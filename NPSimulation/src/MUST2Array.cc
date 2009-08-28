@@ -42,8 +42,7 @@ MUST2Array::MUST2Array()
 }
 
 MUST2Array::~MUST2Array()
-434204366z?
-
+{
    delete m_MaterialAluminium;
    delete m_MaterialIron;
    delete m_MaterialCsI;
@@ -51,6 +50,7 @@ MUST2Array::~MUST2Array()
    delete m_MaterialMyl;
    delete m_MaterialHarvar;
 }
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void MUST2Array::AddTelescope(G4ThreeVector X1_Y1        ,
       G4ThreeVector X128_Y1      ,
