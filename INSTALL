@@ -12,17 +12,29 @@ II) WORKING CONFIGURATIONS
 	The NPTool package has been mainly tested (and developped) with 
 	the two following configurations:
 	1) Mac OS X (10.5.7) + G4 (4.9.2) + CLHEP (2.0.4.2) + ROOT (5.22/00) + GSL ()
-	2) Linux Fedora (kernel ) + G4 () + CLHEP () + ROOT () + GSL ()
+	2) Linux Fedora (kernel 2.6.29) + G4 (4.9.1p3) + CLHEP (2.0.4.2) + ROOT (5.22/00) + GSL (1.12)
 	Please, report any working or non-working configuration.
 
 III) INSTALLATION
-	a) The NPTool package is available via monotone (cvs-like) at 
-	ipnvcs.in2p3.fr
+	a) The NPTool package is available via monotone (svn-like) at ipnvcs.in2p3.fr
 	You can fetch the NPTool package using the following command line:
-	... ...
+	  1) first, create a local monotone database that you can put
+	     wherever you wish:
+	        mtn db init --db=/path/to/pipo.mtn
+
+	  2) then, pull the remote database (on ipnvcs.in2p3.fr) 
+	     to your local database:
+	        mtn pull ipnvcs.in2p3.fr --db=/path/to/pipo.mtn NPTool.dev
+	        mtn pull ipnvcs.in2p3.fr --db=/path/to/pipo.mtn NPTool.pro
+
+	  3) last, checkout your local database and get the NPTool code 
+	     for the developement or production:
+	       mtn checkout --branch=NPTool.dev
+	       mtn checkout --branch=NPTool.pro
+
 
 	b) First, you need to define some environment variables. You can
-	source the NPEnvironment.bash or NPEnvironment.tchrc files 
+	source the NPEnvironment.bash or NPEnvironment.tchrc file 
 	depending on your shell.
 	This step is mandatory since the Makefiles used to build the package
 	depend on some of these environment variables.
