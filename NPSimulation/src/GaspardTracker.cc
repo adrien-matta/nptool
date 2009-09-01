@@ -1,3 +1,25 @@
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
+ *                                                                           *
+ * Creation Date  : 10/06/09                                                 *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription: This class manages different shapes of module for the Gaspard *
+ *             tracker. It allows to have Gaspard geometries with an         *
+ *             heterogeneous set of modules                                  *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
+
 // C++ headers
 #include <fstream>
 #include <sstream>

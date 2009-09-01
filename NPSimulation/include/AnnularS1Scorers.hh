@@ -1,3 +1,24 @@
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
+ *                                                                           *
+ * Creation Date  : 21/07/09                                                 *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription: This class holds all the scorers needed by the AnnularS1      *
+ *             object.                                                       *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
+
 #ifndef AnnularS1Scorers_h
 #define AnnularS1Scorers_h 1
 
