@@ -1,3 +1,29 @@
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
+ *                                                                           *
+ * Creation Date  : 10/06/09                                                 *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription: This class stores the results of the G4 simulation for the    *
+ *             tracker part of the Gaspard detector.                         *
+ *             The format mimics what was used for the GANIL experiments     *
+ *             after conversion of the raw data with GRU. Ask                *
+ *             N. de Sereville for more informations.                        *
+ *             This class derives from TObject (ROOT) and its aim is to be   *
+ *             stored in the output TTree of the G4 simulation               *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
+
 #include <iostream>
 using namespace std;
 

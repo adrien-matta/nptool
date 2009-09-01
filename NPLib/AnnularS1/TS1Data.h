@@ -1,3 +1,30 @@
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
+ *                                                                           *
+ * Creation Date  : 21/07/09                                                 *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription: This class stores the results of the G4 simulation for the S1 *
+ *             detector.                                                     *
+ *             The format is the same as the one which is used for the GANIL *
+ *             experiments after conversion of the raw data with GRU. Ask    *
+ *             N. de Sereville and J. Burgunder (burgunder@ganil.fr) for     *
+ *             informations.                                                 *
+ *             This class derives from TObject (ROOT) and its aim is to be   *
+ *             stored in the output TTree of the G4 simulation               *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
+
 #ifndef __S1DATA__
 #define __S1DATA__
 
