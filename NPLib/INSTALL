@@ -1,5 +1,23 @@
-This file describes the installation procedure of the NPLib
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
 
+/*****************************************************************************
+ * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
+ *                                                                           *
+ * Creation Date  : 01/09/09                                                 *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *      This file describes the installation procedure of the NPLib          *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
 
 In order to build all the libraries of the NPLib module, use the two 
 following commands:
@@ -15,3 +33,7 @@ following commands:
 	to each library are copied to the lib directory. If you are using 
 	a Mac OS system a symbolic link *.dylib is done with respect to 
 	each *.so library. 
+
+	Important note: 
+		You need a working installation of GSL when compiling the 
+		NPEnergyLoss.{h,cxx} library in the Tools directory.
