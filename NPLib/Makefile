@@ -308,6 +308,7 @@ GaspardData:
 		cp ./GASPARD/*.so ./lib ; cp ./GASPARD/*.h ./include
 ifeq ($(ARCH),macosx)
 		cd lib; ln -sf libGaspardData.so libGaspardData.dylib
+		cd lib; ln -sf libGaspardPyysics.so libGaspardPhysics.dylib
 endif
 
 

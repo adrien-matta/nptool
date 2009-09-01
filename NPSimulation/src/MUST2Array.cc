@@ -1185,6 +1185,7 @@ void MUST2Array::ReadSensitive(const G4Event* event)
     }
     
     // clear map for next event
+    DetectorNumberHitMap              ->clear();
     EnergyHitMap   		->clear() ;
     TimeHitMap     		->clear() ;
     XHitMap        		->clear() ;
@@ -1201,7 +1202,7 @@ void MUST2Array::ReadSensitive(const G4Event* event)
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void MUST2Array::InitializeScorer() 
+void MUST2Array::InitializeScorers() 
 	{ 
 		//	Silicon Associate Scorer
 		m_StripScorer = new G4MultiFunctionalDetector("StripScorer");

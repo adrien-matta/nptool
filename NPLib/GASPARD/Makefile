@@ -265,10 +265,10 @@ LDFLAGS      += $(ROOTLDFLAGS)
 LIBS          = $(ROOTLIBS) $(SYSLIBS)
 GLIBS         = $(ROOTGLIBS) $(SYSLIBS)
 
-INCLUDE		= -I$(CLHEP_BASE_DIR)/include
+INCLUDE		= -I$(CLHEP_BASE_DIR)/include -I$(NPLIB)/include
  
 #------------------------------------------------------------------------------
-SHARELIB      =  libGaspardData.so
+SHARELIB      =  libGaspardData.so	libGaspardPhysics.so
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 ############### Detector ##############
@@ -280,10 +280,18 @@ libGaspardData.so:	TGaspardTrackerData.o TGaspardTrackerDataDict.o
 TGaspardTrackerDataDict.cxx:	TGaspardTrackerData.h
 			rootcint -f $@ -c $^
 
+libGaspardPhysics.so:	GaspardTracker.o TGaspardTrackerPhysics.o TGaspardTrackerPhysicsDict.o
+			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
+
+TGaspardTrackerPhysicsDict.cxx:	TGaspardTrackerPhysics.h
+			rootcint -f $@ -c $^
+
 
 
 # dependances
+GaspardTracker.o:	GaspardTracker.cxx	GaspardTracker.h
 TGaspardTrackerData.o:	TGaspardTrackerData.cxx	TGaspardTrackerData.h
+TGaspardTrackerPhysics.o:	TGaspardTrackerPhysics.cxx	TGaspardTrackerPhysics.h
 #######################################
 
 ############# Clean and More ##########

@@ -114,7 +114,7 @@ private:
 	////////////////////////////////////////////////////
 private:
 	//	Initialize all Scorer used by the MUST2Array
-	void InitializeScorer() ;
+	void InitializeScorers() ;
 
 	//	Silicon Associate Scorer
 	G4MultiFunctionalDetector* m_StripScorer				 ;
