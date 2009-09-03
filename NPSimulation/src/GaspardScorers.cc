@@ -22,12 +22,14 @@
 #include "GaspardScorers.hh"
 #include "G4UnitsTable.hh"
 
+#include "GaspardTrackerDummyShape.hh"
 #include "GaspardTrackerSquare.hh"
 #include "GaspardTrackerTrapezoid.hh"
 #include "GaspardTrackerAnnular.hh"
 using namespace GPDSQUARE;
 using namespace GPDTRAP;
 using namespace GPDANNULAR;
+using namespace GPDDUMMYSHAPE;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -280,6 +282,130 @@ void GPDScorerDetectorNumber::PrintAll()
       << "  energy deposit: " << G4BestUnit(*(itr->second), "Energy")
       << G4endl;
    }
+}
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+// FirstStage Front Strip position Scorer for DummyShape geometry
+GPDScorerFirstStageFrontStripDummyShape::GPDScorerFirstStageFrontStripDummyShape(G4String name, G4int depth, G4double StripPlaneSize, G4int NumberOfStrip)
+      : G4VPrimitiveScorer(name, depth), HCID(-1)
+{
+   m_StripPlaneSize =   StripPlaneSize ;
+   m_NumberOfStrip    = NumberOfStrip  ;
+}
+
+GPDScorerFirstStageFrontStripDummyShape::~GPDScorerFirstStageFrontStripDummyShape()
+{
+}
+
+G4bool GPDScorerFirstStageFrontStripDummyShape::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+{
+   G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
+   POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
+
+   G4double StripPitch = m_StripPlaneSize / m_NumberOfStrip;
+
+   G4double temp = (POS(0) + m_StripPlaneSize / 2.) / StripPitch   ;
+   G4double X = int(temp) + 1 ;
+   //Rare case where particle is close to edge of silicon plan
+   if (X == 129) X = 128;
+   G4double edep = aStep->GetTotalEnergyDeposit();
+   if (edep < 100*keV) return FALSE;
+   G4int  index =  aStep->GetTrack()->GetTrackID();
+   EvtMap->set(index, X);
+   return TRUE;
+}
+
+void GPDScorerFirstStageFrontStripDummyShape::Initialize(G4HCofThisEvent* HCE)
+{
+   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
+   if (HCID < 0) {
+      HCID = GetCollectionID(0);
+   }
+   HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
+}
+
+void GPDScorerFirstStageFrontStripDummyShape::EndOfEvent(G4HCofThisEvent*)
+{
+}
+
+void GPDScorerFirstStageFrontStripDummyShape::Clear()
+{
+   EvtMap->clear();
+}
+
+void GPDScorerFirstStageFrontStripDummyShape::DrawAll()
+{
+}
+
+void GPDScorerFirstStageFrontStripDummyShape::PrintAll()
+{
+   G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl ;
+   G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
+   G4cout << " Number of entries " << EvtMap->entries() << G4endl     ;
+}
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+// FirstStage Back Strip position Scorer for DummyShape geometry
+GPDScorerFirstStageBackStripDummyShape::GPDScorerFirstStageBackStripDummyShape(G4String name, G4int depth, G4double StripPlaneSize, G4int NumberOfStrip)
+      : G4VPrimitiveScorer(name, depth), HCID(-1)
+{
+   m_StripPlaneSize =   StripPlaneSize ;
+   m_NumberOfStrip    = NumberOfStrip  ;
+}
+
+GPDScorerFirstStageBackStripDummyShape::~GPDScorerFirstStageBackStripDummyShape()
+{
+}
+
+G4bool GPDScorerFirstStageBackStripDummyShape::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+{
+   G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
+   POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
+
+   G4double StripPitch = m_StripPlaneSize / m_NumberOfStrip;
+
+   G4double temp = (POS(0) + m_StripPlaneSize / 2.) / StripPitch   ;
+   G4double X = int(temp) + 1 ;
+   //Rare case where particle is close to edge of silicon plan
+   if (X == 129) X = 128;
+   G4double edep = aStep->GetTotalEnergyDeposit();
+   if (edep < 100*keV) return FALSE;
+   G4int  index =  aStep->GetTrack()->GetTrackID();
+   EvtMap->set(index, X);
+   return TRUE;
+}
+
+void GPDScorerFirstStageBackStripDummyShape::Initialize(G4HCofThisEvent* HCE)
+{
+   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
+   if (HCID < 0) {
+      HCID = GetCollectionID(0);
+   }
+   HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
+}
+
+void GPDScorerFirstStageBackStripDummyShape::EndOfEvent(G4HCofThisEvent*)
+{
+}
+
+void GPDScorerFirstStageBackStripDummyShape::Clear()
+{
+   EvtMap->clear();
+}
+
+void GPDScorerFirstStageBackStripDummyShape::DrawAll()
+{
+}
+
+void GPDScorerFirstStageBackStripDummyShape::PrintAll()
+{
+   G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl ;
+   G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
+   G4cout << " Number of entries " << EvtMap->entries() << G4endl     ;
 }
 
 
