@@ -31,6 +31,7 @@
 #include "GaspardTrackerSquare.hh"
 #include "GaspardTrackerTrapezoid.hh"
 #include "GaspardTrackerAnnular.hh"
+#include "GaspardTrackerDummyShape.hh"
 
 using namespace std;
 
@@ -55,10 +56,10 @@ void GaspardTracker::ReadConfiguration(string Path)
    ifstream ConfigFile;
    ConfigFile.open(Path.c_str());
 
-   bool GPDTrkSquare    = false;
-   bool GPDTrkTrapezoid = false;
-   bool GPDTrkAnnular   = false;
-   bool GPDTrkShape     = false;
+   bool GPDTrkSquare     = false;
+   bool GPDTrkTrapezoid  = false;
+   bool GPDTrkAnnular    = false;
+   bool GPDTrkDummyShape = false;
 
    string LineBuffer;
    while (!ConfigFile.eof()) {
@@ -114,13 +115,13 @@ void GaspardTracker::ReadConfiguration(string Path)
          // store GaspardTrackerTrapezoid "detector"
          m_Modules.push_back(myDetector);
       }
-      else if (LineBuffer.compare(0, 12, "GPDShape") == 0  &&  GPDTrkShape == false) {
-         GPDTrkShape = true;
+      else if (LineBuffer.compare(0, 13, "GPDDummyShape") == 0  &&  GPDTrkDummyShape == false) {
+         GPDTrkDummyShape = true;
 
          // instantiate a new "detector" corresponding to the Shape elements
          // The GaspardTrackerSquare class should be replaced by the
          // GaspardTrackerShape class you need to define
-         GaspardTrackerModule* myDetector = new GaspardTrackerSquare();
+         GaspardTrackerModule* myDetector = new GaspardTrackerDummyShape();
 
          // read part of the configuration file corresponding to shape elements
          ConfigFile.close();
