@@ -23,12 +23,13 @@ LDFLAGS += -L$(NPLIB)/lib -lMust2Data -lGaspardData -lInteractionCoordinates \
 LDFLAGS += -L$(CLHEP_LIB_DIR) -l$(CLHEP_LIB)
 
 SRC= $(wildcard *.cc)
+INC= $(wildcart $(NPAINCLUDES)/*.hh)
 OBJ=$(SRC:.cc=.o)
 
 #all:$(EXEC)
 #	@$(CPP) -o $@ -c $< $(CXXFLAGS)
 
-Analysis:$(OBJ)
+Analysis:$(OBJ) $(INC)
 	@$(CPP) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 	mv Analysis  ../Analysis
 
