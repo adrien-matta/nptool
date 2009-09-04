@@ -121,6 +121,56 @@ private:
 
 
 
+class GPDScorerFirstStageFrontStripDummyShape : public G4VPrimitiveScorer
+{
+public: // with description
+   GPDScorerFirstStageFrontStripDummyShape(G4String name, G4int depth = 0, G4double StripPlaneSize = 98, G4int NumberOfStrip = 128);
+   virtual ~GPDScorerFirstStageFrontStripDummyShape();
+
+protected: // with description
+   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+
+public:
+   virtual void Initialize(G4HCofThisEvent*);
+   virtual void EndOfEvent(G4HCofThisEvent*);
+   virtual void Clear();
+   virtual void DrawAll();
+   virtual void PrintAll();
+
+private:
+   G4double  m_StripPlaneSize;
+   G4int     m_NumberOfStrip ;
+   G4int HCID;
+   G4THitsMap<G4double>* EvtMap;
+};
+
+
+
+class GPDScorerFirstStageBackStripDummyShape : public G4VPrimitiveScorer
+{
+public: // with description
+   GPDScorerFirstStageBackStripDummyShape(G4String name, G4int depth = 0, G4double StripPlaneSize = 98, G4int NumberOfStrip = 128);
+   virtual ~GPDScorerFirstStageBackStripDummyShape();
+
+protected: // with description
+   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+
+public:
+   virtual void Initialize(G4HCofThisEvent*);
+   virtual void EndOfEvent(G4HCofThisEvent*);
+   virtual void Clear();
+   virtual void DrawAll();
+   virtual void PrintAll();
+
+private:
+   G4double  m_StripPlaneSize;
+   G4int     m_NumberOfStrip ;
+   G4int HCID;
+   G4THitsMap<G4double>* EvtMap;
+};
+
+
+
 class GPDScorerFirstStageFrontStripSquare : public G4VPrimitiveScorer
 {
 public: // with description
