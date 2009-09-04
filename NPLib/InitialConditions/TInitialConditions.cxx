@@ -9,7 +9,7 @@
  * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
  *                                                                           *
  * Creation Date  : 10/06/09                                                 *
- * Last update    :                                                          *
+ * Last update    : 04/09/09                                                 *
  *---------------------------------------------------------------------------*
  * Decription: This class records all the information concerning the event   *
  *             generators, e.g. vertex of interaction, angles of emitted     *
@@ -18,6 +18,7 @@
  *             stored in the output TTree of the G4 simulation               *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
+ *    + 04/09/09: Add private members for emittance  (N. de Sereville)       *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
@@ -46,6 +47,9 @@ void TInitialConditions::Clear()
    fIC_Position_X.clear();
    fIC_Position_Y.clear();
    fIC_Position_Z.clear();
+   // Theta and Phi angles for the emittance
+   fIC_Incident_Emittance_Theta.clear();
+   fIC_Incident_Emittance_Phi.clear();
    // Incident particle angles
    fIC_Incident_Angle_Theta.clear();
    fIC_Incident_Angle_Phi.clear();
@@ -72,6 +76,9 @@ void TInitialConditions::Dump()
    cout << "\tX : " << fIC_Position_X[0] << endl;  
    cout << "\tY : " << fIC_Position_Y[0] << endl;  
    cout << "\tZ : " << fIC_Position_Z[0] << endl;  
+   cout << "Theta and Phi angles for the emittance : " << endl;
+   cout << "\tTheta : " << fIC_Incident_Emittance_Theta[0] << endl;
+   cout << "\tPhi   : " << fIC_Incident_Emittance_Phi[0] << endl;
    cout << "Incident particle angles : " << endl;
    cout << "\tTheta : " << fIC_Incident_Angle_Theta[0] << endl;
    cout << "\tPhi   : " << fIC_Incident_Angle_Phi[0] << endl;

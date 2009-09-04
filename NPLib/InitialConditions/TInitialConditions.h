@@ -9,7 +9,7 @@
  * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
  *                                                                           *
  * Creation Date  : 10/06/09                                                 *
- * Last update    :                                                          *
+ * Last update    : 04/09/09                                                 *
  *---------------------------------------------------------------------------*
  * Decription: This class records all the information concerning the event   *
  *             generators, e.g. vertex of interaction, angles of emitted     *
@@ -18,6 +18,7 @@
  *             stored in the output TTree of the G4 simulation               *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
+ *    + 04/09/09: Add private members for emittance  (N. de Sereville)       *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
@@ -39,6 +40,9 @@ private:
    vector<Double_t>	fIC_Position_X;
    vector<Double_t>	fIC_Position_Y;
    vector<Double_t>	fIC_Position_Z;
+   // Theta and Phi angles for the emittance
+   vector<Double_t>	fIC_Incident_Emittance_Theta;
+   vector<Double_t>	fIC_Incident_Emittance_Phi;
    // Incident particle angles
    vector<Double_t>	fIC_Incident_Angle_Theta;
    vector<Double_t>	fIC_Incident_Angle_Phi;
@@ -70,6 +74,9 @@ public:
    void SetICPositionX(Double_t PositionX) 		{fIC_Position_X.push_back(PositionX);}
    void SetICPositionY(Double_t PositionY) 		{fIC_Position_Y.push_back(PositionY);}
    void SetICPositionZ(Double_t PositionZ)		{fIC_Position_Z.push_back(PositionZ);}
+   // Theta and Phi angles for the emittance
+   void SetICIncidentEmittanceTheta(Double_t Theta)	{fIC_Incident_Emittance_Theta.push_back(Theta);}
+   void SetICIncidentEmittancePhi(Double_t Phi)		{fIC_Incident_Emittance_Phi.push_back(Phi);}
    // Incident particle angles
    void SetICIncidentAngleTheta(Double_t AngleTheta)	{fIC_Incident_Angle_Theta.push_back(AngleTheta);}
    void SetICIncidentAnglePhi(Double_t AnglePhi)	{fIC_Incident_Angle_Phi.push_back(AnglePhi);}
@@ -94,9 +101,12 @@ public:
    // Vertex of interaction
    Double_t GetICPositionX(Int_t i) 		{return fIC_Position_X.at(i);}
    Double_t GetICPositionY(Int_t i) 		{return fIC_Position_Y.at(i);}
-   Double_t GetICPositionZ(Int_t i)		    {return fIC_Position_Z.at(i);}
+   Double_t GetICPositionZ(Int_t i)		{return fIC_Position_Z.at(i);}
+   // Theta and Phi angles for the emittance
+   Double_t GetICIncidentEmittanceTheta(Int_t i)	{return fIC_Incident_Emittance_Theta.at(i);}
+   Double_t GetICIncidentEmittancePhi(Int_t i)	{return fIC_Incident_Emittance_Phi.at(i);}
    // Incident particle angles
-   Double_t GetICIncidentAngleTheta(Int_t i){return fIC_Incident_Angle_Theta.at(i);}
+   Double_t GetICIncidentAngleTheta(Int_t i)	{return fIC_Incident_Angle_Theta.at(i);}
    Double_t GetICIncidentAnglePhi(Int_t i)	{return fIC_Incident_Angle_Phi.at(i);}
    // Incident particle energy
    Double_t GetICIncidentEnergy(Int_t i)	{return fIC_Incident_Energy.at(i);}

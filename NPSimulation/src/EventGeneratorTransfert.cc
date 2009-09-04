@@ -316,28 +316,27 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
    
    //shoot inside the target with correlated angle
    if (m_TargetRadius != 0) {
-      while (sqrt(x0*x0 + y0*y0) > m_TargetRadius) 
-      	{
-      		RandomGaussian2D(0,0,m_BeamFWHMX / 2.35,m_BeamEmmitanceTheta,x0,Beam_thetaX);
-      		RandomGaussian2D(0,0,m_BeamFWHMY / 2.35,m_BeamEmmitancePhi  ,y0,Beam_phiY  );
-      	}
+      while (sqrt(x0*x0 + y0*y0) > m_TargetRadius) {
+         RandomGaussian2D(0,0,m_BeamFWHMX / 2.35,m_BeamEmmitanceTheta,x0,Beam_thetaX);
+         RandomGaussian2D(0,0,m_BeamFWHMY / 2.35,m_BeamEmmitancePhi  ,y0,Beam_phiY  );
+      }
+   }
+   else {
+      RandomGaussian2D(0,0,0,m_BeamEmmitanceTheta,x0,Beam_thetaX);
+      RandomGaussian2D(0,0,0,m_BeamEmmitancePhi  ,y0,Beam_phiY  );
    }
 
-   else 
-   	{
-     	RandomGaussian2D(0,0,0,m_BeamEmmitanceTheta,x0,Beam_thetaX);
-     	RandomGaussian2D(0,0,0,m_BeamEmmitancePhi  ,y0,Beam_phiY  );
-   }
+   // write emittance angles to ROOT file
+   m_InitConditions->SetICIncidentEmittanceTheta(Beam_thetaX / deg);
+   m_InitConditions->SetICIncidentEmittancePhi(Beam_phiY / deg);
 
-	// Calculate Angle in spherical coordinate, passing by the direction vector dir	
-	G4double Xdir =  cos( pi/2. - Beam_thetaX ) 							;
-	G4double Ydir =  cos( pi/2. - Beam_phiY   )								;
-	G4double Zdir =  sin( pi/2. - Beam_thetaX ) + sin(  pi/2. - Beam_phiY) 	;
+   // Calculate Angle in spherical coordinate, passing by the direction vector dir	
+   G4double Xdir =  cos( pi/2. - Beam_thetaX );
+   G4double Ydir =  cos( pi/2. - Beam_phiY   );
+   G4double Zdir =  sin( pi/2. - Beam_thetaX ) + sin(  pi/2. - Beam_phiY);	
 	
-	
-	G4double Beam_theta = acos ( Zdir / sqrt( Xdir*Xdir + Ydir*Ydir + Zdir*Zdir ) );
-	
-	G4double Beam_phi   = atan2( Ydir , Xdir ) ;   
+   G4double Beam_theta = acos ( Zdir / sqrt( Xdir*Xdir + Ydir*Ydir + Zdir*Zdir ) );	
+   G4double Beam_phi   = atan2( Ydir , Xdir ) ;   
 
    // write angles to ROOT file
    m_InitConditions->SetICIncidentAngleTheta(Beam_theta / deg);
