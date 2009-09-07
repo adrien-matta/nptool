@@ -309,10 +309,10 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
    = G4ParticleTable::GetParticleTable()->GetIon(HeavyZ, HeavyA, m_Reaction->GetExcitation()*MeV);
 
    // Vertex position and beam angle inte world frame
-   G4double x0 = 1000 * cm  ;
-   G4double y0 = 1000 * cm  ;
-   G4double Beam_thetaX = 0  ;
-   G4double Beam_phiY   = 0  ;
+   G4double x0 = 1000 * cm;
+   G4double y0 = 1000 * cm;
+   G4double Beam_thetaX = 0;
+   G4double Beam_phiY   = 0;
    
    //shoot inside the target with correlated angle
    if (m_TargetRadius != 0) {
