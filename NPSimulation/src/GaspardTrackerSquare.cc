@@ -9,12 +9,14 @@
  * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
  *                                                                           *
  * Creation Date  : 10/06/09                                                 *
- * Last update    :                                                          *
+ * Last update    : 07/09/09                                                 *
  *---------------------------------------------------------------------------*
  * Decription: Define a module of square shape for the Gaspard tracker       *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
+ *    + 07/09/09: Fix bug for placing module with (r,theta,phi) method.      *
+ *                (N. de Sereville)                                          *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
@@ -771,19 +773,23 @@ void GaspardTrackerSquare::ConstructDetector(G4LogicalVolume* world)
          G4double wX = m_R[i] * sin(Theta / rad) * cos(Phi / rad)   ;
          G4double wY = m_R[i] * sin(Theta / rad) * sin(Phi / rad)   ;
          G4double wZ = m_R[i] * cos(Theta / rad)             ;
-
          MMw = G4ThreeVector(wX, wY, wZ)                ;
-//         G4ThreeVector CT = MMw                       ;
-         CT = MMw                       ;
-         MMw = MMw.unit()                          ;
 
-         G4ThreeVector Y = G4ThreeVector(0 , 1 , 0)         ;
+         // vector corresponding to the center of the module
+         CT = MMw;
 
-         MMu = MMw.cross(Y)      ;
-         MMv = MMw.cross(MMu) ;
+         // vector parallel to one axis of silicon plane
+         G4double ii = cos(Theta / rad) * cos(Phi / rad);
+         G4double jj = cos(Theta / rad) * sin(Phi / rad);
+         G4double kk = -sin(Theta / rad);
+         G4ThreeVector Y = G4ThreeVector(ii, jj, kk);
 
+         MMw = MMw.unit();
+         MMu = MMw.cross(Y);
+         MMv = MMw.cross(MMu);
          MMv = MMv.unit();
          MMu = MMu.unit();
+
          // Passage Matrix from Lab Referential to Telescope Referential
          // MUST2
          MMrot = new G4RotationMatrix(MMu, MMv, MMw);

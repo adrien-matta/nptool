@@ -9,7 +9,7 @@
  * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
  *                                                                           *
  * Creation Date  : 03/09/09                                                 *
- * Last update    :                                                          *
+ * Last update    : 07/09/09                                                 *
  *---------------------------------------------------------------------------*
  * Decription: Define a dummy module for the Gaspard tracker                 *
  *             The goal of this class is to be a starting point to create a  *
@@ -17,6 +17,8 @@
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
+ *    + 07/09/09: Fix bug for placing module with (r,theta,phi) method.      *
+ *                (N. de Sereville)                                          *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
@@ -92,9 +94,6 @@ void GaspardTrackerDummyShape::AddModule(G4ThreeVector X1_Y1     ,
    m_X128_Y1.push_back(X128_Y1)           ;
    m_X1_Y128.push_back(X1_Y128)           ;
    m_X128_Y128.push_back(X128_Y128)       ;
-   m_wFirstStage.push_back(wFirstStage)   ;
-   m_wSecondStage.push_back(wSecondStage) ;
-   m_wThirdStage.push_back(wThirdStage)   ;
 
    m_R.push_back(0)      ;
    m_Theta.push_back(0)  ;
@@ -102,6 +101,12 @@ void GaspardTrackerDummyShape::AddModule(G4ThreeVector X1_Y1     ,
    m_beta_u.push_back(0) ;
    m_beta_v.push_back(0) ;
    m_beta_w.push_back(0) ;
+
+   m_wFirstStage.push_back(wFirstStage)   ;
+   m_wSecondStage.push_back(wSecondStage) ;
+   m_wThirdStage.push_back(wThirdStage)   ;
+
+//   m_wNumberStrip.push_back(wNumberStrip);
 }
 
 
@@ -121,20 +126,21 @@ void GaspardTrackerDummyShape::AddModule(G4double R        ,
 
    m_DefinitionType.push_back(false);
 
+   m_X1_Y1.push_back(empty)     ;
+   m_X128_Y1.push_back(empty)   ;
+   m_X1_Y128.push_back(empty)   ;
+   m_X128_Y128.push_back(empty) ;
+
    m_R.push_back(R)                       ;
    m_Theta.push_back(Theta)               ;
    m_Phi.push_back(Phi)                   ;
    m_beta_u.push_back(beta_u)             ;
    m_beta_v.push_back(beta_v)             ;
    m_beta_w.push_back(beta_w)             ;
+
    m_wFirstStage.push_back(wFirstStage)   ;
    m_wSecondStage.push_back(wSecondStage) ;
    m_wThirdStage.push_back(wThirdStage)   ;
-
-   m_X1_Y1.push_back(empty)     ;
-   m_X128_Y1.push_back(empty)   ;
-   m_X1_Y128.push_back(empty)   ;
-   m_X128_Y128.push_back(empty) ;
 }
 
 
@@ -252,7 +258,7 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
    //////////////////// Second Stage  Construction ////////////////
    ////////////////////////////////////////////////////////////////
    if (wSecondStage) {
-      // Silicon detector itself
+      // Second stage silicon detector
       G4ThreeVector  positionSecondStage = G4ThreeVector(0, 0, SecondStage_PosZ);
 
       G4Box*           solidSecondStage = new G4Box("solidSecondStage", 0.5*SecondStageFace, 0.5*SecondStageFace, 0.5*SecondStageThickness);
@@ -310,10 +316,9 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
 void GaspardTrackerDummyShape::ReadConfiguration(string Path)
 {
-   ifstream ConfigFile           ;
-   ConfigFile.open(Path.c_str()) ;
-   string LineBuffer          ;
-   string DataBuffer          ;
+   ifstream ConfigFile;
+   ConfigFile.open(Path.c_str());
+   string LineBuffer, DataBuffer; 
 
    // A:X1_Y1     --> X:1    Y:1
    // B:X128_Y1   --> X:128  Y:1
@@ -324,23 +329,25 @@ void GaspardTrackerDummyShape::ReadConfiguration(string Path)
    G4ThreeVector A , B , C , D                                                 ;
    G4double Theta = 0 , Phi = 0 , R = 0 , beta_u = 0 , beta_v = 0 , beta_w = 0 ;
    int FIRSTSTAGE = 0 , SECONDSTAGE = 0 , THIRDSTAGE = 0                       ;
+   int NSTRIP = 128;
 
-	bool ReadingStatus = false ;
+   bool ReadingStatus = false;
 
-   bool check_A = false ;
-   bool check_C = false ;
-   bool check_B = false ;
-   bool check_D = false ;
+   bool check_A = false;
+   bool check_C = false;
+   bool check_B = false;
+   bool check_D = false;
 
-   bool check_Theta = false ;
-   bool check_Phi   = false ;
-   bool check_R     = false ;
-   bool check_beta  = false ;
+   bool check_Theta = false;
+   bool check_Phi   = false;
+   bool check_R     = false;
+   bool check_beta  = false;
    
-   bool check_FirstStage = false ;
-   bool check_SecondStage = false ;
-   bool check_ThirdStage = false ;
-   bool checkVis = false ;
+   bool check_FirstStage = false;
+   bool check_SecondStage = false;
+   bool check_ThirdStage = false;
+   bool check_NStrip = false;
+   bool checkVis = false;
 
    while (!ConfigFile.eof()) {
       getline(ConfigFile, LineBuffer);
@@ -348,14 +355,13 @@ void GaspardTrackerDummyShape::ReadConfiguration(string Path)
          G4cout << "///" << G4endl           ;
          G4cout << "DummyShape element found: " << G4endl   ;
          ReadingStatus = true ;
-         }
+      }
          
-   while(ReadingStatus){      
-
+      while (ReadingStatus) {
          ConfigFile >> DataBuffer;
-         //	Comment Line 
-		if (DataBuffer.compare(0, 1, "%") == 0) {/*do nothing */;}
-		
+         // Comment Line 
+         if (DataBuffer.compare(0, 1, "%") == 0) {/*do nothing */;}
+	
          // Position method
          else if (DataBuffer.compare(0, 6, "X1_Y1=") == 0) {
             check_A = true;
@@ -372,7 +378,6 @@ void GaspardTrackerDummyShape::ReadConfiguration(string Path)
             A = G4ThreeVector(Ax, Ay, Az);
             cout << "X1 Y1 corner position : " << A << endl;
          }
-        
          else if (DataBuffer.compare(0, 8, "X128_Y1=") == 0) {
             check_B = true;
             ConfigFile >> DataBuffer ;
@@ -388,7 +393,6 @@ void GaspardTrackerDummyShape::ReadConfiguration(string Path)
             B = G4ThreeVector(Bx, By, Bz);
             cout << "X128 Y1 corner position : " << B << endl;
          }
-         
          else if (DataBuffer.compare(0, 8, "X1_Y128=") == 0) {
             check_C = true;
             ConfigFile >> DataBuffer ;
@@ -404,7 +408,6 @@ void GaspardTrackerDummyShape::ReadConfiguration(string Path)
             C = G4ThreeVector(Cx, Cy, Cz);
             cout << "X1 Y128 corner position : " << C << endl;
          }
-        
          else if (DataBuffer.compare(0, 10, "X128_Y128=") == 0) {
             check_D = true;
             ConfigFile >> DataBuffer ;
@@ -420,9 +423,8 @@ void GaspardTrackerDummyShape::ReadConfiguration(string Path)
             D = G4ThreeVector(Dx, Dy, Dz);
             cout << "X128 Y128 corner position : " << D << endl;
          }
-         
 
-		 // Angle method
+         // Angle method
          else if (DataBuffer.compare(0, 6, "THETA=") == 0) {
             check_Theta = true;
             ConfigFile >> DataBuffer ;
@@ -430,7 +432,6 @@ void GaspardTrackerDummyShape::ReadConfiguration(string Path)
             Theta = Theta * deg;
             cout << "Theta:  " << Theta / deg << endl;
          }
-
          else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
             check_Phi = true;
             ConfigFile >> DataBuffer ;
@@ -438,7 +439,6 @@ void GaspardTrackerDummyShape::ReadConfiguration(string Path)
             Phi = Phi * deg;
             cout << "Phi:  " << Phi / deg << endl;
          }
-
          else if (DataBuffer.compare(0, 2, "R=") == 0) {
             check_R = true;
             ConfigFile >> DataBuffer ;
@@ -446,7 +446,6 @@ void GaspardTrackerDummyShape::ReadConfiguration(string Path)
             R = R * mm;
             cout << "R:  " << R / mm << endl;
          }
-
          else if (DataBuffer.compare(0, 5, "BETA=") == 0) {
             check_beta = true;
             ConfigFile >> DataBuffer ;
@@ -466,91 +465,78 @@ void GaspardTrackerDummyShape::ReadConfiguration(string Path)
             ConfigFile >> DataBuffer;
             FIRSTSTAGE = atof(DataBuffer.c_str()) ;
          }
-
          else if (DataBuffer.compare(0, 12, "SECONDSTAGE=") == 0) {
-         	check_SecondStage = true ;
+            check_SecondStage = true ;
             ConfigFile >> DataBuffer;
             SECONDSTAGE = atof(DataBuffer.c_str()) ;
          }
-
          else if (DataBuffer.compare(0, 11, "THIRDSTAGE=") == 0) {
             check_ThirdStage = true ;
             ConfigFile >> DataBuffer;
             THIRDSTAGE = atof(DataBuffer.c_str()) ;
          }
 
+         else if (DataBuffer.compare(0, 7, "NSTRIP=") == 0) {
+            check_NStrip = true ;
+            ConfigFile >> DataBuffer;
+            NSTRIP = atof(DataBuffer.c_str()) ;
+         }
+
          else if (DataBuffer.compare(0, 4, "VIS=") == 0) {
-         	checkVis = true ;
+            checkVis = true ;
             ConfigFile >> DataBuffer;
             if (DataBuffer.compare(0, 3, "all") == 0) m_non_sensitive_part_visiualisation = true;
          }
          
          else G4cout << "WARNING: Wrong Token, GaspardTrackerDummyShape: DummyShape Element not added" << G4endl;
 
-         //Add The previously define telescope
-         //With position method
-         if ((check_A && check_B && check_C && check_D && check_FirstStage && check_SecondStage && check_ThirdStage && checkVis) && !(check_Theta && check_Phi && check_R)) {
-         
-            ReadingStatus = false ;
-		    check_A = false ;
-		    check_C = false ;
-		    check_B = false ;
-		    check_D = false ;
-		    check_FirstStage = false ;
-		    check_SecondStage = false ;
-		    check_ThirdStage = false ;
-		    checkVis = false ;
-         
-            AddModule(A                ,
-                      B                ,
-                      C                ,
-                      D                ,
-                      FIRSTSTAGE  == 1 ,
-                      SECONDSTAGE == 1 ,
-                      THIRDSTAGE  == 1);
+         // Add The previously define telescope
+         // With position method
+         if ((check_A && check_B && check_C && check_D && check_FirstStage && check_SecondStage && check_ThirdStage && checkVis) && 
+             !(check_Theta && check_Phi && check_R)) {
+            ReadingStatus = false;
+	    check_A = false;
+	    check_C = false;
+	    check_B = false;
+	    check_D = false;
+	    check_FirstStage = false;
+	    check_SecondStage = false;
+	    check_ThirdStage = false;
+	    checkVis = false;
+
+            AddModule(A, B, C, D, FIRSTSTAGE  == 1, SECONDSTAGE == 1, THIRDSTAGE == 1);
          }
 
-         //with angle method
-        if ((check_Theta && check_Phi && check_R && check_FirstStage && check_SecondStage && check_ThirdStage && checkVis) && !(check_A && check_B && check_C && check_D)) {
-         	ReadingStatus = false ;
-         	 check_Theta = false ;
-   			 check_Phi   = false ;
-   			 check_R     = false ;
-   			 check_beta  = false ;
-		     check_FirstStage = false ;
-			 check_SecondStage = false ;
-		     check_ThirdStage = false ;
-		     checkVis = false ;
+         // With angle method
+         if ((check_Theta && check_Phi && check_R && check_FirstStage && check_SecondStage && check_ThirdStage && checkVis) && 
+             !(check_A && check_B && check_C && check_D)) {
+            ReadingStatus = false;
+            check_Theta = false;
+   	    check_Phi   = false;
+   	    check_R     = false;
+   	    check_beta  = false;
+	    check_FirstStage = false;
+	    check_SecondStage = false;
+	    check_ThirdStage = false;
+	    checkVis = false;
 		     
-            AddModule(R                ,
-                      Theta            ,
-                      Phi              ,
-                      beta_u           ,
-                      beta_v           ,
-                      beta_w           ,
-                      FIRSTSTAGE  == 1 ,
-                      SECONDSTAGE == 1 ,
-                      THIRDSTAGE  == 1);
+            AddModule(R, Theta, Phi, beta_u, beta_v, beta_w, FIRSTSTAGE  == 1, SECONDSTAGE == 1, THIRDSTAGE == 1);
          }
-
-         
       }
    }
 }
+
+
 
 // Construct detector and inialise sensitive part.
 // Called After DetecorConstruction::AddDetector Method
 void GaspardTrackerDummyShape::ConstructDetector(G4LogicalVolume* world)
 {
    G4RotationMatrix* MMrot    = NULL                   ;
-/*   G4ThreeVector     MMpos    = G4ThreeVector(0, 0, 0) ;
+   G4ThreeVector     MMpos    = G4ThreeVector(0, 0, 0) ;
    G4ThreeVector     MMu      = G4ThreeVector(0, 0, 0) ;
    G4ThreeVector     MMv      = G4ThreeVector(0, 0, 0) ;
-   G4ThreeVector     MMw      = G4ThreeVector(0, 0, 0) ;*/
-   MMpos    = G4ThreeVector(0, 0, 0) ;
-   MMu      = G4ThreeVector(0, 0, 0) ;
-   MMv      = G4ThreeVector(0, 0, 0) ;
-   MMw      = G4ThreeVector(0, 0, 0) ;
+   G4ThreeVector     MMw      = G4ThreeVector(0, 0, 0) ;
    G4ThreeVector     MMCenter = G4ThreeVector(0, 0, 0) ;
    bool FirstStage  = true ;
    bool SecondStage = true ;
@@ -564,63 +550,57 @@ void GaspardTrackerDummyShape::ConstructDetector(G4LogicalVolume* world)
          // (u,v,w) unitary vector associated to telescope referencial
          // (u,v) // to silicon plan
          // w perpendicular to (u,v) plan and pointing ThirdStage
-         G4cout << "############ Gaspard " << i << " #############" << G4endl;
-         MMu = m_X128_Y1[i] - m_X1_Y1[i] ;
-         G4cout << "MMu: X = " << MMu(0) << " , Y = " << MMu(1) << " , Z = " << MMu(2) << G4endl;
-         MMu = MMu.unit()                ;
-         G4cout << "Norm MMu: X = " << MMu(0) << " , Y = " << MMu(1) << " , Z = " << MMu(2) << G4endl;
+         MMu = m_X128_Y1[i] - m_X1_Y1[i]; 
+         MMu = MMu.unit();
 
-         MMv = m_X1_Y128[i] - m_X1_Y1[i] ;
-         G4cout << "MMv X = " << MMv(0) << " , Y = " << MMv(1) << " , Z = " << MMv(2) << G4endl;
-         MMv = MMv.unit()                ;
-         G4cout << "Norm MMv X = " << MMv(0) << " , Y = " << MMv(1) << " , Z = " << MMv(2) << G4endl;
+         MMv = m_X1_Y128[i] - m_X1_Y1[i];
+         MMv = MMv.unit();
 
          G4ThreeVector MMscal = MMu.dot(MMv);
-         G4cout << "Norm MMu.MMv X = " << MMv(0) << " , Y = " << MMv(1) << " , Z = " << MMv(2) << G4endl;
 
-         MMw = MMu.cross(MMv)                  ;
+         MMw = MMu.cross(MMv);
 //         if (MMw.z() > 0) MMw = MMv.cross(MMu) ;
-         MMw = MMw.unit()                      ;
+         MMw = MMw.unit();
 
-         MMCenter = (m_X1_Y1[i] + m_X1_Y128[i] + m_X128_Y1[i] + m_X128_Y128[i]) / 4 ;
+         MMCenter = (m_X1_Y1[i] + m_X1_Y128[i] + m_X128_Y1[i] + m_X128_Y128[i]) / 4;
 
          // Passage Matrix from Lab Referential to Telescope Referential
          // MUST2
-         MMrot = new G4RotationMatrix(MMu, MMv, MMw) ;
+         MMrot = new G4RotationMatrix(MMu, MMv, MMw);
          // translation to place Telescope
-         MMpos = MMw * Length * 0.5 + MMCenter ;
+         MMpos = MMw * Length * 0.5 + MMCenter;
       }
 
       // By Angle
       else {
          G4double Theta = m_Theta[i] ;
          G4double Phi   = m_Phi[i]   ;
-         //This part because if Phi and Theta = 0 equation are false
-         if (Theta == 0)        Theta = 0.0001 ;
-         if (Theta == 2*cos(0)) Theta = 2 * acos(0) - 0.00001 ;
-         if (Phi   == 0)        Phi   = 0.0001 ;
 
          // (u,v,w) unitary vector associated to telescope referencial
          // (u,v) // to silicon plan
          // w perpendicular to (u,v) plan and pointing ThirdStage
          // Phi is angle between X axis and projection in (X,Y) plan
          // Theta is angle between  position vector and z axis
-         G4double wX = m_R[i] * sin(Theta / rad) * cos(Phi / rad)   ;
-         G4double wY = m_R[i] * sin(Theta / rad) * sin(Phi / rad)   ;
-         G4double wZ = m_R[i] * cos(Theta / rad)             ;
+         G4double wX = m_R[i] * sin(Theta / rad) * cos(Phi / rad);
+         G4double wY = m_R[i] * sin(Theta / rad) * sin(Phi / rad);
+         G4double wZ = m_R[i] * cos(Theta / rad);
+         MMw = G4ThreeVector(wX, wY, wZ);
 
-         MMw = G4ThreeVector(wX, wY, wZ)                ;
-//         G4ThreeVector CT = MMw                       ;
-         CT = MMw                       ;
-         MMw = MMw.unit()                          ;
+         // vector corresponding to the center of the module
+         G4ThreeVector CT = MMw;
 
-         G4ThreeVector Y = G4ThreeVector(0 , 1 , 0)         ;
+         // vector parallel to one axis of silicon plane
+         G4double ii = cos(Theta / rad) * cos(Phi / rad);
+         G4double jj = cos(Theta / rad) * sin(Phi / rad);
+         G4double kk = -sin(Theta / rad);
+         G4ThreeVector Y = G4ThreeVector(ii, jj, kk);
 
-         MMu = MMw.cross(Y)      ;
-         MMv = MMw.cross(MMu) ;
-
+         MMw = MMw.unit();
+         MMu = MMw.cross(Y);
+         MMv = MMw.cross(MMu);
          MMv = MMv.unit();
          MMu = MMu.unit();
+
          // Passage Matrix from Lab Referential to Telescope Referential
          // MUST2
          MMrot = new G4RotationMatrix(MMu, MMv, MMw);
@@ -664,13 +644,9 @@ void GaspardTrackerDummyShape::SetInterCoordPointer(TInteractionCoordinates* int
 // Called at in the EventAction::EndOfEventAvtion
 void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
 {
-   bool checkSi = false;
-   G4String DetectorNumber;
-
-//////////////////////////////////////////////////////////////////////////////////////
-//////////////////////// Used to Read Event Map of detector //////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////
-
+   //////////////////////////////////////////////////////////////////////////////////////
+   //////////////////////// Used to Read Event Map of detector //////////////////////////
+   //////////////////////////////////////////////////////////////////////////////////////
    // First Stage
    std::map<G4int, G4int*>::iterator    DetectorNumber_itr;
    std::map<G4int, G4double*>::iterator Energy_itr;
@@ -695,269 +671,262 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
    G4THitsMap<G4double>* AngPhiHitMap;
 
    // NULL pointer are given to avoid warning at compilation
-   // Si(Li)
-   std::map<G4int, G4double*>::iterator SiLiEnergy_itr ;
-   G4THitsMap<G4double>* SiLiEnergyHitMap = NULL      ;
+   // Second Stage
+   std::map<G4int, G4double*>::iterator SecondStageEnergy_itr ;
+   G4THitsMap<G4double>* SecondStageEnergyHitMap = NULL      ;
    // Third Stage
    std::map<G4int, G4double*>::iterator ThirdStageEnergy_itr  ;
    G4THitsMap<G4double>* ThirdStageEnergyHitMap = NULL    ;
 
-//////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////
-   G4int HitNumber = 0;
-   checkSi = false;
 
-      // Read the Scorer associate to the Silicon Strip
-      //Detector Number
-      G4int StripDetCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerGPDDummyShape/DetectorNumber")    ;
-      DetectorNumberHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripDetCollectionID))         ;
-      DetectorNumber_itr =  DetectorNumberHitMap->GetMap()->begin()                                               ;
+   // Read the Scorer associate to the Silicon Strip
+   //Detector Number
+   G4int StripDetCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerGPDDummyShape/DetectorNumber")    ;
+   DetectorNumberHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripDetCollectionID))         ;
+   DetectorNumber_itr =  DetectorNumberHitMap->GetMap()->begin()                                               ;
 
-      //Energy
-      G4int StripEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerGPDDummyShape/StripEnergy")   ;
-      EnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripEnergyCollectionID))                    ;
-      Energy_itr = EnergyHitMap->GetMap()->begin()                                                          ;
+   //Energy
+   G4int StripEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerGPDDummyShape/StripEnergy")   ;
+   EnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripEnergyCollectionID))                    ;
+   Energy_itr = EnergyHitMap->GetMap()->begin()                                                          ;
 
-      //Time of Flight
-      G4int StripTimeCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerGPDDummyShape/StripTime")    ;
-      TimeHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripTimeCollectionID))                        ;
-      Time_itr = TimeHitMap->GetMap()->begin()                                                              ;
+   //Time of Flight
+   G4int StripTimeCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerGPDDummyShape/StripTime")    ;
+   TimeHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripTimeCollectionID))                        ;
+   Time_itr = TimeHitMap->GetMap()->begin()                                                              ;
 
-      //Strip Number X
-      G4int StripXCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerGPDDummyShape/StripIDFront")    ;
-      XHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripXCollectionID))                              ;
-      X_itr = XHitMap->GetMap()->begin()                                                                    ;
+   //Strip Number X
+   G4int StripXCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerGPDDummyShape/StripIDFront")    ;
+   XHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripXCollectionID))                              ;
+   X_itr = XHitMap->GetMap()->begin()                                                                    ;
 
-      //Strip Number Y
-      G4int StripYCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerGPDDummyShape/StripIDBack");
-      YHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripYCollectionID))                              ;
-      Y_itr = YHitMap->GetMap()->begin()                                                                    ;
+   //Strip Number Y
+   G4int StripYCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerGPDDummyShape/StripIDBack");
+   YHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripYCollectionID))                              ;
+   Y_itr = YHitMap->GetMap()->begin()                                                                    ;
 
-      //Interaction Coordinate X
-      G4int InterCoordXCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerGPDDummyShape/InterCoordX")    ;
-      PosXHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordXCollectionID))                              ;
-      Pos_X_itr = PosXHitMap->GetMap()->begin()                                                                    ;
+   //Interaction Coordinate X
+   G4int InterCoordXCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerGPDDummyShape/InterCoordX")    ;
+   PosXHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordXCollectionID))                              ;
+   Pos_X_itr = PosXHitMap->GetMap()->begin()                                                                    ;
 
-      //Interaction Coordinate Y
-      G4int InterCoordYCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerGPDDummyShape/InterCoordY")    ;
-      PosYHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordYCollectionID))                              ;
-      Pos_Y_itr = PosYHitMap->GetMap()->begin()                                                                    ;
+   //Interaction Coordinate Y
+   G4int InterCoordYCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerGPDDummyShape/InterCoordY")    ;
+   PosYHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordYCollectionID))                              ;
+   Pos_Y_itr = PosYHitMap->GetMap()->begin()                                                                    ;
 
-      //Interaction Coordinate Z
-      G4int InterCoordZCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerGPDDummyShape/InterCoordZ")    ;
-      PosZHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordZCollectionID))                              ;
-      Pos_Z_itr = PosXHitMap->GetMap()->begin()                                                                    ;
+   //Interaction Coordinate Z
+   G4int InterCoordZCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerGPDDummyShape/InterCoordZ")    ;
+   PosZHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordZCollectionID))                              ;
+   Pos_Z_itr = PosXHitMap->GetMap()->begin()                                                                    ;
 
-      //Interaction Coordinate Angle Theta
-      G4int InterCoordAngThetaCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerGPDDummyShape/InterCoordAngTheta")    ;
-      AngThetaHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordAngThetaCollectionID))                              ;
-      Ang_Theta_itr = AngThetaHitMap->GetMap()->begin()                                                                    ;
+   //Interaction Coordinate Angle Theta
+   G4int InterCoordAngThetaCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerGPDDummyShape/InterCoordAngTheta")    ;
+   AngThetaHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordAngThetaCollectionID))                              ;
+   Ang_Theta_itr = AngThetaHitMap->GetMap()->begin()                                                                    ;
 
-      //Interaction Coordinate Angle Phi
-      G4int InterCoordAngPhiCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerGPDDummyShape/InterCoordAngPhi")    ;
-      AngPhiHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordAngPhiCollectionID))                              ;
-      Ang_Phi_itr = AngPhiHitMap->GetMap()->begin()                                                                    ;
-
-      // Read the Scorer associate to the SiLi
-         //Energy
-         G4int SiLiEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("SecondStageScorerGPDDummyShape/SecondStageEnergy")   ;
-         SiLiEnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(SiLiEnergyCollectionID))                 ;
-         SiLiEnergy_itr = SiLiEnergyHitMap->GetMap()->begin()                                                     ;
+   //Interaction Coordinate Angle Phi
+   G4int InterCoordAngPhiCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerGPDDummyShape/InterCoordAngPhi")    ;
+   AngPhiHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordAngPhiCollectionID))                              ;
+   Ang_Phi_itr = AngPhiHitMap->GetMap()->begin()                                                                    ;
 
 
-      // Read the Scorer associate to the CsI crystal
-         //Energy
-         G4int ThirdStageEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThirdStageScorerGPDDummyShape/ThirdStageEnergy");
-         ThirdStageEnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(ThirdStageEnergyCollectionID));
-         ThirdStageEnergy_itr = ThirdStageEnergyHitMap->GetMap()->begin();
+   // Read the Scorer associate to the SecondStage
+   //Energy
+   G4int SecondStageEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("SecondStageScorerGPDDummyShape/SecondStageEnergy")   ;
+   SecondStageEnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(SecondStageEnergyCollectionID))                 ;
+   SecondStageEnergy_itr = SecondStageEnergyHitMap->GetMap()->begin()                                                     ;
 
-      // Check the size of different map
-      G4int sizeN = DetectorNumberHitMap->entries();
-      G4int sizeE = EnergyHitMap->entries();
-      G4int sizeT = TimeHitMap->entries();
-      G4int sizeX = XHitMap->entries();
-      G4int sizeY = YHitMap->entries();
 
-      if (sizeE != sizeT || sizeT != sizeX || sizeX != sizeY) {
-         G4cout << "No match size Si Event Map: sE:"
-         << sizeE << " sT:" << sizeT << " sX:" << sizeX << " sY:" << sizeY << endl ;
-         return;
-      }
+   // Read the Scorer associate to the ThirdStage
+   //Energy
+   G4int ThirdStageEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThirdStageScorerGPDDummyShape/ThirdStageEnergy");
+   ThirdStageEnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(ThirdStageEnergyCollectionID));
+   ThirdStageEnergy_itr = ThirdStageEnergyHitMap->GetMap()->begin();
 
-      // Loop on Strip energy
-      for (G4int l = 0 ; l < sizeE ; l++) {
-         G4int ETrackID  =   Energy_itr->first     ;
-         G4double E     = *(Energy_itr->second)    ;
-         G4int N = 0;
 
-         if (E > 0) {
-            checkSi = true   ;
-            ms_Event->SetGPDTrkFirstStageFrontEEnergy(RandGauss::shoot(E, ResoFirstStage))    ;
-            ms_Event->SetGPDTrkFirstStageBackEEnergy(RandGauss::shoot(E, ResoFirstStage))    ;
+   // Check the size of different map
+   G4int sizeN = DetectorNumberHitMap->entries();
+   G4int sizeE = EnergyHitMap->entries();
+   G4int sizeT = TimeHitMap->entries();
+   G4int sizeX = XHitMap->entries();
+   G4int sizeY = YHitMap->entries();
 
-            //  Detector Number
-            DetectorNumber_itr = DetectorNumberHitMap->GetMap()->begin();
-            for (G4int h = 0 ; h < sizeN ; h++) {
-                G4int NTrackID  =   DetectorNumber_itr->first       ;
-                G4double Nl     = *(DetectorNumber_itr->second)      ;
+   if (sizeE != sizeT || sizeT != sizeX || sizeX != sizeY) {
+      G4cout << "No match size Si Event Map: sE:"
+      << sizeE << " sT:" << sizeT << " sX:" << sizeX << " sY:" << sizeY << endl ;
+      return;
+   }
 
-                if (NTrackID == ETrackID) {
-                   N = Nl ;
-                   ms_Event->SetGPDTrkFirstStageFrontEDetectorNbr(INDEX + N);
-                   ms_Event->SetGPDTrkFirstStageFrontTDetectorNbr(INDEX + N);
-                   ms_Event->SetGPDTrkFirstStageBackEDetectorNbr(INDEX + N);
-                   ms_Event->SetGPDTrkFirstStageBackTDetectorNbr(INDEX + N);
-                }
-                DetectorNumber_itr++;
+   // Loop on FirstStage energy
+   for (G4int l = 0 ; l < sizeE ; l++) {
+      G4int ETrackID  =   Energy_itr->first     ;
+      G4double E     = *(Energy_itr->second)    ;
+      G4int N = 0;
+
+      if (E > 0) {
+         ms_Event->SetGPDTrkFirstStageFrontEEnergy(RandGauss::shoot(E, ResoFirstStage))    ;
+         ms_Event->SetGPDTrkFirstStageBackEEnergy(RandGauss::shoot(E, ResoFirstStage))    ;
+
+         //  Detector Number
+         DetectorNumber_itr = DetectorNumberHitMap->GetMap()->begin();
+         for (G4int h = 0 ; h < sizeN ; h++) {
+             G4int NTrackID  =   DetectorNumber_itr->first       ;
+             G4double Nl     = *(DetectorNumber_itr->second)      ;
+
+             if (NTrackID == ETrackID) {
+                N = Nl ;
+                ms_Event->SetGPDTrkFirstStageFrontEDetectorNbr(INDEX + N);
+                ms_Event->SetGPDTrkFirstStageFrontTDetectorNbr(INDEX + N);
+                ms_Event->SetGPDTrkFirstStageBackEDetectorNbr(INDEX + N);
+                ms_Event->SetGPDTrkFirstStageBackTDetectorNbr(INDEX + N);
+             }
+             DetectorNumber_itr++;
+         }
+
+         //  Time
+         Time_itr = TimeHitMap->GetMap()->begin();
+         for (G4int h = 0 ; h < sizeT ; h++) {
+            G4int TTrackID  =   Time_itr->first       ;
+            G4double T     = *(Time_itr->second)      ;
+
+            if (TTrackID == ETrackID) {
+               T = RandGauss::shoot(T, ResoTimeGpd)   ;
+               ms_Event->SetGPDTrkFirstStageFrontTTime(RandGauss::shoot(T, ResoTimeGpd)) ;
+               ms_Event->SetGPDTrkFirstStageBackTTime(RandGauss::shoot(T, ResoTimeGpd)) ;
             }
+            Time_itr++;
+         }
 
-            //  Time
-            Time_itr = TimeHitMap->GetMap()->begin();
-            for (G4int h = 0 ; h < sizeT ; h++) {
-               G4int TTrackID  =   Time_itr->first       ;
-               G4double T     = *(Time_itr->second)      ;
-
-               if (TTrackID == ETrackID) {
-                  T = RandGauss::shoot(T, ResoTimeGpd)   ;
-                  ms_Event->SetGPDTrkFirstStageFrontTTime(RandGauss::shoot(T, ResoTimeGpd)) ;
-                  ms_Event->SetGPDTrkFirstStageBackTTime(RandGauss::shoot(T, ResoTimeGpd)) ;
-               }
-               Time_itr++;
+         // X
+         X_itr = XHitMap->GetMap()->begin();
+         for (G4int h = 0 ; h < sizeX ; h++) {
+            G4int XTrackID  =   X_itr->first     ;
+            G4double X     = *(X_itr->second)      ;
+            if (XTrackID == ETrackID) {
+               ms_Event->SetGPDTrkFirstStageFrontEStripNbr(X)   ;
+               ms_Event->SetGPDTrkFirstStageFrontTStripNbr(X)   ;
             }
+            X_itr++;
+         }
 
-            // X
-            X_itr = XHitMap->GetMap()->begin();
-            for (G4int h = 0 ; h < sizeX ; h++) {
-               G4int XTrackID  =   X_itr->first     ;
-               G4double X     = *(X_itr->second)      ;
-               if (XTrackID == ETrackID) {
-                  ms_Event->SetGPDTrkFirstStageFrontEStripNbr(X)   ;
-                  ms_Event->SetGPDTrkFirstStageFrontTStripNbr(X)   ;
-               }
-
-               X_itr++;
+         // Y
+         Y_itr = YHitMap->GetMap()->begin()  ;
+         for (G4int h = 0 ; h < sizeY ; h++) {
+            G4int YTrackID  =   Y_itr->first    ;
+            G4double Y     = *(Y_itr->second)      ;
+            if (YTrackID == ETrackID) {
+               ms_Event->SetGPDTrkFirstStageBackEStripNbr(Y)   ;
+               ms_Event->SetGPDTrkFirstStageBackTStripNbr(Y)   ;
             }
+            Y_itr++;
+         }
 
-            // Y
-            Y_itr = YHitMap->GetMap()->begin()  ;
-            for (G4int h = 0 ; h < sizeY ; h++) {
-               G4int YTrackID  =   Y_itr->first    ;
-               G4double Y     = *(Y_itr->second)      ;
-               if (YTrackID == ETrackID) {
-                  ms_Event->SetGPDTrkFirstStageBackEStripNbr(Y)   ;
-                  ms_Event->SetGPDTrkFirstStageBackTStripNbr(Y)   ;
-               }
-
-               Y_itr++;
+         // Pos X
+         Pos_X_itr = PosXHitMap->GetMap()->begin();
+         for (G4int h = 0 ; h < sizeX ; h++) {
+            G4int PosXTrackID =   Pos_X_itr->first     ;
+            G4double PosX     = *(Pos_X_itr->second)      ;
+            if (PosXTrackID == ETrackID) {
+               ms_InterCoord->SetDetectedPositionX(PosX) ;
             }
+            Pos_X_itr++;
+         }
 
-            // Pos X
-            Pos_X_itr = PosXHitMap->GetMap()->begin();
-            for (G4int h = 0 ; h < sizeX ; h++) {
-               G4int PosXTrackID =   Pos_X_itr->first     ;
-               G4double PosX     = *(Pos_X_itr->second)      ;
-               if (PosXTrackID == ETrackID) {
-                  ms_InterCoord->SetDetectedPositionX(PosX) ;
-               }
-               Pos_X_itr++;
+         // Pos Y
+         Pos_Y_itr = PosYHitMap->GetMap()->begin();
+         for (G4int h = 0 ; h < sizeX ; h++) {
+            G4int PosYTrackID =   Pos_Y_itr->first     ;
+            G4double PosY     = *(Pos_Y_itr->second)      ;
+            if (PosYTrackID == ETrackID) {
+               ms_InterCoord->SetDetectedPositionY(PosY) ;
             }
+            Pos_Y_itr++;
+         }
 
-            // Pos Y
-            Pos_Y_itr = PosYHitMap->GetMap()->begin();
-            for (G4int h = 0 ; h < sizeX ; h++) {
-               G4int PosYTrackID =   Pos_Y_itr->first     ;
-               G4double PosY     = *(Pos_Y_itr->second)      ;
-               if (PosYTrackID == ETrackID) {
-                  ms_InterCoord->SetDetectedPositionY(PosY) ;
-               }
-               Pos_Y_itr++;
+         // Pos Z
+         Pos_Z_itr = PosZHitMap->GetMap()->begin();
+         for (G4int h = 0 ; h < sizeX ; h++) {
+            G4int PosZTrackID =   Pos_Z_itr->first     ;
+            G4double PosZ     = *(Pos_Z_itr->second)      ;
+            if (PosZTrackID == ETrackID) {
+               ms_InterCoord->SetDetectedPositionZ(PosZ) ;
             }
+            Pos_Z_itr++;
+         }
 
-            // Pos Z
-            Pos_Z_itr = PosZHitMap->GetMap()->begin();
-            for (G4int h = 0 ; h < sizeX ; h++) {
-               G4int PosZTrackID =   Pos_Z_itr->first     ;
-               G4double PosZ     = *(Pos_Z_itr->second)      ;
-               if (PosZTrackID == ETrackID) {
-                  ms_InterCoord->SetDetectedPositionZ(PosZ) ;
-               }
-               Pos_Z_itr++;
+         // Angle Theta
+         Ang_Theta_itr = AngThetaHitMap->GetMap()->begin();
+         for (G4int h = 0 ; h < sizeX ; h++) {
+            G4int AngThetaTrackID =   Ang_Theta_itr->first     ;
+            G4double AngTheta     = *(Ang_Theta_itr->second)      ;
+            if (AngThetaTrackID == ETrackID) {
+               ms_InterCoord->SetDetectedAngleTheta(AngTheta) ;
             }
+            Ang_Theta_itr++;
+         }
 
-            // Angle Theta
-            Ang_Theta_itr = AngThetaHitMap->GetMap()->begin();
-            for (G4int h = 0 ; h < sizeX ; h++) {
-               G4int AngThetaTrackID =   Ang_Theta_itr->first     ;
-               G4double AngTheta     = *(Ang_Theta_itr->second)      ;
-               if (AngThetaTrackID == ETrackID) {
-                  ms_InterCoord->SetDetectedAngleTheta(AngTheta) ;
-               }
-               Ang_Theta_itr++;
+         // Angle Phi
+         Ang_Phi_itr = AngPhiHitMap->GetMap()->begin();
+         for (G4int h = 0 ; h < sizeX ; h++) {
+            G4int AngPhiTrackID =   Ang_Phi_itr->first     ;
+            G4double AngPhi     = *(Ang_Phi_itr->second)      ;
+            if (AngPhiTrackID == ETrackID) {
+               ms_InterCoord->SetDetectedAnglePhi(AngPhi) ;
             }
+            Ang_Phi_itr++;
+         }
 
-            // Angle Phi
-            Ang_Phi_itr = AngPhiHitMap->GetMap()->begin();
-            for (G4int h = 0 ; h < sizeX ; h++) {
-               G4int AngPhiTrackID =   Ang_Phi_itr->first     ;
-               G4double AngPhi     = *(Ang_Phi_itr->second)      ;
-               if (AngPhiTrackID == ETrackID) {
-                  ms_InterCoord->SetDetectedAnglePhi(AngPhi) ;
-               }
-               Ang_Phi_itr++;
+         // Second Stage
+         SecondStageEnergy_itr = SecondStageEnergyHitMap->GetMap()->begin() ;
+         for (G4int h = 0 ; h < SecondStageEnergyHitMap->entries() ; h++) {
+            G4int SecondStageEnergyTrackID =   SecondStageEnergy_itr->first  ;
+            G4double SecondStageEnergy     = *(SecondStageEnergy_itr->second)   ;
+
+            if (SecondStageEnergyTrackID == ETrackID) {
+               ms_Event->SetGPDTrkSecondStageEEnergy(RandGauss::shoot(SecondStageEnergy, ResoSecondStage)) ;
+               ms_Event->SetGPDTrkSecondStageEPadNbr(1);
+               ms_Event->SetGPDTrkSecondStageTPadNbr(1);
+               ms_Event->SetGPDTrkSecondStageTTime(1);
+               ms_Event->SetGPDTrkSecondStageTDetectorNbr(INDEX + N);
+               ms_Event->SetGPDTrkSecondStageEDetectorNbr(INDEX + N);
             }
+            SecondStageEnergy_itr++;
+         }
 
-            // Second Stage
-               SiLiEnergy_itr = SiLiEnergyHitMap->GetMap()->begin() ;
-               for (G4int h = 0 ; h < SiLiEnergyHitMap->entries() ; h++) {
-                  G4int SiLiEnergyTrackID =   SiLiEnergy_itr->first  ;
-                  G4double SiLiEnergy     = *(SiLiEnergy_itr->second)   ;
+         // Third Stage
+         ThirdStageEnergy_itr = ThirdStageEnergyHitMap->GetMap()->begin()  ;
+         for (G4int h = 0 ; h < ThirdStageEnergyHitMap->entries() ; h++) {
+            G4int ThirdStageEnergyTrackID  =   ThirdStageEnergy_itr->first      ;
+            G4double ThirdStageEnergy      = *(ThirdStageEnergy_itr->second)    ;
 
-                  if (SiLiEnergyTrackID == ETrackID) {
-                     ms_Event->SetGPDTrkSecondStageEEnergy(RandGauss::shoot(SiLiEnergy, ResoSecondStage)) ;
-                     ms_Event->SetGPDTrkSecondStageEPadNbr(1);
-                     ms_Event->SetGPDTrkSecondStageTPadNbr(1);
-                     ms_Event->SetGPDTrkSecondStageTTime(1);
-                     ms_Event->SetGPDTrkSecondStageTDetectorNbr(INDEX + N);
-                     ms_Event->SetGPDTrkSecondStageEDetectorNbr(INDEX + N);
-                  }
-
-                  SiLiEnergy_itr++;
-               }
-
-            // Third Stage
-               ThirdStageEnergy_itr = ThirdStageEnergyHitMap->GetMap()->begin()  ;
-               for (G4int h = 0 ; h < ThirdStageEnergyHitMap->entries() ; h++) {
-                  G4int ThirdStageEnergyTrackID  =   ThirdStageEnergy_itr->first      ;
-                  G4double ThirdStageEnergy      = *(ThirdStageEnergy_itr->second)    ;
-
-                  if (ThirdStageEnergyTrackID == ETrackID) {
-                     ms_Event->SetGPDTrkThirdStageEEnergy(RandGauss::shoot(ThirdStageEnergy, ResoThirdStage));
-                     ms_Event->SetGPDTrkThirdStageEPadNbr(1);
-                     ms_Event->SetGPDTrkThirdStageTPadNbr(1);
-                     ms_Event->SetGPDTrkThirdStageTTime(1);
-                     ms_Event->SetGPDTrkThirdStageTDetectorNbr(INDEX + N);
-                     ms_Event->SetGPDTrkThirdStageEDetectorNbr(INDEX + N);
-                  }
-
-                  ThirdStageEnergy_itr++;
-               }
+            if (ThirdStageEnergyTrackID == ETrackID) {
+               ms_Event->SetGPDTrkThirdStageEEnergy(RandGauss::shoot(ThirdStageEnergy, ResoThirdStage));
+               ms_Event->SetGPDTrkThirdStageEPadNbr(1);
+               ms_Event->SetGPDTrkThirdStageTPadNbr(1);
+               ms_Event->SetGPDTrkThirdStageTTime(1);
+               ms_Event->SetGPDTrkThirdStageTDetectorNbr(INDEX + N);
+               ms_Event->SetGPDTrkThirdStageEDetectorNbr(INDEX + N);
+            }
+            ThirdStageEnergy_itr++;
+         }
 
          Energy_itr++;
-         if (checkSi) HitNumber++ ;
       }
+
       // clear map for next event
-      DetectorNumberHitMap ->clear();
-      EnergyHitMap   ->clear()   ;
-      TimeHitMap     ->clear()   ;
-      XHitMap        ->clear()   ;
-      YHitMap        ->clear()   ;
-      PosXHitMap     ->clear();
-      PosYHitMap     ->clear();
-      PosZHitMap     ->clear();
-      AngThetaHitMap ->clear();
-      AngPhiHitMap   ->clear();
-      SiLiEnergyHitMap ->clear()  ;
-      ThirdStageEnergyHitMap ->clear() ;
+      DetectorNumberHitMap    -> clear();
+      EnergyHitMap            -> clear();
+      TimeHitMap              -> clear();
+      XHitMap                 -> clear();
+      YHitMap                 -> clear();
+      PosXHitMap              -> clear();
+      PosYHitMap              -> clear();
+      PosZHitMap              -> clear();
+      AngThetaHitMap          -> clear();
+      AngPhiHitMap            -> clear();
+      SecondStageEnergyHitMap -> clear();
+      ThirdStageEnergyHitMap  -> clear();
    }
 }
 
@@ -990,15 +959,18 @@ void GaspardTrackerDummyShape::InitializeScorers()
    m_FirstStageScorer->RegisterPrimitive(InteractionCoordinatesAngleTheta);
    m_FirstStageScorer->RegisterPrimitive(InteractionCoordinatesAnglePhi);
 
+
    // Second stage Associate Scorer
    m_SecondStageScorer = new G4MultiFunctionalDetector("SecondStageScorerGPDDummyShape");
    G4VPrimitiveScorer* SecondStageEnergy = new GPDScorerSecondStageEnergy("SecondStageEnergy", 0);
    m_SecondStageScorer->RegisterPrimitive(SecondStageEnergy);
 
+
    //  Third stage Associate Scorer 
    m_ThirdStageScorer = new G4MultiFunctionalDetector("ThirdStageScorerGPDDummyShape");
    G4VPrimitiveScorer* ThirdStageEnergy = new GPDScorerThirdStageEnergy("ThirdStageEnergy", 0);
    m_ThirdStageScorer->RegisterPrimitive(ThirdStageEnergy);
+
 
    //  Add All Scorer to the Global Scorer Manager
    G4SDManager::GetSDMpointer()->AddNewDetector(m_FirstStageScorer);

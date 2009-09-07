@@ -2,7 +2,7 @@
 %%%%%%%%% Reaction file for 11Li(d,3He)10He reaction %%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%Beam energy given in MeV ; Excitation in MeV
-TransfertToResonance
+Transfert
 	Beam= 11Li
 	Target= 2H
 	Light= 3He
@@ -14,12 +14,9 @@ TransfertToResonance
 	BeamFWHMY= 9.069
 	BeamEmmitanceTheta= 0.01208
 	BeamEmmitancePhi= 0.01681
-	ResonanceDecayZ= 2
-	ResonanceDecayA= 8	
 	CrossSectionPath= 11Li(d,3He)10He.txt
 	ShootLight= 1
-	ShootHeavy= 0
-	ShootDecayProduct= 0
+	ShootHeavy= 1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %0.69u

@@ -135,13 +135,6 @@ private:
    vector<G4double>  m_beta_u ; //  |
    vector<G4double>  m_beta_v ; //  > Tilt angle of the Telescope
    vector<G4double>  m_beta_w ; //  |
-
-   // for debugging purpose
-   G4ThreeVector	MMpos;
-   G4ThreeVector	MMu;
-   G4ThreeVector	MMv;
-   G4ThreeVector	MMw;
-   G4ThreeVector	CT;
 };
 
 
@@ -159,7 +152,7 @@ namespace GPDDUMMYSHAPE
    // Geometry for the mother volume containing the different layers of your dummy shape module
    const G4double FaceFront          = 5.1*cm;
    const G4double FaceBack           = 5.1*cm;
-   const G4double Length             = 3.0*cm;
+   const G4double Length             = 1.5*cm;
    const G4double InterStageDistance = 5*mm;
 
    // First stage
