@@ -61,7 +61,7 @@ IV) Inputs
 	structure:
 	Inputs / CrossSection
 	       / DetectorConstruction
-	       / Reaction
+	       / EventGenerator
 	       / dEdx 
 
 V) Outputs

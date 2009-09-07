@@ -31,7 +31,7 @@ yyy.detector is one of the available detector geometry
 I.b) EVENT GENERATORS CONFIGURATION FILES
 All the event generators configuration files are and should be located in the 
 directory:
-	NPTool/Inputs/Reaction 
+	NPTool/Inputs/EventGenerator 
 Several event generators are available for the moment:
 	+ isotropic.source
 		this is an isotropic event generator for charged particles,

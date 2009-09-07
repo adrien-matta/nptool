@@ -55,7 +55,7 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path)
 {
    // added by Nicolas [07/05/09]
    string GlobalPath = getenv("NPTOOL");
-   Path = GlobalPath + "/Inputs/Reaction/" + Path;
+   Path = GlobalPath + "/Inputs/EventGenerator/" + Path;
    string LineBuffer;
    ifstream EventGeneratorFile;
    EventGeneratorFile.open(Path.c_str());
