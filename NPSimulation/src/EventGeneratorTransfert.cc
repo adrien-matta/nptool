@@ -340,8 +340,8 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
    //shoot inside the target with correlated angle
    if (m_TargetRadius != 0) {
       while (sqrt(x0*x0 + y0*y0) > m_TargetRadius) {
-         RandomGaussian2D(0,0,m_SigmaX / 2.35,m_SigmaThetaX,x0,Beam_thetaX);
-         RandomGaussian2D(0,0,m_SigmaY / 2.35,m_SigmaPhiY  ,y0,Beam_phiY  );
+         RandomGaussian2D(0, 0, m_SigmaX, m_SigmaThetaX, x0, Beam_thetaX);
+         RandomGaussian2D(0, 0, m_SigmaY, m_SigmaPhiY  , y0, Beam_phiY  );
       }
    }
    else {
