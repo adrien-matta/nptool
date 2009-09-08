@@ -174,19 +174,20 @@ void EventGeneratorBeam::GenerateEvent(G4Event* anEvent, G4ParticleGun* particle
    G4double Beam_phiY   = 0  ;
    
    //shoot inside the target with correlated angle
-   if (m_TargetRadius != 0) {
-      while (sqrt(x0*x0 + y0*y0) > m_TargetRadius) 
-      	{
-      		RandomGaussian2D(0 , 0 , m_SigmaX , m_SigmaThetaX , x0 , Beam_thetaX );
-      		RandomGaussian2D(0 , 0 , m_SigmaY , m_SigmaPhiY   , y0 , Beam_phiY   );
-      	}
-   }
+   if (m_TargetRadius != 0) 
+	   	{
+	      while (sqrt(x0*x0 + y0*y0) > m_TargetRadius) 
+	      	{
+	      		RandomGaussian2D(0 , 0 , m_SigmaX , m_SigmaThetaX , x0 , Beam_thetaX );
+	      		RandomGaussian2D(0 , 0 , m_SigmaY , m_SigmaPhiY   , y0 , Beam_phiY   );
+	      	}
+	   	}
 
    else 
-   	{
-     	RandomGaussian2D( 0 , 0 , 0 , m_SigmaThetaX , x0 , Beam_thetaX );
-     	RandomGaussian2D( 0 , 0 , 0 , m_SigmaPhiY   , y0 , Beam_phiY   );
-   }
+	   	{
+	     	RandomGaussian2D( 0 , 0 , 0 , m_SigmaThetaX , x0 , Beam_thetaX );
+	     	RandomGaussian2D( 0 , 0 , 0 , m_SigmaPhiY   , y0 , Beam_phiY   );
+	   	}
 
 	 m_InitConditions->SetICIncidentEmittanceTheta(Beam_thetaX / deg);
      m_InitConditions->SetICIncidentEmittancePhi(Beam_phiY / deg);
