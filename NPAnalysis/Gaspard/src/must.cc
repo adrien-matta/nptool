@@ -46,8 +46,13 @@ must::must(double theta, double phi, double distance, double beta_u , double bet
 									distance * sin(theta) * sin(phi) ,
 									distance * cos(theta)			 );
 					
+				Hep3Vector Y = Hep3Vector( cos(theta) * cos(phi),
+							   cos(theta) * sin(phi),
+							  -sin(theta));
+
 				W = C.unit() ;
-				U = W.cross( Hep3Vector (0,1,0) ) ;
+//				U = W.cross( Hep3Vector (0,1,0) ) ;
+				U = W.cross( Y ) ;
 			    V = W.cross(U);
 				
 				U = U.unit();
@@ -63,7 +68,8 @@ must::must(double theta, double phi, double distance, double beta_u , double bet
 				V.rotate( W , beta_w * Pi/180. ) ;
 			}
 
-		double Face = 98 					  	; //mm
+//		double Face = 98 					  	; //mm
+		double Face = 50 					  	; //mm
 		double NumberOfStrip = 128 				;
 		double StripPitch = Face/NumberOfStrip	; //mm
 

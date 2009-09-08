@@ -32,7 +32,7 @@ using namespace VARIABLE ;
 namespace GRAPH
 	{
 		//	Declare your Spectra here:
-        const int NbElements = 18;
+        const int NbElements = 40;
 	
 			TH2F *hXY1 = new TH2F("hXY1","", 128 , 1 , 128 , 128 , 1 , 128 )				;
 			TH2F *hXY2 = new TH2F("hXY2","", 128 , 1 , 128 , 128 , 1 , 128 )				;

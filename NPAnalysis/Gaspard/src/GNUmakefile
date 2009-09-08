@@ -34,8 +34,6 @@ Analysis:$(OBJ) $(INC)
 	mv Analysis  ../Analysis
 
 %.o: %.cc
-	@echo "CXXFLAGS vaut $(CXXFLAGS)"
-	@echo "LDFLAGS vaut $(LDFLAGS)"
 	@$(CPP) $(CXXFLAGS) -o $@ -c $<
 	
 .PHONY: clean mrproper

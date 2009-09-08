@@ -124,7 +124,7 @@ private:
 class GPDScorerFirstStageFrontStripDummyShape : public G4VPrimitiveScorer
 {
 public: // with description
-   GPDScorerFirstStageFrontStripDummyShape(G4String name, G4int depth = 0, G4double StripPlaneSize = 98, G4int NumberOfStrip = 128);
+   GPDScorerFirstStageFrontStripDummyShape(G4String name, G4int depth = 0, G4int NumberOfStrip = 128);
    virtual ~GPDScorerFirstStageFrontStripDummyShape();
 
 protected: // with description
@@ -138,7 +138,6 @@ public:
    virtual void PrintAll();
 
 private:
-   G4double  m_StripPlaneSize;
    G4int     m_NumberOfStrip ;
    G4int HCID;
    G4THitsMap<G4double>* EvtMap;
@@ -149,7 +148,7 @@ private:
 class GPDScorerFirstStageBackStripDummyShape : public G4VPrimitiveScorer
 {
 public: // with description
-   GPDScorerFirstStageBackStripDummyShape(G4String name, G4int depth = 0, G4double StripPlaneSize = 98, G4int NumberOfStrip = 128);
+   GPDScorerFirstStageBackStripDummyShape(G4String name, G4int depth = 0, G4int NumberOfStrip = 128);
    virtual ~GPDScorerFirstStageBackStripDummyShape();
 
 protected: // with description
@@ -163,7 +162,6 @@ public:
    virtual void PrintAll();
 
 private:
-   G4double  m_StripPlaneSize;
    G4int     m_NumberOfStrip ;
    G4int HCID;
    G4THitsMap<G4double>* EvtMap;
@@ -174,7 +172,7 @@ private:
 class GPDScorerFirstStageFrontStripSquare : public G4VPrimitiveScorer
 {
 public: // with description
-   GPDScorerFirstStageFrontStripSquare(G4String name, G4int depth = 0, G4double StripPlaneSize = 98, G4int NumberOfStrip = 128);
+   GPDScorerFirstStageFrontStripSquare(G4String name, G4int depth = 0, G4int NumberOfStrip = 128);
    virtual ~GPDScorerFirstStageFrontStripSquare();
 
 protected: // with description
@@ -188,7 +186,6 @@ public:
    virtual void PrintAll();
 
 private:
-   G4double  m_StripPlaneSize;
    G4int     m_NumberOfStrip ;
    G4int HCID;
    G4THitsMap<G4double>* EvtMap;
@@ -199,7 +196,7 @@ private:
 class GPDScorerFirstStageBackStripSquare : public G4VPrimitiveScorer
 {
 public: // with description
-   GPDScorerFirstStageBackStripSquare(G4String name, G4int depth = 0, G4double StripPlaneSize = 98, G4int NumberOfStrip = 128);
+   GPDScorerFirstStageBackStripSquare(G4String name, G4int depth = 0, G4int NumberOfStrip = 128);
    virtual ~GPDScorerFirstStageBackStripSquare();
 
 protected: // with description
@@ -213,7 +210,6 @@ public:
    virtual void PrintAll();
 
 private:
-   G4double  m_StripPlaneSize;
    G4int     m_NumberOfStrip ;
    G4int HCID;
    G4THitsMap<G4double>* EvtMap;

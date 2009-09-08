@@ -122,6 +122,7 @@ int main(int argc,char** argv)
             Int_t detecXT = EventGPD->GetGPDTrkFirstStageFrontTDetectorNbr(0) / det_ref;
             Int_t detecYE = EventGPD->GetGPDTrkFirstStageBackEDetectorNbr(0) / det_ref;
             Int_t detecYT = EventGPD->GetGPDTrkFirstStageBackTDetectorNbr(0) / det_ref;
+            det_ref -= 1000; // for TGaspardTrackerDummyShape
             // case of same detector
             if (detecXE*detecXT*detecYE*detecYT == 1) {
                // calculate strip number
@@ -149,7 +150,12 @@ int main(int argc,char** argv)
                   Int_t mult2T = EventGPD->GetGPDTrkSecondStageTMult();
                   Int_t mult3E = EventGPD->GetGPDTrkThirdStageEMult();
                   Int_t mult3T = EventGPD->GetGPDTrkThirdStageTMult();
-                  // check if we have a 2nd or third stage event
+                  // check if we have a 2nd stage event
+                  if (mult2E==1 && mult2T==1) {
+                     Double_t EnergySecond = EventGPD->GetGPDTrkSecondStageEEnergy(0);
+                     TotalEnergy += EnergySecond;
+                  }
+                  // check if we have a third stage event
                   if (mult3E==1 && mult3T==1) {
                      Double_t EnergyThird = EventGPD->GetGPDTrkThirdStageEEnergy(0);
                      TotalEnergy += EnergyThird;
@@ -165,6 +171,7 @@ int main(int argc,char** argv)
                   Double_t zstrip = myArray->GetStripPositionZ(det_ref, stripXE, stripYE);
                   Hep3Vector posstrip(xstrip, ystrip, zstrip);
                   Double_t ThetaStrip = posstrip.theta() * rad;
+                  cout << Theta/deg << "  " << ThetaStrip/deg << endl;
                   // calculate excitation energy
 //                  Ex = myReaction->ReconstructRelativistic(TotalEnergy / MeV, Theta / rad);
                   Ex = myReaction->ReconstructRelativistic(TotalEnergy / MeV, ThetaStrip / rad);

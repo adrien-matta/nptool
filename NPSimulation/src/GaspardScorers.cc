@@ -288,10 +288,9 @@ void GPDScorerDetectorNumber::PrintAll()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // FirstStage Front Strip position Scorer for DummyShape geometry
-GPDScorerFirstStageFrontStripDummyShape::GPDScorerFirstStageFrontStripDummyShape(G4String name, G4int depth, G4double StripPlaneSize, G4int NumberOfStrip)
+GPDScorerFirstStageFrontStripDummyShape::GPDScorerFirstStageFrontStripDummyShape(G4String name, G4int depth, G4int NumberOfStrip)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
-   m_StripPlaneSize =   StripPlaneSize ;
    m_NumberOfStrip    = NumberOfStrip  ;
 }
 
@@ -304,12 +303,13 @@ G4bool GPDScorerFirstStageFrontStripDummyShape::ProcessHits(G4Step* aStep, G4Tou
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
-   G4double StripPitch = m_StripPlaneSize / m_NumberOfStrip;
+   G4double StripPitch = GPDDUMMYSHAPE::FirstStageFace / m_NumberOfStrip;
 
-   G4double temp = (POS(0) + m_StripPlaneSize / 2.) / StripPitch   ;
+   G4double temp = (POS(0) + GPDDUMMYSHAPE::FirstStageFace / 2.) / StripPitch   ;
    G4double X = int(temp) + 1 ;
+
    //Rare case where particle is close to edge of silicon plan
-   if (X == 129) X = 128;
+   if (X == m_NumberOfStrip+1) X = m_NumberOfStrip;
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
@@ -350,10 +350,9 @@ void GPDScorerFirstStageFrontStripDummyShape::PrintAll()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // FirstStage Back Strip position Scorer for DummyShape geometry
-GPDScorerFirstStageBackStripDummyShape::GPDScorerFirstStageBackStripDummyShape(G4String name, G4int depth, G4double StripPlaneSize, G4int NumberOfStrip)
+GPDScorerFirstStageBackStripDummyShape::GPDScorerFirstStageBackStripDummyShape(G4String name, G4int depth, G4int NumberOfStrip)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
-   m_StripPlaneSize =   StripPlaneSize ;
    m_NumberOfStrip    = NumberOfStrip  ;
 }
 
@@ -366,12 +365,12 @@ G4bool GPDScorerFirstStageBackStripDummyShape::ProcessHits(G4Step* aStep, G4Touc
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
-   G4double StripPitch = m_StripPlaneSize / m_NumberOfStrip;
+   G4double StripPitch = GPDDUMMYSHAPE::FirstStageFace / m_NumberOfStrip;
 
-   G4double temp = (POS(0) + m_StripPlaneSize / 2.) / StripPitch   ;
+   G4double temp = (POS(1) + GPDDUMMYSHAPE::FirstStageFace / 2.) / StripPitch   ;
    G4double X = int(temp) + 1 ;
    //Rare case where particle is close to edge of silicon plan
-   if (X == 129) X = 128;
+   if (X == m_NumberOfStrip+1) X = m_NumberOfStrip;
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
@@ -412,10 +411,9 @@ void GPDScorerFirstStageBackStripDummyShape::PrintAll()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // FirstStage Front Strip position Scorer for Square geometry
-GPDScorerFirstStageFrontStripSquare::GPDScorerFirstStageFrontStripSquare(G4String name, G4int depth, G4double StripPlaneSize, G4int NumberOfStrip)
+GPDScorerFirstStageFrontStripSquare::GPDScorerFirstStageFrontStripSquare(G4String name, G4int depth, G4int NumberOfStrip)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
-   m_StripPlaneSize =   StripPlaneSize ;
    m_NumberOfStrip    = NumberOfStrip  ;
 }
 
@@ -428,9 +426,9 @@ G4bool GPDScorerFirstStageFrontStripSquare::ProcessHits(G4Step* aStep, G4Touchab
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
-   G4double StripPitch = m_StripPlaneSize / m_NumberOfStrip;
+   G4double StripPitch = GPDSQUARE::SiliconFace / m_NumberOfStrip;
 
-   G4double temp = (POS(0) + m_StripPlaneSize / 2.) / StripPitch   ;
+   G4double temp = (POS(0) + GPDSQUARE::SiliconFace / 2.) / StripPitch   ;
    G4double X = int(temp) + 1 ;
    //Rare case where particle is close to edge of silicon plan
    if (X == 129) X = 128;
@@ -473,10 +471,9 @@ void GPDScorerFirstStageFrontStripSquare::PrintAll()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // FirstStage Back Strip position Scorer for Square geometry
-GPDScorerFirstStageBackStripSquare::GPDScorerFirstStageBackStripSquare(G4String name, G4int depth, G4double StripPlaneSize, G4int NumberOfStrip)
+GPDScorerFirstStageBackStripSquare::GPDScorerFirstStageBackStripSquare(G4String name, G4int depth, G4int NumberOfStrip)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
-   m_StripPlaneSize =   StripPlaneSize ;
    m_NumberOfStrip    = NumberOfStrip  ;
 }
 
@@ -489,9 +486,9 @@ G4bool GPDScorerFirstStageBackStripSquare::ProcessHits(G4Step* aStep, G4Touchabl
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
-   G4double StripPitch = m_StripPlaneSize / m_NumberOfStrip;
+   G4double StripPitch = GPDSQUARE::SiliconFace / m_NumberOfStrip;
 
-   G4double temp = (POS(1) + m_StripPlaneSize / 2.) / StripPitch   ;
+   G4double temp = (POS(1) + GPDSQUARE::SiliconFace / 2.) / StripPitch   ;
    G4int temp2 = temp ;
    G4double Y = temp2 + 1                    ;
    //Rare case where particle is close to edge of silicon plan
