@@ -35,9 +35,6 @@
 #include "G4ParticleGun.hh"
 #include "G4Event.hh"
 
-// ROOT headers
-#include"TRandom3.h"
-#include "Randomize.hh"
 using namespace CLHEP;
 using namespace std;
 
@@ -60,10 +57,8 @@ public:
    virtual void SetTargetCoordinate(G4double, G4double, G4double) {};
    
    //	Used to simulate beam emmitance effect
-   void RandomGaussian2D(double MeanX,double MeanY,double SigmaX,double SigmaY,double &X,double &Y, double NumberOfSigma=7);
+   void RandomGaussian2D(double MeanX,double MeanY,double SigmaX,double SigmaY,double &X,double &Y, double NumberOfSigma=10000);
 
-private:	//	Random Engine used by RandomGaussian2D
-	TRandom3 m_RandomEngine ;
 };
 
 
