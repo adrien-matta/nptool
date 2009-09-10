@@ -856,37 +856,32 @@ void MUST2Array::ConstructDetector(G4LogicalVolume* world)
       else {
          G4double Theta = m_Theta[i]   ;
          G4double Phi   = m_Phi[i]  ;
-         //This part because if Phi and Theta = 0 equation are false
-         if (Theta == 0)      {
-            Theta   = 0.0001             ;
-         }
-         if (Theta == 2*acos(0))   {
-            Theta   = 2 * acos(0) - 0.00001  ;
-         }
-         if (Phi   == 0)         {
-            Phi     = 0.0001             ;
-         }
-
+         
          // (u,v,w) unitary vector associated to telescope referencial
          // (u,v) // to silicon plan
-         // w perpendicular to (u,v) plan and pointing CsI
+         // w perpendicular to (u,v) plan and pointing ThirdStage
          // Phi is angle between X axis and projection in (X,Y) plan
          // Theta is angle between  position vector and z axis
          G4double wX = m_R[i] * sin(Theta / rad) * cos(Phi / rad)   ;
          G4double wY = m_R[i] * sin(Theta / rad) * sin(Phi / rad)   ;
          G4double wZ = m_R[i] * cos(Theta / rad)             ;
-
          MMw = G4ThreeVector(wX, wY, wZ)                ;
-         G4ThreeVector CT = MMw                       ;
-         MMw = MMw.unit()                          ;
 
-         G4ThreeVector Y = G4ThreeVector(0 , 1 , 0)         ;
+         // vector corresponding to the center of the module
+         G4ThreeVector CT = MMw;
 
-         MMu = MMw.cross(Y)      ;
-         MMv = MMw.cross(MMu) ;
+         // vector parallel to one axis of silicon plane
+         G4double ii = cos(Theta / rad) * cos(Phi / rad);
+         G4double jj = cos(Theta / rad) * sin(Phi / rad);
+         G4double kk = -sin(Theta / rad);
+         G4ThreeVector Y = G4ThreeVector(ii, jj, kk);
 
+         MMw = MMw.unit();
+         MMu = MMw.cross(Y);
+         MMv = MMw.cross(MMu);
          MMv = MMv.unit();
          MMu = MMu.unit();
+
          // Passage Matrix from Lab Referential to Telescope Referential
          // MUST2
          MMrot = new G4RotationMatrix(MMu, MMv, MMw);

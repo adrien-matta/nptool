@@ -558,24 +558,29 @@ void ThinSi::ConstructDetector(G4LogicalVolume* world)
 
          // (u,v,w) unitary vector associated to telescope referencial
          // (u,v) // to silicon plan
-         // w perpendicular to (u,v) plan and pointing outside
+         // w perpendicular to (u,v) plan and pointing ThirdStage
          // Phi is angle between X axis and projection in (X,Y) plan
          // Theta is angle between  position vector and z axis
          G4double wX = m_R[i] * sin(Theta / rad) * cos(Phi / rad)   ;
          G4double wY = m_R[i] * sin(Theta / rad) * sin(Phi / rad)   ;
          G4double wZ = m_R[i] * cos(Theta / rad)             ;
+         Det_w = G4ThreeVector(wX, wY, wZ)                ;
 
-         Det_w = G4ThreeVector(wX, wY, wZ)                 ;
-         G4ThreeVector CT = Det_w                        ;
-         Det_w = Det_w.unit()                         ;
+         // vector corresponding to the center of the module
+         G4ThreeVector CT = Det_w;
 
-         G4ThreeVector Y = G4ThreeVector(0 , 1 , 0)         ;
+         // vector parallel to one axis of silicon plane
+         G4double ii = cos(Theta / rad) * cos(Phi / rad);
+         G4double jj = cos(Theta / rad) * sin(Phi / rad);
+         G4double kk = -sin(Theta / rad);
+         G4ThreeVector Y = G4ThreeVector(ii, jj, kk);
 
-         Det_u = Det_w.cross(Y)     ;
-         Det_v = Det_w.cross(Det_u) ;
-
+         Det_w = Det_w.unit();
+         Det_u = Det_w.cross(Y);
+         Det_v = Det_w.cross(Det_u);
          Det_v = Det_v.unit();
          Det_u = Det_u.unit();
+
          // Passage Matrix from Lab Referential to Telescope Referential
          // MUST2
          Det_rot = new G4RotationMatrix(Det_u, Det_v, Det_w);
@@ -584,7 +589,7 @@ void ThinSi::ConstructDetector(G4LogicalVolume* world)
          Det_rot->rotate(m_beta_v[i], Det_v);
          Det_rot->rotate(m_beta_w[i], Det_w);
          // translation to place Telescope
-         Det_pos = CT ;
+         Det_pos = Det_w + CT ;
       }
 
 

@@ -104,7 +104,7 @@ using namespace NPL ;
 namespace ENERGYLOSS
 	{
 	
-		//	Declare your Energy loss here	:
+		//	3He Energy Loss
 			EnergyLoss He3TargetWind = EnergyLoss 	(	"3He_Mylar.txt" 		,
 														1000	 				,
 														1						,
@@ -124,6 +124,24 @@ namespace ENERGYLOSS
 														10						,
 														1						,
 														3						);
+														
+														
+		//	proton Energy Loss
+			EnergyLoss protonTargetWind = EnergyLoss 	(	"proton_Mylar.txt"	 		,
+															1000		 				,
+															1							,
+															1							);
+		
+			EnergyLoss protonTargetGaz = EnergyLoss 	(	"proton_D2gaz_1b_26K.txt" 	,
+															1000		 				,
+															1							,
+															1							);
+			
+			EnergyLoss protonStripAl   = EnergyLoss 	(	"proton_Al.txt" 			,
+															10							,
+															1							,
+															1							);
+														
 	
 	}
 	
