@@ -40,11 +40,7 @@ int main(int argc,char** argv)
 {
    // A Usefull Random Generator
    TRandom rand;
-/*
-   gROOT->Reset();
-   gStyle->SetOptStat(1);
-   gStyle->SetPalette(1);
-*/
+
    // Get arguments from command line	
    if (argc != 4) {
       cout << 
@@ -75,20 +71,19 @@ int main(int argc,char** argv)
    /////////////////////// Load ROOT file ///////////////////////////////
    //////////////////////////////////////////////////////////////////////
    // Open output ROOT file from NPTool simulation run
-/*   string path = getenv("NPTOOL");
-   path += "/Outputs/";
-   if (!rootfileName.Contains("root")) inFileName += ".root";
-   TFile *inFile = new TFile(path + inFileName);
-   TTree *tree   = (TTree*) inFile->Get("EventTree");
-*/
-   TChain* t1 = new TChain("SimulatedTree");
-   t1->Add("../../Outputs/Simulation/mySimul.root");	
+   string path = getenv("NPTOOL");
+   path += "/Outputs/Simulation/" + rootfileName;
+   TFile *inFile = new TFile(path.c_str());
+   TTree *tree   = (TTree*) inFile->Get("SimulatedTree");
+
+//   TChain* t1 = new TChain("SimulatedTree");
+//   t1->Add("../../Outputs/Simulation/mySimul.root");	
    TGaspardTrackerData* EventGPD = new TGaspardTrackerData();
-   t1->SetBranchAddress("GASPARD",&EventGPD);
+   tree->SetBranchAddress("GASPARD",&EventGPD);
    TInteractionCoordinates* InterCoord = new TInteractionCoordinates();
-   t1->SetBranchAddress("InteractionCoordinates",&InterCoord);
+   tree->SetBranchAddress("InteractionCoordinates",&InterCoord);
    TInitialConditions* InitCond = new TInitialConditions();
-   t1->SetBranchAddress("InitialConditions",&InitCond);
+   tree->SetBranchAddress("InitialConditions",&InitCond);
 
    //////////////////////////////////////////////////////////////////////
    /////////////////////// Load ROOT file ///////////////////////////////
@@ -100,12 +95,12 @@ int main(int argc,char** argv)
    }
 
    //////////////// Analyse Part ////////////////////////////////////////	
-   Int_t nentries = (Int_t) t1->GetEntries();
+   Int_t nentries = (Int_t) tree->GetEntries();
    cout << "There are " << nentries << " entries to process" << endl;
    for (Int_t e = 0; e < nentries; e++) {
       check_light =false	;
-      if ((e+1)%10000==0) cout << "Entries number " << e+1 << " on " << t1->GetEntries() << endl ; 
-      t1->GetEntry(e);
+      if ((e+1)%10000==0) cout << "Entries number " << e+1 << " on " << tree->GetEntries() << endl ; 
+      tree->GetEntry(e);
 
       // first check that there is an event detected
       if (EventGPD->GetGPDTrkFirstStageFrontEMult() > 0) {
@@ -122,7 +117,7 @@ int main(int argc,char** argv)
             Int_t detecXT = EventGPD->GetGPDTrkFirstStageFrontTDetectorNbr(0) / det_ref;
             Int_t detecYE = EventGPD->GetGPDTrkFirstStageBackEDetectorNbr(0) / det_ref;
             Int_t detecYT = EventGPD->GetGPDTrkFirstStageBackTDetectorNbr(0) / det_ref;
-            det_ref -= 1000; // for TGaspardTrackerDummyShape
+//            det_ref -= 1000; // for TGaspardTrackerDummyShape
             // case of same detector
             if (detecXE*detecXT*detecYE*detecYT == 1) {
                // calculate strip number

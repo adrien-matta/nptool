@@ -32,45 +32,45 @@ using namespace std ;
 
 class TGaspardTrackerPhysics : public TObject
 {
-	public:
-		TGaspardTrackerPhysics()	;
-		~TGaspardTrackerPhysics();
+public:
+   TGaspardTrackerPhysics();
+   ~TGaspardTrackerPhysics();
 
-	public: 
-	void Clear()									;	
-	void BuildPhysicalEvent(TGaspardTrackerData* Data)		;
-	void BuildSimplePhysicalEvent(TGaspardTrackerData* Data)	;
-		
-	public:
-	//	Provide Physical Multiplicity
-	Int_t			EventMultiplicity	;
-				
-	//	Provide a Classification of Event
-	vector<int>		EventType			;
-		
-	// Telescope
-	vector<int>		TelescopeNumber		;
-	
-	//	Si X
-	vector<double>	Si_E				;
-	vector<double>	Si_T				;
-	vector<int>		Si_X				;
-	vector<int>		Si_Y				;
-	
-	//	Si(Li)
-	vector<double>	SiLi_E				;
-	vector<double>	SiLi_T				;
-	vector<int>		SiLi_N				;
-	
-	//	CsI
-	vector<double>	CsI_E				;
-	vector<double>	CsI_T				;
-	vector<int>		CsI_N				;	
-	
-	// Physical Value  
-	vector<double>	TotalEnergy			;
-	
-	ClassDef(TGaspardTrackerPhysics,1)  // GaspardTrackerPHysics structure
+public: 
+   void Clear();	
+   void BuildPhysicalEvent(TGaspardTrackerData* Data);
+   void BuildSimplePhysicalEvent(TGaspardTrackerData* Data);
+
+public:
+   // Provide Physical Multiplicity
+   Int_t		EventMultiplicity;
+
+   // Provide a Classification of Event
+   vector<int>		EventType;
+
+   // Telescope
+   vector<int>		ModuleNumber;
+
+   //	FirstStage
+   vector<double>	FirstStage_E;
+   vector<double>	FirstStage_T;
+   vector<int>		FirstStage_X;
+   vector<int>		FirstStage_Y;
+
+   //	SecondStage
+   vector<double>	SecondStage_E;
+   vector<double>	SecondStage_T;
+   vector<int>		SecondStage_N;
+
+   //	ThirdStage
+   vector<double>	ThirdStage_E;
+   vector<double>	ThirdStage_T;
+   vector<int>		ThirdStage_N;
+
+   // Physical Value  
+   vector<double>	TotalEnergy;
+
+   ClassDef(TGaspardTrackerPhysics,1)  // GaspardTrackerPHysics structure
 };
 
 #endif

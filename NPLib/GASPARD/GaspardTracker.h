@@ -9,7 +9,7 @@
  * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
  *                                                                           *
  * Creation Date  : 31/08/09                                                 *
- * Last update    :                                                          *
+ * Last update    : 10/09/09                                                 *
  *---------------------------------------------------------------------------*
  * Decription: This class is mainly an interface to the                      *
  *             TGaspardTrackerPhysics class and it deals with the geometrical*
@@ -17,6 +17,8 @@
  *             (X, Y, Z) of interaction.                                     *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
+ *   + 10/09/09: Add support for Square and DummyShape shapes                *
+ *               (N. de Sereville)                                           *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
@@ -32,88 +34,108 @@
 #include "TVector3.h"
 
 class GaspardTracker : public NPA::VDetector
-	{
-			public:	//	Default Constructor
-				GaspardTracker()	;
-				~GaspardTracker()	;
+{
+public:
+   GaspardTracker();
+   ~GaspardTracker();
+
+public:
+   /////////////////////////////////////
+   // Innherited from VDetector Class //
+   /////////////////////////////////////
+   // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
+   void ReadConfiguration(string);
+
+   // Read stream at CalibFile and pick-up calibration parameter using Token
+   // If argument is "Simulation" no change calibration is loaded
+   void ReadCalibrationFile(string);
+
+   // Activated associated Branches and link it to the private member DetectorData address
+   // In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
+   void InitializeRootInput();
+
+   // Create associated branches and associated private member DetectorPhysics address
+   void InitializeRootOutput();
+
+   // This method is called at each event read from the Input Tree. 
+   // The aim is to build treat Raw dat in order to extract physical parameter. 
+   void BuildPhysicalEvent();
 	
-			public:		//	Innherited from VDetector Class
-			
-				//	Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-				void ReadConfiguration(string) 				;
-				
+   // Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
+   // This method aimed to be used for analysis performed during experiment, when speed is requiered.
+   // NB: This method can eventually be the same as BuildPhysicalEvent.
+   void BuildSimplePhysicalEvent();
 
-				//	Read stream at CalibFile and pick-up calibration parameter using Token
-				//	If argument is "Simulation" no change calibration is loaded
-				void ReadCalibrationFile(string)	 		;		
-					
-				
-				//	Activated associated Branches and link it to the private member DetectorData address
-				//	In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
-				void InitializeRootInput() 					;
+   // Those two method all to clear the Event Physics or Data
+   void ClearEventPhysics()	{m_EventPhysics->Clear();}
+   void ClearEventData()	{m_EventData->Clear();}
 
 
-				//	Create associated branches and associated private member DetectorPhysics address
-				void InitializeRootOutput() 		 		;
-				
-				
-				//	This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
-				void BuildPhysicalEvent()					;
-				
-				
-				//	Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
-				//	This method aimed to be used for analysis performed during experiment, when speed is requiered.
-				//	NB: This method can eventually be the same as BuildPhysicalEvent.
-				void BuildSimplePhysicalEvent()				;
+public:
+   ////////////////////////////////
+   // Specific to GaspardTracker //
+   ////////////////////////////////
+   // Case of a Square module
+   // Add a Module using Corner Coordinate information
+   void AddModuleSquare(TVector3 C_X1_Y1,
+                        TVector3 C_X128_Y1,
+                        TVector3 C_X1_Y128,
+                        TVector3 C_X128_Y128);
 
-				//	Those two method all to clear the Event Physics or Data
-				void ClearEventPhysics()		{EventPhysics->Clear();}		
-				void ClearEventData()			{EventData->Clear();}		
+   // Add a Module using R Theta Phi of Si center information
+   void AddModuleSquare(double theta,
+                        double phi,
+                        double distance, 
+                        double beta_u,
+                        double beta_v,
+                        double beta_w);
 
+   // Case of a DummyShape module
+   // Add a Module using Corner Coordinate information
+   void AddModuleDummyShape(TVector3 C_X1_Y1,
+                            TVector3 C_X128_Y1,
+                            TVector3 C_X1_Y128,
+                            TVector3 C_X128_Y128);
 
-			public:		//	Specific to GaspardTracker
-				//	Add a Telescope using Corner Coordinate information
-				void AddTelescope(	TVector3 C_X1_Y1 		,
-			 						TVector3 C_X128_Y1 		, 
-			 						TVector3 C_X1_Y128 		, 
-			 						TVector3 C_X128_Y128	);
-				
-				//	Add a Telescope using R Theta Phi of Si center information
-				void AddTelescope(	double theta 	, 
-									double phi 		, 
-									double distance , 
-									double beta_u 	, 
-									double beta_v 	, 
-									double beta_w	);
-									
-				double GetStripPositionX( int N , int X , int Y )	{ return StripPositionX[N-1][X-1][Y-1] ; };
-				double GetStripPositionY( int N , int X , int Y )	{ return StripPositionY[N-1][X-1][Y-1] ; };
-				double GetStripPositionZ( int N , int X , int Y )	{ return StripPositionZ[N-1][X-1][Y-1] ; };
+   // Add a Module using R Theta Phi of Si center information
+   void AddModuleDummyShape(double theta,
+                            double phi,
+                            double distance, 
+                            double beta_u,
+                            double beta_v,
+                            double beta_w);
 
-				double GetNumberOfTelescope() 	{ return NumberOfTelescope ; }			;
+   // Getters to retrieve the (X,Y,Z) coordinates of a pixel defined by strips (X,Y)
+   double GetStripPositionX(int N ,int X ,int Y)	{ return m_StripPositionX[N-1][X-1][Y-1]; };
+   double GetStripPositionY(int N ,int X ,int Y)	{ return m_StripPositionY[N-1][X-1][Y-1]; };
+   double GetStripPositionZ(int N ,int X ,int Y)	{ return m_StripPositionZ[N-1][X-1][Y-1]; };
+   double GetNumberOfModule()	 			{ return m_NumberOfModule; };
 
-				// To be called after a build Physical Event 
-				
-				double GetEnergyDeposit() ;
-				
-				TVector3 GetPositionOfInteraction();
-				
-				void Print()	;
+   // Get Root input and output objects
+   TGaspardTrackerData* 	GetEventData()		{return m_EventData;};
+   TGaspardTrackerPhysics*	GetEventPhysics()	{return m_EventPhysics;};
 
-			private:	//	Root Input and Output tree classes
-				
-				TGaspardTrackerData* 	EventData		;
-				TGaspardTrackerPhysics* EventPhysics	;
+   // To be called after a build Physical Event 
+   double	GetEnergyDeposit();
+   TVector3	GetPositionOfInteraction();
+
+   void		Print();
 
 
-			private:	//	Spatial Position of Strip Calculated on bases of detector position
-			
-				int NumberOfTelescope	;
-			
-				vector< vector < vector < double > > >	StripPositionX			;
-				vector< vector < vector < double > > >	StripPositionY			;
-				vector< vector < vector < double > > >	StripPositionZ			;
+private:
+   ////////////////////////////////////////
+   // Root Input and Output tree classes //
+   ////////////////////////////////////////
+   TGaspardTrackerData*		m_EventData;
+   TGaspardTrackerPhysics*	m_EventPhysics;
 
-	};
+
+private:
+   // Spatial Position of Strip Calculated on basis of detector position
+   int m_NumberOfModule;
+   vector< vector < vector < double > > >	m_StripPositionX;
+   vector< vector < vector < double > > >	m_StripPositionY;
+   vector< vector < vector < double > > >	m_StripPositionZ;
+};
 
 #endif
