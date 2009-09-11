@@ -124,9 +124,9 @@ void TGaspardTrackerPhysics::BuildPhysicalEvent(TGaspardTrackerData* Data)
             // get energy from strips and store it
             double EnergyStripFront = Data->GetGPDTrkFirstStageFrontEEnergy(0);
             double EnergyStripBack  = Data->GetGPDTrkFirstStageBackEEnergy(0);
-            double EnergyStrip  = 0.5 * (EnergyStripFront + EnergyStripBack);
-//                  double EnergyStrip  = EnergyStripFront;
-//                  if (EnergyStripBack > EnergyStrip) EnergyStrip = EnergyStripBack;
+//            double EnergyStrip  = 0.5 * (EnergyStripFront + EnergyStripBack);
+            double EnergyStrip  = EnergyStripFront;
+//            if (EnergyStripBack > EnergyStrip) EnergyStrip = EnergyStripBack;
             FirstStage_E.push_back(EnergyStrip);
             double EnergyTot = EnergyStrip;
             // get time from strips and store it

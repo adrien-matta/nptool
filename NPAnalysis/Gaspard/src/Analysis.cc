@@ -28,7 +28,7 @@ int main(int argc,char** argv)
 
    // Initialize the detector
    DetectorManager* myDetector = new DetectorManager;
-   myDetector	->	ReadConfigurationFile(detectorfileName);
+   myDetector->ReadConfigurationFile(detectorfileName);
 
    // Attach more branch to the output
    double Ex = 0 ; double EE = 0 ; double TT = 0 ; double X = 0 ; double Y = 0 ; int det ;
@@ -44,6 +44,11 @@ int main(int argc,char** argv)
    // Get the TChain and treat it
    TChain* chain = RootInput:: getInstance() -> GetChain();
 
+   // Connect TInteractionCoordinates branch
+   TInteractionCoordinates *interCoord = 0;
+   chain->SetBranchAddress("InteractionCoordinates", &interCoord);
+   chain->SetBranchStatus("InteractionCoordinates", 0);
+
    // Analysis is here!
    int nentries = chain->GetEntries();
    cout << "Number of entries to be analysed: " << nentries << endl;
@@ -56,18 +61,33 @@ int main(int argc,char** argv)
       myDetector->ClearEventPhysics();
       myDetector->BuildPhysicalEvent();
 
-      // Get total energy and coordinates of interaction
-      double   E = GPDTrack->GetEnergyDeposit();
-      TVector3 A = GPDTrack->GetPositionOfInteraction();
+      // Get total energy
+      double E = GPDTrack->GetEnergyDeposit();
 
-      // Calculate scattering angle
-      double Theta = ThetaCalculation (A ,TVector3(0,0,1));
+      // if there is a hit in the detector array, treat it.
+      double Theta, ThetaStrip;
+      TVector3 A;
+      if (E > -1000) {
+         // Get exact scattering angle from TInteractionCoordinates object
+         Theta = interCoord->GetDetectedAngleTheta(0) * deg;
 
-      // Calculate excitatioin energy
-      if (E > -1000) Ex = myReaction->ReconstructRelativistic(E, Theta);
-      else Ex = -100;
+         // Get interaction coordinates taking into account the strips
+         A = GPDTrack->GetPositionOfInteraction();
+         // Calculate scattering angle
+         ThetaStrip = ThetaCalculation (A ,TVector3(0,0,1));
 
-      EE = E ; TT = Theta/deg;
+         // Calculate excitation energy
+         if (Theta/deg > 90) {
+            Ex = myReaction->ReconstructRelativistic(E, Theta / rad);
+         }
+         else Ex = -200;
+//         Ex = myReaction->ReconstructRelativistic(E, ThetaStrip);
+      }
+      else {
+         Ex = -100;
+      }
+
+      EE = E ; TT = ThetaStrip/deg;
       if (E>-1000) {
          X = A . X();
          Y = A . Y();

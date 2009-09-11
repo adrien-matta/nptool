@@ -7,7 +7,6 @@
 
 // NPA
 #include "DetectorManager.hh"
-#include "Must2Array.h"
 #include "GaspardTracker.h"
 
 // STL C++
@@ -32,6 +31,7 @@
 #include "NPReaction.h"
 #include "RootInput.h"
 #include "RootOutput.h"
+#include "TInteractionCoordinates.h"
 
 // Use CLHEP System of unit and Physical Constant
 #include "CLHEP/Units/GlobalSystemOfUnits.h"
