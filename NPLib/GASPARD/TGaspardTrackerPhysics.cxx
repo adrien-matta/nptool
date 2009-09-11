@@ -136,7 +136,7 @@ void TGaspardTrackerPhysics::BuildPhysicalEvent(TGaspardTrackerData* Data)
                cout << "Warning: multiplicity in third stage greater than in firststage" << endl;
             }
 
-            // Analysis code here.
+            // Fill total energy
             TotalEnergy.push_back(EnergyTot);
          }
          else {

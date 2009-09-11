@@ -54,9 +54,9 @@ void TInteractionCoordinates::Clear()
 
 void TInteractionCoordinates::Dump()
 {
-   cout << "XXXXXXXXXXXXX Initial conditions XXXXXXXXXXXXXXXX" << endl;
+   cout << "XXXXXXXXXXXXX Interaction coordinates XXXXXXXXXXXXXXXX" << endl;
 
-   cout << "Vertex position : " << endl;
+   cout << "Interaction position : " << endl;
    cout << "\tX : " << fDetected_Position_X[0] << endl;  
    cout << "\tY : " << fDetected_Position_Y[0] << endl;  
    cout << "\tZ : " << fDetected_Position_Z[0] << endl;  

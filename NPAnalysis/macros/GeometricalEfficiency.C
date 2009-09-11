@@ -1,3 +1,31 @@
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
+ *                                                                           *
+ * Creation Date  : 22/07/09                                                 *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *    + This macro calculates the geometrical efficiency for a given geometry*
+ *      NPSimulation should have been run with an isotropic source event     *
+ *      generator.                                                           *
+ *                                                                           *
+ *    + Use in a ROOT session:                                               *
+ *      .x GeometricalEfficiency.C("FileToAnalyse")                          *
+ *                                                                           *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
+
 #include <iostream>
 
 #include "TROOT.h"
