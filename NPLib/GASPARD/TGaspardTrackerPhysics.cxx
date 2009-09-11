@@ -50,7 +50,16 @@ void TGaspardTrackerPhysics::BuildSimplePhysicalEvent(TGaspardTrackerData* Data)
 
 
 void TGaspardTrackerPhysics::BuildPhysicalEvent(TGaspardTrackerData* Data)
-{ 
+{
+   // indexes for each kind of detector
+   // this should follow the indexes given in NPSimulation
+   //    0: Square
+   //  100: Trapezoid
+   //  200: Annular
+   // 1000: DummyShape
+   const int dim = 4;
+   int index[dim] = {0, 100, 200, 1000};
+
    // Check
    bool Check_FirstStage = false ;bool Check_SecondStage = false ; bool Check_ThirdStage = false ;
 
@@ -79,7 +88,20 @@ void TGaspardTrackerPhysics::BuildPhysicalEvent(TGaspardTrackerData* Data)
       int detecXT = Data->GetGPDTrkFirstStageFrontTDetectorNbr(0) / det_ref;
       int detecYE = Data->GetGPDTrkFirstStageBackEDetectorNbr(0) / det_ref;
       int detecYT = Data->GetGPDTrkFirstStageBackTDetectorNbr(0) / det_ref;
-      det_ref -= 1000; // only for GaspardDummyShape
+      // convert detector number in order to it begins at 0
+      // this is needed to access the strip position information
+      // WARNING: this method may not work for an heteregneous detector 
+      //          configuration, e.g. Trapezoid + Annular
+      int good_index = -100;
+      int diff_ref = 10000;
+      for (int i = 0; i < dim; i++) {
+         int diff = abs(det_ref - index[i]);
+         if (diff < diff_ref) {
+            diff_ref = diff;
+            good_index = i;
+         }
+      }
+      det_ref -= index[good_index];
 
       // case of same detector
       if (detecXE*detecXT*detecYE*detecYT == 1) {
@@ -154,125 +176,8 @@ void TGaspardTrackerPhysics::BuildPhysicalEvent(TGaspardTrackerData* Data)
       cout << "\tmultYE: " << multYE << endl;
       cout << "\tmultYT: " << multYT << endl;*/
    }
-
-/*	
-		//	Multiplicity 2
-		if( Data->GetMMStripXEMult()==2 && Data->GetMMStripYEMult()==2 && Data->GetMMStripXTMult()==2 && Data->GetMMStripXTMult()==2 )
-			{
-				// Different telescope case
-				if (	Data->GetMMStripXEDetectorNbr(0) != Data->GetMMStripXEDetectorNbr(1)
-					&&	Data->GetMMStripYEDetectorNbr(0) != Data->GetMMStripYEDetectorNbr(1) )
-					{
-					
-						double EY, EX, TX, TY = 0;
-						// loop on both event
-						for (int jj = 0 ; jj < 2 ; jj++)
-							{
-								Check_FirstStage = false ;Check_SecondStage = false ;Check_ThirdStage = false ;
-								
-							
-								ModuleNumber.push_back( Data->GetMMStripXEDetectorNbr(jj) )	;
-								EX = Data->GetMMStripXEEnergy(jj) 				;
-								FirstStage_X.push_back( Data->GetMMStripXEStripNbr(jj))	;
-								
-								// Get Corresponding time
-								for(int i = 0 ; i < 2 ; i++)
-									{ 
-										if(		Data->GetMMStripXTDetectorNbr(i) == Data->GetMMStripXEDetectorNbr(jj) 
-											&&	Data->GetMMStripXTStripNbr(i)    == Data->GetMMStripXEStripNbr(jj)   )
-											{ TX = Data->GetMMStripXTTime(jj)	; }
-									}
-								
-								// Get Corresponding Y strip
-								for(int i = 0 ; i < 2 ; i++)
-									{
-										if(	Data->GetMMStripYEDetectorNbr(i) == Data->GetMMStripXEDetectorNbr(jj) )
-											{
-												FirstStage_Y.push_back( Data->GetMMStripYEStripNbr(i))	;
-												EY = Data->GetMMStripXEEnergy(i) 				;
-												TY = Data->GetMMStripXTTime(i) 					;
-												
-										//		if (EX>EY)	FirstStage_E.push_back(EX)	;
-										//		else	  	FirstStage_E.push_back(EY)	;
-												FirstStage_E.push_back(EX);
-												
-												
-												if (TX>TY)	FirstStage_T.push_back(TY)	;
-												else	  	FirstStage_T.push_back(TX)	; 
-												Check_FirstStage = true ;
-											}
-									}
-							
-								if (Check_FirstStage)
-									{ 
-										//	Si(Li)
-										for (int i = 0 ; i < Data->GetMMSiLiEMult() ; i++)
-											{ 
-												if (	Data->GetMMSiLiEDetectorNbr(i) == Data->GetMMStripXEDetectorNbr(jj)
-													&&	Data->GetMMSiLiEEnergy(i) > SecondStage_E_Threshold	)
-													{
-													SecondStage_E.push_back(Data->GetMMSiLiEEnergy(i))	;
-													SecondStage_N.push_back(Data->GetMMSiLiEPadNbr(i))	;
-													
-													if (	Data->GetMMSiLiTDetectorNbr(i) == Data->GetMMStripXEDetectorNbr(jj)
-														&&	Data->GetMMSiLiTPadNbr(i)      == Data->GetMMSiLiEPadNbr(i) )
-															{
-															SecondStage_T.push_back(Data->GetMMSiLiTTime(i))	;
-															Check_SecondStage = true ;
-															}
-													}
-													
-												else
-													{
-													SecondStage_E.push_back(-1)	;
-													SecondStage_T.push_back(-1)	;
-													SecondStage_N.push_back(-1)	;
-													}
-											}
-								
-										//	CsI
-										for (int i = 0 ; i < Data->GetMMCsIEMult() ; i++)
-											{
-												if (	Data->GetMMCsIEDetectorNbr(i) == Data->GetMMStripXEDetectorNbr(jj)
-													&&	Data->GetMMCsIEEnergy(i) > ThirdStage_E_Threshold	)
-													{
-													ThirdStage_E.push_back(Data->GetMMCsIEEnergy(i))		;
-													ThirdStage_N.push_back(Data->GetMMCsIECristalNbr(i))	;
-													if (	Data->GetMMCsITDetectorNbr(i) == Data->GetMMStripXEDetectorNbr(jj)
-														&&	Data->GetMMCsITCristalNbr(i)  == Data->GetMMCsIECristalNbr(i) )
-															{
-															ThirdStage_T.push_back(Data->GetMMCsITTime(i))		;
-															Check_ThirdStage = true ;
-															}
-													}
-													
-												else
-													{
-													ThirdStage_E.push_back(-1)	;
-													ThirdStage_T.push_back(-1)	;
-													ThirdStage_N.push_back(-1)	;
-													}
-											}
-										
-										TotalEnergy.push_back(FirstStage_E.at(jj)) ;
-										if (Check_SecondStage) TotalEnergy.at(jj) += SecondStage_E.at(jj)	;
-										if (Check_ThirdStage)  TotalEnergy.at(jj) += ThirdStage_E.at(jj)	;
-									}	
-							}
-						return;	
-					}
-					
-				//	Same detector case :
-				if(		Data->GetMMStripXEDetectorNbr(0) == Data->GetMMStripXEDetectorNbr(1)
-					&&	Data->GetMMStripYEDetectorNbr(0) == Data->GetMMStripYEDetectorNbr(1))
-					{
-					
-					
-					return;
-					}
-			}
-			*/
 }
+
 
 
 void TGaspardTrackerPhysics::Clear()
