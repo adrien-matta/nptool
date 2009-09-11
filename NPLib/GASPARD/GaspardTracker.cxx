@@ -279,7 +279,7 @@ void GaspardTracker::ReadConfiguration(string Path)
                ConfigFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n' );
             }
             // Finding another telescope (safety), toggle out
-            else if (DataBuffer.compare(0, 9, "GPDSquare") == 0) {
+            else if (DataBuffer.compare(0, 13, "GPDDummyShape") == 0) {
                cout << "WARNING: Another Module is find before standard sequence of Token, Error may occured in Telecope definition" << endl;
                ReadingStatus = false;
             }

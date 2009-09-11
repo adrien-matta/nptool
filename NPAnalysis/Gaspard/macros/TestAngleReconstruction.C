@@ -19,7 +19,7 @@ void TestAngleReconstruction(const char * fname = "mySimul")
 {
    // Open output ROOT file from NPTool simulation run
    TString path = gSystem->Getenv("NPTOOL");
-   path += "/Outputs/";
+   path += "/Outputs/Simulation/";
    TString inFileName = fname;
    if (!inFileName.Contains("root")) inFileName += ".root";
    TFile *inFile = new TFile(path + inFileName);

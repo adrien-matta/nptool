@@ -354,12 +354,13 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
    m_InitConditions->SetICIncidentEmittancePhi(Beam_phiY / deg);
 
    // Calculate Angle in spherical coordinate, passing by the direction vector dir	
-   G4double Xdir =  cos( pi/2. - Beam_thetaX );
-   G4double Ydir =  cos( pi/2. - Beam_phiY   );
-   G4double Zdir =  sin( pi/2. - Beam_thetaX ) + sin(  pi/2. - Beam_phiY);	
+   G4double Xdir =  cos(pi/2. - Beam_thetaX);
+   G4double Ydir =  cos(pi/2. - Beam_phiY  );
+   G4double Zdir =  sin(pi/2. - Beam_thetaX) + sin(pi/2. - Beam_phiY);	
 	
-   G4double Beam_theta = acos ( Zdir / sqrt( Xdir*Xdir + Ydir*Ydir + Zdir*Zdir ) );	
-   G4double Beam_phi   = atan2( Ydir , Xdir ) ;   
+   G4double Beam_theta = acos(Zdir / sqrt(Xdir*Xdir + Ydir*Ydir + Zdir*Zdir)) * rad;
+   G4double Beam_phi   = atan2(Ydir, Xdir) * rad;
+   if (Beam_phi < 0) Beam_phi += 2*pi;
 
    // write angles to ROOT file
    m_InitConditions->SetICIncidentAngleTheta(Beam_theta / deg);

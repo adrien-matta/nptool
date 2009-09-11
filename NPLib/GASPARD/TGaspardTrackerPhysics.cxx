@@ -79,6 +79,7 @@ void TGaspardTrackerPhysics::BuildPhysicalEvent(TGaspardTrackerData* Data)
       int detecXT = Data->GetGPDTrkFirstStageFrontTDetectorNbr(0) / det_ref;
       int detecYE = Data->GetGPDTrkFirstStageBackEDetectorNbr(0) / det_ref;
       int detecYT = Data->GetGPDTrkFirstStageBackTDetectorNbr(0) / det_ref;
+      det_ref -= 1000; // only for GaspardDummyShape
 
       // case of same detector
       if (detecXE*detecXT*detecYE*detecYT == 1) {

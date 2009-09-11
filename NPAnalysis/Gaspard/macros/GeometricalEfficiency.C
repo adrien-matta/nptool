@@ -15,11 +15,11 @@ void GeometricalEfficiency(const char * fname = "Efficiency_10000")
 {
    // Open output ROOT file from NPTool simulation run
    TString path = gSystem->Getenv("NPTOOL");
-   path += "/Outputs/";
+   path += "/Outputs/Simulation/";
    TString inFileName = fname;
    if (!inFileName.Contains("root")) inFileName += ".root";
    TFile *inFile = new TFile(path + inFileName);
-   TTree *tree   = (TTree*) inFile->Get("EventTree");
+   TTree *tree   = (TTree*) inFile->Get("SimulatedTree");
 
    // Connect the branches of the TTree and activate then if necessary
    // TInitialConditions branch

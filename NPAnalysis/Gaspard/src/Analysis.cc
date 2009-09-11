@@ -117,7 +117,7 @@ int main(int argc,char** argv)
             Int_t detecXT = EventGPD->GetGPDTrkFirstStageFrontTDetectorNbr(0) / det_ref;
             Int_t detecYE = EventGPD->GetGPDTrkFirstStageBackEDetectorNbr(0) / det_ref;
             Int_t detecYT = EventGPD->GetGPDTrkFirstStageBackTDetectorNbr(0) / det_ref;
-//            det_ref -= 1000; // for TGaspardTrackerDummyShape
+            det_ref -= 1000; // for TGaspardTrackerDummyShape
             // case of same detector
             if (detecXE*detecXT*detecYE*detecYT == 1) {
                // calculate strip number

@@ -210,6 +210,13 @@ void EventGeneratorIsotropic::GenerateEvent(G4Event* anEvent, G4ParticleGun* par
    m_InitConditions->SetICPositionX(m_x0 / mm);
    m_InitConditions->SetICPositionY(m_y0 / mm);
    m_InitConditions->SetICPositionZ(m_z0 / mm);
+   // Incident "particles"
+   // Everything is zero for a source
+   m_InitConditions->SetICIncidentEmittanceTheta(0);
+   m_InitConditions->SetICIncidentEmittancePhi(0);
+   m_InitConditions->SetICIncidentAngleTheta(0);
+   m_InitConditions->SetICIncidentAnglePhi(0);
+   m_InitConditions->SetICIncidentEnergy(0);
    // Emitted particle angles
    m_InitConditions->SetICEmittedAngleThetaCM(theta / deg);
    m_InitConditions->SetICEmittedAngleThetaLabIncidentFrame(theta / deg);

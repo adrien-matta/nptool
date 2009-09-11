@@ -12,8 +12,8 @@ Transfert
 	BeamEnergySpread= 0
 	SigmaX= 1
 	SigmaY= 1
-	SigmaThetaX= 0.5
-	SigmaPhiY= 0.5
+	SigmaThetaX= 2 
+	SigmaPhiY= 2
 	CrossSectionPath= ni69_g7_01.n
 	ShootLight= 1
 	ShootHeavy= 0
