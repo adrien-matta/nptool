@@ -22,6 +22,7 @@
 
 TODO for NPTool:
 ----------------
+   + Change map's index of scorers to deal a typical case of dE-E for 2 plastics.
    + Build a dummy detector as a simple example of how NPTool is working
    + Add documentation
    + Add a dedicated class to deal with materials (see example from G4 tutorial)
