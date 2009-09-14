@@ -241,7 +241,7 @@ void Plastic::ConstructDetector(G4LogicalVolume* world)
 {
    	G4ThreeVector Det_pos = G4ThreeVector(0, 0, 0)  ;
 	
-   for (ushort i = 0 ; i < m_R.size() ; i++) 
+   for (unsigned short i = 0 ; i < m_R.size() ; i++) 
    	{
          G4double wX = m_R[i] * sin(m_Theta[i] ) * cos(m_Phi[i] )   ;
          G4double wY = m_R[i] * sin(m_Theta[i] ) * sin(m_Phi[i] )   ;

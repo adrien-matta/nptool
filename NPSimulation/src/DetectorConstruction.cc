@@ -288,7 +288,7 @@ void DetectorConstruction::ReadAllSensitive(const G4Event* event)
    if(m_Detectors.size()>0)
    m_Detectors[0]->GetInterCoordPointer()->Clear();
 
-   for (ushort i = 0 ; i < m_Detectors.size() ; i++) {
+   for (unsigned short i = 0 ; i < m_Detectors.size() ; i++) {
       m_Detectors[i]->ReadSensitive(event);
    }
 }
