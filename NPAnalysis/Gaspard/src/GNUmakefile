@@ -5,7 +5,7 @@ CPP=g++
 EXEC=Analysis
 
 # local includes
-NPAINCLUDES = $(NPANA)/include
+NPAINCLUDES = ../include
 
 # ROOT includes
 CXXFLAGS += `root-config --cflags`
@@ -15,21 +15,21 @@ CXXFLAGS += -I$(CLHEP_INCLUDE_DIR)
 CXXFLAGS += -I$(NPAINCLUDES)
 CXXFLAGS += -I$(NPLIB)/include
 
-
 LDFLAGS  = `root-config --libs` -lMathMore
-#LDFLAGS += -L$(NPLIB) -lMust2Data -lReaction -lEnergyLossCorrection 
-LDFLAGS += -L$(NPLIB)/lib -lMust2Data -lGaspardData -lInteractionCoordinates \
-			-lInitialConditions -lReaction
-LDFLAGS += -L$(CLHEP_LIB_DIR) -l$(CLHEP_LIB)
+LDFLAGS+= -L$(NPLIB)/lib -lVDetector -lIORoot -lReaction -lEnergyLoss \
+			-lMust2Data -lMust2Physics \
+			-lGaspardData -lGaspardPhysics \
+			-lAnnularS1Data \
+			-lInitialConditions -lInteractionCoordinates
+LDFLAGS+= -L$(CLHEP_LIB_DIR) -l$(CLHEP_LIB) 
 
 SRC= $(wildcard *.cc)
-INC= $(wildcart $(NPAINCLUDES)/*.hh)
 OBJ=$(SRC:.cc=.o)
 
 #all:$(EXEC)
 #	@$(CPP) -o $@ -c $< $(CXXFLAGS)
 
-Analysis:$(OBJ) $(INC)
+Analysis:$(OBJ)
 	@$(CPP) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 	mv Analysis  ../Analysis
 

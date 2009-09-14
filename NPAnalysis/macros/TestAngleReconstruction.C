@@ -1,3 +1,31 @@
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
+ *                                                                           *
+ * Creation Date  : 22/07/09                                                 *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *    + This macro studues the impact of the beam emittance on the angle     *
+ *      determination.                                                       *
+ *                                                                           *
+ *    + Use in a ROOT session:                                               *
+ *      .x TestAngleReconstruction.C("FileToAnalyse")                        *
+ *                                                                           *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *   + This macro has not been fully tested yet. Be careful                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
+
 #include <iostream>
 
 #include "TROOT.h"
@@ -11,7 +39,6 @@
 #include "TCanvas.h"
 #include "TMath.h"
 
-#include "TGaspardTrackerData.h"
 #include "TInitialConditions.h"
 #include "TInteractionCoordinates.h"
 
@@ -23,13 +50,9 @@ void TestAngleReconstruction(const char * fname = "mySimul")
    TString inFileName = fname;
    if (!inFileName.Contains("root")) inFileName += ".root";
    TFile *inFile = new TFile(path + inFileName);
-   TTree *tree   = (TTree*) inFile->Get("EventTree");
+   TTree *tree   = (TTree*) inFile->Get("SimulatedTree");
 
    // Connect the branches of the TTree and activate then if necessary
-   // TGaspardTrackerData branch
-   TGaspardTrackerData *gpdTrkData = 0;
-   tree->SetBranchAddress("GASPARD", &gpdTrkData);
-   tree->SetBranchStatus("GASPARD", 0);
    // TInitialConditions branch
    TInitialConditions *initCond = 0;
    tree->SetBranchAddress("InitialConditions", &initCond);

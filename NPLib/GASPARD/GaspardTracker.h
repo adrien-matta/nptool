@@ -106,14 +106,14 @@ public:
                             double beta_w);
 
    // Getters to retrieve the (X,Y,Z) coordinates of a pixel defined by strips (X,Y)
-   double GetStripPositionX(int N ,int X ,int Y)	{ return m_StripPositionX[N-1][X-1][Y-1]; };
-   double GetStripPositionY(int N ,int X ,int Y)	{ return m_StripPositionY[N-1][X-1][Y-1]; };
-   double GetStripPositionZ(int N ,int X ,int Y)	{ return m_StripPositionZ[N-1][X-1][Y-1]; };
-   double GetNumberOfModule()	 			{ return m_NumberOfModule; };
+   double GetStripPositionX(int N ,int X ,int Y)	{ return m_StripPositionX[N-1][X-1][Y-1]; }
+   double GetStripPositionY(int N ,int X ,int Y)	{ return m_StripPositionY[N-1][X-1][Y-1]; }
+   double GetStripPositionZ(int N ,int X ,int Y)	{ return m_StripPositionZ[N-1][X-1][Y-1]; }
+   double GetNumberOfModule()	 			{ return m_NumberOfModule; }
 
    // Get Root input and output objects
-   TGaspardTrackerData* 	GetEventData()		{return m_EventData;};
-   TGaspardTrackerPhysics*	GetEventPhysics()	{return m_EventPhysics;};
+   TGaspardTrackerData* 	GetEventData()		{return m_EventData;}
+   TGaspardTrackerPhysics*	GetEventPhysics()	{return m_EventPhysics;}
 
    // To be called after a build Physical Event 
    double	GetEnergyDeposit();
