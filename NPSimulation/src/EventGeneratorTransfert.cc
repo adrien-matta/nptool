@@ -360,7 +360,8 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
 	
    G4double Beam_theta = acos(Zdir / sqrt(Xdir*Xdir + Ydir*Ydir + Zdir*Zdir)) * rad;
    G4double Beam_phi   = atan2(Ydir, Xdir) * rad;
-   if (Beam_phi < 0) Beam_phi += 2*pi;
+   if (Beam_phi   < 0)    Beam_phi += 2*pi;
+   if (Beam_theta < 1e-6) Beam_phi  = 0;
 
    // write angles to ROOT file
    m_InitConditions->SetICIncidentAngleTheta(Beam_theta / deg);

@@ -168,6 +168,7 @@ namespace GPDSQUARE
    const G4double SiliconFace       = 98*mm          ;
 //   const G4double VacBoxThickness   = 3*cm           ;
    const G4double VacBoxThickness   = 0.5*cm           ;
+   const G4int    NumberOfStrips    = 128;
 
    // Second stage
    const G4double SiLiThickness     = 5.1*mm                      ;  // Must be checked

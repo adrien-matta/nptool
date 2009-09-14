@@ -1,0 +1,21 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%  Reaction file for 60Fe(d,p)61Fe reaction  %%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%Beam energy given in MeV ; Excitation in MeV ; emmitance in rad
+Transfert
+	Beam= 132Sn
+	Target= 2H
+	Light= 1H
+	Heavy= 133Sn
+	ExcitationEnergy= 0.0
+	BeamEnergy= 1320
+	BeamEnergySpread= 0
+	SigmaX= 2
+	SigmaY= 2
+	SigmaThetaX= 0 
+	SigmaPhiY= 0
+	CrossSectionPath= sn132dp_gs_10AMeV.txt
+	ShootLight= 1
+	ShootHeavy= 0
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+

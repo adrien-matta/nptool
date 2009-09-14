@@ -1003,8 +1003,8 @@ void GaspardTrackerTrapezoid::InitializeScorers()
    G4VPrimitiveScorer* DetNbr                           = new GPDScorerDetectorNumber("DetectorNumber", 0, "Silicon");
    G4VPrimitiveScorer* Energy                           = new GPDScorerFirstStageEnergy("StripEnergy", 0);
    G4VPrimitiveScorer* TOF                              = new PSTOF("StripTime", 0);
-   G4VPrimitiveScorer* StripPositionX                   = new GPDScorerFirstStageFrontStripTrapezoid("StripNumberX", 0, 128);
-   G4VPrimitiveScorer* StripPositionY                   = new GPDScorerFirstStageBackStripTrapezoid("StripNumberY", 0, 128);
+   G4VPrimitiveScorer* StripPositionX                   = new GPDScorerFirstStageFrontStripTrapezoid("StripNumberX", 0, NumberOfStripsX);
+   G4VPrimitiveScorer* StripPositionY                   = new GPDScorerFirstStageBackStripTrapezoid("StripNumberY",  0, NumberOfStripsY);
    G4VPrimitiveScorer* InteractionCoordinatesX          = new PSInteractionCoordinatesX("InterCoordX", 0);
    G4VPrimitiveScorer* InteractionCoordinatesY          = new PSInteractionCoordinatesY("InterCoordY", 0);
    G4VPrimitiveScorer* InteractionCoordinatesZ          = new PSInteractionCoordinatesZ("InterCoordZ", 0);

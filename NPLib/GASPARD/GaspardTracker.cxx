@@ -244,9 +244,9 @@ void GaspardTracker::ReadConfiguration(string Path)
 
                // with angle method
                else if ( check_Theta && check_Phi && check_R && check_beta ) {
-                  AddModuleSquare(R       ,
-                                  Theta   ,
+                  AddModuleSquare(Theta   ,
                                   Phi     ,
+                                  R       ,
                                   beta_u  ,
                                   beta_v  ,
                                   beta_w  );
@@ -398,12 +398,12 @@ void GaspardTracker::ReadConfiguration(string Path)
 
                // with angle method
                else if ( check_Theta && check_Phi && check_R && check_beta ) {
-                  AddModuleDummyShape(R       ,
-                                      Theta   ,
-                                      Phi     ,
-                                      beta_u  ,
-                                      beta_v  ,
-                                      beta_w  );
+                  AddModuleDummyShape(Theta,
+                                      Phi,
+                                      R,
+                                      beta_u,
+                                      beta_v,
+                                      beta_w);
                }
 
                // reset boolean flag for point positioning
