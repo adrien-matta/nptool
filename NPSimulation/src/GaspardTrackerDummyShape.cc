@@ -939,8 +939,8 @@ void GaspardTrackerDummyShape::InitializeScorers()
    G4VPrimitiveScorer* DetNbr                           = new GPDScorerDetectorNumber("DetectorNumber", 0, "FirstStage");
    G4VPrimitiveScorer* Energy                           = new GPDScorerFirstStageEnergy("StripEnergy", 0);
    G4VPrimitiveScorer* TOF                              = new PSTOF("StripTime", 0);
-   G4VPrimitiveScorer* StripPositionX                   = new GPDScorerFirstStageFrontStripDummyShape("StripIDFront", 0, 128);
-   G4VPrimitiveScorer* StripPositionY                   = new GPDScorerFirstStageBackStripDummyShape("StripIDBack", 0, 128);
+   G4VPrimitiveScorer* StripPositionX                   = new GPDScorerFirstStageFrontStripDummyShape("StripIDFront", 0, NumberOfStrips);
+   G4VPrimitiveScorer* StripPositionY                   = new GPDScorerFirstStageBackStripDummyShape("StripIDBack", 0, NumberOfStrips);
    G4VPrimitiveScorer* InteractionCoordinatesX          = new PSInteractionCoordinatesX("InterCoordX", 0);
    G4VPrimitiveScorer* InteractionCoordinatesY          = new PSInteractionCoordinatesY("InterCoordY", 0);
    G4VPrimitiveScorer* InteractionCoordinatesZ          = new PSInteractionCoordinatesZ("InterCoordZ", 0);

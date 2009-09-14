@@ -78,10 +78,10 @@ int main(int argc,char** argv)
 
          // Calculate excitation energy
          if (Theta/deg > 90) {
-            Ex = myReaction->ReconstructRelativistic(E, Theta / rad);
+//            Ex = myReaction->ReconstructRelativistic(E, Theta / rad);
+            Ex = myReaction->ReconstructRelativistic(E, ThetaStrip);
          }
          else Ex = -200;
-//         Ex = myReaction->ReconstructRelativistic(E, ThetaStrip);
       }
       else {
          Ex = -100;
