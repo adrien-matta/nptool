@@ -11,7 +11,7 @@
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
  * Creation Date  : January 2009                                             *
- * Last update    :                                                          *
+ * Last update    : 16/09/2009                                               *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This class describe Cryogenic and standard Target. Derived from VDetector*
@@ -19,9 +19,14 @@
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *  Some improvment need to be done in material dealing                      *
+ *                                                                           *
+ *  + 16/09/2009: Add support for positioning the target with an angle with  *
+ *                respect to the beam (N. de Sereville)                      *
+ *                                                                           *
  *****************************************************************************/
 // C++ headers
 #include <string>
+#include <cmath>
 
 // G4 header defining G4 types
 #include "globals.hh"
@@ -41,24 +46,24 @@ using namespace std;
 class Target : public VDetector
 {
 public:
-   Target()               ;
+   Target();
 
 public:
    // Read stream at Configfile to pick-up parameters of detector (Position,...)
    // Called in DetecorConstruction::ReadDetextorConfiguration Method
-   void ReadConfiguration(string Path)          ;
+   void ReadConfiguration(string Path);
 
    // Construct detector and inialise sensitive part.
    // Called After DetecorConstruction::AddDetector Method
-   void ConstructDetector(G4LogicalVolume* world)  ;
+   void ConstructDetector(G4LogicalVolume* world);
 
    // Add Detector branch to the EventTree.
    // Called After DetecorConstruction::AddDetector Method
-   void InitializeRootOutput()            ;
+   void InitializeRootOutput();
 
    // Read sensitive part and fill the Root tree.
    // Called at in the EventAction::EndOfEventAvtion
-   void ReadSensitive(const G4Event* event)     ;
+   void ReadSensitive(const G4Event* event);
 
 
 public:
@@ -69,38 +74,29 @@ private:
    bool     m_TargetType         ;
 
    // Standard parameter
-   G4double m_TargetThickness    ;
-   G4double m_TargetRadius       ;
-   G4Material* m_TargetMaterial     ;
+   G4double    m_TargetThickness;
+   G4double    m_TargetRadius;
+   G4double    m_TargetAngle;
+   G4Material* m_TargetMaterial;
 
    // For Cryo Target
-   G4double m_WindowsThickness      ;
-   G4Material* m_WindowsMaterial    ;
-   G4double m_TargetTemperature     ;
-   G4double m_TargetPressure     ;
+   G4double    m_WindowsThickness;
+   G4double    m_TargetTemperature;
+   G4double    m_TargetPressure;
+   G4Material* m_WindowsMaterial;
 
    // Positioning
-   G4double    m_TargetX            ;
-   G4double    m_TargetY            ;
-   G4double    m_TargetZ            ;
+   G4double    m_TargetX;
+   G4double    m_TargetY;
+   G4double    m_TargetZ;
 
 public:
-   G4double GetTargetThickness() {
-      return m_TargetThickness  ;
-   }
-   G4double GetTargetRadius()    {
-      return m_TargetRadius     ;
-   }
-   G4double GetTargetX()         {
-      return m_TargetX       ;
-   }
-   G4double GetTargetY()         {
-      return m_TargetY       ;
-   }
-   G4double GetTargetZ()         {
-      return m_TargetZ       ;
-   }
-
+   G4double GetTargetThickness()	{return m_TargetThickness / cos(m_TargetAngle/rad);}
+   G4double GetTargetRadius()		{return m_TargetRadius;}
+   G4double GetTargetAngle()		{return m_TargetAngle;}
+   G4double GetTargetX()		{return m_TargetX;}
+   G4double GetTargetY()		{return m_TargetY;}
+   G4double GetTargetZ()		{return m_TargetZ;}
 };
 
 #endif

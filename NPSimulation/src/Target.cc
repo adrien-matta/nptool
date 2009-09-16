@@ -9,7 +9,7 @@
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
  * Creation Date  : January 2009                                             *
- * Last update    :                                                          *
+ * Last update    : 16/09/2009                                               *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This class describe Cryogenic and standard Target. Derived from VDetector*
@@ -17,6 +17,11 @@
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *  Some improvment need to be done in material dealing                      *
+ *                                                                           *
+ *  + 16/09/2009: Add support for positioning the target with an angle with  *
+ *                respect to the beam (N. de Sereville)                      *
+ *  + 16/09/2009: Add CH2 material for targets (N. de Sereville)             *
+ *                                                                           *
  *****************************************************************************/
 // C++ header
 #include <fstream>
@@ -45,12 +50,13 @@ using namespace std;
 // Specific Method of this class
 Target::Target()
 {
-   m_TargetType      = true   ;
-   m_TargetThickness    = 0   ;
-   m_TargetRadius    = 0   ;
+   m_TargetType		= true;
+   m_TargetThickness	= 0   ;
+   m_TargetAngle	= 0   ;
+   m_TargetRadius	= 0   ;
    m_WindowsThickness   = 0   ;
    m_TargetTemperature  = 0   ;
-   m_TargetPressure  = 0   ;
+   m_TargetPressure  	= 0   ;
 }
 
 G4Material* Target::GetMaterialFromLibrary(G4String MaterialName, G4double Temperature, G4double Pressure)
@@ -157,6 +163,16 @@ G4Material* Target::GetMaterialFromLibrary(G4String MaterialName, G4double Tempe
       return myMaterial;
    }
 
+   else if (MaterialName == "CH2") {
+      G4Element* C  = new G4Element("Carbon"  , "C" , 6. , 12.011*g / mole);
+      G4Element* H  = new G4Element("Hydrogen", "H" , 1. ,  1.01 *g / mole);
+
+      G4Material* myMaterial = new G4Material("CH2", 0.9*g / cm3, 2);
+      myMaterial->AddElement(C , 1);
+      myMaterial->AddElement(H , 2);
+      return myMaterial;
+   }
+
    else {
       G4cout << "No Matching Material in the Target Library Default is Vacuum" << G4endl;
       G4Element* N = new G4Element("Nitrogen", "N", 7., 14.01*g / mole);
@@ -178,46 +194,42 @@ G4Material* Target::GetMaterialFromLibrary(G4String MaterialName, G4double Tempe
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
 void Target::ReadConfiguration(string Path)
 {
-   ifstream ConfigFile           ;
-   ConfigFile.open(Path.c_str()) ;
-   string LineBuffer          ;
-   string DataBuffer          ;
+   ifstream ConfigFile;
+   ConfigFile.open(Path.c_str());
+   string LineBuffer;
+   string DataBuffer;
+	
+   bool ReadingStatusTarget = false ;
+   bool ReadingStatusCryoTarget = false ;
 
-	
-	bool ReadingStatusTarget = false ;
-	bool ReadingStatusCryoTarget = false ;
-	
-	bool check_Thickness = false ;
-	bool check_Radius = false ;
-	bool check_Material = false ;
-	bool check_X = false ;
-	bool check_Y = false ;
-	bool check_Z = false ;
-	
-	bool check_Temperature = false ;
-	bool check_Pressure = false ;
-	bool check_WinThickness = false ;
-	bool check_WinMaterial = false ;
+   bool check_Thickness = false ;
+   bool check_Radius = false ;
+   bool check_Angle = false ;
+   bool check_Material = false ;
+   bool check_X = false ;
+   bool check_Y = false ;
+   bool check_Z = false ;
+
+   bool check_Temperature = false ;
+   bool check_Pressure = false ;
+   bool check_WinThickness = false ;
+   bool check_WinMaterial = false ;
    	
    while (!ConfigFile.eof()) {
-     
-     
       getline(ConfigFile, LineBuffer);
       if (LineBuffer.compare(0, 6, "Target") == 0) {
          cout << "Target Found" << endl;
          m_TargetType = true ;
          ReadingStatusTarget = true ;
-         }
-         
+      }
       else if (LineBuffer.compare(0, 10, "CryoTarget") == 0) {
          cout << "Cryogenic Target Found" << endl;
          m_TargetType = false ;
          ReadingStatusCryoTarget = true ;
-         }
-         
-	while(ReadingStatusTarget){
-	
-			ConfigFile >> DataBuffer;
+      }
+
+      while (ReadingStatusTarget) {
+         ConfigFile >> DataBuffer;
 	
       		//Search for comment Symbol %
       		if (DataBuffer.compare(0, 1, "%") == 0) {/*Do Nothing*/;}
@@ -227,6 +239,13 @@ void Target::ReadConfiguration(string Path)
 	            ConfigFile >> DataBuffer;
 	            m_TargetThickness = atof(DataBuffer.c_str()) * micrometer;
 	             cout << "Target Thickness: "  << m_TargetThickness << endl     ;
+	         }
+
+	        else if (DataBuffer.compare(0, 6, "ANGLE=") == 0) {
+	        	check_Angle = true ;
+	            ConfigFile >> DataBuffer;
+	            m_TargetAngle = atof(DataBuffer.c_str()) * deg;
+	             cout << "Target Angle: "  << m_TargetAngle << endl     ;
 	         }
 
 	        else if (DataBuffer.compare(0, 7, "RADIUS=") == 0) {
@@ -377,20 +396,25 @@ void Target::ConstructDetector(G4LogicalVolume* world)
 // If don't you will have a Warning unused variable 'myPVP'
    G4VPhysicalVolume* PVPBuffer ;
 
-   if (m_TargetType) {
+   if (m_TargetType) {	// case of standard target
 
       if (m_TargetThickness > 0) {
          G4Tubs*            solidTarget = new G4Tubs("solidTarget", 0, m_TargetRadius, 0.5*m_TargetThickness, 0*deg, 360*deg);
          G4LogicalVolume*   logicTarget = new G4LogicalVolume(solidTarget, m_TargetMaterial, "logicTarget");
+
+         // rotation of target
+         G4RotationMatrix *rotation = new G4RotationMatrix();
+         rotation->rotateY(m_TargetAngle);
+
          PVPBuffer =
-            new G4PVPlacement(0, G4ThreeVector(m_TargetX, m_TargetY, m_TargetZ), logicTarget, "Target", world, false, 0);
+            new G4PVPlacement(rotation, G4ThreeVector(m_TargetX, m_TargetY, m_TargetZ), logicTarget, "Target", world, false, 0);
 
          G4VisAttributes* TargetVisAtt = new G4VisAttributes(G4Colour(0., 0., 1.));//Blue
          logicTarget->SetVisAttributes(TargetVisAtt);
       }
    }
 
-   else {
+   else {	// case of cryogenic target
 
       if (m_TargetThickness > 0) {
          G4Tubs*            solidTarget = new G4Tubs("solidTarget", 0, m_TargetRadius, 0.5*m_TargetThickness, 0*deg, 360*deg);

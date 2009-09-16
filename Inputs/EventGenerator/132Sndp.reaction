@@ -10,8 +10,8 @@ Transfert
 	ExcitationEnergy= 0.0
 	BeamEnergy= 1320
 	BeamEnergySpread= 0
-	SigmaX= 2
-	SigmaY= 2
+	SigmaX= 0.851
+	SigmaY= 0.851
 	SigmaThetaX= 0 
 	SigmaPhiY= 0
 	CrossSectionPath= sn132dp_gs_10AMeV.txt

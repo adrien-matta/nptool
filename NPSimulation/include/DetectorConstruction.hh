@@ -15,9 +15,9 @@
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This Class manage the virtual detector and call their method.            *
- *	Every time a new detector is added to the project, a few line in the     *
- *	ReadConfigurationFile method are needed in order to detect the associate *
- *	token.                                                                   *
+ *  Every time a new detector is added to the project, a few line in the     *
+ *  ReadConfigurationFile method are needed in order to detect the associate *
+ *  token.                                                                   *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *                                                                           *
@@ -26,11 +26,19 @@
 class G4LogicalVolume;
 class G4VPhysicalVolume;
 
-#include "G4VUserDetectorConstruction.hh"
-#include "VDetector.hh"
-#include "TTree.h"
-#include "G4Event.hh"
+// C++ headers
 #include <vector>
+#include <cmath>
+
+// G4 headers
+#include "G4VUserDetectorConstruction.hh"
+#include "G4Event.hh"
+
+// NPTool headers
+#include "VDetector.hh"
+
+// ROOT headers
+#include "TTree.h"
 
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
@@ -68,21 +76,11 @@ private: // Data about the target
    G4double m_TargetZ         ;
 
 public:  // Getter and Setter
-   G4double GetTargetThickness() {
-      return m_TargetThickness   ;
-   }
-   G4double GetTargetRadius()    {
-      return m_TargetRadius      ;
-   }
-   G4double GetTargetX()         {
-      return m_TargetX        ;
-   }
-   G4double GetTargetY()         {
-      return m_TargetY        ;
-   }
-   G4double GetTargetZ()         {
-      return m_TargetZ        ;
-   }
+   G4double GetTargetThickness()	{return m_TargetThickness;}
+   G4double GetTargetRadius()    	{return m_TargetRadius;}
+   G4double GetTargetX() 		{return m_TargetX;}
+   G4double GetTargetY() 		{return m_TargetY;}
+   G4double GetTargetZ() 		{return m_TargetZ;}
 };
 
 #endif

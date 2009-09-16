@@ -13,9 +13,9 @@
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This Class manage the virtual detector and call their method.            *
- *	Every time a new detector is added to the project, a few line in the     *
- *	ReadConfigurationFile method are needed in order to detect the associate *
- *	token.                                                                   *
+ *  Every time a new detector is added to the project, a few line in the     *
+ *  ReadConfigurationFile method are needed in order to detect the associate *
+ *  token.                                                                   *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *                                                                           *
