@@ -35,6 +35,9 @@
 #include "G4ParticleGun.hh"
 #include "G4Event.hh"
 
+// NPTool headers
+#include "Target.hh"
+
 using namespace CLHEP;
 using namespace std;
 
@@ -52,6 +55,7 @@ public:
    virtual void InitializeRootOutput() {};
 
    // Used in some case to generate event inside the target
+   virtual void SetTarget(Target*) {};
    virtual void SetTargetThickness(G4double) {};
    virtual void SetTargetAngle(G4double) {};
    virtual void SetTargetRadius(G4double) {};

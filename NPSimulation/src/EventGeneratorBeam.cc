@@ -37,11 +37,17 @@ using namespace CLHEP;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorBeam::EventGeneratorBeam()
 {
-m_InitConditions	= new TInitialConditions()	;
+   m_InitConditions = new TInitialConditions();
+   m_Target         = 0;
 }
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorBeam::~EventGeneratorBeam()
-{}
+{
+   delete m_InitConditions;
+   delete m_Target;
+}
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorBeam::ReadConfiguration(string Path)
 {
@@ -170,16 +176,21 @@ void EventGeneratorBeam::GenerateEvent(G4Event* anEvent, G4ParticleGun* particle
    // Vertex position and beam angle
    G4double x0 = 1000 * cm  ;
    G4double y0 = 1000 * cm  ;
+   G4double z0 = 0;
    G4double Beam_thetaX = 0  ;
    G4double Beam_phiY   = 0  ;
+   G4double TargetThick = 0;
    
    //shoot inside the target with correlated angle
-   if (m_TargetRadius != 0) 
+   if (m_Target->GetTargetRadius() != 0) 
 	   	{
-	      while (sqrt(x0*x0 + y0*y0) > m_TargetRadius) 
+	      while (sqrt(x0*x0 + y0*y0) > m_Target->GetTargetRadius()) 
 	      	{
 	      		RandomGaussian2D(0 , 0 , m_SigmaX , m_SigmaThetaX , x0 , Beam_thetaX );
 	      		RandomGaussian2D(0 , 0 , m_SigmaY , m_SigmaPhiY   , y0 , Beam_phiY   );
+                        G4double dz = x0 * tan(m_Target->GetTargetAngle());
+                        TargetThick = m_Target->GetTargetThickness() / cos(m_Target->GetTargetAngle());
+                        z0 = dz + (-TargetThick / 2 + RandFlat::shoot() * TargetThick);
 	      	}
 	   	}
 
@@ -187,6 +198,8 @@ void EventGeneratorBeam::GenerateEvent(G4Event* anEvent, G4ParticleGun* particle
 	   	{
 	     	RandomGaussian2D( 0 , 0 , 0 , m_SigmaThetaX , x0 , Beam_thetaX );
 	     	RandomGaussian2D( 0 , 0 , 0 , m_SigmaPhiY   , y0 , Beam_phiY   );
+                TargetThick = m_Target->GetTargetThickness() / cos(m_Target->GetTargetAngle());
+                z0 = (-TargetThick / 2 + RandFlat::shoot() * TargetThick);
 	   	}
 
 	 m_InitConditions->SetICIncidentEmittanceTheta(Beam_thetaX / deg);
@@ -201,14 +214,10 @@ void EventGeneratorBeam::GenerateEvent(G4Event* anEvent, G4ParticleGun* particle
 	G4double Beam_theta = acos ( Zdir / sqrt( Xdir*Xdir + Ydir*Ydir + Zdir*Zdir ) );
 	G4double Beam_phi   = atan2( Ydir , Xdir );
 
-   //must shoot inside the target.
-   G4double z0 = (-m_TargetThickness / 2 + CLHEP::RandFlat::shoot() * m_TargetThickness);
-
-
    // Move to the target
-   x0 += m_TargetX ;
-   y0 += m_TargetY ;
-   z0 += m_TargetZ ;
+   x0 += m_Target->GetTargetX() ;
+   y0 += m_Target->GetTargetY() ;
+   z0 += m_Target->GetTargetZ() ;
    
    // Store initial value
    m_InitConditions->SetICIncidentAngleTheta(Beam_theta / deg);

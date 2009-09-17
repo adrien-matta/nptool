@@ -56,6 +56,7 @@ EventGeneratorTransfertToResonance::EventGeneratorTransfertToResonance()
    //------------- Default Constructor -------------
 	m_InitConditions	= new TInitialConditions()	;
 	m_Reaction = new Reaction() ;
+	m_Target = 0;
 	m_SigmaX       		=  0 ;
 	m_SigmaY       		=  0 ;
 	m_SigmaThetaX     =  0 ;
@@ -70,6 +71,7 @@ EventGeneratorTransfertToResonance::~EventGeneratorTransfertToResonance()
    //------------- Default Destructor ------------
 	delete m_InitConditions;
 	delete m_Reaction ;
+	delete m_Target;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -392,19 +394,26 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
    // Vertex position and beam angle inte world frame
    G4double x0 = 1000 * cm  	;
    G4double y0 = 1000 * cm  	;
+   G4double z0 =0;
    G4double Beam_thetaX = 0  	;
    G4double Beam_phiY   = 0  	;
+   G4double TargetThick = 0;
    
    //shoot inside the target with correlated angle
-   if (m_TargetRadius != 0) {
-      while (sqrt(x0*x0 + y0*y0) > m_TargetRadius) {
+   if (m_Target->GetTargetRadius() != 0) {
+      while (sqrt(x0*x0 + y0*y0) > m_Target->GetTargetRadius()) {
          RandomGaussian2D(0, 0, m_SigmaX, m_SigmaThetaX, x0, Beam_thetaX);
          RandomGaussian2D(0, 0, m_SigmaY, m_SigmaPhiY  , y0, Beam_phiY  );
       }
+      G4double dz = x0 * tan(m_Target->GetTargetAngle());
+      TargetThick = m_Target->GetTargetThickness() / cos(m_Target->GetTargetAngle());
+      z0 = dz + (-TargetThick / 2 + RandFlat::shoot() * TargetThick);
    }
    else {
       RandomGaussian2D(0,0,0,m_SigmaThetaX,x0,Beam_thetaX);
       RandomGaussian2D(0,0,0,m_SigmaPhiY  ,y0,Beam_phiY  );
+      TargetThick = m_Target->GetTargetThickness() / cos(m_Target->GetTargetAngle());
+      z0 = (-TargetThick / 2 + RandFlat::shoot() * TargetThick);
    }
 
    // write emittance angles to ROOT file
@@ -478,13 +487,11 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
    // write angles/energy to ROOT file
    m_InitConditions->SetICEmittedAngleThetaLabIncidentFrame(ThetaLight / deg);
    m_InitConditions->SetICEmittedEnergy(EnergyLight/MeV);
-   //must shoot inside the target.
-   G4double z0 = (-m_TargetThickness / 2 + RandFlat::shoot() * m_TargetThickness);
 
    // Move to the target
-   x0 += m_TargetX ;
-   y0 += m_TargetY ;
-   z0 += m_TargetZ ;
+   x0 += m_Target->GetTargetX() ;
+   y0 += m_Target->GetTargetY() ;
+   z0 += m_Target->GetTargetZ() ;
 
    // write vertex position to ROOT file
    m_InitConditions->SetICPositionX(x0);

@@ -123,30 +123,21 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path)
          myEventGenerator->ReadConfiguration(Path)                      ;
          EventGeneratorFile.open(Path.c_str())                          ;
          myEventGenerator->InitializeRootOutput()           ;
-         myEventGenerator->SetTargetThickness(m_detector->GetTargetThickness())  ;
-         myEventGenerator->SetTargetRadius(m_detector->GetTargetRadius())     ;
-         myEventGenerator->SetTargetCoordinate(m_detector->GetTargetX() ,
-               m_detector->GetTargetY()   ,
-               m_detector->GetTargetZ())  ;
+         myEventGenerator->SetTarget(m_detector->GetTarget())  ;
          m_EventGenerator = myEventGenerator                            ;
       }
 
 
       //Search for Transfert To Resonance
       else if (LineBuffer.compare(0, 9, "Transfert") == 0 && !check_Transfert && LineBuffer.compare(0, 11, "TransfertTo") != 0) {
-         check_Transfert = true                                      ;
-         VEventGenerator* myEventGenerator = new EventGeneratorTransfert()                  ;
-         EventGeneratorFile.close()                                  ;
-         myEventGenerator->ReadConfiguration(Path)                      ;
-         EventGeneratorFile.open(Path.c_str())                          ;
-         myEventGenerator->InitializeRootOutput()           ;
-         myEventGenerator->SetTargetThickness(m_detector->GetTargetThickness())  ;
-         myEventGenerator->SetTargetAngle(m_detector->GetTargetAngle())     ;
-         myEventGenerator->SetTargetRadius(m_detector->GetTargetRadius())     ;
-         myEventGenerator->SetTargetCoordinate( m_detector->GetTargetX() ,
-               									m_detector->GetTargetY()   ,
-               									m_detector->GetTargetZ())  ;
-         m_EventGenerator = myEventGenerator                            ;
+         check_Transfert = true;
+         VEventGenerator* myEventGenerator = new EventGeneratorTransfert();
+         EventGeneratorFile.close();
+         myEventGenerator->ReadConfiguration(Path);
+         EventGeneratorFile.open(Path.c_str());
+         myEventGenerator->InitializeRootOutput();
+         myEventGenerator->SetTarget(m_detector->GetTarget());
+         m_EventGenerator = myEventGenerator;
       }
 
       //Search for Transfert To Resonance
@@ -157,11 +148,7 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path)
          myEventGenerator->ReadConfiguration(Path)                      ;
          EventGeneratorFile.open(Path.c_str())                          ;
          myEventGenerator->InitializeRootOutput()           ;
-         myEventGenerator->SetTargetThickness(m_detector->GetTargetThickness())  ;
-         myEventGenerator->SetTargetRadius(m_detector->GetTargetRadius())     ;
-         myEventGenerator->SetTargetCoordinate(m_detector->GetTargetX() ,
-               m_detector->GetTargetY()   ,
-               m_detector->GetTargetZ())  ;
+         myEventGenerator->SetTarget(m_detector->GetTarget());
          m_EventGenerator = myEventGenerator                            ;
       }
    }

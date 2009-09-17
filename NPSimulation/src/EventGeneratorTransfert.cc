@@ -48,17 +48,18 @@ using namespace CLHEP;
 EventGeneratorTransfert::EventGeneratorTransfert()
 {
    //------------- Default Constructor -------------
-   m_InitConditions	= new TInitialConditions()	;
-   m_Reaction = new Reaction()					;
+   m_InitConditions	= new TInitialConditions();
+   m_Reaction 		= new Reaction();
+   m_Target		= 0;
 
-   m_BeamEnergy       = 0;
-   m_BeamEnergySpread = 0;
-   m_SigmaX        = 0;
-   m_SigmaY        = 0;
-   m_SigmaThetaX      = 0;
-   m_SigmaPhiY=0 ;
-   m_ShootLight       = 0;
-   m_ShootHeavy       = 0;
+   m_BeamEnergy		= 0;
+   m_BeamEnergySpread	= 0;
+   m_SigmaX		= 0;
+   m_SigmaY		= 0;
+   m_SigmaThetaX	= 0;
+   m_SigmaPhiY		= 0;
+   m_ShootLight		= 0;
+   m_ShootHeavy		= 0;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -67,6 +68,7 @@ EventGeneratorTransfert::~EventGeneratorTransfert()
    //------------- Default Destructor ------------
    delete m_InitConditions;
    delete m_Reaction;
+   delete m_Target;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -338,28 +340,28 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
    G4double Beam_thetaX = 0  	;
    G4double Beam_phiY   = 0  	;
    G4double TargetThick = 0;
-   
+
    // Shoot inside the target with correlated angle
-   if (m_TargetRadius != 0) {
-      while (sqrt(x0*x0 + y0*y0) > m_TargetRadius) {
+   if (m_Target->GetTargetRadius() != 0) {
+      while (sqrt(x0*x0 + y0*y0) > m_Target->GetTargetRadius()) {
          RandomGaussian2D(0, 0, m_SigmaX, m_SigmaThetaX, x0, Beam_thetaX);
          RandomGaussian2D(0, 0, m_SigmaY, m_SigmaPhiY  , y0, Beam_phiY  );
       }
-      G4double dz = x0 * tan(m_TargetAngle);
-      TargetThick = m_TargetThickness / cos(m_TargetAngle);
+      G4double dz = x0 * tan(m_Target->GetTargetAngle());
+      TargetThick = m_Target->GetTargetThickness() / cos(m_Target->GetTargetAngle());
       z0 = dz + (-TargetThick / 2 + RandFlat::shoot() * TargetThick);
    }
    else {
       RandomGaussian2D(0,0,0,m_SigmaThetaX,x0,Beam_thetaX);
       RandomGaussian2D(0,0,0,m_SigmaPhiY  ,y0,Beam_phiY  );
-      TargetThick = m_TargetThickness / cos(m_TargetAngle);
+      TargetThick = m_Target->GetTargetThickness() / cos(m_Target->GetTargetAngle());
       z0 = (-TargetThick / 2 + RandFlat::shoot() * TargetThick);
    }
 
    // Move to the target
-   x0 += m_TargetX ;
-   y0 += m_TargetY ;
-   z0 += m_TargetZ ;
+   x0 += m_Target->GetTargetX() ;
+   y0 += m_Target->GetTargetY() ;
+   z0 += m_Target->GetTargetZ() ;
 
    // write vertex position to ROOT file
    m_InitConditions->SetICPositionX(x0);
@@ -496,36 +498,30 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventGeneratorTransfert::SetEverything(string name1             ,        // Beam nuclei
-		             string name2             ,        // Target nuclei
-		             string name3             ,        // Product of reaction
-		             string name4             ,        // Product of reaction
-		             double BeamEnergy        ,        // Beam Energy
-		             double ExcitationEnergy  ,        // Excitation of Heavy Nuclei
-		             double BeamEnergySpread  ,
-		             double SigmaX         ,
-		             double SigmaY         ,
-		             double SigmaThetaX       ,
-		             double SigmaPhiY  ,
-		             bool   ShootLight        ,
-		             bool   ShootHeavy        ,
-		             string Path) 
+void EventGeneratorTransfert::SetEverything(string name1,		// Beam nuclei
+                                            string name2,		// Target nuclei
+                                            string name3,		// Product of reaction
+                                            string name4,		// Product of reaction
+                                            double BeamEnergy,		// Beam Energy
+                                            double ExcitationEnergy,	// Excitation of Heavy Nuclei
+                                            double BeamEnergySpread,
+                                            double SigmaX,
+                                            double SigmaY,
+                                            double SigmaThetaX,
+                                            double SigmaPhiY,
+                                            bool   ShootLight,
+                                            bool   ShootHeavy,
+                                            string Path) 
 {
-   m_Reaction = new Reaction(	name1					, 
-				name2					,
-	 			name3					,
-	 			name4					,
-				BeamEnergy 				,
-				ExcitationEnergy				,
-				Path 					);	
+   m_Reaction = new Reaction(name1, name2, name3, name4, BeamEnergy, ExcitationEnergy, Path);	
 		
-   m_BeamEnergy       =  BeamEnergy        ;
-   m_BeamEnergySpread =  BeamEnergySpread  ;
-   m_SigmaX        =  SigmaX         ;
-   m_SigmaY        =  SigmaY         ;
-   m_SigmaThetaX      =  SigmaThetaX       ;
-   m_SigmaPhiY      =  SigmaPhiY      ;
-   m_ShootLight       =  ShootLight        ;
-   m_ShootHeavy       =  ShootHeavy        ;
+   m_BeamEnergy       =  BeamEnergy;
+   m_BeamEnergySpread =  BeamEnergySpread;
+   m_SigmaX           =  SigmaX;
+   m_SigmaY           =  SigmaY;
+   m_SigmaThetaX      =  SigmaThetaX;
+   m_SigmaPhiY        =  SigmaPhiY;
+   m_ShootLight       =  ShootLight;
+   m_ShootHeavy       =  ShootHeavy;
 }
-
+ 

@@ -51,14 +51,14 @@
 DetectorConstruction::DetectorConstruction()
       :  world_log(0), world_phys(0)
 {
-   m_TargetRadius    = 0 ;
-   m_TargetThickness = 0 ;
-   m_TargetAngle    = 0 ;
+   m_Target	= 0;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 DetectorConstruction::~DetectorConstruction()
-{}
+{
+   delete m_Target;
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4VPhysicalVolume* DetectorConstruction::Construct()
@@ -253,22 +253,18 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
          G4cout << "////////// Target ///////////" << G4endl   << G4endl   ;
 
          // Instantiate the new array as a VDetector Objects
-         VDetector* myDetector = new Target()                     ;
+         VDetector* myDetector = new Target();
 
          // Read Position and target specification
-         ConfigFile.close()                                    ;
-         myDetector->ReadConfiguration(Path)                      ;
-         ConfigFile.open(Path.c_str())                         ;
+         ConfigFile.close();
+         myDetector->ReadConfiguration(Path);
+         ConfigFile.open(Path.c_str());
 
-         m_TargetThickness = ((Target*)myDetector)->GetTargetThickness()   ;
-         m_TargetRadius    = ((Target*)myDetector)->GetTargetRadius()   ;
-         m_TargetAngle     = ((Target*)myDetector)->GetTargetAngle()   ;
-         m_TargetX         = ((Target*)myDetector)->GetTargetX()         ;
-         m_TargetY         = ((Target*)myDetector)->GetTargetY()         ;
-         m_TargetZ         = ((Target*)myDetector)->GetTargetZ()         ;
+         // Add Target to DetectorConstruction
+         m_Target = (Target*) myDetector;
 
          // Add target to the VDetector Vector
-         AddDetector(myDetector)                               ;
+         AddDetector(myDetector);
       }
 
       //Nothing understandable
