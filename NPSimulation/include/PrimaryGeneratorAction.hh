@@ -14,8 +14,8 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class manage the event Generator used in simulation                 *
- *  Every time you had a new kind of event generator, you need to add a few  *
+ *  This class manages the Event Generators used in NPSimulation             *
+ *  Every time you add a new kind of event generator, you need to add a few  *
  *  line in the ReadConfiguration method to detect the associate Token       *
  *                                                                           *
  *---------------------------------------------------------------------------*
@@ -46,20 +46,15 @@ public:
 
 public:
    void GeneratePrimaries(G4Event*);
-   G4ParticleGun* GetParticleGun() {
-      return m_particleGun;
-   }
+   G4ParticleGun* GetParticleGun()	{return m_particleGun;}
 
 public:
    void ReadEventGeneratorFile(string Path);
 
 private:
-   G4ParticleGun*             m_particleGun  ;
-   DetectorConstruction*      m_detector     ;
-   VEventGenerator*        m_EventGenerator  ;
-
+   G4ParticleGun*		m_particleGun;
+   DetectorConstruction*	m_detector;
+   VEventGenerator*		m_EventGenerator;
 };
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif

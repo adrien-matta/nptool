@@ -48,6 +48,7 @@ class Target : public VDetector
 public:
    Target();
 
+
 public:
    // Read stream at Configfile to pick-up parameters of detector (Position,...)
    // Called in DetecorConstruction::ReadDetextorConfiguration Method
@@ -69,9 +70,19 @@ public:
 public:
    G4Material* GetMaterialFromLibrary(G4String MaterialName, G4double Temperature = 0, G4double Pressure = 0);
 
+
+public:
+   G4double GetTargetThickness()	{return m_TargetThickness;}
+   G4double GetTargetRadius()		{return m_TargetRadius;}
+   G4double GetTargetAngle()		{return m_TargetAngle;}
+   G4double GetTargetX()		{return m_TargetX;}
+   G4double GetTargetY()		{return m_TargetY;}
+   G4double GetTargetZ()		{return m_TargetZ;}
+
+
 private:
    // Target type : true = normal ; false = cryo
-   bool     m_TargetType         ;
+   bool     m_TargetType;
 
    // Standard parameter
    G4double    m_TargetThickness;
@@ -80,23 +91,15 @@ private:
    G4Material* m_TargetMaterial;
 
    // For Cryo Target
-   G4double    m_WindowsThickness;
    G4double    m_TargetTemperature;
    G4double    m_TargetPressure;
+   G4double    m_WindowsThickness;
    G4Material* m_WindowsMaterial;
 
    // Positioning
    G4double    m_TargetX;
    G4double    m_TargetY;
    G4double    m_TargetZ;
-
-public:
-   G4double GetTargetThickness()	{return m_TargetThickness / cos(m_TargetAngle/rad);}
-   G4double GetTargetRadius()		{return m_TargetRadius;}
-   G4double GetTargetAngle()		{return m_TargetAngle;}
-   G4double GetTargetX()		{return m_TargetX;}
-   G4double GetTargetY()		{return m_TargetY;}
-   G4double GetTargetZ()		{return m_TargetZ;}
 };
 
 #endif

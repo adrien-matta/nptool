@@ -334,20 +334,37 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
    // Vertex position and beam angle inte world frame
    G4double x0 = 1000 * cm  	;
    G4double y0 = 1000 * cm  	;
+   G4double z0 = 0;
    G4double Beam_thetaX = 0  	;
    G4double Beam_phiY   = 0  	;
+   G4double TargetThick = 0;
    
-   //shoot inside the target with correlated angle
+   // Shoot inside the target with correlated angle
    if (m_TargetRadius != 0) {
       while (sqrt(x0*x0 + y0*y0) > m_TargetRadius) {
          RandomGaussian2D(0, 0, m_SigmaX, m_SigmaThetaX, x0, Beam_thetaX);
          RandomGaussian2D(0, 0, m_SigmaY, m_SigmaPhiY  , y0, Beam_phiY  );
       }
+      G4double dz = x0 * tan(m_TargetAngle);
+      TargetThick = m_TargetThickness / cos(m_TargetAngle);
+      z0 = dz + (-TargetThick / 2 + RandFlat::shoot() * TargetThick);
    }
    else {
       RandomGaussian2D(0,0,0,m_SigmaThetaX,x0,Beam_thetaX);
       RandomGaussian2D(0,0,0,m_SigmaPhiY  ,y0,Beam_phiY  );
+      TargetThick = m_TargetThickness / cos(m_TargetAngle);
+      z0 = (-TargetThick / 2 + RandFlat::shoot() * TargetThick);
    }
+
+   // Move to the target
+   x0 += m_TargetX ;
+   y0 += m_TargetY ;
+   z0 += m_TargetZ ;
+
+   // write vertex position to ROOT file
+   m_InitConditions->SetICPositionX(x0);
+   m_InitConditions->SetICPositionY(y0);
+   m_InitConditions->SetICPositionZ(z0);
 
    // write emittance angles to ROOT file
    m_InitConditions->SetICIncidentEmittanceTheta(Beam_thetaX / deg);
@@ -421,18 +438,6 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
    // write angles/energy to ROOT file
    m_InitConditions->SetICEmittedAngleThetaLabIncidentFrame(ThetaLight / deg);
    m_InitConditions->SetICEmittedEnergy(EnergyLight/MeV);
-   //must shoot inside the target.
-   G4double z0 = (-m_TargetThickness / 2 + RandFlat::shoot() * m_TargetThickness);
-
-   // Move to the target
-   x0 += m_TargetX ;
-   y0 += m_TargetY ;
-   z0 += m_TargetZ ;
-
-   // write vertex position to ROOT file
-   m_InitConditions->SetICPositionX(x0);
-   m_InitConditions->SetICPositionY(y0);
-   m_InitConditions->SetICPositionZ(z0);
 
    //////////////////////////////////////////////////
    ///////// Set up everything for shooting /////////

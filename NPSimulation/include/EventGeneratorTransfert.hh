@@ -83,6 +83,9 @@ class EventGeneratorTransfert : public VEventGenerator
 		   void        SetTargetRadius(double TargetRadius) {
 															   m_TargetRadius    = TargetRadius    ;
 															}
+		   void        SetTargetAngle(double TargetAngle) {
+															   m_TargetAngle    = TargetAngle    ;
+															}
 
 		private: // Particle Shoot Option
 		   bool        m_ShootLight   ;
@@ -102,6 +105,7 @@ class EventGeneratorTransfert : public VEventGenerator
 		private: // Target Parameter
 		   double         m_TargetThickness ;
 		   double         m_TargetRadius    ;
+		   double         m_TargetAngle     ;
 		   double         m_TargetX         ;
 		   double         m_TargetY         ;
 		   double         m_TargetZ         ;

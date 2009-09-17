@@ -22,14 +22,32 @@
 
 TODO for NPTool:
 ----------------
-   + Change map's index of scorers to deal a typical case of dE-E for 2 plastics.
+   + Try to remove warnings from NPL / NPS compilation
+   + Change dEdX name for EnergyLoss
+   + Change map's index of scorers to deal a typical case like it is now done
+     for the dE-E with 2 plastics.
    + Build a dummy detector as a simple example of how NPTool is working
+   + Target work
+      + Make homogeneous treatment of materials definition wrt other detectors
+      + Possibility to tilt the target with a given angle and to deal with
+        the emittance
+      + Target object as a private member of VEventGenerator
+      + Shooting in the target within a dedicated method in VEventGenerator
+      + IsInsideTarget method for debugging purposes
    + Add documentation
    + Add a dedicated class to deal with materials (see example from G4 tutorial)
+     (still under debate)
    + Split physic list and give the possibility to choose which package to use
    + Add support for messengers
    + Build NPTool with the Autotool/Automake
 
+TODO for NPAnlysis:
+-------------------
+   + Add comment support for RunToTreat.txt
+   + Add calibration manager class from Julien
+   + Use only one class for the analysis per detector instead of two currently
+     (ROOT feature in private member definition ( //!))
+   + Check Makefiles dependency (mostly for Gaspard)
 
 TODO for AnnularS1 detector:
 ----------------------------

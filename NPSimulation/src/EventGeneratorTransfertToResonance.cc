@@ -14,11 +14,11 @@
  * Decription:                                                               *
  *  This event Generator is used to simulated two body TransfertReaction.    *
  *  A Phase Space calculation is then performed to decay the Heavy product.  *
- *	The TGenPhaseSpace from ROOT is used to calculate a phase space decay    *
- *	with flat distribution	                                                 *
+ *  The TGenPhaseSpace from ROOT is used to calculate a phase space decay    *
+ *  with flat distribution	                                             *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *   									                                     *
+ *   									     *
  *                                                                           *
  *****************************************************************************/
 

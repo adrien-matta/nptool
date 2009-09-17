@@ -141,6 +141,7 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path)
          EventGeneratorFile.open(Path.c_str())                          ;
          myEventGenerator->InitializeRootOutput()           ;
          myEventGenerator->SetTargetThickness(m_detector->GetTargetThickness())  ;
+         myEventGenerator->SetTargetAngle(m_detector->GetTargetAngle())     ;
          myEventGenerator->SetTargetRadius(m_detector->GetTargetRadius())     ;
          myEventGenerator->SetTargetCoordinate( m_detector->GetTargetX() ,
                									m_detector->GetTargetY()   ,

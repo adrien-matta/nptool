@@ -53,6 +53,7 @@ DetectorConstruction::DetectorConstruction()
 {
    m_TargetRadius    = 0 ;
    m_TargetThickness = 0 ;
+   m_TargetAngle    = 0 ;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -261,9 +262,10 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
 
          m_TargetThickness = ((Target*)myDetector)->GetTargetThickness()   ;
          m_TargetRadius    = ((Target*)myDetector)->GetTargetRadius()   ;
-         m_TargetX        = ((Target*)myDetector)->GetTargetX()         ;
-         m_TargetY        = ((Target*)myDetector)->GetTargetY()         ;
-         m_TargetZ        = ((Target*)myDetector)->GetTargetZ()         ;
+         m_TargetAngle     = ((Target*)myDetector)->GetTargetAngle()   ;
+         m_TargetX         = ((Target*)myDetector)->GetTargetX()         ;
+         m_TargetY         = ((Target*)myDetector)->GetTargetY()         ;
+         m_TargetZ         = ((Target*)myDetector)->GetTargetZ()         ;
 
          // Add target to the VDetector Vector
          AddDetector(myDetector)                               ;

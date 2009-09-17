@@ -43,21 +43,20 @@ class G4VPhysicalVolume;
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
 public:
-
    DetectorConstruction();
    virtual ~DetectorConstruction();
 
    G4VPhysicalVolume* Construct();
    G4LogicalVolume* GetWorldLogic();
 
-public:
 
+public:
    void ReadConfigurationFile(string);
    void AddDetector(VDetector*);
    void ReadAllSensitive(const G4Event*);
 
-private:
 
+private:
    // Logical volumes
    G4LogicalVolume* world_log      ;
 
@@ -71,6 +70,7 @@ private:
 private: // Data about the target
    G4double m_TargetThickness ;
    G4double m_TargetRadius    ;
+   G4double m_TargetAngle     ;
    G4double m_TargetX         ;
    G4double m_TargetY         ;
    G4double m_TargetZ         ;
@@ -78,6 +78,7 @@ private: // Data about the target
 public:  // Getter and Setter
    G4double GetTargetThickness()	{return m_TargetThickness;}
    G4double GetTargetRadius()    	{return m_TargetRadius;}
+   G4double GetTargetAngle()    	{return m_TargetAngle;}
    G4double GetTargetX() 		{return m_TargetX;}
    G4double GetTargetY() 		{return m_TargetY;}
    G4double GetTargetZ() 		{return m_TargetZ;}

@@ -53,6 +53,7 @@ public:
 
    // Used in some case to generate event inside the target
    virtual void SetTargetThickness(G4double) {};
+   virtual void SetTargetAngle(G4double) {};
    virtual void SetTargetRadius(G4double) {};
    virtual void SetTargetCoordinate(G4double, G4double, G4double) {};
    
