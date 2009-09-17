@@ -63,7 +63,7 @@ EnergyLoss::EnergyLoss(string Path , int NumberOfSlice=100 , int LiseColumn=0 , 
 	fNumberOfMass  = NumberOfMass  ;
 	
 	string globalPath = getenv("NPTOOL");
-	Path = globalPath + "/Inputs/dEdX/" + Path;
+	Path = globalPath + "/Inputs/EnergyLoss/" + Path;
 	
 	cout << "///////////////////////////////// " << endl ;
 	cout << "Initialising an EnergyLoss object " << endl ;

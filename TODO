@@ -22,7 +22,6 @@
 
 TODO for NPTool:
 ----------------
-   + Change dEdX name for EnergyLoss (Nicolas)
    + Try to remove warnings from NPL / NPS compilation (Adrien + Nicolas)
    + Change map's index of scorers to deal a typical case like it is now done
      for the dE-E with 2 plastics. (Adrien + Nicolas)
@@ -32,7 +31,6 @@ TODO for NPTool:
         (Adrien)
       + Possibility to tilt the target with a given angle and to deal with
         the emittance
-      + Target object as a private member of VEventGenerator
       + Shooting in the target within a dedicated method in VEventGenerator
       + IsInsideTarget method for debugging purposes
    + Add a dedicated class to deal with materials (see example from G4 tutorial)
