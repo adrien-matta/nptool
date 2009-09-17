@@ -12,8 +12,8 @@ Transfert
 	BeamEnergySpread= 0
 	SigmaX= 0.851
 	SigmaY= 0.851
-	SigmaThetaX= 0 
-	SigmaPhiY= 0
+	SigmaThetaX= 1 
+	SigmaPhiY= 1
 	CrossSectionPath= sn132dp_gs_10AMeV.txt
 	ShootLight= 1
 	ShootHeavy= 0

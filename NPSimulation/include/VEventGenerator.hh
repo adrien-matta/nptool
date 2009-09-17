@@ -28,12 +28,13 @@
 // C++ header
 #include <string>
 
-// G4 header defining G$ types
+// G4 header defining G4 types
 #include "globals.hh"
 
 // G4 headers
 #include "G4ParticleGun.hh"
 #include "G4Event.hh"
+#include "G4ThreeVector.hh"
 
 // NPTool headers
 #include "Target.hh"
@@ -56,14 +57,17 @@ public:
 
    // Used in some case to generate event inside the target
    virtual void SetTarget(Target*) {};
-   virtual void SetTargetThickness(G4double) {};
-   virtual void SetTargetAngle(G4double) {};
-   virtual void SetTargetRadius(G4double) {};
-   virtual void SetTargetCoordinate(G4double, G4double, G4double) {};
-   
-   //	Used to simulate beam emmitance effect
-   void RandomGaussian2D(double MeanX,double MeanY,double SigmaX,double SigmaY,double &X,double &Y, double NumberOfSigma=10000);
 
+   // Used to calculate the incident beam direction (taking into account
+   // the emittance) and the vertex of interaction in target
+   void CalculateBeamInteraction(double MeanPosX, double SigmaPosX, double MeanPosTheta, double SigmaPosTheta,
+                                 double MeanPosY, double SigmaPosY, double MeanPosPhi,   double SigmaPosPhi,
+                                 Target* target,
+                                 G4ThreeVector &InterCoord, double &AngleEmittanceTheta, double &AngleEmittancePhi,
+                                 double &AngleIncidentTheta, double &AngleIncidentPhi);
+
+   // Used to simulate beam emmitance effect
+   void RandomGaussian2D(double MeanX, double MeanY, double SigmaX, double SigmaY, double &X, double &Y, double NumberOfSigma = 10000);
 };
 
 

@@ -68,7 +68,6 @@ EventGeneratorTransfert::~EventGeneratorTransfert()
    //------------- Default Destructor ------------
    delete m_InitConditions;
    delete m_Reaction;
-   delete m_Target;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -333,37 +332,23 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
    G4ParticleDefinition* HeavyName
    = G4ParticleTable::GetParticleTable()->GetIon(HeavyZ, HeavyA, m_Reaction->GetExcitation()*MeV);
 
-   // Vertex position and beam angle inte world frame
-   G4double x0 = 1000 * cm  	;
-   G4double y0 = 1000 * cm  	;
-   G4double z0 = 0;
-   G4double Beam_thetaX = 0  	;
-   G4double Beam_phiY   = 0  	;
-   G4double TargetThick = 0;
-
-   // Shoot inside the target with correlated angle
-   if (m_Target->GetTargetRadius() != 0) {
-      while (sqrt(x0*x0 + y0*y0) > m_Target->GetTargetRadius()) {
-         RandomGaussian2D(0, 0, m_SigmaX, m_SigmaThetaX, x0, Beam_thetaX);
-         RandomGaussian2D(0, 0, m_SigmaY, m_SigmaPhiY  , y0, Beam_phiY  );
-      }
-      G4double dz = x0 * tan(m_Target->GetTargetAngle());
-      TargetThick = m_Target->GetTargetThickness() / cos(m_Target->GetTargetAngle());
-      z0 = dz + (-TargetThick / 2 + RandFlat::shoot() * TargetThick);
-   }
-   else {
-      RandomGaussian2D(0,0,0,m_SigmaThetaX,x0,Beam_thetaX);
-      RandomGaussian2D(0,0,0,m_SigmaPhiY  ,y0,Beam_phiY  );
-      TargetThick = m_Target->GetTargetThickness() / cos(m_Target->GetTargetAngle());
-      z0 = (-TargetThick / 2 + RandFlat::shoot() * TargetThick);
-   }
-
-   // Move to the target
-   x0 += m_Target->GetTargetX() ;
-   y0 += m_Target->GetTargetY() ;
-   z0 += m_Target->GetTargetZ() ;
+   ///////////////////////////////////////////////////////////////////////
+   ///// Calculate the incident beam direction as well as the vertex /////
+   ///// of interaction in target                                    /////
+   ///////////////////////////////////////////////////////////////////////
+   G4ThreeVector InterCoord;
+   G4double Beam_thetaX = 0, Beam_phiY = 0;
+   G4double Beam_theta  = 0, Beam_phi  = 0;
+   CalculateBeamInteraction(0, m_SigmaX, 0, m_SigmaThetaX,
+                            0, m_SigmaY, 0, m_SigmaPhiY,
+                            m_Target,
+                            InterCoord, Beam_thetaX, Beam_phiY,
+                            Beam_theta, Beam_phi);
 
    // write vertex position to ROOT file
+   G4double x0 = InterCoord.x();
+   G4double y0 = InterCoord.y();
+   G4double z0 = InterCoord.z();
    m_InitConditions->SetICPositionX(x0);
    m_InitConditions->SetICPositionY(y0);
    m_InitConditions->SetICPositionZ(z0);
@@ -371,16 +356,6 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
    // write emittance angles to ROOT file
    m_InitConditions->SetICIncidentEmittanceTheta(Beam_thetaX / deg);
    m_InitConditions->SetICIncidentEmittancePhi(Beam_phiY / deg);
-
-   // Calculate Angle in spherical coordinate, passing by the direction vector dir	
-   G4double Xdir =  cos(pi/2. - Beam_thetaX);
-   G4double Ydir =  cos(pi/2. - Beam_phiY  );
-   G4double Zdir =  sin(pi/2. - Beam_thetaX) + sin(pi/2. - Beam_phiY);	
-	
-   G4double Beam_theta = acos(Zdir / sqrt(Xdir*Xdir + Ydir*Ydir + Zdir*Zdir)) * rad;
-   G4double Beam_phi   = atan2(Ydir, Xdir) * rad;
-   if (Beam_phi   < 0)    Beam_phi += 2*pi;
-   if (Beam_theta < 1e-6) Beam_phi  = 0;
 
    // write angles to ROOT file
    m_InitConditions->SetICIncidentAngleTheta(Beam_theta / deg);
