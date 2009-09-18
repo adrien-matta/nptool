@@ -117,10 +117,6 @@ class EventGeneratorTransfertToResonance : public VEventGenerator
 						        G4Event* anEvent        ,
 						        G4ParticleGun* particleGun);
 
-		//	This method return a random Vector of dimension N and magnitude R
-		//  The return distribution populate uniformely the surface of the N-Sphere of radius R  
-		vector<double>	PhaseSpaceUniformGenerator( int N , double R);
-
 	   void     SetEverything(string    name1          ,         //Beam nuclei
 		         string   name2          ,        //Target nuclei
 		         string   name3          ,        //Product of reaction

@@ -22,6 +22,7 @@ void TPlasticData::Clear()
 {
     fPlastic_Energy.clear();
     fPlastic_Number.clear();
+    fPlastic_Time.clear();
 }
 
 

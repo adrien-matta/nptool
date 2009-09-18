@@ -28,6 +28,7 @@
 // NPL
 #include "TMust2Data.h"
 #include "TMust2Physics.h"
+#include "TPlasticData.h"
 #include "NPReaction.h"
 #include "RootInput.h"
 #include "RootOutput.h"

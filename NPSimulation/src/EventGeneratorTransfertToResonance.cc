@@ -582,27 +582,17 @@ void EventGeneratorTransfertToResonance::ResonanceDecay(  G4double EnergyHeavy  
 		G4double mn = neutron  -> GetPDGMass()     ;
 		G4double mp = proton   -> GetPDGMass()     ;
 
-		G4double Q  =  M - md - mn * NumberOfNeutrons - mp * NumberOfProtons    ;
-
-		vector<G4double> DecayProductsMomentumCM  ;
-		vector<G4double> DecayProductsMomentumXCM ;
-		vector<G4double> DecayProductsMomentumYCM ;
-		vector<G4double> DecayProductsMomentumZCM ;
-		vector<G4double> DecayProductsThetaCM     ;
-		vector<G4double> DecayProductsPhiCM       ;
-
 		// Initial Lab Momentum
-		G4double InitialE      	  = sqrt(EnergyHeavy * EnergyHeavy + M * M)   		;
-		G4double InitialMomentumX = EnergyHeavy * sin(ThetaHeavy) * cos(PhiHeavy) 	;
-		G4double InitialMomentumY = EnergyHeavy * sin(ThetaHeavy) * sin(PhiHeavy) 	;
-		G4double InitialMomentumZ = EnergyHeavy * cos(ThetaHeavy)                 	;
+		G4double InitialE      	  = sqrt(EnergyHeavy * EnergyHeavy + M * M)   			;
+		G4double InitialMomentumX = EnergyHeavy * sin(ThetaHeavy) * cos(PhiHeavy) 		;
+		G4double InitialMomentumY = EnergyHeavy * sin(ThetaHeavy) * sin(PhiHeavy) 		;
+		G4double InitialMomentumZ = EnergyHeavy * cos(ThetaHeavy)                 		;
 
 		TLorentzVector Initial = TLorentzVector(InitialMomentumX/GeV, InitialMomentumY/GeV, InitialMomentumZ/GeV,InitialE/GeV);
-
+		
 		// Array of masses express in GeV/c2
 		double* masses = new double[NumberOfDecayProducts+1];
-
-			//	Filling Array
+		//	Filling Array
 		masses[0] = md/GeV ;
 
 		int ll = 1 ;
@@ -611,21 +601,33 @@ void EventGeneratorTransfertToResonance::ResonanceDecay(  G4double EnergyHeavy  
 				
 		for(int i = 0 ; i < NumberOfProtons ; i++)
 				{masses[ll] = mp/GeV ; ll++;}
+				
 
 		// Instentiate a Phase Space Generator, with flat distrution
-
-		  
 		TGenPhaseSpace TPhaseSpace ;
 
-		if( !TPhaseSpace.SetDecay(Initial, NumberOfDecayProducts+1, masses,"Fermi") ) cout << "Warning: Phase Space Decay forbiden by kinematic";
-		TPhaseSpace.Generate() ;
+		if( !TPhaseSpace.SetDecay(Initial, NumberOfDecayProducts+1, masses) ) cout << "Warning: Phase Space Decay forbiden by kinematic, or more than 18 particles "<<endl;
+		
+		double MaxWt=TPhaseSpace.GetWtMax() ;
+		double Weight = 0 	;
+		double Rand   = 1	; 
+
+		while( Rand > Weight )
+			{  
+				Weight = TPhaseSpace.Generate() 		;
+				Rand = CLHEP::RandFlat::shoot()*MaxWt	; 
+			}
+		
 		
 		TLorentzVector* daugterLV = TPhaseSpace.GetDecay(0);
+		
 		G4ThreeVector Momentum = G4ThreeVector(	daugterLV->X()*GeV	,
 												daugterLV->Y()*GeV	,
 												daugterLV->Z()*GeV 	);		
+												
 		double Energy   = Momentum.mag() ;
 		Momentum.unit() ;
+		
 		//Set the gun to shoot
 		particleGun->SetParticleDefinition(daughter)                    ;
 		particleGun->SetParticleMomentumDirection(Momentum)     		;
@@ -633,6 +635,14 @@ void EventGeneratorTransfertToResonance::ResonanceDecay(  G4double EnergyHeavy  
 		particleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0))     ;
 		// Shoot the Daugter
 		particleGun->GeneratePrimaryVertex(anEvent) ;
+		
+	   // get theta and phi in the world frame
+       G4double theta_world = Momentum.theta();
+       G4double phi_world   = Momentum.phi();
+       if (phi_world < 1e-6) phi_world += 2*pi;
+       // write angles in ROOT file
+       m_InitConditions->SetICEmittedAngleThetaLabWorldFrame(theta_world / deg);
+       m_InitConditions->SetICEmittedAnglePhiWorldFrame(phi_world / deg);		
 
 		if (m_ShootDecayProduct) 
 			{
@@ -647,7 +657,7 @@ void EventGeneratorTransfertToResonance::ResonanceDecay(  G4double EnergyHeavy  
 						Energy   = Momentum.mag() ;
 						Momentum.unit() ;
 						//Set the gun to shoot
-						particleGun->SetParticleDefinition(neutron)                    ;
+						particleGun->SetParticleDefinition(neutron)                    	;
 						particleGun->SetParticleMomentumDirection(Momentum)     		;
 						particleGun->SetParticleEnergy(Energy)                          ;
 						particleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0))     ;
@@ -675,32 +685,11 @@ void EventGeneratorTransfertToResonance::ResonanceDecay(  G4double EnergyHeavy  
 						jj++;
 					}
 				
-			delete masses 	;
+			
 		}
+		delete masses 	;
 	}
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-vector<double>	EventGeneratorTransfertToResonance::PhaseSpaceUniformGenerator( int N , double R)
-	{
-		vector<double> V ;
-		V.reserve(N)	 ;
-		double Norme 	 ;
-		double Buffer	 ;
-		
-			for(int i = 0 ; i< N ; i++)
-					{
-						V.push_back( Buffer = CLHEP::RandFlat::shoot() );
-						Norme += Buffer*Buffer ;
-					}
-					
-			Norme = sqrt(Norme)	;
-			
-			for(int i = 0 ; i< N ; i++)
-						V[i] = V[i] / Norme 	;
-		
-		return V;
-	}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorTransfertToResonance::SetEverything(	  string    name1          			,

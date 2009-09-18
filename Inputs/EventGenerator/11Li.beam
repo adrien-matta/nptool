@@ -7,7 +7,7 @@ Beam
 		ParticleZ= 3
 		ParticleA= 11
 		BeamEnergy= 550
-		BeamEnergySpread= 0
+		BeamEnergySpread= 10
 		SigmaX= 6.232
 		SigmaY= 9.069
 		SigmaThetaX= 0.6921330164

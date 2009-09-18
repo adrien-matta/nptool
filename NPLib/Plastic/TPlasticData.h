@@ -28,6 +28,15 @@ class TPlasticData : public TObject {
    double	GetTime(int i)				{return fPlastic_Time[i];}
    // (N)
    int      GetPlasticNumber(int i)		{return fPlastic_Number[i];}
+   
+   
+     double	GetEnergySize()			{return fPlastic_Energy.size();}
+   // (T)
+   double	GetTimeSize()				{return fPlastic_Time.size();}
+   // (N)
+   int      GetPlasticNumberSize()		{return fPlastic_Number.size();}
+   
+   
    /////////////////////           SETTERS           ////////////////////////
    // (E)
    void	SetEnergy(double E)			{fPlastic_Energy.push_back(E);}
