@@ -31,8 +31,9 @@ int main(int argc,char** argv)
    myDetector->ReadConfigurationFile(detectorfileName);
 
    // Attach more branch to the output
-   double Ex = 0 ; double EE = 0 ; double TT = 0 ; double X = 0 ; double Y = 0 ; int det ;
+   double Ex = 0 ; double ExNoStrips = 0 ; double EE = 0 ; double TT = 0 ; double X = 0 ; double Y = 0 ; int det ;
    RootOutput::getInstance()->GetTree()->Branch("ExcitationEnergy",&Ex,"Ex/D") ;
+   RootOutput::getInstance()->GetTree()->Branch("ExcitationEnergyNoStrips",&ExNoStrips,"ExNoStrips/D") ;
    RootOutput::getInstance()->GetTree()->Branch("E",&EE,"EE/D") ;
    RootOutput::getInstance()->GetTree()->Branch("A",&TT,"TT/D") ;
    RootOutput::getInstance()->GetTree()->Branch("X",&X,"X/D") ;
@@ -76,10 +77,13 @@ int main(int argc,char** argv)
          // Calculate scattering angle
          ThetaStrip = ThetaCalculation (A ,TVector3(0,0,1));
 
+         // Correct for energy loss in the target
+         E = DeutonTargetCD2.EvaluateInitialEnergy(E, 4.85*micrometer, ThetaStrip);
+
          // Calculate excitation energy
          if (Theta/deg > 90) {
-//            Ex = myReaction->ReconstructRelativistic(E, Theta / rad);
-            Ex = myReaction->ReconstructRelativistic(E, ThetaStrip);
+            ExNoStrips = myReaction->ReconstructRelativistic(E, Theta / rad);
+            Ex         = myReaction->ReconstructRelativistic(E, ThetaStrip);
          }
          else Ex = -200;
       }

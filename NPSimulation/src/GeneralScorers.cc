@@ -429,7 +429,7 @@ G4bool PSDetectorNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
    
    int numberOfCharacterInDetectorNumber = name.length() - (int)found  ;
 
-	for( int i = found ; i < found + numberOfCharacterInDetectorNumber ; i++ )
+	for(unsigned int i = found ; i < found + numberOfCharacterInDetectorNumber ; i++ )
 			nbr += name[i] ; 
 		
    G4int DetNbr = atoi( nbr.c_str() ) ;

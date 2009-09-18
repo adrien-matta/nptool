@@ -142,30 +142,26 @@ private:
 namespace GPDDUMMYSHAPE
 {
    // Resolution
-//   const G4double ResoFirstStage  = 0              ;// = 52keV of Resolution   //   Unit is MeV/2.35
-   const G4double ResoFirstStage  = 0.022          ;// = 52keV of Resolution   //   Unit is MeV/2.35
-   const G4double ResoSecondStage = 0          ;// = 130 keV of resolution //   Unit is MeV/2.35
-//   const G4double ResoSecondStage = 0.055          ;// = 130 keV of resolution //   Unit is MeV/2.35
-   const G4double ResoThirdStage  = 0              ;// = 100 keV of resolution //   Unit is MeV/2.35
-//   const G4double ResoThirdStage  = 0.043          ;// = 100 kev of resolution //   Unit is MeV/2.35
-   const G4double ResoTimeGpd     = 0.212765957    ;// = 500ps                 //   Unit is  ns/2.35
+   const G4double ResoFirstStage  = 0.0213;	// = 50 keV of Resolution   //   Unit is MeV/2.35
+   const G4double ResoSecondStage = 0.0213;	// = 50 keV of resolution //   Unit is MeV/2.35
+   const G4double ResoThirdStage  = 0.0213;	// = 50 keV of resolution //   Unit is MeV/2.35
+   const G4double ResoTimeGpd     = 0.212765957;// = 500ps                 //   Unit is  ns/2.35
 
    // Geometry for the mother volume containing the different layers of your dummy shape module
    const G4double FaceFront          = 5.1*cm;
    const G4double FaceBack           = 5.1*cm;
-//   const G4double Length             = 1.5*cm;
-//   const G4double InterStageDistance = 5*mm;
+   const G4double Length             = 1.5*cm;
+   const G4double InterStageDistance = 5*mm;
    // for testing the excitation energy reconstruction
-   const G4double Length             = 4*cm;
-   const G4double InterStageDistance = 15*mm;
+//   const G4double Length             = 4*cm;
+//   const G4double InterStageDistance = 15*mm;
 
    // First stage
    const G4double FirstStageFace       = 5.0*cm;
-//   const G4double FirstStageThickness  = 300*micrometer ;
+   const G4double FirstStageThickness  = 300*micrometer;
    // for testing the excitation energy reconstruction
-   const G4double FirstStageThickness  = 1.3*cm;
-//   const G4int NumberOfStrips	       = 128;
-   const G4int NumberOfStrips	       = 25;
+//   const G4double FirstStageThickness  = 1.3*cm;
+   const G4int NumberOfStrips	       = 25; // 2mm strip pitch
 
    // Second stage
    const G4double SecondStageFace      = FirstStageFace;

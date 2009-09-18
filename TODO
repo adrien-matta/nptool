@@ -31,7 +31,6 @@ TODO for NPTool:
         (Adrien)
       + Possibility to tilt the target with a given angle and to deal with
         the emittance
-      + Shooting in the target within a dedicated method in VEventGenerator
       + IsInsideTarget method for debugging purposes
    + Add a dedicated class to deal with materials (see example from G4 tutorial)
      (still under debate)
@@ -43,7 +42,6 @@ TODO for NPTool:
 TODO for NPAnalysis:
 --------------------
    + Add comment support for RunToTreat.txt (Adrien)
-   + Check Makefiles dependency (mostly for Gaspard) (Nicolas)
    + Add calibration manager class from Julien (Adrien)
    + Use only one class for the analysis per detector instead of two currently
      (ROOT feature in private member definition ( //!))
@@ -51,6 +49,7 @@ TODO for NPAnalysis:
 TODO for AnnularS1 detector:
 ----------------------------
    + Update the way the scorers are dealt to the new way (no more loop in ReadSensitive)
+     (Nicolas)
 
 TODO for Gaspard:
 -----------------

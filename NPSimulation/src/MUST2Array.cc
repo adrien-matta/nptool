@@ -192,7 +192,6 @@ void MUST2Array::VolumeMaker(G4int TelescopeNumber ,
      PVPBuffer = new G4PVPlacement(0,G4ThreeVector(0,0,0),logicDegrader,"Degrader",logicVacBox,false,0) ;
 
 
-      /*
       //Place two marker to identify the u and v axis on silicon face:
       //marker are placed a bit before the silicon itself so they don't perturbate simulation
       //Uncomment to help debugging or if you want to understand the way the code work.

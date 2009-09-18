@@ -68,6 +68,13 @@ public:
 
 
 public:
+   // method for debug purpose (still to be implemented)
+   // This method should check if the results of the beam interaction within the target
+   // (interaction coordinates) are well located inside the target volume
+   bool IsInsideTarget() {return false;};
+
+
+public:
    G4Material* GetMaterialFromLibrary(G4String MaterialName, G4double Temperature = 0, G4double Pressure = 0);
 
 

@@ -128,14 +128,14 @@ void AnnularS1::VolumeMaker(G4int TelescopeNumber   ,
    G4Material* Silicon = new G4Material("Si", z = 14., a, density);
 
    // Al
-   density = 2.702 * g / cm3;
-   a = 26.98 * g / mole;
-   G4Material* Aluminium = new G4Material("Aluminium", z = 13., a, density);
+//   density = 2.702 * g / cm3;
+//   a = 26.98 * g / mole;
+//   G4Material* Aluminium = new G4Material("Aluminium", z = 13., a, density);
 
    // Iron
-   density = 7.874 * g / cm3;
-   a = 55.847 * g / mole;
-   G4Material* Iron = new G4Material("Iron", z = 26., a, density);
+//   density = 7.874 * g / cm3;
+//   a = 55.847 * g / mole;
+//   G4Material* Iron = new G4Material("Iron", z = 26., a, density);
 
    // CsI
    density = 4.51 * g / cm3;

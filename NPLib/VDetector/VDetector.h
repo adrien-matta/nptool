@@ -38,7 +38,7 @@ namespace NPA
 
 				//	Default Constructor and destructor
 				VDetector()   ;
-				~VDetector()   ;
+				virtual ~VDetector()   ;
 
 
 				//	Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token

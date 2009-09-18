@@ -102,15 +102,11 @@ using namespace CUT ;
 #include "NPEnergyLoss.h"
 using namespace NPL ;
 namespace ENERGYLOSS
-	{
-	
-		//	Declare your Energy loss here	:
-	/*		EnergyLoss ProtonTarget = EnergyLoss 	(	"CD2.txt" 	,
-														100 		,
-														1			);
-	*/
-	}
-	
+{
+   // Declare your Energy loss here
+   EnergyLoss DeutonTargetCD2 = EnergyLoss("deuton_cd2.txt", 100, 1, 2);
+}
+
 using namespace ENERGYLOSS ;
 // ----------------------------------------------------------------------------------------------
 /////////////////////////////////////////////////////////////////////////////////////////////////
