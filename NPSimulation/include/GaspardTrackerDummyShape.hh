@@ -143,7 +143,7 @@ namespace GPDDUMMYSHAPE
 {
    // Resolution
    const G4double ResoFirstStage  = 0.0213;	// = 50 keV of Resolution   //   Unit is MeV/2.35
-   const G4double ResoSecondStage = 0.0213;	// = 50 keV of resolution //   Unit is MeV/2.35
+   const G4double ResoSecondStage = 0.0213 * sqrt(2);	// = 50 keV of resolution //   Unit is MeV/2.35
    const G4double ResoThirdStage  = 0.0213;	// = 50 keV of resolution //   Unit is MeV/2.35
    const G4double ResoTimeGpd     = 0.212765957;// = 500ps                 //   Unit is  ns/2.35
 
@@ -165,7 +165,7 @@ namespace GPDDUMMYSHAPE
 
    // Second stage
    const G4double SecondStageFace      = FirstStageFace;
-   const G4double SecondStageThickness = 1*mm;
+   const G4double SecondStageThickness = 2*mm;
 
    // Third stage
    const G4double ThirdStageFace      = FirstStageFace;

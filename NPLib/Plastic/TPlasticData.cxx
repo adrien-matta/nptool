@@ -27,11 +27,11 @@ void TPlasticData::Clear()
 
 
 
-void TPlasticData::Dump()
+void TPlasticData::Dump() const
 {
    cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event XXXXXXXXXXXXXXXXX" << endl;
 
-	for(short i = 0 ; i<fPlastic_Energy.size() ; i ++)
+	for(unsigned short i = 0 ; i<fPlastic_Energy.size() ; i ++)
 		{
 			cout << "Plastic Number " << fPlastic_Number[i] << " Energy: " << fPlastic_Energy[i]  << " Time: "<< fPlastic_Time[i] << endl;
 		

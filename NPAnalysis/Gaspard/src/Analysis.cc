@@ -78,7 +78,7 @@ int main(int argc,char** argv)
          ThetaStrip = ThetaCalculation (A ,TVector3(0,0,1));
 
          // Correct for energy loss in the target
-         E = DeutonTargetCD2.EvaluateInitialEnergy(E, 4.85*micrometer, ThetaStrip);
+//         E = DeutonTargetCD2.EvaluateInitialEnergy(E, 4.85*micrometer, ThetaStrip);
 
          // Calculate excitation energy
          if (Theta/deg > 90) {

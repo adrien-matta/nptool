@@ -66,7 +66,8 @@ public:
    virtual ~TInitialConditions();
 
    void  Clear();
-   void  Dump();
+   void  Clear(const Option_t*) {};
+   void  Dump() const;
 
    /////////////////////           SETTERS           ////////////////////////
    // Incident particle properties (before interactions in the target)

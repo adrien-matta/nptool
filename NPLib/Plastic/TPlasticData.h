@@ -19,7 +19,8 @@ class TPlasticData : public TObject {
    virtual ~TPlasticData();
 
    void	Clear();
-   void	Dump();
+   void	Clear(const Option_t*) {};
+   void	Dump() const;
 
    /////////////////////           GETTERS           ////////////////////////
    // (E)

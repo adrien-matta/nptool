@@ -68,7 +68,7 @@ void TInitialConditions::Clear()
 
 
 
-void TInitialConditions::Dump()
+void TInitialConditions::Dump() const
 {
    cout << "XXXXXXXXXXXXX Initial conditions XXXXXXXXXXXXXXXX" << endl;
 

@@ -39,6 +39,7 @@ public:
 
 public: 
    void Clear();	
+   void Clear(const Option_t*) {};	
    void BuildPhysicalEvent(TGaspardTrackerData* Data);
    void BuildSimplePhysicalEvent(TGaspardTrackerData* Data);
 
