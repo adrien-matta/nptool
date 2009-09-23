@@ -31,7 +31,6 @@
 
 using namespace std;
 
-#define	INDEX	100
 
 
 class GaspardTrackerTrapezoid : public GaspardTrackerModule

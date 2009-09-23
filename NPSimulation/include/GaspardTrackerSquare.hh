@@ -31,7 +31,6 @@
 
 using namespace std;
 
-#define	INDEX	0
 
 
 class GaspardTrackerSquare : public GaspardTrackerModule

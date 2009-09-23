@@ -33,7 +33,6 @@
 
 using namespace std;
 
-#define	INDEX	1000
 
 
 class GaspardTrackerDummyShape : public GaspardTrackerModule

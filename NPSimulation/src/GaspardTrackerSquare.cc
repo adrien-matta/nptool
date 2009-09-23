@@ -968,10 +968,10 @@ void GaspardTrackerSquare::ReadSensitive(const G4Event* event)
 
                 if (NTrackID == ETrackID) {
                    N = Nl ;
-                   ms_Event->SetGPDTrkFirstStageFrontEDetectorNbr(INDEX + N);
-                   ms_Event->SetGPDTrkFirstStageFrontTDetectorNbr(INDEX + N);
-                   ms_Event->SetGPDTrkFirstStageBackEDetectorNbr(INDEX + N);
-                   ms_Event->SetGPDTrkFirstStageBackTDetectorNbr(INDEX + N);
+                   ms_Event->SetGPDTrkFirstStageFrontEDetectorNbr(m_index["Square"] + N);
+                   ms_Event->SetGPDTrkFirstStageFrontTDetectorNbr(m_index["Square"] + N);
+                   ms_Event->SetGPDTrkFirstStageBackEDetectorNbr(m_index["Square"] + N);
+                   ms_Event->SetGPDTrkFirstStageBackTDetectorNbr(m_index["Square"] + N);
                 }
                 DetectorNumber_itr++;
             }
@@ -1082,8 +1082,8 @@ void GaspardTrackerSquare::ReadSensitive(const G4Event* event)
                      ms_Event->SetGPDTrkSecondStageEPadNbr(1);
                      ms_Event->SetGPDTrkSecondStageTPadNbr(1);
                      ms_Event->SetGPDTrkSecondStageTTime(1);
-                     ms_Event->SetGPDTrkSecondStageTDetectorNbr(INDEX + N);
-                     ms_Event->SetGPDTrkSecondStageEDetectorNbr(INDEX + N);
+                     ms_Event->SetGPDTrkSecondStageTDetectorNbr(m_index["Square"] + N);
+                     ms_Event->SetGPDTrkSecondStageEDetectorNbr(m_index["Square"] + N);
                   }
 
                   SiLiEnergy_itr++;
@@ -1100,8 +1100,8 @@ void GaspardTrackerSquare::ReadSensitive(const G4Event* event)
                      ms_Event->SetGPDTrkThirdStageEPadNbr(1);
                      ms_Event->SetGPDTrkThirdStageTPadNbr(1);
                      ms_Event->SetGPDTrkThirdStageTTime(1);
-                     ms_Event->SetGPDTrkThirdStageTDetectorNbr(INDEX + N);
-                     ms_Event->SetGPDTrkThirdStageEDetectorNbr(INDEX + N);
+                     ms_Event->SetGPDTrkThirdStageTDetectorNbr(m_index["Square"] + N);
+                     ms_Event->SetGPDTrkThirdStageEDetectorNbr(m_index["Square"] + N);
                   }
 
                   ThirdStageEnergy_itr++;

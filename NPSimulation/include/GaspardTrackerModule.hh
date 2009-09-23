@@ -24,6 +24,7 @@
 
 // C++ headers
 #include <string>
+#include <vector>
 
 // G4 headers
 #include "G4LogicalVolume.hh"
@@ -66,6 +67,9 @@ public:
    virtual void SetInterCoordPointer(TInteractionCoordinates* interCoord) = 0;
    virtual TInteractionCoordinates* GetInterCoordPointer() = 0;
 
+   // Initialize the Index map for the different modules of Gaspard
+   void InitializeIndex();
+
 public:
    TGaspardTrackerData*		GetEventPointer() 	{return ms_Event;};
 
@@ -90,6 +94,9 @@ protected:
 
    // Third stage Associate Scorer 
    G4MultiFunctionalDetector* m_ThirdStageScorer;
+
+protected:
+   map<string, int> m_index;
 };
 
 #endif
