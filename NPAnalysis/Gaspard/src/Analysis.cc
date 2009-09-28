@@ -55,7 +55,7 @@ int main(int argc,char** argv)
    cout << "Number of entries to be analysed: " << nentries << endl;
 
    for (int i = 0; i < nentries; i ++) {
-      if (i%10000 == 0 && i!=0) cout << i << " analysed events" << endl;
+      if (i%10000 == 0 && i!=0) cout << "\r" << i << " analysed events" << flush;
       chain -> GetEntry(i);
 
       // Treat Gaspard event
@@ -78,17 +78,21 @@ int main(int argc,char** argv)
          ThetaStrip = ThetaCalculation (A ,TVector3(0,0,1));
 
          // Correct for energy loss in the target
-//         E = DeutonTargetCD2.EvaluateInitialEnergy(E, 4.85*micrometer, ThetaStrip);
+//         E = DeutonTargetCD2.EvaluateInitialEnergy(E, 5.15*micrometer, ThetaStrip);
 
          // Calculate excitation energy
          if (Theta/deg > 90) {
             ExNoStrips = myReaction->ReconstructRelativistic(E, Theta / rad);
             Ex         = myReaction->ReconstructRelativistic(E, ThetaStrip);
          }
-         else Ex = -200;
+         else {
+            Ex         = -200;
+            ExNoStrips = -200;
+         }
       }
       else {
-         Ex = -100;
+         Ex         = -100;
+         ExNoStrips = -100;
       }
 
       EE = E ; TT = ThetaStrip/deg;

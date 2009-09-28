@@ -16,12 +16,70 @@
 
 
 \section{Introduction}
+The Gaspard project is developed within the NPTool framework. For the 
+moment only the tracker of charged particles is currently under study.
+Coupling of the tracker with a gamma-ray calorimeter such as AGATA or
+PARIS will be considered in the future. 
+
+NPTool is a modular package allowing to perform Geant4 simulations and to 
+analyse the results of the simulations. It is strongly encouraged to read 
+the general NPTool documentation that you can find in this directory.
+
+
 \section{NPSimulation}
-\subsection{}
-\subsection{Storing the results of the simulation}
+\subsection{Specificity of Gaspard}
+The Gaspard tracker detector, even if it is made of several types of detectors, 
+is considered as {\it one} detector from the NPTool point of view.
+
+\subsection{Running the simulation}
+\subsection{Results of the simulation}
+The results of the simulation are in the ROOT format and the output file 
+is stored in \$NPTool/Output/Simulation. The output ROOT file contains
+three classes:
+\begin{itemize}
+   \item {\it TInitialConditions:}
+   \item {\it TInteractionCoordinates:}
+   \item {\it TGaspardTrackerData:}
+\end{itemize}
+
 \subsection{Adding a new detector shape to Gaspard}
+A special class (GaspardTrackerDummyShape) has been created to show how
+to define a new module for the Gaspard Tracker. This class describes a
+simple 5x5 cm2 square telescope made of three layers of silicon which  
+has been used for some preliminary studies of the tracker. So, when 
+considering adding a new module to the Gaspard Tracker, please do not use
+this class but create you own instead. However, for the explanations the 
+GaspardTrackerDummyShape case will bed considered.
+
+When adding a new detector you need to follow several steps:
+
+\subsubsection{Definition of an index for the detector}
+Since the results of the simulation are stored in an unique data class 
+(GaspardTrackerData) dealing with different module types, it is 
+necessary to give an absolute number to each module. This is managed in
+the GaspardTrackerModule class where there is a map (m\_index) which
+associates a name (the module type identifier) with an integer (the value 
+of the index).
+
+To add a new detector it is just needed to add in the {\it InitializeIndex()}
+method a line such as:
+
+\begin{verbatim}
+   m_index["DummyShape"] = 1000;
+\end{verbatim}
+
+\subsubsection{Definition of the geometry and its readout}
+This is done in two files GaspardTrackerDummyShape.{h,cxx}. The geometry 
+is defined in the {\it VolumeMaker()} method, the placement of the 
+module is defined in the {\it ConstructDetector()} method, the readout
+of the geometry is done in the {\it ReadSensitive()} method and the 
+scorers are declared in the {\it InitializeScorers()} method.
+
+\subsubsection{Definition of the scorers}
+
 
 \section{NPAnalysis}
+To be documented...
 
 \end{document}
 

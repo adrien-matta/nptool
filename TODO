@@ -41,7 +41,6 @@ TODO for NPTool:
 
 TODO for NPAnalysis:
 --------------------
-   + Add comment support for RunToTreat.txt (Adrien)
    + Add calibration manager class from Julien (Adrien)
    + Use only one class for the analysis per detector instead of two currently
      (ROOT feature in private member definition ( //!))

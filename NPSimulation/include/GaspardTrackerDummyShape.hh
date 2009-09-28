@@ -141,6 +141,7 @@ private:
 namespace GPDDUMMYSHAPE
 {
    // Resolution
+//   const G4double ResoFirstStage  = 0;	// = 50 keV of Resolution   //   Unit is MeV/2.35
    const G4double ResoFirstStage  = 0.0213;	// = 50 keV of Resolution   //   Unit is MeV/2.35
    const G4double ResoSecondStage = 0.0213 * sqrt(2);	// = 50 keV of resolution //   Unit is MeV/2.35
    const G4double ResoThirdStage  = 0.0213;	// = 50 keV of resolution //   Unit is MeV/2.35
@@ -158,6 +159,7 @@ namespace GPDDUMMYSHAPE
    // First stage
    const G4double FirstStageFace       = 5.0*cm;
    const G4double FirstStageThickness  = 300*micrometer;
+//   const G4double FirstStageThickness  = 2*mm;
    // for testing the excitation energy reconstruction
 //   const G4double FirstStageThickness  = 1.3*cm;
    const G4int NumberOfStrips	       = 25; // 2mm strip pitch
