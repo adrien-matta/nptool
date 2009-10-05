@@ -74,8 +74,7 @@ class EventGeneratorTransfertToResonance : public VEventGenerator
 	public:     // Inherit from VEventGenerator class
 	   void        ReadConfiguration(string)              ;
 	   void        GenerateEvent(G4Event*, G4ParticleGun*)       ;
-
-           void        SetTarget(Target* Target) {m_Target = Target;}
+	   void        SetTarget(Target* Target) {m_Target = Target;}
 
 	private: // Particle Shoot Option
 	   bool        m_ShootLight         ;
@@ -94,7 +93,7 @@ class EventGeneratorTransfertToResonance : public VEventGenerator
 	   double         m_SigmaPhiY        ;
 
 	private: // Target Parameter
-           Target*        m_Target;
+    	Target*        m_Target;
 
 	private: // Reaction
 		Reaction*	m_Reaction				;

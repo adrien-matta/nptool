@@ -22,6 +22,7 @@
  *****************************************************************************/
 #include "TMust2Physics.h"
 #include <iostream>
+#include <cmath>
 
 ClassImp(TMust2Physics)
 
@@ -58,6 +59,9 @@ void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 					&&	Data->GetMMStripXEStripNbr(0) == Data->GetMMStripXTStripNbr(0)
 					&&	Data->GetMMStripYEStripNbr(0) == Data->GetMMStripYTStripNbr(0)      )
 					{
+					
+						EventMultiplicity = 1;
+					
 						TelescopeNumber.push_back(Data->GetMMStripXEDetectorNbr(0))	;
 					
 						//	Data->Get Max Energy
@@ -72,7 +76,6 @@ void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 						Si_Y.push_back( Data->GetMMStripYEStripNbr(0) )	;	
 						
 						Check_Si = true ;			
-						EventMultiplicity = 1;
 								
 					}
 					
@@ -135,7 +138,7 @@ void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 				if (	Data->GetMMStripXEDetectorNbr(0) != Data->GetMMStripXEDetectorNbr(1)
 					&&	Data->GetMMStripYEDetectorNbr(0) != Data->GetMMStripYEDetectorNbr(1) )
 					{
-					
+						EventMultiplicity = 2 ;
 						double EY, EX, TX, TY = 0;
 						// loop on both event
 						for (int jj = 0 ; jj < 2 ; jj++)
@@ -238,6 +241,38 @@ void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 				if(		Data->GetMMStripXEDetectorNbr(0) == Data->GetMMStripXEDetectorNbr(1)
 					&&	Data->GetMMStripYEDetectorNbr(0) == Data->GetMMStripYEDetectorNbr(1))
 					{
+					
+						EventMultiplicity = 3 ;
+				
+						double EY1, EX1, TX1, TY1 = 0;
+						double EY2, EX2, TX2, TY2 = 0;
+						
+						double Delta01, Delta00 = 0;
+						Delta01 = fabs( Data->GetMMStripXEEnergy(0) - Data->GetMMStripYEEnergy(1) ) ;
+						Delta00 = fabs( Data->GetMMStripXEEnergy(0) - Data->GetMMStripYEEnergy(0) ) ;
+						
+						if( Delta01 < Delta00 ) 
+							{
+								EX1 = Data->GetMMStripXEEnergy(0) 	;	 EY1 =  Data->GetMMStripYEEnergy(1) ;
+								EX2 = Data->GetMMStripXEEnergy(1) 	;	 EY2 =  Data->GetMMStripYEEnergy(0) ;
+								
+								TX1 = Data->GetMMStripXTTime(0)		; 	TY1 =  Data->GetMMStripYTTime(1) ;
+								TX2 = Data->GetMMStripXTTime(1) 	; 	TY2 =  Data->GetMMStripYTTime(0) ;
+							}
+							
+						else
+							{
+								EX1 = Data->GetMMStripXEEnergy(0) 	;	 EY1 =  Data->GetMMStripYEEnergy(0) ;
+								EX2 = Data->GetMMStripXEEnergy(1) 	;	 EY2 =  Data->GetMMStripYEEnergy(1) ;
+								
+								TX1 = Data->GetMMStripXTTime(0) 	;	 TY1 =  Data->GetMMStripYTTime(0) ;
+								TX2 = Data->GetMMStripXTTime(1) 	;	 TY2 =  Data->GetMMStripYTTime(1) ;
+							}
+							
+												
+					
+					
+					
 					
 					
 					return;

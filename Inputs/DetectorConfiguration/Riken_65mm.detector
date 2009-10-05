@@ -150,17 +150,17 @@ ScintillatorPlastic
 Plastic
 	THETA= 0
 	PHI= 0
-	R= 303
-	Thickness= 17
-	Radius= 25
+	R= 293
+	Thickness= 25
+	Radius= 12
 	LeadThickness= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Plastic
 	THETA= 0
 	PHI= 0
-	R= 317
-	Thickness= 8
-	Radius= 25
-	LeadThickness= 2
+	R= 310
+	Thickness= 10
+	Radius= 12
+	LeadThickness= 6
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

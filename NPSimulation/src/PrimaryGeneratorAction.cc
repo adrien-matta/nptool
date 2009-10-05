@@ -128,7 +128,7 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path)
       }
 
 
-      //Search for Transfert To Resonance
+      //Search for Transfert
       else if (LineBuffer.compare(0, 9, "Transfert") == 0 && !check_Transfert && LineBuffer.compare(0, 11, "TransfertTo") != 0) {
          check_Transfert = true;
          VEventGenerator* myEventGenerator = new EventGeneratorTransfert();

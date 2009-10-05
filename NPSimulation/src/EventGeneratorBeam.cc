@@ -45,7 +45,6 @@ EventGeneratorBeam::EventGeneratorBeam()
 EventGeneratorBeam::~EventGeneratorBeam()
 {
    delete m_InitConditions;
-   delete m_Target;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

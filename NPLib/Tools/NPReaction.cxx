@@ -27,7 +27,7 @@
  *	                                                                         *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *                                                                           *
+ *     Based on previous work by N.de Sereville                              *
  *                                                                           *
  *****************************************************************************/
  
@@ -184,6 +184,7 @@ void Reaction::KineRelativistic(double &ThetaLab3, double &EnergieLab3,
       cout << "Problem for energy conservation" << endl;
    EnergieLab3 = W3lab - m3;
    EnergieLab4 = W4lab - m4;
+   
 }
 
 

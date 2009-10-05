@@ -302,7 +302,7 @@ void Plastic::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume*
                                      	
         if(m_LeadThickness[i]>0&& m_PlasticRadius[i]>0)
         	{
-    			G4Tubs* solidLead = new G4Tubs(	Name					,	 
+    			G4Tubs* solidLead = new G4Tubs(	Name+"Lead"  			,	 
 		                            			0						,
 		                            			m_PlasticRadius[i]		,
 		                            			m_LeadThickness[i]/2	,
@@ -316,7 +316,7 @@ void Plastic::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume*
 				PVPBuffer = new G4PVPlacement(	0																		,
 												Det_pos+(m_PlasticThickness[i]/2+m_LeadThickness[i]/2)*Det_pos.unit()	,
 		                                     	logicLead    															,
-		                                     	Name            														,	
+		                                     	Name+"Lead"        														,	
 		                                     	world           														,
 		                                     	false           														,
 		                                     	0																		);

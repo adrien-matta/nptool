@@ -48,7 +48,7 @@ public:
    virtual ~VDetector()   ;
 
    // Read stream at Configfile to pick-up parameters of detector (Position,...)
-   // Called in DetecorConstruction::ReadDetextorConfiguration Method
+   // Called in DetectorConstruction::ReadDetectorConfiguration Method
    virtual void ReadConfiguration(string) = 0;
 
    // Construct detector and inialise sensitive part.
@@ -61,7 +61,7 @@ public:
 
    // Add Detector branch to the EventTree.
    // Called After DetecorConstruction::AddDetector Method
-   virtual void InitializeRootOutput();
+   virtual void InitializeRootOutput() ;
    
    // Add Detector branch to the EventTree.
    // Called After DetecorConstruction::AddDetector Method
