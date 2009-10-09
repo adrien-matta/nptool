@@ -111,7 +111,7 @@ void TMust2Data::Clear()
 
 
 
-void TMust2Data::Dump()
+void TMust2Data::Dump() const
 {
    cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event XXXXXXXXXXXXXXXXX" << endl;
 

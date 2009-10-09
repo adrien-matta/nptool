@@ -264,7 +264,7 @@ void Plastic::ConstructDetector(G4LogicalVolume* world)
          G4double wZ = m_R[i] * cos(m_Theta[i] )             		;
 
          Det_pos = G4ThreeVector(wX, wY, wZ)                 ;
-         G4LogicalVolume* logicPlastic = NULL ;
+//         G4LogicalVolume* logicPlastic = NULL ;
 			
 		VolumeMaker(Det_pos , i+1, world) ;
     }

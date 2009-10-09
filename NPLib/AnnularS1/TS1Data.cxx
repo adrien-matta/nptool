@@ -71,7 +71,7 @@ void TS1Data::Clear()
 
 
 
-void TS1Data::Dump()
+void TS1Data::Dump() const
 {
    cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event XXXXXXXXXXXXXXXXX" << endl;
 

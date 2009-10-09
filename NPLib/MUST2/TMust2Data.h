@@ -72,7 +72,8 @@ class TMust2Data : public TObject {
 		virtual ~TMust2Data();
 
 		void	Clear();
-		void	Dump();
+                void    Clear(const Option_t*) {};
+		void	Dump() const;
 
 		/////////////////////           SETTERS           ////////////////////////
 		// DSSD
@@ -160,7 +161,7 @@ class TMust2Data : public TObject {
 		UShort_t	GetMMCsITCristalNbr(Int_t i)    {return fMM_CsIT_CristalNbr.at(i);}
 		Double_t	GetMMCsITTime(Int_t i)          {return fMM_CsIT_Time.at(i);}
 
-		ClassDef(TMust2Data,1)  // Must2Data structure
+		ClassDef(TMust2Data,2)  // Must2Data structure
 };
 
 #endif

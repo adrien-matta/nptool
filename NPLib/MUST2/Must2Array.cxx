@@ -73,7 +73,6 @@ void MUST2Array::ReadConfiguration(string Path)
    double Ax , Bx , Cx , Dx , Ay , By , Cy , Dy , Az , Bz , Cz , Dz           	;
    TVector3 A , B , C , D                                          				;
    double Theta = 0 , Phi = 0 , R = 0 , beta_u = 0 , beta_v = 0 , beta_w = 0    ;
-   int SI = 0 , SILI = 0 , CSI = 0                                         		;	
 
    bool check_A = false 	;
    bool check_C = false  	;
@@ -392,6 +391,9 @@ void MUST2Array::AddTelescope(	TVector3 C_X1_Y1 		,
 			 					TVector3 C_X1_Y128 		, 
 			 					TVector3 C_X128_Y128	)
 	{
+		// To avoid warning
+		C_X1_Y128 *= 1;
+
 		NumberOfTelescope++;
 	
 		//	Vector U on Telescope Face (paralelle to Y Strip) (NB: remember that Y strip are allong X axis)

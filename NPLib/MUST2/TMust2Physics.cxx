@@ -46,6 +46,12 @@ void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 		double SiLi_E_Threshold = 0		;	double SiLi_T_Threshold = 0		;
 		double CsI_E_Threshold	= 0 	;	double CsI_T_Threshold	= 0		;
 		
+		// To avoid warnings
+		Si_X_E_Threshold *= 1;		Si_X_T_Threshold *= 1;
+		Si_Y_E_Threshold *= 1;		Si_Y_T_Threshold *= 1;
+		SiLi_E_Threshold *= 1;		SiLi_T_Threshold *= 1;
+		CsI_E_Threshold  *= 1;		CsI_T_Threshold  *= 1;
+		
 		//	Multiplicity 1
 		if( Data->GetMMStripXEMult()==1 && Data->GetMMStripYEMult()==1 && Data->GetMMStripXTMult()==1 && Data->GetMMStripXTMult()==1 )
 			{
