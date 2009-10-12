@@ -9,12 +9,13 @@
  * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
  *                                                                           *
  * Creation Date  : 15/07/09                                                 *
- * Last update    :                                                          *
+ * Last update    : 12/10/09                                                 *
  *---------------------------------------------------------------------------*
  * Decription: Define a module of annular shape for the Gaspard tracker      *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
+ *    + 12/10/09: Change scorer scheme (N. de Sereville)                     *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
@@ -502,13 +503,9 @@ void GaspardTrackerAnnular::SetInterCoordPointer(TInteractionCoordinates* interC
 // Called at in the EventAction::EndOfEventAvtion
 void GaspardTrackerAnnular::ReadSensitive(const G4Event* event)
 {
-   bool checkSi = false      ;
-   G4String DetectorNumber ;
-
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////// Used to Read Event Map of detector //////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
-
    // First Stage
    std::map<G4int, G4int*>::iterator    DetectorNumber_itr;
    std::map<G4int, G4double*>::iterator Energy_itr;
@@ -537,10 +534,6 @@ void GaspardTrackerAnnular::ReadSensitive(const G4Event* event)
    std::map<G4int, G4double*>::iterator ThirdStageEnergy_itr;
    G4THitsMap<G4double>* ThirdStageEnergyHitMap = NULL;
 
-//////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////
-   G4int HitNumber = 0;
-   checkSi = false;
 
    // Read the Scorer associated to the first Stage
    //Detector Number
@@ -612,40 +605,35 @@ void GaspardTrackerAnnular::ReadSensitive(const G4Event* event)
       return;
    }
 
-      // Loop on Strip energy
-      for (G4int l = 0 ; l < sizeE ; l++) {
-         G4int ETrackID  =   Energy_itr->first     ;
-         G4double E     = *(Energy_itr->second)    ;
-         G4int N = 0;
+   // Loop on FirstStage number
+   for (G4int l = 0; l < sizeN; l++) {
+      G4double N     = *(DetectorNumber_itr->second);
+      G4int NTrackID =   DetectorNumber_itr->first - N;
 
-         if (E > 0) {
-            checkSi = true   ;
-            ms_Event->SetGPDTrkFirstStageFrontEEnergy(RandGauss::shoot(E, ResoFirstStage))    ;
-            ms_Event->SetGPDTrkFirstStageBackEEnergy(RandGauss::shoot(E, ResoFirstStage))    ;
+      if (N > 0) {
+         // Fill detector number
+         ms_Event->SetGPDTrkFirstStageFrontEDetectorNbr(m_index["Annular"] + N);
+         ms_Event->SetGPDTrkFirstStageFrontTDetectorNbr(m_index["Annular"] + N);
+         ms_Event->SetGPDTrkFirstStageBackEDetectorNbr(m_index["Annular"] + N);
+         ms_Event->SetGPDTrkFirstStageBackTDetectorNbr(m_index["Annular"] + N);
 
-            //  Detector Number
-            DetectorNumber_itr = DetectorNumberHitMap->GetMap()->begin();
-            for (G4int h = 0 ; h < sizeN ; h++) {
-                G4int NTrackID  =   DetectorNumber_itr->first       ;
-                G4double Nl     = *(DetectorNumber_itr->second)      ;
-
-                if (NTrackID == ETrackID) {
-                   N = Nl ;
-                   ms_Event->SetGPDTrkFirstStageFrontEDetectorNbr(m_index["Annular"] + N);
-                   ms_Event->SetGPDTrkFirstStageFrontTDetectorNbr(m_index["Annular"] + N);
-                   ms_Event->SetGPDTrkFirstStageBackEDetectorNbr(m_index["Annular"] + N);
-                   ms_Event->SetGPDTrkFirstStageBackTDetectorNbr(m_index["Annular"] + N);
-                }
-                DetectorNumber_itr++;
+         // Energy
+         for (G4int l = 0 ; l < sizeE ; l++) {
+            G4int ETrackID  =   Energy_itr->first - N;
+            G4double E     = *(Energy_itr->second);
+            if (ETrackID == NTrackID) {
+               ms_Event->SetGPDTrkFirstStageFrontEEnergy(RandGauss::shoot(E, ResoFirstStage));
+               ms_Event->SetGPDTrkFirstStageBackEEnergy(RandGauss::shoot(E, ResoFirstStage));
             }
+            Energy_itr++;
+         }
 
             //  Time
             Time_itr = TimeHitMap->GetMap()->begin();
             for (G4int h = 0 ; h < sizeT ; h++) {
-               G4int TTrackID  =   Time_itr->first       ;
+               G4int TTrackID  =   Time_itr->first - N;
                G4double T     = *(Time_itr->second)      ;
-
-               if (TTrackID == ETrackID) {
+               if (TTrackID == NTrackID) {
                   T = RandGauss::shoot(T, ResoTimePPAC)   ;
                   ms_Event->SetGPDTrkFirstStageFrontTTime(RandGauss::shoot(T, ResoTimeGpd)) ;
                   ms_Event->SetGPDTrkFirstStageBackTTime(RandGauss::shoot(T, ResoTimeGpd)) ;
@@ -656,9 +644,9 @@ void GaspardTrackerAnnular::ReadSensitive(const G4Event* event)
             // X
             X_itr = XHitMap->GetMap()->begin();
             for (G4int h = 0 ; h < sizeX ; h++) {
-               G4int XTrackID  =   X_itr->first     ;
-               G4double X     = *(X_itr->second)      ;
-               if (XTrackID == ETrackID) {
+               G4int XTrackID  =   X_itr->first - N;
+               G4double X     = *(X_itr->second);
+               if (XTrackID == NTrackID) {
                   ms_Event->SetGPDTrkFirstStageFrontEStripNbr(X)   ;
                   ms_Event->SetGPDTrkFirstStageFrontTStripNbr(X)   ;
                }
@@ -671,7 +659,7 @@ void GaspardTrackerAnnular::ReadSensitive(const G4Event* event)
             for (G4int h = 0 ; h < sizeY ; h++) {
                G4int YTrackID  =   Y_itr->first    ;
                G4double Y     = *(Y_itr->second)      ;
-               if (YTrackID == ETrackID) {
+               if (YTrackID == NTrackID) {
                   ms_Event->SetGPDTrkFirstStageBackEStripNbr(Y)   ;
                   ms_Event->SetGPDTrkFirstStageBackTStripNbr(Y)   ;
                }
@@ -684,7 +672,7 @@ void GaspardTrackerAnnular::ReadSensitive(const G4Event* event)
             for (G4int h = 0 ; h < sizeX ; h++) {
                G4int PosXTrackID =   Pos_X_itr->first     ;
                G4double PosX     = *(Pos_X_itr->second)      ;
-               if (PosXTrackID == ETrackID) {
+               if (PosXTrackID == NTrackID) {
                   ms_InterCoord->SetDetectedPositionX(PosX) ;
                }
                Pos_X_itr++;
@@ -695,7 +683,7 @@ void GaspardTrackerAnnular::ReadSensitive(const G4Event* event)
             for (G4int h = 0 ; h < sizeX ; h++) {
                G4int PosYTrackID =   Pos_Y_itr->first     ;
                G4double PosY     = *(Pos_Y_itr->second)      ;
-               if (PosYTrackID == ETrackID) {
+               if (PosYTrackID == NTrackID) {
                   ms_InterCoord->SetDetectedPositionY(PosY) ;
                }
                Pos_Y_itr++;
@@ -706,7 +694,7 @@ void GaspardTrackerAnnular::ReadSensitive(const G4Event* event)
             for (G4int h = 0 ; h < sizeX ; h++) {
                G4int PosZTrackID =   Pos_Z_itr->first     ;
                G4double PosZ     = *(Pos_Z_itr->second)      ;
-               if (PosZTrackID == ETrackID) {
+               if (PosZTrackID == NTrackID) {
                   ms_InterCoord->SetDetectedPositionZ(PosZ) ;
                }
                Pos_Z_itr++;
@@ -717,7 +705,7 @@ void GaspardTrackerAnnular::ReadSensitive(const G4Event* event)
             for (G4int h = 0 ; h < sizeX ; h++) {
                G4int AngThetaTrackID =   Ang_Theta_itr->first     ;
                G4double AngTheta     = *(Ang_Theta_itr->second)      ;
-               if (AngThetaTrackID == ETrackID) {
+               if (AngThetaTrackID == NTrackID) {
                   ms_InterCoord->SetDetectedAngleTheta(AngTheta) ;
                }
                Ang_Theta_itr++;
@@ -726,10 +714,10 @@ void GaspardTrackerAnnular::ReadSensitive(const G4Event* event)
             // Angle Phi
             Ang_Phi_itr = AngPhiHitMap->GetMap()->begin();
             for (G4int h = 0 ; h < sizeX ; h++) {
-               G4int AngPhiTrackID =   Ang_Phi_itr->first     ;
-               G4double AngPhi     = *(Ang_Phi_itr->second)      ;
-               if (AngPhiTrackID == ETrackID) {
-                  ms_InterCoord->SetDetectedAnglePhi(AngPhi) ;
+               G4int AngPhiTrackID =   Ang_Phi_itr->first;
+               G4double AngPhi     = *(Ang_Phi_itr->second);
+               if (AngPhiTrackID == NTrackID) {
+                  ms_InterCoord->SetDetectedAnglePhi(AngPhi);
                }
                Ang_Phi_itr++;
             }
@@ -739,10 +727,10 @@ void GaspardTrackerAnnular::ReadSensitive(const G4Event* event)
             // Third Stage
                ThirdStageEnergy_itr = ThirdStageEnergyHitMap->GetMap()->begin()  ;
                for (G4int h = 0 ; h < ThirdStageEnergyHitMap->entries() ; h++) {
-                  G4int ThirdStageEnergyTrackID  =   ThirdStageEnergy_itr->first      ;
-                  G4double ThirdStageEnergy      = *(ThirdStageEnergy_itr->second)    ;
+                  G4int ThirdStageEnergyTrackID  =   ThirdStageEnergy_itr->first - N;
+                  G4double ThirdStageEnergy      = *(ThirdStageEnergy_itr->second);
 
-                  if (ThirdStageEnergyTrackID == ETrackID) {
+                  if (ThirdStageEnergyTrackID == NTrackID) {
                      ms_Event->SetGPDTrkThirdStageEEnergy(RandGauss::shoot(ThirdStageEnergy, ResoThirdStage));
                      ms_Event->SetGPDTrkThirdStageEPadNbr(1);
                      ms_Event->SetGPDTrkThirdStageTPadNbr(1);
@@ -754,8 +742,7 @@ void GaspardTrackerAnnular::ReadSensitive(const G4Event* event)
                   ThirdStageEnergy_itr++;
                }
 
-         Energy_itr++;
-         if (checkSi) HitNumber++ ;
+         DetectorNumber_itr++;
       }
 
       // clear map for next event
@@ -779,7 +766,7 @@ void GaspardTrackerAnnular::InitializeScorers()
 {
    // First stage Associate Scorer
    m_FirstStageScorer = new G4MultiFunctionalDetector("FirstStageScorerGPDAnnular");
-   G4VPrimitiveScorer* DetNbr                           = new GPDScorerDetectorNumber("DetectorNumber", 0, "Silicon");
+   G4VPrimitiveScorer* DetNbr                           = new GPDScorerDetectorNumber("DetectorNumber", 0, "G");
    G4VPrimitiveScorer* Energy                           = new GPDScorerFirstStageEnergy("StripEnergy", 0);
    G4VPrimitiveScorer* TOF                              = new PSTOF("StripTime", 0);
    G4VPrimitiveScorer* StripPositionX                   = new GPDScorerFirstStageFrontStripAnnular("StripNumberX", 0, FirstStageRmax, 128);

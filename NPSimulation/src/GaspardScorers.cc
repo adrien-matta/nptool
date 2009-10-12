@@ -53,13 +53,25 @@ GPDScorerFirstStageEnergy::~GPDScorerFirstStageEnergy()
 
 G4bool GPDScorerFirstStageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+   // get detector number
+   std::string name = aStep->GetTrack()->GetVolume()->GetName();
+   std::string nbr;
+   size_t found = name.find("G");
+   found += 1;
+
+   int numberOfCharacterInTelescopeNumber = name.length() - (int)found;
+
+   for (int i = 0; i < numberOfCharacterInTelescopeNumber; i++) nbr += name[i+1];
+   G4int DetNbr = atof(nbr.c_str());
+
+   // get energy
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index = aStep->GetTrack()->GetTrackID();
-   EvtMap->add(index, edep);
+   EvtMap->add(DetNbr + index, edep);
    return TRUE;
 }
 
@@ -113,13 +125,25 @@ GPDScorerSecondStageEnergy::~GPDScorerSecondStageEnergy()
 
 G4bool GPDScorerSecondStageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+   // get detector number
+   std::string name = aStep->GetTrack()->GetVolume()->GetName();
+   std::string nbr;
+   size_t found = name.find("G");
+   found += 1;
+
+   int numberOfCharacterInTelescopeNumber = name.length() - (int)found;
+
+   for (int i = 0; i < numberOfCharacterInTelescopeNumber; i++) nbr += name[i+1];
+   G4int DetNbr = atof(nbr.c_str());
+
+   // get energy
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index = aStep->GetTrack()->GetTrackID();
-   EvtMap->add(index, edep);
+   EvtMap->add(DetNbr + index, edep);
    return TRUE;
 }
 
@@ -173,13 +197,25 @@ GPDScorerThirdStageEnergy::~GPDScorerThirdStageEnergy()
 
 G4bool GPDScorerThirdStageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+   // get detector number
+   std::string name = aStep->GetTrack()->GetVolume()->GetName();
+   std::string nbr;
+   size_t found = name.find("G");
+   found += 1;
+
+   int numberOfCharacterInTelescopeNumber = name.length() - (int)found;
+
+   for (int i = 0; i < numberOfCharacterInTelescopeNumber; i++) nbr += name[i+1];
+   G4int DetNbr = atof(nbr.c_str());
+
+   // get energy
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index = aStep->GetTrack()->GetTrackID();
-   EvtMap->add(index, edep);
+   EvtMap->add(DetNbr + index, edep);
    return TRUE;
 }
 
@@ -232,20 +268,21 @@ GPDScorerDetectorNumber::~GPDScorerDetectorNumber()
 
 G4bool GPDScorerDetectorNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+   // get detector number
    std::string name = aStep->GetTrack()->GetVolume()->GetName();
    std::string nbr;
    size_t found = name.find(m_VolumeName);
+   found += 1;
 
-   int numberOfCharacterInTelescopeNumberSquare = (int)found - 1;
+   int numberOfCharacterInTelescopeNumber = name.length() - (int)found;
 
-   for (int i = 0; i < numberOfCharacterInTelescopeNumberSquare; i++) nbr += name[i+1];
-
+   for (int i = 0; i < numberOfCharacterInTelescopeNumber; i++) nbr += name[i+1];
    G4int DetNbr = atof(nbr.c_str());
 
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index = aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, DetNbr);
+   EvtMap->set(DetNbr + index, DetNbr);
    return TRUE;
 }
 
@@ -300,6 +337,18 @@ GPDScorerFirstStageFrontStripDummyShape::~GPDScorerFirstStageFrontStripDummyShap
 
 G4bool GPDScorerFirstStageFrontStripDummyShape::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+   // get detector number
+   std::string name = aStep->GetTrack()->GetVolume()->GetName();
+   std::string nbr;
+   size_t found = name.find("G");
+   found += 1;
+
+   int numberOfCharacterInTelescopeNumber = name.length() - (int)found;
+
+   for (int i = 0; i < numberOfCharacterInTelescopeNumber; i++) nbr += name[i+1];
+   G4int DetNbr = atof(nbr.c_str());
+
+   // get front strip number
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
@@ -313,7 +362,7 @@ G4bool GPDScorerFirstStageFrontStripDummyShape::ProcessHits(G4Step* aStep, G4Tou
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, X);
+   EvtMap->set(DetNbr + index, X);
    return TRUE;
 }
 
@@ -362,6 +411,18 @@ GPDScorerFirstStageBackStripDummyShape::~GPDScorerFirstStageBackStripDummyShape(
 
 G4bool GPDScorerFirstStageBackStripDummyShape::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+   // get detector number
+   std::string name = aStep->GetTrack()->GetVolume()->GetName();
+   std::string nbr;
+   size_t found = name.find("G");
+   found += 1;
+
+   int numberOfCharacterInTelescopeNumber = name.length() - (int)found;
+
+   for (int i = 0; i < numberOfCharacterInTelescopeNumber; i++) nbr += name[i+1];
+   G4int DetNbr = atof(nbr.c_str());
+
+   // get back strip number
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
@@ -374,7 +435,7 @@ G4bool GPDScorerFirstStageBackStripDummyShape::ProcessHits(G4Step* aStep, G4Touc
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, X);
+   EvtMap->set(DetNbr + index, X);
    return TRUE;
 }
 
@@ -423,6 +484,18 @@ GPDScorerFirstStageFrontStripSquare::~GPDScorerFirstStageFrontStripSquare()
 
 G4bool GPDScorerFirstStageFrontStripSquare::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+   // get detector number
+   std::string name = aStep->GetTrack()->GetVolume()->GetName();
+   std::string nbr;
+   size_t found = name.find("G");
+   found += 1;
+
+   int numberOfCharacterInTelescopeNumber = name.length() - (int)found;
+
+   for (int i = 0; i < numberOfCharacterInTelescopeNumber; i++) nbr += name[i+1];
+   G4int DetNbr = atof(nbr.c_str());
+
+   // get front strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
@@ -435,7 +508,7 @@ G4bool GPDScorerFirstStageFrontStripSquare::ProcessHits(G4Step* aStep, G4Touchab
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, X);
+   EvtMap->set(DetNbr + index, X);
    return TRUE;
 }
 
@@ -483,6 +556,18 @@ GPDScorerFirstStageBackStripSquare::~GPDScorerFirstStageBackStripSquare()
 
 G4bool GPDScorerFirstStageBackStripSquare::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+   // get detector number
+   std::string name = aStep->GetTrack()->GetVolume()->GetName();
+   std::string nbr;
+   size_t found = name.find("G");
+   found += 1;
+
+   int numberOfCharacterInTelescopeNumber = name.length() - (int)found;
+
+   for (int i = 0; i < numberOfCharacterInTelescopeNumber; i++) nbr += name[i+1];
+   G4int DetNbr = atof(nbr.c_str());
+
+   // get back strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
@@ -497,7 +582,7 @@ G4bool GPDScorerFirstStageBackStripSquare::ProcessHits(G4Step* aStep, G4Touchabl
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, Y);
+   EvtMap->set(DetNbr + index, Y);
    return TRUE;
 }
 
@@ -545,6 +630,18 @@ GPDScorerFirstStageFrontStripTrapezoid::~GPDScorerFirstStageFrontStripTrapezoid(
 
 G4bool GPDScorerFirstStageFrontStripTrapezoid::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+   // get detector number
+   std::string name = aStep->GetTrack()->GetVolume()->GetName();
+   std::string nbr;
+   size_t found = name.find("G");
+   found += 1;
+
+   int numberOfCharacterInTelescopeNumber = name.length() - (int)found;
+
+   for (int i = 0; i < numberOfCharacterInTelescopeNumber; i++) nbr += name[i+1];
+   G4int DetNbr = atof(nbr.c_str());
+
+   // get front strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
@@ -557,7 +654,7 @@ G4bool GPDScorerFirstStageFrontStripTrapezoid::ProcessHits(G4Step* aStep, G4Touc
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, X);
+   EvtMap->set(DetNbr + index, X);
    return TRUE;
 }
 
@@ -605,6 +702,18 @@ GPDScorerFirstStageBackStripTrapezoid::~GPDScorerFirstStageBackStripTrapezoid()
 
 G4bool GPDScorerFirstStageBackStripTrapezoid::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+   // get detector number
+   std::string name = aStep->GetTrack()->GetVolume()->GetName();
+   std::string nbr;
+   size_t found = name.find("G");
+   found += 1;
+
+   int numberOfCharacterInTelescopeNumber = name.length() - (int)found;
+
+   for (int i = 0; i < numberOfCharacterInTelescopeNumber; i++) nbr += name[i+1];
+   G4int DetNbr = atof(nbr.c_str());
+
+   // get back strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
@@ -619,7 +728,7 @@ G4bool GPDScorerFirstStageBackStripTrapezoid::ProcessHits(G4Step* aStep, G4Touch
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, Y);
+   EvtMap->set(DetNbr + index, Y);
    return TRUE;
 }
 
@@ -668,6 +777,18 @@ GPDScorerFirstStageFrontStripAnnular::~GPDScorerFirstStageFrontStripAnnular()
 
 G4bool GPDScorerFirstStageFrontStripAnnular::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+   // get detector number
+   std::string name = aStep->GetTrack()->GetVolume()->GetName();
+   std::string nbr;
+   size_t found = name.find("G");
+   found += 1;
+
+   int numberOfCharacterInTelescopeNumber = name.length() - (int)found;
+
+   for (int i = 0; i < numberOfCharacterInTelescopeNumber; i++) nbr += name[i+1];
+   G4int DetNbr = atof(nbr.c_str());
+
+   // get front strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
@@ -680,7 +801,7 @@ G4bool GPDScorerFirstStageFrontStripAnnular::ProcessHits(G4Step* aStep, G4Toucha
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, X);
+   EvtMap->set(DetNbr + index, X);
    return TRUE;
 }
 
@@ -729,6 +850,18 @@ GPDScorerFirstStageBackStripAnnular::~GPDScorerFirstStageBackStripAnnular()
 
 G4bool GPDScorerFirstStageBackStripAnnular::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+   // get detector number
+   std::string name = aStep->GetTrack()->GetVolume()->GetName();
+   std::string nbr;
+   size_t found = name.find("G");
+   found += 1;
+
+   int numberOfCharacterInTelescopeNumber = name.length() - (int)found;
+
+   for (int i = 0; i < numberOfCharacterInTelescopeNumber; i++) nbr += name[i+1];
+   G4int DetNbr = atof(nbr.c_str());
+
+   // get back strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
@@ -743,7 +876,7 @@ G4bool GPDScorerFirstStageBackStripAnnular::ProcessHits(G4Step* aStep, G4Touchab
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, Y);
+   EvtMap->set(DetNbr + index, Y);
    return TRUE;
 }
 
