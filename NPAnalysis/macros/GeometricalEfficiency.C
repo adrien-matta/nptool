@@ -36,10 +36,8 @@
 #include "TBranch.h"
 #include "TH1F.h"
 
-#include "/home/Adrien/Desktop/NPTool/NPTool.dev/NPLib/include/TInitialConditions.h"
-#include "/home/Adrien/Desktop/NPTool/NPTool.dev/NPLib/include/TInteractionCoordinates.h"
-
 using namespace std ;
+
 
 void GeometricalEfficiency(const char * fname = "Efficiency_10000")
 {

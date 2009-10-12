@@ -104,13 +104,13 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 void DetectorConstruction::AddDetector(VDetector* NewDetector)
 {
    // Add new detector to vector
-   m_Detectors.push_back(NewDetector)        ;
+   m_Detectors.push_back(NewDetector);
    // Initialize Scorer
    NewDetector->InitializeScorers();
    // Construct new detector
-   NewDetector->ConstructDetector(world_log) ;
+   NewDetector->ConstructDetector(world_log);
    // Add Detector to TTree
-   NewDetector->InitializeRootOutput() ;
+   NewDetector->InitializeRootOutput();
    
 }
 

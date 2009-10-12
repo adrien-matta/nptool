@@ -9,13 +9,14 @@
  * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
  *                                                                           *
  * Creation Date  : 21/07/09                                                 *
- * Last update    :                                                          *
+ * Last update    : 11/10/09                                                 *
  *---------------------------------------------------------------------------*
  * Decription: Define the S1 detector from Micron                            *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *                                                                           *
+ *  + 11/10/09: Change scorer philosophy, one scorer for the detector number *
+ *              added (N. de Sereville)                                      *
  *                                                                           *
  *****************************************************************************/
 
@@ -49,15 +50,13 @@ public:
    ////////////////////////////////////////////////////
 public:
    // By Position Method
-   void AddModule(G4double PosZ,
-                  G4double Rmin,
-                  G4double Rmax);
+   void AddModule(G4double PosZ);
 
    // Effectively construct Volume
    // Avoid to have two time same code for Angle and Point definition
-   void VolumeMaker(G4int TelescopeNumber          ,
-                    G4ThreeVector     MMpos        ,
-                    G4RotationMatrix* MMrot        ,
+   void VolumeMaker(G4int             DetecNumber,
+                    G4ThreeVector     pos,
+                    G4RotationMatrix* rot,
                     G4LogicalVolume*  world);
 
 
@@ -77,6 +76,9 @@ public:
    // Called After DetecorConstruction::AddDetector Method
    void InitializeRootOutput();
 
+   // Initialize all scorers necessary for the detector
+   void InitializeScorers();
+
    // Read sensitive part and fill the Root tree.
    // Called at in the EventAction::EndOfEventAvtion
    void ReadSensitive(const G4Event* event);
@@ -88,21 +90,18 @@ public:
 private:
    TS1Data* m_Event;
 
+
+private:
+   // Scorer
+   G4MultiFunctionalDetector* m_Scorer;
+
+
    ////////////////////////////////////////////////////
    ///////////////Private intern Data//////////////////
    ////////////////////////////////////////////////////
 private:
    // Used for "By Point Definition"
    vector<G4double>	m_PosZ;
-   vector<G4double>	m_Rmin;
-   vector<G4double>	m_Rmax;
-
-   // for debugging purpose
-   G4ThreeVector	MMpos;
-   G4ThreeVector	MMu;
-   G4ThreeVector	MMv;
-   G4ThreeVector	MMw;
-   G4ThreeVector	CT;
 
    // Set to true if you want to see Telescope Frame in your visualisation
    bool			m_non_sensitive_part_visiualisation;
