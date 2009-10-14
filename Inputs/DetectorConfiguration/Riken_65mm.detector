@@ -153,7 +153,7 @@ Plastic
 	R= 318
 	Thickness= 20
 	Radius= 20
-	Scintillator= BC452_10
+	Scintillator= BC400
 	LeadThickness= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Plastic
@@ -162,7 +162,7 @@ Plastic
 	R= 343
 	Thickness= 30
 	Radius= 20
-	Scintillator= BC452_10
+	Scintillator= BC400
 	LeadThickness= 2
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
