@@ -9,8 +9,7 @@
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Target
-%	THICKNESS= 10.3
-	THICKNESS= 0.0001
+	THICKNESS= 10.3
 	ANGLE= 0
 	RADIUS=	12
 	MATERIAL= CD2
@@ -33,7 +32,7 @@ GPDDummyShape
 	BETA= 0 0 0
 	FIRSTSTAGE= 1
 	SECONDSTAGE= 1
-	THIRDSTAGE= 0
+	THIRDSTAGE= 1
 	VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
 GPDDummyShape
@@ -43,7 +42,7 @@ GPDDummyShape
 	BETA= 0 0 0
 	FIRSTSTAGE= 1
 	SECONDSTAGE= 1
-	THIRDSTAGE= 0	
+	THIRDSTAGE= 1	
 	VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
 GPDDummyShape
@@ -53,7 +52,7 @@ GPDDummyShape
 	BETA= 0 0 0
 	FIRSTSTAGE= 1
 	SECONDSTAGE= 1
-	THIRDSTAGE= 0
+	THIRDSTAGE= 1
 	VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%3
 GPDDummyShape
@@ -63,7 +62,7 @@ GPDDummyShape
 	BETA= 0 0 0
 	FIRSTSTAGE= 1
 	SECONDSTAGE= 1
-	THIRDSTAGE= 0	
+	THIRDSTAGE= 1	
 	VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%4
 GPDDummyShape
@@ -73,7 +72,7 @@ GPDDummyShape
 	BETA= 0 0 0
 	FIRSTSTAGE= 1
 	SECONDSTAGE= 1
-	THIRDSTAGE= 0	
+	THIRDSTAGE= 1	
 	VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 GPDDummyShape
@@ -83,7 +82,7 @@ GPDDummyShape
 	BETA= 0 0 0
 	FIRSTSTAGE= 1
 	SECONDSTAGE= 1
-	THIRDSTAGE= 0	
+	THIRDSTAGE= 1	
 	VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%6
 GPDDummyShape
@@ -93,7 +92,7 @@ GPDDummyShape
 	BETA= 0 0 0
 	FIRSTSTAGE= 1
 	SECONDSTAGE= 1
-	THIRDSTAGE= 0	
+	THIRDSTAGE= 1	
 	VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%7
 GPDDummyShape
@@ -103,7 +102,7 @@ GPDDummyShape
 	BETA= 0 0 0
 	FIRSTSTAGE= 1
 	SECONDSTAGE= 1
-	THIRDSTAGE= 0	
+	THIRDSTAGE= 1	
 	VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%8
 GPDDummyShape
@@ -113,7 +112,7 @@ GPDDummyShape
 	BETA= 0 0 0
 	FIRSTSTAGE= 1
 	SECONDSTAGE= 1
-	THIRDSTAGE= 0	
+	THIRDSTAGE= 1	
 	VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%9
 GPDDummyShape
@@ -123,7 +122,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%10
 GPDDummyShape
@@ -133,7 +132,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%11
 GPDDummyShape
@@ -143,7 +142,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%12 First Cone (forward)
 GPDDummyShape
@@ -153,7 +152,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%13
 GPDDummyShape
@@ -163,7 +162,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%14
 GPDDummyShape
@@ -173,7 +172,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%15
 GPDDummyShape
@@ -183,7 +182,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%16
 GPDDummyShape
@@ -193,7 +192,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%17
 GPDDummyShape
@@ -203,7 +202,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%18
 GPDDummyShape
@@ -213,7 +212,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%19
 GPDDummyShape
@@ -223,7 +222,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%20
 GPDDummyShape
@@ -233,7 +232,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%21 Second Cone (forward)
 GPDDummyShape
@@ -243,7 +242,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%22
 GPDDummyShape
@@ -253,7 +252,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%23
 GPDDummyShape
@@ -263,7 +262,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%24
 GPDDummyShape
@@ -273,7 +272,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%25 First Cone (backward)
 GPDDummyShape
@@ -283,7 +282,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%26
 GPDDummyShape
@@ -293,7 +292,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%27
 GPDDummyShape
@@ -303,7 +302,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%28
 GPDDummyShape
@@ -313,7 +312,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%29
 GPDDummyShape
@@ -323,7 +322,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%30
 GPDDummyShape
@@ -333,7 +332,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%31
 GPDDummyShape
@@ -343,7 +342,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%32
 GPDDummyShape
@@ -353,7 +352,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%33
 GPDDummyShape
@@ -363,7 +362,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%34 Second Cone (backward)
 GPDDummyShape
@@ -373,7 +372,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%35
 GPDDummyShape
@@ -383,7 +382,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%36
 GPDDummyShape
@@ -393,7 +392,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%37
 GPDDummyShape
@@ -403,7 +402,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%38 End Cap (forward)
 GPDDummyShape
@@ -413,7 +412,7 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%39 End Cap (backward)
 GPDDummyShape
@@ -423,5 +422,5 @@ GPDDummyShape
         BETA= 0 0 0
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
-        THIRDSTAGE= 0
+        THIRDSTAGE= 1
         VIS= all

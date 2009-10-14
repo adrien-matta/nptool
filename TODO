@@ -22,8 +22,6 @@
 
 TODO for NPTool:
 ----------------
-   + Change map's index of scorers to deal a typical case like it is now done
-     for the dE-E with 2 plastics. (Adrien + Nicolas)
    + Build a dummy detector as a simple example of how NPTool is working (Adrien)
    + Target work (Nicolas)
       + Make homogeneous treatment of materials definition wrt other detectors

@@ -1,8 +1,5 @@
 TTreeName 
 	SimulatedTree
 RootFileName 
-%	../../Outputs/Simulation/mySimul_test.root
-	../../Outputs/Simulation/mySimul.root
-%	../../Outputs/Simulation/TestMarcIsotropic.root
-%	../../Outputs/Simulation/TestMarc132sn.root
-%	../../Outputs/Simulation/TestMarcIsotropic1detector.root
+%	../../Outputs/Simulation/mySimul.root
+	../../Outputs/Simulation/sn132dp_10MeVA_T1_B0_E0.root

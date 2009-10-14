@@ -39,7 +39,7 @@
 using namespace std ;
 
 
-void GeometricalEfficiency(const char * fname = "Efficiency_10000")
+void GeometricalEfficiency(const char * fname = "mySimul")
 {
    // Open output ROOT file from NPTool simulation run
    TString path = gSystem->Getenv("NPTOOL");
@@ -77,8 +77,8 @@ void GeometricalEfficiency(const char * fname = "Efficiency_10000")
 
    // Compute relative efficiency in %
    TH1F *efficiency = new TH1F("hEfficiency", "Efficiency", 180, 0, 180);
-//   efficiency->SetTitle("Efficiency GASPARD;#Theta [deg];#epsilon [%]");
-   efficiency->SetTitle("Efficiency e530;#Theta [deg];#epsilon [%]");
+   efficiency->SetTitle("Efficiency GASPARD (Spheric version);#Theta [deg];#epsilon [%]");
+//   efficiency->SetTitle("Efficiency e530;#Theta [deg];#epsilon [%]");
    efficiency->Divide(hDetecTheta,hEmittTheta,100);
    efficiency->SetMaximum(110);
    efficiency->Draw();
