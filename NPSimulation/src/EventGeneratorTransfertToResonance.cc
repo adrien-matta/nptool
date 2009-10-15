@@ -363,7 +363,7 @@ while(ReadingStatus){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4ParticleGun* particleGun)
-{
+{  
    // Clear contents of Precedent event (now stored in ROOTOutput)
    m_InitConditions->Clear();
 
@@ -409,7 +409,6 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
                             	
 	else 
 		InterCoord = G4ThreeVector(0,0,0);
-
    // write vertex position to ROOT file
    G4double x0 = InterCoord.x();
    G4double y0 = InterCoord.y();
@@ -417,15 +416,12 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
    m_InitConditions->SetICPositionX(x0);
    m_InitConditions->SetICPositionY(y0);
    m_InitConditions->SetICPositionZ(z0);
-
    // write emittance angles to ROOT file
    m_InitConditions->SetICIncidentEmittanceTheta(Beam_thetaX / deg);
    m_InitConditions->SetICIncidentEmittancePhi(Beam_phiY / deg);
-
    // write angles to ROOT file
    m_InitConditions->SetICIncidentAngleTheta(Beam_theta / deg);
    m_InitConditions->SetICIncidentAnglePhi(Beam_phi / deg);
-
    //////////////////////////////////////////////////////////
    ///// Build rotation matrix to go from the incident //////
    ///// beam frame to the "world" frame               //////
@@ -440,7 +436,6 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
                       sin(Beam_theta) * sin(Beam_phi),
                       cos(Beam_theta));
    G4RotationMatrix BeamToWorld(col1, col2, col3);
-
    /////////////////////////////////////////////////////////////////
    ///// Angles for emitted particles following Cross Section //////
    ///// Angles are in the beam frame                         //////
@@ -457,7 +452,6 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
    // write angles to ROOT file
    m_InitConditions->SetICEmittedAngleThetaCM(ThetaCM / deg);
    m_InitConditions->SetICEmittedAnglePhiIncidentFrame(phi / deg);
-
    //////////////////////////////////////////////////
    /////  Momentum and angles from  kinematics  /////
    /////  Angles are in the beam frame          /////
@@ -478,17 +472,16 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
                                          cos(ThetaHeavy));
 
 
-
    // Move to the target
+if( m_Target !=0)   {
    x0 += m_Target->GetTargetX() ;
    y0 += m_Target->GetTargetY() ;
    z0 += m_Target->GetTargetZ() ;
-
+		}
    // write vertex position to ROOT file
    m_InitConditions->SetICPositionX(x0);
    m_InitConditions->SetICPositionY(y0);
    m_InitConditions->SetICPositionZ(z0);
-
    //////////////////////////////////////////////////
    ///////// Set up everything for shooting /////////
    //////////////////////////////////////////////////
@@ -534,7 +527,7 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
       G4double theta_world = momentum_kine_world.theta();
       G4double phi_world   = momentum_kine_world.phi();
       if (phi_world < 1e-6) phi_world += 2*pi;
-      
+
       EventGeneratorTransfertToResonance::ResonanceDecay(	EnergyHeavy    	,
       														theta_world     ,
       														phi_world      	,
@@ -544,7 +537,6 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
       														anEvent        	,
       														particleGun		);
       
-   
 }
 
 

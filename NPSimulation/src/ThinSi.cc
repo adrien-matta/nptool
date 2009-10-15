@@ -173,8 +173,8 @@ void ThinSi::VolumeMaker(	G4int            	DetNumber      	,
             0);
 
    // Frame is made of 4 thick box (2 Horizontal and 2 Vertical)
-   G4Box* solidFrameHorizontal = new G4Box(Name + "Frame", 0.5*SiliconSize, 0.5*(DetectorSize - SiliconSize) / 2, 0.5*FrameThickness*mm)   ;
-   G4Box* solidFrameVertical  = new G4Box(Name + "Frame", 0.5*(DetectorSize - SiliconSize) / 2, 0.5*DetectorSize, 0.5*FrameThickness*mm)   ;
+   G4Box* solidFrameHorizontal = new G4Box(Name + "_Frame", 0.5*SiliconSize, 0.5*(DetectorSize - SiliconSize) / 2, 0.5*FrameThickness*mm)   ;
+   G4Box* solidFrameVertical  = new G4Box(Name + "_Frame", 0.5*(DetectorSize - SiliconSize) / 2, 0.5*DetectorSize, 0.5*FrameThickness*mm)   ;
 
    G4LogicalVolume* logicFrameHorizontal =
       new G4LogicalVolume(solidFrameHorizontal, Al, Name, 0, 0);
@@ -192,7 +192,7 @@ void ThinSi::VolumeMaker(	G4int            	DetNumber      	,
       new G4PVPlacement(0                 ,
             FrameTopPosition     ,
             logicFrameHorizontal ,
-            Name + "Frame"         ,
+            Name + "_Frame"         ,
             logicThinSi          ,
             false             ,
             0);
@@ -201,7 +201,7 @@ void ThinSi::VolumeMaker(	G4int            	DetNumber      	,
       new G4PVPlacement(0                 ,
             FrameBottomPosition     ,
             logicFrameHorizontal ,
-            Name + "Frame"         ,
+            Name + "_Frame"         ,
             logicThinSi          ,
             false             ,
             0);
@@ -210,7 +210,7 @@ void ThinSi::VolumeMaker(	G4int            	DetNumber      	,
       new G4PVPlacement(0                 ,
             FrameLeftPosition    ,
             logicFrameVertical      ,
-            Name + "Frame"         ,
+            Name + "_Frame"         ,
             logicThinSi          ,
             false             ,
             0);
@@ -219,7 +219,7 @@ void ThinSi::VolumeMaker(	G4int            	DetNumber      	,
       new G4PVPlacement(0                 ,
             FrameRightPosition      ,
             logicFrameVertical      ,
-            Name + "Frame"         ,
+            Name + "_Frame"         ,
             logicThinSi          ,
             false             ,
             0);
@@ -236,10 +236,10 @@ void ThinSi::VolumeMaker(	G4int            	DetNumber      	,
       new G4LogicalVolume(solidAlu, Al, "logicAlu", 0, 0, 0)    ;
 
    PVPBuffer =
-      new G4PVPlacement(0  ,  posAluFront ,  logicAlu ,  Name + "AluFront"   ,  logicThinSi ,  true, 0)  ;
+      new G4PVPlacement(0  ,  posAluFront ,  logicAlu ,  Name + "_AluFront"   ,  logicThinSi ,  true, 0)  ;
 
    PVPBuffer =
-      new G4PVPlacement(0  ,  posAluBack  ,  logicAlu ,  Name + "AluBack"    ,  logicThinSi ,  true, 0)  ;
+      new G4PVPlacement(0  ,  posAluBack  ,  logicAlu ,  Name + "_AluBack"    ,  logicThinSi ,  true, 0)  ;
 
 
    G4Box*   solidSi  =
@@ -249,23 +249,10 @@ void ThinSi::VolumeMaker(	G4int            	DetNumber      	,
       new G4LogicalVolume(solidSi, Silicon, "logicSi", 0, 0, 0)           ;
 
    PVPBuffer =
-      new G4PVPlacement(0, posSi, logicSi, Name + "Si", logicThinSi, true, 0)   ;
+      new G4PVPlacement(0, posSi, logicSi, Name + "_Si", logicThinSi, true, 0)   ;
 
-   //Set Add. Silicon strip sensible
-   //instantiate a new scorer
-   G4MultiFunctionalDetector* ThinSiScorer = new G4MultiFunctionalDetector("ThinSi" + DetectorNumber);
    //attach it to the Silicon plate
-   logicSi ->SetSensitiveDetector(ThinSiScorer);
-   //and declare it to the SDManager
-   G4SDManager::GetSDMpointer()->AddNewDetector(ThinSiScorer);
-
-   //instantiate primitive scorer
-   G4VPrimitiveScorer* ThinSiEnergy       ;
-
-   //create primitive scorer
-   ThinSiEnergy = new MUST2::PSStripE("StripEnergy", 0)    ;
-   //and register it to the multifunctionnal detector
-   ThinSiScorer->RegisterPrimitive(ThinSiEnergy)      ;
+   logicSi ->SetSensitiveDetector(m_StripScorer);
 
 }
 
@@ -597,38 +584,102 @@ void ThinSi::ReadSensitive(const G4Event* event)
 //////////////////////////////////////////////////////////////////////////////////////
 
 // Si
-   std::map<G4int, G4double*>::iterator Energy_itr     ;
-   G4THitsMap<G4double>* EnergyHitMap              ;
+	G4THitsMap<G4int>*	  DetNbrHitMap						;      
+	G4THitsMap<G4double>* EnergyHitMap              			;
+	G4THitsMap<G4double>* TimeHitMap             					;
 
-
-
+	std::map<G4int, G4int*>::iterator DetNbr_itr  ;
+	std::map<G4int, G4double*>::iterator Energy_itr     	;
+	std::map<G4int, G4double*>::iterator Time_itr    			;
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
-
-   G4int NumberOfDetector = m_DefinitionType.size()  ;
-   for (G4int i = 0 ; i < NumberOfDetector ; i++) {
-      G4int k = i + 1;
-      ostringstream buffer;
-      buffer << k;
-      DetectorNumber = buffer.str();
-
       // Read the Scorer associate to the Silicon Strip
+
+			//DetectorNumber	
+      G4int StripDetNbrCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThinSi_StripScorer/DetectorNumber")   		;
+      DetNbrHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripDetNbrCollectionID))                 		;
+      DetNbr_itr = DetNbrHitMap->GetMap()->begin()                                                       										;
+
       //Energy
-      G4int StripEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThinSi" + DetectorNumber + "/StripEnergy")   ;
+      G4int StripEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThinSi_StripScorer/StripEnergy")   ;
       EnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripEnergyCollectionID))                 ;
-      Energy_itr = EnergyHitMap->GetMap()->begin()                                                       ;
+      Energy_itr = EnergyHitMap->GetMap()->begin()                                                       								;
 
-      // Loop on Strip energy
-      for (G4int l = 0 ; l < EnergyHitMap->entries() ; l++) {
-         //G4int ETrackID  =   Energy_itr->first      ;
-         G4double E     = *(Energy_itr->second)    ;
+			//Time
+      G4int StripTimeCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThinSi_StripScorer/StripTime")   		;
+      TimeHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripTimeCollectionID))                 		;
+      Time_itr = TimeHitMap->GetMap()->begin()                                                       										;
 
-         if (E > 0) {
-            m_Energy = RandGauss::shoot(E, ResoEnergy);
-         }
+		  G4int sizeN = DetNbrHitMap->entries() 	;
+	    G4int sizeE = EnergyHitMap->entries() 	;
+	    G4int sizeT = TimeHitMap->entries() 		;
+  
+		// Loop on Plastic Number
+    for (G4int l = 0 ; l < sizeN ; l++) 
+				{
+	        G4int N     =      *(DetNbr_itr->second)    ;
+	        G4int NTrackID  =   DetNbr_itr->first - N  ;
+	        
+	      
+	        if (N > 0) 
+						{
 
-      }
-      // clear map for next event
-      EnergyHitMap   ->clear()   ;
-   }
+						//  Energy
+				        Energy_itr = EnergyHitMap->GetMap()->begin();
+				        for (G4int h = 0 ; h < sizeE ; h++) {
+				            G4int ETrackID  =   Energy_itr->first  - N      ;
+				            G4double E     = *(Energy_itr->second)      	;
+
+				            if (ETrackID == NTrackID) {
+				                m_Energy=RandGauss::shoot(E, ResoEnergy )    ;
+				            }
+				            
+				            Energy_itr++;
+				        	}
+
+
+				        //  Time
+				        Time_itr = TimeHitMap->GetMap()->begin();
+				        for (G4int h = 0 ; h < sizeT ; h++) {
+				            G4int TTrackID  =   Time_itr->first   - N    ;
+				            G4double T     = *(Time_itr->second)      ;
+
+				            if (TTrackID == NTrackID) {
+				                /*m_Event->SetTime(RandGauss::shoot(T, ResoTime))*/ ;
+				            }
+				            
+				            Time_itr++;
+				        }
+
+	       	 }
+
+	        DetNbr_itr++;
+   		}
+    
+    // clear map for next event
+    TimeHitMap				->clear()	;    
+    DetNbrHitMap    ->clear()	;
+    EnergyHitMap   			->clear() 	; 
 }
+
+
+void ThinSi::InitializeScorers()
+	{
+
+		//	Silicon Associate Scorer
+			m_StripScorer = new G4MultiFunctionalDetector("ThinSi_StripScorer");
+			
+			G4VPrimitiveScorer* DetNbr 														= new GENERALSCORERS::PSDetectorNumber("DetectorNumber","ThinSi_", 0)            						;
+			G4VPrimitiveScorer* Energy 														= new GENERALSCORERS::PSEnergy("StripEnergy","ThinSi_", 0)             											;			
+			G4VPrimitiveScorer* TOF 															= new GENERALSCORERS::PSTOF("StripTime","ThinSi_", 0)                  											;          					 		 
+	
+
+		//and register it to the multifunctionnal detector
+			m_StripScorer->RegisterPrimitive(DetNbr)             				;
+			m_StripScorer->RegisterPrimitive(Energy)             				;
+			m_StripScorer->RegisterPrimitive(TOF)                				;
+
+	 	//	Add All Scorer to the Global Scorer Manager
+		  G4SDManager::GetSDMpointer()->AddNewDetector(m_StripScorer) ;
+		}
+

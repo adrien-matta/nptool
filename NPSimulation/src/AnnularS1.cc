@@ -169,7 +169,7 @@ void AnnularS1::VolumeMaker(G4int             DetecNumber,
    G4PVPlacement* PVPBuffer ;
 
    // Name of the module
-   G4String Name = "AnnularS1_" + DetectorNumber;
+   G4String Name = "S1Annular" + DetectorNumber;
 
    // Definition of the volume containing the sensitive detector
    G4Tubs* solidAnnularS1 = new G4Tubs(Name, 
@@ -572,11 +572,11 @@ void AnnularS1::InitializeScorers()
    G4VPrimitiveScorer* TOF                              = new AnnularS1ScorerTime("StripTime", 0);
    G4VPrimitiveScorer* ThetaStripPosition               = new AnnularS1ScorerThetaStripNumber("ThetaStripNumber", 0);
    G4VPrimitiveScorer* PhiStripPosition                 = new AnnularS1ScorerPhiStripNumber("PhiStripNumber", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesX          = new PSInteractionCoordinatesX("InterCoordX", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesY          = new PSInteractionCoordinatesY("InterCoordY", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesZ          = new PSInteractionCoordinatesZ("InterCoordZ", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new PSInteractionCoordinatesAngleTheta("InterCoordAngTheta", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new PSInteractionCoordinatesAnglePhi("InterCoordAngPhi", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesX          = new GENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","S1Annular", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesY          = new GENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","S1Annular", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesZ          = new GENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","S1Annular", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new GENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","S1Annular", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new GENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","S1Annular", 0);
 
    //and register it to the multifunctionnal detector
    m_Scorer->RegisterPrimitive(DetNbr);

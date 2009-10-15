@@ -84,9 +84,9 @@ public:
 public: // Material 
 	void InitializeMaterial() 		;
 	// Platic
-	G4Material* m_MaterialPlastic_BC400		; //BC-400 type plastic
-	G4Material* m_MaterialPlastic_BC452_2	; //BC452:BC-400 loaded with 2%Pb type plastic
-	G4Material* m_MaterialPlastic_BC452_5	; //BC452:BC-400 loaded with 5%Pb type plastic
+	G4Material* m_MaterialPlastic_BC400			; //BC-400 type plastic
+	G4Material* m_MaterialPlastic_BC452_2		; //BC452:BC-400 loaded with 2%Pb type plastic
+	G4Material* m_MaterialPlastic_BC452_5		; //BC452:BC-400 loaded with 5%Pb type plastic
 	G4Material* m_MaterialPlastic_BC452_10	; //BC452:BC-400 loaded with 10%Pb type plastic
 	// Lead
 	G4Material* m_MaterialLead		;
@@ -109,7 +109,7 @@ private:
 private:
    
    // if true a Lead plate is added in front or back of the detector
-   vector<double>	  	m_LeadThickness	;
+   vector<double>	  m_LeadThickness	;
    
    vector<double>		m_PlasticThickness	;
    vector<double>		m_PlasticRadius		;

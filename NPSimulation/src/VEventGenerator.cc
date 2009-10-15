@@ -53,52 +53,70 @@ void VEventGenerator::CalculateBeamInteraction(double MeanPosX, double SigmaPosX
                                                G4ThreeVector &InterCoord, double &AngleEmittanceTheta, double &AngleEmittancePhi,
                                                double &AngleIncidentTheta, double &AngleIncidentPhi)
 {
-   // target parameters
-   double TargetThickness = target->GetTargetThickness();
-   double TargetRadius    = target->GetTargetRadius();
-   double TargetAngle     = target->GetTargetAngle();
 
-   // beam interaction parameters
-   double x0 = 1000 * cm;
-   double y0 = 1000 * cm;
-   double z0 =    0 * cm;
-   double dz =    0 * cm;
+	if(target!=0)
+		{
+			 // target parameters
+		   double TargetThickness = target->GetTargetThickness();
+		   double TargetRadius    = target->GetTargetRadius();
+		   double TargetAngle     = target->GetTargetAngle();
 
-   // calculate emittance parameters (x,theta) and (y,phi)
-   if (TargetRadius != 0) {	// case of finite target dimensions
-      while (sqrt(x0*x0 + y0*y0) > TargetRadius) {
-         RandomGaussian2D(MeanPosX, MeanPosTheta, SigmaPosX, SigmaPosTheta, x0, AngleEmittanceTheta);
-         RandomGaussian2D(MeanPosY, MeanPosPhi,   SigmaPosY, SigmaPosPhi,   y0, AngleEmittancePhi);
-      }
-      // in case target is tilted, correct the z-position of interaction
-      dz = x0 * tan(TargetAngle);
-   }
-   else {			// if no target radius is given consider a point-like target
-      RandomGaussian2D(0, 0, 0, SigmaPosTheta, x0, AngleEmittanceTheta);
-      RandomGaussian2D(0, 0, 0, SigmaPosPhi,   y0, AngleEmittancePhi);
-   }
+		   // beam interaction parameters
+		   double x0 = 1000 * cm;
+		   double y0 = 1000 * cm;
+		   double z0 =    0 * cm;
+		   double dz =    0 * cm;
 
-   // correct for the target angle wrt the beam axis
-   // this simple correction is only valid if the beam is parallel to the beam axis
-   // should be improved in a next version
-   TargetThickness /= cos(TargetAngle);
-   z0 = dz + (-TargetThickness / 2 + RandFlat::shoot() * TargetThickness);
+		   // calculate emittance parameters (x,theta) and (y,phi)
+		   if (TargetRadius != 0) {	// case of finite target dimensions
+		      while (sqrt(x0*x0 + y0*y0) > TargetRadius) {
+		         RandomGaussian2D(MeanPosX, MeanPosTheta, SigmaPosX, SigmaPosTheta, x0, AngleEmittanceTheta);
+		         RandomGaussian2D(MeanPosY, MeanPosPhi,   SigmaPosY, SigmaPosPhi,   y0, AngleEmittancePhi);
+		      }
+		      // in case target is tilted, correct the z-position of interaction
+		      dz = x0 * tan(TargetAngle);
+		   }
+		   else {			// if no target radius is given consider a point-like target
+		      RandomGaussian2D(0, 0, 0, SigmaPosTheta, x0, AngleEmittanceTheta);
+		      RandomGaussian2D(0, 0, 0, SigmaPosPhi,   y0, AngleEmittancePhi);
+		   }
 
-   // Move to the target position
-   x0 += target->GetTargetX();
-   y0 += target->GetTargetY();
-   z0 += target->GetTargetZ();
-   InterCoord = G4ThreeVector(x0, y0, z0);
+		   // correct for the target angle wrt the beam axis
+		   // this simple correction is only valid if the beam is parallel to the beam axis
+		   // should be improved in a next version
+		   TargetThickness /= cos(TargetAngle);
+		   z0 = dz + (-TargetThickness / 2 + RandFlat::shoot() * TargetThickness);
 
-   // Calculate incident angle in spherical coordinate, passing by the direction vector dir      
-   double Xdir = sin(AngleEmittanceTheta);
-   double Ydir = sin(AngleEmittancePhi);
-   double Zdir = cos(AngleEmittanceTheta) + cos(AngleEmittancePhi);
+		   // Move to the target position
+		   x0 += target->GetTargetX();
+		   y0 += target->GetTargetY();
+		   z0 += target->GetTargetZ();
+		   InterCoord = G4ThreeVector(x0, y0, z0);
 
-   AngleIncidentTheta = acos(Zdir / sqrt(Xdir*Xdir + Ydir*Ydir + Zdir*Zdir)) * rad;
-   AngleIncidentPhi   = atan2(Ydir, Xdir) * rad;
-   if (AngleIncidentPhi   < 0)    AngleIncidentPhi += 2*pi;
-   if (AngleIncidentTheta < 1e-6) AngleIncidentPhi  = 0;
+		   // Calculate incident angle in spherical coordinate, passing by the direction vector dir      
+		   double Xdir = sin(AngleEmittanceTheta);
+		   double Ydir = sin(AngleEmittancePhi);
+		   double Zdir = cos(AngleEmittanceTheta) + cos(AngleEmittancePhi);
+
+		   AngleIncidentTheta = acos(Zdir / sqrt(Xdir*Xdir + Ydir*Ydir + Zdir*Zdir)) * rad;
+		   AngleIncidentPhi   = atan2(Ydir, Xdir) * rad;
+		   if (AngleIncidentPhi   < 0)    AngleIncidentPhi += 2*pi;
+		   if (AngleIncidentTheta < 1e-6) AngleIncidentPhi  = 0;
+	
+		}
+
+	else{
+
+		
+		InterCoord = G4ThreeVector(0, 0, 0);
+		AngleEmittanceTheta=0;
+		AngleEmittancePhi=0;
+		AngleIncidentTheta=0; 
+		AngleIncidentPhi=0;
+
+		}
+		
+   
 }
 
 

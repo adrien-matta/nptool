@@ -39,7 +39,6 @@ using namespace GPDDUMMYSHAPE;
 // scorer provide by G4 don't work this way but using a global ID for each event you should
 // not use those scorer with some G4 provided ones or being very carefull doing so.
 
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // FirstStage Energy Scorer (deal with multiple particle hit)
 GPDScorerFirstStageEnergy::GPDScorerFirstStageEnergy(G4String name, G4int depth)

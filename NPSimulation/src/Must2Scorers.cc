@@ -24,6 +24,7 @@
  *****************************************************************************/
 #include "Must2Scorers.hh"
 #include "G4UnitsTable.hh"
+#include "GeneralScorers.hh"
 #include <string>
 using namespace MUST2 ;
 
@@ -34,67 +35,6 @@ using namespace MUST2 ;
 // time of flight or position,... particle by particle for each event. Because standard
 // scorer provide by G4 don't work this way but using a global ID for each event you should
 // not use those scorer with some G4 provided ones or being very carefull doing so.
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//Strip Energy Scorer (deal with multiple particle hit)
-
-PSStripE::PSStripE(G4String name, G4int depth)
-      : G4VPrimitiveScorer(name, depth), HCID(-1)
-{
-   ;
-}
-
-PSStripE::~PSStripE()
-{
-   ;
-}
-
-G4bool PSStripE::ProcessHits(G4Step* aStep, G4TouchableHistory*)
-{
-   G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
-   G4int  index = aStep->GetTrack()->GetTrackID();
-   EvtMap->add(index, edep);
-   return TRUE;
-}
-
-void PSStripE::Initialize(G4HCofThisEvent* HCE)
-{
-   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
-   if (HCID < 0) {
-      HCID = GetCollectionID(0);
-   }
-   HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
-}
-
-void PSStripE::EndOfEvent(G4HCofThisEvent*)
-{
-   ;
-}
-
-void PSStripE::clear()
-{
-   EvtMap->clear();
-}
-
-void PSStripE::DrawAll()
-{
-   ;
-}
-
-void PSStripE::PrintAll()
-{
-   G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl;
-   G4cout << " PrimitiveScorer " << GetName() << G4endl;
-   G4cout << " Number of entries " << EvtMap->entries() << G4endl;
-   std::map<G4int, G4double*>::iterator itr = EvtMap->GetMap()->begin();
-   for (; itr != EvtMap->GetMap()->end(); itr++) {
-      G4cout << "  copy no.: " << itr->first
-      << "  energy deposit: " << G4BestUnit(*(itr->second), "Energy")
-      << G4endl;
-   }
-}
-
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -114,6 +54,8 @@ PSStripNumberX::~PSStripNumberX()
 
 G4bool PSStripNumberX::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+	 int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "Must2Telescope");
+
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
@@ -126,7 +68,7 @@ G4bool PSStripNumberX::ProcessHits(G4Step* aStep, G4TouchableHistory*)
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, X);
+   EvtMap->set(index+DetNbr, X);
    return TRUE;
 }
 
@@ -178,6 +120,9 @@ PSStripNumberY::~PSStripNumberY()
 
 G4bool PSStripNumberY::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+	 int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "Must2Telescope");
+
+
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
@@ -192,7 +137,7 @@ G4bool PSStripNumberY::ProcessHits(G4Step* aStep, G4TouchableHistory*)
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, Y);
+   EvtMap->set(index+DetNbr, Y);
    return TRUE;
 }
 
@@ -225,76 +170,4 @@ void PSStripNumberY::PrintAll()
    G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl ;
    G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
    G4cout << " Number of entries " << EvtMap->entries() << G4endl     ;
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-		//Detector Number Scorer
-PSDetectorNumber::PSDetectorNumber(G4String name, G4int depth, G4String VolumeName )
-      : G4VPrimitiveScorer(name, depth), HCID(-1)
-{
-   m_VolumeName = VolumeName;
-}
-
-PSDetectorNumber::~PSDetectorNumber()
-{
-   ;
-}
-
-G4bool PSDetectorNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
-{
-   std::string name = aStep->GetTrack()->GetVolume()->GetName();
-   std::string nbr ;
-   size_t found;
-   found=name.find(m_VolumeName);
-   
-   int numberOfCharacterInTelescopeNumber = (int)found - 1 ;
-   
-
-	for( int i = 0 ; i < numberOfCharacterInTelescopeNumber ; i++ )
-		nbr += name[i+1] ;
-
-   G4int DetNbr = atof( nbr.c_str() ) ;
-   G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
-   G4int  index = aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, DetNbr);
-   return TRUE;
-}
-
-void PSDetectorNumber::Initialize(G4HCofThisEvent* HCE)
-{
-   EvtMap = new G4THitsMap<G4int>(GetMultiFunctionalDetector()->GetName(), GetName());
-   if (HCID < 0) {
-      HCID = GetCollectionID(0);
-   }
-   HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
-}
-
-void PSDetectorNumber::EndOfEvent(G4HCofThisEvent*)
-{
-   ;
-}
-
-void PSDetectorNumber::clear()
-{
-   EvtMap->clear();
-}
-
-void PSDetectorNumber::DrawAll()
-{
-   ;
-}
-
-void PSDetectorNumber::PrintAll()
-{
-   G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl;
-   G4cout << " PrimitiveScorer " << GetName() << G4endl;
-   G4cout << " Number of entries " << EvtMap->entries() << G4endl;
-   std::map<G4int, G4int*>::iterator itr = EvtMap->GetMap()->begin();
-   for (; itr != EvtMap->GetMap()->end(); itr++) {
-      G4cout << "  copy no.: " << itr->first
-      << "  energy deposit: " << G4BestUnit(*(itr->second), "Energy")
-      << G4endl;
-   }
 }

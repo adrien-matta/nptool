@@ -41,9 +41,9 @@
 
 // NPTool header
 #include "Plastic.hh"
-#include "PlasticScorers.hh"
+#include "GeneralScorers.hh"
 #include "RootOutput.h"
-using namespace PLASTIC;
+using namespace GENERALSCORERS ;
 // CLHEP header
 #include "CLHEP/Random/RandGauss.h"
 
@@ -77,26 +77,27 @@ Plastic::~Plastic()
 	delete m_MaterialPlastic_BC452_2	;
 	delete m_MaterialPlastic_BC452_5	;
 	delete m_MaterialPlastic_BC452_10	;
-	delete m_MaterialLead				;
-	delete m_PlasticScorer				;
+	delete m_MaterialLead							;
+	delete m_PlasticScorer						;
 }
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void Plastic::AddPlastic(	G4double    R        			,
-        					G4double    Theta    			,
-         			 		G4double    Phi         		,
-         			 		G4double	PlasticThickness	,
-         			 		G4double	PlasticRadius		,
-         			 		G4String 	Scintillator		,
-         			 		G4double 	LeadThickness		)
+void Plastic::AddPlastic(	G4double  R        					,
+				        					G4double  Theta    					,
+				         			 		G4double  Phi         			,
+				         			 		G4double	PlasticThickness	,
+				         			 		G4double	PlasticRadius			,
+				         			 		G4String 	Scintillator			,
+				         			 		G4double 	LeadThickness			)
 {
 
-   m_R.push_back(R)              		;
-   m_Theta.push_back(Theta)         	;
-   m_Phi.push_back(Phi)          		;
-   m_PlasticThickness.push_back(PlasticThickness)					;
- 	m_PlasticRadius.push_back(PlasticRadius)						;
- 	m_LeadThickness.push_back(LeadThickness);
- 	m_Scintillator.push_back(Scintillator);
+  m_R.push_back(R)              									;
+  m_Theta.push_back(Theta)        								;
+  m_Phi.push_back(Phi)          									;
+  m_PlasticThickness.push_back(PlasticThickness)	;
+ 	m_PlasticRadius.push_back(PlasticRadius)				;
+ 	m_LeadThickness.push_back(LeadThickness)				;
+ 	m_Scintillator.push_back(Scintillator)					;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -109,13 +110,13 @@ void Plastic::AddPlastic(	G4double    R        			,
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
 void Plastic::ReadConfiguration(string Path)
 {
-   ifstream ConfigFile           ;
-   ConfigFile.open(Path.c_str()) ;
-   string LineBuffer          ;
-   string DataBuffer          ;
+	ifstream ConfigFile           ;
+	ConfigFile.open(Path.c_str()) ;
+	string LineBuffer          ;
+	string DataBuffer          ;
 
-   G4double Theta = 0 , Phi = 0 , R = 0 , Thickness = 0 , Radius = 0 , LeadThickness = 0;
-   G4String Scintillator ;
+	G4double Theta = 0 , Phi = 0 , R = 0 , Thickness = 0 , Radius = 0 , LeadThickness = 0;
+	G4String Scintillator ;
 
 	bool check_Theta = false   ;
 	bool check_Phi  = false  ;
@@ -309,7 +310,7 @@ void Plastic::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume*
 			                            			0*deg					, 
 			                            			360*deg					);
 		                            		
-				G4LogicalVolume* logicPlastic = new G4LogicalVolume(solidPlastic, PlasticMaterial, Name, 0, 0, 0);
+				G4LogicalVolume* logicPlastic = new G4LogicalVolume(solidPlastic, PlasticMaterial, Name+ "_Scintillator", 0, 0, 0);
 				logicPlastic->SetSensitiveDetector(m_PlasticScorer);
 				
 				G4VisAttributes* PlastVisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 0.9)) ;
@@ -320,7 +321,7 @@ void Plastic::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume*
 				PVPBuffer = new G4PVPlacement(	0				,
 												Det_pos			,
 		                                     	logicPlastic    ,
-		                                     	Name            ,
+		                                     	Name  + "_Scintillator"          ,
 		                                     	world           ,
 		                                     	false           ,
 		                                     	0				);	
@@ -332,21 +333,21 @@ void Plastic::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume*
                                      	
         if(m_LeadThickness[i]>0&& m_PlasticRadius[i]>0)
         	{
-    			G4Tubs* solidLead = new G4Tubs(	Name+"Lead"  			,	 
+    			G4Tubs* solidLead = new G4Tubs(	Name+"_Lead"  			,	 
 		                            			0						,
 		                            			m_PlasticRadius[i]		,
 		                            			m_LeadThickness[i]/2	,
 		                            			0*deg					, 
 		                            			360*deg					);
 		                            		
-				G4LogicalVolume* logicLead = new G4LogicalVolume(solidLead, m_MaterialLead, Name, 0, 0, 0);
+				G4LogicalVolume* logicLead = new G4LogicalVolume(solidLead, m_MaterialLead, Name+"_Lead", 0, 0, 0);
 				G4VisAttributes* LeadVisAtt = new G4VisAttributes(G4Colour(0.1, 0.1, 0.1)) ;
    				logicLead->SetVisAttributes(LeadVisAtt) ;
    				
 				PVPBuffer = new G4PVPlacement(	0																		,
 												Det_pos+(m_PlasticThickness[i]/2+m_LeadThickness[i]/2)*Det_pos.unit()	,
 		                                     	logicLead    															,
-		                                     	Name+"Lead"        														,	
+		                                     	Name+"_Lead"        														,	
 		                                     	world           														,
 		                                     	false           														,
 		                                     	0																		);
@@ -515,14 +516,14 @@ void Plastic::InitializeScorers()
 		m_PlasticScorer = new G4MultiFunctionalDetector("PlasticScorer") ;
 		G4SDManager::GetSDMpointer()->AddNewDetector(m_PlasticScorer);
 		
-		G4VPrimitiveScorer* DetNbr = new PSDetectorNumber("PlasticNumber", 0)  ;
-		G4VPrimitiveScorer* Energy = new PSEnergy("Energy", 0)             					;
-		G4VPrimitiveScorer* Time = new PSTOF("Time", 0)             					;
+		G4VPrimitiveScorer* DetNbr = new PSDetectorNumber("PlasticNumber","Plastic", 0) ;
+		G4VPrimitiveScorer* Energy = new PSEnergy("Energy","Plastic", 0)             		;
+		G4VPrimitiveScorer* Time   = new PSTOF("Time","Plastic", 0)             				;
 		 
 		//and register it to the multifunctionnal detector
 		m_PlasticScorer->RegisterPrimitive(DetNbr)             				;
 		m_PlasticScorer->RegisterPrimitive(Energy)             				;
-		m_PlasticScorer->RegisterPrimitive(Time)             				;		
+		m_PlasticScorer->RegisterPrimitive(Time)             					;		
 		
 		
 	}
