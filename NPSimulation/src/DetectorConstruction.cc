@@ -43,6 +43,7 @@
 #include "Target.hh"
 #include "ThinSi.hh"
 #include "Plastic.hh"
+#include "DummyDetector.hh"
 //Not G4
 #include <cstdlib>
 #include<fstream>
@@ -148,6 +149,26 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       getline(ConfigFile, LineBuffer);
       //Search for comment Symbol: %
       if (LineBuffer.compare(0, 1, "%") == 0) {   /*Do  Nothing*/;}
+
+			////////////////////////////////////////////
+      /////// Search for a Dummy Detector ////////
+      ////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 16, "TheDUMMYDetector") == 0 && cPlastic == false) {
+         cPlastic = true ;
+         G4cout << "//////// DUMMY DETECTOR ////////" << G4endl << G4endl   ;
+
+         // Instantiate the new array as a VDetector Object
+         VDetector* myDetector = new DUMMYDetector()                  ;
+
+         // Read Position of detector
+         ConfigFile.close()                                 ;
+         myDetector->ReadConfiguration(Path)                   ;
+         ConfigFile.open(Path.c_str())                      ;
+
+         // Add array to the VDetector Vector
+         AddDetector(myDetector)                            ;
+      }
+
 
       ////////////////////////////////////////////
       //////////// Search for Gaspard ////////////

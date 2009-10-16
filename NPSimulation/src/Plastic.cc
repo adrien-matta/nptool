@@ -8,11 +8,13 @@
 /*****************************************************************************
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
- * Creation Date  : January 2009                                             *
+ * Creation Date  : September 2009                                           *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe a 20um Silicium detector                             *
+ *  This class describe a Modular cylindrical Plastic Scintillator           *
+ *	Few Material are instantiate and user can choose position and dimension	 * 
+ *  but also the adding of a lead plate on the rear side of the detector     *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
