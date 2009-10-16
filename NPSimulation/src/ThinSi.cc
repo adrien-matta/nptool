@@ -273,7 +273,7 @@ void ThinSi::ReadConfiguration(string Path)
       
 	      	getline(ConfigFile, LineBuffer);
 
-			//	If line is a Start Up MUST2 bloc, Reading toggle to true      
+			//	If line is a Start Up ThinSi bloc, Reading toggle to true      
 	      	if (LineBuffer.compare(0, 6, "ThinSi") == 0) 
 		      	{
 		        	 G4cout << "///" << G4endl           ;

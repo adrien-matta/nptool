@@ -135,7 +135,7 @@ void Plastic::ReadConfiguration(string Path)
       
 	      	getline(ConfigFile, LineBuffer);
 
-			//	If line is a Start Up MUST2 bloc, Reading toggle to true      
+			//	If line is a Start Up Plastic bloc, Reading toggle to true      
 	      	if (LineBuffer.compare(0, 7, "Plastic") == 0) 
 		      	{
 		        	 G4cout << "///" << G4endl           ;
