@@ -62,11 +62,16 @@ using namespace CLHEP;
 // ThinSi Specific Method
 ThinSi::ThinSi()
 {
-
+		InitializeMaterial();
 }
 
 ThinSi::~ThinSi()
-{}
+{
+		delete m_MaterialSilicon 		;
+   	delete m_MaterialAl 				;
+   	delete m_MaterialVacuum 		;
+
+}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void ThinSi::AddTelescope(G4ThreeVector TL         ,
       G4ThreeVector BL        ,
@@ -125,28 +130,6 @@ void ThinSi::VolumeMaker(	G4int            	DetNumber      	,
    Number << NbrTelescopes                   ;
    DetectorNumber = Number.str()             ;
 
-////////////////////////////////////////////////////////////////
-/////////////////Material Definition ///////////////////////////
-////////////////////////////////////////////////////////////////
-   G4Element* N   = new G4Element("Nitrogen" , "N"  , 7  , 14.01  * g / mole);
-   G4Element* O   = new G4Element("Oxigen"   , "O"  , 8  , 16.00  * g / mole);
-
-   G4double a, z, density;
-   // Si
-   a = 28.0855 * g / mole;
-   density = 2.321 * g / cm3;
-   G4Material* Silicon = new G4Material("Si", z = 14., a, density);
-
-   // Al
-   density = 2.702 * g / cm3;
-   a = 26.98 * g / mole;
-   G4Material* Al = new G4Material("Al", z = 13., a, density);
-
-   //  Vacuum
-   density = 0.000000001 * mg / cm3;
-   G4Material* Vacuum = new G4Material("Vacuum", density, 2);
-   Vacuum->AddElement(N, .7);
-   Vacuum->AddElement(O, .3);
 
 ////////////////////////////////////////////////////////////////
 /////////General Geometry Parameter Definition /////////////////
@@ -162,7 +145,7 @@ void ThinSi::VolumeMaker(	G4int            	DetNumber      	,
    G4Box* solidThinSi = new G4Box(Name, 0.5*DetectorSize, 0.5*DetectorSize, 0.5*FrameThickness*mm);
 
    G4LogicalVolume* logicThinSi =
-      new G4LogicalVolume(solidThinSi, Vacuum, Name, 0, 0);
+      new G4LogicalVolume(solidThinSi, m_MaterialVacuum, Name, 0, 0);
 
    PVPBuffer =
       new G4PVPlacement(G4Transform3D(*Det_rot, Det_pos)  ,
@@ -177,10 +160,10 @@ void ThinSi::VolumeMaker(	G4int            	DetNumber      	,
    G4Box* solidFrameVertical  = new G4Box(Name + "_Frame", 0.5*(DetectorSize - SiliconSize) / 2, 0.5*DetectorSize, 0.5*FrameThickness*mm)   ;
 
    G4LogicalVolume* logicFrameHorizontal =
-      new G4LogicalVolume(solidFrameHorizontal, Al, Name, 0, 0);
+      new G4LogicalVolume(solidFrameHorizontal, m_MaterialAl, Name, 0, 0);
 
    G4LogicalVolume* logicFrameVertical =
-      new G4LogicalVolume(solidFrameVertical, Al, Name, 0, 0);
+      new G4LogicalVolume(solidFrameVertical, m_MaterialAl, Name, 0, 0);
 
    G4ThreeVector FrameTopPosition      = G4ThreeVector(0 ,  0.5 * SiliconSize + 0.5 * (DetectorSize - SiliconSize) / 2 , 0) ;
    G4ThreeVector FrameBottomPosition   = G4ThreeVector(0 , -0.5 * SiliconSize - 0.5 * (DetectorSize - SiliconSize) / 2 , 0) ;
@@ -233,7 +216,7 @@ void ThinSi::VolumeMaker(	G4int            	DetNumber      	,
       new G4Box("ThinSiAlu", 0.5*SiliconSize, 0.5*SiliconSize, 0.5*AluThickness) ;
 
    G4LogicalVolume* logicAlu  =
-      new G4LogicalVolume(solidAlu, Al, "logicAlu", 0, 0, 0)    ;
+      new G4LogicalVolume(solidAlu, m_MaterialAl, "logicAlu", 0, 0, 0)    ;
 
    PVPBuffer =
       new G4PVPlacement(0  ,  posAluFront ,  logicAlu ,  Name + "_AluFront"   ,  logicThinSi ,  true, 0)  ;
@@ -246,7 +229,7 @@ void ThinSi::VolumeMaker(	G4int            	DetNumber      	,
       new G4Box("ThinSi", 0.5*SiliconSize, 0.5*SiliconSize, 0.5*SiliconThickness)   ;
 
    G4LogicalVolume* logicSi  =
-      new G4LogicalVolume(solidSi, Silicon, "logicSi", 0, 0, 0)           ;
+      new G4LogicalVolume(solidSi, m_MaterialSilicon, "logicSi", 0, 0, 0)           ;
 
    PVPBuffer =
       new G4PVPlacement(0, posSi, logicSi, Name + "_Si", logicThinSi, true, 0)   ;
@@ -682,4 +665,32 @@ void ThinSi::InitializeScorers()
 	 	//	Add All Scorer to the Global Scorer Manager
 		  G4SDManager::GetSDMpointer()->AddNewDetector(m_StripScorer) ;
 		}
+
+////////////////////////////////////////////////////////////////
+/////////////////Material Definition ///////////////////////////
+////////////////////////////////////////////////////////////////
+void ThinSi::InitializeMaterial()
+	{
+
+		 G4Element* N   = new G4Element("Nitrogen" , "N"  , 7  , 14.01  * g / mole);
+	   G4Element* O   = new G4Element("Oxigen"   , "O"  , 8  , 16.00  * g / mole);
+
+	   G4double a, z, density;
+	   // Si
+	   a = 28.0855 * g / mole;
+	   density = 2.321 * g / cm3;
+	   m_MaterialSilicon = new G4Material("Si", z = 14., a, density);
+
+	   // Al
+	   density = 2.702 * g / cm3;
+	   a = 26.98 * g / mole;
+	   m_MaterialAl = new G4Material("Al", z = 13., a, density);
+
+	   //  Vacuum
+	   density = 0.000000001 * mg / cm3;
+	   m_MaterialVacuum = new G4Material("Vacuum", density, 2);
+	   m_MaterialVacuum->AddElement(N, .7);
+	   m_MaterialVacuum->AddElement(O, .3);
+	}
+
 

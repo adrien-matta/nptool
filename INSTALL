@@ -28,9 +28,10 @@ I) REQUIREMENTS
 
 II) WORKING CONFIGURATIONS
 	The NPTool package has been mainly tested (and developped) with 
-	the two following configurations:
+	the following configurations:
 	1) Mac OS X (10.5.7) + G4 (4.9.2) + CLHEP (2.0.4.2) + ROOT (5.22/00 and 5.24/00) + GSL ()
 	2) Linux Fedora (kernel 2.6.29) + G4 (4.9.1p3) + CLHEP (2.0.4.2) + ROOT (5.22/00) + GSL (1.12)
+	3) Linux Fedora (kernel 2.6.29) + G4 (4.9.2p2) + CLHEP (2.0.4.2) + ROOT (5.25/02) + GSL (1.12)
 	Please, report any working or non-working configuration.
 
 III) INSTALLATION

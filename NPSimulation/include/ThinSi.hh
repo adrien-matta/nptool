@@ -122,7 +122,7 @@ private:
    G4double    m_Energy ;
 
 	 ////////////////////////////////////////////////////
-   ////////////////// Scorer Things ///////////////////
+   ///////////////// Scorer Related ///////////////////
    ////////////////////////////////////////////////////
 
 private:
@@ -131,6 +131,17 @@ private:
 	 
 		//	Scorer Associate to the 20um Silicon stage
 		G4MultiFunctionalDetector*	m_StripScorer ; 
+
+
+
+private:
+		// 	Initialize mmaterial used in detector definition
+		void InitializeMaterial();
+
+		//	List of material
+		G4Material* m_MaterialSilicon 	;
+   	G4Material* m_MaterialAl 				;
+   	G4Material* m_MaterialVacuum 		;
 
    ////////////////////////////////////////////////////
    ///////////////Private intern Data//////////////////
