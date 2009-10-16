@@ -9,7 +9,7 @@
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
  * Creation Date  : January 2009                                             *
- * Last update    :                                                          *
+ * Last update    : October 2009                                             *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This file describe the MUST2 charge particle Detector                    *

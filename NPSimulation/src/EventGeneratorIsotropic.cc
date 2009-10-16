@@ -19,6 +19,9 @@
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
+// C++
+#include<limits>
+
 // G4 headers
 #include "G4ParticleTable.hh"
 
@@ -99,7 +102,7 @@ void EventGeneratorIsotropic::ReadConfiguration(string Path)
 	    		 ReactionFile >> DataBuffer;
 	    	
 	    		 //Search for comment Symbol %
-			     if (DataBuffer.compare(0, 1, "%") == 0) {/*Do Nothing*/;}
+			     if (DataBuffer.compare(0, 1, "%") == 0) {	ReactionFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
 
 		         else if (DataBuffer.compare(0, 10, "EnergyLow=") == 0) {
 		         	check_EnergyLow = true ;

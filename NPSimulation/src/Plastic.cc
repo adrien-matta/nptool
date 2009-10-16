@@ -22,7 +22,7 @@
 // C++ headers
 #include <sstream>
 #include <cmath>
-
+#include <limits>
 //G4 Geometry object
 #include "G4Tubs.hh"
 
@@ -152,7 +152,7 @@ void Plastic::ReadConfiguration(string Path)
 					ConfigFile >> DataBuffer ;
 
 					//	Comment Line 
-					if (DataBuffer.compare(0, 1, "%") == 0) {/*do nothing */;}
+					if (DataBuffer.compare(0, 1, "%") == 0) {	ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
 
 						//	Finding another telescope (safety), toggle out
 					else if (DataBuffer.compare(0, 6, "Plastic") == 0) {

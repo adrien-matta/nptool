@@ -19,6 +19,10 @@
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
+
+// C++
+#include <limits>
+
 // G4 header
 #include "G4ParticleTable.hh"
 
@@ -91,7 +95,7 @@ void EventGeneratorBeam::ReadConfiguration(string Path)
 			 ReactionFile >> DataBuffer;
 	
       		//Search for comment Symbol %
-      		if (DataBuffer.compare(0, 1, "%") == 0) {/*Do Nothing*/;}
+      		if (DataBuffer.compare(0, 1, "%") == 0) {	ReactionFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
 
 	        else if (DataBuffer.compare(0, 10, "ParticleZ=") == 0) {
 	         	check_Z = true ;
