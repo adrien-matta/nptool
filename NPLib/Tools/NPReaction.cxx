@@ -231,7 +231,7 @@ double Reaction::ReconstructRelativistic(double EnergyLab, double ThetaLab) cons
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 //Return ThetaCM									
-double  Reaction::EnergyLabToThetaCM( double EnergyLab , double ExcitationEnergy = -500) const
+double  Reaction::EnergyLabToThetaCM( double EnergyLab , double ExcitationEnergy ) const
 	{
 		if(ExcitationEnergy == -500) ExcitationEnergy = fExcitation; 
 	

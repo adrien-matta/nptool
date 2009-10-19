@@ -141,29 +141,30 @@ int main(int argc,char** argv)
 						{
 							if(ELab[hit]>-1000 && ThinSi_E>0 )	
 								{
-										ELab[hit]= He3StripAl.EvaluateInitialEnergy(	ELab[hit] 			, // Energy of the detected particle
-																						2*0.4*micrometer	, // Target Thickness at 0 degree
-																						ThetaMM2Surface		);
+										ELab[hit]= He3StripAl.EvaluateInitialEnergy(	ELab[hit] 				, // Energy of the detected particle
+																																	2*0.4*micrometer	, // Target Thickness at 0 degree
+																																	ThetaMM2Surface		);
 																				
-										ELab[hit]= He3StripSi.EvaluateInitialEnergy(	ELab[hit] 			, // Energy of the detected particle
-																						20*micrometer		, // Target Thickness at 0 degree
-																						ThetaMM2Surface		);																
+										ELab[hit]= He3StripSi.EvaluateInitialEnergy(	ELab[hit] 				, // Energy of the detected particle
+																																	20*micrometer			, // Target Thickness at 0 degree
+																																	ThetaMM2Surface		);																
 										
 
-										ELab[hit]= He3StripAl.EvaluateInitialEnergy(	ELab[hit] 			, // Energy of the detected particle
-																					0.4*micrometer		, // Target Thickness at 0 degree
-																						ThetaMM2Surface		);
+										ELab[hit]= He3StripAl.EvaluateInitialEnergy(	ELab[hit] 				, // Energy of the detected particle
+																																	0.4*micrometer		, // Target Thickness at 0 degree
+																																	ThetaMM2Surface		);
 
 										ELab[hit]= He3TargetWind.EvaluateInitialEnergy( ELab[hit] 			, // Energy of the detected particle
-																						15*micrometer		, // Target Thickness at 0 degree
-																						ThetaN				);
+																																		15*micrometer		, // Target Thickness at 0 degree
+																																		ThetaN					);
 																			
 										ELab[hit]= He3TargetGaz.EvaluateInitialEnergy(	ELab[hit] 			, // Energy of the detected particle
-																						1.5*mm				, // Target Thickness at 0 degree
-																						ThetaN				);
+																																		1.5*mm					, // Target Thickness at 0 degree
+																																		ThetaN					);
 																						
-									ThetaCM[hit] = myReaction -> EnergyLabToThetaCM( ELab[hit] , 1 ) /deg 	;
+									ThetaCM[hit] = myReaction -> EnergyLabToThetaCM( ELab[hit] ) /deg 	;
 									ExcitationEnergy[hit] = myReaction -> ReconstructRelativistic( ELab[hit] , ThetaLab[hit] ) 		;	
+									X[hit] = HitDirection . X();
 									X[hit] = HitDirection . X();
 									Y[hit] = HitDirection . Y();	
 									ThetaLab[hit] = ThetaLab[hit] / deg ;
@@ -244,7 +245,7 @@ int main(int argc,char** argv)
 			// Plastic
 			for(int yy = 0 ; yy < Plastic->GetEnergySize() ; yy++)
 				{
-						 if(Plastic->GetPlasticNumber(yy)==1) EPl1[yy]=Plastic->GetEnergy(yy);
+						   if(Plastic->GetPlasticNumber(yy)==1) EPl1[yy]=Plastic->GetEnergy(yy);
 					else if(Plastic->GetPlasticNumber(yy)==2) EPl2[yy]=Plastic->GetEnergy(yy);
 					
 				}

@@ -212,7 +212,7 @@ void PhysicsList::ConstructEM()
          pmanager->AddProcess(new G4MultipleScattering(), -1, 1, 1)        ;
          G4ionIonisation* iI = new G4ionIonisation                   ;
          // mod by Nicolas [07/05/09]
-//          iI->ActivateNuclearStopping(true)                        ;
+          iI->ActivateNuclearStopping(true)                        ;
          iI->ActivateStoppingData(true)                           ;
          pmanager->AddProcess(iI            , -1, 2, 2)          ;
 

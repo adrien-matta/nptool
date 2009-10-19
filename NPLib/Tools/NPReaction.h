@@ -94,7 +94,7 @@ namespace NPL
 													double ThetaLab) const;
 			//	Return ThetaCM									
 			double 		EnergyLabToThetaCM( 	double EnergyLab 		,	//	Energy Measured in lab ref
-											   	double ExcitationEnergy ) 	//	Excitation Energy previously calculated. If no argument given, fExcitation is used
+											   	double ExcitationEnergy = -500) 	//	Excitation Energy previously calculated. If no argument given, fExcitation is used
 												const;
 			
 			//	Other	//
