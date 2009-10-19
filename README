@@ -62,7 +62,7 @@ IV) Inputs
 	Inputs / CrossSection
 	       / DetectorConstruction
 	       / EventGenerator
-	       / dEdx 
+	       / EnergyLoss
 
 V) Outputs
 	This directory contains the ROOT ouput files of the 
