@@ -70,8 +70,9 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 PhysicsList::PhysicsList()
-{
-   defaultCutValue = 1 * cm;
+{	
+	  // ie: no secondaries
+   defaultCutValue = 1000000000000 * cm;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 PhysicsList::~PhysicsList()
@@ -232,9 +233,9 @@ void PhysicsList::ConstructEM()
    G4EmProcessOptions opt        ;
    opt.SetSubCutoff(true)        ;
    opt.SetMinEnergy(0.001*eV)    ;
-   opt.SetMaxEnergy(600.*MeV)    ;
-   opt.SetDEDXBinning(600)       ;
-   opt.SetLambdaBinning(600)     ;
+   opt.SetMaxEnergy(1000.*MeV)    ;
+   opt.SetDEDXBinning(1000)       ;
+   opt.SetLambdaBinning(1000)     ;
    // mod by Nicolas [07/05/09]
 // opt.SetLinearLossLimit(1.e-3) ;
 

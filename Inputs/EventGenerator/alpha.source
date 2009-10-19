@@ -5,9 +5,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Isotropic
 	EnergyLow= 0
-	EnergyHigh= 300
-	HalfOpenAngleMin= 90
-	HalfOpenAngleMax= 180
+	EnergyHigh= 21.6
+	HalfOpenAngleMin= 0
+	HalfOpenAngleMax= 90
 	x0= 0	
 	y0= 0	
 	z0= 0	

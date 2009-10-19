@@ -54,7 +54,7 @@ PSStripNumberX::~PSStripNumberX()
 
 G4bool PSStripNumberX::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
-	 int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "Must2Telescope");
+	 int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "MUST2Telescope");
 
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
@@ -120,7 +120,7 @@ PSStripNumberY::~PSStripNumberY()
 
 G4bool PSStripNumberY::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
-	 int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "Must2Telescope");
+	 int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "MUST2Telescope");
 
 
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();

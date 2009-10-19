@@ -198,12 +198,12 @@ The two last methods are followed by a "{}" wich mean you are free to implemente
 					////////////////////////////////////////////
 					//// Search for a Wonderful Detector //////
 					////////////////////////////////////////////
-					else if (LineBuffer.compare(0, 15, "wonderfulArray") == 0 && cwonderful == false) {
-						cwonderful = true ;
+					else if (LineBuffer.compare(0, 15, "WonderfulArray") == 0 && cWonderful == false) {
+						cWonderful = true ;
 						G4cout << "//////// wonderful ARRAY ////////" << G4endl << G4endl;
 
 						// Instantiate the new array as a VDetector Object
-						VDetector* myDetector = new wonderfulDetector();
+						VDetector* myDetector = new WonderfulDetector();
 
 						// Read Position of detector
 						ConfigFile.close();
@@ -252,7 +252,7 @@ The two last methods are followed by a "{}" wich mean you are free to implemente
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter[NPAnalysis]{NPAnalysis}
 
-
+\chapter[NPLib]{NPLib}
 
 \end{document}
 

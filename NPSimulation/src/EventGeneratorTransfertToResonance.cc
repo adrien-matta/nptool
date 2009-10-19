@@ -403,10 +403,10 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
    
 	else if( m_Target !=0)   
   	 CalculateBeamInteraction(	0, m_SigmaX, 0, m_SigmaThetaX,
-                           	 	0, m_SigmaY, 0, m_SigmaPhiY,
-                            	m_Target,
-                            	InterCoord, Beam_thetaX, Beam_phiY,
-                            	Beam_theta, Beam_phi);
+                           	 		0, m_SigmaY, 0, m_SigmaPhiY,
+                            		m_Target,
+                            		InterCoord, Beam_thetaX, Beam_phiY,
+                            		Beam_theta, Beam_phi);
                             	
 	else 
 		InterCoord = G4ThreeVector(0,0,0);

@@ -106,8 +106,6 @@ void VEventGenerator::CalculateBeamInteraction(double MeanPosX, double SigmaPosX
 		}
 
 	else{
-
-		
 		InterCoord = G4ThreeVector(0, 0, 0);
 		AngleEmittanceTheta=0;
 		AngleEmittancePhi=0;

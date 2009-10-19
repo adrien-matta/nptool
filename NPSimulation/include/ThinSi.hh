@@ -42,7 +42,7 @@ namespace THINSI
 {
    // Energy and time Resolution
    const G4double ResoTime    = 0      ;
-   const G4double ResoEnergy  = 0.064  ;// = 100keV of Resolution   //   Unit is MeV/2.35
+   const G4double ResoEnergy  = 0.064  ;// = 150keV of Resolution   //   Unit is MeV/2.35
 
    // Geometry
    const G4double DetectorSize   	= 68*mm           ;
