@@ -78,6 +78,30 @@ namespace MUST2 {
 	   G4THitsMap<G4double>* EvtMap;
 	};
 	
+	
+		class PSPadOrCristalNumber : public G4VPrimitiveScorer
+	{
+
+	public: // with description
+	   PSPadOrCristalNumber(G4String name, G4int depth = 0, G4String Type = "XXX");
+	   virtual ~PSPadOrCristalNumber();
+
+	protected: // with description
+	   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+
+	public:
+	   virtual void Initialize(G4HCofThisEvent*);
+	   virtual void EndOfEvent(G4HCofThisEvent*);
+	   virtual void clear();
+	   virtual void DrawAll();
+	   virtual void PrintAll();
+
+	private:
+	   bool m_type;
+	   G4int HCID;
+	   G4THitsMap<G4double>* EvtMap;
+	};
+	
 }
 
 #endif

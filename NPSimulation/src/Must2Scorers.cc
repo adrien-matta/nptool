@@ -171,3 +171,103 @@ void PSStripNumberY::PrintAll()
    G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
    G4cout << " Number of entries " << EvtMap->entries() << G4endl     ;
 }
+
+
+
+
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//CsI Cristal / SiLi Pad Number Scorer
+//
+PSPadOrCristalNumber::PSPadOrCristalNumber(G4String name, G4int depth,G4String type)
+      : G4VPrimitiveScorer(name, depth), HCID(-1)
+{
+				if (type=="SiLi") 	m_type = true  ;
+	else 	if (type=="CsI" ) 	m_type = false ;
+  else G4cout << "Problem in MUST2 Scorer definition: Type should be SiLi or CsI" << G4endl ;
+}
+
+PSPadOrCristalNumber::~PSPadOrCristalNumber()
+{
+   ;
+}
+
+G4bool PSPadOrCristalNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+{   
+		std::string name = aStep->GetTrack()->GetVolume()->GetName();
+		std::string nbr ;
+		unsigned int numberOfCharacterInDetectorNumber ;
+		
+		if(m_type)// 24 character before pad number MUST2Telescope4_SiLi_PadXX
+			{
+				numberOfCharacterInDetectorNumber = name.length() - 24 ;
+				for(unsigned int i = 24 ; i < 24 + numberOfCharacterInDetectorNumber ; i++ )
+						nbr += name[i] ; 
+			}
+
+		else // 27 character before cristal number : MUST2Telescope4_CsI_CristalXX
+			{
+				numberOfCharacterInDetectorNumber = name.length() - 27 ;
+				for(unsigned int i = 27 ; i < 27 + numberOfCharacterInDetectorNumber ; i++ )
+						nbr += name[i] ; 
+			}
+
+
+	  double VolumeNumber = atoi( nbr.c_str() );
+
+	 	int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "MUST2Telescope");
+
+		G4double edep = aStep->GetTotalEnergyDeposit();
+		if (edep < 100*keV) return FALSE;
+		G4int  index =  aStep->GetTrack()->GetTrackID();
+		EvtMap->set(index+DetNbr, VolumeNumber);
+		return TRUE;
+}
+
+void PSPadOrCristalNumber::Initialize(G4HCofThisEvent* HCE)
+{
+   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
+   if (HCID < 0) {
+      HCID = GetCollectionID(0);
+   }
+   HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
+}
+
+void PSPadOrCristalNumber::EndOfEvent(G4HCofThisEvent*)
+{
+   ;
+}
+
+void PSPadOrCristalNumber::clear()
+{
+   EvtMap->clear();
+}
+
+void PSPadOrCristalNumber::DrawAll()
+{
+   ;
+}
+
+void PSPadOrCristalNumber::PrintAll()
+{
+   G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl ;
+   G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
+   G4cout << " Number of entries " << EvtMap->entries() << G4endl     ;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

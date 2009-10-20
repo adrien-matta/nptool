@@ -350,9 +350,9 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
    G4double x0 = InterCoord.x();
    G4double y0 = InterCoord.y();
    G4double z0 = InterCoord.z();
-   m_InitConditions->SetICPositionX(x0);
-   m_InitConditions->SetICPositionY(y0);
-   m_InitConditions->SetICPositionZ(z0);
+   m_InitConditions->SetICPositionX(x0);//
+   m_InitConditions->SetICPositionY(y0);//
+   m_InitConditions->SetICPositionZ(z0);//
 
    // write emittance angles to ROOT file
    m_InitConditions->SetICIncidentEmittanceTheta(Beam_thetaX / deg);

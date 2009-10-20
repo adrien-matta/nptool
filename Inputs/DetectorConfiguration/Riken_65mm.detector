@@ -115,7 +115,7 @@ CSI=	0
 VIS=	all		
 
 %%%%%%%%%%%%%%%%%%%%			
-AddThinSi			
+%AddThinSi			
 %%%%%%%%% Det 1 %%%%%%%%			
 ThinSi			
 A=	17.61	9.85	104.11

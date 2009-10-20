@@ -98,11 +98,14 @@ class MUST2Array : public NPA::VDetector
 				
 				TVector3 GetPositionOfInteraction(int i)	 ;	
 				TVector3 GetTelescopeNormal(int i)		;
+
+				TMust2Physics* GetPhysics() {return EventPhysics ;};
+
 				void Print()	;
 
 			private:	//	Root Input and Output tree classes
 				
-				TMust2Data* 	EventData		;
+				TMust2Data* 	  EventData		;
 				TMust2Physics* 	EventPhysics	;
 
 

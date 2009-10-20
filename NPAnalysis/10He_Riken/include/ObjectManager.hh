@@ -109,7 +109,7 @@ namespace ENERGYLOSS
 		//	3He Energy Loss
 			EnergyLoss He3TargetWind = EnergyLoss 	(	"3He_Mylar.txt" 		,
 														1000	 				,
-														3						,
+														3					,
 														3						);
 		
 			EnergyLoss He3TargetGaz = EnergyLoss 	(	"3He_D2solid_1b_26K.txt" 	,

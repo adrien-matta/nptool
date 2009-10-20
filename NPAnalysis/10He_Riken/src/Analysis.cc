@@ -73,7 +73,8 @@ int main(int argc,char** argv)
 
 	// Get Must2 Pointer:
 	MUST2Array* M2 = (MUST2Array*) myDetector -> m_Detector["MUST2"] ;
-	
+	// Allow directe acces to MUST2 Physics event
+	TMust2Physics* M2Physics = M2 -> GetPhysics();
 	cout <<  " ///////// Starting Analysis ///////// "<< endl << endl ;
 	
 	int i ,N=Chain -> GetEntries();
@@ -115,6 +116,8 @@ int main(int argc,char** argv)
 			myDetector -> BuildPhysicalEvent()				;
 			////
 			
+			
+			
 			// Target (from initial condition)
 			XTarget = Init->GetICPositionX(0);
 			YTarget = Init->GetICPositionY(0);
@@ -127,7 +130,7 @@ int main(int argc,char** argv)
 			// Must 2 And ThinSi //
 			for(int hit = 0; hit < M2 -> GetEventMultiplicity() ; hit ++)
 				{
-					ELab[hit] = M2 -> GetEnergyDeposit(hit);
+				//	ELab[hit] = M2 -> GetEnergyDeposit(hit);
 					TVector3 HitDirection  = M2 -> GetPositionOfInteraction(hit) - TVector3(XTarget,YTarget,0);
 					
 					// Angle between beam and particle
@@ -140,10 +143,12 @@ int main(int argc,char** argv)
 					if(M2 -> GetPositionOfInteraction(hit).Z()>0)
 						{
 							if(ELab[hit]>-1000 && ThinSi_E>0 )	
+							if(M2Physics.CsI.size)
 								{
 										ELab[hit]= He3StripAl.EvaluateInitialEnergy(	ELab[hit] 				, // Energy of the detected particle
 																																	2*0.4*micrometer	, // Target Thickness at 0 degree
 																																	ThetaMM2Surface		);
+
 																				
 										ELab[hit]= He3StripSi.EvaluateInitialEnergy(	ELab[hit] 				, // Energy of the detected particle
 																																	20*micrometer			, // Target Thickness at 0 degree
@@ -172,7 +177,8 @@ int main(int argc,char** argv)
 
 							else if(ELab[hit]>-1000 )
 								{
-									if(ELab[hit]>21.66)//CsI are inside a Mylar foil, plus rear alu strip
+					
+								if(ELab[hit]>21.66)//CsI are inside a Mylar foil, plus rear alu strip
 										{
 											ELab[hit]= He3TargetWind.EvaluateInitialEnergy( ELab[hit] 		, // Energy of the detected particle
 																						3*micrometer		, // Target Thickness at 0 degree
@@ -180,8 +186,7 @@ int main(int argc,char** argv)
 											ELab[hit]= He3StripAl.EvaluateInitialEnergy(	ELab[hit] 		, // Energy of the detected particle
 																						0.4*micrometer		, // Target Thickness at 0 degree
 																						ThetaMM2Surface		);
-										}
-								
+										}							
 									ELab[hit]= He3StripAl.EvaluateInitialEnergy(	ELab[hit] 		, // Energy of the detected particle
 																				0.4*micrometer		, // Target Thickness at 0 degree
 																				ThetaMM2Surface		);
@@ -258,7 +263,6 @@ int main(int argc,char** argv)
 	RootOutput::getInstance()->Destroy();
 	return 0	;
 }
-
 
 double ThetaCalculation (TVector3 A , TVector3 B)
 	{

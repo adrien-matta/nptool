@@ -36,11 +36,12 @@ class TMust2Physics : public TObject
 
 	public: 
 	void Clear()									;	
-        void Clear(const Option_t*) {};
+  void Clear(const Option_t*) {};
 	void BuildPhysicalEvent(TMust2Data* Data)		;
 	void BuildSimplePhysicalEvent(TMust2Data* Data)	;
 		
 	public:
+	
 	//	Provide Physical Multiplicity
 	Int_t			EventMultiplicity	;
 				

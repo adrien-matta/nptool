@@ -36,7 +36,6 @@ int GENERALSCORERS::PickUpDetectorNumber(G4Step* aStep, std::string DetName)
 	{
 		std::string name = aStep->GetTrack()->GetVolume()->GetName();
   	std::string nbr ;
-
 		size_t start, end ;
     start = name.find(DetName) + DetName.length();
 		end   = name.find("_");

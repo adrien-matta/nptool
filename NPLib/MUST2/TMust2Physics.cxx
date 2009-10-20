@@ -24,6 +24,9 @@
 #include <iostream>
 #include <cmath>
 
+// ROOT 
+#include "TVector2.h" 
+
 ClassImp(TMust2Physics)
 
 TMust2Physics::TMust2Physics() 
@@ -71,13 +74,15 @@ void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 						TelescopeNumber.push_back(Data->GetMMStripXEDetectorNbr(0))	;
 					
 						//	Data->Get Max Energy
-						if(Data->GetMMStripXEEnergy(0) > Data->GetMMStripYEEnergy(0))	Si_E.push_back( Data->GetMMStripXEEnergy(0) ) ;
-						else															Si_E.push_back( Data->GetMMStripYEEnergy(0) ) ;
-						
+				//		if(Data->GetMMStripXEEnergy(0) > Data->GetMMStripYEEnergy(0))	Si_E.push_back( Data->GetMMStripXEEnergy(0) ) ;
+				//		else															Si_E.push_back( Data->GetMMStripYEEnergy(0) ) ;
+						Si_E.push_back( Data->GetMMStripXEEnergy(0) ) ;
+					
 						//	Data->Get Min Time
-						if(Data->GetMMStripXTTime(0) < Data->GetMMStripYTTime(0))		Si_T.push_back( Data->GetMMStripXTTime(0) ) ;
-						else															Si_T.push_back( Data->GetMMStripYTTime(0) ) ;
-						
+				//		if(Data->GetMMStripXTTime(0) < Data->GetMMStripYTTime(0))		Si_T.push_back( Data->GetMMStripXTTime(0) ) ;
+				//		else															Si_T.push_back( Data->GetMMStripYTTime(0) ) ;
+						Si_T.push_back( Data->GetMMStripXTTime(0) ) ;
+
 						Si_X.push_back( Data->GetMMStripXEStripNbr(0) )	;
 						Si_Y.push_back( Data->GetMMStripYEStripNbr(0) )	;	
 						
@@ -125,11 +130,17 @@ void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 							}
 							
 					 
-					 if      (!Check_SiLi && !Check_CsI ) TotalEnergy.push_back(   			     Si_E.at(0)					);
-					 else if (Check_SiLi  && !Check_CsI ) TotalEnergy.push_back(               + Si_E.at(0) + SiLi_E.at(0)	);
-					 else if (Check_CsI   && !Check_SiLi) TotalEnergy.push_back( CsI_E .at(0)  + Si_E.at(0)					);
-					 else if (Check_CsI   &&  Check_SiLi) TotalEnergy.push_back( CsI_E .at(0)  + Si_E.at(0) + SiLi_E.at(0)	);
+					 			if(!Check_SiLi && !Check_CsI ) { 	TotalEnergy.push_back( Si_E.at(0) )									; 
+					 																				CsI_E.push_back(0) 		;  CsI_T.push_back(0) 				; 
+																									SiLi_E.push_back(0) 	;  SiLi_T.push_back(0) 				;	}
+																									
+					 else if (Check_SiLi  && !Check_CsI ) {	TotalEnergy.push_back( Si_E.at(0) + SiLi_E.at(0) )	;
+					 																				CsI_E.push_back(0) 	;  CsI_T.push_back(0) 					; }
+																																				
+					 else if (Check_CsI   && !Check_SiLi) {	TotalEnergy.push_back( CsI_E .at(0)  + Si_E.at(0) )	; 
+																									SiLi_E.push_back(0) 	;  SiLi_T.push_back(0) 				;	}
 					 
+					 TotalEnergy.push_back( CsI_E[0]  + Si_E[0] + SiLi_E[0]	);
 					 return;
 					}
 
@@ -217,10 +228,9 @@ void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 													&&	Data->GetMMCsIEEnergy(i) > CsI_E_Threshold	)
 													{
 														Check_CsI = true ;
-														CsI_E.push_back(Data->GetMMCsIEEnergy(i))		;
-//														cout << Data->GetMMCsIEEnergy(i) << endl;
+														CsI_E.push_back(Data->GetMMCsIEEnergy(i))			;
 														CsI_N.push_back(Data->GetMMCsIECristalNbr(i))	;
-														CsI_T.push_back(Data->GetMMCsITTime(i))			;
+														CsI_T.push_back(Data->GetMMCsITTime(i))				;
 													}
 													
 											}
@@ -232,9 +242,9 @@ void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 												CsI_N.push_back(-2)	;
 											}
 										
-										TotalEnergy.push_back(Si_E.at(jj)) ;
-										if (Check_SiLi) TotalEnergy.at(jj) += SiLi_E.at(jj)	;
-										if (Check_CsI)  TotalEnergy.at(jj) += CsI_E.at(jj)	;
+										TotalEnergy.push_back(Si_E[jj])) ;
+										if (Check_SiLi) TotalEnergy[jj] += SiLi_E[jj]	;
+										if (Check_CsI)  TotalEnergy[jj] += CsI_E[jj]	;
 									}	
 							}
 						return;	
@@ -284,13 +294,279 @@ void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 			
 	}
 
+/////////////////////////////////////////////
+int TMust2Physics :: CheckEvent()
+	{
+		// Check the size of the different elements
+				 if(			Data->GetMMStripXEMult() == Data->GetMMStripYEMult() && Data->GetMMStripYEMult() == Data->GetMMStripXTMult() &&  Data->GetMMStripXTMult() == Data->GetMMStripYTMult()  )
+	
+					return 1 ; // Regular Event
+	
+		else if(			Data->GetMMStripXEMult() == Data->GetMMStripYEMult()+1 || Data->GetMMStripXEMult() == Data->GetMMStripYEMult()-1  )
+	
+					return 2 ; // Pseudo Event, potentially interstrip
+		
+		else return -1 ; // Rejected Event
+		
+		
+		return -1 		 ; // Rejected Event 
+	}
 
+/////////////////////////////////////////////
+bool TMust2Physics :: ResolvePseudoEvent()
+	{
+	
+		return false;
+	}
+
+/////////////////////////////////////////////
+vector < TVector2 > TMust2Physics :: Match_X_Y()
+	{
+		vector < TVector2 > ArrayOfGoodCouple ;
+		
+		for(int i = 0 ; i < Data->GetMMStripXEMult(); i++)
+			{
+				for(int j = 0 ; j < Data->GetMMStripYEMult(); j++)
+					{
+							if ( Data->GetMMStripXEDetectorNbr(i) == Data->GetMMStripYEDetectorNbr(j) )
+									{
+											if( fabs(Data->GetMMStripXEEnergy(i) - Data->GetMMStripYEEnergy(j))/Data->GetMMStripXEEnergy(i) < 0.1	)
+												ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;	
+									}
+					}
+			}
+	
+		if( ArrayOfGoodCouple.size() > Data->GetMMStripXEMult() ) ArrayOfGoodCouple.clear() ;
+		
+		return ArrayOfGoodCouple;	
+	}
+	
+	
+/////////////////////////////////////////////
+bool TMust2Physics :: Match_Si_SiLi(TVector2 SiCouple)
+	{
+	 
+		for(int i = 0 ; i < Data->GetMMSiLiEMult() ; i++ )
+			{
+							if( 	 Data->GetMMSiLiEPadNbr(i) == 1 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+
+				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 2 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+
+				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 3 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 4 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 5 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1) 
+
+						return true ;
+
+				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 6 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 7 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 8 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 9 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 10 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 11 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 12 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 13 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 14 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 15 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 16 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;		
+			}
+
+		return false;
+	}
+
+
+/////////////////////////////////////////////
+vector < TVector3 > TMust2Physics :: Match_Si_CsI()
+	{
+		for(int i = 0 ; i < Data->GetMMCsIEMult() ; i++ )
+			{
+							if( 	 Data->GetMMCsIECristalNbr(i) == 1 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+
+				else	if( 	 Data->GetMMCsIECristalNbr(i) == 2 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+
+				else	if( 	 Data->GetMMCsIECristalNbr(i) == 3 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+				else	if( 	 Data->GetMMCsIECristalNbr(i) == 4 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+				else	if( 	 Data->GetMMCsIECristalNbr(i) == 5 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+				else	if( 	 Data->GetMMCsIECristalNbr(i) == 6 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+				else	if( 	 Data->GetMMCsIECristalNbr(i) == 7 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+				else	if( 	 Data->GetMMCsIECristalNbr(i) == 8 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+				else	if( 	 Data->GetMMCsIECristalNbr(i) == 9 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+				else	if( 	 Data->GetMMCsIECristalNbr(i) == 10 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+				else	if( 	 Data->GetMMCsIECristalNbr(i) == 11 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+				else	if( 	 Data->GetMMCsIECristalNbr(i) == 12 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+				else	if( 	 Data->GetMMCsIECristalNbr(i) == 13 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+				else	if( 	 Data->GetMMCsIECristalNbr(i) == 14 
+									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+				else	if( 	 Data->GetMMCsIECristalNbr(i) == 15 
+									&& Data->GetMMStripXEStripNbr(Int_t i)< && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)< && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+
+				else	if( 	 Data->GetMMCsIECristalNbr(i) == 16 
+									&& Data->GetMMStripXEStripNbr(Int_t i)< && Data->GetMMStripXEStripNbr(Int_t i)>1 
+									&& Data->GetMMStripYEStripNbr(Int_t i)< && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+
+						return true ;
+			}
+
+
+		return false;
+	}
+
+/////////////////////////////////////////////
 void TMust2Physics::Clear()
 	{
 		EventMultiplicity= 0		;
+		
 		TelescopeNumber	.clear()	;
-		EventType		.clear()	;
-		TotalEnergy		.clear()	;
+		EventType				.clear()	;
+		TotalEnergy			.clear()	;
 		
 		// Si X
 		Si_E.clear()	;
@@ -308,4 +584,6 @@ void TMust2Physics::Clear()
 		CsI_T.clear()	;
 		CsI_N.clear()	;
 	}
+
+
 

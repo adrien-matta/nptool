@@ -410,6 +410,7 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
                             	
 	else 
 		InterCoord = G4ThreeVector(0,0,0);
+
    // write vertex position to ROOT file
    G4double x0 = InterCoord.x();
    G4double y0 = InterCoord.y();
@@ -472,17 +473,6 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
                                          sin(ThetaHeavy) * sin(phi),
                                          cos(ThetaHeavy));
 
-
-   // Move to the target
-if( m_Target !=0)   {
-   x0 += m_Target->GetTargetX() ;
-   y0 += m_Target->GetTargetY() ;
-   z0 += m_Target->GetTargetZ() ;
-		}
-   // write vertex position to ROOT file
-   m_InitConditions->SetICPositionX(x0);
-   m_InitConditions->SetICPositionY(y0);
-   m_InitConditions->SetICPositionZ(z0);
    //////////////////////////////////////////////////
    ///////// Set up everything for shooting /////////
    //////////////////////////////////////////////////
