@@ -46,9 +46,9 @@
 // NPTool header
 #include "ThinSi.hh"
 #include "GeneralScorers.hh"
-#include "Must2Scorers.hh"
-#include "MUST2Array.hh"
+#include "ThinSiScorers.hh"
 #include "RootOutput.h"
+using namespace THINSI;
 
 // CLHEP header
 #include "CLHEP/Random/RandGauss.h"
@@ -561,53 +561,72 @@ void ThinSi::InitializeRootOutput()
 // Called at in the EventAction::EndOfEventAvtion
 void ThinSi::ReadSensitive(const G4Event* event)
 {
-   	G4String DetectorNumber    ;
   	m_Event->Clear();
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////// Used to Read Event Map of detector //////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 
 // Si
-	G4THitsMap<G4int>*	  DetNbrHitMap						;      
-	G4THitsMap<G4double>* EnergyHitMap              			;
-	G4THitsMap<G4double>* TimeHitMap             					;
+	G4THitsMap<G4int>*	  DetNbrHitMap							;  
+	G4THitsMap<G4int>*	  StripNbrHitMap						;    
+	G4THitsMap<G4double>* EnergyHitMap            	;
+	G4THitsMap<G4double>* TimeHitMap             		;
 
-	std::map<G4int, G4int*>::iterator DetNbr_itr  ;
-	std::map<G4int, G4double*>::iterator Energy_itr     	;
-	std::map<G4int, G4double*>::iterator Time_itr    			;
+	std::map<G4int, G4int*>::iterator DetNbr_itr  	;
+	std::map<G4int, G4int*>::iterator StripNbr_itr  ;
+	std::map<G4int, G4double*>::iterator Energy_itr ;
+	std::map<G4int, G4double*>::iterator Time_itr   ;
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
       // Read the Scorer associate to the Silicon Strip
 
 			//DetectorNumber	
-      G4int StripDetNbrCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThinSi_StripScorer/DetectorNumber")   		;
-      DetNbrHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripDetNbrCollectionID))                 		;
-      DetNbr_itr = DetNbrHitMap->GetMap()->begin()                                                       										;
+      G4int DetNbrCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThinSi_StripScorer/DetectorNumber")   	;
+      DetNbrHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(DetNbrCollectionID))                 				;
+      DetNbr_itr = DetNbrHitMap->GetMap()->begin()                                                       								;
+      
+      //StripNumber	
+      G4int StripNbrCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThinSi_StripScorer/StripNumber")  			;
+      StripNbrHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripNbrCollectionID))                 			;
 
       //Energy
-      G4int StripEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThinSi_StripScorer/StripEnergy")   ;
-      EnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripEnergyCollectionID))                 ;
-      Energy_itr = EnergyHitMap->GetMap()->begin()                                                       								;
+      G4int StripEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThinSi_StripScorer/StripEnergy")   		;
+      EnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripEnergyCollectionID))                 		;
 
 			//Time
-      G4int StripTimeCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThinSi_StripScorer/StripTime")   		;
-      TimeHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripTimeCollectionID))                 		;
-      Time_itr = TimeHitMap->GetMap()->begin()                                                       										;
+      G4int StripTimeCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThinSi_StripScorer/StripTime")   				;
+      TimeHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripTimeCollectionID))                 				;
 
-		  G4int sizeN = DetNbrHitMap->entries() 	;
-	    G4int sizeE = EnergyHitMap->entries() 	;
-	    G4int sizeT = TimeHitMap->entries() 		;
+		  G4int sizeN = DetNbrHitMap		->entries() 	;
+		  G4int sizeS = StripNbrHitMap	->entries() ;
+	    G4int sizeE = EnergyHitMap		->entries() 	;
+	    G4int sizeT = TimeHitMap			->entries() 		;
   
-		// Loop on Plastic Number
+		// Loop on Det Number
     for (G4int l = 0 ; l < sizeN ; l++) 
 				{
 	        G4int N     =      *(DetNbr_itr->second)    ;
-	        G4int NTrackID  =   DetNbr_itr->first - N  ;
-	        
+	        G4int NTrackID  =   DetNbr_itr->first - N		;
 	      
 	        if (N > 0) 
 						{
-
+								m_Event->SetStripEDetectorNbr(N)						;
+								m_Event->SetStripTDetectorNbr(N)						;
+								
+						//  Strip Number
+				        StripNbr_itr = StripNbrHitMap->GetMap()->begin();
+				        for (G4int h = 0 ; h < sizeS ; h++) {
+				            G4int STrackID  =   StripNbr_itr->first  - N    ;
+				            G4int S         = *(StripNbr_itr->second)      	;
+										
+				            if (STrackID == NTrackID) {
+				             	 m_Event->SetStripEStripNbr(S)		;
+				             	 m_Event->SetStripTStripNbr(S)		;
+				            }
+				            
+				            StripNbr_itr++;
+				        	}
+								
 						//  Energy
 				        Energy_itr = EnergyHitMap->GetMap()->begin();
 				        for (G4int h = 0 ; h < sizeE ; h++) {
@@ -615,8 +634,6 @@ void ThinSi::ReadSensitive(const G4Event* event)
 				            G4double E      = *(Energy_itr->second)      	;
 
 				            if (ETrackID == NTrackID) {
-				               m_Event->SetStripEDetectorNbr(1)	;
-				             	 m_Event->SetStripEStripNbr(1)		;
 				               m_Event->SetStripEEnergy( RandGauss::shoot(E, ResoEnergy ) )    ;
 				            }
 				            
@@ -631,8 +648,6 @@ void ThinSi::ReadSensitive(const G4Event* event)
 				            G4double T     = *(Time_itr->second)      ;
 
 				            if (TTrackID == NTrackID) {
-				                m_Event->SetStripTDetectorNbr(1)	;
-				             	 	m_Event->SetStripTStripNbr(1)		;
 				               	m_Event->SetStripTTime( RandGauss::shoot(T, ResoTime ) )    ;
 				            }
 				            
@@ -645,9 +660,11 @@ void ThinSi::ReadSensitive(const G4Event* event)
    		}
     
     // clear map for next event
+    
+    DetNbrHitMap    	->clear()	;
+    StripNbrHitMap    ->clear()	;
+    EnergyHitMap   		->clear() ; 
     TimeHitMap				->clear()	;    
-    DetNbrHitMap    ->clear()	;
-    EnergyHitMap   			->clear() 	; 
 }
 
 
@@ -657,13 +674,15 @@ void ThinSi::InitializeScorers()
 		//	Silicon Associate Scorer
 			m_StripScorer = new G4MultiFunctionalDetector("ThinSi_StripScorer");
 			
-			G4VPrimitiveScorer* DetNbr 														= new GENERALSCORERS::PSDetectorNumber("DetectorNumber","ThinSi_", 0)            						;
-			G4VPrimitiveScorer* Energy 														= new GENERALSCORERS::PSEnergy("StripEnergy","ThinSi_", 0)             											;			
-			G4VPrimitiveScorer* TOF 															= new GENERALSCORERS::PSTOF("StripTime","ThinSi_", 0)                  											;          					 		 
-	
+			G4VPrimitiveScorer* DetNbr 														= new GENERALSCORERS::PSDetectorNumber("DetectorNumber","ThinSi_", 0)  	;
+			G4VPrimitiveScorer* StripNbr 													= new PSStripNumber("StripNumber",0,SiliconSize, NumberOfStrip)		; 
+			G4VPrimitiveScorer* Energy 														= new GENERALSCORERS::PSEnergy("StripEnergy","ThinSi_", 0)             	;			
+			G4VPrimitiveScorer* TOF 															= new GENERALSCORERS::PSTOF("StripTime","ThinSi_", 0)                  	;          					 		 
+			
 
 		//and register it to the multifunctionnal detector
 			m_StripScorer->RegisterPrimitive(DetNbr)             				;
+			m_StripScorer->RegisterPrimitive(StripNbr)             			;
 			m_StripScorer->RegisterPrimitive(Energy)             				;
 			m_StripScorer->RegisterPrimitive(TOF)                				;
 

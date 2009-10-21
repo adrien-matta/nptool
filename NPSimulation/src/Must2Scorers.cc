@@ -30,21 +30,14 @@ using namespace MUST2 ;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// Added by Adrien MATTA:
-// Those Scorer use TrackID as map index. This way ones can rebuild energy deposit,
-// time of flight or position,... particle by particle for each event. Because standard
-// scorer provide by G4 don't work this way but using a global ID for each event you should
-// not use those scorer with some G4 provided ones or being very carefull doing so.
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //Strip position Scorer
 //X
 PSStripNumberX::PSStripNumberX(G4String name, G4int depth, G4double StripPlaneSize, G4int NumberOfStrip)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
-   m_StripPlaneSize =   StripPlaneSize ;
-   m_NumberOfStrip    = NumberOfStrip  ;
+   m_StripPlaneSize = StripPlaneSize ;
+   m_NumberOfStrip  = NumberOfStrip  ;
+	 m_StripPitch			= m_StripPlaneSize / m_NumberOfStrip;
 }
 
 PSStripNumberX::~PSStripNumberX()
@@ -59,12 +52,10 @@ G4bool PSStripNumberX::ProcessHits(G4Step* aStep, G4TouchableHistory*)
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
-   G4double StripPitch = m_StripPlaneSize / m_NumberOfStrip;
-
-   G4double temp = (POS(0) + m_StripPlaneSize / 2.) / StripPitch   ;
-   G4double X = int(temp) + 1 ;
+   G4double temp = (POS(0) + m_StripPlaneSize / 2.) / m_StripPitch   ;
+   G4int X = int(temp) + 1 ;
    //Rare case where particle is close to edge of silicon plan
-   if (X == 129) X = 128;
+   if (X == m_NumberOfStrip+1) X = m_NumberOfStrip;
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
@@ -74,7 +65,7 @@ G4bool PSStripNumberX::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
 void PSStripNumberX::Initialize(G4HCofThisEvent* HCE)
 {
-   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
+   EvtMap = new G4THitsMap<G4int>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
       HCID = GetCollectionID(0);
    }
@@ -111,6 +102,7 @@ PSStripNumberY::PSStripNumberY(G4String name, G4int depth, G4double StripPlaneSi
 {
    m_StripPlaneSize =   StripPlaneSize ;
    m_NumberOfStrip    = NumberOfStrip  ;
+	 m_StripPitch			= m_StripPlaneSize / m_NumberOfStrip;
 }
 
 PSStripNumberY::~PSStripNumberY()
@@ -126,13 +118,11 @@ G4bool PSStripNumberY::ProcessHits(G4Step* aStep, G4TouchableHistory*)
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
-   G4double StripPitch = m_StripPlaneSize / m_NumberOfStrip;
-
-   G4double temp = (POS(1) + m_StripPlaneSize / 2.) / StripPitch   ;
+   G4double temp = (POS(1) + m_StripPlaneSize / 2.) / m_StripPitch   ;
    G4int temp2 = temp ;
-   G4double Y = temp2 + 1                    ;
+   G4int Y = temp2 + 1                    ;
    //Rare case where particle is close to edge of silicon plan
-   if (Y == 129) Y = 128;
+   if (Y == m_NumberOfStrip+1) Y = m_NumberOfStrip;
 
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
@@ -143,7 +133,7 @@ G4bool PSStripNumberY::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
 void PSStripNumberY::Initialize(G4HCofThisEvent* HCE)
 {
-   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
+   EvtMap = new G4THitsMap<G4int>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
       HCID = GetCollectionID(0);
    }
@@ -192,10 +182,9 @@ G4bool PSPadOrCristalNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {   
 		std::string name = aStep->GetTrack()->GetVolume()->GetName();
 		std::string nbr ;
-		unsigned int numberOfCharacterInDetectorNumber ;
 
-		int temp1,temp2 ;
-		double VolumeNumber;
+		G4int temp1,temp2 ;
+		G4int VolumeNumber;
 		nbr = name[name.length()-1]	;
 		temp1 = atoi( nbr.c_str() )	;
 		
@@ -208,7 +197,7 @@ G4bool PSPadOrCristalNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 		
 		else 				 { nbr= name[name.length()-1]	; VolumeNumber = atoi( nbr.c_str() )	;}
 
-	 	int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "MUST2Telescope");
+	 	G4int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "MUST2Telescope");
 
 		G4double edep = aStep->GetTotalEnergyDeposit();
 		if (edep < 100*keV) return FALSE;
@@ -219,7 +208,7 @@ G4bool PSPadOrCristalNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
 void PSPadOrCristalNumber::Initialize(G4HCofThisEvent* HCE)
 {
-   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
+   EvtMap = new G4THitsMap<G4int>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
       HCID = GetCollectionID(0);
    }

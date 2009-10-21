@@ -52,7 +52,7 @@ namespace THINSI
    const G4double FrameThickness    = 3*mm            ;
    const G4double SiliconSize    	= 50*mm           ;
    const G4double AluThickness      = 0.4*micrometer  ;
-   const G4int  NumberOfStrip    	= 32       		  ;
+   const G4int  NumberOfStrip    	= 16       		  ;
 
    const G4double AluStripFront_PosZ 	= -0.5*SiliconThickness - 0.5*AluThickness ;
    const G4double Si_PosZ        		= 0                                 ;

@@ -1,5 +1,5 @@
-#ifndef Must2Scorers_h
-#define Must2Scorers_h 1
+#ifndef ThinSiScorers_h
+#define ThinSiScorers_h 1
 /*****************************************************************************
  * Copyright (C) 2009   this file is part of the NPTool Project              *
  *                                                                           *
@@ -10,11 +10,11 @@
 /*****************************************************************************
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
- * Creation Date  : January 2009                                             *
+ * Creation Date  : October 2009                                             *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  File old the scorer specific to the MUST2 Detector                       *
+ *  File old the scorer specific to the ThinSi Detector                       *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -26,14 +26,15 @@
  *****************************************************************************/
 #include "G4VPrimitiveScorer.hh"
 #include "G4THitsMap.hh"
-namespace MUST2 {
+
+namespace THINSI {
 	
-	class PSStripNumberX : public G4VPrimitiveScorer
+	class PSStripNumber : public G4VPrimitiveScorer
 	{
 
 	public: // with description
-	   PSStripNumberX(G4String name, G4int depth = 0, G4double StripPlaneSize = 98, G4int NumberOfStrip = 128);
-	   virtual ~PSStripNumberX();
+	   PSStripNumber(G4String name, G4int depth = 0, G4double StripPlaneSize = 50*mm, G4int NumberOfStrip = 16);
+	   virtual ~PSStripNumber();
 
 	protected: // with description
 	   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
@@ -48,61 +49,11 @@ namespace MUST2 {
 	private:
 	   G4double  m_StripPlaneSize;
 	   G4int     m_NumberOfStrip ;
-	   G4double  m_StripPitch		 ;
+	   G4double  m_StripPitch    ;
 	   G4int HCID;
 	   G4THitsMap<G4int>* EvtMap;
 	};
 
-
-
-	class PSStripNumberY : public G4VPrimitiveScorer
-	{
-
-	public: // with description
-	   PSStripNumberY(G4String name, G4int depth = 0, G4double StripPlaneSize = 98, G4int NumberOfStrip = 128);
-	   virtual ~PSStripNumberY();
-
-	protected: // with description
-	   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-
-	public:
-	   virtual void Initialize(G4HCofThisEvent*);
-	   virtual void EndOfEvent(G4HCofThisEvent*);
-	   virtual void clear();
-	   virtual void DrawAll();
-	   virtual void PrintAll();
-
-	private:
-	   G4double  m_StripPlaneSize;
-	   G4int     m_NumberOfStrip ;
-	   G4double  m_StripPitch		 ;
-	   G4int HCID;
-	   G4THitsMap<G4int>* EvtMap;
-	};
-	
-	
-		class PSPadOrCristalNumber : public G4VPrimitiveScorer
-	{
-
-	public: // with description
-	   PSPadOrCristalNumber(G4String name, G4int depth = 0);
-	   virtual ~PSPadOrCristalNumber();
-
-	protected: // with description
-	   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-
-	public:
-	   virtual void Initialize(G4HCofThisEvent*);
-	   virtual void EndOfEvent(G4HCofThisEvent*);
-	   virtual void clear();
-	   virtual void DrawAll();
-	   virtual void PrintAll();
-
-	private:
-	   G4int HCID;
-	   G4THitsMap<G4int>* EvtMap;
-	};
-	
 }
 
 #endif

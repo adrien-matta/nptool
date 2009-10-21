@@ -925,8 +925,8 @@ void MUST2Array::ReadSensitive(const G4Event* event)
 	std::map<G4int, G4int*>::iterator DetectorNumber_itr    ;
 	std::map<G4int, G4double*>::iterator Energy_itr     		;
 	std::map<G4int, G4double*>::iterator Time_itr    				;
-	std::map<G4int, G4double*>::iterator X_itr       				;
-	std::map<G4int, G4double*>::iterator Y_itr       				;
+	std::map<G4int, G4int*>::iterator X_itr       				;
+	std::map<G4int, G4int*>::iterator Y_itr       				;
 	std::map<G4int, G4double*>::iterator Pos_X_itr     	  	;
 	std::map<G4int, G4double*>::iterator Pos_Y_itr     	  	;
 	std::map<G4int, G4double*>::iterator Pos_Z_itr       		;
@@ -936,8 +936,8 @@ void MUST2Array::ReadSensitive(const G4Event* event)
 	G4THitsMap<G4int>*	  DetectorNumberHitMap							;      
 	G4THitsMap<G4double>* EnergyHitMap              				;
 	G4THitsMap<G4double>* TimeHitMap             						;
-	G4THitsMap<G4double>* XHitMap                						;	
-	G4THitsMap<G4double>* YHitMap               						;
+	G4THitsMap<G4int>* XHitMap                						;	
+	G4THitsMap<G4int>* YHitMap               						;
 	G4THitsMap<G4double>* PosXHitMap                				;
 	G4THitsMap<G4double>* PosYHitMap                				;
 	G4THitsMap<G4double>* PosZHitMap                				;
@@ -946,15 +946,15 @@ void MUST2Array::ReadSensitive(const G4Event* event)
 
 // Si(Li)
    std::map<G4int, G4double*>::iterator SiLiEnergy_itr 		;
-   std::map<G4int, G4double*>::iterator SiLiPadNbr_itr 		;
+   std::map<G4int, G4int*>::iterator SiLiPadNbr_itr 		;
    G4THitsMap<G4double>* 				SiLiEnergyHitMap					;
-   G4THitsMap<G4double>* 				SiLiPadNbrHitMap					;
+   G4THitsMap<G4int>* 				SiLiPadNbrHitMap					;
    
 // CsI
    std::map<G4int, G4double*>::iterator CsIEnergy_itr  		;
-   std::map<G4int, G4double*>::iterator CsICristalNbr_itr ;
+   std::map<G4int, G4int*>::iterator CsICristalNbr_itr ;
    G4THitsMap<G4double>* 				CsIEnergyHitMap 					;
-   G4THitsMap<G4double>* 				CsICristalNbrHitMap 			;
+   G4THitsMap<G4int>* 				CsICristalNbrHitMap 			;
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 
@@ -977,12 +977,12 @@ void MUST2Array::ReadSensitive(const G4Event* event)
 
 	    //Strip Number X
 	    G4int StripXCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_StripScorer/StripNumberX")    		;
-	    XHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripXCollectionID))                     			;
+	    XHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripXCollectionID))                     			;
 	    X_itr = XHitMap->GetMap()->begin()                                                                    						;
 
 	    //Strip Number Y
 	    G4int StripYCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_StripScorer/StripNumberY")    		;
-	    YHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripYCollectionID))                     			;
+	    YHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripYCollectionID))                     			;
 	    Y_itr = YHitMap->GetMap()->begin()                                                                    						;
 
 	    //Interaction Coordinate X
@@ -1017,7 +1017,7 @@ void MUST2Array::ReadSensitive(const G4Event* event)
         SiLiEnergy_itr = SiLiEnergyHitMap->GetMap()->begin()                                                     									;
 
         G4int SiLiPadNbrCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_SiLiScorer/SiLiPadNbr")   						;
-        SiLiPadNbrHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(SiLiPadNbrCollectionID))    		 							;
+        SiLiPadNbrHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(SiLiPadNbrCollectionID))    		 							;
         SiLiPadNbr_itr = SiLiPadNbrHitMap->GetMap()->begin()                                                     									;
         
     // Read the Scorer associate to the CsI crystal
@@ -1027,7 +1027,7 @@ void MUST2Array::ReadSensitive(const G4Event* event)
         CsIEnergy_itr = CsIEnergyHitMap->GetMap()->begin()                                                       									;
         
         G4int CsICristalNbrCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_CsIScorer/CsICristalNbr")     		 	;
-        CsICristalNbrHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(CsICristalNbrCollectionID))      					;
+        CsICristalNbrHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(CsICristalNbrCollectionID))      					;
         CsICristalNbr_itr = CsICristalNbrHitMap->GetMap()->begin()                                                       					;
 
 
@@ -1086,7 +1086,7 @@ void MUST2Array::ReadSensitive(const G4Event* event)
 	        X_itr = XHitMap->GetMap()->begin();
 	        for (G4int h = 0 ; h < sizeX ; h++) {
 	            G4int XTrackID  =   X_itr->first  - N   ;
-	            G4double X     = *(X_itr->second)      ;
+	            G4int X     = *(X_itr->second)      ;
 	            if (XTrackID == NTrackID) {
 	                m_Event->SetMMStripXEStripNbr(X)   ;
 	                m_Event->SetMMStripXTStripNbr(X)   ;
@@ -1099,7 +1099,7 @@ void MUST2Array::ReadSensitive(const G4Event* event)
 	        Y_itr = YHitMap->GetMap()->begin()  ;
 	        for (G4int h = 0 ; h < sizeY ; h++) {
 	            G4int YTrackID  =   Y_itr->first  - N  ;
-	            G4double Y     = *(Y_itr->second)      ;
+	            G4int Y     = *(Y_itr->second)      ;
 	            if (YTrackID == NTrackID) {
 	                m_Event->SetMMStripYEStripNbr(Y)   ;
 	                m_Event->SetMMStripYTStripNbr(Y)   ;
