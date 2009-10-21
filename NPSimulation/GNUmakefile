@@ -19,7 +19,7 @@ G4WORKDIR = ./
 CPPFLAGS += $(shell root-config --cflags) 
 CPPFLAGS += -I$(NPLIB)/include
 EXTRALIBS = $(shell root-config --glibs) 
-EXTRALIBS += -L$(NPLIB)/lib -lMust2Data -lAnnularS1Data -lGaspardData -lPlasticData -lDUMMYDetectorData\
+EXTRALIBS += -L$(NPLIB)/lib -lMust2Data -lAnnularS1Data -lGaspardData -lPlasticData -lDUMMYDetectorData -lSSSDData\
 		-lInitialConditions -lInteractionCoordinates \
 		-lReaction -lIORoot
 .PHONY: all

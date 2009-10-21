@@ -32,9 +32,11 @@
 #include "G4RotationMatrix.hh"
 #include "G4LogicalVolume.hh"
 
-// NPTool header
+// NPSimulation header
 #include "VDetector.hh"
 
+// NPLib 
+#include "TSSSDData.h"
 using namespace std;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -119,7 +121,7 @@ public:
    ///////////Event class to store Data////////////////
    ////////////////////////////////////////////////////
 private:
-   G4double    m_Energy ;
+   TSSSDData*    m_Event ;
 
 	 ////////////////////////////////////////////////////
    ///////////////// Scorer Related ///////////////////

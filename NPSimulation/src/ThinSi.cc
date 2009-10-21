@@ -62,7 +62,8 @@ using namespace CLHEP;
 // ThinSi Specific Method
 ThinSi::ThinSi()
 {
-		InitializeMaterial();
+		InitializeMaterial()			;
+		m_Event = new TSSSDData()	;
 }
 
 ThinSi::~ThinSi()
@@ -553,15 +554,15 @@ void ThinSi::InitializeRootOutput()
 {
    RootOutput *pAnalysis = RootOutput::getInstance();
    TTree *pTree = pAnalysis->GetTree();
-   pTree->Branch("ThinSiEnergy", &m_Energy, "ThinSiEnergy/D") ;
+   pTree->Branch("ThinSi", "TSSSDData", &m_Event) ;
 }
 
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
 void ThinSi::ReadSensitive(const G4Event* event)
 {
-   G4String DetectorNumber    ;
-   m_Energy = 0 ;
+   	G4String DetectorNumber    ;
+  	m_Event->Clear();
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////// Used to Read Event Map of detector //////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
@@ -610,11 +611,13 @@ void ThinSi::ReadSensitive(const G4Event* event)
 						//  Energy
 				        Energy_itr = EnergyHitMap->GetMap()->begin();
 				        for (G4int h = 0 ; h < sizeE ; h++) {
-				            G4int ETrackID  =   Energy_itr->first  - N      ;
-				            G4double E     = *(Energy_itr->second)      	;
+				            G4int ETrackID  =   Energy_itr->first  - N    ;
+				            G4double E      = *(Energy_itr->second)      	;
 
 				            if (ETrackID == NTrackID) {
-				                m_Energy=RandGauss::shoot(E, ResoEnergy )    ;
+				               m_Event->SetStripEDetectorNbr(1)	;
+				             	 m_Event->SetStripEStripNbr(1)		;
+				               m_Event->SetStripEEnergy( RandGauss::shoot(E, ResoEnergy ) )    ;
 				            }
 				            
 				            Energy_itr++;
@@ -628,7 +631,9 @@ void ThinSi::ReadSensitive(const G4Event* event)
 				            G4double T     = *(Time_itr->second)      ;
 
 				            if (TTrackID == NTrackID) {
-				                /*m_Event->SetTime(RandGauss::shoot(T, ResoTime))*/ ;
+				                m_Event->SetStripTDetectorNbr(1)	;
+				             	 	m_Event->SetStripTStripNbr(1)		;
+				               	m_Event->SetStripTTime( RandGauss::shoot(T, ResoTime ) )    ;
 				            }
 				            
 				            Time_itr++;
