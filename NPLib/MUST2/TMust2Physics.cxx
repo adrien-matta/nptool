@@ -24,9 +24,6 @@
 #include <iostream>
 #include <cmath>
 
-// ROOT 
-#include "TVector2.h" 
-
 ClassImp(TMust2Physics)
 
 TMust2Physics::TMust2Physics() 
@@ -242,7 +239,7 @@ void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 												CsI_N.push_back(-2)	;
 											}
 										
-										TotalEnergy.push_back(Si_E[jj])) ;
+										TotalEnergy.push_back(Si_E[jj]) ;
 										if (Check_SiLi) TotalEnergy[jj] += SiLi_E[jj]	;
 										if (Check_CsI)  TotalEnergy[jj] += CsI_E[jj]	;
 									}	
@@ -295,7 +292,7 @@ void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 	}
 
 /////////////////////////////////////////////
-int TMust2Physics :: CheckEvent()
+int TMust2Physics :: CheckEvent(TMust2Data* Data)
 	{
 		// Check the size of the different elements
 				 if(			Data->GetMMStripXEMult() == Data->GetMMStripYEMult() && Data->GetMMStripYEMult() == Data->GetMMStripXTMult() &&  Data->GetMMStripXTMult() == Data->GetMMStripYTMult()  )
@@ -313,14 +310,14 @@ int TMust2Physics :: CheckEvent()
 	}
 
 /////////////////////////////////////////////
-bool TMust2Physics :: ResolvePseudoEvent()
+bool TMust2Physics :: ResolvePseudoEvent(TMust2Data* Data)
 	{
 	
 		return false;
 	}
 
 /////////////////////////////////////////////
-vector < TVector2 > TMust2Physics :: Match_X_Y()
+vector < TVector2 > TMust2Physics :: Match_X_Y(TMust2Data* Data)
 	{
 		vector < TVector2 > ArrayOfGoodCouple ;
 		
@@ -343,220 +340,214 @@ vector < TVector2 > TMust2Physics :: Match_X_Y()
 	
 	
 /////////////////////////////////////////////
-bool TMust2Physics :: Match_Si_SiLi(TVector2 SiCouple)
+bool TMust2Physics :: Match_Si_SiLi(int X, int Y , int PadNbr)
 	{
-	 
-		for(int i = 0 ; i < Data->GetMMSiLiEMult() ; i++ )
-			{
-							if( 	 Data->GetMMSiLiEPadNbr(i) == 1 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+							if( 	 PadNbr == 1 
+									&& X<1 && X>1
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
 
-				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 2 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 PadNbr == 2 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
 
-				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 3 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 PadNbr == 3 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
-				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 4 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 PadNbr == 4 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
-				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 5 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1) 
+				else	if( 	 PadNbr == 5 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1) 
 
 						return true ;
 
-				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 6 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 PadNbr == 6 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
-				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 7 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 PadNbr == 7 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
-				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 8 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 PadNbr == 8 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
-				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 9 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 PadNbr == 9 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
-				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 10 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 PadNbr == 10 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
-				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 11 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 PadNbr == 11 
+									&& X<1 && X>1
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
-				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 12 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 PadNbr == 12 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
-				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 13 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 PadNbr == 13 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
-				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 14 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 PadNbr == 14 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
-				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 15 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 PadNbr == 15 
+									&& X<1 && X>1
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
-				else	if( 	 Data->GetMMSiLiEPadNbr(i) == 16 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 PadNbr == 16 
+									&& X<1 && X>1
+									&& Y<1 && Y>1 ) 
 
 						return true ;		
-			}
 
-		return false;
+				else
+						return false;
 	}
 
 
 /////////////////////////////////////////////
-vector < TVector3 > TMust2Physics :: Match_Si_CsI()
+bool TMust2Physics :: Match_Si_CsI(int X, int Y , int CristalNbr)
 	{
-		for(int i = 0 ; i < Data->GetMMCsIEMult() ; i++ )
-			{
-							if( 	 Data->GetMMCsIECristalNbr(i) == 1 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+							if( 	 CristalNbr == 1 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
 
-				else	if( 	 Data->GetMMCsIECristalNbr(i) == 2 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 CristalNbr == 2 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
 
-				else	if( 	 Data->GetMMCsIECristalNbr(i) == 3 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 CristalNbr == 3 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
-				else	if( 	 Data->GetMMCsIECristalNbr(i) == 4 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 CristalNbr == 4 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
-				else	if( 	 Data->GetMMCsIECristalNbr(i) == 5 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 CristalNbr == 5 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
-				else	if( 	 Data->GetMMCsIECristalNbr(i) == 6 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 CristalNbr == 6 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
-				else	if( 	 Data->GetMMCsIECristalNbr(i) == 7 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 CristalNbr == 7 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
-				else	if( 	 Data->GetMMCsIECristalNbr(i) == 8 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 CristalNbr == 8 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
-				else	if( 	 Data->GetMMCsIECristalNbr(i) == 9 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 CristalNbr == 9 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
-				else	if( 	 Data->GetMMCsIECristalNbr(i) == 10 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 CristalNbr == 10 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
-				else	if( 	 Data->GetMMCsIECristalNbr(i) == 11 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 CristalNbr == 11 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
-				else	if( 	 Data->GetMMCsIECristalNbr(i) == 12 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 CristalNbr == 12 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
-				else	if( 	 Data->GetMMCsIECristalNbr(i) == 13 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 CristalNbr == 13 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
-				else	if( 	 Data->GetMMCsIECristalNbr(i) == 14 
-									&& Data->GetMMStripXEStripNbr(Int_t i)<1 && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)<1 && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 CristalNbr == 14 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
-				else	if( 	 Data->GetMMCsIECristalNbr(i) == 15 
-									&& Data->GetMMStripXEStripNbr(Int_t i)< && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)< && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 CristalNbr == 15 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
 
-				else	if( 	 Data->GetMMCsIECristalNbr(i) == 16 
-									&& Data->GetMMStripXEStripNbr(Int_t i)< && Data->GetMMStripXEStripNbr(Int_t i)>1 
-									&& Data->GetMMStripYEStripNbr(Int_t i)< && Data->GetMMStripYEStripNbr(Int_t i)>1 ) 
+				else	if( 	 CristalNbr == 16 
+									&& X<1 && X>1 
+									&& Y<1 && Y>1 ) 
 
 						return true ;
-			}
 
-
-		return false;
+				else
+						return false;
 	}
 
 /////////////////////////////////////////////

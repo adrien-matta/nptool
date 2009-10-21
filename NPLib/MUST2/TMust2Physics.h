@@ -22,9 +22,16 @@
  *  Improvment needed                                                        *
  *                                                                           *
  *****************************************************************************/
+// STL
 #include <vector>
-#include "TObject.h"
+
+// NPL
 #include "TMust2Data.h"
+
+// ROOT 
+#include "TVector2.h" 
+#include "TVector3.h" 
+#include "TObject.h"
 
 using namespace std ;
 
@@ -39,7 +46,14 @@ class TMust2Physics : public TObject
   void Clear(const Option_t*) {};
 	void BuildPhysicalEvent(TMust2Data* Data)		;
 	void BuildSimplePhysicalEvent(TMust2Data* Data)	;
-		
+	
+	public: 
+	vector < TVector2 > Match_X_Y(TMust2Data* Data) ;
+	bool Match_Si_CsI(int X, int Y , int CristalNbr);
+	bool Match_Si_SiLi(int X, int Y , int PadNbr);
+	bool ResolvePseudoEvent(TMust2Data* Data);
+	int  CheckEvent(TMust2Data* Data);
+	
 	public:
 	
 	//	Provide Physical Multiplicity

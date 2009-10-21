@@ -269,7 +269,7 @@ INCLUDE		= -I$(CLHEP_BASE_DIR)/include
  
 #------------------------------------------------------------------------------
 SHARELIB      =	Vdetec	InputOutputRoot InitCond	InterCoord \
-		Must2All	GaspardData	AnnularS1Data PlasticData DummyDetectorData\
+		Must2All	GaspardData	AnnularS1Data PlasticData DummyDetectorData SSSDData\
 		Reaction	EnergyLoss
 
 all:         $(SHARELIB)
@@ -292,6 +292,14 @@ Must2All:
 ifeq ($(ARCH),macosx)
 		cd lib; ln -sf libMust2Data.so libMust2Data.dylib
 		cd lib; ln -sf libMust2Physics.so libMust2Physics.dylib
+endif
+
+## SSSD ##
+SSSDData:
+		make -C ./SSSD
+		cp ./SSSD/*.so ./lib ; cp ./SSSD/*.h ./include
+ifeq ($(ARCH),macosx)
+		cd lib; ln -sf libSSSDData.so libSSSDData.dylib
 endif
 
 ## AnnularS1 ##
@@ -381,6 +389,7 @@ clean:
 	make clean -C ./IORoot
 	make clean -C ./VDetector
 	make clean -C ./MUST2
+	make clean -C ./SSSD
 	make clean -C ./AnnularS1
 	make clean -C ./GASPARD
 	make clean -C ./InteractionCoordinates
@@ -397,6 +406,7 @@ endif
 	make distclean -C ./IORoot
 	make distclean -C ./VDetector
 	make distclean -C ./MUST2
+	make distclean -C ./SSSD
 	make distclean -C ./AnnularS1
 	make distclean -C ./GASPARD
 	make distclean -C ./InteractionCoordinates
