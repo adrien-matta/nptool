@@ -184,37 +184,6 @@ void MUST2Array::VolumeMaker(G4int TelescopeNumber ,
 
    logicVacBox->SetVisAttributes(G4VisAttributes::Invisible);
 
-// Add a degrader plate between Si and CsI:
-
-   /*
-   G4Box*                   Degrader = new G4Box("Degrader" , 50*mm , 50*mm , 0.1*mm );
-   G4LogicalVolume*     logicDegrader = new G4LogicalVolume( Degrader , Harvar, "logicDegrader",0,0,0)         ;
-     PVPBuffer = new G4PVPlacement(0,G4ThreeVector(0,0,0),logicDegrader,"Degrader",logicVacBox,false,0) ;
-
-
-      //Place two marker to identify the u and v axis on silicon face:
-      //marker are placed a bit before the silicon itself so they don't perturbate simulation
-      //Uncomment to help debugging or if you want to understand the way the code work.
-      //I should recommand to Comment it during simulation to avoid perturbation of simulation
-      //Remember G4 is limitationg step on geometry constraints.
-
-      G4ThreeVector positionMarkerU = CT*0.98 + MMu*SiliconFace/4;
-      G4Box*          solidMarkerU = new G4Box( "solidMarkerU" , SiliconFace/4 , 1*mm , 1*mm )              ;
-      G4LogicalVolume* logicMarkerU = new G4LogicalVolume( solidMarkerU , Vacuum , "logicMarkerU",0,0,0)       ;
-        PVPBuffer = new G4PVPlacement(G4Transform3D(*MMrot,positionMarkerU),logicMarkerU,"MarkerU",world,false,0) ;
-
-      G4VisAttributes* MarkerUVisAtt= new G4VisAttributes(G4Colour(0.,0.,0.5));//blue
-      logicMarkerU->SetVisAttributes(MarkerUVisAtt);
-
-
-      G4ThreeVector positionMarkerV = CT*0.98 + MMv*SiliconFace/4;
-      G4Box*          solidMarkerV = new G4Box( "solidMarkerU" , 1*mm , SiliconFace/4 , 1*mm )              ;
-      G4LogicalVolume* logicMarkerV = new G4LogicalVolume( solidMarkerV , Vacuum , "logicMarkerV",0,0,0)       ;
-        PVPBuffer = new G4PVPlacement(G4Transform3D(*MMrot,positionMarkerV),logicMarkerV,"MarkerV",world,false,0) ;
-
-      G4VisAttributes* MarkerVVisAtt= new G4VisAttributes(G4Colour(0.,0.5,0.5));//green
-      logicMarkerV->SetVisAttributes(MarkerVVisAtt); */
-
 ////////////////////////////////////////////////////////////////
 /////////////////Si Strip Construction//////////////////////////
 ////////////////////////////////////////////////////////////////
@@ -256,36 +225,31 @@ void MUST2Array::VolumeMaker(G4int TelescopeNumber ,
 
       G4RotationMatrix* rotSiLi = Rotation(0., 0., 0.);
 
-      G4ThreeVector positionSiLi = G4ThreeVector(-0.25 * SiliconFace - 0.5 * SiLiSpace, 0, 0);
-      G4ThreeVector positionSiLi2 = G4ThreeVector(0.25 * SiliconFace + 0.5 * SiLiSpace, 0, 0);
-
-      G4Box* solidSiLi = new G4Box("SiLi", 0.5*SiLiFaceX, 0.5*SiLiFaceY, 0.5*SiLiThickness);
-
+     // G4Box* solidSiLi = new G4Box("SiLi", 0.5*SiLiFaceX, 0.5*SiLiFaceY, 0.5*SiLiThickness);
+     
+			G4Box* solidSiLi = new G4Box("SiLi", 0.5*SiliconFace+0.5*SiLiSpace, 0.5*SiliconFace, 0.5*SiLiThickness);
+			
       G4LogicalVolume* logicSiLi = new G4LogicalVolume(solidSiLi, m_MaterialAluminium, Name + "_SiLi" , 0, 0, 0);
 
-      // First Si(Li) 2 time 4 detectore
-      PVPBuffer =  new G4PVPlacement(G4Transform3D(*rotSiLi, positionSiLi)  ,
-            logicSiLi                        ,
-            Name + "_SiLi"                ,
-            logicVacBox                      ,
-            false                         ,
-            0);
-
-      // Second Si(Li) 2 time 4 detectore
-      PVPBuffer =  new G4PVPlacement(G4Transform3D(*rotSiLi, positionSiLi2) ,
-            logicSiLi                        ,
-            Name + "_SiLi"                ,
-            logicVacBox                      ,
-            false                         ,
-            1);
+			PVPBuffer =  new G4PVPlacement( G4Transform3D(*rotSiLi, G4ThreeVector(0,0,0) ) 	,
+													            logicSiLi               												,
+													            Name + "_SiLi"           												,
+													            logicVacBox              												,
+													            false                    												,
+													            0												 												);
 
       // SiLi are placed inside of the VacBox...
       // Left/Right define when looking to detector from Si to CsI
-      G4double SiLi_HighY_Upper = 19.86 * mm;
-      G4double SiLi_HighY_Center = 25.39 * mm ;
-      G4double SiLi_WidthX_Left  = 22.85 * mm;
-      G4double SiLi_WidthX_Right = 24.9 * mm  ;
-      G4double SiLi_ShiftX    = 0.775 * mm ;
+      G4double SiLi_HighY_Upper 	= 19.86 * mm	;
+      G4double SiLi_HighY_Center 	= 25.39 * mm 	;
+      G4double SiLi_WidthX_Left  	= 22.85 * mm	;
+      G4double SiLi_WidthX_Right 	= 24.9	* mm  ;
+      G4double SiLi_ShiftX    		= 0.775 * mm 	;
+
+
+			//	SiLi are organized by two group of 8 Up(9 to 15) and Down(1 to 8).
+			G4ThreeVector ShiftSiLiUp 	 = G4ThreeVector(-0.25 * SiliconFace - 0.5 * SiLiSpace, 0, 0)	;
+      G4ThreeVector ShiftSiLiDown  = G4ThreeVector(0.25  * SiliconFace + 0.5 * SiLiSpace, 0, 0)	;
 
       // SiLi : left side of SiLi detector
       G4Box* solidSiLi_LT  = new G4Box("SiLi_LT"  , 0.5*SiLi_WidthX_Left  , 0.5*SiLi_HighY_Upper   , 0.5*SiLiThickness);
@@ -299,58 +263,139 @@ void MUST2Array::VolumeMaker(G4int TelescopeNumber ,
 
       G4LogicalVolume* logicSiLi_LT    = new G4LogicalVolume(solidSiLi_LT   , m_MaterialSilicon , "SiLi_LT"  , 0 , 0 , 0);
       G4LogicalVolume* logicSiLi_RT    = new G4LogicalVolume(solidSiLi_RT   , m_MaterialSilicon , "SiLi_RT"  , 0 , 0 , 0);
-      G4LogicalVolume* logicSiLi_LC1   = new G4LogicalVolume(solidSiLi_LC1 , m_MaterialSilicon , "SiLi_LC1"  , 0 , 0 , 0);
-      G4LogicalVolume* logicSiLi_RC1   = new G4LogicalVolume(solidSiLi_RC1 , m_MaterialSilicon , "SiLi_RC1"  , 0 , 0 , 0);
+      G4LogicalVolume* logicSiLi_LC1   = new G4LogicalVolume(solidSiLi_LC1 	, m_MaterialSilicon , "SiLi_LC1" , 0 , 0 , 0);
+      G4LogicalVolume* logicSiLi_RC1   = new G4LogicalVolume(solidSiLi_RC1 	, m_MaterialSilicon , "SiLi_RC1" , 0 , 0 , 0);
       G4LogicalVolume* logicSiLi_LB    = new G4LogicalVolume(solidSiLi_LB   , m_MaterialSilicon , "SiLi_LB"  , 0 , 0 , 0);
       G4LogicalVolume* logicSiLi_RB    = new G4LogicalVolume(solidSiLi_RB   , m_MaterialSilicon , "SiLi_RB"  , 0 , 0 , 0);
-      G4LogicalVolume* logicSiLi_LC2   = new G4LogicalVolume(solidSiLi_LC2 , m_MaterialSilicon , "SiLi_LC2"  , 0 , 0 , 0);
-      G4LogicalVolume* logicSiLi_RC2   = new G4LogicalVolume(solidSiLi_RC2 , m_MaterialSilicon , "SiLi_RC2"  , 0 , 0 , 0);
+      G4LogicalVolume* logicSiLi_LC2   = new G4LogicalVolume(solidSiLi_LC2 	, m_MaterialSilicon , "SiLi_LC2" , 0 , 0 , 0);
+      G4LogicalVolume* logicSiLi_RC2   = new G4LogicalVolume(solidSiLi_RC2 	, m_MaterialSilicon , "SiLi_RC2" , 0 , 0 , 0);
 
       G4double interSiLi = 0.5 * mm;
 
       // Top
-      G4ThreeVector positionSiLi_LT = G4ThreeVector(-0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX            ,
+      G4ThreeVector positionSiLi_LT_up = G4ThreeVector(-0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX            ,
             0.5 * SiLi_HighY_Upper  + SiLi_HighY_Center + 1.5 * interSiLi   ,
             0);
 
-      G4ThreeVector positionSiLi_RT = G4ThreeVector(0.5 * SiLi_WidthX_Right - SiLi_ShiftX                     ,
+			positionSiLi_LT_up += ShiftSiLiUp ;
+
+      G4ThreeVector positionSiLi_RT_up = G4ThreeVector(0.5 * SiLi_WidthX_Right - SiLi_ShiftX                     ,
             0.5 * SiLi_HighY_Upper  + SiLi_HighY_Center + 1.5 * interSiLi   ,
             0);
 
-      G4ThreeVector positionSiLi_LC1 = G4ThreeVector(-0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX           ,
+			positionSiLi_RT_up += ShiftSiLiUp ;
+			
+      G4ThreeVector positionSiLi_LC1_up = G4ThreeVector(-0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX           ,
             0.5 * SiLi_HighY_Center + 0.5 * interSiLi                 ,
             0);
 
-      G4ThreeVector positionSiLi_RC1 = G4ThreeVector(0.5 * SiLi_WidthX_Right - SiLi_ShiftX                     ,
+			positionSiLi_LC1_up += ShiftSiLiUp ;
+
+      G4ThreeVector positionSiLi_RC1_up = G4ThreeVector(0.5 * SiLi_WidthX_Right - SiLi_ShiftX                     ,
             0.5 * SiLi_HighY_Center + 0.5 * interSiLi                 ,
             0);
 
-      // Bottom
-      G4ThreeVector positionSiLi_LB = G4ThreeVector(-0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX            ,
+			positionSiLi_RC1_up += ShiftSiLiUp ;
+
+      G4ThreeVector positionSiLi_LB_up = G4ThreeVector(-0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX            ,
             -0.5 * SiLi_HighY_Upper  - SiLi_HighY_Center - 1.5 * interSiLi  ,
             0);
 
-      G4ThreeVector positionSiLi_RB = G4ThreeVector(0.5 * SiLi_WidthX_Right - SiLi_ShiftX                     ,
+			positionSiLi_LB_up += ShiftSiLiUp ;
+
+      G4ThreeVector positionSiLi_RB_up = G4ThreeVector(0.5 * SiLi_WidthX_Right - SiLi_ShiftX                     ,
             -0.5 * SiLi_HighY_Upper  - SiLi_HighY_Center - 1.5 * interSiLi  ,
             0);
 
-      G4ThreeVector positionSiLi_LC2 = G4ThreeVector(-0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX           ,
+			positionSiLi_RB_up += ShiftSiLiUp ;
+
+      G4ThreeVector positionSiLi_LC2_up = G4ThreeVector(-0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX           ,
             -0.5 * SiLi_HighY_Center - 0.5 * interSiLi                ,
             0);
 
-      G4ThreeVector positionSiLi_RC2 = G4ThreeVector(0.5 * SiLi_WidthX_Right - SiLi_ShiftX                    ,
+			positionSiLi_LC2_up += ShiftSiLiUp ;
+
+      G4ThreeVector positionSiLi_RC2_up = G4ThreeVector(0.5 * SiLi_WidthX_Right - SiLi_ShiftX                    ,
+            -0.5 * SiLi_HighY_Center - 0.5 * interSiLi                ,
+            0);
+  
+			positionSiLi_RC2_up += ShiftSiLiUp ;
+          
+            
+       // Down
+      G4ThreeVector positionSiLi_LT_down = G4ThreeVector(-0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX            ,
+            0.5 * SiLi_HighY_Upper  + SiLi_HighY_Center + 1.5 * interSiLi   ,
+            0);
+
+			positionSiLi_LT_down += ShiftSiLiDown ;
+
+      G4ThreeVector positionSiLi_RT_down = G4ThreeVector(0.5 * SiLi_WidthX_Right - SiLi_ShiftX                     ,
+            0.5 * SiLi_HighY_Upper  + SiLi_HighY_Center + 1.5 * interSiLi   ,
+            0);
+
+			positionSiLi_RT_down += ShiftSiLiDown ;
+
+      G4ThreeVector positionSiLi_LC1_down = G4ThreeVector(-0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX           ,
+            0.5 * SiLi_HighY_Center + 0.5 * interSiLi                 ,
+            0);
+
+			positionSiLi_LC1_down += ShiftSiLiDown ;
+
+      G4ThreeVector positionSiLi_RC1_down = G4ThreeVector(0.5 * SiLi_WidthX_Right - SiLi_ShiftX                     ,
+            0.5 * SiLi_HighY_Center + 0.5 * interSiLi                 ,
+            0);
+
+			positionSiLi_RC1_down += ShiftSiLiDown ;
+
+      G4ThreeVector positionSiLi_LB_down = G4ThreeVector(-0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX            ,
+            -0.5 * SiLi_HighY_Upper  - SiLi_HighY_Center - 1.5 * interSiLi  ,
+            0);
+
+			positionSiLi_LB_down += ShiftSiLiDown ;
+
+      G4ThreeVector positionSiLi_RB_down = G4ThreeVector(0.5 * SiLi_WidthX_Right - SiLi_ShiftX                     ,
+            -0.5 * SiLi_HighY_Upper  - SiLi_HighY_Center - 1.5 * interSiLi  ,
+            0);
+
+			positionSiLi_RB_down += ShiftSiLiDown ;
+
+      G4ThreeVector positionSiLi_LC2_down = G4ThreeVector(-0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX           ,
             -0.5 * SiLi_HighY_Center - 0.5 * interSiLi                ,
             0);
 
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LT  , logicSiLi_LT  , Name + "_SiLi_Pad1"  , logicSiLi , false , 0)  ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RT  , logicSiLi_RT  , Name + "_SiLi_Pad2"  , logicSiLi , false , 0)  ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LC1 , logicSiLi_LC1 , Name + "_SiLi_Pad3" , logicSiLi , false , 0)   ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RC1 , logicSiLi_RC1 , Name + "_SiLi_Pad4" , logicSiLi , false , 0)   ;
+			positionSiLi_LC2_down += ShiftSiLiDown ;
 
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LB  , logicSiLi_LB  , Name + "_SiLi_Pad5"  , logicSiLi , false , 0)   ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RB  , logicSiLi_RB  , Name + "_SiLi_Pad6"  , logicSiLi , false , 0)   ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LC2 , logicSiLi_LC2 , Name + "_SiLi_Pad7" , logicSiLi , false , 0) ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RC2 , logicSiLi_RC2 , Name + "_SiLi_Pad8" , logicSiLi , false , 0) ;
+      G4ThreeVector positionSiLi_RC2_down = G4ThreeVector(0.5 * SiLi_WidthX_Right - SiLi_ShiftX                    ,
+            -0.5 * SiLi_HighY_Center - 0.5 * interSiLi                ,
+            0);
+            
+			positionSiLi_RC2_down += ShiftSiLiDown ;
+            
+			
+			// up
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LT_up  , logicSiLi_LT  , Name + "_SiLi_Pad9"  , logicSiLi , false , 0)  ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RT_up  , logicSiLi_RT  , Name + "_SiLi_Pad16"  , logicSiLi , false , 0)  ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LC1_up , logicSiLi_LC1 , Name + "_SiLi_Pad11" 	, logicSiLi , false , 0)  ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RC1_up , logicSiLi_RC1 , Name + "_SiLi_Pad14" 	, logicSiLi , false , 0)  ;
+
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LB_up  , logicSiLi_LB  , Name + "_SiLi_Pad10"  , logicSiLi , false , 0)  ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RB_up  , logicSiLi_RB  , Name + "_SiLi_Pad15"  , logicSiLi , false , 0)  ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LC2_up , logicSiLi_LC2 , Name + "_SiLi_Pad12" 	, logicSiLi , false , 0) 	;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RC2_up , logicSiLi_RC2 , Name + "_SiLi_Pad13" 	, logicSiLi , false , 0)	;
+
+			
+			// down
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LT_down  , logicSiLi_LT  , Name + "_SiLi_Pad2"  , logicSiLi , false , 0)  ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RT_down  , logicSiLi_RT  , Name + "_SiLi_Pad7"  , logicSiLi , false , 0)  ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LC1_down , logicSiLi_LC1 , Name + "_SiLi_Pad4" 	, logicSiLi , false , 0)  ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RC1_down , logicSiLi_RC1 , Name + "_SiLi_Pad5" 	, logicSiLi , false , 0)  ;
+
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LB_down  , logicSiLi_LB  , Name + "_SiLi_Pad1"  , logicSiLi , false , 0)  ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RB_down  , logicSiLi_RB  , Name + "_SiLi_Pad8"  , logicSiLi , false , 0)  ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LC2_down , logicSiLi_LC2 , Name + "_SiLi_Pad3" 	, logicSiLi , false , 0) 	;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RC2_down , logicSiLi_RC2 , Name + "_SiLi_Pad6" 	, logicSiLi , false , 0)	;
+
+
 
       logicSiLi->SetVisAttributes(G4VisAttributes(G4Colour(1, 1., 1.)));
 

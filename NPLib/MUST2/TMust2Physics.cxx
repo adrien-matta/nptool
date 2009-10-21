@@ -23,35 +23,37 @@
 #include "TMust2Physics.h"
 #include <iostream>
 #include <cmath>
+///////////////////////////////////////////////////////////////////////////
+namespace {
+	// Threshold
+	const double Si_X_E_Threshold = 0	;	const double Si_X_T_Threshold = 0 ;
+	const double Si_Y_E_Threshold = 0	;	const double Si_Y_T_Threshold = 0	;
+	const double SiLi_E_Threshold = 0	;	const double SiLi_T_Threshold = 0	;
+	const double CsI_E_Threshold	= 0 ;	const double CsI_T_Threshold	= 0	;
+}
+///////////////////////////////////////////////////////////////////////////
+
 
 ClassImp(TMust2Physics)
-
+///////////////////////////////////////////////////////////////////////////
 TMust2Physics::TMust2Physics() 
 	{ EventMultiplicity = 0 ;}
-
+	
+///////////////////////////////////////////////////////////////////////////
 TMust2Physics::~TMust2Physics() {Clear();}
 
+///////////////////////////////////////////////////////////////////////////
 void TMust2Physics::BuildSimplePhysicalEvent(TMust2Data* Data)
 	{
 		BuildPhysicalEvent(Data);
 	}
+	
+///////////////////////////////////////////////////////////////////////////
 void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 	{ 
 		//	Check
 		bool Check_Si = false ;bool Check_SiLi = false ; bool Check_CsI = false ;
-		
-		// Threshold
-		double Si_X_E_Threshold = 0		;	double Si_X_T_Threshold = 0 	;
-		double Si_Y_E_Threshold = 0		;	double Si_Y_T_Threshold = 0		;
-		double SiLi_E_Threshold = 0		;	double SiLi_T_Threshold = 0		;
-		double CsI_E_Threshold	= 0 	;	double CsI_T_Threshold	= 0		;
-		
-		// To avoid warnings
-		Si_X_E_Threshold *= 1;		Si_X_T_Threshold *= 1;
-		Si_Y_E_Threshold *= 1;		Si_Y_T_Threshold *= 1;
-		SiLi_E_Threshold *= 1;		SiLi_T_Threshold *= 1;
-		CsI_E_Threshold  *= 1;		CsI_T_Threshold  *= 1;
-		
+	
 		//	Multiplicity 1
 		if( Data->GetMMStripXEMult()==1 && Data->GetMMStripYEMult()==1 && Data->GetMMStripXTMult()==1 && Data->GetMMStripXTMult()==1 )
 			{
@@ -181,11 +183,11 @@ void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 												TY = Data->GetMMStripXTTime(i) 					;
 												
 												if (EX>EY)	Si_E.push_back(EX)	;
-												else	  	Si_E.push_back(EY)	;
+												else	  		Si_E.push_back(EY)	;
 												
 												
 												if (TX>TY)	Si_T.push_back(TY)	;
-												else	  	Si_T.push_back(TX)	; 
+												else	  		Si_T.push_back(TX)	; 
 												Check_Si = true ;
 											}
 									}
@@ -279,11 +281,6 @@ void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 								TX2 = Data->GetMMStripXTTime(1) 	;	 TY2 =  Data->GetMMStripYTTime(1) ;
 							}
 							
-												
-					
-					
-					
-					
 					
 					return;
 					}
@@ -291,7 +288,7 @@ void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 			
 	}
 
-/////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
 int TMust2Physics :: CheckEvent(TMust2Data* Data)
 	{
 		// Check the size of the different elements
@@ -303,20 +300,17 @@ int TMust2Physics :: CheckEvent(TMust2Data* Data)
 	
 					return 2 ; // Pseudo Event, potentially interstrip
 		
-		else return -1 ; // Rejected Event
-		
-		
-		return -1 		 ; // Rejected Event 
+		else 	return -1 ; // Rejected Event
+
 	}
 
-/////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
 bool TMust2Physics :: ResolvePseudoEvent(TMust2Data* Data)
 	{
-	
 		return false;
 	}
 
-/////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
 vector < TVector2 > TMust2Physics :: Match_X_Y(TMust2Data* Data)
 	{
 		vector < TVector2 > ArrayOfGoodCouple ;
@@ -339,104 +333,104 @@ vector < TVector2 > TMust2Physics :: Match_X_Y(TMust2Data* Data)
 	}
 	
 	
-/////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
 bool TMust2Physics :: Match_Si_SiLi(int X, int Y , int PadNbr)
 	{
 							if( 	 PadNbr == 1 
-									&& X<1 && X>1
-									&& Y<1 && Y>1 ) 
+									&& X<128 && X>96
+									&& Y<128 && Y>96 ) 
 
 						return true ;
 
 
 				else	if( 	 PadNbr == 2 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<128 && X>96 
+									&& Y<96 && Y>64 ) 
 
 						return true ;
 
 
 				else	if( 	 PadNbr == 3 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<96 && X>64 
+									&& Y<128 && Y>96 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 4 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<96 && X>64
+									&& Y<96 && Y>64 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 5 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1) 
+									&& X<64 && X>32 
+									&& Y<96 && Y>64) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 6 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<64 && X>32 
+									&& Y<128 && Y>96 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 7 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<32 && X>1 
+									&& Y<96 && Y>64 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 8 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<32 && X>1 
+									&& Y<128 && Y>96 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 9 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<128 && X>96 
+									&& Y<32 && Y>1 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 10 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<128 && X>96 
+									&& Y<64 && Y>32 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 11 
-									&& X<1 && X>1
-									&& Y<1 && Y>1 ) 
+									&& X<96 && X>64
+									&& Y<32 && Y>1 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 12 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<96 && X>64 
+									&& Y<64 && Y>32) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 13 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<64 && X>32 
+									&& Y<64 && Y>32 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 14 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<64 && X>32 
+									&& Y<32 && Y>1 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 15 
-									&& X<1 && X>1
-									&& Y<1 && Y>1 ) 
+									&& X<32 && X>1
+									&& Y<64 && Y>32 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 16 
-									&& X<1 && X>1
-									&& Y<1 && Y>1 ) 
+									&& X<32 && X>1
+									&& Y<32 && Y>1 ) 
 
 						return true ;		
 
@@ -445,7 +439,7 @@ bool TMust2Physics :: Match_Si_SiLi(int X, int Y , int PadNbr)
 	}
 
 
-/////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
 bool TMust2Physics :: Match_Si_CsI(int X, int Y , int CristalNbr)
 	{
 							if( 	 CristalNbr == 1 
@@ -550,7 +544,7 @@ bool TMust2Physics :: Match_Si_CsI(int X, int Y , int CristalNbr)
 						return false;
 	}
 
-/////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
 void TMust2Physics::Clear()
 	{
 		EventMultiplicity= 0		;
