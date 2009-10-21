@@ -1271,14 +1271,14 @@ void MUST2Array::InitializeScorers()
 	  	//	SiLi Associate Scorer
 	  	m_SiLiScorer	= new G4MultiFunctionalDetector("MUST2_SiLiScorer")			;
 	    G4VPrimitiveScorer* SiLiEnergy 			= new GENERALSCORERS::PSEnergy("SiLiEnergy","MUST2Telescope", 0) ;
-	    G4VPrimitiveScorer* SiLiPadNbr 			= new PSPadOrCristalNumber("SiLiPadNbr",0,"SiLi") ;
+	    G4VPrimitiveScorer* SiLiPadNbr 			= new PSPadOrCristalNumber("SiLiPadNbr",0) ;
 			m_SiLiScorer->RegisterPrimitive(SiLiEnergy) 							;
 			m_SiLiScorer->RegisterPrimitive(SiLiPadNbr) 							;
 	   
 	    //	CsI Associate Scorer 
 	    m_CsIScorer	= new G4MultiFunctionalDetector("MUST2_CsIScorer")				;
 	    G4VPrimitiveScorer* CsIEnergy 			= new GENERALSCORERS::PSEnergy("CsIEnergy","MUST2Telescope", 0) 	;
-	    G4VPrimitiveScorer* CsICristalNbr 	= new PSPadOrCristalNumber("CsICristalNbr",0,"CsI") ;
+	    G4VPrimitiveScorer* CsICristalNbr 	= new PSPadOrCristalNumber("CsICristalNbr",0) ;
 	    m_CsIScorer->RegisterPrimitive(CsIEnergy)								;
 	    m_CsIScorer->RegisterPrimitive(CsICristalNbr)						;
 	    

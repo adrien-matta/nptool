@@ -181,41 +181,32 @@ void PSStripNumberY::PrintAll()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //CsI Cristal / SiLi Pad Number Scorer
 //
-PSPadOrCristalNumber::PSPadOrCristalNumber(G4String name, G4int depth,G4String type)
+PSPadOrCristalNumber::PSPadOrCristalNumber(G4String name, G4int depth)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
-{
-				if (type=="SiLi") 	m_type = true  ;
-	else 	if (type=="CsI" ) 	m_type = false ;
-  else G4cout << "Problem in MUST2 Scorer definition: Type should be SiLi or CsI" << G4endl ;
-}
+{}
 
 PSPadOrCristalNumber::~PSPadOrCristalNumber()
-{
-   ;
-}
+{}
 
 G4bool PSPadOrCristalNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {   
 		std::string name = aStep->GetTrack()->GetVolume()->GetName();
 		std::string nbr ;
 		unsigned int numberOfCharacterInDetectorNumber ;
+
+		int temp1,temp2 ;
+		double VolumeNumber;
+		nbr = name[name.length()-1]	;
+		temp1 = atoi( nbr.c_str() )	;
 		
-		if(m_type)// 24 character before pad number MUST2Telescope4_SiLi_PadXX
-			{
-				numberOfCharacterInDetectorNumber = name.length() - 24 ;
-				for(unsigned int i = 24 ; i < 24 + numberOfCharacterInDetectorNumber ; i++ )
-						nbr += name[i] ; 
-			}
-
-		else // 27 character before cristal number : MUST2Telescope4_CsI_CristalXX
-			{
-				numberOfCharacterInDetectorNumber = name.length() - 27 ;
-				for(unsigned int i = 27 ; i < 27 + numberOfCharacterInDetectorNumber ; i++ )
-						nbr += name[i] ; 
-			}
-
-
-	  double VolumeNumber = atoi( nbr.c_str() );
+		nbr = name[name.length()-2]	;
+		temp2 = atoi( nbr.c_str() )	;
+		
+		nbr.clear();
+		
+		if(temp2!=0) { nbr+= name[name.length()-2]	; nbr+= name[name.length()-1]	; VolumeNumber = atoi( nbr.c_str() )	;}
+		
+		else 				 { nbr= name[name.length()-1]	; VolumeNumber = atoi( nbr.c_str() )	;}
 
 	 	int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "MUST2Telescope");
 

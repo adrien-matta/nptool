@@ -72,7 +72,7 @@
 PhysicsList::PhysicsList()
 {	
 	  // ie: no secondaries
-   defaultCutValue = 1000000000000 * cm;
+   defaultCutValue = 1000 * pc;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 PhysicsList::~PhysicsList()

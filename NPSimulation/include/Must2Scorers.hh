@@ -83,7 +83,7 @@ namespace MUST2 {
 	{
 
 	public: // with description
-	   PSPadOrCristalNumber(G4String name, G4int depth = 0, G4String Type = "XXX");
+	   PSPadOrCristalNumber(G4String name, G4int depth = 0);
 	   virtual ~PSPadOrCristalNumber();
 
 	protected: // with description
@@ -97,7 +97,6 @@ namespace MUST2 {
 	   virtual void PrintAll();
 
 	private:
-	   bool m_type;
 	   G4int HCID;
 	   G4THitsMap<G4double>* EvtMap;
 	};
