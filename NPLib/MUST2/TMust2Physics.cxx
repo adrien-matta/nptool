@@ -72,11 +72,11 @@ void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 						
 						// Take maximum Energy
 						if(Si_X_E >= Si_Y_E) Si_E.push_back(Si_X_E)	;
-						else								Si_E.push_back(Si_Y_E)	;
+						else								 Si_E.push_back(Si_Y_E)	;
 						
 						// Take minimum Time
 						if(Si_X_T >= Si_Y_T) Si_T.push_back(Si_Y_T)	;
-						else								Si_T.push_back(Si_X_T)	;
+						else								 Si_T.push_back(Si_X_T)	;
 						
 						for(unsigned int j = 0 ; j < Data->GetMMSiLiEMult() ; j++)
 							{
