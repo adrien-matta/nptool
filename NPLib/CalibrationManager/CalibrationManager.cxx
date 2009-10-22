@@ -19,12 +19,12 @@
  *   This class is a singleton                                               *
  *                                                                           *
  *****************************************************************************/
-#include"CalibrationManager.h"
+#include "CalibrationManager.h"
 
 //	STL
-#include<cstdlib>
-#include<limits>
-#include<cmath>
+#include <cstdlib>
+#include <limits>
+#include <cmath>
 
 //////////////////////////////////////////////////////////////////
 CalibrationManager* CalibrationManager::instance = 0;

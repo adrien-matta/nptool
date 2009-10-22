@@ -13,22 +13,28 @@ int main(int argc,char** argv)
 			return 0;
 		} 
 	
-	string reactionfileName 	= argv[1]	;
-	string detectorfileName 	= argv[2]	;
-	string runToReadfileName 	= argv[3]	;
+	string detectorfileName 		= argv[1]	;
+	string calibrationfileName 	= argv[2]	;
+	string runToReadfileName 		= argv[3]	;
 	
 	//	First of All instantiate RootInput and Output
 	//	Detector will be attached later
 	RootInput:: getInstance(runToReadfileName)	;
 	RootOutput::getInstance("Analysis/10HeRiken_AnalyzedData", "AnalyzedTree")					;
 	
-	//	Instantiate a Reaction
-	NPL::Reaction* myReaction = new Reaction					;
-	myReaction	->	ReadConfigurationFile(reactionfileName)		;
+	//	Instantiate some Reaction
+	NPL::Reaction*  He10Reaction = new Reaction								;
+	He10Reaction	->	ReadConfigurationFile("10He.reaction")		;
 
-		//	Instantiate the detector using a file 
-	DetectorManager* myDetector = new DetectorManager 			;
+	NPL::Reaction*  Li10Reaction = new Reaction								;
+	Li10Reaction	->	ReadConfigurationFile("9Li-dp-10Li.reaction")		;
+
+	//	Instantiate the detector using a file 
+	DetectorManager* myDetector = new DetectorManager 			  ;
 	myDetector	->	ReadConfigurationFile(detectorfileName)		;
+	
+	//	Instantiate the Calibration Manger using a file
+	CalibrationManager* myCalibration = new CalibrationManager(calibrationfileName) ;
 	
 	//	Attach more branch to the output
 	

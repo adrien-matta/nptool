@@ -40,7 +40,7 @@ class CalibrationManager
 		public: // Accessor
 			//	return a pointer to the calibration manager instance.
 			//	if the instance does not exist it is created.
-			CalibrationManager* getInstance(string configFileName="XXX");
+			static CalibrationManager* getInstance(string configFileName="XXX");
 	
 		private: // the instance
 			//	Hold a pointer on itself

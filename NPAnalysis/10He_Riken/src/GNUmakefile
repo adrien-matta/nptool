@@ -16,7 +16,7 @@ CXXFLAGS += -I$(NPAINCLUDES)
 CXXFLAGS += -I$(NPLIB)/include
 
 LDFLAGS  = `root-config --libs` -lMathMore
-LDFLAGS+= -L$(NPLIB)/lib -lVDetector -lIORoot -lReaction -lEnergyLoss \
+LDFLAGS+= -L$(NPLIB)/lib -lCalibrationManager -lVDetector -lIORoot -lReaction -lEnergyLoss \
 			-lMust2Data -lMust2Physics \
 			-lAnnularS1Data -lGaspardData -lPlasticData\
 			-lInitialConditions -lInteractionCoordinates

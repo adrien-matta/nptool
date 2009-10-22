@@ -27,6 +27,7 @@
 
 // NPL
 #include "TMust2Data.h"
+#include "../include/CalibrationManager.h"
 
 // ROOT 
 #include "TVector2.h" 
@@ -39,14 +40,14 @@ class TMust2Physics : public TObject
 {
 	public:
 		TMust2Physics()	;
-		~TMust2Physics();
+		~TMust2Physics() {};
 
 	public: 
 	void Clear()									;	
   void Clear(const Option_t*) {};
-	void BuildPhysicalEvent(TMust2Data* Data)		;
-	void BuildSimplePhysicalEvent(TMust2Data* Data)	;
-	
+	void BuildPhysicalEvent(TMust2Data* Data)						;
+	void BuildSimplePhysicalEvent(TMust2Data* Data)			;
+
 	public: 
 	vector < TVector2 > Match_X_Y(TMust2Data* Data) ;
 	bool Match_Si_CsI(int X, int Y , int CristalNbr);
@@ -68,23 +69,53 @@ class TMust2Physics : public TObject
 	//	Si X
 	vector<double>	Si_E				;
 	vector<double>	Si_T				;
-	vector<int>		Si_X				;
-	vector<int>		Si_Y				;
+	vector<int>			Si_X				;
+	vector<int>			Si_Y				;
 	
 	//	Si(Li)
 	vector<double>	SiLi_E				;
 	vector<double>	SiLi_T				;
-	vector<int>		SiLi_N				;
+	vector<int>			SiLi_N				;
 	
 	//	CsI
 	vector<double>	CsI_E				;
 	vector<double>	CsI_T				;
-	vector<int>		CsI_N				;	
+	vector<int>			CsI_N				;	
 	
 	// Physical Value  
 	vector<double>	TotalEnergy			;
 	
 	ClassDef(TMust2Physics,1)  // Must2Data structure
 };
+
+namespace LOCAL
+	{
+		// Threshold
+		const double Si_X_E_Threshold = 0	;	const double Si_X_T_Threshold = 0 ;
+		const double Si_Y_E_Threshold = 0	;	const double Si_Y_T_Threshold = 0	;
+		const double SiLi_E_Threshold = 0	;	const double SiLi_T_Threshold = 0	;
+		const double CsI_E_Threshold	= 0 ;	const double CsI_T_Threshold	= 0	;
+		
+		//	tranform an integer to a string
+		string itoa(int value);
+		//	DSSD
+		//	X
+		double fSi_X_E(TMust2Data* Data , int i);
+		double fSi_X_T(TMust2Data* Data, int i);
+		
+		//	Y	
+		double fSi_Y_E(TMust2Data* Data, int i);
+		double fSi_Y_T(TMust2Data* Data, int i);
+			
+		//	SiLi
+		double fSiLi_E(TMust2Data* Data, int i);
+		double fSiLi_T(TMust2Data* Data, int i);
+			
+		//	CsI
+		double fCsI_E(TMust2Data* Data, int i);
+		double fCsI_T(TMust2Data* Data, int i);
+	
+	}
+
 
 #endif
