@@ -118,7 +118,7 @@ int main(int argc,char** argv)
 			
 			
 			
-			// Target (from initial condition)
+/*			// Target (from initial condition)
 			XTarget = Init->GetICPositionX(0);
 			YTarget = Init->GetICPositionY(0);
 			//	XTarget = RandomEngine.Gaus(Init->GetICPositionX(0),1);
@@ -253,7 +253,7 @@ int main(int argc,char** argv)
 						   if(Plastic->GetPlasticNumber(yy)==1) EPl1[yy]=Plastic->GetEnergy(yy);
 					else if(Plastic->GetPlasticNumber(yy)==2) EPl2[yy]=Plastic->GetEnergy(yy);
 					
-				}
+				}*/
 			
 			RootOutput::getInstance()->GetTree()->Fill()	;
 		}

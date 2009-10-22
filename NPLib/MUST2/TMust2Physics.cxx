@@ -49,6 +49,83 @@ void TMust2Physics::BuildSimplePhysicalEvent(TMust2Data* Data)
 	}
 	
 ///////////////////////////////////////////////////////////////////////////
+	
+void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
+	{ 
+		if( CheckEvent(Data) == 1 )
+			{
+				vector< TVector2 > couple = Match_X_Y(Data) ;
+				
+				for(unsigned int i = 0 ; i < couple.size() ; i++)
+					{
+						int N = Data->GetMMStripXEDetectorNbr(couple[i].X())		;
+						int X = Data->GetMMStripXEStripNbr(couple[i].X())				;
+						int Y = Data->GetMMStripXEStripNbr(couple[i].Y())				;
+						
+						double Si_X_E = Data->GetMMStripXEEnergy(couple[i].X())	;
+						double Si_Y_E = Data->GetMMStripYEEnergy(couple[i].Y())	;
+
+						double Si_X_T = Data->GetMMStripXTTime(couple[i].X())		;
+						double Si_Y_T = Data->GetMMStripYTTime(couple[i].Y())		;
+					
+						Si_X.push_back(X) ; Si_Y.push_back(Y) ; TelescopeNumber.push_back(N) ;
+						
+						// Take maximum Energy
+						if(Si_X_E >= Si_Y_E) Si_E.push_back(Si_X_E)	;
+						else								Si_E.push_back(Si_Y_E)	;
+						
+						// Take minimum Time
+						if(Si_X_T >= Si_Y_T) Si_T.push_back(Si_Y_T)	;
+						else								Si_T.push_back(Si_X_T)	;
+						
+						for(unsigned int j = 0 ; j < Data->GetMMSiLiEMult() ; j++)
+							{
+								if(Data->GetMMSiLiEDetectorNbr(j)==N)
+									{
+										if( Match_Si_SiLi( X, Y , Data->GetMMSiLiEPadNbr(j) ) )
+										{
+											SiLi_N.push_back(Data->GetMMSiLiEPadNbr(j))	;
+											SiLi_E.push_back(Data->GetMMSiLiEEnergy(j))	;
+											SiLi_T.push_back(Data->GetMMSiLiTTime(j))		;
+										}
+										
+									}
+								
+							}
+							
+							
+						 for( int j = 0 ; j < Data->GetMMCsIEMult() ; j++)
+							{
+								if(Data->GetMMCsIEDetectorNbr(j)==N)
+									{
+										if( Match_Si_CsI( X, Y , Data->GetMMCsIECristalNbr(j) ) )
+										{
+											CsI_N.push_back(Data->GetMMCsIECristalNbr(j))	;
+											CsI_E.push_back(Data->GetMMCsIEEnergy(j))			;
+											CsI_T.push_back(Data->GetMMCsITTime(j))				;
+										}
+									}
+								
+							}
+					
+					
+					}
+				
+			}
+		
+		return;
+	
+	}	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*
+///////////////////////////////////////////////////////////////////////////
 void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 	{ 
 		//	Check
@@ -59,7 +136,7 @@ void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 			{
 				
 				if( //Same detector
-						Data->GetMMStripXEDetectorNbr(0) == Data->GetMMStripXTDetectorNbr(0)
+						  Data->GetMMStripXEDetectorNbr(0) == Data->GetMMStripXTDetectorNbr(0)
 					&&	Data->GetMMStripXTDetectorNbr(0) == Data->GetMMStripYTDetectorNbr(0)
 					&&	Data->GetMMStripYTDetectorNbr(0) == Data->GetMMStripYEDetectorNbr(0) 
 					
@@ -287,7 +364,7 @@ void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 			}
 			
 	}
-
+*/
 ///////////////////////////////////////////////////////////////////////////
 int TMust2Physics :: CheckEvent(TMust2Data* Data)
 	{
@@ -337,100 +414,100 @@ vector < TVector2 > TMust2Physics :: Match_X_Y(TMust2Data* Data)
 bool TMust2Physics :: Match_Si_SiLi(int X, int Y , int PadNbr)
 	{
 							if( 	 PadNbr == 1 
-									&& X<128 && X>96
-									&& Y<128 && Y>96 ) 
+									&& X<121 && X>93
+									&& Y<128 && Y>95 ) 
 
 						return true ;
 
 
 				else	if( 	 PadNbr == 2 
-									&& X<128 && X>96 
-									&& Y<96 && Y>64 ) 
+									&& X<121 && X>93 
+									&& Y<100 && Y>65 ) 
 
 						return true ;
 
 
 				else	if( 	 PadNbr == 3 
-									&& X<96 && X>64 
-									&& Y<128 && Y>96 ) 
+									&& X<96 && X>61 
+									&& Y<128 && Y>95 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 4 
-									&& X<96 && X>64
-									&& Y<96 && Y>64 ) 
+									&& X<96 && X>61
+									&& Y<100 && Y>65 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 5 
-									&& X<64 && X>32 
-									&& Y<96 && Y>64) 
+									&& X<67 && X>30 
+									&& Y<100 && Y>65) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 6 
-									&& X<64 && X>32 
-									&& Y<128 && Y>96 ) 
+									&& X<67 && X>30 
+									&& Y<128 && Y>95 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 7 
-									&& X<32 && X>1 
-									&& Y<96 && Y>64 ) 
+									&& X<35 && X>6 
+									&& Y<100 && Y>65 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 8 
-									&& X<32 && X>1 
-									&& Y<128 && Y>96 ) 
+									&& X<35 && X>6 
+									&& Y<128 && Y>95 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 9 
-									&& X<128 && X>96 
-									&& Y<32 && Y>1 ) 
+									&& X<121 && X>93 
+									&& Y<31 && Y>1 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 10 
-									&& X<128 && X>96 
-									&& Y<64 && Y>32 ) 
+									&& X<121 && X>93 
+									&& Y<60 && Y>26 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 11 
-									&& X<96 && X>64
-									&& Y<32 && Y>1 ) 
+									&& X<96 && X>61
+									&& Y<31 && Y>1 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 12 
-									&& X<96 && X>64 
-									&& Y<64 && Y>32) 
+									&& X<96 && X>61
+									&& Y<60 && Y>26) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 13 
-									&& X<64 && X>32 
-									&& Y<64 && Y>32 ) 
+									&& X<67 && X>30 
+									&& Y<60 && Y>26 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 14 
-									&& X<64 && X>32 
-									&& Y<32 && Y>1 ) 
+									&& X<67 && X>30 
+									&& Y<31 && Y>1 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 15 
-									&& X<32 && X>1
-									&& Y<64 && Y>32 ) 
+									&& X<35 && X>6
+									&& Y<60 && Y>26 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 16 
-									&& X<32 && X>1
-									&& Y<32 && Y>1 ) 
+									&& X<35 && X>6
+									&& Y<31 && Y>1 ) 
 
 						return true ;		
 
