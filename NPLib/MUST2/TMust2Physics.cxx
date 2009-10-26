@@ -169,100 +169,100 @@ vector < TVector2 > TMust2Physics :: Match_X_Y(TMust2Data* Data)
 bool TMust2Physics :: Match_Si_SiLi(int X, int Y , int PadNbr)
 	{
 							if( 	 PadNbr == 1 
-									&& X<121 && X>93
-									&& Y<128 && Y>95 ) 
+									&& X<=121 && X>=93
+									&& Y<=128 && Y>=95 ) 
 
 						return true ;
 
 
 				else	if( 	 PadNbr == 2 
-									&& X<121 && X>93 
-									&& Y<100 && Y>65 ) 
+									&& X<=121 && X>=93 
+									&& Y<=100 && Y>=65 ) 
 
 						return true ;
 
 
 				else	if( 	 PadNbr == 3 
-									&& X<96 && X>61 
-									&& Y<128 && Y>95 ) 
+									&& X<=96 && X>=61 
+									&& Y<=128 && Y>=95 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 4 
-									&& X<96 && X>61
-									&& Y<100 && Y>65 ) 
+									&& X<=96 && X>=61
+									&& Y<=100 && Y>=65 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 5 
-									&& X<67 && X>30 
-									&& Y<100 && Y>65) 
+									&& X<=67 && X>=30 
+									&& Y<=100 && Y>=65) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 6 
-									&& X<67 && X>30 
-									&& Y<128 && Y>95 ) 
+									&& X<=67 && X>=30 
+									&& Y<=128 && Y>=95 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 7 
-									&& X<35 && X>6 
-									&& Y<100 && Y>65 ) 
+									&& X<=35 && X>=6 
+									&& Y<=100 && Y>=65 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 8 
-									&& X<35 && X>6 
-									&& Y<128 && Y>95 ) 
+									&& X<=35 && X>=6 
+									&& Y<=128 && Y>=95 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 9 
-									&& X<121 && X>93 
-									&& Y<31 && Y>1 ) 
+									&& X<=121 && X>=93 
+									&& Y<=31 && Y>=1 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 10 
-									&& X<121 && X>93 
-									&& Y<60 && Y>26 ) 
+									&& X<=121 && X>=93 
+									&& Y<=60 && Y>=26 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 11 
-									&& X<96 && X>61
-									&& Y<31 && Y>1 ) 
+									&& X<=96 && X>=61
+									&& Y<=31 && Y>=1 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 12 
-									&& X<96 && X>61
-									&& Y<60 && Y>26) 
+									&& X<=96 && X>=61
+									&& Y<=60 && Y>=26) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 13 
-									&& X<67 && X>30 
-									&& Y<60 && Y>26 ) 
+									&& X<=67 && X>=30 
+									&& Y<=60 && Y>=26 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 14 
-									&& X<67 && X>30 
-									&& Y<31 && Y>1 ) 
+									&& X<=67 && X>=30 
+									&& Y<=31 && Y>=1 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 15 
-									&& X<35 && X>6
-									&& Y<60 && Y>26 ) 
+									&& X<=35 && X>=6
+									&& Y<=60 && Y>=26 ) 
 
 						return true ;
 
 				else	if( 	 PadNbr == 16 
-									&& X<35 && X>6
-									&& Y<31 && Y>1 ) 
+									&& X<=35 && X>=6
+									&& Y<=31 && Y>=1 ) 
 
 						return true ;		
 
@@ -275,100 +275,100 @@ bool TMust2Physics :: Match_Si_SiLi(int X, int Y , int PadNbr)
 bool TMust2Physics :: Match_Si_CsI(int X, int Y , int CristalNbr)
 	{
 							if( 	 CristalNbr == 1 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<=71 && X>=27 
+									&& Y<=101 && Y>=59 ) 
 
 						return true ;
 
 
 				else	if( 	 CristalNbr == 2 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<=71 && X>=27 
+									&& Y<=128 && Y>=90 ) 
 
 						return true ;
 
 
 				else	if( 	 CristalNbr == 3 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<=35 && X>=1 
+									&& Y<=101 && Y>=59 ) 
 
 						return true ;
 
 				else	if( 	 CristalNbr == 4 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<=35 && X>=1 
+									&& Y<=128 && Y>=90 ) 
 
 						return true ;
 
 				else	if( 	 CristalNbr == 5 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<=104 && X>=60 
+									&& Y<=71 && Y>=30 ) 
 
 						return true ;
 
 				else	if( 	 CristalNbr == 6 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<=104 && X>=60 
+									&& Y<=41 && Y>=1 ) 
 
 						return true ;
 
 				else	if( 	 CristalNbr == 7 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<=128 && X>=90 
+									&& Y<=71 && Y>=30 )
 
 						return true ;
 
 				else	if( 	 CristalNbr == 8 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<=128 && X>=90 
+									&& Y<=41 && Y>=1 ) 
 
 						return true ;
 
 				else	if( 	 CristalNbr == 9 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<=71 && X>=27 
+									&& Y<=71 && Y>=40 ) 
 
 						return true ;
 
 				else	if( 	 CristalNbr == 10 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<=71 && X>=27 
+									&& Y<=41 && Y>=1 ) 
 
 						return true ;
 
 				else	if( 	 CristalNbr == 11 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<=35 && X>=1 
+									&& Y<=71 && Y>=30 ) 
 
 						return true ;
 
 				else	if( 	 CristalNbr == 12 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<=35 && X>=1 
+									&& Y<=41 && Y>=1 ) 
 
 						return true ;
 
 				else	if( 	 CristalNbr == 13 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<=104 && X>=60 
+									&& Y<=101 && Y>=59 ) 
 
 						return true ;
 
 				else	if( 	 CristalNbr == 14 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<=104 && X>=60 
+									&& Y<=128 && Y>=90 ) 
 
 						return true ;
 
 				else	if( 	 CristalNbr == 15 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<=128 && X>=90 
+									&& Y<=101 && Y>=59 ) 
 
 						return true ;
 
 				else	if( 	 CristalNbr == 16 
-									&& X<1 && X>1 
-									&& Y<1 && Y>1 ) 
+									&& X<=128 && X>=90 
+									&& Y<=128 && Y>=90 ) 
 
 						return true ;
 
