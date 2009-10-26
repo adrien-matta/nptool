@@ -25,6 +25,7 @@
 //	STL
 #include <cmath>
 #include <iostream>	
+#include <sstream>
 #include <fstream>
 #include <string>
 #include <stdlib.h>
@@ -32,7 +33,7 @@
 //	NPL
 #include "RootInput.h"
 #include "RootOutput.h"
-
+#include "CalibrationManager.h"
 //	Root
 #include "TChain.h"
 
@@ -291,62 +292,49 @@ void MUST2Array::ReadConfiguration(string Path)
 
 }
 
-
-//	Read stream at Path and pick-up calibration parameter using Token
-//	If argument is "Simulation" no change calibration is loaded
-void MUST2Array::ReadCalibrationFile(string Path)	
+//////////// Little Tool //////////////////
+		//	tranform an integer to a string
+		string itoa(int value)
+			{
+			  std::ostringstream o;
+			
+			  if (!(o << value))
+			    return ""	;
+			    
+			  return o.str();
+			}
+			
+//	Add Parameter to the CalibrationManger
+void MUST2Array::AddParameterToCalibrationManager()	
 	{
+		CalibrationManager* Cal = CalibrationManager::getInstance();
 		
-		//	Order of Polynom function used for calibration
-		int Calibration_Si_E_Order 		;
-		int Calibration_Si_T_Order 		;
-		int Calibration_SiLi_E_Order 	;
-		int Calibration_CsI_E_Order 	;
-		
-		//	Calibration_Si_X_E[DetectorNumber][StripNumber][Order of Coeff]
-		vector< vector< vector< double > > >	Calibration_Si_X_E	;
-		vector< vector< vector< double > > >	Calibration_Si_X_T	;
-		
-		vector< vector< vector< double > > >	Calibration_Si_Y_E	;
-		vector< vector< vector< double > > >	Calibration_Si_Y_T	;
-	
-		//	Calibration_SiLi_E[DetectorNumber][PadNumber][Order of Coeff]
-		vector< vector< vector< double > > >	Calibration_SiLi_E	;
-		
-		//	Calibration_SiLi_E[DetectorNumber][CrystalNumber][Order of Coeff]
-		vector< vector< vector< double > > >	Calibration_CsI_E	;
-	
-		if(Path == "Simulation")	//	Simulation case: data already calibrated
+		for(int i = 0 ; i < NumberOfTelescope ; i++)
 			{
-				Calibration_Si_E_Order		=	1 		;
-				Calibration_Si_T_Order 		=	1		;
-				Calibration_SiLi_E_Order 	=	1		;
-				Calibration_CsI_E_Order 	=	1		;
-				
-				vector<double> Coef;
-				//	Order 0				Order 1
-				Coef.push_back(0) ; Coef.push_back(1) 	;
-				
-				vector< vector<double> > StripLine 		;
-				StripLine.resize( 128 , Coef)			;
-				
-				Calibration_Si_X_E.resize( NumberOfTelescope , StripLine)	;
-				Calibration_Si_X_T.resize( NumberOfTelescope , StripLine)	;
-				
-				Calibration_Si_Y_E.resize( NumberOfTelescope , StripLine)	;
-				Calibration_Si_Y_T.resize( NumberOfTelescope , StripLine)	;
-				
-				Calibration_SiLi_E.resize( NumberOfTelescope , StripLine)	;
-				Calibration_CsI_E .resize( NumberOfTelescope , StripLine)	;
-			}
 			
-		else
-			{
-				
+				for( int j = 0 ; j < 128 ; j++)
+					{
+						Cal->AddParameter("MUST2", "T"+itoa(i)+"_Si_X"+itoa(j)+"_E","MUST2_T"+itoa(i)+"_Si_X"+itoa(j)+"_E")	;
+						Cal->AddParameter("MUST2", "T"+itoa(i)+"_Si_Y"+itoa(j)+"_E","MUST2_T"+itoa(i)+"_Si_Y"+itoa(j)+"_E")	;
+						Cal->AddParameter("MUST2", "T"+itoa(i)+"_Si_X"+itoa(j)+"_T","MUST2_T"+itoa(i)+"_Si_X"+itoa(j)+"_T")	;
+						Cal->AddParameter("MUST2", "T"+itoa(i)+"_Si_Y"+itoa(j)+"_T","MUST2_T"+itoa(i)+"_Si_Y"+itoa(j)+"_T")	;	
+					}
+		
+				for( int j = 0 ; j < 16 ; j++)
+					{
+						Cal->AddParameter("MUST2", "T"+itoa(i)+"_SiLi"+itoa(j)+"_E","MUST2_T"+itoa(i)+"_SiLi"+itoa(j)+"_E")	;
+						Cal->AddParameter("MUST2", "T"+itoa(i)+"_SiLi"+itoa(j)+"_T","MUST2_T"+itoa(i)+"_SiLi"+itoa(j)+"_T")	;
+					}
 			
+				for( int j = 0 ; j < 16 ; j++)
+					{
+						Cal->AddParameter("MUST2", "T"+itoa(i)+"_CsI"+itoa(j)+"_E","MUST2_T"+itoa(i)+"_CsI"+itoa(j)+"_E")		;
+						Cal->AddParameter("MUST2", "T"+itoa(i)+"_CsI"+itoa(j)+"_T","MUST2_T"+itoa(i)+"_CsI"+itoa(j)+"_T")		;
+					}
 			}
-	}		
 	
+	
+	}
 
 //	Activated associated Branches and link it to the private member DetectorData address
 //	In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated

@@ -42,9 +42,8 @@ class MUST2Array : public NPA::VDetector
 				void ReadConfiguration(string) 				;
 				
 
-				//	Read stream at CalibFile and pick-up calibration parameter using Token
-				//	If argument is "Simulation" no change calibration is loaded
-				void ReadCalibrationFile(string)	 		;		
+				//	Add Parameter to the CalibrationManger
+				void AddParameterToCalibrationManager()	;		
 					
 				
 				//	Activated associated Branches and link it to the private member DetectorData address
