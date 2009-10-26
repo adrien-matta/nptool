@@ -6,8 +6,7 @@
 #include <cstdlib>
 
 //	Detector	
-#include "Must2Array.h"
-
+#include "TMust2Physics.h"
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //	Default Constructor and Destructor
 DetectorManager::DetectorManager()	
@@ -84,7 +83,7 @@ void	DetectorManager::ReadConfigurationFile(string Path)
 	         cout << "//////// MUST2 Array ////////" << endl   << endl   ;
 
 	         // Instantiate the new array as a VDetector Object
-	         VDetector* myDetector = new MUST2Array()                 ;
+	         VDetector* myDetector = new TMust2Physics()                 ;
 
 	         // Read Position of Telescope
 	         ConfigFile.close()                                    ;

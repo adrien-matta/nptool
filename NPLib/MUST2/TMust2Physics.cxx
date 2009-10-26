@@ -27,37 +27,51 @@ using namespace LOCAL;
 #include <sstream>
 #include <iostream>
 #include <cmath>
+#include <stdlib.h>
 
+//	NPL
+#include "RootInput.h"
+#include "RootOutput.h"
+
+//	ROOT
+#include "TChain.h"
 ///////////////////////////////////////////////////////////////////////////
 
 ClassImp(TMust2Physics)
 ///////////////////////////////////////////////////////////////////////////
 TMust2Physics::TMust2Physics() 
-	{ EventMultiplicity = 0 ;}
-	
-///////////////////////////////////////////////////////////////////////////
-void TMust2Physics::BuildSimplePhysicalEvent(TMust2Data* Data)
-	{ BuildPhysicalEvent(Data); }
-	
-///////////////////////////////////////////////////////////////////////////
-	
-void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 	{ 
-		if( CheckEvent(Data) == 1 )
+		EventMultiplicity = 0 			;
+		EventData = new TMust2Data	;
+		EventPhysics = this					;
+	}
+		
+///////////////////////////////////////////////////////////////////////////
+void TMust2Physics::BuildSimplePhysicalEvent()
+	{ 
+		BuildPhysicalEvent(); 
+	
+	}
+	
+///////////////////////////////////////////////////////////////////////////
+	
+void TMust2Physics::BuildPhysicalEvent()
+	{ 
+		if( CheckEvent() == 1 )
 			{
-				vector< TVector2 > couple = Match_X_Y(Data) ;
+				vector< TVector2 > couple = Match_X_Y() ;
 				
 				for(unsigned int i = 0 ; i < couple.size() ; i++)
 					{
-						int N = Data->GetMMStripXEDetectorNbr(couple[i].X())		;
-						int X = Data->GetMMStripXEStripNbr(couple[i].X())				;
-						int Y = Data->GetMMStripXEStripNbr(couple[i].Y())				;
+						int N = EventData->GetMMStripXEDetectorNbr(couple[i].X())		;
+						int X = EventData->GetMMStripXEStripNbr(couple[i].X())				;
+						int Y = EventData->GetMMStripXEStripNbr(couple[i].Y())				;
 						
-						double Si_X_E = fSi_X_E(Data , couple[i].X())	;
-						double Si_Y_E = fSi_Y_E(Data , couple[i].Y())	;
+						double Si_X_E = fSi_X_E(EventData , couple[i].X())	;
+						double Si_Y_E = fSi_Y_E(EventData , couple[i].Y())	;
 
-						double Si_X_T = fSi_X_T(Data , couple[i].X())		;
-						double Si_Y_T = fSi_Y_T(Data , couple[i].Y())		;
+						double Si_X_T = fSi_X_T(EventData , couple[i].X())		;
+						double Si_Y_T = fSi_Y_T(EventData , couple[i].Y())		;
 					
 						Si_X.push_back(X) ; Si_Y.push_back(Y) ; TelescopeNumber.push_back(N) ;
 						
@@ -69,35 +83,35 @@ void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 						if(Si_X_T >= Si_Y_T) Si_T.push_back(Si_Y_T)	;
 						else								 Si_T.push_back(Si_X_T)	;
 						
-						for(unsigned int j = 0 ; j < Data->GetMMSiLiEMult() ; j++)
+						for(unsigned int j = 0 ; j < EventData->GetMMSiLiEMult() ; j++)
 							{
-								if(Data->GetMMSiLiEDetectorNbr(j)==N)
+								if(EventData->GetMMSiLiEDetectorNbr(j)==N)
 									{
 										//	if SiLi energy is above threshold check the compatibility
-										if( fSiLi_E(Data , j)>SiLi_E_Threshold )
+										if( fSiLi_E(EventData , j)>SiLi_E_Threshold )
 											{
-												if( Match_Si_SiLi( X, Y , Data->GetMMSiLiEPadNbr(j) ) )
+												if( Match_Si_SiLi( X, Y , EventData->GetMMSiLiEPadNbr(j) ) )
 												{
-													SiLi_N.push_back(Data->GetMMSiLiEPadNbr(j))	;
-													SiLi_E.push_back(fSiLi_E(Data , j))	;
-													SiLi_T.push_back(fSiLi_T(Data , j))		;
+													SiLi_N.push_back(EventData->GetMMSiLiEPadNbr(j))	;
+													SiLi_E.push_back(fSiLi_E(EventData , j))	;
+													SiLi_T.push_back(fSiLi_T(EventData , j))		;
 												}
 											}
 									}
 							}
 							
-						 for( int j = 0 ; j < Data->GetMMCsIEMult() ; j++)
+						 for( int j = 0 ; j < EventData->GetMMCsIEMult() ; j++)
 							{
-								if(Data->GetMMCsIEDetectorNbr(j)==N)
+								if(EventData->GetMMCsIEDetectorNbr(j)==N)
 									{
 										//	ifCsI energy is above threshold check the compatibility
-										if( fCsI_T(Data , j)>CsI_E_Threshold )
+										if( fCsI_T(EventData , j)>CsI_E_Threshold )
 											{
-												if( Match_Si_CsI( X, Y , Data->GetMMCsIECristalNbr(j) ) )
+												if( Match_Si_CsI( X, Y , EventData->GetMMCsIECristalNbr(j) ) )
 													{
-														CsI_N.push_back(Data->GetMMCsIECristalNbr(j))	;
-														CsI_E.push_back(fCsI_E(Data , j))			;
-														CsI_T.push_back(fCsI_T(Data , j))				;
+														CsI_N.push_back(EventData->GetMMCsIECristalNbr(j))	;
+														CsI_E.push_back(fCsI_E(EventData , j))			;
+														CsI_T.push_back(fCsI_T(EventData , j))				;
 													}
 											}
 									}
@@ -110,14 +124,14 @@ void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 	}	
 
 ///////////////////////////////////////////////////////////////////////////
-int TMust2Physics :: CheckEvent(TMust2Data* Data)
+int TMust2Physics :: CheckEvent()
 	{
 		// Check the size of the different elements
-				 if(			Data->GetMMStripXEMult() == Data->GetMMStripYEMult() && Data->GetMMStripYEMult() == Data->GetMMStripXTMult() &&  Data->GetMMStripXTMult() == Data->GetMMStripYTMult()  )
+				 if(			EventData->GetMMStripXEMult() == EventData->GetMMStripYEMult() && EventData->GetMMStripYEMult() == EventData->GetMMStripXTMult() &&  EventData->GetMMStripXTMult() == EventData->GetMMStripYTMult()  )
 	
 					return 1 ; // Regular Event
 	
-		else if(			Data->GetMMStripXEMult() == Data->GetMMStripYEMult()+1 || Data->GetMMStripXEMult() == Data->GetMMStripYEMult()-1  )
+		else if(			EventData->GetMMStripXEMult() == EventData->GetMMStripYEMult()+1 || EventData->GetMMStripXEMult() == EventData->GetMMStripYEMult()-1  )
 	
 					return 2 ; // Pseudo Event, potentially interstrip
 		
@@ -126,32 +140,32 @@ int TMust2Physics :: CheckEvent(TMust2Data* Data)
 	}
 
 ///////////////////////////////////////////////////////////////////////////
-bool TMust2Physics :: ResolvePseudoEvent(TMust2Data* Data)
+bool TMust2Physics :: ResolvePseudoEvent()
 	{
 		return false;
 	}
 
 ///////////////////////////////////////////////////////////////////////////
-vector < TVector2 > TMust2Physics :: Match_X_Y(TMust2Data* Data)
+vector < TVector2 > TMust2Physics :: Match_X_Y()
 	{
 		vector < TVector2 > ArrayOfGoodCouple ;
 		
-		for(int i = 0 ; i < Data->GetMMStripXEMult(); i++)
+		for(int i = 0 ; i < EventData->GetMMStripXEMult(); i++)
 			{
 				//	if X value is above threshold, look at Y value
-				if( fSi_X_E(Data , i) > Si_X_E_Threshold )
+				if( fSi_X_E(EventData , i) > Si_X_E_Threshold )
 					{
 					
-						for(int j = 0 ; j < Data->GetMMStripYEMult(); j++)
+						for(int j = 0 ; j < EventData->GetMMStripYEMult(); j++)
 							{
 								//	if Y value is above threshold look if detector match
-								if( fSi_Y_E(Data , j) > Si_Y_E_Threshold )							
+								if( fSi_Y_E(EventData , j) > Si_Y_E_Threshold )							
 									{
 										//	if same detector check energy
-										if ( Data->GetMMStripXEDetectorNbr(i) == Data->GetMMStripYEDetectorNbr(j) )
+										if ( EventData->GetMMStripXEDetectorNbr(i) == EventData->GetMMStripYEDetectorNbr(j) )
 											{
 													//	Look if energy match
-													if( ( fSi_X_E(Data , i) - fSi_Y_E(Data , j) ) / fSi_X_E(Data , i) < 0.1	)
+													if( ( fSi_X_E(EventData , i) - fSi_Y_E(EventData , j) ) / fSi_X_E(EventData , i) < 0.1	)
 														ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;	
 											}
 									}
@@ -159,7 +173,7 @@ vector < TVector2 > TMust2Physics :: Match_X_Y(TMust2Data* Data)
 					}
 			}
 	
-		if( ArrayOfGoodCouple.size() > Data->GetMMStripXEMult() ) ArrayOfGoodCouple.clear() ;
+		if( ArrayOfGoodCouple.size() > EventData->GetMMStripXEMult() ) ArrayOfGoodCouple.clear() ;
 		
 		return ArrayOfGoodCouple;	
 	}
@@ -401,7 +415,495 @@ void TMust2Physics::Clear()
 		CsI_T.clear()	;
 		CsI_N.clear()	;
 	}
+///////////////////////////////////////////////////////////////////////////
 
+////	Innherited from VDetector Class	////				
+				
+//	Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
+void TMust2Physics::ReadConfiguration(string Path) 	
+{
+   ifstream ConfigFile           	;
+   ConfigFile.open(Path.c_str()) 	;
+   string LineBuffer          		;
+   string DataBuffer          		;	
+
+   // A:X1_Y1     --> X:1    Y:1
+   // B:X128_Y1   --> X:128  Y:1
+   // C:X1_Y128   --> X:1    Y:128
+   // D:X128_Y128 --> X:128  Y:128
+
+   double Ax , Bx , Cx , Dx , Ay , By , Cy , Dy , Az , Bz , Cz , Dz           	;
+   TVector3 A , B , C , D                                          				;
+   double Theta = 0 , Phi = 0 , R = 0 , beta_u = 0 , beta_v = 0 , beta_w = 0    ;
+
+   bool check_A = false 	;
+   bool check_C = false  	;
+   bool check_B = false 	;
+   bool check_D = false  	;
+
+   bool check_Theta = false ;
+   bool check_Phi  	= false ;
+   bool check_R     = false ;
+   bool check_beta 	= false ;
+   
+   bool ReadingStatus = false ;
+	
+
+   while (!ConfigFile.eof()) 
+   	{
+      
+      	getline(ConfigFile, LineBuffer);
+
+		//	If line is a Start Up Must2 bloc, Reading toggle to true      
+      	if (LineBuffer.compare(0, 11, "M2Telescope") == 0) 
+	      	{
+	        	 cout << "///" << endl           		;
+	       		  cout << "Telescope found: " << endl   ;        
+	        	 ReadingStatus = true 					;
+	        	
+		   	}
+		
+		//	Else don't toggle to Reading Block Status
+		else ReadingStatus = false ;
+		
+		//	Reading Block
+		while(ReadingStatus)
+			{
+				 
+				ConfigFile >> DataBuffer ;
+				//	Comment Line 
+					if(DataBuffer.compare(0, 1, "%") == 0) {
+						 	ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
+							
+						}
+			
+					//	Finding another telescope (safety), toggle out
+				else if (DataBuffer.compare(0, 11, "M2Telescope") == 0) {
+						cout << "WARNING: Another Telescope is find before standard sequence of Token, Error may occured in Telecope definition" << endl ;
+						ReadingStatus = false ;
+						}
+			
+					//	Position method
+					
+		         else if (DataBuffer.compare(0, 6, "X1_Y1=") == 0) {
+		            check_A = true;
+		            ConfigFile >> DataBuffer ;
+		            Ax = atof(DataBuffer.c_str()) ;
+		            Ax = Ax  ;
+		            ConfigFile >> DataBuffer ;
+		            Ay = atof(DataBuffer.c_str()) ;
+		            Ay = Ay  ;
+		            ConfigFile >> DataBuffer ;
+		            Az = atof(DataBuffer.c_str()) ;
+		            Az = Az  ;
+
+		            A = TVector3(Ax, Ay, Az);
+		            cout << "X1 Y1 corner position : (" << A.X() << ";" << A.Y() << ";" << A.Z() << ")" << endl;
+		            
+		         }
+
+
+		         else if (DataBuffer.compare(0, 8, "X128_Y1=") == 0) {
+		            check_B = true;
+		            ConfigFile >> DataBuffer ;
+		            Bx = atof(DataBuffer.c_str()) ;
+		            Bx = Bx  ;
+		            ConfigFile >> DataBuffer ;
+		            By = atof(DataBuffer.c_str()) ;
+		            By = By  ;
+		            ConfigFile >> DataBuffer ;
+		            Bz = atof(DataBuffer.c_str()) ;
+		            Bz = Bz  ;
+
+		            B = TVector3(Bx, By, Bz);
+		            cout << "X128 Y1 corner position : (" << B.X() << ";" << B.Y() << ";" << B.Z() << ")" << endl;
+		            
+		         }
+		         
+
+		         else if (DataBuffer.compare(0, 8, "X1_Y128=") == 0) {
+		            check_C = true;
+		            ConfigFile >> DataBuffer ;
+		            Cx = atof(DataBuffer.c_str()) ;
+		            Cx = Cx  ;
+		            ConfigFile >> DataBuffer ;
+		            Cy = atof(DataBuffer.c_str()) ;
+		            Cy = Cy  ;
+		            ConfigFile >> DataBuffer ;
+		            Cz = atof(DataBuffer.c_str()) ;
+		            Cz = Cz  ;
+
+		            C = TVector3(Cx, Cy, Cz);
+		            cout << "X1 Y128 corner position : (" << C.X() << ";" << C.Y() << ";" << C.Z() << ")" << endl;
+		           
+		         }
+
+		         else if (DataBuffer.compare(0, 10, "X128_Y128=") == 0) {
+		            check_D = true;
+		            ConfigFile >> DataBuffer ;
+		            Dx = atof(DataBuffer.c_str()) ;
+		            Dx = Dx  ;
+		            ConfigFile >> DataBuffer ;
+		            Dy = atof(DataBuffer.c_str()) ;
+		            Dy = Dy  ;
+		            ConfigFile >> DataBuffer ;
+		            Dz = atof(DataBuffer.c_str()) ;
+		            Dz = Dz  ;
+
+		            D = TVector3(Dx, Dy, Dz);
+		            cout << "X128 Y128 corner position : (" << D.X() << ";" << D.Y() << ";" << D.Z() << ")" << endl;
+		           
+		         }
+			
+				//	End Position Method
+
+		         //	Angle method
+		         else if (DataBuffer.compare(0, 6, "THETA=") == 0) {
+		            check_Theta = true;
+		            ConfigFile >> DataBuffer ;
+		            Theta = atof(DataBuffer.c_str()) ;
+		            Theta = Theta ;
+		            cout << "Theta:  " << Theta << endl;
+		            
+		         }
+
+		         //Angle method
+		         else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
+		            check_Phi = true;
+		            ConfigFile >> DataBuffer ;
+		            Phi = atof(DataBuffer.c_str()) ;
+		            Phi = Phi ;
+		            cout << "Phi:  " << Phi << endl;
+		          
+		         }
+
+		         //Angle method
+		         else if (DataBuffer.compare(0, 2, "R=") == 0) {
+		            check_R = true;
+		            ConfigFile >> DataBuffer ;
+		            R = atof(DataBuffer.c_str()) ;
+		            R = R ;
+		            cout << "R:  " << R << endl;
+		          
+		         }
+
+		         //Angle method
+		         else if (DataBuffer.compare(0, 5, "BETA=") == 0) {
+		            check_beta = true;
+		            ConfigFile >> DataBuffer ;
+		            beta_u = atof(DataBuffer.c_str()) ;
+		            beta_u = beta_u    ;
+		            ConfigFile >> DataBuffer ;
+		            beta_v = atof(DataBuffer.c_str()) ;
+		            beta_v = beta_v    ;
+		            ConfigFile >> DataBuffer ;
+		            beta_w = atof(DataBuffer.c_str()) ;
+		            beta_w = beta_w    ;
+		            cout << "Beta:  " << beta_u << " " << beta_v << " " << beta_w << endl  ;
+		            
+		         }
+		              
+		         /////////////////////////////////////////////////
+		         //	If All necessary information there, toggle out
+		         if ( (check_A && check_B && check_C && check_D) || (check_Theta && check_Phi && check_R && check_beta)  ) 
+		         	{ 
+		         	ReadingStatus = false; 
+		         	
+		         	///Add The previously define telescope
+         			//With position method
+		         	if ( check_A && check_B && check_C && check_D ) 
+		         		{
+				            AddTelescope(	A   ,
+				                  				B   ,
+				                 					C   ,
+				                  				D   ) ;
+				         }
+		         	
+		         	    //with angle method
+       				  else if ( check_Theta && check_Phi && check_R && check_beta ) 
+       				  	{
+				            AddTelescope(	Theta   ,
+				                  				Phi   	,
+				                  				R       ,
+				                  				beta_u  ,
+				                  				beta_v  ,
+				                  				beta_w  );
+      					}
+								
+			        check_A = false 	;
+							check_B = false 	;
+		  				check_C = false  	;
+		  				check_D = false  	;
+
+		   				check_Theta = false   	;
+		   				check_Phi  = false  	;
+		   				check_R    = false   	;
+		   				check_beta = false  	;
+					
+		         	}
+		         
+		}
+		        
+		        
+		    
+		         	
+	}
+	
+	cout << endl << "/////////////////////////////" << endl<<endl;
+
+}
+
+//	Add Parameter to the CalibrationManger
+void TMust2Physics::AddParameterToCalibrationManager()	
+	{
+		CalibrationManager* Cal = CalibrationManager::getInstance();
+		
+		for(int i = 0 ; i < NumberOfTelescope ; i++)
+			{
+			
+				for( int j = 0 ; j < 128 ; j++)
+					{
+						Cal->AddParameter("MUST2", "T"+itoa(i)+"_Si_X"+itoa(j)+"_E","MUST2_T"+itoa(i)+"_Si_X"+itoa(j)+"_E")	;
+						Cal->AddParameter("MUST2", "T"+itoa(i)+"_Si_Y"+itoa(j)+"_E","MUST2_T"+itoa(i)+"_Si_Y"+itoa(j)+"_E")	;
+						Cal->AddParameter("MUST2", "T"+itoa(i)+"_Si_X"+itoa(j)+"_T","MUST2_T"+itoa(i)+"_Si_X"+itoa(j)+"_T")	;
+						Cal->AddParameter("MUST2", "T"+itoa(i)+"_Si_Y"+itoa(j)+"_T","MUST2_T"+itoa(i)+"_Si_Y"+itoa(j)+"_T")	;	
+					}
+		
+				for( int j = 0 ; j < 16 ; j++)
+					{
+						Cal->AddParameter("MUST2", "T"+itoa(i)+"_SiLi"+itoa(j)+"_E","MUST2_T"+itoa(i)+"_SiLi"+itoa(j)+"_E")	;
+						Cal->AddParameter("MUST2", "T"+itoa(i)+"_SiLi"+itoa(j)+"_T","MUST2_T"+itoa(i)+"_SiLi"+itoa(j)+"_T")	;
+					}
+			
+				for( int j = 0 ; j < 16 ; j++)
+					{
+						Cal->AddParameter("MUST2", "T"+itoa(i)+"_CsI"+itoa(j)+"_E","MUST2_T"+itoa(i)+"_CsI"+itoa(j)+"_E")		;
+						Cal->AddParameter("MUST2", "T"+itoa(i)+"_CsI"+itoa(j)+"_T","MUST2_T"+itoa(i)+"_CsI"+itoa(j)+"_T")		;
+					}
+			}
+	
+	
+	}
+
+//	Activated associated Branches and link it to the private member DetectorData address
+//	In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
+void TMust2Physics::InitializeRootInput() 		
+	{
+		TChain* inputChain = RootInput::getInstance()->GetChain()	;
+		inputChain->SetBranchStatus( "MUST2" , true )				;
+		inputChain->SetBranchStatus( "fMM_*" , true )				;
+		inputChain->SetBranchAddress( "MUST2" , &EventData )		;
+	}
+
+
+//	Create associated branches and associated private member DetectorPhysics address
+void TMust2Physics::InitializeRootOutput() 	
+	{
+		cout << "coucou" << endl ;
+		TTree* outputTree = RootOutput::getInstance()->GetTree()		;
+		outputTree->Branch( "MUST2" , "TMust2Physics" , &EventPhysics )	;
+		cout << "coucou2" << endl ;
+	}
+
+
+/////	Specific to MUST2Array	////
+
+void TMust2Physics::AddTelescope(	TVector3 C_X1_Y1 		,
+			 					TVector3 C_X128_Y1 		, 
+			 					TVector3 C_X1_Y128 		, 
+			 					TVector3 C_X128_Y128	)
+	{
+		// To avoid warning
+		C_X1_Y128 *= 1;
+
+		NumberOfTelescope++;
+	
+		//	Vector U on Telescope Face (paralelle to Y Strip) (NB: remember that Y strip are allong X axis)
+		TVector3 U = C_X1_Y1 - C_X128_Y1 				;	
+		U = U.Unit()									;
+		//	Vector V on Telescope Face (parallele to X Strip)
+		TVector3 V = C_X128_Y128 - C_X128_Y1 				;
+		V = V.Unit()									;
+
+		//	Position Vector of Strip Center
+		TVector3 StripCenter = TVector3(0,0,0)			;
+		//	Position Vector of X=1 Y=1 Strip 
+		TVector3 Strip_1_1 								;		
+
+		//	Geometry Parameter
+		double Face = 98 					  	; //mm
+		double NumberOfStrip = 128 				; 
+		double StripPitch = Face/NumberOfStrip	; //mm
+
+		//	Buffer object to fill Position Array
+		vector<double> lineX ; vector<double> lineY ; vector<double> lineZ ;
+
+		vector< vector< double > >	OneTelescopeStripPositionX	;
+		vector< vector< double > >	OneTelescopeStripPositionY	;
+		vector< vector< double > >	OneTelescopeStripPositionZ	;
+		
+		//	Moving StripCenter to 1.1 corner:
+		Strip_1_1 = C_X128_Y1 + (U+V) * (StripPitch/2.) 	;
+
+		for( int i = 0 ; i < 128 ; i++ )
+			{
+				lineX.clear()	;
+				lineY.clear()	;
+				lineZ.clear()	;
+				
+				for( int j = 0 ; j < 128 ; j++ )
+					{
+						StripCenter  = Strip_1_1 + StripPitch*( i*U + j*V  )	;
+						//StripCenter += -TargetPosition		;
+						
+						lineX.push_back( StripCenter.X() )	;
+						lineY.push_back( StripCenter.Y() )	;
+						lineZ.push_back( StripCenter.Z() )	;	
+					}
+					
+				OneTelescopeStripPositionX.push_back(lineX)	;
+				OneTelescopeStripPositionY.push_back(lineY)	;
+				OneTelescopeStripPositionZ.push_back(lineZ)	;
+			 	
+			}
+	
+		
+		StripPositionX.push_back( OneTelescopeStripPositionX ) ;
+		StripPositionY.push_back( OneTelescopeStripPositionY ) ;
+		StripPositionZ.push_back( OneTelescopeStripPositionZ ) ;	
+
+	}
+				
+				
+void TMust2Physics::AddTelescope(	double theta 	, 
+								double phi 		, 
+								double distance , 
+								double beta_u 	, 
+								double beta_v 	, 
+								double beta_w	)
+	{
+	
+		NumberOfTelescope++;
+	
+		double Pi = 3.141592654 ;
+
+		// convert from degree to radian:
+		theta = theta * Pi/180. ; 
+		phi   = phi   * Pi/180. ;
+
+		//Vector U on Telescope Face (paralelle to Y Strip) (NB: remember that Y strip are allong X axis)
+		TVector3 U ;	
+		//Vector V on Telescope Face (parallele to X Strip)
+		TVector3 V ;
+		//Vector W normal to Telescope Face (pointing CsI)
+		TVector3 W ;
+		//Vector position of Telescope Face center
+		TVector3 C ;
+			
+		C = TVector3 (	distance * sin(theta) * cos(phi) ,
+						distance * sin(theta) * sin(phi) ,
+						distance * cos(theta)			 );
+		
+    	TVector3 P = TVector3(	cos(theta ) * cos(phi)	, 
+    							cos(theta ) * sin(phi)	,
+    							-sin(theta)				);
+		
+		W = C.Unit() ;
+		U = W .Cross ( P ) ;
+	    V = W .Cross ( U );
+		
+		U = U.Unit();
+		V = V.Unit();
+		
+		U.Rotate( beta_u * Pi/180. , U ) ;
+		V.Rotate( beta_u * Pi/180. , U ) ;
+		
+		U.Rotate( beta_v * Pi/180. , V ) ;
+		V.Rotate( beta_v * Pi/180. , V ) ;
+		
+		U.Rotate( beta_w * Pi/180. , W ) ;
+		V.Rotate( beta_w * Pi/180. , W ) ;
+		
+		double Face = 98 					  	; //mm
+		double NumberOfStrip = 128 				;
+		double StripPitch = Face/NumberOfStrip	; //mm
+
+		vector<double> lineX ; vector<double> lineY ; vector<double> lineZ ;
+		
+		vector< vector< double > >	OneTelescopeStripPositionX	;
+		vector< vector< double > >	OneTelescopeStripPositionY	;
+		vector< vector< double > >	OneTelescopeStripPositionZ	;
+		
+		double X , Y , Z  ;
+
+		//Moving C to the 1.1 corner:
+		C.SetX( C.X() - ( Face/2 - StripPitch/2 ) * ( V.X() + U.X() ) )  ; 
+		C.SetY( C.Y() - ( Face/2 - StripPitch/2 ) * ( V.Y() + U.Y() ) )  ; 
+		C.SetZ( C.Z() - ( Face/2 - StripPitch/2 ) * ( V.Z() + U.Z() ) )  ; 
+	
+		for( int i = 0 ; i < 128 ; i++ )
+			{
+				
+				lineX.clear()	;
+				lineY.clear()	;
+				lineZ.clear()	;
+				
+				for( int j = 0 ; j < 128 ; j++ )
+					{
+						X = C.X() + StripPitch * ( U.X()*i + V.X()*j )	;
+						Y = C.Y() + StripPitch * ( U.Y()*i + V.Y()*j )	;
+						Z = C.Z() + StripPitch * ( U.Z()*i + V.Z()*j )	;
+									
+						lineX.push_back(X)	;
+						lineY.push_back(Y)	;
+						lineZ.push_back(Z)	;		
+						
+					}
+				
+				OneTelescopeStripPositionX.push_back(lineX)	;
+				OneTelescopeStripPositionY.push_back(lineY)	;
+				OneTelescopeStripPositionZ.push_back(lineZ)	;
+			 	
+			}
+		StripPositionX.push_back( OneTelescopeStripPositionX ) ;
+		StripPositionY.push_back( OneTelescopeStripPositionY ) ;
+		StripPositionZ.push_back( OneTelescopeStripPositionZ ) ;
+	}
+	
+	
+TVector3 TMust2Physics::GetPositionOfInteraction(int i)
+	{
+		TVector3 Position = TVector3 (	GetStripPositionX( TelescopeNumber[i] , Si_X[i] , Si_Y[i] ) 	,
+										GetStripPositionY( TelescopeNumber[i] , Si_X[i] , Si_Y[i] )	,
+										GetStripPositionZ( TelescopeNumber[i] , Si_X[i] , Si_Y[i] )	) ;
+		
+		return(Position) ;	
+	
+	}
+	
+TVector3 TMust2Physics::GetTelescopeNormal( int i)
+	{
+				TVector3 U = TVector3 (		GetStripPositionX( TelescopeNumber[i] , 128 , 1 ) 	,
+											GetStripPositionY( TelescopeNumber[i] , 128 , 1 )		,
+											GetStripPositionZ( TelescopeNumber[i] , 128 , 1 )		)
+											
+							- TVector3 (	GetStripPositionX( TelescopeNumber[i] , 1 , 1 ) 		,
+											GetStripPositionY( TelescopeNumber[i] , 1 , 1 )		,
+											GetStripPositionZ( TelescopeNumber[i] , 1 , 1 )		);
+										
+				TVector3 V = TVector3 (		GetStripPositionX( TelescopeNumber[i] , 128 , 128 ) 	,
+											GetStripPositionY( TelescopeNumber[i] , 128 , 128 )	,
+											GetStripPositionZ( TelescopeNumber[i] , 128 , 128 )	)
+											
+							- TVector3 (	GetStripPositionX( TelescopeNumber[i] , 128 , 1 ) 	,
+											GetStripPositionY( TelescopeNumber[i] , 128 , 1 )		,
+											GetStripPositionZ( TelescopeNumber[i] , 128 , 1 )		);
+											
+				TVector3 Normal = U.Cross(V);
+		
+		return(Normal.Unit()) ;	
+	
+	}	
 
 ///////////////////////////////////////////////////////////////////////////
 namespace LOCAL
@@ -420,57 +922,57 @@ namespace LOCAL
 			
 		//	DSSD
 		//	X
-		double fSi_X_E(TMust2Data* Data , int i)
+		double fSi_X_E(TMust2Data* EventData , int i)
 			{
-				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/" + itoa( Data->GetMMStripXEDetectorNbr(i) ) + "Si_X" + itoa( Data->GetMMStripXEStripNbr(i) ) + "_E",	
-																																		Data->GetMMStripXEEnergy(i) );
+				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/" + itoa( EventData->GetMMStripXEDetectorNbr(i) ) + "Si_X" + itoa( EventData->GetMMStripXEStripNbr(i) ) + "_E",	
+																																		EventData->GetMMStripXEEnergy(i) );
 																																	
 			}
 			
-		double fSi_X_T(TMust2Data* Data, int i)
+		double fSi_X_T(TMust2Data* EventData , int i)
 			{
-				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( Data->GetMMStripXTDetectorNbr(i) ) + "Si_X" + itoa( Data->GetMMStripXTStripNbr(i) ) +"_T",	
-																																		Data->GetMMStripXTTime(i) );
+				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMStripXTDetectorNbr(i) ) + "Si_X" + itoa( EventData->GetMMStripXTStripNbr(i) ) +"_T",	
+																																		EventData->GetMMStripXTTime(i) );
 			}
 		
 		//	Y	
-		double fSi_Y_E(TMust2Data* Data, int i)
+		double fSi_Y_E(TMust2Data* EventData , int i)
 			{
-				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( Data->GetMMStripYEDetectorNbr(i) ) + "Si_Y" + itoa( Data->GetMMStripYEStripNbr(i) ) +"_E",	
-																																		Data->GetMMStripYEEnergy(i) );
+				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMStripYEDetectorNbr(i) ) + "Si_Y" + itoa( EventData->GetMMStripYEStripNbr(i) ) +"_E",	
+																																		EventData->GetMMStripYEEnergy(i) );
 			}
 			
-		double fSi_Y_T(TMust2Data* Data, int i)
+		double fSi_Y_T(TMust2Data* EventData , int i)
 			{
-				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( Data->GetMMStripYTDetectorNbr(i) ) + "Si_Y" + itoa( Data->GetMMStripYTStripNbr(i) ) +"_T",	
-																																		Data->GetMMStripYTTime(i) );
+				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMStripYTDetectorNbr(i) ) + "Si_Y" + itoa( EventData->GetMMStripYTStripNbr(i) ) +"_T",	
+																																		EventData->GetMMStripYTTime(i) );
 			}
 			
 			
 		//	SiLi
-		double fSiLi_E(TMust2Data* Data, int i)
+		double fSiLi_E(TMust2Data* EventData , int i)
 			{
-				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( Data->GetMMSiLiEDetectorNbr(i) ) + "SiLi" + itoa( Data->GetMMSiLiEPadNbr(i) ) +"_E",	
-																																		Data->GetMMSiLiEEnergy(i) );
+				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMSiLiEDetectorNbr(i) ) + "SiLi" + itoa( EventData->GetMMSiLiEPadNbr(i) ) +"_E",	
+																																		EventData->GetMMSiLiEEnergy(i) );
 			}
 			
-		double fSiLi_T(TMust2Data* Data, int i)
+		double fSiLi_T(TMust2Data* EventData , int i)
 			{
-				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( Data->GetMMSiLiTDetectorNbr(i) ) + "SiLi" + itoa( Data->GetMMSiLiTPadNbr(i) )+"_T",	
-																																		Data->GetMMSiLiTTime(i) );
+				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMSiLiTDetectorNbr(i) ) + "SiLi" + itoa( EventData->GetMMSiLiTPadNbr(i) )+"_T",	
+																																		EventData->GetMMSiLiTTime(i) );
 			}
 			
 		//	CsI
-		double fCsI_E(TMust2Data* Data, int i)
+		double fCsI_E(TMust2Data* EventData , int i)
 			{
-				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( Data->GetMMCsIEDetectorNbr(i) ) + "SiLi" + itoa( Data->GetMMCsIECristalNbr(i) ) +"_E",	
-																																		Data->GetMMCsIEEnergy(i) );
+				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMCsIEDetectorNbr(i) ) + "SiLi" + itoa( EventData->GetMMCsIECristalNbr(i) ) +"_E",	
+																																		EventData->GetMMCsIEEnergy(i) );
 			}
 			
-		double fCsI_T(TMust2Data* Data, int i)
+		double fCsI_T(TMust2Data* EventData , int i)
 			{
-				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( Data->GetMMCsITDetectorNbr(i) ) + "SiLi" + itoa( Data->GetMMCsITCristalNbr(i) ) +"_T",	
-																																		Data->GetMMCsITTime(i) );
+				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMCsITDetectorNbr(i) ) + "SiLi" + itoa( EventData->GetMMCsITCristalNbr(i) ) +"_T",	
+																																		EventData->GetMMCsITTime(i) );
 			}
 	
 	}

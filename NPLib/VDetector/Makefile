@@ -276,8 +276,8 @@ all:            $(SHARELIB)
 
 ## MUST2 ##
 libVDetector.so:	VDetector.o
-		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
-		
+		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@	
+			
 # dependances
 VDetector.o:		VDetector.cxx	VDetector.h
 #######################################

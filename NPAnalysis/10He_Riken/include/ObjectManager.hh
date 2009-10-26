@@ -7,7 +7,6 @@
 
 // NPA
 #include "DetectorManager.hh"
-#include "Must2Array.h"
 
 // STL C++
 #include <iostream>

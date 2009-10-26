@@ -29,10 +29,12 @@ int main(int argc,char** argv)
 	NPL::Reaction*  Li10Reaction = new Reaction								;
 	Li10Reaction	->	ReadConfigurationFile("9Li-dp-10Li.reaction")		;
 
+
+	cout << "!!!!" << endl;
 	//	Instantiate the detector using a file 
 	DetectorManager* myDetector = new DetectorManager 			  ;
 	myDetector	->	ReadConfigurationFile(detectorfileName)		;
-	
+	cout << "JJJJ"<< endl ;
 	//	Instantiate the Calibration Manger using a file
 	CalibrationManager* myCalibration = new CalibrationManager(calibrationfileName) ;
 	
@@ -78,9 +80,8 @@ int main(int argc,char** argv)
  	double XTarget=0 ; double YTarget=0; double BeamTheta = 0 ; double BeamPhi = 0 ; double E=-1000;
 
 	// Get Must2 Pointer:
-	MUST2Array* M2 = (MUST2Array*) myDetector -> m_Detector["MUST2"] ;
+//	MUST2Array* M2 = (MUST2Array*) myDetector -> m_Detector["MUST2"] ;
 	// Allow directe acces to MUST2 Physics event
-	TMust2Physics* M2Physics = M2 -> GetPhysics();
 	cout <<  " ///////// Starting Analysis ///////// "<< endl << endl ;
 	
 	int i ,N=Chain -> GetEntries();
