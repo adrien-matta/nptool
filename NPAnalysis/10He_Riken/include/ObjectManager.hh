@@ -26,13 +26,14 @@
 #include <TRandom.h>
 
 // NPL
-#include "TMust2Data.h"
-#include "TMust2Physics.h"
 #include "TPlasticData.h"
 #include "NPReaction.h"
 #include "RootInput.h"
 #include "RootOutput.h"
 #include "TInitialConditions.h"
+#include "TMust2Physics.h"
+#include "TSSSDPhysics.h"
+#include "TPlasticPhysics.h"
 
 // Use CLHEP System of unit and Physical Constant
 #include "CLHEP/Units/GlobalSystemOfUnits.h"

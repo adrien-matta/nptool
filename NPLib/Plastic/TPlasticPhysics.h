@@ -1,5 +1,5 @@
-#ifndef __SSSDPhysics__
-#define __SSSDPhysics__
+#ifndef __PlasticPhysics__
+#define __PlasticPhysics__
 /*****************************************************************************
  * Copyright (C) 2009   this file is part of the NPTool Project              *
  *                                                                           *
@@ -14,13 +14,14 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold the Single Side Striped Detector  Physics                *
+ *  This class hold thePlastic Detector  Physics                             *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
+ 
 //	STL
 #include <vector>
 using namespace std ;
@@ -29,16 +30,15 @@ using namespace std ;
 #include "TObject.h"
 
 //	NPL
-#include "TSSSDData.h"
+#include "TPlasticData.h"
 #include "../include/VDetector.h"
 #include "../include/CalibrationManager.h"
 
-class TSSSDPhysics : public TObject, public NPA::VDetector
+class TPlasticPhysics : public TObject, public NPA::VDetector
 {
 	public:	//	Constructor and Destructor
-		TSSSDPhysics();
-		~TSSSDPhysics();
-
+		TPlasticPhysics();
+		~TPlasticPhysics();
 
 	public:	//	Calibrated Data
 
@@ -79,14 +79,14 @@ class TSSSDPhysics : public TObject, public NPA::VDetector
 		void ClearEventData()				{EventData->Clear();}		
 
 	private:	// Data not writted in the tree
-				int								NumberOfDetector	;//!
-				TSSSDData* 	  	EventData					;//!
-				TSSSDPhysics* 	  EventPhysics			;//!
+				int									NumberOfDetector	;//!
+				TPlasticData* 	  	EventData					;//!
+				TPlasticPhysics* 	  EventPhysics			;//!
 
 		void	Clear();
     void  Clear(const Option_t*) {};
 	
-		ClassDef(TSSSDPhysics,1)  // SSSDPhysics structure
+		ClassDef(TPlasticPhysics,1)  // PlasticPhysics structure
 };
 
 #endif

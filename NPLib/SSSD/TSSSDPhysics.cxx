@@ -50,8 +50,8 @@ ClassImp(TSSSDPhysics)
 ///////////////////////////////////////////////////////////////////////////
 TSSSDPhysics::TSSSDPhysics()
 	{		
-		NumberOfDetector = 0 ;
-		EventData = new TSSSDData	;
+		NumberOfDetector = 0 				;
+		EventData = new TSSSDData		;
 		EventPhysics = this					;
 	}
 ///////////////////////////////////////////////////////////////////////////
@@ -74,7 +74,7 @@ void TSSSDPhysics::ReadConfiguration(string Path)
    string DataBuffer          ;
 
    double TLX , BLX , BRX , TRX , TLY , BLY , BRY , TRY , TLZ , BLZ , BRZ , TRZ   ;
-   double Theta = 0 , Phi = 0 , R = 0 , beta_u = 0 , beta_v = 0 , beta_w = 0                     ;
+   double Theta = 0 , Phi = 0 , R = 0 , beta_u = 0 , beta_v = 0 , beta_w = 0      ;
    bool check_A = false   ;
    bool check_B = false ;
    bool check_C = false   ;
@@ -94,11 +94,9 @@ void TSSSDPhysics::ReadConfiguration(string Path)
 		//	If line is a Start Up ThinSi bloc, Reading toggle to true      
 		  	if (LineBuffer.compare(0, 6, "ThinSi") == 0) 
 		    	{
-		      	 cout << "///" << endl           ;
-		      		  cout << "Detector found: " << endl   ;        
-		      	 ReadingStatus = true ;
-		      	
-		   	}
+		      	cout << "Detector found: " << endl   ;        
+		      	ReadingStatus = true ;
+		    	}
 
 		//	Else don't toggle to Reading Block Status
 		else ReadingStatus = false ;
@@ -260,7 +258,7 @@ void TSSSDPhysics::InitializeRootInput()
 	{
 		TChain* inputChain = RootInput::getInstance()->GetChain()	;
 		inputChain->SetBranchStatus ( "ThinSi" 		, true )					;
-		inputChain->SetBranchStatus ( "ThinSi_*" 	, true )					;
+		inputChain->SetBranchStatus ( "fSSSD_*" 	, true )					;
 		inputChain->SetBranchAddress( "ThinSi" 		, &EventData )		;
 	}	
 

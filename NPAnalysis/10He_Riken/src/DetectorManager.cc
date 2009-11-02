@@ -7,6 +7,8 @@
 
 //	Detector	
 #include "TMust2Physics.h"
+#include "TSSSDPhysics.h"
+#include "TPlasticPhysics.h"
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //	Default Constructor and Destructor
 DetectorManager::DetectorManager()	
@@ -26,10 +28,11 @@ void	DetectorManager::ReadConfigurationFile(string Path)
 	   string DataBuffer;
 
 	   /////////Boolean////////////////////
-	   bool MUST2           = false  ;
-	   bool AddThinSi       = false  ;
-	   bool GeneralTarget   = false  ;
-	   bool GPDTracker      = false  ;	// Gaspard Tracker
+	   bool MUST2           		= false  ;
+	   bool AddThinSi       		= false  ;
+	   bool ScintillatorPlastic	= false  ;
+	   bool GeneralTarget   		= false  ;
+	   bool GPDTracker      		= false  ;	// Gaspard Tracker
 	   //////////////////////////////////////////////////////////////////////////////////////////
 	   // added by Nicolas [07/05/09]
 	   string GlobalPath = getenv("NPTOOL");
@@ -52,7 +55,7 @@ void	DetectorManager::ReadConfigurationFile(string Path)
 
 	   while (!ConfigFile.eof()) {
 	      //Pick-up next line
-	      getline(ConfigFile, LineBuffer);
+	      getline(ConfigFile, LineBuffer);cout << LineBuffer<<endl;
 	      //Search for comment Symbol: %
 	      if (LineBuffer.compare(0, 1, "%") == 0) {   /*Do  Nothing*/ ;}
 
@@ -94,15 +97,15 @@ void	DetectorManager::ReadConfigurationFile(string Path)
 	         AddDetector("MUST2" , myDetector)                               ;
 	      }
 
-	/*      ////////////////////////////////////////////
-	      ////////// Search for Add.ThinSi ///////////
+	    	////////////////////////////////////////////
+	      ////////// Search for ThinSi (SSSD)/////////
 	      ////////////////////////////////////////////
 	      else if (LineBuffer.compare(0, 9, "AddThinSi") == 0 && AddThinSi == false) {
 	         AddThinSi = true ;
 	         cout << "//////// Thin Si ////////" << endl << endl   ;
 
 	         // Instantiate the new array as a VDetector Object
-	         VDetector* myDetector = new ThinSi()                  ;
+	         VDetector* myDetector = new TSSSDPhysics()                  ;
 
 	         // Read Position of Telescope
 	         ConfigFile.close()                                 ;
@@ -110,10 +113,29 @@ void	DetectorManager::ReadConfigurationFile(string Path)
 	         ConfigFile.open(Path.c_str())                      ;
 
 	         // Add array to the VDetector Vector
-	         AddDetector(myDetector)                            ;
+	         AddDetector("SSSD",myDetector)                            ;
+	      }
+	      
+	      
+	      ////////////////////////////////////////////
+	      ///////////// Search for Plastic ///////////
+	      ////////////////////////////////////////////
+	      else if (LineBuffer.compare(0, 19, "ScintillatorPlastic") == 0 && ScintillatorPlastic == false) {
+	         ScintillatorPlastic = true 														;
+	         cout << "//////// Plastic ////////" << endl << endl   	;
+
+	         // Instantiate the new array as a VDetector Object
+	         VDetector* myDetector = new TPlasticPhysics()          ;
+	         // Read Position of Telescope
+	         ConfigFile.close()                                 		;
+	         myDetector->ReadConfiguration(Path)                   	;
+	         ConfigFile.open(Path.c_str())                      		;
+
+	         // Add array to the VDetector Vector
+	         AddDetector("Plastic",myDetector)                      ;
 	      }
 
-	      ////////////////////////////////////////////
+	 /*     ////////////////////////////////////////////
 	      //////////// Search for Target /////////////
 	      ////////////////////////////////////////////
 
@@ -200,7 +222,7 @@ void	DetectorManager::InitializeRootOutput()
 	
 void	DetectorManager::AddDetector(string DetectorName , VDetector* newDetector)	
 	{
-		m_Detector["MUST2"] = newDetector ;
+		m_Detector[DetectorName] = newDetector ;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////////////
 void	DetectorManager::ClearEventPhysics()	

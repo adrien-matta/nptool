@@ -268,7 +268,7 @@ GLIBS         = $(ROOTGLIBS) $(SYSLIBS)
 INCLUDE		= -I$(CLHEP_BASE_DIR)/include
  
 #------------------------------------------------------------------------------
-SHARELIB      =  libPlasticData.so 
+SHARELIB      =  libPlasticData.so libPlasticPhysics.so
 
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
@@ -281,8 +281,15 @@ libPlasticData.so:	TPlasticData.o	TPlasticDataDict.o
 TPlasticDataDict.cxx:	TPlasticData.h
 			rootcint -f $@ -c $^
 
+libPlasticPhysics.so:	TPlasticPhysics.o	TPlasticPhysicsDict.o
+			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
+
+TPlasticPhysicsDict.cxx:	TPlasticPhysics.h
+			rootcint -f $@ -c $^
+
 # dependances
 TPlasticData.o:	TPlasticData.cxx	TPlasticData.h
+TPlasticPhysics.o:	TPlasticPhysics.cxx	TPlasticPhysics.h
 #######################################
 
 ############# Clean and More ##########
