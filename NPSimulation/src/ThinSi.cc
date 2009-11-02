@@ -610,8 +610,8 @@ void ThinSi::ReadSensitive(const G4Event* event)
 	      
 	        if (N > 0) 
 						{
-								m_Event->SetStripEDetectorNbr(N)						;
-								m_Event->SetStripTDetectorNbr(N)						;
+								m_Event->SetEnergyDetectorNbr(N)						;
+								m_Event->SetTimeDetectorNbr(N)						;
 								
 						//  Strip Number
 				        StripNbr_itr = StripNbrHitMap->GetMap()->begin();
@@ -620,8 +620,8 @@ void ThinSi::ReadSensitive(const G4Event* event)
 				            G4int S         = *(StripNbr_itr->second)      	;
 										
 				            if (STrackID == NTrackID) {
-				             	 m_Event->SetStripEStripNbr(S)		;
-				             	 m_Event->SetStripTStripNbr(S)		;
+				             	 m_Event->SetEnergyStripNbr(S)		;
+				             	 m_Event->SetTimeStripNbr(S)		;
 				            }
 				            
 				            StripNbr_itr++;
@@ -634,7 +634,7 @@ void ThinSi::ReadSensitive(const G4Event* event)
 				            G4double E      = *(Energy_itr->second)      	;
 
 				            if (ETrackID == NTrackID) {
-				               m_Event->SetStripEEnergy( RandGauss::shoot(E, ResoEnergy ) )    ;
+				               m_Event->SetEnergy( RandGauss::shoot(E, ResoEnergy ) )    ;
 				            }
 				            
 				            Energy_itr++;
@@ -648,7 +648,7 @@ void ThinSi::ReadSensitive(const G4Event* event)
 				            G4double T     = *(Time_itr->second)      ;
 
 				            if (TTrackID == NTrackID) {
-				               	m_Event->SetStripTTime( RandGauss::shoot(T, ResoTime ) )    ;
+				               	m_Event->SetTime( RandGauss::shoot(T, ResoTime ) )    ;
 				            }
 				            
 				            Time_itr++;

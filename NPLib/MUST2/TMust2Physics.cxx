@@ -663,22 +663,22 @@ void TMust2Physics::AddParameterToCalibrationManager()
 			
 				for( int j = 0 ; j < 128 ; j++)
 					{
-						Cal->AddParameter("MUST2", "T"+itoa(i)+"_Si_X"+itoa(j)+"_E","MUST2_T"+itoa(i)+"_Si_X"+itoa(j)+"_E")	;
-						Cal->AddParameter("MUST2", "T"+itoa(i)+"_Si_Y"+itoa(j)+"_E","MUST2_T"+itoa(i)+"_Si_Y"+itoa(j)+"_E")	;
-						Cal->AddParameter("MUST2", "T"+itoa(i)+"_Si_X"+itoa(j)+"_T","MUST2_T"+itoa(i)+"_Si_X"+itoa(j)+"_T")	;
-						Cal->AddParameter("MUST2", "T"+itoa(i)+"_Si_Y"+itoa(j)+"_T","MUST2_T"+itoa(i)+"_Si_Y"+itoa(j)+"_T")	;	
+						Cal->AddParameter("MUST2", "T"+itoa(i+1)+"_Si_X"+itoa(j+1)+"_E","MUST2_T"+itoa(i+1)+"_Si_X"+itoa(j+1)+"_E")	;
+						Cal->AddParameter("MUST2", "T"+itoa(i+1)+"_Si_Y"+itoa(j+1)+"_E","MUST2_T"+itoa(i+1)+"_Si_Y"+itoa(j+1)+"_E")	;
+						Cal->AddParameter("MUST2", "T"+itoa(i+1)+"_Si_X"+itoa(j+1)+"_T","MUST2_T"+itoa(i+1)+"_Si_X"+itoa(j+1)+"_T")	;
+						Cal->AddParameter("MUST2", "T"+itoa(i+1)+"_Si_Y"+itoa(j+1)+"_T","MUST2_T"+itoa(i+1)+"_Si_Y"+itoa(j+1)+"_T")	;	
 					}
 		
 				for( int j = 0 ; j < 16 ; j++)
 					{
-						Cal->AddParameter("MUST2", "T"+itoa(i)+"_SiLi"+itoa(j)+"_E","MUST2_T"+itoa(i)+"_SiLi"+itoa(j)+"_E")	;
-						Cal->AddParameter("MUST2", "T"+itoa(i)+"_SiLi"+itoa(j)+"_T","MUST2_T"+itoa(i)+"_SiLi"+itoa(j)+"_T")	;
+						Cal->AddParameter("MUST2", "T"+itoa(i+1)+"_SiLi"+itoa(j+1)+"_E","MUST2_T"+itoa(i+1)+"_SiLi"+itoa(j+1)+"_E")	;
+						Cal->AddParameter("MUST2", "T"+itoa(i+1)+"_SiLi"+itoa(j+1)+"_T","MUST2_T"+itoa(i+1)+"_SiLi"+itoa(j+1)+"_T")	;
 					}
 			
 				for( int j = 0 ; j < 16 ; j++)
 					{
-						Cal->AddParameter("MUST2", "T"+itoa(i)+"_CsI"+itoa(j)+"_E","MUST2_T"+itoa(i)+"_CsI"+itoa(j)+"_E")		;
-						Cal->AddParameter("MUST2", "T"+itoa(i)+"_CsI"+itoa(j)+"_T","MUST2_T"+itoa(i)+"_CsI"+itoa(j)+"_T")		;
+						Cal->AddParameter("MUST2", "T"+itoa(i+1)+"_CsI"+itoa(j+1)+"_E","MUST2_T"+itoa(i+1)+"_CsI"+itoa(j+1)+"_E")		;
+						Cal->AddParameter("MUST2", "T"+itoa(i+1)+"_CsI"+itoa(j+1)+"_T","MUST2_T"+itoa(i+1)+"_CsI"+itoa(j+1)+"_T")		;
 					}
 			}
 	
@@ -699,10 +699,8 @@ void TMust2Physics::InitializeRootInput()
 //	Create associated branches and associated private member DetectorPhysics address
 void TMust2Physics::InitializeRootOutput() 	
 	{
-		cout << "coucou" << endl ;
 		TTree* outputTree = RootOutput::getInstance()->GetTree()		;
 		outputTree->Branch( "MUST2" , "TMust2Physics" , &EventPhysics )	;
-		cout << "coucou2" << endl ;
 	}
 
 

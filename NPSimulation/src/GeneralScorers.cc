@@ -75,7 +75,6 @@ G4bool PSDetectorNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
    if (edep < TriggerThreshold) return FALSE;
    
    G4int  index = aStep->GetTrack()->GetTrackID();
-   
    EvtMap->set(index+DetNumber, DetNumber);
    return TRUE;
 }

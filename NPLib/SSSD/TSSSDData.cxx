@@ -51,7 +51,7 @@ void TSSSDData::Clear()
 	// Energy
 	fSSSD_StripE_DetectorNbr.clear()	;
 	fSSSD_StripE_StripNbr.clear()	;
-	fSSSD_StripE_Energy.clear()		;
+	fSSSD_StripE_Energy.clear()		; 
 	// Time
 	fSSSD_StripT_DetectorNbr.clear()	;
 	fSSSD_StripT_StripNbr.clear()	;

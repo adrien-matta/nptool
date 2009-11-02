@@ -63,7 +63,7 @@ int main(int argc,char** argv)
 	
 	//	Get the formed Chained Tree and Treat it
 	TChain* Chain = RootInput:: getInstance() -> GetChain()	;
- 	   
+
 	// Open the ThinSi Branch
 	Chain->SetBranchStatus("ThinSiEnergy",true)	;
 	Chain->SetBranchStatus("InitialConditions",true)	;

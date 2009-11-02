@@ -268,7 +268,7 @@ GLIBS         = $(ROOTGLIBS) $(SYSLIBS)
 INCLUDE		= -I$(CLHEP_BASE_DIR)/include -I$(NPLIB)/include
  
 #------------------------------------------------------------------------------
-SHARELIB      =  libSSSDData.so
+SHARELIB      =  libSSSDData.so libSSSDPhysics.so
 
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
@@ -281,9 +281,15 @@ libSSSDData.so:	TSSSDData.o	TSSSDDataDict.o
 TSSSDDataDict.cxx:	TSSSDData.h
 			rootcint -f $@ -c $^
 
+libSSSDPhysics.so:	TSSSDPhysics.o	TSSSDPhysicsDict.o
+		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
+TSSSDPhysicsDict.cxx:	TSSSDPhysics.h
+			rootcint -f $@ -c $^
+			
 # dependances
 TSSSDData.o:		TSSSDData.cxx	TSSSDData.h
+TSSSDPhysics.o:	TSSSDPhysics.cxx	TSSSDPhysics.h
 #######################################
 
 ############# Clean and More ##########
