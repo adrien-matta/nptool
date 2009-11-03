@@ -11,7 +11,7 @@
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
  * Creation Date  : January 2009                                             *
- * Last update    :                                                          *
+ * Last update    : 03/11/2009                                               *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  All event generator added in the project should derive from this virtual * 
@@ -23,6 +23,8 @@
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
+ *    + 03/11/09: Adding EffectiveThiknessBeforeInteraction in the           *
+ *                CalculateBeamInteraction() method (N. de Sereville)        *
  *                                                                           *
  *****************************************************************************/
 // C++ header
@@ -64,7 +66,8 @@ public:
                                  double MeanPosY, double SigmaPosY, double MeanPosPhi,   double SigmaPosPhi,
                                  Target* target,
                                  G4ThreeVector &InterCoord, double &AngleEmittanceTheta, double &AngleEmittancePhi,
-                                 double &AngleIncidentTheta, double &AngleIncidentPhi);
+                                 double &AngleIncidentTheta, double &AngleIncidentPhi,
+                                 double &EffectiveTargetThicknessBeforeInteraction);
 
    // Used to simulate beam emmitance effect
    void RandomGaussian2D(double MeanX, double MeanY, double SigmaX, double SigmaY, double &X, double &Y, double NumberOfSigma = 10000);

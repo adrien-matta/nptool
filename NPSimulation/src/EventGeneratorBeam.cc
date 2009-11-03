@@ -180,11 +180,13 @@ void EventGeneratorBeam::GenerateEvent(G4Event* anEvent, G4ParticleGun* particle
    G4ThreeVector InterCoord;
    G4double Beam_thetaX = 0, Beam_phiY = 0;
    G4double Beam_theta  = 0, Beam_phi  = 0;
+   G4double EffectiveThickness = 0;
    CalculateBeamInteraction(0, m_SigmaX, 0, m_SigmaThetaX,
                             0, m_SigmaY, 0, m_SigmaPhiY,
                             m_Target,
                             InterCoord, Beam_thetaX, Beam_phiY,
-                            Beam_theta, Beam_phi);
+                            Beam_theta, Beam_phi,
+                            EffectiveThickness);
 
    // write vertex position to ROOT file
    G4double x0 = InterCoord.x();

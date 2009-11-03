@@ -30,6 +30,7 @@
 
 // G4 headers
 #include "G4ParticleTable.hh"
+#include "G4EmCalculator.hh"
 #include "G4ParticleGun.hh"
 #include "G4RotationMatrix.hh"
 
@@ -320,17 +321,24 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
    //////////////////////////////////////////////////
    //////Define the kind of particle to shoot////////
    //////////////////////////////////////////////////
+   // Light
    G4int LightZ = m_Reaction->GetNucleus3()->GetZ() ;
    G4int LightA = m_Reaction->GetNucleus3()->GetA() ;
 
    G4ParticleDefinition* LightName
    = G4ParticleTable::GetParticleTable()->GetIon(LightZ, LightA, 0.);
 
+   // Recoil
    G4int HeavyZ = m_Reaction->GetNucleus4()->GetZ() ;
    G4int HeavyA = m_Reaction->GetNucleus4()->GetA() ;
 
    G4ParticleDefinition* HeavyName
    = G4ParticleTable::GetParticleTable()->GetIon(HeavyZ, HeavyA, m_Reaction->GetExcitation()*MeV);
+
+   // Beam
+   G4int BeamZ = m_Reaction->GetNucleus1()->GetZ();
+   G4int BeamA = m_Reaction->GetNucleus1()->GetA();
+   G4ParticleDefinition* BeamName = G4ParticleTable::GetParticleTable()->GetIon(BeamZ, BeamA, 0);
 
    ///////////////////////////////////////////////////////////////////////
    ///// Calculate the incident beam direction as well as the vertex /////
@@ -339,11 +347,13 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
    G4ThreeVector InterCoord;
    G4double Beam_thetaX = 0, Beam_phiY = 0;
    G4double Beam_theta  = 0, Beam_phi  = 0;
+   G4double EffectiveThickness = 0;
    CalculateBeamInteraction(0, m_SigmaX, 0, m_SigmaThetaX,
                             0, m_SigmaY, 0, m_SigmaPhiY,
                             m_Target,
                             InterCoord, Beam_thetaX, Beam_phiY,
-                            Beam_theta, Beam_phi);
+                            Beam_theta, Beam_phi,
+                            EffectiveThickness);
 
    // write vertex position to ROOT file
    G4double x0 = InterCoord.x();
@@ -380,9 +390,19 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
    ///// Angles for emitted particles following Cross Section //////
    ///// Angles are in the beam frame                         //////
    /////////////////////////////////////////////////////////////////
-   // Beam incident energy
+   // Beam nominal incident energy before interaction with the target
    G4double NominalBeamEnergy = m_BeamEnergy;
    G4double IncidentBeamEnergy = RandGauss::shoot(NominalBeamEnergy, m_BeamEnergySpread / 2.35);
+   // Slowing down the beam to the interaction layer in the target
+   // Number of Layers
+   const G4int NbLayers = 50;
+   G4EmCalculator emCalculator;
+   for (G4int i = 0; i < NbLayers; i++) {
+//      G4double dedx = emCalculator.GetDEDX(IncidentBeamEnergy, BeamName, m_Target->GetTargetMaterial());
+      G4double dedx = emCalculator.ComputeTotalDEDX(IncidentBeamEnergy, BeamName, m_Target->GetTargetMaterial());
+      G4double de   = dedx * EffectiveThickness / NbLayers;
+      IncidentBeamEnergy -= de;
+   }
    m_Reaction->SetBeamEnergy(IncidentBeamEnergy);
    m_InitConditions->SetICIncidentEnergy(IncidentBeamEnergy / MeV);
    // Angles

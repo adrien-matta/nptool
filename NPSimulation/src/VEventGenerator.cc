@@ -9,7 +9,7 @@
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
  * Creation Date  : January 2009                                             *
- * Last update    :                                                          *
+ * Last update    : 03/11/2009                                               *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  All event generator added in the project should derive from this virtual * 
@@ -21,6 +21,8 @@
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
+ *    + 03/11/09: Adding EffectiveThiknessBeforeInteraction in the           *
+ *                CalculateBeamInteraction() method (N. de Sereville)        *
  *                                                                           *
  *****************************************************************************/
 #include "VEventGenerator.hh"
@@ -28,8 +30,8 @@
 // C++ headers
 #include "cmath"
 
-// ROOT headers
-//#include"TMath.h"
+// G4 headers
+#include "G4UnitsTable.hh"
 
 // CLHEP headers
 #include "Randomize.hh"
@@ -51,7 +53,8 @@ void VEventGenerator::CalculateBeamInteraction(double MeanPosX, double SigmaPosX
                                                double MeanPosY, double SigmaPosY, double MeanPosPhi,   double SigmaPosPhi,
                                                Target* target,
                                                G4ThreeVector &InterCoord, double &AngleEmittanceTheta, double &AngleEmittancePhi,
-                                               double &AngleIncidentTheta, double &AngleIncidentPhi)
+                                               double &AngleIncidentTheta, double &AngleIncidentPhi,
+                                               double &EffectiveTargetThicknessBeforeInteraction)
 {
    // target parameters
    double TargetThickness = target->GetTargetThickness();
@@ -71,24 +74,13 @@ void VEventGenerator::CalculateBeamInteraction(double MeanPosX, double SigmaPosX
          RandomGaussian2D(MeanPosY, MeanPosPhi,   SigmaPosY, SigmaPosPhi,   y0, AngleEmittancePhi);
       }
       // in case target is tilted, correct the z-position of interaction
+      // x is the vertical axis
       dz = x0 * tan(TargetAngle);
    }
    else {			// if no target radius is given consider a point-like target
       RandomGaussian2D(0, 0, 0, SigmaPosTheta, x0, AngleEmittanceTheta);
       RandomGaussian2D(0, 0, 0, SigmaPosPhi,   y0, AngleEmittancePhi);
    }
-
-   // correct for the target angle wrt the beam axis
-   // this simple correction is only valid if the beam is parallel to the beam axis
-   // should be improved in a next version
-   TargetThickness /= cos(TargetAngle);
-   z0 = dz + (-TargetThickness / 2 + RandFlat::shoot() * TargetThickness);
-
-   // Move to the target position
-   x0 += target->GetTargetX();
-   y0 += target->GetTargetY();
-   z0 += target->GetTargetZ();
-   InterCoord = G4ThreeVector(x0, y0, z0);
 
    // Calculate incident angle in spherical coordinate, passing by the direction vector dir      
    double Xdir = sin(AngleEmittanceTheta);
@@ -99,6 +91,29 @@ void VEventGenerator::CalculateBeamInteraction(double MeanPosX, double SigmaPosX
    AngleIncidentPhi   = atan2(Ydir, Xdir) * rad;
    if (AngleIncidentPhi   < 0)    AngleIncidentPhi += 2*pi;
    if (AngleIncidentTheta < 1e-6) AngleIncidentPhi  = 0;
+
+   // Calculation of effective target thickness and z-position of interaction
+   // when the target is tilted wrt the beam axis
+   //   * exact if target is perpendicular to the beam axis (target not tilted)
+   //     in any case of beam emittance
+   //   * exact if target is tilted wrt the beam axis and the beam is parallel
+   //     (no beam divergence)
+   //   * wrong if target is tilted and for general case of beam emittance
+   //     (should be fixed in next release). For small beam divergence this
+   //     should not be such a big problem
+   TargetThickness /= cos(TargetAngle);
+   double uniform = RandFlat::shoot();
+   z0 = dz + (-TargetThickness / 2 + uniform * TargetThickness);
+
+   // Calculate the effective thickness before interaction in target
+   // This is useful to slow down the beam
+   EffectiveTargetThicknessBeforeInteraction = TargetThickness  * uniform / cos(AngleIncidentTheta);
+
+   // Move to the target position
+   x0 += target->GetTargetX();
+   y0 += target->GetTargetY();
+   z0 += target->GetTargetZ();
+   InterCoord = G4ThreeVector(x0, y0, z0);
 }
 
 

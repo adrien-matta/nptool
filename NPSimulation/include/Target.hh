@@ -79,12 +79,13 @@ public:
 
 
 public:
-   G4double GetTargetThickness()	{return m_TargetThickness;}
-   G4double GetTargetRadius()		{return m_TargetRadius;}
-   G4double GetTargetAngle()		{return m_TargetAngle;}
-   G4double GetTargetX()		{return m_TargetX;}
-   G4double GetTargetY()		{return m_TargetY;}
-   G4double GetTargetZ()		{return m_TargetZ;}
+   G4double    GetTargetThickness()	{return m_TargetThickness;}
+   G4Material* GetTargetMaterial()	{return m_TargetMaterial;}
+   G4double    GetTargetRadius()	{return m_TargetRadius;}
+   G4double    GetTargetAngle()		{return m_TargetAngle;}
+   G4double    GetTargetX()		{return m_TargetX;}
+   G4double    GetTargetY()		{return m_TargetY;}
+   G4double    GetTargetZ()		{return m_TargetZ;}
 
 
 private:
