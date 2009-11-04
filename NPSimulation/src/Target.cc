@@ -25,7 +25,7 @@
  *****************************************************************************/
 // C++ header
 #include <fstream>
-
+#include <limits>
 // G4 geometry header
 #include "G4Tubs.hh"
 
@@ -232,7 +232,7 @@ void Target::ReadConfiguration(string Path)
          ConfigFile >> DataBuffer;
 	
       		//Search for comment Symbol %
-      		if (DataBuffer.compare(0, 1, "%") == 0) {/*Do Nothing*/;}
+      		if (DataBuffer.compare(0, 1, "%") == 0) {	ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
       		
 	        else if (DataBuffer.compare(0, 10, "THICKNESS=") == 0) {
 	        	check_Thickness = true ;

@@ -7,7 +7,6 @@
 
 // NPA
 #include "DetectorManager.hh"
-#include "Must2Array.h"
 
 // STL C++
 #include <iostream>
@@ -27,13 +26,14 @@
 #include <TRandom.h>
 
 // NPL
-#include "TMust2Data.h"
-#include "TMust2Physics.h"
 #include "TPlasticData.h"
 #include "NPReaction.h"
 #include "RootInput.h"
 #include "RootOutput.h"
 #include "TInitialConditions.h"
+#include "TMust2Physics.h"
+#include "TSSSDPhysics.h"
+#include "TPlasticPhysics.h"
 
 // Use CLHEP System of unit and Physical Constant
 #include "CLHEP/Units/GlobalSystemOfUnits.h"
@@ -109,39 +109,39 @@ namespace ENERGYLOSS
 		//	3He Energy Loss
 			EnergyLoss He3TargetWind = EnergyLoss 	(	"3He_Mylar.txt" 		,
 														1000	 				,
-														1						,
+														3					,
 														3						);
 		
-			EnergyLoss He3TargetGaz = EnergyLoss 	(	"3He_D2gaz_1b_26K.txt" 	,
+			EnergyLoss He3TargetGaz = EnergyLoss 	(	"3He_D2solid_1b_26K.txt" 	,
 														1000	 				,
-														1						,
+														3						,
 														3						);
 			
 			EnergyLoss He3StripAl   = EnergyLoss 	(	"3He_Al.txt" 			,
 														1000						,
-														1						,
+														3						,
 														3						);
 														
 			EnergyLoss He3StripSi   = EnergyLoss 	(	"3He_Si.txt" 			,
 														1000						,
-														1						,
+														3					,
 														3						);
 														
 														
 		//	proton Energy Loss
 			EnergyLoss protonTargetWind = EnergyLoss 	(	"proton_Mylar.txt"	 		,
 															1000		 				,
-															1							,
+															3						,
 															1							);
 		
 			EnergyLoss protonTargetGaz = EnergyLoss 	(	"proton_D2gaz_1b_26K.txt" 	,
 															1000		 				,
-															1							,
+															3						,
 															1							);
 			
 			EnergyLoss protonStripAl   = EnergyLoss 	(	"proton_Al.txt" 			,
 															100							,
-															1							,
+															3							,
 															1							);
 														
 	

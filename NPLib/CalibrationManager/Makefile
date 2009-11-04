@@ -268,28 +268,18 @@ GLIBS         = $(ROOTGLIBS) $(SYSLIBS)
 INCLUDE		= -I$(CLHEP_BASE_DIR)/include
  
 #------------------------------------------------------------------------------
-SHARELIB      =  libPlasticData.so libPlasticPhysics.so
+SHARELIB      =  libCalibrationManager.so 
 
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 ############### Detector ##############
 
-## Plastic ##
-libPlasticData.so:	TPlasticData.o	TPlasticDataDict.o
-			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
-
-TPlasticDataDict.cxx:	TPlasticData.h
-			rootcint -f $@ -c $^
-
-libPlasticPhysics.so:	TPlasticPhysics.o	TPlasticPhysicsDict.o
-			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
-
-TPlasticPhysicsDict.cxx:	TPlasticPhysics.h
-			rootcint -f $@ -c $^
-
+## MUST2 ##
+libCalibrationManager.so:	CalibrationManager.o
+		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
+		
 # dependances
-TPlasticData.o:	TPlasticData.cxx	TPlasticData.h
-TPlasticPhysics.o:	TPlasticPhysics.cxx	TPlasticPhysics.h
+CalibrationManager.o:		CalibrationManager.cxx	CalibrationManager.h
 #######################################
 
 ############# Clean and More ##########

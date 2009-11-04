@@ -32,9 +32,11 @@
 #include "G4RotationMatrix.hh"
 #include "G4LogicalVolume.hh"
 
-// NPTool header
+// NPSimulation header
 #include "VDetector.hh"
 
+// NPLib 
+#include "TSSSDData.h"
 using namespace std;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -42,7 +44,7 @@ namespace THINSI
 {
    // Energy and time Resolution
    const G4double ResoTime    = 0      ;
-   const G4double ResoEnergy  = 0.042  ;// = 100keV of Resolution   //   Unit is MeV/2.35
+   const G4double ResoEnergy  = 0.064  ;// = 150keV of Resolution   //   Unit is MeV/2.35
 
    // Geometry
    const G4double DetectorSize   	= 68*mm           ;
@@ -50,7 +52,7 @@ namespace THINSI
    const G4double FrameThickness    = 3*mm            ;
    const G4double SiliconSize    	= 50*mm           ;
    const G4double AluThickness      = 0.4*micrometer  ;
-   const G4int  NumberOfStrip    	= 32       		  ;
+   const G4int  NumberOfStrip    	= 16       		  ;
 
    const G4double AluStripFront_PosZ 	= -0.5*SiliconThickness - 0.5*AluThickness ;
    const G4double Si_PosZ        		= 0                                 ;
@@ -119,7 +121,29 @@ public:
    ///////////Event class to store Data////////////////
    ////////////////////////////////////////////////////
 private:
-   G4double    m_Energy ;
+   TSSSDData*    m_Event ;
+
+	 ////////////////////////////////////////////////////
+   ///////////////// Scorer Related ///////////////////
+   ////////////////////////////////////////////////////
+
+private:
+		//	Initialize all Scorer used by the MUST2Array
+		void InitializeScorers() ;
+	 
+		//	Scorer Associate to the 20um Silicon stage
+		G4MultiFunctionalDetector*	m_StripScorer ; 
+
+
+
+private:
+		// 	Initialize mmaterial used in detector definition
+		void InitializeMaterial();
+
+		//	List of material
+		G4Material* m_MaterialSilicon 	;
+   	G4Material* m_MaterialAl 				;
+   	G4Material* m_MaterialVacuum 		;
 
    ////////////////////////////////////////////////////
    ///////////////Private intern Data//////////////////

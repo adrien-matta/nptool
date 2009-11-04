@@ -265,31 +265,31 @@ LDFLAGS      += $(ROOTLDFLAGS)
 LIBS          = $(ROOTLIBS) $(SYSLIBS)
 GLIBS         = $(ROOTGLIBS) $(SYSLIBS)
 
-INCLUDE		= -I$(CLHEP_BASE_DIR)/include
+INCLUDE		= -I$(CLHEP_BASE_DIR)/include -I$(NPLIB)/include
  
 #------------------------------------------------------------------------------
-SHARELIB      =  libPlasticData.so libPlasticPhysics.so
+SHARELIB      =  libSSSDData.so libSSSDPhysics.so
 
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 ############### Detector ##############
 
-## Plastic ##
-libPlasticData.so:	TPlasticData.o	TPlasticDataDict.o
-			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
+## SSSD ##
+libSSSDData.so:	TSSSDData.o	TSSSDDataDict.o
+		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
-TPlasticDataDict.cxx:	TPlasticData.h
+TSSSDDataDict.cxx:	TSSSDData.h
 			rootcint -f $@ -c $^
 
-libPlasticPhysics.so:	TPlasticPhysics.o	TPlasticPhysicsDict.o
-			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
+libSSSDPhysics.so:	TSSSDPhysics.o	TSSSDPhysicsDict.o
+		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
-TPlasticPhysicsDict.cxx:	TPlasticPhysics.h
+TSSSDPhysicsDict.cxx:	TSSSDPhysics.h
 			rootcint -f $@ -c $^
-
+			
 # dependances
-TPlasticData.o:	TPlasticData.cxx	TPlasticData.h
-TPlasticPhysics.o:	TPlasticPhysics.cxx	TPlasticPhysics.h
+TSSSDData.o:		TSSSDData.cxx	TSSSDData.h
+TSSSDPhysics.o:	TSSSDPhysics.cxx	TSSSDPhysics.h
 #######################################
 
 ############# Clean and More ##########

@@ -22,6 +22,18 @@
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
+ *	Detector inheriting from VDetector should follow this Naming convention  *
+ *    for logical volume:                                                    *
+ *		DetectorNameX_SubPart                                                  *
+ *		                                                                       *
+ *		-DetectorName is the name of the detector, like "MUST2Array",          * 
+ *		note that use of _ within the name is prohibitted.                     *
+ *                                                                           *
+ *		-X is the detector Number, for example if you have two plastic then you*
+ *		will have Plastic1 and Plastic2                                        *
+ *                                                                           *
+ *		-SubPart is the optionnal sub part, like for examples Si and CsI in    *
+ *      MUST2. Note that you can add as many as _SubPart you need            *
  *                                                                           *
  *****************************************************************************/
 // C++ header

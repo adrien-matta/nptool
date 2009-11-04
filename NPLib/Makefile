@@ -268,13 +268,23 @@ GLIBS         = $(ROOTGLIBS) $(SYSLIBS)
 INCLUDE		= -I$(CLHEP_BASE_DIR)/include
  
 #------------------------------------------------------------------------------
-SHARELIB      =	Vdetec	InputOutputRoot InitCond	InterCoord \
-		Must2All	GaspardData	AnnularS1Data PlasticData\
+SHARELIB      =	CalibManager Vdetec	InputOutputRoot InitCond	InterCoord \
+		Must2All	GaspardData	AnnularS1Data PlasticData DummyDetectorData SSSDData\
 		Reaction	EnergyLoss
 
 all:         $(SHARELIB)
 	rm -f ./include/*Dict.h
 #------------------------------------------------------------------------------
+############### Calibration ##############
+
+## CalibrationManager ##
+CalibManager:
+		make -C ./CalibrationManager
+		cp ./CalibrationManager/*.so ./lib ; cp ./CalibrationManager/*.h ./include
+ifeq ($(ARCH),macosx)
+		cd lib; ln -sf libCalibrationManager.so libCalibrationManager.dylib
+endif
+
 ############### Detector ##############
 
 ## VDetector ##
@@ -294,6 +304,14 @@ ifeq ($(ARCH),macosx)
 		cd lib; ln -sf libMust2Physics.so libMust2Physics.dylib
 endif
 
+## SSSD ##
+SSSDData:
+		make -C ./SSSD
+		cp ./SSSD/*.so ./lib ; cp ./SSSD/*.h ./include
+ifeq ($(ARCH),macosx)
+		cd lib; ln -sf libSSSDData.so libSSSDData.dylib
+endif
+
 ## AnnularS1 ##
 AnnularS1Data:
 		make -C ./AnnularS1
@@ -308,19 +326,26 @@ GaspardData:
 		cp ./GASPARD/*.so ./lib ; cp ./GASPARD/*.h ./include
 ifeq ($(ARCH),macosx)
 		cd lib; ln -sf libGaspardData.so libGaspardData.dylib
-		cd lib; ln -sf libGaspardPyysics.so libGaspardPhysics.dylib
+		cd lib; ln -sf libGaspardPhysics.so libGaspardPhysics.dylib
 endif
 
-## Gaspard ##
+## Plastic ##
 PlasticData:
 		make -C ./Plastic
 		cp ./Plastic/*.so ./lib ; cp ./Plastic/*.h ./include
 ifeq ($(ARCH),macosx)
 		cd lib; ln -sf libPlasticData.so libPlasticData.dylib
-		cd lib; ln -sf libPlasticPyysics.so libPlasticPhysics.dylib
+		cd lib; ln -sf libPlasticPhysics.so libPlasticPhysics.dylib
 endif
 
-
+## DUMMY Detector ##
+DummyDetectorData:
+		make -C ./DummyDetector
+		cp ./DummyDetector/*.so ./lib ; cp ./DummyDetector/*.h ./include
+ifeq ($(ARCH),macosx)
+		cd lib; ln -sf libDummyDetectorData.so libPlasticData.dylib
+		cd lib; ln -sf libPlasticPhysics.so libPlasticPhysics.dylib
+endif
 ############# Simulation ##############
 
 ## InitialConditions ##
@@ -373,11 +398,14 @@ clean:
 	make clean -C ./Tools
 	make clean -C ./IORoot
 	make clean -C ./VDetector
+	make clean -C ./CalibrationManager
 	make clean -C ./MUST2
+	make clean -C ./SSSD
 	make clean -C ./AnnularS1
 	make clean -C ./GASPARD
 	make clean -C ./InteractionCoordinates
 	make clean -C ./InitialConditions
+	make clean -C ./DummyDetector
 	
 distclean:
 	rm -f ./lib/*.so
@@ -388,12 +416,14 @@ endif
 	make distclean -C ./Tools
 	make distclean -C ./IORoot
 	make distclean -C ./VDetector
+	make distclean -C ./CalibrationManager
 	make distclean -C ./MUST2
+	make distclean -C ./SSSD
 	make distclean -C ./AnnularS1
 	make distclean -C ./GASPARD
 	make distclean -C ./InteractionCoordinates
 	make distclean -C ./InitialConditions
-
+	make distclean -C ./DummyDetector
 .SUFFIXES: .$(SrcSuf)
 
 ###

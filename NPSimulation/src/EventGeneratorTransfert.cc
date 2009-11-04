@@ -24,6 +24,7 @@
 // C++ headers
 #include <iostream>
 #include <fstream>
+#include <limits>
 
 // G4 header defining G4 types
 #include "globals.hh"
@@ -175,7 +176,7 @@ while(ReadingStatus){
  			 ReactionFile >> DataBuffer;
  			 
  			 //Search for comment Symbol %
-	      	 if (DataBuffer.compare(0, 1, "%") == 0) {/* Do Nothing */;}
+	      	 if (DataBuffer.compare(0, 1, "%") == 0) {	ReactionFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
  			 
 	         else if (DataBuffer.compare(0, 5, "Beam=") == 0) {
 	         	check_Beam = true ;
@@ -359,9 +360,9 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
    G4double x0 = InterCoord.x();
    G4double y0 = InterCoord.y();
    G4double z0 = InterCoord.z();
-   m_InitConditions->SetICPositionX(x0);
-   m_InitConditions->SetICPositionY(y0);
-   m_InitConditions->SetICPositionZ(z0);
+   m_InitConditions->SetICPositionX(x0);//
+   m_InitConditions->SetICPositionY(y0);//
+   m_InitConditions->SetICPositionZ(z0);//
 
    // write emittance angles to ROOT file
    m_InitConditions->SetICIncidentEmittanceTheta(Beam_thetaX / deg);

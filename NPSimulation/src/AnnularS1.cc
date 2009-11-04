@@ -9,7 +9,7 @@
  * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
  *                                                                           *
  * Creation Date  : 21/07/09                                                 *
- * Last update    : 11/10/09                                                 *
+ * Last update    : 16/10/09                                                 *
  *---------------------------------------------------------------------------*
  * Decription: Define the S1 detector from Micron                            *
  *                                                                           *
@@ -169,7 +169,7 @@ void AnnularS1::VolumeMaker(G4int             DetecNumber,
    G4PVPlacement* PVPBuffer ;
 
    // Name of the module
-   G4String Name = "AnnularS1_" + DetectorNumber;
+   G4String Name = "S1Annular" + DetectorNumber;
 
    // Definition of the volume containing the sensitive detector
    G4Tubs* solidAnnularS1 = new G4Tubs(Name, 
@@ -251,39 +251,63 @@ void AnnularS1::ReadConfiguration(string Path)
    string LineBuffer, DataBuffer;
 
    G4double Z = 0;
-   bool check_Z = false;
+   bool check_Z = false , check_VIS=false,ReadingStatus = false ;
 
    while (!ConfigFile.eof()) {
       getline(ConfigFile, LineBuffer);
-      if (LineBuffer.compare(0, 9, "AnnularS1") == 0) {
+
+
+		if (LineBuffer.compare(0, 9, "AnnularS1") == 0) {
          G4cout << "///" << G4endl           ;
          G4cout << "Annular element found: " << G4endl   ;
+					ReadingStatus = true ;
+			}
+	
+		else ReadingStatus = false ;
 
-         ConfigFile >> DataBuffer;
-         //Position method
-         if (DataBuffer.compare(0, 2, "Z=") == 0) {
-            check_Z = true;
-            ConfigFile >> DataBuffer ;
-            Z = atof(DataBuffer.c_str()) ;
-            Z = Z * mm;
-            cout << "Z:  " << Z / mm << endl;
-         }
+		while(ReadingStatus)
+			{
+				ConfigFile >> DataBuffer;
 
-         ConfigFile >> DataBuffer;
-         if (DataBuffer.compare(0, 4, "VIS=") == 0) {
-            ConfigFile >> DataBuffer;
-            if (DataBuffer.compare(0, 3, "all") == 0) m_non_sensitive_part_visiualisation = true;
-         }
+				//Search for comment Symbol %
+	      if (DataBuffer.compare(0, 1, "%") == 0) {	ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
 
-         //Add The previously define telescope
-         //With position method
-         if (check_Z) {
-            AddModule(Z);
-         }
-         else {
-            G4cout << "Wrong Token, AnnularS1 Annular Element not added" << G4endl;
-         }
-      }
+	      //Position method
+	      else if (DataBuffer.compare(0, 2, "Z=") == 0) {
+	            check_Z = true;
+	            ConfigFile >> DataBuffer ;
+	            Z = atof(DataBuffer.c_str()) ;
+	            Z = Z * mm;
+	            cout << "Z:  " << Z / mm << endl;
+	         }
+
+	       else if (DataBuffer.compare(0, 4, "VIS=") == 0) {
+							check_VIS = true ;
+	            ConfigFile >> DataBuffer;
+	            if (DataBuffer.compare(0, 3, "all") == 0) m_non_sensitive_part_visiualisation = true;
+	         }
+
+
+					///////////////////////////////////////////////////
+					//	If no Detector Token and no comment, toggle out
+					else 
+						{ReadingStatus = false; G4cout << "Wrong Token Sequence: Getting out " << DataBuffer << G4endl ;}
+
+
+	         //Add The previously define telescope
+	         //With position method
+	         if (check_Z&&check_VIS) {
+	            AddModule(Z);
+							check_Z = false ;
+							check_VIS=false	;
+							ReadingStatus = false 			;	
+							cout << "///"<< endl ;	    
+	         }
+
+			}
+
+			
+      
    }
 }
 
@@ -572,11 +596,11 @@ void AnnularS1::InitializeScorers()
    G4VPrimitiveScorer* TOF                              = new AnnularS1ScorerTime("StripTime", 0);
    G4VPrimitiveScorer* ThetaStripPosition               = new AnnularS1ScorerThetaStripNumber("ThetaStripNumber", 0);
    G4VPrimitiveScorer* PhiStripPosition                 = new AnnularS1ScorerPhiStripNumber("PhiStripNumber", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesX          = new PSInteractionCoordinatesX("InterCoordX", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesY          = new PSInteractionCoordinatesY("InterCoordY", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesZ          = new PSInteractionCoordinatesZ("InterCoordZ", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new PSInteractionCoordinatesAngleTheta("InterCoordAngTheta", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new PSInteractionCoordinatesAnglePhi("InterCoordAngPhi", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesX          = new GENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","S1Annular", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesY          = new GENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","S1Annular", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesZ          = new GENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","S1Annular", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new GENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","S1Annular", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new GENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","S1Annular", 0);
 
    //and register it to the multifunctionnal detector
    m_Scorer->RegisterPrimitive(DetNbr);

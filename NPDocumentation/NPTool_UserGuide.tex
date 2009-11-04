@@ -44,13 +44,13 @@ In NPTool analysis and simulation are linked together. The proposed way of worki
 
 				\begin{figure}[!htbp]
 					\centering
-					\includegraphics[width=1\textwidth]{./pictures/nptool_scheme_Sim.png}
+					\includegraphics[width=0.5\textwidth]{./pictures/nptool_scheme_Sim.png}
 					\caption{ \emph{Phase 1: Preparing an experiment} }
 				\end{figure}
 
 				\begin{figure}[!htbp]
 					\centering
-					\includegraphics[width=1\textwidth]{./pictures/nptool_scheme_Ana.png}
+					\includegraphics[width=0.5\textwidth]{./pictures/nptool_scheme_Ana.png}
 					\caption{ \emph{Phase 2: Analysing an experiment} }
 				\end{figure}	
 				
@@ -75,7 +75,7 @@ In NPTool analysis and simulation are linked together. The proposed way of worki
 				
 \chapter[NPSimulation]{NPSimulation}
 
-\section{NPSimulation}
+\section{Introduction}
 
 NPSimulation is build on top of Geant4. It's provide a coherent and modular sets of classes that can be easily modified for your purpose.
 
@@ -89,22 +89,15 @@ Because NPS is build on top of Geant4, you need C++ knowledge and Geant4 skills 
 NPTool
 NPS used two input files, one for the EventGenerator, and one for the Detectors Geometry. Those file are regroup in the \$NPT/Input directory wher you can find the EventGenerator and the DetectorConfiguration folder. If you want to add a new case you just have to create a new file in those directory. Note that files in the input directory are token readable file. It mean that they are not compile with the code, just read at each programm lauch. This way you can change the position of your detector or the energy of your beam for example without recompile the code. You can also quickly exchange your file with collaborators.
 
-\subsection{ Running a simulation with existing detectors and event generator }
+\section{ Running a simulation with existing detectors and event generator }
 
 Running a NPSimulation is quite simple, first, start a console terminal (shell) and put your self in the NPS directory. If you have add the environment variable correctly you can use the \emph{NPS} short cut that open the NPSimulation directory.
 	
-	\begin{footnotesize}
-	\begin{center}
-	\begin{tabular}{|p{\textwidth}|}
-		\hline
-			[myName@myDomain$\sim$ ]\${} NPS
+	\begin{verbatim}
+			[myName@myDomain ~]$ NPS
 			
-			[myName@myDomain$\sim$NPSimulation]\${} Simulation myReaction myDetector
-		\\
-		\hline
-	\end{tabular}
-	\end{center}
-	\end{footnotesize}
+			[myName@myDomain NPSimulation]$ Simulation myReaction myDetector
+	\end{verbatim}
 	
 \emph{NB: order of arguments is essential. Both file need to be in the associated directory (see previous section).}
 
@@ -135,7 +128,9 @@ Idle> tracking/verbose 1
 
 The simulation will use the configured EventGenerator describe in your input file to generate events. Geant4 will deal with the particle tracking, energy loss, decay,... and the NPS framework generate an output ROOT file in the \$NPT/Output/Simulation directory. Default name for this file is mySimul.root. Since the file is regenerated at each execution, one need to rename it in order to keep it.
 
-\subsection{ Adding a detector to NPS }
+\section{ Adding a detector to NPS }
+
+\subsection{ the VDetector class}
 
 First you can have a look to the VDetector.hh file in the \$NPS/include directory. All the detector inherited from this Virtual class (V in VDetector stand for that, following the Geant4 naming convention). A virtual class described what should be the standard features of the inherited object. In this case their is 5 methods: Note thats those method are virtual, wich mean they are not implemented within this virtual class but in the daughter class. That allow to have the same method implemented differently for each detector. The " = 0 " following the class header mean that compilation failed if the daugter class do not have its own method definition (wich can be eventually empty). A Vector of VDetector is manage by the DetectorConstruction file (see DetectorConstruction.hh and .cc) wich call those method automatically.
 
@@ -151,11 +146,113 @@ The two last methods are followed by a "{}" wich mean you are free to implemente
 		\item[] InitializeScorers(): Initialize the scorer (see GeneralScorer.hh and Geant4 Documentation)
 	\end{itemize}
 
+\section{ Step by Step from the DUMMYDetector class}
+	The DUMMYDetector is a simple example of detector class manage in NPSimulation. We will use this class as a starting point for adding your new detector
+
+	\subsection{Step 1 : copying}
+		An easy step, just copy the file DummyDetector.cc and DummyDetector.hh in the NPSimulation/src and NPSimulation/include directory. Then rename them after your detector name, let say WonderfulDetector for the rest of the exemple. Open them with your favorite editor and use the replace function to replace all the DUMMYDetector occurence by your detector name, WondenfulDetector. You almost have finnish...
+
+	\subsection{Step 2 : adding your detector to the Detector Construction}
+		In order to allow the detector construction ton instantiate detector of yours you have to "tell him" to search for such detector. Open the DetectorConstruction.cc file in the NPSimulation/src directory. Have a look at the preprocessor includes, their is a list of all the detector avaible, just add a line with your file :
+	\begin{verbatim}
+	#include "WinderfulDetector.hh"
+	\end{verbatim}
+
+		Now DetectorConstruction know the WonderfulDetector class, but do not know how to find it in an input file. Have look to the DetectorConstruction::ReadConfigurationFile method. In this method Detector construction is reading the detector input file and looking for what kind of detector are presents. Every time a new kind of detector is detected, a new array of this kind is instantiate and inialize via is own ReadConfiguration method. For that, every class need an "array starting" token, wich should be different of the "module starting" token. In our case we will choose "WonderfulArray" as an array starting token. In order to avoid infinite loop of adding and adding the same detector again and again we need a boolean check, that simply check this kind of array is not already instantiate. First, add one of this boolean, lets called it cWonderful, your code should look like that
+
+	\begin{verbatim}
+		/////////Checking Boolean////////////////////
+		bool cMUST2           = false;
+		bool cAddThinSi       = false;
+		bool cGeneralTarget   = false;
+		bool cGPDTracker      = false;	// Gaspard Tracker
+		bool cS1              = false;
+		bool cPlastic         = false;
+		bool cDummy         	= false;
+		bool cWonderful				= false;
+	\end{verbatim}
+
+
+	Then add the small searching sequence right after the Dummy Detector Sequence:
+			
+	\begin{verbatim}
+					////////////////////////////////////////////
+					/////// Search for a Dummy Detector ////////
+					////////////////////////////////////////////
+					else if (LineBuffer.compare(0, 16, "TheDUMMYDetector") == 0 && cDummy == false) {
+						cDummy = true ;
+						G4cout << "//////// DUMMY DETECTOR ////////" << G4endl << G4endl;
+
+						// Instantiate the new array as a VDetector Object
+						VDetector* myDetector = new DUMMYDetector();
+
+						// Read Position of detector
+						ConfigFile.close();
+						myDetector->ReadConfiguration(Path);
+						ConfigFile.open(Path.c_str());
+
+						// Add array to the VDetector Vector
+						AddDetector(myDetector);
+					}
+
+					////////////////////////////////////////////
+					//// Search for a Wonderful Detector //////
+					////////////////////////////////////////////
+					else if (LineBuffer.compare(0, 15, "WonderfulArray") == 0 && cWonderful == false) {
+						cWonderful = true ;
+						G4cout << "//////// wonderful ARRAY ////////" << G4endl << G4endl;
+
+						// Instantiate the new array as a VDetector Object
+						VDetector* myDetector = new WonderfulDetector();
+
+						// Read Position of detector
+						ConfigFile.close();
+						myDetector->ReadConfiguration(Path);
+						ConfigFile.open(Path.c_str());
+
+						// Add array to the VDetector Vector
+						AddDetector(myDetector);
+		      }
+	\end{verbatim}
+
+	\subsection{Step 3 : Data output}
+
+	Lets have look to your Detector code. Open the WonderfulDetector.hh file and look at the private member, you should find the following line
+
+	\begin{verbatim}
+		////////////////////////////////////////////////////
+		///////////Event class to store Data////////////////
+		////////////////////////////////////////////////////
+		private:
+			TWonderfulDetectorData* m_Event ;
+
+	\end{verbatim}
+
+	The TWonderfulDetectorData class probably do not exist yet. So you will have to create one, for that, follow the tutorial in the NPLib chapter. If this class do not exist and you do not want to create one right now, simply use the TDUMMYDetectorData class instead (do not forget to change also the preprocessort include as well).
+
+	\subsection{Step 4 : Token definition}
+		NPS use input file with token detection. For each detector there is at least two token, we already see one in the previous part, the array starting token. You will need a second one, the module starting one, let choose "WonderfulModule". So have a look at the WonderfulDetector::ReadCOnfiguration method. In this method a loop over the config file is made, once the module starting bloc is fine, the ReadingStatus is set to true, wich mean we toggle to a module token search mode. Generally speaking the "\%" simbole is used as a comment symbole and every caracter after this symbole will be skipped until the end of line. This is the first token search. Then come the search for another module starting search, here a security to avoid wrong token sequence. Then come the list of all token. You can add as many token as you need following the same model. Just add one for exercise your self,
+
+		\begin{description}
+			\item[1:] Copying the THETA token bloc
+			\item[2:] We want to add a Token associate to the number of stage in our detector. At the beginning of the function let create an integer name NumberOfStage and set it to 0. We also need a boolean to check the token as been found, just create a boolean named check\_NumberOfStage, and set it to false (have a look to the other variable such as Theta and check\_Theta).
+			\item[3:] Change THETA to your new token, for instance "HOW\_MANY\_STAGE=" (note that token can't have space and always finnish by =). This new token have 15 caracter, so change the second argument of the compare method from 6 to 15.
+			\item[4:] Change check\_Theta to check\_NumberOfStage and \emph{Theta = atof(DataBuffer.c\_str())} to \emph{NumberOfStage = atof(DataBuffer.c\_str())}. Remove the \emph{Theta=Theta*deg} and change the cout to display a corrected message.
+		\end{description}
+
+		
+		\subsection{Step 5 : Material definition}
+
+		Just have a look at the InitializeMaterial function. You can here define as many as needed material after adding a private G4Material* object member to your classe. Remember to delete those new object in the detector destructor. Those material can then be used in the volume definition. This way each material are defined only one time per array, assuring a low number of material and therefor a low time running.
+
+		\subsection{Step 6 : Scorer definition}
+	
+	Let's define a Scorer as class object allowing you to perform any kind of measurement.NPSimulation used G4VPScorer (see the G4 documentation for more detail), understand Virtual Primitive Scorer. This virtual class allow Geant4 user to define the kind of scorer they want. Initially scorer were design to allow user to monitor some physical value inside a logical volume without using the ReadSensitive class and ReadOutGeometry. However, dure to their conception, those object was slow and running time quickly increased with the number of scorer... In NPSimulation we improve this system, using a new way of indexing data in scorer and delete them when they are not needed anymore and the running time is acceptable. Moreover, the Scorer simplify the code reading and allow user to come with their own set of scorer file dedicate to their detector. We implement some General Purpose scorer that you can use as well.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter[NPAnalysis]{NPAnalysis}
 
-
+\chapter[NPLib]{NPLib}
 
 \end{document}
 

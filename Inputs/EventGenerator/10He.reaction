@@ -7,7 +7,7 @@ TransfertToResonance
 	Target= 2H
 	Light= 3He
 	Heavy= 10He
-	ExcitationEnergy= 4.0
+	ExcitationEnergy= 2.0
 	BeamEnergy= 550
 	BeamEnergySpread= 0
 	SigmaThetaX= 0.6921330164
@@ -16,10 +16,10 @@ TransfertToResonance
 	SigmaY= 9.069
 	ResonanceWidth= 0
 	ResonanceDecayZ= 2
-	ResonanceDecayA= 6
+	ResonanceDecayA= 8
 	CrossSectionPath= 11Li(d,3He)10He.txt	
 	ShootLight= 1
-	ShootHeavy= 1
+	ShootHeavy= 0
 	ShootDecayProduct= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

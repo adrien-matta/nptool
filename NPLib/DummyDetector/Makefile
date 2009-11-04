@@ -268,28 +268,21 @@ GLIBS         = $(ROOTGLIBS) $(SYSLIBS)
 INCLUDE		= -I$(CLHEP_BASE_DIR)/include
  
 #------------------------------------------------------------------------------
-SHARELIB      =  libPlasticData.so libPlasticPhysics.so
+SHARELIB      =  libDUMMYDetectorData.so 
 
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 ############### Detector ##############
 
-## Plastic ##
-libPlasticData.so:	TPlasticData.o	TPlasticDataDict.o
+## DUMMYDetector ##
+libDUMMYDetectorData.so:	TDUMMYDetectorData.o	TDUMMYDetectorDataDict.o
 			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
-TPlasticDataDict.cxx:	TPlasticData.h
-			rootcint -f $@ -c $^
-
-libPlasticPhysics.so:	TPlasticPhysics.o	TPlasticPhysicsDict.o
-			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
-
-TPlasticPhysicsDict.cxx:	TPlasticPhysics.h
+TDUMMYDetectorDataDict.cxx:	TDUMMYDetectorData.h
 			rootcint -f $@ -c $^
 
 # dependances
-TPlasticData.o:	TPlasticData.cxx	TPlasticData.h
-TPlasticPhysics.o:	TPlasticPhysics.cxx	TPlasticPhysics.h
+TDUMMYDetectorData.o:	TDUMMYDetectorData.cxx	TDUMMYDetectorData.h
 #######################################
 
 ############# Clean and More ##########

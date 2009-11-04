@@ -51,8 +51,8 @@ G4bool AnnularS1ScorerDetectorNumber::ProcessHits(G4Step* aStep, G4TouchableHist
    std::string name = aStep->GetTrack()->GetVolume()->GetName();
    std::string nbr;
    size_t found;
-   found = name.find("AnnularS1_");
-   found = found + 10;
+   found = name.find("S1Annular");
+   found = found + 9;
   
    int numberOfCharacterInDetectorNumber = name.length() - (int)found;
 
@@ -126,8 +126,8 @@ G4bool AnnularS1ScorerEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
    std::string name = aStep->GetTrack()->GetVolume()->GetName();
    std::string nbr;
    size_t found;
-   found = name.find("AnnularS1_");
-   found = found + 10;
+   found = name.find("S1Annular");
+   found = found + 9;
 
    int numberOfCharacterInDetectorNumber = name.length() - (int)found;
 
@@ -201,8 +201,8 @@ G4bool AnnularS1ScorerTime::ProcessHits(G4Step* aStep, G4TouchableHistory*)
    std::string name = aStep->GetTrack()->GetVolume()->GetName();
    std::string nbr;
    size_t found;
-   found = name.find("AnnularS1_");
-   found = found + 10;
+   found = name.find("S1Annular");
+   found = found + 9;
 
    int numberOfCharacterInDetectorNumber = name.length() - (int)found;
 
@@ -270,8 +270,8 @@ G4bool AnnularS1ScorerThetaStripNumber::ProcessHits(G4Step* aStep, G4TouchableHi
    std::string name = aStep->GetTrack()->GetVolume()->GetName();
    std::string nbr;
    size_t found;
-   found = name.find("AnnularS1_");
-   found = found + 10;
+   found = name.find("S1Annular");
+   found = found + 9;
 
    int numberOfCharacterInDetectorNumber = name.length() - (int)found;
 
@@ -367,8 +367,8 @@ G4bool AnnularS1ScorerPhiStripNumber::ProcessHits(G4Step* aStep, G4TouchableHist
    std::string name = aStep->GetTrack()->GetVolume()->GetName();
    std::string nbr;
    size_t found;
-   found = name.find("AnnularS1_");
-   found = found + 10;
+   found = name.find("S1Annular");
+   found = found + 9;
 
    int numberOfCharacterInDetectorNumber = name.length() - (int)found;
 

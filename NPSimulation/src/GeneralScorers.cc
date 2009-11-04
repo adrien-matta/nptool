@@ -24,15 +24,107 @@
  *****************************************************************************/
 #include "GeneralScorers.hh"
 #include "G4UnitsTable.hh"
+using namespace GENERALSCORERS ;
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+//	The following function is used in many scorer. following the Detector Volume Nomenclature
+//	DetectorNameX_SubPart_SubPart
+//  where X stand for the detector number.
+
+int GENERALSCORERS::PickUpDetectorNumber(G4Step* aStep, std::string DetName)
+	{
+		std::string name = aStep->GetTrack()->GetVolume()->GetName();
+  	std::string nbr ;
+		size_t start, end ;
+    start = name.find(DetName) + DetName.length();
+		end   = name.find("_");
+
+		int numberOfCharacterInDetectorNumber = (int)end - (int)start  ;
+
+		for(unsigned int i = start ; i < start + numberOfCharacterInDetectorNumber ; i++ )
+			nbr += name[i] ; 
+
+		return (atoi( nbr.c_str() ));
+
+	}
+ 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// Energy Scorer (deal with multiple particle hit)
-
-PSEnergy::PSEnergy(G4String name, G4int depth)
+		//Detector Number Scorer
+PSDetectorNumber::PSDetectorNumber(G4String name, G4String VolumeName, G4int depth )
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
+   m_VolumeName = VolumeName;
+}
+
+PSDetectorNumber::~PSDetectorNumber()
+{
+   ;
+}
+
+G4bool PSDetectorNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+	{
+	int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName) ; 
+
+   G4double edep = aStep->GetTotalEnergyDeposit();
+   
+   if (edep < TriggerThreshold) return FALSE;
+   
+   G4int  index = aStep->GetTrack()->GetTrackID();
+   EvtMap->set(index+DetNumber, DetNumber);
+   return TRUE;
+}
+
+void PSDetectorNumber::Initialize(G4HCofThisEvent* HCE)
+{ 
+   EvtMap = new G4THitsMap<G4int>(GetMultiFunctionalDetector()->GetName(), GetName());
+   if (HCID < 0) {
+      HCID = GetCollectionID(0);
+   }
+   HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
+}
+
+void PSDetectorNumber::EndOfEvent(G4HCofThisEvent*)
+{
+   ;
+}
+
+void PSDetectorNumber::clear()
+{
+   EvtMap->clear();
+}
+
+void PSDetectorNumber::DrawAll()
+{
+   ;
+}
+
+void PSDetectorNumber::PrintAll()
+{
+   G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl;
+   G4cout << " PrimitiveScorer " << GetName() << G4endl;
+   G4cout << " Number of entries " << EvtMap->entries() << G4endl;
+   std::map<G4int, G4int*>::iterator itr = EvtMap->GetMap()->begin();
+   for (; itr != EvtMap->GetMap()->end(); itr++) {
+      G4cout << "  copy no.: " << itr->first
+      << "  energy deposit: " << G4BestUnit(*(itr->second), "Energy")
+      << G4endl;
+   }
+}
+
+
+
+
+// Energy Scorer (deal with multiple particle hit)
+
+PSEnergy::PSEnergy(G4String name, G4String VolumeName, G4int depth)
+      : G4VPrimitiveScorer(name, depth), HCID(-1)
+{
+	m_VolumeName = VolumeName;
 }
 
 PSEnergy::~PSEnergy()
@@ -41,12 +133,14 @@ PSEnergy::~PSEnergy()
 
 G4bool PSEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+	 int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName) ; 
+
    G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
+   if (edep < TriggerThreshold) return FALSE;
    
    G4int  index = aStep->GetTrack()->GetTrackID();
    
-   EvtMap->add(index, edep);
+   EvtMap->add(index+DetNumber, edep);
    return TRUE;
 }
 
@@ -89,10 +183,10 @@ void PSEnergy::PrintAll()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //TOF Scorer//
-PSTOF::PSTOF(G4String name, G4int depth)
+PSTOF::PSTOF(G4String name, G4String VolumeName, G4int depth)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
-   ;
+   m_VolumeName = VolumeName;
 }
 
 PSTOF::~PSTOF()
@@ -102,11 +196,13 @@ PSTOF::~PSTOF()
 
 G4bool PSTOF::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+	int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName) ; 
+
    G4double TOF  = aStep->GetPreStepPoint()->GetGlobalTime();
    G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
+   if (edep < TriggerThreshold) return FALSE;
    G4int  index = aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, TOF);
+   EvtMap->set(index+DetNumber, TOF);
    return TRUE;
 }
 
@@ -144,9 +240,10 @@ void PSTOF::PrintAll()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Interaction coordinates X
-PSInteractionCoordinatesX::PSInteractionCoordinatesX(G4String name, G4int depth)
+PSInteractionCoordinatesX::PSInteractionCoordinatesX(G4String name, G4String VolumeName, G4int depth)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
+	 m_VolumeName = VolumeName;
 }
 
 PSInteractionCoordinatesX::~PSInteractionCoordinatesX()
@@ -155,11 +252,13 @@ PSInteractionCoordinatesX::~PSInteractionCoordinatesX()
 
 G4bool PSInteractionCoordinatesX::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+	int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName) ; 
+
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    G4double pos_x = POS.x() / mm;
 
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, pos_x);
+   EvtMap->set(index+DetNumber, pos_x);
    return TRUE;
 }
 
@@ -196,9 +295,10 @@ void PSInteractionCoordinatesX::PrintAll()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Interaction coordinates Y
-PSInteractionCoordinatesY::PSInteractionCoordinatesY(G4String name, G4int depth)
+PSInteractionCoordinatesY::PSInteractionCoordinatesY(G4String name, G4String VolumeName, G4int depth)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
+	 m_VolumeName = VolumeName;
 }
 
 PSInteractionCoordinatesY::~PSInteractionCoordinatesY()
@@ -207,16 +307,19 @@ PSInteractionCoordinatesY::~PSInteractionCoordinatesY()
 
 G4bool PSInteractionCoordinatesY::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+	int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName) ; 
+
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    G4double pos_y = POS.y() / mm;
 
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, pos_y);
+   EvtMap->set(index+DetNumber, pos_y);
    return TRUE;
 }
 
 void PSInteractionCoordinatesY::Initialize(G4HCofThisEvent* HCE)
 {
+
    EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
       HCID = GetCollectionID(0);
@@ -248,9 +351,10 @@ void PSInteractionCoordinatesY::PrintAll()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Interaction coordinates Z
-PSInteractionCoordinatesZ::PSInteractionCoordinatesZ(G4String name, G4int depth)
+PSInteractionCoordinatesZ::PSInteractionCoordinatesZ(G4String name, G4String VolumeName, G4int depth)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
+	 m_VolumeName = VolumeName;
 }
 
 PSInteractionCoordinatesZ::~PSInteractionCoordinatesZ()
@@ -259,11 +363,13 @@ PSInteractionCoordinatesZ::~PSInteractionCoordinatesZ()
 
 G4bool PSInteractionCoordinatesZ::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+	int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName) ; 
+
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    G4double pos_z = POS.z() / mm;
 
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, pos_z);
+   EvtMap->set(index+DetNumber, pos_z);
    return TRUE;
 }
 
@@ -301,9 +407,10 @@ void PSInteractionCoordinatesZ::PrintAll()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Interaction coordinates Angle Theta
-PSInteractionCoordinatesAngleTheta::PSInteractionCoordinatesAngleTheta(G4String name, G4int depth)
+PSInteractionCoordinatesAngleTheta::PSInteractionCoordinatesAngleTheta(G4String name, G4String VolumeName, G4int depth)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
+	 m_VolumeName = VolumeName;
 }
 
 PSInteractionCoordinatesAngleTheta::~PSInteractionCoordinatesAngleTheta()
@@ -312,11 +419,13 @@ PSInteractionCoordinatesAngleTheta::~PSInteractionCoordinatesAngleTheta()
 
 G4bool PSInteractionCoordinatesAngleTheta::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+	int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName) ; 
+
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    G4double angle_theta = POS.theta() / deg;
 
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, angle_theta);
+   EvtMap->set(index+DetNumber, angle_theta);
    return TRUE;
 }
 
@@ -354,9 +463,10 @@ void PSInteractionCoordinatesAngleTheta::PrintAll()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Interaction coordinates Angle Phi
-PSInteractionCoordinatesAnglePhi::PSInteractionCoordinatesAnglePhi(G4String name, G4int depth)
+PSInteractionCoordinatesAnglePhi::PSInteractionCoordinatesAnglePhi(G4String name, G4String VolumeName, G4int depth)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
+	 m_VolumeName = VolumeName;
 }
 
 PSInteractionCoordinatesAnglePhi::~PSInteractionCoordinatesAnglePhi()
@@ -365,12 +475,14 @@ PSInteractionCoordinatesAnglePhi::~PSInteractionCoordinatesAnglePhi()
 
 G4bool PSInteractionCoordinatesAnglePhi::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+	int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName) ; 
+
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    G4double angle_phi = POS.phi() / deg;
    if (angle_phi < 0) angle_phi += 360;
 
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, angle_phi);
+   EvtMap->set(index+DetNumber, angle_phi);
    return TRUE;
 }
 
@@ -405,77 +517,4 @@ void PSInteractionCoordinatesAnglePhi::PrintAll()
    G4cout << " Number of entries " << EvtMap->entries() << G4endl     ;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-		//Detector Number Scorer
-PSDetectorNumber::PSDetectorNumber(G4String name, G4int depth, G4String VolumeName )
-      : G4VPrimitiveScorer(name, depth), HCID(-1)
-{
-   m_VolumeName = VolumeName;
-}
 
-PSDetectorNumber::~PSDetectorNumber()
-{
-   ;
-}
-
-G4bool PSDetectorNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
-{
-   std::string name = aStep->GetTrack()->GetVolume()->GetName();
-   std::string nbr ;
-   size_t found;
-   found=name.find(m_VolumeName);
-   found = found + m_VolumeName.length();
-   
-   int numberOfCharacterInDetectorNumber = name.length() - (int)found  ;
-
-	for(unsigned int i = found ; i < found + numberOfCharacterInDetectorNumber ; i++ )
-			nbr += name[i] ; 
-		
-   G4int DetNbr = atoi( nbr.c_str() ) ;
-   G4double edep = aStep->GetTotalEnergyDeposit();
-   
-   if (edep < 100*keV) return FALSE;
-   
-   G4int  index = aStep->GetTrack()->GetTrackID();
-   
-   EvtMap->set(index, DetNbr);
-   return TRUE;
-}
-
-void PSDetectorNumber::Initialize(G4HCofThisEvent* HCE)
-{ 
-   EvtMap = new G4THitsMap<G4int>(GetMultiFunctionalDetector()->GetName(), GetName());
-   if (HCID < 0) {
-      HCID = GetCollectionID(0);
-   }
-   HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
-}
-
-void PSDetectorNumber::EndOfEvent(G4HCofThisEvent*)
-{
-   ;
-}
-
-void PSDetectorNumber::clear()
-{
-   EvtMap->clear();
-}
-
-void PSDetectorNumber::DrawAll()
-{
-   ;
-}
-
-void PSDetectorNumber::PrintAll()
-{
-   G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl;
-   G4cout << " PrimitiveScorer " << GetName() << G4endl;
-   G4cout << " Number of entries " << EvtMap->entries() << G4endl;
-   std::map<G4int, G4int*>::iterator itr = EvtMap->GetMap()->begin();
-   for (; itr != EvtMap->GetMap()->end(); itr++) {
-      G4cout << "  copy no.: " << itr->first
-      << "  energy deposit: " << G4BestUnit(*(itr->second), "Energy")
-      << G4endl;
-   }
-}

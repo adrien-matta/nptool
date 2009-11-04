@@ -281,14 +281,13 @@ libMust2Data.so:	TMust2Data.o	TMust2DataDict.o
 TMust2DataDict.cxx:	TMust2Data.h
 			rootcint -f $@ -c $^
 
-libMust2Physics.so:	Must2Array.o	TMust2Physics.o	TMust2PhysicsDict.o
+libMust2Physics.so:	TMust2Physics.o	TMust2PhysicsDict.o
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TMust2PhysicsDict.cxx: TMust2Physics.h
 			rootcint -f $@ -c $^
 
 # dependances
-Must2Array.o:		Must2Array.cxx	Must2Array.h
 TMust2Data.o:		TMust2Data.cxx	TMust2Data.h
 TMust2Physics.o:	TMust2Physics.cxx	TMust2Physics.h
 #######################################

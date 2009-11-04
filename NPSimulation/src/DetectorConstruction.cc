@@ -37,12 +37,14 @@
 #include "G4RotationMatrix.hh"
 
 // Detector class
+#include "DummyDetector.hh"
 #include "MUST2Array.hh"
 #include "GaspardTracker.hh"
 #include "AnnularS1.hh"
 #include "Target.hh"
 #include "ThinSi.hh"
 #include "Plastic.hh"
+
 //Not G4
 #include <cstdlib>
 #include<fstream>
@@ -121,13 +123,14 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
    string LineBuffer;
    string DataBuffer;
 
-   /////////Boolean////////////////////
-   bool MUST2           = false;
-   bool AddThinSi       = false;
-   bool GeneralTarget   = false;
-   bool GPDTracker      = false;	// Gaspard Tracker
-   bool S1              = false;
+   /////////Checking Boolean////////////////////
+   bool cMUST2           = false;
+   bool cAddThinSi       = false;
+   bool cGeneralTarget   = false;
+   bool cGPDTracker      = false;	// Gaspard Tracker
+   bool cS1              = false;
    bool cPlastic         = false;
+   bool cDummy         = false;
    //////////////////////////////////////////////////////////////////////////////////////////
    // added by Nicolas [07/05/09]
    string GlobalPath = getenv("NPTOOL");
@@ -149,11 +152,31 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       //Search for comment Symbol: %
       if (LineBuffer.compare(0, 1, "%") == 0) {   /*Do  Nothing*/;}
 
+			////////////////////////////////////////////
+      /////// Search for a Dummy Detector ////////
+      ////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 16, "TheDUMMYDetector") == 0 && cDummy == false) {
+         cDummy = true ;
+         G4cout << "//////// DUMMY DETECTOR ////////" << G4endl << G4endl   ;
+
+         // Instantiate the new array as a VDetector Object
+         VDetector* myDetector = new DUMMYDetector()                  ;
+
+         // Read Position of detector
+         ConfigFile.close()                                 ;
+         myDetector->ReadConfiguration(Path)                   ;
+         ConfigFile.open(Path.c_str())                      ;
+
+         // Add array to the VDetector Vector
+         AddDetector(myDetector)                            ;
+      }
+
+
       ////////////////////////////////////////////
       //////////// Search for Gaspard ////////////
       ////////////////////////////////////////////
-      else if (LineBuffer.compare(0, 14, "GaspardTracker") == 0 && GPDTracker == false) {
-         GPDTracker = true ;
+      else if (LineBuffer.compare(0, 14, "GaspardTracker") == 0 && cGPDTracker == false) {
+         cGPDTracker = true ;
          G4cout << "//////// Gaspard Tracker ////////" << G4endl   ;
 
          // Instantiate the new array as a VDetector Object
@@ -171,8 +194,8 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       ////////////////////////////////////////////
       ///// Search for S1 Annular detector  //////
       ////////////////////////////////////////////
-      else if (LineBuffer.compare(0, 9, "AnnularS1") == 0 && S1 == false) {
-         S1 = true ;
+      else if (LineBuffer.compare(0, 9, "AnnularS1") == 0 && cS1 == false) {
+         cS1 = true ;
          G4cout << "//////// S1 Annular detector ////////" << G4endl   << G4endl   ;
 
          // Instantiate the new array as a VDetector Object
@@ -190,8 +213,8 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       ////////////////////////////////////////////
       //////// Search for MUST2 Array  ////////
       ////////////////////////////////////////////
-      else if (LineBuffer.compare(0, 10, "MUST2Array") == 0 && MUST2 == false) {
-         MUST2 = true ;
+      else if (LineBuffer.compare(0, 10, "MUST2Array") == 0 && cMUST2 == false) {
+         cMUST2 = true ;
          G4cout << "//////// MUST2 Array ////////" << G4endl   << G4endl   ;
 
          // Instantiate the new array as a VDetector Object
@@ -209,8 +232,8 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       ////////////////////////////////////////////
       ////////// Search for     ThinSi ///////////
       ////////////////////////////////////////////
-      else if (LineBuffer.compare(0, 9, "AddThinSi") == 0 && AddThinSi == false) {
-         AddThinSi = true ;
+      else if (LineBuffer.compare(0, 9, "AddThinSi") == 0 && cAddThinSi == false) {
+         cAddThinSi = true ;
          G4cout << "//////// Thin Si ////////" << G4endl << G4endl   ;
 
          // Instantiate the new array as a VDetector Object
@@ -248,8 +271,8 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       //////////// Search for Target /////////////
       ////////////////////////////////////////////
 
-      else if (LineBuffer.compare(0, 13, "GeneralTarget") == 0 && GeneralTarget == false) {
-         GeneralTarget = true ;
+      else if (LineBuffer.compare(0, 13, "GeneralTarget") == 0 && cGeneralTarget == false) {
+         cGeneralTarget = true ;
          G4cout << "////////// Target ///////////" << G4endl   << G4endl   ;
 
          // Instantiate the new array as a VDetector Objects

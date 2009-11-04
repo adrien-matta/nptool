@@ -1,5 +1,5 @@
-#ifndef Plastic_h
-#define Plastic_h 1
+#ifndef DUMMYDetector_h
+#define DUMMYDetector_h 1
 /*****************************************************************************
  * Copyright (C) 2009   this file is part of the NPTool Project              *
  *                                                                           *
@@ -10,19 +10,20 @@
 /*****************************************************************************
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
- * Creation Date  : September 2009                                           *
+ * Creation Date  : October 2009                                             *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe a Modular cylindrical Plastic Scintillator           *
- *	Few Material are instantiate and user can choose position and dimension	 * 
- *  but also the adding of a lead plate on the rear side of the detector     *
+ *  This class describe a simple Dummy Detector :                            *
+ *	a simple cylinder of predifined material. user can choose to place it    *
+ *  where he want using spherical coordinate and choose between two naterial *
+ *	                                                                         *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *                                                                           *
+ *  This detector respect all the NPTool convention in naming volume,        * 
+ *  reading scorers and file. Use it as a basis for your own detector        *
  *****************************************************************************/
-
 // C++ header
 #include <string>
 #include <vector>
@@ -34,34 +35,35 @@
 #include "G4ThreeVector.hh"
 #include "G4RotationMatrix.hh"
 #include "G4LogicalVolume.hh"
+#include "G4SDManager.hh"
+#include "G4MultiFunctionalDetector.hh"
 
 // NPTool header
 #include "VDetector.hh"
-#include "TPlasticData.h"
+#include "TDUMMYDetectorData.h"
 
 using namespace std;
 
-class Plastic : public VDetector
+class DUMMYDetector : public VDetector
 {
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
    ////////////////////////////////////////////////////
 public:
-   Plastic() ;
-   virtual ~Plastic() ;
+   DUMMYDetector() ;
+   virtual ~DUMMYDetector() ;
 
    ////////////////////////////////////////////////////
    //////// Specific Function of this Class ///////////
    ////////////////////////////////////////////////////
 public:
    // By Angle Method
-   void AddPlastic(	 G4double    R        			,
-        			 G4double    Theta    			,
-         			 G4double    Phi         		,
-         			 G4double	 PlasticThickness	,
-         			 G4double	 PlasticRadius		,
-         			 G4String 	Scintillator		,
-         			 G4double    LeadThickness      );  
+   void AddDUMMYDetector(	 G4double    R        							,
+        									 G4double    Theta    							,
+         									 G4double    Phi         						,
+						         			 G4double	 DUMMYDetectorThickness		,
+						         			 G4double	 DUMMYDetectorRadius			,
+						         			 G4String 	Scintillator						 );  
 		
 	void VolumeMaker(G4ThreeVector Det_pos, int DetNumber,G4LogicalVolume* world) ;
    ////////////////////////////////////////////////////
@@ -86,40 +88,36 @@ public:
 
 public: // Material 
 	void InitializeMaterial() 		;
-	// Platic
-	G4Material* m_MaterialPlastic_BC400			; //BC-400 type plastic
-	G4Material* m_MaterialPlastic_BC452_2		; //BC452:BC-400 loaded with 2%Pb type plastic
-	G4Material* m_MaterialPlastic_BC452_5		; //BC452:BC-400 loaded with 5%Pb type plastic
-	G4Material* m_MaterialPlastic_BC452_10	; //BC452:BC-400 loaded with 10%Pb type plastic
-	// Lead
-	G4Material* m_MaterialLead		;
+	// The dummy materials
+	G4Material* m_MaterialDUMMYDetector_material1		; //the dummy material 2
+	G4Material* m_MaterialDUMMYDetector_material2		; //the dummy material 2
+
 	
 public:	//	Scorer
 	//	Initialize all Scorer used by the MUST2Array
 	void InitializeScorers() ;
 
 	//	Silicon Associate Scorer
-	G4MultiFunctionalDetector* m_PlasticScorer				 ;
+	G4MultiFunctionalDetector* m_DUMMYDetectorScorer				 ;
+
+
    ////////////////////////////////////////////////////
    ///////////Event class to store Data////////////////
    ////////////////////////////////////////////////////
 private:
-   TPlasticData* m_Event ;
+   TDUMMYDetectorData* m_Event ;
 
    ////////////////////////////////////////////////////
    ///////////////Private intern Data//////////////////
    ////////////////////////////////////////////////////
 private:
    
-   // if true a Lead plate is added in front or back of the detector
-   vector<double>	  m_LeadThickness	;
-   
-   vector<double>		m_PlasticThickness	;
-   vector<double>		m_PlasticRadius		;
+   vector<double>		m_DUMMYDetectorThickness	;
+   vector<double>		m_DUMMYDetectorRadius		;
       
    // Used for "By Angle Definition"
    vector<G4double>  m_R         ; //  |
-   vector<G4double>  m_Theta     ; //  > Spherical coordinate plastic volume center
+   vector<G4double>  m_Theta     ; //  > Spherical coordinate DUMMYDetector volume center
    vector<G4double>  m_Phi    	 ; //  |
 
 	//	Scintillator type

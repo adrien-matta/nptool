@@ -139,12 +139,12 @@ class TMust2Data : public TObject {
 
 		// SiLi
 		//(E)
-		UShort_t	GetMMSiLiEMult()				{return fMM_SiLiE_DetectorNbr.size();}
+		UShort_t	GetMMSiLiEMult()								{return fMM_SiLiE_DetectorNbr.size();}
 		UShort_t	GetMMSiLiEDetectorNbr(Int_t i)  {return fMM_SiLiE_DetectorNbr.at(i);}
 		UShort_t	GetMMSiLiEPadNbr(Int_t i)       {return fMM_SiLiE_PadNbr.at(i);}
 		Double_t	GetMMSiLiEEnergy(Int_t i)       {return fMM_SiLiE_Energy.at(i);}
 		//(T)
-		UShort_t	GetMMSiLiTMult()				{return fMM_SiLiT_DetectorNbr.size();}
+		UShort_t	GetMMSiLiTMult()								{return fMM_SiLiT_DetectorNbr.size();}
 		UShort_t	GetMMSiLiTDetectorNbr(Int_t i)  {return fMM_SiLiT_DetectorNbr.at(i);}
 		UShort_t	GetMMSiLiTPadNbr(Int_t i)       {return fMM_SiLiT_PadNbr.at(i);}
 		Double_t	GetMMSiLiTTime(Int_t i)         {return fMM_SiLiT_Time.at(i);}
