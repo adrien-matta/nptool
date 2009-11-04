@@ -30,6 +30,9 @@ int main(int argc,char** argv)
    DetectorManager* myDetector = new DetectorManager;
    myDetector->ReadConfigurationFile(detectorfileName);
 
+   // Print target thickness
+   cout << myDetector->GetTargetThickness() << endl;
+
    // Attach more branch to the output
    double Ex = 0 ; double ExNoStrips = 0 ; double EE = 0 ; double TT = 0 ; double X = 0 ; double Y = 0 ; int det ;
    RootOutput::getInstance()->GetTree()->Branch("ExcitationEnergy",&Ex,"Ex/D") ;
