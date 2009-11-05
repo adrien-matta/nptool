@@ -310,6 +310,7 @@ SSSDData:
 		cp ./SSSD/*.so ./lib ; cp ./SSSD/*.h ./include
 ifeq ($(ARCH),macosx)
 		cd lib; ln -sf libSSSDData.so libSSSDData.dylib
+		cd lib; ln -sf libSSSDPhysics.so libSSSDPhysics.dylib
 endif
 
 ## AnnularS1 ##
@@ -343,8 +344,7 @@ DummyDetectorData:
 		make -C ./DummyDetector
 		cp ./DummyDetector/*.so ./lib ; cp ./DummyDetector/*.h ./include
 ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libDummyDetectorData.so libPlasticData.dylib
-		cd lib; ln -sf libPlasticPhysics.so libPlasticPhysics.dylib
+		cd lib; ln -sf libDummyDetectorData.so libDummyDetectorData.dylib
 endif
 ############# Simulation ##############
 

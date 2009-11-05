@@ -27,6 +27,8 @@ NPLib / include
       / Tools
       / InitialConditions
       / InteractionCoordinates
+      / CalibrationManager
+      / DummyDetector
       / MUST2
       / AnnularS1
       / GASPARD
@@ -67,9 +69,28 @@ VI) InteractionCoordinates
 	This class derives from TObject (ROOT) and its aim is to be stored in the 
 	output TTree of the G4 simulation.
 
-VII) MUST2
+VII) CalibrationManager
 
-VIII) AnnularS1
+VIII) DummyDetector
+	This directory includes one library:
+		libDUMMYDetector.so
+	This library stores the results of the G4 simulation for the example detector
+	DummyDetector.
+
+IX) MUST2
+	This directory includes two libraries:
+		libMust2Data.so
+		libMust2Physics.so
+	libMust2Data.so:
+		This library stores the results of the G4 simulation for the Must2
+		detector.
+		The format mimics what was used for the GANIL experiments after conversion 
+		of the raw data with GRU. Ask N. de Sereville for more informations. 
+	libMust2Physics.so:
+		This library deals with the treatment applied to the ROOT output file 
+		obtained from NPSimulation. This library is *only* used by NPAnalysis.
+
+X) AnnularS1
 	This directory includes one library:
 		libAnnularS1Data.so
 	This library stores the results of the G4 simulation for the S1 detector. 
@@ -79,7 +100,7 @@ VIII) AnnularS1
 	This class derives from TObject (ROOT) and its aim is to be stored in the 
 	output TTree of the G4 simulation.
 
-IX) GASPARD
+XI) GASPARD
 	This directory includes two libraries:
 		libGaspardData.so
 		libGaspardPhysics.so
@@ -92,4 +113,4 @@ IX) GASPARD
 		This library deals with the treatment applied to the ROOT output file 
 		obtained from NPSimulation. This library is *only* used by NPAnalysis.
 
-X) VDetector
+XII) VDetector

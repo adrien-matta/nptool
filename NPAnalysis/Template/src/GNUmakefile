@@ -18,7 +18,10 @@ CXXFLAGS += -I$(NPLIB)/include
 LDFLAGS  = `root-config --libs` -lMathMore
 LDFLAGS+= -L$(NPLIB)/lib -lVDetector -lIORoot -lReaction -lEnergyLoss \
 			-lMust2Data -lMust2Physics \
-			-lAnnularS1Data -lGaspardData \
+			-lSSSDData -lSSSDPhysics \
+			-lPlasticData -lPlasticPhysics \
+			-lAnnularS1Data \
+			-lGaspardData -lGaspardPhysics \
 			-lInitialConditions -lInteractionCoordinates
 LDFLAGS+= -L$(CLHEP_LIB_DIR) -l$(CLHEP_LIB) 
 

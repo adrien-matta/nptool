@@ -317,7 +317,7 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
                                          FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg);
       G4LogicalVolume* logicSilicon = new G4LogicalVolume(solidSilicon, Silicon, "logicSilicon", 0, 0, 0);
 
-      PVPBuffer = new G4PVPlacement(0, positionSilicon, logicSilicon, "G" + DetectorNumber + "Silicon", logicMM, false, 0);
+      PVPBuffer = new G4PVPlacement(0, positionSilicon, logicSilicon, Name + "_Silicon", logicMM, false, 0);
 
       // Set First Stage sensible
       logicSilicon->SetSensitiveDetector(m_FirstStageScorer);
@@ -347,7 +347,7 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
 
       G4LogicalVolume* logicThirdStage = new G4LogicalVolume(solidThirdStage, Silicon, "logicThirdStage", 0, 0, 0);
 
-      PVPBuffer = new G4PVPlacement(0, positionThirdStage, logicThirdStage, "G" + DetectorNumber + "ThirdStage", logicMM, false, 0);
+      PVPBuffer = new G4PVPlacement(0, positionThirdStage, logicThirdStage, Name + "_ThirdStage", logicMM, false, 0);
 
       // Visualisation of Third Stage
       G4VisAttributes* ThirdStageVisAtt = new G4VisAttributes(G4Colour(0.7, 0.7, 0.7)) ;
@@ -892,7 +892,7 @@ void GaspardTrackerTrapezoid::ReadSensitive(const G4Event* event)
             // Pos X
             Pos_X_itr = PosXHitMap->GetMap()->begin();
             for (G4int h = 0 ; h < sizeX ; h++) {
-               G4int PosXTrackID =   Pos_X_itr->first     ;
+               G4int PosXTrackID =   Pos_X_itr->first - N    ;
                G4double PosX     = *(Pos_X_itr->second)      ;
                if (PosXTrackID == NTrackID) {
                   ms_InterCoord->SetDetectedPositionX(PosX) ;
@@ -903,7 +903,7 @@ void GaspardTrackerTrapezoid::ReadSensitive(const G4Event* event)
             // Pos Y
             Pos_Y_itr = PosYHitMap->GetMap()->begin();
             for (G4int h = 0 ; h < sizeX ; h++) {
-               G4int PosYTrackID =   Pos_Y_itr->first     ;
+               G4int PosYTrackID =   Pos_Y_itr->first  - N   ;
                G4double PosY     = *(Pos_Y_itr->second)      ;
                if (PosYTrackID == NTrackID) {
                   ms_InterCoord->SetDetectedPositionY(PosY) ;
@@ -914,7 +914,7 @@ void GaspardTrackerTrapezoid::ReadSensitive(const G4Event* event)
             // Pos Z
             Pos_Z_itr = PosZHitMap->GetMap()->begin();
             for (G4int h = 0 ; h < sizeX ; h++) {
-               G4int PosZTrackID =   Pos_Z_itr->first     ;
+               G4int PosZTrackID =   Pos_Z_itr->first - N    ;
                G4double PosZ     = *(Pos_Z_itr->second)      ;
                if (PosZTrackID == NTrackID) {
                   ms_InterCoord->SetDetectedPositionZ(PosZ) ;
@@ -925,7 +925,7 @@ void GaspardTrackerTrapezoid::ReadSensitive(const G4Event* event)
             // Angle Theta
             Ang_Theta_itr = AngThetaHitMap->GetMap()->begin();
             for (G4int h = 0 ; h < sizeX ; h++) {
-               G4int AngThetaTrackID =   Ang_Theta_itr->first     ;
+               G4int AngThetaTrackID =   Ang_Theta_itr->first - N    ;
                G4double AngTheta     = *(Ang_Theta_itr->second)      ;
                if (AngThetaTrackID == NTrackID) {
                   ms_InterCoord->SetDetectedAngleTheta(AngTheta) ;
@@ -936,7 +936,7 @@ void GaspardTrackerTrapezoid::ReadSensitive(const G4Event* event)
             // Angle Phi
             Ang_Phi_itr = AngPhiHitMap->GetMap()->begin();
             for (G4int h = 0 ; h < sizeX ; h++) {
-               G4int AngPhiTrackID =   Ang_Phi_itr->first     ;
+               G4int AngPhiTrackID =   Ang_Phi_itr->first - N    ;
                G4double AngPhi     = *(Ang_Phi_itr->second)      ;
                if (AngPhiTrackID == NTrackID) {
                   ms_InterCoord->SetDetectedAnglePhi(AngPhi) ;
@@ -988,16 +988,16 @@ void GaspardTrackerTrapezoid::InitializeScorers()
 {
    // First stage Associate Scorer
    m_FirstStageScorer = new G4MultiFunctionalDetector("FirstStageScorerGPDTrapezoid");
-   G4VPrimitiveScorer* DetNbr                           = new GPDScorerDetectorNumber("DetectorNumber", 0, "G");
-   G4VPrimitiveScorer* Energy                           = new GPDScorerFirstStageEnergy("StripEnergy", 0);
+   G4VPrimitiveScorer* DetNbr                           = new GENERALSCORERS::PSDetectorNumber("DetectorNumber", "GPDTrapezoid", 0);
    G4VPrimitiveScorer* TOF                              = new GENERALSCORERS::PSTOF("StripTime","GPDTrapezoid", 0);
-   G4VPrimitiveScorer* StripPositionX                   = new GPDScorerFirstStageFrontStripTrapezoid("StripNumberX", 0, NumberOfStripsX);
-   G4VPrimitiveScorer* StripPositionY                   = new GPDScorerFirstStageBackStripTrapezoid("StripNumberY",  0, NumberOfStripsY);
    G4VPrimitiveScorer* InteractionCoordinatesX          = new GENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","GPDTrapezoid", 0);
    G4VPrimitiveScorer* InteractionCoordinatesY          = new GENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","GPDTrapezoid", 0);
    G4VPrimitiveScorer* InteractionCoordinatesZ          = new GENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","GPDTrapezoid", 0);
    G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new GENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","GPDTrapezoid", 0);
    G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new GENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","GPDTrapezoid", 0);
+   G4VPrimitiveScorer* Energy                           = new GPDScorerFirstStageEnergy("StripEnergy", "GPDTrapezoid", 0);
+   G4VPrimitiveScorer* StripPositionX                   = new GPDScorerFirstStageFrontStripTrapezoid("StripNumberX", 0, NumberOfStripsX);
+   G4VPrimitiveScorer* StripPositionY                   = new GPDScorerFirstStageBackStripTrapezoid("StripNumberY",  0, NumberOfStripsY);
 
    //and register it to the multifunctionnal detector
    m_FirstStageScorer->RegisterPrimitive(DetNbr);
@@ -1013,12 +1013,12 @@ void GaspardTrackerTrapezoid::InitializeScorers()
 
    // Second stage Associate Scorer
    m_SecondStageScorer = new G4MultiFunctionalDetector("SecondStageScorerGPDTrapezoid");
-   G4VPrimitiveScorer* SecondStageEnergy = new GPDScorerSecondStageEnergy("SecondStageEnergy", 0);
+   G4VPrimitiveScorer* SecondStageEnergy = new GPDScorerSecondStageEnergy("SecondStageEnergy", "GPDTrapezoid", 0);
    m_SecondStageScorer->RegisterPrimitive(SecondStageEnergy);
 
    //  Third stage Associate Scorer 
    m_ThirdStageScorer = new G4MultiFunctionalDetector("ThirdStageScorerGPDTrapezoid");
-   G4VPrimitiveScorer* ThirdStageEnergy = new GPDScorerThirdStageEnergy("ThirdStageEnergy", 0);
+   G4VPrimitiveScorer* ThirdStageEnergy = new GPDScorerThirdStageEnergy("ThirdStageEnergy", "GPDTrapezoid", 0);
    m_ThirdStageScorer->RegisterPrimitive(ThirdStageEnergy);
 
    //  Add All Scorer to the Global Scorer Manager

@@ -91,6 +91,7 @@ bool CalibrationManager::AddParameter(string DetectorName , string ParameterName
 	{
 		string ParameterPath = DetectorName + "/" + ParameterName ;
 		fToken[Token] = ParameterPath ;
+		return true;
 	}
 
 //////////////////////////////////////////////////////////////////
@@ -163,7 +164,7 @@ double CalibrationManager::ApplyCalibration(string ParameterPath , double RawVal
 		
 		for(unsigned int i = 0 ; i < Coeff.size() ; i++)
 			{
-				CalibratedValue += Coeff[i]*pow(RawValue,i);
+				CalibratedValue += Coeff[i]*pow(RawValue, (double)i);
 			}
 			
 		return CalibratedValue ;

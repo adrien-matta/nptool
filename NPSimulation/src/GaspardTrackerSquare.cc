@@ -304,7 +304,7 @@ void GaspardTrackerSquare::VolumeMaker(G4int TelescopeNumber,
       G4Box*           solidSilicon = new G4Box("solidSilicon", 0.5*SiliconFace, 0.5*SiliconFace, 0.5*SiliconThickness);
       G4LogicalVolume* logicSilicon = new G4LogicalVolume(solidSilicon, Silicon, "logicSilicon", 0, 0, 0);
 
-      PVPBuffer = new G4PVPlacement(0, positionSilicon, logicSilicon, "G" + DetectorNumber + "Silicon", logicMM, false, 0);
+      PVPBuffer = new G4PVPlacement(0, positionSilicon, logicSilicon, Name + "_Silicon", logicMM, false, 0);
 
 
       // Set First Stage sensible
@@ -409,15 +409,15 @@ void GaspardTrackerSquare::VolumeMaker(G4int TelescopeNumber,
             -0.5 * SiLi_HighY_Center - 0.5 * interSiLi                ,
             0);
 
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LT  , logicSiLi_LT  , "G" + DetectorNumber + "SiLi_LT"  , logicSiLi , false , 0)  ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RT  , logicSiLi_RT  , "G" + DetectorNumber + "SiLi_RT"  , logicSiLi , false , 0)  ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LC1 , logicSiLi_LC1 , "G" + DetectorNumber + "SiLi_LC1" , logicSiLi , false , 0)   ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RC1 , logicSiLi_RC1 , "G" + DetectorNumber + "SiLi_RC1" , logicSiLi , false , 0)   ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LT  , logicSiLi_LT  , Name + "_SiLi_LT"  , logicSiLi , false , 0)  ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RT  , logicSiLi_RT  , Name + "_SiLi_RT"  , logicSiLi , false , 0)  ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LC1 , logicSiLi_LC1 , Name + "_SiLi_LC1" , logicSiLi , false , 0)   ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RC1 , logicSiLi_RC1 , Name + "_SiLi_RC1" , logicSiLi , false , 0)   ;
 
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LB  , logicSiLi_LB  , "G" + DetectorNumber + "SiLi_LB"  , logicSiLi , false , 0)   ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RB  , logicSiLi_RB  , "G" + DetectorNumber + "SiLi_RB"  , logicSiLi , false , 0)   ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LC2 , logicSiLi_LC2 , "G" + DetectorNumber + "SiLi_LC2" , logicSiLi , false , 0) ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RC2 , logicSiLi_RC2 , "G" + DetectorNumber + "SiLi_RC2" , logicSiLi , false , 0) ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LB  , logicSiLi_LB  , Name + "_SiLi_LB"  , logicSiLi , false , 0)   ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RB  , logicSiLi_RB  , Name + "_SiLi_RB"  , logicSiLi , false , 0)   ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LC2 , logicSiLi_LC2 , Name + "_SiLi_LC2" , logicSiLi , false , 0) ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RC2 , logicSiLi_RC2 , Name + "_SiLi_RC2" , logicSiLi , false , 0) ;
 
       logicSiLi->SetVisAttributes(G4VisAttributes(G4Colour(1, 1., 1.)));
 
@@ -455,7 +455,7 @@ void GaspardTrackerSquare::VolumeMaker(G4int TelescopeNumber,
       G4Box*           solidThirdStage = new G4Box("solidThirdStage", 0.5*FaceFront, 0.5*FaceFront, 0.5*ThirdStageThickness);
       G4LogicalVolume* logicThirdStage = new G4LogicalVolume(solidThirdStage, Silicon, "logicThirdStage", 0, 0, 0);
 
-      PVPBuffer = new G4PVPlacement(0, positionThirdStage, logicThirdStage, "G" + DetectorNumber + "ThirdStage", logicMM, false, 0);
+      PVPBuffer = new G4PVPlacement(0, positionThirdStage, logicThirdStage, Name + "_ThirdStage", logicMM, false, 0);
 
       ///Visualisation of Third Stage
       G4VisAttributes* ThirdStageVisAtt = new G4VisAttributes(G4Colour(0.7, 0.7, 0.7)) ;
@@ -1008,7 +1008,7 @@ void GaspardTrackerSquare::ReadSensitive(const G4Event* event)
             // Pos X
             Pos_X_itr = PosXHitMap->GetMap()->begin();
             for (G4int h = 0 ; h < sizeX ; h++) {
-               G4int PosXTrackID =   Pos_X_itr->first     ;
+               G4int PosXTrackID =   Pos_X_itr->first - N    ;
                G4double PosX     = *(Pos_X_itr->second)      ;
                if (PosXTrackID == NTrackID) {
                   ms_InterCoord->SetDetectedPositionX(PosX) ;
@@ -1019,7 +1019,7 @@ void GaspardTrackerSquare::ReadSensitive(const G4Event* event)
             // Pos Y
             Pos_Y_itr = PosYHitMap->GetMap()->begin();
             for (G4int h = 0 ; h < sizeX ; h++) {
-               G4int PosYTrackID =   Pos_Y_itr->first     ;
+               G4int PosYTrackID =   Pos_Y_itr->first - N    ;
                G4double PosY     = *(Pos_Y_itr->second)      ;
                if (PosYTrackID == NTrackID) {
                   ms_InterCoord->SetDetectedPositionY(PosY) ;
@@ -1030,7 +1030,7 @@ void GaspardTrackerSquare::ReadSensitive(const G4Event* event)
             // Pos Z
             Pos_Z_itr = PosZHitMap->GetMap()->begin();
             for (G4int h = 0 ; h < sizeX ; h++) {
-               G4int PosZTrackID =   Pos_Z_itr->first     ;
+               G4int PosZTrackID =   Pos_Z_itr->first - N    ;
                G4double PosZ     = *(Pos_Z_itr->second)      ;
                if (PosZTrackID == NTrackID) {
                   ms_InterCoord->SetDetectedPositionZ(PosZ) ;
@@ -1041,7 +1041,7 @@ void GaspardTrackerSquare::ReadSensitive(const G4Event* event)
             // Angle Theta
             Ang_Theta_itr = AngThetaHitMap->GetMap()->begin();
             for (G4int h = 0 ; h < sizeX ; h++) {
-               G4int AngThetaTrackID =   Ang_Theta_itr->first     ;
+               G4int AngThetaTrackID =   Ang_Theta_itr->first - N    ;
                G4double AngTheta     = *(Ang_Theta_itr->second)      ;
                if (AngThetaTrackID == NTrackID) {
                   ms_InterCoord->SetDetectedAngleTheta(AngTheta) ;
@@ -1052,7 +1052,7 @@ void GaspardTrackerSquare::ReadSensitive(const G4Event* event)
             // Angle Phi
             Ang_Phi_itr = AngPhiHitMap->GetMap()->begin();
             for (G4int h = 0 ; h < sizeX ; h++) {
-               G4int AngPhiTrackID =   Ang_Phi_itr->first     ;
+               G4int AngPhiTrackID =   Ang_Phi_itr->first - N    ;
                G4double AngPhi     = *(Ang_Phi_itr->second)      ;
                if (AngPhiTrackID == NTrackID) {
                   ms_InterCoord->SetDetectedAnglePhi(AngPhi) ;
@@ -1121,16 +1121,16 @@ void GaspardTrackerSquare::InitializeScorers()
 {
    // First stage Associate Scorer
    m_FirstStageScorer = new G4MultiFunctionalDetector("FirstStageScorerGPDSquare");
-   G4VPrimitiveScorer* DetNbr                           = new GPDScorerDetectorNumber("DetectorNumber", 0, "G");
-   G4VPrimitiveScorer* Energy                           = new GPDScorerFirstStageEnergy("StripEnergy", 0);
+   G4VPrimitiveScorer* DetNbr                           = new GENERALSCORERS::PSDetectorNumber("DetectorNumber", "GPDSquare", 0);
    G4VPrimitiveScorer* TOF                              = new GENERALSCORERS::PSTOF("StripTime","GPDSquare", 0);
-   G4VPrimitiveScorer* StripPositionX                   = new GPDScorerFirstStageFrontStripSquare("StripNumberX", 0, NumberOfStrips);
-   G4VPrimitiveScorer* StripPositionY                   = new GPDScorerFirstStageBackStripSquare("StripNumberY", 0, NumberOfStrips);
    G4VPrimitiveScorer* InteractionCoordinatesX          = new GENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","GPDSquare", 0);
    G4VPrimitiveScorer* InteractionCoordinatesY          = new GENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","GPDSquare", 0);
    G4VPrimitiveScorer* InteractionCoordinatesZ          = new GENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","GPDSquare", 0);
    G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new GENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","GPDSquare", 0);
    G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new GENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","GPDSquare", 0);
+   G4VPrimitiveScorer* Energy                           = new GPDScorerFirstStageEnergy("StripEnergy", "GPDSquare", 0);
+   G4VPrimitiveScorer* StripPositionX                   = new GPDScorerFirstStageFrontStripSquare("StripNumberX", 0, NumberOfStrips);
+   G4VPrimitiveScorer* StripPositionY                   = new GPDScorerFirstStageBackStripSquare("StripNumberY", 0, NumberOfStrips);
 
    //and register it to the multifunctionnal detector
    m_FirstStageScorer->RegisterPrimitive(DetNbr);
@@ -1146,12 +1146,12 @@ void GaspardTrackerSquare::InitializeScorers()
 
    // Second stage Associate Scorer
    m_SecondStageScorer = new G4MultiFunctionalDetector("SecondStageScorerGPDSquare");
-   G4VPrimitiveScorer* SecondStageEnergy = new GPDScorerSecondStageEnergy("SecondStageEnergy", 0);
+   G4VPrimitiveScorer* SecondStageEnergy = new GPDScorerSecondStageEnergy("SecondStageEnergy", "GPDSquare", 0);
    m_SecondStageScorer->RegisterPrimitive(SecondStageEnergy);
 
    //  Third stage Associate Scorer 
    m_ThirdStageScorer = new G4MultiFunctionalDetector("ThirdStageScorerGPDSquare");
-   G4VPrimitiveScorer* ThirdStageEnergy = new GPDScorerThirdStageEnergy("ThirdStageEnergy", 0);
+   G4VPrimitiveScorer* ThirdStageEnergy = new GPDScorerThirdStageEnergy("ThirdStageEnergy", "GPDSquare", 0);
    m_ThirdStageScorer->RegisterPrimitive(ThirdStageEnergy);
 
    //  Add All Scorer to the Global Scorer Manager

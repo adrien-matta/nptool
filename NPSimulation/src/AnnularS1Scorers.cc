@@ -19,6 +19,7 @@
  *                                                                           *
  *****************************************************************************/
 
+#include "GeneralScorers.hh"
 #include "AnnularS1Scorers.hh"
 #include "G4UnitsTable.hh"
 #include "AnnularS1.hh"
@@ -32,225 +33,6 @@ using namespace ANNULARS1;
 // time of flight or position,... particle by particle for each event. Because standard
 // scorer provide by G4 don't work this way but using a global ID for each event you should
 // not use those scorer with some G4 provided ones or being very carefull doing so.
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-                //Detector Number Scorer
-AnnularS1ScorerDetectorNumber::AnnularS1ScorerDetectorNumber(G4String name, G4int depth)
-      : G4VPrimitiveScorer(name, depth), HCID(-1)
-{
-}
-
-AnnularS1ScorerDetectorNumber::~AnnularS1ScorerDetectorNumber()
-{
-   ;
-}
-
-G4bool AnnularS1ScorerDetectorNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
-{
-   std::string name = aStep->GetTrack()->GetVolume()->GetName();
-   std::string nbr;
-   size_t found;
-   found = name.find("S1Annular");
-   found = found + 9;
-  
-   int numberOfCharacterInDetectorNumber = name.length() - (int)found;
-
-   for (unsigned int i = found; i < found + numberOfCharacterInDetectorNumber; i++) {
-      nbr += name[i];
-   }
-
-   G4int DetNbr = atoi(nbr.c_str());
-   G4double edep = aStep->GetTotalEnergyDeposit();
-  
-   if (edep < 100*keV) return FALSE;
-  
-   G4int  index = aStep->GetTrack()->GetTrackID();
-   EvtMap->set(DetNbr + index, DetNbr);
-
-   return TRUE;
-}
-
-void AnnularS1ScorerDetectorNumber::Initialize(G4HCofThisEvent* HCE)
-{
-   EvtMap = new G4THitsMap<G4int>(GetMultiFunctionalDetector()->GetName(), GetName());
-   if (HCID < 0) {
-      HCID = GetCollectionID(0);
-   }
-   HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
-}
-
-void AnnularS1ScorerDetectorNumber::EndOfEvent(G4HCofThisEvent*)
-{
-   ;
-}
-
-void AnnularS1ScorerDetectorNumber::clear()
-{
-   EvtMap->clear();
-}
-
-void AnnularS1ScorerDetectorNumber::DrawAll()
-{
-   ;
-}
-
-void AnnularS1ScorerDetectorNumber::PrintAll()
-{
-   G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl;
-   G4cout << " PrimitiveScorer " << GetName() << G4endl;
-   G4cout << " Number of entries " << EvtMap->entries() << G4endl;
-   std::map<G4int, G4int*>::iterator itr = EvtMap->GetMap()->begin();
-   for (; itr != EvtMap->GetMap()->end(); itr++) {
-      G4cout << "  copy no.: " << itr->first
-      << "  energy deposit: " << G4BestUnit(*(itr->second), "Energy")
-      << G4endl;
-   }
-}
-
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// Energy Scorer (deal with multiple particle hit)
-AnnularS1ScorerEnergy::AnnularS1ScorerEnergy(G4String name, G4int depth)
-      : G4VPrimitiveScorer(name, depth), HCID(-1)
-{
-}
-
-AnnularS1ScorerEnergy::~AnnularS1ScorerEnergy()
-{
-}
-
-G4bool AnnularS1ScorerEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
-{
-   // get detector number
-   std::string name = aStep->GetTrack()->GetVolume()->GetName();
-   std::string nbr;
-   size_t found;
-   found = name.find("S1Annular");
-   found = found + 9;
-
-   int numberOfCharacterInDetectorNumber = name.length() - (int)found;
-
-   for (unsigned int i = found; i < found + numberOfCharacterInDetectorNumber; i++) {
-      nbr += name[i];
-   }
-   G4int DetNbr = atoi(nbr.c_str());
-
-   // get energy
-   G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
-   POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
-
-   G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
-   G4int  index = aStep->GetTrack()->GetTrackID();
-   EvtMap->add(DetNbr + index, edep);
-   return TRUE;
-}
-
-void AnnularS1ScorerEnergy::Initialize(G4HCofThisEvent* HCE)
-{
-   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
-   if (HCID < 0) {
-      HCID = GetCollectionID(0);
-   }
-   HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
-}
-
-void AnnularS1ScorerEnergy::EndOfEvent(G4HCofThisEvent*)
-{
-}
-
-void AnnularS1ScorerEnergy::clear()
-{
-   EvtMap->clear();
-}
-
-void AnnularS1ScorerEnergy::DrawAll()
-{
-}
-
-void AnnularS1ScorerEnergy::PrintAll()
-{
-   G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl;
-   G4cout << " PrimitiveScorer " << GetName() << G4endl;
-   G4cout << " Number of entries " << EvtMap->entries() << G4endl;
-   std::map<G4int, G4double*>::iterator itr = EvtMap->GetMap()->begin();
-   for (; itr != EvtMap->GetMap()->end(); itr++) {
-      G4cout << "  copy no.: " << itr->first
-      << "  energy deposit: " << G4BestUnit(*(itr->second), "Energy")
-      << G4endl;
-   }
-}
-
-
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// Time Scorer
-AnnularS1ScorerTime::AnnularS1ScorerTime(G4String name, G4int depth)
-      : G4VPrimitiveScorer(name, depth), HCID(-1)
-{
-}
-
-AnnularS1ScorerTime::~AnnularS1ScorerTime()
-{
-}
-
-G4bool AnnularS1ScorerTime::ProcessHits(G4Step* aStep, G4TouchableHistory*)
-{
-   // get detector number
-   std::string name = aStep->GetTrack()->GetVolume()->GetName();
-   std::string nbr;
-   size_t found;
-   found = name.find("S1Annular");
-   found = found + 9;
-
-   int numberOfCharacterInDetectorNumber = name.length() - (int)found;
-
-   for (unsigned int i = found; i < found + numberOfCharacterInDetectorNumber; i++) {
-      nbr += name[i];
-   }
-   G4int DetNbr = atoi(nbr.c_str());
-
-   // get time
-   G4double TOF  = aStep->GetPreStepPoint()->GetGlobalTime();
-   G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
-   G4int  index = aStep->GetTrack()->GetTrackID();
-   EvtMap->set(DetNbr + index, TOF);
-   return TRUE;
-}
-
-void AnnularS1ScorerTime::Initialize(G4HCofThisEvent* HCE)
-{
-   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(),
-         GetName());
-   if (HCID < 0) {
-      HCID = GetCollectionID(0);
-   }
-   HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
-}
-
-void AnnularS1ScorerTime::EndOfEvent(G4HCofThisEvent*)
-{
-}
-
-void AnnularS1ScorerTime::clear()
-{
-   EvtMap->clear();
-}
-
-void AnnularS1ScorerTime::DrawAll()
-{
-}
-
-void AnnularS1ScorerTime::PrintAll()
-{
-   G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl ;
-   G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
-   G4cout << " Number of entries " << EvtMap->entries() << G4endl     ;
-}
-
-
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Strip position Scorer
@@ -267,18 +49,7 @@ AnnularS1ScorerThetaStripNumber::~AnnularS1ScorerThetaStripNumber()
 G4bool AnnularS1ScorerThetaStripNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   std::string name = aStep->GetTrack()->GetVolume()->GetName();
-   std::string nbr;
-   size_t found;
-   found = name.find("S1Annular");
-   found = found + 9;
-
-   int numberOfCharacterInDetectorNumber = name.length() - (int)found;
-
-   for (unsigned int i = found; i < found + numberOfCharacterInDetectorNumber; i++) {
-      nbr += name[i];
-   }
-   G4int DetNbr = atoi(nbr.c_str());
+   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "S1Annular");
 
    // Hit position in the world frame
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -364,18 +135,7 @@ AnnularS1ScorerPhiStripNumber::~AnnularS1ScorerPhiStripNumber()
 G4bool AnnularS1ScorerPhiStripNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   std::string name = aStep->GetTrack()->GetVolume()->GetName();
-   std::string nbr;
-   size_t found;
-   found = name.find("S1Annular");
-   found = found + 9;
-
-   int numberOfCharacterInDetectorNumber = name.length() - (int)found;
-
-   for (unsigned int i = found; i < found + numberOfCharacterInDetectorNumber; i++) {
-      nbr += name[i];
-   }
-   G4int DetNbr = atoi(nbr.c_str());
+   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "S1Annular");
 
    // Hit position in the world frame
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();

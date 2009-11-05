@@ -45,8 +45,8 @@
 #include "G4MultiFunctionalDetector.hh"
 
 // NPTool headers
-#include "AnnularS1.hh"
 #include "GeneralScorers.hh"
+#include "AnnularS1.hh"
 #include "AnnularS1Scorers.hh"
 #include "TS1Data.h"
 #include "RootOutput.h"
@@ -515,7 +515,7 @@ void AnnularS1::ReadSensitive(const G4Event* event)
          // Pos X
          Pos_X_itr = PosXHitMap->GetMap()->begin();
          for (G4int h = 0 ; h < sizeX ; h++) {
-            G4int PosXTrackID =   Pos_X_itr->first;
+            G4int PosXTrackID =   Pos_X_itr->first - N;
             G4double PosX     = *(Pos_X_itr->second);
             if (PosXTrackID == NTrackID) {
                ms_InterCoord->SetDetectedPositionX(PosX);
@@ -526,7 +526,7 @@ void AnnularS1::ReadSensitive(const G4Event* event)
          // Pos Y
          Pos_Y_itr = PosYHitMap->GetMap()->begin();
          for (G4int h = 0 ; h < sizeX ; h++) {
-            G4int PosYTrackID =   Pos_Y_itr->first;
+            G4int PosYTrackID =   Pos_Y_itr->first - N;
             G4double PosY     = *(Pos_Y_itr->second);
             if (PosYTrackID == NTrackID) {
                ms_InterCoord->SetDetectedPositionY(PosY);
@@ -537,7 +537,7 @@ void AnnularS1::ReadSensitive(const G4Event* event)
          // Pos Z
          Pos_Z_itr = PosZHitMap->GetMap()->begin();
          for (G4int h = 0 ; h < sizeX ; h++) {
-            G4int PosZTrackID =   Pos_Z_itr->first;
+            G4int PosZTrackID =   Pos_Z_itr->first - N;
             G4double PosZ     = *(Pos_Z_itr->second);
             if (PosZTrackID == NTrackID) {
                ms_InterCoord->SetDetectedPositionZ(PosZ);
@@ -548,7 +548,7 @@ void AnnularS1::ReadSensitive(const G4Event* event)
          // Angle Theta
          Ang_Theta_itr = AngThetaHitMap->GetMap()->begin();
          for (G4int h = 0 ; h < sizeX ; h++) {
-            G4int AngThetaTrackID =   Ang_Theta_itr->first;
+            G4int AngThetaTrackID =   Ang_Theta_itr->first - N;
             G4double AngTheta     = *(Ang_Theta_itr->second);
             if (AngThetaTrackID == NTrackID) {
                ms_InterCoord->SetDetectedAngleTheta(AngTheta);
@@ -559,7 +559,7 @@ void AnnularS1::ReadSensitive(const G4Event* event)
          // Angle Phi
          Ang_Phi_itr = AngPhiHitMap->GetMap()->begin();
          for (G4int h = 0 ; h < sizeX ; h++) {
-            G4int AngPhiTrackID =   Ang_Phi_itr->first;
+            G4int AngPhiTrackID =   Ang_Phi_itr->first - N;
             G4double AngPhi     = *(Ang_Phi_itr->second);
             if (AngPhiTrackID == NTrackID) {
                ms_InterCoord->SetDetectedAnglePhi(AngPhi);
@@ -591,16 +591,16 @@ void AnnularS1::InitializeScorers()
 {
    // Associate Scorer
    m_Scorer = new G4MultiFunctionalDetector("ScorerAnnularS1");
-   G4VPrimitiveScorer* DetNbr                           = new AnnularS1ScorerDetectorNumber("DetectorNumber", 0);
-   G4VPrimitiveScorer* Energy                           = new AnnularS1ScorerEnergy("StripEnergy", 0);
-   G4VPrimitiveScorer* TOF                              = new AnnularS1ScorerTime("StripTime", 0);
-   G4VPrimitiveScorer* ThetaStripPosition               = new AnnularS1ScorerThetaStripNumber("ThetaStripNumber", 0);
-   G4VPrimitiveScorer* PhiStripPosition                 = new AnnularS1ScorerPhiStripNumber("PhiStripNumber", 0);
+   G4VPrimitiveScorer* DetNbr                           = new GENERALSCORERS::PSDetectorNumber("DetectorNumber", "S1Annular", 0);
+   G4VPrimitiveScorer* Energy                           = new GENERALSCORERS::PSEnergy("StripEnergy", "S1Annular", 0);
+   G4VPrimitiveScorer* TOF                              = new GENERALSCORERS::PSTOF("StripTime", "S1Annular", 0);
    G4VPrimitiveScorer* InteractionCoordinatesX          = new GENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","S1Annular", 0);
    G4VPrimitiveScorer* InteractionCoordinatesY          = new GENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","S1Annular", 0);
    G4VPrimitiveScorer* InteractionCoordinatesZ          = new GENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","S1Annular", 0);
    G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new GENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","S1Annular", 0);
    G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new GENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","S1Annular", 0);
+   G4VPrimitiveScorer* ThetaStripPosition               = new AnnularS1ScorerThetaStripNumber("ThetaStripNumber", 0);
+   G4VPrimitiveScorer* PhiStripPosition                 = new AnnularS1ScorerPhiStripNumber("PhiStripNumber", 0);
 
    //and register it to the multifunctionnal detector
    m_Scorer->RegisterPrimitive(DetNbr);

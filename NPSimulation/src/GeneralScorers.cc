@@ -33,21 +33,21 @@ using namespace GENERALSCORERS ;
 //  where X stand for the detector number.
 
 int GENERALSCORERS::PickUpDetectorNumber(G4Step* aStep, std::string DetName)
-	{
-		std::string name = aStep->GetTrack()->GetVolume()->GetName();
-  	std::string nbr ;
-		size_t start, end ;
-    start = name.find(DetName) + DetName.length();
-		end   = name.find("_");
+{
+   std::string name = aStep->GetTrack()->GetVolume()->GetName();
+   std::string nbr;
+   size_t start, end;
 
-		int numberOfCharacterInDetectorNumber = (int)end - (int)start  ;
+   start = name.find(DetName) + DetName.length();
+   end   = name.find("_");
 
-		for(unsigned int i = start ; i < start + numberOfCharacterInDetectorNumber ; i++ )
-			nbr += name[i] ; 
+   int numberOfCharacterInDetectorNumber = (int)end - (int)start;
 
-		return (atoi( nbr.c_str() ));
+   for (unsigned int i = start; i < start + numberOfCharacterInDetectorNumber; i++)
+      nbr += name[i];
 
-	}
+   return atoi(nbr.c_str());
+}
  
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -191,12 +191,11 @@ PSTOF::PSTOF(G4String name, G4String VolumeName, G4int depth)
 
 PSTOF::~PSTOF()
 {
-   ;
 }
 
 G4bool PSTOF::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
-	int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName) ; 
+   int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName); 
 
    G4double TOF  = aStep->GetPreStepPoint()->GetGlobalTime();
    G4double edep = aStep->GetTotalEnergyDeposit();
@@ -218,7 +217,6 @@ void PSTOF::Initialize(G4HCofThisEvent* HCE)
 
 void PSTOF::EndOfEvent(G4HCofThisEvent*)
 {
-   ;
 }
 
 void PSTOF::clear()
