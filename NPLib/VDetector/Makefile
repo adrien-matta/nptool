@@ -268,18 +268,23 @@ GLIBS         = $(ROOTGLIBS) $(SYSLIBS)
 INCLUDE		= -I$(CLHEP_BASE_DIR)/include
  
 #------------------------------------------------------------------------------
-SHARELIB      =  libVDetector.so 
+SHARELIB      =  libVDetector.so libDetectorManager.so
 
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 ############### Detector ##############
 
-## MUST2 ##
+## VDetector ##
 libVDetector.so:	VDetector.o
+		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@	
+	
+## VDetector ##
+libDetectorManager.so:	DetectorManager.o
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@	
 			
 # dependances
 VDetector.o:		VDetector.cxx	VDetector.h
+DetectorManager.o: DetectorManager.cxx DetectorManager.h
 #######################################
 
 ############# Clean and More ##########

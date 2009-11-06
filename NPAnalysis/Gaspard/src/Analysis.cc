@@ -27,7 +27,7 @@ int main(int argc,char** argv)
    myReaction->ReadConfigurationFile(reactionfileName);
 
    // Initialize the detector
-   DetectorManager* myDetector = new DetectorManager;
+   NPA::DetectorManager* myDetector = new DetectorManager;
    myDetector->ReadConfigurationFile(detectorfileName);
 
    // Print target thickness

@@ -6,7 +6,7 @@
 // -------------------------------------- VARIOUS INCLUDE ---------------------------------------
 
 // NPA
-#include "DetectorManager.hh"
+#include "DetectorManager.h"
 
 // STL C++
 #include <iostream>

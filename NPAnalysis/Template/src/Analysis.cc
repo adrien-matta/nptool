@@ -27,7 +27,7 @@ int main(int argc,char** argv)
 	myReaction	->	ReadConfigurationFile(reactionfileName)		;
 
 		//	Instantiate the detector using a file 
-	DetectorManager* myDetector = new DetectorManager 			;
+	NPA::DetectorManager* myDetector = new DetectorManager 			;
 	myDetector	->	ReadConfigurationFile(detectorfileName)		;
 	
 	//	Get the formed Chained Tree and Treat it

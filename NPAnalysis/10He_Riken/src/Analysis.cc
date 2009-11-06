@@ -30,7 +30,7 @@ int main(int argc,char** argv)
 	Li10Reaction	->	ReadConfigurationFile("9Li-dp-10Li.reaction")		;
 
 	//	Instantiate the detector using a file 
-	DetectorManager* myDetector = new DetectorManager 			  ;
+	NPA::DetectorManager* myDetector = new DetectorManager 			  ;
 	myDetector	->	ReadConfigurationFile(detectorfileName)		;
 
 	//	Instantiate the Calibration Manger using a file
