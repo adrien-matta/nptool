@@ -63,26 +63,54 @@ namespace NPL
 			double	 		fThetaCM			;	//	Center-of-mass angle in radian
 			double	 		fExcitation			;	//	Excitation energy in MeV
 			double*			CrossSection		;	//	Differential CrossSection
-			int				CrossSectionSize	;	//	Size of array containing Differention CrossSection
+			int					CrossSectionSize	;	//	Size of array containing Differention CrossSection
 		   
 		public:
 			// Getters and Setters
 			void				SetBeamEnergy		(double efais)	{fBeamEnergy = efais;}
 			void				SetThetaCM			(double angle)	{fThetaCM = angle;}
 			void				SetExcitation		(double exci)	{fExcitation = exci;}
-			double				GetBeamEnergy() 	const		 	{return fBeamEnergy;}
-			double				GetThetaCM() 		const 			{return fThetaCM;}
-			double				GetExcitation() 	const 			{return fExcitation;}
-			double				GetQValue() 		const 			{return fQValue;}
-			Nucleus*			GetNucleus1() 		const 			{return fNoy1;}
-			Nucleus*			GetNucleus2() 		const 			{return fNoy2;}
-			Nucleus*			GetNucleus3() 		const 			{return fNoy3;}
-			Nucleus*			GetNucleus4() 		const 			{return fNoy4;}  
-			double*				GetCrossSection()	const			{return CrossSection;} 
+			double			GetBeamEnergy() 	const		 	{return fBeamEnergy;}
+			double			GetThetaCM() 		const 			{return fThetaCM;}
+			double			GetExcitation() 	const 			{return fExcitation;}
+			double			GetQValue() 		const 			{return fQValue;}
+			Nucleus*		GetNucleus1() 		const 			{return fNoy1;}
+			Nucleus*		GetNucleus2() 		const 			{return fNoy2;}
+			Nucleus*		GetNucleus3() 		const 			{return fNoy3;}
+			Nucleus*		GetNucleus4() 		const 			{return fNoy4;}  
+			double*			GetCrossSection()	const			{return CrossSection;} 
 			int					GetCrossSectionSize()		const			{return CrossSectionSize;} 
 
-			//	Kinematics	//
-		   
+
+
+
+		private:	//	intern precompute variable
+			void initializePrecomputeVariable();
+			double m1 ;
+			double m2 ;
+			double m3 ;
+			double m4 ;
+
+			// center-of-mass velocity
+			double WtotLab ;
+			double P1 ;
+			double B ;
+			double G ;
+
+			// total energy of the ejectiles in the center-of-mass
+			double W3cm ;
+			double W4cm ;
+
+			// velocity of the ejectiles in the center-of-mass
+			double beta3cm  ;
+			double beta4cm  ;
+
+			// Constants of the kinematics
+			double K3 ;
+			double K4 ;
+
+			
+		 public:	//	Kinematics
 			//	Compute ThetaLab and EnergyLab for product of reaction
 			void		KineRelativistic(	double &ThetaLab3	, 
 										 	double &EnergieLab3	,

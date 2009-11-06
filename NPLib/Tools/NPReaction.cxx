@@ -62,6 +62,7 @@ Reaction::Reaction()
    fThetaCM    = 0;
    fExcitation = 0;
    fQValue     = 0;
+   initializePrecomputeVariable();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
@@ -113,6 +114,7 @@ void Reaction::SetEveryThing(string name1, string name2, string name3, string na
    CrossSectionSize = CrossSectionBuffer.size();
    CrossSection = new double[CrossSectionSize] ;
    for(int i = 0 ; i <CrossSectionSize ; i++ )	CrossSection[i] = CrossSectionBuffer[i];
+   initializePrecomputeVariable();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
@@ -136,33 +138,6 @@ void Reaction::KineRelativistic(double &ThetaLab3, double &EnergieLab3,
 // 2-body relativistic kinematics: direct + inverse
 // EnergieLab3,4 : lab energy in MeV of the 2 ejectiles
 // ThetaLab3,4   : angles in rad
-
-   double m1 = fNoy1->Mass();
-   double m2 = fNoy2->Mass();
-   double m3 = fNoy3->Mass();
-   double m4 = fNoy4->Mass() + fExcitation;
-
-   // center-of-mass velocity
-   double WtotLab = (fBeamEnergy + m1) + m2;
-   double P1 = sqrt(pow(fBeamEnergy,2) + 2*m1*fBeamEnergy);
-   double B = P1 / WtotLab;
-   double G = 1 / sqrt(1 - pow(B,2));
-
-   // total energy of the ejectiles in the center-of-mass
-   double W3cm = (pow(WtotLab,2) + pow(G,2)*(pow(m3,2) - pow(m4,2)))
-   		   / (2 * G * WtotLab);
-   double W4cm = (pow(WtotLab,2) + pow(G,2)*(pow(m4,2) - pow(m3,2)))
-   		   / (2 * G * WtotLab);
-
-   // velocity of the ejectiles in the center-of-mass
-   double beta3cm  = sqrt(1 - pow(m3,2)/pow(W3cm,2));
-   double beta4cm  = sqrt(1 - pow(m4,2)/pow(W4cm,2));
-//   double gamma3cm = 1 / sqrt(1 - pow(beta3cm,2));
-//   double gamma4cm = 1 / sqrt(1 - pow(beta4cm,2));
-
-   // Constants of the kinematics
-   double K3 = B / beta3cm;
-   double K4 = B / beta4cm;
    
    // case of inverse kinematics
    double theta = fThetaCM;
@@ -193,11 +168,6 @@ double Reaction::ReconstructRelativistic(double EnergyLab, double ThetaLab) cons
 	{
 		// EnergyLab in MeV
 		// ThetaLab in rad
-
-		double m1 = fNoy1->Mass()	;
-		double m2 = fNoy2->Mass()	;
-		double m3 = fNoy3->Mass()	;
-		double m4 = fNoy4->Mass()	;	
 
 		double P1 = sqrt(2*m1*fBeamEnergy+(fBeamEnergy*fBeamEnergy))	;
 		double P3 = sqrt(2*m3*EnergyLab+(EnergyLab*EnergyLab))			;
@@ -234,11 +204,7 @@ double Reaction::ReconstructRelativistic(double EnergyLab, double ThetaLab) cons
 double  Reaction::EnergyLabToThetaCM( double EnergyLab , double ExcitationEnergy ) const
 	{
 		if(ExcitationEnergy == -500) ExcitationEnergy = fExcitation; 
-	
-		double m1 = fNoy1->Mass()				;
-		double m2 = fNoy2->Mass()				;
-		double m3 = fNoy3->Mass()				;
-		double m4 = (fNoy4->Mass()+ExcitationEnergy)	;
+
 		double E1 = (fBeamEnergy+m1)			;
 		double E3 = (EnergyLab+m3)				;
 		  
@@ -398,7 +364,34 @@ void Reaction::ReadConfigurationFile(string Path)
 	}
 	
 	
+void Reaction::initializePrecomputeVariable()
+	{
+		 m1 = fNoy1->Mass();
+		 m2 = fNoy2->Mass();
+		 m3 = fNoy3->Mass();
+		 m4 = fNoy4->Mass() + fExcitation;
+
+		// center-of-mass velocity
+		 WtotLab = (fBeamEnergy + m1) + m2;
+		 P1 = sqrt(pow(fBeamEnergy,2) + 2*m1*fBeamEnergy);
+		 B = P1 / WtotLab;
+		 G = 1 / sqrt(1 - pow(B,2));
+
+		// total energy of the ejectiles in the center-of-mass
+		 W3cm = (pow(WtotLab,2) + pow(G,2)*(pow(m3,2) - pow(m4,2)))
+			   / (2 * G * WtotLab);
+		 W4cm = (pow(WtotLab,2) + pow(G,2)*(pow(m4,2) - pow(m3,2)))
+			   / (2 * G * WtotLab);
+
+		// velocity of the ejectiles in the center-of-mass
+		 beta3cm  = sqrt(1 - pow(m3,2)/pow(W3cm,2));
+		 beta4cm  = sqrt(1 - pow(m4,2)/pow(W4cm,2));
+
+		// Constants of the kinematics
+		 K3 = B / beta3cm;
+		 K4 = B / beta4cm;
 	
+	}
 	
 	
 	

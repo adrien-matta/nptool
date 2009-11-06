@@ -19,7 +19,7 @@ TransfertToResonance
 	ResonanceDecayA= 8
 	CrossSectionPath= 11Li(d,3He)10He.txt	
 	ShootLight= 1
-	ShootHeavy= 0
+	ShootHeavy= 1
 	ShootDecayProduct= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

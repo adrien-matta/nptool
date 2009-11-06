@@ -27,7 +27,7 @@ int main(int argc,char** argv)
    myReaction->ReadConfigurationFile(reactionfileName);
 
    // Initialize the detector
-   DetectorManager* myDetector = new DetectorManager;
+   NPA::DetectorManager* myDetector = new DetectorManager;
    myDetector->ReadConfigurationFile(detectorfileName);
 
    // Print target thickness
@@ -58,7 +58,7 @@ int main(int argc,char** argv)
    cout << "Number of entries to be analysed: " << nentries << endl;
 
    for (int i = 0; i < nentries; i ++) {
-      if (i%10000 == 0 && i!=0) cout << "\r" << i << " analysed events" << flush;
+      if (i%10000 == 0 && i!=0) cout << "\r" << i << " analyzed events" << flush;
       chain -> GetEntry(i);
 
       // Treat Gaspard event

@@ -70,7 +70,11 @@ VI) InteractionCoordinates
 	output TTree of the G4 simulation.
 
 VII) CalibrationManager
-
+	This directory includes one library:
+	libCalibrationManager.so
+		This folder contain the the class object for managing calibration file.
+	A caliration manager singleton is instantiate in NPAnalysis project.
+	 
 VIII) DummyDetector
 	This directory includes one library:
 		libDUMMYDetector.so
@@ -114,3 +118,8 @@ XI) GASPARD
 		obtained from NPSimulation. This library is *only* used by NPAnalysis.
 
 XII) VDetector
+		This directory includes two libraries:
+		libVDetector.so and libDetectorManager.so
+			VDetector is a virtual class used for analysis purpose. It comes with several standards method definition called in analysis programm automatically.
+			Those method need to be implemented for each detector inheritted from the VDetector class.
+			DetectorManager is a class that manage a vector of VDetector and call there common functions.

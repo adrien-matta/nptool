@@ -27,7 +27,7 @@ int main(int argc,char** argv)
 	myReaction	->	ReadConfigurationFile(reactionfileName)		;
 
 		//	Instantiate the detector using a file 
-	DetectorManager* myDetector = new DetectorManager 			;
+	NPA::DetectorManager* myDetector = new DetectorManager 			;
 	myDetector	->	ReadConfigurationFile(detectorfileName)		;
 	
 	//	Get the formed Chained Tree and Treat it
@@ -35,8 +35,8 @@ int main(int argc,char** argv)
 	int i;	
 	for ( i = 0 ; i < Chain -> GetEntries() ; i ++ )
 		{
-			if( i%10000 == 0 && i!=0) cout << i << " Event annalysed " << endl ;						
-			Chain -> GetEntry(i);
+			if( i%10000 == 0 && i!=0) cout << "\r Event Analyzed:" << i << flush;					
+			Chain -> GetEntry(i);			
 			
 			myDetector -> ClearEventPhysics()				;
 			myDetector -> BuildPhysicalEvent()				;

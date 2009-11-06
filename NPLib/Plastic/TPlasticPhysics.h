@@ -43,7 +43,6 @@ class TPlasticPhysics : public TObject, public NPA::VDetector
 	public:	//	Calibrated Data
 
 		vector<UShort_t>	DetectorNumber	;
-		vector<UShort_t>	StripNumber			;
 		vector<Double_t>	Energy					;
 		vector<Double_t>	Time						;
 

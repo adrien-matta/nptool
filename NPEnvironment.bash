@@ -16,3 +16,4 @@ alias NPT='cd $NPTOOL'
 alias NPL='cd $NPLIB'	
 alias NPS='cd $NPSIM'	
 alias NPA='cd $NPANA'
+ 

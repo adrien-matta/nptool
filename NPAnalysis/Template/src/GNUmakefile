@@ -16,13 +16,7 @@ CXXFLAGS += -I$(NPAINCLUDES)
 CXXFLAGS += -I$(NPLIB)/include
 
 LDFLAGS  = `root-config --libs` -lMathMore
-LDFLAGS+= -L$(NPLIB)/lib -lVDetector -lIORoot -lReaction -lEnergyLoss \
-			-lMust2Data -lMust2Physics \
-			-lSSSDData -lSSSDPhysics \
-			-lPlasticData -lPlasticPhysics \
-			-lAnnularS1Data \
-			-lGaspardData -lGaspardPhysics \
-			-lInitialConditions -lInteractionCoordinates
+LDFLAGS+= `$(NPLIB)/liblist`
 LDFLAGS+= -L$(CLHEP_LIB_DIR) -l$(CLHEP_LIB) 
 
 SRC= $(wildcard *.cc)
