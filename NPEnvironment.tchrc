@@ -7,6 +7,7 @@ setenv NPLIB $NPTOOL/NPLib
 setenv NPSIM $NPTOOL/NPSimulation
 setenv NPANA $NPTOOL/NPAnalysis
 setenv LD_LIBRARY_PATH $LD_LIBRARY_PATH:$NPLIB/lib
+source $NPLIB/lib/liblist
 
 # alias
 alias Simulation '$NPSIM/bin/$G4SYSTEM/Simulation'
