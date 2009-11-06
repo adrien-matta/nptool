@@ -107,6 +107,9 @@ int main(int argc,char** argv)
 			myDetector -> BuildPhysicalEvent()				;
 			////
 			
+			
+			
+			
 /*			// Target (from initial condition)
 			XTarget = Init->GetICPositionX(0);
 			YTarget = Init->GetICPositionY(0);

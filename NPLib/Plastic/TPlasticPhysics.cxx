@@ -64,7 +64,6 @@ TPlasticPhysics::~TPlasticPhysics()
 void TPlasticPhysics::Clear()
 	{
 		DetectorNumber	.clear()	;
-		StripNumber			.clear()	;
 		Energy					.clear()	;
 		Time						.clear()	;
 	}
@@ -240,7 +239,6 @@ void TPlasticPhysics::BuildSimplePhysicalEvent()
 					{
 					
 						DetectorNumber	.push_back( EventData->GetPlasticNumber(i) )	;
-						StripNumber			.push_back( EventData->GetPlasticNumber(i)    )	;
 						
 						Energy					.push_back(
 							CalibrationManager::getInstance()->ApplyCalibration(	"Plastic/Detector" + itoa( EventData->GetPlasticNumber(i) ) +"_E",	

@@ -38,9 +38,14 @@
 \chapter[NPTool]{NPTool}
 \section {Introduction}
 
-NPTool, Nuclear Physics Tool, aim to be a coherent set of programm usefull for Nuclear Physicist, especially those studying structure experimentally. Because each experiment is differents, people get used to exchange code and modified it to their needs. What NPT do is provinding an (try to be) universal framework so user can add their own functionnalities and share it with their collaborators. Geant4 and ROOT are now popular toolkit among the community, that's why NPTool use them widely and try to give a step by step process to use them efficiently.
+NPTool, Nuclear Physics Tool, aim to be a coherent set of programm usefull for Nuclear Physicist, especially those studying structure experimentally. 
+Because each experiment is differents, people get used to exchange code and modified it to their needs. 
+What NPT do is provinding an (try to be) universal framework so user can add their own functionnalities and share it with their collaborators. 
+Geant4 and ROOT are now popular toolkit among the community, that's why NPTool use them widely and try to give a step by step process to use them efficiently.
 
-In NPTool analysis and simulation are linked together. The proposed way of working is to generate an experiment like set of data and then annalysing with the future analysis code. Working this way help saving time by doing the biggest part of the analysis work in advance. It also help to understand what happen during analysis. 
+In NPTool analysis and simulation are linked together. The proposed way of working is to generate an experiment like set of data and then annalysing with the future analysis code. 
+Working this way help saving time by doing the biggest part of the analysis work in advance. 
+It also help to understand what happen during analysis. 
 
 				\begin{figure}[!htbp]
 					\centering
@@ -57,7 +62,9 @@ In NPTool analysis and simulation are linked together. The proposed way of worki
 				
 				
 \section{The directory layout}
-	NPTool come with a specific directory layout. The different make file and source are made to use this layout, using the environment variable. Here is the standard layout:
+	NPTool come with a specific directory layout. 
+	The different make file and source are made to use this layout, using the environment variable. 
+	Here is the standard layout:
 		\begin{itemize}
 			\item[-] NPLib : hold the libraries used both in NPA and NPS (NB: those librairies can be use in your own independant code if you need)
 			\item[-] NPSimulation : hold the NPSimulation code
