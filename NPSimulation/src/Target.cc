@@ -9,7 +9,7 @@
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
  * Creation Date  : January 2009                                             *
- * Last update    : 16/09/2009                                               *
+ * Last update    : 06/11/2009                                               *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This class describe Cryogenic and standard Target. Derived from VDetector*
@@ -21,6 +21,8 @@
  *  + 16/09/2009: Add support for positioning the target with an angle with  *
  *                respect to the beam (N. de Sereville)                      *
  *  + 16/09/2009: Add CH2 material for targets (N. de Sereville)             *
+ *  + 06/11/2009: Add new Token NBLAYERS defining the number of steps used   *
+ *                to slow down the beam in the target (N. de Sereville)      *
  *                                                                           *
  *****************************************************************************/
 // C++ header
@@ -57,6 +59,7 @@ Target::Target()
    m_WindowsThickness   = 0   ;
    m_TargetTemperature  = 0   ;
    m_TargetPressure  	= 0   ;
+   m_TargetNbLayers      = 50;	// Number of steps by default
 }
 
 G4Material* Target::GetMaterialFromLibrary(G4String MaterialName, G4double Temperature, G4double Pressure)
@@ -209,6 +212,7 @@ void Target::ReadConfiguration(string Path)
    bool check_X = false ;
    bool check_Y = false ;
    bool check_Z = false ;
+   bool check_NbLayers = false;
 
    bool check_Temperature = false ;
    bool check_Pressure = false ;
@@ -281,6 +285,13 @@ void Target::ReadConfiguration(string Path)
 	            ConfigFile >> DataBuffer;
 	            m_TargetZ = atoi(DataBuffer.c_str()) * mm;
 	            cout  << m_TargetZ / mm << " )" << endl ;           
+	         }
+
+	        else if (DataBuffer.compare(0, 9, "NBLAYERS=") == 0) {
+	        	check_NbLayers = true ;
+	            ConfigFile >> DataBuffer;
+	            m_TargetNbLayers = atoi(DataBuffer.c_str());
+	            cout  << "Number of steps for slowing down the beam in target: " << m_TargetNbLayers << endl;
 	         }
 
 	        ///////////////////////////////////////////////////
@@ -368,6 +379,13 @@ void Target::ReadConfiguration(string Path)
 	            ConfigFile >> DataBuffer;
 	            m_TargetZ = atoi(DataBuffer.c_str()) * mm;
 	            cout << m_TargetZ / mm << " )" << endl ;
+	         }
+
+	        else if (DataBuffer.compare(0, 9, "NBLAYERS=") == 0) {
+	        	check_NbLayers = true ;
+	            ConfigFile >> DataBuffer;
+	            m_TargetNbLayers = atoi(DataBuffer.c_str());
+	            cout  << "Number of steps for slowing down the beam in target: " << m_TargetNbLayers << endl;
 	         }
 
 	        ///////////////////////////////////////////////////

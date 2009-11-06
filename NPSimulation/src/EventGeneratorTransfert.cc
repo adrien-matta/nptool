@@ -396,7 +396,7 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
    G4double IncidentBeamEnergy = RandGauss::shoot(NominalBeamEnergy, m_BeamEnergySpread / 2.35);
    // Slowing down the beam to the interaction layer in the target
    // Number of Layers
-   const G4int NbLayers = 50;
+   G4int NbLayers = m_Target->GetTargetNbLayers();
    G4EmCalculator emCalculator;
    for (G4int i = 0; i < NbLayers; i++) {
 //      G4double dedx = emCalculator.GetDEDX(IncidentBeamEnergy, BeamName, m_Target->GetTargetMaterial());

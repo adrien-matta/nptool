@@ -11,7 +11,7 @@
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
  * Creation Date  : January 2009                                             *
- * Last update    : 16/09/2009                                               *
+ * Last update    : 06/11/2009                                               *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This class describe Cryogenic and standard Target. Derived from VDetector*
@@ -22,6 +22,8 @@
  *                                                                           *
  *  + 16/09/2009: Add support for positioning the target with an angle with  *
  *                respect to the beam (N. de Sereville)                      *
+ *  + 06/11/2009: Add new Token NBLAYERS defining the number of steps used   *
+ *                to slow down the beam in the target (N. de Sereville)      *
  *                                                                           *
  *****************************************************************************/
 // C++ headers
@@ -86,6 +88,7 @@ public:
    G4double    GetTargetX()		{return m_TargetX;}
    G4double    GetTargetY()		{return m_TargetY;}
    G4double    GetTargetZ()		{return m_TargetZ;}
+   G4int       GetTargetNbLayers()	{return m_TargetNbLayers;}
 
 
 private:
@@ -97,6 +100,7 @@ private:
    G4double    m_TargetRadius;
    G4double    m_TargetAngle;
    G4Material* m_TargetMaterial;
+   G4int       m_TargetNbLayers;
 
    // For Cryo Target
    G4double    m_TargetTemperature;

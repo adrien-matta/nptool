@@ -13,6 +13,7 @@ Target
 	ANGLE= 0
 	RADIUS=	12
 	MATERIAL= CD2
+	NBLAYERS= 50
 	X= 0
 	Y= 0
 	Z= 0
