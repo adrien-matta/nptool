@@ -4,4 +4,5 @@ echo  -L$NPLIB/lib -lVDetector -lDetectorManager -lCalibrationManager -lIORoot -
 			-lPlasticData -lPlasticPhysics \
 			-lAnnularS1Data \
 			-lGaspardData -lGaspardPhysics \
+			-lDUMMYDetectorData \
 			-lInitialConditions -lInteractionCoordinates
