@@ -35,13 +35,10 @@ TODO for NPTool:
    + Build NPTool with the Autotool/Automake
    + Add documentation (Adrien + Nicolas)
 
-TODO for NPAnalysis:
---------------------
-   + Use only one class for the analysis per detector instead of two currently
-     (ROOT feature in private member definition ( //!))
-
 TODO for Gaspard:
 -----------------
    + Add documentation
    + Check bug when light and heavy particles are detected in the same event
    + Improve analysis in order to deal with heterogeneous detector shapes
+   + Use only one class for the analysis per detector instead of two currently
+     (ROOT feature in private member definition ( //!))
