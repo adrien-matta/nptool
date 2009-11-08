@@ -118,8 +118,14 @@ XI) GASPARD
 		obtained from NPSimulation. This library is *only* used by NPAnalysis.
 
 XII) VDetector
-		This directory includes two libraries:
-		libVDetector.so and libDetectorManager.so
-			VDetector is a virtual class used for analysis purpose. It comes with several standards method definition called in analysis programm automatically.
-			Those method need to be implemented for each detector inheritted from the VDetector class.
-			DetectorManager is a class that manage a vector of VDetector and call there common functions.
+	This directory includes two libraries:
+		libVDetector.so
+		libDetectorManager.so
+	libVDetector.so:
+		VDetector is a virtual class used for analysis purpose. It comes with several 
+		standard methods definition called in the analysis programm automatically.
+		Those method need to be implemented for each detector inheritted from the VDetector 
+		class.
+	libDetectorManager.so:
+		DetectorManager is a class that manages a vector of VDetector and call their 
+		common functions.

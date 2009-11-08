@@ -268,7 +268,7 @@ GLIBS         = $(ROOTGLIBS) $(SYSLIBS)
 INCLUDE		= -I$(CLHEP_BASE_DIR)/include
  
 #------------------------------------------------------------------------------
-SHARELIB      =	CalibManager Vdetec	InputOutputRoot InitCond	InterCoord \
+SHARELIB      =	CalibManager Vdetec InputOutputRoot InitCond	InterCoord \
 		Must2All	GaspardData	AnnularS1Data PlasticData DummyDetectorData SSSDData\
 		Reaction	EnergyLoss
 
@@ -289,8 +289,9 @@ endif
 
 ## VDetector ##
 Vdetec:
+		cp ./VDetector/*.h ./include
 		make -C ./VDetector
-		cp ./VDetector/*.so ./lib ; cp ./VDetector/*.h ./include
+		cp ./VDetector/*.so ./lib
 ifeq ($(ARCH),macosx)
 		cd lib; ln -sf libVDetector.so libVDetector.dylib
 endif
