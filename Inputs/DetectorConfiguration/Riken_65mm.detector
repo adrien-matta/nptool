@@ -7,7 +7,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Target
+%Target
 	THICKNESS= 10000
 	RADIUS=	45
 	MATERIAL= CD2
@@ -16,7 +16,7 @@ Target
 	Y= 0
 	Z= 0
 	
-%CryoTarget
+CryoTarget
 	THICKNESS= 3000
 	RADIUS=	45
 	TEMPERATURE= 26

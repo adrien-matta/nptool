@@ -555,12 +555,35 @@ void Target::CalculateBeamInteraction(	double MeanPosX, double SigmaPosX, double
       InterCoord = G4ThreeVector(x0, y0, z0);
 
 		G4EmCalculator emCalculator;
-		for (G4int i = 0; i < m_TargetNbLayers; i++) 
+		if(m_TargetType)
 			{
-				G4double dedx = emCalculator.ComputeTotalDEDX(IncidentBeamEnergy, BeamName, m_TargetMaterial);
-				G4double de   = dedx * EffectiveTargetThicknessBeforeInteraction / m_TargetNbLayers;
-				IncidentBeamEnergy -= de;
+				for (G4int i = 0; i < m_TargetNbLayers; i++) 
+					{
+						G4double dedx = emCalculator.ComputeTotalDEDX(IncidentBeamEnergy, BeamName, m_TargetMaterial);
+						G4double de   = dedx * EffectiveTargetThicknessBeforeInteraction / m_TargetNbLayers;
+						IncidentBeamEnergy -= de;
+					}
+			
 			}
+		else
+			{		//	Windows
+					for (G4int i = 0; i < m_TargetNbLayers; i++) 
+						{
+							G4double dedx = emCalculator.ComputeTotalDEDX(IncidentBeamEnergy, BeamName, m_WindowsMaterial);
+							G4double de   = dedx * m_WindowsThickness * uniform / (cos(AngleIncidentTheta)*m_TargetNbLayers);
+							IncidentBeamEnergy -= de;
+						}
+						
+					// Target
+					for (G4int i = 0; i < m_TargetNbLayers; i++) 
+						{
+							G4double dedx = emCalculator.ComputeTotalDEDX(IncidentBeamEnergy, BeamName, m_TargetMaterial);
+							G4double de   = dedx * EffectiveTargetThicknessBeforeInteraction / m_TargetNbLayers;
+							IncidentBeamEnergy -= de;
+						}
+			
+			}
+		
 FinalBeamEnergy=IncidentBeamEnergy;
 }
 
