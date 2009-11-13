@@ -21,7 +21,7 @@
  *  + 16/09/2009: Add support for positioning the target with an angle with  *
  *                respect to the beam (N. de Sereville)                      *
  *  + 16/09/2009: Add CH2 material for targets (N. de Sereville)             *
- *  + 06/11/2009: Add new Token NBLAYERS defining the number of steps used   *
+ *  + 06/11/2009: Add new Token m_TargetNbLayers defining the number of steps used   *
  *                to slow down the beam in the target (N. de Sereville)      *
  *                                                                           *
  *****************************************************************************/
@@ -41,7 +41,9 @@
 #include "G4VPhysicalVolume.hh"
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
-
+#include "G4EmCalculator.hh"
+#include "Randomize.hh"
+using namespace CLHEP ;
 // NPTool header
 #include"Target.hh"
 
@@ -212,7 +214,7 @@ void Target::ReadConfiguration(string Path)
    bool check_X = false ;
    bool check_Y = false ;
    bool check_Z = false ;
-   bool check_NbLayers = false;
+   bool check_m_TargetNbLayers = false;
 
    bool check_Temperature = false ;
    bool check_Pressure = false ;
@@ -287,8 +289,8 @@ void Target::ReadConfiguration(string Path)
 	            cout  << m_TargetZ / mm << " )" << endl ;           
 	         }
 
-	        else if (DataBuffer.compare(0, 9, "NBLAYERS=") == 0) {
-	        	check_NbLayers = true ;
+	        else if (DataBuffer.compare(0, 9, "NbLayers=") == 0) {
+	        	check_m_TargetNbLayers = true ;
 	            ConfigFile >> DataBuffer;
 	            m_TargetNbLayers = atoi(DataBuffer.c_str());
 	            cout  << "Number of steps for slowing down the beam in target: " << m_TargetNbLayers << endl;
@@ -381,8 +383,8 @@ void Target::ReadConfiguration(string Path)
 	            cout << m_TargetZ / mm << " )" << endl ;
 	         }
 
-	        else if (DataBuffer.compare(0, 9, "NBLAYERS=") == 0) {
-	        	check_NbLayers = true ;
+	        else if (DataBuffer.compare(0, 9, "m_TargetNbLayers=") == 0) {
+	        	check_m_TargetNbLayers = true ;
 	            ConfigFile >> DataBuffer;
 	            m_TargetNbLayers = atoi(DataBuffer.c_str());
 	            cout  << "Number of steps for slowing down the beam in target: " << m_TargetNbLayers << endl;
@@ -457,20 +459,20 @@ void Target::ConstructDetector(G4LogicalVolume* world)
          G4LogicalVolume*   logicWindowsB = new G4LogicalVolume(solidWindowsB, m_WindowsMaterial, "logicTargetWindowsB");
 
          PVPBuffer =
-            new G4PVPlacement(0                                                           ,
-                  TargetPos + G4ThreeVector(0., 0., 0.5*(m_TargetThickness + m_WindowsThickness))      ,
-                  logicWindowsF                                                  ,
-                  "Target Window Front"                                             ,
-                  world                                                       ,
-                  false, 0);
+            new G4PVPlacement(	0                                                           										,
+                  							TargetPos + G4ThreeVector(0., 0., 0.5*(m_TargetThickness + m_WindowsThickness)) ,
+                  							logicWindowsF                                                  									,
+                 							 	"Target Window Front"                                            							 	,
+                 	 							world                                                       										,
+                 	 							false, 0																																				);
 
          PVPBuffer =
-            new G4PVPlacement(0                                                           ,
-                  TargetPos + G4ThreeVector(0., 0., -0.5*(m_TargetThickness + m_WindowsThickness))  ,
-                  logicWindowsB                                                  ,
-                  "Target Window Back"                                           ,
-                  world                                                       ,
-                  false, 0);
+            new G4PVPlacement(	0                                                           											,
+							                  TargetPos + G4ThreeVector(0., 0., -0.5*(m_TargetThickness + m_WindowsThickness))  ,
+							                  logicWindowsB                                                  										,
+							                  "Target Window Back"                                           										,
+							                  world                                                       											,
+							                  false, 0																																					);
 
          G4VisAttributes* WindowsVisAtt = new G4VisAttributes(G4Colour(0.5, 1., 0.5));
          logicWindowsF->SetVisAttributes(WindowsVisAtt);
@@ -489,4 +491,96 @@ void Target::InitializeRootOutput()
 // Called at in the EventAction::EndOfEventAvtion
 void Target::ReadSensitive(const G4Event*)
 {}
+	
+void Target::CalculateBeamInteraction(	double MeanPosX, double SigmaPosX, double MeanPosTheta, double SigmaPosTheta,
+				                                double MeanPosY, double SigmaPosY, double MeanPosPhi,   double SigmaPosPhi,
+				                                double IncidentBeamEnergy,
+                                 				G4ParticleDefinition* BeamName,
+				                                G4ThreeVector &InterCoord, double &AngleEmittanceTheta, double &AngleEmittancePhi,
+				                                double &AngleIncidentTheta, double &AngleIncidentPhi,
+				                                double &FinalBeamEnergy)
+{
 
+      // target parameters
+			G4ThreeVector TargetNormal = G4ThreeVector(		sin(m_TargetAngle)		,
+      																							0											,
+      																							cos(m_TargetAngle)		);
+			
+      // beam interaction parameters
+      double x0 = 1000 * cm;
+      double y0 = 1000 * cm;
+      double z0 =    0 * cm;
+      double dz =    0 * cm;
+
+      // calculate emittance parameters (x,theta) and (y,phi)
+      if (m_TargetRadius != 0) {	// case of finite target dimensions
+         while (sqrt(x0*x0 + y0*y0) > m_TargetRadius) {
+            RandomGaussian2D(MeanPosX, MeanPosTheta, SigmaPosX, SigmaPosTheta, x0, AngleEmittanceTheta);
+            RandomGaussian2D(MeanPosY, MeanPosPhi,   SigmaPosY, SigmaPosPhi,   y0, AngleEmittancePhi);
+         }
+         // in case target is tilted, correct the z-position of interaction
+         // x is the vertical axis
+         dz = x0 * tan(m_TargetAngle);
+      }
+      else {			// if no target radius is given consider a point-like target
+         RandomGaussian2D(0, 0, 0, SigmaPosTheta, x0, AngleEmittanceTheta);
+         RandomGaussian2D(0, 0, 0, SigmaPosPhi,   y0, AngleEmittancePhi);
+      }
+
+      // Calculate incident angle in spherical coordinate, passing by the direction vector dir      
+      double Xdir = sin(AngleEmittanceTheta);
+      double Ydir = sin(AngleEmittancePhi);
+      double Zdir = cos(AngleEmittanceTheta) + cos(AngleEmittancePhi);
+			G4ThreeVector BeamDir = G4ThreeVector(Xdir,Ydir,Zdir)	;
+			
+      AngleIncidentTheta = BeamDir.theta() 	;
+      AngleIncidentPhi   = BeamDir.phi()		;
+      if (AngleIncidentPhi   < 0)    AngleIncidentPhi += 2*pi	;
+      if (AngleIncidentTheta < 1e-6) AngleIncidentPhi  = 0		;
+
+      // Calculation of effective target thickness and z-position of interaction
+      // when the target is tilted wrt the beam axis
+      double EffectiveThickness = m_TargetThickness / (BeamDir.unit()).dot(TargetNormal.unit());
+      double uniform = RandFlat::shoot();
+      z0 = dz + (-m_TargetThickness / 2 + uniform * m_TargetThickness);
+
+      // Calculate the effective thickness before interaction in target
+      // This is useful to slow down the beam
+      double EffectiveTargetThicknessBeforeInteraction = m_TargetThickness  * uniform / cos(AngleIncidentTheta);
+
+      // Move to the target position
+      x0 += m_TargetX;
+      y0 += m_TargetY;
+      z0 += m_TargetZ;
+      InterCoord = G4ThreeVector(x0, y0, z0);
+
+		G4EmCalculator emCalculator;
+		for (G4int i = 0; i < m_TargetNbLayers; i++) 
+			{
+				G4double dedx = emCalculator.ComputeTotalDEDX(IncidentBeamEnergy, BeamName, m_TargetMaterial);
+				G4double de   = dedx * EffectiveTargetThicknessBeforeInteraction / m_TargetNbLayers;
+				IncidentBeamEnergy -= de;
+			}
+FinalBeamEnergy=IncidentBeamEnergy;
+}
+
+
+
+void Target::RandomGaussian2D(double MeanX, double MeanY, double SigmaX, double SigmaY, double &X, double &Y, double NumberOfSigma)
+{
+   if (SigmaX != 0) {
+      X = 2 * NumberOfSigma*SigmaX;
+      while (X > NumberOfSigma*SigmaX) X = RandGauss::shoot(MeanX, SigmaX);
+
+      double a = NumberOfSigma * SigmaX/2;
+      double b = NumberOfSigma * SigmaY/2;
+      double SigmaYPrim = b * sqrt(1 - X*X / (a*a));
+
+      SigmaYPrim = 2*SigmaYPrim / NumberOfSigma;
+      Y = RandGauss::shoot(MeanY, SigmaYPrim);
+   }
+   else {
+      X = MeanX;
+      Y = RandGauss::shoot(MeanY, SigmaY);
+   }
+}

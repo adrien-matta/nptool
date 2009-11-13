@@ -371,17 +371,24 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
    //////////////////////////////////////////////////
    //////Define the kind of particle to shoot////////
    //////////////////////////////////////////////////
+   // Light
    G4int LightZ = m_Reaction->GetNucleus3()->GetZ() ;
    G4int LightA = m_Reaction->GetNucleus3()->GetA() ;
 
    G4ParticleDefinition* LightName
    = G4ParticleTable::GetParticleTable()->GetIon(LightZ, LightA, 0.);
 
+   // Recoil
    G4int HeavyZ = m_Reaction->GetNucleus4()->GetZ() ;
    G4int HeavyA = m_Reaction->GetNucleus4()->GetA() ;
 
    G4ParticleDefinition* HeavyName
    = G4ParticleTable::GetParticleTable()->GetIon(HeavyZ, HeavyA, m_Reaction->GetExcitation()*MeV);
+
+   // Beam
+   G4int BeamZ = m_Reaction->GetNucleus1()->GetZ();
+   G4int BeamA = m_Reaction->GetNucleus1()->GetA();
+   G4ParticleDefinition* BeamName = G4ParticleTable::GetParticleTable()->GetIon(BeamZ, BeamA, 0);
 
    // Shoot the Resonance energy following the mean and width value
    double EXX = -10 ;
@@ -391,27 +398,29 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
 
 	m_Reaction->SetExcitation( EXX  );
 
-   ///////////////////////////////////////////////////////////////////////
+	 ///////////////////////////////////////////////////////////////////////
    ///// Calculate the incident beam direction as well as the vertex /////
-   ///// of interaction in target                                    /////
+   ///// of interaction in target and Energy Loss of the beam within /////
+   ///// the target.                                                 /////
    ///////////////////////////////////////////////////////////////////////
    G4ThreeVector InterCoord;
+   
    G4double Beam_thetaX = 0, Beam_phiY = 0;
    G4double Beam_theta  = 0, Beam_phi  = 0;
-   G4double EffectiveThickness = 0;
+   G4double FinalBeamEnergy = 0 ;
+   G4double InitialBeamEnergy = RandGauss::shoot(m_BeamEnergy, m_BeamEnergySpread);
    
-   	if(m_SigmaX==0 && m_SigmaY==0 && m_SigmaThetaX == 0 && m_SigmaPhiY==0) InterCoord = G4ThreeVector(0,0,0);
-   
-	else if( m_Target !=0)   
-  	 CalculateBeamInteraction(	0, m_SigmaX, 0, m_SigmaThetaX,
-                           	 	0, m_SigmaY, 0, m_SigmaPhiY,
-                            	m_Target,
-                            	InterCoord, Beam_thetaX, Beam_phiY,
-                            	Beam_theta, Beam_phi,
-                                EffectiveThickness);
-                            	
-	else 
-		InterCoord = G4ThreeVector(0,0,0);
+	m_Target->CalculateBeamInteraction(	0, m_SigmaX, 0, m_SigmaThetaX,
+                            					0, m_SigmaY, 0, m_SigmaPhiY,
+				                            	InitialBeamEnergy,
+				                            	BeamName,
+				                           	 	InterCoord, Beam_thetaX, Beam_phiY,
+                            					Beam_theta, Beam_phi,
+				                           	 	FinalBeamEnergy);
+				                           	 	
+	m_Reaction->SetBeamEnergy(FinalBeamEnergy);
+  m_InitConditions->SetICIncidentEnergy(FinalBeamEnergy / MeV);
+  
 
    // write vertex position to ROOT file
    G4double x0 = InterCoord.x();

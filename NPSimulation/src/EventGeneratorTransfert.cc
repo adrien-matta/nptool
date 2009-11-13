@@ -31,7 +31,6 @@
 
 // G4 headers
 #include "G4ParticleTable.hh"
-#include "G4EmCalculator.hh"
 #include "G4ParticleGun.hh"
 #include "G4RotationMatrix.hh"
 
@@ -343,19 +342,27 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
 
    ///////////////////////////////////////////////////////////////////////
    ///// Calculate the incident beam direction as well as the vertex /////
-   ///// of interaction in target                                    /////
+   ///// of interaction in target and Energy Loss of the beam within /////
+   ///// the target.                                                 /////
    ///////////////////////////////////////////////////////////////////////
    G4ThreeVector InterCoord;
+   
    G4double Beam_thetaX = 0, Beam_phiY = 0;
    G4double Beam_theta  = 0, Beam_phi  = 0;
-   G4double EffectiveThickness = 0;
-   CalculateBeamInteraction(0, m_SigmaX, 0, m_SigmaThetaX,
-                            0, m_SigmaY, 0, m_SigmaPhiY,
-                            m_Target,
-                            InterCoord, Beam_thetaX, Beam_phiY,
-                            Beam_theta, Beam_phi,
-                            EffectiveThickness);
-
+   G4double FinalBeamEnergy = 0 ;
+   G4double InitialBeamEnergy = RandGauss::shoot(m_BeamEnergy, m_BeamEnergySpread);
+   
+	m_Target->CalculateBeamInteraction(	0, m_SigmaX, 0, m_SigmaThetaX,
+                            					0, m_SigmaY, 0, m_SigmaPhiY,
+				                            	InitialBeamEnergy,
+				                            	BeamName,
+				                           	 	InterCoord, Beam_thetaX, Beam_phiY,
+                            					Beam_theta, Beam_phi,
+				                           	 	FinalBeamEnergy);
+				                           	 	
+	m_Reaction->SetBeamEnergy(FinalBeamEnergy);
+  m_InitConditions->SetICIncidentEnergy(FinalBeamEnergy / MeV);
+  
    // write vertex position to ROOT file
    G4double x0 = InterCoord.x();
    G4double y0 = InterCoord.y();
@@ -391,21 +398,7 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
    ///// Angles for emitted particles following Cross Section //////
    ///// Angles are in the beam frame                         //////
    /////////////////////////////////////////////////////////////////
-   // Beam nominal incident energy before interaction with the target
-   G4double NominalBeamEnergy = m_BeamEnergy;
-   G4double IncidentBeamEnergy = RandGauss::shoot(NominalBeamEnergy, m_BeamEnergySpread / 2.35);
-   // Slowing down the beam to the interaction layer in the target
-   // Number of Layers
-   G4int NbLayers = m_Target->GetTargetNbLayers();
-   G4EmCalculator emCalculator;
-   for (G4int i = 0; i < NbLayers; i++) {
-//      G4double dedx = emCalculator.GetDEDX(IncidentBeamEnergy, BeamName, m_Target->GetTargetMaterial());
-      G4double dedx = emCalculator.ComputeTotalDEDX(IncidentBeamEnergy, BeamName, m_Target->GetTargetMaterial());
-      G4double de   = dedx * EffectiveThickness / NbLayers;
-      IncidentBeamEnergy -= de;
-   }
-   m_Reaction->SetBeamEnergy(IncidentBeamEnergy);
-   m_InitConditions->SetICIncidentEnergy(IncidentBeamEnergy / MeV);
+
    // Angles
    RandGeneral CrossSectionShoot(m_Reaction->GetCrossSection(), m_Reaction->GetCrossSectionSize());
    G4double ThetaCM = CrossSectionShoot.shoot() * (180*deg);
@@ -458,16 +451,13 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
       // write angles in ROOT file
       m_InitConditions->SetICEmittedAngleThetaLabWorldFrame(theta_world / deg);
       m_InitConditions->SetICEmittedAnglePhiWorldFrame(phi_world / deg);
-      // tests
-//      G4cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXX" << G4endl;
-//      G4cout << "cinematique dans ref world : " << G4endl;
-//      G4cout << "\t" << momentum_kine_world << G4endl;
+      
       //Set the gun to shoot
       particleGun->SetParticleMomentumDirection(momentum_kine_world);
       //Shoot the light particle
       particleGun->GeneratePrimaryVertex(anEvent);
    }
-   if (m_ShootHeavy) { // Case of recoil particle
+   if (m_ShootHeavy) { // Case of heavy particle
       // Particle type
       particleGun->SetParticleDefinition(HeavyName);
       // Particle energy

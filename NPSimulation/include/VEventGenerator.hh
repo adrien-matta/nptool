@@ -59,16 +59,7 @@ public:
 
    // Used in some case to generate event inside the target
    virtual void SetTarget(Target*) {};
-
-   // Used to calculate the incident beam direction (taking into account
-   // the emittance) and the vertex of interaction in target
-   void CalculateBeamInteraction(double MeanPosX, double SigmaPosX, double MeanPosTheta, double SigmaPosTheta,
-                                 double MeanPosY, double SigmaPosY, double MeanPosPhi,   double SigmaPosPhi,
-                                 Target* target,
-                                 G4ThreeVector &InterCoord, double &AngleEmittanceTheta, double &AngleEmittancePhi,
-                                 double &AngleIncidentTheta, double &AngleIncidentPhi,
-                                 double &EffectiveTargetThicknessBeforeInteraction);
-
+   
    // Used to simulate beam emmitance effect
    void RandomGaussian2D(double MeanX, double MeanY, double SigmaX, double SigmaY, double &X, double &Y, double NumberOfSigma = 10000);
 };

@@ -52,29 +52,41 @@ public:
 
 
 public:
-   // Read stream at Configfile to pick-up parameters of detector (Position,...)
-   // Called in DetecorConstruction::ReadDetextorConfiguration Method
-   void ReadConfiguration(string Path);
+  //	Read stream at Configfile to pick-up parameters of detector (Position,...)
+  //	Called in DetecorConstruction::ReadDetextorConfiguration Method
+  void ReadConfiguration(string Path);
 
-   // Construct detector and inialise sensitive part.
-   // Called After DetecorConstruction::AddDetector Method
-   void ConstructDetector(G4LogicalVolume* world);
+  //	Construct detector and inialise sensitive part.
+  //	Called After DetecorConstruction::AddDetector Method
+  void ConstructDetector(G4LogicalVolume* world);
 
-   // Add Detector branch to the EventTree.
-   // Called After DetecorConstruction::AddDetector Method
-   void InitializeRootOutput();
+  //	Add Detector branch to the EventTree.
+  //	Called After DetecorConstruction::AddDetector Method
+  void InitializeRootOutput();
 
-   // Read sensitive part and fill the Root tree.
-   // Called at in the EventAction::EndOfEventAvtion
-   void ReadSensitive(const G4Event* event);
-
+  //	Read sensitive part and fill the Root tree.
+  //	Called at in the EventAction::EndOfEventAvtion
+  void ReadSensitive(const G4Event* event);
 
 public:
-   // method for debug purpose (still to be implemented)
-   // This method should check if the results of the beam interaction within the target
-   // (interaction coordinates) are well located inside the target volume
-   bool IsInsideTarget() {return false;};
+	//	method for debug purpose (still to be implemented)
+	//	This method should check if the results of the beam interaction within the target
+	//	(interaction coordinates) are well located inside the target volume
+	bool IsInsideTarget() {return false;};
 
+   // Used to calculate the incident beam direction (taking into account
+   // the emittance) and the vertex of interaction in target
+   // Also compute the energy lost by the beam in the target before interacting
+   void CalculateBeamInteraction(double MeanPosX, double SigmaPosX, double MeanPosTheta, double SigmaPosTheta,
+                                 double MeanPosY, double SigmaPosY, double MeanPosPhi,   double SigmaPosPhi,
+                                 double IncidentBeamEnergy,
+                                 G4ParticleDefinition* BeamName,
+                                 G4ThreeVector &InterCoord, double &AngleEmittanceTheta, double &AngleEmittancePhi,
+                                 double &AngleIncidentTheta, double &AngleIncidentPhi,
+                                 double &FinalBeamEnergy);
+	                                
+	// Used to simulate beam emmitance effect
+	void RandomGaussian2D(double MeanX, double MeanY, double SigmaX, double SigmaY, double &X, double &Y, double NumberOfSigma = 10000);
 
 public:
    G4Material* GetMaterialFromLibrary(G4String MaterialName, G4double Temperature = 0, G4double Pressure = 0);
@@ -83,11 +95,11 @@ public:
 public:
    G4double    GetTargetThickness()	{return m_TargetThickness;}
    G4Material* GetTargetMaterial()	{return m_TargetMaterial;}
-   G4double    GetTargetRadius()	{return m_TargetRadius;}
-   G4double    GetTargetAngle()		{return m_TargetAngle;}
-   G4double    GetTargetX()		{return m_TargetX;}
-   G4double    GetTargetY()		{return m_TargetY;}
-   G4double    GetTargetZ()		{return m_TargetZ;}
+   G4double    GetTargetRadius()		{return m_TargetRadius;}
+   G4double    GetTargetAngle()			{return m_TargetAngle;}
+   G4double    GetTargetX()					{return m_TargetX;}
+   G4double    GetTargetY()					{return m_TargetY;}
+   G4double    GetTargetZ()					{return m_TargetZ;}
    G4int       GetTargetNbLayers()	{return m_TargetNbLayers;}
 
 
