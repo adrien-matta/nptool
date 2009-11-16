@@ -57,15 +57,23 @@ void TMust2Physics::BuildSimplePhysicalEvent()
 	
 void TMust2Physics::BuildPhysicalEvent()
 	{ 
+		bool check_SILI = false ;
+		bool check_CSI  = false ;
+	
+	
 		if( CheckEvent() == 1 )
 			{
 				vector< TVector2 > couple = Match_X_Y() ;
 				
 				for(unsigned int i = 0 ; i < couple.size() ; i++)
 					{
+						check_SILI = false ;
+						check_CSI = false ;
+					
 						int N = EventData->GetMMStripXEDetectorNbr(couple[i].X())		;
-						int X = EventData->GetMMStripXEStripNbr(couple[i].X())				;
-						int Y = EventData->GetMMStripXEStripNbr(couple[i].Y())				;
+						
+						int X = EventData->GetMMStripXEStripNbr(couple[i].X())			;
+						int Y = EventData->GetMMStripYEStripNbr(couple[i].Y())			;
 						
 						double Si_X_E = fSi_X_E(EventData , couple[i].X())	;
 						double Si_Y_E = fSi_Y_E(EventData , couple[i].Y())	;
@@ -95,6 +103,8 @@ void TMust2Physics::BuildPhysicalEvent()
 													SiLi_N.push_back(EventData->GetMMSiLiEPadNbr(j))	;
 													SiLi_E.push_back(fSiLi_E(EventData , j))	;
 													SiLi_T.push_back(fSiLi_T(EventData , j))		;
+													check_SILI = true ;
+													
 												}
 											}
 									}
@@ -112,10 +122,27 @@ void TMust2Physics::BuildPhysicalEvent()
 														CsI_N.push_back(EventData->GetMMCsIECristalNbr(j))	;
 														CsI_E.push_back(fCsI_E(EventData , j))			;
 														CsI_T.push_back(fCsI_T(EventData , j))				;
+														check_CSI = true ;
 													}
 											}
 									}
 							}
+					
+					
+						if(!check_SILI)
+							{
+								SiLi_N.push_back(0)	;
+								SiLi_E.push_back(0)	;
+								SiLi_T.push_back(0)	;
+							}
+
+						if(!check_CSI) 
+							{
+								CsI_N.push_back(0)	;
+								CsI_E.push_back(0)	;
+								CsI_T.push_back(0)	;
+							}
+					
 					}
 			}
 		
@@ -872,8 +899,8 @@ void TMust2Physics::AddTelescope(	double theta 	,
 TVector3 TMust2Physics::GetPositionOfInteraction(int i)
 	{
 		TVector3 Position = TVector3 (	GetStripPositionX( TelescopeNumber[i] , Si_X[i] , Si_Y[i] ) 	,
-										GetStripPositionY( TelescopeNumber[i] , Si_X[i] , Si_Y[i] )	,
-										GetStripPositionZ( TelescopeNumber[i] , Si_X[i] , Si_Y[i] )	) ;
+																		GetStripPositionY( TelescopeNumber[i] , Si_X[i] , Si_Y[i] )		,
+																		GetStripPositionZ( TelescopeNumber[i] , Si_X[i] , Si_Y[i] )		) ;
 		
 		return(Position) ;	
 	
@@ -881,21 +908,21 @@ TVector3 TMust2Physics::GetPositionOfInteraction(int i)
 	
 TVector3 TMust2Physics::GetTelescopeNormal( int i)
 	{
-				TVector3 U = TVector3 (		GetStripPositionX( TelescopeNumber[i] , 128 , 1 ) 	,
-											GetStripPositionY( TelescopeNumber[i] , 128 , 1 )		,
-											GetStripPositionZ( TelescopeNumber[i] , 128 , 1 )		)
+				TVector3 U = 	TVector3 (	GetStripPositionX( TelescopeNumber[i] , 128 , 1 ) 	,
+																	GetStripPositionY( TelescopeNumber[i] , 128 , 1 )		,
+																	GetStripPositionZ( TelescopeNumber[i] , 128 , 1 )		)
 											
-							- TVector3 (	GetStripPositionX( TelescopeNumber[i] , 1 , 1 ) 		,
-											GetStripPositionY( TelescopeNumber[i] , 1 , 1 )		,
-											GetStripPositionZ( TelescopeNumber[i] , 1 , 1 )		);
+									- 	TVector3 (	GetStripPositionX( TelescopeNumber[i] , 1 , 1 ) 		,
+																	GetStripPositionY( TelescopeNumber[i] , 1 , 1 )			,
+																	GetStripPositionZ( TelescopeNumber[i] , 1 , 1 )			);
 										
-				TVector3 V = TVector3 (		GetStripPositionX( TelescopeNumber[i] , 128 , 128 ) 	,
-											GetStripPositionY( TelescopeNumber[i] , 128 , 128 )	,
-											GetStripPositionZ( TelescopeNumber[i] , 128 , 128 )	)
+				TVector3 V = 	TVector3 (	GetStripPositionX( TelescopeNumber[i] , 128 , 128 ) ,
+																	GetStripPositionY( TelescopeNumber[i] , 128 , 128 )	,
+																	GetStripPositionZ( TelescopeNumber[i] , 128 , 128 )	)
 											
-							- TVector3 (	GetStripPositionX( TelescopeNumber[i] , 128 , 1 ) 	,
-											GetStripPositionY( TelescopeNumber[i] , 128 , 1 )		,
-											GetStripPositionZ( TelescopeNumber[i] , 128 , 1 )		);
+										-	TVector3 (	GetStripPositionX( TelescopeNumber[i] , 128 , 1 ) 	,
+																	GetStripPositionY( TelescopeNumber[i] , 128 , 1 )		,
+																	GetStripPositionZ( TelescopeNumber[i] , 128 , 1 )		);
 											
 				TVector3 Normal = U.Cross(V);
 		

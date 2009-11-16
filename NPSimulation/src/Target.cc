@@ -28,6 +28,7 @@
 // C++ header
 #include <fstream>
 #include <limits>
+
 // G4 geometry header
 #include "G4Tubs.hh"
 
@@ -42,6 +43,8 @@
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
 #include "G4EmCalculator.hh"
+#include "G4ParticleDefinition.hh"
+#include "G4ParticleTable.hh"
 #include "Randomize.hh"
 using namespace CLHEP ;
 // NPTool header
@@ -480,6 +483,9 @@ void Target::ConstructDetector(G4LogicalVolume* world)
       }
    }
 
+
+
+WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(2, 3, 0.) ,0,300);
 }
 
 // Add Detector branch to the EventTree.
@@ -553,20 +559,28 @@ void Target::CalculateBeamInteraction(	double MeanPosX, double SigmaPosX, double
       y0 += m_TargetY;
       z0 += m_TargetZ;
       InterCoord = G4ThreeVector(x0, y0, z0);
-
-		G4EmCalculator emCalculator;
+      
 		if(m_TargetType)
 			{
-				for (G4int i = 0; i < m_TargetNbLayers; i++) 
+				G4EmCalculator emCalculator;		
+				if(m_TargetThickness!=0)
 					{
-						G4double dedx = emCalculator.ComputeTotalDEDX(IncidentBeamEnergy, BeamName, m_TargetMaterial);
-						G4double de   = dedx * EffectiveTargetThicknessBeforeInteraction / m_TargetNbLayers;
-						IncidentBeamEnergy -= de;
+						for (G4int i = 0; i < m_TargetNbLayers; i++) 
+							{
+								G4double dedx = emCalculator.ComputeTotalDEDX(IncidentBeamEnergy, BeamName, m_TargetMaterial);
+								G4double de   = dedx * EffectiveTargetThicknessBeforeInteraction / m_TargetNbLayers;
+								IncidentBeamEnergy -= de;
+							}
+					
 					}
 			
 			}
+		
+			
 		else
-			{		//	Windows
+			{		G4EmCalculator emCalculator;		
+					//	Windows
+					if(m_WindowsThickness!=0)
 					for (G4int i = 0; i < m_TargetNbLayers; i++) 
 						{
 							G4double dedx = emCalculator.ComputeTotalDEDX(IncidentBeamEnergy, BeamName, m_WindowsMaterial);
@@ -575,6 +589,7 @@ void Target::CalculateBeamInteraction(	double MeanPosX, double SigmaPosX, double
 						}
 						
 					// Target
+					if(m_TargetThickness!=0)
 					for (G4int i = 0; i < m_TargetNbLayers; i++) 
 						{
 							G4double dedx = emCalculator.ComputeTotalDEDX(IncidentBeamEnergy, BeamName, m_TargetMaterial);
@@ -607,3 +622,46 @@ void Target::RandomGaussian2D(double MeanX, double MeanY, double SigmaX, double 
       Y = RandGauss::shoot(MeanY, SigmaY);
    }
 }
+
+//	Generate a DEDX file table using the material used in the target
+void Target::WriteDEDXTable(G4ParticleDefinition* Particle ,G4double Emin,G4double Emax)
+	{
+		//	Opening hte output file
+		G4String GlobalPath = getenv("NPTOOL");
+   	G4String Path = GlobalPath + "/Inputs/EnergyLoss/" + Particle->GetParticleName() + "_" + m_TargetMaterial->GetName() + ".G4table";
+	
+		ofstream File		;
+		File.open(Path)	;
+		
+		if(!File) return ;
+		
+		File	<< "Table from Geant4 generate using NPSimulation" << endl
+					<< "Particle: " << Particle->GetParticleName() << "\tMaterial: " << m_TargetMaterial->GetName() << endl ;
+		
+		G4EmCalculator emCalculator;
+	
+		for (G4double E=Emin*MeV; E < Emax*MeV; E+=(Emax-Emin)*MeV/10000.) 
+						{
+							G4double dedx = emCalculator.ComputeTotalDEDX(E, Particle, m_TargetMaterial);
+							File << E/MeV << "\t" << dedx/(MeV/um) << endl ;
+						}
+		File.close();
+		
+		if(!m_TargetType)
+			{
+				G4String Path = GlobalPath + "/Inputs/EnergyLoss/" + Particle->GetParticleName() + "_" + m_WindowsMaterial->GetName() + ".G4table";
+				File.open(Path)		;
+				if(!File) return 	;
+				File	<< "Table from Geant4 generate using NPSimulation" << endl
+					<< "Particle: " << Particle->GetParticleName() << "\tMaterial: " << m_TargetMaterial->GetName() << endl ;
+					
+				for (G4double E=Emin*MeV; E < Emax*MeV; E+=(Emax-Emin)*MeV/10000.) 
+						{
+							G4double dedx = emCalculator.ComputeTotalDEDX(E, Particle, m_WindowsMaterial);
+							File << E/MeV << "\t" << dedx/(MeV/um) << endl ;
+						}
+			}
+			
+						
+		File.close();
+	}

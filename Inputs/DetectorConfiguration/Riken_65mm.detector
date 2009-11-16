@@ -5,10 +5,10 @@
 %Material name according to the target library
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-GeneralTarget
+%GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Target
-	THICKNESS= 10000
+	THICKNESS= 1
 	RADIUS=	45
 	MATERIAL= CD2
 	ANGLE= 45

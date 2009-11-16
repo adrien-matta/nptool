@@ -57,7 +57,7 @@ EventGeneratorTransfertToResonance::EventGeneratorTransfertToResonance()
    //------------- Default Constructor -------------
 	m_InitConditions	= new TInitialConditions()	;
 	m_Reaction = new Reaction() ;
-	m_Target = 0;
+	m_Target = new Target();
 	m_SigmaX       		=  0 ;
 	m_SigmaY       		=  0 ;
 	m_SigmaThetaX     =  0 ;

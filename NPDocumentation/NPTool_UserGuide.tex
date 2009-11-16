@@ -92,9 +92,34 @@ It also help to understand what happen during analysis.
 	NPLib is widely build on top of ROOT,GSL and CLHEP (by order of importance), but not on Geant4.
 	
 	\section{the directory layout}
-	
+		NPLib is made of several folder, one for each detector basicly and some for other shared object such as reaction and nucleus class. A common makefile is present in the NPLib directory calling the individual make file of every folder. In this folder you will also find a README file and the liblist file, containing a small macro used in NPA and NPS makefile to return the list of avaible librairies. Our phylosophy is to have two class for each detector, inheritted fron the TObject ROOT class so theyr can be put in a TTree. The first one is called the Data class, named following the TDetectorNameData, where T is there to remind the TObject dependance. This Data class hold the raw parameter given by the detector during an experiment, understood before any treatment. NPSimulation will output those kind of raw data, the only difference between a simulated and an experiement data object is the one comming from NPS are already calibrated. The second class is a Physics class, named TDetectorNamePhysics. This class hold the results of the treated Data object, ie after application of threshold, selection of good event, application of calibration,... and so one, depending on your detector. Note that the Physics class also derived from the VDetector class, and therefore can be used in NPA via the DetectorManager class. This system allow your annalysis programm to be more flexible and lisible. Let's have a look to the Directory layout:
+		
+		
+		\begin{itemize}
+			\item[DummyDetector] Template base for making your own Data and Physics class
+			\item[AnnularS1] Containing the Data object for the Annular detector "S1" by micron 
+			\item[GASPARD] Data and Physics object associate to the Gamma and Segmented Particule ARray Detector
+			\item[MUST2] Data and Physics object associate to the MUr a STrip 2 detector
+			\item[Plastic] Data and Physics object associate to the Plastic scintillator detector
+			\item[SSSD] Data and Physics object associate to the Single Sided Striped Detector
+			\item[InitialConditions] Used in NPS to output the initial physics condition of the generated event (Beam interaction position and energy, angle and energy of particule,...)
+			\item[InteractionCoordinates] Used in NPS to output the true physical point of interaction in the differents detector
+			\item[CalibrationManager] This class allowed to manage different file and token and associate them to detector
+			\item[IORoot] Hold the ROOTInput and ROOTOutput classes that allow an easier used of TTRee in NPS and NPA
+			\item[Tools] A few usefull classes such as Nuclear Reaction kinematics, Nucleus object and Energy Loss
+			\item[VDetector] Virtual Detector class from wich inherrited all Physics class
+			\item[include] All header are copy in this folder during compilation
+			\item[lib] All libraries are copy in this folder during compilation
+		\end{itemize}
+		
 	\section{Step by step from TDUMMYDetectorData class}
 		\subsection{step 1}
+			First, go to your consol and open the NPLib folder, there type \begin{verbatim}make distclean\end{verbatim}
+			This command will remove all the compilation generated file and only the source will remain.
+			Copy the DummyDetector folder and rename it, let's say, WonderdullDetector. 
+			Ebter the directory and rename the TDummyDetectorData.h and .cxx with your detector name, you should have now only three file: Makefile, TWonderfullDetectorData.h and TWonderfullDetectorData.cxx
+			If any other file remain, just remove it.
+			No open the .h and .cxx file with your favorite editor (gedit or vim for instance). Replace the the DUMMYDetector by your detector name. Just have look in the .h file, the class is very basic, a couple of value are stored in stl vector (allowing smaller tree and increasing speed access). A few methods allowed to set or get those value and to know the size of the different vector. 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 				
 \chapter[NPSimulation]{NPSimulation}

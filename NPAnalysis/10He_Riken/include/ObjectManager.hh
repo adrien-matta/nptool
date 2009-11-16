@@ -108,40 +108,40 @@ namespace ENERGYLOSS
 	
 		//	3He Energy Loss
 			EnergyLoss He3TargetWind = EnergyLoss 	(	"3He_Mylar.txt" 		,
-														1000	 				,
-														3					,
+														10000	 				,
+														1					,
 														3						);
 		
-			EnergyLoss He3TargetGaz = EnergyLoss 	(	"3He_D2solid_1b_26K.txt" 	,
-														1000	 				,
-														3						,
+			EnergyLoss He3TargetGaz = EnergyLoss 	(	"3He_D2gaz_1b_26K.txt" 	,
+														10000	 				,
+														1						,
 														3						);
 			
 			EnergyLoss He3StripAl   = EnergyLoss 	(	"3He_Al.txt" 			,
-														1000						,
-														3						,
+														10000						,
+														1						,
 														3						);
 														
 			EnergyLoss He3StripSi   = EnergyLoss 	(	"3He_Si.txt" 			,
-														1000						,
-														3					,
+														10000						,
+														1					,
 														3						);
 														
 														
 		//	proton Energy Loss
 			EnergyLoss protonTargetWind = EnergyLoss 	(	"proton_Mylar.txt"	 		,
 															1000		 				,
-															3						,
+															1						,
 															1							);
 		
 			EnergyLoss protonTargetGaz = EnergyLoss 	(	"proton_D2gaz_1b_26K.txt" 	,
 															1000		 				,
-															3						,
+															1						,
 															1							);
 			
 			EnergyLoss protonStripAl   = EnergyLoss 	(	"proton_Al.txt" 			,
 															100							,
-															3							,
+															1							,
 															1							);
 														
 	
