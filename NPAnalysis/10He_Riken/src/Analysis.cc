@@ -139,7 +139,7 @@ int main(int argc,char** argv)
 						{
 							if( M2 -> CsI_E[hit] == 0 && M2 -> Si_E[hit] > 0)
 								{ 
-										ELab[hit] = M2 -> Si_E[hit]  ;
+										ELab[hit] = M2 -> Si_E[hit]  ; 
 										
 										ELab[hit]= He3StripAl.EvaluateInitialEnergy(		ELab[hit] 				, // Energy of the detected particle
 																																		2*0.4*micrometer	, // Target Thickness at 0 degree
@@ -163,7 +163,7 @@ int main(int argc,char** argv)
 										ELab[hit]= He3TargetGaz.EvaluateInitialEnergy(	ELab[hit] 				, // Energy of the detected particle
 																																		1.5*mm						, // Target Thickness at 0 degree
 																																		ThetaN						);
-																						
+																		 				
 									ThetaCM[hit] = He10Reaction -> EnergyLabToThetaCM( ELab[hit] ) /deg 	;
 									ExcitationEnergy[hit] = He10Reaction -> ReconstructRelativistic( ELab[hit] , ThetaLab[hit] ) 		;	
 									X[hit] = HitDirection . X();

@@ -483,9 +483,6 @@ void Target::ConstructDetector(G4LogicalVolume* world)
       }
    }
 
-
-
-WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(2, 3, 0.) ,0,300);
 }
 
 // Add Detector branch to the EventTree.
@@ -635,7 +632,7 @@ void Target::WriteDEDXTable(G4ParticleDefinition* Particle ,G4double Emin,G4doub
 		
 		if(!File) return ;
 		
-		File	<< "Table from Geant4 generate using NPSimulation" << endl
+		File	<< "Table from Geant4 generate using NPSimulation \t"
 					<< "Particle: " << Particle->GetParticleName() << "\tMaterial: " << m_TargetMaterial->GetName() << endl ;
 		
 		G4EmCalculator emCalculator;
@@ -652,8 +649,8 @@ void Target::WriteDEDXTable(G4ParticleDefinition* Particle ,G4double Emin,G4doub
 				G4String Path = GlobalPath + "/Inputs/EnergyLoss/" + Particle->GetParticleName() + "_" + m_WindowsMaterial->GetName() + ".G4table";
 				File.open(Path)		;
 				if(!File) return 	;
-				File	<< "Table from Geant4 generate using NPSimulation" << endl
-					<< "Particle: " << Particle->GetParticleName() << "\tMaterial: " << m_TargetMaterial->GetName() << endl ;
+				File	<< "Table from Geant4 generate using NPSimulation \t " 
+					<< "Particle: " << Particle->GetParticleName() << "\tMaterial: " << m_WindowsMaterial->GetName() << endl ;
 					
 				for (G4double E=Emin*MeV; E < Emax*MeV; E+=(Emax-Emin)*MeV/10000.) 
 						{

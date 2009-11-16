@@ -5,7 +5,7 @@
 %Material name according to the target library
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%GeneralTarget
+GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Target
 	THICKNESS= 1

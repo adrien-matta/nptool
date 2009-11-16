@@ -67,9 +67,9 @@ namespace NPL
 		   
 		public:
 			// Getters and Setters
-			void				SetBeamEnergy		(double efais)	{fBeamEnergy = efais;}
+			void				SetBeamEnergy		(double efais)	{fBeamEnergy = efais;initializePrecomputeVariable();}
 			void				SetThetaCM			(double angle)	{fThetaCM = angle;}
-			void				SetExcitation		(double exci)	{fExcitation = exci;}
+			void				SetExcitation		(double exci)	{fExcitation = exci;initializePrecomputeVariable();}
 			double			GetBeamEnergy() 	const		 	{return fBeamEnergy;}
 			double			GetThetaCM() 		const 			{return fThetaCM;}
 			double			GetExcitation() 	const 			{return fExcitation;}

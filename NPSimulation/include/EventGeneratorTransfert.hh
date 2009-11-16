@@ -69,7 +69,7 @@ public:     // Constructors and Destructors
 public: // Inherit from VEventGenerator class
    void        ReadConfiguration(string);
    void        GenerateEvent(G4Event*, G4ParticleGun*);
-   void	       SetTarget(Target* Target) {if(Target!=0)m_Target = Target;};
+   void	       SetTarget(Target* Target) ;
 
 
 private: // Particle Shoot Option

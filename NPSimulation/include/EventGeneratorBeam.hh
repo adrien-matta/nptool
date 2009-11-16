@@ -36,8 +36,6 @@
 
 using namespace std  ;
 
-
-
 class EventGeneratorBeam : public VEventGenerator
 {
 public:     // Constructor and destructor
@@ -50,7 +48,7 @@ public:     // Inherit from VEventGenerator Class
    void GenerateEvent(G4Event*, G4ParticleGun*);
    void InitializeRootOutput();
 
-   void SetTarget(Target* Target) {if(Target!=0)m_Target = Target;}
+   void SetTarget(Target* Target) ;
 
 
 private: // TTree to store initial value of beam and reaction

@@ -56,7 +56,7 @@ EnergyLoss::~EnergyLoss()
 	{}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-EnergyLoss::EnergyLoss(string Path , int NumberOfSlice=100 , int LiseColumn=0 , int NumberOfMass=1) 
+EnergyLoss::EnergyLoss(string Path , int NumberOfSlice=100 ,  int LiseColumn , int NumberOfMass) 
 	{ 
 	
 	fNumberOfSlice = NumberOfSlice ; 
@@ -68,7 +68,7 @@ EnergyLoss::EnergyLoss(string Path , int NumberOfSlice=100 , int LiseColumn=0 , 
 	cout << "///////////////////////////////// " << endl ;
 	cout << "Initialising an EnergyLoss object " << endl ;
 	
-	 //If LiseColumn is set to 0 File type is expected to be from SRIM
+	 //If LiseColumn is set to 0 File type is expected to be from SRIM or Geant4
 	 if (LiseColumn == 0)
 	 	{
 			// Opening dE/dX file
@@ -82,7 +82,7 @@ EnergyLoss::EnergyLoss(string Path , int NumberOfSlice=100 , int LiseColumn=0 , 
 				return;
 		    }	
 		 
-		else
+	/*	else
 		   	{
 				// Reading Data
 				double energy, nuclear, electronic;
@@ -100,6 +100,24 @@ EnergyLoss::EnergyLoss(string Path , int NumberOfSlice=100 , int LiseColumn=0 , 
 						fdEdX_Nuclear		.push_back ( nuclear ) 				;
 						fdEdX_Electronic	.push_back ( electronic ) 			;
 						fdEdX_Total			.push_back ( nuclear + electronic )	;
+					}
+		   
+		  		// Close File
+		   		TableFile.close();
+		   	}*/
+		   	
+		   	else
+		   	{
+				// Reading Data
+				double energy, total;
+				string dummy;
+				//skipped first line
+				getline(TableFile,dummy);
+				while ( TableFile >> energy)
+				     {
+						fEnergy				.push_back ( energy*MeV )				;
+						TableFile >> total;
+						fdEdX_Total			.push_back ( total*MeV/um )	;
 					}
 		   
 		  		// Close File

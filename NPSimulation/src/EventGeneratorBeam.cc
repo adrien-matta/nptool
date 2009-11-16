@@ -52,6 +52,16 @@ EventGeneratorBeam::~EventGeneratorBeam()
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void	EventGeneratorBeam::SetTarget(Target* Target) 
+   {
+   	if(Target!=0)	
+   		{
+   			m_Target = Target;
+   			m_Target->WriteDEDXTable(m_particle ,0, m_BeamEnergy);
+   		}
+   
+   }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorBeam::ReadConfiguration(string Path)
 {
    ////////General Reading needs////////

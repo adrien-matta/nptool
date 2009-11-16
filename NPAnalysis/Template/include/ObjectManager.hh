@@ -110,6 +110,7 @@ namespace ENERGYLOSS
 		//	Declare your Energy loss here	:
 	/*		EnergyLoss ProtonTarget = EnergyLoss 	(	"CD2.txt" 	,
 														100 		,
+														1,
 														1			);
 	*/
 	}

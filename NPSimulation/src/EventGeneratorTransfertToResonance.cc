@@ -73,7 +73,18 @@ EventGeneratorTransfertToResonance::~EventGeneratorTransfertToResonance()
 	delete m_InitConditions;
 	delete m_Reaction ;
 }
-
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void	EventGeneratorTransfertToResonance::SetTarget(Target* Target) 
+   {
+   	if(Target!=0)	
+   		{
+   			m_Target = Target;
+   			G4int LightZ = m_Reaction->GetNucleus3()->GetZ() ;
+  			G4int LightA = m_Reaction->GetNucleus3()->GetA() ;
+   			m_Target->WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(LightZ,LightA, 0.) ,0, m_BeamEnergy);
+   		}
+   
+   }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorTransfertToResonance::EventGeneratorTransfertToResonance(	  string  	name1          		,
 																	      string   	name2          		,

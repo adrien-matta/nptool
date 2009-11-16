@@ -106,6 +106,26 @@ using namespace NPL ;
 namespace ENERGYLOSS
 	{
 	
+	
+//	//	3He Energy Loss
+//			EnergyLoss He3TargetWind = EnergyLoss 	(	"He3_Mylar.G4table" 		,
+//																									10000	 				);
+//		
+//			EnergyLoss He3TargetGaz = EnergyLoss 		(	"He3_D2.G4table" 	,
+//																									10000	 				);
+//			
+//			EnergyLoss He3StripAl   = EnergyLoss 	(	"3He_Al.txt" 			,
+//														10000						,
+//														1						,
+//														3						);
+//														
+//			EnergyLoss He3StripSi   = EnergyLoss 	(	"3He_Si.txt" 			,
+//														10000						,
+//														1					,
+//														3						);
+														
+
+	
 		//	3He Energy Loss
 			EnergyLoss He3TargetWind = EnergyLoss 	(	"3He_Mylar.txt" 		,
 														10000	 				,
