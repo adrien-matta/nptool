@@ -376,6 +376,11 @@ while(ReadingStatus){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4ParticleGun* particleGun)
 {
+
+				G4int LightZx = m_Reaction->GetNucleus3()->GetZ() ;
+  			G4int LightAx = m_Reaction->GetNucleus3()->GetA() ;
+   			m_Target->WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(LightZx,LightAx, 0.) ,0, 550);
+
    // Clear contents of Precedent event (now stored in ROOTOutput)
    m_InitConditions->Clear();
 

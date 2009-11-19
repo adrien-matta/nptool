@@ -71,58 +71,58 @@ EnergyLoss::EnergyLoss(string Path , int NumberOfSlice=100 ,  int LiseColumn , i
 	 //If LiseColumn is set to 0 File type is expected to be from SRIM or Geant4
 	 if (LiseColumn == 0)
 	 	{
-			// Opening dE/dX file
+				// Opening dE/dX file
 
-		ifstream TableFile	;
-		TableFile.open(Path.c_str())	;
+			ifstream TableFile	;
+			TableFile.open(Path.c_str())	;
 
-		if ( !TableFile )
-		    {
-				cout << "Failed to open file " << Path << endl;
-				return;
-		    }	
-		 
-	/*	else
-		   	{
-				// Reading Data
-				double energy, nuclear, electronic;
-				string unit, dummy;
-				
-				while ( TableFile >> energy >> unit 
-						>> electronic >> nuclear 
-						>> dummy >> dummy >> dummy 
-				    	>> dummy >> dummy >> dummy )
-				     {
-						if ( unit == "keV" ) energy = energy*keV				;
-						if ( unit == "MeV" ) energy = energy*MeV				;
-						if ( unit == "GeV" ) energy = energy*GeV				;
-						fEnergy				.push_back ( energy )				;
-						fdEdX_Nuclear		.push_back ( nuclear ) 				;
-						fdEdX_Electronic	.push_back ( electronic ) 			;
-						fdEdX_Total			.push_back ( nuclear + electronic )	;
-					}
-		   
-		  		// Close File
-		   		TableFile.close();
-		   	}*/
-		   	
-		   	else
-		   	{
-				// Reading Data
-				double energy, total;
-				string dummy;
-				//skipped first line
-				getline(TableFile,dummy);
-				while ( TableFile >> energy)
-				     {
-						fEnergy				.push_back ( energy*MeV )				;
-						TableFile >> total;
-						fdEdX_Total			.push_back ( total*MeV/um )	;
-					}
-		   
-		  		// Close File
-		   		TableFile.close();
-		   	}
+			if ( !TableFile )
+			    {
+					cout << "Failed to open file " << Path << endl;
+					return;
+			    }	
+			 		   	else
+				   	{
+				   	cout << "Reading Energy Loss File: " << Path << endl ;
+						// Reading Data
+						double energy, total;
+						string dummy;
+						//skipped first line
+						getline(TableFile,dummy);
+						while ( TableFile >> energy)
+						     {
+								fEnergy.push_back ( energy*MeV )				;
+								TableFile >> total;
+								fdEdX_Total.push_back ( total*MeV/micrometer )	;
+							}
+				   
+				  		// Close File
+				   		TableFile.close();
+				   	}
+		/*	else
+			   	{
+					// Reading Data
+					double energy, nuclear, electronic;
+					string unit, dummy;
+					
+					while ( TableFile >> energy >> unit 
+							>> electronic >> nuclear 
+							>> dummy >> dummy >> dummy 
+					    	>> dummy >> dummy >> dummy )
+					     {
+							if ( unit == "keV" ) energy = energy*keV				;
+							if ( unit == "MeV" ) energy = energy*MeV				;
+							if ( unit == "GeV" ) energy = energy*GeV				;
+							fEnergy				.push_back ( energy )				;
+							fdEdX_Nuclear		.push_back ( nuclear ) 				;
+							fdEdX_Electronic	.push_back ( electronic ) 			;
+							fdEdX_Total			.push_back ( nuclear + electronic )	;
+						}
+			   
+			  		// Close File
+			   		TableFile.close();
+			   	}*/
+			   
 			
 		}
 		
@@ -141,7 +141,8 @@ EnergyLoss::EnergyLoss(string Path , int NumberOfSlice=100 ,  int LiseColumn , i
 				    }	
 				   
 				else
-				   	{ cout << "Reading Energy Loss File: " << Path << endl ;
+				   	{ 
+				   	cout << "Reading Energy Loss File: " << Path << endl ;
 						// Reading Data
 						double energy=0, energyloss=0;
 						string dummy;				
@@ -226,10 +227,8 @@ double EnergyLoss::EvaluateTotalLoss(double Energy) const
 				return -1000;
 			}
 	
-	   Interpolator* s = new Interpolator( fEnergy , fdEdX_Total )	;   
-	   double val = s->Eval(Energy)									;
-	   
-	   delete s		;   
+	   double val = fInter->Eval(Energy)									;
+	    
 	   return val	;
 	}
 
@@ -267,17 +266,17 @@ double EnergyLoss::Slow(	double Energy 			, // Energy of the detected particle
 			}
 		   
 		delete s		;
-		return slow		;
+		return slow	;
 	}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-double EnergyLoss::EvaluateInitialEnergy(	double Energy 			, // Energy of the detected particle
-		   									double TargetThickness	, // Target Thickness at 0 degree
-		   									double Angle			) // Particle Angle
-		   									const
+double EnergyLoss::EvaluateInitialEnergy(	double Energy 					, // Energy of the detected particle
+		   																		double TargetThickness	, // Target Thickness at 0 degree
+		   																		double Angle						) // Particle Angle
+		   																		const
 	{
 	
 		//	Lise file are given in MeV/u
-		//	For SRIM file fNumberOfMass = 1 whatever is the nucleus, file are given in MeV
+		//	For SRIM and geant4 file fNumberOfMass = 1 whatever is the nucleus, file are given in MeV
 		Energy = Energy / (double) fNumberOfMass ;
 	
 		if (Angle > halfpi) Angle = pi-Angle								;
@@ -288,7 +287,7 @@ double EnergyLoss::EvaluateInitialEnergy(	double Energy 			, // Energy of the de
 		for (int i = 0; i < fNumberOfSlice ; i++) 
 			{
 			    double de = fInter->Eval(Energy) * SliceThickness	;
-			    Energy	+= de/fNumberOfMass							;
+			    Energy	+= de/fNumberOfMass												;
 			}
 			
 		return (Energy*fNumberOfMass)	;

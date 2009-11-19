@@ -568,11 +568,8 @@ void Target::CalculateBeamInteraction(	double MeanPosX, double SigmaPosX, double
 								G4double de   = dedx * EffectiveTargetThicknessBeforeInteraction / m_TargetNbLayers;
 								IncidentBeamEnergy -= de;
 							}
-					
 					}
-			
 			}
-		
 			
 		else
 			{		G4EmCalculator emCalculator;		
@@ -593,7 +590,6 @@ void Target::CalculateBeamInteraction(	double MeanPosX, double SigmaPosX, double
 							G4double de   = dedx * EffectiveTargetThicknessBeforeInteraction / m_TargetNbLayers;
 							IncidentBeamEnergy -= de;
 						}
-			
 			}
 		
 FinalBeamEnergy=IncidentBeamEnergy;
@@ -637,10 +633,10 @@ void Target::WriteDEDXTable(G4ParticleDefinition* Particle ,G4double Emin,G4doub
 		
 		G4EmCalculator emCalculator;
 	
-		for (G4double E=Emin*MeV; E < Emax*MeV; E+=(Emax-Emin)*MeV/10000.) 
+		for (G4double E=Emin; E < Emax; E+=(Emax-Emin)/10000.) 
 						{
 							G4double dedx = emCalculator.ComputeTotalDEDX(E, Particle, m_TargetMaterial);
-							File << E/MeV << "\t" << dedx/(MeV/um) << endl ;
+							File << E/MeV << "\t" << dedx/(MeV/micrometer) << endl ;
 						}
 		File.close();
 		
@@ -652,13 +648,15 @@ void Target::WriteDEDXTable(G4ParticleDefinition* Particle ,G4double Emin,G4doub
 				File	<< "Table from Geant4 generate using NPSimulation \t " 
 					<< "Particle: " << Particle->GetParticleName() << "\tMaterial: " << m_WindowsMaterial->GetName() << endl ;
 					
-				for (G4double E=Emin*MeV; E < Emax*MeV; E+=(Emax-Emin)*MeV/10000.) 
+				for (G4double E=Emin; E < Emax; E+=(Emax-Emin)/10000.) 
 						{
-							G4double dedx = emCalculator.ComputeTotalDEDX(E, Particle, m_WindowsMaterial);
-							File << E/MeV << "\t" << dedx/(MeV/um) << endl ;
+//							G4double dedx = emCalculator.ComputeTotalDEDX(E, Particle, m_WindowsMaterial);
+							  G4double dedx = emCalculator.ComputeDEDX(	E, Particle ,
+                       																		"ionIoni",  m_WindowsMaterial);
+cout << dedx<<endl ;
+							File << E/MeV << "\t" << dedx/(MeV/micrometer) << endl ;
 						}
 			}
-			
-						
 		File.close();
+		
 	}
