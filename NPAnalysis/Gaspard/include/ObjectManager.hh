@@ -104,7 +104,8 @@ using namespace NPL ;
 namespace ENERGYLOSS
 {
    // Declare your Energy loss here
-   EnergyLoss DeutonTargetCD2 = EnergyLoss("deuton_cd2.txt", 100, 1, 2);
+//   EnergyLoss DeutonTargetCD2 = EnergyLoss("deuton_cd2.txt", 100, 1, 2);
+   EnergyLoss DeutonTargetCD2 = EnergyLoss("proton_cd2.txt", 100, 1, 2);
 }
 
 using namespace ENERGYLOSS ;
