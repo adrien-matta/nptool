@@ -292,7 +292,7 @@ void Target::ReadConfiguration(string Path)
 	            cout  << m_TargetZ / mm << " )" << endl ;           
 	         }
 
-	        else if (DataBuffer.compare(0, 9, "NbLayers=") == 0) {
+	        else if (DataBuffer.compare(0, 9, "NBLAYERS=") == 0) {
 	        	check_m_TargetNbLayers = true ;
 	            ConfigFile >> DataBuffer;
 	            m_TargetNbLayers = atoi(DataBuffer.c_str());
@@ -386,7 +386,7 @@ void Target::ReadConfiguration(string Path)
 	            cout << m_TargetZ / mm << " )" << endl ;
 	         }
 
-	        else if (DataBuffer.compare(0, 9, "m_TargetNbLayers=") == 0) {
+	        else if (DataBuffer.compare(0, 9, "NBLAYERS=") == 0) {
 	        	check_m_TargetNbLayers = true ;
 	            ConfigFile >> DataBuffer;
 	            m_TargetNbLayers = atoi(DataBuffer.c_str());
