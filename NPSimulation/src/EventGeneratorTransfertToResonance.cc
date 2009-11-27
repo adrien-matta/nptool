@@ -69,7 +69,7 @@ EventGeneratorTransfertToResonance::EventGeneratorTransfertToResonance()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorTransfertToResonance::~EventGeneratorTransfertToResonance()
 {
-   //------------- Default Destructor ------------
+  //------------- Default Destructor ------------
 	delete m_InitConditions;
 	delete m_Reaction ;
 }
@@ -77,13 +77,7 @@ EventGeneratorTransfertToResonance::~EventGeneratorTransfertToResonance()
 void	EventGeneratorTransfertToResonance::SetTarget(Target* Target) 
    {
    	if(Target!=0)	
-   		{
    			m_Target = Target;
-   			G4int LightZ = m_Reaction->GetNucleus3()->GetZ() ;
-  			G4int LightA = m_Reaction->GetNucleus3()->GetA() ;
-   			m_Target->WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(LightZ,LightA, 0.) ,0, m_BeamEnergy);
-   		}
-   
    }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorTransfertToResonance::EventGeneratorTransfertToResonance(	  string  	name1          		,
@@ -376,6 +370,26 @@ while(ReadingStatus){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4ParticleGun* particleGun)
 {
+
+	//	If first time, write the DeDx table
+	if(anEvent->GetEventID()==0)
+		{
+			//-------------- Before living, wrtie the DeDx Table -------------------
+
+			G4int LightZx = m_Reaction->GetNucleus3()->GetZ() ;
+		  G4int LightAx = m_Reaction->GetNucleus3()->GetA() ;
+		  
+		  G4int BeamZx = m_Reaction->GetNucleus1()->GetZ() ;
+		  G4int BeamAx = m_Reaction->GetNucleus1()->GetA() ;
+		  
+		  if(m_Target!=0)
+		  	{
+		  		m_Target->WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(LightZx,LightAx, 0.) ,0, m_BeamEnergy+4*m_BeamEnergySpread);
+		  		m_Target->WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(BeamZx,BeamAx, 0.) ,0, m_BeamEnergy+4*m_BeamEnergySpread);
+		  	}
+		
+		}
+
    // Clear contents of Precedent event (now stored in ROOTOutput)
    m_InitConditions->Clear();
 

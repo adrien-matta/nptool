@@ -138,7 +138,7 @@ int main(int argc,char** argv)
 					if(M2 -> GetPositionOfInteraction(hit).Z() > 0)
 						{
 							if( M2 -> CsI_E[hit] == 0 && M2 -> Si_E[hit] > 0)
-								{ 
+								{  
 										ELab[hit] = M2 -> Si_E[hit]  ; 
 										
 										ELab[hit]= He3StripAl.EvaluateInitialEnergy(		ELab[hit] 				, // Energy of the detected particle
