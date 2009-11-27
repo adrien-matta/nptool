@@ -31,7 +31,7 @@ namespace GPDSCORERS
 class GPDScorerFirstStageEnergy : public G4VPrimitiveScorer
 {
 public: // with description
-   GPDScorerFirstStageEnergy(G4String name, G4int depth = 0);
+   GPDScorerFirstStageEnergy(G4String name, G4String volumeName, G4int depth = 0);
    virtual ~GPDScorerFirstStageEnergy();
 
 protected: // with description
@@ -45,6 +45,7 @@ public:
    virtual void PrintAll();
 
 private:
+   G4String m_VolumeName;
    G4int HCID;
    G4THitsMap<G4double>* EvtMap;
 };
@@ -54,7 +55,7 @@ private:
 class GPDScorerSecondStageEnergy : public G4VPrimitiveScorer
 {
 public: // with description
-   GPDScorerSecondStageEnergy(G4String name, G4int depth = 0);
+   GPDScorerSecondStageEnergy(G4String name, G4String volumeName, G4int depth = 0);
    virtual ~GPDScorerSecondStageEnergy();
 
 protected: // with description
@@ -68,6 +69,7 @@ public:
    virtual void PrintAll();
 
 private:
+   G4String m_VolumeName;
    G4int HCID;
    G4THitsMap<G4double>* EvtMap;
 };
@@ -77,7 +79,7 @@ private:
 class GPDScorerThirdStageEnergy : public G4VPrimitiveScorer
 {
 public: // with description
-   GPDScorerThirdStageEnergy(G4String name, G4int depth = 0);
+   GPDScorerThirdStageEnergy(G4String name, G4String volumeName, G4int depth = 0);
    virtual ~GPDScorerThirdStageEnergy();
 
 protected: // with description
@@ -91,33 +93,11 @@ public:
    virtual void PrintAll();
 
 private:
+   G4String m_VolumeName;
    G4int HCID;
    G4THitsMap<G4double>* EvtMap;
 };
 
-
-
-class GPDScorerDetectorNumber : public G4VPrimitiveScorer
-{
-public: // with description
-   GPDScorerDetectorNumber(G4String name, G4int depth = 0 , G4String VolumeName = "xxx");
-   virtual ~GPDScorerDetectorNumber();
-
-protected: // with description
-   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-
-public:
-   virtual void Initialize(G4HCofThisEvent*);
-   virtual void EndOfEvent(G4HCofThisEvent*);
-   virtual void Clear();
-   virtual void DrawAll();
-   virtual void PrintAll();
-
-private:
-   G4int HCID;
-   G4THitsMap<G4int>* EvtMap;
-   G4String m_VolumeName ;
-};
 
 
 

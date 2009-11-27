@@ -536,6 +536,9 @@ void GaspardTracker::AddModuleSquare(TVector3 C_X1_Y1,
 {
    m_NumberOfModule++;
 
+   // remove warning using C_X128_Y128
+   C_X128_Y128.Unit();
+
    // Vector U on Module Face (paralelle to Y Strip) (NB: remember that Y strip are allong X axis)
    TVector3 U = C_X128_Y1 - C_X1_Y1;
    U = U.Unit();
@@ -692,6 +695,9 @@ void GaspardTracker::AddModuleDummyShape(TVector3 C_X1_Y1,
 {
    m_NumberOfModule++;
 
+   // remove warning using C_X128_Y128
+   C_X128_Y128.Unit();
+
    // Vector U on Module Face (paralelle to Y Strip) (NB: remember that Y strip are allong X axis)
    TVector3 U = C_X128_Y1 - C_X1_Y1;
    U = U.Unit();
@@ -796,7 +802,7 @@ void GaspardTracker::AddModuleDummyShape(double theta,
    V.Rotate( beta_w * Pi/180. , W ) ;
 
    double Face = 50; // mm
-   double NumberOfStrip = 128;
+   double NumberOfStrip = 25;
    double StripPitch = Face/NumberOfStrip; // mm
 
    vector<double> lineX;

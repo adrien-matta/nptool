@@ -9,7 +9,7 @@
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
  * Creation Date  : January 2009                                             *
- * Last update    :                                                          *
+ * Last update    : 03/11/2009                                               *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  All event generator added in the project should derive from this virtual * 
@@ -21,45 +21,29 @@
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
+ *    + 03/11/09: Adding EffectiveThiknessBeforeInteraction in the           *
+ *                CalculateBeamInteraction() method (N. de Sereville)        *
  *                                                                           *
  *****************************************************************************/
 #include "VEventGenerator.hh"
 
-// ROOT headers
-#include"TMath.h"
+// C++ headers
+#include "cmath"
+
+// G4 headers
+#include "G4UnitsTable.hh"
 
 // CLHEP headers
 #include "Randomize.hh"
 
+
 VEventGenerator::VEventGenerator()
-	{
-	}
+{
+}
+
+
 
 VEventGenerator::~VEventGenerator()
-	{
-	}
+{
+}
 
-void VEventGenerator::RandomGaussian2D(double MeanX,double MeanY,double SigmaX,double SigmaY,double &X,double &Y,double NumberOfSigma)
-	{
-	
-		if(SigmaX!=0)
-			{
-				X=2* NumberOfSigma *SigmaX;
-				while(X>NumberOfSigma*SigmaX)
-				X = RandGauss::shoot( MeanX , SigmaX);
-				double a = NumberOfSigma * SigmaX/2  ;
-				double b = NumberOfSigma * SigmaY/2  ;
-				 
-				double SigmaYPrim = b * sqrt(  1 - X*X / (a*a) ) ;
-				SigmaYPrim = 2*SigmaYPrim / NumberOfSigma ; 
-			
-				Y = RandGauss::shoot( MeanY , SigmaYPrim) ;
-			}
-	
-		 else
-		 	{
-		 		X = MeanX								;
-		 		Y = RandGauss::shoot( MeanY , SigmaY)	;
-		 	}
-	
-	}

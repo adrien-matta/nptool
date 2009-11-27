@@ -46,9 +46,13 @@ private:
 public:
    TInteractionCoordinates();
    virtual ~TInteractionCoordinates();
-
+/*
    void  Clear();
    void  Dump();
+*/
+   void  Clear();
+   void  Clear(const Option_t*) {};
+   void  Dump() const;
 
    /////////////////////           SETTERS           ////////////////////////
    // Incident particle properties (before interactions in the target)

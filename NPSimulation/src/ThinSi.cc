@@ -9,7 +9,7 @@
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
  * Creation Date  : January 2009                                             *
- * Last update    :                                                          *
+ * Last update    : October 2009                                             *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This class describe a 20um Silicium detector                             *
@@ -22,7 +22,7 @@
 // C++ headers
 #include <sstream>
 #include <cmath>
-
+#include <limits>
 //G4 Geometry object
 #include "G4Trd.hh"
 #include "G4Box.hh"
@@ -46,9 +46,9 @@
 // NPTool header
 #include "ThinSi.hh"
 #include "GeneralScorers.hh"
-#include "Must2Scorers.hh"
-#include "MUST2Array.hh"
+#include "ThinSiScorers.hh"
 #include "RootOutput.h"
+using namespace THINSI;
 
 // CLHEP header
 #include "CLHEP/Random/RandGauss.h"
@@ -62,11 +62,17 @@ using namespace CLHEP;
 // ThinSi Specific Method
 ThinSi::ThinSi()
 {
-
+		InitializeMaterial()			;
+		m_Event = new TSSSDData()	;
 }
 
 ThinSi::~ThinSi()
-{}
+{
+		delete m_MaterialSilicon 		;
+   	delete m_MaterialAl 				;
+   	delete m_MaterialVacuum 		;
+
+}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void ThinSi::AddTelescope(G4ThreeVector TL         ,
       G4ThreeVector BL        ,
@@ -125,28 +131,6 @@ void ThinSi::VolumeMaker(	G4int            	DetNumber      	,
    Number << NbrTelescopes                   ;
    DetectorNumber = Number.str()             ;
 
-////////////////////////////////////////////////////////////////
-/////////////////Material Definition ///////////////////////////
-////////////////////////////////////////////////////////////////
-   G4Element* N   = new G4Element("Nitrogen" , "N"  , 7  , 14.01  * g / mole);
-   G4Element* O   = new G4Element("Oxigen"   , "O"  , 8  , 16.00  * g / mole);
-
-   G4double a, z, density;
-   // Si
-   a = 28.0855 * g / mole;
-   density = 2.321 * g / cm3;
-   G4Material* Silicon = new G4Material("Si", z = 14., a, density);
-
-   // Al
-   density = 2.702 * g / cm3;
-   a = 26.98 * g / mole;
-   G4Material* Al = new G4Material("Al", z = 13., a, density);
-
-   //  Vacuum
-   density = 0.000000001 * mg / cm3;
-   G4Material* Vacuum = new G4Material("Vacuum", density, 2);
-   Vacuum->AddElement(N, .7);
-   Vacuum->AddElement(O, .3);
 
 ////////////////////////////////////////////////////////////////
 /////////General Geometry Parameter Definition /////////////////
@@ -162,7 +146,7 @@ void ThinSi::VolumeMaker(	G4int            	DetNumber      	,
    G4Box* solidThinSi = new G4Box(Name, 0.5*DetectorSize, 0.5*DetectorSize, 0.5*FrameThickness*mm);
 
    G4LogicalVolume* logicThinSi =
-      new G4LogicalVolume(solidThinSi, Vacuum, Name, 0, 0);
+      new G4LogicalVolume(solidThinSi, m_MaterialVacuum, Name, 0, 0);
 
    PVPBuffer =
       new G4PVPlacement(G4Transform3D(*Det_rot, Det_pos)  ,
@@ -173,14 +157,14 @@ void ThinSi::VolumeMaker(	G4int            	DetNumber      	,
             0);
 
    // Frame is made of 4 thick box (2 Horizontal and 2 Vertical)
-   G4Box* solidFrameHorizontal = new G4Box(Name + "Frame", 0.5*SiliconSize, 0.5*(DetectorSize - SiliconSize) / 2, 0.5*FrameThickness*mm)   ;
-   G4Box* solidFrameVertical  = new G4Box(Name + "Frame", 0.5*(DetectorSize - SiliconSize) / 2, 0.5*DetectorSize, 0.5*FrameThickness*mm)   ;
+   G4Box* solidFrameHorizontal = new G4Box(Name + "_Frame", 0.5*SiliconSize, 0.5*(DetectorSize - SiliconSize) / 2, 0.5*FrameThickness*mm)   ;
+   G4Box* solidFrameVertical  = new G4Box(Name + "_Frame", 0.5*(DetectorSize - SiliconSize) / 2, 0.5*DetectorSize, 0.5*FrameThickness*mm)   ;
 
    G4LogicalVolume* logicFrameHorizontal =
-      new G4LogicalVolume(solidFrameHorizontal, Al, Name, 0, 0);
+      new G4LogicalVolume(solidFrameHorizontal, m_MaterialAl, Name, 0, 0);
 
    G4LogicalVolume* logicFrameVertical =
-      new G4LogicalVolume(solidFrameVertical, Al, Name, 0, 0);
+      new G4LogicalVolume(solidFrameVertical, m_MaterialAl, Name, 0, 0);
 
    G4ThreeVector FrameTopPosition      = G4ThreeVector(0 ,  0.5 * SiliconSize + 0.5 * (DetectorSize - SiliconSize) / 2 , 0) ;
    G4ThreeVector FrameBottomPosition   = G4ThreeVector(0 , -0.5 * SiliconSize - 0.5 * (DetectorSize - SiliconSize) / 2 , 0) ;
@@ -192,7 +176,7 @@ void ThinSi::VolumeMaker(	G4int            	DetNumber      	,
       new G4PVPlacement(0                 ,
             FrameTopPosition     ,
             logicFrameHorizontal ,
-            Name + "Frame"         ,
+            Name + "_Frame"         ,
             logicThinSi          ,
             false             ,
             0);
@@ -201,7 +185,7 @@ void ThinSi::VolumeMaker(	G4int            	DetNumber      	,
       new G4PVPlacement(0                 ,
             FrameBottomPosition     ,
             logicFrameHorizontal ,
-            Name + "Frame"         ,
+            Name + "_Frame"         ,
             logicThinSi          ,
             false             ,
             0);
@@ -210,7 +194,7 @@ void ThinSi::VolumeMaker(	G4int            	DetNumber      	,
       new G4PVPlacement(0                 ,
             FrameLeftPosition    ,
             logicFrameVertical      ,
-            Name + "Frame"         ,
+            Name + "_Frame"         ,
             logicThinSi          ,
             false             ,
             0);
@@ -219,7 +203,7 @@ void ThinSi::VolumeMaker(	G4int            	DetNumber      	,
       new G4PVPlacement(0                 ,
             FrameRightPosition      ,
             logicFrameVertical      ,
-            Name + "Frame"         ,
+            Name + "_Frame"         ,
             logicThinSi          ,
             false             ,
             0);
@@ -233,39 +217,26 @@ void ThinSi::VolumeMaker(	G4int            	DetNumber      	,
       new G4Box("ThinSiAlu", 0.5*SiliconSize, 0.5*SiliconSize, 0.5*AluThickness) ;
 
    G4LogicalVolume* logicAlu  =
-      new G4LogicalVolume(solidAlu, Al, "logicAlu", 0, 0, 0)    ;
+      new G4LogicalVolume(solidAlu, m_MaterialAl, "logicAlu", 0, 0, 0)    ;
 
    PVPBuffer =
-      new G4PVPlacement(0  ,  posAluFront ,  logicAlu ,  Name + "AluFront"   ,  logicThinSi ,  true, 0)  ;
+      new G4PVPlacement(0  ,  posAluFront ,  logicAlu ,  Name + "_AluFront"   ,  logicThinSi ,  true, 0)  ;
 
    PVPBuffer =
-      new G4PVPlacement(0  ,  posAluBack  ,  logicAlu ,  Name + "AluBack"    ,  logicThinSi ,  true, 0)  ;
+      new G4PVPlacement(0  ,  posAluBack  ,  logicAlu ,  Name + "_AluBack"    ,  logicThinSi ,  true, 0)  ;
 
 
    G4Box*   solidSi  =
       new G4Box("ThinSi", 0.5*SiliconSize, 0.5*SiliconSize, 0.5*SiliconThickness)   ;
 
    G4LogicalVolume* logicSi  =
-      new G4LogicalVolume(solidSi, Silicon, "logicSi", 0, 0, 0)           ;
+      new G4LogicalVolume(solidSi, m_MaterialSilicon, "logicSi", 0, 0, 0)           ;
 
    PVPBuffer =
-      new G4PVPlacement(0, posSi, logicSi, Name + "Si", logicThinSi, true, 0)   ;
+      new G4PVPlacement(0, posSi, logicSi, Name + "_Si", logicThinSi, true, 0)   ;
 
-   //Set Add. Silicon strip sensible
-   //instantiate a new scorer
-   G4MultiFunctionalDetector* ThinSiScorer = new G4MultiFunctionalDetector("ThinSi" + DetectorNumber);
    //attach it to the Silicon plate
-   logicSi ->SetSensitiveDetector(ThinSiScorer);
-   //and declare it to the SDManager
-   G4SDManager::GetSDMpointer()->AddNewDetector(ThinSiScorer);
-
-   //instantiate primitive scorer
-   G4VPrimitiveScorer* ThinSiEnergy       ;
-
-   //create primitive scorer
-   ThinSiEnergy = new MUST2::PSStripE("StripEnergy", 0)    ;
-   //and register it to the multifunctionnal detector
-   ThinSiScorer->RegisterPrimitive(ThinSiEnergy)      ;
+   logicSi ->SetSensitiveDetector(m_StripScorer);
 
 }
 
@@ -303,7 +274,7 @@ void ThinSi::ReadConfiguration(string Path)
       
 	      	getline(ConfigFile, LineBuffer);
 
-			//	If line is a Start Up MUST2 bloc, Reading toggle to true      
+			//	If line is a Start Up ThinSi bloc, Reading toggle to true      
 	      	if (LineBuffer.compare(0, 6, "ThinSi") == 0) 
 		      	{
 		        	 G4cout << "///" << G4endl           ;
@@ -322,7 +293,7 @@ void ThinSi::ReadConfiguration(string Path)
 					ConfigFile >> DataBuffer ;
 
 					//	Comment Line 
-					if (DataBuffer.compare(0, 1, "%") == 0) {/*do nothing */;}
+					if (DataBuffer.compare(0, 1, "%") == 0) {	ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
 
 						//	Finding another telescope (safety), toggle out
 					else if (DataBuffer.compare(0, 6, "ThinSi") == 0) {
@@ -583,52 +554,167 @@ void ThinSi::InitializeRootOutput()
 {
    RootOutput *pAnalysis = RootOutput::getInstance();
    TTree *pTree = pAnalysis->GetTree();
-   pTree->Branch("ThinSiEnergy", &m_Energy, "ThinSiEnergy/D") ;
+   pTree->Branch("ThinSi", "TSSSDData", &m_Event) ;
 }
 
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
 void ThinSi::ReadSensitive(const G4Event* event)
 {
-   G4String DetectorNumber    ;
-   m_Energy = 0 ;
+  	m_Event->Clear();
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////// Used to Read Event Map of detector //////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 
 // Si
-   std::map<G4int, G4double*>::iterator Energy_itr     ;
-   G4THitsMap<G4double>* EnergyHitMap              ;
+	G4THitsMap<G4int>*	  DetNbrHitMap							;  
+	G4THitsMap<G4int>*	  StripNbrHitMap						;    
+	G4THitsMap<G4double>* EnergyHitMap            	;
+	G4THitsMap<G4double>* TimeHitMap             		;
 
-
-
+	std::map<G4int, G4int*>::iterator DetNbr_itr  	;
+	std::map<G4int, G4int*>::iterator StripNbr_itr  ;
+	std::map<G4int, G4double*>::iterator Energy_itr ;
+	std::map<G4int, G4double*>::iterator Time_itr   ;
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
-
-   G4int NumberOfDetector = m_DefinitionType.size()  ;
-   for (G4int i = 0 ; i < NumberOfDetector ; i++) {
-      G4int k = i + 1;
-      ostringstream buffer;
-      buffer << k;
-      DetectorNumber = buffer.str();
-
       // Read the Scorer associate to the Silicon Strip
+
+			//DetectorNumber	
+      G4int DetNbrCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThinSi_StripScorer/DetectorNumber")   	;
+      DetNbrHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(DetNbrCollectionID))                 				;
+      DetNbr_itr = DetNbrHitMap->GetMap()->begin()                                                       								;
+      
+      //StripNumber	
+      G4int StripNbrCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThinSi_StripScorer/StripNumber")  			;
+      StripNbrHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripNbrCollectionID))                 			;
+
       //Energy
-      G4int StripEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThinSi" + DetectorNumber + "/StripEnergy")   ;
-      EnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripEnergyCollectionID))                 ;
-      Energy_itr = EnergyHitMap->GetMap()->begin()                                                       ;
+      G4int StripEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThinSi_StripScorer/StripEnergy")   		;
+      EnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripEnergyCollectionID))                 		;
 
-      // Loop on Strip energy
-      for (G4int l = 0 ; l < EnergyHitMap->entries() ; l++) {
-         //G4int ETrackID  =   Energy_itr->first      ;
-         G4double E     = *(Energy_itr->second)    ;
+			//Time
+      G4int StripTimeCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThinSi_StripScorer/StripTime")   				;
+      TimeHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripTimeCollectionID))                 				;
 
-         if (E > 0) {
-            m_Energy = RandGauss::shoot(E, ResoEnergy);
-         }
+		  G4int sizeN = DetNbrHitMap		->entries() 	;
+		  G4int sizeS = StripNbrHitMap	->entries() ;
+	    G4int sizeE = EnergyHitMap		->entries() 	;
+	    G4int sizeT = TimeHitMap			->entries() 		;
+  
+		// Loop on Det Number
+    for (G4int l = 0 ; l < sizeN ; l++) 
+				{
+	        G4int N     =      *(DetNbr_itr->second)    ;
+	        G4int NTrackID  =   DetNbr_itr->first - N		;
+	      
+	        if (N > 0) 
+						{
+								m_Event->SetEnergyDetectorNbr(N)						;
+								m_Event->SetTimeDetectorNbr(N)						;
+								
+						//  Strip Number
+				        StripNbr_itr = StripNbrHitMap->GetMap()->begin();
+				        for (G4int h = 0 ; h < sizeS ; h++) {
+				            G4int STrackID  =   StripNbr_itr->first  - N    ;
+				            G4int S         = *(StripNbr_itr->second)      	;
+										
+				            if (STrackID == NTrackID) {
+				             	 m_Event->SetEnergyStripNbr(S)		;
+				             	 m_Event->SetTimeStripNbr(S)		;
+				            }
+				            
+				            StripNbr_itr++;
+				        	}
+								
+						//  Energy
+				        Energy_itr = EnergyHitMap->GetMap()->begin();
+				        for (G4int h = 0 ; h < sizeE ; h++) {
+				            G4int ETrackID  =   Energy_itr->first  - N    ;
+				            G4double E      = *(Energy_itr->second)      	;
 
-      }
-      // clear map for next event
-      EnergyHitMap   ->clear()   ;
-   }
+				            if (ETrackID == NTrackID) {
+				               m_Event->SetEnergy( RandGauss::shoot(E, ResoEnergy ) )    ;
+				            }
+				            
+				            Energy_itr++;
+				        	}
+
+
+				        //  Time
+				        Time_itr = TimeHitMap->GetMap()->begin();
+				        for (G4int h = 0 ; h < sizeT ; h++) {
+				            G4int TTrackID  =   Time_itr->first   - N    ;
+				            G4double T     = *(Time_itr->second)      ;
+
+				            if (TTrackID == NTrackID) {
+				               	m_Event->SetTime( RandGauss::shoot(T, ResoTime ) )    ;
+				            }
+				            
+				            Time_itr++;
+				        }
+
+	       	 }
+
+	        DetNbr_itr++;
+   		}
+    
+    // clear map for next event
+    
+    DetNbrHitMap    	->clear()	;
+    StripNbrHitMap    ->clear()	;
+    EnergyHitMap   		->clear() ; 
+    TimeHitMap				->clear()	;    
 }
+
+
+void ThinSi::InitializeScorers()
+	{
+
+		//	Silicon Associate Scorer
+			m_StripScorer = new G4MultiFunctionalDetector("ThinSi_StripScorer");
+			
+			G4VPrimitiveScorer* DetNbr 														= new GENERALSCORERS::PSDetectorNumber("DetectorNumber","ThinSi_", 0)  	;
+			G4VPrimitiveScorer* StripNbr 													= new PSStripNumber("StripNumber",0,SiliconSize, NumberOfStrip)		; 
+			G4VPrimitiveScorer* Energy 														= new GENERALSCORERS::PSEnergy("StripEnergy","ThinSi_", 0)             	;			
+			G4VPrimitiveScorer* TOF 															= new GENERALSCORERS::PSTOF("StripTime","ThinSi_", 0)                  	;          					 		 
+			
+
+		//and register it to the multifunctionnal detector
+			m_StripScorer->RegisterPrimitive(DetNbr)             				;
+			m_StripScorer->RegisterPrimitive(StripNbr)             			;
+			m_StripScorer->RegisterPrimitive(Energy)             				;
+			m_StripScorer->RegisterPrimitive(TOF)                				;
+
+	 	//	Add All Scorer to the Global Scorer Manager
+		  G4SDManager::GetSDMpointer()->AddNewDetector(m_StripScorer) ;
+		}
+
+////////////////////////////////////////////////////////////////
+/////////////////Material Definition ///////////////////////////
+////////////////////////////////////////////////////////////////
+void ThinSi::InitializeMaterial()
+	{
+
+		 G4Element* N   = new G4Element("Nitrogen" , "N"  , 7  , 14.01  * g / mole);
+	   G4Element* O   = new G4Element("Oxigen"   , "O"  , 8  , 16.00  * g / mole);
+
+	   G4double a, z, density;
+	   // Si
+	   a = 28.0855 * g / mole;
+	   density = 2.321 * g / cm3;
+	   m_MaterialSilicon = new G4Material("Si", z = 14., a, density);
+
+	   // Al
+	   density = 2.702 * g / cm3;
+	   a = 26.98 * g / mole;
+	   m_MaterialAl = new G4Material("Al", z = 13., a, density);
+
+	   //  Vacuum
+	   density = 0.000000001 * mg / cm3;
+	   m_MaterialVacuum = new G4Material("Vacuum", density, 2);
+	   m_MaterialVacuum->AddElement(N, .7);
+	   m_MaterialVacuum->AddElement(O, .3);
+	}
+
+

@@ -21,6 +21,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <limits>
 
 #include "RootInput.h"
 
@@ -89,7 +90,12 @@ RootInput::RootInput(string configFileName)
             while (!inputConfigFile.eof()) {
                inputConfigFile >> dataBuffer;
 
-               if (!inputConfigFile.eof()) {
+               // ignore comment Line 
+               if (dataBuffer.compare(0, 1, "%") == 0) {
+                  inputConfigFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+               }
+
+               else if (!inputConfigFile.eof()) {
                   pRootChain->Add(dataBuffer.c_str());
                   cout << "Adding file " << dataBuffer << " to TChain" << endl;
                }

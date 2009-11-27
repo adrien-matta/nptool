@@ -31,7 +31,6 @@
 
 using namespace std;
 
-#define INDEX	200
 
 
 class GaspardTrackerAnnular : public GaspardTrackerModule

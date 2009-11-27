@@ -24,6 +24,7 @@
 // C++ headers
 #include <iostream>
 #include <fstream>
+#include <limits>
 
 // G4 header defining G4 types
 #include "globals.hh"
@@ -48,18 +49,32 @@ using namespace CLHEP;
 EventGeneratorTransfert::EventGeneratorTransfert()
 {
    //------------- Default Constructor -------------
-   m_InitConditions	= new TInitialConditions()	;
-   m_Reaction = new Reaction()					;
+   m_InitConditions	= new TInitialConditions();
+   m_Reaction 		= new Reaction();
+   m_Target		= 0;
 
-   m_BeamEnergy       = 0;
-   m_BeamEnergySpread = 0;
-   m_SigmaX        = 0;
-   m_SigmaY        = 0;
-   m_SigmaThetaX      = 0;
-   m_SigmaPhiY=0 ;
-   m_ShootLight       = 0;
-   m_ShootHeavy       = 0;
+   m_BeamEnergy		= 0;
+   m_BeamEnergySpread	= 0;
+   m_SigmaX		= 0;
+   m_SigmaY		= 0;
+   m_SigmaThetaX	= 0;
+   m_SigmaPhiY		= 0;
+   m_ShootLight		= 0;
+   m_ShootHeavy		= 0;
 }
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void EventGeneratorTransfert::SetTarget(Target* Target) 
+{
+   if (Target != 0) {
+      m_Target = Target;
+      G4int LightZ = m_Reaction->GetNucleus3()->GetZ();
+      G4int LightA = m_Reaction->GetNucleus3()->GetA();
+      m_Target->WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(LightZ,LightA, 0.) ,0, m_BeamEnergy);
+   }
+}
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorTransfert::~EventGeneratorTransfert()
@@ -173,7 +188,7 @@ while(ReadingStatus){
  			 ReactionFile >> DataBuffer;
  			 
  			 //Search for comment Symbol %
-	      	 if (DataBuffer.compare(0, 1, "%") == 0) {/* Do Nothing */;}
+	      	 if (DataBuffer.compare(0, 1, "%") == 0) {	ReactionFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
  			 
 	         else if (DataBuffer.compare(0, 5, "Beam=") == 0) {
 	         	check_Beam = true ;
@@ -313,55 +328,86 @@ while(ReadingStatus){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* particleGun)
 {	
+	//	If first time, write the DeDx table
+	if(anEvent->GetEventID()==0)
+		{
+			//-------------- Before living, wrtie the DeDx Table -------------------
+
+			G4int LightZx = m_Reaction->GetNucleus3()->GetZ() ;
+		  G4int LightAx = m_Reaction->GetNucleus3()->GetA() ;
+		  
+		  G4int BeamZx = m_Reaction->GetNucleus1()->GetZ() ;
+		  G4int BeamAx = m_Reaction->GetNucleus1()->GetA() ;
+		  
+		  if(m_Target!=0)
+		  	{
+		  		m_Target->WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(LightZx,LightAx, 0.) ,0, m_BeamEnergy+4*m_BeamEnergySpread);
+		  		m_Target->WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(BeamZx,BeamAx, 0.) ,0, m_BeamEnergy+4*m_BeamEnergySpread);
+		  	}
+		
+		}
+
+
+
    // Clear contents of Precedent event (now stored in ROOTOutput)
    m_InitConditions->Clear();
 
    //////////////////////////////////////////////////
    //////Define the kind of particle to shoot////////
    //////////////////////////////////////////////////
+   // Light
    G4int LightZ = m_Reaction->GetNucleus3()->GetZ() ;
    G4int LightA = m_Reaction->GetNucleus3()->GetA() ;
 
    G4ParticleDefinition* LightName
    = G4ParticleTable::GetParticleTable()->GetIon(LightZ, LightA, 0.);
 
+   // Recoil
    G4int HeavyZ = m_Reaction->GetNucleus4()->GetZ() ;
    G4int HeavyA = m_Reaction->GetNucleus4()->GetA() ;
 
    G4ParticleDefinition* HeavyName
    = G4ParticleTable::GetParticleTable()->GetIon(HeavyZ, HeavyA, m_Reaction->GetExcitation()*MeV);
 
-   // Vertex position and beam angle inte world frame
-   G4double x0 = 1000 * cm  	;
-   G4double y0 = 1000 * cm  	;
-   G4double Beam_thetaX = 0  	;
-   G4double Beam_phiY   = 0  	;
+   // Beam
+   G4int BeamZ = m_Reaction->GetNucleus1()->GetZ();
+   G4int BeamA = m_Reaction->GetNucleus1()->GetA();
+   G4ParticleDefinition* BeamName = G4ParticleTable::GetParticleTable()->GetIon(BeamZ, BeamA, 0);
+
+   ///////////////////////////////////////////////////////////////////////
+   ///// Calculate the incident beam direction as well as the vertex /////
+   ///// of interaction in target and Energy Loss of the beam within /////
+   ///// the target.                                                 /////
+   ///////////////////////////////////////////////////////////////////////
+   G4ThreeVector InterCoord;
    
-   //shoot inside the target with correlated angle
-   if (m_TargetRadius != 0) {
-      while (sqrt(x0*x0 + y0*y0) > m_TargetRadius) {
-         RandomGaussian2D(0, 0, m_SigmaX, m_SigmaThetaX, x0, Beam_thetaX);
-         RandomGaussian2D(0, 0, m_SigmaY, m_SigmaPhiY  , y0, Beam_phiY  );
-      }
-   }
-   else {
-      RandomGaussian2D(0,0,0,m_SigmaThetaX,x0,Beam_thetaX);
-      RandomGaussian2D(0,0,0,m_SigmaPhiY  ,y0,Beam_phiY  );
-   }
+   G4double Beam_thetaX = 0, Beam_phiY = 0;
+   G4double Beam_theta  = 0, Beam_phi  = 0;
+   G4double FinalBeamEnergy = 0 ;
+   G4double InitialBeamEnergy = RandGauss::shoot(m_BeamEnergy, m_BeamEnergySpread);
+   
+   m_Target->CalculateBeamInteraction(0, m_SigmaX, 0, m_SigmaThetaX,
+                                      0, m_SigmaY, 0, m_SigmaPhiY,
+				      InitialBeamEnergy,
+				      BeamName,
+				      InterCoord, Beam_thetaX, Beam_phiY,
+                                      Beam_theta, Beam_phi,
+				      FinalBeamEnergy);
+				                           	 	
+   m_Reaction->SetBeamEnergy(FinalBeamEnergy);
+   m_InitConditions->SetICIncidentEnergy(FinalBeamEnergy / MeV);
+  
+   // write vertex position to ROOT file
+   G4double x0 = InterCoord.x();
+   G4double y0 = InterCoord.y();
+   G4double z0 = InterCoord.z();
+   m_InitConditions->SetICPositionX(x0);//
+   m_InitConditions->SetICPositionY(y0);//
+   m_InitConditions->SetICPositionZ(z0);//
 
    // write emittance angles to ROOT file
    m_InitConditions->SetICIncidentEmittanceTheta(Beam_thetaX / deg);
    m_InitConditions->SetICIncidentEmittancePhi(Beam_phiY / deg);
-
-   // Calculate Angle in spherical coordinate, passing by the direction vector dir	
-   G4double Xdir =  cos(pi/2. - Beam_thetaX);
-   G4double Ydir =  cos(pi/2. - Beam_phiY  );
-   G4double Zdir =  sin(pi/2. - Beam_thetaX) + sin(pi/2. - Beam_phiY);	
-	
-   G4double Beam_theta = acos(Zdir / sqrt(Xdir*Xdir + Ydir*Ydir + Zdir*Zdir)) * rad;
-   G4double Beam_phi   = atan2(Ydir, Xdir) * rad;
-   if (Beam_phi   < 0)    Beam_phi += 2*pi;
-   if (Beam_theta < 1e-6) Beam_phi  = 0;
 
    // write angles to ROOT file
    m_InitConditions->SetICIncidentAngleTheta(Beam_theta / deg);
@@ -386,11 +432,7 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
    ///// Angles for emitted particles following Cross Section //////
    ///// Angles are in the beam frame                         //////
    /////////////////////////////////////////////////////////////////
-   // Beam incident energy
-   G4double NominalBeamEnergy = m_BeamEnergy;
-   G4double IncidentBeamEnergy = RandGauss::shoot(NominalBeamEnergy, m_BeamEnergySpread / 2.35);
-   m_Reaction->SetBeamEnergy(IncidentBeamEnergy);
-   m_InitConditions->SetICIncidentEnergy(IncidentBeamEnergy / MeV);
+
    // Angles
    RandGeneral CrossSectionShoot(m_Reaction->GetCrossSection(), m_Reaction->GetCrossSectionSize());
    G4double ThetaCM = CrossSectionShoot.shoot() * (180*deg);
@@ -421,18 +463,6 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
    // write angles/energy to ROOT file
    m_InitConditions->SetICEmittedAngleThetaLabIncidentFrame(ThetaLight / deg);
    m_InitConditions->SetICEmittedEnergy(EnergyLight/MeV);
-   //must shoot inside the target.
-   G4double z0 = (-m_TargetThickness / 2 + RandFlat::shoot() * m_TargetThickness);
-
-   // Move to the target
-   x0 += m_TargetX ;
-   y0 += m_TargetY ;
-   z0 += m_TargetZ ;
-
-   // write vertex position to ROOT file
-   m_InitConditions->SetICPositionX(x0);
-   m_InitConditions->SetICPositionY(y0);
-   m_InitConditions->SetICPositionZ(z0);
 
    //////////////////////////////////////////////////
    ///////// Set up everything for shooting /////////
@@ -455,16 +485,13 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
       // write angles in ROOT file
       m_InitConditions->SetICEmittedAngleThetaLabWorldFrame(theta_world / deg);
       m_InitConditions->SetICEmittedAnglePhiWorldFrame(phi_world / deg);
-      // tests
-//      G4cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXX" << G4endl;
-//      G4cout << "cinematique dans ref world : " << G4endl;
-//      G4cout << "\t" << momentum_kine_world << G4endl;
+      
       //Set the gun to shoot
       particleGun->SetParticleMomentumDirection(momentum_kine_world);
       //Shoot the light particle
       particleGun->GeneratePrimaryVertex(anEvent);
    }
-   if (m_ShootHeavy) { // Case of recoil particle
+   if (m_ShootHeavy) { // Case of heavy particle
       // Particle type
       particleGun->SetParticleDefinition(HeavyName);
       // Particle energy
@@ -491,36 +518,30 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventGeneratorTransfert::SetEverything(string name1             ,        // Beam nuclei
-		             string name2             ,        // Target nuclei
-		             string name3             ,        // Product of reaction
-		             string name4             ,        // Product of reaction
-		             double BeamEnergy        ,        // Beam Energy
-		             double ExcitationEnergy  ,        // Excitation of Heavy Nuclei
-		             double BeamEnergySpread  ,
-		             double SigmaX         ,
-		             double SigmaY         ,
-		             double SigmaThetaX       ,
-		             double SigmaPhiY  ,
-		             bool   ShootLight        ,
-		             bool   ShootHeavy        ,
-		             string Path) 
+void EventGeneratorTransfert::SetEverything(string name1,		// Beam nuclei
+                                            string name2,		// Target nuclei
+                                            string name3,		// Product of reaction
+                                            string name4,		// Product of reaction
+                                            double BeamEnergy,		// Beam Energy
+                                            double ExcitationEnergy,	// Excitation of Heavy Nuclei
+                                            double BeamEnergySpread,
+                                            double SigmaX,
+                                            double SigmaY,
+                                            double SigmaThetaX,
+                                            double SigmaPhiY,
+                                            bool   ShootLight,
+                                            bool   ShootHeavy,
+                                            string Path) 
 {
-   m_Reaction = new Reaction(	name1					, 
-				name2					,
-	 			name3					,
-	 			name4					,
-				BeamEnergy 				,
-				ExcitationEnergy				,
-				Path 					);	
+   m_Reaction = new Reaction(name1, name2, name3, name4, BeamEnergy, ExcitationEnergy, Path);	
 		
-   m_BeamEnergy       =  BeamEnergy        ;
-   m_BeamEnergySpread =  BeamEnergySpread  ;
-   m_SigmaX        =  SigmaX         ;
-   m_SigmaY        =  SigmaY         ;
-   m_SigmaThetaX      =  SigmaThetaX       ;
-   m_SigmaPhiY      =  SigmaPhiY      ;
-   m_ShootLight       =  ShootLight        ;
-   m_ShootHeavy       =  ShootHeavy        ;
+   m_BeamEnergy       =  BeamEnergy;
+   m_BeamEnergySpread =  BeamEnergySpread;
+   m_SigmaX           =  SigmaX;
+   m_SigmaY           =  SigmaY;
+   m_SigmaThetaX      =  SigmaThetaX;
+   m_SigmaPhiY        =  SigmaPhiY;
+   m_ShootLight       =  ShootLight;
+   m_ShootHeavy       =  ShootHeavy;
 }
-
+ 

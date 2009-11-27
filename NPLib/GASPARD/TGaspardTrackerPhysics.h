@@ -27,6 +27,7 @@
 #include <vector>
 #include "TObject.h"
 #include "TGaspardTrackerData.h"
+#include <cstdlib>
 
 using namespace std ;
 
@@ -38,6 +39,7 @@ public:
 
 public: 
    void Clear();	
+   void Clear(const Option_t*) {};	
    void BuildPhysicalEvent(TGaspardTrackerData* Data);
    void BuildSimplePhysicalEvent(TGaspardTrackerData* Data);
 

@@ -8,11 +8,13 @@
 /*****************************************************************************
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
- * Creation Date  : January 2009                                             *
+ * Creation Date  : September 2009                                           *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe a 20um Silicium detector                             *
+ *  This class describe a Modular cylindrical Plastic Scintillator           *
+ *	Few Material are instantiate and user can choose position and dimension	 * 
+ *  but also the adding of a lead plate on the rear side of the detector     *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -22,7 +24,7 @@
 // C++ headers
 #include <sstream>
 #include <cmath>
-
+#include <limits>
 //G4 Geometry object
 #include "G4Tubs.hh"
 
@@ -41,9 +43,9 @@
 
 // NPTool header
 #include "Plastic.hh"
-#include "PlasticScorers.hh"
+#include "GeneralScorers.hh"
 #include "RootOutput.h"
-
+using namespace GENERALSCORERS ;
 // CLHEP header
 #include "CLHEP/Random/RandGauss.h"
 
@@ -56,7 +58,7 @@ namespace PLASTIC
 {
    // Energy and time Resolution
    const G4double ResoTime    = 4.2      	;// = 10ns of Resolution   //   Unit is MeV/2.35
-   const G4double ResoEnergy  = 0.42   		;// = 1MeV of Resolution   //   Unit is MeV/2.35
+   const G4double ResoEnergy  = 5.0   		;// Resolution in %
 
 }
 
@@ -73,25 +75,31 @@ Plastic::Plastic()
 
 Plastic::~Plastic()
 {
-	delete m_MaterialPlastic	; 
-	delete m_MaterialLead		;
-	delete m_PlasticScorer		;
+	delete m_MaterialPlastic_BC400		; 
+	delete m_MaterialPlastic_BC452_2	;
+	delete m_MaterialPlastic_BC452_5	;
+	delete m_MaterialPlastic_BC452_10	;
+	delete m_MaterialLead							;
+	delete m_PlasticScorer						;
 }
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void Plastic::AddPlastic(	G4double    R        			,
-        					G4double    Theta    			,
-         			 		G4double    Phi         		,
-         			 		G4double	 PlasticThickness	,
-         			 		G4double	 PlasticRadius		,
-         			 		G4double 	LeadThickness		)
+void Plastic::AddPlastic(	G4double  R        					,
+				        					G4double  Theta    					,
+				         			 		G4double  Phi         			,
+				         			 		G4double	PlasticThickness	,
+				         			 		G4double	PlasticRadius			,
+				         			 		G4String 	Scintillator			,
+				         			 		G4double 	LeadThickness			)
 {
 
-   m_R.push_back(R)              		;
-   m_Theta.push_back(Theta)         	;
-   m_Phi.push_back(Phi)          		;
-   m_PlasticThickness.push_back(PlasticThickness)					;
- 	m_PlasticRadius.push_back(PlasticRadius)						;
- 	m_LeadThickness.push_back(LeadThickness);
+  m_R.push_back(R)              									;
+  m_Theta.push_back(Theta)        								;
+  m_Phi.push_back(Phi)          									;
+  m_PlasticThickness.push_back(PlasticThickness)	;
+ 	m_PlasticRadius.push_back(PlasticRadius)				;
+ 	m_LeadThickness.push_back(LeadThickness)				;
+ 	m_Scintillator.push_back(Scintillator)					;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -104,12 +112,13 @@ void Plastic::AddPlastic(	G4double    R        			,
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
 void Plastic::ReadConfiguration(string Path)
 {
-   ifstream ConfigFile           ;
-   ConfigFile.open(Path.c_str()) ;
-   string LineBuffer          ;
-   string DataBuffer          ;
+	ifstream ConfigFile           ;
+	ConfigFile.open(Path.c_str()) ;
+	string LineBuffer          ;
+	string DataBuffer          ;
 
-   G4double Theta = 0 , Phi = 0 , R = 0 , Thickness = 0 , Radius = 0 , LeadThickness = 0;
+	G4double Theta = 0 , Phi = 0 , R = 0 , Thickness = 0 , Radius = 0 , LeadThickness = 0;
+	G4String Scintillator ;
 
 	bool check_Theta = false   ;
 	bool check_Phi  = false  ;
@@ -117,6 +126,7 @@ void Plastic::ReadConfiguration(string Path)
 	bool check_Thickness = false  		;
 	bool check_Radius = false  			;
 	bool check_LeadThickness = false		;
+	bool check_Scintillator = false		;
 	bool ReadingStatus = false ;
 	
 
@@ -125,7 +135,7 @@ void Plastic::ReadConfiguration(string Path)
       
 	      	getline(ConfigFile, LineBuffer);
 
-			//	If line is a Start Up MUST2 bloc, Reading toggle to true      
+			//	If line is a Start Up Plastic bloc, Reading toggle to true      
 	      	if (LineBuffer.compare(0, 7, "Plastic") == 0) 
 		      	{
 		        	 G4cout << "///" << G4endl           ;
@@ -144,7 +154,7 @@ void Plastic::ReadConfiguration(string Path)
 					ConfigFile >> DataBuffer ;
 
 					//	Comment Line 
-					if (DataBuffer.compare(0, 1, "%") == 0) {/*do nothing */;}
+					if (DataBuffer.compare(0, 1, "%") == 0) {	ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
 
 						//	Finding another telescope (safety), toggle out
 					else if (DataBuffer.compare(0, 6, "Plastic") == 0) {
@@ -193,6 +203,13 @@ void Plastic::ReadConfiguration(string Path)
 						cout << "Plastic Thickness:  " << Thickness/mm << endl;
 					}
 					
+					else if (DataBuffer.compare(0, 13, "Scintillator=") == 0) {
+						check_Scintillator = true ;
+						ConfigFile >> DataBuffer ;
+						Scintillator = DataBuffer ;
+						cout << "Plastic Scintillator type:  " << Scintillator << endl;
+					}
+					
 					else if (DataBuffer.compare(0, 14, "LeadThickness=") == 0) {
 						check_LeadThickness = true;
 						ConfigFile >> DataBuffer ;
@@ -209,14 +226,15 @@ void Plastic::ReadConfiguration(string Path)
 			         	/////////////////////////////////////////////////
 			         	//	If All necessary information there, toggle out
 			         
-			         if ( check_Theta && check_Phi && check_R && check_Thickness && check_Radius && check_LeadThickness) 
+			         if ( check_Theta && check_Phi && check_R && check_Thickness && check_Radius && check_LeadThickness && check_Scintillator) 
 			         	{ 
-		         		  AddPlastic(	R       	,
-		                  				Theta    	,
-		                  				Phi   		,
-		                  				Thickness	,
-		                  				Radius		,
-		                  				LeadThickness);
+		         		  AddPlastic(	R       		,
+		                  				Theta    		,
+		                  				Phi   			,
+		                  				Thickness		,
+		                  				Radius			,
+		                  				Scintillator	,
+		                  				LeadThickness	);
 					         
 					        //	Reinitialisation of Check Boolean 
 					        
@@ -226,6 +244,7 @@ void Plastic::ReadConfiguration(string Path)
 							check_Thickness = false  		;
 							check_Radius = false  			;
 							check_LeadThickness = false		;
+							check_Scintillator = false 		;
 							ReadingStatus = false 			;	
 							cout << "///"<< endl ;	         
 			         	}
@@ -241,14 +260,14 @@ void Plastic::ConstructDetector(G4LogicalVolume* world)
 {
    	G4ThreeVector Det_pos = G4ThreeVector(0, 0, 0)  ;
 	
-   for (ushort i = 0 ; i < m_R.size() ; i++) 
+   for (unsigned short i = 0 ; i < m_R.size() ; i++) 
    	{
          G4double wX = m_R[i] * sin(m_Theta[i] ) * cos(m_Phi[i] )   ;
          G4double wY = m_R[i] * sin(m_Theta[i] ) * sin(m_Phi[i] )   ;
          G4double wZ = m_R[i] * cos(m_Theta[i] )             		;
 
          Det_pos = G4ThreeVector(wX, wY, wZ)                 ;
-         G4LogicalVolume* logicPlastic = NULL ;
+//         G4LogicalVolume* logicPlastic = NULL ;
 			
 		VolumeMaker(Det_pos , i+1, world) ;
     }
@@ -269,6 +288,20 @@ void Plastic::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume*
 		
 		int i = DetNumber-1;
 
+		G4Material* PlasticMaterial ;
+		
+			 if(m_Scintillator[i] == "BC400"    ) PlasticMaterial = m_MaterialPlastic_BC400 	;
+		else if(m_Scintillator[i] == "BC452_2"  ) PlasticMaterial = m_MaterialPlastic_BC452_2 	;
+		else if(m_Scintillator[i] == "BC452_5"  ) PlasticMaterial = m_MaterialPlastic_BC452_5	;
+		else if(m_Scintillator[i] == "BC452_10" ) PlasticMaterial = m_MaterialPlastic_BC452_10	;
+		else {	
+				G4cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl ;
+				G4cout << "WARNING: Material Not found, default material set : BC400" << endl ; 
+				G4cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl ;
+				PlasticMaterial = m_MaterialPlastic_BC400;
+			}
+		
+		
 		// Definition of the volume containing the sensitive detector
 		if(m_PlasticThickness[i]>0 && m_PlasticRadius[i]>0)
 			{ 
@@ -279,7 +312,7 @@ void Plastic::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume*
 			                            			0*deg					, 
 			                            			360*deg					);
 		                            		
-				G4LogicalVolume* logicPlastic = new G4LogicalVolume(solidPlastic, m_MaterialPlastic, Name, 0, 0, 0);
+				G4LogicalVolume* logicPlastic = new G4LogicalVolume(solidPlastic, PlasticMaterial, Name+ "_Scintillator", 0, 0, 0);
 				logicPlastic->SetSensitiveDetector(m_PlasticScorer);
 				
 				G4VisAttributes* PlastVisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 0.9)) ;
@@ -290,7 +323,7 @@ void Plastic::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume*
 				PVPBuffer = new G4PVPlacement(	0				,
 												Det_pos			,
 		                                     	logicPlastic    ,
-		                                     	Name            ,
+		                                     	Name  + "_Scintillator"          ,
 		                                     	world           ,
 		                                     	false           ,
 		                                     	0				);	
@@ -302,21 +335,21 @@ void Plastic::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume*
                                      	
         if(m_LeadThickness[i]>0&& m_PlasticRadius[i]>0)
         	{
-    			G4Tubs* solidLead = new G4Tubs(	Name					,	 
+    			G4Tubs* solidLead = new G4Tubs(	Name+"_Lead"  			,	 
 		                            			0						,
 		                            			m_PlasticRadius[i]		,
 		                            			m_LeadThickness[i]/2	,
 		                            			0*deg					, 
 		                            			360*deg					);
 		                            		
-				G4LogicalVolume* logicLead = new G4LogicalVolume(solidLead, m_MaterialLead, Name, 0, 0, 0);
+				G4LogicalVolume* logicLead = new G4LogicalVolume(solidLead, m_MaterialLead, Name+"_Lead", 0, 0, 0);
 				G4VisAttributes* LeadVisAtt = new G4VisAttributes(G4Colour(0.1, 0.1, 0.1)) ;
    				logicLead->SetVisAttributes(LeadVisAtt) ;
    				
 				PVPBuffer = new G4PVPlacement(	0																		,
 												Det_pos+(m_PlasticThickness[i]/2+m_LeadThickness[i]/2)*Det_pos.unit()	,
 		                                     	logicLead    															,
-		                                     	Name            														,	
+		                                     	Name+"_Lead"        														,	
 		                                     	world           														,
 		                                     	false           														,
 		                                     	0																		);
@@ -393,7 +426,7 @@ void Plastic::ReadSensitive(const G4Event* event)
 	            G4double E     = *(Energy_itr->second)      	;
 
 	            if (ETrackID == NTrackID) {
-	                m_Event->SetEnergy(RandGauss::shoot(E, ResoEnergy))    ;
+	                m_Event->SetEnergy(RandGauss::shoot(E, E*ResoEnergy/100./2.35))    ;
 	            }
 	            
 	            Energy_itr++;
@@ -419,8 +452,10 @@ void Plastic::ReadSensitive(const G4Event* event)
     }
     
     // clear map for next event
-    DetectorNumberHitMap    ->clear();
-    EnergyHitMap   			->clear() ;     
+    TimeHitMap				->clear()	;    
+    DetectorNumberHitMap    ->clear()	;
+    EnergyHitMap   			->clear() 	; 
+   
 }
 
 ////////////////////////////////////////////////////////////////
@@ -430,14 +465,14 @@ void Plastic::InitializeMaterial()
 		////////////////////////////////////////////////////////////////
 		/////////////////Element  Definition ///////////////////////////
 		////////////////////////////////////////////////////////////////
-		   G4String symbol               			;
-		   G4double density = 0. , a = 0, z = 0   	;
-		   G4int ncomponents = 0, natoms = 0		;
+		   G4String symbol               						;
+		   G4double density = 0. , a = 0, z = 0   				;
+		   G4int ncomponents = 0, natoms = 0, fractionmass = 0	;
 
 			// for Plastic
-		   G4Element* H   = new G4Element("Hydrogen" , symbol = "H"  , z = 1  , a = 1.01   * g / mole);
-		   G4Element* C   = new G4Element("Carbon"   , symbol = "C"  , z = 6  , a = 12.011 * g / mole);
-			
+		   	G4Element* H   = new G4Element("Hydrogen" 	, symbol = "H"  	, z = 1  , a = 1.01   * g / mole);
+		   	G4Element* C   = new G4Element("Carbon"   	, symbol = "C"  	, z = 6  , a = 12.011 * g / mole);
+		 	G4Element* Pb  = new G4Element("Lead"   	, symbol = "Pb"  	, z = 82 , a = 207.2  * g / mole);
 		////////////////////////////////////////////////////////////////
 		/////////////////Material Definition ///////////////////////////
 		////////////////////////////////////////////////////////////////
@@ -448,11 +483,32 @@ void Plastic::InitializeMaterial()
 		   m_MaterialLead = new G4Material("Lead", z = 82 , a, density);
 
 
-		   // Plastic
-		   density = 1.243 * g / cm3;
-		   m_MaterialPlastic = new G4Material("Plastic", density, ncomponents = 2);
-		   m_MaterialPlastic->AddElement(H , natoms = 10);
-		   m_MaterialPlastic->AddElement(C  , natoms = 14);
+		   // Plastic BC-400
+		   density = 1.032 * g / cm3;
+		   m_MaterialPlastic_BC400 = new G4Material("Plastic_BC400", density, ncomponents = 2);
+		   m_MaterialPlastic_BC400->AddElement(H , natoms = 10);
+		   m_MaterialPlastic_BC400->AddElement(C  , natoms = 9);
+		   
+		   // Plastic BC-452 Pb 2%
+		   density = 1.05 * g / cm3;
+		   m_MaterialPlastic_BC452_2 = new G4Material("Plastic_BC452_2", density, ncomponents = 3);
+		   m_MaterialPlastic_BC452_2->AddElement(H  , natoms = 10);
+		   m_MaterialPlastic_BC452_2->AddElement(C  , natoms = 9);
+		   m_MaterialPlastic_BC452_2->AddElement(Pb , fractionmass=2*perCent);
+
+		   // Plastic BC-452 Pb 5%
+		   density = 1.08 * g / cm3;
+		   m_MaterialPlastic_BC452_5 = new G4Material("Plastic_BC452_5", density, ncomponents = 3);
+		   m_MaterialPlastic_BC452_5->AddElement(H  , natoms = 10);
+		   m_MaterialPlastic_BC452_5->AddElement(C  , natoms = 9);
+		   m_MaterialPlastic_BC452_5->AddElement(Pb , fractionmass=5*perCent);
+
+		   // Plastic BC-452 Pb 10%
+		   density = 1.17 * g / cm3;
+		   m_MaterialPlastic_BC452_10 = new G4Material("Plastic_BC452_10", density, ncomponents = 3);
+		   m_MaterialPlastic_BC452_10->AddElement(H  , natoms = 10);
+		   m_MaterialPlastic_BC452_10->AddElement(C  , natoms = 9);
+		   m_MaterialPlastic_BC452_10->AddElement(Pb , fractionmass=10*perCent);		   
 	
 	}
 
@@ -462,14 +518,14 @@ void Plastic::InitializeScorers()
 		m_PlasticScorer = new G4MultiFunctionalDetector("PlasticScorer") ;
 		G4SDManager::GetSDMpointer()->AddNewDetector(m_PlasticScorer);
 		
-		G4VPrimitiveScorer* DetNbr = new PSDetectorNumber("PlasticNumber", 0)  ;
-		G4VPrimitiveScorer* Energy = new PSEnergy("Energy", 0)             					;
-		G4VPrimitiveScorer* Time = new PSTOF("Time", 0)             					;
+		G4VPrimitiveScorer* DetNbr = new PSDetectorNumber("PlasticNumber","Plastic", 0) ;
+		G4VPrimitiveScorer* Energy = new PSEnergy("Energy","Plastic", 0)             		;
+		G4VPrimitiveScorer* Time   = new PSTOF("Time","Plastic", 0)             				;
 		 
 		//and register it to the multifunctionnal detector
 		m_PlasticScorer->RegisterPrimitive(DetNbr)             				;
 		m_PlasticScorer->RegisterPrimitive(Energy)             				;
-		m_PlasticScorer->RegisterPrimitive(Time)             				;		
+		m_PlasticScorer->RegisterPrimitive(Time)             					;		
 		
 		
 	}

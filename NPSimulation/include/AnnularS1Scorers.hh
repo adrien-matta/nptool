@@ -26,59 +26,10 @@
 #include "G4THitsMap.hh"
 
 
-class AnnularS1ScorerEnergy : public G4VPrimitiveScorer
-{
-
-public: // with description
-   AnnularS1ScorerEnergy(G4String name, G4int depth = 0);
-   virtual ~AnnularS1ScorerEnergy();
-
-protected: // with description
-   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-
-public:
-   virtual void Initialize(G4HCofThisEvent*);
-   virtual void EndOfEvent(G4HCofThisEvent*);
-   virtual void clear();
-   virtual void DrawAll();
-   virtual void PrintAll();
-
-private:
-   G4int HCID;
-   G4THitsMap<G4double>* EvtMap;
-};
-
-
-
-class AnnularS1ScorerTime : public G4VPrimitiveScorer
-{
-
-public: // with description
-   AnnularS1ScorerTime(G4String name, G4int depth = 0);
-   virtual ~AnnularS1ScorerTime();
-
-protected: // with description
-   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-
-public:
-   virtual void Initialize(G4HCofThisEvent*);
-   virtual void EndOfEvent(G4HCofThisEvent*);
-   virtual void clear();
-   virtual void DrawAll();
-   virtual void PrintAll();
-
-private:
-   G4int HCID;
-   G4THitsMap<G4double>* EvtMap;
-};
-
-
-
 class AnnularS1ScorerThetaStripNumber : public G4VPrimitiveScorer
 {
-
 public: // with description
-   AnnularS1ScorerThetaStripNumber(G4String name, G4int depth = 0, G4double StripPlaneSize = 98, G4int NumberOfStrip = 128);
+   AnnularS1ScorerThetaStripNumber(G4String name, G4int depth = 0);
    virtual ~AnnularS1ScorerThetaStripNumber();
 
 protected: // with description
@@ -102,9 +53,8 @@ private:
 
 class AnnularS1ScorerPhiStripNumber : public G4VPrimitiveScorer
 {
-
 public: // with description
-   AnnularS1ScorerPhiStripNumber(G4String name, G4int depth = 0, G4double StripPlaneSize = 98, G4int NumberOfStrip = 128);
+   AnnularS1ScorerPhiStripNumber(G4String name, G4int depth = 0);
    virtual ~AnnularS1ScorerPhiStripNumber();
 
 protected: // with description

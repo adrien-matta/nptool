@@ -1,0 +1,8 @@
+echo  -L$NPLIB/lib -lVDetector -lDetectorManager -lCalibrationManager -lIORoot -lReaction -lEnergyLoss \
+			-lMust2Data -lMust2Physics \
+			-lSSSDData -lSSSDPhysics \
+			-lPlasticData -lPlasticPhysics \
+			-lAnnularS1Data \
+			-lGaspardData -lGaspardPhysics \
+			-lDUMMYDetectorData \
+			-lInitialConditions -lInteractionCoordinates

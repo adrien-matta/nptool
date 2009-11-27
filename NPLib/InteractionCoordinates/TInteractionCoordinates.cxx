@@ -52,7 +52,7 @@ void TInteractionCoordinates::Clear()
 
 
 
-void TInteractionCoordinates::Dump()
+void TInteractionCoordinates::Dump() const
 {
    cout << "XXXXXXXXXXXXX Interaction coordinates XXXXXXXXXXXXXXXX" << endl;
 

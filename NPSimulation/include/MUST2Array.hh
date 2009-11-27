@@ -55,8 +55,9 @@ namespace MUST2
    const G4double MylarCsIThickness = 3*micrometer          ;
    const G4double CsIThickness      = 4.*cm + 2*MylarCsIThickness ;
    const G4double CsIFaceFront      = 12.2*cm                  ;
-   const G4double CsIFaceBack    = 16*cm                    ;
-
+   const G4double CsIFaceBack    	= 16*cm                    ;
+   const G4double DistInterCsI 		= 0.2 * mm;
+   
    // Starting at the front and going to CsI
    const G4double AluStripFront_PosZ   = Length* -0.5 + 0.5*AluStripThickness                       ;
    const G4double Silicon_PosZ      = AluStripFront_PosZ + 0.5*AluStripThickness + 0.5*SiliconThickness     ;

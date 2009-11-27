@@ -72,7 +72,8 @@ class TMust2Data : public TObject {
 		virtual ~TMust2Data();
 
 		void	Clear();
-		void	Dump();
+                void    Clear(const Option_t*) {};
+		void	Dump() const;
 
 		/////////////////////           SETTERS           ////////////////////////
 		// DSSD
@@ -138,12 +139,12 @@ class TMust2Data : public TObject {
 
 		// SiLi
 		//(E)
-		UShort_t	GetMMSiLiEMult()				{return fMM_SiLiE_DetectorNbr.size();}
+		UShort_t	GetMMSiLiEMult()								{return fMM_SiLiE_DetectorNbr.size();}
 		UShort_t	GetMMSiLiEDetectorNbr(Int_t i)  {return fMM_SiLiE_DetectorNbr.at(i);}
 		UShort_t	GetMMSiLiEPadNbr(Int_t i)       {return fMM_SiLiE_PadNbr.at(i);}
 		Double_t	GetMMSiLiEEnergy(Int_t i)       {return fMM_SiLiE_Energy.at(i);}
 		//(T)
-		UShort_t	GetMMSiLiTMult()				{return fMM_SiLiT_DetectorNbr.size();}
+		UShort_t	GetMMSiLiTMult()								{return fMM_SiLiT_DetectorNbr.size();}
 		UShort_t	GetMMSiLiTDetectorNbr(Int_t i)  {return fMM_SiLiT_DetectorNbr.at(i);}
 		UShort_t	GetMMSiLiTPadNbr(Int_t i)       {return fMM_SiLiT_PadNbr.at(i);}
 		Double_t	GetMMSiLiTTime(Int_t i)         {return fMM_SiLiT_Time.at(i);}
@@ -160,7 +161,7 @@ class TMust2Data : public TObject {
 		UShort_t	GetMMCsITCristalNbr(Int_t i)    {return fMM_CsIT_CristalNbr.at(i);}
 		Double_t	GetMMCsITTime(Int_t i)          {return fMM_CsIT_Time.at(i);}
 
-		ClassDef(TMust2Data,1)  // Must2Data structure
+		ClassDef(TMust2Data,2)  // Must2Data structure
 };
 
 #endif

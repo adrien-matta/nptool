@@ -19,8 +19,12 @@
  *                                                                           *
  *****************************************************************************/
 
-#include "GaspardScorers.hh"
+// G4 headers
 #include "G4UnitsTable.hh"
+
+// NPTool headers
+#include "GeneralScorers.hh"
+#include "GaspardScorers.hh"
 
 #include "GaspardTrackerDummyShape.hh"
 #include "GaspardTrackerSquare.hh"
@@ -39,12 +43,12 @@ using namespace GPDDUMMYSHAPE;
 // scorer provide by G4 don't work this way but using a global ID for each event you should
 // not use those scorer with some G4 provided ones or being very carefull doing so.
 
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // FirstStage Energy Scorer (deal with multiple particle hit)
-GPDScorerFirstStageEnergy::GPDScorerFirstStageEnergy(G4String name, G4int depth)
+GPDScorerFirstStageEnergy::GPDScorerFirstStageEnergy(G4String name, G4String volumeName, G4int depth)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
+   m_VolumeName = volumeName;
 }
 
 GPDScorerFirstStageEnergy::~GPDScorerFirstStageEnergy()
@@ -53,13 +57,17 @@ GPDScorerFirstStageEnergy::~GPDScorerFirstStageEnergy()
 
 G4bool GPDScorerFirstStageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+   // get detector number
+   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+
+   // get energy
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index = aStep->GetTrack()->GetTrackID();
-   EvtMap->add(index, edep);
+   EvtMap->add(DetNbr + index, edep);
    return TRUE;
 }
 
@@ -102,9 +110,10 @@ void GPDScorerFirstStageEnergy::PrintAll()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // SecondStage Energy Scorer (deal with multiple particle hit)
-GPDScorerSecondStageEnergy::GPDScorerSecondStageEnergy(G4String name, G4int depth)
+GPDScorerSecondStageEnergy::GPDScorerSecondStageEnergy(G4String name, G4String volumeName, G4int depth)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
+   m_VolumeName = volumeName;
 }
 
 GPDScorerSecondStageEnergy::~GPDScorerSecondStageEnergy()
@@ -113,13 +122,17 @@ GPDScorerSecondStageEnergy::~GPDScorerSecondStageEnergy()
 
 G4bool GPDScorerSecondStageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+   // get detector number
+   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+
+   // get energy
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index = aStep->GetTrack()->GetTrackID();
-   EvtMap->add(index, edep);
+   EvtMap->add(DetNbr + index, edep);
    return TRUE;
 }
 
@@ -162,9 +175,10 @@ void GPDScorerSecondStageEnergy::PrintAll()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // ThirdStage Energy Scorer (deal with multiple particle hit)
-GPDScorerThirdStageEnergy::GPDScorerThirdStageEnergy(G4String name, G4int depth)
+GPDScorerThirdStageEnergy::GPDScorerThirdStageEnergy(G4String name, G4String volumeName, G4int depth)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
+   m_VolumeName = volumeName;
 }
 
 GPDScorerThirdStageEnergy::~GPDScorerThirdStageEnergy()
@@ -173,13 +187,17 @@ GPDScorerThirdStageEnergy::~GPDScorerThirdStageEnergy()
 
 G4bool GPDScorerThirdStageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+   // get detector number
+   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+
+   // get energy
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index = aStep->GetTrack()->GetTrackID();
-   EvtMap->add(index, edep);
+   EvtMap->add(DetNbr + index, edep);
    return TRUE;
 }
 
@@ -220,71 +238,6 @@ void GPDScorerThirdStageEnergy::PrintAll()
 
 
 
-GPDScorerDetectorNumber::GPDScorerDetectorNumber(G4String name, G4int depth, G4String VolumeName )
-      : G4VPrimitiveScorer(name, depth), HCID(-1)
-{
-   m_VolumeName = VolumeName;
-}
-
-GPDScorerDetectorNumber::~GPDScorerDetectorNumber()
-{
-}
-
-G4bool GPDScorerDetectorNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
-{
-   std::string name = aStep->GetTrack()->GetVolume()->GetName();
-   std::string nbr;
-   size_t found = name.find(m_VolumeName);
-
-   int numberOfCharacterInTelescopeNumberSquare = (int)found - 1;
-
-   for (int i = 0; i < numberOfCharacterInTelescopeNumberSquare; i++) nbr += name[i+1];
-
-   G4int DetNbr = atof(nbr.c_str());
-
-   G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
-   G4int  index = aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, DetNbr);
-   return TRUE;
-}
-
-void GPDScorerDetectorNumber::Initialize(G4HCofThisEvent* HCE)
-{
-   EvtMap = new G4THitsMap<G4int>(GetMultiFunctionalDetector()->GetName(), GetName());
-   if (HCID < 0) {
-      HCID = GetCollectionID(0);
-   }
-   HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
-}
-
-void GPDScorerDetectorNumber::EndOfEvent(G4HCofThisEvent*)
-{
-}
-
-void GPDScorerDetectorNumber::Clear()
-{
-   EvtMap->clear();
-}
-
-void GPDScorerDetectorNumber::DrawAll()
-{
-}
-
-void GPDScorerDetectorNumber::PrintAll()
-{
-   G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl;
-   G4cout << " PrimitiveScorer " << GetName() << G4endl;
-   G4cout << " Number of entries " << EvtMap->entries() << G4endl;
-   std::map<G4int, G4int*>::iterator itr = EvtMap->GetMap()->begin();
-   for (; itr != EvtMap->GetMap()->end(); itr++) {
-      G4cout << "  copy no.: " << itr->first
-      << "  energy deposit: " << G4BestUnit(*(itr->second), "Energy")
-      << G4endl;
-   }
-}
-
-
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // FirstStage Front Strip position Scorer for DummyShape geometry
@@ -300,6 +253,10 @@ GPDScorerFirstStageFrontStripDummyShape::~GPDScorerFirstStageFrontStripDummyShap
 
 G4bool GPDScorerFirstStageFrontStripDummyShape::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+   // get detector number
+   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "GPDDummyShape");
+
+   // get front strip number
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
@@ -313,7 +270,7 @@ G4bool GPDScorerFirstStageFrontStripDummyShape::ProcessHits(G4Step* aStep, G4Tou
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, X);
+   EvtMap->set(DetNbr + index, X);
    return TRUE;
 }
 
@@ -362,6 +319,10 @@ GPDScorerFirstStageBackStripDummyShape::~GPDScorerFirstStageBackStripDummyShape(
 
 G4bool GPDScorerFirstStageBackStripDummyShape::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+   // get detector number
+   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "GPDDummyShape");
+
+   // get back strip number
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
@@ -374,7 +335,7 @@ G4bool GPDScorerFirstStageBackStripDummyShape::ProcessHits(G4Step* aStep, G4Touc
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, X);
+   EvtMap->set(DetNbr + index, X);
    return TRUE;
 }
 
@@ -423,6 +384,10 @@ GPDScorerFirstStageFrontStripSquare::~GPDScorerFirstStageFrontStripSquare()
 
 G4bool GPDScorerFirstStageFrontStripSquare::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+   // get detector number
+   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "GPDSquare");
+
+   // get front strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
@@ -435,7 +400,7 @@ G4bool GPDScorerFirstStageFrontStripSquare::ProcessHits(G4Step* aStep, G4Touchab
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, X);
+   EvtMap->set(DetNbr + index, X);
    return TRUE;
 }
 
@@ -483,6 +448,10 @@ GPDScorerFirstStageBackStripSquare::~GPDScorerFirstStageBackStripSquare()
 
 G4bool GPDScorerFirstStageBackStripSquare::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+   // get detector number
+   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "GPDSquare");
+
+   // get back strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
@@ -497,7 +466,7 @@ G4bool GPDScorerFirstStageBackStripSquare::ProcessHits(G4Step* aStep, G4Touchabl
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, Y);
+   EvtMap->set(DetNbr + index, Y);
    return TRUE;
 }
 
@@ -545,6 +514,10 @@ GPDScorerFirstStageFrontStripTrapezoid::~GPDScorerFirstStageFrontStripTrapezoid(
 
 G4bool GPDScorerFirstStageFrontStripTrapezoid::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+   // get detector number
+   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "GPDTrapezoid");
+
+   // get front strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
@@ -557,7 +530,7 @@ G4bool GPDScorerFirstStageFrontStripTrapezoid::ProcessHits(G4Step* aStep, G4Touc
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, X);
+   EvtMap->set(DetNbr + index, X);
    return TRUE;
 }
 
@@ -605,6 +578,10 @@ GPDScorerFirstStageBackStripTrapezoid::~GPDScorerFirstStageBackStripTrapezoid()
 
 G4bool GPDScorerFirstStageBackStripTrapezoid::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+   // get detector number
+   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "GPDTrapezoid");
+
+   // get back strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
@@ -619,7 +596,7 @@ G4bool GPDScorerFirstStageBackStripTrapezoid::ProcessHits(G4Step* aStep, G4Touch
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, Y);
+   EvtMap->set(DetNbr + index, Y);
    return TRUE;
 }
 
@@ -668,6 +645,10 @@ GPDScorerFirstStageFrontStripAnnular::~GPDScorerFirstStageFrontStripAnnular()
 
 G4bool GPDScorerFirstStageFrontStripAnnular::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+   // get detector number
+   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "GPDAnnular");
+
+   // get front strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
@@ -680,7 +661,7 @@ G4bool GPDScorerFirstStageFrontStripAnnular::ProcessHits(G4Step* aStep, G4Toucha
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, X);
+   EvtMap->set(DetNbr + index, X);
    return TRUE;
 }
 
@@ -729,6 +710,10 @@ GPDScorerFirstStageBackStripAnnular::~GPDScorerFirstStageBackStripAnnular()
 
 G4bool GPDScorerFirstStageBackStripAnnular::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+   // get detector number
+   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "GPDAnnular");
+
+   // get back strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
@@ -743,7 +728,7 @@ G4bool GPDScorerFirstStageBackStripAnnular::ProcessHits(G4Step* aStep, G4Touchab
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, Y);
+   EvtMap->set(DetNbr + index, Y);
    return TRUE;
 }
 

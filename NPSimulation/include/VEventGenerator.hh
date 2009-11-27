@@ -11,7 +11,7 @@
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
  * Creation Date  : January 2009                                             *
- * Last update    :                                                          *
+ * Last update    : 03/11/2009                                               *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  All event generator added in the project should derive from this virtual * 
@@ -23,17 +23,23 @@
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
+ *    + 03/11/09: Adding EffectiveThiknessBeforeInteraction in the           *
+ *                CalculateBeamInteraction() method (N. de Sereville)        *
  *                                                                           *
  *****************************************************************************/
 // C++ header
 #include <string>
 
-// G4 header defining G$ types
+// G4 header defining G4 types
 #include "globals.hh"
 
 // G4 headers
 #include "G4ParticleGun.hh"
 #include "G4Event.hh"
+#include "G4ThreeVector.hh"
+
+// NPTool headers
+#include "Target.hh"
 
 using namespace CLHEP;
 using namespace std;
@@ -52,13 +58,10 @@ public:
    virtual void InitializeRootOutput() {};
 
    // Used in some case to generate event inside the target
-   virtual void SetTargetThickness(G4double) {};
-   virtual void SetTargetRadius(G4double) {};
-   virtual void SetTargetCoordinate(G4double, G4double, G4double) {};
+   virtual void SetTarget(Target*) {};
    
-   //	Used to simulate beam emmitance effect
-   void RandomGaussian2D(double MeanX,double MeanY,double SigmaX,double SigmaY,double &X,double &Y, double NumberOfSigma=10000);
-
+   // Used to simulate beam emmitance effect
+   void RandomGaussian2D(double MeanX, double MeanY, double SigmaX, double SigmaY, double &X, double &Y, double NumberOfSigma = 10000);
 };
 
 

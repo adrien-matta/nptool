@@ -6,8 +6,7 @@
 // -------------------------------------- VARIOUS INCLUDE ---------------------------------------
 
 // NPA
-#include "DetectorManager.hh"
-#include "Must2Array.h"
+#include "DetectorManager.h"
 
 // STL C++
 #include <iostream>
@@ -16,6 +15,7 @@
 #include <string>
 #include <cmath>
 #include <cstdlib>
+#include <time.h>
 
 // ROOT
 #include <TROOT.h>
@@ -26,12 +26,14 @@
 #include <TRandom.h>
 
 // NPL
-#include "TMust2Data.h"
-#include "TMust2Physics.h"
+#include "TPlasticData.h"
 #include "NPReaction.h"
 #include "RootInput.h"
 #include "RootOutput.h"
 #include "TInitialConditions.h"
+#include "TMust2Physics.h"
+#include "TSSSDPhysics.h"
+#include "TPlasticPhysics.h"
 
 // Use CLHEP System of unit and Physical Constant
 #include "CLHEP/Units/GlobalSystemOfUnits.h"
@@ -104,41 +106,68 @@ using namespace NPL ;
 namespace ENERGYLOSS
 	{
 	
-		//	3He Energy Loss
-			EnergyLoss He3TargetWind = EnergyLoss 	(	"3He_Mylar.txt" 		,
-														1000	 				,
-														1						,
-														3						);
+	
+	//	3He Energy Loss
+			EnergyLoss He3TargetWind = EnergyLoss 	(	"He3_Mylar.G4table" 		,
+																								"G4Table",
+																									10000	 				);
 		
-			EnergyLoss He3TargetGaz = EnergyLoss 	(	"3He_D2gaz_1b_26K.txt" 	,
-														1000	 				,
-														1						,
-														3						);
+			EnergyLoss He3TargetGaz = EnergyLoss 		(	"He3_D2.G4table" 	,
+																								"G4Table",
+																									10000	 				);
 			
 			EnergyLoss He3StripAl   = EnergyLoss 	(	"3He_Al.txt" 			,
-														10						,
-														1						,
-														3						);
+																							"LISE",
+																							10000						,
+																							1						,
+																							3						);
 														
 			EnergyLoss He3StripSi   = EnergyLoss 	(	"3He_Si.txt" 			,
-														10						,
-														1						,
-														3						);
+																							"LISE",
+																							10000						,
+																							1					,
+																							3						);
+														
+
+	
+//		//	3He Energy Loss
+//			EnergyLoss He3TargetWind = EnergyLoss 	(	"3He_Mylar.txt" 		,
+//														10000	 				,
+//														1					,
+//														3						);
+//		
+//			EnergyLoss He3TargetGaz = EnergyLoss 	(	"3He_D2gaz_1b_26K.txt" 	,
+//														10000	 				,
+//														1						,
+//														3						);
+//			
+//			EnergyLoss He3StripAl   = EnergyLoss 	(	"3He_Al.txt" 			,
+//														10000						,
+//														1						,
+//														3						);
+//														
+//			EnergyLoss He3StripSi   = EnergyLoss 	(	"3He_Si.txt" 			,
+//														10000						,
+//														1					,
+//														3						);
 														
 														
 		//	proton Energy Loss
 			EnergyLoss protonTargetWind = EnergyLoss 	(	"proton_Mylar.txt"	 		,
+															"LISE",
 															1000		 				,
-															1							,
+															1						,
 															1							);
 		
 			EnergyLoss protonTargetGaz = EnergyLoss 	(	"proton_D2gaz_1b_26K.txt" 	,
+																"LISE",
 															1000		 				,
-															1							,
+															1						,
 															1							);
 			
 			EnergyLoss protonStripAl   = EnergyLoss 	(	"proton_Al.txt" 			,
-															10							,
+															"LISE",
+															100							,
 															1							,
 															1							);
 														

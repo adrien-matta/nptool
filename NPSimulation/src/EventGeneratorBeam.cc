@@ -19,6 +19,10 @@
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
+
+// C++
+#include <limits>
+
 // G4 header
 #include "G4ParticleTable.hh"
 
@@ -37,11 +41,26 @@ using namespace CLHEP;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorBeam::EventGeneratorBeam()
 {
-m_InitConditions	= new TInitialConditions()	;
+   m_InitConditions = new TInitialConditions();
+   m_Target         = 0;
 }
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorBeam::~EventGeneratorBeam()
-{}
+{
+   delete m_InitConditions;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void	EventGeneratorBeam::SetTarget(Target* Target) 
+   {
+   	if(Target!=0)	
+   		{
+   			m_Target = Target;
+   			m_Target->WriteDEDXTable(m_particle ,0, m_BeamEnergy);
+   		}
+   
+   }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorBeam::ReadConfiguration(string Path)
 {
@@ -86,7 +105,7 @@ void EventGeneratorBeam::ReadConfiguration(string Path)
 			 ReactionFile >> DataBuffer;
 	
       		//Search for comment Symbol %
-      		if (DataBuffer.compare(0, 1, "%") == 0) {/*Do Nothing*/;}
+      		if (DataBuffer.compare(0, 1, "%") == 0) {	ReactionFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
 
 	        else if (DataBuffer.compare(0, 10, "ParticleZ=") == 0) {
 	         	check_Z = true ;
@@ -166,56 +185,49 @@ void EventGeneratorBeam::ReadConfiguration(string Path)
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorBeam::GenerateEvent(G4Event* anEvent, G4ParticleGun* particleGun)
 {
+			//--------------write the DeDx Table -------------------
+  if(m_Target!=0)
+  	m_Target->WriteDEDXTable(m_particle ,0, m_BeamEnergy+4*m_BeamEnergySpread);
+
+
    m_InitConditions->Clear();
-   // Vertex position and beam angle
-   G4double x0 = 1000 * cm  ;
-   G4double y0 = 1000 * cm  ;
-   G4double Beam_thetaX = 0  ;
-   G4double Beam_phiY   = 0  ;
    
-   //shoot inside the target with correlated angle
-   if (m_TargetRadius != 0) 
-	   	{
-	      while (sqrt(x0*x0 + y0*y0) > m_TargetRadius) 
-	      	{
-	      		RandomGaussian2D(0 , 0 , m_SigmaX , m_SigmaThetaX , x0 , Beam_thetaX );
-	      		RandomGaussian2D(0 , 0 , m_SigmaY , m_SigmaPhiY   , y0 , Beam_phiY   );
-	      	}
-	   	}
-
-   else 
-	   	{
-	     	RandomGaussian2D( 0 , 0 , 0 , m_SigmaThetaX , x0 , Beam_thetaX );
-	     	RandomGaussian2D( 0 , 0 , 0 , m_SigmaPhiY   , y0 , Beam_phiY   );
-	   	}
-
-	 m_InitConditions->SetICIncidentEmittanceTheta(Beam_thetaX / deg);
-     m_InitConditions->SetICIncidentEmittancePhi(Beam_phiY / deg);
-
-
-	// Calculate Angle in spherical coordinate, passing by the direction vector dir	
-	G4double Xdir =  cos( pi/2. - Beam_thetaX ) 							;
-	G4double Ydir =  cos( pi/2. - Beam_phiY   )								;
-	G4double Zdir =  sin( pi/2. - Beam_thetaX ) + sin(  pi/2. - Beam_phiY) 	;
-	
-	G4double Beam_theta = acos ( Zdir / sqrt( Xdir*Xdir + Ydir*Ydir + Zdir*Zdir ) );
-	G4double Beam_phi   = atan2( Ydir , Xdir );
-
-   //must shoot inside the target.
-   G4double z0 = (-m_TargetThickness / 2 + CLHEP::RandFlat::shoot() * m_TargetThickness);
-
-
-   // Move to the target
-   x0 += m_TargetX ;
-   y0 += m_TargetY ;
-   z0 += m_TargetZ ;
+   ///////////////////////////////////////////////////////////////////////
+   ///// Calculate the incident beam direction as well as the vertex /////
+   ///// of interaction in target and Energy Loss of the beam within /////
+   ///// the target.                                                 /////
+   ///////////////////////////////////////////////////////////////////////
+   G4ThreeVector InterCoord;
    
-   // Store initial value
-   m_InitConditions->SetICIncidentAngleTheta(Beam_theta / deg);
-   m_InitConditions->SetICIncidentAnglePhi(Beam_phi / deg);
+   G4double Beam_thetaX = 0, Beam_phiY = 0;
+   G4double Beam_theta  = 0, Beam_phi  = 0;
+   G4double FinalBeamEnergy = 0 ;
+   G4double InitialBeamEnergy = RandGauss::shoot(m_BeamEnergy, m_BeamEnergySpread);
+   
+	m_Target->CalculateBeamInteraction(	0, m_SigmaX, 0, m_SigmaThetaX,
+                            					0, m_SigmaY, 0, m_SigmaPhiY,
+				                            	InitialBeamEnergy,
+				                            	m_particle,
+				                           	 	InterCoord, Beam_thetaX, Beam_phiY,
+                            					Beam_theta, Beam_phi,
+				                           	 	FinalBeamEnergy);
+				                           	 	
+   // write vertex position to ROOT file
+   G4double x0 = InterCoord.x();
+   G4double y0 = InterCoord.y();
+   G4double z0 = InterCoord.z();
    m_InitConditions->SetICPositionX(x0);
    m_InitConditions->SetICPositionY(y0);
    m_InitConditions->SetICPositionZ(z0);
+
+   // write emittance angles to ROOT file
+   m_InitConditions->SetICIncidentEmittanceTheta(Beam_thetaX / deg);
+   m_InitConditions->SetICIncidentEmittancePhi(Beam_phiY / deg);
+
+   // Store initial value
+   m_InitConditions->SetICIncidentAngleTheta(Beam_theta / deg);
+   m_InitConditions->SetICIncidentAnglePhi(Beam_phi / deg);
+
    //////////////////////////////////////////////////
    /////Now define everything for light particle/////
    //////////////////////////////////////////////////

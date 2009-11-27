@@ -37,7 +37,7 @@ class GaspardTracker : public NPA::VDetector
 {
 public:
    GaspardTracker();
-   ~GaspardTracker();
+   virtual ~GaspardTracker();
 
 public:
    /////////////////////////////////////

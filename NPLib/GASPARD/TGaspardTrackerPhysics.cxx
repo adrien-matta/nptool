@@ -25,7 +25,6 @@
 #include <iostream>
 #include <cstdlib>
 
-using namespace std ;
 
 ClassImp(TGaspardTrackerPhysics)
 
@@ -66,11 +65,12 @@ void TGaspardTrackerPhysics::BuildPhysicalEvent(TGaspardTrackerData* Data)
    bool Check_FirstStage = false ;bool Check_SecondStage = false ; bool Check_ThirdStage = false ;
 
    // Thresholds
+/*
    double FirstStage_Front_E_Threshold = 0; double FirstStage_Front_T_Threshold = 0;
    double FirstStage_Back_E_Threshold  = 0; double FirstStage_Back_T_Threshold  = 0;
    double SecondStage_E_Threshold      = 0; double SecondStage_T_Threshold      = 0;
    double ThirdStage_E_Threshold       = 0; double ThirdStage_T_Threshold	= 0;
-
+*/
    // calculate multipicity in the first stage
    int multXE = Data->GetGPDTrkFirstStageFrontEMult();
    int multYE = Data->GetGPDTrkFirstStageBackEMult();
@@ -125,7 +125,7 @@ void TGaspardTrackerPhysics::BuildPhysicalEvent(TGaspardTrackerData* Data)
             FirstStage_Y.push_back(stripYE);
             // get energy from strips and store it
             double EnergyStripFront = Data->GetGPDTrkFirstStageFrontEEnergy(0);
-            double EnergyStripBack  = Data->GetGPDTrkFirstStageBackEEnergy(0);
+//            double EnergyStripBack  = Data->GetGPDTrkFirstStageBackEEnergy(0);
 //            double EnergyStrip  = 0.5 * (EnergyStripFront + EnergyStripBack);
             double EnergyStrip  = EnergyStripFront;
 //            if (EnergyStripBack > EnergyStrip) EnergyStrip = EnergyStripBack;
@@ -134,8 +134,8 @@ void TGaspardTrackerPhysics::BuildPhysicalEvent(TGaspardTrackerData* Data)
             // get time from strips and store it
             double TimeStripFront = Data->GetGPDTrkFirstStageFrontEEnergy(0);
             double TimeStripBack  = Data->GetGPDTrkFirstStageBackEEnergy(0);
-            double TimeStrip  = 0.5 * (EnergyStripFront + EnergyStripBack);
-//                  double TimeStrip  = EnergyStripFront;
+            double TimeStrip  = 0.5 * (TimeStripFront + TimeStripBack);
+//                  double TimeStrip  = TimeStripFront;
 //                  if (TimeStripBack > TimeStrip) TimeStrip = TimeStripBack;
             FirstStage_T.push_back(TimeStrip);
 

@@ -89,7 +89,7 @@ void TGaspardTrackerData::Clear()
 
 
 
-void TGaspardTrackerData::Dump()
+void TGaspardTrackerData::Dump() const
 {
    cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event XXXXXXXXXXXXXXXXX" << endl;
 

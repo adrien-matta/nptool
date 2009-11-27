@@ -27,183 +27,217 @@
 #include "G4VPrimitiveScorer.hh"
 #include "G4THitsMap.hh"
 
-class PSEnergy : public G4VPrimitiveScorer
+namespace GENERALSCORERS
 	{
+			//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+			//	This Threshold is used in the above scorer. Any energy deposit under this threshold will not create an entry.
+			const double TriggerThreshold = 100*keV ;
 
-	public: // with description
-	   PSEnergy(G4String name, G4int depth = 0);
-	   virtual ~PSEnergy();
+			//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+			//	The following function is used in many scorer. following the Detector Volume Nomenclature
+			//	DetectorNameX_SubPart_SubPart
+			//  where X stand for the detector number.
 
-	protected: // with description
-	   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-
-	public:
-	   virtual void Initialize(G4HCofThisEvent*);
-	   virtual void EndOfEvent(G4HCofThisEvent*);
-	   virtual void clear();
-	   virtual void DrawAll();
-	   virtual void PrintAll();
-
-	private:
-	   G4int HCID;
-	   G4THitsMap<G4double>* EvtMap;
-	};
-
-class PSTOF : public G4VPrimitiveScorer
-{
-
-	public: // with description
-	   PSTOF(G4String name, G4int depth = 0);
-	   virtual ~PSTOF();
-
-	protected: // with description
-	   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-
-	public:
-	   virtual void Initialize(G4HCofThisEvent*);
-	   virtual void EndOfEvent(G4HCofThisEvent*);
-	   virtual void clear();
-	   virtual void DrawAll();
-	   virtual void PrintAll();
-
-	private:
-	   G4int HCID;
-	   G4THitsMap<G4double>* EvtMap;
-};
-
-
-class PSInteractionCoordinatesX : public G4VPrimitiveScorer
-	{
-	public: // with description
-	   PSInteractionCoordinatesX(G4String name, G4int depth = 0);
-	   virtual ~PSInteractionCoordinatesX();
-
-	protected: // with description
-	   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-
-	public:
-	   virtual void Initialize(G4HCofThisEvent*);
-	   virtual void EndOfEvent(G4HCofThisEvent*);
-	   virtual void clear();
-	   virtual void DrawAll();
-	   virtual void PrintAll();
-
-	private:
-	   G4int HCID;
-	   G4THitsMap<G4double>* EvtMap;
-	};
-
-class PSInteractionCoordinatesY : public G4VPrimitiveScorer
-	{
-	public: // with description
-	   PSInteractionCoordinatesY(G4String name, G4int depth = 0);
-	   virtual ~PSInteractionCoordinatesY();
-
-	protected: // with description
-	   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-
-	public:
-	   virtual void Initialize(G4HCofThisEvent*);
-	   virtual void EndOfEvent(G4HCofThisEvent*);
-	   virtual void clear();
-	   virtual void DrawAll();
-	   virtual void PrintAll();
-
-	private:
-	   G4int HCID;
-	   G4THitsMap<G4double>* EvtMap;
-	};
+			int PickUpDetectorNumber(G4Step* aStep, std::string DetName);
 
 
 
-class PSInteractionCoordinatesZ : public G4VPrimitiveScorer
-	{
-	public: // with description
-	   PSInteractionCoordinatesZ(G4String name, G4int depth = 0);
-	   virtual ~PSInteractionCoordinatesZ();
+			//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+			class PSDetectorNumber : public G4VPrimitiveScorer
+				{
 
-	protected: // with description
-	   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+				public: // with description
+				   PSDetectorNumber(G4String name, G4String VolumeName = "xxx", G4int depth = 0 );
+				   virtual ~PSDetectorNumber();
 
-	public:
-	   virtual void Initialize(G4HCofThisEvent*);
-	   virtual void EndOfEvent(G4HCofThisEvent*);
-	   virtual void clear();
-	   virtual void DrawAll();
-	   virtual void PrintAll();
+				protected: // with description
+				   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
 
-	private:
-	   G4int HCID;
-	   G4THitsMap<G4double>* EvtMap;
-	};
+				public:
+				   virtual void Initialize(G4HCofThisEvent*);
+				   virtual void EndOfEvent(G4HCofThisEvent*);
+				   virtual void clear();
+				   virtual void DrawAll();
+				   virtual void PrintAll();
+
+				private:
+					 G4String m_VolumeName; 
+				   G4int HCID;
+				   G4THitsMap<G4int>* EvtMap;
+				   
+				};
+
+			//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......			
+			class PSEnergy : public G4VPrimitiveScorer
+					{
+
+						public: // with description
+						   PSEnergy(G4String name, G4String VolumeName, G4int depth);
+						   virtual ~PSEnergy();
+
+						protected: // with description
+						   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+
+						public:
+						   virtual void Initialize(G4HCofThisEvent*);
+						   virtual void EndOfEvent(G4HCofThisEvent*);
+						   virtual void clear();
+						   virtual void DrawAll();
+						   virtual void PrintAll();
+
+						private:
+								G4String m_VolumeName;
+						   G4int HCID;
+						   G4THitsMap<G4double>* EvtMap;
+					};
+
+			//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+			class PSTOF : public G4VPrimitiveScorer
+					{
+
+						public: // with description
+						   PSTOF(G4String name, G4String VolumeName, G4int depth);
+						   virtual ~PSTOF();
+
+						protected: // with description
+						   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+
+						public:
+						   virtual void Initialize(G4HCofThisEvent*);
+						   virtual void EndOfEvent(G4HCofThisEvent*);
+						   virtual void clear();
+						   virtual void DrawAll();
+						   virtual void PrintAll();
+
+						private:
+								G4String m_VolumeName;
+						   	G4int HCID;
+						   	G4THitsMap<G4double>* EvtMap;
+					};
+
+			//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+			class PSInteractionCoordinatesX : public G4VPrimitiveScorer
+				{
+				public: // with description
+				   PSInteractionCoordinatesX(G4String name, G4String VolumeName, G4int depth);
+				   virtual ~PSInteractionCoordinatesX();
+
+				protected: // with description
+				   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+
+				public:
+				   virtual void Initialize(G4HCofThisEvent*);
+				   virtual void EndOfEvent(G4HCofThisEvent*);
+				   virtual void clear();
+				   virtual void DrawAll();
+				   virtual void PrintAll();
+
+				private:
+						G4String m_VolumeName;
+				   G4int HCID;
+				   G4THitsMap<G4double>* EvtMap;
+				};
+
+
+			//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+			class PSInteractionCoordinatesY : public G4VPrimitiveScorer
+				{
+				public: // with description
+				   PSInteractionCoordinatesY(G4String name, G4String VolumeName, G4int depth);
+				   virtual ~PSInteractionCoordinatesY();
+
+				protected: // with description
+				   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+
+				public:
+				   virtual void Initialize(G4HCofThisEvent*);
+				   virtual void EndOfEvent(G4HCofThisEvent*);
+				   virtual void clear();
+				   virtual void DrawAll();
+				   virtual void PrintAll();
+
+				private:
+						G4String m_VolumeName;
+				   G4int HCID;
+				   G4THitsMap<G4double>* EvtMap;
+				};
+
+
+			//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+			class PSInteractionCoordinatesZ : public G4VPrimitiveScorer
+				{
+				public: // with description
+				   PSInteractionCoordinatesZ(G4String name, G4String VolumeName, G4int depth);
+				   virtual ~PSInteractionCoordinatesZ();
+
+				protected: // with description
+				   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+
+				public:
+				   virtual void Initialize(G4HCofThisEvent*);
+				   virtual void EndOfEvent(G4HCofThisEvent*);
+				   virtual void clear();
+				   virtual void DrawAll();
+				   virtual void PrintAll();
+
+				private:
+						G4String m_VolumeName;
+				   G4int HCID;
+				   G4THitsMap<G4double>* EvtMap;
+				};
+
+
+			//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+			class PSInteractionCoordinatesAngleTheta : public G4VPrimitiveScorer
+				{
+					public: // with description
+					   PSInteractionCoordinatesAngleTheta(G4String name, G4String VolumeName, G4int depth);
+					   virtual ~PSInteractionCoordinatesAngleTheta();
+
+					protected: // with description
+					   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+
+					public:
+					   virtual void Initialize(G4HCofThisEvent*);
+					   virtual void EndOfEvent(G4HCofThisEvent*);
+					   virtual void clear();
+					   virtual void DrawAll();
+					   virtual void PrintAll();
+
+					private:
+								G4String m_VolumeName;
+					   G4int HCID;
+					   G4THitsMap<G4double>* EvtMap;
+				};
+
+
+			//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+			class PSInteractionCoordinatesAnglePhi : public G4VPrimitiveScorer
+				{
+					public: // with description
+					   PSInteractionCoordinatesAnglePhi(G4String name, G4String VolumeName, G4int depth);
+					   virtual ~PSInteractionCoordinatesAnglePhi();
+
+					protected: // with description
+					   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+
+					public:
+					   virtual void Initialize(G4HCofThisEvent*);
+					   virtual void EndOfEvent(G4HCofThisEvent*);
+					   virtual void clear();
+					   virtual void DrawAll();
+					   virtual void PrintAll();
+
+					private:
+						 G4String m_VolumeName;
+					   G4int HCID;
+					   G4THitsMap<G4double>* EvtMap;
+				};
+
+			
+
+	}
 
 
 
-class PSInteractionCoordinatesAngleTheta : public G4VPrimitiveScorer
-{
-public: // with description
-   PSInteractionCoordinatesAngleTheta(G4String name, G4int depth = 0);
-   virtual ~PSInteractionCoordinatesAngleTheta();
-
-protected: // with description
-   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-
-public:
-   virtual void Initialize(G4HCofThisEvent*);
-   virtual void EndOfEvent(G4HCofThisEvent*);
-   virtual void clear();
-   virtual void DrawAll();
-   virtual void PrintAll();
-
-private:
-   G4int HCID;
-   G4THitsMap<G4double>* EvtMap;
-};
-
-
-
-class PSInteractionCoordinatesAnglePhi : public G4VPrimitiveScorer
-{
-public: // with description
-   PSInteractionCoordinatesAnglePhi(G4String name, G4int depth = 0);
-   virtual ~PSInteractionCoordinatesAnglePhi();
-
-protected: // with description
-   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-
-public:
-   virtual void Initialize(G4HCofThisEvent*);
-   virtual void EndOfEvent(G4HCofThisEvent*);
-   virtual void clear();
-   virtual void DrawAll();
-   virtual void PrintAll();
-
-private:
-   G4int HCID;
-   G4THitsMap<G4double>* EvtMap;
-};
-
-
-class PSDetectorNumber : public G4VPrimitiveScorer
-	{
-
-	public: // with description
-	   PSDetectorNumber(G4String name, G4int depth = 0 , G4String VolumeName = "xxx");
-	   virtual ~PSDetectorNumber();
-
-	protected: // with description
-	   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-
-	public:
-	   virtual void Initialize(G4HCofThisEvent*);
-	   virtual void EndOfEvent(G4HCofThisEvent*);
-	   virtual void clear();
-	   virtual void DrawAll();
-	   virtual void PrintAll();
-
-	private:
-	   G4int HCID;
-	   G4THitsMap<G4int>* EvtMap;
-	   G4String m_VolumeName ;
-	};
 #endif

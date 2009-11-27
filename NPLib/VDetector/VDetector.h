@@ -24,9 +24,8 @@
  *   See MUST2 array for exemple of VDetector derived class                  *
  *                                                                           *
  *****************************************************************************/
-// STL header
+//	STL header
 #include <string>
-
 using namespace std;
 
 namespace NPA 
@@ -38,12 +37,15 @@ namespace NPA
 
 				//	Default Constructor and destructor
 				VDetector()   ;
-				~VDetector()   ;
-
-
+				virtual ~VDetector()   ;
+			
 				//	Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
 				virtual void ReadConfiguration(string) 		{}		;
+		
+				//	Add Parameter to the CalibrationManger
+				virtual void AddParameterToCalibrationManager()	{} ;		
 
+				//	XXX To be DUMPED XXX
 				//	Read stream at CalibFile and pick-up calibration parameter using Token
 				//	If argument is "Simulation" no change calibration is loaded
 				virtual void ReadCalibrationFile(string)	{} ;		
@@ -94,6 +96,7 @@ namespace NPA
 				nothing	noCalibration	;
 				
 			*/
+			
 		};
 
 	}

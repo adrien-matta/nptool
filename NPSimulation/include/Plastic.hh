@@ -10,16 +10,19 @@
 /*****************************************************************************
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
- * Creation Date  : september 2009                                           *
+ * Creation Date  : September 2009                                           *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe a modular plastic array                              *
+ *  This class describe a Modular cylindrical Plastic Scintillator           *
+ *	Few Material are instantiate and user can choose position and dimension	 * 
+ *  but also the adding of a lead plate on the rear side of the detector     *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *                                                                           *
  *****************************************************************************/
+
 // C++ header
 #include <string>
 #include <vector>
@@ -57,6 +60,7 @@ public:
          			 G4double    Phi         		,
          			 G4double	 PlasticThickness	,
          			 G4double	 PlasticRadius		,
+         			 G4String 	Scintillator		,
          			 G4double    LeadThickness      );  
 		
 	void VolumeMaker(G4ThreeVector Det_pos, int DetNumber,G4LogicalVolume* world) ;
@@ -83,7 +87,10 @@ public:
 public: // Material 
 	void InitializeMaterial() 		;
 	// Platic
-	G4Material* m_MaterialPlastic	;
+	G4Material* m_MaterialPlastic_BC400			; //BC-400 type plastic
+	G4Material* m_MaterialPlastic_BC452_2		; //BC452:BC-400 loaded with 2%Pb type plastic
+	G4Material* m_MaterialPlastic_BC452_5		; //BC452:BC-400 loaded with 5%Pb type plastic
+	G4Material* m_MaterialPlastic_BC452_10	; //BC452:BC-400 loaded with 10%Pb type plastic
 	// Lead
 	G4Material* m_MaterialLead		;
 	
@@ -105,7 +112,7 @@ private:
 private:
    
    // if true a Lead plate is added in front or back of the detector
-   vector<double>	  	m_LeadThickness	;
+   vector<double>	  m_LeadThickness	;
    
    vector<double>		m_PlasticThickness	;
    vector<double>		m_PlasticRadius		;
@@ -114,6 +121,9 @@ private:
    vector<G4double>  m_R         ; //  |
    vector<G4double>  m_Theta     ; //  > Spherical coordinate plastic volume center
    vector<G4double>  m_Phi    	 ; //  |
+
+	//	Scintillator type
+	vector<G4String> m_Scintillator ;
 
 
 };

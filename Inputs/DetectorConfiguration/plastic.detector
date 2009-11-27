@@ -1,5 +1,3 @@
-%Fichier de configuration manip E225
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ScintillatorPlastic
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -9,6 +7,7 @@ Plastic
 	R= 150
 	Thickness= 20
 	Radius= 50
+	Scintillator= BC400
 	LeadThickness= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Plastic
@@ -17,5 +16,12 @@ Plastic
 	R= 175
 	Thickness= 20
 	Radius= 50
+	Scintillator= BC452_5
 	LeadThickness= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Avaible material:
+% BC400
+% BC452_2  : BC400 with 2% Pb
+% BC452_5  : BC400 with 5% Pb
+% BC452_10 : BC400 with 10% Pb

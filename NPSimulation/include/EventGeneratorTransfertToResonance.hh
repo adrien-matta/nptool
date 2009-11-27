@@ -16,11 +16,11 @@
  * Decription:                                                               *
  *  This event Generator is used to simulated two body TransfertReaction.    *
  *  A Phase Space calculation is then performed to decay the Heavy product.  *
- *	The TGenPhaseSpace from ROOT is used to calculate a phase space decay    *
- *	with flat distribution	                                                 *
+ *  The TGenPhaseSpace from ROOT is used to calculate a phase space decay    *
+ *  with flat distribution	                                             *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *   									                                     *
+ *   					                                     *
  *                                                                           *
  *****************************************************************************/
 // C++ header
@@ -28,6 +28,7 @@
 
 // NPSimulation
 #include "VEventGenerator.hh"
+#include "Target.hh"
 
 // NPLib
 #include "TInitialConditions.h"
@@ -73,20 +74,7 @@ class EventGeneratorTransfertToResonance : public VEventGenerator
 	public:     // Inherit from VEventGenerator class
 	   void        ReadConfiguration(string)              ;
 	   void        GenerateEvent(G4Event*, G4ParticleGun*)       ;
-
-	   void        SetTargetCoordinate(G4double X, G4double Y, G4double Z) {
-	      m_TargetX = X;
-	      m_TargetY = Y;
-	      m_TargetZ = Z;
-	   }
-
-	   void        SetTargetThickness(double TargetThickness) {
-	      m_TargetThickness = TargetThickness ;
-	   }
-
-	   void        SetTargetRadius(double TargetRadius) {
-	      m_TargetRadius    = TargetRadius    ;
-	   }
+	   void        SetTarget(Target* Target);
 
 	private: // Particle Shoot Option
 	   bool        m_ShootLight         ;
@@ -105,11 +93,7 @@ class EventGeneratorTransfertToResonance : public VEventGenerator
 	   double         m_SigmaPhiY        ;
 
 	private: // Target Parameter
-	   double         m_TargetThickness    ;
-	   double         m_TargetRadius       ;
-	   double         m_TargetX            ;
-	   double         m_TargetY            ;
-	   double         m_TargetZ            ;
+    	Target*        m_Target;
 
 	private: // Reaction
 		Reaction*	m_Reaction				;
@@ -131,10 +115,6 @@ class EventGeneratorTransfertToResonance : public VEventGenerator
 						        G4double z0             ,
 						        G4Event* anEvent        ,
 						        G4ParticleGun* particleGun);
-
-		//	This method return a random Vector of dimension N and magnitude R
-		//  The return distribution populate uniformely the surface of the N-Sphere of radius R  
-		vector<double>	PhaseSpaceUniformGenerator( int N , double R);
 
 	   void     SetEverything(string    name1          ,         //Beam nuclei
 		         string   name2          ,        //Target nuclei

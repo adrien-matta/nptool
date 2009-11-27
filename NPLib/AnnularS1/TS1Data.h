@@ -61,7 +61,8 @@ class TS1Data : public TObject {
    virtual ~TS1Data();
 
    void	Clear();
-   void	Dump();
+   void Clear(const Option_t*) {};
+   void	Dump() const;
 
 
 
@@ -105,7 +106,7 @@ class TS1Data : public TObject {
    void	SetS1PhiTStripNbr(UShort_t Nr)		{fS1_Phi_T_StripNbr.push_back(Nr);}
    void	SetS1PhiTTime(Double_t T)		{fS1_Phi_T_Time.push_back(T);}
 
-   ClassDef(TS1Data,1)  // S1Data structure
+   ClassDef(TS1Data,2)  // S1Data structure
 };
 
 #endif

@@ -68,6 +68,8 @@ void ControlSimu(const char * fname = "mySimul")
    TH2F *hEmittanceYPhi   = new TH2F("hEmittanceYPhi",   "Emittance (y, #phi)",       200, -10, 10, 200, -10, 10);
    TH1F *hIncidentTheta   = new TH1F("hIncidentTheta",   "Incident Theta",            100,   0, 10);
    TH1F *hIncidentPhi     = new TH1F("hIncidentPhi",     "Incident Phi",              360,   0, 360);
+   TH1F *hIncidentZ       = new TH1F("hIncidentZ",       "z-position of interaction", 200,  -5, 5);
+
    // for emitted particle
    TH1F *hEmittedThetaCM = new TH1F("hEmittedThetaCM", "Emitted Theta CM",               180, 0, 180);
    TH1F *hEmittedThetaIF = new TH1F("hEmittedThetaIF", "Emitted Theta (reaction frame)", 180, 0, 180);
@@ -87,6 +89,7 @@ void ControlSimu(const char * fname = "mySimul")
       // Fill histos
       // incident beam
       hEmittanceXY     -> Fill(initCond->GetICPositionX(0), initCond->GetICPositionY(0));
+      hIncidentZ       -> Fill(initCond->GetICPositionZ(0));
       hEmittanceXTheta -> Fill(initCond->GetICPositionX(0), initCond->GetICIncidentEmittanceTheta(0));
       hEmittanceYPhi   -> Fill(initCond->GetICPositionX(0), initCond->GetICIncidentEmittancePhi(0));
       hIncidentTheta   -> Fill(initCond->GetICIncidentAngleTheta(0));
@@ -118,6 +121,8 @@ void ControlSimu(const char * fname = "mySimul")
    hIncidentPhi->Draw();
    canvas1->cd(5);
    hEmittanceXY->Draw("colz");
+   canvas1->cd(6);
+   hIncidentZ->Draw();
 
    // Display histograms
    TCanvas *canvas2 = new TCanvas("canvas2", "Emitted particle properties");

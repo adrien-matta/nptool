@@ -68,6 +68,7 @@ RootOutput::~RootOutput()
 {
    // The data is written to the file and the tree is closed:
    if (pRootFile) {
+      cout << endl;
       cout << "Got histograms and Tree !" << endl;
       pRootFile->Write();
       pRootFile->Close();

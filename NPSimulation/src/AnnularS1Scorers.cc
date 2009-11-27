@@ -19,6 +19,7 @@
  *                                                                           *
  *****************************************************************************/
 
+#include "GeneralScorers.hh"
 #include "AnnularS1Scorers.hh"
 #include "G4UnitsTable.hh"
 #include "AnnularS1.hh"
@@ -34,126 +35,11 @@ using namespace ANNULARS1;
 // not use those scorer with some G4 provided ones or being very carefull doing so.
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// Energy Scorer (deal with multiple particle hit)
-AnnularS1ScorerEnergy::AnnularS1ScorerEnergy(G4String name, G4int depth)
-      : G4VPrimitiveScorer(name, depth), HCID(-1)
-{
-}
-
-AnnularS1ScorerEnergy::~AnnularS1ScorerEnergy()
-{
-}
-
-G4bool AnnularS1ScorerEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
-{
-   G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
-   POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
-
-   G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
-   G4int  index = aStep->GetTrack()->GetTrackID();
-   EvtMap->add(index, edep);
-   return TRUE;
-}
-
-void AnnularS1ScorerEnergy::Initialize(G4HCofThisEvent* HCE)
-{
-   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
-   if (HCID < 0) {
-      HCID = GetCollectionID(0);
-   }
-   HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
-}
-
-void AnnularS1ScorerEnergy::EndOfEvent(G4HCofThisEvent*)
-{
-}
-
-void AnnularS1ScorerEnergy::clear()
-{
-   EvtMap->clear();
-}
-
-void AnnularS1ScorerEnergy::DrawAll()
-{
-}
-
-void AnnularS1ScorerEnergy::PrintAll()
-{
-   G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl;
-   G4cout << " PrimitiveScorer " << GetName() << G4endl;
-   G4cout << " Number of entries " << EvtMap->entries() << G4endl;
-   std::map<G4int, G4double*>::iterator itr = EvtMap->GetMap()->begin();
-   for (; itr != EvtMap->GetMap()->end(); itr++) {
-      G4cout << "  copy no.: " << itr->first
-      << "  energy deposit: " << G4BestUnit(*(itr->second), "Energy")
-      << G4endl;
-   }
-}
-
-
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// Time Scorer
-AnnularS1ScorerTime::AnnularS1ScorerTime(G4String name, G4int depth)
-      : G4VPrimitiveScorer(name, depth), HCID(-1)
-{
-}
-
-AnnularS1ScorerTime::~AnnularS1ScorerTime()
-{
-}
-
-G4bool AnnularS1ScorerTime::ProcessHits(G4Step* aStep, G4TouchableHistory*)
-{
-   G4double TOF  = aStep->GetPreStepPoint()->GetGlobalTime();
-   G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
-   G4int  index = aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, TOF);
-   return TRUE;
-}
-
-void AnnularS1ScorerTime::Initialize(G4HCofThisEvent* HCE)
-{
-   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(),
-         GetName());
-   if (HCID < 0) {
-      HCID = GetCollectionID(0);
-   }
-   HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
-}
-
-void AnnularS1ScorerTime::EndOfEvent(G4HCofThisEvent*)
-{
-}
-
-void AnnularS1ScorerTime::clear()
-{
-   EvtMap->clear();
-}
-
-void AnnularS1ScorerTime::DrawAll()
-{
-}
-
-void AnnularS1ScorerTime::PrintAll()
-{
-   G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl ;
-   G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
-   G4cout << " Number of entries " << EvtMap->entries() << G4endl     ;
-}
-
-
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Strip position Scorer
 // Theta
-AnnularS1ScorerThetaStripNumber::AnnularS1ScorerThetaStripNumber(G4String name, G4int depth, G4double StripPlaneSize, G4int NumberOfStrip)
+AnnularS1ScorerThetaStripNumber::AnnularS1ScorerThetaStripNumber(G4String name, G4int depth)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
-   m_StripPlaneSize =   StripPlaneSize ;
-   m_NumberOfStrip    = NumberOfStrip  ;
 }
 
 AnnularS1ScorerThetaStripNumber::~AnnularS1ScorerThetaStripNumber()
@@ -162,6 +48,9 @@ AnnularS1ScorerThetaStripNumber::~AnnularS1ScorerThetaStripNumber()
 
 G4bool AnnularS1ScorerThetaStripNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+   // get detector number
+   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "S1Annular");
+
    // Hit position in the world frame
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
 
@@ -197,7 +86,7 @@ G4bool AnnularS1ScorerThetaStripNumber::ProcessHits(G4Step* aStep, G4TouchableHi
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, ThetaStripNumber);
+   EvtMap->set(DetNbr + index, ThetaStripNumber);
    return TRUE;
 }
 
@@ -234,11 +123,9 @@ void AnnularS1ScorerThetaStripNumber::PrintAll()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Phi
-AnnularS1ScorerPhiStripNumber::AnnularS1ScorerPhiStripNumber(G4String name, G4int depth, G4double StripPlaneSize, G4int NumberOfStrip)
+AnnularS1ScorerPhiStripNumber::AnnularS1ScorerPhiStripNumber(G4String name, G4int depth)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
-   m_StripPlaneSize =   StripPlaneSize ;
-   m_NumberOfStrip    = NumberOfStrip  ;
 }
 
 AnnularS1ScorerPhiStripNumber::~AnnularS1ScorerPhiStripNumber()
@@ -247,6 +134,9 @@ AnnularS1ScorerPhiStripNumber::~AnnularS1ScorerPhiStripNumber()
 
 G4bool AnnularS1ScorerPhiStripNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+   // get detector number
+   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "S1Annular");
+
    // Hit position in the world frame
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
 
@@ -268,7 +158,7 @@ G4bool AnnularS1ScorerPhiStripNumber::ProcessHits(G4Step* aStep, G4TouchableHist
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(index, PhiStripNumber);
+   EvtMap->set(DetNbr + index, PhiStripNumber);
    return TRUE;
 }
 

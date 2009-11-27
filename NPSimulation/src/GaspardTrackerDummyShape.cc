@@ -9,7 +9,7 @@
  * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
  *                                                                           *
  * Creation Date  : 03/09/09                                                 *
- * Last update    : 07/09/09                                                 *
+ * Last update    : 12/10/09                                                 *
  *---------------------------------------------------------------------------*
  * Decription: Define a dummy module for the Gaspard tracker                 *
  *             The goal of this class is to be a starting point to create a  *
@@ -19,6 +19,7 @@
  * Comment:                                                                  *
  *    + 07/09/09: Fix bug for placing module with (r,theta,phi) method.      *
  *                (N. de Sereville)                                          *
+ *    + 12/10/09: Change scorer scheme (N. de Sereville)                     *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
@@ -53,7 +54,6 @@
 #include "GeneralScorers.hh"
 #include "GaspardScorers.hh"
 #include "RootOutput.h"
-#include "MUST2Array.hh"
 
 // CLHEP
 #include "CLHEP/Random/RandGauss.h"
@@ -241,7 +241,8 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
       PVPBuffer = new G4PVPlacement(0, 
                                     positionFirstStage, 
                                     logicFirstStage, 
-                                    "G" + DetectorNumber + "FirstStage", 
+//                                    "G" + DetectorNumber + "FirstStage", 
+                                    Name + "_FirstStage", 
                                     logicGPDDummyShape, 
                                     false, 
                                     0);
@@ -267,7 +268,8 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
       PVPBuffer = new G4PVPlacement(0, 
                                     positionSecondStage, 
                                     logicSecondStage, 
-                                    "G" + DetectorNumber + "SecondStage", 
+//                                    "G" + DetectorNumber + "SecondStage", 
+                                    Name + "_SecondStage", 
                                     logicGPDDummyShape, 
                                     false, 
                                     0);
@@ -293,7 +295,8 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
       PVPBuffer = new G4PVPlacement(0, 
                                     positionThirdStage, 
                                     logicThirdStage, 
-                                    "G" + DetectorNumber + "ThirdStage", 
+//                                    "G" + DetectorNumber + "ThirdStage", 
+                                    Name + "_ThirdStage", 
                                     logicGPDDummyShape, 
                                     false, 
                                     0);
@@ -758,66 +761,62 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
       return;
    }
 
-   // Loop on FirstStage energy
-   for (G4int l = 0 ; l < sizeE ; l++) {
-      G4int ETrackID  =   Energy_itr->first     ;
-      G4double E     = *(Energy_itr->second)    ;
-      G4int N = 0;
+   // Loop on FirstStage number
+   for (G4int l = 0; l < sizeN; l++) {
+      G4double N     = *(DetectorNumber_itr->second);
+      G4int NTrackID =   DetectorNumber_itr->first - N;
 
-      if (E > 0) {
-         ms_Event->SetGPDTrkFirstStageFrontEEnergy(RandGauss::shoot(E, ResoFirstStage))    ;
-         ms_Event->SetGPDTrkFirstStageBackEEnergy(RandGauss::shoot(E, ResoFirstStage))    ;
+      if (N > 0) {
+         // Fill detector number
+         ms_Event->SetGPDTrkFirstStageFrontEDetectorNbr(m_index["DummyShape"] + N);
+         ms_Event->SetGPDTrkFirstStageFrontTDetectorNbr(m_index["DummyShape"] + N);
+         ms_Event->SetGPDTrkFirstStageBackEDetectorNbr(m_index["DummyShape"] + N);
+         ms_Event->SetGPDTrkFirstStageBackTDetectorNbr(m_index["DummyShape"] + N);
 
-         //  Detector Number
-         DetectorNumber_itr = DetectorNumberHitMap->GetMap()->begin();
-         for (G4int h = 0 ; h < sizeN ; h++) {
-             G4int NTrackID  =   DetectorNumber_itr->first       ;
-             G4double Nl     = *(DetectorNumber_itr->second)      ;
-
-             if (NTrackID == ETrackID) {
-                N = Nl ;
-                ms_Event->SetGPDTrkFirstStageFrontEDetectorNbr(INDEX + N);
-                ms_Event->SetGPDTrkFirstStageFrontTDetectorNbr(INDEX + N);
-                ms_Event->SetGPDTrkFirstStageBackEDetectorNbr(INDEX + N);
-                ms_Event->SetGPDTrkFirstStageBackTDetectorNbr(INDEX + N);
-             }
-             DetectorNumber_itr++;
+         // Energy
+         for (G4int l = 0 ; l < sizeE ; l++) {
+            G4int ETrackID  =   Energy_itr->first - N;
+            G4double E     = *(Energy_itr->second);
+            if (ETrackID == NTrackID) {
+               ms_Event->SetGPDTrkFirstStageFrontEEnergy(RandGauss::shoot(E, ResoFirstStage));
+               ms_Event->SetGPDTrkFirstStageBackEEnergy(RandGauss::shoot(E, ResoFirstStage));
+            }
+            Energy_itr++;
          }
 
          //  Time
          Time_itr = TimeHitMap->GetMap()->begin();
          for (G4int h = 0 ; h < sizeT ; h++) {
-            G4int TTrackID  =   Time_itr->first       ;
-            G4double T     = *(Time_itr->second)      ;
-
-            if (TTrackID == ETrackID) {
-               T = RandGauss::shoot(T, ResoTimeGpd)   ;
-               ms_Event->SetGPDTrkFirstStageFrontTTime(RandGauss::shoot(T, ResoTimeGpd)) ;
-               ms_Event->SetGPDTrkFirstStageBackTTime(RandGauss::shoot(T, ResoTimeGpd)) ;
+            G4int TTrackID  =   Time_itr->first - N;
+            G4double T     = *(Time_itr->second);
+            if (TTrackID == NTrackID) {
+               T = RandGauss::shoot(T, ResoTimeGpd);
+               ms_Event->SetGPDTrkFirstStageFrontTTime(RandGauss::shoot(T, ResoTimeGpd));
+               ms_Event->SetGPDTrkFirstStageBackTTime(RandGauss::shoot(T, ResoTimeGpd));
             }
             Time_itr++;
          }
 
-         // X
+         // Strip X
          X_itr = XHitMap->GetMap()->begin();
          for (G4int h = 0 ; h < sizeX ; h++) {
-            G4int XTrackID  =   X_itr->first     ;
-            G4double X     = *(X_itr->second)      ;
-            if (XTrackID == ETrackID) {
-               ms_Event->SetGPDTrkFirstStageFrontEStripNbr(X)   ;
-               ms_Event->SetGPDTrkFirstStageFrontTStripNbr(X)   ;
+            G4int XTrackID  =   X_itr->first - N;
+            G4double X     = *(X_itr->second);
+            if (XTrackID == NTrackID) {
+               ms_Event->SetGPDTrkFirstStageFrontEStripNbr(X);
+               ms_Event->SetGPDTrkFirstStageFrontTStripNbr(X);
             }
             X_itr++;
          }
 
-         // Y
+         // Strip Y
          Y_itr = YHitMap->GetMap()->begin()  ;
          for (G4int h = 0 ; h < sizeY ; h++) {
-            G4int YTrackID  =   Y_itr->first    ;
-            G4double Y     = *(Y_itr->second)      ;
-            if (YTrackID == ETrackID) {
-               ms_Event->SetGPDTrkFirstStageBackEStripNbr(Y)   ;
-               ms_Event->SetGPDTrkFirstStageBackTStripNbr(Y)   ;
+            G4int YTrackID  =   Y_itr->first - N;
+            G4double Y     = *(Y_itr->second);
+            if (YTrackID == NTrackID) {
+               ms_Event->SetGPDTrkFirstStageBackEStripNbr(Y);
+               ms_Event->SetGPDTrkFirstStageBackTStripNbr(Y);
             }
             Y_itr++;
          }
@@ -825,9 +824,9 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
          // Pos X
          Pos_X_itr = PosXHitMap->GetMap()->begin();
          for (G4int h = 0 ; h < sizeX ; h++) {
-            G4int PosXTrackID =   Pos_X_itr->first     ;
+            G4int PosXTrackID =   Pos_X_itr->first - N    ;
             G4double PosX     = *(Pos_X_itr->second)      ;
-            if (PosXTrackID == ETrackID) {
+            if (PosXTrackID == NTrackID) {
                ms_InterCoord->SetDetectedPositionX(PosX) ;
             }
             Pos_X_itr++;
@@ -836,9 +835,9 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
          // Pos Y
          Pos_Y_itr = PosYHitMap->GetMap()->begin();
          for (G4int h = 0 ; h < sizeX ; h++) {
-            G4int PosYTrackID =   Pos_Y_itr->first     ;
+            G4int PosYTrackID =   Pos_Y_itr->first - N    ;
             G4double PosY     = *(Pos_Y_itr->second)      ;
-            if (PosYTrackID == ETrackID) {
+            if (PosYTrackID == NTrackID) {
                ms_InterCoord->SetDetectedPositionY(PosY) ;
             }
             Pos_Y_itr++;
@@ -847,9 +846,9 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
          // Pos Z
          Pos_Z_itr = PosZHitMap->GetMap()->begin();
          for (G4int h = 0 ; h < sizeX ; h++) {
-            G4int PosZTrackID =   Pos_Z_itr->first     ;
+            G4int PosZTrackID =   Pos_Z_itr->first - N    ;
             G4double PosZ     = *(Pos_Z_itr->second)      ;
-            if (PosZTrackID == ETrackID) {
+            if (PosZTrackID == NTrackID) {
                ms_InterCoord->SetDetectedPositionZ(PosZ) ;
             }
             Pos_Z_itr++;
@@ -858,9 +857,9 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
          // Angle Theta
          Ang_Theta_itr = AngThetaHitMap->GetMap()->begin();
          for (G4int h = 0 ; h < sizeX ; h++) {
-            G4int AngThetaTrackID =   Ang_Theta_itr->first     ;
+            G4int AngThetaTrackID =   Ang_Theta_itr->first - N    ;
             G4double AngTheta     = *(Ang_Theta_itr->second)      ;
-            if (AngThetaTrackID == ETrackID) {
+            if (AngThetaTrackID == NTrackID) {
                ms_InterCoord->SetDetectedAngleTheta(AngTheta) ;
             }
             Ang_Theta_itr++;
@@ -869,9 +868,9 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
          // Angle Phi
          Ang_Phi_itr = AngPhiHitMap->GetMap()->begin();
          for (G4int h = 0 ; h < sizeX ; h++) {
-            G4int AngPhiTrackID =   Ang_Phi_itr->first     ;
+            G4int AngPhiTrackID =   Ang_Phi_itr->first - N    ;
             G4double AngPhi     = *(Ang_Phi_itr->second)      ;
-            if (AngPhiTrackID == ETrackID) {
+            if (AngPhiTrackID == NTrackID) {
                ms_InterCoord->SetDetectedAnglePhi(AngPhi) ;
             }
             Ang_Phi_itr++;
@@ -880,16 +879,16 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
          // Second Stage
          SecondStageEnergy_itr = SecondStageEnergyHitMap->GetMap()->begin() ;
          for (G4int h = 0 ; h < SecondStageEnergyHitMap->entries() ; h++) {
-            G4int SecondStageEnergyTrackID =   SecondStageEnergy_itr->first  ;
-            G4double SecondStageEnergy     = *(SecondStageEnergy_itr->second)   ;
+            G4int SecondStageEnergyTrackID =   SecondStageEnergy_itr->first - N;
+            G4double SecondStageEnergy     = *(SecondStageEnergy_itr->second);
 
-            if (SecondStageEnergyTrackID == ETrackID) {
+            if (SecondStageEnergyTrackID == NTrackID) {
                ms_Event->SetGPDTrkSecondStageEEnergy(RandGauss::shoot(SecondStageEnergy, ResoSecondStage)) ;
                ms_Event->SetGPDTrkSecondStageEPadNbr(1);
                ms_Event->SetGPDTrkSecondStageTPadNbr(1);
                ms_Event->SetGPDTrkSecondStageTTime(1);
-               ms_Event->SetGPDTrkSecondStageTDetectorNbr(INDEX + N);
-               ms_Event->SetGPDTrkSecondStageEDetectorNbr(INDEX + N);
+               ms_Event->SetGPDTrkSecondStageTDetectorNbr(m_index["DummyShape"] + N);
+               ms_Event->SetGPDTrkSecondStageEDetectorNbr(m_index["DummyShape"] + N);
             }
             SecondStageEnergy_itr++;
          }
@@ -897,21 +896,21 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
          // Third Stage
          ThirdStageEnergy_itr = ThirdStageEnergyHitMap->GetMap()->begin()  ;
          for (G4int h = 0 ; h < ThirdStageEnergyHitMap->entries() ; h++) {
-            G4int ThirdStageEnergyTrackID  =   ThirdStageEnergy_itr->first      ;
-            G4double ThirdStageEnergy      = *(ThirdStageEnergy_itr->second)    ;
+            G4int ThirdStageEnergyTrackID  =   ThirdStageEnergy_itr->first - N;
+            G4double ThirdStageEnergy      = *(ThirdStageEnergy_itr->second);
 
-            if (ThirdStageEnergyTrackID == ETrackID) {
+            if (ThirdStageEnergyTrackID == NTrackID) {
                ms_Event->SetGPDTrkThirdStageEEnergy(RandGauss::shoot(ThirdStageEnergy, ResoThirdStage));
                ms_Event->SetGPDTrkThirdStageEPadNbr(1);
                ms_Event->SetGPDTrkThirdStageTPadNbr(1);
                ms_Event->SetGPDTrkThirdStageTTime(1);
-               ms_Event->SetGPDTrkThirdStageTDetectorNbr(INDEX + N);
-               ms_Event->SetGPDTrkThirdStageEDetectorNbr(INDEX + N);
+               ms_Event->SetGPDTrkThirdStageTDetectorNbr(m_index["DummyShape"] + N);
+               ms_Event->SetGPDTrkThirdStageEDetectorNbr(m_index["DummyShape"] + N);
             }
             ThirdStageEnergy_itr++;
          }
 
-         Energy_itr++;
+         DetectorNumber_itr++;
       }
 
       // clear map for next event
@@ -936,16 +935,16 @@ void GaspardTrackerDummyShape::InitializeScorers()
 {
    // First stage Associate Scorer
    m_FirstStageScorer                                   = new G4MultiFunctionalDetector("FirstStageScorerGPDDummyShape");
-   G4VPrimitiveScorer* DetNbr                           = new GPDScorerDetectorNumber("DetectorNumber", 0, "FirstStage");
-   G4VPrimitiveScorer* Energy                           = new GPDScorerFirstStageEnergy("StripEnergy", 0);
-   G4VPrimitiveScorer* TOF                              = new PSTOF("StripTime", 0);
+   G4VPrimitiveScorer* DetNbr                           = new GENERALSCORERS::PSDetectorNumber("DetectorNumber", "GPDDummyShape", 0);
+   G4VPrimitiveScorer* TOF                              = new GENERALSCORERS::PSTOF("StripTime","GPDDummyShape", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesX          = new GENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","GPDDummyShape", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesY          = new GENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","GPDDummyShape", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesZ          = new GENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","GPDDummyShape", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new GENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","GPDDummyShape", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new GENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","GPDDummyShape", 0);
+   G4VPrimitiveScorer* Energy                           = new GPDScorerFirstStageEnergy("StripEnergy", "GPDDummyShape", 0);
    G4VPrimitiveScorer* StripPositionX                   = new GPDScorerFirstStageFrontStripDummyShape("StripIDFront", 0, NumberOfStrips);
    G4VPrimitiveScorer* StripPositionY                   = new GPDScorerFirstStageBackStripDummyShape("StripIDBack", 0, NumberOfStrips);
-   G4VPrimitiveScorer* InteractionCoordinatesX          = new PSInteractionCoordinatesX("InterCoordX", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesY          = new PSInteractionCoordinatesY("InterCoordY", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesZ          = new PSInteractionCoordinatesZ("InterCoordZ", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new PSInteractionCoordinatesAngleTheta("InterCoordAngTheta", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new PSInteractionCoordinatesAnglePhi("InterCoordAngPhi", 0);
 
    //and register it to the multifunctionnal detector
    m_FirstStageScorer->RegisterPrimitive(DetNbr);
@@ -962,13 +961,13 @@ void GaspardTrackerDummyShape::InitializeScorers()
 
    // Second stage Associate Scorer
    m_SecondStageScorer = new G4MultiFunctionalDetector("SecondStageScorerGPDDummyShape");
-   G4VPrimitiveScorer* SecondStageEnergy = new GPDScorerSecondStageEnergy("SecondStageEnergy", 0);
+   G4VPrimitiveScorer* SecondStageEnergy = new GPDScorerSecondStageEnergy("SecondStageEnergy", "GPDDummyShape", 0);
    m_SecondStageScorer->RegisterPrimitive(SecondStageEnergy);
 
 
    //  Third stage Associate Scorer 
    m_ThirdStageScorer = new G4MultiFunctionalDetector("ThirdStageScorerGPDDummyShape");
-   G4VPrimitiveScorer* ThirdStageEnergy = new GPDScorerThirdStageEnergy("ThirdStageEnergy", 0);
+   G4VPrimitiveScorer* ThirdStageEnergy = new GPDScorerThirdStageEnergy("ThirdStageEnergy", "GPDDummyShape", 0);
    m_ThirdStageScorer->RegisterPrimitive(ThirdStageEnergy);
 
 

@@ -6,8 +6,7 @@
 // -------------------------------------- VARIOUS INCLUDE ---------------------------------------
 
 // NPA
-#include "DetectorManager.hh"
-#include "Must2Array.h"
+#include "DetectorManager.h"
 
 // STL C++
 #include <iostream>
@@ -26,11 +25,16 @@
 #include <TRandom.h>
 
 // NPL
-#include "TMust2Data.h"
-#include "TMust2Physics.h"
-#include "NPReaction.h"
 #include "RootInput.h"
 #include "RootOutput.h"
+#include "NPReaction.h"
+#include "TInitialConditions.h"
+#include "TPlasticData.h"
+#include "TMust2Data.h"
+#include "TMust2Physics.h"
+#include "TSSSDPhysics.h"
+#include "TPlasticPhysics.h"
+#include "GaspardTracker.h"
 
 // Use CLHEP System of unit and Physical Constant
 #include "CLHEP/Units/GlobalSystemOfUnits.h"
@@ -106,6 +110,7 @@ namespace ENERGYLOSS
 		//	Declare your Energy loss here	:
 	/*		EnergyLoss ProtonTarget = EnergyLoss 	(	"CD2.txt" 	,
 														100 		,
+														1,
 														1			);
 	*/
 	}
