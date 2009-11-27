@@ -26,12 +26,18 @@ int main(int argc,char** argv)
    NPL::Reaction* myReaction = new Reaction();
    myReaction->ReadConfigurationFile(reactionfileName);
 
-   // set energy beam at target middle
-   myReaction->SetBeamEnergy(1292);
-
    // Initialize the detector
    NPA::DetectorManager* myDetector = new DetectorManager;
    myDetector->ReadConfigurationFile(detectorfileName);
+
+   // nominal beam energy
+   Double_t BeamEnergyNominal = myReaction->GetBeamEnergy() * MeV;
+   cout << BeamEnergyNominal << endl;
+   // slow beam at target middle
+   Double_t BeamEnergy = BeamEnergyNominal - BeamTarget.Slow(BeamEnergyNominal, myDetector->GetTargetThickness()/2 * micrometer, 0);
+   cout << BeamEnergy << endl;
+   // set energy beam at target middle
+   myReaction->SetBeamEnergy(BeamEnergy);
 
    // Print target thickness
    cout << myDetector->GetTargetThickness() << endl;
@@ -84,7 +90,8 @@ int main(int argc,char** argv)
          ThetaStrip = ThetaCalculation (A ,TVector3(0,0,1));
 
          // Correct for energy loss in the target
-         E = LightTarget.EvaluateInitialEnergy(E, 5.15*micrometer, ThetaStrip);
+//         E = LightTarget.EvaluateInitialEnergy(E, 5.15*micrometer, ThetaStrip);
+         E = LightTarget.EvaluateInitialEnergy(E, myDetector->GetTargetThickness()/2 * micrometer, ThetaStrip);
 
          // Calculate excitation energy
          if (Theta/deg > 90) {

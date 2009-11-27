@@ -64,7 +64,7 @@ Target::Target()
    m_WindowsThickness   = 0   ;
    m_TargetTemperature  = 0   ;
    m_TargetPressure  	= 0   ;
-   m_TargetNbLayers      = 50;	// Number of steps by default
+   m_TargetNbLayers     = 50;	// Number of steps by default
 }
 
 G4Material* Target::GetMaterialFromLibrary(G4String MaterialName, G4double Temperature, G4double Pressure)
@@ -292,7 +292,7 @@ void Target::ReadConfiguration(string Path)
 	            cout  << m_TargetZ / mm << " )" << endl ;           
 	         }
 
-	        else if (DataBuffer.compare(0, 9, "NbLayers=") == 0) {
+	        else if (DataBuffer.compare(0, 9, "NBLAYERS=") == 0) {
 	        	check_m_TargetNbLayers = true ;
 	            ConfigFile >> DataBuffer;
 	            m_TargetNbLayers = atoi(DataBuffer.c_str());
@@ -386,7 +386,7 @@ void Target::ReadConfiguration(string Path)
 	            cout << m_TargetZ / mm << " )" << endl ;
 	         }
 
-	        else if (DataBuffer.compare(0, 9, "m_TargetNbLayers=") == 0) {
+	        else if (DataBuffer.compare(0, 9, "NBLAYERS=") == 0) {
 	        	check_m_TargetNbLayers = true ;
 	            ConfigFile >> DataBuffer;
 	            m_TargetNbLayers = atoi(DataBuffer.c_str());

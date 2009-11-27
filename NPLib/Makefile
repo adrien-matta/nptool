@@ -425,6 +425,7 @@ endif
 	make distclean -C ./InteractionCoordinates
 	make distclean -C ./InitialConditions
 	make distclean -C ./DummyDetector
+	make distclean -C ./Plastic
 .SUFFIXES: .$(SrcSuf)
 
 ###
