@@ -165,7 +165,7 @@ namespace GPDDUMMYSHAPE
    // for testing the excitation energy reconstruction
    const G4double FirstStageThickness  = 1.3*cm;
 //   const G4int NumberOfStrips	       = 128;
-   const G4int NumberOfStrips	       = 128;
+   const G4int NumberOfStrips	       = 20;
 
    // Second stage
    const G4double SecondStageFace      = FirstStageFace;
