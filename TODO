@@ -22,8 +22,6 @@
 
 TODO for NPTool:
 ----------------
-   + Retrieve energyloss tables from G4 to be used for slowing the beam
-     and in the analysis.
    + Target work (Nicolas)
       + Take correctly into account the emittance when the target is tilted. 
       + IsInsideTarget method for debugging purposes
@@ -33,11 +31,9 @@ TODO for NPTool:
    + Add support for messengers
    + Scorers: CopyNumber v.s. DetectorNumber? (to be checked)
    + Build NPTool with the Autotool/Automake
-   + Add documentation (Adrien + Nicolas)
 
 TODO for Gaspard:
 -----------------
-   + Add documentation
    + Check bug when light and heavy particles are detected in the same event
    + Improve analysis in order to deal with heterogeneous detector shapes
    + Use only one class for the analysis per detector instead of two currently
