@@ -56,7 +56,7 @@ EnergyLoss::~EnergyLoss()
 	{}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-EnergyLoss::EnergyLoss(string Path , int NumberOfSlice=100 ,  int LiseColumn , int NumberOfMass) 
+EnergyLoss::EnergyLoss(string Path , string Source, int NumberOfSlice=100 ,  int LiseColumn , int NumberOfMass) 
 	{ 
 	
 	fNumberOfSlice = NumberOfSlice ; 
@@ -67,105 +67,86 @@ EnergyLoss::EnergyLoss(string Path , int NumberOfSlice=100 ,  int LiseColumn , i
 	
 	cout << "///////////////////////////////// " << endl ;
 	cout << "Initialising an EnergyLoss object " << endl ;
-	
-	 //If LiseColumn is set to 0 File type is expected to be from SRIM or Geant4
-	 if (LiseColumn == 0)
-	 	{
-				// Opening dE/dX file
-
-			ifstream TableFile	;
-			TableFile.open(Path.c_str())	;
-
-			if ( !TableFile )
-			    {
-					cout << "Failed to open file " << Path << endl;
-					return;
-			    }	
-			 		   	else
-				   	{
-				   	cout << "Reading Energy Loss File: " << Path << endl ;
-						// Reading Data
-						double energy, total;
-						string dummy;
-						//skipped first line
-						getline(TableFile,dummy);
-						while ( TableFile >> energy)
-						     {
-								fEnergy.push_back ( energy*MeV )				;
-								TableFile >> total;
-								fdEdX_Total.push_back ( total*MeV/micrometer )	;
-							}
-				   
-				  		// Close File
-				   		TableFile.close();
-				   	}
-		/*	else
-			   	{
-					// Reading Data
-					double energy, nuclear, electronic;
-					string unit, dummy;
-					
-					while ( TableFile >> energy >> unit 
-							>> electronic >> nuclear 
-							>> dummy >> dummy >> dummy 
-					    	>> dummy >> dummy >> dummy )
-					     {
-							if ( unit == "keV" ) energy = energy*keV				;
-							if ( unit == "MeV" ) energy = energy*MeV				;
-							if ( unit == "GeV" ) energy = energy*GeV				;
-							fEnergy				.push_back ( energy )				;
-							fdEdX_Nuclear		.push_back ( nuclear ) 				;
-							fdEdX_Electronic	.push_back ( electronic ) 			;
-							fdEdX_Total			.push_back ( nuclear + electronic )	;
-						}
-			   
-			  		// Close File
-			   		TableFile.close();
-			   	}*/
-			   
-			
-		}
 		
-		//Else File is expected to be from Lise, and LiseColumn gives which model to take
+		ifstream TableFile	;
+		TableFile.open(Path.c_str())	;
+
+ 		// Opening dE/dX file
+	 if(!TableFile) cout << "ERROR: TABLE FILE NOT FOUND" << endl; 
+	  
+	 if (Source == "G4Table")
+	 	{
+	   	cout << "Reading Energy Loss File: " << Path << endl ;
+			// Reading Data
+			double energy, total;
+			string dummy;
+			//skipped first line
+			getline(TableFile,dummy);
+			while ( TableFile >> energy)
+	     {
+				fEnergy.push_back ( energy*MeV )				;
+				TableFile >> total;
+				fdEdX_Total.push_back ( total*MeV/micrometer )	;
+				}
+	   
+	  		// Close File
+	   		TableFile.close();
+				   	
+			}
+			
+		else if (Source == "SRIM")	
+	   	{
+				// Reading Data
+				double energy, nuclear, electronic;
+				string unit, dummy;
+				
+				while ( TableFile >> energy >> unit 
+						>> electronic >> nuclear 
+						>> dummy >> dummy >> dummy 
+				    	>> dummy >> dummy >> dummy )
+				     {
+						if ( unit == "keV" ) energy = energy*keV				;
+						if ( unit == "MeV" ) energy = energy*MeV				;
+						if ( unit == "GeV" ) energy = energy*GeV				;
+						fEnergy				.push_back ( energy )				;
+						fdEdX_Nuclear		.push_back ( nuclear ) 				;
+						fdEdX_Electronic	.push_back ( electronic ) 			;
+						fdEdX_Total			.push_back ( nuclear + electronic )	;
+					}
+		   
+		  		// Close File
+		   		TableFile.close();
+	   	}
+
+		else if(Source == "LISE")
+			{
+		   	cout << "Reading Energy Loss File: " << Path << endl ;
+				// Reading Data
+				double energy=0, energyloss=0;
+				string dummy;				
+				// skipping comment first line		
+				getline(TableFile,dummy);
+				
+				while ( TableFile >> energy )
+					{ 
+						for (int k = 0 ; k < 11 ; k++ )
+							{
+								TableFile >> dummy ;
+								if (k+1==LiseColumn) energyloss = atof(dummy.c_str()) ;
+							}
+						fEnergy.push_back (energy*MeV) ;
+						fdEdX_Total.push_back(energyloss*MeV/micrometer);
+					}
+		   
+		  		// Close File
+		   		TableFile.close();
+			}
+			
 		else
 			{
-				// Opening dE/dX file
-
-				ifstream TableFile	;
-				TableFile.open(Path.c_str())	;
-
-				if ( !TableFile )
-				    {
-						cout << "Failed to open file " << Path << endl;
-						return;
-				    }	
-				   
-				else
-				   	{ 
-				   	cout << "Reading Energy Loss File: " << Path << endl ;
-						// Reading Data
-						double energy=0, energyloss=0;
-						string dummy;				
-						// skipping comment first line		
-						getline(TableFile,dummy);
-						
-						while ( TableFile >> energy )
-							{ 
-								for (int k = 0 ; k < 11 ; k++ )
-									{
-										TableFile >> dummy ;
-										if (k+1==LiseColumn) energyloss = atof(dummy.c_str()) ;
-									}
-								fEnergy.push_back (energy*MeV) ;
-								fdEdX_Total.push_back(energyloss*MeV/micrometer);
-							}
-				   
-				  		// Close File
-				   		TableFile.close();
-				   	}
-					
-			
+				cout << "ERROR : Wrong Source Type" << endl ;
 			}
+			
 			fInter = new Interpolator( fEnergy , fdEdX_Total	)		;
 			cout << "///////////////////////////////// " << endl ;
 	}

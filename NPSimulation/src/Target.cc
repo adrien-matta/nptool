@@ -653,8 +653,7 @@ void Target::WriteDEDXTable(G4ParticleDefinition* Particle ,G4double Emin,G4doub
 //							G4double dedx = emCalculator.ComputeTotalDEDX(E, Particle, m_WindowsMaterial);
 							  G4double dedx = emCalculator.ComputeDEDX(	E, Particle ,
                        																		"ionIoni",  m_WindowsMaterial);
-cout << dedx<<endl ;
-							File << E/MeV << "\t" << dedx/(MeV/micrometer) << endl ;
+								File << E/MeV << "\t" << dedx/(MeV/micrometer) << endl ;
 						}
 			}
 		File.close();
