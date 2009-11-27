@@ -62,18 +62,20 @@ EventGeneratorTransfert::EventGeneratorTransfert()
    m_ShootLight		= 0;
    m_ShootHeavy		= 0;
 }
+
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void	EventGeneratorTransfert::SetTarget(Target* Target) 
-   {
-   	if(Target!=0)	
-   		{
-   			m_Target = Target;
-   			G4int LightZ = m_Reaction->GetNucleus3()->GetZ() ;
-  			G4int LightA = m_Reaction->GetNucleus3()->GetA() ;
-   			m_Target->WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(LightZ,LightA, 0.) ,0, m_BeamEnergy);
-   		}
-   
+void EventGeneratorTransfert::SetTarget(Target* Target) 
+{
+   if (Target != 0) {
+      m_Target = Target;
+      G4int LightZ = m_Reaction->GetNucleus3()->GetZ();
+      G4int LightA = m_Reaction->GetNucleus3()->GetA();
+      m_Target->WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(LightZ,LightA, 0.) ,0, m_BeamEnergy);
    }
+}
+
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorTransfert::~EventGeneratorTransfert()
 {
@@ -363,16 +365,16 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
    G4double FinalBeamEnergy = 0 ;
    G4double InitialBeamEnergy = RandGauss::shoot(m_BeamEnergy, m_BeamEnergySpread);
    
-	m_Target->CalculateBeamInteraction(	0, m_SigmaX, 0, m_SigmaThetaX,
-                            					0, m_SigmaY, 0, m_SigmaPhiY,
-				                            	InitialBeamEnergy,
-				                            	BeamName,
-				                           	 	InterCoord, Beam_thetaX, Beam_phiY,
-                            					Beam_theta, Beam_phi,
-				                           	 	FinalBeamEnergy);
+   m_Target->CalculateBeamInteraction(0, m_SigmaX, 0, m_SigmaThetaX,
+                                      0, m_SigmaY, 0, m_SigmaPhiY,
+				      InitialBeamEnergy,
+				      BeamName,
+				      InterCoord, Beam_thetaX, Beam_phiY,
+                                      Beam_theta, Beam_phi,
+				      FinalBeamEnergy);
 				                           	 	
-	m_Reaction->SetBeamEnergy(FinalBeamEnergy);
-  m_InitConditions->SetICIncidentEnergy(FinalBeamEnergy / MeV);
+   m_Reaction->SetBeamEnergy(FinalBeamEnergy);
+   m_InitConditions->SetICIncidentEnergy(FinalBeamEnergy / MeV);
   
    // write vertex position to ROOT file
    G4double x0 = InterCoord.x();
