@@ -31,6 +31,7 @@
 #include "RootInput.h"
 #include "RootOutput.h"
 #include "TInitialConditions.h"
+#include "TInteractionCoordinates.h"
 #include "TMust2Physics.h"
 #include "TSSSDPhysics.h"
 #include "TPlasticPhysics.h"
@@ -116,11 +117,9 @@ namespace ENERGYLOSS
 																								"G4Table",
 																									10000	 				);
 			
-			EnergyLoss He3StripAl   = EnergyLoss 	(	"3He_Al.txt" 			,
-																							"LISE",
-																							10000						,
-																							1						,
-																							3						);
+			EnergyLoss He3StripAl   = EnergyLoss 	(	"He3_Aluminium.G4table" 			,
+																							"G4Table",
+																							10000						);
 														
 			EnergyLoss He3StripSi   = EnergyLoss 	(	"3He_Si.txt" 			,
 																							"LISE",
