@@ -104,7 +104,9 @@ using namespace NPL ;
 namespace ENERGYLOSS
 {
    // Declare your Energy loss here
-   EnergyLoss DeutonTargetCD2 = EnergyLoss("deuton_cd2.txt", 100, 1, 2);
+//   EnergyLoss LightTargetCD2 = EnergyLoss("proton_cd2.txt", 100, 1, 1); // LISE++
+   EnergyLoss LightTarget = EnergyLoss("proton_CD2.G4table", "G4Table", 1000);          // G4
+   EnergyLoss BeamTarget  = EnergyLoss("Sn132[0.0]_CD2.G4table", "G4Table", 1000);      // G4
 }
 
 using namespace ENERGYLOSS ;
