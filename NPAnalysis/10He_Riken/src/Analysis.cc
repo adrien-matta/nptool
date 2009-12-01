@@ -66,8 +66,8 @@ int main(int argc,char** argv)
 	TInteractionCoordinates* ICoord = new TInteractionCoordinates();
 	Chain->SetBranchAddress("InteractionCoordinates"	,&ICoord		);
 	
- 	double XTarget=0 ; double YTarget=0; double BeamTheta = 0 ; double BeamPhi = 0 ; double E=-1000;
-double ZTarget = 0 ;
+ 	double XTarget=0 ; double YTarget=0; double ZTarget = 0 ; double BeamTheta = 0 ; double BeamPhi = 0 ; double E=-1000;
+
 	// Get Detector Pointer:
 	TMust2Physics* M2 		= (TMust2Physics*) 			myDetector -> m_Detector["MUST2"] 	;
 	TPlasticPhysics* Pl 	= (TPlasticPhysics*) 		myDetector -> m_Detector["Plastic"] ;
@@ -77,7 +77,6 @@ double ZTarget = 0 ;
 	int i ,N=Chain -> GetEntries();
 	
 	cout << " Number of Event to be treated : " << N << endl ;
-	double deltaTheta=0;int k=0;
 	clock_t begin=clock();
 	clock_t end=begin;
 	for ( i = 0 ; i < N ; i ++ )
@@ -114,7 +113,6 @@ double ZTarget = 0 ;
 			XTarget = Init->GetICPositionX(0);
 			YTarget = Init->GetICPositionY(0);
 			ZTarget = Init->GetICPositionZ(0);
-			double TVRAI = Init-> GetICEmittedAngleThetaLabWorldFrame(0)*deg;	
 			//	XTarget = RandomEngine.Gaus(Init->GetICPositionX(0),1);
 			//	YTarget = RandomEngine.Gaus(Init->GetICPositionY(0),1);
 			BeamTheta = Init->GetICIncidentAngleTheta(0)*deg ; BeamPhi = Init->GetICIncidentAnglePhi(0)*deg ; 
@@ -127,13 +125,9 @@ double ZTarget = 0 ;
 					ELab[hit] = -1 ; ThetaLab[hit] = -1;
 					//	Get Hit Direction
 					TVector3 HitDirection  = M2 -> GetPositionOfInteraction(hit) - TVector3(XTarget,YTarget,0);
-//					TVector3 GG = TVector3(ICoord->GetDetectedPositionX(0),ICoord->GetDetectedPositionY(0),ICoord->GetDetectedPositionZ(0));
-//					TVector3 HitDirection  = GG - TVector3(XTarget,YTarget,0);					
 					// Angle between beam and particle
 					ThetaLab[hit]  = ThetaCalculation ( HitDirection , BeamDirection   ) ;		
 					
-					//cout << "XX  " << (ThetaLab[hit]-TVRAI)/deg << endl ;
-							deltaTheta+=(ThetaLab[hit]-TVRAI)/deg ; k++;
 					// Angle between particule and z axis (target Normal)
 					double ThetaN = ThetaCalculation ( HitDirection , TVector3(0,0,1) ) ;
 					// Angle between particule and Must2 Si surface
@@ -230,7 +224,6 @@ double ZTarget = 0 ;
 
 	cout << " A total of " << i << " event has been annalysed " << endl ;
 	cout << endl << "/////////////////////////////////"<< endl<< endl ;
-	cout << deltaTheta/k << endl ;
 	RootOutput::getInstance()->Destroy();
 	return 0	;
 }
