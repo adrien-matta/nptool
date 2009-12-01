@@ -745,9 +745,11 @@ void TMust2Physics::AddTelescope(	TVector3 C_X1_Y1 		,
 	
 		//	Vector U on Telescope Face (paralelle to Y Strip) (NB: remember that Y strip are allong X axis)
 		TVector3 U = C_X1_Y1 - C_X128_Y1 				;	
+		double Ushift = (U.Mag()-98)/2. ;
 		U = U.Unit()									;
 		//	Vector V on Telescope Face (parallele to X Strip)
 		TVector3 V = C_X128_Y128 - C_X128_Y1 				;
+		double Vshift = (V.Mag() -98)/2. ;
 		V = V.Unit()									;
 
 		//	Position Vector of Strip Center
@@ -756,10 +758,9 @@ void TMust2Physics::AddTelescope(	TVector3 C_X1_Y1 		,
 		TVector3 Strip_1_1 								;		
 
 		//	Geometry Parameter
-		double Face = 98 					  	; //mm
-		double NumberOfStrip = 128 				; 
+		double Face = 98					 					  	; //mm
+		double NumberOfStrip = 128 							; 
 		double StripPitch = Face/NumberOfStrip	; //mm
-
 		//	Buffer object to fill Position Array
 		vector<double> lineX ; vector<double> lineY ; vector<double> lineZ ;
 
@@ -769,7 +770,8 @@ void TMust2Physics::AddTelescope(	TVector3 C_X1_Y1 		,
 		
 		//	Moving StripCenter to 1.1 corner:
 		Strip_1_1 = C_X128_Y1 + (U+V) * (StripPitch/2.) 	;
-
+    Strip_1_1+= U*Ushift+V*Vshift ;
+    
 		for( int i = 0 ; i < 128 ; i++ )
 			{
 				lineX.clear()	;
@@ -791,8 +793,6 @@ void TMust2Physics::AddTelescope(	TVector3 C_X1_Y1 		,
 				OneTelescopeStripPositionZ.push_back(lineZ)	;
 			 	
 			}
-	
-		
 		StripPositionX.push_back( OneTelescopeStripPositionX ) ;
 		StripPositionY.push_back( OneTelescopeStripPositionY ) ;
 		StripPositionZ.push_back( OneTelescopeStripPositionZ ) ;	
@@ -835,7 +835,7 @@ void TMust2Physics::AddTelescope(	double theta 	,
 		
 		W = C.Unit() ;
 		U = W .Cross ( P ) ;
-	    V = W .Cross ( U );
+	  V = W .Cross ( U );
 		
 		U = U.Unit();
 		V = V.Unit();

@@ -63,8 +63,11 @@ int main(int argc,char** argv)
 	TInitialConditions* Init = new TInitialConditions();
 	Chain->SetBranchAddress("InitialConditions"	,&Init		);
 	
+	TInteractionCoordinates* ICoord = new TInteractionCoordinates();
+	Chain->SetBranchAddress("InteractionCoordinates"	,&ICoord		);
+	
  	double XTarget=0 ; double YTarget=0; double BeamTheta = 0 ; double BeamPhi = 0 ; double E=-1000;
-
+double ZTarget = 0 ;
 	// Get Detector Pointer:
 	TMust2Physics* M2 		= (TMust2Physics*) 			myDetector -> m_Detector["MUST2"] 	;
 	TPlasticPhysics* Pl 	= (TPlasticPhysics*) 		myDetector -> m_Detector["Plastic"] ;
@@ -74,7 +77,7 @@ int main(int argc,char** argv)
 	int i ,N=Chain -> GetEntries();
 	
 	cout << " Number of Event to be treated : " << N << endl ;
-	
+	double deltaTheta=0;int k=0;
 	clock_t begin=clock();
 	clock_t end=begin;
 	for ( i = 0 ; i < N ; i ++ )
@@ -107,13 +110,11 @@ int main(int argc,char** argv)
 			// Build the new one
 			myDetector -> BuildPhysicalEvent()				;
 			////
-			
-			
-			
-			
 			// Target (from initial condition)
 			XTarget = Init->GetICPositionX(0);
 			YTarget = Init->GetICPositionY(0);
+			ZTarget = Init->GetICPositionZ(0);
+			double TVRAI = Init-> GetICEmittedAngleThetaLabWorldFrame(0)*deg;	
 			//	XTarget = RandomEngine.Gaus(Init->GetICPositionX(0),1);
 			//	YTarget = RandomEngine.Gaus(Init->GetICPositionY(0),1);
 			BeamTheta = Init->GetICIncidentAngleTheta(0)*deg ; BeamPhi = Init->GetICIncidentAnglePhi(0)*deg ; 
@@ -121,18 +122,21 @@ int main(int argc,char** argv)
 			////
 			
 			// Must 2 And ThinSi //
-			//for(int hit = 0; hit < M2 -> GetEventMultiplicity() ; hit ++)
 			for(int hit = 0; hit < M2 -> Si_E.size() ; hit ++)
 				{
 					ELab[hit] = -1 ; ThetaLab[hit] = -1;
 					//	Get Hit Direction
 					TVector3 HitDirection  = M2 -> GetPositionOfInteraction(hit) - TVector3(XTarget,YTarget,0);
-					
+//					TVector3 GG = TVector3(ICoord->GetDetectedPositionX(0),ICoord->GetDetectedPositionY(0),ICoord->GetDetectedPositionZ(0));
+//					TVector3 HitDirection  = GG - TVector3(XTarget,YTarget,0);					
 					// Angle between beam and particle
-					ThetaLab[hit]  = ThetaCalculation ( HitDirection , BeamDirection   ) ;				
+					ThetaLab[hit]  = ThetaCalculation ( HitDirection , BeamDirection   ) ;		
+					
+					//cout << "XX  " << (ThetaLab[hit]-TVRAI)/deg << endl ;
+							deltaTheta+=(ThetaLab[hit]-TVRAI)/deg ; k++;
 					// Angle between particule and z axis (target Normal)
 					double ThetaN = ThetaCalculation ( HitDirection , TVector3(0,0,1) ) ;
-					// ANgle between particule and Must2 Si surface
+					// Angle between particule and Must2 Si surface
 					double ThetaMM2Surface = ThetaCalculation ( HitDirection , M2 -> GetTelescopeNormal(hit) );
 
 					if(M2 -> GetPositionOfInteraction(hit).Z() > 0)
@@ -141,31 +145,29 @@ int main(int argc,char** argv)
 								{  
 										ELab[hit] = M2 -> Si_E[hit]  ; 
 										
-										ELab[hit]= He3StripAl.EvaluateInitialEnergy(		ELab[hit] 				, // Energy of the detected particle
-																																		2*0.4*micrometer	, // Target Thickness at 0 degree
-																																		ThetaMM2Surface		);
-
-																														
-//										ELab[hit]= He3StripSi.EvaluateInitialEnergy(		ELab[hit] 				, // Energy of the detected particle
-//																																		20*micrometer			, // Target Thickness at 0 degree
-//																																		ThetaMM2Surface		);																
+										ELab[hit]= He3StripAl.EvaluateInitialEnergy(			ELab[hit] 				, // Energy of the detected particle
+																																			2*0.4*micrometer	, // Target Thickness at 0 degree
+																																			ThetaMM2Surface		);														
 										
-										if(ThinSi -> Energy.size() > 0)ELab[hit] += ThinSi-> Energy[hit];
-										
-										ELab[hit]= He3StripAl.EvaluateInitialEnergy(		ELab[hit] 				, // Energy of the detected particle
-																																		0.4*micrometer		, // Target Thickness at 0 degree
-																																		ThetaMM2Surface		);
+										if(ThinSi -> Energy.size() > 0)
+											{
+												ELab[hit] += ThinSi-> Energy[hit];
+												ELab[hit]= He3StripAl.EvaluateInitialEnergy(	ELab[hit] 				, // Energy of the detected particle
+																																			0.4*micrometer		, // Target Thickness at 0 degree
+																																			ThetaMM2Surface		);
+											}
 
-										ELab[hit]= He3TargetWind.EvaluateInitialEnergy( ELab[hit] 				, // Energy of the detected particle
-																																		15*micrometer			, // Target Thickness at 0 degree
-																																		ThetaN						);
+										ELab[hit]= He3TargetWind.EvaluateInitialEnergy( 	ELab[hit] 				, // Energy of the detected particle
+																																			15*micrometer			, // Target Thickness at 0 degree
+																																			ThetaN						);
 																			
-										ELab[hit]= He3TargetGaz.EvaluateInitialEnergy(	ELab[hit] 				, // Energy of the detected particle
-																																		1.5*mm						, // Target Thickness at 0 degree
-																																		ThetaN						);
+										ELab[hit]= He3TargetGaz.EvaluateInitialEnergy(		ELab[hit] 				, // Energy of the detected particle
+																																			1.5*mm						, // Target Thickness at 0 degree
+																																			ThetaN						);
 																		 				
 									ThetaCM[hit] = He10Reaction -> EnergyLabToThetaCM( ELab[hit] ) /deg 	;
 									ExcitationEnergy[hit] = He10Reaction -> ReconstructRelativistic( ELab[hit] , ThetaLab[hit] ) 		;	
+//								  	ExcitationEnergy[hit] = He10Reaction -> ReconstructRelativistic( ELab[hit] , TVRAI ) 		;
 									X[hit] = HitDirection . X();
 									Y[hit] = HitDirection . Y();	
 									ThetaLab[hit] = ThetaLab[hit] / deg ;
@@ -176,36 +178,38 @@ int main(int argc,char** argv)
 					
 									ELab[hit]= M2 ->CsI_E[hit] ;
 								
-									ELab[hit]= He3TargetWind.EvaluateInitialEnergy( ELab[hit] 					, // Energy of the detected particle
-																																	3*micrometer				, // Target Thickness at 0 degree
-																																	ThetaMM2Surface			);
+									ELab[hit]= He3TargetWind.EvaluateInitialEnergy( 	ELab[hit] 					, // Energy of the detected particle
+																																		3*micrometer				, // Target Thickness at 0 degree
+																																		ThetaMM2Surface			);
 																																	
-									ELab[hit]= He3StripAl.EvaluateInitialEnergy(		ELab[hit] 					, // Energy of the detected particle
-																																	0.4*micrometer			, // Target Thickness at 0 degree
-																																	ThetaMM2Surface			);
+									ELab[hit]= He3StripAl.EvaluateInitialEnergy(			ELab[hit] 					, // Energy of the detected particle
+																																		0.4*micrometer			, // Target Thickness at 0 degree
+																																		ThetaMM2Surface			);
 									ELab[hit]+= M2 ->Si_E[hit];
 									
-									ELab[hit]= He3StripAl.EvaluateInitialEnergy(		ELab[hit] 					, // Energy of the detected particle
-																																	0.4*micrometer			, // Target Thickness at 0 degree
-																																	ThetaMM2Surface			);
+									ELab[hit]= He3StripAl.EvaluateInitialEnergy(			ELab[hit] 					, // Energy of the detected particle
+																																		0.4*micrometer			, // Target Thickness at 0 degree
+																																		ThetaMM2Surface			);
 								
-									if(ThinSi -> Energy.size() > 0)ELab[hit] += ThinSi-> Energy[hit];
+									if(ThinSi -> Energy.size() > 0)
+										{
+											ELab[hit] += ThinSi-> Energy[hit];
+											ELab[hit]= He3StripAl.EvaluateInitialEnergy(	ELab[hit] 					, // Energy of the detected particle
+																																		0.4*micrometer			, // Target Thickness at 0 degree
+																																		ThetaMM2Surface			);
+										}
+											
+									ELab[hit]= He3TargetWind.EvaluateInitialEnergy( 	ELab[hit] 					, // Energy of the detected particle
+																																		15*micrometer				, // Target Thickness at 0 degree
+																																		ThetaN							);
 									
-									
-									ELab[hit]= He3StripAl.EvaluateInitialEnergy(		ELab[hit] 					, // Energy of the detected particle
-																																	0.4*micrometer			, // Target Thickness at 0 degree
-																																	ThetaMM2Surface			);
-								
-									ELab[hit]= He3TargetWind.EvaluateInitialEnergy( ELab[hit] 					, // Energy of the detected particle
-																																	15*micrometer				, // Target Thickness at 0 degree
-																																	ThetaN							);
-									
-									ELab[hit]= He3TargetGaz.EvaluateInitialEnergy(	ELab[hit] 					, // Energy of the detected particle
-																																	1.5*mm							, // Target Thickness at 0 degree
-																																	ThetaN							);
+									ELab[hit]= He3TargetGaz.EvaluateInitialEnergy(		ELab[hit] 					, // Energy of the detected particle
+																																		1.5*mm							, // Target Thickness at 0 degree
+																																		ThetaN							);
 																				
 									ThetaCM[hit]= He10Reaction -> EnergyLabToThetaCM( ELab[hit] ) /deg 	;	
-									ExcitationEnergy[hit] = He10Reaction -> ReconstructRelativistic( ELab[hit], ThetaLab[hit] ) ;	
+									ExcitationEnergy[hit] = He10Reaction -> ReconstructRelativistic( ELab[hit], ThetaLab[hit]) ;	
+//									ExcitationEnergy[hit] = He10Reaction -> ReconstructRelativistic( ELab[hit] , TVRAI ) 		;
 									X[hit] = HitDirection . X();
 									Y[hit] = HitDirection . Y();	
 									ThetaLab[hit] = ThetaLab[hit] / deg ;
@@ -216,38 +220,7 @@ int main(int argc,char** argv)
 						}
 						
 					/*else if(M2 -> GetPositionOfInteraction(hit).Z()<0)
-						{
-							
-						if(ELab[hit]>-1000 )
-							{
-								if(ELab[hit]>18)
-									{
-										ELab[hit]= protonStripAl.EvaluateInitialEnergy(	ELab[hit] 					, // Energy of the detected particle
-																				0.4*micrometer		, // Target Thickness at 0 degree
-																				ThetaMM2Surface		);
-									}
-							
-								ELab[hit]= protonStripAl.EvaluateInitialEnergy(		ELab[hit]					, // Energy of the detected particle
-																			0.4*micrometer		, // Target Thickness at 0 degree
-																			ThetaMM2Surface		);
-							
-								ELab[hit]= protonTargetWind.EvaluateInitialEnergy( 	ELab[hit] 					, // Energy of the detected particle
-																			15*micrometer		, // Target Thickness at 0 degree
-																			ThetaN				);
-								
-								ELab[hit]= protonTargetGaz.EvaluateInitialEnergy(	ELab[hit] 					, // Energy of the detected particle
-																			1.5*mm				, // Target Thickness at 0 degree
-																			ThetaN				);
-								ThetaCM[hit] = myReaction -> EnergyLabToThetaCM( ELab[hit] , 1 ) /deg 	;	
-								ExcitationEnergy[hit] = myReaction -> ReconstructRelativistic( ELab[hit], ThetaLab[hit] ) ;	
-								X[hit] = HitDirection . X();
-								Y[hit] = HitDirection . Y();	
-								ThetaLab[hit] = ThetaLab[hit] / deg ;
-							}	
-							
-						else {ExcitationEnergy[hit]=-100 ; X[hit] = -100 ; Y[hit] = -100 ;ThetaLab[hit]=-100; ThetaCM[hit]=-100 ;}
-						
-						}	*/
+						{}	*/
 
 
 				}			
@@ -256,7 +229,8 @@ int main(int argc,char** argv)
 		}
 
 	cout << " A total of " << i << " event has been annalysed " << endl ;
-	cout << endl << " ///////////////////////////////////// "<< endl<< endl ;
+	cout << endl << "/////////////////////////////////"<< endl<< endl ;
+	cout << deltaTheta/k << endl ;
 	RootOutput::getInstance()->Destroy();
 	return 0	;
 }
@@ -264,6 +238,6 @@ int main(int argc,char** argv)
 double ThetaCalculation (TVector3 A , TVector3 B)
 	{
 		double Theta = acos( (A.Dot(B)) / (A.Mag()*B.Mag()) ) ;
-		return Theta*rad ;
+		return Theta ;
 	}
 
