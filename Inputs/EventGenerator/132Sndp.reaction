@@ -14,7 +14,7 @@ Transfert
 	SigmaY= 0
 	SigmaThetaX= 0 
 	SigmaPhiY= 0
-	CrossSectionPath= sn132dp_gs_10AMeV.txt
+	CrossSectionPath= 132Sndp_10A_MeV_3p3_ZR_FRC.lis
 	ShootLight= 1
 	ShootHeavy= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

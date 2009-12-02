@@ -30,13 +30,14 @@ int main(int argc,char** argv)
    NPA::DetectorManager* myDetector = new DetectorManager;
    myDetector->ReadConfigurationFile(detectorfileName);
 
-   // nominal beam energy
+   // Calculate beam energy at target middle
+   // Get nominal beam energy
    Double_t BeamEnergyNominal = myReaction->GetBeamEnergy() * MeV;
    cout << BeamEnergyNominal << endl;
-   // slow beam at target middle
+   // Slow beam at target middle
    Double_t BeamEnergy = BeamEnergyNominal - BeamTarget.Slow(BeamEnergyNominal, myDetector->GetTargetThickness()/2 * micrometer, 0);
    cout << BeamEnergy << endl;
-   // set energy beam at target middle
+   // Set energy beam at target middle
    myReaction->SetBeamEnergy(BeamEnergy);
 
    // Print target thickness
@@ -54,8 +55,13 @@ int main(int argc,char** argv)
    // Get GaspardTracker pointer
    GaspardTracker* GPDTrack = (GaspardTracker*) myDetector->m_Detector["GASPARD"];
 
-   // Get the TChain and treat it
+   // Get the input TChain and treat it
    TChain* chain = RootInput:: getInstance() -> GetChain();
+
+   // Connect TInitialConditions branch
+   TInitialConditions *initCond = 0;
+   chain->SetBranchAddress("InitialConditions", &initCond);
+   chain->SetBranchStatus("InitialConditions", 1);
 
    // Connect TInteractionCoordinates branch
    TInteractionCoordinates *interCoord = 0;
@@ -66,6 +72,13 @@ int main(int argc,char** argv)
    int nentries = chain->GetEntries();
    cout << "Number of entries to be analysed: " << nentries << endl;
 
+   // Default initialization
+   double XTarget = 0;
+   double YTarget = 0;
+   double BeamTheta = 0;
+   double BeamPhi = 0;
+
+   // Loop on all events
    for (int i = 0; i < nentries; i ++) {
       if (i%10000 == 0 && i!=0) cout << "\r" << i << " analyzed events" << flush;
       chain -> GetEntry(i);
@@ -79,21 +92,47 @@ int main(int argc,char** argv)
 
       // if there is a hit in the detector array, treat it.
       double Theta, ThetaStrip;
+      double DetecX, DetecY, DetecZ;
       TVector3 A;
       if (E > -1000) {
          // Get exact scattering angle from TInteractionCoordinates object
-         Theta = interCoord->GetDetectedAngleTheta(0) * deg;
+//         Theta = interCoord->GetDetectedAngleTheta(0) * deg;
+         DetecX = interCoord->GetDetectedPositionX(0);
+         DetecY = interCoord->GetDetectedPositionY(0);
+         DetecZ = interCoord->GetDetectedPositionZ(0);
+         TVector3 Detec(DetecX, DetecY, DetecZ);
 
-         // Get interaction coordinates taking into account the strips
+         // Get interaction position in detector
+         // This takes into account the strips
          A = GPDTrack->GetPositionOfInteraction();
-         // Calculate scattering angle
-         ThetaStrip = ThetaCalculation (A ,TVector3(0,0,1));
+
+         // Get beam interaction coordinates on target (from initial condition)
+         XTarget = initCond->GetICPositionX(0);
+         YTarget = initCond->GetICPositionY(0);
+//         cout << XTarget << "  " << YTarget << endl;
+         BeamTheta = initCond->GetICIncidentAngleTheta(0)*deg;
+         BeamPhi   = initCond->GetICIncidentAnglePhi(0)*deg;
+         TVector3 BeamDirection = TVector3(cos(BeamPhi)*sin(BeamTheta), sin(BeamPhi)*sin(BeamTheta), cos(BeamTheta));
+//         cout << BeamDirection.X() << "  " << BeamDirection.Y() << "  " << BeamDirection.Z() << endl;
+
+         // Hit direction taking into account beam position on target
+         TVector3 HitDirection = A - TVector3(XTarget, YTarget, 0);
+//         cout << "A:            " << A.X() << "  " << A.Y() << "  " << A.Z() << endl;
+//         cout << "HitDirection: " << HitDirection.X() << "  " << HitDirection.Y() << "  " << HitDirection.Z() << endl;
+
+         // Calculate scattering angle w.r.t. optical beam axis (do not take into account beam position on target)
+//         ThetaStrip = ThetaCalculation(A, TVector3(0,0,1));
+//         Theta = ThetaCalculation(Detec, TVector3(0, 0, 1));
+         // Calculate scattering angle w.r.t. beam
+         ThetaStrip = ThetaCalculation(HitDirection, BeamDirection);
+         Theta = ThetaCalculation(Detec - TVector3(XTarget, YTarget, 0), BeamDirection);
 
          // Correct for energy loss in the target
-//         E = LightTarget.EvaluateInitialEnergy(E, 5.15*micrometer, ThetaStrip);
          E = LightTarget.EvaluateInitialEnergy(E, myDetector->GetTargetThickness()/2 * micrometer, ThetaStrip);
 
          // Calculate excitation energy
+//         if (Theta/deg > 35  && Theta/deg < 85) {
+//         if (Theta/deg < 85) {
          if (Theta/deg > 90) {
             ExNoStrips = myReaction->ReconstructRelativistic(E, Theta / rad);
             Ex         = myReaction->ReconstructRelativistic(E, ThetaStrip);
