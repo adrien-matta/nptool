@@ -44,6 +44,7 @@
 #include "Target.hh"
 #include "ThinSi.hh"
 #include "Plastic.hh"
+#include "Paris.hh"
 
 //Not G4
 #include <cstdlib>
@@ -130,7 +131,8 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
    bool cGPDTracker      = false;	// Gaspard Tracker
    bool cS1              = false;
    bool cPlastic         = false;
-   bool cDummy         = false;
+   bool cDummy           = false;
+   bool cParis           = false;	// Paris Calorimeter
    //////////////////////////////////////////////////////////////////////////////////////////
    // added by Nicolas [07/05/09]
    string GlobalPath = getenv("NPTOOL");
@@ -152,7 +154,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       //Search for comment Symbol: %
       if (LineBuffer.compare(0, 1, "%") == 0) {   /*Do  Nothing*/;}
 
-			////////////////////////////////////////////
+      ////////////////////////////////////////////
       /////// Search for a Dummy Detector ////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 16, "TheDUMMYDetector") == 0 && cDummy == false) {
@@ -181,6 +183,25 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
 
          // Instantiate the new array as a VDetector Object
          VDetector* myDetector = new GaspardTracker()                  ;
+
+         // Read Position of Telescope
+         ConfigFile.close()                                 ;
+         myDetector->ReadConfiguration(Path)                   ;
+         ConfigFile.open(Path.c_str())                      ;
+
+         // Add array to the VDetector Vector
+         AddDetector(myDetector)                            ;
+      }
+
+      ////////////////////////////////////////////
+      //////////// Search for paris   ////////////
+      ////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 5, "Paris") == 0 && cParis == false) {
+         cParis = true ;
+         G4cout << "//////// Paris  ////////" << G4endl   ;
+
+         // Instantiate the new array as a VDetector Object
+         VDetector* myDetector = new Paris()                  ;
 
          // Read Position of Telescope
          ConfigFile.close()                                 ;
