@@ -8,21 +8,17 @@
 /*****************************************************************************
  * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
  *                                                                           *
- * Creation Date  : 03/09/09                                                 *
- * Last update    : 12/10/09                                                 *
+ * Creation Date  : 04/12/09                                                 *
+ * Last update    :                                                          *
  *---------------------------------------------------------------------------*
- * Decription: Define a dummy module for the Gaspard tracker                 *
- *             The goal of this class is to be a starting point to create a  *
- *             new shape to be added to the Gaspard tracker.                 *
+ * Decription: Define a phoswitch module for the Paris detector.             *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *    + 07/09/09: Fix bug for placing module with (r,theta,phi) method.      *
- *                (N. de Sereville)                                          *
- *    + 12/10/09: Change scorer scheme (N. de Sereville)                     *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
+
 
 // C++ headers
 #include <sstream>
@@ -52,7 +48,6 @@
 // NPTool headers
 #include "ParisPhoswitch.hh"
 #include "GeneralScorers.hh"
-#include "GaspardScorers.hh"
 #include "RootOutput.h"
 
 // CLHEP
@@ -80,66 +75,66 @@ ParisPhoswitch::~ParisPhoswitch()
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void ParisPhoswitch::AddModule(G4ThreeVector X1_Y1     ,
-                               G4ThreeVector X128_Y1   ,
-                               G4ThreeVector X1_Y128   ,
+void ParisPhoswitch::AddModule(G4ThreeVector X1_Y1,
+                               G4ThreeVector X128_Y1,
+                               G4ThreeVector X1_Y128,
                                G4ThreeVector X128_Y128)
 {
-   m_DefinitionType.push_back(true) ;
+   m_DefinitionType.push_back(true);
 
-   m_X1_Y1.push_back(X1_Y1)               ;
-   m_X128_Y1.push_back(X128_Y1)           ;
-   m_X1_Y128.push_back(X1_Y128)           ;
-   m_X128_Y128.push_back(X128_Y128)       ;
+   m_X1_Y1.push_back(X1_Y1);
+   m_X128_Y1.push_back(X128_Y1);
+   m_X1_Y128.push_back(X1_Y128);
+   m_X128_Y128.push_back(X128_Y128);
 
-   m_R.push_back(0)      ;
-   m_Theta.push_back(0)  ;
-   m_Phi.push_back(0)    ;
-   m_beta_u.push_back(0) ;
-   m_beta_v.push_back(0) ;
-   m_beta_w.push_back(0) ;
+   m_R.push_back(0);
+   m_Theta.push_back(0);
+   m_Phi.push_back(0);
+   m_beta_u.push_back(0);
+   m_beta_v.push_back(0);
+   m_beta_w.push_back(0);
 }
 
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void ParisPhoswitch::AddModule(G4double R        ,
-                               G4double Theta    ,
-                               G4double Phi      ,
-                               G4double beta_u   ,
-                               G4double beta_v   ,
+void ParisPhoswitch::AddModule(G4double R,
+                               G4double Theta,
+                               G4double Phi,
+                               G4double beta_u,
+                               G4double beta_v,
                                G4double beta_w) 
 {
    G4ThreeVector empty = G4ThreeVector(0, 0, 0);
 
    m_DefinitionType.push_back(false);
 
-   m_X1_Y1.push_back(empty)     ;
-   m_X128_Y1.push_back(empty)   ;
-   m_X1_Y128.push_back(empty)   ;
-   m_X128_Y128.push_back(empty) ;
+   m_X1_Y1.push_back(empty);
+   m_X128_Y1.push_back(empty);
+   m_X1_Y128.push_back(empty);
+   m_X128_Y128.push_back(empty);
 
-   m_R.push_back(R)                       ;
-   m_Theta.push_back(Theta)               ;
-   m_Phi.push_back(Phi)                   ;
-   m_beta_u.push_back(beta_u)             ;
-   m_beta_v.push_back(beta_v)             ;
-   m_beta_w.push_back(beta_w)             ;
+   m_R.push_back(R);
+   m_Theta.push_back(Theta);
+   m_Phi.push_back(Phi);
+   m_beta_u.push_back(beta_u);
+   m_beta_v.push_back(beta_v);
+   m_beta_w.push_back(beta_w);
 }
 
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void ParisPhoswitch::VolumeMaker(G4int TelescopeNumber,
-                                 G4ThreeVector MMpos,
+void ParisPhoswitch::VolumeMaker(G4int             DetectorNumber,
+                                 G4ThreeVector     MMpos,
                                  G4RotationMatrix* MMrot,
-                                 G4LogicalVolume* world)
+                                 G4LogicalVolume*  world)
 {
-   G4double NbrTelescopes = TelescopeNumber  ;
-   G4String DetectorNumber                   ;
-   ostringstream Number                      ;
-   Number << NbrTelescopes                   ;
-   DetectorNumber = Number.str()             ;
+   G4double NbrTelescopes = DetectorNumber;
+   G4String DetectorNumber;
+   ostringstream Number;
+   Number << NbrTelescopes;
+   DetectorNumber = Number.str();
 
    /////////////////////////////////////////////////////////////////
    /////////////////Element  Definition ///////////////////////////
@@ -542,7 +537,7 @@ void ParisPhoswitch::ConstructDetector(G4LogicalVolume* world)
 
 
 
-// Connect the GaspardTrackingData class to the output TTree
+// Connect the ParisData class to the output TTree
 // of the simulation
 void ParisPhoswitch::InitializeRootOutput()
 {

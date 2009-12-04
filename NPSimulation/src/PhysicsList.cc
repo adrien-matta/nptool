@@ -195,10 +195,10 @@ void PhysicsList::ConstructEM()
 
       } else if (particleName == "e+") {
          //positron
-         /*   pmanager->AddProcess(new G4MultipleScattering   , -1,  1, 1 )  ;
-            pmanager->AddProcess(new G4eIonisation         , -1,  2, 2 )     ;
-            pmanager->AddProcess(new G4eBremsstrahlung     , -1, -1, 3 )     ;
-            // pmanager->AddProcess(new G4eplusAnnihilation   ,  0, -1, 4 )     ;*/
+            pmanager->AddProcess(new G4MultipleScattering  , -1,  1, 1 );
+            pmanager->AddProcess(new G4eIonisation         , -1,  2, 2 );
+            pmanager->AddProcess(new G4eBremsstrahlung     , -1, -1, 3 );
+            pmanager->AddProcess(new G4eplusAnnihilation   ,  0, -1, 4 );
 
       } else if (particleName == "mu+" ||
                  particleName == "mu-") {
@@ -250,6 +250,11 @@ void PhysicsList::SetCuts()
    //  " G4VUserPhysicsList::SetCutsWithDefault" method sets
    //   the default cut value for all particle types
    SetCutsWithDefault();
+
+   // for gamma-rays
+   SetCutValue(0.1*mm, "gamma");
+   SetCutValue(0.1*mm, "e-");
+   SetCutValue(0.1*mm, "e+");
 
    // Retrieve verbose level
    SetVerboseLevel(temp);

@@ -8,12 +8,10 @@
 /*****************************************************************************
  * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
  *                                                                           *
- * Creation Date  : 03/09/09                                                 *
+ * Creation Date  : 04/12/09                                                 *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
- * Decription: Define a dummy module for the Gaspard tracker                 *
- *             The goal of this class is to be a starting point to create a  *
- *             new shape to be added to the Gaspard tracker.                 *
+ * Decription: Define a phoswitch module for the Paris detector.             *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -49,30 +47,30 @@ public:
    ////////////////////////////////////////////////////
 public:
    // By Position Method
-   void AddModule(G4ThreeVector TL           ,
-                  G4ThreeVector BL           ,
-                  G4ThreeVector BR           ,
+   void AddModule(G4ThreeVector TL,
+                  G4ThreeVector BL,
+                  G4ThreeVector BR,
                   G4ThreeVector CT);
 
    // By Angle Method
-   void AddModule(G4double R            ,
-                  G4double Theta        ,
-                  G4double Phi          ,
-                  G4double beta_u       ,
-                  G4double beta_v       ,
+   void AddModule(G4double R,
+                  G4double Theta,
+                  G4double Phi,
+                  G4double beta_u,
+                  G4double beta_v,
                   G4double beta_w); 
 
    // Effectively construct Volume
    // Avoid to have two time same code for Angle and Point definition
-   void VolumeMaker(G4int TelescopeNumber          ,
-                    G4ThreeVector     MMpos        ,
-                    G4RotationMatrix* MMrot        ,
+   void VolumeMaker(G4int             DetectorNumber,
+                    G4ThreeVector     MMpos,
+                    G4RotationMatrix* MMrot,
                     G4LogicalVolume*  world);
 
 
-   ////////////////////////////////////////////////////
-   ////  Inherite from GaspardTrackerModule class /////
-   ////////////////////////////////////////////////////
+   ///////////////////////////////////////////
+   ////  Inherite from ParisModule class /////
+   ///////////////////////////////////////////
 public:
    // Read stream at Configfile to pick-up parameters of detector (Position,...)
    // Called in DetecorConstruction::ReadDetextorConfiguration Method
@@ -94,8 +92,8 @@ public:
    void ReadSensitive(const G4Event* event);
 
    // Give the static TInteractionCoordinates from VDetector to the classes
-   // deriving from GaspardTrackerModule
-   // This is mandatory since the GaspardTracker*** does not derive from VDetector
+   // deriving from ParisModule
+   // This is mandatory since the Paris*** does not derive from VDetector
    void SetInterCoordPointer(TInteractionCoordinates* interCoord);
    TInteractionCoordinates* GetInterCoordPointer()	{return ms_InterCoord;};
 

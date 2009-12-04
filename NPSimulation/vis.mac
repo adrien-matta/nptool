@@ -1,10 +1,10 @@
 #verbose level
-/control/verbose 0
-/material/verbose 0
-/tracking/verbose 0
-/process/verbose 0
+/control/verbose 1
+/material/verbose 1
+/tracking/verbose 1
+/process/verbose 1
 /event/verbose 0
-/run/verbose 0
+/run/verbose 1
 
 # choose a graphic system
 #/vis/open OGLIX

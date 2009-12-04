@@ -8,11 +8,11 @@
 /*****************************************************************************
  * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
  *                                                                           *
- * Creation Date  : 10/06/09                                                 *
+ * Creation Date  : 04/12/09                                                 *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription: This class is an Abstract Base Class (ABC) from which should  *
- *             derive all different modules from the Gaspard tracker.        *
+ *             derive all different modules from the Paris detector.         *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *                                                                           *

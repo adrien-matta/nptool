@@ -8,11 +8,11 @@
 /*****************************************************************************
  * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
  *                                                                           *
- * Creation Date  : 10/06/09                                                 *
+ * Creation Date  : 04/12/09                                                 *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
- * Decription: This class manages different shapes of module for the Gaspard *
- *             tracker. It allows to have Gaspard geometries with an         *
+ * Decription: This class manages different shapes of module for the Paris   *
+ *             detector. It allows to have Paris geometries with an          *
  *             heterogeneous set of modules                                  *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -108,7 +108,7 @@ void Paris::ConstructDetector(G4LogicalVolume* world)
 
 
 
-// Connect the GaspardTrackingData class to the output TTree
+// Connect the ParisData class to the output TTree
 // of the simulation
 void Paris::InitializeRootOutput()
 {
