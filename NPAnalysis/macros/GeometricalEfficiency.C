@@ -36,6 +36,9 @@
 #include "TBranch.h"
 #include "TH1F.h"
 
+#include "TInitialConditions.h"
+#include "TInteractionCoordinates.h"
+
 using namespace std ;
 
 

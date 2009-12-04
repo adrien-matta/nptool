@@ -37,7 +37,6 @@
 #include "TH1F.h"
 #include "TH2F.h"
 
-#include "TGaspardTrackerData.h"
 #include "TInitialConditions.h"
 #include "TInteractionCoordinates.h"
 
@@ -91,7 +90,7 @@ void ControlSimu(const char * fname = "mySimul")
       hEmittanceXY     -> Fill(initCond->GetICPositionX(0), initCond->GetICPositionY(0));
       hIncidentZ       -> Fill(initCond->GetICPositionZ(0));
       hEmittanceXTheta -> Fill(initCond->GetICPositionX(0), initCond->GetICIncidentEmittanceTheta(0));
-      hEmittanceYPhi   -> Fill(initCond->GetICPositionX(0), initCond->GetICIncidentEmittancePhi(0));
+      hEmittanceYPhi   -> Fill(initCond->GetICPositionY(0), initCond->GetICIncidentEmittancePhi(0));
       hIncidentTheta   -> Fill(initCond->GetICIncidentAngleTheta(0));
       hIncidentPhi     -> Fill(initCond->GetICIncidentAnglePhi(0));
       // ejected particle
