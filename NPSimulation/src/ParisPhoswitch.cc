@@ -125,12 +125,12 @@ void ParisPhoswitch::AddModule(G4double R,
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void ParisPhoswitch::VolumeMaker(G4int             DetectorNumber,
+void ParisPhoswitch::VolumeMaker(G4int             DetecNumber,
                                  G4ThreeVector     MMpos,
                                  G4RotationMatrix* MMrot,
                                  G4LogicalVolume*  world)
 {
-   G4double NbrTelescopes = DetectorNumber;
+   G4double NbrTelescopes = DetecNumber;
    G4String DetectorNumber;
    ostringstream Number;
    Number << NbrTelescopes;

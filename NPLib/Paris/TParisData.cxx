@@ -1,3 +1,5 @@
+#include <iostream>
+#include "TParisData.h"
 /*****************************************************************************
  * Copyright (C) 2009   this file is part of the NPTool Project              *
  *                                                                           *
@@ -8,53 +10,46 @@
 /*****************************************************************************
  * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
  *                                                                           *
- * Creation Date  : 04/12/09                                                 *
+ * Creation Date  : 04/12/2009                                               *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
- * Decription: This class is an Abstract Base Class (ABC) from which should  *
- *             derive all different modules from the Paris detector.         *
+ * Decription:                                                               *
+ *  This class described the raw data of the Paris detector                  *
+ *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
 
-#include "ParisModule.hh"
-#include "RootOutput.h"
+ClassImp(TParisData)
 
-
-TParisData *ParisModule::ms_Event = 0;
-
-
-
-ParisModule::ParisModule()
-{
-   if (ms_Event == 0) ms_Event = new TParisData();
-
-   InitializeRootOutput();
-   InitializeIndex();
-}
-
-
-
-ParisModule::~ParisModule()
+TParisData::TParisData()
 {
 }
 
 
 
-void ParisModule::InitializeRootOutput()
+TParisData::~TParisData()
 {
-   RootOutput *pAnalysis = RootOutput::getInstance();
-   TTree *pTree = pAnalysis->GetTree();
-   // if the branch does not exist yet, create it
-   if (!pTree->GetBranch("PARIS"))
-      pTree->Branch("PARIS", "TParisData", &ms_Event);
 }
 
 
 
-void ParisModule::InitializeIndex()
+void TParisData::Clear()
 {
-   m_index["Phoswitch"]     =    0;
+    fParis_Energy.clear();
+    fParis_Number.clear();
+    fParis_Time.clear();
+}
+
+
+
+void TParisData::Dump() const
+{
+   cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event XXXXXXXXXXXXXXXXX" << endl;
+
+   for (unsigned short i = 0; i<fParis_Energy.size(); i ++) {
+      cout << "Paris Number " << fParis_Number[i] << " Energy: " << fParis_Energy[i]  << " Time: "<< fParis_Time[i] << endl;
+   }
 }

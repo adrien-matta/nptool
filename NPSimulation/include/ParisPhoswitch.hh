@@ -62,7 +62,7 @@ public:
 
    // Effectively construct Volume
    // Avoid to have two time same code for Angle and Point definition
-   void VolumeMaker(G4int             DetectorNumber,
+   void VolumeMaker(G4int             DetecNumber,
                     G4ThreeVector     MMpos,
                     G4RotationMatrix* MMrot,
                     G4LogicalVolume*  world);

@@ -32,6 +32,7 @@ NPLib / include
       / MUST2
       / AnnularS1
       / GASPARD
+      / Paris
       / VDetector
 
 A description of each directory follows.
@@ -117,7 +118,12 @@ XI) GASPARD
 		This library deals with the treatment applied to the ROOT output file 
 		obtained from NPSimulation. This library is *only* used by NPAnalysis.
 
-XII) VDetector
+XII) Paris
+	This directory includes one library:
+		libParisData.so
+	This library stores the results of the G4 simulation for the Paris detector.
+
+XIII) VDetector
 	This directory includes two libraries:
 		libVDetector.so
 		libDetectorManager.so

@@ -33,7 +33,7 @@
 
 // NPTool - ROOT headers
 #include "TInteractionCoordinates.h"
-#include "TGaspardTrackerData.h"
+#include "TParisData.h"
 
 using namespace std;
 
@@ -71,11 +71,11 @@ public:
    void InitializeIndex();
 
 public:
-   TGaspardTrackerData*		GetEventPointer() 	{return ms_Event;};
+   TParisData*		GetEventPointer() 	{return ms_Event;};
 
 protected:
    // Class to store the result of simulation
-   static TGaspardTrackerData*		ms_Event;
+   static TParisData*		ms_Event;
 
    // Set to true if you want to see Telescope Frame in your visualisation
    bool              m_non_sensitive_part_visiualisation;
