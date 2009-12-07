@@ -450,8 +450,8 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
                                          sin(ThetaLight) * sin(phi),
                                          cos(ThetaLight));
    // Momentum in beam frame for heavy particle
-   G4ThreeVector momentum_kineHeavy_beam(sin(ThetaHeavy) * cos(phi),
-                                         sin(ThetaHeavy) * sin(phi),
+   G4ThreeVector momentum_kineHeavy_beam(sin(ThetaHeavy) * cos(phi+pi),
+                                         sin(ThetaHeavy) * sin(phi+pi),
                                          cos(ThetaHeavy));
 
    // write angles/energy to ROOT file
