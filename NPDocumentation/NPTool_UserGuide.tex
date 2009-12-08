@@ -113,13 +113,20 @@ It also help to understand what happen during analysis.
 		\end{itemize}
 		
 	\section{Step by step from TDUMMYDetectorData class}
-		\subsection{step 1}
+		\subsection{step 1: copying and editing file}
 			First, go to your consol and open the NPLib folder, there type \begin{verbatim}make distclean\end{verbatim}
 			This command will remove all the compilation generated file and only the source will remain.
-			Copy the DummyDetector folder and rename it, let's say, WonderdullDetector. 
-			Ebter the directory and rename the TDummyDetectorData.h and .cxx with your detector name, you should have now only three file: Makefile, TWonderfullDetectorData.h and TWonderfullDetectorData.cxx
+			Copy the DummyDetector folder and rename it, let's say, WonderfullDetector. 
+			Enter the directory and rename the TDummyDetectorData.h and .cxx with your detector name, you should have now only three files: Makefile, TWonderfullDetectorData.h and TWonderfullDetectorData.cxx
 			If any other file remain, just remove it.
-			No open the .h and .cxx file with your favorite editor (gedit or vim for instance). Replace the the DUMMYDetector by your detector name. Just have look in the .h file, the class is very basic, a couple of value are stored in stl vector (allowing smaller tree and increasing speed access). A few methods allowed to set or get those value and to know the size of the different vector. 
+			No open the .h and .cxx file with your favorite editor (gedit or vim for instance). Replace the the DUMMYDetector by your detector name. Just have look in the .h file, the class is very basic, a couple of value are stored in stl vector (allowing smaller tree and increasing speed access). A few methods allowed to set or get those value and to know the size of the different vector. Simply rename, add or remove needed value for your detector and update Set and Get methods as well. Please keep minde that longer and explicit name are better for understanding by other users than short not explicit name. Also note that all the private member named start with letter f (following the ROOT naming convention), followed by a few letter (2 or 3) related to your detector (fMM for MUST2 for instance). This point is of importance for enabling and disabling branches during analysis. It also avoid confusion when using cint to plote histogramm from the tree.
+			
+		\subsection{step 2: changing detector makefile}
+			Open the GNUMakefile in your detector directoy and edit it so it compile your file and produce a libWonderfullDetectorData.so library. Do not forget to edit the clean and distclean command as well.
+			
+		\subsection{step 3: changing NPL makefile}
+			Open the makefile in the NPLib directory and edit it to add a new target for your detector. Do not forget to add libWonderfullDetectorData.so in the list of target librari and edit clean and distclean target as well.
+		
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 				
 \chapter[NPSimulation]{NPSimulation}
