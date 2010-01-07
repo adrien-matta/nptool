@@ -23,7 +23,7 @@
 #include <TFile.h>
 #include <TLeaf.h>
 #include <TVector3.h>
-#include <TRandom.h>
+#include <TRandom3.h>
 
 // NPL
 #include "TMust2Data.h"
@@ -107,11 +107,11 @@ namespace ENERGYLOSS
    // Declare your Energy loss here
 //   EnergyLoss LightTargetCD2 = EnergyLoss("proton_cd2.txt", 100, 1, 1); // LISE++
    // For 132Sn(d,p)
-   EnergyLoss LightTarget = EnergyLoss("proton_CD2.G4table", "G4Table", 1000);		// G4
-   EnergyLoss BeamTarget  = EnergyLoss("Sn132[0.0]_CD2.G4table", "G4Table", 1000);	// G4
-   // For 132Sn(d,p)
-//   EnergyLoss LightTarget = EnergyLoss("triton_CH2.G4table", "G4Table", 1000);		// G4
-//   EnergyLoss BeamTarget  = EnergyLoss("Sn134[0.0]_CH2.G4table", "G4Table", 1000);	// G4
+//   EnergyLoss LightTarget = EnergyLoss("proton_CD2.G4table", "G4Table", 1000);		// G4
+//   EnergyLoss BeamTarget  = EnergyLoss("Sn132[0.0]_CD2.G4table", "G4Table", 1000);	// G4
+   // For 134Sn(p,t)
+   EnergyLoss LightTarget = EnergyLoss("triton_CH2.G4table", "G4Table", 1000);		// G4
+   EnergyLoss BeamTarget  = EnergyLoss("Sn134[0.0]_CH2.G4table", "G4Table", 1000);	// G4
 }
 
 using namespace ENERGYLOSS ;

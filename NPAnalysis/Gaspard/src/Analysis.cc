@@ -36,6 +36,7 @@ int main(int argc,char** argv)
    cout << BeamEnergyNominal << endl;
    // Slow beam at target middle
    Double_t BeamEnergy = BeamEnergyNominal - BeamTarget.Slow(BeamEnergyNominal, myDetector->GetTargetThickness()/2 * micrometer, 0);
+//   Double_t BeamEnergy = 1293.56 * MeV;
    cout << BeamEnergy << endl;
    // Set energy beam at target middle
    myReaction->SetBeamEnergy(BeamEnergy);
@@ -78,6 +79,9 @@ int main(int argc,char** argv)
    double BeamTheta = 0;
    double BeamPhi = 0;
 
+   // random generator
+   TRandom3 *gene = new TRandom3();
+
    // Loop on all events
    for (int i = 0; i < nentries; i ++) {
       if (i%10000 == 0 && i!=0) cout << "\r" << i << " analyzed events" << flush;
@@ -91,8 +95,9 @@ int main(int argc,char** argv)
       double E = GPDTrack->GetEnergyDeposit();
 
       // if there is a hit in the detector array, treat it.
-      double Theta, ThetaStrip;
+      double Theta, ThetaStrip, angle;
       double DetecX, DetecY, DetecZ;
+      double r;
       TVector3 A;
       if (E > -1000) {
          // Get exact scattering angle from TInteractionCoordinates object
@@ -123,17 +128,23 @@ int main(int argc,char** argv)
          // Calculate scattering angle w.r.t. optical beam axis (do not take into account beam position on target)
 //         ThetaStrip = ThetaCalculation(A, TVector3(0,0,1));
 //         Theta = ThetaCalculation(Detec, TVector3(0, 0, 1));
-         // Calculate scattering angle w.r.t. beam
-         ThetaStrip = ThetaCalculation(HitDirection, BeamDirection);
-         Theta = ThetaCalculation(Detec - TVector3(XTarget, YTarget, 0), BeamDirection);
+         // Calculate scattering angle w.r.t. beam (ideal case)
+//         ThetaStrip = ThetaCalculation(HitDirection, BeamDirection);
+//         Theta = ThetaCalculation(Detec - TVector3(XTarget, YTarget, 0), BeamDirection);
+         // Calculate scattering angle w.r.t. beam (finite spatial resolution)
+         double resol = 800;	// in micrometer
+         angle = gene->Rndm() * 2*3.14;
+         r     = fabs(gene->Gaus(0, resol)) * micrometer;
+         ThetaStrip = ThetaCalculation(A     - TVector3(XTarget + r*cos(angle), YTarget + r*sin(angle), 0), BeamDirection);
+         Theta      = ThetaCalculation(Detec - TVector3(XTarget + r*cos(angle), YTarget + r*sin(angle), 0), BeamDirection);
 
          // Correct for energy loss in the target
          E = LightTarget.EvaluateInitialEnergy(E, myDetector->GetTargetThickness()/2 * micrometer, ThetaStrip);
 
          // Calculate excitation energy
-//         if (Theta/deg > 35  && Theta/deg < 85) {
-//         if (Theta/deg < 85) {
-         if (Theta/deg > 90) {
+//         if (Theta/deg > 150  && Theta/deg < 180) {
+         if (Theta/deg < 45) {
+//         if (Theta/deg > 90) {
             ExNoStrips = myReaction->ReconstructRelativistic(E, Theta / rad);
             Ex         = myReaction->ReconstructRelativistic(E, ThetaStrip);
          }

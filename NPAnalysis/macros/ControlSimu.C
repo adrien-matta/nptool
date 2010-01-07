@@ -140,4 +140,18 @@ void ControlSimu(const char * fname = "mySimul")
    hEmittedPhiWF->Draw();
 //   hControlPhi->SetLineColor(kRed);
 //   hControlPhi->Draw("same");
+
+   // Display histograms
+   TCanvas *canvasxi32 = new TCanvas("canvas3", "Emitted particle properties", 300, 600);
+   canvas3->Divide(1,3);
+   canvas3->cd(1);
+   hEmittedThetaCM->SetXTitle("#Theta_{c.m.}");
+   hEmittedThetaCM->Draw();
+   canvas3->cd(2);
+   hEmittedThetaWF->Draw();
+   hEmittedThetaWF->SetXTitle("#Theta_{lab}");
+   canvas3->cd(3);
+   hEmittedETheta->SetXTitle("#Theta_{lab}");
+   hEmittedETheta->SetYTitle("E [MeV]");
+   hEmittedETheta->Draw();
 }

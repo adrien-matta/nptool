@@ -14,7 +14,8 @@ Transfert
 	SigmaY= 0
 	SigmaThetaX= 0 
 	SigmaPhiY= 0
-	CrossSectionPath= 132Sndp_10A_MeV_3p3_ZR_FRC.lis
+	CrossSectionPath= 132Sndp_10A_MeV_2f7_ZR_FRC.lis
+%	CrossSectionPath= flat.txt
 	ShootLight= 1
 	ShootHeavy= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

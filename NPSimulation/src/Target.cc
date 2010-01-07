@@ -181,6 +181,14 @@ G4Material* Target::GetMaterialFromLibrary(G4String MaterialName, G4double Tempe
       return myMaterial;
    }
 
+   else if (MaterialName == "Pb208") {
+      G4Element* Pb  = new G4Element("Lead"  , "Pb" , 82. , 207.2*g / mole);
+
+      G4Material* myMaterial = new G4Material("Pb208", 11.342*g / cm3, 1);
+      myMaterial->AddElement(Pb , 1);
+      return myMaterial;
+   }
+
    else {
       G4cout << "No Matching Material in the Target Library Default is Vacuum" << G4endl;
       G4Element* N = new G4Element("Nitrogen", "N", 7., 14.01*g / mole);
