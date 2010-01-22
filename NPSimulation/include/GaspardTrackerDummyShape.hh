@@ -165,8 +165,8 @@ namespace GPDDUMMYSHAPE
 //   const G4int NumberOfStrips	       = 10; // 5 mm strip pitch
 //   const G4int NumberOfStrips	       = 25; // 2 mm strip pitch
 //   const G4int NumberOfStrips	       = 50; // 1 mm strip pitch
-   const G4int NumberOfStrips	       = 100; // 0.5 mm strip pitch
-//   const G4int NumberOfStrips	       = 500; // 0.1 mm strip pitch
+//   const G4int NumberOfStrips	       = 100; // 0.5 mm strip pitch
+   const G4int NumberOfStrips	       = 500; // 0.1 mm strip pitch
 
    // Second stage
    const G4double SecondStageFace      = FirstStageFace;

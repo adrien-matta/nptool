@@ -95,11 +95,14 @@ int main(int argc,char** argv)
       double E = GPDTrack->GetEnergyDeposit();
 
       // if there is a hit in the detector array, treat it.
-      double Theta, ThetaStrip, angle;
+      double Theta, ThetaStrip, angle, ThetaCM;
       double DetecX, DetecY, DetecZ;
       double r;
       TVector3 A;
       if (E > -1000) {
+         // Get c.m. angle
+         ThetaCM = initCond->GetICEmittedAngleThetaCM(0) * deg;
+
          // Get exact scattering angle from TInteractionCoordinates object
 //         Theta = interCoord->GetDetectedAngleTheta(0) * deg;
          DetecX = interCoord->GetDetectedPositionX(0);
@@ -126,24 +129,27 @@ int main(int argc,char** argv)
 //         cout << "HitDirection: " << HitDirection.X() << "  " << HitDirection.Y() << "  " << HitDirection.Z() << endl;
 
          // Calculate scattering angle w.r.t. optical beam axis (do not take into account beam position on target)
-//         ThetaStrip = ThetaCalculation(A, TVector3(0,0,1));
-//         Theta = ThetaCalculation(Detec, TVector3(0, 0, 1));
+         ThetaStrip = ThetaCalculation(A, TVector3(0,0,1));
+         Theta = ThetaCalculation(Detec, TVector3(0, 0, 1));
          // Calculate scattering angle w.r.t. beam (ideal case)
 //         ThetaStrip = ThetaCalculation(HitDirection, BeamDirection);
 //         Theta = ThetaCalculation(Detec - TVector3(XTarget, YTarget, 0), BeamDirection);
          // Calculate scattering angle w.r.t. beam (finite spatial resolution)
-         double resol = 800;	// in micrometer
+/*         double resol = 800;	// in micrometer
          angle = gene->Rndm() * 2*3.14;
          r     = fabs(gene->Gaus(0, resol)) * micrometer;
          ThetaStrip = ThetaCalculation(A     - TVector3(XTarget + r*cos(angle), YTarget + r*sin(angle), 0), BeamDirection);
          Theta      = ThetaCalculation(Detec - TVector3(XTarget + r*cos(angle), YTarget + r*sin(angle), 0), BeamDirection);
-
+*/
          // Correct for energy loss in the target
          E = LightTarget.EvaluateInitialEnergy(E, myDetector->GetTargetThickness()/2 * micrometer, ThetaStrip);
 
          // Calculate excitation energy
 //         if (Theta/deg > 150  && Theta/deg < 180) {
-         if (Theta/deg < 45) {
+//         if (Theta/deg < 60 && ThetaCM/deg < 90) {
+//         if (Theta/deg > 35 && Theta/deg < 45 && E/MeV < 17) {
+//         if (Theta/deg < 45) {
+         if (E/MeV < 38) {
 //         if (Theta/deg > 90) {
             ExNoStrips = myReaction->ReconstructRelativistic(E, Theta / rad);
             Ex         = myReaction->ReconstructRelativistic(E, ThetaStrip);

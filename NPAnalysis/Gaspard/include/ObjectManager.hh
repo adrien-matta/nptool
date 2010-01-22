@@ -112,6 +112,9 @@ namespace ENERGYLOSS
    // For 134Sn(p,t)
    EnergyLoss LightTarget = EnergyLoss("triton_CH2.G4table", "G4Table", 1000);		// G4
    EnergyLoss BeamTarget  = EnergyLoss("Sn134[0.0]_CH2.G4table", "G4Table", 1000);	// G4
+   // For 132Sn(d,t)
+//   EnergyLoss LightTarget = EnergyLoss("triton_CD2.G4table", "G4Table", 1000);		// G4
+//   EnergyLoss BeamTarget  = EnergyLoss("Sn132[0.0]_CD2.G4table", "G4Table", 1000);	// G4
 }
 
 using namespace ENERGYLOSS ;

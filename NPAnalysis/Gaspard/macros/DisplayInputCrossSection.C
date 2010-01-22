@@ -26,6 +26,7 @@ void DisplayInputCrossSection()
    // Read cross-section 132Sn(d,d)
    // Angel
    TGraph *grdd = new TGraph(path + "132Sndd_10A_MeV_ruth.dat");
+   TGraph *grpp = new TGraph(path + "132Snpp_10A_MeV_ruth.dat");
 
    // Draw cross-sections
    TCanvas *can = new TCanvas("can");
@@ -49,11 +50,13 @@ void DisplayInputCrossSection()
    gr3->SetLineColor(kBlue); gr3->SetLineStyle(2); gr3->Draw("l");
    gr4->SetLineColor(kBlue); gr4->Draw("l");*/
 //   gr5->Draw("l");
-   grdd->Draw("l");
+//   grdd->Draw("l");
+   grpp->Draw("l");
 
    // TLegend
    TLegend *leg = new TLegend(0.50, 0.64, 0.82, 0.84);
-   leg->AddEntry(grdd, "10 MeV/u", "l");
+//   leg->AddEntry(grdd, "10 MeV/u", "l");
+   leg->AddEntry(grpp, "10 MeV/u", "l");
 /*   TLegend *leg = new TLegend(0.50, 0.64, 0.82, 0.84);
    leg->AddEntry(grpt1, "1h9/2 10 MeV/u", "l");
    leg->AddEntry(grpt2, "1h9/2 15 MeV/u", "l");
