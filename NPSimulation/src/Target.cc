@@ -64,7 +64,7 @@ Target::Target()
    m_WindowsThickness   = 0   ;
    m_TargetTemperature  = 0   ;
    m_TargetPressure  	= 0   ;
-   m_TargetNbLayers      = 50;	// Number of steps by default
+   m_TargetNbLayers     = 50;	// Number of steps by default
 }
 
 G4Material* Target::GetMaterialFromLibrary(G4String MaterialName, G4double Temperature, G4double Pressure)
@@ -165,7 +165,7 @@ G4Material* Target::GetMaterialFromLibrary(G4String MaterialName, G4double Tempe
       G4Element* C  = new G4Element("Carbon"  , "C" , 6. , 12.011*g / mole);
       G4Element* D  = new G4Element("Deuteron"  , "D" , 1., 2.0141*g / mole);
 
-      G4Material* myMaterial = new G4Material("CD2", 0.97*g / cm3, 2);
+      G4Material* myMaterial = new G4Material("CD2", 1.15*g / cm3, 2);
       myMaterial->AddElement(C , 1);
       myMaterial->AddElement(D , 2);
       return myMaterial;
@@ -175,9 +175,17 @@ G4Material* Target::GetMaterialFromLibrary(G4String MaterialName, G4double Tempe
       G4Element* C  = new G4Element("Carbon"  , "C" , 6. , 12.011*g / mole);
       G4Element* H  = new G4Element("Hydrogen", "H" , 1. ,  1.01 *g / mole);
 
-      G4Material* myMaterial = new G4Material("CH2", 0.9*g / cm3, 2);
+      G4Material* myMaterial = new G4Material("CH2", 1.0*g / cm3, 2);
       myMaterial->AddElement(C , 1);
       myMaterial->AddElement(H , 2);
+      return myMaterial;
+   }
+
+   else if (MaterialName == "Pb208") {
+      G4Element* Pb  = new G4Element("Lead"  , "Pb" , 82. , 207.2*g / mole);
+
+      G4Material* myMaterial = new G4Material("Pb208", 11.342*g / cm3, 1);
+      myMaterial->AddElement(Pb , 1);
       return myMaterial;
    }
 

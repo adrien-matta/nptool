@@ -37,7 +37,6 @@
 #include "TH1F.h"
 #include "TH2F.h"
 
-#include "TGaspardTrackerData.h"
 #include "TInitialConditions.h"
 #include "TInteractionCoordinates.h"
 
@@ -91,7 +90,7 @@ void ControlSimu(const char * fname = "mySimul")
       hEmittanceXY     -> Fill(initCond->GetICPositionX(0), initCond->GetICPositionY(0));
       hIncidentZ       -> Fill(initCond->GetICPositionZ(0));
       hEmittanceXTheta -> Fill(initCond->GetICPositionX(0), initCond->GetICIncidentEmittanceTheta(0));
-      hEmittanceYPhi   -> Fill(initCond->GetICPositionX(0), initCond->GetICIncidentEmittancePhi(0));
+      hEmittanceYPhi   -> Fill(initCond->GetICPositionY(0), initCond->GetICIncidentEmittancePhi(0));
       hIncidentTheta   -> Fill(initCond->GetICIncidentAngleTheta(0));
       hIncidentPhi     -> Fill(initCond->GetICIncidentAnglePhi(0));
       // ejected particle
@@ -141,4 +140,18 @@ void ControlSimu(const char * fname = "mySimul")
    hEmittedPhiWF->Draw();
 //   hControlPhi->SetLineColor(kRed);
 //   hControlPhi->Draw("same");
+
+   // Display histograms
+   TCanvas *canvasxi32 = new TCanvas("canvas3", "Emitted particle properties", 300, 600);
+   canvas3->Divide(1,3);
+   canvas3->cd(1);
+   hEmittedThetaCM->SetXTitle("#Theta_{c.m.}");
+   hEmittedThetaCM->Draw();
+   canvas3->cd(2);
+   hEmittedThetaWF->Draw();
+   hEmittedThetaWF->SetXTitle("#Theta_{lab}");
+   canvas3->cd(3);
+   hEmittedETheta->SetXTitle("#Theta_{lab}");
+   hEmittedETheta->SetYTitle("E [MeV]");
+   hEmittedETheta->Draw();
 }

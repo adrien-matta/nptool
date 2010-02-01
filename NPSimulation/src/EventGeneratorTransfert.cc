@@ -69,9 +69,6 @@ void EventGeneratorTransfert::SetTarget(Target* Target)
 {
    if (Target != 0) {
       m_Target = Target;
-      G4int LightZ = m_Reaction->GetNucleus3()->GetZ();
-      G4int LightA = m_Reaction->GetNucleus3()->GetA();
-      m_Target->WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(LightZ,LightA, 0.) ,0, m_BeamEnergy);
    }
 }
 
@@ -328,26 +325,20 @@ while(ReadingStatus){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* particleGun)
 {	
-	//	If first time, write the DeDx table
-	if(anEvent->GetEventID()==0)
-		{
-			//-------------- Before living, wrtie the DeDx Table -------------------
+   // If first time, write the DeDx table
+   if (anEvent->GetEventID() == 0) {
+      //-------------- Before living, wrtie the DeDx Table -------------------
+      G4int LightZx = m_Reaction->GetNucleus3()->GetZ();
+      G4int LightAx = m_Reaction->GetNucleus3()->GetA();
 
-			G4int LightZx = m_Reaction->GetNucleus3()->GetZ() ;
-		  G4int LightAx = m_Reaction->GetNucleus3()->GetA() ;
-		  
-		  G4int BeamZx = m_Reaction->GetNucleus1()->GetZ() ;
-		  G4int BeamAx = m_Reaction->GetNucleus1()->GetA() ;
-		  
-		  if(m_Target!=0)
-		  	{
-		  		m_Target->WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(LightZx,LightAx, 0.) ,0, m_BeamEnergy+4*m_BeamEnergySpread);
-		  		m_Target->WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(BeamZx,BeamAx, 0.) ,0, m_BeamEnergy+4*m_BeamEnergySpread);
-		  	}
-		
-		}
+      G4int BeamZx = m_Reaction->GetNucleus1()->GetZ();
+      G4int BeamAx = m_Reaction->GetNucleus1()->GetA();
 
-
+      if (m_Target != 0) {
+         m_Target->WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(LightZx,LightAx, 0.) ,0, m_BeamEnergy+4*m_BeamEnergySpread);
+         m_Target->WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(BeamZx,BeamAx, 0.) ,0, m_BeamEnergy+4*m_BeamEnergySpread);
+      }
+   }
 
    // Clear contents of Precedent event (now stored in ROOTOutput)
    m_InitConditions->Clear();
@@ -456,8 +447,8 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
                                          sin(ThetaLight) * sin(phi),
                                          cos(ThetaLight));
    // Momentum in beam frame for heavy particle
-   G4ThreeVector momentum_kineHeavy_beam(sin(ThetaHeavy) * cos(phi),
-                                         sin(ThetaHeavy) * sin(phi),
+   G4ThreeVector momentum_kineHeavy_beam(sin(ThetaHeavy) * cos(phi+pi),
+                                         sin(ThetaHeavy) * sin(phi+pi),
                                          cos(ThetaHeavy));
 
    // write angles/energy to ROOT file

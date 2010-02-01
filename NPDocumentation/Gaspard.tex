@@ -240,10 +240,35 @@ directory. For the moment the main feature is the reconstruction of the excitati
 energy.
 
 \subsubsection{Running the analysis}
-******* to be documented *********
+To run NPAnalysis the following command line should be executed:
 
-\subsubsection{Results the analysis}
-******* to be documented *********
+\begin{verbatim}
+   ./Analysis xxx.reaction yyy.detector RunToTreat.txt
+\end{verbatim}
+
+where xxx.reaction is the input file describing the event generator used in 
+NPSimulation and yyy.detector is the input file describing the detector geometry
+used in NPSimulation. All these input files are based on keywords and can be found 
+in the \$NPTool/Inputs subdirectories. The RunToTreat.txt file contains the
+name of the files (either from NPSimulation or from real experiment) which should
+be analysed. The name of the tree should also be specified. An example 
+of such a file is given here:
+
+\begin{verbatim}
+   TTreeName
+           SimulatedTree
+   RootFileName
+   %       ../../Outputs/Simulation/mySimul.root
+           ../../Outputs/Simulation/132Sndp_3p3_10MeVA_T0_B1_E0_S05mm.root
+   %       ../../Outputs/Simulation/134Snpt_1h9_10MeVA_T1_B1_E0_S05mm.root
+\end{verbatim}
+
+
+\subsubsection{Results of the analysis}
+The results of the anaysis are stored in a ROOT file in the \$NPTool/Output/Analysis
+directory. For the moment the main feature available is the reconstructionof the 
+excitation energy.
+
 
 \subsubsection{Structure of the analysis}
 ******* to be documented *********
