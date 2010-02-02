@@ -33,7 +33,7 @@ using namespace std ;
 class CalibrationManager
 	{
 	
-		public:	//	Constructor and Destructor
+		protected:	//	Constructor and Destructor are protected because the class is a singleton
 			CalibrationManager(string configFileName);
 			~CalibrationManager();
 	
@@ -61,9 +61,9 @@ class CalibrationManager
 			double ApplyCalibration(string ParameterPath , double RawValue);
 		
 		
-			public:	//	To be called after initialisation
-				//	Loop over the file list and catch the file used for calibration
-				void LoadParameterFromFile();
+		public:	//	To be called after initialisation
+			//	Loop over the file list and catch the file used for calibration
+			void LoadParameterFromFile();
 				
 		
 		private:
