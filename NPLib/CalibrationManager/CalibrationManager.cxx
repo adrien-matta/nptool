@@ -143,7 +143,7 @@ void CalibrationManager::LoadParameterFromFile()
 			}
 	}
 //////////////////////////////////////////////////////////////////
-bool FillCalibrationTable(string ParameterPattern, &vector< vector <vector <double> > >)
+bool FillCalibrationTable(string ParameterPattern, vector< vector <vector <double> > > &table)
 	{
 
 

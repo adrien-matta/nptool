@@ -101,7 +101,7 @@ void TMust2Physics::BuildPhysicalEvent()
 												if( Match_Si_SiLi( X, Y , EventData->GetMMSiLiEPadNbr(j) ) )
 												{
 													SiLi_N.push_back(EventData->GetMMSiLiEPadNbr(j))	;
-													SiLi_E.push_back(fSiLi_E(EventData , j))	;
+													SiLi_E.push_back(fSiLi_E(EventData , j))					;
 													SiLi_T.push_back(fSiLi_T(EventData , j))		;
 													check_SILI = true ;
 													
@@ -176,6 +176,11 @@ bool TMust2Physics :: ResolvePseudoEvent()
 vector < TVector2 > TMust2Physics :: Match_X_Y()
 	{
 		vector < TVector2 > ArrayOfGoodCouple ;
+		
+		// Prevent code from treating very high multiplicity Event
+		// Those event are not physical anyway and that improve speed.
+		if( EventData->GetMMStripXEMult()>6 || EventData->GetMMStripYEMult()>6 )
+			return ArrayOfGoodCouple;
 		
 		for(int i = 0 ; i < EventData->GetMMStripXEMult(); i++)
 			{
