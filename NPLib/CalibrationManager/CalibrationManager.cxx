@@ -109,41 +109,45 @@ void CalibrationManager::LoadParameterFromFile()
 				if(!CalibFile)
 					{
 						cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
-						cout << " WARNING: FILE " << fFileList[i] << " IS MISSING " 																  	<< endl ;
+						cout << " WARNING: FILE " << fFileList[i] << " IS MISSING "				  	<< endl ;
 						cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
-					
 					}
 					
 				else while( !CalibFile.eof() )
+					{
+						CalibFile >> DataBuffer ;
+						
+						//	Search word in the token list
+						it=fToken.find(DataBuffer);
+						
+						//	if the word is find, values are read
+						if( it!=fToken.end() )
 							{
-								CalibFile >> DataBuffer ;
-								
-								//	Search word in the token list
-								it=fToken.find(DataBuffer);
-								
-								//	if the word is find, values are read
-								if( it!=fToken.end() )
+										
+								Coeff.clear();
+								while(DataBuffer!="\n")
 									{
-										
-										Coeff.clear();
-										while(DataBuffer!="\n")
-											{
-												CalibFile >> DataBuffer ; Coeff.push_back( atof(DataBuffer.c_str()) ) ;
-											}
-									
-										//	Check this parameter is not already define
-										if( fCalibrationCoeff.find(it->second) != fCalibrationCoeff.end() ) cout << "WARNING: Parameter " << it->second << " Already found. It will be rewritted " << endl;
-										
-										//	Add the list of Coeff to the Coeff map using Parameter Path as index
-										fCalibrationCoeff[ it->second ] = Coeff ;
+										CalibFile >> DataBuffer ; Coeff.push_back( atof(DataBuffer.c_str()) ) ;
 									}
-								
+									
+								//	Check this parameter is not already define
+								if( fCalibrationCoeff.find(it->second) != fCalibrationCoeff.end() ) 
+									cout << "WARNING: Parameter " << it->second << " Already found. It will be rewritted " << endl;
+										
+								//	Add the list of Coeff to the Coeff map using Parameter Path as index
+								fCalibrationCoeff[ it->second ] = Coeff ;
 							}
-					CalibFile.close() ;
+								
+					}
+				CalibFile.close() ;
 			}
-		
 	}
+//////////////////////////////////////////////////////////////////
+bool FillCalibrationTable(string ParameterPattern, &vector< vector <vector <double> > >)
+	{
 
+
+	}
 //////////////////////////////////////////////////////////////////
 double CalibrationManager::ApplyCalibration(string ParameterPath , double RawValue)
 	{
