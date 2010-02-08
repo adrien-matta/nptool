@@ -44,6 +44,7 @@
 #include "Target.hh"
 #include "ThinSi.hh"
 #include "Plastic.hh"
+#include "EDEN.hh"
 
 //Not G4
 #include <cstdlib>
@@ -129,8 +130,9 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
    bool cGeneralTarget   = false;
    bool cGPDTracker      = false;	// Gaspard Tracker
    bool cS1              = false;
+   bool cEDEN            = false;
    bool cPlastic         = false;
-   bool cDummy         = false;
+   bool cDummy           = false;
    //////////////////////////////////////////////////////////////////////////////////////////
    // added by Nicolas [07/05/09]
    string GlobalPath = getenv("NPTOOL");
@@ -208,6 +210,25 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
 
          // Add array to the VDetector Vector
          AddDetector(myDetector)                               ;
+      }
+
+      ////////////////////////////////////////////
+      //////// Search for EDEN detector  /////////
+      ////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 4, "EDEN") == 0 && cEDEN == false) {
+         cEDEN = true;
+         G4cout << "//////// EDEN detector ////////" << G4endl << G4endl;
+
+         // Instantiate the new array as a VDetector Object
+         VDetector* myDetector = new EDEN();
+
+         // Read Position of Telescope
+         ConfigFile.close();
+         myDetector->ReadConfiguration(Path);
+         ConfigFile.open(Path.c_str());
+
+         // Add array to the VDetector Vector
+         AddDetector(myDetector);
       }
 
       ////////////////////////////////////////////
