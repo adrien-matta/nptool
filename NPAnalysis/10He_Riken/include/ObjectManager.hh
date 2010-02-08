@@ -120,35 +120,32 @@ namespace ENERGYLOSS
 			EnergyLoss He3StripAl   = EnergyLoss 	(	"He3_Aluminium.G4table" 			,
 																							"G4Table",
 																							10000						);
+
+//			EnergyLoss He3TargetWind = EnergyLoss 	(	"3He_Mylar.txt" 		,
+//																								"LISE",
+//																							10000						,
+//																							1					,
+//																							3	);					
+//		
+//			EnergyLoss He3TargetGaz = EnergyLoss 		(	"3He_D2gaz_1b_26K.txt" 	,
+//																								"LISE",
+//																							10000						,
+//																							1					,
+//																							3					);	
+//			
+//			EnergyLoss He3StripAl   = EnergyLoss 	(		"3He_Al.txt"			,
+//																							"LISE",
+//																							10000						,
+//																							1					,
+//																							3			);			
+
+
 														
 			EnergyLoss He3StripSi   = EnergyLoss 	(	"3He_Si.txt" 			,
 																							"LISE",
 																							10000						,
 																							1					,
 																							3						);
-														
-
-	
-//		//	3He Energy Loss
-//			EnergyLoss He3TargetWind = EnergyLoss 	(	"3He_Mylar.txt" 		,
-//														10000	 				,
-//														1					,
-//														3						);
-//		
-//			EnergyLoss He3TargetGaz = EnergyLoss 	(	"3He_D2gaz_1b_26K.txt" 	,
-//														10000	 				,
-//														1						,
-//														3						);
-//			
-//			EnergyLoss He3StripAl   = EnergyLoss 	(	"3He_Al.txt" 			,
-//														10000						,
-//														1						,
-//														3						);
-//														
-//			EnergyLoss He3StripSi   = EnergyLoss 	(	"3He_Si.txt" 			,
-//														10000						,
-//														1					,
-//														3						);
 														
 														
 		//	proton Energy Loss

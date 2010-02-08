@@ -35,6 +35,7 @@
 #include "EventGeneratorTransfertToResonance.hh"
 #include "EventGeneratorIsotropic.hh"
 #include "EventGeneratorBeam.hh"
+#include "EventGeneratorPhaseSpace.hh"
 
 #include <cstdlib>
 
@@ -83,10 +84,11 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path)
    ifstream EventGeneratorFile;
    EventGeneratorFile.open(Path.c_str());
 
-   bool check_TransfertToResonance = false   ;
-   bool check_Isotropic        = false ;
-   bool check_Transfert        = false ;
-   bool check_Beam                = false ;
+   bool check_TransfertToResonance 	= false   ;
+   bool check_PhaseSpace				 		= false   ;
+   bool check_Isotropic        			= false 	;
+   bool check_Transfert        			= false 	;
+   bool check_Beam                	= false 	;
 
    if (EventGeneratorFile.is_open()) cout << " Event Generator file " << Path << " loading " << endl  ;
    else                      {
@@ -150,6 +152,18 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path)
          myEventGenerator->InitializeRootOutput()           ;
          myEventGenerator->SetTarget(m_detector->GetTarget());
          m_EventGenerator = myEventGenerator                            ;
+      }
+      
+      //Search for Transfert To Resonance
+      else if (LineBuffer.compare(0, 10, "PhaseSpace") == 0 && !check_PhaseSpace) {
+         check_PhaseSpace = true                             								 	;
+         VEventGenerator* myEventGenerator = new EventGeneratorPhaseSpace()  	;
+         EventGeneratorFile.close()                                  					;
+         myEventGenerator->ReadConfiguration(Path)                      			;	
+         EventGeneratorFile.open(Path.c_str())                          			;
+         myEventGenerator->InitializeRootOutput()           									;
+         myEventGenerator->SetTarget(m_detector->GetTarget())									;
+         m_EventGenerator = myEventGenerator                            			;
       }
    }
    EventGeneratorFile.close();

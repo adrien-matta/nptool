@@ -46,32 +46,34 @@
 //Root Headers
 #include "TGenPhaseSpace.h"
 
+//CLHEP
+#include "CLHEP/Random/RandBreitWigner.h"
+
 using namespace std;
 using namespace CLHEP;
-
-
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorTransfertToResonance::EventGeneratorTransfertToResonance()
 {
    //------------- Default Constructor -------------
 	m_InitConditions	= new TInitialConditions()	;
-	m_Reaction = new Reaction() ;
-	m_Target = new Target();
-	m_SigmaX       		=  0 ;
-	m_SigmaY       		=  0 ;
-	m_SigmaThetaX     =  0 ;
-	m_SigmaPhiY 		=  0 ;
-	m_ResonanceDecayZ 		=  0 ;
-	m_ResonanceDecayA 		=  0 ;
+	m_Reaction 				= new Reaction() 						;
+	m_Target 					= new Target()							;
+	m_SigmaX       		=  0 												;
+	m_SigmaY       		=  0 												;
+	m_SigmaThetaX     =  0 												;
+	m_SigmaPhiY 			=  0 												;
+	m_ResonanceDecayZ = 0 												;
+	m_ResonanceDecayA = 0 												;
+	m_EventWeight     =	0 												;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorTransfertToResonance::~EventGeneratorTransfertToResonance()
 {
   //------------- Default Destructor ------------
-	delete m_InitConditions;
-	delete m_Reaction ;
+	delete m_InitConditions	;
+	delete m_Reaction 			;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void	EventGeneratorTransfertToResonance::SetTarget(Target* Target) 
@@ -119,6 +121,8 @@ EventGeneratorTransfertToResonance::EventGeneratorTransfertToResonance(	  string
 		           	ShootHeavy        	,
 		           	ShootDecayProduct   ,
 		            Path				);        
+		            
+    m_EventWeight     =	0 												;
 
 }
 
@@ -129,13 +133,7 @@ void EventGeneratorTransfertToResonance::InitializeRootOutput()
    RootOutput *pAnalysis = RootOutput::getInstance();
    TTree *pTree = pAnalysis->GetTree();
    pTree->Branch("InitialConditions", "TInitialConditions", &m_InitConditions);
-}
-
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventGeneratorTransfertToResonance::Print() const
-{
-
+   pTree->Branch("EventWeight",&m_EventWeight,"EventWeigt/D");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -188,7 +186,7 @@ void EventGeneratorTransfertToResonance::ReadConfiguration(string Path)
 
       
 
-      if (LineBuffer.compare(0, 9, "Transfert") == 0) { ReadingStatus = true ;}
+      if (LineBuffer.compare(0, 20, "TransfertToResonance") == 0) { ReadingStatus = true ;}
 
 
 while(ReadingStatus){
@@ -345,24 +343,24 @@ while(ReadingStatus){
 
 	}
    
-   SetEverything(	Beam            	,
-			         Target            	,
-			         Light          	,
-			         Heavy          	,
-			         BeamEnergy       	,
-			         ExcitationEnergy  	,
-			         BeamEnergySpread  	,
-			         SigmaX         	,
-			         SigmaY         	,
-			         SigmaThetaX ,
-			         SigmaPhiY 	,
-			         ResonanceWidth,
-			         ResonanceDecayZ    ,
-			         ResonanceDecayA    ,
-			         ShootLight        	,
-			         ShootHeavy        	,
-			         ShootDecayProduct  ,
-			         CrossSectionPath	);
+   SetEverything(	Beam            		,
+			         		Target            	,
+			         		Light          			,
+			         		Heavy          			,
+			         		BeamEnergy       		,
+			         		ExcitationEnergy  	,
+			         		BeamEnergySpread  	,
+			         		SigmaX         			,
+			        		SigmaY         			,
+			         		SigmaThetaX				 	,
+			         		SigmaPhiY 					,
+			         		ResonanceWidth			,
+			         		ResonanceDecayZ    	,
+			         		ResonanceDecayA    	,
+			         		ShootLight        	,
+			         		ShootHeavy        	,
+			        		ShootDecayProduct  	,
+			         		CrossSectionPath		);
 
    		ReactionFile.close();
 }
@@ -407,21 +405,19 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
    G4int HeavyZ = m_Reaction->GetNucleus4()->GetZ() ;
    G4int HeavyA = m_Reaction->GetNucleus4()->GetA() ;
 
-   G4ParticleDefinition* HeavyName
-   = G4ParticleTable::GetParticleTable()->GetIon(HeavyZ, HeavyA, m_Reaction->GetExcitation()*MeV);
+
+	 // Shoot the Resonance energy following the mean and width value
+   	double EXX = -10 ;
+		EXX = RandBreitWigner::shoot(m_ResonanceMean,m_ResonanceWidth) ;
+
+  	m_Reaction->SetExcitation( EXX );
 
    // Beam
    G4int BeamZ = m_Reaction->GetNucleus1()->GetZ();
    G4int BeamA = m_Reaction->GetNucleus1()->GetA();
    G4ParticleDefinition* BeamName = G4ParticleTable::GetParticleTable()->GetIon(BeamZ, BeamA, 0);
 
-   // Shoot the Resonance energy following the mean and width value
-   double EXX = -10 ;
-   
-   while(EXX<0)
-   EXX = RandGauss::shoot(m_ResonanceMean,m_ResonanceWidth) ;
 
-	m_Reaction->SetExcitation( EXX  );
 
 	 ///////////////////////////////////////////////////////////////////////
    ///// Calculate the incident beam direction as well as the vertex /////
@@ -482,11 +478,6 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
    ///// Angles for emitted particles following Cross Section //////
    ///// Angles are in the beam frame                         //////
    /////////////////////////////////////////////////////////////////
-   // Beam incident energy
-   G4double NominalBeamEnergy = m_BeamEnergy;
-   G4double IncidentBeamEnergy = RandGauss::shoot(NominalBeamEnergy, m_BeamEnergySpread);
-   m_Reaction->SetBeamEnergy(IncidentBeamEnergy);
-   m_InitConditions->SetICIncidentEnergy(IncidentBeamEnergy / MeV);
    // Angles
    RandGeneral CrossSectionShoot(m_Reaction->GetCrossSection(), m_Reaction->GetCrossSectionSize());
    G4double ThetaCM = CrossSectionShoot.shoot() * (180*deg);
@@ -545,12 +536,6 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
    }
    
    // Case of recoil particle
-   /*   // Particle type
-      particleGun->SetParticleDefinition(HeavyName);
-      // Particle energy
-      particleGun->SetParticleEnergy(EnergyHeavy);
-      // Particle vertex position
-      particleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0));
       // Particle direction
       // Kinematical angles in the beam frame are transformed 
       // to the "world" frame*/
@@ -560,14 +545,15 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
       G4double phi_world   = momentum_kine_world.phi();
       if (phi_world < 1e-6) phi_world += 2*pi;
       
+      if(m_ShootHeavy || m_ShootDecayProduct)
       EventGeneratorTransfertToResonance::ResonanceDecay(	EnergyHeavy    	,
-      														theta_world     ,
-      														phi_world      	,
-      														x0            	,
-      														y0            	,
-      														z0             	,
-      														anEvent        	,
-      														particleGun		);
+      																										theta_world     ,
+												      														phi_world      	,
+												      														x0            	,
+												      														y0            	,
+												      														z0             	,
+												      														anEvent        	,
+												      														particleGun		  );
       
    
 }
@@ -598,7 +584,7 @@ void EventGeneratorTransfertToResonance::ResonanceDecay(  G4double EnergyHeavy  
    else {
 		//Obtain Mass of daughter Nuclei
 		G4ParticleDefinition* parent
-		= G4ParticleTable::GetParticleTable()->GetIon(parentZ, parentA, m_Reaction->GetExcitation())     ;
+		= G4ParticleTable::GetParticleTable()->GetIon(parentZ, parentA, 0 )     ;
 
 		G4ParticleDefinition* daughter
 		= G4ParticleTable::GetParticleTable()->GetIon(m_ResonanceDecayZ, m_ResonanceDecayA, 0.) ;
@@ -609,7 +595,7 @@ void EventGeneratorTransfertToResonance::ResonanceDecay(  G4double EnergyHeavy  
 		G4ParticleDefinition* proton
 		=  G4ParticleTable::GetParticleTable()->FindParticle("proton");
 
-		G4double M  = parent   -> GetPDGMass()     ;
+		G4double M  = parent   -> GetPDGMass() + m_Reaction->GetExcitation()     ;
 		G4double md = daughter -> GetPDGMass()     ;
 		G4double mn = neutron  -> GetPDGMass()     ;
 		G4double mp = proton   -> GetPDGMass()     ;
@@ -638,15 +624,9 @@ void EventGeneratorTransfertToResonance::ResonanceDecay(  G4double EnergyHeavy  
 		TGenPhaseSpace TPhaseSpace ;
 
 		if( !TPhaseSpace.SetDecay(Initial, NumberOfDecayProducts+1, masses) ) cout << "Warning: Phase Space Decay forbiden by kinematic, or more than 18 particles "<<endl;
-		double MaxWt=TPhaseSpace.GetWtMax() ;
-		double Weight = 0 	;
-		double Rand   = 1	; 
 
-		while( Rand > Weight )
-			{  
-				Weight = TPhaseSpace.Generate() 		;
-				Rand = CLHEP::RandFlat::shoot()*MaxWt	; 
-			}
+		//	Generate an event and store is weight in the Output Tree
+		m_EventWeight = TPhaseSpace.Generate() 		;
 		
 		
 		TLorentzVector* daugterLV ;

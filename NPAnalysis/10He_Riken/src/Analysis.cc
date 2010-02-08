@@ -117,7 +117,7 @@ int main(int argc,char** argv)
 			//	YTarget = RandomEngine.Gaus(Init->GetICPositionY(0),1);
 			BeamTheta = Init->GetICIncidentAngleTheta(0)*deg ; BeamPhi = Init->GetICIncidentAnglePhi(0)*deg ; 
 			TVector3 BeamDirection = TVector3(cos(BeamPhi)*sin(BeamTheta) , sin(BeamPhi)*sin(BeamTheta) , cos(BeamTheta)) ;
-			////
+			//// 
 			
 			// Must 2 And ThinSi //
 			for(int hit = 0; hit < M2 -> Si_E.size() ; hit ++)
@@ -152,7 +152,7 @@ int main(int argc,char** argv)
 											}
 
 										ELab[hit]= He3TargetWind.EvaluateInitialEnergy( 	ELab[hit] 				, // Energy of the detected particle
-																																			15*micrometer			, // Target Thickness at 0 degree
+																																			10*micrometer			, // Target Thickness at 0 degree
 																																			ThetaN						);
 																			
 										ELab[hit]= He3TargetGaz.EvaluateInitialEnergy(		ELab[hit] 				, // Energy of the detected particle
@@ -161,7 +161,6 @@ int main(int argc,char** argv)
 																		 				
 									ThetaCM[hit] = He10Reaction -> EnergyLabToThetaCM( ELab[hit] ) /deg 	;
 									ExcitationEnergy[hit] = He10Reaction -> ReconstructRelativistic( ELab[hit] , ThetaLab[hit] ) 		;	
-//								  	ExcitationEnergy[hit] = He10Reaction -> ReconstructRelativistic( ELab[hit] , TVRAI ) 		;
 									X[hit] = HitDirection . X();
 									Y[hit] = HitDirection . Y();	
 									ThetaLab[hit] = ThetaLab[hit] / deg ;
@@ -194,7 +193,7 @@ int main(int argc,char** argv)
 										}
 											
 									ELab[hit]= He3TargetWind.EvaluateInitialEnergy( 	ELab[hit] 					, // Energy of the detected particle
-																																		15*micrometer				, // Target Thickness at 0 degree
+																																		10*micrometer				, // Target Thickness at 0 degree
 																																		ThetaN							);
 									
 									ELab[hit]= He3TargetGaz.EvaluateInitialEnergy(		ELab[hit] 					, // Energy of the detected particle
@@ -203,7 +202,6 @@ int main(int argc,char** argv)
 																				
 									ThetaCM[hit]= He10Reaction -> EnergyLabToThetaCM( ELab[hit] ) /deg 	;	
 									ExcitationEnergy[hit] = He10Reaction -> ReconstructRelativistic( ELab[hit], ThetaLab[hit]) ;	
-//									ExcitationEnergy[hit] = He10Reaction -> ReconstructRelativistic( ELab[hit] , TVRAI ) 		;
 									X[hit] = HitDirection . X();
 									Y[hit] = HitDirection . Y();	
 									ThetaLab[hit] = ThetaLab[hit] / deg ;
@@ -215,7 +213,6 @@ int main(int argc,char** argv)
 						
 					/*else if(M2 -> GetPositionOfInteraction(hit).Z()<0)
 						{}	*/
-
 
 				}			
 			
