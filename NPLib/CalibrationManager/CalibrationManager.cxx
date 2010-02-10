@@ -59,15 +59,17 @@ CalibrationManager::CalibrationManager(string configFileName)
       return;
    }
    
-   else {
+   else 
+		{
+   		cout << "Reading list of file from :" << configFileName << endl; 
       while (!inputConfigFile.eof()) {
          getline(inputConfigFile, lineBuffer);
 			      
          // search for token giving the list of Root files to treat
-         if ( lineBuffer.compare(0, 12, "CalibrationFilePath") == 0 ) {
+         if ( lineBuffer.compare(0, 19, "CalibrationFilePath") == 0 ) {
              while (!inputConfigFile.eof()) {
                inputConfigFile >> dataBuffer;
-
+								
                // ignore comment Line 
                if (dataBuffer.compare(0, 1, "%") == 0) {
                   inputConfigFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -77,11 +79,12 @@ CalibrationManager::CalibrationManager(string configFileName)
                   AddFile(dataBuffer);
                   cout << "Adding file " << dataBuffer << " to Calibration" << endl;
                }
-            }
-         }
-      }
+	            }
+	         }
+	      }
+	  	}
+   	cout << "/////////////////////////////////" << endl;
    }
-   cout << "/////////////////////////////////" << endl;}
 	
 //////////////////////////////////////////////////////////////////
 CalibrationManager::~CalibrationManager()
@@ -178,6 +181,7 @@ double CalibrationManager::ApplyCalibration(string ParameterPath , double RawVal
 		
 		// The vector size give the degree of calibration
 		// We just apply the coeff and returned the calibrated value
+		
 		for(unsigned int i = 0 ; i < Coeff.size() ; i++)
 			{
 				CalibratedValue += Coeff[i]*pow(RawValue, (double)i);

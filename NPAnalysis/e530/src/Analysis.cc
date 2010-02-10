@@ -39,16 +39,11 @@ int main(int argc,char** argv)
 	//	Ask the detector manager to load the parameter added by the detector in the calibrationfileName
 	myCalibration->LoadParameterFromFile() ;
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-  //	Attach more branch to the output
-	
 
+  //	Attach more branch to the output
 	
   //	Get the formed Chained Tree and Treat it
   TChain* Chain = RootInput:: getInstance() -> GetChain()	;
-
-
-	
 
   TMust2Physics* M2 		= (TMust2Physics*) 	myDetector -> m_Detector["MUST2"] 	;
   cout <<  " ///////// Starting Analysis ///////// "<< endl << endl ;
