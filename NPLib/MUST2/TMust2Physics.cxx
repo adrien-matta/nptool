@@ -41,16 +41,16 @@ ClassImp(TMust2Physics)
 ///////////////////////////////////////////////////////////////////////////
 TMust2Physics::TMust2Physics() 
 	{ 
-		EventMultiplicity = 0 			;
-		EventData = new TMust2Data	;
-		EventPhysics = this					;
+		EventMultiplicity 	= 0 							;
+		EventData 					= new TMust2Data	;
+		EventPhysics 				= this						;
+		NumberOfTelescope		= 0								;
 	}
 		
 ///////////////////////////////////////////////////////////////////////////
 void TMust2Physics::BuildSimplePhysicalEvent()
 	{ 
 		BuildPhysicalEvent(); 
-	
 	}
 	
 ///////////////////////////////////////////////////////////////////////////

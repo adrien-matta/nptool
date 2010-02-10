@@ -25,6 +25,7 @@
 #include <cstdlib>
 #include <limits>
 #include <cmath>
+#include <sstream>
 
 //////////////////////////////////////////////////////////////////
 CalibrationManager* CalibrationManager::instance = 0;
@@ -99,35 +100,43 @@ void CalibrationManager::LoadParameterFromFile()
 	{
 		ifstream CalibFile 	;
 		string	 DataBuffer	;
+		string   LineBuffer ;
 		
 		for(unsigned int i = 0 ; i < fFileList.size() ; i++)
 			{
 				CalibFile.open( fFileList[i].c_str() );
-				vector<double> Coeff ;
 				map<string,string>::iterator it ;
 				
 				if(!CalibFile)
 					{
 						cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
-						cout << " WARNING: FILE " << fFileList[i] << " IS MISSING "				  	<< endl ;
+						cout << " WARNING: FILE " << fFileList[i] << " IS MISSING "				  														<< endl ;
 						cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
 					}
 					
 				else while( !CalibFile.eof() )
 					{
-						CalibFile >> DataBuffer ;
+						// Read the file Line by line
+						getline(CalibFile, LineBuffer);
 						
+						// Create a istringstream to manipulate the line easely
+					  istringstream theLine (LineBuffer,istringstream::in);
+						theLine >> DataBuffer ;
+						
+						// Comment support, comment symbole is %
+						if(DataBuffer.compare(0, 1, "%") == 0) {
+						 	CalibFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
+						 	
 						//	Search word in the token list
 						it=fToken.find(DataBuffer);
 						
 						//	if the word is find, values are read
 						if( it!=fToken.end() )
 							{
-										
-								Coeff.clear();
-								while(DataBuffer!="\n")
+								vector<double> Coeff ;
+								while( !theLine.eof() )
 									{
-										CalibFile >> DataBuffer ; Coeff.push_back( atof(DataBuffer.c_str()) ) ;
+										theLine >> DataBuffer ; Coeff.push_back( atof(DataBuffer.c_str()) ) ;
 									}
 									
 								//	Check this parameter is not already define
@@ -142,19 +151,18 @@ void CalibrationManager::LoadParameterFromFile()
 				CalibFile.close() ;
 			}
 	}
-//////////////////////////////////////////////////////////////////
-bool FillCalibrationTable(string ParameterPattern, vector< vector <vector <double> > > &table)
-	{
 
-
-	}
 //////////////////////////////////////////////////////////////////
 double CalibrationManager::ApplyCalibration(string ParameterPath , double RawValue)
 	{
 		double CalibratedValue = 0 ;
 		map< string , vector<double> >::iterator it ;
+		
+		//	Find the good parameter in the Map
+		// Using Find method of stl is the fastest way
 		it = fCalibrationCoeff.find(ParameterPath)  ;
 		
+		// If the find methods return the end iterator it's mean the parameter was not found
 		if(it == fCalibrationCoeff.end() )
 			{
 			/*	cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
@@ -164,8 +172,12 @@ double CalibrationManager::ApplyCalibration(string ParameterPath , double RawVal
 				return RawValue ;
 			}
 		
+		// Else we take the second part of the element (first is index, ie: parameter path)
+		// Second is the vector of Coeff
 		vector<double> Coeff = it->second  ;
 		
+		// The vector size give the degree of calibration
+		// We just apply the coeff and returned the calibrated value
 		for(unsigned int i = 0 ; i < Coeff.size() ; i++)
 			{
 				CalibratedValue += Coeff[i]*pow(RawValue, (double)i);

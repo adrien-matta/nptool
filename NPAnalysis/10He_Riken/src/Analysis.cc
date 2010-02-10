@@ -17,6 +17,7 @@ int main(int argc,char** argv)
 	string calibrationfileName 	= argv[2]	;
 	string runToReadfileName 		= argv[3]	;
 	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//	First of All instantiate RootInput and Output
 	//	Detector will be attached later
 	RootInput:: getInstance(runToReadfileName)	;
@@ -29,13 +30,19 @@ int main(int argc,char** argv)
 	NPL::Reaction*  Li10Reaction = new Reaction								;
 	Li10Reaction	->	ReadConfigurationFile("9Li-dp-10Li.reaction")		;
 
+	//	Instantiate the Calibration Manger using a file (WARNING:prior to the detector instantiation)
+	CalibrationManager* myCalibration = CalibrationManager::getInstance(calibrationfileName) ;
+
 	//	Instantiate the detector using a file 
 	NPA::DetectorManager* myDetector = new DetectorManager 			  ;
 	myDetector	->	ReadConfigurationFile(detectorfileName)		;
-
-	//	Instantiate the Calibration Manger using a file
-	CalibrationManager* myCalibration = new CalibrationManager(calibrationfileName) ;
 	
+	//	Ask the detector manager to load the parameter added by the detector in the calibrationfileName
+	myCalibration->LoadParameterFromFile() ;
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+
+
 	//	Attach more branch to the output
 	
 	double ELab[2], ExcitationEnergy[2]	;
@@ -46,11 +53,11 @@ int main(int argc,char** argv)
 	RootOutput::getInstance()->GetTree()->Branch("ExcitationEnergy",ExcitationEnergy,"ExcitationEnergy[2]/D") ;
 
 	//E lab et Theta lab
-	RootOutput::getInstance()->GetTree()->Branch("ThetaCM",ThetaCM,"ThetaCM[2]/D") 	;
-	RootOutput::getInstance()->GetTree()->Branch("ELab",ELab,"ELab[2]/D") 					;
-	RootOutput::getInstance()->GetTree()->Branch("ThetaLab",ThetaLab,"ThetaLab[2]/D") 					;
-	RootOutput::getInstance()->GetTree()->Branch("X",X,"X/D[2]") 										;
-	RootOutput::getInstance()->GetTree()->Branch("Y",Y,"Y/D[2]")									 	;
+	RootOutput::getInstance()->GetTree()->Branch("ThetaCM",ThetaCM,"ThetaCM[2]/D") 			;
+	RootOutput::getInstance()->GetTree()->Branch("ELab",ELab,"ELab[2]/D") 							;
+	RootOutput::getInstance()->GetTree()->Branch("ThetaLab",ThetaLab,"ThetaLab[2]/D") 	;
+	RootOutput::getInstance()->GetTree()->Branch("X",X,"X/D[2]") 												;
+	RootOutput::getInstance()->GetTree()->Branch("Y",Y,"Y/D[2]")									 			;
 	
 	
 	//	Get the formed Chained Tree and Treat it

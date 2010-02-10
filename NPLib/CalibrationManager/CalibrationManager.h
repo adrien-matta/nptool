@@ -52,15 +52,10 @@ class CalibrationManager
 			
 		public:	// Calibration Parameter Related
 	
-			/*FIXME to be deleted later */
 			// call like : myCalibrationManager->AddParameter( "MUST2" ,"Telescope5_Si_X38_E", "T5_Si_X38_E" )
 			// return false if the token is not found in the file list
 			bool AddParameter(string DetectorName , string ParameterName , string Token)    ;		
 			
-			// Fill the Detector associated table with the asked parameter
-			bool FillCalibrationTable(string ParameterPattern , vector< vector <double> > &table) ;
-	
-			/*FIXME to be deleted later */
 			// call like : myCalibrationManager->ApplyCalibration( "MUST2/Telescope5_Si_X38_E" , RawEnergy )
 			// return the Calibrated value
 			double ApplyCalibration(string ParameterPath , double RawValue);

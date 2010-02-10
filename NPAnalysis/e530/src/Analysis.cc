@@ -17,26 +17,28 @@ int main(int argc,char** argv)
   string reactionfileName     = argv[1]       ;
   string detectorfileName 		= argv[2]	;
   string calibrationfileName  = argv[3]	;  
-  string runToReadfileName 		= argv[4]	;
+  string runToTreatFileName 	= argv[4]	;
 	
-  //	First of All instantiate RootInput and Output
-  //	Detector will be attached later
-  RootInput:: getInstance(runToReadfileName)	;
-  //RootOutput::getInstance("Analysis/10HeRiken_AnalyzedData", "AnalyzedTree")					;
-  RootOutput::getInstance("Analysis/Fe60", "Analysed_Data")					;
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	First of All instantiate RootInput and Output
+	//	Detector will be attached later
+	RootInput:: getInstance(runToTreatFileName)	;
+	RootOutput::getInstance("Analysis/60Fe_AnalyzedData", "AnalyzedTree")	;
 	
-  //	Instantiate some Reaction
+	//	Instantiate some Reaction
+	NPL::Reaction*  e530Reaction = new Reaction								;
+	e530Reaction	->	ReadConfigurationFile(reactionfileName)	;
 
-  NPL::Reaction* Fe60Reaction = new Reaction;
-  Fe60Reaction    -> ReadConfigurationFile(reactionfileName);
+	//	Instantiate the Calibration Manger using a file (WARNING:prior to the detector instantiation)
+	CalibrationManager* myCalibration = CalibrationManager::getInstance(calibrationfileName) ;
 
-  //	Instantiate the detector using a file 
-  NPA::DetectorManager* myDetector = new DetectorManager 			  ;
-  myDetector	->	ReadConfigurationFile(detectorfileName)		;
-
-  //	Instantiate the Calibration Manger using a file
-  //  CalibrationManager* myCalibration = new CalibrationManager(calibrationfileName) ;
-    CalibrationManager* myCalibration = CalibrationManager::getInstance(calibrationfileName);
+	//	Instantiate the detector using a file 
+	NPA::DetectorManager* myDetector = new DetectorManager 		;
+	myDetector	->	ReadConfigurationFile(detectorfileName)		;
+	
+	//	Ask the detector manager to load the parameter added by the detector in the calibrationfileName
+	myCalibration->LoadParameterFromFile() ;
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	
   //	Attach more branch to the output
 	
