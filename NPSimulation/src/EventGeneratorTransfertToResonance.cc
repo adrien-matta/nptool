@@ -407,17 +407,20 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
 
 
 	 // Shoot the Resonance energy following the mean and width value
-   	double EXX = -10 ;
-		EXX = RandBreitWigner::shoot(m_ResonanceMean,m_ResonanceWidth) ;
+	 // EXX should always be more than specific heat of the reaction
+    double EXX = RandBreitWigner::shoot(m_ResonanceMean,m_ResonanceWidth) ;	 
+    m_Reaction->SetExcitation( EXX );
 
-  	m_Reaction->SetExcitation( EXX );
+		while ( m_Reaction->CheckKinematic()==false ) 
+   		{
+   			EXX = RandBreitWigner::shoot(m_ResonanceMean,m_ResonanceWidth) ;
+  	  	m_Reaction->SetExcitation( EXX );
+  	  }
 
    // Beam
    G4int BeamZ = m_Reaction->GetNucleus1()->GetZ();
    G4int BeamA = m_Reaction->GetNucleus1()->GetA();
    G4ParticleDefinition* BeamName = G4ParticleTable::GetParticleTable()->GetIon(BeamZ, BeamA, 0);
-
-
 
 	 ///////////////////////////////////////////////////////////////////////
    ///// Calculate the incident beam direction as well as the vertex /////
@@ -573,8 +576,8 @@ void EventGeneratorTransfertToResonance::ResonanceDecay(  G4double EnergyHeavy  
    G4double parentA = m_Reaction->GetNucleus4()->GetA() ;
 
    G4int NumberOfNeutrons = (parentA - parentZ) - (m_ResonanceDecayA - m_ResonanceDecayZ)  	;
-   G4int NumberOfProtons  = parentZ - m_ResonanceDecayZ                  				  	;
-   G4int NumberOfDecayProducts = NumberOfNeutrons + NumberOfProtons         			  	;
+   G4int NumberOfProtons  = parentZ - m_ResonanceDecayZ                  				  					;
+   G4int NumberOfDecayProducts = NumberOfNeutrons + NumberOfProtons         			  				;
 
    if (NumberOfNeutrons < 0 || NumberOfProtons < 0) {
       G4cout << "Error input for Resonance decay" << G4endl;
@@ -599,6 +602,15 @@ void EventGeneratorTransfertToResonance::ResonanceDecay(  G4double EnergyHeavy  
 		G4double md = daughter -> GetPDGMass()     ;
 		G4double mn = neutron  -> GetPDGMass()     ;
 		G4double mp = proton   -> GetPDGMass()     ;
+		
+		// Check that we are above threshold:
+		// If the Resonnance go below the threshold, decay is forced at thereshold
+		if (M < md + NumberOfNeutrons*mm + NumberOfProtons*mp)
+			{
+				double NewExx  = M - md - NumberOfNeutrons*mm - NumberOfProtons*mp ;
+				M = parent   -> GetPDGMass() + NewExx ;
+			}
+			
 		
 		G4double InitialE      	  = EnergyHeavy + M   			;
 		G4double InitialMomentumX = sqrt( InitialE*InitialE - M*M) * sin(ThetaHeavy) * cos(PhiHeavy) 		;

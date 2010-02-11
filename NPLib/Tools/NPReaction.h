@@ -67,19 +67,19 @@ namespace NPL
 		   
 		public:
 			// Getters and Setters
-			void				SetBeamEnergy		(double efais)	{fBeamEnergy = efais;initializePrecomputeVariable();}
-			void				SetThetaCM			(double angle)	{fThetaCM = angle;}
-			void				SetExcitation		(double exci)	{fExcitation = exci;initializePrecomputeVariable();}
-			double			GetBeamEnergy() 	const		 	{return fBeamEnergy;}
-			double			GetThetaCM() 		const 			{return fThetaCM;}
-			double			GetExcitation() 	const 			{return fExcitation;}
-			double			GetQValue() 		const 			{return fQValue;}
-			Nucleus*		GetNucleus1() 		const 			{return fNoy1;}
-			Nucleus*		GetNucleus2() 		const 			{return fNoy2;}
-			Nucleus*		GetNucleus3() 		const 			{return fNoy3;}
-			Nucleus*		GetNucleus4() 		const 			{return fNoy4;}  
-			double*			GetCrossSection()	const			{return CrossSection;} 
-			int					GetCrossSectionSize()		const			{return CrossSectionSize;} 
+			void				SetBeamEnergy						(double efais)	{fBeamEnergy = efais;initializePrecomputeVariable();}
+			void				SetThetaCM							(double angle)	{fThetaCM = angle;}
+			void				SetExcitation						(double exci)		{fExcitation = exci;initializePrecomputeVariable();}
+			double			GetBeamEnergy() 				const		 				{return fBeamEnergy;}
+			double			GetThetaCM() 						const 					{return fThetaCM;}
+			double			GetExcitation() 				const 					{return fExcitation;}
+			double			GetQValue() 						const 					{return fQValue;}
+			Nucleus*		GetNucleus1() 					const 					{return fNoy1;}
+			Nucleus*		GetNucleus2() 					const 					{return fNoy2;}
+			Nucleus*		GetNucleus3() 					const 					{return fNoy3;}
+			Nucleus*		GetNucleus4() 					const 					{return fNoy4;}  
+			double*			GetCrossSection()				const						{return CrossSection;} 
+			int					GetCrossSectionSize()		const						{return CrossSectionSize;} 
 
 
 
@@ -111,6 +111,10 @@ namespace NPL
 
 			
 		 public:	//	Kinematics
+		  // Check that the reaction is alowed
+		  bool CheckKinematic();
+		 
+		 
 			//	Compute ThetaLab and EnergyLab for product of reaction
 			void		KineRelativistic(	double &ThetaLab3	, 
 										 	double &EnergieLab3	,

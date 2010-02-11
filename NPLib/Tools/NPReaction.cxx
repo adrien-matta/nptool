@@ -130,6 +130,23 @@ Reaction::~Reaction()
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
+bool Reaction::CheckKinematic()
+	{
+		// Check if kinematics is allowed
+	   
+   // case of inverse kinematics
+   double theta = fThetaCM;
+   if (m1 > m2) theta = M_PI - fThetaCM;
+
+   // total and kinetic energies in the lab
+   double W3lab = W3cm * G * (1 + B*beta3cm*cos(theta));
+   double W4lab = W4cm * G * (1 + B*beta4cm*cos(theta + M_PI));
+   // test for total energy conversion
+   if (fabs(WtotLab - (W3lab+W4lab)) > 1e-6) 
+      return false ;
+   
+   else return true ;
+	}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 void Reaction::KineRelativistic(double &ThetaLab3, double &EnergieLab3,
@@ -178,26 +195,6 @@ double Reaction::ReconstructRelativistic(double EnergyLab, double ThetaLab) cons
 		
 		return Eex;
 	}
-	
-/*double Reaction::ReconstructThetaHeavy(double EnergyLab, double ThetaLab)
-	{
-		// EnergyLab in MeV
-		// ThetaLab in rad
-
-		double m1 = fNoy1->Mass()	;
-		double m2 = fNoy2->Mass()	;
-		double m3 = fNoy3->Mass()	;
-		double m4 = fNoy4->Mass()	;	
-
-		double P1 = sqrt(2*m1*fBeamEnergy+(fBeamEnergy*fBeamEnergy))	;
-		double P3 = sqrt(2*m3*EnergyLab+(EnergyLab*EnergyLab))			;
-		double P4 = sqrt(P1*P1+P3*P3-(2*P1*P3*cos(ThetaLab)))			;
-		
-		
-			double cosThetaHeavy = (P1 - P4cos(hetaLab))/P3	;
-
-	}*/
-
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 //Return ThetaCM									
