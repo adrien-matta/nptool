@@ -73,7 +73,7 @@ using namespace DUMMYDETECTOR ;
 EDEN::EDEN()
 {
    InitializeMaterial();
-//   m_Event = new TEDENData();
+   m_Event = new TEdenSimuData();
 }
 
 
@@ -81,7 +81,7 @@ EDEN::EDEN()
 EDEN::~EDEN()
 {
    delete m_MaterialEDEN_liqSci;
-//   delete m_Event;
+   delete m_Event;
    delete m_EDENScorer;
 }
 
@@ -252,7 +252,7 @@ void EDEN::InitializeRootOutput()
 {
    RootOutput *pAnalysis = RootOutput::getInstance();
    TTree *pTree = pAnalysis->GetTree();
-//   pTree->Branch("EDEN", "TEDENData", &m_Event) ;
+   pTree->Branch("EDEN", "TEdenSimuData", &m_Event) ;
 }
 
 
@@ -262,7 +262,7 @@ void EDEN::InitializeRootOutput()
 void EDEN::ReadSensitive(const G4Event* event)
 {
    G4String DetectorNumber;
-//   m_Event->Clear();
+   m_Event->Clear();
 }
 
 

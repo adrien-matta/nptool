@@ -37,7 +37,7 @@
 
 // NPTool header
 #include "VDetector.hh"
-//#include "TEDENData.h"
+#include "TEdenSimuData.h"
 
 using namespace std;
 
@@ -107,7 +107,7 @@ private:
    ///////////Event class to store Data////////////////
    ////////////////////////////////////////////////////
 private:
-//   TEDENData* m_Event ;
+   TEdenSimuData* m_Event ;
 
 
    ////////////////////////////////////////////////////

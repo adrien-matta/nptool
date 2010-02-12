@@ -5,4 +5,5 @@ echo  -L$NPLIB/lib -lVDetector -lDetectorManager -lCalibrationManager -lIORoot -
 			-lAnnularS1Data \
 			-lGaspardData -lGaspardPhysics \
 			-lDUMMYDetectorData \
+			-lEdenSimuData \
 			-lInitialConditions -lInteractionCoordinates

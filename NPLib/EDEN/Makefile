@@ -268,177 +268,30 @@ GLIBS         = $(ROOTGLIBS) $(SYSLIBS)
 INCLUDE		= -I$(CLHEP_BASE_DIR)/include
  
 #------------------------------------------------------------------------------
-SHARELIB      =	CalibManager Vdetec InputOutputRoot InitCond	InterCoord \
-		Must2All	GaspardData	AnnularS1Data PlasticData DummyDetectorData SSSDData\
-		EdenSimuData	Reaction	EnergyLoss
+SHARELIB      =  libEdenSimuData.so 
 
-all:         $(SHARELIB)
-	rm -f ./include/*Dict.h
+all:            $(SHARELIB)
 #------------------------------------------------------------------------------
-############### Calibration ##############
-
-## CalibrationManager ##
-CalibManager:
-		make -C ./CalibrationManager
-		cp ./CalibrationManager/*.so ./lib ; cp ./CalibrationManager/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libCalibrationManager.so libCalibrationManager.dylib
-endif
-
 ############### Detector ##############
 
-## VDetector ##
-Vdetec:
-		cp ./VDetector/*.h ./include
-		make -C ./VDetector
-		cp ./VDetector/*.so ./lib
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libVDetector.so libVDetector.dylib
-endif
-		
-## MUST2 ##
-Must2All:
-		make -C ./MUST2
-		cp ./MUST2/*.so ./lib ; cp ./MUST2/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libMust2Data.so libMust2Data.dylib
-		cd lib; ln -sf libMust2Physics.so libMust2Physics.dylib
-endif
+## EdenSimu ##
+libEdenSimuData.so:	TEdenSimuData.o	TEdenSimuDataDict.o
+			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
-## SSSD ##
-SSSDData:
-		make -C ./SSSD
-		cp ./SSSD/*.so ./lib ; cp ./SSSD/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libSSSDData.so libSSSDData.dylib
-		cd lib; ln -sf libSSSDPhysics.so libSSSDPhysics.dylib
-endif
+TEdenSimuDataDict.cxx:	TEdenSimuData.h
+			rootcint -f $@ -c $^
 
-## AnnularS1 ##
-AnnularS1Data:
-		make -C ./AnnularS1
-		cp ./AnnularS1/*.so ./lib ; cp ./AnnularS1/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libAnnularS1Data.so libAnnularS1Data.dylib
-endif
-
-## Gaspard ##
-GaspardData:
-		make -C ./GASPARD
-		cp ./GASPARD/*.so ./lib ; cp ./GASPARD/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libGaspardData.so libGaspardData.dylib
-		cd lib; ln -sf libGaspardPhysics.so libGaspardPhysics.dylib
-endif
-
-## Plastic ##
-PlasticData:
-		make -C ./Plastic
-		cp ./Plastic/*.so ./lib ; cp ./Plastic/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libPlasticData.so libPlasticData.dylib
-		cd lib; ln -sf libPlasticPhysics.so libPlasticPhysics.dylib
-endif
-
-## DUMMY Detector ##
-DummyDetectorData:
-		make -C ./DummyDetector
-		cp ./DummyDetector/*.so ./lib ; cp ./DummyDetector/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libDummyDetectorData.so libDummyDetectorData.dylib
-endif
-
-## EDEN Detector ##
-EdenSimuData:
-		make -C ./EDEN
-		cp ./EDEN/*.so ./lib ; cp ./EDEN/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libEdenSimuData.so libEdenSimuData.dylib
-endif
-
-
-############# Simulation ##############
-
-## InitialConditions ##
-InitCond:
-		make -C ./InitialConditions
-		cp ./InitialConditions/*.so ./lib ; cp ./InitialConditions/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libInitialConditions.so libInititalConditions.dylib
-endif
-
-## InteractionCoordinates ##
-InterCoord:	
-		make -C ./InteractionCoordinates
-		cp ./InteractionCoordinates/*.so ./lib ; cp ./InteractionCoordinates/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libInteractionCoordinates.so libInteractionCoordinates.dylib
-endif
-
-############# I/O Root File ############
-InputOutputRoot:
-	make -C ./IORoot
-	cp ./IORoot/*.so ./lib ; cp ./IORoot/*.h ./include
-ifeq ($(ARCH),macosx)
-	cd lib; ln -sf libIORoot.so libIORoot.dylib
-endif
-
-
-
-############# Various Tools ############
-
-## Reaction ##
-Reaction:
-		make libReaction.so -C ./Tools
-		cp ./Tools/*.so ./lib ; cp ./Tools/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libReaction.so libReaction.dylib
-endif
-
-EnergyLoss:
-		make libEnergyLoss.so -C ./Tools
-		cp ./Tools/*.so ./lib ; cp ./Tools/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libEnergyLoss.so libEnergyLoss.dylib
-endif
-		
+# dependances
+TEdenSimuData.o:	TEdenSimuData.cxx	TEdenSimuData.h
 #######################################
 
 ############# Clean and More ##########
 clean:
-	make clean -C ./Tools
-	make clean -C ./IORoot
-	make clean -C ./VDetector
-	make clean -C ./CalibrationManager
-	make clean -C ./MUST2
-	make clean -C ./SSSD
-	make clean -C ./AnnularS1
-	make clean -C ./GASPARD
-	make clean -C ./InteractionCoordinates
-	make clean -C ./InitialConditions
-	make clean -C ./DummyDetector
-	make clean -C ./EDEN
-	make clean -C ./Plastic
-	
+	@rm -f core *~ *.o *Dict*
+
 distclean:
-	rm -f ./lib/*.so
-ifeq ($(ARCH),macosx)
-	rm -f ./lib/*.dylib
-endif
-	rm -f ./include/*.h 
-	make distclean -C ./Tools
-	make distclean -C ./IORoot
-	make distclean -C ./VDetector
-	make distclean -C ./CalibrationManager
-	make distclean -C ./MUST2
-	make distclean -C ./SSSD
-	make distclean -C ./AnnularS1
-	make distclean -C ./GASPARD
-	make distclean -C ./InteractionCoordinates
-	make distclean -C ./InitialConditions
-	make distclean -C ./DummyDetector
-	make distclean -C ./EDEN
-	make distclean -C ./Plastic
+	  make clean; rm -f *.so
+
 .SUFFIXES: .$(SrcSuf)
 
 ###
