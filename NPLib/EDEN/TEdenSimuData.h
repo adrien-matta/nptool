@@ -52,7 +52,7 @@ class TEdenSimuData : public TObject {
    /////////////////////           SETTERS           ////////////////////////
    void	SetEdenSimuDetectorNumber(int N)	{fEdenSimu_DetectorNumber.push_back(N);}
    void	SetEdenSimuCharge(double Q)		{fEdenSimu_Charge.push_back(Q);}
-   void	SetEdenSimTime(double T)		{fEdenSimu_Time.push_back(T);}
+   void	SetEdenSimuTime(double T)		{fEdenSimu_Time.push_back(T);}
    
    ClassDef(TEdenSimuData,1)  // EdenSimuData structure
 };

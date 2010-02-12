@@ -119,4 +119,14 @@ private:
    vector<G4double>  m_Theta     ; //  > Spherical coordinate EDEN volume center
    vector<G4double>  m_Phi    	 ; //  |
 };
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+namespace EDENDETECTOR
+{
+   // Energy and time Resolution
+   const G4double ResoTime    = 4.2             ;// = 10ns of Resolution   //   Unit is MeV/2.35
+   const G4double ResoEnergy  = 5.0             ;// Resolution in %
+}
+
 #endif
