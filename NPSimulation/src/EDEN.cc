@@ -296,4 +296,10 @@ void EDEN::InitializeMaterial()
 ////////////////////////////////////////////////////////////////	
 void EDEN::InitializeScorers() 
 { 
+   // EDEN associated scorer
+   m_EDENScorer = new G4MultiFunctionalDetector("EDENScorer");
+
+   // Add All Scorer to the Global Scorer Manager
+   G4SDManager::GetSDMpointer()->AddNewDetector(m_EDENScorer);
 }
+

@@ -23,10 +23,9 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-//
-// PhysicsList.hh
+// PhysicsListStandardICRU73Em.hh
 // ----------------------------------------------------------------------------
-//                 GEANT 4 -  example
+//                 GEANT 4 - Hadrontherapy example
 // ----------------------------------------------------------------------------
 // Code developed by:
 //
@@ -41,60 +40,26 @@
 // ----------------------------------------------------------------------------
 //
 
-#ifndef PhysicsList_h
-#define PhysicsList_h 1
+#ifndef PhysicsListStandardICRU73Em_h
+#define PhysicsListStandardICRU73Em_h 
 
-#include "G4VModularPhysicsList.hh"
-#include "G4EmConfigurator.hh"
+#include "G4VPhysicsConstructor.hh"
 #include "globals.hh"
 
-class G4VPhysicsConstructor;
-//class StepMax;
-class PhysicsListMessenger;
-
-class PhysicsList: public G4VModularPhysicsList
+class PhysicsListStandardICRU73Em : public G4VPhysicsConstructor
 {
-public:
+  public: 
+    PhysicsListStandardICRU73Em(const G4String& name = "local_standardICRU73");
+   ~PhysicsListStandardICRU73Em();
 
-  PhysicsList();
-  virtual ~PhysicsList();
-
-  void ConstructParticle();
-    
-  void SetCuts();
-  void SetCutForGamma(G4double);
-  void SetCutForElectron(G4double);
-  void SetCutForPositron(G4double);
-        
-  void AddPhysicsList(const G4String& name);
-  void ConstructProcess();
-    
-//  void AddStepMax();       
-//  StepMax* GetStepMaxProcess() {return stepMaxProcess;};
-  void AddPackage(const G4String& name);
-
-private:
-
-  G4EmConfigurator em_config; 
-
-  G4double cutForGamma;
-  G4double cutForElectron;
-  G4double cutForPositron;
-
-  G4bool helIsRegisted;
-  G4bool bicIsRegisted;
-  G4bool biciIsRegisted;
-  G4bool locIonIonInelasticIsRegistered;
-    
-  G4String                             emName;
-  G4VPhysicsConstructor*               emPhysicsList;
-  G4VPhysicsConstructor*               decPhysicsList;
-  std::vector<G4VPhysicsConstructor*>  hadronPhys;
-    
-//  StepMax* stepMaxProcess;
-    
-  PhysicsListMessenger* pMessenger;
+  public: 
+    // This method is dummy for physics
+    void ConstructParticle() {};
+ 
+    // This method will be invoked in the Construct() method.
+    // each physics process will be instantiated and
+    // registered to the process manager of each particle type 
+    void ConstructProcess();
 };
 
 #endif
-

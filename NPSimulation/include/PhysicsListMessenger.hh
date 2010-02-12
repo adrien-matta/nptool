@@ -23,78 +23,45 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-//
-// PhysicsList.hh
-// ----------------------------------------------------------------------------
-//                 GEANT 4 -  example
-// ----------------------------------------------------------------------------
-// Code developed by:
-//
-// G.A.P. Cirrone(a)*
-// 
-// (a) Laboratori Nazionali del Sud 
-//     of the INFN, Catania, Italy
-// 
-// * cirrone@lns.infn.it
-//
-// See more at: http://workgroup.lngs.infn.it/geant4lns/
-// ----------------------------------------------------------------------------
-//
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#ifndef PhysicsList_h
-#define PhysicsList_h 1
+#ifndef PhysicsListMessenger_h
+#define PhysicsListMessenger_h 1
 
-#include "G4VModularPhysicsList.hh"
-#include "G4EmConfigurator.hh"
 #include "globals.hh"
+#include "G4UImessenger.hh"
 
-class G4VPhysicsConstructor;
-//class StepMax;
-class PhysicsListMessenger;
+class PhysicsList;
+class G4UIdirectory;
+class G4UIcmdWithADoubleAndUnit;
+class G4UIcmdWithAString;
 
-class PhysicsList: public G4VModularPhysicsList
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+class PhysicsListMessenger: public G4UImessenger
 {
-public:
-
-  PhysicsList();
-  virtual ~PhysicsList();
-
-  void ConstructParticle();
+  public:
+  
+    PhysicsListMessenger(PhysicsList* );
+   ~PhysicsListMessenger();
     
-  void SetCuts();
-  void SetCutForGamma(G4double);
-  void SetCutForElectron(G4double);
-  void SetCutForPositron(G4double);
-        
-  void AddPhysicsList(const G4String& name);
-  void ConstructProcess();
+    void SetNewValue(G4UIcommand*, G4String);
     
-//  void AddStepMax();       
-//  StepMax* GetStepMaxProcess() {return stepMaxProcess;};
-  void AddPackage(const G4String& name);
-
-private:
-
-  G4EmConfigurator em_config; 
-
-  G4double cutForGamma;
-  G4double cutForElectron;
-  G4double cutForPositron;
-
-  G4bool helIsRegisted;
-  G4bool bicIsRegisted;
-  G4bool biciIsRegisted;
-  G4bool locIonIonInelasticIsRegistered;
+  private:
+  
+  PhysicsList* pPhysicsList;
     
-  G4String                             emName;
-  G4VPhysicsConstructor*               emPhysicsList;
-  G4VPhysicsConstructor*               decPhysicsList;
-  std::vector<G4VPhysicsConstructor*>  hadronPhys;
-    
-//  StepMax* stepMaxProcess;
-    
-  PhysicsListMessenger* pMessenger;
+  G4UIdirectory*             physDir;        
+  G4UIcmdWithADoubleAndUnit* gammaCutCmd;
+  G4UIcmdWithADoubleAndUnit* electCutCmd;
+  G4UIcmdWithADoubleAndUnit* protoCutCmd;    
+  G4UIcmdWithADoubleAndUnit* allCutCmd;    
+  G4UIcmdWithAString*        pListCmd;
+  G4UIcmdWithAString* packageListCmd;    
 };
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
 

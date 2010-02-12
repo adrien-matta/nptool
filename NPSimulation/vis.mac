@@ -1,10 +1,24 @@
-#verbose level
-/control/verbose 0
-/material/verbose 0
-/tracking/verbose 0
-/process/verbose 0
-/event/verbose 0
-/run/verbose 0
+##############################
+# Set of the verboses level
+#
+/control/verbose 1
+/material/verbose 1
+/tracking/verbose 1
+/process/verbose 1
+/event/verbose 1
+/run/verbose 1
+
+##############################
+# Set of the physic models
+#
+#/physic/addPackage QGSP_BERT_HP
+#/physic/addPhysics standard_opt3    # Electromagnetic model
+#/physic/addPhysics elastic          # Hadronic elastic model
+
+##########################
+# Initialisation procedure
+#
+#/run/initialize
 
 # choose a graphic system
 #/vis/open OGLIX

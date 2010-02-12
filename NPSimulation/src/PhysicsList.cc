@@ -1,284 +1,346 @@
-/*****************************************************************************
- * Copyright (C) 2009   this file is part of the NPTool Project              *
- *                                                                           *
- * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
- * For the list of contributors see $NPTOOL/Licence/Contributors             *
- *****************************************************************************/
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+// PhysicsList.cc
+// ----------------------------------------------------------------------------
+//                 GEANT 4 -  example
+// ----------------------------------------------------------------------------
+// Code developed by:
+//
+// G.A.P. Cirrone(a)*, F.Romano(a)
+// 
+// (a) Laboratori Nazionali del Sud 
+//     of the INFN, Catania, Italy
+// 
+// * cirrone@lns.infn.it
+//
+// See more at: http://workgroup.lngs.infn.it/geant4lns/
+// ----------------------------------------------------------------------------
 
-/*****************************************************************************
- * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
- *                                                                           *
- * Creation Date  : January 2009                                             *
- * Last update    :                                                          *
- *---------------------------------------------------------------------------*
- * Decription:                                                               *
- *  A quite standard, non-modulable Geant4 PPhysicis list.                   *
- *  Well suited for low energy ions physics.                                 *
- *                                                                           *
- *---------------------------------------------------------------------------*
- * Comment:                                                                  *
- * A good improvement should be a modular physicis list in order to deal     *
- * accuratly with different physics cases.                                   *
- *****************************************************************************/
- #include "PhysicsList.hh"
+// This class provides all the physic models that can be activated inside ;
+// Each model can be setted via macro commands;
+// Inside  the models can be activate with three different complementar methods:
+//
+// 1. Use of the *Packages*. 
+//    Packages (that are contained inside the
+//    Geant4 distribution at $G4INSTALL/source/physics_lists/lists) provide a full set 
+//    of models (both electromagnetic and hadronic).
+//    The User can use this method simply add the line /physic/addPackage <nameOfPackage> 
+//    in his/her macro file. No other action is required.
+//    For  applications we suggest the use of the QGSP_BIC package 
+//    for proton beams. The same can be used 
+//    also for ligth ion beam.
+//    Example of use of package can be found in the packageQGSP_BIC.mac file.
+//
+// 2. Use of the *Physic Lists*.
+//    Physic lists are also already ready to use inside the Geant4 distribution 
+//    ($G4INSTALL/source/physics_lists/builders). To use them the simple
+//    /physic/addPhysics <nameOfPhysicList> command must be used in the macro.
+//    In  we provide physics list to activate Electromagnetic,
+//    Hadronic elastic and Hadronic inelastic models.
+//
+//    For  we suggest the use of:
+//    
+//    /physic/addPhysic/emstandard_option3 (electromagnetic model)
+//    /physic/addPhysic/QElastic (hadronic elastic model)
+//    /physic/addPhysic/binary (hadronic inelastic models for proton and neutrons)
+//    /physic/addPhysic/binary_ion (hadronic inelastic models for ions)
+//
+//    Example of the use of physics lists can be found in the macro files included in the
+//    'macro' folder .   
+//
+// 3. Use of a *local* physics. In this case the models are implemented in local files
+//    contained in the  folder. The use of local physic is recommended 
+//    to more expert Users.
+//    We provide as local, only the LocalStandardICRU73EmPhysic.cc (an Elecromagnetic
+//    implementation containing the new ICRU73 data table for ions stopping powers)
+//    and the LocalIonIonInelasticPhysic.cc (physic list to use for the ion-ion interaction
+//    case)
+//    The *local* physics can be activated with the same /physic/addPhysic <nameOfPhysic> command;
+//
+//    While Packages approch must be used exclusively, Physics List and Local physics can 
+//    be activated, if necessary, contemporaneously in the same simulation run.
+//
+//    AT MOMENT, IF ACCURATE RESULTS ARE NEDED, WE STRONGLY RECOMMEND THE USE OF THE MACROS:
+//    proton_therapy.mac: use of the built-in Geant4 physics list for proton beams)
+//    ion_therapy.mac   : use of mixed combination of native Geant4 physic lists 
+//                        and local physic for ion-ion enelastic processes)
 
-// I/O
-#include "G4ios.hh"
-#include <iomanip>
+#include "PhysicsList.hh"
+#include "PhysicsListMessenger.hh"
+//#include "StepMax.hh"
+#include "G4PhysListFactory.hh"
+#include "G4VPhysicsConstructor.hh"
 
-//Particle Definition
-#include "G4ParticleTypes.hh"
-#include "G4IonConstructor.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4ParticleTable.hh"
+// Local physic directly implemented in the Hadronthrapy directory
+#include "PhysicsListStandardICRU73Em.hh"            // This permits the use of the ICRU73 tables for stopping powers of ions
+//#include "LocalIonIonInelasticPhysic.hh"             // Physic dedicated to the ion-ion inelastic processes
 
-//Process
-#include "G4Transportation.hh"
-
-#include "G4ComptonScattering.hh"
-#include "G4GammaConversion.hh"
-#include "G4PhotoElectricEffect.hh"
-#include "G4MultipleScattering.hh"
-#include "G4eIonisation.hh"
-#include "G4eBremsstrahlung.hh"
-#include "G4eplusAnnihilation.hh"
-
-#include "G4MuIonisation.hh"
-#include "G4MuBremsstrahlung.hh"
-#include "G4MuPairProduction.hh"
-
-#include "G4hIonisation.hh"
-#include "G4ionIonisation.hh"
-#include "G4hMultipleScattering.hh"
-#include "G4hLowEnergyIonisation.hh"
-
-#include "G4EmProcessOptions.hh"
-#include "G4ProcessManager.hh"
-#include "G4ProcessVector.hh"
-
-// Cut
-#include "G4ParticleWithCuts.hh"
-#include "G4UserSpecialCuts.hh"
-
-// Decay
+// Physic lists (contained inside the Geant4 distribution)
+#include "G4EmStandardPhysics_option3.hh"
+#include "G4EmLivermorePhysics.hh"
+#include "G4EmPenelopePhysics.hh"
+#include "G4DecayPhysics.hh"
+#include "G4HadronElasticPhysics.hh"
+#include "G4HadronDElasticPhysics.hh"
+#include "G4HadronHElasticPhysics.hh"
+#include "G4HadronQElasticPhysics.hh"
+#include "G4HadronInelasticQBBC.hh"
+#include "G4IonBinaryCascadePhysics.hh"
 #include "G4Decay.hh"
-#include "G4DecayTable.hh"
-#include "G4VDecayChannel.hh"
-#include "G4NuclearDecayChannel.hh"
-#include "G4BetaMinusDecayChannel.hh"
 
+#include "G4LossTableManager.hh"
+#include "G4UnitsTable.hh"
+#include "G4ProcessManager.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-PhysicsList::PhysicsList()
-{	
-	  // ie: no secondaries
-   defaultCutValue = 1000 * pc;
+#include "G4IonFluctuations.hh"
+#include "G4IonParametrisedLossModel.hh"
+#include "G4EmProcessOptions.hh"
+
+/////////////////////////////////////////////////////////////////////////////
+PhysicsList::PhysicsList() : G4VModularPhysicsList()
+{
+  G4LossTableManager::Instance();
+  defaultCutValue = 1.*mm;
+  cutForGamma     = defaultCutValue;
+  cutForElectron  = defaultCutValue;
+  cutForPositron  = defaultCutValue;
+
+  helIsRegisted  = false;
+  bicIsRegisted  = false;
+  biciIsRegisted = false;
+
+//  stepMaxProcess  = 0;
+
+  pMessenger = new PhysicsListMessenger(this);
+
+  SetVerboseLevel(1);
+
+  // EM physics
+  emPhysicsList = new G4EmStandardPhysics_option3(1);
+  emName = G4String("emstandard_opt3");
+
+  // Deacy physics and all particles
+  decPhysicsList = new G4DecayPhysics();
 }
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+/////////////////////////////////////////////////////////////////////////////
 PhysicsList::~PhysicsList()
 {
-   ;
+  delete pMessenger;
+  delete emPhysicsList;
+  delete decPhysicsList;
+  for(size_t i=0; i<hadronPhys.size(); i++) {delete hadronPhys[i];}
 }
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+/////////////////////////////////////////////////////////////////////////////
+void PhysicsList::AddPackage(const G4String& name)
+{
+  G4PhysListFactory factory;
+  G4VModularPhysicsList* phys =factory.GetReferencePhysList(name);
+  G4int i=0; 
+  const G4VPhysicsConstructor* elem= phys->GetPhysics(i);
+  G4VPhysicsConstructor* tmp = const_cast<G4VPhysicsConstructor*> (elem);
+  while (elem !=0)
+	{
+	  RegisterPhysics(tmp);
+	  elem= phys->GetPhysics(++i) ;
+	  tmp = const_cast<G4VPhysicsConstructor*> (elem);
+	}
+}
+
+/////////////////////////////////////////////////////////////////////////////
 void PhysicsList::ConstructParticle()
 {
-   // In this method, static member functions should be called
-   // for all particles which you want to use.
-   // This ensures that objects of these particle types will be
-   // created in the program.
-
-   //Usefull to test geometry
-   G4Geantino::GeantinoDefinition();
-
-   //Usefull for Gamma
-   ConstructBosons();
-
-   //Usefull for betaDecay
-   ConstructLeptons();
-
-   //Needed by G4 (4.9.2) to run on mac os X ;-)
-   ConstructMesons();
-
-   //usefull for p and n
-   ConstructBaryons();
-
-   //Usefull of course :p
-   ConstructIons();
-}
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void PhysicsList::ConstructBosons()
-{
-   G4Geantino::GeantinoDefinition()              ;
-   G4ChargedGeantino::ChargedGeantinoDefinition()   ;
-   G4Gamma::GammaDefinition()                 ;
-}
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void PhysicsList::ConstructLeptons()
-{
-   G4Electron::ElectronDefinition()              ;
-   G4Positron::PositronDefinition()              ;
-   G4NeutrinoE::NeutrinoEDefinition()            ;
-   G4AntiNeutrinoE::AntiNeutrinoEDefinition()    ;
-   //G4NeutrinoMu::NeutrinoMuDefinition()        ;
-   //G4AntiNeutrinoMu::AntiNeutrinoMuDefinition()   ;
-   //G4MuonPlus::MuonPlusDefinition()            ;
-   //G4MuonMinus::MuonMinusDefinition()          ;
+  decPhysicsList->ConstructParticle();
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void PhysicsList::ConstructBaryons()
-{
-   G4Proton::ProtonDefinition()   ;
-   G4Neutron::NeutronDefinition();
-}
-
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void PhysicsList::ConstructMesons()
-{
-  //  mesons
-  G4PionPlus     ::PionPlusDefinition();
-  G4PionMinus    ::PionMinusDefinition();
-  G4PionZero     ::PionZeroDefinition();
-  G4Eta          ::EtaDefinition();
-  G4EtaPrime     ::EtaPrimeDefinition();
-  //  G4RhoZero      ::RhoZeroDefinition();
-  G4KaonPlus     ::KaonPlusDefinition();
-  G4KaonMinus    ::KaonMinusDefinition();
-  G4KaonZero     ::KaonZeroDefinition();
-  G4AntiKaonZero ::AntiKaonZeroDefinition();
-  G4KaonZeroLong ::KaonZeroLongDefinition();
-  G4KaonZeroShort::KaonZeroShortDefinition();
-}
-
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void PhysicsList::ConstructIons()
-{
-   G4He3::He3Definition()         ;
-   G4Deuteron::DeuteronDefinition()  ;
-   G4Triton::TritonDefinition()      ;
-   G4Alpha::AlphaDefinition()     ;
-
-   G4IonConstructor iConstructor     ;
-   iConstructor.ConstructParticle()  ;
-
-}
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+/////////////////////////////////////////////////////////////////////////////
 void PhysicsList::ConstructProcess()
 {
-   AddTransportation()   ;
-   ConstructEM()         ;
-   SetCuts()          ;
+  // transportation
+  //
+  AddTransportation();
+  
+  // electromagnetic physics list
+  //
+  emPhysicsList->ConstructProcess();
+  em_config.AddModels();
+
+  // decay physics list
+  //
+  decPhysicsList->ConstructProcess();
+  
+  // hadronic physics lists
+  for(size_t i=0; i<hadronPhys.size(); i++) {
+    hadronPhys[i]->ConstructProcess();
+  }
+  
+  // step limitation (as a full process)
+  //  
+//  AddStepMax();  
 }
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void PhysicsList::ConstructEM()
+
+/////////////////////////////////////////////////////////////////////////////
+void PhysicsList::AddPhysicsList(const G4String& name)
 {
 
-   theParticleIterator->reset();
-   while ((*theParticleIterator)()) {
-      G4ParticleDefinition* particle = theParticleIterator->value()          ;
-      G4ProcessManager* pmanager = particle->GetProcessManager()             ;
-      G4String particleName = particle->GetParticleName()                    ;
+  if (verboseLevel>1) {
+    G4cout << "PhysicsList::AddPhysicsList: <" << name << ">" << G4endl;
+  }
+  if (name == emName) return;
 
-      if (particleName == "gamma") {
-         // gamma
-         pmanager->AddDiscreteProcess(new G4PhotoElectricEffect)          ;
-         pmanager->AddDiscreteProcess(new G4ComptonScattering)            ;
-         pmanager->AddDiscreteProcess(new G4GammaConversion)              ;
+  /////////////////////////////////////////////////////////////////////////////
+  //   ELECTROMAGNETIC MODELS
+  /////////////////////////////////////////////////////////////////////////////
 
-      } else if (particleName == "e-") {
-         //electron
-         pmanager->AddProcess(new G4MultipleScattering  , -1,  1, 1)     ;
-         pmanager->AddProcess(new G4eIonisation         , -1,  2, 2)     ;
-         pmanager->AddProcess(new G4eBremsstrahlung     , -1, -1, 3)     ;
+  if (name == "standard_opt3") {
+    emName = name;
+    delete emPhysicsList;
+    emPhysicsList = new G4EmStandardPhysics_option3();    
+    G4cout << "THE FOLLOWING ELECTROMAGNETIC PHYSICS LIST HAS BEEN ACTIVATED: G4EmStandardPhysics_option3" << G4endl;
+    
+  } else if (name == "local_standardICRU73") {
+    emName = name;
+    delete emPhysicsList;
+    emPhysicsList = new PhysicsListStandardICRU73Em(name);
+    em_config.SetExtraEmModel("GenericIon","ionIoni",
+			      new G4IonParametrisedLossModel(),
+			      "",0.0, 100.0*TeV,
+			      new G4IonFluctuations());
+    G4cout << "standardICRU73" << G4endl;
+    
+ 
+ } else if (name == "LowE_Livermore") {
+    emName = name;
+    delete emPhysicsList;
+    emPhysicsList = new G4EmLivermorePhysics();
+    G4cout << "THE FOLLOWING ELECTROMAGNETIC PHYSICS LIST HAS BEEN ACTIVATED: G4EmLivermorePhysics" << G4endl;
 
-      } else if (particleName == "e+") {
-         //positron
-         /*   pmanager->AddProcess(new G4MultipleScattering   , -1,  1, 1 )  ;
-            pmanager->AddProcess(new G4eIonisation         , -1,  2, 2 )     ;
-            pmanager->AddProcess(new G4eBremsstrahlung     , -1, -1, 3 )     ;
-            // pmanager->AddProcess(new G4eplusAnnihilation   ,  0, -1, 4 )     ;*/
+ } else if (name == "LowE_Penelope") {
+    emName = name;
+    delete emPhysicsList;
+    emPhysicsList = new G4EmPenelopePhysics();
+    G4cout << "THE FOLLOWING ELECTROMAGNETIC PHYSICS LIST HAS BEEN ACTIVATED: G4EmLivermorePhysics" << G4endl;
 
-      } else if (particleName == "mu+" ||
-                 particleName == "mu-") {
-         //muon
-         /*   pmanager->AddProcess(new G4MultipleScattering   , -1,  1, 1 )     ;
-            pmanager->AddProcess(new G4MuIonisation        , -1,  2, 2 )     ;
-            pmanager->AddProcess(new G4MuBremsstrahlung    , -1, -1, 3 )     ;
-            pmanager->AddProcess(new G4MuPairProduction    , -1, -1, 4 )     ;*/
+    /////////////////////////////////////////////////////////////////////////////
+    //   HADRONIC MODELS
+    /////////////////////////////////////////////////////////////////////////////
+  } else if (name == "elastic" && !helIsRegisted) {
+    G4cout << "THE FOLLOWING HADRONIC ELASTIC PHYSICS LIST HAS BEEN ACTIVATED: G4HadronElasticPhysics()" << G4endl;
+    hadronPhys.push_back( new G4HadronElasticPhysics());
+    helIsRegisted = true;
 
-      } else if (particleName == "GenericIon") {
-         pmanager->AddProcess(new G4MultipleScattering(), -1, 1, 1)        ;
-         G4ionIonisation* iI = new G4ionIonisation                   ;
-         // mod by Nicolas [07/05/09]
-          iI->ActivateNuclearStopping(true)                        ;
-         iI->ActivateStoppingData(true)                           ;
-         pmanager->AddProcess(iI            , -1, 2, 2)          ;
+  } else if (name == "DElastic" && !helIsRegisted) {
+    hadronPhys.push_back( new G4HadronDElasticPhysics());
+    helIsRegisted = true;
 
-         //all others charged particles except geantino
-      } else if ((!particle->IsShortLived())     &&
-                 (particle->GetPDGCharge() != 0.0)   &&
-                 (particleName != "chargedgeantino")) {
+  } else if (name == "HElastic" && !helIsRegisted) {
+    hadronPhys.push_back( new G4HadronHElasticPhysics());
+    helIsRegisted = true;
 
-         G4hIonisation* hI = new G4hIonisation                      ;
-         // mod by Nicolas [07/05/09]
-//        hI->ActivateNuclearStopping(true)                          ;
-         pmanager->AddProcess(new G4MultipleScattering     , -1, 1, 1)   ;
-         pmanager->AddProcess(hI                        , -1, 2, 2)   ;
+  } else if (name == "QElastic" && !helIsRegisted) {
+    hadronPhys.push_back( new G4HadronQElasticPhysics());
+    helIsRegisted = true;
 
+  } else if (name == "binary" && !bicIsRegisted) {
+    hadronPhys.push_back(new G4HadronInelasticQBBC());
+    bicIsRegisted = true;
+    G4cout << "THE FOLLOWING HADRONIC INELASTIC PHYSICS LIST HAS BEEN ACTIVATED: G4HadronInelasticQBBC()" << G4endl;
 
-      }//end else if
-   }//end while particle
-   G4EmProcessOptions opt        ;
-   opt.SetSubCutoff(true)        ;
-   opt.SetMinEnergy(0.001*eV)    ;
-   opt.SetMaxEnergy(1000.*MeV)    ;
-   opt.SetDEDXBinning(1000)       ;
-   opt.SetLambdaBinning(1000)     ;
-   // mod by Nicolas [07/05/09]
-// opt.SetLinearLossLimit(1.e-3) ;
-
+  } else if (name == "binary_ion" && !biciIsRegisted) {
+    hadronPhys.push_back(new G4IonBinaryCascadePhysics());
+    biciIsRegisted = true;
+    
+  } /*else if (name == "local_ion_ion_inelastic" && !locIonIonInelasticIsRegistered) {
+    hadronPhys.push_back(new LocalIonIonInelasticPhysic());
+    locIonIonInelasticIsRegistered = true;
+    
+  }*/ else {
+    
+    G4cout << "PhysicsList::AddPhysicsList: <" << name << ">"
+           << " is not defined"
+           << G4endl;
+  }
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+/////////////////////////////////////////////////////////////////////////////
+/*void PhysicsList::AddStepMax()
+{
+  // Step limitation seen as a process
+  stepMaxProcess = new StepMax();
+
+  theParticleIterator->reset();
+  while ((*theParticleIterator)()){
+    G4ParticleDefinition* particle = theParticleIterator->value();
+    G4ProcessManager* pmanager = particle->GetProcessManager();
+
+    if (stepMaxProcess->IsApplicable(*particle) && pmanager)
+      {
+	pmanager ->AddDiscreteProcess(stepMaxProcess);
+      }
+  }
+}
+*/
+/////////////////////////////////////////////////////////////////////////////
 void PhysicsList::SetCuts()
 {
-   // uppress error messages even in case e/gamma/proton do not exist
-   G4int temp = GetVerboseLevel();
-   SetVerboseLevel(0);
-   //  " G4VUserPhysicsList::SetCutsWithDefault" method sets
-   //   the default cut value for all particle types
-   SetCutsWithDefault();
 
-   // Retrieve verbose level
-   SetVerboseLevel(temp);
+  if (verboseLevel >0){
+    G4cout << "PhysicsList::SetCuts:";
+    G4cout << "CutLength : " << G4BestUnit(defaultCutValue,"Length") << G4endl;
+  }
+
+  // set cut values for gamma at first and for e- second and next for e+,
+  // because some processes for e+/e- need cut values for gamma
+  SetCutValue(cutForGamma, "gamma");
+  SetCutValue(cutForElectron, "e-");
+  SetCutValue(cutForPositron, "e+");
+
+  if (verboseLevel>0) DumpCutValuesTable();
 }
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void PhysicsList::ConstructDecay()
+
+/////////////////////////////////////////////////////////////////////////////
+void PhysicsList::SetCutForGamma(G4double cut)
 {
-
-// Add Decay Process
-   G4Decay* theDecayProcess = new G4Decay()                     ;
-   theParticleIterator->reset()                              ;
-   while ((*theParticleIterator)()) {
-      G4ParticleDefinition*  particle = theParticleIterator->value()   ;
-      G4ProcessManager*      pmanager = particle->GetProcessManager();
-      if (theDecayProcess->IsApplicable(*particle)) {
-         pmanager ->AddProcess(theDecayProcess);
-         // set ordering for PostStepDoIt and AtRestDoIt
-         pmanager->SetProcessOrdering(theDecayProcess, idxPostStep);
-         pmanager->SetProcessOrdering(theDecayProcess, idxAtRest);
-      }
-   }
-//end Add Decay Process
-
+  cutForGamma = cut;
+  SetParticleCuts(cutForGamma, G4Gamma::Gamma());
 }
 
-void PhysicsList::MyOwnConstruction()
+/////////////////////////////////////////////////////////////////////////////
+void PhysicsList::SetCutForElectron(G4double cut)
 {
-   ConstructDecay();
+  cutForElectron = cut;
+  SetParticleCuts(cutForElectron, G4Electron::Electron());
 }
 
+/////////////////////////////////////////////////////////////////////////////
+void PhysicsList::SetCutForPositron(G4double cut)
+{
+  cutForPositron = cut;
+  SetParticleCuts(cutForPositron, G4Positron::Positron());
+}
 
 
