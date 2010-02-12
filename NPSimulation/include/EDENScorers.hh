@@ -46,6 +46,9 @@ class EDENScorerCharge : public G4VPrimitiveScorer
    virtual void DrawAll();
    virtual void PrintAll();
 
+  protected:
+   G4double LightOutput(G4double E, G4int particleType);
+
   private:
    G4int HCID;
    G4THitsMap<G4double>* EvtMap;

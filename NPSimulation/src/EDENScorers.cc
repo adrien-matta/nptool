@@ -51,11 +51,18 @@ G4bool EDENScorerCharge::ProcessHits(G4Step* aStep, G4TouchableHistory*)
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
-   G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
-   G4int  index =  aStep->GetTrack()->GetTrackID();
+   G4int  index   = aStep->GetTrack()->GetTrackID();
+   G4String pname = aStep->GetTrack()->GetDefinition()->GetParticleName();
+   G4double edep  = aStep->GetTotalEnergyDeposit();
+   G4cout << pname << "   " << DetNbr << "  " << index << "  " << edep << G4endl;
 
-   EvtMap->add(index+DetNbr, edep);
+   G4double Light = edep;
+   if (pname == "e-")          Light = LightOutput(edep, 0);
+   else if (pname == "proton") Light = LightOutput(edep, 1);
+   else if (pname == "carbon") Light = LightOutput(edep, 2);
+   else G4cout << "Unknown type of particle" << G4endl;
+
+   EvtMap->add(index+DetNbr, Light);
    return TRUE;
 }
 
@@ -96,4 +103,15 @@ void EDENScorerCharge::PrintAll()
    G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl ;
    G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
    G4cout << " Number of entries " << EvtMap->entries() << G4endl     ;
+}
+
+
+G4double EDENScorerCharge::LightOutput(G4double E, G4int pType)
+{
+   G4double a1[3] = {1, 0.83, 0.017};
+   G4double a2[3] = {0, 2.82, 0.000};
+   G4double a3[3] = {0, 0.25, 0.000};
+   G4double a4[3] = {0, 0.93, 0.000};
+   
+   return a1[pType]*E - a2[pType]* (1 - exp(-a3[pType]*pow(E,a4[pType])));
 }

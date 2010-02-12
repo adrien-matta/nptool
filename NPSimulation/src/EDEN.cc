@@ -319,10 +319,11 @@ void EDEN::ReadSensitive(const G4Event* event)
    G4int sizeT = TimeHitMap->entries();
    G4int sizeX = PosXHitMap->entries();
 
-   if (sizeN != sizeQ || sizeQ != sizeT) {
+/*   if (sizeN != sizeQ || sizeQ != sizeT) {
       G4cout << "No match size EDEN Event Map: sQ:" << sizeQ << " sT:" << sizeT << endl;
       return;
-   }
+   }*/
+   G4cout << "*******SIZE********: " << sizeN << "  " << sizeQ << "  " << sizeT << "  " << sizeX << G4endl;
 
 
    // Loop on detector number
@@ -334,10 +335,11 @@ void EDEN::ReadSensitive(const G4Event* event)
          // Fill detector number
          m_Event->SetEdenSimuDetectorNumber(N);
 
-         // Energy
+         // Charge
          for (G4int l = 0; l < sizeQ; l++) {
             G4int QTrackID =   Charge_itr->first - N;
             G4double Q     = *(Charge_itr->second);
+            G4cout << "QTrarckID, Q: " << QTrackID << "   " << Q << G4endl;
             if (QTrackID == NTrackID) {
                m_Event->SetEdenSimuCharge(RandGauss::shoot(Q, 1));
             }
