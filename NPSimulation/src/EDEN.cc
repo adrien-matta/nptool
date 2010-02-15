@@ -417,7 +417,7 @@ void EDEN::ReadSensitive(const G4Event* event)
 
       // clear map for next event
       DetectorNumberHitMap    -> clear();
-//      ChargeHitMap            -> clear();
+      ChargeHitMap            -> clear();
       TimeHitMap              -> clear();
       PosXHitMap              -> clear();
       PosYHitMap              -> clear();
@@ -448,7 +448,7 @@ void EDEN::InitializeMaterial()
    ////////////////////////////////////////////////////////////////
    // EDEN NE213
    density = 0.87 * g / cm3;
-   m_MaterialEDEN_liqSci = new G4Material("EDEN_liqSci", density, ncomponents = 2);
+   m_MaterialEDEN_liqSci = new G4Material("liqSci", density, ncomponents = 2);
    m_MaterialEDEN_liqSci->AddElement(H, natoms = 10);
    m_MaterialEDEN_liqSci->AddElement(C, natoms = 8);
 }

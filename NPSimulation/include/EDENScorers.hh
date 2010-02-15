@@ -42,7 +42,7 @@ class EDENScorerCharge : public G4VPrimitiveScorer
   public:
    virtual void Initialize(G4HCofThisEvent*);
    virtual void EndOfEvent(G4HCofThisEvent*);
-   virtual void Clear();
+   virtual void clear();
    virtual void DrawAll();
    virtual void PrintAll();
 

@@ -11,14 +11,14 @@
 ##############################
 # Set of the physic models
 #
-#/physic/addPackage QGSP_BERT_HP
+/physic/addPackage QGSP_BERT_HP
 #/physic/addPhysics standard_opt3    # Electromagnetic model
 #/physic/addPhysics elastic          # Hadronic elastic model
 
 ##########################
 # Initialisation procedure
 #
-#/run/initialize
+/run/initialize
 
 # choose a graphic system
 #/vis/open OGLIX

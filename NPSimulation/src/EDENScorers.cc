@@ -85,7 +85,7 @@ void EDENScorerCharge::EndOfEvent(G4HCofThisEvent*)
 
 
 
-void EDENScorerCharge::Clear()
+void EDENScorerCharge::clear()
 {
    EvtMap->clear();
 }

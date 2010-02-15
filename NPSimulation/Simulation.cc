@@ -25,70 +25,49 @@
 
 int main(int argc, char** argv)
 {
-
    if (argc != 3) {
       cout << "you need to specify both a Reaction file and a Detector file such as : Simulation myReaction.reaction myDetector.detector" << endl ;
       return 0;
    }
 
-   // Getting arguments
+   // Getting arguments from command line
    G4String EventGeneratorFileName = argv[1];
-   G4String DetectorFileName = argv[2];
+   G4String DetectorFileName       = argv[2];
 
    //my Verbose output class
    G4VSteppingVerbose::SetInstance(new SteppingVerbose);
 
-   //Construct the default run manager
+   // Construct the default run manager
    G4RunManager* runManager = new G4RunManager;
 
-   //set mandatory initialization classes
-   DetectorConstruction* detector  = new DetectorConstruction();
-   runManager->SetUserInitialization(detector);
-
-   PhysicsList* physics   = new PhysicsList();
-   runManager->SetUserInitialization(physics);
-   PrimaryGeneratorAction* primary = new PrimaryGeneratorAction(detector);
-
-   //Initialize Geant4 kernel
-   runManager->Initialize();
-//   physics->MyOwnConstruction();
-
-   ///////////////////////////////////////////////////////////////
-   ///////////////// Initializing the Root Output ////////////////
-   ///////////////////////////////////////////////////////////////
+   // Initialize the ROOT output
    RootOutput::getInstance("Simulation/mySimul");
 
-   ///////////////////////////////////////////////////////////////
-   ////////////// Reading Detector Configuration /////////////////
-   ///////////////////////////////////////////////////////////////
-   detector->ReadConfigurationFile(DetectorFileName);
+   // Initialize the geometry
+   DetectorConstruction* detector = new DetectorConstruction();
+   runManager->SetUserInitialization(detector);
 
-   ///////////////////////////////////////////////////////////////
-   ////////////////////// Reading Reaction ///////////////////////
-   ///////////////////////////////////////////////////////////////
-   primary->ReadEventGeneratorFile(EventGeneratorFileName);
+   // Initialize the physics
+   PhysicsList* physics   = new PhysicsList();
+   runManager->SetUserInitialization(physics);
+
+   // Initialize the primary particles
+   PrimaryGeneratorAction* primary = new PrimaryGeneratorAction(detector);
    runManager->SetUserAction(primary);
 
-   ///////////////////////////////////////////////////////////////
-   ////////////////// Starting the Event Action //////////////////
-   ///////////////////////////////////////////////////////////////
-   EventAction* event_action = new EventAction() ;
-   event_action->SetDetector(detector)           ;
-   runManager->SetUserAction(event_action)       ;
+   // Optional UserActions: run, event, stepping
+   EventAction* event_action = new EventAction();
+   event_action->SetDetector(detector);
+   runManager->SetUserAction(event_action);
 
-   ///////////////////////////////////////////////////////////////
-   ///////  Get the pointer to the User Interface manager ////////
-   ///////////////////////////////////////////////////////////////
-   G4UImanager* UI = G4UImanager::GetUIpointer();
-
-   ///////////////////////////////////////////////////////////////
-   /////////// Define UI terminal for interactive mode ///////////
-   ///////////////////////////////////////////////////////////////
 #ifdef G4VIS_USE
+   // Visualization manager
    G4VisManager* visManager = new G4VisExecutive;
    visManager->Initialize();
 #endif
 
+   // Get the pointer to the User Interface manager 
+   G4UImanager* UI = G4UImanager::GetUIpointer();
    G4UIsession* session = 0;
 
 #ifdef G4UI_USE_TCSH
@@ -98,6 +77,12 @@ int main(int argc, char** argv)
 #endif
 
    UI->ApplyCommand("/control/execute vis.mac");
+
+   // should be done here since the runManager->Initialize()
+   // command is done in the vis.mac macro
+   detector->ReadConfigurationFile(DetectorFileName);
+   primary->ReadEventGeneratorFile(EventGeneratorFileName);
+
    session->SessionStart();
    delete session;
 
