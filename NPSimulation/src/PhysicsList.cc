@@ -1,93 +1,66 @@
-//
-// ********************************************************************
-// * License and Disclaimer                                           *
-// *                                                                  *
-// * The  Geant4 software  is  copyright of the Copyright Holders  of *
-// * the Geant4 Collaboration.  It is provided  under  the terms  and *
-// * conditions of the Geant4 Software License,  included in the file *
-// * LICENSE and available at  http://cern.ch/geant4/license .  These *
-// * include a list of copyright holders.                             *
-// *                                                                  *
-// * Neither the authors of this software system, nor their employing *
-// * institutes,nor the agencies providing financial support for this *
-// * work  make  any representation or  warranty, express or implied, *
-// * regarding  this  software system or assume any liability for its *
-// * use.  Please see the license in the file  LICENSE  and URL above *
-// * for the full disclaimer and the limitation of liability.         *
-// *                                                                  *
-// * This  code  implementation is the result of  the  scientific and *
-// * technical work of the GEANT4 collaboration.                      *
-// * By using,  copying,  modifying or  distributing the software (or *
-// * any work based  on the software)  you  agree  to acknowledge its *
-// * use  in  resulting  scientific  publications,  and indicate your *
-// * acceptance of all terms of the Geant4 Software license.          *
-// ********************************************************************
-//
-// PhysicsList.cc
-// ----------------------------------------------------------------------------
-//                 GEANT 4 -  example
-// ----------------------------------------------------------------------------
-// Code developed by:
-//
-// G.A.P. Cirrone(a)*, F.Romano(a)
-// 
-// (a) Laboratori Nazionali del Sud 
-//     of the INFN, Catania, Italy
-// 
-// * cirrone@lns.infn.it
-//
-// See more at: http://workgroup.lngs.infn.it/geant4lns/
-// ----------------------------------------------------------------------------
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
 
-// This class provides all the physic models that can be activated inside ;
-// Each model can be setted via macro commands;
-// Inside  the models can be activate with three different complementar methods:
-//
-// 1. Use of the *Packages*. 
-//    Packages (that are contained inside the
-//    Geant4 distribution at $G4INSTALL/source/physics_lists/lists) provide a full set 
-//    of models (both electromagnetic and hadronic).
-//    The User can use this method simply add the line /physic/addPackage <nameOfPackage> 
-//    in his/her macro file. No other action is required.
-//    For  applications we suggest the use of the QGSP_BIC package 
-//    for proton beams. The same can be used 
-//    also for ligth ion beam.
-//    Example of use of package can be found in the packageQGSP_BIC.mac file.
-//
-// 2. Use of the *Physic Lists*.
-//    Physic lists are also already ready to use inside the Geant4 distribution 
-//    ($G4INSTALL/source/physics_lists/builders). To use them the simple
-//    /physic/addPhysics <nameOfPhysicList> command must be used in the macro.
-//    In  we provide physics list to activate Electromagnetic,
-//    Hadronic elastic and Hadronic inelastic models.
-//
-//    For  we suggest the use of:
-//    
-//    /physic/addPhysic/emstandard_option3 (electromagnetic model)
-//    /physic/addPhysic/QElastic (hadronic elastic model)
-//    /physic/addPhysic/binary (hadronic inelastic models for proton and neutrons)
-//    /physic/addPhysic/binary_ion (hadronic inelastic models for ions)
-//
-//    Example of the use of physics lists can be found in the macro files included in the
-//    'macro' folder .   
-//
-// 3. Use of a *local* physics. In this case the models are implemented in local files
-//    contained in the  folder. The use of local physic is recommended 
-//    to more expert Users.
-//    We provide as local, only the LocalStandardICRU73EmPhysic.cc (an Elecromagnetic
-//    implementation containing the new ICRU73 data table for ions stopping powers)
-//    and the LocalIonIonInelasticPhysic.cc (physic list to use for the ion-ion interaction
-//    case)
-//    The *local* physics can be activated with the same /physic/addPhysic <nameOfPhysic> command;
-//
-//    While Packages approch must be used exclusively, Physics List and Local physics can 
-//    be activated, if necessary, contemporaneously in the same simulation run.
-//
-//    AT MOMENT, IF ACCURATE RESULTS ARE NEDED, WE STRONGLY RECOMMEND THE USE OF THE MACROS:
-//    proton_therapy.mac: use of the built-in Geant4 physics list for proton beams)
-//    ion_therapy.mac   : use of mixed combination of native Geant4 physic lists 
-//                        and local physic for ion-ion enelastic processes)
-
+/*****************************************************************************
+ * Original Author: N. de Sereville contact address:  deserevi@ipno.in2p3.fr *
+ *                                                                           *
+ * Creation Date  : 15/02/2010                                               *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *  A quite standard, non-modulable Geant4 PPhysicis list.                   *
+ *  Well suited for low energy ions physics.                                 *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *   This class is taken from the G4 tutorial advanced/hadrontherapy         *
+ *                                                                           *
+ * This class provides all the physic models that can be activated inside;   *
+ * Each model can be setted via macro commands;                              *
+ * Inside  the models can be activate with three different complementar      *
+ * methods:                                                                  *
+ *                                                                           *
+ * 1. Use of the *Packages*.                                                 *
+ *    Packages (that are contained inside the Geant4 distribution at         *
+ *    $G4INSTALL/source/physics_lists/lists) provide a full set of models    *
+ *    (both electromagnetic and hadronic). The User can use this method      *
+ *    simply add the line /physic/addPackage <nameOfPackage>                 *
+ *    in his/her macro file. No other action is required.                    *
+ *    For  applications we suggest the use of the QGSP_BIC package for       *
+ *    proton beams. The same can be used also for ligth ion beam.            *
+ *                                                                           *
+ * 2. Use of the *Physic Lists*.                                             *
+ *   Physic lists are also already ready to use inside the Geant4            *
+ *   distribution ($G4INSTALL/source/physics_lists/builders). To use them    *
+ *   the simple /physic/addPhysics <nameOfPhysicList> command must be used   *
+ *   in the macro. In  we provide physics list to activate Electromagnetic,  *
+ *   Hadronic elastic and Hadronic inelastic models.                         *
+ *                                                                           *
+ *   For  we suggest the use of:                                             *
+ *                                                                           *
+ *   /physic/addPhysic/emstandard_option3 (electromagnetic model)            *
+ *   /physic/addPhysic/QElastic (hadronic elastic model)                     *
+ *   /physic/addPhysic/binary (hadronic inelastic models for proton and      *
+ *                             neutrons)                                     *
+ *   /physic/addPhysic/binary_ion (hadronic inelastic models for ions)       *
+ *                                                                           *
+ * 3. Use of a *local* physics. In this case the models are implemented in   *
+ *    local files contained in the  folder. The use of local physic is       *
+ *    recommended to more expert Users.                                      *
+ *    We provide as local, only the LocalStandardICRU73EmPhysic.cc (an       *
+ *    Elecromagnetic implementation containing the new ICRU73 data table for *
+ *    ions stopping powers).                                                 *
+ *    The *local* physics can be activated with the same                     *
+ *    /physic/addPhysic <nameOfPhysic> command;                              *
+ *                                                                           *
+ *   While Packages approch must be used exclusively, Physics List and Local *
+ *   physics can be activated, if necessary, contemporaneously in the same   *
+ *   simulation run.                                                         *
+ *****************************************************************************/
 #include "PhysicsList.hh"
 #include "PhysicsListMessenger.hh"
 //#include "StepMax.hh"
