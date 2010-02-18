@@ -11,16 +11,8 @@
 	double DegToRad = Pi/180.   ; // 2Pi/360 = Pi/180
 	double RadToDeg = 180./Pi   ; // 360/2Pi = 180/Pi
 	
-TFile *file0 = TFile::Open("./Result/myResult.root");
-	
-	cEA = new TCanvas("cEA","Kinematic Line" ,100,100,900,900);
-	hEA->Draw("COLZ");
-	cEx = new TCanvas("cEx","Excitation Energy" ,100,100,600,600);
-	hEx->Draw();
-	
-	cEHexa = new TCanvas("cEHexa","Hexaneutron bound Energy" ,100,100,600,600);
-	hEHexa->Draw();
-	
+TFile *file0 = TFile::Open("./Result/thetaCM.root");
+
 	cCM = new TCanvas("cCm" , "Cross Section (CM)" , 100 , 100 , 900, 900) ;
 	hThetaCM->Draw();
 	
@@ -79,8 +71,7 @@ TFile *file0 = TFile::Open("./Result/myResult.root");
 	
 	
 	//Normalisation:
-	//Int_t Maximum_Bin 		= hCrossSection->GetMaximumBin()			;
-	Int_t Maximum_Bin 		= 3 										;
+	Int_t Maximum_Bin 		= hCrossSection->GetMaximumBin()			;
 	Double_t Maximum_theta 	= hCrossSection->GetBinCenter(Maximum_Bin)	;
 	Double_t Bin_Width		= hCrossSection->GetBinWidth(Maximum_Bin)	;
 	Double_t Maximum  		= hCrossSection->GetBinContent(Maximum_Bin)	;

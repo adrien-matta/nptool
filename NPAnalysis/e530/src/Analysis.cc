@@ -41,7 +41,10 @@ int main(int argc,char** argv)
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 
   //	Attach more branch to the output
-	
+  double ELab=0,ThetaLab=0,ExcitationEnergy=0;
+	RootOutput::getInstance()->GetTree()->Branch("ELab",&ELab,"ELab/D") 							;
+	RootOutput::getInstance()->GetTree()->Branch("ThetaLab",&ThetaLab,"ThetaLab/D") 	;
+	RootOutput::getInstance()->GetTree()->Branch("ExcitationEnergy",&ExcitationEnergy,"ExcitationEnergy/D") ;
   //	Get the formed Chained Tree and Treat it
   TChain* Chain = RootInput:: getInstance() -> GetChain()	;
 
@@ -79,6 +82,17 @@ int main(int argc,char** argv)
       myDetector -> BuildPhysicalEvent()		;
       ////
 		
+			
+			// Must 2
+			for(int hit = 0; hit < M2 -> Si_E.size() ; hit ++)
+				{
+					ELab = -1 ; ThetaLab = -1;
+					//	Get Hit Direction
+					TVector3 HitDirection  = M2 -> GetPositionOfInteraction(hit) - TVector3(0,0,-40);
+					// Angle between beam and particle
+					ThetaLab  = ThetaCalculation ( HitDirection , TVector3(0,0,1)   ) ;	
+					ELab = M2 -> Si_E[hit] + M2 -> SiLi_E[hit]	;
+			  }
 			
       RootOutput::getInstance()->GetTree()->Fill()	;
     }
