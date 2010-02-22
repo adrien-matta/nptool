@@ -1,5 +1,6 @@
 echo  -L$NPLIB/lib -lVDetector -lDetectorManager -lCalibrationManager -lIORoot -lReaction -lEnergyLoss \
 			-lMust2Data -lMust2Physics \
+			-lCATSData -lCATSPhysics \
 			-lSSSDData -lSSSDPhysics \
 			-lPlasticData -lPlasticPhysics \
 			-lAnnularS1Data \
