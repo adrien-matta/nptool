@@ -359,25 +359,24 @@ void EventGeneratorPhaseSpace::GenerateEvent(G4Event* anEvent , G4ParticleGun* p
         masses[k] = m_ReactionProducts[k]-> GetPDGMass()/GeV ;
     	}
     
-    // Kinematics of reaction
-    G4double M =  m_BeamParticle -> GetPDGMass() 																										; 
+    // Kinematic of reaction
+    G4double M 								=  m_BeamParticle -> GetPDGMass() 																		; 
    	G4double InitialE      	  = FinalBeamEnergy + M   																							;
 		G4double InitialMomentumX = sqrt( InitialE*InitialE - M*M) * sin(Beam_theta) * cos(Beam_phi) 		;
 		G4double InitialMomentumY = sqrt( InitialE*InitialE - M*M) * sin(Beam_theta) * sin(Beam_phi) 		;
 		G4double InitialMomentumZ = sqrt( InitialE*InitialE - M*M) * cos(Beam_theta)                 		;
 
-		TLorentzVector Initial = TLorentzVector(InitialMomentumX/GeV, InitialMomentumY/GeV, InitialMomentumZ/GeV,InitialE/GeV) + TLorentzVector(0,0,0,m_TargetParticle -> GetPDGMass() / GeV);
+		TLorentzVector W = TLorentzVector(InitialMomentumX/GeV, InitialMomentumY/GeV, InitialMomentumZ/GeV,InitialE/GeV) + TLorentzVector(0,0,0,m_TargetParticle -> GetPDGMass() / GeV);
 		
 		
 		// Instentiate a Phase Space Generator, with flat distrution
 		TGenPhaseSpace TPhaseSpace ;
 		
-    if( !TPhaseSpace.SetDecay(Initial, NumberOfReactionProducts , masses) ) cout << "Warning: Phase Space Decay forbiden by kinematic, or more than 18 particles "<<endl;
+    if( !TPhaseSpace.SetDecay(W, NumberOfReactionProducts , masses) ) cout << "Warning: Phase Space Decay forbiden by kinematic, or more than 18 particles "<<endl;
    
-   	//	Generate event and store the associate weight. Think to use this weigt to get correcte spectrum
+   	//	Generate event and store the associate weight. Think to use this weigt to get correct spectrum
    	m_EventWeight = TPhaseSpace.Generate() 		;
-   	
-   	
+
    	TLorentzVector* ProductLV ;
 		for ( int u = 0; u < NumberOfReactionProducts ; u++) 
 			{
@@ -388,12 +387,12 @@ void EventGeneratorPhaseSpace::GenerateEvent(G4Event* anEvent , G4ParticleGun* p
 																	ProductLV->Z()*GeV 	);
 				Momentum.unit() ;
 																	
-				G4double Energy   = ProductLV->E()*GeV-masses[u]*GeV ;
+				G4double KineticEnergy   = ProductLV->E()*GeV-masses[u]*GeV ;
 				
 				//Set the gun to shoot
-				particleGun->SetParticleDefinition(m_ReactionProducts[u])          ;
+				particleGun->SetParticleDefinition(m_ReactionProducts[u])       ;
 				particleGun->SetParticleMomentumDirection(Momentum)     				;
-				particleGun->SetParticleEnergy(Energy)                          ;
+				particleGun->SetParticleEnergy(KineticEnergy)                   ;
 				particleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0))     ;
 				// Shoot the Daugter
 				particleGun->GeneratePrimaryVertex(anEvent) ;
@@ -405,7 +404,7 @@ void EventGeneratorPhaseSpace::GenerateEvent(G4Event* anEvent , G4ParticleGun* p
 				// write angles in ROOT file
 				m_InitConditions->SetICEmittedAngleThetaLabWorldFrame(theta_world / deg);
 				m_InitConditions->SetICEmittedAnglePhiWorldFrame(phi_world / deg);		
-				m_InitConditions->SetICEmittedEnergy(Energy);
+				m_InitConditions->SetICEmittedEnergy(KineticEnergy);
 				
 			}
 }

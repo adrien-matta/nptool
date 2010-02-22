@@ -9,11 +9,11 @@
 # choose a graphic system
 #/vis/open OGLIX
 #/vis/open OGLSX
-/vis/open VRML2FILE
-/vis/scene/create
-/vis/drawVolume
-/vis/viewer/set/viewpointThetaPhi 0 0 deg
-/vis/viewer/zoom 7
+#/vis/open VRML2FILE
+#/vis/scene/create
+#/vis/drawVolume
+#/vis/viewer/set/viewpointThetaPhi 0 0 deg
+#/vis/viewer/zoom 7
 
 # options to draw trajectories
 /vis/scene/endOfEventAction accumulate

@@ -56,7 +56,7 @@ EnergyLoss::~EnergyLoss()
 	{}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-EnergyLoss::EnergyLoss(string Path , string Source, int NumberOfSlice=100 ,  int LiseColumn , int NumberOfMass) 
+EnergyLoss::EnergyLoss(string Path , string Source, int NumberOfSlice , int NumberOfMass,  int LiseColumn ) 
 	{ 
 	
 	fNumberOfSlice = NumberOfSlice ; 
@@ -76,6 +76,8 @@ EnergyLoss::EnergyLoss(string Path , string Source, int NumberOfSlice=100 ,  int
 	  
 	 if (Source == "G4Table")
 	 	{
+	 	  // G4Table are in MeV directly!
+	 		fNumberOfMass  = 1  ;
 	   	cout << "Reading Energy Loss File: " << Path << endl ;
 			// Reading Data
 			double energy, total;

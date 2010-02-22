@@ -408,7 +408,8 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
 
 	 // Shoot the Resonance energy following the mean and width value
 	 // EXX should always be more than specific heat of the reaction
-    double EXX = RandBreitWigner::shoot(m_ResonanceMean,m_ResonanceWidth) ;	 
+   // double EXX = RandBreitWigner::shoot(m_ResonanceMean,m_ResonanceWidth) ;	 
+   double EXX = RandGauss::shoot(m_ResonanceMean,m_ResonanceWidth) ;	
     m_Reaction->SetExcitation( EXX );
 
 		while ( m_Reaction->CheckKinematic()==false ) 
@@ -564,13 +565,13 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorTransfertToResonance::ResonanceDecay(  G4double EnergyHeavy    		,
-													      G4double ThetaHeavy     		,
-													      G4double PhiHeavy       		,
-													      G4double x0             		,
-													      G4double y0             		,
-													      G4double z0             		,
-													      G4Event* anEvent        		,
-													      G4ParticleGun* particleGun	)
+																										      G4double ThetaHeavy     		,
+																										      G4double PhiHeavy       		,
+																										      G4double x0             		,
+																										      G4double y0             		,
+																										      G4double z0             		,
+																										      G4Event* anEvent        		,
+																										      G4ParticleGun* particleGun	)
 {
    G4double parentZ = m_Reaction->GetNucleus4()->GetZ() ;
    G4double parentA = m_Reaction->GetNucleus4()->GetA() ;

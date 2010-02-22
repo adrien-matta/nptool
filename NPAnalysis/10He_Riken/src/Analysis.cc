@@ -190,7 +190,7 @@ RootOutput::getInstance()->GetList()->Add(myHist1D);
 											} 
 
 										ELab[hit]= He3TargetWind.EvaluateInitialEnergy( 	ELab[hit] 				, // Energy of the detected particle
-																																			10*micrometer			, // Target Thickness at 0 degree
+																																			15*micrometer			, // Target Thickness at 0 degree
 																																			ThetaN						);
 																			
 										ELab[hit]= He3TargetGaz.EvaluateInitialEnergy(		ELab[hit] 				, // Energy of the detected particle
@@ -239,7 +239,7 @@ RootOutput::getInstance()->GetList()->Add(myHist1D);
 										}
 											
 									ELab[hit]= He3TargetWind.EvaluateInitialEnergy( 	ELab[hit] 					, // Energy of the detected particle
-																																		10*micrometer				, // Target Thickness at 0 degree
+																																		15*micrometer				, // Target Thickness at 0 degree
 																																		ThetaN							);
 									
 									ELab[hit]= He3TargetGaz.EvaluateInitialEnergy(		ELab[hit] 					, // Energy of the detected particle
