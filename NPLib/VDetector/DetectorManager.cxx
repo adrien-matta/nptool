@@ -302,6 +302,7 @@ void DetectorManager::InitializeRootOutput()
 void DetectorManager::AddDetector(string DetectorName , VDetector* newDetector)
 {
    m_Detector[DetectorName] = newDetector;
+   newDetector->AddParameterToCalibrationManager();
 }
 
 

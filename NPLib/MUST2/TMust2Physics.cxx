@@ -16,8 +16,6 @@
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *  Only multiplicity one and multiplicity 2 are down.                       *
- *  Improvment needed                                                        *
  *                                                                           *
  *****************************************************************************/
 #include "TMust2Physics.h"
@@ -40,17 +38,17 @@ using namespace LOCAL;
 ClassImp(TMust2Physics)
 ///////////////////////////////////////////////////////////////////////////
 TMust2Physics::TMust2Physics() 
-	{ 
-		EventMultiplicity = 0 			;
-		EventData = new TMust2Data	;
-		EventPhysics = this					;
+	{
+		EventMultiplicity 	= 0 							;
+		EventData 					= new TMust2Data	;
+		EventPhysics 				= this						;
+		NumberOfTelescope		= 0								;
 	}
 		
 ///////////////////////////////////////////////////////////////////////////
 void TMust2Physics::BuildSimplePhysicalEvent()
 	{ 
 		BuildPhysicalEvent(); 
-	
 	}
 	
 ///////////////////////////////////////////////////////////////////////////
@@ -95,14 +93,24 @@ void TMust2Physics::BuildPhysicalEvent()
 							{
 								if(EventData->GetMMSiLiEDetectorNbr(j)==N)
 									{
-										//	if SiLi energy is above threshold check the compatibility
+										// SiLi energy is above threshold check the compatibility
 										if( fSiLi_E(EventData , j)>SiLi_E_Threshold )
 											{
+												// pad vs strip number match
 												if( Match_Si_SiLi( X, Y , EventData->GetMMSiLiEPadNbr(j) ) )
 												{
 													SiLi_N.push_back(EventData->GetMMSiLiEPadNbr(j))	;
-													SiLi_E.push_back(fSiLi_E(EventData , j))	;
-													SiLi_T.push_back(fSiLi_T(EventData , j))		;
+													SiLi_E.push_back(fSiLi_E(EventData , j))					;
+													
+													// Look for associate energy
+													// Note: in case of use of SiLi "Orsay" time is not coded.
+													for(int k =0 ; k  < EventData->GetMMSiLiTMult() ; k ++)
+														{
+															// Same Pad, same Detector
+															if( EventData->GetMMSiLiEPadNbr(j)==EventData->GetMMSiLiEPadNbr(k) && EventData->GetMMSiLiEDetectorNbr(j)==EventData->GetMMSiLiTDetectorNbr(k) )
+																{SiLi_T.push_back(fSiLi_T(EventData , k))		; break ;}
+														}
+													
 													check_SILI = true ;
 													
 												}
@@ -114,14 +122,20 @@ void TMust2Physics::BuildPhysicalEvent()
 							{
 								if(EventData->GetMMCsIEDetectorNbr(j)==N)
 									{
-										//	ifCsI energy is above threshold check the compatibility
+										//	CsI energy is above threshold check the compatibility
 										if( fCsI_T(EventData , j)>CsI_E_Threshold )
 											{
-												if( Match_Si_CsI( X, Y , EventData->GetMMCsIECristalNbr(j) ) )
+												if(Match_Si_CsI( X, Y , EventData->GetMMCsIECristalNbr(j) ) )
 													{
 														CsI_N.push_back(EventData->GetMMCsIECristalNbr(j))	;
-														CsI_E.push_back(fCsI_E(EventData , j))			;
-														CsI_T.push_back(fCsI_T(EventData , j))				;
+														CsI_E.push_back(fCsI_E(EventData , j))							;
+														
+														for(int k =0 ; k  < EventData->GetMMCsITMult() ; k ++)
+															{
+																if( EventData->GetMMCsIECristalNbr(j)==EventData->GetMMCsITCristalNbr(k) && EventData->GetMMCsIEDetectorNbr(j)==EventData->GetMMCsITDetectorNbr(k) )
+																	{CsI_T.push_back(fCsI_T(EventData , k))	; break ;}
+															}
+														
 														check_CSI = true ;
 													}
 											}
@@ -132,15 +146,15 @@ void TMust2Physics::BuildPhysicalEvent()
 						if(!check_SILI)
 							{
 								SiLi_N.push_back(0)	;
-								SiLi_E.push_back(0)	;
-								SiLi_T.push_back(0)	;
+								SiLi_E.push_back(-10000)	;
+								SiLi_T.push_back(-10000)	;
 							}
 
 						if(!check_CSI) 
 							{
 								CsI_N.push_back(0)	;
-								CsI_E.push_back(0)	;
-								CsI_T.push_back(0)	;
+								CsI_E.push_back(-10000)	;
+								CsI_T.push_back(-10000)	;
 							}
 					
 					}
@@ -177,6 +191,11 @@ vector < TVector2 > TMust2Physics :: Match_X_Y()
 	{
 		vector < TVector2 > ArrayOfGoodCouple ;
 		
+		// Prevent code from treating very high multiplicity Event
+		// Those event are not physical anyway and that improve speed.
+		if( EventData->GetMMStripXEMult()>6 || EventData->GetMMStripYEMult()>6 )
+			return ArrayOfGoodCouple;
+		
 		for(int i = 0 ; i < EventData->GetMMStripXEMult(); i++)
 			{
 				//	if X value is above threshold, look at Y value
@@ -191,7 +210,7 @@ vector < TVector2 > TMust2Physics :: Match_X_Y()
 										//	if same detector check energy
 										if ( EventData->GetMMStripXEDetectorNbr(i) == EventData->GetMMStripYEDetectorNbr(j) )
 											{
-													//	Look if energy match
+													//	Look if energy match (within 10%)
 													if( ( fSi_X_E(EventData , i) - fSi_Y_E(EventData , j) ) / fSi_X_E(EventData , i) < 0.1	)
 														ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;	
 											}

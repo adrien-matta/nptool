@@ -151,7 +151,7 @@ class TMust2Data : public TObject {
 
 		// CsI 
 		//(E)
-		UShort_t	GetMMCsIEMult()					{return fMM_CsIE_DetectorNbr.size();}
+		UShort_t	GetMMCsIEMult()									{return fMM_CsIE_DetectorNbr.size();}
 		UShort_t	GetMMCsIEDetectorNbr(Int_t i)   {return fMM_CsIE_DetectorNbr.at(i);}
 		UShort_t	GetMMCsIECristalNbr(Int_t i)    {return fMM_CsIE_CristalNbr.at(i);}
 		Double_t	GetMMCsIEEnergy(Int_t i)        {return fMM_CsIE_Energy.at(i);}

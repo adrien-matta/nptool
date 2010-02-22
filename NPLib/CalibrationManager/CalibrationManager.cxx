@@ -25,6 +25,7 @@
 #include <cstdlib>
 #include <limits>
 #include <cmath>
+#include <sstream>
 
 //////////////////////////////////////////////////////////////////
 CalibrationManager* CalibrationManager::instance = 0;
@@ -58,15 +59,17 @@ CalibrationManager::CalibrationManager(string configFileName)
       return;
    }
    
-   else {
+   else 
+		{
+   		cout << "Reading list of file from :" << configFileName << endl; 
       while (!inputConfigFile.eof()) {
          getline(inputConfigFile, lineBuffer);
 			      
          // search for token giving the list of Root files to treat
-         if ( lineBuffer.compare(0, 12, "CalibrationFilePath") == 0 ) {
+         if ( lineBuffer.compare(0, 19, "CalibrationFilePath") == 0 ) {
              while (!inputConfigFile.eof()) {
                inputConfigFile >> dataBuffer;
-
+								
                // ignore comment Line 
                if (dataBuffer.compare(0, 1, "%") == 0) {
                   inputConfigFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -76,11 +79,12 @@ CalibrationManager::CalibrationManager(string configFileName)
                   AddFile(dataBuffer);
                   cout << "Adding file " << dataBuffer << " to Calibration" << endl;
                }
-            }
-         }
-      }
+	            }
+	         }
+	      }
+	  	}
+   	cout << "/////////////////////////////////" << endl;
    }
-   cout << "/////////////////////////////////" << endl;}
 	
 //////////////////////////////////////////////////////////////////
 CalibrationManager::~CalibrationManager()
@@ -99,49 +103,56 @@ void CalibrationManager::LoadParameterFromFile()
 	{
 		ifstream CalibFile 	;
 		string	 DataBuffer	;
+		string   LineBuffer ;
 		
 		for(unsigned int i = 0 ; i < fFileList.size() ; i++)
 			{
 				CalibFile.open( fFileList[i].c_str() );
-				vector<double> Coeff ;
 				map<string,string>::iterator it ;
 				
 				if(!CalibFile)
 					{
 						cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
-						cout << " WARNING: FILE " << fFileList[i] << " IS MISSING " 																  	<< endl ;
+						cout << " WARNING: FILE " << fFileList[i] << " IS MISSING "				  														<< endl ;
 						cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
-					
 					}
 					
 				else while( !CalibFile.eof() )
+					{
+						// Read the file Line by line
+						getline(CalibFile, LineBuffer);
+						
+						// Create a istringstream to manipulate the line easely
+					  istringstream theLine (LineBuffer,istringstream::in);
+						theLine >> DataBuffer ;
+						
+						// Comment support, comment symbole is %
+						if(DataBuffer.compare(0, 1, "%") == 0) {
+						 	CalibFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
+						 	
+						//	Search word in the token list
+						it=fToken.find(DataBuffer);
+						
+						//	if the word is find, values are read
+						if( it!=fToken.end() )
 							{
-								CalibFile >> DataBuffer ;
-								
-								//	Search word in the token list
-								it=fToken.find(DataBuffer);
-								
-								//	if the word is find, values are read
-								if( it!=fToken.end() )
+								vector<double> Coeff ;
+								while( !theLine.eof() )
 									{
-										
-										Coeff.clear();
-										while(DataBuffer!="\n")
-											{
-												CalibFile >> DataBuffer ; Coeff.push_back( atof(DataBuffer.c_str()) ) ;
-											}
-									
-										//	Check this parameter is not already define
-										if( fCalibrationCoeff.find(it->second) != fCalibrationCoeff.end() ) cout << "WARNING: Parameter " << it->second << " Already found. It will be rewritted " << endl;
-										
-										//	Add the list of Coeff to the Coeff map using Parameter Path as index
-										fCalibrationCoeff[ it->second ] = Coeff ;
+										theLine >> DataBuffer ; Coeff.push_back( atof(DataBuffer.c_str()) ) ;
 									}
-								
+									
+								//	Check this parameter is not already define
+								if( fCalibrationCoeff.find(it->second) != fCalibrationCoeff.end() ) 
+									cout << "WARNING: Parameter " << it->second << " Already found. It will be rewritted " << endl;
+										
+								//	Add the list of Coeff to the Coeff map using Parameter Path as index
+								fCalibrationCoeff[ it->second ] = Coeff ;
 							}
-					CalibFile.close() ;
+								
+					}
+				CalibFile.close() ;
 			}
-		
 	}
 
 //////////////////////////////////////////////////////////////////
@@ -149,8 +160,12 @@ double CalibrationManager::ApplyCalibration(string ParameterPath , double RawVal
 	{
 		double CalibratedValue = 0 ;
 		map< string , vector<double> >::iterator it ;
+		
+		//	Find the good parameter in the Map
+		// Using Find method of stl is the fastest way
 		it = fCalibrationCoeff.find(ParameterPath)  ;
 		
+		// If the find methods return the end iterator it's mean the parameter was not found
 		if(it == fCalibrationCoeff.end() )
 			{
 			/*	cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
@@ -160,7 +175,12 @@ double CalibrationManager::ApplyCalibration(string ParameterPath , double RawVal
 				return RawValue ;
 			}
 		
+		// Else we take the second part of the element (first is index, ie: parameter path)
+		// Second is the vector of Coeff
 		vector<double> Coeff = it->second  ;
+		
+		// The vector size give the degree of calibration
+		// We just apply the coeff and returned the calibrated value
 		
 		for(unsigned int i = 0 ; i < Coeff.size() ; i++)
 			{
