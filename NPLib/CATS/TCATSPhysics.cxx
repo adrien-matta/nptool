@@ -1,4 +1,23 @@
+/*****************************************************************************
+ * Copyright (C) 2009-2010   this file is part of the NPTool Project         *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
 
+/*****************************************************************************
+ * Original Author: Sandra Giron  contact address: giron@ipno.in2p3.fr       *
+ *                                                                           *
+ * Creation Date  : febuary 2010                                             *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *  This class hold CATS treated data                                        *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *****************************************************************************/
 #include <iostream>
 using namespace std;
 
@@ -13,18 +32,61 @@ ClassImp(TCATSPhysics)
 
   TCATSPhysics::TCATSPhysics()
 {
-  // Default constructor
-  Clear() ;
+  EventData 					= new TCATSData	;
+	EventPhysics 				= this						;
 }
 
 
 
 TCATSPhysics::~TCATSPhysics()
 {
-  // cout<<"TCATSPhysics destructor"<<endl;
 }
 
 
+////////////////////////////////////////// A SANDRA DE JOUER! ////////////////////////////////////////
+
+			
+//	Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
+void ReadConfiguration(string) 				
+ 	{
+	}
+
+//	Add Parameter to the CalibrationManger
+void AddParameterToCalibrationManager()	
+ 	{
+ 	// voir MUST2
+	}		
+		
+//	Activated associated Branches and link it to the private member DetectorData address
+//	In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
+void InitializeRootInput() 					
+ 	{
+ 	// voir MUST2
+	}
+
+//	Create associated branches and associated private member DetectorPhysics address
+void InitializeRootOutput() 		 		
+ 	{
+ 	// voir MUST2
+	}
+		
+//	This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
+void BuildPhysicalEvent()					
+ 	{
+ 	// voir les commentaire fait la ou la methode existe deja
+	}
+		
+//	Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
+//	This method aimed to be used for analysis performed during experiment, when speed is requiered.
+//	NB: This method can eventually be the same as BuildPhysicalEvent.
+void BuildSimplePhysicalEvent()				
+ 	{
+ 	// pourquoi pas une methode avec qui prend que le strip max par exemple...
+	}
+
+
+
+////////////////////////////////////////// LE RESTE DE LA CLASSE! ////////////////////////////////////////
 
 void TCATSPhysics::Clear()
 {  
@@ -63,7 +125,13 @@ void TCATSPhysics::Dump()
   cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event XXXXXXXXXXXXXXXXX" << endl;
 }
 
-
+/*
+Pas mal de chose a modifier:
+- supprimer l'histoire des calibration par exemple...
+- TCATSData doit etre un membre prive de la classe (non ecrit dans l'arbre de sorti), vois ce que j'ai fait sur MUST2
+- Les positions doivent aussi etre des membre prive non ecrit, comme dans MUST2
+- N'oublie pas que la methode ne doit plus avoir d'argument a la fin... (et qu'elle est deja declare plus haut...)
+*/
 void TCATSPhysics::BuildSimplePhysicalEvent( TCATSData* Data				, 
 					     vector< vector <double> > 			&Ped_X 		,
 					     vector< vector <double> > 			&Ped_Y 		,
