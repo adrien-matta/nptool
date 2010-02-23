@@ -108,14 +108,13 @@ RootOutput::getInstance()->GetList()->Add(myHist1D);
    cut3He_M2_SSSD->SetPoint(9,3.41954,1.40797);
    cut3He_M2_SSSD->SetPoint(10,7.44252,1.45432);
 
-
 	cout <<  " ///////// Starting Analysis ///////// "<< endl << endl ;	
 	int i ,N=Chain -> GetEntries();
 	
 	cout << " Number of Event to be treated : " << N << endl ;
 	clock_t begin=clock();
 	clock_t end=begin;
-	for ( i = 0 ; i < N ; i ++ )
+	for ( i = 0 ; i < N ;	 i ++ )
 		{
 			// Clear local branch
 			for(int hh = 0 ; hh <2 ; hh++)
@@ -198,7 +197,8 @@ RootOutput::getInstance()->GetList()->Add(myHist1D);
 																																			ThetaN						);
 																		 				
 									ThetaCM[hit] = He10Reaction -> EnergyLabToThetaCM( ELab[hit] ) /deg 	;
-									ExcitationEnergy[hit] = He10Reaction -> ReconstructRelativistic( ELab[hit] , ThetaLab[hit] ) 		;	
+//									ExcitationEnergy[hit] = He10Reaction -> ReconstructRelativistic( ELab[hit] , ThetaLab[hit] ) 		;	
+									ExcitationEnergy[hit] = He10Reaction -> ReconstructRelativistic( Init->GetICEmittedEnergy(hit) , Init->GetICEmittedAngleThetaLabIncidentFrame(hit) ) 		;	
 									
 									if(ThinSi -> Energy.size() > 0 )
 								  	if(cut3He_M2_SSSD->IsInside(ThinSi -> Energy[hit], M2 -> Si_E[hit]) )

@@ -368,7 +368,9 @@ while(ReadingStatus){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4ParticleGun* particleGun)
 {
-
+	// Initialize event weight to one.
+	m_EventWeight = 1 ;
+	
 	//	If first time, write the DeDx table
 	if(anEvent->GetEventID()==0)
 		{
@@ -402,8 +404,8 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
    = G4ParticleTable::GetParticleTable()->GetIon(LightZ, LightA, 0.);
 
    // Recoil
-   G4int HeavyZ = m_Reaction->GetNucleus4()->GetZ() ;
-   G4int HeavyA = m_Reaction->GetNucleus4()->GetA() ;
+//   G4int HeavyZ = m_Reaction->GetNucleus4()->GetZ() ;
+//   G4int HeavyA = m_Reaction->GetNucleus4()->GetA() ;
 
 
 	 // Shoot the Resonance energy following the mean and width value
