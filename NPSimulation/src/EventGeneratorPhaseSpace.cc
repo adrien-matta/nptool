@@ -124,8 +124,8 @@ void EventGeneratorPhaseSpace::ReadConfiguration(string Path)
    string Beam, Target, Heavy, Light, CrossSectionPath ;
    G4double BeamEnergy = 0 , BeamEnergySpread = 0 , SigmaX = 0 , SigmaY = 0 , SigmaThetaX = 0 , SigmaPhiY=0;
    vector<G4ParticleDefinition*> ReactionProducts;
-   G4ParticleDefinition* BeamParticle   ;
-   G4ParticleDefinition* TargetParticle ;
+   G4ParticleDefinition* BeamParticle   = NULL ;
+   G4ParticleDefinition* TargetParticle = NULL ;
    
    bool ReadingStatus 					=	false ;
    bool check_Beam 							= false ;

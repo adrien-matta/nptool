@@ -403,11 +403,6 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
    G4ParticleDefinition* LightName
    = G4ParticleTable::GetParticleTable()->GetIon(LightZ, LightA, 0.);
 
-   // Recoil
-//   G4int HeavyZ = m_Reaction->GetNucleus4()->GetZ() ;
-//   G4int HeavyA = m_Reaction->GetNucleus4()->GetA() ;
-
-
 	 // Shoot the Resonance energy following the mean and width value
 	 // EXX should always be more than specific heat of the reaction
     double EXX = RandBreitWigner::shoot(m_ResonanceMean,m_ResonanceWidth) ;	 
