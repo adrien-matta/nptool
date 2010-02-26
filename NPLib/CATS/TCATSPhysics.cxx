@@ -502,14 +502,19 @@ void TCATSPhysics::BuildSimplePhysicalEvent()
       //int    ff = NumberOfCATSHit - gg -1 ;
       int ff = gg ;
      
-      CalculatedStripX = AnalyseX(EventData, Pedestal_X , Threshold_X, StripPositionX, ff, NumberOfCATSHit);        //     cout << "Analyse X = " << CalculatedStripX << endl; 
-      CalculatedStripY = AnalyseY(EventData, Pedestal_Y , Threshold_Y, StripPositionY, ff, NumberOfCATSHit);        //    cout << "Analyse Y = " << CalculatedStripY << endl;
+
+      CalculatedStripX = AnalyseX(ff, NumberOfCATSHit);        //     cout << "Analyse X = " << CalculatedStripX << endl; 
+      CalculatedStripY = AnalyseY(ff, NumberOfCATSHit);        //    cout << "Analyse Y = " << CalculatedStripY << endl;
        
       //      CalculatedStripX = AnalyseX(EventData, Pedestal_X , OnlineCalib_X_E, Threshold_X, StripPositionX, ff, NumberOfCATSHit);        //     cout << "Analyse X = " << CalculatedStripX << endl; 
       //CalculatedStripY = AnalyseY(EventData, Pedestal_Y , OnlineCalib_Y_E, Threshold_Y, StripPositionY, ff, NumberOfCATSHit);        //    cout << "Analyse Y = " << CalculatedStripY << endl;
 
-      posX = CalculatePositionX(StripPositionX, StripMaxX[ff], Chargex, CalculatedStripX, ff, cor);   // cout << "Position X = " << posX << endl;
-      posY = CalculatePositionY(StripPositionY, StripMaxY[ff], Chargey, CalculatedStripY, ff, cor);   // cout << "Position Y = " << posY << endl;
+      //posX = CalculatePositionX(StripPositionX, StripMaxX[ff], Chargex, CalculatedStripX, ff, cor);   // cout << "Position X = " << posX << endl;
+      //posY = CalculatePositionY(StripPositionY, StripMaxY[ff], Chargey, CalculatedStripY, ff, cor);   // cout << "Position Y = " << posY << endl;
+
+      posX = CalculatePositionX(StripMaxX[ff], Chargex, CalculatedStripX, ff, cor);   // cout << "Position X = " << posX << endl;
+      posY = CalculatePositionY(StripMaxY[ff], Chargey, CalculatedStripY, ff, cor);   // cout << "Position Y = " << posY << endl;
+
 
       DetNumberX_Position.push_back(ff+1);
       DetNumberY_Position.push_back(ff+1);
@@ -581,11 +586,11 @@ void TCATSPhysics::BuildSimplePhysicalEvent()
 }
 
 
-double TCATSPhysics::AnalyseX(TCATSData* Data, 
-			      vector< vector <double> > 	        &Pedestal_X 		,
+double TCATSPhysics::AnalyseX(//TCATSData* Data, 
+			      //vector< vector <double> > 	        &Pedestal_X 		,
 			      //vector< vector< vector<double> > > 	&OnlineCalib_X_E,
-			      vector< vector <double> > 		&Threshold_X 	,
-			      vector< vector< vector<double> > >        &StripPositionX,
+			      //vector< vector <double> > 		&Threshold_X 	,
+			      //vector< vector< vector<double> > >        &StripPositionX,
 			      int ff,
 			      int NumberOfCATSHit)
 {
@@ -601,25 +606,26 @@ double TCATSPhysics::AnalyseX(TCATSData* Data,
   double ChargeX_Buffer = 0;
   double CalculatedStripX=0;
 
-  for(UShort_t i =0; i<Data->GetCATSMultX(); i++)
+  for(UShort_t i =0; i<EventData->GetCATSMultX(); i++)
     {
-      // cout <<  Data->GetCATSDetX(i)<< endl;  
-      //cout <<  Data->GetCATSStripX(i)<< endl;  
+      // cout <<  EventData->GetCATSDetX(i)<< endl;  
+      //cout <<  EventData->GetCATSStripX(i)<< endl;  
       // cout << "ff+1 = " << ff+1 << endl;
 
-      if( Data->GetCATSDetX(i) == ff+1 )
+      if( EventData->GetCATSDetX(i) == ff+1 )
 	{
-	  int NX = Data->GetCATSDetX(i);   
-	  int StrX = Data->GetCATSStripX(i) ;   // cout << NX << " " << StrX << endl ;
+	  int NX = EventData->GetCATSDetX(i);   
+	  int StrX = EventData->GetCATSStripX(i) ;   // cout << NX << " " << StrX << endl ;
 	  
 	  if(NX > 2 || StrX > 28)	cout << NX << " " << StrX << endl ;
 	  
-	  double Q = Data->GetCATSChargeX(i) + gRandom->Rndm() - Pedestal_X[NX-1][StrX-1] ;
+	  double Q = EventData->GetCATSChargeX(i) + gRandom->Rndm() - Pedestal_X[NX-1][StrX-1] ;
 	  //ChargeX_Buffer = OnlineCalib_X_E[NX-1][StrX-1][0] + Q * OnlineCalib_X_E[NX-1][StrX-1][1] + Q*Q * OnlineCalib_X_E[NX-1][StrX-1][2] ;
 
-	  CalibrationManager::getInstance()->ApplyCalibration("CATS/"+itoa(NX)+"_X"+itoa(StrX)+"_Q",Q);
+	  ChargeX_Buffer = CalibrationManager::getInstance()->ApplyCalibration("CATS/"+itoa(NX)+"_X"+itoa(StrX)+"_Q",Q);
+
 	
-	  if(Data->GetCATSChargeX(i) > Threshold_X[NX-1][StrX-1] && NX <= NumberOfCATSHit  && StrX < 28)
+	  if(EventData->GetCATSChargeX(i) > Threshold_X[NX-1][StrX-1] && NX <= NumberOfCATSHit  && StrX < 28)
 	    {  
 	      //  cout <<  Threshold_X[NX-1][StrX-1] << endl;
 
@@ -657,7 +663,8 @@ double TCATSPhysics::AnalyseX(TCATSData* Data,
   if(ReconstructionMethodX[ff] == BAR3) CalculatedStripX = Barycentric3Method( Chargex, StripMaxX[ff] );
   if(ReconstructionMethodX[ff] == BAR4) CalculatedStripX = Barycentric4Method( Chargex, StripMaxX[ff] );
   if(ReconstructionMethodX[ff] == SECHS)CalculatedStripX = HyperbolicSequentMethod( Chargex, StripMaxX[ff] ); 
-  if(ReconstructionMethodX[ff] == GAUSS)CalculatedStripX = GaussianMethodX(ff, Chargex, StripMaxX[ff], StripPositionX);
+  if(ReconstructionMethodX[ff] == GAUSS)CalculatedStripX = GaussianMethodX(ff, Chargex, StripMaxX[ff]);
+  //  if(ReconstructionMethodX[ff] == GAUSS)CalculatedStripX = GaussianMethodX(ff, Chargex, StripMaxX[ff], StripPositionX);
   
   // else cout << "Error in the choice of the method!" << endl;
   
@@ -665,11 +672,11 @@ double TCATSPhysics::AnalyseX(TCATSData* Data,
   return(CalculatedStripX);
 }
 
-double TCATSPhysics::AnalyseY(TCATSData* Data, 
-			      vector< vector <double> > 	        &Pedestal_Y 		,
+double TCATSPhysics::AnalyseY(//TCATSEventData* EventData, 
+			      //vector< vector <double> > 	        &Pedestal_Y 		,
 			      //vector< vector< vector<double> > > 	&OnlineCalib_Y_E,
-			      vector< vector <double> > 		&Threshold_Y 	,
-			      vector< vector< vector<double> > >        &StripPositionY,
+			      //vector< vector <double> > 		&Threshold_Y 	,
+			      //vector< vector< vector<double> > >        &StripPositionY,
 			      int ff,
 			      int NumberOfCATSHit)
 {
@@ -690,25 +697,25 @@ double TCATSPhysics::AnalyseY(TCATSData* Data,
 
   double CalculatedStripY=0;
   
-  for(UShort_t i =0; i<Data->GetCATSMultY(); i++)
+  for(UShort_t i =0; i<EventData->GetCATSMultY(); i++)
     {
-      if( Data->GetCATSDetY(i) == ff+1 )
+      if( EventData->GetCATSDetY(i) == ff+1 )
 	{ 
-	  int NY	 = Data	->	GetCATSDetY(i);
-	  int StrY = Data	->	GetCATSStripY(i) ;//	cout << NY << endl ; //" " << StrY << endl ;
+	  int NY	 = EventData	->	GetCATSDetY(i);
+	  int StrY = EventData	->	GetCATSStripY(i) ;//	cout << NY << endl ; //" " << StrY << endl ;
 	  
 	  if(NY > 2 || StrY > 32)	cout << NY << " " << StrY << endl ;
 	  
 	  if(StrY < 28)
 	    {	
-	      double Q = Data->GetCATSChargeY(i) + gRandom->Rndm() - Pedestal_Y[NY-1][StrY-1];
+	      double Q = EventData->GetCATSChargeY(i) + gRandom->Rndm() - Pedestal_Y[NY-1][StrY-1];
 	      //ChargeY_Buffer = OnlineCalib_Y_E[NY-1][StrY-1][0] + Q * OnlineCalib_Y_E[NY-1][StrY-1][1] + Q*Q * OnlineCalib_Y_E[NY-1][StrY-1][2] ;
-	      CalibrationManager::getInstance()->ApplyCalibration("CATS/"+itoa(NY)+"_Y"+itoa(StrY)+"_Q",Q);
+	      ChargeY_Buffer = CalibrationManager::getInstance()->ApplyCalibration("CATS/"+itoa(NY)+"_Y"+itoa(StrY)+"_Q",Q);
 	    }
 	  
 	  else {ChargeY_Buffer = 0 ;}
 	  
-	  if(Data->GetCATSChargeY(i) > Threshold_Y[NY-1][StrY-1] && NY <= NumberOfCATSHit  && StrY < 28)
+	  if(EventData->GetCATSChargeY(i) > Threshold_Y[NY-1][StrY-1] && NY <= NumberOfCATSHit  && StrY < 28)
 	    {
 	      //   cout <<  Threshold_Y[NY-1][StrY-1] << endl;
 	      
@@ -765,7 +772,8 @@ double TCATSPhysics::AnalyseY(TCATSData* Data,
   if(ReconstructionMethodY[ff] == BAR3) CalculatedStripY = Barycentric3Method( Chargey, StripMaxY[ff] );
   if(ReconstructionMethodY[ff] == BAR4) CalculatedStripY = Barycentric4Method( Chargey, StripMaxY[ff] );
   if(ReconstructionMethodY[ff] == SECHS)CalculatedStripY = HyperbolicSequentMethod( Chargey, StripMaxY[ff] ); 
-  if(ReconstructionMethodY[ff] == GAUSS)CalculatedStripY = GaussianMethodY(ff, Chargey, StripMaxY[ff], StripPositionY);
+  if(ReconstructionMethodY[ff] == GAUSS)CalculatedStripY = GaussianMethodY(ff, Chargey, StripMaxY[ff]);
+  //if(ReconstructionMethodY[ff] == GAUSS)CalculatedStripY = GaussianMethodY(ff, Chargey, StripMaxY[ff], StripPositionY);
 
   // else cout << "Error in the choice of the method!" << endl;
   
@@ -794,7 +802,7 @@ reconstruction TCATSPhysics::ChooseReconstruction(int ff, int type, double * cha
   return(method);
 } 
 
-double  TCATSPhysics::CalculatePositionX( vector< vector< vector<double> > >  &StripPositionX,
+double  TCATSPhysics::CalculatePositionX( //vector< vector< vector<double> > >  &StripPositionX,
 					  int                                 StripMaxX,
 					  double*                             Chargex,
 					  double                              CalculatedStripX, 
@@ -830,8 +838,10 @@ double  TCATSPhysics::CalculatePositionX( vector< vector< vector<double> > >  &S
 
 	    if(method == NOcor) positionX = positionX;
 	    else if(method == cor){
-	      if(ReconstructionMethodX[ff] == BAR3) positionX = CorrectedPositionX3(ff, positionX, StripMaxX, 0.6, StripPositionX);
-	      if(ReconstructionMethodX[ff] == BAR4) positionX = CorrectedPositionX4(ff, Chargex, positionX, StripMaxX, 0.77, StripPositionX );
+	      //if(ReconstructionMethodX[ff] == BAR3) positionX = CorrectedPositionX3(ff, positionX, StripMaxX, 0.6, StripPositionX);
+	      //if(ReconstructionMethodX[ff] == BAR4) positionX = CorrectedPositionX4(ff, Chargex, positionX, StripMaxX, 0.77, StripPositionX );
+	      if(ReconstructionMethodX[ff] == BAR3) positionX = CorrectedPositionX3(ff, positionX, StripMaxX, 0.6);
+	      if(ReconstructionMethodX[ff] == BAR4) positionX = CorrectedPositionX4(ff, Chargex, positionX, StripMaxX, 0.77);
 	    }
 
 	  }
@@ -844,8 +854,10 @@ double  TCATSPhysics::CalculatePositionX( vector< vector< vector<double> > >  &S
 
 	    if(method == NOcor) positionX = positionX;
 	    else if(method == cor){
-	      if(ReconstructionMethodX[ff] == BAR3) positionX = CorrectedPositionX3(ff, positionX, StripMaxX, 0.53, StripPositionX);            
-	      if(ReconstructionMethodX[ff] == BAR4) positionX = CorrectedPositionX4(ff, Chargex, positionX, StripMaxX, 0.67, StripPositionX);
+	      //if(ReconstructionMethodX[ff] == BAR3) positionX = CorrectedPositionX3(ff, positionX, StripMaxX, 0.53, StripPositionX);            
+	      //if(ReconstructionMethodX[ff] == BAR4) positionX = CorrectedPositionX4(ff, Chargex, positionX, StripMaxX, 0.67, StripPositionX);
+	      if(ReconstructionMethodX[ff] == BAR3) positionX = CorrectedPositionX3(ff, positionX, StripMaxX, 0.53);            
+	      if(ReconstructionMethodX[ff] == BAR4) positionX = CorrectedPositionX4(ff, Chargex, positionX, StripMaxX, 0.67);
 	    }
 	  }
 	else  cout << "only 2CATS!! ff = " << ff << endl;
@@ -859,7 +871,7 @@ double  TCATSPhysics::CalculatePositionX( vector< vector< vector<double> > >  &S
 }
 
 
-double  TCATSPhysics::CalculatePositionY( vector< vector< vector<double> > >  &StripPositionY,
+double  TCATSPhysics::CalculatePositionY(// vector< vector< vector<double> > >  &StripPositionY,
 					  int                                 StripMaxY,
 					  double *                            Chargey,
 					  double                              CalculatedStripY, 
@@ -898,16 +910,20 @@ double  TCATSPhysics::CalculatePositionY( vector< vector< vector<double> > >  &S
 	  if(ff ==0){
 	    if(method == NOcor) positionY = positionY;
 	    else if(method == cor) {
-	      if(ReconstructionMethodY[ff] == BAR3) positionY = CorrectedPositionY3(ff, positionY, StripMaxY, 0.6, StripPositionY);
-	      if(ReconstructionMethodY[ff] == BAR4) positionY = CorrectedPositionY4(ff, Chargey, positionY, StripMaxY, 0.75, StripPositionY);
+	      if(ReconstructionMethodY[ff] == BAR3) positionY = CorrectedPositionY3(ff, positionY, StripMaxY, 0.6);
+	      if(ReconstructionMethodY[ff] == BAR4) positionY = CorrectedPositionY4(ff, Chargey, positionY, StripMaxY, 0.75);
+	      //if(ReconstructionMethodY[ff] == BAR3) positionY = CorrectedPositionY3(ff, positionY, StripMaxY, 0.6, StripPositionY);
+	      //if(ReconstructionMethodY[ff] == BAR4) positionY = CorrectedPositionY4(ff, Chargey, positionY, StripMaxY, 0.75, StripPositionY);
 	    }
 	  }
 	  
 	  else if(ff ==1){
 	    if(method == NOcor) positionY = positionY;
 	    else if(method == cor){
-	      if(ReconstructionMethodY[ff] == BAR3) positionY = CorrectedPositionY3(ff, positionY, StripMaxY, 0.57, StripPositionY);
-	      if(ReconstructionMethodY[ff] == BAR4) positionY = CorrectedPositionY4(ff, Chargey, positionY, StripMaxY, 0.7, StripPositionY);
+	      if(ReconstructionMethodY[ff] == BAR3) positionY = CorrectedPositionY3(ff, positionY, StripMaxY, 0.57);
+	      if(ReconstructionMethodY[ff] == BAR4) positionY = CorrectedPositionY4(ff, Chargey, positionY, StripMaxY, 0.7);
+	      //if(ReconstructionMethodY[ff] == BAR3) positionY = CorrectedPositionY3(ff, positionY, StripMaxY, 0.57, StripPositionY);
+	      //if(ReconstructionMethodY[ff] == BAR4) positionY = CorrectedPositionY4(ff, Chargey, positionY, StripMaxY, 0.7, StripPositionY);
 	    }
 	  }
 	  
@@ -962,7 +978,7 @@ double TCATSPhysics:: HyperbolicSequentMethod( double* Charge , int StripMax )
 }
 
 
-double TCATSPhysics:: GaussianMethodX(int ff, double* Chargex , int StripMax, vector< vector< vector<double> > >  &StripPositionX)
+double TCATSPhysics:: GaussianMethodX(int ff, double* Chargex , int StripMax)//, vector< vector< vector<double> > >  &StripPositionX)
 {
   int StripMax_ = StripMax - 1;
   double gauss = -1000;
@@ -1053,7 +1069,7 @@ double TCATSPhysics:: GaussianMethodX(int ff, double* Chargex , int StripMax, ve
 }
 
 
-double TCATSPhysics:: GaussianMethodY(int ff, double* Chargey , int StripMax, vector< vector< vector<double> > >  &StripPositionY)
+double TCATSPhysics:: GaussianMethodY(int ff, double* Chargey , int StripMax)//, vector< vector< vector<double> > >  &StripPositionY)
 {
   double Q[3];
   double StripPos[3];
@@ -1252,7 +1268,7 @@ double TCATSPhysics:: Barycentric4Method( double* Charge , int StripMax )
 }
 
 
-double TCATSPhysics::CorrectedPositionX3(int ff, double Position, int StripMax, double a, vector< vector< vector<double> > >  &StripPositionX )
+double TCATSPhysics::CorrectedPositionX3(int ff, double Position, int StripMax, double a) //, vector< vector< vector<double> > >  &StripPositionX )
 {
   double Corrected_Position = 0;
   int StripMax_ = StripMax -1;
@@ -1263,7 +1279,7 @@ double TCATSPhysics::CorrectedPositionX3(int ff, double Position, int StripMax, 
   return Corrected_Position;
 }
 
-double TCATSPhysics::CorrectedPositionY3(int ff, double Position, int StripMax, double a, vector< vector< vector<double> > >  &StripPositionY )
+double TCATSPhysics::CorrectedPositionY3(int ff, double Position, int StripMax, double a) //, vector< vector< vector<double> > >  &StripPositionY )
 {
   double Corrected_Position = 0;
   int StripMax_ = StripMax -1;
@@ -1274,7 +1290,7 @@ double TCATSPhysics::CorrectedPositionY3(int ff, double Position, int StripMax, 
   return Corrected_Position;
 }
 
-double TCATSPhysics::CorrectedPositionX4(int ff, double* Charge, double Position, int StripMax, double b, vector< vector< vector<double> > >  &StripPositionX )
+double TCATSPhysics::CorrectedPositionX4(int ff, double* Charge, double Position, int StripMax, double b) //, vector< vector< vector<double> > >  &StripPositionX )
 {
   double Corrected_Position = 0;
   double xmax = 0;
@@ -1295,7 +1311,7 @@ double TCATSPhysics::CorrectedPositionX4(int ff, double* Charge, double Position
   return Corrected_Position;
 }
 
-double TCATSPhysics::CorrectedPositionY4(int ff, double* Charge, double Position, int StripMax, double b, vector< vector< vector<double> > >  &StripPositionY )
+double TCATSPhysics::CorrectedPositionY4(int ff, double* Charge, double Position, int StripMax, double b) //, vector< vector< vector<double> > >  &StripPositionY )
 {
   double Corrected_Position = 0;
   double xmax = 0;
