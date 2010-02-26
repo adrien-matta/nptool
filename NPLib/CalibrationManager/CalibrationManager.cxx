@@ -107,6 +107,8 @@ void CalibrationManager::LoadParameterFromFile()
 		
 		for(unsigned int i = 0 ; i < fFileList.size() ; i++)
 			{
+			  cout << fFileList[i].c_str() << endl;
+
 				CalibFile.open( fFileList[i].c_str() );
 				map<string,string>::iterator it ;
 				
@@ -139,7 +141,8 @@ void CalibrationManager::LoadParameterFromFile()
 								vector<double> Coeff ;
 								while( !theLine.eof() )
 									{
-										theLine >> DataBuffer ; Coeff.push_back( atof(DataBuffer.c_str()) ) ;
+										theLine >> DataBuffer ; 
+										Coeff.push_back( atof(DataBuffer.c_str()) ) ;
 									}
 									
 								//	Check this parameter is not already define

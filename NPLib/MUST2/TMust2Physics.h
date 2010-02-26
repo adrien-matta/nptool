@@ -43,8 +43,8 @@ class TMust2Physics : public TObject, public NPA::VDetector
 		~TMust2Physics() {};
 
 	public: 
-	void Clear()									;	
-  void Clear(const Option_t*) {};
+	void Clear()	              ;	
+	void Clear(const Option_t*) {};
 
 	public: 
 	vector < TVector2 > Match_X_Y() ;
@@ -147,8 +147,8 @@ class TMust2Physics : public TObject, public NPA::VDetector
 
 	 	private:	//	Root Input and Output tree classes
 				
-				TMust2Data* 	  	EventData				;//!
-				TMust2Physics* 	  EventPhysics		;//!
+		TMust2Data* 	  EventData				;//!
+		TMust2Physics* 	  EventPhysics		;//!
 
 
 		private:	//	Spatial Position of Strip Calculated on bases of detector position

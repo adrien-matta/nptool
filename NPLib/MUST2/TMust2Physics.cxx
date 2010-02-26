@@ -40,9 +40,9 @@ ClassImp(TMust2Physics)
 TMust2Physics::TMust2Physics() 
 	{
 		EventMultiplicity 	= 0 							;
-		EventData 					= new TMust2Data	;
-		EventPhysics 				= this						;
-		NumberOfTelescope		= 0								;
+		EventData 		= new TMust2Data	;
+		EventPhysics 		= this						;
+		NumberOfTelescope	= 0								;
 	}
 		
 ///////////////////////////////////////////////////////////////////////////
@@ -478,8 +478,8 @@ void TMust2Physics::ReadConfiguration(string Path)
    // C:X1_Y128   --> X:1    Y:128
    // D:X128_Y128 --> X:128  Y:128
 
-   double Ax , Bx , Cx , Dx , Ay , By , Cy , Dy , Az , Bz , Cz , Dz           	;
-   TVector3 A , B , C , D                                          				;
+   double Ax , Bx , Cx , Dx , Ay , By , Cy , Dy , Az , Bz , Cz , Dz    	;
+   TVector3 A , B , C , D                                          	;
    double Theta = 0 , Phi = 0 , R = 0 , beta_u = 0 , beta_v = 0 , beta_w = 0    ;
 
    bool check_A = false 	;
@@ -500,7 +500,7 @@ void TMust2Physics::ReadConfiguration(string Path)
       
       	getline(ConfigFile, LineBuffer);
 
-		//	If line is a Start Up Must2 bloc, Reading toggle to true      
+		//If line is a Start Up Must2 bloc, Reading toggle to true      
       	if (LineBuffer.compare(0, 11, "M2Telescope") == 0) 
 	      	{
 	        	 cout << "///" << endl           		;
@@ -525,7 +525,7 @@ void TMust2Physics::ReadConfiguration(string Path)
 			
 					//	Finding another telescope (safety), toggle out
 				else if (DataBuffer.compare(0, 11, "M2Telescope") == 0) {
-						cout << "WARNING: Another Telescope is find before standard sequence of Token, Error may occured in Telecope definition" << endl ;
+						cout << "WARNING: Another Telescope is found before standard sequence of Token, Error may occured in Telecope definition" << endl ;
 						ReadingStatus = false ;
 						}
 			
@@ -735,18 +735,18 @@ void TMust2Physics::AddParameterToCalibrationManager()
 //	In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
 void TMust2Physics::InitializeRootInput() 		
 	{
-		TChain* inputChain = RootInput::getInstance()->GetChain()	;
-		inputChain->SetBranchStatus( "MUST2" , true )				;
-		inputChain->SetBranchStatus( "fMM_*" , true )				;
-		inputChain->SetBranchAddress( "MUST2" , &EventData )		;
+	  TChain* inputChain = RootInput::getInstance()->GetChain()	;
+	  inputChain->SetBranchStatus( "MUST2" , true )			;
+	  inputChain->SetBranchStatus( "fMM_*" , true )			;
+	  inputChain->SetBranchAddress( "MUST2" , &EventData )		;
 	}
 
 
 //	Create associated branches and associated private member DetectorPhysics address
 void TMust2Physics::InitializeRootOutput() 	
 	{
-		TTree* outputTree = RootOutput::getInstance()->GetTree()		;
-		outputTree->Branch( "MUST2" , "TMust2Physics" , &EventPhysics )	;
+	  TTree* outputTree = RootOutput::getInstance()->GetTree()		;
+	  outputTree->Branch( "MUST2" , "TMust2Physics" , &EventPhysics )	;
 	}
 
 

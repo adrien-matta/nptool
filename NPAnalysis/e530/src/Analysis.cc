@@ -10,7 +10,7 @@ int main(int argc,char** argv)
       cout << 
 	"you need to specify both a Reaction file and a Detector file such as : "<< endl;
       cout << 
-	"Analysis 	myReaction.reaction myDetector.detector runToRead.run" 	<< endl;
+	"Analysis 	myReaction.reaction myDetector.detector myCalib.txt runToRead.run" 	<< endl;
       return 0;
     } 
 	
@@ -23,7 +23,7 @@ int main(int argc,char** argv)
 	//	First of All instantiate RootInput and Output
 	//	Detector will be attached later
 	RootInput:: getInstance(runToTreatFileName)	;
-	RootOutput::getInstance("Analysis/60Fe_AnalyzedData", "AnalyzedTree")	;
+	RootOutput::getInstance("Analysis/60Fe_AnalysedData", "AnalysedTree")	;
 	
 	//	Instantiate some Reaction
 	NPL::Reaction*  e530Reaction = new Reaction								;

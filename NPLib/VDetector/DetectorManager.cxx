@@ -5,7 +5,8 @@
 #include <fstream>
 #include <cstdlib>
 
-//	Detector	
+//	Detector
+#include "../CATS/TCATSPhysics.h"
 #include "../MUST2/TMust2Physics.h"
 #include "../SSSD/TSSSDPhysics.h"
 #include "../Plastic/TPlasticPhysics.h"
@@ -37,11 +38,12 @@ void DetectorManager::ReadConfigurationFile(string Path)
    string DataBuffer;
 
    /////////Boolean////////////////////
-   bool MUST2               = false;
-   bool AddThinSi           = false;
-   bool ScintillatorPlastic = false;
-   bool GeneralTarget       = false;
-   bool GPDTracker          = false;
+     bool CATS                = false;  
+     bool MUST2               = false;
+     bool AddThinSi           = false;
+     bool ScintillatorPlastic = false;
+     bool GeneralTarget       = false;
+     bool GPDTracker          = false;
 
    //////////////////////////////////////////////////////////////////////////////////////////
    string GlobalPath = getenv("NPTOOL");
@@ -84,6 +86,26 @@ void DetectorManager::ReadConfigurationFile(string Path)
          AddDetector("GASPARD", myDetector);
       }
 
+      ////////////////////////////////////////////
+      //////// Search for CATS Detector   ////////
+      ////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 9,"CATSArray") == 0 && CATS == false) {
+	CATS = true;
+	cout << "//////// CATS Detectors ////////" << endl << endl;
+	
+	// Instantiate the new array as a VDetector Object
+	VDetector* myDetector = new TCATSPhysics();
+	
+	// Read Position of Telescope
+	ConfigFile.close();
+	myDetector->ReadConfiguration(Path);
+	ConfigFile.open(Path.c_str());
+	
+	// Add array to the VDetector Vector
+	AddDetector("CATS", myDetector);
+      }
+      
+      
       ////////////////////////////////////////////
       //////// Search for MUST2 Array  ////////
       ////////////////////////////////////////////

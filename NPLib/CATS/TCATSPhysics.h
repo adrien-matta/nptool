@@ -31,14 +31,17 @@
 //	NPLib
 #include "TCATSData.h"
 #include "../include/VDetector.h"
+#include "../include/CalibrationManager.h"
 
+using namespace std ;
 
 /* J'aime pas trop cette partie, je pense que deja ca pourrait etre mieux une variable interne te disant quel methode tu as utiliser
 et d'ailleur d'ecrire cette varaible dans l'arbre de sorti pour une question de tracabilite.
 Ensuite tu peux faire un Set et un Get de cette variable (je preconise un string avec un nom completement lisible... :p ).
 Ensuite dans ton build tu appelle une methode unique, qui elle appellera la methode correcte apres avoir fait les tests...
 
-Si apres tu veux vraiment ameliorer les performances le mieux est de definir un pointer de fonction que tu appelle a chaque event... mais c'est un peu plus complique,
+Si apres tu veux vraiment ameliorer les performances le mieux est de definir un pointer de fonction que tu appelle a chaque event... 
+mais c'est un peu plus complique,
 voila un liens si jamais ca t'interresse: http://www.newty.de/fpt/intro.html
 
 Ceci dit ce n'est que des points de detail.
@@ -101,44 +104,50 @@ class TCATSPhysics : public TObject, public NPA::VDetector
 	  vector<reconstruction>       ReconstructionMethodX;
 	  vector<reconstruction>       ReconstructionMethodY;
 	 
-	 private:	//	Root Input and Output tree classes
-				
-				TCATSData* 	  		EventData				;//!
-				TCATSPhysics* 	  EventPhysics		;//!
-	 
-	 public:		//	Innherited from VDetector Class
-			
-		//	Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-		void ReadConfiguration(string) 				;
-
-		//	Add Parameter to the CalibrationManger
-		void AddParameterToCalibrationManager()	;		
+	private:	//	Root Input and Output tree classes
+	  
+	  TCATSData* 	  	  EventData			;//!
+	  TCATSPhysics* 	  EventPhysics		;//!
+	  
+	public:		//	Innherited from VDetector Class
+	  
+	  //	Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
+	  void ReadConfiguration(string) 				;
+	  
+	  //	Add Parameter to the CalibrationManger
+	  void AddParameterToCalibrationManager()	;		
+	  
+	  //	Activated associated Branches and link it to the private member DetectorData address
+	  //	In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
+	  void InitializeRootInput() 					;
+	  
+	  //	Create associated branches and associated private member DetectorPhysics address
+	  void InitializeRootOutput() 		 		;
+	  
+	  //	This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
+	  void BuildPhysicalEvent()					;
+	  
+	  //	Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
+	  //	This method aimed to be used for analysis performed during experiment, when speed is requiered.
+	  //	NB: This method can eventually be the same as BuildPhysicalEvent.
+	  void BuildSimplePhysicalEvent()				;
+	  
+	  //	Those two method all to clear the Event Physics or Data
+	  void ClearEventPhysics()		{Clear();}		
+	  void ClearEventData()			{EventData->Clear();}		
+	  
+	  
+	private :
+	  
+	  int NumberOfDetector	;//!	
 		
-		//	Activated associated Branches and link it to the private member DetectorData address
-		//	In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
-		void InitializeRootInput() 					;
-
-		//	Create associated branches and associated private member DetectorPhysics address
-		void InitializeRootOutput() 		 		;
-		
-		//	This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
-		void BuildPhysicalEvent()					;
-		
-		//	Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
-		//	This method aimed to be used for analysis performed during experiment, when speed is requiered.
-		//	NB: This method can eventually be the same as BuildPhysicalEvent.
-		void BuildSimplePhysicalEvent()				;
-
-		//	Those two method all to clear the Event Physics or Data
-		void ClearEventPhysics()		{Clear();}		
-		void ClearEventData()				{EventData->Clear();}		
-	 
-	 
 	public :	//	Specific to CATS
 
 	  void	Clear();
 	  void	Dump();
 	  
+	  void AddCATS(TVector3 A, TVector3 B, TVector3 C, TVector3 D);
+
 	  void BuildSimplePhysicalEvent(  TCATSData* 	                        Data			, 
 																	  vector< vector <double> > 	        &Ped_X 	        ,
 																	  vector< vector <double> > 	        &Ped_Y 	        ,
@@ -240,5 +249,15 @@ class TCATSPhysics : public TObject, public NPA::VDetector
 	  ClassDef(TCATSPhysics,1)  // CATSPhysics structure
 	};
 
+
+
+
+
+namespace LOCAL_CATS
+{
+//	tranform an integer to a string
+  string itoa(int value);
+
+}
 
 #endif

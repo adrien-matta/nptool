@@ -18,22 +18,34 @@
  * Comment:                                                                  *
  *                                                                           *
  *****************************************************************************/
-#include <iostream>
-using namespace std;
 
-#include "TRandom.h"
+
 #include "TCATSPhysics.h"
+using namespace LOCAL_CATS;
+
+//	STL
 #include <cmath>
 #include <algorithm>
+#include <sstream>
+#include <fstream>
+#include <iostream>
+#include <stdlib.h>
 
+//	NPL
+#include "RootInput.h"
+#include "RootOutput.h"
 
+//	ROOT
+#include "TChain.h"
+#include "TRandom.h"
 
 ClassImp(TCATSPhysics)
 
   TCATSPhysics::TCATSPhysics()
 {
-  EventData 					= new TCATSData	;
-	EventPhysics 				= this						;
+  EventData 				= new TCATSData()	;
+  EventPhysics 				= this						;
+  NumberOfDetector                      = 0                     ;
 }
 
 
@@ -47,42 +59,207 @@ TCATSPhysics::~TCATSPhysics()
 
 			
 //	Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-void ReadConfiguration(string) 				
- 	{
+void TCATSPhysics::ReadConfiguration(string Path) 				
+{
+  ifstream ConfigFile;
+  ConfigFile.open(Path.c_str());
+  string LineBuffer          		;
+  string DataBuffer          		;
+  
+  double Ax , Bx , Cx , Dx , Ay , By , Cy , Dy , Az , Bz , Cz , Dz    	;
+  TVector3 A , B , C , D                                          	;
+
+  bool check_A = false 	;
+  bool check_B = false  	;
+  bool check_C = false 	;
+  bool check_D = false 	;
+
+  bool ReadingStatus = false ;
+
+ 
+  while (!ConfigFile.eof()) 
+    {
+      getline(ConfigFile, LineBuffer);
+      
+      //If line is a Start Up CATS bloc, Reading toggle to true      
+      if (LineBuffer.compare(0, 12, "CATSDetector") == 0) 
+	{
+	  cout << "///" << endl           		;
+	  cout << "CATS Detector found: " << endl   ;  
+	  ReadingStatus = true 					;
 	}
+      
+      //	Else don't toggle to Reading Block Status
+      else ReadingStatus = false ;
+      
+      //	Reading Block
+      while(ReadingStatus)
+	{
+	  ConfigFile >> DataBuffer ;
+	  //	Comment Line 
+	  if(DataBuffer.compare(0, 1, "%") == 0) {
+	    ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
+	  }
+	  
+	  //	Finding another telescope (safety), toggle out
+	  else if (DataBuffer.compare(0, 12, "CATSDetector") == 0) {
+	    cout << "WARNING: Another CATS is found before standard sequence of Token, Error may occured in CATS definition" << endl ;
+	    ReadingStatus = false ;
+	  }
+	  
+	  //	Position method
+	  
+	  else if (DataBuffer.compare(0, 6, "X1_Y1=") == 0) {
+	    check_A = true;
+	    ConfigFile >> DataBuffer ;
+	    Ax = atof(DataBuffer.c_str()) ;
+	    Ax = Ax  ;
+	    ConfigFile >> DataBuffer ;
+	    Ay = atof(DataBuffer.c_str()) ;
+	    Ay = Ay  ;
+	    ConfigFile >> DataBuffer ;
+	    Az = atof(DataBuffer.c_str()) ;
+	    Az = Az  ;
+	    
+	    A = TVector3(Ax, Ay, Az);
+	    cout << "X1 Y1 corner position : (" << A.X() << ";" << A.Y() << ";" << A.Z() << ")" << endl;
+	  }
+	  
+	  else if (DataBuffer.compare(0, 7, "X28_Y1=") == 0) {
+	    check_B = true;
+	    ConfigFile >> DataBuffer ;
+	    Bx = atof(DataBuffer.c_str()) ;
+	    Bx = Bx  ;
+	    ConfigFile >> DataBuffer ;
+	    By = atof(DataBuffer.c_str()) ;
+	    By = By  ;
+	    ConfigFile >> DataBuffer ;
+	    Bz = atof(DataBuffer.c_str()) ;
+	    Bz = Bz  ;
+	    
+	    B = TVector3(Bx, By, Bz);
+	    cout << "X28 Y1 corner position : (" << B.X() << ";" << B.Y() << ";" << B.Z() << ")" << endl;
+	  }
+	  
+	  else if (DataBuffer.compare(0, 7, "X1_Y28=") == 0) {
+	    check_C = true;
+	    ConfigFile >> DataBuffer ;
+	    Cx = atof(DataBuffer.c_str()) ;
+	    Cx = Cx  ;
+	    ConfigFile >> DataBuffer ;
+	    Cy = atof(DataBuffer.c_str()) ;
+	    Cy = Cy  ;
+	    ConfigFile >> DataBuffer ;
+	    Cz = atof(DataBuffer.c_str()) ;
+	    Cz = Cz  ;
+	    
+	    C = TVector3(Cx, Cy, Cz);
+	    cout << "X1 Y28 corner position : (" << C.X() << ";" << C.Y() << ";" << C.Z() << ")" << endl;
+	  }
+	  
+	  else if (DataBuffer.compare(0, 8, "X28_Y28=") == 0) {
+	    check_D = true;
+	    ConfigFile >> DataBuffer ;
+	    Dx = atof(DataBuffer.c_str()) ;
+	    Dx = Dx  ;
+	    ConfigFile >> DataBuffer ;
+	    Dy = atof(DataBuffer.c_str()) ;
+	    Dy = Dy  ;
+	    ConfigFile >> DataBuffer ;
+	    Dz = atof(DataBuffer.c_str()) ;
+	    Dz = Dz  ;
+	    
+	    D = TVector3(Dx, Dy, Dz);
+	    cout << "X28 Y28 corner position : (" << D.X() << ";" << D.Y() << ";" << D.Z() << ")" << endl;
+	    
+	  }
+	  
+	  //	End Position Method
+
+	  /////////////////////////////////////////////////
+	    //	If All necessary information there, toggle out
+	    if (check_A && check_B && check_C && check_D)  
+	      { 
+		ReadingStatus = false; 
+		
+		///Add The previously define telescope
+		  
+		  AddCATS(	A   ,
+				B   ,
+				C   ,
+				D  );
+		  
+		  
+		  check_A = false;
+		  check_B = false;
+		  check_C = false;
+		  check_D = false;
+	      }
+	}  
+		  
+    }
+
+  cout << endl << "/////////////////////////////" << endl<<endl;
+
+}
+
+void TCATSPhysics::AddCATS(TVector3 A, TVector3 B, TVector3 C, TVector3 D)
+{
+  //  CATSTelescope myCATS(A, B, C, D)	;
+  NumberOfDetector++			;
+  //myArray.push_back(myCATS)	        ;
+  //cout << "myArray = " << myArray.size() << endl;
+}
 
 //	Add Parameter to the CalibrationManger
-void AddParameterToCalibrationManager()	
- 	{
- 	// voir MUST2
-	}		
-		
+void TCATSPhysics::AddParameterToCalibrationManager()	
+{
+  CalibrationManager* Cal = CalibrationManager::getInstance();
+  
+  for(int i = 0 ; i < NumberOfDetector ; i++)
+    {
+      
+      for( int j = 0 ; j < 28 ; j++)
+	{
+	  Cal->AddParameter("CATS", "D"+itoa(i+1)+"_X"+itoa(j+1)+"_Q","CATS_D"+itoa(i+1)+"_X"+itoa(j+1)+"_Q")	;
+	  Cal->AddParameter("CATS", "D"+itoa(i+1)+"_Y"+itoa(j+1)+"_Q","CATS_D"+itoa(i+1)+"_Y"+itoa(j+1)+"_Q")	;
+	} 
+    }
+}		
+
 //	Activated associated Branches and link it to the private member DetectorData address
 //	In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
-void InitializeRootInput() 					
- 	{
- 	// voir MUST2
-	}
+void TCATSPhysics::InitializeRootInput() 					
+{
+  TChain* inputChain = RootInput::getInstance()->GetChain()	;
+  inputChain->SetBranchStatus( "CATS" , true )			;
+  inputChain->SetBranchStatus( "fCATS_*" , true )		;
+  inputChain->SetBranchAddress( "CATS" , &EventData )           ;
+}
 
 //	Create associated branches and associated private member DetectorPhysics address
-void InitializeRootOutput() 		 		
- 	{
- 	// voir MUST2
-	}
+void TCATSPhysics::InitializeRootOutput() 		 		
+{
+  TTree* outputTree = RootOutput::getInstance()->GetTree()		;
+  outputTree->Branch( "CATS" , "TCATSPhysics" , &EventPhysics )	;
+}
+
 		
-//	This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
-void BuildPhysicalEvent()					
- 	{
- 	// voir les commentaire fait la ou la methode existe deja
-	}
+//	This method is called at each event read from the Input Tree. Aim is to build treat Raw dat in order to extract physical parameter. 
+void TCATSPhysics::BuildPhysicalEvent()					
+{
+  // voir les commentaire fait la ou la methode existe deja
+}
 		
 //	Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
 //	This method aimed to be used for analysis performed during experiment, when speed is requiered.
 //	NB: This method can eventually be the same as BuildPhysicalEvent.
-void BuildSimplePhysicalEvent()				
- 	{
- 	// pourquoi pas une methode avec qui prend que le strip max par exemple...
-	}
+void TCATSPhysics::BuildSimplePhysicalEvent()				
+{
+
+  // cout <<  EventData-> GetCATSMultX() << endl;
+  // pourquoi pas une methode avec qui prend que le strip max par exemple...
+}
 
 
 
@@ -116,6 +293,8 @@ void TCATSPhysics::Clear()
 
   HitX = 0;
   HitY = 0;
+  
+  NumberOfDetector = 0;
 }
 
 
@@ -126,44 +305,43 @@ void TCATSPhysics::Dump()
 }
 
 /*
-Pas mal de chose a modifier:
-- supprimer l'histoire des calibration par exemple...
-- TCATSData doit etre un membre prive de la classe (non ecrit dans l'arbre de sorti), vois ce que j'ai fait sur MUST2
-- Les positions doivent aussi etre des membre prive non ecrit, comme dans MUST2
-- N'oublie pas que la methode ne doit plus avoir d'argument a la fin... (et qu'elle est deja declare plus haut...)
+  Pas mal de chose a modifier:
+  - supprimer l'histoire des calibration par exemple...
+  - TCATSData doit etre un membre prive de la classe (non ecrit dans l'arbre de sorti), vois ce que j'ai fait sur MUST2
+  - Les positions doivent aussi etre des membre prive non ecrit, comme dans MUST2
+  - N'oublie pas que la methode ne doit plus avoir d'argument a la fin... (et qu'elle est deja declare plus haut...)
 */
-void TCATSPhysics::BuildSimplePhysicalEvent( TCATSData* Data				, 
-					     vector< vector <double> > 			&Ped_X 		,
+void TCATSPhysics::BuildSimplePhysicalEvent( vector< vector <double> > 			&Ped_X 		,
 					     vector< vector <double> > 			&Ped_Y 		,
 					     vector< vector< vector<double> > > 	&OnlineCalib_X_E,
 					     vector< vector< vector<double> > > 	&OnlineCalib_Y_E,	
-					      vector< vector <double> > 		&Thresh_X 	,
+					     vector< vector <double> > 		&Thresh_X 	,
 					     vector< vector <double> > 			&Thresh_Y 	,
 					     vector< vector< vector<double> > >  &StripPositionX  	,
 					     vector< vector< vector<double> > >  &StripPositionY   	,
 					     vector<double>                      &StripPositionZ   	)
 {
   /*
-  int 	        HitX 	       = 0 	;
-  int 	        HitY 	       = 0 	;
+    int 	        HitX 	       = 0 	;
+    int 	        HitY 	       = 0 	;
   */    
 
   gRandom->SetSeed(0);
 
-  //Data->Dump();
+  //EventData->Dump();
   double CalculatedStripX, CalculatedStripY ;
   double posX =0 , posY = 0;
   
 
   //	How many CATS?
-  int NumberOfDetector = 0 ;
+  //int NumberOfDetector = 0 ;
   int DetectorID = -1;
   
-  for( ushort i = 0 ; i < Data->GetCATSMultX() ; i++ )
+  for( ushort i = 0 ; i < EventData->GetCATSMultX() ; i++ )
     { 
-      //  if( NumberOfDetector < Data->GetCATSDetX(i) ) NumberOfDetector = Data->GetCATSDetX(i)	;   //determination of the number of CATS detectors
+      //  if( NumberOfDetector < EventData->GetCATSDetX(i) ) NumberOfDetector = EventData->GetCATSDetX(i)	;   //determination of the number of CATS detectors
 
-      if( Data->GetCATSDetX(i) != DetectorID)  {
+      if( EventData->GetCATSDetX(i) != DetectorID)  {
 	NumberOfDetector++;
       }
 
@@ -198,8 +376,8 @@ void TCATSPhysics::BuildSimplePhysicalEvent( TCATSData* Data				,
       //int    ff = NumberOfDetector - gg -1 ;
       int ff = gg ;
            
-      CalculatedStripX = AnalyseX(Data, Ped_X , OnlineCalib_X_E, Thresh_X, StripPositionX, ff, NumberOfDetector);        //     cout << "Analyse X = " << CalculatedStripX << endl; 
-      CalculatedStripY = AnalyseY(Data, Ped_Y , OnlineCalib_Y_E, Thresh_Y, StripPositionY, ff, NumberOfDetector);        //    cout << "Analyse Y = " << CalculatedStripY << endl;
+      CalculatedStripX = AnalyseX(EventData, Ped_X , OnlineCalib_X_E, Thresh_X, StripPositionX, ff, NumberOfDetector);        //     cout << "Analyse X = " << CalculatedStripX << endl; 
+      CalculatedStripY = AnalyseY(EventData, Ped_Y , OnlineCalib_Y_E, Thresh_Y, StripPositionY, ff, NumberOfDetector);        //    cout << "Analyse Y = " << CalculatedStripY << endl;
 
       posX = CalculatePositionX(StripPositionX, StripMaxX[ff], Chargex, CalculatedStripX, ff, cor);   // cout << "Position X = " << posX << endl;
       posY = CalculatePositionY(StripPositionY, StripMaxY[ff], Chargey, CalculatedStripY, ff, cor);   // cout << "Position Y = " << posY << endl;
@@ -217,9 +395,9 @@ void TCATSPhysics::BuildSimplePhysicalEvent( TCATSData* Data				,
   if(NumberOfDetector>1)
     { 
       /*
-      cout << "PositionX[0]= " <<PositionX[0] << " PositionX[1] = " << PositionX[1] << " PositionX[0]-PositionX[1]= " << PositionX[0]-PositionX[1] << endl;
-      cout << "PositionY[0]= " <<PositionY[0] << " PositionY[1] = " << PositionY[1] << " PositionY[0]-PositionY[1]= " << PositionY[0]-PositionY[1] << endl;
-      cout << "PositionZ[0] = "<< PositionZ[0] << " PositionZ[1] = "<< PositionZ[1] << endl;
+	cout << "PositionX[0]= " <<PositionX[0] << " PositionX[1] = " << PositionX[1] << " PositionX[0]-PositionX[1]= " << PositionX[0]-PositionX[1] << endl;
+	cout << "PositionY[0]= " <<PositionY[0] << " PositionY[1] = " << PositionY[1] << " PositionY[0]-PositionY[1]= " << PositionY[0]-PositionY[1] << endl;
+	cout << "PositionZ[0] = "<< PositionZ[0] << " PositionZ[1] = "<< PositionZ[1] << endl;
       */
 
       if(PositionX[0] != -40 && PositionY[0] != -40 && PositionX[1] != -40 && PositionY[1] != -40) {
@@ -238,8 +416,8 @@ void TCATSPhysics::BuildSimplePhysicalEvent( TCATSData* Data				,
 	//cout << "t = " << t << endl;
 	
 	/* Adrien stuff
-	PositionOnTargetX = PositionX[0] + BeamDirection.X()*t;
-	PositionOnTargetY = PositionY[0] + BeamDirection.Y()*t;
+	   PositionOnTargetX = PositionX[0] + BeamDirection.X()*t;
+	   PositionOnTargetY = PositionY[0] + BeamDirection.Y()*t;
 	*/
 	
 	PositionOnTargetX = PositionX[0] + (PositionX[1] - PositionX[0]) * t;
@@ -248,8 +426,8 @@ void TCATSPhysics::BuildSimplePhysicalEvent( TCATSData* Data				,
 	BeamDirection.Unit();
 			
 	/* Pierre
-	PositionOnTargetX = PositionX[1] + (PositionX[1] - PositionX[0]) * L /l;
-	PositionOnTargetY = PositionY[1] + (PositionY[1] - PositionY[0]) * L /l;
+	   PositionOnTargetX = PositionX[1] + (PositionX[1] - PositionX[0]) * L /l;
+	   PositionOnTargetY = PositionY[1] + (PositionY[1] - PositionY[0]) * L /l;
 	*/
       }
 
@@ -413,19 +591,19 @@ double TCATSPhysics::AnalyseY(TCATSData* Data,
 	      ChargeSum_Y += ChargeY_Buffer;
 	      
 	      /*
-	      if(ff ==1 && StrY ==15) {
+		if(ff ==1 && StrY ==15) {
 		//	ChargeY_test.push_back( ChargeY_Buffer );   
 		//		Chargey_test[StrY-1] = ChargeY_Buffer ;  
 		ChargeY.push_back( -1 );   
 		Chargey[StrY-1] = -1 ;   
-	      }
+		}
 	      */
 	      //else{
-		//		ChargeY_test.push_back( ChargeY_Buffer );   
-		//		Chargey_test[StrY-1] = ChargeY_Buffer ;  
-		ChargeY.push_back( ChargeY_Buffer );   //   cout << "ChargeY_Buffer = " << ChargeY_Buffer << endl;
-		Chargey[StrY-1] = ChargeY_Buffer ;   // cout <<" Chargey[" << StrY-1 << "] " << Chargey[StrY-1] << endl;
-		//      }
+	      //		ChargeY_test.push_back( ChargeY_Buffer );   
+	      //		Chargey_test[StrY-1] = ChargeY_Buffer ;  
+	      ChargeY.push_back( ChargeY_Buffer );   //   cout << "ChargeY_Buffer = " << ChargeY_Buffer << endl;
+	      Chargey[StrY-1] = ChargeY_Buffer ;   // cout <<" Chargey[" << StrY-1 << "] " << Chargey[StrY-1] << endl;
+	      //      }
 	      
 	      StripY.push_back(StrY);
 	      DetNumberY.push_back(NY) ;
@@ -485,11 +663,11 @@ reconstruction TCATSPhysics::ChooseReconstruction(int ff, int type, double * cha
 } 
 
 double  TCATSPhysics::CalculatePositionX( vector< vector< vector<double> > >  &StripPositionX,
-			   int                                 StripMaxX,
-			   double*                             Chargex,
-			   double                              CalculatedStripX, 
-			   int                                 ff, 
-			   correction                          method)
+					  int                                 StripMaxX,
+					  double*                             Chargex,
+					  double                              CalculatedStripX, 
+					  int                                 ff, 
+					  correction                          method)
 {
   double positionX=-10;
 
@@ -498,50 +676,50 @@ double  TCATSPhysics::CalculatePositionX( vector< vector< vector<double> > >  &S
   else
     {
       // cout << "CalculatedStripX = " << CalculatedStripX  << endl;
-  //  Integer part
+      //  Integer part
       int IStripX = (int) CalculatedStripX ;  //  cout << "IStripX = " << IStripX  << endl;
   
-  // Decimal Part
+      // Decimal Part
       double DStripX = CalculatedStripX-IStripX ; // cout << "DStripX = " << DStripX  << endl;
   
-  if( DStripX > 0.5) {IStripX++; DStripX = DStripX-1 ;}     else {DStripX = DStripX;} 
+      if( DStripX > 0.5) {IStripX++; DStripX = DStripX-1 ;}     else {DStripX = DStripX;} 
     
-  // Calculate Geometrical Position 
-  if( IStripX > 0 &&  IStripX < 29 ) {
-    //if( IStripX>0 && IStripY>0 && StripMaxX[ff] > 0 && StripMaxY[ff] > 0 &&  StripMaxX[ff] < 29  && StripMaxY[ff] < 29 )
+      // Calculate Geometrical Position 
+      if( IStripX > 0 &&  IStripX < 29 ) {
+	//if( IStripX>0 && IStripY>0 && StripMaxX[ff] > 0 && StripMaxY[ff] > 0 &&  StripMaxX[ff] < 29  && StripMaxY[ff] < 29 )
   
-    // positionX = (DStripX)*2.54 + StripPositionX[ff][IStripX-1][0] ;  // conversion en mm initiale
+	// positionX = (DStripX)*2.54 + StripPositionX[ff][IStripX-1][0] ;  // conversion en mm initiale
   
-    if(ff==0)    //CATS1
-      {
-	positionX = -(DStripX)*2.54 + StripPositionX[ff][IStripX-1][0] ;
-	//	positionX =  2.54 * (15-CalculatedStripX) - 1.27 ;
-	//cout << "ecartX1 = " << positionX - (-(DStripX)*2.54 + StripPositionX[ff][IStripX-1][0]) << endl;
+	if(ff==0)    //CATS1
+	  {
+	    positionX = -(DStripX)*2.54 + StripPositionX[ff][IStripX-1][0] ;
+	    //	positionX =  2.54 * (15-CalculatedStripX) - 1.27 ;
+	    //cout << "ecartX1 = " << positionX - (-(DStripX)*2.54 + StripPositionX[ff][IStripX-1][0]) << endl;
 
-	if(method == NOcor) positionX = positionX;
-	else if(method == cor){
-	  if(ReconstructionMethodX[ff] == BAR3) positionX = CorrectedPositionX3(ff, positionX, StripMaxX, 0.6, StripPositionX);
-	  if(ReconstructionMethodX[ff] == BAR4) positionX = CorrectedPositionX4(ff, Chargex, positionX, StripMaxX, 0.77, StripPositionX );
-	}
+	    if(method == NOcor) positionX = positionX;
+	    else if(method == cor){
+	      if(ReconstructionMethodX[ff] == BAR3) positionX = CorrectedPositionX3(ff, positionX, StripMaxX, 0.6, StripPositionX);
+	      if(ReconstructionMethodX[ff] == BAR4) positionX = CorrectedPositionX4(ff, Chargex, positionX, StripMaxX, 0.77, StripPositionX );
+	    }
 
-      }
+	  }
     
-    else if(ff==1)    //CATS2
-      {
-	positionX = (DStripX)*2.54 + StripPositionX[ff][IStripX-1][0] ;
-	//	positionX =  2.54 * (CalculatedStripX-15) + 1.27 ;
-	//cout << "ecartX2 = " << positionX - ((DStripX)*2.54 + StripPositionX[ff][IStripX-1][0]) << endl;
+	else if(ff==1)    //CATS2
+	  {
+	    positionX = (DStripX)*2.54 + StripPositionX[ff][IStripX-1][0] ;
+	    //	positionX =  2.54 * (CalculatedStripX-15) + 1.27 ;
+	    //cout << "ecartX2 = " << positionX - ((DStripX)*2.54 + StripPositionX[ff][IStripX-1][0]) << endl;
 
-	if(method == NOcor) positionX = positionX;
-	else if(method == cor){
-	  if(ReconstructionMethodX[ff] == BAR3) positionX = CorrectedPositionX3(ff, positionX, StripMaxX, 0.53, StripPositionX);            
-	  if(ReconstructionMethodX[ff] == BAR4) positionX = CorrectedPositionX4(ff, Chargex, positionX, StripMaxX, 0.67, StripPositionX);
-	}
+	    if(method == NOcor) positionX = positionX;
+	    else if(method == cor){
+	      if(ReconstructionMethodX[ff] == BAR3) positionX = CorrectedPositionX3(ff, positionX, StripMaxX, 0.53, StripPositionX);            
+	      if(ReconstructionMethodX[ff] == BAR4) positionX = CorrectedPositionX4(ff, Chargex, positionX, StripMaxX, 0.67, StripPositionX);
+	    }
+	  }
+	else  cout << "only 2CATS!! ff = " << ff << endl;
       }
-    else  cout << "only 2CATS!! ff = " << ff << endl;
-  }
   
-  else  positionX = -40;
+      else  positionX = -40;
 
     }
  
@@ -550,11 +728,11 @@ double  TCATSPhysics::CalculatePositionX( vector< vector< vector<double> > >  &S
 
 
 double  TCATSPhysics::CalculatePositionY( vector< vector< vector<double> > >  &StripPositionY,
-			   int                                 StripMaxY,
-			   double *                            Chargey,
-			   double                              CalculatedStripY, 
-			   int                                 ff, 
-			   correction                          method)
+					  int                                 StripMaxY,
+					  double *                            Chargey,
+					  double                              CalculatedStripY, 
+					  int                                 ff, 
+					  correction                          method)
 {
   double positionY = -10;
 
@@ -573,15 +751,15 @@ double  TCATSPhysics::CalculatePositionY( vector< vector< vector<double> > >  &S
       
       // Calculate Geometrical Position 
       if(IStripY > 0  && IStripY < 29 ) 
-      //  if(IStripX>0 && IStripY>0 && StripMaxX[ff] > 0 && StripMaxY[ff] > 0 &&  StripMaxX[ff] < 29  && StripMaxY[ff] < 29 )
+	//  if(IStripX>0 && IStripY>0 && StripMaxX[ff] > 0 && StripMaxY[ff] > 0 &&  StripMaxX[ff] < 29  && StripMaxY[ff] < 29 )
 	{	
 	  positionY = (DStripY)*2.54 + StripPositionY[ff][0][IStripY-1] ;  // conversion en mm initiale
 	
 	  /*  if(ff== 1) {
-	    cout << CalculatedStripY << endl;
-	    cout << positionY << endl;
-	    cout << StripPositionY[ff][0][IStripY-1] << endl;
-	    }*/
+	      cout << CalculatedStripY << endl;
+	      cout << positionY << endl;
+	      cout << StripPositionY[ff][0][IStripY-1] << endl;
+	      }*/
 	  //positionY = 2.54 * ( CalculatedStripY-14) - 1.27;
 	  //  cout << "ecartY" << positionY - ((DStripY)*2.54 + StripPositionY[ff][0][IStripY-1]) << endl;
 
@@ -620,9 +798,9 @@ double TCATSPhysics:: HyperbolicSequentMethod( double* Charge , int StripMax )
   if(StripMax > 2 && StripMax<27)
     {
       /*
-      cout << "Charge[" << StripMax-1 << "] = " << Charge[StripMax-1-1] << endl;
-      cout << "Charge[" << StripMax   << "] = " << Charge[StripMax-1]   << endl;
-      cout << "Charge[" << StripMax+1 << "] = " << Charge[StripMax-1+1] << endl; 
+	cout << "Charge[" << StripMax-1 << "] = " << Charge[StripMax-1-1] << endl;
+	cout << "Charge[" << StripMax   << "] = " << Charge[StripMax-1]   << endl;
+	cout << "Charge[" << StripMax+1 << "] = " << Charge[StripMax-1+1] << endl; 
       */
       
       double vs1 = sqrt( Charge[StripMax-1]/Charge[StripMax-1+1] ) 	;
@@ -897,38 +1075,38 @@ double TCATSPhysics:: Barycentric4Method( double* Charge , int StripMax )
    
   if(StripMax > 2 && StripMax < 27)     {
 
-      int StripMax_ = StripMax -1 ; // Use because numerotation of array start at 0 ;
-      double NumberOfPoint = 0 ;
-      double ChargeTotal =0;
+    int StripMax_ = StripMax -1 ; // Use because numerotation of array start at 0 ;
+    double NumberOfPoint = 0 ;
+    double ChargeTotal =0;
 
-      if(Charge[StripMax_+1] > Charge[StripMax_-1]) {
+    if(Charge[StripMax_+1] > Charge[StripMax_-1]) {
 
-	//	cout << "Barycentre droit" << endl;
-	  for(int i = -1 ; i < 3 ; i++)  
-	    {
-	      if(Charge[StripMax_+i]!=-1)   {                            // Charge initialized to -1
-		Barycenter += (StripMax+i)*Charge[StripMax_+i] ;
-		NumberOfPoint++;
-		ChargeTotal+=Charge[StripMax_+i];
-	      }
-	    }
-      }
-      
-      else {
-	//	cout << "Barycentre gauche" << endl;	
-	for(int i = -2 ; i < 2 ; i++)
-	  {
-	    if(Charge[StripMax_+i]!=-1)	{                                 // Charge initialized to -1
-	      Barycenter += (StripMax+i)*Charge[StripMax_+i] ;
-	      NumberOfPoint++;
-	      ChargeTotal+=Charge[StripMax_+i];
-	    }
+      //	cout << "Barycentre droit" << endl;
+      for(int i = -1 ; i < 3 ; i++)  
+	{
+	  if(Charge[StripMax_+i]!=-1)   {                            // Charge initialized to -1
+	    Barycenter += (StripMax+i)*Charge[StripMax_+i] ;
+	    NumberOfPoint++;
+	    ChargeTotal+=Charge[StripMax_+i];
 	  }
-      }
+	}
+    }
+      
+    else {
+      //	cout << "Barycentre gauche" << endl;	
+      for(int i = -2 ; i < 2 ; i++)
+	{
+	  if(Charge[StripMax_+i]!=-1)	{                                 // Charge initialized to -1
+	    Barycenter += (StripMax+i)*Charge[StripMax_+i] ;
+	    NumberOfPoint++;
+	    ChargeTotal+=Charge[StripMax_+i];
+	  }
+	}
+    }
 
-      if(ChargeTotal>0) {
-	Barycenter = Barycenter / ChargeTotal ;
-      }
+    if(ChargeTotal>0) {
+      Barycenter = Barycenter / ChargeTotal ;
+    }
   
   }
 
@@ -1005,3 +1183,17 @@ double TCATSPhysics::CorrectedPositionY4(int ff, double* Charge, double Position
 }
 
 
+
+namespace LOCAL_CATS
+{
+  //	tranform an integer to a string
+  string itoa(int value)
+  {
+    std::ostringstream o;
+    
+    if (!(o << value))
+      return ""	;
+    
+    return o.str();
+  }
+}

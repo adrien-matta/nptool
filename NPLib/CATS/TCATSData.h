@@ -24,6 +24,7 @@
 
 #include "TObject.h"
 
+using namespace std;
 
 
 class TCATSData : public TObject {
