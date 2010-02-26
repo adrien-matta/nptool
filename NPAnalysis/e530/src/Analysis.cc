@@ -23,7 +23,7 @@ int main(int argc,char** argv)
 	//	First of All instantiate RootInput and Output
 	//	Detector will be attached later
 	RootInput:: getInstance(runToTreatFileName)	;
-	RootOutput::getInstance("Analysis/60Fe_AnalysedData", "AnalysedTree")	;
+	RootOutput::getInstance("Analysis/60Fe_AnalysedData", "Analysed_Data")	;
 	
 	//	Instantiate some Reaction
 	NPL::Reaction*  e530Reaction = new Reaction								;
@@ -79,7 +79,7 @@ int main(int argc,char** argv)
       // Clear Previous Event
       myDetector -> ClearEventPhysics()			;
       // Build the new one
-      myDetector -> BuildPhysicalEvent()		;
+      myDetector -> BuildSimplePhysicalEvent()		;
       ////
 		
 			

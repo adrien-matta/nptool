@@ -146,11 +146,11 @@ class TCATSPhysics : public TObject, public NPA::VDetector
 
 	  int NumberOfCATS	                                  ;   //!	
 
-	  vector< vector <double> > 		 Pedestal_X 		  ;
-	  vector< vector <double> > 		 Pedestal_Y 		  ;
+	  vector< vector <double> > 		 Pedestal_X 	  ;   //!
+	  vector< vector <double> > 		 Pedestal_Y 	  ;   //!
 	  
-	  vector< vector <double> > 	         Threshold_X         ;      
-	  vector< vector <double> > 		 Threshold_Y 	  ;
+	  vector< vector <double> > 	         Threshold_X      ;   //!     
+	  vector< vector <double> > 		 Threshold_Y 	  ;   //!
 
 		
 	public :	//	Specific to CATS
@@ -162,29 +162,25 @@ class TCATSPhysics : public TObject, public NPA::VDetector
 
 	  void ReadPedestal(string PedestalPath);
 
-	  void BuildSimplePhysicalEvent(vector< vector <double> > 	        &Pedestal_X 	                ,
-					vector< vector <double> > 	        &Pedestal_Y 	                ,
-					vector< vector< vector<double> > >      &OnlineCalib_X_E	,
-					vector< vector< vector<double> > >	&OnlineCalib_Y_E 	,	
-					vector< vector <double> > 	        &Threshold_X               ,
-					vector< vector <double> > 		&Threshold_Y 	        ) ;
+	  //	  void BuildSimplePhysicalEvent(vector< vector< vector<double> > >      &OnlineCalib_X_E	,
+	  //				vector< vector< vector<double> > >	&OnlineCalib_Y_E 	) ;
 
 	  
-	  double AnalyseX(	TCATSData* Data, 
-										  vector< vector <double> > 	        &Pedestal_X 		,
-										  vector< vector< vector<double> > >    &OnlineCalib_X_E,
-										  vector< vector <double> > 		&Threshold_X,
-										  vector< vector< vector<double> > >    &StripPositionX,
-										  int ff,
-										  int NumberOfDetector);
+	  double AnalyseX(TCATSData* Data, 
+			  vector< vector <double> > 	        &Pedestal_X 		,
+			  //  vector< vector< vector<double> > >    &OnlineCalib_X_E,
+			  vector< vector <double> > 		&Threshold_X,
+			  vector< vector< vector<double> > >    &StripPositionX,
+			  int ff,
+			  int NumberOfDetector);
 
-	  double AnalyseY(	TCATSData* Data, 
-										  vector< vector <double> >              	&Pedestal_Y 		,
-										  vector< vector< vector<double> > >    	&OnlineCalib_Y_E,
-										  vector< vector <double> > 			&Threshold_Y,
-										  vector< vector< vector<double> > >            &StripPositionY,
-										  int ff,
-										  int NumberOfDetector);
+	  double AnalyseY(TCATSData* Data, 
+			  vector< vector <double> >              	&Pedestal_Y 		,
+			  //  vector< vector< vector<double> > >    	&OnlineCalib_Y_E,
+			  vector< vector <double> > 			&Threshold_Y,
+			  vector< vector< vector<double> > >            &StripPositionY,
+			  int ff,
+			  int NumberOfDetector);
 
 	  double CalculatePositionX( vector< vector< vector<double> > >  &StripPositionX,
 													     int          StripMaxX,

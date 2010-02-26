@@ -198,6 +198,7 @@ void TCATSPhysics::ReadConfiguration(string Path)
 		  
     }
 
+  // Should be called in Analysis... 
   ReadPedestal("../../../offline/calibrations/CATS/CATScoeff/Piedestaux_368.txt");
   // path given from e530 directory
 
@@ -315,13 +316,15 @@ void TCATSPhysics::BuildPhysicalEvent()
 //	Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
 //	This method aimed to be used for analysis performed during experiment, when speed is requiered.
 //	NB: This method can eventually be the same as BuildPhysicalEvent.
+
+/*
 void TCATSPhysics::BuildSimplePhysicalEvent()				
 {
 
   // cout <<  EventData-> GetCATSMultX() << endl;
   // pourquoi pas une methode avec qui prend que le strip max par exemple...
 }
-
+*/
 
 
 ////////////////////////////////////////// LE RESTE DE LA CLASSE! ////////////////////////////////////////
@@ -439,18 +442,16 @@ void TCATSPhysics::ReadPedestal(string PedestalPath)
   - Les positions doivent aussi etre des membre prive non ecrit, comme dans MUST2
   - N'oublie pas que la methode ne doit plus avoir d'argument a la fin... (et qu'elle est deja declare plus haut...)
 */
-void TCATSPhysics::BuildSimplePhysicalEvent( vector< vector <double> > 		 &Pedestal_X 		,
-					     vector< vector <double> > 		 &Pedestal_Y 		,
-					     vector< vector< vector<double> > >  &OnlineCalib_X_E       ,
-					     vector< vector< vector<double> > >  &OnlineCalib_Y_E       ,	
-					     vector< vector <double> > 		 &Threshold_X 	        ,
-					     vector< vector <double> > 		 &Threshold_Y 	        )
+void TCATSPhysics::BuildSimplePhysicalEvent()
+//vector< vector< vector<double> > >  &OnlineCalib_X_E       ,
+//					     vector< vector< vector<double> > >  &OnlineCalib_Y_E       )
 {
   /*
     int 	        HitX 	       = 0 	;
     int 	        HitY 	       = 0 	;
   */    
 
+  
   gRandom->SetSeed(0);
 
   //EventData->Dump();
@@ -500,9 +501,12 @@ void TCATSPhysics::BuildSimplePhysicalEvent( vector< vector <double> > 		 &Pedes
     { 
       //int    ff = NumberOfCATSHit - gg -1 ;
       int ff = gg ;
-           
-      CalculatedStripX = AnalyseX(EventData, Pedestal_X , OnlineCalib_X_E, Threshold_X, StripPositionX, ff, NumberOfCATSHit);        //     cout << "Analyse X = " << CalculatedStripX << endl; 
-      CalculatedStripY = AnalyseY(EventData, Pedestal_Y , OnlineCalib_Y_E, Threshold_Y, StripPositionY, ff, NumberOfCATSHit);        //    cout << "Analyse Y = " << CalculatedStripY << endl;
+     
+      CalculatedStripX = AnalyseX(EventData, Pedestal_X , Threshold_X, StripPositionX, ff, NumberOfCATSHit);        //     cout << "Analyse X = " << CalculatedStripX << endl; 
+      CalculatedStripY = AnalyseY(EventData, Pedestal_Y , Threshold_Y, StripPositionY, ff, NumberOfCATSHit);        //    cout << "Analyse Y = " << CalculatedStripY << endl;
+       
+      //      CalculatedStripX = AnalyseX(EventData, Pedestal_X , OnlineCalib_X_E, Threshold_X, StripPositionX, ff, NumberOfCATSHit);        //     cout << "Analyse X = " << CalculatedStripX << endl; 
+      //CalculatedStripY = AnalyseY(EventData, Pedestal_Y , OnlineCalib_Y_E, Threshold_Y, StripPositionY, ff, NumberOfCATSHit);        //    cout << "Analyse Y = " << CalculatedStripY << endl;
 
       posX = CalculatePositionX(StripPositionX, StripMaxX[ff], Chargex, CalculatedStripX, ff, cor);   // cout << "Position X = " << posX << endl;
       posY = CalculatePositionY(StripPositionY, StripMaxY[ff], Chargey, CalculatedStripY, ff, cor);   // cout << "Position Y = " << posY << endl;
@@ -579,7 +583,7 @@ void TCATSPhysics::BuildSimplePhysicalEvent( vector< vector <double> > 		 &Pedes
 
 double TCATSPhysics::AnalyseX(TCATSData* Data, 
 			      vector< vector <double> > 	        &Pedestal_X 		,
-			      vector< vector< vector<double> > > 	&OnlineCalib_X_E,
+			      //vector< vector< vector<double> > > 	&OnlineCalib_X_E,
 			      vector< vector <double> > 		&Threshold_X 	,
 			      vector< vector< vector<double> > >        &StripPositionX,
 			      int ff,
@@ -611,7 +615,9 @@ double TCATSPhysics::AnalyseX(TCATSData* Data,
 	  if(NX > 2 || StrX > 28)	cout << NX << " " << StrX << endl ;
 	  
 	  double Q = Data->GetCATSChargeX(i) + gRandom->Rndm() - Pedestal_X[NX-1][StrX-1] ;
-	  ChargeX_Buffer = OnlineCalib_X_E[NX-1][StrX-1][0] + Q * OnlineCalib_X_E[NX-1][StrX-1][1] + Q*Q * OnlineCalib_X_E[NX-1][StrX-1][2] ;
+	  //ChargeX_Buffer = OnlineCalib_X_E[NX-1][StrX-1][0] + Q * OnlineCalib_X_E[NX-1][StrX-1][1] + Q*Q * OnlineCalib_X_E[NX-1][StrX-1][2] ;
+
+	  CalibrationManager::getInstance()->ApplyCalibration("CATS/"+itoa(NX)+"_X"+itoa(StrX)+"_Q",Q);
 	
 	  if(Data->GetCATSChargeX(i) > Threshold_X[NX-1][StrX-1] && NX <= NumberOfCATSHit  && StrX < 28)
 	    {  
@@ -661,7 +667,7 @@ double TCATSPhysics::AnalyseX(TCATSData* Data,
 
 double TCATSPhysics::AnalyseY(TCATSData* Data, 
 			      vector< vector <double> > 	        &Pedestal_Y 		,
-			      vector< vector< vector<double> > > 	&OnlineCalib_Y_E,
+			      //vector< vector< vector<double> > > 	&OnlineCalib_Y_E,
 			      vector< vector <double> > 		&Threshold_Y 	,
 			      vector< vector< vector<double> > >        &StripPositionY,
 			      int ff,
@@ -696,7 +702,8 @@ double TCATSPhysics::AnalyseY(TCATSData* Data,
 	  if(StrY < 28)
 	    {	
 	      double Q = Data->GetCATSChargeY(i) + gRandom->Rndm() - Pedestal_Y[NY-1][StrY-1];
-	      ChargeY_Buffer = OnlineCalib_Y_E[NY-1][StrY-1][0] + Q * OnlineCalib_Y_E[NY-1][StrY-1][1] + Q*Q * OnlineCalib_Y_E[NY-1][StrY-1][2] ;
+	      //ChargeY_Buffer = OnlineCalib_Y_E[NY-1][StrY-1][0] + Q * OnlineCalib_Y_E[NY-1][StrY-1][1] + Q*Q * OnlineCalib_Y_E[NY-1][StrY-1][2] ;
+	      CalibrationManager::getInstance()->ApplyCalibration("CATS/"+itoa(NY)+"_Y"+itoa(StrY)+"_Q",Q);
 	    }
 	  
 	  else {ChargeY_Buffer = 0 ;}
