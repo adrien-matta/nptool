@@ -103,6 +103,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
 	
 	// Add array to the VDetector Vector
 	AddDetector("CATS", myDetector);
+
       }
       
       

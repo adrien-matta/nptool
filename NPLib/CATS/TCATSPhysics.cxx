@@ -198,9 +198,46 @@ void TCATSPhysics::ReadConfiguration(string Path)
 		  
     }
 
+  ReadPedestal("../../../offline/calibrations/CATS/CATScoeff/Piedestaux_368.txt");
+  // path given from e530 directory
+
   cout << endl << "/////////////////////////////" << endl<<endl;
 
 }
+
+//	Add Parameter to the CalibrationManger
+void TCATSPhysics::AddParameterToCalibrationManager()	
+{
+  CalibrationManager* Cal = CalibrationManager::getInstance();
+  
+  for(int i = 0 ; i < NumberOfCATS ; i++)
+    {
+      
+      for( int j = 0 ; j < 28 ; j++)
+	{
+	  Cal->AddParameter("CATS", "D"+itoa(i+1)+"_X"+itoa(j+1)+"_Q","CATS_D"+itoa(i+1)+"_X"+itoa(j+1)+"_Q")	;
+	  Cal->AddParameter("CATS", "D"+itoa(i+1)+"_Y"+itoa(j+1)+"_Q","CATS_D"+itoa(i+1)+"_Y"+itoa(j+1)+"_Q")	;
+	} 
+    }
+}		
+
+//	Activated associated Branches and link it to the private member DetectorData address
+//	In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
+void TCATSPhysics::InitializeRootInput() 					
+{
+  TChain* inputChain = RootInput::getInstance()->GetChain()	;
+  inputChain->SetBranchStatus( "CATS" , true )			;
+  inputChain->SetBranchStatus( "fCATS_*" , true )		;
+  inputChain->SetBranchAddress( "CATS" , &EventData )           ;
+}
+
+//	Create associated branches and associated private member DetectorPhysics address
+void TCATSPhysics::InitializeRootOutput() 		 		
+{
+  TTree* outputTree = RootOutput::getInstance()->GetTree()		;
+  outputTree->Branch( "CATS" , "TCATSPhysics" , &EventPhysics )	;
+}
+
 
 void TCATSPhysics::AddCATS(TVector3 C_X1_Y1, TVector3 C_X28_Y1, TVector3 C_X1_Y28, TVector3 C_X28_Y28)
 {
@@ -265,43 +302,7 @@ void TCATSPhysics::AddCATS(TVector3 C_X1_Y1, TVector3 C_X28_Y1, TVector3 C_X1_Y2
   StripPositionX.push_back(OneDetectorStripPositionX)	;
   StripPositionY.push_back(OneDetectorStripPositionY)	;
   StripPositionZ.push_back(OneDetectorStripPositionZ)	;
-  // StripPositionZ = C_X1_Y1.Z()	;
 
-  //myArray.push_back(myCATS)	        ;
-  //cout << "myArray = " << myArray.size() << endl;
-}
-
-//	Add Parameter to the CalibrationManger
-void TCATSPhysics::AddParameterToCalibrationManager()	
-{
-  CalibrationManager* Cal = CalibrationManager::getInstance();
-  
-  for(int i = 0 ; i < NumberOfCATS ; i++)
-    {
-      
-      for( int j = 0 ; j < 28 ; j++)
-	{
-	  Cal->AddParameter("CATS", "D"+itoa(i+1)+"_X"+itoa(j+1)+"_Q","CATS_D"+itoa(i+1)+"_X"+itoa(j+1)+"_Q")	;
-	  Cal->AddParameter("CATS", "D"+itoa(i+1)+"_Y"+itoa(j+1)+"_Q","CATS_D"+itoa(i+1)+"_Y"+itoa(j+1)+"_Q")	;
-	} 
-    }
-}		
-
-//	Activated associated Branches and link it to the private member DetectorData address
-//	In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
-void TCATSPhysics::InitializeRootInput() 					
-{
-  TChain* inputChain = RootInput::getInstance()->GetChain()	;
-  inputChain->SetBranchStatus( "CATS" , true )			;
-  inputChain->SetBranchStatus( "fCATS_*" , true )		;
-  inputChain->SetBranchAddress( "CATS" , &EventData )           ;
-}
-
-//	Create associated branches and associated private member DetectorPhysics address
-void TCATSPhysics::InitializeRootOutput() 		 		
-{
-  TTree* outputTree = RootOutput::getInstance()->GetTree()		;
-  outputTree->Branch( "CATS" , "TCATSPhysics" , &EventPhysics )	;
 }
 
 		
@@ -364,6 +365,73 @@ void TCATSPhysics::Dump()
   cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event XXXXXXXXXXXXXXXXX" << endl;
 }
 
+
+
+
+void TCATSPhysics::ReadPedestal(string PedestalPath)
+{
+  int NumberOfStrips = 28   ; 
+  vector<double> line 	; 
+  line.resize(NumberOfStrips, 0);
+
+  Pedestal_X.resize(NumberOfCATS, line);
+  Pedestal_Y.resize(NumberOfCATS, line);
+
+  Threshold_X.resize(NumberOfCATS, line);
+  Threshold_Y.resize(NumberOfCATS, line);
+
+  string DataBuffer, XY;
+  int StripNumber = 0;
+
+  ifstream Pedestal_File;
+  Pedestal_File.open(PedestalPath.c_str());
+
+  if( Pedestal_File.is_open() ) 
+    cout << " Calibration File " << PedestalPath << " loading " << endl;
+  else {
+    cout << " Error, no calibration file" << PedestalPath << " found" << endl; 
+    return;
+  }
+
+  while( !Pedestal_File.eof() ) {
+
+    Pedestal_File >> DataBuffer ;
+        
+    for(int i = 0 ; i < NumberOfCATS ; i++)
+      {
+	std::ostringstream DetectorNumber ;
+	DetectorNumber << i+1;   
+
+	if(DataBuffer == "CATS"+DetectorNumber.str()+"_X")	
+	  { 
+	    for( int k = 0 ; k < NumberOfStrips ; k++ )
+	      {
+		Pedestal_File >> StripNumber; 	
+		Pedestal_File >> DataBuffer;	Pedestal_X[i][k] = atof(DataBuffer.c_str()) ;
+
+		// definition du seuil : piedestal + 3 * sigma(piedestal)
+		Pedestal_File >> DataBuffer;  	Threshold_X[i][k] = Pedestal_X[i][k]+3*atof(DataBuffer.c_str()) ;   
+		
+	      }						    
+	  }
+	else if(DataBuffer == "CATS"+DetectorNumber.str()+"_Y")
+	  {
+	    for( int k = 0 ; k < NumberOfStrips ; k++ )
+	      {
+		Pedestal_File >> StripNumber; 	  
+		Pedestal_File >> DataBuffer;	Pedestal_Y[i][k] = atof(DataBuffer.c_str()) ;
+
+		// definition du seuil : piedestal + 3 * sigma(piedestal)
+		Pedestal_File >> DataBuffer;	Threshold_Y[i][k] = Pedestal_Y[i][k]+3*atof(DataBuffer.c_str()) ;  // definition du seuil 
+
+	      }						    
+	  }
+      }
+  }
+
+}
+
+
 /*
   Pas mal de chose a modifier:
   - supprimer l'histoire des calibration par exemple...
@@ -371,16 +439,12 @@ void TCATSPhysics::Dump()
   - Les positions doivent aussi etre des membre prive non ecrit, comme dans MUST2
   - N'oublie pas que la methode ne doit plus avoir d'argument a la fin... (et qu'elle est deja declare plus haut...)
 */
-void TCATSPhysics::BuildSimplePhysicalEvent( vector< vector <double> > 		 &Ped_X 		,
-					     vector< vector <double> > 		 &Ped_Y 		,
+void TCATSPhysics::BuildSimplePhysicalEvent( vector< vector <double> > 		 &Pedestal_X 		,
+					     vector< vector <double> > 		 &Pedestal_Y 		,
 					     vector< vector< vector<double> > >  &OnlineCalib_X_E       ,
 					     vector< vector< vector<double> > >  &OnlineCalib_Y_E       ,	
-					     vector< vector <double> > 		 &Thresh_X 	        ,
-					     vector< vector <double> > 		 &Thresh_Y 	        //,
-					     //vector< vector< vector<double> > >  &StripPositionX  	,
-					     //vector< vector< vector<double> > >  &StripPositionY   	,
-					     //					     vector<double>                      &StripPositionZ   	
-					     )
+					     vector< vector <double> > 		 &Threshold_X 	        ,
+					     vector< vector <double> > 		 &Threshold_Y 	        )
 {
   /*
     int 	        HitX 	       = 0 	;
@@ -437,8 +501,8 @@ void TCATSPhysics::BuildSimplePhysicalEvent( vector< vector <double> > 		 &Ped_X
       //int    ff = NumberOfCATSHit - gg -1 ;
       int ff = gg ;
            
-      CalculatedStripX = AnalyseX(EventData, Ped_X , OnlineCalib_X_E, Thresh_X, StripPositionX, ff, NumberOfCATSHit);        //     cout << "Analyse X = " << CalculatedStripX << endl; 
-      CalculatedStripY = AnalyseY(EventData, Ped_Y , OnlineCalib_Y_E, Thresh_Y, StripPositionY, ff, NumberOfCATSHit);        //    cout << "Analyse Y = " << CalculatedStripY << endl;
+      CalculatedStripX = AnalyseX(EventData, Pedestal_X , OnlineCalib_X_E, Threshold_X, StripPositionX, ff, NumberOfCATSHit);        //     cout << "Analyse X = " << CalculatedStripX << endl; 
+      CalculatedStripY = AnalyseY(EventData, Pedestal_Y , OnlineCalib_Y_E, Threshold_Y, StripPositionY, ff, NumberOfCATSHit);        //    cout << "Analyse Y = " << CalculatedStripY << endl;
 
       posX = CalculatePositionX(StripPositionX, StripMaxX[ff], Chargex, CalculatedStripX, ff, cor);   // cout << "Position X = " << posX << endl;
       posY = CalculatePositionY(StripPositionY, StripMaxY[ff], Chargey, CalculatedStripY, ff, cor);   // cout << "Position Y = " << posY << endl;
@@ -514,9 +578,9 @@ void TCATSPhysics::BuildSimplePhysicalEvent( vector< vector <double> > 		 &Ped_X
 
 
 double TCATSPhysics::AnalyseX(TCATSData* Data, 
-			      vector< vector <double> > 	        &Ped_X 		,
+			      vector< vector <double> > 	        &Pedestal_X 		,
 			      vector< vector< vector<double> > > 	&OnlineCalib_X_E,
-			      vector< vector <double> > 		&Thresh_X 	,
+			      vector< vector <double> > 		&Threshold_X 	,
 			      vector< vector< vector<double> > >        &StripPositionX,
 			      int ff,
 			      int NumberOfCATSHit)
@@ -546,12 +610,12 @@ double TCATSPhysics::AnalyseX(TCATSData* Data,
 	  
 	  if(NX > 2 || StrX > 28)	cout << NX << " " << StrX << endl ;
 	  
-	  double Q = Data->GetCATSChargeX(i) + gRandom->Rndm() - Ped_X[NX-1][StrX-1] ;
+	  double Q = Data->GetCATSChargeX(i) + gRandom->Rndm() - Pedestal_X[NX-1][StrX-1] ;
 	  ChargeX_Buffer = OnlineCalib_X_E[NX-1][StrX-1][0] + Q * OnlineCalib_X_E[NX-1][StrX-1][1] + Q*Q * OnlineCalib_X_E[NX-1][StrX-1][2] ;
 	
-	  if(Data->GetCATSChargeX(i) > Thresh_X[NX-1][StrX-1] && NX <= NumberOfCATSHit  && StrX < 28)
+	  if(Data->GetCATSChargeX(i) > Threshold_X[NX-1][StrX-1] && NX <= NumberOfCATSHit  && StrX < 28)
 	    {  
-	      //  cout <<  Thresh_X[NX-1][StrX-1] << endl;
+	      //  cout <<  Threshold_X[NX-1][StrX-1] << endl;
 
 	      //	KNOWN INVERSION
 	      if	(StrX == 15 && NX == 1) 	StrX = 16	;
@@ -596,9 +660,9 @@ double TCATSPhysics::AnalyseX(TCATSData* Data,
 }
 
 double TCATSPhysics::AnalyseY(TCATSData* Data, 
-			      vector< vector <double> > 	        &Ped_Y 		,
+			      vector< vector <double> > 	        &Pedestal_Y 		,
 			      vector< vector< vector<double> > > 	&OnlineCalib_Y_E,
-			      vector< vector <double> > 		&Thresh_Y 	,
+			      vector< vector <double> > 		&Threshold_Y 	,
 			      vector< vector< vector<double> > >        &StripPositionY,
 			      int ff,
 			      int NumberOfCATSHit)
@@ -631,15 +695,15 @@ double TCATSPhysics::AnalyseY(TCATSData* Data,
 	  
 	  if(StrY < 28)
 	    {	
-	      double Q = Data->GetCATSChargeY(i) + gRandom->Rndm() - Ped_Y[NY-1][StrY-1];
+	      double Q = Data->GetCATSChargeY(i) + gRandom->Rndm() - Pedestal_Y[NY-1][StrY-1];
 	      ChargeY_Buffer = OnlineCalib_Y_E[NY-1][StrY-1][0] + Q * OnlineCalib_Y_E[NY-1][StrY-1][1] + Q*Q * OnlineCalib_Y_E[NY-1][StrY-1][2] ;
 	    }
 	  
 	  else {ChargeY_Buffer = 0 ;}
 	  
-	  if(Data->GetCATSChargeY(i) > Thresh_Y[NY-1][StrY-1] && NY <= NumberOfCATSHit  && StrY < 28)
+	  if(Data->GetCATSChargeY(i) > Threshold_Y[NY-1][StrY-1] && NY <= NumberOfCATSHit  && StrY < 28)
 	    {
-	      //   cout <<  Thresh_Y[NY-1][StrY-1] << endl;
+	      //   cout <<  Threshold_Y[NY-1][StrY-1] << endl;
 	      
 	      //	KNOWN INVERSION
 	      if	(StrY == 15 && NY == 1) 	StrY = 16	;
