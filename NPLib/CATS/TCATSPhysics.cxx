@@ -40,12 +40,12 @@ using namespace LOCAL_CATS;
 #include "TRandom.h"
 
 ClassImp(TCATSPhysics)
-
-  TCATSPhysics::TCATSPhysics()
+///////////////////////////////////////////////////////////////////////////
+TCATSPhysics::TCATSPhysics()
 {
   EventData 				= new TCATSData()	;
-  EventPhysics 				= this						;
-  NumberOfDetector                      = 0                     ;
+  EventPhysics 				= this			;
+  NumberOfCATS                          = 0                     ;
 }
 
 
@@ -107,7 +107,7 @@ void TCATSPhysics::ReadConfiguration(string Path)
 	    ReadingStatus = false ;
 	  }
 	  
-	  //	Position method
+	  //	Corner Position method
 	  
 	  else if (DataBuffer.compare(0, 6, "X1_Y1=") == 0) {
 	    check_A = true;
@@ -174,7 +174,7 @@ void TCATSPhysics::ReadConfiguration(string Path)
 	    
 	  }
 	  
-	  //	End Position Method
+	  //	End Corner Position Method
 
 	  /////////////////////////////////////////////////
 	    //	If All necessary information there, toggle out
@@ -185,10 +185,9 @@ void TCATSPhysics::ReadConfiguration(string Path)
 		///Add The previously define telescope
 		  
 		  AddCATS(	A   ,
-				B   ,
+			 	B   ,
 				C   ,
-				D  );
-		  
+				D   );
 		  
 		  check_A = false;
 		  check_B = false;
@@ -203,10 +202,71 @@ void TCATSPhysics::ReadConfiguration(string Path)
 
 }
 
-void TCATSPhysics::AddCATS(TVector3 A, TVector3 B, TVector3 C, TVector3 D)
+void TCATSPhysics::AddCATS(TVector3 C_X1_Y1, TVector3 C_X28_Y1, TVector3 C_X1_Y28, TVector3 C_X28_Y28)
 {
-  //  CATSTelescope myCATS(A, B, C, D)	;
-  NumberOfDetector++			;
+  NumberOfCATS++			;
+
+ //	Vector U on Telescope Face (paralelle to Y Strip) (NB: remember that Y strip are along X axis)
+  TVector3 U = C_X28_Y1 - C_X1_Y1 				;	
+  U = U.Unit()									;
+		
+  //	Vector V on Telescope Face (parallele to X Strip)
+  TVector3 V = C_X1_Y28 - C_X1_Y1 				;
+  V = V.Unit()									;
+		
+  //	Position Vector of Strip Center
+  TVector3 StripCenter 					;
+  //	Position Vector of X=1 Y=1 Strip 
+  TVector3 Strip_1_1 					;		
+		
+  //	Geometry Parameter
+  
+  double Face = 71.12 				; //mm
+  double NumberOfStrip = 28 			;
+  double StripPitch = Face / NumberOfStrip	; //mm
+  
+  //	Buffer object to fill Position Array
+  vector<double> lineX ; 
+  vector<double> lineY ; 
+  //vector<double> lineZ ;
+
+  vector< vector< double > >	OneDetectorStripPositionX	;
+  vector< vector< double > >	OneDetectorStripPositionY	;
+  double                 	OneDetectorStripPositionZ	;
+
+  //	Moving StripCenter to 1.1 corner (strip center!) :
+  Strip_1_1 = C_X1_Y1 + (U+V) * (StripPitch/2) 	;
+  
+  //cout << "Strip_1_1X = " << Strip_1_1.X()  << endl;
+  //cout << "Strip_1_1Y = " << Strip_1_1.Y()  << endl;
+  	
+	
+  for( int i = 0 ; i < 28 ; i++ )
+    {
+      lineX.clear()	;
+      lineY.clear()	;
+      //  lineZ.clear()	;
+				
+      for( int j = 0 ; j < 28 ; j++ )
+	{
+	  StripCenter  = Strip_1_1 + StripPitch*( i*U + j*V  )	;
+	  //StripCenter += -TargetPosition		;
+	  lineX.push_back( StripCenter.x() )	;
+	  lineY.push_back( StripCenter.y() )	;
+	  //  lineZ.push_back( StripCenter.z() )	;	
+	}
+	
+      OneDetectorStripPositionX.push_back(lineX);
+      OneDetectorStripPositionY.push_back(lineY);
+    }
+
+  OneDetectorStripPositionZ = C_X1_Y1.Z();
+
+  StripPositionX.push_back(OneDetectorStripPositionX)	;
+  StripPositionY.push_back(OneDetectorStripPositionY)	;
+  StripPositionZ.push_back(OneDetectorStripPositionZ)	;
+  // StripPositionZ = C_X1_Y1.Z()	;
+
   //myArray.push_back(myCATS)	        ;
   //cout << "myArray = " << myArray.size() << endl;
 }
@@ -216,7 +276,7 @@ void TCATSPhysics::AddParameterToCalibrationManager()
 {
   CalibrationManager* Cal = CalibrationManager::getInstance();
   
-  for(int i = 0 ; i < NumberOfDetector ; i++)
+  for(int i = 0 ; i < NumberOfCATS ; i++)
     {
       
       for( int j = 0 ; j < 28 ; j++)
@@ -294,7 +354,7 @@ void TCATSPhysics::Clear()
   HitX = 0;
   HitY = 0;
   
-  NumberOfDetector = 0;
+  NumberOfCATS = 0;
 }
 
 
@@ -311,15 +371,16 @@ void TCATSPhysics::Dump()
   - Les positions doivent aussi etre des membre prive non ecrit, comme dans MUST2
   - N'oublie pas que la methode ne doit plus avoir d'argument a la fin... (et qu'elle est deja declare plus haut...)
 */
-void TCATSPhysics::BuildSimplePhysicalEvent( vector< vector <double> > 			&Ped_X 		,
-					     vector< vector <double> > 			&Ped_Y 		,
-					     vector< vector< vector<double> > > 	&OnlineCalib_X_E,
-					     vector< vector< vector<double> > > 	&OnlineCalib_Y_E,	
-					     vector< vector <double> > 		&Thresh_X 	,
-					     vector< vector <double> > 			&Thresh_Y 	,
-					     vector< vector< vector<double> > >  &StripPositionX  	,
-					     vector< vector< vector<double> > >  &StripPositionY   	,
-					     vector<double>                      &StripPositionZ   	)
+void TCATSPhysics::BuildSimplePhysicalEvent( vector< vector <double> > 		 &Ped_X 		,
+					     vector< vector <double> > 		 &Ped_Y 		,
+					     vector< vector< vector<double> > >  &OnlineCalib_X_E       ,
+					     vector< vector< vector<double> > >  &OnlineCalib_Y_E       ,	
+					     vector< vector <double> > 		 &Thresh_X 	        ,
+					     vector< vector <double> > 		 &Thresh_Y 	        //,
+					     //vector< vector< vector<double> > >  &StripPositionX  	,
+					     //vector< vector< vector<double> > >  &StripPositionY   	,
+					     //					     vector<double>                      &StripPositionZ   	
+					     )
 {
   /*
     int 	        HitX 	       = 0 	;
@@ -334,27 +395,27 @@ void TCATSPhysics::BuildSimplePhysicalEvent( vector< vector <double> > 			&Ped_X
   
 
   //	How many CATS?
-  //int NumberOfDetector = 0 ;
+  int NumberOfCATSHit = 0 ;
   int DetectorID = -1;
   
   for( ushort i = 0 ; i < EventData->GetCATSMultX() ; i++ )
     { 
-      //  if( NumberOfDetector < EventData->GetCATSDetX(i) ) NumberOfDetector = EventData->GetCATSDetX(i)	;   //determination of the number of CATS detectors
+      //  if( NumberOfCATSHit < EventData->GetCATSDetX(i) ) NumberOfCATSHit = EventData->GetCATSDetX(i)	;   //determination of the number of CATS detectors
 
       if( EventData->GetCATSDetX(i) != DetectorID)  {
-	NumberOfDetector++;
+	NumberOfCATSHit++;
       }
 
-      if(NumberOfDetector == 2) break;	
+      if(NumberOfCATSHit == 2) break;	
 
     }
 
   
-  // cout << "Nombre de CATS: " << NumberOfDetector << endl;
+  // cout << "Nombre de CATS: " << NumberOfCATSHit << endl;
 
 
   // INITIALISATION OF VECTORS
-  for(int ff = 0 ; ff < NumberOfDetector ; ff++ )
+  for(int ff = 0 ; ff < NumberOfCATSHit ; ff++ )
     {
       MultOverThreshX.push_back(-1); 
       StripMaxX.push_back(-1); 
@@ -371,13 +432,13 @@ void TCATSPhysics::BuildSimplePhysicalEvent( vector< vector <double> > 			&Ped_X
 
 
   
-  for(int gg = 0 ; gg < NumberOfDetector ; gg++ )
+  for(int gg = 0 ; gg < NumberOfCATSHit ; gg++ )
     { 
-      //int    ff = NumberOfDetector - gg -1 ;
+      //int    ff = NumberOfCATSHit - gg -1 ;
       int ff = gg ;
            
-      CalculatedStripX = AnalyseX(EventData, Ped_X , OnlineCalib_X_E, Thresh_X, StripPositionX, ff, NumberOfDetector);        //     cout << "Analyse X = " << CalculatedStripX << endl; 
-      CalculatedStripY = AnalyseY(EventData, Ped_Y , OnlineCalib_Y_E, Thresh_Y, StripPositionY, ff, NumberOfDetector);        //    cout << "Analyse Y = " << CalculatedStripY << endl;
+      CalculatedStripX = AnalyseX(EventData, Ped_X , OnlineCalib_X_E, Thresh_X, StripPositionX, ff, NumberOfCATSHit);        //     cout << "Analyse X = " << CalculatedStripX << endl; 
+      CalculatedStripY = AnalyseY(EventData, Ped_Y , OnlineCalib_Y_E, Thresh_Y, StripPositionY, ff, NumberOfCATSHit);        //    cout << "Analyse Y = " << CalculatedStripY << endl;
 
       posX = CalculatePositionX(StripPositionX, StripMaxX[ff], Chargex, CalculatedStripX, ff, cor);   // cout << "Position X = " << posX << endl;
       posY = CalculatePositionY(StripPositionY, StripMaxY[ff], Chargey, CalculatedStripY, ff, cor);   // cout << "Position Y = " << posY << endl;
@@ -392,7 +453,7 @@ void TCATSPhysics::BuildSimplePhysicalEvent( vector< vector <double> > 			&Ped_X
     }
 	
  
-  if(NumberOfDetector>1)
+  if(NumberOfCATSHit>1)
     { 
       /*
 	cout << "PositionX[0]= " <<PositionX[0] << " PositionX[1] = " << PositionX[1] << " PositionX[0]-PositionX[1]= " << PositionX[0]-PositionX[1] << endl;
@@ -458,7 +519,7 @@ double TCATSPhysics::AnalyseX(TCATSData* Data,
 			      vector< vector <double> > 		&Thresh_X 	,
 			      vector< vector< vector<double> > >        &StripPositionX,
 			      int ff,
-			      int NumberOfDetector)
+			      int NumberOfCATSHit)
 {
   // cout << "AnalyseX proccessing ..." << endl;
 
@@ -488,7 +549,7 @@ double TCATSPhysics::AnalyseX(TCATSData* Data,
 	  double Q = Data->GetCATSChargeX(i) + gRandom->Rndm() - Ped_X[NX-1][StrX-1] ;
 	  ChargeX_Buffer = OnlineCalib_X_E[NX-1][StrX-1][0] + Q * OnlineCalib_X_E[NX-1][StrX-1][1] + Q*Q * OnlineCalib_X_E[NX-1][StrX-1][2] ;
 	
-	  if(Data->GetCATSChargeX(i) > Thresh_X[NX-1][StrX-1] && NX <= NumberOfDetector  && StrX < 28)
+	  if(Data->GetCATSChargeX(i) > Thresh_X[NX-1][StrX-1] && NX <= NumberOfCATSHit  && StrX < 28)
 	    {  
 	      //  cout <<  Thresh_X[NX-1][StrX-1] << endl;
 
@@ -540,7 +601,7 @@ double TCATSPhysics::AnalyseY(TCATSData* Data,
 			      vector< vector <double> > 		&Thresh_Y 	,
 			      vector< vector< vector<double> > >        &StripPositionY,
 			      int ff,
-			      int NumberOfDetector)
+			      int NumberOfCATSHit)
 {
 
 
@@ -576,7 +637,7 @@ double TCATSPhysics::AnalyseY(TCATSData* Data,
 	  
 	  else {ChargeY_Buffer = 0 ;}
 	  
-	  if(Data->GetCATSChargeY(i) > Thresh_Y[NY-1][StrY-1] && NY <= NumberOfDetector  && StrY < 28)
+	  if(Data->GetCATSChargeY(i) > Thresh_Y[NY-1][StrY-1] && NY <= NumberOfCATSHit  && StrY < 28)
 	    {
 	      //   cout <<  Thresh_Y[NY-1][StrY-1] << endl;
 	      

@@ -138,26 +138,31 @@ class TCATSPhysics : public TObject, public NPA::VDetector
 	  
 	  
 	private :
-	  
-	  int NumberOfDetector	;//!	
+
+	  // redundant information : could be optimized in the future
+	  vector< vector< vector<double> > >      StripPositionX  ;   //!
+	  vector< vector< vector<double> > >      StripPositionY  ;   //!
+	  vector<double>  		          StripPositionZ  ;   //!  
+
+	  int NumberOfCATS	                                   ;   //!	
 		
 	public :	//	Specific to CATS
 
 	  void	Clear();
 	  void	Dump();
 	  
-	  void AddCATS(TVector3 A, TVector3 B, TVector3 C, TVector3 D);
+	  void AddCATS(TVector3 C_X1_Y1, TVector3 C_X28_Y1, TVector3 C_X1_Y28, TVector3 C_X28_Y28);
 
-	  void BuildSimplePhysicalEvent(  TCATSData* 	                        Data			, 
-																	  vector< vector <double> > 	        &Ped_X 	        ,
-																	  vector< vector <double> > 	        &Ped_Y 	        ,
-																	  vector< vector< vector<double> > >  &OnlineCalib_X_E	,
-																	  vector< vector< vector<double> > >	&OnlineCalib_Y_E 	,	
-																	  vector< vector <double> > 		 			&Thresh_X              ,
-																	  vector< vector <double> > 		 			&Thresh_Y 	        ,
-																	  vector< vector< vector<double> > >  &StripPositionX  	,
-																	  vector< vector< vector<double> > >  &StripPositionY   	,
-																	  vector<double>  			 							&StripPositionZ   	     ) ;
+	  void BuildSimplePhysicalEvent(vector< vector <double> > 	        &Ped_X 	                ,
+					vector< vector <double> > 	        &Ped_Y 	                ,
+					vector< vector< vector<double> > >      &OnlineCalib_X_E	,
+					vector< vector< vector<double> > >	&OnlineCalib_Y_E 	,	
+					vector< vector <double> > 	        &Thresh_X               ,
+					vector< vector <double> > 		&Thresh_Y 	        //,
+					//	vector< vector< vector<double> > >      &StripPositionX  	,
+					//	vector< vector< vector<double> > >      &StripPositionY   	,
+					//	vector<double>  		        &StripPositionZ       
+					) ;
 
 	  
 	  double AnalyseX(	TCATSData* Data, 
