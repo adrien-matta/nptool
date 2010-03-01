@@ -162,35 +162,19 @@ class TCATSPhysics : public TObject, public NPA::VDetector
 
 	  void ReadPedestal(string PedestalPath);
 
-	  //	  void BuildSimplePhysicalEvent(vector< vector< vector<double> > >      &OnlineCalib_X_E	,
-	  //				vector< vector< vector<double> > >	&OnlineCalib_Y_E 	) ;
-
-	  
-	  double AnalyseX(//TCATSData* Data, 
-			  //vector< vector <double> > 	        &Pedestal_X 		,
-			  //  vector< vector< vector<double> > >    &OnlineCalib_X_E,
-			  //vector< vector <double> > 		&Threshold_X,
-			  //vector< vector< vector<double> > >    &StripPositionX,
-			  int ff,
+	  double AnalyseX(int ff,
 			  int NumberOfDetector);
 
-	  double AnalyseY(//TCATSData* Data, 
-			  //vector< vector <double> >              	&Pedestal_Y 		,
-			  //  vector< vector< vector<double> > >    	&OnlineCalib_Y_E,
-			  //vector< vector <double> > 			&Threshold_Y,
-			  //vector< vector< vector<double> > >            &StripPositionY,
-			  int ff,
+	  double AnalyseY(int ff,
 			  int NumberOfDetector);
 
-	  double CalculatePositionX( //vector< vector< vector<double> > >  &StripPositionX,
-				     int          StripMaxX,
+	  double CalculatePositionX( int          StripMaxX,
 				     double*      Chargex,
 				     double       CalculatedStripX, 
 				     int          ff, 
 				     correction   method);
 
-	  double CalculatePositionY( //vector< vector< vector<double> > >  &StripPositionY,
-				     int        StripMaxY,
+	  double CalculatePositionY( int        StripMaxY,
 				     double*    Chargey,
 				     double     CalculatedStripY, 
 				     int        ff, 
@@ -202,16 +186,16 @@ class TCATSPhysics : public TObject, public NPA::VDetector
 	  //	Calculate Strip touch using an array of Charge on Strip and Strip with Maximum Charge
 	  
 	  double HyperbolicSequentMethod(double* Charge , int StripMax) ;
-	  double GaussianMethodX(int ff, double* Chargex , int StripMax); //, vector< vector< vector<double> > >  &StripPositionX);
-	  double GaussianMethodY(int ff, double* Chargey , int StripMax); //, vector< vector< vector<double> > >  &StripPositionY);
+	  double GaussianMethodX(int ff, double* Chargex , int StripMax); 
+	  double GaussianMethodY(int ff, double* Chargey , int StripMax); 
 	  double Barycentric5Method( double* Charge , int StripMax);
 	  double Barycentric4Method( double* Charge , int StripMax);
 	  double Barycentric3Method( double* Charge , int StripMax);
 	  
-	  double CorrectedPositionX3(int ff, double Position, int StripMax, double a) ;//, vector< vector< vector<double> > >  &StripPositionX);
-	  double CorrectedPositionY3(int ff, double Position, int StripMax, double a) ;//, vector< vector< vector<double> > >  &StripPositionY);
-	  double CorrectedPositionX4(int ff, double* Charge, double Position, int StripMax, double b); //, vector< vector< vector<double> > >  &StripPositionX);
-	  double CorrectedPositionY4(int ff, double* Charge, double Position, int StripMax, double b); //, vector< vector< vector<double> > >  &StripPositionY);
+	  double CorrectedPositionX3(int ff, double Position, int StripMax, double a) ;
+	  double CorrectedPositionY3(int ff, double Position, int StripMax, double a) ;
+	  double CorrectedPositionX4(int ff, double* Charge, double Position, int StripMax, double b); 
+	  double CorrectedPositionY4(int ff, double* Charge, double Position, int StripMax, double b); 
 	 
 	  // X
 

@@ -48,9 +48,14 @@ int main(int argc,char** argv)
   //	Get the formed Chained Tree and Treat it
   TChain* Chain = RootInput:: getInstance() -> GetChain()	;
 
+
+ 
   TMust2Physics* M2 		= (TMust2Physics*) 	myDetector -> m_Detector["MUST2"] 	;
   cout <<  " ///////// Starting Analysis ///////// "<< endl << endl ;
 	
+
+
+
   int i ,N=Chain -> GetEntries();
 	
   //N = 1000;

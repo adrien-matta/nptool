@@ -268,8 +268,10 @@ GLIBS         = $(ROOTGLIBS) $(SYSLIBS)
 INCLUDE		= -I$(CLHEP_BASE_DIR)/include
  
 #------------------------------------------------------------------------------
-SHARELIB      =	CalibManager Vdetec InputOutputRoot InitCond	InterCoord \
-		Must2Data	CATSData GaspardData	AnnularS1Data PlasticData DummyDetectorData SSSDData\
+SHARELIB      =	CalibManager	Vdetec	InputOutputRoot	InitCond \
+		InterCoord	Must2Data	CATSData \
+		GaspardData	AnnularS1Data	PlasticData \
+		DummyDetectorData	SSSDData	trigData \
 		Reaction	EnergyLoss
 
 all:         $(SHARELIB)
@@ -295,7 +297,7 @@ Vdetec:
 ifeq ($(ARCH),macosx)
 		cd lib; ln -sf libVDetector.so libVDetector.dylib
 endif
-		
+
 ## MUST2 ##
 Must2Data:
 		make -C ./MUST2
@@ -356,6 +358,15 @@ DummyDetectorData:
 ifeq ($(ARCH),macosx)
 		cd lib; ln -sf libDummyDetectorData.so libDummyDetectorData.dylib
 endif
+
+## TriggerConditions ##
+trigData:
+		make -C ./TriggerData
+		cp ./TriggerData/*.so ./lib ; cp ./TriggerData/*.h ./include
+ifeq ($(ARCH),macosx)
+		cd lib; ln -sf libTriggerData.so libTriggerData.dylib
+endif
+
 ############# Simulation ##############
 
 ## InitialConditions ##
@@ -400,7 +411,7 @@ EnergyLoss:
 ifeq ($(ARCH),macosx)
 		cd lib; ln -sf libEnergyLoss.so libEnergyLoss.dylib
 endif
-		
+
 #######################################
 
 ############# Clean and More ##########
@@ -415,8 +426,9 @@ clean:
 	make clean -C ./GASPARD
 	make clean -C ./InteractionCoordinates
 	make clean -C ./InitialConditions
+	make clean -C ./TriggerData
 	make clean -C ./DummyDetector
-	
+
 distclean:
 	rm -f ./lib/*.so
 ifeq ($(ARCH),macosx)
@@ -433,6 +445,7 @@ endif
 	make distclean -C ./GASPARD
 	make distclean -C ./InteractionCoordinates
 	make distclean -C ./InitialConditions
+	make distclean -C ./TriggerData
 	make distclean -C ./DummyDetector
 	make distclean -C ./Plastic
 .SUFFIXES: .$(SrcSuf)

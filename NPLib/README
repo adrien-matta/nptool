@@ -26,6 +26,7 @@ NPLib / include
       / IORoot
       / Tools
       / InitialConditions
+      / TriggerData
       / InteractionCoordinates
       / CalibrationManager
       / DummyDetector
@@ -129,3 +130,10 @@ XII) VDetector
 	libDetectorManager.so:
 		DetectorManager is a class that manages a vector of VDetector and call their 
 		common functions.
+
+XIII) TriggerData
+	This directory includes one library : 
+		libTriggerData.so
+	libTriggerData.so :
+		TriggerData is a class which contains the trigger information provided by 
+		by the trigger module used in experiments
