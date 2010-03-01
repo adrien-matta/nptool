@@ -622,7 +622,7 @@ double TCATSPhysics::AnalyseX(//TCATSData* Data,
 	  double Q = EventData->GetCATSChargeX(i) + gRandom->Rndm() - Pedestal_X[NX-1][StrX-1] ;
 	  //ChargeX_Buffer = OnlineCalib_X_E[NX-1][StrX-1][0] + Q * OnlineCalib_X_E[NX-1][StrX-1][1] + Q*Q * OnlineCalib_X_E[NX-1][StrX-1][2] ;
 
-	  ChargeX_Buffer = CalibrationManager::getInstance()->ApplyCalibration("CATS/"+itoa(NX)+"_X"+itoa(StrX)+"_Q",Q);
+	  ChargeX_Buffer = CalibrationManager::getInstance()->ApplyCalibration("CATS/D"+itoa(NX)+"_X"+itoa(StrX)+"_Q",Q);
 
 	
 	  if(EventData->GetCATSChargeX(i) > Threshold_X[NX-1][StrX-1] && NX <= NumberOfCATSHit  && StrX < 28)
@@ -710,7 +710,7 @@ double TCATSPhysics::AnalyseY(//TCATSEventData* EventData,
 	    {	
 	      double Q = EventData->GetCATSChargeY(i) + gRandom->Rndm() - Pedestal_Y[NY-1][StrY-1];
 	      //ChargeY_Buffer = OnlineCalib_Y_E[NY-1][StrY-1][0] + Q * OnlineCalib_Y_E[NY-1][StrY-1][1] + Q*Q * OnlineCalib_Y_E[NY-1][StrY-1][2] ;
-	      ChargeY_Buffer = CalibrationManager::getInstance()->ApplyCalibration("CATS/"+itoa(NY)+"_Y"+itoa(StrY)+"_Q",Q);
+	      ChargeY_Buffer = CalibrationManager::getInstance()->ApplyCalibration("CATS/D"+itoa(NY)+"_Y"+itoa(StrY)+"_Q",Q);
 	    }
 	  
 	  else {ChargeY_Buffer = 0 ;}
@@ -1330,7 +1330,13 @@ double TCATSPhysics::CorrectedPositionY4(int ff, double* Charge, double Position
   return Corrected_Position;
 }
 
-
+TVector3 TCATSPhysics::GetPositionOnTarget()
+{
+  TVector3 Position = TVector3 (GetPositionOnTargetX() 	,
+				GetPositionOnTargetY() 	,
+				-40                     );  // a modifier !! passer la distance de la cible
+  return(Position) ;	
+}
 
 namespace LOCAL_CATS
 {

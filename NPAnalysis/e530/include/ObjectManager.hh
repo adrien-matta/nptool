@@ -31,7 +31,9 @@
 #include "RootInput.h"
 #include "RootOutput.h"
 #include "TInitialConditions.h"
+#include "TTriggerData.h"
 #include "TMust2Physics.h"
+#include "TCATSPhysics.h"
 #include "TSSSDPhysics.h"
 #include "TPlasticPhysics.h"
 

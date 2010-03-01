@@ -93,9 +93,9 @@ CalibrationManager::~CalibrationManager()
 //////////////////////////////////////////////////////////////////
 bool CalibrationManager::AddParameter(string DetectorName , string ParameterName , string Token )
 	{
-		string ParameterPath = DetectorName + "/" + ParameterName ;
-		fToken[Token] = ParameterPath ;
-		return true;
+	  string ParameterPath = DetectorName + "/" + ParameterName ;
+	  fToken[Token] = ParameterPath ;
+	  return true;
 	}
 
 //////////////////////////////////////////////////////////////////
@@ -171,11 +171,12 @@ double CalibrationManager::ApplyCalibration(string ParameterPath , double RawVal
 		// If the find methods return the end iterator it's mean the parameter was not found
 		if(it == fCalibrationCoeff.end() )
 			{
-			/*	cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
-				cout << " ERROR: PARAMETER " << ParameterPath << " IS NOT FOUND IN THE CALIBRATION DATA BASE  " << endl ;
-				cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;*/
-				
-				return RawValue ;
+			  /*
+			  cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
+			  cout << " ERROR: PARAMETER " << ParameterPath << " IS NOT FOUND IN THE CALIBRATION DATA BASE  " << endl ;
+			  cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
+			  */
+			  return RawValue ;
 			}
 		
 		// Else we take the second part of the element (first is index, ie: parameter path)

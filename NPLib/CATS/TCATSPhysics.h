@@ -84,15 +84,15 @@ class TCATSPhysics : public TObject, public NPA::VDetector
 	  // 	vector<int> 		StripMaxY_test;
 	  
 	  //	Calculate
-	  vector<int>			DetNumberX_Position ;
+	  vector<int>		DetNumberX_Position ;
 	  vector<int>    	DetNumberY_Position ;
 	  vector<int>    	DetNumberZ_Position ;
-	  vector<double> 	PositionX 					;
-	  vector<double>	PositionY 					;
-	  vector<double>	PositionZ 					;
-	  double 					PositionOnTargetX		;
-	  double 					PositionOnTargetY		;
-	  TVector3				BeamDirection				;
+	  vector<double> 	PositionX 		;
+	  vector<double>	PositionY 		;
+	  vector<double>	PositionZ 		;
+	  double 		PositionOnTargetX	;
+	  double 		PositionOnTargetY	;
+	  TVector3		BeamDirection		;  //!
 
 	  double                Chargex[28];  //!
 	  double                Chargey[28];  //!
@@ -235,6 +235,10 @@ class TCATSPhysics : public TObject, public NPA::VDetector
 	  double    GetPositionOnTargetY()         {return PositionOnTargetY;}
 
 	  int       GetCATSMult()                  {return PositionX.size();}
+
+	  TVector3  GetPositionOnTarget();
+	  TVector3  GetBeamDirection()             {return BeamDirection;}
+
 
 	  ClassDef(TCATSPhysics,1)  // CATSPhysics structure
 	};

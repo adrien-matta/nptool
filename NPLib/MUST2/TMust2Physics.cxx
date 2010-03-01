@@ -917,9 +917,9 @@ void TMust2Physics::AddTelescope(	double theta 	,
 	
 TVector3 TMust2Physics::GetPositionOfInteraction(int i)
 {
-  TVector3 Position = TVector3 (	GetStripPositionX( TelescopeNumber[i] , Si_X[i] , Si_Y[i] ) 	,
-					GetStripPositionY( TelescopeNumber[i] , Si_X[i] , Si_Y[i] )		,
-					GetStripPositionZ( TelescopeNumber[i] , Si_X[i] , Si_Y[i] )		) ;
+  TVector3 Position = TVector3 (GetStripPositionX( TelescopeNumber[i] , Si_X[i] , Si_Y[i] ) 	,
+				GetStripPositionY( TelescopeNumber[i] , Si_X[i] , Si_Y[i] )	,
+				GetStripPositionZ( TelescopeNumber[i] , Si_X[i] , Si_Y[i] )	) ;
 		
   return(Position) ;	
 	
@@ -968,27 +968,26 @@ namespace LOCAL
   //	X
   double fSi_X_E(TMust2Data* EventData , int i)
   {
-    return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/" + itoa( EventData->GetMMStripXEDetectorNbr(i) ) + "Si_X" + itoa( EventData->GetMMStripXEStripNbr(i) ) + "_E",	
+    return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMStripXEDetectorNbr(i) ) + "_Si_X" + itoa( EventData->GetMMStripXEStripNbr(i) ) + "_E",	
 								EventData->GetMMStripXEEnergy(i) );
-															
   }
 			
   double fSi_X_T(TMust2Data* EventData , int i)
   {
-    return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMStripXTDetectorNbr(i) ) + "Si_X" + itoa( EventData->GetMMStripXTStripNbr(i) ) +"_T",	
+    return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMStripXTDetectorNbr(i) ) + "_Si_X" + itoa( EventData->GetMMStripXTStripNbr(i) ) +"_T",	
 								EventData->GetMMStripXTTime(i) );
   }
 		
   //	Y	
   double fSi_Y_E(TMust2Data* EventData , int i)
   {
-    return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMStripYEDetectorNbr(i) ) + "Si_Y" + itoa( EventData->GetMMStripYEStripNbr(i) ) +"_E",	
+    return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMStripYEDetectorNbr(i) ) + "_Si_Y" + itoa( EventData->GetMMStripYEStripNbr(i) ) +"_E",	
 								EventData->GetMMStripYEEnergy(i) );
   }
 			
   double fSi_Y_T(TMust2Data* EventData , int i)
   {
-    return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMStripYTDetectorNbr(i) ) + "Si_Y" + itoa( EventData->GetMMStripYTStripNbr(i) ) +"_T",	
+    return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMStripYTDetectorNbr(i) ) + "_Si_Y" + itoa( EventData->GetMMStripYTStripNbr(i) ) +"_T",	
 								EventData->GetMMStripYTTime(i) );
   }
 			
@@ -996,26 +995,26 @@ namespace LOCAL
   //	SiLi
   double fSiLi_E(TMust2Data* EventData , int i)
   {
-    return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMSiLiEDetectorNbr(i) ) + "SiLi" + itoa( EventData->GetMMSiLiEPadNbr(i) ) +"_E",	
+    return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMSiLiEDetectorNbr(i) ) + "_SiLi" + itoa( EventData->GetMMSiLiEPadNbr(i) ) +"_E",	
 								EventData->GetMMSiLiEEnergy(i) );
   }
 			
   double fSiLi_T(TMust2Data* EventData , int i)
   {
-    return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMSiLiTDetectorNbr(i) ) + "SiLi" + itoa( EventData->GetMMSiLiTPadNbr(i) )+"_T",	
+    return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMSiLiTDetectorNbr(i) ) + "_SiLi" + itoa( EventData->GetMMSiLiTPadNbr(i) )+"_T",	
 								EventData->GetMMSiLiTTime(i) );
   }
 			
   //	CsI
   double fCsI_E(TMust2Data* EventData , int i)
   {
-    return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMCsIEDetectorNbr(i) ) + "SiLi" + itoa( EventData->GetMMCsIECristalNbr(i) ) +"_E",	
+    return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMCsIEDetectorNbr(i) ) + "_CSi" + itoa( EventData->GetMMCsIECristalNbr(i) ) +"_E",	
 								EventData->GetMMCsIEEnergy(i) );
   }
 			
   double fCsI_T(TMust2Data* EventData , int i)
   {
-    return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMCsITDetectorNbr(i) ) + "SiLi" + itoa( EventData->GetMMCsITCristalNbr(i) ) +"_T",	
+    return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMCsITDetectorNbr(i) ) + "_CSi" + itoa( EventData->GetMMCsITCristalNbr(i) ) +"_T",	
 								EventData->GetMMCsITTime(i) );
   }
 	

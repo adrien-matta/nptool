@@ -48,13 +48,17 @@ int main(int argc,char** argv)
   //	Get the formed Chained Tree and Treat it
   TChain* Chain = RootInput:: getInstance() -> GetChain()	;
 
-
- 
+  // Connect TTriggerData branch
+  
+  TTriggerData* TriggerCondition = 0;
+  Chain->SetBranchAddress("TRIG", &TriggerCondition);
+  Chain->SetBranchStatus("TRIG", 1);
+   
   TMust2Physics* M2 		= (TMust2Physics*) 	myDetector -> m_Detector["MUST2"] 	;
+  TCATSPhysics * CATS           = (TCATSPhysics* )      myDetector -> m_Detector["CATS"]        ;
+
   cout <<  " ///////// Starting Analysis ///////// "<< endl << endl ;
 	
-
-
 
   int i ,N=Chain -> GetEntries();
 	
@@ -66,42 +70,52 @@ int main(int argc,char** argv)
   for ( i = 0 ; i < N ; i ++ )
     {
       // Minimum code
-    	if( i%10000 == 0 && i!=0) 	{	
-				cout.precision(5);
-				end=clock();										
-				double TimeElapsed = (end-begin)/CLOCKS_PER_SEC;
-				double percent = (double)i/N ;
-				double TimeToWait = (TimeElapsed/percent) - TimeElapsed	;					
-				cout	<< "\r Progression:" << percent*100 
-	     				<< " % \t | \t Remaining time : ~" 
-	     				<<  TimeToWait <<"s"<< flush;
+      if( i%10000 == 0 && i!=0) 	{	
+	cout.precision(5);
+	end=clock();										
+	double TimeElapsed = (end-begin)/CLOCKS_PER_SEC;
+	double percent = (double)i/N ;
+	double TimeToWait = (TimeElapsed/percent) - TimeElapsed	;					
+	cout	<< "\r Progression:" << percent*100 
+		<< " % \t | \t Remaining time : ~" 
+		<<  TimeToWait <<"s"<< flush;
       }	
-										
+      
       else if (i==N-1) 	cout << "\r Progression:" 
 			     << " 100% " <<endl;
-					
+      
       Chain -> GetEntry(i);
       // Clear Previous Event
       myDetector -> ClearEventPhysics()			;
-      // Build the new one
-      myDetector -> BuildSimplePhysicalEvent()		;
-      ////
-		
-			
-			// Must 2
-			for(int hit = 0; hit < M2 -> Si_E.size() ; hit ++)
-				{
-					ELab = -1 ; ThetaLab = -1;
-					//	Get Hit Direction
-					TVector3 HitDirection  = M2 -> GetPositionOfInteraction(hit) - TVector3(0,0,-40);
-					// Angle between beam and particle
-					ThetaLab  = ThetaCalculation ( HitDirection , TVector3(0,0,1)   ) ;	
-					ELab = M2 -> Si_E[hit] + M2 -> SiLi_E[hit]	;
-			  }
-			
-      RootOutput::getInstance()->GetTree()->Fill()	;
-    }
+      
+      
+      short must2_event = TriggerCondition -> GetTRIG1();
+      
+      if(must2_event < 16) {
+	
+	// Build the new event
+	myDetector -> BuildSimplePhysicalEvent()		;
+	////
+	
+	// Must 2
+	for(int hit = 0; hit < M2 -> Si_E.size() ; hit ++)
+	  {
+	    ELab = -1 ; ThetaLab = -1;
+	    //	Get Hit Direction
+	    TVector3 HitDirection  = M2 -> GetPositionOfInteraction(hit) - CATS -> GetPositionOnTarget();
+	    TVector3 BeamDirection = CATS -> GetBeamDirection();
+	    // Angle between beam and particle
+	    ThetaLab  = ThetaCalculation ( HitDirection , BeamDirection ) ;	
+	    //ThetaLab  = ThetaCalculation ( HitDirection , TVector3(0,0,1)   ) ;	
+	    ELab = M2 -> Si_E[hit] + M2 -> SiLi_E[hit]	;
+	  }
 
+			
+
+	RootOutput::getInstance()->GetTree()->Fill()	;
+      }
+    }
+  
   cout << " A total of " << i << " event has been annalysed " << endl ;
   cout << endl << " ///////////////////////////////////// "<< endl<< endl ;
   RootOutput::getInstance()->Destroy();
