@@ -92,9 +92,10 @@ using namespace GRAPH ;
 #include <TCutG.h>
 namespace CUT
 	{
-		//	Declare your Cut here:
-
-	}
+	 //open the ROOT file for cuts
+	  TFile *FCuts = new TFile("cut_protons.root");
+	  TCutG *cut_protons = (TCutG*) FCuts->Get("protons");
+        }
 
 using namespace CUT ;
 // --------------------------------------------------------------------------------------------

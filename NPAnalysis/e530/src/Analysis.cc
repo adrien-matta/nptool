@@ -67,7 +67,7 @@ int main(int argc,char** argv)
 	
   clock_t begin=clock();
   clock_t end=begin;
-  for ( i = 0 ; i < N ; i ++ )
+  for ( i = 0 ; i < 700 ; i ++ )
     {
       // Minimum code
       if( i%10000 == 0 && i!=0) 	{	
@@ -90,33 +90,56 @@ int main(int argc,char** argv)
       
       
       short must2_event = TriggerCondition -> GetTRIG1();
-      
-      if(must2_event < 16) {
-	
-	// Build the new event
-	myDetector -> BuildSimplePhysicalEvent()		;
-	////
-	
-	// Must 2
-	for(int hit = 0; hit < M2 -> Si_E.size() ; hit ++)
-	  {
-	    ELab = -1 ; ThetaLab = -1;
-	    //	Get Hit Direction
-	    TVector3 HitDirection  = M2 -> GetPositionOfInteraction(hit) - CATS -> GetPositionOnTarget();
-	    TVector3 BeamDirection = CATS -> GetBeamDirection();
-	    // Angle between beam and particle
-	    ThetaLab  = ThetaCalculation ( HitDirection , BeamDirection ) ;	
-	    //ThetaLab  = ThetaCalculation ( HitDirection , TVector3(0,0,1)   ) ;	
-	    ELab = M2 -> Si_E[hit] + M2 -> SiLi_E[hit]	;
-	  }
+    
+      if(must2_event < 16) 
+	 {
+	   cout << endl << "event number " << i  << " " << "must2_hit " << must2_event <<  endl;
+ 
+	   // Build the new event
+	   myDetector -> BuildSimplePhysicalEvent()		;
+	   ////
 
-			
+	   M2->Dump();
 
-	RootOutput::getInstance()->GetTree()->Fill()	;
-      }
+	   // Must 2
+	   for(int hit = 0; hit < M2 -> Si_E.size() ; hit ++)
+	     {
+	       if((M2 -> TelescopeNumber[hit]) != 4) 
+		 {
+		   //	Get Hit Direction
+		   TVector3 HitDirection  = M2 -> GetPositionOfInteraction(hit) - CATS -> GetPositionOnTarget();
+		   //TVector3 HitDirection  = M2 -> GetPositionOfInteraction(hit) - TVector3(0,0,-40);
+		   TVector3 BeamDirection = CATS -> GetBeamDirection();
+		   
+		   ELab = -1 ; ThetaLab = -1;    
+
+		   // if(CUT::cut_protons -> IsInside(M2 -> Si_E[hit], M2 -> SiLi_E[hit])) 
+		     {
+		       // Angle between beam and particle
+		       ThetaLab  = ThetaCalculation ( HitDirection , BeamDirection ) ;
+		       //ThetaLab  = ThetaCalculation ( HitDirection , TVector3(0,0,1)   ) ;	
+		       
+		       if((M2 -> SiLi_E[hit]) !=-10000) ELab = M2 -> Si_E[hit] + M2 -> SiLi_E[hit]	;
+		       else                             ELab = M2 -> Si_E[hit];
+		     }
+		   
+		     /* else 
+		     {
+		       ThetaLab = 0; ELab=0;
+		       cout << "pas de protons" << endl;
+		       }*/
+		   
+		   cout << ThetaLab << " " << ELab << endl;
+		   
+		 }
+	       else cout << "Telescope4" << endl;
+	       
+	       RootOutput::getInstance()->GetTree()->Fill()	;
+	     }
+	 }
     }
   
-  cout << " A total of " << i << " event has been annalysed " << endl ;
+cout << " A total of " << i << " event has been analysed " << endl ;
   cout << endl << " ///////////////////////////////////// "<< endl<< endl ;
   RootOutput::getInstance()->Destroy();
   return 0	;

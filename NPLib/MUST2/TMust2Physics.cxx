@@ -82,12 +82,12 @@ void TMust2Physics::BuildPhysicalEvent()
 	  Si_X.push_back(X) ; Si_Y.push_back(Y) ; TelescopeNumber.push_back(N) ;
 						
 	  // Take maximum Energy
-	  if(Si_X_E >= Si_Y_E) Si_E.push_back(Si_X_E)	;
-	  else								 Si_E.push_back(Si_Y_E)	;
+	  if(Si_X_E >= Si_Y_E)   Si_E.push_back(Si_X_E)	;
+	  else			 Si_E.push_back(Si_Y_E)	;
 						
 	  // Take minimum Time
-	  if(Si_X_T >= Si_Y_T) Si_T.push_back(Si_Y_T)	;
-	  else								 Si_T.push_back(Si_X_T)	;
+	  if(Si_X_T >= Si_Y_T)   Si_T.push_back(Si_Y_T)	;
+	  else			 Si_T.push_back(Si_X_T)	;
 						
 	  for(unsigned int j = 0 ; j < EventData->GetMMSiLiEMult() ; j++)
 	    {
@@ -947,6 +947,52 @@ TVector3 TMust2Physics::GetTelescopeNormal( int i)
 		
   return(Normal.Unit()) ;	
 	
+}
+
+void TMust2Physics::Dump()
+{
+  cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event XXXXXXXXXXXXXXXXX" << endl;
+
+  //GENERAL
+  cout << "NumberOfTelescope : " << NumberOfTelescope << endl;
+  cout << "EventMultiplicity : " << EventMultiplicity << endl;
+
+  cout << "Event Type : " << "non filled variable " << endl;
+
+  for(unsigned int i = 0; i< TotalEnergy.size() ; i++)
+    {
+      cout << "Total Energy : " << TotalEnergy.at(i) << endl;
+    }
+	 
+  for(unsigned int i = 0; i<TelescopeNumber.size() ; i++)
+    {
+      cout << "Telescope Number :" << TelescopeNumber.at(i) << endl;
+    }
+  
+  //DSSD
+  cout << "Si_E.size() : " << Si_E.size() << endl; 
+  cout << "Si_T.size() : " << Si_T.size() << endl;			
+  cout << "Si_X.size() : " << Si_X.size() << endl;		
+  cout << "Si_Y.size() : " << Si_Y.size() << endl;
+				
+  //SILI
+  cout << "SiLi_E.size() : " << SiLi_E.size() << endl;
+  //  cout << "SiLi_T.size() : " << SiLi_T.size() << endl;
+ 
+  for(unsigned int i = 0; i < SiLi_N.size() ; i++)
+    {
+      cout << "SiLi Pad Number : " << SiLi_N.at(i) << endl;
+    }
+
+  //CSI
+  cout << "CsI_E.size() : " << CsI_E.size() << endl;
+  //  cout << "CsI_T.size() : " << CsI_T.size() << endl;
+  
+  for(unsigned int i = 0; i < CsI_N.size() ; i++)
+    {
+      cout << "CsI Crystal Number : " << CsI_N.at(i) << endl;
+    }
+ 				
 }	
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1008,13 +1054,13 @@ namespace LOCAL
   //	CsI
   double fCsI_E(TMust2Data* EventData , int i)
   {
-    return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMCsIEDetectorNbr(i) ) + "_CSi" + itoa( EventData->GetMMCsIECristalNbr(i) ) +"_E",	
+    return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMCsIEDetectorNbr(i) ) + "_CsI" + itoa( EventData->GetMMCsIECristalNbr(i) ) +"_E",	
 								EventData->GetMMCsIEEnergy(i) );
   }
 			
   double fCsI_T(TMust2Data* EventData , int i)
   {
-    return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMCsITDetectorNbr(i) ) + "_CSi" + itoa( EventData->GetMMCsITCristalNbr(i) ) +"_T",	
+    return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMCsITDetectorNbr(i) ) + "_CsI" + itoa( EventData->GetMMCsITCristalNbr(i) ) +"_T",	
 								EventData->GetMMCsITTime(i) );
   }
 	
