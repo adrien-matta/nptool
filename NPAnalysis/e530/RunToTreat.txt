@@ -2,4 +2,7 @@ TTreeName
 	AutoTree
 RootFileName 
 	../../../../root/run_0200.root 
-	
+	../../../../root/run_0201.root
+	../../../../root/run_0202.root
+	../../../../root/run_0203.root
+	../../../../root/run_0204.root

@@ -4,7 +4,6 @@ using namespace std;
 
 int main(int argc,char** argv)
 {	
-	 
   if(argc!=5) 
     {
       cout << 
@@ -67,7 +66,7 @@ int main(int argc,char** argv)
 	
   clock_t begin=clock();
   clock_t end=begin;
-  for ( i = 0 ; i < 700 ; i ++ )
+  for ( i = 0 ; i < N ; i ++ )
     {
       // Minimum code
       if( i%10000 == 0 && i!=0) 	{	
@@ -93,13 +92,13 @@ int main(int argc,char** argv)
     
       if(must2_event < 16) 
 	 {
-	   cout << endl << "event number " << i  << " " << "must2_hit " << must2_event <<  endl;
+	   //cout << endl << "event number " << i  << " " << "must2_hit " << must2_event <<  endl;
  
 	   // Build the new event
 	   myDetector -> BuildSimplePhysicalEvent()		;
 	   ////
 
-	   M2->Dump();
+	   //	   M2->Dump();	   
 
 	   // Must 2
 	   for(int hit = 0; hit < M2 -> Si_E.size() ; hit ++)
@@ -113,8 +112,9 @@ int main(int argc,char** argv)
 		   
 		   ELab = -1 ; ThetaLab = -1;    
 
-		   // if(CUT::cut_protons -> IsInside(M2 -> Si_E[hit], M2 -> SiLi_E[hit])) 
+		   if(CUT::cut_protons -> IsInside(M2 -> Si_E[hit], M2 -> SiLi_E[hit])) 
 		     {
+
 		       // Angle between beam and particle
 		       ThetaLab  = ThetaCalculation ( HitDirection , BeamDirection ) ;
 		       //ThetaLab  = ThetaCalculation ( HitDirection , TVector3(0,0,1)   ) ;	
@@ -123,16 +123,16 @@ int main(int argc,char** argv)
 		       else                             ELab = M2 -> Si_E[hit];
 		     }
 		   
-		     /* else 
+		   else 
 		     {
 		       ThetaLab = 0; ELab=0;
-		       cout << "pas de protons" << endl;
-		       }*/
+		       // cout << "pas de protons" << endl;
+		     }
 		   
-		   cout << ThetaLab << " " << ELab << endl;
+		   // cout << "theta lab : " << ThetaLab << "    ELab : " << ELab << endl;
 		   
 		 }
-	       else cout << "Telescope4" << endl;
+	       //	       else cout << "Telescope4" << endl;
 	       
 	       RootOutput::getInstance()->GetTree()->Fill()	;
 	     }

@@ -19,6 +19,7 @@
 
 // ROOT
 #include <TROOT.h>
+#include <TCutG.h>
 #include <TChain.h>
 #include <TFile.h>
 #include <TLeaf.h>
@@ -89,6 +90,7 @@ using namespace GRAPH ;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // -----------------------------------CUT------------------------------------------------------
+
 #include <TCutG.h>
 namespace CUT
 	{

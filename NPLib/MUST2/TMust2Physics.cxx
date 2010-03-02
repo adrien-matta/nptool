@@ -93,26 +93,28 @@ void TMust2Physics::BuildPhysicalEvent()
 	    {
 	      if(EventData->GetMMSiLiEDetectorNbr(j)==N)
 		{
-		  // SiLi energy is above threshold check the compatibility
-		  if( fSiLi_E(EventData , j)>SiLi_E_Threshold )
+		  if(EventData->GetMMSiLiEEnergy(i) > 8250 || EventData->GetMMSiLiEEnergy(i) < 8100 )  // suppression " la main" des piedestaux
 		    {
-		      // pad vs strip number match
-		      if( Match_Si_SiLi( X, Y , EventData->GetMMSiLiEPadNbr(j) ) )
+		      // SiLi energy is above threshold check the compatibility
+		      if( fSiLi_E(EventData , j)>SiLi_E_Threshold )
 			{
-			  SiLi_N.push_back(EventData->GetMMSiLiEPadNbr(j))	;
-			  SiLi_E.push_back(fSiLi_E(EventData , j))					;
-													
-			  // Look for associate energy
-			  // Note: in case of use of SiLi "Orsay" time is not coded.
-			  for(int k =0 ; k  < EventData->GetMMSiLiTMult() ; k ++)
+			  // pad vs strip number match
+			  if( Match_Si_SiLi( X, Y , EventData->GetMMSiLiEPadNbr(j) ) )
 			    {
-			      // Same Pad, same Detector
-			      if( EventData->GetMMSiLiEPadNbr(j)==EventData->GetMMSiLiEPadNbr(k) && EventData->GetMMSiLiEDetectorNbr(j)==EventData->GetMMSiLiTDetectorNbr(k) )
-				{SiLi_T.push_back(fSiLi_T(EventData , k))		; break ;}
-			    }
+			      SiLi_N.push_back(EventData->GetMMSiLiEPadNbr(j))	;  //cout << "pad : " << EventData->GetMMSiLiEPadNbr(j) << endl;
+			      SiLi_E.push_back(fSiLi_E(EventData , j))		;
+			      
+			      // Look for associate energy
+			      // Note: in case of use of SiLi "Orsay" time is not coded.
+			      for(int k =0 ; k  < EventData->GetMMSiLiTMult() ; k ++)
+				{
+				  // Same Pad, same Detector
+				  if( EventData->GetMMSiLiEPadNbr(j)==EventData->GetMMSiLiEPadNbr(k) && EventData->GetMMSiLiEDetectorNbr(j)==EventData->GetMMSiLiTDetectorNbr(k) )
+				    {SiLi_T.push_back(fSiLi_T(EventData , k))		; break ;}
+				}
 													
 			  check_SILI = true ;
-													
+			    }							
 			}
 		    }
 		}
@@ -168,11 +170,11 @@ void TMust2Physics::BuildPhysicalEvent()
 int TMust2Physics :: CheckEvent()
 {
   // Check the size of the different elements
-  if(			EventData->GetMMStripXEMult() == EventData->GetMMStripYEMult() && EventData->GetMMStripYEMult() == EventData->GetMMStripXTMult() &&  EventData->GetMMStripXTMult() == EventData->GetMMStripYTMult()  )
+  if(EventData->GetMMStripXEMult() == EventData->GetMMStripYEMult() && EventData->GetMMStripYEMult() == EventData->GetMMStripXTMult() &&  EventData->GetMMStripXTMult() == EventData->GetMMStripYTMult()  )
 	
     return 1 ; // Regular Event
 	
-  else if(			EventData->GetMMStripXEMult() == EventData->GetMMStripYEMult()+1 || EventData->GetMMStripXEMult() == EventData->GetMMStripYEMult()-1  )
+  else if(EventData->GetMMStripXEMult() == EventData->GetMMStripYEMult()+1 || EventData->GetMMStripXEMult() == EventData->GetMMStripYEMult()-1  )
 	
     return 2 ; // Pseudo Event, potentially interstrip
 		
@@ -951,7 +953,10 @@ TVector3 TMust2Physics::GetTelescopeNormal( int i)
 
 void TMust2Physics::Dump()
 {
-  cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event XXXXXXXXXXXXXXXXX" << endl;
+  // EventData->Dump();
+
+  cout << "XXXXXXXXXXXXXXXXXXXXXXXX Physical Event XXXXXXXXXXXXXXXXX" << endl;
+
 
   //GENERAL
   cout << "NumberOfTelescope : " << NumberOfTelescope << endl;
@@ -964,19 +969,19 @@ void TMust2Physics::Dump()
       cout << "Total Energy : " << TotalEnergy.at(i) << endl;
     }
 	 
-  for(unsigned int i = 0; i<TelescopeNumber.size() ; i++)
+  for(unsigned int i = 0; i < TelescopeNumber.size() ; i++)
     {
       cout << "Telescope Number :" << TelescopeNumber.at(i) << endl;
     }
   
   //DSSD
-  cout << "Si_E.size() : " << Si_E.size() << endl; 
-  cout << "Si_T.size() : " << Si_T.size() << endl;			
-  cout << "Si_X.size() : " << Si_X.size() << endl;		
-  cout << "Si_Y.size() : " << Si_Y.size() << endl;
+  cout << "Si_E.size() : " << Si_E.size() << endl; for(unsigned int i= 0; i < Si_E.size() ; i++) { cout << "Si_E = " << Si_E.at(i) << endl ;}
+  cout << "Si_T.size() : " << Si_T.size() << endl; for(unsigned int i= 0; i < Si_T.size() ; i++) { cout << "Si_T = " << Si_T.at(i) << endl ;}			
+  cout << "Si_X.size() : " << Si_X.size() << endl; for(unsigned int i= 0; i < Si_X.size() ; i++) { cout << "Si_X = " << Si_X.at(i) << endl ;}		
+  cout << "Si_Y.size() : " << Si_Y.size() << endl; for(unsigned int i= 0; i < Si_Y.size() ; i++) { cout << "Si_Y = " << Si_Y.at(i) << endl ;}
 				
   //SILI
-  cout << "SiLi_E.size() : " << SiLi_E.size() << endl;
+  cout << "SiLi_E.size() : " << SiLi_E.size() << endl; for(unsigned int i= 0; i < SiLi_E.size() ; i++) { cout << "SiLi_E = " << SiLi_E.at(i) << endl ;}
   //  cout << "SiLi_T.size() : " << SiLi_T.size() << endl;
  
   for(unsigned int i = 0; i < SiLi_N.size() ; i++)
@@ -985,7 +990,7 @@ void TMust2Physics::Dump()
     }
 
   //CSI
-  cout << "CsI_E.size() : " << CsI_E.size() << endl;
+  cout << "CsI_E.size() : " << CsI_E.size() << endl;  for(unsigned int i= 0; i < CsI_E.size() ; i++) { cout << "CsI_E = " << CsI_E.at(i) << endl ;}
   //  cout << "CsI_T.size() : " << CsI_T.size() << endl;
   
   for(unsigned int i = 0; i < CsI_N.size() ; i++)

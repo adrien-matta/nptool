@@ -142,7 +142,7 @@ void ControlSimu(const char * fname = "mySimul")
 //   hControlPhi->Draw("same");
 
    // Display histograms
-   TCanvas *canvasxi32 = new TCanvas("canvas3", "Emitted particle properties", 300, 600);
+   TCanvas *canvas3 = new TCanvas("canvas3", "Emitted particle properties", 300, 600);
    canvas3->Divide(1,3);
    canvas3->cd(1);
    hEmittedThetaCM->SetXTitle("#Theta_{c.m.}");
