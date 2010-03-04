@@ -99,7 +99,7 @@ void TMust2Physics::BuildPhysicalEvent()
 		      if( fSiLi_E(EventData , j)>SiLi_E_Threshold )
 			{
 			  // pad vs strip number match
-			  if( Match_Si_SiLi( X, Y , EventData->GetMMSiLiEPadNbr(j) ) )
+			  // if( Match_Si_SiLi( X, Y , EventData->GetMMSiLiEPadNbr(j) ) )
 			    {
 			      SiLi_N.push_back(EventData->GetMMSiLiEPadNbr(j))	;  //cout << "pad : " << EventData->GetMMSiLiEPadNbr(j) << endl;
 			      SiLi_E.push_back(fSiLi_E(EventData , j))		;

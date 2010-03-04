@@ -366,6 +366,99 @@ void TCATSPhysics::Clear()
 void TCATSPhysics::Dump()
 {
   cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event XXXXXXXXXXXXXXXXX" << endl;
+
+  cout << "Number Of CATS : " << NumberOfCATS << endl;
+  
+  for(unsigned int i= 0; i < DetNumberX.size() ; i++) 
+    {
+      cout << "DetNumberX :  " << DetNumberX.at(i) << endl;
+    }
+  for(unsigned int i= 0; i < StripX.size() ; i++) 
+    {
+      cout << "StripX :  " << StripX.at(i) << endl;
+    }
+  for(unsigned int i= 0; i < StripMaxX.size() ; i++) 
+    {
+      cout << "StripMaxX :  " << StripMaxX.at(i) << endl;
+    }
+  for(unsigned int i= 0; i < ChargeX.size() ; i++) 
+    {
+      cout << "ChargeX :  " << ChargeX.at(i) << endl;
+    }
+  for(unsigned int i= 0; i < ChargeSumX.size() ; i++) 
+    {
+      cout << "ChargeSumX :  " << ChargeSumX.at(i) << endl;
+    }
+  for(unsigned int i= 0; i < MultOverThreshX.size() ; i++) 
+    {
+      cout << "MultOverThreshX :  " << MultOverThreshX.at(i) << endl;
+    }
+
+
+
+  for(unsigned int i= 0; i < DetNumberY.size() ; i++) 
+    {
+      cout << "DetNumberY :  " << DetNumberY.at(i) << endl;
+    }
+ for(unsigned int i= 0; i < StripY.size() ; i++) 
+    {
+      cout << "StripY :  " << StripY.at(i) << endl;
+    }
+  for(unsigned int i= 0; i < StripMaxY.size() ; i++) 
+    {
+      cout << "StripMaxY :  " << StripMaxY.at(i) << endl;
+    }
+  for(unsigned int i= 0; i < ChargeY.size() ; i++) 
+    {
+      cout << "ChargeY :  " << ChargeY.at(i) << endl;
+    }
+  for(unsigned int i= 0; i < ChargeSumY.size() ; i++) 
+    {
+      cout << "ChargeSumY :  " << ChargeSumY.at(i) << endl;
+    }
+  for(unsigned int i= 0; i < MultOverThreshY.size() ; i++) 
+    {
+      cout << "MultOverThreshY :  " << MultOverThreshY.at(i) << endl;
+    }
+  
+  
+  for(unsigned int i = 0; i < DetNumberX_Position.size() ; i++)
+    {
+      cout << "DetNumberX_Position : " << DetNumberX_Position.at(i) << endl;
+    }                   
+  for(unsigned int i = 0; i < DetNumberY_Position.size() ; i++)
+    {
+      cout << "DetNumberY_Position : " << DetNumberY_Position.at(i) << endl;
+    }      
+  for(unsigned int i = 0; i < DetNumberZ_Position.size() ; i++)
+    {
+      cout << "DetNumberZ_Position : " << DetNumberZ_Position.at(i) << endl;
+    } 
+
+  for(unsigned int i = 0; i < PositionX.size() ; i++)
+    {
+      cout << "PositionX : " << PositionX.at(i) << endl;
+    }                   
+  for(unsigned int i = 0; i < PositionY.size() ; i++)
+    {
+      cout << "PositionY : " << PositionY.at(i) << endl;
+    }  
+  for(unsigned int i = 0; i < PositionZ.size() ; i++)
+    {
+      cout << "PositionZ : " << PositionZ.at(i) << endl;
+    }  
+
+  for(unsigned int i = 0; i < ReconstructionMethodX.size() ; i++)
+    {
+      cout << "ReconstructionMethodX : " << ReconstructionMethodX.at(i) << endl;
+    } 
+
+  for(unsigned int i = 0; i < ReconstructionMethodY.size() ; i++)
+    {
+      cout << "ReconstructionMethodY : " << ReconstructionMethodY.at(i) << endl;
+    } 
+
+
 }
 
 
@@ -440,7 +533,6 @@ void TCATSPhysics::ReadPedestal(string PedestalPath)
   - supprimer l'histoire des calibration par exemple...
   - TCATSData doit etre un membre prive de la classe (non ecrit dans l'arbre de sorti), vois ce que j'ai fait sur MUST2
   - Les positions doivent aussi etre des membre prive non ecrit, comme dans MUST2
-  - N'oublie pas que la methode ne doit plus avoir d'argument a la fin... (et qu'elle est deja declare plus haut...)
 */
 void TCATSPhysics::BuildSimplePhysicalEvent()
 //vector< vector< vector<double> > >  &OnlineCalib_X_E       ,
@@ -636,8 +728,8 @@ double TCATSPhysics::AnalyseX(//TCATSData* Data,
 	      MultOverThreshX[ff]++;
 	      ChargeSum_X += ChargeX_Buffer;    
 	      //ChargeSum += ChargeX_Buffer;
-	      ChargeX.push_back( ChargeX_Buffer );   //  cout << "ChargeX_Buffer = " << ChargeX_Buffer << endl;
-	      Chargex[StrX-1] = ChargeX_Buffer ;    // cout <<" Chargex[" << StrX-1 << "] " << Chargex[StrX-1] << endl;
+	      ChargeX.push_back( ChargeX_Buffer );    // cout << "ChargeX_Buffer = " << ChargeX_Buffer << endl;
+	      Chargex[StrX-1] = ChargeX_Buffer ;     //cout <<" Chargex[" << StrX-1 << "] " << Chargex[StrX-1] << endl;
 	      StripX.push_back(StrX);
 	      DetNumberX.push_back(NX) ;
 	      HitX++;
@@ -666,6 +758,8 @@ double TCATSPhysics::AnalyseX(//TCATSData* Data,
   if(ReconstructionMethodX[ff] == GAUSS)CalculatedStripX = GaussianMethodX(ff, Chargex, StripMaxX[ff]);
   //  if(ReconstructionMethodX[ff] == GAUSS)CalculatedStripX = GaussianMethodX(ff, Chargex, StripMaxX[ff], StripPositionX);
   
+  //  cout << "in AnalyseX : " << CalculatedStripX << endl;
+
   // else cout << "Error in the choice of the method!" << endl;
   
   //  cout << "AnalyseX done!" << endl ;
@@ -792,10 +886,10 @@ reconstruction TCATSPhysics::ChooseReconstruction(int ff, int type, double * cha
   else { 
     if(type == 1)  
       {
-	method = GAUSS;
+	method = SECHS;
       } // cout << "bar5" << endl; }
     else { 
-      method = SECHS;
+      method = GAUSS;
     }
   }
   
@@ -817,7 +911,7 @@ double  TCATSPhysics::CalculatePositionX( //vector< vector< vector<double> > >  
     {
       // cout << "CalculatedStripX = " << CalculatedStripX  << endl;
       //  Integer part
-      int IStripX = (int) CalculatedStripX ;  //  cout << "IStripX = " << IStripX  << endl;
+      int IStripX = (int) CalculatedStripX ;   // cout << "IStripX = " << IStripX  << endl;
   
       // Decimal Part
       double DStripX = CalculatedStripX-IStripX ; // cout << "DStripX = " << DStripX  << endl;
@@ -865,7 +959,9 @@ double  TCATSPhysics::CalculatePositionX( //vector< vector< vector<double> > >  
   
       else  positionX = -40;
 
+      // cout << "positionX " << positionX << "   ff " << ff << "  IStripX " << IStripX <<endl;
     }
+ 
  
   return(positionX);
 }
@@ -967,12 +1063,12 @@ double TCATSPhysics:: HyperbolicSequentMethod( double* Charge , int StripMax )
       else
 	{ sechs = StripMax - vs6/vs4 ;}	
 
-      //   cout << "vs1 = " << vs1 << " vs2 = " << vs2 << " vs3 = " << vs3 << " vs4 = " << vs4 << " vs5 = " << vs5 << " vs6 = " << vs6 << endl;
+      // cout << "vs1 = " << vs1 << " vs2 = " << vs2 << " vs3 = " << vs3 << " vs4 = " << vs4 << " vs5 = " << vs5 << " vs6 = " << vs6 << endl;
       
     }
 
 
-  //  cout << "sechs = " << sechs << endl;
+  // cout << "sechs = " << sechs << endl;
 
   return sechs ;
 }

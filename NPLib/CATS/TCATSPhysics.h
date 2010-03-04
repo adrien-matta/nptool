@@ -67,14 +67,14 @@ class TCATSPhysics : public TObject, public NPA::VDetector
 	  
 	  //	Vector of dim = number of CATS
 	  vector<double>	ChargeSumX				;
-	  vector<int>			MultOverThreshX 	;  
-	  vector<int>			StripMaxX 				;
+	  vector<int>		MultOverThreshX 	                ;  
+	  vector<int>		StripMaxX 				;
 	  
 	  
 	  //	Vector of dim = multiplicity of event on all detector
 	  vector<int>  		DetNumberY				; 
-	  vector<int>  		StripY						;
-	  vector<double>	ChargeY						;
+	  vector<int>  		StripY					;
+	  vector<double>	ChargeY					;
 	  //  vector<double>	ChargeY_test	;
 	  
 	  //	Vector of dim = number of CATS
