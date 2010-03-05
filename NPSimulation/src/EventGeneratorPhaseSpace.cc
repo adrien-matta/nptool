@@ -247,13 +247,15 @@ while(ReadingStatus){
 	            	ParticleBuffer = G4ParticleTable::GetParticleTable()->FindParticle("neutron");
 	            else if ( A==1 && Z==1)
 	            	ParticleBuffer = G4ParticleTable::GetParticleTable()->FindParticle("proton");
+//	            else if ( A==2 && Z==0)
+//	            	ParticleBuffer = G4ParticleTable::GetParticleTable()->FindParticle("neutron");
+//	            	ParticleBuffer->SetPDGMass( ParticleBuffer->GetPDGMass*2);
 	            else
 	            	ParticleBuffer = G4ParticleTable::GetParticleTable()->GetIon(Z, A, EXX) ;
 	            	
 	            ReactionProducts.push_back(ParticleBuffer);
 	            
 	            G4cout << "Decay Product: A=" << A << " Z=" << Z << " Excitation Energy = " << EXX/MeV << "MeV" << G4endl;
-	            G4cout << "Super " <<ParticleBuffer->GetPDGMass() << G4endl ;
 	         }
 	         
 	         else if  (DataBuffer.compare(0, 21, "EndOfDecayProductList") == 0) {

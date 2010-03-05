@@ -595,16 +595,16 @@ void EventGeneratorTransfertToResonance::ResonanceDecay(  G4double EnergyHeavy  
 		G4ParticleDefinition* proton
 		=  G4ParticleTable::GetParticleTable()->FindParticle("proton");
 
-		G4double M  = parent   -> GetPDGMass() + m_Reaction->GetExcitation()     ;
+		G4double M  = parent   -> GetPDGMass() + m_Reaction->GetExcitation()*MeV     ;
 		G4double md = daughter -> GetPDGMass()     ;
 		G4double mn = neutron  -> GetPDGMass()     ;
 		G4double mp = proton   -> GetPDGMass()     ;
 		
 		// Check that we are above threshold:
 		// If the Resonnance go below the threshold, decay is forced at thereshold
-		if (M < md + NumberOfNeutrons*mm + NumberOfProtons*mp)
+		if (M < md + NumberOfNeutrons*mn + NumberOfProtons*mp)
 			{
-				double NewExx  = M - md - NumberOfNeutrons*mm - NumberOfProtons*mp ;
+				double NewExx  = parent   -> GetPDGMass() - md - NumberOfNeutrons*mn - NumberOfProtons*mp ;
 				M = parent   -> GetPDGMass() + NewExx ;
 			}
 			

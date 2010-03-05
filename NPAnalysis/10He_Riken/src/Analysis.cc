@@ -169,7 +169,7 @@ RootOutput::getInstance()->GetList()->Add(myHist1D);
 
 					if(M2 -> GetPositionOfInteraction(hit).Z() > 0)
 						{
-							if( M2 -> CsI_E[hit] == 0 && M2 -> Si_E[hit] > 0 )
+							if( M2 -> CsI_E[hit] < 0 && M2 -> Si_E[hit] > 0 )
 								{  
 										ELab[hit] = M2 -> Si_E[hit]  ; 
 										
@@ -197,8 +197,7 @@ RootOutput::getInstance()->GetList()->Add(myHist1D);
 																																			ThetaN						);
 																		 				
 									ThetaCM[hit] = He10Reaction -> EnergyLabToThetaCM( ELab[hit] ) /deg 	;
-//									ExcitationEnergy[hit] = He10Reaction -> ReconstructRelativistic( ELab[hit] , ThetaLab[hit] ) 		;	
-									ExcitationEnergy[hit] = He10Reaction -> ReconstructRelativistic( Init->GetICEmittedEnergy(hit) , Init->GetICEmittedAngleThetaLabIncidentFrame(hit) ) 		;	
+									ExcitationEnergy[hit] = He10Reaction -> ReconstructRelativistic( ELab[hit] , ThetaLab[hit] ) 		;	
 									
 									if(ThinSi -> Energy.size() > 0 )
 								  	if(cut3He_M2_SSSD->IsInside(ThinSi -> Energy[hit], M2 -> Si_E[hit]) )
