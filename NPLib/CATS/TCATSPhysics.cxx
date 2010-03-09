@@ -535,8 +535,6 @@ void TCATSPhysics::ReadPedestal(string PedestalPath)
   - Les positions doivent aussi etre des membre prive non ecrit, comme dans MUST2
 */
 void TCATSPhysics::BuildSimplePhysicalEvent()
-//vector< vector< vector<double> > >  &OnlineCalib_X_E       ,
-//					     vector< vector< vector<double> > >  &OnlineCalib_Y_E       )
 {
   /*
     int 	        HitX 	       = 0 	;
@@ -626,49 +624,43 @@ void TCATSPhysics::BuildSimplePhysicalEvent()
 	cout << "PositionZ[0] = "<< PositionZ[0] << " PositionZ[1] = "<< PositionZ[1] << endl;
       */
 
-      if(PositionX[0] != -40 && PositionY[0] != -40 && PositionX[1] != -40 && PositionY[1] != -40) {
-	
-	BeamDirection = TVector3 (PositionX[1]-PositionX[0] ,
-				  PositionY[1]-PositionY[0] ,
-				  PositionZ[1]-PositionZ[0] );
-	//	BeamDirection.Unit(); Adrien
-	
-	double l = sqrt((PositionZ[0]-PositionZ[1])*(PositionZ[0]-PositionZ[1]));
-	double L = - PositionZ[1];
-
-	double t = (l+L) / l;
-	
-	//double t = - PositionZ[0] / BeamDirection.Z()  ;  Adrien
-	//cout << "t = " << t << endl;
-	
-	/* Adrien stuff
-	   PositionOnTargetX = PositionX[0] + BeamDirection.X()*t;
-	   PositionOnTargetY = PositionY[0] + BeamDirection.Y()*t;
-	*/
-	
-	PositionOnTargetX = PositionX[0] + (PositionX[1] - PositionX[0]) * t;
-	PositionOnTargetY = PositionY[0] + (PositionY[1] - PositionY[0]) * t;
-
-	BeamDirection.Unit();
-			
-	/* Pierre
-	   PositionOnTargetX = PositionX[1] + (PositionX[1] - PositionX[0]) * L /l;
-	   PositionOnTargetY = PositionY[1] + (PositionY[1] - PositionY[0]) * L /l;
-	*/
-      }
+      if(PositionX[0] != -40 && PositionY[0] != -40 && PositionX[1] != -40 && PositionY[1] != -40) 
+	{
+	  BeamDirection = TVector3 (PositionX[1]-PositionX[0] ,
+				    PositionY[1]-PositionY[0] ,
+				    PositionZ[1]-PositionZ[0] );
+	  //	BeamDirection.Unit(); Adrien
+	  
+	  double l = sqrt((PositionZ[0]-PositionZ[1])*(PositionZ[0]-PositionZ[1]));
+	  double L = - PositionZ[1];
+	  
+	  double t = (l+L) / l;
+	  
+	  PositionOnTargetX = PositionX[0] + (PositionX[1] - PositionX[0]) * t;
+	  PositionOnTargetY = PositionY[0] + (PositionY[1] - PositionY[0]) * t;
+	  
+	  BeamDirection.Unit();
+	}
 
       else
 	{
+	  cout << "One of the CATS position was not reconstructed ! Impossible to reconstruct position on target ..." << endl;
+
+	  cout << "PositionX[0] = " <<  PositionX[0] << "   PositionY[0] = " << PositionY[0] << "   PositionX[1] = " << PositionX[1] <<  "   PositionY[1] = " << PositionY[1] << endl;
+
 	  BeamDirection = TVector3 ( 	1 ,
 					0 ,
 					0 );
+	  
 	  PositionOnTargetX = 3000	;
 	  PositionOnTargetY = 3000	;
 	}
     }
   
-  else
+  else if(NumberOfCATSHit ==1)
     {
+      cout << NumberOfCATSHit << endl;
+
       BeamDirection = TVector3 ( 	1 ,
 					0 ,
 					0 );
@@ -758,7 +750,7 @@ double TCATSPhysics::AnalyseX(//TCATSData* Data,
   if(ReconstructionMethodX[ff] == GAUSS)CalculatedStripX = GaussianMethodX(ff, Chargex, StripMaxX[ff]);
   //  if(ReconstructionMethodX[ff] == GAUSS)CalculatedStripX = GaussianMethodX(ff, Chargex, StripMaxX[ff], StripPositionX);
   
-  //  cout << "in AnalyseX : " << CalculatedStripX << endl;
+  //cout << "in AnalyseX : " << CalculatedStripX << endl;
 
   // else cout << "Error in the choice of the method!" << endl;
   
@@ -879,14 +871,14 @@ reconstruction TCATSPhysics::ChooseReconstruction(int ff, int type, double * cha
 {
   // if(ff ==1 && type ==1)  cout << StripMax << endl; 
   reconstruction method;
-  if(ff ==0) { method = SECHS; }  //cout << "sechs" << endl; }
+  if(ff ==0) { method = GAUSS; }  //cout << "sechs" << endl; }
   //else method = GAUSS;
  
   
   else { 
     if(type == 1)  
       {
-	method = SECHS;
+	method = GAUSS;
       } // cout << "bar5" << endl; }
     else { 
       method = GAUSS;
@@ -896,14 +888,14 @@ reconstruction TCATSPhysics::ChooseReconstruction(int ff, int type, double * cha
   return(method);
 } 
 
-double  TCATSPhysics::CalculatePositionX( //vector< vector< vector<double> > >  &StripPositionX,
-					  int                                 StripMaxX,
+double  TCATSPhysics::CalculatePositionX( int                                 StripMaxX,
 					  double*                             Chargex,
 					  double                              CalculatedStripX, 
 					  int                                 ff, 
 					  correction                          method)
 {
   double positionX=-10;
+  int IStripX = 0;
 
   if(ReconstructionMethodX[ff] == GAUSS) positionX = CalculatedStripX;   // already in mm -> see gaussian method
 
@@ -911,7 +903,7 @@ double  TCATSPhysics::CalculatePositionX( //vector< vector< vector<double> > >  
     {
       // cout << "CalculatedStripX = " << CalculatedStripX  << endl;
       //  Integer part
-      int IStripX = (int) CalculatedStripX ;   // cout << "IStripX = " << IStripX  << endl;
+      IStripX = (int) CalculatedStripX ;   
   
       // Decimal Part
       double DStripX = CalculatedStripX-IStripX ; // cout << "DStripX = " << DStripX  << endl;
@@ -957,7 +949,7 @@ double  TCATSPhysics::CalculatePositionX( //vector< vector< vector<double> > >  
 	else  cout << "only 2CATS!! ff = " << ff << endl;
       }
   
-      else  positionX = -40;
+      else { positionX = -40;  cout << CalculatedStripX << " " << IStripX << " " << ff << endl; }
 
       // cout << "positionX " << positionX << "   ff " << ff << "  IStripX " << IStripX <<endl;
     }
@@ -967,8 +959,7 @@ double  TCATSPhysics::CalculatePositionX( //vector< vector< vector<double> > >  
 }
 
 
-double  TCATSPhysics::CalculatePositionY(// vector< vector< vector<double> > >  &StripPositionY,
-					  int                                 StripMaxY,
+double  TCATSPhysics::CalculatePositionY( int                                 StripMaxY,
 					  double *                            Chargey,
 					  double                              CalculatedStripY, 
 					  int                                 ff, 
@@ -1026,7 +1017,7 @@ double  TCATSPhysics::CalculatePositionY(// vector< vector< vector<double> > >  
 	  else cout << "only 2CATS!! ff = " << ff << endl;
 	}
       
-      else  positionY = -40;
+      else  { positionY = -40   ;   cout << CalculatedStripY << " " << IStripY << " " << ff << endl; }
       // cout << IStripX << " " << IStripY << endl;
       
     }
@@ -1063,9 +1054,11 @@ double TCATSPhysics:: HyperbolicSequentMethod( double* Charge , int StripMax )
       else
 	{ sechs = StripMax - vs6/vs4 ;}	
 
-      // cout << "vs1 = " << vs1 << " vs2 = " << vs2 << " vs3 = " << vs3 << " vs4 = " << vs4 << " vs5 = " << vs5 << " vs6 = " << vs6 << endl;
+      //   cout << "vs1 = " << vs1 << " vs2 = " << vs2 << " vs3 = " << vs3 << " vs4 = " << vs4 << " vs5 = " << vs5 << " vs6 = " << vs6 << endl;
       
     }
+
+  else { sechs = -10; cout << " StripMax = " << StripMax << " out of range for SECHS !" << endl;   }
 
 
   // cout << "sechs = " << sechs << endl;
@@ -1160,15 +1153,24 @@ double TCATSPhysics:: GaussianMethodX(int ff, double* Chargex , int StripMax)//,
 
     }
 
+  else {
+    gauss = -1000;
+    // cout << "Gaussian method X failed ! " << endl;
+
+  }
+
   return gauss;
   
 }
 
 
-double TCATSPhysics:: GaussianMethodY(int ff, double* Chargey , int StripMax)//, vector< vector< vector<double> > >  &StripPositionY)
+double TCATSPhysics:: GaussianMethodY(int ff, double* Chargey , int StripMax)
 {
   double Q[3];
   double StripPos[3];
+
+  double Q0_Q1, Q0_Q2;
+  double num, denom;
 
   for(int j = 0; j<3 ; j++)
     {
@@ -1230,14 +1232,19 @@ double TCATSPhysics:: GaussianMethodY(int ff, double* Chargey , int StripMax)//,
       //else cout << "pb avec les charges Y2" << endl; //Q[1] = 1 ; Strip[1] = 0 
       
 
-      double Q0_Q1 = log(Q[0]/Q[1]);
-      double Q0_Q2 = log(Q[0]/Q[2]);
+      Q0_Q1 = log(Q[0]/Q[1]);
+      Q0_Q2 = log(Q[0]/Q[2]);
       
-      double num   = Q0_Q1 * (StripPos[2]*StripPos[2] - StripPos[0]*StripPos[0]) - Q0_Q2 * (StripPos[1]*StripPos[1] - StripPos[0]*StripPos[0])  ;
-      double denom = Q0_Q1 * (StripPos[2] - StripPos[0]) - Q0_Q2 * (StripPos[1] - StripPos[0]) ;
+      num   = Q0_Q1 * (StripPos[2]*StripPos[2] - StripPos[0]*StripPos[0]) - Q0_Q2 * (StripPos[1]*StripPos[1] - StripPos[0]*StripPos[0])  ;
+      denom = Q0_Q1 * (StripPos[2] - StripPos[0]) - Q0_Q2 * (StripPos[1] - StripPos[0]) ;
       gauss = 0.5*num / denom;
 
     }
+
+  else {
+    gauss = -1000;
+    //cout << "Gaussian method Y failed ! " << endl;
+  }
 
   return gauss;
   
@@ -1364,7 +1371,7 @@ double TCATSPhysics:: Barycentric4Method( double* Charge , int StripMax )
 }
 
 
-double TCATSPhysics::CorrectedPositionX3(int ff, double Position, int StripMax, double a) //, vector< vector< vector<double> > >  &StripPositionX )
+double TCATSPhysics::CorrectedPositionX3(int ff, double Position, int StripMax, double a) 
 {
   double Corrected_Position = 0;
   int StripMax_ = StripMax -1;
@@ -1375,7 +1382,7 @@ double TCATSPhysics::CorrectedPositionX3(int ff, double Position, int StripMax, 
   return Corrected_Position;
 }
 
-double TCATSPhysics::CorrectedPositionY3(int ff, double Position, int StripMax, double a) //, vector< vector< vector<double> > >  &StripPositionY )
+double TCATSPhysics::CorrectedPositionY3(int ff, double Position, int StripMax, double a) 
 {
   double Corrected_Position = 0;
   int StripMax_ = StripMax -1;
@@ -1386,7 +1393,7 @@ double TCATSPhysics::CorrectedPositionY3(int ff, double Position, int StripMax, 
   return Corrected_Position;
 }
 
-double TCATSPhysics::CorrectedPositionX4(int ff, double* Charge, double Position, int StripMax, double b) //, vector< vector< vector<double> > >  &StripPositionX )
+double TCATSPhysics::CorrectedPositionX4(int ff, double* Charge, double Position, int StripMax, double b) 
 {
   double Corrected_Position = 0;
   double xmax = 0;
@@ -1407,7 +1414,7 @@ double TCATSPhysics::CorrectedPositionX4(int ff, double* Charge, double Position
   return Corrected_Position;
 }
 
-double TCATSPhysics::CorrectedPositionY4(int ff, double* Charge, double Position, int StripMax, double b) //, vector< vector< vector<double> > >  &StripPositionY )
+double TCATSPhysics::CorrectedPositionY4(int ff, double* Charge, double Position, int StripMax, double b) 
 {
   double Corrected_Position = 0;
   double xmax = 0;

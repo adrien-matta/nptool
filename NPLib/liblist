@@ -7,4 +7,5 @@ echo  -L$NPLIB/lib -lVDetector -lDetectorManager -lCalibrationManager -lIORoot -
 			-lGaspardData -lGaspardPhysics \
 			-lDUMMYDetectorData \
 			-lTriggerData \
+			-lTacData \
 			-lInitialConditions -lInteractionCoordinates

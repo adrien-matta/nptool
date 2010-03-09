@@ -268,196 +268,30 @@ GLIBS         = $(ROOTGLIBS) $(SYSLIBS)
 INCLUDE		= -I$(CLHEP_BASE_DIR)/include
  
 #------------------------------------------------------------------------------
-SHARELIB      =	CalibManager	Vdetec	InputOutputRoot	InitCond \
-		InterCoord	Must2Data	CATSData	TacData \
-		GaspardData	AnnularS1Data	PlasticData \
-		DummyDetectorData	SSSDData	trigData \
-		Reaction	EnergyLoss
-
-all:         $(SHARELIB)
-	rm -f ./include/*Dict.h
+SHARELIB      = libTacData.so
+all:            $(SHARELIB)
 #------------------------------------------------------------------------------
-############### Calibration ##############
-
-## CalibrationManager ##
-CalibManager:
-		make -C ./CalibrationManager
-		cp ./CalibrationManager/*.so ./lib ; cp ./CalibrationManager/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libCalibrationManager.so libCalibrationManager.dylib
-endif
-
 ############### Detector ##############
 
-## VDetector ##
-Vdetec:
-		cp ./VDetector/*.h ./include
-		make -C ./VDetector
-		cp ./VDetector/*.so ./lib
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libVDetector.so libVDetector.dylib
-endif
+## TacData ##
+libTacData.so:	TTacData.o TTacDataDict.o
+		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
-## MUST2 ##
-Must2Data:
-		make -C ./MUST2
-		cp ./MUST2/*.so ./lib ; cp ./MUST2/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libMust2Data.so libMust2Data.dylib
-		cd lib; ln -sf libMust2Physics.so libMust2Physics.dylib
-endif
+TTacDataDict.cxx:	TTacData.h
+			rootcint -f $@ -c $^
 
-## CATS ##
-CATSData:
-		make -C ./CATS
-		cp ./CATS/*.so ./lib ; cp ./CATS/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libCATSData.so libCATSData.dylib
-		cd lib; ln -sf libCATSPhysics.so libCATSPhysics.dylib
-endif
-
-## SSSD ##
-SSSDData:
-		make -C ./SSSD
-		cp ./SSSD/*.so ./lib ; cp ./SSSD/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libSSSDData.so libSSSDData.dylib
-		cd lib; ln -sf libSSSDPhysics.so libSSSDPhysics.dylib
-endif
-
-## AnnularS1 ##
-AnnularS1Data:
-		make -C ./AnnularS1
-		cp ./AnnularS1/*.so ./lib ; cp ./AnnularS1/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libAnnularS1Data.so libAnnularS1Data.dylib
-endif
-
-## Gaspard ##
-GaspardData:
-		make -C ./GASPARD
-		cp ./GASPARD/*.so ./lib ; cp ./GASPARD/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libGaspardData.so libGaspardData.dylib
-		cd lib; ln -sf libGaspardPhysics.so libGaspardPhysics.dylib
-endif
-
-## Plastic ##
-PlasticData:
-		make -C ./Plastic
-		cp ./Plastic/*.so ./lib ; cp ./Plastic/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libPlasticData.so libPlasticData.dylib
-		cd lib; ln -sf libPlasticPhysics.so libPlasticPhysics.dylib
-endif
-
-## TAC ##
-TacData:
-		make -C ./TAC
-		cp ./TAC/*.so ./lib ; cp ./TAC/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libTACData.so libTACData.dylib
-endif
-
-## DUMMY Detector ##
-DummyDetectorData:
-		make -C ./DummyDetector
-		cp ./DummyDetector/*.so ./lib ; cp ./DummyDetector/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libDummyDetectorData.so libDummyDetectorData.dylib
-endif
-
-## TriggerConditions ##
-trigData:
-		make -C ./TriggerData
-		cp ./TriggerData/*.so ./lib ; cp ./TriggerData/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libTriggerData.so libTriggerData.dylib
-endif
-
-############# Simulation ##############
-
-## InitialConditions ##
-InitCond:
-		make -C ./InitialConditions
-		cp ./InitialConditions/*.so ./lib ; cp ./InitialConditions/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libInitialConditions.so libInititalConditions.dylib
-endif
-
-## InteractionCoordinates ##
-InterCoord:	
-		make -C ./InteractionCoordinates
-		cp ./InteractionCoordinates/*.so ./lib ; cp ./InteractionCoordinates/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libInteractionCoordinates.so libInteractionCoordinates.dylib
-endif
-
-############# I/O Root File ############
-InputOutputRoot:
-	make -C ./IORoot
-	cp ./IORoot/*.so ./lib ; cp ./IORoot/*.h ./include
-ifeq ($(ARCH),macosx)
-	cd lib; ln -sf libIORoot.so libIORoot.dylib
-endif
-
-
-
-############# Various Tools ############
-
-## Reaction ##
-Reaction:
-		make libReaction.so -C ./Tools
-		cp ./Tools/*.so ./lib ; cp ./Tools/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libReaction.so libReaction.dylib
-endif
-
-EnergyLoss:
-		make libEnergyLoss.so -C ./Tools
-		cp ./Tools/*.so ./lib ; cp ./Tools/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libEnergyLoss.so libEnergyLoss.dylib
-endif
-
+# dependances
+TTacData.o:	TTacData.cxx	TTacData.h
+TTacDataDict.o: TTacDataDict.cxx TTacDataDict.h
 #######################################
 
 ############# Clean and More ##########
 clean:
-	make clean -C ./Tools
-	make clean -C ./IORoot
-	make clean -C ./VDetector
-	make clean -C ./CalibrationManager
-	make clean -C ./MUST2
-	make clean -C ./SSSD
-	make clean -C ./AnnularS1
-	make clean -C ./GASPARD
-	make clean -C ./TAC
-	make clean -C ./InteractionCoordinates
-	make clean -C ./InitialConditions
-	make clean -C ./TriggerData
-	make clean -C ./DummyDetector
+	@rm -f core *~ *.o *Dict*
 
 distclean:
-	rm -f ./lib/*.so
-ifeq ($(ARCH),macosx)
-	rm -f ./lib/*.dylib
-endif
-	rm -f ./include/*.h 
-	make distclean -C ./Tools
-	make distclean -C ./IORoot
-	make distclean -C ./VDetector
-	make distclean -C ./CalibrationManager
-	make distclean -C ./MUST2
-	make distclean -C ./SSSD
-	make distclean -C ./AnnularS1
-	make distclean -C ./GASPARD
-	make distclean -C ./TAC
-	make distclean -C ./InteractionCoordinates
-	make distclean -C ./InitialConditions
-	make distclean -C ./TriggerData
-	make distclean -C ./DummyDetector
-	make distclean -C ./Plastic
+	  make clean; rm -f *.so
+
 .SUFFIXES: .$(SrcSuf)
 
 ###

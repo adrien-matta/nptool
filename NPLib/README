@@ -27,6 +27,7 @@ NPLib / include
       / Tools
       / InitialConditions
       / TriggerData
+      / TacData		
       / InteractionCoordinates
       / CalibrationManager
       / DummyDetector

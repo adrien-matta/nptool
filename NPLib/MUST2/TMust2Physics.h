@@ -56,24 +56,38 @@ class TMust2Physics : public TObject, public NPA::VDetector
  public:
 	
   //	Provide Physical Multiplicity
-  Int_t			EventMultiplicity	;
+  Int_t	 		EventMultiplicity	;
+  //  Int_t                 Check_Event             ;
+  int Check1 , Check2 , Check_1 ;
+  int compt_Match_XY;
+  int diff_det;
+  int good_couple;
+  int c1, c2, c3, c4, c5, c6;
+  int boucle_couple;
+  int SiLi_loop;
 				
   //	Provide a Classification of Event
-  vector<int>		EventType			;
+  vector<int>		EventType		;
 		
   // Telescope
   vector<int>		TelescopeNumber		;
 	
   //	Si X
   vector<double>	Si_E				;
+  vector<double>	Si_E_X				;
+  vector<double>	Si_E_Y				;
+  
   vector<double>	Si_T				;
-  vector<int>			Si_X				;
-  vector<int>			Si_Y				;
+  vector<double>	Si_T_X				;
+  vector<double>	Si_T_Y				;
+
+  vector<int>		Si_X				;
+  vector<int>		Si_Y				;
 	
   //	Si(Li)
   vector<double>	SiLi_E				;
   vector<double>	SiLi_T				;
-  vector<int>			SiLi_N				;
+  vector<int>		SiLi_N				;
 	
   //	CsI
   vector<double>	CsI_E				;

@@ -39,10 +39,20 @@ ClassImp(TMust2Physics)
 ///////////////////////////////////////////////////////////////////////////
 TMust2Physics::TMust2Physics() 
 {
-  EventMultiplicity 	= 0 							;
+  EventMultiplicity 	= 0 			;
   EventData 		= new TMust2Data	;
-  EventPhysics 		= this						;
-  NumberOfTelescope	= 0								;
+  EventPhysics 		= this			;
+  NumberOfTelescope	= 0			;
+  //  Check_Event           = 0                     ;
+  Check1 = 0 , Check2 = 0 , Check_1 = 0;
+  compt_Match_XY = 0;
+  diff_det =0;
+  good_couple=0;
+
+  c1 = 0, c2 = 0, c3 = 0, c4 = 0, c5 = 0, c6 = 0;
+  boucle_couple = 0;
+  SiLi_loop = 0;
+
 }
 		
 ///////////////////////////////////////////////////////////////////////////
@@ -57,14 +67,23 @@ void TMust2Physics::BuildPhysicalEvent()
 { 
   bool check_SILI = false ;
   bool check_CSI  = false ;
-	
-	
+
+
+
+  
+  // Check_Event = CheckEvent();
+  //  cout << Check_Event << endl;
+  	
   if( CheckEvent() == 1 )
     {
+      Check1 ++;
+
       vector< TVector2 > couple = Match_X_Y() ;
-				
+      
       for(unsigned int i = 0 ; i < couple.size() ; i++)
 	{
+	  boucle_couple++;
+
 	  check_SILI = false ;
 	  check_CSI = false ;
 					
@@ -81,9 +100,20 @@ void TMust2Physics::BuildPhysicalEvent()
 					
 	  Si_X.push_back(X) ; Si_Y.push_back(Y) ; TelescopeNumber.push_back(N) ;
 						
+	    Si_E_X.push_back(Si_X_E);
+	    Si_E_Y.push_back(Si_Y_E);
+	   
+
 	  // Take maximum Energy
+	    Si_E.push_back(Si_X_E);
+	    /*
 	  if(Si_X_E >= Si_Y_E)   Si_E.push_back(Si_X_E)	;
 	  else			 Si_E.push_back(Si_Y_E)	;
+	    */
+
+	   Si_T_X.push_back(Si_X_T);
+           Si_T_Y.push_back(Si_Y_T);
+	   Si_T.push_back(Si_X_T);
 						
 	  // Take minimum Time
 	  if(Si_X_T >= Si_Y_T)   Si_T.push_back(Si_Y_T)	;
@@ -91,15 +121,19 @@ void TMust2Physics::BuildPhysicalEvent()
 						
 	  for(unsigned int j = 0 ; j < EventData->GetMMSiLiEMult() ; j++)
 	    {
+	      SiLi_loop++;
+	      // cout << "SiLi detector hit "<< EventData->GetMMSiLiEDetectorNbr(j) << endl;
+
 	      if(EventData->GetMMSiLiEDetectorNbr(j)==N)
 		{
-		  if(EventData->GetMMSiLiEEnergy(i) > 8250 || EventData->GetMMSiLiEEnergy(i) < 8100 )  // suppression " la main" des piedestaux
+
+		  if(EventData->GetMMSiLiEEnergy(j) > 8210)  // suppression " la main" des piedestaux
 		    {
 		      // SiLi energy is above threshold check the compatibility
 		      if( fSiLi_E(EventData , j)>SiLi_E_Threshold )
 			{
 			  // pad vs strip number match
-			  // if( Match_Si_SiLi( X, Y , EventData->GetMMSiLiEPadNbr(j) ) )
+			  //if( Match_Si_SiLi( X, Y , EventData->GetMMSiLiEPadNbr(j) ) )
 			    {
 			      SiLi_N.push_back(EventData->GetMMSiLiEPadNbr(j))	;  //cout << "pad : " << EventData->GetMMSiLiEPadNbr(j) << endl;
 			      SiLi_E.push_back(fSiLi_E(EventData , j))		;
@@ -161,7 +195,11 @@ void TMust2Physics::BuildPhysicalEvent()
 					
 	}
     }
-		
+  
+  else if( CheckEvent()  == -1) { Check_1 ++; }
+  else if( CheckEvent()  ==  2) { Check2 ++ ; }
+
+  
   return;
 	
 }	
@@ -195,35 +233,71 @@ vector < TVector2 > TMust2Physics :: Match_X_Y()
 		
   // Prevent code from treating very high multiplicity Event
   // Those event are not physical anyway and that improve speed.
+  /*
   if( EventData->GetMMStripXEMult()>6 || EventData->GetMMStripYEMult()>6 )
     return ArrayOfGoodCouple;
+  */
+
+  c1 ++;/* cout << "XEMult " << EventData->GetMMStripXEMult() << endl;
+         cout << "YEMult " << EventData->GetMMStripYEMult() << endl;
+         cout << "SiLiEMult " << EventData->GetMMSiLiEMult() << endl;*/
+	 /*
+	 for(unsigned int j = 0 ; j < EventData->GetMMSiLiEMult() ; j++)
+	    {
+	      cout << "SiLi detector hit "<< EventData->GetMMSiLiEDetectorNbr(j) << endl;
+	    }
+	 */
+
+	 //	 cout << "Tel " << EventData->GetMMSiLiEDetectorNbr() << endl;
 		
   for(int i = 0 ; i < EventData->GetMMStripXEMult(); i++)
     {
+
+      c2++; 	// cout << "Tel " << EventData->GetMMStripXEDetectorNbr(i) << endl;
+
       //	if X value is above threshold, look at Y value
       if( fSi_X_E(EventData , i) > Si_X_E_Threshold )
 	{
+	  c3 ++;
 					
 	  for(int j = 0 ; j < EventData->GetMMStripYEMult(); j++)
 	    {
+
+	      c4 ++;  	// cout << "Tel " << EventData->GetMMStripYEDetectorNbr(j) << endl;
+
 	      //	if Y value is above threshold look if detector match
 	      if( fSi_Y_E(EventData , j) > Si_Y_E_Threshold )							
 		{
+		  c5 ++;
+
 		  //	if same detector check energy
 		  if ( EventData->GetMMStripXEDetectorNbr(i) == EventData->GetMMStripYEDetectorNbr(j) )
 		    {
+
+		      c6++;
 		      //	Look if energy match (within 10%)
-		      if( ( fSi_X_E(EventData , i) - fSi_Y_E(EventData , j) ) / fSi_X_E(EventData , i) < 0.1	)
-			ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;	
+		     // if( ( fSi_X_E(EventData , i) - fSi_Y_E(EventData , j) ) / fSi_X_E(EventData , i) < 0.1)
+			{
+			  ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;	
+			  compt_Match_XY ++;
+			  //cout << "number of good couples " << ArrayOfGoodCouple.size() << endl;
+			}
+		      // else cout << fSi_X_E(EventData , i) << " " << fSi_Y_E(EventData , j) << endl;
 		    }
+		  else diff_det ++;
 		}
 	    }
 	}
     }
 	
-  if( ArrayOfGoodCouple.size() > EventData->GetMMStripXEMult() ) ArrayOfGoodCouple.clear() ;
+  if( ArrayOfGoodCouple.size() > EventData->GetMMStripXEMult() ) { ArrayOfGoodCouple.clear() ;  }
+
+  else if (ArrayOfGoodCouple.size()!=0 ){ good_couple++; }
+  
+  return ArrayOfGoodCouple; 
+    //cout << "warning : X multiplicity bigger than XY couple to treat" << endl; }
 		
-  return ArrayOfGoodCouple;	
+ 	
 }
 	
 	
@@ -449,7 +523,13 @@ void TMust2Physics::Clear()
 		
   // Si X
   Si_E.clear()	;
+  Si_E_X.clear();
+  Si_E_Y.clear();
+
   Si_T.clear()	;
+  Si_T_X.clear();
+  Si_T_Y.clear();
+
   Si_X.clear()	;
   Si_Y.clear()	;
 		
@@ -976,7 +1056,13 @@ void TMust2Physics::Dump()
   
   //DSSD
   cout << "Si_E.size() : " << Si_E.size() << endl; for(unsigned int i= 0; i < Si_E.size() ; i++) { cout << "Si_E = " << Si_E.at(i) << endl ;}
-  cout << "Si_T.size() : " << Si_T.size() << endl; for(unsigned int i= 0; i < Si_T.size() ; i++) { cout << "Si_T = " << Si_T.at(i) << endl ;}			
+  cout << "Si_E_X.size() : " << Si_E_X.size() << endl; for(unsigned int i= 0; i < Si_E_X.size() ; i++) { cout << "Si_E_X = " << Si_E_X.at(i) << endl ;}
+  cout << "Si_E_Y.size() : " << Si_E_Y.size() << endl; for(unsigned int i= 0; i < Si_E_Y.size() ; i++) { cout << "Si_E_Y = " << Si_E_Y.at(i) << endl ;}
+  
+  cout << "Si_T.size() : " << Si_T.size() << endl; for(unsigned int i= 0; i < Si_T.size() ; i++) { cout << "Si_T = " << Si_T.at(i) << endl ;}
+  cout << "Si_T_X.size() : " << Si_T_X.size() << endl; for(unsigned int i= 0; i < Si_T_X.size() ; i++) { cout << "Si_T_X = " << Si_T_X.at(i) << endl ;}
+  cout << "Si_T_Y.size() : " << Si_T_Y.size() << endl; for(unsigned int i= 0; i < Si_T_Y.size() ; i++) { cout << "Si_T_Y = " << Si_T_Y.at(i) << endl ;}
+			
   cout << "Si_X.size() : " << Si_X.size() << endl; for(unsigned int i= 0; i < Si_X.size() ; i++) { cout << "Si_X = " << Si_X.at(i) << endl ;}		
   cout << "Si_Y.size() : " << Si_Y.size() << endl; for(unsigned int i= 0; i < Si_Y.size() ; i++) { cout << "Si_Y = " << Si_Y.at(i) << endl ;}
 				
