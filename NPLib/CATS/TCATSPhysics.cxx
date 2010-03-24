@@ -1437,7 +1437,7 @@ TVector3 TCATSPhysics::GetPositionOnTarget()
 {
   TVector3 Position = TVector3 (GetPositionOnTargetX() 	,
 				GetPositionOnTargetY() 	,
-				-40                     );  // a modifier !! passer la distance de la cible
+				0                     );  // a modifier !! passer la distance de la cible
   return(Position) ;	
 }
 

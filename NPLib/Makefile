@@ -269,7 +269,8 @@ INCLUDE		= -I$(CLHEP_BASE_DIR)/include
  
 #------------------------------------------------------------------------------
 SHARELIB      =	CalibManager	Vdetec	InputOutputRoot	InitCond \
-		InterCoord	Must2Data	CATSData	TacData \
+		InterCoord	Must2Data	CATSData  \
+		TacData	\
 		GaspardData	AnnularS1Data	PlasticData \
 		DummyDetectorData	SSSDData	trigData \
 		Reaction	EnergyLoss
@@ -351,12 +352,12 @@ ifeq ($(ARCH),macosx)
 		cd lib; ln -sf libPlasticPhysics.so libPlasticPhysics.dylib
 endif
 
-## TAC ##
+## Tac ##
 TacData:
 		make -C ./TAC
 		cp ./TAC/*.so ./lib ; cp ./TAC/*.h ./include
 ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libTACData.so libTACData.dylib
+		cd lib; ln -sf libTacData.so libTacData.dylib
 endif
 
 ## DUMMY Detector ##

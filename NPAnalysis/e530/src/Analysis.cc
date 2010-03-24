@@ -14,10 +14,10 @@ int main(int argc,char** argv)
       return 0;
     } 
   
-  string reactionfileName     = argv[1]       ;
-  string detectorfileName 		= argv[2]	;
+  string reactionfileName     = argv[1] ;
+  string detectorfileName     = argv[2]	;
   string calibrationfileName  = argv[3]	;  
-  string runToTreatFileName 	= argv[4]	;
+  string runToTreatFileName   = argv[4]	;
   
   /////////////////////////////////////////////////////////////////////////////////////////////////////
     //	First of All instantiate RootInput and Output
@@ -26,7 +26,7 @@ int main(int argc,char** argv)
     RootOutput::getInstance("Analysis/60Fe_AnalysedData", "Analysed_Data")	;
     
     //	Instantiate some Reaction
-    NPL::Reaction*  e530Reaction = new Reaction								;
+    NPL::Reaction*  e530Reaction = new Reaction					;
     e530Reaction	->	ReadConfigurationFile(reactionfileName)	;
     
     //	Instantiate the Calibration Manger using a file (WARNING:prior to the detector instantiation)
@@ -43,7 +43,8 @@ int main(int argc,char** argv)
       //	Attach more branch to the output
       
       double ELab=0,ThetaLab=0,ExcitationEnergy=0;
-      RootOutput::getInstance()->GetTree()->Branch("ELab",&ELab,"ELab/D") 							;
+      double ThetaN = 0;
+      RootOutput::getInstance()->GetTree()->Branch("ELab",&ELab,"ELab/D") 		;
       RootOutput::getInstance()->GetTree()->Branch("ThetaLab",&ThetaLab,"ThetaLab/D") 	;
       RootOutput::getInstance()->GetTree()->Branch("ExcitationEnergy",&ExcitationEnergy,"ExcitationEnergy/D") ;
       
@@ -56,17 +57,23 @@ int main(int argc,char** argv)
       Chain->SetBranchAddress("TRIG", &TriggerCondition);
       Chain->SetBranchStatus("TRIG", 1);
       
+      TTacData* TacCondition = 0;
+      Chain->SetBranchAddress("TAC", &TacCondition);
+      Chain->SetBranchStatus("TAC", 1);
       
-      TMust2Physics* M2 		= (TMust2Physics*) 	myDetector -> m_Detector["MUST2"] 	;
-      TCATSPhysics * CATS           = (TCATSPhysics* )      myDetector -> m_Detector["CATS"]        ;
-      
+
+      TMust2Physics* M2 	    = (TMust2Physics*)  myDetector -> m_Detector["MUST2"] 	;
+      TCATSPhysics * CATS           = (TCATSPhysics* )  myDetector -> m_Detector["CATS"]        ;
+            
       TH2F* DE_E_protons  = new TH2F("DE_E_protons","DE_E et cut protons",1000,0,25000,1000,0,25000) ;
       TH2F* DE_E          = new TH2F("DE_E","DE_E               ",1000,0,25000,1000,0,25000) ;
       TH2F* E_Theta       = new TH2F("E_Theta","E_Theta         ",60,100,160,500,0,25000) ;
-
+      TH2F* Position_M2   = new TH2F("Must2Positions","Must2Positions",2000,-200,200,2000,-200,200);
+      
       TH1F* trigger       = new TH1F("trig","trig",650,0,649);
-
-      int must = 0;
+      TH1F* tac           = new TH1F("tac","tac",200,2800,4000);
+     
+      int must, evt_tac, evt_ETof, evt_EDE  = 0;
       
       cout <<  " ///////// Starting Analysis ///////// "<< endl << endl ;
       
@@ -79,6 +86,8 @@ int main(int argc,char** argv)
       clock_t end=begin;
       for ( i = 0 ; i < N ; i ++ )
 	{
+	 
+	  
 	  // Minimum code
 	  if( i%10000 == 0 && i!=0) 	{	
 	    cout.precision(5);
@@ -98,74 +107,108 @@ int main(int argc,char** argv)
 	  // Clear Previous Event
 	  myDetector -> ClearEventPhysics()			;
 	  
-	  
+	  UShort_t tac_pl_cats2 = TacCondition -> GetTAC_PL_CATS2();
+	  tac -> Fill(tac_pl_cats2);
 	  
 	  UShort_t must2_event = TriggerCondition -> GetTRIG1();
 	  trigger -> Fill(must2_event);
 	  
 	  
-	   if(must2_event < 16) 
-	    {
-	      //cout << "event number " << i << endl;
+	  if(must2_event < 16) 
+	     {
+	       // cout << "event number " << i+1 << endl;
+	       //cout << "must!"<< endl;
 
-	      // cout << must2_event << endl;
-	      must++;
-	      //cout << endl << "event number " << i  << " " << "must2_hit " << must2_event <<  endl;
-	      
-	      // Build the new event
-	      myDetector -> BuildSimplePhysicalEvent()		;
-	      ////
-	      
-	      // Must 2
-	      for(int hit = 0; hit < M2 -> Si_E.size() ; hit ++)
-		{
-		  //	  M2->Dump();
+	       if(tac_pl_cats2 > 3450 && tac_pl_cats2 < 3650) 
+		 {
+		   evt_tac++;
+		   must++;
+		   
+		   		   
+		   // Build the new event
+		   myDetector -> BuildSimplePhysicalEvent()		;
+		   ////
 
-		  //	Get Hit Direction
-		  TVector3 HitDirection  = M2 -> GetPositionOfInteraction(hit) - CATS -> GetPositionOnTarget();
-		  //TVector3 HitDirection  = M2 -> GetPositionOfInteraction(hit) - TVector3(0,0,-40);
-		  TVector3 BeamDirection = CATS -> GetBeamDirection();
-		  
-		  ELab = -1 ; ThetaLab = -1;    
-		  
-		  DE_E ->Fill(M2 -> SiLi_E[hit],M2 -> Si_E[hit]);
+		   // Must 2
+		   for(int hit = 0; hit < M2 -> Si_E.size() ; hit ++)
+		     {
+		       //	  M2->Dump();
+		       
+		       //	Get Hit Direction
+		       TVector3 HitDirection  = M2 -> GetPositionOfInteraction(hit) - CATS -> GetPositionOnTarget();
+		       //TVector3 HitDirection  = M2 -> GetPositionOfInteraction(hit) - TVector3(0,0,-40);
+		       TVector3 BeamDirection = CATS -> GetBeamDirection();
+		       
+		       
+		      
 
-		  if(M2->TelescopeNumber[hit] ==1) ;
-		  
-		  // if(CUT::cut_protons -> IsInside(M2 -> SiLi_E[hit], M2 -> Si_E[hit])) 
-		  {
-		    // Angle between beam and particle
-		    ThetaLab  = ThetaCalculation ( HitDirection , BeamDirection ) ;
-		    //ThetaLab  = ThetaCalculation ( HitDirection , TVector3(0,0,1)   ) ;	
-		    
-		    if((M2 -> SiLi_E[hit]) !=-10000) ELab = M2 -> Si_E[hit] + M2 -> SiLi_E[hit]	;
-		    else                             ELab = M2 -> Si_E[hit];
-		    
-		    // DE_E_protons   -> Fill(M2 -> SiLi_E[hit],M2 -> Si_E[hit]);
-		    //E_Theta        -> Fill(ThetaLab*180/3.14,ELab);
-		    //	}
-		    
-		    /*
-		      else 
-		    {
-		    ThetaLab = 0; ELab=0;
-		    // cout << "pas de protons" << endl;
-		    }
-		    */
-		    
-		    // cout << "theta lab : " << ThetaLab << "    ELab : " << ELab << endl;
-		    
-		  }  
-		  
-		  
-		  RootOutput::getInstance()->GetTree()->Fill()	;
-		}  // end of for loop over hit
-	    }
+		       ELab = -1 ; ThetaLab = -1;    
+		       
+		       DE_E ->Fill(M2 -> SiLi_E[hit],M2 -> Si_E[hit]);
+		       
+		       		       		       
+		       //  if(CUT::cut_protons -> IsInside(M2 -> SiLi_E[hit], M2 -> Si_E[hit])) 
+		       {
+			 // Angle between beam and particle
+			 ThetaLab  = ThetaCalculation ( HitDirection , BeamDirection ) ;
+			 //ThetaLab  = ThetaCalculation ( HitDirection , TVector3(0,0,1)   ) ;	
+			 ThetaN = ThetaCalculation(HitDirection , M2 -> GetTelescopeNormal(hit));
+
+			 if((M2->Si_E[hit] > 0))
+			   {
+			     Position_M2->Fill((M2 -> GetPositionOfInteraction(hit)).X(),(M2 -> GetPositionOfInteraction(hit)).Y());
+			   }
+
+			 if((M2->Si_E[hit] > 0) && (M2 -> SiLi_E[hit]) < 0) 
+			   {
+			     ELab = M2 -> Si_E[hit];
+			     ELab = protonStripAl.EvaluateInitialEnergy(ELab, 0.5*micrometer, ThetaN);
+			     ELab = protonTargetCD2.EvaluateInitialEnergy(ELab,17.4*micrometer,ThetaLab);
+
+			    
+
+			   }
+
+			 else if((M2->Si_E[hit] > 0) && (M2 -> SiLi_E[hit]) > 0)
+			   {
+			     ELab = M2 -> SiLi_E[hit];
+			     ELab = protonStripAl.EvaluateInitialEnergy(ELab, 0.5*micrometer, ThetaN);
+
+			     ELab += M2 -> Si_E[hit];
+			     ELab = protonStripAl.EvaluateInitialEnergy(ELab, 0.5*micrometer, ThetaN);
+
+			     ELab = protonTargetCD2.EvaluateInitialEnergy(ELab,17.4*micrometer,ThetaLab);
+
+			     
+			   }
+
+
+			 			 
+			 // DE_E_protons   -> Fill(M2 -> SiLi_E[hit],M2 -> Si_E[hit]);
+			 E_Theta        -> Fill(ThetaLab*180/3.14,ELab);
+			 //	}
+			 
+			 /*
+			   else 
+			   {
+			   ThetaLab = 0; ELab=0;
+			   // cout << "pas de protons" << endl;
+			   }
+			 */
+			 
+			 // cout << "theta lab : " << ThetaLab << "    ELab : " << ELab << endl;
+			 
+			 
+			 
+		       }
+		       RootOutput::getInstance()->GetTree()->Fill()	;
+		     }  // end of for loop over hit
+		 }  // tac condition
+	     } //must2 events condition
 	   	  
 	} // end of for loop over events
 
-      cout << "Number of telescope1 events treated" << t1 << endl;
-
+      
       cout << "events -1 : " << M2->Check_1 << "    events 1 : " << M2->Check1 << "   events 2 : " << M2->Check2 << endl;
       cout << "Match XY " << M2->compt_Match_XY << " events " << endl; 
       cout << "detecteurs differents : " << M2-> diff_det << endl;
@@ -181,8 +224,9 @@ int main(int argc,char** argv)
       DE_E_protons ->Write("");
       E_Theta      ->Write("");
       trigger      ->Draw("");
+      Position_M2->Write("");
       
-      cout << " A total of " << i << " event has been annalysed " << endl ;
+      cout << " A total of " << i << " event has been analysed " << endl ;
       cout << endl << " ///////////////////////////////////// "<< endl<< endl ;
       RootOutput::getInstance()->Destroy();
       return 0	;

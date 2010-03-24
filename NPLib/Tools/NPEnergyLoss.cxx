@@ -251,8 +251,8 @@ double EnergyLoss::Slow(	double Energy 			, // Energy of the detected particle
 	}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 double EnergyLoss::EvaluateInitialEnergy(	double Energy 					, // Energy of the detected particle
-		   																		double TargetThickness	, // Target Thickness at 0 degree
-		   																		double Angle						) // Particle Angle
+						double TargetThickness	, // Target Thickness at 0 degree
+						double Angle						) // Particle Angle
 		   																		const
 	{
 	

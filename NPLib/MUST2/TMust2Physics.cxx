@@ -68,18 +68,14 @@ void TMust2Physics::BuildPhysicalEvent()
   bool check_SILI = false ;
   bool check_CSI  = false ;
 
-
-
-  
-  // Check_Event = CheckEvent();
-  //  cout << Check_Event << endl;
+  //  cout <<" CheckEvent " << CheckEvent() << endl;
   	
   if( CheckEvent() == 1 )
     {
       Check1 ++;
 
       vector< TVector2 > couple = Match_X_Y() ;
-      
+            
       for(unsigned int i = 0 ; i < couple.size() ; i++)
 	{
 	  boucle_couple++;
@@ -89,11 +85,11 @@ void TMust2Physics::BuildPhysicalEvent()
 					
 	  int N = EventData->GetMMStripXEDetectorNbr(couple[i].X())		;
 						
-	  int X = EventData->GetMMStripXEStripNbr(couple[i].X())			;
-	  int Y = EventData->GetMMStripYEStripNbr(couple[i].Y())			;
+	  int X = EventData->GetMMStripXEStripNbr(couple[i].X())		; 
+	  int Y = EventData->GetMMStripYEStripNbr(couple[i].Y())		;
 						
-	  double Si_X_E = fSi_X_E(EventData , couple[i].X())	;
-	  double Si_Y_E = fSi_Y_E(EventData , couple[i].Y())	;
+	  double Si_X_E = fSi_X_E(EventData , couple[i].X())	;  
+	  double Si_Y_E = fSi_Y_E(EventData , couple[i].Y())	;  
 
 	  double Si_X_T = fSi_X_T(EventData , couple[i].X())		;
 	  double Si_Y_T = fSi_Y_T(EventData , couple[i].Y())		;
@@ -105,17 +101,16 @@ void TMust2Physics::BuildPhysicalEvent()
 	   
 
 	  // Take maximum Energy
-	    Si_E.push_back(Si_X_E);
-	    /*
-	  if(Si_X_E >= Si_Y_E)   Si_E.push_back(Si_X_E)	;
-	  else			 Si_E.push_back(Si_Y_E)	;
-	    */
-
-	   Si_T_X.push_back(Si_X_T);
-           Si_T_Y.push_back(Si_Y_T);
-	   Si_T.push_back(Si_X_T);
+	    // Si_E.push_back(Si_X_E);
+	    
+	    if(Si_X_E >= Si_Y_E)   Si_E.push_back(Si_X_E)	;
+	    else		   Si_E.push_back(Si_Y_E)	;
+	    
+	    Si_T_Y.push_back(Si_Y_T);
+	    Si_T.push_back(Si_X_T);
 						
 	  // Take minimum Time
+	    // Si_T_X.push_back(Si_X_T);
 	  if(Si_X_T >= Si_Y_T)   Si_T.push_back(Si_Y_T)	;
 	  else			 Si_T.push_back(Si_X_T)	;
 						
@@ -127,7 +122,7 @@ void TMust2Physics::BuildPhysicalEvent()
 	      if(EventData->GetMMSiLiEDetectorNbr(j)==N)
 		{
 
-		  if(EventData->GetMMSiLiEEnergy(j) > 8210)  // suppression " la main" des piedestaux
+		  if(EventData->GetMMSiLiEEnergy(j) > 8220)  // suppression " la main" des piedestaux
 		    {
 		      // SiLi energy is above threshold check the compatibility
 		      if( fSiLi_E(EventData , j)>SiLi_E_Threshold )
@@ -276,7 +271,7 @@ vector < TVector2 > TMust2Physics :: Match_X_Y()
 
 		      c6++;
 		      //	Look if energy match (within 10%)
-		     // if( ( fSi_X_E(EventData , i) - fSi_Y_E(EventData , j) ) / fSi_X_E(EventData , i) < 0.1)
+		      if( ( fSi_X_E(EventData , i) - fSi_Y_E(EventData , j) ) / fSi_X_E(EventData , i) < 0.1)
 			{
 			  ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;	
 			  compt_Match_XY ++;
@@ -1002,7 +997,7 @@ TVector3 TMust2Physics::GetPositionOfInteraction(int i)
   TVector3 Position = TVector3 (GetStripPositionX( TelescopeNumber[i] , Si_X[i] , Si_Y[i] ) 	,
 				GetStripPositionY( TelescopeNumber[i] , Si_X[i] , Si_Y[i] )	,
 				GetStripPositionZ( TelescopeNumber[i] , Si_X[i] , Si_Y[i] )	) ;
-		
+
   return(Position) ;	
 	
 }
@@ -1033,7 +1028,7 @@ TVector3 TMust2Physics::GetTelescopeNormal( int i)
 
 void TMust2Physics::Dump()
 {
-  // EventData->Dump();
+  EventData->Dump();
 
   cout << "XXXXXXXXXXXXXXXXXXXXXXXX Physical Event XXXXXXXXXXXXXXXXX" << endl;
 

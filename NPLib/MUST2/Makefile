@@ -289,7 +289,7 @@ TMust2PhysicsDict.cxx: TMust2Physics.h
 
 # dependances
 TMust2Data.o:		TMust2Data.cxx	TMust2Data.h
-TMust2Physics.o:	TMust2Physics.cxx	TMust2Physics.h
+TMust2Physics.o:	TMust2Physics.cxx TMust2Physics.h
 #######################################
 
 ############# Clean and More ##########

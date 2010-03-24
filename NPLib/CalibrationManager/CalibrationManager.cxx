@@ -143,6 +143,7 @@ void CalibrationManager::LoadParameterFromFile()
 									{
 										theLine >> DataBuffer ; 
 										Coeff.push_back( atof(DataBuffer.c_str()) ) ;
+										//	cout << atof(DataBuffer.c_str()) << endl;
 									}
 									
 								//	Check this parameter is not already define

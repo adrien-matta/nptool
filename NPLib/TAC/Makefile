@@ -265,10 +265,11 @@ LDFLAGS      += $(ROOTLDFLAGS)
 LIBS          = $(ROOTLIBS) $(SYSLIBS)
 GLIBS         = $(ROOTGLIBS) $(SYSLIBS)
 
-INCLUDE		= -I$(CLHEP_BASE_DIR)/include
+INCLUDE		= -I$(CLHEP_BASE_DIR)/include	-I$(NPLIB)/include
  
 #------------------------------------------------------------------------------
 SHARELIB      = libTacData.so
+
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 ############### Detector ##############
@@ -277,12 +278,11 @@ all:            $(SHARELIB)
 libTacData.so:	TTacData.o TTacDataDict.o
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
-TTacDataDict.cxx:	TTacData.h
-			rootcint -f $@ -c $^
+TTacDataDict.cxx:TTacData.h
+		rootcint -f $@ -c $^
 
 # dependances
 TTacData.o:	TTacData.cxx	TTacData.h
-TTacDataDict.o: TTacDataDict.cxx TTacDataDict.h
 #######################################
 
 ############# Clean and More ##########
