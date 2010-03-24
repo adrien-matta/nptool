@@ -57,7 +57,6 @@ void	EventGeneratorBeam::SetTarget(Target* Target)
    	if(Target!=0)	
    		{
    			m_Target = Target;
-   			m_Target->WriteDEDXTable(m_particle ,0, m_BeamEnergy);
    		}
    
    }
@@ -186,8 +185,8 @@ void EventGeneratorBeam::ReadConfiguration(string Path)
 void EventGeneratorBeam::GenerateEvent(G4Event* anEvent, G4ParticleGun* particleGun)
 {
 			//--------------write the DeDx Table -------------------
-  if(m_Target!=0)
-  	m_Target->WriteDEDXTable(m_particle ,0, m_BeamEnergy+4*m_BeamEnergySpread);
+  if(m_Target!=0 && anEvent->GetEventID()==0)
+  		m_Target->WriteDEDXTable(m_particle ,0, m_BeamEnergy+4*m_BeamEnergySpread);
 
 
    m_InitConditions->Clear();
