@@ -57,6 +57,8 @@ private: // TTree to store initial value of beam and reaction
 		   
 private: // Source parameter
    G4ParticleDefinition*	m_particle;  // Kind of particle to shoot
+   G4int 				m_beamA;
+   G4int				m_beamZ;
    G4double			m_BeamEnergy;
    G4double			m_BeamEnergySpread;
    G4double			m_SigmaX;
