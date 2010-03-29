@@ -879,20 +879,19 @@ void MUST2Array::ConstructDetector(G4LogicalVolume* world)
          // (u,v) // to silicon plan
          // w perpendicular to (u,v) plan and pointing CsI
          MMu = m_X128_Y1[i] - m_X1_Y1[i]     ;
-         MMu = -MMu.unit()              ;
+         MMu = MMu.unit()              ;
 
          MMv = m_X1_Y128[i] - m_X1_Y1[i]     ;
          MMv = MMv.unit()              ;
 
-         MMw = MMu.cross(MMv)          ;
+         MMw = MMv.cross(MMu)          ;
         // if (MMw.z() > 0)MMw = MMv.cross(MMu)  ;
          MMw = MMw.unit()                ;
 
          MMCenter = (m_X1_Y1[i] + m_X1_Y128[i] + m_X128_Y1[i] + m_X128_Y128[i]) / 4 ;
 
          // Passage Matrix from Lab Referential to Telescope Referential
-         // MUST2
-         MMrot = new G4RotationMatrix(MMu, MMv, MMw);
+         MMrot = new G4RotationMatrix(MMv, MMu, MMw);
          // translation to place Telescope
          MMpos = MMw * Length * 0.5 + MMCenter ;
       }
