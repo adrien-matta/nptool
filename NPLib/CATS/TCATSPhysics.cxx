@@ -567,7 +567,7 @@ void TCATSPhysics::BuildSimplePhysicalEvent()
   int NumberOfCATSHit = 0 ;
   int DetectorID = -1;
   
-  for( ushort i = 0 ; i < EventData->GetCATSMultX() ; i++ )
+  for( unsigned short i = 0 ; i < EventData->GetCATSMultX() ; i++ )
     { 
       //  if( NumberOfCATSHit < EventData->GetCATSDetX(i) ) NumberOfCATSHit = EventData->GetCATSDetX(i)	;   //determination of the number of CATS detectors
 
@@ -701,7 +701,7 @@ double TCATSPhysics::AnalyseX(//TCATSData* Data,
   // cout << "AnalyseX proccessing ..." << endl;
 
   // double	Chargex[28];
-  for(ushort z=0; z<28; z++) {
+  for(unsigned short z=0; z<28; z++) {
     Chargex[z] = -1;
   }
 
@@ -788,7 +788,7 @@ double TCATSPhysics::AnalyseY(int ff,
   //  cout << "AnalyseY proccessing ..." << endl;
 
   //  double	Chargey[28];
-  for(ushort z=0; z<28; z++) {
+  for(unsigned short z=0; z<28; z++) {
     Chargey[z] = -1;
     //    Chargey_test[z] = -1;
   }
