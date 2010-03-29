@@ -86,8 +86,6 @@ int main(int argc,char** argv)
       clock_t end=begin;
       for ( i = 0 ; i < N ; i ++ )
 	{
-	 
-	  
 	  // Minimum code
 	  if( i%10000 == 0 && i!=0) 	{	
 	    cout.precision(5);
@@ -116,9 +114,6 @@ int main(int argc,char** argv)
 	  
 	  if(must2_event < 16) 
 	     {
-	       // cout << "event number " << i+1 << endl;
-	       //cout << "must!"<< endl;
-
 	       if(tac_pl_cats2 > 3450 && tac_pl_cats2 < 3650) 
 		 {
 		   evt_tac++;
@@ -130,96 +125,91 @@ int main(int argc,char** argv)
 		   ////
 
 		   // Must 2
-		   for(int hit = 0; hit < M2 -> Si_E.size() ; hit ++)
+		   
+		   if(M2 -> Si_E.size() != M2 -> EventMultiplicity) cout << "problem with EventMultiplicity !" << endl;
+		   else 
 		     {
-		       //	  M2->Dump();
 		       
-		       //	Get Hit Direction
-		       TVector3 HitDirection  = M2 -> GetPositionOfInteraction(hit) - CATS -> GetPositionOnTarget();
-		       //TVector3 HitDirection  = M2 -> GetPositionOfInteraction(hit) - TVector3(0,0,-40);
-		       TVector3 BeamDirection = CATS -> GetBeamDirection();
-		       
-		       
-		      
+		       for(int hit = 0; hit < M2 -> Si_E.size() ; hit ++)
+			 {
+			   //	  M2->Dump();
+			   
+			   //	Get Hit Direction
+			   TVector3 HitDirection  = M2 -> GetPositionOfInteraction(hit) - CATS -> GetPositionOnTarget();
+			   //TVector3 HitDirection  = M2 -> GetPositionOfInteraction(hit) - TVector3(0,0,-40);
+			   TVector3 BeamDirection = CATS -> GetBeamDirection();
+			   			   
+			   ExcitationEnergy = -1 ;
+			   ELab = -1 ; ThetaLab = -1;    
+			   
+			  			   			   
+			   // Angle between beam and particle
+			   ThetaLab  = ThetaCalculation ( HitDirection , BeamDirection ) ;
+			   //ThetaLab  = ThetaCalculation ( HitDirection , TVector3(0,0,1)   ) ;	
+			   ThetaN = ThetaCalculation(HitDirection , M2 -> GetTelescopeNormal(hit));
+			   
+			   if((M2->Si_E[hit] > 0))
+			     {
+			       Position_M2->Fill((M2 -> GetPositionOfInteraction(hit)).X(),(M2 -> GetPositionOfInteraction(hit)).Y());
+			     }
+			   
+			   if((M2->Si_E[hit] > 0) && (M2 -> SiLi_E[hit]) < 0) 
+			     {
+			       ELab = M2 -> Si_E[hit];
+			       ELab = protonStripAl.EvaluateInitialEnergy(ELab, 0.5*micrometer, ThetaN);
+			       ELab = protonTargetCD2.EvaluateInitialEnergy(ELab,17.4*micrometer,ThetaLab);
+			       
+			       ExcitationEnergy = e530Reaction -> ReconstructRelativistic( ELab, ThetaLab) ;
+			       
+			     }
+			   
+			   else if((M2->Si_E[hit] > 0) && (M2 -> SiLi_E[hit]) > 0)
+			     {
+			       DE_E ->Fill(M2 -> SiLi_E[hit],M2 -> Si_E[hit]);
+			       //cout << M2 -> SiLi_E[hit] << " " << M2 -> Si_E[hit] << endl;
 
-		       ELab = -1 ; ThetaLab = -1;    
-		       
-		       DE_E ->Fill(M2 -> SiLi_E[hit],M2 -> Si_E[hit]);
-		       
-		       		       		       
-		       //  if(CUT::cut_protons -> IsInside(M2 -> SiLi_E[hit], M2 -> Si_E[hit])) 
-		       {
-			 // Angle between beam and particle
-			 ThetaLab  = ThetaCalculation ( HitDirection , BeamDirection ) ;
-			 //ThetaLab  = ThetaCalculation ( HitDirection , TVector3(0,0,1)   ) ;	
-			 ThetaN = ThetaCalculation(HitDirection , M2 -> GetTelescopeNormal(hit));
-
-			 if((M2->Si_E[hit] > 0))
-			   {
-			     Position_M2->Fill((M2 -> GetPositionOfInteraction(hit)).X(),(M2 -> GetPositionOfInteraction(hit)).Y());
-			   }
-
-			 if((M2->Si_E[hit] > 0) && (M2 -> SiLi_E[hit]) < 0) 
-			   {
-			     ELab = M2 -> Si_E[hit];
-			     ELab = protonStripAl.EvaluateInitialEnergy(ELab, 0.5*micrometer, ThetaN);
-			     ELab = protonTargetCD2.EvaluateInitialEnergy(ELab,17.4*micrometer,ThetaLab);
-
-			    
-
-			   }
-
-			 else if((M2->Si_E[hit] > 0) && (M2 -> SiLi_E[hit]) > 0)
-			   {
-			     ELab = M2 -> SiLi_E[hit];
-			     ELab = protonStripAl.EvaluateInitialEnergy(ELab, 0.5*micrometer, ThetaN);
-
-			     ELab += M2 -> Si_E[hit];
-			     ELab = protonStripAl.EvaluateInitialEnergy(ELab, 0.5*micrometer, ThetaN);
-
-			     ELab = protonTargetCD2.EvaluateInitialEnergy(ELab,17.4*micrometer,ThetaLab);
-
-			     
-			   }
-
-
-			 			 
-			 // DE_E_protons   -> Fill(M2 -> SiLi_E[hit],M2 -> Si_E[hit]);
-			 E_Theta        -> Fill(ThetaLab*180/3.14,ELab);
-			 //	}
-			 
-			 /*
-			   else 
-			   {
-			   ThetaLab = 0; ELab=0;
+			       ELab = M2 -> SiLi_E[hit];
+			       ELab = protonStripAl.EvaluateInitialEnergy(ELab, 0.5*micrometer, ThetaN);
+			       
+			       ELab += M2 -> Si_E[hit];
+			       ELab = protonStripAl.EvaluateInitialEnergy(ELab, 0.5*micrometer, ThetaN);
+			       
+			       ELab = protonTargetCD2.EvaluateInitialEnergy(ELab,17.4*micrometer,ThetaLab);
+			       
+			       ExcitationEnergy = e530Reaction -> ReconstructRelativistic( ELab, ThetaLab) ;
+			     }
+			   
+			   else {ExcitationEnergy=-100 ; ThetaLab=-100;}
+			   
+			   
+			   
+			   // DE_E_protons   -> Fill(M2 -> SiLi_E[hit],M2 -> Si_E[hit]);
+			   E_Theta        -> Fill(ThetaLab*180/3.14,ELab);
+			 			   
+			   //
+			   //  else 
+			   //  {
+			   //  ThetaLab = 0; ELab=0;
 			   // cout << "pas de protons" << endl;
-			   }
-			 */
-			 
-			 // cout << "theta lab : " << ThetaLab << "    ELab : " << ELab << endl;
-			 
-			 
-			 
-		       }
+			   //  }
+			   
+			   // cout << "theta lab : " << ThetaLab << "    ELab : " << ELab << endl;
+
+			 } // end of for loop over hit
 		       RootOutput::getInstance()->GetTree()->Fill()	;
-		     }  // end of for loop over hit
+		     } 
+		       
+		     
+		   //RootOutput::getInstance()->GetTree()->Fill()	;    // if you want to look at CATS detector only, without must2 events
+
 		 }  // tac condition
 	     } //must2 events condition
 	   	  
 	} // end of for loop over events
 
       
-      cout << "events -1 : " << M2->Check_1 << "    events 1 : " << M2->Check1 << "   events 2 : " << M2->Check2 << endl;
-      cout << "Match XY " << M2->compt_Match_XY << " events " << endl; 
-      cout << "detecteurs differents : " << M2-> diff_det << endl;
-      cout << "good couple : " << M2-> good_couple << endl;
       cout << "must events : " << must << endl;
 
-      cout << M2->c1 << " " << M2->c2 << " "  << M2->c3 << " " <<  M2->c4 << " " << M2-> c5 << " " <<  M2->c6 << " " << endl;
-
-      cout << "boucle sur couples XY : " << M2 -> boucle_couple << endl;
-      cout <<  "boucle sur SiLi : "      << M2 -> SiLi_loop << endl;
-      
       DE_E         ->Write("");
       DE_E_protons ->Write("");
       E_Theta      ->Write("");

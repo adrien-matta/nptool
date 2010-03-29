@@ -121,7 +121,7 @@ RootOutput::getInstance()->GetList()->Add(myHist1D);
 			for(int hh = 0 ; hh <2 ; hh++)
 				{
 					ELab[hh] = -10000 	; ExcitationEnergy[hh] = -10000 ; ThetaLab[hh] = -10000 ;	
-					X[hh]	 = -10000	; Y[hh]					= -10000 ; ThetaCM[hh]  = -10000 ;
+					X[hh]	 = -10000	; Y[hh]			= -10000 ; ThetaCM[hh]  = -10000 ;
 				}
 
 			// Minimum code

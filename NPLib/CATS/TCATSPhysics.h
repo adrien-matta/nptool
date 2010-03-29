@@ -103,7 +103,11 @@ class TCATSPhysics : public TObject, public NPA::VDetector
 
 	  vector<reconstruction>       ReconstructionMethodX;
 	  vector<reconstruction>       ReconstructionMethodY;
+
 	 
+	  // vector<reconstruction>       FailedReconstructionX;
+	   vector<reconstruction>       FailedReconstructionY;
+	                               
 	private:	//	Root Input and Output tree classes
 	  
 	  TCATSData* 	  	  EventData			;//!
@@ -228,7 +232,6 @@ class TCATSPhysics : public TObject, public NPA::VDetector
 	  double    GetCATSChargeSumY(int i)       {return ChargeSumY.at(i);}
 	  int 	    GetCATSMultOverThreshY(int i)  {return MultOverThreshY.at(i);}
 	  int       GetCATSStripMaxY(int i)        {return StripMaxY.at(i); }
-	  // int       GetCATSStripMaxY_test(int i)   {return StripMaxY_test.at(i); }
 	  int       GetCATSDetNumberY_Position(int i)  {return DetNumberY_Position.at(i);}
 	  double    GetCATSPositionY(int i)        {return PositionY.at(i);}
 	  

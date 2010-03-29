@@ -355,6 +355,10 @@ void TCATSPhysics::Clear()
   ReconstructionMethodX.clear()                 ;
   ReconstructionMethodY.clear()                 ;
 
+  //FailedReconstructionX.clear()                  ;
+  FailedReconstructionY.clear()                  ;
+
+
   HitX = 0;
   HitY = 0;
   
@@ -457,8 +461,18 @@ void TCATSPhysics::Dump()
     {
       cout << "ReconstructionMethodY : " << ReconstructionMethodY.at(i) << endl;
     } 
-
-
+  /*
+  for(unsigned int i = 0; i < FailedReconstructionX.size() ; i++)
+    {
+      cout << "FailedReconstructionX : " << FailedReconstructionX.at(i) << endl;
+    } 
+  */
+  for(unsigned int i = 0; i < FailedReconstructionY.size() ; i++)
+    {
+      cout << "FailedReconstructionY : " << FailedReconstructionY.at(i) << endl;
+    } 
+  
+ 
 }
 
 
@@ -582,6 +596,10 @@ void TCATSPhysics::BuildSimplePhysicalEvent()
       //   StripMaxY_test.push_back(-1); 
       ChargeSumY.push_back(-1);
       ReconstructionMethodY.push_back(NO);
+      
+      //      FailedReconstructionX.push_back(NO); 
+      FailedReconstructionY.push_back(NO);
+      
     }
   //  cout << "Init OK" << endl;
 
@@ -624,7 +642,8 @@ void TCATSPhysics::BuildSimplePhysicalEvent()
 	cout << "PositionZ[0] = "<< PositionZ[0] << " PositionZ[1] = "<< PositionZ[1] << endl;
       */
 
-      if(PositionX[0] != -40 && PositionY[0] != -40 && PositionX[1] != -40 && PositionY[1] != -40) 
+      if(PositionX[0] > -35 && PositionX[0] < 35 && PositionY[0] > -35 && PositionY[0] < 35 && PositionX[1] > -35 && PositionX[1] < 35 && PositionY[1] > -35 && PositionY[1] < 35 ) 
+      //      if(PositionX[0] != -1000 && PositionY[0] != -1000 && PositionX[1] != -1000 && PositionY[1] != -1000) 
 	{
 	  BeamDirection = TVector3 (PositionX[1]-PositionX[0] ,
 				    PositionY[1]-PositionY[0] ,
@@ -644,9 +663,10 @@ void TCATSPhysics::BuildSimplePhysicalEvent()
 
       else
 	{
-	  cout << "One of the CATS position was not reconstructed ! Impossible to reconstruct position on target ..." << endl;
+	  //cout << "One of the CATS position was not reconstructed ! Impossible to reconstruct position on target ..." << endl;
 
-	  cout << "PositionX[0] = " <<  PositionX[0] << "   PositionY[0] = " << PositionY[0] << "   PositionX[1] = " << PositionX[1] <<  "   PositionY[1] = " << PositionY[1] << endl;
+	  //cout << "PositionX[0] = " <<  PositionX[0] << "   PositionY[0] = " << PositionY[0] << "   PositionX[1] = " << PositionX[1] <<  "   PositionY[1] = " << PositionY[1] << endl;
+	  
 
 	  BeamDirection = TVector3 ( 	1 ,
 					0 ,
@@ -743,12 +763,14 @@ double TCATSPhysics::AnalyseX(//TCATSData* Data,
   //if (ff==1) cout << "StripMaxX = " << StripMaxX[ff] << endl;
   //cout << ReconstructionMethodX[ff] << endl;
 
-  if(ReconstructionMethodX[ff] == BAR5) CalculatedStripX = Barycentric5Method( Chargex, StripMaxX[ff] );
-  if(ReconstructionMethodX[ff] == BAR3) CalculatedStripX = Barycentric3Method( Chargex, StripMaxX[ff] );
-  if(ReconstructionMethodX[ff] == BAR4) CalculatedStripX = Barycentric4Method( Chargex, StripMaxX[ff] );
   if(ReconstructionMethodX[ff] == SECHS)CalculatedStripX = HyperbolicSequentMethod( Chargex, StripMaxX[ff] ); 
   if(ReconstructionMethodX[ff] == GAUSS)CalculatedStripX = GaussianMethodX(ff, Chargex, StripMaxX[ff]);
-  //  if(ReconstructionMethodX[ff] == GAUSS)CalculatedStripX = GaussianMethodX(ff, Chargex, StripMaxX[ff], StripPositionX);
+  if(ReconstructionMethodX[ff] == BAR3) CalculatedStripX = Barycentric3Method( Chargex, StripMaxX[ff] );
+  if(ReconstructionMethodX[ff] == BAR4) CalculatedStripX = Barycentric4Method( Chargex, StripMaxX[ff] );
+  if(ReconstructionMethodX[ff] == BAR5) CalculatedStripX = Barycentric5Method( Chargex, StripMaxX[ff] );
+
+  if(CalculatedStripX < 35 && CalculatedStripX > -35)    { } //FailedReconstructionX[ff] = NO ; }
+  //  else                                                   { FailedReconstructionX[ff] = ReconstructionMethodX[ff] ; } // cout << CalculatedStripX << endl;}
   
   //cout << "in AnalyseX : " << CalculatedStripX << endl;
 
@@ -758,12 +780,7 @@ double TCATSPhysics::AnalyseX(//TCATSData* Data,
   return(CalculatedStripX);
 }
 
-double TCATSPhysics::AnalyseY(//TCATSEventData* EventData, 
-			      //vector< vector <double> > 	        &Pedestal_Y 		,
-			      //vector< vector< vector<double> > > 	&OnlineCalib_Y_E,
-			      //vector< vector <double> > 		&Threshold_Y 	,
-			      //vector< vector< vector<double> > >        &StripPositionY,
-			      int ff,
+double TCATSPhysics::AnalyseY(int ff,
 			      int NumberOfCATSHit)
 {
 
@@ -852,14 +869,15 @@ double TCATSPhysics::AnalyseY(//TCATSEventData* EventData,
   ReconstructionMethodY[ff] = ChooseReconstruction(ff, 1, Chargey, StripMaxY[ff]);
   //if (ff==1) cout << "StripMaxY = " << StripMaxY[ff] << endl;
   //  cout << ReconstructionMethodY[ff] << endl;
-
-
-  if(ReconstructionMethodY[ff] == BAR5) CalculatedStripY = Barycentric5Method( Chargey, StripMaxY[ff] );
-  if(ReconstructionMethodY[ff] == BAR3) CalculatedStripY = Barycentric3Method( Chargey, StripMaxY[ff] );
-  if(ReconstructionMethodY[ff] == BAR4) CalculatedStripY = Barycentric4Method( Chargey, StripMaxY[ff] );
+  
   if(ReconstructionMethodY[ff] == SECHS)CalculatedStripY = HyperbolicSequentMethod( Chargey, StripMaxY[ff] ); 
   if(ReconstructionMethodY[ff] == GAUSS)CalculatedStripY = GaussianMethodY(ff, Chargey, StripMaxY[ff]);
-  //if(ReconstructionMethodY[ff] == GAUSS)CalculatedStripY = GaussianMethodY(ff, Chargey, StripMaxY[ff], StripPositionY);
+  if(ReconstructionMethodY[ff] == BAR3) CalculatedStripY = Barycentric3Method( Chargey, StripMaxY[ff] );
+  if(ReconstructionMethodY[ff] == BAR4) CalculatedStripY = Barycentric4Method( Chargey, StripMaxY[ff] );
+  if(ReconstructionMethodY[ff] == BAR5) CalculatedStripY = Barycentric5Method( Chargey, StripMaxY[ff] );
+
+  if(CalculatedStripY < 35 && CalculatedStripY > -35)  { FailedReconstructionY[ff] = NO ; }
+  else                                                   FailedReconstructionY[ff] = ReconstructionMethodY[ff] ;
 
   // else cout << "Error in the choice of the method!" << endl;
   
@@ -871,7 +889,7 @@ reconstruction TCATSPhysics::ChooseReconstruction(int ff, int type, double * cha
 {
   // if(ff ==1 && type ==1)  cout << StripMax << endl; 
   reconstruction method;
-  if(ff ==0) { method = GAUSS; }  //cout << "sechs" << endl; }
+  if(ff ==0) { method = SECHS; }  //cout << "sechs" << endl; }
   //else method = GAUSS;
  
   
@@ -894,7 +912,7 @@ double  TCATSPhysics::CalculatePositionX( int                                 St
 					  int                                 ff, 
 					  correction                          method)
 {
-  double positionX=-10;
+  double positionX=-1000;
   int IStripX = 0;
 
   if(ReconstructionMethodX[ff] == GAUSS) positionX = CalculatedStripX;   // already in mm -> see gaussian method
@@ -949,7 +967,7 @@ double  TCATSPhysics::CalculatePositionX( int                                 St
 	else  cout << "only 2CATS!! ff = " << ff << endl;
       }
   
-      else { positionX = -40;  cout << CalculatedStripX << " " << IStripX << " " << ff << endl; }
+      else { positionX = -1000; } //  cout << CalculatedStripX << " " << IStripX << " " << ff << endl; }
 
       // cout << "positionX " << positionX << "   ff " << ff << "  IStripX " << IStripX <<endl;
     }
@@ -965,7 +983,7 @@ double  TCATSPhysics::CalculatePositionY( int                                 St
 					  int                                 ff, 
 					  correction                          method)
 {
-  double positionY = -10;
+  double positionY = -1000;
 
   if(ReconstructionMethodY[ff] == GAUSS) positionY = CalculatedStripY;  // already in mm -> see gaussian method
 
@@ -1017,7 +1035,7 @@ double  TCATSPhysics::CalculatePositionY( int                                 St
 	  else cout << "only 2CATS!! ff = " << ff << endl;
 	}
       
-      else  { positionY = -40   ;   cout << CalculatedStripY << " " << IStripY << " " << ff << endl; }
+      else  { positionY = -1000   ;  } // cout << CalculatedStripY << " " << IStripY << " " << ff << endl; }
       // cout << IStripX << " " << IStripY << endl;
       
     }
@@ -1028,7 +1046,7 @@ double  TCATSPhysics::CalculatePositionY( int                                 St
 
 double TCATSPhysics:: HyperbolicSequentMethod( double* Charge , int StripMax )
 {
-  double sechs = -10 ;
+  double sechs = -1000 ;
   
   if(StripMax > 2 && StripMax<27)
     {
@@ -1058,7 +1076,9 @@ double TCATSPhysics:: HyperbolicSequentMethod( double* Charge , int StripMax )
       
     }
 
-  else { sechs = -10; cout << " StripMax = " << StripMax << " out of range for SECHS !" << endl;   }
+  else { 
+    sechs = -1000; //cout << " StripMax = " << StripMax << " out of range for SECHS !" << endl;  
+  }
 
 
   // cout << "sechs = " << sechs << endl;
@@ -1074,7 +1094,7 @@ double TCATSPhysics:: GaussianMethodX(int ff, double* Chargex , int StripMax)//,
   double Q[3];
   double StripPos[3];
 
- 
+  
   for(int j = 0; j<3 ; j++)
     {
       Q[j] = 0;

@@ -33,6 +33,7 @@
 #include "TVector2.h" 
 #include "TVector3.h" 
 #include "TObject.h"
+#include "TH1.h"
 
 using namespace std ;
 
@@ -57,15 +58,10 @@ class TMust2Physics : public TObject, public NPA::VDetector
 	
   //	Provide Physical Multiplicity
   Int_t	 		EventMultiplicity	;
-  //  Int_t                 Check_Event             ;
-  int Check1 , Check2 , Check_1 ;
-  int compt_Match_XY;
-  int diff_det;
-  int good_couple;
-  int c1, c2, c3, c4, c5, c6;
-  int boucle_couple;
-  int SiLi_loop;
-				
+  Int_t                 MultiplicitySiLi        ;
+  Int_t                 MultiplicityCsI         ;
+  
+ 				
   //	Provide a Classification of Event
   vector<int>		EventType		;
 		
@@ -96,6 +92,12 @@ class TMust2Physics : public TObject, public NPA::VDetector
 	
   // Physical Value  
   vector<double>	TotalEnergy			;
+
+  TH1F*                 controle                        ;  //!
+  TH1F*                 controle_Strips                       ;  //!
+  TH1F*                 controle_SiLi                   ;  //!
+  TH1F*                 SiLi; //!
+  TH1F*                 SiLi_Number                     ;    //!
 	
 	
  public:		//	Innherited from VDetector Class

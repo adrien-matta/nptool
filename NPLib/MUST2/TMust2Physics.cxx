@@ -33,25 +33,20 @@ using namespace LOCAL;
 
 //	ROOT
 #include "TChain.h"
-///////////////////////////////////////////////////////////////////////////
 
+
+///////////////////////////////////////////////////////////////////////////
 ClassImp(TMust2Physics)
 ///////////////////////////////////////////////////////////////////////////
 TMust2Physics::TMust2Physics() 
 {
   EventMultiplicity 	= 0 			;
+  MultiplicitySiLi      = 0                     ;
+  MultiplicityCsI       = 0                     ;
+
   EventData 		= new TMust2Data	;
   EventPhysics 		= this			;
   NumberOfTelescope	= 0			;
-  //  Check_Event           = 0                     ;
-  Check1 = 0 , Check2 = 0 , Check_1 = 0;
-  compt_Match_XY = 0;
-  diff_det =0;
-  good_couple=0;
-
-  c1 = 0, c2 = 0, c3 = 0, c4 = 0, c5 = 0, c6 = 0;
-  boucle_couple = 0;
-  SiLi_loop = 0;
 
 }
 		
@@ -69,17 +64,22 @@ void TMust2Physics::BuildPhysicalEvent()
   bool check_CSI  = false ;
 
   //  cout <<" CheckEvent " << CheckEvent() << endl;
+
+
+  controle -> Fill(0);
   	
   if( CheckEvent() == 1 )
     {
-      Check1 ++;
+      controle -> Fill(1);
 
       vector< TVector2 > couple = Match_X_Y() ;
             
       for(unsigned int i = 0 ; i < couple.size() ; i++)
 	{
-	  boucle_couple++;
+	  controle -> Fill(2);
 
+	  EventMultiplicity++;
+	
 	  check_SILI = false ;
 	  check_CSI = false ;
 					
@@ -96,8 +96,8 @@ void TMust2Physics::BuildPhysicalEvent()
 					
 	  Si_X.push_back(X) ; Si_Y.push_back(Y) ; TelescopeNumber.push_back(N) ;
 						
-	    Si_E_X.push_back(Si_X_E);
-	    Si_E_Y.push_back(Si_Y_E);
+	  Si_E_X.push_back(Si_X_E);
+	  Si_E_Y.push_back(Si_Y_E);
 	   
 
 	  // Take maximum Energy
@@ -116,20 +116,32 @@ void TMust2Physics::BuildPhysicalEvent()
 						
 	  for(unsigned int j = 0 ; j < EventData->GetMMSiLiEMult() ; j++)
 	    {
-	      SiLi_loop++;
+	      if(j==0) controle -> Fill(3);
+	      controle_SiLi->Fill(3);
+
 	      // cout << "SiLi detector hit "<< EventData->GetMMSiLiEDetectorNbr(j) << endl;
 
 	      if(EventData->GetMMSiLiEDetectorNbr(j)==N)
 		{
+		  controle_SiLi -> Fill(4);
 
 		  if(EventData->GetMMSiLiEEnergy(j) > 8220)  // suppression " la main" des piedestaux
 		    {
+		      controle_SiLi -> Fill(5);
+
 		      // SiLi energy is above threshold check the compatibility
-		      if( fSiLi_E(EventData , j)>SiLi_E_Threshold )
+		      if( fSiLi_E(EventData , j) > SiLi_E_Threshold )
 			{
+			  // cout << "/////////////////////////////////////////////////////////////////////////////////////////" << fSiLi_E(EventData , j) << endl;
+			  controle_SiLi -> Fill(6);
+
 			  // pad vs strip number match
 			  //if( Match_Si_SiLi( X, Y , EventData->GetMMSiLiEPadNbr(j) ) )
 			    {
+			      controle_SiLi -> Fill(7);
+
+			      MultiplicitySiLi++;
+			      
 			      SiLi_N.push_back(EventData->GetMMSiLiEPadNbr(j))	;  //cout << "pad : " << EventData->GetMMSiLiEPadNbr(j) << endl;
 			      SiLi_E.push_back(fSiLi_E(EventData , j))		;
 			      
@@ -137,6 +149,8 @@ void TMust2Physics::BuildPhysicalEvent()
 			      // Note: in case of use of SiLi "Orsay" time is not coded.
 			      for(int k =0 ; k  < EventData->GetMMSiLiTMult() ; k ++)
 				{
+				  controle_SiLi -> Fill(8);
+
 				  // Same Pad, same Detector
 				  if( EventData->GetMMSiLiEPadNbr(j)==EventData->GetMMSiLiEPadNbr(k) && EventData->GetMMSiLiEDetectorNbr(j)==EventData->GetMMSiLiTDetectorNbr(k) )
 				    {SiLi_T.push_back(fSiLi_T(EventData , k))		; break ;}
@@ -158,6 +172,7 @@ void TMust2Physics::BuildPhysicalEvent()
 		    {
 		      if(Match_Si_CsI( X, Y , EventData->GetMMCsIECristalNbr(j) ) )
 			{
+			  MultiplicityCsI ++;
 			  CsI_N.push_back(EventData->GetMMCsIECristalNbr(j))	;
 			  CsI_E.push_back(fCsI_E(EventData , j))							;
 														
@@ -191,8 +206,8 @@ void TMust2Physics::BuildPhysicalEvent()
 	}
     }
   
-  else if( CheckEvent()  == -1) { Check_1 ++; }
-  else if( CheckEvent()  ==  2) { Check2 ++ ; }
+  else if( CheckEvent()  == -1) {  }
+  else if( CheckEvent()  ==  2) {  }
 
   
   return;
@@ -203,16 +218,29 @@ void TMust2Physics::BuildPhysicalEvent()
 int TMust2Physics :: CheckEvent()
 {
   // Check the size of the different elements
-  if(EventData->GetMMStripXEMult() == EventData->GetMMStripYEMult() && EventData->GetMMStripYEMult() == EventData->GetMMStripXTMult() &&  EventData->GetMMStripXTMult() == EventData->GetMMStripYTMult()  )
+  if(EventData->GetMMStripXEMult() !=0 || EventData->GetMMStripYEMult() !=0)
+    {
+      if(EventData->GetMMStripXEMult() == EventData->GetMMStripYEMult() && EventData->GetMMStripYEMult() == EventData->GetMMStripXTMult() &&  EventData->GetMMStripXTMult() == EventData->GetMMStripYTMult()  )
+   	
+	return 1 ; // Regular Event
 	
-    return 1 ; // Regular Event
+      else if(EventData->GetMMStripXEMult() == EventData->GetMMStripYEMult()+1 || EventData->GetMMStripXEMult() == EventData->GetMMStripYEMult()-1  )
 	
-  else if(EventData->GetMMStripXEMult() == EventData->GetMMStripYEMult()+1 || EventData->GetMMStripXEMult() == EventData->GetMMStripYEMult()-1  )
-	
-    return 2 ; // Pseudo Event, potentially interstrip
-		
-  else 	return -1 ; // Rejected Event
+	return 2 ; // Pseudo Event, potentially interstrip
+      
+      else 	return -1 ; // Rejected Event
+    }
+    
+  else {
+    SiLi->Fill(EventData->GetMMSiLiEMult());
+    for(int i = 0; i< EventData->GetMMSiLiEMult(); i++)
+      {
+	SiLi_Number->Fill(EventData->GetMMSiLiEDetectorNbr(i));
+      }
+    return -1;
 
+  }
+    
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -233,53 +261,40 @@ vector < TVector2 > TMust2Physics :: Match_X_Y()
     return ArrayOfGoodCouple;
   */
 
-  c1 ++;/* cout << "XEMult " << EventData->GetMMStripXEMult() << endl;
-         cout << "YEMult " << EventData->GetMMStripYEMult() << endl;
-         cout << "SiLiEMult " << EventData->GetMMSiLiEMult() << endl;*/
-	 /*
-	 for(unsigned int j = 0 ; j < EventData->GetMMSiLiEMult() ; j++)
-	    {
-	      cout << "SiLi detector hit "<< EventData->GetMMSiLiEDetectorNbr(j) << endl;
-	    }
-	 */
+  controle_Strips->Fill(0);
 
-	 //	 cout << "Tel " << EventData->GetMMSiLiEDetectorNbr() << endl;
-		
   for(int i = 0 ; i < EventData->GetMMStripXEMult(); i++)
     {
-
-      c2++; 	// cout << "Tel " << EventData->GetMMStripXEDetectorNbr(i) << endl;
+      controle_Strips->Fill(1);
 
       //	if X value is above threshold, look at Y value
       if( fSi_X_E(EventData , i) > Si_X_E_Threshold )
 	{
-	  c3 ++;
-					
+	  controle_Strips->Fill(2);
+
 	  for(int j = 0 ; j < EventData->GetMMStripYEMult(); j++)
 	    {
-
-	      c4 ++;  	// cout << "Tel " << EventData->GetMMStripYEDetectorNbr(j) << endl;
+	      controle_Strips->Fill(3);
 
 	      //	if Y value is above threshold look if detector match
 	      if( fSi_Y_E(EventData , j) > Si_Y_E_Threshold )							
 		{
-		  c5 ++;
-
+		  controle_Strips->Fill(4);
+		  
 		  //	if same detector check energy
 		  if ( EventData->GetMMStripXEDetectorNbr(i) == EventData->GetMMStripYEDetectorNbr(j) )
 		    {
+		      controle_Strips->Fill(5);
 
-		      c6++;
 		      //	Look if energy match (within 10%)
 		      if( ( fSi_X_E(EventData , i) - fSi_Y_E(EventData , j) ) / fSi_X_E(EventData , i) < 0.1)
 			{
+			  controle_Strips->Fill(6);
+
 			  ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;	
-			  compt_Match_XY ++;
-			  //cout << "number of good couples " << ArrayOfGoodCouple.size() << endl;
 			}
-		      // else cout << fSi_X_E(EventData , i) << " " << fSi_Y_E(EventData , j) << endl;
 		    }
-		  else diff_det ++;
+		    // else {};
 		}
 	    }
 	}
@@ -287,7 +302,7 @@ vector < TVector2 > TMust2Physics :: Match_X_Y()
 	
   if( ArrayOfGoodCouple.size() > EventData->GetMMStripXEMult() ) { ArrayOfGoodCouple.clear() ;  }
 
-  else if (ArrayOfGoodCouple.size()!=0 ){ good_couple++; }
+  else if (ArrayOfGoodCouple.size()!=0 ){ }
   
   return ArrayOfGoodCouple; 
     //cout << "warning : X multiplicity bigger than XY couple to treat" << endl; }
@@ -511,7 +526,9 @@ bool TMust2Physics :: Match_Si_CsI(int X, int Y , int CristalNbr)
 void TMust2Physics::Clear()
 {
   EventMultiplicity= 0		;
-		
+  MultiplicitySiLi = 0          ;
+  MultiplicityCsI  = 0          ;
+
   TelescopeNumber	.clear()	;
   EventType				.clear()	;
   TotalEnergy			.clear()	;
@@ -824,6 +841,22 @@ void TMust2Physics::InitializeRootOutput()
 {
   TTree* outputTree = RootOutput::getInstance()->GetTree()		;
   outputTree->Branch( "MUST2" , "TMust2Physics" , &EventPhysics )	;
+  
+  TList* outputList = RootOutput::getInstance()->GetList();
+  controle = new TH1F("controle","histo de controle",20,0,20);
+  outputList->Add(controle);
+
+  controle_Strips = new TH1F("controle_Strips","histo de controle Strips",20,0,20);
+  outputList->Add(controle_Strips);
+
+  controle_SiLi = new TH1F("controle_SiLi","histo de controle SiLi",20,0,20);
+  outputList->Add(controle_SiLi);
+
+  SiLi = new TH1F("SiLi","SiLi Mult",64,0,64);
+  outputList->Add(SiLi);
+  
+  SiLi_Number = new TH1F("SiLiN","SiLi Number",64,0,64);
+  outputList->Add(SiLi_Number);
 }
 
 
@@ -839,11 +872,13 @@ void TMust2Physics::AddTelescope(	TVector3 C_X1_Y1 		,
 
   NumberOfTelescope++;
 	
-  //	Vector U on Telescope Face (paralelle to Y Strip) (NB: remember that Y strip are allong X axis)
+  //	Vector U on Telescope Face (paralelle to Y Strip) (NB: remember that Y strip are along X axis)
   TVector3 U = C_X1_Y1 - C_X128_Y1 				;	
+  //TVector3 U = C_X1_Y1 - C_X128_Y1 	;
   double Ushift = (U.Mag()-98)/2. ;
   U = U.Unit()									;
   //	Vector V on Telescope Face (parallele to X Strip)
+  //TVector3 V = C_X1_Y128 - C_X1_Y1 			;
   TVector3 V = C_X128_Y128 - C_X128_Y1 				;
   double Vshift = (V.Mag() -98)/2. ;
   V = V.Unit()									;
@@ -854,9 +889,9 @@ void TMust2Physics::AddTelescope(	TVector3 C_X1_Y1 		,
   TVector3 Strip_1_1 								;		
 
   //	Geometry Parameter
-  double Face = 98					 					  	; //mm
-  double NumberOfStrip = 128 							; 
-  double StripPitch = Face/NumberOfStrip	; //mm
+  double Face = 98					  	; //mm
+  double NumberOfStrip = 128 					; 
+  double StripPitch = Face/NumberOfStrip	                ; //mm
   //	Buffer object to fill Position Array
   vector<double> lineX ; vector<double> lineY ; vector<double> lineZ ;
 
@@ -866,6 +901,7 @@ void TMust2Physics::AddTelescope(	TVector3 C_X1_Y1 		,
 		
   //	Moving StripCenter to 1.1 corner:
   Strip_1_1 = C_X128_Y1 + (U+V) * (StripPitch/2.) 	;
+  //Strip_1_1 = C_X1_Y1 + (U+V) * (StripPitch/2.) 	;
   Strip_1_1+= U*Ushift+V*Vshift ;
     
   for( int i = 0 ; i < 128 ; i++ )
@@ -1036,6 +1072,8 @@ void TMust2Physics::Dump()
   //GENERAL
   cout << "NumberOfTelescope : " << NumberOfTelescope << endl;
   cout << "EventMultiplicity : " << EventMultiplicity << endl;
+  cout << "Multiplicity SiLi: "  << MultiplicitySiLi  << endl;
+  cout << "Multiplicity  CsI: "  << MultiplicityCsI   << endl;
 
   cout << "Event Type : " << "non filled variable " << endl;
 
