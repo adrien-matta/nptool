@@ -1,7 +1,7 @@
 #ifndef EventGeneratorBeam_h
 #define EventGeneratorBeam_h
 /*****************************************************************************
- * Copyright (C) 2009   this file is part of the NPTool Project              *
+ * Copyright (C) 2009-2010   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -57,6 +57,8 @@ private: // TTree to store initial value of beam and reaction
 		   
 private: // Source parameter
    G4ParticleDefinition*	m_particle;  // Kind of particle to shoot
+   G4int 				m_beamA;
+   G4int				m_beamZ;
    G4double			m_BeamEnergy;
    G4double			m_BeamEnergySpread;
    G4double			m_SigmaX;

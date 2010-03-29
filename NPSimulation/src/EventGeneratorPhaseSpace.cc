@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2009   this file is part of the NPTool Project              *
+ * Copyright (C) 2009-2010   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -124,8 +124,8 @@ void EventGeneratorPhaseSpace::ReadConfiguration(string Path)
    string Beam, Target, Heavy, Light, CrossSectionPath ;
    G4double BeamEnergy = 0 , BeamEnergySpread = 0 , SigmaX = 0 , SigmaY = 0 , SigmaThetaX = 0 , SigmaPhiY=0;
    vector<G4ParticleDefinition*> ReactionProducts;
-   G4ParticleDefinition* BeamParticle   ;
-   G4ParticleDefinition* TargetParticle ;
+   G4ParticleDefinition* BeamParticle   = NULL ;
+   G4ParticleDefinition* TargetParticle = NULL ;
    
    bool ReadingStatus 					=	false ;
    bool check_Beam 							= false ;
@@ -247,13 +247,15 @@ while(ReadingStatus){
 	            	ParticleBuffer = G4ParticleTable::GetParticleTable()->FindParticle("neutron");
 	            else if ( A==1 && Z==1)
 	            	ParticleBuffer = G4ParticleTable::GetParticleTable()->FindParticle("proton");
+//	            else if ( A==2 && Z==0)
+//	            	ParticleBuffer = G4ParticleTable::GetParticleTable()->FindParticle("neutron");
+//	            	ParticleBuffer->SetPDGMass( ParticleBuffer->GetPDGMass*2);
 	            else
 	            	ParticleBuffer = G4ParticleTable::GetParticleTable()->GetIon(Z, A, EXX) ;
 	            	
 	            ReactionProducts.push_back(ParticleBuffer);
 	            
 	            G4cout << "Decay Product: A=" << A << " Z=" << Z << " Excitation Energy = " << EXX/MeV << "MeV" << G4endl;
-	            G4cout << "Super " <<ParticleBuffer->GetPDGMass() << G4endl ;
 	         }
 	         
 	         else if  (DataBuffer.compare(0, 21, "EndOfDecayProductList") == 0) {

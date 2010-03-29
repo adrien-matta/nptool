@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2009   this file is part of the NPTool Project              *
+ * Copyright (C) 2009-2010   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -42,7 +42,10 @@ using namespace CLHEP;
 EventGeneratorBeam::EventGeneratorBeam()
 {
    m_InitConditions = new TInitialConditions();
-   m_Target         = 0;
+   m_Target         = NULL	;
+   m_beamA					= 0 		;
+   m_beamZ					= 0 		;
+   m_particle 			= NULL 	;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -57,7 +60,6 @@ void	EventGeneratorBeam::SetTarget(Target* Target)
    	if(Target!=0)	
    		{
    			m_Target = Target;
-   			m_Target->WriteDEDXTable(m_particle ,0, m_BeamEnergy);
    		}
    
    }
@@ -68,8 +70,6 @@ void EventGeneratorBeam::ReadConfiguration(string Path)
    string LineBuffer;
    string DataBuffer;
 
-   ////////Reaction Setting needs///////
-   G4double particleZ = 0 , particleA = 0 ;
    //////////////////////////////////////////////////////////////////////////////////////////
    ifstream ReactionFile;
    ReactionFile.open(Path.c_str());
@@ -92,13 +92,10 @@ void EventGeneratorBeam::ReadConfiguration(string Path)
       //Pick-up next line
       getline(ReactionFile, LineBuffer);
 
-
-
      if (LineBuffer.compare(0, 4, "Beam") == 0) {
          G4cout << "Beam Found" << G4endl ;
          ReadingStatus = true ;
          }
-
 
 	while(ReadingStatus){
 	
@@ -110,16 +107,22 @@ void EventGeneratorBeam::ReadConfiguration(string Path)
 	        else if (DataBuffer.compare(0, 10, "ParticleZ=") == 0) {
 	         	check_Z = true ;
 	            ReactionFile >> DataBuffer;
-	            particleZ = atof(DataBuffer.c_str());
+	            m_beamZ = atof(DataBuffer.c_str());
+	            
+	            if(check_A)
+	            		G4cout << "Beam Particle: Z:" << m_beamZ << "  A:" << m_beamA << G4endl;
+	            
 	         }
 
 	        
 	         else if (DataBuffer.compare(0, 10, "ParticleA=") == 0) {
 	         	check_A = true ;
 	            ReactionFile >> DataBuffer;
-	            particleA = atof(DataBuffer.c_str());
-	            G4cout << "Beam Particle: Z:" << particleZ << "  A:" << particleA << G4endl;
-	            m_particle = G4ParticleTable::GetParticleTable()->GetIon(particleZ, particleA, 0.);
+	            m_beamA = atof(DataBuffer.c_str());
+	            
+	            if(check_Z)
+	            		G4cout << "Beam Particle: Z:" << m_beamZ << "  A:" << m_beamA << G4endl;
+	           
 	         }
 
 	         else if (DataBuffer.compare(0, 11, "BeamEnergy=") == 0) {
@@ -185,11 +188,15 @@ void EventGeneratorBeam::ReadConfiguration(string Path)
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorBeam::GenerateEvent(G4Event* anEvent, G4ParticleGun* particleGun)
 {
-			//--------------write the DeDx Table -------------------
-  if(m_Target!=0)
-  	m_Target->WriteDEDXTable(m_particle ,0, m_BeamEnergy+4*m_BeamEnergySpread);
-
-
+	//--------------write the DeDx Table -------------------
+  if( anEvent->GetEventID()==0)
+		{
+	 		m_particle = G4ParticleTable::GetParticleTable()->GetIon(m_beamZ, m_beamA , 0.);
+			
+			if(m_Target!=0 )
+				m_Target->WriteDEDXTable(m_particle ,0, m_BeamEnergy+4*m_BeamEnergySpread);
+		}
+  		
    m_InitConditions->Clear();
    
    ///////////////////////////////////////////////////////////////////////

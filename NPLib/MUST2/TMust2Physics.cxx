@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2009   this file is part of the NPTool Project              *
+ * Copyright (C) 2009-2010   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -872,37 +872,34 @@ void TMust2Physics::AddTelescope(	TVector3 C_X1_Y1 		,
 
   NumberOfTelescope++;
 	
-  //	Vector U on Telescope Face (paralelle to Y Strip) (NB: remember that Y strip are along X axis)
-  TVector3 U = C_X1_Y1 - C_X128_Y1 				;	
-  //TVector3 U = C_X1_Y1 - C_X128_Y1 	;
-  double Ushift = (U.Mag()-98)/2. ;
-  U = U.Unit()									;
-  //	Vector V on Telescope Face (parallele to X Strip)
-  //TVector3 V = C_X1_Y128 - C_X1_Y1 			;
-  TVector3 V = C_X128_Y128 - C_X128_Y1 				;
-  double Vshift = (V.Mag() -98)/2. ;
-  V = V.Unit()									;
+		//	Vector U on Telescope Face (paralelle to Y Strip) (NB: remember that Y strip are allong X axis)
+		TVector3 U = C_X128_Y1 - C_X1_Y1 				;	
+		double Ushift = (U.Mag()-98)/2. ;
+		U = U.Unit()									;
+		//	Vector V on Telescope Face (parallele to X Strip)
+		TVector3 V = C_X1_Y128 - C_X1_Y1 				;
+		double Vshift = (V.Mag() -98)/2. ;
+		V = V.Unit()									;
 
-  //	Position Vector of Strip Center
-  TVector3 StripCenter = TVector3(0,0,0)			;
-  //	Position Vector of X=1 Y=1 Strip 
-  TVector3 Strip_1_1 								;		
+		//	Position Vector of Strip Center
+		TVector3 StripCenter = TVector3(0,0,0)			;
+		//	Position Vector of X=1 Y=1 Strip 
+		TVector3 Strip_1_1 								;		
 
-  //	Geometry Parameter
-  double Face = 98					  	; //mm
-  double NumberOfStrip = 128 					; 
-  double StripPitch = Face/NumberOfStrip	                ; //mm
-  //	Buffer object to fill Position Array
-  vector<double> lineX ; vector<double> lineY ; vector<double> lineZ ;
+		//	Geometry Parameter
+		double Face = 98					 					  	; //mm
+		double NumberOfStrip = 128 							; 
+		double StripPitch = Face/NumberOfStrip	; //mm
+		//	Buffer object to fill Position Array
+		vector<double> lineX ; vector<double> lineY ; vector<double> lineZ ;
 
-  vector< vector< double > >	OneTelescopeStripPositionX	;
-  vector< vector< double > >	OneTelescopeStripPositionY	;
-  vector< vector< double > >	OneTelescopeStripPositionZ	;
+		vector< vector< double > >	OneTelescopeStripPositionX	;
+		vector< vector< double > >	OneTelescopeStripPositionY	;
+		vector< vector< double > >	OneTelescopeStripPositionZ	;
 		
-  //	Moving StripCenter to 1.1 corner:
-  Strip_1_1 = C_X128_Y1 + (U+V) * (StripPitch/2.) 	;
-  //Strip_1_1 = C_X1_Y1 + (U+V) * (StripPitch/2.) 	;
-  Strip_1_1+= U*Ushift+V*Vshift ;
+		//	Moving StripCenter to 1.1 corner:
+		Strip_1_1 = C_X1_Y1 + (U+V) * (StripPitch/2.) 	;
+    Strip_1_1+= U*Ushift+V*Vshift ;
     
   for( int i = 0 ; i < 128 ; i++ )
     {
@@ -910,10 +907,10 @@ void TMust2Physics::AddTelescope(	TVector3 C_X1_Y1 		,
       lineY.clear()	;
       lineZ.clear()	;
 				
-      for( int j = 0 ; j < 128 ; j++ )
-	{
-	  StripCenter  = Strip_1_1 + StripPitch*( i*U + j*V  )	;
-	  //StripCenter += -TargetPosition		;
+				for( int j = 0 ; j < 128 ; j++ )
+					{
+						StripCenter  = Strip_1_1 + StripPitch*( j*U + i*V  )	;
+						//StripCenter += -TargetPosition		;
 						
 	  lineX.push_back( StripCenter.X() )	;
 	  lineY.push_back( StripCenter.Y() )	;

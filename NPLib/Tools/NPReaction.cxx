@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2009 	this file is part of the NPTool Project              *
+ * Copyright (C) 2009-2010 	this file is part of the NPTool Project          *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -54,15 +54,15 @@ Reaction::Reaction()
 {
    //------------- Default Constructor -------------
 
-   fNoy1       = new Nucleus();
-   fNoy2       = new Nucleus();
-   fNoy3       = new Nucleus();
-   fNoy4       = new Nucleus();
-   fBeamEnergy = 0;
-   fThetaCM    = 0;
-   fExcitation = 0;
-   fQValue     = 0;
-   initializePrecomputeVariable();
+   fNuclei1       = new Nucleus()		;
+   fNuclei2       = new Nucleus()		;
+   fNuclei3       = new Nucleus()		;
+   fNuclei4       = new Nucleus()		;
+   fBeamEnergy = 0								;
+   fThetaCM    = 0								;
+   fExcitation = 0								;
+   fQValue     = 0								;
+   initializePrecomputeVariable()	;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
@@ -76,18 +76,18 @@ void Reaction::SetEveryThing(string name1, string name2, string name3, string na
 {
    //------------- Constructor with nuclei names and beam energy ------------
      
-   fNoy1       = new Nucleus(name1);
-   fNoy2       = new Nucleus(name2);
-   fNoy3       = new Nucleus(name3);
-   fNoy4       = new Nucleus(name4);
+   fNuclei1       = new Nucleus(name1);
+   fNuclei2       = new Nucleus(name2);
+   fNuclei3       = new Nucleus(name3);
+   fNuclei4       = new Nucleus(name4);
    fBeamEnergy = BeamEnergy;
    fThetaCM    = 0;
    fExcitation = ExcitationEnergy;
-   fQValue     = (  fNoy1->GetMassExcess() + fNoy2->GetMassExcess()
-		  - fNoy3->GetMassExcess() - fNoy4->GetMassExcess()) / 1000;
+   fQValue     = (  fNuclei1->GetMassExcess() + fNuclei2->GetMassExcess()
+		  - fNuclei3->GetMassExcess() - fNuclei4->GetMassExcess()) / 1000;
 
-   int masse  = fNoy1->GetA() + fNoy2->GetA() - fNoy3->GetA() - fNoy4->GetA();
-   int charge = fNoy1->GetZ() + fNoy2->GetZ() - fNoy3->GetZ() - fNoy4->GetZ();
+   int masse  = fNuclei1->GetA() + fNuclei2->GetA() - fNuclei3->GetA() - fNuclei4->GetA();
+   int charge = fNuclei1->GetZ() + fNuclei2->GetZ() - fNuclei3->GetZ() - fNuclei4->GetZ();
    if (masse || charge) cout << "Problem with charge or mass conservation" << endl;
    
    ///Read the differential cross section
@@ -122,10 +122,10 @@ Reaction::~Reaction()
 {
    //------------- Default Destructor ------------
 
-   delete fNoy1;
-   delete fNoy2;
-   delete fNoy3;
-   delete fNoy4;
+   delete fNuclei1;
+   delete fNuclei2;
+   delete fNuclei3;
+   delete fNuclei4;
 }
 
 
@@ -155,7 +155,7 @@ void Reaction::KineRelativistic(double &ThetaLab3, double &EnergieLab3,
 // 2-body relativistic kinematics: direct + inverse
 // EnergieLab3,4 : lab energy in MeV of the 2 ejectiles
 // ThetaLab3,4   : angles in rad
-   
+
    // case of inverse kinematics
    double theta = fThetaCM;
    if (m1 > m2) theta = M_PI - fThetaCM;
@@ -185,13 +185,12 @@ double Reaction::ReconstructRelativistic(double EnergyLab, double ThetaLab) cons
 	{
 		// EnergyLab in MeV
 		// ThetaLab in rad
-
 		double P1 = sqrt(2*m1*fBeamEnergy+(fBeamEnergy*fBeamEnergy))	;
 		double P3 = sqrt(2*m3*EnergyLab+(EnergyLab*EnergyLab))			;
 		double P4 = sqrt(P1*P1+P3*P3-(2*P1*P3*cos(ThetaLab)))			;
 		double E4 = fBeamEnergy+m1+m2-(EnergyLab+m3)					;
 		double m4e = sqrt((E4*E4)-(P4*P4))								;
-		double Eex= m4e-m4												;
+		double Eex= m4e-fNuclei4->Mass()												;
 		
 		return Eex;
 	}
@@ -231,8 +230,8 @@ void Reaction::Print() const
 	{
 		// Print informations concerning the reaction
 
-		cout << "Reaction : " << fNoy2->GetName() << "(" << fNoy1->GetName() 
-			 << "," << fNoy3->GetName() << ")" << fNoy4->GetName() << "  @  " 
+		cout << "Reaction : " << fNuclei2->GetName() << "(" << fNuclei1->GetName() 
+			 << "," << fNuclei3->GetName() << ")" << fNuclei4->GetName() << "  @  " 
 			 << fBeamEnergy << " MeV" 
 		<< endl	;
 		
@@ -362,11 +361,11 @@ void Reaction::ReadConfigurationFile(string Path)
 	
 	
 void Reaction::initializePrecomputeVariable()
-	{
-		 m1 = fNoy1->Mass();
-		 m2 = fNoy2->Mass();
-		 m3 = fNoy3->Mass();
-		 m4 = fNoy4->Mass() + fExcitation;
+	{ 
+		 m1 = fNuclei1->Mass();
+		 m2 = fNuclei2->Mass();
+		 m3 = fNuclei3->Mass();
+		 m4 = fNuclei4->Mass() + fExcitation;
 
 		// center-of-mass velocity
 		 WtotLab = (fBeamEnergy + m1) + m2;
@@ -387,7 +386,6 @@ void Reaction::initializePrecomputeVariable()
 		// Constants of the kinematics
 		 K3 = B / beta3cm;
 		 K4 = B / beta4cm;
-	
 	}
 	
 	

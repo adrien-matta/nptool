@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2009   this file is part of the NPTool Project              *
+ * Copyright (C) 2009-2010   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -368,7 +368,9 @@ while(ReadingStatus){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4ParticleGun* particleGun)
 {
-
+	// Initialize event weight to one.
+	m_EventWeight = 1 ;
+	
 	//	If first time, write the DeDx table
 	if(anEvent->GetEventID()==0)
 		{
@@ -400,11 +402,6 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
 
    G4ParticleDefinition* LightName
    = G4ParticleTable::GetParticleTable()->GetIon(LightZ, LightA, 0.);
-
-   // Recoil
-   G4int HeavyZ = m_Reaction->GetNucleus4()->GetZ() ;
-   G4int HeavyA = m_Reaction->GetNucleus4()->GetA() ;
-
 
 	 // Shoot the Resonance energy following the mean and width value
 	 // EXX should always be more than specific heat of the reaction
@@ -598,16 +595,16 @@ void EventGeneratorTransfertToResonance::ResonanceDecay(  G4double EnergyHeavy  
 		G4ParticleDefinition* proton
 		=  G4ParticleTable::GetParticleTable()->FindParticle("proton");
 
-		G4double M  = parent   -> GetPDGMass() + m_Reaction->GetExcitation()     ;
+		G4double M  = parent   -> GetPDGMass() + m_Reaction->GetExcitation()*MeV     ;
 		G4double md = daughter -> GetPDGMass()     ;
 		G4double mn = neutron  -> GetPDGMass()     ;
 		G4double mp = proton   -> GetPDGMass()     ;
 		
 		// Check that we are above threshold:
 		// If the Resonnance go below the threshold, decay is forced at thereshold
-		if (M < md + NumberOfNeutrons*mm + NumberOfProtons*mp)
+		if (M < md + NumberOfNeutrons*mn + NumberOfProtons*mp)
 			{
-				double NewExx  = M - md - NumberOfNeutrons*mm - NumberOfProtons*mp ;
+				double NewExx  = parent   -> GetPDGMass() - md - NumberOfNeutrons*mn - NumberOfProtons*mp ;
 				M = parent   -> GetPDGMass() + NewExx ;
 			}
 			

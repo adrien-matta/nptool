@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2009   this file is part of the NPTool Project              *
+ * Copyright (C) 2009-2010   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -549,9 +549,8 @@ void Target::CalculateBeamInteraction(	double MeanPosX, double SigmaPosX, double
       if (AngleIncidentPhi   < 0)    AngleIncidentPhi += 2*pi	;
       if (AngleIncidentTheta < 1e-6) AngleIncidentPhi  = 0		;
 
-      // Calculation of effective target thickness and z-position of interaction
+      // effective target thickness is dz and z-position of interaction
       // when the target is tilted wrt the beam axis
-      double EffectiveThickness = m_TargetThickness / (BeamDir.unit()).dot(TargetNormal.unit());
       double uniform = RandFlat::shoot();
       z0 = dz + (-m_TargetThickness / 2 + uniform * m_TargetThickness);
 
