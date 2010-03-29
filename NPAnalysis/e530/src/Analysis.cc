@@ -84,6 +84,9 @@ int main(int argc,char** argv)
       
       clock_t begin=clock();
       clock_t end=begin;
+
+      //M2->Dump_Positions();
+
       for ( i = 0 ; i < N ; i ++ )
 	{
 	  // Minimum code

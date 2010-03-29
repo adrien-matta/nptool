@@ -162,6 +162,7 @@ class TMust2Physics : public TObject, public NPA::VDetector
   TVector3 GetTelescopeNormal(int i)		;
 
   void Dump();
+  void Dump_Positions();
 
  private:	//	Root Input and Output tree classes
 				

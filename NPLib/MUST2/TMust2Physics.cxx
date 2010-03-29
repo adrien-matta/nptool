@@ -887,7 +887,7 @@ void TMust2Physics::AddTelescope(	TVector3 C_X1_Y1 		,
 		TVector3 Strip_1_1 								;		
 
 		//	Geometry Parameter
-		double Face = 98					 					  	; //mm
+		double Face = 98					 			; //mm
 		double NumberOfStrip = 128 							; 
 		double StripPitch = Face/NumberOfStrip	; //mm
 		//	Buffer object to fill Position Array
@@ -907,11 +907,11 @@ void TMust2Physics::AddTelescope(	TVector3 C_X1_Y1 		,
       lineY.clear()	;
       lineZ.clear()	;
 				
-				for( int j = 0 ; j < 128 ; j++ )
-					{
-						StripCenter  = Strip_1_1 + StripPitch*( j*U + i*V  )	;
-						//StripCenter += -TargetPosition		;
-						
+      for( int j = 0 ; j < 128 ; j++ )
+	{
+	  StripCenter  = Strip_1_1 + StripPitch*( i*U + j*V  )	;
+	  //StripCenter += -TargetPosition		;
+	  
 	  lineX.push_back( StripCenter.X() )	;
 	  lineY.push_back( StripCenter.Y() )	;
 	  lineZ.push_back( StripCenter.Z() )	;	
@@ -1114,7 +1114,25 @@ void TMust2Physics::Dump()
       cout << "CsI Crystal Number : " << CsI_N.at(i) << endl;
     }
  				
-}	
+}
+
+void TMust2Physics::Dump_Positions()
+{
+  cout << " Dump Position of MUST2 Telescopes " << endl;
+  int NumberOfTelescopes = GetNumberOfTelescope();
+
+  for(int k = 0; k < NumberOfTelescopes; k++)
+    {
+      for(int i = 0; i < 128; i++)
+	{
+	  for(int j = 0; j < 128; j++)
+	    {
+	      cout << k+1 << " " << i+1 << " " << j+1 << " " << GetStripPositionX(k+1, i+1, j+1) << " " << GetStripPositionY(k+1, i+1, j+1) << " " << GetStripPositionZ(k+1, i+1, j+1) << endl;
+	    }
+	}
+    }
+
+}
 
 ///////////////////////////////////////////////////////////////////////////
 namespace LOCAL
