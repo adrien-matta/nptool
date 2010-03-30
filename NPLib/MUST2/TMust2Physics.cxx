@@ -799,9 +799,8 @@ void TMust2Physics::AddTelescope(	TVector3 C_X1_Y1 		,
 				
 				for( int j = 0 ; j < 128 ; j++ )
 					{
-						StripCenter  = Strip_1_1 + StripPitch*( j*U + i*V  )	;
+						StripCenter  = Strip_1_1 + StripPitch*( i*U + j*V  )	;
 						//StripCenter += -TargetPosition		;
-						
 						lineX.push_back( StripCenter.X() )	;
 						lineY.push_back( StripCenter.Y() )	;
 						lineZ.push_back( StripCenter.Z() )	;	

@@ -879,10 +879,10 @@ void MUST2Array::ConstructDetector(G4LogicalVolume* world)
          // (u,v) // to silicon plan
          // w perpendicular to (u,v) plan and pointing CsI
          MMu = m_X128_Y1[i] - m_X1_Y1[i]     ;
-         MMu = MMu.unit()              ;
+         MMu = -MMu.unit()              ;
 
          MMv = m_X1_Y128[i] - m_X1_Y1[i]     ;
-         MMv = MMv.unit()              ;
+         MMv = -MMv.unit()              ;
 
          MMw = MMv.cross(MMu)          ;
         // if (MMw.z() > 0)MMw = MMv.cross(MMu)  ;
