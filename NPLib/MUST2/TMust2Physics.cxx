@@ -95,24 +95,26 @@ void TMust2Physics::BuildPhysicalEvent()
 	  double Si_Y_T = fSi_Y_T(EventData , couple[i].Y())		;
 					
 	  Si_X.push_back(X) ; Si_Y.push_back(Y) ; TelescopeNumber.push_back(N) ;
-						
+		
+	  
 	  Si_E_X.push_back(Si_X_E);
 	  Si_E_Y.push_back(Si_Y_E);
 	   
 
+	  //	  Si_E.push_back(Si_Y_E);
 	  // Take maximum Energy
-	    // Si_E.push_back(Si_X_E);
-	    
-	    if(Si_X_E >= Si_Y_E)   Si_E.push_back(Si_X_E)	;
-	    else		   Si_E.push_back(Si_Y_E)	;
-	    
-	    Si_T_Y.push_back(Si_Y_T);
-	    Si_T.push_back(Si_X_T);
+	  if(Si_X_E >= Si_Y_E)   Si_E.push_back(Si_X_E)	;
+	  else		   Si_E.push_back(Si_Y_E)	;
+	  
+	  Si_T_Y.push_back(Si_Y_T);
+	  Si_T_X.push_back(Si_X_T);
 						
 	  // Take minimum Time
-	    // Si_T_X.push_back(Si_X_T);
+	  Si_T.push_back(Si_X_T);
+	    /*
 	  if(Si_X_T >= Si_Y_T)   Si_T.push_back(Si_Y_T)	;
 	  else			 Si_T.push_back(Si_X_T)	;
+	    */
 						
 	  for(unsigned int j = 0 ; j < EventData->GetMMSiLiEMult() ; j++)
 	    {
@@ -127,6 +129,8 @@ void TMust2Physics::BuildPhysicalEvent()
 
 		  if(EventData->GetMMSiLiEEnergy(j) > 8220)  // suppression " la main" des piedestaux
 		    {
+		      
+
 		      controle_SiLi -> Fill(5);
 
 		      // SiLi energy is above threshold check the compatibility
@@ -136,7 +140,7 @@ void TMust2Physics::BuildPhysicalEvent()
 			  controle_SiLi -> Fill(6);
 
 			  // pad vs strip number match
-			  //if( Match_Si_SiLi( X, Y , EventData->GetMMSiLiEPadNbr(j) ) )
+			  if( Match_Si_SiLi( X, Y , EventData->GetMMSiLiEPadNbr(j) ) )
 			    {
 			      controle_SiLi -> Fill(7);
 
@@ -209,7 +213,6 @@ void TMust2Physics::BuildPhysicalEvent()
   else if( CheckEvent()  == -1) {  }
   else if( CheckEvent()  ==  2) {  }
 
-  
   return;
 	
 }	
@@ -1061,9 +1064,13 @@ TVector3 TMust2Physics::GetTelescopeNormal( int i)
 
 void TMust2Physics::Dump()
 {
-  EventData->Dump();
+  //  EventData->Dump();
+  
+  cout <<  EventData-> GetMMSiLiEMult() << endl;
 
   cout << "XXXXXXXXXXXXXXXXXXXXXXXX Physical Event XXXXXXXXXXXXXXXXX" << endl;
+  
+  
 
 
   //GENERAL

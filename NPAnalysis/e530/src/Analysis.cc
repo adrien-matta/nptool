@@ -42,8 +42,16 @@ int main(int argc,char** argv)
       
       //	Attach more branch to the output
       
-      double ELab=0,ThetaLab=0,ExcitationEnergy=0;
-      double ThetaN = 0;
+      double ELab[2],ThetaLab[2],ExcitationEnergy[2];
+      double ThetaN[2];
+      
+      for (int i = 0; i < 2; i++) 
+	{
+	  ELab[i]  = 0; ThetaLab[i] = 0; ExcitationEnergy[i] = 0;
+	  ThetaN[i]= 0;
+	}
+
+
       RootOutput::getInstance()->GetTree()->Branch("ELab",&ELab,"ELab/D") 		;
       RootOutput::getInstance()->GetTree()->Branch("ThetaLab",&ThetaLab,"ThetaLab/D") 	;
       RootOutput::getInstance()->GetTree()->Branch("ExcitationEnergy",&ExcitationEnergy,"ExcitationEnergy/D") ;
@@ -67,7 +75,7 @@ int main(int argc,char** argv)
             
       TH2F* DE_E_protons  = new TH2F("DE_E_protons","DE_E et cut protons",1000,0,25000,1000,0,25000) ;
       TH2F* DE_E          = new TH2F("DE_E","DE_E               ",1000,0,25000,1000,0,25000) ;
-      TH2F* E_Theta       = new TH2F("E_Theta","E_Theta         ",60,100,160,500,0,25000) ;
+      TH2F* E_Theta       = new TH2F("E_Theta","E_Theta         ",60,100,160,500,0,50) ;
       TH2F* Position_M2   = new TH2F("Must2Positions","Must2Positions",2000,-200,200,2000,-200,200);
       
       TH1F* trigger       = new TH1F("trig","trig",650,0,649);
@@ -110,102 +118,126 @@ int main(int argc,char** argv)
 	  
 	  UShort_t tac_pl_cats2 = TacCondition -> GetTAC_PL_CATS2();
 	  tac -> Fill(tac_pl_cats2);
-	  
+
+	  UShort_t tdc_MM1_cats2 = TacCondition -> GetTDC_MM1_CATS2();  
+	  UShort_t tdc_MM2_cats2 = TacCondition -> GetTDC_MM2_CATS2();
+	  UShort_t tdc_MM3_cats2 = TacCondition -> GetTDC_MM3_CATS2();
+	  UShort_t tdc_MM4_cats2 = TacCondition -> GetTDC_MM4_CATS2();
+	  //	  cout << tdc_MM1_cats2 << " " << tdc_MM2_cats2 << " " << tdc_MM3_cats2 << " " << tdc_MM4_cats2 << endl;
+
 	  UShort_t must2_event = TriggerCondition -> GetTRIG1();
 	  trigger -> Fill(must2_event);
 	  
 	  
 	  if(must2_event < 16) 
 	     {
+	       //if(tac_pl_cats2 > 6500 && tac_pl_cats2 < 6700) // Jo conditions
 	       if(tac_pl_cats2 > 3450 && tac_pl_cats2 < 3650) 
 		 {
-		   evt_tac++;
-		   must++;
-		   
-		   		   
-		   // Build the new event
-		   myDetector -> BuildSimplePhysicalEvent()		;
-		   ////
 
-		   // Must 2
-		   
-		   if(M2 -> Si_E.size() != M2 -> EventMultiplicity) cout << "problem with EventMultiplicity !" << endl;
-		   else 
+		   if(3500 < tdc_MM1_cats2 < 5000 || 3500 < tdc_MM2_cats2 < 5000 || 3500 < tdc_MM3_cats2 < 5000 || 3500 < tdc_MM4_cats2 < 5000 )
 		     {
+		       evt_tac++;
+		       must++;
 		       
-		       for(int hit = 0; hit < M2 -> Si_E.size() ; hit ++)
+		       // Build the new event
+		       myDetector -> BuildSimplePhysicalEvent()		;
+		       ////
+		       
+		       // Must 2
+		       
+		      
+		       if(M2 -> Si_E.size() != M2 -> EventMultiplicity)  cout << "problem with EventMultiplicity !" << endl;
+		      		       
+		       else 
 			 {
-			   //	  M2->Dump();
-			   
-			   //	Get Hit Direction
-			   TVector3 HitDirection  = M2 -> GetPositionOfInteraction(hit) - CATS -> GetPositionOnTarget();
-			   //TVector3 HitDirection  = M2 -> GetPositionOfInteraction(hit) - TVector3(0,0,-40);
-			   TVector3 BeamDirection = CATS -> GetBeamDirection();
-			   			   
-			   ExcitationEnergy = -1 ;
-			   ELab = -1 ; ThetaLab = -1;    
-			   
-			  			   			   
-			   // Angle between beam and particle
-			   ThetaLab  = ThetaCalculation ( HitDirection , BeamDirection ) ;
-			   //ThetaLab  = ThetaCalculation ( HitDirection , TVector3(0,0,1)   ) ;	
-			   ThetaN = ThetaCalculation(HitDirection , M2 -> GetTelescopeNormal(hit));
-			   
-			   if((M2->Si_E[hit] > 0))
+			   if(CATS -> GetPositionOnTargetX() > -30 && CATS -> GetPositionOnTargetX() < 30 && CATS -> GetPositionOnTargetY() > -30 && CATS -> GetPositionOnTargetY() < 30)
 			     {
-			       Position_M2->Fill((M2 -> GetPositionOfInteraction(hit)).X(),(M2 -> GetPositionOfInteraction(hit)).Y());
-			     }
-			   
-			   if((M2->Si_E[hit] > 0) && (M2 -> SiLi_E[hit]) < 0) 
-			     {
-			       ELab = M2 -> Si_E[hit];
-			       ELab = protonStripAl.EvaluateInitialEnergy(ELab, 0.5*micrometer, ThetaN);
-			       ELab = protonTargetCD2.EvaluateInitialEnergy(ELab,17.4*micrometer,ThetaLab);
-			       
-			       ExcitationEnergy = e530Reaction -> ReconstructRelativistic( ELab, ThetaLab) ;
-			       
-			     }
-			   
-			   else if((M2->Si_E[hit] > 0) && (M2 -> SiLi_E[hit]) > 0)
-			     {
-			       DE_E ->Fill(M2 -> SiLi_E[hit],M2 -> Si_E[hit]);
-			       //cout << M2 -> SiLi_E[hit] << " " << M2 -> Si_E[hit] << endl;
 
-			       ELab = M2 -> SiLi_E[hit];
-			       ELab = protonStripAl.EvaluateInitialEnergy(ELab, 0.5*micrometer, ThetaN);
-			       
-			       ELab += M2 -> Si_E[hit];
-			       ELab = protonStripAl.EvaluateInitialEnergy(ELab, 0.5*micrometer, ThetaN);
-			       
-			       ELab = protonTargetCD2.EvaluateInitialEnergy(ELab,17.4*micrometer,ThetaLab);
-			       
-			       ExcitationEnergy = e530Reaction -> ReconstructRelativistic( ELab, ThetaLab) ;
+			       for(int hit = 0; hit < M2 -> EventMultiplicity ; hit ++)
+				 //  for(int hit = 0; hit < M2 -> Si_E.size() ; hit ++)
+				 {
+				   
+				   //	Get Hit Direction
+				   TVector3 HitDirection  = M2 -> GetPositionOfInteraction(hit) - CATS -> GetPositionOnTarget();
+				   //TVector3 HitDirection  = M2 -> GetPositionOfInteraction(hit) - TVector3(0,0,-40);
+				   TVector3 BeamDirection = CATS -> GetBeamDirection();
+				   
+				   ExcitationEnergy[hit] = -1 ;
+				   ELab[hit] = -1 ; ThetaLab[hit] = -1;    
+				   
+				   
+				   // Angle between beam and particle
+				   ThetaLab[hit]  = ThetaCalculation ( HitDirection , BeamDirection ) *rad ; 
+				   //ThetaLab[hit]  = ThetaCalculation ( HitDirection , TVector3(0,0,1)   ) ;	
+				   ThetaN[hit] = ThetaCalculation(HitDirection , M2 -> GetTelescopeNormal(hit))*rad;
+				   
+				   if((M2->Si_E[hit] > 0))
+				     {
+				       Position_M2->Fill((M2 -> GetPositionOfInteraction(hit)).X(),(M2 -> GetPositionOfInteraction(hit)).Y());
+				     }
+				   
+				   
+				   if((M2-> Si_E[hit] > 0) && (M2 -> MultiplicitySiLi ==0)) 
+				     //			       if((M2->Si_E[hit] > 0) && (M2 -> SiLi_E[hit]) < 0) 
+				     {
+				       ELab[hit] = M2 -> Si_E[hit] * keV;
+				       ELab[hit] = protonStripAl.EvaluateInitialEnergy(ELab[hit], 0.5*micrometer, ThetaN[hit]) /MeV;
+				       ELab[hit] = protonTargetCD2.EvaluateInitialEnergy(ELab[hit],17.4*micrometer,ThetaLab[hit]) /MeV;
+				       
+				       ExcitationEnergy[hit] = e530Reaction -> ReconstructRelativistic( ELab[hit]/MeV, ThetaLab[hit]/rad) /MeV;
+				       ThetaLab[hit]  = ThetaLab[hit] /deg;
+				       
+				     }
+				   
+				   //else if((M2->Si_E[hit] > 0) && (M2 -> MultiplicitySiLi != 0))
+				   else if((M2->Si_E[hit] > 0) && (M2 -> SiLi_E[hit]) > 0)
+				     {
+				       //  if(M2 -> SiLi_E.size() != M2 -> MultiplicitySiLi) Dump()
+				       //else
+				       {		       
+					 DE_E ->Fill(M2 -> SiLi_E[hit],M2 -> Si_E[hit]);
+					 //cout << M2 -> SiLi_E[hit] << " " << M2 -> Si_E[hit] << endl;
+					 
+					 ELab[hit] = M2 -> SiLi_E[hit] *keV;
+					 ELab[hit] = protonStripAl.EvaluateInitialEnergy(ELab[hit]/MeV, 0.5*micrometer, ThetaN[hit]) /MeV;
+					 
+					 ELab[hit] += M2 -> Si_E[hit] *keV;
+					 ELab[hit] = protonStripAl.EvaluateInitialEnergy(ELab[hit]/MeV, 0.5*micrometer, ThetaN[hit]) /MeV;
+					 
+					 ELab[hit] = protonTargetCD2.EvaluateInitialEnergy(ELab[hit]/MeV,17.4*micrometer,ThetaLab[hit]) /MeV;
+					 
+					 ExcitationEnergy[hit] = e530Reaction -> ReconstructRelativistic( ELab[hit]/MeV, ThetaLab[hit]/rad) /MeV ;
+					 ThetaLab[hit]  = ThetaLab[hit] /deg;
+				       }
+				     }
+				   
+				   else {ExcitationEnergy[hit]=-100 ; ThetaLab[hit]=-100;}
+				   
+				   
+				   // DE_E_protons   -> Fill(M2 -> SiLi_E[hit],M2 -> Si_E[hit]);
+				   E_Theta        -> Fill(ThetaLab[hit],ELab[hit]/MeV);
+				   
+				   //
+				   //  else 
+				   //  {
+				   //  ThetaLab[hit] = 0; ELab[hit]=0;
+				   // cout << "pas de protons" << endl;
+				   //  }
+				   
+				   // cout << "theta lab : " << ThetaLab[hit] << "    ELab[hit] : " << ELab[hit] << endl;
+				   
+				   
+				 } // end of for loop over hit
 			     }
-			   
-			   else {ExcitationEnergy=-100 ; ThetaLab=-100;}
-			   
-			   
-			   
-			   // DE_E_protons   -> Fill(M2 -> SiLi_E[hit],M2 -> Si_E[hit]);
-			   E_Theta        -> Fill(ThetaLab*180/3.14,ELab);
-			 			   
-			   //
-			   //  else 
-			   //  {
-			   //  ThetaLab = 0; ELab=0;
-			   // cout << "pas de protons" << endl;
-			   //  }
-			   
-			   // cout << "theta lab : " << ThetaLab << "    ELab : " << ELab << endl;
-
-			 } // end of for loop over hit
-		       RootOutput::getInstance()->GetTree()->Fill()	;
-		     } 
+			   RootOutput::getInstance()->GetTree()->Fill()	;
+			 } 
 		       
-		     
-		   //RootOutput::getInstance()->GetTree()->Fill()	;    // if you want to look at CATS detector only, without must2 events
-
-		 }  // tac condition
+		       
+		       //RootOutput::getInstance()->GetTree()->Fill()	;    // to look at CATS detector only, without must2 events condition
+		       
+		     }  // tac condition
+		 } //td conditions
 	     } //must2 events condition
 	   	  
 	} // end of for loop over events

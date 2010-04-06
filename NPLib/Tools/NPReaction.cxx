@@ -186,12 +186,14 @@ double Reaction::ReconstructRelativistic(double EnergyLab, double ThetaLab) cons
 		// EnergyLab in MeV
 		// ThetaLab in rad
 		double P1 = sqrt(2*m1*fBeamEnergy+(fBeamEnergy*fBeamEnergy))	;
-		double P3 = sqrt(2*m3*EnergyLab+(EnergyLab*EnergyLab))			;
-		double P4 = sqrt(P1*P1+P3*P3-(2*P1*P3*cos(ThetaLab)))			;
-		double E4 = fBeamEnergy+m1+m2-(EnergyLab+m3)					;
-		double m4e = sqrt((E4*E4)-(P4*P4))								;
-		double Eex= m4e-fNuclei4->Mass()												;
-		
+		double P3 = sqrt(2*m3*EnergyLab+(EnergyLab*EnergyLab))		;
+		double P4 = sqrt(P1*P1+P3*P3-(2*P1*P3*cos(ThetaLab)))		;
+		double E4 = fBeamEnergy+m1+m2-(EnergyLab+m3)			;
+		double m4e = sqrt((E4*E4)-(P4*P4))				;
+		double Eex= m4e-fNuclei4->Mass()				;
+
+		//if(Eex<=0) cout << m4e << " " << fNuclei4->Mass() << endl;
+
 		return Eex;
 	}
 

@@ -60,11 +60,11 @@ namespace NPL
 		 
 		 public :	//	Constructor
 		   EnergyLoss();
-		   EnergyLoss(   	string Path 				,	//	Path of dE/dX table file
-		   								string Source  			, // Type of file : Geant4,Lise,SRIM
-		   				 				int NumberOfSlice		, //	Low number = Faster, High Number = more accurate / typical: 100 to 1000
-		   								int LiseColumns=0		,	//	Indicate which model to read in a lise File, set to 0 (Default value) for a SRIM file
-		   				 				int NumberOfMass=1	);//	Number of mass A of the nucleus (used only for Lise file)	
+		   EnergyLoss(  string Path 			, //	Path of dE/dX table file
+		   		string Source  			, // Type of file : Geant4,Lise,SRIM
+		   		int NumberOfSlice		, //	Low number = Faster, High Number = more accurate / typical: 100 to 1000
+		   		int LiseColumns=0		,	//	Indicate which model to read in a lise File, set to 0 (Default value) for a SRIM file
+		   		int NumberOfMass=1	);//	Number of mass A of the nucleus (used only for Lise file)	
 		   ~EnergyLoss();
 		 
 		 private :	//	dE/dX, slice parameter

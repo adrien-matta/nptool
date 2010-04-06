@@ -204,43 +204,43 @@ class TCATSPhysics : public TObject, public NPA::VDetector
 	  // X
 
 	  //	Vector of dim = multiplicity of event on all detector
-	  int	    GetCATSDetNumberX(int i)       {return DetNumberX.at(i);}
-	  int	    GetCATSStripX(int i)           {return StripX.at(i);}
-	  double    GetCATSChargeX(int i)          {return ChargeX.at(i);}
+	  int	    GetCATSDetNumberX(int i)         {return DetNumberX.at(i);}
+	  int	    GetCATSStripX(int i)             {return StripX.at(i);}
+	  double    GetCATSChargeX(int i)            {return ChargeX.at(i);}
 	  
-	  int	    GetCATSMultX()	           {return DetNumberX.size();}
+	  int	    GetCATSMultX()	             {return DetNumberX.size();}
 	 
 	  //	Vector of dim = number of CATS
-	  double    GetCATSChargeSumX(int i)       {return ChargeSumX.at(i);}
-	  int 	    GetCATSMultOverThreshX(int i)  {return MultOverThreshX.at(i);}
-	  int       GetCATSStripMaxX(int i)        {return StripMaxX.at(i); }
-	  int       GetCATSDetNumberX_Position(int i)  {return DetNumberX_Position.at(i);}
-	  double    GetCATSPositionX(int i)        {return PositionX.at(i);}
+	  double    GetCATSChargeSumX(int i)          ;
+	  int 	    GetCATSMultOverThreshX(int i)     ;
+	  int       GetCATSStripMaxX(int i)           ;
+	  int       GetCATSDetNumberX_Position(int i) ;
+	  double    GetCATSPositionX(int i)           ;
 
-	  double    GetPositionOnTargetX()         {return PositionOnTargetX;}
+	  double    GetPositionOnTargetX()           {return PositionOnTargetX;}
 
 	  // Y
 
 	  //	Vector of dim = multiplicity of event on all detector
-	  int	    GetCATSDetNumberY(int i)       {return DetNumberY.at(i);}
-	  int	    GetCATSStripY(int i)           {return StripY.at(i);}
-	  double    GetCATSChargeY(int i)          {return ChargeY.at(i);}
+	  int	    GetCATSDetNumberY(int i)         {return DetNumberY.at(i);}
+	  int	    GetCATSStripY(int i)             {return StripY.at(i);}
+	  double    GetCATSChargeY(int i)            {return ChargeY.at(i);}
 
-	  int	    GetCATSMultY()	           {return DetNumberY.size();}
+	  int	    GetCATSMultY()	             {return DetNumberY.size();}
 	 
 	  //	Vector of dim = number of CATS
-	  double    GetCATSChargeSumY(int i)       {return ChargeSumY.at(i);}
-	  int 	    GetCATSMultOverThreshY(int i)  {return MultOverThreshY.at(i);}
-	  int       GetCATSStripMaxY(int i)        {return StripMaxY.at(i); }
-	  int       GetCATSDetNumberY_Position(int i)  {return DetNumberY_Position.at(i);}
-	  double    GetCATSPositionY(int i)        {return PositionY.at(i);}
+	  double    GetCATSChargeSumY(int i)         ;
+	  int 	    GetCATSMultOverThreshY(int i)    ;
+	  int       GetCATSStripMaxY(int i)          ;
+	  int       GetCATSDetNumberY_Position(int i);
+	  double    GetCATSPositionY(int i)          ;
 	  
-	  double    GetPositionOnTargetY()         {return PositionOnTargetY;}
+	  double    GetPositionOnTargetY()           {return PositionOnTargetY;}
 
-	  int       GetCATSMult()                  {return PositionX.size();}
+	  int       GetCATSMult()                    {return PositionX.size();}
 
 	  TVector3  GetPositionOnTarget();
-	  TVector3  GetBeamDirection()             {return BeamDirection;}
+	  TVector3  GetBeamDirection()               {return BeamDirection;}
 
 
 	  ClassDef(TCATSPhysics,1)  // CATSPhysics structure

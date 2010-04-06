@@ -354,10 +354,10 @@ endif
 
 ## Tac ##
 TacData:
-		make -C ./TAC
-		cp ./TAC/*.so ./lib ; cp ./TAC/*.h ./include
+	make -C ./TAC
+	cp ./TAC/*.so ./lib ; cp ./TAC/*.h ./include
 ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libTacData.so libTacData.dylib
+	cd lib; ln -sf libTacData.so libTacData.dylib
 endif
 
 ## DUMMY Detector ##

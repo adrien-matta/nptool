@@ -184,8 +184,8 @@ class TMust2Physics : public TObject, public NPA::VDetector
 namespace LOCAL
 {
   // Threshold
-  const double Si_X_E_Threshold = 0	;	const double Si_X_T_Threshold = 0 ;
-  const double Si_Y_E_Threshold = 0	;	const double Si_Y_T_Threshold = 0;
+  const double Si_X_E_Threshold = 100	;	const double Si_X_T_Threshold = 0 ;
+  const double Si_Y_E_Threshold = 100	;	const double Si_Y_T_Threshold = 0 ;
   const double SiLi_E_Threshold = 0	;	const double SiLi_T_Threshold = 0 ;
   const double CsI_E_Threshold	= 0     ;	const double CsI_T_Threshold  = 0 ;
 		

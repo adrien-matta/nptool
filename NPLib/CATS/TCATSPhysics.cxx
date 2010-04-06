@@ -655,8 +655,8 @@ void TCATSPhysics::BuildSimplePhysicalEvent()
 	  
 	  double t = (l+L) / l;
 	  
-	  PositionOnTargetX = PositionX[0] + (PositionX[1] - PositionX[0]) * t;
-	  PositionOnTargetY = PositionY[0] + (PositionY[1] - PositionY[0]) * t;
+	  PositionOnTargetX = PositionX[0] + (PositionX[1] - PositionX[0]) * t ;
+	  PositionOnTargetY = PositionY[0] + (PositionY[1] - PositionY[0]) * t ;
 	  
 	  BeamDirection.Unit();
 	}
@@ -831,21 +831,28 @@ double TCATSPhysics::AnalyseY(int ff,
 	      MultOverThreshY[ff]++;
 	      //ChargeSum += ChargeY_Buffer;
 	      ChargeSum_Y += ChargeY_Buffer;
-	      
+
 	      /*
-		if(ff ==1 && StrY ==15) {
-		//	ChargeY_test.push_back( ChargeY_Buffer );   
-		//		Chargey_test[StrY-1] = ChargeY_Buffer ;  
-		ChargeY.push_back( -1 );   
-		Chargey[StrY-1] = -1 ;   
-		}
-	      */
-	      //else{
-	      //		ChargeY_test.push_back( ChargeY_Buffer );   
-	      //		Chargey_test[StrY-1] = ChargeY_Buffer ;  
 	      ChargeY.push_back( ChargeY_Buffer );   //   cout << "ChargeY_Buffer = " << ChargeY_Buffer << endl;
 	      Chargey[StrY-1] = ChargeY_Buffer ;   // cout <<" Chargey[" << StrY-1 << "] " << Chargey[StrY-1] << endl;
-	      //      }
+	      */
+
+      
+	      //Specific treatment for e530 experiment ///////////////////////////////////////////////////////////////////
+	      // pist15 of cats2 not working...
+	      
+	      if(ff ==1 && StrY ==15) 
+		{
+		  ChargeY.push_back( -1 );   
+		  Chargey[StrY-1] = -1 ;   
+		}
+	      
+		
+	      else{
+		ChargeY.push_back( ChargeY_Buffer );   //   cout << "ChargeY_Buffer = " << ChargeY_Buffer << endl;
+		Chargey[StrY-1] = ChargeY_Buffer ;   // cout <<" Chargey[" << StrY-1 << "] " << Chargey[StrY-1] << endl;
+	      }
+	      ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	      
 	      StripY.push_back(StrY);
 	      DetNumberY.push_back(NY) ;
@@ -1460,6 +1467,139 @@ TVector3 TCATSPhysics::GetPositionOnTarget()
 				0                     );  // a modifier !! passer la distance de la cible
   return(Position) ;	
 }
+
+double TCATSPhysics::GetCATSChargeSumX(int i)
+{
+  double ChargeSum = 0;
+  
+  for(unsigned int i = 0; i < ChargeSumX.size(); i++)
+    {
+      if     (DetNumberX.at(i) == 1) ChargeSum = ChargeSumX.at(i);
+      else if(DetNumberX.at(i) == 2) ChargeSum = ChargeSumX.at(i);
+    }
+
+  return(ChargeSum);
+}
+
+int TCATSPhysics::GetCATSMultOverThreshX(int i)    
+{
+  int MultOverThresh = 0;
+  
+  for(unsigned int i = 0; i < MultOverThreshX.size(); i++)
+    {
+      if     (DetNumberX.at(i) == 1)  MultOverThresh =  MultOverThreshX.at(i);
+      else if(DetNumberX.at(i) == 2)  MultOverThresh =  MultOverThreshX.at(i);
+    }
+
+  return MultOverThresh;
+}
+
+int TCATSPhysics::GetCATSStripMaxX(int i)
+{
+  int StripMax = 0;
+  
+  for(unsigned int i = 0; i < StripMaxX.size(); i++)
+    {
+      if     (DetNumberX.at(i) == 1)  StripMax =  StripMaxX.at(i);
+      else if(DetNumberX.at(i) == 2)  StripMax =  StripMaxX.at(i);
+    }
+
+  return StripMax;
+}
+
+int TCATSPhysics::GetCATSDetNumberX_Position(int i)
+{
+  int DetNumber_Position = 0;
+  
+  for(unsigned int i = 0; i < DetNumberX_Position.size(); i++)
+    {
+      if     (DetNumberX.at(i) == 1)  DetNumber_Position =  DetNumberX_Position.at(i);
+      else if(DetNumberX.at(i) == 2)  DetNumber_Position =  DetNumberX_Position.at(i);
+    }
+
+  return DetNumber_Position;
+}
+
+double TCATSPhysics::GetCATSPositionX(int i)
+{
+  double Position = 0;
+
+  for(unsigned int i = 0; i < PositionX.size(); i++)
+    {
+      if     (DetNumberX.at(i) == 1)  Position =  PositionX.at(i);
+      else if(DetNumberX.at(i) == 2)  Position =  PositionX.at(i);
+    }
+
+  return Position;
+}
+
+
+double TCATSPhysics::GetCATSChargeSumY(int i)
+{
+  double ChargeSum = 0;
+  
+  for(unsigned int i = 0; i < ChargeSumY.size(); i++)
+    {
+      if     (DetNumberY.at(i) == 1) ChargeSum = ChargeSumY.at(i);
+      else if(DetNumberY.at(i) == 2) ChargeSum = ChargeSumY.at(i);
+    }
+
+  return(ChargeSum);
+}
+
+int TCATSPhysics::GetCATSMultOverThreshY(int i)    
+{
+  int MultOverThresh = 0;
+  
+  for(unsigned int i = 0; i < MultOverThreshY.size(); i++)
+    {
+      if     (DetNumberY.at(i) == 1)  MultOverThresh =  MultOverThreshY.at(i);
+      else if(DetNumberY.at(i) == 2)  MultOverThresh =  MultOverThreshY.at(i);
+    }
+
+  return MultOverThresh;
+}
+
+int TCATSPhysics::GetCATSStripMaxY(int i)
+{
+  int StripMax = 0;
+  
+  for(unsigned int i = 0; i < StripMaxY.size(); i++)
+    {
+      if     (DetNumberY.at(i) == 1)  StripMax =  StripMaxY.at(i);
+      else if(DetNumberY.at(i) == 2)  StripMax =  StripMaxY.at(i);
+    }
+
+  return StripMax;
+}
+
+int TCATSPhysics::GetCATSDetNumberY_Position(int i)
+{
+  int DetNumber_Position = 0;
+  
+  for(unsigned int i = 0; i < DetNumberY_Position.size(); i++)
+    {
+      if     (DetNumberY.at(i) == 1)  DetNumber_Position =  DetNumberY_Position.at(i);
+      else if(DetNumberY.at(i) == 2)  DetNumber_Position =  DetNumberY_Position.at(i);
+    }
+
+  return DetNumber_Position;
+}
+
+double TCATSPhysics::GetCATSPositionY(int i)
+{
+  double Position = 0;
+
+  for(unsigned int i = 0; i < PositionY.size(); i++)
+    {
+      if     (DetNumberY.at(i) == 1)  Position =  PositionY.at(i);
+      else if(DetNumberY.at(i) == 2)  Position =  PositionY.at(i);
+    }
+
+  return Position;
+}
+
+
 
 namespace LOCAL_CATS
 {
