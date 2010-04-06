@@ -185,7 +185,7 @@ int main(int argc,char** argv)
 				       ELab[hit] = protonStripAl.EvaluateInitialEnergy(ELab[hit], 0.5*micrometer, ThetaN[hit]) /MeV;
 				       ELab[hit] = protonTargetCD2.EvaluateInitialEnergy(ELab[hit],17.4*micrometer,ThetaLab[hit]) /MeV;
 				       
-				       ExcitationEnergy[hit] = e530Reaction -> ReconstructRelativistic( ELab[hit]/MeV, ThetaLab[hit]/rad) /MeV;
+				       ExcitationEnergy[hit] = e530Reaction -> ReconstructRelativistic( ELab[hit]/MeV, ThetaLab[hit]) /MeV;
 				       ThetaLab[hit]  = ThetaLab[hit] /deg;
 				       
 				     }
@@ -207,7 +207,7 @@ int main(int argc,char** argv)
 					 
 					 ELab[hit] = protonTargetCD2.EvaluateInitialEnergy(ELab[hit]/MeV,17.4*micrometer,ThetaLab[hit]) /MeV;
 					 
-					 ExcitationEnergy[hit] = e530Reaction -> ReconstructRelativistic( ELab[hit]/MeV, ThetaLab[hit]/rad) /MeV ;
+					 ExcitationEnergy[hit] = e530Reaction -> ReconstructRelativistic( ELab[hit]/MeV, ThetaLab[hit]) /MeV ;
 					 ThetaLab[hit]  = ThetaLab[hit] /deg;
 				       }
 				     }
