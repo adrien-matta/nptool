@@ -192,8 +192,6 @@ double Reaction::ReconstructRelativistic(double EnergyLab, double ThetaLab) cons
 		double m4e = sqrt((E4*E4)-(P4*P4))				;
 		double Eex= m4e-fNuclei4->Mass()				;
 
-		//if(Eex<=0) cout << m4e << " " << fNuclei4->Mass() << endl;
-
 		return Eex;
 	}
 

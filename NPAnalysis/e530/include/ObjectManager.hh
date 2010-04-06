@@ -111,7 +111,11 @@ using namespace CUT ;
 using namespace NPL ;
 namespace ENERGYLOSS
 	{
-	  
+	  // Beam Energy Loss
+	  EnergyLoss BeamTargetCD2    = EnergyLoss      ("Fe60[0.0]_CD2.G4table",
+							 "G4Table"              ,
+							 1000                   );
+
 	  //	proton Energy Loss
 	  EnergyLoss protonTargetWind = EnergyLoss 	("proton_Mylar.txt",
 							 "LISE"            ,
@@ -119,7 +123,7 @@ namespace ENERGYLOSS
      							  1		   ,
 							  1		  );
 		
-	  EnergyLoss protonTargetGaz = EnergyLoss       ("proton_D2gaz_1b_26K.txt" 	,
+	  EnergyLoss protonTargetC   = EnergyLoss       ("proton_carbone.txt" 	,
 							 "LISE"                         ,
 							 1000		 		,
 							 1				,

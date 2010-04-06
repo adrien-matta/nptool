@@ -35,6 +35,17 @@ int main(int argc,char** argv)
     //	Instantiate the detector using a file 
     NPA::DetectorManager* myDetector = new DetectorManager 		;
     myDetector	->	ReadConfigurationFile(detectorfileName)		;
+
+    // Calculate beam energy at target middle
+    // Get nominal beam energy
+    Double_t BeamEnergyNominal = e530Reaction->GetBeamEnergy() * keV;
+    cout << BeamEnergyNominal << endl;
+    // Slow beam at target middle
+    Double_t BeamEnergy = BeamEnergyNominal - BeamTargetCD2.Slow(BeamEnergyNominal, myDetector->GetTargetThickness()/2 * micrometer, 0);
+    //   Double_t BeamEnergy = 1293.56 * MeV;
+    cout << BeamEnergy << endl;
+    // Set energy beam at target middle
+    e530Reaction->SetBeamEnergy(BeamEnergy);
     
     //	Ask the detector manager to load the parameter added by the detector in the calibrationfileName
     myCalibration->LoadParameterFromFile() ;
@@ -182,8 +193,9 @@ int main(int argc,char** argv)
 				     //			       if((M2->Si_E[hit] > 0) && (M2 -> SiLi_E[hit]) < 0) 
 				     {
 				       ELab[hit] = M2 -> Si_E[hit] * keV;
-				       ELab[hit] = protonStripAl.EvaluateInitialEnergy(ELab[hit], 0.5*micrometer, ThetaN[hit]) /MeV;
-				       ELab[hit] = protonTargetCD2.EvaluateInitialEnergy(ELab[hit],17.4*micrometer,ThetaLab[hit]) /MeV;
+				       ELab[hit] = protonStripAl.EvaluateInitialEnergy(ELab[hit], 0.5 *micrometer, ThetaN[hit]) /MeV;
+				       // ELab[hit] = protonTargetCD2.EvaluateInitialEnergy(ELab[hit], myDetector -> GetTargetThickness() /2 *micrometer, ThetaLab[hit]) /MeV;
+				        ELab[hit] = protonTargetC.EvaluateInitialEnergy(ELab[hit], myDetector -> GetTargetThickness() /2 *micrometer, ThetaLab[hit]) /MeV;
 				       
 				       ExcitationEnergy[hit] = e530Reaction -> ReconstructRelativistic( ELab[hit]/MeV, ThetaLab[hit]) /MeV;
 				       ThetaLab[hit]  = ThetaLab[hit] /deg;
@@ -205,8 +217,9 @@ int main(int argc,char** argv)
 					 ELab[hit] += M2 -> Si_E[hit] *keV;
 					 ELab[hit] = protonStripAl.EvaluateInitialEnergy(ELab[hit]/MeV, 0.5*micrometer, ThetaN[hit]) /MeV;
 					 
-					 ELab[hit] = protonTargetCD2.EvaluateInitialEnergy(ELab[hit]/MeV,17.4*micrometer,ThetaLab[hit]) /MeV;
-					 
+					 //	 ELab[hit] = protonTargetCD2.EvaluateInitialEnergy(ELab[hit]/MeV, myDetector -> GetTargetThickness() /2*micrometer,ThetaLab[hit]) /MeV;
+					 ELab[hit] = protonTargetC.EvaluateInitialEnergy(ELab[hit], myDetector -> GetTargetThickness() /2 *micrometer, ThetaLab[hit]) /MeV;
+				       
 					 ExcitationEnergy[hit] = e530Reaction -> ReconstructRelativistic( ELab[hit]/MeV, ThetaLab[hit]) /MeV ;
 					 ThetaLab[hit]  = ThetaLab[hit] /deg;
 				       }
