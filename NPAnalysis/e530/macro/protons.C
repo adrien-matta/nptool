@@ -23,7 +23,7 @@ using namespace std;
 
 void protons(const char* frun = "run_241_249")
 {
-  TH2F* E_Theta_calc     = new TH2F("Kinematics","Kinematics",180,100,160,5000,0,25000);
+  TH2F* E_Theta_calc     = new TH2F("Kinematics","Kinematics",180,100,180,5000,0,25000);
  
   //Read kinematics file
   double energy[90], theta[90];
@@ -76,13 +76,16 @@ void protons(const char* frun = "run_241_249")
   */  
 
   // connect the E and Theta Branches
-  double E, Theta;
+  double E, Theta,Ex;
   //UShort_t tac_pl_cats2;
 
   TBranch      *ELab = tree->GetBranch("ELab");
   ELab->SetAddress(&E);
   TBranch      *ThetaLab = tree->GetBranch("ThetaLab");
   ThetaLab->SetAddress(&Theta);
+  TBranch      *ExcitationEnergy = tree->GetBranch("ExcitationEnergy");
+  ExcitationEnergy ->SetAddress(&Ex);
+
   /*
   TBranch      *Tac = tree->GetBranch("tac");
   Tac->SetAddress(&tac_pl_cats2);
@@ -90,9 +93,10 @@ void protons(const char* frun = "run_241_249")
       
   // prepare output histograms 
   TH2F* target        = new TH2F("Positiontarget","PositionOnTarget",500,-30,30,500,-30,30);
-  TH2F* E_Theta       = new TH2F("E vs theta tot","E vs theta",180,110,170,500,0,30);
-  TH2F* E_Theta1      = new TH2F("E vs theta EDE","E vs theta EDE",180,110,170,500,0,30);
-  TH2F* E_Theta2      = new TH2F("E vs theta ETof","E vs theta ETof",180,110,170,500,0,30);
+  TH2F* E_Theta       = new TH2F("E vs theta tot","E vs theta",180,100,170,500,0,30);
+  TH2F* E_Theta1      = new TH2F("E vs theta EDE","E vs theta EDE",180,100,170,500,0,30);
+  TH2F* E_Theta2      = new TH2F("E vs theta ETof","E vs theta ETof",180,100,170,500,0,30);
+  TH1F* Excitation_E  = new TH1F("ExcitationEnergy","Excitation Energy",300,-10,25);
 
   TH2F* DE_E          = new TH2F("DE vs E","DE vs E",1000,0,25000,1000,0,10000);
   TH2F* DE_E_protons  = new TH2F("DE vs E protons","DE vs E protons",1000,0,25000,1000,0,10000);
@@ -100,8 +104,8 @@ void protons(const char* frun = "run_241_249")
   TH2F* DE_E_protons1 = new TH2F("DE vs E protons Tel1","DE vs E protons Tel1",1000,0,25000,1000,0,10000);
  
   TH2F* DE_TOF           = new TH2F("E vs TOF","E vs TOF",120,360,400,500,0,10000);
-  TH2F* DE_TOF_protons12 = new TH2F("E vs TOF protons","E vs TOF protons",120,360,400,500,0,10000);
-  TH2F* DE_TOF_protons3  = new TH2F("E vs TOF protons","E vs TOF protons",120,360,400,500,0,10000);
+  TH2F* DE_TOF_protons12 = new TH2F("E vs TOF protons12","E vs TOF protons12",120,360,400,500,0,10000);
+  TH2F* DE_TOF_protons3  = new TH2F("E vs TOF protons3","E vs TOF protons3",120,360,400,500,0,10000);
 
   //TH2F* DE_TOF        = new TH2F("E vs TOF","E vs TOF",120,200,260,500,0,10000);
   //TH2F* DE_TOF_protons= new TH2F("E vs TOF protons","E vs TOF protons",120,200,260,500,0,10000);
@@ -115,7 +119,7 @@ void protons(const char* frun = "run_241_249")
   
   TFile *FCuts_Jo = new TFile("cut_e_tof_jo.root");
   TCutG *cut_protons_E_TOF_Jo = (TCutG*) FCuts_Jo->Get("protons_E_TOF_Jo");
-
+  
   TFile *FCuts_1 = new TFile("cut_protons_E_TOF1.root");
   TCutG *cut_protons_E_TOF1 = (TCutG*) FCuts_1->Get("protons_E_TOF1");
 
@@ -128,6 +132,12 @@ void protons(const char* frun = "run_241_249")
   TFile *FCuts_cats = new TFile("cut_cats2.root");
   TCutG *cut_cats2 = (TCutG*) FCuts_cats->Get("cut_cats2");
   */
+  
+  //TFile *FCuts_grstate = new TFile("cut_ground_state.root");
+  //TCutG *cut_grstate = (TCutG*) FCuts_grstate->Get("ground_state");
+  TFile *FCuts_grstate_Jo = new TFile("cut_ground_state_Jo.root");
+  TCutG *cut_grstate_Jo = (TCutG*) FCuts_grstate_Jo->Get("ground_state_Jo");
+  
   int evt_EDE =0, evt_ETOF =0;
     
   // read the data
@@ -135,10 +145,11 @@ void protons(const char* frun = "run_241_249")
   int nentries = tree->GetEntries();
   cout << "TTree contains " << nentries << " events" << endl;
   
+  int pipo = 0;
 
   for (int i = 0; i < nentries; i++) {
     //for (int i = 0; i < 100; i++) {
-    if (i%10000 == 0) cout << "Entry " << i << endl;
+    if (i%10000 == 0)     cout << "Entry " << i << endl;
     //////////////////////
     // read Cats branch //
     //////////////////////
@@ -147,108 +158,113 @@ void protons(const char* frun = "run_241_249")
     int Cats_NumberX = cats->GetCATSDetNumberX_Position(2);
     int Cats_NumberY = cats->GetCATSDetNumberY_Position(2);
 
-   
-    /*
-    if(cut_cats2 -> IsInside(cats->GetCATSPositionX(Cats_NumberX),cats->GetCATSPositionY(Cats_NumberY)))
-      {
+  
 
-      }
-    */
-    //else
-      {
-
-	//position_CATS2   -> Fill(cats -> GetPositionOnTargetX(), cats -> GetPositionOnTargetY());	
-	position_CATS2   -> Fill(cats -> GetCATSPositionX(2), cats -> GetCATSPositionY(2));	
-	
-	//if(cats->PositionOnTargetX < 4000 && cats->PositionOnTargetX > 2000 && cats->PositionOnTargetY > 2000 && cats->PositionOnTargetY < 4000)
-	if(cats->PositionOnTargetX > -20 && cats->PositionOnTargetX < 20 && cats->PositionOnTargetY > -20 && cats->PositionOnTargetY < 30)
-	//if(cats->PositionOnTargetX > -30 && cats->PositionOnTargetX < -10 && cats->PositionOnTargetY > -20 && cats->PositionOnTargetY < 30)
-	  { 
-	    for(unsigned int hit = 0; hit < M2 -> Si_E.size() ; hit ++)
-	      {
-		//  if(tac_pl_cats2 > 3450 && tac_pl_cats2  < 3650)
+    //position_CATS2   -> Fill(cats -> GetPositionOnTargetX(), cats -> GetPositionOnTargetY());	
+    position_CATS2   -> Fill(cats -> GetCATSPositionX(2), cats -> GetCATSPositionY(2));	
+    
+    if(cats->PositionOnTargetX > -20 && cats->PositionOnTargetX < 20 && cats->PositionOnTargetY > -20 && cats->PositionOnTargetY < 30)
+      { 
+	for(unsigned int hit = 0; hit < M2 -> Si_E.size() ; hit ++)
+	  {
+	    //  if(tac_pl_cats2 > 3450 && tac_pl_cats2  < 3650)
+	    {
+	      if(M2 -> TelescopeNumber[hit] !=4 ) 
 		{
-		  if(M2 -> TelescopeNumber[hit] !=4 ) 
-		    {
-		      if(M2 -> TelescopeNumber[hit]==1)  DE_E1   -> Fill(M2 -> SiLi_E[hit], M2 -> Si_E[hit]);
-		      
-		      DE_E   -> Fill(M2 -> SiLi_E[hit], M2 -> Si_E[hit]);
-		      		      
-		      if(cut_protons -> IsInside(M2 -> SiLi_E[hit], M2 -> Si_E[hit])) 
-			{
-			  evt_EDE ++;
-			  DE_E_protons   -> Fill(M2 -> SiLi_E[hit], M2 -> Si_E[hit]);
-			  
-			  E_Theta        -> Fill(Theta,E);
-			  E_Theta1       -> Fill(Theta,E);
-			  
-			  target->Fill(cats->PositionOnTargetX,cats->PositionOnTargetY);
-			  //  M2->Dump();
-			  
-			  if(M2 -> TelescopeNumber[hit] == 1) DE_E_protons1  -> Fill(M2 -> SiLi_E[hit], M2 -> Si_E[hit]);
-			}
-		      
-		      else 
-			{
-			  if(M2 -> TelescopeNumber[hit] == 1 ) 
-			    {
-			      evt_ETOF ++;
-			      DE_TOF -> Fill(M2 -> Si_T[hit], M2 -> Si_E[hit]);		  
-			      
-			      //   if(cut_protons_E_TOF_Jo -> IsInside(M2 -> Si_T[hit], M2 -> Si_E[hit]) )
-			      if(cut_protons_E_TOF1 -> IsInside(M2 -> Si_T[hit], M2 -> Si_E[hit]) )
-			      	{
-				  DE_TOF_protons12 -> Fill(M2 -> Si_T[hit], M2 -> Si_E[hit]);
-				  E_Theta        -> Fill(Theta,E);
-				  E_Theta2       -> Fill(Theta,E);
-				  
-				  target->Fill(cats->PositionOnTargetX,cats->PositionOnTargetY);
-				  //M2->Dump();
-				}
-			    }
-			  
-			  else if(M2 -> TelescopeNumber[hit] == 2 ) 
-			    {
-			      evt_ETOF ++;
-			      DE_TOF -> Fill(M2 -> Si_T[hit], M2 -> Si_E[hit]);		  
-			      
-			      //  if(cut_protons_E_TOF_Jo -> IsInside(M2 -> Si_T[hit], M2 -> Si_E[hit]) )
-			      if(cut_protons_E_TOF2 -> IsInside(M2 -> Si_T[hit], M2 -> Si_E[hit]) )
-			      {
-				  DE_TOF_protons12 -> Fill(M2 -> Si_T[hit], M2 -> Si_E[hit]);
-				  E_Theta        -> Fill(Theta,E);
-				  E_Theta2       -> Fill(Theta,E);
-				  
-				  target->Fill(cats->PositionOnTargetX,cats->PositionOnTargetY);
-				 
-			    }
-			    }
-			  
-			  else
-			    {
-			      //  if(cut_protons_E_TOF_Jo -> IsInside(M2 -> Si_T[hit], M2 -> Si_E[hit]) )
-			      if(cut_protons_E_TOF3 -> IsInside(M2 -> Si_T[hit], M2 -> Si_E[hit]) )
-			      {
-				  evt_ETOF ++;
-				  DE_TOF_protons3 -> Fill(M2 -> Si_T[hit], M2 -> Si_E[hit]);
-				  E_Theta        -> Fill(Theta,E);
-				  E_Theta2       -> Fill(Theta,E);
-				  
-				  target->Fill(cats->PositionOnTargetX,cats->PositionOnTargetY);
-				 
-			    }
-			    }
-			}  // cut protons
-
-		    } // det Number not 4
+		  if(M2 -> TelescopeNumber[hit]==1)  DE_E1   -> Fill(M2 -> SiLi_E[hit], M2 -> Si_E[hit]);
 		  
-		} // tac condition if any
-	      } //hit loop
-	  } // condition target position
-      }  // cut cats2
+		  DE_E   -> Fill(M2 -> SiLi_E[hit], M2 -> Si_E[hit]);
+		  
+		  if(cut_protons -> IsInside(M2 -> SiLi_E[hit], M2 -> Si_E[hit])) 
+		    {
+		      evt_EDE ++;
+		      DE_E_protons   -> Fill(M2 -> SiLi_E[hit], M2 -> Si_E[hit]);
+		      
+		      E_Theta        -> Fill(Theta,E);
+		      E_Theta1       -> Fill(Theta,E);
+		      
+		      // if(E > 2) 			
+			Excitation_E   -> Fill(Ex);
+		      
+		      target->Fill(cats->PositionOnTargetX,cats->PositionOnTargetY);
+		      //M2->Dump();
+		      
+		      if(M2 -> TelescopeNumber[hit] == 1) DE_E_protons1  -> Fill(M2 -> SiLi_E[hit], M2 -> Si_E[hit]);
+		    }
+		    
+		    else 
+		      {
+			if(M2 -> TelescopeNumber[hit] == 1 ) 
+			  {
+			    evt_ETOF ++;
+			    DE_TOF -> Fill(M2 -> Si_T[hit], M2 -> Si_E[hit]);		  
+			    
+			    //if(cut_protons_E_TOF_Jo -> IsInside(M2 -> Si_T[hit], M2 -> Si_E[hit]) )
+			    if(cut_protons_E_TOF1 -> IsInside(M2 -> Si_T[hit], M2 -> Si_E[hit]) )
+			      {
+				DE_TOF_protons12 -> Fill(M2 -> Si_T[hit], M2 -> Si_E[hit]);
+				E_Theta        -> Fill(Theta,E);
+				E_Theta2       -> Fill(Theta,E);
+				
+				//	if(E > 2) 
+				Excitation_E   -> Fill(Ex);
+				
+				target->Fill(cats->PositionOnTargetX,cats->PositionOnTargetY);
+				//M2->Dump();
+			      }
+			  }
+			
+			else if(M2 -> TelescopeNumber[hit] == 2 ) 
+			  {
+			    evt_ETOF ++;
+			    DE_TOF -> Fill(M2 -> Si_T[hit], M2 -> Si_E[hit]);		  
+			    
+			    //if(cut_protons_E_TOF_Jo -> IsInside(M2 -> Si_T[hit], M2 -> Si_E[hit]) )
+			    if(cut_protons_E_TOF2 -> IsInside(M2 -> Si_T[hit], M2 -> Si_E[hit]) )
+			      {
+				DE_TOF_protons12 -> Fill(M2 -> Si_T[hit], M2 -> Si_E[hit]);
+				E_Theta        -> Fill(Theta,E);
+				E_Theta2       -> Fill(Theta,E);
+				
+				//if(E > 2) 
+				Excitation_E   -> Fill(Ex);
+				
+				target->Fill(cats->PositionOnTargetX,cats->PositionOnTargetY);
+				
+			      }
+			  }
+			
+			else
+			  {
+			    //if(cut_protons_E_TOF_Jo -> IsInside(M2 -> Si_T[hit], M2 -> Si_E[hit]) )
+			    if(cut_protons_E_TOF3 -> IsInside(M2 -> Si_T[hit], M2 -> Si_E[hit]) )
+			      {
+				evt_ETOF ++;
+				DE_TOF_protons3 -> Fill(M2 -> Si_T[hit], M2 -> Si_E[hit]);
+				E_Theta        -> Fill(Theta,E);
+				E_Theta2       -> Fill(Theta,E);
+				
+				//	if(E > 2) 
+				Excitation_E   -> Fill(Ex);
+				
+				target->Fill(cats->PositionOnTargetX,cats->PositionOnTargetY);
+				
+			      }
+			  }
+		      } // cut protons
+		  
+		} // det Number not 4
+	      //else E_Theta        -> Fill(Theta,E);
+	      
+	    } // tac condition if any
+	  } //hit loop
+      } // condition target position
+      
     
   }  // loop over the events
   
+  // cout <<  "ground state events : " << cut_grstate_Jo -> Integral(E_Theta) << endl;
+ 
   
   cout << evt_EDE << " " << evt_ETOF << " " << endl;
 
@@ -261,6 +277,7 @@ void protons(const char* frun = "run_241_249")
   c1->cd(3);
   E_Theta->Draw("colz");
   c1->cd(4);
+  Excitation_E->Draw();
   
   TCanvas * c2 = new TCanvas("c2","DE_E",900,900);
   c2->Divide(2,2);

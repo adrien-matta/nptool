@@ -101,10 +101,12 @@ void TMust2Physics::BuildPhysicalEvent()
 	  Si_E_Y.push_back(Si_Y_E);
 	   
 
-	  //	  Si_E.push_back(Si_Y_E);
+	  //	   Si_E.push_back(Si_Y_E);
 	  // Take maximum Energy
+	  
 	  if(Si_X_E >= Si_Y_E)   Si_E.push_back(Si_X_E)	;
-	  else		   Si_E.push_back(Si_Y_E)	;
+	  else		         Si_E.push_back(Si_Y_E)	;
+	  
 	  
 	  Si_T_Y.push_back(Si_Y_T);
 	  Si_T_X.push_back(Si_X_T);

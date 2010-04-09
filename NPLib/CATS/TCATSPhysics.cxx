@@ -836,8 +836,6 @@ double TCATSPhysics::AnalyseY(int ff,
 	      ChargeY.push_back( ChargeY_Buffer );   //   cout << "ChargeY_Buffer = " << ChargeY_Buffer << endl;
 	      Chargey[StrY-1] = ChargeY_Buffer ;   // cout <<" Chargey[" << StrY-1 << "] " << Chargey[StrY-1] << endl;
 	      */
-
-      
 	      //Specific treatment for e530 experiment ///////////////////////////////////////////////////////////////////
 	      // pist15 of cats2 not working...
 	      
@@ -852,6 +850,7 @@ double TCATSPhysics::AnalyseY(int ff,
 		ChargeY.push_back( ChargeY_Buffer );   //   cout << "ChargeY_Buffer = " << ChargeY_Buffer << endl;
 		Chargey[StrY-1] = ChargeY_Buffer ;   // cout <<" Chargey[" << StrY-1 << "] " << Chargey[StrY-1] << endl;
 	      }
+	      
 	      ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	      
 	      StripY.push_back(StrY);
@@ -1464,7 +1463,7 @@ TVector3 TCATSPhysics::GetPositionOnTarget()
 {
   TVector3 Position = TVector3 (GetPositionOnTargetX() 	,
 				GetPositionOnTargetY() 	,
-				0                     );  // a modifier !! passer la distance de la cible
+				0                       );  // a modifier !! passer la distance de la cible
   return(Position) ;	
 }
 

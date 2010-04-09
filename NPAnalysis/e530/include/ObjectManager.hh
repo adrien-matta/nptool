@@ -112,15 +112,57 @@ using namespace NPL ;
 namespace ENERGYLOSS
 	{
 	  // Beam Energy Loss
-	  EnergyLoss BeamTargetCD2    = EnergyLoss      ("Fe60[0.0]_CD2.G4table",
+	  /*
+	  EnergyLoss Fe60TargetCD2    = EnergyLoss      ("Fe60[0.0]_CD2.G4table",
 							 "G4Table"              ,
 							 1000                   );
+	  */
+	  EnergyLoss Fe60TargetCD2    = EnergyLoss 	("60Fe_CD2.txt",
+							 "LISE"            ,
+							 1000		   ,
+							 1		   ,
+							 60		  );
+
+	  EnergyLoss Fe60TargetCarbone= EnergyLoss 	("60Fe_carbone.txt",
+							 "LISE"            ,
+							 1000		   ,
+							 1		   ,
+							 60		  );
+
+	  /*
+	  EnergyLoss S34TargetCD2    = EnergyLoss      ("S34[0.0]_CD2.G4table",
+							 "G4Table"              ,
+							 1000                   );
+	  */
+	  EnergyLoss Si34TargetCD2    = EnergyLoss 	("34Si_CD2.txt",
+							 "LISE"            ,
+							 1000		   ,
+							 1		   ,
+							 34		  );
+
+	  EnergyLoss Si34TargetCarbone= EnergyLoss 	("34Si_carbone.txt",
+							 "LISE"            ,
+							 1000		   ,
+							 1		   ,
+							 34		  );
+
+	  EnergyLoss S36TargetCD2    = EnergyLoss 	("36S_CD2.txt",
+							 "LISE"            ,
+							 1000		   ,
+							 1		   ,
+							 36		  );
+
+	  EnergyLoss S36TargetCarbone= EnergyLoss 	("36S_carbone.txt",
+							 "LISE"            ,
+							 1000		   ,
+							 1		   ,
+							 36		  );
 
 	  //	proton Energy Loss
 	  EnergyLoss protonTargetWind = EnergyLoss 	("proton_Mylar.txt",
 							 "LISE"            ,
 							  1000		   ,
-     							  1		   ,
+							  1,
 							  1		  );
 		
 	  EnergyLoss protonTargetC   = EnergyLoss       ("proton_carbone.txt" 	,
@@ -138,7 +180,7 @@ namespace ENERGYLOSS
 	  
 	  EnergyLoss protonStripAl   = EnergyLoss 	("proton_Al.txt" 		,
 							 "LISE"                         ,
-							 100				,
+							 1000				,
 							 1				,
 							 1				);
 	  

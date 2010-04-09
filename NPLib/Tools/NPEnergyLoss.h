@@ -85,16 +85,16 @@ namespace NPL
 		
 		   //	Calculate Energy loss of a particle inside material
 		   double	Slow(	double Energy 			, // Energy of the detected particle
-		   					double TargetThickness	, // Target Thickness at 0 degree
-		   					double Angle			) // Particle Angle
-		   					const;
+					double TargetThickness	, // Target Thickness at 0 degree
+					double Angle			) // Particle Angle
+		     const;
 		   					
 		   //	Evaluate Initial Energy of particle before crossing material knowing Angle, final Energy 
 		   //   and Target Thickness.
 		   double	EvaluateInitialEnergy(	double energy 			, // Energy of the detected particle
-		   									double TargetThickness	, // Target Thickness at 0 degree
-		   									double Angle			) // Particle Angle
-		   									const ;
+							double TargetThickness	, // Target Thickness at 0 degree
+							double Angle			) // Particle Angle
+		     const ;
 		public	:	//	Usefull function
 			//	Display parameter	
 		   void         Print() const;

@@ -60,7 +60,7 @@ EnergyLoss::EnergyLoss(string Path , string Source, int NumberOfSlice=100 ,  int
 	{ 
 	
 	fNumberOfSlice = NumberOfSlice ; 
-	fNumberOfMass  = NumberOfMass  ;
+	fNumberOfMass  = NumberOfMass  ; 
 	
 	string globalPath = getenv("NPTOOL");
 	Path = globalPath + "/Inputs/EnergyLoss/" + Path;
@@ -131,11 +131,15 @@ EnergyLoss::EnergyLoss(string Path , string Source, int NumberOfSlice=100 ,  int
 					{ 
 						for (int k = 0 ; k < 11 ; k++ )
 							{
-								TableFile >> dummy ;
-								if (k+1==LiseColumn) energyloss = atof(dummy.c_str()) ;
+							  TableFile >> dummy ;  
+							  if (k+1==LiseColumn) {
+							    energyloss = atof(dummy.c_str()) ; 
+							    //  cout << "dummy " << dummy << endl; 
+							    //cout << "loss " << energyloss << endl;
+							  }
 							}
 						fEnergy.push_back (energy*MeV) ;
-						fdEdX_Total.push_back(energyloss*MeV/micrometer);
+						fdEdX_Total.push_back(energyloss*MeV/micrometer); //cout << " used energy loss  " << energyloss <<  endl;
 					}
 		   
 		  		// Close File
@@ -225,35 +229,38 @@ void EnergyLoss::Print() const
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 double EnergyLoss::Slow(	double Energy 			, // Energy of the detected particle
-		   					double TargetThickness	, // Target Thickness at 0 degree
-		   					double Angle			) // Particle Angle
-		   					const
+				double TargetThickness	, // Target Thickness at 0 degree
+				double Angle			) // Particle Angle
+  const
 	{
-		TargetThickness = TargetThickness / cos(Angle)  					;
-		double SliceThickness = TargetThickness / (double)fNumberOfSlice 	;
-		
-		Interpolator* s = new Interpolator( fEnergy , fdEdX_Total	)		;
-		
-		double InitialEnergy = Energy										;
-		double slow = 0.													;
-		   
-		for (int i = 0; i < fNumberOfSlice ; i++) 
-			{
-			    double de = s->Eval(Energy) * SliceThickness;
-			    slow 	+= de	;
-			    Energy	-= de	;
-			    // If ion do not cross the target
-			    if (Energy < 0) 	{slow = InitialEnergy; break;}
-			}
-		   
-		delete s		;
-		return slow	;
+	  Energy = Energy / (double) fNumberOfMass ; // added
+
+	  TargetThickness = TargetThickness / cos(Angle)  		        ;
+	  double SliceThickness = TargetThickness / (double)fNumberOfSlice      ;
+	  
+	  Interpolator* s = new Interpolator( fEnergy , fdEdX_Total	)	;
+	  
+	  double InitialEnergy = Energy						;
+	  double slow = 0.							;
+	  
+	  for (int i = 0; i < fNumberOfSlice ; i++) 
+	    {
+	      double de = s->Eval(Energy) * SliceThickness;
+	      slow 	+= de/fNumberOfMass	; //add
+	      Energy	-= de/fNumberOfMass	; //add
+
+	      // If ion do not cross the target
+	      if (Energy < 0) 	{slow = InitialEnergy ; break;}
+	    }
+	  
+	  delete s		;
+	  return (slow*fNumberOfMass)	; //Add
 	}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 double EnergyLoss::EvaluateInitialEnergy(	double Energy 					, // Energy of the detected particle
 						double TargetThickness	, // Target Thickness at 0 degree
 						double Angle						) // Particle Angle
-		   																		const
+  const
 	{
 	
 		//	Lise file are given in MeV/u

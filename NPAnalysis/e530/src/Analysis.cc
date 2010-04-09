@@ -7,8 +7,7 @@ int main(int argc,char** argv)
   
   if(argc!=5) 
     {
-      cout << 
-	"you need to specify both a Reaction file and a Detector file such as : "<< endl;
+      cout << "you need to specify both a Reaction file and a Detector file such as : "<< endl;
       cout << 
 	"Analysis 	myReaction.reaction myDetector.detector myCalib.txt runToRead.run" 	<< endl;
       return 0;
@@ -38,16 +37,18 @@ int main(int argc,char** argv)
 
     // Calculate beam energy at target middle
     // Get nominal beam energy
-    Double_t BeamEnergyNominal = e530Reaction->GetBeamEnergy() * keV;
-    cout << BeamEnergyNominal << endl;
+    Double_t BeamEnergyNominal = e530Reaction -> GetBeamEnergy() / MeV;
+    cout << "Beam Energy Nominal : " << BeamEnergyNominal << " MeV" << endl;
     // Slow beam at target middle
-    Double_t BeamEnergy = BeamEnergyNominal - BeamTargetCD2.Slow(BeamEnergyNominal, myDetector->GetTargetThickness()/2 * micrometer, 0);
-    //   Double_t BeamEnergy = 1293.56 * MeV;
-    cout << BeamEnergy << endl;
+    //Double_t BeamEnergy = BeamEnergyNominal - S36TargetCD2.Slow(BeamEnergyNominal, myDetector->GetTargetThickness()/2 * micrometer, 0);
+    Double_t BeamEnergy = BeamEnergyNominal - Fe60TargetCD2.Slow(BeamEnergyNominal, myDetector->GetTargetThickness()/2 * micrometer, 0);
+    cout << "Beam Energy " << BeamEnergy << " MeV" << endl;
     // Set energy beam at target middle
     e530Reaction->SetBeamEnergy(BeamEnergy);
+
+    cout << myDetector-> GetTargetThickness() << endl;
     
-    //	Ask the detector manager to load the parameter added by the detector in the calibrationfileName
+   //	Ask the detector manager to load the parameter added by the detector in the calibrationfileName
     myCalibration->LoadParameterFromFile() ;
     /////////////////////////////////////////////////////////////////////////////////////////////////////
       
@@ -58,8 +59,8 @@ int main(int argc,char** argv)
       
       for (int i = 0; i < 2; i++) 
 	{
-	  ELab[i]  = 0; ThetaLab[i] = 0; ExcitationEnergy[i] = 0;
-	  ThetaN[i]= 0;
+	  ELab[i]  = -10000; ThetaLab[i] = -10000; ExcitationEnergy[i] = -10000;
+	  ThetaN[i]= -10000;
 	}
 
 
@@ -86,7 +87,7 @@ int main(int argc,char** argv)
             
       TH2F* DE_E_protons  = new TH2F("DE_E_protons","DE_E et cut protons",1000,0,25000,1000,0,25000) ;
       TH2F* DE_E          = new TH2F("DE_E","DE_E               ",1000,0,25000,1000,0,25000) ;
-      TH2F* E_Theta       = new TH2F("E_Theta","E_Theta         ",60,100,160,500,0,50) ;
+      TH2F* E_Theta       = new TH2F("E_Theta","E_Theta         ",60,100,180,500,0,20) ;
       TH2F* Position_M2   = new TH2F("Must2Positions","Must2Positions",2000,-200,200,2000,-200,200);
       
       TH1F* trigger       = new TH1F("trig","trig",650,0,649);
@@ -142,12 +143,12 @@ int main(int argc,char** argv)
 	  
 	  if(must2_event < 16) 
 	     {
-	       //if(tac_pl_cats2 > 6500 && tac_pl_cats2 < 6700) // Jo conditions
+	       //if(tac_pl_cats2 > 6496 && tac_pl_cats2 < 7000) // Jo conditions
 	       if(tac_pl_cats2 > 3450 && tac_pl_cats2 < 3650) 
 		 {
 
 		   if(3500 < tdc_MM1_cats2 < 5000 || 3500 < tdc_MM2_cats2 < 5000 || 3500 < tdc_MM3_cats2 < 5000 || 3500 < tdc_MM4_cats2 < 5000 )
-		     {
+	       // {
 		       evt_tac++;
 		       must++;
 		       
@@ -162,6 +163,8 @@ int main(int argc,char** argv)
 		      		       
 		       else 
 			 {
+			   
+			   //if(CATS -> GetPositionOnTargetX() > -12 && CATS -> GetPositionOnTargetX() < 10 && CATS -> GetPositionOnTargetY() > -3 && CATS -> GetPositionOnTargetY() < 6)
 			   if(CATS -> GetPositionOnTargetX() > -30 && CATS -> GetPositionOnTargetX() < 30 && CATS -> GetPositionOnTargetY() > -30 && CATS -> GetPositionOnTargetY() < 30)
 			     {
 
@@ -174,8 +177,8 @@ int main(int argc,char** argv)
 				   //TVector3 HitDirection  = M2 -> GetPositionOfInteraction(hit) - TVector3(0,0,-40);
 				   TVector3 BeamDirection = CATS -> GetBeamDirection();
 				   
-				   ExcitationEnergy[hit] = -1 ;
-				   ELab[hit] = -1 ; ThetaLab[hit] = -1;    
+				   ExcitationEnergy[hit] = -10000 ;
+				   ELab[hit] = -10000 ; ThetaLab[hit] = -10000;    
 				   
 				   
 				   // Angle between beam and particle
@@ -194,8 +197,8 @@ int main(int argc,char** argv)
 				     {
 				       ELab[hit] = M2 -> Si_E[hit] * keV;
 				       ELab[hit] = protonStripAl.EvaluateInitialEnergy(ELab[hit], 0.5 *micrometer, ThetaN[hit]) /MeV;
-				       // ELab[hit] = protonTargetCD2.EvaluateInitialEnergy(ELab[hit], myDetector -> GetTargetThickness() /2 *micrometer, ThetaLab[hit]) /MeV;
-				        ELab[hit] = protonTargetC.EvaluateInitialEnergy(ELab[hit], myDetector -> GetTargetThickness() /2 *micrometer, ThetaLab[hit]) /MeV;
+				       ELab[hit] = protonTargetCD2.EvaluateInitialEnergy(ELab[hit], myDetector -> GetTargetThickness() /2 *micrometer, ThetaLab[hit]) /MeV;
+				       //ELab[hit] = protonTargetC.EvaluateInitialEnergy(ELab[hit], myDetector -> GetTargetThickness() /2 *micrometer, ThetaLab[hit]) /MeV;
 				       
 				       ExcitationEnergy[hit] = e530Reaction -> ReconstructRelativistic( ELab[hit]/MeV, ThetaLab[hit]) /MeV;
 				       ThetaLab[hit]  = ThetaLab[hit] /deg;
@@ -217,15 +220,16 @@ int main(int argc,char** argv)
 					 ELab[hit] += M2 -> Si_E[hit] *keV;
 					 ELab[hit] = protonStripAl.EvaluateInitialEnergy(ELab[hit]/MeV, 0.5*micrometer, ThetaN[hit]) /MeV;
 					 
-					 //	 ELab[hit] = protonTargetCD2.EvaluateInitialEnergy(ELab[hit]/MeV, myDetector -> GetTargetThickness() /2*micrometer,ThetaLab[hit]) /MeV;
-					 ELab[hit] = protonTargetC.EvaluateInitialEnergy(ELab[hit], myDetector -> GetTargetThickness() /2 *micrometer, ThetaLab[hit]) /MeV;
+
+					 ELab[hit] = protonTargetCD2.EvaluateInitialEnergy(ELab[hit]/MeV,myDetector -> GetTargetThickness() /2 *micrometer,ThetaLab[hit]) /MeV;
+					 //ELab[hit] = protonTargetC.EvaluateInitialEnergy(ELab[hit], myDetector -> GetTargetThickness() /2 *micrometer, ThetaLab[hit]) /MeV;
 				       
 					 ExcitationEnergy[hit] = e530Reaction -> ReconstructRelativistic( ELab[hit]/MeV, ThetaLab[hit]) /MeV ;
 					 ThetaLab[hit]  = ThetaLab[hit] /deg;
 				       }
 				     }
 				   
-				   else {ExcitationEnergy[hit]=-100 ; ThetaLab[hit]=-100;}
+				   else {ExcitationEnergy[hit]=-10000 ; ThetaLab[hit]=-10000;}
 				   
 				   
 				   // DE_E_protons   -> Fill(M2 -> SiLi_E[hit],M2 -> Si_E[hit]);
@@ -249,8 +253,8 @@ int main(int argc,char** argv)
 		       
 		       //RootOutput::getInstance()->GetTree()->Fill()	;    // to look at CATS detector only, without must2 events condition
 		       
-		     }  // tac condition
-		 } //td conditions
+		 }  // tac condition
+	  // } //tdc conditions
 	     } //must2 events condition
 	   	  
 	} // end of for loop over events
