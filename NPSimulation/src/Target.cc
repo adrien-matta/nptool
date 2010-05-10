@@ -282,21 +282,21 @@ void Target::ReadConfiguration(string Path)
 	        else if (DataBuffer.compare(0, 2, "X=") == 0) {
 	        	check_X = true ;
 	            ConfigFile >> DataBuffer;
-	            m_TargetX = atoi(DataBuffer.c_str()) * mm;
+	            m_TargetX = atof(DataBuffer.c_str()) * mm;
 	            cout << "Target coordinate (mm): ( " << m_TargetX / mm << " ; ";
 	         }
 
 	        else if (DataBuffer.compare(0, 2, "Y=") == 0) {
 	        	check_Y = true ;
 	            ConfigFile >> DataBuffer;
-	            m_TargetY = atoi(DataBuffer.c_str()) * mm;
+	            m_TargetY = atof(DataBuffer.c_str()) * mm;
 	             cout << m_TargetY / mm << " ; ";
 	         }
 
 	        else if (DataBuffer.compare(0, 2, "Z=") == 0) {
 	        	check_Z = true ;
 	            ConfigFile >> DataBuffer;
-	            m_TargetZ = atoi(DataBuffer.c_str()) * mm;
+	            m_TargetZ = atof(DataBuffer.c_str()) * mm;
 	            cout  << m_TargetZ / mm << " )" << endl ;           
 	         }
 
@@ -343,13 +343,13 @@ void Target::ReadConfiguration(string Path)
 	        else if (DataBuffer.compare(0, 12, "TEMPERATURE=") == 0) {
 	        	check_Temperature = true ;
 	            ConfigFile >> DataBuffer;
-	            m_TargetTemperature = atoi(DataBuffer.c_str());
+	            m_TargetTemperature = atof(DataBuffer.c_str());
 	         }
 
 	        else if (DataBuffer.compare(0, 9, "PRESSURE=") == 0) {
 	        	check_Pressure = true ;
 	            ConfigFile >> DataBuffer;
-	            m_TargetPressure = atoi(DataBuffer.c_str());
+	            m_TargetPressure = atof(DataBuffer.c_str());
 	         }
 
 	        else if (DataBuffer.compare(0, 9, "MATERIAL=") == 0) {
@@ -362,7 +362,7 @@ void Target::ReadConfiguration(string Path)
 	        else if (DataBuffer.compare(0, 17, "WINDOWSTHICKNESS=") == 0) {
 	        	check_WinThickness = true ;
 	            ConfigFile >> DataBuffer;
-	            m_WindowsThickness = atoi(DataBuffer.c_str()) * micrometer;
+	            m_WindowsThickness = atof(DataBuffer.c_str()) * micrometer;
 	            cout << "Windows Thickness: " <<    m_WindowsThickness / micrometer << "um" << endl   ;
 	         }
 
@@ -376,21 +376,21 @@ void Target::ReadConfiguration(string Path)
 	        else if (DataBuffer.compare(0, 2, "X=") == 0) {
 	        	check_X = true ;
 	            ConfigFile >> DataBuffer;
-	            m_TargetX = atoi(DataBuffer.c_str()) * mm;
+	            m_TargetX = atof(DataBuffer.c_str()) * mm;
 	            cout << "Target coordinate (mm): ( " << m_TargetX / mm << " ; ";
 	         }
 
 	       else if (DataBuffer.compare(0, 2, "Y=") == 0) {
 	            check_Y = true ;
 	            ConfigFile >> DataBuffer;
-	            m_TargetY = atoi(DataBuffer.c_str()) * mm;
+	            m_TargetY = atof(DataBuffer.c_str()) * mm;
 	            cout << m_TargetY / mm << " ; ";
 	         }
 
 	        else if (DataBuffer.compare(0, 2, "Z=") == 0) {
 	            check_Z = true ;
 	            ConfigFile >> DataBuffer;
-	            m_TargetZ = atoi(DataBuffer.c_str()) * mm;
+	            m_TargetZ = atof(DataBuffer.c_str()) * mm;
 	            cout << m_TargetZ / mm << " )" << endl ;
 	         }
 
