@@ -405,15 +405,16 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
 
 	 // Shoot the Resonance energy following the mean and width value
 	 // EXX should always be more than specific heat of the reaction
-    double EXX = RandBreitWigner::shoot(m_ResonanceMean,m_ResonanceWidth) ;	 
+ //   double EXX = RandBreitWigner::shoot(m_ResonanceMean,m_ResonanceWidth) ;	 
+ double EXX = RandGauss::shoot(m_ResonanceMean,m_ResonanceWidth) ;	 
     m_Reaction->SetExcitation( EXX );
 
 		while ( m_Reaction->CheckKinematic()==false ) 
    		{
-   			EXX = RandBreitWigner::shoot(m_ResonanceMean,m_ResonanceWidth) ;
+//   			EXX = RandBreitWigner::shoot(m_ResonanceMean,m_ResonanceWidth) ;
+				EXX = RandGauss::shoot(m_ResonanceMean,m_ResonanceWidth) ;	 
   	  	m_Reaction->SetExcitation( EXX );
   	  }
-
    // Beam
    G4int BeamZ = m_Reaction->GetNucleus1()->GetZ();
    G4int BeamA = m_Reaction->GetNucleus1()->GetA();

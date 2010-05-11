@@ -14,12 +14,12 @@ TransfertToResonance
 	SigmaPhiY= 0.963142053
 	SigmaX= 6.232
 	SigmaY= 9.069
-	ResonanceWidth= 1.0
+	ResonanceWidth= 0
 	ResonanceDecayZ= 2
 	ResonanceDecayA= 8
 	CrossSectionPath= 11Li(d,3He)10He.txt	
 	ShootLight= 1
-	ShootHeavy= 1
+	ShootHeavy= 0
 	ShootDecayProduct= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
