@@ -23,7 +23,7 @@
 #include <TFile.h>
 #include <TLeaf.h>
 #include <TVector3.h>
-#include <TRandom.h>
+#include <TRandom3.h>
 
 // NPL
 #include "TMust2Data.h"
@@ -32,6 +32,7 @@
 #include "RootInput.h"
 #include "RootOutput.h"
 #include "TInteractionCoordinates.h"
+#include "TInitialConditions.h"
 
 // Use CLHEP System of unit and Physical Constant
 #include "CLHEP/Units/GlobalSystemOfUnits.h"
@@ -105,8 +106,23 @@ namespace ENERGYLOSS
 {
    // Declare your Energy loss here
 //   EnergyLoss LightTargetCD2 = EnergyLoss("proton_cd2.txt", 100, 1, 1); // LISE++
-   EnergyLoss LightTarget = EnergyLoss("proton_CD2.G4table", "G4Table", 1000);          // G4
-   EnergyLoss BeamTarget  = EnergyLoss("Sn132[0.0]_CD2.G4table", "G4Table", 1000);      // G4
+   // For 132Sn(d,p)
+   // CD2
+//   EnergyLoss LightTarget = EnergyLoss("proton_CD2.G4table", "G4Table", 1000);		// G4
+//   EnergyLoss BeamTarget  = EnergyLoss("Sn132[0.0]_CD2.G4table", "G4Table", 1000);	// G4
+   // solid D2
+//   EnergyLoss LightTarget = EnergyLoss("proton_D2_solid.G4table", "G4Table", 1000);		// G4
+//   EnergyLoss BeamTarget  = EnergyLoss("Sn132[0.0]_D2_solid.G4table", "G4Table", 1000);	// G4
+   // For 134Sn(p,t)
+   // CH2
+//   EnergyLoss LightTarget = EnergyLoss("triton_CH2.G4table", "G4Table", 1000);		// G4
+//   EnergyLoss BeamTarget  = EnergyLoss("Sn134[0.0]_CH2.G4table", "G4Table", 1000);	// G4
+   // solid H2
+   EnergyLoss LightTarget = EnergyLoss("triton_H2_solid.G4table", "G4Table", 1000);		// G4
+   EnergyLoss BeamTarget  = EnergyLoss("Sn134[0.0]_H2_solid.G4table", "G4Table", 1000);	// G4
+   // For 132Sn(d,t)
+//   EnergyLoss LightTarget = EnergyLoss("triton_CD2.G4table", "G4Table", 1000);		// G4
+//   EnergyLoss BeamTarget  = EnergyLoss("Sn132[0.0]_CD2.G4table", "G4Table", 1000);	// G4
 }
 
 using namespace ENERGYLOSS ;

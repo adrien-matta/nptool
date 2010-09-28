@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2009   this file is part of the NPTool Project              *
+ * Copyright (C) 2009-2010   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -155,18 +155,29 @@ namespace GPDTRAP
    const G4double ResoTimePPAC    = 0.106382979    ;// = 250ps                 //   Unit is  ns/2.35
 
    // Geometry
-   const G4double Height    = 90*mm;
+   // gaspard Trapezoid
+/*   const G4double Height    = 90*mm;
    const G4double BaseLarge = 85*mm;
    const G4double BaseSmall = 35*mm;
-   const G4double Length    = 20*mm;
+   const G4double Length    = 20*mm;*/
+   // gaspHyde
+   const G4double Height    = 115*mm;
+   const G4double BaseLarge =  98*mm;
+   const G4double BaseSmall =  30*mm;
+   const G4double Length    =  20*mm;
 
    // First stage
 //   const G4double AluStripThickness = 0.00000001*micrometer;
    const G4double AluStripThickness   = 0.4*micrometer;
    const G4double FirstStageThickness = 300*micrometer;
-   const G4double FirstStageHeight    = 81*mm;
+   // gaspard Trapezoid
+/*   const G4double FirstStageHeight    = 81*mm;
    const G4double FirstStageBaseLarge = 78*mm;
-   const G4double FirstStageBaseSmall = 29*mm;
+   const G4double FirstStageBaseSmall = 29*mm;*/
+   // gaspHyde
+   const G4double FirstStageHeight    = 113.5*mm;
+   const G4double FirstStageBaseLarge =  97.5*mm;
+   const G4double FirstStageBaseSmall =  28.5*mm;
 //   const G4double VacBoxThickness   = 3*cm           ;
    const G4double VacBoxThickness     = 0.5*cm;
    const G4int    NumberOfStripsX     = 128;

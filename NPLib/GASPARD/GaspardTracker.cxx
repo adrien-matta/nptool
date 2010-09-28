@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2009   this file is part of the NPTool Project              *
+ * Copyright (C) 2009-2010   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -802,7 +802,7 @@ void GaspardTracker::AddModuleDummyShape(double theta,
    V.Rotate( beta_w * Pi/180. , W ) ;
 
    double Face = 50; // mm
-   double NumberOfStrip = 25;
+   double NumberOfStrip = 100;
    double StripPitch = Face/NumberOfStrip; // mm
 
    vector<double> lineX;

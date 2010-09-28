@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2009   this file is part of the NPTool Project              *
+ * Copyright (C) 2009-2010   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -54,7 +54,9 @@ III) INSTALLATION
 
 	b) First, you need to define some environment variables. You can
 	source the NPEnvironment.bash or NPEnvironment.tchrc file 
-	depending on your shell.
+	depending on your shell or include the relevant lines in your
+        .bashrc or .tcshrc file. Don't forget to customize these file
+        with the relevant path to your NPTool installation.
 	This step is mandatory since the Makefiles used to build the package
 	depend on some of these environment variables.
 
@@ -76,3 +78,6 @@ III) INSTALLATION
 		cd Template
 		make
 	This step is not mandatory for the G4 simulation to work.
+	If you want to use the ROOT macros in the $NPAnalysis/macros
+        directory you should execute in a ROOT terminal the commands
+	you can find in rootlogon.C

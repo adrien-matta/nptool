@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2009   this file is part of the NPTool Project              *
+ * Copyright (C) 2009-2010   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -76,18 +76,20 @@ void TPlasticPhysics::ReadConfiguration(string Path)
 		string LineBuffer          ;
 		string DataBuffer          ;
 
-		double Theta = 0 , Phi = 0 , R = 0 , Thickness = 0 , Radius = 0 , LeadThickness = 0;
-		string Scintillator ;
-
-		bool check_Theta = false   ;
-		bool check_Phi  = false  ;
-		bool check_R     = false   ;
+		bool check_Theta = false   				;
+		bool check_Phi  = false  					;
+		bool check_R     = false   				;
 		bool check_Thickness = false  		;
-		bool check_Radius = false  			;
-		bool check_LeadThickness = false		;
+		bool check_Radius = false  				;
+		bool check_LeadThickness = false	;
 		bool check_Scintillator = false		;
-		bool ReadingStatus = false ;
-		
+		bool check_Height = false 				;
+		bool check_Width = false 					;
+		bool check_Shape = false 					;
+		bool check_X = false 							;
+		bool check_Y = false 							;
+		bool check_Z = false 							;		
+		bool ReadingStatus = false 				;
 
 	 while (!ConfigFile.eof()) 
 	 	{
@@ -117,54 +119,96 @@ void TPlasticPhysics::ReadConfiguration(string Path)
 
 							//	Finding another telescope (safety), toggle out
 						else if (DataBuffer.compare(0, 6, "Plastic") == 0) {
-							cout << "WARNING: Another Telescope is find before standard sequence of Token, Error may occured in Telecope definition" << endl ;
+							cout << "WARNING: Another Detector is find before standard sequence of Token, Error may occured in Telecope definition" << endl ;
 							ReadingStatus = false ;
 						}
 											
-						//Angle method
+													//Angle method
 						else if (DataBuffer.compare(0, 6, "THETA=") == 0) {
 							check_Theta = true;
 							ConfigFile >> DataBuffer ;
-							Theta = atof(DataBuffer.c_str()) ;
+							cout << "Theta:  " << atof(DataBuffer.c_str()) << "deg" << endl;
 						}
 
 						else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
 							check_Phi = true;
 							ConfigFile >> DataBuffer ;
-							Phi = atof(DataBuffer.c_str()) ;
+							cout << "Phi:  " << atof( DataBuffer.c_str() ) << "deg" << endl;
 						}
 
 						else if (DataBuffer.compare(0, 2, "R=") == 0) {
 							check_R = true;
 							ConfigFile >> DataBuffer ;
-							R = atof(DataBuffer.c_str()) ;
+							cout << "R:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
 						}
 						
+						//Position method
+						else if (DataBuffer.compare(0, 2, "X=") == 0) {
+							check_X = true;
+							ConfigFile >> DataBuffer ;
+							cout << "X:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
+						}
+
+						else if (DataBuffer.compare(0, 2, "Y=") == 0) {
+							check_Y = true;
+							ConfigFile >> DataBuffer ;
+							cout << "Y:  " << atof( DataBuffer.c_str() ) << "mm"<< endl;
+						}
+
+						else if (DataBuffer.compare(0, 2, "Z=") == 0) {
+							check_Z = true;
+							ConfigFile >> DataBuffer ;
+							cout << "Z:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
+						}
+						
+						
+						//General
+						else if (DataBuffer.compare(0, 6, "Shape=") == 0) {
+							check_Shape = true;
+							ConfigFile >> DataBuffer ;
+							cout << "Shape:  " << DataBuffer << endl;
+						}
+						
+						// Cylindrical shape
 						else if (DataBuffer.compare(0, 7, "Radius=") == 0) {
 							check_Radius = true;
 							ConfigFile >> DataBuffer ;
-							Radius = atof(DataBuffer.c_str()) ;
+							cout << "Plastic Radius:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
 						}
 						
+						// Squared shape
+						else if (DataBuffer.compare(0, 7, "Width=") == 0) {
+							check_Width = true;
+							ConfigFile >> DataBuffer ;
+							cout << "Plastic Width:  " <<atof( DataBuffer.c_str() ) << "mm" << endl;
+						}
+						
+						else if (DataBuffer.compare(0, 7, "Height=") == 0) {
+							check_Height = true;
+							ConfigFile >> DataBuffer ;
+							cout << "Plastic Height:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
+						}
+						
+						// Common
 						else if (DataBuffer.compare(0, 10, "Thickness=") == 0) {
 							check_Thickness = true;
 							ConfigFile >> DataBuffer ;
-							Thickness = atof(DataBuffer.c_str()) ;
+							cout << "Plastic Thickness:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
 						}
 						
 						else if (DataBuffer.compare(0, 13, "Scintillator=") == 0) {
 							check_Scintillator = true ;
 							ConfigFile >> DataBuffer ;
-							Scintillator = DataBuffer ;
+							cout << "Plastic Scintillator type:  " << DataBuffer << endl;
 						}
 						
 						else if (DataBuffer.compare(0, 14, "LeadThickness=") == 0) {
 							check_LeadThickness = true;
 							ConfigFile >> DataBuffer ;
-							LeadThickness = atof(DataBuffer.c_str()) ;
+							cout << "Lead Thickness :  " << atof( DataBuffer.c_str() ) << "mm" << endl;
 						}
-				      
-				         	///////////////////////////////////////////////////
+															      
+		         	///////////////////////////////////////////////////
 							//	If no Detector Token and no comment, toggle out
 				         else 
 				         	{ReadingStatus = false; cout << "Wrong Token Sequence: Getting out " << DataBuffer << endl ;}
@@ -172,21 +216,26 @@ void TPlasticPhysics::ReadConfiguration(string Path)
 				         	/////////////////////////////////////////////////
 				         	//	If All necessary information there, toggle out
 				         
-				         if ( check_Theta && check_Phi && check_R && check_Thickness && check_Radius && check_LeadThickness && check_Scintillator) 
+				         if ( check_Theta && check_Phi && check_R && check_Thickness && check_Radius &&	check_LeadThickness && check_Scintillator &&	check_Height &&	check_Width && check_Shape && check_X && check_Y && check_Z ) 
 				         	{ 
 			         		  NumberOfDetector++;
 						         
-						        //	Reinitialisation of Check Boolean 
-						        
-								check_Theta = false   			;
-								check_Phi  = false  			;
-								check_R     = false   			;
-								check_Thickness = false  		;
-								check_Radius = false  			;
-								check_LeadThickness = false		;
-								check_Scintillator = false 		;
-								ReadingStatus = false 			;	
-								cout << "///"<< endl ;	         
+						      //	Reinitialisation of Check Boolean  
+									check_Theta = false   			;
+									check_Phi  = false  				;
+									check_R     = false   			;
+									check_Thickness = false  		;
+									check_Radius = false  			;
+									check_LeadThickness = false	;
+									check_Scintillator = false 	;
+									check_Height = false 				;
+									check_Width = false 				;
+									check_Shape = false 				;
+									check_X = false 						;
+									check_Y = false 						;
+									check_Z = false 						;
+									ReadingStatus = false 			;	
+									cout << "///"<< endl 				;	             
 				         	}
 				         	
 					}

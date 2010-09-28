@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2009   this file is part of the NPTool Project              *
+ * Copyright (C) 2009-2010   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -64,7 +64,7 @@ Target::Target()
    m_WindowsThickness   = 0   ;
    m_TargetTemperature  = 0   ;
    m_TargetPressure  	= 0   ;
-   m_TargetNbLayers      = 50;	// Number of steps by default
+   m_TargetNbLayers     = 50;	// Number of steps by default
 }
 
 G4Material* Target::GetMaterialFromLibrary(G4String MaterialName, G4double Temperature, G4double Pressure)
@@ -77,6 +77,7 @@ G4Material* Target::GetMaterialFromLibrary(G4String MaterialName, G4double Tempe
 
       if (Pressure == 1) {
          G4cout << "CryoTarget pressure set to 1 bar" << G4endl;
+         
          if (Temperature == 24) {
             density = 0.0020182 * g / cm3;
             G4cout << "CryoTarget temp set to 24K" << G4endl;
@@ -91,13 +92,16 @@ G4Material* Target::GetMaterialFromLibrary(G4String MaterialName, G4double Tempe
             density = 0.001863 * g / cm3;
             G4cout << "CryoTarget temp set to 26K" << G4endl;
          }
+         
+         else if (Temperature == 30) {
+            density = 0.00020475 * g / cm3;
+            G4cout << "CryoTarget temp set to 30K" << G4endl;
+         }
 
          else {
             G4cout << ">>>  !!!!WARNING INVALID TEMP FOR CRYOGENIC TARGET!!!!  <<<" << G4endl;
          }
       }
-
-
 
       else if (Pressure == 0.5) {
          G4cout << "CryoTarget pressure set to 0.5 bar" << G4endl;
@@ -117,6 +121,17 @@ G4Material* Target::GetMaterialFromLibrary(G4String MaterialName, G4double Tempe
             G4cout << "CryoTarget temp set to 26K" << G4endl;
          }
 
+				
+				else if (Pressure == 0.7) {
+        G4cout << "CryoTarget pressure set to 0.7 bar" << G4endl;
+
+	        if (Temperature == 26) {
+	          density = 0.0013125 * g / cm3;
+	          G4cout << "CryoTarget temp set to 26K" << G4endl;
+	        }
+        }
+
+
          else {
             G4cout << ">>>  !!!!WARNING INVALID TEMP FOR CRYOGENIC TARGET!!!!  <<<" << G4endl;
          }
@@ -130,7 +145,19 @@ G4Material* Target::GetMaterialFromLibrary(G4String MaterialName, G4double Tempe
       return(myMaterial);
    }
 
+   else if (MaterialName == "D2_solid") {
+      G4Element* D           = new G4Element("Deuteron", "D", 1., 2.0141*g / mole);
+      G4Material* myMaterial = new G4Material("D2_solid", 0.0715*g/cm3, 1);
+      myMaterial->AddElement(D, 2);
+      return(myMaterial);
+   }
 
+   else if (MaterialName == "H2_solid") {
+      G4Element* H           = new G4Element("Hydrogen", "H", 1., 1.01*g / mole);
+      G4Material* myMaterial = new G4Material("H2_solid", 0.0715*g/cm3, 1);
+      myMaterial->AddElement(H, 2);
+      return(myMaterial);
+   }
 
    else if (MaterialName == "Mylar") {
       G4cout << "Mylar Material" << G4endl ;
@@ -165,7 +192,7 @@ G4Material* Target::GetMaterialFromLibrary(G4String MaterialName, G4double Tempe
       G4Element* C  = new G4Element("Carbon"  , "C" , 6. , 12.011*g / mole);
       G4Element* D  = new G4Element("Deuteron"  , "D" , 1., 2.0141*g / mole);
 
-      G4Material* myMaterial = new G4Material("CD2", 0.97*g / cm3, 2);
+      G4Material* myMaterial = new G4Material("CD2", 1.15*g / cm3, 2);
       myMaterial->AddElement(C , 1);
       myMaterial->AddElement(D , 2);
       return myMaterial;
@@ -175,9 +202,17 @@ G4Material* Target::GetMaterialFromLibrary(G4String MaterialName, G4double Tempe
       G4Element* C  = new G4Element("Carbon"  , "C" , 6. , 12.011*g / mole);
       G4Element* H  = new G4Element("Hydrogen", "H" , 1. ,  1.01 *g / mole);
 
-      G4Material* myMaterial = new G4Material("CH2", 0.9*g / cm3, 2);
+      G4Material* myMaterial = new G4Material("CH2", 1.0*g / cm3, 2);
       myMaterial->AddElement(C , 1);
       myMaterial->AddElement(H , 2);
+      return myMaterial;
+   }
+
+   else if (MaterialName == "Pb208") {
+      G4Element* Pb  = new G4Element("Lead"  , "Pb" , 82. , 207.2*g / mole);
+
+      G4Material* myMaterial = new G4Material("Pb208", 11.342*g / cm3, 1);
+      myMaterial->AddElement(Pb , 1);
       return myMaterial;
    }
 
@@ -274,21 +309,21 @@ void Target::ReadConfiguration(string Path)
 	        else if (DataBuffer.compare(0, 2, "X=") == 0) {
 	        	check_X = true ;
 	            ConfigFile >> DataBuffer;
-	            m_TargetX = atoi(DataBuffer.c_str()) * mm;
+	            m_TargetX = atof(DataBuffer.c_str()) * mm;
 	            cout << "Target coordinate (mm): ( " << m_TargetX / mm << " ; ";
 	         }
 
 	        else if (DataBuffer.compare(0, 2, "Y=") == 0) {
 	        	check_Y = true ;
 	            ConfigFile >> DataBuffer;
-	            m_TargetY = atoi(DataBuffer.c_str()) * mm;
+	            m_TargetY = atof(DataBuffer.c_str()) * mm;
 	             cout << m_TargetY / mm << " ; ";
 	         }
 
 	        else if (DataBuffer.compare(0, 2, "Z=") == 0) {
 	        	check_Z = true ;
 	            ConfigFile >> DataBuffer;
-	            m_TargetZ = atoi(DataBuffer.c_str()) * mm;
+	            m_TargetZ = atof(DataBuffer.c_str()) * mm;
 	            cout  << m_TargetZ / mm << " )" << endl ;           
 	         }
 
@@ -335,13 +370,13 @@ void Target::ReadConfiguration(string Path)
 	        else if (DataBuffer.compare(0, 12, "TEMPERATURE=") == 0) {
 	        	check_Temperature = true ;
 	            ConfigFile >> DataBuffer;
-	            m_TargetTemperature = atoi(DataBuffer.c_str());
+	            m_TargetTemperature = atof(DataBuffer.c_str());
 	         }
 
 	        else if (DataBuffer.compare(0, 9, "PRESSURE=") == 0) {
 	        	check_Pressure = true ;
 	            ConfigFile >> DataBuffer;
-	            m_TargetPressure = atoi(DataBuffer.c_str());
+	            m_TargetPressure = atof(DataBuffer.c_str());
 	         }
 
 	        else if (DataBuffer.compare(0, 9, "MATERIAL=") == 0) {
@@ -354,7 +389,7 @@ void Target::ReadConfiguration(string Path)
 	        else if (DataBuffer.compare(0, 17, "WINDOWSTHICKNESS=") == 0) {
 	        	check_WinThickness = true ;
 	            ConfigFile >> DataBuffer;
-	            m_WindowsThickness = atoi(DataBuffer.c_str()) * micrometer;
+	            m_WindowsThickness = atof(DataBuffer.c_str()) * micrometer;
 	            cout << "Windows Thickness: " <<    m_WindowsThickness / micrometer << "um" << endl   ;
 	         }
 
@@ -368,21 +403,21 @@ void Target::ReadConfiguration(string Path)
 	        else if (DataBuffer.compare(0, 2, "X=") == 0) {
 	        	check_X = true ;
 	            ConfigFile >> DataBuffer;
-	            m_TargetX = atoi(DataBuffer.c_str()) * mm;
+	            m_TargetX = atof(DataBuffer.c_str()) * mm;
 	            cout << "Target coordinate (mm): ( " << m_TargetX / mm << " ; ";
 	         }
 
 	       else if (DataBuffer.compare(0, 2, "Y=") == 0) {
 	            check_Y = true ;
 	            ConfigFile >> DataBuffer;
-	            m_TargetY = atoi(DataBuffer.c_str()) * mm;
+	            m_TargetY = atof(DataBuffer.c_str()) * mm;
 	            cout << m_TargetY / mm << " ; ";
 	         }
 
 	        else if (DataBuffer.compare(0, 2, "Z=") == 0) {
 	            check_Z = true ;
 	            ConfigFile >> DataBuffer;
-	            m_TargetZ = atoi(DataBuffer.c_str()) * mm;
+	            m_TargetZ = atof(DataBuffer.c_str()) * mm;
 	            cout << m_TargetZ / mm << " )" << endl ;
 	         }
 
@@ -541,9 +576,8 @@ void Target::CalculateBeamInteraction(	double MeanPosX, double SigmaPosX, double
       if (AngleIncidentPhi   < 0)    AngleIncidentPhi += 2*pi	;
       if (AngleIncidentTheta < 1e-6) AngleIncidentPhi  = 0		;
 
-      // Calculation of effective target thickness and z-position of interaction
+      // effective target thickness is dz and z-position of interaction
       // when the target is tilted wrt the beam axis
-      double EffectiveThickness = m_TargetThickness / (BeamDir.unit()).dot(TargetNormal.unit());
       double uniform = RandFlat::shoot();
       z0 = dz + (-m_TargetThickness / 2 + uniform * m_TargetThickness);
 

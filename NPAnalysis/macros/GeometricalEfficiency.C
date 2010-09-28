@@ -36,6 +36,9 @@
 #include "TBranch.h"
 #include "TH1F.h"
 
+#include "TInitialConditions.h"
+#include "TInteractionCoordinates.h"
+
 using namespace std ;
 
 
@@ -75,11 +78,20 @@ void GeometricalEfficiency(const char * fname = "mySimul")
          hDetecTheta->Fill(interCoord->GetDetectedAngleTheta(0));
    }
 
+   TCanvas *c1 = new TCanvas("c1", "c1");
+   c1->Draw();
    // Compute relative efficiency in %
    TH1F *efficiency = new TH1F("hEfficiency", "Efficiency", 180, 0, 180);
-   efficiency->SetTitle("Efficiency GASPARD (Spheric version);#Theta [deg];#epsilon [%]");
-//   efficiency->SetTitle("Efficiency e530;#Theta [deg];#epsilon [%]");
+//   efficiency->SetTitle("Efficiency GASPARD (Spheric version);#Theta [deg];#epsilon [%]");
+   efficiency->SetTitle("Efficiency GASPARD;#Theta [deg];#epsilon [%]");
    efficiency->Divide(hDetecTheta,hEmittTheta,100);
    efficiency->SetMaximum(110);
    efficiency->Draw();
+
+
+   TCanvas *c2 = new TCanvas("c2", "c2");
+   c2->Draw();
+   hEmittTheta->Draw();
+   hDetecTheta->SetLineColor(kRed);
+   hDetecTheta->Draw("same");
 }

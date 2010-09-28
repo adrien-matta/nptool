@@ -1,4 +1,3 @@
-%Fichier de configuration manip E225
 %%%%%%%%%%%Target%%%%%%%%%%%%%%%%%%%1
 %Thickness in micrometer
 %Radius in mm
@@ -9,14 +8,16 @@
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Target
-	THICKNESS= 10.3
+	THICKNESS= 1.0
 	ANGLE= 0
 	RADIUS=	12
-	MATERIAL= CD2
+	MATERIAL= CH2
 	NBLAYERS= 50
 	X= 0
 	Y= 0
 	Z= 0
+
+
 %%%%%%%%%%Detector%%%%%%%%%%%%%%%%%%%
 %%Position and R given in mm
 %%Angle given in degree

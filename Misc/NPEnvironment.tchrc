@@ -1,0 +1,19 @@
+# This File content all environment variable needed by NPTool.
+# On linux system, include it in your bashrc or tcshrc file.
+
+# NPTool Needs
+setenv NPTOOL /home/local1/geant4/NPTool.Paris
+setenv NPLIB $NPTOOL/NPLib
+setenv NPSIM $NPTOOL/NPSimulation
+setenv NPANA $NPTOOL/NPAnalysis
+setenv LD_LIBRARY_PATH $NPLIB/lib:$LD_LIBRARY_PATH
+source $NPLIB/liblist
+
+# alias
+alias Simulation '$NPSIM/bin/$G4SYSTEM/Simulation'
+alias Analysis '$NPANA/Analysis'
+
+alias NPT 'cd Desktop/NPTool'	
+alias NPL 'cd Desktop/NPTool/NPLib/'	
+alias NPS 'cd Desktop/NPTool/NPSimulation/'	
+alias NPA 'cd Desktop/NPTool/NPAnalysis/'
