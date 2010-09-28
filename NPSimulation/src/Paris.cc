@@ -6,7 +6,7 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
+ * Original Author: M. Labiche    contact address: marc.labiche@stfc.ac.uk   *
  *                                                                           *
  * Creation Date  : 04/12/09                                                 *
  * Last update    :                                                          *
@@ -28,7 +28,8 @@
 
 // NPTool headers
 #include "Paris.hh"
-#include "ParisPhoswitch.hh"
+#include "ParisPhoswich.hh"
+#include "ParisCluster.hh"
 
 using namespace std;
 
@@ -53,16 +54,17 @@ void Paris::ReadConfiguration(string Path)
    ifstream ConfigFile;
    ConfigFile.open(Path.c_str());
 
-   bool bParisPhoswitch     = false;
+   bool bParisPhoswich     = false;
+   bool bParisCluster     = false;
 
    string LineBuffer;
    while (!ConfigFile.eof()) {
       getline(ConfigFile, LineBuffer);
-      if (LineBuffer.compare(0, 14, "ParisPhoswitch") == 0  &&  bParisPhoswitch == false) {
-         bParisPhoswitch = true;
+      if (LineBuffer.compare(0, 14, "ParisPhoswich") == 0  &&  bParisPhoswich == false) {
+         bParisPhoswich = true;
 
          // instantiate a new "detector" corresponding to the Square elements
-         ParisModule* myDetector = new ParisPhoswitch();
+         ParisModule* myDetector = new ParisPhoswich();
 
          // read part of the configuration file corresponding to square elements
          ConfigFile.close();
@@ -72,14 +74,14 @@ void Paris::ReadConfiguration(string Path)
          // ms_InterCoord comes from VDetector
          myDetector->SetInterCoordPointer(ms_InterCoord);
 
-         // store ParisSquare "detector"
+         // store ParisPhoswich "detector"
          m_Modules.push_back(myDetector);
       }
-/*      else if (LineBuffer.compare(0, 12, "GPDTrapezoid") == 0  &&  GPDTrkTrapezoid == false) {
-         GPDTrkTrapezoid = true;
+      else if (LineBuffer.compare(0, 12, "ParisCluster") == 0  &&  bParisCluster == false) {
+         bParisCluster = true;
 
          // instantiate a new "detector" corresponding to the Trapezoid elements
-         ParisModule* myDetector = new ParisTrapezoid();
+         ParisModule* myDetector = new ParisCluster();
 
          // read part of the configuration file corresponding to trapezoid elements
          ConfigFile.close();
@@ -89,16 +91,17 @@ void Paris::ReadConfiguration(string Path)
          // ms_InterCoord comes from VDetector
          myDetector->SetInterCoordPointer(ms_InterCoord);
 
-         // store ParisTrapezoid "detector"
+         // store ParisCluster "detector"
          m_Modules.push_back(myDetector);
-      }*/
+      }
+
    }
 }
 
 
 
 // Construct detector and initialize sensitive part.
-// Called After DetecorConstruction::AddDetector Method
+// Called After DetectorConstruction::AddDetector Method
 void Paris::ConstructDetector(G4LogicalVolume* world)
 {
    // loop on sub-detectors belonging to Paris

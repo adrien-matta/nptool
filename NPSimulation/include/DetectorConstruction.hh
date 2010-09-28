@@ -11,7 +11,7 @@
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
  * Creation Date  : January 2009                                             *
- * Last update    :                                                          *
+ * Last update    : January 2010                                                         *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This Class manage the virtual detector and call their method.            *
@@ -20,7 +20,7 @@
  *  token.                                                                   *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *                                                                           *
+ *   January 2010: added chamber (marc.labiche@stfc.ac.uk)                   *
  *                                                                           *
  *****************************************************************************/
 class G4LogicalVolume;
@@ -37,6 +37,7 @@ class G4VPhysicalVolume;
 // NPTool headers
 #include "VDetector.hh"
 #include "Target.hh"
+#include "Chamber.hh"
 
 // ROOT headers
 #include "TTree.h"
@@ -60,9 +61,11 @@ public:
 private:
    // Logical volumes
    G4LogicalVolume* world_log;
+  //G4LogicalVolume* Chamber_log;
 
    // Physical volumes
    G4VPhysicalVolume* world_phys;
+  //G4VPhysicalVolume* Chamber_phys;
 
    // Virtual Detector Vector
    vector<VDetector*> m_Detectors;
@@ -70,9 +73,11 @@ private:
 
 private: // Data about the target
    Target*  m_Target;
+   Chamber*  m_Chamber;
 
 public:  // Getter and Setter
    Target*  GetTarget()		{return m_Target;}
+   Chamber*  GetChamber()		{return m_Chamber;}
 };
 
 #endif

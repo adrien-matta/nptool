@@ -270,7 +270,7 @@ INCLUDE		= -I$(CLHEP_BASE_DIR)/include
 #------------------------------------------------------------------------------
 SHARELIB      =	CalibManager Vdetec InputOutputRoot InitCond	InterCoord \
 		Must2All	GaspardData	AnnularS1Data PlasticData DummyDetectorData SSSDData\
-		Reaction	EnergyLoss	ParisData
+		Reaction	EnergyLoss	ParisData	ShieldData
 
 all:         $(SHARELIB)
 	rm -f ./include/*Dict.h
@@ -354,7 +354,19 @@ ParisData:
 		cp ./Paris/*.so ./lib ; cp ./Paris/*.h ./include
 ifeq ($(ARCH),macosx)
 		cd lib; ln -sf libParisData.so libParisData.dylib
+		cd lib; ln -sf libParisPhysics.so libParisPhysics.dylib
 endif
+
+
+## Paris Shield Detector ##
+ShieldData:
+		make -C ./Shield
+		cp ./Shield/*.so ./lib ; cp ./Shield/*.h ./include
+ifeq ($(ARCH),macosx)
+		cd lib; ln -sf libShieldData.so libShieldData.dylib
+		cd lib; ln -sf libShieldPhysics.so libShieldPhysics.dylib
+endif
+
 ############# Simulation ##############
 
 ## InitialConditions ##
@@ -417,6 +429,7 @@ clean:
 	make clean -C ./DummyDetector
 	make clean -C ./Plastic
 	make clean -C ./Paris
+	make clean -C ./Shield
 	
 distclean:
 	rm -f ./lib/*.so
@@ -437,6 +450,7 @@ endif
 	make distclean -C ./DummyDetector
 	make distclean -C ./Plastic
 	make distclean -C ./Paris
+	make distclean -C ./Shield
 .SUFFIXES: .$(SrcSuf)
 
 ###

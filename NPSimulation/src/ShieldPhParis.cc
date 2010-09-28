@@ -6,12 +6,12 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
+ * Original Author: M. Labiche  contact address: marc.labiche@atfc.ac.uk     *
  *                                                                           *
- * Creation Date  : 04/12/09                                                 *
+ * Creation Date  : 25/08/10                                                 *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
- * Decription: Define a phoswitch module for the Paris detector.             *
+ * Decription: Define the shield around a PARIS phoswich module              *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -29,6 +29,9 @@
 #include "G4Trd.hh"
 #include "G4Box.hh"
 #include "G4Trap.hh"
+#include "G4Polyhedra.hh"
+
+#include "G4SubtractionSolid.hh"
 
 // G4 various headers
 #include "G4MaterialTable.hh"
@@ -46,7 +49,9 @@
 #include "G4MultiFunctionalDetector.hh"
 
 // NPTool headers
-#include "ParisPhoswitch.hh"
+#include "ShieldPhParis.hh"
+//#include "ParisScorers.hh"
+#include "ShieldScorers.hh"
 #include "GeneralScorers.hh"
 #include "RootOutput.h"
 
@@ -55,12 +60,12 @@
 
 using namespace std;
 using namespace CLHEP;
-using namespace PARISPHOSWITCH;
+using namespace PARISPHSHIELD;
 
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-ParisPhoswitch::ParisPhoswitch()
+ShieldPhParis::ShieldPhParis()
 {
    ms_InterCoord = 0;
 }
@@ -68,14 +73,14 @@ ParisPhoswitch::ParisPhoswitch()
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-ParisPhoswitch::~ParisPhoswitch()
+ShieldPhParis::~ShieldPhParis()
 {
 }
 
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void ParisPhoswitch::AddModule(G4ThreeVector X1_Y1,
+void ShieldPhParis::AddModule(G4ThreeVector X1_Y1,
                                G4ThreeVector X128_Y1,
                                G4ThreeVector X1_Y128,
                                G4ThreeVector X128_Y128)
@@ -98,7 +103,7 @@ void ParisPhoswitch::AddModule(G4ThreeVector X1_Y1,
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void ParisPhoswitch::AddModule(G4double R,
+void ShieldPhParis::AddModule(G4double R,
                                G4double Theta,
                                G4double Phi,
                                G4double beta_u,
@@ -125,7 +130,7 @@ void ParisPhoswitch::AddModule(G4double R,
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void ParisPhoswitch::VolumeMaker(G4int             DetecNumber,
+void ShieldPhParis::VolumeMaker(G4int             DetecNumber,
                                  G4ThreeVector     MMpos,
                                  G4RotationMatrix* MMrot,
                                  G4LogicalVolume*  world)
@@ -161,7 +166,6 @@ void ParisPhoswitch::VolumeMaker(G4int             DetecNumber,
    G4Element* Cs = new G4Element(name="Cesium",symbol="Cs",z=55.,a);
    a=138.9055*g/mole;
    G4Element* La = new G4Element(name="Lanthanum",symbol="La",z=57.,a);
-
    //  Vacuum
    G4Element* N   = new G4Element("Nitrogen" , symbol = "N"  , z = 7  , a = 14.01  * g / mole);
    G4Element* O   = new G4Element("Oxigen"   , symbol = "O"  , z = 8  , a = 16.00  * g / mole);
@@ -201,64 +205,59 @@ void ParisPhoswitch::VolumeMaker(G4int             DetecNumber,
    // Little trick to avoid warning in compilation: Use a PVPlacement "buffer".
    // If don't you will have a Warning unused variable 'myPVP'
    G4PVPlacement* PVPBuffer;
-   G4String Name = "ParisPhoswitch" + DetectorNumber ;
+   G4String Name = "ShieldPhParis" + DetectorNumber ;
 
-   // Mother Volume
-   G4Box*           solidParisPhoswitch = new G4Box(Name, 0.5*FaceFront, 0.5*FaceFront, 0.5*Length);
-   G4LogicalVolume* logicParisPhoswitch = new G4LogicalVolume(solidParisPhoswitch, Vacuum, Name, 0, 0, 0);
+   // Mother VolumeShieldPhParis.cc
+   G4double z_values[2]={0 , Length};
+   G4double Rmin_values[2]={0., 0.};
+   G4double Rmax_values[2]={134.375/2, 196.625/2};
+
+   G4Box*           solidSubtractBox = new G4Box("Box", (PhoswichFace/2.), (PhoswichFace/2.), (Length+0.5)/2); 
+
+   G4Polyhedra*           solidPolyhedra = new G4Polyhedra(Name, 0.*deg, 360.*deg, 3, 2, z_values, Rmin_values, Rmax_values); 
+
+   G4SubtractionSolid*           solidShieldPhParis = new G4SubtractionSolid(Name,solidPolyhedra, solidSubtractBox, 0, G4ThreeVector(0.,0.,Length/2)); 
+
+
+   G4LogicalVolume* logicShieldPhParis = new G4LogicalVolume(solidShieldPhParis, Vacuum, Name, 0, 0, 0);
 
    PVPBuffer     = new G4PVPlacement(G4Transform3D(*MMrot, MMpos) ,
-                                     logicParisPhoswitch           ,
+                                     logicShieldPhParis           ,
                                      Name                         ,
                                      world                        ,
                                      false                        ,
                                      0);
 
-   logicParisPhoswitch->SetVisAttributes(G4VisAttributes::Invisible);
-   if (m_non_sensitive_part_visiualisation) logicParisPhoswitch->SetVisAttributes(G4VisAttributes(G4Colour(0.90, 0.90, 0.90)));
+   logicShieldPhParis->SetVisAttributes(G4VisAttributes::Invisible);
+   //if (m_non_sensitive_part_visiualisation) logicShieldPhParis->SetVisAttributes(G4VisAttributes(G4Colour(0.90, 0.90, 0.90)));
 
-   // Phoswitch construction
-   // LaBr3
-   G4ThreeVector  positionLaBr3Stage = G4ThreeVector(0, 0, LaBr3Stage_PosZ);
-
-   G4Box*           solidLaBr3Stage = new G4Box("solidLaBr3Stage", 0.5*LaBr3Face, 0.5*LaBr3Face, 0.5*LaBr3Thickness);
-   G4LogicalVolume* logicLaBr3Stage = new G4LogicalVolume(solidLaBr3Stage, LaBr3, "logicLaBr3Stage", 0, 0, 0);
-
-   PVPBuffer = new G4PVPlacement(0, 
-                                 positionLaBr3Stage, 
-                                 logicLaBr3Stage, 
-                                 Name + "_LaBr3Stage", 
-                                 logicParisPhoswitch, 
-                                 false, 
-                                 0);
-
-   // Set LaBr3 sensible
-   logicLaBr3Stage->SetSensitiveDetector(m_LaBr3StageScorer);
-
-   // Visualisation of LaBr3Stage Strip
-   G4VisAttributes* LaBr3VisAtt = new G4VisAttributes(G4Colour(0., 0., 1.));
-   logicLaBr3Stage->SetVisAttributes(LaBr3VisAtt);
-
+   // Daughter Volume
    // CsI
-   G4ThreeVector  positionCsIStage = G4ThreeVector(0, 0, CsIStage_PosZ);
+   G4ThreeVector  positionCsI = G4ThreeVector(0, 0, 0);
 
-   G4Box*           solidCsIStage = new G4Box("solidCsIStage", 0.5*CsIFace, 0.5*CsIFace, 0.5*CsIThickness);
-   G4LogicalVolume* logicCsIStage = new G4LogicalVolume(solidCsIStage, CsI, "logicCsIStage", 0, 0, 0);
+   G4Polyhedra*           solidShield = new G4Polyhedra("solidShield",0.*deg, 360.*deg, 3, 2, z_values, Rmin_values, Rmax_values);  
 
-   PVPBuffer = new G4PVPlacement(0, 
-                                 positionCsIStage, 
-                                 logicCsIStage, 
-                                 Name + "_CsIStage", 
-                                 logicParisPhoswitch, 
-                                 false, 
-                                 0);
+   G4SubtractionSolid*           solidShieldCsI = new G4SubtractionSolid("solidShieldCsI",solidShield, solidSubtractBox, 0, G4ThreeVector(0.,0.,Length/2)); 
 
+   //G4LogicalVolume* logicShieldCsI = new G4LogicalVolume(solidShieldCsI, CsI, "logicShieldCsI", 0, 0, 0);
+   G4LogicalVolume* logicShieldCsI = new G4LogicalVolume(solidShieldCsI, NaI, "logicShieldCsI", 0, 0, 0);
+
+   PVPBuffer     = new G4PVPlacement(0,
+				     positionCsI              ,
+                                     logicShieldCsI           ,
+                                     Name + "_ShieldCsI"      ,
+                                     logicShieldPhParis       ,
+                                     false                    ,
+                                     0);
+  
    // Set CsI sensible
-   logicCsIStage->SetSensitiveDetector(m_CsIStageScorer);
+   logicShieldCsI->SetSensitiveDetector(m_CsIShieldScorer);
 
-   // Visualisation of CsIStage Strip
-   G4VisAttributes* CsIVisAtt = new G4VisAttributes(G4Colour(1., 0., 0.));
-   logicCsIStage->SetVisAttributes(CsIVisAtt);
+   // Visualisation of CsIStage
+   G4VisAttributes* CsIShieldVisAtt = new G4VisAttributes(G4Colour(1., 0., 0.));
+   logicShieldCsI->SetVisAttributes(CsIShieldVisAtt);
+
+
 }
 
 
@@ -268,7 +267,7 @@ void ParisPhoswitch::VolumeMaker(G4int             DetecNumber,
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void ParisPhoswitch::ReadConfiguration(string Path)
+void ShieldPhParis::ReadConfiguration(string Path)
 {
    ifstream ConfigFile;
    ConfigFile.open(Path.c_str());
@@ -299,9 +298,9 @@ void ParisPhoswitch::ReadConfiguration(string Path)
 
    while (!ConfigFile.eof()) {
       getline(ConfigFile, LineBuffer);
-      if (LineBuffer.compare(0, 14, "ParisPhoswitch") == 0) {
+      if (LineBuffer.compare(0, 13, "ShieldPhParis") == 0) {
          G4cout << "///" << G4endl           ;
-         G4cout << "Phoswitch element found: " << G4endl   ;
+         G4cout << "Cluster Shield element found: " << G4endl   ;
          ReadingStatus = true ;
       }
          
@@ -414,7 +413,7 @@ void ParisPhoswitch::ReadConfiguration(string Path)
             if (DataBuffer.compare(0, 3, "all") == 0) m_non_sensitive_part_visiualisation = true;
          }
          
-         else G4cout << "WARNING: Wrong Token, ParisPhoswitch: Phoswitch Element not added" << G4endl;
+         else G4cout << "WARNING: Wrong Token, ShieldPhParis: Cluster Element not added" << G4endl;
 
          // Add The previously define telescope
          // With position method
@@ -450,7 +449,7 @@ void ParisPhoswitch::ReadConfiguration(string Path)
 
 // Construct detector and inialise sensitive part.
 // Called After DetecorConstruction::AddDetector Method
-void ParisPhoswitch::ConstructDetector(G4LogicalVolume* world)
+void ShieldPhParis::ConstructDetector(G4LogicalVolume* world)
 {
    G4RotationMatrix* MMrot    = NULL                   ;
    G4ThreeVector     MMpos    = G4ThreeVector(0, 0, 0) ;
@@ -471,6 +470,7 @@ void ParisPhoswitch::ConstructDetector(G4LogicalVolume* world)
          MMu = MMu.unit();
 
          MMv = m_X1_Y128[i] - m_X1_Y1[i];
+         //MMv = -0.5 * (m_X1_Y1[i] + m_X128_Y128[i] - m_X1_Y128[i] - m_X128_Y1[i]);
          MMv = MMv.unit();
 
          G4ThreeVector MMscal = MMu.dot(MMv);
@@ -485,7 +485,8 @@ void ParisPhoswitch::ConstructDetector(G4LogicalVolume* world)
          // MUST2
          MMrot = new G4RotationMatrix(MMu, MMv, MMw);
          // translation to place Telescope
-         MMpos = MMw * Length * 0.5 + MMCenter;
+         //MMpos = MMw * Length * 0.5 + MMCenter;
+         MMpos = MMCenter;
       }
 
       // By Angle
@@ -539,14 +540,14 @@ void ParisPhoswitch::ConstructDetector(G4LogicalVolume* world)
 
 // Connect the ParisData class to the output TTree
 // of the simulation
-void ParisPhoswitch::InitializeRootOutput()
+void ShieldPhParis::InitializeRootOutput()
 {
 }
 
 
 
 // Set the TinteractionCoordinates object from VDetector to the present class
-void ParisPhoswitch::SetInterCoordPointer(TInteractionCoordinates* interCoord)
+void ShieldPhParis::SetInterCoordPointer(TInteractionCoordinates* interCoord)
 {
    ms_InterCoord = interCoord;
 }
@@ -555,21 +556,250 @@ void ParisPhoswitch::SetInterCoordPointer(TInteractionCoordinates* interCoord)
 
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
-void ParisPhoswitch::ReadSensitive(const G4Event* event)
+void ShieldPhParis::ReadSensitive(const G4Event* event)
 {
+   //////////////////////////////////////////////////////////////////////////////////////
+   //////////////////////// Used to Read Event Map of detector //////////////////////////
+   //////////////////////////////////////////////////////////////////////////////////////
+ 
+      momentum = event->GetPrimaryVertex()->GetPrimary()->GetMomentum(); 
+      G4double EGamma = momentum.getR(); // for photon E=p
+      G4double EGammaMin = EGamma-4*ResoFirstStage; 
+      G4double EGammaMax = EGamma+4*ResoFirstStage;
+
+   // CsI Shield
+   std::map<G4int, G4int*>::iterator    CsIShieldDetectorNumber_itr;
+   std::map<G4int, G4double*>::iterator CsIShieldEnergy_itr;
+   std::map<G4int, G4double*>::iterator CsIShieldTime_itr;
+   //std::map<G4int, G4double*>::iterator X_itr;
+   //std::map<G4int, G4double*>::iterator Y_itr;
+   //std::map<G4int, G4double*>::iterator Pos_X_itr;
+   //std::map<G4int, G4double*>::iterator Pos_Y_itr;
+   //std::map<G4int, G4double*>::iterator Pos_Z_itr;
+   //std::map<G4int, G4double*>::iterator Ang_Theta_itr;
+   //std::map<G4int, G4double*>::iterator Ang_Phi_itr;
+
+   G4THitsMap<G4int>*    CsIShieldDetectorNumberHitMap;
+   G4THitsMap<G4double>* CsIShieldEnergyHitMap;
+   G4THitsMap<G4double>* CsIShieldTimeHitMap;
+   //   G4THitsMap<G4double>* XHitMap;
+   //  G4THitsMap<G4double>* YHitMap;
+   //G4THitsMap<G4double>* PosXHitMap;
+   //G4THitsMap<G4double>* PosYHitMap;
+   //G4THitsMap<G4double>* PosZHitMap;
+   //G4THitsMap<G4double>* AngThetaHitMap;
+   //G4THitsMap<G4double>* AngPhiHitMap;
+
+   // NULL pointer are given to avoid warning at compilation
+
+   // Read the Scorer associate to the LaBr
+
+   //Detector Number
+   G4int CsIShieldDetCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("CsIScorerShieldPhParis/CsIShieldDetectorNumber")    ;
+   CsIShieldDetectorNumberHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(CsIShieldDetCollectionID))         ;
+   CsIShieldDetectorNumber_itr =  CsIShieldDetectorNumberHitMap->GetMap()->begin()                                               ;
+
+   //Energy
+   G4int CsIShieldEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("CsIScorerShieldPhParis/CsIShieldEnergy")   ;
+   CsIShieldEnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(CsIShieldEnergyCollectionID))                    ;
+   CsIShieldEnergy_itr = CsIShieldEnergyHitMap->GetMap()->begin()                                                          ;
+
+   //Time of Flight
+   G4int CsIShieldTimeCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("CsIScorerShieldPhParis/CsIShieldTime")    ;
+   CsIShieldTimeHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(CsIShieldTimeCollectionID))                        ;
+   CsIShieldTime_itr = CsIShieldTimeHitMap->GetMap()->begin()                                                              ;
+
+
+   // Check the size of different map
+   G4int sizeN = CsIShieldDetectorNumberHitMap->entries();  // number of objects hit by trackID=1 (can be the same object hit several time) 
+   G4int sizeE = CsIShieldEnergyHitMap->entries();          // = number of steps with edep non null 
+   G4int sizeT = CsIShieldTimeHitMap->entries();
+   //G4int sizeX = PosXHitMap->entries();
+   //G4int sizeY = PosYHitMap->entries();
+   //G4int sizeX = XHitMap->entries();
+   //G4int sizeY = YHitMap->entries();
+
+   //G4cout <<"SizeN=" << sizeN << endl;
+   //G4cout <<"SizeC=" << sizeC << endl;
+   //G4cout <<"SizeN CsI =" << sizeNCsI << endl;
+   //G4cout <<"SizeE CsI =" << sizeECsI << endl;
+
+   //DetectorNumberHitMap->PrintAllHits();
+
+
+    if (sizeE != sizeT) {
+      G4cout << "No match size PARIS Event Map: sE:"
+      << sizeE << " sT:" << sizeT << endl ;
+
+      //   if (sizeE != sizeX) {
+      //G4cout << "No match size PARIS Event Map: sE:"
+      //<< sizeE << " sT:" << sizeT << " sX:" << sizeX << " sY:" << sizeY << endl ;
+      return;
+     }
+
+
+    //G4cout <<"SizeN=" << sizeN << G4endl;
+
+
+   if(sizeN>0)
+     {
+
+       // Deal with trackID=1:
+       G4int N_first= *(CsIShieldDetectorNumber_itr->second);                  // ID of first det hit
+       G4int NTrackID =   CsIShieldDetectorNumber_itr->first - N_first;           // first trackID dealt with (not always =1)
+       G4double E = *(CsIShieldEnergy_itr->second);
+       G4double T = *(CsIShieldTime_itr->second);
+      
+
+       //G4cout <<"NTrackID=" << NTrackID << G4endl;
+       //G4cout <<"N_first=" << N_first << G4endl;
+       //G4cout <<"CrystalNumber_first=" << NCryst << G4endl;
+       //G4cout <<"Energy first=" << E << G4endl;
+       //G4cout <<"Time first =" << T << G4endl;
+
+
+       if(sizeN>1)
+	 {
+	   CsIShieldEnergy_itr++;
+	   CsIShieldTime_itr++;
+	   CsIShieldDetectorNumber_itr++;
+
+	   for (G4int l = 1; l < sizeN ; l++) {                    // loop on all the other tracks
+
+ 
+	     G4int N= *(CsIShieldDetectorNumber_itr->second);            // ID of det hit
+	     NTrackID =   CsIShieldDetectorNumber_itr->first - N;           // ID of the track
+
+	     //G4cout <<"l=" << l << G4endl;
+	     //G4cout <<"N=" << N << G4endl;
+	     //G4cout <<"DetectorNumber_itr->first =" << DetectorNumber_itr->first << G4endl;
+	     //G4cout <<"NTrackID=" << NTrackID << G4endl;
+
+	     if(N==N_first)
+	       {
+		 E += *(CsIShieldEnergy_itr->second);
+
+	       }else  // we fill the tree for the first detector hit and move to the next detector hit
+		 {
+		   if(E!=0)
+		     {
+		       // Fill detector number
+		       ms_Event->SetPARISCsIShieldEDetectorNbr(m_index["ShieldPh"] + N_first);
+		       ms_Event->SetPARISCsIShieldTDetectorNbr(m_index["ShieldPh"] + N_first);
+		       // Fill Energy
+		       // ms_Event->SetPARISCsIShieldEEnergy(RandGauss::shoot(E, ResoFirstStage));
+		           E=RandGauss::shoot(E, ResoFirstStage);
+		           ms_Event->SetPARISCsIShieldEEnergy(E); // Fill the tree
+		           if(E>EGammaMin && E<EGammaMax) ms_Event->SetPARISCsIShieldEffphpeak(EGamma);
+		       // Fill Time
+		       ms_Event->SetPARISCsIShieldTTime(RandGauss::shoot(T, ResoTimeGpd));
+
+		     }
+
+		   N_first=N;
+		   E=*(CsIShieldEnergy_itr->second);
+
+		 }
+
+
+	     //G4cout <<"Energy=" << E << G4endl;
+	     //G4cout <<"Time =" << T << G4endl;
+       
+	     // Always fill the tree at the end of the loop:
+	   if(l==(sizeN-1) && E!=0)
+	     {
+	       // Fill detector number
+	       ms_Event->SetPARISCsIShieldEDetectorNbr(m_index["ShieldPh"] + N_first);
+	       ms_Event->SetPARISCsIShieldTDetectorNbr(m_index["ShieldPh"] + N_first);
+	       // Fill Energy
+	       // ms_Event->SetPARISCsIShieldEEnergy(RandGauss::shoot(E, ResoFirstStage));
+		           E=RandGauss::shoot(E, ResoFirstStage);
+		           ms_Event->SetPARISCsIShieldEEnergy(E); // Fill the tree
+		           if(E>EGammaMin && E<EGammaMax) ms_Event->SetPARISCsIShieldEffphpeak(EGamma);
+	       // Fill Time
+	       ms_Event->SetPARISCsIShieldTTime(RandGauss::shoot(T, ResoTimeGpd));	       
+	     }
+
+	     CsIShieldEnergy_itr++;
+	     CsIShieldDetectorNumber_itr++;
+	   }
+	 }else
+	   {
+	     // Fill the tree if sizeN=1:
+	     if(E!=0)
+	       {
+	       // Fill detector number
+	       ms_Event->SetPARISCsIShieldEDetectorNbr(m_index["ShieldPh"] + N_first);
+	       ms_Event->SetPARISCsIShieldTDetectorNbr(m_index["ShieldPh"] + N_first);
+	       // Fill Energy
+	       // ms_Event->SetPARISCsIShieldEEnergy(RandGauss::shoot(E, ResoFirstStage));
+		           E=RandGauss::shoot(E, ResoFirstStage);
+		           ms_Event->SetPARISCsIShieldEEnergy(E); // Fill the tree
+		           if(E>EGammaMin && E<EGammaMax) ms_Event->SetPARISCsIShieldEffphpeak(EGamma);
+
+	       // Fill Time
+	       ms_Event->SetPARISCsIShieldTTime(RandGauss::shoot(T, ResoTimeGpd));
+	       }
+	   }
+	
+ 
+     }
+  
+
+
+      // clear map for next event
+      CsIShieldDetectorNumberHitMap    -> clear();
+      CsIShieldEnergyHitMap            -> clear();
+      CsIShieldTimeHitMap              -> clear();
+      //XHitMap                 -> clear();
+      //YHitMap                 -> clear();
+      //PosXHitMap              -> clear();
+      //PosYHitMap              -> clear();
+      //PosZHitMap              -> clear();
+      //AngThetaHitMap          -> clear();
+      //AngPhiHitMap            -> clear();
+
 }
 
 
 
-void ParisPhoswitch::InitializeScorers()
+void ShieldPhParis::InitializeScorers()
 {
-   // LaBr3 Associate Scorer
-   m_LaBr3StageScorer = new G4MultiFunctionalDetector("LaBr3StageScorerParisPhoswitch");
+ 
+   // CsIShield Associate Scorer
+   m_CsIShieldScorer = new G4MultiFunctionalDetector("CsIScorerShieldPhParis");
+   
+   //   G4VPrimitiveScorer* DetNbr                           = new GENERALSCORERS::PSDetectorNumber("DetectorNumber", "ShieldPhParis", 0);
+   G4VPrimitiveScorer* DetNbr                           = new SHIELDScorerCsIDetectorNumber("CsIShieldDetectorNumber", "ShieldPhParis", 0);
+   //   G4VPrimitiveScorer* TOF                              = new GENERALSCORERS::PSTOF("StripTime","ShieldPhParis", 0);
+   G4VPrimitiveScorer* TOF                              = new SHIELDScorerCsITOF("CsIShieldTime","ShieldPhParis", 0);
+   //G4VPrimitiveScorer* InteractionCoordinatesX          = new GENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","ShieldPhParis", 0);
+   //G4VPrimitiveScorer* InteractionCoordinatesY          = new GENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","ShieldPhParis", 0);
+   //G4VPrimitiveScorer* InteractionCoordinatesZ          = new GENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","ShieldPhParis", 0);
+   //G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new GENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","ShieldPhParis", 0);
+   //G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new GENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","ShieldPhParis", 0);
 
-   // Second stage Associate Scorer
-   m_CsIStageScorer = new G4MultiFunctionalDetector("CsIStageScorerParisPhoswitch");
+   G4VPrimitiveScorer* Energy                           = new SHIELDScorerCsIEnergy("CsIShieldEnergy", "ShieldPhParis", 0);
+
+   //   G4VPrimitiveScorer* StripPositionX                   = new PARIScorerLaBr3StageFrontStripDummyShape("StripIDFront", 0, NumberOfStrips);
+   //  G4VPrimitiveScorer* StripPositionY                   = new PARISScorerLaBr3StageBackStripDummyShape("StripIDBack", 0, NumberOfStrips);
+
+   //and register it to the multifunctionnal detector
+   m_CsIShieldScorer->RegisterPrimitive(DetNbr);
+   m_CsIShieldScorer->RegisterPrimitive(Energy);
+   m_CsIShieldScorer->RegisterPrimitive(TOF);
+   //m_LaBr3StageScorer->RegisterPrimitive(StripPositionX);
+   //m_LaBr3StageScorer->RegisterPrimitive(StripPositionY);
+   //m_LaBr3StageScorer->RegisterPrimitive(InteractionCoordinatesX);
+   //m_LaBr3StageScorer->RegisterPrimitive(InteractionCoordinatesY);
+   //m_LaBr3StageScorer->RegisterPrimitive(InteractionCoordinatesZ);
+   //m_LaBr3StageScorer->RegisterPrimitive(InteractionCoordinatesAngleTheta);
+   //m_LaBr3StageScorer->RegisterPrimitive(InteractionCoordinatesAnglePhi);
+
+
 
    //  Add All Scorer to the Global Scorer Manager
-   G4SDManager::GetSDMpointer()->AddNewDetector(m_LaBr3StageScorer);
-   G4SDManager::GetSDMpointer()->AddNewDetector(m_CsIStageScorer);
+   G4SDManager::GetSDMpointer()->AddNewDetector(m_CsIShieldScorer);
+  
+ 
 }

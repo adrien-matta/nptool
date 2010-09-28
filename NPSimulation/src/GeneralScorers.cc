@@ -54,7 +54,7 @@ int GENERALSCORERS::PickUpDetectorNumber(G4Step* aStep, std::string DetName)
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-		//Detector Number Scorer
+// Detector Number Scorer
 PSDetectorNumber::PSDetectorNumber(G4String name, G4String VolumeName, G4int depth )
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
@@ -115,6 +115,8 @@ void PSDetectorNumber::PrintAll()
       << G4endl;
    }
 }
+
+
 
 
 

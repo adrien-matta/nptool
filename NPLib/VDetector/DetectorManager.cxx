@@ -10,6 +10,8 @@
 #include "../SSSD/TSSSDPhysics.h"
 #include "../Plastic/TPlasticPhysics.h"
 #include "../GASPARD/GaspardTracker.h"
+#include "../Paris/Paris.h"
+#include "../Shield/Shield.h"
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,6 +44,8 @@ void DetectorManager::ReadConfigurationFile(string Path)
    bool ScintillatorPlastic = false;
    bool GeneralTarget       = false;
    bool GPDTracker          = false;
+   bool ParisDet            = false;
+   bool ShieldDet           = false;
 
    //////////////////////////////////////////////////////////////////////////////////////////
    string GlobalPath = getenv("NPTOOL");
@@ -82,6 +86,40 @@ void DetectorManager::ReadConfigurationFile(string Path)
 
          // Add array to the VDetector Vector
          AddDetector("GASPARD", myDetector);
+      }
+      ////////////////////////////////////////////
+      ///////////// Search for Paris /////////////
+      ////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 5, "Paris") == 0 && ParisDet == false) {
+         ParisDet = true;
+         cout << "//////// Paris ////////" << endl << endl;
+
+         // Instantiate the new array as a VDetector Object
+         VDetector* myDetector = new Paris();
+         // Read Position of Telescope
+         ConfigFile.close();
+         myDetector->ReadConfiguration(Path);
+         ConfigFile.open(Path.c_str());
+
+         // Add array to the VDetector Vector
+         AddDetector("PARIS", myDetector);
+      }
+      ////////////////////////////////////////////
+      ///////////// Search for Paris' Shield /////
+      ////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 6, "Shield") == 0 && ShieldDet == false) {
+         ShieldDet = true;
+         cout << "//////// Shield ////////" << endl << endl;
+
+         // Instantiate the new array as a VDetector Object
+         VDetector* myDetector = new Shield();
+         // Read Position of Telescope
+         ConfigFile.close();
+         myDetector->ReadConfiguration(Path);
+         ConfigFile.open(Path.c_str());
+
+         // Add array to the VDetector Vector
+         AddDetector("SHIELD", myDetector);
       }
 
       ////////////////////////////////////////////
@@ -139,6 +177,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
          // Add array to the VDetector Vector
          AddDetector("Plastic", myDetector);
       }
+
 
       ////////////////////////////////////////////
       //////////// Search for Target /////////////

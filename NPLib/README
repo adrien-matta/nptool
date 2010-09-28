@@ -9,14 +9,14 @@
  * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
  *                                                                           *
  * Creation Date  : 01/09/09                                                 *
- * Last update    :                                                          *
+ * Last update    : 17/09/10                                                 *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *      This file describes the content of the NPLib directory               *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *                                                                           *
- *                                                                           *
+ *     01/09/10: added Shield of PARIS                                       *
+ *     04/12/09: added PARIS array                                           *
  *****************************************************************************/
 
 This directory contains a set of libraries which are used both in the 
@@ -33,6 +33,7 @@ NPLib / include
       / AnnularS1
       / GASPARD
       / Paris
+      / Shield
       / VDetector
 
 A description of each directory follows.
@@ -119,11 +120,27 @@ XI) GASPARD
 		obtained from NPSimulation. This library is *only* used by NPAnalysis.
 
 XII) Paris
-	This directory includes one library:
+	This directory includes tow library:
 		libParisData.so
-	This library stores the results of the G4 simulation for the Paris detector.
+		libParisPhysics.so
+	libParisData.so
+		This library stores the results of the G4 simulation for the Paris detector.
+	libParisPhysics.so
+		This library deals with the treatment applied to the ROOT output file 
+		obtained from NPSimulation. This library is *only* used by NPAnalysis.
 
-XIII) VDetector
+
+XIII) Shield
+	This directory includes two library:
+		libShieldData.so
+		libShieldPhysics.so
+	libShieldData.so
+		This library stores the results of the G4 simulation for the Shield of PARIS.
+	libShieldPhysics.so
+		This library deals with the treatment applied to the ROOT output file 
+		obtained from NPSimulation. This library is *only* used by NPAnalysis.
+
+XIV) VDetector
 	This directory includes two libraries:
 		libVDetector.so
 		libDetectorManager.so

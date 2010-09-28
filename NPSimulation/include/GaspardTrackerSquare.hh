@@ -155,8 +155,8 @@ namespace GPDSQUARE
    const G4double ResoTimePPAC    = 0.106382979    ;// = 250ps                 //   Unit is  ns/2.35
 
    // Geometry
-   const G4double FaceFront = 11.*cm   ;
-   const G4double FaceBack = 16.5*cm   ;
+  const G4double FaceFront = 5*cm; // = for 5x5cm det //11.*cm for 10x10 cm det.   ;
+  const G4double FaceBack = 5*cm; //16.5*cm   ;
 //   const G4double Length  = 7.2*cm     ;
    const G4double Length  = 2.0*cm     ;
 
@@ -164,7 +164,7 @@ namespace GPDSQUARE
 //   const G4double AluStripThickness = 0.00000001*micrometer;
    const G4double AluStripThickness = 0.4*micrometer ;
    const G4double SiliconThickness  = 300*micrometer ;
-   const G4double SiliconFace       = 98*mm          ;
+  const G4double SiliconFace       = 48.25*mm; //98*mm          ;
 //   const G4double VacBoxThickness   = 3*cm           ;
    const G4double VacBoxThickness   = 0.5*cm           ;
    const G4int    NumberOfStrips    = 128;
@@ -172,7 +172,7 @@ namespace GPDSQUARE
    // Second stage
    const G4double SiLiThickness     = 5.1*mm                      ;  // Must be checked
    const G4double SiLiFaceX         = 48.25*mm                    ;
-   const G4double SiLiFaceY         = 92*mm                       ;
+   const G4double SiLiFaceY         = 48.25*mm ; // 92*mm                       ;
 
    // Third stage
    const G4double MylarCsIThickness   = 3*micrometer;

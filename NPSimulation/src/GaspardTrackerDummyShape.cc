@@ -755,6 +755,10 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
    G4int sizeX = XHitMap->entries();
    G4int sizeY = YHitMap->entries();
 
+
+   //G4cout << "sizeN:" << sizeN << G4endl;
+
+
    if (sizeE != sizeT || sizeT != sizeX || sizeX != sizeY) {
       G4cout << "No match size Si Event Map: sE:"
       << sizeE << " sT:" << sizeT << " sX:" << sizeX << " sY:" << sizeY << endl ;
@@ -765,6 +769,11 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
    for (G4int l = 0; l < sizeN; l++) {
       G4double N     = *(DetectorNumber_itr->second);
       G4int NTrackID =   DetectorNumber_itr->first - N;
+
+      G4cout <<"N:" <<N << G4endl;
+      G4cout <<"DetectorNumber_itr->first:" << DetectorNumber_itr->first <<  G4endl;
+      G4cout <<"NTrackID:" <<NTrackID << G4endl;
+
 
       if (N > 0) {
          // Fill detector number

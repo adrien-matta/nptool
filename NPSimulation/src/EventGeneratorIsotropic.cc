@@ -195,6 +195,7 @@ void EventGeneratorIsotropic::GenerateEvent(G4Event* anEvent, G4ParticleGun* par
    G4double cos_theta_max   = cos(m_HalfOpenAngleMax);
    G4double cos_theta       = cos_theta_min + (cos_theta_max - cos_theta_min) * RandFlat::shoot();
    G4double theta           = acos(cos_theta)                                                   ;
+   //   G4double phi             = 3*pi/2; //RandFlat::shoot() * 2 * pi                                        ;
    G4double phi             = RandFlat::shoot() * 2 * pi                                        ;
    G4double particle_energy = m_EnergyLow + RandFlat::shoot() * (m_EnergyHigh - m_EnergyLow)    ;
 
@@ -228,6 +229,7 @@ void EventGeneratorIsotropic::GenerateEvent(G4Event* anEvent, G4ParticleGun* par
    m_InitConditions->SetICEmittedAnglePhiWorldFrame(phi / deg);
    // Emitted particle energy
    m_InitConditions->SetICEmittedEnergy(particle_energy / MeV);
+
 
    //Shoot particle
    particleGun->GeneratePrimaryVertex(anEvent)                                                    ;

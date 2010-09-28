@@ -6,12 +6,12 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
+ * Original Author:  M. Labiche  contact address: marc.labiche@atfc.ac.uk    *
  *                                                                           *
- * Creation Date  : 04/12/09                                                 *
+ * Creation Date  : 15/08/10                                                 *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
- * Decription: Define a phoswitch module for the Paris detector.             *
+ * Decription: Define the shield around a PARIS phoswich module              *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -19,28 +19,29 @@
  *                                                                           *
  *****************************************************************************/
 
-#ifndef ParisPhoswitch_h
-#define ParisPhoswitch_h 1
+#ifndef ShieldPhParis_h
+#define ShieldPhParis_h 1
 
 // C++ headers
 #include <vector>
 
 // NPTool header
-#include "ParisModule.hh"
+//#include "ParisModule.hh"
+#include "ShieldModule.hh"
 #include "TInteractionCoordinates.h"
 
 using namespace std;
 
 
 
-class ParisPhoswitch : public ParisModule
+class ShieldPhParis : public ShieldModule
 {
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
    ////////////////////////////////////////////////////
 public:
-   ParisPhoswitch();
-   virtual ~ParisPhoswitch();
+   ShieldPhParis();
+   virtual ~ShieldPhParis();
 
    ////////////////////////////////////////////////////
    //////// Specific Function of this Class ///////////
@@ -123,36 +124,35 @@ private:
    vector<G4double>  m_beta_u ; //  |
    vector<G4double>  m_beta_v ; //  > Tilt angle of the Telescope
    vector<G4double>  m_beta_w ; //  |
+
+  G4ThreeVector momentum;
 };
 
 
 
-namespace PARISPHOSWITCH
+namespace PARISPHSHIELD
 {
    // Resolution
 //   const G4double ResoFirstStage  = 0;	// = 50 keV of Resolution   //   Unit is MeV/2.35
-   const G4double ResoFirstStage  = 0.0213;	// = 50 keV of Resolution   //   Unit is MeV/2.35
-   const G4double ResoSecondStage = 0.0213;	// = 50 keV of resolution //   Unit is MeV/2.35
-   const G4double ResoThirdStage  = 0.0213;	// = 50 keV of resolution //   Unit is MeV/2.35
+   const G4double ResoFirstStage  = 0.0366;	// = 3% at .662 MeV of Resolution   //   Unit is MeV/2.35
    const G4double ResoTimeGpd     = 0.212765957;// = 500ps                 //   Unit is  ns/2.35
 
    // Geometry for the mother volume containing the different layers of your dummy shape module
-   const G4double FaceFront          = 6.3*cm;
-   const G4double FaceBack           = 6.3*cm;
-   const G4double Length             = 21*cm;
+  //   const G4double FaceFront          = 16.9*cm;
+  //   const G4double FaceBack           = 16.9*cm;
 
-   // Geometry for the phoswitch
-   // LaBr3
-   const G4double LaBr3Face       = 5.08*cm;
-   const G4double LaBr3Thickness  = 5.08*cm;
+   const G4double Length             = 15.*cm;
+
+  // central hole for Phoswich  
+  const G4double PhoswichFace       = 5.8*cm; // 5.7+0.1 cm
 
    // CsI
-   const G4double CsIFace      = LaBr3Face;
-   const G4double CsIThickness = 15.24*cm;
+  //   const G4double CsIFace      = LaBr3Face;
+  //   const G4double CsIThickness = 15.24*cm;
 
    // Starting form the LaBr3 and going to the CsI
-   const G4double LaBr3Stage_PosZ  = Length* -0.5 + 0.5*LaBr3Thickness;
-   const G4double CsIStage_PosZ    = Length* -0.5 + LaBr3Thickness + 0.5*CsIThickness;
+  //   const G4double LaBr3Stage_PosZ  = Length* -0.5 + 0.5*LaBr3Thickness;
+  //   const G4double CsIStage_PosZ    = Length* -0.5 + LaBr3Thickness + 0.5*CsIThickness;
 }
 
 #endif

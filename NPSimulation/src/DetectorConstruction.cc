@@ -9,7 +9,7 @@
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
  * Creation Date  : January 2009                                             *
- * Last update    :                                                          *
+ * Last update    : 26/08/2010  (M. Labiche)                                 *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This Class manage the virtual detector and call their method.            *
@@ -18,14 +18,17 @@
  *  token.                                                                   *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *                                                                           *
- *                                                                           *
+ *    25/08/10: Added Shield around PARIS   (marc.labiche@stfc.ac.uk)        *
+ *    15/01/10: Added Chamber (marc.labiche@stfc.ac.uk)                      *
+ *    04/12/09: Added PARIS detector (marc.labiche@stfc.ac.uk)               *
  *****************************************************************************/
+
 #include "DetectorConstruction.hh"
 
 #include "G4Material.hh"
 #include "G4Box.hh"
 #include "G4Tubs.hh"
+#include "G4Sphere.hh"
 #include "G4LogicalVolume.hh"
 #include "G4ThreeVector.hh"
 #include "G4PVPlacement.hh"
@@ -42,9 +45,11 @@
 #include "GaspardTracker.hh"
 #include "AnnularS1.hh"
 #include "Target.hh"
+#include "Chamber.hh"
 #include "ThinSi.hh"
 #include "Plastic.hh"
 #include "Paris.hh"
+#include "Shield.hh"
 
 //Not G4
 #include <cstdlib>
@@ -55,12 +60,14 @@ DetectorConstruction::DetectorConstruction()
       :  world_log(0), world_phys(0)
 {
    m_Target	= 0;
+   m_Chamber	= 0;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 DetectorConstruction::~DetectorConstruction()
 {
    delete m_Target;
+   delete m_Chamber;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -95,10 +102,35 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
    world_phys = new G4PVPlacement(0, G4ThreeVector(), world_log, "world", 0, false, 0);
 
-   G4VisAttributes* VisAtt = new G4VisAttributes(G4Colour(0.2, 0.2, 0.2));
+   //   G4VisAttributes* VisAtt = new G4VisAttributes(G4Colour(0.2, 0.2, 0.2));
+   G4VisAttributes* VisAtt = new G4VisAttributes(G4VisAttributes::Invisible);
    world_log->SetVisAttributes(VisAtt);
 
    //------------------------------------------------------------------
+
+   //------------------------------Reaction Chamber volume
+   /*
+   G4double Chamber_Rmin = 20.0 * cm;
+   G4double Chamber_Rmax = 20.2 * cm;
+   G4double Chamber_ThetaMin = 0.0 * rad;
+   G4double Chamber_ThetaMax = 3.14 * rad;
+   G4double Chamber_PhiMin = 0.0 * rad;
+   G4double Chamber_PhiMax = 6.26 * rad;
+
+   G4Sphere* Chamber_sphere
+   = new G4Sphere("Chamber_sphere", Chamber_Rmin, Chamber_Rmax, Chamber_PhiMin, Chamber_PhiMax, Chamber_ThetaMin, Chamber_ThetaMax );
+
+   Chamber_log = new G4LogicalVolume(Chamber_sphere, Vacuum, "Chamber_log", 0, 0, 0);
+
+   Chamber_phys = new G4PVPlacement(0, G4ThreeVector(), Chamber_log, "Chamber", world_log, false, 0);
+
+   G4VisAttributes* VisAttChamber = new G4VisAttributes(G4Colour(0.2, 0.2, 0.2));
+   //G4VisAttributes* VisAtt = new G4VisAttributes(G4VisAttributes::Invisible);
+   Chamber_log->SetVisAttributes(VisAttChamber);
+   */
+   //------------------------------------------------------------------
+
+
 
    return world_phys;
 }
@@ -128,11 +160,13 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
    bool cMUST2           = false;
    bool cAddThinSi       = false;
    bool cGeneralTarget   = false;
+   bool cGeneralChamber  = false;
    bool cGPDTracker      = false;	// Gaspard Tracker
    bool cS1              = false;
    bool cPlastic         = false;
    bool cDummy           = false;
    bool cParis           = false;	// Paris Calorimeter
+   bool cShield          = false;	// Paris Shield CsI
    //////////////////////////////////////////////////////////////////////////////////////////
    // added by Nicolas [07/05/09]
    string GlobalPath = getenv("NPTOOL");
@@ -193,6 +227,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
          AddDetector(myDetector)                            ;
       }
 
+
       ////////////////////////////////////////////
       //////////// Search for paris   ////////////
       ////////////////////////////////////////////
@@ -202,6 +237,25 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
 
          // Instantiate the new array as a VDetector Object
          VDetector* myDetector = new Paris()                  ;
+
+         // Read Position of Telescope
+         ConfigFile.close()                                 ;
+         myDetector->ReadConfiguration(Path)                   ;
+         ConfigFile.open(Path.c_str())                      ;
+
+         // Add array to the VDetector Vector
+         AddDetector(myDetector)                            ;
+      }
+
+      ////////////////////////////////////////////
+      //////////// Search for paris shield   ////////////
+      ////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 6, "Shield") == 0 && cShield == false) {
+         cShield = true ;
+         G4cout << "//////// Shield  ////////" << G4endl   ;
+
+         // Instantiate the new array as a VDetector Object
+         VDetector* myDetector = new Shield()                  ;
 
          // Read Position of Telescope
          ConfigFile.close()                                 ;
@@ -306,6 +360,28 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
 
          // Add Target to DetectorConstruction
          m_Target = (Target*) myDetector;
+
+         // Add target to the VDetector Vector
+         AddDetector(myDetector);
+      }
+      ////////////////////////////////////////////
+      //////////// Search for Chamber /////////////
+      ////////////////////////////////////////////
+
+      else if (LineBuffer.compare(0, 14, "GeneralChamber") == 0 && cGeneralChamber == false) {
+         cGeneralChamber = true ;
+         G4cout << "////////// Chamber ///////////" << G4endl   << G4endl   ;
+
+         // Instantiate the new array as a VDetector Objects
+         VDetector* myDetector = new Chamber();
+
+         // Read Position and target specification
+         ConfigFile.close();
+         myDetector->ReadConfiguration(Path);
+         ConfigFile.open(Path.c_str());
+
+         // Add Target to DetectorConstruction
+         m_Chamber = (Chamber*) myDetector;
 
          // Add target to the VDetector Vector
          AddDetector(myDetector);

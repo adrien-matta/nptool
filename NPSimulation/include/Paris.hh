@@ -6,7 +6,7 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
+ * Original Author: M. Labiche  contact address: marc.labiche@stfc.ac.uk     *
  *                                                                           *
  * Creation Date  : 04/12/09                                                 *
  * Last update    :                                                          *

@@ -265,11 +265,10 @@ LDFLAGS      += $(ROOTLDFLAGS)
 LIBS          = $(ROOTLIBS) $(SYSLIBS)
 GLIBS         = $(ROOTGLIBS) $(SYSLIBS)
 
-INCLUDE		= -I$(CLHEP_BASE_DIR)/include
+INCLUDE		= -I$(CLHEP_BASE_DIR)/include -I$(NPLIB)/include
  
 #------------------------------------------------------------------------------
-SHARELIB      =  libParisData.so 
-
+SHARELIB      =  libParisData.so	libParisPhysics.so 
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 ############### Detector ##############
@@ -281,8 +280,18 @@ libParisData.so:	TParisData.o	TParisDataDict.o
 TParisDataDict.cxx:	TParisData.h
 			rootcint -f $@ -c $^
 
+libParisPhysics.so:	Paris.o TParisPhysics.o TParisPhysicsDict.o
+			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
+
+TParisPhysicsDict.cxx:	TParisPhysics.h
+			rootcint -f $@ -c $^
+
+
 # dependances
+Paris.o:	Paris.cxx	Paris.h
 TParisData.o:	TParisData.cxx	TParisData.h
+TParisPhysics.o:	TParisPhysics.cxx	TParisPhysics.h
+
 #######################################
 
 ############# Clean and More ##########

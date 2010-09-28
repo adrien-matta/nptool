@@ -2,12 +2,12 @@
 # On linux system, include it in your bashrc or tcshrc file.
 
 # NPTool Needs
-setenv NPTOOL /YourPathToNPTool/NPTool
+setenv NPTOOL /home/local1/geant4/NPTool.Paris
 setenv NPLIB $NPTOOL/NPLib
 setenv NPSIM $NPTOOL/NPSimulation
 setenv NPANA $NPTOOL/NPAnalysis
-setenv LD_LIBRARY_PATH $LD_LIBRARY_PATH:$NPLIB/lib
-source $NPLIB/lib/liblist
+setenv LD_LIBRARY_PATH $NPLIB/lib:$LD_LIBRARY_PATH
+source $NPLIB/liblist
 
 # alias
 alias Simulation '$NPSIM/bin/$G4SYSTEM/Simulation'
