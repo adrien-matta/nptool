@@ -290,7 +290,7 @@ void GaspardTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
 
       ///Visualisation of Silicon Strip
 //      G4VisAttributes* SiliconVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5)) ;
-      G4VisAttributes* SiliconVisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 0.9)) ;
+      G4VisAttributes* SiliconVisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 0.9)) ;	// bleu
       logicSilicon->SetVisAttributes(SiliconVisAtt)                        ;
    }
 
@@ -319,7 +319,7 @@ void GaspardTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
       PVPBuffer = new G4PVPlacement(0, positionThirdStage, logicThirdStage, Name + "_ThirdStage", logicMM, false, 0);
 
       ///Visualisation of Third Stage
-      G4VisAttributes* ThirdStageVisAtt = new G4VisAttributes(G4Colour(0.0, 0.9, 0.)) ;
+      G4VisAttributes* ThirdStageVisAtt = new G4VisAttributes(G4Colour(0.0, 0.9, 0.)) ;	// green
       logicThirdStage->SetVisAttributes(ThirdStageVisAtt)                        ;
 //      logicThirdStage->SetVisAttributes(G4VisAttributes::Invisible);
 

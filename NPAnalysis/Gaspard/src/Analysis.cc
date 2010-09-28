@@ -149,8 +149,8 @@ int main(int argc,char** argv)
 //         if (Theta/deg < 60 && ThetaCM/deg < 90) {
 //         if (Theta/deg > 35 && Theta/deg < 45 && E/MeV < 17) {
 //         if (Theta/deg < 45) {
-         if (E/MeV < 38) {
-//         if (Theta/deg > 90) {
+         if (E/MeV < 38) {		// for (p,t) reaction
+//         if (Theta/deg > 90) {	// for (d,p) reaction
             ExNoStrips = myReaction->ReconstructRelativistic(E, Theta / rad);
             Ex         = myReaction->ReconstructRelativistic(E, ThetaStrip);
          }

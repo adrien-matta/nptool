@@ -130,7 +130,19 @@ G4Material* Target::GetMaterialFromLibrary(G4String MaterialName, G4double Tempe
       return(myMaterial);
    }
 
+   else if (MaterialName == "D2_solid") {
+      G4Element* D           = new G4Element("Deuteron", "D", 1., 2.0141*g / mole);
+      G4Material* myMaterial = new G4Material("D2_solid", 0.0715*g/cm3, 1);
+      myMaterial->AddElement(D, 2);
+      return(myMaterial);
+   }
 
+   else if (MaterialName == "H2_solid") {
+      G4Element* H           = new G4Element("Hydrogen", "H", 1., 1.01*g / mole);
+      G4Material* myMaterial = new G4Material("H2_solid", 0.0715*g/cm3, 1);
+      myMaterial->AddElement(H, 2);
+      return(myMaterial);
+   }
 
    else if (MaterialName == "Mylar") {
       G4cout << "Mylar Material" << G4endl ;

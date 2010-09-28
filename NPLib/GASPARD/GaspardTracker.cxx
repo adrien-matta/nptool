@@ -802,7 +802,7 @@ void GaspardTracker::AddModuleDummyShape(double theta,
    V.Rotate( beta_w * Pi/180. , W ) ;
 
    double Face = 50; // mm
-   double NumberOfStrip = 25;
+   double NumberOfStrip = 100;
    double StripPitch = Face/NumberOfStrip; // mm
 
    vector<double> lineX;
