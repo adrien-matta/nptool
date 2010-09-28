@@ -17,12 +17,12 @@ GeneralTarget
 	Z= 0
 	
 CryoTarget
-	THICKNESS= 3000
+	THICKNESS= 3
 	RADIUS=	45
 	TEMPERATURE= 26
 	PRESSURE= 1
 	MATERIAL= D2	
-	WINDOWSTHICKNESS= 15
+	WINDOWSTHICKNESS= 0
 	WINDOWSMATERIAL= Mylar
 	X= 0
 	Y= 0
@@ -149,6 +149,28 @@ D=	17.61	-9.85	104.11
 ScintillatorPlastic
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Plastic
+	X= 0
+	Y= -15
+	Z= 318
+	Shape= Square
+	Height= 70
+	Width= 40
+	Thickness= 20
+	Scintillator= BC400
+	LeadThickness= 0
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Plastic
+	X= 0
+	Y= -15
+	Z= 343
+	Thickness= 30
+	Shape= Square
+	Height= 70
+	Width= 40
+	Scintillator= BC400
+	LeadThickness= 2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Plastic
 	THETA= 0
 	PHI= 0
 	R= 318
@@ -157,7 +179,7 @@ Plastic
 	Scintillator= BC400
 	LeadThickness= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Plastic
+%Plastic
 	THETA= 0
 	PHI= 0
 	R= 343

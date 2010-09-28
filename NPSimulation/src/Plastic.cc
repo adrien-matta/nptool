@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2009   this file is part of the NPTool Project              *
+ * Copyright (C) 2009-2010   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -27,6 +27,7 @@
 #include <limits>
 //G4 Geometry object
 #include "G4Tubs.hh"
+#include "G4Box.hh"
 
 //G4 sensitive
 #include "G4SDManager.hh"
@@ -91,16 +92,40 @@ void Plastic::AddPlastic(	G4double  R        					,
 				         			 		G4double	PlasticRadius			,
 				         			 		G4String 	Scintillator			,
 				         			 		G4double 	LeadThickness			)
-{
+	{
 
-  m_R.push_back(R)              									;
-  m_Theta.push_back(Theta)        								;
-  m_Phi.push_back(Phi)          									;
-  m_PlasticThickness.push_back(PlasticThickness)	;
- 	m_PlasticRadius.push_back(PlasticRadius)				;
- 	m_LeadThickness.push_back(LeadThickness)				;
- 	m_Scintillator.push_back(Scintillator)					;
-}
+	  m_R.push_back(R)              									;
+	  m_Theta.push_back(Theta)        								;
+	  m_Phi.push_back(Phi)          									;
+	  m_PlasticThickness.push_back(PlasticThickness)	;
+	 	m_LeadThickness.push_back(LeadThickness)				;
+	 	m_Scintillator.push_back(Scintillator)					;
+    m_PlasticRadius.push_back(PlasticRadius)				; // cylindrical shape
+	 	m_PlasticHeight.push_back(-1)										; // squared shape
+   	m_PlasticWidth.push_back(-1)										; // squared shape
+	}
+
+void Plastic::AddPlastic(	G4double R       					,
+						      				G4double Theta    				,
+						      				G4double Phi   						,
+						      				G4double Height						,
+						      				G4double Width						,
+						      				G4double PlasticThickness	,
+						      				G4String Scintillator			,
+						      				G4double LeadThickness		)
+	{
+		m_R.push_back(R)              									;
+	  m_Theta.push_back(Theta)        								;
+	  m_Phi.push_back(Phi)          									;
+	  m_PlasticThickness.push_back(PlasticThickness)	;
+	 	m_LeadThickness.push_back(LeadThickness)				;
+	 	m_Scintillator.push_back(Scintillator)					;
+    m_PlasticRadius.push_back(-1)				; // cylindrical shape
+	 	m_PlasticHeight.push_back(Height)								; // squared shape
+   	m_PlasticWidth.push_back(Width)									; // squared shape
+	
+	}
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -117,18 +142,24 @@ void Plastic::ReadConfiguration(string Path)
 	string LineBuffer          ;
 	string DataBuffer          ;
 
-	G4double Theta = 0 , Phi = 0 , R = 0 , Thickness = 0 , Radius = 0 , LeadThickness = 0;
-	G4String Scintillator ;
+	G4double Theta = 0 , Phi = 0 , R = 0 , Thickness = 0 , Radius = 0 , LeadThickness = 0, X = 0 , Y = 0 , Z = 0 , Width = 0 , Height = 0 ;
+	G4String Scintillator, Shape ;
 
-	bool check_Theta = false   ;
-	bool check_Phi  = false  ;
-	bool check_R     = false   ;
+	bool check_Theta = false   				;
+	bool check_Phi  = false  					;
+	bool check_R     = false   				;
 	bool check_Thickness = false  		;
-	bool check_Radius = false  			;
-	bool check_LeadThickness = false		;
+	bool check_Radius = false  				;
+	bool check_LeadThickness = false	;
 	bool check_Scintillator = false		;
-	bool ReadingStatus = false ;
-	
+	bool check_Height = false 				;
+	bool check_Width = false 					;
+	bool check_Shape = false 					;
+	bool check_X = false 							;
+	bool check_Y = false 							;
+	bool check_Z = false 							;		
+	bool ReadingStatus = false 				;
+
 
  while (!ConfigFile.eof()) 
  	{
@@ -187,6 +218,41 @@ void Plastic::ReadConfiguration(string Path)
 						cout << "R:  " << R/mm << endl;
 					}
 					
+					//Position method
+					else if (DataBuffer.compare(0, 2, "X=") == 0) {
+						check_X = true;
+						ConfigFile >> DataBuffer ;
+						X = atof(DataBuffer.c_str()) ;
+						X = X * mm;
+						cout << "X:  " << X / mm << endl;
+					}
+
+					else if (DataBuffer.compare(0, 2, "Y=") == 0) {
+						check_Y = true;
+						ConfigFile >> DataBuffer ;
+						Y = atof(DataBuffer.c_str()) ;
+						Y = Y * mm;
+						cout << "Y:  " << Y / mm << endl;
+					}
+
+					else if (DataBuffer.compare(0, 2, "Z=") == 0) {
+						check_Z = true;
+						ConfigFile >> DataBuffer ;
+						Z = atof(DataBuffer.c_str()) ;
+						Z = Z * mm;
+						cout << "Z:  " << Z / mm << endl;
+					}
+					
+					
+					//General
+					else if (DataBuffer.compare(0, 6, "Shape=") == 0) {
+						check_Shape = true;
+						ConfigFile >> DataBuffer ;
+						Shape = DataBuffer ;
+						cout << "Shape:  " << Shape << endl;
+					}
+					
+					// Cylindrical shape
 					else if (DataBuffer.compare(0, 7, "Radius=") == 0) {
 						check_Radius = true;
 						ConfigFile >> DataBuffer ;
@@ -195,6 +261,24 @@ void Plastic::ReadConfiguration(string Path)
 						cout << "Plastic Radius:  " << Radius/mm << endl;
 					}
 					
+					// Squared shape
+					else if (DataBuffer.compare(0, 7, "Width=") == 0) {
+						check_Width = true;
+						ConfigFile >> DataBuffer ;
+						Width = atof(DataBuffer.c_str()) ;
+						Width = Width * mm;
+						cout << "Plastic Width:  " << Width/mm << endl;
+					}
+					
+					else if (DataBuffer.compare(0, 7, "Height=") == 0) {
+						check_Height = true;
+						ConfigFile >> DataBuffer ;
+						Height = atof(DataBuffer.c_str()) ;
+						Height = Height * mm;
+						cout << "Plastic Height:  " << Height/mm << endl;
+					}
+					
+					// Common
 					else if (DataBuffer.compare(0, 10, "Thickness=") == 0) {
 						check_Thickness = true;
 						ConfigFile >> DataBuffer ;
@@ -226,27 +310,57 @@ void Plastic::ReadConfiguration(string Path)
 			         	/////////////////////////////////////////////////
 			         	//	If All necessary information there, toggle out
 			         
-			         if ( check_Theta && check_Phi && check_R && check_Thickness && check_Radius && check_LeadThickness && check_Scintillator) 
+			         if ( 		( check_Theta && check_Phi && check_R && check_Thickness && check_Radius && check_LeadThickness && check_Scintillator && check_Shape) // Cylindrical case
+			         			|| 	( check_X && check_Y && check_Z && check_Thickness && check_Radius && check_LeadThickness && check_Scintillator )
+			         
+			         			||	( check_Theta && check_Phi && check_R && check_Thickness && check_Width && check_Height && check_LeadThickness && check_Scintillator && check_Shape ) // Squared case
+			         			||	( check_X && check_Y && check_Z && check_Thickness && check_Width && check_Height && check_LeadThickness && check_Scintillator )
+			         		) 
 			         	{ 
-		         		  AddPlastic(	R       		,
-		                  				Theta    		,
-		                  				Phi   			,
-		                  				Thickness		,
-		                  				Radius			,
-		                  				Scintillator	,
-		                  				LeadThickness	);
+			         	
+			         		if (check_X && check_Y && check_Z)
+			         			{
+			         				R 		= sqrt (X*X+Y*Y+Z*Z)			;
+			         				Theta	=	acos(Z / (R) )		;
+			         				Phi 	= atan2(Y,X) 	;
+			         			}
+			         	
+			         		if (Shape == "Cylinder")
+			         		  AddPlastic(	R       			,
+			                  				Theta    			,
+			                  				Phi   				,
+			                  				Thickness			,
+			                  				Radius				,
+			                  				Scintillator	,
+			                  				LeadThickness	);
+		                  				
+		              else if (Shape == "Square")
+		              	AddPlastic(	R       			,
+			                  				Theta    			,
+			                  				Phi   				,
+			                  				Height				,
+			                  				Width					,
+			                  				Thickness			,
+			                  				Scintillator	,
+			                  				LeadThickness	);
 					         
 					        //	Reinitialisation of Check Boolean 
 					        
 							check_Theta = false   			;
-							check_Phi  = false  			;
+							check_Phi  = false  				;
 							check_R     = false   			;
 							check_Thickness = false  		;
 							check_Radius = false  			;
-							check_LeadThickness = false		;
-							check_Scintillator = false 		;
+							check_LeadThickness = false	;
+							check_Scintillator = false 	;
+							check_Height = false 				;
+							check_Width = false 				;
+							check_Shape = false 				;
+							check_X = false 						;
+							check_Y = false 						;
+							check_Z = false 						;
 							ReadingStatus = false 			;	
-							cout << "///"<< endl ;	         
+							cout << "///"<< endl 				;	         
 			         	}
 			         	
 				}
@@ -303,58 +417,103 @@ void Plastic::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume*
 		
 		
 		// Definition of the volume containing the sensitive detector
-		if(m_PlasticThickness[i]>0 && m_PlasticRadius[i]>0)
-			{ 
-				G4Tubs* solidPlastic = new G4Tubs(	Name					, 
-			                            			0						,
-			                            			m_PlasticRadius[i]		,
-			                            			m_PlasticThickness[i]/2	,
-			                            			0*deg					, 
-			                            			360*deg					);
-		                            		
-				G4LogicalVolume* logicPlastic = new G4LogicalVolume(solidPlastic, PlasticMaterial, Name+ "_Scintillator", 0, 0, 0);
-				logicPlastic->SetSensitiveDetector(m_PlasticScorer);
+		
+		
+		// Cylindrical Case
+		if(m_PlasticRadius[i]!=-1)
+			{
+				if(m_PlasticThickness[i]>0 && m_PlasticRadius[i]>0)
+					{ 
+						G4Tubs* solidPlastic = new G4Tubs(	Name										,	 
+							                            			0												,
+							                            			m_PlasticRadius[i]			,
+							                            			m_PlasticThickness[i]/2	,
+							                            			0*deg										, 
+							                            			360*deg									);
+				                            		
+						G4LogicalVolume* logicPlastic = new G4LogicalVolume(solidPlastic, PlasticMaterial, Name+ "_Scintillator", 0, 0, 0);
+						logicPlastic->SetSensitiveDetector(m_PlasticScorer);
+						
+						G4VisAttributes* PlastVisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 0.9)) ;
+		   				logicPlastic->SetVisAttributes(PlastVisAtt) ;
+		 				
+		 				
+					  
+						PVPBuffer = new G4PVPlacement(	0													,
+																						Det_pos										,
+				                                    logicPlastic    					,
+				                                    Name  + "_Scintillator"   ,
+				                                    world           					,
+				                                    false           					,
+				                                    0													);	
+					}
 				
-				G4VisAttributes* PlastVisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 0.9)) ;
-   				logicPlastic->SetVisAttributes(PlastVisAtt) ;
- 				
- 				
-			  
-				PVPBuffer = new G4PVPlacement(	0				,
-												Det_pos			,
-		                                     	logicPlastic    ,
-		                                     	Name  + "_Scintillator"          ,
-		                                     	world           ,
-		                                     	false           ,
-		                                     	0				);	
 		                                     	
-		       
-		                                     	
+		        if(m_LeadThickness[i]>0&& m_PlasticRadius[i]>0)
+		        	{
+			    			G4Tubs* solidLead = new G4Tubs(	Name+"_Lead"  				,	 
+							                            			0											,
+							                            			m_PlasticRadius[i]		,
+							                            			m_LeadThickness[i]/2	,
+							                            			0*deg									, 
+							                            			360*deg								);
+					                            		
+							G4LogicalVolume* logicLead = new G4LogicalVolume(solidLead, m_MaterialLead, Name+"_Lead", 0, 0, 0);
+							G4VisAttributes* LeadVisAtt = new G4VisAttributes(G4Colour(0.1, 0.1, 0.1)) ;
+			   				logicLead->SetVisAttributes(LeadVisAtt) ;
+			   				
+							PVPBuffer = new G4PVPlacement(	0																																			,
+																							Det_pos+(m_PlasticThickness[i]/2+m_LeadThickness[i]/2)*Det_pos.unit()	,
+					                                    logicLead    																													,
+					                                    Name+"_Lead"        																									,	
+					                                    world           																											,
+					                                    false           																											,
+					                                    0																																			);
+		        	
+		        	}	
 			}
 		
-                                     	
-        if(m_LeadThickness[i]>0&& m_PlasticRadius[i]>0)
-        	{
-    			G4Tubs* solidLead = new G4Tubs(	Name+"_Lead"  			,	 
-		                            			0						,
-		                            			m_PlasticRadius[i]		,
-		                            			m_LeadThickness[i]/2	,
-		                            			0*deg					, 
-		                            			360*deg					);
-		                            		
-				G4LogicalVolume* logicLead = new G4LogicalVolume(solidLead, m_MaterialLead, Name+"_Lead", 0, 0, 0);
-				G4VisAttributes* LeadVisAtt = new G4VisAttributes(G4Colour(0.1, 0.1, 0.1)) ;
-   				logicLead->SetVisAttributes(LeadVisAtt) ;
-   				
-				PVPBuffer = new G4PVPlacement(	0																		,
-												Det_pos+(m_PlasticThickness[i]/2+m_LeadThickness[i]/2)*Det_pos.unit()	,
-		                                     	logicLead    															,
-		                                     	Name+"_Lead"        														,	
-		                                     	world           														,
-		                                     	false           														,
-		                                     	0																		);
-        	
-        	}
+		// Squared case
+		if(m_PlasticHeight[i]!=-1)
+			{
+			
+				if(m_PlasticThickness[i]>0 && m_PlasticHeight[i]>0 && m_PlasticWidth[i]>0)
+					{ 
+						G4Box* solidPlastic = new G4Box(Name, 0.5*m_PlasticWidth[i], 0.5*m_PlasticHeight[i], 0.5*m_PlasticThickness[i]);
+						G4LogicalVolume* logicPlastic = new G4LogicalVolume(solidPlastic, PlasticMaterial, Name+ "_Scintillator", 0, 0, 0);
+						logicPlastic->SetSensitiveDetector(m_PlasticScorer);
+						
+						G4VisAttributes* PlastVisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 0.9)) ;
+		   			logicPlastic->SetVisAttributes(PlastVisAtt) ;
+					  
+						PVPBuffer = new G4PVPlacement(	0												,
+																						Det_pos									,
+				                                    logicPlastic    				,
+					                                  Name  + "_Scintillator" ,
+				                                    world           				,
+				                                    false           				,
+				                                    0												);	
+					}
+				
+		        if(m_LeadThickness[i]>0&& m_PlasticHeight[i]>0 && m_PlasticWidth[i]>0)
+		        	{
+		        		G4Box* solidLead = new G4Box(Name+"_Lead", 0.5*m_PlasticWidth[i], 0.5*m_PlasticHeight[i], 0.5*m_LeadThickness[i]);
+		        		
+								G4LogicalVolume* logicLead = new G4LogicalVolume(solidLead, m_MaterialLead, Name+"_Lead", 0, 0, 0);
+								G4VisAttributes* LeadVisAtt = new G4VisAttributes(G4Colour(0.1, 0.1, 0.1)) ;
+			   				logicLead->SetVisAttributes(LeadVisAtt) ;
+			   				
+								PVPBuffer = new G4PVPlacement(	0																																			,
+																								Det_pos+(m_PlasticThickness[i]/2+m_LeadThickness[i]/2)*Det_pos.unit()	,
+													                    	logicLead																															,
+													                   	 	Name+"_Lead"        																									,	
+													                   	 	world           																											,
+													                   	 	false           																											,
+													                    	0																																			);
+										        	
+		        	}	
+			}
+		
 	}
 
 // Add Detector branch to the EventTree.

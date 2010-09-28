@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2009   this file is part of the NPTool Project              *
+ * Copyright (C) 2009-2010   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -16,8 +16,6 @@
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *  Only multiplicity one and multiplicity 2 are down.                       *
- *  Improvment needed                                                        *
  *                                                                           *
  *****************************************************************************/
 #include "TMust2Physics.h"
@@ -40,17 +38,17 @@ using namespace LOCAL;
 ClassImp(TMust2Physics)
 ///////////////////////////////////////////////////////////////////////////
 TMust2Physics::TMust2Physics() 
-	{ 
-		EventMultiplicity = 0 			;
-		EventData = new TMust2Data	;
-		EventPhysics = this					;
+	{
+		EventMultiplicity 	= 0 							;
+		EventData 					= new TMust2Data	;
+		EventPhysics 				= this						;
+		NumberOfTelescope		= 0								;
 	}
 		
 ///////////////////////////////////////////////////////////////////////////
 void TMust2Physics::BuildSimplePhysicalEvent()
 	{ 
 		BuildPhysicalEvent(); 
-	
 	}
 	
 ///////////////////////////////////////////////////////////////////////////
@@ -95,14 +93,24 @@ void TMust2Physics::BuildPhysicalEvent()
 							{
 								if(EventData->GetMMSiLiEDetectorNbr(j)==N)
 									{
-										//	if SiLi energy is above threshold check the compatibility
+										// SiLi energy is above threshold check the compatibility
 										if( fSiLi_E(EventData , j)>SiLi_E_Threshold )
 											{
+												// pad vs strip number match
 												if( Match_Si_SiLi( X, Y , EventData->GetMMSiLiEPadNbr(j) ) )
 												{
 													SiLi_N.push_back(EventData->GetMMSiLiEPadNbr(j))	;
-													SiLi_E.push_back(fSiLi_E(EventData , j))	;
-													SiLi_T.push_back(fSiLi_T(EventData , j))		;
+													SiLi_E.push_back(fSiLi_E(EventData , j))					;
+													
+													// Look for associate energy
+													// Note: in case of use of SiLi "Orsay" time is not coded.
+													for(int k =0 ; k  < EventData->GetMMSiLiTMult() ; k ++)
+														{
+															// Same Pad, same Detector
+															if( EventData->GetMMSiLiEPadNbr(j)==EventData->GetMMSiLiEPadNbr(k) && EventData->GetMMSiLiEDetectorNbr(j)==EventData->GetMMSiLiTDetectorNbr(k) )
+																{SiLi_T.push_back(fSiLi_T(EventData , k))		; break ;}
+														}
+													
 													check_SILI = true ;
 													
 												}
@@ -114,14 +122,20 @@ void TMust2Physics::BuildPhysicalEvent()
 							{
 								if(EventData->GetMMCsIEDetectorNbr(j)==N)
 									{
-										//	ifCsI energy is above threshold check the compatibility
+										//	CsI energy is above threshold check the compatibility
 										if( fCsI_T(EventData , j)>CsI_E_Threshold )
 											{
-												if( Match_Si_CsI( X, Y , EventData->GetMMCsIECristalNbr(j) ) )
+												if(Match_Si_CsI( X, Y , EventData->GetMMCsIECristalNbr(j) ) )
 													{
 														CsI_N.push_back(EventData->GetMMCsIECristalNbr(j))	;
-														CsI_E.push_back(fCsI_E(EventData , j))			;
-														CsI_T.push_back(fCsI_T(EventData , j))				;
+														CsI_E.push_back(fCsI_E(EventData , j))							;
+														
+														for(int k =0 ; k  < EventData->GetMMCsITMult() ; k ++)
+															{
+																if( EventData->GetMMCsIECristalNbr(j)==EventData->GetMMCsITCristalNbr(k) && EventData->GetMMCsIEDetectorNbr(j)==EventData->GetMMCsITDetectorNbr(k) )
+																	{CsI_T.push_back(fCsI_T(EventData , k))	; break ;}
+															}
+														
 														check_CSI = true ;
 													}
 											}
@@ -132,15 +146,15 @@ void TMust2Physics::BuildPhysicalEvent()
 						if(!check_SILI)
 							{
 								SiLi_N.push_back(0)	;
-								SiLi_E.push_back(0)	;
-								SiLi_T.push_back(0)	;
+								SiLi_E.push_back(-10000)	;
+								SiLi_T.push_back(-10000)	;
 							}
 
 						if(!check_CSI) 
 							{
 								CsI_N.push_back(0)	;
-								CsI_E.push_back(0)	;
-								CsI_T.push_back(0)	;
+								CsI_E.push_back(-10000)	;
+								CsI_T.push_back(-10000)	;
 							}
 					
 					}
@@ -177,6 +191,11 @@ vector < TVector2 > TMust2Physics :: Match_X_Y()
 	{
 		vector < TVector2 > ArrayOfGoodCouple ;
 		
+		// Prevent code from treating very high multiplicity Event
+		// Those event are not physical anyway and that improve speed.
+		if( EventData->GetMMStripXEMult()>6 || EventData->GetMMStripYEMult()>6 )
+			return ArrayOfGoodCouple;
+		
 		for(int i = 0 ; i < EventData->GetMMStripXEMult(); i++)
 			{
 				//	if X value is above threshold, look at Y value
@@ -191,7 +210,7 @@ vector < TVector2 > TMust2Physics :: Match_X_Y()
 										//	if same detector check energy
 										if ( EventData->GetMMStripXEDetectorNbr(i) == EventData->GetMMStripYEDetectorNbr(j) )
 											{
-													//	Look if energy match
+													//	Look if energy match (within 10%)
 													if( ( fSi_X_E(EventData , i) - fSi_Y_E(EventData , j) ) / fSi_X_E(EventData , i) < 0.1	)
 														ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;	
 											}
@@ -744,10 +763,12 @@ void TMust2Physics::AddTelescope(	TVector3 C_X1_Y1 		,
 		NumberOfTelescope++;
 	
 		//	Vector U on Telescope Face (paralelle to Y Strip) (NB: remember that Y strip are allong X axis)
-		TVector3 U = C_X1_Y1 - C_X128_Y1 				;	
+		TVector3 U = C_X128_Y1 - C_X1_Y1 				;	
+		double Ushift = (U.Mag()-98)/2. ;
 		U = U.Unit()									;
 		//	Vector V on Telescope Face (parallele to X Strip)
-		TVector3 V = C_X128_Y128 - C_X128_Y1 				;
+		TVector3 V = C_X1_Y128 - C_X1_Y1 				;
+		double Vshift = (V.Mag() -98)/2. ;
 		V = V.Unit()									;
 
 		//	Position Vector of Strip Center
@@ -756,10 +777,9 @@ void TMust2Physics::AddTelescope(	TVector3 C_X1_Y1 		,
 		TVector3 Strip_1_1 								;		
 
 		//	Geometry Parameter
-		double Face = 98 					  	; //mm
-		double NumberOfStrip = 128 				; 
+		double Face = 98					 					  	; //mm
+		double NumberOfStrip = 128 							; 
 		double StripPitch = Face/NumberOfStrip	; //mm
-
 		//	Buffer object to fill Position Array
 		vector<double> lineX ; vector<double> lineY ; vector<double> lineZ ;
 
@@ -768,8 +788,9 @@ void TMust2Physics::AddTelescope(	TVector3 C_X1_Y1 		,
 		vector< vector< double > >	OneTelescopeStripPositionZ	;
 		
 		//	Moving StripCenter to 1.1 corner:
-		Strip_1_1 = C_X128_Y1 + (U+V) * (StripPitch/2.) 	;
-
+		Strip_1_1 = C_X1_Y1 + (U+V) * (StripPitch/2.) 	;
+    Strip_1_1+= U*Ushift+V*Vshift ;
+    
 		for( int i = 0 ; i < 128 ; i++ )
 			{
 				lineX.clear()	;
@@ -780,7 +801,6 @@ void TMust2Physics::AddTelescope(	TVector3 C_X1_Y1 		,
 					{
 						StripCenter  = Strip_1_1 + StripPitch*( i*U + j*V  )	;
 						//StripCenter += -TargetPosition		;
-						
 						lineX.push_back( StripCenter.X() )	;
 						lineY.push_back( StripCenter.Y() )	;
 						lineZ.push_back( StripCenter.Z() )	;	
@@ -791,8 +811,6 @@ void TMust2Physics::AddTelescope(	TVector3 C_X1_Y1 		,
 				OneTelescopeStripPositionZ.push_back(lineZ)	;
 			 	
 			}
-	
-		
 		StripPositionX.push_back( OneTelescopeStripPositionX ) ;
 		StripPositionY.push_back( OneTelescopeStripPositionY ) ;
 		StripPositionZ.push_back( OneTelescopeStripPositionZ ) ;	
@@ -835,7 +853,7 @@ void TMust2Physics::AddTelescope(	double theta 	,
 		
 		W = C.Unit() ;
 		U = W .Cross ( P ) ;
-	    V = W .Cross ( U );
+	  V = W .Cross ( U );
 		
 		U = U.Unit();
 		V = V.Unit();

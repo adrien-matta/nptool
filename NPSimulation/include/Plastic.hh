@@ -1,7 +1,7 @@
 #ifndef Plastic_h
 #define Plastic_h 1
 /*****************************************************************************
- * Copyright (C) 2009   this file is part of the NPTool Project              *
+ * Copyright (C) 2009-2010   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -54,14 +54,24 @@ public:
    //////// Specific Function of this Class ///////////
    ////////////////////////////////////////////////////
 public:
-   // By Angle Method
-   void AddPlastic(	 G4double    R        			,
-        			 G4double    Theta    			,
-         			 G4double    Phi         		,
-         			 G4double	 PlasticThickness	,
-         			 G4double	 PlasticRadius		,
-         			 G4String 	Scintillator		,
-         			 G4double    LeadThickness      );  
+   // Cylindric plastic
+   void AddPlastic(	 G4double   R       					,
+			        			 G4double   Theta    					,
+			         			 G4double   Phi         			,
+			         			 G4double	 	PlasticThickness	,
+			         			 G4double		PlasticRadius			,
+			         			 G4String 	Scintillator			,
+			         			 G4double   LeadThickness  		);  
+   
+   // Squared Plastic
+   void AddPlastic(	G4double   R       				,
+			      				G4double   Theta    			,
+			      				G4double   Phi   					,
+			      				G4double   Height					,
+			      				G4double   Width					,
+			      				G4double   Thickness			,
+			      				G4String   Scintillator		,
+			      				G4double   LeadThickness	);
 		
 	void VolumeMaker(G4ThreeVector Det_pos, int DetNumber,G4LogicalVolume* world) ;
    ////////////////////////////////////////////////////
@@ -111,12 +121,16 @@ private:
    ////////////////////////////////////////////////////
 private:
    
-   // if true a Lead plate is added in front or back of the detector
+   
+   
+   // Lead plate is added in front or back of the detector
    vector<double>	  m_LeadThickness	;
    
    vector<double>		m_PlasticThickness	;
-   vector<double>		m_PlasticRadius		;
-      
+   vector<double>		m_PlasticRadius			; // cylindrical shape
+   vector<double>		m_PlasticHeight			; // squared shape
+   vector<double>		m_PlasticWidth			; // squared shape
+   	   
    // Used for "By Angle Definition"
    vector<G4double>  m_R         ; //  |
    vector<G4double>  m_Theta     ; //  > Spherical coordinate plastic volume center

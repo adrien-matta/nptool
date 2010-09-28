@@ -41,8 +41,14 @@ int main(int argc,char** argv)
    // Set energy beam at target middle
    myReaction->SetBeamEnergy(BeamEnergy);
 
-   // Print target thickness
-   cout << myDetector->GetTargetThickness() << endl;
+   // nominal beam energy
+   Double_t BeamEnergyNominal = myReaction->GetBeamEnergy() * MeV;
+   cout << BeamEnergyNominal << endl;
+   // slow beam at target middle
+   Double_t BeamEnergy = BeamEnergyNominal - BeamTarget.Slow(BeamEnergyNominal, myDetector->GetTargetThickness()/2 * micrometer, 0);
+   cout << BeamEnergy << endl;
+   // set energy beam at target middle
+   myReaction->SetBeamEnergy(BeamEnergy);
 
    // Attach more branch to the output
    double Ex = 0 ; double ExNoStrips = 0 ; double EE = 0 ; double TT = 0 ; double X = 0 ; double Y = 0 ; int det ;

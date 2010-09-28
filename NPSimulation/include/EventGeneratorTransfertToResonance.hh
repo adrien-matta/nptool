@@ -1,7 +1,7 @@
 #ifndef EventGeneratorTransfertToResonance_H
 #define EventGeneratorTransfertToResonance_H
 /*****************************************************************************
- * Copyright (C) 2009   this file is part of the NPTool Project              *
+ * Copyright (C) 2009-2010   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -99,13 +99,17 @@ class EventGeneratorTransfertToResonance : public VEventGenerator
 		Reaction*	m_Reaction				;
 
 	private: // Resonance decay channel
-		double			m_ResonanceWidth	;
-		double			m_ResonanceMean		;
-	   	int            	m_ResonanceDecayZ   ;
-	   	int            	m_ResonanceDecayA   ;
+		double			m_ResonanceWidth		;
+		double			m_ResonanceMean			;
+	   	int       m_ResonanceDecayZ   ;
+	   	int       m_ResonanceDecayA   ;
+	   	 	
+	  //	When the Phase Space Generator is called, the weight of the current configuration is return and stored in this variable
+	  //	Spectrum then need to be weighted by this paramater to be realistic
+	  //	NB: This procedure avoid long calculation time of the rejection methods previously instantiate and therefore allow simulation of manybody phase space decay 	 	
+	  double 			m_EventWeight				;
 
 	   //Other
-	   void     Print() const        ;
 	   void     InitializeRootOutput()  ;
 	   void     ResonanceDecay(	G4double EnergyHeavy    ,
 					         	G4double ThetaHeavy     ,

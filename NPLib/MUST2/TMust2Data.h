@@ -1,7 +1,7 @@
 #ifndef __MUST2DATA__
 #define __MUST2DATA__
 /*****************************************************************************
- * Copyright (C) 2009   this file is part of the NPTool Project              *
+ * Copyright (C) 2009-2010   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -151,7 +151,7 @@ class TMust2Data : public TObject {
 
 		// CsI 
 		//(E)
-		UShort_t	GetMMCsIEMult()					{return fMM_CsIE_DetectorNbr.size();}
+		UShort_t	GetMMCsIEMult()									{return fMM_CsIE_DetectorNbr.size();}
 		UShort_t	GetMMCsIEDetectorNbr(Int_t i)   {return fMM_CsIE_DetectorNbr.at(i);}
 		UShort_t	GetMMCsIECristalNbr(Int_t i)    {return fMM_CsIE_CristalNbr.at(i);}
 		Double_t	GetMMCsIEEnergy(Int_t i)        {return fMM_CsIE_Energy.at(i);}
