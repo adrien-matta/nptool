@@ -16,6 +16,8 @@
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *    + 12/10/09: Change scorer scheme (N. de Sereville)                     *
+ *    + 01/10/10: Fix bug with TInteractionCoordinate map size in Read       *
+ *                Sensitive (N. de Sereville)                                *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
@@ -669,7 +671,7 @@ void GaspardTrackerAnnular::ReadSensitive(const G4Event* event)
 
             // Pos X
             Pos_X_itr = PosXHitMap->GetMap()->begin();
-            for (G4int h = 0 ; h < sizeX ; h++) {
+            for (G4int h = 0; h < PosXHitMap->entries(); h++) {
                G4int PosXTrackID =   Pos_X_itr->first - N    ;
                G4double PosX     = *(Pos_X_itr->second)      ;
                if (PosXTrackID == NTrackID) {
@@ -680,7 +682,7 @@ void GaspardTrackerAnnular::ReadSensitive(const G4Event* event)
 
             // Pos Y
             Pos_Y_itr = PosYHitMap->GetMap()->begin();
-            for (G4int h = 0 ; h < sizeX ; h++) {
+            for (G4int h = 0; h < PosYHitMap->entries(); h++) {
                G4int PosYTrackID =   Pos_Y_itr->first - N    ;
                G4double PosY     = *(Pos_Y_itr->second)      ;
                if (PosYTrackID == NTrackID) {
@@ -691,7 +693,7 @@ void GaspardTrackerAnnular::ReadSensitive(const G4Event* event)
 
             // Pos Z
             Pos_Z_itr = PosZHitMap->GetMap()->begin();
-            for (G4int h = 0 ; h < sizeX ; h++) {
+            for (G4int h = 0; h < PosZHitMap->entries(); h++) {
                G4int PosZTrackID =   Pos_Z_itr->first - N    ;
                G4double PosZ     = *(Pos_Z_itr->second)      ;
                if (PosZTrackID == NTrackID) {
@@ -702,7 +704,7 @@ void GaspardTrackerAnnular::ReadSensitive(const G4Event* event)
 
             // Angle Theta
             Ang_Theta_itr = AngThetaHitMap->GetMap()->begin();
-            for (G4int h = 0 ; h < sizeX ; h++) {
+            for (G4int h = 0; h < AngThetaHitMap->entries(); h++) {
                G4int AngThetaTrackID =   Ang_Theta_itr->first - N    ;
                G4double AngTheta     = *(Ang_Theta_itr->second)      ;
                if (AngThetaTrackID == NTrackID) {
@@ -713,7 +715,7 @@ void GaspardTrackerAnnular::ReadSensitive(const G4Event* event)
 
             // Angle Phi
             Ang_Phi_itr = AngPhiHitMap->GetMap()->begin();
-            for (G4int h = 0 ; h < sizeX ; h++) {
+            for (G4int h = 0; h < AngPhiHitMap->entries(); h++) {
                G4int AngPhiTrackID =   Ang_Phi_itr->first - N;
                G4double AngPhi     = *(Ang_Phi_itr->second);
                if (AngPhiTrackID == NTrackID) {

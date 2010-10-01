@@ -41,14 +41,8 @@ int main(int argc,char** argv)
    // Set energy beam at target middle
    myReaction->SetBeamEnergy(BeamEnergy);
 
-   // nominal beam energy
-   Double_t BeamEnergyNominal = myReaction->GetBeamEnergy() * MeV;
-   cout << BeamEnergyNominal << endl;
-   // slow beam at target middle
-   Double_t BeamEnergy = BeamEnergyNominal - BeamTarget.Slow(BeamEnergyNominal, myDetector->GetTargetThickness()/2 * micrometer, 0);
-   cout << BeamEnergy << endl;
-   // set energy beam at target middle
-   myReaction->SetBeamEnergy(BeamEnergy);
+   // Print target thickness
+   cout << myDetector->GetTargetThickness() << endl;
 
    // Attach more branch to the output
    double Ex = 0 ; double ExNoStrips = 0 ; double EE = 0 ; double TT = 0 ; double X = 0 ; double Y = 0 ; int det ;
@@ -77,6 +71,7 @@ int main(int argc,char** argv)
 
    // Analysis is here!
    int nentries = chain->GetEntries();
+//   nentries = 106;
    cout << "Number of entries to be analysed: " << nentries << endl;
 
    // Default initialization
@@ -99,6 +94,7 @@ int main(int argc,char** argv)
 
       // Get total energy
       double E = GPDTrack->GetEnergyDeposit();
+//      cout << i << "  " << E << endl;
 
       // if there is a hit in the detector array, treat it.
       double Theta, ThetaStrip, angle, ThetaCM;
@@ -111,9 +107,13 @@ int main(int argc,char** argv)
 
          // Get exact scattering angle from TInteractionCoordinates object
 //         Theta = interCoord->GetDetectedAngleTheta(0) * deg;
+//         cout << interCoord << endl;
+//         interCoord->Dump();
+//         cout << i << " mult: " << interCoord->GetDetectedMultiplicity() << endl;
          DetecX = interCoord->GetDetectedPositionX(0);
          DetecY = interCoord->GetDetectedPositionY(0);
          DetecZ = interCoord->GetDetectedPositionZ(0);
+//         cout << DetecX << "  " << DetecY << "  " << DetecZ << endl;
          TVector3 Detec(DetecX, DetecY, DetecZ);
 
          // Get interaction position in detector
@@ -141,12 +141,12 @@ int main(int argc,char** argv)
 //         ThetaStrip = ThetaCalculation(HitDirection, BeamDirection);
 //         Theta = ThetaCalculation(Detec - TVector3(XTarget, YTarget, 0), BeamDirection);
          // Calculate scattering angle w.r.t. beam (finite spatial resolution)
-/*         double resol = 800;	// in micrometer
-         angle = gene->Rndm() * 2*3.14;
-         r     = fabs(gene->Gaus(0, resol)) * micrometer;
-         ThetaStrip = ThetaCalculation(A     - TVector3(XTarget + r*cos(angle), YTarget + r*sin(angle), 0), BeamDirection);
-         Theta      = ThetaCalculation(Detec - TVector3(XTarget + r*cos(angle), YTarget + r*sin(angle), 0), BeamDirection);
-*/
+//         double resol = 800;	// in micrometer
+//         angle = gene->Rndm() * 2*3.14;
+//         r     = fabs(gene->Gaus(0, resol)) * micrometer;
+//         ThetaStrip = ThetaCalculation(A     - TVector3(XTarget + r*cos(angle), YTarget + r*sin(angle), 0), BeamDirection);
+//         Theta      = ThetaCalculation(Detec - TVector3(XTarget + r*cos(angle), YTarget + r*sin(angle), 0), BeamDirection);
+//
          // Correct for energy loss in the target
          E = LightTarget.EvaluateInitialEnergy(E, myDetector->GetTargetThickness()/2 * micrometer, ThetaStrip);
 
@@ -155,8 +155,8 @@ int main(int argc,char** argv)
 //         if (Theta/deg < 60 && ThetaCM/deg < 90) {
 //         if (Theta/deg > 35 && Theta/deg < 45 && E/MeV < 17) {
 //         if (Theta/deg < 45) {
-         if (E/MeV < 38) {		// for (p,t) reaction
-//         if (Theta/deg > 90) {	// for (d,p) reaction
+//         if (E/MeV < 38) {		// for (p,t) reaction
+         if (Theta/deg > 90) {	// for (d,p) reaction
             ExNoStrips = myReaction->ReconstructRelativistic(E, Theta / rad);
             Ex         = myReaction->ReconstructRelativistic(E, ThetaStrip);
          }

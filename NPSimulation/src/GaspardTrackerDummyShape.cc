@@ -20,6 +20,8 @@
  *    + 07/09/09: Fix bug for placing module with (r,theta,phi) method.      *
  *                (N. de Sereville)                                          *
  *    + 12/10/09: Change scorer scheme (N. de Sereville)                     *
+ *    + 01/10/10: Fix bug with TInteractionCoordinate map size in Read       *
+ *                Sensitive (N. de Sereville)                                *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
@@ -758,7 +760,6 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
 
    //G4cout << "sizeN:" << sizeN << G4endl;
 
-
    if (sizeE != sizeT || sizeT != sizeX || sizeX != sizeY) {
       G4cout << "No match size Si Event Map: sE:"
       << sizeE << " sT:" << sizeT << " sX:" << sizeX << " sY:" << sizeY << endl ;
@@ -769,11 +770,6 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
    for (G4int l = 0; l < sizeN; l++) {
       G4double N     = *(DetectorNumber_itr->second);
       G4int NTrackID =   DetectorNumber_itr->first - N;
-
-      G4cout <<"N:" <<N << G4endl;
-      G4cout <<"DetectorNumber_itr->first:" << DetectorNumber_itr->first <<  G4endl;
-      G4cout <<"NTrackID:" <<NTrackID << G4endl;
-
 
       if (N > 0) {
          // Fill detector number
@@ -832,7 +828,7 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
 
          // Pos X
          Pos_X_itr = PosXHitMap->GetMap()->begin();
-         for (G4int h = 0 ; h < sizeX ; h++) {
+         for (G4int h = 0; h < PosXHitMap->entries(); h++) {
             G4int PosXTrackID =   Pos_X_itr->first - N    ;
             G4double PosX     = *(Pos_X_itr->second)      ;
             if (PosXTrackID == NTrackID) {
@@ -843,7 +839,7 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
 
          // Pos Y
          Pos_Y_itr = PosYHitMap->GetMap()->begin();
-         for (G4int h = 0 ; h < sizeX ; h++) {
+         for (G4int h = 0 ; h < PosYHitMap->entries(); h++) {
             G4int PosYTrackID =   Pos_Y_itr->first - N    ;
             G4double PosY     = *(Pos_Y_itr->second)      ;
             if (PosYTrackID == NTrackID) {
@@ -854,7 +850,7 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
 
          // Pos Z
          Pos_Z_itr = PosZHitMap->GetMap()->begin();
-         for (G4int h = 0 ; h < sizeX ; h++) {
+         for (G4int h = 0 ; h < PosZHitMap->entries(); h++) {
             G4int PosZTrackID =   Pos_Z_itr->first - N    ;
             G4double PosZ     = *(Pos_Z_itr->second)      ;
             if (PosZTrackID == NTrackID) {
@@ -865,7 +861,7 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
 
          // Angle Theta
          Ang_Theta_itr = AngThetaHitMap->GetMap()->begin();
-         for (G4int h = 0 ; h < sizeX ; h++) {
+         for (G4int h = 0; h < AngThetaHitMap->entries(); h++) {
             G4int AngThetaTrackID =   Ang_Theta_itr->first - N    ;
             G4double AngTheta     = *(Ang_Theta_itr->second)      ;
             if (AngThetaTrackID == NTrackID) {
@@ -876,7 +872,7 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
 
          // Angle Phi
          Ang_Phi_itr = AngPhiHitMap->GetMap()->begin();
-         for (G4int h = 0 ; h < sizeX ; h++) {
+         for (G4int h = 0; h < AngPhiHitMap->entries(); h++) {
             G4int AngPhiTrackID =   Ang_Phi_itr->first - N    ;
             G4double AngPhi     = *(Ang_Phi_itr->second)      ;
             if (AngPhiTrackID == NTrackID) {
@@ -921,6 +917,7 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
 
          DetectorNumber_itr++;
       }
+
 
       // clear map for next event
       DetectorNumberHitMap    -> clear();

@@ -310,9 +310,9 @@ void PhysicsList::SetCuts()
    SetCutsWithDefault();
 
    // for gamma-rays
-   SetCutValue(0.01*mm, "gamma");
-   SetCutValue(0.01*mm, "e-");
-   SetCutValue(0.01*mm, "e+");
+//   SetCutValue(0.01*mm, "gamma");
+//   SetCutValue(0.01*mm, "e-");
+//   SetCutValue(0.01*mm, "e+");
 
    // Retrieve verbose level
    SetVerboseLevel(temp);
