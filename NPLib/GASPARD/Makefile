@@ -268,7 +268,8 @@ GLIBS         = $(ROOTGLIBS) $(SYSLIBS)
 INCLUDE		= -I$(CLHEP_BASE_DIR)/include -I$(NPLIB)/include
  
 #------------------------------------------------------------------------------
-SHARELIB      =  libGaspardData.so	libGaspardPhysics.so
+SHARELIB      =  libGaspardData.so	libGaspardPhysics.so	\
+		 libGaspardTrackerModules.so 	libGaspardPhysicsNew.so
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 ############### Detector ##############
@@ -286,12 +287,26 @@ libGaspardPhysics.so:	GaspardTracker.o TGaspardTrackerPhysics.o TGaspardTrackerP
 TGaspardTrackerPhysicsDict.cxx:	TGaspardTrackerPhysics.h
 			rootcint -f $@ -c $^
 
+libGaspardPhysicsNew.so:	TGaspardTrackerPhysicsNew.o TGaspardTrackerPhysicsNewDict.o
+			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
+
+TGaspardTrackerPhysicsNewDict.cxx:	TGaspardTrackerPhysicsNew.h
+			rootcint -f $@ -c $^
+
+libGaspardTrackerModules.so:	TGaspardTrackerModule.o	TGaspardTrackerDummyShape.o \
+				TGaspardTrackerTrapezoid.o
+			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
+
 
 
 # dependances
 GaspardTracker.o:	GaspardTracker.cxx	GaspardTracker.h
 TGaspardTrackerData.o:	TGaspardTrackerData.cxx	TGaspardTrackerData.h
 TGaspardTrackerPhysics.o:	TGaspardTrackerPhysics.cxx	TGaspardTrackerPhysics.h
+TGaspardTrackerPhysicsNew.o:	TGaspardTrackerPhysicsNew.cxx	TGaspardTrackerPhysicsNew.h
+TGaspardTrackerModule.o:	TGaspardTrackerModule.cxx	TGaspardTrackerModule.h
+TGaspardTrackerDummyShape.o:	TGaspardTrackerDummyShape.cxx	TGaspardTrackerDummyShape.h
+TGaspardTrackerTrapezoid.o:	TGaspardTrackerTrapezoid.cxx	TGaspardTrackerTrapezoid.h
 #######################################
 
 ############# Clean and More ##########

@@ -10,6 +10,7 @@
 #include "../SSSD/TSSSDPhysics.h"
 #include "../Plastic/TPlasticPhysics.h"
 #include "../GASPARD/GaspardTracker.h"
+#include "../GASPARD/TGaspardTrackerPhysicsNew.h"
 #include "../Paris/Paris.h"
 #include "../Shield/Shield.h"
 
@@ -77,7 +78,8 @@ void DetectorManager::ReadConfigurationFile(string Path)
          cout << "//////// Gaspard Tracker ////////" << endl;
 
          // Instantiate the new array as a VDetector Object
-         VDetector* myDetector = new GaspardTracker();
+//         VDetector* myDetector = new GaspardTracker();
+         VDetector* myDetector = new TGaspardTrackerPhysicsNew();
 
          // Read Position of Telescope
          ConfigFile.close();

@@ -27,6 +27,16 @@ Target
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 GaspardTracker
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%0 Central Barrel
+GPDTrapezoid
+	THETA= 90
+	PHI= 90 
+	R= 300
+	BETA= 0 0 0
+	FIRSTSTAGE= 1
+	SECONDSTAGE= 1
+	THIRDSTAGE= 1
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%0 Central Barrel
 GPDDummyShape
 	THETA= 90
 	PHI= 90 

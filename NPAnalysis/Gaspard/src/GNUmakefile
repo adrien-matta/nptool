@@ -2,6 +2,7 @@
 #			Made to compile the ROOT Analyser for MUST2 experiment
 
 CPP=g++
+#EXEC=AnalysisNew
 EXEC=Analysis
 
 # local includes
@@ -26,7 +27,11 @@ OBJ=$(SRC:.cc=.o)
 #all:$(EXEC)
 #	@$(CPP) -o $@ -c $< $(CXXFLAGS)
 
-Analysis:$(OBJ) $(INC)
+AnalysisNew:	AnalysisNew.o $(INC)
+	@$(CPP) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+	mv AnalysisNew  ../AnalysisNew
+
+Analysis:	Analysis.o $(INC)
 	@$(CPP) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 	mv Analysis  ../Analysis
 
