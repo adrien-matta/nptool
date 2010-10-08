@@ -294,6 +294,7 @@ Vdetec:
 		cp ./VDetector/*.so ./lib
 ifeq ($(ARCH),macosx)
 		cd lib; ln -sf libVDetector.so libVDetector.dylib
+		cd lib; ln -sf libDetectorManager.so libDetectorManager.dylib
 endif
 		
 ## MUST2 ##
@@ -329,6 +330,8 @@ GaspardData:
 ifeq ($(ARCH),macosx)
 		cd lib; ln -sf libGaspardData.so libGaspardData.dylib
 		cd lib; ln -sf libGaspardPhysics.so libGaspardPhysics.dylib
+		cd lib; ln -sf libGaspardTrackerModules.so libGaspardTrackerModules.dylib
+		cd lib; ln -sf libGaspardPhysicsNew.so libGaspardPhysicsNew.dylib
 endif
 
 ## Plastic ##

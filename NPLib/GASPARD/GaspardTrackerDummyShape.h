@@ -1,31 +1,32 @@
-#ifndef TGaspardTrackerTrapezoid_h
-#define TGaspardTrackerTrapezoid_h 1
+#ifndef GaspardTrackerDummyShape_h
+#define GaspardTrackerDummyShape_h 1
 
 // C++ headers
+#include <iostream>
 #include <string>
 #include <map>
 #include <vector>
 
-// NPTool - ROOT headers
-#include "TInteractionCoordinates.h"
-#include "TGaspardTrackerData.h"
+// ROOT headers
 #include "TVector3.h"
 
 // Gaspard headers
-#include "TGaspardTrackerModule.h"
+#include "TGaspardTrackerData.h"
+#include "TGaspardTrackerPhysicsNew.h"
+#include "GaspardTrackerModule.h"
 
 using namespace std;
 
 
 
-class TGaspardTrackerTrapezoid : public TGaspardTrackerModule
+class GaspardTrackerDummyShape : public GaspardTrackerModule
 {
 public:
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
    ////////////////////////////////////////////////////
-   TGaspardTrackerTrapezoid(map<int, TGaspardTrackerModule*> &Module);
-   virtual ~TGaspardTrackerTrapezoid();
+   GaspardTrackerDummyShape(map<int, GaspardTrackerModule*> &Module, TGaspardTrackerPhysicsNew* &EventPhysics);
+   virtual ~GaspardTrackerDummyShape();
 
 public:
    ////////////////////////////////////////////////////
@@ -42,7 +43,18 @@ public:
    void BuildSimplePhysicalEvent();
 
 private:
-   map<int, TGaspardTrackerModule*> &m_ModuleTest;
+   map<int, GaspardTrackerModule*> &m_ModuleTest;
+   TGaspardTrackerPhysicsNew* &m_EventPhysics;
+
+public:
+   void SetGaspardDataPointer(TGaspardTrackerData* gaspardData) {m_EventData = gaspardData;};
+   void PreTreat();
+
+private:
+   // Gaspard data coming from TGaspardTrackerPhysics through the 
+   // SetGaspardDataPointer method
+   TGaspardTrackerData* m_EventData;
+   TGaspardTrackerData* m_PreTreatData;
 
 public:
    ////////////////////////////////
@@ -63,9 +75,9 @@ public:
                   double beta_w);
 
    // Getters to retrieve the (X,Y,Z) coordinates of a pixel defined by strips (X,Y)
-   double GetStripPositionX(int N ,int X ,int Y)        { return m_StripPositionX[N-1][X-1][Y-1]; }
-   double GetStripPositionY(int N ,int X ,int Y)        { return m_StripPositionY[N-1][X-1][Y-1]; }
-   double GetStripPositionZ(int N ,int X ,int Y)        { return m_StripPositionZ[N-1][X-1][Y-1]; }
+   double GetStripPositionX(int N ,int X ,int Y)        { return m_StripPositionX[N-1-m_index["DummyShape"]][X-1][Y-1]; }
+   double GetStripPositionY(int N ,int X ,int Y)        { return m_StripPositionY[N-1-m_index["DummyShape"]][X-1][Y-1]; }
+   double GetStripPositionZ(int N ,int X ,int Y)        { return m_StripPositionZ[N-1-m_index["DummyShape"]][X-1][Y-1]; }
    double GetNumberOfModule()                           { return m_NumberOfModule; }
 
 private:

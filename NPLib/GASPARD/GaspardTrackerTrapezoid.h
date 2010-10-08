@@ -1,5 +1,5 @@
-#ifndef TGaspardTrackerDummyShape_h
-#define TGaspardTrackerDummyShape_h 1
+#ifndef GaspardTrackerTrapezoid_h
+#define GaspardTrackerTrapezoid_h 1
 
 // C++ headers
 #include <string>
@@ -12,20 +12,20 @@
 #include "TVector3.h"
 
 // Gaspard headers
-#include "TGaspardTrackerModule.h"
+#include "GaspardTrackerModule.h"
 
 using namespace std;
 
 
 
-class TGaspardTrackerDummyShape : public TGaspardTrackerModule
+class GaspardTrackerTrapezoid : public GaspardTrackerModule
 {
 public:
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
    ////////////////////////////////////////////////////
-   TGaspardTrackerDummyShape(map<int, TGaspardTrackerModule*> &Module);
-   virtual ~TGaspardTrackerDummyShape();
+   GaspardTrackerTrapezoid(map<int, GaspardTrackerModule*> &Module);
+   virtual ~GaspardTrackerTrapezoid();
 
 public:
    ////////////////////////////////////////////////////
@@ -42,7 +42,15 @@ public:
    void BuildSimplePhysicalEvent();
 
 private:
-   map<int, TGaspardTrackerModule*> &m_ModuleTest;
+   map<int, GaspardTrackerModule*> &m_ModuleTest;
+
+public:
+   void SetGaspardDataPointer(TGaspardTrackerData* gaspardData) {m_EventData = gaspardData;};
+
+private:
+   // Gaspard data coming from TGaspardTrackerPhysics through the 
+   // SetGaspardDataPointer method
+   TGaspardTrackerData* m_EventData;
 
 public:
    ////////////////////////////////

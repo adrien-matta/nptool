@@ -24,9 +24,11 @@
 #ifndef TGASPARDTRACKERPHYSICS_H
 #define TGASPARDTRACKERPHYSICS_H
 
-#include <vector>
-#include "TObject.h"
 #include "TGaspardTrackerData.h"
+
+#include "TObject.h"
+
+#include <vector>
 #include <cstdlib>
 
 using namespace std ;

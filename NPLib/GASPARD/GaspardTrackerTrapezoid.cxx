@@ -1,4 +1,4 @@
-#include "TGaspardTrackerDummyShape.h"
+#include "GaspardTrackerTrapezoid.h"
 
 // C++ headers
 #include <iostream>
@@ -7,21 +7,22 @@
 #include <cmath>
 
 
-TGaspardTrackerDummyShape::TGaspardTrackerDummyShape(map<int, TGaspardTrackerModule*> &Module) 
+GaspardTrackerTrapezoid::GaspardTrackerTrapezoid(map<int, GaspardTrackerModule*> &Module) 
 	: m_ModuleTest(Module),
+	  m_EventData(0),
 	  m_NumberOfModule(0)
 {
 }
 
 
 
-TGaspardTrackerDummyShape::~TGaspardTrackerDummyShape()
+GaspardTrackerTrapezoid::~GaspardTrackerTrapezoid()
 {
 }
 
 
 
-void TGaspardTrackerDummyShape::ReadConfiguration(string Path)
+void GaspardTrackerTrapezoid::ReadConfiguration(string Path)
 {
    ifstream ConfigFile;
    ConfigFile.open(Path.c_str());
@@ -54,9 +55,9 @@ void TGaspardTrackerDummyShape::ReadConfiguration(string Path)
 
       // If line is a GaspardXXX bloc, reading toggle to true
       // and toggle to true flags indicating which shape is treated.
-      if (LineBuffer.compare(0, 13, "GPDDummyShape") == 0) {
+      if (LineBuffer.compare(0, 12, "GPDTrapezoid") == 0) {
          cout << "///////////////////////" << endl;
-         cout << "DummyShape module found:" << endl;
+         cout << "Trapezoid module found:" << endl;
          ReadingStatus = true;
       }
 
@@ -68,7 +69,7 @@ void TGaspardTrackerDummyShape::ReadConfiguration(string Path)
             ConfigFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n' );
          }
          // Finding another telescope (safety), toggle out
-         else if (DataBuffer.compare(0, 13, "GPDDummyShape") == 0) {
+         else if (DataBuffer.compare(0, 12, "GPDTrapezoid") == 0) {
             cout << "WARNING: Another Module is find before standard sequence of Token, Error may occured in Telecope definition" << endl;
             ReadingStatus = false;
          }
@@ -180,13 +181,13 @@ void TGaspardTrackerDummyShape::ReadConfiguration(string Path)
             // With position method
             if ( check_A && check_B && check_C && check_D ) {
                AddModule(A, B, C, D);
-               m_ModuleTest[m_index["DummyShape"] + m_NumberOfModule] = this;
+               m_ModuleTest[m_index["Trapezoid"] + m_NumberOfModule] = this;
             }
 
             // with angle method
             else if ( check_Theta && check_Phi && check_R && check_beta ) {
                AddModule(Theta, Phi, R, beta_u, beta_v, beta_w);
-               m_ModuleTest[m_index["DummyShape"] + m_NumberOfModule] = this;
+               m_ModuleTest[m_index["Trapezoid"] + m_NumberOfModule] = this;
             }
 
             // reset boolean flag for point positioning
@@ -209,20 +210,19 @@ void TGaspardTrackerDummyShape::ReadConfiguration(string Path)
 
 
 
-void TGaspardTrackerDummyShape::BuildPhysicalEvent()
+void GaspardTrackerTrapezoid::BuildPhysicalEvent()
 {
 }
 
 
 
-void TGaspardTrackerDummyShape::BuildSimplePhysicalEvent()
+void GaspardTrackerTrapezoid::BuildSimplePhysicalEvent()
 {
 }
 
 
 
-
-void TGaspardTrackerDummyShape::AddModule(TVector3 C_X1_Y1,
+void GaspardTrackerTrapezoid::AddModule(TVector3 C_X1_Y1,
                                           TVector3 C_X128_Y1,
                                           TVector3 C_X1_Y128,
                                           TVector3 C_X128_Y128)
@@ -288,7 +288,7 @@ void TGaspardTrackerDummyShape::AddModule(TVector3 C_X1_Y1,
 
 
 
-void TGaspardTrackerDummyShape::AddModule(double theta,
+void GaspardTrackerTrapezoid::AddModule(double theta,
                                           double phi,
                                           double distance,
                                           double beta_u,

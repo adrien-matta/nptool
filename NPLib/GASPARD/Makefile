@@ -287,26 +287,28 @@ libGaspardPhysics.so:	GaspardTracker.o TGaspardTrackerPhysics.o TGaspardTrackerP
 TGaspardTrackerPhysicsDict.cxx:	TGaspardTrackerPhysics.h
 			rootcint -f $@ -c $^
 
-libGaspardPhysicsNew.so:	TGaspardTrackerPhysicsNew.o TGaspardTrackerPhysicsNewDict.o
+libGaspardPhysicsNew.so:	GaspardTrackerNew.o TGaspardTrackerPhysicsNew.o \
+				TGaspardTrackerPhysicsNewDict.o
 			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TGaspardTrackerPhysicsNewDict.cxx:	TGaspardTrackerPhysicsNew.h
 			rootcint -f $@ -c $^
 
-libGaspardTrackerModules.so:	TGaspardTrackerModule.o	TGaspardTrackerDummyShape.o \
-				TGaspardTrackerTrapezoid.o
+libGaspardTrackerModules.so:	GaspardTrackerModule.o	GaspardTrackerDummyShape.o \
+				GaspardTrackerTrapezoid.o
 			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 
 
 # dependances
 GaspardTracker.o:	GaspardTracker.cxx	GaspardTracker.h
+GaspardTrackerNew.o:	GaspardTrackerNew.cxx	GaspardTrackerNew.h
 TGaspardTrackerData.o:	TGaspardTrackerData.cxx	TGaspardTrackerData.h
 TGaspardTrackerPhysics.o:	TGaspardTrackerPhysics.cxx	TGaspardTrackerPhysics.h
 TGaspardTrackerPhysicsNew.o:	TGaspardTrackerPhysicsNew.cxx	TGaspardTrackerPhysicsNew.h
-TGaspardTrackerModule.o:	TGaspardTrackerModule.cxx	TGaspardTrackerModule.h
-TGaspardTrackerDummyShape.o:	TGaspardTrackerDummyShape.cxx	TGaspardTrackerDummyShape.h
-TGaspardTrackerTrapezoid.o:	TGaspardTrackerTrapezoid.cxx	TGaspardTrackerTrapezoid.h
+GaspardTrackerModule.o:		GaspardTrackerModule.cxx	GaspardTrackerModule.h
+GaspardTrackerDummyShape.o:	GaspardTrackerDummyShape.cxx	GaspardTrackerDummyShape.h
+GaspardTrackerTrapezoid.o:	GaspardTrackerTrapezoid.cxx	GaspardTrackerTrapezoid.h
 #######################################
 
 ############# Clean and More ##########

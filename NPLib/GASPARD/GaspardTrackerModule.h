@@ -1,5 +1,5 @@
-#ifndef TGaspardTrackerModule_h
-#define TGaspardTrackerModule_h 1
+#ifndef GaspardTrackerModule_h
+#define GaspardTrackerModule_h 1
 
 // C++ headers
 #include <string>
@@ -12,11 +12,11 @@ using namespace std;
 
 
 
-class TGaspardTrackerModule
+class GaspardTrackerModule
 {
 public:
-   TGaspardTrackerModule();
-   virtual ~TGaspardTrackerModule();
+   GaspardTrackerModule();
+   virtual ~GaspardTrackerModule();
 
 public:
    // Read stream at Configfile to pick-up parameters of detector (Position,...)
@@ -31,6 +31,15 @@ public:
 
    // Initialize the Index map for the different modules of Gaspard
    void InitializeIndex();
+
+   // Pass the TGaspardTrackerData object from TGaspardTrackerPhysics to the 
+   // classes deriving from GaspardTrackerModule
+   virtual void SetGaspardDataPointer(TGaspardTrackerData* gaspardData) = 0;
+
+   //
+   virtual double GetStripPositionX(Int_t DetectorNumber, Int_t stripX, Int_t stripY) = 0;
+   virtual double GetStripPositionY(Int_t DetectorNumber, Int_t stripX, Int_t stripY) = 0;
+   virtual double GetStripPositionZ(Int_t DetectorNumber, Int_t stripX, Int_t stripY) = 0;
 
 protected:
    map<string, int> m_index;

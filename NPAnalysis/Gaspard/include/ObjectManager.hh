@@ -7,8 +7,7 @@
 
 // NPA
 #include "DetectorManager.h"
-//#include "GaspardTracker.h"
-#include "TGaspardTrackerPhysicsNew.h"
+#include "GaspardTrackerNew.h"
 
 // STL C++
 #include <iostream>

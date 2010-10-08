@@ -27,7 +27,7 @@ Target
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 GaspardTracker
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%0 Central Barrel
-GPDTrapezoid
+%GPDTrapezoid
 	THETA= 90
 	PHI= 90 
 	R= 300

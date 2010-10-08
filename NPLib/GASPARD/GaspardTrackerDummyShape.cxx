@@ -1,4 +1,4 @@
-#include "TGaspardTrackerTrapezoid.h"
+#include "GaspardTrackerDummyShape.h"
 
 // C++ headers
 #include <iostream>
@@ -6,22 +6,30 @@
 #include <string>
 #include <cmath>
 
+// Gaspard
+#include "TGaspardTrackerPhysicsNew.h"
 
-TGaspardTrackerTrapezoid::TGaspardTrackerTrapezoid(map<int, TGaspardTrackerModule*> &Module) 
+
+GaspardTrackerDummyShape::GaspardTrackerDummyShape(map<int, GaspardTrackerModule*> &Module,
+						     TGaspardTrackerPhysicsNew* &EventPhysics) 
 	: m_ModuleTest(Module),
+	  m_EventPhysics(EventPhysics),
+	  m_EventData(0),
+	  m_PreTreatData(new TGaspardTrackerData),
 	  m_NumberOfModule(0)
 {
 }
 
 
 
-TGaspardTrackerTrapezoid::~TGaspardTrackerTrapezoid()
+GaspardTrackerDummyShape::~GaspardTrackerDummyShape()
 {
+   delete m_PreTreatData;
 }
 
 
 
-void TGaspardTrackerTrapezoid::ReadConfiguration(string Path)
+void GaspardTrackerDummyShape::ReadConfiguration(string Path)
 {
    ifstream ConfigFile;
    ConfigFile.open(Path.c_str());
@@ -54,9 +62,9 @@ void TGaspardTrackerTrapezoid::ReadConfiguration(string Path)
 
       // If line is a GaspardXXX bloc, reading toggle to true
       // and toggle to true flags indicating which shape is treated.
-      if (LineBuffer.compare(0, 12, "GPDTrapezoid") == 0) {
+      if (LineBuffer.compare(0, 13, "GPDDummyShape") == 0) {
          cout << "///////////////////////" << endl;
-         cout << "Trapezoid module found:" << endl;
+         cout << "DummyShape module found:" << endl;
          ReadingStatus = true;
       }
 
@@ -68,7 +76,7 @@ void TGaspardTrackerTrapezoid::ReadConfiguration(string Path)
             ConfigFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n' );
          }
          // Finding another telescope (safety), toggle out
-         else if (DataBuffer.compare(0, 12, "GPDTrapezoid") == 0) {
+         else if (DataBuffer.compare(0, 13, "GPDDummyShape") == 0) {
             cout << "WARNING: Another Module is find before standard sequence of Token, Error may occured in Telecope definition" << endl;
             ReadingStatus = false;
          }
@@ -180,13 +188,13 @@ void TGaspardTrackerTrapezoid::ReadConfiguration(string Path)
             // With position method
             if ( check_A && check_B && check_C && check_D ) {
                AddModule(A, B, C, D);
-               m_ModuleTest[m_index["Trapezoid"] + m_NumberOfModule] = this;
+               m_ModuleTest[m_index["DummyShape"] + m_NumberOfModule] = this;
             }
 
             // with angle method
             else if ( check_Theta && check_Phi && check_R && check_beta ) {
                AddModule(Theta, Phi, R, beta_u, beta_v, beta_w);
-               m_ModuleTest[m_index["Trapezoid"] + m_NumberOfModule] = this;
+               m_ModuleTest[m_index["DummyShape"] + m_NumberOfModule] = this;
             }
 
             // reset boolean flag for point positioning
@@ -208,20 +216,134 @@ void TGaspardTrackerTrapezoid::ReadConfiguration(string Path)
 }
 
 
-
-void TGaspardTrackerTrapezoid::BuildPhysicalEvent()
+void GaspardTrackerDummyShape::PreTreat()
 {
 }
 
 
 
-void TGaspardTrackerTrapezoid::BuildSimplePhysicalEvent()
+void GaspardTrackerDummyShape::BuildPhysicalEvent()
+{
+   // Check flags
+   bool Check_FirstStage  = false;
+   bool Check_SecondStage = false; 
+   bool Check_ThirdStage  = false;
+
+   // Thresholds
+/*
+   double FirstStage_Front_E_Threshold = 0; double FirstStage_Front_T_Threshold = 0;
+   double FirstStage_Back_E_Threshold  = 0; double FirstStage_Back_T_Threshold  = 0;
+   double SecondStage_E_Threshold      = 0; double SecondStage_T_Threshold      = 0;
+   double ThirdStage_E_Threshold       = 0; double ThirdStage_T_Threshold       = 0;
+*/
+   // calculate multipicity in the first stage
+   int multXE = m_EventData->GetGPDTrkFirstStageFrontEMult();
+   int multYE = m_EventData->GetGPDTrkFirstStageBackEMult();
+   int multXT = m_EventData->GetGPDTrkFirstStageFrontTMult();
+   int multYT = m_EventData->GetGPDTrkFirstStageBackTMult();
+   // calculate multiplicity of 2nd and third stages
+   int mult2E = m_EventData->GetGPDTrkSecondStageEMult();
+   int mult2T = m_EventData->GetGPDTrkSecondStageTMult();
+   int mult3E = m_EventData->GetGPDTrkThirdStageEMult();
+   int mult3T = m_EventData->GetGPDTrkThirdStageTMult();
+
+   // Deal with multiplicity 1 for the first layer
+   if (multXE==1 && multYE==1 && multXT==1 && multYT==1) {
+      // calculate detector number
+      int det_ref = m_EventData->GetGPDTrkFirstStageFrontEDetectorNbr(0);
+      int detecXE = m_EventData->GetGPDTrkFirstStageFrontEDetectorNbr(0) / det_ref;
+      int detecXT = m_EventData->GetGPDTrkFirstStageFrontTDetectorNbr(0) / det_ref;
+      int detecYE = m_EventData->GetGPDTrkFirstStageBackEDetectorNbr(0) / det_ref;
+      int detecYT = m_EventData->GetGPDTrkFirstStageBackTDetectorNbr(0) / det_ref;
+
+      // module number starting from 0
+      det_ref -= m_index["DummyShape"];
+
+      // case of same detector
+      if (detecXE*detecXT*detecYE*detecYT == 1) {
+         // store module number
+         m_EventPhysics->SetModuleNumber(det_ref + m_index["DummyShape"]);
+         // calculate strip number
+         int stripXE = m_EventData->GetGPDTrkFirstStageFrontEStripNbr(0);
+         int stripXT = m_EventData->GetGPDTrkFirstStageFrontTStripNbr(0);
+         int stripYE = m_EventData->GetGPDTrkFirstStageBackEStripNbr(0);
+         int stripYT = m_EventData->GetGPDTrkFirstStageBackTStripNbr(0);
+
+         // case of same strips on X and Y
+         if (stripXE == stripXT  &&  stripYE == stripYT) {        // here we have a good strip event
+            // various
+            Check_FirstStage = true;
+//            EventMultiplicity = 1;
+            // store strip ID
+            m_EventPhysics->SetFirstStageFrontPosition(stripXE);
+            m_EventPhysics->SetFirstStageBackPosition(stripYE);
+            // get energy from strips and store it
+            double EnergyStripFront = m_EventData->GetGPDTrkFirstStageFrontEEnergy(0);
+//            double EnergyStripBack  = m_EventData->GetGPDTrkFirstStageBackEEnergy(0);
+//            double EnergyStrip  = 0.5 * (EnergyStripFront + EnergyStripBack);
+            double EnergyStrip  = EnergyStripFront;
+//            if (EnergyStripBack > EnergyStrip) EnergyStrip = EnergyStripBack;
+            m_EventPhysics->SetFirstStageEnergy(EnergyStrip);
+            double EnergyTot = EnergyStrip;
+            // get time from strips and store it
+            double TimeStripFront = m_EventData->GetGPDTrkFirstStageFrontEEnergy(0);
+            double TimeStripBack  = m_EventData->GetGPDTrkFirstStageBackEEnergy(0);
+            double TimeStrip  = 0.5 * (TimeStripFront + TimeStripBack);
+//                  double TimeStrip  = TimeStripFront;
+//                  if (TimeStripBack > TimeStrip) TimeStrip = TimeStripBack;
+            m_EventPhysics->SetFirstStageTime(TimeStrip);
+
+            // check if we have a 2nd stage event
+            if (mult2E==1 && mult2T==1) {
+               Check_SecondStage = true;
+               double EnergySecond = m_EventData->GetGPDTrkSecondStageEEnergy(0);
+               m_EventPhysics->SetSecondStageEnergy(EnergySecond);
+               EnergyTot += EnergySecond;
+            }
+            else if (mult2E>1 || mult2T>1) {
+               cout << "Warning: multiplicity in second stage greater than in firststage" << endl;
+            }
+            // check if we have a third stage event
+            if (mult3E==1 && mult3T==1) {
+               Check_ThirdStage = true;
+               double EnergyThird = m_EventData->GetGPDTrkThirdStageEEnergy(0);
+               m_EventPhysics->SetThirdStageEnergy(EnergyThird);
+               EnergyTot += EnergyThird;
+            }
+            else if (mult3E>1 || mult3T>1) {
+               cout << "Warning: multiplicity in third stage greater than in firststage" << endl;
+            }
+
+            // Fill total energy
+            m_EventPhysics->SetTotalEnergy(EnergyTot);
+         }
+         else {
+            cout << "Not same strips" << endl;
+         }
+      }
+      else {
+         cout << "Not same detector" << endl;
+      }
+   }
+   else {
+/*      cout << "Multiplicity is not one, it is: " << endl;
+      cout << "\tmultXE: " << multXE << endl;
+      cout << "\tmultXT: " << multXT << endl;
+      cout << "\tmultYE: " << multYE << endl;
+      cout << "\tmultYT: " << multYT << endl;*/
+   }
+}
+
+
+
+void GaspardTrackerDummyShape::BuildSimplePhysicalEvent()
 {
 }
 
 
 
-void TGaspardTrackerTrapezoid::AddModule(TVector3 C_X1_Y1,
+
+void GaspardTrackerDummyShape::AddModule(TVector3 C_X1_Y1,
                                           TVector3 C_X128_Y1,
                                           TVector3 C_X1_Y128,
                                           TVector3 C_X128_Y128)
@@ -287,7 +409,7 @@ void TGaspardTrackerTrapezoid::AddModule(TVector3 C_X1_Y1,
 
 
 
-void TGaspardTrackerTrapezoid::AddModule(double theta,
+void GaspardTrackerDummyShape::AddModule(double theta,
                                           double phi,
                                           double distance,
                                           double beta_u,
