@@ -27,6 +27,14 @@ Target
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 GaspardTracker
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%0 Central Barrel
+GPDAnnular
+	Z= 	200
+	RMIN= 	16
+	RMAX= 	52
+	FIRSTSTAGE= 1
+	SECONDSTAGE= 1
+	THIRDSTAGE= 1
+	VIS= all
 %GPDTrapezoid
 	THETA= 90
 	PHI= 90 

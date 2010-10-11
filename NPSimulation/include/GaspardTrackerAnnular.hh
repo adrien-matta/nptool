@@ -147,6 +147,11 @@ namespace GPDANNULAR
    const G4double MylarCsIThickness   = 3*micrometer;
    const G4double ThirdStageThickness = 1.5*mm;
 
+   // Characteristics
+   const G4int NbPhiStrips     = 16;
+   const G4int NbThetaStrips   = 16;
+   const G4int NbThetaQuadrant = 4;
+
    // Starting at the front and going in direction of third stage
    const G4double AluStripFront_PosZ = Length* -0.5 + 0.5*AluStripThickness                              ;
    const G4double Silicon_PosZ       = AluStripFront_PosZ + 0.5*AluStripThickness + 0.5*FirstStageThickness ;

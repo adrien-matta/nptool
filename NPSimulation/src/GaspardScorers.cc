@@ -648,20 +648,43 @@ G4bool GPDScorerFirstStageFrontStripAnnular::ProcessHits(G4Step* aStep, G4Toucha
    // get detector number
    int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "GPDAnnular");
 
-   // get front strip
+   // Hit position in the world frame
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
+
+   // Hit position in the detector frame
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
-   G4double StripPitch = m_StripPlaneSize / m_NumberOfStrip;
+   // Radial position in the Oxy plane
+   G4double r = sqrt(pow(POS(0), 2) + pow(POS(1), 2));
 
-   G4double temp = (POS(0) + m_StripPlaneSize / 2.) / StripPitch   ;
-   G4double X = int(temp) + 1 ;
-   //Rare case where particle is close to edge of silicon plan
-   if (X == 129) X = 128;
+   // Phi angle
+   G4double phi = atan2(POS(1), POS(0)) / deg;
+   if (phi < 0) phi += 360;
+
+   // Phi quadrant
+   G4double PhiWidth = 360. / GPDANNULAR::NbThetaQuadrant;
+   G4double PhiQuadrantNumber = floor(phi / PhiWidth);
+
+   // Theta strip pitch
+   // Interstrip should be taken into account here. To be done
+   G4double ThetaStripPitch = (GPDANNULAR::FirstStageRmax - GPDANNULAR::FirstStageRmin) / GPDANNULAR::NbThetaStrips;
+   G4double dummy = (r - GPDANNULAR::FirstStageRmin);
+   if (dummy < 0 && fabs(dummy) < 1e-6) dummy *= -1;
+   G4double ThetaStripNumber = floor(dummy / ThetaStripPitch);
+   ThetaStripNumber += PhiQuadrantNumber * GPDANNULAR::NbThetaStrips;
+
+   if (ThetaStripNumber < 1e-6) {
+    /*  G4cout << "POS: " << POS << G4endl;
+      G4cout << "r, phi " << r << "  " << phi << G4endl;
+      G4cout << "PhiWidth, PhiQuadrantNumber " << PhiWidth << "  " << PhiQuadrantNumber << G4endl;
+      G4cout << "ThetaStripPitch, ThetaStripNumber, dummy " << ThetaStripPitch << "  " << ThetaStripNumber << "  " << dummy << G4endl;*/
+   }
+
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(DetNbr + index, X);
+   EvtMap->set(DetNbr + index, ThetaStripNumber);
+
    return TRUE;
 }
 
@@ -713,22 +736,29 @@ G4bool GPDScorerFirstStageBackStripAnnular::ProcessHits(G4Step* aStep, G4Touchab
    // get detector number
    int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "GPDAnnular");
 
-   // get back strip
+   // Hit position in the world frame
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
+
+   // Hit position in the detector frame
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
-   G4double StripPitch = m_StripPlaneSize / m_NumberOfStrip;
+   // Phi angle
+   G4double phi = atan2(POS(1), POS(0)) / deg;
+   if (phi < 0) phi += 360;
 
-   G4double temp = (POS(1) + m_StripPlaneSize / 2.) / StripPitch   ;
-   G4int temp2 = temp ;
-   G4double Y = temp2 + 1                    ;
-   //Rare case where particle is close to edge of silicon plan
-   if (Y == 129) Y = 128;
+   // Phi strip number
+   // Interstrip should be taken into account here. To be done
+   G4double PhiWidth = 360. / (GPDANNULAR::NbPhiStrips * GPDANNULAR::NbThetaQuadrant);
+   G4double PhiStripNumber = floor(phi / PhiWidth);
+
+//   G4cout << POS << G4endl;
+//   G4cout << "phi " << phi << " PhiWidth  " << PhiWidth << "  PhiStripNumber " << PhiStripNumber << G4endl;
 
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   EvtMap->set(DetNbr + index, Y);
+   EvtMap->set(DetNbr + index, PhiStripNumber);
+
    return TRUE;
 }
 

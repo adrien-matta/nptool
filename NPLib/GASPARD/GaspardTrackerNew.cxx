@@ -42,6 +42,7 @@
 // Gaspard headers
 #include "GaspardTrackerDummyShape.h"
 #include "GaspardTrackerTrapezoid.h"
+#include "GaspardTrackerAnnular.h"
 
 using namespace std ;	
 
@@ -115,9 +116,9 @@ void GaspardTrackerNew::ReadConfiguration(string Path)
       }
       else if (LineBuffer.compare(0, 10, "GPDAnnular") == 0  &&  GPDTrkAnnular == false) {
          GPDTrkAnnular = true;
-/*
+
          // instantiate a new "detector" corresponding to the Trapezoid elements
-         GaspardTrackerModule* myDetector = new GaspardTrackerAnnular();
+         GaspardTrackerModule* myDetector = new GaspardTrackerAnnular(m_ModulesMap, m_EventPhysics);
 
          // Pass the data object to the GaspardTracker*** object
          myDetector->SetGaspardDataPointer(m_EventData);
@@ -126,7 +127,7 @@ void GaspardTrackerNew::ReadConfiguration(string Path)
          ConfigFile.close();
          myDetector->ReadConfiguration(Path);
          ConfigFile.open(Path.c_str());
-*/      }
+      }
       else if (LineBuffer.compare(0, 13, "GPDDummyShape") == 0  &&  GPDTrkDummyShape == false) {
          GPDTrkDummyShape = true;
 
