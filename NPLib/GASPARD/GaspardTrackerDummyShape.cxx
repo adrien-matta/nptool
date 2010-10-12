@@ -273,25 +273,16 @@ void GaspardTrackerDummyShape::BuildPhysicalEvent()
          if (stripXE == stripXT  &&  stripYE == stripYT) {        // here we have a good strip event
             // various
             Check_FirstStage = true;
-//            EventMultiplicity = 1;
             // store strip ID
             m_EventPhysics->SetFirstStageFrontPosition(stripXE);
             m_EventPhysics->SetFirstStageBackPosition(stripYE);
             // get energy from strips and store it
             double EnergyStripFront = m_EventData->GetGPDTrkFirstStageFrontEEnergy(0);
-//            double EnergyStripBack  = m_EventData->GetGPDTrkFirstStageBackEEnergy(0);
-//            double EnergyStrip  = 0.5 * (EnergyStripFront + EnergyStripBack);
-            double EnergyStrip  = EnergyStripFront;
-//            if (EnergyStripBack > EnergyStrip) EnergyStrip = EnergyStripBack;
-            m_EventPhysics->SetFirstStageEnergy(EnergyStrip);
-            double EnergyTot = EnergyStrip;
+            m_EventPhysics->SetFirstStageEnergy(EnergyStripFront);
+            double EnergyTot = EnergyStripFront;
             // get time from strips and store it
-            double TimeStripFront = m_EventData->GetGPDTrkFirstStageFrontEEnergy(0);
             double TimeStripBack  = m_EventData->GetGPDTrkFirstStageBackEEnergy(0);
-            double TimeStrip  = 0.5 * (TimeStripFront + TimeStripBack);
-//                  double TimeStrip  = TimeStripFront;
-//                  if (TimeStripBack > TimeStrip) TimeStrip = TimeStripBack;
-            m_EventPhysics->SetFirstStageTime(TimeStrip);
+            m_EventPhysics->SetFirstStageTime(TimeStripBack);
 
             // check if we have a 2nd stage event
             if (mult2E==1 && mult2T==1) {
@@ -303,6 +294,7 @@ void GaspardTrackerDummyShape::BuildPhysicalEvent()
             else if (mult2E>1 || mult2T>1) {
                cout << "Warning: multiplicity in second stage greater than in firststage" << endl;
             }
+
             // check if we have a third stage event
             if (mult3E==1 && mult3T==1) {
                Check_ThirdStage = true;
@@ -316,6 +308,18 @@ void GaspardTrackerDummyShape::BuildPhysicalEvent()
 
             // Fill total energy
             m_EventPhysics->SetTotalEnergy(EnergyTot);
+
+            // Fill default values for second an third stages
+            if (!Check_SecondStage) {
+               m_EventPhysics->SetSecondStageEnergy(-1000);
+               m_EventPhysics->SetSecondStageTime(-1000);
+               m_EventPhysics->SetSecondStagePosition(-1000);
+            }
+            if (!Check_ThirdStage) {
+               m_EventPhysics->SetThirdStageEnergy(-1000);
+               m_EventPhysics->SetThirdStageTime(-1000);
+               m_EventPhysics->SetThirdStagePosition(-1000);
+            }
          }
          else {
             cout << "Not same strips" << endl;

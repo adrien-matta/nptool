@@ -650,6 +650,8 @@ G4bool GPDScorerFirstStageFrontStripAnnular::ProcessHits(G4Step* aStep, G4Toucha
 
    // Hit position in the world frame
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
+   G4cout << "world frame hit position" << G4endl;
+   G4cout << POS.x() << "   " << POS.y() << "   " << POS.z() << G4endl;
 
    // Hit position in the detector frame
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
@@ -672,6 +674,11 @@ G4bool GPDScorerFirstStageFrontStripAnnular::ProcessHits(G4Step* aStep, G4Toucha
    if (dummy < 0 && fabs(dummy) < 1e-6) dummy *= -1;
    G4double ThetaStripNumber = floor(dummy / ThetaStripPitch);
    ThetaStripNumber += PhiQuadrantNumber * GPDANNULAR::NbThetaStrips;
+
+      G4cout << "POS: " << POS << G4endl;
+      G4cout << "r, phi " << r << "  " << phi << G4endl;
+      G4cout << "PhiWidth, PhiQuadrantNumber " << PhiWidth << "  " << PhiQuadrantNumber << G4endl;
+      G4cout << "ThetaStripPitch, ThetaStripNumber, dummy " << ThetaStripPitch << "  " << ThetaStripNumber << "  " << dummy << G4endl;
 
    if (ThetaStripNumber < 1e-6) {
     /*  G4cout << "POS: " << POS << G4endl;

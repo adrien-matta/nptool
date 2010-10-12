@@ -221,36 +221,6 @@ void GaspardTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
 
    logicVacBox->SetVisAttributes(G4VisAttributes::Invisible);
 
-   // Add a degrader plate between Si and CsI:
-   /*
-      G4Box* Degrader = new G4Box("Degrader" , 50*mm , 50*mm , 0.1*mm );
-      G4LogicalVolume* logicDegrader = new G4LogicalVolume( Degrader , Harvar, "logicDegrader",0,0,0);
-      PVPBuffer = new G4PVPlacement(0,G4ThreeVector(0,0,0),logicDegrader,"Degrader",logicVacBox,false,0) ;
-   */
-
-   //Place two marker to identify the u and v axis on silicon face:
-   //marker are placed a bit before the silicon itself so they don't perturbate simulation
-   //Uncomment to help debugging or if you want to understand the way the code work.
-   //I should recommand to Comment it during simulation to avoid perturbation of simulation
-   //Remember G4 is limitationg step on geometry constraints.
-  /* 
-         G4ThreeVector positionMarkerU = CT*0.98 + MMu*SiliconFace/4;
-         G4Box*          solidMarkerU = new G4Box( "solidMarkerU" , SiliconFace/4 , 1*mm , 1*mm )              ;
-         G4LogicalVolume* logicMarkerU = new G4LogicalVolume( solidMarkerU , Vacuum , "logicMarkerU",0,0,0)       ;
-         PVPBuffer = new G4PVPlacement(G4Transform3D(*MMrot,positionMarkerU),logicMarkerU,"MarkerU",world,false,0) ;
-
-         G4VisAttributes* MarkerUVisAtt= new G4VisAttributes(G4Colour(0.,0.,0.5));//blue
-         logicMarkerU->SetVisAttributes(MarkerUVisAtt);
-
-         G4ThreeVector positionMarkerV = CT*0.98 + MMv*SiliconFace/4;
-         G4Box*          solidMarkerV = new G4Box( "solidMarkerU" , 1*mm , SiliconFace/4 , 1*mm )              ;
-         G4LogicalVolume* logicMarkerV = new G4LogicalVolume( solidMarkerV , Vacuum , "logicMarkerV",0,0,0)       ;
-         PVPBuffer = new G4PVPlacement(G4Transform3D(*MMrot,positionMarkerV),logicMarkerV,"MarkerV",world,false,0) ;
-
-         G4VisAttributes* MarkerVVisAtt= new G4VisAttributes(G4Colour(0.,0.5,0.5));//green
-         logicMarkerV->SetVisAttributes(MarkerVVisAtt);
-   */
-
    ////////////////////////////////////////////////////////////////
    /////////////////// First Stage Construction////////////////////
    ////////////////////////////////////////////////////////////////
@@ -276,6 +246,8 @@ void GaspardTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
 
       // Silicon detector itself
       G4ThreeVector  positionSilicon = G4ThreeVector(0, 0, Silicon_PosZ);
+      G4cout << "position en z de l'annulaire " << MMpos.z() * mm << G4endl;
+      G4cout << "position en z de l'annulaire " << Silicon_PosZ * mm << G4endl;
 
       G4Tubs* solidSilicon = new G4Tubs("solidSilicon", 
                                          FirstStageRmin,
@@ -291,8 +263,7 @@ void GaspardTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
       logicSilicon->SetSensitiveDetector(m_FirstStageScorer);
 
       ///Visualisation of Silicon Strip
-//      G4VisAttributes* SiliconVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5)) ;
-      G4VisAttributes* SiliconVisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 0.9)) ;	// bleu
+      G4VisAttributes* SiliconVisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 0.9)) ;	// blue
       logicSilicon->SetVisAttributes(SiliconVisAtt)                        ;
    }
 
@@ -323,7 +294,6 @@ void GaspardTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
       ///Visualisation of Third Stage
       G4VisAttributes* ThirdStageVisAtt = new G4VisAttributes(G4Colour(0.0, 0.9, 0.)) ;	// green
       logicThirdStage->SetVisAttributes(ThirdStageVisAtt)                        ;
-//      logicThirdStage->SetVisAttributes(G4VisAttributes::Invisible);
 
       // Set Third Stage sensible
       logicThirdStage->SetSensitiveDetector(m_ThirdStageScorer);
@@ -464,6 +434,8 @@ void GaspardTrackerAnnular::ConstructDetector(G4LogicalVolume* world)
 
    for (G4int i = 0; i < NumberOfModule; i++) {
       // translation to position the module
+      // test if module is in the forward or backward hemisphere
+      (m_PosZ[i] < 0) ? m_PosZ[i] -= 0.5*Length : m_PosZ[i] += 0.5*Length;
       MMpos = G4ThreeVector(0, 0, m_PosZ[i]);
 
       // Passage Matrix from Lab Referential to Module Referential

@@ -199,7 +199,7 @@ public:
    UShort_t GetGPDTrkFirstStageFrontTStripNbr(Int_t i)    {
       return fGPDTrk_FirstStage_FrontT_StripNbr.at(i);
    }
-   Double_t GetGPDTrkFirstStageFrontTTnergy(Int_t i)      {
+   Double_t GetGPDTrkFirstStageFrontTTime(Int_t i)      {
       return fGPDTrk_FirstStage_FrontT_Time.at(i);
    }
    // (Back, E)
@@ -225,7 +225,7 @@ public:
    UShort_t GetGPDTrkFirstStageBackTStripNbr(Int_t i)    {
       return fGPDTrk_FirstStage_BackT_StripNbr.at(i);
    }
-   Double_t GetGPDTrkFirstStageBackTTnergy(Int_t i)      {
+   Double_t GetGPDTrkFirstStageBackTTime(Int_t i)      {
       return fGPDTrk_FirstStage_BackT_Time.at(i);
    }
 
