@@ -6,12 +6,12 @@
 #include <map>
 #include <vector>
 
-// NPTool - ROOT headers
-#include "TInteractionCoordinates.h"
-#include "TGaspardTrackerData.h"
+// ROOT headers
 #include "TVector3.h"
 
 // Gaspard headers
+#include "TGaspardTrackerData.h"
+#include "TGaspardTrackerPhysicsNew.h"
 #include "GaspardTrackerModule.h"
 
 using namespace std;
@@ -24,7 +24,7 @@ public:
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
    ////////////////////////////////////////////////////
-   GaspardTrackerTrapezoid(map<int, GaspardTrackerModule*> &Module);
+   GaspardTrackerTrapezoid(map<int, GaspardTrackerModule*> &Module, TGaspardTrackerPhysicsNew* &EventPhysics);
    virtual ~GaspardTrackerTrapezoid();
 
 public:
@@ -43,14 +43,17 @@ public:
 
 private:
    map<int, GaspardTrackerModule*> &m_ModuleTest;
+   TGaspardTrackerPhysicsNew* &m_EventPhysics;
 
 public:
    void SetGaspardDataPointer(TGaspardTrackerData* gaspardData) {m_EventData = gaspardData;};
+   void PreTreat();
 
 private:
    // Gaspard data coming from TGaspardTrackerPhysics through the 
    // SetGaspardDataPointer method
    TGaspardTrackerData* m_EventData;
+   TGaspardTrackerData* m_PreTreatData;
 
 public:
    ////////////////////////////////
@@ -71,9 +74,9 @@ public:
                   double beta_w);
 
    // Getters to retrieve the (X,Y,Z) coordinates of a pixel defined by strips (X,Y)
-   double GetStripPositionX(int N ,int X ,int Y)        { return m_StripPositionX[N-1][X-1][Y-1]; }
-   double GetStripPositionY(int N ,int X ,int Y)        { return m_StripPositionY[N-1][X-1][Y-1]; }
-   double GetStripPositionZ(int N ,int X ,int Y)        { return m_StripPositionZ[N-1][X-1][Y-1]; }
+   double GetStripPositionX(int N ,int X ,int Y)        { return m_StripPositionX[N-1-m_index["Trapezoid"]][X-1][Y-1]; }
+   double GetStripPositionY(int N ,int X ,int Y)        { return m_StripPositionY[N-1-m_index["Trapezoid"]][X-1][Y-1]; }
+   double GetStripPositionZ(int N ,int X ,int Y)        { return m_StripPositionZ[N-1-m_index["Trapezoid"]][X-1][Y-1]; }
    double GetNumberOfModule()                           { return m_NumberOfModule; }
 
 private:

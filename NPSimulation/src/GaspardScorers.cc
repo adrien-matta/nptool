@@ -391,9 +391,9 @@ G4bool GPDScorerFirstStageFrontStripSquare::ProcessHits(G4Step* aStep, G4Touchab
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
-   G4double StripPitch = GPDSQUARE::SiliconFace / m_NumberOfStrip;
+   G4double StripPitch = GPDSQUARE::FirstStageFace / m_NumberOfStrip;
 
-   G4double temp = (POS(0) + GPDSQUARE::SiliconFace / 2.) / StripPitch   ;
+   G4double temp = (POS(0) + GPDSQUARE::FirstStageFace / 2.) / StripPitch   ;
    G4double X = int(temp) + 1 ;
    //Rare case where particle is close to edge of silicon plan
    if (X == 129) X = 128;
@@ -455,9 +455,9 @@ G4bool GPDScorerFirstStageBackStripSquare::ProcessHits(G4Step* aStep, G4Touchabl
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
-   G4double StripPitch = GPDSQUARE::SiliconFace / m_NumberOfStrip;
+   G4double StripPitch = GPDSQUARE::FirstStageFace / m_NumberOfStrip;
 
-   G4double temp = (POS(1) + GPDSQUARE::SiliconFace / 2.) / StripPitch   ;
+   G4double temp = (POS(1) + GPDSQUARE::FirstStageFace / 2.) / StripPitch   ;
    G4int temp2 = temp ;
    G4double Y = temp2 + 1                    ;
    //Rare case where particle is close to edge of silicon plan

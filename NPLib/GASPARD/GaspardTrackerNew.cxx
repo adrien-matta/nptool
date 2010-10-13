@@ -104,7 +104,7 @@ void GaspardTrackerNew::ReadConfiguration(string Path)
          GPDTrkTrapezoid = true;
 
          // instantiate a new "detector" corresponding to the Trapezoid elements
-         GaspardTrackerModule* myDetector = new GaspardTrackerTrapezoid(m_ModulesMap);
+         GaspardTrackerModule* myDetector = new GaspardTrackerTrapezoid(m_ModulesMap, m_EventPhysics);
 
          // Pass the data object to the GaspardTracker*** object
          myDetector->SetGaspardDataPointer(m_EventData);

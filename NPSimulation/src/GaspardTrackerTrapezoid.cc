@@ -224,47 +224,19 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
    // Little trick to avoid warning in compilation: Use a PVPlacement "buffer".
    // If don't you will have a Warning unused variable 'myPVP'
    G4PVPlacement* PVPBuffer ;
+   G4String Name = "GPDTrapezoid" + DetectorNumber ;
 
    // Definition of the volume containing the sensitive detector
-   G4Trap* solidMM = new G4Trap("GPDTrapezoid" + DetectorNumber, 
-                                Length/2, 0*deg, 0*deg, 
-                                Height/2, BaseSmall/2, BaseLarge/2, 0*deg, 
-                                Height/2, BaseSmall/2, BaseLarge/2, 0*deg);
+   G4Trap* solidGPDTrapezoid = new G4Trap(Name, 
+                                          Length/2, 0*deg, 0*deg, 
+                                          Height/2, BaseSmall/2, BaseLarge/2, 0*deg, 
+                                          Height/2, BaseSmall/2, BaseLarge/2, 0*deg);
+   G4LogicalVolume* logicGPDTrapezoid = new G4LogicalVolume(solidGPDTrapezoid, Vacuum, Name, 0, 0, 0);
 
-//   G4LogicalVolume* logicMM = new G4LogicalVolume(solidMM, Iron, "GPDTrapezoid" + DetectorNumber, 0, 0, 0)                                ;
-   G4LogicalVolume* logicMM = new G4LogicalVolume(solidMM, Vacuum, "GPDTrapezoid" + DetectorNumber, 0, 0, 0)                                ;
+   PVPBuffer = new G4PVPlacement(G4Transform3D(*MMrot, MMpos), logicGPDTrapezoid, Name, world, false, 0);
 
-   G4String Name = "GPDTrapezoid" + DetectorNumber ;
-   PVPBuffer     = new G4PVPlacement(G4Transform3D(*MMrot, MMpos) ,
-                                     logicMM                      ,
-                                     Name                         ,
-                                     world                        ,
-                                     false                        ,
-                                     0);
-
-   logicMM->SetVisAttributes(G4VisAttributes::Invisible);
-   if (m_non_sensitive_part_visiualisation) logicMM->SetVisAttributes(G4VisAttributes(G4Colour(0.90, 0.90, 0.90)));
-
-   // Definition of a vaccuum volume
-   G4ThreeVector positionVacBox = G4ThreeVector(0, 0, VacBox_PosZ);
-
-   G4Trap* solidVacBox = new G4Trap("solidVacBox", 
-                                    VacBoxThickness/2, 0*deg, 0*deg, 
-                                    FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg, 
-                                    FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg);
-
-   G4LogicalVolume* logicVacBox = new G4LogicalVolume(solidVacBox, Vacuum, "logicVacBox", 0, 0, 0);
-
-   PVPBuffer = new G4PVPlacement(0, positionVacBox, logicVacBox, "G" + DetectorNumber + "VacBox", logicMM, false, 0);
-
-   logicVacBox->SetVisAttributes(G4VisAttributes::Invisible);
-
-   // Add a degrader plate between Si and CsI:
-   /*
-      G4Box* Degrader = new G4Box("Degrader" , 50*mm , 50*mm , 0.1*mm );
-      G4LogicalVolume* logicDegrader = new G4LogicalVolume( Degrader , Harvar, "logicDegrader",0,0,0);
-      PVPBuffer = new G4PVPlacement(0,G4ThreeVector(0,0,0),logicDegrader,"Degrader",logicVacBox,false,0) ;
-   */
+   logicGPDTrapezoid->SetVisAttributes(G4VisAttributes::Invisible);
+   if (m_non_sensitive_part_visiualisation) logicGPDTrapezoid->SetVisAttributes(G4VisAttributes(G4Colour(0.90, 0.90, 0.90)));
 
    //Place two marker to identify the u and v axis on silicon face:
    //marker are placed a bit before the silicon itself so they don't perturbate simulation
@@ -293,46 +265,58 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
    /////////////////// First Stage Construction////////////////////
    ////////////////////////////////////////////////////////////////
    if (wFirstStage) {
-      // Aluminium dead layers
-      G4ThreeVector positionAluStripFront = G4ThreeVector(0, 0, AluStripFront_PosZ);
-      G4ThreeVector positionAluStripBack  = G4ThreeVector(0, 0, AluStripBack_PosZ);
-
-      G4Trap* solidAluStrip = new G4Trap("AluBox", 
-                                         AluStripThickness/2, 0*deg, 0*deg, 
-                                         FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg, 
-                                         FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg);
-
-//      G4LogicalVolume* logicAluStrip = new G4LogicalVolume(solidAluStrip, Aluminium, "logicAluStrip", 0, 0, 0);
-      G4LogicalVolume* logicAluStrip = new G4LogicalVolume(solidAluStrip, Vacuum, "logicAluStrip", 0, 0, 0);
-
-      PVPBuffer = new G4PVPlacement(0, positionAluStripFront, logicAluStrip, "G" + DetectorNumber + "AluStripFront", logicMM, false, 0);
-      PVPBuffer = new G4PVPlacement(0, positionAluStripBack,  logicAluStrip, "G" + DetectorNumber + "AluStripBack",  logicMM, false, 0);
-
-      logicAluStrip->SetVisAttributes(G4VisAttributes::Invisible);
-
       // Silicon detector itself
-      G4ThreeVector  positionSilicon = G4ThreeVector(0, 0, Silicon_PosZ);
+      G4ThreeVector  positionFirstStage = G4ThreeVector(0, 0, FirstStage_PosZ);
 
-      G4Trap* solidSilicon = new G4Trap("solidSilicon", 
-                                         FirstStageThickness/2, 0*deg, 0*deg, 
-                                         FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg, 
-                                         FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg);
-      G4LogicalVolume* logicSilicon = new G4LogicalVolume(solidSilicon, Silicon, "logicSilicon", 0, 0, 0);
+      G4Trap* solidFirstStage = new G4Trap("solidFirstStage", 
+                                           FirstStageThickness/2, 0*deg, 0*deg, 
+                                           FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg, 
+                                           FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg);
+      G4LogicalVolume* logicFirstStage = new G4LogicalVolume(solidFirstStage, Silicon, "logicFirstStage", 0, 0, 0);
 
-      PVPBuffer = new G4PVPlacement(0, positionSilicon, logicSilicon, Name + "_Silicon", logicMM, false, 0);
+      PVPBuffer = new G4PVPlacement(0,
+                                    positionFirstStage,
+                                    logicFirstStage,
+                                    Name + "_FirstStage",
+                                    logicGPDTrapezoid,
+                                    false,
+                                    0);
 
       // Set First Stage sensible
-      logicSilicon->SetSensitiveDetector(m_FirstStageScorer);
+      logicFirstStage->SetSensitiveDetector(m_FirstStageScorer);
 
-      // Visualisation of Silicon Strip
-      G4VisAttributes* SiliconVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5)) ;
-      logicSilicon->SetVisAttributes(SiliconVisAtt)                        ;
+      ///Visualisation of FirstStage Strip
+      G4VisAttributes* FirstStageVisAtt = new G4VisAttributes(G4Colour(0.2, 0.2, 0.2));
+      logicFirstStage->SetVisAttributes(FirstStageVisAtt);
    }
 
    ////////////////////////////////////////////////////////////////
    //////////////// Second Stage  Construction ////////////////////
    ////////////////////////////////////////////////////////////////
    if (wSecondStage) {
+      // Second stage silicon detector
+      G4ThreeVector  positionSecondStage = G4ThreeVector(0, 0, SecondStage_PosZ);
+
+      G4Trap* solidSecondStage = new G4Trap("solidSecondStage", 
+                                            SecondStageThickness/2, 0*deg, 0*deg, 
+                                            SecondStageHeight/2, SecondStageBaseSmall/2, SecondStageBaseLarge/2, 0*deg, 
+                                            SecondStageHeight/2, SecondStageBaseSmall/2, SecondStageBaseLarge/2, 0*deg);
+      G4LogicalVolume* logicSecondStage = new G4LogicalVolume(solidSecondStage, Silicon, "logicSecondStage", 0, 0, 0);
+
+      PVPBuffer = new G4PVPlacement(0,
+                                    positionSecondStage,
+                                    logicSecondStage,
+                                    Name + "_SecondStage",
+                                    logicGPDTrapezoid,
+                                    false,
+                                    0);
+
+      // Set Second Stage sensible
+      logicSecondStage->SetSensitiveDetector(m_SecondStageScorer);
+
+      ///Visualisation of SecondStage Strip
+      G4VisAttributes* SecondStageVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5)) ;
+      logicSecondStage->SetVisAttributes(SecondStageVisAtt)                        ;
    }
 
    ////////////////////////////////////////////////////////////////
@@ -344,20 +328,24 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
 
       G4Trap* solidThirdStage = new G4Trap("solidThirdStage", 
                                            ThirdStageThickness/2, 0*deg, 0*deg, 
-                                           Height/2, BaseSmall/2, BaseLarge/2, 0*deg, 
-                                           Height/2, BaseSmall/2, BaseLarge/2, 0*deg);
-
+                                           ThirdStageHeight/2, ThirdStageBaseSmall/2, ThirdStageBaseLarge/2, 0*deg, 
+                                           ThirdStageHeight/2, ThirdStageBaseSmall/2, ThirdStageBaseLarge/2, 0*deg);
       G4LogicalVolume* logicThirdStage = new G4LogicalVolume(solidThirdStage, Silicon, "logicThirdStage", 0, 0, 0);
 
-      PVPBuffer = new G4PVPlacement(0, positionThirdStage, logicThirdStage, Name + "_ThirdStage", logicMM, false, 0);
-
-      // Visualisation of Third Stage
-      G4VisAttributes* ThirdStageVisAtt = new G4VisAttributes(G4Colour(0.7, 0.7, 0.7)) ;
-      logicThirdStage->SetVisAttributes(ThirdStageVisAtt)                        ;
-//      logicThirdStage->SetVisAttributes(G4VisAttributes::Invisible);
+      PVPBuffer = new G4PVPlacement(0,
+                                    positionThirdStage,
+                                    logicThirdStage,
+                                    Name + "_ThirdStage",
+                                    logicGPDTrapezoid,
+                                    false,
+                                    0);
 
       // Set Third Stage sensible
       logicThirdStage->SetSensitiveDetector(m_ThirdStageScorer);
+
+      ///Visualisation of Third Stage
+      G4VisAttributes* ThirdStageVisAtt = new G4VisAttributes(G4Colour(0.7, 0.7, 0.7));
+      logicThirdStage->SetVisAttributes(ThirdStageVisAtt);
    }
 }
 

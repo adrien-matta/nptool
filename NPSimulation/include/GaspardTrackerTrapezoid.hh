@@ -156,51 +156,46 @@ namespace GPDTRAP
 
    // Geometry
    // gaspard Trapezoid
-/*   const G4double Height    = 90*mm;
-   const G4double BaseLarge = 85*mm;
-   const G4double BaseSmall = 35*mm;
-   const G4double Length    = 20*mm;*/
+//   const G4double Height    = 90*mm;
+//   const G4double BaseLarge = 85*mm;
+//   const G4double BaseSmall = 35*mm;
+//   const G4double Length    = 20*mm;
    // gaspHyde
    const G4double Height    = 115*mm;
    const G4double BaseLarge =  98*mm;
    const G4double BaseSmall =  30*mm;
    const G4double Length    =  20*mm;
+   const G4double InterStageDistance = 7*mm;
 
    // First stage
-//   const G4double AluStripThickness = 0.00000001*micrometer;
-   const G4double AluStripThickness   = 0.4*micrometer;
    const G4double FirstStageThickness = 300*micrometer;
+   const G4int    NumberOfStripsX     = 128;
+   const G4int    NumberOfStripsY     = 128;
    // gaspard Trapezoid
-/*   const G4double FirstStageHeight    = 81*mm;
-   const G4double FirstStageBaseLarge = 78*mm;
-   const G4double FirstStageBaseSmall = 29*mm;*/
+//   const G4double FirstStageHeight    = 81*mm;
+//   const G4double FirstStageBaseLarge = 78*mm;
+//   const G4double FirstStageBaseSmall = 29*mm;
    // gaspHyde
    const G4double FirstStageHeight    = 113.5*mm;
    const G4double FirstStageBaseLarge =  97.5*mm;
    const G4double FirstStageBaseSmall =  28.5*mm;
-//   const G4double VacBoxThickness   = 3*cm           ;
-   const G4double VacBoxThickness     = 0.5*cm;
-   const G4int    NumberOfStripsX     = 128;
-   const G4int    NumberOfStripsY     = 128;
 
    // Second stage
-   const G4double SiLiThickness     = 5.1*mm                      ;  // Must be checked
-   const G4double SiLiFaceX         = 48.25*mm                    ;
-   const G4double SiLiFaceY         = 92*mm                       ;
+   const G4double SecondStageHeight    = FirstStageHeight;
+   const G4double SecondStageBaseLarge = FirstStageBaseLarge;
+   const G4double SecondStageBaseSmall = FirstStageBaseSmall;
+   const G4double SecondStageThickness = 1.5*mm;
 
    // Third stage
-   const G4double MylarCsIThickness   = 3*micrometer;
-//   const G4double ThirdStageThickness = 1.5*mm;
-   const G4double ThirdStageThickness = 8.5*mm;
-//   const G4double ThirdStageFaceFront = FaceFront;
-//   const G4double ThirdStageFaceBack  = FaceBack;
+   const G4double ThirdStageHeight    = FirstStageHeight;
+   const G4double ThirdStageBaseLarge = FirstStageBaseLarge;
+   const G4double ThirdStageBaseSmall = FirstStageBaseSmall;
+   const G4double ThirdStageThickness = 1.5*mm;
 
-   // Starting at the front and going to CsI
-   const G4double AluStripFront_PosZ = Length* -0.5 + 0.5*AluStripThickness                              ;
-   const G4double Silicon_PosZ       = AluStripFront_PosZ + 0.5*AluStripThickness + 0.5*FirstStageThickness ;
-   const G4double AluStripBack_PosZ  = Silicon_PosZ + 0.5*FirstStageThickness + 0.5*AluStripThickness       ;
-   const G4double VacBox_PosZ        = AluStripBack_PosZ + 0.5*AluStripThickness + 0.5* VacBoxThickness  ;
-   const G4double ThirdStage_PosZ    = VacBox_PosZ + 0.5*VacBoxThickness + 0.5*ThirdStageThickness       ;
+   // Starting at the front of the first stage and pointing to the third stage 
+   const G4double FirstStage_PosZ  = Length* -0.5 + 0.5*FirstStageThickness;
+   const G4double SecondStage_PosZ = Length* -0.5 + 0.5*SecondStageThickness + 1*InterStageDistance;
+   const G4double ThirdStage_PosZ  = Length* -0.5 + 0.5*ThirdStageThickness  + 2*InterStageDistance;
 }
 
 #endif

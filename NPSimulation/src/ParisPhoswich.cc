@@ -686,6 +686,8 @@ void ParisPhoswich::ReadSensitive(const G4Event* event)
    G4int sizeNCsI= CsIDetectorNumberHitMap->entries();
    G4int sizeECsI= CsIStageEnergyHitMap->entries();
 
+   sizeC *= 1;		// remove warning at compilation
+   sizeECsI *= 1;	// remove warning at compilation
    //G4cout <<"SizeN=" << sizeN << endl;
    //G4cout <<"SizeC=" << sizeC << endl;
    //G4cout <<"SizeN CsI =" << sizeNCsI << endl;
@@ -717,6 +719,7 @@ void ParisPhoswich::ReadSensitive(const G4Event* event)
        G4double E = *(Energy_itr->second);
        G4double T = *(Time_itr->second);
        G4int NCryst= *(CrystalNumber_itr->second);
+       NCryst *= 1;	// remove warning at compilation
 
 
        //G4cout <<"NTrackID=" << NTrackID << G4endl;

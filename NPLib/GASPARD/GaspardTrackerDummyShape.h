@@ -2,7 +2,6 @@
 #define GaspardTrackerDummyShape_h 1
 
 // C++ headers
-#include <iostream>
 #include <string>
 #include <map>
 #include <vector>

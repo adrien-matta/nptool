@@ -132,13 +132,6 @@ private:
    vector<G4double>  m_beta_u ; //  |
    vector<G4double>  m_beta_v ; //  > Tilt angle of the Telescope
    vector<G4double>  m_beta_w ; //  |
-
-   // for debugging purpose
-   G4ThreeVector	MMpos;
-   G4ThreeVector	MMu;
-   G4ThreeVector	MMv;
-   G4ThreeVector	MMw;
-   G4ThreeVector	CT;
 };
 
 
@@ -155,38 +148,35 @@ namespace GPDSQUARE
    const G4double ResoTimePPAC    = 0.106382979    ;// = 250ps                 //   Unit is  ns/2.35
 
    // Geometry
-  const G4double FaceFront = 5*cm; // = for 5x5cm det //11.*cm for 10x10 cm det.   ;
-  const G4double FaceBack = 5*cm; //16.5*cm   ;
-//   const G4double Length  = 7.2*cm     ;
-   const G4double Length  = 2.0*cm     ;
+   const G4double FaceFront          = 11*cm;
+   const G4double FaceBack           = 11*cm;
+   const G4double Length             = 1.6*cm;
+   const G4double InterStageDistance = 7*mm;
 
    // First stage
-//   const G4double AluStripThickness = 0.00000001*micrometer;
-   const G4double AluStripThickness = 0.4*micrometer ;
-   const G4double SiliconThickness  = 300*micrometer ;
-  const G4double SiliconFace       = 48.25*mm; //98*mm          ;
-//   const G4double VacBoxThickness   = 3*cm           ;
-   const G4double VacBoxThickness   = 0.5*cm           ;
-   const G4int    NumberOfStrips    = 128;
+   const G4double FirstStageFace      = 98*mm;
+   const G4double FirstStageThickness = 300*micrometer;
+   const G4int    NumberOfStrips      = 128;
+   const G4double AluStripThickness   = 0.4*micrometer;
 
    // Second stage
-   const G4double SiLiThickness     = 5.1*mm                      ;  // Must be checked
-   const G4double SiLiFaceX         = 48.25*mm                    ;
-   const G4double SiLiFaceY         = 48.25*mm ; // 92*mm                       ;
+   const G4double SecondStageFace      = FirstStageFace;
+   const G4double SecondStageThickness = 1.5*mm;
 
    // Third stage
-   const G4double MylarCsIThickness   = 3*micrometer;
-//   const G4double ThirdStageThickness = 1.5*mm;
-   const G4double ThirdStageThickness = 8.5*mm;
-   const G4double ThirdStageFaceFront = FaceFront;
-   const G4double ThirdStageFaceBack  = FaceBack;
+   const G4double ThirdStageFace      = FirstStageFace;
+   const G4double ThirdStageThickness = 1.5*mm;
 
-   // Starting at the front and going to CsI
-   const G4double AluStripFront_PosZ = Length* -0.5 + 0.5*AluStripThickness                              ;
-   const G4double Silicon_PosZ       = AluStripFront_PosZ + 0.5*AluStripThickness + 0.5*SiliconThickness ;
-   const G4double AluStripBack_PosZ  = Silicon_PosZ + 0.5*SiliconThickness + 0.5*AluStripThickness       ;
-   const G4double VacBox_PosZ        = AluStripBack_PosZ + 0.5*AluStripThickness + 0.5* VacBoxThickness  ;
-   const G4double ThirdStage_PosZ    = VacBox_PosZ + 0.5*VacBoxThickness + 0.5*ThirdStageThickness       ;
+   // Starting at the front of the first stage and pointing to the third stage
+   const G4double FirstStage_PosZ  = Length* -0.5 + 0.5*FirstStageThickness;
+   const G4double SecondStage_PosZ = Length* -0.5 + 0.5*SecondStageThickness + 1*InterStageDistance;
+   const G4double ThirdStage_PosZ  = Length* -0.5 + 0.5*ThirdStageThickness  + 2*InterStageDistance;
+
+//   const G4double AluStripFront_PosZ = Length* -0.5 + 0.5*AluStripThickness                              ;
+//   const G4double Silicon_PosZ       = AluStripFront_PosZ + 0.5*AluStripThickness + 0.5*SiliconThickness ;
+//   const G4double AluStripBack_PosZ  = Silicon_PosZ + 0.5*SiliconThickness + 0.5*AluStripThickness       ;
+//   const G4double VacBox_PosZ        = AluStripBack_PosZ + 0.5*AluStripThickness + 0.5* VacBoxThickness  ;
+//   const G4double ThirdStage_PosZ    = VacBox_PosZ + 0.5*VacBoxThickness + 0.5*ThirdStageThickness       ;
 }
 
 #endif

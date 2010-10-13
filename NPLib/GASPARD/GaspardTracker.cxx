@@ -44,10 +44,10 @@ using namespace std ;
 //	Default Constructor
 
 GaspardTracker::GaspardTracker()
+	: m_NumberOfModule(0),
+	  m_EventData(new TGaspardTrackerData),
+	  m_EventPhysics(new TGaspardTrackerPhysics)
 {
-   m_NumberOfModule = 0;
-   m_EventData    = new TGaspardTrackerData();
-   m_EventPhysics = new TGaspardTrackerPhysics();
 }	
 
 

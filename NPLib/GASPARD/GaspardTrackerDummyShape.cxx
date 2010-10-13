@@ -11,7 +11,7 @@
 
 
 GaspardTrackerDummyShape::GaspardTrackerDummyShape(map<int, GaspardTrackerModule*> &Module,
-						     TGaspardTrackerPhysicsNew* &EventPhysics) 
+						   TGaspardTrackerPhysicsNew* &EventPhysics) 
 	: m_ModuleTest(Module),
 	  m_EventPhysics(EventPhysics),
 	  m_EventData(0),
@@ -216,6 +216,7 @@ void GaspardTrackerDummyShape::ReadConfiguration(string Path)
 }
 
 
+
 void GaspardTrackerDummyShape::PreTreat()
 {
 }
@@ -343,7 +344,6 @@ void GaspardTrackerDummyShape::BuildPhysicalEvent()
 void GaspardTrackerDummyShape::BuildSimplePhysicalEvent()
 {
 }
-
 
 
 
