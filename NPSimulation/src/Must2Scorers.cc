@@ -52,7 +52,7 @@ G4bool PSStripNumberX::ProcessHits(G4Step* aStep, G4TouchableHistory*)
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
-   G4double temp = (POS(0) + m_StripPlaneSize / 2.) / m_StripPitch   ;
+   G4double temp = (POS(1) + m_StripPlaneSize / 2.) / m_StripPitch   ;
    G4int X = int(temp) + 1 ;
    //Rare case where particle is close to edge of silicon plan
    if (X == m_NumberOfStrip+1) X = m_NumberOfStrip;
@@ -118,7 +118,7 @@ G4bool PSStripNumberY::ProcessHits(G4Step* aStep, G4TouchableHistory*)
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
-   G4double temp = (POS(1) + m_StripPlaneSize / 2.) / m_StripPitch   ;
+   G4double temp = (POS(0) + m_StripPlaneSize / 2.) / m_StripPitch   ;
    G4int temp2 = temp ;
    G4int Y = temp2 + 1                    ;
    //Rare case where particle is close to edge of silicon plan
