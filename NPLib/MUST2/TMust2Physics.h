@@ -18,8 +18,8 @@
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *  Only multiplicity one and multiplicity 2 are down.                       *
- *  Improvment needed                                                        *
+ *                                                                           *
+ *                                                                           *
  *                                                                           *
  *****************************************************************************/
 // STL
@@ -64,12 +64,19 @@ class TMust2Physics : public TObject, public NPA::VDetector
 	// Telescope
 	vector<int>		TelescopeNumber		;
 	
-	//	Si X
-	vector<double>	Si_E				;
-	vector<double>	Si_T				;
-	vector<int>			Si_X				;
-	vector<int>			Si_Y				;
-	
+	//	Si
+	vector<double>	Si_E										;//max of Si_EX and Si_EY
+	vector<double>	Si_T										;//min of Si_TX and Si_TY
+	vector<int>			Si_X										;
+	vector<int>			Si_Y										;
+
+	// Use for checking purpose
+	vector<double>	Si_EX				;
+	vector<double>	Si_TX				;
+	vector<double>	Si_EY				;
+	vector<double>	Si_TY				;
+	vector<int>			TelescopeNumber_X				;
+	vector<int>			TelescopeNumber_Y				;
 	//	Si(Li)
 	vector<double>	SiLi_E				;
 	vector<double>	SiLi_T				;
@@ -106,7 +113,6 @@ class TMust2Physics : public TObject, public NPA::VDetector
 		//	This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
 		void BuildPhysicalEvent()					;
 		
-		
 		//	Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
 		//	This method aimed to be used for analysis performed during experiment, when speed is requiered.
 		//	NB: This method can eventually be the same as BuildPhysicalEvent.
@@ -114,23 +120,46 @@ class TMust2Physics : public TObject, public NPA::VDetector
 
 		//	Those two method all to clear the Event Physics or Data
 		void ClearEventPhysics()		{Clear();}		
-		void ClearEventData()				{EventData->Clear();}		
+		void ClearEventData()				{EventData->Clear();}	
 	
 	public:		//	Specific to MUST2 Array
+	
+		//	Clear The PreTeated object
+		void ClearPreTreatedData()	{PreTreatedData->Clear();}
+	
+		//	Remove bad channel, calibrate the data and apply threshold
+		void PreTreat();
+	
+		//	Return false if the channel is disabled by user
+			//	Frist argument is either "X","Y","SiLi","CsI"
+		bool IsValidChannel(string DetectorType, int telescope , int channel);
+	
+	
+		//	Initialize the standard parameter for analysis
+			//	ie: all channel enable, maximum multiplicity for strip = number of telescope
+		void InitializeStandardParameter();
+		
+		//	Read the user configuration file; if no file found, load standard one
+		void ReadAnalysisConfig();
+			
 		//	Add a Telescope using Corner Coordinate information
-		void AddTelescope(	TVector3 C_X1_Y1 		,
-	 						TVector3 C_X128_Y1 		, 
-	 						TVector3 C_X1_Y128 		, 
-	 						TVector3 C_X128_Y128	);
+		void AddTelescope(	TVector3 C_X1_Y1 			,
+						 						TVector3 C_X128_Y1 		, 
+						 						TVector3 C_X1_Y128 		, 
+						 						TVector3 C_X128_Y128	);
 		
 		//	Add a Telescope using R Theta Phi of Si center information
-		void AddTelescope(	double theta 	, 
-							double phi 		, 
-							double distance , 
-							double beta_u 	, 
-							double beta_v 	, 
-							double beta_w	);
-							
+		void AddTelescope(	double theta 		, 
+												double phi 			, 
+												double distance , 
+												double beta_u 	, 
+												double beta_v 	, 
+												double beta_w		);
+		
+		// Use for reading Calibration Run, very simple methods; only apply calibration, no condition
+		void ReadCalibrationRun();
+		
+		// Use to access the strip position
 		double GetStripPositionX( int N , int X , int Y )	{ return StripPositionX[N-1][X-1][Y-1] ; };
 		double GetStripPositionY( int N , int X , int Y )	{ return StripPositionY[N-1][X-1][Y-1] ; };
 		double GetStripPositionZ( int N , int X , int Y )	{ return StripPositionZ[N-1][X-1][Y-1] ; };
@@ -143,13 +172,27 @@ class TMust2Physics : public TObject, public NPA::VDetector
 		double GetEnergyDeposit(int i) { return TotalEnergy[i] ;};
 		
 		TVector3 GetPositionOfInteraction(int i)	 ;	
-		TVector3 GetTelescopeNormal(int i)		;
+		TVector3 GetTelescopeNormal(int i)				 ;
 
+		private:	//	Parameter used in the analysis
+		
+		//	Event over this value after pre-treatment are not treated / avoid long treatment time on spurious event	
+			int m_MaximumStripMultiplicityAllowed  ;//!
+		//	Give the allowance in percent of the difference in energy between X and Y
+			double m_StripEnergyMatchingTolerance  ; //!
+			
 	 	private:	//	Root Input and Output tree classes
 				
 				TMust2Data* 	  	EventData				;//!
+				TMust2Data* 	  	PreTreatedData	;//!
 				TMust2Physics* 	  EventPhysics		;//!
 
+
+		private:	//	Map of activated channel
+				map< int, vector<bool> > XChannelStatus 		;//!
+				map< int, vector<bool> > YChannelStatus 		;//! 
+				map< int, vector<bool> > SiLiChannelStatus 	;//! 
+				map< int, vector<bool> > CsIChannelStatus 	;//! 
 
 		private:	//	Spatial Position of Strip Calculated on bases of detector position
 	
@@ -164,12 +207,12 @@ class TMust2Physics : public TObject, public NPA::VDetector
 
 namespace LOCAL
 	{
-		// Threshold
-		const double Si_X_E_Threshold = 0	;	const double Si_X_T_Threshold = 0 ;
-		const double Si_Y_E_Threshold = 0	;	const double Si_Y_T_Threshold = 0	;
-		const double SiLi_E_Threshold = 0	;	const double SiLi_T_Threshold = 0	;
-		const double CsI_E_Threshold	= 0 ;	const double CsI_T_Threshold	= 0	;
-		
+		//	Threshold
+		const double Si_X_E_Threshold = 0	;
+		const double Si_Y_E_Threshold = 0	;
+		const double SiLi_E_Threshold = 0	;
+		const double CsI_E_Threshold	= 0 ;
+
 		//	tranform an integer to a string
 		string itoa(int value);
 		//	DSSD

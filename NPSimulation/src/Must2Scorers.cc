@@ -9,7 +9,7 @@
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
  * Creation Date  : January 2009                                             *
- * Last update    :                                                          *
+ * Last update    : october 2010                                             *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  File old the scorer specific to the MUST2 Detector                       *

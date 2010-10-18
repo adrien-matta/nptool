@@ -9,7 +9,7 @@
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
  * Creation Date  : febuary 2009                                             *
- * Last update    :                                                          *
+ * Last update    : october 2010                                             *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This class hold must2 treated data                                       *
@@ -38,141 +38,329 @@ using namespace LOCAL;
 ClassImp(TMust2Physics)
 ///////////////////////////////////////////////////////////////////////////
 TMust2Physics::TMust2Physics() 
-	{
+	{ 
 		EventMultiplicity 	= 0 							;
 		EventData 					= new TMust2Data	;
+		PreTreatedData			= new TMust2Data	;
 		EventPhysics 				= this						;
-		NumberOfTelescope		= 0								;
+		NumberOfTelescope		  = 0								;
+		m_MaximumStripMultiplicityAllowed = 0	;
+		m_StripEnergyMatchingTolerance    = 0 ;	
+//                ReadAnalysisConfig();
 	}
 		
 ///////////////////////////////////////////////////////////////////////////
 void TMust2Physics::BuildSimplePhysicalEvent()
 	{ 
-		BuildPhysicalEvent(); 
+	  BuildPhysicalEvent();
 	}
 	
 ///////////////////////////////////////////////////////////////////////////
 	
 void TMust2Physics::BuildPhysicalEvent()
 	{ 
+		PreTreat();
+		
 		bool check_SILI = false ;
 		bool check_CSI  = false ;
-	
 	
 		if( CheckEvent() == 1 )
 			{
 				vector< TVector2 > couple = Match_X_Y() ;
-				
+				EventMultiplicity = couple.size();
 				for(unsigned int i = 0 ; i < couple.size() ; i++)
 					{
 						check_SILI = false ;
 						check_CSI = false ;
 					
-						int N = EventData->GetMMStripXEDetectorNbr(couple[i].X())		;
+						int N = PreTreatedData->GetMMStripXEDetectorNbr(couple[i].X())	;
 						
-						int X = EventData->GetMMStripXEStripNbr(couple[i].X())			;
-						int Y = EventData->GetMMStripYEStripNbr(couple[i].Y())			;
+						int X = PreTreatedData->GetMMStripXEStripNbr(couple[i].X())			;
+						int Y = PreTreatedData->GetMMStripYEStripNbr(couple[i].Y())			;
 						
-						double Si_X_E = fSi_X_E(EventData , couple[i].X())	;
-						double Si_Y_E = fSi_Y_E(EventData , couple[i].Y())	;
-
-						double Si_X_T = fSi_X_T(EventData , couple[i].X())		;
-						double Si_Y_T = fSi_Y_T(EventData , couple[i].Y())		;
-					
+						double Si_X_E = PreTreatedData->GetMMStripXEEnergy( couple[i].X() ) 	;
+						double Si_Y_E = PreTreatedData->GetMMStripYEEnergy( couple[i].Y() ) 	;  
+						
+						
+						//  Search for associate Time
+						  double Si_X_T = -1000 ;
+						  for(unsigned int t = 0 ; t < PreTreatedData->GetMMStripXTMult() ; t++ )
+						    {
+						      if(  PreTreatedData->GetMMStripXTStripNbr( couple[i].X() ) == PreTreatedData->GetMMStripXTStripNbr(t)
+						         ||PreTreatedData->GetMMStripXTDetectorNbr( couple[i].X() ) == PreTreatedData->GetMMStripXTDetectorNbr(t)) 
+						        Si_X_T = PreTreatedData->GetMMStripXTTime(t);
+						    }
+						    
+						  double Si_Y_T = -1000 ;
+						  for(unsigned int t = 0 ; t < PreTreatedData->GetMMStripYTMult() ; t++ )
+						    {
+						      if(  PreTreatedData->GetMMStripYTStripNbr( couple[i].Y() ) == PreTreatedData->GetMMStripYTStripNbr(t)
+						         ||PreTreatedData->GetMMStripYTDetectorNbr( couple[i].Y() ) == PreTreatedData->GetMMStripYTDetectorNbr(t)) 
+						        Si_Y_T = PreTreatedData->GetMMStripYTTime(t);
+						    }
+						
 						Si_X.push_back(X) ; Si_Y.push_back(Y) ; TelescopeNumber.push_back(N) ;
 						
-						// Take maximum Energy
+						//	Take maximum Energy
 						if(Si_X_E >= Si_Y_E) Si_E.push_back(Si_X_E)	;
 						else								 Si_E.push_back(Si_Y_E)	;
 						
-						// Take minimum Time
-						if(Si_X_T >= Si_Y_T) Si_T.push_back(Si_Y_T)	;
-						else								 Si_T.push_back(Si_X_T)	;
+						//	Take Y Time, better resolution than X.							
+						Si_T.push_back(Si_Y_T)	;
 						
-						for(unsigned int j = 0 ; j < EventData->GetMMSiLiEMult() ; j++)
+						for(unsigned int j = 0 ; j < PreTreatedData->GetMMSiLiEMult() ; j++)
 							{
-								if(EventData->GetMMSiLiEDetectorNbr(j)==N)
+								if(PreTreatedData->GetMMSiLiEDetectorNbr(j)==N)
 									{
-										// SiLi energy is above threshold check the compatibility
-										if( fSiLi_E(EventData , j)>SiLi_E_Threshold )
-											{
 												// pad vs strip number match
-												if( Match_Si_SiLi( X, Y , EventData->GetMMSiLiEPadNbr(j) ) )
+												if( Match_Si_SiLi( X, Y , PreTreatedData->GetMMSiLiEPadNbr(j) ) )
 												{
-													SiLi_N.push_back(EventData->GetMMSiLiEPadNbr(j))	;
-													SiLi_E.push_back(fSiLi_E(EventData , j))					;
+													SiLi_N.push_back(PreTreatedData->GetMMSiLiEPadNbr(j))	;
+													SiLi_E.push_back(PreTreatedData->GetMMSiLiEEnergy(j))	;
 													
-													// Look for associate energy
+													// Look for associate time
 													// Note: in case of use of SiLi "Orsay" time is not coded.
-													for(int k =0 ; k  < EventData->GetMMSiLiTMult() ; k ++)
+													for(int k =0 ; k  < PreTreatedData->GetMMSiLiTMult() ; k ++)
 														{
 															// Same Pad, same Detector
-															if( EventData->GetMMSiLiEPadNbr(j)==EventData->GetMMSiLiEPadNbr(k) && EventData->GetMMSiLiEDetectorNbr(j)==EventData->GetMMSiLiTDetectorNbr(k) )
-																{SiLi_T.push_back(fSiLi_T(EventData , k))		; break ;}
+															if( PreTreatedData->GetMMSiLiEPadNbr(j)==PreTreatedData->GetMMSiLiEPadNbr(k) && PreTreatedData->GetMMSiLiEDetectorNbr(j)==PreTreatedData->GetMMSiLiTDetectorNbr(k) )
+																{ SiLi_T.push_back( PreTreatedData->GetMMSiLiTTime(k) ) ; break ;}
 														}
 													
 													check_SILI = true ;
 													
 												}
-											}
+											
 									}
 							}
 							
-						 for( int j = 0 ; j < EventData->GetMMCsIEMult() ; j++)
+						 for( int j = 0 ; j < PreTreatedData->GetMMCsIEMult() ; j++)
 							{
-								if(EventData->GetMMCsIEDetectorNbr(j)==N)
+											
+								if(PreTreatedData->GetMMCsIEDetectorNbr(j)==N)
 									{
-										//	CsI energy is above threshold check the compatibility
-										if( fCsI_T(EventData , j)>CsI_E_Threshold )
-											{
-												if(Match_Si_CsI( X, Y , EventData->GetMMCsIECristalNbr(j) ) )
+											if(Match_Si_CsI( X, Y , PreTreatedData->GetMMCsIECristalNbr(j) ) )
 													{
-														CsI_N.push_back(EventData->GetMMCsIECristalNbr(j))	;
-														CsI_E.push_back(fCsI_E(EventData , j))							;
+														 CsI_N.push_back( PreTreatedData->GetMMCsIECristalNbr(j) ) ;
+														 CsI_E.push_back( PreTreatedData->GetMMCsIEEnergy(j) ) ;
 														
-														for(int k =0 ; k  < EventData->GetMMCsITMult() ; k ++)
+														//	Look for associate Time																										
+														for(int k =0 ; k  < PreTreatedData->GetMMCsITMult() ; k ++)
 															{
-																if( EventData->GetMMCsIECristalNbr(j)==EventData->GetMMCsITCristalNbr(k) && EventData->GetMMCsIEDetectorNbr(j)==EventData->GetMMCsITDetectorNbr(k) )
-																	{CsI_T.push_back(fCsI_T(EventData , k))	; break ;}
+																// Same Cristal; Same Detector
+																if( PreTreatedData->GetMMCsIECristalNbr(j)==PreTreatedData->GetMMCsITCristalNbr(k) && PreTreatedData->GetMMCsIEDetectorNbr(j)==PreTreatedData->GetMMCsITDetectorNbr(k) )
+																	{ CsI_T.push_back( PreTreatedData->GetMMCsITTime(j) ) ; break ;}
 															}
 														
 														check_CSI = true ;
 													}
-											}
-									}
-							}
-					
-					
-						if(!check_SILI)
+											
+										}
+								}
+							
+						
+					if(!check_SILI)
 							{
-								SiLi_N.push_back(0)	;
-								SiLi_E.push_back(-10000)	;
-								SiLi_T.push_back(-10000)	;
+								SiLi_N.push_back(0)			;
+								SiLi_E.push_back(-1000)	;
+								SiLi_T.push_back(-1000)	;
 							}
 
 						if(!check_CSI) 
 							{
-								CsI_N.push_back(0)	;
-								CsI_E.push_back(-10000)	;
-								CsI_T.push_back(-10000)	;
+								CsI_N.push_back(0)			;
+								CsI_E.push_back(-1000)	;
+								CsI_T.push_back(-1000)	;
 							}
 					
 					}
 			}
-		
+
 		return;
 	
 	}	
 
 ///////////////////////////////////////////////////////////////////////////
+void TMust2Physics::PreTreat()
+	{
+		ClearPreTreatedData();
+	
+		//	X
+			//	E
+			for(int i = 0 ; i < EventData->GetMMStripXEMult() ; i++)
+				{
+							if(IsValidChannel("X", EventData->GetMMStripXEDetectorNbr(i), EventData->GetMMStripXEStripNbr(i)))
+								{
+									double EX = fSi_X_E(EventData , i); 
+									if( EX > Si_X_E_Threshold )
+										{
+											PreTreatedData->SetMMStripXEDetectorNbr( EventData->GetMMStripXEDetectorNbr(i) )	;
+											PreTreatedData->SetMMStripXEStripNbr( EventData->GetMMStripXEStripNbr(i) )				;
+											PreTreatedData->SetMMStripXEEnergy( EX )																					;
+										}
+									
+								}
+						
+					
+					else
+						{
+						
+						}
+				
+				}
+				
+			//	T
+			for(int i = 0 ; i < EventData->GetMMStripXTMult() ; i++)
+				{
+							if(IsValidChannel("X", EventData->GetMMStripXTDetectorNbr(i), EventData->GetMMStripXTStripNbr(i)))
+								{
+									PreTreatedData->SetMMStripXTDetectorNbr( EventData->GetMMStripXTDetectorNbr(i) )	;
+									PreTreatedData->SetMMStripXTStripNbr( EventData->GetMMStripXTStripNbr(i) )				;
+									PreTreatedData->SetMMStripXTTime( fSi_X_T(EventData , i) )												;
+								}
+					
+					else
+						{
+						
+						}
+				
+				}
+				
+				
+		//	Y
+			//	E
+			for(int i = 0 ; i < EventData->GetMMStripYEMult() ; i++)
+				{
+							if(IsValidChannel("Y", EventData->GetMMStripYEDetectorNbr(i), EventData->GetMMStripYEStripNbr(i)))
+								{
+									double EY = fSi_Y_E(EventData , i); 
+									if( EY > Si_Y_E_Threshold )
+										{
+											PreTreatedData->SetMMStripYEDetectorNbr( EventData->GetMMStripYEDetectorNbr(i) )	;
+											PreTreatedData->SetMMStripYEStripNbr( EventData->GetMMStripYEStripNbr(i) )				;
+											PreTreatedData->SetMMStripYEEnergy( EY )																					;
+										}
+								}
+					
+					else
+						{
+						
+						}
+				
+				}
+				
+			//	T
+			for(int i = 0 ; i < EventData->GetMMStripYTMult() ; i++)
+				{
+							if(IsValidChannel("Y", EventData->GetMMStripYTDetectorNbr(i), EventData->GetMMStripYTStripNbr(i)))
+								{
+									PreTreatedData->SetMMStripYTDetectorNbr( EventData->GetMMStripYTDetectorNbr(i) )	;
+									PreTreatedData->SetMMStripYTStripNbr( EventData->GetMMStripYTStripNbr(i) )				;
+									PreTreatedData->SetMMStripYTTime( fSi_Y_T(EventData , i) )												;
+								}
+					
+					else
+						{
+						
+						}
+				
+				}
+
+
+		//	CsI
+			//	E
+			for(int i = 0 ; i < EventData->GetMMCsIEMult() ; i++)
+				{
+				
+							if(IsValidChannel("CsI", EventData->GetMMCsIEDetectorNbr(i), EventData->GetMMCsIECristalNbr(i)))
+								{
+									double ECsI = fCsI_E(EventData , i); 
+									if( ECsI > CsI_E_Threshold )
+										{
+											PreTreatedData->SetMMCsIEDetectorNbr( EventData->GetMMCsIEDetectorNbr(i) )		;
+											PreTreatedData->SetMMCsIECristalNbr( EventData->GetMMCsIECristalNbr(i) )			;
+											PreTreatedData->SetMMCsIEEnergy( ECsI )																				;
+										}
+								}
+						
+					else
+						{
+						
+						}
+				
+				}
+				
+			//	T
+			for(int i = 0 ; i < EventData->GetMMCsITMult() ; i++)
+				{
+							if(IsValidChannel("CsI", EventData->GetMMCsITDetectorNbr(i), EventData->GetMMCsITCristalNbr(i)))
+								{
+									PreTreatedData->SetMMCsITDetectorNbr( EventData->GetMMCsITDetectorNbr(i) )		;
+									PreTreatedData->SetMMCsITCristalNbr( EventData->GetMMCsITCristalNbr(i) )			;
+									PreTreatedData->SetMMCsITTime( fCsI_T(EventData , i) )												;
+								}	
+						
+					else
+						{
+						
+						}
+				
+				}
+				
+				
+		//	SiLi
+			//	E
+			for(int i = 0 ; i < EventData->GetMMSiLiEMult() ; i++)
+				{
+							if(IsValidChannel("SiLi", EventData->GetMMSiLiEDetectorNbr(i), EventData->GetMMSiLiEPadNbr(i)))
+								{
+									double ESiLi = fSiLi_E(EventData , i); 
+									if( ESiLi > SiLi_E_Threshold )
+										{
+											PreTreatedData->SetMMSiLiEDetectorNbr( EventData->GetMMSiLiEDetectorNbr(i) )	;
+											PreTreatedData->SetMMSiLiEPadNbr( EventData->GetMMSiLiEPadNbr(i) )						;
+											PreTreatedData->SetMMSiLiEEnergy( ESiLi )										;
+										}
+								}
+					
+					else
+						{
+						
+						}
+				
+				}
+				
+			//	T
+			for(int i = 0 ; i < EventData->GetMMSiLiTMult() ; i++)
+				{
+							if(IsValidChannel("SiLi", EventData->GetMMSiLiTDetectorNbr(i), EventData->GetMMSiLiTPadNbr(i)))
+								{
+									PreTreatedData->SetMMSiLiTDetectorNbr( EventData->GetMMSiLiTDetectorNbr(i) )	;
+									PreTreatedData->SetMMSiLiTPadNbr( EventData->GetMMSiLiTPadNbr(i) )						;
+									PreTreatedData->SetMMSiLiTTime( fSiLi_T(EventData , i) )											;
+								}
+					
+					else
+						{
+						
+						}
+				
+				}
+	
+	
+		return;
+	}
+
+
+///////////////////////////////////////////////////////////////////////////
 int TMust2Physics :: CheckEvent()
 	{
 		// Check the size of the different elements
-				 if(			EventData->GetMMStripXEMult() == EventData->GetMMStripYEMult() && EventData->GetMMStripYEMult() == EventData->GetMMStripXTMult() &&  EventData->GetMMStripXTMult() == EventData->GetMMStripYTMult()  )
+				 if(			PreTreatedData->GetMMStripXEMult() == PreTreatedData->GetMMStripYEMult() /*&& PreTreatedData->GetMMStripYEMult() == PreTreatedData->GetMMStripXTMult() &&  PreTreatedData->GetMMStripXTMult() == PreTreatedData->GetMMStripYTMult()*/  )
 	
 					return 1 ; // Regular Event
 	
-		else if(			EventData->GetMMStripXEMult() == EventData->GetMMStripYEMult()+1 || EventData->GetMMStripXEMult() == EventData->GetMMStripYEMult()-1  )
+		else if(			PreTreatedData->GetMMStripXEMult() == PreTreatedData->GetMMStripYEMult()+1 || PreTreatedData->GetMMStripXEMult() == PreTreatedData->GetMMStripYEMult()-1  )
 	
 					return 2 ; // Pseudo Event, potentially interstrip
 		
@@ -193,37 +381,149 @@ vector < TVector2 > TMust2Physics :: Match_X_Y()
 		
 		// Prevent code from treating very high multiplicity Event
 		// Those event are not physical anyway and that improve speed.
-		if( EventData->GetMMStripXEMult()>6 || EventData->GetMMStripYEMult()>6 )
+		if( PreTreatedData->GetMMStripXEMult() > m_MaximumStripMultiplicityAllowed || PreTreatedData->GetMMStripYEMult() > m_MaximumStripMultiplicityAllowed )
 			return ArrayOfGoodCouple;
 		
-		for(int i = 0 ; i < EventData->GetMMStripXEMult(); i++)
+		for(int i = 0 ; i < PreTreatedData->GetMMStripXEMult(); i++)
 			{
-				//	if X value is above threshold, look at Y value
-				if( fSi_X_E(EventData , i) > Si_X_E_Threshold )
-					{
-					
-						for(int j = 0 ; j < EventData->GetMMStripYEMult(); j++)
+						for(int j = 0 ; j < PreTreatedData->GetMMStripYEMult(); j++)
 							{
-								//	if Y value is above threshold look if detector match
-								if( fSi_Y_E(EventData , j) > Si_Y_E_Threshold )							
-									{
 										//	if same detector check energy
-										if ( EventData->GetMMStripXEDetectorNbr(i) == EventData->GetMMStripYEDetectorNbr(j) )
+										if ( PreTreatedData->GetMMStripXEDetectorNbr(i) == PreTreatedData->GetMMStripYEDetectorNbr(j) )
 											{
 													//	Look if energy match (within 10%)
-													if( ( fSi_X_E(EventData , i) - fSi_Y_E(EventData , j) ) / fSi_X_E(EventData , i) < 0.1	)
+													if( abs((  PreTreatedData->GetMMStripXEEnergy(i) - PreTreatedData->GetMMStripYEEnergy(j) ) / PreTreatedData->GetMMStripXEEnergy(i)) < m_StripEnergyMatchingTolerance/100.	)
 														ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;	
 											}
-									}
 							}
-					}
 			}
 	
-		if( ArrayOfGoodCouple.size() > EventData->GetMMStripXEMult() ) ArrayOfGoodCouple.clear() ;
+		//	Prevent to treat event with ambiguous matchin beetween X and Y
+		if( ArrayOfGoodCouple.size() > PreTreatedData->GetMMStripXEMult() ) ArrayOfGoodCouple.clear() ;
 		
 		return ArrayOfGoodCouple;	
 	}
 	
+	
+////////////////////////////////////////////////////////////////////////////
+bool TMust2Physics :: IsValidChannel(string DetectorType, int telescope , int channel)
+	{
+		vector<bool>::iterator it ;
+		if(DetectorType == "X")
+			return *(XChannelStatus[telescope].begin()+channel);
+			
+		else if(DetectorType == "Y")
+			return *(YChannelStatus[telescope].begin()+channel);
+			
+		else if(DetectorType == "SiLi")
+			return *(SiLiChannelStatus[telescope].begin()+channel);
+			
+		else if(DetectorType == "CsI")
+			return *(CsIChannelStatus[telescope].begin()+channel);
+			
+		else return false;
+	}
+	
+///////////////////////////////////////////////////////////////////////////
+void TMust2Physics::ReadAnalysisConfig()
+{
+   bool ReadingStatus = false;
+   bool check_mult    = false;
+   bool check_match   = false;
+
+   // path to file
+   string FileName = "./configs/ConfigMust2.dat";
+
+   // open analysis config file
+   ifstream AnalysisConfigFile;
+   AnalysisConfigFile.open(FileName.c_str());
+
+   if (!AnalysisConfigFile.is_open()) {
+      cout << " No ConfigMust2.dat found: Default parameter loaded for Analayis " << FileName << endl;
+      return;
+   }
+   cout << " Loading user parameter for Analysis from ConfigMust2.dat " << endl;
+
+   // read analysis config file
+   string LineBuffer,DataBuffer;
+   while (!AnalysisConfigFile.eof()) {
+      // Pick-up next line
+      getline(AnalysisConfigFile, LineBuffer);
+
+      // search for "header"
+      if (LineBuffer.compare(0, 11, "ConfigMust2") == 0) ReadingStatus = true;
+
+      // loop on tokens and data
+      while (ReadingStatus) {
+         AnalysisConfigFile >> DataBuffer;
+
+         // Search for comment symbol (%)
+         if (DataBuffer.compare(0, 1, "%") == 0) {
+            AnalysisConfigFile.ignore(numeric_limits<streamsize>::max(), '\n' );
+         }
+         else if (DataBuffer.compare(0, 22, "MAX_STRIP_MULTIPLICITY") == 0) {
+            check_mult = true;
+            AnalysisConfigFile >> DataBuffer;
+            m_MaximumStripMultiplicityAllowed = atoi(DataBuffer.c_str() );
+            cout << "MAX_STRIP_MULTIPLICITY= " << m_MaximumStripMultiplicityAllowed << endl;
+         }
+         else if (DataBuffer.compare(0, 31, "STRIP_ENERGY_MATCHING_TOLERANCE") == 0) {
+            check_match = true;
+            AnalysisConfigFile >> DataBuffer;
+            m_StripEnergyMatchingTolerance = atoi(DataBuffer.c_str() );
+            cout << "STRIP_ENERGY_MATCHING_TOLERANCE= " << m_StripEnergyMatchingTolerance << endl;
+         }
+         else if (DataBuffer.compare(0, 5, "MUST2") == 0) {
+            AnalysisConfigFile >> DataBuffer;
+            string whatToDo = DataBuffer;
+            if (whatToDo.compare(0, 11, "DISABLE_ALL") == 0) {
+               AnalysisConfigFile >> DataBuffer;
+               cout << whatToDo << "  " << DataBuffer << endl;
+               int telescope = atoi(DataBuffer.substr(2,1).c_str());
+               vector< bool > ChannelStatus;
+               ChannelStatus.resize(128,false);
+               XChannelStatus[telescope] = ChannelStatus;
+               YChannelStatus[telescope] = ChannelStatus;
+               ChannelStatus.resize(16,false);
+               SiLiChannelStatus[telescope] = ChannelStatus;
+               CsIChannelStatus[telescope]  = ChannelStatus;
+            }
+            else if (whatToDo.compare(0, 15, "DISABLE_CHANNEL") == 0) {
+               AnalysisConfigFile >> DataBuffer;
+               cout << whatToDo << "  " << DataBuffer << endl;
+               int telescope = atoi(DataBuffer.substr(2,1).c_str());
+               int channel = -1;
+               if (DataBuffer.compare(4,4,"STRX") == 0) {
+                  channel = atoi(DataBuffer.substr(9).c_str());
+                  *(XChannelStatus[telescope].begin()+channel) = false;
+               }
+               else if (DataBuffer.compare(4,4,"STRY") == 0) {
+                  channel = atoi(DataBuffer.substr(9).c_str());
+                  *(YChannelStatus[telescope].begin()+channel) = false;
+               }
+               else if (DataBuffer.compare(4,4,"SILI") == 0) {
+                  channel = atoi(DataBuffer.substr(9).c_str());
+                  *(SiLiChannelStatus[telescope].begin()+channel) = false;
+               }
+               else if (DataBuffer.compare(4,3,"CSI") == 0) {
+                  channel = atoi(DataBuffer.substr(8).c_str());
+                  *(CsIChannelStatus[telescope].begin()+channel) = false;
+               }
+               else {
+                  cout << "Warning: detector type for Must2 unknown!" << endl;
+               }
+            }
+            else {
+               cout << "Warning: don't know what to do (lost in translation)" << endl;
+            }
+         }
+         else {
+            ReadingStatus = false;
+//            cout << "WARNING: Wrong Token Sequence" << endl;
+         }
+      }
+   }
+}	
 	
 ///////////////////////////////////////////////////////////////////////////
 bool TMust2Physics :: Match_Si_SiLi(int X, int Y , int PadNbr)
@@ -333,107 +633,108 @@ bool TMust2Physics :: Match_Si_SiLi(int X, int Y , int PadNbr)
 
 ///////////////////////////////////////////////////////////////////////////
 bool TMust2Physics :: Match_Si_CsI(int X, int Y , int CristalNbr)
-	{
-							if( 	 CristalNbr == 1 
-									&& X<=71 && X>=27 
-									&& Y<=101 && Y>=59 ) 
+	{ 
+				if( 	 CristalNbr == 1 
+									&& X<=128 && X>=97 
+									&& Y<=128 && Y>=97 ) 
 
 						return true ;
 
 
 				else	if( 	 CristalNbr == 2 
-									&& X<=71 && X>=27 
-									&& Y<=128 && Y>=90 ) 
+									&& X<=128 && X>=97 
+									&& Y<=96 && Y>=65 ) 
 
 						return true ;
 
 
 				else	if( 	 CristalNbr == 3 
-									&& X<=35 && X>=1 
-									&& Y<=101 && Y>=59 ) 
+									&& X<=128 && X>=97 
+									&& Y<=64 && Y>=33 ) 
 
 						return true ;
 
 				else	if( 	 CristalNbr == 4 
-									&& X<=35 && X>=1 
-									&& Y<=128 && Y>=90 ) 
+									&& X<=128 && X>=7 
+									&& Y<=32 && Y>=1 ) 
 
 						return true ;
 
 				else	if( 	 CristalNbr == 5 
-									&& X<=104 && X>=60 
-									&& Y<=71 && Y>=30 ) 
+									&& X<=96 && X>=65 
+									&& Y<=32 && Y>=1 ) 
 
 						return true ;
 
 				else	if( 	 CristalNbr == 6 
-									&& X<=104 && X>=60 
-									&& Y<=41 && Y>=1 ) 
+									&& X<=96 && X>=65 
+									&& Y<=64 && Y>=33 ) 
 
 						return true ;
 
 				else	if( 	 CristalNbr == 7 
-									&& X<=128 && X>=90 
-									&& Y<=71 && Y>=30 )
+									&& X<=96 && X>=65 
+									&& Y<=96 && Y>=65 )
 
 						return true ;
 
 				else	if( 	 CristalNbr == 8 
-									&& X<=128 && X>=90 
-									&& Y<=41 && Y>=1 ) 
+									&& X<=96 && X>=65 
+									&& Y<=128 && Y>=97 ) 
 
 						return true ;
 
 				else	if( 	 CristalNbr == 9 
-									&& X<=71 && X>=27 
-									&& Y<=71 && Y>=40 ) 
+									&& X<=64 && X>=33 
+									&& Y<=32 && Y>=1 ) 
 
 						return true ;
 
 				else	if( 	 CristalNbr == 10 
-									&& X<=71 && X>=27 
-									&& Y<=41 && Y>=1 ) 
+									&& X<=64 && X>=33 
+									&& Y<=64 && Y>=33 ) 
 
 						return true ;
 
 				else	if( 	 CristalNbr == 11 
-									&& X<=35 && X>=1 
-									&& Y<=71 && Y>=30 ) 
+									&& X<=64 && X>=33 
+									&& Y<=96 && Y>=65 ) 
 
 						return true ;
 
 				else	if( 	 CristalNbr == 12 
-									&& X<=35 && X>=1 
-									&& Y<=41 && Y>=1 ) 
+									&& X<=64 && X>=33 
+									&& Y<=128 && Y>=97 ) 
 
 						return true ;
 
 				else	if( 	 CristalNbr == 13 
-									&& X<=104 && X>=60 
-									&& Y<=101 && Y>=59 ) 
+									&& X<=32 && X>=1 
+									&& Y<=32 && Y>=1 ) 
 
 						return true ;
 
 				else	if( 	 CristalNbr == 14 
-									&& X<=104 && X>=60 
-									&& Y<=128 && Y>=90 ) 
+									&& X<=32 && X>=1 
+									&& Y<=64 && Y>=33 ) 
 
 						return true ;
 
 				else	if( 	 CristalNbr == 15 
-									&& X<=128 && X>=90 
-									&& Y<=101 && Y>=59 ) 
+									&& X<=32 && X>=1 
+									&& Y<=96 && Y>=65 ) 
 
 						return true ;
 
 				else	if( 	 CristalNbr == 16 
-									&& X<=128 && X>=90 
-									&& Y<=128 && Y>=90 ) 
+									&& X<=32 && X>=1 
+									&& Y<=128 && Y>=97 ) 
 
 						return true ;
 
 				else
 						return false;
+				
 	}
 
 ///////////////////////////////////////////////////////////////////////////
@@ -460,14 +761,79 @@ void TMust2Physics::Clear()
 		CsI_E.clear()	;
 		CsI_T.clear()	;
 		CsI_N.clear()	;
+		
+		Si_EX.clear()				;
+		Si_TX.clear()				;
+		Si_EY.clear()			;
+		Si_TY.clear()				;
+		TelescopeNumber_X.clear()				;
+		TelescopeNumber_Y.clear()				;
 	}
 ///////////////////////////////////////////////////////////////////////////
+
+void TMust2Physics::ReadCalibrationRun()
+	{
+		//	X
+			//	E	
+		for(int i = 0 ; i < EventData->GetMMStripXEMult();i++)
+			{
+						TelescopeNumber_X.push_back(EventData->GetMMStripXEDetectorNbr(i));
+						Si_EX.push_back( fSi_X_E( EventData , i) )				;
+						Si_X.push_back(EventData->GetMMStripXEStripNbr(i));
+				
+			}
+			//	T
+		for(int i = 0 ; i < EventData->GetMMStripXTMult();i++)
+			{
+						TelescopeNumber_X.push_back(EventData->GetMMStripXTDetectorNbr(i));
+						Si_TX.push_back( fSi_X_T( EventData , i) )				;
+						Si_X.push_back(EventData->GetMMStripXTStripNbr(i));
+					
+			}
+		
+		//	Y
+			//	E
+		for(int i = 0 ; i < EventData->GetMMStripYEMult();i++)
+			{
+						TelescopeNumber_Y.push_back(EventData->GetMMStripYEDetectorNbr(i));
+						Si_EY.push_back( fSi_Y_E( EventData , i) )				;
+						Si_Y.push_back(EventData->GetMMStripYEStripNbr(i));
+					
+						
+			}
+			
+			//	T
+		for(int i = 0 ; i < EventData->GetMMStripYTMult();i++)
+			{ 
+						TelescopeNumber_Y.push_back(EventData->GetMMStripYTDetectorNbr(i));
+						Si_TY.push_back( fSi_Y_T( EventData , i) )				;
+						Si_Y.push_back(EventData->GetMMStripYTStripNbr(i));
+					
+			}
+			
+	  //CsI Energy
+		for( int j = 0 ; j < EventData->GetMMCsIEMult() ; j++)
+		  {				
+				   CsI_N.push_back(EventData->GetMMCsIECristalNbr(j))	;								
+					 CsI_E.push_back(fCsI_E(EventData , j))							;
+				 
+		  }
+		
+		//CsI Time
+		for( int j = 0 ; j < EventData->GetMMCsITMult() ; j++)
+		  {			
+				   //CsI_N.push_back(EventData->GetMMCsITCristalNbr(j))	;								
+					 CsI_T.push_back(fCsI_T(EventData , j))							;
+				 
+		  }
+	
+	}
 
 ////	Innherited from VDetector Class	////				
 				
 //	Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
 void TMust2Physics::ReadConfiguration(string Path) 	
-{
+{ 
    ifstream ConfigFile           	;
    ConfigFile.open(Path.c_str()) 	;
    string LineBuffer          		;
@@ -681,7 +1047,7 @@ void TMust2Physics::ReadConfiguration(string Path)
 		  				check_C = false  	;
 		  				check_D = false  	;
 
-		   				check_Theta = false   	;
+		   				check_Theta = false   ;
 		   				check_Phi  = false  	;
 		   				check_R    = false   	;
 		   				check_beta = false  	;
@@ -690,12 +1056,13 @@ void TMust2Physics::ReadConfiguration(string Path)
 		         
 		}
 		        
-		        
-		    
-		         	
+//		InitializeStandardParameter();        
+//                ReadAnalysisConfig();
 	}
+		InitializeStandardParameter();        
+                ReadAnalysisConfig();
 	
-	cout << endl << "/////////////////////////////" << endl<<endl;
+	cout << endl << "/////////////////////////////" << endl << endl;
 
 }
 
@@ -727,7 +1094,8 @@ void TMust2Physics::AddParameterToCalibrationManager()
 						Cal->AddParameter("MUST2", "T"+itoa(i+1)+"_CsI"+itoa(j+1)+"_T","MUST2_T"+itoa(i+1)+"_CsI"+itoa(j+1)+"_T")		;
 					}
 			}
-	
+			
+		return;
 	
 	}
 
@@ -737,8 +1105,11 @@ void TMust2Physics::InitializeRootInput()
 	{
 		TChain* inputChain = RootInput::getInstance()->GetChain()	;
 		inputChain->SetBranchStatus( "MUST2" , true )				;
+		//added for compatibility with Riken file
+		inputChain->SetBranchStatus( "Must2" , true )				;
 		inputChain->SetBranchStatus( "fMM_*" , true )				;
 		inputChain->SetBranchAddress( "MUST2" , &EventData )		;
+		inputChain->SetBranchAddress( "Must2" , &EventData )		;
 	}
 
 
@@ -816,7 +1187,33 @@ void TMust2Physics::AddTelescope(	TVector3 C_X1_Y1 		,
 		StripPositionZ.push_back( OneTelescopeStripPositionZ ) ;	
 
 	}
-				
+	
+	
+void TMust2Physics::InitializeStandardParameter()
+	{
+		//	Enable all channel
+		vector< bool > ChannelStatus;
+
+		ChannelStatus.resize(128,true);
+		for(int i = 0 ; i < NumberOfTelescope ; i ++)		
+			{
+				XChannelStatus[i+1] = ChannelStatus;
+				YChannelStatus[i+1] = ChannelStatus;
+			}
+		
+		ChannelStatus.resize(16,true);
+		for(int i = 0 ; i < NumberOfTelescope ; i ++)		
+			{
+				SiLiChannelStatus[i+1] = ChannelStatus;
+				CsIChannelStatus[i+1]  = ChannelStatus;
+			}
+			
+			
+		m_MaximumStripMultiplicityAllowed = NumberOfTelescope	;
+		m_StripEnergyMatchingTolerance    = 10 								;	// %	
+		
+		return;
+	}	
 				
 void TMust2Physics::AddTelescope(	double theta 	, 
 								double phi 		, 
@@ -967,27 +1364,27 @@ namespace LOCAL
 		//	X
 		double fSi_X_E(TMust2Data* EventData , int i)
 			{
-				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/" + itoa( EventData->GetMMStripXEDetectorNbr(i) ) + "Si_X" + itoa( EventData->GetMMStripXEStripNbr(i) ) + "_E",	
+				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMStripXEDetectorNbr(i) ) + "_Si_X" + itoa( EventData->GetMMStripXEStripNbr(i) ) + "_E",	
 																																		EventData->GetMMStripXEEnergy(i) );
 																																	
 			}
 			
 		double fSi_X_T(TMust2Data* EventData , int i)
 			{
-				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMStripXTDetectorNbr(i) ) + "Si_X" + itoa( EventData->GetMMStripXTStripNbr(i) ) +"_T",	
+				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMStripXTDetectorNbr(i) ) + "_Si_X" + itoa( EventData->GetMMStripXTStripNbr(i) ) +"_T",	
 																																		EventData->GetMMStripXTTime(i) );
 			}
 		
 		//	Y	
 		double fSi_Y_E(TMust2Data* EventData , int i)
 			{
-				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMStripYEDetectorNbr(i) ) + "Si_Y" + itoa( EventData->GetMMStripYEStripNbr(i) ) +"_E",	
+				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMStripYEDetectorNbr(i) ) + "_Si_Y" + itoa( EventData->GetMMStripYEStripNbr(i) ) +"_E",	
 																																		EventData->GetMMStripYEEnergy(i) );
 			}
 			
 		double fSi_Y_T(TMust2Data* EventData , int i)
 			{
-				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMStripYTDetectorNbr(i) ) + "Si_Y" + itoa( EventData->GetMMStripYTStripNbr(i) ) +"_T",	
+				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMStripYTDetectorNbr(i) ) + "_Si_Y" + itoa( EventData->GetMMStripYTStripNbr(i) ) +"_T",	
 																																		EventData->GetMMStripYTTime(i) );
 			}
 			
@@ -995,26 +1392,26 @@ namespace LOCAL
 		//	SiLi
 		double fSiLi_E(TMust2Data* EventData , int i)
 			{
-				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMSiLiEDetectorNbr(i) ) + "SiLi" + itoa( EventData->GetMMSiLiEPadNbr(i) ) +"_E",	
+				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMSiLiEDetectorNbr(i) ) + "_SiLi" + itoa( EventData->GetMMSiLiEPadNbr(i) ) +"_E",	
 																																		EventData->GetMMSiLiEEnergy(i) );
 			}
 			
 		double fSiLi_T(TMust2Data* EventData , int i)
 			{
-				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMSiLiTDetectorNbr(i) ) + "SiLi" + itoa( EventData->GetMMSiLiTPadNbr(i) )+"_T",	
+				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMSiLiTDetectorNbr(i) ) + "_SiLi" + itoa( EventData->GetMMSiLiTPadNbr(i) )+"_T",	
 																																		EventData->GetMMSiLiTTime(i) );
 			}
 			
 		//	CsI
 		double fCsI_E(TMust2Data* EventData , int i)
 			{
-				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMCsIEDetectorNbr(i) ) + "SiLi" + itoa( EventData->GetMMCsIECristalNbr(i) ) +"_E",	
+				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMCsIEDetectorNbr(i) ) + "_CsI" + itoa( EventData->GetMMCsIECristalNbr(i) ) +"_E",	
 																																		EventData->GetMMCsIEEnergy(i) );
 			}
 			
 		double fCsI_T(TMust2Data* EventData , int i)
 			{
-				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMCsITDetectorNbr(i) ) + "SiLi" + itoa( EventData->GetMMCsITCristalNbr(i) ) +"_T",	
+				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( EventData->GetMMCsITDetectorNbr(i) ) + "_CsI" + itoa( EventData->GetMMCsITCristalNbr(i) ) +"_T",	
 																																		EventData->GetMMCsITTime(i) );
 			}
 	
