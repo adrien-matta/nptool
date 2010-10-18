@@ -81,35 +81,6 @@ int main(int argc,char** argv)
 //	TPlasticPhysics* Pl 	= (TPlasticPhysics*) 		myDetector -> m_Detector["Plastic"] ;
 //	TSSSDPhysics* ThinSi 	= (TSSSDPhysics*) 			myDetector -> m_Detector["SSSD"] 		;
 
-
-RootOutput::getInstance()->GetList()->Add(myHist1D);
-
-   TCutG *cut3He_MUST2 = new TCutG("Cut3HeMUST2",11);
-   cut3He_MUST2->SetPoint(0,-1.49426,24.2781);
-   cut3He_MUST2->SetPoint(1,15.3161,14.3151);
-   cut3He_MUST2->SetPoint(2,47.069,7.6732);
-   cut3He_MUST2->SetPoint(3,110.575,4.35222);
-   cut3He_MUST2->SetPoint(4,308.563,2.25477);
-   cut3He_MUST2->SetPoint(5,310.431,1.20604);
-   cut3He_MUST2->SetPoint(6,232.917,1.11864);
-   cut3He_MUST2->SetPoint(7,89.0948,2.42955);
-   cut3He_MUST2->SetPoint(8,32.1264,6.71186);
-   cut3He_MUST2->SetPoint(9,1.30747,11.9555);
-   cut3He_MUST2->SetPoint(10,-1.49426,24.2781);
-   
-   TCutG *cut3He_M2_SSSD = new TCutG("Cut3HeM2SSSD",11);
-   cut3He_M2_SSSD->SetPoint(0,7.44252,1.45432);
-   cut3He_M2_SSSD->SetPoint(1,40.6322,0.684984);
-   cut3He_M2_SSSD->SetPoint(2,95.9483,0.406912);
-   cut3He_M2_SSSD->SetPoint(3,218.649,0.216896);
-   cut3He_M2_SSSD->SetPoint(4,362.471,0.101033);
-   cut3He_M2_SSSD->SetPoint(5,355.431,0.0315148);
-   cut3He_M2_SSSD->SetPoint(6,100.977,0.0315148);
-   cut3He_M2_SSSD->SetPoint(7,25.546,0.314221);
-   cut3He_M2_SSSD->SetPoint(8,3.41954,0.995498);
-   cut3He_M2_SSSD->SetPoint(9,3.41954,1.40797);
-   cut3He_M2_SSSD->SetPoint(10,7.44252,1.45432);
-
 	cout <<  " ///////// Starting Analysis ///////// "<< endl << endl ;	
 	int i ,N=Chain -> GetEntries();
 	

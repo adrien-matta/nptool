@@ -1107,7 +1107,8 @@ void TMust2Physics::InitializeRootInput()
 		inputChain->SetBranchStatus( "MUST2" , true )				;
 		//added for compatibility with Riken file
 		inputChain->SetBranchStatus( "Must2" , true )				;
-		inputChain->SetBranchStatus( "fMM_*" , true )				;
+		
+		inputChain->SetBranchStatus( "fMM_*" , true )				    ;
 		inputChain->SetBranchAddress( "MUST2" , &EventData )		;
 		inputChain->SetBranchAddress( "Must2" , &EventData )		;
 	}
