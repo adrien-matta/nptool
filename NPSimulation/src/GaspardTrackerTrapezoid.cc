@@ -590,16 +590,13 @@ void GaspardTrackerTrapezoid::ReadConfiguration(string Path)
 // Called After DetecorConstruction::AddDetector Method
 void GaspardTrackerTrapezoid::ConstructDetector(G4LogicalVolume* world)
 {
-   G4RotationMatrix* MMrot    = NULL                   ;
-/*   G4ThreeVector     MMpos    = G4ThreeVector(0, 0, 0) ;
-   G4ThreeVector     MMu      = G4ThreeVector(0, 0, 0) ;
-   G4ThreeVector     MMv      = G4ThreeVector(0, 0, 0) ;
-   G4ThreeVector     MMw      = G4ThreeVector(0, 0, 0) ;*/
-   MMpos    = G4ThreeVector(0, 0, 0) ;
-   MMu      = G4ThreeVector(0, 0, 0) ;
-   MMv      = G4ThreeVector(0, 0, 0) ;
-   MMw      = G4ThreeVector(0, 0, 0) ;
-   G4ThreeVector     MMCenter = G4ThreeVector(0, 0, 0) ;
+   G4RotationMatrix* MMrot    = NULL;
+   G4ThreeVector     MMpos    = G4ThreeVector(0, 0, 0);
+   G4ThreeVector     MMu      = G4ThreeVector(0, 0, 0);
+   G4ThreeVector     MMv      = G4ThreeVector(0, 0, 0);
+   G4ThreeVector     MMw      = G4ThreeVector(0, 0, 0);
+   G4ThreeVector     MMCenter = G4ThreeVector(0, 0, 0);
+
    bool FirstStage  = true ;
    bool SecondStage = true ;
    bool ThirdStage  = true ;
@@ -613,106 +610,80 @@ void GaspardTrackerTrapezoid::ConstructDetector(G4LogicalVolume* world)
          // (u,v) // to silicon plan
          // w perpendicular to (u,v) plan and pointing ThirdStage
          // new positioning scheme ?
-         G4cout << "############ Gaspard Trapezoid " << i << " #############" << G4endl;
-         MMu = m_X128_Y1[i] - m_X1_Y1[i] ;
-         MMu *= -1;
-         G4cout << "MMu: " << MMu << G4endl;
-         MMu = MMu.unit()                ;
-         G4cout << "Norm MMu: " << MMu << G4endl;
+         MMu = m_X128_Y1[i] - m_X1_Y1[i];
+         MMu = MMu.unit();
 
-         MMv = -0.5 * (m_X1_Y128[i] + m_X128_Y128[i] - m_X1_Y1[i] - m_X1_Y128[i]);
-         G4cout << "MMv: " << MMv << G4endl;
-         MMv = MMv.unit()                ;
-         G4cout << "Norm MMv: " << MMv << G4endl;
+         MMv = 0.5 * (m_X1_Y128[i] + m_X128_Y128[i] - m_X1_Y1[i] - m_X128_Y1[i]);
+         MMv = MMv.unit();
 
-         G4ThreeVector MMscal = MMu.dot(MMv);
-         G4cout << "Norm MMu.MMv: " << MMscal << G4endl;
+         MMw = MMu.cross(MMv);
+         MMw = MMw.unit();
 
-//         MMw = MMu.cross(MMv)                  ;
-         MMw = MMv.cross(MMu)                  ;
-//         if (MMw.z() > 0) MMw = MMv.cross(MMu) ;
-         MMw = MMw.unit()                      ;
-         G4cout << "Norm MMw: " << MMw << G4endl;
-
-         // old positioning scheme
-/*         G4cout << "############ Gaspard Trapezoid " << i << " #############" << G4endl;
-         MMu = m_X128_Y1[i] - m_X1_Y128[i] ;
-         G4cout << "MMu: " << MMu << G4endl;
-         MMu = MMu.unit()                ;
-         G4cout << "Norm MMu: " << MMu << G4endl;
-
-         MMv = -0.5 * (m_X1_Y1[i] + m_X128_Y128[i] - m_X1_Y128[i] - m_X128_Y1[i]);
-         G4cout << "MMv: " << MMv << G4endl;
-         MMv = MMv.unit()                ;
-         G4cout << "Norm MMv: " << MMv << G4endl;
-
-         G4ThreeVector MMscal = MMu.dot(MMv);
-         G4cout << "Norm MMu.MMv: " << MMscal << G4endl;
-
-         MMw = MMu.cross(MMv)                  ;
-//         MMw = MMv.cross(MMu)                  ;
-//         if (MMw.z() > 0) MMw = MMv.cross(MMu) ;
-         MMw = MMw.unit()                      ;
-         G4cout << "Norm MMw: " << MMw << G4endl;
-*/
          // Center of the module
-         MMCenter = (m_X1_Y1[i] + m_X1_Y128[i] + m_X128_Y1[i] + m_X128_Y128[i]) / 4 ;
+         MMCenter = (m_X1_Y1[i] + m_X1_Y128[i] + m_X128_Y1[i] + m_X128_Y128[i]) / 4;
 
          // Passage Matrix from Lab Referential to Module Referential
-         MMrot = new G4RotationMatrix(MMu, MMv, MMw) ;
+         MMrot = new G4RotationMatrix(MMu, MMv, MMw);
          // translation to place Module
-         MMpos = MMw * Length * 0.5 + MMCenter ;
+         MMpos = MMw * Length * 0.5 + MMCenter;
       }
 
       // By Angle
       else {
-         G4double Theta = m_Theta[i] ;
-         G4double Phi   = m_Phi[i]   ;
+         G4double Theta = m_Theta[i];
+         G4double Phi   = m_Phi[i];
          //This part because if Phi and Theta = 0 equation are false
-         if (Theta == 0)        Theta = 0.0001 ;
-         if (Theta == 2*cos(0)) Theta = 2 * acos(0) - 0.00001 ;
-         if (Phi   == 0)        Phi   = 0.0001 ;
+         if (Theta == 0)        Theta = 0.0001;
+         if (Theta == 2*cos(0)) Theta = 2 * acos(0) - 0.00001;
+         if (Phi   == 0)        Phi   = 0.0001;
 
          // (u,v,w) unitary vector associated to telescope referencial
          // (u,v) // to silicon plan
          // w perpendicular to (u,v) plan and pointing ThirdStage
          // Phi is angle between X axis and projection in (X,Y) plan
          // Theta is angle between  position vector and z axis
-         G4double wX = m_R[i] * sin(Theta / rad) * cos(Phi / rad)   ;
-         G4double wY = m_R[i] * sin(Theta / rad) * sin(Phi / rad)   ;
-         G4double wZ = m_R[i] * cos(Theta / rad)             ;
+         G4double wX = m_R[i] * sin(Theta / rad) * cos(Phi / rad);
+         G4double wY = m_R[i] * sin(Theta / rad) * sin(Phi / rad);
+         G4double wZ = m_R[i] * cos(Theta / rad);
+         MMw = G4ThreeVector(wX, wY, wZ);
 
-         MMw = G4ThreeVector(wX, wY, wZ)                ;
-//         G4ThreeVector CT = MMw                       ;
-         CT = MMw                       ;
-         MMw = MMw.unit()                          ;
+         // vector corresponding to the center of the module
+         MMCenter = MMw;
 
-         G4ThreeVector Y = G4ThreeVector(0 , 1 , 0)         ;
+         // vector parallel to one axis of silicon plane
+         G4double ii = cos(Theta / rad) * cos(Phi / rad);
+         G4double jj = cos(Theta / rad) * sin(Phi / rad);
+         G4double kk = -sin(Theta / rad);
+         G4ThreeVector Y = G4ThreeVector(ii, jj, kk);
 
-         MMu = MMw.cross(Y)      ;
-         MMv = MMw.cross(MMu) ;
-
+         MMw = MMw.unit();
+         MMu = MMw.cross(Y);
+         MMv = MMw.cross(MMu);
          MMv = MMv.unit();
          MMu = MMu.unit();
+
+         MMw = G4ThreeVector(wX, wY, wZ);
+         MMCenter = MMw;
+         MMw = MMw.unit();
+
          // Passage Matrix from Lab Referential to Telescope Referential
-         // MUST2
          MMrot = new G4RotationMatrix(MMu, MMv, MMw);
          // Telescope is rotate of Beta angle around MMv axis.
          MMrot->rotate(m_beta_u[i], MMu);
          MMrot->rotate(m_beta_v[i], MMv);
          MMrot->rotate(m_beta_w[i], MMw);
          // translation to place Telescope
-         MMpos = MMw * Length * 0.5 + CT ;
+         MMpos = MMw * Length * 0.5 + MMCenter;
       }
 
-      FirstStage  = m_wFirstStage[i]  ;
-      SecondStage = m_wSecondStage[i] ;
-      ThirdStage  = m_wThirdStage[i]  ;
+      FirstStage  = m_wFirstStage[i];
+      SecondStage = m_wSecondStage[i];
+      ThirdStage  = m_wThirdStage[i];
 
-      VolumeMaker(i + 1, MMpos, MMrot, FirstStage, SecondStage, ThirdStage , world);
+      VolumeMaker(i + 1, MMpos, MMrot, FirstStage, SecondStage, ThirdStage, world);
    }
 
-   delete MMrot ;
+   delete MMrot;
 }
 
 
