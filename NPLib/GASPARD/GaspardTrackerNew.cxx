@@ -43,6 +43,7 @@
 #include "GaspardTrackerDummyShape.h"
 #include "GaspardTrackerTrapezoid.h"
 #include "GaspardTrackerAnnular.h"
+#include "GaspardTrackerSquare.h"
 
 using namespace std ;	
 
@@ -88,9 +89,9 @@ void GaspardTrackerNew::ReadConfiguration(string Path)
       getline(ConfigFile, LineBuffer);
       if (LineBuffer.compare(0, 9, "GPDSquare") == 0  &&  GPDTrkSquare == false) {
          GPDTrkSquare = true;
-/*
+
          // instantiate a new "detector" corresponding to the Square elements
-         GaspardTrackerModule* myDetector = new GaspardTrackerSquare();
+         GaspardTrackerModule* myDetector = new GaspardTrackerSquare(m_ModulesMap, m_EventPhysics);
 
          // Pass the data object to the GaspardTracker*** object
          myDetector->SetGaspardDataPointer(m_EventData);
@@ -99,7 +100,7 @@ void GaspardTrackerNew::ReadConfiguration(string Path)
          ConfigFile.close();
          myDetector->ReadConfiguration(Path);
          ConfigFile.open(Path.c_str());
-*/      }
+      }
       else if (LineBuffer.compare(0, 12, "GPDTrapezoid") == 0  &&  GPDTrkTrapezoid == false) {
          GPDTrkTrapezoid = true;
 

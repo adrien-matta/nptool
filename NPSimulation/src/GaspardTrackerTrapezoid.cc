@@ -286,7 +286,7 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
       logicFirstStage->SetSensitiveDetector(m_FirstStageScorer);
 
       ///Visualisation of FirstStage Strip
-      G4VisAttributes* FirstStageVisAtt = new G4VisAttributes(G4Colour(0.2, 0.2, 0.2));
+      G4VisAttributes* FirstStageVisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 0.9));	// blue
       logicFirstStage->SetVisAttributes(FirstStageVisAtt);
    }
 
@@ -315,8 +315,8 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
       logicSecondStage->SetSensitiveDetector(m_SecondStageScorer);
 
       ///Visualisation of SecondStage Strip
-      G4VisAttributes* SecondStageVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5)) ;
-      logicSecondStage->SetVisAttributes(SecondStageVisAtt)                        ;
+      G4VisAttributes* SecondStageVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5));
+      logicSecondStage->SetVisAttributes(SecondStageVisAtt);
    }
 
    ////////////////////////////////////////////////////////////////
@@ -344,7 +344,7 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
       logicThirdStage->SetSensitiveDetector(m_ThirdStageScorer);
 
       ///Visualisation of Third Stage
-      G4VisAttributes* ThirdStageVisAtt = new G4VisAttributes(G4Colour(0.7, 0.7, 0.7));
+      G4VisAttributes* ThirdStageVisAtt = new G4VisAttributes(G4Colour(0.0, 0.9, 0.0));	// red
       logicThirdStage->SetVisAttributes(ThirdStageVisAtt);
    }
 }
@@ -612,7 +612,30 @@ void GaspardTrackerTrapezoid::ConstructDetector(G4LogicalVolume* world)
          // (u,v,w) unitary vector associated to telescope referencial
          // (u,v) // to silicon plan
          // w perpendicular to (u,v) plan and pointing ThirdStage
+         // new positioning scheme ?
          G4cout << "############ Gaspard Trapezoid " << i << " #############" << G4endl;
+         MMu = m_X128_Y1[i] - m_X1_Y1[i] ;
+         MMu *= -1;
+         G4cout << "MMu: " << MMu << G4endl;
+         MMu = MMu.unit()                ;
+         G4cout << "Norm MMu: " << MMu << G4endl;
+
+         MMv = -0.5 * (m_X1_Y128[i] + m_X128_Y128[i] - m_X1_Y1[i] - m_X1_Y128[i]);
+         G4cout << "MMv: " << MMv << G4endl;
+         MMv = MMv.unit()                ;
+         G4cout << "Norm MMv: " << MMv << G4endl;
+
+         G4ThreeVector MMscal = MMu.dot(MMv);
+         G4cout << "Norm MMu.MMv: " << MMscal << G4endl;
+
+//         MMw = MMu.cross(MMv)                  ;
+         MMw = MMv.cross(MMu)                  ;
+//         if (MMw.z() > 0) MMw = MMv.cross(MMu) ;
+         MMw = MMw.unit()                      ;
+         G4cout << "Norm MMw: " << MMw << G4endl;
+
+         // old positioning scheme
+/*         G4cout << "############ Gaspard Trapezoid " << i << " #############" << G4endl;
          MMu = m_X128_Y1[i] - m_X1_Y128[i] ;
          G4cout << "MMu: " << MMu << G4endl;
          MMu = MMu.unit()                ;
@@ -627,10 +650,11 @@ void GaspardTrackerTrapezoid::ConstructDetector(G4LogicalVolume* world)
          G4cout << "Norm MMu.MMv: " << MMscal << G4endl;
 
          MMw = MMu.cross(MMv)                  ;
+//         MMw = MMv.cross(MMu)                  ;
 //         if (MMw.z() > 0) MMw = MMv.cross(MMu) ;
          MMw = MMw.unit()                      ;
          G4cout << "Norm MMw: " << MMw << G4endl;
-
+*/
          // Center of the module
          MMCenter = (m_X1_Y1[i] + m_X1_Y128[i] + m_X128_Y1[i] + m_X128_Y128[i]) / 4 ;
 

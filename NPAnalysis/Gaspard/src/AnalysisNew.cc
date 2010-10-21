@@ -92,7 +92,7 @@ int main(int argc,char** argv)
 
       // Get total energy
       double E = GPDTrack->GetEnergyDeposit();
-//      cout << i << "  " << E << endl;
+      cout << i << "  " << E << endl;
 
       // if there is a hit in the detector array, treat it.
       double Theta, ThetaStrip, angle, ThetaCM;
@@ -111,7 +111,8 @@ int main(int argc,char** argv)
          DetecX = interCoord->GetDetectedPositionX(0);
          DetecY = interCoord->GetDetectedPositionY(0);
          DetecZ = interCoord->GetDetectedPositionZ(0);
-//         cout << DetecX << "  " << DetecY << "  " << DetecZ << endl;
+         cout << "Detected position :" << endl;
+         cout << "\t" << DetecX << "  " << DetecY << "  " << DetecZ << endl;
          TVector3 Detec(DetecX, DetecY, DetecZ);
 
          // Get interaction position in detector
@@ -154,7 +155,7 @@ int main(int argc,char** argv)
 //         if (Theta/deg > 35 && Theta/deg < 45 && E/MeV < 17) {
 //         if (Theta/deg < 45) {
 //         if (E/MeV < 38) {		// for (p,t) reaction
-         if (Theta/deg > 90) {	// for (d,p) reaction
+         if (Theta/deg > 30) {	// for (d,p) reaction
             ExNoStrips = myReaction->ReconstructRelativistic(E, Theta / rad);
             Ex         = myReaction->ReconstructRelativistic(E, ThetaStrip);
          }

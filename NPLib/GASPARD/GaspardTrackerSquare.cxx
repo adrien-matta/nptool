@@ -1,4 +1,4 @@
-#include "GaspardTrackerTrapezoid.h"
+#include "GaspardTrackerSquare.h"
 
 // C++ headers
 #include <iostream>
@@ -10,26 +10,29 @@
 #include "TGaspardTrackerPhysicsNew.h"
 
 
-GaspardTrackerTrapezoid::GaspardTrackerTrapezoid(map<int, GaspardTrackerModule*> &Module,
-                                                 TGaspardTrackerPhysicsNew* &EventPhysics) 
+GaspardTrackerSquare::GaspardTrackerSquare(map<int, GaspardTrackerModule*> &Module,
+					   TGaspardTrackerPhysicsNew* &EventPhysics) 
 	: m_ModuleTest(Module),
-          m_EventPhysics(EventPhysics),
-          m_EventData(0),
-          m_PreTreatData(new TGaspardTrackerData),
-          m_NumberOfModule(0)
+	  m_EventPhysics(EventPhysics),
+	  m_EventData(0),
+	  m_PreTreatData(new TGaspardTrackerData),
+	  m_NumberOfModule(0),
+          m_FirstStageFace(98), // mm
+          m_NumberOfStrips(128)
 {
+   m_StripPitch = m_FirstStageFace / (double)m_NumberOfStrips;
 }
 
 
 
-GaspardTrackerTrapezoid::~GaspardTrackerTrapezoid()
+GaspardTrackerSquare::~GaspardTrackerSquare()
 {
    delete m_PreTreatData;
 }
 
 
 
-void GaspardTrackerTrapezoid::ReadConfiguration(string Path)
+void GaspardTrackerSquare::ReadConfiguration(string Path)
 {
    ifstream ConfigFile;
    ConfigFile.open(Path.c_str());
@@ -62,9 +65,9 @@ void GaspardTrackerTrapezoid::ReadConfiguration(string Path)
 
       // If line is a GaspardXXX bloc, reading toggle to true
       // and toggle to true flags indicating which shape is treated.
-      if (LineBuffer.compare(0, 12, "GPDTrapezoid") == 0) {
+      if (LineBuffer.compare(0, 9, "GPDSquare") == 0) {
          cout << "///////////////////////" << endl;
-         cout << "Trapezoid module found:" << endl;
+         cout << "Square module found:" << endl;
          ReadingStatus = true;
       }
 
@@ -76,7 +79,7 @@ void GaspardTrackerTrapezoid::ReadConfiguration(string Path)
             ConfigFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n' );
          }
          // Finding another telescope (safety), toggle out
-         else if (DataBuffer.compare(0, 12, "GPDTrapezoid") == 0) {
+         else if (DataBuffer.compare(0, 9, "GPDSquare") == 0) {
             cout << "WARNING: Another Module is find before standard sequence of Token, Error may occured in Telecope definition" << endl;
             ReadingStatus = false;
          }
@@ -188,13 +191,13 @@ void GaspardTrackerTrapezoid::ReadConfiguration(string Path)
             // With position method
             if ( check_A && check_B && check_C && check_D ) {
                AddModule(A, B, C, D);
-               m_ModuleTest[m_index["Trapezoid"] + m_NumberOfModule] = this;
+               m_ModuleTest[m_index["Square"] + m_NumberOfModule] = this;
             }
 
             // with angle method
             else if ( check_Theta && check_Phi && check_R && check_beta ) {
                AddModule(Theta, Phi, R, beta_u, beta_v, beta_w);
-               m_ModuleTest[m_index["Trapezoid"] + m_NumberOfModule] = this;
+               m_ModuleTest[m_index["Square"] + m_NumberOfModule] = this;
             }
 
             // reset boolean flag for point positioning
@@ -217,17 +220,17 @@ void GaspardTrackerTrapezoid::ReadConfiguration(string Path)
 
 
 
-void GaspardTrackerTrapezoid::PreTreat()
+void GaspardTrackerSquare::PreTreat()
 {
 }
 
 
 
-void GaspardTrackerTrapezoid::BuildPhysicalEvent()
+void GaspardTrackerSquare::BuildPhysicalEvent()
 {
    // Check flags
    bool Check_FirstStage  = false;
-   bool Check_SecondStage = false;
+   bool Check_SecondStage = false; 
    bool Check_ThirdStage  = false;
 
    // Thresholds
@@ -258,12 +261,12 @@ void GaspardTrackerTrapezoid::BuildPhysicalEvent()
       int detecYT = m_EventData->GetGPDTrkFirstStageBackTDetectorNbr(0) / det_ref;
 
       // module number starting from 0
-      det_ref -= m_index["DummyShape"];
+      det_ref -= m_index["Square"];
 
       // case of same detector
       if (detecXE*detecXT*detecYE*detecYT == 1) {
          // store module number
-         m_EventPhysics->SetModuleNumber(det_ref + m_index["DummyShape"]);
+         m_EventPhysics->SetModuleNumber(det_ref + m_index["Square"]);
          // calculate strip number
          int stripXE = m_EventData->GetGPDTrkFirstStageFrontEStripNbr(0);
          int stripXT = m_EventData->GetGPDTrkFirstStageFrontTStripNbr(0);
@@ -310,6 +313,13 @@ void GaspardTrackerTrapezoid::BuildPhysicalEvent()
             // Fill total energy
             m_EventPhysics->SetTotalEnergy(EnergyTot);
 
+            // check strip position
+            cout << "strips X, Y : " << stripXE << "  " << stripYE << endl;
+            cout << "position : " << endl;
+            cout << "\t X: " << GetStripPositionX(det_ref + m_index["Square"], stripXE, stripYE) << endl;
+            cout << "\t Y: " << GetStripPositionY(det_ref + m_index["Square"], stripXE, stripYE) << endl;
+            cout << "\t Z: " << GetStripPositionZ(det_ref + m_index["Square"], stripXE, stripYE) << endl;
+
             // Fill default values for second an third stages
             if (!Check_SecondStage) {
                m_EventPhysics->SetSecondStageEnergy(-1000);
@@ -341,16 +351,16 @@ void GaspardTrackerTrapezoid::BuildPhysicalEvent()
 
 
 
-void GaspardTrackerTrapezoid::BuildSimplePhysicalEvent()
+void GaspardTrackerSquare::BuildSimplePhysicalEvent()
 {
 }
 
 
 
-void GaspardTrackerTrapezoid::AddModule(TVector3 C_X1_Y1,
-                                        TVector3 C_X128_Y1,
-                                        TVector3 C_X1_Y128,
-                                        TVector3 C_X128_Y128)
+void GaspardTrackerSquare::AddModule(TVector3 C_X1_Y1,
+                                     TVector3 C_X128_Y1,
+                                     TVector3 C_X1_Y128,
+                                     TVector3 C_X128_Y128)
 {
    m_NumberOfModule++;
 
@@ -370,11 +380,6 @@ void GaspardTrackerTrapezoid::AddModule(TVector3 C_X1_Y1,
    // Position Vector of X=1 Y=1 Strip 
    TVector3 Strip_1_1;
 
-   // Geometry Parameter
-   double Face = 50;            // mm
-   double NumberOfStrip = 128;
-   double StripPitch = Face/NumberOfStrip; // mm
-
    // Buffer object to fill Position Array
    vector<double> lineX;
    vector<double> lineY;
@@ -385,16 +390,15 @@ void GaspardTrackerTrapezoid::AddModule(TVector3 C_X1_Y1,
    vector< vector< double > >   OneModuleStripPositionZ;
 
    // Moving StripCenter to 1.1 corner:
-   Strip_1_1 = C_X1_Y1 + (U+V) * (StripPitch/2.);
+   Strip_1_1 = C_X1_Y1 + (U+V) * (m_StripPitch/2.);
 
-   for (int i = 0; i < NumberOfStrip; i++) {
+   for (int i = 0; i < m_NumberOfStrips; i++) {
       lineX.clear();
       lineY.clear();
       lineZ.clear();
 
-      for (int j = 0; j < NumberOfStrip; j++) {
-         StripCenter  = Strip_1_1 + StripPitch*( i*U + j*V  );
-//         StripCenter += -TargetPosition;
+      for (int j = 0; j < m_NumberOfStrips; j++) {
+         StripCenter  = Strip_1_1 + m_StripPitch*(i*U + j*V);
 
          lineX.push_back( StripCenter.X() );
          lineY.push_back( StripCenter.Y() );
@@ -413,12 +417,12 @@ void GaspardTrackerTrapezoid::AddModule(TVector3 C_X1_Y1,
 
 
 
-void GaspardTrackerTrapezoid::AddModule(double theta,
-                                        double phi,
-                                        double distance,
-                                        double beta_u,
-                                        double beta_v,
-                                        double beta_w)
+void GaspardTrackerSquare::AddModule(double theta,
+                                     double phi,
+                                     double distance,
+                                     double beta_u,
+                                     double beta_v,
+                                     double beta_w)
 {
    m_NumberOfModule++;
 
@@ -459,9 +463,10 @@ void GaspardTrackerTrapezoid::AddModule(double theta,
    U.Rotate( beta_w * M_PI/180. , W ) ;
    V.Rotate( beta_w * M_PI/180. , W ) ;
 
-   double Face = 50; // mm
-   double NumberOfStrip = 100;
-   double StripPitch = Face/NumberOfStrip; // mm
+   // Position Vector of Strip Center
+   TVector3 StripCenter = TVector3(0,0,0);
+   // Position Vector of X=1 Y=1 Strip 
+   TVector3 Strip_1_1;
 
    vector<double> lineX;
    vector<double> lineY;
@@ -471,26 +476,20 @@ void GaspardTrackerTrapezoid::AddModule(double theta,
    vector< vector< double > >   OneModuleStripPositionY;
    vector< vector< double > >   OneModuleStripPositionZ;
 
-   double X, Y, Z;
-
    // Moving C to the 1.1 corner:
-   C.SetX( C.X() - ( Face/2 - StripPitch/2 ) * ( V.X() + U.X() ) )  ;
-   C.SetY( C.Y() - ( Face/2 - StripPitch/2 ) * ( V.Y() + U.Y() ) )  ;
-   C.SetZ( C.Z() - ( Face/2 - StripPitch/2 ) * ( V.Z() + U.Z() ) )  ;
+   Strip_1_1 = C - 0.5 * (m_FirstStageFace - m_StripPitch) * (U + V);
 
-   for (int i = 0; i < NumberOfStrip; i++) {
+   for (int i = 0; i < m_NumberOfStrips; i++) {
       lineX.clear();
       lineY.clear();
       lineZ.clear();
 
-      for (int j = 0; j < NumberOfStrip; j++) {
-         X = C.X() + StripPitch * ( U.X()*i + V.X()*j );
-         Y = C.Y() + StripPitch * ( U.Y()*i + V.Y()*j );
-         Z = C.Z() + StripPitch * ( U.Z()*i + V.Z()*j );
+      for (int j = 0; j < m_NumberOfStrips; j++) {
+         StripCenter = Strip_1_1 + m_StripPitch * (i*U + j*V);
 
-         lineX.push_back(X);
-         lineY.push_back(Y);
-         lineZ.push_back(Z);
+         lineX.push_back(StripCenter.X());
+         lineY.push_back(StripCenter.Y());
+         lineZ.push_back(StripCenter.Z());
       }
 
       OneModuleStripPositionX.push_back(lineX);

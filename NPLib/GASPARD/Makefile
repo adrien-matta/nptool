@@ -295,7 +295,8 @@ TGaspardTrackerPhysicsNewDict.cxx:	TGaspardTrackerPhysicsNew.h
 			rootcint -f $@ -c $^
 
 libGaspardTrackerModules.so:	GaspardTrackerModule.o	GaspardTrackerDummyShape.o \
-				GaspardTrackerTrapezoid.o	GaspardTrackerAnnular.o
+				GaspardTrackerTrapezoid.o	GaspardTrackerAnnular.o \
+				GaspardTrackerSquare.o
 			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 
@@ -310,6 +311,7 @@ GaspardTrackerModule.o:		GaspardTrackerModule.cxx	GaspardTrackerModule.h
 GaspardTrackerDummyShape.o:	GaspardTrackerDummyShape.cxx	GaspardTrackerDummyShape.h
 GaspardTrackerTrapezoid.o:	GaspardTrackerTrapezoid.cxx	GaspardTrackerTrapezoid.h
 GaspardTrackerAnnular.o:	GaspardTrackerAnnular.cxx	GaspardTrackerAnnular.h
+GaspardTrackerSquare.o:		GaspardTrackerSquare.cxx	GaspardTrackerSquare.h
 #######################################
 
 ############# Clean and More ##########

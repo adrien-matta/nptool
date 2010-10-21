@@ -258,12 +258,15 @@ G4bool GPDScorerFirstStageFrontStripDummyShape::ProcessHits(G4Step* aStep, G4Tou
 
    // get front strip number
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
+//   G4cout << "POS world: " << POS << G4endl;
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
+//   G4cout << "POS local: " << POS << G4endl;
 
    G4double StripPitch = GPDDUMMYSHAPE::FirstStageFace / m_NumberOfStrip;
 
    G4double temp = (POS(0) + GPDDUMMYSHAPE::FirstStageFace / 2.) / StripPitch   ;
    G4double X = int(temp) + 1 ;
+//   G4cout << "strip X: " << X << G4endl;
 
    //Rare case where particle is close to edge of silicon plan
    if (X == m_NumberOfStrip+1) X = m_NumberOfStrip;
@@ -330,6 +333,8 @@ G4bool GPDScorerFirstStageBackStripDummyShape::ProcessHits(G4Step* aStep, G4Touc
 
    G4double temp = (POS(1) + GPDDUMMYSHAPE::FirstStageFace / 2.) / StripPitch   ;
    G4double X = int(temp) + 1 ;
+//   G4cout << "strip Y: " << X << G4endl;
+
    //Rare case where particle is close to edge of silicon plan
    if (X == m_NumberOfStrip+1) X = m_NumberOfStrip;
    G4double edep = aStep->GetTotalEnergyDeposit();
@@ -650,8 +655,8 @@ G4bool GPDScorerFirstStageFrontStripAnnular::ProcessHits(G4Step* aStep, G4Toucha
 
    // Hit position in the world frame
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
-   G4cout << "world frame hit position" << G4endl;
-   G4cout << POS.x() << "   " << POS.y() << "   " << POS.z() << G4endl;
+//   G4cout << "world frame hit position" << G4endl;
+//   G4cout << POS.x() << "   " << POS.y() << "   " << POS.z() << G4endl;
 
    // Hit position in the detector frame
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
@@ -675,10 +680,10 @@ G4bool GPDScorerFirstStageFrontStripAnnular::ProcessHits(G4Step* aStep, G4Toucha
    G4double ThetaStripNumber = floor(dummy / ThetaStripPitch);
    ThetaStripNumber += PhiQuadrantNumber * GPDANNULAR::NbThetaStrips;
 
-      G4cout << "POS: " << POS << G4endl;
-      G4cout << "r, phi " << r << "  " << phi << G4endl;
-      G4cout << "PhiWidth, PhiQuadrantNumber " << PhiWidth << "  " << PhiQuadrantNumber << G4endl;
-      G4cout << "ThetaStripPitch, ThetaStripNumber, dummy " << ThetaStripPitch << "  " << ThetaStripNumber << "  " << dummy << G4endl;
+//      G4cout << "POS: " << POS << G4endl;
+//      G4cout << "r, phi " << r << "  " << phi << G4endl;
+//      G4cout << "PhiWidth, PhiQuadrantNumber " << PhiWidth << "  " << PhiQuadrantNumber << G4endl;
+//      G4cout << "ThetaStripPitch, ThetaStripNumber, dummy " << ThetaStripPitch << "  " << ThetaStripNumber << "  " << dummy << G4endl;
 
    if (ThetaStripNumber < 1e-6) {
     /*  G4cout << "POS: " << POS << G4endl;

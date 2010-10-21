@@ -283,7 +283,7 @@ void GaspardTrackerSquare::VolumeMaker(G4int TelescopeNumber,
       logicFirstStage->SetSensitiveDetector(m_FirstStageScorer);
 
       ///Visualisation of FirstStage Strip
-      G4VisAttributes* FirstStageVisAtt = new G4VisAttributes(G4Colour(0.2, 0.2, 0.2));
+      G4VisAttributes* FirstStageVisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 0.9));	// blue
       logicFirstStage->SetVisAttributes(FirstStageVisAtt);
    }
 
@@ -335,7 +335,7 @@ void GaspardTrackerSquare::VolumeMaker(G4int TelescopeNumber,
       logicThirdStage->SetSensitiveDetector(m_ThirdStageScorer);
 
       ///Visualisation of Third Stage
-      G4VisAttributes* ThirdStageVisAtt = new G4VisAttributes(G4Colour(0.7, 0.7, 0.7));
+      G4VisAttributes* ThirdStageVisAtt = new G4VisAttributes(G4Colour(0.0, 0.9, 0.0));	// green
       logicThirdStage->SetVisAttributes(ThirdStageVisAtt);
    }
 }
@@ -587,9 +587,9 @@ void GaspardTrackerSquare::ConstructDetector(G4LogicalVolume* world)
    G4ThreeVector     MMv      = G4ThreeVector(0, 0, 0) ;
    G4ThreeVector     MMw      = G4ThreeVector(0, 0, 0) ;
    G4ThreeVector     MMCenter = G4ThreeVector(0, 0, 0) ;
-   bool FirstStage  = true ;
-   bool SecondStage = true ;
-   bool ThirdStage  = true ;
+   bool FirstStage  = true;
+   bool SecondStage = true;
+   bool ThirdStage  = true;
 
    G4int NumberOfTelescope = m_DefinitionType.size() ;
 
@@ -599,25 +599,21 @@ void GaspardTrackerSquare::ConstructDetector(G4LogicalVolume* world)
          // (u,v,w) unitary vector associated to telescope referencial
          // (u,v) // to silicon plan
          // w perpendicular to (u,v) plan and pointing ThirdStage
-         MMu = m_X128_Y1[i] - m_X1_Y1[i] ;
-         MMu = MMu.unit()                ;
+         MMu = m_X128_Y1[i] - m_X1_Y1[i];
+         MMu = MMu.unit();
 
-         MMv = m_X1_Y128[i] - m_X1_Y1[i] ;
-         MMv = MMv.unit()                ;
+         MMv = m_X1_Y128[i] - m_X1_Y1[i];
+         MMv = MMv.unit();
 
-         G4ThreeVector MMscal = MMu.dot(MMv);
+         MMw = MMu.cross(MMv);
+         MMw = MMw.unit();
 
-         MMw = MMu.cross(MMv)                  ;
-//         if (MMw.z() > 0) MMw = MMv.cross(MMu) ;
-         MMw = MMw.unit()                      ;
-
-         MMCenter = (m_X1_Y1[i] + m_X1_Y128[i] + m_X128_Y1[i] + m_X128_Y128[i]) / 4 ;
+         MMCenter = (m_X1_Y1[i] + m_X1_Y128[i] + m_X128_Y1[i] + m_X128_Y128[i]) / 4;
 
          // Passage Matrix from Lab Referential to Telescope Referential
-         // MUST2
-         MMrot = new G4RotationMatrix(MMu, MMv, MMw) ;
+         MMrot = new G4RotationMatrix(MMu, MMv, MMw);
          // translation to place Telescope
-         MMpos = MMw * Length * 0.5 + MMCenter ;
+         MMpos = MMw * Length * 0.5 + MMCenter;
       }
 
       // By Angle
@@ -630,13 +626,13 @@ void GaspardTrackerSquare::ConstructDetector(G4LogicalVolume* world)
          // w perpendicular to (u,v) plan and pointing ThirdStage
          // Phi is angle between X axis and projection in (X,Y) plan
          // Theta is angle between  position vector and z axis
-         G4double wX = m_R[i] * sin(Theta / rad) * cos(Phi / rad)   ;
-         G4double wY = m_R[i] * sin(Theta / rad) * sin(Phi / rad)   ;
-         G4double wZ = m_R[i] * cos(Theta / rad)             ;
-         MMw = G4ThreeVector(wX, wY, wZ)                ;
+         G4double wX = m_R[i] * sin(Theta / rad) * cos(Phi / rad);
+         G4double wY = m_R[i] * sin(Theta / rad) * sin(Phi / rad);
+         G4double wZ = m_R[i] * cos(Theta / rad);
+         MMw = G4ThreeVector(wX, wY, wZ);
 
          // vector corresponding to the center of the module
-         G4ThreeVector CT = MMw;
+         MMCenter = MMw;
 
          // vector parallel to one axis of silicon plane
          G4double ii = cos(Theta / rad) * cos(Phi / rad);
@@ -658,7 +654,7 @@ void GaspardTrackerSquare::ConstructDetector(G4LogicalVolume* world)
          MMrot->rotate(m_beta_v[i], MMv);
          MMrot->rotate(m_beta_w[i], MMw);
          // translation to place Telescope
-         MMpos = MMw * Length * 0.5 + CT ;
+         MMpos = MMw * Length * 0.5 + MMCenter;
       }
 
       FirstStage  = m_wFirstStage[i]  ;

@@ -1,5 +1,5 @@
-#ifndef GaspardTrackerDummyShape_h
-#define GaspardTrackerDummyShape_h 1
+#ifndef GaspardTrackerSquare_h
+#define GaspardTrackerSquare_h 1
 
 // C++ headers
 #include <string>
@@ -18,14 +18,14 @@ using namespace std;
 
 
 
-class GaspardTrackerDummyShape : public GaspardTrackerModule
+class GaspardTrackerSquare : public GaspardTrackerModule
 {
 public:
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
    ////////////////////////////////////////////////////
-   GaspardTrackerDummyShape(map<int, GaspardTrackerModule*> &Module, TGaspardTrackerPhysicsNew* &EventPhysics);
-   virtual ~GaspardTrackerDummyShape();
+   GaspardTrackerSquare(map<int, GaspardTrackerModule*> &Module, TGaspardTrackerPhysicsNew* &EventPhysics);
+   virtual ~GaspardTrackerSquare();
 
 public:
    ////////////////////////////////////////////////////
@@ -74,9 +74,9 @@ public:
                   double beta_w);
 
    // Getters to retrieve the (X,Y,Z) coordinates of a pixel defined by strips (X,Y)
-   double GetStripPositionX(int N ,int X ,int Y)        { return m_StripPositionX[N-1-m_index["DummyShape"]][X-1][Y-1]; }
-   double GetStripPositionY(int N ,int X ,int Y)        { return m_StripPositionY[N-1-m_index["DummyShape"]][X-1][Y-1]; }
-   double GetStripPositionZ(int N ,int X ,int Y)        { return m_StripPositionZ[N-1-m_index["DummyShape"]][X-1][Y-1]; }
+   double GetStripPositionX(int N ,int X ,int Y)        { return m_StripPositionX[N-1-m_index["Square"]][X-1][Y-1]; }
+   double GetStripPositionY(int N ,int X ,int Y)        { return m_StripPositionY[N-1-m_index["Square"]][X-1][Y-1]; }
+   double GetStripPositionZ(int N ,int X ,int Y)        { return m_StripPositionZ[N-1-m_index["Square"]][X-1][Y-1]; }
    double GetNumberOfModule()                           { return m_NumberOfModule; }
 
 private:
@@ -90,7 +90,7 @@ private:
    //////////////////////////////
    // Geometry and stip number //
    //////////////////////////////
-   double m_FirstStageFace;	// mm
+   double m_FirstStageFace;     // mm
    int    m_NumberOfStrips;
    double m_StripPitch;
 };

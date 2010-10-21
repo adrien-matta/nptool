@@ -27,7 +27,7 @@ Target
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 GaspardTracker
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%0 Central Barrel
-GPDAnnular
+%GPDAnnular
 	Z= 	200
 	RMIN= 	16
 	RMAX= 	52

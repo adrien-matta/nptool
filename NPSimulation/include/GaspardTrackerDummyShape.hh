@@ -134,6 +134,12 @@ private:
    vector<G4double>  m_beta_u ; //  |
    vector<G4double>  m_beta_v ; //  > Tilt angle of the Telescope
    vector<G4double>  m_beta_w ; //  |
+
+private:
+   // debugging purposes
+   G4ThreeVector MMCenter;
+   G4ThreeVector MMu;
+   G4ThreeVector MMv;
 };
 
 
