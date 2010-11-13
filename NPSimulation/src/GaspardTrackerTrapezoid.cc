@@ -635,7 +635,7 @@ void GaspardTrackerTrapezoid::ConstructDetector(G4LogicalVolume* world)
          MMv = MMv.unit()                ;
          G4cout << "Norm MMv: " << MMv << G4endl;
 
-         G4ThreeVector MMscal = MMu.dot(MMv);
+         double MMscal = MMu.dot(MMv);
          G4cout << "Norm MMu.MMv: " << MMscal << G4endl;
 
          MMw = MMu.cross(MMv)                  ;
