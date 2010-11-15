@@ -29,6 +29,11 @@
 ClassImp(NPTagManager)
 
 ////////////////////////////////////////////
+NPTagManager::NPTagManager() {}
+NPTagManager::~NPTagManager(){}
+
+
+////////////////////////////////////////////
 bool NPTagManager::Is(string condition)
 	{
 	  // return True is the element is find, false other wise

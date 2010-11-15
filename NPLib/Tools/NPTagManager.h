@@ -37,7 +37,6 @@ using namespace std;
 
 class NPTagManager : public TObject
    {
-    
     public:
      NPTagManager();
     ~NPTagManager();
