@@ -283,8 +283,11 @@ libEnergyLoss.so: NPEnergyLoss.o
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 		
 ## TAGManager ##
-libTagManager.so: NPTagManager.o
+libTagManager.so: NPTagManager.o NPTagManagerDict.o
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
+		
+NPTagManagerDict.cxx: NPTagManager.h
+			rootcint -f $@ -c $^
 		
 # dependances
 NPReaction.o:NPReaction.cxx NPReaction.h

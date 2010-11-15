@@ -25,22 +25,23 @@
  *****************************************************************************/
  
 #include "NPTagManager.h"
-using namespace NPL;
+
+ClassImp(NPTagManager)
 
 ////////////////////////////////////////////
-bool TagManager::Is(string condition)
+bool NPTagManager::Is(string condition)
 	{
 	  // return True is the element is find, false other wise
    return !( fTAG.find(condition)==fTAG.end() );
   }
 ////////////////////////////////////////////
-void TagManager::SetCondition(string condition)
+void NPTagManager::AddCondition(string condition)
 	{
     fTAG.insert(condition);
 	}
 
 ////////////////////////////////////////////
-void TagManager::PrintCondition()
+void NPTagManager::PrintCondition()
 	{
     set<string>::iterator it ;	
 
@@ -56,7 +57,7 @@ void TagManager::PrintCondition()
 	}
 
 ////////////////////////////////////////////
-void TagManager::PrintConditionToFile(string filename)
+void NPTagManager::PrintConditionToFile(string filename)
 	{
     
     ofstream file;

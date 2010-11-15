@@ -1,5 +1,5 @@
-#ifndef __TAG__
-#define __TAG__
+#ifndef _TAG_
+#define _TAG_
 /*****************************************************************************
  * Copyright (C) 2009 	this file is part of the NPTool Project              *
  *                                                                           *
@@ -35,13 +35,12 @@ using namespace std;
 // ROOT header
 #include "TObject.h"
 
-namespace NPL 
-	{
-		class TagManager : public TObject{
+class NPTagManager : public TObject
+   {
     
     public:
-     TagManager();
-    ~TagManager();
+     NPTagManager();
+    ~NPTagManager();
     
     private:
      set<string> fTAG;
@@ -51,7 +50,7 @@ namespace NPL
      bool Is(string condition);
      
      // Add condition to the set fTAG
-     void SetCondition(string condition);
+     void AddCondition(string condition);
      
      // Print all the condition that exist in fTAG
      void PrintCondition(); 
@@ -62,8 +61,8 @@ namespace NPL
         
      // Clear all the fTAG
      inline void Clear() {fTAG.clear();} ;
-        
+    
+     ClassDef(NPTagManager,1)  
     };
-  }
   
 #endif
