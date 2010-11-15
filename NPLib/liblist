@@ -1,4 +1,4 @@
-echo  -L$NPLIB/lib -lVDetector -lDetectorManager -lCalibrationManager -lIORoot -lReaction -lEnergyLoss \
+echo  -L$NPLIB/lib -lVDetector -lDetectorManager -lCalibrationManager -lIORoot -lReaction -lEnergyLoss -lTagManager\
 			-lMust2Data -lMust2Physics \
 			-lSSSDData -lSSSDPhysics \
 			-lPlasticData -lPlasticPhysics \
