@@ -273,14 +273,17 @@ SHARELIB      =	CalibManager Vdetec InputOutputRoot InitCond	InterCoord \
 		AnnularS1Data	PlasticData	DummyDetectorData SSSDData \
 		Reaction	EnergyLoss
 
-FILLINCLIB	= fillinclib
+FILLINC		= fillinc
+FILLLIB		= filllib
 LIBLIST		= liblistfile
 
-all:         $(SHARELIB) $(FILLINCLIB) $(LIBLIST)
+all:	$(FILLINC) $(SHARELIB) $(FILLLIB) $(LIBLIST)
 #------------------------------------------------------------------------------
 ############### fillinclib ##############
-fillinclib:
+fillinc:
 		./scripts/fillincdir.sh
+
+filllib:
 		./scripts/filllibdir.sh
 ifeq ($(ARCH),macosx)
 		./scripts/filllibmacdir.sh
@@ -295,12 +298,10 @@ liblistfile:
 ## CalibrationManager ##
 CalibManager:
 		make -C ./CalibrationManager
-		cp ./CalibrationManager/*.h ./include
 
 ############### Detector ##############
 ## VDetector ##
 Vdetec:
-		cp ./VDetector/*.h ./include
 		make -C ./VDetector
 		
 ## MUST2 ##
