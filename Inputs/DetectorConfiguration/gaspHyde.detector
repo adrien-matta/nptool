@@ -28,11 +28,21 @@ Target
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
 GaspardTracker
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
-GPDTrapezoid
+%GPDTrapezoid
 	THETA= 0 
 	PHI= 0
 	R= 200
 	BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Barrel
+GPDTrapezoid
+        X1_Y1=    	-25.0	-25.00   200.00
+        X128_Y1=       	 25.0	-25.00   200.00
+        X1_Y128=        -25.0 	 25.00	 200.00
+        X128_Y128=       25.0	 25.00   200.00
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
         THIRDSTAGE= 1

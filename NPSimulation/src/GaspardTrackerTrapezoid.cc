@@ -229,8 +229,10 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
    // Definition of the volume containing the sensitive detector
    G4Trap* solidGPDTrapezoid = new G4Trap(Name, 
                                           Length/2, 0*deg, 0*deg, 
-                                          Height/2, BaseSmall/2, BaseLarge/2, 0*deg, 
-                                          Height/2, BaseSmall/2, BaseLarge/2, 0*deg);
+                                          Height/2, BaseLarge/2, BaseSmall/2, 0*deg, 
+                                          Height/2, BaseLarge/2, BaseSmall/2, 0*deg);
+//                                          Height/2, BaseSmall/2, BaseLarge/2, 0*deg, 
+//                                          Height/2, BaseSmall/2, BaseLarge/2, 0*deg);
    G4LogicalVolume* logicGPDTrapezoid = new G4LogicalVolume(solidGPDTrapezoid, Vacuum, Name, 0, 0, 0);
 
    PVPBuffer = new G4PVPlacement(G4Transform3D(*MMrot, MMpos), logicGPDTrapezoid, Name, world, false, 0);
@@ -270,8 +272,10 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
 
       G4Trap* solidFirstStage = new G4Trap("solidFirstStage", 
                                            FirstStageThickness/2, 0*deg, 0*deg, 
-                                           FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg, 
-                                           FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg);
+                                           FirstStageHeight/2, FirstStageBaseLarge/2, FirstStageBaseSmall/2, 0*deg, 
+                                           FirstStageHeight/2, FirstStageBaseLarge/2, FirstStageBaseSmall/2, 0*deg);
+//                                           FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg, 
+//                                           FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg);
       G4LogicalVolume* logicFirstStage = new G4LogicalVolume(solidFirstStage, Silicon, "logicFirstStage", 0, 0, 0);
 
       PVPBuffer = new G4PVPlacement(0,
@@ -299,8 +303,10 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
 
       G4Trap* solidSecondStage = new G4Trap("solidSecondStage", 
                                             SecondStageThickness/2, 0*deg, 0*deg, 
-                                            SecondStageHeight/2, SecondStageBaseSmall/2, SecondStageBaseLarge/2, 0*deg, 
-                                            SecondStageHeight/2, SecondStageBaseSmall/2, SecondStageBaseLarge/2, 0*deg);
+                                           FirstStageHeight/2, FirstStageBaseLarge/2, FirstStageBaseSmall/2, 0*deg, 
+                                           FirstStageHeight/2, FirstStageBaseLarge/2, FirstStageBaseSmall/2, 0*deg);
+//                                           FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg, 
+//                                           FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg);
       G4LogicalVolume* logicSecondStage = new G4LogicalVolume(solidSecondStage, Silicon, "logicSecondStage", 0, 0, 0);
 
       PVPBuffer = new G4PVPlacement(0,
@@ -328,8 +334,10 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
 
       G4Trap* solidThirdStage = new G4Trap("solidThirdStage", 
                                            ThirdStageThickness/2, 0*deg, 0*deg, 
-                                           ThirdStageHeight/2, ThirdStageBaseSmall/2, ThirdStageBaseLarge/2, 0*deg, 
-                                           ThirdStageHeight/2, ThirdStageBaseSmall/2, ThirdStageBaseLarge/2, 0*deg);
+                                           FirstStageHeight/2, FirstStageBaseLarge/2, FirstStageBaseSmall/2, 0*deg, 
+                                           FirstStageHeight/2, FirstStageBaseLarge/2, FirstStageBaseSmall/2, 0*deg);
+//                                           FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg, 
+//                                           FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg);
       G4LogicalVolume* logicThirdStage = new G4LogicalVolume(solidThirdStage, Silicon, "logicThirdStage", 0, 0, 0);
 
       PVPBuffer = new G4PVPlacement(0,
@@ -610,14 +618,18 @@ void GaspardTrackerTrapezoid::ConstructDetector(G4LogicalVolume* world)
          // (u,v) // to silicon plan
          // w perpendicular to (u,v) plan and pointing ThirdStage
          // new positioning scheme ?
+         G4cout << "XXXXXXXXXXXX Trapezoid " << i << " XXXXXXXXXXXXX" << G4endl;
          MMu = m_X128_Y1[i] - m_X1_Y1[i];
          MMu = MMu.unit();
+         G4cout << "MMu: " << MMu << G4endl;
 
          MMv = 0.5 * (m_X1_Y128[i] + m_X128_Y128[i] - m_X1_Y1[i] - m_X128_Y1[i]);
          MMv = MMv.unit();
+         G4cout << "MMv: " << MMv << G4endl;
 
          MMw = MMu.cross(MMv);
          MMw = MMw.unit();
+         G4cout << "MMw: " << MMw << G4endl;
 
          // Center of the module
          MMCenter = (m_X1_Y1[i] + m_X1_Y128[i] + m_X128_Y1[i] + m_X128_Y128[i]) / 4;
@@ -632,10 +644,6 @@ void GaspardTrackerTrapezoid::ConstructDetector(G4LogicalVolume* world)
       else {
          G4double Theta = m_Theta[i];
          G4double Phi   = m_Phi[i];
-         //This part because if Phi and Theta = 0 equation are false
-         if (Theta == 0)        Theta = 0.0001;
-         if (Theta == 2*cos(0)) Theta = 2 * acos(0) - 0.00001;
-         if (Phi   == 0)        Phi   = 0.0001;
 
          // (u,v,w) unitary vector associated to telescope referencial
          // (u,v) // to silicon plan
@@ -662,9 +670,10 @@ void GaspardTrackerTrapezoid::ConstructDetector(G4LogicalVolume* world)
          MMv = MMv.unit();
          MMu = MMu.unit();
 
-         MMw = G4ThreeVector(wX, wY, wZ);
-         MMCenter = MMw;
-         MMw = MMw.unit();
+         G4cout << "XXXXXXXXXXXX Trapezoid " << i << " XXXXXXXXXXXXX" << G4endl;
+         G4cout << "MMu: " << MMu << G4endl;
+         G4cout << "MMv: " << MMv << G4endl;
+         G4cout << "MMw: " << MMw << G4endl;
 
          // Passage Matrix from Lab Referential to Telescope Referential
          MMrot = new G4RotationMatrix(MMu, MMv, MMw);

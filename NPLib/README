@@ -9,12 +9,13 @@
  * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
  *                                                                           *
  * Creation Date  : 01/09/09                                                 *
- * Last update    : 17/09/10                                                 *
+ * Last update    : 16/11/10                                                 *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *      This file describes the content of the NPLib directory               *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
+ *     16/11/10: added scripts directory description                         *
  *     01/09/10: added Shield of PARIS                                       *
  *     04/12/09: added PARIS array                                           *
  *****************************************************************************/
@@ -23,6 +24,7 @@ This directory contains a set of libraries which are used both in the
 NPSimulation and the NPAnalysis modules. The structure of this directory is:
 NPLib / include
       / lib
+      / scripts
       / IORoot
       / Tools
       / InitialConditions
@@ -46,16 +48,19 @@ II) lib directory
 	When compiling NPLib (see INSTALL file) all the shared libraries are 
 	copied to this directory
 
-III) IORoot
+III) scripts
+	This directory contains several scripts used in the global Makefile.
+
+IV) IORoot
 	This directory includes one library:
 		libIORoot.so
 	This library contains two singleton classes (RootOutput and RootInput) used
 	both in NPSimulation and NPAnalysis.
 	These classes are used to deal with the input and output ROOT files and trees.
 
-IV) Tools
+V) Tools
 
-V) InitialConditions
+VI) InitialConditions
 	This directory includes one library:
 		libInitialConditions.so
 	This library records all the information concerning the event generators, 
@@ -63,7 +68,7 @@ V) InitialConditions
 	This class derives from TObject (ROOT) and its aim is to be stored in the 
 	output TTree of the G4 simulation 
 
-VI) InteractionCoordinates
+VII) InteractionCoordinates
 	This directory includes one library:
 		libInteractionCoordinates.so
 	This library mainly records the coordinates of interaction between a particle 
@@ -71,19 +76,19 @@ VI) InteractionCoordinates
 	This class derives from TObject (ROOT) and its aim is to be stored in the 
 	output TTree of the G4 simulation.
 
-VII) CalibrationManager
+VIII) CalibrationManager
 	This directory includes one library:
 	libCalibrationManager.so
 		This folder contain the the class object for managing calibration file.
 	A caliration manager singleton is instantiate in NPAnalysis project.
 	 
-VIII) DummyDetector
+IX) DummyDetector
 	This directory includes one library:
 		libDUMMYDetector.so
 	This library stores the results of the G4 simulation for the example detector
 	DummyDetector.
 
-IX) MUST2
+X) MUST2
 	This directory includes two libraries:
 		libMust2Data.so
 		libMust2Physics.so
@@ -96,7 +101,7 @@ IX) MUST2
 		This library deals with the treatment applied to the ROOT output file 
 		obtained from NPSimulation. This library is *only* used by NPAnalysis.
 
-X) AnnularS1
+XI) AnnularS1
 	This directory includes one library:
 		libAnnularS1Data.so
 	This library stores the results of the G4 simulation for the S1 detector. 
@@ -106,7 +111,7 @@ X) AnnularS1
 	This class derives from TObject (ROOT) and its aim is to be stored in the 
 	output TTree of the G4 simulation.
 
-XI) GASPARD
+XII) GASPARD
 	This directory includes two libraries:
 		libGaspardData.so
 		libGaspardPhysics.so
@@ -119,7 +124,7 @@ XI) GASPARD
 		This library deals with the treatment applied to the ROOT output file 
 		obtained from NPSimulation. This library is *only* used by NPAnalysis.
 
-XII) Paris
+XIII) Paris
 	This directory includes tow library:
 		libParisData.so
 		libParisPhysics.so
@@ -130,7 +135,7 @@ XII) Paris
 		obtained from NPSimulation. This library is *only* used by NPAnalysis.
 
 
-XIII) Shield
+XIV) Shield
 	This directory includes two library:
 		libShieldData.so
 		libShieldPhysics.so
@@ -140,7 +145,7 @@ XIII) Shield
 		This library deals with the treatment applied to the ROOT output file 
 		obtained from NPSimulation. This library is *only* used by NPAnalysis.
 
-XIV) VDetector
+XV) VDetector
 	This directory includes two libraries:
 		libVDetector.so
 		libDetectorManager.so
