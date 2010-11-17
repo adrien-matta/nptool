@@ -270,7 +270,7 @@ INCLUDE		= -I$(CLHEP_BASE_DIR)/include
 #------------------------------------------------------------------------------
 SHARELIB      =	CalibManager Vdetec InputOutputRoot InitCond	InterCoord \
 		Must2All	GaspardData	AnnularS1Data PlasticData DummyDetectorData SSSDData\
-		Reaction	EnergyLoss	TagManager ParisData	ShieldData
+		Reaction	EnergyLoss TagManager OptionManager ParisData	ShieldData
 
 all:         $(SHARELIB)
 	rm -f ./include/*Dict.h
@@ -417,6 +417,13 @@ TagManager:
 		cp ./Tools/*.so ./lib ; cp ./Tools/*.h ./include
 ifeq ($(ARCH),macosx)
 		cd lib; ln -sf libTagManager.so libTagManager.dylib
+endif
+
+OptionManager:
+		make libOptionManager.so -C ./Tools
+		cp ./Tools/*.so ./lib ; cp ./Tools/*.h ./include
+ifeq ($(ARCH),macosx)
+		cd lib; ln -sf libOptionManager.so libOptionManager.dylib
 endif
 		
 #######################################

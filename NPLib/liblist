@@ -1,10 +1,25 @@
-echo  -L$NPLIB/lib -lVDetector -lDetectorManager -lCalibrationManager -lIORoot -lReaction -lEnergyLoss -lTagManager\
-			-lMust2Data -lMust2Physics \
-			-lSSSDData -lSSSDPhysics \
-			-lPlasticData -lPlasticPhysics \
-			-lAnnularS1Data \
-			-lGaspardData -lGaspardPhysics \
-			-lDUMMYDetectorData \
-			-lParisData -lParisPhysics\
-			-lShieldData -lShieldPhysics\
-			-lInitialConditions -lInteractionCoordinates
+echo -L/home/Adrien/Desktop/NPTool.dev/NPLib/lib \
+	 	 -lAnnularS1Data \
+	 	 -lCalibrationManager \
+	 	 -lDetectorManager \
+	 	 -lDUMMYDetectorData \
+	 	 -lEnergyLoss \
+	 	 -lGaspardData \
+	 	 -lGaspardPhysics \
+	 	 -lInitialConditions \
+	 	 -lInteractionCoordinates \
+	 	 -lIORoot \
+	 	 -lMust2Data \
+	 	 -lMust2Physics \
+	 	 -lParisData \
+	 	 -lParisPhysics \
+	 	 -lPlasticData \
+	 	 -lPlasticPhysics \
+	 	 -lReaction \
+	 	 -lShieldData \
+	 	 -lShieldPhysics \
+	 	 -lSSSDData \
+	 	 -lSSSDPhysics \
+	 	 -lTagManager \
+	 	 -lOptionManager \
+	 	 -lVDetector \

@@ -268,7 +268,7 @@ GLIBS         = $(ROOTGLIBS) $(SYSLIBS)
 INCLUDE		= -I$(CLHEP_BASE_DIR)/include
  
 #------------------------------------------------------------------------------
-SHARELIB      = libReaction.so libEnergyLoss.so libTagManager.so
+SHARELIB      = libReaction.so libEnergyLoss.so libTagManager.so libOptionManager.so
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 
@@ -288,12 +288,17 @@ libTagManager.so: NPTagManager.o NPTagManagerDict.o
 		
 NPTagManagerDict.cxx: NPTagManager.h
 			rootcint -f $@ -c $^
+			
+## OptionManager ##
+libOptionManager.so: NPOptionManager.o
+		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 		
 # dependances
 NPReaction.o:NPReaction.cxx NPReaction.h
 NPNucleus.o: NPNucleus.cxx NPNucleus.h
 NPEnergyLoss.o:NPEnergyLoss.cxx NPEnergyLoss.h
 NPTagManager.o:NPTagManager.cxx NPTagManager.h
+NPOptionManager.o:NPOptionManager.cxx NPOptionManager.h
 #######################################
 
 ############# Clean and More ##########
