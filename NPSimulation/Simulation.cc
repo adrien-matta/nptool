@@ -13,103 +13,100 @@
 #ifdef G4VIS_USE
 #include "G4VisExecutive.hh"
 #endif
-// NPS Source
+// NPS headers
 #include "EventAction.hh"
 #include "VDetector.hh"
+//NPL headers
+#include "NPOptionManager.h"
 #include "RootOutput.h"
-// ROOT Source
+// ROOT headers
 #include "TTree.h"
 #include "TFile.h"
 // STL
 #include <vector>
 
 int main(int argc, char** argv)
-{
+  {
+    NPOptionManager* OptionManager = NPOptionManager::getInstance(argc,argv);
+    G4String EventGeneratorFileName = OptionManager->GetReactionFilePath();
+    G4String DetectorFileName = OptionManager->GetDetectorFilePath();
+       
 
-   if (argc != 3) {
-      cout << "you need to specify both a Reaction file and a Detector file such as : Simulation myReaction.reaction myDetector.detector" << endl ;
-      return 0;
-   }
+     //my Verbose output class
+     G4VSteppingVerbose::SetInstance(new SteppingVerbose);
 
-   // Getting arguments
-   G4String EventGeneratorFileName = argv[1];
-   G4String DetectorFileName = argv[2];
+     //Construct the default run manager
+     G4RunManager* runManager = new G4RunManager;
 
-   //my Verbose output class
-   G4VSteppingVerbose::SetInstance(new SteppingVerbose);
+     //set mandatory initialization classes
+     DetectorConstruction* detector  = new DetectorConstruction();
+     runManager->SetUserInitialization(detector);
 
-   //Construct the default run manager
-   G4RunManager* runManager = new G4RunManager;
+     PhysicsList* physics   = new PhysicsList();
+     runManager->SetUserInitialization(physics);
+     PrimaryGeneratorAction* primary = new PrimaryGeneratorAction(detector);
 
-   //set mandatory initialization classes
-   DetectorConstruction* detector  = new DetectorConstruction();
-   runManager->SetUserInitialization(detector);
+     //Initialize Geant4 kernel
+     runManager->Initialize();
+     physics->MyOwnConstruction();
 
-   PhysicsList* physics   = new PhysicsList();
-   runManager->SetUserInitialization(physics);
-   PrimaryGeneratorAction* primary = new PrimaryGeneratorAction(detector);
+     ///////////////////////////////////////////////////////////////
+     ///////////////// Initializing the Root Output ////////////////
+     ///////////////////////////////////////////////////////////////
+     RootOutput::getInstance("Simulation/"+OptionManager->GetOutputFilePath());
 
-   //Initialize Geant4 kernel
-   runManager->Initialize();
-   physics->MyOwnConstruction();
+     ///////////////////////////////////////////////////////////////
+     ////////////// Reading Detector Configuration /////////////////
+     ///////////////////////////////////////////////////////////////
+     detector->ReadConfigurationFile(DetectorFileName);
 
-   ///////////////////////////////////////////////////////////////
-   ///////////////// Initializing the Root Output ////////////////
-   ///////////////////////////////////////////////////////////////
-   RootOutput::getInstance("Simulation/mySimul");
+     ///////////////////////////////////////////////////////////////
+     ////////////////////// Reading Reaction ///////////////////////
+     ///////////////////////////////////////////////////////////////
+     primary->ReadEventGeneratorFile(EventGeneratorFileName);
+     runManager->SetUserAction(primary);
 
-   ///////////////////////////////////////////////////////////////
-   ////////////// Reading Detector Configuration /////////////////
-   ///////////////////////////////////////////////////////////////
-   detector->ReadConfigurationFile(DetectorFileName);
+     ///////////////////////////////////////////////////////////////
+     ////////////////// Starting the Event Action //////////////////
+     ///////////////////////////////////////////////////////////////
+     EventAction* event_action = new EventAction() ;
+     event_action->SetDetector(detector)           ;
+     runManager->SetUserAction(event_action)       ;
 
-   ///////////////////////////////////////////////////////////////
-   ////////////////////// Reading Reaction ///////////////////////
-   ///////////////////////////////////////////////////////////////
-   primary->ReadEventGeneratorFile(EventGeneratorFileName);
-   runManager->SetUserAction(primary);
+     ///////////////////////////////////////////////////////////////
+     ///////  Get the pointer to the User Interface manager ////////
+     ///////////////////////////////////////////////////////////////
+     G4UImanager* UI = G4UImanager::GetUIpointer();
 
-   ///////////////////////////////////////////////////////////////
-   ////////////////// Starting the Event Action //////////////////
-   ///////////////////////////////////////////////////////////////
-   EventAction* event_action = new EventAction() ;
-   event_action->SetDetector(detector)           ;
-   runManager->SetUserAction(event_action)       ;
+     ///////////////////////////////////////////////////////////////
+     /////////// Define UI terminal for interactive mode ///////////
+     ///////////////////////////////////////////////////////////////
+  #ifdef G4VIS_USE
+     G4VisManager* visManager = new G4VisExecutive;
+     visManager->Initialize();
+  #endif
 
-   ///////////////////////////////////////////////////////////////
-   ///////  Get the pointer to the User Interface manager ////////
-   ///////////////////////////////////////////////////////////////
-   G4UImanager* UI = G4UImanager::GetUIpointer();
+     G4UIsession* session = 0;
 
-   ///////////////////////////////////////////////////////////////
-   /////////// Define UI terminal for interactive mode ///////////
-   ///////////////////////////////////////////////////////////////
-#ifdef G4VIS_USE
-   G4VisManager* visManager = new G4VisExecutive;
-   visManager->Initialize();
-#endif
+  #ifdef G4UI_USE_TCSH
+     session = new G4UIterminal(new G4UItcsh);
+  #else
+     session = new G4UIterminal();
+  #endif
 
-   G4UIsession* session = 0;
+     UI->ApplyCommand("/control/execute vis.mac");
+     session->SessionStart();
+     delete session;
 
-#ifdef G4UI_USE_TCSH
-   session = new G4UIterminal(new G4UItcsh);
-#else
-   session = new G4UIterminal();
-#endif
+  #ifdef G4VIS_USE
+     delete visManager;
+  #endif
 
-   UI->ApplyCommand("/control/execute vis.mac");
-   session->SessionStart();
-   delete session;
+     ///////////////////////////////////////////////////////////////
+     ////////////////////// Job termination ////////////////////////
+     ///////////////////////////////////////////////////////////////
+     RootOutput::getInstance()->Destroy();
 
-#ifdef G4VIS_USE
-   delete visManager;
-#endif
-
-   ///////////////////////////////////////////////////////////////
-   ////////////////////// Job termination ////////////////////////
-   ///////////////////////////////////////////////////////////////
-   RootOutput::getInstance()->Destroy();
-
-   delete runManager;
-   return 0;
-}
+     delete runManager;
+     return 0;
+  }
