@@ -268,22 +268,18 @@ GLIBS         = $(ROOTGLIBS) $(SYSLIBS)
 INCLUDE		= -I$(CLHEP_BASE_DIR)/include
  
 #------------------------------------------------------------------------------
-SHARELIB      =	CalibManager Vdetec InputOutputRoot InitCond	InterCoord \
-		Must2All	GaspardData	ParisData	ShieldData \
-		AnnularS1Data	PlasticData	DummyDetectorData SSSDData \
-		Reaction	EnergyLoss
-
-FILLINC		= fillinc
-FILLLIB		= filllib
+SHARELIB	= SharedLib
+FILLINC		= FillIncludeDir
+FILLLIB		= FillLibraryDir
 LIBLIST		= liblistfile
 
 all:	$(FILLINC) $(SHARELIB) $(FILLLIB) $(LIBLIST)
 #------------------------------------------------------------------------------
 ############### fillinclib ##############
-fillinc:
+FillIncludeDir:
 		./scripts/fillincdir.sh
 
-filllib:
+FillLibraryDir:
 		./scripts/filllibdir.sh
 ifeq ($(ARCH),macosx)
 		./scripts/filllibmacdir.sh
@@ -291,114 +287,22 @@ endif
 
 ############### liblist ##############
 liblistfile:
-		echo "Building liblist"
 		./scripts/buildliblist.sh
 
-############### Calibration ##############
-## CalibrationManager ##
-CalibManager:
-		make -C ./CalibrationManager
-
-############### Detector ##############
-## VDetector ##
-Vdetec:
-		make -C ./VDetector
-		
-## MUST2 ##
-Must2All:
-		make -C ./MUST2
-
-## SSSD ##
-SSSDData:
-		make -C ./SSSD
-
-## AnnularS1 ##
-AnnularS1Data:
-		make -C ./AnnularS1
-
-## Gaspard ##
-GaspardData:
-		make -C ./GASPARD
-
-## Paris ##
-ParisData:
-		make -C ./Paris
-
-## Shield ##
-ShieldData:
-		make -C ./Shield
-
-## Plastic ##
-PlasticData:
-		make -C ./Plastic
-
-## DUMMY Detector ##
-DummyDetectorData:
-		make -C ./DummyDetector
-
-
-############# Simulation ##############
-## InitialConditions ##
-InitCond:
-		make -C ./InitialConditions
-
-## InteractionCoordinates ##
-InterCoord:	
-		make -C ./InteractionCoordinates
-
-############# I/O Root File ############
-InputOutputRoot:
-	make -C ./IORoot
-	cp ./IORoot/*.h ./include
-
-
-############# Various Tools ############
-## Reaction ##
-Reaction:
-		make libReaction.so -C ./Tools
-
-EnergyLoss:
-		make libEnergyLoss.so -C ./Tools
-		
-#######################################
+############### sharedlib ##############
+SharedLib:
+		./scripts/makefile.sh
 
 ############# Clean and More ##########
 clean:
-	make clean -C ./Tools
-	make clean -C ./IORoot
-	make clean -C ./VDetector
-	make clean -C ./CalibrationManager
-	make clean -C ./MUST2
-	make clean -C ./SSSD
-	make clean -C ./AnnularS1
-	make clean -C ./GASPARD
-	make clean -C ./Paris
-	make clean -C ./Shield
-	make clean -C ./InteractionCoordinates
-	make clean -C ./InitialConditions
-	make clean -C ./DummyDetector
+	./scripts/makefile.sh clean
 	
 distclean:
-	rm -f ./lib/*.so
-ifeq ($(ARCH),macosx)
-	rm -f ./lib/*.dylib
-endif
+	rm -f ./lib/*
 	rm -f ./include/*.h 
 	rm -f liblist
-	make distclean -C ./Tools
-	make distclean -C ./IORoot
-	make distclean -C ./VDetector
-	make distclean -C ./CalibrationManager
-	make distclean -C ./MUST2
-	make distclean -C ./SSSD
-	make distclean -C ./AnnularS1
-	make distclean -C ./GASPARD
-	make distclean -C ./Paris
-	make distclean -C ./Shield
-	make distclean -C ./InteractionCoordinates
-	make distclean -C ./InitialConditions
-	make distclean -C ./DummyDetector
-	make distclean -C ./Plastic
+	./scripts/makefile.sh distclean
+
 .SUFFIXES: .$(SrcSuf)
 
 ###
