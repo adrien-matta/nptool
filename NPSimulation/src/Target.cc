@@ -216,6 +216,16 @@ G4Material* Target::GetMaterialFromLibrary(G4String MaterialName, G4double Tempe
       return myMaterial;
    }
 
+  else if (MaterialName == "Si") {
+      G4Material* myMaterial = new G4Material("Si", 14., 28.0855 * g / mole,  2.321 * g / cm3);
+      return myMaterial;
+   }
+
+  else if (MaterialName == "Al") {
+      G4Material* myMaterial = new G4Material("Aluminium",  13.,  26.98 * g / mole, 2.702 * g / cm3);
+      return myMaterial;
+   }
+
    else {
       G4cout << "No Matching Material in the Target Library Default is Vacuum" << G4endl;
       G4Element* N = new G4Element("Nitrogen", "N", 7., 14.01*g / mole);

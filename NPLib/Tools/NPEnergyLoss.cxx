@@ -63,7 +63,7 @@ EnergyLoss::EnergyLoss(string Path , string Source, int NumberOfSlice=100 ,  int
 	fNumberOfMass  = NumberOfMass  ;
 	
 	string globalPath = getenv("NPTOOL");
-	Path = globalPath + "/Inputs/EnergyLoss/" + Path;
+	string StandardPath = globalPath + "/Inputs/EnergyLoss/" + Path;
 	
 	cout << "///////////////////////////////// " << endl ;
 	cout << "Initialising an EnergyLoss object " << endl ;
@@ -72,11 +72,19 @@ EnergyLoss::EnergyLoss(string Path , string Source, int NumberOfSlice=100 ,  int
 		TableFile.open(Path.c_str())	;
 
  		// Opening dE/dX file
-	 if(!TableFile) cout << "ERROR: TABLE FILE NOT FOUND" << endl; 
+	  if(TableFile.is_open()) 	cout << "Reading Energy Loss File: " << Path << endl ; 
+  	// In case the file is not found in the standard path, the programm try to interpret the file name as an absolute or relative file path.
+       else 
+        {
+          TableFile.open( Path.c_str() );
+          if(TableFile.is_open()) { cout << "Reading Energy Loss File: " << Path << endl ;}
+          
+          else { cout << "ERROR: TABLE FILE NOT FOUND" << endl; return; }
+        }
+	
 	  
 	 if (Source == "G4Table")
 	 	{
-	   	cout << "Reading Energy Loss File: " << Path << endl ;
 			// Reading Data
 			double energy, total;
 			string dummy;
