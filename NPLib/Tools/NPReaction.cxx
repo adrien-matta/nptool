@@ -92,12 +92,20 @@ void Reaction::SetEveryThing(string name1, string name2, string name3, string na
    
    ///Read the differential cross section
    string GlobalPath = getenv("NPTOOL");
-   Path = GlobalPath + "/Inputs/CrossSection/" + Path;
+   string StandardPath = GlobalPath + "/Inputs/CrossSection/" + Path;
    ifstream CSFile;
-   CSFile.open( Path.c_str() );
+   CSFile.open( StandardPath.c_str() );
    
-   if(CSFile.is_open()) { cout << "Reading Cross Section File " << Path << endl;}
-   else {cout << "Cross Section File " << Path << " not found" << endl;return;}
+   if(CSFile.is_open()) cout << "Reading Cross Section File " << Path << endl;
+   
+   // In case the file is not found in the standard path, the programm try to interpret the file name as an absolute or relative file path.
+   else 
+    {
+      CSFile.open( Path.c_str() );
+      if(CSFile.is_open()) { cout << "Reading Cross Section File " << Path << endl;}
+      
+      else {cout << "Cross Section File " << Path << " not found" << endl;return;}
+    }
 
 	double CSBuffer,AngleBuffer;
 	vector<double> CrossSectionBuffer ;
@@ -262,15 +270,19 @@ void Reaction::ReadConfigurationFile(string Path)
 		//////////////////////////////////////////////////////////////////////////////////////////
 		   ifstream ReactionFile;
 		   string GlobalPath = getenv("NPTOOL");
- 		   Path = GlobalPath + "/Inputs/EventGenerator/" + Path;
-		   ReactionFile.open(Path.c_str());
+ 		   string StandardPath = GlobalPath + "/Inputs/EventGenerator/" + Path;
+		   ReactionFile.open(StandardPath.c_str());
 			
 		   if (ReactionFile.is_open()) {cout << "Reading Reaction File " << Path << endl ;}
-		   else 
-		   	{
-		   		cout << "Reaction File " << Path << " not Found! " << endl ;
-		      	return;
-		   	}
+
+       // In case the file is not found in the standard path, the programm try to interpret the file name as an absolute or relative file path.
+       else 
+        {
+          ReactionFile.open( Path.c_str() );
+          if(ReactionFile.is_open()) { cout << "Reading Reaction File " << Path << endl;}
+          
+          else {cout << "Reaction File " << Path << " not found" << endl;return;}
+        }
 
 		   while (!ReactionFile.eof()) {
 		      //Pick-up next line
