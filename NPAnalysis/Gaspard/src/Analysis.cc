@@ -5,18 +5,10 @@ using namespace std;
 
 int main(int argc,char** argv)
 {	
-   // test if number of arguments is correct
-   if (argc != 4) {
-      cout << 
-         "you need to specify both a Reaction file and a Detector file such as : Analysis myReaction.reaction myDetector.detector runToRead.run" 
-           << endl;
-      return 0;
-   }
-
-   // get arguments
-   string reactionfileName  = argv[1];
-   string detectorfileName  = argv[2];
-   string runToReadfileName = argv[3];
+  NPOptionManager* myOptionManager = NPOptionManager::getInstance(argc,argv)  ;
+	string detectorfileName 		= myOptionManager->GetDetectorFilePath()	      ;
+	string reactionfileName 	  = myOptionManager->GetCalibrationFilePath()	    ;
+	string runToReadfileName 		= myOptionManager->GetRunToReadFilePath()       ;
 
    // Instantiate RootInput and RootOutput singleton classes
    RootInput:: getInstance(runToReadfileName);

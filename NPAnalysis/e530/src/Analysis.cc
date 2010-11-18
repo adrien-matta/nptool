@@ -4,21 +4,12 @@ using namespace std;
 
 int main(int argc,char** argv)
 {	
-	 
-  if(argc!=5) 
-    {
-      cout << 
-	"you need to specify both a Reaction file and a Detector file such as : "<< endl;
-      cout << 
-	"Analysis 	myReaction.reaction myDetector.detector runToRead.run" 	<< endl;
-      return 0;
-    } 
-	
-  string reactionfileName     = argv[1]       ;
-  string detectorfileName 		= argv[2]	;
-  string calibrationfileName  = argv[3]	;  
-  string runToTreatFileName 	= argv[4]	;
-	
+	NPOptionManager* myOptionManager = NPOptionManager::getInstance(argc,argv)  ;
+	string detectorfileName 		= myOptionManager->GetDetectorFilePath()	      ;
+	string reactionfileName 	  = myOptionManager->GetCalibrationFilePath()	    ;
+	string calibrationfileName 	= myOptionManager->GetCalibrationFilePath()	    ;
+	string runToTreatFileName 	= myOptionManager->GetRunToReadFilePath()       ;
+  
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//	First of All instantiate RootInput and Output
 	//	Detector will be attached later

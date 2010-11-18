@@ -4,18 +4,12 @@ using namespace std;
 
 int main(int argc,char** argv)
 {	
-	
-	if(argc!=4) 
-		{
-			cout << 
-			"you need to specify both a Reaction file and a Detector file such as : Analysis 	myReaction.reaction myDetector.detector runToRead.run" 
-			<< endl;
-			return 0;
-		}
-	
-	string reactionfileName 	= argv[1]	;
-	string detectorfileName 	= argv[2]	;
-	string runToReadfileName 	= argv[3]	;
+
+	NPOptionManager* myOptionManager = NPOptionManager::getInstance(argc,argv)  ;
+	string detectorfileName 		= myOptionManager->GetDetectorFilePath()	      ;
+	string reactionfileName 	  = myOptionManager->GetCalibrationFilePath()	    ;
+	string calibrationfileName 	= myOptionManager->GetCalibrationFilePath()	    ;
+	string runToReadfileName 		= myOptionManager->GetRunToReadFilePath()       ;
 	
 	//	First of All instantiate RootInput and Output
 	//	Detector will be attached later
@@ -29,6 +23,9 @@ int main(int argc,char** argv)
 		//	Instantiate the detector using a file 
 	NPA::DetectorManager* myDetector = new DetectorManager 			;
 	myDetector	->	ReadConfigurationFile(detectorfileName)		;
+	
+	//	Instantiate the Calibration Manger using a file
+	CalibrationManager* myCalibration = CalibrationManager::getInstance(calibrationfileName) ;
 	
 	//	Get the formed Chained Tree and Treat it
 	TChain* Chain = RootInput:: getInstance() -> GetChain()	;
