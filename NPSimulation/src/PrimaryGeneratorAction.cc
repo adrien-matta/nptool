@@ -79,10 +79,10 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path)
 {
    // added by Nicolas [07/05/09]
    string GlobalPath = getenv("NPTOOL");
-   Path = GlobalPath + "/Inputs/EventGenerator/" + Path;
+   string StandardPath = GlobalPath + "/Inputs/EventGenerator/" + Path;
    string LineBuffer;
    ifstream EventGeneratorFile;
-   EventGeneratorFile.open(Path.c_str());
+   EventGeneratorFile.open(StandardPath.c_str());
 
    bool check_TransfertToResonance 	= false   ;
    bool check_PhaseSpace				 		= false   ;
@@ -90,11 +90,22 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path)
    bool check_Transfert        			= false 	;
    bool check_Beam                	= false 	;
 
-   if (EventGeneratorFile.is_open()) cout << " Event Generator file " << Path << " loading " << endl  ;
-   else                      {
-      cout << " Error, Event Generator file " << Path << " found" << endl ;
-      return;
-   }
+   if (EventGeneratorFile.is_open()) 
+    {
+      cout << " Event Generator file " << Path << " loading " << endl  ;
+      Path = StandardPath;
+    }
+
+   else 
+    {
+      EventGeneratorFile.open( Path.c_str() );
+      if(EventGeneratorFile.is_open()) {
+      cout << " Event Generator file " << Path << " loading " << endl  ;
+      }
+      
+      else { cout << " Error, Event Generator file " << Path << " found" << endl ; return;}
+    }
+
 
    while (!EventGeneratorFile.eof()) {
       //Pick-up next line
