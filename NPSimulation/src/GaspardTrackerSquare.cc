@@ -743,7 +743,6 @@ void GaspardTrackerSquare::ConstructDetector(G4LogicalVolume* world)
          MMv = MMv.unit()                ;
          G4cout << "Norm MMv X = " << MMv(0) << " , Y = " << MMv(1) << " , Z = " << MMv(2) << G4endl;
 
-         G4ThreeVector MMscal = MMu.dot(MMv);
          G4cout << "Norm MMu.MMv X = " << MMv(0) << " , Y = " << MMv(1) << " , Z = " << MMv(2) << G4endl;
 
          MMw = MMu.cross(MMv)                  ;

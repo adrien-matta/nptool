@@ -475,8 +475,6 @@ void ParisPhoswich::ConstructDetector(G4LogicalVolume* world)
          MMv = m_X1_Y128[i] - m_X1_Y1[i];
          MMv = MMv.unit();
 
-         G4ThreeVector MMscal = MMu.dot(MMv);
-
          MMw = MMu.cross(MMv);
 //         if (MMw.z() > 0) MMw = MMv.cross(MMu) ;
          MMw = MMw.unit();
