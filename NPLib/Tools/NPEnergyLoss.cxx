@@ -69,7 +69,7 @@ EnergyLoss::EnergyLoss(string Path , string Source, int NumberOfSlice=100 ,  int
 	cout << "Initialising an EnergyLoss object " << endl ;
 		
 		ifstream TableFile	;
-		TableFile.open(Path.c_str())	;
+		TableFile.open(StandardPath.c_str())	;
 
  		// Opening dE/dX file
 	  if(TableFile.is_open()) 	cout << "Reading Energy Loss File: " << Path << endl ; 
