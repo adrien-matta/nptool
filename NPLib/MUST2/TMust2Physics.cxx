@@ -43,7 +43,7 @@ TMust2Physics::TMust2Physics()
 		EventData 					= new TMust2Data	;
 		PreTreatedData			= new TMust2Data	;
 		EventPhysics 				= this						;
-		NumberOfTelescope		  = 0								;
+		NumberOfTelescope		= 0								;
 		m_MaximumStripMultiplicityAllowed = 0	;
 		m_StripEnergyMatchingTolerance    = 0 ;	
 //                ReadAnalysisConfig();
@@ -1055,12 +1055,9 @@ void TMust2Physics::ReadConfiguration(string Path)
 		         	}
 		         
 		}
-		        
-//		InitializeStandardParameter();        
-//                ReadAnalysisConfig();
 	}
 		InitializeStandardParameter();        
-                ReadAnalysisConfig();
+    ReadAnalysisConfig();
 	
 	cout << endl << "/////////////////////////////" << endl << endl;
 

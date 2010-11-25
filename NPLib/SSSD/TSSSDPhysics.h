@@ -33,60 +33,90 @@ using namespace std ;
 #include "../include/VDetector.h"
 #include "../include/CalibrationManager.h"
 
+
 class TSSSDPhysics : public TObject, public NPA::VDetector
 {
-	public:	//	Constructor and Destructor
-		TSSSDPhysics();
-		~TSSSDPhysics();
+ public:	//	Constructor and Destructor
+   TSSSDPhysics();
+   ~TSSSDPhysics();
 
+ public:	//	Calibrated Data
+   vector<UShort_t>	DetectorNumber;
+   vector<UShort_t>	StripNumber;
+   vector<Double_t>	Energy;
+   vector<Double_t>	Time;
 
-	public:	//	Calibrated Data
-
-		vector<UShort_t>	DetectorNumber	;
-		vector<UShort_t>	StripNumber			;
-		vector<Double_t>	Energy					;
-		vector<Double_t>	Time						;
-
-	public:	//	inherrited from VDetector
-		//	Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-		void ReadConfiguration(string) 				;
+ public:	//	inherrited from VDetector
+   // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
+   void ReadConfiguration(string);
 		
-
-		//	Add Parameter to the CalibrationManger
-		void AddParameterToCalibrationManager()	;		
+   // Add Parameter to the CalibrationManger
+   void AddParameterToCalibrationManager();		
 			
 		
-		//	Activated associated Branches and link it to the private member DetectorData address
-		//	In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
-		void InitializeRootInput() 					;
+   // Activated associated Branches and link it to the private member DetectorData address
+   // In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
+   void InitializeRootInput();
 
+   // Create associated branches and associated private member DetectorPhysics address
+   void InitializeRootOutput();
 
-		//	Create associated branches and associated private member DetectorPhysics address
-		void InitializeRootOutput() 		 		;
+   // This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
+   void BuildPhysicalEvent();
 		
 		
-		//	This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
-		void BuildPhysicalEvent()					;
+   // Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
+   // This method aimed to be used for analysis performed during experiment, when speed is requiered.
+   // NB: This method can eventually be the same as BuildPhysicalEvent.
+   void BuildSimplePhysicalEvent();
+
+   // Those two method all to clear the Event Physics or Data
+   void ClearEventPhysics()	{Clear();}
+   void ClearEventData()	{EventData->Clear();}
+
+
+ public: //	Specific to SSSD
+   // Clear The PreTeated object
+   void ClearPreTreatedData()	{PreTreatedData->Clear();}
 		
-		
-		//	Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
-		//	This method aimed to be used for analysis performed during experiment, when speed is requiered.
-		//	NB: This method can eventually be the same as BuildPhysicalEvent.
-		void BuildSimplePhysicalEvent()				;
+   // Remove bad channel, calibrate the data and apply threshold
+   void PreTreat();
 
-		//	Those two method all to clear the Event Physics or Data
-		void ClearEventPhysics()		{Clear();}		
-		void ClearEventData()				{EventData->Clear();}		
+   // Initialize the standard parameter for analysis
+   // ie: all channel enable, maximum multiplicity for strip = number of telescope
+   void InitializeStandardParameter();
+   
+   //	Read the user configuration file; if no file found, load standard one
+	 void ReadAnalysisConfig();
 
-	private:	// Data not writted in the tree
-				int								NumberOfDetector	;//!
-				TSSSDData* 	  	EventData					;//!
-				TSSSDPhysics* 	  EventPhysics			;//!
 
-		void	Clear();
-    void  Clear(const Option_t*) {};
+ private:	// Data not written in the tree
+   int			      NumberOfDetector;	//!
+   TSSSDData* 	  EventData;		    //!
+   TSSSDData* 	  PreTreatedData;		//!
+   TSSSDPhysics*  EventPhysics;	  	//!
+
+   double 		E_Threshold;		//!
+   double 		Pedestal_Threshold;	//!
+				
+
+ private: //  Map of activated Channel
+   map< int, vector<bool> > ChannelStatus;//!
+    
+ public:  //  Return True if the channel is activated
+   // bool IsValidChannel(int DetectorNbr, int StripNbr) ;
+
+   void	Clear();
+   void  Clear(const Option_t*) {};
 	
-		ClassDef(TSSSDPhysics,1)  // SSSDPhysics structure
+   ClassDef(TSSSDPhysics,1)  // SSSDPhysics structure
 };
+
+
+namespace LOCAL
+{
+   double fSi_E( TSSSDData* EventData , int i );
+   double fSi_T( TSSSDData* EventData , int i );
+}
 
 #endif
