@@ -35,6 +35,7 @@
 #include "TMust2Physics.h"
 #include "TSSSDPhysics.h"
 #include "TPlasticPhysics.h"
+#include "NPOptionManager.h"
 
 // Use CLHEP System of unit and Physical Constant
 #include "CLHEP/Units/GlobalSystemOfUnits.h"

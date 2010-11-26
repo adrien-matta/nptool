@@ -55,7 +55,7 @@ TSSSDPhysics::TSSSDPhysics()
     PreTreatedData = new TSSSDData    ;
     EventPhysics = this          ;
     E_Threshold = 0             ;
-    Pedestal_Threshold = 000;
+    Pedestal_Threshold = 0      ;
   }
 ///////////////////////////////////////////////////////////////////////////
 TSSSDPhysics::~TSSSDPhysics()
@@ -225,10 +225,10 @@ void TSSSDPhysics::ReadConfiguration(string Path)
                 check_C = false   ;
                 check_D = false ;
 
-                check_Theta = false   ;
-                check_Phi  = false  ;
-                check_R     = false   ;
-                check_beta = false  ;
+                check_Theta   = false   ;
+                check_Phi     = false  ;
+                check_R       = false   ;
+                check_beta    = false  ;
                 ReadingStatus = false ;
                        
                }
@@ -337,11 +337,11 @@ void TSSSDPhysics::PreTreat()
 void TSSSDPhysics::InitializeStandardParameter()
   {
   	//  Enable all channel
-		vector< bool > TempChannelStatus;
-
+		vector<bool> TempChannelStatus;
+    ChannelStatus.clear();
 		TempChannelStatus.resize(16,true);
-		for(int i = 0 ; i < NumberOfDetector ; i ++)		
-				ChannelStatus[i+1] = TempChannelStatus;
+		for(int i = 0 ; i < NumberOfDetector ; i ++)	
+		    ChannelStatus[i+1] = TempChannelStatus;
   }
 ///////////////////////////////////////////////////////////////////////////
 void TSSSDPhysics::ReadAnalysisConfig()
@@ -397,7 +397,7 @@ void TSSSDPhysics::ReadAnalysisConfig()
                int telescope = atoi(DataBuffer.substr(2,1).c_str());
                int channel = -1;
                if (DataBuffer.compare(3,3,"STR") == 0) {
-                  channel = atoi(DataBuffer.substr(8).c_str());
+                  channel = atoi(DataBuffer.substr(6).c_str());
                   *(ChannelStatus[telescope].begin()+channel) = false;
                }
                

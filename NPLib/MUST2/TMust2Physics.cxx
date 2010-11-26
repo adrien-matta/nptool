@@ -493,20 +493,20 @@ void TMust2Physics::ReadAnalysisConfig()
                cout << whatToDo << "  " << DataBuffer << endl;
                int telescope = atoi(DataBuffer.substr(2,1).c_str());
                int channel = -1;
-               if (DataBuffer.compare(4,4,"STRX") == 0) {
-                  channel = atoi(DataBuffer.substr(9).c_str());
+               if (DataBuffer.compare(3,4,"STRX") == 0) {
+                  channel = atoi(DataBuffer.substr(7).c_str());
                   *(XChannelStatus[telescope].begin()+channel) = false;
                }
-               else if (DataBuffer.compare(4,4,"STRY") == 0) {
-                  channel = atoi(DataBuffer.substr(9).c_str());
+               else if (DataBuffer.compare(3,4,"STRY") == 0) {
+                  channel = atoi(DataBuffer.substr(7).c_str());
                   *(YChannelStatus[telescope].begin()+channel) = false;
                }
-               else if (DataBuffer.compare(4,4,"SILI") == 0) {
-                  channel = atoi(DataBuffer.substr(9).c_str());
+               else if (DataBuffer.compare(3,4,"SILI") == 0) {
+                  channel = atoi(DataBuffer.substr(7).c_str());
                   *(SiLiChannelStatus[telescope].begin()+channel) = false;
                }
-               else if (DataBuffer.compare(4,3,"CSI") == 0) {
-                  channel = atoi(DataBuffer.substr(8).c_str());
+               else if (DataBuffer.compare(3,3,"CSI") == 0) {
+                  channel = atoi(DataBuffer.substr(6).c_str());
                   *(CsIChannelStatus[telescope].begin()+channel) = false;
                }
                else {
@@ -1191,7 +1191,11 @@ void TMust2Physics::InitializeStandardParameter()
 	{
 		//	Enable all channel
 		vector< bool > ChannelStatus;
-
+    XChannelStatus.clear()    ;
+    YChannelStatus.clear()    ;
+    SiLiChannelStatus.clear() ;
+    CsIChannelStatus.clear()  ;
+    
 		ChannelStatus.resize(128,true);
 		for(int i = 0 ; i < NumberOfTelescope ; i ++)		
 			{
