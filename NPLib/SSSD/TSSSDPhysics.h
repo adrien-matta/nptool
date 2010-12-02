@@ -96,8 +96,8 @@ class TSSSDPhysics : public TObject, public NPA::VDetector
    TSSSDData* 	  PreTreatedData;		//!
    TSSSDPhysics*  EventPhysics;	  	//!
 
-   double 		E_Threshold;		//!
-   double 		Pedestal_Threshold;	//!
+   double 		m_E_Threshold;		//!
+   double 		m_Pedestal_Threshold;	//!
 				
 
  private: //  Map of activated Channel

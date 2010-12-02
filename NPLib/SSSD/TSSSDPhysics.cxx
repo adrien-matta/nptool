@@ -54,8 +54,8 @@ TSSSDPhysics::TSSSDPhysics()
     EventData = new TSSSDData    ;
     PreTreatedData = new TSSSDData    ;
     EventPhysics = this          ;
-    E_Threshold = 0             ;
-    Pedestal_Threshold = 0      ;
+    m_E_Threshold = 0             ;
+    m_Pedestal_Threshold = 0      ;
   }
 ///////////////////////////////////////////////////////////////////////////
 TSSSDPhysics::~TSSSDPhysics()
@@ -251,8 +251,8 @@ void TSSSDPhysics::AddParameterToCalibrationManager()
       
         for( int j = 0 ; j < 16 ; j++)
           {
-            Cal->AddParameter("SSSD", "Detector"+itoa(i+1)+"_Strip"+itoa(j+1)+"_E","SSSD_Detector"+itoa(i+1)+"_Strip"+itoa(j+1)+"_E")  ;
-            Cal->AddParameter("SSSD", "Detector"+itoa(i+1)+"_Strip"+itoa(j+1)+"_T","SSSD_Detector"+itoa(i+1)+"_Strip"+itoa(j+1)+"_T")  ;  
+            Cal->AddParameter("SSSD", "Detector"+itoa(i+1)+"_Strip"+itoa(j+1)+"_E","SSSD_DETECTOR_"+itoa(i+1)+"_STRIP_"+itoa(j+1)+"_E")  ;
+            Cal->AddParameter("SSSD", "Detector"+itoa(i+1)+"_Strip"+itoa(j+1)+"_T","SSSD_DETECTOR_"+itoa(i+1)+"_STRIP_"+itoa(j+1)+"_T")  ;  
           }
     
       }
@@ -312,7 +312,7 @@ void TSSSDPhysics::PreTreat()
           if(ChannelStatus[EventData->GetEnergyDetectorNbr(i)][EventData->GetEnergyStripNbr(i)])
             {
 	            double E = fSi_E(EventData , i); 
-	            if( E > E_Threshold && EventData->GetEnergy(i) > Pedestal_Threshold)
+	            if( E > m_E_Threshold && EventData->GetEnergy(i) > m_Pedestal_Threshold)
 	                {
 	                  PreTreatedData->SetEnergyDetectorNbr( EventData->GetEnergyDetectorNbr(i) )  ;
 	                  PreTreatedData->SetEnergyStripNbr( EventData->GetEnergyStripNbr(i) )        ;
@@ -377,6 +377,12 @@ void TSSSDPhysics::ReadAnalysisConfig()
          // Search for comment symbol (%)
          if (DataBuffer.compare(0, 1, "%") == 0) {
             AnalysisConfigFile.ignore(numeric_limits<streamsize>::max(), '\n' );
+         }
+         
+         else if (DataBuffer.compare(0, 18, "PEDESTAL_THRESHOLD") == 0) {
+            AnalysisConfigFile >> DataBuffer;
+            m_Pedestal_Threshold = atoi(DataBuffer.c_str() );
+            cout << "Pedestal threshold = " << m_Pedestal_Threshold << endl;
          }
          
          else if (DataBuffer.compare(0, 4, "SSSD") == 0) {

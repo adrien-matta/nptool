@@ -100,11 +100,9 @@ void TMust2Physics::BuildPhysicalEvent()
 						    }
 						
 						Si_X.push_back(X) ; Si_Y.push_back(Y) ; TelescopeNumber.push_back(N) ;
-						
-						//	Take maximum Energy
-						if(Si_X_E >= Si_Y_E) Si_E.push_back(Si_X_E)	;
-						else								 Si_E.push_back(Si_Y_E)	;
-						
+				
+						// Take X Energy (better resolution, better zero extrapolation)
+						Si_E.push_back(Si_X_E);
 						//	Take Y Time, better resolution than X.							
 						Si_T.push_back(Si_Y_T)	;
 						
@@ -465,13 +463,13 @@ void TMust2Physics::ReadAnalysisConfig()
             check_mult = true;
             AnalysisConfigFile >> DataBuffer;
             m_MaximumStripMultiplicityAllowed = atoi(DataBuffer.c_str() );
-            cout << "MAX_STRIP_MULTIPLICITY= " << m_MaximumStripMultiplicityAllowed << endl;
+            cout << "Maximun strip multiplicity= " << m_MaximumStripMultiplicityAllowed << endl;
          }
          else if (DataBuffer.compare(0, 31, "STRIP_ENERGY_MATCHING_TOLERANCE") == 0) {
             check_match = true;
             AnalysisConfigFile >> DataBuffer;
             m_StripEnergyMatchingTolerance = atoi(DataBuffer.c_str() );
-            cout << "STRIP_ENERGY_MATCHING_TOLERANCE= " << m_StripEnergyMatchingTolerance << endl;
+            cout << "Strip energy matching tolerance= " << m_StripEnergyMatchingTolerance << endl;
          }
          else if (DataBuffer.compare(0, 5, "MUST2") == 0) {
             AnalysisConfigFile >> DataBuffer;
@@ -1101,13 +1099,9 @@ void TMust2Physics::AddParameterToCalibrationManager()
 void TMust2Physics::InitializeRootInput() 		
 	{
 		TChain* inputChain = RootInput::getInstance()->GetChain()	;
-		inputChain->SetBranchStatus( "MUST2" , true )				;
-		//added for compatibility with Riken file
-		inputChain->SetBranchStatus( "Must2" , true )				;
-		
-		inputChain->SetBranchStatus( "fMM_*" , true )				    ;
-		inputChain->SetBranchAddress( "MUST2" , &EventData )		;
-		inputChain->SetBranchAddress( "Must2" , &EventData )		;
+		inputChain->SetBranchStatus( "MUST2" , true )				      ;
+		inputChain->SetBranchStatus( "fMM_*" , true )				      ;
+		inputChain->SetBranchAddress( "MUST2" , &EventData )		  ;
 	}
 
 
