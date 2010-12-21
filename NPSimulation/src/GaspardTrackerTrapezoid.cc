@@ -614,10 +614,15 @@ void GaspardTrackerTrapezoid::ConstructDetector(G4LogicalVolume* world)
    for (G4int i = 0; i < NumberOfModule; i++) {
       // By Point
       if (m_DefinitionType[i]) {
-         // (u,v,w) unitary vector associated to telescope referencial
+         // (u,v,w) unitary vector associated to trapezoidal referencial
          // (u,v) // to silicon plan
+         //      -------
+         //     /       \              ^
+         //    /         \             |  v
+         //   /           \            |
+         //  ---------------     <------
+         //                         u
          // w perpendicular to (u,v) plan and pointing ThirdStage
-         // new positioning scheme ?
          G4cout << "XXXXXXXXXXXX Trapezoid " << i << " XXXXXXXXXXXXX" << G4endl;
          MMu = m_X128_Y1[i] - m_X1_Y1[i];
          MMu = MMu.unit();
@@ -647,6 +652,12 @@ void GaspardTrackerTrapezoid::ConstructDetector(G4LogicalVolume* world)
 
          // (u,v,w) unitary vector associated to telescope referencial
          // (u,v) // to silicon plan
+         //      -------
+         //     /       \              ^
+         //    /         \             |  v
+         //   /           \            |
+         //  ---------------     <------
+         //                         u
          // w perpendicular to (u,v) plan and pointing ThirdStage
          // Phi is angle between X axis and projection in (X,Y) plan
          // Theta is angle between  position vector and z axis
@@ -659,14 +670,15 @@ void GaspardTrackerTrapezoid::ConstructDetector(G4LogicalVolume* world)
          MMCenter = MMw;
 
          // vector parallel to one axis of silicon plane
+         // in fact, this is vector u
          G4double ii = cos(Theta / rad) * cos(Phi / rad);
          G4double jj = cos(Theta / rad) * sin(Phi / rad);
          G4double kk = -sin(Theta / rad);
          G4ThreeVector Y = G4ThreeVector(ii, jj, kk);
 
          MMw = MMw.unit();
-         MMu = MMw.cross(Y);
-         MMv = MMw.cross(MMu);
+         MMv = MMw.cross(Y);
+         MMu = MMv.cross(MMw);
          MMv = MMv.unit();
          MMu = MMu.unit();
 
