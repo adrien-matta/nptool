@@ -80,7 +80,7 @@ void TMust2Physics::BuildPhysicalEvent()
 						int Y = PreTreatedData->GetMMStripYEStripNbr(couple[i].Y())			;
 						
 						double Si_X_E = PreTreatedData->GetMMStripXEEnergy( couple[i].X() ) 	;
-						double Si_Y_E = PreTreatedData->GetMMStripYEEnergy( couple[i].Y() ) 	;  
+//						double Si_Y_E = PreTreatedData->GetMMStripYEEnergy( couple[i].Y() ) 	;  
 						
 						
 						//  Search for associate Time
