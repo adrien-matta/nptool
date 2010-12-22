@@ -311,12 +311,12 @@ void GaspardTrackerSquare::BuildPhysicalEvent()
             m_EventPhysics->SetTotalEnergy(EnergyTot);
 
             // check strip position
-            cout << "strips X, Y : " << stripXE << "  " << stripYE << endl;
+/*            cout << "strips X, Y : " << stripXE << "  " << stripYE << endl;
             cout << "position : " << endl;
             cout << "\t X: " << GetStripPositionX(det_ref + m_index["Square"], stripXE, stripYE) << endl;
             cout << "\t Y: " << GetStripPositionY(det_ref + m_index["Square"], stripXE, stripYE) << endl;
             cout << "\t Z: " << GetStripPositionZ(det_ref + m_index["Square"], stripXE, stripYE) << endl;
-
+*/
             // Fill default values for second an third stages
             if (!Check_SecondStage) {
                m_EventPhysics->SetSecondStageEnergy(-1000);

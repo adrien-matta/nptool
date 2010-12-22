@@ -31,17 +31,17 @@ int main(int argc,char** argv)
    myDetector->ReadConfigurationFile(detectorfileName);
 
    // Calculate beam energy at target middle
+   // Target informations
+   cout << "/////////// Target information ///////////" << endl;
+   cout << "Thickness (um): " << myDetector->GetTargetThickness() << endl;
    // Get nominal beam energy
    Double_t BeamEnergyNominal = myReaction->GetBeamEnergy() * MeV;
-   cout << BeamEnergyNominal << endl;
+   cout << "Nominal beam energy (MeV): " << BeamEnergyNominal << endl;
    // Slow beam at target middle
    Double_t BeamEnergy = BeamEnergyNominal - BeamTarget.Slow(BeamEnergyNominal, myDetector->GetTargetThickness()/2 * micrometer, 0);
-   cout << BeamEnergy << endl;
+   cout << "Middle-target beam energy (MeV): " << BeamEnergy << endl << endl;
    // Set energy beam at target middle
    myReaction->SetBeamEnergy(BeamEnergy);
-
-   // Print target thickness
-   cout << myDetector->GetTargetThickness() << endl;
 
    // Attach more branch to the output
    double Ex = 0 ; double ExNoStrips = 0 ; double EE = 0 ; double TT = 0 ; double X = 0 ; double Y = 0 ; int det ;
@@ -70,6 +70,7 @@ int main(int argc,char** argv)
 
    // Analysis is here!
    int nentries = chain->GetEntries();
+   cout << "/////////// Loop information ///////////" << endl;
    cout << "Number of entries to be analysed: " << nentries << endl;
 
    // Default initialization
@@ -92,7 +93,7 @@ int main(int argc,char** argv)
 
       // Get total energy
       double E = GPDTrack->GetEnergyDeposit();
-      cout << i << "  " << E << endl;
+//      cout << i << "  " << E << endl;
 
       // if there is a hit in the detector array, treat it.
       double Theta, ThetaStrip, angle, ThetaCM;
@@ -111,8 +112,8 @@ int main(int argc,char** argv)
          DetecX = interCoord->GetDetectedPositionX(0);
          DetecY = interCoord->GetDetectedPositionY(0);
          DetecZ = interCoord->GetDetectedPositionZ(0);
-         cout << "Detected position :" << endl;
-         cout << "\t" << DetecX << "  " << DetecY << "  " << DetecZ << endl;
+//         cout << "Detected position :" << endl;
+//         cout << "\t" << DetecX << "  " << DetecY << "  " << DetecZ << endl;
          TVector3 Detec(DetecX, DetecY, DetecZ);
 
          // Get interaction position in detector

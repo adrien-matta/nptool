@@ -271,7 +271,7 @@ void GaspardTrackerAnnular::AddModule(double zpos, double rmin, double rmax)
 
       // center of theta strip
       double r = rmin + thetaPitch/2 + thetaPitch*(i % NbThetaStrips);
-      cout << i << "  " << i%NbThetaStrips << "   " << r << endl;
+//      cout << i << "  " << i%NbThetaStrips << "   " << r << endl;
 
       // loop on phi strips
       for (int j = 0; j < NbPhiStrips*NbQuadrant; j++) {
@@ -282,7 +282,7 @@ void GaspardTrackerAnnular::AddModule(double zpos, double rmin, double rmax)
          double x = r * cos(phi);
          double y = r * sin(phi);
 
-         cout << i << "  " << j << "  " << r << "  " << phi*180/M_PI << "   " << x << "   " << y << endl;
+//         cout << i << "  " << j << "  " << r << "  " << phi*180/M_PI << "   " << x << "   " << y << endl;
          // fill lineX,Y,Z
          lineX.push_back(x);
          lineY.push_back(y);
