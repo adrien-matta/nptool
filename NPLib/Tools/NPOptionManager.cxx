@@ -39,7 +39,7 @@ NPOptionManager::NPOptionManager(int argc,char** argv)
     // Default Setting
     fReactionFileName    = "myReaction.reaction"  ;
     fDetectorFileName    = "myDetector.detector"  ;
-    fOutputFileName      = "myResult.root"        ;
+    fOutputFileName      = "myResult"             ;
     fRunToReadFileName   = "RunToRead.txt"        ;
     fCalibrationFileName = "Calibration.txt"      ; 
   
@@ -47,18 +47,28 @@ NPOptionManager::NPOptionManager(int argc,char** argv)
       {
         string argument = argv[i];
         
-        if(argument == "-H" || argument == "-h" || argument == "-help") 
+        if(argument == "-H" || argument == "-h" || argument == "--help") 
           DisplayHelp(); 
               
-        else if(argument == "-R" && argc>=i+1 )    fReactionFileName    = argv[i+1] ;
+        else if(argument == "--event-generator" && argc>=i+1 )    fReactionFileName    = argv[i+1] ; 
+              
+        else if(argument == "-E" && argc>=i+1 )                  fReactionFileName    = argv[i+1] ;
         
-        else if(argument == "-C" && argc>=i+1 )    fDetectorFileName    = argv[i+1] ;
+        else if(argument == "--detector" && argc>=i+1 )    fDetectorFileName    = argv[i+1] ;
+        
+        else if(argument == "-D" && argc>=i+1 )    fDetectorFileName    = argv[i+1] ;
+        
+        else if(argument == "--output" && argc>=i+1 )    fOutputFileName      = argv[i+1] ;
         
         else if(argument == "-O" && argc>=i+1 )    fOutputFileName      = argv[i+1] ;
         
-        else if(argument == "-run" && argc>=i+1 )  fRunToReadFileName   = argv[i+1] ;
+        else if(argument == "--run" && argc>=i+1 )  fRunToReadFileName   = argv[i+1] ;
         
-        else if(argument == "-cal" && argc>=i+1 )  fCalibrationFileName = argv[i+1] ;
+        else if(argument == "-R" && argc>=i+1 )     fRunToReadFileName   = argv[i+1] ;
+        
+        else if(argument == "--cal" && argc>=i+1 )  fCalibrationFileName = argv[i+1] ;
+        
+        else if(argument == "-C" && argc>=i+1 )     fCalibrationFileName = argv[i+1] ;
         
         else ;
       }
@@ -70,10 +80,11 @@ void NPOptionManager::DisplayHelp()
   {
     cout << "----NPOptionManager Help----" << endl ;
     cout << "List of Option " << endl ;
-    cout << "\t -C <arg>\t \t \t \t \t Set arg as the detector configuration file" << endl ;
-    cout << "\t -cal <arg>\t \t \t \t \t Set arg as the calibration file list" << endl ;
-    cout << "\t -H -h -help\t \t \t \t \t Display this help message" << endl ;
-    cout << "\t -O <arg>\t \t \t \t \t Set arg as the Output File Name (output tree)" << endl ;
-    cout << "\t -run <arg>\t \t \t \t \t Set arg as the run to read file list" << endl  ;
+    cout << "\t --detector　-D <arg>\t \t \t \t \t \t　Set arg as the detector configuration file" << endl ;
+    cout << "\t --event-generator　-E <arg>\t \t \t \t \t　Set arg as the event generator file" << endl ;
+    cout << "\t --cal -C <arg>\t \t \t \t \t \t \t　Set arg as the calibration file list" << endl ;
+    cout << "\t --help　-H -h\t \t \t \t \t \t \t　Display this help message" << endl ;
+    cout << "\t --output　-O <arg>\t \t \t \t \t \t　Set arg as the Output File Name (output tree)" << endl ;
+    cout << "\t --run -R <arg>\t \t \t \t \t \t \t　Set arg as the run to read file list" << endl  ;
     cout << endl << endl ;  
   }

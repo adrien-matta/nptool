@@ -111,14 +111,14 @@ void GaspardTrackerSquare::AddModule(G4ThreeVector X1_Y1     ,
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void GaspardTrackerSquare::AddModule(G4double R        ,
-      G4double Theta    ,
-      G4double Phi      ,
-      G4double beta_u   ,
-      G4double beta_v   ,
-      G4double beta_w   ,
-      bool wFirstStage  ,
-      bool wSecondStage ,
-      bool wThirdStage)
+                                     G4double Theta    ,
+                                     G4double Phi      ,
+                                     G4double beta_u   ,
+                                     G4double beta_v   ,
+                                     G4double beta_w   ,
+                                     bool wFirstStage  ,
+                                     bool wSecondStage ,
+                                     bool wThirdStage)
 {
    G4ThreeVector empty = G4ThreeVector(0, 0, 0);
 
@@ -188,7 +188,7 @@ void GaspardTrackerSquare::VolumeMaker(G4int TelescopeNumber,
    // Al
    density = 2.702 * g / cm3;
    a = 26.98 * g / mole;
-   G4Material* Aluminium = new G4Material("Aluminium", z = 13., a, density);
+//   G4Material* Aluminium = new G4Material("Aluminium", z = 13., a, density);
 
    // Iron
 //   density = 7.874 * g / cm3;
@@ -228,37 +228,15 @@ void GaspardTrackerSquare::VolumeMaker(G4int TelescopeNumber,
    // Little trick to avoid warning in compilation: Use a PVPlacement "buffer".
    // If don't you will have a Warning unused variable 'myPVP'
    G4PVPlacement* PVPBuffer ;
+   G4String Name = "GPDSquare" + DetectorNumber;
 
-   G4Trd*           solidMM = new G4Trd("GPDSquare" + DetectorNumber, 0.5*FaceFront, 0.5*FaceFront, 0.5*FaceFront, 0.5*FaceFront, 0.5*Length);
-//   G4LogicalVolume* logicMM = new G4LogicalVolume(solidMM, Iron, "GPDSquare" + DetectorNumber, 0, 0, 0)                                ;
-   G4LogicalVolume* logicMM = new G4LogicalVolume(solidMM, Vacuum, "GPDSquare" + DetectorNumber, 0, 0, 0)                                ;
+   G4Box*           solidGPDSquare = new G4Box(Name, 0.5*FaceFront, 0.5*FaceFront, 0.5*Length);
+   G4LogicalVolume* logicGPDSquare = new G4LogicalVolume(solidGPDSquare, Vacuum, Name, 0, 0, 0);
 
-   G4String Name = "GPDSquare" + DetectorNumber ;
-   PVPBuffer     = new G4PVPlacement(G4Transform3D(*MMrot, MMpos) ,
-                                     logicMM                      ,
-                                     Name                         ,
-                                     world                        ,
-                                     false                        ,
-                                     0);
+   PVPBuffer = new G4PVPlacement(G4Transform3D(*MMrot, MMpos), logicGPDSquare, Name, world, false, 0);
 
-   logicMM->SetVisAttributes(G4VisAttributes::Invisible);
-   if (m_non_sensitive_part_visiualisation) logicMM->SetVisAttributes(G4VisAttributes(G4Colour(0.90, 0.90, 0.90)));
-
-   G4ThreeVector positionVacBox = G4ThreeVector(0, 0, VacBox_PosZ);
-
-   G4Trd*           solidVacBox = new G4Trd("solidVacBox", 0.5*SiliconFace, 0.5*SiliconFace, 0.5*SiliconFace, 0.5*SiliconFace, 0.5*VacBoxThickness);
-   G4LogicalVolume* logicVacBox = new G4LogicalVolume(solidVacBox, Vacuum, "logicVacBox", 0, 0, 0);
-
-   PVPBuffer = new G4PVPlacement(0, positionVacBox, logicVacBox, "G" + DetectorNumber + "VacBox", logicMM, false, 0);
-
-   logicVacBox->SetVisAttributes(G4VisAttributes::Invisible);
-
-   // Add a degrader plate between Si and CsI:
-   /*
-      G4Box* Degrader = new G4Box("Degrader" , 50*mm , 50*mm , 0.1*mm );
-      G4LogicalVolume* logicDegrader = new G4LogicalVolume( Degrader , Harvar, "logicDegrader",0,0,0);
-      PVPBuffer = new G4PVPlacement(0,G4ThreeVector(0,0,0),logicDegrader,"Degrader",logicVacBox,false,0) ;
-   */
+   logicGPDSquare->SetVisAttributes(G4VisAttributes::Invisible);
+   if (m_non_sensitive_part_visiualisation) logicGPDSquare->SetVisAttributes(G4VisAttributes(G4Colour(0.90, 0.90, 0.90)));
 
    //Place two marker to identify the u and v axis on silicon face:
    //marker are placed a bit before the silicon itself so they don't perturbate simulation
@@ -284,166 +262,55 @@ void GaspardTrackerSquare::VolumeMaker(G4int TelescopeNumber,
    */
 
    ////////////////////////////////////////////////////////////////
-   /////////////////Si Strip Construction//////////////////////////
+   //////////////// First Stage Construction //////////////////////
    ////////////////////////////////////////////////////////////////
    if (wFirstStage) {
-      // Aluminium dead layers
-      G4ThreeVector positionAluStripFront = G4ThreeVector(0, 0, AluStripFront_PosZ);
-      G4ThreeVector positionAluStripBack  = G4ThreeVector(0, 0, AluStripBack_PosZ);
-
-      G4Box*           solidAluStrip = new G4Box("AluBox", 0.5*SiliconFace, 0.5*SiliconFace, 0.5*AluStripThickness);
-//      G4LogicalVolume* logicAluStrip = new G4LogicalVolume(solidAluStrip, Aluminium, "logicAluStrip", 0, 0, 0);
-      G4LogicalVolume* logicAluStrip = new G4LogicalVolume(solidAluStrip, Vacuum, "logicAluStrip", 0, 0, 0);
-
-      PVPBuffer = new G4PVPlacement(0, positionAluStripFront, logicAluStrip, "G" + DetectorNumber + "AluStripFront", logicMM, false, 0);
-      PVPBuffer = new G4PVPlacement(0, positionAluStripBack,  logicAluStrip, "G" + DetectorNumber + "AluStripBack",  logicMM, false, 0);
-
-      logicAluStrip->SetVisAttributes(G4VisAttributes::Invisible);
-
       // Silicon detector itself
-      G4ThreeVector  positionSilicon = G4ThreeVector(0, 0, Silicon_PosZ);
+      G4ThreeVector  positionFirstStage = G4ThreeVector(0, 0, FirstStage_PosZ);
 
-      G4Box*           solidSilicon = new G4Box("solidSilicon", 0.5*SiliconFace, 0.5*SiliconFace, 0.5*SiliconThickness);
-      G4LogicalVolume* logicSilicon = new G4LogicalVolume(solidSilicon, Silicon, "logicSilicon", 0, 0, 0);
+      G4Box*           solidFirstStage = new G4Box("solidFirstStage", 0.5*FirstStageFace, 0.5*FirstStageFace, 0.5*FirstStageThickness);
+      G4LogicalVolume* logicFirstStage = new G4LogicalVolume(solidFirstStage, Silicon, "logicFirstStage", 0, 0, 0);
 
-      PVPBuffer = new G4PVPlacement(0, positionSilicon, logicSilicon, Name + "_Silicon", logicMM, false, 0);
-
+      PVPBuffer = new G4PVPlacement(0,
+                                    positionFirstStage,
+                                    logicFirstStage,
+                                    Name + "_FirstStage",
+                                    logicGPDSquare,
+                                    false,
+                                    0);
 
       // Set First Stage sensible
-      logicSilicon->SetSensitiveDetector(m_FirstStageScorer);
+      logicFirstStage->SetSensitiveDetector(m_FirstStageScorer);
 
-      ///Visualisation of Silicon Strip
-      G4VisAttributes* SiliconVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5)) ;
-      logicSilicon->SetVisAttributes(SiliconVisAtt)                        ;
+      ///Visualisation of FirstStage Strip
+      G4VisAttributes* FirstStageVisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 0.9));	// blue
+      logicFirstStage->SetVisAttributes(FirstStageVisAtt);
    }
 
    ////////////////////////////////////////////////////////////////
-   //////////////////// SiLi  Construction ////////////////////////
+   //////////////////// Second Stage  Construction ////////////////
    ////////////////////////////////////////////////////////////////
    if (wSecondStage) {
-      G4double SiLiSpace = 8 * mm;
+      // Second stage silicon detector
+      G4ThreeVector  positionSecondStage = G4ThreeVector(0, 0, SecondStage_PosZ);
 
-      G4RotationMatrix* rotSiLi = Rotation(0., 0., 0.);
+      G4Box*           solidSecondStage = new G4Box("solidSecondStage", 0.5*SecondStageFace, 0.5*SecondStageFace, 0.5*SecondStageThickness);
+      G4LogicalVolume* logicSecondStage = new G4LogicalVolume(solidSecondStage, Silicon, "logicSecondStage", 0, 0, 0);
 
-      G4ThreeVector positionSiLi = G4ThreeVector(-0.25 * SiliconFace - 0.5 * SiLiSpace, 0, 0);
-      G4ThreeVector positionSiLi2 = G4ThreeVector(0.25 * SiliconFace + 0.5 * SiLiSpace, 0, 0);
-
-      G4Box* solidSiLi = new G4Box("SiLi", 0.5*SiLiFaceX, 0.5*SiLiFaceY, 0.5*SiLiThickness);
-
-      G4LogicalVolume* logicSiLi = new G4LogicalVolume(solidSiLi, Aluminium, "SiLi" + DetectorNumber, 0, 0, 0);
-
-      // First Si(Li) 2 time 4 detectore
-      PVPBuffer =  new G4PVPlacement(G4Transform3D(*rotSiLi, positionSiLi)  ,
-            logicSiLi                        ,
-            "SiLi" + DetectorNumber               ,
-            logicVacBox                      ,
-            false                         ,
-            0);
-
-      // Second Si(Li) 2 time 4 detectore
-      PVPBuffer =  new G4PVPlacement(G4Transform3D(*rotSiLi, positionSiLi2) ,
-            logicSiLi                        ,
-            "SiLi" + DetectorNumber               ,
-            logicVacBox                      ,
-            false                         ,
-            1);
-
-      // SiLi are placed inside of the VacBox...
-      // Left/Right define when looking to detector from Si to CsI
-      G4double SiLi_HighY_Upper = 19.86 * mm;
-      G4double SiLi_HighY_Center = 25.39 * mm ;
-      G4double SiLi_WidthX_Left  = 22.85 * mm;
-      G4double SiLi_WidthX_Right = 24.9 * mm  ;
-      G4double SiLi_ShiftX    = 0.775 * mm ;
-
-      // SiLi : left side of SiLi detector
-      G4Box* solidSiLi_LT  = new G4Box("SiLi_LT"  , 0.5*SiLi_WidthX_Left  , 0.5*SiLi_HighY_Upper   , 0.5*SiLiThickness);
-      G4Box* solidSiLi_RT  = new G4Box("SiLi_RT"  , 0.5*SiLi_WidthX_Right , 0.5*SiLi_HighY_Upper   , 0.5*SiLiThickness);
-      G4Box* solidSiLi_LC1 = new G4Box("SiLi_LC1" , 0.5*SiLi_WidthX_Left  , 0.5*SiLi_HighY_Center  , 0.5*SiLiThickness);
-      G4Box* solidSiLi_RC1 = new G4Box("SiLi_RC1" , 0.5*SiLi_WidthX_Right , 0.5*SiLi_HighY_Center  , 0.5*SiLiThickness);
-      G4Box* solidSiLi_LB  = new G4Box("SiLi_LB"  , 0.5*SiLi_WidthX_Left  , 0.5*SiLi_HighY_Upper   , 0.5*SiLiThickness);
-      G4Box* solidSiLi_RB  = new G4Box("SiLi_RB"  , 0.5*SiLi_WidthX_Right , 0.5*SiLi_HighY_Upper   , 0.5*SiLiThickness);
-      G4Box* solidSiLi_LC2 = new G4Box("SiLi_LC2" , 0.5*SiLi_WidthX_Left  , 0.5*SiLi_HighY_Center  , 0.5*SiLiThickness);
-      G4Box* solidSiLi_RC2 = new G4Box("SiLi_RC2" , 0.5*SiLi_WidthX_Right , 0.5*SiLi_HighY_Center  , 0.5*SiLiThickness);
-
-      G4LogicalVolume* logicSiLi_LT    = new G4LogicalVolume(solidSiLi_LT   , Silicon , "SiLi_LT"  , 0 , 0 , 0);
-      G4LogicalVolume* logicSiLi_RT    = new G4LogicalVolume(solidSiLi_RT   , Silicon , "SiLi_RT"  , 0 , 0 , 0);
-      G4LogicalVolume* logicSiLi_LC1   = new G4LogicalVolume(solidSiLi_LC1 , Silicon , "SiLi_LC1"  , 0 , 0 , 0);
-      G4LogicalVolume* logicSiLi_RC1   = new G4LogicalVolume(solidSiLi_RC1 , Silicon , "SiLi_RC1"  , 0 , 0 , 0);
-      G4LogicalVolume* logicSiLi_LB    = new G4LogicalVolume(solidSiLi_LB   , Silicon , "SiLi_LB"  , 0 , 0 , 0);
-      G4LogicalVolume* logicSiLi_RB    = new G4LogicalVolume(solidSiLi_RB   , Silicon , "SiLi_RB"  , 0 , 0 , 0);
-      G4LogicalVolume* logicSiLi_LC2   = new G4LogicalVolume(solidSiLi_LC2 , Silicon , "SiLi_LC2"  , 0 , 0 , 0);
-      G4LogicalVolume* logicSiLi_RC2   = new G4LogicalVolume(solidSiLi_RC2 , Silicon , "SiLi_RC2"  , 0 , 0 , 0);
-
-      G4double interSiLi = 0.5 * mm;
-
-      // Top
-      G4ThreeVector positionSiLi_LT = G4ThreeVector(-0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX            ,
-            0.5 * SiLi_HighY_Upper  + SiLi_HighY_Center + 1.5 * interSiLi   ,
-            0);
-
-      G4ThreeVector positionSiLi_RT = G4ThreeVector(0.5 * SiLi_WidthX_Right - SiLi_ShiftX                     ,
-            0.5 * SiLi_HighY_Upper  + SiLi_HighY_Center + 1.5 * interSiLi   ,
-            0);
-
-      G4ThreeVector positionSiLi_LC1 = G4ThreeVector(-0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX           ,
-            0.5 * SiLi_HighY_Center + 0.5 * interSiLi                 ,
-            0);
-
-      G4ThreeVector positionSiLi_RC1 = G4ThreeVector(0.5 * SiLi_WidthX_Right - SiLi_ShiftX                     ,
-            0.5 * SiLi_HighY_Center + 0.5 * interSiLi                 ,
-            0);
-
-      // Bottom
-      G4ThreeVector positionSiLi_LB = G4ThreeVector(-0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX            ,
-            -0.5 * SiLi_HighY_Upper  - SiLi_HighY_Center - 1.5 * interSiLi  ,
-            0);
-
-      G4ThreeVector positionSiLi_RB = G4ThreeVector(0.5 * SiLi_WidthX_Right - SiLi_ShiftX                     ,
-            -0.5 * SiLi_HighY_Upper  - SiLi_HighY_Center - 1.5 * interSiLi  ,
-            0);
-
-      G4ThreeVector positionSiLi_LC2 = G4ThreeVector(-0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX           ,
-            -0.5 * SiLi_HighY_Center - 0.5 * interSiLi                ,
-            0);
-
-      G4ThreeVector positionSiLi_RC2 = G4ThreeVector(0.5 * SiLi_WidthX_Right - SiLi_ShiftX                    ,
-            -0.5 * SiLi_HighY_Center - 0.5 * interSiLi                ,
-            0);
-
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LT  , logicSiLi_LT  , Name + "_SiLi_LT"  , logicSiLi , false , 0)  ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RT  , logicSiLi_RT  , Name + "_SiLi_RT"  , logicSiLi , false , 0)  ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LC1 , logicSiLi_LC1 , Name + "_SiLi_LC1" , logicSiLi , false , 0)   ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RC1 , logicSiLi_RC1 , Name + "_SiLi_RC1" , logicSiLi , false , 0)   ;
-
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LB  , logicSiLi_LB  , Name + "_SiLi_LB"  , logicSiLi , false , 0)   ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RB  , logicSiLi_RB  , Name + "_SiLi_RB"  , logicSiLi , false , 0)   ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LC2 , logicSiLi_LC2 , Name + "_SiLi_LC2" , logicSiLi , false , 0) ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RC2 , logicSiLi_RC2 , Name + "_SiLi_RC2" , logicSiLi , false , 0) ;
-
-      logicSiLi->SetVisAttributes(G4VisAttributes(G4Colour(1, 1., 1.)));
+      PVPBuffer = new G4PVPlacement(0,
+                                    positionSecondStage,
+                                    logicSecondStage,
+                                    Name + "_SecondStage",
+                                    logicGPDSquare,
+                                    false,
+                                    0);
 
       // Set Second Stage sensible
-      logicSiLi_LT->SetSensitiveDetector(m_SecondStageScorer);
-      logicSiLi_RT->SetSensitiveDetector(m_SecondStageScorer);
-      logicSiLi_LC1->SetSensitiveDetector(m_SecondStageScorer);
-      logicSiLi_RC1->SetSensitiveDetector(m_SecondStageScorer);
+      logicSecondStage->SetSensitiveDetector(m_SecondStageScorer);
 
-      logicSiLi_LB->SetSensitiveDetector(m_SecondStageScorer);
-      logicSiLi_RB->SetSensitiveDetector(m_SecondStageScorer);
-      logicSiLi_LC2->SetSensitiveDetector(m_SecondStageScorer);
-      logicSiLi_RC2->SetSensitiveDetector(m_SecondStageScorer);
-
-      // Mark blue a SiLi to see telescope orientation
-      logicSiLi_LT->SetVisAttributes(G4VisAttributes(G4Colour(0, 0., 1.)));
-      logicSiLi_RT->SetVisAttributes(G4VisAttributes(G4Colour(0, 1., 0)));
-      logicSiLi_LC1->SetVisAttributes(G4VisAttributes(G4Colour(0, 1., 0)));
-      logicSiLi_RC1->SetVisAttributes(G4VisAttributes(G4Colour(0, 1., 0)));
-
-      logicSiLi_LB->SetVisAttributes(G4VisAttributes(G4Colour(0, 1., 0)));
-      logicSiLi_RB->SetVisAttributes(G4VisAttributes(G4Colour(0, 1., 0)));
-      logicSiLi_LC2->SetVisAttributes(G4VisAttributes(G4Colour(0, 1., 0)));
-      logicSiLi_RC2->SetVisAttributes(G4VisAttributes(G4Colour(0, 1., 0)));
+      ///Visualisation of SecondStage Strip
+      G4VisAttributes* SecondStageVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5)) ;
+      logicSecondStage->SetVisAttributes(SecondStageVisAtt)                        ;
    }
 
    ////////////////////////////////////////////////////////////////
@@ -453,19 +320,23 @@ void GaspardTrackerSquare::VolumeMaker(G4int TelescopeNumber,
       // Third stage silicon detector
       G4ThreeVector  positionThirdStage = G4ThreeVector(0, 0, ThirdStage_PosZ);
 
-//      G4Box*           solidThirdStage = new G4Box("solidThirdStage", 0.5*SiliconFace, 0.5*SiliconFace, 0.5*ThirdStageThickness);
-      G4Box*           solidThirdStage = new G4Box("solidThirdStage", 0.5*FaceFront, 0.5*FaceFront, 0.5*ThirdStageThickness);
+      G4Box*           solidThirdStage = new G4Box("solidThirdStage", 0.5*ThirdStageFace, 0.5*ThirdStageFace, 0.5*ThirdStageThickness);
       G4LogicalVolume* logicThirdStage = new G4LogicalVolume(solidThirdStage, Silicon, "logicThirdStage", 0, 0, 0);
 
-      PVPBuffer = new G4PVPlacement(0, positionThirdStage, logicThirdStage, Name + "_ThirdStage", logicMM, false, 0);
-
-      ///Visualisation of Third Stage
-      G4VisAttributes* ThirdStageVisAtt = new G4VisAttributes(G4Colour(0.7, 0.7, 0.7)) ;
-      logicThirdStage->SetVisAttributes(ThirdStageVisAtt)                        ;
-//      logicThirdStage->SetVisAttributes(G4VisAttributes::Invisible);
+      PVPBuffer = new G4PVPlacement(0,
+                                    positionThirdStage,
+                                    logicThirdStage,
+                                    Name + "_ThirdStage",
+                                    logicGPDSquare,
+                                    false,
+                                    0);
 
       // Set Third Stage sensible
       logicThirdStage->SetSensitiveDetector(m_ThirdStageScorer);
+
+      ///Visualisation of Third Stage
+      G4VisAttributes* ThirdStageVisAtt = new G4VisAttributes(G4Colour(0.0, 0.9, 0.0));	// green
+      logicThirdStage->SetVisAttributes(ThirdStageVisAtt);
    }
 }
 
@@ -711,18 +582,14 @@ void GaspardTrackerSquare::ReadConfiguration(string Path)
 void GaspardTrackerSquare::ConstructDetector(G4LogicalVolume* world)
 {
    G4RotationMatrix* MMrot    = NULL                   ;
-/*   G4ThreeVector     MMpos    = G4ThreeVector(0, 0, 0) ;
+   G4ThreeVector     MMpos    = G4ThreeVector(0, 0, 0) ;
    G4ThreeVector     MMu      = G4ThreeVector(0, 0, 0) ;
    G4ThreeVector     MMv      = G4ThreeVector(0, 0, 0) ;
-   G4ThreeVector     MMw      = G4ThreeVector(0, 0, 0) ;*/
-   MMpos    = G4ThreeVector(0, 0, 0) ;
-   MMu      = G4ThreeVector(0, 0, 0) ;
-   MMv      = G4ThreeVector(0, 0, 0) ;
-   MMw      = G4ThreeVector(0, 0, 0) ;
+   G4ThreeVector     MMw      = G4ThreeVector(0, 0, 0) ;
    G4ThreeVector     MMCenter = G4ThreeVector(0, 0, 0) ;
-   bool FirstStage  = true ;
-   bool SecondStage = true ;
-   bool ThirdStage  = true ;
+   bool FirstStage  = true;
+   bool SecondStage = true;
+   bool ThirdStage  = true;
 
    G4int NumberOfTelescope = m_DefinitionType.size() ;
 
@@ -732,31 +599,21 @@ void GaspardTrackerSquare::ConstructDetector(G4LogicalVolume* world)
          // (u,v,w) unitary vector associated to telescope referencial
          // (u,v) // to silicon plan
          // w perpendicular to (u,v) plan and pointing ThirdStage
-         G4cout << "############ Gaspard " << i << " #############" << G4endl;
-         MMu = m_X128_Y1[i] - m_X1_Y1[i] ;
-         G4cout << "MMu: X = " << MMu(0) << " , Y = " << MMu(1) << " , Z = " << MMu(2) << G4endl;
-         MMu = MMu.unit()                ;
-         G4cout << "Norm MMu: X = " << MMu(0) << " , Y = " << MMu(1) << " , Z = " << MMu(2) << G4endl;
+         MMu = m_X128_Y1[i] - m_X1_Y1[i];
+         MMu = MMu.unit();
 
-         MMv = m_X1_Y128[i] - m_X1_Y1[i] ;
-         G4cout << "MMv X = " << MMv(0) << " , Y = " << MMv(1) << " , Z = " << MMv(2) << G4endl;
-         MMv = MMv.unit()                ;
-         G4cout << "Norm MMv X = " << MMv(0) << " , Y = " << MMv(1) << " , Z = " << MMv(2) << G4endl;
+         MMv = m_X1_Y128[i] - m_X1_Y1[i];
+         MMv = MMv.unit();
 
-         G4ThreeVector MMscal = MMu.dot(MMv);
-         G4cout << "Norm MMu.MMv X = " << MMv(0) << " , Y = " << MMv(1) << " , Z = " << MMv(2) << G4endl;
+         MMw = MMu.cross(MMv);
+         MMw = MMw.unit();
 
-         MMw = MMu.cross(MMv)                  ;
-//         if (MMw.z() > 0) MMw = MMv.cross(MMu) ;
-         MMw = MMw.unit()                      ;
-
-         MMCenter = (m_X1_Y1[i] + m_X1_Y128[i] + m_X128_Y1[i] + m_X128_Y128[i]) / 4 ;
+         MMCenter = (m_X1_Y1[i] + m_X1_Y128[i] + m_X128_Y1[i] + m_X128_Y128[i]) / 4;
 
          // Passage Matrix from Lab Referential to Telescope Referential
-         // MUST2
-         MMrot = new G4RotationMatrix(MMu, MMv, MMw) ;
+         MMrot = new G4RotationMatrix(MMu, MMv, MMw);
          // translation to place Telescope
-         MMpos = MMw * Length * 0.5 + MMCenter ;
+         MMpos = MMw * Length * 0.5 + MMCenter;
       }
 
       // By Angle
@@ -769,13 +626,13 @@ void GaspardTrackerSquare::ConstructDetector(G4LogicalVolume* world)
          // w perpendicular to (u,v) plan and pointing ThirdStage
          // Phi is angle between X axis and projection in (X,Y) plan
          // Theta is angle between  position vector and z axis
-         G4double wX = m_R[i] * sin(Theta / rad) * cos(Phi / rad)   ;
-         G4double wY = m_R[i] * sin(Theta / rad) * sin(Phi / rad)   ;
-         G4double wZ = m_R[i] * cos(Theta / rad)             ;
-         MMw = G4ThreeVector(wX, wY, wZ)                ;
+         G4double wX = m_R[i] * sin(Theta / rad) * cos(Phi / rad);
+         G4double wY = m_R[i] * sin(Theta / rad) * sin(Phi / rad);
+         G4double wZ = m_R[i] * cos(Theta / rad);
+         MMw = G4ThreeVector(wX, wY, wZ);
 
          // vector corresponding to the center of the module
-         CT = MMw;
+         MMCenter = MMw;
 
          // vector parallel to one axis of silicon plane
          G4double ii = cos(Theta / rad) * cos(Phi / rad);
@@ -797,7 +654,7 @@ void GaspardTrackerSquare::ConstructDetector(G4LogicalVolume* world)
          MMrot->rotate(m_beta_v[i], MMv);
          MMrot->rotate(m_beta_w[i], MMw);
          // translation to place Telescope
-         MMpos = MMw * Length * 0.5 + CT ;
+         MMpos = MMw * Length * 0.5 + MMCenter;
       }
 
       FirstStage  = m_wFirstStage[i]  ;

@@ -232,6 +232,18 @@ void EnergyLoss::Print() const
 	   		
 	}
 
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
+double EnergyLoss::EnergyLossCalulation(	double Energy 			, // Energy of the detected particle
+		                             					double TargetThickness	, // Target Thickness at 0 degree
+		                             					double Angle			) // Particle Angle
+		                             					const
+	{
+   return(Energy - Slow(Energy,TargetThickness,Angle) ) ;
+	}
+
+
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 double EnergyLoss::Slow(	double Energy 			, // Energy of the detected particle
 		   					double TargetThickness	, // Target Thickness at 0 degree

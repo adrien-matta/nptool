@@ -41,7 +41,6 @@ ROOTLIBS     := $(shell $(ROOTCONFIG) --libs)
 ROOTGLIBS    := $(shell $(ROOTCONFIG) --glibs)
 HASTHREAD    := $(shell $(ROOTCONFIG) --has-thread)
 ROOTDICTTYPE := $(shell $(ROOTCONFIG) --dicttype)
-NOSTUBS      := $(shell $(ROOTCONFIG) --nostubs)
 ROOTCINT     := rootcint
 
 ifeq ($(ARCH),linux)
@@ -268,189 +267,41 @@ GLIBS         = $(ROOTGLIBS) $(SYSLIBS)
 INCLUDE		= -I$(CLHEP_BASE_DIR)/include
  
 #------------------------------------------------------------------------------
-SHARELIB      =	CalibManager Vdetec InputOutputRoot InitCond	InterCoord \
-		Must2All	GaspardData	AnnularS1Data PlasticData DummyDetectorData SSSDData\
-		Reaction	EnergyLoss	ParisData	ShieldData
+SHARELIB	= SharedLib
+FILLINC		= FillIncludeDir
+FILLLIB		= FillLibraryDir
+LIBLIST		= liblistfile
 
-all:         $(SHARELIB)
-	rm -f ./include/*Dict.h
+all:	$(FILLINC) $(SHARELIB) $(FILLLIB) $(LIBLIST)
 #------------------------------------------------------------------------------
-############### Calibration ##############
+############### fillinclib ##############
+FillIncludeDir:
+		./scripts/fillincdir.sh
 
-## CalibrationManager ##
-CalibManager:
-		make -C ./CalibrationManager
-		cp ./CalibrationManager/*.so ./lib ; cp ./CalibrationManager/*.h ./include
+FillLibraryDir:
+		./scripts/filllibdir.sh
 ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libCalibrationManager.so libCalibrationManager.dylib
+		./scripts/filllibmacdir.sh
 endif
 
-############### Detector ##############
+############### liblist ##############
+liblistfile:
+		./scripts/buildliblist.sh
 
-## VDetector ##
-Vdetec:
-		cp ./VDetector/*.h ./include
-		make -C ./VDetector
-		cp ./VDetector/*.so ./lib
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libVDetector.so libVDetector.dylib
-endif
-		
-## MUST2 ##
-Must2All:
-		make -C ./MUST2
-		cp ./MUST2/*.so ./lib ; cp ./MUST2/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libMust2Data.so libMust2Data.dylib
-		cd lib; ln -sf libMust2Physics.so libMust2Physics.dylib
-endif
-
-## SSSD ##
-SSSDData:
-		make -C ./SSSD
-		cp ./SSSD/*.so ./lib ; cp ./SSSD/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libSSSDData.so libSSSDData.dylib
-		cd lib; ln -sf libSSSDPhysics.so libSSSDPhysics.dylib
-endif
-
-## AnnularS1 ##
-AnnularS1Data:
-		make -C ./AnnularS1
-		cp ./AnnularS1/*.so ./lib ; cp ./AnnularS1/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libAnnularS1Data.so libAnnularS1Data.dylib
-endif
-
-## Gaspard ##
-GaspardData:
-		make -C ./GASPARD
-		cp ./GASPARD/*.so ./lib ; cp ./GASPARD/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libGaspardData.so libGaspardData.dylib
-		cd lib; ln -sf libGaspardPhysics.so libGaspardPhysics.dylib
-endif
-
-## Plastic ##
-PlasticData:
-		make -C ./Plastic
-		cp ./Plastic/*.so ./lib ; cp ./Plastic/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libPlasticData.so libPlasticData.dylib
-		cd lib; ln -sf libPlasticPhysics.so libPlasticPhysics.dylib
-endif
-
-## DUMMY Detector ##
-DummyDetectorData:
-		make -C ./DummyDetector
-		cp ./DummyDetector/*.so ./lib ; cp ./DummyDetector/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libDummyDetectorData.so libDummyDetectorData.dylib
-endif
-
-## Paris Detector ##
-ParisData:
-		make -C ./Paris
-		cp ./Paris/*.so ./lib ; cp ./Paris/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libParisData.so libParisData.dylib
-		cd lib; ln -sf libParisPhysics.so libParisPhysics.dylib
-endif
-
-
-## Paris Shield Detector ##
-ShieldData:
-		make -C ./Shield
-		cp ./Shield/*.so ./lib ; cp ./Shield/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libShieldData.so libShieldData.dylib
-		cd lib; ln -sf libShieldPhysics.so libShieldPhysics.dylib
-endif
-
-############# Simulation ##############
-
-## InitialConditions ##
-InitCond:
-		make -C ./InitialConditions
-		cp ./InitialConditions/*.so ./lib ; cp ./InitialConditions/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libInitialConditions.so libInititalConditions.dylib
-endif
-
-## InteractionCoordinates ##
-InterCoord:	
-		make -C ./InteractionCoordinates
-		cp ./InteractionCoordinates/*.so ./lib ; cp ./InteractionCoordinates/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libInteractionCoordinates.so libInteractionCoordinates.dylib
-endif
-
-############# I/O Root File ############
-InputOutputRoot:
-	make -C ./IORoot
-	cp ./IORoot/*.so ./lib ; cp ./IORoot/*.h ./include
-ifeq ($(ARCH),macosx)
-	cd lib; ln -sf libIORoot.so libIORoot.dylib
-endif
-
-
-
-############# Various Tools ############
-
-## Reaction ##
-Reaction:
-		make libReaction.so -C ./Tools
-		cp ./Tools/*.so ./lib ; cp ./Tools/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libReaction.so libReaction.dylib
-endif
-
-EnergyLoss:
-		make libEnergyLoss.so -C ./Tools
-		cp ./Tools/*.so ./lib ; cp ./Tools/*.h ./include
-ifeq ($(ARCH),macosx)
-		cd lib; ln -sf libEnergyLoss.so libEnergyLoss.dylib
-endif
-		
-#######################################
+############### sharedlib ##############
+SharedLib:
+		./scripts/makefile.sh
 
 ############# Clean and More ##########
 clean:
-	make clean -C ./Tools
-	make clean -C ./IORoot
-	make clean -C ./VDetector
-	make clean -C ./CalibrationManager
-	make clean -C ./MUST2
-	make clean -C ./SSSD
-	make clean -C ./AnnularS1
-	make clean -C ./GASPARD
-	make clean -C ./InteractionCoordinates
-	make clean -C ./InitialConditions
-	make clean -C ./DummyDetector
-	make clean -C ./Plastic
-	make clean -C ./Paris
-	make clean -C ./Shield
+	./scripts/makefile.sh clean
 	
 distclean:
-	rm -f ./lib/*.so
-ifeq ($(ARCH),macosx)
-	rm -f ./lib/*.dylib
-endif
+	rm -f ./lib/*
 	rm -f ./include/*.h 
-	make distclean -C ./Tools
-	make distclean -C ./IORoot
-	make distclean -C ./VDetector
-	make distclean -C ./CalibrationManager
-	make distclean -C ./MUST2
-	make distclean -C ./SSSD
-	make distclean -C ./AnnularS1
-	make distclean -C ./GASPARD
-	make distclean -C ./InteractionCoordinates
-	make distclean -C ./InitialConditions
-	make distclean -C ./DummyDetector
-	make distclean -C ./Plastic
-	make distclean -C ./Paris
-	make distclean -C ./Shield
+	rm -f liblist
+	./scripts/makefile.sh distclean
+
 .SUFFIXES: .$(SrcSuf)
 
 ###

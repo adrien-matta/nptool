@@ -83,12 +83,18 @@ namespace NPL
 		   
 		public :	//	Function to Slow down particle or reconstruct their initial energy
 		
-		   //	Calculate Energy loss of a particle inside material
+		   //	Calculate Energy of a particle after crossing material
 		   double	Slow(	double Energy 			, // Energy of the detected particle
 		   					double TargetThickness	, // Target Thickness at 0 degree
 		   					double Angle			) // Particle Angle
 		   					const;
 		   					
+      //	Calculate Energy Loss of a particle inside a material		   					
+		   double EnergyLossCalulation(	double Energy 			, // Energy of the detected particle
+		                             					double TargetThickness	, // Target Thickness at 0 degree
+		                             					double Angle			) // Particle Angle
+		                             					const;					
+		                             					
 		   //	Evaluate Initial Energy of particle before crossing material knowing Angle, final Energy 
 		   //   and Target Thickness.
 		   double	EvaluateInitialEnergy(	double energy 			, // Energy of the detected particle

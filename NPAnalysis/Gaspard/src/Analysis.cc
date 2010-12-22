@@ -5,23 +5,19 @@ using namespace std;
 
 int main(int argc,char** argv)
 {	
-   // test if number of arguments is correct
-   if (argc != 4) {
-      cout << 
-         "you need to specify both a Reaction file and a Detector file such as : Analysis myReaction.reaction myDetector.detector runToRead.run" 
-           << endl;
-      return 0;
-   }
 
-   // get arguments
-   string reactionfileName  = argv[1];
-   string detectorfileName  = argv[2];
-   string runToReadfileName = argv[3];
+  NPOptionManager* myOptionManager  = NPOptionManager::getInstance(argc,argv)   ;
+  string reactionfileName           = myOptionManager->GetReactionFilePath()    ;
+	string detectorfileName 		      = myOptionManager->GetDetectorFilePath()	  ;
+	string calibrationfileName        = myOptionManager->GetCalibrationFilePath()	;
+	string runToReadfileName          = myOptionManager->GetRunToReadFilePath()   ;
+	string OutputfileName             = myOptionManager->GetOutputFilePath()      ;
 
    // Instantiate RootInput and RootOutput singleton classes
    RootInput:: getInstance(runToReadfileName);
+//   RootOutput::getInstance("Analysis/"+OutputfileName, "AnalyzedTree")	;
    RootOutput::getInstance("Analysis/Gaspard_AnalyzedData", "AnalyzedTree");
-
+ 
    // Initialize the reaction
    NPL::Reaction* myReaction = new Reaction();
    myReaction->ReadConfigurationFile(reactionfileName);
@@ -38,7 +34,7 @@ int main(int argc,char** argv)
    Double_t BeamEnergyNominal = myReaction->GetBeamEnergy() * MeV;
    cout << "Nominal beam energy (MeV): " << BeamEnergyNominal << endl;
    // Slow beam at target middle
-   Double_t BeamEnergy = BeamEnergyNominal - BeamTarget.Slow(BeamEnergyNominal, myDetector->GetTargetThickness()/2 * micrometer, 0);
+   Double_t BeamEnergy = BeamTarget.Slow(BeamEnergyNominal, myDetector->GetTargetThickness()/2 * micrometer, 0);
    cout << "Middle-target beam energy (MeV): " << BeamEnergy << endl << endl;
    // Set energy beam at target middle
    myReaction->SetBeamEnergy(BeamEnergy);
