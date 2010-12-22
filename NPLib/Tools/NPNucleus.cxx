@@ -35,13 +35,13 @@ using namespace NPL;
 Nucleus::Nucleus()
 {
    //----------- Default Constructor ----------
-   fName	 	 = "XX DEFAULT XX"	;
-   fCharge	 	 = 0				;
-   fAtomicWeight = 0				;
-   fMassExcess	 = 0				;
-   fSpinParity	 = ""				;
-   fSpin	 	 = 0				;
-   fParity	 	 = ""				;
+   fName	 = "XX DEFAULT XX";
+   fCharge	 = 0;
+   fAtomicWeight = 0;
+   fMassExcess	 = 0;
+   fSpinParity	 = "";
+   fSpin	 = 0;
+   fParity	 = "";
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
@@ -63,7 +63,7 @@ Nucleus::Nucleus(string isotope)
       while (!inFile.eof()) {
          getline(inFile,line);
 	 s_name = line.substr(11,6);
-	 if (s_name.find(Isotope) != string::npos) break;
+	 if (s_name.find(Isotope) != string::npos && s_name.length() == isotope.length()) break;
       }
       Extract(line.data());
    }
