@@ -24,13 +24,20 @@
  *****************************************************************************/
 
 #ifndef GaspardTracker_H
+#define GaspardTracker_H
 
 // NPL
 #include "../include/VDetector.h"
 #include "TGaspardTrackerData.h"
 #include "TGaspardTrackerPhysics.h"
+#include "GaspardTrackerModule.h"
+
+// C++
+#include <map>
+#include <vector>
 
 // Root
+#include "TObject.h"
 #include "TVector3.h"
 
 class GaspardTracker : public NPA::VDetector
@@ -38,6 +45,10 @@ class GaspardTracker : public NPA::VDetector
 public:
    GaspardTracker();
    virtual ~GaspardTracker();
+
+public:
+  void Clear()                                                                    ;
+  void Clear(const Option_t*) {};
 
 public:
    /////////////////////////////////////
@@ -72,45 +83,12 @@ public:
 
 
 public:
-   ////////////////////////////////
-   // Specific to GaspardTracker //
-   ////////////////////////////////
-   // Case of a Square module
-   // Add a Module using Corner Coordinate information
-   void AddModuleSquare(TVector3 C_X1_Y1,
-                        TVector3 C_X128_Y1,
-                        TVector3 C_X1_Y128,
-                        TVector3 C_X128_Y128);
+   void DumpModulesMap();
 
-   // Add a Module using R Theta Phi of Si center information
-   void AddModuleSquare(double theta,
-                        double phi,
-                        double distance, 
-                        double beta_u,
-                        double beta_v,
-                        double beta_w);
+private:
+   map<int, GaspardTrackerModule*>	m_ModulesMap;
 
-   // Case of a DummyShape module
-   // Add a Module using Corner Coordinate information
-   void AddModuleDummyShape(TVector3 C_X1_Y1,
-                            TVector3 C_X128_Y1,
-                            TVector3 C_X1_Y128,
-                            TVector3 C_X128_Y128);
-
-   // Add a Module using R Theta Phi of Si center information
-   void AddModuleDummyShape(double theta,
-                            double phi,
-                            double distance, 
-                            double beta_u,
-                            double beta_v,
-                            double beta_w);
-
-   // Getters to retrieve the (X,Y,Z) coordinates of a pixel defined by strips (X,Y)
-   double GetStripPositionX(int N ,int X ,int Y)	{ return m_StripPositionX[N-1][X-1][Y-1]; }
-   double GetStripPositionY(int N ,int X ,int Y)	{ return m_StripPositionY[N-1][X-1][Y-1]; }
-   double GetStripPositionZ(int N ,int X ,int Y)	{ return m_StripPositionZ[N-1][X-1][Y-1]; }
-   double GetNumberOfModule()	 			{ return m_NumberOfModule; }
-
+public:
    // Get Root input and output objects
    TGaspardTrackerData* 	GetEventData()		{return m_EventData;}
    TGaspardTrackerPhysics*	GetEventPhysics()	{return m_EventPhysics;}
@@ -119,8 +97,6 @@ public:
    double	GetEnergyDeposit();
    TVector3	GetPositionOfInteraction();
 
-   void		Print();
-
 
 private:
    ////////////////////////////////////////
@@ -128,14 +104,6 @@ private:
    ////////////////////////////////////////
    TGaspardTrackerData*		m_EventData;
    TGaspardTrackerPhysics*	m_EventPhysics;
-
-
-private:
-   // Spatial Position of Strip Calculated on basis of detector position
-   int m_NumberOfModule;
-   vector< vector < vector < double > > >	m_StripPositionX;
-   vector< vector < vector < double > > >	m_StripPositionY;
-   vector< vector < vector < double > > >	m_StripPositionZ;
 };
 
 #endif

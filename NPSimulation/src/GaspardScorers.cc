@@ -529,7 +529,7 @@ G4bool GPDScorerFirstStageFrontStripTrapezoid::ProcessHits(G4Step* aStep, G4Touc
    G4double StripPitch = GPDTRAP::FirstStageBaseLarge / m_NumberOfStrip;
 
    G4double temp = (POS(0) + GPDTRAP::FirstStageBaseLarge / 2.) / StripPitch   ;
-   G4double X = int(temp) + 1 ;
+   G4double X = int(temp) + 1;
    //Rare case where particle is close to edge of silicon plan
    if (X == 129) X = 128;
    G4double edep = aStep->GetTotalEnergyDeposit();

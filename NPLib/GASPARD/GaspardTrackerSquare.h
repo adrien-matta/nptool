@@ -11,7 +11,7 @@
 
 // Gaspard headers
 #include "TGaspardTrackerData.h"
-#include "TGaspardTrackerPhysicsNew.h"
+#include "TGaspardTrackerPhysics.h"
 #include "GaspardTrackerModule.h"
 
 using namespace std;
@@ -24,7 +24,7 @@ public:
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
    ////////////////////////////////////////////////////
-   GaspardTrackerSquare(map<int, GaspardTrackerModule*> &Module, TGaspardTrackerPhysicsNew* &EventPhysics);
+   GaspardTrackerSquare(map<int, GaspardTrackerModule*> &Module, TGaspardTrackerPhysics* &EventPhysics);
    virtual ~GaspardTrackerSquare();
 
 public:
@@ -42,8 +42,8 @@ public:
    void BuildSimplePhysicalEvent();
 
 private:
-   map<int, GaspardTrackerModule*> &m_ModuleTest;
-   TGaspardTrackerPhysicsNew* &m_EventPhysics;
+   map<int, GaspardTrackerModule*> 	&m_ModuleTest;
+   TGaspardTrackerPhysics* 		&m_EventPhysics;
 
 public:
    void SetGaspardDataPointer(TGaspardTrackerData* gaspardData) {m_EventData = gaspardData;};

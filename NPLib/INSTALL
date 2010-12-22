@@ -48,4 +48,5 @@ following commands:
 	the include directory and the shared libraries (*.so) associated 
 	to each library are copied to the lib directory. If you are using 
 	a Mac OS system a symbolic link *.dylib is done with respect to 
-	each *.so library. 
+	each *.so library. The 'liblist' file used for linking NPS and NPA
+        is created.

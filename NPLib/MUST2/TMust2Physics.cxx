@@ -758,7 +758,7 @@ void TMust2Physics::AddTelescope(	TVector3 C_X1_Y1 		,
 			 					TVector3 C_X128_Y128	)
 	{
 		// To avoid warning
-		C_X1_Y128 *= 1;
+		C_X128_Y128 *= 1;
 
 		NumberOfTelescope++;
 	

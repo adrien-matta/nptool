@@ -11,7 +11,7 @@
 
 // Gaspard headers
 #include "TGaspardTrackerData.h"
-#include "TGaspardTrackerPhysicsNew.h"
+#include "TGaspardTrackerPhysics.h"
 #include "GaspardTrackerModule.h"
 
 using namespace std;
@@ -24,7 +24,7 @@ public:
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
    ////////////////////////////////////////////////////
-   GaspardTrackerTrapezoid(map<int, GaspardTrackerModule*> &Module, TGaspardTrackerPhysicsNew* &EventPhysics);
+   GaspardTrackerTrapezoid(map<int, GaspardTrackerModule*> &Module, TGaspardTrackerPhysics* &EventPhysics);
    virtual ~GaspardTrackerTrapezoid();
 
 public:
@@ -42,8 +42,8 @@ public:
    void BuildSimplePhysicalEvent();
 
 private:
-   map<int, GaspardTrackerModule*> &m_ModuleTest;
-   TGaspardTrackerPhysicsNew* &m_EventPhysics;
+   map<int, GaspardTrackerModule*> 	&m_ModuleTest;
+   TGaspardTrackerPhysics* 		&m_EventPhysics;
 
 public:
    void SetGaspardDataPointer(TGaspardTrackerData* gaspardData) {m_EventData = gaspardData;};
@@ -85,6 +85,17 @@ private:
    vector< vector < vector < double > > >       m_StripPositionX;
    vector< vector < vector < double > > >       m_StripPositionY;
    vector< vector < vector < double > > >       m_StripPositionZ;
+
+private:
+   //////////////////////////////
+   // Geometry and stip number //
+   //////////////////////////////
+   double m_FirstStageBaseLarge;	// mm
+   double m_FirstStageHeight;		// mm
+   int    m_NumberOfStripsX;
+   int    m_NumberOfStripsY;
+   double m_StripPitchX;		// mm
+   double m_StripPitchY;		// mm
 };
 
 #endif

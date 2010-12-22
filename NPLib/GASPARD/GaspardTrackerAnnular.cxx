@@ -7,13 +7,13 @@
 #include <cmath>
 
 // Gaspard
-#include "TGaspardTrackerPhysicsNew.h"
+#include "TGaspardTrackerPhysics.h"
 
 using namespace std;
 
 
 GaspardTrackerAnnular::GaspardTrackerAnnular(map<int, GaspardTrackerModule*> &Module,
-						     TGaspardTrackerPhysicsNew* &EventPhysics) 
+					     TGaspardTrackerPhysics* &EventPhysics) 
 	: m_ModuleTest(Module),
 	  m_EventPhysics(EventPhysics),
 	  m_EventData(0),
@@ -153,13 +153,10 @@ void GaspardTrackerAnnular::BuildPhysicalEvent()
       int detecYE = m_EventData->GetGPDTrkFirstStageBackEDetectorNbr(0) / det_ref;
       int detecYT = m_EventData->GetGPDTrkFirstStageBackTDetectorNbr(0) / det_ref;
 
-      // module number starting from 0
-      det_ref -= m_index["Annular"];
-
       // case of same detector
       if (detecXE*detecXT*detecYE*detecYT == 1) {
          // store module number
-         m_EventPhysics->SetModuleNumber(det_ref + m_index["Annular"]);
+         m_EventPhysics->SetModuleNumber(det_ref);
          // calculate strip number
          int stripXE = m_EventData->GetGPDTrkFirstStageFrontEStripNbr(0);
          int stripXT = m_EventData->GetGPDTrkFirstStageFrontTStripNbr(0);

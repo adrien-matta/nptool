@@ -7,17 +7,23 @@
 #include <cmath>
 
 // Gaspard
-#include "TGaspardTrackerPhysicsNew.h"
+#include "TGaspardTrackerPhysics.h"
 
 
 GaspardTrackerTrapezoid::GaspardTrackerTrapezoid(map<int, GaspardTrackerModule*> &Module,
-                                                 TGaspardTrackerPhysicsNew* &EventPhysics) 
+                                                 TGaspardTrackerPhysics* &EventPhysics) 
 	: m_ModuleTest(Module),
           m_EventPhysics(EventPhysics),
           m_EventData(0),
           m_PreTreatData(new TGaspardTrackerData),
-          m_NumberOfModule(0)
+          m_NumberOfModule(0),
+          m_FirstStageBaseLarge(97.5),	// mm
+          m_FirstStageHeight(113.5),	// mm
+          m_NumberOfStripsX(128),
+          m_NumberOfStripsY(128)
 {
+   m_StripPitchX = m_FirstStageBaseLarge / (double)m_NumberOfStripsX;
+   m_StripPitchY = m_FirstStageHeight    / (double)m_NumberOfStripsY;
 }
 
 
@@ -257,13 +263,10 @@ void GaspardTrackerTrapezoid::BuildPhysicalEvent()
       int detecYE = m_EventData->GetGPDTrkFirstStageBackEDetectorNbr(0) / det_ref;
       int detecYT = m_EventData->GetGPDTrkFirstStageBackTDetectorNbr(0) / det_ref;
 
-      // module number starting from 0
-      det_ref -= m_index["DummyShape"];
-
       // case of same detector
       if (detecXE*detecXT*detecYE*detecYT == 1) {
          // store module number
-         m_EventPhysics->SetModuleNumber(det_ref + m_index["DummyShape"]);
+         m_EventPhysics->SetModuleNumber(det_ref);
          // calculate strip number
          int stripXE = m_EventData->GetGPDTrkFirstStageFrontEStripNbr(0);
          int stripXT = m_EventData->GetGPDTrkFirstStageFrontTStripNbr(0);
@@ -354,26 +357,20 @@ void GaspardTrackerTrapezoid::AddModule(TVector3 C_X1_Y1,
 {
    m_NumberOfModule++;
 
-   // remove warning using C_X128_Y128
-   C_X128_Y128.Unit();
-
-   // Vector U on Module Face (paralelle to Y Strip) (NB: remember that Y strip are allong X axis)
+   // Definition of vectors U and V are *identical* with definition
+   // in NPS.
+   // Vector U parallel to BaseLarge
    TVector3 U = C_X128_Y1 - C_X1_Y1;
    U = U.Unit();
 
-   // Vector V on Module Face (parallele to X Strip)
-   TVector3 V = C_X1_Y128 - C_X1_Y1;
+   // Vector V parallel to height
+   TVector3 V = 0.5 * (C_X1_Y128 + C_X128_Y128 - C_X1_Y1 - C_X128_Y1);
    V = V.Unit();
 
    // Position Vector of Strip Center
    TVector3 StripCenter = TVector3(0,0,0);
    // Position Vector of X=1 Y=1 Strip 
    TVector3 Strip_1_1;
-
-   // Geometry Parameter
-   double Face = 50;            // mm
-   double NumberOfStrip = 128;
-   double StripPitch = Face/NumberOfStrip; // mm
 
    // Buffer object to fill Position Array
    vector<double> lineX;
@@ -385,16 +382,15 @@ void GaspardTrackerTrapezoid::AddModule(TVector3 C_X1_Y1,
    vector< vector< double > >   OneModuleStripPositionZ;
 
    // Moving StripCenter to 1.1 corner:
-   Strip_1_1 = C_X1_Y1 + (U+V) * (StripPitch/2.);
+   Strip_1_1 = C_X1_Y1 + m_StripPitchX/2*U + m_StripPitchY/2*V;
 
-   for (int i = 0; i < NumberOfStrip; i++) {
+   for (int i = 0; i < m_NumberOfStripsX; i++) {
       lineX.clear();
       lineY.clear();
       lineZ.clear();
 
-      for (int j = 0; j < NumberOfStrip; j++) {
-         StripCenter  = Strip_1_1 + StripPitch*( i*U + j*V  );
-//         StripCenter += -TargetPosition;
+      for (int j = 0; j < m_NumberOfStripsY; j++) {
+         StripCenter = Strip_1_1 + i*m_StripPitchX*U + j*m_StripPitchY*V;
 
          lineX.push_back( StripCenter.X() );
          lineY.push_back( StripCenter.Y() );

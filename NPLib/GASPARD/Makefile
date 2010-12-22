@@ -268,8 +268,8 @@ GLIBS         = $(ROOTGLIBS) $(SYSLIBS)
 INCLUDE		= -I$(CLHEP_BASE_DIR)/include -I$(NPLIB)/include
  
 #------------------------------------------------------------------------------
-SHARELIB      =  libGaspardData.so	libGaspardPhysics.so	\
-		 libGaspardTrackerModules.so 	libGaspardPhysicsNew.so
+SHARELIB      =  libGaspardData.so	\
+		 libGaspardTrackerModules.so 	libGaspardPhysics.so
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 ############### Detector ##############
@@ -281,17 +281,11 @@ libGaspardData.so:	TGaspardTrackerData.o TGaspardTrackerDataDict.o
 TGaspardTrackerDataDict.cxx:	TGaspardTrackerData.h
 			rootcint -f $@ -c $^
 
-libGaspardPhysics.so:	GaspardTracker.o TGaspardTrackerPhysics.o TGaspardTrackerPhysicsDict.o
+libGaspardPhysics.so:	GaspardTracker.o TGaspardTrackerPhysics.o \
+				TGaspardTrackerPhysicsDict.o
 			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TGaspardTrackerPhysicsDict.cxx:	TGaspardTrackerPhysics.h
-			rootcint -f $@ -c $^
-
-libGaspardPhysicsNew.so:	GaspardTrackerNew.o TGaspardTrackerPhysicsNew.o \
-				TGaspardTrackerPhysicsNewDict.o
-			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
-
-TGaspardTrackerPhysicsNewDict.cxx:	TGaspardTrackerPhysicsNew.h
 			rootcint -f $@ -c $^
 
 libGaspardTrackerModules.so:	GaspardTrackerModule.o	GaspardTrackerDummyShape.o \
@@ -303,10 +297,8 @@ libGaspardTrackerModules.so:	GaspardTrackerModule.o	GaspardTrackerDummyShape.o \
 
 # dependances
 GaspardTracker.o:	GaspardTracker.cxx	GaspardTracker.h
-GaspardTrackerNew.o:	GaspardTrackerNew.cxx	GaspardTrackerNew.h
 TGaspardTrackerData.o:	TGaspardTrackerData.cxx	TGaspardTrackerData.h
 TGaspardTrackerPhysics.o:	TGaspardTrackerPhysics.cxx	TGaspardTrackerPhysics.h
-TGaspardTrackerPhysicsNew.o:	TGaspardTrackerPhysicsNew.cxx	TGaspardTrackerPhysicsNew.h
 GaspardTrackerModule.o:		GaspardTrackerModule.cxx	GaspardTrackerModule.h
 GaspardTrackerDummyShape.o:	GaspardTrackerDummyShape.cxx	GaspardTrackerDummyShape.h
 GaspardTrackerTrapezoid.o:	GaspardTrackerTrapezoid.cxx	GaspardTrackerTrapezoid.h

@@ -19,7 +19,7 @@
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
 Target
-	THICKNESS= 0.001
+	THICKNESS= 5
 	RADIUS=	7.5
 	MATERIAL= CD2
 	X= 0
@@ -38,7 +38,7 @@ GaspardTracker
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Barrel
-GPDTrapezoid
+%GPDTrapezoid
         X1_Y1=    	-25.0	-25.00   200.00
         X128_Y1=       	 25.0	-25.00   200.00
         X1_Y128=        -25.0 	 25.00	 200.00
