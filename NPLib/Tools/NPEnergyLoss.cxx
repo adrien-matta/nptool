@@ -64,20 +64,28 @@ EnergyLoss::EnergyLoss(string Path , string Source, int NumberOfSlice=100 ,  int
 	fNumberOfMass  = NumberOfMass  ;
 	
 	string globalPath = getenv("NPTOOL");
-	Path = globalPath + "/Inputs/EnergyLoss/" + Path;
+	string StandardPath = globalPath + "/Inputs/EnergyLoss/" + Path;
 	
 	cout << "///////////////////////////////// " << endl ;
 	cout << "Initialising an EnergyLoss object " << endl ;
 		
 		ifstream TableFile	;
-		TableFile.open(Path.c_str())	;
+		TableFile.open(StandardPath.c_str())	;
 
  		// Opening dE/dX file
-	 if(!TableFile) cout << "ERROR: TABLE FILE NOT FOUND" << endl; 
+	  if(TableFile.is_open()) 	cout << "Reading Energy Loss File: " << Path << endl ; 
+  	// In case the file is not found in the standard path, the programm try to interpret the file name as an absolute or relative file path.
+       else 
+        {
+          TableFile.open( Path.c_str() );
+          if(TableFile.is_open()) { cout << "Reading Energy Loss File: " << Path << endl ;}
+          
+          else { cout << "ERROR: TABLE FILE NOT FOUND" << endl; return; }
+        }
+	
 	  
 	 if (Source == "G4Table")
 	 	{
-	   	cout << "Reading Energy Loss File: " << Path << endl ;
 			// Reading Data
 			double energy, total;
 			string dummy;
@@ -230,25 +238,53 @@ double EnergyLoss::Slow(	double Energy 			, // Energy of the detected particle
 		   					double Angle			) // Particle Angle
 		   					const
 	{
-		TargetThickness = TargetThickness / cos(Angle)  					;
+//    //	Lise file are given in MeV/u
+//		//	For SRIM and geant4 file fNumberOfMass = 1 whatever is the nucleus, file are given in MeV
+//		Energy = Energy / (double) fNumberOfMass ;
+//	
+//		if (Angle > halfpi) Angle = pi-Angle								;	
+//	
+//		TargetThickness = TargetThickness / cos(Angle)  					;
+//		double SliceThickness = TargetThickness / (double)fNumberOfSlice 	;
+//		
+//		//Interpolator* s = new Interpolator( fEnergy , fdEdX_Total	)		;
+//		
+////		double InitialEnergy = Energy										;
+////		//double slow = 0.													;
+//		   
+//		for (int i = 0; i < fNumberOfSlice ; i++) 
+//			{
+//			   // double de = s->Eval(Energy) * SliceThickness;
+//			    double de = fInter->Eval(Energy) * SliceThickness	;
+//			   // slow 	+= de	;
+//			    Energy	-= de/fNumberOfMass	;
+//			    // If ion do not cross the target
+////			    if (Energy < 0) 	{slow = InitialEnergy; break;}
+//        if (Energy < 0) 	{Energy=0; break;}
+//			}
+//		   
+//	//	delete s		;
+//		return slow	;
+
+    //	Lise file are given in MeV/u
+		//	For SRIM and geant4 file fNumberOfMass = 1 whatever is the nucleus, file are given in MeV
+		Energy = Energy / (double) fNumberOfMass ;
+	
+		if (Angle > halfpi) Angle = pi-Angle								;
+		TargetThickness = TargetThickness / ( cos(Angle) ) 					;
+		
 		double SliceThickness = TargetThickness / (double)fNumberOfSlice 	;
-		
-		Interpolator* s = new Interpolator( fEnergy , fdEdX_Total	)		;
-		
-		double InitialEnergy = Energy										;
-		double slow = 0.													;
-		   
+
 		for (int i = 0; i < fNumberOfSlice ; i++) 
 			{
-			    double de = s->Eval(Energy) * SliceThickness;
-			    slow 	+= de	;
-			    Energy	-= de	;
-			    // If ion do not cross the target
-			    if (Energy < 0) 	{slow = InitialEnergy; break;}
+			    double de = fInter->Eval(Energy) * SliceThickness	;
+			    Energy	 -= de/fNumberOfMass											;
+			    
+			    if(Energy<0) {Energy=0;break;}
 			}
-		   
-		delete s		;
-		return slow	;
+			
+		return (Energy*fNumberOfMass)	;
+
 	}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 double EnergyLoss::EvaluateInitialEnergy(	double Energy 					, // Energy of the detected particle

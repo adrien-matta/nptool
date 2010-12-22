@@ -10,10 +10,10 @@ TransfertToResonance
 	ExcitationEnergy= 1.0
 	BeamEnergy= 550
 	BeamEnergySpread= 0
-	SigmaThetaX= 0.6921330164
-	SigmaPhiY= 0.963142053
-	SigmaX= 6.232
-	SigmaY= 9.069
+	SigmaThetaX= 0.01
+	SigmaPhiY= 0.01
+	SigmaX= 0.01
+	SigmaY= 0.01
 	ResonanceWidth= 0
 	ResonanceDecayZ= 2
 	ResonanceDecayA= 8

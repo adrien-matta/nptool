@@ -555,7 +555,6 @@ void GaspardTrackerDummyShape::ConstructDetector(G4LogicalVolume* world)
 
          MMv = m_X1_Y128[i] - m_X1_Y1[i];
          MMv = MMv.unit();
-
          MMw = MMu.cross(MMv);
          MMw = MMw.unit();
 

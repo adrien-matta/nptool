@@ -288,6 +288,7 @@ TMust2PhysicsDict.cxx: TMust2Physics.h
 
 # dependances
 TMust2Data.o:		TMust2Data.cxx	TMust2Data.h
+TMust2DataDict.o:		TMust2DataDict.cxx	TMust2DataDict.h
 TMust2Physics.o:	TMust2Physics.cxx	TMust2Physics.h
 #######################################
 

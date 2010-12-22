@@ -170,17 +170,25 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
    //////////////////////////////////////////////////////////////////////////////////////////
    // added by Nicolas [07/05/09]
    string GlobalPath = getenv("NPTOOL");
-   Path = GlobalPath + "/Inputs/DetectorConfiguration/" + Path;
+   string StandardPath = GlobalPath + "/Inputs/DetectorConfiguration/" + Path;
    ifstream ConfigFile;
-   ConfigFile.open(Path.c_str());
+   ConfigFile.open(StandardPath.c_str());
 
    if (ConfigFile.is_open())
-      cout << " Configuration file " << Path << " loading " << endl;
-   else {
-      cout << " Error, no configuration file" << Path << " found" << endl;
-      return;
-   }
+      { 
+        cout << " Configuration file " << Path << " loading " << endl;
+        Path=StandardPath;
+      }
 
+   else 
+    {
+      ConfigFile.open( Path.c_str() );
+      if(ConfigFile.is_open()) {
+      cout << " Configuration file " << Path << " loading " << endl;
+      }
+      
+      else { cout << " Error, no configuration file" << Path << " found" << endl;return;}
+    }
 
    while (!ConfigFile.eof()) {
       //Pick-up next line

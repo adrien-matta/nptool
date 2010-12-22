@@ -7,6 +7,7 @@
 
 // NPA
 #include "DetectorManager.h"
+#include "NPOptionManager.h"
 
 // STL C++
 #include <iostream>
