@@ -1,10 +1,12 @@
 #include "GaspardTrackerSquare.h"
 
 // C++ headers
+#include <limits>
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <cmath>
+#include <stdlib.h>
 
 // Gaspard
 #include "TGaspardTrackerPhysics.h"

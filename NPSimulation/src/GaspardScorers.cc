@@ -695,6 +695,7 @@ G4bool GPDScorerFirstStageFrontStripAnnular::ProcessHits(G4Step* aStep, G4Toucha
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
+   ThetaStripNumber++;
    EvtMap->set(DetNbr + index, ThetaStripNumber);
 
    return TRUE;
@@ -769,6 +770,7 @@ G4bool GPDScorerFirstStageBackStripAnnular::ProcessHits(G4Step* aStep, G4Touchab
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
+   PhiStripNumber++;
    EvtMap->set(DetNbr + index, PhiStripNumber);
 
    return TRUE;

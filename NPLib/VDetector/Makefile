@@ -41,7 +41,6 @@ ROOTLIBS     := $(shell $(ROOTCONFIG) --libs)
 ROOTGLIBS    := $(shell $(ROOTCONFIG) --glibs)
 HASTHREAD    := $(shell $(ROOTCONFIG) --has-thread)
 ROOTDICTTYPE := $(shell $(ROOTCONFIG) --dicttype)
-NOSTUBS      := $(shell $(ROOTCONFIG) --nostubs)
 ROOTCINT     := rootcint
 
 ifeq ($(ARCH),linux)

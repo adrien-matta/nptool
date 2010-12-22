@@ -26,6 +26,7 @@ using namespace LOCAL;
 #include <iostream>
 #include <cmath>
 #include <stdlib.h>
+#include <limits>
 
 //	NPL
 #include "RootInput.h"

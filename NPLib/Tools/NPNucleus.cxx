@@ -59,10 +59,15 @@ Nucleus::Nucleus(string isotope)
    
    // reading the file
    string line, s_name;
+   size_t space;
    if (inFile.is_open()) {
       while (!inFile.eof()) {
          getline(inFile,line);
-	 s_name = line.substr(11,6);
+
+	 s_name = line.substr(11,7);
+	 space = s_name.find_first_of(" "); 
+	 s_name.resize(space);
+
 	 if (s_name.find(Isotope) != string::npos && s_name.length() == isotope.length()) break;
       }
       Extract(line.data());
