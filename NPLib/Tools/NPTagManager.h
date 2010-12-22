@@ -54,7 +54,7 @@ class NPTagManager : public TObject
      // Print all the condition that exist in fTAG
      void PrintCondition(); 
      inline void Print() {PrintCondition();};
-     void  Print(const Option_t*) const;
+     void  Print(const Option_t*) const {} ;
      
      // Print to File filename all the condition that exist in fTAG
      void PrintConditionToFile(string filename);
