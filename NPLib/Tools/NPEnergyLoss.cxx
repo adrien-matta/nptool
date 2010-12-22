@@ -250,34 +250,6 @@ double EnergyLoss::Slow(	double Energy 			, // Energy of the detected particle
 		   					double Angle			) // Particle Angle
 		   					const
 	{
-//    //	Lise file are given in MeV/u
-//		//	For SRIM and geant4 file fNumberOfMass = 1 whatever is the nucleus, file are given in MeV
-//		Energy = Energy / (double) fNumberOfMass ;
-//	
-//		if (Angle > halfpi) Angle = pi-Angle								;	
-//	
-//		TargetThickness = TargetThickness / cos(Angle)  					;
-//		double SliceThickness = TargetThickness / (double)fNumberOfSlice 	;
-//		
-//		//Interpolator* s = new Interpolator( fEnergy , fdEdX_Total	)		;
-//		
-////		double InitialEnergy = Energy										;
-////		//double slow = 0.													;
-//		   
-//		for (int i = 0; i < fNumberOfSlice ; i++) 
-//			{
-//			   // double de = s->Eval(Energy) * SliceThickness;
-//			    double de = fInter->Eval(Energy) * SliceThickness	;
-//			   // slow 	+= de	;
-//			    Energy	-= de/fNumberOfMass	;
-//			    // If ion do not cross the target
-////			    if (Energy < 0) 	{slow = InitialEnergy; break;}
-//        if (Energy < 0) 	{Energy=0; break;}
-//			}
-//		   
-//	//	delete s		;
-//		return slow	;
-
     //	Lise file are given in MeV/u
 		//	For SRIM and geant4 file fNumberOfMass = 1 whatever is the nucleus, file are given in MeV
 		Energy = Energy / (double) fNumberOfMass ;
