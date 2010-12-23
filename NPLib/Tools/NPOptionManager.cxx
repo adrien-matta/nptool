@@ -22,6 +22,8 @@
  
 #include "NPOptionManager.h"
  
+#include <cstdlib>
+
 
 NPOptionManager* NPOptionManager::instance = 0 ;
 
@@ -87,6 +89,9 @@ void NPOptionManager::DisplayHelp()
     cout << "\t --output　-O <arg>\t \t \t \t \t \t　Set arg as the Output File Name (output tree)" << endl ;
     cout << "\t --run -R <arg>\t \t \t \t \t \t \t　Set arg as the run to read file list" << endl  ;
     cout << endl << endl ;  
+
+    // exit current program
+    exit(1);
   }
 
 
