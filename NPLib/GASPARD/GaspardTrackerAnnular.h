@@ -72,6 +72,17 @@ private:
    vector< vector < vector < double > > >       m_StripPositionX;
    vector< vector < vector < double > > >       m_StripPositionY;
    vector< vector < vector < double > > >       m_StripPositionZ;
+
+private:
+   //////////////////////////////
+   // Geometry and stip number //
+   //////////////////////////////
+   double m_FirstStageBaseLarge; // mm
+   double m_FirstStageHeight;    // mm
+   int    m_NumberOfStripsX;
+   int    m_NumberOfStripsY;
+   double m_StripPitchX;      // mm
+   double m_StripPitchY;      // mm
 };
 
 #endif
