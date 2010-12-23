@@ -61,9 +61,9 @@ public:
    void AddModule(double zpos, double rmin, double rmax);
 
    // Getters to retrieve the (X,Y,Z) coordinates of a pixel defined by strips (X,Y)
-   double GetStripPositionX(int N ,int X ,int Y)        { return m_StripPositionX[N-1-m_index["Annular"]][X-1][Y-1]; }
-   double GetStripPositionY(int N ,int X ,int Y)        { return m_StripPositionY[N-1-m_index["Annular"]][X-1][Y-1]; }
-   double GetStripPositionZ(int N ,int X ,int Y)        { return m_StripPositionZ[N-1-m_index["Annular"]][X-1][Y-1]; }
+   double GetStripPositionX(int N ,int X ,int Y)        {return m_StripPositionX[N-1-m_index["Annular"]][X-1][Y-1]; }
+   double GetStripPositionY(int N ,int X ,int Y)        {return m_StripPositionY[N-1-m_index["Annular"]][X-1][Y-1]; }
+   double GetStripPositionZ(int N ,int X ,int Y)        {return m_StripPositionZ[N-1-m_index["Annular"]][X-1][Y-1]; }
    double GetNumberOfModule()                           { return m_NumberOfModule; }
 
 private:
@@ -77,12 +77,9 @@ private:
    //////////////////////////////
    // Geometry and stip number //
    //////////////////////////////
-   double m_FirstStageBaseLarge; // mm
-   double m_FirstStageHeight;    // mm
-   int    m_NumberOfStripsX;
-   int    m_NumberOfStripsY;
-   double m_StripPitchX;      // mm
-   double m_StripPitchY;      // mm
+   int m_NumberOfStripsTheta;
+   int m_NumberOfStripsPhi;
+   int m_NumberOfQuadrants;
 };
 
 #endif

@@ -258,6 +258,22 @@ void GaspardTracker::DumpModulesMap()
 
 
 
+void GaspardTracker::DumpStrippingScheme(int moduleNumber)
+{
+   cout << "GaspardTracker::DumpStrippingScheme()" << endl;
+
+   for (int i = 1; i < 65; i++) {   // front part
+      for (int j = 1; j < 65; j++) {   // back part
+         cout << "strips X, Y: " << i << "  " << j << "\t--->\t (X,Y,Z) mm: "
+              << m_ModulesMap[moduleNumber]->GetStripPositionX(moduleNumber, i, j) << "\t"
+              << m_ModulesMap[moduleNumber]->GetStripPositionY(moduleNumber, i, j) << "\t"
+              << m_ModulesMap[moduleNumber]->GetStripPositionZ(moduleNumber, i, j) << endl;
+      }
+   }
+}
+
+
+
 double GaspardTracker::GetEnergyDeposit()		
 { 
    if (m_EventPhysics->GetEventMultiplicity() > 0) {

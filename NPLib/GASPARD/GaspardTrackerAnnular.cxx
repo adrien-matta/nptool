@@ -20,7 +20,10 @@ GaspardTrackerAnnular::GaspardTrackerAnnular(map<int, GaspardTrackerModule*> &Mo
 	  m_EventPhysics(EventPhysics),
 	  m_EventData(0),
 	  m_PreTreatData(new TGaspardTrackerData),
-	  m_NumberOfModule(0)
+	  m_NumberOfModule(0),
+     m_NumberOfStripsTheta(16),
+     m_NumberOfStripsPhi(16),
+     m_NumberOfQuadrants(4)
 {
 }
 
@@ -247,14 +250,9 @@ void GaspardTrackerAnnular::AddModule(double zpos, double rmin, double rmax)
 {
    m_NumberOfModule++;
 
-   // Characteristics
-   int NbPhiStrips     = 16;
-   int NbThetaStrips   = 16;
-   int NbQuadrant = 4;
-
    // Theta & phi strips pitch
-   double thetaPitch = (rmax - rmin) / NbThetaStrips;
-   double phiPitch   = 2*M_PI / (NbQuadrant*NbThetaStrips);
+   double thetaPitch = (rmax - rmin) / m_NumberOfStripsTheta;
+   double phiPitch   = 2*M_PI / (m_NumberOfQuadrants*m_NumberOfStripsPhi);
 
    // Buffer object to fill Position Array
    vector<double> lineX;
@@ -266,25 +264,31 @@ void GaspardTrackerAnnular::AddModule(double zpos, double rmin, double rmax)
    vector< vector< double > >   OneModuleStripPositionZ;
 
    // loop on theta strips
-   for (int i = 0; i < NbThetaStrips*NbQuadrant; i++) {
+   for (int i = 0; i < m_NumberOfStripsTheta*m_NumberOfQuadrants; i++) {
       lineX.clear();
       lineY.clear();
       lineZ.clear();
 
       // center of theta strip
-      double r = rmin + thetaPitch/2 + thetaPitch*(i % NbThetaStrips);
-//      cout << i << "  " << i%NbThetaStrips << "   " << r << endl;
+      double r = rmin + thetaPitch/2 + thetaPitch*(i % m_NumberOfStripsTheta);
+         
+      // current quandrant
+      int quadrant = i / m_NumberOfStripsTheta;
 
       // loop on phi strips
-      for (int j = 0; j < NbPhiStrips*NbQuadrant; j++) {
+      for (int j = 0; j < m_NumberOfStripsPhi*m_NumberOfQuadrants; j++) {
+         // initialize x and y
+         double x = 0;
+         double y = 0;
          // center of phi strips
          double phi = phiPitch/2 + phiPitch*j;
+         if (phi > quadrant*M_PI/2 && phi < (quadrant+1)*M_PI/2) {
+            // calculate x and y projections
+            x = r * cos(phi);
+            y = r * sin(phi);
+            if (zpos < 0) y *= -1;
+         }
 
-         // calculate x and y projections
-         double x = r * cos(phi);
-         double y = r * sin(phi);
-
-//         cout << i << "  " << j << "  " << r << "  " << phi*180/M_PI << "   " << x << "   " << y << endl;
          // fill lineX,Y,Z
          lineX.push_back(x);
          lineY.push_back(y);

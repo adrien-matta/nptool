@@ -88,3 +88,15 @@ void NPOptionManager::DisplayHelp()
     cout << "\t --run -R <arg>\t \t \t \t \t \t \t　Set arg as the run to read file list" << endl  ;
     cout << endl << endl ;  
   }
+
+
+
+void NPOptionManager::Destroy()
+{
+   if (instance != 0) {
+      delete instance;
+      instance = 0;
+   }
+}
+
+

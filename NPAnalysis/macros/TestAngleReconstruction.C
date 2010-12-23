@@ -42,7 +42,7 @@
 #include "TInitialConditions.h"
 #include "TInteractionCoordinates.h"
 
-void TestAngleReconstruction(const char * fname = "mySimul")
+void TestAngleReconstruction(const char * fname = "myResult")
 {
    // Open output ROOT file from NPTool simulation run
    TString path = gSystem->Getenv("NPTOOL");

@@ -84,6 +84,7 @@ public:
 
 public:
    void DumpModulesMap();
+   void DumpStrippingScheme(int moduleNumber);
 
 private:
    map<int, GaspardTrackerModule*>	m_ModulesMap;

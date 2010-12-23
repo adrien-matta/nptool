@@ -679,12 +679,13 @@ G4bool GPDScorerFirstStageFrontStripAnnular::ProcessHits(G4Step* aStep, G4Toucha
    if (dummy < 0 && fabs(dummy) < 1e-6) dummy *= -1;
    G4double ThetaStripNumber = floor(dummy / ThetaStripPitch);
    ThetaStripNumber += PhiQuadrantNumber * GPDANNULAR::NbThetaStrips;
-
-//      G4cout << "POS: " << POS << G4endl;
-//      G4cout << "r, phi " << r << "  " << phi << G4endl;
-//      G4cout << "PhiWidth, PhiQuadrantNumber " << PhiWidth << "  " << PhiQuadrantNumber << G4endl;
-//      G4cout << "ThetaStripPitch, ThetaStripNumber, dummy " << ThetaStripPitch << "  " << ThetaStripNumber << "  " << dummy << G4endl;
-
+   ThetaStripNumber++;
+/*
+      G4cout << "POS: " << POS << G4endl;
+      G4cout << "r, phi " << r << "  " << phi << G4endl;
+      G4cout << "PhiWidth, PhiQuadrantNumber " << PhiWidth << "  " << PhiQuadrantNumber << G4endl;
+      G4cout << "ThetaStripPitch, ThetaStripNumber, dummy " << ThetaStripPitch << "  " << ThetaStripNumber << "  " << dummy << G4endl;
+*/
    if (ThetaStripNumber < 1e-6) {
     /*  G4cout << "POS: " << POS << G4endl;
       G4cout << "r, phi " << r << "  " << phi << G4endl;
@@ -695,7 +696,6 @@ G4bool GPDScorerFirstStageFrontStripAnnular::ProcessHits(G4Step* aStep, G4Toucha
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   ThetaStripNumber++;
    EvtMap->set(DetNbr + index, ThetaStripNumber);
 
    return TRUE;
@@ -763,6 +763,7 @@ G4bool GPDScorerFirstStageBackStripAnnular::ProcessHits(G4Step* aStep, G4Touchab
    // Interstrip should be taken into account here. To be done
    G4double PhiWidth = 360. / (GPDANNULAR::NbPhiStrips * GPDANNULAR::NbThetaQuadrant);
    G4double PhiStripNumber = floor(phi / PhiWidth);
+   PhiStripNumber++;
 
 //   G4cout << POS << G4endl;
 //   G4cout << "phi " << phi << " PhiWidth  " << PhiWidth << "  PhiStripNumber " << PhiStripNumber << G4endl;
@@ -770,7 +771,6 @@ G4bool GPDScorerFirstStageBackStripAnnular::ProcessHits(G4Step* aStep, G4Touchab
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 100*keV) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
-   PhiStripNumber++;
    EvtMap->set(DetNbr + index, PhiStripNumber);
 
    return TRUE;

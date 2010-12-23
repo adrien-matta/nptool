@@ -5,13 +5,13 @@ using namespace std;
 
 int main(int argc,char** argv)
 {	
-
-  NPOptionManager* myOptionManager  = NPOptionManager::getInstance(argc,argv)   ;
-  string reactionfileName           = myOptionManager->GetReactionFilePath()    ;
-	string detectorfileName 		      = myOptionManager->GetDetectorFilePath()	  ;
-	string calibrationfileName        = myOptionManager->GetCalibrationFilePath()	;
-	string runToReadfileName          = myOptionManager->GetRunToReadFilePath()   ;
-	string OutputfileName             = myOptionManager->GetOutputFilePath()      ;
+   // command line parsing
+   NPOptionManager* myOptionManager = NPOptionManager::getInstance(argc,argv);
+   string reactionfileName          = myOptionManager->GetReactionFilePath();
+	string detectorfileName          = myOptionManager->GetDetectorFilePath();
+	string calibrationfileName       = myOptionManager->GetCalibrationFilePath();
+	string runToReadfileName         = myOptionManager->GetRunToReadFilePath();
+	string OutputfileName            = myOptionManager->GetOutputFilePath();
 
    // Instantiate RootInput and RootOutput singleton classes
    RootInput:: getInstance(runToReadfileName);
@@ -89,7 +89,6 @@ int main(int argc,char** argv)
 
       // Get total energy
       double E = GPDTrack->GetEnergyDeposit();
-//      cout << i << "  " << E << endl;
 
       // if there is a hit in the detector array, treat it.
       double Theta, ThetaStrip, angle, ThetaCM;
@@ -101,15 +100,11 @@ int main(int argc,char** argv)
          ThetaCM = initCond->GetICEmittedAngleThetaCM(0) * deg;
 
          // Get exact scattering angle from TInteractionCoordinates object
-//         Theta = interCoord->GetDetectedAngleTheta(0) * deg;
-//         cout << interCoord << endl;
 //         interCoord->Dump();
 //         cout << i << " mult: " << interCoord->GetDetectedMultiplicity() << endl;
          DetecX = interCoord->GetDetectedPositionX(0);
          DetecY = interCoord->GetDetectedPositionY(0);
          DetecZ = interCoord->GetDetectedPositionZ(0);
-//         cout << "Detected position :" << endl;
-//         cout << "\t" << DetecX << "  " << DetecY << "  " << DetecZ << endl;
          TVector3 Detec(DetecX, DetecY, DetecZ);
 
          // Get interaction position in detector
@@ -119,11 +114,9 @@ int main(int argc,char** argv)
          // Get beam interaction coordinates on target (from initial condition)
          XTarget = initCond->GetICPositionX(0);
          YTarget = initCond->GetICPositionY(0);
-//         cout << XTarget << "  " << YTarget << endl;
          BeamTheta = initCond->GetICIncidentAngleTheta(0)*deg;
          BeamPhi   = initCond->GetICIncidentAnglePhi(0)*deg;
          TVector3 BeamDirection = TVector3(cos(BeamPhi)*sin(BeamTheta), sin(BeamPhi)*sin(BeamTheta), cos(BeamTheta));
-//         cout << BeamDirection.X() << "  " << BeamDirection.Y() << "  " << BeamDirection.Z() << endl;
 
          // Hit direction taking into account beam position on target
          TVector3 HitDirection = A - TVector3(XTarget, YTarget, 0);
@@ -182,6 +175,7 @@ int main(int argc,char** argv)
    // delete singleton classes
    RootOutput::getInstance()->Destroy();
    RootInput::getInstance()->Destroy();
+   NPOptionManager::getInstance()->Destroy();
 
    return 0;
 }

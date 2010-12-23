@@ -8,4 +8,3 @@ clean:
 distclean:
 	make clean -C ./src
 	rm Analysis
-	rm AnalysisNew

@@ -246,8 +246,6 @@ void GaspardTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
 
       // Silicon detector itself
       G4ThreeVector  positionSilicon = G4ThreeVector(0, 0, Silicon_PosZ);
-      G4cout << "position en z de l'annulaire " << MMpos.z() * mm << G4endl;
-      G4cout << "position en z de l'annulaire " << Silicon_PosZ * mm << G4endl;
 
       G4Tubs* solidSilicon = new G4Tubs("solidSilicon", 
                                          FirstStageRmin,
