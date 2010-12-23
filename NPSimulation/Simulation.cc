@@ -106,6 +106,7 @@ int main(int argc, char** argv)
      ////////////////////// Job termination ////////////////////////
      ///////////////////////////////////////////////////////////////
      RootOutput::getInstance()->Destroy();
+     NPOptionManager::getInstance()->Destroy();
 
      delete runManager;
      return 0;

@@ -19,7 +19,7 @@
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
 Target
-	THICKNESS= 5
+	THICKNESS= 0.001
 	RADIUS=	7.5
 	MATERIAL= CD2
 	X= 0
@@ -27,76 +27,6 @@ Target
 	Z= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
 GaspardTracker
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
-%GPDTrapezoid
-	THETA= 0 
-	PHI= 0
-	R= 200
-	BETA= 0 0 0
-        FIRSTSTAGE= 1
-        SECONDSTAGE= 1
-        THIRDSTAGE= 1
-        VIS= all
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Barrel
-%GPDTrapezoid
-        X1_Y1=    	-25.0	-25.00   200.00
-        X128_Y1=       	 25.0	-25.00   200.00
-        X1_Y128=        -25.0 	 25.00	 200.00
-        X128_Y128=       25.0	 25.00   200.00
-        FIRSTSTAGE= 1
-        SECONDSTAGE= 1
-        THIRDSTAGE= 1
-        VIS= all
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
-%GPDDummyShape
-	THETA= 180 
-	PHI= 0
-	R= 100
-	BETA= 0 0 0
-        FIRSTSTAGE= 1
-        SECONDSTAGE= 1
-        THIRDSTAGE= 1
-        VIS= all
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Barrel
-%GPDDummyShape
-        X1_Y1=    	-25.0	-25.00  -100.00
-        X128_Y1=       	-25.0	 25.00  -100.00
-        X1_Y128=         25.0 	-25.00	-100.00
-        X128_Y128=       25.0	 25.00  -100.00
-        FIRSTSTAGE= 1
-        SECONDSTAGE= 1
-        THIRDSTAGE= 1
-        VIS= all
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Barrel
-%GPDDummyShape
-        X1_Y1=         -10.0	-10.00  100.00
-        X128_Y1=       -10.0	 10.00  100.00
-        X1_Y128=        10.0 	-10.00	100.00
-        X128_Y128=      10.0	 10.00  100.00
-        FIRSTSTAGE= 1
-        SECONDSTAGE= 1
-        THIRDSTAGE= 1
-        VIS= all
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
-%GPDSquare
-	THETA= 180 
-	PHI= 0
-	R= 100
-	BETA= 0 0 0
-        FIRSTSTAGE= 1
-        SECONDSTAGE= 1
-        THIRDSTAGE= 1
-        VIS= all
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Barrel
-%GPDSquare
-        X1_Y1=    	-49.0	-49.00  -100.00
-        X128_Y1=       	-49.0	 49.00  -100.00
-        X1_Y128=         49.0 	-49.00	-100.00
-        X128_Y128=       49.0	 49.00  -100.00
-        FIRSTSTAGE= 1
-        SECONDSTAGE= 1
-        THIRDSTAGE= 1
-        VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Annular Back
 GPDAnnular
         Z=      -156.5
