@@ -280,7 +280,8 @@ FillIncludeDir:
 
 FillLibraryDir:
 		./scripts/filllibdir.sh
-ifeq ($(ARCH),macosx)
+#ifeq ($(ARCH),macosx)
+ifeq ($(findstring macosx, $(ARCH)), macosx)
 		./scripts/filllibmacdir.sh
 endif
 
