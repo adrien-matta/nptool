@@ -83,7 +83,11 @@ int main(int argc,char** argv)
 					// Angle between beam and particle
 					ThetaLab  = ThetaCalculation ( HitDirection , TVector3(0,0,1)   ) ;	
 					ELab = M2 -> Si_E[hit] + M2 -> SiLi_E[hit]	;
+					
 			  }
+			
+			
+			e530Reaction	-> ; 
 			
       RootOutput::getInstance()->GetTree()->Fill()	;
     }

@@ -4,30 +4,30 @@
 %Temperature in K, Pressure in bar
 %Material name according to the target library
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-GeneralTarget
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Target
-	THICKNESS= 0.001
-	RADIUS=	45
-	MATERIAL= CD2
-	ANGLE= 45
-	X= 0
-	Y= 0
-	Z= 0
-	
-%CryoTarget
-	THICKNESS= 3
-	RADIUS=	45
-	TEMPERATURE= 26
-	PRESSURE= 1
-	MATERIAL= D2	
-	WINDOWSTHICKNESS= 0
-	WINDOWSMATERIAL= Mylar
-	X= 0
-	Y= 0
-	Z= 0			
-			
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%GeneralTarget
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Target
+%	THICKNESS= 0.001
+%	RADIUS=	45
+%	MATERIAL= CD2
+%	ANGLE= 45
+%	X= 0
+%	Y= 0
+%	Z= 0
+%	
+%%CryoTarget
+%	THICKNESS= 3
+%	RADIUS=	45
+%	TEMPERATURE= 26
+%	PRESSURE= 1
+%	MATERIAL= D2	
+%	WINDOWSTHICKNESS= 0
+%	WINDOWSMATERIAL= Mylar
+%	X= 0
+%	Y= 0
+%	Z= 0			
+%			
 %%%%%%%%%%%%%%%%%%%%%			
 MUST2Array			
 %%%%%%% Telescope 1 %%%%%%%			
@@ -85,7 +85,7 @@ SILI=	0
 CSI=	1		
 VIS=	all		
 %%%%%%% Telescope 6 %%%%%%%			
-%M2Telescope 			
+M2Telescope 			
 X1_Y1=	155.77	50.23	8.18
 X1_Y128=	155.77	-50.23	8.18
 X128_Y1=	133.17	50.23	-89.7
@@ -94,16 +94,16 @@ SI=	1
 SILI=	1		
 CSI=	0		
 VIS=	all		
-% Alternate Telescope 6 %%
-M2Telescope
-	THETA= -130
-	PHI= 0
-	R= 150
-	BETA= 0 0 0
-	SI= 1
-	SILI= 1
-	CSI= 0
-	VIS= all					
+%% Alternate Telescope 6 %%
+%M2Telescope
+%	THETA= -130
+%	PHI= 0
+%	R= 150
+%	BETA= 0 0 0
+%	SI= 1
+%	SILI= 1
+%	CSI= 0
+%	VIS= all					
 %%%%%%% Telescope 7 %%%%%%%			
 M2Telescope 			
 X1_Y1=	27.07	50.23	-154.49
