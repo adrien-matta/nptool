@@ -295,3 +295,40 @@ double EnergyLoss::EvaluateInitialEnergy(	double Energy 					, // Energy of the 
 		return (Energy*fNumberOfMass)	;
 	}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double	EnergyLoss::EvaluateMaterialThickness(	double InitialEnergy 	, // Energy of the detected particle
+		   									            double FinalEnergy	  ,
+                                    double ThicknessLimit,
+                                    double ThicknessStep) // Target Thickness at 0 degree
+		   									            const 
+  {
+    double Thickness = ThicknessStep ;
+    double Energy = InitialEnergy;
+    while(Energy<FinalEnergy && Thickness > 0)
+      {
+        Energy = EvaluateInitialEnergy(Energy,ThicknessStep,0);
+        Thickness+=ThicknessStep;
+        if (Thickness>ThicknessLimit)
+          Thickness= -1 ;
+        
+      }
+    
+    return Thickness ;
+
+  }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
