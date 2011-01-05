@@ -231,8 +231,6 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
                                           Length/2, 0*deg, 0*deg, 
                                           Height/2, BaseLarge/2, BaseSmall/2, 0*deg, 
                                           Height/2, BaseLarge/2, BaseSmall/2, 0*deg);
-//                                          Height/2, BaseSmall/2, BaseLarge/2, 0*deg, 
-//                                          Height/2, BaseSmall/2, BaseLarge/2, 0*deg);
    G4LogicalVolume* logicGPDTrapezoid = new G4LogicalVolume(solidGPDTrapezoid, Vacuum, Name, 0, 0, 0);
 
    PVPBuffer = new G4PVPlacement(G4Transform3D(*MMrot, MMpos), logicGPDTrapezoid, Name, world, false, 0);
@@ -274,8 +272,6 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
                                            FirstStageThickness/2, 0*deg, 0*deg, 
                                            FirstStageHeight/2, FirstStageBaseLarge/2, FirstStageBaseSmall/2, 0*deg, 
                                            FirstStageHeight/2, FirstStageBaseLarge/2, FirstStageBaseSmall/2, 0*deg);
-//                                           FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg, 
-//                                           FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg);
       G4LogicalVolume* logicFirstStage = new G4LogicalVolume(solidFirstStage, Silicon, "logicFirstStage", 0, 0, 0);
 
       PVPBuffer = new G4PVPlacement(0,
@@ -305,8 +301,6 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
                                             SecondStageThickness/2, 0*deg, 0*deg, 
                                            FirstStageHeight/2, FirstStageBaseLarge/2, FirstStageBaseSmall/2, 0*deg, 
                                            FirstStageHeight/2, FirstStageBaseLarge/2, FirstStageBaseSmall/2, 0*deg);
-//                                           FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg, 
-//                                           FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg);
       G4LogicalVolume* logicSecondStage = new G4LogicalVolume(solidSecondStage, Silicon, "logicSecondStage", 0, 0, 0);
 
       PVPBuffer = new G4PVPlacement(0,
@@ -336,8 +330,6 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
                                            ThirdStageThickness/2, 0*deg, 0*deg, 
                                            FirstStageHeight/2, FirstStageBaseLarge/2, FirstStageBaseSmall/2, 0*deg, 
                                            FirstStageHeight/2, FirstStageBaseLarge/2, FirstStageBaseSmall/2, 0*deg);
-//                                           FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg, 
-//                                           FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg);
       G4LogicalVolume* logicThirdStage = new G4LogicalVolume(solidThirdStage, Silicon, "logicThirdStage", 0, 0, 0);
 
       PVPBuffer = new G4PVPlacement(0,
@@ -756,11 +748,12 @@ void GaspardTrackerTrapezoid::ReadSensitive(const G4Event* event)
    G4THitsMap<G4double>* AngPhiHitMap;
 
    // NULL pointer are given to avoid warning at compilation
-
+   // Second Stage
+   std::map<G4int, G4double*>::iterator SecondStageEnergy_itr;
+   G4THitsMap<G4double>* SecondStageEnergyHitMap = NULL;
    // Third Stage
    std::map<G4int, G4double*>::iterator ThirdStageEnergy_itr;
    G4THitsMap<G4double>* ThirdStageEnergyHitMap = NULL;
-
 
    // Read the Scorer associated to the first Stage
    //Detector Number
@@ -813,8 +806,12 @@ void GaspardTrackerTrapezoid::ReadSensitive(const G4Event* event)
    AngPhiHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordAngPhiCollectionID))                              ;
    Ang_Phi_itr = AngPhiHitMap->GetMap()->begin()                                                                    ;
 
-   // Read the Scorer associated to the Third Stage 
-   //Energy
+   // Read the Scorer associated to the Second and Third Stage 
+   // Energy second stage
+   G4int SecondStageEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("SecondStageScorerGPDTrapezoid/SecondStageEnergy")      ;
+   SecondStageEnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(SecondStageEnergyCollectionID))                      ;
+   SecondStageEnergy_itr = SecondStageEnergyHitMap->GetMap()->begin()                                                       ;
+   // Energy third stage
    G4int ThirdStageEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThirdStageScorerGPDTrapezoid/ThirdStageEnergy")      ;
    ThirdStageEnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(ThirdStageEnergyCollectionID))                      ;
    ThirdStageEnergy_itr = ThirdStageEnergyHitMap->GetMap()->begin()                                                       ;
@@ -951,24 +948,40 @@ void GaspardTrackerTrapezoid::ReadSensitive(const G4Event* event)
             }
 
             // Second Stage
+            SecondStageEnergy_itr = SecondStageEnergyHitMap->GetMap()->begin()  ;
+            for (G4int h = 0 ; h < SecondStageEnergyHitMap->entries() ; h++) {
+               G4int SecondStageEnergyTrackID  =   SecondStageEnergy_itr->first - N;
+               G4double SecondStageEnergy      = *(SecondStageEnergy_itr->second);
+
+               if (SecondStageEnergyTrackID == NTrackID) {
+                  ms_Event->SetGPDTrkSecondStageEEnergy(RandGauss::shoot(SecondStageEnergy, ResoSecondStage));
+                  ms_Event->SetGPDTrkSecondStageEPadNbr(1);
+                  ms_Event->SetGPDTrkSecondStageTPadNbr(1);
+                  ms_Event->SetGPDTrkSecondStageTTime(1);
+                  ms_Event->SetGPDTrkSecondStageTDetectorNbr(m_index["Trapezoid"] + N);
+                  ms_Event->SetGPDTrkSecondStageEDetectorNbr(m_index["Trapezoid"] + N);
+               }
+
+               SecondStageEnergy_itr++;
+            }
 
             // Third Stage
-               ThirdStageEnergy_itr = ThirdStageEnergyHitMap->GetMap()->begin()  ;
-               for (G4int h = 0 ; h < ThirdStageEnergyHitMap->entries() ; h++) {
-                  G4int ThirdStageEnergyTrackID  =   ThirdStageEnergy_itr->first - N;
-                  G4double ThirdStageEnergy      = *(ThirdStageEnergy_itr->second);
+            ThirdStageEnergy_itr = ThirdStageEnergyHitMap->GetMap()->begin()  ;
+            for (G4int h = 0 ; h < ThirdStageEnergyHitMap->entries() ; h++) {
+               G4int ThirdStageEnergyTrackID  =   ThirdStageEnergy_itr->first - N;
+               G4double ThirdStageEnergy      = *(ThirdStageEnergy_itr->second);
 
-                  if (ThirdStageEnergyTrackID == NTrackID) {
-                     ms_Event->SetGPDTrkThirdStageEEnergy(RandGauss::shoot(ThirdStageEnergy, ResoThirdStage));
-                     ms_Event->SetGPDTrkThirdStageEPadNbr(1);
-                     ms_Event->SetGPDTrkThirdStageTPadNbr(1);
-                     ms_Event->SetGPDTrkThirdStageTTime(1);
-                     ms_Event->SetGPDTrkThirdStageTDetectorNbr(m_index["Trapezoid"] + N);
-                     ms_Event->SetGPDTrkThirdStageEDetectorNbr(m_index["Trapezoid"] + N);
-                  }
-
-                  ThirdStageEnergy_itr++;
+               if (ThirdStageEnergyTrackID == NTrackID) {
+                  ms_Event->SetGPDTrkThirdStageEEnergy(RandGauss::shoot(ThirdStageEnergy, ResoThirdStage));
+                  ms_Event->SetGPDTrkThirdStageEPadNbr(1);
+                  ms_Event->SetGPDTrkThirdStageTPadNbr(1);
+                  ms_Event->SetGPDTrkThirdStageTTime(1);
+                  ms_Event->SetGPDTrkThirdStageTDetectorNbr(m_index["Trapezoid"] + N);
+                  ms_Event->SetGPDTrkThirdStageEDetectorNbr(m_index["Trapezoid"] + N);
                }
+
+               ThirdStageEnergy_itr++;
+            }
 
          DetectorNumber_itr++;
       }
@@ -984,6 +997,7 @@ void GaspardTrackerTrapezoid::ReadSensitive(const G4Event* event)
       PosZHitMap     ->clear();
       AngThetaHitMap ->clear();
       AngPhiHitMap   ->clear();
+      SecondStageEnergyHitMap ->clear();
       ThirdStageEnergyHitMap ->clear();
    }
 }

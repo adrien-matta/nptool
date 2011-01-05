@@ -269,6 +269,26 @@ void GaspardTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
    //////////////// Second Stage  Construction ////////////////////
    ////////////////////////////////////////////////////////////////
    if (wSecondStage) {
+      // Second stage silicon detector
+      G4ThreeVector  positionSecondStage = G4ThreeVector(0, 0, SecondStage_PosZ);
+
+      G4Tubs* solidSecondStage = new G4Tubs("solidSecondStage", 
+                                            FirstStageRmin,
+                                            FirstStageRmax,
+                                            SecondStageThickness/2, 
+                                            0*deg, 
+                                            360*deg); 
+
+      G4LogicalVolume* logicSecondStage = new G4LogicalVolume(solidSecondStage, Silicon, "logicSecondStage", 0, 0, 0);
+
+      PVPBuffer = new G4PVPlacement(0, positionSecondStage, logicSecondStage, Name + "_SecondStage", logicMM, false, 0);
+
+      ///Visualisation of Second Stage
+      G4VisAttributes* SecondStageVisAtt = new G4VisAttributes(G4Colour(0.9, 0, 0));	// red
+      logicSecondStage->SetVisAttributes(SecondStageVisAtt);
+
+      // Set Second Stage sensible
+      logicSecondStage->SetSensitiveDetector(m_SecondStageScorer);
    }
 
    ////////////////////////////////////////////////////////////////
@@ -502,6 +522,10 @@ void GaspardTrackerAnnular::ReadSensitive(const G4Event* event)
    G4THitsMap<G4double>* AngPhiHitMap;
 
    // NULL pointer are given to avoid warning at compilation
+   // Second Stage
+   std::map<G4int, G4double*>::iterator SecondStageEnergy_itr;
+   G4THitsMap<G4double>* SecondStageEnergyHitMap = NULL;
+
    // Third Stage
    std::map<G4int, G4double*>::iterator ThirdStageEnergy_itr;
    G4THitsMap<G4double>* ThirdStageEnergyHitMap = NULL;
@@ -558,8 +582,12 @@ void GaspardTrackerAnnular::ReadSensitive(const G4Event* event)
    AngPhiHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordAngPhiCollectionID))                              ;
    Ang_Phi_itr = AngPhiHitMap->GetMap()->begin()                                                                    ;
 
-   // Read the Scorer associated to the Third Stage 
-   //Energy
+   // Read the Scorer associated to the Second and Third Stage 
+   // Energy second
+   G4int SecondStageEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("SecondStageScorerGPDAnnular/SecondStageEnergy")      ;
+   SecondStageEnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(SecondStageEnergyCollectionID))                      ;
+   SecondStageEnergy_itr = SecondStageEnergyHitMap->GetMap()->begin()                                                       ;
+   // Energy third
    G4int ThirdStageEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThirdStageScorerGPDAnnular/ThirdStageEnergy")      ;
    ThirdStageEnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(ThirdStageEnergyCollectionID))                      ;
    ThirdStageEnergy_itr = ThirdStageEnergyHitMap->GetMap()->begin()                                                       ;
@@ -695,40 +723,57 @@ void GaspardTrackerAnnular::ReadSensitive(const G4Event* event)
             }
 
             // Second Stage
+            SecondStageEnergy_itr = SecondStageEnergyHitMap->GetMap()->begin()  ;
+            for (G4int h = 0 ; h < SecondStageEnergyHitMap->entries() ; h++) {
+               G4int SecondStageEnergyTrackID  =   SecondStageEnergy_itr->first - N;
+               G4double SecondStageEnergy      = *(SecondStageEnergy_itr->second);
+
+               if (SecondStageEnergyTrackID == NTrackID) {
+                  ms_Event->SetGPDTrkSecondStageEEnergy(RandGauss::shoot(SecondStageEnergy, ResoSecondStage));
+                  ms_Event->SetGPDTrkSecondStageEPadNbr(1);
+                  ms_Event->SetGPDTrkSecondStageTPadNbr(1);
+                  ms_Event->SetGPDTrkSecondStageTTime(1);
+                  ms_Event->SetGPDTrkSecondStageTDetectorNbr(m_index["Annular"] + N);
+                  ms_Event->SetGPDTrkSecondStageEDetectorNbr(m_index["Annular"] + N);
+               }
+
+               SecondStageEnergy_itr++;
+            }
 
             // Third Stage
-               ThirdStageEnergy_itr = ThirdStageEnergyHitMap->GetMap()->begin()  ;
-               for (G4int h = 0 ; h < ThirdStageEnergyHitMap->entries() ; h++) {
-                  G4int ThirdStageEnergyTrackID  =   ThirdStageEnergy_itr->first - N;
-                  G4double ThirdStageEnergy      = *(ThirdStageEnergy_itr->second);
+            ThirdStageEnergy_itr = ThirdStageEnergyHitMap->GetMap()->begin()  ;
+            for (G4int h = 0 ; h < ThirdStageEnergyHitMap->entries() ; h++) {
+               G4int ThirdStageEnergyTrackID  =   ThirdStageEnergy_itr->first - N;
+               G4double ThirdStageEnergy      = *(ThirdStageEnergy_itr->second);
 
-                  if (ThirdStageEnergyTrackID == NTrackID) {
-                     ms_Event->SetGPDTrkThirdStageEEnergy(RandGauss::shoot(ThirdStageEnergy, ResoThirdStage));
-                     ms_Event->SetGPDTrkThirdStageEPadNbr(1);
-                     ms_Event->SetGPDTrkThirdStageTPadNbr(1);
-                     ms_Event->SetGPDTrkThirdStageTTime(1);
-                     ms_Event->SetGPDTrkThirdStageTDetectorNbr(m_index["Annular"] + N);
-                     ms_Event->SetGPDTrkThirdStageEDetectorNbr(m_index["Annular"] + N);
-                  }
-
-                  ThirdStageEnergy_itr++;
+               if (ThirdStageEnergyTrackID == NTrackID) {
+                  ms_Event->SetGPDTrkThirdStageEEnergy(RandGauss::shoot(ThirdStageEnergy, ResoThirdStage));
+                  ms_Event->SetGPDTrkThirdStageEPadNbr(1);
+                  ms_Event->SetGPDTrkThirdStageTPadNbr(1);
+                  ms_Event->SetGPDTrkThirdStageTTime(1);
+                  ms_Event->SetGPDTrkThirdStageTDetectorNbr(m_index["Annular"] + N);
+                  ms_Event->SetGPDTrkThirdStageEDetectorNbr(m_index["Annular"] + N);
                }
+
+               ThirdStageEnergy_itr++;
+            }
 
          DetectorNumber_itr++;
       }
 
       // clear map for next event
-      DetectorNumberHitMap ->clear();
-      EnergyHitMap   ->clear();
-      TimeHitMap     ->clear();
-      XHitMap        ->clear();
-      YHitMap        ->clear();
-      PosXHitMap     ->clear();
-      PosYHitMap     ->clear();
-      PosZHitMap     ->clear();
-      AngThetaHitMap ->clear();
-      AngPhiHitMap   ->clear();
-      ThirdStageEnergyHitMap ->clear();
+      DetectorNumberHitMap    -> clear();
+      EnergyHitMap            -> clear();
+      TimeHitMap              -> clear();
+      XHitMap                 -> clear();
+      YHitMap                 -> clear();
+      PosXHitMap              -> clear();
+      PosYHitMap              -> clear();
+      PosZHitMap              -> clear();
+      AngThetaHitMap          -> clear();
+      AngPhiHitMap            -> clear();
+      SecondStageEnergyHitMap -> clear();
+      ThirdStageEnergyHitMap  -> clear();
    }
 }
 

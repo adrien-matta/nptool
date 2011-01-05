@@ -143,8 +143,10 @@ namespace GPDANNULAR
 //   const G4double VacBoxThickness   = 3*cm           ;
    const G4double VacBoxThickness     = 0.4*cm;
 
+   // Second stage
+   const G4double SecondStageThickness = 1.5*mm;
+
    // Third stage
-   const G4double MylarCsIThickness   = 3*micrometer;
    const G4double ThirdStageThickness = 1.5*mm;
 
    // Characteristics
@@ -153,11 +155,12 @@ namespace GPDANNULAR
    const G4int NbThetaQuadrant = 4;
 
    // Starting at the front and going in direction of third stage
-   const G4double AluStripFront_PosZ = Length* -0.5 + 0.5*AluStripThickness                              ;
-   const G4double Silicon_PosZ       = AluStripFront_PosZ + 0.5*AluStripThickness + 0.5*FirstStageThickness ;
-   const G4double AluStripBack_PosZ  = Silicon_PosZ + 0.5*FirstStageThickness + 0.5*AluStripThickness       ;
-   const G4double VacBox_PosZ        = AluStripBack_PosZ + 0.5*AluStripThickness + 0.5* VacBoxThickness  ;
-   const G4double ThirdStage_PosZ    = VacBox_PosZ + 0.5*VacBoxThickness + 0.5*ThirdStageThickness       ;
+   const G4double AluStripFront_PosZ = Length* -0.5 + 0.5*AluStripThickness;
+   const G4double Silicon_PosZ       = AluStripFront_PosZ + 0.5*AluStripThickness + 0.5*FirstStageThickness;
+   const G4double AluStripBack_PosZ  = Silicon_PosZ + 0.5*FirstStageThickness + 0.5*AluStripThickness;
+   const G4double VacBox_PosZ        = AluStripBack_PosZ + 0.5*AluStripThickness + 0.5* VacBoxThickness;
+   const G4double SecondStage_PosZ   = VacBox_PosZ + 0.5*VacBoxThickness + 0.5*SecondStageThickness;
+   const G4double ThirdStage_PosZ    = SecondStage_PosZ + 0.5*SecondStageThickness + 0.5*VacBoxThickness + 0.5*ThirdStageThickness;
 }
 
 #endif

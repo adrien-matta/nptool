@@ -33,7 +33,7 @@ GPDAnnular
         RMIN=   16
         RMAX=	52
         FIRSTSTAGE= 1
-        SECONDSTAGE= 0
+        SECONDSTAGE= 1
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Annular Front
@@ -42,7 +42,7 @@ GPDAnnular
         RMIN=	16
         RMAX=	52
         FIRSTSTAGE= 1
-        SECONDSTAGE= 0
+        SECONDSTAGE= 1
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 End-Cap Back

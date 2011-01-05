@@ -717,8 +717,8 @@ void GaspardTrackerSquare::ReadSensitive(const G4Event* event)
 
    // NULL pointer are given to avoid warning at compilation
    // Si(Li)
-   std::map<G4int, G4double*>::iterator SiLiEnergy_itr ;
-   G4THitsMap<G4double>* SiLiEnergyHitMap = NULL      ;
+   std::map<G4int, G4double*>::iterator SecondStageEnergy_itr ;
+   G4THitsMap<G4double>* SecondStageEnergyHitMap = NULL      ;
    // Third Stage
    std::map<G4int, G4double*>::iterator ThirdStageEnergy_itr  ;
    G4THitsMap<G4double>* ThirdStageEnergyHitMap = NULL    ;
@@ -776,14 +776,14 @@ void GaspardTrackerSquare::ReadSensitive(const G4Event* event)
    Ang_Phi_itr = AngPhiHitMap->GetMap()->begin()                                                                    ;
 
 
-   // Read the Scorer associate to the SiLi
+   // Read the Scorer associate to the SecondStage
    //Energy
-   G4int SiLiEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("SecondStageScorerGPDSquare/SecondStageEnergy")   ;
-   SiLiEnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(SiLiEnergyCollectionID))                 ;
-   SiLiEnergy_itr = SiLiEnergyHitMap->GetMap()->begin()                                                     ;
+   G4int SecondStageEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("SecondStageScorerGPDSquare/SecondStageEnergy")   ;
+   SecondStageEnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(SecondStageEnergyCollectionID))                 ;
+   SecondStageEnergy_itr = SecondStageEnergyHitMap->GetMap()->begin()                                                     ;
 
 
-   // Read the Scorer associate to the CsI crystal
+   // Read the Scorer associate to the ThirdStage
    //Energy
    G4int ThirdStageEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThirdStageScorerGPDSquare/ThirdStageEnergy");
    ThirdStageEnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(ThirdStageEnergyCollectionID));
@@ -920,13 +920,13 @@ void GaspardTrackerSquare::ReadSensitive(const G4Event* event)
             }
 
             // Second Stage
-               SiLiEnergy_itr = SiLiEnergyHitMap->GetMap()->begin() ;
-               for (G4int h = 0 ; h < SiLiEnergyHitMap->entries() ; h++) {
-                  G4int SiLiEnergyTrackID =   SiLiEnergy_itr->first - N;
-                  G4double SiLiEnergy     = *(SiLiEnergy_itr->second);
+               SecondStageEnergy_itr = SecondStageEnergyHitMap->GetMap()->begin() ;
+               for (G4int h = 0 ; h < SecondStageEnergyHitMap->entries() ; h++) {
+                  G4int SecondStageEnergyTrackID =   SecondStageEnergy_itr->first - N;
+                  G4double SecondStageEnergy     = *(SecondStageEnergy_itr->second);
 
-                  if (SiLiEnergyTrackID == NTrackID) {
-                     ms_Event->SetGPDTrkSecondStageEEnergy(RandGauss::shoot(SiLiEnergy, ResoSecondStage)) ;
+                  if (SecondStageEnergyTrackID == NTrackID) {
+                     ms_Event->SetGPDTrkSecondStageEEnergy(RandGauss::shoot(SecondStageEnergy, ResoSecondStage)) ;
                      ms_Event->SetGPDTrkSecondStageEPadNbr(1);
                      ms_Event->SetGPDTrkSecondStageTPadNbr(1);
                      ms_Event->SetGPDTrkSecondStageTTime(1);
@@ -934,7 +934,7 @@ void GaspardTrackerSquare::ReadSensitive(const G4Event* event)
                      ms_Event->SetGPDTrkSecondStageEDetectorNbr(m_index["Square"] + N);
                   }
 
-                  SiLiEnergy_itr++;
+                  SecondStageEnergy_itr++;
                }
 
             // Third Stage
@@ -969,7 +969,7 @@ void GaspardTrackerSquare::ReadSensitive(const G4Event* event)
       PosZHitMap     ->clear();
       AngThetaHitMap ->clear();
       AngPhiHitMap   ->clear();
-      SiLiEnergyHitMap ->clear()  ;
+      SecondStageEnergyHitMap ->clear()  ;
       ThirdStageEnergyHitMap ->clear() ;
    }
 }
