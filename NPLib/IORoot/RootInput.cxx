@@ -20,6 +20,7 @@
  *****************************************************************************/
 
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <limits>
 
@@ -48,10 +49,10 @@ void RootInput::Destroy()
    }
 }
 
-
 // fileNameBase doit etre le nom du TChain.
 RootInput::RootInput(string configFileName)
 {
+   NumberOfFriend = 0;
    bool CheckTreeName     = false;
    bool CheckRootFileName = false;
 
@@ -110,7 +111,75 @@ RootInput::RootInput(string configFileName)
    cout << "/////////////////////////////////" << endl;
 }
 
+void RootInput::AddFriendChain( string RunToAdd)
+{
+   NumberOfFriend++;
+   ostringstream suffix_buffer;
+   suffix_buffer << "_" << NumberOfFriend ; 
+   string suffix = suffix_buffer.str();
+   bool CheckTreeName     = false;
+   bool CheckRootFileName = false;
 
+   // Read configuration file Buffer
+   string lineBuffer, dataBuffer;
+
+   // Open file
+   ifstream inputConfigFile;
+   inputConfigFile.open(RunToAdd.c_str());
+	
+   TChain* localChain = new TChain();
+   
+   cout << "/////////////////////////////////" << endl;
+   cout << "Adding frien to current TChain" << endl;
+
+   if (!inputConfigFile) {
+      cout << "Run to Add file :" << RunToAdd << " not found " << endl; 
+      return;
+   }
+   
+   else {
+      while (!inputConfigFile.eof()) {
+         getline(inputConfigFile, lineBuffer);
+			      
+         // search for token giving the TTree name
+         if (lineBuffer.compare(0, 9, "TTreeName") == 0) {
+            inputConfigFile >> dataBuffer;
+            // adding suffix to insure uniquity of the chain name
+            dataBuffer+suffix;
+            // initialize localChain
+            localChain->SetName(dataBuffer.c_str());
+            CheckTreeName = true ;
+         }
+     
+         // search for token giving the list of Root files to treat
+         else if (lineBuffer.compare(0, 12, "RootFileName") == 0  &&  localChain) {
+            CheckRootFileName = true ;
+
+            while (!inputConfigFile.eof()) {
+               inputConfigFile >> dataBuffer;
+
+               // ignore comment Line 
+               if (dataBuffer.compare(0, 1, "%") == 0) {
+                  inputConfigFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+               }
+
+               else if (!inputConfigFile.eof()) {
+                  localChain->Add(dataBuffer.c_str());
+                  cout << "Adding file " << dataBuffer << " to TChain" << endl;
+               }
+            }
+         }
+      }
+   }
+		   
+   if (!CheckRootFileName || !CheckTreeName) 
+      cout << "WARNING: Token not found for InputTree Declaration : Input Tree has not be Added to the current Chain" << endl;
+
+   else
+      pRootChain->AddFriend( localChain->GetName() );
+      
+   cout << "/////////////////////////////////" << endl;
+}
 
 RootInput::~RootInput()
 {
