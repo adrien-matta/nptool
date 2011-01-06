@@ -11,17 +11,44 @@
  * Creation Date  : 07/01/11                                                 *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
- * Decription: Example of rootlogon.C file which calls the NPToolLogon.C     *
- *             located in NPLib/scripts and which loads all necessary NPTool *
- *             information needed by ROOT.                                   *
+ * Decription: This script loads automatically the NPLib include path and    *
+ *             shared.                                                       *
  *                                                                           *
  *---------------------------------------------------------------------------*
- * Comment:                                                                  *
+ * Comment: This script should be called in your rootlogon.C file            *
+ *          See example in NPTool/Misc/rootlogon.C                           *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
 {
-   // Load NPToolLogon.C macro dealing with all the NPLib shared libraries
    TString path = gSystem->Getenv("NPLIB");
-   gROOT->ProcessLine(Form(".x %s/scripts/NPToolLogon.C", path.Data()));
+
+   // Add include path
+   cout << "NPTool: adding include path ..." << endl;
+   gSystem->AddIncludePath(Form("%s/include", path.Data()));
+
+   // Add shared libraries
+   cout << "NPTool: loading NPLib shared libraries ..." << endl;
+   TString libpath = Form("%s/lib", path.Data());
+   TSystemDirectory libdir("libdir", libpath);
+   TList* listfile = libdir.GetListOfFiles();
+   
+   // Since the list is ordered alphabetically and that the 
+   // libVDetector.so library should be loaded before the 
+   // lib*Physics.so libraries, it is then loaded manually 
+   // first.
+   gSystem->Load(libpath+"/libVdetector.so");
+
+   // Since the libMust2Physics.so library uses TVector2
+   // objects, the libPhysics.so ROOT library is loaded.
+   gSystem->Load("libPhysics.so");
+
+   Int_t i = 0;
+   while (listfile->At(i)) {
+      TString libname = listfile->At(i++)->GetName();
+      if (libname.Contains("so") && !libname.Contains("libVDetector.so")) {
+         TString lib     = libpath + "/" + libname;
+         gSystem->Load(lib);
+      }
+   }
 }
