@@ -64,10 +64,15 @@ private:
    static RootInput* instance;
 
 public:
+   // Return the private chain
    TChain*	GetChain() {return pRootChain;};
+   
+   // Add a Friend chain to the input chain
+   void     AddFriendChain( string RunToAdd);
 
 private:
    TChain	*pRootChain;
+   int NumberOfFriend;
 };
 
 #endif // ROOTINPUT_HH
