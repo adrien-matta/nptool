@@ -12,8 +12,8 @@
 #include "../GASPARD/GaspardTracker.h"
 #include "../Paris/Paris.h"
 #include "../Shield/Shield.h"
-
-
+#include "../Tools/NPOptionManager.h"
+#include "../IORoot/RootInput.h"
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //	Default Constructor
 DetectorManager::DetectorManager()	
@@ -325,6 +325,10 @@ void DetectorManager::BuildSimplePhysicalEvent()
 /////////////////////////////////////////////////////////////////////////////////////////////////
 void DetectorManager::InitializeRootInput()						
 {
+
+  if( NPOptionManager::getInstance()->GetDisableAllBranchOption() )
+   RootInput::getInstance()->GetChain()->SetBranchStatus ( "*" , false ) ;
+   
    map<string,VDetector*>::iterator it;
 
    for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {

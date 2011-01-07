@@ -43,7 +43,8 @@ NPOptionManager::NPOptionManager(int argc,char** argv)
     fDetectorFileName    = "myDetector.detector"  ;
     fOutputFileName      = "myResult"             ;
     fRunToReadFileName   = "RunToRead.txt"        ;
-    fCalibrationFileName = "Calibration.txt"      ; 
+    fCalibrationFileName = "Calibration.txt"      ;
+    fDisableAllBranchOption = false; 
   
     for (int i = 0 ; i < argc ; i++)
       {
@@ -72,6 +73,8 @@ NPOptionManager::NPOptionManager(int argc,char** argv)
         
         else if(argument == "-C" && argc>=i+1 )     fCalibrationFileName = argv[i+1] ;
         
+        else if(argument == "--disable-branch" )    fDisableAllBranchOption = true ;
+        
         else ;
       }
   
@@ -88,6 +91,7 @@ void NPOptionManager::DisplayHelp()
     cout << "\t --help　-H -h\t \t \t \t \t \t \t　Display this help message" << endl ;
     cout << "\t --output　-O <arg>\t \t \t \t \t \t　Set arg as the Output File Name (output tree)" << endl ;
     cout << "\t --run -R <arg>\t \t \t \t \t \t \t　Set arg as the run to read file list" << endl  ;
+    cout << "\t --disable-branch\t \t \t \t \t \t　Disable of branch of Input tree except the one of the detector (faster)" << endl  ;
     cout << endl << endl ;  
 
     // exit current program

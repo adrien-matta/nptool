@@ -62,18 +62,20 @@ class NPOptionManager
       void DisplayHelp();
 
     public:
-      string GetReactionFilePath()    { return fReactionFileName    ; } ;
-      string GetDetectorFilePath()    { return fDetectorFileName    ; } ;
-      string GetRunToReadFilePath()   { return fRunToReadFileName   ; } ;
-      string GetCalibrationFilePath() { return fCalibrationFileName ; } ;
-      string GetOutputFilePath()      { return fOutputFileName      ; } ;
+      string GetReactionFilePath()        { return fReactionFileName        ; } ;
+      string GetDetectorFilePath()        { return fDetectorFileName        ; } ;
+      string GetRunToReadFilePath()       { return fRunToReadFileName       ; } ;
+      string GetCalibrationFilePath()     { return fCalibrationFileName     ; } ;
+      string GetOutputFilePath()          { return fOutputFileName          ; } ;
+      bool   GetDisableAllBranchOption()  { return fDisableAllBranchOption  ; } ;
       
     private:
-      string fReactionFileName    ;
-      string fDetectorFileName    ;
-      string fRunToReadFileName   ;
-      string fCalibrationFileName ;
-      string fOutputFileName      ;
+      string fReactionFileName        ;
+      string fDetectorFileName        ;
+      string fRunToReadFileName       ;
+      string fCalibrationFileName     ;
+      string fOutputFileName          ;
+      bool   fDisableAllBranchOption  ;
     
   };
 
