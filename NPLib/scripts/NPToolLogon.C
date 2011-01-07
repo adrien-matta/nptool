@@ -20,14 +20,27 @@
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
-{
-   TString path = gSystem->Getenv("NPLIB");
+ 
+#include "TSystem.h"
+#include "TList.h"
+#include "TSystemDirectory.h"
+#include "TString.h"
+ 
+#include <iostream>
+using namespace std;
 
+void InitNPTool(bool quietmode = false)
+{
+   TString currentpath = gSystem->Getenv("PWD");
+   TString path = gSystem->Getenv("NPLIB");
+   
    // Add include path
-   cout << "NPTool: adding include path ..." << endl;
+   if(quietmode)
+    cout << "NPTool: adding include path ..." << endl;
    gSystem->AddIncludePath(Form("%s/include", path.Data()));
 
    // Add shared libraries
+   if(quietmode)
    cout << "NPTool: loading NPLib shared libraries ..." << endl;
    TString libpath = Form("%s/lib", path.Data());
    TSystemDirectory libdir("libdir", libpath);
@@ -37,7 +50,7 @@
    // libVDetector.so library should be loaded before the 
    // lib*Physics.so libraries, it is then loaded manually 
    // first.
-   gSystem->Load(libpath+"/libVdetector.so");
+   gSystem->Load(libpath+"/libVDetector.so");
 
    // Since the libMust2Physics.so library uses TVector2
    // objects, the libPhysics.so ROOT library is loaded.
@@ -51,4 +64,12 @@
          gSystem->Load(lib);
       }
    }
+   
+   TSystemDirectory dir("dir",currentpath);
+   TList* listfile2 = dir.GetListOfFiles();
+   
+   if(quietmode)
+   cout << "NPTool: Ready" << endl;
+   
+   delete listfile2, listfile ;
 }
