@@ -22,6 +22,7 @@
  *****************************************************************************/
  
 #include "TSystem.h"
+#include "TROOT.h"
 #include "TList.h"
 #include "TSystemDirectory.h"
 #include "TString.h"
@@ -36,9 +37,9 @@ void InitNPTool(bool quietmode = false)
    
    // Add include path
    if(quietmode)
-    cout << "NPTool: adding include path ..." << endl;
-   gSystem->AddIncludePath(Form("%s/include", path.Data()));
-
+    cout << "NPTool: adding include path : " << path << "/include" << endl;
+    
+   gROOT->ProcessLine(Form(".include %s/include", path.Data()));
    // Add shared libraries
    if(quietmode)
    cout << "NPTool: loading NPLib shared libraries ..." << endl;
@@ -71,5 +72,5 @@ void InitNPTool(bool quietmode = false)
    if(quietmode)
    cout << "NPTool: Ready" << endl;
    
-   delete listfile2, listfile ;
+//   delete listfile2, listfile ;
 }
