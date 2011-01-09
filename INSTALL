@@ -79,5 +79,5 @@ III) INSTALLATION
 		make
 	This step is not mandatory for the G4 simulation to work.
 	If you want to use the ROOT macros in the $NPAnalysis/macros
-        directory you should execute in a ROOT terminal the commands
-	you can find in rootlogon.C
+   directory you should execute in a ROOT terminal the rootlogon.C
+   file available in NPTool/Misc

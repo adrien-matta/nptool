@@ -26,9 +26,9 @@
    gROOT->ProcessLine( Form(".L %s/scripts/NPToolLogon.C+", path.Data()) );
    
    // No Init Display
-   // InitNPTool(false)
-   InitNPTool();
+   // NPToolLogon(false)
+   NPToolLogon();
    
    // With Init Display
-   //InitNPTool(true);
+   // NPToolLogon(true);
 }

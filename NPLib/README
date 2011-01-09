@@ -49,7 +49,8 @@ II) lib directory
 	copied to this directory
 
 III) scripts
-	This directory contains several scripts used in the global Makefile.
+	This directory contains several scripts used in the global Makefile and 
+   for ROOT.
 
 IV) IORoot
 	This directory includes one library:

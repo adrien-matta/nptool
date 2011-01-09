@@ -30,19 +30,17 @@
 #include <iostream>
 using namespace std;
 
-void InitNPTool(bool quietmode = false)
+void NPToolLogon(bool quietmode = false)
 {
    TString currentpath = gSystem->Getenv("PWD");
    TString path = gSystem->Getenv("NPLIB");
    
    // Add include path
-   if(quietmode)
-    cout << "NPTool: adding include path : " << path << "/include" << endl;
-    
+   if (quietmode) cout << "NPTool: adding include path : " << path << "/include" << endl;
    gROOT->ProcessLine(Form(".include %s/include", path.Data()));
+
    // Add shared libraries
-   if(quietmode)
-   cout << "NPTool: loading NPLib shared libraries ..." << endl;
+   if (quietmode) cout << "NPTool: loading NPLib shared libraries ..." << endl;
    TString libpath = Form("%s/lib", path.Data());
    TSystemDirectory libdir("libdir", libpath);
    TList* listfile = libdir.GetListOfFiles();
@@ -66,11 +64,10 @@ void InitNPTool(bool quietmode = false)
       }
    }
    
-   TSystemDirectory dir("dir",currentpath);
-   TList* listfile2 = dir.GetListOfFiles();
+   // Since the libdir.GetListOfFiles() commands cds to the
+   // libidr directory, one has to return to the initial
+   // directory
+   gSystem->cd(currentpath);
    
-   if(quietmode)
-   cout << "NPTool: Ready" << endl;
-   
-//   delete listfile2, listfile ;
+   if (quietmode) cout << "NPTool: Ready" << endl;
 }
