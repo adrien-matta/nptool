@@ -50,6 +50,7 @@
 #include "Plastic.hh"
 #include "Paris.hh"
 #include "Shield.hh"
+#include "W1.hh"
 
 //Not G4
 #include <cstdlib>
@@ -167,8 +168,8 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
    bool cDummy           = false;
    bool cParis           = false;	// Paris Calorimeter
    bool cShield          = false;	// Paris Shield CsI
+   bool cW1              = false;   // W1 Micron DSSD
    //////////////////////////////////////////////////////////////////////////////////////////
-   // added by Nicolas [07/05/09]
    string GlobalPath = getenv("NPTOOL");
    string StandardPath = GlobalPath + "/Inputs/DetectorConfiguration/" + Path;
    ifstream ConfigFile;
@@ -291,6 +292,25 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
 
          // Add array to the VDetector Vector
          AddDetector(myDetector)                               ;
+      }
+
+      ////////////////////////////////////////////
+      ///// Search for S1 Annular detector  //////
+      ////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 2, "W1") == 0 && cW1 == false) {
+         cW1 = true ;
+         G4cout << "//////// W1 Square detector ////////" << G4endl   << G4endl;
+
+         // Instantiate the new array as a VDetector Object
+         VDetector* myDetector = new W1();
+
+         // Read Position of Telescope
+         ConfigFile.close();
+         myDetector->ReadConfiguration(Path);
+         ConfigFile.open(Path.c_str());
+
+         // Add array to the VDetector Vector
+         AddDetector(myDetector);
       }
 
       ////////////////////////////////////////////
