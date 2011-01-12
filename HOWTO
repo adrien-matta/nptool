@@ -14,7 +14,8 @@
  * Decription:                                                               *
  *      This file describes how to use the NPTool package                    *
  *---------------------------------------------------------------------------*
- * Comment:                                                                  *
+ * Comment: See the general documentation in NPTool/NPDocumentation          *
+ *                                                                           *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
@@ -23,8 +24,8 @@ I) NPSIMULATION
 I.a) HOW TO RUN THE G4 SIMULATION
 To invoke the G4 simulation module do the following:
 	cd NPSimulation
-	./bin/Darwin-g++/Simulation xxx.reaction yyy.detector (for Mac OS X platform)
-	./bin/Linux-g++/Simulation  xxx.reaction yyy.detector (for Linux platform)
+	./bin/Darwin-g++/Simulation -E xxx.reaction -D yyy.detector (for Mac OS X platform)
+	./bin/Linux-g++/Simulation  -E xxx.reaction -D yyy.detector (for Linux platform)
 where xxx.reaction is one of the available event generator and 
 yyy.detector is one of the available detector geometry
 
@@ -58,3 +59,10 @@ As the first release of the NPTool package several detectors are available:
 
 
 II) NPANALYSIS
+To invoke the analysis module do the following:
+	cd NPAnalysis/yourAnalysisDirectory
+	./Analysis -E xxx.reaction -D yyy.detector -R RunToTreat.txt 
+where xxx.reaction is one of the available event generator, yyy.detector 
+is one of the available detector geometry and RunToTreat is a file
+specifying the ROOT file to analyse.
+

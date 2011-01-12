@@ -1,4 +1,6 @@
 \documentclass[a4paper,12pt]{article}
+\usepackage[margin=2cm]{geometry}
+
 \usepackage[T1]{fontenc}
 \usepackage [isolatin]{inputenc}
 \usepackage{graphicx}
@@ -16,14 +18,14 @@
 
 
 \section{Introduction}
-The Gaspard project is developed within the NPTool framework. For the 
-moment only the tracker of charged particles is currently under study.
-Coupling the tracker with a gamma-ray calorimeter such as AGATA or
-PARIS will be considered in the near future. 
+The Gaspard project is developed within the NPTool framework which is a 
+modular package allowing to perform Geant4 simulations and to analyse the 
+results of the simulations. It is strongly encouraged to read the general 
+NPTool documentation that you can find in this directory.
 
-NPTool is a modular package allowing to perform Geant4 simulations and to 
-analyse the results of the simulations. It is strongly encouraged to read 
-the general NPTool documentation that you can find in this directory.
+Concerning the status for Gaspard simulations, the charged particles tracker
+is now finished and the coupling with the PARIS gamma-ray calorimeter is
+done. Both the tracker and the calorimeter have different available geomtries.
 
 
 \section{NPSimulation}
@@ -31,9 +33,9 @@ the general NPTool documentation that you can find in this directory.
 The Gaspard tracker detector, even if it is made of several detectors of
 different shapes (square, trapezoid, annular, ...), is considered as {\it one} 
 detector from the NPSimulation point of view. The Gaspard tracker detector 
-is described in the GaspardTracker class defined in the 
-GaspardTracker.\{hh,cc\} files. Since the Gaspard tracker detector is 
-registered in the DetectorConstructor.cc file it is available for NPSimulation.
+is described in the GaspardTracker class defined in the GaspardTracker.\{hh,cc\} 
+files. Since the Gaspard tracker detector is registered in the 
+DetectorConstructor.cc file it is available for NPSimulation.
 
 In order to manage the different detector shapes (square, trapezoid, annular, 
 ...) of the Gaspard tracker, the GaspardTracker class holds a vector of 
@@ -46,13 +48,13 @@ GaspardTrackerTrapezoid and GaspardTrackerDummyShape classes).
 To run NPSimulation the following command line should be executed: 
 
 \begin{verbatim}
-   Simulation xxx.reaction yyy.detector
+   Simulation -E xxx.reaction -D yyy.detector
 \end{verbatim}
 
 where xxx.reaction is an input file describing the event generator and
 yyy.detector is an input file describing the detector geometry. All these
-input files are based on keywords and can be found in the 
-\$NPTool/Inputs subdirectories.
+input files are based on keywords and can be found in the \$NPTool/Inputs 
+subdirectories.
 
 \subsubsection{Event Generators}
 All the different kind of event generator files as well as their 
@@ -243,7 +245,7 @@ energy.
 To run NPAnalysis the following command line should be executed:
 
 \begin{verbatim}
-   ./Analysis xxx.reaction yyy.detector RunToTreat.txt
+   ./Analysis -E xxx.reaction -D yyy.detector -R RunToTreat.txt
 \end{verbatim}
 
 where xxx.reaction is the input file describing the event generator used in 
@@ -266,12 +268,38 @@ of such a file is given here:
 
 \subsubsection{Results of the analysis}
 The results of the anaysis are stored in a ROOT file in the \$NPTool/Output/Analysis
-directory. For the moment the main feature available is the reconstructionof the 
+directory. For the moment the main feature available is the reconstruction of the 
 excitation energy.
 
 
 \subsubsection{Structure of the analysis}
-******* to be documented *********
+The analysis package now deals with Gaspard trackers including different shapes.
+The main analysis program is the \$NPTool/NPAnalysis/Gaspard/src/Analysis.cc
+file where the user is in charge to code the specific functionalities he is
+interested in. This includes to treat cases with multiplicity greater than one,
+calculate the excitation energy, check the effect of beam tracker detector
+positioning resolution, ...
+
+However, all the basic treatments of the analysis are done in \$NPTool/NPLib/GASPARD.
+These basic treatments calculate the total energy deposited in the telescope and
+associate for each pixel number the cartesian coordinates of the pixel middle.
+
+The structure in \$NPLib/GASPARD is very similar to the NPSimulation structure
+for Gaspard. The GaspardTracker.\{h,cxx\} class derives from the VDetector class
+and holds ($i$) the GaspardTrackerData object to be analysed, ($ii$) the
+GaspardTrackerPhysics object with the results of the basic treatement and ($iii$)
+a map which associates the detector number read in the geometry file with a pointer
+to the GaspardTrackerModule class. In this way a Gaspard tracker geometry with any 
+kind of shapes is analyzed correctly. Each available shape (square, trapezoid, annular,
+dummyshape, ...) has its own class GaspardTracker*Shape*.\{h,cxx\} deriving from 
+the GaspardTrackerModule class. Each class basically applies the same stripping scheme 
+as defined in the simulation in order to obtain the cartesian coordinates of the center 
+of each pixel. Each class have its own treatement method to calculate the total energy
+deposited in each module.
+
+
+IMPORTANT NOTE: for the moment, only multiplicity one are considered.
+
 
 
 \end{document}

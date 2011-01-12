@@ -133,8 +133,6 @@ void GaspardTracker::ReadConfiguration(string Path)
          GPDTrkDummyShape = true;
 
          // instantiate a new "detector" corresponding to the Shape elements
-         // The GaspardTrackerSquare class should be replaced by the
-         // GaspardTrackerShape class you need to define
          GaspardTrackerModule* myDetector = new GaspardTrackerDummyShape(m_ModulesMap, m_EventPhysics);
 
          // Pass the data object to the GaspardTracker*** object

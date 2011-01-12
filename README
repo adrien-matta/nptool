@@ -27,12 +27,12 @@ module which contains a set of libraries needed both by the
 NPSimulation and NPAnalysis modules.
 
 The detailed structure of the NPTool package is:
-NPTool	/ NPLib
-	/ NPSimulation
-	/ NPAnalysis
-	/ Inputs
-	/ Outputs
-	/ NPDocumentation
+NPTool / NPLib
+	    / NPSimulation
+	    / NPAnalysis
+	    / Inputs
+	    / Outputs
+	    / NPDocumentation
 
 
 I) NPLib
@@ -69,9 +69,9 @@ V) Outputs
 	G4 simulation (NPSimulation) and of the analysis
 	tools (NPAnalysis). It has the following structure:
 	Outputs / Analysis
-		/ Simulation
+		     / Simulation
 
 VI) NPDocumentation
-	You will find here in the (near?) future some detailed 
-	documentation concerning NPSimulation and on how to add
-	a new detector to NPSimulation.
+   This directory contains some detailed documentation
+   concerning NPSimulation and NPAnalysis and on how to 
+   add a new detector to NPSimulation.

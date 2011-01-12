@@ -15,7 +15,7 @@ using namespace std;
 
 
 GaspardTrackerAnnular::GaspardTrackerAnnular(map<int, GaspardTrackerModule*> &Module,
-					     TGaspardTrackerPhysics* &EventPhysics) 
+                                             TGaspardTrackerPhysics* &EventPhysics) 
 	: m_ModuleTest(Module),
 	  m_EventPhysics(EventPhysics),
 	  m_EventData(0),

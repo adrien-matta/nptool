@@ -12,7 +12,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription: This script loads automatically the NPLib include path and    *
- *             shared.                                                       *
+ *             shared libraries.                                             *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment: This script should be called in your rootlogon.C file            *
@@ -20,13 +20,14 @@
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
- 
+// ROOT headers
 #include "TSystem.h"
 #include "TROOT.h"
 #include "TList.h"
 #include "TSystemDirectory.h"
 #include "TString.h"
  
+// C++ headers
 #include <iostream>
 using namespace std;
 
@@ -55,6 +56,7 @@ void NPToolLogon(bool quietmode = false)
    // objects, the libPhysics.so ROOT library is loaded.
    gSystem->Load("libPhysics.so");
 
+   // Loop on all libraries
    Int_t i = 0;
    while (listfile->At(i)) {
       TString libname = listfile->At(i++)->GetName();

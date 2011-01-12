@@ -78,8 +78,8 @@ public:
    void BuildSimplePhysicalEvent();
 
    // Those two method all to clear the Event Physics or Data
-   void ClearEventPhysics()	{m_EventPhysics->Clear();}
-   void ClearEventData()	{m_EventData->Clear();}
+   void ClearEventPhysics()   {m_EventPhysics->Clear();}
+   void ClearEventData()      {m_EventData->Clear();}
 
 
 public:

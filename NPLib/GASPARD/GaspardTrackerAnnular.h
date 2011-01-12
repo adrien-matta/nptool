@@ -40,8 +40,8 @@ public:
    void BuildSimplePhysicalEvent();
 
 private:
-   map<int, GaspardTrackerModule*> 	&m_ModuleTest;
-   TGaspardTrackerPhysics* 		&m_EventPhysics;
+   map<int, GaspardTrackerModule*>  &m_ModuleTest;
+   TGaspardTrackerPhysics*          &m_EventPhysics;
 
 public:
    void SetGaspardDataPointer(TGaspardTrackerData* gaspardData) {m_EventData = gaspardData;};
@@ -61,17 +61,17 @@ public:
    void AddModule(double zpos, double rmin, double rmax);
 
    // Getters to retrieve the (X,Y,Z) coordinates of a pixel defined by strips (X,Y)
-   double GetStripPositionX(int N ,int X ,int Y)        {return m_StripPositionX[N-1-m_index["Annular"]][X-1][Y-1]; }
-   double GetStripPositionY(int N ,int X ,int Y)        {return m_StripPositionY[N-1-m_index["Annular"]][X-1][Y-1]; }
-   double GetStripPositionZ(int N ,int X ,int Y)        {return m_StripPositionZ[N-1-m_index["Annular"]][X-1][Y-1]; }
-   double GetNumberOfModule()                           { return m_NumberOfModule; }
+   double GetStripPositionX(int N ,int X ,int Y)        {return m_StripPositionX[N-1-m_index["Annular"]][X-1][Y-1];}
+   double GetStripPositionY(int N ,int X ,int Y)        {return m_StripPositionY[N-1-m_index["Annular"]][X-1][Y-1];}
+   double GetStripPositionZ(int N ,int X ,int Y)        {return m_StripPositionZ[N-1-m_index["Annular"]][X-1][Y-1];}
+   double GetNumberOfModule()                           { return m_NumberOfModule;}
 
 private:
    // Spatial Position of Strip Calculated on basis of detector position
    int m_NumberOfModule;
-   vector< vector < vector < double > > >       m_StripPositionX;
-   vector< vector < vector < double > > >       m_StripPositionY;
-   vector< vector < vector < double > > >       m_StripPositionZ;
+   vector< vector < vector < double > > >    m_StripPositionX;
+   vector< vector < vector < double > > >    m_StripPositionY;
+   vector< vector < vector < double > > >    m_StripPositionZ;
 
 private:
    //////////////////////////////

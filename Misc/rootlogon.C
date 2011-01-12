@@ -23,7 +23,7 @@
 {
    // Load NPToolLogon.C macro dealing with all the NPLib shared libraries
    TString path = gSystem->Getenv("NPLIB");
-   gROOT->ProcessLine( Form(".L %s/scripts/NPToolLogon.C+", path.Data()) );
+   gROOT->ProcessLine(Form(".L %s/scripts/NPToolLogon.C+", path.Data()));
    
    // No Init Display
    // NPToolLogon(false)

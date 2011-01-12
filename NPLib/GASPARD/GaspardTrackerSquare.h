@@ -42,8 +42,8 @@ public:
    void BuildSimplePhysicalEvent();
 
 private:
-   map<int, GaspardTrackerModule*> 	&m_ModuleTest;
-   TGaspardTrackerPhysics* 		&m_EventPhysics;
+   map<int, GaspardTrackerModule*>  &m_ModuleTest;
+   TGaspardTrackerPhysics*          &m_EventPhysics;
 
 public:
    void SetGaspardDataPointer(TGaspardTrackerData* gaspardData) {m_EventData = gaspardData;};
