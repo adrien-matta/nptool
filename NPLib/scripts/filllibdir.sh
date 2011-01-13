@@ -32,3 +32,5 @@ do
    # copy header files to the include directory
    cp -f $file lib/
 done
+
+rm -f lib/NPToolLogon_C.so
