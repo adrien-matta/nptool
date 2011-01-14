@@ -123,18 +123,12 @@ class TW1Physics : public TObject, public NPA::VDetector
    // Add detector using cartesian coordiantes
    void AddDetector(TVector3 C_X1_Y1, TVector3 C_X16_Y1, TVector3 C_X1_Y16, TVector3 C_X16_Y16);
 
-   // Add a Telescope using R Theta Phi of Si center information
+   // Add detector using spherical coordinates
    void AddDetector(double theta, double phi, double distance, double beta_u, double beta_v, double beta_w);
 
    // Use for reading Calibration Run, very simple methods; only apply calibration, no condition
    void ReadCalibrationRun();
 
-   // Use to access the strip position
-   double GetStripPositionX(int N, int X, int Y)  {return m_StripPositionX[N-1][X-1][Y-1];};
-   double GetStripPositionY(int N, int X, int Y)  {return m_StripPositionY[N-1][X-1][Y-1];};
-   double GetStripPositionZ(int N, int X, int Y)  {return m_StripPositionZ[N-1][X-1][Y-1];};
-
-   double   GetNumberOfDetectors() {return m_NumberOfDetector;};
    TVector3 GetPositionOfInteraction(int i);
    TVector3 GetDetectorNormal(int i);
 
@@ -159,8 +153,12 @@ class TW1Physics : public TObject, public NPA::VDetector
 
 
  private: // Energy thresholds
-   double m_E_Threshold;          //!
-   double m_Pedestal_Threshold;   //!
+   // Raw Threshold
+   int    m_FrontE_Raw_Threshold;   //!
+   int    m_BackE_Raw_Threshold;    //!
+   // Calibrated Threshold
+   double m_FrontE_Calib_Threshold; //!
+   double m_BackE_Calib_Threshold;  //!
 
 
  private: // Spatial Position of Strip Calculated on bases of detector position
@@ -168,6 +166,12 @@ class TW1Physics : public TObject, public NPA::VDetector
    vector< vector < vector < double > > > m_StripPositionX; //!
    vector< vector < vector < double > > > m_StripPositionY; //!
    vector< vector < vector < double > > > m_StripPositionZ; //!
+
+ public:
+   double GetNumberOfDetectors()                   {return m_NumberOfDetector;};
+   double GetStripPositionX(int N, int X, int Y)   {return m_StripPositionX[N-1][X-1][Y-1];};
+   double GetStripPositionY(int N, int X, int Y)   {return m_StripPositionY[N-1][X-1][Y-1];};
+   double GetStripPositionZ(int N, int X, int Y)   {return m_StripPositionZ[N-1][X-1][Y-1];};
 
 
  private:   // Geometry and strip number

@@ -57,8 +57,10 @@ TW1Physics::TW1Physics()
      m_EventPhysics(this),
      m_MaximumStripMultiplicityAllowed(1),   // multiplidity 1
      m_StripEnergyMatchingTolerance(10),     // 10%
-     m_E_Threshold(0),
-     m_Pedestal_Threshold(0),
+     m_FrontE_Raw_Threshold(0),
+     m_BackE_Raw_Threshold(0),
+     m_FrontE_Calib_Threshold(0),
+     m_BackE_Calib_Threshold(0),
      m_NumberOfDetector(0),
      m_SiliconFace(49.6),  // mm
      m_NumberOfStrips(16)
@@ -495,9 +497,10 @@ void TW1Physics::PreTreat()
       
    // (Front, E)
    for (int i = 0; i < m_EventData->GetW1FrontEMult(); i++) {
-      if (IsValidChannel("Front", m_EventData->GetW1FrontEDetectorNbr(i), m_EventData->GetW1FrontEStripNbr(i))) {
+      if (IsValidChannel("Front", m_EventData->GetW1FrontEDetectorNbr(i), m_EventData->GetW1FrontEStripNbr(i)) &&
+           m_EventData->GetW1FrontEEnergy(i) > m_FrontE_Raw_Threshold) {
          double E = fW1_Front_E(m_EventData , i);
-         if (E > m_E_Threshold && m_EventData->GetW1FrontEEnergy(i) > m_Pedestal_Threshold)	{
+         if (E > m_FrontE_Calib_Threshold)	{
             m_PreTreatedData->SetW1FrontEDetectorNbr(m_EventData->GetW1FrontEDetectorNbr(i));
             m_PreTreatedData->SetW1FrontEStripNbr(m_EventData->GetW1FrontEStripNbr(i));
             m_PreTreatedData->SetW1FrontEEnergy(E);
@@ -516,9 +519,10 @@ void TW1Physics::PreTreat()
 
    // (Back, E)
    for (int i = 0; i < m_EventData->GetW1BackEMult(); i++) {
-      if (IsValidChannel("Back", m_EventData->GetW1FrontEDetectorNbr(i), m_EventData->GetW1FrontEStripNbr(i))) {
+      if (IsValidChannel("Back", m_EventData->GetW1FrontEDetectorNbr(i), m_EventData->GetW1FrontEStripNbr(i)) &&
+          m_EventData->GetW1BackEEnergy(i) > m_BackE_Raw_Threshold) {
          double E = fW1_Back_E(m_EventData , i);
-         if (E > m_E_Threshold && m_EventData->GetW1BackEEnergy(i) > m_Pedestal_Threshold)	{
+         if (E > m_BackE_Calib_Threshold) {
             m_PreTreatedData->SetW1BackEDetectorNbr(m_EventData->GetW1BackEDetectorNbr(i));
             m_PreTreatedData->SetW1BackEStripNbr(m_EventData->GetW1BackEStripNbr(i));
             m_PreTreatedData->SetW1BackEEnergy(E);
@@ -622,12 +626,6 @@ void TW1Physics::ReadAnalysisConfig()
             cout << "Strip energy matching tolerance= " << m_StripEnergyMatchingTolerance << endl;
          }
          
-         else if (DataBuffer.compare(0, 18, "PEDESTAL_THRESHOLD") == 0) {
-            AnalysisConfigFile >> DataBuffer;
-            m_Pedestal_Threshold = atoi(DataBuffer.c_str() );
-            cout << "Pedestal threshold = " << m_Pedestal_Threshold << endl;
-         }
-         
          else if (DataBuffer.compare(0, 2, "W1") == 0) {
             AnalysisConfigFile >> DataBuffer;
             string whatToDo = DataBuffer;
@@ -659,6 +657,31 @@ void TW1Physics::ReadAnalysisConfig()
                   cout << "Warning: detector type for W1 unknown!" << endl;
                }
             }
+
+            else if (whatToDo.compare(0, 21, "FRONT_E_RAW_THRESHOLD") == 0) {
+               AnalysisConfigFile >> DataBuffer;
+               m_FrontE_Raw_Threshold = atoi(DataBuffer.c_str());
+               cout << whatToDo << " " << m_FrontE_Raw_Threshold << endl;
+            }
+
+            else if (whatToDo.compare(0, 20, "BACK_E_RAW_THRESHOLD") == 0) {
+               AnalysisConfigFile >> DataBuffer;
+               m_BackE_Raw_Threshold = atoi(DataBuffer.c_str());
+               cout << whatToDo << " " << m_BackE_Raw_Threshold << endl;
+            }
+
+            else if (whatToDo.compare(0, 21, "FRONT_E_CAL_THRESHOLD") == 0) {
+               AnalysisConfigFile >> DataBuffer;
+               m_FrontE_Calib_Threshold = atoi(DataBuffer.c_str());
+               cout << whatToDo << " " << m_FrontE_Calib_Threshold << endl;
+            }
+
+            else if (whatToDo.compare(0, 20, "BACK_E_CAL_THRESHOLD") == 0) {
+               AnalysisConfigFile >> DataBuffer;
+               m_BackE_Calib_Threshold = atoi(DataBuffer.c_str());
+               cout << whatToDo << " " << m_BackE_Calib_Threshold << endl;
+            }
+
             else {
                cout << "Warning: don't know what to do (lost in translation)" << endl;
             }
