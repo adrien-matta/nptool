@@ -445,6 +445,17 @@ void TW1Physics::AddDetector(double theta, double phi, double distance,
 
 
 
+TVector3 TW1Physics::GetPositionOfInteraction(int i)
+{
+   TVector3 Position = TVector3(GetStripPositionX(fDetectorNumber[i], fFrontStrip[i], fBackStrip[i]),
+                                GetStripPositionY(fDetectorNumber[i], fFrontStrip[i], fBackStrip[i]),
+                                GetStripPositionZ(fDetectorNumber[i], fFrontStrip[i], fBackStrip[i]));
+
+   return Position;
+}
+
+
+
 TVector3 TW1Physics::GetDetectorNormal(int i)
 {
    TVector3 U = TVector3(GetStripPositionX(fDetectorNumber[i], m_NumberOfStrips, 1),
