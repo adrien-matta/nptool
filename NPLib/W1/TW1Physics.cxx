@@ -12,7 +12,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold W1  Physics                                            *
+ *    This class hold W1  Physics                                            *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -29,9 +29,11 @@
 #include <sstream>
 #include <fstream>
 #include <limits>
+#include <cmath>
 #include <stdlib.h>
 using namespace std;
 using namespace LOCAL;
+
 //  ROOT
 #include "TChain.h"
 
@@ -50,13 +52,18 @@ string itoa(int value)
 ClassImp(TW1Physics)
 ///////////////////////////////////////////////////////////////////////////
 TW1Physics::TW1Physics()
-   : m_NumberOfDetector(0),
-     m_EventData(new TW1Data),
+   : m_EventData(new TW1Data),
      m_PreTreatedData(new TW1Data),
      m_EventPhysics(this),
+     m_MaximumStripMultiplicityAllowed(1),   // multiplidity 1
+     m_StripEnergyMatchingTolerance(10),     // 10%
      m_E_Threshold(0),
-     m_Pedestal_Threshold(0)
+     m_Pedestal_Threshold(0),
+     m_NumberOfDetector(0),
+     m_SiliconFace(49.6),  // mm
+     m_NumberOfStrips(16)
 {    
+   m_StripPitch = m_SiliconFace / (double)m_NumberOfStrips;
 }
 
 
@@ -64,6 +71,8 @@ TW1Physics::TW1Physics()
 ///////////////////////////////////////////////////////////////////////////
 TW1Physics::~TW1Physics()
 {
+   delete m_EventData;
+   delete m_PreTreatedData;
 }
 
 
@@ -71,10 +80,12 @@ TW1Physics::~TW1Physics()
 ///////////////////////////////////////////////////////////////////////////
 void TW1Physics::Clear()
 {
-   DetectorNumber  .clear()  ;
-   StripNumber      .clear()  ;
-   Energy          .clear()  ;
-   Time            .clear()  ;
+   fEventType.clear();
+   fDetectorNumber.clear();
+   fEnergy.clear();
+   fTime.clear();
+   fFrontStrip.clear();
+   fBackStrip.clear();
 }
 
 
@@ -258,9 +269,13 @@ void TW1Physics::AddParameterToCalibrationManager()
    CalibrationManager* Cal = CalibrationManager::getInstance();
     
    for (int i = 0; i < m_NumberOfDetector; i++) {
-      for (int j = 0; j < 16; j++) {
-         Cal->AddParameter("W1", "Detector"+itoa(i+1)+"_Strip"+itoa(j+1)+"_E","W1_DETECTOR_"+itoa(i+1)+"_STRIP_"+itoa(j+1)+"_E")  ;
-         Cal->AddParameter("W1", "Detector"+itoa(i+1)+"_Strip"+itoa(j+1)+"_T","W1_DETECTOR_"+itoa(i+1)+"_STRIP_"+itoa(j+1)+"_T")  ;  
+      for (int j = 0; j < m_NumberOfStrips; j++) {
+         // Energy
+         Cal->AddParameter("W1", "Detector"+itoa(i+1)+"_Front_"+itoa(j+1)+"_E", "W1_DETECTOR"+itoa(i+1)+"_FRONT_"+itoa(j+1)+"_E");
+         Cal->AddParameter("W1", "Detector"+itoa(i+1)+"_Back_"+itoa(j+1)+"_E",  "W1_DETECTOR"+itoa(i+1)+"_BACK_"+itoa(j+1)+"_E");  
+         // Time
+         Cal->AddParameter("W1", "Detector"+itoa(i+1)+"_Front_"+itoa(j+1)+"_T", "W1_DETECTOR"+itoa(i+1)+"_FRONT_"+itoa(j+1)+"_T");
+         Cal->AddParameter("W1", "Detector"+itoa(i+1)+"_Back_"+itoa(j+1)+"_T",  "W1_DETECTOR"+itoa(i+1)+"_BACK_"+itoa(j+1)+"_T");  
       }
    }
 }
@@ -287,6 +302,173 @@ void TW1Physics::InitializeRootOutput()
 
 
 
+void TW1Physics::AddDetector(TVector3 C_X1_Y1,  TVector3 C_X16_Y1,
+                             TVector3 C_X1_Y16, TVector3 C_X16_Y16)
+{
+   m_NumberOfDetector++;
+
+   // remove warning using C_X16_Y16
+   C_X16_Y16.Unit();
+
+   // Vector U on Module Face (paralelle to Y Strip) (NB: remember that Y strip are allong X axis)
+   TVector3 U = C_X16_Y1 - C_X1_Y1;
+   U = U.Unit();
+
+   // Vector V on Module Face (parallele to X Strip)
+   TVector3 V = C_X1_Y16 - C_X1_Y1;
+   V = V.Unit();
+
+   // Position Vector of Strip Center
+   TVector3 StripCenter = TVector3(0,0,0);
+   // Position Vector of X=1 Y=1 Strip 
+   TVector3 Strip_1_1;
+
+   // Buffer object to fill Position Array
+   vector<double> lineX;
+   vector<double> lineY;
+   vector<double> lineZ;
+
+   vector< vector< double > >   OneModuleStripPositionX;
+   vector< vector< double > >   OneModuleStripPositionY;
+   vector< vector< double > >   OneModuleStripPositionZ;
+
+   // Moving StripCenter to 1.1 corner:
+   Strip_1_1 = C_X1_Y1 + (U+V) * (m_StripPitch/2.);
+
+   for (int i = 0; i < m_NumberOfStrips; i++) {
+      lineX.clear();
+      lineY.clear();
+      lineZ.clear();
+
+      for (int j = 0; j < m_NumberOfStrips; j++) {
+         StripCenter  = Strip_1_1 + m_StripPitch*(i*U + j*V);
+
+         lineX.push_back( StripCenter.X() );
+         lineY.push_back( StripCenter.Y() );
+         lineZ.push_back( StripCenter.Z() );
+      }
+
+      OneModuleStripPositionX.push_back(lineX);
+      OneModuleStripPositionY.push_back(lineY);
+      OneModuleStripPositionZ.push_back(lineZ);
+   }
+
+   m_StripPositionX.push_back( OneModuleStripPositionX );
+   m_StripPositionY.push_back( OneModuleStripPositionY );
+   m_StripPositionZ.push_back( OneModuleStripPositionZ );
+}
+
+
+
+void TW1Physics::AddDetector(double theta, double phi, double distance,
+                             double beta_u, double beta_v, double beta_w)
+{
+   m_NumberOfDetector++;
+
+   // convert from degree to radian:
+   theta *= M_PI/180;
+   phi   *= M_PI/180;
+
+   // Vector U on Module Face (paralelle to Y Strip) (NB: remember that Y strip are allong X axis)
+   TVector3 U;
+   // Vector V on Module Face (parallele to X Strip)
+   TVector3 V;
+   // Vector W normal to Module Face (pointing CsI)
+   TVector3 W;
+   // Vector position of Module Face center
+   TVector3 C;
+
+   C = TVector3(distance * sin(theta) * cos(phi),
+                distance * sin(theta) * sin(phi),
+                distance * cos(theta));
+
+   TVector3 YperpW = TVector3( cos(theta) * cos(phi),
+                               cos(theta) * sin(phi),
+                              -sin(theta));
+
+   W = C.Unit();
+   U = W.Cross(YperpW);
+   V = W.Cross(U);
+
+   U = U.Unit();
+   V = V.Unit();
+
+   U.Rotate(beta_u * M_PI/180, U);
+   V.Rotate(beta_u * M_PI/180, U);
+
+   U.Rotate(beta_v * M_PI/180, V);
+   V.Rotate(beta_v * M_PI/180, V);
+
+   U.Rotate(beta_w * M_PI/180, W);
+   V.Rotate(beta_w * M_PI/180, W);
+
+   // Position Vector of Strip Center
+   TVector3 StripCenter = TVector3(0,0,0);
+   // Position Vector of X=1 Y=1 Strip 
+   TVector3 Strip_1_1;
+
+   vector<double> lineX;
+   vector<double> lineY;
+   vector<double> lineZ;
+
+   vector< vector< double > >   OneModuleStripPositionX;
+   vector< vector< double > >   OneModuleStripPositionY;
+   vector< vector< double > >   OneModuleStripPositionZ;
+
+   // Moving C to the 1.1 corner:
+   Strip_1_1 = C - 0.5 * (m_SiliconFace - m_StripPitch) * (U + V);
+
+   for (int i = 0; i < m_NumberOfStrips; i++) {
+      lineX.clear();
+      lineY.clear();
+      lineZ.clear();
+
+      for (int j = 0; j < m_NumberOfStrips; j++) {
+         StripCenter = Strip_1_1 + m_StripPitch * (i*U + j*V);
+
+         lineX.push_back(StripCenter.X());
+         lineY.push_back(StripCenter.Y());
+         lineZ.push_back(StripCenter.Z());
+      }
+
+      OneModuleStripPositionX.push_back(lineX);
+      OneModuleStripPositionY.push_back(lineY);
+      OneModuleStripPositionZ.push_back(lineZ);
+   }
+
+   m_StripPositionX.push_back( OneModuleStripPositionX );
+   m_StripPositionY.push_back( OneModuleStripPositionY );
+   m_StripPositionZ.push_back( OneModuleStripPositionZ );
+}
+
+
+
+TVector3 TW1Physics::GetDetectorNormal(int i)
+{
+   TVector3 U = TVector3(GetStripPositionX(fDetectorNumber[i], m_NumberOfStrips, 1),
+                         GetStripPositionY(fDetectorNumber[i], m_NumberOfStrips, 1),
+                         GetStripPositionZ(fDetectorNumber[i], m_NumberOfStrips, 1))
+
+              - TVector3(GetStripPositionX(fDetectorNumber[i], 1, 1),
+                         GetStripPositionY(fDetectorNumber[i], 1, 1),
+                         GetStripPositionZ(fDetectorNumber[i], 1, 1));
+
+
+   TVector3 V = TVector3(GetStripPositionX(fDetectorNumber[i], m_NumberOfStrips, m_NumberOfStrips),
+                         GetStripPositionY(fDetectorNumber[i], m_NumberOfStrips, m_NumberOfStrips),
+                         GetStripPositionZ(fDetectorNumber[i], m_NumberOfStrips, m_NumberOfStrips))
+
+              - TVector3(GetStripPositionX(fDetectorNumber[i], m_NumberOfStrips, 1),
+                         GetStripPositionY(fDetectorNumber[i], m_NumberOfStrips, 1),
+                         GetStripPositionZ(fDetectorNumber[i], m_NumberOfStrips, 1));
+
+   TVector3 Normal = U.Cross(V);
+
+   return Normal.Unit();
+}
+
+
+
 ///////////////////////////////////////////////////////////////////////////
 void TW1Physics::BuildPhysicalEvent()
 {
@@ -299,18 +481,7 @@ void TW1Physics::BuildPhysicalEvent()
 void TW1Physics::BuildSimplePhysicalEvent()
 {
    PreTreat();
-/*
-   for (unsigned int i = 0; i < m_PreTreatedData->GetEnergyMult(); i++) {
-      DetectorNumber  .push_back(   m_PreTreatedData->GetEnergyDetectorNbr(i) );
-      StripNumber     .push_back(   m_PreTreatedData->GetEnergyStripNbr(i)    );
-      Energy          .push_back(   m_PreTreatedData->GetEnergy(i)            ); 
-      // Look For associate Time
-      for (unsigned int j = 0; j < m_PreTreatedData->GetTimeMult(); j++) {
-         if (m_PreTreatedData->GetEnergyDetectorNbr(i) == m_PreTreatedData->GetTimeDetectorNbr(j) && m_PreTreatedData->GetEnergyStripNbr(i)==m_PreTreatedData->GetTimeStripNbr(j))
-            Time.push_back(m_PreTreatedData->GetTime(j));
-      }                        
-   }
-  */ 
+
    return;    
 }
 
@@ -319,12 +490,13 @@ void TW1Physics::BuildSimplePhysicalEvent()
 ///////////////////////////////////////////////////////////////////////////
 void TW1Physics::PreTreat()
 {
+   // Clear pre treated object
    ClearPreTreatedData();
       
    // (Front, E)
    for (int i = 0; i < m_EventData->GetW1FrontEMult(); i++) {
-      if (ChannelStatus[m_EventData->GetW1FrontEDetectorNbr(i)][m_EventData->GetW1FrontEStripNbr(i)]) {
-         double E = fSi_E(m_EventData , i);
+      if (IsValidChannel("Front", m_EventData->GetW1FrontEDetectorNbr(i), m_EventData->GetW1FrontEStripNbr(i))) {
+         double E = fW1_Front_E(m_EventData , i);
          if (E > m_E_Threshold && m_EventData->GetW1FrontEEnergy(i) > m_Pedestal_Threshold)	{
             m_PreTreatedData->SetW1FrontEDetectorNbr(m_EventData->GetW1FrontEDetectorNbr(i));
             m_PreTreatedData->SetW1FrontEStripNbr(m_EventData->GetW1FrontEStripNbr(i));
@@ -334,8 +506,8 @@ void TW1Physics::PreTreat()
    }
    // (Front, T)
    for (int i = 0; i < m_EventData->GetW1FrontTMult(); i++) {
-      if (ChannelStatus[m_EventData->GetW1FrontTDetectorNbr(i)][m_EventData->GetW1FrontTStripNbr(i)]) {
-         double T = fSi_T(m_EventData , i);
+      if (IsValidChannel("Front", m_EventData->GetW1FrontTDetectorNbr(i), m_EventData->GetW1FrontTStripNbr(i))) {
+         double T = fW1_Front_T(m_EventData , i);
          m_PreTreatedData->SetW1FrontTDetectorNbr(m_EventData->GetW1FrontTDetectorNbr(i));
          m_PreTreatedData->SetW1FrontTStripNbr(m_EventData->GetW1FrontTStripNbr(i));
          m_PreTreatedData->SetW1FrontTTime(T);
@@ -344,8 +516,8 @@ void TW1Physics::PreTreat()
 
    // (Back, E)
    for (int i = 0; i < m_EventData->GetW1BackEMult(); i++) {
-      if (ChannelStatus[m_EventData->GetW1BackEDetectorNbr(i)][m_EventData->GetW1BackEStripNbr(i)]) {
-         double E = fSi_E(m_EventData , i);
+      if (IsValidChannel("Back", m_EventData->GetW1FrontEDetectorNbr(i), m_EventData->GetW1FrontEStripNbr(i))) {
+         double E = fW1_Back_E(m_EventData , i);
          if (E > m_E_Threshold && m_EventData->GetW1BackEEnergy(i) > m_Pedestal_Threshold)	{
             m_PreTreatedData->SetW1BackEDetectorNbr(m_EventData->GetW1BackEDetectorNbr(i));
             m_PreTreatedData->SetW1BackEStripNbr(m_EventData->GetW1BackEStripNbr(i));
@@ -355,8 +527,8 @@ void TW1Physics::PreTreat()
    }
    // (Back, T)
    for (int i = 0; i < m_EventData->GetW1BackTMult(); i++) {
-      if (ChannelStatus[m_EventData->GetW1BackTDetectorNbr(i)][m_EventData->GetW1BackTStripNbr(i)]) {
-         double T = fSi_T(m_EventData , i);
+      if (IsValidChannel("Back", m_EventData->GetW1FrontTDetectorNbr(i), m_EventData->GetW1FrontTStripNbr(i))) {
+         double T = fW1_Back_T(m_EventData , i);
          m_PreTreatedData->SetW1BackTDetectorNbr(m_EventData->GetW1BackTDetectorNbr(i));
          m_PreTreatedData->SetW1BackTStripNbr(m_EventData->GetW1BackTStripNbr(i));
          m_PreTreatedData->SetW1BackTTime(T);
@@ -366,14 +538,34 @@ void TW1Physics::PreTreat()
 
 
 
+bool TW1Physics::IsValidChannel(string Type, int detector, int channel)
+{
+   vector<bool>::iterator it;
+   if (Type == "Front")
+      return *(m_FrontChannelStatus[detector].begin()+channel);
+
+   else if (Type == "Back")
+      return *(m_BackChannelStatus[detector].begin()+channel);
+
+   else 
+      return false;
+}
+
+
+
 ///////////////////////////////////////////////////////////////////////////
 void TW1Physics::InitializeStandardParameter()
 {
    // Enable all channels
-   vector<bool> TempChannelStatus;
-   ChannelStatus.clear();
-   TempChannelStatus.resize(16,true);
-   for (int i = 0; i < m_NumberOfDetector; i ++) ChannelStatus[i+1] = TempChannelStatus;
+   vector<bool> ChannelStatus;
+   m_FrontChannelStatus.clear();
+   m_BackChannelStatus.clear();
+
+   ChannelStatus.resize(m_NumberOfStrips, true);
+   for (int i = 0; i < m_NumberOfDetector; i ++) {
+      m_FrontChannelStatus[i+1] = ChannelStatus;
+      m_BackChannelStatus[i+1]  = ChannelStatus;
+   }
 }
 
 
@@ -382,6 +574,8 @@ void TW1Physics::InitializeStandardParameter()
 void TW1Physics::ReadAnalysisConfig()
 {
    bool ReadingStatus = false;
+   bool check_mult    = false;
+   bool check_match   = false;
 
    // path to file
    string FileName = "./configs/ConfigW1.dat";
@@ -391,7 +585,7 @@ void TW1Physics::ReadAnalysisConfig()
    AnalysisConfigFile.open(FileName.c_str());
 
    if (!AnalysisConfigFile.is_open()) {
-      cout << " No ConfigMust2.dat found: Default parameter loaded for Analayis " << FileName << endl;
+      cout << " No ConfigW1.dat found: Default parameter loaded for Analayis " << FileName << endl;
       return;
    }
    cout << " Loading user parameter for Analysis from ConfigW1.dat " << endl;
@@ -403,7 +597,7 @@ void TW1Physics::ReadAnalysisConfig()
       getline(AnalysisConfigFile, LineBuffer);
 
       // search for "header"
-      if (LineBuffer.compare(0, 11, "ConfigW1") == 0) ReadingStatus = true;
+      if (LineBuffer.compare(0, 8, "ConfigW1") == 0) ReadingStatus = true;
 
       // loop on tokens and data
       while (ReadingStatus) {
@@ -414,36 +608,55 @@ void TW1Physics::ReadAnalysisConfig()
             AnalysisConfigFile.ignore(numeric_limits<streamsize>::max(), '\n' );
          }
          
+         else if (DataBuffer.compare(0, 22, "MAX_STRIP_MULTIPLICITY") == 0) {
+            check_mult = true;
+            AnalysisConfigFile >> DataBuffer;
+            m_MaximumStripMultiplicityAllowed = atoi(DataBuffer.c_str() );
+            cout << "Maximun strip multiplicity= " << m_MaximumStripMultiplicityAllowed << endl;
+         }
+
+         else if (DataBuffer.compare(0, 31, "STRIP_ENERGY_MATCHING_TOLERANCE") == 0) {
+            check_match = true;
+            AnalysisConfigFile >> DataBuffer;
+            m_StripEnergyMatchingTolerance = atoi(DataBuffer.c_str() );
+            cout << "Strip energy matching tolerance= " << m_StripEnergyMatchingTolerance << endl;
+         }
+         
          else if (DataBuffer.compare(0, 18, "PEDESTAL_THRESHOLD") == 0) {
             AnalysisConfigFile >> DataBuffer;
             m_Pedestal_Threshold = atoi(DataBuffer.c_str() );
             cout << "Pedestal threshold = " << m_Pedestal_Threshold << endl;
          }
          
-         else if (DataBuffer.compare(0, 4, "W1") == 0) {
+         else if (DataBuffer.compare(0, 2, "W1") == 0) {
             AnalysisConfigFile >> DataBuffer;
             string whatToDo = DataBuffer;
             if (whatToDo.compare(0, 11, "DISABLE_ALL") == 0) {
                AnalysisConfigFile >> DataBuffer;
                cout << whatToDo << "  " << DataBuffer << endl;
-               int Detector = atoi(DataBuffer.substr(2,1).c_str());
-               vector< bool > ChannelStatusBuffer;
-               ChannelStatusBuffer.resize(16,false);
-               ChannelStatus[Detector] = ChannelStatusBuffer;
+               int Detector = atoi(DataBuffer.substr(3,1).c_str());
+               vector< bool > ChannelStatus;
+               ChannelStatus.resize(m_NumberOfStrips,false);
+               m_FrontChannelStatus[Detector] = ChannelStatus;
+               m_BackChannelStatus[Detector]  = ChannelStatus;
             }
             
-          else if (whatToDo.compare(0, 15, "DISABLE_CHANNEL") == 0) {
+            else if (whatToDo.compare(0, 15, "DISABLE_CHANNEL") == 0) {
                AnalysisConfigFile >> DataBuffer;
                cout << whatToDo << "  " << DataBuffer << endl;
-               int telescope = atoi(DataBuffer.substr(2,1).c_str());
+               int detector = atoi(DataBuffer.substr(3,1).c_str());
                int channel = -1;
-               if (DataBuffer.compare(3,3,"STR") == 0) {
-                  channel = atoi(DataBuffer.substr(6).c_str());
-                  *(ChannelStatus[telescope].begin()+channel) = false;
+               if (DataBuffer.compare(4,5,"FRONT") == 0) {
+                  channel = atoi(DataBuffer.substr(11).c_str());
+                  *(m_FrontChannelStatus[detector].begin()+channel) = false;
+               }
+               else if (DataBuffer.compare(4,4,"BACK") == 0) {
+                  channel = atoi(DataBuffer.substr(10).c_str());
+                  *(m_BackChannelStatus[detector].begin()+channel) = false;
                }
                
                else {
-                  cout << "Warning: detector type for Must2 unknown!" << endl;
+                  cout << "Warning: detector type for W1 unknown!" << endl;
                }
             }
             else {
@@ -452,7 +665,6 @@ void TW1Physics::ReadAnalysisConfig()
          }
          else {
             ReadingStatus = false;
-//            cout << "WARNING: Wrong Token Sequence" << endl;
          }
       }
    }
@@ -461,18 +673,28 @@ void TW1Physics::ReadAnalysisConfig()
 
 
 ///////////////////////////////////////////////////////////////////////////
-double LOCAL::fSi_E( TW1Data* m_EventData , int i )
+double LOCAL::fW1_Front_E(TW1Data* m_EventData , int i)
 {
-   return CalibrationManager::getInstance()->ApplyCalibration(  "W1/Detector" + itoa( m_EventData->GetW1FrontEDetectorNbr(i) ) + "_Strip" + itoa( m_EventData->GetW1FrontEStripNbr(i) ) +"_E",  
-   m_EventData->GetW1FrontEEnergy(i) );
+   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + itoa(m_EventData->GetW1FrontEDetectorNbr(i)) + "_Front_" + itoa(m_EventData->GetW1FrontEStripNbr(i)) +"_E",  m_EventData->GetW1FrontEEnergy(i));
 }
-	  
-	  
-double LOCAL::fSi_T( TW1Data* m_EventData , int i )
+ 
+ 
+
+double LOCAL::fW1_Back_E(TW1Data* m_EventData , int i)
 {
-	    return CalibrationManager::getInstance()->ApplyCalibration(  "W1/Detector" + itoa( m_EventData->GetW1FrontEDetectorNbr(i) ) + "_Strip" + itoa( m_EventData->GetW1FrontEStripNbr(i) ) +"_T",  
-									    m_EventData->GetW1FrontTTime(i) );
-}  
-	  
-	  
-	  
+   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + itoa(m_EventData->GetW1BackEDetectorNbr(i)) + "_Back_" + itoa(m_EventData->GetW1BackEStripNbr(i)) +"_E",  m_EventData->GetW1BackEEnergy(i));
+}
+  
+ 
+
+double LOCAL::fW1_Front_T(TW1Data* m_EventData , int i)
+{
+   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + itoa(m_EventData->GetW1FrontTDetectorNbr(i)) + "_Front_" + itoa(m_EventData->GetW1FrontTStripNbr(i)) +"_T",  m_EventData->GetW1FrontTTime(i));
+}
+ 
+ 
+
+double LOCAL::fW1_Back_T(TW1Data* m_EventData , int i)
+{
+   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + itoa(m_EventData->GetW1BackTDetectorNbr(i)) + "_Back_" + itoa(m_EventData->GetW1BackTStripNbr(i)) +"_T",  m_EventData->GetW1BackTTime(i));
+}
