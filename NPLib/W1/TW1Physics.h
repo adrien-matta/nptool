@@ -27,6 +27,7 @@ using namespace std ;
 
 //	ROOT
 #include "TObject.h"
+#include "TVector2.h"
 #include "TVector3.h"
 
 //	NPL
@@ -129,9 +130,10 @@ class TW1Physics : public TObject, public NPA::VDetector
    // Use for reading Calibration Run, very simple methods; only apply calibration, no condition
    void ReadCalibrationRun();
 
-   TVector3 GetPositionOfInteraction(int i);
-   TVector3 GetDetectorNormal(int i);
 
+ public: // Methods used for event treatement
+   int               EventType();
+   vector<TVector2>  Match_Front_Back();
 
  private: // Data not written in the tree
    TW1Data*    m_EventData;            //!
@@ -168,10 +170,12 @@ class TW1Physics : public TObject, public NPA::VDetector
    vector< vector < vector < double > > > m_StripPositionZ; //!
 
  public:
-   double GetNumberOfDetectors()                   {return m_NumberOfDetector;};
-   double GetStripPositionX(int N, int X, int Y)   {return m_StripPositionX[N-1][X-1][Y-1];};
-   double GetStripPositionY(int N, int X, int Y)   {return m_StripPositionY[N-1][X-1][Y-1];};
-   double GetStripPositionZ(int N, int X, int Y)   {return m_StripPositionZ[N-1][X-1][Y-1];};
+   double   GetNumberOfDetectors()                   {return m_NumberOfDetector;};
+   double   GetStripPositionX(int N, int X, int Y)   {return m_StripPositionX[N-1][X-1][Y-1];};
+   double   GetStripPositionY(int N, int X, int Y)   {return m_StripPositionY[N-1][X-1][Y-1];};
+   double   GetStripPositionZ(int N, int X, int Y)   {return m_StripPositionZ[N-1][X-1][Y-1];};
+   TVector3 GetPositionOfInteraction(int i);
+   TVector3 GetDetectorNormal(int i);
 
 
  private:   // Geometry and strip number

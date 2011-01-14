@@ -11,6 +11,7 @@
 #include "../Plastic/TPlasticPhysics.h"
 #include "../GASPARD/GaspardTracker.h"
 #include "../Paris/Paris.h"
+#include "../W1/TW1Physics.h"
 #include "../Shield/Shield.h"
 #include "../Tools/NPOptionManager.h"
 #include "../IORoot/RootInput.h"
@@ -46,6 +47,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
    bool GPDTracker          = false;
    bool ParisDet            = false;
    bool ShieldDet           = false;
+   bool W1                  = false;
 
    //////////////////////////////////////////////////////////////////////////////////////////
    string GlobalPath = getenv("NPTOOL");
@@ -148,6 +150,25 @@ void DetectorManager::ReadConfigurationFile(string Path)
 
          // Add array to the VDetector Vector
          AddDetector("MUST2", myDetector);
+      }
+
+      ////////////////////////////////////////////
+      ////////// Search for W1 (Micron)  /////////
+      ////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 2, "W1") == 0 && W1 == false) {
+         W1 = true;
+         cout << "//////// W1 ////////" << endl << endl;
+
+         // Instantiate the new array as a VDetector Object
+         VDetector* myDetector = new TW1Physics();
+
+         // Read Position of Telescope
+         ConfigFile.close();
+         myDetector->ReadConfiguration(Path);
+         ConfigFile.open(Path.c_str());
+
+         // Add array to the VDetector Vector
+         AddDetector("W1", myDetector);
       }
 
       ////////////////////////////////////////////

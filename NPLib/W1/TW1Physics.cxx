@@ -482,9 +482,48 @@ void TW1Physics::BuildPhysicalEvent()
 ///////////////////////////////////////////////////////////////////////////
 void TW1Physics::BuildSimplePhysicalEvent()
 {
+   // Select active channels and apply thresholds
    PreTreat();
 
-   return;    
+   // Begin treatement
+   int evtType = EventType();
+
+   if (evtType == 1) {  // case where multiplicity front = multiplicity back
+      vector<TVector2> couple = Match_Front_Back();
+
+      for (unsigned int i = 0; i < couple.size(); i++) { // loop on selected events
+         int    DetecNbr    = m_PreTreatedData->GetW1FrontEDetectorNbr(couple[i].X());
+         int    StripFront  = m_PreTreatedData->GetW1FrontEStripNbr(couple[i].X());
+         int    StripBack   = m_PreTreatedData->GetW1BackEStripNbr(couple[i].Y());
+         double EnergyFront = m_PreTreatedData->GetW1FrontEEnergy(couple[i].X());
+         double EnergyBack  = m_PreTreatedData->GetW1BackEEnergy(couple[i].Y());
+         EnergyBack *= 1;
+
+         // Search for associate time
+         // Front
+         double TimeFront = -1000;
+         for (unsigned int t = 0; t < m_PreTreatedData->GetW1FrontTMult(); t++) {
+            if (m_PreTreatedData->GetW1FrontTStripNbr(couple[i].X()) == m_PreTreatedData->GetW1FrontTStripNbr(t) ||
+                m_PreTreatedData->GetW1FrontTDetectorNbr(couple[i].X()) == m_PreTreatedData->GetW1FrontTDetectorNbr(t))
+               TimeFront = m_PreTreatedData->GetW1FrontTTime(t);
+         }
+         // Back
+         double TimeBack = -1000;
+         for (unsigned int t = 0; t < m_PreTreatedData->GetW1BackTMult(); t++) {
+            if (m_PreTreatedData->GetW1BackTStripNbr(couple[i].X()) == m_PreTreatedData->GetW1BackTStripNbr(t) ||
+                m_PreTreatedData->GetW1BackTDetectorNbr(couple[i].X()) == m_PreTreatedData->GetW1BackTDetectorNbr(t))
+               TimeBack = m_PreTreatedData->GetW1BackTTime(t);
+         }
+
+         // Fill TW1Physics private members
+         fEventType.push_back(evtType);
+         fDetectorNumber.push_back(DetecNbr);
+         fEnergy.push_back(EnergyFront);
+         fTime.push_back(TimeBack);
+         fFrontStrip.push_back(StripFront);
+         fBackStrip.push_back(StripBack);
+      }
+   }
 }
 
 
@@ -538,6 +577,58 @@ void TW1Physics::PreTreat()
          m_PreTreatedData->SetW1BackTTime(T);
       } 
    }
+}
+
+
+
+int TW1Physics::EventType()
+{
+   // Same multiplicity on front and back side
+   if (m_PreTreatedData->GetW1FrontEMult() == m_PreTreatedData->GetW1BackEMult()) {
+      return 1;
+   }
+   // Possibly interstrip
+   else if (m_PreTreatedData->GetW1FrontEMult() == m_PreTreatedData->GetW1BackEMult()+1 ||
+            m_PreTreatedData->GetW1FrontEMult() == m_PreTreatedData->GetW1BackEMult()-1) {
+      return 2;
+   }
+   // Rejected event
+   else {
+      return -1;
+   }
+}
+
+
+
+vector<TVector2> TW1Physics::Match_Front_Back()
+{
+   vector<TVector2> ArrayOfGoodCouple;
+
+   // Treat only allowd multiplicity events. If multiplicity is too 
+   // high, then return "empty" vector
+   if (m_PreTreatedData->GetW1FrontEMult() > m_MaximumStripMultiplicityAllowed || 
+       m_PreTreatedData->GetW1BackEMult()  > m_MaximumStripMultiplicityAllowed)
+      return ArrayOfGoodCouple;
+
+   // Loop on front multiplicity
+   for (int i = 0; i < m_PreTreatedData->GetW1FrontEMult(); i++) {
+      // Loop on back multiplicity
+      for (int j = 0; j < m_PreTreatedData->GetW1BackEMult(); j++) {
+         // if same detector check energy
+         if (m_PreTreatedData->GetW1FrontEDetectorNbr(i) == m_PreTreatedData->GetW1BackEDetectorNbr(j)) {
+            // Look if energy match (within m_StripEnergyMatchingTolerance %)
+            double de = abs(m_PreTreatedData->GetW1FrontEEnergy(i) - m_PreTreatedData->GetW1BackEEnergy(j));
+            if (de / m_PreTreatedData->GetW1FrontEEnergy(i) < m_StripEnergyMatchingTolerance/100) {
+               ArrayOfGoodCouple.push_back(TVector2(i,j));
+            }  // end test energy
+         }  // end test same detector
+      }  // end loop back multiplicity
+   }  // end loop front multiplicity
+
+   // Prevent treating event with ambiguous matchin beetween X and Y
+   if (ArrayOfGoodCouple.size() > m_PreTreatedData->GetW1FrontEMult()) ArrayOfGoodCouple.clear();
+
+   return ArrayOfGoodCouple;
 }
 
 
