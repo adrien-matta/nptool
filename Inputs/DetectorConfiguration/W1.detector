@@ -10,7 +10,7 @@ Target
    Z= 0
 %%%%%%% Detector 1 %%%%%%%			
 W1
-	THETA= 0
+	THETA= 150
 	PHI= 0
 	R= 150
 	BETA= 0 0 0

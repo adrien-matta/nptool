@@ -24,7 +24,6 @@ int main(int argc,char** argv)
    myReaction->ReadConfigurationFile(reactionfileName);
 
    // Initialize the detector
-//   cout << endl << "/////////// Detector geometry ///////////" << endl;
    NPA::DetectorManager* myDetector = new DetectorManager;
    myDetector->ReadConfigurationFile(detectorfileName);
 
@@ -160,92 +159,12 @@ int main(int argc,char** argv)
             Ex         = -200;
             ExNoStrips = -200;
          }
-
-         // Fill output tree
-         RootOutput::getInstance()->GetTree()->Fill();
       }  // end loop on multiplicity event
-   }  // end loop on number of events to treat
-
-
-/*
-      // Get total energy
-      double E = W1->GetEnergy(0);
-
-      // if there is a hit in the detector array, treat it.
-      double Theta, ThetaStrip, angle, ThetaCM;
-      double DetecX, DetecY, DetecZ;
-      double r;
-      TVector3 A;
-      if (E > -1000) {
-         // Get c.m. angle
-         ThetaCM = initCond->GetICEmittedAngleThetaCM(0) * deg;
-
-         // Get exact scattering angle from TInteractionCoordinates object
-//         interCoord->Dump();
-//         cout << i << " mult: " << interCoord->GetDetectedMultiplicity() << endl;
-         DetecX = interCoord->GetDetectedPositionX(0);
-         DetecY = interCoord->GetDetectedPositionY(0);
-         DetecZ = interCoord->GetDetectedPositionZ(0);
-         TVector3 Detec(DetecX, DetecY, DetecZ);
-
-         // Get interaction position in detector
-         // This takes into account the strips
-         A = W1->GetPositionOfInteraction(0);
-
-         // Hit direction taking into account beam position on target
-         TVector3 HitDirection = A - TVector3(XTarget, YTarget, 0);
-//         cout << "A:            " << A.X() << "  " << A.Y() << "  " << A.Z() << endl;
-//         cout << "HitDirection: " << HitDirection.X() << "  " << HitDirection.Y() << "  " << HitDirection.Z() << endl;
-
-         // Calculate scattering angle w.r.t. optical beam axis (do not take into account beam position on target)
-         ThetaStrip = ThetaCalculation(A, TVector3(0,0,1));
-         Theta = ThetaCalculation(Detec, TVector3(0, 0, 1));
-         // Calculate scattering angle w.r.t. beam (ideal case)
-//         ThetaStrip = ThetaCalculation(HitDirection, BeamDirection);
-//         Theta = ThetaCalculation(Detec - TVector3(XTarget, YTarget, 0), BeamDirection);
-         // Calculate scattering angle w.r.t. beam (finite spatial resolution)
-//         double resol = 800;	// in micrometer
-//         angle = gene->Rndm() * 2*3.14;
-//         r     = fabs(gene->Gaus(0, resol)) * micrometer;
-//         ThetaStrip = ThetaCalculation(A     - TVector3(XTarget + r*cos(angle), YTarget + r*sin(angle), 0), BeamDirection);
-//         Theta      = ThetaCalculation(Detec - TVector3(XTarget + r*cos(angle), YTarget + r*sin(angle), 0), BeamDirection);
-//
-         // Correct for energy loss in the target
-         E = LightTarget.EvaluateInitialEnergy(E, myDetector->GetTargetThickness()/2 * micrometer, ThetaStrip);
-
-         // Calculate excitation energy
-//         if (Theta/deg > 150  && Theta/deg < 180) {
-//         if (Theta/deg < 60 && ThetaCM/deg < 90) {
-//         if (Theta/deg > 35 && Theta/deg < 45 && E/MeV < 17) {
-//         if (Theta/deg < 45) {
-//         if (E/MeV < 38) {		// for (p,t) reaction
-         if (Theta/deg > 30) {	// for (d,p) reaction
-            ExNoStrips = myReaction->ReconstructRelativistic(E, Theta / rad);
-            Ex         = myReaction->ReconstructRelativistic(E, ThetaStrip);
-         }
-         else {
-            Ex         = -200;
-            ExNoStrips = -200;
-         }
-      }
-      else {
-         Ex         = -100;
-         ExNoStrips = -100;
-      }
-
-      EE = E ; TT = ThetaStrip/deg;
-      if (E>-1000) {
-         X = A . X();
-         Y = A . Y();
-      }
-      else {
-         X = -1000 ; Y = -1000;
-      }
 
       // Fill output tree
       RootOutput::getInstance()->GetTree()->Fill();
-   }
-*/
+   }  // end loop on number of events to treat
+
    // delete singleton classes
    RootOutput::getInstance()->Destroy();
    RootInput::getInstance()->Destroy();
