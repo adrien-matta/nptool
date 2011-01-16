@@ -20,16 +20,18 @@
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
+
+// C++ headers
+#include <iostream>
+#include <vector>
+using namespace std;
+
 // ROOT headers
 #include "TSystem.h"
 #include "TROOT.h"
 #include "TList.h"
 #include "TSystemDirectory.h"
 #include "TString.h"
- 
-// C++ headers
-#include <iostream>
-using namespace std;
 
 void NPToolLogon(bool quietmode = false)
 {

@@ -120,12 +120,12 @@ class TMust2Physics : public TObject, public NPA::VDetector
 
 		//	Those two method all to clear the Event Physics or Data
 		void ClearEventPhysics()		{Clear();}		
-		void ClearEventData()				{EventData->Clear();}	
+		void ClearEventData()				{m_EventData->Clear();}	
 	
 	public:		//	Specific to MUST2 Array
 	
 		//	Clear The PreTeated object
-		void ClearPreTreatedData()	{PreTreatedData->Clear();}
+		void ClearPreTreatedData()	{m_PreTreatedData->Clear();}
 	
 		//	Remove bad channel, calibrate the data and apply threshold
 		void PreTreat();
@@ -160,11 +160,11 @@ class TMust2Physics : public TObject, public NPA::VDetector
 		void ReadCalibrationRun();
 		
 		// Use to access the strip position
-		double GetStripPositionX( int N , int X , int Y )	{ return StripPositionX[N-1][X-1][Y-1] ; };
-		double GetStripPositionY( int N , int X , int Y )	{ return StripPositionY[N-1][X-1][Y-1] ; };
-		double GetStripPositionZ( int N , int X , int Y )	{ return StripPositionZ[N-1][X-1][Y-1] ; };
+		double GetStripPositionX( int N , int X , int Y )	{ return m_StripPositionX[N-1][X-1][Y-1] ; };
+		double GetStripPositionY( int N , int X , int Y )	{ return m_StripPositionY[N-1][X-1][Y-1] ; };
+		double GetStripPositionZ( int N , int X , int Y )	{ return m_StripPositionZ[N-1][X-1][Y-1] ; };
 
-		double GetNumberOfTelescope() 	{ return NumberOfTelescope ; }			;
+		double GetNumberOfTelescope() 	{ return m_NumberOfTelescope ; }			;
 
 		// To be called after a build Physical Event 
 		int GetEventMultiplicity()	{ return EventMultiplicity; };
@@ -181,37 +181,69 @@ class TMust2Physics : public TObject, public NPA::VDetector
 		//	Give the allowance in percent of the difference in energy between X and Y
 			double m_StripEnergyMatchingTolerance  ; //!
 			
+		// Raw Threshold
+		int m_Si_X_E_RAW_Threshold ;//!
+		int m_Si_Y_E_RAW_Threshold ;//!
+		int m_SiLi_E_RAW_Threshold ;//!
+		int m_CsI_E_RAW_Threshold	 ;//!
+		
+		// Calibrated Threshold
+		double m_Si_X_E_Threshold ;//!
+		double m_Si_Y_E_Threshold ;//!
+		double m_SiLi_E_Threshold ;//!
+		double m_CsI_E_Threshold	;//!
+		
+		// Geometric Matching
+		// size in strip of a pad
+		int m_SiLi_Size;//!
+		// center position of the pad on X
+		vector< int > m_SiLi_MatchingX;//!
+		// center position of the pad on Y
+		vector< int > m_SiLi_MatchingY;//!
+		// size in strip of a cristal
+		int m_CsI_Size;//!
+		// center position of the cristal on X
+		vector< int > m_CsI_MatchingX;//!
+		// center position of the cristal on X
+		vector< int > m_CsI_MatchingY;//!
+		
+		// If set to true, all event that do not come in front of a cristal will be ignore all time (crossing or not),
+		// Warning, this option reduce statistic, however it help eliminating unrealevent event that cross the DSSD
+		// And go between pad or cristal. 
+		bool m_Ignore_not_matching_SiLi;//!
+		bool m_Ignore_not_matching_CsI;//!
+			
 	 	private:	//	Root Input and Output tree classes
 				
-				TMust2Data* 	  	EventData				;//!
-				TMust2Data* 	  	PreTreatedData	;//!
-				TMust2Physics* 	  EventPhysics		;//!
+				TMust2Data* 	  	m_EventData				;//!
+				TMust2Data* 	  	m_PreTreatedData	;//!
+				TMust2Physics* 	  m_EventPhysics		;//!
 
 
 		private:	//	Map of activated channel
-				map< int, vector<bool> > XChannelStatus 		;//!
-				map< int, vector<bool> > YChannelStatus 		;//! 
-				map< int, vector<bool> > SiLiChannelStatus 	;//! 
-				map< int, vector<bool> > CsIChannelStatus 	;//! 
+				map< int, vector<bool> > m_XChannelStatus 		;//!
+				map< int, vector<bool> > m_YChannelStatus 		;//! 
+				map< int, vector<bool> > m_SiLiChannelStatus 	;//!
+				map< int, vector<bool> > m_CsIChannelStatus 	;//! 
 
 		private:	//	Spatial Position of Strip Calculated on bases of detector position
 	
-			int NumberOfTelescope	;//!
+			int m_NumberOfTelescope	;//!
 		
-			vector< vector < vector < double > > >	StripPositionX			;//!
-			vector< vector < vector < double > > >	StripPositionY			;//!
-			vector< vector < vector < double > > >	StripPositionZ			;//!
+			vector< vector < vector < double > > >	m_StripPositionX			;//!
+			vector< vector < vector < double > > >	m_StripPositionY			;//!
+			vector< vector < vector < double > > >	m_StripPositionZ			;//!
 			
 	ClassDef(TMust2Physics,1)  // Must2Physics structure
 };
 
-namespace LOCAL
+namespace MUST2_LOCAL
 	{
 		//	Threshold
-		const double Si_X_E_Threshold = 0	;
-		const double Si_Y_E_Threshold = 0	;
-		const double SiLi_E_Threshold = 0	;
-		const double CsI_E_Threshold	= 0 ;
+//		const double Si_X_E_Threshold = 0	;
+//		const double Si_Y_E_Threshold = 0	;
+//		const double SiLi_E_Threshold = 0	;
+//		const double CsI_E_Threshold	= 0 ;
 
 		//	tranform an integer to a string
 		string itoa(int value);

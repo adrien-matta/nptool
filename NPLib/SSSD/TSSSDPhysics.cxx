@@ -362,7 +362,7 @@ void TSSSDPhysics::ReadAnalysisConfig()
    cout << " Loading user parameter for Analysis from ConfigSSSD.dat " << endl;
 
    // read analysis config file
-   string LineBuffer,DataBuffer;
+   string LineBuffer,DataBuffer,whatToDo;
    while (!AnalysisConfigFile.eof()) {
       // Pick-up next line
       getline(AnalysisConfigFile, LineBuffer);
@@ -372,49 +372,46 @@ void TSSSDPhysics::ReadAnalysisConfig()
 
       // loop on tokens and data
       while (ReadingStatus) {
-         AnalysisConfigFile >> DataBuffer;
+      
+         whatToDo= "" ;
+         AnalysisConfigFile >> whatToDo;
 
          // Search for comment symbol (%)
-         if (DataBuffer.compare(0, 1, "%") == 0) {
+         if (whatToDo.compare(0, 1, "%") == 0) {
             AnalysisConfigFile.ignore(numeric_limits<streamsize>::max(), '\n' );
          }
          
-         else if (DataBuffer.compare(0, 18, "PEDESTAL_THRESHOLD") == 0) {
+         else if (whatToDo.compare(0, 18, "PEDESTAL_THRESHOLD") == 0) {
             AnalysisConfigFile >> DataBuffer;
             m_Pedestal_Threshold = atoi(DataBuffer.c_str() );
             cout << "Pedestal threshold = " << m_Pedestal_Threshold << endl;
          }
          
-         else if (DataBuffer.compare(0, 4, "SSSD") == 0) {
-            AnalysisConfigFile >> DataBuffer;
-            string whatToDo = DataBuffer;
-            if (whatToDo.compare(0, 11, "DISABLE_ALL") == 0) {
-               AnalysisConfigFile >> DataBuffer;
-               cout << whatToDo << "  " << DataBuffer << endl;
-               int Detector = atoi(DataBuffer.substr(2,1).c_str());
-               vector< bool > ChannelStatusBuffer;
-               ChannelStatusBuffer.resize(16,false);
-               ChannelStatus[Detector] = ChannelStatusBuffer;
-            }
-            
-          else if (whatToDo.compare(0, 15, "DISABLE_CHANNEL") == 0) {
-               AnalysisConfigFile >> DataBuffer;
-               cout << whatToDo << "  " << DataBuffer << endl;
-               int telescope = atoi(DataBuffer.substr(2,1).c_str());
-               int channel = -1;
-               if (DataBuffer.compare(3,3,"STR") == 0) {
-                  channel = atoi(DataBuffer.substr(6).c_str());
-                  *(ChannelStatus[telescope].begin()+channel) = false;
-               }
-               
-               else {
-                  cout << "Warning: detector type for Must2 unknown!" << endl;
-               }
-            }
-            else {
-               cout << "Warning: don't know what to do (lost in translation)" << endl;
-            }
-         }
+         
+       else if (whatToDo.compare(0, 11, "DISABLE_ALL") == 0) {
+             AnalysisConfigFile >> DataBuffer;
+             cout << whatToDo << "  " << DataBuffer << endl;
+             int Detector = atoi(DataBuffer.substr(2,1).c_str());
+             vector< bool > ChannelStatusBuffer;
+             ChannelStatusBuffer.resize(16,false);
+             ChannelStatus[Detector] = ChannelStatusBuffer;
+          }
+          
+        else if (whatToDo.compare(0, 15, "DISABLE_CHANNEL") == 0) {
+             AnalysisConfigFile >> DataBuffer;
+             cout << whatToDo << "  " << DataBuffer << endl;
+             int telescope = atoi(DataBuffer.substr(2,1).c_str());
+             int channel = -1;
+             if (DataBuffer.compare(3,3,"STR") == 0) {
+                channel = atoi(DataBuffer.substr(6).c_str());
+                *(ChannelStatus[telescope].begin()+channel) = false;
+             }
+             
+             else {
+                cout << "Warning: detector type for SSSD unknown!" << endl;
+             }
+          }
+
          else {
             ReadingStatus = false;
 //            cout << "WARNING: Wrong Token Sequence" << endl;
