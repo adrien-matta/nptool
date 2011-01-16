@@ -37,6 +37,7 @@ NPLib / include
       / Paris
       / Shield
       / VDetector
+      / W1
 
 A description of each directory follows.
 
@@ -158,3 +159,14 @@ XV) VDetector
 	libDetectorManager.so:
 		DetectorManager is a class that manages a vector of VDetector and call their 
 		common functions.
+
+XVI) W1
+	This directory includes two libraries:
+		libW1Data.so
+		libW1Physics.so
+	libW1Data.so:
+		This library stores the results of the G4 simulation for the W1 (Micron)
+		detector.
+	libW1Physics.so:
+		This library deals with the treatment applied to the ROOT output file 
+		obtained from NPSimulation. This library is *only* used by NPAnalysis.
