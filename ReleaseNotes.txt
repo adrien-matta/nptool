@@ -1,0 +1,67 @@
+NPTool version xx.xx has been released on January xx 2011.
+
+The following people have contributed to this new version:
+Sandra Giron, IPNO
+Marc Labiche, STFC
+Adrien Matta, IPNO
+Nicolas de Sereville, IPNO
+
+
+****************************************************************************
+*                               GENERAL FEATURES                           *
+****************************************************************************
++ NPLib
+-------
+  + General
+    Building NPLib is now easier. 
+    + The new 'scripts' directory holds bash scripts called by the main
+      Makefile at the NPLib level.
+    + The main Makefile calls several scripts:
+      + All headers files are moved to the 'include' directory.
+      + Each Makefile found in any subdirectory is called.
+      + All libraries are moved to the 'library' directory.
+      + Symbolic links to *.dylib files are done if on a macosx platform.
+      + The 'liblist' file at NPLib level is created.
+
+  + NPOptionManager facility
+    + This singleton class allows to pass arguments on the command line when
+      executing NPSimulation and NPAnalysis.
+    + Execute ./Simulation --help or ./Analysis --help to know the available 
+      options.
+
+  + RootInput facility
+    + Support for adding TFriend object
+
+  + NPTagManager facility
+    ?? Adrien ??
+
++ NPSimulation
+--------------
+  + No new functionality in NPSimulation
+  + Using the NPOptionManager facility, calling NPSimulation is now:
+    ./Simulation -D xxx.detector -E xxx.reaction 
+
++ NPAnalysis
+------------
+  + No new functionality in NPSimulation
+  + Using the NPOptionManager facility, calling NPAnalysis is now:
+    ./Analysis -D xxx.detector -E xxx.reaction -R RunToTreat.txt
+
+
+****************************************************************************
+*                              SPECIFIC FEATURES                           *
+****************************************************************************
++ MUST2
+-------
+
++ GASPARD
+---------
+  + Lot of minor bugs corrected.
+  (see Gaspard documentation in NPDocumentation directory for more details)
+
++ W1
+----
+   + Add support for the W1 DSSD detector from Micron
+
++ PARIS
+-------
