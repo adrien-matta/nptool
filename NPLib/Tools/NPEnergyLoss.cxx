@@ -66,8 +66,9 @@ EnergyLoss::EnergyLoss(string Path , string Source, int NumberOfSlice=100 ,  int
 	string globalPath = getenv("NPTOOL");
 	string StandardPath = globalPath + "/Inputs/EnergyLoss/" + Path;
 	
-	cout << "///////////////////////////////// " << endl ;
-	cout << "Initialising an EnergyLoss object " << endl ;
+   cout << endl;
+	cout << "/////////// Energy loss ///////////" << endl ;
+	cout << "Initializing an EnergyLoss object " << endl ;
 		
 		ifstream TableFile	;
 		TableFile.open(StandardPath.c_str())	;
@@ -157,7 +158,6 @@ EnergyLoss::EnergyLoss(string Path , string Source, int NumberOfSlice=100 ,  int
 			}
 			
 			fInter = new Interpolator( fEnergy , fdEdX_Total	)		;
-			cout << "///////////////////////////////// " << endl ;
 	}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 

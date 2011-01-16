@@ -57,8 +57,8 @@ void DetectorManager::ReadConfigurationFile(string Path)
 
    if (ConfigFile.is_open()) 
     {
-      cout << "/////////////////////////////" << endl;
-      cout << " Configuration file " << Path << " loading " << endl;
+      cout << endl << "/////////// Detector geometry ///////////" << endl;
+      cout << "Configuration file " << Path << " loading " << endl;
       Path = StandardPath;
     }
   
@@ -66,7 +66,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
     {
       ConfigFile.open( Path.c_str() );
       if(ConfigFile.is_open()) {
-      cout << "/////////////////////////////" << endl;
+      cout << endl << "/////////// Detector geometry ///////////" << endl;
       cout << " Configuration file " << Path << " loading " << endl;
       }
       
@@ -157,7 +157,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 2, "W1") == 0 && W1 == false) {
          W1 = true;
-         cout << "//////// W1 ////////" << endl << endl;
+         cout << "//////// W1 ////////" << endl;
 
          // Instantiate the new array as a VDetector Object
          VDetector* myDetector = new TW1Physics();
@@ -214,7 +214,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 13, "GeneralTarget") == 0 && GeneralTarget == false) {
          GeneralTarget = true ;
-         cout << "////////// Target ///////////" << endl << endl;
+         cout << "////////// Target ///////////" << endl;
 
          // jump one line
          getline(ConfigFile, LineBuffer);

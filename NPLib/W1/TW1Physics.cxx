@@ -94,174 +94,177 @@ void TW1Physics::Clear()
 
 ///////////////////////////////////////////////////////////////////////////
 void TW1Physics::ReadConfiguration(string Path) 
-  {
-   ifstream ConfigFile           ;
-   ConfigFile.open(Path.c_str()) ;
-   string LineBuffer          ;
-   string DataBuffer          ;
+{
+   ifstream ConfigFile;
+   ConfigFile.open(Path.c_str());
+   string LineBuffer, DataBuffer;
 
-   double TLX , BLX , BRX , TRX , TLY , BLY , BRY , TRY , TLZ , BLZ , BRZ , TRZ   ;
-   double Theta = 0 , Phi = 0 , R = 0 , beta_u = 0 , beta_v = 0 , beta_w = 0      ;
-   bool check_A = false   ;
-   bool check_B = false ;
-   bool check_C = false   ;
-   bool check_D = false ;
+   double TLX, BLX, BRX, TRX, TLY, BLY, BRY, TRY, TLZ, BLZ, BRZ, TRZ;
+   TVector3 A, B, C, D;
+   double Theta = 0, Phi = 0, R = 0, beta_u = 0, beta_v = 0, beta_w = 0;
+   bool check_A = false;
+   bool check_B = false;
+   bool check_C = false;
+   bool check_D = false;
+   bool check_Theta = false;
+   bool check_Phi   = false;
+   bool check_R     = false;
+   bool check_beta  = false;
+   bool ReadingStatus = false;
 
-   bool check_Theta = false   ;
-   bool check_Phi  = false  ;
-   bool check_R     = false   ;
-   bool check_beta = false  ;
-   bool ReadingStatus = false ;
+   while (!ConfigFile.eof()) {      
+      getline(ConfigFile, LineBuffer);
 
- while (!ConfigFile.eof()) 
-   {
-      
-    getline(ConfigFile, LineBuffer);
+      // If W1 detector found, toggle Reading Block Status
+      if (LineBuffer.compare(0, 2, "W1") == 0) {
+         cout << "Detector found: " << endl;
+         ReadingStatus = true;
+      }
 
-    //  If line is a Start Up ThinSi bloc, Reading toggle to true      
-        if (LineBuffer.compare(0, 6, "ThinSi") == 0) 
-          {
-            cout << "Detector found: " << endl   ;        
-            ReadingStatus = true ;
-          }
+      // else don't toggle to Reading Block Status
+      else ReadingStatus = false;
 
-    //  Else don't toggle to Reading Block Status
-    else ReadingStatus = false ;
+      // Reading Block
+      while (ReadingStatus) {
+         // Pickup Next Word 
+         ConfigFile >> DataBuffer;
 
-    //  Reading Block
-    while(ReadingStatus)
-      {
-          // Pickup Next Word 
-        ConfigFile >> DataBuffer ;
+         //  Comment Line 
+         if (DataBuffer.compare(0, 1, "%") == 0) {ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
 
-        //  Comment Line 
-        if (DataBuffer.compare(0, 1, "%") == 0) {  ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
+         //  Finding another telescope (safety), toggle out
+         else if (DataBuffer.compare(0, 2, "W1") == 0) {
+            cout << "WARNING: Another Telescope is find before standard sequence of Token, Error may occured in Telecope definition" << endl;
+            ReadingStatus = false;
+         }
 
-          //  Finding another telescope (safety), toggle out
-        else if (DataBuffer.compare(0, 6, "ThinSi") == 0) {
-          cout << "WARNING: Another Telescope is find before standard sequence of Token, Error may occured in Telecope definition" << endl ;
-          ReadingStatus = false ;
+         // Position method
+         else if (DataBuffer.compare(0, 6, "X1_Y1=") == 0) {
+            check_A = true;
+            ConfigFile >> DataBuffer;
+            TLX = atof(DataBuffer.c_str());
+            ConfigFile >> DataBuffer;
+            TLY = atof(DataBuffer.c_str());
+            ConfigFile >> DataBuffer;
+            TLZ = atof(DataBuffer.c_str());
+
+            A = TVector3(TLX, TLY, TLZ);
+            cout << "X1 Y1 corner position : (" << A.X() << ";" << A.Y() << ";" << A.Z() << ")" << endl;
+         }
+
+         else if (DataBuffer.compare(0, 7, "X16_Y1=") == 0) {
+            check_B = true;
+            ConfigFile >> DataBuffer;
+            BLX = atof(DataBuffer.c_str());
+            ConfigFile >> DataBuffer;
+            BLY = atof(DataBuffer.c_str());
+            ConfigFile >> DataBuffer;
+            BLZ = atof(DataBuffer.c_str());            
+
+            B = TVector3(BLX, BLY, BLZ);
+            cout << "X16 Y1 corner position : (" << B.X() << ";" << B.Y() << ";" << B.Z() << ")" << endl;
+         }
+
+         else if (DataBuffer.compare(0, 7, "X1_Y16=") == 0) {
+            check_C = true;
+            ConfigFile >> DataBuffer;
+            BRX = atof(DataBuffer.c_str());
+            ConfigFile >> DataBuffer;
+            BRY = atof(DataBuffer.c_str());
+            ConfigFile >> DataBuffer;
+            BRZ = atof(DataBuffer.c_str());
+
+            C = TVector3(BRX, BRY, BRZ);
+            cout << "X1 Y16 corner position : (" << C.X() << ";" << C.Y() << ";" << C.Z() << ")" << endl;
         }
 
-           //Position method
-             else if (DataBuffer.compare(0, 3, "A=") == 0) {
-                check_A = true;
-                ConfigFile >> DataBuffer ;
-                TLX = atof(DataBuffer.c_str()) ;
-                ConfigFile >> DataBuffer ;
-                TLY = atof(DataBuffer.c_str()) ;
-                ConfigFile >> DataBuffer ;
-                TLZ = atof(DataBuffer.c_str()) ;
+         else if (DataBuffer.compare(0, 8, "X16_Y16=") == 0) {
+            check_D = true;
+            ConfigFile >> DataBuffer;
+            TRX = atof(DataBuffer.c_str());
+            ConfigFile >> DataBuffer;
+            TRY = atof(DataBuffer.c_str());
+            ConfigFile >> DataBuffer;
+            TRZ = atof(DataBuffer.c_str());
 
-             }
-        
-        else if (DataBuffer.compare(0, 3, "B=") == 0) {
-          check_B = true;
-          ConfigFile >> DataBuffer ;
-          BLX = atof(DataBuffer.c_str()) ;
-          ConfigFile >> DataBuffer ;
-          BLY = atof(DataBuffer.c_str()) ;
-          ConfigFile >> DataBuffer ;
-          BLZ = atof(DataBuffer.c_str()) ;
-
-        }
-
-        else if (DataBuffer.compare(0, 3, "C=") == 0) {
-          check_C = true;
-          ConfigFile >> DataBuffer ;
-          BRX = atof(DataBuffer.c_str()) ;
-          ConfigFile >> DataBuffer ;
-          BRY = atof(DataBuffer.c_str()) ;
-          ConfigFile >> DataBuffer ;
-          BRZ = atof(DataBuffer.c_str()) ;
-
-        }
-
-        else if (DataBuffer.compare(0, 3, "D=") == 0) {
-          check_D = true;
-          ConfigFile >> DataBuffer ;
-          TRX = atof(DataBuffer.c_str()) ;
-          ConfigFile >> DataBuffer ;
-          TRY = atof(DataBuffer.c_str()) ;
-          ConfigFile >> DataBuffer ;
-          TRZ = atof(DataBuffer.c_str()) ;
-
-        }
+            D = TVector3(TRX, TRY, TRZ);
+            cout << "X16 Y16 corner position : (" << D.X() << ";" << D.Y() << ";" << D.Z() << ")" << endl;
+         }
 
                   
-        //Angle method
-        else if (DataBuffer.compare(0, 6, "THETA=") == 0) {
-          check_Theta = true;
-          ConfigFile >> DataBuffer ;
-          Theta = atof(DataBuffer.c_str()) ;
-        }
+         //Angle method
+         else if (DataBuffer.compare(0, 6, "THETA=") == 0) {
+            check_Theta = true;
+            ConfigFile >> DataBuffer;
+            Theta = atof(DataBuffer.c_str());
+            cout << "Theta:  " << Theta << endl;
+         }
 
-        else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
-          check_Phi = true;
-          ConfigFile >> DataBuffer ;
-          Phi = atof(DataBuffer.c_str()) ;
-        }
+         else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
+            check_Phi = true;
+            ConfigFile >> DataBuffer;
+            Phi = atof(DataBuffer.c_str());
+            cout << "Phi:  " << Phi << endl;
+         }
 
-        else if (DataBuffer.compare(0, 2, "R=") == 0) {
-          check_R = true;
-          ConfigFile >> DataBuffer ;
-          R = atof(DataBuffer.c_str()) ;
-        }
+         else if (DataBuffer.compare(0, 2, "R=") == 0) {
+            check_R = true;
+            ConfigFile >> DataBuffer;
+            R = atof(DataBuffer.c_str());
+            cout << "R:  " << R << endl;
+         }
 
-
-        else if (DataBuffer.compare(0, 5, "BETA=") == 0) {
-          check_beta = true;
-          ConfigFile >> DataBuffer ;
-          beta_u = atof(DataBuffer.c_str()) ;
-          ConfigFile >> DataBuffer ;
-          beta_v = atof(DataBuffer.c_str()) ;
-          ConfigFile >> DataBuffer ;
-          beta_w = atof(DataBuffer.c_str()) ;
-        }
+         else if (DataBuffer.compare(0, 5, "BETA=") == 0) {
+            check_beta = true;
+            ConfigFile >> DataBuffer;
+            beta_u = atof(DataBuffer.c_str());
+            ConfigFile >> DataBuffer;
+            beta_v = atof(DataBuffer.c_str());
+            ConfigFile >> DataBuffer;
+            beta_w = atof(DataBuffer.c_str());
+            cout << "Beta:  " << beta_u << " " << beta_v << " " << beta_w << endl;
+         }
           
-               ///////////////////////////////////////////////////
-          //  If no Detector Token and no comment, toggle out
-             else 
-               {ReadingStatus = false; cout << "Wrong Token Sequence: Getting out " << DataBuffer << endl ;}
-             
-               /////////////////////////////////////////////////
-               //  If All necessary information there, toggle out
-             
-             if ( (check_A && check_B && check_C && check_D) || (check_Theta && check_Phi && check_R && check_beta) ) 
-               { 
-                   ReadingStatus = false; 
+         ///////////////////////////////////////////////////
+         //  If no Detector Token and no comment, toggle out
+         else {
+            ReadingStatus = false; 
+            cout << "Wrong Token Sequence: Getting out " << DataBuffer << endl;
+         }
+
+         /////////////////////////////////////////////////
+         //  If All necessary information there, toggle out             
+         if ((check_A && check_B && check_C && check_D) || (check_Theta && check_Phi && check_R && check_beta)) { 
+            ReadingStatus = false; 
                    
-                   ///Add The previously define telescope
-                   //With position method
-                    if ((check_A && check_B && check_C && check_D) || !(check_Theta && check_Phi && check_R)) {
-                           m_NumberOfDetector++;
-                     }
-
-                   //with angle method
-                   else if ((check_Theta && check_Phi && check_R) || !(check_A && check_B && check_C && check_D)) {
-                           m_NumberOfDetector++;
-                     }
-                     
-                    //  Reinitialisation of Check Boolean 
-                    
-                check_A = false   ;
-                check_B = false ;
-                check_C = false   ;
-                check_D = false ;
-
-                check_Theta   = false   ;
-                check_Phi     = false  ;
-                check_R       = false   ;
-                check_beta    = false  ;
-                ReadingStatus = false ;
-                       
-               }
-               
+            // Add The previously define telescope
+            // With position method
+            if ((check_A && check_B && check_C && check_D) || !(check_Theta && check_Phi && check_R)) {
+               AddDetector(A, B, C, D);
             }
-          }
+
+            // with angle method
+            else if ((check_Theta && check_Phi && check_R) || !(check_A && check_B && check_C && check_D)) {
+               AddDetector(Theta, Phi, R, beta_u, beta_v, beta_w);
+            }
+                     
+            //  Reinitialisation of Check Boolean 
+            check_A = false;
+            check_B = false;
+            check_C = false;
+            check_D = false;
+
+            check_Theta   = false;
+            check_Phi     = false;
+            check_R       = false;
+            check_beta    = false;
+            ReadingStatus = false;
+         }
+      }
+   }
           
-    InitializeStandardParameter() ;
-    ReadAnalysisConfig()          ;
+   InitializeStandardParameter();
+   ReadAnalysisConfig();
 }
 
 
@@ -482,6 +485,23 @@ TVector3 TW1Physics::GetDetectorNormal(int i)
 
 
 
+void TW1Physics::DumpStrippingScheme(int detecNumber)
+{
+   cout << endl << "TW1Physics::DumpStrippingScheme()" << endl;
+   cout << "Detector number " << detecNumber << endl;
+
+   for (int i = 1; i < m_NumberOfStrips+1; i++) {   // front part
+      for (int j = 1; j < m_NumberOfStrips+1; j++) {   // back part
+         cout << "strips Front, Back: " << i << "  " << j << "\t--->\t (X,Y,Z) mm: "
+            << GetStripPositionX(detecNumber, i, j) << "\t"
+            << GetStripPositionY(detecNumber, i, j) << "\t"
+            << GetStripPositionZ(detecNumber, i, j) << endl;
+      }
+   }
+}
+
+
+
 ///////////////////////////////////////////////////////////////////////////
 void TW1Physics::BuildPhysicalEvent()
 {
@@ -683,6 +703,8 @@ void TW1Physics::ReadAnalysisConfig()
    bool check_mult    = false;
    bool check_match   = false;
 
+   cout << "\t/////////// Reading ConfigW1.dat file ///////////" << endl;
+
    // path to file
    string FileName = "./configs/ConfigW1.dat";
 
@@ -691,10 +713,10 @@ void TW1Physics::ReadAnalysisConfig()
    AnalysisConfigFile.open(FileName.c_str());
 
    if (!AnalysisConfigFile.is_open()) {
-      cout << " No ConfigW1.dat found: Default parameter loaded for Analayis " << FileName << endl;
+      cout << "\tNo ConfigW1.dat found: Default parameter loaded for Analayis " << FileName << endl;
       return;
    }
-   cout << " Loading user parameter for Analysis from ConfigW1.dat " << endl;
+   cout << "\tLoading user parameters from ConfigW1.dat " << endl;
 
    // read analysis config file
    string LineBuffer,DataBuffer;
@@ -718,14 +740,14 @@ void TW1Physics::ReadAnalysisConfig()
             check_mult = true;
             AnalysisConfigFile >> DataBuffer;
             m_MaximumStripMultiplicityAllowed = atoi(DataBuffer.c_str() );
-            cout << "Maximun strip multiplicity= " << m_MaximumStripMultiplicityAllowed << endl;
+            cout << "\tMaximun strip multiplicity= " << m_MaximumStripMultiplicityAllowed << endl;
          }
 
          else if (DataBuffer.compare(0, 31, "STRIP_ENERGY_MATCHING_TOLERANCE") == 0) {
             check_match = true;
             AnalysisConfigFile >> DataBuffer;
             m_StripEnergyMatchingTolerance = atoi(DataBuffer.c_str() );
-            cout << "Strip energy matching tolerance= " << m_StripEnergyMatchingTolerance << endl;
+            cout << "\tStrip energy matching tolerance= " << m_StripEnergyMatchingTolerance << endl;
          }
          
          else if (DataBuffer.compare(0, 2, "W1") == 0) {
@@ -756,7 +778,7 @@ void TW1Physics::ReadAnalysisConfig()
                }
                
                else {
-                  cout << "Warning: detector type for W1 unknown!" << endl;
+                  cout << "\tWarning: detector type for W1 unknown!" << endl;
                }
             }
 
@@ -785,7 +807,7 @@ void TW1Physics::ReadAnalysisConfig()
             }
 
             else {
-               cout << "Warning: don't know what to do (lost in translation)" << endl;
+               cout << "\tWarning: don't know what to do (lost in translation)" << endl;
             }
          }
          else {

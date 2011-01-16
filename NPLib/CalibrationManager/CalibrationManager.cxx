@@ -51,7 +51,8 @@ CalibrationManager::CalibrationManager(string configFileName)
    ifstream inputConfigFile;
    inputConfigFile.open(configFileName.c_str());
 	
-   cout << "/////////////////////////////////" << endl;
+   cout << endl;
+   cout << "/////////// Calibration Information ///////////" << endl;
    cout << "Getting list of Calibration File" << endl;
 
    if (!inputConfigFile) {

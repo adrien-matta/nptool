@@ -2,6 +2,3 @@ TTreeName
 	SimulatedTree
 RootFileName 
 	../../Outputs/Simulation/myResult.root
-%	../../Outputs/Simulation/134Snpt_1h9_10MeVA_T0_B0_E0_S2mm.root
-%	../../Outputs/Simulation/132Sndp_3p3_10MeVA_T0_B1_E0_S05mm.root
-%	../../Outputs/Simulation/134Snpt_1h9_10MeVA_T1_B1_E0_S05mm.root

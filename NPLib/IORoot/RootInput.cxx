@@ -65,7 +65,8 @@ RootInput::RootInput(string configFileName)
 	
    pRootChain = new TChain();
    
-   cout << "/////////////////////////////////" << endl;
+   cout << endl;
+   cout << "/////////// ROOT Input files ///////////" << endl;
    cout << "Initializing input TChain" << endl;
 
    if (!inputConfigFile) {
@@ -107,8 +108,6 @@ RootInput::RootInput(string configFileName)
 		   
    if (!CheckRootFileName || !CheckTreeName) 
       cout << "WARNING: Token not found for InputTree Declaration : Input Tree may not be instantiate properly" << endl;
-
-   cout << "/////////////////////////////////" << endl;
 }
 
 void RootInput::AddFriendChain( string RunToAdd)

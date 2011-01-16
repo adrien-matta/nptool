@@ -176,6 +176,7 @@ class TW1Physics : public TObject, public NPA::VDetector
    double   GetStripPositionZ(int N, int X, int Y)   {return m_StripPositionZ[N-1][X-1][Y-1];};
    TVector3 GetPositionOfInteraction(int i);
    TVector3 GetDetectorNormal(int i);
+   void     DumpStrippingScheme(int detecNumber);
 
 
  private:   // Geometry and strip number

@@ -1,4 +1,14 @@
-%%%%%%% Telescope 1 %%%%%%%			
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GeneralTarget
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Target
+   THICKNESS= 0.001
+   RADIUS=  7.5
+   MATERIAL= CD2
+   X= 0
+   Y= 0
+   Z= 0
+%%%%%%% Detector 1 %%%%%%%			
 W1
 	THETA= 0
 	PHI= 0
