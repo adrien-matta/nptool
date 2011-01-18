@@ -157,7 +157,7 @@ void CalibrationManager::LoadParameterFromFile()
 	}
 
 //////////////////////////////////////////////////////////////////
-double CalibrationManager::ApplyCalibration(string ParameterPath , double RawValue)
+double CalibrationManager::ApplyCalibration(const string ParameterPath , const double RawValue)
 	{
 		double CalibratedValue = 0 ;
 		map< string , vector<double> >::iterator it ;

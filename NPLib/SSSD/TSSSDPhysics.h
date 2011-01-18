@@ -96,8 +96,8 @@ class TSSSDPhysics : public TObject, public NPA::VDetector
    TSSSDData* 	  PreTreatedData;		//!
    TSSSDPhysics*  EventPhysics;	  	//!
 
-   double 		m_E_Threshold;		//!
-   double 		m_Pedestal_Threshold;	//!
+   double m_E_Threshold;		//!
+   double m_Pedestal_Threshold;	//!
 				
 
  private: //  Map of activated Channel
@@ -107,16 +107,16 @@ class TSSSDPhysics : public TObject, public NPA::VDetector
    // bool IsValidChannel(int DetectorNbr, int StripNbr) ;
 
    void	Clear();
-   void  Clear(const Option_t*) {};
+   void Clear(const Option_t*) {};
 	
    ClassDef(TSSSDPhysics,1)  // SSSDPhysics structure
 };
 
 
-namespace LOCAL
+namespace SSSD_LOCAL
 {
-   double fSi_E( TSSSDData* EventData , int i );
-   double fSi_T( TSSSDData* EventData , int i );
+   double fSi_E( const TSSSDData* EventData , const int i );
+   double fSi_T( const TSSSDData* EventData , const int i );
 }
 
 #endif

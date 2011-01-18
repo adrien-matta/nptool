@@ -134,7 +134,6 @@ class TMust2Physics : public TObject, public NPA::VDetector
 			//	Frist argument is either "X","Y","SiLi","CsI"
 		bool IsValidChannel(string DetectorType, int telescope , int channel);
 	
-	
 		//	Initialize the standard parameter for analysis
 			//	ie: all channel enable, maximum multiplicity for strip = number of telescope
 		void InitializeStandardParameter();
@@ -160,26 +159,32 @@ class TMust2Physics : public TObject, public NPA::VDetector
 		void ReadCalibrationRun();
 		
 		// Use to access the strip position
-		double GetStripPositionX( int N , int X , int Y )	{ return m_StripPositionX[N-1][X-1][Y-1] ; };
-		double GetStripPositionY( int N , int X , int Y )	{ return m_StripPositionY[N-1][X-1][Y-1] ; };
-		double GetStripPositionZ( int N , int X , int Y )	{ return m_StripPositionZ[N-1][X-1][Y-1] ; };
+		double GetStripPositionX( const int N , const int X , const int Y )	const{ return m_StripPositionX[N-1][X-1][Y-1] ; }  ;
+		double GetStripPositionY( const int N , const int X , const int Y )	const{ return m_StripPositionY[N-1][X-1][Y-1] ; }  ;
+		double GetStripPositionZ( const int N , const int X , const int Y )	const{ return m_StripPositionZ[N-1][X-1][Y-1] ; }  ;
 
-		double GetNumberOfTelescope() 	{ return m_NumberOfTelescope ; }			;
+		double GetNumberOfTelescope() const { return m_NumberOfTelescope ; }  	;
 
 		// To be called after a build Physical Event 
-		int GetEventMultiplicity()	{ return EventMultiplicity; };
+		int GetEventMultiplicity() const { return EventMultiplicity; } ;
 		
-		double GetEnergyDeposit(int i) { return TotalEnergy[i] ;};
+		double GetEnergyDeposit(const int i) const{ return TotalEnergy[i] ;} ;
 		
-		TVector3 GetPositionOfInteraction(int i)	 ;	
-		TVector3 GetTelescopeNormal(int i)				 ;
+		TVector3 GetPositionOfInteraction(const int i) const  ;	
+		TVector3 GetTelescopeNormal(const int i) const 	 ;
 
 		private:	//	Parameter used in the analysis
+		
+		// By default take EX and TY.
+		bool m_Take_E_Y;//!
+		bool m_Take_T_Y;//!
+		
 		
 		//	Event over this value after pre-treatment are not treated / avoid long treatment time on spurious event	
 			int m_MaximumStripMultiplicityAllowed  ;//!
 		//	Give the allowance in percent of the difference in energy between X and Y
-			double m_StripEnergyMatchingTolerance  ; //!
+			double m_StripEnergyMatchingSigma  ; //!
+			double m_StripEnergyMatchingNumberOfSigma  ; //!
 			
 		// Raw Threshold
 		int m_Si_X_E_RAW_Threshold ;//!
@@ -239,30 +244,25 @@ class TMust2Physics : public TObject, public NPA::VDetector
 
 namespace MUST2_LOCAL
 	{
-		//	Threshold
-//		const double Si_X_E_Threshold = 0	;
-//		const double Si_Y_E_Threshold = 0	;
-//		const double SiLi_E_Threshold = 0	;
-//		const double CsI_E_Threshold	= 0 ;
 
 		//	tranform an integer to a string
 		string itoa(int value);
 		//	DSSD
 		//	X
-		double fSi_X_E(TMust2Data* Data , int i);
-		double fSi_X_T(TMust2Data* Data, int i);
+		double fSi_X_E(TMust2Data* Data, const int i);
+		double fSi_X_T(TMust2Data* Data, const int i);
 		
 		//	Y	
-		double fSi_Y_E(TMust2Data* Data, int i);
-		double fSi_Y_T(TMust2Data* Data, int i);
+		double fSi_Y_E(TMust2Data* Data, const int i);
+		double fSi_Y_T(TMust2Data* Data, const int i);
 			
 		//	SiLi
-		double fSiLi_E(TMust2Data* Data, int i);
-		double fSiLi_T(TMust2Data* Data, int i);
+		double fSiLi_E(TMust2Data* Data, const int i);
+		double fSiLi_T(TMust2Data* Data, const int i);
 			
 		//	CsI
-		double fCsI_E(TMust2Data* Data, int i);
-		double fCsI_T(TMust2Data* Data, int i);
+		double fCsI_E(TMust2Data* Data, const int i);
+		double fCsI_T(TMust2Data* Data, const int i);
 	
 	}
 
