@@ -309,10 +309,10 @@ void TSSSDPhysics::PreTreat()
       //  E
       for(int i = 0 ; i < EventData->GetEnergyMult() ; i++)
         {
-          if(ChannelStatus[EventData->GetEnergyDetectorNbr(i)][EventData->GetEnergyStripNbr(i)])
+          if(EventData->GetEnergy(i) > m_Pedestal_Threshold && ChannelStatus[EventData->GetEnergyDetectorNbr(i)][EventData->GetEnergyStripNbr(i)])
             {
 	            double E = fSi_E(EventData , i); 
-	            if( E > m_E_Threshold && EventData->GetEnergy(i) > m_Pedestal_Threshold)
+	            if( E > m_E_Threshold )
 	                {
 	                  PreTreatedData->SetEnergyDetectorNbr( EventData->GetEnergyDetectorNbr(i) )  ;
 	                  PreTreatedData->SetEnergyStripNbr( EventData->GetEnergyStripNbr(i) )        ;
