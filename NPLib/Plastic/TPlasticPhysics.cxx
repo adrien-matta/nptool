@@ -124,38 +124,38 @@ void TPlasticPhysics::ReadConfiguration(string Path)
 						}
 											
 													//Angle method
-						else if (DataBuffer.compare(0, 6, "THETA=") == 0) {
+						else if (DataBuffer=="THETA=") {
 							check_Theta = true;
 							ConfigFile >> DataBuffer ;
 							cout << "Theta:  " << atof(DataBuffer.c_str()) << "deg" << endl;
 						}
 
-						else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
+						else if (DataBuffer=="PHI=") {
 							check_Phi = true;
 							ConfigFile >> DataBuffer ;
 							cout << "Phi:  " << atof( DataBuffer.c_str() ) << "deg" << endl;
 						}
 
-						else if (DataBuffer.compare(0, 2, "R=") == 0) {
+						else if (DataBuffer=="R=") {
 							check_R = true;
 							ConfigFile >> DataBuffer ;
 							cout << "R:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
 						}
 						
 						//Position method
-						else if (DataBuffer.compare(0, 2, "X=") == 0) {
+						else if (DataBuffer=="X=") {
 							check_X = true;
 							ConfigFile >> DataBuffer ;
 							cout << "X:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
 						}
 
-						else if (DataBuffer.compare(0, 2, "Y=") == 0) {
+						else if (DataBuffer=="Y=") {
 							check_Y = true;
 							ConfigFile >> DataBuffer ;
 							cout << "Y:  " << atof( DataBuffer.c_str() ) << "mm"<< endl;
 						}
 
-						else if (DataBuffer.compare(0, 2, "Z=") == 0) {
+						else if (DataBuffer=="Z=") {
 							check_Z = true;
 							ConfigFile >> DataBuffer ;
 							cout << "Z:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
@@ -163,46 +163,46 @@ void TPlasticPhysics::ReadConfiguration(string Path)
 						
 						
 						//General
-						else if (DataBuffer.compare(0, 6, "Shape=") == 0) {
+						else if (DataBuffer=="Shape=") {
 							check_Shape = true;
 							ConfigFile >> DataBuffer ;
 							cout << "Shape:  " << DataBuffer << endl;
 						}
 						
 						// Cylindrical shape
-						else if (DataBuffer.compare(0, 7, "Radius=") == 0) {
+						else if (DataBuffer== "Radius=") {
 							check_Radius = true;
 							ConfigFile >> DataBuffer ;
 							cout << "Plastic Radius:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
 						}
 						
 						// Squared shape
-						else if (DataBuffer.compare(0, 7, "Width=") == 0) {
+						else if (DataBuffer=="Width=") {
 							check_Width = true;
 							ConfigFile >> DataBuffer ;
 							cout << "Plastic Width:  " <<atof( DataBuffer.c_str() ) << "mm" << endl;
 						}
 						
-						else if (DataBuffer.compare(0, 7, "Height=") == 0) {
+						else if (DataBuffer== "Height=") {
 							check_Height = true;
 							ConfigFile >> DataBuffer ;
 							cout << "Plastic Height:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
 						}
 						
 						// Common
-						else if (DataBuffer.compare(0, 10, "Thickness=") == 0) {
+						else if (DataBuffer=="Thickness=") {
 							check_Thickness = true;
 							ConfigFile >> DataBuffer ;
 							cout << "Plastic Thickness:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
 						}
 						
-						else if (DataBuffer.compare(0, 13, "Scintillator=") == 0) {
+						else if (DataBuffer== "Scintillator=") {
 							check_Scintillator = true ;
 							ConfigFile >> DataBuffer ;
 							cout << "Plastic Scintillator type:  " << DataBuffer << endl;
 						}
 						
-						else if (DataBuffer.compare(0, 14, "LeadThickness=") == 0) {
+						else if (DataBuffer=="LeadThickness=") {
 							check_LeadThickness = true;
 							ConfigFile >> DataBuffer ;
 							cout << "Lead Thickness :  " << atof( DataBuffer.c_str() ) << "mm" << endl;

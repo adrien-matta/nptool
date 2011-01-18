@@ -45,24 +45,15 @@ namespace NPA
 				//	Add Parameter to the CalibrationManger
 				virtual void AddParameterToCalibrationManager()	{} ;		
 
-				//	XXX To be DUMPED XXX
-				//	Read stream at CalibFile and pick-up calibration parameter using Token
-				//	If argument is "Simulation" no change calibration is loaded
-				virtual void ReadCalibrationFile(string)	{} ;		
-					
-				
 				//	Activated associated Branches and link it to the private member DetectorData address
 				//	In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
 				virtual void InitializeRootInput() 			{}		;
 
-
 				//	Create associated branches and associated private member DetectorPhysics address
 				virtual void InitializeRootOutput() 		{} 	;
 				
-				
 				//	This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
 				virtual void BuildPhysicalEvent()			{}		;
-				
 				
 				//	Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
 				//	This method aimed to be used for analysis performed during experiment, when speed is requiered.
@@ -88,7 +79,7 @@ namespace NPA
 				
 				//	Position of detector: An array which held geometric information of detector, such as Strip position,...
 				//	Dimension must be suited for your need
-				
+
 				vector< vector <double > >	DetectorPosition	;
 				
 				//	Calibration are passed to the EventPhysics Object, so you don't need to store them here

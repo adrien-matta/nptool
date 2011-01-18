@@ -300,49 +300,49 @@ void Reaction::ReadConfigurationFile(string Path)
 		 			 //Search for comment Symbol %
 			      	 if (LineBuffer.compare(0, 1, "%") == 0) {/* Do Nothing */;}
 		 			 
-			         else if (DataBuffer.compare(0, 5, "Beam=") == 0) {
+			         else if (DataBuffer=="Beam=") {
 			         	check_Beam = true ;
 			            ReactionFile >> DataBuffer;
 			            Beam = DataBuffer;
 			            cout << "Beam " << Beam << endl;
 			         }
 			
-			         else if (DataBuffer.compare(0, 7, "Target=") == 0) {
+			         else if (DataBuffer=="Target=") {
 			            check_Target = true ;
 			            ReactionFile >> DataBuffer;
 			            Target = DataBuffer;
 			            cout << "Target " << Target << endl;
 			         }
 
-			         else if (DataBuffer.compare(0, 6, "Light=") == 0) {
+			         else if (DataBuffer=="Light=") {
 			         	check_Light = true ;
 			            ReactionFile >> DataBuffer;
 			            Light = DataBuffer;
 			            cout << "Light " << Light << endl;
 			         }
 
-			        else if  (DataBuffer.compare(0, 6, "Heavy=") == 0) {
+			        else if  (DataBuffer== "Heavy=") {
 			            check_Heavy = true ;
 			            ReactionFile >> DataBuffer;
 			            Heavy = DataBuffer;
 			            cout << "Heavy " << Heavy << endl;
 			         }
 
-			        else if  (DataBuffer.compare(0, 17, "ExcitationEnergy=") == 0) {
+			        else if  (DataBuffer=="ExcitationEnergy=") {
 			        	check_ExcitationEnergy = true ;
 			            ReactionFile >> DataBuffer;
 			            ExcitationEnergy = atof(DataBuffer.c_str()) * MeV;
 			            cout << "Excitation Energy " << ExcitationEnergy / MeV << " MeV" << endl;
 			         }
 
-			        else if  (DataBuffer.compare(0, 11, "BeamEnergy=") == 0) {
+			        else if  (DataBuffer=="BeamEnergy=") {
 			        	check_BeamEnergy = true ;
 			            ReactionFile >> DataBuffer;
 			            BeamEnergy = atof(DataBuffer.c_str()) * MeV;
 			            cout << "Beam Energy " << BeamEnergy / MeV << " MeV" << endl;
 			         }
 
-			        else if  (DataBuffer.compare(0, 17, "CrossSectionPath=") == 0) {
+			        else if  (DataBuffer== "CrossSectionPath=") {
 			        	check_CrossSectionPath = true ;
 			            ReactionFile >> CrossSectionPath;
 			            cout << "Cross Section File: " << CrossSectionPath << endl ;
