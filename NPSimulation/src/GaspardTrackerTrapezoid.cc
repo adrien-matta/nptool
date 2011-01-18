@@ -224,19 +224,47 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
    // Little trick to avoid warning in compilation: Use a PVPlacement "buffer".
    // If don't you will have a Warning unused variable 'myPVP'
    G4PVPlacement* PVPBuffer ;
-   G4String Name = "GPDTrapezoid" + DetectorNumber ;
 
    // Definition of the volume containing the sensitive detector
-   G4Trap* solidGPDTrapezoid = new G4Trap(Name, 
-                                          Length/2, 0*deg, 0*deg, 
-                                          Height/2, BaseLarge/2, BaseSmall/2, 0*deg, 
-                                          Height/2, BaseLarge/2, BaseSmall/2, 0*deg);
-   G4LogicalVolume* logicGPDTrapezoid = new G4LogicalVolume(solidGPDTrapezoid, Vacuum, Name, 0, 0, 0);
+   G4Trap* solidMM = new G4Trap("GPDTrapezoid" + DetectorNumber, 
+                                Length/2, 0*deg, 0*deg, 
+                                Height/2, BaseSmall/2, BaseLarge/2, 0*deg, 
+                                Height/2, BaseSmall/2, BaseLarge/2, 0*deg);
 
-   PVPBuffer = new G4PVPlacement(G4Transform3D(*MMrot, MMpos), logicGPDTrapezoid, Name, world, false, 0);
+//   G4LogicalVolume* logicMM = new G4LogicalVolume(solidMM, Iron, "GPDTrapezoid" + DetectorNumber, 0, 0, 0)                                ;
+   G4LogicalVolume* logicMM = new G4LogicalVolume(solidMM, Vacuum, "GPDTrapezoid" + DetectorNumber, 0, 0, 0)                                ;
 
-   logicGPDTrapezoid->SetVisAttributes(G4VisAttributes::Invisible);
-   if (m_non_sensitive_part_visiualisation) logicGPDTrapezoid->SetVisAttributes(G4VisAttributes(G4Colour(0.90, 0.90, 0.90)));
+   G4String Name = "GPDTrapezoid" + DetectorNumber ;
+   PVPBuffer     = new G4PVPlacement(G4Transform3D(*MMrot, MMpos) ,
+                                     logicMM                      ,
+                                     Name                         ,
+                                     world                        ,
+                                     false                        ,
+                                     0);
+
+   logicMM->SetVisAttributes(G4VisAttributes::Invisible);
+   if (m_non_sensitive_part_visiualisation) logicMM->SetVisAttributes(G4VisAttributes(G4Colour(0.90, 0.90, 0.90)));
+
+   // Definition of a vaccuum volume
+   G4ThreeVector positionVacBox = G4ThreeVector(0, 0, VacBox_PosZ);
+
+   G4Trap* solidVacBox = new G4Trap("solidVacBox", 
+                                    VacBoxThickness/2, 0*deg, 0*deg, 
+                                    FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg, 
+                                    FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg);
+
+   G4LogicalVolume* logicVacBox = new G4LogicalVolume(solidVacBox, Vacuum, "logicVacBox", 0, 0, 0);
+
+   PVPBuffer = new G4PVPlacement(0, positionVacBox, logicVacBox, "G" + DetectorNumber + "VacBox", logicMM, false, 0);
+
+   logicVacBox->SetVisAttributes(G4VisAttributes::Invisible);
+
+   // Add a degrader plate between Si and CsI:
+   /*
+      G4Box* Degrader = new G4Box("Degrader" , 50*mm , 50*mm , 0.1*mm );
+      G4LogicalVolume* logicDegrader = new G4LogicalVolume( Degrader , Harvar, "logicDegrader",0,0,0);
+      PVPBuffer = new G4PVPlacement(0,G4ThreeVector(0,0,0),logicDegrader,"Degrader",logicVacBox,false,0) ;
+   */
 
    //Place two marker to identify the u and v axis on silicon face:
    //marker are placed a bit before the silicon itself so they don't perturbate simulation
@@ -265,58 +293,46 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
    /////////////////// First Stage Construction////////////////////
    ////////////////////////////////////////////////////////////////
    if (wFirstStage) {
+      // Aluminium dead layers
+      G4ThreeVector positionAluStripFront = G4ThreeVector(0, 0, AluStripFront_PosZ);
+      G4ThreeVector positionAluStripBack  = G4ThreeVector(0, 0, AluStripBack_PosZ);
+
+      G4Trap* solidAluStrip = new G4Trap("AluBox", 
+                                         AluStripThickness/2, 0*deg, 0*deg, 
+                                         FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg, 
+                                         FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg);
+
+//      G4LogicalVolume* logicAluStrip = new G4LogicalVolume(solidAluStrip, Aluminium, "logicAluStrip", 0, 0, 0);
+      G4LogicalVolume* logicAluStrip = new G4LogicalVolume(solidAluStrip, Vacuum, "logicAluStrip", 0, 0, 0);
+
+      PVPBuffer = new G4PVPlacement(0, positionAluStripFront, logicAluStrip, "G" + DetectorNumber + "AluStripFront", logicMM, false, 0);
+      PVPBuffer = new G4PVPlacement(0, positionAluStripBack,  logicAluStrip, "G" + DetectorNumber + "AluStripBack",  logicMM, false, 0);
+
+      logicAluStrip->SetVisAttributes(G4VisAttributes::Invisible);
+
       // Silicon detector itself
-      G4ThreeVector  positionFirstStage = G4ThreeVector(0, 0, FirstStage_PosZ);
+      G4ThreeVector  positionSilicon = G4ThreeVector(0, 0, Silicon_PosZ);
 
-      G4Trap* solidFirstStage = new G4Trap("solidFirstStage", 
-                                           FirstStageThickness/2, 0*deg, 0*deg, 
-                                           FirstStageHeight/2, FirstStageBaseLarge/2, FirstStageBaseSmall/2, 0*deg, 
-                                           FirstStageHeight/2, FirstStageBaseLarge/2, FirstStageBaseSmall/2, 0*deg);
-      G4LogicalVolume* logicFirstStage = new G4LogicalVolume(solidFirstStage, Silicon, "logicFirstStage", 0, 0, 0);
+      G4Trap* solidSilicon = new G4Trap("solidSilicon", 
+                                         FirstStageThickness/2, 0*deg, 0*deg, 
+                                         FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg, 
+                                         FirstStageHeight/2, FirstStageBaseSmall/2, FirstStageBaseLarge/2, 0*deg);
+      G4LogicalVolume* logicSilicon = new G4LogicalVolume(solidSilicon, Silicon, "logicSilicon", 0, 0, 0);
 
-      PVPBuffer = new G4PVPlacement(0,
-                                    positionFirstStage,
-                                    logicFirstStage,
-                                    Name + "_FirstStage",
-                                    logicGPDTrapezoid,
-                                    false,
-                                    0);
+      PVPBuffer = new G4PVPlacement(0, positionSilicon, logicSilicon, Name + "_Silicon", logicMM, false, 0);
 
       // Set First Stage sensible
-      logicFirstStage->SetSensitiveDetector(m_FirstStageScorer);
+      logicSilicon->SetSensitiveDetector(m_FirstStageScorer);
 
-      ///Visualisation of FirstStage Strip
-      G4VisAttributes* FirstStageVisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 0.9));	// blue
-      logicFirstStage->SetVisAttributes(FirstStageVisAtt);
+      // Visualisation of Silicon Strip
+      G4VisAttributes* SiliconVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5)) ;
+      logicSilicon->SetVisAttributes(SiliconVisAtt)                        ;
    }
 
    ////////////////////////////////////////////////////////////////
    //////////////// Second Stage  Construction ////////////////////
    ////////////////////////////////////////////////////////////////
    if (wSecondStage) {
-      // Second stage silicon detector
-      G4ThreeVector  positionSecondStage = G4ThreeVector(0, 0, SecondStage_PosZ);
-
-      G4Trap* solidSecondStage = new G4Trap("solidSecondStage", 
-                                            SecondStageThickness/2, 0*deg, 0*deg, 
-                                           FirstStageHeight/2, FirstStageBaseLarge/2, FirstStageBaseSmall/2, 0*deg, 
-                                           FirstStageHeight/2, FirstStageBaseLarge/2, FirstStageBaseSmall/2, 0*deg);
-      G4LogicalVolume* logicSecondStage = new G4LogicalVolume(solidSecondStage, Silicon, "logicSecondStage", 0, 0, 0);
-
-      PVPBuffer = new G4PVPlacement(0,
-                                    positionSecondStage,
-                                    logicSecondStage,
-                                    Name + "_SecondStage",
-                                    logicGPDTrapezoid,
-                                    false,
-                                    0);
-
-      // Set Second Stage sensible
-      logicSecondStage->SetSensitiveDetector(m_SecondStageScorer);
-
-      ///Visualisation of SecondStage Strip
-      G4VisAttributes* SecondStageVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5));
-      logicSecondStage->SetVisAttributes(SecondStageVisAtt);
    }
 
    ////////////////////////////////////////////////////////////////
@@ -328,24 +344,20 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
 
       G4Trap* solidThirdStage = new G4Trap("solidThirdStage", 
                                            ThirdStageThickness/2, 0*deg, 0*deg, 
-                                           FirstStageHeight/2, FirstStageBaseLarge/2, FirstStageBaseSmall/2, 0*deg, 
-                                           FirstStageHeight/2, FirstStageBaseLarge/2, FirstStageBaseSmall/2, 0*deg);
+                                           Height/2, BaseSmall/2, BaseLarge/2, 0*deg, 
+                                           Height/2, BaseSmall/2, BaseLarge/2, 0*deg);
+
       G4LogicalVolume* logicThirdStage = new G4LogicalVolume(solidThirdStage, Silicon, "logicThirdStage", 0, 0, 0);
 
-      PVPBuffer = new G4PVPlacement(0,
-                                    positionThirdStage,
-                                    logicThirdStage,
-                                    Name + "_ThirdStage",
-                                    logicGPDTrapezoid,
-                                    false,
-                                    0);
+      PVPBuffer = new G4PVPlacement(0, positionThirdStage, logicThirdStage, Name + "_ThirdStage", logicMM, false, 0);
+
+      // Visualisation of Third Stage
+      G4VisAttributes* ThirdStageVisAtt = new G4VisAttributes(G4Colour(0.7, 0.7, 0.7)) ;
+      logicThirdStage->SetVisAttributes(ThirdStageVisAtt)                        ;
+//      logicThirdStage->SetVisAttributes(G4VisAttributes::Invisible);
 
       // Set Third Stage sensible
       logicThirdStage->SetSensitiveDetector(m_ThirdStageScorer);
-
-      ///Visualisation of Third Stage
-      G4VisAttributes* ThirdStageVisAtt = new G4VisAttributes(G4Colour(0.0, 0.9, 0.0));	// red
-      logicThirdStage->SetVisAttributes(ThirdStageVisAtt);
    }
 }
 
@@ -590,13 +602,16 @@ void GaspardTrackerTrapezoid::ReadConfiguration(string Path)
 // Called After DetecorConstruction::AddDetector Method
 void GaspardTrackerTrapezoid::ConstructDetector(G4LogicalVolume* world)
 {
-   G4RotationMatrix* MMrot    = NULL;
-   G4ThreeVector     MMpos    = G4ThreeVector(0, 0, 0);
-   G4ThreeVector     MMu      = G4ThreeVector(0, 0, 0);
-   G4ThreeVector     MMv      = G4ThreeVector(0, 0, 0);
-   G4ThreeVector     MMw      = G4ThreeVector(0, 0, 0);
-   G4ThreeVector     MMCenter = G4ThreeVector(0, 0, 0);
-
+   G4RotationMatrix* MMrot    = NULL                   ;
+/*   G4ThreeVector     MMpos    = G4ThreeVector(0, 0, 0) ;
+   G4ThreeVector     MMu      = G4ThreeVector(0, 0, 0) ;
+   G4ThreeVector     MMv      = G4ThreeVector(0, 0, 0) ;
+   G4ThreeVector     MMw      = G4ThreeVector(0, 0, 0) ;*/
+   MMpos    = G4ThreeVector(0, 0, 0) ;
+   MMu      = G4ThreeVector(0, 0, 0) ;
+   MMv      = G4ThreeVector(0, 0, 0) ;
+   MMw      = G4ThreeVector(0, 0, 0) ;
+   G4ThreeVector     MMCenter = G4ThreeVector(0, 0, 0) ;
    bool FirstStage  = true ;
    bool SecondStage = true ;
    bool ThirdStage  = true ;
@@ -606,97 +621,86 @@ void GaspardTrackerTrapezoid::ConstructDetector(G4LogicalVolume* world)
    for (G4int i = 0; i < NumberOfModule; i++) {
       // By Point
       if (m_DefinitionType[i]) {
-         // (u,v,w) unitary vector associated to trapezoidal referencial
+         // (u,v,w) unitary vector associated to telescope referencial
          // (u,v) // to silicon plan
-         //      -------
-         //     /       \              ^
-         //    /         \             |  v
-         //   /           \            |
-         //  ---------------     <------
-         //                         u
          // w perpendicular to (u,v) plan and pointing ThirdStage
-         G4cout << "XXXXXXXXXXXX Trapezoid " << i << " XXXXXXXXXXXXX" << G4endl;
-         MMu = m_X128_Y1[i] - m_X1_Y1[i];
-         MMu = MMu.unit();
+         G4cout << "############ Gaspard Trapezoid " << i << " #############" << G4endl;
+         MMu = m_X128_Y1[i] - m_X1_Y128[i] ;
          G4cout << "MMu: " << MMu << G4endl;
+         MMu = MMu.unit()                ;
+         G4cout << "Norm MMu: " << MMu << G4endl;
 
-         MMv = 0.5 * (m_X1_Y128[i] + m_X128_Y128[i] - m_X1_Y1[i] - m_X128_Y1[i]);
-         MMv = MMv.unit();
+         MMv = -0.5 * (m_X1_Y1[i] + m_X128_Y128[i] - m_X1_Y128[i] - m_X128_Y1[i]);
          G4cout << "MMv: " << MMv << G4endl;
+         MMv = MMv.unit()                ;
+         G4cout << "Norm MMv: " << MMv << G4endl;
 
-         MMw = MMu.cross(MMv);
-         MMw = MMw.unit();
-         G4cout << "MMw: " << MMw << G4endl;
+         G4ThreeVector MMscal = MMu.dot(MMv);
+         G4cout << "Norm MMu.MMv: " << MMscal << G4endl;
+
+         MMw = MMu.cross(MMv)                  ;
+//         if (MMw.z() > 0) MMw = MMv.cross(MMu) ;
+         MMw = MMw.unit()                      ;
+         G4cout << "Norm MMw: " << MMw << G4endl;
 
          // Center of the module
-         MMCenter = (m_X1_Y1[i] + m_X1_Y128[i] + m_X128_Y1[i] + m_X128_Y128[i]) / 4;
+         MMCenter = (m_X1_Y1[i] + m_X1_Y128[i] + m_X128_Y1[i] + m_X128_Y128[i]) / 4 ;
 
          // Passage Matrix from Lab Referential to Module Referential
-         MMrot = new G4RotationMatrix(MMu, MMv, MMw);
+         MMrot = new G4RotationMatrix(MMu, MMv, MMw) ;
          // translation to place Module
-         MMpos = MMw * Length * 0.5 + MMCenter;
+         MMpos = MMw * Length * 0.5 + MMCenter ;
       }
 
       // By Angle
       else {
-         G4double Theta = m_Theta[i];
-         G4double Phi   = m_Phi[i];
+         G4double Theta = m_Theta[i] ;
+         G4double Phi   = m_Phi[i]   ;
+         //This part because if Phi and Theta = 0 equation are false
+         if (Theta == 0)        Theta = 0.0001 ;
+         if (Theta == 2*cos(0)) Theta = 2 * acos(0) - 0.00001 ;
+         if (Phi   == 0)        Phi   = 0.0001 ;
 
          // (u,v,w) unitary vector associated to telescope referencial
          // (u,v) // to silicon plan
-         //      -------
-         //     /       \              ^
-         //    /         \             |  v
-         //   /           \            |
-         //  ---------------     <------
-         //                         u
          // w perpendicular to (u,v) plan and pointing ThirdStage
          // Phi is angle between X axis and projection in (X,Y) plan
          // Theta is angle between  position vector and z axis
-         G4double wX = m_R[i] * sin(Theta / rad) * cos(Phi / rad);
-         G4double wY = m_R[i] * sin(Theta / rad) * sin(Phi / rad);
-         G4double wZ = m_R[i] * cos(Theta / rad);
-         MMw = G4ThreeVector(wX, wY, wZ);
+         G4double wX = m_R[i] * sin(Theta / rad) * cos(Phi / rad)   ;
+         G4double wY = m_R[i] * sin(Theta / rad) * sin(Phi / rad)   ;
+         G4double wZ = m_R[i] * cos(Theta / rad)             ;
 
-         // vector corresponding to the center of the module
-         MMCenter = MMw;
+         MMw = G4ThreeVector(wX, wY, wZ)                ;
+//         G4ThreeVector CT = MMw                       ;
+         CT = MMw                       ;
+         MMw = MMw.unit()                          ;
 
-         // vector parallel to one axis of silicon plane
-         // in fact, this is vector u
-         G4double ii = cos(Theta / rad) * cos(Phi / rad);
-         G4double jj = cos(Theta / rad) * sin(Phi / rad);
-         G4double kk = -sin(Theta / rad);
-         G4ThreeVector Y = G4ThreeVector(ii, jj, kk);
+         G4ThreeVector Y = G4ThreeVector(0 , 1 , 0)         ;
 
-         MMw = MMw.unit();
-         MMv = MMw.cross(Y);
-         MMu = MMv.cross(MMw);
+         MMu = MMw.cross(Y)      ;
+         MMv = MMw.cross(MMu) ;
+
          MMv = MMv.unit();
          MMu = MMu.unit();
-
-         G4cout << "XXXXXXXXXXXX Trapezoid " << i << " XXXXXXXXXXXXX" << G4endl;
-         G4cout << "MMu: " << MMu << G4endl;
-         G4cout << "MMv: " << MMv << G4endl;
-         G4cout << "MMw: " << MMw << G4endl;
-
          // Passage Matrix from Lab Referential to Telescope Referential
+         // MUST2
          MMrot = new G4RotationMatrix(MMu, MMv, MMw);
          // Telescope is rotate of Beta angle around MMv axis.
          MMrot->rotate(m_beta_u[i], MMu);
          MMrot->rotate(m_beta_v[i], MMv);
          MMrot->rotate(m_beta_w[i], MMw);
          // translation to place Telescope
-         MMpos = MMw * Length * 0.5 + MMCenter;
+         MMpos = MMw * Length * 0.5 + CT ;
       }
 
-      FirstStage  = m_wFirstStage[i];
-      SecondStage = m_wSecondStage[i];
-      ThirdStage  = m_wThirdStage[i];
+      FirstStage  = m_wFirstStage[i]  ;
+      SecondStage = m_wSecondStage[i] ;
+      ThirdStage  = m_wThirdStage[i]  ;
 
-      VolumeMaker(i + 1, MMpos, MMrot, FirstStage, SecondStage, ThirdStage, world);
+      VolumeMaker(i + 1, MMpos, MMrot, FirstStage, SecondStage, ThirdStage , world);
    }
 
-   delete MMrot;
+   delete MMrot ;
 }
 
 
@@ -748,12 +752,11 @@ void GaspardTrackerTrapezoid::ReadSensitive(const G4Event* event)
    G4THitsMap<G4double>* AngPhiHitMap;
 
    // NULL pointer are given to avoid warning at compilation
-   // Second Stage
-   std::map<G4int, G4double*>::iterator SecondStageEnergy_itr;
-   G4THitsMap<G4double>* SecondStageEnergyHitMap = NULL;
+
    // Third Stage
    std::map<G4int, G4double*>::iterator ThirdStageEnergy_itr;
    G4THitsMap<G4double>* ThirdStageEnergyHitMap = NULL;
+
 
    // Read the Scorer associated to the first Stage
    //Detector Number
@@ -806,12 +809,8 @@ void GaspardTrackerTrapezoid::ReadSensitive(const G4Event* event)
    AngPhiHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordAngPhiCollectionID))                              ;
    Ang_Phi_itr = AngPhiHitMap->GetMap()->begin()                                                                    ;
 
-   // Read the Scorer associated to the Second and Third Stage 
-   // Energy second stage
-   G4int SecondStageEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("SecondStageScorerGPDTrapezoid/SecondStageEnergy")      ;
-   SecondStageEnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(SecondStageEnergyCollectionID))                      ;
-   SecondStageEnergy_itr = SecondStageEnergyHitMap->GetMap()->begin()                                                       ;
-   // Energy third stage
+   // Read the Scorer associated to the Third Stage 
+   //Energy
    G4int ThirdStageEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThirdStageScorerGPDTrapezoid/ThirdStageEnergy")      ;
    ThirdStageEnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(ThirdStageEnergyCollectionID))                      ;
    ThirdStageEnergy_itr = ThirdStageEnergyHitMap->GetMap()->begin()                                                       ;
@@ -948,40 +947,24 @@ void GaspardTrackerTrapezoid::ReadSensitive(const G4Event* event)
             }
 
             // Second Stage
-            SecondStageEnergy_itr = SecondStageEnergyHitMap->GetMap()->begin()  ;
-            for (G4int h = 0 ; h < SecondStageEnergyHitMap->entries() ; h++) {
-               G4int SecondStageEnergyTrackID  =   SecondStageEnergy_itr->first - N;
-               G4double SecondStageEnergy      = *(SecondStageEnergy_itr->second);
-
-               if (SecondStageEnergyTrackID == NTrackID) {
-                  ms_Event->SetGPDTrkSecondStageEEnergy(RandGauss::shoot(SecondStageEnergy, ResoSecondStage));
-                  ms_Event->SetGPDTrkSecondStageEPadNbr(1);
-                  ms_Event->SetGPDTrkSecondStageTPadNbr(1);
-                  ms_Event->SetGPDTrkSecondStageTTime(1);
-                  ms_Event->SetGPDTrkSecondStageTDetectorNbr(m_index["Trapezoid"] + N);
-                  ms_Event->SetGPDTrkSecondStageEDetectorNbr(m_index["Trapezoid"] + N);
-               }
-
-               SecondStageEnergy_itr++;
-            }
 
             // Third Stage
-            ThirdStageEnergy_itr = ThirdStageEnergyHitMap->GetMap()->begin()  ;
-            for (G4int h = 0 ; h < ThirdStageEnergyHitMap->entries() ; h++) {
-               G4int ThirdStageEnergyTrackID  =   ThirdStageEnergy_itr->first - N;
-               G4double ThirdStageEnergy      = *(ThirdStageEnergy_itr->second);
+               ThirdStageEnergy_itr = ThirdStageEnergyHitMap->GetMap()->begin()  ;
+               for (G4int h = 0 ; h < ThirdStageEnergyHitMap->entries() ; h++) {
+                  G4int ThirdStageEnergyTrackID  =   ThirdStageEnergy_itr->first - N;
+                  G4double ThirdStageEnergy      = *(ThirdStageEnergy_itr->second);
 
-               if (ThirdStageEnergyTrackID == NTrackID) {
-                  ms_Event->SetGPDTrkThirdStageEEnergy(RandGauss::shoot(ThirdStageEnergy, ResoThirdStage));
-                  ms_Event->SetGPDTrkThirdStageEPadNbr(1);
-                  ms_Event->SetGPDTrkThirdStageTPadNbr(1);
-                  ms_Event->SetGPDTrkThirdStageTTime(1);
-                  ms_Event->SetGPDTrkThirdStageTDetectorNbr(m_index["Trapezoid"] + N);
-                  ms_Event->SetGPDTrkThirdStageEDetectorNbr(m_index["Trapezoid"] + N);
+                  if (ThirdStageEnergyTrackID == NTrackID) {
+                     ms_Event->SetGPDTrkThirdStageEEnergy(RandGauss::shoot(ThirdStageEnergy, ResoThirdStage));
+                     ms_Event->SetGPDTrkThirdStageEPadNbr(1);
+                     ms_Event->SetGPDTrkThirdStageTPadNbr(1);
+                     ms_Event->SetGPDTrkThirdStageTTime(1);
+                     ms_Event->SetGPDTrkThirdStageTDetectorNbr(m_index["Trapezoid"] + N);
+                     ms_Event->SetGPDTrkThirdStageEDetectorNbr(m_index["Trapezoid"] + N);
+                  }
+
+                  ThirdStageEnergy_itr++;
                }
-
-               ThirdStageEnergy_itr++;
-            }
 
          DetectorNumber_itr++;
       }
@@ -997,7 +980,6 @@ void GaspardTrackerTrapezoid::ReadSensitive(const G4Event* event)
       PosZHitMap     ->clear();
       AngThetaHitMap ->clear();
       AngPhiHitMap   ->clear();
-      SecondStageEnergyHitMap ->clear();
       ThirdStageEnergyHitMap ->clear();
    }
 }

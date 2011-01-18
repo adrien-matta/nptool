@@ -473,6 +473,8 @@ void ShieldPhParis::ConstructDetector(G4LogicalVolume* world)
          //MMv = -0.5 * (m_X1_Y1[i] + m_X128_Y128[i] - m_X1_Y128[i] - m_X128_Y1[i]);
          MMv = MMv.unit();
 
+         G4ThreeVector MMscal = MMu.dot(MMv);
+
          MMw = MMu.cross(MMv);
 //         if (MMw.z() > 0) MMw = MMv.cross(MMu) ;
          MMw = MMw.unit();
