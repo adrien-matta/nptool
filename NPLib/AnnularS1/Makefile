@@ -1,4 +1,4 @@
-include ../base_Makefile
+include ../Makefile.arch
  
 #------------------------------------------------------------------------------
 SHARELIB      =  libAnnularS1Data.so 

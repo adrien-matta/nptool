@@ -1,4 +1,4 @@
-include ../base_Makefile
+include ../Makefile.arch
 
 #------------------------------------------------------------------------------
 SHARELIB      =  libMust2Data.so	libMust2Physics.so

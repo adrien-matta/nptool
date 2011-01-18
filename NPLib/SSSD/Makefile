@@ -1,4 +1,4 @@
-include ../base_Makefile
+include ../Makefile.arch
  
 #------------------------------------------------------------------------------
 SHARELIB      =  libSSSDData.so libSSSDPhysics.so

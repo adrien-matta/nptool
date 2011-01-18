@@ -1,4 +1,4 @@
-include ../base_Makefile
+include ../Makefile.arch
  
 #------------------------------------------------------------------------------
 SHARELIB      = libReaction.so libEnergyLoss.so libTagManager.so libOptionManager.so

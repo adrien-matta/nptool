@@ -1,5 +1,5 @@
+include Makefile.arch
 
-include base_Makefile
 #------------------------------------------------------------------------------
 SHARELIB	= SharedLib
 FILLINC		= FillIncludeDir

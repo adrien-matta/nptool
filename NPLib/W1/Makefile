@@ -1,4 +1,4 @@
-include ../base_Makefile
+include ../Makefile.arch
  
 #------------------------------------------------------------------------------
 SHARELIB      =  libW1Data.so libW1Physics.so
