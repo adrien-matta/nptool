@@ -31,7 +31,7 @@
 #include <limits>
 #include <stdlib.h>
 using namespace std;
-using namespace LOCAL;
+using namespace SSSD_LOCAL;
 //  ROOT
 #include "TChain.h"
 
@@ -120,7 +120,7 @@ void TSSSDPhysics::ReadConfiguration(string Path)
         }
 
            //Position method
-             else if (DataBuffer.compare(0, 3, "A=") == 0) {
+             else if (DataBuffer=="A=") {
                 check_A = true;
                 ConfigFile >> DataBuffer ;
                 TLX = atof(DataBuffer.c_str()) ;
@@ -128,10 +128,10 @@ void TSSSDPhysics::ReadConfiguration(string Path)
                 TLY = atof(DataBuffer.c_str()) ;
                 ConfigFile >> DataBuffer ;
                 TLZ = atof(DataBuffer.c_str()) ;
-
+                cout << " A corner Position : (" << TLX << ";"<< TLY << ";"<< TLZ << ")"<<endl;
              }
         
-        else if (DataBuffer.compare(0, 3, "B=") == 0) {
+        else if (DataBuffer=="B=") {
           check_B = true;
           ConfigFile >> DataBuffer ;
           BLX = atof(DataBuffer.c_str()) ;
@@ -139,10 +139,11 @@ void TSSSDPhysics::ReadConfiguration(string Path)
           BLY = atof(DataBuffer.c_str()) ;
           ConfigFile >> DataBuffer ;
           BLZ = atof(DataBuffer.c_str()) ;
+          cout << " B corner Position : (" << BLX << ";"<< BLY << ";"<< BLZ << ")"<<endl;
 
         }
 
-        else if (DataBuffer.compare(0, 3, "C=") == 0) {
+        else if (DataBuffer=="C=") {
           check_C = true;
           ConfigFile >> DataBuffer ;
           BRX = atof(DataBuffer.c_str()) ;
@@ -150,10 +151,11 @@ void TSSSDPhysics::ReadConfiguration(string Path)
           BRY = atof(DataBuffer.c_str()) ;
           ConfigFile >> DataBuffer ;
           BRZ = atof(DataBuffer.c_str()) ;
+          cout << " C corner Position : (" << BRX << ";"<< BRY << ";"<< BRZ << ")"<<endl;
 
         }
 
-        else if (DataBuffer.compare(0, 3, "D=") == 0) {
+        else if (DataBuffer=="D=") {
           check_D = true;
           ConfigFile >> DataBuffer ;
           TRX = atof(DataBuffer.c_str()) ;
@@ -161,31 +163,34 @@ void TSSSDPhysics::ReadConfiguration(string Path)
           TRY = atof(DataBuffer.c_str()) ;
           ConfigFile >> DataBuffer ;
           TRZ = atof(DataBuffer.c_str()) ;
-
+          cout << " D corner Position : (" << TRX << ";"<< TRY << ";"<< TRZ << ")"<<endl;
         }
 
                   
         //Angle method
-        else if (DataBuffer.compare(0, 6, "THETA=") == 0) {
+        else if (DataBuffer=="THETA=") {
           check_Theta = true;
           ConfigFile >> DataBuffer ;
           Theta = atof(DataBuffer.c_str()) ;
+          cout << " Theta : " << Theta << "deg"<<endl;
         }
 
-        else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
+        else if (DataBuffer=="PHI=") {
           check_Phi = true;
           ConfigFile >> DataBuffer ;
           Phi = atof(DataBuffer.c_str()) ;
+          cout << " Phi : " << Phi << "deg"<<endl;
         }
 
-        else if (DataBuffer.compare(0, 2, "R=") == 0) {
+        else if (DataBuffer=="R=") {
           check_R = true;
           ConfigFile >> DataBuffer ;
           R = atof(DataBuffer.c_str()) ;
+          cout << " R : " << R << "mm"<<endl;
         }
 
 
-        else if (DataBuffer.compare(0, 5, "BETA=") == 0) {
+        else if (DataBuffer=="BETA=") {
           check_beta = true;
           ConfigFile >> DataBuffer ;
           beta_u = atof(DataBuffer.c_str()) ;
@@ -193,6 +198,7 @@ void TSSSDPhysics::ReadConfiguration(string Path)
           beta_v = atof(DataBuffer.c_str()) ;
           ConfigFile >> DataBuffer ;
           beta_w = atof(DataBuffer.c_str()) ;
+          cout << " Beta : (" << beta_u << "deg ; "<< beta_v << "deg ; "<< beta_w << "deg"<<endl;
         }
           
                ///////////////////////////////////////////////////
@@ -381,14 +387,14 @@ void TSSSDPhysics::ReadAnalysisConfig()
             AnalysisConfigFile.ignore(numeric_limits<streamsize>::max(), '\n' );
          }
          
-         else if (whatToDo.compare(0, 18, "PEDESTAL_THRESHOLD") == 0) {
+         else if (whatToDo=="PEDESTAL_THRESHOLD") {
             AnalysisConfigFile >> DataBuffer;
             m_Pedestal_Threshold = atoi(DataBuffer.c_str() );
-            cout << "Pedestal threshold = " << m_Pedestal_Threshold << endl;
+            cout << "PEDESTAL THRESHOLD  " << m_Pedestal_Threshold << endl;
          }
          
          
-       else if (whatToDo.compare(0, 11, "DISABLE_ALL") == 0) {
+       else if (whatToDo=="DISABLE_ALL") {
              AnalysisConfigFile >> DataBuffer;
              cout << whatToDo << "  " << DataBuffer << endl;
              int Detector = atoi(DataBuffer.substr(2,1).c_str());
@@ -397,7 +403,7 @@ void TSSSDPhysics::ReadAnalysisConfig()
              ChannelStatus[Detector] = ChannelStatusBuffer;
           }
           
-        else if (whatToDo.compare(0, 15, "DISABLE_CHANNEL") == 0) {
+        else if (whatToDo=="DISABLE_CHANNEL") {
              AnalysisConfigFile >> DataBuffer;
              cout << whatToDo << "  " << DataBuffer << endl;
              int telescope = atoi(DataBuffer.substr(2,1).c_str());
@@ -423,14 +429,14 @@ void TSSSDPhysics::ReadAnalysisConfig()
 
 
 	///////////////////////////////////////////////////////////////////////////
-	double LOCAL::fSi_E( TSSSDData* EventData , int i )
+	double SSSD_LOCAL::fSi_E( const TSSSDData* EventData , const int i )
 	  {
 	    return CalibrationManager::getInstance()->ApplyCalibration(  "SSSD/Detector" + itoa( EventData->GetEnergyDetectorNbr(i) ) + "_Strip" + itoa( EventData->GetEnergyStripNbr(i) ) +"_E",  
 									    EventData->GetEnergy(i) );
 	  }
 	  
 	  
-	double LOCAL::fSi_T( TSSSDData* EventData , int i )
+	double SSSD_LOCAL::fSi_T( const TSSSDData* EventData , const int i )
 	  {
 	    return CalibrationManager::getInstance()->ApplyCalibration(  "SSSD/Detector" + itoa( EventData->GetEnergyDetectorNbr(i) ) + "_Strip" + itoa( EventData->GetEnergyStripNbr(i) ) +"_T",  
 									    EventData->GetTime(i) );
