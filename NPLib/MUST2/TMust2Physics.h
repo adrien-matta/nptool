@@ -176,6 +176,11 @@ class TMust2Physics : public TObject, public NPA::VDetector
 
 		private:	//	Parameter used in the analysis
 		
+		// By default take EX and TY.
+		bool m_Take_E_Y;//!
+		bool m_Take_T_Y;//!
+		
+		
 		//	Event over this value after pre-treatment are not treated / avoid long treatment time on spurious event	
 			int m_MaximumStripMultiplicityAllowed  ;//!
 		//	Give the allowance in percent of the difference in energy between X and Y

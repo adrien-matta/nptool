@@ -57,8 +57,12 @@ TMust2Physics::TMust2Physics()
 		m_Si_Y_E_Threshold = 0	;
 		m_SiLi_E_Threshold = 0	;
 		m_CsI_E_Threshold	 = 0  ;
+    
     m_Ignore_not_matching_SiLi = false ;
 		m_Ignore_not_matching_CsI = false  ;
+		
+		m_Take_E_Y=false;
+		m_Take_T_Y=true;
 		
 		m_SiLi_Size=32;
 		m_SiLi_MatchingX.resize(16,0);
@@ -201,7 +205,7 @@ void TMust2Physics::BuildPhysicalEvent()
 						int Y = m_PreTreatedData->GetMMStripYEStripNbr(couple[i].Y())			;
 						
 						double Si_X_E = m_PreTreatedData->GetMMStripXEEnergy( couple[i].X() ) 	;
-//						double Si_Y_E = m_PreTreatedData->GetMMStripYEEnergy( couple[i].Y() ) 	;  
+						double Si_Y_E = m_PreTreatedData->GetMMStripYEEnergy( couple[i].Y() ) 	;  
 						
 						
 						//  Search for associate Time
@@ -223,10 +227,18 @@ void TMust2Physics::BuildPhysicalEvent()
 						
 						Si_X.push_back(X) ; Si_Y.push_back(Y) ; TelescopeNumber.push_back(N) ;
 				
-						// Take X Energy (better resolution, better zero extrapolation)
-						Si_E.push_back(Si_X_E);
-						//	Take Y Time, better resolution than X.							
-						Si_T.push_back(Si_Y_T)	;
+				    if(m_Take_E_Y) Si_E.push_back(Si_Y_E);
+				    else           Si_E.push_back(Si_X_E);
+				    
+				    if(m_Take_T_Y) Si_T.push_back(Si_Y_T)	;
+				    else           Si_T.push_back(Si_X_T)	;
+				
+						// Store the other value for checking purpose
+						Si_EX.push_back(Si_X_E);				;
+	          Si_TX.push_back(Si_X_T);				;
+	          
+	          Si_EY.push_back(Si_Y_E);				;
+	          Si_TY.push_back(Si_Y_T);				;
 						
 						for(unsigned int j = 0 ; j < m_PreTreatedData->GetMMSiLiEMult() ; j++)
 							{
@@ -320,13 +332,6 @@ void TMust2Physics::PreTreat()
 										}
 									
 								}
-						
-					
-					else
-						{
-						
-						}
-				
 				}
 				
 			//	T
@@ -338,12 +343,6 @@ void TMust2Physics::PreTreat()
 									m_PreTreatedData->SetMMStripXTStripNbr( m_EventData->GetMMStripXTStripNbr(i) )				;
 									m_PreTreatedData->SetMMStripXTTime( fSi_X_T(m_EventData , i) )												;
 								}
-					
-					else
-						{
-						
-						}
-				
 				}
 				
 				
@@ -361,12 +360,6 @@ void TMust2Physics::PreTreat()
 											m_PreTreatedData->SetMMStripYEEnergy( EY )																					;
 										}
 								}
-					
-					else
-						{
-						
-						}
-				
 				}
 				
 			//	T
@@ -378,12 +371,6 @@ void TMust2Physics::PreTreat()
 									m_PreTreatedData->SetMMStripYTStripNbr( m_EventData->GetMMStripYTStripNbr(i) )				;
 									m_PreTreatedData->SetMMStripYTTime( fSi_Y_T(m_EventData , i) )												;
 								}
-					
-					else
-						{
-						
-						}
-				
 				}
 
 
@@ -402,12 +389,6 @@ void TMust2Physics::PreTreat()
 											m_PreTreatedData->SetMMCsIEEnergy( ECsI )																				;
 										}
 								}
-						
-					else
-						{
-						
-						}
-				
 				}
 				
 			//	T
@@ -419,12 +400,6 @@ void TMust2Physics::PreTreat()
 									m_PreTreatedData->SetMMCsITCristalNbr( m_EventData->GetMMCsITCristalNbr(i) )			;
 									m_PreTreatedData->SetMMCsITTime( fCsI_T(m_EventData , i) )												;
 								}	
-						
-					else
-						{
-						
-						}
-				
 				}
 				
 				
@@ -442,12 +417,6 @@ void TMust2Physics::PreTreat()
 											m_PreTreatedData->SetMMSiLiEEnergy( ESiLi )										;
 										}
 								}
-					
-					else
-						{
-						
-						}
-				
 				}
 				
 			//	T
@@ -459,15 +428,8 @@ void TMust2Physics::PreTreat()
 									m_PreTreatedData->SetMMSiLiTPadNbr( m_EventData->GetMMSiLiTPadNbr(i) )						;
 									m_PreTreatedData->SetMMSiLiTTime( fSiLi_T(m_EventData , i) )											;
 								}
-					
-					else
-						{
-						
-						}
-				
 				}
-	
-	
+
 		return;
 	}
 
@@ -671,7 +633,26 @@ void TMust2Physics::ReadAnalysisConfig()
        
         } 
             
-            
+        else if (whatToDo.compare(0, 8, "TAKE_E_Y") == 0) {
+           m_Take_E_Y = true;
+           cout << whatToDo << endl;
+        } 
+        
+        else if (whatToDo.compare(0, 8, "TAKE_T_Y") == 0) {
+           m_Take_T_Y = true;
+           cout << whatToDo << endl;
+        }
+        
+        else if (whatToDo.compare(0, 8, "TAKE_E_X") == 0) {
+           m_Take_E_Y = false;
+           cout << whatToDo << endl;
+        }
+        
+        else if (whatToDo.compare(0, 8, "TAKE_T_X") == 0) {
+           m_Take_T_Y = false;
+           cout << whatToDo << endl;
+        }
+           
         else if (whatToDo.compare(0, 23, "IGNORE_NOT_MATCHING_CSI") == 0) {
            m_Ignore_not_matching_CsI = true;
            cout << whatToDo << endl;
