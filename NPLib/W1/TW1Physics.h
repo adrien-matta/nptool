@@ -128,7 +128,7 @@ class TW1Physics : public TObject, public NPA::VDetector
    void AddDetector(double theta, double phi, double distance, double beta_u, double beta_v, double beta_w);
 
    // Use for reading Calibration Run, very simple methods; only apply calibration, no condition
-   void ReadCalibrationRun();
+   void ReadCalibrationRun() {};
 
 
  public: // Methods used for event treatement
