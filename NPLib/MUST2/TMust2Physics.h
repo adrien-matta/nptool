@@ -184,7 +184,8 @@ class TMust2Physics : public TObject, public NPA::VDetector
 		//	Event over this value after pre-treatment are not treated / avoid long treatment time on spurious event	
 			int m_MaximumStripMultiplicityAllowed  ;//!
 		//	Give the allowance in percent of the difference in energy between X and Y
-			double m_StripEnergyMatchingTolerance  ; //!
+			double m_StripEnergyMatchingSigma  ; //!
+			double m_StripEnergyMatchingNumberOfSigma  ; //!
 			
 		// Raw Threshold
 		int m_Si_X_E_RAW_Threshold ;//!
@@ -244,11 +245,6 @@ class TMust2Physics : public TObject, public NPA::VDetector
 
 namespace MUST2_LOCAL
 	{
-		//	Threshold
-//		const double Si_X_E_Threshold = 0	;
-//		const double Si_Y_E_Threshold = 0	;
-//		const double SiLi_E_Threshold = 0	;
-//		const double CsI_E_Threshold	= 0 ;
 
 		//	tranform an integer to a string
 		string itoa(int value);
