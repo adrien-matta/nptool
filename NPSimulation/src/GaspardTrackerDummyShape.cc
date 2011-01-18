@@ -212,23 +212,21 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
    //Uncomment to help debugging or if you want to understand the way the code work.
    //I should recommand to Comment it during simulation to avoid perturbation of simulation
    //Remember G4 is limitationg step on geometry constraints.
-  /* 
-         G4ThreeVector positionMarkerU = CT*0.98 + MMu*SiliconFace/4;
-         G4Box*          solidMarkerU = new G4Box( "solidMarkerU" , SiliconFace/4 , 1*mm , 1*mm )              ;
-         G4LogicalVolume* logicMarkerU = new G4LogicalVolume( solidMarkerU , Vacuum , "logicMarkerU",0,0,0)       ;
-         PVPBuffer = new G4PVPlacement(G4Transform3D(*MMrot,positionMarkerU),logicMarkerU,"MarkerU",world,false,0) ;
+   G4ThreeVector positionMarkerU = MMCenter*0.8 + MMu*FirstStageFace/4;
+   G4Box*           solidMarkerU = new G4Box("solidMarkerU", FirstStageFace/4, 1*mm, 1*mm);
+   G4LogicalVolume* logicMarkerU = new G4LogicalVolume(solidMarkerU, Vacuum, "logicMarkerU", 0, 0, 0);
+   PVPBuffer                     = new G4PVPlacement(G4Transform3D(*MMrot,positionMarkerU), logicMarkerU, "MarkerU", world, false, 0);
 
-         G4VisAttributes* MarkerUVisAtt= new G4VisAttributes(G4Colour(0.,0.,0.5));//blue
-         logicMarkerU->SetVisAttributes(MarkerUVisAtt);
+   G4VisAttributes* MarkerUVisAtt= new G4VisAttributes(G4Colour(0.,0.,0.5)); //blue
+   logicMarkerU->SetVisAttributes(MarkerUVisAtt);
 
-         G4ThreeVector positionMarkerV = CT*0.98 + MMv*SiliconFace/4;
-         G4Box*          solidMarkerV = new G4Box( "solidMarkerU" , 1*mm , SiliconFace/4 , 1*mm )              ;
-         G4LogicalVolume* logicMarkerV = new G4LogicalVolume( solidMarkerV , Vacuum , "logicMarkerV",0,0,0)       ;
-         PVPBuffer = new G4PVPlacement(G4Transform3D(*MMrot,positionMarkerV),logicMarkerV,"MarkerV",world,false,0) ;
+   G4ThreeVector positionMarkerV = MMCenter*0.8 + MMv*FirstStageFace/4;
+   G4Box*           solidMarkerV = new G4Box("solidMarkerU", 1*mm, FirstStageFace/4, 1*mm);
+   G4LogicalVolume* logicMarkerV = new G4LogicalVolume(solidMarkerV, Vacuum, "logicMarkerV", 0, 0, 0);
+   PVPBuffer                     = new G4PVPlacement(G4Transform3D(*MMrot,positionMarkerV), logicMarkerV, "MarkerV", world, false, 0);
 
-         G4VisAttributes* MarkerVVisAtt= new G4VisAttributes(G4Colour(0.,0.5,0.5));//green
-         logicMarkerV->SetVisAttributes(MarkerVVisAtt);
-   */
+   G4VisAttributes* MarkerVVisAtt= new G4VisAttributes(G4Colour(0.,0.5,0.)); //green
+   logicMarkerV->SetVisAttributes(MarkerVVisAtt);
 
    ////////////////////////////////////////////////////////////////
    ///////////////// First Stage Construction /////////////////////
@@ -243,7 +241,6 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
       PVPBuffer = new G4PVPlacement(0, 
                                     positionFirstStage, 
                                     logicFirstStage, 
-//                                    "G" + DetectorNumber + "FirstStage", 
                                     Name + "_FirstStage", 
                                     logicGPDDummyShape, 
                                     false, 
@@ -253,7 +250,7 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
       logicFirstStage->SetSensitiveDetector(m_FirstStageScorer);
 
       ///Visualisation of FirstStage Strip
-      G4VisAttributes* FirstStageVisAtt = new G4VisAttributes(G4Colour(0.2, 0.2, 0.2));
+      G4VisAttributes* FirstStageVisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 0.9));	// blue
       logicFirstStage->SetVisAttributes(FirstStageVisAtt);
    }
 
@@ -270,7 +267,6 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
       PVPBuffer = new G4PVPlacement(0, 
                                     positionSecondStage, 
                                     logicSecondStage, 
-//                                    "G" + DetectorNumber + "SecondStage", 
                                     Name + "_SecondStage", 
                                     logicGPDDummyShape, 
                                     false, 
@@ -280,8 +276,8 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
       logicSecondStage->SetSensitiveDetector(m_SecondStageScorer);
 
       ///Visualisation of SecondStage Strip
-      G4VisAttributes* SecondStageVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5)) ;
-      logicSecondStage->SetVisAttributes(SecondStageVisAtt)                        ;
+      G4VisAttributes* SecondStageVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5));
+      logicSecondStage->SetVisAttributes(SecondStageVisAtt);
    }
 
    ////////////////////////////////////////////////////////////////
@@ -297,7 +293,6 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
       PVPBuffer = new G4PVPlacement(0, 
                                     positionThirdStage, 
                                     logicThirdStage, 
-//                                    "G" + DetectorNumber + "ThirdStage", 
                                     Name + "_ThirdStage", 
                                     logicGPDDummyShape, 
                                     false, 
@@ -307,7 +302,7 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
       logicThirdStage->SetSensitiveDetector(m_ThirdStageScorer);
 
       ///Visualisation of Third Stage
-      G4VisAttributes* ThirdStageVisAtt = new G4VisAttributes(G4Colour(0.7, 0.7, 0.7));
+      G4VisAttributes* ThirdStageVisAtt = new G4VisAttributes(G4Colour(0.0, 0.9, 0.0));	// green
       logicThirdStage->SetVisAttributes(ThirdStageVisAtt);
    }
 }
@@ -539,10 +534,10 @@ void GaspardTrackerDummyShape::ConstructDetector(G4LogicalVolume* world)
 {
    G4RotationMatrix* MMrot    = NULL                   ;
    G4ThreeVector     MMpos    = G4ThreeVector(0, 0, 0) ;
-   G4ThreeVector     MMu      = G4ThreeVector(0, 0, 0) ;
-   G4ThreeVector     MMv      = G4ThreeVector(0, 0, 0) ;
+//   G4ThreeVector     MMu      = G4ThreeVector(0, 0, 0) ;
+//   G4ThreeVector     MMv      = G4ThreeVector(0, 0, 0) ;
    G4ThreeVector     MMw      = G4ThreeVector(0, 0, 0) ;
-   G4ThreeVector     MMCenter = G4ThreeVector(0, 0, 0) ;
+//   G4ThreeVector     MMCenter = G4ThreeVector(0, 0, 0) ;
    bool FirstStage  = true ;
    bool SecondStage = true ;
    bool ThirdStage  = true ;
@@ -560,17 +555,12 @@ void GaspardTrackerDummyShape::ConstructDetector(G4LogicalVolume* world)
 
          MMv = m_X1_Y128[i] - m_X1_Y1[i];
          MMv = MMv.unit();
-
-         G4ThreeVector MMscal = MMu.dot(MMv);
-
          MMw = MMu.cross(MMv);
-//         if (MMw.z() > 0) MMw = MMv.cross(MMu) ;
          MMw = MMw.unit();
 
          MMCenter = (m_X1_Y1[i] + m_X1_Y128[i] + m_X128_Y1[i] + m_X128_Y128[i]) / 4;
 
          // Passage Matrix from Lab Referential to Telescope Referential
-         // MUST2
          MMrot = new G4RotationMatrix(MMu, MMv, MMw);
          // translation to place Telescope
          MMpos = MMw * Length * 0.5 + MMCenter;
@@ -592,7 +582,7 @@ void GaspardTrackerDummyShape::ConstructDetector(G4LogicalVolume* world)
          MMw = G4ThreeVector(wX, wY, wZ);
 
          // vector corresponding to the center of the module
-         G4ThreeVector CT = MMw;
+         MMCenter = MMw;
 
          // vector parallel to one axis of silicon plane
          G4double ii = cos(Theta / rad) * cos(Phi / rad);
@@ -607,21 +597,20 @@ void GaspardTrackerDummyShape::ConstructDetector(G4LogicalVolume* world)
          MMu = MMu.unit();
 
          // Passage Matrix from Lab Referential to Telescope Referential
-         // MUST2
          MMrot = new G4RotationMatrix(MMu, MMv, MMw);
          // Telescope is rotate of Beta angle around MMv axis.
          MMrot->rotate(m_beta_u[i], MMu);
          MMrot->rotate(m_beta_v[i], MMv);
          MMrot->rotate(m_beta_w[i], MMw);
          // translation to place Telescope
-         MMpos = MMw * Length * 0.5 + CT ;
+         MMpos = MMw * Length * 0.5 + MMCenter;
       }
 
       FirstStage  = m_wFirstStage[i]  ;
       SecondStage = m_wSecondStage[i] ;
       ThirdStage  = m_wThirdStage[i]  ;
 
-      VolumeMaker(i + 1, MMpos, MMrot, FirstStage, SecondStage, ThirdStage , world);
+      VolumeMaker(i + 1, MMpos, MMrot, FirstStage, SecondStage, ThirdStage, world);
    }
 
    delete MMrot ;
