@@ -526,20 +526,20 @@ vector < TVector2 > TMust2Physics :: Match_X_Y()
 	
 	
 ////////////////////////////////////////////////////////////////////////////
-bool TMust2Physics :: IsValidChannel(string DetectorType, int telescope , int channel)
+bool TMust2Physics :: IsValidChannel(const string DetectorType, const int telescope , const int channel) 
 	{
-		vector<bool>::iterator it ;
+		
 		if(DetectorType == "X")
-			return *(m_XChannelStatus[telescope].begin()+channel);
+			return *(m_XChannelStatus[telescope].begin()+channel-1);
 			
 		else if(DetectorType == "Y")
-			return *(m_YChannelStatus[telescope].begin()+channel);
+			return *(m_YChannelStatus[telescope].begin()+channel-1);
 			
 		else if(DetectorType == "SiLi")
-			return *(m_SiLiChannelStatus[telescope].begin()+channel);
+			return *(m_SiLiChannelStatus[telescope].begin()+channel-1);
 			
 		else if(DetectorType == "CsI")
-			return *(m_CsIChannelStatus[telescope].begin()+channel);
+			return *(m_CsIChannelStatus[telescope].begin()+channel-1);
 			
 		else return false;
 	}
@@ -622,22 +622,22 @@ void TMust2Physics::ReadAnalysisConfig()
            int channel = -1;
            if (DataBuffer.compare(3,4,"STRX") == 0) {
               channel = atoi(DataBuffer.substr(7).c_str());
-              *(m_XChannelStatus[telescope].begin()+channel) = false;
+              *(m_XChannelStatus[telescope].begin()+channel-1) = false;
            }
            
            else if (DataBuffer.compare(3,4,"STRY") == 0) {
               channel = atoi(DataBuffer.substr(7).c_str());
-              *(m_YChannelStatus[telescope].begin()+channel) = false;
+              *(m_YChannelStatus[telescope].begin()+channel-1) = false;
            }
            
            else if (DataBuffer.compare(3,4,"SILI") == 0) {
               channel = atoi(DataBuffer.substr(7).c_str());
-              *(m_SiLiChannelStatus[telescope].begin()+channel) = false;
+              *(m_SiLiChannelStatus[telescope].begin()+channel-1) = false;
            }
            
            else if (DataBuffer.compare(3,3,"CSI") == 0) {
               channel = atoi(DataBuffer.substr(6).c_str());
-              *(m_CsIChannelStatus[telescope].begin()+channel) = false;
+              *(m_CsIChannelStatus[telescope].begin()+channel-1) = false;
            }
            
            else cout << "Warning: detector type for Must2 unknown!" << endl;
@@ -1238,15 +1238,15 @@ void TMust2Physics::InitializeStandardParameter()
 		ChannelStatus.resize(128,true);
 		for(int i = 0 ; i < m_NumberOfTelescope ; i ++)		
 			{
-				m_XChannelStatus[i+1] = ChannelStatus;
-				m_YChannelStatus[i+1] = ChannelStatus;
+				m_XChannelStatus[i] = ChannelStatus;
+				m_YChannelStatus[i] = ChannelStatus;
 			}
 		
 		ChannelStatus.resize(16,true);
 		for(int i = 0 ; i < m_NumberOfTelescope ; i ++)		
 			{
-				m_SiLiChannelStatus[i+1] = ChannelStatus;
-				m_CsIChannelStatus[i+1]  = ChannelStatus;
+				m_SiLiChannelStatus[i] = ChannelStatus;
+				m_CsIChannelStatus[i]  = ChannelStatus;
 			}
 			
 			
@@ -1402,27 +1402,27 @@ namespace MUST2_LOCAL
 			
 		//	DSSD
 		//	X
-		double fSi_X_E(TMust2Data* m_EventData , const int i)
+		double fSi_X_E(const TMust2Data* m_EventData , const int i)
 			{
 				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( m_EventData->GetMMStripXEDetectorNbr(i) ) + "_Si_X" + itoa( m_EventData->GetMMStripXEStripNbr(i) ) + "_E",	
 																																		m_EventData->GetMMStripXEEnergy(i) );
 																																	
 			}
 			
-		double fSi_X_T(TMust2Data* m_EventData , const int i)
+		double fSi_X_T(const TMust2Data* m_EventData , const int i)
 			{
 				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( m_EventData->GetMMStripXTDetectorNbr(i) ) + "_Si_X" + itoa( m_EventData->GetMMStripXTStripNbr(i) ) +"_T",	
 																																		m_EventData->GetMMStripXTTime(i) );
 			}
 		
 		//	Y	
-		double fSi_Y_E(TMust2Data* m_EventData , const int i)
+		double fSi_Y_E(const TMust2Data* m_EventData , const int i)
 			{
 				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( m_EventData->GetMMStripYEDetectorNbr(i) ) + "_Si_Y" + itoa( m_EventData->GetMMStripYEStripNbr(i) ) +"_E",	
 																																		m_EventData->GetMMStripYEEnergy(i) );
 			}
 			
-		double fSi_Y_T(TMust2Data* m_EventData , const int i)
+		double fSi_Y_T(const TMust2Data* m_EventData , const int i)
 			{
 				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( m_EventData->GetMMStripYTDetectorNbr(i) ) + "_Si_Y" + itoa( m_EventData->GetMMStripYTStripNbr(i) ) +"_T",	
 																																		m_EventData->GetMMStripYTTime(i) );
@@ -1430,26 +1430,26 @@ namespace MUST2_LOCAL
 			
 			
 		//	SiLi
-		double fSiLi_E(TMust2Data* m_EventData , const int i)
+		double fSiLi_E(const TMust2Data* m_EventData , const int i)
 			{
 				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( m_EventData->GetMMSiLiEDetectorNbr(i) ) + "_SiLi" + itoa( m_EventData->GetMMSiLiEPadNbr(i) ) +"_E",	
 																																		m_EventData->GetMMSiLiEEnergy(i) );
 			}
 			
-		double fSiLi_T(TMust2Data* m_EventData , const int i)
+		double fSiLi_T(const TMust2Data* m_EventData , const int i)
 			{
 				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( m_EventData->GetMMSiLiTDetectorNbr(i) ) + "_SiLi" + itoa( m_EventData->GetMMSiLiTPadNbr(i) )+"_T",	
 																																		m_EventData->GetMMSiLiTTime(i) );
 			}
 			
 		//	CsI
-		double fCsI_E(TMust2Data* m_EventData , const int i)
+		double fCsI_E(const TMust2Data* m_EventData , const int i)
 			{
 				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( m_EventData->GetMMCsIEDetectorNbr(i) ) + "_CsI" + itoa( m_EventData->GetMMCsIECristalNbr(i) ) +"_E",	
 																																		m_EventData->GetMMCsIEEnergy(i) );
 			}
 			
-		double fCsI_T(TMust2Data* m_EventData , const int i)
+		double fCsI_T(const TMust2Data* m_EventData , const int i)
 			{
 				return CalibrationManager::getInstance()->ApplyCalibration(	"MUST2/T" + itoa( m_EventData->GetMMCsITDetectorNbr(i) ) + "_CsI" + itoa( m_EventData->GetMMCsITCristalNbr(i) ) +"_T",	
 																																		m_EventData->GetMMCsITTime(i) );

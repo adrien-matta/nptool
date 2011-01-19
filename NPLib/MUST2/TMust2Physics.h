@@ -132,7 +132,7 @@ class TMust2Physics : public TObject, public NPA::VDetector
 	
 		//	Return false if the channel is disabled by user
 			//	Frist argument is either "X","Y","SiLi","CsI"
-		bool IsValidChannel(string DetectorType, int telescope , int channel);
+		bool IsValidChannel(const string DetectorType, const int telescope , const int channel);
 	
 		//	Initialize the standard parameter for analysis
 			//	ie: all channel enable, maximum multiplicity for strip = number of telescope
@@ -249,20 +249,20 @@ namespace MUST2_LOCAL
 		string itoa(int value);
 		//	DSSD
 		//	X
-		double fSi_X_E(TMust2Data* Data, const int i);
-		double fSi_X_T(TMust2Data* Data, const int i);
+		double fSi_X_E(const TMust2Data* Data, const int i);
+		double fSi_X_T(const TMust2Data* Data, const int i);
 		
 		//	Y	
-		double fSi_Y_E(TMust2Data* Data, const int i);
-		double fSi_Y_T(TMust2Data* Data, const int i);
+		double fSi_Y_E(const TMust2Data* Data, const int i);
+		double fSi_Y_T(const TMust2Data* Data, const int i);
 			
 		//	SiLi
-		double fSiLi_E(TMust2Data* Data, const int i);
-		double fSiLi_T(TMust2Data* Data, const int i);
+		double fSiLi_E(const TMust2Data* Data, const int i);
+		double fSiLi_T(const TMust2Data* Data, const int i);
 			
 		//	CsI
-		double fCsI_E(TMust2Data* Data, const int i);
-		double fCsI_T(TMust2Data* Data, const int i);
+		double fCsI_E(const TMust2Data* Data, const int i);
+		double fCsI_T(const TMust2Data* Data, const int i);
 	
 	}
 

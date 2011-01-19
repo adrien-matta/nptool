@@ -61,14 +61,14 @@ class TSSSDData : public TObject {
 		// DSSD
 		// (X,E)
 		UShort_t	GetEnergyMult					()           	const {	return fSSSD_StripE_DetectorNbr.size()	;}
-		UShort_t	GetEnergyDetectorNbr	(const Int_t i) 		const {	return fSSSD_StripE_DetectorNbr.at(i)		;}
-		UShort_t	GetEnergyStripNbr			(const Int_t i)    	const {	return fSSSD_StripE_StripNbr.at(i)			;}
-		Double_t	GetEnergy							(const Int_t i)     const {	return fSSSD_StripE_Energy.at(i)				;}
+		UShort_t	GetEnergyDetectorNbr	(const Int_t i) 		const {	return fSSSD_StripE_DetectorNbr[i]		;}
+		UShort_t	GetEnergyStripNbr			(const Int_t i)    	const {	return fSSSD_StripE_StripNbr[i]			;}
+		Double_t	GetEnergy							(const Int_t i)     const {	return fSSSD_StripE_Energy[i]				;}
 		// (X,T)
 		UShort_t	GetTimeMult						()            const {	return fSSSD_StripT_DetectorNbr.size()	;}
-		UShort_t	GetTimeDetectorNbr		(const Int_t i) 		const {	return fSSSD_StripT_DetectorNbr.at(i)		;}
-		UShort_t	GetTimeStripNbr				(const Int_t i)   	const {	return fSSSD_StripT_StripNbr.at(i)			;}
-		Double_t	GetTime								(const Int_t i)     const {	return fSSSD_StripT_Time.at(i)					;}
+		UShort_t	GetTimeDetectorNbr		(const Int_t i) 		const {	return fSSSD_StripT_DetectorNbr[i]		;}
+		UShort_t	GetTimeStripNbr				(const Int_t i)   	const {	return fSSSD_StripT_StripNbr[i]			;}
+		Double_t	GetTime								(const Int_t i)     const {	return fSSSD_StripT_Time[i]					;}
 	
 		ClassDef(TSSSDData,1)  // SSSDData structure
 };
