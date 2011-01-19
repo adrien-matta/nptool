@@ -10,7 +10,7 @@ all:            $(SHARELIB)
 ## VDetector ##
 libVDetector.so:	VDetector.o
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@	
-	
+
 ## VDetector ##
 libDetectorManager.so:	DetectorManager.o
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@	

@@ -252,10 +252,10 @@ void TSSSDPhysics::AddParameterToCalibrationManager()
   {
     CalibrationManager* Cal = CalibrationManager::getInstance();
     
-    for(int i = 0 ; i < NumberOfDetector ; i++)
+    for(int i = 0 ; i < NumberOfDetector ; ++i)
       {
       
-        for( int j = 0 ; j < 16 ; j++)
+        for( int j = 0 ; j < 16 ; ++j)
           {
             Cal->AddParameter("SSSD", "Detector"+itoa(i+1)+"_Strip"+itoa(j+1)+"_E","SSSD_DETECTOR_"+itoa(i+1)+"_STRIP_"+itoa(j+1)+"_E")  ;
             Cal->AddParameter("SSSD", "Detector"+itoa(i+1)+"_Strip"+itoa(j+1)+"_T","SSSD_DETECTOR_"+itoa(i+1)+"_STRIP_"+itoa(j+1)+"_T")  ;  
@@ -291,14 +291,14 @@ void TSSSDPhysics::BuildSimplePhysicalEvent()
   {
         PreTreat();
 
-        for(unsigned int i = 0 ; i <   PreTreatedData->GetEnergyMult() ; i++)
+        for(unsigned int i = 0 ; i <   PreTreatedData->GetEnergyMult() ; ++i)
           {
           
             DetectorNumber  .push_back(   PreTreatedData->GetEnergyDetectorNbr(i) )  ;
             StripNumber     .push_back(   PreTreatedData->GetEnergyStripNbr(i)    )  ;
             Energy          .push_back(   PreTreatedData->GetEnergy(i)            )  ; 
             // Look For associate Time
-            for(unsigned int j = 0 ; j <   PreTreatedData->GetTimeMult() ; j ++ )
+            for(unsigned int j = 0 ; j <   PreTreatedData->GetTimeMult() ; ++j )
               {
                 if(PreTreatedData->GetEnergyDetectorNbr(i) == PreTreatedData->GetTimeDetectorNbr(j) && PreTreatedData->GetEnergyStripNbr(i)==PreTreatedData->GetTimeStripNbr(j))
                   Time.push_back(PreTreatedData->GetTime(j));
@@ -313,7 +313,7 @@ void TSSSDPhysics::PreTreat()
     ClearPreTreatedData();
       
       //  E
-      for(int i = 0 ; i < EventData->GetEnergyMult() ; i++)
+      for(int i = 0 ; i < EventData->GetEnergyMult() ; ++i)
         {
           if(EventData->GetEnergy(i) > m_Pedestal_Threshold && ChannelStatus[EventData->GetEnergyDetectorNbr(i)][EventData->GetEnergyStripNbr(i)])
             {
@@ -328,7 +328,7 @@ void TSSSDPhysics::PreTreat()
 		    }
 		
 	      //  T
-	      for(int i = 0 ; i < EventData->GetTimeMult() ; i++)
+	      for(int i = 0 ; i < EventData->GetTimeMult() ; ++i)
 		      {
 		        if(ChannelStatus[EventData->GetEnergyDetectorNbr(i)][EventData->GetEnergyStripNbr(i)])
 		          {
@@ -346,7 +346,7 @@ void TSSSDPhysics::InitializeStandardParameter()
 		vector<bool> TempChannelStatus;
     ChannelStatus.clear();
 		TempChannelStatus.resize(16,true);
-		for(int i = 0 ; i < NumberOfDetector ; i ++)	
+		for(int i = 0 ; i < NumberOfDetector ; ++i)	
 		    ChannelStatus[i+1] = TempChannelStatus;
   }
 ///////////////////////////////////////////////////////////////////////////

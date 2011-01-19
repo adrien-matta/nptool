@@ -157,9 +157,8 @@ void CalibrationManager::LoadParameterFromFile()
 	}
 
 //////////////////////////////////////////////////////////////////
-double CalibrationManager::ApplyCalibration(const string ParameterPath , const double RawValue)
+double CalibrationManager::ApplyCalibration(const string& ParameterPath , const double& RawValue)
 	{
-		double CalibratedValue = 0 ;
 		map< string , vector<double> >::iterator it ;
 		
 		//	Find the good parameter in the Map
@@ -183,6 +182,7 @@ double CalibrationManager::ApplyCalibration(const string ParameterPath , const d
 		// The vector size give the degree of calibration
 		// We just apply the coeff and returned the calibrated value
 		
+		double CalibratedValue = 0 ;
 		for(unsigned int i = 0 ; i < Coeff.size() ; i++)
 			{
 				CalibratedValue += Coeff[i]*pow(RawValue, (double)i);

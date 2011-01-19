@@ -58,7 +58,7 @@ class CalibrationManager
 			
 			// call like : myCalibrationManager->ApplyCalibration( "MUST2/Telescope5_Si_X38_E" , RawEnergy )
 			// return the Calibrated value
-			double ApplyCalibration(const string ParameterPath , const double RawValue);
+			double ApplyCalibration(const string& ParameterPath , const double& RawValue);
 		
 		
 		public:	//	To be called after initialisation

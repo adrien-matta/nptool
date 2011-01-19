@@ -65,8 +65,8 @@ class TMust2Physics : public TObject, public NPA::VDetector
 	vector<int>		TelescopeNumber		;
 	
 	//	Si
-	vector<double>	Si_E										;//max of Si_EX and Si_EY
-	vector<double>	Si_T										;//min of Si_TX and Si_TY
+	vector<double>	Si_E										;
+	vector<double>	Si_T										;
 	vector<int>			Si_X										;
 	vector<int>			Si_Y										;
 

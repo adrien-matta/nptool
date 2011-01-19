@@ -7,8 +7,8 @@
 /run/verbose 0
 
 # choose a graphic system
-##/vis/open OGLIX
-##/vis/open OGLSX
+#/vis/open OGLIX
+#/vis/open OGLSX
 #/vis/open VRML2FILE
 #/vis/scene/create
 #/vis/drawVolume

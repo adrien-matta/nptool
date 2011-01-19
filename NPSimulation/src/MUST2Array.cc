@@ -223,7 +223,7 @@ void MUST2Array::VolumeMaker(G4int TelescopeNumber ,
    if (wSiLi) {
       G4double SiLiSpace = 8 * mm;
 
-      G4RotationMatrix* rotSiLi = new G4RotationMatrix(0,0,-90*deg); //Rotation(0., 0., 0.);
+      G4RotationMatrix* rotSiLi = new G4RotationMatrix(0,0,0); 
 
      // G4Box* solidSiLi = new G4Box("SiLi", 0.5*SiLiFaceX, 0.5*SiLiFaceY, 0.5*SiLiThickness);
      
@@ -373,27 +373,27 @@ void MUST2Array::VolumeMaker(G4int TelescopeNumber ,
             
 			
 			// up
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LT_up  , logicSiLi_LT  , Name + "_SiLi_Pad16"   , logicSiLi , false , 0)  ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RT_up  , logicSiLi_RT  , Name + "_SiLi_Pad15"  , logicSiLi , false , 0)  ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LC1_up , logicSiLi_LC1 , Name + "_SiLi_Pad14" 	, logicSiLi , false , 0)  ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RC1_up , logicSiLi_RC1 , Name + "_SiLi_Pad13" 	, logicSiLi , false , 0)  ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LT_up  , logicSiLi_LT  , Name + "_SiLi_Pad9"   , logicSiLi , false , 0)  ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RT_up  , logicSiLi_RT  , Name + "_SiLi_Pad10"  , logicSiLi , false , 0)  ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LC1_up , logicSiLi_LC1 , Name + "_SiLi_Pad11" 	, logicSiLi , false , 0)  ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RC1_up , logicSiLi_RC1 , Name + "_SiLi_Pad12" 	, logicSiLi , false , 0)  ;
 
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LB_up  , logicSiLi_LB  , Name + "_SiLi_Pad9"  , logicSiLi , false , 0)  ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RB_up  , logicSiLi_RB  , Name + "_SiLi_Pad10"  , logicSiLi , false , 0)  ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LC2_up , logicSiLi_LC2 , Name + "_SiLi_Pad11" 	, logicSiLi , false , 0) 	;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RC2_up , logicSiLi_RC2 , Name + "_SiLi_Pad12" 	, logicSiLi , false , 0)	;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LB_up  , logicSiLi_LB  , Name + "_SiLi_Pad16"  , logicSiLi , false , 0)  ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RB_up  , logicSiLi_RB  , Name + "_SiLi_Pad15"  , logicSiLi , false , 0)  ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LC2_up , logicSiLi_LC2 , Name + "_SiLi_Pad14" 	, logicSiLi , false , 0) 	;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RC2_up , logicSiLi_RC2 , Name + "_SiLi_Pad13" 	, logicSiLi , false , 0)	;
 
 			
 			// down
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LT_down  , logicSiLi_LT  , Name + "_SiLi_Pad7"  , logicSiLi , false , 0)  ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RT_down  , logicSiLi_RT  , Name + "_SiLi_Pad8"  , logicSiLi , false , 0)  ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LC1_down , logicSiLi_LC1 , Name + "_SiLi_Pad5" 	, logicSiLi , false , 0)  ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RC1_down , logicSiLi_RC1 , Name + "_SiLi_Pad6" 	, logicSiLi , false , 0)  ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LT_down  , logicSiLi_LT  , Name + "_SiLi_Pad2"  , logicSiLi , false , 0)  ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RT_down  , logicSiLi_RT  , Name + "_SiLi_Pad1"  , logicSiLi , false , 0)  ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LC1_down , logicSiLi_LC1 , Name + "_SiLi_Pad4" 	, logicSiLi , false , 0)  ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RC1_down , logicSiLi_RC1 , Name + "_SiLi_Pad3" 	, logicSiLi , false , 0)  ;
 
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LB_down  , logicSiLi_LB  , Name + "_SiLi_Pad2"  , logicSiLi , false , 0)  ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RB_down  , logicSiLi_RB  , Name + "_SiLi_Pad1"  , logicSiLi , false , 0)  ;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LC2_down , logicSiLi_LC2 , Name + "_SiLi_Pad4" 	, logicSiLi , false , 0) 	;
-      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RC2_down , logicSiLi_RC2 , Name + "_SiLi_Pad3" 	, logicSiLi , false , 0)	;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LB_down  , logicSiLi_LB  , Name + "_SiLi_Pad7"  , logicSiLi , false , 0)  ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RB_down  , logicSiLi_RB  , Name + "_SiLi_Pad8"  , logicSiLi , false , 0)  ;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_LC2_down , logicSiLi_LC2 , Name + "_SiLi_Pad5" 	, logicSiLi , false , 0) 	;
+      PVPBuffer = new G4PVPlacement(0 , positionSiLi_RC2_down , logicSiLi_RC2 , Name + "_SiLi_Pad6" 	, logicSiLi , false , 0)	;
 
 
 
