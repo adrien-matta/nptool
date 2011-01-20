@@ -256,7 +256,7 @@ void TMust2Physics::BuildPhysicalEvent()
 													for(int k =0 ; k  < m_PreTreatedData->GetMMSiLiTMult() ; ++k)
 														{
 															// Same Pad, same Detector
-															if( m_PreTreatedData->GetMMSiLiEPadNbr(j)==m_PreTreatedData->GetMMSiLiEPadNbr(k) && m_PreTreatedData->GetMMSiLiEDetectorNbr(j)==m_PreTreatedData->GetMMSiLiTDetectorNbr(k) )
+															if( m_PreTreatedData->GetMMSiLiEPadNbr(j)==m_PreTreatedData->GetMMSiLiTPadNbr(k) && m_PreTreatedData->GetMMSiLiEDetectorNbr(j)==m_PreTreatedData->GetMMSiLiTDetectorNbr(k) )
 																{ SiLi_T.push_back( m_PreTreatedData->GetMMSiLiTTime(k) ) ; break ;}
 														}
 													
@@ -475,13 +475,7 @@ vector < TVector2 > TMust2Physics :: Match_X_Y()
 										if ( m_PreTreatedData->GetMMStripXEDetectorNbr(i) == m_PreTreatedData->GetMMStripYEDetectorNbr(j) )
 											{
 													//	Look if energy match
-													double EX = m_PreTreatedData->GetMMStripXEEnergy(i) ;
-													double EY = m_PreTreatedData->GetMMStripYEEnergy(j) ;
-													double mean = abs( EX - EY ) /2. ;
-													double distX = abs(EX-mean);
-													double distY = abs(EY-mean);
-													
-													if( distX< m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma && distY< m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma )
+													if( abs( (m_PreTreatedData->GetMMStripXEEnergy(i)-m_PreTreatedData->GetMMStripYEEnergy(j))/2. ) < m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma )
 														{
 														  // Special Option, if the event is between two CsI cristal, it is rejected.
 														  if(m_Ignore_not_matching_CsI)
@@ -750,14 +744,14 @@ bool TMust2Physics :: Match_Si_SiLi(int X, int Y , int PadNbr)
            X < 5  ||  X > 123
         || Y < 5  ||  Y > 123   
           // Central Part
-        || Y < 68 ||  Y < 60 
+        || (Y < 68 &&  Y > 60) 
         )
 	      {
 	      return false;
 	      }
 	    
       if( abs(m_SiLi_MatchingX[PadNbr-1] - X) < m_SiLi_Size/2.&&
-        abs(m_SiLi_MatchingY[PadNbr-1] - Y) < m_SiLi_Size/2.)
+          abs(m_SiLi_MatchingY[PadNbr-1] - Y) < m_SiLi_Size/2.)
 
         return true ;
 
