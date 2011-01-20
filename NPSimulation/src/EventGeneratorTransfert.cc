@@ -9,7 +9,7 @@
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
  * Creation Date  : January 2009                                             *
- * Last update    :                                                          *
+ * Last update    : January 2011                                             *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This event Generator is used to simulated two body TransfertReaction.    *
@@ -18,6 +18,8 @@
  *   section shoot. Eleastic scattering can also be simulated.               *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
+ *    + 20/01/2011: Add support for excitation energy for light ejectile     *
+ *                  (N. de Sereville)                                        *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
@@ -87,7 +89,8 @@ EventGeneratorTransfert::EventGeneratorTransfert(string name1             ,     
 		             string name3             ,        // Product of reaction
 		             string name4             ,        // Product of reaction
 		             double BeamEnergy        ,        // Beam Energy
-		             double ExcitationEnergy  ,        // Excitation of Heavy Nuclei
+		             double ExcitationEnergyLight  ,        // Excitation of Light Nuclei
+		             double ExcitationEnergyHeavy  ,        // Excitation of Heavy Nuclei
 		             double BeamEnergySpread  ,
 		             double SigmaX         ,
 		             double SigmaY         ,
@@ -102,7 +105,8 @@ EventGeneratorTransfert::EventGeneratorTransfert(string name1             ,     
 		              name3             ,        // Product of reaction
 		              name4             ,        // Product of reaction
 		              BeamEnergy        ,        // Beam Energy
-		              ExcitationEnergy  ,        // Excitation of Heavy Nuclei
+		              ExcitationEnergyLight  ,        // Excitation of Light Nuclei
+		              ExcitationEnergyHeavy  ,        // Excitation of Heavy Nuclei
 		              BeamEnergySpread  ,
 		              SigmaX         ,
 		              SigmaY         ,
@@ -143,7 +147,8 @@ void EventGeneratorTransfert::ReadConfiguration(string Path)
 
 ////////Reaction Setting needs///////
    string Beam, Target, Heavy, Light, CrossSectionPath ;
-   G4double BeamEnergy = 0 , ExcitationEnergy = 0 , BeamEnergySpread = 0 , SigmaX = 0 , SigmaY = 0 , SigmaThetaX = 0 , SigmaPhiY=0;
+   G4double BeamEnergy = 0 , ExcitationEnergyLight = 0, ExcitationEnergyHeavy = 0;
+   G4double BeamEnergySpread = 0 , SigmaX = 0 , SigmaY = 0 , SigmaThetaX = 0 , SigmaPhiY=0;
    bool  ShootLight     = false ;
    bool  ShootHeavy      = false ;
    
@@ -152,7 +157,8 @@ void EventGeneratorTransfert::ReadConfiguration(string Path)
    bool check_Target = false ;
    bool check_Light = false ;
    bool check_Heavy = false ;
-   bool check_ExcitationEnergy = false ;
+   bool check_ExcitationEnergyLight = false ;
+   bool check_ExcitationEnergyHeavy = false ;
    bool check_BeamEnergy = false ;
    bool check_BeamEnergySpread = false ;
    bool check_FWHMX = false ;
@@ -215,11 +221,18 @@ while(ReadingStatus){
 	            G4cout << "Heavy " << Heavy << G4endl;
 	         }
 
-	        else if  (DataBuffer.compare(0, 17, "ExcitationEnergy=") == 0) {
-	        	check_ExcitationEnergy = true ;
+	        else if  (DataBuffer.compare(0, 22, "ExcitationEnergyLight=") == 0) {
+	        	check_ExcitationEnergyLight = true ;
 	            ReactionFile >> DataBuffer;
-	            ExcitationEnergy = atof(DataBuffer.c_str()) * MeV;
-	            G4cout << "Excitation Energy " << ExcitationEnergy / MeV << " MeV" << G4endl;
+	            ExcitationEnergyLight = atof(DataBuffer.c_str()) * MeV;
+	            G4cout << "Excitation Energy Light" << ExcitationEnergyLight / MeV << " MeV" << G4endl;
+	         }
+
+	        else if  (DataBuffer.compare(0, 22, "ExcitationEnergyHeavy=") == 0) {
+	        	check_ExcitationEnergyHeavy = true ;
+	            ReactionFile >> DataBuffer;
+	            ExcitationEnergyHeavy = atof(DataBuffer.c_str()) * MeV;
+	            G4cout << "Excitation Energy Heavy" << ExcitationEnergyHeavy / MeV << " MeV" << G4endl;
 	         }
 
 	        else if  (DataBuffer.compare(0, 11, "BeamEnergy=") == 0) {
@@ -294,7 +307,7 @@ while(ReadingStatus){
 	         	
 	         ///////////////////////////////////////////////////
 			//	If all Token found toggle out
-	         if(   	check_Beam && check_Target && check_Light && check_Heavy && check_ExcitationEnergy 
+	         if(check_Beam && check_Target && check_Light && check_Heavy && check_ExcitationEnergyLight && check_ExcitationEnergyHeavy 
 	         	&&  check_BeamEnergy && check_BeamEnergySpread && check_FWHMX && check_FWHMY && check_EmmitanceTheta 
 	         	&&  check_EmmitancePhi && check_CrossSectionPath && check_ShootLight && check_ShootHeavy)
 	         	ReadingStatus = false ;	
@@ -309,7 +322,8 @@ while(ReadingStatus){
          Light          ,
          Heavy          ,
          BeamEnergy        ,
-         ExcitationEnergy  ,
+         ExcitationEnergyLight  ,
+         ExcitationEnergyHeavy  ,
          BeamEnergySpread  ,
          SigmaX         ,
          SigmaY         ,
@@ -514,7 +528,8 @@ void EventGeneratorTransfert::SetEverything(string name1,		// Beam nuclei
                                             string name3,		// Product of reaction
                                             string name4,		// Product of reaction
                                             double BeamEnergy,		// Beam Energy
-                                            double ExcitationEnergy,	// Excitation of Heavy Nuclei
+                                            double ExcitationEnergyLight,	// Excitation of Light Nuclei
+                                            double ExcitationEnergyHeavy,	// Excitation of Heavy Nuclei
                                             double BeamEnergySpread,
                                             double SigmaX,
                                             double SigmaY,
@@ -524,7 +539,7 @@ void EventGeneratorTransfert::SetEverything(string name1,		// Beam nuclei
                                             bool   ShootHeavy,
                                             string Path) 
 {
-   m_Reaction = new Reaction(name1, name2, name3, name4, BeamEnergy, ExcitationEnergy, Path);	
+   m_Reaction = new Reaction(name1, name2, name3, name4, BeamEnergy, ExcitationEnergyLight, ExcitationEnergyHeavy, Path);	
 		
    m_BeamEnergy       =  BeamEnergy;
    m_BeamEnergySpread =  BeamEnergySpread;

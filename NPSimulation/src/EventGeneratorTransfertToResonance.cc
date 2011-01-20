@@ -9,16 +9,18 @@
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
  * Creation Date  : January 2009                                             *
- * Last update    :                                                          *
+ * Last update    : January 2011                                             *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This event Generator is used to simulated two body TransfertReaction.    *
  *  A Phase Space calculation is then performed to decay the Heavy product.  *
  *  The TGenPhaseSpace from ROOT is used to calculate a phase space decay    *
- *  with flat distribution	                                             *
+ *  with flat distribution	                                                  *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *   									     *
+ *    + 20/01/2011: Add support for excitation energy for light ejectile     *
+ *                  (N. de Sereville)                                        *
+ *   									                                               *
  *                                                                           *
  *****************************************************************************/
 
@@ -87,7 +89,8 @@ EventGeneratorTransfertToResonance::EventGeneratorTransfertToResonance(	  string
 																	      string   	name3          		,
 																	      string   	name4          		,
 																	      double   	BeamEnergy        	,
-																	      double   	ExcitationEnergy    ,
+																	      double   	ExcitationEnergyLight    ,
+																	      double   	ExcitationEnergyHeavy    ,
 																	      double   	BeamEnergySpread  	,
 																	      double   	SigmaX         	,
 																	      double   	SigmaY         	,
@@ -108,7 +111,8 @@ EventGeneratorTransfertToResonance::EventGeneratorTransfertToResonance(	  string
 		            name3          		,        //Product of reaction
 		            name4          		,        //Product of reaction
 		            BeamEnergy        	,        //Beam Energy
-		            ExcitationEnergy 	,        //Excitation of Heavy Nuclei
+		            ExcitationEnergyLight 	,        //Excitation of Heavy Nuclei
+		            ExcitationEnergyHeavy 	,        //Excitation of Heavy Nuclei
 		            BeamEnergySpread  	,
 		            SigmaX         	,
 		            SigmaY         	,
@@ -147,7 +151,8 @@ void EventGeneratorTransfertToResonance::ReadConfiguration(string Path)
 
 ////////Reaction Setting needs///////
    string Beam, Target, Heavy, Light, CrossSectionPath ;
-   G4double BeamEnergy = 0 , ExcitationEnergy = 0 , BeamEnergySpread = 0 , SigmaX = 0 , SigmaY = 0 , SigmaThetaX = 0 , SigmaPhiY=0,  ResonanceWidth = 0 ,ResonanceDecayZ = 0 , ResonanceDecayA = 0  ;
+   G4double BeamEnergy = 0, ExcitationEnergyLight = 0, ExcitationEnergyHeavy = 0;
+   G4double BeamEnergySpread = 0 , SigmaX = 0 , SigmaY = 0 , SigmaThetaX = 0 , SigmaPhiY=0,  ResonanceWidth = 0 ,ResonanceDecayZ = 0 , ResonanceDecayA = 0  ;
    bool  ShootLight     = false ;
    bool  ShootHeavy      = false ;
    bool ShootDecayProduct = false ;
@@ -157,7 +162,8 @@ void EventGeneratorTransfertToResonance::ReadConfiguration(string Path)
    bool check_Target = false ;
    bool check_Light = false ;
    bool check_Heavy = false ;
-   bool check_ExcitationEnergy = false ;
+   bool check_ExcitationEnergyLight = false ;
+   bool check_ExcitationEnergyHeavy = false ;
    bool check_BeamEnergy = false ;
    bool check_BeamEnergySpread = false ;
    bool check_FWHMX = false ;
@@ -224,11 +230,18 @@ while(ReadingStatus){
 	            G4cout << "Heavy " << Heavy << G4endl;
 	         }
 
-	        else if  (DataBuffer.compare(0, 17, "ExcitationEnergy=") == 0) {
-	        	check_ExcitationEnergy = true ;
+	        else if  (DataBuffer.compare(0, 22, "ExcitationEnergyLight=") == 0) {
+	        	check_ExcitationEnergyLight = true ;
 	            ReactionFile >> DataBuffer;
-	            ExcitationEnergy = atof(DataBuffer.c_str()) * MeV;
-	            G4cout << "Excitation Energy " << ExcitationEnergy / MeV << " MeV" << G4endl;
+	            ExcitationEnergyLight = atof(DataBuffer.c_str()) * MeV;
+	            G4cout << "Excitation Energy Light " << ExcitationEnergyLight / MeV << " MeV" << G4endl;
+	         }
+
+	        else if  (DataBuffer.compare(0, 22, "ExcitationEnergyHeavy=") == 0) {
+	        	check_ExcitationEnergyHeavy = true ;
+	            ReactionFile >> DataBuffer;
+	            ExcitationEnergyHeavy = atof(DataBuffer.c_str()) * MeV;
+	            G4cout << "Excitation Energy Heavy " << ExcitationEnergyHeavy / MeV << " MeV" << G4endl;
 	         }
 
 	        else if  (DataBuffer.compare(0, 11, "BeamEnergy=") == 0) {
@@ -332,7 +345,7 @@ while(ReadingStatus){
 	         	
 	         ///////////////////////////////////////////////////
 			//	If all Token found toggle out
-	         if(   	check_Beam && check_Target && check_Light && check_Heavy && check_ExcitationEnergy 
+	         if (check_Beam && check_Target && check_Light && check_Heavy && check_ExcitationEnergyLight && check_ExcitationEnergyHeavy
 	         	&&  check_BeamEnergy && check_BeamEnergySpread && check_FWHMX && check_FWHMY && check_EmmitanceTheta 
 	         	&&  check_EmmitancePhi && check_CrossSectionPath && check_ShootLight && check_ShootHeavy 
 	         	&& check_ResonanceWidth && check_ResonanceDecayZ && check_ResonanceDecayA && check_ShootDecayProduct)
@@ -348,7 +361,8 @@ while(ReadingStatus){
 			         		Light          			,
 			         		Heavy          			,
 			         		BeamEnergy       		,
-			         		ExcitationEnergy  	,
+			         		ExcitationEnergyLight  	,
+			         		ExcitationEnergyHeavy  	,
 			         		BeamEnergySpread  	,
 			         		SigmaX         			,
 			        		SigmaY         			,
@@ -407,13 +421,13 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
 	 // EXX should always be more than specific heat of the reaction
  //   double EXX = RandBreitWigner::shoot(m_ResonanceMean,m_ResonanceWidth) ;	 
  double EXX = RandGauss::shoot(m_ResonanceMean,m_ResonanceWidth) ;	 
-    m_Reaction->SetExcitation( EXX );
+    m_Reaction->SetExcitationHeavy( EXX );
 
 		while ( m_Reaction->CheckKinematic()==false ) 
    		{
 //   			EXX = RandBreitWigner::shoot(m_ResonanceMean,m_ResonanceWidth) ;
 				EXX = RandGauss::shoot(m_ResonanceMean,m_ResonanceWidth) ;	 
-  	  	m_Reaction->SetExcitation( EXX );
+  	  	m_Reaction->SetExcitationHeavy( EXX );
   	  }
    // Beam
    G4int BeamZ = m_Reaction->GetNucleus1()->GetZ();
@@ -744,7 +758,8 @@ void EventGeneratorTransfertToResonance::SetEverything(	  string    name1       
 													      string   name3          			,
 													      string   name4          			,
 													      double   BeamEnergy        		,
-													      double   Excitation        		,
+													      double   ExcitationLight        		,
+													      double   ExcitationHeavy        		,
 													      double   BeamEnergySpread  		,
 													      double   SigmaX         			,
 													      double   SigmaY         			,
@@ -765,7 +780,8 @@ void EventGeneratorTransfertToResonance::SetEverything(	  string    name1       
 								name3 ,
 								name4 ,
 								BeamEnergy,
-								Excitation,
+								ExcitationLight,
+								ExcitationHeavy,
 								Path) ;
    m_BeamEnergy         = BeamEnergy;
    m_BeamEnergySpread   =  BeamEnergySpread  ;
@@ -774,7 +790,7 @@ void EventGeneratorTransfertToResonance::SetEverything(	  string    name1       
    m_SigmaThetaX    =  SigmaThetaX    	 ;
    m_SigmaPhiY    =  SigmaPhiY    	 ;
    m_ResonanceWidth	=	ResonanceWidth	;
-   m_ResonanceMean	= Excitation		;
+   m_ResonanceMean	= ExcitationHeavy		;
    m_ResonanceDecayZ =  ResonanceDecayZ      ;
    m_ResonanceDecayA =  ResonanceDecayA      ;
    m_ShootLight      =  ShootLight       	 ;

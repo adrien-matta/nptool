@@ -8,7 +8,8 @@ Transfert
 	Target= 2H
 	Light= 1H
 	Heavy= 12Li
-	ExcitationEnergy= 1.0
+	ExcitationEnergyLight= 0.0
+	ExcitationEnergyHeavy= 1.0
 	BeamEnergy= 550
 	BeamEnergySpread= 0
 	SigmaThetaX= 0.6921330164

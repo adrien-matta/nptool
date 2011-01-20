@@ -23,6 +23,9 @@ Nicolas de Sereville, IPNO
       + Symbolic links to *.dylib files are done if on a macosx platform.
       + The 'liblist' file at NPLib level is created.
 
+  + NPReaction class
+    + Now it is possible to give excitation to the light nucleus in exit channel.
+
   + NPOptionManager facility
     + This singleton class allows to pass arguments on the command line when
       executing NPSimulation and NPAnalysis.

@@ -7,7 +7,8 @@ TransfertToResonance
 	Target= 27Al
 	Light= 1H
 	Heavy= 27Al
-	ExcitationEnergy= 13.0
+	ExcitationEnergyLight= 0.0
+	ExcitationEnergyHeavy= 13.0
 	BeamEnergy= 18
 	BeamEnergySpread= 0
 	SigmaThetaX= 0

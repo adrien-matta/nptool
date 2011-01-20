@@ -7,7 +7,8 @@ Transfert
 	Target= 2H
 	Light= 3H
 	Heavy= 13O
-	ExcitationEnergy= 0.0
+	ExcitationEnergyLight= 0.0
+	ExcitationEnergyHeavy= 0.0
 	BeamEnergy= 252
 	BeamEnergySpread= 0
 	SigmaX= 2

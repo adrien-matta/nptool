@@ -11,16 +11,18 @@
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
  * Creation Date  : January 2009                                             *
- * Last update    :                                                          *
+ * Last update    : January 2011                                             *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This event Generator is used to simulated two body TransfertReaction.    *
  *  A Phase Space calculation is then performed to decay the Heavy product.  *
  *  The TGenPhaseSpace from ROOT is used to calculate a phase space decay    *
- *  with flat distribution	                                             *
+ *  with flat distribution	                                                  *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *   					                                     *
+ *    + 20/01/2011: Add support for excitation energy for light ejectile     *
+ *                  (N. de Sereville)                                        *
+ *   					                                                           *
  *                                                                           *
  *****************************************************************************/
 // C++ header
@@ -54,7 +56,8 @@ class EventGeneratorTransfertToResonance : public VEventGenerator
 	         string   name3          ,        //Product of reaction
 	         string   name4          ,        //Product of reaction
 	         double   BeamEnergy        ,        //Beam Energy
-	         double   ExcitationEnergy  ,        //Excitation of Heavy Nuclei
+	         double   ExcitationEnergyLight  ,        //Excitation of Light Nuclei
+	         double   ExcitationEnergyHeavy  ,        //Excitation of Heavy Nuclei
 	         double   BeamEnergySpread  ,
 	         double   SigmaX         ,
 	         double   SigmaY         ,
@@ -125,7 +128,8 @@ class EventGeneratorTransfertToResonance : public VEventGenerator
 		         string   name3          ,        //Product of reaction
 		         string   name4          ,        //Product of reaction
 		         double   BeamEnergy        ,        //Beam Energy
-		         double   ExcitationEnergy  ,        //Excitation of Heavy Nuclei
+		         double   ExcitationEnergyLight  ,        //Excitation of Light Nuclei
+		         double   ExcitationEnergyHeavy  ,        //Excitation of Heavy Nuclei
 		         double   BeamEnergySpread  ,
 		         double   SigmaX         ,
 		         double   SigmaY         ,

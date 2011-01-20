@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2009-2010 	this file is part of the NPTool Project          *
+ * Copyright (C) 2009-2010 	this file is part of the NPTool Project        *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -10,23 +10,25 @@
  * Original Author :  Adrien MATTA    contact address: matta@ipno.in2p3.fr   *
  *                                                                           *
  * Creation Date   : March 2009                                              *
- * Last update     :                                                         *
+ * Last update     : January 2011                                            *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *	This class deal with Two Body transfert Reaction                         *
- *	Physical parameter (Nuclei mass) are loaded from the nubtab03.asc file   *
- *	(2003 nuclear table of isotopes mass).                                   *
- *	                                                                         *
- *	KineRelativistic: Used in NPSimulation                                   *
- *	A relativistic calculation is made to compute Light and Heavy nuclei     * 
- *	angle given the Theta CM angle.                                          *
- *	                                                                         * 
- *	ReconstructRelativistic: Used in NPAnalysis                              *
- *	A relativistic calculation is made to compute Excitation energy given the*
- *	light angle and energy in Lab frame.                                     *
- *	                                                                         *
+ *	 This class deal with Two Body transfert Reaction                         *
+ *	 Physical parameter (Nuclei mass) are loaded from the nubtab03.asc file   *
+ *	 (2003 nuclear table of isotopes mass).                                   *
+ *	                                                                          *
+ *	 KineRelativistic: Used in NPSimulation                                   *
+ *	 A relativistic calculation is made to compute Light and Heavy nuclei     * 
+ *	 angle given the Theta CM angle.                                          *
+ *	                                                                          * 
+ *	 ReconstructRelativistic: Used in NPAnalysis                              *
+ *	 A relativistic calculation is made to compute Excitation energy given the*
+ *	 light angle and energy in Lab frame.                                     *
+ *	                                                                          *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
+ *    + 20/01/2011: Add support for excitation energy for light ejectile     *
+ *                  (N. de Sereville)                                        *
  *     Based on previous work by N.de Sereville                              *
  *                                                                           *
  *****************************************************************************/
@@ -60,19 +62,24 @@ Reaction::Reaction()
    fNuclei4       = new Nucleus()		;
    fBeamEnergy = 0								;
    fThetaCM    = 0								;
-   fExcitation = 0								;
+   fExcitationLight = 0								;
+   fExcitationHeavy = 0								;
    fQValue     = 0								;
    initializePrecomputeVariable()	;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-Reaction::Reaction(string name1, string name2, string name3, string name4, double BeamEnergy, double ExcitationEnergy,string Path)
-{
-	SetEveryThing( name1, name2, name3, name4, BeamEnergy, ExcitationEnergy, Path) ;
-}
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-void Reaction::SetEveryThing(string name1, string name2, string name3, string name4, double BeamEnergy, double ExcitationEnergy,string Path)
+Reaction::Reaction(string name1, string name2, string name3, string name4, double BeamEnergy, double ExcitationEnergyLight, double ExcitationEnergyHeavy ,string Path)
+{
+	SetEveryThing( name1, name2, name3, name4, BeamEnergy, ExcitationEnergyLight, ExcitationEnergyHeavy, Path) ;
+}
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
+void Reaction::SetEveryThing(string name1, string name2, string name3, string name4, double BeamEnergy, double ExcitationEnergyLight, double ExcitationEnergyHeavy, string Path)
 {
    //------------- Constructor with nuclei names and beam energy ------------
      
@@ -82,7 +89,8 @@ void Reaction::SetEveryThing(string name1, string name2, string name3, string na
    fNuclei4       = new Nucleus(name4);
    fBeamEnergy = BeamEnergy;
    fThetaCM    = 0;
-   fExcitation = ExcitationEnergy;
+   fExcitationLight = ExcitationEnergyLight;
+   fExcitationHeavy = ExcitationEnergyHeavy;
    fQValue     = (  fNuclei1->GetMassExcess() + fNuclei2->GetMassExcess()
 		  - fNuclei3->GetMassExcess() - fNuclei4->GetMassExcess()) / 1000;
 
@@ -137,10 +145,11 @@ Reaction::~Reaction()
 }
 
 
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 bool Reaction::CheckKinematic()
-	{
-		// Check if kinematics is allowed
+{
+	// Check if kinematics is allowed
 	   
    // case of inverse kinematics
    double theta = fThetaCM;
@@ -151,14 +160,16 @@ bool Reaction::CheckKinematic()
    double W4lab = W4cm * G * (1 + B*beta4cm*cos(theta + M_PI));
    // test for total energy conversion
    if (fabs(WtotLab - (W3lab+W4lab)) > 1e-6) 
-      return false ;
+      return false;
    
-   else return true ;
-	}
+   else return true;
+}
+
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 void Reaction::KineRelativistic(double &ThetaLab3, double &EnergieLab3,
-			        double &ThetaLab4, double &EnergieLab4) const
+			                       double &ThetaLab4, double &EnergieLab4) const
 {
 // 2-body relativistic kinematics: direct + inverse
 // EnergieLab3,4 : lab energy in MeV of the 2 ejectiles
@@ -190,24 +201,26 @@ void Reaction::KineRelativistic(double &ThetaLab3, double &EnergieLab3,
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 double Reaction::ReconstructRelativistic(double EnergyLab, double ThetaLab) const
-	{
-		// EnergyLab in MeV
-		// ThetaLab in rad
-		double P1 = sqrt(2*m1*fBeamEnergy+(fBeamEnergy*fBeamEnergy))	;
-		double P3 = sqrt(2*m3*EnergyLab+(EnergyLab*EnergyLab))			;
-		double P4 = sqrt(P1*P1+P3*P3-(2*P1*P3*cos(ThetaLab)))			;
-		double E4 = fBeamEnergy+m1+m2-(EnergyLab+m3)					;
-		double m4e = sqrt((E4*E4)-(P4*P4))								;
-		double Eex= m4e-fNuclei4->Mass()												;
-		
-		return Eex;
-	}
+{
+   // EnergyLab in MeV
+   // ThetaLab in rad
+   double P1 = sqrt(2*m1*fBeamEnergy+(fBeamEnergy*fBeamEnergy));
+   double P3 = sqrt(2*m3*EnergyLab+(EnergyLab*EnergyLab));
+   double P4 = sqrt(P1*P1+P3*P3-(2*P1*P3*cos(ThetaLab)));
+   double E4 = fBeamEnergy+m1+m2-(EnergyLab+m3);
+   double m4e = sqrt((E4*E4)-(P4*P4));
+   double Eex= m4e-fNuclei4->Mass();
+	
+   return Eex;
+}
+
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 //Return ThetaCM									
 double  Reaction::EnergyLabToThetaCM( double EnergyLab , double ExcitationEnergy ) const
 	{
-		if(ExcitationEnergy == -500) ExcitationEnergy = fExcitation; 
+		if(ExcitationEnergy == -500) ExcitationEnergy = fExcitationHeavy; 
 
 		double E1 = (fBeamEnergy+m1)			;
 		double E3 = (EnergyLab+m3)				;
@@ -243,7 +256,8 @@ void Reaction::Print() const
 			 << fBeamEnergy << " MeV" 
 		<< endl	;
 		
-		cout << "Exc = " << fExcitation << " MeV" << endl;
+		cout << "Exc Light = " << fExcitationLight << " MeV" << endl;
+		cout << "Exc Heavy = " << fExcitationHeavy << " MeV" << endl;
 		cout << "Qgg = " << fQValue << " MeV" << endl;
 	}
 	
@@ -256,13 +270,14 @@ void Reaction::ReadConfigurationFile(string Path)
 
 		////////Reaction Setting needs///////
 		   string Beam, Target, Heavy, Light, CrossSectionPath ;
-		   double BeamEnergy = 0 , ExcitationEnergy = 0 ;		   
+		   double BeamEnergy = 0 , ExcitationEnergyLight = 0, ExcitationEnergyHeavy = 0;		   
 		   bool ReadingStatus = false ;
 		   bool check_Beam = false ;
 		   bool check_Target = false ;
 		   bool check_Light = false ;
 		   bool check_Heavy = false ;
-		   bool check_ExcitationEnergy = false ;
+		   bool check_ExcitationEnergyLight = false ;
+		   bool check_ExcitationEnergyHeavy = false ;
 		   bool check_BeamEnergy = false ;
 		   bool check_CrossSectionPath = false ;
 
@@ -328,11 +343,18 @@ void Reaction::ReadConfigurationFile(string Path)
 			            cout << "Heavy " << Heavy << endl;
 			         }
 
-			        else if  (DataBuffer=="ExcitationEnergy=") {
-			        	check_ExcitationEnergy = true ;
+			        else if  (DataBuffer=="ExcitationEnergyLight=") {
+			        	check_ExcitationEnergyLight = true ;
 			            ReactionFile >> DataBuffer;
-			            ExcitationEnergy = atof(DataBuffer.c_str()) * MeV;
-			            cout << "Excitation Energy " << ExcitationEnergy / MeV << " MeV" << endl;
+			            ExcitationEnergyLight = atof(DataBuffer.c_str()) * MeV;
+			            cout << "Excitation Energy Light" << ExcitationEnergyLight / MeV << " MeV" << endl;
+			         }
+
+			        else if  (DataBuffer=="ExcitationEnergyHeavy=") {
+			        	check_ExcitationEnergyHeavy = true ;
+			            ReactionFile >> DataBuffer;
+			            ExcitationEnergyHeavy = atof(DataBuffer.c_str()) * MeV;
+			            cout << "Excitation Energy Heavy" << ExcitationEnergyHeavy / MeV << " MeV" << endl;
 			         }
 
 			        else if  (DataBuffer=="BeamEnergy=") {
@@ -356,19 +378,15 @@ void Reaction::ReadConfigurationFile(string Path)
 			         	
 			         ///////////////////////////////////////////////////
 					//	If all Token found toggle out
-			         if(   	check_Beam && check_Target && check_Light && check_Heavy && check_ExcitationEnergy 
-			         	&&  check_BeamEnergy && check_CrossSectionPath )
-			         	ReadingStatus = false ;	
-
+			         if (check_Beam && check_Target && check_Light && check_Heavy && check_ExcitationEnergyLight 
+			         	&& check_ExcitationEnergyHeavy && check_BeamEnergy && check_CrossSectionPath)
+			         	ReadingStatus = false;
 				}
-			        
-
 			}
 		   
-		   
-		   SetEveryThing(Beam, Target, Light, Heavy,BeamEnergy,ExcitationEnergy,CrossSectionPath);
+		   SetEveryThing(Beam, Target, Light, Heavy,BeamEnergy,ExcitationEnergyLight, ExcitationEnergyHeavy,CrossSectionPath);
 
-		   		ReactionFile.close();
+         ReactionFile.close();
 	}
 	
 	
@@ -376,8 +394,8 @@ void Reaction::initializePrecomputeVariable()
 	{ 
 		 m1 = fNuclei1->Mass();
 		 m2 = fNuclei2->Mass();
-		 m3 = fNuclei3->Mass();
-		 m4 = fNuclei4->Mass() + fExcitation;
+		 m3 = fNuclei3->Mass() + fExcitationLight;
+		 m4 = fNuclei4->Mass() + fExcitationHeavy;
 
 		// center-of-mass velocity
 		 WtotLab = (fBeamEnergy + m1) + m2;
@@ -399,12 +417,3 @@ void Reaction::initializePrecomputeVariable()
 		 K3 = B / beta3cm;
 		 K4 = B / beta4cm;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	

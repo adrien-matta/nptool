@@ -3,7 +3,8 @@ Transfert
        Target= 208Pb
        Light= 208Pb
        Heavy= 19C
-       ExcitationEnergy= 5.9
+       ExcitationEnergyLight= 5.9
+       ExcitationEnergyHeavy= 5.9
        BeamEnergy= 722
        BeamEnergySpread= 0
        SigmaThetaX= 0.6921330164
