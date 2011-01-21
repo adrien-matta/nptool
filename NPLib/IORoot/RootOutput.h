@@ -22,6 +22,9 @@
 #ifndef ROOTOUTPUT_HH
 #define ROOTOUTPUT_HH
 
+// NPL headers
+#include "TAsciiFile.h"
+
 // ROOT headers
 #include "TString.h"
 #include "TFile.h"
@@ -64,11 +67,19 @@ public:
    TFile*	GetFile() {return pRootFile;};
    TTree*	GetTree() {return pRootTree;};
    TList*	GetList() {return pRootList;};
+   TAsciiFile* GetAsciiFileEventGenerator()        {return pEventGenerator;}
+   TAsciiFile* GetAsciiFileDetectorConfiguration() {return pDetectorConfiguration;}
+   TAsciiFile* GetAsciiFileCalibration()           {return pCalibrationFile;}
+   TAsciiFile* GetAsciiFileRunToTreat()            {return pRunToTreatFile;}
 
 private:
-   TFile *pRootFile;
-   TTree *pRootTree;
-   TList *pRootList;
+   TFile      *pRootFile;
+   TTree      *pRootTree;
+   TList      *pRootList;
+   TAsciiFile *pEventGenerator;
+   TAsciiFile *pDetectorConfiguration;
+   TAsciiFile *pCalibrationFile;
+   TAsciiFile *pRunToTreatFile;
 };
 
 #endif // ROOTOUTPUT_HH

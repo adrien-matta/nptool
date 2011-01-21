@@ -32,6 +32,7 @@
 #include "NPReaction.h"
 #include "RootInput.h"
 #include "RootOutput.h"
+#include "TAsciiFile.h"
 #include "TInteractionCoordinates.h"
 #include "TInitialConditions.h"
 

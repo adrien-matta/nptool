@@ -17,6 +17,24 @@ int main(int argc,char** argv)
    RootInput:: getInstance(runToReadfileName);
 //   RootOutput::getInstance("Analysis/"+OutputfileName, "AnalyzedTree")	;
    RootOutput::getInstance("Analysis/Gaspard_AnalyzedData", "AnalyzedTree");
+   // store configuration files
+   TString GlobalPath = getenv("NPTOOL");
+   // event generator file
+   TString PathEG = GlobalPath + "/Inputs/EventGenerator/";
+   TString EGFileName = PathEG + reactionfileName;
+   TAsciiFile *asciiFileEG = RootOutput::getInstance()->GetAsciiFileEventGenerator();
+   asciiFileEG->SetNameTitle("EventGenerator", "EventGenerator input file");
+   asciiFileEG->Append(EGFileName);
+   // detector configuration file
+   TString PathDC = GlobalPath + "/Inputs/DetectorConfiguration/";
+   TString DCFileName = PathDC + detectorfileName;
+   TAsciiFile *asciiFileDC = RootOutput::getInstance()->GetAsciiFileDetectorConfiguration();
+   asciiFileDC->SetNameTitle("DetectorConfiguration", "DetectorConfiguration input file");
+   asciiFileDC->Append(DCFileName);
+   // detector configuration file
+   TAsciiFile *asciiFileRF = RootOutput::getInstance()->GetAsciiFileRunToTreat();
+   asciiFileRF->SetNameTitle("RunToTreat", "RunToTreat input file");
+   asciiFileRF->Append(runToReadfileName.data());
  
    // Initialize the reaction
    NPL::Reaction* myReaction = new Reaction();

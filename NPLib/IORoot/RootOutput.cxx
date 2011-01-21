@@ -60,6 +60,11 @@ RootOutput::RootOutput(TString fileNameBase, TString treeNameBase)
 
    pRootTree = new TTree(treeNameBase, "Data created / analyzed with the NPTool package");
    pRootList = new TList();
+
+   pEventGenerator        = new TAsciiFile();
+   pDetectorConfiguration = new TAsciiFile();
+   pCalibrationFile       = new TAsciiFile();
+   pRunToTreatFile        = new TAsciiFile();
 }
 
 
@@ -71,6 +76,21 @@ RootOutput::~RootOutput()
       cout << endl;
       cout << "Got histograms and Tree !" << endl;
       pRootFile->Write();
+
+      // write TAsciiFile if used
+      // EventGenerator
+      TString EGName = pEventGenerator->GetName();
+      if (!EGName.IsNull()) pEventGenerator->Write();
+      // DetectorConfiguration
+      TString DCName = pDetectorConfiguration->GetName();
+      if (!DCName.IsNull()) pDetectorConfiguration->Write();
+      // CalibrationFile
+      TString CFName = pCalibrationFile->GetName();
+      if (!CFName.IsNull()) pCalibrationFile->Write();
+      // RunToTreatFile
+      TString RTName = pRunToTreatFile->GetName();
+      if (!RTName.IsNull()) pRunToTreatFile->Write();
+
       pRootFile->Close();
    } else {
       cout << "No histograms and Tree !" << endl;

@@ -1,7 +1,8 @@
 include ../Makefile.arch
  
 #------------------------------------------------------------------------------
-SHARELIB      = libReaction.so libEnergyLoss.so libTagManager.so libOptionManager.so
+SHARELIB      = libReaction.so libEnergyLoss.so libTagManager.so libOptionManager.so \
+                libAsciiFile.so
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 
@@ -26,12 +27,20 @@ NPTagManagerDict.cxx: NPTagManager.h
 libOptionManager.so: NPOptionManager.o
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 		
+## AsciiFile ##
+libAsciiFile.so: TAsciiFile.o TAsciiFileDict.o
+		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
+
+TAsciiFileDict.cxx: TAsciiFile.h
+			rootcint -f $@ -c $^
+			
 # dependances
 NPReaction.o:NPReaction.cxx NPReaction.h
 NPNucleus.o: NPNucleus.cxx NPNucleus.h
 NPEnergyLoss.o:NPEnergyLoss.cxx NPEnergyLoss.h
 NPTagManager.o:NPTagManager.cxx NPTagManager.h
 NPOptionManager.o:NPOptionManager.cxx NPOptionManager.h
+TAsciiFile.o:  TAsciiFile.cxx TAsciiFile.h
 #######################################
 
 ############# Clean and More ##########
