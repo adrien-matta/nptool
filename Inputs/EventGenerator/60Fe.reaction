@@ -8,14 +8,14 @@ Transfert
 	Light= 1H
 	Heavy= 61Fe
 	ExcitationEnergyLight= 0.0
-	ExcitationEnergyHeavy= 2.0
-	BeamEnergy= 1200
+	ExcitationEnergyHeavy= 0.702
+	BeamEnergy= 1628.41
 	BeamEnergySpread= 0
-	SigmaX= 3
-	SigmaY= 3
-	SigmaThetaX= 0.5 
-	SigmaPhiY= 0.5
-	CrossSectionPath= ni69_g7_01.n
+	SigmaX= 0
+	SigmaY= 0
+	SigmaThetaX= 0 
+	SigmaPhiY= 0
+	CrossSectionPath= fe61_p1_2_702.n
 	ShootLight= 1
 	ShootHeavy= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
