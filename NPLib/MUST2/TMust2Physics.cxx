@@ -89,10 +89,10 @@ TMust2Physics::TMust2Physics()
 		    m_SiLi_MatchingX[5]=48;
 		    m_SiLi_MatchingY[5]=112;
 		    
-		    m_SiLi_MatchingX[6]=12;
+		    m_SiLi_MatchingX[6]=16;
 		    m_SiLi_MatchingY[6]=80;
 		    
-		    m_SiLi_MatchingX[7]=12;
+		    m_SiLi_MatchingX[7]=16;
 		    m_SiLi_MatchingY[7]=112;
 		    //
 		    m_SiLi_MatchingX[8]=112;
@@ -113,10 +113,10 @@ TMust2Physics::TMust2Physics()
 		    m_SiLi_MatchingX[13]=48;
 		    m_SiLi_MatchingY[13]=16;
 		    
-		    m_SiLi_MatchingX[14]=12;
+		    m_SiLi_MatchingX[14]=16;
 		    m_SiLi_MatchingY[14]=48;
 		    
-		    m_SiLi_MatchingX[15]=12;
+		    m_SiLi_MatchingX[15]=16;
 		    m_SiLi_MatchingY[15]=16;
       }
 
@@ -523,16 +523,16 @@ vector < TVector2 > TMust2Physics :: Match_X_Y()
 bool TMust2Physics :: IsValidChannel(const string DetectorType, const int telescope , const int channel) 
 	{
 		if(DetectorType == "CsI")
-			return *(m_CsIChannelStatus[telescope].begin()+channel-1);
+			return *(m_CsIChannelStatus[telescope-1].begin()+channel-1);
 		
 		else if(DetectorType == "SiLi")
-			return *(m_SiLiChannelStatus[telescope].begin()+channel-1);
+			return *(m_SiLiChannelStatus[telescope-1].begin()+channel-1);
 			
 		else if(DetectorType == "X")
-			return *(m_XChannelStatus[telescope].begin()+channel-1);
+			return *(m_XChannelStatus[telescope-1].begin()+channel-1);
 			
 		else if(DetectorType == "Y")
-			return *(m_YChannelStatus[telescope].begin()+channel-1);
+			return *(m_YChannelStatus[telescope-1].begin()+channel-1);
 			
 		else return false;
 	}
@@ -601,11 +601,11 @@ void TMust2Physics::ReadAnalysisConfig()
                int telescope = atoi(DataBuffer.substr(2,1).c_str());
                vector< bool > ChannelStatus;
                ChannelStatus.resize(128,false);
-               m_XChannelStatus[telescope] = ChannelStatus;
-               m_YChannelStatus[telescope] = ChannelStatus;
+               m_XChannelStatus[telescope-1] = ChannelStatus;
+               m_YChannelStatus[telescope-1] = ChannelStatus;
                ChannelStatus.resize(16,false);
-               m_SiLiChannelStatus[telescope] = ChannelStatus;
-               m_CsIChannelStatus[telescope]  = ChannelStatus;
+               m_SiLiChannelStatus[telescope-1] = ChannelStatus;
+               m_CsIChannelStatus[telescope-1]  = ChannelStatus;
             }
             
         else if (whatToDo == "DISABLE_CHANNEL") {
@@ -615,22 +615,22 @@ void TMust2Physics::ReadAnalysisConfig()
            int channel = -1;
            if (DataBuffer.compare(3,4,"STRX") == 0) {
               channel = atoi(DataBuffer.substr(7).c_str());
-              *(m_XChannelStatus[telescope].begin()+channel-1) = false;
+              *(m_XChannelStatus[telescope-1].begin()+channel-1) = false;
            }
            
            else if (DataBuffer.compare(3,4,"STRY") == 0) {
               channel = atoi(DataBuffer.substr(7).c_str());
-              *(m_YChannelStatus[telescope].begin()+channel-1) = false;
+              *(m_YChannelStatus[telescope-1].begin()+channel-1) = false;
            }
            
            else if (DataBuffer.compare(3,4,"SILI") == 0) {
               channel = atoi(DataBuffer.substr(7).c_str());
-              *(m_SiLiChannelStatus[telescope].begin()+channel-1) = false;
+              *(m_SiLiChannelStatus[telescope-1].begin()+channel-1) = false;
            }
            
            else if (DataBuffer.compare(3,3,"CSI") == 0) {
               channel = atoi(DataBuffer.substr(6).c_str());
-              *(m_CsIChannelStatus[telescope].begin()+channel-1) = false;
+              *(m_CsIChannelStatus[telescope-1].begin()+channel-1) = false;
            }
            
            else cout << "Warning: detector type for Must2 unknown!" << endl;
@@ -741,8 +741,8 @@ bool TMust2Physics :: Match_Si_SiLi(int X, int Y , int PadNbr)
 	
 	    //remove the central part and surrounding
       if( // Outter Part
-           X < 5  ||  X > 123
-        || Y < 5  ||  Y > 123   
+           X < 8  ||  X > 120
+        //|| Y < 0  ||  Y > 128   
           // Central Part
         || (Y < 68 &&  Y > 60) 
         )
