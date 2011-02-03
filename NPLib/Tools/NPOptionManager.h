@@ -23,60 +23,62 @@
  *                                                                           *
  *****************************************************************************/
 
-// STL headers
+// C++ headers
 #include <iostream>
 #include <string>
 using namespace std;
 
 class NPOptionManager
-  {
-    public:
-       // The analysis class is designed to be a singleton (i.e. only one instance
-       // can exist). A member function called Instance is defined, which allows
-       // the user to get a pointer to the existing instance or to create it if
-       // it does not yet exist:
-       // (see the constructor for an explanation of the arguments)
-       static NPOptionManager* getInstance(int argc=0,char** argv=NULL);
+{
+   public:
+      // The analysis class is designed to be a singleton (i.e. only one instance
+      // can exist). A member function called Instance is defined, which allows
+      // the user to get a pointer to the existing instance or to create it if
+      // it does not yet exist:
+      // (see the constructor for an explanation of the arguments)
+      static NPOptionManager* getInstance(int argc = 0, char** argv = NULL);
 
-       // The analysis class instance can be deleted by calling the Destroy
-       // method (NOTE: The class destructor is protected, and can thus not be
-       // called directly):
-       static void Destroy();
+      // The analysis class instance can be deleted by calling the Destroy
+      // method (NOTE: The class destructor is protected, and can thus not be
+      // called directly):
+      static void Destroy();
 
-    protected:
-       // Constructor (protected)
-       NPOptionManager(int argc,char** argv);
+   protected:
+      // Constructor (protected)
+      NPOptionManager(int argc, char** argv);
 
-       // Destructor (protected)
-       ~NPOptionManager() {};
+      // Destructor (protected)
+      ~NPOptionManager() {};
 
-       // Prevent copying
-       NPOptionManager(const NPOptionManager& only);
-       const NPOptionManager& operator=(const NPOptionManager& only);
+      // Prevent copying
+      NPOptionManager(const NPOptionManager& only);
+      const NPOptionManager& operator=(const NPOptionManager& only);
 
-    private:
-       // The static instance of the NPOptionManager class:
-       static NPOptionManager* instance;
+   private:
+      // The static instance of the NPOptionManager class:
+      static NPOptionManager* instance;
 
-    private:
+   private:
       void DisplayHelp();
+      void CheckArguments();
+      void CheckEventGenerator();
+      void CheckDetectorConfiguration();
 
-    public:
-      string GetReactionFilePath()        { return fReactionFileName        ; } ;
-      string GetDetectorFilePath()        { return fDetectorFileName        ; } ;
-      string GetRunToReadFilePath()       { return fRunToReadFileName       ; } ;
-      string GetCalibrationFilePath()     { return fCalibrationFileName     ; } ;
-      string GetOutputFilePath()          { return fOutputFileName          ; } ;
-      bool   GetDisableAllBranchOption()  { return fDisableAllBranchOption  ; } ;
-      
-    private:
-      string fReactionFileName        ;
-      string fDetectorFileName        ;
-      string fRunToReadFileName       ;
-      string fCalibrationFileName     ;
-      string fOutputFileName          ;
-      bool   fDisableAllBranchOption  ;
-    
-  };
+   public:
+      string GetReactionFilePath()        {return fReactionFileName;}
+      string GetDetectorFilePath()        {return fDetectorFileName;}
+      string GetRunToReadFilePath()       {return fRunToReadFileName;}
+      string GetCalibrationFilePath()     {return fCalibrationFileName;}
+      string GetOutputFilePath()          {return fOutputFileName;}
+      bool   GetDisableAllBranchOption()  {return fDisableAllBranchOption;}
+
+   private:
+      string fReactionFileName;
+      string fDetectorFileName;
+      string fRunToReadFileName;
+      string fCalibrationFileName;
+      string fOutputFileName;
+      bool   fDisableAllBranchOption;
+};
 
 #endif

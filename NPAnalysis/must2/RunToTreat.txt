@@ -1,4 +1,6 @@
 TTreeName 
 	SimulatedTree
 RootFileName 
-	../../Outputs/Simulation/myResult.root
+%	../../Outputs/Simulation/myResult.root
+	../../Outputs/Simulation/pipo.root
+%	../../Outputs/Simulation/fe60dp_1mg.root

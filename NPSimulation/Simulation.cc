@@ -27,9 +27,10 @@
 
 int main(int argc, char** argv)
 {
-   NPOptionManager* OptionManager = NPOptionManager::getInstance(argc, argv);
+   // Initialize NPOptionManager object
+   NPOptionManager* OptionManager  = NPOptionManager::getInstance(argc, argv);
    G4String EventGeneratorFileName = OptionManager->GetReactionFilePath();
-   G4String DetectorFileName = OptionManager->GetDetectorFilePath();
+   G4String DetectorFileName       = OptionManager->GetDetectorFilePath();
 
    // my Verbose output class
    G4VSteppingVerbose::SetInstance(new SteppingVerbose);

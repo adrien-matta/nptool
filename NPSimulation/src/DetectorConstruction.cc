@@ -170,26 +170,15 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
    bool cShield          = false;	// Paris Shield CsI
    bool cW1              = false;   // W1 Micron DSSD
    //////////////////////////////////////////////////////////////////////////////////////////
-   string GlobalPath = getenv("NPTOOL");
-   string StandardPath = GlobalPath + "/Inputs/DetectorConfiguration/" + Path;
    ifstream ConfigFile;
-   ConfigFile.open(StandardPath.c_str());
+   ConfigFile.open(Path.c_str());
 
-   if (ConfigFile.is_open())
-      { 
-        cout << " Configuration file " << Path << " loading " << endl;
-        Path=StandardPath;
-      }
-
-   else 
-    {
-      ConfigFile.open( Path.c_str() );
-      if(ConfigFile.is_open()) {
+   if (ConfigFile.is_open()) {   // should be always be true
       cout << " Configuration file " << Path << " loading " << endl;
-      }
-      
-      else { cout << " Error, no configuration file" << Path << " found" << endl;return;}
-    }
+   }
+   else {
+      cout << " Error, no configuration file" << Path << " found" << endl;
+   }
 
    while (!ConfigFile.eof()) {
       //Pick-up next line
