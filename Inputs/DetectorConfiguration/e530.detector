@@ -19,7 +19,7 @@
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
 Target
-	THICKNESS= 1.0755
+	THICKNESS= 10.755
 	RADIUS=	1.25
 	MATERIAL= CD2
 	ANGLE= 0
