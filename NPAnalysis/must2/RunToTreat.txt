@@ -2,3 +2,4 @@ TTreeName
 	SimulatedTree
 RootFileName 
 	../../Outputs/Simulation/myResult.root
+%	../../Outputs/Simulation/fe60dp_100ug_resolSiLi22.root

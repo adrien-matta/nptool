@@ -48,6 +48,7 @@ void ControlSimu(const char * fname = "myResult")
    TString inFileName = fname;
    if (!inFileName.Contains("root")) inFileName += ".root";
    TFile *inFile = new TFile(path + inFileName);
+   if (!inFile->IsOpen()) exit(1);
    TTree *tree   = (TTree*) inFile->Get("SimulatedTree");
 
    // Connect the branches of the TTree and activate then if necessary
@@ -80,9 +81,22 @@ void ControlSimu(const char * fname = "myResult")
 
    // Read the TTree
    Int_t nentries = tree->GetEntries();
-   cout << "TTree contains " << nentries << " events" << endl;
+   cout <<endl << " TTree contains " << nentries << " events" << endl;
+   clock_t begin=clock();
+   clock_t end=begin;
    for (Int_t i = 0; i < nentries; i++) {
-      if (i%10000 == 0) cout << "Entry " << i << endl;
+      if (i%10000 == 0 && i!=0)  {
+         cout.precision(5);
+         end = clock();
+         double TimeElapsed = (end-begin) / CLOCKS_PER_SEC;
+         double percent = (double)i/nentries ;
+         double TimeToWait = (TimeElapsed/percent) - TimeElapsed;
+         cout  << "\r Progression:" << percent*100 << " % \t | \t Remaining time : ~" <<  TimeToWait <<"s"<< flush;
+      }
+      else if (i==nentries-1)  cout << "\r Progression:" << " 100% " <<endl;
+      
+//      if (i%10000 == 0) cout << "Entry " << i << endl;
+      // Get entry
       tree->GetEntry(i);
 
       // Fill histos
