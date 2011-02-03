@@ -10,7 +10,7 @@ Transfert
 	ExcitationEnergyHeavy= 0.0
 	ExcitationEnergyLight= 0.0
 	BeamEnergy= 1628.41
-	BeamEnergySpread= 0
+	BeamEnergySpread= 8.14
 	SigmaX= 0
 	SigmaY= 0
 	SigmaThetaX= 0 

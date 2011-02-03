@@ -84,7 +84,7 @@ int main(int argc,char** argv)
    TH2F* Position_M2      = new TH2F("Must2Positions",     "Must2Positions",      2000, -200,   200, 2000, -200, 200);
    TH2F* Position_M2_tot  = new TH2F("Must2Positions_tot", "Must2Positions_tot",   130,   -1,   129,  130,   -1, 130);
       
-   cout <<  " ///////// Starting Analysis ///////// "<< endl << endl ;
+   cout << endl << "///////// Starting Analysis ///////// "<< endl;
    int N = Chain -> GetEntries(); 
    cout << " Number of Event to be treated : " << N << endl ;
    clock_t begin=clock();
