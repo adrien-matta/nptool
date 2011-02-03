@@ -68,7 +68,7 @@ public:
    TChain*	GetChain() {return pRootChain;};
    
    // Add a Friend chain to the input chain
-   void     AddFriendChain( string RunToAdd);
+   void     AddFriendChain(string RunToAdd);
 
 private:
    TChain	*pRootChain;

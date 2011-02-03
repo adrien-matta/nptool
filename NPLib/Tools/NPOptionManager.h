@@ -65,14 +65,28 @@ class NPOptionManager
       void CheckDetectorConfiguration();
 
    public:
-      string GetReactionFilePath()        {return fReactionFileName;}
-      string GetDetectorFilePath()        {return fDetectorFileName;}
-      string GetRunToReadFilePath()       {return fRunToReadFileName;}
-      string GetCalibrationFilePath()     {return fCalibrationFileName;}
-      string GetOutputFilePath()          {return fOutputFileName;}
+      // default values
+      string GetDefaultReactionFile()     {return fDefaultReactionFileName;}
+      string GetDefaultDetectorFile()     {return fDefaultDetectorFileName;}
+      string GetDefaultRunToReadFile()    {return fDefaultRunToReadFileName;}
+      string GetDefaultCalibrationFile()  {return fDefaultCalibrationFileName;}
+      string GetDefaultOutputFile()       {return fDefaultOutputFileName;}
+      // assigned values
+      string GetReactionFile()            {return fReactionFileName;}
+      string GetDetectorFile()            {return fDetectorFileName;}
+      string GetRunToReadFile()           {return fRunToReadFileName;}
+      string GetCalibrationFile()         {return fCalibrationFileName;}
+      string GetOutputFile()              {return fOutputFileName;}
       bool   GetDisableAllBranchOption()  {return fDisableAllBranchOption;}
 
    private:
+      // default values
+      string fDefaultReactionFileName;
+      string fDefaultDetectorFileName;
+      string fDefaultRunToReadFileName;
+      string fDefaultCalibrationFileName;
+      string fDefaultOutputFileName;
+      // assigned values
       string fReactionFileName;
       string fDetectorFileName;
       string fRunToReadFileName;

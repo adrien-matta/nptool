@@ -29,8 +29,8 @@ int main(int argc, char** argv)
 {
    // Initialize NPOptionManager object
    NPOptionManager* OptionManager  = NPOptionManager::getInstance(argc, argv);
-   G4String EventGeneratorFileName = OptionManager->GetReactionFilePath();
-   G4String DetectorFileName       = OptionManager->GetDetectorFilePath();
+   G4String EventGeneratorFileName = OptionManager->GetReactionFile();
+   G4String DetectorFileName       = OptionManager->GetDetectorFile();
 
    // my Verbose output class
    G4VSteppingVerbose::SetInstance(new SteppingVerbose);
@@ -53,21 +53,7 @@ int main(int argc, char** argv)
    ///////////////////////////////////////////////////////////////
    ///////////////// Initializing the Root Output ////////////////
    ///////////////////////////////////////////////////////////////
-   RootOutput::getInstance("Simulation/" + OptionManager->GetOutputFilePath());
-   // store configuration files
-   G4String GlobalPath = getenv("NPTOOL");
-   // event generator file
-   G4String PathEG = GlobalPath + "/Inputs/EventGenerator/";
-   G4String EGFileName = PathEG + EventGeneratorFileName;
-   TAsciiFile *asciiFileEG = RootOutput::getInstance()->GetAsciiFileEventGenerator();
-   asciiFileEG->SetNameTitle("EventGenerator", "EventGenerator input file");
-   asciiFileEG->Append(EGFileName);
-   // detector configuration file
-   G4String PathDC = GlobalPath + "/Inputs/DetectorConfiguration/";
-   G4String DCFileName = PathDC + DetectorFileName;
-   TAsciiFile *asciiFileDC = RootOutput::getInstance()->GetAsciiFileDetectorConfiguration();
-   asciiFileDC->SetNameTitle("DetectorConfiguration", "DetectorConfiguration input file");
-   asciiFileDC->Append(DCFileName);
+   RootOutput::getInstance("Simulation/" + OptionManager->GetOutputFile());
 
    ///////////////////////////////////////////////////////////////
    ////////////// Reading Detector Configuration /////////////////

@@ -9,12 +9,13 @@
  * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
  *                                                                           *
  * Creation Date  : 21/07/09                                                 *
- * Last update    :                                                          *
+ * Last update    : 03/02/11                                                 *
  *---------------------------------------------------------------------------*
  * Decription: This class is a singleton class which deals with the ROOT     *
  *             output file and tree both for NPSimulation and NPAnalysis.    *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
+ *   + 03/02/11: Add support for TAsciiFile objects (N. de Sereville)        *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
@@ -23,6 +24,7 @@
 #include <cstdlib>
 
 #include "RootOutput.h"
+#include "NPOptionManager.h"
 
 using namespace std;
 
@@ -53,18 +55,51 @@ RootOutput::RootOutput(TString fileNameBase, TString treeNameBase)
 {
    // The file extension is added to the file name:
    TString GlobalPath = getenv("NPTOOL");
-   TString fileName = GlobalPath + "/Outputs/" + fileNameBase + ".root";
+   TString fileName = GlobalPath + "/Outputs/";
+   if (fileNameBase.Contains("root")) fileName += fileNameBase;
+   else fileName += fileNameBase + ".root"; 
 
    // The ROOT file is created
    pRootFile = new TFile(fileName, "RECREATE");
-
    pRootTree = new TTree(treeNameBase, "Data created / analyzed with the NPTool package");
    pRootList = new TList();
 
-   pEventGenerator        = new TAsciiFile();
+   // Init TAsciiFile objects
+   InitAsciiFiles();
+}
+
+
+
+void RootOutput::InitAsciiFiles()
+{
+   // get NPOptionManager pointer
+   NPOptionManager* OptionManager  = NPOptionManager::getInstance();
+
+   // Event generator
+   // Get file name from NPOptionManager
+   TString fileNameEG = OptionManager->GetReactionFile();
+   pEventGenerator = new TAsciiFile();
+   pEventGenerator->SetNameTitle("EventGenerator", fileNameEG.Data());
+   pEventGenerator->Append(fileNameEG.Data());
+
+   // Detector configuration 
+   // Get file name from NPOptionManager
+   TString fileNameDC = OptionManager->GetDetectorFile();
    pDetectorConfiguration = new TAsciiFile();
-   pCalibrationFile       = new TAsciiFile();
-   pRunToTreatFile        = new TAsciiFile();
+   pDetectorConfiguration->SetNameTitle("DetectorConfiguration", fileNameDC.Data());
+   pDetectorConfiguration->Append(fileNameDC.Data());
+
+   // Run to treat file
+   // Get file name from NPOptionManager
+   TString fileNameRT = OptionManager->GetRunToReadFile();
+   pRunToTreatFile = new TAsciiFile();
+   if (fileNameRT != OptionManager->GetDefaultRunToReadFile()) {
+      pRunToTreatFile->SetNameTitle("RunToTreat", fileNameRT.Data());
+      pRunToTreatFile->Append(fileNameRT.Data());
+   }
+
+   // Calibration files
+   pCalibrationFile = new TAsciiFile();
 }
 
 

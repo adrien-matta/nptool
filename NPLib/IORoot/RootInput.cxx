@@ -41,6 +41,7 @@ RootInput* RootInput::getInstance(string configFileName)
 }
 
 
+
 void RootInput::Destroy()
 {
    if (instance != 0) {
@@ -48,6 +49,8 @@ void RootInput::Destroy()
       instance = 0;
    }
 }
+
+
 
 // fileNameBase doit etre le nom du TChain.
 RootInput::RootInput(string configFileName)
@@ -110,7 +113,9 @@ RootInput::RootInput(string configFileName)
       cout << "WARNING: Token not found for InputTree Declaration : Input Tree may not be instantiate properly" << endl;
 }
 
-void RootInput::AddFriendChain( string RunToAdd)
+
+
+void RootInput::AddFriendChain(string RunToAdd)
 {
    NumberOfFriend++;
    ostringstream suffix_buffer;
@@ -179,6 +184,8 @@ void RootInput::AddFriendChain( string RunToAdd)
       
    cout << "/////////////////////////////////" << endl;
 }
+
+
 
 RootInput::~RootInput()
 {

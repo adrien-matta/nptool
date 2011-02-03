@@ -40,11 +40,17 @@ NPOptionManager* NPOptionManager::getInstance(int argc, char** argv)
 NPOptionManager::NPOptionManager(int argc, char** argv)
 {
    // Default Setting
-   fReactionFileName    = "myReaction.reaction"  ;
-   fDetectorFileName    = "myDetector.detector"  ;
-   fOutputFileName      = "myResult"             ;
-   fRunToReadFileName   = "RunToRead.txt"        ;
-   fCalibrationFileName = "Calibration.txt"      ;
+   fDefaultReactionFileName    = "defaultReaction.reaction";
+   fDefaultDetectorFileName    = "defaultDetector.detector";
+   fDefaultOutputFileName      = "myResult.root";
+   fDefaultRunToReadFileName   = "defaultRunToTreat.txt";
+   fDefaultCalibrationFileName = "Calibration.txt";
+   // Assigned values
+   fReactionFileName           = fDefaultReactionFileName;
+   fDetectorFileName           = fDefaultDetectorFileName;
+   fOutputFileName             = fDefaultOutputFileName;
+   fRunToReadFileName          = fDefaultRunToReadFileName;
+   fCalibrationFileName        = fDefaultCalibrationFileName;
    fDisableAllBranchOption = false;
 
    for (int i = 0; i < argc; i++) {

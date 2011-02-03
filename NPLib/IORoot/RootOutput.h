@@ -9,12 +9,13 @@
  * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
  *                                                                           *
  * Creation Date  : 21/07/09                                                 *
- * Last update    :                                                          *
+ * Last update    : 03/02/11                                                 *
  *---------------------------------------------------------------------------*
  * Decription: This class is a singleton class which deals with the ROOT     *
  *             output file and tree both for NPSimulation and NPAnalysis.    *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
+ *   + 03/02/11: Add support for TAsciiFile objects (N. de Sereville)        *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
@@ -63,10 +64,13 @@ private:
    // The static instance of the RootOutput class:
    static RootOutput* instance;
 
+private:
+   void InitAsciiFiles();
+
 public:
-   TFile*	GetFile() {return pRootFile;};
-   TTree*	GetTree() {return pRootTree;};
-   TList*	GetList() {return pRootList;};
+   TFile*	   GetFile()                           {return pRootFile;}
+   TTree*	   GetTree()                           {return pRootTree;}
+   TList*	   GetList()                           {return pRootList;}
    TAsciiFile* GetAsciiFileEventGenerator()        {return pEventGenerator;}
    TAsciiFile* GetAsciiFileDetectorConfiguration() {return pDetectorConfiguration;}
    TAsciiFile* GetAsciiFileCalibration()           {return pCalibrationFile;}
