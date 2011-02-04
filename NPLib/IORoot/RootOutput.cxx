@@ -91,9 +91,9 @@ void RootOutput::InitAsciiFiles()
 
    // Run to treat file
    // Get file name from NPOptionManager
-   TString fileNameRT = OptionManager->GetRunToReadFile();
    pRunToTreatFile = new TAsciiFile();
-   if (fileNameRT != OptionManager->GetDefaultRunToReadFile()) {
+   if (!OptionManager->IsDefault("RunToTreat")) {
+      TString fileNameRT = OptionManager->GetRunToReadFile();
       pRunToTreatFile->SetNameTitle("RunToTreat", fileNameRT.Data());
       pRunToTreatFile->Append(fileNameRT.Data());
    }

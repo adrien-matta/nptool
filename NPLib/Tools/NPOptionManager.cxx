@@ -112,13 +112,14 @@ void NPOptionManager::CheckEventGenerator()
    }
    else {   // if not, assume config file is in current directory
       ConfigFile.open(fReactionFileName.c_str());
-      if (!ConfigFile.is_open()) {  // if not, send error and exit program
-         cout << endl;
+      if (!ConfigFile.is_open()) {  // if not, assign default value
+         fReactionFileName = fDefaultReactionFileName;
+/*         cout << endl;
          cout << "**********************************       Error       **********************************" << endl;
          cout << "* No event generator file found in $NPTool/Inputs/EventGenerator or local directories *" << endl;
          cout << "***************************************************************************************" << endl;
          cout << endl;
-         exit(1);
+         exit(1);*/
       }
    }
 
@@ -144,18 +145,77 @@ void NPOptionManager::CheckDetectorConfiguration()
    }
    else {   // if not, assume config file is in current directory
       ConfigFile.open(fDetectorFileName.c_str());
-      if (!ConfigFile.is_open()) {  // if not, send error and exit program
-         cout << endl;
+      if (!ConfigFile.is_open()) {  // if not, assign default value
+         fDetectorFileName = fDefaultDetectorFileName;
+/*         cout << endl;
          cout << "***********************************       Error       ***********************************" << endl;
          cout << "* No detector geometry file found in $NPTool/Inputs/EventGenerator or local directories *" << endl;
          cout << "*****************************************************************************************" << endl;
          cout << endl;
-         exit(1);
+         exit(1);*/
       }
    }
 
    // close ConfigFile
    ConfigFile.close();
+}
+
+
+
+// This method tests if the input files are the default ones
+bool NPOptionManager::IsDefault(const char* type) const
+{
+   bool result = false;
+
+   string stype = type;
+   if (stype == "EventGenerator") {
+      if (fReactionFileName == fDefaultReactionFileName) result = true;
+   }
+   else if (stype == "DetectorConfiguration") {
+      if (fDetectorFileName == fDefaultDetectorFileName) result = true;
+   }
+   else if (stype == "Calibration") {
+      if (fCalibrationFileName == fDefaultCalibrationFileName) result = true;
+   }
+   else if (stype == "RunToTreat") {
+      if (fRunToReadFileName == fDefaultRunToReadFileName) result = true;
+   }
+   else {
+      cout << "NPOptionManager::IsDefault() unkwown keyword" << endl;
+   }
+
+   return result;
+}
+
+
+
+// This method tests if the input files are the default ones
+void NPOptionManager::SendErrorAndExit(const char* type) const
+{
+   string stype = type;
+   if (stype == "EventGenerator") {
+      cout << endl;
+      cout << "**********************************       Error       **********************************" << endl;
+      cout << "* No event generator file found in $NPTool/Inputs/EventGenerator or local directories *" << endl;
+      cout << "***************************************************************************************" << endl;
+      cout << endl;
+      exit(1);
+   }
+   else if (stype == "DetectorConfiguration") {
+      cout << endl;
+      cout << "***********************************       Error       ***********************************" << endl;
+      cout << "* No detector geometry file found in $NPTool/Inputs/EventGenerator or local directories *" << endl;
+      cout << "*****************************************************************************************" << endl;
+      cout << endl;
+      exit(1);
+   }
+   else if (stype == "Calibration") {
+   }
+   else if (stype == "RunToTreat") {
+   }
+   else {
+      cout << "NPOptionManager::SendErrorAndAbort() unkwown keyword" << endl;
+   }
 }
 
 

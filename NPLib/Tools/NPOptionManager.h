@@ -65,6 +65,10 @@ class NPOptionManager
       void CheckDetectorConfiguration();
 
    public:
+      bool IsDefault(const char* type) const;
+      void SendErrorAndExit(const char* type) const;
+
+   public:
       // default values
       string GetDefaultReactionFile()     {return fDefaultReactionFileName;}
       string GetDefaultDetectorFile()     {return fDefaultDetectorFileName;}
