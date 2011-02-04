@@ -1,0 +1,1628 @@
+%%%%%%%%%%%Target%%%%%%%%%%%%%%%%%%%1
+%Thickness in micrometer
+%Radius in mm
+%Temperature in K, Pressure in bar
+%Material name according to the target library
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GeneralTarget
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Target
+	THICKNESS= 0.441
+	RADIUS= 12
+	ANGLE= 0
+	MATERIAL= CD2
+	X= 0
+	Y= 0
+	Z= 0
+
+
+%%%%%%%%%%Detector%%%%%%%%%%%%%%%%%%%
+%%Position and R given in mm
+%%Angle given in degree
+%%Option: 0,1 for Si SiLi and CsI
+%%Option: all or sensible for VISualisation
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+HydeTracker
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%0  End Cap (forward) (theta = 0 deg)
+HYDDummyShape
+        THETA= 0
+        PHI= 0
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 First cone (forward) (theta = 15 deg)        
+HYDDummyShape
+        THETA= 15
+        PHI= 0 
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
+HYDDummyShape
+        THETA= 15
+        PHI= 90 
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%3
+HYDDummyShape
+        THETA= 15
+        PHI= 180
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%4         
+HYDDummyShape
+        THETA= 15
+        PHI= 270
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5  Second Cone (forward) (theta = 30 deg) 
+HYDDummyShape
+        THETA= 30
+        PHI= 0  
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%6 
+HYDDummyShape
+        THETA= 30
+        PHI= 45 
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%7  
+HYDDummyShape
+        THETA= 30
+        PHI= 90
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%8 
+HYDDummyShape
+        THETA= 30
+        PHI= 135
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%9
+HYDDummyShape
+        THETA= 30
+        PHI= 180
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%10
+HYDDummyShape
+        THETA= 30
+        PHI= 225
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%11
+HYDDummyShape
+        THETA= 30
+        PHI= 270
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%12
+HYDDummyShape
+        THETA= 30
+        PHI= 315
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%13 Third Cone (forward) (theta = 45 deg) 
+HYDDummyShape
+        THETA= 45
+        PHI= 0
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%14
+HYDDummyShape
+        THETA= 45
+        PHI= 22.5
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%15
+HYDDummyShape
+        THETA= 45
+        PHI= 45
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%16
+HYDDummyShape
+        THETA= 45
+        PHI= 67.5
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%17
+HYDDummyShape
+        THETA= 45
+        PHI= 90
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%18 
+HYDDummyShape
+        THETA= 45
+        PHI= 112.5
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%19 
+HYDDummyShape
+        THETA= 45
+        PHI= 135
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%20 
+HYDDummyShape
+        THETA= 45
+        PHI= 157.5
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%21 
+HYDDummyShape
+        THETA= 45
+        PHI= 180
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%22
+HYDDummyShape
+        THETA= 45
+        PHI= 202.5
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%23 
+HYDDummyShape
+        THETA= 45
+        PHI= 225
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%24 
+HYDDummyShape
+        THETA= 45
+        PHI= 247.5
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%25
+HYDDummyShape
+        THETA= 45
+        PHI= 270
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%26
+HYDDummyShape
+        THETA= 45
+        PHI= 292.5
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%27
+HYDDummyShape
+        THETA= 45
+        PHI= 315
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%28 
+HYDDummyShape
+        THETA= 45
+        PHI= 337.5
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%29 Fourth Cone (forward) (theta = 60 deg) 
+HYDDummyShape
+        THETA= 60 
+        PHI= 0
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%30
+HYDDummyShape
+        THETA= 60 
+        PHI= 20
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%31
+HYDDummyShape
+        THETA= 60 
+        PHI= 40
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%32
+HYDDummyShape
+        THETA= 60 
+        PHI= 60
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%33
+HYDDummyShape
+        THETA= 60 
+        PHI= 80
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%34
+HYDDummyShape
+        THETA= 60 
+        PHI= 100
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%35
+HYDDummyShape
+        THETA= 60 
+        PHI= 120
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%36
+HYDDummyShape
+        THETA= 60 
+        PHI= 140
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%37
+HYDDummyShape
+        THETA= 60 
+        PHI= 160
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%38
+HYDDummyShape
+        THETA= 60 
+        PHI= 180
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%39
+HYDDummyShape
+        THETA= 60 
+        PHI= 200
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%40
+HYDDummyShape
+        THETA= 60 
+        PHI= 220
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%41
+HYDDummyShape
+        THETA= 60 
+        PHI= 240
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%42
+HYDDummyShape
+        THETA= 60 
+        PHI= 260
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%43
+HYDDummyShape
+        THETA= 60 
+        PHI= 280
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%44
+HYDDummyShape
+        THETA= 60 
+        PHI= 300
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%45
+HYDDummyShape
+        THETA= 60 
+        PHI= 320
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%46
+HYDDummyShape
+        THETA= 60 
+        PHI= 340
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%47 Fifth Cone (forward) (theta = 75 deg) 
+HYDDummyShape
+        THETA= 75
+        PHI= 0   
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%48
+HYDDummyShape
+        THETA= 75
+        PHI= 17.14
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%49
+HYDDummyShape
+        THETA= 75
+        PHI= 34.28
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%50   
+HYDDummyShape
+        THETA= 75
+        PHI= 51.42
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%51   
+HYDDummyShape
+        THETA= 75
+        PHI= 68.56
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%52   
+HYDDummyShape
+        THETA= 75
+        PHI= 85.70
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%53    
+HYDDummyShape
+        THETA= 75
+        PHI= 102.84
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%54   
+HYDDummyShape
+        THETA= 75
+        PHI= 119.98
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%55    
+HYDDummyShape
+        THETA= 75
+        PHI= 137.12
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%56   
+HYDDummyShape
+        THETA= 75
+        PHI= 154.26
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%57    
+HYDDummyShape
+        THETA= 75
+        PHI= 171.40
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%58   
+HYDDummyShape
+        THETA= 75
+        PHI= 188.54
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%59    
+HYDDummyShape
+        THETA= 75
+        PHI= 205.68
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%60   
+HYDDummyShape
+        THETA= 75
+        PHI= 222.82
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%61    
+HYDDummyShape
+        THETA= 75
+        PHI= 239.96
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%62   
+HYDDummyShape
+        THETA= 75
+        PHI= 257.1
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%63   
+HYDDummyShape
+        THETA= 75
+        PHI= 274.24
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%64   
+HYDDummyShape
+        THETA= 75
+        PHI= 291.38
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%65   
+HYDDummyShape
+        THETA= 75
+        PHI= 308.52
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%66   
+HYDDummyShape
+        THETA= 75
+        PHI= 325.66
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%67   
+HYDDummyShape
+        THETA= 75
+        PHI= 342.80
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%68 Central Barrel (theta = 90 deg) 
+HYDDummyShape
+        THETA= 90
+        PHI= 0
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%69
+HYDDummyShape
+        THETA= 90
+        PHI= 15
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%70
+HYDDummyShape
+        THETA= 90
+        PHI= 30
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%71 
+HYDDummyShape
+        THETA= 90
+        PHI= 45
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%72
+HYDDummyShape
+        THETA= 90
+        PHI= 60
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%73 
+HYDDummyShape
+        THETA= 90
+        PHI= 75
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%74
+HYDDummyShape
+	THETA= 90
+	PHI= 90 
+	R= 200
+	BETA= 0 0 0
+	FIRSTSTAGE= 1
+	SECONDSTAGE= 1
+	THIRDSTAGE= 1
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%75
+HYDDummyShape
+	THETA= 90
+	PHI= 105
+	R= 200
+	BETA= 0 0 0
+	FIRSTSTAGE= 1
+	SECONDSTAGE= 1
+	THIRDSTAGE= 1
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%76
+HYDDummyShape
+	THETA= 90
+	PHI= 120
+	R= 200
+	BETA= 0 0 0
+	FIRSTSTAGE= 1
+	SECONDSTAGE= 1
+	THIRDSTAGE= 1	
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%77
+HYDDummyShape
+	THETA= 90
+	PHI= 135
+	R= 200
+	BETA= 0 0 0
+	FIRSTSTAGE= 1
+	SECONDSTAGE= 1
+	THIRDSTAGE= 1	
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%78
+HYDDummyShape
+	THETA= 90
+	PHI= 150
+	R= 200
+	BETA= 0 0 0
+	FIRSTSTAGE= 1
+	SECONDSTAGE= 1
+	THIRDSTAGE= 1
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%79
+HYDDummyShape
+	THETA= 90
+	PHI= 165
+	R= 200
+	BETA= 0 0 0
+	FIRSTSTAGE= 1
+	SECONDSTAGE= 1
+	THIRDSTAGE= 1
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%80
+HYDDummyShape
+	THETA= 90
+	PHI= 180
+	R= 200
+	BETA= 0 0 0
+	FIRSTSTAGE= 1
+	SECONDSTAGE= 1
+	THIRDSTAGE= 1	
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%81
+HYDDummyShape
+	THETA= 90
+	PHI= 195
+	R= 200
+	BETA= 0 0 0
+	FIRSTSTAGE= 1
+	SECONDSTAGE= 1
+	THIRDSTAGE= 1	
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%82
+HYDDummyShape
+	THETA= 90
+	PHI= 210
+	R= 200
+	BETA= 0 0 0
+	FIRSTSTAGE= 1
+	SECONDSTAGE= 1
+	THIRDSTAGE= 1	
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%83
+HYDDummyShape
+	THETA= 90
+	PHI= 225
+	R= 200
+	BETA= 0 0 0
+	FIRSTSTAGE= 1
+	SECONDSTAGE= 1
+	THIRDSTAGE= 1	
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%84
+HYDDummyShape
+	THETA= 90
+	PHI= 240
+	R= 200
+	BETA= 0 0 0
+	FIRSTSTAGE= 1
+	SECONDSTAGE= 1
+	THIRDSTAGE= 1	
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%85
+HYDDummyShape
+	THETA= 90
+	PHI= 255
+	R= 200
+	BETA= 0 0 0
+	FIRSTSTAGE= 1
+	SECONDSTAGE= 1
+	THIRDSTAGE= 1	
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%86
+HYDDummyShape
+	THETA= 90
+	PHI= 270
+	R= 200
+	BETA= 0 0 0
+	FIRSTSTAGE= 1
+	SECONDSTAGE= 1
+	THIRDSTAGE= 1	
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%87
+HYDDummyShape
+	THETA= 90
+	PHI= 285
+	R= 200
+	BETA= 0 0 0
+	FIRSTSTAGE= 1
+	SECONDSTAGE= 1
+	THIRDSTAGE= 1	
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%88
+HYDDummyShape
+	THETA= 90
+	PHI= 300
+	R= 200
+	BETA= 0 0 0
+	FIRSTSTAGE= 1
+	SECONDSTAGE= 1
+	THIRDSTAGE= 1	
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%89
+HYDDummyShape
+	THETA= 90
+	PHI= 315
+	R= 200
+	BETA= 0 0 0
+	FIRSTSTAGE= 1
+	SECONDSTAGE= 1
+	THIRDSTAGE= 1	
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%90
+HYDDummyShape
+	THETA= 90
+	PHI= 330
+	R= 200
+	BETA= 0 0 0
+	FIRSTSTAGE= 1
+	SECONDSTAGE= 1
+	THIRDSTAGE= 1	
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%91
+HYDDummyShape
+	THETA= 90
+	PHI= 345
+	R= 200
+	BETA= 0 0 0
+	FIRSTSTAGE= 1
+	SECONDSTAGE= 1
+	THIRDSTAGE= 1	
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%92 Fifth Cone (backward) (theta = 105 deg) 
+HYDDummyShape
+        THETA= 105
+        PHI= 0   
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%93   
+HYDDummyShape
+        THETA= 105
+        PHI= 17.14
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%94    
+HYDDummyShape
+        THETA= 105
+        PHI= 34.28
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%95   
+HYDDummyShape
+        THETA= 105
+        PHI= 51.42
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%96   
+HYDDummyShape
+        THETA= 105
+        PHI= 68.56
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%97   
+HYDDummyShape
+        THETA= 105
+        PHI= 85.70
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%98    
+HYDDummyShape
+        THETA= 105
+        PHI= 102.84
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%99   
+HYDDummyShape
+        THETA= 105
+        PHI= 119.98
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%100   
+HYDDummyShape
+        THETA= 105
+        PHI= 137.12
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%101  
+HYDDummyShape
+        THETA= 105
+        PHI= 154.26
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%102   
+HYDDummyShape
+        THETA= 105
+        PHI= 171.40
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%103  
+HYDDummyShape
+        THETA= 105
+        PHI= 188.54
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%104   
+HYDDummyShape
+        THETA= 105
+        PHI= 205.68
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%105  
+HYDDummyShape
+        THETA= 105
+        PHI= 222.82
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%106   
+HYDDummyShape
+        THETA= 105
+        PHI= 239.96
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%107  
+HYDDummyShape
+        THETA= 105
+        PHI= 257.1
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%108  
+HYDDummyShape
+        THETA= 105
+        PHI= 274.24
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%109  
+HYDDummyShape
+        THETA= 105
+        PHI= 291.38
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%110  
+HYDDummyShape
+        THETA= 105
+        PHI= 308.52
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%111  
+HYDDummyShape
+        THETA= 105
+        PHI= 325.66
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%112  
+HYDDummyShape
+        THETA= 105
+        PHI= 342.80
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%113 Fourth Cone (backward) (theta = 120 deg)
+HYDDummyShape
+        THETA= 120
+        PHI= 0
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%114
+HYDDummyShape
+        THETA= 120
+        PHI= 20
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%115
+HYDDummyShape
+        THETA= 120
+        PHI= 40
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%116
+HYDDummyShape
+        THETA= 120
+        PHI= 60
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%117                     
+HYDDummyShape
+        THETA= 120
+        PHI= 80
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%118
+HYDDummyShape
+        THETA= 120
+        PHI= 100
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%119
+HYDDummyShape
+        THETA= 120
+        PHI= 120
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%120
+HYDDummyShape
+        THETA= 120
+        PHI= 140
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%121
+HYDDummyShape
+        THETA= 120
+        PHI= 160
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%122
+HYDDummyShape
+        THETA= 120
+        PHI= 180
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%123
+HYDDummyShape
+        THETA= 120
+        PHI= 200
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%124
+HYDDummyShape
+        THETA= 120
+        PHI= 220
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%125
+HYDDummyShape
+        THETA= 120
+        PHI= 240
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%126
+HYDDummyShape
+        THETA= 120
+        PHI= 260
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%127
+HYDDummyShape
+        THETA= 120
+        PHI= 280
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%128
+HYDDummyShape
+        THETA= 120
+        PHI= 300
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%129
+HYDDummyShape
+        THETA= 120
+        PHI= 320
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%130
+HYDDummyShape
+        THETA= 120
+        PHI= 340
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%131 Third Cone (backward) (theta = 135 deg) 
+HYDDummyShape
+        THETA= 135
+        PHI= 0
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%132  
+HYDDummyShape
+        THETA= 135
+        PHI= 22.5
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%133 
+HYDDummyShape
+        THETA= 135
+        PHI= 45
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%134   
+HYDDummyShape
+        THETA= 135
+        PHI= 67.5
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%135 
+HYDDummyShape
+        THETA= 135
+        PHI= 90
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%136 
+HYDDummyShape
+        THETA= 135
+        PHI= 112.5
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%137   
+HYDDummyShape
+        THETA= 135
+        PHI= 135
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%138    
+HYDDummyShape
+        THETA= 135
+        PHI= 157.5
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%139 
+HYDDummyShape
+        THETA= 135
+        PHI= 180
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%140  
+HYDDummyShape
+        THETA= 135
+        PHI= 202.5
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%141  
+HYDDummyShape
+        THETA= 135
+        PHI= 225
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%142   
+HYDDummyShape
+        THETA= 135
+        PHI= 247.5
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%143 
+HYDDummyShape
+        THETA= 135
+        PHI= 270
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%144 
+HYDDummyShape
+        THETA= 135
+        PHI= 292.5
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%145  
+HYDDummyShape
+        THETA= 135
+        PHI= 315
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%146   
+HYDDummyShape
+        THETA= 135
+        PHI= 337.5
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%147 Second Cone (backward) (theta = 150 deg)
+HYDDummyShape
+        THETA= 150
+        PHI= 0
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%148
+HYDDummyShape
+        THETA= 150
+        PHI= 45 
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%149 
+HYDDummyShape
+        THETA= 150
+        PHI= 90
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%150 
+HYDDummyShape
+        THETA= 150
+        PHI= 135
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%151
+HYDDummyShape
+        THETA= 150
+        PHI= 180
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%152
+HYDDummyShape
+        THETA= 150
+        PHI= 225
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%153
+HYDDummyShape
+        THETA= 150
+        PHI= 270
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%154
+HYDDummyShape
+        THETA= 150
+        PHI= 315
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%155 First Cone (backward) (theta = 165 deg)
+HYDDummyShape
+        THETA= 165
+        PHI= 0 
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%156 
+HYDDummyShape
+        THETA= 165
+        PHI= 90 
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%157  
+HYDDummyShape
+        THETA= 165
+        PHI= 180
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%158  
+HYDDummyShape
+        THETA= 165
+        PHI= 270
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%159 End Cap (backward)
+HYDDummyShape
+        THETA= 180
+        PHI= 0
+        R= 200
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
