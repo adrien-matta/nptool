@@ -173,7 +173,7 @@ namespace HYDDUMMYSHAPE
 //   const G4int NumberOfStrips	       = 50; // 1 mm strip pitch
 //   const G4int NumberOfStrips	       = 64; // 0.781 mm strip pitch
 //   const G4int NumberOfStrips	       = 100; // 0.5 mm strip pitch
-     const G4int NumberOfStrips	       = 128; // 0.391 mm strip pitch
+     const G4int NumberOfStrips	       = 16; // 0.391 mm strip pitch
 //   const G4int NumberOfStrips	       = 500; // 0.1 mm strip pitch
 
    // Second stage

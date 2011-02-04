@@ -4,6 +4,7 @@ The following people have contributed to this new version:
 Sandra Giron, IPNO
 Marc Labiche, STFC
 Adrien Matta, IPNO
+Angel Sanchez Benitez, UHU
 Nicolas de Sereville, IPNO
 
 
@@ -38,6 +39,7 @@ Nicolas de Sereville, IPNO
 
   + RootInput facility
     + Support for adding TFriend object
+    + Support for using information from TAsciiFile when running NPAnalysis
 
   + RootOutput facility
     + Support for adding TAsciiFile object automatically

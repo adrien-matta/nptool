@@ -554,7 +554,7 @@ void HydeTracker::AddModuleSquare(TVector3 C_X1_Y1,
 
    // Geometry Parameter
    double Face = 98;		// mm
-   double NumberOfStrip = 128;
+   double NumberOfStrip = 16;
    double StripPitch = Face/NumberOfStrip; // mm
 
    // Buffer object to fill Position Array
@@ -644,7 +644,7 @@ void HydeTracker::AddModuleSquare(double theta,
 
    double Face = 98; // mm
    //double NumberOfStrip = 25;    angelmsb
-   double NumberOfStrip = 25;
+   double NumberOfStrip = 16;
    double StripPitch = Face/NumberOfStrip; // mm
 
    vector<double> lineX;
@@ -754,7 +754,7 @@ void HydeTracker::AddModuleDummyShape(TVector3 C_X1_Y1,
 }
 
 
-
+///////////////////// relevant angelmsb 
 void HydeTracker::AddModuleDummyShape(double theta,
                                          double phi,
                                          double distance,
@@ -803,7 +803,8 @@ void HydeTracker::AddModuleDummyShape(double theta,
    V.Rotate( beta_w * Pi/180. , W ) ;
 
    double Face = 50; // mm
-   double NumberOfStrip = 100;
+///////////////////// Fri Feb  4 13:29:51 CET 2011 angelmsb
+   double NumberOfStrip = 16;
    double StripPitch = Face/NumberOfStrip; // mm
 
    vector<double> lineX;

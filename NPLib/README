@@ -38,6 +38,7 @@ NPLib / include
       / Shield
       / VDetector
       / W1
+      / HYDE
 
 A description of each directory follows.
 
@@ -120,8 +121,6 @@ XII) GASPARD
 	libGaspardData.so:
 		This library stores the results of the G4 simulation for the tracker part 
 		of the Gaspard detector.
-		The format mimics what was used for the GANIL experiments after conversion 
-		of the raw data with GRU. Ask N. de Sereville for more informations. 
 	libGaspardPhysics.so:
 		This library deals with the treatment applied to the ROOT output file 
 		obtained from NPSimulation. This library is *only* used by NPAnalysis.
@@ -168,5 +167,16 @@ XVI) W1
 		This library stores the results of the G4 simulation for the W1 (Micron)
 		detector.
 	libW1Physics.so:
+		This library deals with the treatment applied to the ROOT output file 
+		obtained from NPSimulation. This library is *only* used by NPAnalysis.
+
+XVII) HYDE
+	This directory includes two libraries:
+		libHydeData.so
+		libHydePhysics.so
+	libHydeData.so:
+		This library stores the results of the G4 simulation for the tracker part 
+		of the Hyde detector.
+	libHydePhysics.so:
 		This library deals with the treatment applied to the ROOT output file 
 		obtained from NPSimulation. This library is *only* used by NPAnalysis.
