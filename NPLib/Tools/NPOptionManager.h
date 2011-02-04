@@ -69,6 +69,7 @@ class NPOptionManager
       void SendErrorAndExit(const char* type) const;
 
    public:
+      // Getters
       // default values
       string GetDefaultReactionFile()     {return fDefaultReactionFileName;}
       string GetDefaultDetectorFile()     {return fDefaultDetectorFileName;}
@@ -82,6 +83,11 @@ class NPOptionManager
       string GetCalibrationFile()         {return fCalibrationFileName;}
       string GetOutputFile()              {return fOutputFileName;}
       bool   GetDisableAllBranchOption()  {return fDisableAllBranchOption;}
+
+      // Setters
+      void SetReactionFile(string name)   {fReactionFileName = name;}
+      void SetDetectorFile(string name)   {fDetectorFileName = name;}
+      void SetRunToReadFile(string name)  {fRunToReadFileName = name;}
 
    private:
       // default values

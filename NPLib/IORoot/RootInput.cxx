@@ -23,8 +23,10 @@
 #include <sstream>
 #include <fstream>
 #include <limits>
+#include <sys/stat.h>
 
 #include "RootInput.h"
+#include "TAsciiFile.h"
 
 
 RootInput *RootInput::instance = 0;
@@ -66,6 +68,7 @@ RootInput::RootInput(string configFileName)
    ifstream inputConfigFile;
    inputConfigFile.open(configFileName.c_str());
 	
+   pRootFile  = NULL;
    pRootChain = new TChain();
    
    cout << endl;
@@ -103,6 +106,7 @@ RootInput::RootInput(string configFileName)
                else if (!inputConfigFile.eof()) {
                   pRootChain->Add(dataBuffer.c_str());
                   cout << "Adding file " << dataBuffer << " to TChain" << endl;
+                  if (!pRootFile) pRootFile = new TFile(dataBuffer.c_str());
                }
             }
          }
@@ -187,7 +191,61 @@ void RootInput::AddFriendChain(string RunToAdd)
 
 
 
+string RootInput::DumpAsciiFile(const char* type, const char* folder)
+{
+   string name;
+
+   string sfolder = folder;
+   // create folder if not existing
+   // first test if folder exist
+   struct stat dirInfo;
+   int res = stat(folder, &dirInfo);
+   if (res != 0) {   // if folder does not exist, create it
+      string cmd = "mkdir " + sfolder;
+      if (system(cmd.c_str()) != 0) cout << "RootInput::DumpAsciiFile() problem creating directory" << endl;
+   }
+
+   string stype = type;
+   if (stype == "EventGenerator") {
+      TAsciiFile *aFile = (TAsciiFile*)pRootFile->Get(stype.c_str());
+      // build file name
+      string title = aFile->GetTitle();
+      unsigned int pos = title.rfind("/");
+      if (pos != string::npos) name = sfolder + title.substr(pos);
+      else name = sfolder + "/" + title;
+      aFile->WriteToFile(name.c_str());
+   }
+   else if (stype == "DetectorConfiguration") {
+      TAsciiFile *aFile = (TAsciiFile*)pRootFile->Get(stype.c_str());
+      // build file name
+      string title = aFile->GetTitle();
+      unsigned int pos = title.rfind("/");
+      if (pos != string::npos) name = sfolder + title.substr(pos);
+      else name = sfolder + "/" + title;
+      aFile->WriteToFile(name.c_str());
+   }
+   else if (stype == "Calibration") {
+   }
+   else if (stype == "RunToTreat") {
+   }
+   else {
+      cout << "RootInput::DumpAsciiFile() unkwown keyword" << endl;
+   }
+
+   return name;
+}
+
+
+
 RootInput::~RootInput()
 {
+   // delete default directory ./.tmp
+   struct stat dirInfo;
+   int res = stat("./.tmp", &dirInfo);
+   if (res == 0) {   // if does exist, delete it
+      if (system("rm -rf ./.tmp") != 0) cout << "RootInput::~RootInput() problem deleting ./.tmp directory" << endl; 
+   }
+
+   delete pRootFile;
    delete pRootChain;
 }

@@ -10,18 +10,30 @@ int main(int argc,char** argv)
 {	
    // command line parsing
    NPOptionManager* myOptionManager = NPOptionManager::getInstance(argc,argv);
-   string reactionfileName          = myOptionManager->GetReactionFile();
-   string detectorfileName          = myOptionManager->GetDetectorFile();
-   string calibrationfileName       = myOptionManager->GetCalibrationFile();
-   string runToReadfileName         = myOptionManager->GetRunToReadFile();
-   string OutputfileName            = myOptionManager->GetOutputFile();
 
-   /////////////////////////////////////////////////////////////////////////////////////////////////////
-   //	First of All instantiate RootInput and Output
-   //	Detector will be attached later
+   //	Instantiate RootInput
+   string runToReadfileName = myOptionManager->GetRunToReadFile();
    RootInput:: getInstance(runToReadfileName);
-   RootOutput::getInstance("Analysis/Must2_AnalysedData", "AnalysedTree");
     
+   // if input files are not given, use those from TAsciiFile
+   if (myOptionManager->IsDefault("EventGenerator")) {
+      string name = RootInput::getInstance()->DumpAsciiFile("EventGenerator");
+      myOptionManager->SetReactionFile(name);
+   }
+   if (myOptionManager->IsDefault("DetectorConfiguration")) {
+      string name = RootInput::getInstance()->DumpAsciiFile("DetectorConfiguration");
+      myOptionManager->SetDetectorFile(name);
+   }
+   
+   // Instantiate RootOutput
+   RootOutput::getInstance("Analysis/Must2_AnalysedData", "AnalysedTree");
+
+   // get input files from NPOptionManager
+   string reactionfileName    = myOptionManager->GetReactionFile();
+   string detectorfileName    = myOptionManager->GetDetectorFile();
+   string calibrationfileName = myOptionManager->GetCalibrationFile();
+   string OutputfileName      = myOptionManager->GetOutputFile();
+
    // Instantiate some Reaction
    cout << endl << "/////////// Event generator ///////////" << endl;
    NPL::Reaction* myReaction = new Reaction();
@@ -176,6 +188,7 @@ int main(int argc,char** argv)
    cout << " A total of " << N << " event has been analysed " << endl ;
    cout << endl << " ///////////////////////////////////// "<< endl<< endl ;
    RootOutput::getInstance()->Destroy();
+   RootInput::getInstance()->Destroy();
    
    return 0;
 }

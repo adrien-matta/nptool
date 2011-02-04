@@ -28,7 +28,6 @@
 // ROOT headers
 #include "TFile.h"
 #include "TChain.h"
-#include "TList.h"
 
 using namespace std;
 
@@ -64,14 +63,19 @@ private:
    static RootInput* instance;
 
 public:
-   // Return the private chain
-   TChain*	GetChain() {return pRootChain;}
+   string DumpAsciiFile(const char* type, const char* folder = "./.tmp");
+
+public:
+   // Return the private chain and file
+   TChain*	GetChain()  {return pRootChain;}
+   TFile*   GetFile()   {return pRootFile;}
    
    // Add a Friend chain to the input chain
    void     AddFriendChain(string RunToAdd);
 
 private:
    TChain	*pRootChain;
+   TFile    *pRootFile;
    int NumberOfFriend;
 };
 

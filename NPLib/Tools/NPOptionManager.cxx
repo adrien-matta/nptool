@@ -97,7 +97,9 @@ void NPOptionManager::CheckArguments()
 
 
 void NPOptionManager::CheckEventGenerator()
-{
+{   
+   bool checkFile = true; 
+
    // NPTool path
    string GlobalPath = getenv("NPTOOL");
    string StandardPath = GlobalPath + "/Inputs/EventGenerator/" + fReactionFileName;
@@ -105,22 +107,19 @@ void NPOptionManager::CheckEventGenerator()
    // ifstream to configfile
    ifstream ConfigFile;
 
-   // test if config file is in standard path
-   ConfigFile.open(StandardPath.c_str());
-   if (ConfigFile.is_open()) {
-      fReactionFileName = StandardPath;
-   }
-   else {   // if not, assume config file is in current directory
-      ConfigFile.open(fReactionFileName.c_str());
-      if (!ConfigFile.is_open()) {  // if not, assign default value
-         fReactionFileName = fDefaultReactionFileName;
-/*         cout << endl;
-         cout << "**********************************       Error       **********************************" << endl;
-         cout << "* No event generator file found in $NPTool/Inputs/EventGenerator or local directories *" << endl;
-         cout << "***************************************************************************************" << endl;
-         cout << endl;
-         exit(1);*/
+   // test if config file is in local path
+   ConfigFile.open(fReactionFileName.c_str());
+   if (!ConfigFile.is_open()) {
+      ConfigFile.open(StandardPath.c_str());
+      if (!ConfigFile.is_open()) {  // if not, assign standard path
+         checkFile = false;
       }
+      else {
+         fReactionFileName = StandardPath;
+      }
+   }
+   if (!checkFile && fReactionFileName != fDefaultReactionFileName) {   // if file does not exist 
+      SendErrorAndExit("EventGenerator");
    }
 
    // close ConfigFile
@@ -131,6 +130,8 @@ void NPOptionManager::CheckEventGenerator()
 
 void NPOptionManager::CheckDetectorConfiguration()
 {
+   bool checkFile = true; 
+
    // NPTool path
    string GlobalPath = getenv("NPTOOL");
    string StandardPath = GlobalPath + "/Inputs/DetectorConfiguration/" + fDetectorFileName;
@@ -138,22 +139,19 @@ void NPOptionManager::CheckDetectorConfiguration()
    // ifstream to configfile
    ifstream ConfigFile;
 
-   // test if config file is in standard path
-   ConfigFile.open(StandardPath.c_str());
-   if (ConfigFile.is_open()) {
-      fDetectorFileName = StandardPath;
-   }
-   else {   // if not, assume config file is in current directory
-      ConfigFile.open(fDetectorFileName.c_str());
-      if (!ConfigFile.is_open()) {  // if not, assign default value
-         fDetectorFileName = fDefaultDetectorFileName;
-/*         cout << endl;
-         cout << "***********************************       Error       ***********************************" << endl;
-         cout << "* No detector geometry file found in $NPTool/Inputs/EventGenerator or local directories *" << endl;
-         cout << "*****************************************************************************************" << endl;
-         cout << endl;
-         exit(1);*/
+   // test if config file is in local path
+   ConfigFile.open(fDetectorFileName.c_str());
+   if (!ConfigFile.is_open()) {
+      ConfigFile.open(StandardPath.c_str());
+      if (!ConfigFile.is_open()) {  // if not, assign standard path
+         checkFile = false;
       }
+      else {
+         fDetectorFileName = StandardPath;
+      }
+   }
+   if (!checkFile && fDetectorFileName != fDefaultDetectorFileName) {   // if file does not exist 
+      SendErrorAndExit("DetectorConfiguration");
    }
 
    // close ConfigFile
@@ -214,7 +212,7 @@ void NPOptionManager::SendErrorAndExit(const char* type) const
    else if (stype == "RunToTreat") {
    }
    else {
-      cout << "NPOptionManager::SendErrorAndAbort() unkwown keyword" << endl;
+      cout << "NPOptionManager::SendErrorAndExit() unkwown keyword" << endl;
    }
 }
 
