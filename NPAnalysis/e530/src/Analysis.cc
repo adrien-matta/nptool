@@ -5,10 +5,10 @@ using namespace std;
 int main(int argc,char** argv)
 {	
 	NPOptionManager* myOptionManager = NPOptionManager::getInstance(argc,argv)  ;
-	string detectorfileName 		= myOptionManager->GetDetectorFilePath()	      ;
-	string reactionfileName 	  = myOptionManager->GetCalibrationFilePath()	    ;
-	string calibrationfileName 	= myOptionManager->GetCalibrationFilePath()	    ;
-	string runToTreatFileName 	= myOptionManager->GetRunToReadFilePath()       ;
+	string detectorfileName 		= myOptionManager->GetDetectorFile()	      ;
+	string reactionfileName 	  = myOptionManager->GetCalibrationFile()	    ;
+	string calibrationfileName 	= myOptionManager->GetCalibrationFile()	    ;
+	string runToTreatFileName 	= myOptionManager->GetRunToReadFile()       ;
   
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//	First of All instantiate RootInput and Output

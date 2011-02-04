@@ -10,11 +10,11 @@ int main(int argc,char** argv)
 {	
    // command line parsing
    NPOptionManager* myOptionManager = NPOptionManager::getInstance(argc,argv);
-   string reactionfileName          = myOptionManager->GetReactionFilePath();
-   string detectorfileName          = myOptionManager->GetDetectorFilePath();
-   string calibrationfileName       = myOptionManager->GetCalibrationFilePath();
-   string runToReadfileName         = myOptionManager->GetRunToReadFilePath();
-   string OutputfileName            = myOptionManager->GetOutputFilePath();
+   string reactionfileName          = myOptionManager->GetReactionFile();
+   string detectorfileName          = myOptionManager->GetDetectorFile();
+   string calibrationfileName       = myOptionManager->GetCalibrationFile();
+   string runToReadfileName         = myOptionManager->GetRunToReadFile();
+   string OutputfileName            = myOptionManager->GetOutputFile();
 
    /////////////////////////////////////////////////////////////////////////////////////////////////////
    //	First of All instantiate RootInput and Output

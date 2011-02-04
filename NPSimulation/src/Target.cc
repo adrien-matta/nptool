@@ -208,10 +208,10 @@ G4Material* Target::GetMaterialFromLibrary(G4String MaterialName, G4double Tempe
       return myMaterial;
    }
 
-   else if (MaterialName == "Pb208") {
+   else if (MaterialName == "208Pb") {
       G4Element* Pb  = new G4Element("Lead"  , "Pb" , 82. , 207.2*g / mole);
 
-      G4Material* myMaterial = new G4Material("Pb208", 11.342*g / cm3, 1);
+      G4Material* myMaterial = new G4Material("208Pb", 11.342*g / cm3, 1);
       myMaterial->AddElement(Pb , 1);
       return myMaterial;
    }
@@ -292,21 +292,21 @@ void Target::ReadConfiguration(string Path)
 	        	check_Thickness = true ;
 	            ConfigFile >> DataBuffer;
 	            m_TargetThickness = atof(DataBuffer.c_str()) * micrometer;
-	             cout << "Target Thickness: "  << m_TargetThickness << endl     ;
+	             cout << "Target Thickness: "  << m_TargetThickness / micrometer << " micrometer" << endl;
 	         }
 
 	        else if (DataBuffer.compare(0, 6, "ANGLE=") == 0) {
 	        	check_Angle = true ;
 	            ConfigFile >> DataBuffer;
 	            m_TargetAngle = atof(DataBuffer.c_str()) * deg;
-	             cout << "Target Angle: "  << m_TargetAngle << endl     ;
+	             cout << "Target Angle: "  << m_TargetAngle / deg << endl     ;
 	         }
 
 	        else if (DataBuffer.compare(0, 7, "RADIUS=") == 0) {
 	        	check_Radius = true ;
 	            ConfigFile >> DataBuffer;
 	            m_TargetRadius = atof(DataBuffer.c_str()) * mm;
-	            cout << "Target Radius: "     <<  m_TargetRadius      << endl     ;
+	            cout << "Target Radius: "     <<  m_TargetRadius / mm << " mm " << endl;
 	         }
 
 	        else if (DataBuffer.compare(0, 9, "MATERIAL=") == 0) {

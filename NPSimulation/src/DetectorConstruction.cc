@@ -43,6 +43,7 @@
 #include "DummyDetector.hh"
 #include "MUST2Array.hh"
 #include "GaspardTracker.hh"
+#include "HydeTracker.hh"
 #include "AnnularS1.hh"
 #include "Target.hh"
 #include "Chamber.hh"
@@ -163,6 +164,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
    bool cGeneralTarget   = false;
    bool cGeneralChamber  = false;
    bool cGPDTracker      = false;	// Gaspard Tracker
+   bool cHYDTracker      = false;   // Hyde detector
    bool cS1              = false;
    bool cPlastic         = false;
    bool cDummy           = false;
@@ -215,6 +217,26 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
 
          // Instantiate the new array as a VDetector Object
          VDetector* myDetector = new GaspardTracker()                  ;
+
+         // Read Position of Telescope
+         ConfigFile.close()                                 ;
+         myDetector->ReadConfiguration(Path)                   ;
+         ConfigFile.open(Path.c_str())                      ;
+
+         // Add array to the VDetector Vector
+         AddDetector(myDetector)                            ;
+      }
+
+
+      ////////////////////////////////////////////
+      //////////// Search for Hyde    ////////////
+      ////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 11, "HydeTracker") == 0 && cHYDTracker == false) {
+         cHYDTracker = true ;
+         G4cout << "//////// Hyde Tracker ////////" << G4endl   ;
+
+         // Instantiate the new array as a VDetector Object
+         VDetector* myDetector = new HydeTracker()                  ;
 
          // Read Position of Telescope
          ConfigFile.close()                                 ;

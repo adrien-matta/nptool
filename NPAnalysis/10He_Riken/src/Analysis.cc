@@ -5,9 +5,9 @@ int main(int argc,char** argv)
 {	
 
 	NPOptionManager* myOptionManager = NPOptionManager::getInstance(argc,argv)  ;
-	string detectorfileName 		= myOptionManager->GetDetectorFilePath()	      ;
-	string calibrationfileName 	= myOptionManager->GetCalibrationFilePath()	    ;
-	string runToReadfileName 		= myOptionManager->GetRunToReadFilePath()       ;
+	string detectorfileName 		= myOptionManager->GetDetectorFile()	      ;
+	string calibrationfileName 	= myOptionManager->GetCalibrationFile()	    ;
+	string runToReadfileName 		= myOptionManager->GetRunToReadFile()       ;
 	
 	//	First of All instantiate RootInput and Output
 	//	Detector will be attached later

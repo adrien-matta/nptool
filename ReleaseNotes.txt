@@ -32,8 +32,15 @@ Nicolas de Sereville, IPNO
     + Execute ./Simulation --help or ./Analysis --help to know the available 
       options.
 
+  + TAsciiFile class
+     + This class allows to store any regular text file in a ROOT file
+     + This is used to store the event generator, detector configuration files
+
   + RootInput facility
     + Support for adding TFriend object
+
+  + RootOutput facility
+    + Support for adding TAsciiFile object automatically
 
   + NPTagManager facility
     ?? Adrien ??
@@ -46,9 +53,11 @@ Nicolas de Sereville, IPNO
 
 + NPAnalysis
 ------------
-  + No new functionality in NPSimulation
   + Using the NPOptionManager facility, calling NPAnalysis is now:
     ./Analysis -D xxx.detector -E xxx.reaction -R RunToTreat.txt
+
+  + A simple but functional example for MUST2 analysis can be found
+    in the NPAnalysis/must2 directory.
 
 
 ****************************************************************************
@@ -68,3 +77,4 @@ Nicolas de Sereville, IPNO
 
 + PARIS
 -------
+   + Add documentation

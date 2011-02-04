@@ -7,34 +7,16 @@ int main(int argc,char** argv)
 {	
    // command line parsing
    NPOptionManager* myOptionManager = NPOptionManager::getInstance(argc,argv);
-   string reactionfileName          = myOptionManager->GetReactionFilePath();
-	string detectorfileName          = myOptionManager->GetDetectorFilePath();
-	string calibrationfileName       = myOptionManager->GetCalibrationFilePath();
-	string runToReadfileName         = myOptionManager->GetRunToReadFilePath();
-	string OutputfileName            = myOptionManager->GetOutputFilePath();
+   string reactionfileName          = myOptionManager->GetReactionFile();
+	string detectorfileName          = myOptionManager->GetDetectorFile();
+	string calibrationfileName       = myOptionManager->GetCalibrationFile();
+	string runToReadfileName         = myOptionManager->GetRunToReadFile();
+	string OutputfileName            = myOptionManager->GetOutputFile();
 
    // Instantiate RootInput and RootOutput singleton classes
    RootInput:: getInstance(runToReadfileName);
 //   RootOutput::getInstance("Analysis/"+OutputfileName, "AnalyzedTree")	;
    RootOutput::getInstance("Analysis/Gaspard_AnalyzedData", "AnalyzedTree");
-   // store configuration files
-   TString GlobalPath = getenv("NPTOOL");
-   // event generator file
-   TString PathEG = GlobalPath + "/Inputs/EventGenerator/";
-   TString EGFileName = PathEG + reactionfileName;
-   TAsciiFile *asciiFileEG = RootOutput::getInstance()->GetAsciiFileEventGenerator();
-   asciiFileEG->SetNameTitle("EventGenerator", "EventGenerator input file");
-   asciiFileEG->Append(EGFileName);
-   // detector configuration file
-   TString PathDC = GlobalPath + "/Inputs/DetectorConfiguration/";
-   TString DCFileName = PathDC + detectorfileName;
-   TAsciiFile *asciiFileDC = RootOutput::getInstance()->GetAsciiFileDetectorConfiguration();
-   asciiFileDC->SetNameTitle("DetectorConfiguration", "DetectorConfiguration input file");
-   asciiFileDC->Append(DCFileName);
-   // detector configuration file
-   TAsciiFile *asciiFileRF = RootOutput::getInstance()->GetAsciiFileRunToTreat();
-   asciiFileRF->SetNameTitle("RunToTreat", "RunToTreat input file");
-   asciiFileRF->Append(runToReadfileName.data());
  
    // Initialize the reaction
    NPL::Reaction* myReaction = new Reaction();

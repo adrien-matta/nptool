@@ -6,15 +6,16 @@
 #include <cstdlib>
 
 //	Detector	
-#include "../MUST2/TMust2Physics.h"
-#include "../SSSD/TSSSDPhysics.h"
-#include "../Plastic/TPlasticPhysics.h"
-#include "../GASPARD/GaspardTracker.h"
-#include "../Paris/Paris.h"
-#include "../W1/TW1Physics.h"
-#include "../Shield/Shield.h"
-#include "../Tools/NPOptionManager.h"
-#include "../IORoot/RootInput.h"
+#include "TMust2Physics.h"
+#include "TSSSDPhysics.h"
+#include "TPlasticPhysics.h"
+#include "GaspardTracker.h"
+#include "HydeTracker.h"
+#include "Paris.h"
+#include "TW1Physics.h"
+#include "Shield.h"
+#include "NPOptionManager.h"
+#include "RootInput.h"
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //	Default Constructor
 DetectorManager::DetectorManager()	
@@ -45,6 +46,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
    bool ScintillatorPlastic = false;
    bool GeneralTarget       = false;
    bool GPDTracker          = false;
+   bool HYDTracker          = false;
    bool ParisDet            = false;
    bool ShieldDet           = false;
    bool W1                  = false;
@@ -97,6 +99,24 @@ void DetectorManager::ReadConfigurationFile(string Path)
 
          // Add array to the VDetector Vector
          AddDetector("GASPARD", myDetector);
+      }
+      ////////////////////////////////////////////
+      //////////// Search for Hyde    ////////////
+      ////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 11, "HydeTracker") == 0 && HYDTracker == false) {
+         HYDTracker = true ;
+         cout << "//////// Hyde Tracker ////////" << endl;
+
+         // Instantiate the new array as a VDetector Object
+         VDetector* myDetector = new HydeTracker();
+
+         // Read Position of Telescope
+         ConfigFile.close();
+         myDetector->ReadConfiguration(Path);
+         ConfigFile.open(Path.c_str());
+
+         // Add array to the VDetector Vector
+         AddDetector("HYDE", myDetector);
       }
       ////////////////////////////////////////////
       ///////////// Search for Paris /////////////

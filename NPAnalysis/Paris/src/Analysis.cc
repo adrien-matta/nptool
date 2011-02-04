@@ -8,9 +8,9 @@ int main(int argc,char** argv)
 {	
 
   NPOptionManager* myOptionManager = NPOptionManager::getInstance(argc,argv)  ;
-	string detectorfileName 		= myOptionManager->GetDetectorFilePath()	      ;
-	string reactionfileName 	  = myOptionManager->GetCalibrationFilePath()	    ;
-	string runToReadfileName 		= myOptionManager->GetRunToReadFilePath()       ;
+	string detectorfileName 		= myOptionManager->GetDetectorFile()	      ;
+	string reactionfileName 	  = myOptionManager->GetCalibrationFile()	    ;
+	string runToReadfileName 		= myOptionManager->GetRunToReadFile()       ;
 	
    // Instantiate RootInput and RootOutput singleton classes
    RootInput:: getInstance(runToReadfileName);

@@ -65,7 +65,7 @@ private:
 
 public:
    // Return the private chain
-   TChain*	GetChain() {return pRootChain;};
+   TChain*	GetChain() {return pRootChain;}
    
    // Add a Friend chain to the input chain
    void     AddFriendChain(string RunToAdd);

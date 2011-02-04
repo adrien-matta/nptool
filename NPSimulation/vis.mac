@@ -9,18 +9,18 @@
 # choose a graphic system
 #/vis/open OGLIX
 #/vis/open OGLSX
-#/vis/open VRML2FILE
-#/vis/scene/create
-#/vis/drawVolume
-#/vis/viewer/set/viewpointThetaPhi 0 0 deg
-#/vis/viewer/zoom 7
+/vis/open VRML2FILE
+/vis/scene/create
+/vis/drawVolume
+/vis/viewer/set/viewpointThetaPhi 0 0 deg
+/vis/viewer/zoom 7
 
 ## options to draw trajectories
-#/vis/scene/endOfEventAction accumulate
-#/vis/scene/add/trajectories 1
-#/tracking/storeTrajectory 1
-#/vis/scene/add/axes 0 0 0 20 cm
-#/vis/viewer/refresh
+/vis/scene/endOfEventAction accumulate
+/vis/scene/add/trajectories 1
+/tracking/storeTrajectory 1
+/vis/scene/add/axes 0 0 0 20 cm
+/vis/viewer/refresh
 
 # run event
 #/run/beamOn 0
