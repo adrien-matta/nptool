@@ -151,9 +151,8 @@ private:
 namespace W1SQUARE
 {
    // Energy/Time resolutions for the different layers
-   const G4double EnergyResolution = 0;       // = 52keV of Resolution   //   Unit is MeV/2.35
-//   const G4double ResoFirstStage  = 0.0106          ;// = 52keV of Resolution   //   Unit is MeV/2.35
-   const G4double TimeResolution  = 0.638;   // 1.5 ns (FWHM)
+   const G4double EnergyResolution = 12.8e-3;   // 30 keV FWHM 
+   const G4double TimeResolution   = 0.638;     // 1.5 ns (FWHM)
 
    // Geometry
    const G4double FaceFront = 50*mm;

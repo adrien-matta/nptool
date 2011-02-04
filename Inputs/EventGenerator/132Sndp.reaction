@@ -8,7 +8,7 @@ Transfert
 	Light= 1H
 	Heavy= 133Sn
 	ExcitationEnergyLight= 0.0
-	ExcitationEnergyHeavy= 5.0
+	ExcitationEnergyHeavy= 0.0
 	BeamEnergy= 1320
 	BeamEnergySpread= 0
 	SigmaX= 0

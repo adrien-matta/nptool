@@ -52,7 +52,7 @@ int main(int argc,char** argv)
    GaspardTracker* GPDTrack = (GaspardTracker*) myDetector->m_Detector["GASPARD"];
 
    // Get the input TChain and treat it
-   TChain* chain = RootInput:: getInstance() -> GetChain();
+   TChain* chain = RootInput:: getInstance()->GetChain();
 
    // Connect TInitialConditions branch
    TInitialConditions *initCond = 0;
@@ -64,11 +64,6 @@ int main(int argc,char** argv)
    chain->SetBranchAddress("InteractionCoordinates", &interCoord);
    chain->SetBranchStatus("InteractionCoordinates", 0);
 
-   // Analysis is here!
-   int nentries = chain->GetEntries();
-   cout << "/////////// Loop information ///////////" << endl;
-   cout << "Number of entries to be analysed: " << nentries << endl;
-
    // Default initialization
    double XTarget = 0;
    double YTarget = 0;
@@ -78,9 +73,26 @@ int main(int argc,char** argv)
    // random generator
    TRandom3 *gene = new TRandom3();
 
+   // Get number of events to treat
+   cout << endl << "///////// Starting Analysis ///////// "<< endl;
+   int nentries = chain->GetEntries();
+   cout << " Number of Event to be treated : " << nentries << endl;
+   clock_t begin = clock();
+   clock_t end = begin;
+
    // Loop on all events
    for (int i = 0; i < nentries; i ++) {
-      if (i%10000 == 0 && i!=0) cout << "\r" << i << " analyzed events" << flush;
+      if (i%10000 == 0 && i!=0)  {
+         cout.precision(5);
+         end = clock();
+         double TimeElapsed = (end-begin) / CLOCKS_PER_SEC;
+         double percent = (double)i/nentries;
+         double TimeToWait = (TimeElapsed/percent) - TimeElapsed;
+         cout  << "\r Progression:" << percent*100 << " % \t | \t Remaining time : ~" <<  TimeToWait <<"s"<< flush;
+      }
+      else if (i == nentries-1)  cout << "\r Progression:" << " 100% " <<endl;
+
+      // Get data
       chain -> GetEntry(i);
 
       // Treat Gaspard event
