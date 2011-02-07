@@ -23,16 +23,13 @@ int main(int argc,char** argv)
    }
 
    // Instantiate RootOutput
-   RootOutput::getInstance("Analysis/Paris_AnalyzedData", "AnalysedTree");
+   RootOutput::getInstance("Analysis/Gaspard_AnalyzedData", "AnalysedTree");
 
    // get input files from NPOptionManager
    string reactionfileName    = myOptionManager->GetReactionFile();
    string detectorfileName    = myOptionManager->GetDetectorFile();
    string calibrationfileName = myOptionManager->GetCalibrationFile();
    string OutputfileName      = myOptionManager->GetOutputFile();
-
-   // Instantiate RootOutput singleton classes
-   RootOutput::getInstance("Analysis/Gaspard_AnalyzedData", "AnalyzedTree");
 
    // Initialize the reaction
    NPL::Reaction* myReaction = new Reaction();

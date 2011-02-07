@@ -23,7 +23,7 @@ int main(int argc,char** argv)
    }
 
    // Instantiate RootOutput
-   RootOutput::getInstance("Analysis/Must2_AnalysedData", "AnalysedTree");
+   RootOutput::getInstance("Analysis/W1_AnalysedData", "AnalysedTree");
 
    // get input files from NPOptionManager
    string reactionfileName    = myOptionManager->GetReactionFile();
