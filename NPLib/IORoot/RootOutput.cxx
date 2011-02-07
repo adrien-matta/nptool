@@ -104,6 +104,9 @@ void RootOutput::InitAsciiFiles()
       TString fileNameCal = OptionManager->GetCalibrationFile();
       pCalibrationFile->SetNameTitle("Calibration", fileNameCal.Data());
    }
+
+   // Analysis configuration files
+   pAnalysisConfigFile = new TAsciiFile();
 }
 
 
@@ -129,6 +132,8 @@ RootOutput::~RootOutput()
       // RunToTreatFile
       TString RTName = pRunToTreatFile->GetName();
       if (!RTName.IsNull()) pRunToTreatFile->Write();
+      // Analysis ConfigFile
+      if (!pAnalysisConfigFile->IsEmpty()) pAnalysisConfigFile->Write();
 
       pRootFile->Close();
    } else {

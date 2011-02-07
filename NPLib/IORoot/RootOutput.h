@@ -75,6 +75,7 @@ public:
    TAsciiFile* GetAsciiFileDetectorConfiguration() {return pDetectorConfiguration;}
    TAsciiFile* GetAsciiFileCalibration()           {return pCalibrationFile;}
    TAsciiFile* GetAsciiFileRunToTreat()            {return pRunToTreatFile;}
+   TAsciiFile* GetAsciiFileAnlysisConfig()         {return pAnalysisConfigFile;}
 
 private:
    TFile      *pRootFile;
@@ -84,6 +85,7 @@ private:
    TAsciiFile *pDetectorConfiguration;
    TAsciiFile *pCalibrationFile;
    TAsciiFile *pRunToTreatFile;
+   TAsciiFile *pAnalysisConfigFile;
 };
 
 #endif // ROOTOUTPUT_HH
