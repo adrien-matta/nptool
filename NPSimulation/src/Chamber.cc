@@ -63,7 +63,8 @@ Chamber::Chamber()
 
 G4Material* Chamber::GetMaterialFromLibrary(G4String MaterialName, G4double Temperature, G4double Pressure)
 {
-  
+   Temperature = 0 ;
+   Pressure = 0 ;
    G4Material* myMaterial;
    
  

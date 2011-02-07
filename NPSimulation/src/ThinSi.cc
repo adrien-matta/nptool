@@ -554,7 +554,7 @@ void ThinSi::InitializeRootOutput()
 {
    RootOutput *pAnalysis = RootOutput::getInstance();
    TTree *pTree = pAnalysis->GetTree();
-   pTree->Branch("ThinSi", "TSSSDData", &m_Event) ;
+   pTree->Branch("SSSD", "TSSSDData", &m_Event) ;
 }
 
 // Read sensitive part and fill the Root tree.
