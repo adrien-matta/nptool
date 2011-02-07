@@ -50,6 +50,8 @@ class TAsciiFile : public TNamed {
    void Print(const Option_t*) const {}; 
    void Print() const;
    void Print(UInt_t begin, UInt_t end) const;
+   bool IsEmpty () {if (fLines.size()!=0) return true;
+                    else return false ;}
 
    ClassDef(TAsciiFile, 1);	// Class TAsciiFile for storing ascii text
 };

@@ -31,7 +31,7 @@ using namespace MUST2_LOCAL;
 //	NPL
 #include "RootInput.h"
 #include "RootOutput.h"
-
+#include "TAsciiFile.h"
 //	ROOT
 #include "TChain.h"
 ///////////////////////////////////////////////////////////////////////////
@@ -554,7 +554,9 @@ void TMust2Physics::ReadAnalysisConfig()
       return;
    }
    cout << " Loading user parameter for Analysis from ConfigMust2.dat " << endl;
-
+   TAsciiFile* asciiConfig = RootOutput::getInstance->GetAsciiFileAnalysisConfig();
+   asciiConfig->Append(FileName.c_str());
+   
    // read analysis config file
    string LineBuffer,DataBuffer,whatToDo;
    while (!AnalysisConfigFile.eof()) {
