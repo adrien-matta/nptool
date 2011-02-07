@@ -71,6 +71,14 @@ void TAsciiFile::ReadFile(const char* inputAsciiFile)
 
 
 
+bool TAsciiFile::IsEmpty() const
+{
+   if (fLines.size() == 0) return true;
+   else return false;
+}
+
+
+
 void TAsciiFile::Append(const char* inputAsciiFile)
 {
    ReadFile(inputAsciiFile);

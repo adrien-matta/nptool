@@ -1,34 +1,24 @@
 include ../Makefile.arch
  
 #------------------------------------------------------------------------------
-SHARELIB      = libTagManager.so libOptionManager.so libAsciiFile.so
+SHARELIB      = libReaction.so libEnergyLoss.so
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 
 ############# Various Tool ############
 
-## TAGManager ##
-libTagManager.so: NPTagManager.o NPTagManagerDict.o
-		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
-		
-NPTagManagerDict.cxx: NPTagManager.h
-			rootcint -f $@ -c $^
-			
-## OptionManager ##
-libOptionManager.so: NPOptionManager.o
-		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
-		
-## AsciiFile ##
-libAsciiFile.so: TAsciiFile.o TAsciiFileDict.o
+## Reaction ##
+libReaction.so:	NPReaction.o NPNucleus.o
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
-TAsciiFileDict.cxx: TAsciiFile.h
-			rootcint -f $@ -c $^
-			
+## EnergyLoss ##
+libEnergyLoss.so: NPEnergyLoss.o
+		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
+		
 # dependances
-NPTagManager.o:NPTagManager.cxx NPTagManager.h
-NPOptionManager.o:NPOptionManager.cxx NPOptionManager.h
-TAsciiFile.o:  TAsciiFile.cxx TAsciiFile.h
+NPReaction.o:NPReaction.cxx NPReaction.h
+NPNucleus.o: NPNucleus.cxx NPNucleus.h
+NPEnergyLoss.o:NPEnergyLoss.cxx NPEnergyLoss.h
 #######################################
 
 ############# Clean and More ##########

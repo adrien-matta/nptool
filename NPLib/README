@@ -26,7 +26,7 @@ NPLib / include
       / lib
       / scripts
       / IORoot
-      / Tools
+      / Tools + Physics
       / InitialConditions
       / InteractionCoordinates
       / CalibrationManager
@@ -61,7 +61,7 @@ IV) IORoot
 	both in NPSimulation and NPAnalysis.
 	These classes are used to deal with the input and output ROOT files and trees.
 
-V) Tools
+V) Tools + Physics
 
 VI) InitialConditions
 	This directory includes one library:

@@ -54,7 +54,7 @@ Nucleus::Nucleus(string isotope)
    
    ifstream inFile;
    string Path = getenv("NPLIB") ;
-   string FileName = Path + "/Tools/nubtab03.asc";
+   string FileName = Path + "/Physics/nubtab03.asc";
    inFile.open(FileName.c_str());
    
    // reading the file
@@ -83,7 +83,7 @@ Nucleus::Nucleus(int Z, int A)
    // open the file to read and check if it is open
    ifstream inFile;
    string Path = getenv("NPLIB") ;
-   string FileName = Path + "/Tools/nubtab03.asc";
+   string FileName = Path + "/Physics/nubtab03.asc";
    inFile.open(FileName.c_str());
    
    // reading the file
