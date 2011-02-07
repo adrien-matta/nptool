@@ -1,2 +1,0 @@
-CalibrationFilePath
-	/home/Adrien/Desktop/NPTool/NPTool.dev.CalibMust2/NPAnalysis/e530/calibrrrPipo.txt
