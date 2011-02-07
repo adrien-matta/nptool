@@ -44,6 +44,7 @@ class TAsciiFile : public TNamed {
    virtual ~TAsciiFile();
 
    void Append(const char* inputAsciiFile);
+   void AppendLine(const char* AsciiLine);
    void WriteToFile(const char* outputAsciiFile) const;
    void WriteToFile(const char* outputAsciiFile, UInt_t begin, UInt_t end) const;
    void Print(const Option_t*) const {}; 

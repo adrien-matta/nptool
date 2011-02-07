@@ -20,6 +20,8 @@
  *                                                                           *
  *****************************************************************************/
 #include "CalibrationManager.h"
+#include "TAsciiFile.h"
+#include "RootOutput.h"
 
 //	STL
 #include <cstdlib>
@@ -106,6 +108,10 @@ void CalibrationManager::LoadParameterFromFile()
 		string	 DataBuffer	;
 		string   LineBuffer ;
 		
+		// Get pointer to the TAsciifile CalibrationFile in RootOuput
+		TAsciiFile* AcsiiCalibration = RootOutput::getInstance()->GetAsciiFileCalibration();
+		
+		
 		for(unsigned int i = 0 ; i < fFileList.size() ; i++)
 			{
 				CalibFile.open( fFileList[i].c_str() );
@@ -118,40 +124,52 @@ void CalibrationManager::LoadParameterFromFile()
 						cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
 					}
 					
-				else while( !CalibFile.eof() )
-					{
-						// Read the file Line by line
-						getline(CalibFile, LineBuffer);
+				else 
+				{
+				  // Append the Calibration File to the RootOuput for Back-up
+		      string comment = "%%% From File " + fFileList[i] + "%%%";
+		      AcsiiCalibration->AppendLine(comment.c_str());
+		      AcsiiCalibration->Append(fFileList[i].c_str());
+				
+				
+				  while( !CalibFile.eof() )
+					  {
+						  // Read the file Line by line
+						  getline(CalibFile, LineBuffer);
 						
-						// Create a istringstream to manipulate the line easely
-					  istringstream theLine (LineBuffer,istringstream::in);
-						theLine >> DataBuffer ;
+						  // Create a istringstream to manipulate the line easely
+					    istringstream theLine (LineBuffer,istringstream::in);
+						  theLine >> DataBuffer ;
 						
-						// Comment support, comment symbole is %
-						if(DataBuffer.compare(0, 1, "%") == 0) {
-						 	CalibFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
-						 	
-						//	Search word in the token list
-						it=fToken.find(DataBuffer);
+						  // Comment support, comment symbole is %
+						  if(DataBuffer.compare(0, 1, "%") == 0) {
+						   	CalibFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
+						   	
+						  //	Search word in the token list
+						  it=fToken.find(DataBuffer);
 						
-						//	if the word is find, values are read
-						if( it!=fToken.end() )
-							{
-								vector<double> Coeff ;
-								while( !theLine.eof() )
-									{
-										theLine >> DataBuffer ; Coeff.push_back( atof(DataBuffer.c_str()) ) ;
-									}
+						  //	if the word is find, values are read
+						  if( it!=fToken.end() )
+							  {
+								  vector<double> Coeff ;
+								  while( !theLine.eof() )
+									  {
+										  theLine >> DataBuffer ; Coeff.push_back( atof(DataBuffer.c_str()) ) ;
+									  }
 									
-								//	Check this parameter is not already define
-								if( fCalibrationCoeff.find(it->second) != fCalibrationCoeff.end() ) 
-									cout << "WARNING: Parameter " << it->second << " Already found. It will be rewritted " << endl;
+								  //	Check this parameter is not already define
+								  if( fCalibrationCoeff.find(it->second) != fCalibrationCoeff.end() ) 
+									  cout << "WARNING: Parameter " << it->second << " Already found. It will be rewritted " << endl;
 										
-								//	Add the list of Coeff to the Coeff map using Parameter Path as index
-								fCalibrationCoeff[ it->second ] = Coeff ;
-							}
+								  //	Add the list of Coeff to the Coeff map using Parameter Path as index
+								  fCalibrationCoeff[ it->second ] = Coeff ;
+							  }
 								
-					}
+					  }
+				
+				}
+				
+				
 				CalibFile.close() ;
 			}
 	}

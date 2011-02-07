@@ -44,7 +44,7 @@ NPOptionManager::NPOptionManager(int argc, char** argv)
    fDefaultDetectorFileName    = "defaultDetector.detector";
    fDefaultOutputFileName      = "myResult.root";
    fDefaultRunToReadFileName   = "defaultRunToTreat.txt";
-   fDefaultCalibrationFileName = "Calibration.txt";
+   fDefaultCalibrationFileName = "defaultCalibration.txt";
    // Assigned values
    fReactionFileName           = fDefaultReactionFileName;
    fDetectorFileName           = fDefaultDetectorFileName;

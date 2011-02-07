@@ -100,6 +100,10 @@ void RootOutput::InitAsciiFiles()
 
    // Calibration files
    pCalibrationFile = new TAsciiFile();
+   if (!OptionManager->IsDefault("Calibration")) {
+      TString fileNameCal = OptionManager->GetCalibrationFile();
+      pCalibrationFile->SetNameTitle("Calibration", fileNameCal.Data());
+   }
 }
 
 

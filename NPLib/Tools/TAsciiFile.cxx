@@ -77,6 +77,13 @@ void TAsciiFile::Append(const char* inputAsciiFile)
 }
 
 
+void TAsciiFile::AppendLine(const char* AsciiLine)
+{
+  string line = AsciiLine ;
+  
+  fLines.push_back(line);
+}
+
 
 void TAsciiFile::WriteToFile(const char* outputAsciiFile) const
 {
