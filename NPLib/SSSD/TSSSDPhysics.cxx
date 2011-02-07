@@ -366,7 +366,13 @@ void TSSSDPhysics::ReadAnalysisConfig()
       return;
    }
    cout << " Loading user parameter for Analysis from ConfigSSSD.dat " << endl;
-
+    
+   // Save it in a TAsciiFile
+   TAsciiFile* asciiConfig = RootOutput::getInstance()->GetAsciiFileAnalysisConfig();
+   asciiConfig->AppendLine("%%% ConfigSSSD.dat %%%");
+   asciiConfig->Append(FileName.c_str());
+   asciiConfig->AppendLine("");
+   
    // read analysis config file
    string LineBuffer,DataBuffer,whatToDo;
    while (!AnalysisConfigFile.eof()) {

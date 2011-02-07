@@ -107,6 +107,7 @@ void RootOutput::InitAsciiFiles()
 
    // Analysis configuration files
    pAnalysisConfigFile = new TAsciiFile();
+   pAnalysisConfigFile->SetNameTitle("AnalysisConfig", "AnalysisConfig");
 }
 
 
@@ -121,17 +122,13 @@ RootOutput::~RootOutput()
 
       // write TAsciiFile if used
       // EventGenerator
-      TString EGName = pEventGenerator->GetName();
-      if (!EGName.IsNull()) pEventGenerator->Write();
+      if (!pEventGenerator->IsEmpty()) pEventGenerator->Write();
       // DetectorConfiguration
-      TString DCName = pDetectorConfiguration->GetName();
-      if (!DCName.IsNull()) pDetectorConfiguration->Write();
+      if (!pDetectorConfiguration->IsEmpty()) pDetectorConfiguration->Write();
       // CalibrationFile
-      TString CFName = pCalibrationFile->GetName();
-      if (!CFName.IsNull()) pCalibrationFile->Write();
+      if (!pCalibrationFile->IsEmpty()) pCalibrationFile->Write();
       // RunToTreatFile
-      TString RTName = pRunToTreatFile->GetName();
-      if (!RTName.IsNull()) pRunToTreatFile->Write();
+      if (!pRunToTreatFile->IsEmpty()) pRunToTreatFile->Write();
       // Analysis ConfigFile
       if (!pAnalysisConfigFile->IsEmpty()) pAnalysisConfigFile->Write();
 
