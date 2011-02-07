@@ -75,7 +75,7 @@ public:
    TAsciiFile* GetAsciiFileDetectorConfiguration() {return pDetectorConfiguration;}
    TAsciiFile* GetAsciiFileCalibration()           {return pCalibrationFile;}
    TAsciiFile* GetAsciiFileRunToTreat()            {return pRunToTreatFile;}
-   TAsciiFile* GetAsciiFileAnlysisConfig()         {return pAnalysisConfigFile;}
+   TAsciiFile* GetAsciiFileAnalysisConfig()        {return pAnalysisConfigFile;}
 
 private:
    TFile      *pRootFile;
