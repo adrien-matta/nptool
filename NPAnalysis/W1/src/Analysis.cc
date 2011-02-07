@@ -7,17 +7,30 @@ int main(int argc,char** argv)
 {	
    // command line parsing
    NPOptionManager* myOptionManager = NPOptionManager::getInstance(argc,argv);
-   string reactionfileName          = myOptionManager->GetReactionFile();
-	string detectorfileName          = myOptionManager->GetDetectorFile();
-	string calibrationfileName       = myOptionManager->GetCalibrationFile();
-	string runToReadfileName         = myOptionManager->GetRunToReadFile();
-	string OutputfileName            = myOptionManager->GetOutputFile();
 
-   // Instantiate RootInput and RootOutput singleton classes
+   // Instantiate RootInput
+   string runToReadfileName = myOptionManager->GetRunToReadFile();
    RootInput:: getInstance(runToReadfileName);
-//   RootOutput::getInstance("Analysis/"+OutputfileName, "AnalyzedTree")	;
-   RootOutput::getInstance("Analysis/W1_AnalyzedData", "AnalyzedTree");
- 
+
+   // if input files are not given, use those from TAsciiFile
+   if (myOptionManager->IsDefault("EventGenerator")) {
+      string name = RootInput::getInstance()->DumpAsciiFile("EventGenerator");
+      myOptionManager->SetReactionFile(name);
+   }
+   if (myOptionManager->IsDefault("DetectorConfiguration")) {
+      string name = RootInput::getInstance()->DumpAsciiFile("DetectorConfiguration");
+      myOptionManager->SetDetectorFile(name);
+   }
+
+   // Instantiate RootOutput
+   RootOutput::getInstance("Analysis/Must2_AnalysedData", "AnalysedTree");
+
+   // get input files from NPOptionManager
+   string reactionfileName    = myOptionManager->GetReactionFile();
+   string detectorfileName    = myOptionManager->GetDetectorFile();
+   string calibrationfileName = myOptionManager->GetCalibrationFile();
+   string OutputfileName      = myOptionManager->GetOutputFile();
+
    // Initialize the reaction
    cout << endl << "/////////// Event generator ///////////" << endl;
    NPL::Reaction* myReaction = new Reaction();

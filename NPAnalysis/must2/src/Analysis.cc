@@ -189,6 +189,7 @@ int main(int argc,char** argv)
    cout << endl << " ///////////////////////////////////// "<< endl<< endl ;
    RootOutput::getInstance()->Destroy();
    RootInput::getInstance()->Destroy();
+   NPOptionManager::getInstance()->Destroy();
    
    return 0;
 }

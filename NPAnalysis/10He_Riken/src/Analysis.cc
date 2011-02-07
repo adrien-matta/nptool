@@ -3,17 +3,35 @@ using namespace std;
 
 int main(int argc,char** argv)
 {	
+   // command line parsing
+   NPOptionManager* myOptionManager = NPOptionManager::getInstance(argc,argv);
 
-	NPOptionManager* myOptionManager = NPOptionManager::getInstance(argc,argv)  ;
-	string detectorfileName 		= myOptionManager->GetDetectorFile()	      ;
-	string calibrationfileName 	= myOptionManager->GetCalibrationFile()	    ;
-	string runToReadfileName 		= myOptionManager->GetRunToReadFile()       ;
-	
-	//	First of All instantiate RootInput and Output
-	//	Detector will be attached later
-	RootInput:: getInstance(runToReadfileName)	;
-	RootOutput::getInstance("Analysis/10HeRiken_AnalyzedData", "AnalyzedTree")	;
-	
+   // Instantiate RootInput
+   string runToReadfileName = myOptionManager->GetRunToReadFile();
+   RootInput:: getInstance(runToReadfileName);
+
+   // if input files are not given, use those from TAsciiFile
+   if (myOptionManager->IsDefault("EventGenerator")) {
+      string name = RootInput::getInstance()->DumpAsciiFile("EventGenerator");
+      myOptionManager->SetReactionFile(name);
+   }
+   if (myOptionManager->IsDefault("DetectorConfiguration")) {
+      string name = RootInput::getInstance()->DumpAsciiFile("DetectorConfiguration");
+      myOptionManager->SetDetectorFile(name);
+   }
+
+   // Instantiate RootOutput
+   RootOutput::getInstance("Analysis/Paris_AnalyzedData", "AnalysedTree");
+
+   // get input files from NPOptionManager
+   string reactionfileName    = myOptionManager->GetReactionFile();
+   string detectorfileName    = myOptionManager->GetDetectorFile();
+   string calibrationfileName = myOptionManager->GetCalibrationFile();
+   string OutputfileName      = myOptionManager->GetOutputFile();
+
+   // Instantiate RootOutput singleton classes
+   RootOutput::getInstance("Analysis/10He_AnalysedData", "AnalyzedTree");
+
 	//	Instantiate some Reaction
 	NPL::Reaction*  He10Reaction = new Reaction								;
 	He10Reaction	->	ReadConfigurationFile("10He.reaction")	;
@@ -244,6 +262,8 @@ int main(int argc,char** argv)
 	cout << endl << "/////////////////////////////////"<< endl<< endl ;
 	myHist1D->Write();
 	RootOutput::getInstance()->Destroy();
+	RootInput::getInstance()->Destroy();
+   NPOptionManager::getInstance()->Destroy();
 	return 0	;
 }
 

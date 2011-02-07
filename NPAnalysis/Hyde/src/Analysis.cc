@@ -189,6 +189,7 @@ int main(int argc,char** argv)
    // delete singleton classes
    RootOutput::getInstance()->Destroy();
    RootInput::getInstance()->Destroy();
+   NPOptionManager::getInstance()->Destroy();
 
    return 0;
 }

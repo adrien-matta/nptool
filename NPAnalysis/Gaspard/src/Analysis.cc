@@ -7,17 +7,33 @@ int main(int argc,char** argv)
 {	
    // command line parsing
    NPOptionManager* myOptionManager = NPOptionManager::getInstance(argc,argv);
-   string reactionfileName          = myOptionManager->GetReactionFile();
-	string detectorfileName          = myOptionManager->GetDetectorFile();
-	string calibrationfileName       = myOptionManager->GetCalibrationFile();
-	string runToReadfileName         = myOptionManager->GetRunToReadFile();
-	string OutputfileName            = myOptionManager->GetOutputFile();
 
-   // Instantiate RootInput and RootOutput singleton classes
+   // Instantiate RootInput
+   string runToReadfileName = myOptionManager->GetRunToReadFile();
    RootInput:: getInstance(runToReadfileName);
-//   RootOutput::getInstance("Analysis/"+OutputfileName, "AnalyzedTree")	;
+
+   // if input files are not given, use those from TAsciiFile
+   if (myOptionManager->IsDefault("EventGenerator")) {
+      string name = RootInput::getInstance()->DumpAsciiFile("EventGenerator");
+      myOptionManager->SetReactionFile(name);
+   }
+   if (myOptionManager->IsDefault("DetectorConfiguration")) {
+      string name = RootInput::getInstance()->DumpAsciiFile("DetectorConfiguration");
+      myOptionManager->SetDetectorFile(name);
+   }
+
+   // Instantiate RootOutput
+   RootOutput::getInstance("Analysis/Paris_AnalyzedData", "AnalysedTree");
+
+   // get input files from NPOptionManager
+   string reactionfileName    = myOptionManager->GetReactionFile();
+   string detectorfileName    = myOptionManager->GetDetectorFile();
+   string calibrationfileName = myOptionManager->GetCalibrationFile();
+   string OutputfileName      = myOptionManager->GetOutputFile();
+
+   // Instantiate RootOutput singleton classes
    RootOutput::getInstance("Analysis/Gaspard_AnalyzedData", "AnalyzedTree");
- 
+
    // Initialize the reaction
    NPL::Reaction* myReaction = new Reaction();
    myReaction->ReadConfigurationFile(reactionfileName);
