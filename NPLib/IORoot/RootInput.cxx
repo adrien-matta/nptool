@@ -24,7 +24,7 @@
 #include <fstream>
 #include <limits>
 #include <sys/stat.h>
-
+#include <stdlib.h>
 #include "RootInput.h"
 #include "TAsciiFile.h"
 
