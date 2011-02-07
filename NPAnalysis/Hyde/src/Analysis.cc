@@ -7,15 +7,29 @@ int main(int argc,char** argv)
 {	
    // command line parsing
    NPOptionManager* myOptionManager = NPOptionManager::getInstance(argc,argv);
-   string reactionfileName          = myOptionManager->GetReactionFile();
-   string detectorfileName          = myOptionManager->GetDetectorFile();
-   string calibrationfileName       = myOptionManager->GetCalibrationFile();
-   string runToReadfileName         = myOptionManager->GetRunToReadFile();
-   string OutputfileName            = myOptionManager->GetOutputFile();
 
-   // Instantiate RootInput and RootOutput singleton classes
+   // Instantiate RootInput
+   string runToReadfileName = myOptionManager->GetRunToReadFile();
    RootInput:: getInstance(runToReadfileName);
-   RootOutput::getInstance("Analysis/Gaspard_AnalyzedData", "AnalyzedTree");
+
+   // if input files are not given, use those from TAsciiFile
+   if (myOptionManager->IsDefault("EventGenerator")) {
+      string name = RootInput::getInstance()->DumpAsciiFile("EventGenerator");
+      myOptionManager->SetReactionFile(name);
+   }
+   if (myOptionManager->IsDefault("DetectorConfiguration")) {
+      string name = RootInput::getInstance()->DumpAsciiFile("DetectorConfiguration");
+      myOptionManager->SetDetectorFile(name);
+   }
+
+   // Instantiate RootOutput
+   RootOutput::getInstance("Analysis/Hyde_AnalysedData", "AnalysedTree");
+
+   // get input files from NPOptionManager
+   string reactionfileName    = myOptionManager->GetReactionFile();
+   string detectorfileName    = myOptionManager->GetDetectorFile();
+   string calibrationfileName = myOptionManager->GetCalibrationFile();
+   string OutputfileName      = myOptionManager->GetOutputFile();
 
    // Initialize the reaction
    NPL::Reaction* myReaction = new Reaction();
@@ -30,7 +44,7 @@ int main(int argc,char** argv)
    Double_t BeamEnergyNominal = myReaction->GetBeamEnergy() * MeV;
    cout << BeamEnergyNominal << endl;
    // Slow beam at target middle
-   Double_t BeamEnergy = BeamEnergyNominal - BeamTarget.Slow(BeamEnergyNominal, myDetector->GetTargetThickness()/2 * micrometer, 0);
+   Double_t BeamEnergy = BeamTarget.Slow(BeamEnergyNominal, myDetector->GetTargetThickness()/2 * micrometer, 0);
 //   Double_t BeamEnergy = 1293.56 * MeV;
    cout << BeamEnergy << endl;
    // Set energy beam at target middle
@@ -48,8 +62,8 @@ int main(int argc,char** argv)
    RootOutput::getInstance()->GetTree()->Branch("X",&X,"X/D") ;
    RootOutput::getInstance()->GetTree()->Branch("Y",&Y,"Y/D") ;
 
-   // Get GaspardTracker pointer
-   GaspardTracker* GPDTrack = (GaspardTracker*) myDetector->m_Detector["GASPARD"];
+   // Get HydeTracker pointer
+   HydeTracker* HYDTrack = (HydeTracker*) myDetector->m_Detector["HYDE"];
 
    // Get the input TChain and treat it
    TChain* chain = RootInput:: getInstance() -> GetChain();
@@ -87,7 +101,7 @@ int main(int argc,char** argv)
       myDetector->BuildPhysicalEvent();
 
       // Get total energy
-      double E = GPDTrack->GetEnergyDeposit();
+      double E = HYDTrack->GetEnergyDeposit();
 
       // if there is a hit in the detector array, treat it.
       double Theta, ThetaStrip, angle, ThetaCM;
@@ -107,7 +121,7 @@ int main(int argc,char** argv)
 
          // Get interaction position in detector
          // This takes into account the strips
-         A = GPDTrack->GetPositionOfInteraction();
+         A = HYDTrack->GetPositionOfInteraction();
 
          // Get beam interaction coordinates on target (from initial condition)
          XTarget = initCond->GetICPositionX(0);

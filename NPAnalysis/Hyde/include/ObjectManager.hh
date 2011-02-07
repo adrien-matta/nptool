@@ -8,7 +8,7 @@
 // NPA
 #include "DetectorManager.h"
 #include "NPOptionManager.h"
-#include "GaspardTracker.h"
+#include "HydeTracker.h"
 
 // STL C++
 #include <iostream>
@@ -108,11 +108,13 @@ namespace ENERGYLOSS
    // Declare your Energy loss here
 //   EnergyLoss LightTargetCD2 = EnergyLoss("proton_cd2.txt", 100, 1, 1); // LISE++
    // For 132Sn(d,p)
-   EnergyLoss LightTarget = EnergyLoss("proton_CD2.G4table", "G4Table", 1000);		// G4
-   EnergyLoss BeamTarget  = EnergyLoss("Sn132[0.0]_CD2.G4table", "G4Table", 1000);	// G4
+//   EnergyLoss LightTarget = EnergyLoss("proton_CD2.G4table", "G4Table", 1000);		// G4
+//   EnergyLoss BeamTarget  = EnergyLoss("Sn132[0.0]_CD2.G4table", "G4Table", 1000);	// G4
    // For 134Sn(p,t)
 //   EnergyLoss LightTarget = EnergyLoss("triton_CH2.G4table", "G4Table", 1000);		// G4
 //   EnergyLoss BeamTarget  = EnergyLoss("Sn134[0.0]_CH2.G4table", "G4Table", 1000);	// G4
+   EnergyLoss LightTarget = EnergyLoss("C19[0.0]_208Pb.G4table", "G4Table", 1000);     // G4
+   EnergyLoss BeamTarget  = EnergyLoss("Pb208[0.0]_208Pb.G4table", "G4Table", 1000);   // G4
    // For 132Sn(d,t)
 //   EnergyLoss LightTarget = EnergyLoss("triton_CD2.G4table", "G4Table", 1000);		// G4
 //   EnergyLoss BeamTarget  = EnergyLoss("Sn132[0.0]_CD2.G4table", "G4Table", 1000);	// G4
