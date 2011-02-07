@@ -94,11 +94,7 @@ int main(int argc,char** argv)
    clock_t begin = clock();
    clock_t end = begin;
 
-	
-	cout << " Number of Event to be treated : " << N << endl ;
-	clock_t begin=clock();
-	clock_t end=begin;
-	for ( i = 0 ; i < N ;	 i ++ )
+	for ( int i = 0 ; i < nentries ;	 i ++ )
 		{
 			// Clear local branch
 			for(int hh = 0 ; hh <2 ; hh++)
@@ -117,7 +113,7 @@ int main(int argc,char** argv)
          cout  << "                                                                                                "<< flush;
          cout << "\rProgression:" << percent*100 << " % \t | \t Remaining time : ~" <<  TimeToWait << "s" << flush;
       }
-			else if (i==N-1) 	cout << "\r Progression:" 
+			else if (i==nentries-1) 	cout << "\r Progression:" 
 								 << " 100% " <<endl;
 					
 			Chain -> GetEntry(i);
@@ -257,8 +253,6 @@ int main(int argc,char** argv)
 			RootOutput::getInstance()->GetTree()->Fill()	;
 		}
 
-	cout << " A total of " << i << " event has been annalysed " << endl ;
-	cout << endl << "/////////////////////////////////"<< endl<< endl ;
 	myHist1D->Write();
 	RootOutput::getInstance()->Destroy();
 	RootInput::getInstance()->Destroy();
