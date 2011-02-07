@@ -59,6 +59,7 @@ int main(int argc, char** argv)
          double TimeElapsed = (end-begin) / CLOCKS_PER_SEC;
          double percent = (double)i/nentries;
          double TimeToWait = (TimeElapsed/percent) - TimeElapsed;
+         cout  << "                                                                                                "<< flush;
          cout  << "\r Progression:" << percent*100 << " % \t | \t Remaining time : ~" <<  TimeToWait <<"s"<< flush;
       }
       else if (i == nentries-1)  cout << "\r Progression:" << " 100% " <<endl;

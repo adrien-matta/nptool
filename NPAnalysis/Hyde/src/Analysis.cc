@@ -93,7 +93,15 @@ int main(int argc,char** argv)
 
    // Loop on all events
    for (int i = 0; i < nentries; i ++) {
-      if (i%10000 == 0 && i!=0) cout << "\r" << i << " analyzed events" << flush;
+      if (i%10000 == 0 && i!=0)  {
+         cout.precision(5);
+         end = clock();
+         double TimeElapsed = (end-begin) / CLOCKS_PER_SEC;
+         double percent = (double)i / nentries;
+         double TimeToWait = (TimeElapsed/percent) - TimeElapsed;
+         cout  << "                                                                                                "<< flush;
+         cout << "\rProgression:" << percent*100 << " % \t | \t Remaining time : ~" <<  TimeToWait << "s" << flush;
+      }
       chain -> GetEntry(i);
 
       // Treat Gaspard event

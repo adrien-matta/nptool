@@ -83,7 +83,16 @@ int main(int argc,char** argv)
    cout << "Number of entries to be analysed: " << nentries << endl;
 
    for (int i = 0; i < nentries; i ++) {
-      if (i%10000 == 0 && i!=0) cout << "\r" << i << " analyzed events" << flush;
+      if (i%10000 == 0 && i!=0)  {
+         cout.precision(5);
+         end = clock();
+         double TimeElapsed = (end-begin) / CLOCKS_PER_SEC;
+         double percent = (double)i / nentries;
+         double TimeToWait = (TimeElapsed/percent) - TimeElapsed;
+         cout  << "                                                                                                "<< flush;
+         cout << "\rProgression:" << percent*100 << " % \t | \t Remaining time : ~" <<  TimeToWait << "s" << flush;
+      }
+      else if (i == nentries-1)  cout << "\rProgression:" << " 100%" << endl;
 
      chain -> GetEntry(i);
 

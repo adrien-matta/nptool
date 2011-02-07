@@ -104,17 +104,15 @@ int main(int argc,char** argv)
 				}
 
 			// Minimum code
-			if( i%10000 == 0 && i!=0) 	{	
-											cout.precision(5);
-											end=clock();										
-											double TimeElapsed = (end-begin)/CLOCKS_PER_SEC;
-											double percent = (double)i/N ;
-											double TimeToWait = (TimeElapsed/percent) - TimeElapsed	;					
-											cout << "\r Progression:" << percent*100 
-												 << " % \t | \t Remaining time : ~" 
-												 <<  TimeToWait <<"s"<< flush;
-										}	
-										
+			if (i%10000 == 0 && i!=0)  {
+         cout.precision(5);
+         end = clock();
+         double TimeElapsed = (end-begin) / CLOCKS_PER_SEC;
+         double percent = (double)i / nentries;
+         double TimeToWait = (TimeElapsed/percent) - TimeElapsed;
+         cout  << "                                                                                                "<< flush;
+         cout << "\rProgression:" << percent*100 << " % \t | \t Remaining time : ~" <<  TimeToWait << "s" << flush;
+      }
 			else if (i==N-1) 	cout << "\r Progression:" 
 								 << " 100% " <<endl;
 					
