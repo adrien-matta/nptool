@@ -29,9 +29,6 @@ int main(int argc,char** argv)
    string calibrationfileName = myOptionManager->GetCalibrationFile();
    string OutputfileName      = myOptionManager->GetOutputFile();
 
-   // Instantiate RootOutput singleton classes
-   RootOutput::getInstance("Analysis/10He_AnalysedData", "AnalyzedTree");
-
 	//	Instantiate some Reaction
 	NPL::Reaction*  He10Reaction = new Reaction								;
 	He10Reaction	->	ReadConfigurationFile("10He.reaction")	;
