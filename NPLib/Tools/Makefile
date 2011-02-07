@@ -1,7 +1,7 @@
 include ../Makefile.arch
  
 #------------------------------------------------------------------------------
-SHARELIB      = libTagManager.so libOptionManager.so libAsciiFile.so
+SHARELIB      = libTagManager.so libOptionManager.so libAsciiFile.so libCalibrationManager.so
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 
@@ -24,11 +24,16 @@ libAsciiFile.so: TAsciiFile.o TAsciiFileDict.o
 
 TAsciiFileDict.cxx: TAsciiFile.h
 			rootcint -f $@ -c $^
-			
+
+## Calibration Manager ##
+libCalibrationManager.so:  CalibrationManager.o
+	$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
+            
 # dependances
 NPTagManager.o:NPTagManager.cxx NPTagManager.h
 NPOptionManager.o:NPOptionManager.cxx NPOptionManager.h
 TAsciiFile.o:  TAsciiFile.cxx TAsciiFile.h
+CalibrationManager.o:   CalibrationManager.cxx  CalibrationManager.h
 #######################################
 
 ############# Clean and More ##########

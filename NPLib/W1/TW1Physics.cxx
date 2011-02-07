@@ -718,6 +718,12 @@ void TW1Physics::ReadAnalysisConfig()
    }
    cout << "\tLoading user parameters from ConfigW1.dat " << endl;
 
+   // storing config file in the ROOT output file
+   TAsciiFile *asciiFile = RootOutput::getInstance()->GetAsciiFileAnalysisConfig();
+   asciiFile->AppendLine("%% ConfigW1.dat %%");
+   asciiFile->Append(FileName.c_str());
+   asciiFile->AppendLine("");
+
    // read analysis config file
    string LineBuffer,DataBuffer;
    while (!AnalysisConfigFile.eof()) {

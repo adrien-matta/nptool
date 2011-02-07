@@ -1,4 +1,4 @@
-NPTool version xx.xx has been released on January xx 2011.
+NPTool version xx.xx has been released on February 7th 2011.
 
 The following people have contributed to this new version:
 Sandra Giron, IPNO
@@ -24,6 +24,9 @@ Nicolas de Sereville, IPNO
       + Symbolic links to *.dylib files are done if on a macosx platform.
       + The 'liblist' file at NPLib level is created.
 
+  + CalibrationManager class
+     + This class handles in a nice way a collection of calibration files
+
   + NPReaction class
     + Now it is possible to give excitation to the light nucleus in exit channel.
 
@@ -36,6 +39,7 @@ Nicolas de Sereville, IPNO
   + TAsciiFile class
      + This class allows to store any regular text file in a ROOT file
      + This is used to store the event generator, detector configuration files
+       in ROOT output file.
 
   + RootInput facility
     + Support for adding TFriend object
@@ -45,7 +49,7 @@ Nicolas de Sereville, IPNO
     + Support for adding TAsciiFile object automatically
 
   + NPTagManager facility
-    ?? Adrien ??
+    + Associate one or more string to an event in a TTree
 
 + NPSimulation
 --------------
@@ -56,7 +60,10 @@ Nicolas de Sereville, IPNO
 + NPAnalysis
 ------------
   + Using the NPOptionManager facility, calling NPAnalysis is now:
-    ./Analysis -D xxx.detector -E xxx.reaction -R RunToTreat.txt
+       ./Analysis -D xxx.detector -E xxx.reaction -R RunToTreat.txt
+  + One can also call Analysis in the following way:
+       ./Analysis -R RunToTreat
+    In this case the configuration files stored in TAsciiFile are used
 
   + A simple but functional example for MUST2 analysis can be found
     in the NPAnalysis/must2 directory.
@@ -67,6 +74,10 @@ Nicolas de Sereville, IPNO
 ****************************************************************************
 + MUST2
 -------
+   + Add configuration parameters:
+      + possibility to suppress channels
+      + give raw and physical threshold
+      + configure Si/SiLi and Si/CsI match conditions
 
 + GASPARD
 ---------
