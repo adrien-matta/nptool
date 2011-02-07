@@ -554,7 +554,7 @@ void TMust2Physics::ReadAnalysisConfig()
       return;
    }
    cout << " Loading user parameter for Analysis from ConfigMust2.dat " << endl;
-   TAsciiFile* asciiConfig = RootOutput::getInstance->GetAsciiFileAnalysisConfig();
+   TAsciiFile* asciiConfig = RootOutput::getInstance()->GetAsciiFileAnalysisConfig();
    asciiConfig->Append(FileName.c_str());
    
    // read analysis config file
