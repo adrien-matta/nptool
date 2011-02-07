@@ -68,17 +68,17 @@ int main(int argc,char** argv)
    GaspardTracker* GPDTrack = (GaspardTracker*) myDetector->m_Detector["GASPARD"];
 
    // Get the input TChain and treat it
-   TChain* chain = RootInput:: getInstance()->GetChain();
+   TChain* Chain = RootInput:: getInstance()->GetChain();
 
    // Connect TInitialConditions branch
    TInitialConditions *initCond = 0;
-   chain->SetBranchAddress("InitialConditions", &initCond);
-   chain->SetBranchStatus("InitialConditions", 1);
+   Chain->SetBranchAddress("InitialConditions", &initCond);
+   Chain->SetBranchStatus("InitialConditions", 1);
 
    // Connect TInteractionCoordinates branch
    TInteractionCoordinates *interCoord = 0;
-   chain->SetBranchAddress("InteractionCoordinates", &interCoord);
-   chain->SetBranchStatus("InteractionCoordinates", 0);
+   Chain->SetBranchAddress("InteractionCoordinates", &interCoord);
+   Chain->SetBranchStatus("InteractionCoordinates", 0);
 
    // Default initialization
    double XTarget = 0;
@@ -90,11 +90,12 @@ int main(int argc,char** argv)
    TRandom3 *gene = new TRandom3();
 
    // Get number of events to treat
-   cout << endl << "///////// Starting Analysis ///////// "<< endl;
-   int nentries = chain->GetEntries();
+    cout << endl << "///////// Starting Analysis ///////// "<< endl;
+   int nentries = Chain->GetEntries();
    cout << " Number of Event to be treated : " << nentries << endl;
    clock_t begin = clock();
    clock_t end = begin;
+
 
    // Loop on all events
    for (int i = 0; i < nentries; i ++) {
@@ -109,7 +110,7 @@ int main(int argc,char** argv)
       else if (i == nentries-1)  cout << "\r Progression:" << " 100% " <<endl;
 
       // Get data
-      chain -> GetEntry(i);
+      Chain -> GetEntry(i);
 
       // Treat Gaspard event
       myDetector->ClearEventPhysics();

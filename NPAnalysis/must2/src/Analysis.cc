@@ -97,10 +97,11 @@ int main(int argc,char** argv)
    TH2F* Position_M2_tot  = new TH2F("Must2Positions_tot", "Must2Positions_tot",   130,   -1,   129,  130,   -1, 130);
       
    cout << endl << "///////// Starting Analysis ///////// "<< endl;
-   int N = Chain -> GetEntries(); 
-   cout << " Number of Event to be treated : " << N << endl ;
-   clock_t begin=clock();
-   clock_t end=begin;
+   int nentries = Chain->GetEntries();
+   cout << " Number of Event to be treated : " << nentries << endl;
+   clock_t begin = clock();
+   clock_t end = begin;
+
 
    for (int i = 0; i < N; i++) {
 	   if (i%10000 == 0 && i!=0) 	{	

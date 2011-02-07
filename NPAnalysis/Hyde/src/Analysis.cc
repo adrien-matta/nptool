@@ -66,21 +66,25 @@ int main(int argc,char** argv)
    HydeTracker* HYDTrack = (HydeTracker*) myDetector->m_Detector["HYDE"];
 
    // Get the input TChain and treat it
-   TChain* chain = RootInput:: getInstance() -> GetChain();
+   TChain* Chain = RootInput:: getInstance() -> GetChain();
 
    // Connect TInitialConditions branch
    TInitialConditions *initCond = 0;
-   chain->SetBranchAddress("InitialConditions", &initCond);
-   chain->SetBranchStatus("InitialConditions", 1);
+   Chain->SetBranchAddress("InitialConditions", &initCond);
+   Chain->SetBranchStatus("InitialConditions", 1);
 
    // Connect TInteractionCoordinates branch
    TInteractionCoordinates *interCoord = 0;
-   chain->SetBranchAddress("InteractionCoordinates", &interCoord);
-   chain->SetBranchStatus("InteractionCoordinates", 0);
+   Chain->SetBranchAddress("InteractionCoordinates", &interCoord);
+   Chain->SetBranchStatus("InteractionCoordinates", 0);
 
    // Analysis is here!
-   int nentries = chain->GetEntries();
-   cout << "Number of entries to be analysed: " << nentries << endl;
+    cout << endl << "///////// Starting Analysis ///////// "<< endl;
+   int nentries = Chain->GetEntries();
+   cout << " Number of Event to be treated : " << nentries << endl;
+   clock_t begin = clock();
+   clock_t end = begin;
+
 
    // Default initialization
    double XTarget = 0;
@@ -102,7 +106,7 @@ int main(int argc,char** argv)
          cout  << "                                                                                                "<< flush;
          cout << "\rProgression:" << percent*100 << " % \t | \t Remaining time : ~" <<  TimeToWait << "s" << flush;
       }
-      chain -> GetEntry(i);
+      Chain -> GetEntry(i);
 
       // Treat Gaspard event
       myDetector->ClearEventPhysics();

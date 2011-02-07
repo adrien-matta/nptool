@@ -88,8 +88,12 @@ int main(int argc,char** argv)
 //	TPlasticPhysics* Pl 	= (TPlasticPhysics*) 		myDetector -> m_Detector["Plastic"] ;
 //	TSSSDPhysics* ThinSi 	= (TSSSDPhysics*) 			myDetector -> m_Detector["SSSD"] 		;
 
-	cout <<  " ///////// Starting Analysis ///////// "<< endl << endl ;	
-	int i ,N=Chain -> GetEntries();
+	 cout << endl << "///////// Starting Analysis ///////// "<< endl;
+   int nentries = Chain->GetEntries();
+   cout << " Number of Event to be treated : " << nentries << endl;
+   clock_t begin = clock();
+   clock_t end = begin;
+
 	
 	cout << " Number of Event to be treated : " << N << endl ;
 	clock_t begin=clock();

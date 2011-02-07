@@ -66,21 +66,25 @@ int main(int argc,char** argv)
    Shield* ShieldTrack = (Shield*) myDetector->m_Detector["SHIELD"];
 
    // Get the TChain and treat it
-   TChain* chain = RootInput:: getInstance() -> GetChain();
+   TChain* Chain = RootInput:: getInstance() -> GetChain();
 
    // Connect TInteractionCoordinates branch
    TInteractionCoordinates *interCoord = 0;
-   chain->SetBranchAddress("InteractionCoordinates", &interCoord);
-   chain->SetBranchStatus("InteractionCoordinates", 0);
+   Chain->SetBranchAddress("InteractionCoordinates", &interCoord);
+   Chain->SetBranchStatus("InteractionCoordinates", 0);
    // Connect TInitialConditions branch
    TInitialConditions *initCond = 0;
-   chain->SetBranchAddress("InitialConditions", &initCond);
-   chain->SetBranchStatus("InitialConditions", 0);
+   Chain->SetBranchAddress("InitialConditions", &initCond);
+   Chain->SetBranchStatus("InitialConditions", 0);
 
 
    // Analysis is here!
-   int nentries = chain->GetEntries();
-   cout << "Number of entries to be analysed: " << nentries << endl;
+   cout << endl << "///////// Starting Analysis ///////// "<< endl;
+   int nentries = Chain->GetEntries();
+   cout << " Number of Event to be treated : " << nentries << endl;
+   clock_t begin = clock();
+   clock_t end = begin;
+
 
    for (int i = 0; i < nentries; i ++) {
       if (i%10000 == 0 && i!=0)  {
@@ -94,7 +98,7 @@ int main(int argc,char** argv)
       }
       else if (i == nentries-1)  cout << "\rProgression:" << " 100%" << endl;
 
-     chain -> GetEntry(i);
+     Chain -> GetEntry(i);
 
       // Treat event
       myDetector->ClearEventPhysics();
