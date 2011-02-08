@@ -208,8 +208,8 @@ void ShieldClParis::VolumeMaker(G4int             DetecNumber,
 
    // Mother Volume
    G4Trap*           solidShieldClParis = new G4Trap(Name, Length/2, 16.3543*deg, 225.*deg, 
-						     12.*mm,102.375*mm, 102.375*mm, 0.*deg, 
-						     43.125*mm, 133.5*mm, 133.5*mm,0.*deg);
+                       12.*mm,102.375*mm, 102.375*mm, 0.*deg, 
+                       43.125*mm, 133.5*mm, 133.5*mm,0.*deg);
    G4LogicalVolume* logicShieldClParis = new G4LogicalVolume(solidShieldClParis, Vacuum, Name, 0, 0, 0);
 
    PVPBuffer     = new G4PVPlacement(G4Transform3D(*MMrot, MMpos) ,
@@ -227,13 +227,13 @@ void ShieldClParis::VolumeMaker(G4int             DetecNumber,
    G4ThreeVector  positionCsI = G4ThreeVector(0, 0, 0);
 
    G4Trap*           solidShieldCsI = new G4Trap("solidShieldCsI", Length/2, 16.3543*deg, 225.*deg, 
-						     12.*mm,102.375*mm, 102.375*mm, 0.*deg, 
-						     43.125*mm, 133.5*mm, 133.5*mm,0.*deg);
+                       12.*mm,102.375*mm, 102.375*mm, 0.*deg, 
+                       43.125*mm, 133.5*mm, 133.5*mm,0.*deg);
    //G4LogicalVolume* logicShieldCsI = new G4LogicalVolume(solidShieldCsI, CsI, "logicShieldCsI", 0, 0, 0);
    G4LogicalVolume* logicShieldCsI = new G4LogicalVolume(solidShieldCsI, NaI, "logicShieldCsI", 0, 0, 0);
 
    PVPBuffer     = new G4PVPlacement(0,
-				     positionCsI              ,
+                 positionCsI              ,
                                      logicShieldCsI           ,
                                      Name + "_ShieldCsI"      ,
                                      logicShieldClParis       ,
@@ -298,7 +298,7 @@ void ShieldClParis::ReadConfiguration(string Path)
          ConfigFile >> DataBuffer;
          // Comment Line 
          if (DataBuffer.compare(0, 1, "%") == 0) {/*do nothing */;}
-	
+   
          // Position method
          else if (DataBuffer.compare(0, 6, "X1_Y1=") == 0) {
             check_A = true;
@@ -410,11 +410,11 @@ void ShieldClParis::ReadConfiguration(string Path)
          if ((check_A && check_B && check_C && check_D && checkVis) && 
              !(check_Theta && check_Phi && check_R)) {
             ReadingStatus = false;
-	    check_A = false;
-	    check_C = false;
-	    check_B = false;
-	    check_D = false;
-	    checkVis = false;
+       check_A = false;
+       check_C = false;
+       check_B = false;
+       check_D = false;
+       checkVis = false;
 
             AddModule(A, B, C, D);
          }
@@ -424,11 +424,11 @@ void ShieldClParis::ReadConfiguration(string Path)
              !(check_A && check_B && check_C && check_D)) {
             ReadingStatus = false;
             check_Theta = false;
-   	    check_Phi   = false;
-   	    check_R     = false;
-   	    check_beta  = false;
-	    checkVis = false;
-		     
+          check_Phi   = false;
+          check_R     = false;
+          check_beta  = false;
+       checkVis = false;
+           
             AddModule(R, Theta, Phi, beta_u, beta_v, beta_w);
          }
       }
@@ -647,90 +647,90 @@ void ShieldClParis::ReadSensitive(const G4Event* event)
 
 
        if(sizeN>1)
-	 {
-	   CsIShieldEnergy_itr++;
-	   CsIShieldTime_itr++;
-	   CsIShieldDetectorNumber_itr++;
+    {
+      CsIShieldEnergy_itr++;
+      CsIShieldTime_itr++;
+      CsIShieldDetectorNumber_itr++;
 
-	   for (G4int l = 1; l < sizeN ; l++) {                    // loop on all the other tracks
+      for (G4int l = 1; l < sizeN ; l++) {                    // loop on all the other tracks
 
  
-	     G4int N= *(CsIShieldDetectorNumber_itr->second);            // ID of det hit
-	     NTrackID =   CsIShieldDetectorNumber_itr->first - N;           // ID of the track
+        G4int N= *(CsIShieldDetectorNumber_itr->second);            // ID of det hit
+        NTrackID =   CsIShieldDetectorNumber_itr->first - N;           // ID of the track
 
-	     //G4cout <<"l=" << l << G4endl;
-	     //G4cout <<"N=" << N << G4endl;
-	     //G4cout <<"DetectorNumber_itr->first =" << DetectorNumber_itr->first << G4endl;
-	     //G4cout <<"NTrackID=" << NTrackID << G4endl;
+        //G4cout <<"l=" << l << G4endl;
+        //G4cout <<"N=" << N << G4endl;
+        //G4cout <<"DetectorNumber_itr->first =" << DetectorNumber_itr->first << G4endl;
+        //G4cout <<"NTrackID=" << NTrackID << G4endl;
 
-	     if(N==N_first)
-	       {
-		 E += *(CsIShieldEnergy_itr->second);
+        if(N==N_first)
+          {
+       E += *(CsIShieldEnergy_itr->second);
 
-	       }else  // we fill the tree for the first detector hit and move to the next detector hit
-		 {
-		   if(E!=0)
-		     {
-		       // Fill detector number
-		       ms_Event->SetPARISCsIShieldEDetectorNbr(m_index["ShieldCl"] + N_first);
-		       ms_Event->SetPARISCsIShieldTDetectorNbr(m_index["ShieldCl"] + N_first);
-		       // Fill Energy
-		       // ms_Event->SetPARISCsIShieldEEnergy(RandGauss::shoot(E, ResoFirstStage));
-		           E=RandGauss::shoot(E, ResoFirstStage);
-		           ms_Event->SetPARISCsIShieldEEnergy(E); // Fill the tree
-		           if(E>EGammaMin && E<EGammaMax) ms_Event->SetPARISCsIShieldEffphpeak(EGamma);
+          }else  // we fill the tree for the first detector hit and move to the next detector hit
+       {
+         if(E!=0)
+           {
+             // Fill detector number
+             ms_Event->SetPARISCsIShieldEDetectorNbr(m_index["ShieldCl"] + N_first);
+             ms_Event->SetPARISCsIShieldTDetectorNbr(m_index["ShieldCl"] + N_first);
+             // Fill Energy
+             // ms_Event->SetPARISCsIShieldEEnergy(RandGauss::shoot(E, ResoFirstStage));
+                 E=RandGauss::shoot(E, ResoFirstStage);
+                 ms_Event->SetPARISCsIShieldEEnergy(E); // Fill the tree
+                 if(E>EGammaMin && E<EGammaMax) ms_Event->SetPARISCsIShieldEffphpeak(EGamma);
 
-		       // Fill Time
-		       ms_Event->SetPARISCsIShieldTTime(RandGauss::shoot(T, ResoTimeGpd));
+             // Fill Time
+             ms_Event->SetPARISCsIShieldTTime(RandGauss::shoot(T, ResoTimeGpd));
 
-		     }
+           }
 
-		   N_first=N;
-		   E=*(CsIShieldEnergy_itr->second);
+         N_first=N;
+         E=*(CsIShieldEnergy_itr->second);
 
-		 }
+       }
 
 
-	     //G4cout <<"Energy=" << E << G4endl;
-	     //G4cout <<"Time =" << T << G4endl;
+        //G4cout <<"Energy=" << E << G4endl;
+        //G4cout <<"Time =" << T << G4endl;
        
-	     // Always fill the tree at the end of the loop:
-	   if(l==(sizeN-1) && E!=0)
-	     {
-	       // Fill detector number
-	       ms_Event->SetPARISCsIShieldEDetectorNbr(m_index["ShieldCl"] + N_first);
-	       ms_Event->SetPARISCsIShieldTDetectorNbr(m_index["ShieldCl"] + N_first);
-	       // Fill Energy
-	       // ms_Event->SetPARISCsIShieldEEnergy(RandGauss::shoot(E, ResoFirstStage));
-		           E=RandGauss::shoot(E, ResoFirstStage);
-		           ms_Event->SetPARISCsIShieldEEnergy(E); // Fill the tree
-		           if(E>EGammaMin && E<EGammaMax) ms_Event->SetPARISCsIShieldEffphpeak(EGamma);
-	       // Fill Time
-	       ms_Event->SetPARISCsIShieldTTime(RandGauss::shoot(T, ResoTimeGpd));	       
-	     }
+        // Always fill the tree at the end of the loop:
+      if(l==(sizeN-1) && E!=0)
+        {
+          // Fill detector number
+          ms_Event->SetPARISCsIShieldEDetectorNbr(m_index["ShieldCl"] + N_first);
+          ms_Event->SetPARISCsIShieldTDetectorNbr(m_index["ShieldCl"] + N_first);
+          // Fill Energy
+          // ms_Event->SetPARISCsIShieldEEnergy(RandGauss::shoot(E, ResoFirstStage));
+                 E=RandGauss::shoot(E, ResoFirstStage);
+                 ms_Event->SetPARISCsIShieldEEnergy(E); // Fill the tree
+                 if(E>EGammaMin && E<EGammaMax) ms_Event->SetPARISCsIShieldEffphpeak(EGamma);
+          // Fill Time
+          ms_Event->SetPARISCsIShieldTTime(RandGauss::shoot(T, ResoTimeGpd));          
+        }
 
-	     CsIShieldEnergy_itr++;
-	     CsIShieldDetectorNumber_itr++;
-	   }
-	 }else
-	   {
-	     // Fill the tree if sizeN=1:
-	     if(E!=0)
-	       {
-	       // Fill detector number
-	       ms_Event->SetPARISCsIShieldEDetectorNbr(m_index["ShieldCl"] + N_first);
-	       ms_Event->SetPARISCsIShieldTDetectorNbr(m_index["ShieldCl"] + N_first);
-	       // Fill Energy
-	       // ms_Event->SetPARISCsIShieldEEnergy(RandGauss::shoot(E, ResoFirstStage));
-		           E=RandGauss::shoot(E, ResoFirstStage);
-		           ms_Event->SetPARISCsIShieldEEnergy(E); // Fill the tree
-		           if(E>EGammaMin && E<EGammaMax) ms_Event->SetPARISCsIShieldEffphpeak(EGamma);
+        CsIShieldEnergy_itr++;
+        CsIShieldDetectorNumber_itr++;
+      }
+    }else
+      {
+        // Fill the tree if sizeN=1:
+        if(E!=0)
+          {
+          // Fill detector number
+          ms_Event->SetPARISCsIShieldEDetectorNbr(m_index["ShieldCl"] + N_first);
+          ms_Event->SetPARISCsIShieldTDetectorNbr(m_index["ShieldCl"] + N_first);
+          // Fill Energy
+          // ms_Event->SetPARISCsIShieldEEnergy(RandGauss::shoot(E, ResoFirstStage));
+                 E=RandGauss::shoot(E, ResoFirstStage);
+                 ms_Event->SetPARISCsIShieldEEnergy(E); // Fill the tree
+                 if(E>EGammaMin && E<EGammaMax) ms_Event->SetPARISCsIShieldEffphpeak(EGamma);
 
-	       // Fill Time
-	       ms_Event->SetPARISCsIShieldTTime(RandGauss::shoot(T, ResoTimeGpd));
-	       }
-	   }
-	
+          // Fill Time
+          ms_Event->SetPARISCsIShieldTTime(RandGauss::shoot(T, ResoTimeGpd));
+          }
+      }
+   
  
      }
   

@@ -28,31 +28,31 @@
 #include "G4THitsMap.hh"
 
 namespace THINSI {
-	
-	class PSStripNumber : public G4VPrimitiveScorer
-	{
+   
+   class PSStripNumber : public G4VPrimitiveScorer
+   {
 
-	public: // with description
-	   PSStripNumber(G4String name, G4int depth = 0, G4double StripPlaneSize = 50*mm, G4int NumberOfStrip = 16);
-	   virtual ~PSStripNumber();
+   public: // with description
+      PSStripNumber(G4String name, G4int depth = 0, G4double StripPlaneSize = 50*mm, G4int NumberOfStrip = 16);
+      virtual ~PSStripNumber();
 
-	protected: // with description
-	   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+   protected: // with description
+      virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
 
-	public:
-	   virtual void Initialize(G4HCofThisEvent*);
-	   virtual void EndOfEvent(G4HCofThisEvent*);
-	   virtual void clear();
-	   virtual void DrawAll();
-	   virtual void PrintAll();
+   public:
+      virtual void Initialize(G4HCofThisEvent*);
+      virtual void EndOfEvent(G4HCofThisEvent*);
+      virtual void clear();
+      virtual void DrawAll();
+      virtual void PrintAll();
 
-	private:
-	   G4double  m_StripPlaneSize;
-	   G4int     m_NumberOfStrip ;
-	   G4double  m_StripPitch    ;
-	   G4int HCID;
-	   G4THitsMap<G4int>* EvtMap;
-	};
+   private:
+      G4double  m_StripPlaneSize;
+      G4int     m_NumberOfStrip ;
+      G4double  m_StripPitch    ;
+      G4int HCID;
+      G4THitsMap<G4int>* EvtMap;
+   };
 
 }
 

@@ -269,22 +269,22 @@ void AnnularS1::ReadConfiguration(string Path)
          ConfigFile >> DataBuffer;
 
          // Search for comment Symbol %
-	 if (DataBuffer.compare(0, 1, "%") == 0) {
+    if (DataBuffer.compare(0, 1, "%") == 0) {
             ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
          }
 
          // Position method
          else if (DataBuffer.compare(0, 2, "Z=") == 0) {
-	    check_Z = true;
-	    ConfigFile >> DataBuffer ;
-	    Z = atof(DataBuffer.c_str()) ;
-	    Z = Z * mm;
-	    cout << "Z:  " << Z / mm << endl;
-	 }
+       check_Z = true;
+       ConfigFile >> DataBuffer ;
+       Z = atof(DataBuffer.c_str()) ;
+       Z = Z * mm;
+       cout << "Z:  " << Z / mm << endl;
+    }
          else if (DataBuffer.compare(0, 4, "VIS=") == 0) {
             check_VIS = true;
-	    ConfigFile >> DataBuffer;
-	    if (DataBuffer.compare(0, 3, "all") == 0) m_non_sensitive_part_visiualisation = true;
+       ConfigFile >> DataBuffer;
+       if (DataBuffer.compare(0, 3, "all") == 0) m_non_sensitive_part_visiualisation = true;
          }
          else {
             ///////////////////////////////////////////////////

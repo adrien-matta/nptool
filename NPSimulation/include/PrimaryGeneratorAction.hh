@@ -46,15 +46,15 @@ public:
 
 public:
    void GeneratePrimaries(G4Event*);
-   G4ParticleGun* GetParticleGun()	{return m_particleGun;}
+   G4ParticleGun* GetParticleGun()   {return m_particleGun;}
 
 public:
    void ReadEventGeneratorFile(string Path);
 
 private:
-   G4ParticleGun*		m_particleGun;
-   DetectorConstruction*	m_detector;
-   VEventGenerator*		m_EventGenerator;
+   G4ParticleGun*        m_particleGun;
+   DetectorConstruction* m_detector;
+   VEventGenerator*      m_EventGenerator;
 };
 
 #endif

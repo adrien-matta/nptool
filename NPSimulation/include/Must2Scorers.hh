@@ -27,82 +27,82 @@
 #include "G4VPrimitiveScorer.hh"
 #include "G4THitsMap.hh"
 namespace MUST2 {
-	
-	class PSStripNumberX : public G4VPrimitiveScorer
-	{
+   
+   class PSStripNumberX : public G4VPrimitiveScorer
+   {
 
-	public: // with description
-	   PSStripNumberX(G4String name, G4int depth = 0, G4double StripPlaneSize = 98, G4int NumberOfStrip = 128);
-	   virtual ~PSStripNumberX();
+   public: // with description
+      PSStripNumberX(G4String name, G4int depth = 0, G4double StripPlaneSize = 98, G4int NumberOfStrip = 128);
+      virtual ~PSStripNumberX();
 
-	protected: // with description
-	   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+   protected: // with description
+      virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
 
-	public:
-	   virtual void Initialize(G4HCofThisEvent*);
-	   virtual void EndOfEvent(G4HCofThisEvent*);
-	   virtual void clear();
-	   virtual void DrawAll();
-	   virtual void PrintAll();
+   public:
+      virtual void Initialize(G4HCofThisEvent*);
+      virtual void EndOfEvent(G4HCofThisEvent*);
+      virtual void clear();
+      virtual void DrawAll();
+      virtual void PrintAll();
 
-	private:
-	   G4double  m_StripPlaneSize;
-	   G4int     m_NumberOfStrip ;
-	   G4double  m_StripPitch		 ;
-	   G4int HCID;
-	   G4THitsMap<G4int>* EvtMap;
-	};
+   private:
+      G4double  m_StripPlaneSize;
+      G4int     m_NumberOfStrip ;
+      G4double  m_StripPitch;
+      G4int HCID;
+      G4THitsMap<G4int>* EvtMap;
+   };
 
 
 
-	class PSStripNumberY : public G4VPrimitiveScorer
-	{
+   class PSStripNumberY : public G4VPrimitiveScorer
+   {
 
-	public: // with description
-	   PSStripNumberY(G4String name, G4int depth = 0, G4double StripPlaneSize = 98, G4int NumberOfStrip = 128);
-	   virtual ~PSStripNumberY();
+   public: // with description
+      PSStripNumberY(G4String name, G4int depth = 0, G4double StripPlaneSize = 98, G4int NumberOfStrip = 128);
+      virtual ~PSStripNumberY();
 
-	protected: // with description
-	   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+   protected: // with description
+      virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
 
-	public:
-	   virtual void Initialize(G4HCofThisEvent*);
-	   virtual void EndOfEvent(G4HCofThisEvent*);
-	   virtual void clear();
-	   virtual void DrawAll();
-	   virtual void PrintAll();
+   public:
+      virtual void Initialize(G4HCofThisEvent*);
+      virtual void EndOfEvent(G4HCofThisEvent*);
+      virtual void clear();
+      virtual void DrawAll();
+      virtual void PrintAll();
 
-	private:
-	   G4double  m_StripPlaneSize;
-	   G4int     m_NumberOfStrip ;
-	   G4double  m_StripPitch		 ;
-	   G4int HCID;
-	   G4THitsMap<G4int>* EvtMap;
-	};
-	
-	
-		class PSPadOrCristalNumber : public G4VPrimitiveScorer
-	{
+   private:
+      G4double  m_StripPlaneSize;
+      G4int     m_NumberOfStrip ;
+      G4double  m_StripPitch;
+      G4int HCID;
+      G4THitsMap<G4int>* EvtMap;
+   };
+   
+   
+      class PSPadOrCristalNumber : public G4VPrimitiveScorer
+   {
 
-	public: // with description
-	   PSPadOrCristalNumber(G4String name, G4int depth = 0);
-	   virtual ~PSPadOrCristalNumber();
+   public: // with description
+      PSPadOrCristalNumber(G4String name, G4int depth = 0);
+      virtual ~PSPadOrCristalNumber();
 
-	protected: // with description
-	   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+   protected: // with description
+      virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
 
-	public:
-	   virtual void Initialize(G4HCofThisEvent*);
-	   virtual void EndOfEvent(G4HCofThisEvent*);
-	   virtual void clear();
-	   virtual void DrawAll();
-	   virtual void PrintAll();
+   public:
+      virtual void Initialize(G4HCofThisEvent*);
+      virtual void EndOfEvent(G4HCofThisEvent*);
+      virtual void clear();
+      virtual void DrawAll();
+      virtual void PrintAll();
 
-	private:
-	   G4int HCID;
-	   G4THitsMap<G4int>* EvtMap;
-	};
-	
+   private:
+      G4int HCID;
+      G4THitsMap<G4int>* EvtMap;
+   };
+   
 }
 
 #endif

@@ -101,10 +101,10 @@ private:
    ////////////////////////////////////////////////////
 private:
    // Used for "By Point Definition"
-   vector<G4double>	m_PosZ;
+   vector<G4double>   m_PosZ;
 
    // Set to true if you want to see Telescope Frame in your visualisation
-   bool			m_non_sensitive_part_visiualisation;
+   bool         m_non_sensitive_part_visiualisation;
 };
 
 

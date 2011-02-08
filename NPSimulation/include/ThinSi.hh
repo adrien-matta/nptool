@@ -47,16 +47,16 @@ namespace THINSI
    const G4double ResoEnergy  = 0.064  ;// = 150keV of Resolution   //   Unit is MeV/2.35
 
    // Geometry
-   const G4double DetectorSize   	= 68*mm           ;
+   const G4double DetectorSize      = 68*mm           ;
    const G4double SiliconThickness  = 20*micrometer   ;
    const G4double FrameThickness    = 3*mm            ;
-   const G4double SiliconSize    	= 50*mm           ;
+   const G4double SiliconSize       = 50*mm           ;
    const G4double AluThickness      = 0.4*micrometer  ;
-   const G4int  NumberOfStrip    	= 16       		  ;
+   const G4int  NumberOfStrip       = 16              ;
 
-   const G4double AluStripFront_PosZ 	= -0.5*SiliconThickness - 0.5*AluThickness ;
-   const G4double Si_PosZ        		= 0                                 ;
-   const G4double AluStripBack_PosZ  	= 0.5*SiliconThickness + 0.5*AluThickness  ;
+   const G4double AluStripFront_PosZ   = -0.5*SiliconThickness - 0.5*AluThickness   ;
+   const G4double Si_PosZ              = 0                                          ;
+   const G4double AluStripBack_PosZ    = 0.5*SiliconThickness + 0.5*AluThickness    ;
 
 }
 
@@ -76,24 +76,24 @@ public:
    ////////////////////////////////////////////////////
 public:
    // By Position Method
-   void AddTelescope(G4ThreeVector  TL       ,
-         G4ThreeVector  BL       ,
-         G4ThreeVector  BR       ,
-         G4ThreeVector  TR       );
+   void AddTelescope(   G4ThreeVector  TL    ,
+                        G4ThreeVector  BL    ,
+                        G4ThreeVector  BR    ,
+                        G4ThreeVector  TR    );
    // By Angle Method
-   void AddTelescope(G4double    R        ,
-         G4double    Theta    ,
-         G4double    Phi         ,
-         G4double    beta_u       ,
-         G4double    beta_v       ,
-         G4double    beta_w       );
+   void AddTelescope(   G4double    R        ,
+                        G4double    Theta    ,
+                        G4double    Phi      ,
+                        G4double    beta_u   ,
+                        G4double    beta_v   ,
+                        G4double    beta_w   );
 
    // Effectively construct Volume
    // Avoid to have two time same code for Angle and Point definition
-   void VolumeMaker(G4int DetectorNumber     ,
-         G4ThreeVector     MMpos ,
-         G4RotationMatrix* MMrot ,
-         G4LogicalVolume*  world );
+   void VolumeMaker(    G4int DetectorNumber    ,
+                        G4ThreeVector     MMpos ,
+                        G4RotationMatrix* MMrot ,
+                        G4LogicalVolume*  world );
 
 
    ////////////////////////////////////////////////////
@@ -102,19 +102,19 @@ public:
 public:
    // Read stream at Configfile to pick-up parameters of detector (Position,...)
    // Called in DetecorConstruction::ReadDetextorConfiguration Method
-   void ReadConfiguration(string Path)          ;
+   void ReadConfiguration(string Path) ;
 
    // Construct detector and inialise sensitive part.
    // Called After DetecorConstruction::AddDetector Method
-   void ConstructDetector(G4LogicalVolume* world)  ;
+   void ConstructDetector(G4LogicalVolume* world) ;
 
    // Add Detector branch to the EventTree.
    // Called After DetecorConstruction::AddDetector Method
-   void InitializeRootOutput()            ;
+   void InitializeRootOutput() ;
 
    // Read sensitive part and fill the Root tree.
    // Called at in the EventAction::EndOfEventAvtion
-   void ReadSensitive(const G4Event* event)     ;
+   void ReadSensitive(const G4Event* event) ;
 
 
    ////////////////////////////////////////////////////
@@ -123,27 +123,27 @@ public:
 private:
    TSSSDData*    m_Event ;
 
-	 ////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////
    ///////////////// Scorer Related ///////////////////
    ////////////////////////////////////////////////////
 
 private:
-		//	Initialize all Scorer used by the MUST2Array
-		void InitializeScorers() ;
-	 
-		//	Scorer Associate to the 20um Silicon stage
-		G4MultiFunctionalDetector*	m_StripScorer ; 
+      //   Initialize all Scorer used by the MUST2Array
+      void InitializeScorers() ;
+    
+      //   Scorer Associate to the 20um Silicon stage
+      G4MultiFunctionalDetector*   m_StripScorer ; 
 
 
 
 private:
-		// 	Initialize mmaterial used in detector definition
-		void InitializeMaterial();
+      //    Initialize mmaterial used in detector definition
+      void InitializeMaterial();
 
-		//	List of material
-		G4Material* m_MaterialSilicon 	;
-   	G4Material* m_MaterialAl 				;
-   	G4Material* m_MaterialVacuum 		;
+      //   List of material
+      G4Material* m_MaterialSilicon ;
+      G4Material* m_MaterialAl      ;
+      G4Material* m_MaterialVacuum  ;
 
    ////////////////////////////////////////////////////
    ///////////////Private intern Data//////////////////
@@ -159,15 +159,15 @@ private:
    vector<G4ThreeVector>   m_TR     ; // Center Corner Position Vector
 
    // Used for "By Angle Definition"
-   vector<G4double>  m_R         ; //  |
-   vector<G4double>  m_Theta     ; //  > Spherical coordinate of Strips Silicium Plate
+   vector<G4double>  m_R      ; //  |
+   vector<G4double>  m_Theta  ; //  > Spherical coordinate of Strips Silicium Plate
    vector<G4double>  m_Phi    ; //  |
 
    vector<G4double>  m_beta_u ; //  |
    vector<G4double>  m_beta_v ; //  >Tilt angle of the Telescope
    vector<G4double>  m_beta_w ; //  |
    // Set to true if you want to see Telescope Frame in your visualisation
-   bool           m_non_sensitive_part_visiualisation ;
+   bool m_non_sensitive_part_visiualisation ;
 
 };
 #endif

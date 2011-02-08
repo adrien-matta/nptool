@@ -364,7 +364,7 @@ void HydeTrackerDummyShape::ReadConfiguration(string Path)
          ConfigFile >> DataBuffer;
          // Comment Line 
          if (DataBuffer.compare(0, 1, "%") == 0) {/*do nothing */;}
-	
+   
          // Position method
          else if (DataBuffer.compare(0, 6, "X1_Y1=") == 0) {
             check_A = true;
@@ -497,15 +497,15 @@ void HydeTrackerDummyShape::ReadConfiguration(string Path)
          // With position method
          if ((check_A && check_B && check_C && check_D && check_FirstStage && check_SecondStage && check_ThirdStage && checkVis) && 
              !(check_Theta && check_Phi && check_R)) {
-            ReadingStatus = false;
-	    check_A = false;
-	    check_C = false;
-	    check_B = false;
-	    check_D = false;
-	    check_FirstStage = false;
-	    check_SecondStage = false;
-	    check_ThirdStage = false;
-	    checkVis = false;
+             ReadingStatus = false;
+             check_A = false;
+             check_C = false;
+             check_B = false;
+             check_D = false;
+             check_FirstStage = false;
+             check_SecondStage = false;
+             check_ThirdStage = false;
+             checkVis = false;
 
             AddModule(A, B, C, D, FIRSTSTAGE  == 1, SECONDSTAGE == 1, THIRDSTAGE == 1);
          }
@@ -513,16 +513,16 @@ void HydeTrackerDummyShape::ReadConfiguration(string Path)
          // With angle method
          if ((check_Theta && check_Phi && check_R && check_FirstStage && check_SecondStage && check_ThirdStage && checkVis) && 
              !(check_A && check_B && check_C && check_D)) {
-            ReadingStatus = false;
-            check_Theta = false;
-   	    check_Phi   = false;
-   	    check_R     = false;
-   	    check_beta  = false;
-	    check_FirstStage = false;
-	    check_SecondStage = false;
-	    check_ThirdStage = false;
-	    checkVis = false;
-		     
+             ReadingStatus = false;
+             check_Theta = false;
+             check_Phi   = false;
+             check_R     = false;
+             check_beta  = false;
+             check_FirstStage = false;
+             check_SecondStage = false;
+             check_ThirdStage = false;
+             checkVis = false;
+           
             AddModule(R, Theta, Phi, beta_u, beta_v, beta_w, FIRSTSTAGE  == 1, SECONDSTAGE == 1, THIRDSTAGE == 1);
          }
       }

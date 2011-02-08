@@ -107,25 +107,25 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path)
 
       //Search for Isotropic source
       else if (LineBuffer.compare(0, 9, "Isotropic") == 0  && !check_Isotropic) {
-         check_Isotropic = true                       ;
-         VEventGenerator* myEventGenerator = new EventGeneratorIsotropic()   ;
-         EventGeneratorFile.close()                   ;
-         myEventGenerator->ReadConfiguration(Path)       ;
-         EventGeneratorFile.open(Path.c_str())           ;
-         myEventGenerator->InitializeRootOutput()           ;
-         m_EventGenerator = myEventGenerator             ;
+         check_Isotropic = true;
+         VEventGenerator* myEventGenerator = new EventGeneratorIsotropic();
+         EventGeneratorFile.close();
+         myEventGenerator->ReadConfiguration(Path);
+         EventGeneratorFile.open(Path.c_str());
+         myEventGenerator->InitializeRootOutput();
+         m_EventGenerator = myEventGenerator;
       }
 
       //Search for Beam
       else if (LineBuffer.compare(0, 4, "Beam") == 0  && !check_Beam) {
-         check_Beam = true                                           ;
-         VEventGenerator* myEventGenerator = new EventGeneratorBeam()                    ;
-         EventGeneratorFile.close()                                  ;
-         myEventGenerator->ReadConfiguration(Path)                      ;
-         EventGeneratorFile.open(Path.c_str())                          ;
-         myEventGenerator->InitializeRootOutput()           ;
-         myEventGenerator->SetTarget(m_detector->GetTarget())  ;
-         m_EventGenerator = myEventGenerator                            ;
+         check_Beam = true;
+         VEventGenerator* myEventGenerator = new EventGeneratorBeam();
+         EventGeneratorFile.close();
+         myEventGenerator->ReadConfiguration(Path);
+         EventGeneratorFile.open(Path.c_str());
+         myEventGenerator->InitializeRootOutput();
+         myEventGenerator->SetTarget(m_detector->GetTarget());
+         m_EventGenerator = myEventGenerator;
       }
 
 
@@ -143,26 +143,26 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path)
 
       //Search for Transfert To Resonance
       else if (LineBuffer.compare(0, 21, "TransfertToResonance") == 0 && !check_TransfertToResonance) {
-         check_TransfertToResonance = true                              ;
-         VEventGenerator* myEventGenerator = new EventGeneratorTransfertToResonance()       ;
-         EventGeneratorFile.close()                                  ;
-         myEventGenerator->ReadConfiguration(Path)                      ;
-         EventGeneratorFile.open(Path.c_str())                          ;
-         myEventGenerator->InitializeRootOutput()           ;
+         check_TransfertToResonance = true;
+         VEventGenerator* myEventGenerator = new EventGeneratorTransfertToResonance();
+         EventGeneratorFile.close();
+         myEventGenerator->ReadConfiguration(Path);
+         EventGeneratorFile.open(Path.c_str());
+         myEventGenerator->InitializeRootOutput();
          myEventGenerator->SetTarget(m_detector->GetTarget());
-         m_EventGenerator = myEventGenerator                            ;
+         m_EventGenerator = myEventGenerator;
       }
       
       //Search for Transfert To Resonance
       else if (LineBuffer.compare(0, 10, "PhaseSpace") == 0 && !check_PhaseSpace) {
-         check_PhaseSpace = true                             								 	;
-         VEventGenerator* myEventGenerator = new EventGeneratorPhaseSpace()  	;
-         EventGeneratorFile.close()                                  					;
-         myEventGenerator->ReadConfiguration(Path)                      			;	
-         EventGeneratorFile.open(Path.c_str())                          			;
-         myEventGenerator->InitializeRootOutput()           									;
-         myEventGenerator->SetTarget(m_detector->GetTarget())									;
-         m_EventGenerator = myEventGenerator                            			;
+         check_PhaseSpace = true;
+         VEventGenerator* myEventGenerator = new EventGeneratorPhaseSpace();
+         EventGeneratorFile.close();
+         myEventGenerator->ReadConfiguration(Path);   
+         EventGeneratorFile.open(Path.c_str());
+         myEventGenerator->InitializeRootOutput();
+         myEventGenerator->SetTarget(m_detector->GetTarget());
+         m_EventGenerator = myEventGenerator;
       }
    }
    EventGeneratorFile.close();

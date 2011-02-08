@@ -104,7 +104,7 @@ public:
    // deriving from HydeTrackerModule
    // This is mandatory since the HydeTracker*** does not derive from VDetector
    void SetInterCoordPointer(TInteractionCoordinates* interCoord);
-   TInteractionCoordinates* GetInterCoordPointer()	{return ms_InterCoord;};
+   TInteractionCoordinates* GetInterCoordPointer()   {return ms_InterCoord;};
 
 
    ////////////////////////////////////////////////////
@@ -134,11 +134,11 @@ private:
    vector<G4double>  m_beta_w ; //  |
 
    // for debugging purpose
-   G4ThreeVector	MMpos;
-   G4ThreeVector	MMu;
-   G4ThreeVector	MMv;
-   G4ThreeVector	MMw;
-   G4ThreeVector	CT;
+   G4ThreeVector   MMpos;
+   G4ThreeVector   MMu;
+   G4ThreeVector   MMv;
+   G4ThreeVector   MMw;
+   G4ThreeVector   CT;
 };
 
 

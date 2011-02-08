@@ -37,7 +37,7 @@ PSStripNumberX::PSStripNumberX(G4String name, G4int depth, G4double StripPlaneSi
 {
    m_StripPlaneSize = StripPlaneSize ;
    m_NumberOfStrip  = NumberOfStrip  ;
-	 m_StripPitch			= m_StripPlaneSize / m_NumberOfStrip;
+   m_StripPitch    = m_StripPlaneSize / m_NumberOfStrip;
 }
 
 PSStripNumberX::~PSStripNumberX()
@@ -47,7 +47,7 @@ PSStripNumberX::~PSStripNumberX()
 
 G4bool PSStripNumberX::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
-	 int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "MUST2Telescope");
+    int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "MUST2Telescope");
 
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
@@ -102,7 +102,7 @@ PSStripNumberY::PSStripNumberY(G4String name, G4int depth, G4double StripPlaneSi
 {
    m_StripPlaneSize =   StripPlaneSize ;
    m_NumberOfStrip    = NumberOfStrip  ;
-	 m_StripPitch			= m_StripPlaneSize / m_NumberOfStrip;
+    m_StripPitch         = m_StripPlaneSize / m_NumberOfStrip;
 }
 
 PSStripNumberY::~PSStripNumberY()
@@ -112,7 +112,7 @@ PSStripNumberY::~PSStripNumberY()
 
 G4bool PSStripNumberY::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
-	 int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "MUST2Telescope");
+    int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "MUST2Telescope");
 
 
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -180,30 +180,30 @@ PSPadOrCristalNumber::~PSPadOrCristalNumber()
 
 G4bool PSPadOrCristalNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {   
-		std::string name = aStep->GetTrack()->GetVolume()->GetName();
-		std::string nbr ;
+      std::string name = aStep->GetTrack()->GetVolume()->GetName();
+      std::string nbr ;
 
-		G4int temp1,temp2 ;
-		G4int VolumeNumber;
-		nbr = name[name.length()-1]	;
-		temp1 = atoi( nbr.c_str() )	;
-		
-		nbr = name[name.length()-2]	;
-		temp2 = atoi( nbr.c_str() )	;
-		
-		nbr.clear();
-		
-		if(temp2!=0) { nbr+= name[name.length()-2]	; nbr+= name[name.length()-1]	; VolumeNumber = atoi( nbr.c_str() )	;}
-		
-		else 				 { nbr= name[name.length()-1]	; VolumeNumber = atoi( nbr.c_str() )	;}
+      G4int temp1,temp2 ;
+      G4int VolumeNumber;
+      nbr = name[name.length()-1]   ;
+      temp1 = atoi( nbr.c_str() )   ;
+      
+      nbr = name[name.length()-2]   ;
+      temp2 = atoi( nbr.c_str() )   ;
+      
+      nbr.clear();
+      
+      if(temp2!=0) { nbr+= name[name.length()-2]   ; nbr+= name[name.length()-1]   ; VolumeNumber = atoi( nbr.c_str() )   ;}
+      
+      else              { nbr= name[name.length()-1]   ; VolumeNumber = atoi( nbr.c_str() )   ;}
 
-	 	G4int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "MUST2Telescope");
+       G4int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "MUST2Telescope");
 
-		G4double edep = aStep->GetTotalEnergyDeposit();
-		if (edep < 100*keV) return FALSE;
-		G4int  index =  aStep->GetTrack()->GetTrackID();
-		EvtMap->set(index+DetNbr, VolumeNumber);
-		return TRUE;
+      G4double edep = aStep->GetTotalEnergyDeposit();
+      if (edep < 100*keV) return FALSE;
+      G4int  index =  aStep->GetTrack()->GetTrackID();
+      EvtMap->set(index+DetNbr, VolumeNumber);
+      return TRUE;
 }
 
 void PSPadOrCristalNumber::Initialize(G4HCofThisEvent* HCE)

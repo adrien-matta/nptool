@@ -71,11 +71,11 @@ public:
    void InitializeIndex();
 
 public:
-   TGaspardTrackerData*		GetEventPointer() 	{return ms_Event;};
+   TGaspardTrackerData*      GetEventPointer()    {return ms_Event;};
 
 protected:
    // Class to store the result of simulation
-   static TGaspardTrackerData*		ms_Event;
+   static TGaspardTrackerData*      ms_Event;
 
    // Set to true if you want this stage on you telescope
    vector<bool>      m_wFirstStage;

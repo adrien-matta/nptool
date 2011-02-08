@@ -15,9 +15,9 @@
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This class describe a simple Dummy Detector :                            *
- *	a simple cylinder of predifined material. user can choose to place it    *
+ *   a simple cylinder of predifined material. user can choose to place it    *
  *  where he want using spherical coordinate and choose between two naterial *
- *	                                                                         *
+ *                                                                            *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -58,14 +58,14 @@ public:
    ////////////////////////////////////////////////////
 public:
    // By Angle Method
-   void AddDUMMYDetector(	 G4double    R        							,
-        									 G4double    Theta    							,
-         									 G4double    Phi         						,
-						         			 G4double	 DUMMYDetectorThickness		,
-						         			 G4double	 DUMMYDetectorRadius			,
-						         			 G4String 	Scintillator						 );  
-		
-	void VolumeMaker(G4ThreeVector Det_pos, int DetNumber,G4LogicalVolume* world) ;
+   void AddDUMMYDetector(  G4double    R                       ,
+                           G4double    Theta                   ,
+                           G4double    Phi                     ,
+                           G4double    DUMMYDetectorThickness  ,
+                           G4double    DUMMYDetectorRadius     ,
+                           G4String    Scintillator            );  
+      
+   void VolumeMaker(G4ThreeVector Det_pos, int DetNumber,G4LogicalVolume* world) ;
    ////////////////////////////////////////////////////
    /////////  Inherite from VDetector class ///////////
    ////////////////////////////////////////////////////
@@ -87,18 +87,18 @@ public:
    void ReadSensitive(const G4Event* event)     ;
 
 public: // Material 
-	void InitializeMaterial() 		;
-	// The dummy materials
-	G4Material* m_MaterialDUMMYDetector_material1		; //the dummy material 2
-	G4Material* m_MaterialDUMMYDetector_material2		; //the dummy material 2
+   void InitializeMaterial()       ;
+   // The dummy materials
+   G4Material* m_MaterialDUMMYDetector_material1      ; //the dummy material 2
+   G4Material* m_MaterialDUMMYDetector_material2      ; //the dummy material 2
 
-	
-public:	//	Scorer
-	//	Initialize all Scorer used by the MUST2Array
-	void InitializeScorers() ;
+   
+public:   //   Scorer
+   //   Initialize all Scorer used by the MUST2Array
+   void InitializeScorers() ;
 
-	//	Silicon Associate Scorer
-	G4MultiFunctionalDetector* m_DUMMYDetectorScorer				 ;
+   //   Silicon Associate Scorer
+   G4MultiFunctionalDetector* m_DUMMYDetectorScorer             ;
 
 
    ////////////////////////////////////////////////////
@@ -112,16 +112,16 @@ private:
    ////////////////////////////////////////////////////
 private:
    
-   vector<double>		m_DUMMYDetectorThickness	;
-   vector<double>		m_DUMMYDetectorRadius		;
+   vector<double>      m_DUMMYDetectorThickness   ;
+   vector<double>      m_DUMMYDetectorRadius      ;
       
    // Used for "By Angle Definition"
    vector<G4double>  m_R         ; //  |
    vector<G4double>  m_Theta     ; //  > Spherical coordinate DUMMYDetector volume center
-   vector<G4double>  m_Phi    	 ; //  |
+   vector<G4double>  m_Phi        ; //  |
 
-	//	Scintillator type
-	vector<G4String> m_Scintillator ;
+   //   Scintillator type
+   vector<G4String> m_Scintillator ;
 
 
 };

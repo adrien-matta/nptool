@@ -104,7 +104,7 @@ public:
    // deriving from GaspardTrackerModule
    // This is mandatory since the GaspardTracker*** does not derive from VDetector
    void SetInterCoordPointer(TInteractionCoordinates* interCoord);
-   TInteractionCoordinates* GetInterCoordPointer()	{return ms_InterCoord;};
+   TInteractionCoordinates* GetInterCoordPointer()   {return ms_InterCoord;};
 
 
    ////////////////////////////////////////////////////

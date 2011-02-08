@@ -15,7 +15,7 @@
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This class describe a Modular cylindrical Plastic Scintillator           *
- *	Few Material are instantiate and user can choose position and dimension	 * 
+ *   Few Material are instantiate and user can choose position and dimension    * 
  *  but also the adding of a lead plate on the rear side of the detector     *
  *                                                                           *
  *---------------------------------------------------------------------------*
@@ -55,61 +55,61 @@ public:
    ////////////////////////////////////////////////////
 public:
    // Cylindric plastic
-   void AddPlastic(	 G4double   R       					,
-			        			 G4double   Theta    					,
-			         			 G4double   Phi         			,
-			         			 G4double	 	PlasticThickness	,
-			         			 G4double		PlasticRadius			,
-			         			 G4String 	Scintillator			,
-			         			 G4double   LeadThickness  		);  
+   void AddPlastic(  G4double   R                  ,
+                     G4double   Theta              ,
+                     G4double   Phi                ,
+                     G4double   PlasticThickness   ,
+                     G4double   PlasticRadius      ,
+                     G4String   Scintillator       ,
+                     G4double   LeadThickness      );  
    
    // Squared Plastic
-   void AddPlastic(	G4double   R       				,
-			      				G4double   Theta    			,
-			      				G4double   Phi   					,
-			      				G4double   Height					,
-			      				G4double   Width					,
-			      				G4double   Thickness			,
-			      				G4String   Scintillator		,
-			      				G4double   LeadThickness	);
-		
-	void VolumeMaker(G4ThreeVector Det_pos, int DetNumber,G4LogicalVolume* world) ;
+   void AddPlastic(  G4double   R               ,
+                     G4double   Theta           ,
+                     G4double   Phi             ,
+                     G4double   Height          ,
+                     G4double   Width           ,
+                     G4double   Thickness       ,
+                     G4String   Scintillator    ,
+                     G4double   LeadThickness   );
+      
+   void VolumeMaker(G4ThreeVector Det_pos, int DetNumber,G4LogicalVolume* world) ;
    ////////////////////////////////////////////////////
    /////////  Inherite from VDetector class ///////////
    ////////////////////////////////////////////////////
 public:
    // Read stream at Configfile to pick-up parameters of detector (Position,...)
    // Called in DetecorConstruction::ReadDetextorConfiguration Method
-   void ReadConfiguration(string Path)          ;
+   void ReadConfiguration(string Path) ;
 
    // Construct detector and inialise sensitive part.
    // Called After DetecorConstruction::AddDetector Method
-   void ConstructDetector(G4LogicalVolume* world)  ;
+   void ConstructDetector(G4LogicalVolume* world) ;
 
    // Add Detector branch to the EventTree.
    // Called After DetecorConstruction::AddDetector Method
-   void InitializeRootOutput()            ;
+   void InitializeRootOutput() ;
 
    // Read sensitive part and fill the Root tree.
    // Called at in the EventAction::EndOfEventAvtion
-   void ReadSensitive(const G4Event* event)     ;
+   void ReadSensitive(const G4Event* event) ;
 
 public: // Material 
-	void InitializeMaterial() 		;
-	// Platic
-	G4Material* m_MaterialPlastic_BC400			; //BC-400 type plastic
-	G4Material* m_MaterialPlastic_BC452_2		; //BC452:BC-400 loaded with 2%Pb type plastic
-	G4Material* m_MaterialPlastic_BC452_5		; //BC452:BC-400 loaded with 5%Pb type plastic
-	G4Material* m_MaterialPlastic_BC452_10	; //BC452:BC-400 loaded with 10%Pb type plastic
-	// Lead
-	G4Material* m_MaterialLead		;
-	
-public:	//	Scorer
-	//	Initialize all Scorer used by the MUST2Array
-	void InitializeScorers() ;
+   void InitializeMaterial() ;
+   // Platic
+   G4Material* m_MaterialPlastic_BC400     ; //BC-400 type plastic
+   G4Material* m_MaterialPlastic_BC452_2   ; //BC452:BC-400 loaded with 2%Pb type plastic
+   G4Material* m_MaterialPlastic_BC452_5   ; //BC452:BC-400 loaded with 5%Pb type plastic
+   G4Material* m_MaterialPlastic_BC452_10  ; //BC452:BC-400 loaded with 10%Pb type plastic
+   // Lead
+   G4Material* m_MaterialLead ;
+   
+public:   //   Scorer
+   //   Initialize all Scorer used by the MUST2Array
+   void InitializeScorers() ;
 
-	//	Silicon Associate Scorer
-	G4MultiFunctionalDetector* m_PlasticScorer				 ;
+   //   Silicon Associate Scorer
+   G4MultiFunctionalDetector* m_PlasticScorer ;
    ////////////////////////////////////////////////////
    ///////////Event class to store Data////////////////
    ////////////////////////////////////////////////////
@@ -124,20 +124,20 @@ private:
    
    
    // Lead plate is added in front or back of the detector
-   vector<double>	  m_LeadThickness	;
+   vector<double>     m_LeadThickness ;
    
-   vector<double>		m_PlasticThickness	;
-   vector<double>		m_PlasticRadius			; // cylindrical shape
-   vector<double>		m_PlasticHeight			; // squared shape
-   vector<double>		m_PlasticWidth			; // squared shape
-   	   
+   vector<double>      m_PlasticThickness ;
+   vector<double>      m_PlasticRadius    ; // cylindrical shape
+   vector<double>      m_PlasticHeight    ; // squared shape
+   vector<double>      m_PlasticWidth     ; // squared shape
+         
    // Used for "By Angle Definition"
-   vector<G4double>  m_R         ; //  |
-   vector<G4double>  m_Theta     ; //  > Spherical coordinate plastic volume center
-   vector<G4double>  m_Phi    	 ; //  |
+   vector<G4double>  m_R      ; //  |
+   vector<G4double>  m_Theta  ; //  > Spherical coordinate plastic volume center
+   vector<G4double>  m_Phi    ; //  |
 
-	//	Scintillator type
-	vector<G4String> m_Scintillator ;
+   //   Scintillator type
+   vector<G4String> m_Scintillator ;
 
 
 };

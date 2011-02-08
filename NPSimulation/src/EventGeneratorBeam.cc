@@ -42,10 +42,10 @@ using namespace CLHEP;
 EventGeneratorBeam::EventGeneratorBeam()
 {
    m_InitConditions = new TInitialConditions();
-   m_Target         = NULL	;
-   m_beamA					= 0 		;
-   m_beamZ					= 0 		;
-   m_particle 			= NULL 	;
+   m_Target         = NULL    ;
+   m_beamA          = 0       ;
+   m_beamZ          = 0       ;
+   m_particle       = NULL    ;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -55,12 +55,12 @@ EventGeneratorBeam::~EventGeneratorBeam()
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void	EventGeneratorBeam::SetTarget(Target* Target) 
+void   EventGeneratorBeam::SetTarget(Target* Target) 
    {
-   	if(Target!=0)	
-   		{
-   			m_Target = Target;
-   		}
+      if(Target!=0)   
+         {
+            m_Target = Target;
+         }
    
    }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -74,16 +74,16 @@ void EventGeneratorBeam::ReadConfiguration(string Path)
    ifstream ReactionFile;
    ReactionFile.open(Path.c_str());
 
-	bool ReadingStatus 			= false ;
-	bool check_Z 				= false ;
-	bool check_A 				= false ;
-	bool check_Energy 			= false ;
-	bool check_EnergySpread 	= false ;
-	bool check_FWHMX 			= false ;
-	bool check_FWHMY 			= false ;
-	bool check_SigmaThetaX	 	= false ;
-	bool check_SigmaPhiY  	 	= false ;
-	
+   bool ReadingStatus       = false ;
+   bool check_Z             = false ;
+   bool check_A             = false ;
+   bool check_Energy        = false ;
+   bool check_EnergySpread  = false ;
+   bool check_FWHMX         = false ;
+   bool check_FWHMY         = false ;
+   bool check_SigmaThetaX   = false ;
+   bool check_SigmaPhiY     = false ;
+   
    if (ReactionFile.is_open()) {} else {
       return;
    }
@@ -97,106 +97,106 @@ void EventGeneratorBeam::ReadConfiguration(string Path)
          ReadingStatus = true ;
          }
 
-	while(ReadingStatus){
-	
-			 ReactionFile >> DataBuffer;
-	
-      		//Search for comment Symbol %
-      		if (DataBuffer.compare(0, 1, "%") == 0) {	ReactionFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
+   while(ReadingStatus){
+   
+          ReactionFile >> DataBuffer;
+   
+            //Search for comment Symbol %
+            if (DataBuffer.compare(0, 1, "%") == 0) {   ReactionFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
 
-	        else if (DataBuffer.compare(0, 10, "ParticleZ=") == 0) {
-	         	check_Z = true ;
-	            ReactionFile >> DataBuffer;
-	            m_beamZ = atof(DataBuffer.c_str());
-	            
-	            if(check_A)
-	            		G4cout << "Beam Particle: Z:" << m_beamZ << "  A:" << m_beamA << G4endl;
-	            
-	         }
+           else if (DataBuffer.compare(0, 10, "ParticleZ=") == 0) {
+               check_Z = true ;
+               ReactionFile >> DataBuffer;
+               m_beamZ = atof(DataBuffer.c_str());
+               
+               if(check_A)
+                     G4cout << "Beam Particle: Z:" << m_beamZ << "  A:" << m_beamA << G4endl;
+               
+            }
 
-	        
-	         else if (DataBuffer.compare(0, 10, "ParticleA=") == 0) {
-	         	check_A = true ;
-	            ReactionFile >> DataBuffer;
-	            m_beamA = atof(DataBuffer.c_str());
-	            
-	            if(check_Z)
-	            		G4cout << "Beam Particle: Z:" << m_beamZ << "  A:" << m_beamA << G4endl;
-	           
-	         }
+           
+            else if (DataBuffer.compare(0, 10, "ParticleA=") == 0) {
+               check_A = true ;
+               ReactionFile >> DataBuffer;
+               m_beamA = atof(DataBuffer.c_str());
+               
+               if(check_Z)
+                     G4cout << "Beam Particle: Z:" << m_beamZ << "  A:" << m_beamA << G4endl;
+              
+            }
 
-	         else if (DataBuffer.compare(0, 11, "BeamEnergy=") == 0) {
-	         	check_Energy = true ;
-	            ReactionFile >> DataBuffer;
-	            m_BeamEnergy = atof(DataBuffer.c_str()) * MeV;
-	            G4cout << "Beam Energy: " << m_BeamEnergy / MeV << " MeV" << G4endl;
-	         }
+            else if (DataBuffer.compare(0, 11, "BeamEnergy=") == 0) {
+               check_Energy = true ;
+               ReactionFile >> DataBuffer;
+               m_BeamEnergy = atof(DataBuffer.c_str()) * MeV;
+               G4cout << "Beam Energy: " << m_BeamEnergy / MeV << " MeV" << G4endl;
+            }
 
-	         else if (DataBuffer.compare(0, 17, "BeamEnergySpread=") == 0) {
-	         	check_EnergySpread = true ;
-	            ReactionFile >> DataBuffer;
-	            m_BeamEnergySpread = atof(DataBuffer.c_str()) * MeV;
-	            G4cout << "Beam Energy Spread: " << m_BeamEnergySpread / MeV << " MeV" << G4endl;
-	         }
+            else if (DataBuffer.compare(0, 17, "BeamEnergySpread=") == 0) {
+               check_EnergySpread = true ;
+               ReactionFile >> DataBuffer;
+               m_BeamEnergySpread = atof(DataBuffer.c_str()) * MeV;
+               G4cout << "Beam Energy Spread: " << m_BeamEnergySpread / MeV << " MeV" << G4endl;
+            }
 
-	         else if (DataBuffer.compare(0, 7, "SigmaX=") == 0) {
-	         	check_FWHMX = true ;
-	            ReactionFile >> DataBuffer;
-	            m_SigmaX = atof(DataBuffer.c_str()) * mm;
-	            G4cout << "Sigma X: " << m_SigmaX / mm << " mm" << G4endl;
-	         }
+            else if (DataBuffer.compare(0, 7, "SigmaX=") == 0) {
+               check_FWHMX = true ;
+               ReactionFile >> DataBuffer;
+               m_SigmaX = atof(DataBuffer.c_str()) * mm;
+               G4cout << "Sigma X: " << m_SigmaX / mm << " mm" << G4endl;
+            }
 
-	         else if (DataBuffer.compare(0, 7, "SigmaY=") == 0) {
-	            check_FWHMY = true ;
-	            ReactionFile >> DataBuffer;
-	            m_SigmaY = atof(DataBuffer.c_str()) * mm;
-	            G4cout << "Sigma Y: " << m_SigmaY / mm << " mm" << G4endl;
-	         }
+            else if (DataBuffer.compare(0, 7, "SigmaY=") == 0) {
+               check_FWHMY = true ;
+               ReactionFile >> DataBuffer;
+               m_SigmaY = atof(DataBuffer.c_str()) * mm;
+               G4cout << "Sigma Y: " << m_SigmaY / mm << " mm" << G4endl;
+            }
 
-	         else if (DataBuffer.compare(0, 12, "SigmaThetaX=") == 0) {
-	            check_SigmaThetaX = true ;
-	            ReactionFile >> DataBuffer;
-	            m_SigmaThetaX = atof(DataBuffer.c_str()) * deg;
-	            G4cout << "Sigma Theta X: " << m_SigmaThetaX / deg << " deg" << G4endl;
-	         }
-	         
-	         else if (DataBuffer.compare(0, 10, "SigmaPhiY=") == 0) {
-	         	check_SigmaPhiY = true ;
-	            ReactionFile >> DataBuffer;
-	            m_SigmaPhiY = atof(DataBuffer.c_str()) * deg;
-	            G4cout << "Sigma Phi Y: " << m_SigmaPhiY / deg << " deg" << G4endl;
-	         }
-	          
-         	///////////////////////////////////////////////////
-			//	If no Beam Token and no comment, toggle out
-	         else 
-	         	{ReadingStatus = false; G4cout << "WARNING : Wrong Token Sequence: Getting out " << G4endl ;}
-	         	
-	         ///////////////////////////////////////////////////
-			//	If all Token found toggle out
-	         if( check_Z && check_A && check_Energy && check_EnergySpread && check_FWHMX && check_FWHMY && check_SigmaThetaX && check_SigmaPhiY )
-	         	ReadingStatus = false ;	
-     	}
+            else if (DataBuffer.compare(0, 12, "SigmaThetaX=") == 0) {
+               check_SigmaThetaX = true ;
+               ReactionFile >> DataBuffer;
+               m_SigmaThetaX = atof(DataBuffer.c_str()) * deg;
+               G4cout << "Sigma Theta X: " << m_SigmaThetaX / deg << " deg" << G4endl;
+            }
+            
+            else if (DataBuffer.compare(0, 10, "SigmaPhiY=") == 0) {
+               check_SigmaPhiY = true ;
+               ReactionFile >> DataBuffer;
+               m_SigmaPhiY = atof(DataBuffer.c_str()) * deg;
+               G4cout << "Sigma Phi Y: " << m_SigmaPhiY / deg << " deg" << G4endl;
+            }
+             
+            ///////////////////////////////////////////////////
+         //   If no Beam Token and no comment, toggle out
+            else 
+               {ReadingStatus = false; G4cout << "WARNING : Wrong Token Sequence: Getting out " << G4endl ;}
+               
+            ///////////////////////////////////////////////////
+         //   If all Token found toggle out
+            if( check_Z && check_A && check_Energy && check_EnergySpread && check_FWHMX && check_FWHMY && check_SigmaThetaX && check_SigmaPhiY )
+               ReadingStatus = false ;   
+        }
    }
    
-   if( !check_Z || !check_A || !check_Energy || !check_EnergySpread || !check_FWHMX || !check_FWHMY || !check_SigmaThetaX || !check_SigmaPhiY )	
-   		{cout << "WARNING : Token Sequence Incomplete, Beam definition could not be Fonctionnal" << endl ;}
-   		
+   if( !check_Z || !check_A || !check_Energy || !check_EnergySpread || !check_FWHMX || !check_FWHMY || !check_SigmaThetaX || !check_SigmaPhiY )   
+         {cout << "WARNING : Token Sequence Incomplete, Beam definition could not be Fonctionnal" << endl ;}
+         
   cout << "///////////////////////////////////////////////////" << endl << endl ;
    
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorBeam::GenerateEvent(G4Event* anEvent, G4ParticleGun* particleGun)
 {
-	//--------------write the DeDx Table -------------------
+   //--------------write the DeDx Table -------------------
   if( anEvent->GetEventID()==0)
-		{
-	 		m_particle = G4ParticleTable::GetParticleTable()->GetIon(m_beamZ, m_beamA , 0.);
-			
-			if(m_Target!=0 )
-				m_Target->WriteDEDXTable(m_particle ,0, m_BeamEnergy+4*m_BeamEnergySpread);
-		}
-  		
+      {
+          m_particle = G4ParticleTable::GetParticleTable()->GetIon(m_beamZ, m_beamA , 0.);
+         
+         if(m_Target!=0 )
+            m_Target->WriteDEDXTable(m_particle ,0, m_BeamEnergy+4*m_BeamEnergySpread);
+      }
+        
    m_InitConditions->Clear();
    
    ///////////////////////////////////////////////////////////////////////
@@ -211,14 +211,14 @@ void EventGeneratorBeam::GenerateEvent(G4Event* anEvent, G4ParticleGun* particle
    G4double FinalBeamEnergy = 0 ;
    G4double InitialBeamEnergy = RandGauss::shoot(m_BeamEnergy, m_BeamEnergySpread);
    
-	m_Target->CalculateBeamInteraction(	0, m_SigmaX, 0, m_SigmaThetaX,
-                            					0, m_SigmaY, 0, m_SigmaPhiY,
-				                            	InitialBeamEnergy,
-				                            	m_particle,
-				                           	 	InterCoord, Beam_thetaX, Beam_phiY,
-                            					Beam_theta, Beam_phi,
-				                           	 	FinalBeamEnergy);
-				                           	 	
+   m_Target->CalculateBeamInteraction( 0, m_SigmaX, 0, m_SigmaThetaX,
+                                       0, m_SigmaY, 0, m_SigmaPhiY,
+                                       InitialBeamEnergy,
+                                       m_particle,
+                                       InterCoord, Beam_thetaX, Beam_phiY,
+                                       Beam_theta, Beam_phi,
+                                       FinalBeamEnergy);
+                                              
    // write vertex position to ROOT file
    G4double x0 = InterCoord.x();
    G4double y0 = InterCoord.y();
@@ -243,16 +243,16 @@ void EventGeneratorBeam::GenerateEvent(G4Event* anEvent, G4ParticleGun* particle
 
    G4double particle_energy = RandGauss::shoot(m_BeamEnergy, m_BeamEnergySpread);
    // Direction of particle, energy and laboratory angle
-   G4double momentum_x = sin(Beam_theta) * cos(Beam_phi)       	;
-   G4double momentum_y = sin(Beam_theta) * sin(Beam_phi)      	;
-   G4double momentum_z = cos(Beam_theta)             		;
+   G4double momentum_x = sin(Beam_theta) * cos(Beam_phi) ;
+   G4double momentum_y = sin(Beam_theta) * sin(Beam_phi) ;
+   G4double momentum_z = cos(Beam_theta) ;
    //Set the gun to shoot
-   particleGun->SetParticleMomentumDirection(G4ThreeVector(momentum_x, momentum_y, momentum_z))   	;
-   particleGun->SetParticleEnergy(particle_energy)                                  				;
-   particleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0))                           			;
+   particleGun->SetParticleMomentumDirection(G4ThreeVector(momentum_x, momentum_y, momentum_z)) ;
+   particleGun->SetParticleEnergy(particle_energy) ;
+   particleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0)) ;
 
    //Shoot the light particle
-   particleGun->GeneratePrimaryVertex(anEvent)        ;
+   particleGun->GeneratePrimaryVertex(anEvent) ;
 
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

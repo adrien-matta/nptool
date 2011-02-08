@@ -223,7 +223,7 @@ void W1::ReadConfiguration(string Path)
          ConfigFile >> DataBuffer;
 
          // Search for comment Symbol %
-	      if (DataBuffer.compare(0, 1, "%") == 0) {
+         if (DataBuffer.compare(0, 1, "%") == 0) {
             ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
          }
 
@@ -334,8 +334,8 @@ void W1::ReadConfiguration(string Path)
 
          else if (DataBuffer.compare(0, 4, "VIS=") == 0) {
             checkVis = true;
-	         ConfigFile >> DataBuffer;
-	         if (DataBuffer.compare(0, 3, "all") == 0) m_non_sensitive_part_visiualisation = true;
+            ConfigFile >> DataBuffer;
+            if (DataBuffer.compare(0, 3, "all") == 0) m_non_sensitive_part_visiualisation = true;
          }
 
          else {

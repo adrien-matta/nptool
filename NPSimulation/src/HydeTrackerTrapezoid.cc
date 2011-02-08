@@ -383,7 +383,7 @@ void HydeTrackerTrapezoid::ReadConfiguration(string Path)
    G4double Theta = 0 , Phi = 0 , R = 0 , beta_u = 0 , beta_v = 0 , beta_w = 0 ;
    int FIRSTSTAGE = 0 , SECONDSTAGE = 0 , THIRDSTAGE = 0                       ;
 
-	bool ReadingStatus = false ;
+   bool ReadingStatus = false ;
 
    bool check_A = false ;
    bool check_C = false ;
@@ -411,9 +411,9 @@ void HydeTrackerTrapezoid::ReadConfiguration(string Path)
    while(ReadingStatus){      
 
          ConfigFile >> DataBuffer;
-         //	Comment Line 
-		if (DataBuffer.compare(0, 1, "%") == 0) {/*do nothing */;}
-		
+         //   Comment Line 
+      if (DataBuffer.compare(0, 1, "%") == 0) {/*do nothing */;}
+      
          // Position method
          else if (DataBuffer.compare(0, 6, "X1_Y1=") == 0) {
             check_A = true;
@@ -480,7 +480,7 @@ void HydeTrackerTrapezoid::ReadConfiguration(string Path)
          }
          
 
-		 // Angle method
+       // Angle method
          else if (DataBuffer.compare(0, 6, "THETA=") == 0) {
             check_Theta = true;
             ConfigFile >> DataBuffer ;
@@ -526,7 +526,7 @@ void HydeTrackerTrapezoid::ReadConfiguration(string Path)
          }
 
          else if (DataBuffer.compare(0, 12, "SECONDSTAGE=") == 0) {
-         	check_SecondStage = true ;
+            check_SecondStage = true ;
             ConfigFile >> DataBuffer;
             SECONDSTAGE = atof(DataBuffer.c_str()) ;
          }
@@ -538,7 +538,7 @@ void HydeTrackerTrapezoid::ReadConfiguration(string Path)
          }
 
          else if (DataBuffer.compare(0, 4, "VIS=") == 0) {
-         	checkVis = true ;
+            checkVis = true ;
             ConfigFile >> DataBuffer;
             if (DataBuffer.compare(0, 3, "all") == 0) m_non_sensitive_part_visiualisation = true;
          }
@@ -550,14 +550,14 @@ void HydeTrackerTrapezoid::ReadConfiguration(string Path)
          if ((check_A && check_B && check_C && check_D && check_FirstStage && check_SecondStage && check_ThirdStage && checkVis) && !(check_Theta && check_Phi && check_R)) {
          
             ReadingStatus = false ;
-		    check_A = false ;
-		    check_C = false ;
-		    check_B = false ;
-		    check_D = false ;
-		    check_FirstStage = false ;
-		    check_SecondStage = false ;
-		    check_ThirdStage = false ;
-		    checkVis = false ;
+          check_A = false ;
+          check_C = false ;
+          check_B = false ;
+          check_D = false ;
+          check_FirstStage = false ;
+          check_SecondStage = false ;
+          check_ThirdStage = false ;
+          checkVis = false ;
          
             AddModule(A                ,
                       B                ,
@@ -570,16 +570,16 @@ void HydeTrackerTrapezoid::ReadConfiguration(string Path)
 
          //with angle method
         if ((check_Theta && check_Phi && check_R && check_FirstStage && check_SecondStage && check_ThirdStage && checkVis) && !(check_A && check_B && check_C && check_D)) {
-         	ReadingStatus = false ;
-         	 check_Theta = false ;
-   			 check_Phi   = false ;
-   			 check_R     = false ;
-   			 check_beta  = false ;
-		     check_FirstStage = false ;
-			 check_SecondStage = false ;
-		     check_ThirdStage = false ;
-		     checkVis = false ;
-		     
+            ReadingStatus = false ;
+             check_Theta = false ;
+             check_Phi   = false ;
+             check_R     = false ;
+             check_beta  = false ;
+           check_FirstStage = false ;
+          check_SecondStage = false ;
+           check_ThirdStage = false ;
+           checkVis = false ;
+           
             AddModule(R                ,
                       Theta            ,
                       Phi              ,

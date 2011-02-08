@@ -360,13 +360,13 @@ void HydeTrackerAnnular::ReadConfiguration(string Path)
          G4cout << "///" << G4endl           ;
          G4cout << "Annular element found: " << G4endl   ;
          ReadingStatus = true ;}
-		
-	while(ReadingStatus){
+      
+   while(ReadingStatus){
 
-		         ConfigFile >> DataBuffer;		
-		//	Comment Line 
-		if (DataBuffer.compare(0, 1, "%") == 0) {/*do nothing */;}
-		
+               ConfigFile >> DataBuffer;      
+      //   Comment Line 
+      if (DataBuffer.compare(0, 1, "%") == 0) {/*do nothing */;}
+      
 
          
          //Position method
@@ -397,19 +397,19 @@ void HydeTrackerAnnular::ReadConfiguration(string Path)
          }
 
          else if (DataBuffer.compare(0, 11, "FIRSTSTAGE=") == 0) {
-         	check_FirstStage = true ;
+            check_FirstStage = true ;
             ConfigFile >> DataBuffer;
             FIRSTSTAGE = atof(DataBuffer.c_str()) ;
          }
 
          else if (DataBuffer.compare(0, 12, "SECONDSTAGE=") == 0) {
-         	check_SecondStage = true ;
+            check_SecondStage = true ;
             ConfigFile >> DataBuffer;
             SECONDSTAGE = atof(DataBuffer.c_str()) ;
          }
 
          else if (DataBuffer.compare(0, 11, "THIRDSTAGE=") == 0) {
-         	check_ThirdStage = true ;
+            check_ThirdStage = true ;
             ConfigFile >> DataBuffer;
             THIRDSTAGE = atof(DataBuffer.c_str()) ;
          }
@@ -419,19 +419,19 @@ void HydeTrackerAnnular::ReadConfiguration(string Path)
             if (DataBuffer.compare(0, 3, "all") == 0) m_non_sensitive_part_visiualisation = true;
          }
 
-		else {
+      else {
         G4cout << "WARNIG: Wrong Token Sequence, HydeTrackerAnnular: Annular Element not added" << G4endl;
-        	}
+           }
 
          if (check_Z && check_Rmin && check_Rmax && check_FirstStage && check_SecondStage && check_ThirdStage) {
             
             ReadingStatus = false ;
              check_Z    = false ;
-  			 check_Rmin = false ;
-  			 check_Rmax = false ;
-  			 check_FirstStage = false ;
-   			 check_SecondStage = false ;
-   			 check_ThirdStage = false ;
+            check_Rmin = false ;
+            check_Rmax = false ;
+            check_FirstStage = false ;
+             check_SecondStage = false ;
+             check_ThirdStage = false ;
             
             AddModule(Z,
                       Rmin,

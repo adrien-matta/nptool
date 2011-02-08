@@ -15,12 +15,12 @@
  *  This event Generator is used to simulated two body TransfertReaction.    *
  *  A Phase Space calculation is then performed to decay the Heavy product.  *
  *  The TGenPhaseSpace from ROOT is used to calculate a phase space decay    *
- *  with flat distribution	                                                  *
+ *  with flat distribution                                                   *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *    + 20/01/2011: Add support for excitation energy for light ejectile     *
  *                  (N. de Sereville)                                        *
- *   									                                               *
+ *                                                                           *
  *                                                                           *
  *****************************************************************************/
 
@@ -58,75 +58,75 @@ using namespace CLHEP;
 EventGeneratorTransfertToResonance::EventGeneratorTransfertToResonance()
 {
    //------------- Default Constructor -------------
-	m_InitConditions	= new TInitialConditions()	;
-	m_Reaction 				= new Reaction() 						;
-	m_Target 					= new Target()							;
-	m_SigmaX       		=  0 												;
-	m_SigmaY       		=  0 												;
-	m_SigmaThetaX     =  0 												;
-	m_SigmaPhiY 			=  0 												;
-	m_ResonanceDecayZ = 0 												;
-	m_ResonanceDecayA = 0 												;
-	m_EventWeight     =	0 												;
+   m_InitConditions   = new TInitialConditions();
+   m_Reaction         = new Reaction();
+   m_Target           = new Target();
+   m_SigmaX           = 0;
+   m_SigmaY           = 0;
+   m_SigmaThetaX      = 0;
+   m_SigmaPhiY        = 0;
+   m_ResonanceDecayZ  = 0;
+   m_ResonanceDecayA  = 0;
+   m_EventWeight      = 0;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorTransfertToResonance::~EventGeneratorTransfertToResonance()
 {
   //------------- Default Destructor ------------
-	delete m_InitConditions	;
-	delete m_Reaction 			;
+   delete m_InitConditions;
+   delete m_Reaction;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void	EventGeneratorTransfertToResonance::SetTarget(Target* Target) 
+void   EventGeneratorTransfertToResonance::SetTarget(Target* Target) 
    {
-   	if(Target!=0)	
-   			m_Target = Target;
+      if(Target!=0)   
+            m_Target = Target;
    }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-EventGeneratorTransfertToResonance::EventGeneratorTransfertToResonance(	  string  	name1          		,
-																	      string   	name2          		,
-																	      string   	name3          		,
-																	      string   	name4          		,
-																	      double   	BeamEnergy        	,
-																	      double   	ExcitationEnergyLight    ,
-																	      double   	ExcitationEnergyHeavy    ,
-																	      double   	BeamEnergySpread  	,
-																	      double   	SigmaX         	,
-																	      double   	SigmaY         	,
-																	      double   	SigmaThetaX  ,
-																	      double   	SigmaPhiY    ,
-																	      double    ResonanceWidth,
-																	      int      	ResonanceDecayZ     ,
-																	      int      	ResonanceDecayA     ,
-																	      bool  	ShootLight        	,
-																	      bool  	ShootHeavy        	,
-																	      bool  	ShootDecayProduct   ,
-																	      string   	Path				)
+EventGeneratorTransfertToResonance::EventGeneratorTransfertToResonance( string   name1,
+                                                                        string   name2,
+                                                                        string   name3,
+                                                                        string   name4,
+                                                                        double   BeamEnergy,
+                                                                        double   ExcitationEnergyLight,
+                                                                        double   ExcitationEnergyHeavy,
+                                                                        double   BeamEnergySpread,
+                                                                        double   SigmaX,
+                                                                        double   SigmaY,
+                                                                        double   SigmaThetaX,
+                                                                        double   SigmaPhiY,
+                                                                        double   ResonanceWidth,
+                                                                        int      ResonanceDecayZ,
+                                                                        int      ResonanceDecayA,
+                                                                        bool     ShootLight,
+                                                                        bool     ShootHeavy,
+                                                                        bool     ShootDecayProduct,
+                                                                        string   Path)
 {
    //------------- Constructor with nuclei names and beam energy ------------
 
-   	SetEverything(  name1          		,        //Beam nuclei
-		            name2          		,        //Target nuclei
-		            name3          		,        //Product of reaction
-		            name4          		,        //Product of reaction
-		            BeamEnergy        	,        //Beam Energy
-		            ExcitationEnergyLight 	,        //Excitation of Heavy Nuclei
-		            ExcitationEnergyHeavy 	,        //Excitation of Heavy Nuclei
-		            BeamEnergySpread  	,
-		            SigmaX         	,
-		            SigmaY         	,
-		            SigmaThetaX  ,
-		            SigmaPhiY    ,
-		            ResonanceWidth ,
-		            ResonanceDecayZ     ,
-		            ResonanceDecayA     ,
-		           	ShootLight        	,
-		           	ShootHeavy        	,
-		           	ShootDecayProduct   ,
-		            Path				);        
-		            
-    m_EventWeight     =	0 												;
+   SetEverything( name1,        
+                  name2,
+                  name3,
+                  name4,
+                  BeamEnergy,
+                  ExcitationEnergyLight,
+                  ExcitationEnergyHeavy,
+                  BeamEnergySpread,
+                  SigmaX,
+                  SigmaY,
+                  SigmaThetaX,
+                  SigmaPhiY,
+                  ResonanceWidth,
+                  ResonanceDecayZ,
+                  ResonanceDecayA,
+                  ShootLight,
+                  ShootHeavy,
+                  ShootDecayProduct,
+                  Path);        
+               
+   m_EventWeight = 0;
 
 }
 
@@ -153,8 +153,8 @@ void EventGeneratorTransfertToResonance::ReadConfiguration(string Path)
    string Beam, Target, Heavy, Light, CrossSectionPath ;
    G4double BeamEnergy = 0, ExcitationEnergyLight = 0, ExcitationEnergyHeavy = 0;
    G4double BeamEnergySpread = 0 , SigmaX = 0 , SigmaY = 0 , SigmaThetaX = 0 , SigmaPhiY=0,  ResonanceWidth = 0 ,ResonanceDecayZ = 0 , ResonanceDecayA = 0  ;
-   bool  ShootLight     = false ;
-   bool  ShootHeavy      = false ;
+   bool  ShootLight = false ;
+   bool  ShootHeavy = false ;
    bool ShootDecayProduct = false ;
    
    bool ReadingStatus = false ;
@@ -195,214 +195,214 @@ void EventGeneratorTransfertToResonance::ReadConfiguration(string Path)
       if (LineBuffer.compare(0, 20, "TransfertToResonance") == 0) { ReadingStatus = true ;}
 
 
-while(ReadingStatus){
- 			
- 			 ReactionFile >> DataBuffer;
- 			 
- 			 //Search for comment Symbol %
-	      	 if (DataBuffer.compare(0, 1, "%") == 0) {	ReactionFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
- 			 
-	         else if (DataBuffer.compare(0, 5, "Beam=") == 0) {
-	         	check_Beam = true ;
-	            ReactionFile >> DataBuffer;
-	            Beam = DataBuffer;
-	            G4cout << "Beam " << Beam << G4endl;
-	         }
-	
-	         else if (DataBuffer.compare(0, 7, "Target=") == 0) {
-	            check_Target = true ;
-	            ReactionFile >> DataBuffer;
-	            Target = DataBuffer;
-	            G4cout << "Target " << Target << G4endl;
-	         }
+   while(ReadingStatus){
+          
+     ReactionFile >> DataBuffer;
+     
+     //Search for comment Symbol %
+      if (DataBuffer.compare(0, 1, "%") == 0) {   ReactionFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
+     
+      else if (DataBuffer.compare(0, 5, "Beam=") == 0) {
+         check_Beam = true ;
+         ReactionFile >> DataBuffer;
+         Beam = DataBuffer;
+         G4cout << "Beam " << Beam << G4endl;
+      }
 
-	         else if (DataBuffer.compare(0, 6, "Light=") == 0) {
-	         	check_Light = true ;
-	            ReactionFile >> DataBuffer;
-	            Light = DataBuffer;
-	            G4cout << "Light " << Light << G4endl;
-	         }
+      else if (DataBuffer.compare(0, 7, "Target=") == 0) {
+         check_Target = true ;
+         ReactionFile >> DataBuffer;
+         Target = DataBuffer;
+         G4cout << "Target " << Target << G4endl;
+      }
 
-	        else if  (DataBuffer.compare(0, 6, "Heavy=") == 0) {
-	            check_Heavy = true ;
-	            ReactionFile >> DataBuffer;
-	            Heavy = DataBuffer;
-	            G4cout << "Heavy " << Heavy << G4endl;
-	         }
+      else if (DataBuffer.compare(0, 6, "Light=") == 0) {
+         check_Light = true ;
+         ReactionFile >> DataBuffer;
+         Light = DataBuffer;
+         G4cout << "Light " << Light << G4endl;
+      }
 
-	        else if  (DataBuffer.compare(0, 22, "ExcitationEnergyLight=") == 0) {
-	        	check_ExcitationEnergyLight = true ;
-	            ReactionFile >> DataBuffer;
-	            ExcitationEnergyLight = atof(DataBuffer.c_str()) * MeV;
-	            G4cout << "Excitation Energy Light " << ExcitationEnergyLight / MeV << " MeV" << G4endl;
-	         }
+      else if  (DataBuffer.compare(0, 6, "Heavy=") == 0) {
+         check_Heavy = true ;
+         ReactionFile >> DataBuffer;
+         Heavy = DataBuffer;
+         G4cout << "Heavy " << Heavy << G4endl;
+      }
 
-	        else if  (DataBuffer.compare(0, 22, "ExcitationEnergyHeavy=") == 0) {
-	        	check_ExcitationEnergyHeavy = true ;
-	            ReactionFile >> DataBuffer;
-	            ExcitationEnergyHeavy = atof(DataBuffer.c_str()) * MeV;
-	            G4cout << "Excitation Energy Heavy " << ExcitationEnergyHeavy / MeV << " MeV" << G4endl;
-	         }
+      else if  (DataBuffer.compare(0, 22, "ExcitationEnergyLight=") == 0) {
+        check_ExcitationEnergyLight = true ;
+         ReactionFile >> DataBuffer;
+         ExcitationEnergyLight = atof(DataBuffer.c_str()) * MeV;
+         G4cout << "Excitation Energy Light " << ExcitationEnergyLight / MeV << " MeV" << G4endl;
+      }
 
-	        else if  (DataBuffer.compare(0, 11, "BeamEnergy=") == 0) {
-	        	check_BeamEnergy = true ;
-	            ReactionFile >> DataBuffer;
-	            BeamEnergy = atof(DataBuffer.c_str()) * MeV;
-	            G4cout << "Beam Energy " << BeamEnergy / MeV << " MeV" << G4endl;
-	         }
+      else if  (DataBuffer.compare(0, 22, "ExcitationEnergyHeavy=") == 0) {
+        check_ExcitationEnergyHeavy = true ;
+         ReactionFile >> DataBuffer;
+         ExcitationEnergyHeavy = atof(DataBuffer.c_str()) * MeV;
+         G4cout << "Excitation Energy Heavy " << ExcitationEnergyHeavy / MeV << " MeV" << G4endl;
+      }
 
-	        else if  (DataBuffer.compare(0, 17, "BeamEnergySpread=") == 0) {
-	        	check_BeamEnergySpread = true ;
-	            ReactionFile >> DataBuffer;
-	            BeamEnergySpread = atof(DataBuffer.c_str()) * MeV;
-	            G4cout << "Beam Energy Spread " << BeamEnergySpread / MeV << " MeV" << G4endl;
-	         }
+      else if  (DataBuffer.compare(0, 11, "BeamEnergy=") == 0) {
+        check_BeamEnergy = true ;
+         ReactionFile >> DataBuffer;
+         BeamEnergy = atof(DataBuffer.c_str()) * MeV;
+         G4cout << "Beam Energy " << BeamEnergy / MeV << " MeV" << G4endl;
+      }
 
-	        else if  (DataBuffer.compare(0, 7, "SigmaX=") == 0) {
-	        	check_FWHMX = true ;
-	            ReactionFile >> DataBuffer;
-	            SigmaX = atof(DataBuffer.c_str()) * mm;
-	            G4cout << "Beam FWHM X " << SigmaX << " mm" << G4endl;
-	         }
+      else if  (DataBuffer.compare(0, 17, "BeamEnergySpread=") == 0) {
+        check_BeamEnergySpread = true ;
+         ReactionFile >> DataBuffer;
+         BeamEnergySpread = atof(DataBuffer.c_str()) * MeV;
+         G4cout << "Beam Energy Spread " << BeamEnergySpread / MeV << " MeV" << G4endl;
+      }
 
-	        else if  (DataBuffer.compare(0, 7, "SigmaY=") == 0) {
-	        	check_FWHMY = true ;
-	            ReactionFile >> DataBuffer;
-	            SigmaY = atof(DataBuffer.c_str()) * mm;
-	            G4cout << "Beam FWHM Y " << SigmaX << " mm" << G4endl;
-	         }
+      else if  (DataBuffer.compare(0, 7, "SigmaX=") == 0) {
+        check_FWHMX = true ;
+         ReactionFile >> DataBuffer;
+         SigmaX = atof(DataBuffer.c_str()) * mm;
+         G4cout << "Beam FWHM X " << SigmaX << " mm" << G4endl;
+      }
 
-	        else if  (DataBuffer.compare(0, 19, "SigmaThetaX=") == 0) {
-	        	check_EmmitanceTheta = true ;
-	            ReactionFile >> DataBuffer;
-	            SigmaThetaX = atof(DataBuffer.c_str()) * deg;
-	            G4cout << "Beam Emmitance Theta " << SigmaThetaX / deg << " deg" << G4endl;
-	         }
-	         
-	        else if  (DataBuffer.compare(0, 17, "SigmaPhiY=") == 0) {
-	        	check_EmmitancePhi = true ;
-	            ReactionFile >> DataBuffer;
-	            SigmaPhiY = atof(DataBuffer.c_str()) * deg;
-	            G4cout << "Beam Emmitance Phi " << SigmaPhiY / deg << " deg" << G4endl;
-	         }
+      else if  (DataBuffer.compare(0, 7, "SigmaY=") == 0) {
+        check_FWHMY = true ;
+         ReactionFile >> DataBuffer;
+         SigmaY = atof(DataBuffer.c_str()) * mm;
+         G4cout << "Beam FWHM Y " << SigmaX << " mm" << G4endl;
+      }
 
-			else if (DataBuffer.compare(0, 15, "ResonanceWidth=") == 0) {
-				check_ResonanceWidth = true ;
-            	ReactionFile >> DataBuffer;
-            	ResonanceWidth = atof(DataBuffer.c_str())*MeV;
-            	G4cout << "Resonance Width " << ResonanceWidth/MeV << " MeV" << G4endl;
-         	 }
+      else if  (DataBuffer.compare(0, 19, "SigmaThetaX=") == 0) {
+        check_EmmitanceTheta = true ;
+         ReactionFile >> DataBuffer;
+         SigmaThetaX = atof(DataBuffer.c_str()) * deg;
+         G4cout << "Beam Emmitance Theta " << SigmaThetaX / deg << " deg" << G4endl;
+      }
 
-			else if (DataBuffer.compare(0, 17, "ResonanceDecayZ=") == 0) {
-				check_ResonanceDecayZ = true ;
-            	ReactionFile >> DataBuffer;
-            	ResonanceDecayZ = atof(DataBuffer.c_str());
-            	G4cout << "ResonanceDecayZ " << ResonanceDecayZ << G4endl;
-         	 }
+      else if  (DataBuffer.compare(0, 17, "SigmaPhiY=") == 0) {
+        check_EmmitancePhi = true ;
+         ReactionFile >> DataBuffer;
+         SigmaPhiY = atof(DataBuffer.c_str()) * deg;
+         G4cout << "Beam Emmitance Phi " << SigmaPhiY / deg << " deg" << G4endl;
+      }
 
-         	else if (DataBuffer.compare(0, 17, "ResonanceDecayA=") == 0) {
-         		check_ResonanceDecayA = true ;
-            	ReactionFile >> DataBuffer;
-            	ResonanceDecayA = atof(DataBuffer.c_str());
-            	G4cout << "ResonanceDecayA " << ResonanceDecayA << G4endl;
-         	}
+      else if (DataBuffer.compare(0, 15, "ResonanceWidth=") == 0) {
+      check_ResonanceWidth = true ;
+         ReactionFile >> DataBuffer;
+         ResonanceWidth = atof(DataBuffer.c_str())*MeV;
+         G4cout << "Resonance Width " << ResonanceWidth/MeV << " MeV" << G4endl;
+       }
 
-	        else if  (DataBuffer.compare(0, 17, "CrossSectionPath=") == 0) {
-	        	check_CrossSectionPath = true ;
-	            ReactionFile >> CrossSectionPath;
-	            G4cout << "Cross Section File: " << CrossSectionPath << G4endl ;
-	         }
+      else if (DataBuffer.compare(0, 17, "ResonanceDecayZ=") == 0) {
+      check_ResonanceDecayZ = true ;
+         ReactionFile >> DataBuffer;
+         ResonanceDecayZ = atof(DataBuffer.c_str());
+         G4cout << "ResonanceDecayZ " << ResonanceDecayZ << G4endl;
+       }
 
-	        else if  (DataBuffer.compare(0, 11, "ShootLight=") == 0) {
-	        	check_ShootLight = true ;
-	            ReactionFile >> DataBuffer;
-	            if (atof(DataBuffer.c_str()) == 1) ShootLight = true ;
-	            if (ShootLight)    G4cout << "Shoot Light particle      : yes" << G4endl;
-	            else           G4cout << "Shoot Light particle      : no"  << G4endl;
-	         }
+      else if (DataBuffer.compare(0, 17, "ResonanceDecayA=") == 0) {
+         check_ResonanceDecayA = true ;
+         ReactionFile >> DataBuffer;
+         ResonanceDecayA = atof(DataBuffer.c_str());
+         G4cout << "ResonanceDecayA " << ResonanceDecayA << G4endl;
+      }
 
-	        else if  (DataBuffer.compare(0, 11, "ShootHeavy=") == 0) {
-	        	check_ShootHeavy = true ;
-	            ReactionFile >> DataBuffer;
-	            if (atof(DataBuffer.c_str()) == 1) ShootHeavy = true ;
-	            if (ShootHeavy)    G4cout << "Shoot Heavy particle      : yes" << G4endl;
-	            else           G4cout << "Shoot Heavy particle      : no"  << G4endl;
-	         }
-	         
-        	else if (DataBuffer.compare(0, 18, "ShootDecayProduct=") == 0) {
-        		check_ShootDecayProduct = true ;
-	            ReactionFile >> DataBuffer;
-	            if (atof(DataBuffer.c_str()) == 1) ShootDecayProduct = true  ;
-	            if (ShootDecayProduct)  G4cout << "Shoot DecayProducts from decay : yes" << G4endl;
-	            else           G4cout << "Shoot DecayProducts from decay : no"  << G4endl;
-	         }
+      else if  (DataBuffer.compare(0, 17, "CrossSectionPath=") == 0) {
+        check_CrossSectionPath = true ;
+         ReactionFile >> CrossSectionPath;
+         G4cout << "Cross Section File: " << CrossSectionPath << G4endl ;
+      }
 
-			  
-         	///////////////////////////////////////////////////
-			//	If no Transfert Token and no comment, toggle out
-	         else 
-	         	{ReadingStatus = false; G4cout << "WARNING : Wrong Token Sequence: Getting out " << G4endl ;}
-	         	
-	         ///////////////////////////////////////////////////
-			//	If all Token found toggle out
-	         if (check_Beam && check_Target && check_Light && check_Heavy && check_ExcitationEnergyLight && check_ExcitationEnergyHeavy
-	         	&&  check_BeamEnergy && check_BeamEnergySpread && check_FWHMX && check_FWHMY && check_EmmitanceTheta 
-	         	&&  check_EmmitancePhi && check_CrossSectionPath && check_ShootLight && check_ShootHeavy 
-	         	&& check_ResonanceWidth && check_ResonanceDecayZ && check_ResonanceDecayA && check_ShootDecayProduct)
-	         	ReadingStatus = false ;	
+      else if  (DataBuffer.compare(0, 11, "ShootLight=") == 0) {
+        check_ShootLight = true ;
+         ReactionFile >> DataBuffer;
+         if (atof(DataBuffer.c_str()) == 1) ShootLight = true ;
+         if (ShootLight)    G4cout << "Shoot Light particle      : yes" << G4endl;
+         else           G4cout << "Shoot Light particle      : no"  << G4endl;
+      }
 
-		}
-	        
+      else if  (DataBuffer.compare(0, 11, "ShootHeavy=") == 0) {
+        check_ShootHeavy = true ;
+         ReactionFile >> DataBuffer;
+         if (atof(DataBuffer.c_str()) == 1) ShootHeavy = true ;
+         if (ShootHeavy)    G4cout << "Shoot Heavy particle      : yes" << G4endl;
+         else           G4cout << "Shoot Heavy particle      : no"  << G4endl;
+      }
 
-	}
+      else if (DataBuffer.compare(0, 18, "ShootDecayProduct=") == 0) {
+        check_ShootDecayProduct = true ;
+         ReactionFile >> DataBuffer;
+         if (atof(DataBuffer.c_str()) == 1) ShootDecayProduct = true  ;
+         if (ShootDecayProduct)  G4cout << "Shoot DecayProducts from decay : yes" << G4endl;
+         else           G4cout << "Shoot DecayProducts from decay : no"  << G4endl;
+      }
+
+     
+      ///////////////////////////////////////////////////
+      //   If no Transfert Token and no comment, toggle out
+      else 
+         {ReadingStatus = false; G4cout << "WARNING : Wrong Token Sequence: Getting out " << G4endl ;}
+         
+      ///////////////////////////////////////////////////
+      //   If all Token found toggle out
+      if (check_Beam && check_Target && check_Light && check_Heavy && check_ExcitationEnergyLight && check_ExcitationEnergyHeavy
+         &&  check_BeamEnergy && check_BeamEnergySpread && check_FWHMX && check_FWHMY && check_EmmitanceTheta 
+         &&  check_EmmitancePhi && check_CrossSectionPath && check_ShootLight && check_ShootHeavy 
+         && check_ResonanceWidth && check_ResonanceDecayZ && check_ResonanceDecayA && check_ShootDecayProduct)
+         ReadingStatus = false ;   
+
+      }
+           
+
+   }
    
-   SetEverything(	Beam            		,
-			         		Target            	,
-			         		Light          			,
-			         		Heavy          			,
-			         		BeamEnergy       		,
-			         		ExcitationEnergyLight  	,
-			         		ExcitationEnergyHeavy  	,
-			         		BeamEnergySpread  	,
-			         		SigmaX         			,
-			        		SigmaY         			,
-			         		SigmaThetaX				 	,
-			         		SigmaPhiY 					,
-			         		ResonanceWidth			,
-			         		ResonanceDecayZ    	,
-			         		ResonanceDecayA    	,
-			         		ShootLight        	,
-			         		ShootHeavy        	,
-			        		ShootDecayProduct  	,
-			         		CrossSectionPath		);
+   SetEverything( Beam,
+               Target,
+               Light,
+               Heavy,
+               BeamEnergy,
+               ExcitationEnergyLight,
+               ExcitationEnergyHeavy,
+               BeamEnergySpread,
+               SigmaX,
+               SigmaY,
+               SigmaThetaX,
+               SigmaPhiY,
+               ResonanceWidth,
+               ResonanceDecayZ,
+               ResonanceDecayA,
+               ShootLight,
+               ShootHeavy,
+               ShootDecayProduct,
+               CrossSectionPath);
 
-   		ReactionFile.close();
+   ReactionFile.close();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4ParticleGun* particleGun)
 {
-	// Initialize event weight to one.
-	m_EventWeight = 1 ;
-	
-	//	If first time, write the DeDx table
-	if(anEvent->GetEventID()==0)
-		{
-			//-------------- Before living, wrtie the DeDx Table -------------------
+   // Initialize event weight to one.
+   m_EventWeight = 1 ;
+   
+   //   If first time, write the DeDx table
+   if(anEvent->GetEventID()==0)
+      {
+         //-------------- Before living, wrtie the DeDx Table -------------------
 
-			G4int LightZx = m_Reaction->GetNucleus3()->GetZ() ;
-		  G4int LightAx = m_Reaction->GetNucleus3()->GetA() ;
-		  
-		  G4int BeamZx = m_Reaction->GetNucleus1()->GetZ() ;
-		  G4int BeamAx = m_Reaction->GetNucleus1()->GetA() ;
-		  
-		  if(m_Target!=0)
-		  	{
-		  		m_Target->WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(LightZx,LightAx, 0.) ,0, m_BeamEnergy+4*m_BeamEnergySpread);
-		  		m_Target->WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(BeamZx,BeamAx, 0.) ,0, m_BeamEnergy+4*m_BeamEnergySpread);
-		  	}
-		
-		}
+         G4int LightZx = m_Reaction->GetNucleus3()->GetZ() ;
+        G4int LightAx = m_Reaction->GetNucleus3()->GetA() ;
+        
+        G4int BeamZx = m_Reaction->GetNucleus1()->GetZ() ;
+        G4int BeamAx = m_Reaction->GetNucleus1()->GetA() ;
+        
+        if(m_Target!=0)
+           {
+              m_Target->WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(LightZx,LightAx, 0.) ,0, m_BeamEnergy+4*m_BeamEnergySpread);
+              m_Target->WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(BeamZx,BeamAx, 0.)   ,0, m_BeamEnergy+4*m_BeamEnergySpread);
+           }
+      
+      }
 
    // Clear contents of Precedent event (now stored in ROOTOutput)
    m_InitConditions->Clear();
@@ -417,24 +417,24 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
    G4ParticleDefinition* LightName
    = G4ParticleTable::GetParticleTable()->GetIon(LightZ, LightA, 0.);
 
-	 // Shoot the Resonance energy following the mean and width value
-	 // EXX should always be more than specific heat of the reaction
- //   double EXX = RandBreitWigner::shoot(m_ResonanceMean,m_ResonanceWidth) ;	 
- double EXX = RandGauss::shoot(m_ResonanceMean,m_ResonanceWidth) ;	 
+    // Shoot the Resonance energy following the mean and width value
+    // EXX should always be more than specific heat of the reaction
+ //   double EXX = RandBreitWigner::shoot(m_ResonanceMean,m_ResonanceWidth) ;    
+ double EXX = RandGauss::shoot(m_ResonanceMean,m_ResonanceWidth) ;    
     m_Reaction->SetExcitationHeavy( EXX );
 
-		while ( m_Reaction->CheckKinematic()==false ) 
-   		{
-//   			EXX = RandBreitWigner::shoot(m_ResonanceMean,m_ResonanceWidth) ;
-				EXX = RandGauss::shoot(m_ResonanceMean,m_ResonanceWidth) ;	 
-  	  	m_Reaction->SetExcitationHeavy( EXX );
-  	  }
+      while ( m_Reaction->CheckKinematic()==false ) 
+         {
+//            EXX = RandBreitWigner::shoot(m_ResonanceMean,m_ResonanceWidth) ;
+            EXX = RandGauss::shoot(m_ResonanceMean,m_ResonanceWidth) ;    
+          m_Reaction->SetExcitationHeavy( EXX );
+       }
    // Beam
    G4int BeamZ = m_Reaction->GetNucleus1()->GetZ();
    G4int BeamA = m_Reaction->GetNucleus1()->GetA();
    G4ParticleDefinition* BeamName = G4ParticleTable::GetParticleTable()->GetIon(BeamZ, BeamA, 0);
 
-	 ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
    ///// Calculate the incident beam direction as well as the vertex /////
    ///// of interaction in target and Energy Loss of the beam within /////
    ///// the target.                                                 /////
@@ -446,17 +446,16 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
    G4double FinalBeamEnergy = 0 ;
    G4double InitialBeamEnergy = RandGauss::shoot(m_BeamEnergy, m_BeamEnergySpread);
    
-	m_Target->CalculateBeamInteraction(	0, m_SigmaX, 0, m_SigmaThetaX,
-                            					0, m_SigmaY, 0, m_SigmaPhiY,
-				                            	InitialBeamEnergy,
-				                            	BeamName,
-				                           	 	InterCoord, Beam_thetaX, Beam_phiY,
-                            					Beam_theta, Beam_phi,
-				                           	 	FinalBeamEnergy);
-				                           	 	
-	m_Reaction->SetBeamEnergy(FinalBeamEnergy);
-  m_InitConditions->SetICIncidentEnergy(FinalBeamEnergy / MeV);
-  
+   m_Target->CalculateBeamInteraction( 0, m_SigmaX, 0, m_SigmaThetaX,
+                                       0, m_SigmaY, 0, m_SigmaPhiY,
+                                       InitialBeamEnergy,
+                                       BeamName,
+                                       InterCoord, Beam_thetaX, Beam_phiY,
+                                       Beam_theta, Beam_phi,
+                                       FinalBeamEnergy);
+                                              
+   m_Reaction->SetBeamEnergy(FinalBeamEnergy);
+   m_InitConditions->SetICIncidentEnergy(FinalBeamEnergy / MeV);
 
    // write vertex position to ROOT file
    G4double x0 = InterCoord.x();
@@ -542,8 +541,8 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
       m_InitConditions->SetICEmittedAngleThetaLabWorldFrame(theta_world / deg);
       m_InitConditions->SetICEmittedAnglePhiWorldFrame(phi_world / deg);
          // write angles/energy to ROOT file
-   		m_InitConditions->SetICEmittedAngleThetaLabIncidentFrame(ThetaLight / deg);
-   		m_InitConditions->SetICEmittedEnergy(EnergyLight/MeV);
+         m_InitConditions->SetICEmittedAngleThetaLabIncidentFrame(ThetaLight / deg);
+         m_InitConditions->SetICEmittedEnergy(EnergyLight/MeV);
       //Set the gun to shoot
       particleGun->SetParticleMomentumDirection(momentum_kine_world);
       //Shoot the light particle
@@ -561,35 +560,34 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
       if (phi_world < 1e-6) phi_world += 2*pi;
       
       if(m_ShootHeavy || m_ShootDecayProduct)
-      EventGeneratorTransfertToResonance::ResonanceDecay(	EnergyHeavy    	,
-      																										theta_world     ,
-												      														phi_world      	,
-												      														x0            	,
-												      														y0            	,
-												      														z0             	,
-												      														anEvent        	,
-												      														particleGun		  );
+      EventGeneratorTransfertToResonance::ResonanceDecay(   EnergyHeavy,
+                                                            theta_world,
+                                                            phi_world,
+                                                            x0,
+                                                            y0,
+                                                            z0,
+                                                            anEvent,
+                                                            particleGun);
       
    
 }
 
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventGeneratorTransfertToResonance::ResonanceDecay(  G4double EnergyHeavy    		,
-													      G4double ThetaHeavy     		,
-													      G4double PhiHeavy       		,
-													      G4double x0             		,
-													      G4double y0             		,
-													      G4double z0             		,
-													      G4Event* anEvent        		,
-													      G4ParticleGun* particleGun	)
+void EventGeneratorTransfertToResonance::ResonanceDecay( G4double EnergyHeavy,
+                                                         G4double ThetaHeavy,
+                                                         G4double PhiHeavy,
+                                                         G4double x0,
+                                                         G4double y0,
+                                                         G4double z0,
+                                                         G4Event* anEvent,
+                                                         G4ParticleGun* particleGun)
 {
    G4double parentZ = m_Reaction->GetNucleus4()->GetZ() ;
    G4double parentA = m_Reaction->GetNucleus4()->GetA() ;
 
-   G4int NumberOfNeutrons = (parentA - parentZ) - (m_ResonanceDecayA - m_ResonanceDecayZ)  	;
-   G4int NumberOfProtons  = parentZ - m_ResonanceDecayZ                  				  					;
-   G4int NumberOfDecayProducts = NumberOfNeutrons + NumberOfProtons         			  				;
+   G4int NumberOfNeutrons = (parentA - parentZ) - (m_ResonanceDecayA - m_ResonanceDecayZ) ;
+   G4int NumberOfProtons  = parentZ - m_ResonanceDecayZ ;
+   G4int NumberOfDecayProducts = NumberOfNeutrons + NumberOfProtons ;
 
    if (NumberOfNeutrons < 0 || NumberOfProtons < 0) {
       G4cout << "Error input for Resonance decay" << G4endl;
@@ -597,205 +595,206 @@ void EventGeneratorTransfertToResonance::ResonanceDecay(  G4double EnergyHeavy  
    }
    
    else {
-		//Obtain Mass of daughter Nuclei
-		G4ParticleDefinition* parent
-		= G4ParticleTable::GetParticleTable()->GetIon(parentZ, parentA, 0 )     ;
+      //Obtain Mass of daughter Nuclei
+      G4ParticleDefinition* parent
+      = G4ParticleTable::GetParticleTable()->GetIon(parentZ, parentA, 0 );
 
-		G4ParticleDefinition* daughter
-		= G4ParticleTable::GetParticleTable()->GetIon(m_ResonanceDecayZ, m_ResonanceDecayA, 0.) ;
+      G4ParticleDefinition* daughter
+      = G4ParticleTable::GetParticleTable()->GetIon(m_ResonanceDecayZ, m_ResonanceDecayA, 0.);
 
-		G4ParticleDefinition* neutron
-		=  G4ParticleTable::GetParticleTable()->FindParticle("neutron");
+      G4ParticleDefinition* neutron
+      =  G4ParticleTable::GetParticleTable()->FindParticle("neutron");
 
-		G4ParticleDefinition* proton
-		=  G4ParticleTable::GetParticleTable()->FindParticle("proton");
+      G4ParticleDefinition* proton
+      =  G4ParticleTable::GetParticleTable()->FindParticle("proton");
 
-		G4double M  = parent   -> GetPDGMass() + m_Reaction->GetExcitation()*MeV     ;
-		G4double md = daughter -> GetPDGMass()     ;
-		G4double mn = neutron  -> GetPDGMass()     ;
-		G4double mp = proton   -> GetPDGMass()     ;
-		
-		// Check that we are above threshold:
-		// If the Resonnance go below the threshold, decay is forced at thereshold
-		if (M < md + NumberOfNeutrons*mn + NumberOfProtons*mp)
-			{
-				double NewExx  = parent   -> GetPDGMass() - md - NumberOfNeutrons*mn - NumberOfProtons*mp ;
-				M = parent   -> GetPDGMass() + NewExx ;
-			}
-			
-		
-		G4double InitialE      	  = EnergyHeavy + M   			;
-		G4double InitialMomentumX = sqrt( InitialE*InitialE - M*M) * sin(ThetaHeavy) * cos(PhiHeavy) 		;
-		G4double InitialMomentumY = sqrt( InitialE*InitialE - M*M) * sin(ThetaHeavy) * sin(PhiHeavy) 		;
-		G4double InitialMomentumZ = sqrt( InitialE*InitialE - M*M) * cos(ThetaHeavy)                 		;
+      G4double M  = parent   -> GetPDGMass() + m_Reaction->GetExcitation()*MeV;
+      G4double md = daughter -> GetPDGMass() ;
+      G4double mn = neutron  -> GetPDGMass() ;
+      G4double mp = proton   -> GetPDGMass() ;
+      
+      // Check that we are above threshold:
+      // If the Resonnance go below the threshold, decay is forced at thereshold
+      if (M < md + NumberOfNeutrons*mn + NumberOfProtons*mp)
+         {
+            double NewExx  = parent   -> GetPDGMass() - md - NumberOfNeutrons*mn - NumberOfProtons*mp ;
+            M = parent   -> GetPDGMass() + NewExx ;
+         }
+         
+      
+      G4double InitialE           = EnergyHeavy + M            ;
+      G4double InitialMomentumX = sqrt( InitialE*InitialE - M*M) * sin(ThetaHeavy) * cos(PhiHeavy) ;
+      G4double InitialMomentumY = sqrt( InitialE*InitialE - M*M) * sin(ThetaHeavy) * sin(PhiHeavy) ;
+      G4double InitialMomentumZ = sqrt( InitialE*InitialE - M*M) * cos(ThetaHeavy)                 ;
 
-		TLorentzVector Initial = TLorentzVector(InitialMomentumX/GeV, InitialMomentumY/GeV, InitialMomentumZ/GeV,InitialE/GeV);
+      TLorentzVector Initial = TLorentzVector(InitialMomentumX/GeV, InitialMomentumY/GeV, InitialMomentumZ/GeV,InitialE/GeV);
 
-		// Array of masses express in GeV/c2
-		double* masses = new double[NumberOfDecayProducts+1];
+      // Array of masses express in GeV/c2
+      double* masses = new double[NumberOfDecayProducts+1];
 
-		//	Filling Array
-		masses[0] = md/GeV ;
-	
-		int ll = 1 ;
-		for(int i = 0 ; i < NumberOfNeutrons ; i++)
-				{masses[ll] = mn/GeV ; ll++;}
-				
-		for(int i = 0 ; i < NumberOfProtons ; i++)
-				{masses[ll] = mp/GeV ; ll++;}
-				
-		// Instentiate a Phase Space Generator, with flat distrution
-		TGenPhaseSpace TPhaseSpace ;
+      //   Filling Array
+      masses[0] = md/GeV ;
+   
+      int ll = 1 ;
+      for(int i = 0 ; i < NumberOfNeutrons ; i++)
+            {masses[ll] = mn/GeV ; ll++;}
+            
+      for(int i = 0 ; i < NumberOfProtons ; i++)
+            {masses[ll] = mp/GeV ; ll++;}
+            
+      // Instentiate a Phase Space Generator, with flat distrution
+      TGenPhaseSpace TPhaseSpace ;
 
-		if( !TPhaseSpace.SetDecay(Initial, NumberOfDecayProducts+1, masses) ) cout << "Warning: Phase Space Decay forbiden by kinematic, or more than 18 particles "<<endl;
+      if( !TPhaseSpace.SetDecay(Initial, NumberOfDecayProducts+1, masses) ) cout << "Warning: Phase Space Decay forbiden by kinematic, or more than 18 particles "<<endl;
 
-		//	Generate an event and store is weight in the Output Tree
-		m_EventWeight = TPhaseSpace.Generate() 		;
-		
-		
-		TLorentzVector* daugterLV ;
-		double Energy;
-		G4ThreeVector Momentum;
-		 if (m_ShootHeavy) 
-		 	{
-		 		daugterLV = TPhaseSpace.GetDecay(0);
-		 	
-		 		Momentum = G4ThreeVector(	daugterLV->X()*GeV	,
-											daugterLV->Y()*GeV	,
-											daugterLV->Z()*GeV 	);				
-		
-				Energy   = daugterLV->E()*GeV-md ;
-				Momentum.unit() ;		 	
-		 	
-				//Set the gun to shoot
-				particleGun->SetParticleDefinition(daughter)                    ;
-				particleGun->SetParticleMomentumDirection(Momentum)     		;
-				particleGun->SetParticleEnergy(Energy)                          ;
-				particleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0))     ;
-				// Shoot the Daugter
-				particleGun->GeneratePrimaryVertex(anEvent) ;
-				
-			   // get theta and phi in the world frame
-		       G4double theta_world = Momentum.theta();
-		       G4double phi_world   = Momentum.phi();
-		       if (phi_world < 1e-6) phi_world += 2*pi;
-		       // write angles in ROOT file
-		       m_InitConditions->SetICEmittedAngleThetaLabWorldFrame(theta_world / deg);
-		       m_InitConditions->SetICEmittedAnglePhiWorldFrame(phi_world / deg);		
-			   m_InitConditions->SetICEmittedEnergy(Energy);
-			}
-		
-		if (m_ShootDecayProduct) 
-			{
-				G4int jj = 1   ;
-				for ( int u = 0; u < NumberOfNeutrons ; u++) 
-					{
-						daugterLV = TPhaseSpace.GetDecay(jj);
+      //   Generate an event and store is weight in the Output Tree
+      m_EventWeight = TPhaseSpace.Generate()       ;
+      
+      
+      TLorentzVector* daugterLV ;
+      double Energy;
+      G4ThreeVector Momentum;
+       if (m_ShootHeavy) 
+          {
+             daugterLV = TPhaseSpace.GetDecay(0);
+          
+             Momentum = G4ThreeVector(   daugterLV->X()*GeV   ,
+                                 daugterLV->Y()*GeV   ,
+                                 daugterLV->Z()*GeV    );            
+      
+            Energy   = daugterLV->E()*GeV-md ;
+            Momentum.unit() ;          
+          
+            //Set the gun to shoot
+            particleGun->SetParticleDefinition(daughter);
+            particleGun->SetParticleMomentumDirection(Momentum);
+            particleGun->SetParticleEnergy(Energy);
+            particleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0));
+            // Shoot the Daugter
+            particleGun->GeneratePrimaryVertex(anEvent) ;
+            
+            // get theta and phi in the world frame
+             G4double theta_world = Momentum.theta();
+             G4double phi_world   = Momentum.phi();
+             if (phi_world < 1e-6) phi_world += 2*pi;
+             // write angles in ROOT file
+             m_InitConditions->SetICEmittedAngleThetaLabWorldFrame(theta_world / deg);
+             m_InitConditions->SetICEmittedAnglePhiWorldFrame(phi_world / deg);      
+            m_InitConditions->SetICEmittedEnergy(Energy);
+         }
+      
+      if (m_ShootDecayProduct) 
+         {
+            G4int jj = 1   ;
+            for ( int u = 0; u < NumberOfNeutrons ; u++) 
+               {
+                  daugterLV = TPhaseSpace.GetDecay(jj);
 
-						Momentum = G4ThreeVector(	daugterLV->X()*GeV	,
-													daugterLV->Y()*GeV	,
-													daugterLV->Z()*GeV 	);
-						Energy   = daugterLV->E()*GeV-mn ;
-						Momentum.unit() ;
-						//Set the gun to shoot
-						particleGun->SetParticleDefinition(neutron)                    	;
-						particleGun->SetParticleMomentumDirection(Momentum)     		;
-						particleGun->SetParticleEnergy(Energy)                          ;
-						particleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0))     ;
-						// Shoot the Daugter
-						particleGun->GeneratePrimaryVertex(anEvent) ;
-						
-						// get theta and phi in the world frame
-						G4double theta_world = Momentum.theta();
-						G4double phi_world   = Momentum.phi();
-						if (phi_world < 1e-6) phi_world += 2*pi;
-						// write angles in ROOT file
-						m_InitConditions->SetICEmittedAngleThetaLabWorldFrame(theta_world / deg);
-						m_InitConditions->SetICEmittedAnglePhiWorldFrame(phi_world / deg);		
-						m_InitConditions->SetICEmittedEnergy(Energy);
-						
-						jj++;
-					}
-				
-				for ( int u = 0; u < NumberOfProtons ; u++) 
-					{
-						daugterLV = TPhaseSpace.GetDecay(jj);
+                  Momentum = G4ThreeVector(  daugterLV->X()*GeV,
+                                             daugterLV->Y()*GeV,
+                                             daugterLV->Z()*GeV);
+                  Energy   = daugterLV->E()*GeV-mn ;
+                  Momentum.unit() ;
+                  //Set the gun to shoot
+                  particleGun->SetParticleDefinition(neutron);
+                  particleGun->SetParticleMomentumDirection(Momentum);
+                  particleGun->SetParticleEnergy(Energy);
+                  particleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0));
+                  // Shoot the Daugter
+                  particleGun->GeneratePrimaryVertex(anEvent) ;
+                  
+                  // get theta and phi in the world frame
+                  G4double theta_world = Momentum.theta();
+                  G4double phi_world   = Momentum.phi();
+                  if (phi_world < 1e-6) phi_world += 2*pi;
+                  // write angles in ROOT file
+                  m_InitConditions->SetICEmittedAngleThetaLabWorldFrame(theta_world / deg);
+                  m_InitConditions->SetICEmittedAnglePhiWorldFrame(phi_world / deg);      
+                  m_InitConditions->SetICEmittedEnergy(Energy);
+                  
+                  jj++;
+               }
+            
+            for ( int u = 0; u < NumberOfProtons ; u++) 
+               {
+                  daugterLV = TPhaseSpace.GetDecay(jj);
 
-						Momentum = G4ThreeVector(	daugterLV->X()*GeV	,
-													daugterLV->Y()*GeV	,
-													daugterLV->Z()*GeV 	);
-						Energy   = daugterLV->E()*GeV-mp ;
-						Momentum.unit() ;
-						//Set the gun to shoot
-						particleGun->SetParticleDefinition(proton)                      ;
-						particleGun->SetParticleMomentumDirection(Momentum)     		;
-						particleGun->SetParticleEnergy(Energy)                          ;
-						particleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0))     ;
-						// Shoot the Daugter
-						particleGun->GeneratePrimaryVertex(anEvent) ;
-						
-					 	// get theta and phi in the world frame
-						G4double theta_world = Momentum.theta();
-						G4double phi_world   = Momentum.phi();
-						if (phi_world < 1e-6) phi_world += 2*pi;
-						// write angles in ROOT file
-						m_InitConditions->SetICEmittedAngleThetaLabWorldFrame(theta_world / deg);
-						m_InitConditions->SetICEmittedAnglePhiWorldFrame(phi_world / deg);		
-						m_InitConditions->SetICEmittedEnergy(Energy);
-						jj++;
-					}
-				
-			
-		}
-		
-		delete masses 	;
-	}
+                  Momentum = G4ThreeVector(  daugterLV->X()*GeV,
+                                             daugterLV->Y()*GeV,
+                                             daugterLV->Z()*GeV);
+                  Energy   = daugterLV->E()*GeV-mp ;
+                  Momentum.unit() ;
+                  //Set the gun to shoot
+                  particleGun->SetParticleDefinition(proton);
+                  particleGun->SetParticleMomentumDirection(Momentum);
+                  particleGun->SetParticleEnergy(Energy);
+                  particleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0));
+                  // Shoot the Daugter
+                  particleGun->GeneratePrimaryVertex(anEvent);
+                  
+                   // get theta and phi in the world frame
+                  G4double theta_world = Momentum.theta();
+                  G4double phi_world   = Momentum.phi();
+                  if (phi_world < 1e-6) phi_world += 2*pi;
+                  // write angles in ROOT file
+                  m_InitConditions->SetICEmittedAngleThetaLabWorldFrame(theta_world / deg);
+                  m_InitConditions->SetICEmittedAnglePhiWorldFrame(phi_world / deg);      
+                  m_InitConditions->SetICEmittedEnergy(Energy);
+                  jj++;
+               }
+            
+         
+      }
+      
+      delete masses    ;
+   }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventGeneratorTransfertToResonance::SetEverything(	  string    name1          			,
-													      string   name2          			,
-													      string   name3          			,
-													      string   name4          			,
-													      double   BeamEnergy        		,
-													      double   ExcitationLight        		,
-													      double   ExcitationHeavy        		,
-													      double   BeamEnergySpread  		,
-													      double   SigmaX         			,
-													      double   SigmaY         			,
-													      double   SigmaThetaX      		,
-													      double   SigmaPhiY       			,
-													      double    ResonanceWidth          ,
-													      int      ResonanceDecayZ      	,
-													      int      ResonanceDecayA      	,
-													      bool  ShootLight        			,
-													      bool  ShootHeavy        			,
-													      bool  ShootDecayProduct      		,
-													      string   Path						)
+void EventGeneratorTransfertToResonance::SetEverything(  string   name1,
+                                                         string   name2,
+                                                         string   name3,
+                                                         string   name4,
+                                                         double   BeamEnergy,
+                                                         double   ExcitationLight,
+                                                         double   ExcitationHeavy,
+                                                         double   BeamEnergySpread,
+                                                         double   SigmaX,
+                                                         double   SigmaY,
+                                                         double   SigmaThetaX,
+                                                         double   SigmaPhiY,
+                                                         double   ResonanceWidth,
+                                                         int      ResonanceDecayZ,
+                                                         int      ResonanceDecayA,
+                                                         bool     ShootLight,
+                                                         bool     ShootHeavy,
+                                                         bool     ShootDecayProduct,
+                                                         string   Path)
 {
    //------------- Constructor with nuclei names and beam energy ------------
 
-	m_Reaction = new Reaction (	name1 ,
-								name2 ,
-								name3 ,
-								name4 ,
-								BeamEnergy,
-								ExcitationLight,
-								ExcitationHeavy,
-								Path) ;
-   m_BeamEnergy         = BeamEnergy;
-   m_BeamEnergySpread   =  BeamEnergySpread  ;
-   m_SigmaX       =  SigmaX         	;
-   m_SigmaY       =  SigmaY         	;
-   m_SigmaThetaX    =  SigmaThetaX    	 ;
-   m_SigmaPhiY    =  SigmaPhiY    	 ;
-   m_ResonanceWidth	=	ResonanceWidth	;
-   m_ResonanceMean	= ExcitationHeavy		;
-   m_ResonanceDecayZ =  ResonanceDecayZ      ;
-   m_ResonanceDecayA =  ResonanceDecayA      ;
-   m_ShootLight      =  ShootLight       	 ;
-   m_ShootHeavy      =  ShootHeavy        	;
-   m_ShootDecayProduct    =  ShootDecayProduct      	;
+   m_Reaction = new Reaction (   name1 ,
+                                 name2 ,
+                                 name3 ,
+                                 name4 ,
+                                 BeamEnergy,
+                                 ExcitationLight,
+                                 ExcitationHeavy,
+                                 Path) ;
+                                 
+   m_BeamEnergy         =  BeamEnergy;
+   m_BeamEnergySpread   =  BeamEnergySpread;
+   m_SigmaX             =  SigmaX;
+   m_SigmaY             =  SigmaY;
+   m_SigmaThetaX        =  SigmaThetaX;
+   m_SigmaPhiY          =  SigmaPhiY;
+   m_ResonanceWidth     =  ResonanceWidth;
+   m_ResonanceMean      =  ExcitationHeavy;
+   m_ResonanceDecayZ    =  ResonanceDecayZ;
+   m_ResonanceDecayA    =  ResonanceDecayA;
+   m_ShootLight         =  ShootLight;
+   m_ShootHeavy         =  ShootHeavy;
+   m_ShootDecayProduct  =  ShootDecayProduct;
 
 }
 

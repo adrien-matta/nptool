@@ -261,7 +261,7 @@ void GaspardTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
       logicSilicon->SetSensitiveDetector(m_FirstStageScorer);
 
       ///Visualisation of Silicon Strip
-      G4VisAttributes* SiliconVisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 0.9)) ;	// blue
+      G4VisAttributes* SiliconVisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 0.9)) ;   // blue
       logicSilicon->SetVisAttributes(SiliconVisAtt)                        ;
    }
 
@@ -284,7 +284,7 @@ void GaspardTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
       PVPBuffer = new G4PVPlacement(0, positionSecondStage, logicSecondStage, Name + "_SecondStage", logicMM, false, 0);
 
       ///Visualisation of Second Stage
-      G4VisAttributes* SecondStageVisAtt = new G4VisAttributes(G4Colour(0.9, 0, 0));	// red
+      G4VisAttributes* SecondStageVisAtt = new G4VisAttributes(G4Colour(0.9, 0, 0));   // red
       logicSecondStage->SetVisAttributes(SecondStageVisAtt);
 
       // Set Second Stage sensible
@@ -310,7 +310,7 @@ void GaspardTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
       PVPBuffer = new G4PVPlacement(0, positionThirdStage, logicThirdStage, Name + "_ThirdStage", logicMM, false, 0);
 
       ///Visualisation of Third Stage
-      G4VisAttributes* ThirdStageVisAtt = new G4VisAttributes(G4Colour(0.0, 0.9, 0.)) ;	// green
+      G4VisAttributes* ThirdStageVisAtt = new G4VisAttributes(G4Colour(0.0, 0.9, 0.)) ;   // green
       logicThirdStage->SetVisAttributes(ThirdStageVisAtt)                        ;
 
       // Set Third Stage sensible
@@ -350,13 +350,13 @@ void GaspardTrackerAnnular::ReadConfiguration(string Path)
          G4cout << "///" << G4endl           ;
          G4cout << "Annular element found: " << G4endl   ;
          ReadingStatus = true ;}
-		
-	while(ReadingStatus){
+      
+   while(ReadingStatus){
 
-		         ConfigFile >> DataBuffer;		
-		//	Comment Line 
-		if (DataBuffer.compare(0, 1, "%") == 0) {/*do nothing */;}
-		
+               ConfigFile >> DataBuffer;      
+      //   Comment Line 
+      if (DataBuffer.compare(0, 1, "%") == 0) {/*do nothing */;}
+      
 
          
          //Position method
@@ -387,19 +387,19 @@ void GaspardTrackerAnnular::ReadConfiguration(string Path)
          }
 
          else if (DataBuffer.compare(0, 11, "FIRSTSTAGE=") == 0) {
-         	check_FirstStage = true ;
+            check_FirstStage = true ;
             ConfigFile >> DataBuffer;
             FIRSTSTAGE = atof(DataBuffer.c_str()) ;
          }
 
          else if (DataBuffer.compare(0, 12, "SECONDSTAGE=") == 0) {
-         	check_SecondStage = true ;
+            check_SecondStage = true ;
             ConfigFile >> DataBuffer;
             SECONDSTAGE = atof(DataBuffer.c_str()) ;
          }
 
          else if (DataBuffer.compare(0, 11, "THIRDSTAGE=") == 0) {
-         	check_ThirdStage = true ;
+            check_ThirdStage = true ;
             ConfigFile >> DataBuffer;
             THIRDSTAGE = atof(DataBuffer.c_str()) ;
          }
@@ -409,19 +409,19 @@ void GaspardTrackerAnnular::ReadConfiguration(string Path)
             if (DataBuffer.compare(0, 3, "all") == 0) m_non_sensitive_part_visiualisation = true;
          }
 
-		else {
+      else {
         G4cout << "WARNIG: Wrong Token Sequence, GaspardTrackerAnnular: Annular Element not added" << G4endl;
-        	}
+           }
 
          if (check_Z && check_Rmin && check_Rmax && check_FirstStage && check_SecondStage && check_ThirdStage) {
             
             ReadingStatus = false ;
              check_Z    = false ;
-  			 check_Rmin = false ;
-  			 check_Rmax = false ;
-  			 check_FirstStage = false ;
-   			 check_SecondStage = false ;
-   			 check_ThirdStage = false ;
+            check_Rmin = false ;
+            check_Rmax = false ;
+            check_FirstStage = false ;
+             check_SecondStage = false ;
+             check_ThirdStage = false ;
             
             AddModule(Z,
                       Rmin,

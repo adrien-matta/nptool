@@ -106,7 +106,7 @@ public:
    // deriving from GaspardTrackerModule
    // This is mandatory since the GaspardTracker*** does not derive from VDetector
    void SetInterCoordPointer(TInteractionCoordinates* interCoord);
-   TInteractionCoordinates* GetInterCoordPointer()	{return ms_InterCoord;};
+   TInteractionCoordinates* GetInterCoordPointer()   {return ms_InterCoord;};
 
 
    ////////////////////////////////////////////////////
@@ -147,10 +147,10 @@ private:
 namespace GPDDUMMYSHAPE
 {
    // Resolution
-//   const G4double ResoFirstStage  = 0;	// = 50 keV of Resolution   //   Unit is MeV/2.35
-   const G4double ResoFirstStage  = 0.0213;	// = 50 keV of Resolution   //   Unit is MeV/2.35
-   const G4double ResoSecondStage = 0.0426;	// = 100 keV of resolution //   Unit is MeV/2.35
-   const G4double ResoThirdStage  = 0.0426;	// = 100 keV of resolution //   Unit is MeV/2.35
+//   const G4double ResoFirstStage  = 0;   // = 50 keV of Resolution   //   Unit is MeV/2.35
+   const G4double ResoFirstStage  = 0.0213;   // = 50 keV of Resolution   //   Unit is MeV/2.35
+   const G4double ResoSecondStage = 0.0426;   // = 100 keV of resolution //   Unit is MeV/2.35
+   const G4double ResoThirdStage  = 0.0426;   // = 100 keV of resolution //   Unit is MeV/2.35
    const G4double ResoTimeGpd     = 0.212765957;// = 500ps                 //   Unit is  ns/2.35
 
    // Geometry for the mother volume containing the different layers of your dummy shape module
@@ -168,11 +168,11 @@ namespace GPDDUMMYSHAPE
 //   const G4double FirstStageThickness  = 2*mm;
    // for testing the excitation energy reconstruction
 //   const G4double FirstStageThickness  = 1.3*cm;
-//   const G4int NumberOfStrips	       = 10; // 5 mm strip pitch
-//   const G4int NumberOfStrips	       = 25; // 2 mm strip pitch
-//   const G4int NumberOfStrips	       = 50; // 1 mm strip pitch
-   const G4int NumberOfStrips	       = 100; // 0.5 mm strip pitch
-//   const G4int NumberOfStrips	       = 500; // 0.1 mm strip pitch
+//   const G4int NumberOfStrips          = 10; // 5 mm strip pitch
+//   const G4int NumberOfStrips          = 25; // 2 mm strip pitch
+//   const G4int NumberOfStrips          = 50; // 1 mm strip pitch
+   const G4int NumberOfStrips          = 100; // 0.5 mm strip pitch
+//   const G4int NumberOfStrips          = 500; // 0.1 mm strip pitch
 
    // Second stage
    const G4double SecondStageFace      = FirstStageFace;

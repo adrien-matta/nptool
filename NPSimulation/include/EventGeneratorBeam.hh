@@ -52,19 +52,19 @@ public:     // Inherit from VEventGenerator Class
 
 
 private: // TTree to store initial value of beam and reaction
-   TInitialConditions*	m_InitConditions;
+   TInitialConditions*   m_InitConditions;
 
-		   
+         
 private: // Source parameter
-   G4ParticleDefinition*	m_particle;  // Kind of particle to shoot
-   G4int 				m_beamA;
-   G4int				m_beamZ;
-   G4double			m_BeamEnergy;
-   G4double			m_BeamEnergySpread;
-   G4double			m_SigmaX;
-   G4double			m_SigmaY;
-   G4double			m_SigmaThetaX;
-   G4double			m_SigmaPhiY;
+   G4ParticleDefinition*   m_particle;  // Kind of particle to shoot
+   G4int     m_beamA;
+   G4int     m_beamZ;
+   G4double  m_BeamEnergy;
+   G4double  m_BeamEnergySpread;
+   G4double  m_SigmaX;
+   G4double  m_SigmaY;
+   G4double  m_SigmaThetaX;
+   G4double  m_SigmaPhiY;
 
 private: // Target Value
    Target* m_Target;

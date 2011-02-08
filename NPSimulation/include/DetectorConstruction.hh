@@ -11,7 +11,7 @@
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
  * Creation Date  : January 2009                                             *
- * Last update    : January 2010                                                         *
+ * Last update    : January 2010                                             *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This Class manage the virtual detector and call their method.            *
@@ -76,8 +76,8 @@ private: // Data about the target
    Chamber*  m_Chamber;
 
 public:  // Getter and Setter
-   Target*  GetTarget()		{return m_Target;}
-   Chamber*  GetChamber()		{return m_Chamber;}
+   Target*  GetTarget()    {return m_Target;}
+   Chamber*  GetChamber()  {return m_Chamber;}
 };
 
 #endif

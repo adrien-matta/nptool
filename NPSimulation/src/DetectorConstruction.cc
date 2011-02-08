@@ -61,8 +61,8 @@
 DetectorConstruction::DetectorConstruction()
       :  world_log(0), world_phys(0)
 {
-   m_Target	= 0;
-   m_Chamber	= 0;
+   m_Target   = 0;
+   m_Chamber  = 0;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -163,13 +163,13 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
    bool cAddThinSi       = false;
    bool cGeneralTarget   = false;
    bool cGeneralChamber  = false;
-   bool cGPDTracker      = false;	// Gaspard Tracker
+   bool cGPDTracker      = false;   // Gaspard Tracker
    bool cHYDTracker      = false;   // Hyde detector
    bool cS1              = false;
    bool cPlastic         = false;
    bool cDummy           = false;
-   bool cParis           = false;	// Paris Calorimeter
-   bool cShield          = false;	// Paris Shield CsI
+   bool cParis           = false;   // Paris Calorimeter
+   bool cShield          = false;   // Paris Shield CsI
    bool cW1              = false;   // W1 Micron DSSD
    //////////////////////////////////////////////////////////////////////////////////////////
    ifstream ConfigFile;
@@ -363,7 +363,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       }
       
       ////////////////////////////////////////////
-      ////////// Search for Plastic	   ///////////
+      ////////// Search for Plastic      ///////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 19, "ScintillatorPlastic") == 0 && cPlastic == false) {
          cPlastic = true ;

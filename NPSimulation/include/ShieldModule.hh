@@ -71,11 +71,11 @@ public:
    void InitializeIndex();
 
 public:
-   TShieldData*		GetEventPointer() 	{return ms_Event;};
+   TShieldData*      GetEventPointer()    {return ms_Event;};
 
 protected:
    // Class to store the result of simulation
-   static TShieldData*		ms_Event;
+   static TShieldData*      ms_Event;
 
    // Set to true if you want to see Telescope Frame in your visualisation
    bool              m_non_sensitive_part_visiualisation;

@@ -95,7 +95,7 @@ public:
    // deriving from ParisModule
    // This is mandatory since the Paris*** does not derive from VDetector
    void SetInterCoordPointer(TInteractionCoordinates* interCoord);
-   TInteractionCoordinates* GetInterCoordPointer()	{return ms_InterCoord;};
+   TInteractionCoordinates* GetInterCoordPointer()   {return ms_InterCoord;};
 
 
    ////////////////////////////////////////////////////
@@ -138,10 +138,10 @@ namespace PARISPHOSWICH
 
 
    // Resolution
-//   const G4double ResoFirstStage  = 0;	// = 50 keV of Resolution   //   Unit is MeV/2.35
-     const G4double ResoFirstStage  = 0.0099;	// = 3.5% at .662MeV of Resolution   //   Unit is MeV/2.35
-     const G4double ResoSecondStage = 0.0366;	// = 13% at .662 MeV of resolution //   Unit is MeV/2.35
-   const G4double ResoThirdStage  = 0.0213;	// = 50 keV of resolution //   Unit is MeV/2.35
+//   const G4double ResoFirstStage  = 0;   // = 50 keV of Resolution   //   Unit is MeV/2.35
+     const G4double ResoFirstStage  = 0.0099;   // = 3.5% at .662MeV of Resolution   //   Unit is MeV/2.35
+     const G4double ResoSecondStage = 0.0366;   // = 13% at .662 MeV of resolution //   Unit is MeV/2.35
+   const G4double ResoThirdStage  = 0.0213;   // = 50 keV of resolution //   Unit is MeV/2.35
    const G4double ResoTimeGpd     = 0.212765957;// = 500ps                 //   Unit is  ns/2.35
 
    // Geometry for the mother volume containing the different layers of your dummy shape module

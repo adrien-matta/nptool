@@ -71,11 +71,11 @@ public:
    void InitializeIndex();
 
 public:
-   THydeTrackerData*		GetEventPointer() 	{return ms_Event;};
+   THydeTrackerData*      GetEventPointer()    {return ms_Event;};
 
 protected:
    // Class to store the result of simulation
-   static THydeTrackerData*		ms_Event;
+   static THydeTrackerData*      ms_Event;
 
    // Set to true if you want this stage on you telescope
    vector<bool>      m_wFirstStage;

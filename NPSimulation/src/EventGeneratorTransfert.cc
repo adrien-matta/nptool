@@ -51,18 +51,18 @@ using namespace CLHEP;
 EventGeneratorTransfert::EventGeneratorTransfert()
 {
    //------------- Default Constructor -------------
-   m_InitConditions	= new TInitialConditions();
-   m_Reaction 		= new Reaction();
-   m_Target		= 0;
+   m_InitConditions = new TInitialConditions();
+   m_Reaction       = new Reaction();
+   m_Target         = 0;
 
-   m_BeamEnergy		= 0;
-   m_BeamEnergySpread	= 0;
-   m_SigmaX		= 0;
-   m_SigmaY		= 0;
-   m_SigmaThetaX	= 0;
-   m_SigmaPhiY		= 0;
-   m_ShootLight		= 0;
-   m_ShootHeavy		= 0;
+   m_BeamEnergy       = 0;
+   m_BeamEnergySpread = 0;
+   m_SigmaX           = 0;
+   m_SigmaY           = 0;
+   m_SigmaThetaX      = 0;
+   m_SigmaPhiY        = 0;
+   m_ShootLight       = 0;
+   m_ShootHeavy       = 0;
 }
 
 
@@ -84,37 +84,37 @@ EventGeneratorTransfert::~EventGeneratorTransfert()
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-EventGeneratorTransfert::EventGeneratorTransfert(string name1             ,        // Beam nuclei
-		             string name2             ,        // Target nuclei
-		             string name3             ,        // Product of reaction
-		             string name4             ,        // Product of reaction
-		             double BeamEnergy        ,        // Beam Energy
-		             double ExcitationEnergyLight  ,        // Excitation of Light Nuclei
-		             double ExcitationEnergyHeavy  ,        // Excitation of Heavy Nuclei
-		             double BeamEnergySpread  ,
-		             double SigmaX         ,
-		             double SigmaY         ,
-		             double SigmaThetaX       ,
-		             double SigmaPhiY  ,
-		             bool   ShootLight        ,
-		             bool   ShootHeavy        ,
-		             string Path)                     // Path of the differentiel Cross Section
+EventGeneratorTransfert::EventGeneratorTransfert(  string name1                  ,  // Beam nuclei
+                                                   string name2                  ,  // Target nuclei
+                                                   string name3                  ,  // Product of reaction
+                                                   string name4                  ,  // Product of reaction
+                                                   double BeamEnergy             ,  // Beam Energy
+                                                   double ExcitationEnergyLight  ,  // Excitation of Light Nuclei
+                                                   double ExcitationEnergyHeavy  ,  // Excitation of Heavy Nuclei
+                                                   double BeamEnergySpread       ,
+                                                   double SigmaX                 ,
+                                                   double SigmaY                 ,
+                                                   double SigmaThetaX            ,
+                                                   double SigmaPhiY              ,
+                                                   bool   ShootLight             ,
+                                                   bool   ShootHeavy             ,
+                                                   string Path                   )  // Path of the differentiel Cross Section
 {
- SetEverything(		name1             ,        // Beam nuclei
-		              name2             ,        // Target nuclei
-		              name3             ,        // Product of reaction
-		              name4             ,        // Product of reaction
-		              BeamEnergy        ,        // Beam Energy
-		              ExcitationEnergyLight  ,        // Excitation of Light Nuclei
-		              ExcitationEnergyHeavy  ,        // Excitation of Heavy Nuclei
-		              BeamEnergySpread  ,
-		              SigmaX         ,
-		              SigmaY         ,
-		              SigmaThetaX       ,
-		              SigmaPhiY  ,
-		               ShootLight        ,
-		                ShootHeavy        ,
-		             Path);        
+ SetEverything(   name1,       
+                  name2,        
+                  name3,       
+                  name4,        
+                  BeamEnergy,        
+                  ExcitationEnergyLight,        
+                  ExcitationEnergyHeavy,
+                  BeamEnergySpread,
+                  SigmaX,
+                  SigmaY,
+                  SigmaThetaX,
+                  SigmaPhiY,
+                  ShootLight,
+                  ShootHeavy,
+                  Path);      
 
 }
 
@@ -149,8 +149,8 @@ void EventGeneratorTransfert::ReadConfiguration(string Path)
    string Beam, Target, Heavy, Light, CrossSectionPath ;
    G4double BeamEnergy = 0 , ExcitationEnergyLight = 0, ExcitationEnergyHeavy = 0;
    G4double BeamEnergySpread = 0 , SigmaX = 0 , SigmaY = 0 , SigmaThetaX = 0 , SigmaPhiY=0;
-   bool  ShootLight     = false ;
-   bool  ShootHeavy      = false ;
+   bool  ShootLight = false ;
+   bool  ShootHeavy = false ;
    
    bool ReadingStatus = false ;
    bool check_Beam = false ;
@@ -186,159 +186,159 @@ void EventGeneratorTransfert::ReadConfiguration(string Path)
       if (LineBuffer.compare(0, 9, "Transfert") == 0) { ReadingStatus = true ;}
 
 
-while(ReadingStatus){
- 			
- 			 ReactionFile >> DataBuffer;
- 			 
- 			 //Search for comment Symbol %
-	      	 if (DataBuffer.compare(0, 1, "%") == 0) {	ReactionFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
- 			 
-	         else if (DataBuffer.compare(0, 5, "Beam=") == 0) {
-	         	check_Beam = true ;
-	            ReactionFile >> DataBuffer;
-	            Beam = DataBuffer;
-	            G4cout << "Beam " << Beam << G4endl;
-	         }
-	
-	         else if (DataBuffer.compare(0, 7, "Target=") == 0) {
-	            check_Target = true ;
-	            ReactionFile >> DataBuffer;
-	            Target = DataBuffer;
-	            G4cout << "Target " << Target << G4endl;
-	         }
+   while(ReadingStatus){
+          
+        ReactionFile >> DataBuffer;
+        
+        //Search for comment Symbol %
+          if (DataBuffer.compare(0, 1, "%") == 0) {   ReactionFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
+        
+         else if (DataBuffer.compare(0, 5, "Beam=") == 0) {
+            check_Beam = true ;
+            ReactionFile >> DataBuffer;
+            Beam = DataBuffer;
+            G4cout << "Beam " << Beam << G4endl;
+         }
 
-	         else if (DataBuffer.compare(0, 6, "Light=") == 0) {
-	         	check_Light = true ;
-	            ReactionFile >> DataBuffer;
-	            Light = DataBuffer;
-	            G4cout << "Light " << Light << G4endl;
-	         }
+         else if (DataBuffer.compare(0, 7, "Target=") == 0) {
+            check_Target = true ;
+            ReactionFile >> DataBuffer;
+            Target = DataBuffer;
+            G4cout << "Target " << Target << G4endl;
+         }
 
-	        else if  (DataBuffer.compare(0, 6, "Heavy=") == 0) {
-	            check_Heavy = true ;
-	            ReactionFile >> DataBuffer;
-	            Heavy = DataBuffer;
-	            G4cout << "Heavy " << Heavy << G4endl;
-	         }
+         else if (DataBuffer.compare(0, 6, "Light=") == 0) {
+            check_Light = true ;
+            ReactionFile >> DataBuffer;
+            Light = DataBuffer;
+            G4cout << "Light " << Light << G4endl;
+         }
 
-	        else if  (DataBuffer.compare(0, 22, "ExcitationEnergyLight=") == 0) {
-	        	check_ExcitationEnergyLight = true ;
-	            ReactionFile >> DataBuffer;
-	            ExcitationEnergyLight = atof(DataBuffer.c_str()) * MeV;
-	            G4cout << "Excitation Energy Light" << ExcitationEnergyLight / MeV << " MeV" << G4endl;
-	         }
+        else if  (DataBuffer.compare(0, 6, "Heavy=") == 0) {
+            check_Heavy = true ;
+            ReactionFile >> DataBuffer;
+            Heavy = DataBuffer;
+            G4cout << "Heavy " << Heavy << G4endl;
+         }
 
-	        else if  (DataBuffer.compare(0, 22, "ExcitationEnergyHeavy=") == 0) {
-	        	check_ExcitationEnergyHeavy = true ;
-	            ReactionFile >> DataBuffer;
-	            ExcitationEnergyHeavy = atof(DataBuffer.c_str()) * MeV;
-	            G4cout << "Excitation Energy Heavy" << ExcitationEnergyHeavy / MeV << " MeV" << G4endl;
-	         }
+        else if  (DataBuffer.compare(0, 22, "ExcitationEnergyLight=") == 0) {
+           check_ExcitationEnergyLight = true ;
+            ReactionFile >> DataBuffer;
+            ExcitationEnergyLight = atof(DataBuffer.c_str()) * MeV;
+            G4cout << "Excitation Energy Light" << ExcitationEnergyLight / MeV << " MeV" << G4endl;
+         }
 
-	        else if  (DataBuffer.compare(0, 11, "BeamEnergy=") == 0) {
-	        	check_BeamEnergy = true ;
-	            ReactionFile >> DataBuffer;
-	            BeamEnergy = atof(DataBuffer.c_str()) * MeV;
-	            G4cout << "Beam Energy " << BeamEnergy / MeV << " MeV" << G4endl;
-	         }
+        else if  (DataBuffer.compare(0, 22, "ExcitationEnergyHeavy=") == 0) {
+           check_ExcitationEnergyHeavy = true ;
+            ReactionFile >> DataBuffer;
+            ExcitationEnergyHeavy = atof(DataBuffer.c_str()) * MeV;
+            G4cout << "Excitation Energy Heavy" << ExcitationEnergyHeavy / MeV << " MeV" << G4endl;
+         }
 
-	        else if  (DataBuffer.compare(0, 17, "BeamEnergySpread=") == 0) {
-	        	check_BeamEnergySpread = true ;
-	            ReactionFile >> DataBuffer;
-	            BeamEnergySpread = atof(DataBuffer.c_str()) * MeV;
-	            G4cout << "Beam Energy Spread " << BeamEnergySpread / MeV << " MeV" << G4endl;
-	         }
+        else if  (DataBuffer.compare(0, 11, "BeamEnergy=") == 0) {
+           check_BeamEnergy = true ;
+            ReactionFile >> DataBuffer;
+            BeamEnergy = atof(DataBuffer.c_str()) * MeV;
+            G4cout << "Beam Energy " << BeamEnergy / MeV << " MeV" << G4endl;
+         }
 
-	        else if  (DataBuffer.compare(0, 7, "SigmaX=") == 0) {
-	        	check_FWHMX = true ;
-	            ReactionFile >> DataBuffer;
-	            SigmaX = atof(DataBuffer.c_str()) * mm;
-	            G4cout << "Beam FWHM X " << SigmaX << " mm" << G4endl;
-	         }
+        else if  (DataBuffer.compare(0, 17, "BeamEnergySpread=") == 0) {
+           check_BeamEnergySpread = true ;
+            ReactionFile >> DataBuffer;
+            BeamEnergySpread = atof(DataBuffer.c_str()) * MeV;
+            G4cout << "Beam Energy Spread " << BeamEnergySpread / MeV << " MeV" << G4endl;
+         }
 
-	        else if  (DataBuffer.compare(0, 7, "SigmaY=") == 0) {
-	        	check_FWHMY = true ;
-	            ReactionFile >> DataBuffer;
-	            SigmaY = atof(DataBuffer.c_str()) * mm;
-	            G4cout << "Beam FWHM Y " << SigmaX << " mm" << G4endl;
-	         }
+        else if  (DataBuffer.compare(0, 7, "SigmaX=") == 0) {
+           check_FWHMX = true ;
+            ReactionFile >> DataBuffer;
+            SigmaX = atof(DataBuffer.c_str()) * mm;
+            G4cout << "Beam FWHM X " << SigmaX << " mm" << G4endl;
+         }
 
-	        else if  (DataBuffer.compare(0, 12, "SigmaThetaX=") == 0) {
-	        	check_EmmitanceTheta = true ;
-	            ReactionFile >> DataBuffer;
-	            SigmaThetaX = atof(DataBuffer.c_str()) * deg;
-	            G4cout << "Beam Emmitance Theta " << SigmaThetaX / deg << " deg" << G4endl;
-	         }
-	         
-	        else if  (DataBuffer.compare(0, 10, "SigmaPhiY=") == 0) {
-	        	check_EmmitancePhi = true ;
-	            ReactionFile >> DataBuffer;
-	            SigmaPhiY = atof(DataBuffer.c_str()) * deg;
-	            G4cout << "Beam Emmitance Phi " << SigmaPhiY / deg << " deg" << G4endl;
-	         }
+        else if  (DataBuffer.compare(0, 7, "SigmaY=") == 0) {
+           check_FWHMY = true ;
+            ReactionFile >> DataBuffer;
+            SigmaY = atof(DataBuffer.c_str()) * mm;
+            G4cout << "Beam FWHM Y " << SigmaX << " mm" << G4endl;
+         }
 
-	        else if  (DataBuffer.compare(0, 17, "CrossSectionPath=") == 0) {
-	        	check_CrossSectionPath = true ;
-	            ReactionFile >> CrossSectionPath;
-	            G4cout << "Cross Section File: " << CrossSectionPath << G4endl ;
-	         }
-
-	        else if  (DataBuffer.compare(0, 11, "ShootLight=") == 0) {
-	        	check_ShootLight = true ;
-	            ReactionFile >> DataBuffer;
-	            if (atof(DataBuffer.c_str()) == 1) ShootLight = true ;
-	            if (ShootLight)    G4cout << "Shoot Light particle      : yes" << G4endl;
-	            else           G4cout << "Shoot Light particle      : no"  << G4endl;
-	         }
-
-	        else if  (DataBuffer.compare(0, 11, "ShootHeavy=") == 0) {
-	        	check_ShootHeavy = true ;
-	            ReactionFile >> DataBuffer;
-	            if (atof(DataBuffer.c_str()) == 1) ShootHeavy = true ;
-	            if (ShootHeavy)    G4cout << "Shoot Heavy particle      : yes" << G4endl;
-	            else           G4cout << "Shoot Heavy particle      : no"  << G4endl;
-	         }
-
-			  
-         	///////////////////////////////////////////////////
-			//	If no Transfert Token and no comment, toggle out
-	         else 
-	         	{ReadingStatus = false; G4cout << "WARNING : Wrong Token Sequence: Getting out " << G4endl ;}
-	         	
-	         ///////////////////////////////////////////////////
-			//	If all Token found toggle out
-	         if(check_Beam && check_Target && check_Light && check_Heavy && check_ExcitationEnergyLight && check_ExcitationEnergyHeavy 
-	         	&&  check_BeamEnergy && check_BeamEnergySpread && check_FWHMX && check_FWHMY && check_EmmitanceTheta 
-	         	&&  check_EmmitancePhi && check_CrossSectionPath && check_ShootLight && check_ShootHeavy)
-	         	ReadingStatus = false ;	
-
-		}
-	        
-
-	}
-   
-   SetEverything(Beam            ,
-         Target            ,
-         Light          ,
-         Heavy          ,
-         BeamEnergy        ,
-         ExcitationEnergyLight  ,
-         ExcitationEnergyHeavy  ,
-         BeamEnergySpread  ,
-         SigmaX         ,
-         SigmaY         ,
-         SigmaThetaX       ,
-         SigmaPhiY	,
-         ShootLight        ,
-         ShootHeavy        ,
-         CrossSectionPath);
+        else if  (DataBuffer.compare(0, 12, "SigmaThetaX=") == 0) {
+           check_EmmitanceTheta = true ;
+            ReactionFile >> DataBuffer;
+            SigmaThetaX = atof(DataBuffer.c_str()) * deg;
+            G4cout << "Beam Emmitance Theta " << SigmaThetaX / deg << " deg" << G4endl;
+         }
          
-   		ReactionFile.close();
+        else if  (DataBuffer.compare(0, 10, "SigmaPhiY=") == 0) {
+           check_EmmitancePhi = true ;
+            ReactionFile >> DataBuffer;
+            SigmaPhiY = atof(DataBuffer.c_str()) * deg;
+            G4cout << "Beam Emmitance Phi " << SigmaPhiY / deg << " deg" << G4endl;
+         }
+
+        else if  (DataBuffer.compare(0, 17, "CrossSectionPath=") == 0) {
+           check_CrossSectionPath = true ;
+            ReactionFile >> CrossSectionPath;
+            G4cout << "Cross Section File: " << CrossSectionPath << G4endl ;
+         }
+
+        else if  (DataBuffer.compare(0, 11, "ShootLight=") == 0) {
+           check_ShootLight = true ;
+            ReactionFile >> DataBuffer;
+            if (atof(DataBuffer.c_str()) == 1) ShootLight = true ;
+            if (ShootLight)    G4cout << "Shoot Light particle      : yes" << G4endl;
+            else           G4cout << "Shoot Light particle      : no"  << G4endl;
+         }
+
+        else if  (DataBuffer.compare(0, 11, "ShootHeavy=") == 0) {
+           check_ShootHeavy = true ;
+            ReactionFile >> DataBuffer;
+            if (atof(DataBuffer.c_str()) == 1) ShootHeavy = true ;
+            if (ShootHeavy)    G4cout << "Shoot Heavy particle      : yes" << G4endl;
+            else           G4cout << "Shoot Heavy particle      : no"  << G4endl;
+         }
+
+        
+         ///////////////////////////////////////////////////
+      //   If no Transfert Token and no comment, toggle out
+         else 
+            {ReadingStatus = false; G4cout << "WARNING : Wrong Token Sequence: Getting out " << G4endl ;}
+            
+         ///////////////////////////////////////////////////
+      //   If all Token found toggle out
+         if(check_Beam && check_Target && check_Light && check_Heavy && check_ExcitationEnergyLight && check_ExcitationEnergyHeavy 
+            &&  check_BeamEnergy && check_BeamEnergySpread && check_FWHMX && check_FWHMY && check_EmmitanceTheta 
+            &&  check_EmmitancePhi && check_CrossSectionPath && check_ShootLight && check_ShootHeavy)
+            ReadingStatus = false ;   
+
+         }
+           
+
+   }
+   
+   SetEverything( Beam,
+                  Target,
+                  Light,
+                  Heavy,
+                  BeamEnergy,
+                  ExcitationEnergyLight,
+                  ExcitationEnergyHeavy,
+                  BeamEnergySpread,
+                  SigmaX,
+                  SigmaY,
+                  SigmaThetaX,
+                  SigmaPhiY,
+                  ShootLight,
+                  ShootHeavy,
+                  CrossSectionPath);
+         
+   ReactionFile.close();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* particleGun)
-{	
+{   
    // If first time, write the DeDx table
    if (anEvent->GetEventID() == 0) {
       //-------------- Before living, wrtie the DeDx Table -------------------
@@ -350,7 +350,7 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
 
       if (m_Target != 0) {
          m_Target->WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(LightZx,LightAx, 0.) ,0, m_BeamEnergy+4*m_BeamEnergySpread);
-         m_Target->WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(BeamZx,BeamAx, 0.) ,0, m_BeamEnergy+4*m_BeamEnergySpread);
+         m_Target->WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(BeamZx,BeamAx, 0.)   ,0, m_BeamEnergy+4*m_BeamEnergySpread);
       }
    }
 
@@ -391,14 +391,14 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
    G4double FinalBeamEnergy = 0 ;
    G4double InitialBeamEnergy = RandGauss::shoot(m_BeamEnergy, m_BeamEnergySpread);
    
-   m_Target->CalculateBeamInteraction(0, m_SigmaX, 0, m_SigmaThetaX,
-                                      0, m_SigmaY, 0, m_SigmaPhiY,
-				      InitialBeamEnergy,
-				      BeamName,
-				      InterCoord, Beam_thetaX, Beam_phiY,
-                                      Beam_theta, Beam_phi,
-				      FinalBeamEnergy);
-				                           	 	
+   m_Target->CalculateBeamInteraction( 0, m_SigmaX, 0, m_SigmaThetaX,
+                                       0, m_SigmaY, 0, m_SigmaPhiY,
+                                       InitialBeamEnergy,
+                                       BeamName,
+                                       InterCoord, Beam_thetaX, Beam_phiY,
+                                       Beam_theta, Beam_phi,
+                                       FinalBeamEnergy);
+                                              
    m_Reaction->SetBeamEnergy(FinalBeamEnergy);
    m_InitConditions->SetICIncidentEnergy(FinalBeamEnergy / MeV);
   
@@ -523,13 +523,13 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventGeneratorTransfert::SetEverything(string name1,		// Beam nuclei
-                                            string name2,		// Target nuclei
-                                            string name3,		// Product of reaction
-                                            string name4,		// Product of reaction
-                                            double BeamEnergy,		// Beam Energy
-                                            double ExcitationEnergyLight,	// Excitation of Light Nuclei
-                                            double ExcitationEnergyHeavy,	// Excitation of Heavy Nuclei
+void EventGeneratorTransfert::SetEverything(string name1,                // Beam nuclei
+                                            string name2,                // Target nuclei
+                                            string name3,                // Product of reaction
+                                            string name4,                // Product of reaction
+                                            double BeamEnergy,           // Beam Energy
+                                            double ExcitationEnergyLight,// Excitation of Light Nuclei
+                                            double ExcitationEnergyHeavy,// Excitation of Heavy Nuclei
                                             double BeamEnergySpread,
                                             double SigmaX,
                                             double SigmaY,
@@ -539,8 +539,8 @@ void EventGeneratorTransfert::SetEverything(string name1,		// Beam nuclei
                                             bool   ShootHeavy,
                                             string Path) 
 {
-   m_Reaction = new Reaction(name1, name2, name3, name4, BeamEnergy, ExcitationEnergyLight, ExcitationEnergyHeavy, Path);	
-		
+   m_Reaction = new Reaction(name1, name2, name3, name4, BeamEnergy, ExcitationEnergyLight, ExcitationEnergyHeavy, Path);   
+      
    m_BeamEnergy       =  BeamEnergy;
    m_BeamEnergySpread =  BeamEnergySpread;
    m_SigmaX           =  SigmaX;

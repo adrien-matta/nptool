@@ -67,16 +67,16 @@ void EventGeneratorIsotropic::ReadConfiguration(string Path)
    string LineBuffer;
    string DataBuffer;
 
-	bool ReadingStatus = false ;
-	bool check_EnergyLow = false ;
-	bool check_EnergyHigh = false ;
-	bool check_HalfOpenAngleMin = false ;
-	bool check_HalfOpenAngleMax = false ;
-	bool check_x0 = false ;
-	bool check_y0 = false ;
-	bool check_z0 = false ;
-	bool check_particle = false ;
-	
+   bool ReadingStatus = false ;
+   bool check_EnergyLow = false ;
+   bool check_EnergyHigh = false ;
+   bool check_HalfOpenAngleMin = false ;
+   bool check_HalfOpenAngleMax = false ;
+   bool check_x0 = false ;
+   bool check_y0 = false ;
+   bool check_z0 = false ;
+   bool check_particle = false ;
+   
    ////////Reaction Setting needs///////
    string particle   ;
    //////////////////////////////////////////////////////////////////////////////////////////
@@ -85,98 +85,98 @@ void EventGeneratorIsotropic::ReadConfiguration(string Path)
 
    if (ReactionFile.is_open()) {} 
    else {
-      		return;
- 		}
+            return;
+       }
 
    while (!ReactionFile.eof()) {
-	      //Pick-up next line
-	      getline(ReactionFile, LineBuffer);
-	      
-	 		 if (LineBuffer.compare(0, 9, "Isotropic") == 0) {
-	         G4cout << "Isotropic Source Found" << G4endl ;
-	         ReadingStatus = true;}
-	         
-	         
-	    while (ReadingStatus)
-	    	{
-	    		 ReactionFile >> DataBuffer;
-	    	
-	    		 //Search for comment Symbol %
-			     if (DataBuffer.compare(0, 1, "%") == 0) {	ReactionFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
+         //Pick-up next line
+         getline(ReactionFile, LineBuffer);
+         
+           if (LineBuffer.compare(0, 9, "Isotropic") == 0) {
+            G4cout << "Isotropic Source Found" << G4endl ;
+            ReadingStatus = true;}
+            
+            
+       while (ReadingStatus)
+          {
+              ReactionFile >> DataBuffer;
+          
+              //Search for comment Symbol %
+              if (DataBuffer.compare(0, 1, "%") == 0) {   ReactionFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
 
-		         else if (DataBuffer.compare(0, 10, "EnergyLow=") == 0) {
-		         	check_EnergyLow = true ;
-		            ReactionFile >> DataBuffer;
-		            m_EnergyLow = atof(DataBuffer.c_str()) * MeV;
-		            G4cout << "Minimum energy " << m_EnergyLow / MeV << " MeV" << G4endl;
-		         }
+               else if (DataBuffer.compare(0, 10, "EnergyLow=") == 0) {
+                  check_EnergyLow = true ;
+                  ReactionFile >> DataBuffer;
+                  m_EnergyLow = atof(DataBuffer.c_str()) * MeV;
+                  G4cout << "Minimum energy " << m_EnergyLow / MeV << " MeV" << G4endl;
+               }
 
-		         else if (DataBuffer.compare(0, 11, "EnergyHigh=") == 0) {
-		         	check_EnergyHigh = true ;
-		            ReactionFile >> DataBuffer;
-		            m_EnergyHigh = atof(DataBuffer.c_str()) * MeV;
-		            G4cout << "Maximum energy " << m_EnergyHigh / MeV << " MeV" << G4endl;
-		         }
+               else if (DataBuffer.compare(0, 11, "EnergyHigh=") == 0) {
+                  check_EnergyHigh = true ;
+                  ReactionFile >> DataBuffer;
+                  m_EnergyHigh = atof(DataBuffer.c_str()) * MeV;
+                  G4cout << "Maximum energy " << m_EnergyHigh / MeV << " MeV" << G4endl;
+               }
 
-		         else if (DataBuffer.compare(0, 17, "HalfOpenAngleMin=") == 0) {
-		         	check_HalfOpenAngleMin = true ;
-		            ReactionFile >> DataBuffer;
-		            m_HalfOpenAngleMin = atof(DataBuffer.c_str()) * deg;
-		            G4cout << "HalfOpenAngleMin " << m_HalfOpenAngleMin / deg << " degree" << G4endl;
-		         }
+               else if (DataBuffer.compare(0, 17, "HalfOpenAngleMin=") == 0) {
+                  check_HalfOpenAngleMin = true ;
+                  ReactionFile >> DataBuffer;
+                  m_HalfOpenAngleMin = atof(DataBuffer.c_str()) * deg;
+                  G4cout << "HalfOpenAngleMin " << m_HalfOpenAngleMin / deg << " degree" << G4endl;
+               }
 
-		         else if (DataBuffer.compare(0, 17, "HalfOpenAngleMax=") == 0) {
-		         	check_HalfOpenAngleMax = true ;
-		            ReactionFile >> DataBuffer;
-		            m_HalfOpenAngleMax = atof(DataBuffer.c_str()) * deg;
-		            G4cout << "HalfOpenAngleMax " << m_HalfOpenAngleMax / deg << " degree" << G4endl;
-		         }
+               else if (DataBuffer.compare(0, 17, "HalfOpenAngleMax=") == 0) {
+                  check_HalfOpenAngleMax = true ;
+                  ReactionFile >> DataBuffer;
+                  m_HalfOpenAngleMax = atof(DataBuffer.c_str()) * deg;
+                  G4cout << "HalfOpenAngleMax " << m_HalfOpenAngleMax / deg << " degree" << G4endl;
+               }
 
-		         else if (DataBuffer.compare(0, 3, "x0=") == 0) {
-		         	check_x0 = true ;
-		            ReactionFile >> DataBuffer;
-		            m_x0 = atof(DataBuffer.c_str()) * mm;
-		            G4cout << "x0 " << m_x0 << " mm" << G4endl;
-		         }
+               else if (DataBuffer.compare(0, 3, "x0=") == 0) {
+                  check_x0 = true ;
+                  ReactionFile >> DataBuffer;
+                  m_x0 = atof(DataBuffer.c_str()) * mm;
+                  G4cout << "x0 " << m_x0 << " mm" << G4endl;
+               }
 
-		         else if (DataBuffer.compare(0, 3, "y0=") == 0) {
-		            check_y0 = true ;
-		            ReactionFile >> DataBuffer;
-		            m_y0 = atof(DataBuffer.c_str()) * mm;
-		            G4cout << "y0 " << m_y0 << " mm" << G4endl;
-		         }
+               else if (DataBuffer.compare(0, 3, "y0=") == 0) {
+                  check_y0 = true ;
+                  ReactionFile >> DataBuffer;
+                  m_y0 = atof(DataBuffer.c_str()) * mm;
+                  G4cout << "y0 " << m_y0 << " mm" << G4endl;
+               }
 
-		         else if (DataBuffer.compare(0, 3, "z0=") == 0) {
-		         	check_z0 = true ;
-		            ReactionFile >> DataBuffer;
-		            m_y0 = atof(DataBuffer.c_str()) * mm;
-		            G4cout << "y0 " << m_y0 << " mm" << G4endl;
-		         }
+               else if (DataBuffer.compare(0, 3, "z0=") == 0) {
+                  check_z0 = true ;
+                  ReactionFile >> DataBuffer;
+                  m_y0 = atof(DataBuffer.c_str()) * mm;
+                  G4cout << "y0 " << m_y0 << " mm" << G4endl;
+               }
 
-		         else if (DataBuffer.compare(0, 9, "particle=") == 0) {
-		         	check_particle = true ;
-		            ReactionFile >> DataBuffer;
-		            particle = DataBuffer;
-		            G4cout << "particle  " << particle << G4endl;
-		            m_particle = G4ParticleTable::GetParticleTable()->FindParticle(particle);
-		         }
-		        
-		         //	If no isotropic Token and no comment, toggle out
-		         else 
-		         	{ReadingStatus = false; G4cout << "WARNING : Wrong Token Sequence: Getting out " << G4endl ;}
-		         	
-		         ///////////////////////////////////////////////////
-				//	If all Token found toggle out
-		         if( 	check_EnergyLow && check_EnergyHigh && check_HalfOpenAngleMin && check_HalfOpenAngleMax && check_x0 && check_y0 && check_z0 && check_particle )
-		         	ReadingStatus = false ;	
-		         
-	    	}
-    	
+               else if (DataBuffer.compare(0, 9, "particle=") == 0) {
+                  check_particle = true ;
+                  ReactionFile >> DataBuffer;
+                  particle = DataBuffer;
+                  G4cout << "particle  " << particle << G4endl;
+                  m_particle = G4ParticleTable::GetParticleTable()->FindParticle(particle);
+               }
+              
+               //   If no isotropic Token and no comment, toggle out
+               else 
+                  {ReadingStatus = false; G4cout << "WARNING : Wrong Token Sequence: Getting out " << G4endl ;}
+                  
+               ///////////////////////////////////////////////////
+            //   If all Token found toggle out
+               if(    check_EnergyLow && check_EnergyHigh && check_HalfOpenAngleMin && check_HalfOpenAngleMax && check_x0 && check_y0 && check_z0 && check_particle )
+                  ReadingStatus = false ;   
+               
+          }
+       
       }
    
-   if( 	!check_EnergyLow || !check_EnergyHigh || !check_HalfOpenAngleMin || !check_HalfOpenAngleMax || !check_x0 || !check_y0 || !check_z0 || !check_particle )
-	 		{cout << "WARNING : Token Sequence Incomplete, Isotropic definition could not be Fonctionnal" << endl ;}
-   		
+   if(    !check_EnergyLow || !check_EnergyHigh || !check_HalfOpenAngleMin || !check_HalfOpenAngleMax || !check_x0 || !check_y0 || !check_z0 || !check_particle )
+          {cout << "WARNING : Token Sequence Incomplete, Isotropic definition could not be Fonctionnal" << endl ;}
+         
   cout << "///////////////////////////////////////////////////" << endl << endl ;
    
 }

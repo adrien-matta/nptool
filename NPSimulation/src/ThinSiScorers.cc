@@ -35,9 +35,9 @@ using namespace THINSI ;
 PSStripNumber::PSStripNumber(G4String name, G4int depth, G4double StripPlaneSize, G4int NumberOfStrip)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
-   m_StripPlaneSize 	= StripPlaneSize 											;
-   m_NumberOfStrip    = NumberOfStrip  											;
-   m_StripPitch 			= m_StripPlaneSize / m_NumberOfStrip	;
+   m_StripPlaneSize  = StripPlaneSize                                  ;
+   m_NumberOfStrip   = NumberOfStrip                                   ;
+   m_StripPitch      = m_StripPlaneSize / m_NumberOfStrip   ;
 }
 
 PSStripNumber::~PSStripNumber()
@@ -47,7 +47,7 @@ PSStripNumber::~PSStripNumber()
 
 G4bool PSStripNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
-	 int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "ThinSi");
+    int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "ThinSi");
 
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);

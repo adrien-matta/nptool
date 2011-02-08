@@ -28,8 +28,8 @@ using namespace GENERALSCORERS ;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-//	The following function is used in many scorer. following the Detector Volume Nomenclature
-//	DetectorNameX_SubPart_SubPart
+//   The following function is used in many scorer. following the Detector Volume Nomenclature
+//   DetectorNameX_SubPart_SubPart
 //  where X stand for the detector number.
 
 int GENERALSCORERS::PickUpDetectorNumber(G4Step* aStep, std::string DetName)
@@ -67,8 +67,8 @@ PSDetectorNumber::~PSDetectorNumber()
 }
 
 G4bool PSDetectorNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
-	{
-	int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName) ; 
+   {
+   int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName) ; 
 
    G4double edep = aStep->GetTotalEnergyDeposit();
    
@@ -126,7 +126,7 @@ void PSDetectorNumber::PrintAll()
 PSEnergy::PSEnergy(G4String name, G4String VolumeName, G4int depth)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
-	m_VolumeName = VolumeName;
+   m_VolumeName = VolumeName;
 }
 
 PSEnergy::~PSEnergy()
@@ -135,7 +135,7 @@ PSEnergy::~PSEnergy()
 
 G4bool PSEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
-	 int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName) ; 
+    int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName) ; 
 
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < TriggerThreshold) return FALSE;
@@ -243,7 +243,7 @@ void PSTOF::PrintAll()
 PSInteractionCoordinatesX::PSInteractionCoordinatesX(G4String name, G4String VolumeName, G4int depth)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
-	 m_VolumeName = VolumeName;
+    m_VolumeName = VolumeName;
 }
 
 PSInteractionCoordinatesX::~PSInteractionCoordinatesX()
@@ -252,7 +252,7 @@ PSInteractionCoordinatesX::~PSInteractionCoordinatesX()
 
 G4bool PSInteractionCoordinatesX::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
-	int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName) ; 
+   int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName) ; 
 
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    G4double pos_x = POS.x() / mm;
@@ -298,7 +298,7 @@ void PSInteractionCoordinatesX::PrintAll()
 PSInteractionCoordinatesY::PSInteractionCoordinatesY(G4String name, G4String VolumeName, G4int depth)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
-	 m_VolumeName = VolumeName;
+    m_VolumeName = VolumeName;
 }
 
 PSInteractionCoordinatesY::~PSInteractionCoordinatesY()
@@ -307,7 +307,7 @@ PSInteractionCoordinatesY::~PSInteractionCoordinatesY()
 
 G4bool PSInteractionCoordinatesY::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
-	int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName) ; 
+   int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName) ; 
 
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    G4double pos_y = POS.y() / mm;
@@ -354,7 +354,7 @@ void PSInteractionCoordinatesY::PrintAll()
 PSInteractionCoordinatesZ::PSInteractionCoordinatesZ(G4String name, G4String VolumeName, G4int depth)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
-	 m_VolumeName = VolumeName;
+    m_VolumeName = VolumeName;
 }
 
 PSInteractionCoordinatesZ::~PSInteractionCoordinatesZ()
@@ -363,7 +363,7 @@ PSInteractionCoordinatesZ::~PSInteractionCoordinatesZ()
 
 G4bool PSInteractionCoordinatesZ::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
-	int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName) ; 
+   int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName) ; 
 
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    G4double pos_z = POS.z() / mm;
@@ -410,7 +410,7 @@ void PSInteractionCoordinatesZ::PrintAll()
 PSInteractionCoordinatesAngleTheta::PSInteractionCoordinatesAngleTheta(G4String name, G4String VolumeName, G4int depth)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
-	 m_VolumeName = VolumeName;
+    m_VolumeName = VolumeName;
 }
 
 PSInteractionCoordinatesAngleTheta::~PSInteractionCoordinatesAngleTheta()
@@ -419,7 +419,7 @@ PSInteractionCoordinatesAngleTheta::~PSInteractionCoordinatesAngleTheta()
 
 G4bool PSInteractionCoordinatesAngleTheta::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
-	int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName) ; 
+   int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName) ; 
 
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    G4double angle_theta = POS.theta() / deg;
@@ -466,7 +466,7 @@ void PSInteractionCoordinatesAngleTheta::PrintAll()
 PSInteractionCoordinatesAnglePhi::PSInteractionCoordinatesAnglePhi(G4String name, G4String VolumeName, G4int depth)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
-	 m_VolumeName = VolumeName;
+    m_VolumeName = VolumeName;
 }
 
 PSInteractionCoordinatesAnglePhi::~PSInteractionCoordinatesAnglePhi()
@@ -475,7 +475,7 @@ PSInteractionCoordinatesAnglePhi::~PSInteractionCoordinatesAnglePhi()
 
 G4bool PSInteractionCoordinatesAnglePhi::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
-	int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName) ; 
+   int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName) ; 
 
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    G4double angle_phi = POS.phi() / deg;

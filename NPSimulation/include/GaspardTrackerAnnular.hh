@@ -109,11 +109,11 @@ private:
    vector<G4double> m_Rmax;
 
    // for debugging purpose
-   G4ThreeVector	MMpos;
-   G4ThreeVector	MMu;
-   G4ThreeVector	MMv;
-   G4ThreeVector	MMw;
-   G4ThreeVector	CT;
+   G4ThreeVector   MMpos;
+   G4ThreeVector   MMu;
+   G4ThreeVector   MMv;
+   G4ThreeVector   MMw;
+   G4ThreeVector   CT;
 };
 
 
