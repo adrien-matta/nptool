@@ -71,8 +71,8 @@ class TSSSDPhysics : public TObject, public NPA::VDetector
    void BuildSimplePhysicalEvent();
 
    // Those two method all to clear the Event Physics or Data
-   void ClearEventPhysics()   {Clear();}
-   void ClearEventData()   {EventData->Clear();}
+   void ClearEventPhysics() {Clear();}
+   void ClearEventData()    {EventData->Clear();}
 
 
  public: //   Specific to SSSD
@@ -103,9 +103,7 @@ class TSSSDPhysics : public TObject, public NPA::VDetector
  private: //  Map of activated Channel
    map< int, vector<bool> > ChannelStatus;//!
     
- public:  //  Return True if the channel is activated
-   // bool IsValidChannel(int DetectorNbr, int StripNbr) ;
-
+ public:  
    void Clear();
    void Clear(const Option_t*) {};
    

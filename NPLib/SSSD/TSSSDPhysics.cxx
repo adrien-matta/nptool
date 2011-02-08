@@ -315,7 +315,7 @@ void TSSSDPhysics::PreTreat()
       //  E
       for(int i = 0 ; i < EventData->GetEnergyMult() ; ++i)
         {
-          if(EventData->GetEnergy(i) > m_Pedestal_Threshold && ChannelStatus[EventData->GetEnergyDetectorNbr(i)][EventData->GetEnergyStripNbr(i)])
+          if(EventData->GetEnergy(i) > m_Pedestal_Threshold && ChannelStatus[EventData->GetEnergyDetectorNbr(i)-1][EventData->GetEnergyStripNbr(i)-1])
             {
                double E = fSi_E(EventData , i); 
                if( E > m_E_Threshold )
@@ -330,7 +330,7 @@ void TSSSDPhysics::PreTreat()
          //  T
          for(int i = 0 ; i < EventData->GetTimeMult() ; ++i)
             {
-              if(ChannelStatus[EventData->GetEnergyDetectorNbr(i)][EventData->GetEnergyStripNbr(i)])
+              if(ChannelStatus[EventData->GetEnergyDetectorNbr(i)-1][EventData->GetEnergyStripNbr(i)-1])
                 {
                  PreTreatedData->SetTimeDetectorNbr( EventData->GetTimeDetectorNbr(i) )  ;
                  PreTreatedData->SetTimeStripNbr( EventData->GetTimeStripNbr(i) )        ;
@@ -342,12 +342,12 @@ void TSSSDPhysics::PreTreat()
 ///////////////////////////////////////////////////////////////////////////
 void TSSSDPhysics::InitializeStandardParameter()
   {
-     //  Enable all channel
+      //  Enable all channel
       vector<bool> TempChannelStatus;
-    ChannelStatus.clear();
+      ChannelStatus.clear();
       TempChannelStatus.resize(16,true);
       for(int i = 0 ; i < NumberOfDetector ; ++i)   
-          ChannelStatus[i+1] = TempChannelStatus;
+          ChannelStatus[i] = TempChannelStatus;
   }
 ///////////////////////////////////////////////////////////////////////////
 void TSSSDPhysics::ReadAnalysisConfig()
@@ -406,7 +406,7 @@ void TSSSDPhysics::ReadAnalysisConfig()
              int Detector = atoi(DataBuffer.substr(2,1).c_str());
              vector< bool > ChannelStatusBuffer;
              ChannelStatusBuffer.resize(16,false);
-             ChannelStatus[Detector] = ChannelStatusBuffer;
+             ChannelStatus[Detector-1] = ChannelStatusBuffer;
           }
           
         else if (whatToDo=="DISABLE_CHANNEL") {
@@ -416,7 +416,7 @@ void TSSSDPhysics::ReadAnalysisConfig()
              int channel = -1;
              if (DataBuffer.compare(3,3,"STR") == 0) {
                 channel = atoi(DataBuffer.substr(6).c_str());
-                *(ChannelStatus[telescope].begin()+channel) = false;
+                *(ChannelStatus[telescope-1].begin()+channel-1) = false;
              }
              
              else {
@@ -426,27 +426,25 @@ void TSSSDPhysics::ReadAnalysisConfig()
 
          else {
             ReadingStatus = false;
-//            cout << "WARNING: Wrong Token Sequence" << endl;
          }
       }
    }
 }   
 
 
-
-   ///////////////////////////////////////////////////////////////////////////
-   double SSSD_LOCAL::fSi_E( const TSSSDData* EventData , const int i )
-     {
-       return CalibrationManager::getInstance()->ApplyCalibration(  "SSSD/Detector" + itoa( EventData->GetEnergyDetectorNbr(i) ) + "_Strip" + itoa( EventData->GetEnergyStripNbr(i) ) +"_E",  
-                               EventData->GetEnergy(i) );
-     }
-     
-     
-   double SSSD_LOCAL::fSi_T( const TSSSDData* EventData , const int i )
-     {
-       return CalibrationManager::getInstance()->ApplyCalibration(  "SSSD/Detector" + itoa( EventData->GetEnergyDetectorNbr(i) ) + "_Strip" + itoa( EventData->GetEnergyStripNbr(i) ) +"_T",  
-                               EventData->GetTime(i) );
-     }  
+///////////////////////////////////////////////////////////////////////////
+double SSSD_LOCAL::fSi_E( const TSSSDData* EventData , const int i )
+  {
+    return CalibrationManager::getInstance()->ApplyCalibration(  "SSSD/Detector" + itoa( EventData->GetEnergyDetectorNbr(i) ) + "_Strip" + itoa( EventData->GetEnergyStripNbr(i) ) +"_E",  
+                            EventData->GetEnergy(i) );
+  }
+  
+  
+double SSSD_LOCAL::fSi_T( const TSSSDData* EventData , const int i )
+  {
+    return CalibrationManager::getInstance()->ApplyCalibration(  "SSSD/Detector" + itoa( EventData->GetEnergyDetectorNbr(i) ) + "_Strip" + itoa( EventData->GetEnergyStripNbr(i) ) +"_T",  
+                            EventData->GetTime(i) );
+  }  
      
      
      
