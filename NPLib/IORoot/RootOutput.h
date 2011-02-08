@@ -68,9 +68,9 @@ private:
    void InitAsciiFiles();
 
 public:
-   TFile*	   GetFile()                           {return pRootFile;}
-   TTree*	   GetTree()                           {return pRootTree;}
-   TList*	   GetList()                           {return pRootList;}
+   TFile*      GetFile()                           {return pRootFile;}
+   TTree*      GetTree()                           {return pRootTree;}
+   TList*      GetList()                           {return pRootList;}
    TAsciiFile* GetAsciiFileEventGenerator()        {return pEventGenerator;}
    TAsciiFile* GetAsciiFileDetectorConfiguration() {return pDetectorConfiguration;}
    TAsciiFile* GetAsciiFileCalibration()           {return pCalibrationFile;}

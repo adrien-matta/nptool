@@ -36,26 +36,26 @@ using namespace SSSD_LOCAL;
 #include "TChain.h"
 
 //  tranform an integer to a string
-    string itoa(int value)
-      {
-        std::ostringstream o;
-      
-        if (!(o << value))
-          return ""  ;
-          
-        return o.str();
-      }
+string itoa(int value)
+{
+  std::ostringstream o;
+
+  if (!(o << value))
+    return ""  ;
+    
+  return o.str();
+}
 
 ClassImp(TSSSDPhysics)
 ///////////////////////////////////////////////////////////////////////////
 TSSSDPhysics::TSSSDPhysics()
   {    
-    NumberOfDetector = 0         ;
-    EventData = new TSSSDData    ;
-    PreTreatedData = new TSSSDData    ;
-    EventPhysics = this          ;
-    m_E_Threshold = 0             ;
-    m_Pedestal_Threshold = 0      ;
+    NumberOfDetector = 0;
+    EventData = new TSSSDData;
+    PreTreatedData = new TSSSDData;
+    EventPhysics = this;
+    m_E_Threshold = 0;
+    m_Pedestal_Threshold = 0;
   }
 ///////////////////////////////////////////////////////////////////////////
 TSSSDPhysics::~TSSSDPhysics()
@@ -63,30 +63,30 @@ TSSSDPhysics::~TSSSDPhysics()
 ///////////////////////////////////////////////////////////////////////////
 void TSSSDPhysics::Clear()
   {
-    DetectorNumber  .clear()  ;
-    StripNumber      .clear()  ;
-    Energy          .clear()  ;
-    Time            .clear()  ;
+    DetectorNumber  .clear() ;
+    StripNumber     .clear() ;
+    Energy          .clear() ;
+    Time            .clear() ;
   }
 ///////////////////////////////////////////////////////////////////////////
 void TSSSDPhysics::ReadConfiguration(string Path) 
   {
    ifstream ConfigFile           ;
    ConfigFile.open(Path.c_str()) ;
-   string LineBuffer          ;
-   string DataBuffer          ;
+   string LineBuffer             ;
+   string DataBuffer             ;
 
    double TLX , BLX , BRX , TRX , TLY , BLY , BRY , TRY , TLZ , BLZ , BRZ , TRZ   ;
    double Theta = 0 , Phi = 0 , R = 0 , beta_u = 0 , beta_v = 0 , beta_w = 0      ;
-   bool check_A = false   ;
+   bool check_A = false ;
    bool check_B = false ;
-   bool check_C = false   ;
+   bool check_C = false ;
    bool check_D = false ;
 
    bool check_Theta = false   ;
-   bool check_Phi  = false  ;
+   bool check_Phi  = false    ;
    bool check_R     = false   ;
-   bool check_beta = false  ;
+   bool check_beta = false    ;
    bool ReadingStatus = false ;
 
  while (!ConfigFile.eof()) 
@@ -226,15 +226,15 @@ void TSSSDPhysics::ReadConfiguration(string Path)
                      
                     //  Reinitialisation of Check Boolean 
                     
-                check_A = false   ;
+                check_A = false ;
                 check_B = false ;
-                check_C = false   ;
+                check_C = false ;
                 check_D = false ;
 
-                check_Theta   = false   ;
-                check_Phi     = false  ;
-                check_R       = false   ;
-                check_beta    = false  ;
+                check_Theta   = false ;
+                check_Phi     = false ;
+                check_R       = false ;
+                check_beta    = false ;
                 ReadingStatus = false ;
                        
                }
@@ -317,37 +317,37 @@ void TSSSDPhysics::PreTreat()
         {
           if(EventData->GetEnergy(i) > m_Pedestal_Threshold && ChannelStatus[EventData->GetEnergyDetectorNbr(i)][EventData->GetEnergyStripNbr(i)])
             {
-	            double E = fSi_E(EventData , i); 
-	            if( E > m_E_Threshold )
-	                {
-	                  PreTreatedData->SetEnergyDetectorNbr( EventData->GetEnergyDetectorNbr(i) )  ;
-	                  PreTreatedData->SetEnergyStripNbr( EventData->GetEnergyStripNbr(i) )        ;
-	                  PreTreatedData->SetEnergy( E )                                              ;
-	                }
-		        } 
-		    }
-		
-	      //  T
-	      for(int i = 0 ; i < EventData->GetTimeMult() ; ++i)
-		      {
-		        if(ChannelStatus[EventData->GetEnergyDetectorNbr(i)][EventData->GetEnergyStripNbr(i)])
-		          {
-	              PreTreatedData->SetTimeDetectorNbr( EventData->GetTimeDetectorNbr(i) )  ;
-	              PreTreatedData->SetTimeStripNbr( EventData->GetTimeStripNbr(i) )        ;
-	              PreTreatedData->SetTime( fSi_T(EventData , i) )                         ;
-		          }
-		      }
+               double E = fSi_E(EventData , i); 
+               if( E > m_E_Threshold )
+                   {
+                     PreTreatedData->SetEnergyDetectorNbr( EventData->GetEnergyDetectorNbr(i) )  ;
+                     PreTreatedData->SetEnergyStripNbr( EventData->GetEnergyStripNbr(i) )        ;
+                     PreTreatedData->SetEnergy( E )                                              ;
+                   }
+              } 
+          }
+      
+         //  T
+         for(int i = 0 ; i < EventData->GetTimeMult() ; ++i)
+            {
+              if(ChannelStatus[EventData->GetEnergyDetectorNbr(i)][EventData->GetEnergyStripNbr(i)])
+                {
+                 PreTreatedData->SetTimeDetectorNbr( EventData->GetTimeDetectorNbr(i) )  ;
+                 PreTreatedData->SetTimeStripNbr( EventData->GetTimeStripNbr(i) )        ;
+                 PreTreatedData->SetTime( fSi_T(EventData , i) )                         ;
+                }
+            }
   }
 
 ///////////////////////////////////////////////////////////////////////////
 void TSSSDPhysics::InitializeStandardParameter()
   {
-  	//  Enable all channel
-		vector<bool> TempChannelStatus;
+     //  Enable all channel
+      vector<bool> TempChannelStatus;
     ChannelStatus.clear();
-		TempChannelStatus.resize(16,true);
-		for(int i = 0 ; i < NumberOfDetector ; ++i)	
-		    ChannelStatus[i+1] = TempChannelStatus;
+      TempChannelStatus.resize(16,true);
+      for(int i = 0 ; i < NumberOfDetector ; ++i)   
+          ChannelStatus[i+1] = TempChannelStatus;
   }
 ///////////////////////////////////////////////////////////////////////////
 void TSSSDPhysics::ReadAnalysisConfig()
@@ -430,23 +430,23 @@ void TSSSDPhysics::ReadAnalysisConfig()
          }
       }
    }
-}	
+}   
 
 
 
-	///////////////////////////////////////////////////////////////////////////
-	double SSSD_LOCAL::fSi_E( const TSSSDData* EventData , const int i )
-	  {
-	    return CalibrationManager::getInstance()->ApplyCalibration(  "SSSD/Detector" + itoa( EventData->GetEnergyDetectorNbr(i) ) + "_Strip" + itoa( EventData->GetEnergyStripNbr(i) ) +"_E",  
-									    EventData->GetEnergy(i) );
-	  }
-	  
-	  
-	double SSSD_LOCAL::fSi_T( const TSSSDData* EventData , const int i )
-	  {
-	    return CalibrationManager::getInstance()->ApplyCalibration(  "SSSD/Detector" + itoa( EventData->GetEnergyDetectorNbr(i) ) + "_Strip" + itoa( EventData->GetEnergyStripNbr(i) ) +"_T",  
-									    EventData->GetTime(i) );
-	  }  
-	  
-	  
-	  
+   ///////////////////////////////////////////////////////////////////////////
+   double SSSD_LOCAL::fSi_E( const TSSSDData* EventData , const int i )
+     {
+       return CalibrationManager::getInstance()->ApplyCalibration(  "SSSD/Detector" + itoa( EventData->GetEnergyDetectorNbr(i) ) + "_Strip" + itoa( EventData->GetEnergyStripNbr(i) ) +"_E",  
+                               EventData->GetEnergy(i) );
+     }
+     
+     
+   double SSSD_LOCAL::fSi_T( const TSSSDData* EventData , const int i )
+     {
+       return CalibrationManager::getInstance()->ApplyCalibration(  "SSSD/Detector" + itoa( EventData->GetEnergyDetectorNbr(i) ) + "_Strip" + itoa( EventData->GetEnergyStripNbr(i) ) +"_T",  
+                               EventData->GetTime(i) );
+     }  
+     
+     
+     

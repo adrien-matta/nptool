@@ -67,14 +67,14 @@ public:
 
 public:
    // Return the private chain and file
-   TChain*	GetChain()  {return pRootChain;}
+   TChain*  GetChain()  {return pRootChain;}
    TFile*   GetFile()   {return pRootFile;}
    
    // Add a Friend chain to the input chain
    void     AddFriendChain(string RunToAdd);
 
 private:
-   TChain	*pRootChain;
+   TChain   *pRootChain;
    TFile    *pRootFile;
    int NumberOfFriend;
 };

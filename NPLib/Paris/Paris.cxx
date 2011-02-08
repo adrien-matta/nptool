@@ -22,7 +22,7 @@
 #include "Paris.h"
 
 // C++ headers
-#include <iostream>	
+#include <iostream>   
 #include <fstream>
 #include <string>
 #include <cmath>
@@ -35,16 +35,16 @@
 // ROOT headers
 #include "TChain.h"
 
-using namespace std ;	
-	
-//	Default Constructor
+using namespace std ;   
+   
+//   Default Constructor
 
 Paris::Paris()
 {
    m_NumberOfModule = 0;
    m_EventData    = new TParisData();
    m_EventPhysics = new TParisPhysics();
-}	
+}   
 
 
 
@@ -53,17 +53,17 @@ Paris::~Paris()
    m_NumberOfModule = 0;
    delete m_EventData;
    delete m_EventPhysics;
-}	
+}   
 
 
 
 // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-void Paris::ReadConfiguration(string Path) 	
+void Paris::ReadConfiguration(string Path)    
 {
-   ifstream ConfigFile           	;
-   ConfigFile.open(Path.c_str()) 	;
-   string LineBuffer          		;
-   string DataBuffer          		;	
+   ifstream ConfigFile              ;
+   ConfigFile.open(Path.c_str())    ;
+   string LineBuffer                ;
+   string DataBuffer                ;   
 
    // A:X1_Y1     --> X:1    Y:1
    // B:X128_Y1   --> X:128  Y:1
@@ -107,8 +107,8 @@ void Paris::ReadConfiguration(string Path)
       else ReadingStatus = false;
 
       // Reading Block
-      while (ReadingStatus) {	 
-         if (isCluster) { 	// square shape
+      while (ReadingStatus) {    
+         if (isCluster) {    // square shape
             ConfigFile >> DataBuffer ;
             // Comment Line 
             if (DataBuffer.compare(0, 1, "%") == 0) {
@@ -260,7 +260,7 @@ void Paris::ReadConfiguration(string Path)
             } // end test for adding a module
          } // end test for ParisCluster shape
 
-        else if (isPhoswich) { 	// ParisPhoswich shape
+        else if (isPhoswich) {    // ParisPhoswich shape
             ConfigFile >> DataBuffer ;
             // Comment Line 
             if (DataBuffer.compare(0, 1, "%") == 0) {
@@ -422,7 +422,7 @@ void Paris::ReadConfiguration(string Path)
 
 // Read stream at Path and pick-up calibration parameter using Token
 // If argument is "Simulation" no change calibration is loaded
-void Paris::ReadCalibrationFile(string Path)	
+void Paris::ReadCalibrationFile(string Path)   
 {
    // Order of Polynom function used for calibration
    int Calibration_Si_E_Order;
@@ -431,16 +431,16 @@ void Paris::ReadCalibrationFile(string Path)
    int Calibration_CsI_E_Order;
 
    // Calibration_Si_X_E[DetectorNumber][StripNumber][Order of Coeff]
-   vector< vector< vector< double > > >	Calibration_Si_X_E	;
-   vector< vector< vector< double > > >	Calibration_Si_X_T	;
-   vector< vector< vector< double > > >	Calibration_Si_Y_E	;
-   vector< vector< vector< double > > >	Calibration_Si_Y_T	;
+   vector< vector< vector< double > > >   Calibration_Si_X_E   ;
+   vector< vector< vector< double > > >   Calibration_Si_X_T   ;
+   vector< vector< vector< double > > >   Calibration_Si_Y_E   ;
+   vector< vector< vector< double > > >   Calibration_Si_Y_T   ;
 
    // Calibration_SiLi_E[DetectorNumber][PadNumber][Order of Coeff]
-   vector< vector< vector< double > > >	Calibration_SiLi_E	;
+   vector< vector< vector< double > > >   Calibration_SiLi_E   ;
 
    // Calibration_SiLi_E[DetectorNumber][CrystalNumber][Order of Coeff]
-   vector< vector< vector< double > > >	Calibration_CsI_E	;
+   vector< vector< vector< double > > >   Calibration_CsI_E   ;
 
    if (Path == "Simulation") {   // Simulation case: data already calibrated
       Calibration_Si_E_Order   = 1;
@@ -449,29 +449,29 @@ void Paris::ReadCalibrationFile(string Path)
       Calibration_CsI_E_Order  = 1;
 
       vector<double> Coef;
-      // Order 0				Order 1
-      Coef.push_back(0) ; Coef.push_back(1) 	;
+      // Order 0            Order 1
+      Coef.push_back(0) ; Coef.push_back(1)    ;
 
-      vector< vector<double> > StripLine 		;
-      StripLine.resize( 128 , Coef)			;
+      vector< vector<double> > StripLine       ;
+      StripLine.resize( 128 , Coef)         ;
 
-      Calibration_Si_X_E.resize( m_NumberOfModule , StripLine)	;
-      Calibration_Si_X_T.resize( m_NumberOfModule , StripLine)	;
-      Calibration_Si_Y_E.resize( m_NumberOfModule , StripLine)	;
-      Calibration_Si_Y_T.resize( m_NumberOfModule , StripLine)	;
-				
-      Calibration_SiLi_E.resize( m_NumberOfModule , StripLine)	;
-      Calibration_CsI_E .resize( m_NumberOfModule , StripLine)	;
+      Calibration_Si_X_E.resize( m_NumberOfModule , StripLine)   ;
+      Calibration_Si_X_T.resize( m_NumberOfModule , StripLine)   ;
+      Calibration_Si_Y_E.resize( m_NumberOfModule , StripLine)   ;
+      Calibration_Si_Y_T.resize( m_NumberOfModule , StripLine)   ;
+            
+      Calibration_SiLi_E.resize( m_NumberOfModule , StripLine)   ;
+      Calibration_CsI_E .resize( m_NumberOfModule , StripLine)   ;
    }
    else {
    }
-}		
+}      
 
-	
+   
 
 // Activated associated Branches and link it to the private member DetectorData address
 // In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
-void Paris::InitializeRootInput() 		
+void Paris::InitializeRootInput()       
 {
    TChain* inputChain = RootInput::getInstance()->GetChain();
    inputChain->SetBranchStatus("PARIS", true);
@@ -482,7 +482,7 @@ void Paris::InitializeRootInput()
 
 
 // Create associated branches and associated private member DetectorPhysics address
-void Paris::InitializeRootOutput() 	
+void Paris::InitializeRootOutput()    
 {
    TTree* outputTree = RootOutput::getInstance()->GetTree();
    outputTree->Branch("PARIS", "TParisPhysics", &m_EventPhysics);
@@ -491,7 +491,7 @@ void Paris::InitializeRootOutput()
 
 
 // This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
-void Paris::BuildPhysicalEvent()		
+void Paris::BuildPhysicalEvent()      
 {
    m_EventPhysics -> BuildPhysicalEvent(m_EventData);
 }
@@ -501,7 +501,7 @@ void Paris::BuildPhysicalEvent()
 // Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
 // This method aimed to be used for analysis performed during experiment, when speed is requiered.
 // NB: This method can eventually be the same as BuildPhysicalEvent.
-void Paris::BuildSimplePhysicalEvent()	
+void Paris::BuildSimplePhysicalEvent()   
 {
    m_EventPhysics -> BuildSimplePhysicalEvent(m_EventData);
 }
@@ -532,7 +532,7 @@ void Paris::AddModuleSquare(TVector3 C_X1_Y1,
    TVector3 Strip_1_1;
 
    // Geometry Parameter
-   double Face = 98;		// mm
+   double Face = 98;      // mm
    double NumberOfStrip = 128;
    double StripPitch = Face/NumberOfStrip; // mm
 
@@ -541,9 +541,9 @@ void Paris::AddModuleSquare(TVector3 C_X1_Y1,
    vector<double> lineY; 
    vector<double> lineZ;
 
-   vector< vector< double > >	OneModuleStripPositionX;
-   vector< vector< double > >	OneModuleStripPositionY;
-   vector< vector< double > >	OneModuleStripPositionZ;
+   vector< vector< double > >   OneModuleStripPositionX;
+   vector< vector< double > >   OneModuleStripPositionY;
+   vector< vector< double > >   OneModuleStripPositionZ;
 
    // Moving StripCenter to 1.1 corner:
    Strip_1_1 = C_X1_Y1 + (U+V) * (StripPitch/2.);
@@ -559,7 +559,7 @@ void Paris::AddModuleSquare(TVector3 C_X1_Y1,
 
          lineX.push_back( StripCenter.X() );
          lineY.push_back( StripCenter.Y() );
-         lineZ.push_back( StripCenter.Z() );	
+         lineZ.push_back( StripCenter.Z() );   
       }
 
       OneModuleStripPositionX.push_back(lineX);
@@ -589,7 +589,7 @@ void Paris::AddModuleSquare(double theta,
    phi   = phi   * Pi/180. ;
 
    // Vector U on Module Face (paralelle to Y Strip) (NB: remember that Y strip are allong X axis)
-   TVector3 U ;	
+   TVector3 U ;   
    // Vector V on Module Face (parallele to X Strip)
    TVector3 V ;
    // Vector W normal to Module Face (pointing CsI)
@@ -629,10 +629,10 @@ void Paris::AddModuleSquare(double theta,
    vector<double> lineY;
    vector<double> lineZ;
 
-   vector< vector< double > >	OneModuleStripPositionX;
-   vector< vector< double > >	OneModuleStripPositionY;
-   vector< vector< double > >	OneModuleStripPositionZ;
-		
+   vector< vector< double > >   OneModuleStripPositionX;
+   vector< vector< double > >   OneModuleStripPositionY;
+   vector< vector< double > >   OneModuleStripPositionZ;
+      
    double X, Y, Z;
 
    // Moving C to the 1.1 corner:
@@ -691,7 +691,7 @@ void Paris::AddModuleDummyShape(TVector3 C_X1_Y1,
    TVector3 Strip_1_1;
 
    // Geometry Parameter
-   double Face = 50;		// mm
+   double Face = 50;      // mm
    double NumberOfStrip = 128;
    double StripPitch = Face/NumberOfStrip; // mm
 
@@ -700,9 +700,9 @@ void Paris::AddModuleDummyShape(TVector3 C_X1_Y1,
    vector<double> lineY; 
    vector<double> lineZ;
 
-   vector< vector< double > >	OneModuleStripPositionX;
-   vector< vector< double > >	OneModuleStripPositionY;
-   vector< vector< double > >	OneModuleStripPositionZ;
+   vector< vector< double > >   OneModuleStripPositionX;
+   vector< vector< double > >   OneModuleStripPositionY;
+   vector< vector< double > >   OneModuleStripPositionZ;
 
    // Moving StripCenter to 1.1 corner:
    Strip_1_1 = C_X1_Y1 + (U+V) * (StripPitch/2.);
@@ -718,7 +718,7 @@ void Paris::AddModuleDummyShape(TVector3 C_X1_Y1,
 
          lineX.push_back( StripCenter.X() );
          lineY.push_back( StripCenter.Y() );
-         lineZ.push_back( StripCenter.Z() );	
+         lineZ.push_back( StripCenter.Z() );   
       }
 
       OneModuleStripPositionX.push_back(lineX);
@@ -748,7 +748,7 @@ void Paris::AddModuleDummyShape(double theta,
    phi   = phi   * Pi/180. ;
 
    // Vector U on Module Face (paralelle to Y Strip) (NB: remember that Y strip are allong X axis)
-   TVector3 U ;	
+   TVector3 U ;   
    // Vector V on Module Face (parallele to X Strip)
    TVector3 V ;
    // Vector W normal to Module Face (pointing CsI)
@@ -788,10 +788,10 @@ void Paris::AddModuleDummyShape(double theta,
    vector<double> lineY;
    vector<double> lineZ;
 
-   vector< vector< double > >	OneModuleStripPositionX;
-   vector< vector< double > >	OneModuleStripPositionY;
-   vector< vector< double > >	OneModuleStripPositionZ;
-		
+   vector< vector< double > >   OneModuleStripPositionX;
+   vector< vector< double > >   OneModuleStripPositionY;
+   vector< vector< double > >   OneModuleStripPositionZ;
+      
    double X, Y, Z;
 
    // Moving C to the 1.1 corner:
@@ -826,7 +826,7 @@ void Paris::AddModuleDummyShape(double theta,
 
 
 
-double Paris::GetEnergyDeposit()		
+double Paris::GetEnergyDeposit()      
 { 
    if (m_EventPhysics->ParisTotalEnergy.size() > 0)
       return m_EventPhysics->ParisTotalEnergy[0]; 
@@ -834,7 +834,7 @@ double Paris::GetEnergyDeposit()
       return -1000;
 }
 
-double Paris::GetEnergyInDeposit()	// inner Layer	
+double Paris::GetEnergyInDeposit()   // inner Layer   
 { 
    if (m_EventPhysics->ParisInTotalEnergy.size() > 0)
       return m_EventPhysics->ParisInTotalEnergy[0]; 
@@ -842,7 +842,7 @@ double Paris::GetEnergyInDeposit()	// inner Layer
       return -1000;
 }
 
-double Paris::GetEnergyOutDeposit()	// Outer Layer	
+double Paris::GetEnergyOutDeposit()   // Outer Layer   
 { 
    if (m_EventPhysics->ParisOutTotalEnergy.size() > 0)
       return m_EventPhysics->ParisOutTotalEnergy[0]; 

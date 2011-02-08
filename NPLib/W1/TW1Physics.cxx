@@ -570,7 +570,7 @@ void TW1Physics::PreTreat()
       if (IsValidChannel("Front", m_EventData->GetW1FrontEDetectorNbr(i), m_EventData->GetW1FrontEStripNbr(i)) &&
            m_EventData->GetW1FrontEEnergy(i) > m_FrontE_Raw_Threshold) {
          double E = fW1_Front_E(m_EventData , i);
-         if (E > m_FrontE_Calib_Threshold)	{
+         if (E > m_FrontE_Calib_Threshold)   {
             m_PreTreatedData->SetW1FrontEDetectorNbr(m_EventData->GetW1FrontEDetectorNbr(i));
             m_PreTreatedData->SetW1FrontEStripNbr(m_EventData->GetW1FrontEStripNbr(i));
             m_PreTreatedData->SetW1FrontEEnergy(E);
@@ -821,7 +821,7 @@ void TW1Physics::ReadAnalysisConfig()
          }
       }
    }
-}	
+}   
 
 
 

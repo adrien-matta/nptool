@@ -33,7 +33,7 @@ using namespace std;
 
 class TAsciiFile : public TNamed {
  private :
-   vector<string>	fLines;
+   vector<string>   fLines;
 
  protected :
    void ReadFile(const char* inputAsciiFile);
@@ -52,7 +52,7 @@ class TAsciiFile : public TNamed {
    void Print(UInt_t begin, UInt_t end) const;
    bool IsEmpty() const;
 
-   ClassDef(TAsciiFile, 1);	// Class TAsciiFile for storing ascii text
+   ClassDef(TAsciiFile, 1);   // Class TAsciiFile for storing ascii text
 };
 
 #endif

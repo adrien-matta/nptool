@@ -69,7 +69,7 @@ void THydeTrackerPhysics::BuildPhysicalEvent(THydeTrackerData* Data)
    double FirstStage_Front_E_Threshold = 0; double FirstStage_Front_T_Threshold = 0;
    double FirstStage_Back_E_Threshold  = 0; double FirstStage_Back_T_Threshold  = 0;
    double SecondStage_E_Threshold      = 0; double SecondStage_T_Threshold      = 0;
-   double ThirdStage_E_Threshold       = 0; double ThirdStage_T_Threshold	= 0;
+   double ThirdStage_E_Threshold       = 0; double ThirdStage_T_Threshold   = 0;
 */
    // calculate multipicity in the first stage
    int multXE = Data->GetHYDTrkFirstStageFrontEMult();
@@ -200,7 +200,7 @@ void THydeTrackerPhysics::Clear()
    SecondStage_T.clear();
    SecondStage_N.clear();
 
-   // CsI	
+   // CsI   
    ThirdStage_E.clear();
    ThirdStage_T.clear();
    ThirdStage_N.clear();

@@ -90,7 +90,7 @@ private:
    //////////////////////////////
    // Geometry and stip number //
    //////////////////////////////
-   double m_FirstStageFace;	// mm
+   double m_FirstStageFace;   // mm
    int    m_NumberOfStrips;
    double m_StripPitch;
 };

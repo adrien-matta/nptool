@@ -35,13 +35,13 @@ using namespace NPL;
 Nucleus::Nucleus()
 {
    //----------- Default Constructor ----------
-   fName	 = "XX DEFAULT XX";
-   fCharge	 = 0;
-   fAtomicWeight = 0;
-   fMassExcess	 = 0;
-   fSpinParity	 = "";
-   fSpin	 = 0;
-   fParity	 = "";
+   fName= "XX DEFAULT XX";
+   fCharge= 0;
+   fAtomicWeight= 0;
+   fMassExcess= 0;
+   fSpinParity= "";
+   fSpin= 0;
+   fParity= "";
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
@@ -64,11 +64,11 @@ Nucleus::Nucleus(string isotope)
       while (!inFile.eof()) {
          getline(inFile,line);
 
-	 s_name = line.substr(11,7);
-	 space = s_name.find_first_of(" "); 
-	 s_name.resize(space);
+    s_name = line.substr(11,7);
+    space = s_name.find_first_of(" "); 
+    s_name.resize(space);
 
-	 if (s_name.find(Isotope) != string::npos && s_name.length() == isotope.length()) break;
+    if (s_name.find(Isotope) != string::npos && s_name.length() == isotope.length()) break;
       }
       Extract(line.data());
    }
@@ -93,11 +93,11 @@ Nucleus::Nucleus(int Z, int A)
    if (inFile.is_open()) {
       while (!inFile.eof()) {
          getline(inFile,line);
-	 s_mass   = line.substr(0,3);
-	 s_charge = line.substr(4,4);
-	 charge = atoi(s_charge.data());
-	 mass   = atoi(s_mass.data());
-	 if (mass == A && charge == Z*10) break;
+    s_mass   = line.substr(0,3);
+    s_charge = line.substr(4,4);
+    charge = atoi(s_charge.data());
+    mass   = atoi(s_mass.data());
+    if (mass == A && charge == Z*10) break;
       }
       Extract(line.data());
    }
@@ -143,28 +143,28 @@ void Nucleus::Extract(const char* line)
    if (found_p != string::npos) fParity = "+";
    if (found_m != string::npos) fParity = "-";
    // spin
-   if (s_spinparity.find("0")    != string::npos) fSpin = 0		;
-   if (s_spinparity.find("1")    != string::npos) fSpin = 1		;
-   if (s_spinparity.find("2")    != string::npos) fSpin = 2		;
-   if (s_spinparity.find("3")    != string::npos) fSpin = 3		;
-   if (s_spinparity.find("4")    != string::npos) fSpin = 4		;
-   if (s_spinparity.find("5")    != string::npos) fSpin = 5		;
-   if (s_spinparity.find("6")    != string::npos) fSpin = 6		;
-   if (s_spinparity.find("7")    != string::npos) fSpin = 7		;
-   if (s_spinparity.find("8")    != string::npos) fSpin = 8		;
-   if (s_spinparity.find("9")    != string::npos) fSpin = 9		;
-   if (s_spinparity.find("10")   != string::npos) fSpin = 10	;
-   if (s_spinparity.find("1/2")  != string::npos) fSpin = 0.5	;
-   if (s_spinparity.find("3/2")  != string::npos) fSpin = 1.5	;
-   if (s_spinparity.find("5/2")  != string::npos) fSpin = 2.5	;
-   if (s_spinparity.find("7/2")  != string::npos) fSpin = 3.5	;
-   if (s_spinparity.find("9/2")  != string::npos) fSpin = 4.5	;
-   if (s_spinparity.find("11/2") != string::npos) fSpin = 5.5	;
-   if (s_spinparity.find("13/2") != string::npos) fSpin = 6.5	;
-   if (s_spinparity.find("15/2") != string::npos) fSpin = 7.5	;
-   if (s_spinparity.find("17/2") != string::npos) fSpin = 8.5	;
-   if (s_spinparity.find("19/2") != string::npos) fSpin = 9.5	;
-   if (s_spinparity.find("21/2") != string::npos) fSpin = 10.5	;
+   if (s_spinparity.find("0")    != string::npos) fSpin = 0     ;
+   if (s_spinparity.find("1")    != string::npos) fSpin = 1     ;
+   if (s_spinparity.find("2")    != string::npos) fSpin = 2     ;
+   if (s_spinparity.find("3")    != string::npos) fSpin = 3     ;
+   if (s_spinparity.find("4")    != string::npos) fSpin = 4     ;
+   if (s_spinparity.find("5")    != string::npos) fSpin = 5     ;
+   if (s_spinparity.find("6")    != string::npos) fSpin = 6     ;
+   if (s_spinparity.find("7")    != string::npos) fSpin = 7     ;
+   if (s_spinparity.find("8")    != string::npos) fSpin = 8     ;
+   if (s_spinparity.find("9")    != string::npos) fSpin = 9     ;
+   if (s_spinparity.find("10")   != string::npos) fSpin = 10    ;
+   if (s_spinparity.find("1/2")  != string::npos) fSpin = 0.5   ;
+   if (s_spinparity.find("3/2")  != string::npos) fSpin = 1.5   ;
+   if (s_spinparity.find("5/2")  != string::npos) fSpin = 2.5   ;
+   if (s_spinparity.find("7/2")  != string::npos) fSpin = 3.5   ;
+   if (s_spinparity.find("9/2")  != string::npos) fSpin = 4.5   ;
+   if (s_spinparity.find("11/2") != string::npos) fSpin = 5.5   ;
+   if (s_spinparity.find("13/2") != string::npos) fSpin = 6.5   ;
+   if (s_spinparity.find("15/2") != string::npos) fSpin = 7.5   ;
+   if (s_spinparity.find("17/2") != string::npos) fSpin = 8.5   ;
+   if (s_spinparity.find("19/2") != string::npos) fSpin = 9.5   ;
+   if (s_spinparity.find("21/2") != string::npos) fSpin = 10.5 ;
 } 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 

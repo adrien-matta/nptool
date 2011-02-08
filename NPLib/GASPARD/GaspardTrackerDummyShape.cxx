@@ -12,14 +12,14 @@
 #include "TGaspardTrackerPhysics.h"
 
 GaspardTrackerDummyShape::GaspardTrackerDummyShape(map<int, GaspardTrackerModule*> &Module,
-						   TGaspardTrackerPhysics* &EventPhysics) 
-	: m_ModuleTest(Module),
-	  m_EventPhysics(EventPhysics),
-	  m_EventData(0),
-	  m_PreTreatData(new TGaspardTrackerData),
-	  m_NumberOfModule(0),
-	  m_FirstStageFace(50),	// mm
-	  m_NumberOfStrips(100)
+                     TGaspardTrackerPhysics* &EventPhysics) 
+   : m_ModuleTest(Module),
+     m_EventPhysics(EventPhysics),
+     m_EventData(0),
+     m_PreTreatData(new TGaspardTrackerData),
+     m_NumberOfModule(0),
+     m_FirstStageFace(50),   // mm
+     m_NumberOfStrips(100)
 {
    m_StripPitch = m_FirstStageFace / (double)m_NumberOfStrips;
 }

@@ -21,16 +21,16 @@
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
-//	STL
+//   STL
 #include <vector>
 using namespace std ;
 
-//	ROOT
+//   ROOT
 #include "TObject.h"
 #include "TVector2.h"
 #include "TVector3.h"
 
-//	NPL
+//   NPL
 #include "TW1Data.h"
 #include "../include/VDetector.h"
 #include "../include/CalibrationManager.h"
@@ -38,14 +38,14 @@ using namespace std ;
 
 class TW1Physics : public TObject, public NPA::VDetector
 {
- public:	//	Constructor and Destructor
+ public:   //   Constructor and Destructor
    TW1Physics();
    ~TW1Physics();
 
  public:
    void Clear();
    void Clear(const Option_t*) {};
-	
+   
 
  private: // data obtained after BuildPhysicalEvent() and stored in ROOT output file
    vector<Int_t>     fEventType;
@@ -76,13 +76,13 @@ class TW1Physics : public TObject, public NPA::VDetector
    Int_t    GetBackStrip(Int_t i)            {return fBackStrip.at(i);}
 
 
- public:	//	inherrited from VDetector
+ public:   //   inherrited from VDetector
    // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
    void ReadConfiguration(string);
-		
+      
    // Add Parameter to the CalibrationManger
-   void AddParameterToCalibrationManager();		
-			
+   void AddParameterToCalibrationManager();      
+         
    // Activated associated Branches and link it to the private member DetectorData address
    // In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
    void InitializeRootInput();
@@ -92,7 +92,7 @@ class TW1Physics : public TObject, public NPA::VDetector
 
    // This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
    void BuildPhysicalEvent();
-		
+      
    // Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
    // This method aimed to be used for analysis performed during experiment, when speed is requiered.
    // NB: This method can eventually be the same as BuildPhysicalEvent.
@@ -103,13 +103,13 @@ class TW1Physics : public TObject, public NPA::VDetector
    void ClearEventData()      {m_EventData->Clear();}
 
 
- public: //	Specific to W1
+ public: //   Specific to W1
    // Remove bad channel, calibrate the data and apply threshold
    void PreTreat();
 
    // Clear The PreTeated object
-   void ClearPreTreatedData()	{m_PreTreatedData->Clear();}
-		
+   void ClearPreTreatedData()   {m_PreTreatedData->Clear();}
+      
    // Return false if the channel is disabled by user
    // Frist argument is either "Front" or "Back"
    bool IsValidChannel(string Type, int detector, int channel);
@@ -118,7 +118,7 @@ class TW1Physics : public TObject, public NPA::VDetector
    // ie: all channel enable, maximum multiplicity for strip = number of telescope
    void InitializeStandardParameter();
    
-   //	Read the user configuration file; if no file found, load standard one
+   //   Read the user configuration file; if no file found, load standard one
    void ReadAnalysisConfig();
 
    // Add detector using cartesian coordiantes

@@ -57,18 +57,18 @@ class TParisData : public TObject {
 
    /*
  private:
-   vector<double>	fParis_Energy;
-   vector<double>	fParis_Time;
-   vector<short>	fParis_Number;
+   vector<double>   fParis_Energy;
+   vector<double>   fParis_Time;
+   vector<short>   fParis_Number;
    */
 
  public:
    TParisData();
    virtual ~TParisData();
 
-   void	Clear();
-   void	Clear(const Option_t*) {};
-   void	Dump() const;
+   void   Clear();
+   void   Clear(const Option_t*) {};
+   void   Dump() const;
 
    /////////////////////           GETTERS           ////////////////////////
 
@@ -143,16 +143,16 @@ class TParisData : public TObject {
 
    /*
    // (E)
-   //double	GetEnergy(int i)		{return fParis_Energy[i];}
+   //double   GetEnergy(int i)      {return fParis_Energy[i];}
    // (T)
-   //double	GetTime(int i)			{return fParis_Time[i];}
+   //double   GetTime(int i)         {return fParis_Time[i];}
    // (N)
-   int		GetParisNumber(int i)		{return fParis_Number[i];}   
-   double	GetEnergySize()			{return fParis_Energy.size();}
+   int      GetParisNumber(int i)      {return fParis_Number[i];}   
+   double   GetEnergySize()         {return fParis_Energy.size();}
    // (T)
-   double	GetTimeSize()			{return fParis_Time.size();}
+   double   GetTimeSize()         {return fParis_Time.size();}
    // (N)
-   int      	GetParisNumberSize()		{return fParis_Number.size();}
+   int         GetParisNumberSize()      {return fParis_Number.size();}
    */
    
    /////////////////////           SETTERS           ////////////////////////
@@ -218,9 +218,9 @@ class TParisData : public TObject {
 
    /*
    // (E)
-   void	SetEnergy(double E)			{fParis_Energy.push_back(E);}
-   void	SetTime(double T)			{fParis_Time.push_back(T);}
-   void	SetParisNumber(int N)			{fParis_Number.push_back(N);}
+   void   SetEnergy(double E)         {fParis_Energy.push_back(E);}
+   void   SetTime(double T)         {fParis_Time.push_back(T);}
+   void   SetParisNumber(int N)         {fParis_Number.push_back(N);}
    */
    ClassDef(TParisData,1)  // ParisData structure
 };

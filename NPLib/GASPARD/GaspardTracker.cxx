@@ -26,7 +26,7 @@
 #include "GaspardTracker.h"
 
 // C++ headers
-#include <iostream>	
+#include <iostream>   
 #include <fstream>
 #include <string>
 #include <cmath>
@@ -45,16 +45,16 @@
 #include "GaspardTrackerAnnular.h"
 #include "GaspardTrackerSquare.h"
 
-using namespace std ;	
+using namespace std ;   
 
 
 
 
 GaspardTracker::GaspardTracker()
-	: m_EventData (new TGaspardTrackerData()),
-	  m_EventPhysics (new TGaspardTrackerPhysics())
+   : m_EventData (new TGaspardTrackerData()),
+     m_EventPhysics (new TGaspardTrackerPhysics())
 {
-}	
+}   
 
 
 
@@ -62,7 +62,7 @@ GaspardTracker::~GaspardTracker()
 {
    delete m_EventData;
    delete m_EventPhysics;
-}	
+}   
 
 
 
@@ -73,7 +73,7 @@ void GaspardTracker::Clear()
 
 
 // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-void GaspardTracker::ReadConfiguration(string Path) 	
+void GaspardTracker::ReadConfiguration(string Path)    
 {
    // open configuration file
    ifstream ConfigFile;
@@ -149,9 +149,9 @@ void GaspardTracker::ReadConfiguration(string Path)
 
 // Read stream at Path and pick-up calibration parameter using Token
 // If argument is "Simulation" no change calibration is loaded
-void GaspardTracker::ReadCalibrationFile(string Path)	
+void GaspardTracker::ReadCalibrationFile(string Path)   
 {
-   Path.c_str();	// remove warning at compilation time
+   Path.c_str();   // remove warning at compilation time
 
 /*   // Order of Polynom function used for calibration
    int Calibration_Si_E_Order;
@@ -160,16 +160,16 @@ void GaspardTracker::ReadCalibrationFile(string Path)
    int Calibration_CsI_E_Order;
 
    // Calibration_Si_X_E[DetectorNumber][StripNumber][Order of Coeff]
-   vector< vector< vector< double > > >	Calibration_Si_X_E	;
-   vector< vector< vector< double > > >	Calibration_Si_X_T	;
-   vector< vector< vector< double > > >	Calibration_Si_Y_E	;
-   vector< vector< vector< double > > >	Calibration_Si_Y_T	;
+   vector< vector< vector< double > > >   Calibration_Si_X_E   ;
+   vector< vector< vector< double > > >   Calibration_Si_X_T   ;
+   vector< vector< vector< double > > >   Calibration_Si_Y_E   ;
+   vector< vector< vector< double > > >   Calibration_Si_Y_T   ;
 
    // Calibration_SiLi_E[DetectorNumber][PadNumber][Order of Coeff]
-   vector< vector< vector< double > > >	Calibration_SiLi_E	;
+   vector< vector< vector< double > > >   Calibration_SiLi_E   ;
 
    // Calibration_SiLi_E[DetectorNumber][CrystalNumber][Order of Coeff]
-   vector< vector< vector< double > > >	Calibration_CsI_E	;
+   vector< vector< vector< double > > >   Calibration_CsI_E   ;
 
    if (Path == "Simulation") {   // Simulation case: data already calibrated
       Calibration_Si_E_Order   = 1;
@@ -178,30 +178,30 @@ void GaspardTracker::ReadCalibrationFile(string Path)
       Calibration_CsI_E_Order  = 1;
 
       vector<double> Coef;
-      // Order 0				Order 1
-      Coef.push_back(0) ; Coef.push_back(1) 	;
+      // Order 0            Order 1
+      Coef.push_back(0) ; Coef.push_back(1)    ;
 
-      vector< vector<double> > StripLine 		;
-      StripLine.resize( 128 , Coef)			;
+      vector< vector<double> > StripLine       ;
+      StripLine.resize( 128 , Coef)         ;
 
-      Calibration_Si_X_E.resize( m_NumberOfModule , StripLine)	;
-      Calibration_Si_X_T.resize( m_NumberOfModule , StripLine)	;
-      Calibration_Si_Y_E.resize( m_NumberOfModule , StripLine)	;
-      Calibration_Si_Y_T.resize( m_NumberOfModule , StripLine)	;
-				
-      Calibration_SiLi_E.resize( m_NumberOfModule , StripLine)	;
-      Calibration_CsI_E .resize( m_NumberOfModule , StripLine)	;
+      Calibration_Si_X_E.resize( m_NumberOfModule , StripLine)   ;
+      Calibration_Si_X_T.resize( m_NumberOfModule , StripLine)   ;
+      Calibration_Si_Y_E.resize( m_NumberOfModule , StripLine)   ;
+      Calibration_Si_Y_T.resize( m_NumberOfModule , StripLine)   ;
+            
+      Calibration_SiLi_E.resize( m_NumberOfModule , StripLine)   ;
+      Calibration_CsI_E .resize( m_NumberOfModule , StripLine)   ;
    }
    else {
    }
 */
-}		
+}      
 
-	
+   
 
 // Activated associated Branches and link it to the private member DetectorData address
 // In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
-void GaspardTracker::InitializeRootInput() 		
+void GaspardTracker::InitializeRootInput()       
 {
    TChain* inputChain = RootInput::getInstance()->GetChain();
    inputChain->SetBranchStatus("GASPARD", true);
@@ -212,7 +212,7 @@ void GaspardTracker::InitializeRootInput()
 
 
 // Create associated branches and associated private member DetectorPhysics address
-void GaspardTracker::InitializeRootOutput() 	
+void GaspardTracker::InitializeRootOutput()    
 {
    TTree* outputTree = RootOutput::getInstance()->GetTree();
    outputTree->Branch("GASPARD", "TGaspardTrackerPhysics", &m_EventPhysics);
@@ -221,7 +221,7 @@ void GaspardTracker::InitializeRootOutput()
 
 
 // This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
-void GaspardTracker::BuildPhysicalEvent()		
+void GaspardTracker::BuildPhysicalEvent()      
 {
    if (m_EventData->GetGPDTrkFirstStageFrontEMult() > 0) {
       for (UInt_t i = 0; i < m_EventData->GetGPDTrkFirstStageFrontEMult(); i++) {
@@ -236,7 +236,7 @@ void GaspardTracker::BuildPhysicalEvent()
 // Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
 // This method aimed to be used for analysis performed during experiment, when speed is requiered.
 // NB: This method can eventually be the same as BuildPhysicalEvent.
-void GaspardTracker::BuildSimplePhysicalEvent()	
+void GaspardTracker::BuildSimplePhysicalEvent()   
 {
    BuildPhysicalEvent();
 }
@@ -272,7 +272,7 @@ void GaspardTracker::DumpStrippingScheme(int moduleNumber)
 
 
 
-double GaspardTracker::GetEnergyDeposit()		
+double GaspardTracker::GetEnergyDeposit()      
 { 
    if (m_EventPhysics->GetEventMultiplicity() > 0) {
       return m_EventPhysics->GetTotalEnergy(0); 

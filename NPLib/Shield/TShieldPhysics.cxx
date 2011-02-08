@@ -74,12 +74,12 @@ void TShieldPhysics::BuildPhysicalEvent(TShieldData* Data)
 
     for(int j=0;j<multE;j++)
       {
-	EnergyStripFront= Data->GetPARISCsIShieldEEnergy(j);
-	
-	EnergyStrip  = EnergyStripFront;
-	ShieldCsI_E.push_back(EnergyStrip);
+   EnergyStripFront= Data->GetPARISCsIShieldEEnergy(j);
+   
+   EnergyStrip  = EnergyStripFront;
+   ShieldCsI_E.push_back(EnergyStrip);
 
-	EnergyTot += EnergyStrip; // addback between CsIShield 
+   EnergyTot += EnergyStrip; // addback between CsIShield 
       }
 
     // Fill total energy

@@ -14,13 +14,13 @@
 
 GaspardTrackerTrapezoid::GaspardTrackerTrapezoid(map<int, GaspardTrackerModule*> &Module,
                                                  TGaspardTrackerPhysics* &EventPhysics) 
-	: m_ModuleTest(Module),
+   : m_ModuleTest(Module),
           m_EventPhysics(EventPhysics),
           m_EventData(0),
           m_PreTreatData(new TGaspardTrackerData),
           m_NumberOfModule(0),
-          m_FirstStageBaseLarge(97.5),	// mm
-          m_FirstStageHeight(113.5),	// mm
+          m_FirstStageBaseLarge(97.5),   // mm
+          m_FirstStageHeight(113.5),   // mm
           m_NumberOfStripsX(128),
           m_NumberOfStripsY(128)
 {

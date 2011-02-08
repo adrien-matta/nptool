@@ -1,11 +1,11 @@
 #include "DetectorManager.h"
 
-//	STL
+//   STL
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
 
-//	Detector	
+//   Detector   
 #include "TMust2Physics.h"
 #include "TSSSDPhysics.h"
 #include "TPlasticPhysics.h"
@@ -17,15 +17,15 @@
 #include "NPOptionManager.h"
 #include "RootInput.h"
 /////////////////////////////////////////////////////////////////////////////////////////////////
-//	Default Constructor
-DetectorManager::DetectorManager()	
+//   Default Constructor
+DetectorManager::DetectorManager()   
 {
 }
 
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////	
-//	Default Desstructor
+/////////////////////////////////////////////////////////////////////////////////////////////////   
+//   Default Desstructor
 DetectorManager::~DetectorManager()
 {
 }
@@ -33,8 +33,8 @@ DetectorManager::~DetectorManager()
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-//	Read stream at ConfigFile and pick-up Token declaration of Detector
-void DetectorManager::ReadConfigurationFile(string Path)	
+//   Read stream at ConfigFile and pick-up Token declaration of Detector
+void DetectorManager::ReadConfigurationFile(string Path)   
 {
    ////////General Reading needs////////
    string LineBuffer;
@@ -339,8 +339,8 @@ void DetectorManager::ReadConfigurationFile(string Path)
 
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////	
-void DetectorManager::BuildPhysicalEvent()						
+/////////////////////////////////////////////////////////////////////////////////////////////////   
+void DetectorManager::BuildPhysicalEvent()                  
 {
    map<string,VDetector*>::iterator it;
 
@@ -364,7 +364,7 @@ void DetectorManager::BuildSimplePhysicalEvent()
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-void DetectorManager::InitializeRootInput()						
+void DetectorManager::InitializeRootInput()                  
 {
 
   if( NPOptionManager::getInstance()->GetDisableAllBranchOption() )
@@ -379,8 +379,8 @@ void DetectorManager::InitializeRootInput()
 
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////	
-void DetectorManager::InitializeRootOutput()	
+/////////////////////////////////////////////////////////////////////////////////////////////////   
+void DetectorManager::InitializeRootOutput()   
 {
    map<string,VDetector*>::iterator it;
 
@@ -421,4 +421,4 @@ void DetectorManager::ClearEventData()
       it->second->ClearEventData();
    }
 }
-			
+         

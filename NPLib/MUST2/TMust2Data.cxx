@@ -28,43 +28,43 @@ ClassImp(TMust2Data)
 
 TMust2Data::TMust2Data()
 {
-	// Default constructor
+   // Default constructor
 
-	// DSSD
-	// (X,E)
-	fMM_StripXE_DetectorNbr.clear()	;
-	fMM_StripXE_StripNbr.clear()	;
-	fMM_StripXE_Energy.clear()		;
-	// (X,T)
-	fMM_StripXT_DetectorNbr.clear()	;
-	fMM_StripXT_StripNbr.clear()	;
-	fMM_StripXT_Time.clear()		;
-	// (Y,E)
-	fMM_StripYE_DetectorNbr.clear()	;	
-	fMM_StripYE_StripNbr.clear()	;
-	fMM_StripYE_Energy.clear()		;
-	// (Y,T)
-	fMM_StripYT_DetectorNbr.clear()	;
-	fMM_StripYT_StripNbr.clear()	;
-	fMM_StripYT_Time.clear()		;
+   // DSSD
+   // (X,E)
+   fMM_StripXE_DetectorNbr.clear();
+   fMM_StripXE_StripNbr.clear();
+   fMM_StripXE_Energy.clear();
+   // (X,T)
+   fMM_StripXT_DetectorNbr.clear();
+   fMM_StripXT_StripNbr.clear();
+   fMM_StripXT_Time.clear();
+   // (Y,E)
+   fMM_StripYE_DetectorNbr.clear();   
+   fMM_StripYE_StripNbr.clear();
+   fMM_StripYE_Energy.clear();
+   // (Y,T)
+   fMM_StripYT_DetectorNbr.clear();
+   fMM_StripYT_StripNbr.clear();
+   fMM_StripYT_Time.clear();
 
-	// SiLi E
-	fMM_SiLiE_DetectorNbr.clear()	;
-	fMM_SiLiE_PadNbr.clear()		;
-	fMM_SiLiE_Energy.clear()		;
-	// SiLi T
-	fMM_SiLiT_DetectorNbr.clear()	;
-	fMM_SiLiT_PadNbr.clear()		;
-	fMM_SiLiT_Time.clear()			;
+   // SiLi E
+   fMM_SiLiE_DetectorNbr.clear();
+   fMM_SiLiE_PadNbr.clear();
+   fMM_SiLiE_Energy.clear();
+   // SiLi T
+   fMM_SiLiT_DetectorNbr.clear();
+   fMM_SiLiT_PadNbr.clear();
+   fMM_SiLiT_Time.clear();
 
-	// CsI E
-	fMM_CsIE_DetectorNbr.clear()	;
-	fMM_CsIE_CristalNbr.clear()		;
-	fMM_CsIE_Energy.clear()			;
-	// CsI T
-	fMM_CsIT_DetectorNbr.clear()	;
-	fMM_CsIT_CristalNbr.clear()		;
-	fMM_CsIT_Time.clear()			;
+   // CsI E
+   fMM_CsIE_DetectorNbr.clear();
+   fMM_CsIE_CristalNbr.clear() ;
+   fMM_CsIE_Energy.clear();
+   // CsI T
+   fMM_CsIT_DetectorNbr.clear();
+   fMM_CsIT_CristalNbr.clear();
+   fMM_CsIT_Time.clear();
 }
 
 TMust2Data::~TMust2Data()
@@ -72,41 +72,41 @@ TMust2Data::~TMust2Data()
 
 void TMust2Data::Clear()
 {
-	// DSSD
-	// (X,E)
-	fMM_StripXE_DetectorNbr.clear()	;
-	fMM_StripXE_StripNbr.clear()	;
-	fMM_StripXE_Energy.clear()		;
-	// (X,T)
-	fMM_StripXT_DetectorNbr.clear()	;
-	fMM_StripXT_StripNbr.clear()	;
-	fMM_StripXT_Time.clear()		;
-	// (Y,E)
-	fMM_StripYE_DetectorNbr.clear()	;
-	fMM_StripYE_StripNbr.clear()	;
-	fMM_StripYE_Energy.clear()		;
-	// (Y,T)
-	fMM_StripYT_DetectorNbr.clear()	;
-	fMM_StripYT_StripNbr.clear()	;
-	fMM_StripYT_Time.clear()		;
+   // DSSD
+   // (X,E)
+   fMM_StripXE_DetectorNbr.clear();
+   fMM_StripXE_StripNbr.clear();
+   fMM_StripXE_Energy.clear();
+   // (X,T)
+   fMM_StripXT_DetectorNbr.clear();
+   fMM_StripXT_StripNbr.clear();
+   fMM_StripXT_Time.clear();
+   // (Y,E)
+   fMM_StripYE_DetectorNbr.clear();
+   fMM_StripYE_StripNbr.clear();
+   fMM_StripYE_Energy.clear();
+   // (Y,T)
+   fMM_StripYT_DetectorNbr.clear();
+   fMM_StripYT_StripNbr.clear();
+   fMM_StripYT_Time.clear();
 
-	// SiLi E
-	fMM_SiLiE_DetectorNbr.clear()	;
-	fMM_SiLiE_PadNbr.clear()		;
-	fMM_SiLiE_Energy.clear()		;
-	// SiLi T
-	fMM_SiLiT_DetectorNbr.clear()	;
-	fMM_SiLiT_PadNbr.clear()		;
-	fMM_SiLiT_Time.clear()			;
+   // SiLi E
+   fMM_SiLiE_DetectorNbr.clear();
+   fMM_SiLiE_PadNbr.clear();
+   fMM_SiLiE_Energy.clear();
+   // SiLi T
+   fMM_SiLiT_DetectorNbr.clear();
+   fMM_SiLiT_PadNbr.clear();
+   fMM_SiLiT_Time.clear();
 
-	// CsI E
-	fMM_CsIE_DetectorNbr.clear()	;
-	fMM_CsIE_CristalNbr.clear()		;
-	fMM_CsIE_Energy.clear()			;
-	// CsI T
-	fMM_CsIT_DetectorNbr.clear()	;
-	fMM_CsIT_CristalNbr.clear()		;
-	fMM_CsIT_Time.clear()			;
+   // CsI E
+   fMM_CsIE_DetectorNbr.clear();
+   fMM_CsIE_CristalNbr.clear();
+   fMM_CsIE_Energy.clear();
+   // CsI T
+   fMM_CsIT_DetectorNbr.clear();
+   fMM_CsIT_CristalNbr.clear();
+   fMM_CsIT_Time.clear();
 }
 
 

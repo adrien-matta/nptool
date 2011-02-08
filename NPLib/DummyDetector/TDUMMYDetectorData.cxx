@@ -15,7 +15,7 @@
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This class described the raw data of a very simple DUMMYDetector         *
- *	Use it as a template for your own detector!                              *
+ *   Use it as a template for your own detector!                              *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -50,10 +50,10 @@ void TDUMMYDetectorData::Dump() const
 {
    cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event XXXXXXXXXXXXXXXXX" << endl;
 
-	for(unsigned short i = 0 ; i<fDUMMYDetector_Energy.size() ; i ++)
-		{
-			cout << "DUMMYDetector Number " << fDUMMYDetector_Number[i] << " Energy: " << fDUMMYDetector_Energy[i]  << " Time: "<< fDUMMYDetector_Time[i] << endl;
-		
-		}
+   for(unsigned short i = 0 ; i<fDUMMYDetector_Energy.size() ; i ++)
+      {
+         cout << "DUMMYDetector Number " << fDUMMYDetector_Number[i] << " Energy: " << fDUMMYDetector_Energy[i]  << " Time: "<< fDUMMYDetector_Time[i] << endl;
+      
+      }
    
 }

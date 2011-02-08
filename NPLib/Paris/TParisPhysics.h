@@ -38,43 +38,43 @@ public:
    ~TParisPhysics();
 
 public: 
-   void Clear();	
-   void Clear(const Option_t*) {};	
+   void Clear();   
+   void Clear(const Option_t*) {};   
    void BuildPhysicalEvent(TParisData* Data);
    void BuildSimplePhysicalEvent(TParisData* Data);
 
 public:
    // Provide Physical Multiplicity
-   Int_t		ParisEventMult;
+   Int_t      ParisEventMult;
 
    // Provide a Classification of Event
-   //vector<int>		EventType;
+   //vector<int>      EventType;
 
    // Telescope
-   //vector<int>		ModuleNumber;
+   //vector<int>      ModuleNumber;
 
-   //	FirstStage
-   vector<double>	ParisLaBr_E;
-   //vector<double>	FirstStage_T;
-   //vector<int>		FirstStage_X;
-   //vector<int>		FirstStage_Y;
+   //   FirstStage
+   vector<double>   ParisLaBr_E;
+   //vector<double>   FirstStage_T;
+   //vector<int>      FirstStage_X;
+   //vector<int>      FirstStage_Y;
 
-   //	SecondStage
-   vector<double>	ParisCsI_E;
-   //vector<double>	SecondStage_T;
-   //vector<int>		SecondStage_N;
+   //   SecondStage
+   vector<double>   ParisCsI_E;
+   //vector<double>   SecondStage_T;
+   //vector<int>      SecondStage_N;
 
    /*
-   //	ThirdStage
-   vector<double>	ThirdStage_E;
-   vector<double>	ThirdStage_T;
-   vector<int>		ThirdStage_N;
+   //   ThirdStage
+   vector<double>   ThirdStage_E;
+   vector<double>   ThirdStage_T;
+   vector<int>      ThirdStage_N;
    */
 
    // Physical Value  
-   vector<double>	ParisTotalEnergy;
-   vector<double>	ParisInTotalEnergy;
-   vector<double>	ParisOutTotalEnergy;
+   vector<double>   ParisTotalEnergy;
+   vector<double>   ParisInTotalEnergy;
+   vector<double>   ParisOutTotalEnergy;
 
    ClassDef(TParisPhysics,1)  // GaspardTrackerPHysics structure
 };

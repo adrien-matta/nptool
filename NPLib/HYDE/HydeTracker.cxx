@@ -26,7 +26,7 @@
 #include "HydeTracker.h"
 
 // C++ headers
-#include <iostream>	
+#include <iostream>   
 #include <fstream>
 #include <string>
 #include <cmath>
@@ -39,16 +39,16 @@
 // ROOT headers
 #include "TChain.h"
 
-using namespace std ;	
-	
-//	Default Constructor
+using namespace std ;   
+   
+//   Default Constructor
 
 HydeTracker::HydeTracker()
 {
    m_NumberOfModule = 0;
    m_EventData    = new THydeTrackerData();
    m_EventPhysics = new THydeTrackerPhysics();
-}	
+}   
 
 
 
@@ -57,17 +57,17 @@ HydeTracker::~HydeTracker()
    m_NumberOfModule = 0;
    delete m_EventData;
    delete m_EventPhysics;
-}	
+}   
 
 
 
 // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-void HydeTracker::ReadConfiguration(string Path) 	
+void HydeTracker::ReadConfiguration(string Path)    
 {
-   ifstream ConfigFile           	;
-   ConfigFile.open(Path.c_str()) 	;
-   string LineBuffer          		;
-   string DataBuffer          		;	
+   ifstream ConfigFile              ;
+   ConfigFile.open(Path.c_str())    ;
+   string LineBuffer                ;
+   string DataBuffer                ;   
 
    // A:X1_Y1     --> X:1    Y:1
    // B:X128_Y1   --> X:128  Y:1
@@ -117,8 +117,8 @@ void HydeTracker::ReadConfiguration(string Path)
       else ReadingStatus = false;
 
       // Reading Block
-      while (ReadingStatus) {	 
-         if (isSquare) { 	// square shape
+      while (ReadingStatus) {    
+         if (isSquare) {    // square shape
             ConfigFile >> DataBuffer ;
             // Comment Line 
             if (DataBuffer.compare(0, 1, "%") == 0) {
@@ -272,7 +272,7 @@ void HydeTracker::ReadConfiguration(string Path)
             } // end test for adding a module
          } // end test for Square shape
 
-        else if (isDummyShape) { 	// dummyshape shape
+        else if (isDummyShape) {    // dummyshape shape
             ConfigFile >> DataBuffer ;
             // Comment Line 
             if (DataBuffer.compare(0, 1, "%") == 0) {
@@ -426,11 +426,11 @@ void HydeTracker::ReadConfiguration(string Path)
             } // end test for adding a module
          } // end test for DummyShape shape
 
-         else if (isTrapezoid) {	// trapezoid shape
+         else if (isTrapezoid) {   // trapezoid shape
             cout << "Trapezoid treatment not implemented yet!" << endl;
          } // end test for Trapezoid shape
 
-         else if (isAnnular) {		// annular shape
+         else if (isAnnular) {      // annular shape
             cout << "Annular treatment not implemented yet!" << endl;
          } // end test for Annular shape
 
@@ -443,7 +443,7 @@ void HydeTracker::ReadConfiguration(string Path)
 
 // Read stream at Path and pick-up calibration parameter using Token
 // If argument is "Simulation" no change calibration is loaded
-void HydeTracker::ReadCalibrationFile(string Path)	
+void HydeTracker::ReadCalibrationFile(string Path)   
 {
    // Order of Polynom function used for calibration
    int Calibration_Si_E_Order;
@@ -452,16 +452,16 @@ void HydeTracker::ReadCalibrationFile(string Path)
    int Calibration_CsI_E_Order;
 
    // Calibration_Si_X_E[DetectorNumber][StripNumber][Order of Coeff]
-   vector< vector< vector< double > > >	Calibration_Si_X_E	;
-   vector< vector< vector< double > > >	Calibration_Si_X_T	;
-   vector< vector< vector< double > > >	Calibration_Si_Y_E	;
-   vector< vector< vector< double > > >	Calibration_Si_Y_T	;
+   vector< vector< vector< double > > >   Calibration_Si_X_E   ;
+   vector< vector< vector< double > > >   Calibration_Si_X_T   ;
+   vector< vector< vector< double > > >   Calibration_Si_Y_E   ;
+   vector< vector< vector< double > > >   Calibration_Si_Y_T   ;
 
    // Calibration_SiLi_E[DetectorNumber][PadNumber][Order of Coeff]
-   vector< vector< vector< double > > >	Calibration_SiLi_E	;
+   vector< vector< vector< double > > >   Calibration_SiLi_E   ;
 
    // Calibration_SiLi_E[DetectorNumber][CrystalNumber][Order of Coeff]
-   vector< vector< vector< double > > >	Calibration_CsI_E	;
+   vector< vector< vector< double > > >   Calibration_CsI_E   ;
 
    if (Path == "Simulation") {   // Simulation case: data already calibrated
       Calibration_Si_E_Order   = 1;
@@ -470,29 +470,29 @@ void HydeTracker::ReadCalibrationFile(string Path)
       Calibration_CsI_E_Order  = 1;
 
       vector<double> Coef;
-      // Order 0				Order 1
-      Coef.push_back(0) ; Coef.push_back(1) 	;
+      // Order 0            Order 1
+      Coef.push_back(0) ; Coef.push_back(1)    ;
 
-      vector< vector<double> > StripLine 		;
-      StripLine.resize( 128 , Coef)			;
+      vector< vector<double> > StripLine       ;
+      StripLine.resize( 128 , Coef)         ;
 
-      Calibration_Si_X_E.resize( m_NumberOfModule , StripLine)	;
-      Calibration_Si_X_T.resize( m_NumberOfModule , StripLine)	;
-      Calibration_Si_Y_E.resize( m_NumberOfModule , StripLine)	;
-      Calibration_Si_Y_T.resize( m_NumberOfModule , StripLine)	;
-				
-      Calibration_SiLi_E.resize( m_NumberOfModule , StripLine)	;
-      Calibration_CsI_E .resize( m_NumberOfModule , StripLine)	;
+      Calibration_Si_X_E.resize( m_NumberOfModule , StripLine)   ;
+      Calibration_Si_X_T.resize( m_NumberOfModule , StripLine)   ;
+      Calibration_Si_Y_E.resize( m_NumberOfModule , StripLine)   ;
+      Calibration_Si_Y_T.resize( m_NumberOfModule , StripLine)   ;
+            
+      Calibration_SiLi_E.resize( m_NumberOfModule , StripLine)   ;
+      Calibration_CsI_E .resize( m_NumberOfModule , StripLine)   ;
    }
    else {
    }
-}		
+}      
 
-	
+   
 
 // Activated associated Branches and link it to the private member DetectorData address
 // In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
-void HydeTracker::InitializeRootInput() 		
+void HydeTracker::InitializeRootInput()       
 {
    TChain* inputChain = RootInput::getInstance()->GetChain();
    inputChain->SetBranchStatus("HYDE", true);
@@ -503,7 +503,7 @@ void HydeTracker::InitializeRootInput()
 
 
 // Create associated branches and associated private member DetectorPhysics address
-void HydeTracker::InitializeRootOutput() 	
+void HydeTracker::InitializeRootOutput()    
 {
    TTree* outputTree = RootOutput::getInstance()->GetTree();
    outputTree->Branch("HYDE", "THydeTrackerPhysics", &m_EventPhysics);
@@ -512,7 +512,7 @@ void HydeTracker::InitializeRootOutput()
 
 
 // This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
-void HydeTracker::BuildPhysicalEvent()		
+void HydeTracker::BuildPhysicalEvent()      
 {
    m_EventPhysics -> BuildPhysicalEvent(m_EventData);
 }
@@ -522,7 +522,7 @@ void HydeTracker::BuildPhysicalEvent()
 // Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
 // This method aimed to be used for analysis performed during experiment, when speed is requiered.
 // NB: This method can eventually be the same as BuildPhysicalEvent.
-void HydeTracker::BuildSimplePhysicalEvent()	
+void HydeTracker::BuildSimplePhysicalEvent()   
 {
    m_EventPhysics -> BuildSimplePhysicalEvent(m_EventData);
 }
@@ -553,7 +553,7 @@ void HydeTracker::AddModuleSquare(TVector3 C_X1_Y1,
    TVector3 Strip_1_1;
 
    // Geometry Parameter
-   double Face = 98;		// mm
+   double Face = 98;      // mm
    double NumberOfStrip = 16;
    double StripPitch = Face/NumberOfStrip; // mm
 
@@ -562,9 +562,9 @@ void HydeTracker::AddModuleSquare(TVector3 C_X1_Y1,
    vector<double> lineY; 
    vector<double> lineZ;
 
-   vector< vector< double > >	OneModuleStripPositionX;
-   vector< vector< double > >	OneModuleStripPositionY;
-   vector< vector< double > >	OneModuleStripPositionZ;
+   vector< vector< double > >   OneModuleStripPositionX;
+   vector< vector< double > >   OneModuleStripPositionY;
+   vector< vector< double > >   OneModuleStripPositionZ;
 
    // Moving StripCenter to 1.1 corner:
    Strip_1_1 = C_X1_Y1 + (U+V) * (StripPitch/2.);
@@ -580,7 +580,7 @@ void HydeTracker::AddModuleSquare(TVector3 C_X1_Y1,
 
          lineX.push_back( StripCenter.X() );
          lineY.push_back( StripCenter.Y() );
-         lineZ.push_back( StripCenter.Z() );	
+         lineZ.push_back( StripCenter.Z() );   
       }
 
       OneModuleStripPositionX.push_back(lineX);
@@ -610,7 +610,7 @@ void HydeTracker::AddModuleSquare(double theta,
    phi   = phi   * Pi/180. ;
 
    // Vector U on Module Face (paralelle to Y Strip) (NB: remember that Y strip are allong X axis)
-   TVector3 U ;	
+   TVector3 U ;   
    // Vector V on Module Face (parallele to X Strip)
    TVector3 V ;
    // Vector W normal to Module Face (pointing CsI)
@@ -651,10 +651,10 @@ void HydeTracker::AddModuleSquare(double theta,
    vector<double> lineY;
    vector<double> lineZ;
 
-   vector< vector< double > >	OneModuleStripPositionX;
-   vector< vector< double > >	OneModuleStripPositionY;
-   vector< vector< double > >	OneModuleStripPositionZ;
-		
+   vector< vector< double > >   OneModuleStripPositionX;
+   vector< vector< double > >   OneModuleStripPositionY;
+   vector< vector< double > >   OneModuleStripPositionZ;
+      
    double X, Y, Z;
 
    // Moving C to the 1.1 corner:
@@ -713,7 +713,7 @@ void HydeTracker::AddModuleDummyShape(TVector3 C_X1_Y1,
    TVector3 Strip_1_1;
 
    // Geometry Parameter
-   double Face = 50;		// mm
+   double Face = 50;      // mm
    double NumberOfStrip = 128;
    double StripPitch = Face/NumberOfStrip; // mm
 
@@ -722,9 +722,9 @@ void HydeTracker::AddModuleDummyShape(TVector3 C_X1_Y1,
    vector<double> lineY; 
    vector<double> lineZ;
 
-   vector< vector< double > >	OneModuleStripPositionX;
-   vector< vector< double > >	OneModuleStripPositionY;
-   vector< vector< double > >	OneModuleStripPositionZ;
+   vector< vector< double > >   OneModuleStripPositionX;
+   vector< vector< double > >   OneModuleStripPositionY;
+   vector< vector< double > >   OneModuleStripPositionZ;
 
    // Moving StripCenter to 1.1 corner:
    Strip_1_1 = C_X1_Y1 + (U+V) * (StripPitch/2.);
@@ -740,7 +740,7 @@ void HydeTracker::AddModuleDummyShape(TVector3 C_X1_Y1,
 
          lineX.push_back( StripCenter.X() );
          lineY.push_back( StripCenter.Y() );
-         lineZ.push_back( StripCenter.Z() );	
+         lineZ.push_back( StripCenter.Z() );   
       }
 
       OneModuleStripPositionX.push_back(lineX);
@@ -770,7 +770,7 @@ void HydeTracker::AddModuleDummyShape(double theta,
    phi   = phi   * Pi/180. ;
 
    // Vector U on Module Face (paralelle to Y Strip) (NB: remember that Y strip are allong X axis)
-   TVector3 U ;	
+   TVector3 U ;   
    // Vector V on Module Face (parallele to X Strip)
    TVector3 V ;
    // Vector W normal to Module Face (pointing CsI)
@@ -811,10 +811,10 @@ void HydeTracker::AddModuleDummyShape(double theta,
    vector<double> lineY;
    vector<double> lineZ;
 
-   vector< vector< double > >	OneModuleStripPositionX;
-   vector< vector< double > >	OneModuleStripPositionY;
-   vector< vector< double > >	OneModuleStripPositionZ;
-		
+   vector< vector< double > >   OneModuleStripPositionX;
+   vector< vector< double > >   OneModuleStripPositionY;
+   vector< vector< double > >   OneModuleStripPositionZ;
+      
    double X, Y, Z;
 
    // Moving C to the 1.1 corner:
@@ -849,7 +849,7 @@ void HydeTracker::AddModuleDummyShape(double theta,
 
 
 
-double HydeTracker::GetEnergyDeposit()		
+double HydeTracker::GetEnergyDeposit()      
 { 
    if (m_EventPhysics->TotalEnergy.size() > 0)
       return m_EventPhysics->TotalEnergy[0]; 

@@ -1,7 +1,7 @@
 #ifndef _TAG_
 #define _TAG_
 /*****************************************************************************
- * Copyright (C) 2009 	this file is part of the NPTool Project              *
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -15,11 +15,11 @@
  * Last update     :                                                         *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *	This class will held a set of string, that can be used as a TAG manager  *
+ * This class will held a set of string, that can be used as a TAG manager   *
  * Users can write macro and add different TAG to that object based on users *
  * condition. Then the TAG branch can be open and close alone to select event*
  * without loading the whole tree.                                           *
- *	                                                                         *
+ *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *                                                                           *

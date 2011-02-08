@@ -51,20 +51,20 @@ void THydeTrackerData::Clear()
    // DSSD
    // (X,E)
    fHYDTrk_FirstStage_FrontE_DetectorNbr.clear();
-   fHYDTrk_FirstStage_FrontE_StripNbr.clear()  ;
-   fHYDTrk_FirstStage_FrontE_Energy.clear()    ;
+   fHYDTrk_FirstStage_FrontE_StripNbr.clear()   ;
+   fHYDTrk_FirstStage_FrontE_Energy.clear()     ;
    // (X,T)
-   fHYDTrk_FirstStage_FrontT_DetectorNbr.clear()  ;
-   fHYDTrk_FirstStage_FrontT_StripNbr.clear()  ;
-   fHYDTrk_FirstStage_FrontT_Time.clear()      ;
+   fHYDTrk_FirstStage_FrontT_DetectorNbr.clear();
+   fHYDTrk_FirstStage_FrontT_StripNbr.clear()   ;
+   fHYDTrk_FirstStage_FrontT_Time.clear()       ;
    // (Y,E)
-   fHYDTrk_FirstStage_BackE_DetectorNbr.clear()  ;
-   fHYDTrk_FirstStage_BackE_StripNbr.clear()  ;
-   fHYDTrk_FirstStage_BackE_Energy.clear()    ;
+   fHYDTrk_FirstStage_BackE_DetectorNbr.clear() ;
+   fHYDTrk_FirstStage_BackE_StripNbr.clear()    ;
+   fHYDTrk_FirstStage_BackE_Energy.clear()      ;
    // (Y,T)
-   fHYDTrk_FirstStage_BackT_DetectorNbr.clear()  ;
-   fHYDTrk_FirstStage_BackT_StripNbr.clear()  ;
-   fHYDTrk_FirstStage_BackT_Time.clear()      ;
+   fHYDTrk_FirstStage_BackT_DetectorNbr.clear() ;
+   fHYDTrk_FirstStage_BackT_StripNbr.clear()    ;
+   fHYDTrk_FirstStage_BackT_Time.clear()        ;
 
    // Second Stage
    // E
@@ -79,11 +79,11 @@ void THydeTrackerData::Clear()
    // Third Stage
    // E
    fHYDTrk_ThirdStage_E_DetectorNbr.clear()  ;
-   fHYDTrk_ThirdStage_E_PadNbr.clear()      ;
+   fHYDTrk_ThirdStage_E_PadNbr.clear()       ;
    fHYDTrk_ThirdStage_E_Energy.clear()       ;
    // T
    fHYDTrk_ThirdStage_T_DetectorNbr.clear()  ;
-   fHYDTrk_ThirdStage_T_PadNbr.clear()      ;
+   fHYDTrk_ThirdStage_T_PadNbr.clear()       ;
    fHYDTrk_ThirdStage_T_Time.clear()         ;
 }
 

@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2009 	this file is part of the NPTool Project              *
+ * Copyright (C) 2009    this file is part of the NPTool Project             *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -13,11 +13,11 @@
  * Last update     :                                                         *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *	This class will held a set of string, that can be used as a TAG manager  *
+ *   This class will held a set of string, that can be used as a TAG manager *
  * Users can write macro and add different TAG to that object based on users *
  * condition. Then the TAG branch can be open and close alone to select event*
  * without loading the whole tree.                                           *
- *	                                                                         *
+ *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *                                                                           *
@@ -35,20 +35,20 @@ NPTagManager::~NPTagManager(){}
 
 ////////////////////////////////////////////
 bool NPTagManager::Is(string condition)
-	{
-	  // return True is the element is find, false other wise
+   {
+     // return True is the element is find, false other wise
    return !( fTAG.find(condition)==fTAG.end() );
   }
 ////////////////////////////////////////////
 void NPTagManager::AddCondition(string condition)
-	{
+   {
     fTAG.insert(condition);
-	}
+   }
 
 ////////////////////////////////////////////
 void NPTagManager::PrintCondition()
-	{
-    set<string>::iterator it ;	
+   {
+    set<string>::iterator it ;   
 
     cout << "------------------  Event Condition  ------------------" << endl ;
     
@@ -59,11 +59,11 @@ void NPTagManager::PrintCondition()
 
     cout << "-------------------------------------------------------" << endl ;
     
-	}
+   }
 
 ////////////////////////////////////////////
 void NPTagManager::PrintConditionToFile(string filename)
-	{
+   {
     
     ofstream file;
     file.open(filename.c_str());
@@ -72,7 +72,7 @@ void NPTagManager::PrintConditionToFile(string filename)
     
     else
       {
-        set<string>::iterator it ;	
+        set<string>::iterator it ;   
     
         file << "------------------  Event Condition  ------------------" << endl ;
         
@@ -85,6 +85,6 @@ void NPTagManager::PrintConditionToFile(string filename)
     
       } 
     
-	}
+   }
 
         

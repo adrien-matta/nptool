@@ -68,7 +68,7 @@ RootInput::RootInput(string configFileName)
    // Open file
    ifstream inputConfigFile;
    inputConfigFile.open(configFileName.c_str());
-	
+   
    pRootFile  = NULL;
    pRootChain = new TChain();
    
@@ -83,7 +83,7 @@ RootInput::RootInput(string configFileName)
    else {
       while (!inputConfigFile.eof()) {
          getline(inputConfigFile, lineBuffer);
-			      
+               
          // search for token giving the TTree name
          if (lineBuffer.compare(0, 9, "TTreeName") == 0) {
             inputConfigFile >> dataBuffer;
@@ -113,7 +113,7 @@ RootInput::RootInput(string configFileName)
          }
       }
    }
-		   
+         
    if (!CheckRootFileName || !CheckTreeName) 
       cout << "WARNING: Token not found for InputTree Declaration : Input Tree may not be instantiate properly" << endl;
 }
@@ -135,7 +135,7 @@ void RootInput::AddFriendChain(string RunToAdd)
    // Open file
    ifstream inputConfigFile;
    inputConfigFile.open(RunToAdd.c_str());
-	
+   
    TChain* localChain = new TChain();
    
    cout << "/////////////////////////////////" << endl;
@@ -149,7 +149,7 @@ void RootInput::AddFriendChain(string RunToAdd)
    else {
       while (!inputConfigFile.eof()) {
          getline(inputConfigFile, lineBuffer);
-			      
+               
          // search for token giving the TTree name
          if (lineBuffer.compare(0, 9, "TTreeName") == 0) {
             inputConfigFile >> dataBuffer;
@@ -180,7 +180,7 @@ void RootInput::AddFriendChain(string RunToAdd)
          }
       }
    }
-		   
+         
    if (!CheckRootFileName || !CheckTreeName) 
       cout << "WARNING: Token not found for InputTree Declaration : Input Tree has not be Added to the current Chain" << endl;
 

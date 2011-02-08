@@ -42,8 +42,8 @@ public:
    void BuildSimplePhysicalEvent();
 
 private:
-   map<int, GaspardTrackerModule*> 	&m_ModuleTest;
-   TGaspardTrackerPhysics* 		&m_EventPhysics;
+   map<int, GaspardTrackerModule*> &m_ModuleTest;
+   TGaspardTrackerPhysics*         &m_EventPhysics;
 
 public:
    void SetGaspardDataPointer(TGaspardTrackerData* gaspardData) {m_EventData = gaspardData;};
@@ -90,12 +90,12 @@ private:
    //////////////////////////////
    // Geometry and stip number //
    //////////////////////////////
-   double m_FirstStageBaseLarge;	// mm
-   double m_FirstStageHeight;		// mm
+   double m_FirstStageBaseLarge;   // mm
+   double m_FirstStageHeight;      // mm
    int    m_NumberOfStripsX;
    int    m_NumberOfStripsY;
-   double m_StripPitchX;		// mm
-   double m_StripPitchY;		// mm
+   double m_StripPitchX;      // mm
+   double m_StripPitchY;      // mm
 };
 
 #endif

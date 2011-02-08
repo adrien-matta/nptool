@@ -60,15 +60,15 @@ public:
    // This method is called at each event read from the Input Tree. 
    // The aim is to build treat Raw dat in order to extract physical parameter. 
    void BuildPhysicalEvent();
-	
+   
    // Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
    // This method aimed to be used for analysis performed during experiment, when speed is requiered.
    // NB: This method can eventually be the same as BuildPhysicalEvent.
    void BuildSimplePhysicalEvent();
 
    // Those two method all to clear the Event Physics or Data
-   void ClearEventPhysics()	{m_EventPhysics->Clear();}
-   void ClearEventData()	{m_EventData->Clear();}
+   void ClearEventPhysics() {m_EventPhysics->Clear();}
+   void ClearEventData()    {m_EventData->Clear();}
 
 
 public:
@@ -106,36 +106,36 @@ public:
                             double beta_w);
 
    // Getters to retrieve the (X,Y,Z) coordinates of a pixel defined by strips (X,Y)
-   double GetStripPositionX(int N ,int X ,int Y)	{ return m_StripPositionX[N-1][X-1][Y-1]; }
-   double GetStripPositionY(int N ,int X ,int Y)	{ return m_StripPositionY[N-1][X-1][Y-1]; }
-   double GetStripPositionZ(int N ,int X ,int Y)	{ return m_StripPositionZ[N-1][X-1][Y-1]; }
-   double GetNumberOfModule()	 			{ return m_NumberOfModule; }
+   double GetStripPositionX(int N ,int X ,int Y)   { return m_StripPositionX[N-1][X-1][Y-1]; }
+   double GetStripPositionY(int N ,int X ,int Y)   { return m_StripPositionY[N-1][X-1][Y-1]; }
+   double GetStripPositionZ(int N ,int X ,int Y)   { return m_StripPositionZ[N-1][X-1][Y-1]; }
+   double GetNumberOfModule()             { return m_NumberOfModule; }
 
    // Get Root input and output objects
-   THydeTrackerData* 	GetEventData()		{return m_EventData;}
-   THydeTrackerPhysics*	GetEventPhysics()	{return m_EventPhysics;}
+   THydeTrackerData*    GetEventData()      {return m_EventData;}
+   THydeTrackerPhysics*   GetEventPhysics()   {return m_EventPhysics;}
 
    // To be called after a build Physical Event 
-   double	GetEnergyDeposit();
-   TVector3	GetPositionOfInteraction();
+   double   GetEnergyDeposit();
+   TVector3   GetPositionOfInteraction();
 
-   void		Print();
+   void      Print();
 
 
 private:
    ////////////////////////////////////////
    // Root Input and Output tree classes //
    ////////////////////////////////////////
-   THydeTrackerData*		m_EventData;
-   THydeTrackerPhysics*	m_EventPhysics;
+   THydeTrackerData*      m_EventData;
+   THydeTrackerPhysics*   m_EventPhysics;
 
 
 private:
    // Spatial Position of Strip Calculated on basis of detector position
    int m_NumberOfModule;
-   vector< vector < vector < double > > >	m_StripPositionX;
-   vector< vector < vector < double > > >	m_StripPositionY;
-   vector< vector < vector < double > > >	m_StripPositionZ;
+   vector< vector < vector < double > > >   m_StripPositionX;
+   vector< vector < vector < double > > >   m_StripPositionY;
+   vector< vector < vector < double > > >   m_StripPositionZ;
 };
 
 #endif

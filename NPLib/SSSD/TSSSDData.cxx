@@ -28,17 +28,17 @@ ClassImp(TSSSDData)
 
 TSSSDData::TSSSDData()
 {
-	// Default constructor
+   // Default constructor
 
-	// SSSD
-	// Energy
-	fSSSD_StripE_DetectorNbr.clear()	;
-	fSSSD_StripE_StripNbr.clear()	;
-	fSSSD_StripE_Energy.clear()		;
-	// Time
-	fSSSD_StripT_DetectorNbr.clear()	;
-	fSSSD_StripT_StripNbr.clear()	;
-	fSSSD_StripT_Time.clear()		;
+   // SSSD
+   // Energy
+   fSSSD_StripE_DetectorNbr.clear();
+   fSSSD_StripE_StripNbr.clear();
+   fSSSD_StripE_Energy.clear();
+   // Time
+   fSSSD_StripT_DetectorNbr.clear();
+   fSSSD_StripT_StripNbr.clear();
+   fSSSD_StripT_Time.clear();
 
 }
 
@@ -47,15 +47,15 @@ TSSSDData::~TSSSDData()
 
 void TSSSDData::Clear()
 {
-	// DSSD
-	// Energy
-	fSSSD_StripE_DetectorNbr.clear()	;
-	fSSSD_StripE_StripNbr.clear()	;
-	fSSSD_StripE_Energy.clear()		; 
-	// Time
-	fSSSD_StripT_DetectorNbr.clear()	;
-	fSSSD_StripT_StripNbr.clear()	;
-	fSSSD_StripT_Time.clear()		;
+   // DSSD
+   // Energy
+   fSSSD_StripE_DetectorNbr.clear();
+   fSSSD_StripE_StripNbr.clear();
+   fSSSD_StripE_Energy.clear(); 
+   // Time
+   fSSSD_StripT_DetectorNbr.clear();
+   fSSSD_StripT_StripNbr.clear();
+   fSSSD_StripT_Time.clear();
 }
 
 

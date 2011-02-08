@@ -14,11 +14,11 @@
 
 GaspardTrackerSquare::GaspardTrackerSquare(map<int, GaspardTrackerModule*> &Module,
                                            TGaspardTrackerPhysics* &EventPhysics) 
-	: m_ModuleTest(Module),
-	  m_EventPhysics(EventPhysics),
-	  m_EventData(0),
-	  m_PreTreatData(new TGaspardTrackerData),
-	  m_NumberOfModule(0),
+   : m_ModuleTest(Module),
+     m_EventPhysics(EventPhysics),
+     m_EventData(0),
+     m_PreTreatData(new TGaspardTrackerData),
+     m_NumberOfModule(0),
      m_FirstStageFace(98), // mm
      m_NumberOfStrips(128)
 {

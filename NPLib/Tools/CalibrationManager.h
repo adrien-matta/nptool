@@ -21,7 +21,7 @@
  *   This class is a singleton                                               *
  *                                                                           *
  *****************************************************************************/
-//	STL
+//   STL
 #include<fstream>
 #include<iostream>
 #include<string>
@@ -31,51 +31,51 @@
 using namespace std ;
 
 class CalibrationManager
-	{
-	
-		protected:	//	Constructor and Destructor are protected because the class is a singleton
-			CalibrationManager(string configFileName);
-			~CalibrationManager();
-	
-		public: // Accessor
-			//	return a pointer to the calibration manager instance.
-			//	if the instance does not exist it is created.
-			static CalibrationManager* getInstance(string configFileName="XXX");
-	
-		private: // the instance
-			//	Hold a pointer on itself
-			static CalibrationManager* instance ;
-	
-		public:	//	File Management
-			inline void AddFile(string Path) { fFileList.push_back(Path) ;} ;
-			
-			
-		public:	// Calibration Parameter Related
-	
-			// call like : myCalibrationManager->AddParameter( "MUST2" ,"Telescope5_Si_X38_E", "T5_Si_X38_E" )
-			// return false if the token is not found in the file list
-			bool AddParameter(string DetectorName , string ParameterName , string Token)    ;		
-			
-			// call like : myCalibrationManager->ApplyCalibration( "MUST2/Telescope5_Si_X38_E" , RawEnergy )
-			// return the Calibrated value
-			double ApplyCalibration(const string& ParameterPath , const double& RawValue);
-		
-		
-		public:	//	To be called after initialisation
-			//	Loop over the file list and catch the file used for calibration
-			void LoadParameterFromFile();
-				
-		
-		private:
-			//	This map hold a vector of the calibration coefficient. Index is the Parameter path, like "MUST2/Telescope5_Si_X38_E"
-			map< string , vector<double> >	fCalibrationCoeff ;
-			
-			//	Hold the path of all the registered file of coeff
-			vector<string>	fFileList	;
-			
-			//	Hold The list of Token. Index is the Token, value the parameter path.
-			map< string , string >	fToken		;
-		
-	};
-	
+   {
+   
+      protected:   //   Constructor and Destructor are protected because the class is a singleton
+         CalibrationManager(string configFileName);
+         ~CalibrationManager();
+   
+      public: // Accessor
+         //   return a pointer to the calibration manager instance.
+         //   if the instance does not exist it is created.
+         static CalibrationManager* getInstance(string configFileName="XXX");
+   
+      private: // the instance
+         //   Hold a pointer on itself
+         static CalibrationManager* instance ;
+   
+      public:   //   File Management
+         inline void AddFile(string Path) { fFileList.push_back(Path) ;} ;
+         
+         
+      public:   // Calibration Parameter Related
+   
+         // call like : myCalibrationManager->AddParameter( "MUST2" ,"Telescope5_Si_X38_E", "T5_Si_X38_E" )
+         // return false if the token is not found in the file list
+         bool AddParameter(string DetectorName , string ParameterName , string Token)    ;      
+         
+         // call like : myCalibrationManager->ApplyCalibration( "MUST2/Telescope5_Si_X38_E" , RawEnergy )
+         // return the Calibrated value
+         double ApplyCalibration(const string& ParameterPath , const double& RawValue);
+      
+      
+      public:   //   To be called after initialisation
+         //   Loop over the file list and catch the file used for calibration
+         void LoadParameterFromFile();
+            
+      
+      private:
+         //   This map hold a vector of the calibration coefficient. Index is the Parameter path, like "MUST2/Telescope5_Si_X38_E"
+         map< string , vector<double> >   fCalibrationCoeff ;
+         
+         //   Hold the path of all the registered file of coeff
+         vector<string>   fFileList   ;
+         
+         //   Hold The list of Token. Index is the Token, value the parameter path.
+         map< string , string >   fToken      ;
+      
+   };
+   
 #endif

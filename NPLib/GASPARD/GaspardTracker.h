@@ -47,7 +47,7 @@ public:
    virtual ~GaspardTracker();
 
 public:
-  void Clear()                                                                    ;
+  void Clear();
   void Clear(const Option_t*) {};
 
 public:
@@ -71,7 +71,7 @@ public:
    // This method is called at each event read from the Input Tree. 
    // The aim is to build treat Raw dat in order to extract physical parameter. 
    void BuildPhysicalEvent();
-	
+   
    // Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
    // This method aimed to be used for analysis performed during experiment, when speed is requiered.
    // NB: This method can eventually be the same as BuildPhysicalEvent.
@@ -87,24 +87,24 @@ public:
    void DumpStrippingScheme(int moduleNumber);
 
 private:
-   map<int, GaspardTrackerModule*>	m_ModulesMap;
+   map<int, GaspardTrackerModule*>   m_ModulesMap;
 
 public:
    // Get Root input and output objects
-   TGaspardTrackerData* 	GetEventData()		{return m_EventData;}
-   TGaspardTrackerPhysics*	GetEventPhysics()	{return m_EventPhysics;}
+   TGaspardTrackerData*    GetEventData()      {return m_EventData;}
+   TGaspardTrackerPhysics* GetEventPhysics()   {return m_EventPhysics;}
 
    // To be called after a build Physical Event 
-   double	GetEnergyDeposit();
-   TVector3	GetPositionOfInteraction();
+   double   GetEnergyDeposit();
+   TVector3 GetPositionOfInteraction();
 
 
 private:
    ////////////////////////////////////////
    // Root Input and Output tree classes //
    ////////////////////////////////////////
-   TGaspardTrackerData*		m_EventData;
-   TGaspardTrackerPhysics*	m_EventPhysics;
+   TGaspardTrackerData*      m_EventData;
+   TGaspardTrackerPhysics*   m_EventPhysics;
 };
 
 #endif

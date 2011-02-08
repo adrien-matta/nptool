@@ -45,31 +45,31 @@ public:
    ~TGaspardTrackerPhysics();
 
 public: 
-   void Clear();	
+   void Clear();   
    void Clear(const Option_t*) {};
 
 
 private:
-   vector<Int_t>	fEventType;
-   vector<Int_t>	fModuleNumber;
+   vector<Int_t>   fEventType;
+   vector<Int_t>   fModuleNumber;
 
    // First stage
-   vector<Double_t>	fFirstStage_Energy;
-   vector<Double_t>	fFirstStage_Time;
-   vector<Int_t>	fFirstStage_FrontPosition;
-   vector<Int_t>	fFirstStage_BackPosition;
+   vector<Double_t>  fFirstStage_Energy;
+   vector<Double_t>  fFirstStage_Time;
+   vector<Int_t>     fFirstStage_FrontPosition;
+   vector<Int_t>     fFirstStage_BackPosition;
 
    // Second stage
-   vector<Double_t>	fSecondStage_Energy;
-   vector<Double_t>	fSecondStage_Time;
-   vector<Int_t>	fSecondStage_Position;
+   vector<Double_t>  fSecondStage_Energy;
+   vector<Double_t>  fSecondStage_Time;
+   vector<Int_t>     fSecondStage_Position;
 
    // Third stage
-   vector<Double_t>	fThirdStage_Energy;
-   vector<Double_t>	fThirdStage_Time;
-   vector<Int_t>	fThirdStage_Position;
+   vector<Double_t>  fThirdStage_Energy;
+   vector<Double_t>  fThirdStage_Time;
+   vector<Int_t>     fThirdStage_Position;
 
-   vector<Double_t>	fTotalEnergy;
+   vector<Double_t>  fTotalEnergy;
 
 
 public:
@@ -77,50 +77,50 @@ public:
    //            SETTERS              //
    /////////////////////////////////////
    // General
-   void SetEventType(Int_t evtType)		{fEventType.push_back(evtType);}
-   void SetModuleNumber(Int_t moduleNbr)	{fModuleNumber.push_back(moduleNbr);}
-   void SetTotalEnergy(Double_t ener)		{fTotalEnergy.push_back(ener);}
+   void SetEventType(Int_t evtType)      {fEventType.push_back(evtType);}
+   void SetModuleNumber(Int_t moduleNbr)   {fModuleNumber.push_back(moduleNbr);}
+   void SetTotalEnergy(Double_t ener)      {fTotalEnergy.push_back(ener);}
 
    // First stage
-   void SetFirstStageEnergy(Double_t ener)	{fFirstStage_Energy.push_back(ener);}
-   void SetFirstStageTime(Double_t time)	{fFirstStage_Time.push_back(time);}
-   void SetFirstStageFrontPosition(Int_t x)	{fFirstStage_FrontPosition.push_back(x);}
-   void SetFirstStageBackPosition(Int_t y)	{fFirstStage_BackPosition.push_back(y);}
+   void SetFirstStageEnergy(Double_t ener)   {fFirstStage_Energy.push_back(ener);}
+   void SetFirstStageTime(Double_t time)   {fFirstStage_Time.push_back(time);}
+   void SetFirstStageFrontPosition(Int_t x)   {fFirstStage_FrontPosition.push_back(x);}
+   void SetFirstStageBackPosition(Int_t y)   {fFirstStage_BackPosition.push_back(y);}
 
    // Second stage
-   void SetSecondStageEnergy(Double_t ener)	{fSecondStage_Energy.push_back(ener);}
-   void SetSecondStageTime(Double_t time)	{fSecondStage_Time.push_back(time);}
-   void SetSecondStagePosition(Int_t pos)	{fSecondStage_Position.push_back(pos);}
+   void SetSecondStageEnergy(Double_t ener)   {fSecondStage_Energy.push_back(ener);}
+   void SetSecondStageTime(Double_t time)   {fSecondStage_Time.push_back(time);}
+   void SetSecondStagePosition(Int_t pos)   {fSecondStage_Position.push_back(pos);}
 
    // Third stage
-   void SetThirdStageEnergy(Double_t ener)	{fThirdStage_Energy.push_back(ener);}
-   void SetThirdStageTime(Double_t time)	{fThirdStage_Time.push_back(time);}
-   void SetThirdStagePosition(Int_t pos)	{fThirdStage_Position.push_back(pos);}
+   void SetThirdStageEnergy(Double_t ener)   {fThirdStage_Energy.push_back(ener);}
+   void SetThirdStageTime(Double_t time)   {fThirdStage_Time.push_back(time);}
+   void SetThirdStagePosition(Int_t pos)   {fThirdStage_Position.push_back(pos);}
 
    /////////////////////////////////////
    //            GETTERS              //
    /////////////////////////////////////
    // General
-   Int_t	GetEventMultiplicity()			{return fTotalEnergy.size();}
-   Int_t	GetEventType(Int_t i)			{return fEventType.at(i);}
-   Int_t	GetModuleNumber(Int_t i)		{return fModuleNumber.at(i);}
-   Double_t	GetTotalEnergy(Int_t i)			{return fTotalEnergy.at(i);}
+   Int_t   GetEventMultiplicity()         {return fTotalEnergy.size();}
+   Int_t   GetEventType(Int_t i)         {return fEventType.at(i);}
+   Int_t   GetModuleNumber(Int_t i)      {return fModuleNumber.at(i);}
+   Double_t   GetTotalEnergy(Int_t i)         {return fTotalEnergy.at(i);}
 
    // First stage
-   Double_t	GetFirstStageEnergy(Int_t i)		{return fFirstStage_Energy.at(i);}
-   Double_t	GetFirstStageTime(Int_t i)		{return fFirstStage_Time.at(i);}
-   Int_t	GetFirstStageFrontPosition(Int_t i)	{return fFirstStage_FrontPosition.at(i);}
-   Int_t	GetFirstStageBackPosition(Int_t i)	{return fFirstStage_BackPosition.at(i);}
+   Double_t   GetFirstStageEnergy(Int_t i)      {return fFirstStage_Energy.at(i);}
+   Double_t   GetFirstStageTime(Int_t i)      {return fFirstStage_Time.at(i);}
+   Int_t   GetFirstStageFrontPosition(Int_t i)   {return fFirstStage_FrontPosition.at(i);}
+   Int_t   GetFirstStageBackPosition(Int_t i)   {return fFirstStage_BackPosition.at(i);}
 
    // Second stage
-   Double_t	GetSecondStageEnergy(Int_t i)		{return fSecondStage_Energy.at(i);}
-   Double_t	GetSecondStageTime(Int_t i)		{return fSecondStage_Time.at(i);}
-   Int_t	GetSecondStagePosition(Int_t i)		{return fSecondStage_Position.at(i);}
+   Double_t   GetSecondStageEnergy(Int_t i)      {return fSecondStage_Energy.at(i);}
+   Double_t   GetSecondStageTime(Int_t i)      {return fSecondStage_Time.at(i);}
+   Int_t   GetSecondStagePosition(Int_t i)      {return fSecondStage_Position.at(i);}
 
    // Third stage
-   Double_t	GetThirdStageEnergy(Int_t i)		{return fThirdStage_Energy.at(i);}
-   Double_t	GetThirdStageTime(Int_t i)		{return fThirdStage_Time.at(i);}
-   Int_t	GetThirdStagePosition(Int_t i)		{return fThirdStage_Position.at(i);}
+   Double_t   GetThirdStageEnergy(Int_t i)      {return fThirdStage_Energy.at(i);}
+   Double_t   GetThirdStageTime(Int_t i)      {return fThirdStage_Time.at(i);}
+   Int_t   GetThirdStagePosition(Int_t i)      {return fThirdStage_Position.at(i);}
 
    ClassDef(TGaspardTrackerPhysics,1)  // TGaspardTrackerPhysics structure
 };

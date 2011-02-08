@@ -38,39 +38,39 @@ public:
    ~THydeTrackerPhysics();
 
 public: 
-   void Clear();	
-   void Clear(const Option_t*) {};	
+   void Clear();   
+   void Clear(const Option_t*) {};   
    void BuildPhysicalEvent(THydeTrackerData* Data);
    void BuildSimplePhysicalEvent(THydeTrackerData* Data);
 
 public:
    // Provide Physical Multiplicity
-   Int_t		EventMultiplicity;
+   Int_t EventMultiplicity;
 
    // Provide a Classification of Event
-   vector<int>		EventType;
+   vector<int>      EventType;
 
    // Telescope
-   vector<int>		ModuleNumber;
+   vector<int>      ModuleNumber;
 
-   //	FirstStage
-   vector<double>	FirstStage_E;
-   vector<double>	FirstStage_T;
-   vector<int>		FirstStage_X;
-   vector<int>		FirstStage_Y;
+   //   FirstStage
+   vector<double>   FirstStage_E;
+   vector<double>   FirstStage_T;
+   vector<int>      FirstStage_X;
+   vector<int>      FirstStage_Y;
 
-   //	SecondStage
-   vector<double>	SecondStage_E;
-   vector<double>	SecondStage_T;
-   vector<int>		SecondStage_N;
+   //   SecondStage
+   vector<double>   SecondStage_E;
+   vector<double>   SecondStage_T;
+   vector<int>      SecondStage_N;
 
-   //	ThirdStage
-   vector<double>	ThirdStage_E;
-   vector<double>	ThirdStage_T;
-   vector<int>		ThirdStage_N;
+   //   ThirdStage
+   vector<double>   ThirdStage_E;
+   vector<double>   ThirdStage_T;
+   vector<int>      ThirdStage_N;
 
    // Physical Value  
-   vector<double>	TotalEnergy;
+   vector<double>   TotalEnergy;
 
    ClassDef(THydeTrackerPhysics,1)  // HydeTrackerPHysics structure
 };

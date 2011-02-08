@@ -70,41 +70,41 @@ void TParisPhysics::BuildPhysicalEvent(TParisData* Data)
       double EnergyTot=0.;
 
       if(multLaBrE>=1){
-	//cout << "cava1b" <<endl;
-	//cout <<  Data->GetPARISLaBr3StageEEnergy(0) <<endl;
-	//cout << "cava1b" <<endl;
+   //cout << "cava1b" <<endl;
+   //cout <<  Data->GetPARISLaBr3StageEEnergy(0) <<endl;
+   //cout << "cava1b" <<endl;
 
             double EnergyStripFront;
-	    double EnergyStrip;
+       double EnergyStrip;
 
-	    for(int j=0;j<multLaBrE;j++)
-	    {
-	     EnergyStripFront= Data->GetPARISLaBr3StageEEnergy(j);
+       for(int j=0;j<multLaBrE;j++)
+       {
+        EnergyStripFront= Data->GetPARISLaBr3StageEEnergy(j);
   
              EnergyStrip  = EnergyStripFront;
              ParisLaBr_E.push_back(EnergyStrip);
   
              EnergyTot += EnergyStrip;
-	     //cout << "Energytot LaBr=" << EnergyTot << endl;
-	    }
+        //cout << "Energytot LaBr=" << EnergyTot << endl;
+       }
 
       // Fill total energy in inner shell
       ParisInTotalEnergy.push_back(EnergyTot);
       }
 
       if(multCsIE>=1){
-	double EnergySecond;
-	double EnergyTotSecond;
-	    for(int j=0;j<multCsIE;j++)
-	    {
-	      EnergySecond = Data->GetPARISCsIStageEEnergy(j);
-	      ParisCsI_E.push_back(EnergySecond);
-	      EnergyTotSecond +=EnergySecond;
+   double EnergySecond;
+   double EnergyTotSecond;
+       for(int j=0;j<multCsIE;j++)
+       {
+         EnergySecond = Data->GetPARISCsIStageEEnergy(j);
+         ParisCsI_E.push_back(EnergySecond);
+         EnergyTotSecond +=EnergySecond;
 
-	      EnergyTot += EnergySecond;
-	      //cout << "Energy CsI=" << EnergySecond << endl;
-	      //cout << "Energytot CsI=" << EnergyTot << endl;
-	    }
+         EnergyTot += EnergySecond;
+         //cout << "Energy CsI=" << EnergySecond << endl;
+         //cout << "Energytot CsI=" << EnergyTot << endl;
+       }
 
       // Fill total energy in outter shell
       ParisOutTotalEnergy.push_back(EnergyTotSecond);
@@ -140,7 +140,7 @@ void TParisPhysics::Clear()
    //SecondStage_N.clear();
 
    /*
-   // CsI	
+   // CsI   
    ThirdStage_E.clear();
    ThirdStage_T.clear();
    ThirdStage_N.clear();

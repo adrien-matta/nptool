@@ -16,11 +16,11 @@ using namespace std;
 
 GaspardTrackerAnnular::GaspardTrackerAnnular(map<int, GaspardTrackerModule*> &Module,
                                              TGaspardTrackerPhysics* &EventPhysics) 
-	: m_ModuleTest(Module),
-	  m_EventPhysics(EventPhysics),
-	  m_EventData(0),
-	  m_PreTreatData(new TGaspardTrackerData),
-	  m_NumberOfModule(0),
+   : m_ModuleTest(Module),
+     m_EventPhysics(EventPhysics),
+     m_EventData(0),
+     m_PreTreatData(new TGaspardTrackerData),
+     m_NumberOfModule(0),
      m_NumberOfStripsTheta(16),
      m_NumberOfStripsPhi(16),
      m_NumberOfQuadrants(4)
