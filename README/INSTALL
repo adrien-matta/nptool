@@ -1,0 +1,87 @@
+/*****************************************************************************
+ * Copyright (C) 2009-2010   this file is part of the NPTool Project         *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
+ *                                                                           *
+ * Creation Date  : 01/09/09                                                 *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *      This file describes the installation steps of the NPTool package     *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
+
+I) REQUIREMENTS
+	The NPTool package depends on 4 third-party softwares:
+	+ Geant4 (http://geant4.web.cern.ch/geant4/)
+	+ ROOT (http://root.cern.ch)
+	+ CLHEP (http://www.cern.ch/clhep)
+	+ GSL (http://www.gnu.org/software/gsl/)
+
+II) WORKING CONFIGURATIONS
+	The NPTool package has been mainly tested (and developped) with 
+	the following configurations:
+	1) Mac OS X (10.5.7) + G4 (4.9.2 and 4.9.3.b1) + CLHEP (2.0.4.2) + ROOT (5.22/00 and 5.24/00) + GSL ()
+	2) Linux Fedora (kernel 2.6.29) + G4 (4.9.1p3) + CLHEP (2.0.4.2) + ROOT (5.22/00) + GSL (1.12)
+	3) Linux Fedora (kernel 2.6.29) + G4 (4.9.2p2) + CLHEP (2.0.4.2) + ROOT (5.25/02) + GSL (1.12)
+	Please, report any working or non-working configuration.
+
+III) INSTALLATION
+	a) The NPTool package is available via monotone (svn-like) at ipnvcs.in2p3.fr
+	You can fetch the NPTool package using the following command line:
+	  1) first, create a local monotone database that you can put
+	     wherever you wish:
+	        mtn db init --db=/path/to/pipo.mtn
+
+	  2) then, pull the remote database (on ipnvcs.in2p3.fr) 
+	     to your local database:
+	        mtn pull ipnvcs.in2p3.fr --db=/path/to/pipo.mtn NPTool.dev
+	        mtn pull ipnvcs.in2p3.fr --db=/path/to/pipo.mtn NPTool.pro
+
+	  3) last, checkout your local database and get the NPTool code 
+	     for the developement or production version of NPTool:
+	       mtn checkout --db=/path/to/pipo.mtn --branch=NPTool.dev
+	       mtn checkout --db=/path/to/pipo.mtn --branch=NPTool.pro
+
+     4) in case you want to download a specific version of NPTool.pro
+        (NPTool-1.4.0 in the example) do the following:
+          mtn checkout --db==/path/to/pipo.mtn --revision=t:NPTool-1.4.0
+
+
+	b) First, you need to define some environment variables. You can
+	source the NPEnvironment.bash or NPEnvironment.tchrc file 
+	depending on your shell or include the relevant lines in your
+        .bashrc or .tcshrc file. Don't forget to customize these file
+        with the relevant path to your NPTool installation.
+	This step is mandatory since the Makefiles used to build the package
+	depend on some of these environment variables.
+
+	c) Then, you need to compile the NPLib.
+	Go in the NPLib directory and compile doing:
+		make distclean
+		make
+	Complementary informations can be found in the INSTALL file of the 
+	NPLib directory.
+
+	d) Then you need to compile the G4 simulation program itself.
+	Go in the NPSimulation directory and compile doing:
+		make clean
+		make
+
+	e) Last, you can compile the NPAnalysis part of the NPTool
+	package.
+	Go to the NPAnalysis directory and compile doing:
+		cd Template
+		make
+	This step is not mandatory for the G4 simulation to work.
+	If you want to use the ROOT macros in the $NPAnalysis/macros
+   directory you should execute in a ROOT terminal the rootlogon.C
+   file available in NPTool/Misc
