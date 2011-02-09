@@ -1,4 +1,4 @@
-NPTool version xx.xx has been released on February 7th 2011.
+NPTool version 1.4.0 has been released on February 9th 2011.
 
 The following people have contributed to this new version:
 Sandra Giron, IPNO
