@@ -83,20 +83,26 @@ void Reaction::SetEveryThing(string name1, string name2, string name3, string na
 {
    //------------- Constructor with nuclei names and beam energy ------------
      
-   fNuclei1       = new Nucleus(name1);
-   fNuclei2       = new Nucleus(name2);
-   fNuclei3       = new Nucleus(name3);
-   fNuclei4       = new Nucleus(name4);
-   fBeamEnergy = BeamEnergy;
-   fThetaCM    = 0;
+   fNuclei1         = new Nucleus(name1);
+   fNuclei2         = new Nucleus(name2);
+   fNuclei3         = new Nucleus(name3);
+   fNuclei4         = new Nucleus(name4);
+   fBeamEnergy      = BeamEnergy;
+   fThetaCM         = 0;
    fExcitationLight = ExcitationEnergyLight;
    fExcitationHeavy = ExcitationEnergyHeavy;
-   fQValue     = (  fNuclei1->GetMassExcess() + fNuclei2->GetMassExcess()
-        - fNuclei3->GetMassExcess() - fNuclei4->GetMassExcess()) / 1000;
+   fQValue          = (fNuclei1->GetMassExcess() + fNuclei2->GetMassExcess()
+                      - fNuclei3->GetMassExcess() - fNuclei4->GetMassExcess()) / 1000;
 
    int masse  = fNuclei1->GetA() + fNuclei2->GetA() - fNuclei3->GetA() - fNuclei4->GetA();
    int charge = fNuclei1->GetZ() + fNuclei2->GetZ() - fNuclei3->GetZ() - fNuclei4->GetZ();
-   if (masse || charge) cout << "Problem with charge or mass conservation" << endl;
+   if (masse || charge) {
+      cout << endl;
+      cout << "**********************************       Error       **********************************" << endl;
+      cout << "* NPReaction: charge of mass not conserved.        Check you event generator file     *" << endl;
+      cout << "***************************************************************************************" << endl;
+      exit(1);
+   }
    
    ///Read the differential cross section
    string GlobalPath = getenv("NPTOOL");
