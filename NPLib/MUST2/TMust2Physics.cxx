@@ -578,14 +578,12 @@ void TMust2Physics::ReadAnalysisConfig()
             AnalysisConfigFile.ignore(numeric_limits<streamsize>::max(), '\n' );
          }
          
-//         else if (whatToDo.compare(0, 22, "MAX_STRIP_MULTIPLICITY") == 0) {
            else if (whatToDo=="MAX_STRIP_MULTIPLICITY") { 
             AnalysisConfigFile >> DataBuffer;
             m_MaximumStripMultiplicityAllowed = atoi(DataBuffer.c_str() );
             cout << "MAXIMUN STRIP MULTIPLICITY " << m_MaximumStripMultiplicityAllowed << endl;
          }
          
-//         else if (whatToDo.compare(0, 27, "STRIP_ENERGY_MATCHING_SIGMA") == 0) {
           else if (whatToDo=="STRIP_ENERGY_MATCHING_SIGMA") {
             AnalysisConfigFile >> DataBuffer;
             m_StripEnergyMatchingSigma = atof(DataBuffer.c_str() );

@@ -354,5 +354,36 @@ If not they will remain empty.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter[NPAnalysis]{NPAnalysis}
 
+   \section{Token used in the config file}
+      \subsection{Must2}
+      
+      \textbf{File name :} ConfigMust2.dat \\
+      \textbf{Main Token :} ConfigMust2
+      \begin{description}
+         \item[MAX\_STRIP\_MULTIPLICITY:] Maximum multiplicity to treat an event.
+         \item[STRIP\_ENERGY\_MATCHING\_SIGMA:] Sigma of Energy for Silicium stage
+         \item[STRIP\_ENERGY\_MATCHING\_NUMBER\_OF\_SIGMA:] Number of sigma allowed in difference beetween X and Y
+         \item[DISABLE\_CHANNEL MMzSTRXt:] Disable Strip X number t of detector z 
+         \item[DISABLE\_CHANNEL MMzSTRYt:] Disable Strip Y number t of detector z 
+         \item[DISABLE\_CHANNEL MMzSILIt:] Disable SiLi number t of detector z 
+         \item[DISABLE\_CHANNEL MMzCSIt:]  Disable CsI number t of detector z 
+         \item[TAKE\_E\_Y:] Take Energy Y
+         \item[TAKE\_T\_Y:] Take Time Y
+         \item[TAKE\_E\_X:] Take Energy X
+         \item[TAKE\_T\_X:] Take Time Xs
+         \item[IGNORE\_NOT\_MATCHING\_CSI:] Ignore event that does not occure in front of a CsI cristal
+         \item[CSI\_SIZE:] size in strip of a CsI cristal
+         \item[IGNORE\_NOT\_MATCHING\_SILI:] Ignore event that does not occure in front of a SiLi pad
+         \item[SILI\_SIZE:] size in strip of a SiLi pad
+         \item[SI\_X\_E\_RAW\_THRESHOLD:] Threshold in channel for Strip X (set to 0 for simulation)
+         \item[SI\_Y\_E\_RAW\_THRESHOLD:] Threshold in channel for Strip Y
+         \item[SILI\_E\_RAW\_THRESHOLD:] Threshold in channel for SiLi (set to 0 for simulation)
+         \item[CSI\_E\_RAW\_THRESHOLD:] Threshold in channel for CsI (set to 0 for simulation)
+         \item[SI\_X\_E\_THRESHOLD:] Threshold in energy for Strip X
+         \item[SI\_Y\_E\_THRESHOLD:] Threshold in energy for Strip Y
+         \item[SILI\_E\_THRESHOLD:] Threshold in energy for SiLi
+         \item[CSI\_E\_THRESHOLD:] Threshold in energy for CsI
+      \end{description}
+      
 \end{document}
 

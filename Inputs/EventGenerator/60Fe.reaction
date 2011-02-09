@@ -17,6 +17,6 @@ Transfert
 	SigmaPhiY= 0
 	CrossSectionPath= fe61_p3_2gs.n
 	ShootLight= 1
-	ShootHeavy= 0
+	ShootHeavy= 1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
