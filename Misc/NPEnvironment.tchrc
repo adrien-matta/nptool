@@ -13,7 +13,7 @@ source $NPLIB/liblist
 alias Simulation '$NPSIM/bin/$G4SYSTEM/Simulation'
 alias Analysis '$NPANA/Analysis'
 
-alias NPT 'cd Desktop/NPTool'	
-alias NPL 'cd Desktop/NPTool/NPLib/'	
-alias NPS 'cd Desktop/NPTool/NPSimulation/'	
-alias NPA 'cd Desktop/NPTool/NPAnalysis/'
+alias NPT 'cd $NPTOOL'	
+alias NPL 'cd $NPLIB'	
+alias NPS 'cd $NPSIM'	
+alias NPA 'cd $NPANA'
