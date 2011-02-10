@@ -87,7 +87,7 @@ int main(int argc,char** argv)
    Chain->SetBranchStatus("InitialConditions", 1);
       
    // Get TMust2Physics pointer
-   TMust2Physics *M2 	 = (TMust2Physics*)  myDetector -> m_Detector["MUST2"] 	;
+   TMust2Physics *M2 	 = (TMust2Physics*)  myDetector -> GetDetector("MUST2")	;
             
    // define user spectra
    TH2F* DE_E_protons     = new TH2F("DE_E_protons",       "DE_E et cut protons", 1000,    0, 25000, 1000,   0, 25000);

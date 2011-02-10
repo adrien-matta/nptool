@@ -12,10 +12,6 @@ int main(int argc, char** argv)
    RootInput:: getInstance(runToReadfileName);
 
    // if input files are not given, use those from TAsciiFile
-   if (myOptionManager->IsDefault("EventGenerator")) {
-      string name = RootInput::getInstance()->DumpAsciiFile("EventGenerator");
-      myOptionManager->SetReactionFile(name);
-   }
    if (myOptionManager->IsDefault("DetectorConfiguration")) {
       string name = RootInput::getInstance()->DumpAsciiFile("DetectorConfiguration");
       myOptionManager->SetDetectorFile(name);
@@ -25,14 +21,9 @@ int main(int argc, char** argv)
    RootOutput::getInstance("Analysis/Template_AnalyzedData", "AnalysedTree");
 
    // get input files from NPOptionManager
-   string reactionfileName    = myOptionManager->GetReactionFile();
    string detectorfileName    = myOptionManager->GetDetectorFile();
    string calibrationfileName = myOptionManager->GetCalibrationFile();
    string OutputfileName      = myOptionManager->GetOutputFile();
-
-   // Instantiate a Reaction
-   NPL::Reaction* myReaction = new Reaction();
-   myReaction->ReadConfigurationFile(reactionfileName);
 
    // Instantiate the detector using a file
    NPA::DetectorManager* myDetector = new DetectorManager();

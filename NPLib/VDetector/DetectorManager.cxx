@@ -398,7 +398,22 @@ void DetectorManager::AddDetector(string DetectorName , VDetector* newDetector)
    newDetector->AddParameterToCalibrationManager();
 }
 
-
+/////////////////////////////////////////////////////////////////////////////////////////////////
+VDetector* DetectorManager::GetDetector(string name)
+{
+   map<string,VDetector*>::iterator it;
+   it = m_Detector.find(name);
+   if ( it!=m_Detector.end() ) return it->second;
+   else{
+      cout << endl;
+      cout << "**********************************       Error       **********************************" << endl;
+      cout << " No Detector " << name << " found in the Detector Manager" << endl;
+      cout << "***************************************************************************************" << endl;
+      cout << endl;
+      exit(1);
+   }
+   
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 void DetectorManager::ClearEventPhysics()
