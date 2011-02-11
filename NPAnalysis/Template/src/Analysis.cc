@@ -25,12 +25,12 @@ int main(int argc, char** argv)
    string calibrationfileName = myOptionManager->GetCalibrationFile();
    string OutputfileName      = myOptionManager->GetOutputFile();
 
+   // Instantiate the Calibration Manger using a file
+   CalibrationManager* myCalibration = CalibrationManager::getInstance(calibrationfileName);
+   
    // Instantiate the detector using a file
    NPA::DetectorManager* myDetector = new DetectorManager();
    myDetector->ReadConfigurationFile(detectorfileName);
-
-   // Instantiate the Calibration Manger using a file
-   CalibrationManager* myCalibration = CalibrationManager::getInstance(calibrationfileName);
 
    // Get the formed Chained Tree and Treat it
    TChain* Chain = RootInput:: getInstance() -> GetChain();

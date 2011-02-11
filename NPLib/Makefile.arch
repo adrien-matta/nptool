@@ -37,7 +37,7 @@ endif
 
 ROOTCFLAGS   := $(shell $(ROOTCONFIG) --cflags)
 ROOTLDFLAGS  := $(shell $(ROOTCONFIG) --ldflags)
-ROOTLIBS     := $(shell $(ROOTCONFIG) --libs)
+ROOTLIBS     := $(shell $(ROOTCONFIG) --libs) -lMathMore
 ROOTGLIBS    := $(shell $(ROOTCONFIG) --glibs)
 HASTHREAD    := $(shell $(ROOTCONFIG) --has-thread)
 ROOTDICTTYPE := $(shell $(ROOTCONFIG) --dicttype)
