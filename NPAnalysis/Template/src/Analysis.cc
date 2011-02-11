@@ -17,21 +17,22 @@ int main(int argc, char** argv)
       myOptionManager->SetDetectorFile(name);
    }
 
-   // Instantiate RootOutput
-   RootOutput::getInstance("Analysis/Template_AnalyzedData", "AnalysedTree");
+   
 
    // get input files from NPOptionManager
    string detectorfileName    = myOptionManager->GetDetectorFile();
    string calibrationfileName = myOptionManager->GetCalibrationFile();
    string OutputfileName      = myOptionManager->GetOutputFile();
-
+   
+   // Instantiate RootOutput
+   RootOutput::getInstance("Analysis/"+OutputfileName, "AnalysedTree");
    // Instantiate the Calibration Manger using a file
    CalibrationManager* myCalibration = CalibrationManager::getInstance(calibrationfileName);
    
    // Instantiate the detector using a file
    NPA::DetectorManager* myDetector = new DetectorManager();
    myDetector->ReadConfigurationFile(detectorfileName);
-
+   myCalibration->LoadParameterFromFile();
    // Get the formed Chained Tree and Treat it
    TChain* Chain = RootInput:: getInstance() -> GetChain();
 
