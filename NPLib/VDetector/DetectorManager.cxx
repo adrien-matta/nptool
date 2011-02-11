@@ -36,6 +36,11 @@ DetectorManager::~DetectorManager()
 //   Read stream at ConfigFile and pick-up Token declaration of Detector
 void DetectorManager::ReadConfigurationFile(string Path)   
 {
+
+   // Instantiate the Calibration Manager
+   // All The detector will then add to it their parameter (see AddDetector)
+   CalibrationManager::getInstance(NPOptionManager::getInstance()->GetCalibrationFile());
+
    ////////General Reading needs////////
    string LineBuffer;
    string DataBuffer;
@@ -331,8 +336,12 @@ void DetectorManager::ReadConfigurationFile(string Path)
 
    ConfigFile.close();
 
+   // Now that the detector are all added, they can initialise their Branch to the Root I/O
    InitializeRootInput();
    InitializeRootOutput();
+
+   // The calibration Manager got all the parameter added, so it can load them from the calibration file
+   CalibrationManager::getInstance()->LoadParameterFromFile();
 
    return;
 }
