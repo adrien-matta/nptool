@@ -1,5 +1,4 @@
-#include "ObjectManager.hh"
-
+#include "Analysis.h"
 using namespace std;
 
 
@@ -62,7 +61,7 @@ int main(int argc,char** argv)
    RootOutput::getInstance()->GetTree()->Branch("Y",&Y,"Y/D") ;
 
    // Get GaspardTracker pointer
-   GaspardTracker* GPDTrack = (GaspardTracker*) myDetector->m_Detector["GASPARD"];
+   GaspardTracker* GPDTrack = (GaspardTracker*) myDetector->GetDetector("GASPARD");
 
    // Get the input TChain and treat it
    TChain* Chain = RootInput:: getInstance()->GetChain();

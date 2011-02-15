@@ -366,7 +366,7 @@ ifeq ($(ARCH),macosx)
 CXX           = g++
 CXXFLAGS      = $(OPT2) -pipe -Wall -W -Woverloaded-virtual
 LD            = g++
-LDFLAGS       = $(OPT2) -mmacosx-version-min=$(MACOSXTARGET)
+LDFLAGS       = $(OPT2) -mmacosx-version-min=$(MACOSXTARGET) -bind_at_load
 # The SOFLAGS will be used to create the .dylib,
 # the .so will be created separately
 ifeq ($(subst $(MACOSX_MINOR),,1234),1234)
@@ -379,7 +379,8 @@ ifneq ($(subst $(MACOSX_MINOR),,12),12)
 UNDEFOPT      = suppress
 LD            = g++
 endif
-SOFLAGS       = -dynamiclib -single_module -undefined $(UNDEFOPT) -install_name $(CURDIR)/
+#SOFLAGS       = -dynamiclib -single_module -undefined $(UNDEFOPT) -install_name $(CURDIR)/
+SOFLAGS       = -dynamiclib -single_module -undefined $(UNDEFOPT)
 endif
 
 ifeq ($(ARCH),macosxicc)
@@ -398,7 +399,8 @@ DllSuf        = so
 else
 DllSuf        = dylib
 endif
-SOFLAGS       = -dynamiclib -single_module -undefined dynamic_lookup -install_name $(CURDIR)/
+#SOFLAGS       = -dynamiclib -single_module -undefined dynamic_lookup -install_name $(CURDIR)/
+SOFLAGS       = -dynamiclib -single_module -undefined $(UNDEFOPT)
 endif
 
 ifeq ($(ARCH),macosx64)
@@ -407,7 +409,7 @@ ifeq ($(ARCH),macosx64)
 CXX           = g++
 CXXFLAGS      = $(OPT2) -pipe -Wall -W -Woverloaded-virtual
 LD            = g++
-LDFLAGS       = $(OPT2) -mmacosx-version-min=$(MACOSXTARGET)
+LDFLAGS       = $(OPT2) -mmacosx-version-min=$(MACOSXTARGET) -bind_at_load
 # The SOFLAGS will be used to create the .dylib,
 # the .so will be created separately
 ifeq ($(subst $(MACOSX_MINOR),,1234),1234)
@@ -415,7 +417,8 @@ DllSuf        = so
 else
 DllSuf        = dylib
 endif
-SOFLAGS       = -dynamiclib -single_module -undefined dynamic_lookup -install_name $(CURDIR)/
+#SOFLAGS       = -dynamiclib -single_module -undefined dynamic_lookup -install_name $(CURDIR)/
+SOFLAGS       = -dynamiclib -single_module -undefined $(UNDEFOPT)
 endif
 
 ifeq ($(ARCH),win32)
@@ -480,6 +483,8 @@ LDFLAGS      += $(ROOTLDFLAGS)
 LIBS          = $(ROOTLIBS) $(SYSLIBS)
 GLIBS         = $(ROOTGLIBS) $(SYSLIBS)
 
+INCLUDE		= -I$(CLHEP_BASE_DIR)/include -I$(NPLIB)/include
+
 ifneq ($(ALTCC),)
    CC  = $(ALTCC)
 endif
@@ -497,11 +502,3 @@ ifneq ($(findstring g++, $(CXX)),)
 GCC_MAJOR := $(shell $(CXX) -dumpversion 2>&1 | cut -d'.' -f1)
 GCC_MINOR := $(shell $(CXX) -dumpversion 2>&1 | cut -d'.' -f2)
 endif
-
-CXXFLAGS     += $(ROOTCFLAGS)
-LDFLAGS      += $(ROOTLDFLAGS)
-LIBS          = $(ROOTLIBS) $(SYSLIBS)
-GLIBS         = $(ROOTGLIBS) $(SYSLIBS)
-
-INCLUDE		= -I$(CLHEP_BASE_DIR)/include -I$(NPLIB)/include
-
