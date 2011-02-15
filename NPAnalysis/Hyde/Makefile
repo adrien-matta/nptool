@@ -1,10 +1,31 @@
+# include same architecture file than for NPLib
+# so that consistency is ensured
+include $(NPLIB)/Makefile.arch
 
-Analyse:
-	make -C ./src
+# additional libraries
+LIBRARY  = `$(NPLIB)/liblist`
+LIBRARY += -L$(CLHEP_LIB_DIR) -l$(CLHEP_LIB)
+
+PROGRAMS	= Analysis
+
+all:	$(PROGRAMS)
+
+Analysis:	Analysis.o
+	$(LD) $(LDFLAGS) $^ $(LIBS) $(LIBRARY) $(OutPutOpt) $@
+	@echo "$@ done"
 	
+
+# rule for creating .o from .cxx
+.SUFFIXES: .$(SrcSuf)
+.$(SrcSuf).$(ObjSuf):
+	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $<
+
+# some cleaning
 clean:
-	make clean -C ./src
+	rm -rf *.o
 
 distclean:
-	make clean -C ./src
-	rm Analysis
+	make clean; rm $(PROGRAMS)
+
+# dependences
+Analysis.o:	Analysis.cxx	Analysis.h

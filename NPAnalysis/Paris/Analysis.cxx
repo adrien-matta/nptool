@@ -1,6 +1,4 @@
-#include "ObjectManager.hh"
-
-
+#include "Analysis.h"
 using namespace std;
 
 
@@ -61,9 +59,9 @@ int main(int argc,char** argv)
    // Get GaspardTracker pointer
    //GaspardTracker* GPDTrack = (GaspardTracker*) myDetector->m_Detector["GASPARD"];
    // Get Paris pointer
-   Paris* ParisTrack = (Paris*) myDetector->m_Detector["PARIS"];
+   Paris* ParisTrack = (Paris*) myDetector->GetDetector("PARIS");
    // Get Shield pointer
-   Shield* ShieldTrack = (Shield*) myDetector->m_Detector["SHIELD"];
+   Shield* ShieldTrack = (Shield*) myDetector->GetDetector("SHIELD");
 
    // Get the TChain and treat it
    TChain* Chain = RootInput:: getInstance() -> GetChain();

@@ -1,5 +1,4 @@
-#include "ObjectManager.hh"
-
+#include "Analysis.h"
 using namespace std;
 
 
@@ -23,7 +22,7 @@ int main(int argc,char** argv)
    }
 
    // Instantiate RootOutput
-   RootOutput::getInstance("Analysis/Hyde_AnalysedData", "AnalysedTree");
+   RootOutput::getInstance("Analysis/W1_AnalysedData", "AnalysedTree");
 
    // get input files from NPOptionManager
    string reactionfileName    = myOptionManager->GetReactionFile();
@@ -32,6 +31,7 @@ int main(int argc,char** argv)
    string OutputfileName      = myOptionManager->GetOutputFile();
 
    // Initialize the reaction
+   cout << endl << "/////////// Event generator ///////////" << endl;
    NPL::Reaction* myReaction = new Reaction();
    myReaction->ReadConfigurationFile(reactionfileName);
 
@@ -40,18 +40,18 @@ int main(int argc,char** argv)
    myDetector->ReadConfigurationFile(detectorfileName);
 
    // Calculate beam energy at target middle
+   // Target informations
+   cout << endl;
+   cout << "/////////// Target information ///////////" << endl;
+   cout << "Thickness (um): " << myDetector->GetTargetThickness() << endl;
    // Get nominal beam energy
    Double_t BeamEnergyNominal = myReaction->GetBeamEnergy() * MeV;
-   cout << BeamEnergyNominal << endl;
+   cout << "Nominal beam energy (MeV): " << BeamEnergyNominal << endl;
    // Slow beam at target middle
    Double_t BeamEnergy = BeamTarget.Slow(BeamEnergyNominal, myDetector->GetTargetThickness()/2 * micrometer, 0);
-//   Double_t BeamEnergy = 1293.56 * MeV;
-   cout << BeamEnergy << endl;
+   cout << "Middle-target beam energy (MeV): " << BeamEnergy << endl;
    // Set energy beam at target middle
    myReaction->SetBeamEnergy(BeamEnergy);
-
-   // Print target thickness
-   cout << myDetector->GetTargetThickness() << endl;
 
    // Attach more branch to the output
    double Ex = 0 ; double ExNoStrips = 0 ; double EE = 0 ; double TT = 0 ; double X = 0 ; double Y = 0 ; int det ;
@@ -62,8 +62,8 @@ int main(int argc,char** argv)
    RootOutput::getInstance()->GetTree()->Branch("X",&X,"X/D") ;
    RootOutput::getInstance()->GetTree()->Branch("Y",&Y,"Y/D") ;
 
-   // Get HydeTracker pointer
-   HydeTracker* HYDTrack = (HydeTracker*) myDetector->m_Detector["HYDE"];
+   // Get TW1Physics pointer
+   TW1Physics* W1 = (TW1Physics*) myDetector->GetDetector("W1");
 
    // Get the input TChain and treat it
    TChain* Chain = RootInput:: getInstance() -> GetChain();
@@ -78,13 +78,8 @@ int main(int argc,char** argv)
    Chain->SetBranchAddress("InteractionCoordinates", &interCoord);
    Chain->SetBranchStatus("InteractionCoordinates", 0);
 
-   // Analysis is here!
-    cout << endl << "///////// Starting Analysis ///////// "<< endl;
-   int nentries = Chain->GetEntries();
-   cout << " Number of Event to be treated : " << nentries << endl;
-   clock_t begin = clock();
-   clock_t end = begin;
-
+   // random generator
+   TRandom3 *gene = new TRandom3();
 
    // Default initialization
    double XTarget = 0;
@@ -92,8 +87,13 @@ int main(int argc,char** argv)
    double BeamTheta = 0;
    double BeamPhi = 0;
 
-   // random generator
-   TRandom3 *gene = new TRandom3();
+   // Analysis is here!
+    cout << endl << "///////// Starting Analysis ///////// "<< endl;
+   int nentries = Chain->GetEntries();
+   cout << " Number of Event to be treated : " << nentries << endl;
+   clock_t begin = clock();
+   clock_t end = begin;
+
 
    // Loop on all events
    for (int i = 0; i < nentries; i ++) {
@@ -106,63 +106,56 @@ int main(int argc,char** argv)
          cout  << "                                                                                                "<< flush;
          cout << "\rProgression:" << percent*100 << " % \t | \t Remaining time : ~" <<  TimeToWait << "s" << flush;
       }
+      else if (i == nentries-1)  cout << "\rProgression:" << " 100%" << endl;
+
+      // Get raw data
       Chain -> GetEntry(i);
 
-      // Treat Gaspard event
+      // Treat W1 event
       myDetector->ClearEventPhysics();
       myDetector->BuildPhysicalEvent();
 
-      // Get total energy
-      double E = HYDTrack->GetEnergyDeposit();
+      // Get Target information from TInitialConditions
+      XTarget = initCond->GetICPositionX(0);
+      YTarget = initCond->GetICPositionY(0);
+      BeamTheta = initCond->GetICIncidentAngleTheta(0)*deg;
+      BeamPhi   = initCond->GetICIncidentAnglePhi(0)*deg;
+      TVector3 BeamDirection = TVector3(cos(BeamPhi)*sin(BeamTheta), sin(BeamPhi)*sin(BeamTheta), cos(BeamTheta));
 
-      // if there is a hit in the detector array, treat it.
-      double Theta, ThetaStrip, angle, ThetaCM;
-      double DetecX, DetecY, DetecZ;
-      double r;
-      TVector3 A;
-      if (E > -1000) {
+      // loop on multiplicity event
+      for (int hit = 0; hit < W1->GetEventMultiplicity(); hit++) {
          // Get c.m. angle
-         ThetaCM = initCond->GetICEmittedAngleThetaCM(0) * deg;
+         double ThetaCM = initCond->GetICEmittedAngleThetaCM(0) * deg;
 
          // Get exact scattering angle from TInteractionCoordinates object
-//         Theta = interCoord->GetDetectedAngleTheta(0) * deg;
-         DetecX = interCoord->GetDetectedPositionX(0);
-         DetecY = interCoord->GetDetectedPositionY(0);
-         DetecZ = interCoord->GetDetectedPositionZ(0);
+         double DetecX = interCoord->GetDetectedPositionX(hit);
+         double DetecY = interCoord->GetDetectedPositionY(hit);
+         double DetecZ = interCoord->GetDetectedPositionZ(hit);
          TVector3 Detec(DetecX, DetecY, DetecZ);
 
          // Get interaction position in detector
          // This takes into account the strips
-         A = HYDTrack->GetPositionOfInteraction();
-
-         // Get beam interaction coordinates on target (from initial condition)
-         XTarget = initCond->GetICPositionX(0);
-         YTarget = initCond->GetICPositionY(0);
-//         cout << XTarget << "  " << YTarget << endl;
-         BeamTheta = initCond->GetICIncidentAngleTheta(0)*deg;
-         BeamPhi   = initCond->GetICIncidentAnglePhi(0)*deg;
-         TVector3 BeamDirection = TVector3(cos(BeamPhi)*sin(BeamTheta), sin(BeamPhi)*sin(BeamTheta), cos(BeamTheta));
-//         cout << BeamDirection.X() << "  " << BeamDirection.Y() << "  " << BeamDirection.Z() << endl;
+         TVector3 A = W1->GetPositionOfInteraction(hit);
 
          // Hit direction taking into account beam position on target
          TVector3 HitDirection = A - TVector3(XTarget, YTarget, 0);
-//         cout << "A:            " << A.X() << "  " << A.Y() << "  " << A.Z() << endl;
-//         cout << "HitDirection: " << HitDirection.X() << "  " << HitDirection.Y() << "  " << HitDirection.Z() << endl;
 
          // Calculate scattering angle w.r.t. optical beam axis (do not take into account beam position on target)
-         ThetaStrip = ThetaCalculation(A, TVector3(0,0,1));
-         Theta = ThetaCalculation(Detec, TVector3(0, 0, 1));
-         // Calculate scattering angle w.r.t. beam (ideal case)
+         double ThetaStrip = ThetaCalculation(A,     TVector3(0,0,1));
+         double Theta      = ThetaCalculation(Detec, TVector3(0, 0, 1));
+
+         // Calculate scattering angle w.r.t. real beam direction (ideal case)
 //         ThetaStrip = ThetaCalculation(HitDirection, BeamDirection);
-//         Theta = ThetaCalculation(Detec - TVector3(XTarget, YTarget, 0), BeamDirection);
+//         Theta      = ThetaCalculation(Detec - TVector3(XTarget, YTarget, 0), BeamDirection);
          // Calculate scattering angle w.r.t. beam (finite spatial resolution)
-/*         double resol = 800;	// in micrometer
-         angle = gene->Rndm() * 2*3.14;
-         r     = fabs(gene->Gaus(0, resol)) * micrometer;
-         ThetaStrip = ThetaCalculation(A     - TVector3(XTarget + r*cos(angle), YTarget + r*sin(angle), 0), BeamDirection);
-         Theta      = ThetaCalculation(Detec - TVector3(XTarget + r*cos(angle), YTarget + r*sin(angle), 0), BeamDirection);
-*/
+//         double resol = 800;	// in micrometer
+//         double angle = gene->Rndm() * 2*3.14;
+//         double r     = fabs(gene->Gaus(0, resol)) * micrometer;
+//         ThetaStrip = ThetaCalculation(A     - TVector3(XTarget + r*cos(angle), YTarget + r*sin(angle), 0), BeamDirection);
+//         Theta      = ThetaCalculation(Detec - TVector3(XTarget + r*cos(angle), YTarget + r*sin(angle), 0), BeamDirection);
+//
          // Correct for energy loss in the target
+         double E = W1->GetEnergy(hit);
          E = LightTarget.EvaluateInitialEnergy(E, myDetector->GetTargetThickness()/2 * micrometer, ThetaStrip);
 
          // Calculate excitation energy
@@ -170,8 +163,8 @@ int main(int argc,char** argv)
 //         if (Theta/deg < 60 && ThetaCM/deg < 90) {
 //         if (Theta/deg > 35 && Theta/deg < 45 && E/MeV < 17) {
 //         if (Theta/deg < 45) {
-         if (E/MeV < 38) {
-//         if (Theta/deg > 90) {
+//         if (E/MeV < 38) {		// for (p,t) reaction
+         if (Theta/deg > 30) {	// for (d,p) reaction
             ExNoStrips = myReaction->ReconstructRelativistic(E, Theta / rad);
             Ex         = myReaction->ReconstructRelativistic(E, ThetaStrip);
          }
@@ -179,24 +172,11 @@ int main(int argc,char** argv)
             Ex         = -200;
             ExNoStrips = -200;
          }
-      }
-      else {
-         Ex         = -100;
-         ExNoStrips = -100;
-      }
-
-      EE = E ; TT = ThetaStrip/deg;
-      if (E>-1000) {
-         X = A . X();
-         Y = A . Y();
-      }
-      else {
-         X = -1000 ; Y = -1000;
-      }
+      }  // end loop on multiplicity event
 
       // Fill output tree
       RootOutput::getInstance()->GetTree()->Fill();
-   }
+   }  // end loop on number of events to treat
 
    // delete singleton classes
    RootOutput::getInstance()->Destroy();

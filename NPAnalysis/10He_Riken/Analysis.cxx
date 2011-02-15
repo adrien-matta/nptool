@@ -1,4 +1,4 @@
-#include "ObjectManager.hh"
+#include "Analysis.h"
 using namespace std;
 
 int main(int argc,char** argv)
@@ -84,7 +84,7 @@ int main(int argc,char** argv)
  	double XTarget=0 ; double YTarget=0; double ZTarget = 0 ; double BeamTheta = 0 ; double BeamPhi = 0 ; double E=-1000;
 
 	// Get Detector Pointer:
-	TMust2Physics* M2 		= (TMust2Physics*) 			myDetector -> m_Detector["MUST2"] 	;
+	TMust2Physics* M2 		= (TMust2Physics*) 			myDetector -> GetDetector("MUST2") 	;
 //	TPlasticPhysics* Pl 	= (TPlasticPhysics*) 		myDetector -> m_Detector["Plastic"] ;
 //	TSSSDPhysics* ThinSi 	= (TSSSDPhysics*) 			myDetector -> m_Detector["SSSD"] 		;
 
