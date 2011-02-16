@@ -56,30 +56,32 @@ Reaction::Reaction()
 {
    //------------- Default Constructor -------------
 
-   fNuclei1       = new Nucleus() ;
-   fNuclei2       = new Nucleus() ;
-   fNuclei3       = new Nucleus() ;
-   fNuclei4       = new Nucleus() ;
-   fBeamEnergy = 0                ;
-   fThetaCM    = 0                ;
-   fExcitationLight = 0           ;
-   fExcitationHeavy = 0           ;
-   fQValue     = 0                ;
-   initializePrecomputeVariable() ;
+   fNuclei1              = new Nucleus();
+   fNuclei2              = new Nucleus();
+   fNuclei3              = new Nucleus();
+   fNuclei4              = new Nucleus();
+   fBeamEnergy           = 0;
+   fThetaCM              = 0;
+   fExcitationLight      = 0;
+   fExcitationHeavy      = 0;
+   fQValue               = 0;
+   fCrossSectionAngleMin = 0;
+   fCrossSectionAngleMax = 180;
+   initializePrecomputeVariable();
 }
 
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-Reaction::Reaction(string name1, string name2, string name3, string name4, double BeamEnergy, double ExcitationEnergyLight, double ExcitationEnergyHeavy ,string Path)
+Reaction::Reaction(string name1, string name2, string name3, string name4, double BeamEnergy, double ExcitationEnergyLight, double ExcitationEnergyHeavy ,string Path, double CSThetaMin, double CSThetaMax)
 {
-   SetEveryThing( name1, name2, name3, name4, BeamEnergy, ExcitationEnergyLight, ExcitationEnergyHeavy, Path) ;
+   SetEveryThing( name1, name2, name3, name4, BeamEnergy, ExcitationEnergyLight, ExcitationEnergyHeavy, Path, CSThetaMin, CSThetaMax);
 }
 
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-void Reaction::SetEveryThing(string name1, string name2, string name3, string name4, double BeamEnergy, double ExcitationEnergyLight, double ExcitationEnergyHeavy, string Path)
+void Reaction::SetEveryThing(string name1, string name2, string name3, string name4, double BeamEnergy, double ExcitationEnergyLight, double ExcitationEnergyHeavy, string Path, double CSThetaMin, double CSThetaMax)
 {
    //------------- Constructor with nuclei names and beam energy ------------
      
@@ -122,16 +124,25 @@ void Reaction::SetEveryThing(string name1, string name2, string name3, string na
     }
 
    double CSBuffer,AngleBuffer;
-   vector<double> CrossSectionBuffer ;
-   
-   while(!CSFile.eof())
-   {
-     CSFile >> AngleBuffer;
-     CSFile >> CSBuffer;   
-     double CSFinal = CSBuffer*sin(AngleBuffer*deg);
-     CrossSectionBuffer.push_back(CSFinal);
+   vector<double> CrossSectionBuffer;
+   double thetamin = 200;
+   double thetamax = -10;
+   while(!CSFile.eof()) {
+      CSFile >> AngleBuffer;
+      CSFile >> CSBuffer;   
+      // only treat angular range defined by user
+      if (AngleBuffer < CSThetaMin || AngleBuffer > CSThetaMax) continue; 
+      double CSFinal = CSBuffer*sin(AngleBuffer*deg);
+      CrossSectionBuffer.push_back(CSFinal);
+      // determine theta min and max
+      if (AngleBuffer < thetamin) thetamin = AngleBuffer;
+      if (AngleBuffer > thetamax) thetamax = AngleBuffer;
    }
-  
+
+   // set theta min and max values
+   fCrossSectionAngleMin = thetamin;
+   fCrossSectionAngleMax = thetamax;
+
    CSFile.close();
    CrossSectionSize = CrossSectionBuffer.size();
    CrossSection = new double[CrossSectionSize] ;
@@ -277,6 +288,7 @@ void Reaction::ReadConfigurationFile(string Path)
       ////////Reaction Setting needs///////
          string Beam, Target, Heavy, Light, CrossSectionPath ;
          double BeamEnergy = 0 , ExcitationEnergyLight = 0, ExcitationEnergyHeavy = 0;         
+         double CSHalfOpenAngleMin = 0, CSHalfOpenAngleMax = 0;
          bool ReadingStatus = false ;
          bool check_Beam = false ;
          bool check_Target = false ;
@@ -376,6 +388,18 @@ void Reaction::ReadConfigurationFile(string Path)
                      cout << "Cross Section File: " << CrossSectionPath << endl ;
                   }
 
+                  else if (DataBuffer.compare(0, 17, "HalfOpenAngleMin=") == 0) {
+                     ReactionFile >> DataBuffer;
+                     CSHalfOpenAngleMin = atof(DataBuffer.c_str()) * deg;
+                     cout << "HalfOpenAngleMin " << CSHalfOpenAngleMin / deg << " degree" << endl;
+                  }
+
+                  else if (DataBuffer.compare(0, 17, "HalfOpenAngleMax=") == 0) {
+                     ReactionFile >> DataBuffer;
+                     CSHalfOpenAngleMax = atof(DataBuffer.c_str()) * deg;
+                     cout << "HalfOpenAngleMax " << CSHalfOpenAngleMax / deg << " degree" << endl;
+                  }
+
                  
                   ///////////////////////////////////////////////////
                //   If no Transfert Token and no comment, toggle out
@@ -390,7 +414,7 @@ void Reaction::ReadConfigurationFile(string Path)
             }
          }
          
-         SetEveryThing(Beam, Target, Light, Heavy,BeamEnergy,ExcitationEnergyLight, ExcitationEnergyHeavy,CrossSectionPath);
+         SetEveryThing(Beam, Target, Light, Heavy,BeamEnergy,ExcitationEnergyLight, ExcitationEnergyHeavy,CrossSectionPath, CSHalfOpenAngleMin, CSHalfOpenAngleMax);
 
          ReactionFile.close();
    }

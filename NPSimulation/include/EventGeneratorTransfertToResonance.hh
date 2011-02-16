@@ -69,7 +69,9 @@ class EventGeneratorTransfertToResonance : public VEventGenerator
                                           bool     ShootLight              ,
                                           bool     ShootHeavy              ,
                                           bool     ShootDecayProduct       ,
-                                          string   Path                    );       //Path of the differentiel Cross Section
+                                          string   Path                    ,
+                                          double   CSThetaMin              ,
+                                          double   CSThetaMax);       //Path of the differentiel Cross Section
 
       // Default Destructor
       virtual ~EventGeneratorTransfertToResonance();
@@ -141,7 +143,9 @@ class EventGeneratorTransfertToResonance : public VEventGenerator
                               bool     ShootLight              ,
                               bool     ShootHeavy              ,
                               bool     ShootDecayProduct       ,
-                              string   Path                    );       //Path of the differentiel Cross Section
+                              string   Path                    ,
+                              double   CSThetaMin              ,
+                              double   CSThetaMax);       //Path of the differentiel Cross Section
 };
 
 #endif
