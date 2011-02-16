@@ -607,7 +607,7 @@ void LatexSummaryHeader(TString xy)
     latex_file << "\\maketitle" << endl ;
     
     // Write Report header
-    latex_file << "\\section{Calibration Summarry}" << endl ;
+    latex_file << "\\section{Calibration Summary}" << endl ;
     latex_file << "\\begin{itemize}" << endl ;
     latex_file << "\t \\item[{\\bf Experiment:}] "<< Experiment << endl ;
     latex_file << "\t \\item[{\\bf Operator:}] "<< Operator << endl ;
