@@ -7,6 +7,7 @@
 
 //   Detector   
 #include "TMust2Physics.h"
+#include "TCATSPhysics.h"
 #include "TSSSDPhysics.h"
 #include "TPlasticPhysics.h"
 #include "GaspardTracker.h"
@@ -47,7 +48,8 @@ void DetectorManager::ReadConfigurationFile(string Path)
 
    /////////Boolean////////////////////
    bool MUST2               = false;
-   bool AddThinSi           = false;
+   bool CATS                = false;
+   bool SSSD                = false;
    bool ScintillatorPlastic = false;
    bool GeneralTarget       = false;
    bool GPDTracker          = false;
@@ -159,7 +161,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
       }
 
       ////////////////////////////////////////////
-      //////// Search for MUST2 Array  ////////
+      ////////  Search for MUST2 Array    ////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 10, "MUST2Array") == 0 && MUST2 == false) {
          MUST2 = true;
@@ -177,6 +179,25 @@ void DetectorManager::ReadConfigurationFile(string Path)
          AddDetector("MUST2", myDetector);
       }
 
+      ////////////////////////////////////////////
+      ////////   Search for CATS Array    ////////
+      ////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 9, "CATSArray") == 0 && CATS == false) {
+         MUST2 = true;
+         cout << "//////// CATS Array ////////" << endl << endl;
+
+         // Instantiate the new array as a VDetector Object
+         VDetector* myDetector = new TCATSPhysics();
+
+         // Read Position of Telescope
+         ConfigFile.close();
+         myDetector->ReadConfiguration(Path);
+         ConfigFile.open(Path.c_str());
+
+         // Add array to the VDetector Vector
+         AddDetector("CATS", myDetector);
+      }
+      
       ////////////////////////////////////////////
       ////////// Search for W1 (Micron)  /////////
       ////////////////////////////////////////////
@@ -197,11 +218,11 @@ void DetectorManager::ReadConfigurationFile(string Path)
       }
 
       ////////////////////////////////////////////
-      ////////// Search for ThinSi (SSSD)/////////
+      //////////      Search for SSSD    /////////
       ////////////////////////////////////////////
-      else if (LineBuffer.compare(0, 9, "AddThinSi") == 0 && AddThinSi == false) {
-         AddThinSi = true ;
-         cout << "//////// Thin Si ////////" << endl << endl;
+      else if (LineBuffer.compare(0, 9, "SSSDArray") == 0 && SSSD == false) {
+         SSSD = true ;
+         cout << "//////// SSSD ////////" << endl << endl;
 
          // Instantiate the new array as a VDetector Object
          VDetector* myDetector = new TSSSDPhysics();
