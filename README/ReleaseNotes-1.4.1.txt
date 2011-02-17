@@ -1,10 +1,8 @@
-NPTool version xx.xx has been released on February 7th 2011.
+NPTool version 1.4.1 has been released on February 17th 2011.
 
-The following people have contributed to this new version:
-Sandra Giron, IPNO
-Marc Labiche, STFC
+The following people have contributed to this fix release:
+Anna Maria Corsi, CEA
 Adrien Matta, IPNO
-Angel Sanchez Benitez, UHU
 Nicolas de Sereville, IPNO
 
 
@@ -14,80 +12,37 @@ Nicolas de Sereville, IPNO
 + NPLib
 -------
   + General
-    Building NPLib is now easier. 
-    + The new 'scripts' directory holds bash scripts called by the main
-      Makefile at the NPLib level.
-    + The main Makefile calls several scripts:
-      + All headers files are moved to the 'include' directory.
-      + Each Makefile found in any subdirectory is called.
-      + All libraries are moved to the 'library' directory.
-      + Symbolic links to *.dylib files are done if on a macosx platform.
-      + The 'liblist' file at NPLib level is created.
+    + New Makefile.arch version
+
+  + scripts
+    + NPToolLogon.C compiles the RootInput.h header which is needed to use 
+      the new RootInput makeFriendTrees() method.
 
   + CalibrationManager class
-     + This class handles in a nice way a collection of calibration files
+    + This class is now instantiated in DetectorManager (NPAnalysis).
 
   + NPReaction class
-    + Now it is possible to give excitation to the light nucleus in exit channel.
+    + Minimum and maximum angles for the cross-section are now given in the 
+      constructor. New tokens (HalfOpenAngleMin and HalfOpenAngleMax) can
+      be used in EventGeneratorTransfer and EventGeneratorTransferToResonance.
 
   + NPOptionManager facility
-    + This singleton class allows to pass arguments on the command line when
-      executing NPSimulation and NPAnalysis.
-    + Execute ./Simulation --help or ./Analysis --help to know the available 
-      options.
-
-  + TAsciiFile class
-     + This class allows to store any regular text file in a ROOT file
-     + This is used to store the event generator, detector configuration files
-       in ROOT output file.
+    + New option --input-physical (--IP) which allows the user to consider an 
+      input file containing a physic class instead of a raw data class.
 
   + RootInput facility
-    + Support for adding TFriend object
-    + Support for using information from TAsciiFile when running NPAnalysis
-
-  + RootOutput facility
-    + Support for adding TAsciiFile object automatically
-
-  + NPTagManager facility
-    + Associate one or more string to an event in a TTree
+     + Add new MakeFriendTrees("RunToRead1", "RunToRead2") method which returns
+       a TChain object which can be called directly in the ROOT interpreter.
+       This is particularly useful when associating raw and physical data together. 
 
 + NPSimulation
 --------------
-  + No new functionality in NPSimulation
-  + Using the NPOptionManager facility, calling NPSimulation is now:
-    ./Simulation -D xxx.detector -E xxx.reaction 
+  + Scorers: Minimum energy deposit for charged particles is now 0.1 keV
+             instead of 100 keV.
 
 + NPAnalysis
 ------------
-  + Using the NPOptionManager facility, calling NPAnalysis is now:
-       ./Analysis -D xxx.detector -E xxx.reaction -R RunToTreat.txt
-  + One can also call Analysis in the following way:
-       ./Analysis -R RunToTreat
-    In this case the configuration files stored in TAsciiFile are used
-
-  + A simple but functional example for MUST2 analysis can be found
-    in the NPAnalysis/must2 directory.
-
-
-****************************************************************************
-*                              SPECIFIC FEATURES                           *
-****************************************************************************
-+ MUST2
--------
-   + Add configuration parameters:
-      + possibility to suppress channels
-      + give raw and physical threshold
-      + configure Si/SiLi and Si/CsI match conditions
-
-+ GASPARD
----------
-  + Lot of minor bugs corrected.
-  (see Gaspard documentation in NPDocumentation directory for more details)
-
-+ W1
-----
-   + Add support for the W1 DSSD detector from Micron
-
-+ PARIS
--------
-   + Add documentation
+  + New layout of the analysis files in all projects
+  + Makefile of each project now includes Makefile.arch from NPLib
+  + Template project is now MakePhysicalTree
+  + New SSSD and RRC66 analysis projects with specific analysis ROOT macros
