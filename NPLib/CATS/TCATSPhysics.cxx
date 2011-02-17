@@ -271,6 +271,9 @@ void TCATSPhysics::AddCATS(TVector3 C_X1_Y1, TVector3 C_X28_Y1, TVector3 C_X1_Y2
 {
   NumberOfCATS++			;
 
+  // remove warning
+  C_X28_Y28 *= 1;
+
  //	Vector U on Telescope Face (paralelle to Y Strip) (NB: remember that Y strip are along X axis)
   TVector3 U = C_X28_Y1 - C_X1_Y1 				;	
   U = U.Unit()									;
@@ -394,7 +397,7 @@ void TCATSPhysics::Clear()
 
 
 
-void TCATSPhysics::Dump()
+void TCATSPhysics::Dump() const
 {
   cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event XXXXXXXXXXXXXXXXX" << endl;
 

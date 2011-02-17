@@ -48,7 +48,8 @@ class TCATSData : public TObject {
    virtual ~TCATSData();
 
    void	Clear();
-   void	Dump();
+   void  Clear(const Option_t*) {};
+   void	Dump() const;
 
    /////////////////////           SETTERS           ////////////////////////
    // X

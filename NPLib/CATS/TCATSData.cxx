@@ -30,17 +30,7 @@ TCATSData::TCATSData()
 {
    // Default constructor
 
-   // X
-   fCATS_DetX.clear();
-   fCATS_StripX.clear();
-   fCATS_ChargeX.clear();
-   // Y
-   fCATS_DetY.clear();
-   fCATS_StripY.clear();
-   fCATS_ChargeY.clear();
-   // (Qfil)
-   fCATS_DetQ.clear();
-   fCATS_Charge.clear();
+   Clear();
 }
 
 
@@ -68,7 +58,7 @@ void TCATSData::Clear()
 
 
 
-void TCATSData::Dump()
+void TCATSData::Dump() const
 {
    cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event XXXXXXXXXXXXXXXXX" << endl;
 
