@@ -27,7 +27,6 @@ int main(int argc,char** argv)
    // get input files from NPOptionManager
    string reactionfileName    = myOptionManager->GetReactionFile();
    string detectorfileName    = myOptionManager->GetDetectorFile();
-   string calibrationfileName = myOptionManager->GetCalibrationFile();
    string OutputfileName      = myOptionManager->GetOutputFile();
 
    // Initialize the reaction

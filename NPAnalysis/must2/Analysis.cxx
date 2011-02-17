@@ -31,16 +31,12 @@ int main(int argc,char** argv)
    // get input files from NPOptionManager
    string reactionfileName    = myOptionManager->GetReactionFile();
    string detectorfileName    = myOptionManager->GetDetectorFile();
-   string calibrationfileName = myOptionManager->GetCalibrationFile();
    string OutputfileName      = myOptionManager->GetOutputFile();
 
    // Instantiate some Reaction
    cout << endl << "/////////// Event generator ///////////" << endl;
    NPL::Reaction* myReaction = new Reaction();
    myReaction->ReadConfigurationFile(reactionfileName);
-    
-   // Instantiate the Calibration Manger using a file (WARNING:prior to the detector instantiation)
-   CalibrationManager* myCalibration = CalibrationManager::getInstance(calibrationfileName) ;
     
    // Instantiate the detector using a file 
    NPA::DetectorManager* myDetector = new DetectorManager();
@@ -60,9 +56,6 @@ int main(int argc,char** argv)
    // Set energy beam at target middle
    myReaction->SetBeamEnergy(BeamEnergy);
    myReaction->Print();
-     
-   // Ask the detector manager to load the parameter added by the detector in the calibrationfileName
-   myCalibration->LoadParameterFromFile() ;
       
    // Attach more branch to the output
    const int mult = 2;

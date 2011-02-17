@@ -22,7 +22,7 @@
  *  a global ID for each event you should not use those scorer with some G4  *
  *  provided ones or being very carefull doing so.                           *
  *****************************************************************************/
-#include "Must2Scorers.hh"
+#include "MUST2Scorers.hh"
 #include "G4UnitsTable.hh"
 #include "GeneralScorers.hh"
 #include <string>

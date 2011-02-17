@@ -18,7 +18,6 @@ int main(int argc, char** argv)
 
    // get input files from NPOptionManager
    string detectorfileName    = myOptionManager->GetDetectorFile();
-   string calibrationfileName = myOptionManager->GetCalibrationFile();
    string OutputfileName      = myOptionManager->GetOutputFile();
    
    // Instantiate RootOutput

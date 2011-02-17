@@ -26,7 +26,6 @@ int main(int argc,char** argv)
    // get input files from NPOptionManager
    string reactionfileName    = myOptionManager->GetReactionFile();
    string detectorfileName    = myOptionManager->GetDetectorFile();
-   string calibrationfileName = myOptionManager->GetCalibrationFile();
    string OutputfileName      = myOptionManager->GetOutputFile();
 
 	//	Instantiate some Reaction
@@ -40,8 +39,6 @@ int main(int argc,char** argv)
 	NPA::DetectorManager* myDetector = new DetectorManager 			  ;
 	myDetector	->	ReadConfigurationFile(detectorfileName)		;
 
-	//	Instantiate the Calibration Manger using a file
-	CalibrationManager* myCalibration = CalibrationManager::getInstance(calibrationfileName) ;
 	
 	//	Attach more branch to the output
 	
