@@ -44,10 +44,14 @@ namespace NPA
       
             //   Add Parameter to the CalibrationManger
             virtual void AddParameterToCalibrationManager() {} ;      
-
+            
             //   Activated associated Branches and link it to the private member DetectorData address
             //   In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
-            virtual void InitializeRootInput() {} ;
+            virtual void InitializeRootInputRaw() {} ;
+            
+            //   Activated associated Branches and link it to the private member DetectorPhysics address
+            //   In this method mother Branches (Detector) AND daughter leaf (parameter) have to be activated
+            virtual void InitializeRootInputPhysics() {} ;
 
             //   Create associated branches and associated private member DetectorPhysics address
             virtual void InitializeRootOutput() {} ;

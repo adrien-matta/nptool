@@ -268,7 +268,7 @@ void ThinSi::ReadConfiguration(string Path)
          getline(ConfigFile, LineBuffer);
 
          //   If line is a Start Up ThinSi bloc, Reading toggle to true      
-         if (LineBuffer.compare(0, 6, "ThinSi") == 0) 
+         if (LineBuffer.compare(0, 4, "SSSD") == 0 && LineBuffer.compare(0, 5, "SSSDA") != 0) 
             {
                G4cout << "///" << G4endl           ;
                   G4cout << "Detector found: " << G4endl   ;        
@@ -289,8 +289,8 @@ void ThinSi::ReadConfiguration(string Path)
                if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
 
                   //   Finding another telescope (safety), toggle out
-               else if (DataBuffer.compare(0, 6, "ThinSi") == 0) {
-                  cout << "WARNING: Another Telescope is find before standard sequence of Token, Error may occured in Telecope definition" << endl ;
+               else if (DataBuffer=="SSSD") {
+                  cout << "WARNING: Another Telescope is found before standard sequence of Token, Error may occured in detector definition" << endl ;
                   ReadingStatus = false ;
                }
          

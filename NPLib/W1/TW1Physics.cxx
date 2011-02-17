@@ -286,18 +286,27 @@ void TW1Physics::AddParameterToCalibrationManager()
 }
 
 
-  
 ///////////////////////////////////////////////////////////////////////////
-void TW1Physics::InitializeRootInput()
+void  TW1Physics::InitializeRootInputRaw() 
 {
    TChain* inputChain = RootInput::getInstance()->GetChain();
    inputChain->SetBranchStatus("W1"   , true);
    inputChain->SetBranchStatus("fW1_*", true);
    inputChain->SetBranchAddress("W1"  , &m_EventData);
 }
-
-
-
+///////////////////////////////////////////////////////////////////////////
+void  TW1Physics::InitializeRootInputPhysics() 
+{
+   TChain* inputChain = RootInput::getInstance()->GetChain();
+   inputChain->SetBranchStatus("W1"   , true);
+   inputChain->SetBranchStatus("fEventType", true);
+   inputChain->SetBranchStatus("fDetectorNumber", true);
+   inputChain->SetBranchStatus("fEnergy", true);
+   inputChain->SetBranchStatus("fTime", true);
+   inputChain->SetBranchStatus("fFrontStrip", true);
+   inputChain->SetBranchStatus("fBackStrip", true);
+   inputChain->SetBranchAddress("W1"  , &m_EventPhysics);
+}
 ///////////////////////////////////////////////////////////////////////////
 void TW1Physics::InitializeRootOutput()
 {

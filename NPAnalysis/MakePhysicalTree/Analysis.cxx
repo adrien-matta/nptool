@@ -38,7 +38,8 @@ int main(int argc, char** argv)
    clock_t end = begin;
 
    // main loop on entries
-   for (int i = 0; i < nentries; i++) {
+//   for (int i = 0; i < nentries; i++) {
+   for (int i = 0; i < 10000; i++) {
       if (i%10000 == 0 && i!=0)  {
          cout.precision(5);
          end = clock();

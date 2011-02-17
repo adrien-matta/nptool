@@ -221,12 +221,42 @@ void TCATSPhysics::AddParameterToCalibrationManager()
 
 //	Activated associated Branches and link it to the private member DetectorData address
 //	In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
-void TCATSPhysics::InitializeRootInput() 					
+void TCATSPhysics::InitializeRootInputRaw() 
 {
   TChain* inputChain = RootInput::getInstance()->GetChain()	;
   inputChain->SetBranchStatus( "CATS" , true )			;
   inputChain->SetBranchStatus( "fCATS_*" , true )		;
   inputChain->SetBranchAddress( "CATS" , &EventData )           ;
+}
+//   Activated associated Branches and link it to the private member DetectorPhysics address
+//   In this method mother Branches (Detector) AND daughter leaf (parameter) have to be activated
+void TCATSPhysics::InitializeRootInputPhysics() 
+{
+  TChain* inputChain = RootInput::getInstance()->GetChain();
+  inputChain->SetBranchStatus( "CATS" , true );
+  inputChain->SetBranchStatus( "ff" , true );
+  inputChain->SetBranchStatus( "DetNumberX" , true );
+  inputChain->SetBranchStatus( "StripX" , true );
+  inputChain->SetBranchStatus( "ChargeX" , true );
+  inputChain->SetBranchStatus( "ChargeSumX" , true );
+  inputChain->SetBranchStatus( "MultOverThreshX" , true );
+  inputChain->SetBranchStatus( "StripMaxX" , true );
+  inputChain->SetBranchStatus( "DetNumberY" , true );
+  inputChain->SetBranchStatus( "StripY" , true );
+  inputChain->SetBranchStatus( "ChargeY" , true );
+  inputChain->SetBranchStatus( "ChargeSumY" , true );
+  inputChain->SetBranchStatus( "MultOverThreshY" , true );
+  inputChain->SetBranchStatus( "StripMaxY" , true );
+  inputChain->SetBranchStatus( "DetNumberX_Position" , true );
+  inputChain->SetBranchStatus( "DetNumberY_Position" , true );
+  inputChain->SetBranchStatus( "DetNumberZ_Position" , true );
+  inputChain->SetBranchStatus( "PositionX" , true );
+  inputChain->SetBranchStatus( "PositionY" , true );
+  inputChain->SetBranchStatus( "PositionZ" , true );
+  inputChain->SetBranchStatus( "PositionOnTargetX" , true );
+  inputChain->SetBranchStatus( "PositionOnTargetY" , true );
+  inputChain->SetBranchAddress( "CATS" , &EventPhysics );
+
 }
 
 //	Create associated branches and associated private member DetectorPhysics address

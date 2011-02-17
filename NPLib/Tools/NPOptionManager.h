@@ -77,13 +77,14 @@ class NPOptionManager
       string GetDefaultCalibrationFile()  {return fDefaultCalibrationFileName;}
       string GetDefaultOutputFile()       {return fDefaultOutputFileName;}
       // assigned values
-      string GetReactionFile()            {return fReactionFileName;}
-      string GetDetectorFile()            {return fDetectorFileName;}
-      string GetRunToReadFile()           {return fRunToReadFileName;}
-      string GetCalibrationFile()         {return fCalibrationFileName;}
-      string GetOutputFile()              {return fOutputFileName;}
-      bool   GetDisableAllBranchOption()  {return fDisableAllBranchOption;}
-
+      string GetReactionFile()             {return fReactionFileName;}
+      string GetDetectorFile()             {return fDetectorFileName;}
+      string GetRunToReadFile()            {return fRunToReadFileName;}
+      string GetCalibrationFile()          {return fCalibrationFileName;}
+      string GetOutputFile()               {return fOutputFileName;}
+      bool   GetDisableAllBranchOption()   {return fDisableAllBranchOption;}
+      bool   GetInputPhysicalTreeOption()  {return fInputPhysicalTreeOption;}
+      
       // Setters
       void SetReactionFile(string name)   {fReactionFileName = name;}
       void SetDetectorFile(string name)   {fDetectorFileName = name;}
@@ -103,6 +104,7 @@ class NPOptionManager
       string fCalibrationFileName;
       string fOutputFileName;
       bool   fDisableAllBranchOption;
+      bool   fInputPhysicalTreeOption;
 };
 
 #endif

@@ -99,16 +99,17 @@ class TMust2Physics : public TObject, public NPA::VDetector
 
       //   Add Parameter to the CalibrationManger
       void AddParameterToCalibrationManager() ;      
-         
-      
+
       //   Activated associated Branches and link it to the private member DetectorData address
       //   In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
-      void InitializeRootInput() ;
-
+      void InitializeRootInputRaw() ;
+      
+      //   Activated associated Branches and link it to the private member DetectorPhysics address
+      //   In this method mother Branches (Detector) AND daughter leaf (parameter) have to be activated
+      void InitializeRootInputPhysics() ;
 
       //   Create associated branches and associated private member DetectorPhysics address
       void InitializeRootOutput() ;
-      
       
       //   This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
       void BuildPhysicalEvent() ;

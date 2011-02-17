@@ -862,7 +862,7 @@ void TMust2Physics::ReadCalibrationRun()
 
 ////   Innherited from VDetector Class   ////            
             
-//   Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
+///////////////////////////////////////////////////////////////////////////
 void TMust2Physics::ReadConfiguration(string Path)    
 { 
    ifstream ConfigFile              ;
@@ -1093,7 +1093,7 @@ void TMust2Physics::ReadConfiguration(string Path)
 
 }
 
-//   Add Parameter to the CalibrationManger
+///////////////////////////////////////////////////////////////////////////
 void TMust2Physics::AddParameterToCalibrationManager()   
    {
       CalibrationManager* Cal = CalibrationManager::getInstance();
@@ -1126,18 +1126,44 @@ void TMust2Physics::AddParameterToCalibrationManager()
    
    }
 
-//   Activated associated Branches and link it to the private member DetectorData address
-//   In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
-void TMust2Physics::InitializeRootInput()       
+///////////////////////////////////////////////////////////////////////////
+void TMust2Physics::InitializeRootInputRaw() 
    {
       TChain* inputChain = RootInput::getInstance()->GetChain()   ;
       inputChain->SetBranchStatus( "MUST2" , true )               ;
       inputChain->SetBranchStatus( "fMM_*" , true )               ;
       inputChain->SetBranchAddress( "MUST2" , &m_EventData )      ;
    }
+   
+///////////////////////////////////////////////////////////////////////////
+void TMust2Physics::InitializeRootInputPhysics() 
+   {
+      TChain* inputChain = RootInput::getInstance()->GetChain();
+      inputChain->SetBranchStatus( "MUST2" , true );
+      inputChain->SetBranchStatus( "EventMultiplicity" , true );
+      inputChain->SetBranchStatus( "EventType" , true );
+      inputChain->SetBranchStatus( "TelescopeNumber" , true );
+      inputChain->SetBranchStatus( "Si_E" , true );
+      inputChain->SetBranchStatus( "Si_T" , true );
+      inputChain->SetBranchStatus( "Si_X" , true );
+      inputChain->SetBranchStatus( "Si_Y" , true );
+      inputChain->SetBranchStatus( "Si_EX" , true );
+      inputChain->SetBranchStatus( "Si_TX" , true );
+      inputChain->SetBranchStatus( "Si_EY" , true );
+      inputChain->SetBranchStatus( "Si_TY" , true );
+      inputChain->SetBranchStatus( "TelescopeNumber_X" , true );
+      inputChain->SetBranchStatus( "TelescopeNumber_Y" , true );
+      inputChain->SetBranchStatus( "SiLi_E" , true );
+      inputChain->SetBranchStatus( "SiLi_T" , true );
+      inputChain->SetBranchStatus( "SiLi_N" , true );
+      inputChain->SetBranchStatus( "CsI_E" , true );
+      inputChain->SetBranchStatus( "CsI_T" , true );
+      inputChain->SetBranchStatus( "CsI_N" , true );
+      inputChain->SetBranchStatus( "TotalEnergy" , true );
+      inputChain->SetBranchAddress( "MUST2" , &m_EventPhysics);
+   }
 
-
-//   Create associated branches and associated private member DetectorPhysics address
+///////////////////////////////////////////////////////////////////////////
 void TMust2Physics::InitializeRootOutput()    
    {
       TTree* outputTree = RootOutput::getInstance()->GetTree();

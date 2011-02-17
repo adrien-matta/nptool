@@ -193,7 +193,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 16, "TheDUMMYDetector") == 0 && cDummy == false) {
          cDummy = true ;
-         G4cout << "//////// DUMMY DETECTOR ////////" << G4endl << G4endl   ;
+         G4cout << G4endl << "//////// DUMMY DETECTOR ////////" << G4endl << G4endl   ;
 
          // Instantiate the new array as a VDetector Object
          VDetector* myDetector = new DUMMYDetector()                  ;
@@ -213,7 +213,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 14, "GaspardTracker") == 0 && cGPDTracker == false) {
          cGPDTracker = true ;
-         G4cout << "//////// Gaspard Tracker ////////" << G4endl   ;
+         G4cout << G4endl << "//////// Gaspard Tracker ////////" << G4endl   ;
 
          // Instantiate the new array as a VDetector Object
          VDetector* myDetector = new GaspardTracker()                  ;
@@ -233,7 +233,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 11, "HydeTracker") == 0 && cHYDTracker == false) {
          cHYDTracker = true ;
-         G4cout << "//////// Hyde Tracker ////////" << G4endl   ;
+         G4cout << G4endl << "//////// Hyde Tracker ////////" << G4endl   ;
 
          // Instantiate the new array as a VDetector Object
          VDetector* myDetector = new HydeTracker()                  ;
@@ -253,7 +253,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 5, "Paris") == 0 && cParis == false) {
          cParis = true ;
-         G4cout << "//////// Paris  ////////" << G4endl   ;
+         G4cout << G4endl << "//////// Paris  ////////" << G4endl   ;
 
          // Instantiate the new array as a VDetector Object
          VDetector* myDetector = new Paris()                  ;
@@ -272,7 +272,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 6, "Shield") == 0 && cShield == false) {
          cShield = true ;
-         G4cout << "//////// Shield  ////////" << G4endl   ;
+         G4cout << G4endl << "//////// Shield  ////////" << G4endl   ;
 
          // Instantiate the new array as a VDetector Object
          VDetector* myDetector = new Shield()                  ;
@@ -291,7 +291,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 9, "AnnularS1") == 0 && cS1 == false) {
          cS1 = true ;
-         G4cout << "//////// S1 Annular detector ////////" << G4endl   << G4endl   ;
+         G4cout << G4endl << "//////// S1 Annular detector ////////" << G4endl   << G4endl   ;
 
          // Instantiate the new array as a VDetector Object
          VDetector* myDetector = new AnnularS1()                 ;
@@ -310,7 +310,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 2, "W1") == 0 && cW1 == false) {
          cW1 = true ;
-         G4cout << "//////// W1 Square detector ////////" << G4endl   << G4endl;
+         G4cout << G4endl << "//////// W1 Square detector ////////" << G4endl   << G4endl;
 
          // Instantiate the new array as a VDetector Object
          VDetector* myDetector = new W1();
@@ -329,7 +329,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 10, "MUST2Array") == 0 && cMUST2 == false) {
          cMUST2 = true ;
-         G4cout << "//////// MUST2 Array ////////" << G4endl   << G4endl   ;
+         G4cout << G4endl << "//////// MUST2 Array ////////" << G4endl   << G4endl   ;
 
          // Instantiate the new array as a VDetector Object
          VDetector* myDetector = new MUST2Array()                 ;
@@ -346,9 +346,9 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       ////////////////////////////////////////////
       ////////// Search for     ThinSi ///////////
       ////////////////////////////////////////////
-      else if (LineBuffer.compare(0, 9, "AddThinSi") == 0 && cAddThinSi == false) {
+      else if (LineBuffer.compare(0, 9, "SSSDArray") == 0 && cAddThinSi == false) {
          cAddThinSi = true ;
-         G4cout << "//////// Thin Si ////////" << G4endl << G4endl   ;
+         G4cout << G4endl << "//////// SSSD ////////" << G4endl << G4endl   ;
 
          // Instantiate the new array as a VDetector Object
          VDetector* myDetector = new ThinSi()                  ;
@@ -367,7 +367,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 19, "ScintillatorPlastic") == 0 && cPlastic == false) {
          cPlastic = true ;
-         G4cout << "//////// Plastic ////////" << G4endl << G4endl   ;
+         G4cout << G4endl << "//////// Plastic ////////" << G4endl << G4endl   ;
 
          // Instantiate the new array as a VDetector Object
          VDetector* myDetector = new Plastic()                  ;
@@ -387,7 +387,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
 
       else if (LineBuffer.compare(0, 13, "GeneralTarget") == 0 && cGeneralTarget == false) {
          cGeneralTarget = true ;
-         G4cout << "////////// Target ///////////" << G4endl   << G4endl   ;
+         G4cout << G4endl << "////////// Target ///////////" << G4endl   << G4endl   ;
 
          // Instantiate the new array as a VDetector Objects
          VDetector* myDetector = new Target();
@@ -409,7 +409,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
 
       else if (LineBuffer.compare(0, 14, "GeneralChamber") == 0 && cGeneralChamber == false) {
          cGeneralChamber = true ;
-         G4cout << "////////// Chamber ///////////" << G4endl   << G4endl   ;
+         G4cout << G4endl << "////////// Chamber ///////////" << G4endl   << G4endl   ;
 
          // Instantiate the new array as a VDetector Objects
          VDetector* myDetector = new Chamber();

@@ -402,9 +402,13 @@ void DetectorManager::InitializeRootInput()
    
    map<string,VDetector*>::iterator it;
 
-   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {
-      it->second->InitializeRootInput();
-   }
+   if(NPOptionManager::getInstance()->GetInputPhysicalTreeOption())
+      for (it = m_Detector.begin(); it != m_Detector.end(); ++it) 
+         it->second->InitializeRootInputPhysics();
+   
+   else // Default Case
+      for (it = m_Detector.begin(); it != m_Detector.end(); ++it) 
+         it->second->InitializeRootInputRaw();
 }
 
 
@@ -414,9 +418,9 @@ void DetectorManager::InitializeRootOutput()
 {
    map<string,VDetector*>::iterator it;
 
-   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {
-      it->second->InitializeRootOutput();
-   }   
+   if(!NPOptionManager::getInstance()->GetInputPhysicalTreeOption())
+      for (it = m_Detector.begin(); it != m_Detector.end(); ++it) 
+         it->second->InitializeRootOutput();
 }
 
 

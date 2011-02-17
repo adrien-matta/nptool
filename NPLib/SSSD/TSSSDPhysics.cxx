@@ -95,7 +95,7 @@ void TSSSDPhysics::ReadConfiguration(string Path)
     getline(ConfigFile, LineBuffer);
 
     //  If line is a Start Up SSSD bloc, Reading toggle to true      
-        if (LineBuffer.compare(0, 4, "SSSD") == 0) 
+        if (LineBuffer.compare(0, 4, "SSSD") == 0 &&LineBuffer.compare(0, 5, "SSSDA") != 0) 
           {
             cout << "SSSD found: " << endl   ;        
             ReadingStatus = true ;
@@ -114,8 +114,8 @@ void TSSSDPhysics::ReadConfiguration(string Path)
         if (DataBuffer.compare(0, 1, "%") == 0) {  ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
 
           //  Finding another telescope (safety), toggle out
-        else if (DataBuffer.compare(0, 4, "SSSD") == 0) {
-          cout << "WARNING: Another Telescope is find before standard sequence of Token, Error may occured in Telecope definition" << endl ;
+        else if (DataBuffer=="SSSD") {
+          cout << "WARNING: Another Telescope is founnd before standard sequence of Token, Error may occured in detector definition" << endl ;
           ReadingStatus = false ;
         }
 
@@ -265,14 +265,25 @@ void TSSSDPhysics::AddParameterToCalibrationManager()
   }
   
 ///////////////////////////////////////////////////////////////////////////
-void TSSSDPhysics::InitializeRootInput()
+void TSSSDPhysics::InitializeRootInputRaw()
   {
-    TChain* inputChain = RootInput::getInstance()->GetChain()  ;
-    inputChain->SetBranchStatus ( "SSSD"     , true )          ;
-    inputChain->SetBranchStatus ( "fSSSD_*"   , true )          ;
-    inputChain->SetBranchAddress( "SSSD"     , &EventData )    ;
-  }  
+    TChain* inputChain = RootInput::getInstance()->GetChain();
+    inputChain->SetBranchStatus ( "SSSD"     , true );
+    inputChain->SetBranchStatus ( "fSSSD_*"  , true );
+    inputChain->SetBranchAddress( "SSSD"     , &EventData );
+  }     
+///////////////////////////////////////////////////////////////////////////
+void TSSSDPhysics::InitializeRootInputPhysics()
+   {
+   TChain* inputChain = RootInput::getInstance()->GetChain();
+   inputChain->SetBranchStatus ( "SSSD"          , true );
+   inputChain->SetBranchStatus ( "DetectorNumber", true );
+   inputChain->SetBranchStatus ( "StripNumber"   , true );
+   inputChain->SetBranchStatus ( "Energy"        , true );
+   inputChain->SetBranchStatus ( "Time"          , true );
+   inputChain->SetBranchAddress( "SSSD"          , &EventPhysics );
 
+   }
 ///////////////////////////////////////////////////////////////////////////
 void TSSSDPhysics::InitializeRootOutput()
   {
