@@ -1,3 +1,13 @@
 CalibrationFilePath
-   calibration/pipo1.cal
-   calibration/pipo2.cal
+	calibration/Cal_Str_X_E_MM1.cal
+	calibration/Cal_Str_X_E_MM2.cal
+	calibration/Cal_Str_X_E_MM3.cal
+	calibration/Cal_Str_X_E_MM4.cal
+	calibration/Cal_Str_Y_E_MM1.cal
+	calibration/Cal_Str_Y_E_MM2.cal
+	calibration/Cal_Str_Y_E_MM3.cal
+	calibration/Cal_Str_Y_E_MM4.cal
+	calibration/Cal_SSSD_E_1.cal
+	calibration/Cal_SSSD_E_2.cal
+	calibration/Cal_SSSD_E_3.cal
+	calibration/Cal_SSSD_E_4.cal

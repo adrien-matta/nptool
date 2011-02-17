@@ -43,7 +43,7 @@
 
 //G4 sensitive
 #include "GeneralScorers.hh"
-#include "Must2Scorers.hh"
+#include "MUST2Scorers.hh"
 
 //Not G4
 #include "RootOutput.h"

@@ -29,6 +29,8 @@
 #include "W1.hh"
 using namespace W1SQUARE;
 
+using namespace W1SCORERS;
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Added by Adrien MATTA:
@@ -69,7 +71,7 @@ G4bool W1ScorerFrontStripNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
    //Rare case where particle is close to edge of silicon plan
    if (X == m_NumberOfStrip+1) X = m_NumberOfStrip;
    G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
+   if (edep < TriggerThreshold) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
    EvtMap->set(DetNbr + index, X);
    return TRUE;
@@ -136,7 +138,7 @@ G4bool W1ScorerBackStripNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
    //Rare case where particle is close to edge of silicon plan
    if (X == m_NumberOfStrip+1) X = m_NumberOfStrip;
    G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
+   if (edep < TriggerThreshold) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
    EvtMap->set(DetNbr + index, X);
    return TRUE;

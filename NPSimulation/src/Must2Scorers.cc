@@ -22,7 +22,7 @@
  *  a global ID for each event you should not use those scorer with some G4  *
  *  provided ones or being very carefull doing so.                           *
  *****************************************************************************/
-#include "Must2Scorers.hh"
+#include "MUST2Scorers.hh"
 #include "G4UnitsTable.hh"
 #include "GeneralScorers.hh"
 #include <string>
@@ -57,7 +57,7 @@ G4bool PSStripNumberX::ProcessHits(G4Step* aStep, G4TouchableHistory*)
    //Rare case where particle is close to edge of silicon plan
    if (X == m_NumberOfStrip+1) X = m_NumberOfStrip;
    G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
+   if (edep < TriggerThreshold) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
    EvtMap->set(index+DetNbr, X);
    return TRUE;
@@ -125,7 +125,7 @@ G4bool PSStripNumberY::ProcessHits(G4Step* aStep, G4TouchableHistory*)
    if (Y == m_NumberOfStrip+1) Y = m_NumberOfStrip;
 
    G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
+   if (edep < TriggerThreshold) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
    EvtMap->set(index+DetNbr, Y);
    return TRUE;
@@ -200,7 +200,7 @@ G4bool PSPadOrCristalNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
        G4int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "MUST2Telescope");
 
       G4double edep = aStep->GetTotalEnergyDeposit();
-      if (edep < 100*keV) return FALSE;
+      if (edep < TriggerThreshold) return FALSE;
       G4int  index =  aStep->GetTrack()->GetTrackID();
       EvtMap->set(index+DetNbr, VolumeNumber);
       return TRUE;

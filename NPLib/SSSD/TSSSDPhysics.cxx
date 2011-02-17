@@ -94,10 +94,10 @@ void TSSSDPhysics::ReadConfiguration(string Path)
       
     getline(ConfigFile, LineBuffer);
 
-    //  If line is a Start Up ThinSi bloc, Reading toggle to true      
-        if (LineBuffer.compare(0, 6, "ThinSi") == 0) 
+    //  If line is a Start Up SSSD bloc, Reading toggle to true      
+        if (LineBuffer.compare(0, 4, "SSSD") == 0 &&LineBuffer.compare(0, 5, "SSSDA") != 0) 
           {
-            cout << "Detector found: " << endl   ;        
+            cout << "SSSD found: " << endl   ;        
             ReadingStatus = true ;
           }
 
@@ -114,22 +114,22 @@ void TSSSDPhysics::ReadConfiguration(string Path)
         if (DataBuffer.compare(0, 1, "%") == 0) {  ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
 
           //  Finding another telescope (safety), toggle out
-        else if (DataBuffer.compare(0, 6, "ThinSi") == 0) {
-          cout << "WARNING: Another Telescope is find before standard sequence of Token, Error may occured in Telecope definition" << endl ;
+        else if (DataBuffer=="SSSD") {
+          cout << "WARNING: Another Telescope is founnd before standard sequence of Token, Error may occured in detector definition" << endl ;
           ReadingStatus = false ;
         }
 
-           //Position method
-             else if (DataBuffer=="A=") {
-                check_A = true;
-                ConfigFile >> DataBuffer ;
-                TLX = atof(DataBuffer.c_str()) ;
-                ConfigFile >> DataBuffer ;
-                TLY = atof(DataBuffer.c_str()) ;
-                ConfigFile >> DataBuffer ;
-                TLZ = atof(DataBuffer.c_str()) ;
-                cout << " A corner Position : (" << TLX << ";"<< TLY << ";"<< TLZ << ")"<<endl;
-             }
+        //Position method
+       else if (DataBuffer=="A=") {
+          check_A = true;
+          ConfigFile >> DataBuffer ;
+          TLX = atof(DataBuffer.c_str()) ;
+          ConfigFile >> DataBuffer ;
+          TLY = atof(DataBuffer.c_str()) ;
+          ConfigFile >> DataBuffer ;
+          TLZ = atof(DataBuffer.c_str()) ;
+          cout << " A corner Position : (" << TLX << ";"<< TLY << ";"<< TLZ << ")"<<endl;
+       }
         
         else if (DataBuffer=="B=") {
           check_B = true;
@@ -265,14 +265,25 @@ void TSSSDPhysics::AddParameterToCalibrationManager()
   }
   
 ///////////////////////////////////////////////////////////////////////////
-void TSSSDPhysics::InitializeRootInput()
+void TSSSDPhysics::InitializeRootInputRaw()
   {
-    TChain* inputChain = RootInput::getInstance()->GetChain()  ;
-    inputChain->SetBranchStatus ( "SSSD"     , true )          ;
-    inputChain->SetBranchStatus ( "fSSSD_*"   , true )          ;
-    inputChain->SetBranchAddress( "SSSD"     , &EventData )    ;
-  }  
+    TChain* inputChain = RootInput::getInstance()->GetChain();
+    inputChain->SetBranchStatus ( "SSSD"     , true );
+    inputChain->SetBranchStatus ( "fSSSD_*"  , true );
+    inputChain->SetBranchAddress( "SSSD"     , &EventData );
+  }     
+///////////////////////////////////////////////////////////////////////////
+void TSSSDPhysics::InitializeRootInputPhysics()
+   {
+   TChain* inputChain = RootInput::getInstance()->GetChain();
+   inputChain->SetBranchStatus ( "SSSD"          , true );
+   inputChain->SetBranchStatus ( "DetectorNumber", true );
+   inputChain->SetBranchStatus ( "StripNumber"   , true );
+   inputChain->SetBranchStatus ( "Energy"        , true );
+   inputChain->SetBranchStatus ( "Time"          , true );
+   inputChain->SetBranchAddress( "SSSD"          , &EventPhysics );
 
+   }
 ///////////////////////////////////////////////////////////////////////////
 void TSSSDPhysics::InitializeRootOutput()
   {

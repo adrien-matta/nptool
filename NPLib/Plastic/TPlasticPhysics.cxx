@@ -257,14 +257,23 @@ void TPlasticPhysics::AddParameterToCalibrationManager()
    }
    
 ///////////////////////////////////////////////////////////////////////////
-void TPlasticPhysics::InitializeRootInput()
+void TPlasticPhysics::InitializeRootInputRaw() 
    {
       TChain* inputChain = RootInput::getInstance()->GetChain()     ;
       inputChain->SetBranchStatus ( "Plastic"       , true )        ;
       inputChain->SetBranchStatus ( "fPlastic_*"    , true )        ;
       inputChain->SetBranchAddress( "Plastic"       , &EventData )  ;
-   }   
-
+   }
+///////////////////////////////////////////////////////////////////////////
+void TPlasticPhysics::InitializeRootInputPhysics()
+   {
+      TChain* inputChain = RootInput::getInstance()->GetChain();
+      inputChain->SetBranchStatus ( "Plastic", true );
+      inputChain->SetBranchStatus ( "DetectorNumber", true );
+      inputChain->SetBranchStatus ( "Energy", true );
+      inputChain->SetBranchStatus ( "Time", true );
+      inputChain->SetBranchAddress( "Plastic", &EventPhysics );
+   }
 ///////////////////////////////////////////////////////////////////////////
 void TPlasticPhysics::InitializeRootOutput()
    {

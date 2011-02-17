@@ -27,6 +27,9 @@
 #include "G4VPrimitiveScorer.hh"
 #include "G4THitsMap.hh"
 namespace MUST2 {
+   //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+   //   This Threshold is used in the above scorer. Any energy deposit under this threshold will not create an entry.
+   const double TriggerThreshold = 0.1*keV ;
    
    class PSStripNumberX : public G4VPrimitiveScorer
    {

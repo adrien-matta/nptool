@@ -1,0 +1,52 @@
+NPTool version 1.4.1 has been released on February 17th 2011.
+
+The following people have contributed to this fix release:
+Anna Maria Corsi, CEA
+Adrien Matta, IPNO
+Nicolas de Sereville, IPNO
+
+
+****************************************************************************
+*                               GENERAL FEATURES                           *
+****************************************************************************
++ NPLib
+-------
+  + General
+    + New Makefile.arch version
+
+  + scripts
+    + NPToolLogon.C compiles the RootInput.h header which is needed to use 
+      the new RootInput makeFriendTrees() method.
+
+  + CalibrationManager class
+    + This class is now instantiated in DetectorManager (NPAnalysis).
+
+  + NPReaction class
+    + Minimum and maximum angles for the cross-section are now given in the 
+      constructor. New tokens (HalfOpenAngleMin and HalfOpenAngleMax) can
+      be used in EventGeneratorTransfer and EventGeneratorTransferToResonance.
+
+  + NPOptionManager facility
+    + New option --input-physical (--IP) which allows the user to consider an 
+      input file containing a physic class instead of a raw data class.
+
+  + RootInput facility
+     + Add new MakeFriendTrees("RunToRead1", "RunToRead2") method which returns
+       a TChain object which can be called directly in the ROOT interpreter.
+       This is particularly useful when associating raw and physical data together. 
+
+  + Add CATS directory
+     + TCATSData and TCASPhysics are added. These classes are only used in NPAnalysis.
+
+
++ NPSimulation
+--------------
+  + Scorers: Minimum energy deposit for charged particles is now 0.1 keV
+             instead of 100 keV.
+
++ NPAnalysis
+------------
+  + New layout of the analysis files in all projects
+  + Makefile of each project now includes Makefile.arch from NPLib
+  + Template project is now MakePhysicalTree
+  + New SSSD and RRC66 analysis projects with specific analysis ROOT macros

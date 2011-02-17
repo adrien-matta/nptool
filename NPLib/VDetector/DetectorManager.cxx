@@ -7,6 +7,7 @@
 
 //   Detector   
 #include "TMust2Physics.h"
+#include "TCATSPhysics.h"
 #include "TSSSDPhysics.h"
 #include "TPlasticPhysics.h"
 #include "GaspardTracker.h"
@@ -36,13 +37,19 @@ DetectorManager::~DetectorManager()
 //   Read stream at ConfigFile and pick-up Token declaration of Detector
 void DetectorManager::ReadConfigurationFile(string Path)   
 {
+
+   // Instantiate the Calibration Manager
+   // All The detector will then add to it their parameter (see AddDetector)
+   CalibrationManager::getInstance(NPOptionManager::getInstance()->GetCalibrationFile());
+
    ////////General Reading needs////////
    string LineBuffer;
    string DataBuffer;
 
    /////////Boolean////////////////////
    bool MUST2               = false;
-   bool AddThinSi           = false;
+   bool CATS                = false;
+   bool SSSD                = false;
    bool ScintillatorPlastic = false;
    bool GeneralTarget       = false;
    bool GPDTracker          = false;
@@ -154,7 +161,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
       }
 
       ////////////////////////////////////////////
-      //////// Search for MUST2 Array  ////////
+      ////////  Search for MUST2 Array    ////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 10, "MUST2Array") == 0 && MUST2 == false) {
          MUST2 = true;
@@ -172,6 +179,25 @@ void DetectorManager::ReadConfigurationFile(string Path)
          AddDetector("MUST2", myDetector);
       }
 
+      ////////////////////////////////////////////
+      ////////   Search for CATS Array    ////////
+      ////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 9, "CATSArray") == 0 && CATS == false) {
+         MUST2 = true;
+         cout << "//////// CATS Array ////////" << endl << endl;
+
+         // Instantiate the new array as a VDetector Object
+         VDetector* myDetector = new TCATSPhysics();
+
+         // Read Position of Telescope
+         ConfigFile.close();
+         myDetector->ReadConfiguration(Path);
+         ConfigFile.open(Path.c_str());
+
+         // Add array to the VDetector Vector
+         AddDetector("CATS", myDetector);
+      }
+      
       ////////////////////////////////////////////
       ////////// Search for W1 (Micron)  /////////
       ////////////////////////////////////////////
@@ -192,11 +218,11 @@ void DetectorManager::ReadConfigurationFile(string Path)
       }
 
       ////////////////////////////////////////////
-      ////////// Search for ThinSi (SSSD)/////////
+      //////////      Search for SSSD    /////////
       ////////////////////////////////////////////
-      else if (LineBuffer.compare(0, 9, "AddThinSi") == 0 && AddThinSi == false) {
-         AddThinSi = true ;
-         cout << "//////// Thin Si ////////" << endl << endl;
+      else if (LineBuffer.compare(0, 9, "SSSDArray") == 0 && SSSD == false) {
+         SSSD = true ;
+         cout << "//////// SSSD ////////" << endl << endl;
 
          // Instantiate the new array as a VDetector Object
          VDetector* myDetector = new TSSSDPhysics();
@@ -331,8 +357,12 @@ void DetectorManager::ReadConfigurationFile(string Path)
 
    ConfigFile.close();
 
+   // Now that the detector are all added, they can initialise their Branch to the Root I/O
    InitializeRootInput();
    InitializeRootOutput();
+
+   // The calibration Manager got all the parameter added, so it can load them from the calibration file
+   CalibrationManager::getInstance()->LoadParameterFromFile();
 
    return;
 }
@@ -372,9 +402,13 @@ void DetectorManager::InitializeRootInput()
    
    map<string,VDetector*>::iterator it;
 
-   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {
-      it->second->InitializeRootInput();
-   }
+   if(NPOptionManager::getInstance()->GetInputPhysicalTreeOption())
+      for (it = m_Detector.begin(); it != m_Detector.end(); ++it) 
+         it->second->InitializeRootInputPhysics();
+   
+   else // Default Case
+      for (it = m_Detector.begin(); it != m_Detector.end(); ++it) 
+         it->second->InitializeRootInputRaw();
 }
 
 
@@ -384,9 +418,9 @@ void DetectorManager::InitializeRootOutput()
 {
    map<string,VDetector*>::iterator it;
 
-   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {
-      it->second->InitializeRootOutput();
-   }   
+   if(!NPOptionManager::getInstance()->GetInputPhysicalTreeOption())
+      for (it = m_Detector.begin(); it != m_Detector.end(); ++it) 
+         it->second->InitializeRootOutput();
 }
 
 
@@ -398,7 +432,22 @@ void DetectorManager::AddDetector(string DetectorName , VDetector* newDetector)
    newDetector->AddParameterToCalibrationManager();
 }
 
-
+/////////////////////////////////////////////////////////////////////////////////////////////////
+VDetector* DetectorManager::GetDetector(string name)
+{
+   map<string,VDetector*>::iterator it;
+   it = m_Detector.find(name);
+   if ( it!=m_Detector.end() ) return it->second;
+   else{
+      cout << endl;
+      cout << "**********************************       Error       **********************************" << endl;
+      cout << " No Detector " << name << " found in the Detector Manager" << endl;
+      cout << "***************************************************************************************" << endl;
+      cout << endl;
+      exit(1);
+   }
+   
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 void DetectorManager::ClearEventPhysics()

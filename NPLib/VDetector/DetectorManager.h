@@ -22,16 +22,17 @@ namespace NPA
 
             public:
                // Read stream at Path and pick-up Token declaration of Detector
-               void   ReadConfigurationFile(string Path);
-               void   BuildPhysicalEvent();
-               void   BuildSimplePhysicalEvent();
-               void   InitializeRootInput();
-               void   InitializeRootOutput();
-               void   AddDetector(string,VDetector*);
-               void   ClearEventPhysics();
-               void   ClearEventData();
+               void        ReadConfigurationFile(string Path);
+               void        BuildPhysicalEvent();
+               void        BuildSimplePhysicalEvent();
+               void        InitializeRootInput();
+               void        InitializeRootOutput();
+               void        AddDetector(string,VDetector*);
+               VDetector*  GetDetector(string);
+               void        ClearEventPhysics();
+               void        ClearEventData();
 
-            public:   
+            private:   
                // The map containning all detectors
                // Using a Map one can access to any detector using its name
                map<string,VDetector*> m_Detector;

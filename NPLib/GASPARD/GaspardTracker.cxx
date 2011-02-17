@@ -201,12 +201,20 @@ void GaspardTracker::ReadCalibrationFile(string Path)
 
 // Activated associated Branches and link it to the private member DetectorData address
 // In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
-void GaspardTracker::InitializeRootInput()       
+void GaspardTracker::InitializeRootInputRaw()       
 {
    TChain* inputChain = RootInput::getInstance()->GetChain();
    inputChain->SetBranchStatus("GASPARD", true);
    inputChain->SetBranchStatus("fGPD*", true);
    inputChain->SetBranchAddress("GASPARD", &m_EventData);
+}
+
+
+
+void GaspardTracker::InitializeRootInputPhysics()
+{
+   TChain* inputChain = RootInput::getInstance()->GetChain();
+   inputChain->SetBranchAddress("GASPARD" , &m_EventPhysics);
 }
 
 

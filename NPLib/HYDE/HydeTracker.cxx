@@ -492,7 +492,7 @@ void HydeTracker::ReadCalibrationFile(string Path)
 
 // Activated associated Branches and link it to the private member DetectorData address
 // In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
-void HydeTracker::InitializeRootInput()       
+void HydeTracker::InitializeRootInputRaw()       
 {
    TChain* inputChain = RootInput::getInstance()->GetChain();
    inputChain->SetBranchStatus("HYDE", true);

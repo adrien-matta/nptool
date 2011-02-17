@@ -52,7 +52,8 @@ NPOptionManager::NPOptionManager(int argc, char** argv)
    fRunToReadFileName          = fDefaultRunToReadFileName;
    fCalibrationFileName        = fDefaultCalibrationFileName;
    fDisableAllBranchOption = false;
-
+   fInputPhysicalTreeOption = false;
+   
    for (int i = 0; i < argc; i++) {
       string argument = argv[i];
 
@@ -79,6 +80,10 @@ NPOptionManager::NPOptionManager(int argc, char** argv)
       else if (argument == "-C" && argc >= i + 1)     fCalibrationFileName = argv[i+1] ;
 
       else if (argument == "--disable-branch")    fDisableAllBranchOption = true ;
+      
+      else if (argument == "--input-physical")    fInputPhysicalTreeOption = true ;
+      
+      else if (argument == "-IP")    fInputPhysicalTreeOption = true ;
 
       else ;
    }
@@ -220,15 +225,17 @@ void NPOptionManager::SendErrorAndExit(const char* type) const
 
 void NPOptionManager::DisplayHelp()
 {
-   cout << "----NPOptionManager Help----" << endl ;
+   cout << endl << "----NPOptionManager Help----" << endl << endl ;
    cout << "List of Option " << endl ;
+   cout << "\t --help　-H -h\t \t \t \t \t \t \t　Display this help message" << endl ;
    cout << "\t --detector　-D <arg>\t \t \t \t \t \t　Set arg as the detector configuration file" << endl ;
    cout << "\t --event-generator　-E <arg>\t \t \t \t \t　Set arg as the event generator file" << endl ;
-   cout << "\t --cal -C <arg>\t \t \t \t \t \t \t　Set arg as the calibration file list" << endl ;
-   cout << "\t --help　-H -h\t \t \t \t \t \t \t　Display this help message" << endl ;
    cout << "\t --output　-O <arg>\t \t \t \t \t \t　Set arg as the Output File Name (output tree)" << endl ;
+   cout << endl << "NPAnalysis only:"<<endl;
    cout << "\t --run -R <arg>\t \t \t \t \t \t \t　Set arg as the run to read file list" << endl  ;
+   cout << "\t --cal -C <arg>\t \t \t \t \t \t \t　Set arg as the calibration file list" << endl ;
    cout << "\t --disable-branch\t \t \t \t \t \t　Disable of branch of Input tree except the one of the detector (faster)" << endl  ;
+   cout << "\t --input-physical -IP\t \t \t \t \t \t　Consider the Input file is containing Physics Class instead of Data Class. Output branches associate to the detector are not activated" << endl  ;
    cout << endl << endl ;
 
    // exit current program

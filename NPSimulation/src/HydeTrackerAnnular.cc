@@ -58,6 +58,8 @@ using namespace std;
 using namespace CLHEP;
 using namespace HYDANNULAR;
 
+using namespace HYDSCORERS;
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 HydeTrackerAnnular::HydeTrackerAnnular()
 {

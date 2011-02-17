@@ -44,82 +44,88 @@ using namespace NPL ;
 
 class EventGeneratorTransfert : public VEventGenerator
 {
-public:     // Constructors and Destructors
-   // Default constructor used to allocate memory
-   EventGeneratorTransfert();
+   public:     // Constructors and Destructors
+      // Default constructor used to allocate memory
+      EventGeneratorTransfert();
 
-   // This is the constructor to be used
-   EventGeneratorTransfert(   string name1                  ,        // Beam nuclei
-                              string name2                  ,        // Target nuclei
-                              string name3                  ,        // Product of reaction
-                              string name4                  ,        // Product of reaction
-                              double BeamEnergy             ,        // Beam Energy
-                              double ExcitationEnergyLight  ,        // Excitation of Light Nuclei
-                              double ExcitationEnergyHeavy  ,        // Excitation of Heavy Nuclei
-                              double BeamEnergySpread       ,
-                              double SigmaX                 ,
-                              double SigmaY                 ,
-                              double SigmaThetaX            ,
-                              double SigmaPhiY              ,
-                              bool   ShootLight             ,
-                              bool   ShootHeavy             ,
-                              string Path                   );       // Path of the differentiel Cross Section
+      // This is the constructor to be used
+      EventGeneratorTransfert(string name1                  ,           // Beam nuclei
+            string name2                  ,        // Target nuclei
+            string name3                  ,        // Product of reaction
+            string name4                  ,        // Product of reaction
+            double BeamEnergy             ,        // Beam Energy
+            double ExcitationEnergyLight  ,        // Excitation of Light Nuclei
+            double ExcitationEnergyHeavy  ,        // Excitation of Heavy Nuclei
+            double BeamEnergySpread       ,
+            double SigmaX                 ,
+            double SigmaY                 ,
+            double SigmaThetaX            ,
+            double SigmaPhiY              ,
+            bool   ShootLight             ,
+            bool   ShootHeavy             ,
+            string Path,
+            double CSThetaMin,
+            double CSThetaMax);                          // Path of the differentiel Cross Section
 
-   // Default Destructor
-   virtual ~EventGeneratorTransfert();
-
-
-public: // Inherit from VEventGenerator class
-   void        ReadConfiguration(string);
-   void        GenerateEvent(G4Event*, G4ParticleGun*);
-   void          SetTarget(Target* Target) ;
+      // Default Destructor
+      virtual ~EventGeneratorTransfert();
 
 
-private: // Particle Shoot Option
-   bool        m_ShootLight;
-   bool        m_ShootHeavy;
+   public: // Inherit from VEventGenerator class
+      void ReadConfiguration(string);
+      void GenerateEvent(G4Event*, G4ParticleGun*);
+      void SetTarget(Target* Target) ;
 
 
-private: // Target Parameter
-   Target*     m_Target;
+   private: // Particle Shoot Option
+      bool m_ShootLight;
+      bool m_ShootHeavy;
 
 
-private: // Reaction and CrossSection Shoot
-   Reaction*   m_Reaction;
+   private: // Target Parameter
+      Target* m_Target;
 
 
-private: // Beam Parameters
-   double      m_BeamEnergy;
-   double      m_BeamEnergySpread;
-   double      m_SigmaX;
-   double      m_SigmaY;
-   double      m_SigmaThetaX;
-   double      m_SigmaPhiY;
+   private: // Reaction and CrossSection Shoot
+      Reaction* m_Reaction;
+      G4double  m_HalfOpenAngleMin;  // Min Half open angle of the source
+      G4double  m_HalfOpenAngleMax;  // Max Half open angle of the source
 
 
-private: // TTree to store initial value of beam and reaction
-   TInitialConditions*   m_InitConditions;
+   private: // Beam Parameters
+      double m_BeamEnergy;
+      double m_BeamEnergySpread;
+      double m_SigmaX;
+      double m_SigmaY;
+      double m_SigmaThetaX;
+      double m_SigmaPhiY;
 
 
-   // Other methods
-   void        Print() const;
-   void        InitializeRootOutput();
+   private: // TTree to store initial value of beam and reaction
+      TInitialConditions*   m_InitConditions;
 
-   void        SetEverything( string name1                     ,        // Beam nuclei
-                              string name2                     ,        // Target nuclei
-                              string name3                     ,        // Product of reaction
-                              string name4                     ,        // Product of reaction
-                              double BeamEnergy                ,        // Beam Energy
-                              double ExcitationEnergyLight     ,        // Excitation of Light Nuclei
-                              double ExcitationEnergyHeavy     ,        // Excitation of Heavy Nuclei
-                              double BeamEnergySpread          ,
-                              double SigmaX                    ,
-                              double SigmaY                    ,
-                              double SigmaThetaX               ,
-                              double SigmaPhiY                 ,
-                              bool   ShootLight                ,
-                              bool   ShootHeavy                ,
-                              string Path                      );       // Path of the differentiel Cross Section
+
+      // Other methods
+      void Print() const;
+      void InitializeRootOutput();
+
+      void SetEverything(string name1                     ,         // Beam nuclei
+                         string name2                     ,        // Target nuclei
+                         string name3                     ,        // Product of reaction
+                         string name4                     ,        // Product of reaction
+                         double BeamEnergy                ,        // Beam Energy
+                         double ExcitationEnergyLight     ,        // Excitation of Light Nuclei
+                         double ExcitationEnergyHeavy     ,        // Excitation of Heavy Nuclei
+                         double BeamEnergySpread          ,
+                         double SigmaX                    ,
+                         double SigmaY                    ,
+                         double SigmaThetaX               ,
+                         double SigmaPhiY                 ,
+                         bool   ShootLight                ,
+                         bool   ShootHeavy                ,
+                         string Path,
+                         double CSThetaMin,
+                         double CSThetaMax);                             // Path of the differentiel Cross Section
 };
 
 #endif

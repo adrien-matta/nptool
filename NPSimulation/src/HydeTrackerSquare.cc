@@ -61,6 +61,7 @@ using namespace std;
 using namespace CLHEP;
 using namespace HYDSQUARE;
 
+using namespace HYDSCORERS;
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

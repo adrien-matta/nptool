@@ -79,4 +79,7 @@ private:
    int NumberOfFriend;
 };
 
+// A convenient function related to Root Input, coded Here so it can be called within ROOT CINT
+TChain* MakeFriendTrees(string,string);
+
 #endif // ROOTINPUT_HH

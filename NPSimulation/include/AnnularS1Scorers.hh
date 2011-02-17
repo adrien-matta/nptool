@@ -26,6 +26,12 @@
 #include "G4THitsMap.hh"
 
 
+namespace S1SCORERS
+{
+   // This Threshold is used in all scorers
+   // Any energy deposit under this threshold will not create an entry
+   const double TriggerThreshold = 0.1 * keV;
+
 class AnnularS1ScorerThetaStripNumber : public G4VPrimitiveScorer
 {
 public: // with description
@@ -74,4 +80,5 @@ private:
    G4THitsMap<G4double>* EvtMap;
 };
 
+}
 #endif

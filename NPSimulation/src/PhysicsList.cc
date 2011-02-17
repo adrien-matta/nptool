@@ -40,7 +40,7 @@
 #include "G4ComptonScattering.hh"
 #include "G4GammaConversion.hh"
 #include "G4PhotoElectricEffect.hh"
-#include "G4MultipleScattering.hh"
+#include "G4eMultipleScattering.hh"
 #include "G4eIonisation.hh"
 #include "G4eBremsstrahlung.hh"
 #include "G4eplusAnnihilation.hh"
@@ -66,6 +66,7 @@
 
 
 #include "G4MuIonisation.hh"
+#include "G4MuMultipleScattering.hh"
 #include "G4MuBremsstrahlung.hh"
 #include "G4MuPairProduction.hh"
 
@@ -230,7 +231,7 @@ void PhysicsList::ConstructEM()
 
       } else if (particleName == "e-") {
          //electron
-         pmanager->AddProcess(new G4MultipleScattering  , -1,  1, 1)     ;
+         pmanager->AddProcess(new G4eMultipleScattering  , -1,  1, 1)     ;
     //standard geant4:
     pmanager->AddProcess(new G4eIonisation         , -1,  2, 2)     ;
     pmanager->AddProcess(new G4eBremsstrahlung     , -1, -1, 3)     ;
@@ -244,7 +245,7 @@ void PhysicsList::ConstructEM()
 
       } else if (particleName == "e+") {
          //positron
-   pmanager->AddProcess(new G4MultipleScattering  , -1,  1, 1 );
+   pmanager->AddProcess(new G4eMultipleScattering  , -1,  1, 1 );
    // standard Geant4 and Low energy
    pmanager->AddProcess(new G4eIonisation         , -1,  2, 2 );
    pmanager->AddProcess(new G4eBremsstrahlung     , -1, -1, 3 );
@@ -260,13 +261,13 @@ void PhysicsList::ConstructEM()
                  particleName == "mu-") {
   
     //muon
-         /*   pmanager->AddProcess(new G4MultipleScattering   , -1,  1, 1 )     ;
+         /*   pmanager->AddProcess(new G4muMultipleScattering   , -1,  1, 1 )     ;
             pmanager->AddProcess(new G4MuIonisation        , -1,  2, 2 )     ;
             pmanager->AddProcess(new G4MuBremsstrahlung    , -1, -1, 3 )     ;
             pmanager->AddProcess(new G4MuPairProduction    , -1, -1, 4 )     ;*/
   
       } else if (particleName == "GenericIon") {
-         pmanager->AddProcess(new G4MultipleScattering(), -1, 1, 1)        ;
+         pmanager->AddProcess(new G4hMultipleScattering(), -1, 1, 1)        ;
          G4ionIonisation* iI = new G4ionIonisation                   ;
          // mod by Nicolas [07/05/09]
           iI->ActivateNuclearStopping(true)                        ;
@@ -281,7 +282,7 @@ void PhysicsList::ConstructEM()
          G4hIonisation* hI = new G4hIonisation                      ;
          // mod by Nicolas [07/05/09]
 //        hI->ActivateNuclearStopping(true)                          ;
-         pmanager->AddProcess(new G4MultipleScattering     , -1, 1, 1)   ;
+         pmanager->AddProcess(new G4hMultipleScattering     , -1, 1, 1)   ;
          pmanager->AddProcess(hI                        , -1, 2, 2)   ;
 
 

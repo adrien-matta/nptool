@@ -27,6 +27,9 @@
 
 namespace HYDSCORERS
 {
+   // This Threshold is used in all scorers
+   // Any energy deposit under this threshold will not create an entry
+   const double TriggerThreshold = 0.1 * keV;
 
 class HYDScorerFirstStageEnergy : public G4VPrimitiveScorer
 {
@@ -295,5 +298,4 @@ private:
 
 }
 
-using namespace HYDSCORERS;
 #endif

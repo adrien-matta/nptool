@@ -49,20 +49,21 @@ using namespace CLHEP;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorTransfert::EventGeneratorTransfert()
+   :  m_ShootLight(0),
+      m_ShootHeavy(0),
+      m_Target(0),
+      m_Reaction(new Reaction),
+      m_HalfOpenAngleMin(0),
+      m_HalfOpenAngleMax(180),
+      m_BeamEnergy(0),
+      m_BeamEnergySpread(0),
+      m_SigmaX(0),
+      m_SigmaY(0),
+      m_SigmaThetaX(0),
+      m_SigmaPhiY(0),
+      m_InitConditions(new TInitialConditions)
 {
    //------------- Default Constructor -------------
-   m_InitConditions = new TInitialConditions();
-   m_Reaction       = new Reaction();
-   m_Target         = 0;
-
-   m_BeamEnergy       = 0;
-   m_BeamEnergySpread = 0;
-   m_SigmaX           = 0;
-   m_SigmaY           = 0;
-   m_SigmaThetaX      = 0;
-   m_SigmaPhiY        = 0;
-   m_ShootLight       = 0;
-   m_ShootHeavy       = 0;
 }
 
 
@@ -98,7 +99,9 @@ EventGeneratorTransfert::EventGeneratorTransfert(  string name1                 
                                                    double SigmaPhiY              ,
                                                    bool   ShootLight             ,
                                                    bool   ShootHeavy             ,
-                                                   string Path                   )  // Path of the differentiel Cross Section
+                                                   string Path                   ,
+                                                   double CSThetaMin             ,
+                                                   double CSThetaMax)  // Path of the differentiel Cross Section
 {
  SetEverything(   name1,       
                   name2,        
@@ -114,7 +117,9 @@ EventGeneratorTransfert::EventGeneratorTransfert(  string name1                 
                   SigmaPhiY,
                   ShootLight,
                   ShootHeavy,
-                  Path);      
+                  Path,
+                  CSThetaMin,
+                  CSThetaMax);
 
 }
 
@@ -149,6 +154,7 @@ void EventGeneratorTransfert::ReadConfiguration(string Path)
    string Beam, Target, Heavy, Light, CrossSectionPath ;
    G4double BeamEnergy = 0 , ExcitationEnergyLight = 0, ExcitationEnergyHeavy = 0;
    G4double BeamEnergySpread = 0 , SigmaX = 0 , SigmaY = 0 , SigmaThetaX = 0 , SigmaPhiY=0;
+   G4double CSHalfOpenAngleMin = 0, CSHalfOpenAngleMax = 180;
    bool  ShootLight = false ;
    bool  ShootHeavy = false ;
    
@@ -283,6 +289,18 @@ void EventGeneratorTransfert::ReadConfiguration(string Path)
             G4cout << "Cross Section File: " << CrossSectionPath << G4endl ;
          }
 
+         else if (DataBuffer.compare(0, 17, "HalfOpenAngleMin=") == 0) {
+            ReactionFile >> DataBuffer;
+            CSHalfOpenAngleMin = atof(DataBuffer.c_str()) * deg;
+            G4cout << "HalfOpenAngleMin " << CSHalfOpenAngleMin / deg << " degree" << G4endl;
+         }
+
+         else if (DataBuffer.compare(0, 17, "HalfOpenAngleMax=") == 0) {
+            ReactionFile >> DataBuffer;
+            CSHalfOpenAngleMax = atof(DataBuffer.c_str()) * deg;
+            G4cout << "HalfOpenAngleMax " << CSHalfOpenAngleMax / deg << " degree" << G4endl;
+         }
+
         else if  (DataBuffer.compare(0, 11, "ShootLight=") == 0) {
            check_ShootLight = true ;
             ReactionFile >> DataBuffer;
@@ -331,7 +349,9 @@ void EventGeneratorTransfert::ReadConfiguration(string Path)
                   SigmaPhiY,
                   ShootLight,
                   ShootHeavy,
-                  CrossSectionPath);
+                  CrossSectionPath,
+                  CSHalfOpenAngleMin/deg,
+                  CSHalfOpenAngleMax/deg);
          
    ReactionFile.close();
 }
@@ -440,7 +460,7 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
 
    // Angles
    RandGeneral CrossSectionShoot(m_Reaction->GetCrossSection(), m_Reaction->GetCrossSectionSize());
-   G4double ThetaCM = CrossSectionShoot.shoot() * (180*deg);
+   G4double ThetaCM = (m_Reaction->GetCrossSectionAngleMin() + CrossSectionShoot.shoot() * (m_Reaction->GetCrossSectionAngleMax() - m_Reaction->GetCrossSectionAngleMin())) * deg;
    G4double phi     = RandFlat::shoot() * 2*pi;
    // write angles to ROOT file
    m_InitConditions->SetICEmittedAngleThetaCM(ThetaCM / deg);
@@ -537,17 +557,21 @@ void EventGeneratorTransfert::SetEverything(string name1,                // Beam
                                             double SigmaPhiY,
                                             bool   ShootLight,
                                             bool   ShootHeavy,
-                                            string Path) 
+                                            string Path,
+                                            double CSThetaMin,
+                                            double CSThetaMax) 
 {
-   m_Reaction = new Reaction(name1, name2, name3, name4, BeamEnergy, ExcitationEnergyLight, ExcitationEnergyHeavy, Path);   
-      
-   m_BeamEnergy       =  BeamEnergy;
-   m_BeamEnergySpread =  BeamEnergySpread;
-   m_SigmaX           =  SigmaX;
-   m_SigmaY           =  SigmaY;
-   m_SigmaThetaX      =  SigmaThetaX;
-   m_SigmaPhiY        =  SigmaPhiY;
-   m_ShootLight       =  ShootLight;
-   m_ShootHeavy       =  ShootHeavy;
+   m_Reaction = new Reaction(name1, name2, name3, name4, BeamEnergy, ExcitationEnergyLight, ExcitationEnergyHeavy, Path, CSThetaMin, CSThetaMax);
+
+   m_BeamEnergy       = BeamEnergy;
+   m_BeamEnergySpread = BeamEnergySpread;
+   m_SigmaX           = SigmaX;
+   m_SigmaY           = SigmaY;
+   m_SigmaThetaX      = SigmaThetaX;
+   m_SigmaPhiY        = SigmaPhiY;
+   m_ShootLight       = ShootLight;
+   m_ShootHeavy       = ShootHeavy;
+   m_HalfOpenAngleMin = CSThetaMin;
+   m_HalfOpenAngleMax = CSThetaMax;
 }
  

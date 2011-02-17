@@ -56,7 +56,9 @@
 
 using namespace std;
 using namespace CLHEP;
+
 using namespace ANNULARS1;
+using namespace S1SCORERS;
 
 
 

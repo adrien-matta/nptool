@@ -209,32 +209,42 @@ string RootInput::DumpAsciiFile(const char* type, const char* folder)
    string stype = type;
    if (stype == "EventGenerator") {
       TAsciiFile *aFile = (TAsciiFile*)pRootFile->Get(stype.c_str());
-      // build file name
-      string title = aFile->GetTitle();
-      unsigned int pos = title.rfind("/");
-      if (pos != string::npos) name = sfolder + title.substr(pos);
-      else name = sfolder + "/" + title;
-      aFile->WriteToFile(name.c_str());
+      
+      if(aFile)
+         {
+            // build file name
+            string title = aFile->GetTitle();
+            unsigned int pos = title.rfind("/");
+            if (pos != string::npos) name = sfolder + title.substr(pos);
+            else name = sfolder + "/" + title;
+            aFile->WriteToFile(name.c_str());
+         }
    }
    
    else if (stype == "DetectorConfiguration") {
       TAsciiFile *aFile = (TAsciiFile*)pRootFile->Get(stype.c_str());
-      // build file name
-      string title = aFile->GetTitle();
-      unsigned int pos = title.rfind("/");
-      if (pos != string::npos) name = sfolder + title.substr(pos);
-      else name = sfolder + "/" + title;
-      aFile->WriteToFile(name.c_str());
+      if(aFile)
+         {
+            // build file name
+            string title = aFile->GetTitle();
+            unsigned int pos = title.rfind("/");
+            if (pos != string::npos) name = sfolder + title.substr(pos);
+            else name = sfolder + "/" + title;
+            aFile->WriteToFile(name.c_str());
+         }
    }
    
    else if (stype == "Calibration") {
       TAsciiFile *aFile = (TAsciiFile*)pRootFile->Get(stype.c_str());
-      // build file name
-      string title = aFile->GetTitle();
-      unsigned int pos = title.rfind("/");
-      if (pos != string::npos) name = sfolder + title.substr(pos);
-      else name = sfolder + "/" + title;
-      aFile->WriteToFile(name.c_str());
+      if(aFile)
+         {
+            // build file name
+            string title = aFile->GetTitle();
+            unsigned int pos = title.rfind("/");
+            if (pos != string::npos) name = sfolder + title.substr(pos);
+            else name = sfolder + "/" + title;
+            aFile->WriteToFile(name.c_str());
+         }
    }
    
    else if (stype == "RunToTreat") {
@@ -260,3 +270,11 @@ RootInput::~RootInput()
    delete pRootFile;
    delete pRootChain;
 }
+
+/////////////////////////////////////////////////////////////////////
+TChain* MakeFriendTrees(string RunToRead1,string RunToRead2)
+   {
+      RootInput:: getInstance(RunToRead1)	;
+      RootInput:: getInstance()->AddFriendChain(RunToRead2);
+      return RootInput:: getInstance()->GetChain();
+   }

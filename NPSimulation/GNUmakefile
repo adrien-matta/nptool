@@ -15,6 +15,7 @@ endif
 # Result of compilation is put in (./$G4WORKDIR/bin/$G4SYSTEM/)
 # to execute your programm : ./$G4WORKDIR/bin/$G4SYSTEM/Simulation xx.reaction xx.detector
 G4WORKDIR = ./
+G4BIN = ./bin
 
 CPPFLAGS += $(shell root-config --cflags) 
 CPPFLAGS += -I$(NPLIB)/include

@@ -49,11 +49,11 @@ namespace NPL
 
       public:  // Constructors and Destructors
          Reaction();
-         Reaction(string name1, string name2, string name3, string name4, double BeamEnergy , double ExcitationEnergyLight, double ExcitationEnergyHeavy, string Path);
+         Reaction(string name1, string name2, string name3, string name4, double BeamEnergy , double ExcitationEnergyLight, double ExcitationEnergyHeavy, string Path, double CSThetaMin = 0, double CSThetaMax = 180);
          ~Reaction();
 
       public:  // Various Method
-         void SetEveryThing(string name1, string name2, string name3, string name4, double BeamEnergy, double ExcitationEnergyLight, double ExcitationEnergyHeavy, string Path) ;
+         void SetEveryThing(string name1, string name2, string name3, string name4, double BeamEnergy, double ExcitationEnergyLight, double ExcitationEnergyHeavy, string Path, double CSThetaMin, double CSThetaMax);
          void ReadConfigurationFile(string Path);
 
       private:
@@ -69,6 +69,8 @@ namespace NPL
          double   fExcitationHeavy; // Excitation energy in MeV
          double*  CrossSection;     // Differential CrossSection
          int      CrossSectionSize; // Size of array containing Differention CrossSection
+         double   fCrossSectionAngleMin;  // Minimum angle of the differential cross-section given by the user
+         double   fCrossSectionAngleMax;  // Maximum angle of the differential cross-section given by the user
 
       public:
          // Getters and Setters
@@ -86,6 +88,8 @@ namespace NPL
          Nucleus* GetNucleus4() const              {return fNuclei4;}
          double*  GetCrossSection() const          {return CrossSection;}
          int      GetCrossSectionSize() const      {return CrossSectionSize;}
+         double   GetCrossSectionAngleMin() const  {return fCrossSectionAngleMin;}
+         double   GetCrossSectionAngleMax() const  {return fCrossSectionAngleMax;}
 
       private: // intern precompute variable
          void initializePrecomputeVariable();

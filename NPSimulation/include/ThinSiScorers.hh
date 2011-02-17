@@ -28,6 +28,9 @@
 #include "G4THitsMap.hh"
 
 namespace THINSI {
+   //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+   //   This Threshold is used in the above scorer. Any energy deposit under this threshold will not create an entry.
+   const double TriggerThreshold = 0.1*keV ;
    
    class PSStripNumber : public G4VPrimitiveScorer
    {
