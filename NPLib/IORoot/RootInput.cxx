@@ -270,3 +270,11 @@ RootInput::~RootInput()
    delete pRootFile;
    delete pRootChain;
 }
+
+/////////////////////////////////////////////////////////////////////
+TChain* MakeFriendTrees(string RunToRead1,string RunToRead2)
+   {
+      RootInput:: getInstance(RunToRead1)	;
+      RootInput:: getInstance()->AddFriendChain(RunToRead2);
+      return RootInput:: getInstance()->GetChain();
+   }
