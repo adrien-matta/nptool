@@ -167,7 +167,8 @@ class TCATSPhysics : public TObject, public NPA::VDetector
  public :   //   Specific to CATS
 
   void   Clear();
-  void   Dump();
+  void  Clear(const Option_t*) {};
+  void   Dump() const;
      
   void AddCATS(TVector3 C_X1_Y1, TVector3 C_X28_Y1, TVector3 C_X1_Y28, TVector3 C_X28_Y28);
 

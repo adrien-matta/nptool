@@ -63,7 +63,10 @@ public:
 
    // Activated associated Branches and link it to the private member DetectorData address
    // In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
-   void InitializeRootInput();
+   void InitializeRootInputRaw();
+
+   // In this method mother Branches (Detector) AND daughter leaf (parameter) have to be activated
+   void InitializeRootInputPhysics();
 
    // Create associated branches and associated private member DetectorPhysics address
    void InitializeRootOutput();

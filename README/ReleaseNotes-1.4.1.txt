@@ -35,6 +35,10 @@ Nicolas de Sereville, IPNO
        a TChain object which can be called directly in the ROOT interpreter.
        This is particularly useful when associating raw and physical data together. 
 
+  + Add CATS directory
+     + TCATSData and TCASPhysics are added. These classes are only used in NPAnalysis.
+
+
 + NPSimulation
 --------------
   + Scorers: Minimum energy deposit for charged particles is now 0.1 keV

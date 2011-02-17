@@ -471,7 +471,7 @@ void Paris::ReadCalibrationFile(string Path)
 
 // Activated associated Branches and link it to the private member DetectorData address
 // In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
-void Paris::InitializeRootInput()       
+void Paris::InitializeRootInputRaw()       
 {
    TChain* inputChain = RootInput::getInstance()->GetChain();
    inputChain->SetBranchStatus("PARIS", true);
