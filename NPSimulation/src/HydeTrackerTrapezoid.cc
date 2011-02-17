@@ -57,6 +57,7 @@ using namespace std;
 using namespace CLHEP;
 using namespace HYDTRAP ;
 
+using namespace HYDSCORERS;
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

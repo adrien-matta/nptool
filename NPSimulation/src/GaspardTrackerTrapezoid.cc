@@ -57,7 +57,10 @@
 
 using namespace std;
 using namespace CLHEP;
-using namespace GPDTRAP ;
+
+using namespace GPDTRAP;
+using namespace GPDSCORERS;
+
 
 
 

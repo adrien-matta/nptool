@@ -31,7 +31,7 @@ namespace GENERALSCORERS
    {
          //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
          //   This Threshold is used in the above scorer. Any energy deposit under this threshold will not create an entry.
-         const double TriggerThreshold = 100*keV ;
+         const double TriggerThreshold = 0.1*keV ;
 
          //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
          //   The following function is used in many scorer. following the Detector Volume Nomenclature

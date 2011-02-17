@@ -25,6 +25,7 @@
 #include "AnnularS1.hh"
 
 using namespace ANNULARS1;
+using namespace S1SCORERS;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -84,7 +85,7 @@ G4bool AnnularS1ScorerThetaStripNumber::ProcessHits(G4Step* aStep, G4TouchableHi
    }
 
    G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
+   if (edep < TriggerThreshold) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
    EvtMap->set(DetNbr + index, ThetaStripNumber);
    return TRUE;
@@ -156,7 +157,7 @@ G4bool AnnularS1ScorerPhiStripNumber::ProcessHits(G4Step* aStep, G4TouchableHist
 //   G4cout << "phi " << phi << " PhiWidth  " << PhiWidth << "  PhiStripNumber " << PhiStripNumber << G4endl;
 
    G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
+   if (edep < TriggerThreshold) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
    EvtMap->set(DetNbr + index, PhiStripNumber);
    return TRUE;
