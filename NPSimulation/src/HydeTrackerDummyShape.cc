@@ -62,6 +62,7 @@ using namespace std;
 using namespace CLHEP;
 using namespace HYDDUMMYSHAPE;
 
+using namespace HYDSCORERS;
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

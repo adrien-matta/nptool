@@ -61,7 +61,10 @@
 
 using namespace std;
 using namespace CLHEP;
+
 using namespace GPDSQUARE;
+using namespace GPDSCORERS;
+
 
 
 

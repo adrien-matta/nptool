@@ -27,6 +27,9 @@
 
 namespace W1SCORERS
 {
+   // This Threshold is used in all scorers
+   // Any energy deposit under this threshold will not create an entry
+   const double TriggerThreshold = 0.1 * keV;
 
 class W1ScorerFrontStripNumber : public G4VPrimitiveScorer
 {

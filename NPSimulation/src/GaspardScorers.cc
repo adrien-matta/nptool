@@ -35,6 +35,8 @@ using namespace GPDTRAP;
 using namespace GPDANNULAR;
 using namespace GPDDUMMYSHAPE;
 
+using namespace GPDSCORERS;
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Added by Adrien MATTA:
@@ -65,7 +67,7 @@ G4bool GPDScorerFirstStageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
    G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
+   if (edep < TriggerThreshold) return FALSE;
    G4int  index = aStep->GetTrack()->GetTrackID();
    EvtMap->add(DetNbr + index, edep);
    return TRUE;
@@ -130,7 +132,7 @@ G4bool GPDScorerSecondStageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
    G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
+   if (edep < TriggerThreshold) return FALSE;
    G4int  index = aStep->GetTrack()->GetTrackID();
    EvtMap->add(DetNbr + index, edep);
    return TRUE;
@@ -195,7 +197,7 @@ G4bool GPDScorerThirdStageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
    G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
+   if (edep < TriggerThreshold) return FALSE;
    G4int  index = aStep->GetTrack()->GetTrackID();
    EvtMap->add(DetNbr + index, edep);
    return TRUE;
@@ -271,7 +273,7 @@ G4bool GPDScorerFirstStageFrontStripDummyShape::ProcessHits(G4Step* aStep, G4Tou
    //Rare case where particle is close to edge of silicon plan
    if (X == m_NumberOfStrip+1) X = m_NumberOfStrip;
    G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
+   if (edep < TriggerThreshold) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
    EvtMap->set(DetNbr + index, X);
    return TRUE;
@@ -338,7 +340,7 @@ G4bool GPDScorerFirstStageBackStripDummyShape::ProcessHits(G4Step* aStep, G4Touc
    //Rare case where particle is close to edge of silicon plan
    if (X == m_NumberOfStrip+1) X = m_NumberOfStrip;
    G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
+   if (edep < TriggerThreshold) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
    EvtMap->set(DetNbr + index, X);
    return TRUE;
@@ -403,7 +405,7 @@ G4bool GPDScorerFirstStageFrontStripSquare::ProcessHits(G4Step* aStep, G4Touchab
    //Rare case where particle is close to edge of silicon plan
    if (X == 129) X = 128;
    G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
+   if (edep < TriggerThreshold) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
    EvtMap->set(DetNbr + index, X);
    return TRUE;
@@ -469,7 +471,7 @@ G4bool GPDScorerFirstStageBackStripSquare::ProcessHits(G4Step* aStep, G4Touchabl
    if (Y == 129) Y = 128;
 
    G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
+   if (edep < TriggerThreshold) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
    EvtMap->set(DetNbr + index, Y);
    return TRUE;
@@ -533,7 +535,7 @@ G4bool GPDScorerFirstStageFrontStripTrapezoid::ProcessHits(G4Step* aStep, G4Touc
    //Rare case where particle is close to edge of silicon plan
    if (X == 129) X = 128;
    G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
+   if (edep < TriggerThreshold) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
    EvtMap->set(DetNbr + index, X);
    return TRUE;
@@ -599,7 +601,7 @@ G4bool GPDScorerFirstStageBackStripTrapezoid::ProcessHits(G4Step* aStep, G4Touch
    if (Y == 129) Y = 128;
 
    G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
+   if (edep < TriggerThreshold) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
    EvtMap->set(DetNbr + index, Y);
    return TRUE;
@@ -694,7 +696,7 @@ G4bool GPDScorerFirstStageFrontStripAnnular::ProcessHits(G4Step* aStep, G4Toucha
    }
 
    G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
+   if (edep < TriggerThreshold) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
    EvtMap->set(DetNbr + index, ThetaStripNumber);
 
@@ -769,7 +771,7 @@ G4bool GPDScorerFirstStageBackStripAnnular::ProcessHits(G4Step* aStep, G4Touchab
 //   G4cout << "phi " << phi << " PhiWidth  " << PhiWidth << "  PhiStripNumber " << PhiStripNumber << G4endl;
 
    G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < 100*keV) return FALSE;
+   if (edep < TriggerThreshold) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
    EvtMap->set(DetNbr + index, PhiStripNumber);
 

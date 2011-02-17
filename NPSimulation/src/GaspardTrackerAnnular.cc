@@ -58,7 +58,9 @@
 
 using namespace std;
 using namespace CLHEP;
+
 using namespace GPDANNULAR;
+using namespace GPDSCORERS;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 GaspardTrackerAnnular::GaspardTrackerAnnular()
