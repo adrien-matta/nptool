@@ -51,7 +51,7 @@ int main(int argc,char** argv)
    myReaction->SetBeamEnergy(BeamEnergy);
 
    // Attach more branch to the output
-   double Ex = 0 ; double ExNoStrips = 0 ; double EE = 0 ; double TT = 0 ; double X = 0 ; double Y = 0 ; int det ;
+   double Ex = 0 ; double ExNoStrips = 0 ; double EE = 0 ; double TT = 0 ; double X = 0 ; double Y = 0 ;
    RootOutput::getInstance()->GetTree()->Branch("ExcitationEnergy",&Ex,"Ex/D") ;
    RootOutput::getInstance()->GetTree()->Branch("ExcitationEnergyNoStrips",&ExNoStrips,"ExNoStrips/D") ;
    RootOutput::getInstance()->GetTree()->Branch("E",&EE,"EE/D") ;
