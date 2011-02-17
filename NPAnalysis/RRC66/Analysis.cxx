@@ -69,13 +69,12 @@ int main(int argc, char** argv)
       }
 
    // Attach new branch
-   Float_t Energy_Must2 = 0 ;
-   Float_t Energy_SSSD = 0;
-   RootOutput::getInstance()->GetTree()->Branch("Energy_Must2",&Energy_Must2,"Energy_Must2/F");
-   RootOutput::getInstance()->GetTree()->Branch("Energy_SSSD",&Energy_SSSD,"Energy_SSSD/F");
+   InitOutputBranch();
+   
    ////////////////////////////////////////////////////////
    
    // Get pointer to the different detector
+   
    TMust2Physics* M2  = (TMust2Physics*)    myDetector -> GetDetector("MUST2");
    TSSSDPhysics* SSSD = (TSSSDPhysics*)    myDetector -> GetDetector("SSSD");
 
@@ -132,4 +131,9 @@ int main(int argc, char** argv)
    return 0 ;
 }
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////
+void InitOutputBranch() 
+   {
+      RootOutput::getInstance()->GetTree()->Branch("Energy_Must2",&Energy_Must2,"Energy_Must2/F");
+      RootOutput::getInstance()->GetTree()->Branch("Energy_SSSD",&Energy_SSSD,"Energy_SSSD/F");
+   }

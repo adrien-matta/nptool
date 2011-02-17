@@ -43,16 +43,15 @@
 
 
 // ----------------------------------------------------------------------------------------------
-double ThetaCalculation (TVector3 A , TVector3 B) ;
+void InitOutputBranch() ;
 /////////////////////////////////////////////////////////////////////////////////////////////////
 // ----------------------------------- DOUBLE, INT, BOOL AND MORE -------------------------------
 namespace VARIABLE
 	{
 		//	Declare your Variable here:
 		
-			double X1,Y1,Z1				;
-			int N1,N2 = 0				;
-			bool check= false			;
+		Float_t Energy_Must2 = 0 ;
+      Float_t Energy_SSSD = 0;
 	
 		//	A Usefull Simple Random Generator
 			TRandom Rand;
@@ -75,11 +74,6 @@ using namespace VARIABLE ;
 namespace GRAPH
 	{
 		//	Declare your Spectra here:
-	
-			TH1F *myHist1D = new TH1F("Hist1D","Histogramm 1D ; x ; count", 1000 , -5 , 5 )					;
-	
-			TH2F *myHist2D = new TH2F("Hist2D","Histogramm 2D ; x ; y ", 128 , 1 , 128 , 128 , 1 , 128 )	;
-
 	}
 
 using namespace GRAPH ;
