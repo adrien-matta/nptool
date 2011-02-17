@@ -1,4 +1,4 @@
 TTreeName 
-	SimulatedTree
+	t1
 RootFileName 
-	../../Outputs/Simulation/myResult.root
+	/media/rc66_1/data/runROOT/20umTest/si20um_test0089.root
