@@ -169,7 +169,7 @@ void TreatTwentyMicron(Int_t detector_number ,const char* fname )
               else 
                {
                   CorrectionFile << jj+1 << " " <<  kk+1 << " " << -100 << " " << -100 <<endl;
-                  AutCoherenceFile << jj+1 << " " <<  kk+1 << " " << -100 << endl;
+                  AutCoherenceFile << jj+1 << " " <<  kk+1 << " " << 100 << endl;
                }
                
          }

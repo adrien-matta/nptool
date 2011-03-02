@@ -38,15 +38,16 @@ int main(int argc, char** argv)
    clock_t end = begin;
 
    // main loop on entries
-   for (int i = 0; i < nentries; i++) {
+//   for (int i = 0; i < nentries; i++) {
+   for (int i = 0; i <  100000; i++) {
       if (i%10000 == 0 && i!=0)  {
          cout.precision(5);
          end = clock();
-         double TimeElapsed = (end-begin) / CLOCKS_PER_SEC;
+         double TimeElapsed = (double) (end-begin) / CLOCKS_PER_SEC;
          double percent = (double)i/nentries;
          double TimeToWait = (TimeElapsed/percent) - TimeElapsed;
-         cout  << "                                                                                                "<< flush;
-         cout  << "\r Progression:" << percent*100 << " % \t | \t Remaining time : ~" <<  TimeToWait <<"s"<< flush;
+         cout  << "                                                                                                                                             "<< flush;
+         cout  << "\r Progression:" << percent*100 << " % \t | \t Remaining time : ~" <<  TimeToWait <<"s  | Analysis Rate: " <<(double) i/TimeElapsed << "evt/s"<< flush;
       }
       else if (i == nentries-1)  cout << "\r Progression:" << " 100% " <<endl;
 

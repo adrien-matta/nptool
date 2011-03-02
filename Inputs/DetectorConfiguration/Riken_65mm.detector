@@ -76,16 +76,6 @@ VIS=	all
 			
 %%%%%%% Telescope 5 %%%%%%%			
 M2Telescope
-X1_Y1=		-50.23	-50.23	365
-X1_Y128=	50.23	-50.23	365
-X128_Y1=	-50.23	50.23	365
-X128_Y128=	50.23	50.23	365
-SI=	1		
-SILI=	0		
-CSI=	1		
-VIS=	all		
-%%%%%%% Telescope 6 %%%%%%%			
-M2Telescope
 X1_Y1=	155.77	50.23	8.18
 X1_Y128=	155.77	-50.23	8.18
 X128_Y1=	133.17	50.23	-89.7
@@ -93,7 +83,18 @@ X128_Y128=	133.17	-50.23	-89.7
 SI=	1		
 SILI=	1		
 CSI=	0		
-VIS=	all		
+VIS=	all	
+%%%%%%% Telescope 6 %%%%%%%	
+M2Telescope
+X1_Y1=		-50.23	-50.23	365
+X1_Y128=	50.23	-50.23	365
+X128_Y1=	-50.23	50.23	365
+X128_Y128=	50.23	50.23	365
+SI=	1		
+SILI=	0		
+CSI=	1		
+VIS=	all			
+	
 %% Alternate Telescope 6 %%
 %M2Telescope
 %	THETA= -130

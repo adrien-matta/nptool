@@ -38,12 +38,9 @@ using namespace SSSD_LOCAL;
 //  tranform an integer to a string
 string itoa(int value)
 {
-  std::ostringstream o;
-
-  if (!(o << value))
-    return ""  ;
-    
-  return o.str();
+   char buffer [33];
+   sprintf(buffer,"%d",value);
+   return buffer;
 }
 
 ClassImp(TSSSDPhysics)

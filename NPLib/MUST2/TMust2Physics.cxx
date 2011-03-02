@@ -475,36 +475,33 @@ vector < TVector2 > TMust2Physics :: Match_X_Y()
                         //   Look if energy match
                         if( abs( (m_PreTreatedData->GetMMStripXEEnergy(i)-m_PreTreatedData->GetMMStripYEEnergy(j))/2. ) < m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma )
                            {
+                              bool check_validity=false;
+                           
                              // Special Option, if the event is between two CsI cristal, it is rejected.
                              if(m_Ignore_not_matching_CsI)
                                {
-                                 bool check_validity=false;
                                  for (int hh = 0 ; hh<16 ; ++hh )
                                   {
                                    if( Match_Si_CsI(m_PreTreatedData->GetMMStripXEStripNbr(i), m_PreTreatedData->GetMMStripYEStripNbr(j) , hh+1) )
                                      check_validity=true;
                                   }
-                                 
-                                 if(check_validity)
-                                  ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;   
                                }
                              
                               // Special Option, if the event is between two SiLi pad , it is rejected.
                               if(m_Ignore_not_matching_SiLi)
                                {
-                                 bool check_validity=false;
                                  for (int hh = 0 ; hh<16 ; ++hh )
                                   {
                                    if( Match_Si_SiLi(m_PreTreatedData->GetMMStripXEStripNbr(i), m_PreTreatedData->GetMMStripYEStripNbr(j) , hh+1) )
                                      check_validity=true;
                                   }
-                                 
-                                 if(check_validity)
-                                  ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;   
                                }
-                             
+                               
+                             if(check_validity)
+                              ArrayOfGoodCouple.push_back ( TVector2(i,j) ) ;   
+                                  
                              // Regular case, keep the event
-                             else ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;   
+                             else if (!m_Ignore_not_matching_CsI && !m_Ignore_not_matching_SiLi)ArrayOfGoodCouple.push_back ( TVector2(i,j) ) ;   
                            }
                      }
                }
@@ -1403,12 +1400,9 @@ namespace MUST2_LOCAL
       //   tranform an integer to a string
       string itoa(int value)
          {
-           std::ostringstream o;
-         
-           if (!(o << value))
-             return ""   ;
-             
-           return o.str();
+          char buffer [33];
+          sprintf(buffer,"%d",value);
+          return buffer;
          }
          
       //   DSSD

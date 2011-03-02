@@ -1,4 +1,4 @@
 TTreeName 
-	t1
+	ResultTree
 RootFileName 
-	/media/rc66_1/data/runROOT/20umTest/si20um_test0089.root
+	../../Outputs/Analysis/NPAResult/Result_Li9.root
