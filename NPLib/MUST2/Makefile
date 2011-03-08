@@ -1,7 +1,7 @@
 include ../Makefile.arch
 
 #------------------------------------------------------------------------------
-SHARELIB      =  libMust2Data.so	libMust2Physics.so
+SHARELIB      =  libMust2Data.so	libMust2Physics.so   libMust2Spectra.so
 
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
@@ -20,10 +20,16 @@ libMust2Physics.so:	TMust2Physics.o	TMust2PhysicsDict.o
 TMust2PhysicsDict.cxx: TMust2Physics.h
 			rootcint -f $@ -c $^
 
+libMust2Spectra.so:	TMust2Spectra.o	TMust2SpectraDict.o
+		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
+
+TMust2SpectraDict.cxx: TMust2Spectra.h
+			rootcint -f $@ -c $^
+
 # dependances
 TMust2Data.o:		TMust2Data.cxx	TMust2Data.h
-TMust2DataDict.o:		TMust2DataDict.cxx	TMust2DataDict.h
 TMust2Physics.o:	TMust2Physics.cxx	TMust2Physics.h
+TMust2Spectra.o:	TMust2Spectra.cxx	TMust2Spectra.h
 #######################################
 
 ############# Clean and More ##########
