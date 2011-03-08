@@ -1402,15 +1402,12 @@ namespace MUST2_LOCAL
       
       //   tranform an integer to a string
       string itoa(int value)
-         {
-           std::ostringstream o;
-         
-           if (!(o << value))
-             return ""   ;
-             
-           return o.str();
-         }
-         
+      {
+         char buffer [33];
+         sprintf(buffer,"%d",value);
+         return buffer;
+      }
+
       //   DSSD
       //   X
       double fSi_X_E(const TMust2Data* m_EventData , const int i)

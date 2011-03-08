@@ -37,15 +37,12 @@ using namespace std;
 #include "TChain.h"
 
 //   tranform an integer to a string
-      string itoa(int value)
-         {
-           std::ostringstream o;
-         
-           if (!(o << value))
-             return ""   ;
-             
-           return o.str();
-         }
+string itoa(int value)
+{
+   char buffer [33];
+   sprintf(buffer,"%d",value);
+   return buffer;
+}
 
 ClassImp(TPlasticPhysics)
 ///////////////////////////////////////////////////////////////////////////
