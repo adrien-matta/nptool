@@ -90,7 +90,13 @@ class TSSSDPhysics : public TObject, public NPA::VDetector
    void InitializeStandardParameter();
    
    //   Read the user configuration file; if no file found, load standard one
-    void ReadAnalysisConfig();
+   void ReadAnalysisConfig();
+
+   // Give and external TMustData object to TMust2Physics. Needed for online analysis for example.
+   void SetRawDataPointer(TSSSDData* rawDataPointer) {EventData = rawDataPointer;}
+   // Retrieve raw and pre-treated data
+   TSSSDData* GetRawData()        const {return EventData;}
+   TSSSDData* GetPreTreatedData() const {return PreTreatedData;}
 
 
  private:   // Data not written in the tree

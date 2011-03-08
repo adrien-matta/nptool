@@ -159,6 +159,12 @@ class TMust2Physics : public TObject, public NPA::VDetector
       // Use for reading Calibration Run, very simple methods; only apply calibration, no condition
       void ReadCalibrationRun();
       
+      // Give and external TMustData object to TMust2Physics. Needed for online analysis for example.
+      void SetRawDataPointer(TMust2Data* rawDataPointer) {m_EventData = rawDataPointer;}
+      // Retrieve raw and pre-treated data
+      TMust2Data* GetRawData()        const {return m_EventData;}
+      TMust2Data* GetPreTreatedData() const {return m_PreTreatedData;}
+
       // Use to access the strip position
       double GetStripPositionX( const int N , const int X , const int Y )   const{ return m_StripPositionX[N-1][X-1][Y-1] ; }  ;
       double GetStripPositionY( const int N , const int X , const int Y )   const{ return m_StripPositionY[N-1][X-1][Y-1] ; }  ;

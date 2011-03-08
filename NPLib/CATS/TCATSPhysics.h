@@ -147,8 +147,11 @@ class TCATSPhysics : public TObject, public NPA::VDetector
    //   Those two method all to clear the Event Physics or Data
    void ClearEventPhysics() {Clear();}      
    void ClearEventData()    {EventData->Clear();}      
-     
-     
+
+   // Give and external TMustData object to TMust2Physics. Needed for online analysis for example.
+   void SetRawDataPointer(TCATSData* rawDataPointer) {EventData = rawDataPointer;}
+
+
  private :
 
   // redundant information : could be optimized in the future
