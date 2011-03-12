@@ -3,17 +3,14 @@
 
 # NPTool Needs
 setenv NPTOOL /home/local1/geant4/NPTool.Paris
-setenv NPLIB $NPTOOL/NPLib
-setenv NPSIM $NPTOOL/NPSimulation
-setenv NPANA $NPTOOL/NPAnalysis
-setenv LD_LIBRARY_PATH $NPLIB/lib:$LD_LIBRARY_PATH
-source $NPLIB/liblist
+setenv LD_LIBRARY_PATH $NPTOOL/NPLib/lib:$LD_LIBRARY_PATH
+source $NPTOOL/NPLib/liblist
 
 # alias
-alias Simulation '$NPSIM/bin/$G4SYSTEM/Simulation'
+alias Simulation '$NPTOOL/NPSimulation/bin/$G4SYSTEM/Simulation'
 alias Analysis '$NPANA/Analysis'
 
-alias NPT 'cd $NPTOOL'	
-alias NPL 'cd $NPLIB'	
-alias NPS 'cd $NPSIM'	
-alias NPA 'cd $NPANA'
+alias NPT 'cd $NPTOOL'
+alias NPL 'cd $NPTOOL/NPLib'
+alias NPS 'cd $NPTOOL/NPSimulation'
+alias NPA 'cd $NPTOOL/NPAnalysis'

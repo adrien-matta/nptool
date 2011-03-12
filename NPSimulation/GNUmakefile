@@ -18,9 +18,9 @@ G4WORKDIR = ./
 G4BIN = ./bin
 
 CPPFLAGS += $(shell root-config --cflags) 
-CPPFLAGS += -I$(NPLIB)/include
+CPPFLAGS += -I$(NPTOOL)/NPLib/include
 EXTRALIBS = $(shell root-config --glibs) -lMathMore
-EXTRALIBS += `$(NPLIB)/liblist`
+EXTRALIBS += `$(NPTOOL)/NPLib/liblist`
 .PHONY: all
 all: lib bin
 

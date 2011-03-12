@@ -36,15 +36,15 @@ using namespace std;
 void NPToolLogon(bool verbosemode = false)
 {
    TString currentpath = gSystem->Getenv("PWD");
-   TString path = gSystem->Getenv("NPLIB");
+   TString path = gSystem->Getenv("NPTOOL");
    
    // Add include path
-   if (verbosemode) cout << "NPTool: adding include path : " << path << "/include" << endl;
-   gROOT->ProcessLine(Form(".include %s/include", path.Data()));
+   if (verbosemode) cout << "NPTool: adding include path : " << path << "/NPLib/include" << endl;
+   gROOT->ProcessLine(Form(".include %s/NPLib/include", path.Data()));
 
    // Add shared libraries
    if (verbosemode) cout << "NPTool: loading NPLib shared libraries ..." << endl;
-   TString libpath = Form("%s/lib", path.Data());
+   TString libpath = Form("%s/NPLib/lib", path.Data());
    TSystemDirectory libdir("libdir", libpath);
    TList* listfile = libdir.GetListOfFiles();
    
@@ -64,12 +64,12 @@ void NPToolLogon(bool verbosemode = false)
    while (listfile->At(i)) {
       TString libname = listfile->At(i++)->GetName();
       if (libname.Contains("so") && !libname.Contains("libVDetector.so")) {
-         TString lib     = libpath + "/" + libname;
+         TString lib = libpath + "/" + libname;
          gSystem->Load(lib);
       }
    }
    
-   gROOT->ProcessLine(".L $NPLIB/include/RootInput.h+");   
+   gROOT->ProcessLine(".L $NPTOOL/NPLib/include/RootInput.h+");   
    
    // Since the libdir.GetListOfFiles() commands cds to the
    // libidr directory, one has to return to the initial

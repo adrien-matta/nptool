@@ -1,4 +1,4 @@
-include Makefile.arch
+include $(NPTOOL)/NPLib/Makefile.arch
 
 #------------------------------------------------------------------------------
 SHARELIB	= SharedLib
@@ -29,7 +29,7 @@ SharedLib:
 
 ############# Clean and More ##########
 clean:
-	./scripts/makefile.sh clean
+	$(NPTOOL)/NPLib/scripts/makefile.sh clean
 	
 distclean:
 	rm -f ./lib/*

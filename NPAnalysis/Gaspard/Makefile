@@ -1,9 +1,9 @@
 # include same architecture file than for NPLib
 # so that consistency is ensured
-include $(NPLIB)/Makefile.arch
+include $(NPTOOL)/NPLib/Makefile.arch
 
 # additional libraries
-LIBRARY  = `$(NPLIB)/liblist`
+LIBRARY  = `$(NPTOOL)/NPLib/liblist`
 LIBRARY += -L$(CLHEP_LIB_DIR) -l$(CLHEP_LIB)
 
 PROGRAMS	= Analysis

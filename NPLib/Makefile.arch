@@ -483,7 +483,7 @@ LDFLAGS      += $(ROOTLDFLAGS)
 LIBS          = $(ROOTLIBS) $(SYSLIBS)
 GLIBS         = $(ROOTGLIBS) $(SYSLIBS)
 
-INCLUDE		= -I$(CLHEP_BASE_DIR)/include -I$(NPLIB)/include
+INCLUDE		= -I$(CLHEP_BASE_DIR)/include -I$(NPTOOL)/NPLib/include
 
 ifneq ($(ALTCC),)
    CC  = $(ALTCC)

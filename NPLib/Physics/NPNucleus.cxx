@@ -53,8 +53,8 @@ Nucleus::Nucleus(string isotope)
    const char* Isotope = isotope.c_str();
    
    ifstream inFile;
-   string Path = getenv("NPLIB") ;
-   string FileName = Path + "/Physics/nubtab03.asc";
+   string Path = getenv("NPTOOL") ;
+   string FileName = Path + "/NPLib/Physics/nubtab03.asc";
    inFile.open(FileName.c_str());
    
    // reading the file
@@ -82,8 +82,8 @@ Nucleus::Nucleus(int Z, int A)
 
    // open the file to read and check if it is open
    ifstream inFile;
-   string Path = getenv("NPLIB") ;
-   string FileName = Path + "/Physics/nubtab03.asc";
+   string Path = getenv("NPTOOL") ;
+   string FileName = Path + "/NPLib/Physics/nubtab03.asc";
    inFile.open(FileName.c_str());
    
    // reading the file

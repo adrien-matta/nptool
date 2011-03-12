@@ -3,17 +3,14 @@
 
 # NPTool Needs
 export NPTOOL=/YourPathToNPTool/NPTool
-export NPLIB=$NPTOOL/NPLib
-export NPSIM=$NPTOOL/NPSimulation
-export NPANA=$NPTOOL/NPAnalysis
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$NPLIB/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$NPTOOL/NPLib/lib
 
 # alias
-alias Simulation='$NPSIM/bin/$G4SYSTEM/Simulation'
+alias Simulation='$NPTOOL/NPSimulation/bin/$G4SYSTEM/Simulation'
 alias Analysis='$NPANA/Analysis'
 
-alias NPT='cd $NPTOOL'	
-alias NPL='cd $NPLIB'	
-alias NPS='cd $NPSIM'	
-alias NPA='cd $NPANA'
+alias NPT='cd $NPTOOL'
+alias NPL='cd $NPTOOL/NPLib'
+alias NPS='cd $NPTOOL/NPSimulation'
+alias NPA='cd $NPTOOL/NPAnalysis'
  
