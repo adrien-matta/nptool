@@ -692,15 +692,15 @@ void GaspardTrackerSquare::SetInterCoordPointer(TInteractionCoordinates* interCo
 // Called at in the EventAction::EndOfEventAvtion
 void GaspardTrackerSquare::ReadSensitive(const G4Event* event)
 {
-//////////////////////////////////////////////////////////////////////////////////////
-//////////////////////// Used to Read Event Map of detector //////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////
+   //////////////////////////////////////////////////////////////////////////////////////
+   //////////////////////// Used to Read Event Map of detector //////////////////////////
+   //////////////////////////////////////////////////////////////////////////////////////
    // First Stage
    std::map<G4int, G4int*>::iterator    DetectorNumber_itr;
    std::map<G4int, G4double*>::iterator Energy_itr;
    std::map<G4int, G4double*>::iterator Time_itr;
-   std::map<G4int, G4double*>::iterator X_itr;
-   std::map<G4int, G4double*>::iterator Y_itr;
+   std::map<G4int, G4int*>::iterator    X_itr;
+   std::map<G4int, G4int*>::iterator    Y_itr;
    std::map<G4int, G4double*>::iterator Pos_X_itr;
    std::map<G4int, G4double*>::iterator Pos_Y_itr;
    std::map<G4int, G4double*>::iterator Pos_Z_itr;
@@ -710,8 +710,8 @@ void GaspardTrackerSquare::ReadSensitive(const G4Event* event)
    G4THitsMap<G4int>*    DetectorNumberHitMap;
    G4THitsMap<G4double>* EnergyHitMap;
    G4THitsMap<G4double>* TimeHitMap;
-   G4THitsMap<G4double>* XHitMap;
-   G4THitsMap<G4double>* YHitMap;
+   G4THitsMap<G4int>*    XHitMap;
+   G4THitsMap<G4int>*    YHitMap;
    G4THitsMap<G4double>* PosXHitMap;
    G4THitsMap<G4double>* PosYHitMap;
    G4THitsMap<G4double>* PosZHitMap;
@@ -745,12 +745,12 @@ void GaspardTrackerSquare::ReadSensitive(const G4Event* event)
 
    //Strip Number X
    G4int StripXCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerGPDSquare/StripNumberX")    ;
-   XHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripXCollectionID))                              ;
+   XHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripXCollectionID))                              ;
    X_itr = XHitMap->GetMap()->begin()                                                                    ;
 
    //Strip Number Y
    G4int StripYCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerGPDSquare/StripNumberY")    ;
-   YHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripYCollectionID))                              ;
+   YHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripYCollectionID))                              ;
    Y_itr = YHitMap->GetMap()->begin()                                                                    ;
 
    //Interaction Coordinate X
@@ -801,7 +801,7 @@ void GaspardTrackerSquare::ReadSensitive(const G4Event* event)
 
    if (sizeE != sizeT || sizeT != sizeX || sizeX != sizeY) {
       G4cout << "No match size Si Event Map: sE:"
-      << sizeE << " sT:" << sizeT << " sX:" << sizeX << " sY:" << sizeY << endl ;
+         << sizeE << " sT:" << sizeT << " sX:" << sizeX << " sY:" << sizeY << endl ;
       return;
    }
 
@@ -818,6 +818,7 @@ void GaspardTrackerSquare::ReadSensitive(const G4Event* event)
          ms_Event->SetGPDTrkFirstStageBackTDetectorNbr(m_index["Square"] + N);
 
          // Energy
+         Energy_itr = EnergyHitMap->GetMap()->begin();
          for (G4int l = 0 ; l < sizeE ; l++) {
             G4int ETrackID  =   Energy_itr->first - N;
             G4double E     = *(Energy_itr->second);
@@ -841,140 +842,140 @@ void GaspardTrackerSquare::ReadSensitive(const G4Event* event)
             Time_itr++;
          }
 
-            // X
-            X_itr = XHitMap->GetMap()->begin();
-            for (G4int h = 0 ; h < sizeX ; h++) {
-               G4int XTrackID  =   X_itr->first - N;
-               G4double X     = *(X_itr->second);
-               if (XTrackID == NTrackID) {
-                  ms_Event->SetGPDTrkFirstStageFrontEStripNbr(X);
-                  ms_Event->SetGPDTrkFirstStageFrontTStripNbr(X);
-               }
-
-               X_itr++;
+         // X
+         X_itr = XHitMap->GetMap()->begin();
+         for (G4int h = 0 ; h < sizeX ; h++) {
+            G4int XTrackID  =   X_itr->first - N;
+            G4int X         = *(X_itr->second);
+            if (XTrackID == NTrackID) {
+               ms_Event->SetGPDTrkFirstStageFrontEStripNbr(X);
+               ms_Event->SetGPDTrkFirstStageFrontTStripNbr(X);
             }
 
-            // Y
-            Y_itr = YHitMap->GetMap()->begin()  ;
-            for (G4int h = 0 ; h < sizeY ; h++) {
-               G4int YTrackID  =   Y_itr->first - N;
-               G4double Y     = *(Y_itr->second);
-               if (YTrackID == NTrackID) {
-                  ms_Event->SetGPDTrkFirstStageBackEStripNbr(Y);
-                  ms_Event->SetGPDTrkFirstStageBackTStripNbr(Y);
-               }
+            X_itr++;
+         }
 
-               Y_itr++;
+         // Y
+         Y_itr = YHitMap->GetMap()->begin()  ;
+         for (G4int h = 0 ; h < sizeY ; h++) {
+            G4int YTrackID  =   Y_itr->first - N;
+            G4int Y         = *(Y_itr->second);
+            if (YTrackID == NTrackID) {
+               ms_Event->SetGPDTrkFirstStageBackEStripNbr(Y);
+               ms_Event->SetGPDTrkFirstStageBackTStripNbr(Y);
             }
 
-            // Pos X
-            Pos_X_itr = PosXHitMap->GetMap()->begin();
-            for (G4int h = 0; h < PosXHitMap->entries(); h++) {
-               G4int PosXTrackID =   Pos_X_itr->first - N    ;
-               G4double PosX     = *(Pos_X_itr->second)      ;
-               if (PosXTrackID == NTrackID) {
-                  ms_InterCoord->SetDetectedPositionX(PosX) ;
-               }
-               Pos_X_itr++;
+            Y_itr++;
+         }
+
+         // Pos X
+         Pos_X_itr = PosXHitMap->GetMap()->begin();
+         for (G4int h = 0; h < PosXHitMap->entries(); h++) {
+            G4int PosXTrackID =   Pos_X_itr->first - N    ;
+            G4double PosX     = *(Pos_X_itr->second)      ;
+            if (PosXTrackID == NTrackID) {
+               ms_InterCoord->SetDetectedPositionX(PosX) ;
+            }
+            Pos_X_itr++;
+         }
+
+         // Pos Y
+         Pos_Y_itr = PosYHitMap->GetMap()->begin();
+         for (G4int h = 0; h < PosYHitMap->entries(); h++) {
+            G4int PosYTrackID =   Pos_Y_itr->first - N    ;
+            G4double PosY     = *(Pos_Y_itr->second)      ;
+            if (PosYTrackID == NTrackID) {
+               ms_InterCoord->SetDetectedPositionY(PosY) ;
+            }
+            Pos_Y_itr++;
+         }
+
+         // Pos Z
+         Pos_Z_itr = PosZHitMap->GetMap()->begin();
+         for (G4int h = 0; h < PosZHitMap->entries(); h++) {
+            G4int PosZTrackID =   Pos_Z_itr->first - N    ;
+            G4double PosZ     = *(Pos_Z_itr->second)      ;
+            if (PosZTrackID == NTrackID) {
+               ms_InterCoord->SetDetectedPositionZ(PosZ) ;
+            }
+            Pos_Z_itr++;
+         }
+
+         // Angle Theta
+         Ang_Theta_itr = AngThetaHitMap->GetMap()->begin();
+         for (G4int h = 0; h < AngThetaHitMap->entries(); h++) {
+            G4int AngThetaTrackID =   Ang_Theta_itr->first - N    ;
+            G4double AngTheta     = *(Ang_Theta_itr->second)      ;
+            if (AngThetaTrackID == NTrackID) {
+               ms_InterCoord->SetDetectedAngleTheta(AngTheta) ;
+            }
+            Ang_Theta_itr++;
+         }
+
+         // Angle Phi
+         Ang_Phi_itr = AngPhiHitMap->GetMap()->begin();
+         for (G4int h = 0; h < AngPhiHitMap->entries(); h++) {
+            G4int AngPhiTrackID =   Ang_Phi_itr->first - N    ;
+            G4double AngPhi     = *(Ang_Phi_itr->second)      ;
+            if (AngPhiTrackID == NTrackID) {
+               ms_InterCoord->SetDetectedAnglePhi(AngPhi) ;
+            }
+            Ang_Phi_itr++;
+         }
+
+         // Second Stage
+         SecondStageEnergy_itr = SecondStageEnergyHitMap->GetMap()->begin() ;
+         for (G4int h = 0 ; h < SecondStageEnergyHitMap->entries() ; h++) {
+            G4int SecondStageEnergyTrackID =   SecondStageEnergy_itr->first - N;
+            G4double SecondStageEnergy     = *(SecondStageEnergy_itr->second);
+
+            if (SecondStageEnergyTrackID == NTrackID) {
+               ms_Event->SetGPDTrkSecondStageEEnergy(RandGauss::shoot(SecondStageEnergy, ResoSecondStage)) ;
+               ms_Event->SetGPDTrkSecondStageEPadNbr(1);
+               ms_Event->SetGPDTrkSecondStageTPadNbr(1);
+               ms_Event->SetGPDTrkSecondStageTTime(1);
+               ms_Event->SetGPDTrkSecondStageTDetectorNbr(m_index["Square"] + N);
+               ms_Event->SetGPDTrkSecondStageEDetectorNbr(m_index["Square"] + N);
             }
 
-            // Pos Y
-            Pos_Y_itr = PosYHitMap->GetMap()->begin();
-            for (G4int h = 0; h < PosYHitMap->entries(); h++) {
-               G4int PosYTrackID =   Pos_Y_itr->first - N    ;
-               G4double PosY     = *(Pos_Y_itr->second)      ;
-               if (PosYTrackID == NTrackID) {
-                  ms_InterCoord->SetDetectedPositionY(PosY) ;
-               }
-               Pos_Y_itr++;
+            SecondStageEnergy_itr++;
+         }
+
+         // Third Stage
+         ThirdStageEnergy_itr = ThirdStageEnergyHitMap->GetMap()->begin()  ;
+         for (G4int h = 0 ; h < ThirdStageEnergyHitMap->entries() ; h++) {
+            G4int ThirdStageEnergyTrackID  =   ThirdStageEnergy_itr->first - N;
+            G4double ThirdStageEnergy      = *(ThirdStageEnergy_itr->second)    ;
+
+            if (ThirdStageEnergyTrackID == NTrackID) {
+               ms_Event->SetGPDTrkThirdStageEEnergy(RandGauss::shoot(ThirdStageEnergy, ResoThirdStage));
+               ms_Event->SetGPDTrkThirdStageEPadNbr(1);
+               ms_Event->SetGPDTrkThirdStageTPadNbr(1);
+               ms_Event->SetGPDTrkThirdStageTTime(1);
+               ms_Event->SetGPDTrkThirdStageTDetectorNbr(m_index["Square"] + N);
+               ms_Event->SetGPDTrkThirdStageEDetectorNbr(m_index["Square"] + N);
             }
 
-            // Pos Z
-            Pos_Z_itr = PosZHitMap->GetMap()->begin();
-            for (G4int h = 0; h < PosZHitMap->entries(); h++) {
-               G4int PosZTrackID =   Pos_Z_itr->first - N    ;
-               G4double PosZ     = *(Pos_Z_itr->second)      ;
-               if (PosZTrackID == NTrackID) {
-                  ms_InterCoord->SetDetectedPositionZ(PosZ) ;
-               }
-               Pos_Z_itr++;
-            }
+            ThirdStageEnergy_itr++;
+         }
 
-            // Angle Theta
-            Ang_Theta_itr = AngThetaHitMap->GetMap()->begin();
-            for (G4int h = 0; h < AngThetaHitMap->entries(); h++) {
-               G4int AngThetaTrackID =   Ang_Theta_itr->first - N    ;
-               G4double AngTheta     = *(Ang_Theta_itr->second)      ;
-               if (AngThetaTrackID == NTrackID) {
-                  ms_InterCoord->SetDetectedAngleTheta(AngTheta) ;
-               }
-               Ang_Theta_itr++;
-            }
-
-            // Angle Phi
-            Ang_Phi_itr = AngPhiHitMap->GetMap()->begin();
-            for (G4int h = 0; h < AngPhiHitMap->entries(); h++) {
-               G4int AngPhiTrackID =   Ang_Phi_itr->first - N    ;
-               G4double AngPhi     = *(Ang_Phi_itr->second)      ;
-               if (AngPhiTrackID == NTrackID) {
-                  ms_InterCoord->SetDetectedAnglePhi(AngPhi) ;
-               }
-               Ang_Phi_itr++;
-            }
-
-            // Second Stage
-               SecondStageEnergy_itr = SecondStageEnergyHitMap->GetMap()->begin() ;
-               for (G4int h = 0 ; h < SecondStageEnergyHitMap->entries() ; h++) {
-                  G4int SecondStageEnergyTrackID =   SecondStageEnergy_itr->first - N;
-                  G4double SecondStageEnergy     = *(SecondStageEnergy_itr->second);
-
-                  if (SecondStageEnergyTrackID == NTrackID) {
-                     ms_Event->SetGPDTrkSecondStageEEnergy(RandGauss::shoot(SecondStageEnergy, ResoSecondStage)) ;
-                     ms_Event->SetGPDTrkSecondStageEPadNbr(1);
-                     ms_Event->SetGPDTrkSecondStageTPadNbr(1);
-                     ms_Event->SetGPDTrkSecondStageTTime(1);
-                     ms_Event->SetGPDTrkSecondStageTDetectorNbr(m_index["Square"] + N);
-                     ms_Event->SetGPDTrkSecondStageEDetectorNbr(m_index["Square"] + N);
-                  }
-
-                  SecondStageEnergy_itr++;
-               }
-
-            // Third Stage
-               ThirdStageEnergy_itr = ThirdStageEnergyHitMap->GetMap()->begin()  ;
-               for (G4int h = 0 ; h < ThirdStageEnergyHitMap->entries() ; h++) {
-                  G4int ThirdStageEnergyTrackID  =   ThirdStageEnergy_itr->first - N;
-                  G4double ThirdStageEnergy      = *(ThirdStageEnergy_itr->second)    ;
-
-                  if (ThirdStageEnergyTrackID == NTrackID) {
-                     ms_Event->SetGPDTrkThirdStageEEnergy(RandGauss::shoot(ThirdStageEnergy, ResoThirdStage));
-                     ms_Event->SetGPDTrkThirdStageEPadNbr(1);
-                     ms_Event->SetGPDTrkThirdStageTPadNbr(1);
-                     ms_Event->SetGPDTrkThirdStageTTime(1);
-                     ms_Event->SetGPDTrkThirdStageTDetectorNbr(m_index["Square"] + N);
-                     ms_Event->SetGPDTrkThirdStageEDetectorNbr(m_index["Square"] + N);
-                  }
-
-                  ThirdStageEnergy_itr++;
-               }
-
-         DetectorNumber_itr++;
       }
+      DetectorNumber_itr++;
 
-      // clear map for next event
-      DetectorNumberHitMap ->clear();
-      EnergyHitMap   ->clear()   ;
-      TimeHitMap     ->clear()   ;
-      XHitMap        ->clear()   ;
-      YHitMap        ->clear()   ;
-      PosXHitMap     ->clear();
-      PosYHitMap     ->clear();
-      PosZHitMap     ->clear();
-      AngThetaHitMap ->clear();
-      AngPhiHitMap   ->clear();
-      SecondStageEnergyHitMap ->clear()  ;
-      ThirdStageEnergyHitMap ->clear() ;
    }
+   // clear map for next event
+   DetectorNumberHitMap ->clear();
+   EnergyHitMap   ->clear()   ;
+   TimeHitMap     ->clear()   ;
+   XHitMap        ->clear()   ;
+   YHitMap        ->clear()   ;
+   PosXHitMap     ->clear();
+   PosYHitMap     ->clear();
+   PosZHitMap     ->clear();
+   AngThetaHitMap ->clear();
+   AngPhiHitMap   ->clear();
+   SecondStageEnergyHitMap ->clear()  ;
+   ThirdStageEnergyHitMap ->clear() ;
 }
 
 

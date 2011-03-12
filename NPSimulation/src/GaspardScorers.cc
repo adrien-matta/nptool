@@ -86,7 +86,7 @@ void GPDScorerFirstStageEnergy::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void GPDScorerFirstStageEnergy::Clear()
+void GPDScorerFirstStageEnergy::clear()
 {
    EvtMap->clear();
 }
@@ -151,7 +151,7 @@ void GPDScorerSecondStageEnergy::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void GPDScorerSecondStageEnergy::Clear()
+void GPDScorerSecondStageEnergy::clear()
 {
    EvtMap->clear();
 }
@@ -216,7 +216,7 @@ void GPDScorerThirdStageEnergy::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void GPDScorerThirdStageEnergy::Clear()
+void GPDScorerThirdStageEnergy::clear()
 {
    EvtMap->clear();
 }
@@ -267,7 +267,7 @@ G4bool GPDScorerFirstStageFrontStripDummyShape::ProcessHits(G4Step* aStep, G4Tou
    G4double StripPitch = GPDDUMMYSHAPE::FirstStageFace / m_NumberOfStrip;
 
    G4double temp = (POS(0) + GPDDUMMYSHAPE::FirstStageFace / 2.) / StripPitch   ;
-   G4double X = int(temp) + 1 ;
+   G4int X = int(temp) + 1 ;
 //   G4cout << "strip X: " << X << G4endl;
 
    //Rare case where particle is close to edge of silicon plan
@@ -281,7 +281,7 @@ G4bool GPDScorerFirstStageFrontStripDummyShape::ProcessHits(G4Step* aStep, G4Tou
 
 void GPDScorerFirstStageFrontStripDummyShape::Initialize(G4HCofThisEvent* HCE)
 {
-   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
+   EvtMap = new G4THitsMap<G4int>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
       HCID = GetCollectionID(0);
    }
@@ -292,7 +292,7 @@ void GPDScorerFirstStageFrontStripDummyShape::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void GPDScorerFirstStageFrontStripDummyShape::Clear()
+void GPDScorerFirstStageFrontStripDummyShape::clear()
 {
    EvtMap->clear();
 }
@@ -334,7 +334,7 @@ G4bool GPDScorerFirstStageBackStripDummyShape::ProcessHits(G4Step* aStep, G4Touc
    G4double StripPitch = GPDDUMMYSHAPE::FirstStageFace / m_NumberOfStrip;
 
    G4double temp = (POS(1) + GPDDUMMYSHAPE::FirstStageFace / 2.) / StripPitch   ;
-   G4double X = int(temp) + 1 ;
+   G4int X = int(temp) + 1 ;
 //   G4cout << "strip Y: " << X << G4endl;
 
    //Rare case where particle is close to edge of silicon plan
@@ -348,7 +348,7 @@ G4bool GPDScorerFirstStageBackStripDummyShape::ProcessHits(G4Step* aStep, G4Touc
 
 void GPDScorerFirstStageBackStripDummyShape::Initialize(G4HCofThisEvent* HCE)
 {
-   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
+   EvtMap = new G4THitsMap<G4int>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
       HCID = GetCollectionID(0);
    }
@@ -359,7 +359,7 @@ void GPDScorerFirstStageBackStripDummyShape::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void GPDScorerFirstStageBackStripDummyShape::Clear()
+void GPDScorerFirstStageBackStripDummyShape::clear()
 {
    EvtMap->clear();
 }
@@ -401,7 +401,7 @@ G4bool GPDScorerFirstStageFrontStripSquare::ProcessHits(G4Step* aStep, G4Touchab
    G4double StripPitch = GPDSQUARE::FirstStageFace / m_NumberOfStrip;
 
    G4double temp = (POS(0) + GPDSQUARE::FirstStageFace / 2.) / StripPitch   ;
-   G4double X = int(temp) + 1 ;
+   G4int X = int(temp) + 1 ;
    //Rare case where particle is close to edge of silicon plan
    if (X == 129) X = 128;
    G4double edep = aStep->GetTotalEnergyDeposit();
@@ -413,7 +413,7 @@ G4bool GPDScorerFirstStageFrontStripSquare::ProcessHits(G4Step* aStep, G4Touchab
 
 void GPDScorerFirstStageFrontStripSquare::Initialize(G4HCofThisEvent* HCE)
 {
-   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
+   EvtMap = new G4THitsMap<G4int>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
       HCID = GetCollectionID(0);
    }
@@ -424,7 +424,7 @@ void GPDScorerFirstStageFrontStripSquare::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void GPDScorerFirstStageFrontStripSquare::Clear()
+void GPDScorerFirstStageFrontStripSquare::clear()
 {
    EvtMap->clear();
 }
@@ -466,7 +466,7 @@ G4bool GPDScorerFirstStageBackStripSquare::ProcessHits(G4Step* aStep, G4Touchabl
 
    G4double temp = (POS(1) + GPDSQUARE::FirstStageFace / 2.) / StripPitch   ;
    G4int temp2 = temp ;
-   G4double Y = temp2 + 1                    ;
+   G4int Y = temp2 + 1                    ;
    //Rare case where particle is close to edge of silicon plan
    if (Y == 129) Y = 128;
 
@@ -479,7 +479,7 @@ G4bool GPDScorerFirstStageBackStripSquare::ProcessHits(G4Step* aStep, G4Touchabl
 
 void GPDScorerFirstStageBackStripSquare::Initialize(G4HCofThisEvent* HCE)
 {
-   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
+   EvtMap = new G4THitsMap<G4int>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
       HCID = GetCollectionID(0);
    }
@@ -490,7 +490,7 @@ void GPDScorerFirstStageBackStripSquare::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void GPDScorerFirstStageBackStripSquare::Clear()
+void GPDScorerFirstStageBackStripSquare::clear()
 {
    EvtMap->clear();
 }
@@ -531,7 +531,7 @@ G4bool GPDScorerFirstStageFrontStripTrapezoid::ProcessHits(G4Step* aStep, G4Touc
    G4double StripPitch = GPDTRAP::FirstStageBaseLarge / m_NumberOfStrip;
 
    G4double temp = (POS(0) + GPDTRAP::FirstStageBaseLarge / 2.) / StripPitch   ;
-   G4double X = int(temp) + 1;
+   G4int X = int(temp) + 1;
    //Rare case where particle is close to edge of silicon plan
    if (X == 129) X = 128;
    G4double edep = aStep->GetTotalEnergyDeposit();
@@ -543,7 +543,7 @@ G4bool GPDScorerFirstStageFrontStripTrapezoid::ProcessHits(G4Step* aStep, G4Touc
 
 void GPDScorerFirstStageFrontStripTrapezoid::Initialize(G4HCofThisEvent* HCE)
 {
-   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
+   EvtMap = new G4THitsMap<G4int>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
       HCID = GetCollectionID(0);
    }
@@ -554,7 +554,7 @@ void GPDScorerFirstStageFrontStripTrapezoid::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void GPDScorerFirstStageFrontStripTrapezoid::Clear()
+void GPDScorerFirstStageFrontStripTrapezoid::clear()
 {
    EvtMap->clear();
 }
@@ -596,7 +596,7 @@ G4bool GPDScorerFirstStageBackStripTrapezoid::ProcessHits(G4Step* aStep, G4Touch
 
    G4double temp = (POS(1) + GPDTRAP::FirstStageHeight / 2.) / StripPitch   ;
    G4int temp2 = temp ;
-   G4double Y = temp2 + 1                    ;
+   G4int Y = temp2 + 1                    ;
    //Rare case where particle is close to edge of silicon plan
    if (Y == 129) Y = 128;
 
@@ -609,7 +609,7 @@ G4bool GPDScorerFirstStageBackStripTrapezoid::ProcessHits(G4Step* aStep, G4Touch
 
 void GPDScorerFirstStageBackStripTrapezoid::Initialize(G4HCofThisEvent* HCE)
 {
-   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
+   EvtMap = new G4THitsMap<G4int>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
       HCID = GetCollectionID(0);
    }
@@ -620,7 +620,7 @@ void GPDScorerFirstStageBackStripTrapezoid::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void GPDScorerFirstStageBackStripTrapezoid::Clear()
+void GPDScorerFirstStageBackStripTrapezoid::clear()
 {
    EvtMap->clear();
 }
@@ -679,7 +679,7 @@ G4bool GPDScorerFirstStageFrontStripAnnular::ProcessHits(G4Step* aStep, G4Toucha
    G4double ThetaStripPitch = (GPDANNULAR::FirstStageRmax - GPDANNULAR::FirstStageRmin) / GPDANNULAR::NbThetaStrips;
    G4double dummy = (r - GPDANNULAR::FirstStageRmin);
    if (dummy < 0 && fabs(dummy) < 1e-6) dummy *= -1;
-   G4double ThetaStripNumber = floor(dummy / ThetaStripPitch);
+   G4int ThetaStripNumber = floor(dummy / ThetaStripPitch);
    ThetaStripNumber += PhiQuadrantNumber * GPDANNULAR::NbThetaStrips;
    ThetaStripNumber++;
 /*
@@ -705,7 +705,7 @@ G4bool GPDScorerFirstStageFrontStripAnnular::ProcessHits(G4Step* aStep, G4Toucha
 
 void GPDScorerFirstStageFrontStripAnnular::Initialize(G4HCofThisEvent* HCE)
 {
-   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
+   EvtMap = new G4THitsMap<G4int>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
       HCID = GetCollectionID(0);
    }
@@ -716,7 +716,7 @@ void GPDScorerFirstStageFrontStripAnnular::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void GPDScorerFirstStageFrontStripAnnular::Clear()
+void GPDScorerFirstStageFrontStripAnnular::clear()
 {
    EvtMap->clear();
 }
@@ -764,7 +764,7 @@ G4bool GPDScorerFirstStageBackStripAnnular::ProcessHits(G4Step* aStep, G4Touchab
    // Phi strip number
    // Interstrip should be taken into account here. To be done
    G4double PhiWidth = 360. / (GPDANNULAR::NbPhiStrips * GPDANNULAR::NbThetaQuadrant);
-   G4double PhiStripNumber = floor(phi / PhiWidth);
+   G4int PhiStripNumber = floor(phi / PhiWidth);
    PhiStripNumber++;
 
 //   G4cout << POS << G4endl;
@@ -780,7 +780,7 @@ G4bool GPDScorerFirstStageBackStripAnnular::ProcessHits(G4Step* aStep, G4Touchab
 
 void GPDScorerFirstStageBackStripAnnular::Initialize(G4HCofThisEvent* HCE)
 {
-   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
+   EvtMap = new G4THitsMap<G4int>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
       HCID = GetCollectionID(0);
    }
@@ -791,7 +791,7 @@ void GPDScorerFirstStageBackStripAnnular::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void GPDScorerFirstStageBackStripAnnular::Clear()
+void GPDScorerFirstStageBackStripAnnular::clear()
 {
    EvtMap->clear();
 }

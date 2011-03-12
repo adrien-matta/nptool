@@ -647,8 +647,8 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
    std::map<G4int, G4int*>::iterator    DetectorNumber_itr;
    std::map<G4int, G4double*>::iterator Energy_itr;
    std::map<G4int, G4double*>::iterator Time_itr;
-   std::map<G4int, G4double*>::iterator X_itr;
-   std::map<G4int, G4double*>::iterator Y_itr;
+   std::map<G4int, G4int*>::iterator    X_itr;
+   std::map<G4int, G4int*>::iterator    Y_itr;
    std::map<G4int, G4double*>::iterator Pos_X_itr;
    std::map<G4int, G4double*>::iterator Pos_Y_itr;
    std::map<G4int, G4double*>::iterator Pos_Z_itr;
@@ -658,8 +658,8 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
    G4THitsMap<G4int>*    DetectorNumberHitMap;
    G4THitsMap<G4double>* EnergyHitMap;
    G4THitsMap<G4double>* TimeHitMap;
-   G4THitsMap<G4double>* XHitMap;
-   G4THitsMap<G4double>* YHitMap;
+   G4THitsMap<G4int>*    XHitMap;
+   G4THitsMap<G4int>*    YHitMap;
    G4THitsMap<G4double>* PosXHitMap;
    G4THitsMap<G4double>* PosYHitMap;
    G4THitsMap<G4double>* PosZHitMap;
@@ -693,12 +693,12 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
 
    //Strip Number X
    G4int StripXCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerGPDDummyShape/StripIDFront")    ;
-   XHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripXCollectionID))                              ;
+   XHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripXCollectionID))                              ;
    X_itr = XHitMap->GetMap()->begin()                                                                    ;
 
    //Strip Number Y
    G4int StripYCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerGPDDummyShape/StripIDBack");
-   YHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripYCollectionID))                              ;
+   YHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripYCollectionID))                              ;
    Y_itr = YHitMap->GetMap()->begin()                                                                    ;
 
    //Interaction Coordinate X
@@ -753,7 +753,7 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
 
    if (sizeE != sizeT || sizeT != sizeX || sizeX != sizeY) {
       G4cout << "No match size Si Event Map: sE:"
-      << sizeE << " sT:" << sizeT << " sX:" << sizeX << " sY:" << sizeY << endl ;
+         << sizeE << " sT:" << sizeT << " sX:" << sizeX << " sY:" << sizeY << endl ;
       return;
    }
 
@@ -770,6 +770,7 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
          ms_Event->SetGPDTrkFirstStageBackTDetectorNbr(m_index["DummyShape"] + N);
 
          // Energy
+         Energy_itr = EnergyHitMap->GetMap()->begin();
          for (G4int l = 0 ; l < sizeE ; l++) {
             G4int ETrackID  =   Energy_itr->first - N;
             G4double E     = *(Energy_itr->second);
@@ -797,7 +798,7 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
          X_itr = XHitMap->GetMap()->begin();
          for (G4int h = 0 ; h < sizeX ; h++) {
             G4int XTrackID  =   X_itr->first - N;
-            G4double X     = *(X_itr->second);
+            G4int X         = *(X_itr->second);
             if (XTrackID == NTrackID) {
                ms_Event->SetGPDTrkFirstStageFrontEStripNbr(X);
                ms_Event->SetGPDTrkFirstStageFrontTStripNbr(X);
@@ -809,7 +810,7 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
          Y_itr = YHitMap->GetMap()->begin()  ;
          for (G4int h = 0 ; h < sizeY ; h++) {
             G4int YTrackID  =   Y_itr->first - N;
-            G4double Y     = *(Y_itr->second);
+            G4int Y         = *(Y_itr->second);
             if (YTrackID == NTrackID) {
                ms_Event->SetGPDTrkFirstStageBackEStripNbr(Y);
                ms_Event->SetGPDTrkFirstStageBackTStripNbr(Y);
@@ -906,24 +907,24 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
             ThirdStageEnergy_itr++;
          }
 
-         DetectorNumber_itr++;
       }
+      DetectorNumber_itr++;
 
 
-      // clear map for next event
-      DetectorNumberHitMap    -> clear();
-      EnergyHitMap            -> clear();
-      TimeHitMap              -> clear();
-      XHitMap                 -> clear();
-      YHitMap                 -> clear();
-      PosXHitMap              -> clear();
-      PosYHitMap              -> clear();
-      PosZHitMap              -> clear();
-      AngThetaHitMap          -> clear();
-      AngPhiHitMap            -> clear();
-      SecondStageEnergyHitMap -> clear();
-      ThirdStageEnergyHitMap  -> clear();
    }
+   // clear map for next event
+   DetectorNumberHitMap    -> clear();
+   EnergyHitMap            -> clear();
+   TimeHitMap              -> clear();
+   XHitMap                 -> clear();
+   YHitMap                 -> clear();
+   PosXHitMap              -> clear();
+   PosYHitMap              -> clear();
+   PosZHitMap              -> clear();
+   AngThetaHitMap          -> clear();
+   AngPhiHitMap            -> clear();
+   SecondStageEnergyHitMap -> clear();
+   ThirdStageEnergyHitMap  -> clear();
 }
 
 

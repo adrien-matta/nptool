@@ -43,7 +43,7 @@ protected: // with description
 public:
    virtual void Initialize(G4HCofThisEvent*);
    virtual void EndOfEvent(G4HCofThisEvent*);
-   virtual void Clear();
+   virtual void clear();
    virtual void DrawAll();
    virtual void PrintAll();
 
@@ -67,7 +67,7 @@ protected: // with description
 public:
    virtual void Initialize(G4HCofThisEvent*);
    virtual void EndOfEvent(G4HCofThisEvent*);
-   virtual void Clear();
+   virtual void clear();
    virtual void DrawAll();
    virtual void PrintAll();
 
@@ -91,7 +91,7 @@ protected: // with description
 public:
    virtual void Initialize(G4HCofThisEvent*);
    virtual void EndOfEvent(G4HCofThisEvent*);
-   virtual void Clear();
+   virtual void clear();
    virtual void DrawAll();
    virtual void PrintAll();
 
@@ -116,14 +116,14 @@ protected: // with description
 public:
    virtual void Initialize(G4HCofThisEvent*);
    virtual void EndOfEvent(G4HCofThisEvent*);
-   virtual void Clear();
+   virtual void clear();
    virtual void DrawAll();
    virtual void PrintAll();
 
 private:
    G4int     m_NumberOfStrip ;
    G4int HCID;
-   G4THitsMap<G4double>* EvtMap;
+   G4THitsMap<G4int>* EvtMap;
 };
 
 
@@ -140,14 +140,14 @@ protected: // with description
 public:
    virtual void Initialize(G4HCofThisEvent*);
    virtual void EndOfEvent(G4HCofThisEvent*);
-   virtual void Clear();
+   virtual void clear();
    virtual void DrawAll();
    virtual void PrintAll();
 
 private:
    G4int     m_NumberOfStrip ;
    G4int HCID;
-   G4THitsMap<G4double>* EvtMap;
+   G4THitsMap<G4int>* EvtMap;
 };
 
 
@@ -164,14 +164,14 @@ protected: // with description
 public:
    virtual void Initialize(G4HCofThisEvent*);
    virtual void EndOfEvent(G4HCofThisEvent*);
-   virtual void Clear();
+   virtual void clear();
    virtual void DrawAll();
    virtual void PrintAll();
 
 private:
    G4int     m_NumberOfStrip ;
    G4int HCID;
-   G4THitsMap<G4double>* EvtMap;
+   G4THitsMap<G4int>* EvtMap;
 };
 
 
@@ -188,14 +188,14 @@ protected: // with description
 public:
    virtual void Initialize(G4HCofThisEvent*);
    virtual void EndOfEvent(G4HCofThisEvent*);
-   virtual void Clear();
+   virtual void clear();
    virtual void DrawAll();
    virtual void PrintAll();
 
 private:
    G4int     m_NumberOfStrip ;
    G4int HCID;
-   G4THitsMap<G4double>* EvtMap;
+   G4THitsMap<G4int>* EvtMap;
 };
 
 
@@ -212,14 +212,14 @@ protected: // with description
 public:
    virtual void Initialize(G4HCofThisEvent*);
    virtual void EndOfEvent(G4HCofThisEvent*);
-   virtual void Clear();
+   virtual void clear();
    virtual void DrawAll();
    virtual void PrintAll();
 
 private:
    G4int     m_NumberOfStrip ;
    G4int HCID;
-   G4THitsMap<G4double>* EvtMap;
+   G4THitsMap<G4int>* EvtMap;
 };
 
 
@@ -236,14 +236,14 @@ protected: // with description
 public:
    virtual void Initialize(G4HCofThisEvent*);
    virtual void EndOfEvent(G4HCofThisEvent*);
-   virtual void Clear();
+   virtual void clear();
    virtual void DrawAll();
    virtual void PrintAll();
 
 private:
    G4int     m_NumberOfStrip ;
    G4int HCID;
-   G4THitsMap<G4double>* EvtMap;
+   G4THitsMap<G4int>* EvtMap;
 };
 
 
@@ -260,7 +260,7 @@ protected: // with description
 public:
    virtual void Initialize(G4HCofThisEvent*);
    virtual void EndOfEvent(G4HCofThisEvent*);
-   virtual void Clear();
+   virtual void clear();
    virtual void DrawAll();
    virtual void PrintAll();
 
@@ -268,7 +268,7 @@ private:
    G4double  m_StripPlaneSize;
    G4int     m_NumberOfStrip ;
    G4int HCID;
-   G4THitsMap<G4double>* EvtMap;
+   G4THitsMap<G4int>* EvtMap;
 };
 
 
@@ -285,7 +285,7 @@ protected: // with description
 public:
    virtual void Initialize(G4HCofThisEvent*);
    virtual void EndOfEvent(G4HCofThisEvent*);
-   virtual void Clear();
+   virtual void clear();
    virtual void DrawAll();
    virtual void PrintAll();
 
@@ -293,7 +293,7 @@ private:
    G4double  m_StripPlaneSize;
    G4int     m_NumberOfStrip ;
    G4int HCID;
-   G4THitsMap<G4double>* EvtMap;
+   G4THitsMap<G4int>* EvtMap;
 };
 
 }
