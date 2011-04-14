@@ -40,8 +40,11 @@ class TPlasticPhysics : public TObject, public NPA::VDetector
       TPlasticPhysics();
       ~TPlasticPhysics();
 
+   public:
+      void  Clear();
+      void  Clear(const Option_t*) {};
+   
    public:   //   Calibrated Data
-
       vector<UShort_t>   DetectorNumber ;
       vector<Double_t>   Energy;
       vector<Double_t>   Time;
@@ -62,19 +65,19 @@ class TPlasticPhysics : public TObject, public NPA::VDetector
       //   In this method mother Branches (Detector) AND daughter leaf (parameter) have to be activated
       void InitializeRootInputPhysics() ;
 
-
       //   Create associated branches and associated private member DetectorPhysics address
       void InitializeRootOutput();
       
-      
       //   This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
       void BuildPhysicalEvent();
-      
       
       //   Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
       //   This method aimed to be used for analysis performed during experiment, when speed is requiered.
       //   NB: This method can eventually be the same as BuildPhysicalEvent.
       void BuildSimplePhysicalEvent();
+
+      // Give and external TPlasticData object to TPlasticPhysics. Needed for online analysis for example.
+      void SetRawDataPointer(TPlasticData* rawDataPointer) {EventData = rawDataPointer;}
 
       //   Those two method all to clear the Event Physics or Data
       void ClearEventPhysics() {Clear();}      
@@ -85,9 +88,6 @@ class TPlasticPhysics : public TObject, public NPA::VDetector
       TPlasticData*         EventData ;//!
       TPlasticPhysics*      EventPhysics ;//!
 
-      void   Clear();
-      void  Clear(const Option_t*) {};
-   
       ClassDef(TPlasticPhysics,1)  // PlasticPhysics structure
 };
 

@@ -33,7 +33,7 @@ clean:
 	
 distclean:
 	rm -f ./lib/*
-	rm -f ./include/*.h 
+	rm -f ./include/* 
 	rm -f liblist
 	rm -f ./scripts/NPToolLogon_C*
 	./scripts/makefile.sh distclean
