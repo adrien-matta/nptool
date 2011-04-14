@@ -76,6 +76,9 @@ class TPlasticPhysics : public TObject, public NPA::VDetector
       //   NB: This method can eventually be the same as BuildPhysicalEvent.
       void BuildSimplePhysicalEvent();
 
+      // Same as above but for online analysis
+      void BuildOnlinePhysicalEvent()  {BuildPhysicalEvent();};
+
       // Give and external TPlasticData object to TPlasticPhysics. Needed for online analysis for example.
       void SetRawDataPointer(TPlasticData* rawDataPointer) {EventData = rawDataPointer;}
 

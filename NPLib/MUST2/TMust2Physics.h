@@ -119,6 +119,9 @@ class TMust2Physics : public TObject, public NPA::VDetector
       //   NB: This method can eventually be the same as BuildPhysicalEvent.
       void BuildSimplePhysicalEvent() ;
 
+      // Same as above but for online analysis
+      void BuildOnlinePhysicalEvent()  {BuildPhysicalEvent();};
+
       //   Those two method all to clear the Event Physics or Data
       void ClearEventPhysics() {Clear();}      
       void ClearEventData()    {m_EventData->Clear();}   

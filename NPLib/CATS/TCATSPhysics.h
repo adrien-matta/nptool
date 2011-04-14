@@ -143,7 +143,10 @@ class TCATSPhysics : public TObject, public NPA::VDetector
    //   This method aimed to be used for analysis performed during experiment, when speed is requiered.
    //   NB: This method can eventually be the same as BuildPhysicalEvent.
    void BuildSimplePhysicalEvent();
-     
+   
+   // Same as above but for online analysis
+   void BuildOnlinePhysicalEvent()  {BuildPhysicalEvent();};
+
    //   Those two method all to clear the Event Physics or Data
    void ClearEventPhysics() {Clear();}      
    void ClearEventData()    {EventData->Clear();}      
