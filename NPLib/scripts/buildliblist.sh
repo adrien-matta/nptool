@@ -50,7 +50,7 @@ do
       # add trailing \
       name="$name \\"
       # add tab at the beginning
-      name=$(echo -e "\t $name")
-      echo -e "\t $name" >> $outfile
+      name=$(echo "\t $name")
+      echo "\t $name" >> $outfile
    fi ;
 done

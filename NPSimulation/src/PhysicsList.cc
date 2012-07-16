@@ -46,23 +46,23 @@
 #include "G4eplusAnnihilation.hh"
 
 // Penelope 
-#include "G4PenelopeIonisation.hh"
-#include "G4PenelopeBremsstrahlung.hh"
-#include "G4PenelopeAnnihilation.hh"
+//#include "G4PenelopeIonisation.hh"
+//#include "G4PenelopeBremsstrahlung.hh"
+//#include "G4PenelopeAnnihilation.hh"
 
-#include "G4PenelopeCompton.hh"
-#include "G4PenelopeGammaConversion.hh"
-#include "G4PenelopePhotoElectric.hh"
-#include "G4PenelopeRayleigh.hh"
+//#include "G4PenelopeCompton.hh"
+//#include "G4PenelopeGammaConversion.hh"
+//#include "G4PenelopePhotoElectric.hh"
+//#include "G4PenelopeRayleigh.hh"
 
 // Low energy ~ Penelope
-#include "G4LowEnergyIonisation.hh"
-#include "G4LowEnergyBremsstrahlung.hh"
+//#include "G4LowEnergyIonisation.hh"
+//#include "G4LowEnergyBremsstrahlung.hh"
 
-#include "G4LowEnergyCompton.hh"
-#include "G4LowEnergyGammaConversion.hh"
-#include "G4LowEnergyPhotoElectric.hh"
-#include "G4LowEnergyRayleigh.hh"
+//#include "G4LowEnergyCompton.hh"
+//#include "G4LowEnergyGammaConversion.hh"
+//#include "G4LowEnergyPhotoElectric.hh"
+//#include "G4LowEnergyRayleigh.hh"
 
 
 #include "G4MuIonisation.hh"
@@ -73,7 +73,7 @@
 #include "G4hIonisation.hh"
 #include "G4ionIonisation.hh"
 #include "G4hMultipleScattering.hh"
-#include "G4hLowEnergyIonisation.hh"
+//#include "G4hLowEnergyIonisation.hh"
 
 #include "G4EmProcessOptions.hh"
 #include "G4ProcessManager.hh"
@@ -158,6 +158,7 @@ void PhysicsList::ConstructLeptons()
 void PhysicsList::ConstructBaryons()
 {
    G4Proton::ProtonDefinition()   ;
+   G4AntiProton::AntiProtonDefinition()   ;
    G4Neutron::NeutronDefinition();
 }
 
@@ -270,7 +271,7 @@ void PhysicsList::ConstructEM()
          pmanager->AddProcess(new G4hMultipleScattering(), -1, 1, 1)        ;
          G4ionIonisation* iI = new G4ionIonisation                   ;
          // mod by Nicolas [07/05/09]
-          iI->ActivateNuclearStopping(true)                        ;
+//          iI->ActivateNuclearStopping(true)                        ;
          iI->ActivateStoppingData(true)                           ;
          pmanager->AddProcess(iI            , -1, 2, 2)          ;
 

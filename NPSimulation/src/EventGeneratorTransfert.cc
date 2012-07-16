@@ -33,7 +33,6 @@
 
 // G4 headers
 #include "G4ParticleTable.hh"
-#include "G4ParticleGun.hh"
 #include "G4RotationMatrix.hh"
 
 // G4 headers including CLHEP headers
@@ -43,7 +42,8 @@
 // NPTool headers
 #include "EventGeneratorTransfert.hh"
 #include "RootOutput.h"
-
+#include "Particle.hh"
+#include "ParticleStack.hh"
 using namespace CLHEP;
 
 
@@ -60,8 +60,7 @@ EventGeneratorTransfert::EventGeneratorTransfert()
       m_SigmaX(0),
       m_SigmaY(0),
       m_SigmaThetaX(0),
-      m_SigmaPhiY(0),
-      m_InitConditions(new TInitialConditions)
+      m_SigmaPhiY(0)
 {
    //------------- Default Constructor -------------
 }
@@ -80,7 +79,6 @@ void EventGeneratorTransfert::SetTarget(Target* Target)
 EventGeneratorTransfert::~EventGeneratorTransfert()
 {
    //------------- Default Destructor ------------
-   delete m_InitConditions;
    delete m_Reaction;
 }
 
@@ -126,9 +124,7 @@ EventGeneratorTransfert::EventGeneratorTransfert(  string name1                 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorTransfert::InitializeRootOutput()
 {
-   RootOutput *pAnalysis = RootOutput::getInstance();
-   TTree *pTree = pAnalysis->GetTree();
-   pTree->Branch("InitialConditions", "TInitialConditions", &m_InitConditions);
+
 }
 
 
@@ -357,7 +353,7 @@ void EventGeneratorTransfert::ReadConfiguration(string Path)
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* particleGun)
+void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent)
 {   
    // If first time, write the DeDx table
    if (anEvent->GetEventID() == 0) {
@@ -374,9 +370,6 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
       }
    }
 
-   // Clear contents of Precedent event (now stored in ROOTOutput)
-   m_InitConditions->Clear();
-
    //////////////////////////////////////////////////
    //////Define the kind of particle to shoot////////
    //////////////////////////////////////////////////
@@ -385,14 +378,14 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
    G4int LightA = m_Reaction->GetNucleus3()->GetA() ;
 
    G4ParticleDefinition* LightName
-   = G4ParticleTable::GetParticleTable()->GetIon(LightZ, LightA, 0.);
+   = G4ParticleTable::GetParticleTable()->GetIon(LightZ, LightA, m_Reaction->GetExcitationLight()*MeV);
 
    // Recoil
    G4int HeavyZ = m_Reaction->GetNucleus4()->GetZ() ;
    G4int HeavyA = m_Reaction->GetNucleus4()->GetA() ;
 
    G4ParticleDefinition* HeavyName
-   = G4ParticleTable::GetParticleTable()->GetIon(HeavyZ, HeavyA, m_Reaction->GetExcitation()*MeV);
+   = G4ParticleTable::GetParticleTable()->GetIon(HeavyZ, HeavyA, m_Reaction->GetExcitationHeavy()*MeV);
 
    // Beam
    G4int BeamZ = m_Reaction->GetNucleus1()->GetZ();
@@ -404,141 +397,119 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
    ///// of interaction in target and Energy Loss of the beam within /////
    ///// the target.                                                 /////
    ///////////////////////////////////////////////////////////////////////
-   G4ThreeVector InterCoord;
-   
-   G4double Beam_thetaX = 0, Beam_phiY = 0;
-   G4double Beam_theta  = 0, Beam_phi  = 0;
-   G4double FinalBeamEnergy = 0 ;
-   G4double InitialBeamEnergy = RandGauss::shoot(m_BeamEnergy, m_BeamEnergySpread);
-   
-   m_Target->CalculateBeamInteraction( 0, m_SigmaX, 0, m_SigmaThetaX,
+    G4ThreeVector InterCoord;
+    
+    G4double Beam_thetaX = 0, Beam_phiY = 0;
+    G4double Beam_theta  = 0, Beam_phi  = 0;
+    G4double FinalBeamEnergy = 0 ;
+    G4double InitialBeamEnergy = RandGauss::shoot(m_BeamEnergy, m_BeamEnergySpread);
+    
+    m_Target->CalculateBeamInteraction( 0, m_SigmaX, 0, m_SigmaThetaX,
                                        0, m_SigmaY, 0, m_SigmaPhiY,
                                        InitialBeamEnergy,
                                        BeamName,
                                        InterCoord, Beam_thetaX, Beam_phiY,
                                        Beam_theta, Beam_phi,
                                        FinalBeamEnergy);
-                                              
-   m_Reaction->SetBeamEnergy(FinalBeamEnergy);
-   m_InitConditions->SetICIncidentEnergy(FinalBeamEnergy / MeV);
-  
-   // write vertex position to ROOT file
-   G4double x0 = InterCoord.x();
-   G4double y0 = InterCoord.y();
-   G4double z0 = InterCoord.z();
-   m_InitConditions->SetICPositionX(x0);//
-   m_InitConditions->SetICPositionY(y0);//
-   m_InitConditions->SetICPositionZ(z0);//
-
-   // write emittance angles to ROOT file
-   m_InitConditions->SetICIncidentEmittanceTheta(Beam_thetaX / deg);
-   m_InitConditions->SetICIncidentEmittancePhi(Beam_phiY / deg);
-
-   // write angles to ROOT file
-   m_InitConditions->SetICIncidentAngleTheta(Beam_theta / deg);
-   m_InitConditions->SetICIncidentAnglePhi(Beam_phi / deg);
-
-   //////////////////////////////////////////////////////////
-   ///// Build rotation matrix to go from the incident //////
-   ///// beam frame to the "world" frame               //////
-   //////////////////////////////////////////////////////////
-   G4ThreeVector col1(cos(Beam_theta) * cos(Beam_phi),
-                      cos(Beam_theta) * sin(Beam_phi),
-                      -sin(Beam_theta));
-   G4ThreeVector col2(-sin(Beam_phi),
-                      cos(Beam_phi),
-                      0);
-   G4ThreeVector col3(sin(Beam_theta) * cos(Beam_phi),
-                      sin(Beam_theta) * sin(Beam_phi),
-                      cos(Beam_theta));
-   G4RotationMatrix BeamToWorld(col1, col2, col3);
-
-   /////////////////////////////////////////////////////////////////
-   ///// Angles for emitted particles following Cross Section //////
-   ///// Angles are in the beam frame                         //////
-   /////////////////////////////////////////////////////////////////
-
-   // Angles
-   RandGeneral CrossSectionShoot(m_Reaction->GetCrossSection(), m_Reaction->GetCrossSectionSize());
-   G4double ThetaCM = (m_Reaction->GetCrossSectionAngleMin() + CrossSectionShoot.shoot() * (m_Reaction->GetCrossSectionAngleMax() - m_Reaction->GetCrossSectionAngleMin())) * deg;
-   G4double phi     = RandFlat::shoot() * 2*pi;
-   // write angles to ROOT file
-   m_InitConditions->SetICEmittedAngleThetaCM(ThetaCM / deg);
-   m_InitConditions->SetICEmittedAnglePhiIncidentFrame(phi / deg);
-
-   //////////////////////////////////////////////////
-   /////  Momentum and angles from  kinematics  /////
-   /////  Angles are in the beam frame          /////
-   //////////////////////////////////////////////////
-   // Variable where to store results
-   G4double ThetaLight, EnergyLight, ThetaHeavy, EnergyHeavy;
-   // Set the Theta angle of reaction
-   m_Reaction->SetThetaCM(ThetaCM);
-   // Compute Kinematic using previously defined ThetaCM
-   m_Reaction->KineRelativistic(ThetaLight, EnergyLight, ThetaHeavy, EnergyHeavy);
-   // Momentum in beam frame for light particle
-   G4ThreeVector momentum_kineLight_beam(sin(ThetaLight) * cos(phi),
-                                         sin(ThetaLight) * sin(phi),
-                                         cos(ThetaLight));
-   // Momentum in beam frame for heavy particle
-   G4ThreeVector momentum_kineHeavy_beam(sin(ThetaHeavy) * cos(phi+pi),
-                                         sin(ThetaHeavy) * sin(phi+pi),
-                                         cos(ThetaHeavy));
-
-   // write angles/energy to ROOT file
-   m_InitConditions->SetICEmittedAngleThetaLabIncidentFrame(ThetaLight / deg);
-   m_InitConditions->SetICEmittedEnergy(EnergyLight/MeV);
-
-   //////////////////////////////////////////////////
-   ///////// Set up everything for shooting /////////
-   //////////////////////////////////////////////////
-   if (m_ShootLight) {   // Case of light particle
-      // Particle type
-      particleGun->SetParticleDefinition(LightName);
-      // Particle energy
-      particleGun->SetParticleEnergy(EnergyLight);
-      // Particle vertex position
-      particleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0));
-      // Particle direction
-      // Kinematical angles in the beam frame are transformed 
-      // to the "world" frame
-      G4ThreeVector momentum_kine_world = BeamToWorld * momentum_kineLight_beam;
-      // get theta and phi in the world frame
-      G4double theta_world = momentum_kine_world.theta();
-      G4double phi_world   = momentum_kine_world.phi();
-      if (phi_world < 1e-6) phi_world += 2*pi;
-      // write angles in ROOT file
-      m_InitConditions->SetICEmittedAngleThetaLabWorldFrame(theta_world / deg);
-      m_InitConditions->SetICEmittedAnglePhiWorldFrame(phi_world / deg);
-      
-      //Set the gun to shoot
-      particleGun->SetParticleMomentumDirection(momentum_kine_world);
-      //Shoot the light particle
-      particleGun->GeneratePrimaryVertex(anEvent);
-   }
-   if (m_ShootHeavy) { // Case of heavy particle
-      // Particle type
-      particleGun->SetParticleDefinition(HeavyName);
-      // Particle energy
-      particleGun->SetParticleEnergy(EnergyHeavy);
-      // Particle vertex position
-      particleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0));
-      // Particle direction
-      // Kinematical angles in the beam frame are transformed 
-      // to the "world" frame
-      G4ThreeVector momentum_kine_world = BeamToWorld * momentum_kineHeavy_beam;
-      // get theta and phi in the world frame
-      G4double theta_world = momentum_kine_world.theta();
-      G4double phi_world   = momentum_kine_world.phi();
-      if (phi_world < 1e-6) phi_world += 2*pi;
-      // write angles in ROOT file
-      m_InitConditions->SetICEmittedAngleThetaLabWorldFrame(theta_world / deg);
-      m_InitConditions->SetICEmittedAnglePhiWorldFrame(phi_world / deg);
-      //Set the gun to shoot
-      particleGun->SetParticleMomentumDirection(momentum_kine_world);
-      //Shoot the light particle
-      particleGun->GeneratePrimaryVertex(anEvent);
-   }
+    
+    m_Reaction->SetBeamEnergy(FinalBeamEnergy);
+    
+    
+    // write vertex position to ROOT file
+    G4double x0 = InterCoord.x();
+    G4double y0 = InterCoord.y();
+    G4double z0 = InterCoord.z();
+    
+    
+    //////////////////////////////////////////////////////////
+    ///// Build rotation matrix to go from the incident //////
+    ///// beam frame to the "world" frame               //////
+    //////////////////////////////////////////////////////////
+    G4ThreeVector col1(cos(Beam_theta) * cos(Beam_phi),
+                       cos(Beam_theta) * sin(Beam_phi),
+                       -sin(Beam_theta));
+    G4ThreeVector col2(-sin(Beam_phi),
+                       cos(Beam_phi),
+                       0);
+    G4ThreeVector col3(sin(Beam_theta) * cos(Beam_phi),
+                       sin(Beam_theta) * sin(Beam_phi),
+                       cos(Beam_theta));
+    G4RotationMatrix BeamToWorld(col1, col2, col3);
+    
+    /////////////////////////////////////////////////////////////////
+    ///// Angles for emitted particles following Cross Section //////
+    ///// Angles are in the beam frame                         //////
+    /////////////////////////////////////////////////////////////////
+    
+    // Angles
+    RandGeneral CrossSectionShoot(m_Reaction->GetCrossSection(), m_Reaction->GetCrossSectionSize());
+    G4double ThetaCM = (m_Reaction->GetCrossSectionAngleMin() + CrossSectionShoot.shoot() * (m_Reaction->GetCrossSectionAngleMax() - m_Reaction->GetCrossSectionAngleMin())) * deg;
+    G4double phi     = RandFlat::shoot() * 2*pi;
+    
+    //////////////////////////////////////////////////
+    /////  Momentum and angles from  kinematics  /////
+    /////  Angles are in the beam frame          /////
+    //////////////////////////////////////////////////
+    // Variable where to store results
+    G4double ThetaLight, EnergyLight, ThetaHeavy, EnergyHeavy;
+    // Set the Theta angle of reaction
+    m_Reaction->SetThetaCM(ThetaCM);
+    // Compute Kinematic using previously defined ThetaCM
+    m_Reaction->KineRelativistic(ThetaLight, EnergyLight, ThetaHeavy, EnergyHeavy);
+    // Momentum in beam frame for light particle
+    G4ThreeVector momentum_kineLight_beam(sin(ThetaLight) * cos(phi),
+                                          sin(ThetaLight) * sin(phi),
+                                          cos(ThetaLight));
+    // Momentum in beam frame for heavy particle
+    G4ThreeVector momentum_kineHeavy_beam(sin(ThetaHeavy) * cos(phi+pi),
+                                          sin(ThetaHeavy) * sin(phi+pi),
+                                          cos(ThetaHeavy));
+    
+    //////////////////////////////////////////////////
+    ///////// Set up everything for shooting /////////
+    //////////////////////////////////////////////////
+    // Case of light particle
+    // Instantiate a new particle
+    Particle LightParticle;
+    
+    // Particle type
+    LightParticle.SetParticleDefinition(LightName);
+    // Particle energy
+    LightParticle.SetParticleKineticEnergy(EnergyLight);
+    // Particle vertex position
+    LightParticle.SetParticlePosition(G4ThreeVector(x0, y0, z0));
+    // Particle direction
+    // Kinematical angles in the beam frame are transformed 
+    // to the "world" frame
+    G4ThreeVector momentum_kine_world = BeamToWorld * momentum_kineLight_beam;
+    //Set the Momentum Direction
+    LightParticle.SetParticleMomentumDirection(momentum_kine_world);
+    // Set the shoot status
+    LightParticle.SetShootStatus(m_ShootLight) ;
+    //Add the particle to the particle stack
+    ParticleStack::getInstance()->AddParticleToStack(LightParticle); 
+   
+    
+   // Case of heavy particle
+   // Instantiate a new particle
+    Particle HeavyParticle;
+    
+    // Particle type
+    HeavyParticle.SetParticleDefinition(HeavyName);
+    // Particle energy
+    HeavyParticle.SetParticleKineticEnergy(EnergyHeavy);
+    // Particle vertex position
+    HeavyParticle.SetParticlePosition(G4ThreeVector(x0, y0, z0));
+    // Particle direction
+    // Kinematical angles in the beam frame are transformed 
+    // to the "world" frame
+    momentum_kine_world = BeamToWorld * momentum_kineHeavy_beam;
+    //Set the Momentum Direction
+    HeavyParticle.SetParticleMomentumDirection(momentum_kine_world);
+    // Set the shoot status
+    HeavyParticle.SetShootStatus(m_ShootHeavy) ;
+    //Add the particle to the particle stack
+    ParticleStack::getInstance()->AddParticleToStack(HeavyParticle); 
 }
 
 

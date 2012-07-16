@@ -1,5 +1,5 @@
 include $(NPTOOL)/NPLib/Makefile.arch
-
+#include /usr/local/root-5.32.01/etc/Makefile.arch
 #------------------------------------------------------------------------------
 SHARELIB	= SharedLib
 FILLINC		= FillIncludeDir

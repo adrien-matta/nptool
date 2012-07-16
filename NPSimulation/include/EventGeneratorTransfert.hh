@@ -32,9 +32,6 @@
 #include "VEventGenerator.hh"
 #include "Target.hh"
 
-// NPLib
-#include "TInitialConditions.h"
-
 // NPLib header
 #include "NPReaction.h"
 
@@ -73,7 +70,7 @@ class EventGeneratorTransfert : public VEventGenerator
 
    public: // Inherit from VEventGenerator class
       void ReadConfiguration(string);
-      void GenerateEvent(G4Event*, G4ParticleGun*);
+      void GenerateEvent(G4Event*);
       void SetTarget(Target* Target) ;
 
 
@@ -99,11 +96,6 @@ class EventGeneratorTransfert : public VEventGenerator
       double m_SigmaY;
       double m_SigmaThetaX;
       double m_SigmaPhiY;
-
-
-   private: // TTree to store initial value of beam and reaction
-      TInitialConditions*   m_InitConditions;
-
 
       // Other methods
       void Print() const;

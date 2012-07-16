@@ -80,7 +80,9 @@ namespace NPL
          void     SetExcitationHeavy(double exci)  {fExcitationHeavy = exci; initializePrecomputeVariable();}
          double   GetBeamEnergy() const            {return fBeamEnergy;}
          double   GetThetaCM() const               {return fThetaCM;}
-         double   GetExcitation() const            {return fExcitation;}
+         double   GetExcitationHeavy() const            {return fExcitationHeavy;}
+         double   GetExcitation() const            {return fExcitationHeavy;}
+         double   GetExcitationLight() const            {return fExcitationLight;}
          double   GetQValue() const                {return fQValue;}
          Nucleus* GetNucleus1() const              {return fNuclei1;}
          Nucleus* GetNucleus2() const              {return fNuclei2;}
