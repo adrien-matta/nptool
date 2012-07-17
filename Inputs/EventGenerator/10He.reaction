@@ -2,25 +2,42 @@
 %%%%%%%%% Reaction file for 11Li(d,3He)10He reaction %%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%Beam energy given in MeV ; Excitation in MeV
-TransfertToResonance
+Transfert
 	Beam= 11Li
 	Target= 2H
 	Light= 3He
 	Heavy= 10He
 	ExcitationEnergyLight= 0.0
-	ExcitationEnergyHeavy= 1.0
+	ExcitationEnergyHeavy= 10.0
 	BeamEnergy= 550
 	BeamEnergySpread= 0
 	SigmaThetaX= 0.01
 	SigmaPhiY= 0.01
 	SigmaX= 0.01
 	SigmaY= 0.01
-	ResonanceWidth= 0
-	ResonanceDecayZ= 2
-	ResonanceDecayA= 8
 	CrossSectionPath= 11Li(d,3He)10He.txt	
 	ShootLight= 1
-	ShootHeavy= 0
-	ShootDecayProduct= 0
+	ShootHeavy= 1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+ParticleDecay 10He
+    Daughter= 9He n
+    ExcitationEnergy= 0.5 0
+    DifferentialCrossSection= flat.txt
+    shoot= 1 1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+GammaDecay 9He
+    Cascade
+        BranchingRatio= 30
+        Energies= 0.1
+        DifferentialCrossSection= flat.txt
+    Cascade
+        BranchingRatio= 70
+        Energies= 0.2 0.3
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ParticleDecay 9He
+    Daughter= 8He n
+    DifferentialCrossSection= flat.txt
+    shoot= 1 1

@@ -1,0 +1,398 @@
+/*****************************************************************************
+ * Copyright (C) 2009-2010   this file is part of the NPTool Project         *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
+ *                                                                           *
+ * Creation Date  : May 2012                                                 *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *  This event Generator is used to simulated a gamma decay of nuclei genera-*
+ * ted by previous event generator. Multiple cases are supported:            *
+ *  - Only one gamma is emmited, in this case a Cross section can be given   *
+ *  - A cascade decay, in this case the CS is ignore                         *
+ *  - If more than one cascade are given, Branching Ratio could be given     *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
+
+#include "EventGeneratorGammaDecay.hh"
+
+// NPS
+#include "Particle.hh"
+
+// G4 headers including CLHEP headers
+// for generating random numbers
+#include "Randomize.hh"
+
+// G4
+#include "G4ParticleTable.hh"
+
+// ROOT
+#include "TLorentzVector.h"
+#include "TVector3.h"
+EventGeneratorGammaDecay::EventGeneratorGammaDecay(){
+    m_ParticleStack = ParticleStack::getInstance();
+}
+
+EventGeneratorGammaDecay::~EventGeneratorGammaDecay(){
+    
+}
+
+void EventGeneratorGammaDecay::ReadConfiguration(string Path, int Occurence){
+    ////////General Reading needs////////
+    string LineBuffer;
+    string DataBuffer;
+    istringstream LineStream;
+    int TokenOccurence = 0 ;
+    //////// Setting needs///////
+    unsigned int NumberOfCascade = 0;
+    bool ReadingStatusGammaDecay  = false ;
+    bool CascadeStatus = false ;
+    
+    bool check_E = false;
+    bool check_BranchingRatio = false;
+    bool check_CSPath = false ;
+    bool check_created = false;
+    
+    //////////////////////////////////////////////////////////////////////////////////////////
+    ifstream InputFile;
+    InputFile.open(Path.c_str());
+    
+    if (InputFile.is_open()) {} else {
+        return;
+    }
+    
+    while (!InputFile.eof() && !check_created) {
+        //Pick-up next line
+        getline(InputFile, LineBuffer);
+        
+        if (LineBuffer.compare(0, 10, "GammaDecay") == 0) { 
+            TokenOccurence++;
+            if (TokenOccurence == Occurence) {
+                ReadingStatusGammaDecay = true ;
+                G4cout << "///////////////////////////////////////// " << G4endl;
+                // Get the nuclei name
+                LineStream.clear();
+                LineStream.str(LineBuffer);
+                LineStream >> DataBuffer;
+                DataBuffer.erase();
+                LineStream >> DataBuffer;
+                m_NucleiName = DataBuffer ;
+                G4cout << "Gamma Decay for " << m_NucleiName << G4endl;
+            }
+        }
+        
+        ///////////////////////////////
+        /// Gamma Decay case
+        while(ReadingStatusGammaDecay){
+            InputFile >> DataBuffer;
+            //Search for comment Symbol %
+            if (DataBuffer.compare(0, 1, "%") == 0) {   InputFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
+            
+            else if (DataBuffer == "Cascade") {
+                CascadeStatus = true ;
+                NumberOfCascade++;
+                G4cout << "  Cascade " << NumberOfCascade << G4endl;
+                
+                LineStream.clear();
+                LineStream.str(LineBuffer);
+                
+                // Instantiate new variable for the up coming cascade
+                check_E = false;
+                check_BranchingRatio = false;
+                check_CSPath = false ;
+                
+                double BranchingRatio = -1;
+                vector<double> E ;
+                string CSPath;
+                
+                while (CascadeStatus) {
+                    getline(InputFile, LineBuffer);
+                    LineStream.clear();
+                    LineStream.str(LineBuffer);
+                    LineStream >> DataBuffer ;
+                      
+                    // G4cout << DataBuffer << G4endl;
+                    
+                    //Search for comment Symbol %
+                    if (DataBuffer.compare(0, 1, "%") == 0) {   InputFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
+                    
+                    else if(DataBuffer == "BranchingRatio=") {
+                        check_BranchingRatio = true;
+                        LineStream.clear();
+                        LineStream.str(LineBuffer);
+                        LineStream >> DataBuffer ;
+                        LineStream >> DataBuffer ;
+                        BranchingRatio = atof(DataBuffer.c_str());
+                        G4cout << "    Branching Ratio: " << atof(DataBuffer.c_str()) << G4endl;
+                        
+                    }
+                    
+                    else if(DataBuffer == "Energies=") {
+                        check_E = true;
+                        G4cout << "    Energies: " ;
+                        LineStream.clear();
+                        LineStream.str(LineBuffer);
+                        LineStream >> DataBuffer;
+                        while(LineStream >> DataBuffer){
+                            E.push_back(atof(DataBuffer.c_str()));
+                            G4cout << atof(DataBuffer.c_str()) << " ";    
+                            
+                        }
+                        G4cout << G4endl;
+                    }
+                    
+                    else if(DataBuffer == "DifferentialCrossSection="){
+                        LineStream.clear();
+                        LineStream.str(LineBuffer);
+                        LineStream >> DataBuffer >> DataBuffer ;
+                        CSPath = DataBuffer;
+                        G4cout << "    Cross Section Path: " << DataBuffer << G4endl;
+                        check_CSPath = true;
+                    }
+                    
+                    // Cascade ended
+                    if(check_E && check_BranchingRatio && E.size()>1){
+                        AddCascade(E, BranchingRatio, "_void_");
+                        CascadeStatus = false;
+                    }
+                    
+                    if(check_E && check_BranchingRatio && (E.size()<2 && check_CSPath)){                        AddCascade(E, BranchingRatio, CSPath);
+                        CascadeStatus = false;
+                    }
+
+                }
+                
+            }
+            
+            //////////////////////////////////////////////////////
+            // If no Token and no comment, toggle out //
+            //  else 
+            //   {ReadingStatusGammaDecay = false; G4cout << "WARNING : Wrong Token Sequence: Getting out " << G4endl ;}
+         
+            
+            if(InputFile.eof()) {ReadingStatusGammaDecay=false;check_created=true;}
+        }
+    }
+    G4cout << "///////////////////////////////////////// " << G4endl;
+    InputFile.close();
+    PrepareCascade();
+}
+
+
+void EventGeneratorGammaDecay::GenerateEvent(G4Event*){
+    // Choose a Cascade to follow
+    int ChoosenCascade = -1;
+    double RandomNumber = RandFlat::shoot();
+    
+    for (unsigned int i = 1; i<m_BranchingRatio.size(); i++) {
+        if(RandomNumber > m_BranchingRatio[i-1] && RandomNumber< m_BranchingRatio[i])
+            ChoosenCascade=i;
+    }  
+    
+    if (ChoosenCascade==-1) ChoosenCascade=0;
+    
+    // Look for the decaying nucleus
+    Particle decayingParticle = m_ParticleStack->SearchAndRemoveParticle(m_NucleiName);
+
+    if(decayingParticle.GetParticleDefinition()==NULL){
+        G4cout << "Gamma Decay Warning: The decaying particle " << m_NucleiName
+        << " was not found in the particle stack " << G4endl;
+        return ;   
+    }
+    // Check for energies conservation (i.e: Cascade Energies lower than Excitation energie)
+    string ExcitationString = decayingParticle.GetParticleDefinition()->GetParticleName();
+    ExcitationString.erase(0,m_NucleiName.length()+1);
+    ExcitationString.erase(ExcitationString.length()-1,ExcitationString.length());
+    double ExcitationEnergy = atof(ExcitationString.c_str())*keV;
+    
+    // Compute the final excitation energy of the decaying nuclei
+    double FinalExcitationEnergy = ExcitationEnergy-m_CascadeTotalEnergy[ChoosenCascade];
+    if(FinalExcitationEnergy<0){
+        G4cout << "Gamma Decay Warning: The cascade energy exceed the excitation energy of the decaying nuclei: " 
+        << G4endl << " Excitation Energy : " << ExcitationEnergy
+        << G4endl << " Cascade Energy : "    <<    m_CascadeTotalEnergy[ChoosenCascade] << G4endl;
+        FinalExcitationEnergy=0;
+    }
+    
+    // Put back the decaying nucleus with its new excitation energy
+    G4ParticleDefinition* FinalParticleDefition
+    = G4ParticleTable::GetParticleTable()->GetIon(decayingParticle.GetParticleDefinition()->GetAtomicNumber(), decayingParticle.GetParticleDefinition()->GetAtomicMass(), FinalExcitationEnergy*MeV);
+    
+    Particle FinalParticle = Particle(  FinalParticleDefition,
+                                        decayingParticle.GetParticleKineticEnergy(),
+                                        decayingParticle.GetParticleMomentumDirection(),
+                                        decayingParticle.GetParticlePosition(),
+                                        decayingParticle.GetShootStatus());
+    
+    m_ParticleStack->AddParticleToStack(FinalParticle);
+    
+    // Instantiate and add the gamma to the particle stack
+    for (unsigned int i = 0; i < m_Energies[ChoosenCascade].size(); i++) {
+        G4ParticleDefinition* gammaDefinition = G4ParticleTable::GetParticleTable()->FindParticle("gamma");
+        G4ThreeVector gammaDirection;
+        double theta=0;
+        double phi=0;
+        // If more than one gamma shoot no cross section to follow
+        if(m_Energies[ChoosenCascade].size()>1){
+            
+            // Shoot flat in cos(theta) and Phi to have isotropic emission
+            double cos_theta = RandFlat::shoot();
+            theta = acos(cos_theta);
+            phi = RandFlat::shoot()*2.*pi;
+                
+            gammaDirection= G4ThreeVector(  cos(phi)*sin(theta),
+                                            sin(phi)*sin(theta),
+                                            cos(theta));
+        }
+        
+        // Only one gamma to shoot, use the given cross section
+        else{ 
+            RandGeneral CrossSectionShoot(m_CrossSectionArray[ChoosenCascade], m_CrossSectionSize[ChoosenCascade]);
+            theta = (   m_CrossSectionThetaMin[ChoosenCascade] 
+                        + CrossSectionShoot.shoot() 
+                        * ( m_CrossSectionThetaMax[ChoosenCascade] - m_CrossSectionThetaMin[ChoosenCascade]) ) * deg;
+            phi   = RandFlat::shoot() * 2. *pi;     
+            gammaDirection= G4ThreeVector(  cos(phi)*sin(theta),
+                                            sin(phi)*sin(theta),
+                                            cos(theta));
+        }
+        
+        // Doppler shifted gamma emission
+        decayingParticle.GetParticleMomentumDirection();
+        double gammaEnergy = m_Energies[ChoosenCascade][i];
+        TLorentzVector GammaLV( gammaEnergy*cos(phi)*sin(theta),
+                                gammaEnergy*sin(phi)*sin(theta),
+                                gammaEnergy*cos(theta),
+                                gammaEnergy);
+        
+        double NucleiEnergy= decayingParticle.GetParticleKineticEnergy()+FinalParticleDefition->GetPDGMass();
+        double NucleiMomentum= sqrt(NucleiEnergy*NucleiEnergy-FinalParticleDefition->GetPDGMass()*FinalParticleDefition->GetPDGMass());
+        TLorentzVector NuvleiLV( NucleiMomentum*decayingParticle.GetParticleMomentumDirection().x(),
+                                 NucleiMomentum*decayingParticle.GetParticleMomentumDirection().y(),
+                                 NucleiMomentum*decayingParticle.GetParticleMomentumDirection().z(),
+                                 NucleiEnergy);
+        
+        GammaLV.Boost(NuvleiLV.BoostVector());
+        gammaDirection= G4ThreeVector(  GammaLV.Px(),
+                                        GammaLV.Py(),
+                                        GammaLV.Pz());
+        // Add the gamma to the stack
+        Particle gammaParticle(gammaDefinition,GammaLV.E(),gammaDirection, decayingParticle.GetParticlePosition());
+        m_ParticleStack->AddParticleToStack(gammaParticle);
+    }
+}
+
+
+void EventGeneratorGammaDecay::SetTarget(Target* Target){
+    m_Target = Target;
+}
+
+void EventGeneratorGammaDecay::AddCascade(vector<double> Energies, double BranchingRatio, string CrossSectionPath){
+    m_BranchingRatio.push_back(BranchingRatio);
+    m_CrossSectionPath.push_back(CrossSectionPath);
+    m_Energies.push_back(Energies);
+}
+
+void EventGeneratorGammaDecay::PrepareCascade(){
+    // Change the given branching ratio so total is one (always have a decay during the event)
+    double TotalRatio=0;
+    for (unsigned int i = 0; i < m_BranchingRatio.size(); i++) {
+        TotalRatio+=m_BranchingRatio[i]/100.;
+    }
+    
+    // Check that the total ratio is not over 100% (below is allowed)
+    if(TotalRatio>1) {
+        G4cout << "Gamma Decay Error: Sum of branching ratio is over 100%" << endl;
+        exit(1);
+    }
+    
+    for (unsigned int i = 0; i < m_BranchingRatio.size(); i++) {
+        m_BranchingRatio[i]=(m_BranchingRatio[i]/TotalRatio)/100.;
+    }
+    
+    // Shift the Branching ratio for faster shooting during event generation
+    for (unsigned int i = 1; i < m_BranchingRatio.size(); i++) {
+        m_BranchingRatio[i]=m_BranchingRatio[i-1]+m_BranchingRatio[i];
+    }
+    
+    // Compute the total energy of the cascade
+    double TotalEnergy=0;
+    for (unsigned int i = 0 ; i < m_Energies.size(); i++) {
+        TotalEnergy=0;
+        for (unsigned int j = 0; j < m_Energies[i].size(); j++) {
+            TotalEnergy+=m_Energies[i][j];
+        }
+        m_CascadeTotalEnergy.push_back(TotalEnergy);
+    }
+    
+    // Transform the particle name to G4 standard: i.e: 10He -> He10
+    m_NucleiName = m_ParticleStack->ChangeNameToG4Standard(m_NucleiName);
+         if (m_NucleiName=="proton"   || 
+             m_NucleiName=="deuteron" || 
+             m_NucleiName=="triton"   || 
+             m_NucleiName=="3He"      || 
+             m_NucleiName=="alpha"    ){
+                G4cout << "Gamma Decay Error: Gamma Decay not allowed for light particles" << endl;
+                exit(1);
+             }
+    
+    /// Load the differential cross section
+    for (unsigned int i = 0; i < m_BranchingRatio.size(); i++) {
+        unsigned int CrossSectionSize = 0;
+        double* CrossSection = new double[CrossSectionSize] ;
+        double thetamin = 0;
+        double thetamax = 0;
+        
+        if(m_CrossSectionPath[i]!="_void_"){
+            string GlobalPath = getenv("NPTOOL");
+            string StandardPath = GlobalPath + "/Inputs/CrossSection/" + m_CrossSectionPath[i];
+            ifstream CSFile;
+            CSFile.open( StandardPath.c_str() );
+            
+            if(CSFile.is_open()) cout << "Reading Cross Section File " << m_CrossSectionPath[i] << endl;
+            
+            // In case the file is not found in the standard path, the programm try to interpret the file name as an absolute or relative file path.
+            else{
+                CSFile.open( m_CrossSectionPath[i].c_str() );
+                if(CSFile.is_open()) { cout << "Reading Cross Section File " << m_CrossSectionPath[i] << endl;}
+                
+                else {cout << "Cross Section File " << m_CrossSectionPath[i] << " not found" << endl;return;}
+            }
+            
+            double CSBuffer,AngleBuffer;
+            vector<double> CrossSectionBuffer;
+            thetamin = 200;
+            thetamax = -10;
+            while(!CSFile.eof()) {
+                CSFile >> AngleBuffer;
+                CSFile >> CSBuffer;   
+                double CSFinal = CSBuffer*sin(AngleBuffer*deg);
+                CrossSectionBuffer.push_back(CSFinal);
+                if (AngleBuffer < thetamin) thetamin = AngleBuffer;
+                if (AngleBuffer > thetamax) thetamax = AngleBuffer;
+            }
+            
+            CSFile.close();
+            CrossSectionSize = CrossSectionBuffer.size();
+            delete CrossSection;
+            CrossSection = new double[CrossSectionSize] ;
+            for(unsigned int i = 0 ; i <CrossSectionSize ; i++ )   CrossSection[i] = CrossSectionBuffer[i];
+        }
+        m_CrossSectionArray.push_back(CrossSection);
+        m_CrossSectionSize.push_back(CrossSectionSize);
+        m_CrossSectionThetaMax.push_back(thetamax);
+        m_CrossSectionThetaMin.push_back(thetamin);
+    }
+}
+

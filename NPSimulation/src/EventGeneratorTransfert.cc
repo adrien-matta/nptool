@@ -185,7 +185,11 @@ void EventGeneratorTransfert::ReadConfiguration(string Path)
 
       
 
-      if (LineBuffer.compare(0, 9, "Transfert") == 0) { ReadingStatus = true ;}
+      if (LineBuffer.compare(0, 9, "Transfert") == 0) { 
+          ReadingStatus = true ;
+      
+          G4cout << "////////// Transfert ///////////" << G4endl;
+      }
 
 
    while(ReadingStatus){
@@ -323,10 +327,11 @@ void EventGeneratorTransfert::ReadConfiguration(string Path)
       //   If all Token found toggle out
          if(check_Beam && check_Target && check_Light && check_Heavy && check_ExcitationEnergyLight && check_ExcitationEnergyHeavy 
             &&  check_BeamEnergy && check_BeamEnergySpread && check_FWHMX && check_FWHMY && check_EmmitanceTheta 
-            &&  check_EmmitancePhi && check_CrossSectionPath && check_ShootLight && check_ShootHeavy)
-            ReadingStatus = false ;   
-
+            &&  check_EmmitancePhi && check_CrossSectionPath && check_ShootLight && check_ShootHeavy){
+            ReadingStatus = false ;  
+            G4cout << "////////////////////////////////" << G4endl;
          }
+   }
            
 
    }

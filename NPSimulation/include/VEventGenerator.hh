@@ -54,7 +54,8 @@ public:
 
 public:
    virtual void ReadConfiguration(string) {};
-   virtual void GenerateEvent(G4Event*, G4ParticleGun*) {};
+   virtual void ReadConfiguration(string,int) {};
+   virtual void GenerateEvent(G4Event*) {};
    virtual void InitializeRootOutput() {};
 
    // Used in some case to generate event inside the target

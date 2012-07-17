@@ -27,7 +27,6 @@
 
 // G4 headers
 #include "G4VUserPrimaryGeneratorAction.hh"
-#include "G4ParticleGun.hh"
 #include "G4Event.hh"
 
 // NPTool headers
@@ -46,15 +45,13 @@ public:
 
 public:
    void GeneratePrimaries(G4Event*);
-   G4ParticleGun* GetParticleGun()   {return m_particleGun;}
 
 public:
    void ReadEventGeneratorFile(string Path);
 
 private:
-   G4ParticleGun*        m_particleGun;
    DetectorConstruction* m_detector;
-   VEventGenerator*      m_EventGenerator;
+   vector<VEventGenerator*>      m_EventGenerator;
 };
 
 #endif
