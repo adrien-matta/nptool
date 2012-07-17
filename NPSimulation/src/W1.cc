@@ -135,16 +135,13 @@ void W1::VolumeMaker(G4int             DetecNumber,
    ////////////////////////////////////////////////////////////////
    ////////////// Starting Volume Definition //////////////////////
    ////////////////////////////////////////////////////////////////
-   // Little trick to avoid warning in compilation: Use a PVPlacement "buffer".
-   // If don't you will have a Warning unused variable 'myPVP'
-   G4PVPlacement* PVPBuffer ;
    G4String Name = "W1Square" + DetectorNumber;
 
    // Definition of the volume containing the sensitive detector
    G4Box*           solidW1 = new G4Box(Name, 0.5*FaceFront, 0.5*FaceFront, 0.5*Length);
    G4LogicalVolume* logicW1 = new G4LogicalVolume(solidW1, m_MaterialVacuum, Name, 0, 0, 0);
 
-   PVPBuffer = new G4PVPlacement(G4Transform3D(*rotation, position), logicW1, Name, world, false, 0);
+   new G4PVPlacement(G4Transform3D(*rotation, position), logicW1, Name, world, false, 0);
 
    logicW1->SetVisAttributes(G4VisAttributes::Invisible);
    if (m_non_sensitive_part_visiualisation) logicW1->SetVisAttributes(G4VisAttributes(G4Colour(0.90, 0.90, 0.90)));
@@ -157,8 +154,8 @@ void W1::VolumeMaker(G4int             DetecNumber,
 //   G4LogicalVolume* logicAluStrip = new G4LogicalVolume(solidAluStrip, m_MaterialAluminium, "logicAluStrip", 0, 0, 0);
    G4LogicalVolume* logicAluStrip = new G4LogicalVolume(solidAluStrip, m_MaterialVacuum, "logicAluStrip", 0, 0, 0);
 
-   PVPBuffer = new G4PVPlacement(0, positionAluStripFront, logicAluStrip, Name + "_AluStripFront", logicW1, false, 0);
-   PVPBuffer = new G4PVPlacement(0, positionAluStripBack,  logicAluStrip, Name + "_AluStripBack",  logicW1, false, 0);
+   new G4PVPlacement(0, positionAluStripFront, logicAluStrip, Name + "_AluStripFront", logicW1, false, 0);
+   new G4PVPlacement(0, positionAluStripBack,  logicAluStrip, Name + "_AluStripBack",  logicW1, false, 0);
 
    logicAluStrip->SetVisAttributes(G4VisAttributes::Invisible);
 
@@ -168,7 +165,7 @@ void W1::VolumeMaker(G4int             DetecNumber,
    G4Box*           solidSilicon = new G4Box("solidSilicon", 0.5*SiliconFace, 0.5*SiliconFace, 0.5*SiliconThickness);
    G4LogicalVolume* logicSilicon = new G4LogicalVolume(solidSilicon, m_MaterialSilicon, "logicSilicon", 0, 0, 0);
 
-   PVPBuffer = new G4PVPlacement(0, positionSilicon, logicSilicon, Name + "_Silicon", logicW1, false, 0);
+   new G4PVPlacement(0, positionSilicon, logicSilicon, Name + "_Silicon", logicW1, false, 0);
 
    // Set Silicon strip sensible
    logicSilicon->SetSensitiveDetector(m_Scorer);
@@ -206,7 +203,6 @@ void W1::ReadConfiguration(string Path)
    bool check_R     = false;
    bool check_Theta = false;
    bool check_Phi   = false;
-   bool check_beta  = false;
    bool checkVis = false ;
 
    while (!ConfigFile.eof()) {
@@ -319,7 +315,6 @@ void W1::ReadConfiguration(string Path)
          }
 
          else if (DataBuffer.compare(0, 5, "BETA=") == 0) {
-            check_beta = true;
             ConfigFile >> DataBuffer;
             beta_u = atof(DataBuffer.c_str());
             beta_u = beta_u * deg;
@@ -364,7 +359,6 @@ void W1::ReadConfiguration(string Path)
             check_R     = false;
             check_Theta = false;
             check_Phi   = false;
-            check_beta  = false;
             checkVis    = false;
 
             AddDetector(R, Theta, Phi, beta_u, beta_v, beta_w);

@@ -73,11 +73,11 @@ private:
 
 private: // Data about the target
    Target*  m_Target;
-   Chamber*  m_Chamber;
+   Chamber* m_Chamber;
 
 public:  // Getter and Setter
    Target*  GetTarget()    {return m_Target;}
-   Chamber*  GetChamber()  {return m_Chamber;}
+   Chamber* GetChamber()   {return m_Chamber;}
 };
 
 #endif

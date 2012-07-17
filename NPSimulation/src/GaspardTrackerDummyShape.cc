@@ -22,6 +22,7 @@
  *    + 12/10/09: Change scorer scheme (N. de Sereville)                     *
  *    + 01/10/10: Fix bug with TInteractionCoordinate map size in Read       *
  *                Sensitive (N. de Sereville)                                *
+ *    + 01/07/11: Add dead layer support (N. de Sereville)                   *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
@@ -174,6 +175,11 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
    ////////////////////////////////////////////////////////////////
    /////////////////Material Definition ///////////////////////////
    ////////////////////////////////////////////////////////////////
+   // Al
+//   density = 2.702 * g / cm3;
+//   a = 26.98 * g / mole;
+//   G4Material* Aluminium = new G4Material("Aluminium", z = 13., a, density);
+
    // Si
    a = 28.0855 * g / mole;
    density = 2.321 * g / cm3;
@@ -191,15 +197,12 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
    ////////////////////////////////////////////////////////////////
    ////////////// Starting Volume Definition //////////////////////
    ////////////////////////////////////////////////////////////////
-   // Little trick to avoid warning in compilation: Use a PVPlacement "buffer".
-   // If don't you will have a Warning unused variable 'myPVP'
-   G4PVPlacement* PVPBuffer;
    G4String Name = "GPDDummyShape" + DetectorNumber ;
 
    G4Box*           solidGPDDummyShape = new G4Box(Name, 0.5*FaceFront, 0.5*FaceFront, 0.5*Length);
    G4LogicalVolume* logicGPDDummyShape = new G4LogicalVolume(solidGPDDummyShape, Vacuum, Name, 0, 0, 0);
 
-   PVPBuffer     = new G4PVPlacement(G4Transform3D(*MMrot, MMpos) ,
+   new G4PVPlacement(G4Transform3D(*MMrot, MMpos) ,
                                      logicGPDDummyShape           ,
                                      Name                         ,
                                      world                        ,
@@ -217,7 +220,7 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
    G4ThreeVector positionMarkerU = MMCenter*0.8 + MMu*FirstStageFace/4;
    G4Box*           solidMarkerU = new G4Box("solidMarkerU", FirstStageFace/4, 1*mm, 1*mm);
    G4LogicalVolume* logicMarkerU = new G4LogicalVolume(solidMarkerU, Vacuum, "logicMarkerU", 0, 0, 0);
-   PVPBuffer                     = new G4PVPlacement(G4Transform3D(*MMrot,positionMarkerU), logicMarkerU, "MarkerU", world, false, 0);
+   new G4PVPlacement(G4Transform3D(*MMrot,positionMarkerU), logicMarkerU, "MarkerU", world, false, 0);
 
    G4VisAttributes* MarkerUVisAtt= new G4VisAttributes(G4Colour(0.,0.,0.5)); //blue
    logicMarkerU->SetVisAttributes(MarkerUVisAtt);
@@ -225,7 +228,7 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
    G4ThreeVector positionMarkerV = MMCenter*0.8 + MMv*FirstStageFace/4;
    G4Box*           solidMarkerV = new G4Box("solidMarkerU", 1*mm, FirstStageFace/4, 1*mm);
    G4LogicalVolume* logicMarkerV = new G4LogicalVolume(solidMarkerV, Vacuum, "logicMarkerV", 0, 0, 0);
-   PVPBuffer                     = new G4PVPlacement(G4Transform3D(*MMrot,positionMarkerV), logicMarkerV, "MarkerV", world, false, 0);
+   new G4PVPlacement(G4Transform3D(*MMrot,positionMarkerV), logicMarkerV, "MarkerV", world, false, 0);
 
    G4VisAttributes* MarkerVVisAtt= new G4VisAttributes(G4Colour(0.,0.5,0.)); //green
    logicMarkerV->SetVisAttributes(MarkerVVisAtt);
@@ -234,13 +237,26 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
    ///////////////// First Stage Construction /////////////////////
    ////////////////////////////////////////////////////////////////
    if (wFirstStage) {
+      // Dead layers
+/*      G4ThreeVector positionFirstStageDLFront = G4ThreeVector(0, 0, FirstStage_DL_Front_PosZ);
+      G4ThreeVector positionFirstStageDLBack  = G4ThreeVector(0, 0, FirstStage_DL_Back_PosZ);
+
+      G4Box*           solidFirstStageDL = new G4Box("solidFirstStageDL", 0.5*FirstStageFace, 0.5*FirstStageFace, 0.5*FirstStageDeadLayer);
+      G4LogicalVolume* logicFirstStageDL = new G4LogicalVolume(solidFirstStageDL, Aluminium, "logicFirstStageDL", 0, 0, 0);
+
+      PVPBuffer = new G4PVPlacement(0, positionFirstStageDLFront, logicFirstStageDL, Name + "_DLFront", logicGPDDummyShape, false, 0);
+      PVPBuffer = new G4PVPlacement(0, positionFirstStageDLBack,  logicFirstStageDL, Name + "_DLBack",  logicGPDDummyShape, false, 0);
+
+      logicFirstStageDL->SetVisAttributes(G4VisAttributes::Invisible);
+*/
+
       // Silicon detector itself
       G4ThreeVector  positionFirstStage = G4ThreeVector(0, 0, FirstStage_PosZ);
 
       G4Box*           solidFirstStage = new G4Box("solidFirstStage", 0.5*FirstStageFace, 0.5*FirstStageFace, 0.5*FirstStageThickness);
       G4LogicalVolume* logicFirstStage = new G4LogicalVolume(solidFirstStage, Silicon, "logicFirstStage", 0, 0, 0);
 
-      PVPBuffer = new G4PVPlacement(0, 
+      new G4PVPlacement(0, 
                                     positionFirstStage, 
                                     logicFirstStage, 
                                     Name + "_FirstStage", 
@@ -260,13 +276,26 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
    //////////////////// Second Stage  Construction ////////////////
    ////////////////////////////////////////////////////////////////
    if (wSecondStage) {
+      // Dead layers
+/*      G4ThreeVector positionSecondStageDLFront = G4ThreeVector(0, 0, SecondStage_DL_Front_PosZ);
+      G4ThreeVector positionSecondStageDLBack  = G4ThreeVector(0, 0, SecondStage_DL_Back_PosZ);
+
+      G4Box*           solidSecondStageDL = new G4Box("solidSecondStageDL", 0.5*SecondStageFace, 0.5*SecondStageFace, 0.5*SecondStageDeadLayer);
+      G4LogicalVolume* logicSecondStageDL = new G4LogicalVolume(solidSecondStageDL, Aluminium, "logicSecondStageDL", 0, 0, 0);
+
+      PVPBuffer = new G4PVPlacement(0, positionSecondStageDLFront, logicSecondStageDL, Name + "_DLFront", logicGPDDummyShape, false, 0);
+      PVPBuffer = new G4PVPlacement(0, positionSecondStageDLBack,  logicSecondStageDL, Name + "_DLBack",  logicGPDDummyShape, false, 0);
+
+      logicSecondStageDL->SetVisAttributes(G4VisAttributes::Invisible);
+*/
+
       // Second stage silicon detector
       G4ThreeVector  positionSecondStage = G4ThreeVector(0, 0, SecondStage_PosZ);
 
       G4Box*           solidSecondStage = new G4Box("solidSecondStage", 0.5*SecondStageFace, 0.5*SecondStageFace, 0.5*SecondStageThickness);
       G4LogicalVolume* logicSecondStage = new G4LogicalVolume(solidSecondStage, Silicon, "logicSecondStage", 0, 0, 0);
 
-      PVPBuffer = new G4PVPlacement(0, 
+      new G4PVPlacement(0, 
                                     positionSecondStage, 
                                     logicSecondStage, 
                                     Name + "_SecondStage", 
@@ -286,13 +315,26 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
    ///////////////// Third Stage Construction /////////////////////
    ////////////////////////////////////////////////////////////////
    if (wThirdStage) {
+      // Dead layers
+/*      G4ThreeVector positionThirdStageDLFront = G4ThreeVector(0, 0, ThirdStage_DL_Front_PosZ);
+      G4ThreeVector positionThirdStageDLBack  = G4ThreeVector(0, 0, ThirdStage_DL_Back_PosZ);
+
+      G4Box*           solidThirdStageDL = new G4Box("solidThirdStageDL", 0.5*ThirdStageFace, 0.5*ThirdStageFace, 0.5*ThirdStageDeadLayer);
+      G4LogicalVolume* logicThirdStageDL = new G4LogicalVolume(solidThirdStageDL, Aluminium, "logicThirdStageDL", 0, 0, 0);
+
+      PVPBuffer = new G4PVPlacement(0, positionThirdStageDLFront, logicThirdStageDL, Name + "_DLFront", logicGPDDummyShape, false, 0);
+      PVPBuffer = new G4PVPlacement(0, positionThirdStageDLBack,  logicThirdStageDL, Name + "_DLBack",  logicGPDDummyShape, false, 0);
+
+      logicThirdStageDL->SetVisAttributes(G4VisAttributes::Invisible);
+*/
+
       // Third stage silicon detector
       G4ThreeVector  positionThirdStage = G4ThreeVector(0, 0, ThirdStage_PosZ);
 
       G4Box*           solidThirdStage = new G4Box("solidThirdStage", 0.5*ThirdStageFace, 0.5*ThirdStageFace, 0.5*ThirdStageThickness);
       G4LogicalVolume* logicThirdStage = new G4LogicalVolume(solidThirdStage, Silicon, "logicThirdStage", 0, 0, 0);
 
-      PVPBuffer = new G4PVPlacement(0, 
+      new G4PVPlacement(0, 
                                     positionThirdStage, 
                                     logicThirdStage, 
                                     Name + "_ThirdStage", 
@@ -343,12 +385,10 @@ void GaspardTrackerDummyShape::ReadConfiguration(string Path)
    bool check_Theta = false;
    bool check_Phi   = false;
    bool check_R     = false;
-   bool check_beta  = false;
    
    bool check_FirstStage = false;
    bool check_SecondStage = false;
    bool check_ThirdStage = false;
-   bool check_NStrip = false;
    bool checkVis = false;
 
    while (!ConfigFile.eof()) {
@@ -449,7 +489,6 @@ void GaspardTrackerDummyShape::ReadConfiguration(string Path)
             cout << "R:  " << R / mm << endl;
          }
          else if (DataBuffer.compare(0, 5, "BETA=") == 0) {
-            check_beta = true;
             ConfigFile >> DataBuffer ;
             beta_u = atof(DataBuffer.c_str()) ;
             beta_u = beta_u * deg   ;
@@ -479,9 +518,9 @@ void GaspardTrackerDummyShape::ReadConfiguration(string Path)
          }
 
          else if (DataBuffer.compare(0, 7, "NSTRIP=") == 0) {
-            check_NStrip = true ;
             ConfigFile >> DataBuffer;
             NSTRIP = atof(DataBuffer.c_str()) ;
+            NSTRIP *= 1;
          }
 
          else if (DataBuffer.compare(0, 4, "VIS=") == 0) {
@@ -516,7 +555,6 @@ void GaspardTrackerDummyShape::ReadConfiguration(string Path)
             check_Theta = false;
             check_Phi   = false;
             check_R     = false;
-            check_beta  = false;
             check_FirstStage = false;
             check_SecondStage = false;
             check_ThirdStage = false;
@@ -787,7 +825,6 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
             G4int TTrackID  =   Time_itr->first - N;
             G4double T     = *(Time_itr->second);
             if (TTrackID == NTrackID) {
-               T = RandGauss::shoot(T, ResoTimeGpd);
                ms_Event->SetGPDTrkFirstStageFrontTTime(RandGauss::shoot(T, ResoTimeGpd));
                ms_Event->SetGPDTrkFirstStageBackTTime(RandGauss::shoot(T, ResoTimeGpd));
             }

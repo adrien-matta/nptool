@@ -228,15 +228,12 @@ void GaspardTrackerSquare::VolumeMaker(G4int TelescopeNumber,
    ////////////////////////////////////////////////////////////////
    ////////////// Starting Volume Definition //////////////////////
    ////////////////////////////////////////////////////////////////
-   // Little trick to avoid warning in compilation: Use a PVPlacement "buffer".
-   // If don't you will have a Warning unused variable 'myPVP'
-   G4PVPlacement* PVPBuffer ;
    G4String Name = "GPDSquare" + DetectorNumber;
 
    G4Box*           solidGPDSquare = new G4Box(Name, 0.5*FaceFront, 0.5*FaceFront, 0.5*Length);
    G4LogicalVolume* logicGPDSquare = new G4LogicalVolume(solidGPDSquare, Vacuum, Name, 0, 0, 0);
 
-   PVPBuffer = new G4PVPlacement(G4Transform3D(*MMrot, MMpos), logicGPDSquare, Name, world, false, 0);
+   new G4PVPlacement(G4Transform3D(*MMrot, MMpos), logicGPDSquare, Name, world, false, 0);
 
    logicGPDSquare->SetVisAttributes(G4VisAttributes::Invisible);
    if (m_non_sensitive_part_visiualisation) logicGPDSquare->SetVisAttributes(G4VisAttributes(G4Colour(0.90, 0.90, 0.90)));
@@ -274,13 +271,7 @@ void GaspardTrackerSquare::VolumeMaker(G4int TelescopeNumber,
       G4Box*           solidFirstStage = new G4Box("solidFirstStage", 0.5*FirstStageFace, 0.5*FirstStageFace, 0.5*FirstStageThickness);
       G4LogicalVolume* logicFirstStage = new G4LogicalVolume(solidFirstStage, Silicon, "logicFirstStage", 0, 0, 0);
 
-      PVPBuffer = new G4PVPlacement(0,
-                                    positionFirstStage,
-                                    logicFirstStage,
-                                    Name + "_FirstStage",
-                                    logicGPDSquare,
-                                    false,
-                                    0);
+      new G4PVPlacement(0, positionFirstStage, logicFirstStage, Name + "_FirstStage", logicGPDSquare, false, 0);
 
       // Set First Stage sensible
       logicFirstStage->SetSensitiveDetector(m_FirstStageScorer);
@@ -300,13 +291,7 @@ void GaspardTrackerSquare::VolumeMaker(G4int TelescopeNumber,
       G4Box*           solidSecondStage = new G4Box("solidSecondStage", 0.5*SecondStageFace, 0.5*SecondStageFace, 0.5*SecondStageThickness);
       G4LogicalVolume* logicSecondStage = new G4LogicalVolume(solidSecondStage, Silicon, "logicSecondStage", 0, 0, 0);
 
-      PVPBuffer = new G4PVPlacement(0,
-                                    positionSecondStage,
-                                    logicSecondStage,
-                                    Name + "_SecondStage",
-                                    logicGPDSquare,
-                                    false,
-                                    0);
+      new G4PVPlacement(0, positionSecondStage, logicSecondStage, Name + "_SecondStage", logicGPDSquare, false, 0);
 
       // Set Second Stage sensible
       logicSecondStage->SetSensitiveDetector(m_SecondStageScorer);
@@ -326,13 +311,7 @@ void GaspardTrackerSquare::VolumeMaker(G4int TelescopeNumber,
       G4Box*           solidThirdStage = new G4Box("solidThirdStage", 0.5*ThirdStageFace, 0.5*ThirdStageFace, 0.5*ThirdStageThickness);
       G4LogicalVolume* logicThirdStage = new G4LogicalVolume(solidThirdStage, Silicon, "logicThirdStage", 0, 0, 0);
 
-      PVPBuffer = new G4PVPlacement(0,
-                                    positionThirdStage,
-                                    logicThirdStage,
-                                    Name + "_ThirdStage",
-                                    logicGPDSquare,
-                                    false,
-                                    0);
+      new G4PVPlacement(0, positionThirdStage, logicThirdStage, Name + "_ThirdStage", logicGPDSquare, false, 0);
 
       // Set Third Stage sensible
       logicThirdStage->SetSensitiveDetector(m_ThirdStageScorer);
@@ -377,7 +356,6 @@ void GaspardTrackerSquare::ReadConfiguration(string Path)
    bool check_Theta = false ;
    bool check_Phi   = false ;
    bool check_R     = false ;
-   bool check_beta  = false ;
    
    bool check_FirstStage = false ;
    bool check_SecondStage = false ;
@@ -490,7 +468,6 @@ void GaspardTrackerSquare::ReadConfiguration(string Path)
          }
 
          else if (DataBuffer.compare(0, 5, "BETA=") == 0) {
-            check_beta = true;
             ConfigFile >> DataBuffer ;
             beta_u = atof(DataBuffer.c_str()) ;
             beta_u = beta_u * deg   ;
@@ -558,7 +535,6 @@ void GaspardTrackerSquare::ReadConfiguration(string Path)
              check_Theta = false ;
              check_Phi   = false ;
              check_R     = false ;
-             check_beta  = false ;
            check_FirstStage = false ;
           check_SecondStage = false ;
            check_ThirdStage = false ;

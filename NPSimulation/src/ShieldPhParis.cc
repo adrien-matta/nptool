@@ -202,9 +202,6 @@ void ShieldPhParis::VolumeMaker(G4int             DetecNumber,
    ////////////////////////////////////////////////////////////////
    ////////////// Starting Volume Definition //////////////////////
    ////////////////////////////////////////////////////////////////
-   // Little trick to avoid warning in compilation: Use a PVPlacement "buffer".
-   // If don't you will have a Warning unused variable 'myPVP'
-   G4PVPlacement* PVPBuffer;
    G4String Name = "ShieldPhParis" + DetectorNumber ;
 
    // Mother VolumeShieldPhParis.cc
@@ -221,12 +218,12 @@ void ShieldPhParis::VolumeMaker(G4int             DetecNumber,
 
    G4LogicalVolume* logicShieldPhParis = new G4LogicalVolume(solidShieldPhParis, Vacuum, Name, 0, 0, 0);
 
-   PVPBuffer = new G4PVPlacement( G4Transform3D(*MMrot, MMpos),
-                                  logicShieldPhParis,
-                                  Name,
-                                  world,
-                                  false,
-                                  0);
+   G4PVPlacement(G4Transform3D(*MMrot, MMpos),
+                 logicShieldPhParis,
+                 Name,
+                 world,
+                 false,
+                 0);
 
    logicShieldPhParis->SetVisAttributes(G4VisAttributes::Invisible);
    //if (m_non_sensitive_part_visiualisation) logicShieldPhParis->SetVisAttributes(G4VisAttributes(G4Colour(0.90, 0.90, 0.90)));
@@ -242,13 +239,13 @@ void ShieldPhParis::VolumeMaker(G4int             DetecNumber,
    //G4LogicalVolume* logicShieldCsI = new G4LogicalVolume(solidShieldCsI, CsI, "logicShieldCsI", 0, 0, 0);
    G4LogicalVolume* logicShieldCsI = new G4LogicalVolume(solidShieldCsI, NaI, "logicShieldCsI", 0, 0, 0);
 
-   PVPBuffer = new G4PVPlacement( 0,
-                                  positionCsI,
-                                  logicShieldCsI,
-                                  Name + "_ShieldCsI",
-                                  logicShieldPhParis,
-                                  false,
-                                  0);
+   new G4PVPlacement(0,
+                     positionCsI,
+                     logicShieldCsI,
+                     Name + "_ShieldCsI",
+                     logicShieldPhParis,
+                     false,
+                     0);
   
    // Set CsI sensible
    logicShieldCsI->SetSensitiveDetector(m_CsIShieldScorer);
@@ -292,7 +289,6 @@ void ShieldPhParis::ReadConfiguration(string Path)
    bool check_Theta = false;
    bool check_Phi   = false;
    bool check_R     = false;
-   bool check_beta  = false;
    
    bool checkVis = false;
 
@@ -394,7 +390,6 @@ void ShieldPhParis::ReadConfiguration(string Path)
             cout << "R:  " << R / mm << endl;
          }
          else if (DataBuffer.compare(0, 5, "BETA=") == 0) {
-            check_beta = true;
             ConfigFile >> DataBuffer ;
             beta_u = atof(DataBuffer.c_str()) ;
             beta_u = beta_u * deg   ;
@@ -436,7 +431,6 @@ void ShieldPhParis::ReadConfiguration(string Path)
             check_Theta = false;
           check_Phi   = false;
           check_R     = false;
-          check_beta  = false;
        checkVis = false;
            
             AddModule(R, Theta, Phi, beta_u, beta_v, beta_w);
@@ -645,6 +639,7 @@ void ShieldPhParis::ReadSensitive(const G4Event* event)
        // Deal with trackID=1:
        G4int N_first= *(CsIShieldDetectorNumber_itr->second);                  // ID of first det hit
        G4int NTrackID =   CsIShieldDetectorNumber_itr->first - N_first;           // first trackID dealt with (not always =1)
+       NTrackID *= 1;
        G4double E = *(CsIShieldEnergy_itr->second);
        G4double T = *(CsIShieldTime_itr->second);
       

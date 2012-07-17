@@ -21,16 +21,13 @@
 
 // G4 headers
 #include "G4UnitsTable.hh"
+#include "G4VProcess.hh"
 
 // NPTool headers
 #include "GeneralScorers.hh"
-#include "ParisScorers.hh"
 
-#include "ParisCluster.hh"
-#include "ParisPhoswich.hh"
+#include "ComptonTelescopeScorers.hh"
 
-using namespace PARISCLUSTER;
-using namespace PARISPHOSWICH;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -41,34 +38,128 @@ using namespace PARISPHOSWICH;
 // not use those scorer with some G4 provided ones or being very carefull doing so.
 
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+// FirstStage Tower Number Scorer (deal with multiple particle hit)
+ComptonTelescopeScorerProcess::ComptonTelescopeScorerProcess(G4String name, G4String volumeName, G4String processName, G4int depth)
+      : G4VPrimitiveScorer(name, depth), HCID(-1)
+{
+   m_VolumeName  = volumeName;
+   m_ProcessName = processName;
+}
+
+ComptonTelescopeScorerProcess::~ComptonTelescopeScorerProcess()
+{
+}
+
+G4bool ComptonTelescopeScorerProcess::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+{
+   G4bool status = false;
+
+   // Get track ID
+   G4Track *track          = aStep->GetTrack();
+   G4int    trackID        = track->GetTrackID();
+   if (trackID > 1) {    // secondary particle
+      // get some relevant track informations
+//      G4int    parentID       = track->GetParentID();
+      G4int    stepNumber     = track->GetCurrentStepNumber();
+      G4String parentProcName = track->GetCreatorProcess()->GetProcessName();
+      G4String particleName   = track->GetDefinition()->GetParticleName();
+      // select secondary electrons created by compton effect
+      if (particleName   == "e-"          &&    // secondary is an electron
+          parentProcName == m_ProcessName &&    // electron has been created through compton effect
+          stepNumber     == 1                   // first step of track 
+         ) {
+         // electron kinetic energy
+         G4double ElectronKineticEnergy = aStep->GetPreStepPoint()->GetKineticEnergy() / MeV;
+         // id of dsssd & tower
+         // dsssd id
+         G4int dsssdID = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(0);
+         // tower id
+         G4int towerID = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);
+         // build index for map
+         G4int index = trackID + pow(100,1)*dsssdID + pow(100,2)*towerID;
+         // fill map
+         EvtMap->set(index, ElectronKineticEnergy);
+
+         // debug outputs
+//         G4cout << "////////// Compton electron found.............." << G4endl;
+//         G4cout << "\tCopyNumbers()\t" << dsssdID << "\t" << towerID << G4endl;
+//         G4cout << "\tElectron energy\t" << ElectronKineticEnergy << G4endl;
+
+         status = true;
+      }
+   }
+
+   return status;
+}
+
+void ComptonTelescopeScorerProcess::Initialize(G4HCofThisEvent* HCE)
+{
+   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
+   if (HCID < 0) {
+      HCID = GetCollectionID(0);
+   }
+   HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
+}
+
+void ComptonTelescopeScorerProcess::EndOfEvent(G4HCofThisEvent*)
+{
+}
+
+void ComptonTelescopeScorerProcess::Clear()
+{
+   EvtMap->clear();
+}
+
+void ComptonTelescopeScorerProcess::DrawAll()
+{
+}
+
+void ComptonTelescopeScorerProcess::PrintAll()
+{
+   G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl;
+   G4cout << " PrimitiveScorer " << GetName() << G4endl;
+   G4cout << " Number of entries " << EvtMap->entries() << G4endl;
+   std::map<G4int, G4double*>::iterator itr = EvtMap->GetMap()->begin();
+   for (; itr != EvtMap->GetMap()->end(); itr++) {
+      G4cout << "  copy no.: " << itr->first
+      << " Tower Number : " << G4BestUnit(*(itr->second), "TowerNumber")
+      << G4endl;
+   }
+}
+
+
+
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// FirstStage Detector Number Scorer (deal with multiple particle hit)
-PARISScorerLaBr3StageDetectorNumber::PARISScorerLaBr3StageDetectorNumber(G4String name, G4String volumeName, G4int depth)
+// FirstStage Tower Number Scorer (deal with multiple particle hit)
+ComptonTelescopeScorerTrackerTowerNumber::ComptonTelescopeScorerTrackerTowerNumber(G4String name, G4String volumeName, G4int depth)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
    m_VolumeName = volumeName;
 }
 
-PARISScorerLaBr3StageDetectorNumber::~PARISScorerLaBr3StageDetectorNumber()
+ComptonTelescopeScorerTrackerTowerNumber::~ComptonTelescopeScorerTrackerTowerNumber()
 {
 }
 
-G4bool PARISScorerLaBr3StageDetectorNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+G4bool ComptonTelescopeScorerTrackerTowerNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
    int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
    // int DetNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(0); // this line does exactly the same than the line above
-   int CrystalNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);
+   int DSSSDNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(0);
 
    // get energy
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 0*keV) return FALSE;                   // = HERE IS THE DIFFERENCE WITH GENERALSCORER 
    G4int  index = aStep->GetTrack()->GetTrackID();
-   EvtMap->set(CrystalNbr + DetNbr + index, DetNbr);
+   EvtMap->set(DSSSDNbr + DetNbr + index, DetNbr);
    return TRUE;
 }
-void PARISScorerLaBr3StageDetectorNumber::Initialize(G4HCofThisEvent* HCE)
+
+void ComptonTelescopeScorerTrackerTowerNumber::Initialize(G4HCofThisEvent* HCE)
 {
    EvtMap = new G4THitsMap<G4int>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
@@ -77,20 +168,20 @@ void PARISScorerLaBr3StageDetectorNumber::Initialize(G4HCofThisEvent* HCE)
    HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
 }
 
-void PARISScorerLaBr3StageDetectorNumber::EndOfEvent(G4HCofThisEvent*)
+void ComptonTelescopeScorerTrackerTowerNumber::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void PARISScorerLaBr3StageDetectorNumber::Clear()
+void ComptonTelescopeScorerTrackerTowerNumber::Clear()
 {
    EvtMap->clear();
 }
 
-void PARISScorerLaBr3StageDetectorNumber::DrawAll()
+void ComptonTelescopeScorerTrackerTowerNumber::DrawAll()
 {
 }
 
-void PARISScorerLaBr3StageDetectorNumber::PrintAll()
+void ComptonTelescopeScorerTrackerTowerNumber::PrintAll()
 {
    G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl;
    G4cout << " PrimitiveScorer " << GetName() << G4endl;
@@ -98,7 +189,7 @@ void PARISScorerLaBr3StageDetectorNumber::PrintAll()
    std::map<G4int, G4int*>::iterator itr = EvtMap->GetMap()->begin();
    for (; itr != EvtMap->GetMap()->end(); itr++) {
       G4cout << "  copy no.: " << itr->first
-      << " Detector Number : " << G4BestUnit(*(itr->second), "DetectorNumber")
+      << " Tower Number : " << G4BestUnit(*(itr->second), "TowerNumber")
       << G4endl;
    }
 }
@@ -107,21 +198,21 @@ void PARISScorerLaBr3StageDetectorNumber::PrintAll()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // FirstStage Energy Scorer (deal with multiple particle hit)
-PARISScorerLaBr3StageEnergy::PARISScorerLaBr3StageEnergy(G4String name, G4String volumeName, G4int depth)
+ComptonTelescopeScorerTrackerEnergy::ComptonTelescopeScorerTrackerEnergy(G4String name, G4String volumeName, G4int depth)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
    m_VolumeName = volumeName;
 }
 
-PARISScorerLaBr3StageEnergy::~PARISScorerLaBr3StageEnergy()
+ComptonTelescopeScorerTrackerEnergy::~ComptonTelescopeScorerTrackerEnergy()
 {
 }
 
-G4bool PARISScorerLaBr3StageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+G4bool ComptonTelescopeScorerTrackerEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
    int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
-   int CrystalNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);
+   int DSSSDNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);
 
    // get energy
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -131,11 +222,11 @@ G4bool PARISScorerLaBr3StageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistor
    //   if (edep < 100*keV) return FALSE;
    if (edep < 0*keV) return FALSE;                  // = HERE IS THE DIFFERENCE WITH GENERALSCORER 
    G4int  index = aStep->GetTrack()->GetTrackID();
-   EvtMap->add(CrystalNbr + DetNbr + index, edep);
+   EvtMap->add(DSSSDNbr + DetNbr + index, edep);
    return TRUE;
 }
 
-void PARISScorerLaBr3StageEnergy::Initialize(G4HCofThisEvent* HCE)
+void ComptonTelescopeScorerTrackerEnergy::Initialize(G4HCofThisEvent* HCE)
 {
    EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
@@ -144,20 +235,20 @@ void PARISScorerLaBr3StageEnergy::Initialize(G4HCofThisEvent* HCE)
    HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
 }
 
-void PARISScorerLaBr3StageEnergy::EndOfEvent(G4HCofThisEvent*)
+void ComptonTelescopeScorerTrackerEnergy::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void PARISScorerLaBr3StageEnergy::Clear()
+void ComptonTelescopeScorerTrackerEnergy::Clear()
 {
    EvtMap->clear();
 }
 
-void PARISScorerLaBr3StageEnergy::DrawAll()
+void ComptonTelescopeScorerTrackerEnergy::DrawAll()
 {
 }
 
-void PARISScorerLaBr3StageEnergy::PrintAll()
+void ComptonTelescopeScorerTrackerEnergy::PrintAll()
 {
    G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl;
    G4cout << " PrimitiveScorer " << GetName() << G4endl;
@@ -173,24 +264,24 @@ void PARISScorerLaBr3StageEnergy::PrintAll()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // FirstStage CrystalNbr Scorer (deal with multiple particle hit)
-PARISScorerLaBr3StageCrystal::PARISScorerLaBr3StageCrystal(G4String name, G4String volumeName, G4int depth)
+ComptonTelescopeScorerTrackerDSSSDNumber::ComptonTelescopeScorerTrackerDSSSDNumber(G4String name, G4String volumeName, G4int depth)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
    m_VolumeName = volumeName;
 }
 
-PARISScorerLaBr3StageCrystal::~PARISScorerLaBr3StageCrystal()
+ComptonTelescopeScorerTrackerDSSSDNumber::~ComptonTelescopeScorerTrackerDSSSDNumber()
 {
 }
 
-G4bool PARISScorerLaBr3StageCrystal::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+G4bool ComptonTelescopeScorerTrackerDSSSDNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
    int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
 
    //G4int CrystalNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetReplicaNumber(1);
    //Adde by Anna:
-  G4int CrystalNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1); // daughter crystal volume
+  G4int DSSSDNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1); // daughter crystal volume
    //depth:0 is the world, 1 is the mother...
    //AC instead of GetReplicaNumber(1)
    //cout<<"****replica****"<<endl;
@@ -207,12 +298,12 @@ G4bool PARISScorerLaBr3StageCrystal::ProcessHits(G4Step* aStep, G4TouchableHisto
    //EvtMap->add(DetNbr + index, CrystalNbr);  // Marc
    //cout<<"index "<<index<<endl;
    //cout<<"DetNbr + index "<<DetNbr + index<<endl;   
-   EvtMap->set(CrystalNbr + DetNbr + index, CrystalNbr);// modified by Anna
+   EvtMap->set(DSSSDNbr + DetNbr + index, DSSSDNbr);// modified by Anna
    return TRUE;
 
 }
 
-void PARISScorerLaBr3StageCrystal::Initialize(G4HCofThisEvent* HCE)
+void ComptonTelescopeScorerTrackerDSSSDNumber::Initialize(G4HCofThisEvent* HCE)
 {
    EvtMap = new G4THitsMap<G4int>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
@@ -221,20 +312,20 @@ void PARISScorerLaBr3StageCrystal::Initialize(G4HCofThisEvent* HCE)
    HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
 }
 
-void PARISScorerLaBr3StageCrystal::EndOfEvent(G4HCofThisEvent*)
+void ComptonTelescopeScorerTrackerDSSSDNumber::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void PARISScorerLaBr3StageCrystal::Clear()
+void ComptonTelescopeScorerTrackerDSSSDNumber::Clear()
 {
    EvtMap->clear();
 }
 
-void PARISScorerLaBr3StageCrystal::DrawAll()
+void ComptonTelescopeScorerTrackerDSSSDNumber::DrawAll()
 {
 }
 
-void PARISScorerLaBr3StageCrystal::PrintAll()
+void ComptonTelescopeScorerTrackerDSSSDNumber::PrintAll()
 {
    G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl;
    G4cout << " PrimitiveScorer " << GetName() << G4endl;
@@ -242,7 +333,7 @@ void PARISScorerLaBr3StageCrystal::PrintAll()
       std::map<G4int, G4int*>::iterator itr = EvtMap->GetMap()->begin();
       for (; itr != EvtMap->GetMap()->end(); itr++) {
          G4cout << "  copy no.: " << itr->first
-         << "  crystal nbr: " << G4BestUnit(*(itr->second), "Crystal")
+         << "  crystal nbr: " << G4BestUnit(*(itr->second), "DSSSD")
        << G4endl;
    }
 }
@@ -252,21 +343,21 @@ void PARISScorerLaBr3StageCrystal::PrintAll()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // FirstStage ToF Scorer (deal with multiple particle hit)
-PARISScorerLaBr3StageTOF::PARISScorerLaBr3StageTOF(G4String name, G4String volumeName, G4int depth)
+ComptonTelescopeScorerTrackerTOF::ComptonTelescopeScorerTrackerTOF(G4String name, G4String volumeName, G4int depth)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
    m_VolumeName = volumeName;
 }
 
-PARISScorerLaBr3StageTOF::~PARISScorerLaBr3StageTOF()
+ComptonTelescopeScorerTrackerTOF::~ComptonTelescopeScorerTrackerTOF()
 {
 }
 
-G4bool PARISScorerLaBr3StageTOF::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+G4bool ComptonTelescopeScorerTrackerTOF::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
    int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
-   int CrystalNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);
+   int DSSSDNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);
 
    // get TOF
    G4double TOF  = aStep->GetPreStepPoint()->GetGlobalTime();
@@ -275,11 +366,11 @@ G4bool PARISScorerLaBr3StageTOF::ProcessHits(G4Step* aStep, G4TouchableHistory*)
    //   if (edep < 100*keV) return FALSE;
    if (edep < 0*keV) return FALSE;                   // = HERE IS THE DIFFERENCE WITH GENERALSCORER 
    G4int  index = aStep->GetTrack()->GetTrackID();
-   EvtMap->add(CrystalNbr + DetNbr + index, TOF);
+   EvtMap->add(DSSSDNbr + DetNbr + index, TOF);
    return TRUE;
 }
 
-void PARISScorerLaBr3StageTOF::Initialize(G4HCofThisEvent* HCE)
+void ComptonTelescopeScorerTrackerTOF::Initialize(G4HCofThisEvent* HCE)
 {
    EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
@@ -288,20 +379,20 @@ void PARISScorerLaBr3StageTOF::Initialize(G4HCofThisEvent* HCE)
    HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
 }
 
-void PARISScorerLaBr3StageTOF::EndOfEvent(G4HCofThisEvent*)
+void ComptonTelescopeScorerTrackerTOF::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void PARISScorerLaBr3StageTOF::Clear()
+void ComptonTelescopeScorerTrackerTOF::Clear()
 {
    EvtMap->clear();
 }
 
-void PARISScorerLaBr3StageTOF::DrawAll()
+void ComptonTelescopeScorerTrackerTOF::DrawAll()
 {
 }
 
-void PARISScorerLaBr3StageTOF::PrintAll()
+void ComptonTelescopeScorerTrackerTOF::PrintAll()
 {
    G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl;
    G4cout << " PrimitiveScorer " << GetName() << G4endl;
@@ -313,32 +404,33 @@ void PARISScorerLaBr3StageTOF::PrintAll()
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// SecondStage (CsI) Detector Number Scorer (deal with multiple particle hit)
-PARISScorerCsIStageDetectorNumber::PARISScorerCsIStageDetectorNumber(G4String name, G4String volumeName, G4int depth)
+// SecondStage (CsI) Tower Number Scorer (deal with multiple particle hit)
+ComptonTelescopeScorerCalorimeterTowerNumber::ComptonTelescopeScorerCalorimeterTowerNumber(G4String name, G4String volumeName, G4int depth)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
    m_VolumeName = volumeName;
 }
 
-PARISScorerCsIStageDetectorNumber::~PARISScorerCsIStageDetectorNumber()
+ComptonTelescopeScorerCalorimeterTowerNumber::~ComptonTelescopeScorerCalorimeterTowerNumber()
 {
 }
 
-G4bool PARISScorerCsIStageDetectorNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+G4bool ComptonTelescopeScorerCalorimeterTowerNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
    int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
    // int DetNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(0); // this line does exactly the same than the line above
-   int CrystalNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);
+   int DSSSDNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);
 
    // get energy
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < 0*keV) return FALSE;                   // = HERE IS THE DIFFERENCE WITH GENERALSCORER 
    G4int  index = aStep->GetTrack()->GetTrackID();
-   EvtMap->set(CrystalNbr + DetNbr + index, DetNbr);
+   EvtMap->set(DSSSDNbr + DetNbr + index, DetNbr);
    return TRUE;
 }
-void PARISScorerCsIStageDetectorNumber::Initialize(G4HCofThisEvent* HCE)
+
+void ComptonTelescopeScorerCalorimeterTowerNumber::Initialize(G4HCofThisEvent* HCE)
 {
    EvtMap = new G4THitsMap<G4int>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
@@ -347,20 +439,20 @@ void PARISScorerCsIStageDetectorNumber::Initialize(G4HCofThisEvent* HCE)
    HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
 }
 
-void PARISScorerCsIStageDetectorNumber::EndOfEvent(G4HCofThisEvent*)
+void ComptonTelescopeScorerCalorimeterTowerNumber::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void PARISScorerCsIStageDetectorNumber::Clear()
+void ComptonTelescopeScorerCalorimeterTowerNumber::Clear()
 {
    EvtMap->clear();
 }
 
-void PARISScorerCsIStageDetectorNumber::DrawAll()
+void ComptonTelescopeScorerCalorimeterTowerNumber::DrawAll()
 {
 }
 
-void PARISScorerCsIStageDetectorNumber::PrintAll()
+void ComptonTelescopeScorerCalorimeterTowerNumber::PrintAll()
 {
    G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl;
    G4cout << " PrimitiveScorer " << GetName() << G4endl;
@@ -368,29 +460,29 @@ void PARISScorerCsIStageDetectorNumber::PrintAll()
    std::map<G4int, G4int*>::iterator itr = EvtMap->GetMap()->begin();
    for (; itr != EvtMap->GetMap()->end(); itr++) {
       G4cout << "  copy no.: " << itr->first
-      << " Detector Number : " << G4BestUnit(*(itr->second), "DetectorNumber")
+      << " Tower Number : " << G4BestUnit(*(itr->second), "DetectorNumber")
       << G4endl;
    }
 }
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// CsIStage Energy Scorer (deal with multiple particle hit)
-PARISScorerCsIStageEnergy::PARISScorerCsIStageEnergy(G4String name, G4String volumeName, G4int depth)
+// Calorimeter Energy Scorer (deal with multiple particle hit)
+ComptonTelescopeScorerCalorimeterEnergy::ComptonTelescopeScorerCalorimeterEnergy(G4String name, G4String volumeName, G4int depth)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
    m_VolumeName = volumeName;
 }
 
-PARISScorerCsIStageEnergy::~PARISScorerCsIStageEnergy()
+ComptonTelescopeScorerCalorimeterEnergy::~ComptonTelescopeScorerCalorimeterEnergy()
 {
 }
 
-G4bool PARISScorerCsIStageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+G4bool ComptonTelescopeScorerCalorimeterEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
    int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
-   int CrystalNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);
+   int DSSSDNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);
 
    // get energy
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -400,11 +492,11 @@ G4bool PARISScorerCsIStageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*
    //if (edep < 100*keV) return FALSE;      
    if (edep < 0*keV) return FALSE;      // = HERE IS THE DIFFERENCE WITH GENERALSCORER 
    G4int  index = aStep->GetTrack()->GetTrackID();
-   EvtMap->add(CrystalNbr + DetNbr + index, edep);
+   EvtMap->add(DSSSDNbr + DetNbr + index, edep);
    return TRUE;
 }
 
-void PARISScorerCsIStageEnergy::Initialize(G4HCofThisEvent* HCE)
+void ComptonTelescopeScorerCalorimeterEnergy::Initialize(G4HCofThisEvent* HCE)
 {
    EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
@@ -413,20 +505,20 @@ void PARISScorerCsIStageEnergy::Initialize(G4HCofThisEvent* HCE)
    HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
 }
 
-void PARISScorerCsIStageEnergy::EndOfEvent(G4HCofThisEvent*)
+void ComptonTelescopeScorerCalorimeterEnergy::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void PARISScorerCsIStageEnergy::Clear()
+void ComptonTelescopeScorerCalorimeterEnergy::Clear()
 {
    EvtMap->clear();
 }
 
-void PARISScorerCsIStageEnergy::DrawAll()
+void ComptonTelescopeScorerCalorimeterEnergy::DrawAll()
 {
 }
 
-void PARISScorerCsIStageEnergy::PrintAll()
+void ComptonTelescopeScorerCalorimeterEnergy::PrintAll()
 {
    G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl;
    G4cout << " PrimitiveScorer " << GetName() << G4endl;
@@ -443,24 +535,24 @@ void PARISScorerCsIStageEnergy::PrintAll()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // all added by Anna:
 
-// FirstStage CrystalNbr Scorer (deal with multiple particle hit)
-PARISScorerCsIStageCrystalNumber::PARISScorerCsIStageCrystalNumber(G4String name, G4String volumeName, G4int depth)
+// FirstStage DetectorNbr Scorer (deal with multiple particle hit)
+ComptonTelescopeScorerCalorimeterDetectorNumber::ComptonTelescopeScorerCalorimeterDetectorNumber(G4String name, G4String volumeName, G4int depth)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
    m_VolumeName = volumeName;
 }
 
-PARISScorerCsIStageCrystalNumber::~PARISScorerCsIStageCrystalNumber()
+ComptonTelescopeScorerCalorimeterDetectorNumber::~ComptonTelescopeScorerCalorimeterDetectorNumber()
 {
 }
 
-G4bool PARISScorerCsIStageCrystalNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+G4bool ComptonTelescopeScorerCalorimeterDetectorNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
    int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
 
    // get energy
-   G4int CrystalNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);
+   G4int DetectorNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);
    //depth:0 is the world, 1 is the mother...
    //AC instead of GetReplicaNumber(1)
    //cout<<"****replica****"<<endl;
@@ -475,12 +567,12 @@ G4bool PARISScorerCsIStageCrystalNumber::ProcessHits(G4Step* aStep, G4TouchableH
    G4int  index = aStep->GetTrack()->GetTrackID();
    //cout<<"index "<<index<<endl;
    //cout<<"DetNbr + index "<<DetNbr + index<<endl;
-   EvtMap->set(CrystalNbr + DetNbr + index, CrystalNbr);
+   EvtMap->set(DetectorNbr + DetNbr + index, DetectorNbr);
    return TRUE;
 
 }
 
-void PARISScorerCsIStageCrystalNumber::Initialize(G4HCofThisEvent* HCE)
+void ComptonTelescopeScorerCalorimeterDetectorNumber::Initialize(G4HCofThisEvent* HCE)
 {
    EvtMap = new G4THitsMap<G4int>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
@@ -489,20 +581,20 @@ void PARISScorerCsIStageCrystalNumber::Initialize(G4HCofThisEvent* HCE)
    HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
 }
 
-void PARISScorerCsIStageCrystalNumber::EndOfEvent(G4HCofThisEvent*)
+void ComptonTelescopeScorerCalorimeterDetectorNumber::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void PARISScorerCsIStageCrystalNumber::Clear()
+void ComptonTelescopeScorerCalorimeterDetectorNumber::Clear()
 {
    EvtMap->clear();
 }
 
-void PARISScorerCsIStageCrystalNumber::DrawAll()
+void ComptonTelescopeScorerCalorimeterDetectorNumber::DrawAll()
 {
 }
 
-void PARISScorerCsIStageCrystalNumber::PrintAll()
+void ComptonTelescopeScorerCalorimeterDetectorNumber::PrintAll()
 {
    G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl;
    G4cout << " PrimitiveScorer " << GetName() << G4endl;
@@ -510,7 +602,7 @@ void PARISScorerCsIStageCrystalNumber::PrintAll()
       std::map<G4int, G4int*>::iterator itr = EvtMap->GetMap()->begin();
       for (; itr != EvtMap->GetMap()->end(); itr++) {
          G4cout << "  copy no.: " << itr->first
-         << "  crystal nbr: " << G4BestUnit(*(itr->second), "Crystal")
+         << "  detector nbr: " << G4BestUnit(*(itr->second), "Detector")
        << G4endl;
    }
 }

@@ -146,6 +146,29 @@ private:
    G4THitsMap<G4int>* EvtMap;
 };
 
+// Added by Anna
+class PARISScorerCsIStageCrystalNumber : public G4VPrimitiveScorer
+{
+public: // with description
+   PARISScorerCsIStageCrystalNumber(G4String name, G4String volumeName, G4int depth = 0);
+   virtual ~PARISScorerCsIStageCrystalNumber();
+
+protected: // with description
+   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+
+public:
+   virtual void Initialize(G4HCofThisEvent*);
+   virtual void EndOfEvent(G4HCofThisEvent*);
+   virtual void Clear();
+   virtual void DrawAll();
+   virtual void PrintAll();
+
+private:
+   G4String m_VolumeName;
+   G4int HCID;
+   G4THitsMap<G4int>* EvtMap;
+};
+
 
 class PARISScorerCsIStageEnergy : public G4VPrimitiveScorer
 {

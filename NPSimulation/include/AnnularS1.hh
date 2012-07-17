@@ -25,6 +25,7 @@
 
 // C++ headers
 #include <vector>
+using namespace std;
 
 // NPTool header
 #include "VDetector.hh"
@@ -32,8 +33,8 @@
 // NPTool - ROOT headers
 #include "TS1Data.h"
 
-using namespace std;
-
+// Geant4Header
+#include "G4MultiFunctionalDetector.hh"
 
 
 class AnnularS1 : public VDetector

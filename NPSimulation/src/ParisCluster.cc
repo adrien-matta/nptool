@@ -9,9 +9,9 @@
  * Original Author: M. Labiche  contact address: marc.labiche@stfc.ac.uk     *
  *                                                                           *
  * Creation Date  : 04/12/09                                                 *
- * Last update    :                                                          *
+ * Last update    : 20/07/11                                                 *
  *---------------------------------------------------------------------------*
- * Decription: Define a cluster of 9 phoswitch modules for the Paris detector*
+ * Decription: Define a cluster of 9 phoswich modules for the Paris detector *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -199,110 +199,107 @@ void ParisCluster::VolumeMaker(G4int             DetecNumber,
    ////////////////////////////////////////////////////////////////
    ////////////// Starting Volume Definition //////////////////////
    ////////////////////////////////////////////////////////////////
-   // Little trick to avoid warning in compilation: Use a PVPlacement "buffer".
-   // If don't you will have a Warning unused variable 'myPVP'
-   G4PVPlacement* PVPBuffer;
    G4String Name = "ParisCluster" + DetectorNumber ;
 
    // Mother Volume
    G4Box*           solidParisCluster = new G4Box(Name, 0.5*FaceFront, 0.5*FaceFront, 0.5*Length);
    G4LogicalVolume* logicParisCluster = new G4LogicalVolume(solidParisCluster, Vacuum, Name, 0, 0, 0);
 
-   PVPBuffer     = new G4PVPlacement(G4Transform3D(*MMrot, MMpos) ,
-                                     logicParisCluster           ,
-                                     Name                         ,
-                                     world                        ,
-                                     false                        ,
-                                     0);
+   new G4PVPlacement(G4Transform3D(*MMrot, MMpos) ,
+                     logicParisCluster           ,
+                     Name                         ,
+                     world                        ,
+                     false                        ,
+                     0);
 
    logicParisCluster->SetVisAttributes(G4VisAttributes::Invisible);
    if (m_non_sensitive_part_visiualisation) logicParisCluster->SetVisAttributes(G4VisAttributes(G4Colour(0.90, 0.90, 0.90)));
 
-   // Phoswich construction
+   // Phoswich volume construction (empty volume)
 
    G4ThreeVector  positionPhoSwStage = G4ThreeVector(LaBr3Face+InterSpace, LaBr3Face+InterSpace, 0.);
-   G4Box*           solidPhoSwStage = new G4Box(Name+"_PhoSwStage", 0.5*LaBr3Face, 0.5*LaBr3Face, 0.5*(LaBr3Thickness+CsIThickness));
-   G4LogicalVolume* logicPhoSwStage = new G4LogicalVolume(solidPhoSwStage, LaBr3, "logicPhoSwStage", 0, 0, 0);
+   G4Box*           solidPhoSwStage = new G4Box(Name+"_PhoSwStage", 0.5*LaBr3Face, 0.5*LaBr3Face, 0.5*Length);
+   G4LogicalVolume* logicPhoSwStage = new G4LogicalVolume(solidPhoSwStage, Vacuum, "logicPhoSwStage", 0, 0, 0);
 
-   PVPBuffer = new G4PVPlacement(0, 
-                                 positionPhoSwStage, 
-                                 logicPhoSwStage, 
-                                 Name+"_PhoSwStage", 
-                                 logicParisCluster, 
-                                 false, 
-                                 0);
+   new G4PVPlacement(0, 
+                     positionPhoSwStage, 
+                     logicPhoSwStage, 
+                     Name+"_PhoSwStage", 
+                     logicParisCluster, 
+                     false,8); 
+   // 0);
    
    positionPhoSwStage = G4ThreeVector(0., LaBr3Face+InterSpace, 0.);
-   PVPBuffer = new G4PVPlacement(0, 
+   G4PVPlacement(0, 
                                  positionPhoSwStage, 
                                  logicPhoSwStage, 
                                  Name+"_PhoSwStage", 
                                  logicParisCluster, 
-                                 false, 
-                                 1);
+                                 false,7); 
+                                // 1);
 
    positionPhoSwStage = G4ThreeVector(-(LaBr3Face+InterSpace), LaBr3Face+InterSpace, 0.);
-   PVPBuffer = new G4PVPlacement(0, 
+   new G4PVPlacement(0, 
                                  positionPhoSwStage, 
                                  logicPhoSwStage, 
                                  Name+"_PhoSwStage", 
                                  logicParisCluster, 
-                                 false, 
-                                 2);
+                                 false,6); 
+                                 //2);
 
    positionPhoSwStage = G4ThreeVector(LaBr3Face+InterSpace, 0., 0.);
-   PVPBuffer = new G4PVPlacement(0, 
+   new G4PVPlacement(0, 
                                  positionPhoSwStage, 
                                  logicPhoSwStage, 
                                  Name+"_PhoSwStage", 
                                  logicParisCluster, 
-                                 false, 
-                                 3);
+                                 false,5); 
+                                 //3);
 
    positionPhoSwStage = G4ThreeVector(0., 0., 0.);
-   PVPBuffer = new G4PVPlacement(0, 
+   new G4PVPlacement(0, 
                                  positionPhoSwStage, 
                                  logicPhoSwStage, 
                                  Name+"_PhoSwStage", 
                                  logicParisCluster, 
-                                 false, 
-                                 4);
+                                 false, 4);
+                                 //4);
 
    positionPhoSwStage = G4ThreeVector(-(LaBr3Face+InterSpace), 0., 0.);
-   PVPBuffer = new G4PVPlacement(0, 
+   new G4PVPlacement(0, 
                                  positionPhoSwStage, 
                                  logicPhoSwStage, 
                                  Name+"_PhoSwStage", 
                                  logicParisCluster, 
-                                 false, 
-                                 5);
+                                 false, 3);
+                                 //5);
 
    positionPhoSwStage = G4ThreeVector(LaBr3Face+InterSpace, -(LaBr3Face+InterSpace), 0.);
-   PVPBuffer = new G4PVPlacement(0, 
+   new G4PVPlacement(0, 
                                  positionPhoSwStage, 
                                  logicPhoSwStage, 
                                  Name+"_PhoSwStage", 
                                  logicParisCluster, 
-                                 false, 
-                                 6);
+                                 false,2); 
+                                 //6);
 
    positionPhoSwStage = G4ThreeVector(0.,-(LaBr3Face+InterSpace), 0.);
-   PVPBuffer = new G4PVPlacement(0, 
+   new G4PVPlacement(0, 
                                  positionPhoSwStage, 
                                  logicPhoSwStage, 
                                  Name+"_PhoSwStage", 
                                  logicParisCluster, 
-                                 false, 
-                                 7);
+                                 false, 1);
+                                 //7);
 
    positionPhoSwStage = G4ThreeVector(-(LaBr3Face+InterSpace),-(LaBr3Face+InterSpace), 0.);
-   PVPBuffer = new G4PVPlacement(0, 
+   new G4PVPlacement(0, 
                                  positionPhoSwStage, 
                                  logicPhoSwStage, 
                                  Name+"_PhoSwStage", 
                                  logicParisCluster, 
-                                 false, 
-                                 8);
+                                 false, 0);
+                                 //8);
    
 
    // LaBr3
@@ -311,13 +308,13 @@ void ParisCluster::VolumeMaker(G4int             DetecNumber,
    G4Box*           solidLaBr3Stage = new G4Box(Name+"_LaBr3Stage", 0.5*LaBr3Face, 0.5*LaBr3Face, 0.5*LaBr3Thickness);
    G4LogicalVolume* logicLaBr3Stage = new G4LogicalVolume(solidLaBr3Stage, LaBr3, "logicLaBr3Stage", 0, 0, 0);
 
-   PVPBuffer = new G4PVPlacement(0, 
-                                 positionLaBr3Stage, 
-                                 logicLaBr3Stage, 
-                                 Name+"_LaBr3Stage", 
-                                 logicPhoSwStage, 
-                                 false, 
-                                 0);
+   new G4PVPlacement(0, 
+                     positionLaBr3Stage, 
+                     logicLaBr3Stage, 
+                     Name+"_LaBr3Stage", 
+                     logicPhoSwStage, 
+                     false, 
+                     0);
 
 
 
@@ -336,13 +333,13 @@ void ParisCluster::VolumeMaker(G4int             DetecNumber,
    //G4LogicalVolume* logicCsIStage = new G4LogicalVolume(solidCsIStage, CsI, "logicCsIStage", 0, 0, 0);
    G4LogicalVolume* logicCsIStage = new G4LogicalVolume(solidCsIStage, NaI, "logicCsIStage", 0, 0, 0);
 
-   PVPBuffer = new G4PVPlacement(0, 
-                                 positionCsIStage, 
-                                 logicCsIStage, 
-                                 Name + "_CsIStage", 
-                                 logicPhoSwStage, 
-                                 false, 
-                                 0);
+   new G4PVPlacement(0, 
+                     positionCsIStage, 
+                     logicCsIStage, 
+                     Name + "_CsIStage", 
+                     logicPhoSwStage, 
+                     false, 
+                     0);
 
    // Set CsI sensible
    logicCsIStage->SetSensitiveDetector(m_CsIStageScorer);
@@ -384,7 +381,6 @@ void ParisCluster::ReadConfiguration(string Path)
    bool check_Theta = false;
    bool check_Phi   = false;
    bool check_R     = false;
-   bool check_beta  = false;
    
    bool checkVis = false;
 
@@ -400,7 +396,7 @@ void ParisCluster::ReadConfiguration(string Path)
          ConfigFile >> DataBuffer;
          // Comment Line 
          if (DataBuffer.compare(0, 1, "%") == 0) {/*do nothing */;}
-   
+	
          // Position method
          else if (DataBuffer.compare(0, 6, "X1_Y1=") == 0) {
             check_A = true;
@@ -486,7 +482,6 @@ void ParisCluster::ReadConfiguration(string Path)
             cout << "R:  " << R / mm << endl;
          }
          else if (DataBuffer.compare(0, 5, "BETA=") == 0) {
-            check_beta = true;
             ConfigFile >> DataBuffer ;
             beta_u = atof(DataBuffer.c_str()) ;
             beta_u = beta_u * deg   ;
@@ -512,11 +507,11 @@ void ParisCluster::ReadConfiguration(string Path)
          if ((check_A && check_B && check_C && check_D && checkVis) && 
              !(check_Theta && check_Phi && check_R)) {
             ReadingStatus = false;
-       check_A = false;
-       check_C = false;
-       check_B = false;
-       check_D = false;
-       checkVis = false;
+	    check_A = false;
+	    check_C = false;
+	    check_B = false;
+	    check_D = false;
+	    checkVis = false;
 
             AddModule(A, B, C, D);
          }
@@ -526,11 +521,10 @@ void ParisCluster::ReadConfiguration(string Path)
              !(check_A && check_B && check_C && check_D)) {
             ReadingStatus = false;
             check_Theta = false;
-          check_Phi   = false;
-          check_R     = false;
-          check_beta  = false;
-       checkVis = false;
-           
+   	    check_Phi   = false;
+   	    check_R     = false;
+	    checkVis = false;
+		     
             AddModule(R, Theta, Phi, beta_u, beta_v, beta_w);
          }
       }
@@ -652,8 +646,9 @@ void ParisCluster::ReadSensitive(const G4Event* event)
  
       momentum = event->GetPrimaryVertex()->GetPrimary()->GetMomentum(); 
       G4double EGamma = momentum.getR(); // for photon E=p
-      G4double EGammaMin = EGamma-4*ResoFirstStage; 
-      G4double EGammaMax = EGamma+4*ResoFirstStage;
+      EGamma *= 1;
+      //G4double EGammaMin = EGamma-4*ResoFirstStage; 
+      //G4double EGammaMax = EGamma+4*ResoFirstStage;
 
    // First Stage (LaBr3)
    std::map<G4int, G4int*>::iterator    DetectorNumber_itr;
@@ -683,8 +678,10 @@ void ParisCluster::ReadSensitive(const G4Event* event)
    // NULL pointer are given to avoid warning at compilation
    // Second Stage (CsI)
    std::map<G4int, G4int*>::iterator    CsIDetectorNumber_itr;
+   std::map<G4int, G4int*>::iterator    CsICrystalNumber_itr; // added by Anna
    std::map<G4int, G4double*>::iterator CsIStageEnergy_itr ;
    G4THitsMap<G4int>* CsIDetectorNumberHitMap = NULL      ;
+   G4THitsMap<G4int>* CsICrystalNumberHitMap = NULL      ;    // added by Anna
    G4THitsMap<G4double>* CsIStageEnergyHitMap = NULL      ;
   
 
@@ -753,6 +750,14 @@ void ParisCluster::ReadSensitive(const G4Event* event)
    G4int CsIDetCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("CsIStageScorerParisCluster/CsIDetectorNumber")    ;
    CsIDetectorNumberHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(CsIDetCollectionID))         ;
    CsIDetectorNumber_itr =  CsIDetectorNumberHitMap->GetMap()->begin()                                               ;
+
+   //CsI Crystal Number  // added by Anna
+   G4int CsICryCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("CsIStageScorerParisCluster/CsICrystalNumber")    ; // added by Anna
+   CsICrystalNumberHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(CsICryCollectionID))         ;  // added by Anna
+   CsICrystalNumber_itr =  CsICrystalNumberHitMap->GetMap()->begin()                                               ; // added by Anna
+
+
+
    //CsI Energy
    G4int CsIStageEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("CsIStageScorerParisCluster/CsIStageEnergy")   ;
    CsIStageEnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(CsIStageEnergyCollectionID))                 ;
@@ -760,8 +765,8 @@ void ParisCluster::ReadSensitive(const G4Event* event)
 
 
    // Check the size of different map
-   G4int sizeN = DetectorNumberHitMap->entries();  // number of objects hit by trackID=1 (can be the same object hit several time) 
-   G4int sizeC = CrystalNumberHitMap->entries();
+   G4int sizeN = DetectorNumberHitMap->entries();  // number of hits by trackID=1 (can be the same object hit several time) 
+   G4int sizeC = CrystalNumberHitMap->entries();   // number of hits in all crystal by trackID=1
    G4int sizeE = EnergyHitMap->entries();          // = number of steps with edep non null 
    G4int sizeT = TimeHitMap->entries();
    //G4int sizeX = PosXHitMap->entries();
@@ -770,21 +775,28 @@ void ParisCluster::ReadSensitive(const G4Event* event)
    //G4int sizeY = YHitMap->entries();
 
    G4int sizeNCsI= CsIDetectorNumberHitMap->entries();
+   G4int sizeCCsI= CsICrystalNumberHitMap->entries(); // added by Anna
    G4int sizeECsI= CsIStageEnergyHitMap->entries();
 
-   sizeC *= 1;      // remove warning at compilation
-   sizeECsI *= 1;   // remove warning at compilation
-   //G4cout <<"SizeN=" << sizeN << endl;
-   //G4cout <<"SizeC=" << sizeC << endl;
-   //G4cout <<"SizeN CsI =" << sizeNCsI << endl;
-   //G4cout <<"SizeE CsI =" << sizeECsI << endl;
+   sizeC    *= 1;      // remove warning at compilation  added by Anna
+   sizeCCsI *= 1;      // remove warning at compilation  added by Anna
+   sizeECsI *= 1;   // remove warning at compilation  added by Anna
+   /*   
+   G4cout <<"SizeN=" << sizeN << endl;
+   G4cout <<"SizeC=" << sizeC << endl;
+   G4cout <<"SizeE=" << sizeE << endl;
+   G4cout <<"SizeT=" << sizeT << endl;
+   G4cout <<"SizeN CsI =" << sizeNCsI << endl;
+   G4cout <<"SizeC CsI =" << sizeCCsI << endl;
+   G4cout <<"SizeE CsI =" << sizeECsI << endl;
+   */
 
    //DetectorNumberHitMap->PrintAllHits();
 
 
     if (sizeE != sizeT) {
-      G4cout << "No match size PARIS Event Map: sE:"
-      << sizeE << " sT:" << sizeT << endl ;
+//      G4cout << "No match size PARIS Event Map: sE:"
+//      << sizeE << " sT:" << sizeT << endl ;
 
       //   if (sizeE != sizeX) {
       //G4cout << "No match size PARIS Event Map: sE:"
@@ -795,213 +807,356 @@ void ParisCluster::ReadSensitive(const G4Event* event)
 
     //G4cout <<"SizeN=" << sizeN << G4endl;
 
-
-   if(sizeN>0)
+    //if at least 1 cluster is hit:
+    if(sizeN>0)
      {
 
        // Deal with trackID=1:
-       G4int N_first= *(DetectorNumber_itr->second);                  // ID of first det hit
+       G4int N_first= *(DetectorNumber_itr->second);                  // ID of first hit det (det=cluster)
        G4int NTrackID =   DetectorNumber_itr->first - N_first;           // first trackID dealt with (not always =1)
        G4double E = *(Energy_itr->second);
        G4double T = *(Time_itr->second);
-       G4int NCryst= *(CrystalNumber_itr->second);
+       G4int NCryst= *(CrystalNumber_itr->second);                    // ID of first hit crystal
 
-       NCryst *= 1;    //remove warning at compilation
-       //G4cout <<"NTrackID=" << NTrackID << G4endl;
-       //G4cout <<"N_first=" << N_first << G4endl;
-       //G4cout <<"CrystalNumber_first=" << NCryst << G4endl;
-       //G4cout <<"Energy first=" << E << G4endl;
-       //G4cout <<"Time first =" << T << G4endl;
+       NCryst *= 1;    //remove warning at compilation  // added by Anna
+       NTrackID *= 1;    //remove warning at compilation
+       /*
+       G4cout <<"NTrackID=" << NTrackID << G4endl;
+       G4cout <<"N_first=" << N_first << G4endl;
+       G4cout <<"CrystalNumber_first=" << NCryst << G4endl;
+       G4cout <<"Energy first=" << E << G4endl;
+       G4cout <<"Time first =" << T << G4endl;
+       cout<<"*******"<<endl;
+
+	//added by Nicolas on the model of gaspard scorers 8/7/11
+         CrystalNumber_itr = CrystalNumberHitMap->GetMap()->begin();
+	 
+         for (G4int l = 0 ; l < sizeC ; l++) {
+	   G4double NCryst = *(CrystalNumber_itr->second);         
+	    G4int CTrackID  =   CrystalNumber_itr->first - N_first - NCryst;
+	    G4cout << N_first << "  " << NTrackID << "  " << CTrackID << "  " << NCryst << G4endl;
+            if (CTrackID == NTrackID) {
+	       G4cout << "****************** NCryst " <<  NCryst << G4endl;
+               //ms_Event->SetGPDTrkFirstStageFrontEEnergy(RandGauss::shoot(E, ResoFirstStage));
+               //ms_Event->SetGPDTrkFirstStageBackEEnergy(RandGauss::shoot(E, ResoFirstStage));
+            }
+            CrystalNumber_itr++;
+         }
+	 //rewind:
+         for (G4int l = 0 ; l < sizeC ; l++) {
+            CrystalNumber_itr--;
+	 }
+       */
+
+	 //if there is more than 1 interaction in crystals (1 interaction = 1 hit)
+	 if(sizeN>1)
+	 {
+            
+	   //At clusters'level
+	   for (G4int l = 1; l < sizeN ; l++) {                    // loop on all the other hits
+
+	   Energy_itr++;
+	   Time_itr++;
+           DetectorNumber_itr++;
+	   CrystalNumber_itr++;
+
+	     G4int N= *(DetectorNumber_itr->second);                // ID of hit cluster 
+	     G4int Nc= *(CrystalNumber_itr->second);                // ID of hit crystal
+
+	     //G4cout <<"l=" << l << G4endl;
+	     //G4cout <<"DetectorNumber_itr->first =" << DetectorNumber_itr->first << G4endl;
+	     //G4cout <<"TrackID=" << NTrackID << G4endl;
+	     //G4cout <<"CTrackID=" << CTrackID << G4endl;
+
+	     // At clusters'level:
+	     if(N==N_first)     // if the hit is still in the same cluster
+	       {
+		 // At crystals'level:
+		 if(Nc==NCryst)  // if we are still in the same crystal than the first hit crystal
+		   {
+		     E += *(Energy_itr->second);   // if same detector then sum up the energy
+		 
+		     // G4cout <<"Energy=" << E << G4endl;
+		 
+		   }else  // we fill the tree for the first hit crystal and move to the next hit crystal if any
+		     {
+		       if(E!=0)
+			 {
+			   //G4cout <<" -1- filling tree with energy=" << E << G4endl;
+			   // Fill detector number
+			   ms_Event->SetPARISLaBr3StageEDetectorNbr(m_index["Cluster"] + N_first );
+			   ms_Event->SetPARISLaBr3StageTDetectorNbr(m_index["Cluster"] + N_first );
+			   ms_Event->SetPARISLaBr3StageECrystalNbr(NCryst); // added by Anna
+			   ms_Event->SetPARISLaBr3StageTCrystalNbr(NCryst); // added by Anna
+			   // Fill Energy
+			   //ms_Event->SetPARISLaBr3StageEEnergy(RandGauss::shoot(E, ResoFirstStage));
+			   E=RandGauss::shoot(E, ResoFirstStage);
+			   ms_Event->SetPARISLaBr3StageEEnergy(E); // Fill the tree with energy deposited in first detector
+			   //if(E>EGammaMin && E<EGammaMax)ms_Event->SetPARISLaBr3StageEffphpeak(EGamma);
+		       
+			   // Fill Time
+			   ms_Event->SetPARISLaBr3StageTTime(RandGauss::shoot(T, ResoTimeGpd));
+		       
+			 }
+		   
+
+		       NCryst=Nc;   // continue with the next hit crystal		   
+		       E=*(Energy_itr->second);
+		     }
 
 
-       if(sizeN>1)
-    {
-      Energy_itr++;
-      Time_itr++;
-      CrystalNumber_itr++;
-      DetectorNumber_itr++;
-
-      for (G4int l = 1; l < sizeN ; l++) {                    // loop on all the other tracks
-
- 
-        G4int N= *(DetectorNumber_itr->second);            // ID of det hit
-        NTrackID =   DetectorNumber_itr->first - N;           // ID of the track
-
-        //G4cout <<"l=" << l << G4endl;
-        //G4cout <<"N=" << N << G4endl;
-        //G4cout <<"DetectorNumber_itr->first =" << DetectorNumber_itr->first << G4endl;
-        //G4cout <<"NTrackID=" << NTrackID << G4endl;
-
-        if(N==N_first)
-          {
-       E += *(Energy_itr->second);
-
-          }else  // we fill the tree for the first detector hit and move to the next detector hit
-       {
-         if(E!=0)
-           {
-             // Fill detector number
-             ms_Event->SetPARISLaBr3StageEDetectorNbr(m_index["Cluster"] + N_first);
-             ms_Event->SetPARISLaBr3StageTDetectorNbr(m_index["Cluster"] + N_first);
-             // Fill Energy
-             //ms_Event->SetPARISLaBr3StageEEnergy(RandGauss::shoot(E, ResoFirstStage));
-                 E=RandGauss::shoot(E, ResoFirstStage);
-                 ms_Event->SetPARISLaBr3StageEEnergy(E); // Fill the tree
-                 if(E>EGammaMin && E<EGammaMax)ms_Event->SetPARISLaBr3StageEffphpeak(EGamma);
-
-             // Fill Time
-             ms_Event->SetPARISLaBr3StageTTime(RandGauss::shoot(T, ResoTimeGpd));
-
-           }
-
-         N_first=N;
-         E=*(Energy_itr->second);
-
-       }
-
-
-        //G4cout <<"Energy=" << E << G4endl;
-        //G4cout <<"Time =" << T << G4endl;
-       
-        // Always fill the tree at the end of the loop:
-      if(l==(sizeN-1) && E!=0)
-        {
-          // Fill detector number
-          ms_Event->SetPARISLaBr3StageEDetectorNbr(m_index["Cluster"] + N_first);
-          ms_Event->SetPARISLaBr3StageTDetectorNbr(m_index["Cluster"] + N_first);
-          // Fill Energy
-          //ms_Event->SetPARISLaBr3StageEEnergy(RandGauss::shoot(E, ResoFirstStage));
-                 E=RandGauss::shoot(E, ResoFirstStage);
-                 ms_Event->SetPARISLaBr3StageEEnergy(E); // Fill the tree
-                 if(E>EGammaMin && E<EGammaMax)ms_Event->SetPARISLaBr3StageEffphpeak(EGamma);
-
-          // Fill Time
-          ms_Event->SetPARISLaBr3StageTTime(RandGauss::shoot(T, ResoTimeGpd));          
-        }
-
-        Energy_itr++;
-        DetectorNumber_itr++;
-      }
-    }else
-      {
-        // Fill the tree if sizeN=1:
-        if(E!=0)
-          {
-          // Fill detector number
-          ms_Event->SetPARISLaBr3StageEDetectorNbr(m_index["Cluster"] + N_first);
-          ms_Event->SetPARISLaBr3StageTDetectorNbr(m_index["Cluster"] + N_first);
-          // Fill Energy
-          //ms_Event->SetPARISLaBr3StageEEnergy(RandGauss::shoot(E, ResoFirstStage));
-                 E=RandGauss::shoot(E, ResoFirstStage);
-                 ms_Event->SetPARISLaBr3StageEEnergy(E); // Fill the tree
-                 if(E>EGammaMin && E<EGammaMax)ms_Event->SetPARISLaBr3StageEffphpeak(EGamma);
-
-          // Fill Time
-          ms_Event->SetPARISLaBr3StageTTime(RandGauss::shoot(T, ResoTimeGpd));
-          }
-      }
+	       }else  // if it's a new cluster, one fills the tree with first hit and inspect this new cluster 
+		 {
+	     
+		   if(E!=0)
+		     {
+//		       G4cout <<" -2- filling tree with energy=" << E << G4endl;
+		       // Fill detector number
+		       ms_Event->SetPARISLaBr3StageEDetectorNbr(m_index["Cluster"] + N_first );
+		       ms_Event->SetPARISLaBr3StageTDetectorNbr(m_index["Cluster"] + N_first );
+		       ms_Event->SetPARISLaBr3StageECrystalNbr(NCryst); // added by Anna
+			    ms_Event->SetPARISLaBr3StageTCrystalNbr(NCryst); // added by Anna
+		       // Fill Energy
+		       //ms_Event->SetPARISLaBr3StageEEnergy(RandGauss::shoot(E, ResoFirstStage));
+		       E=RandGauss::shoot(E, ResoFirstStage);
+		       ms_Event->SetPARISLaBr3StageEEnergy(E); // Fill the tree with energy deposited in first detector
+		       //if(E>EGammaMin && E<EGammaMax)ms_Event->SetPARISLaBr3StageEffphpeak(EGamma);
+		       
+		       // Fill Time
+		       ms_Event->SetPARISLaBr3StageTTime(RandGauss::shoot(T, ResoTimeGpd));
+		       
+		     }
+	    
+		   N_first=N;  // continue with the new hit cluster
+		   NCryst=Nc;   // and continue with the new hit crystal in this new cluster		   
+		   E=*(Energy_itr->second); 
    
- 
+		 }
+
+	     //G4cout <<"Energy=" << E << G4endl;
+	     //G4cout <<"Time =" << T << G4endl;
+       
+
+	     // Always fill the tree at the end of the loop:	   
+	     if(l==(sizeN-1) && E!=0)
+	       {
+//		 G4cout <<"-3- filling tree with energy=" << E << G4endl;
+		 // Fill detector number
+		 ms_Event->SetPARISLaBr3StageEDetectorNbr(m_index["Cluster"] + N_first);
+		 ms_Event->SetPARISLaBr3StageTDetectorNbr(m_index["Cluster"] + N_first);
+		 ms_Event->SetPARISLaBr3StageECrystalNbr(NCryst); // added by Anna
+	    ms_Event->SetPARISLaBr3StageTCrystalNbr(NCryst); // added by Anna
+//		 cout<<NTrackID<<" filled at the end "<<NCryst<<endl;
+
+		 // Fill Energy
+		 //ms_Event->SetPARISLaBr3StageEEnergy(RandGauss::shoot(E, ResoFirstStage));
+		 E=RandGauss::shoot(E, ResoFirstStage);
+		 ms_Event->SetPARISLaBr3StageEEnergy(E); // Fill the tree
+		 //if(E>EGammaMin && E<EGammaMax)ms_Event->SetPARISLaBr3StageEffphpeak(EGamma);
+
+		 // Fill Time
+		 ms_Event->SetPARISLaBr3StageTTime(RandGauss::shoot(T, ResoTimeGpd));	       
+	       }
+	   
+	   
+	   } // end of the l loop
+     
+	 }else
+	   {
+	     // Fill the tree if sizeN=1 and E>0
+	     if(E!=0)
+	       {
+//		 G4cout <<" -4- filling tree with energy=" << E << G4endl;
+		 // Fill detector number
+		 ms_Event->SetPARISLaBr3StageEDetectorNbr(m_index["Cluster"] + N_first);
+		 ms_Event->SetPARISLaBr3StageTDetectorNbr(m_index["Cluster"] + N_first);
+		 ms_Event->SetPARISLaBr3StageECrystalNbr(NCryst);
+	    ms_Event->SetPARISLaBr3StageTCrystalNbr(NCryst); // added by Anna
+//		 cout<<NTrackID<<" filled with sizeN=1 "<<NCryst<<endl;
+
+
+		 // Fill Energy
+		 //ms_Event->SetPARISLaBr3StageEEnergy(RandGauss::shoot(E, ResoFirstStage));
+		 E=RandGauss::shoot(E, ResoFirstStage);
+		 ms_Event->SetPARISLaBr3StageEEnergy(E); // Fill the tree
+		 //if(E>EGammaMin && E<EGammaMax)ms_Event->SetPARISLaBr3StageEffphpeak(EGamma);
+
+		 // Fill Time
+		 ms_Event->SetPARISLaBr3StageTTime(RandGauss::shoot(T, ResoTimeGpd));
+	       }
+	   }
+	
      }
   
 
    ///////// For CsI stage:
-   EGammaMin = EGamma-4*ResoSecondStage; 
-   EGammaMax = EGamma+4*ResoSecondStage;
+   //EGammaMin = EGamma-4*ResoSecondStage; 
+   //EGammaMax = EGamma+4*ResoSecondStage;
    if(sizeNCsI>0)
      {
        // Deal with trackID=1:
        G4int NCsI_first= *(CsIDetectorNumber_itr->second);                  // ID of first det hit
        G4int NCsITrackID =   CsIDetectorNumber_itr->first - NCsI_first;           // first trackID dealt with (not always =1)
        G4double E_CsI=*(CsIStageEnergy_itr->second);                   // Energy second stage
+       G4int NCsICryst= *(CsICrystalNumber_itr->second); //9/6 Nicolas and Anna added
 
 
        //G4cout <<"NCsITrackID=" << NCsITrackID << G4endl;
        //G4cout <<"NCsI_first=" << NCsI_first << G4endl;
        //G4cout <<"CsI Energy first=" << E_CsI << G4endl;
 
-       if(sizeNCsI>1)
-    {
-      CsIDetectorNumber_itr++;
-      CsIStageEnergy_itr++;
+	//added by Anna and Nicolas on the model of gaspard scorers 8/7/11
+         CsICrystalNumber_itr = CsICrystalNumberHitMap->GetMap()->begin();
+	 /*	
+         for (G4int l = 0 ; l < sizeCCsI ; l++) {
+            G4double NCsICryst = *(CsICrystalNumber_itr->second);
+	    G4int CCsITrackID  =   CsICrystalNumber_itr->first - NCsI_first - NCsICryst;
+	    G4cout << NCsI_first << "  " << NCsITrackID << "  " << CCsITrackID << "  " << NCsICryst << G4endl;
+            if (CCsITrackID == NCsITrackID) {
+	       G4cout << "****************** NCsICryst " <<  NCsICryst << G4endl;
+               //ms_Event->SetGPDTrkFirstStageFrontEEnergy(RandGauss::shoot(E, ResoFirstStage));
+               //ms_Event->SetGPDTrkFirstStageBackEEnergy(RandGauss::shoot(E, ResoFirstStage));
+            }
+            CsICrystalNumber_itr++;
+         }
+	 //rewind:
+         for (G4int l = 0 ; l < sizeCCsI ; l++) {
+            CsICrystalNumber_itr--;
+	 }
+	 */
 
-      for (G4int l = 1; l < sizeNCsI ; l++) {                    // loop on all the other tracks
+	 if(sizeNCsI>1)
+	 {
+	   for (G4int l = 1; l < sizeNCsI ; l++) {                    // loop on all the other tracks
 
+	     CsIStageEnergy_itr++;
+	     CsIDetectorNumber_itr++;
+	     CsICrystalNumber_itr++;
  
-        G4int NCsI= *(CsIDetectorNumber_itr->second);            // ID of det hit
-        NCsITrackID =   CsIDetectorNumber_itr->first - NCsI;           // ID of the track
+	     G4int NCsI= *(CsIDetectorNumber_itr->second);            // ID of hit cluster
+	     //NCsITrackID =   CsIDetectorNumber_itr->first - NCsI;           // ID of the track
+	     G4int NcCsI= *(CsICrystalNumber_itr->second);            // ID of hit CsI crystal
+	     //NcCsITrackID =   CsIDetectorNumber_itr->first - NCsI;           // ID of the track
 
-        //G4cout <<"l=" << l << G4endl;
-        //G4cout <<"NCsI=" << NCsI << G4endl;
-        //G4cout <<"DetectorNumber_itr->first =" << CsIDetectorNumber_itr->first << G4endl;
-        //G4cout <<"NCsITrackID=" << NCsITrackID << G4endl;
+	     //G4cout <<"l=" << l << G4endl;
+	     //G4cout <<"NCsI=" << NCsI << G4endl;
+	     //G4cout <<"DetectorNumber_itr->first =" << CsIDetectorNumber_itr->first << G4endl;
+	     //G4cout <<"NCsITrackID=" << NCsITrackID << G4endl;
 
-        if(NCsI==NCsI_first)
-          {
-      
-       E_CsI += *(CsIStageEnergy_itr->second);
 
-          }else  // we fill the tree for the first detector hit and move to the next detector hit
-       {
-         if(E_CsI!=0)
-           {
-             // Fill detector number
-             ms_Event->SetPARISCsIStageEDetectorNbr(m_index["Cluster"] + NCsI_first);
-             ms_Event->SetPARISCsIStageTDetectorNbr(m_index["Cluster"] + NCsI_first);
-             // Fill Energy
-             // ms_Event->SetPARISCsIStageEEnergy(RandGauss::shoot(E_CsI, ResoSecondStage));
-                 E_CsI=RandGauss::shoot(E_CsI, ResoSecondStage);
-                 ms_Event->SetPARISCsIStageEEnergy(E_CsI); // Fill the tree
-                 if(E_CsI>EGammaMin && E_CsI<EGammaMax)ms_Event->SetPARISCsIStageEffphpeak(EGamma);
+	     // At clusters'level:
+	     if(NCsI==NCsI_first)    // if the hit is still in the same cluster
+	       {
+		
+		 // At crystals'level:
+		 if(NcCsI==NCsICryst)  // if we are still in the same crystal than the first hit CsI crystal
+		   {
+		     E_CsI += *(CsIStageEnergy_itr->second);   // if same detector then sum up the energy
 
-             // Fill Time
-             //ms_Event->SetPARISCsIStageTTime(RandGauss::shoot(T_CsI, ResoTimeGpd));
-           }
-         
-          NCsI_first=NCsI;
-          E_CsI=*(CsIStageEnergy_itr->second);
-       }
+		   }else  // we fill the tree for the first detector hit and move to the next detector hit
+		     {
+		       if(E_CsI!=0)
+			 {
+//			   G4cout <<" -1- filling tree with energy in CsI =" << E_CsI << G4endl;
+			   // Fill detector number
+			   ms_Event->SetPARISCsIStageEDetectorNbr(m_index["Cluster"] + NCsI_first);
+			   ms_Event->SetPARISCsIStageTDetectorNbr(m_index["Cluster"] + NCsI_first);
+			   ms_Event->SetPARISCsIStageECrystalNbr(NCsICryst);
+			   ms_Event->SetPARISCsIStageTCrystalNbr(NCsICryst);
+			   // Fill Energy
+			   // ms_Event->SetPARISCsIStageEEnergy(RandGauss::shoot(E_CsI, ResoSecondStage));
+		           E_CsI=RandGauss::shoot(E_CsI, ResoSecondStage);
+		           ms_Event->SetPARISCsIStageEEnergy(E_CsI); // Fill the tree
+		           //if(E_CsI>EGammaMin && E_CsI<EGammaMax)ms_Event->SetPARISCsIStageEffphpeak(EGamma);
 
-        //G4cout <<"Energy_CsI=" << E_CsI << G4endl;
+			   // Fill Time
+			   //ms_Event->SetPARISCsIStageTTime(RandGauss::shoot(T_CsI, ResoTimeGpd));
 
-        // Always fill the tree at the end of the loop:
+			   //ms_Event->SetPARISCsIStageECrystalNbr(NCsICryst); // added by Anna
+			   //cout<<NCsITrackID<<" filled with sizeN=1 "<<NCsICryst<<endl;
+			 }
+		   
+		       NCsICryst=NcCsI;   // continue with the next hit CsI crystal
+		       E_CsI=*(CsIStageEnergy_itr->second);
+		     }
+
+	       }else           // if it's a new cluster, one fills the tree with first hit and inspect the new cluster 
+		 {
+		   if(E_CsI!=0)
+		     {
+//		       G4cout <<" -2- filling tree with energy in CsI =" << E_CsI << G4endl;
+		       // Fill detector number
+		       ms_Event->SetPARISCsIStageEDetectorNbr(m_index["Cluster"] + NCsI_first );
+		       ms_Event->SetPARISCsIStageTDetectorNbr(m_index["Cluster"] + NCsI_first );
+		       ms_Event->SetPARISCsIStageECrystalNbr(NCsICryst); // added by Anna
+		       ms_Event->SetPARISCsIStageTCrystalNbr(NCsICryst); // added by Anna
+		       // Fill Energy
+		       //ms_Event->SetPARISLaBr3StageEEnergy(RandGauss::shoot(E, ResoFirstStage));
+		       E_CsI=RandGauss::shoot(E_CsI, ResoFirstStage);
+		       ms_Event->SetPARISCsIStageEEnergy(E_CsI); // Fill the tree with energy deposited in first detector
+		       //if(E_CsI>EGammaMin && E_CsI<EGammaMax)ms_Event->SetPARISCsIStageEffphpeak(EGamma);
+		       
+		       // Fill Time
+		       //ms_Event->SetPARISCsIStageTTime(RandGauss::shoot(T_CsI, ResoTimeGpd));
+
+		     }
+	    
+		   NCsI_first=NCsI;  // continue with the new hit cluster
+		   NCsICryst=NcCsI;   // and continue with the new hit CsI crystal in this new cluster
+		   E_CsI=*(CsIStageEnergy_itr->second); 
+   
+		 }
+
+
+	   // Always fill the tree at the end of the loop:
        
-      if(l==(sizeNCsI-1) && E_CsI!=0)
-        {
-          // Fill detector number
-          ms_Event->SetPARISCsIStageEDetectorNbr(m_index["Cluster"] + NCsI_first);
-          ms_Event->SetPARISCsIStageTDetectorNbr(m_index["Cluster"] + NCsI_first);
-          // Fill Energy
-          // ms_Event->SetPARISCsIStageEEnergy(RandGauss::shoot(E_CsI, ResoSecondStage));
-                 E_CsI=RandGauss::shoot(E_CsI, ResoSecondStage);
-                 ms_Event->SetPARISCsIStageEEnergy(E_CsI); // Fill the tree
-                 if(E_CsI>EGammaMin && E_CsI<EGammaMax)ms_Event->SetPARISCsIStageEffphpeak(EGamma);
-          // Fill Time
-          //ms_Event->SetPARISCsIStageTTime(RandGauss::shoot(T_CsI, ResoTimeGpd));
-          
-          }
+	     if(l==(sizeNCsI-1) && E_CsI!=0)
+	       {
+//		 G4cout <<" -3- filling tree with energy in CsI =" << E_CsI << G4endl;
+		 // Fill detector number
+		 ms_Event->SetPARISCsIStageEDetectorNbr(m_index["Cluster"] + NCsI_first);
+		 ms_Event->SetPARISCsIStageTDetectorNbr(m_index["Cluster"] + NCsI_first);
+		 ms_Event->SetPARISCsIStageECrystalNbr(NCsICryst);
+		 ms_Event->SetPARISCsIStageTCrystalNbr(NCsICryst);
+		 // Fill Energy
+		 // ms_Event->SetPARISCsIStageEEnergy(RandGauss::shoot(E_CsI, ResoSecondStage));
+		 E_CsI=RandGauss::shoot(E_CsI, ResoSecondStage);
+		 ms_Event->SetPARISCsIStageEEnergy(E_CsI); // Fill the tree
+		 //if(E_CsI>EGammaMin && E_CsI<EGammaMax)ms_Event->SetPARISCsIStageEffphpeak(EGamma);
+		 // Fill Time
+		 //ms_Event->SetPARISCsIStageTTime(RandGauss::shoot(T_CsI, ResoTimeGpd));
+	       
+		 ms_Event->SetPARISCsIStageECrystalNbr(NCsICryst); // added by Anna
+		 cout<<NCsITrackID<<" filled with sizeN=1 "<<NCsICryst<<endl;
+	       }
 
-        CsIStageEnergy_itr++;
-        CsIDetectorNumber_itr++;
-      }
+	   }  // end of l loop
 
-    }else
-      {
-        // Fill the tree if sizeN=1:
-        if(E_CsI!=0)
-          {
-          // Fill detector number
-          ms_Event->SetPARISCsIStageEDetectorNbr(m_index["Cluster"] + NCsI_first);
-          ms_Event->SetPARISCsIStageTDetectorNbr(m_index["Cluster"] + NCsI_first);
-          // Fill Energy
-          // ms_Event->SetPARISCsIStageEEnergy(RandGauss::shoot(E_CsI, ResoSecondStage));
-                 E_CsI=RandGauss::shoot(E_CsI, ResoSecondStage);
-                 ms_Event->SetPARISCsIStageEEnergy(E_CsI); // Fill the tree
-                 if(E_CsI>EGammaMin && E_CsI<EGammaMax)ms_Event->SetPARISCsIStageEffphpeak(EGamma);
-          // Fill Time
-          //ms_Event->SetPARISCsIStageTTime(RandGauss::shoot(T_CsI, ResoTimeGpd));
-          }
-      }
+	 }else
+	   {
+	     // Fill the tree if sizeN=1:
+	     if(E_CsI!=0)
+	       {
+//		 G4cout <<" -4- filling tree with energy in CsI =" << E_CsI << G4endl;
+		 // Fill detector number
+		 ms_Event->SetPARISCsIStageEDetectorNbr(m_index["Cluster"] + NCsI_first);
+		 ms_Event->SetPARISCsIStageTDetectorNbr(m_index["Cluster"] + NCsI_first);
+		 ms_Event->SetPARISCsIStageECrystalNbr(NCsICryst);
+		 ms_Event->SetPARISCsIStageTCrystalNbr(NCsICryst);
+		 // Fill Energy
+		 // ms_Event->SetPARISCsIStageEEnergy(RandGauss::shoot(E_CsI, ResoSecondStage));
+		 E_CsI=RandGauss::shoot(E_CsI, ResoSecondStage);
+		 ms_Event->SetPARISCsIStageEEnergy(E_CsI); // Fill the tree
+		 //if(E_CsI>EGammaMin && E_CsI<EGammaMax)ms_Event->SetPARISCsIStageEffphpeak(EGamma);
+		 // Fill Time
+		 //ms_Event->SetPARISCsIStageTTime(RandGauss::shoot(T_CsI, ResoTimeGpd));
+
+		 // Fill Crystal number  // added by Anna
+		 ms_Event->SetPARISCsIStageECrystalNbr(NCsICryst);
+		 //cout<<NCsITrackID<<" filled with sizeN=1 "<<NCsICryst<<endl;
+		 
+	       }
+	   }
  
      }
   
@@ -1010,6 +1165,7 @@ void ParisCluster::ReadSensitive(const G4Event* event)
 
       // clear map for next event
       DetectorNumberHitMap    -> clear();
+      CrystalNumberHitMap     -> clear();  // added by anna
       EnergyHitMap            -> clear();
       TimeHitMap              -> clear();
       //XHitMap                 -> clear();
@@ -1021,6 +1177,7 @@ void ParisCluster::ReadSensitive(const G4Event* event)
       //AngPhiHitMap            -> clear();
 
       CsIDetectorNumberHitMap    -> clear();
+      CsICrystalNumberHitMap    -> clear();   // added by Anna
       CsIStageEnergyHitMap -> clear();
       //    SecondStageEnergyHitMap -> clear();
       //    ThirdStageEnergyHitMap  -> clear();
@@ -1072,9 +1229,11 @@ void ParisCluster::InitializeScorers()
    m_CsIStageScorer = new G4MultiFunctionalDetector("CsIStageScorerParisCluster");
    /**/
    G4VPrimitiveScorer* CsIDetNbr                        = new PARISScorerCsIStageDetectorNumber("CsIDetectorNumber", "ParisCluster", 0);
+   G4VPrimitiveScorer* CsICryNbr                        = new PARISScorerCsIStageCrystalNumber("CsICrystalNumber", "ParisCluster", 0);
    G4VPrimitiveScorer* CsIStageEnergy                   = new PARISScorerCsIStageEnergy("CsIStageEnergy", "ParisCluster", 0);
 
    m_CsIStageScorer->RegisterPrimitive(CsIDetNbr);
+   m_CsIStageScorer->RegisterPrimitive(CsICryNbr); // Added by anna
    m_CsIStageScorer->RegisterPrimitive(CsIStageEnergy);
    /**/
 

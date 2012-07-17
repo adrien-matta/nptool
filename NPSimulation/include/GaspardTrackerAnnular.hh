@@ -121,11 +121,9 @@ private:
 namespace GPDANNULAR
 {
    // Energy/Time resolutions for the different layers
-   const G4double ResoFirstStage  = 0              ;// = 52keV of Resolution   //   Unit is MeV/2.35
-//   const G4double ResoFirstStage  = 0.022          ;// = 52keV of Resolution   //   Unit is MeV/2.35
-   const G4double ResoSecondStage = 0.055          ;// = 130 keV of resolution //   Unit is MeV/2.35
-   const G4double ResoThirdStage  = 0              ;// = 100 keV of resolution //   Unit is MeV/2.35
-//   const G4double ResoThirdStage  = 0.043          ;// = 100 kev of resolution //   Unit is MeV/2.35
+   const G4double ResoFirstStage  = 0.021          ;// = 52keV of Resolution   //   Unit is MeV/2.35
+   const G4double ResoSecondStage = 0.043          ;// = 100 keV of resolution //   Unit is MeV/2.35
+   const G4double ResoThirdStage  = 0.043          ;// = 100 kev of resolution //   Unit is MeV/2.35
    const G4double ResoTimeGpd     = 0.212765957    ;// = 500ps                 //   Unit is  ns/2.35
    const G4double ResoTimePPAC    = 0.106382979    ;// = 250ps                 //   Unit is  ns/2.35
 

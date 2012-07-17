@@ -19,28 +19,34 @@
  *                                                                           *
  *****************************************************************************/
 
-#ifndef GaspardTrackerSquare_h
-#define GaspardTrackerSquare_h 1
+#ifndef ComptonTelescope_h
+#define ComptonTelescope_h 1
+
+// NPTool headers
+#include "VDetector.hh"
+#include "TComptonTelescopeData.h"
+#include "TComptonTelescopeProcessData.h"
+
+// Geant4 headers
+#include "G4SDManager.hh"
+#include "G4MultiFunctionalDetector.hh"
+#include "G4Event.hh"
 
 // C++ headers
 #include <vector>
-
-// NPTool header
-#include "GaspardTrackerModule.hh"
-#include "TInteractionCoordinates.h"
-
 using namespace std;
 
 
 
-class GaspardTrackerSquare : public GaspardTrackerModule
+class ComptonTelescope : public VDetector
+//class ComptonTelescope
 {
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
    ////////////////////////////////////////////////////
 public:
-   GaspardTrackerSquare();
-   virtual ~GaspardTrackerSquare();
+   ComptonTelescope();
+   virtual ~ComptonTelescope();
 
    ////////////////////////////////////////////////////
    //////// Specific Function of this Class ///////////
@@ -51,9 +57,8 @@ public:
                   G4ThreeVector BL           ,
                   G4ThreeVector BR           ,
                   G4ThreeVector CT           ,
-                  bool          wFirstStage  ,
-                  bool          wSecondStage ,
-                  bool          wThirdStage);
+                  bool          wTracker  ,
+                  bool          wCalorimeter);
 
    // By Angle Method
    void AddModule(G4double R            ,
@@ -62,24 +67,22 @@ public:
                   G4double beta_u       ,
                   G4double beta_v       ,
                   G4double beta_w       ,
-                  bool     wFirstStage  ,
-                  bool     wSecondStage ,
-                  bool     wThirdStage);
+                  bool     wTracker  ,
+                  bool     wCalorimeter);
 
    // Effectively construct Volume
    // Avoid to have two time same code for Angle and Point definition
    void VolumeMaker(G4int TelescopeNumber          ,
-                    G4ThreeVector     MMpos        ,
-                    G4RotationMatrix* MMrot        ,
-                    bool              wFirstStage  ,
-                    bool              wSecondStage ,
-                    bool              wThirdStage  ,
+                    G4ThreeVector     CTpos        ,
+                    G4RotationMatrix* CTrot        ,
+                    bool              wTracker  ,
+                    bool              wCalorimeter ,
                     G4LogicalVolume*  world);
 
 
-   ////////////////////////////////////////////////////
-   ////  Inherite from GaspardTrackerModule class /////
-   ////////////////////////////////////////////////////
+   /////////////////////////////////////////
+   ////  Inherite from VDetector class /////
+   /////////////////////////////////////////
 public:
    // Read stream at Configfile to pick-up parameters of detector (Position,...)
    // Called in DetecorConstruction::ReadDetextorConfiguration Method
@@ -100,21 +103,46 @@ public:
    // Called at in the EventAction::EndOfEventAvtion
    void ReadSensitive(const G4Event* event);
 
-   // Give the static TInteractionCoordinates from VDetector to the classes
-   // deriving from GaspardTrackerModule
-   // This is mandatory since the GaspardTracker*** does not derive from VDetector
-   void SetInterCoordPointer(TInteractionCoordinates* interCoord);
-   TInteractionCoordinates* GetInterCoordPointer()   {return ms_InterCoord;};
+
+   ////////////////////////////////////////////////////
+   ///////////Event class to store Data////////////////
+   ////////////////////////////////////////////////////
+private:
+   TComptonTelescopeData*        m_Event;
+   TComptonTelescopeProcessData* m_ProcessEvent;
+
+
+   ////////////////////////////////////////////////////
+   ///////////////////// Scorer ///////////////////////
+   ////////////////////////////////////////////////////
+private:
+   // Silicon Associate Scorer
+   G4MultiFunctionalDetector* m_TrackerScorer;
+
+   // CsI Associate Scorer 
+   G4MultiFunctionalDetector* m_CalorimeterScorer;
+
+
+   ////////////////////////////////////////////////////
+   //////////////////// Material //////////////////////
+   ////////////////////////////////////////////////////
+private:
+   //   Declare all material used by the MUST2Array
+   void InitializeMaterial() ;
+   // Si
+   G4Material* m_MaterialSilicon;
+   // Al
+   G4Material* m_MaterialAluminium;
+   // CsI
+   G4Material* m_MaterialLaBr3;
+   //  Vacuum
+   G4Material* m_MaterialVacuum ;
 
 
    ////////////////////////////////////////////////////
    ///////////////Private intern Data//////////////////
    ////////////////////////////////////////////////////
 private:
-   // Interaction Coordinates coming from VDetector through the 
-   // SetInteractionCoordinatesPointer method
-   TInteractionCoordinates* ms_InterCoord;
-
    // True if Define by Position, False is Define by angle
    vector<bool>   m_DefinitionType  ;
 
@@ -132,49 +160,33 @@ private:
    vector<G4double>  m_beta_u ; //  |
    vector<G4double>  m_beta_v ; //  > Tilt angle of the Telescope
    vector<G4double>  m_beta_w ; //  |
+
+   // Set to true if you want this stage on you telescope
+   vector<bool>      m_wTracker;
+   vector<bool>      m_wCalorimeter;
+
+   // Set to true if you want to see Telescope Frame in your visualisation
+   bool m_non_sensitive_part_visiualisation ;
+
+   G4int    m_NumberOfDSSSD;
+   G4int    m_SizeOfDSSSD;
+   G4int    m_NumberOfStrips;
+   G4double m_ThicknessOfDSSSD;
+   G4double m_DistanceInterDSSSD;
+   G4double m_ThicknessOfCalorimeter;
+   G4double m_DistanceTrackerCalorimeter;
+   G4double m_TowerHeight;
 };
 
 
 
-namespace GPDSQUARE
+namespace COMPTONTELESCOPE
 {
    // Resolution
-   const G4double ResoFirstStage  = 0.021          ;// = 52keV of Resolution   //   Unit is MeV/2.35
-   const G4double ResoSecondStage = 0.043          ;// = 130 keV of resolution //   Unit is MeV/2.35
-   const G4double ResoThirdStage  = 0.043          ;// = 100 kev of resolution //   Unit is MeV/2.35
-   const G4double ResoTimeGpd     = 0.212765957    ;// = 500ps                 //   Unit is  ns/2.35
-   const G4double ResoTimePPAC    = 0.106382979    ;// = 250ps                 //   Unit is  ns/2.35
-
-   // Geometry
-   const G4double FaceFront          = 11*cm;
-   const G4double FaceBack           = 11*cm;
-   const G4double Length             = 1.6*cm;
-   const G4double InterStageDistance = 7*mm;
-
-   // First stage
-   const G4double FirstStageFace      = 98*mm;
-   const G4double FirstStageThickness = 300*micrometer;
-   const G4int    NumberOfStrips      = 128;
-   const G4double AluStripThickness   = 0.4*micrometer;
-
-   // Second stage
-   const G4double SecondStageFace      = FirstStageFace;
-   const G4double SecondStageThickness = 1.5*mm;
-
-   // Third stage
-   const G4double ThirdStageFace      = FirstStageFace;
-   const G4double ThirdStageThickness = 1.5*mm;
-
-   // Starting at the front of the first stage and pointing to the third stage
-   const G4double FirstStage_PosZ  = Length* -0.5 + 0.5*FirstStageThickness;
-   const G4double SecondStage_PosZ = Length* -0.5 + 0.5*SecondStageThickness + 1*InterStageDistance;
-   const G4double ThirdStage_PosZ  = Length* -0.5 + 0.5*ThirdStageThickness  + 2*InterStageDistance;
-
-//   const G4double AluStripFront_PosZ = Length* -0.5 + 0.5*AluStripThickness                              ;
-//   const G4double Silicon_PosZ       = AluStripFront_PosZ + 0.5*AluStripThickness + 0.5*SiliconThickness ;
-//   const G4double AluStripBack_PosZ  = Silicon_PosZ + 0.5*SiliconThickness + 0.5*AluStripThickness       ;
-//   const G4double VacBox_PosZ        = AluStripBack_PosZ + 0.5*AluStripThickness + 0.5* VacBoxThickness  ;
-//   const G4double ThirdStage_PosZ    = VacBox_PosZ + 0.5*VacBoxThickness + 0.5*ThirdStageThickness       ;
+   const G4double EnergyResolutionTracker    = 0.0064;       // = 15 keV of Resolution   //   Unit is MeV/2.35
+   const G4double TimeResolutionTracker      = 0.212765957;  // = 500ps                 //   Unit is  ns/2.35
+   const G4double EnergyReolutionCalorimeter = 0.021;        // = 52keV of Resolution   //   Unit is MeV/2.35
+   const G4double TimeResolutionCalorimeter  = 0.212765957;  // = 500ps                 //   Unit is  ns/2.35
 }
 
 #endif

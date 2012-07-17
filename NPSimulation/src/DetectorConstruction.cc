@@ -40,16 +40,18 @@
 #include "G4RotationMatrix.hh"
 
 // Detector class
+#include "AnnularS1.hh"
+#include "Chamber.hh"
+#include "ComptonTelescope.hh"
 #include "DummyDetector.hh"
-#include "MUST2Array.hh"
+#include "Eurogam.hh"
 #include "GaspardTracker.hh"
 #include "HydeTracker.hh"
-#include "AnnularS1.hh"
-#include "Target.hh"
-#include "Chamber.hh"
-#include "ThinSi.hh"
-#include "Plastic.hh"
+#include "MUST2Array.hh"
 #include "Paris.hh"
+#include "Plastic.hh"
+#include "Target.hh"
+#include "ThinSi.hh"
 #include "Shield.hh"
 #include "W1.hh"
 
@@ -93,9 +95,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
    //------------------------------world volume
 
-   G4double world_x = 80.0 * cm;
-   G4double world_y = 80.0 * cm;
-   G4double world_z = 80.0 * cm;
+   G4double world_x = 10.0 * m;
+   G4double world_y = 10.0 * m;
+   G4double world_z = 10.0 * m;
 
    G4Box* world_box
    = new G4Box("world_box", world_x, world_y, world_z);
@@ -137,19 +139,25 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
    return world_phys;
 }
 
+
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void DetectorConstruction::AddDetector(VDetector* NewDetector)
 {
    // Add new detector to vector
    m_Detectors.push_back(NewDetector);
+
    // Initialize Scorer
    NewDetector->InitializeScorers();
+
    // Construct new detector
    NewDetector->ConstructDetector(world_log);
+
    // Add Detector to TTree
    NewDetector->InitializeRootOutput();
-   
 }
+
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void DetectorConstruction::ReadConfigurationFile(string Path)
@@ -159,18 +167,20 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
    string DataBuffer;
 
    /////////Checking Boolean////////////////////
-   bool cMUST2           = false;
-   bool cAddThinSi       = false;
-   bool cGeneralTarget   = false;
-   bool cGeneralChamber  = false;
-   bool cGPDTracker      = false;   // Gaspard Tracker
-   bool cHYDTracker      = false;   // Hyde detector
-   bool cS1              = false;
-   bool cPlastic         = false;
-   bool cDummy           = false;
-   bool cParis           = false;   // Paris Calorimeter
-   bool cShield          = false;   // Paris Shield CsI
-   bool cW1              = false;   // W1 Micron DSSD
+   bool cAddThinSi        = false;
+   bool cComptonTelescope = false;
+   bool cDummy            = false;
+   bool cEurogam          = false;
+   bool cGeneralTarget    = false;
+   bool cGeneralChamber   = false;
+   bool cGPDTracker       = false;   // Gaspard Tracker
+   bool cHYDTracker       = false;   // Hyde detector
+   bool cMUST2            = false;
+   bool cPlastic          = false;
+   bool cParis            = false;   // Paris Calorimeter
+   bool cS1               = false;
+   bool cShield           = false;   // Paris Shield CsI
+   bool cW1               = false;   // W1 Micron DSSD
    //////////////////////////////////////////////////////////////////////////////////////////
    ifstream ConfigFile;
    ConfigFile.open(Path.c_str());
@@ -205,6 +215,46 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
 
          // Add array to the VDetector Vector
          AddDetector(myDetector)                            ;
+      }
+
+
+      /////////////////////////////////////////////////////
+      //////////// Search for ComptonTelescope ////////////
+      /////////////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 16, "ComptonTelescope") == 0 && cComptonTelescope == false) {
+         cComptonTelescope = true;
+         G4cout << "//////// ComptonTelescope  ////////" << G4endl;
+
+         // Instantiate the new array as a VDetector Object
+         VDetector* myDetector = new ComptonTelescope();
+
+         // Read Position of detector
+         ConfigFile.close();
+         myDetector->ReadConfiguration(Path);
+         ConfigFile.open(Path.c_str());
+
+         // Add array to the VDetector Vector
+         AddDetector(myDetector);
+      }
+
+
+      ////////////////////////////////////////////
+      //////////// Search for Eurogam ////////////
+      ////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 7, "Eurogam") == 0 && cEurogam == false) {
+         cEurogam = true;
+         G4cout << "//////// Eurogam  ////////" << G4endl;
+
+         // Instantiate the new array as a VDetector Object
+         VDetector* myDetector = new Eurogam();
+
+         // Read Position of detector
+         ConfigFile.close();
+         myDetector->ReadConfiguration(Path);
+         ConfigFile.open(Path.c_str());
+
+         // Add array to the VDetector Vector
+         AddDetector(myDetector);
       }
 
 

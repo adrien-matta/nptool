@@ -95,7 +95,7 @@ public:
    // deriving from ParisModule
    // This is mandatory since the Paris*** does not derive from VDetector
    void SetInterCoordPointer(TInteractionCoordinates* interCoord);
-   TInteractionCoordinates* GetInterCoordPointer()   {return ms_InterCoord;};
+   TInteractionCoordinates* GetInterCoordPointer()	{return ms_InterCoord;};
 
 
    ////////////////////////////////////////////////////
@@ -133,26 +133,30 @@ private:
 namespace PARISCLUSTER
 {
    // Resolution
-//   const G4double ResoFirstStage  = 0;   // = 50 keV of Resolution   //   Unit is MeV/2.35
-   const G4double ResoFirstStage  = 0.0085;   // = 3% at .662 MeV of Resolution   //   Unit is MeV/2.35
-   const G4double ResoSecondStage = 0.0366;   // = 13% at .662 MeV of resolution //   Unit is MeV/2.35
-   const G4double ResoThirdStage  = 0.0;   // = 50 keV of resolution //   Unit is MeV/2.35
+//   const G4double ResoFirstStage  = 0;	// = 50 keV of Resolution   //   Unit is MeV/2.35
+   const G4double ResoFirstStage  = 0.0085;	// = 3% at .662 MeV of Resolution   //   Unit is MeV/2.35
+   const G4double ResoSecondStage = 0.0366;	// = 13% at .662 MeV of resolution //   Unit is MeV/2.35
+   const G4double ResoThirdStage  = 0.0;	// = 50 keV of resolution //   Unit is MeV/2.35
    const G4double ResoTimeGpd     = 0.212765957;// = 500ps                 //   Unit is  ns/2.35
 
    // Geometry for the mother volume containing the different layers of your dummy shape module
    const G4double FaceFront          = 16.9*cm;
    const G4double FaceBack           = 16.9*cm;
-   const G4double Length             = 21*cm;
+  //const G4double Length             = 21*cm; // for 2x2x2 LaBr + 2x2x6 NaI
+   const G4double Length             = 23.6*cm; // for 2x2x3 LaBr + 2x2x6 NaI
 
    // Geometry for the phoswitch
    // LaBr3
    const G4double LaBr3Face       = 5.08*cm;
-   const G4double LaBr3Thickness  = 5.08*cm;
+  //const G4double LaBr3Thickness  = 5.08*cm; // for phoswich 2x2x2
+   const G4double LaBr3Thickness  = 7.62*cm; // for phoswich 2x2x3
+  //const G4double LaBr3Thickness  = 15.24*cm; // for long LaBr3 2x2x6
    const G4double InterSpace  = 0.3*cm;
 
    // CsI
    const G4double CsIFace      = LaBr3Face;
-   const G4double CsIThickness = 15.24*cm;
+   const G4double CsIThickness = 15.24*cm; // for phoswich 2x2x6
+  //const G4double CsIThickness = 0.001*cm; // for long LaBr3
 
    // Starting form the LaBr3 and going to the CsI
    const G4double LaBr3Stage_PosZ  = Length* -0.5 + 0.5*LaBr3Thickness;
