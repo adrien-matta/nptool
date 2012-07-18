@@ -245,7 +245,7 @@ bool TMayaData::Calibrate(){
 
       if(fMaya_PAD_Nbr.at(i)<fMaya_PAD_E_calpar.size()){
 	for(unsigned int j=0;j<fMaya_PAD_E_calpar.at(tmpNbr).size();j++){
-	  tmpCal += pow(fMaya_PAD_E.at(i),j)*fMaya_PAD_E_calpar.at(tmpNbr).at(j) ;
+	  tmpCal += pow((double)fMaya_PAD_E.at(i),(double)j)*fMaya_PAD_E_calpar.at(tmpNbr).at(j) ;
 	}
 	if(tmpCal>fMaya_PAD_E_cal_threshold){
 	  fMaya_PAD_E_cal.at(i) = tmpCal ;
@@ -372,7 +372,7 @@ Conclusion : all have two times r-1,r,r+1 combinaisons
       } else {
 	if(fMaya_QFIL_T_Nbr.at(i)<fMaya_QFIL_T_calpar.size()){
 	  for(unsigned int j=0;j<fMaya_QFIL_T_calpar.at(tmpNbr).size();j++){
-	    tmpCal += pow(fMaya_QFIL_T.at(i),j)*fMaya_QFIL_T_calpar.at(tmpNbr).at(j) ;
+	    tmpCal += pow((double)fMaya_QFIL_T.at(i),(double)j)*fMaya_QFIL_T_calpar.at(tmpNbr).at(j) ;
 	  }
 	  fMaya_QFIL_T_cal.at(i) = tmpCal ;
 	  //fprintf(fichier_test,"%f \n",fMaya_QFIL_T_cal.at(i));
@@ -416,7 +416,7 @@ cout << "out Qfil " << endl ;
       } else {
 	if(fMaya_Si_E_Nbr.at(i)<fMaya_Si_E_calpar.size()){
 	  for(unsigned int j=0;j<fMaya_Si_E_calpar.at(tmpNbr).size();j++){
-	    tmpCal += pow(fMaya_Si_E.at(i),j)*fMaya_Si_E_calpar.at(tmpNbr).at(j) ;
+	    tmpCal += pow((double)fMaya_Si_E.at(i),(double)j)*fMaya_Si_E_calpar.at(tmpNbr).at(j) ;
 	  }
 	  fMaya_Si_E_cal.at(i) = tmpCal ;
 	}
