@@ -199,109 +199,109 @@ void EventGeneratorTransfert::ReadConfiguration(string Path)
         //Search for comment Symbol %
           if (DataBuffer.compare(0, 1, "%") == 0) {   ReactionFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
         
-         else if (DataBuffer.compare(0, 5, "Beam=") == 0) {
+         else if (DataBuffer=="Beam=") {
             check_Beam = true ;
             ReactionFile >> DataBuffer;
             Beam = DataBuffer;
             G4cout << "Beam " << Beam << G4endl;
          }
 
-         else if (DataBuffer.compare(0, 7, "Target=") == 0) {
+         else if (DataBuffer=="Target=") {
             check_Target = true ;
             ReactionFile >> DataBuffer;
             Target = DataBuffer;
             G4cout << "Target " << Target << G4endl;
          }
 
-         else if (DataBuffer.compare(0, 6, "Light=") == 0) {
+         else if (DataBuffer=="Light=") {
             check_Light = true ;
             ReactionFile >> DataBuffer;
             Light = DataBuffer;
             G4cout << "Light " << Light << G4endl;
          }
 
-        else if  (DataBuffer.compare(0, 6, "Heavy=") == 0) {
+        else if  (DataBuffer=="Heavy=") {
             check_Heavy = true ;
             ReactionFile >> DataBuffer;
             Heavy = DataBuffer;
             G4cout << "Heavy " << Heavy << G4endl;
          }
 
-        else if  (DataBuffer.compare(0, 22, "ExcitationEnergyLight=") == 0) {
+        else if  (DataBuffer=="ExcitationEnergy3=" || DataBuffer=="ExcitationEnergyLight=") {
            check_ExcitationEnergyLight = true ;
             ReactionFile >> DataBuffer;
             ExcitationEnergyLight = atof(DataBuffer.c_str()) * MeV;
-            G4cout << "Excitation Energy Light" << ExcitationEnergyLight / MeV << " MeV" << G4endl;
+            G4cout << "Excitation Energy Nuclei 3: " << ExcitationEnergyLight / MeV << " MeV" << G4endl;
          }
 
-        else if  (DataBuffer.compare(0, 22, "ExcitationEnergyHeavy=") == 0) {
+        else if  (DataBuffer=="ExcitationEnergy4=" || DataBuffer=="ExcitationEnergyHeavy=") {
            check_ExcitationEnergyHeavy = true ;
             ReactionFile >> DataBuffer;
             ExcitationEnergyHeavy = atof(DataBuffer.c_str()) * MeV;
-            G4cout << "Excitation Energy Heavy" << ExcitationEnergyHeavy / MeV << " MeV" << G4endl;
+            G4cout << "Excitation Energy Nuclei 4: " << ExcitationEnergyHeavy / MeV << " MeV" << G4endl;
          }
 
-        else if  (DataBuffer.compare(0, 11, "BeamEnergy=") == 0) {
+        else if  (DataBuffer=="BeamEnergy=") {
            check_BeamEnergy = true ;
             ReactionFile >> DataBuffer;
             BeamEnergy = atof(DataBuffer.c_str()) * MeV;
             G4cout << "Beam Energy " << BeamEnergy / MeV << " MeV" << G4endl;
          }
 
-        else if  (DataBuffer.compare(0, 17, "BeamEnergySpread=") == 0) {
+        else if  (DataBuffer=="BeamEnergySpread=") {
            check_BeamEnergySpread = true ;
             ReactionFile >> DataBuffer;
             BeamEnergySpread = atof(DataBuffer.c_str()) * MeV;
             G4cout << "Beam Energy Spread " << BeamEnergySpread / MeV << " MeV" << G4endl;
          }
 
-        else if  (DataBuffer.compare(0, 7, "SigmaX=") == 0) {
+        else if  (DataBuffer=="SigmaX=") {
            check_FWHMX = true ;
             ReactionFile >> DataBuffer;
             SigmaX = atof(DataBuffer.c_str()) * mm;
             G4cout << "Beam FWHM X " << SigmaX << " mm" << G4endl;
          }
 
-        else if  (DataBuffer.compare(0, 7, "SigmaY=") == 0) {
+        else if  (DataBuffer=="SigmaY=") {
            check_FWHMY = true ;
             ReactionFile >> DataBuffer;
             SigmaY = atof(DataBuffer.c_str()) * mm;
             G4cout << "Beam FWHM Y " << SigmaX << " mm" << G4endl;
          }
 
-        else if  (DataBuffer.compare(0, 12, "SigmaThetaX=") == 0) {
+        else if  (DataBuffer=="SigmaThetaX=") {
            check_EmmitanceTheta = true ;
             ReactionFile >> DataBuffer;
             SigmaThetaX = atof(DataBuffer.c_str()) * deg;
             G4cout << "Beam Emmitance Theta " << SigmaThetaX / deg << " deg" << G4endl;
          }
          
-        else if  (DataBuffer.compare(0, 10, "SigmaPhiY=") == 0) {
+        else if  (DataBuffer=="SigmaPhiY=") {
            check_EmmitancePhi = true ;
             ReactionFile >> DataBuffer;
             SigmaPhiY = atof(DataBuffer.c_str()) * deg;
             G4cout << "Beam Emmitance Phi " << SigmaPhiY / deg << " deg" << G4endl;
          }
 
-        else if  (DataBuffer.compare(0, 17, "CrossSectionPath=") == 0) {
+        else if  (DataBuffer=="CrossSectionPath=") {
            check_CrossSectionPath = true ;
             ReactionFile >> CrossSectionPath;
             G4cout << "Cross Section File: " << CrossSectionPath << G4endl ;
          }
 
-         else if (DataBuffer.compare(0, 17, "HalfOpenAngleMin=") == 0) {
+         else if (DataBuffer=="HalfOpenAngleMin=") {
             ReactionFile >> DataBuffer;
             CSHalfOpenAngleMin = atof(DataBuffer.c_str()) * deg;
             G4cout << "HalfOpenAngleMin " << CSHalfOpenAngleMin / deg << " degree" << G4endl;
          }
 
-         else if (DataBuffer.compare(0, 17, "HalfOpenAngleMax=") == 0) {
+         else if (DataBuffer=="HalfOpenAngleMax=") {
             ReactionFile >> DataBuffer;
             CSHalfOpenAngleMax = atof(DataBuffer.c_str()) * deg;
             G4cout << "HalfOpenAngleMax " << CSHalfOpenAngleMax / deg << " degree" << G4endl;
          }
 
-        else if  (DataBuffer.compare(0, 11, "ShootLight=") == 0) {
+        else if  (DataBuffer=="ShootLight=") {
            check_ShootLight = true ;
             ReactionFile >> DataBuffer;
             if (atof(DataBuffer.c_str()) == 1) ShootLight = true ;
@@ -309,7 +309,7 @@ void EventGeneratorTransfert::ReadConfiguration(string Path)
             else           G4cout << "Shoot Light particle      : no"  << G4endl;
          }
 
-        else if  (DataBuffer.compare(0, 11, "ShootHeavy=") == 0) {
+        else if  (DataBuffer=="ShootHeavy=") {
            check_ShootHeavy = true ;
             ReactionFile >> DataBuffer;
             if (atof(DataBuffer.c_str()) == 1) ShootHeavy = true ;
@@ -383,14 +383,14 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent)
    G4int LightA = m_Reaction->GetNucleus3()->GetA() ;
 
    G4ParticleDefinition* LightName
-   = G4ParticleTable::GetParticleTable()->GetIon(LightZ, LightA, m_Reaction->GetExcitationLight()*MeV);
+   = G4ParticleTable::GetParticleTable()->GetIon(LightZ, LightA, m_Reaction->GetExcitation3()*MeV);
 
    // Recoil
    G4int HeavyZ = m_Reaction->GetNucleus4()->GetZ() ;
    G4int HeavyA = m_Reaction->GetNucleus4()->GetA() ;
 
    G4ParticleDefinition* HeavyName
-   = G4ParticleTable::GetParticleTable()->GetIon(HeavyZ, HeavyA, m_Reaction->GetExcitationHeavy()*MeV);
+   = G4ParticleTable::GetParticleTable()->GetIon(HeavyZ, HeavyA, m_Reaction->GetExcitation4()*MeV);
 
    // Beam
    G4int BeamZ = m_Reaction->GetNucleus1()->GetZ();

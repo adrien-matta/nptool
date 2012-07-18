@@ -39,8 +39,15 @@
 
 #include "NPNucleus.h"
 
+// ROOT header
+#include "TLorentzVector.h"
+#include "TLorentzRotation.h"
+#include "TVector3.h"
+#include "TGraph.h"
+#include "TCanvas.h"
+#include "TH2F.h"
+
 using namespace std;
-//class Nucleus;
 
 namespace NPL
 {
@@ -57,85 +64,115 @@ namespace NPL
          void ReadConfigurationFile(string Path);
 
       private:
-         Nucleus *fNuclei1;         // Beam
-         Nucleus *fNuclei2;         // Target
-         Nucleus *fNuclei3;         // Light ejectile
-         Nucleus *fNuclei4;         // Heavy ejectile
-         double   fQValue;          // Q-value in MeV
-         double   fBeamEnergy;      // Beam energy in MeV
-         double   fThetaCM;         // Center-of-mass angle in radian
-         double   fExcitation;      // Excitation energy in MeV
-         double   fExcitationLight; // Excitation energy in MeV
-         double   fExcitationHeavy; // Excitation energy in MeV
-         double*  CrossSection;     // Differential CrossSection
-         int      CrossSectionSize; // Size of array containing Differention CrossSection
-         double   fCrossSectionAngleMin;  // Minimum angle of the differential cross-section given by the user
-         double   fCrossSectionAngleMax;  // Maximum angle of the differential cross-section given by the user
+         Nucleus *fNuclei1;                 // Beam
+         Nucleus *fNuclei2;                 // Target
+         Nucleus *fNuclei3;                 // Light ejectile
+         Nucleus *fNuclei4;                 // Heavy ejectile
+         double   fQValue;                  // Q-value in MeV
+         double   fBeamEnergy;              // Beam energy in MeV
+         double   fThetaCM;                 // Center-of-mass angle in radian
+         double   fExcitation3;             // Excitation energy in MeV
+         double   fExcitation4;             // Excitation energy in MeV
+         double*  fCrossSection;             // Differential CrossSection
+         int      fCrossSectionSize;         // Size of array containing Differention CrossSection
+         double   fCrossSectionAngleMin;    // Minimum angle of the differential cross-section given by the user
+         double   fCrossSectionAngleMax;    // Maximum angle of the differential cross-section given by the user
 
       public:
          // Getters and Setters
          void     SetBeamEnergy(double eBeam)      {fBeamEnergy = eBeam;     initializePrecomputeVariable();}
          void     SetThetaCM(double angle)         {fThetaCM = angle;        initializePrecomputeVariable();}
-         void     SetExcitationLight(double exci)  {fExcitationLight = exci; initializePrecomputeVariable();}
-         void     SetExcitationHeavy(double exci)  {fExcitationHeavy = exci; initializePrecomputeVariable();}
+         void     SetExcitation3(double exci)      {fExcitation3 = exci; initializePrecomputeVariable();}
+         void     SetExcitation4(double exci)      {fExcitation4 = exci; initializePrecomputeVariable();}
          double   GetBeamEnergy() const            {return fBeamEnergy;}
          double   GetThetaCM() const               {return fThetaCM;}
-         double   GetExcitationHeavy() const            {return fExcitationHeavy;}
-         double   GetExcitation() const            {return fExcitationHeavy;}
-         double   GetExcitationLight() const            {return fExcitationLight;}
+         double   GetExcitation3() const           {return fExcitation3;}
+         double   GetExcitation4() const           {return fExcitation4;}
          double   GetQValue() const                {return fQValue;}
          Nucleus* GetNucleus1() const              {return fNuclei1;}
          Nucleus* GetNucleus2() const              {return fNuclei2;}
          Nucleus* GetNucleus3() const              {return fNuclei3;}
          Nucleus* GetNucleus4() const              {return fNuclei4;}
-         double*  GetCrossSection() const          {return CrossSection;}
-         int      GetCrossSectionSize() const      {return CrossSectionSize;}
+         double*  GetCrossSection() const          {return fCrossSection;}
+         int      GetCrossSectionSize() const      {return fCrossSectionSize;}
          double   GetCrossSectionAngleMin() const  {return fCrossSectionAngleMin;}
          double   GetCrossSectionAngleMax() const  {return fCrossSectionAngleMax;}
 
-      private: // intern precompute variable
-         void initializePrecomputeVariable();
-         double m1;
-         double m2;
-         double m3;
-         double m4;
-
-         // center-of-mass velocity
-         double WtotLab;
-         double P1;
-         double B;
-         double G;
-
-         // total energy of the ejectiles in the center-of-mass
-         double W3cm;
-         double W4cm;
-
-         // velocity of the ejectiles in the center-of-mass
-         double beta3cm;
-         double beta4cm;
-
-         // Constants of the kinematics
-         double K3;
-         double K4;
+	    	   
+	private: // intern precompute variable
+	   void initializePrecomputeVariable();
+	   double m1;
+	   double m2;
+	   double m3;
+	   double m4;
+	   
+	   // Lorents Vector
+	   TLorentzVector fEnergyImpulsionLab_1;
+	   TLorentzVector fEnergyImpulsionLab_2;	
+	   TLorentzVector fEnergyImpulsionLab_3;
+	   TLorentzVector fEnergyImpulsionLab_4;
+	   TLorentzVector fTotalEnergyImpulsionLab;
+	   
+	   TLorentzVector fEnergyImpulsionCM_1;
+	   TLorentzVector fEnergyImpulsionCM_2;	
+	   TLorentzVector fEnergyImpulsionCM_3;
+	   TLorentzVector fEnergyImpulsionCM_4;
+	   TLorentzVector fTotalEnergyImpulsionCM;
+	   
+	   // Impulsion Vector3
+	   TVector3 fImpulsionLab_1;
+	   TVector3 fImpulsionLab_2;
+	   TVector3 fImpulsionLab_3;
+	   TVector3 fImpulsionLab_4;
+	   
+	   TVector3 fImpulsionCM_1;
+	   TVector3 fImpulsionCM_2;
+	   TVector3 fImpulsionCM_3;
+	   TVector3 fImpulsionCM_4;
+	   
+	   // CM Energy composante & CM impulsion norme
+	   Double_t ECM_1;
+	   Double_t ECM_2;
+	   Double_t ECM_3;
+	   Double_t ECM_4;
+	   Double_t pCM_3;
+	   Double_t pCM_4;
+	   
+	   // Mandelstam variable
+	   Double_t s;
+	   
+	   // Center of Mass Kinematic
+	   Double_t BetaCM;
+	   
 
       public: // Kinematics
-         // Check that the reaction is alowed
-         bool CheckKinematic();
+	   // Check that the reaction is alowed
+	   bool CheckKinematic();
 
-         // Compute ThetaLab and EnergyLab for product of reaction
-         void KineRelativistic(double &ThetaLab3, double &EnergieLab3,
-                               double &ThetaLab4, double &EnergieLab4) const;
+	   // Compute ThetaLab and EnergyLab for product of reaction
+	   void KineRelativistic(double &ThetaLab3, double &KineticEnergyLab3,
+							 double &ThetaLab4, double &KineticEnergyLab4);
 
-         // Return Excitation Energy
-         double ReconstructRelativistic(double EnergyLab, double ThetaLab) const;
+	   // Return Excitation Energy
+	   double ReconstructRelativistic(double EnergyLab, double ThetaLab);
+	   
 
-         // Return ThetaCM
-         // EnergyLab: energy measured in the laboratory frame
-         // ExcitationEnergy: excitation energy previously calculated. If no argument given, fExcitation is used
-         double EnergyLabToThetaCM(double EnergyLab, double ExcitationEnergy = -500) const;
+	   // Return ThetaCM
+	   // EnergyLab: energy measured in the laboratory frame
+	   // ExcitationEnergy: excitation energy previously calculated.
+	   double EnergyLabToThetaCM(double EnergyLab, double ThetaLab);
+	   
+	   void SetNuclei3(double EnergyLab, double ThetaLab);
+	   
+	   
+	   TGraph* GetKinematicLine3();
+	   TGraph* GetKinematicLine4();
+	   TGraph* GetBrhoLine3();
+	   TGraph* GetThetaLabVersusThetaCM();
+	   void PrintKinematic();
 
-         // Print private paremeter
-         void Print() const;
+	   // Print private paremeter
+	   void Print() const;
    };
 }
 #endif

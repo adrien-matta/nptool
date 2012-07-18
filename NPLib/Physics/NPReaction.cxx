@@ -48,6 +48,7 @@
 #include "CLHEP/Units/GlobalSystemOfUnits.h"
 #include "CLHEP/Units/PhysicalConstants.h"
 
+
 using namespace NPL;
 
 
@@ -62,8 +63,8 @@ Reaction::Reaction()
    fNuclei4              = new Nucleus();
    fBeamEnergy           = 0;
    fThetaCM              = 0;
-   fExcitationLight      = 0;
-   fExcitationHeavy      = 0;
+   fExcitation3      = 0;
+   fExcitation4      = 0;
    fQValue               = 0;
    fCrossSectionAngleMin = 0;
    fCrossSectionAngleMax = 180;
@@ -91,8 +92,8 @@ void Reaction::SetEveryThing(string name1, string name2, string name3, string na
    fNuclei4         = new Nucleus(name4);
    fBeamEnergy      = BeamEnergy;
    fThetaCM         = 0;
-   fExcitationLight = ExcitationEnergyLight;
-   fExcitationHeavy = ExcitationEnergyHeavy;
+   fExcitation3 = ExcitationEnergyLight;
+   fExcitation4 = ExcitationEnergyHeavy;
    fQValue          = (fNuclei1->GetMassExcess() + fNuclei2->GetMassExcess()
                       - fNuclei3->GetMassExcess() - fNuclei4->GetMassExcess()) / 1000;
 
@@ -144,9 +145,9 @@ void Reaction::SetEveryThing(string name1, string name2, string name3, string na
    fCrossSectionAngleMax = thetamax;
 
    CSFile.close();
-   CrossSectionSize = CrossSectionBuffer.size();
-   CrossSection = new double[CrossSectionSize] ;
-   for(int i = 0 ; i <CrossSectionSize ; i++ )   CrossSection[i] = CrossSectionBuffer[i];
+   fCrossSectionSize = CrossSectionBuffer.size();
+   fCrossSection = new double[fCrossSectionSize] ;
+   for(int i = 0 ; i < fCrossSectionSize ; i++ )   fCrossSection[i] = CrossSectionBuffer[i];
    initializePrecomputeVariable();
 }
 
@@ -161,106 +162,103 @@ Reaction::~Reaction()
    delete fNuclei4;
 }
 
-
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 bool Reaction::CheckKinematic()
 {
-   // Check if kinematics is allowed
-      
-   // case of inverse kinematics
-   double theta = fThetaCM;
-   if (m1 > m2) theta = M_PI - fThetaCM;
-
-   // total and kinetic energies in the lab
-   double W3lab = W3cm * G * (1 + B*beta3cm*cos(theta));
-   double W4lab = W4cm * G * (1 + B*beta4cm*cos(theta + M_PI));
-   // test for total energy conversion
-   if (fabs(WtotLab - (W3lab+W4lab)) > 1e-6) 
-      return false;
-   
-   else return true;
+	double theta = fThetaCM;
+	if (m1 > m2) theta = M_PI - fThetaCM;
+	
+	fEnergyImpulsionCM_3	= TLorentzVector(pCM_3*sin(theta),0,pCM_3*cos(theta),ECM_3);
+	fEnergyImpulsionCM_4	= fTotalEnergyImpulsionCM - fEnergyImpulsionCM_3;
+	
+	fEnergyImpulsionLab_3 = fEnergyImpulsionCM_3;
+	fEnergyImpulsionLab_3.Boost(0,0,BetaCM);
+	fEnergyImpulsionLab_4 = fEnergyImpulsionCM_4;
+	fEnergyImpulsionLab_4.Boost(0,0,BetaCM);
+	
+	if ( fabs(fTotalEnergyImpulsionLab.E() - (fEnergyImpulsionLab_3.E()+fEnergyImpulsionLab_4.E()))> 1e-6){
+		cout << "Problem with energy conservation" << endl;
+		return false;
+	}
+		
+	else{
+		//cout << "Kinematic OK" << endl;
+		return true;
+	}
+	
 }
 
-
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-void Reaction::KineRelativistic(double &ThetaLab3, double &EnergieLab3,
-                                double &ThetaLab4, double &EnergieLab4) const
+void Reaction::KineRelativistic(double &ThetaLab3, double &KineticEnergyLab3,
+                                double &ThetaLab4, double &KineticEnergyLab4) 
 {
-// 2-body relativistic kinematics: direct + inverse
-// EnergieLab3,4 : lab energy in MeV of the 2 ejectiles
-// ThetaLab3,4   : angles in rad
+	// 2-body relativistic kinematics: direct + inverse
+	// EnergieLab3,4 : lab energy in MeV of the 2 ejectiles
+	// ThetaLab3,4   : angles in rad
 
-   // case of inverse kinematics
-   double theta = fThetaCM;
-   if (m1 > m2) theta = M_PI - fThetaCM;
+	// case of inverse kinematics
+	double theta = fThetaCM;
+	if (m1 > m2) theta = M_PI - fThetaCM;
 
-   // lab angles
-   ThetaLab3 = atan(sin(theta) / (cos(theta) + K3) / G);
-   if (ThetaLab3 < 0) ThetaLab3 += M_PI;
-   ThetaLab4 = atan(sin(M_PI + theta) / (cos(M_PI + theta) + K4) / G);
-   if (fabs(ThetaLab3) < 1e-6) ThetaLab3 = 0;
-   ThetaLab4 = fabs(ThetaLab4);
-   if (fabs(ThetaLab4) < 1e-6) ThetaLab4 = 0;
-   
-   // total and kinetic energies in the lab
-   double W3lab = W3cm * G * (1 + B*beta3cm*cos(theta));
-   double W4lab = W4cm * G * (1 + B*beta4cm*cos(theta + M_PI));
-   // test for total energy conversion
-   if (fabs(WtotLab - (W3lab+W4lab)) > 1e-6) 
-      cout << "Problem for energy conservation" << endl;
-   EnergieLab3 = W3lab - m3;
-   EnergieLab4 = W4lab - m4;
-   
+	fEnergyImpulsionCM_3	= TLorentzVector(pCM_3*sin(theta),0,pCM_3*cos(theta),ECM_3);
+	fEnergyImpulsionCM_4	= fTotalEnergyImpulsionCM - fEnergyImpulsionCM_3;
+	
+	fEnergyImpulsionLab_3 = fEnergyImpulsionCM_3;
+	fEnergyImpulsionLab_3.Boost(0,0,BetaCM);
+	fEnergyImpulsionLab_4 = fEnergyImpulsionCM_4;
+	fEnergyImpulsionLab_4.Boost(0,0,BetaCM);
+	
+	// Angle in the lab frame
+	ThetaLab3 = fEnergyImpulsionLab_3.Angle(fEnergyImpulsionLab_1.Vect());
+	if (ThetaLab3 < 0) ThetaLab3 += M_PI;
+
+	ThetaLab4 = fEnergyImpulsionLab_4.Angle(fEnergyImpulsionLab_1.Vect());
+	if (fabs(ThetaLab3) < 1e-6) ThetaLab3 = 0;
+	ThetaLab4 = fabs(ThetaLab4);
+	if (fabs(ThetaLab4) < 1e-6) ThetaLab4 = 0;
+	
+	// Kinetic Energy in the lab frame
+	KineticEnergyLab3 = fEnergyImpulsionLab_3.E() - m3;
+	KineticEnergyLab4 = fEnergyImpulsionLab_4.E() - m4;
+	
+	// test for total energy conversion
+	if (fabs(fTotalEnergyImpulsionLab.E() - (fEnergyImpulsionLab_3.E()+fEnergyImpulsionLab_4.E())) > 1e-6) 
+		cout << "Problem for energy conservation" << endl;
 }
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-double Reaction::ReconstructRelativistic(double EnergyLab, double ThetaLab) const
+double Reaction::ReconstructRelativistic(double EnergyLab, double ThetaLab) 
 {
    // EnergyLab in MeV
    // ThetaLab in rad
-   double P1 = sqrt(2*m1*fBeamEnergy+(fBeamEnergy*fBeamEnergy));
-   double P3 = sqrt(2*m3*EnergyLab+(EnergyLab*EnergyLab));
-   double P4 = sqrt(P1*P1+P3*P3-(2*P1*P3*cos(ThetaLab)));
-   double E4 = fBeamEnergy+m1+m2-(EnergyLab+m3);
-   double m4e = sqrt((E4*E4)-(P4*P4));
-   double Eex= m4e-fNuclei4->Mass();
+	double E3 = m3 + EnergyLab;
+	double p_Lab_3 = sqrt(E3*E3 - m3*m3);
+	
+	fEnergyImpulsionLab_3 = TLorentzVector(p_Lab_3*sin(ThetaLab),0,p_Lab_3*cos(ThetaLab),E3);
+	fEnergyImpulsionLab_4 = fTotalEnergyImpulsionLab - fEnergyImpulsionLab_3;
+	
+	double Eex = fEnergyImpulsionLab_4.Mag() - fNuclei4->Mass();
    
-   return Eex;
+	return Eex;
 }
 
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 //Return ThetaCM                           
-double  Reaction::EnergyLabToThetaCM( double EnergyLab , double ExcitationEnergy ) const
+double  Reaction::EnergyLabToThetaCM(double EnergyLab, double ThetaLab)
    {
-      if(ExcitationEnergy == -500) ExcitationEnergy = fExcitationHeavy; 
+	   double E3 = m3 + EnergyLab;
+	   double p_Lab_3 = sqrt(E3*E3 - m3*m3);
+	   
+	   fEnergyImpulsionLab_3 = TLorentzVector(p_Lab_3*sin(ThetaLab),0,p_Lab_3*cos(ThetaLab),E3);
+	   fEnergyImpulsionCM_3 = fEnergyImpulsionLab_3;
+	   fEnergyImpulsionCM_3.Boost(0,0,-BetaCM);
+	   
+	   double ThetaCM = CLHEP::pi - fEnergyImpulsionCM_1.Angle(fEnergyImpulsionCM_3.Vect());
 
-      double E1 = (fBeamEnergy+m1) ;
-      double E3 = (EnergyLab+m3)   ;
-        
-      // Compute Mandelstan variable
-      double s =  2*m2*E1 + m1*m1 + m2*m2 ;
-      double u = -2*m2*E3 + m2*m2 + m3*m3 ;
-      // Compute CM impulsion:
-      //before reaction
-      double P2CM =  ( sqrt(  ( s-(m1-m2)*(m1-m2) )*( s-(m1+m2)*(m1+m2) )  ) ) / (2*sqrt(s))   ;
-      // after reaction
-      double P3CM =  ( sqrt(  ( s-(m3-m4)*(m3-m4) )*( s-(m3+m4)*(m3+m4) )  ) ) / (2*sqrt(s))   ;
-
-      // Compute CM Energy
-      double E2CM = (s + m2*m2 -m1*m1)/(2*sqrt(s)) ;
-      double E3CM = (s + m3*m3 -m4*m4)/(2*sqrt(s)) ;
-
-      double u0 = m2*m2 + m3*m3 - 2*(E2CM*E3CM + P2CM*P3CM) ;
-
-      double Pi = 3.141592654    ;
-      double ThetaCM = Pi - acos (  1-(u-u0)/(2*P2CM*P3CM)  ) ;
-
-      return(ThetaCM);
+	   return(ThetaCM);
    }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
@@ -273,12 +271,14 @@ void Reaction::Print() const
           << fBeamEnergy << " MeV" 
       << endl   ;
       
-      cout << "Exc Light = " << fExcitationLight << " MeV" << endl;
-      cout << "Exc Heavy = " << fExcitationHeavy << " MeV" << endl;
+      cout << "Exc Nuclei 3 = " << fExcitation3 << " MeV" << endl;
+      cout << "Exc Nuclei 4 = " << fExcitation4 << " MeV" << endl;
       cout << "Qgg = " << fQValue << " MeV" << endl;
    }
    
-   
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////   
 void Reaction::ReadConfigurationFile(string Path)
    {   
       ////////General Reading needs////////
@@ -287,15 +287,15 @@ void Reaction::ReadConfigurationFile(string Path)
 
       ////////Reaction Setting needs///////
          string Beam, Target, Heavy, Light, CrossSectionPath ;
-         double BeamEnergy = 0 , ExcitationEnergyLight = 0, ExcitationEnergyHeavy = 0;         
+         double BeamEnergy = 0 , ExcitationEnergy3 = 0, ExcitationEnergy4 = 0;         
          double CSHalfOpenAngleMin = 0, CSHalfOpenAngleMax = 0;
          bool ReadingStatus = false ;
          bool check_Beam = false ;
          bool check_Target = false ;
          bool check_Light = false ;
          bool check_Heavy = false ;
-         bool check_ExcitationEnergyLight = false ;
-         bool check_ExcitationEnergyHeavy = false ;
+         bool check_ExcitationEnergy3 = false ;
+         bool check_ExcitationEnergy4 = false ;
          bool check_BeamEnergy = false ;
          bool check_CrossSectionPath = false ;
 
@@ -361,18 +361,18 @@ void Reaction::ReadConfigurationFile(string Path)
                      cout << "Heavy " << Heavy << endl;
                   }
 
-                 else if  (DataBuffer=="ExcitationEnergyLight=") {
-                    check_ExcitationEnergyLight = true ;
+                 else if  (DataBuffer=="ExcitationEnergy3=" || DataBuffer=="ExcitationEnergyLight=") {
+                    check_ExcitationEnergy3 = true ;
                      ReactionFile >> DataBuffer;
-                     ExcitationEnergyLight = atof(DataBuffer.c_str()) * MeV;
-                     cout << "Excitation Energy Light" << ExcitationEnergyLight / MeV << " MeV" << endl;
+                     ExcitationEnergy3 = atof(DataBuffer.c_str()) * MeV;
+                     cout << "Excitation Energy Nuclei 3: " << ExcitationEnergy3 / MeV << " MeV" << endl;
                   }
 
-                 else if  (DataBuffer=="ExcitationEnergyHeavy=") {
-                    check_ExcitationEnergyHeavy = true ;
+                 else if  (DataBuffer=="ExcitationEnergy4=" || DataBuffer=="ExcitationEnergyHeavy=") {
+                    check_ExcitationEnergy4 = true ;
                      ReactionFile >> DataBuffer;
-                     ExcitationEnergyHeavy = atof(DataBuffer.c_str()) * MeV;
-                     cout << "Excitation Energy Heavy" << ExcitationEnergyHeavy / MeV << " MeV" << endl;
+                     ExcitationEnergy4 = atof(DataBuffer.c_str()) * MeV;
+                     cout << "Excitation Energy Nuclei 4: " << ExcitationEnergy4 / MeV << " MeV" << endl;
                   }
 
                  else if  (DataBuffer=="BeamEnergy=") {
@@ -383,7 +383,7 @@ void Reaction::ReadConfigurationFile(string Path)
                   }
 
                  else if  (DataBuffer== "CrossSectionPath=") {
-                    check_CrossSectionPath = true ;
+                     check_CrossSectionPath = true ;
                      ReactionFile >> CrossSectionPath;
                      cout << "Cross Section File: " << CrossSectionPath << endl ;
                   }
@@ -408,42 +408,203 @@ void Reaction::ReadConfigurationFile(string Path)
                      
                   ///////////////////////////////////////////////////
                //   If all Token found toggle out
-                  if (check_Beam && check_Target && check_Light && check_Heavy && check_ExcitationEnergyLight 
-                     && check_ExcitationEnergyHeavy && check_BeamEnergy && check_CrossSectionPath)
+                  if (check_Beam && check_Target && check_Light && check_Heavy && check_ExcitationEnergy3 
+                     && check_ExcitationEnergy4 && check_BeamEnergy && check_CrossSectionPath)
                      ReadingStatus = false;
             }
          }
          
-         SetEveryThing(Beam, Target, Light, Heavy,BeamEnergy,ExcitationEnergyLight, ExcitationEnergyHeavy,CrossSectionPath, CSHalfOpenAngleMin, CSHalfOpenAngleMax);
+         SetEveryThing(Beam, Target, Light, Heavy,BeamEnergy,ExcitationEnergy3, ExcitationEnergy4,CrossSectionPath, CSHalfOpenAngleMin, CSHalfOpenAngleMax);
 
          ReactionFile.close();
    }
    
-   
+
+////////////////////////////////////////////////////////////////////////////////////////////   
 void Reaction::initializePrecomputeVariable()
    { 
        m1 = fNuclei1->Mass();
        m2 = fNuclei2->Mass();
-       m3 = fNuclei3->Mass() + fExcitationLight;
-       m4 = fNuclei4->Mass() + fExcitationHeavy;
+       m3 = fNuclei3->Mass() + fExcitation3;
+       m4 = fNuclei4->Mass() + fExcitation4;
+	   
+	   s = m1*m1 + m2*m2 + 2*m2*(fBeamEnergy + m1);
+	   
+	   fTotalEnergyImpulsionCM = TLorentzVector(0,0,0,sqrt(s));
+	   
+	   ECM_1 = (s + m1*m1 - m2*m2)/(2*sqrt(s));
+	   ECM_2 = (s + m2*m2 - m1*m1)/(2*sqrt(s));
+	   ECM_3 = (s + m3*m3 - m4*m4)/(2*sqrt(s));
+	   ECM_4 = (s + m4*m4 - m3*m3)/(2*sqrt(s));
+	   
+	   pCM_3 = sqrt(ECM_3*ECM_3 - m3*m3);
+	   pCM_4 = sqrt(ECM_4*ECM_4 - m4*m4);
+	   
+	   fImpulsionLab_1 = TVector3(0,0,sqrt(fBeamEnergy*fBeamEnergy + 2*fBeamEnergy*m1));
+	   fImpulsionLab_2 = TVector3(0,0,0);
+	   
+	   fEnergyImpulsionLab_1 = TLorentzVector(fImpulsionLab_1,m1+fBeamEnergy);
+	   fEnergyImpulsionLab_2 = TLorentzVector(fImpulsionLab_2,m2);
+	   
+	   fTotalEnergyImpulsionLab = fEnergyImpulsionLab_1 + fEnergyImpulsionLab_2;
+	   
+	   BetaCM = fTotalEnergyImpulsionLab.Beta();
+	   
+	   fEnergyImpulsionCM_1 = fEnergyImpulsionLab_1;
+	   fEnergyImpulsionCM_1.Boost(0,0,-BetaCM);
 
-      // center-of-mass velocity
-       WtotLab = (fBeamEnergy + m1) + m2;
-       P1 = sqrt(pow(fBeamEnergy,2) + 2*m1*fBeamEnergy);
-       B = P1 / WtotLab;
-       G = 1 / sqrt(1 - pow(B,2));
+	   fEnergyImpulsionCM_2 = fEnergyImpulsionLab_2;
+	   fEnergyImpulsionCM_2.Boost(0,0,-BetaCM);
+}
 
-      // total energy of the ejectiles in the center-of-mass
-       W3cm = (pow(WtotLab,2) + pow(G,2)*(pow(m3,2) - pow(m4,2)))
-            / (2 * G * WtotLab);
-       W4cm = (pow(WtotLab,2) + pow(G,2)*(pow(m4,2) - pow(m3,2)))
-            / (2 * G * WtotLab);
+////////////////////////////////////////////////////////////////////////////////////////////   
+void Reaction::SetNuclei3(double EnergyLab, double ThetaLab)
+{
+	double p3 = sqrt(pow(EnergyLab,2) + 2*m3*EnergyLab);
+	
+	fEnergyImpulsionLab_3 = TLorentzVector(p3*sin(ThetaLab),0,p3*cos(ThetaLab),EnergyLab+m3);
+	fEnergyImpulsionLab_4 = fTotalEnergyImpulsionLab - fEnergyImpulsionLab_3;
+	
+	fNuclei3->SetEnergyImpulsion(fEnergyImpulsionLab_3);
+	fNuclei4->SetEnergyImpulsion(fEnergyImpulsionLab_4);
+	
+	fThetaCM = EnergyLabToThetaCM(EnergyLab, ThetaLab);
+	fExcitation4 = ReconstructRelativistic(EnergyLab, ThetaLab);
+}
 
-      // velocity of the ejectiles in the center-of-mass
-       beta3cm  = sqrt(1 - pow(m3,2)/pow(W3cm,2));
-       beta4cm  = sqrt(1 - pow(m4,2)/pow(W4cm,2));
 
-      // Constants of the kinematics
-       K3 = B / beta3cm;
-       K4 = B / beta4cm;
-   }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////   
+TGraph* Reaction::GetKinematicLine3()
+{	
+	int size = 360; 
+	double x[size];
+	double y[size];
+	double theta3,E3,theta4,E4,Brho;
+	
+	for (int i = 0; i < size; ++i)
+	{
+		SetThetaCM(((double)i)/2*deg); 
+		KineRelativistic(theta3, E3, theta4, E4);
+		fNuclei3->SetKineticEnergy(E3);
+		Brho = fNuclei3->GetBrho();
+		
+		x[i] = theta3/deg; 
+		y[i] = E3; 
+	}
+	TGraph* KineLine3 = new TGraph(size,x,y);
+	KineLine3->SetTitle("Kinematic Line of particule 3");
+	return(KineLine3);
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////   
+TGraph* Reaction::GetKinematicLine4()
+{	
+	int size = 360; 
+	double x[size];
+	double y[size];
+	double theta3,E3,theta4,E4,Brho;
+
+	for (int i = 0; i < size; ++i)
+	{
+		SetThetaCM(((double)i)/2*deg); 
+		KineRelativistic(theta3, E3, theta4, E4);
+		fNuclei4->SetKineticEnergy(E4);
+		Brho = fNuclei4->GetBrho();
+		
+		x[i] = theta4/deg; 
+		y[i] = E4; 
+	}
+	TGraph* KineLine4= new TGraph(size,x,y);
+	KineLine4->SetTitle("Kinematic Line of particule 4");
+	return(KineLine4);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////   
+TGraph* Reaction::GetBrhoLine3()
+{	
+	int size = 360; 
+	double x[size];
+	double y[size];
+	double theta3,E3,theta4,E4;
+	double Brho;
+	
+	for (int i = 0; i < size; ++i)
+	{
+		SetThetaCM(((double)i)/2*deg); 
+		KineRelativistic(theta3, E3, theta4, E4);
+		fNuclei3->SetKineticEnergy(E3);
+		Brho = fNuclei3->GetBrho();
+		
+		x[i] = theta3/deg; 
+		y[i] = Brho; 
+	}
+	TGraph* LineBrho3= new TGraph(size,x,y);
+	return(LineBrho3);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////   
+TGraph* Reaction::GetThetaLabVersusThetaCM()
+{
+	int size = 360; 
+	double x[size];
+	double y[size];
+	double theta3,E3,theta4,E4;
+	
+	for (int i = 0; i < size; ++i)
+	{
+		SetThetaCM(((double)i)/2*deg); 
+		KineRelativistic(theta3, E3, theta4, E4);
+		
+		x[i] = fThetaCM/deg; 
+		y[i] = theta3/deg; 
+	}
+	TGraph* AngleLine= new TGraph(size,x,y);
+	return(AngleLine);
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////   
+void Reaction::PrintKinematic()
+{	
+	int size = 360; 
+	double theta3,E3,theta4,E4,Brho3,Brho4;
+	
+	cout << endl;
+	cout << "*********************** Print Kinematic ***********************" << endl;
+	cout << "ThetaCM" << "	" << "ThetaLab" << " " << "EnergyLab3" << "	" << "Brho3" << "	" << "EnergyLab4" << "	" << "Brho4" << endl;
+	for (int i = 0; i < size; ++i)
+	{
+		SetThetaCM(((double)i)/2*deg); 
+		KineRelativistic(theta3, E3, theta4, E4);
+		
+		fNuclei3->SetKineticEnergy(E3);
+		Brho3 = fNuclei3->GetBrho();
+		
+		fNuclei4->SetKineticEnergy(E4);
+		Brho4 = fNuclei4->GetBrho();
+		
+		cout << (double)i/2 << "	" << theta3/deg << "	" << E3 << "	" << Brho3 << "		" << E4 << "	" << Brho4 << endl;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

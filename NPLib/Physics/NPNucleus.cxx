@@ -9,7 +9,7 @@
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
  * Creation Date  : febuary 2009                                             *
- * Last update    :                                                          *
+ * Last update    : may 2012 morfouac@ipno.in2p3.fr                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This class manage a nucleus, data are read in the nubtab03.asc file      *
@@ -24,9 +24,20 @@
 // C++ headers
 #include <iostream>
 #include <fstream>
-#include <stdlib.h>
+#include <string>
+#include <cstdlib>
+#include <sstream>
+//#include <stdlib.h>
+#include <cmath>
+#include <vector>
+
 
 #include "NPNucleus.h"
+#include "Constant.h"
+
+// Use CLHEP System of unit and Physical Constant
+//#include "CLHEP/Units/GlobalSystemOfUnits.h"
+//#include "CLHEP/Units/PhysicalConstants.h"
 
 using namespace std;
 using namespace NPL;
@@ -118,7 +129,7 @@ void Nucleus::Extract(const char* line)
    string ligne = line;
 
    // name of the isotope
-   string s_name = ligne.substr(11,6);
+   string s_name = ligne.substr(11,7);
    fName = s_name.data();
 
    // charge and mass
@@ -165,6 +176,9 @@ void Nucleus::Extract(const char* line)
    if (s_spinparity.find("17/2") != string::npos) fSpin = 8.5   ;
    if (s_spinparity.find("19/2") != string::npos) fSpin = 9.5   ;
    if (s_spinparity.find("21/2") != string::npos) fSpin = 10.5 ;
+	//cout << fName << endl;
+	GetNucleusName();
+	
 } 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
@@ -178,11 +192,93 @@ void Nucleus::Print() const
    cout << "Jpi = " << fSpinParity << " (" << fSpin << fParity << ")" << endl;
 }
 
-string Nucleus::GetName() const 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
+void Nucleus::GetNucleusName() 
 {
-string Name=string(fName,1);
-return Name;
-
+fNucleusName=string(fName,6);
 }
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
+void Nucleus::EnergyToBrho()
+{
+	fBrho = sqrt(pow(fKineticEnergy,2) + 2*fKineticEnergy*Mass()) * 1e6 * echarge / C / (GetZ() * echarge);
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
+void Nucleus::EnergyToTof() // second/meter
+{
+	fTimeOfFlight = 1/sqrt(1-(Mass()*Mass())/(fKineticEnergy+Mass())/(fKineticEnergy+Mass()))/C;
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
+void Nucleus::TofToEnergy() 
+{
+	double Energy =  sqrt( Mass()*Mass()/(1-pow((1/(C*fTimeOfFlight)),2)) );
+	fKineticEnergy = Energy - Mass();
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
+void Nucleus::BrhoToEnergy()
+{
+	fKineticEnergy =  sqrt( pow((fBrho*C*GetZ()*echarge)/(1e6*echarge),2) + pow(Mass(),2) ) - Mass();
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
+void Nucleus::EnergyToBeta()
+{
+	fBeta = sqrt(pow(fKineticEnergy,2) + 2*fKineticEnergy*Mass())/(fKineticEnergy + Mass());
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
+void Nucleus::BetaToEnergy()
+{
+	fKineticEnergy = Mass()/sqrt(1-pow(fBeta,2)) - Mass();
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
+void Nucleus::BetaToGamma()
+{
+	fGamma = 1/sqrt(1-pow(fBeta,2));
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
+void Nucleus::BetaToVelocity() // in cm/ns
+{
+	fVelocity = C*fBeta*1e-7;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
+double Nucleus::DopplerCorrection(double EnergyLabGamma, double ThetaLabGamma)
+{
+	double EnergyGammaCorrected = EnergyLabGamma*(1-fBeta*cos(ThetaLabGamma))/( sqrt(1-pow(fBeta,2)) );
+	
+	return EnergyGammaCorrected;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
