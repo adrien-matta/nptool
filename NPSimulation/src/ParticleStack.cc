@@ -20,12 +20,14 @@
  *                                                                           *
  *****************************************************************************/
 
-
+// NPS
 #include"ParticleStack.hh"
 
 // G4 headers
 #include "G4ParticleTable.hh"
 
+// NPL
+#include "RootOutput.h"
 
 ParticleStack* ParticleStack::instance = 0 ;
 
@@ -45,7 +47,10 @@ ParticleStack::ParticleStack(){
     
     m_particleGun->SetParticlePosition(G4ThreeVector(0., 0., 0.));
     m_particleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., 1.));
-}
+    
+    // Instantiate the TInitialConditions object and link it to the RootOutput tree
+    m_InitialConditions = new TInitialConditions();
+    RootOutput::getInstance()->GetTree()->Branch("InitialConditions","TInitialConditions",&m_InitialConditions);}
 
 ParticleStack::~ParticleStack(){
     
@@ -61,6 +66,10 @@ void ParticleStack::SetParticleStack(vector<Particle> particle_stack){
 
 void ParticleStack::AddParticleToStack(Particle particle){
     m_ParticleStack.push_back(particle);
+    m_InitialConditions->SetICPositionX(particle.GetParticlePosition().x());
+    m_InitialConditions->SetICPositionY(particle.GetParticlePosition().y());
+    m_InitialConditions->SetICPositionZ(particle.GetParticlePosition().z());
+    m_InitialConditions->SetICEmittedAngleThetaLabWorldFrame(particle.GetParticleMomentumDirection().theta());
 }
 
 Particle ParticleStack::SearchAndRemoveParticle(string name){

@@ -449,6 +449,7 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent)
     // Angles
     RandGeneral CrossSectionShoot(m_Reaction->GetCrossSection(), m_Reaction->GetCrossSectionSize());
     G4double ThetaCM = (m_Reaction->GetCrossSectionAngleMin() + CrossSectionShoot.shoot() * (m_Reaction->GetCrossSectionAngleMax() - m_Reaction->GetCrossSectionAngleMin())) * deg;
+    
     G4double phi     = RandFlat::shoot() * 2*pi;
     
     //////////////////////////////////////////////////

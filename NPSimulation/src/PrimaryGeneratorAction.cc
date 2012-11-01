@@ -42,7 +42,6 @@
 #include "EventGeneratorTransfert.hh"
 #include "EventGeneratorIsotropic.hh"
 #include "EventGeneratorBeam.hh"
-#include "EventGeneratorPhaseSpace.hh"
 #include "EventGeneratorGammaDecay.hh"
 #include "EventGeneratorParticleDecay.hh"
 
@@ -77,8 +76,6 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path)
 {
-    bool check_TransfertToResonance = false;
-    bool check_PhaseSpace           = false;
     bool check_Isotropic            = false;
     bool check_Transfert            = false;
     bool check_Beam                 = false;
@@ -99,7 +96,6 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path)
     else {
         cout << "Error, Event Generator file " << Path << " found" << endl;
     }
-    
     
     while (!EventGeneratorFile.eof()) {
         //Pick-up next line
@@ -135,7 +131,7 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path)
         }
         
         //Search for Transfert
-        else if (LineBuffer.compare(0, 9, "Transfert") == 0 && !check_Transfert && LineBuffer.compare(0, 11, "TransfertTo") != 0) {
+        else if (LineBuffer.compare(0, 9, "Transfert") == 0 && !check_Transfert) {
             check_Transfert = true;
             VEventGenerator* myEventGenerator = new EventGeneratorTransfert();
             EventGeneratorFile.close();
@@ -178,20 +174,8 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path)
                 seenToken_ParticleDecay=0;
             }
         }
-        
-        
-        //Search for Transfert To Resonance
-        else if (LineBuffer.compare(0, 10, "PhaseSpace") == 0 && !check_PhaseSpace) {
-            check_PhaseSpace = true;
-            VEventGenerator* myEventGenerator = new EventGeneratorPhaseSpace();
-            EventGeneratorFile.close();
-            myEventGenerator->ReadConfiguration(Path);   
-            EventGeneratorFile.open(Path.c_str());
-            myEventGenerator->InitializeRootOutput();
-            myEventGenerator->SetTarget(m_detector->GetTarget());
-            m_EventGenerator.push_back(myEventGenerator);
-        }
     }
+  
     EventGeneratorFile.close();
 }
 

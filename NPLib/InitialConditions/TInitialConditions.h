@@ -34,6 +34,30 @@ using namespace std ;
 class TInitialConditions : public TObject
 {
 private:
+   /*
+    // Beam
+    TLorentzVector fIC_Beam_LV;
+    double fIC_Beam_ThetaX;
+    double fIC_Beam_PhiY;    
+   
+    // Particle
+    // Emitted particle properties (after interactions in the target)
+    vector<Double_t>   fIC_Emitted_Angle_ThetaCM;
+    // Emitted particle angles in the incident frame
+    vector<Double_t>   fIC_Emitted_Angle_Theta_LocalFrame;
+    vector<Double_t>   fIC_Emitted_Angle_Phi_LocalFrame;
+    // Emitted particle angles in the world frame
+    vector<Double_t>   fIC_Emitted_Angle_Theta_LabFrame;
+    vector<Double_t>   fIC_Emitted_Angle_Phi_LabFrame;
+    // Emittedparticle energy
+    vector<Double_t>   fIC_Emitted_Energy;
+    vector<int>        fIC_Process;
+    vector<string>     fIC_Name;
+   */
+    
+    
+    
+    
    // Incident particle properties (before interactions in the target)
    // Vertex of interaction
    vector<Double_t>   fIC_Position_X;

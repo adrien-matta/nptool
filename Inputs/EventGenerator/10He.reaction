@@ -20,14 +20,14 @@ Transfert
 	ShootHeavy= 1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-ParticleDecay 10He
+%ParticleDecay 10He
     Daughter= 9He n
     ExcitationEnergy= 0.5 0
     DifferentialCrossSection= flat.txt
     shoot= 1 1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-GammaDecay 9He
+%GammaDecay 9He
     Cascade
         BranchingRatio= 30
         Energies= 0.1
@@ -37,7 +37,7 @@ GammaDecay 9He
         Energies= 0.2 0.3
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-ParticleDecay 9He
+%ParticleDecay 9He
     Daughter= 8He n
     DifferentialCrossSection= flat.txt
     shoot= 1 1

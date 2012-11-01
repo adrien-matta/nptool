@@ -72,7 +72,7 @@ class TChio_anPhysics : public TObject, public NPA::VDetector
   vector<double> rawAmplitude;
   vector<double> calAmplitude;
 
-  TF1 *fdecay;
+  TF1 *fdecay; //!
 
  private:   //   Root Input and Output tree classes
      

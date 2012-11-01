@@ -23,11 +23,14 @@
  *****************************************************************************/
 
 // NPS
-#include"Particle.hh"
+#include "Particle.hh"
+
+// NPL
+#include "TInitialConditions.h"
 
 // STL
-#include<vector>
-#include<string>
+#include <vector>
+#include <string>
 using namespace std;
 
 // G4
@@ -64,7 +67,8 @@ private:
     static ParticleStack* instance;    
     // The particle gun
     G4ParticleGun* m_particleGun;
-
+    // Host the Initial conditions TObject
+    TInitialConditions* m_InitialConditions;
 private: // Private Member
     vector<Particle> m_ParticleStack;
 
