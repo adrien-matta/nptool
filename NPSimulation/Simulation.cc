@@ -5,6 +5,13 @@
 #include "G4UImanager.hh"
 #include "G4UIterminal.hh"
 #include "G4UItcsh.hh"
+#ifdef G4VIS_USE
+#include "G4VisExecutive.hh"
+#endif
+
+#ifdef G4UI_USE
+#include "G4UIExecutive.hh"
+#endif
 
 // G4 local source
 #include "DetectorConstruction.hh"
@@ -86,13 +93,13 @@ int main(int argc, char** argv)
    /////////// Define UI terminal for interactive mode ///////////
    ///////////////////////////////////////////////////////////////
 #ifdef G4VIS_USE
-   G4VisManager* visManager = new G4VisExecutive;
+   G4VisManager* visManager = new G4VisExecutive("Quiet");
    visManager->Initialize();
 #endif
 
    G4UIsession* session = 0;
 
-#ifdef G4UI_USE_TCSH
+/*#ifdef G4UI_USE_TCSH
    session = new G4UIterminal(new G4UItcsh);
 #else
    session = new G4UIterminal();
@@ -101,7 +108,21 @@ int main(int argc, char** argv)
    UI->ApplyCommand("/control/execute vis.mac");
    session->SessionStart();
    delete session;
-
+*/
+  
+  // interactive mode : define UI session
+  // Get the pointer to the User Interface manager
+  G4UImanager* UImanager = G4UImanager::GetUIpointer();
+#ifdef G4UI_USE
+  G4UIExecutive* ui = new G4UIExecutive(argc, argv);
+#ifdef G4VIS_USE
+  UImanager->ApplyCommand("/control/execute vis.mac");
+#endif
+  if (ui->IsGUI())
+    UImanager->ApplyCommand("/control/execute gui.mac");
+  ui->SessionStart();
+  delete ui;
+#endif
 #ifdef G4VIS_USE
    delete visManager;
 #endif

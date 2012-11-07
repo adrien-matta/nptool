@@ -191,4 +191,5 @@ void ParticleStack::ShootAllParticle(G4Event* anEvent){
         }
     }
     m_ParticleStack.clear();
+    m_InitialConditions->Clear();
 }

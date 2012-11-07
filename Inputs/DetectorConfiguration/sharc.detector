@@ -1,0 +1,92 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GeneralTarget
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Target
+	THICKNESS= 0.001
+	RADIUS=	45
+	MATERIAL= CD2
+	ANGLE= 0
+	X= 0
+	Y= 0
+	Z= 0
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Sharc
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % Upstream CD
+  SharcCD
+    Z= -70
+    R= 0
+    Phi= 25
+  
+  SharcCD
+    Z= -70
+    R= 0
+    Phi= 50
+  
+  SharcCD
+    Z= -70
+    R= 0
+    Phi= 75
+  
+  SharcCD
+    Z= -70
+    R= 0
+    Phi= 100
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % Upstream Box
+  SharcBOX
+    X= 0
+    Y= -36
+    Z= -5
+  SharcBOX
+    X= 0
+    Y= 36
+    Z= -5
+  SharcBOX
+    X= 42.5
+    Y= 0
+    Z= -5
+  SharcBOX
+    X= -42.5
+    Y= 0
+    Z= -5
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % Down Stream Box
+  SharcBOX
+    X= 0
+    Y= -36
+    Z= 9
+  SharcBOX
+    X= 0
+    Y= 36
+    Z= 9
+  SharcBOX
+    X= 40.5
+    Y= 0
+    Z= 9
+  SharcBOX
+    X= -40.5
+    Y= 0
+    Z= 9
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % Down stream CD
+  SharcCD
+    Z= 70
+    R= 0
+    Phi= 25
+  
+  SharcCD
+    Z= 70
+    R= 0
+    Phi= 50
+  
+  SharcCD
+    Z= 70
+    R= 0
+    Phi= 75
+  
+  SharcCD
+    Z= 70
+    R= 0
+    Phi= 100
