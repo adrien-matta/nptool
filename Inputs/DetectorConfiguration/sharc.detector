@@ -13,26 +13,27 @@ Target
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Sharc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  % Upstream CD
-  SharcCD
-    Z= -70
+  %Upstream CD
+  SharcQQQ
+    Z= -100
     R= 0
-    Phi= 25
-  
-  SharcCD
-    Z= -70
+    Phi= 0
+    ThicknessDector= 100
+  SharcQQQ
+    Z= -100
     R= 0
-    Phi= 50
-  
-  SharcCD
-    Z= -70
+    Phi= 90
+    ThicknessDector= 100
+  SharcQQQ
+    Z= -100
     R= 0
-    Phi= 75
-  
-  SharcCD
-    Z= -70
+    Phi= 180
+    ThicknessDector= 100
+  SharcQQQ
+    Z= -100
     R= 0
-    Phi= 100
+    Phi= 270
+    ThicknessDector= 100
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % Upstream Box
   SharcBOX
@@ -41,7 +42,10 @@ Sharc
     ThicknessDector2= 100
     ThicknessDector3= 100
     ThicknessDector4= 100
-    
+    ThicknessPAD1= 0
+    ThicknessPAD2= 0
+    ThicknessPAD3= 0
+    ThicknessPAD4= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % Down Stream Box
   SharcBOX
@@ -50,24 +54,30 @@ Sharc
     ThicknessDector2= 100
     ThicknessDector3= 100
     ThicknessDector4= 100
+    ThicknessPAD1= 1000
+    ThicknessPAD2= 1000
+    ThicknessPAD3= 1000
+    ThicknessPAD4= 1000
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  % Down stream CD
-  SharcCD
-    Z= 70
+  %Downstream CD
+  SharcQQQ
+    Z= 100
     R= 0
-    Phi= 25
-  
-  SharcCD
-    Z= 70
+    Phi= 0
+    ThicknessDector= 100
+  SharcQQQ
+    Z= 100
     R= 0
-    Phi= 50
-  
-  SharcCD
-    Z= 70
+    Phi= 90
+    ThicknessDector= 100
+  SharcQQQ
+    Z= 100
     R= 0
-    Phi= 75
-  
-  SharcCD
-    Z= 70
+    Phi= 180
+    ThicknessDector= 100
+  SharcQQQ
+    Z= 100
     R= 0
-    Phi= 100
+    Phi= 270
+    ThicknessDector= 100
+

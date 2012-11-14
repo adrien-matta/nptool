@@ -62,7 +62,7 @@ namespace SHARC
   
   // BOX Wafer
   const G4double BOX_Wafer_Width  = 51.00*mm;
-  const G4double BOX_Wafer_Length = 76.00*mm;
+  const G4double BOX_Wafer_Length = 77.00*mm;
   const G4double BOX_Wafer_Thickness = 100*um;
   
   const G4double BOX_Wafer_DeadLayer_Thickness = 0.1*um;
@@ -76,6 +76,30 @@ namespace SHARC
   BOX_PCB_Length/2. - BOX_PCB_Border_ShortSide - BOX_Wafer_Length/2.;
   const G4double BOX_PCB_Slot_Position =(BOX_Wafer_Length/2.-BOX_Wafer_Length_Offset) + BOX_PCB_Slot_Border + BOX_PCB_Slot_Width/2.;
 
+  // PAD //
+  // PAD PCB
+  const G4double PAD_PCB_Width  = 61.0*mm;
+  const G4double PAD_PCB_Length = 104.00*mm;
+  const G4double PAD_PCB_Thickness = 3*mm;
+  const G4double PAD_PCB_Border_LongSide = 1*mm;
+  const G4double PAD_PCB_Border_ShortSide = 2*mm;
+  
+  const G4double PAD_PCB_Slot_Width = 3*mm;
+  const G4double PAD_PCB_Slot_Border = 5*mm;
+  const G4double PAD_PCB_Slot_Deepness = 1*mm;
+  
+  // PAD Wafer
+  const G4double PAD_Wafer_Width  = 52.00*mm;
+  const G4double PAD_Wafer_Length = 74.00*mm;
+  const G4double PAD_Wafer_Thickness = 100*um;
+  const G4double PAD_Wafer_DeadLayer_Thickness = 0.1*um;
+  
+  // Compute
+  const G4double PAD_Wafer_Width_Offset =
+  PAD_PCB_Width/2. - PAD_PCB_Border_LongSide - PAD_Wafer_Width/2.;
+  const G4double PAD_Wafer_Length_Offset =
+  PAD_PCB_Length/2. - PAD_PCB_Border_ShortSide - PAD_Wafer_Length/2.;
+  
   // QQQ //
   // QQQ PCB
   const G4double QQQ_PCB_Outer_Radius = 61*mm;
@@ -88,8 +112,8 @@ namespace SHARC
   const G4double QQQ_Wafer_Thickness = 100*um;
   const G4double QQQ_Wafer_Starting_Phi = 8*deg;
   const G4double QQQ_Wafer_Stopping_Phi = 162*deg;
-  const G4int    QQQ_Wafer_Front_NumberOfStrip = 16 ;
-  const G4int    QQQ_Wafer_Back_NumberOfStrip = 16 ;
+  const G4int    QQQ_Wafer_NumberOf_RadialStrip = 16 ;
+  const G4int    QQQ_Wafer_NumberOf_AnnularStrip = 24 ;
   
 }
 
@@ -109,7 +133,7 @@ public:
   ////////////////////////////////////////////////////
 public:
   // To add a box detector
-  void AddBoxDetector(G4double Z,G4double Thickness1,G4double Thickness2,G4double Thickness3,G4double Thickness4);
+  void AddBoxDetector(G4double Z,G4double Thickness1,G4double Thickness2,G4double Thickness3,G4double Thickness4,G4double ThicknessPAD1,G4double ThicknessPAD2,G4double ThicknessPAD3,G4double ThicknessPAD4);
   // To add a Quadrant detector
   void AddQQQDetector(G4ThreeVector Pos);
   
@@ -173,7 +197,7 @@ private:
   vector<bool>   m_Type  ;
   
   // Used for Quadrant detectors
-  vector<G4ThreeVector>   m_Pos   ;
+  vector<G4ThreeVector>   m_Pos   ; // R , Phi , Z
   vector<G4double>        m_Thickness;
   
   // Used for Box detectors
@@ -182,6 +206,10 @@ private:
   vector<G4double>   m_Thickness2;
   vector<G4double>   m_Thickness3;
   vector<G4double>   m_Thickness4;
+  vector<G4double>   m_ThicknessPAD1;
+  vector<G4double>   m_ThicknessPAD2;
+  vector<G4double>   m_ThicknessPAD3;
+  vector<G4double>   m_ThicknessPAD4;
   
   // Set to true if you want to see Telescope Frame in your visualisation
   bool m_non_sensitive_part_visiualisation ;

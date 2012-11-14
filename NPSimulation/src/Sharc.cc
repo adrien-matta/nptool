@@ -75,7 +75,7 @@ Sharc::~Sharc()
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void Sharc::AddBoxDetector(G4double Z,G4double Thickness1,G4double Thickness2,G4double Thickness3,G4double Thickness4)
+void Sharc::AddBoxDetector(G4double Z,G4double Thickness1,G4double Thickness2,G4double Thickness3,G4double Thickness4,G4double ThicknessPAD1,G4double ThicknessPAD2,G4double ThicknessPAD3,G4double ThicknessPAD4)
 {
   
   m_Type.push_back(true);
@@ -84,6 +84,11 @@ void Sharc::AddBoxDetector(G4double Z,G4double Thickness1,G4double Thickness2,G4
   m_Thickness2.push_back(Thickness2);
   m_Thickness3.push_back(Thickness3);
   m_Thickness4.push_back(Thickness4);
+  
+  m_ThicknessPAD1.push_back(ThicknessPAD1);
+  m_ThicknessPAD2.push_back(ThicknessPAD2);
+  m_ThicknessPAD3.push_back(ThicknessPAD3);
+  m_ThicknessPAD4.push_back(ThicknessPAD4);
   
 }
 
@@ -109,7 +114,7 @@ void Sharc::ReadConfiguration(string Path)
   string LineBuffer             ;
   string DataBuffer             ;
   
-  G4double R,Phi,Thickness1,Thickness2,Thickness3,Thickness4,Z;
+  G4double R,Phi,Thickness1,Thickness2,Thickness3,Thickness4,ThicknessPAD1,ThicknessPAD2,ThicknessPAD3,ThicknessPAD4,Z;
   G4ThreeVector Pos;
   bool check_R   = false ;
   bool check_Phi = false ;
@@ -117,6 +122,10 @@ void Sharc::ReadConfiguration(string Path)
   bool check_Thickness2   = false ;
   bool check_Thickness3   = false ;
   bool check_Thickness4   = false ;
+  bool check_PAD1   = false ;
+  bool check_PAD2   = false ;
+  bool check_PAD3   = false ;
+  bool check_PAD4   = false ;
   bool check_Z   = false ;
   
   bool ReadingStatusQQQ = false ;
@@ -192,7 +201,7 @@ void Sharc::ReadConfiguration(string Path)
         if (check_R && check_Phi && check_Z){
           
           ReadingStatusQQQ = false;
-          AddQQQDetector(G4ThreeVector(Z,R,Phi));
+          AddQQQDetector(G4ThreeVector(R,Phi,Z));
           //   Reinitialisation of Check Boolean
           check_R   = false ;
           check_Phi = false ;
@@ -243,6 +252,34 @@ void Sharc::ReadConfiguration(string Path)
           cout << "  ThicknessDetector4= " << Thickness4/um << "mm" << endl;
         }
         
+        else if (DataBuffer == "ThicknessPAD1=") {
+          check_PAD1 = true;
+          ConfigFile >> DataBuffer ;
+          ThicknessPAD1= atof(DataBuffer.c_str())*um;
+          cout << "  ThicknessPAD1= " << ThicknessPAD1 << endl;
+        }
+        
+        else if (DataBuffer == "ThicknessPAD2=") {
+          check_PAD2 = true;
+          ConfigFile >> DataBuffer ;
+          ThicknessPAD2= atof(DataBuffer.c_str())*um;
+          cout << "  ThicknessPAD2= " << ThicknessPAD2 << endl;
+        }
+        
+        else if (DataBuffer == "ThicknessPAD3=") {
+          check_PAD3 = true;
+          ConfigFile >> DataBuffer ;
+          ThicknessPAD3= atof(DataBuffer.c_str())*um;
+          cout << "  ThicknessPAD3= " << ThicknessPAD3 << endl;
+        }
+        
+        else if (DataBuffer == "ThicknessPAD4=") {
+          check_PAD4 = true;
+          ConfigFile >> DataBuffer ;
+          ThicknessPAD4= atof(DataBuffer.c_str())*um;
+          cout << "  ThicknessPAD4= " << ThicknessPAD4 << endl;
+        }
+        
         ///////////////////////////////////////////////////
         //   If no Detector Token and no comment, toggle out
         else{
@@ -254,17 +291,24 @@ void Sharc::ReadConfiguration(string Path)
         /////////////////////////////////////////////////
         //   If All necessary information there, toggle out
         
-        if (check_Thickness1 && check_Thickness2 && check_Thickness3 && check_Thickness4 && check_Z){
+        if (check_Thickness1 && check_Thickness2 && check_Thickness3 && check_Thickness4
+            && check_PAD1 && check_PAD2 && check_PAD3 && check_PAD4
+            && check_Z){
           ReadingStatusBOX = false;
-          AddBoxDetector(Z,Thickness1,Thickness2,Thickness3,Thickness4);
+          AddBoxDetector(Z,Thickness1,Thickness2,Thickness3,Thickness4,
+                         ThicknessPAD1,ThicknessPAD2,ThicknessPAD3,ThicknessPAD4);
           //   Reinitialisation of Check Boolean
-          check_R   = false ;
+          check_R = false ;
           check_Phi = false ;
-          check_Thickness1   = false;
-          check_Thickness2   = false;
-          check_Thickness3   = false;
-          check_Thickness4   = false;
-          check_Z   = false ;
+          check_Thickness1 = false;
+          check_Thickness2 = false;
+          check_Thickness3 = false;
+          check_Thickness4 = false;
+          check_PAD1 = false;
+          check_PAD2 = false;
+          check_PAD3 = false;
+          check_PAD4 = false;
+          check_Z = false ;
           
         }
       }
@@ -293,7 +337,7 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world)
   const G4VisAttributes* FrameVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5)) ;
   
   
-  // create the Box
+  // create the Box DSSD
   
   // Make the a single detector geometry
   G4Box*  BoxDetector = new G4Box("BoxDetector"  ,
@@ -412,7 +456,123 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world)
                       logicBoxDetector,"Box",world,false,i+3);
   }
   
+  
+  
+  // create the PAD
+  
+  // Make the a single detector geometry
+  G4Box*  PADDetector = new G4Box("PADDetector"  ,
+                                  PAD_PCB_Length/2.,
+                                  PAD_PCB_Width/2.,
+                                  PAD_PCB_Thickness/2.);
+  
+  G4Box*  PADPCBFull = new G4Box("PCBFull"  ,
+                                 PAD_PCB_Length/2.,
+                                 PAD_PCB_Width/2.,
+                                 PAD_PCB_Thickness/2.);
+  
+  G4Box*  PADWaferShape = new G4Box("PADWaferShape",
+                                    PAD_Wafer_Length/2.,
+                                    PAD_Wafer_Width/2.,
+                                    PAD_PCB_Thickness/2.+0.1*mm);
+  
+  G4Box*  PADWafer       = new G4Box("PADWafer",
+                                     PAD_Wafer_Length/2.,
+                                     PAD_Wafer_Width/2.,
+                                     PAD_Wafer_Thickness/2.);
+  
+  G4ThreeVector PAD_Wafer_Offset =
+  G4ThreeVector(PAD_Wafer_Length_Offset, PAD_Wafer_Width_Offset,0 );
+  
+  G4SubtractionSolid* PADPCB = new G4SubtractionSolid("PADPCB", PADPCBFull, PADWaferShape,new G4RotationMatrix,PAD_Wafer_Offset);
+  
+  // Master Volume
+  G4LogicalVolume* logicPADDetector =
+  new G4LogicalVolume(PADDetector,m_MaterialVacuum,"logicPADDetector", 0, 0, 0);
+  logicPADDetector->SetVisAttributes(G4VisAttributes::Invisible);
+  // Sub Volume PCB
+  G4LogicalVolume* logicPADPCB =
+  new G4LogicalVolume(PCB,m_MaterialPCB,"logicPADPCB", 0, 0, 0);
+  logicPADPCB->SetVisAttributes(PCBVisAtt);
+  
+  // Sub Volume Wafer
+  G4LogicalVolume* logicPADWafer =
+  new G4LogicalVolume(Wafer,m_MaterialSilicon,"logicPADWafer", 0, 0, 0);
+  logicPADWafer->SetVisAttributes(SiliconVisAtt);
+  
+  
+  
+  // Place the sub volume in the master volume
+  new G4PVPlacement(new G4RotationMatrix(0,0,0),
+                    G4ThreeVector(0,0,0),
+                    logicPCB,"PAD_PCB",logicPADDetector,false,0);
+  
+  new G4PVPlacement(new G4RotationMatrix(0,0,0),
+                    PAD_Wafer_Offset,
+                    logicWafer,"PAD_Wafer",logicPADDetector,false,0);
+  
+  // Place the detector in the world
+  for(unsigned int i = 0 ; i < m_Z.size() ; i++){
+    G4ThreeVector DetectorPosition =
+    -PAD_Wafer_Offset+0.5*G4ThreeVector(PAD_PCB_Slot_Border + 0.5*PAD_PCB_Slot_Width -(PAD_PCB_Border_ShortSide - PAD_PCB_Slot_Deepness),0,0);
     
+    // Det 1
+    G4RotationMatrix* DetectorRotation1= new G4RotationMatrix;
+    G4ThreeVector DetectorSpacing =
+    -G4ThreeVector(0, 0,0.5*(PAD_Wafer_Length+(PAD_PCB_Border_ShortSide- PAD_PCB_Slot_Deepness)+PAD_PCB_Slot_Border+0.5*PAD_PCB_Slot_Width));
+    
+    DetectorRotation1->rotateX(90*deg);
+    if(m_Z[i]>0) DetectorRotation1->rotateY(180*deg);
+    G4ThreeVector DetectorPosition1=
+    DetectorPosition+DetectorSpacing;
+    DetectorPosition1.transform(*DetectorRotation1);
+    DetectorPosition1+=G4ThreeVector(0,0,m_Z[i]);
+    
+    new G4PVPlacement(G4Transform3D(*DetectorRotation1, DetectorPosition1),
+                      logicPADDetector,"PAD",world,false,i+0);
+    
+    // Det2
+    G4RotationMatrix* DetectorRotation2= new G4RotationMatrix;
+    DetectorRotation2->rotateZ(180*deg);
+    DetectorRotation2->rotateX(-90*deg);
+    if(m_Z[i]>0) DetectorRotation2->rotateY(180*deg);
+    G4ThreeVector DetectorPosition2=
+    DetectorPosition+DetectorSpacing;
+    DetectorPosition2.transform(*DetectorRotation2);
+    DetectorPosition2+=G4ThreeVector(0,0,m_Z[i]);
+    
+    new G4PVPlacement(G4Transform3D(*DetectorRotation2, DetectorPosition2),
+                      logicPADDetector,"PAD",world,false,i+1);
+    
+    // Det 3
+    G4RotationMatrix* DetectorRotation3= new G4RotationMatrix;
+    DetectorRotation3->rotateX(90*deg);
+    DetectorRotation3->rotateZ(90*deg);
+    if(m_Z[i]>0) DetectorRotation3->rotateY(180*deg);
+    G4ThreeVector DetectorPosition3=
+    DetectorPosition+DetectorSpacing;
+    DetectorPosition3.transform(*DetectorRotation3);
+    DetectorPosition3+=G4ThreeVector(0,0,m_Z[i]);
+    
+    new G4PVPlacement(G4Transform3D(*DetectorRotation3, DetectorPosition3),
+                      logicPADDetector,"PAD",world,false,i+2);
+    
+    // Det 4
+    G4RotationMatrix* DetectorRotation4= new G4RotationMatrix;
+    DetectorRotation4->rotateX(90*deg);
+    DetectorRotation4->rotateZ(-90*deg);
+    if(m_Z[i]>0) DetectorRotation4->rotateY(180*deg);
+    G4ThreeVector DetectorPosition4=
+    DetectorPosition+DetectorSpacing;
+    DetectorPosition4.transform(*DetectorRotation4);
+    DetectorPosition4+=G4ThreeVector(0,0,m_Z[i]);
+    new G4PVPlacement(G4Transform3D(*DetectorRotation4, DetectorPosition4),
+                      logicPADDetector,"PAD",world,false,i+3);
+  }
+
+  
+  
+  
 }
 
 ///////////////////////////////////////////////////
@@ -428,7 +588,7 @@ void Sharc::ConstructQQQDetector(G4LogicalVolume* world)
   const G4VisAttributes* FrameVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5)) ;
   
   
-  // create the Box
+  // create the QQQ
   
   // Make the a single detector geometry
   G4Tubs*  QQQDetector = new G4Tubs("QQQDetector"  ,
@@ -470,25 +630,27 @@ void Sharc::ConstructQQQDetector(G4LogicalVolume* world)
   new G4LogicalVolume(PCB,m_MaterialPCB,"logicPCB", 0, 0, 0);
   logicPCB->SetVisAttributes(PCBVisAtt);
   
- /* // Sub Volume Wafer
+  // Sub Volume Wafer
   G4LogicalVolume* logicWafer =
   new G4LogicalVolume(Wafer,m_MaterialSilicon,"logicWafer", 0, 0, 0);
-  logicWafer->SetVisAttributes(SiliconVisAtt);*/
+  logicWafer->SetVisAttributes(SiliconVisAtt);
   
   // Place the sub volume in the master volume
   new G4PVPlacement(new G4RotationMatrix(0,0,0),
                     G4ThreeVector(0,0,0),
                     logicPCB,"QQQ_PCB",logicQQQDetector,false,0);
   
-/*  new G4PVPlacement(new G4RotationMatrix(0,0,0),
-                    Box_Wafer_Offset,
-                    logicWafer,"Box_Wafer",logicBoxDetector,false,0);*/
-  
-  // Place the master volume in the world
   new G4PVPlacement(new G4RotationMatrix(0,0,0),
-                    G4ThreeVector(0,0,100),
+                    G4ThreeVector(0,0,0),
+                    logicWafer,"QQQ_Wafer",logicQQQDetector,false,0);
+  
+  // Place the masters volume in the world
+  for(unsigned int i = 0 ; i < m_Pos.size() ; i++){
+  
+  new G4PVPlacement(new G4RotationMatrix(0,0,m_Pos[i].y()),
+                    G4ThreeVector(0,0,m_Pos[i].z()),
                     logicQQQDetector,"QQQ",world,false,0);
-
+  }
 }
 
 // Add Detector branch to the EventTree.
