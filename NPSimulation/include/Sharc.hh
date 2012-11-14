@@ -83,9 +83,11 @@ namespace SHARC
   const G4double QQQ_PCB_Thickness = 2*mm;
 
   // QQQ Wafer
-  const G4double QQQ_Wafer_Outer_Radius = 0*mm;
-  const G4double QQQ_Wafer_Inner_Radius = 0*mm;
-  const G4double QQQ_Wafer_Thickness = 0*mm;
+  const G4double QQQ_Wafer_Outer_Radius = 42.63*mm;
+  const G4double QQQ_Wafer_Inner_Radius = 7.8*mm;
+  const G4double QQQ_Wafer_Thickness = 100*um;
+  const G4double QQQ_Wafer_Starting_Phi = 8*deg;
+  const G4double QQQ_Wafer_Stopping_Phi = 162*deg;
   const G4int    QQQ_Wafer_Front_NumberOfStrip = 16 ;
   const G4int    QQQ_Wafer_Back_NumberOfStrip = 16 ;
   

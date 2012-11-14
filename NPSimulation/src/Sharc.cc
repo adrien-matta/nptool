@@ -24,9 +24,8 @@
 #include <cmath>
 #include <limits>
 //G4 Geometry object
-#include "G4Trd.hh"
 #include "G4Box.hh"
-#include "G4Trap.hh"
+#include "G4Tubs.hh"
 
 //G4 sensitive
 #include "G4SDManager.hh"
@@ -432,66 +431,63 @@ void Sharc::ConstructQQQDetector(G4LogicalVolume* world)
   // create the Box
   
   // Make the a single detector geometry
-  G4Box*  BoxDetector = new G4Box("BoxDetector"  ,
-                                  BOX_PCB_Length/2.,
-                                  BOX_PCB_Width/2.,
-                                  BOX_PCB_Thickness/2.);
+  G4Tubs*  QQQDetector = new G4Tubs("QQQDetector"  ,
+                                   QQQ_PCB_Inner_Radius,
+                                   QQQ_PCB_Outer_Radius,
+                                   QQQ_PCB_Thickness/2.,
+                                   0.,
+                                   M_PI/2.);
   
-  G4Box*  PCBFull = new G4Box("PCBFull"  ,
-                              BOX_PCB_Length/2.,
-                              BOX_PCB_Width/2.,
-                              BOX_PCB_Thickness/2.);
+  G4Tubs*  PCBFull = new G4Tubs("PCBFull"  ,
+                                QQQ_PCB_Inner_Radius,
+                                QQQ_PCB_Outer_Radius,
+                                QQQ_PCB_Thickness/2.,
+                                0.,
+                                M_PI/2.);
   
-  G4Box*  WaferShape = new G4Box("WaferShape",
-                                 BOX_Wafer_Length/2.,
-                                 BOX_Wafer_Width/2.,
-                                 BOX_PCB_Thickness/2.+0.1*mm);
+  G4Tubs*  WaferShape = new G4Tubs("WaferShape"  ,
+                                  QQQ_Wafer_Inner_Radius,
+                                  QQQ_Wafer_Outer_Radius,
+                                  QQQ_PCB_Thickness/2.+0.1*mm,
+                                   QQQ_Wafer_Starting_Phi,
+                                   QQQ_Wafer_Stopping_Phi/2.);
   
-  G4Box*  Wafer       = new G4Box("Wafer",
-                                  BOX_Wafer_Length/2.,
-                                  BOX_Wafer_Width/2.,
-                                  BOX_Wafer_Thickness/2.);
-  
-  G4Box*  SlotShape = new G4Box("SlotShape",
-                                BOX_PCB_Slot_Width/2.,
-                                BOX_PCB_Width/2.+0.1*mm,
-                                BOX_PCB_Slot_Deepness);
-  
-  G4ThreeVector Box_Wafer_Offset =
-  G4ThreeVector(BOX_Wafer_Length_Offset, BOX_Wafer_Width_Offset,0 );
-  
-  G4SubtractionSolid* PCB1 = new G4SubtractionSolid("PCB1", PCBFull, WaferShape,new G4RotationMatrix,Box_Wafer_Offset);
-  
-  G4SubtractionSolid* PCB = new G4SubtractionSolid("PCB", PCB1, SlotShape,new G4RotationMatrix,G4ThreeVector(-BOX_PCB_Slot_Position, 0,BOX_PCB_Slot_Deepness));
+  G4Tubs*  Wafer = new G4Tubs("Wafer"  ,
+                              QQQ_Wafer_Inner_Radius,
+                              QQQ_Wafer_Outer_Radius,
+                              QQQ_Wafer_Thickness/2.,
+                              QQQ_Wafer_Starting_Phi,
+                              QQQ_Wafer_Stopping_Phi/2.);
+
+  G4SubtractionSolid* PCB = new G4SubtractionSolid("PCB", PCBFull, WaferShape,new G4RotationMatrix,G4ThreeVector(0, 0,0));
   
   // Master Volume
-  G4LogicalVolume* logicBoxDetector =
-  new G4LogicalVolume(BoxDetector,m_MaterialVacuum,"logicBoxDetector", 0, 0, 0);
-  logicBoxDetector->SetVisAttributes(G4VisAttributes::Invisible);
+  G4LogicalVolume* logicQQQDetector =
+  new G4LogicalVolume(QQQDetector,m_MaterialVacuum,"logicQQQDetector", 0, 0, 0);
+  logicQQQDetector->SetVisAttributes(G4VisAttributes::Invisible);
   // Sub Volume PCB
   G4LogicalVolume* logicPCB =
   new G4LogicalVolume(PCB,m_MaterialPCB,"logicPCB", 0, 0, 0);
   logicPCB->SetVisAttributes(PCBVisAtt);
   
-  // Sub Volume Wafer
+ /* // Sub Volume Wafer
   G4LogicalVolume* logicWafer =
   new G4LogicalVolume(Wafer,m_MaterialSilicon,"logicWafer", 0, 0, 0);
-  logicWafer->SetVisAttributes(SiliconVisAtt);
+  logicWafer->SetVisAttributes(SiliconVisAtt);*/
   
   // Place the sub volume in the master volume
   new G4PVPlacement(new G4RotationMatrix(0,0,0),
                     G4ThreeVector(0,0,0),
-                    logicPCB,"Box_PCB",logicBoxDetector,false,0);
+                    logicPCB,"QQQ_PCB",logicQQQDetector,false,0);
   
-  new G4PVPlacement(new G4RotationMatrix(0,0,0),
+/*  new G4PVPlacement(new G4RotationMatrix(0,0,0),
                     Box_Wafer_Offset,
-                    logicWafer,"Box_Wafer",logicBoxDetector,false,0);
+                    logicWafer,"Box_Wafer",logicBoxDetector,false,0);*/
   
   // Place the master volume in the world
-
   new G4PVPlacement(new G4RotationMatrix(0,0,0),
                     G4ThreeVector(0,0,100),
-                    logicBoxDetector,"Box_Wafer",world,false,0);
+                    logicQQQDetector,"QQQ",world,false,0);
 
 }
 
