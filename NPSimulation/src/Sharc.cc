@@ -71,14 +71,21 @@ Sharc::~Sharc()
   delete m_MaterialSilicon;
   delete m_MaterialAl;
   delete m_MaterialVacuum;
+  delete m_MaterialPCB;
   
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void Sharc::AddBoxDetector(G4ThreeVector Pos)
+void Sharc::AddBoxDetector(G4double Z,G4double Thickness1,G4double Thickness2,G4double Thickness3,G4double Thickness4)
 {
+  
   m_Type.push_back(true);
-  m_Pos.push_back(Pos);
+  m_Z.push_back(Z);
+  m_Thickness1.push_back(Thickness1);
+  m_Thickness2.push_back(Thickness2);
+  m_Thickness3.push_back(Thickness3);
+  m_Thickness4.push_back(Thickness4);
+  
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -86,25 +93,6 @@ void Sharc::AddQQQDetector(G4ThreeVector Pos)
 {
   m_Type.push_back(false);
   m_Pos.push_back(Pos);
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void Sharc::VolumeMaker(G4int             DetNumber ,
-                        G4ThreeVector     Det_pos ,
-                        G4RotationMatrix* Det_rot ,
-                        G4LogicalVolume*  world   )
-{
-  // create the DSSD
-  G4Box*  PCBFull = new G4Box("PCBFull"  ,90*mm,60*mm,1*mm);
-  G4Box*  Wafer = new G4Box("Wafer",72*mm,48*mm,100*um);
-  
-  G4SubtractionSolid* PCB = new G4SubtractionSolid("PCB", PCBFull, Wafer);
-  
-  G4LogicalVolume* logicPCB =
-  new G4LogicalVolume(PCB, m_MaterialSilicon, "logicPCB", 0, 0, 0);
-  
-  new G4PVPlacement(0, G4ThreeVector(0,0,0), logicPCB, "TEST", world, false, 0);
-  
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -122,12 +110,14 @@ void Sharc::ReadConfiguration(string Path)
   string LineBuffer             ;
   string DataBuffer             ;
   
-  G4double R,Phi,X,Y,Z;
+  G4double R,Phi,Thickness1,Thickness2,Thickness3,Thickness4,Z;
   G4ThreeVector Pos;
   bool check_R   = false ;
   bool check_Phi = false ;
-  bool check_X   = false ;
-  bool check_Y   = false ;
+  bool check_Thickness1   = false ;
+  bool check_Thickness2   = false ;
+  bool check_Thickness3   = false ;
+  bool check_Thickness4   = false ;
   bool check_Z   = false ;
   
   bool ReadingStatusQQQ = false ;
@@ -207,10 +197,6 @@ void Sharc::ReadConfiguration(string Path)
           //   Reinitialisation of Check Boolean
           check_R   = false ;
           check_Phi = false ;
-          check_X   = false;
-          check_Y   = false;
-          check_Z   = false ;
-          
         }
         
       }
@@ -223,25 +209,39 @@ void Sharc::ReadConfiguration(string Path)
         if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
         
         //Position method
-        else if (DataBuffer == "X=") {
-          check_X = true;
-          ConfigFile >> DataBuffer ;
-          X= atof(DataBuffer.c_str())*mm;
-          cout << "  X= " << Y/mm << "mm" << endl;
-        }
-        
-        else if (DataBuffer == "Y=") {
-          check_Y = true;
-          ConfigFile >> DataBuffer ;
-          Y= atof(DataBuffer.c_str())*mm;
-          cout << "  Y= " << Y/mm << "mm" << endl;
-        }
-        
         else if (DataBuffer == "Z=") {
           check_Z = true;
           ConfigFile >> DataBuffer ;
           Z= atof(DataBuffer.c_str())*mm;
           cout << "  Z= " << Z/mm << "mm" << endl;
+        }
+        
+        else if (DataBuffer == "ThicknessDector1=") {
+          check_Thickness1 = true;
+          ConfigFile >> DataBuffer ;
+          Thickness1= atof(DataBuffer.c_str())*um;
+          cout << "  ThicknessDetector1= " << Thickness1/um << "mm" << endl;
+        }
+        
+        else if (DataBuffer == "ThicknessDector2=") {
+          check_Thickness2 = true;
+          ConfigFile >> DataBuffer ;
+          Thickness2= atof(DataBuffer.c_str())*um;
+          cout << "  ThicknessDetector2= " << Thickness2/um << "mm" << endl;
+        }
+        
+        else if (DataBuffer == "ThicknessDector3=") {
+          check_Thickness3 = true;
+          ConfigFile >> DataBuffer ;
+          Thickness3= atof(DataBuffer.c_str())*um;
+          cout << "  ThicknessDetector3= " << Thickness3/um << "mm" << endl;
+        }
+        
+        else if (DataBuffer == "ThicknessDector4=") {
+          check_Thickness4 = true;
+          ConfigFile >> DataBuffer ;
+          Thickness4= atof(DataBuffer.c_str())*um;
+          cout << "  ThicknessDetector4= " << Thickness4/um << "mm" << endl;
         }
         
         ///////////////////////////////////////////////////
@@ -255,18 +255,19 @@ void Sharc::ReadConfiguration(string Path)
         /////////////////////////////////////////////////
         //   If All necessary information there, toggle out
         
-        if (check_X && check_Y && check_Z){
+        if (check_Thickness1 && check_Thickness2 && check_Thickness3 && check_Thickness4 && check_Z){
           ReadingStatusBOX = false;
-          AddBoxDetector(G4ThreeVector(X,Y,Z));
+          AddBoxDetector(Z,Thickness1,Thickness2,Thickness3,Thickness4);
           //   Reinitialisation of Check Boolean
           check_R   = false ;
           check_Phi = false ;
-          check_X   = false;
-          check_Y   = false;
+          check_Thickness1   = false;
+          check_Thickness2   = false;
+          check_Thickness3   = false;
+          check_Thickness4   = false;
           check_Z   = false ;
           
         }
-
       }
     }
   }
@@ -276,96 +277,222 @@ void Sharc::ReadConfiguration(string Path)
 // Called After DetecorConstruction::AddDetector Method
 void Sharc::ConstructDetector(G4LogicalVolume* world)
 {
-  /*  G4RotationMatrix* Det_rot  = NULL;
-   G4ThreeVector     Det_pos  = G4ThreeVector(0, 0, 0);
-   G4ThreeVector     Det_u    = G4ThreeVector(0, 0, 0);
-   G4ThreeVector     Det_v    = G4ThreeVector(0, 0, 0);
-   G4ThreeVector     Det_w    = G4ThreeVector(0, 0, 0);
-   
-   G4int NumberOfDetector = m_DefinitionType.size();
-   
-   for (G4int i = 0 ; i < NumberOfDetector ; i++) {
-   // By Point
-   if (m_DefinitionType[i]) {
-   // (u,v,w) unitary vector associated to telescope referencial
-   // (u,v) // to silicon plan
-   // w perpendicular to (u,v) plan and pointing outside
-   Det_u = m_TL[i] - m_BL[i];
-   Det_u = Det_u.unit();
-   Det_v = m_BR[i] - m_BL[i];
-   Det_v = Det_v.unit();
-   Det_w = Det_u.cross(Det_v);
-   Det_w = Det_w.unit();
-   // Passage Matrix from Lab Referential to Telescope Referential
-   // MUST2
-   Det_rot = new G4RotationMatrix(Det_u, Det_v, Det_w);
-   // translation to place Telescope
-   Det_pos =  (m_TR[i]+m_TL[i]+m_BL[i]+m_BR[i])/4 ;
-   }
-   
-   // By Angle
-   else {
-   G4double Theta = m_Theta[i];
-   G4double Phi   = m_Phi[i];
-   //This part because if Phi and Theta = 0 equation are false
-   if (Theta == 0) Theta   = 0.0001;
-   if (Theta == 2*cos(0)) Theta   = 2 * acos(0) - 0.00001;
-   if (Phi   == 0) Phi = 0.0001;
-   
-   
-   // (u,v,w) unitary vector associated to telescope referencial
-   // (u,v) // to silicon plan
-   // w perpendicular to (u,v) plan and pointing ThirdStage
-   // Phi is angle between X axis and projection in (X,Y) plan
-   // Theta is angle between  position vector and z axis
-   G4double wX = m_R[i] * sin(Theta / rad) * cos(Phi / rad)   ;
-   G4double wY = m_R[i] * sin(Theta / rad) * sin(Phi / rad)   ;
-   G4double wZ = m_R[i] * cos(Theta / rad);
-   Det_w = G4ThreeVector(wX, wY, wZ);
-   
-   // vector corresponding to the center of the module
-   G4ThreeVector CT = Det_w;
-   
-   // vector parallel to one axis of silicon plane
-   G4double ii = cos(Theta / rad) * cos(Phi / rad);
-   G4double jj = cos(Theta / rad) * sin(Phi / rad);
-   G4double kk = -sin(Theta / rad);
-   G4ThreeVector Y = G4ThreeVector(ii, jj, kk);
-   
-   Det_w = Det_w.unit();
-   Det_u = Det_w.cross(Y);
-   Det_v = Det_w.cross(Det_u);
-   Det_v = Det_v.unit();
-   Det_u = Det_u.unit();
-   
-   // Passage Matrix from Lab Referential to Telescope Referential
-   // MUST2
-   Det_rot = new G4RotationMatrix(Det_u, Det_v, Det_w);
-   // Telescope is rotate of Beta angle around Det_v axis.
-   Det_rot->rotate(m_beta_u[i], Det_u);
-   Det_rot->rotate(m_beta_v[i], Det_v);
-   Det_rot->rotate(m_beta_w[i], Det_w);
-   // translation to place Telescope
-   Det_pos = Det_w + CT ;
-   }
-   
-   
-   
-   VolumeMaker(i + 1 , Det_pos , Det_rot , world);
-   }
-   
-   delete Det_rot ;*/
+  ConstructBOXDetector(world);
+  ConstructQQQDetector(world);
+}
+
+///////////////////////////////////////////////////
+void Sharc::ConstructBOXDetector(G4LogicalVolume* world)
+{
+  // Vis Attribute:
+  // Visual Attribute:
+  // Dark Grey
+  const G4VisAttributes* SiliconVisAtt = new G4VisAttributes(G4Colour(0.3, 0.3, 0.3)) ;
+  // Green
+  const G4VisAttributes* PCBVisAtt = new G4VisAttributes(G4Colour(0.2, 0.5, 0.2)) ;
+  // Light Grey
+  const G4VisAttributes* FrameVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5)) ;
   
-  // create the DSSD
-  G4Box*  PCBFull = new G4Box("PCBFull"  ,90*mm,60*mm,1*mm);
-  G4Box*  Wafer = new G4Box("Wafer",72*mm,48*mm,1.01*mm);
-  G4ThreeVector zTrans(0, 0, 50);
-  G4SubtractionSolid* PCB = new G4SubtractionSolid("PCB", PCBFull, Wafer,new G4RotationMatrix,G4ThreeVector(10*mm, 10*mm,0 ));
   
+  // create the Box
+  
+  // Make the a single detector geometry
+  G4Box*  BoxDetector = new G4Box("BoxDetector"  ,
+                                  BOX_PCB_Length/2.,
+                                  BOX_PCB_Width/2.,
+                                  BOX_PCB_Thickness/2.);
+  
+  G4Box*  PCBFull = new G4Box("PCBFull"  ,
+                              BOX_PCB_Length/2.,
+                              BOX_PCB_Width/2.,
+                              BOX_PCB_Thickness/2.);
+  
+  G4Box*  WaferShape = new G4Box("WaferShape",
+                                 BOX_Wafer_Length/2.,
+                                 BOX_Wafer_Width/2.,
+                                 BOX_PCB_Thickness/2.+0.1*mm);
+  
+  G4Box*  Wafer       = new G4Box("Wafer",
+                                  BOX_Wafer_Length/2.,
+                                  BOX_Wafer_Width/2.,
+                                  BOX_Wafer_Thickness/2.);
+  
+  G4Box*  SlotShape = new G4Box("SlotShape",
+                                BOX_PCB_Slot_Width/2.,
+                                BOX_PCB_Width/2.+0.1*mm,
+                                BOX_PCB_Slot_Deepness);
+  
+  G4ThreeVector Box_Wafer_Offset =
+    G4ThreeVector(BOX_Wafer_Length_Offset, BOX_Wafer_Width_Offset,0 );
+  
+  G4SubtractionSolid* PCB1 = new G4SubtractionSolid("PCB1", PCBFull, WaferShape,new G4RotationMatrix,Box_Wafer_Offset);
+  
+  G4SubtractionSolid* PCB = new G4SubtractionSolid("PCB", PCB1, SlotShape,new G4RotationMatrix,G4ThreeVector(-BOX_PCB_Slot_Position, 0,BOX_PCB_Slot_Deepness));
+  
+  // Master Volume
+  G4LogicalVolume* logicBoxDetector =
+  new G4LogicalVolume(BoxDetector,m_MaterialVacuum,"logicBoxDetector", 0, 0, 0);
+  logicBoxDetector->SetVisAttributes(G4VisAttributes::Invisible);
+  // Sub Volume PCB
   G4LogicalVolume* logicPCB =
-  new G4LogicalVolume(PCB, m_MaterialSilicon, "logicPCB", 0, 0, 0);
+  new G4LogicalVolume(PCB,m_MaterialPCB,"logicPCB", 0, 0, 0);
+  logicPCB->SetVisAttributes(PCBVisAtt);
   
-  new G4PVPlacement(new G4RotationMatrix(0,90*deg,0), G4ThreeVector(0,30*mm,-70), logicPCB, "TEST", world, false, 0);
+  // Sub Volume Wafer
+  G4LogicalVolume* logicWafer =
+  new G4LogicalVolume(Wafer,m_MaterialSilicon,"logicWafer", 0, 0, 0);
+  logicWafer->SetVisAttributes(SiliconVisAtt);
+
+  
+  
+  // Place the sub volume in the master volume
+  new G4PVPlacement(new G4RotationMatrix(0,0,0),
+                    G4ThreeVector(0,0,0),
+                    logicPCB,"Box_PCB",logicBoxDetector,false,0);
+  
+  new G4PVPlacement(new G4RotationMatrix(0,0,0),
+                    Box_Wafer_Offset,
+                    logicWafer,"Box_Wafer",logicBoxDetector,false,0);
+  
+  // Place the detector in the world
+  for(unsigned int i = 0 ; i < m_Z.size() ; i++){
+    G4ThreeVector DetectorPosition =
+    -Box_Wafer_Offset+0.5*G4ThreeVector(BOX_PCB_Slot_Border + 0.5*BOX_PCB_Slot_Width -(BOX_PCB_Border_ShortSide - BOX_PCB_Slot_Deepness),0,0);
+    
+    // Det 1
+    G4RotationMatrix* DetectorRotation1= new G4RotationMatrix;
+    G4ThreeVector DetectorSpacing =
+    -G4ThreeVector(0, 0,0.5*(BOX_Wafer_Length+(BOX_PCB_Border_ShortSide- BOX_PCB_Slot_Deepness)+BOX_PCB_Slot_Border+0.5*BOX_PCB_Slot_Width));
+    
+    DetectorRotation1->rotateX(90*deg);
+    if(m_Z[i]>0) DetectorRotation1->rotateY(180*deg);
+    G4ThreeVector DetectorPosition1=
+    DetectorPosition+DetectorSpacing;
+    DetectorPosition1.transform(*DetectorRotation1);
+    DetectorPosition1+=G4ThreeVector(0,0,m_Z[i]);
+    
+    new G4PVPlacement(G4Transform3D(*DetectorRotation1, DetectorPosition1),
+                      logicBoxDetector,"Box",world,false,i+0);
+    
+    // Det2
+    G4RotationMatrix* DetectorRotation2= new G4RotationMatrix;
+    DetectorRotation2->rotateZ(180*deg);
+    DetectorRotation2->rotateX(-90*deg);
+    if(m_Z[i]>0) DetectorRotation2->rotateY(180*deg);
+    G4ThreeVector DetectorPosition2=
+    DetectorPosition+DetectorSpacing;
+    DetectorPosition2.transform(*DetectorRotation2);
+    DetectorPosition2+=G4ThreeVector(0,0,m_Z[i]);
+    
+    new G4PVPlacement(G4Transform3D(*DetectorRotation2, DetectorPosition2),
+                      logicBoxDetector,"Box",world,false,i+1);
+    
+    // Det 3
+    G4RotationMatrix* DetectorRotation3= new G4RotationMatrix;
+    DetectorRotation3->rotateX(90*deg);
+    DetectorRotation3->rotateZ(90*deg);
+    if(m_Z[i]>0) DetectorRotation3->rotateY(180*deg);
+    G4ThreeVector DetectorPosition3=
+    DetectorPosition+DetectorSpacing;
+    DetectorPosition3.transform(*DetectorRotation3);
+    DetectorPosition3+=G4ThreeVector(0,0,m_Z[i]);
+    
+    new G4PVPlacement(G4Transform3D(*DetectorRotation3, DetectorPosition3),
+                      logicBoxDetector,"Box",world,false,i+2);
+    
+    // Det 4
+    G4RotationMatrix* DetectorRotation4= new G4RotationMatrix;
+    DetectorRotation4->rotateX(90*deg);
+    DetectorRotation4->rotateZ(-90*deg);
+    if(m_Z[i]>0) DetectorRotation4->rotateY(180*deg);
+    G4ThreeVector DetectorPosition4=
+    DetectorPosition+DetectorSpacing;
+    DetectorPosition4.transform(*DetectorRotation4);
+    DetectorPosition4+=G4ThreeVector(0,0,m_Z[i]);
+    new G4PVPlacement(G4Transform3D(*DetectorRotation4, DetectorPosition4),
+                      logicBoxDetector,"Box",world,false,i+3);
+  }
+  
+    
+}
+
+///////////////////////////////////////////////////
+void Sharc::ConstructQQQDetector(G4LogicalVolume* world)
+{
+  // Vis Attribute:
+  // Visual Attribute:
+  // Dark Grey
+  const G4VisAttributes* SiliconVisAtt = new G4VisAttributes(G4Colour(0.3, 0.3, 0.3)) ;
+  // Green
+  const G4VisAttributes* PCBVisAtt = new G4VisAttributes(G4Colour(0.2, 0.5, 0.2)) ;
+  // Light Grey
+  const G4VisAttributes* FrameVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5)) ;
+  
+  
+  // create the Box
+  
+  // Make the a single detector geometry
+  G4Box*  BoxDetector = new G4Box("BoxDetector"  ,
+                                  BOX_PCB_Length/2.,
+                                  BOX_PCB_Width/2.,
+                                  BOX_PCB_Thickness/2.);
+  
+  G4Box*  PCBFull = new G4Box("PCBFull"  ,
+                              BOX_PCB_Length/2.,
+                              BOX_PCB_Width/2.,
+                              BOX_PCB_Thickness/2.);
+  
+  G4Box*  WaferShape = new G4Box("WaferShape",
+                                 BOX_Wafer_Length/2.,
+                                 BOX_Wafer_Width/2.,
+                                 BOX_PCB_Thickness/2.+0.1*mm);
+  
+  G4Box*  Wafer       = new G4Box("Wafer",
+                                  BOX_Wafer_Length/2.,
+                                  BOX_Wafer_Width/2.,
+                                  BOX_Wafer_Thickness/2.);
+  
+  G4Box*  SlotShape = new G4Box("SlotShape",
+                                BOX_PCB_Slot_Width/2.,
+                                BOX_PCB_Width/2.+0.1*mm,
+                                BOX_PCB_Slot_Deepness);
+  
+  G4ThreeVector Box_Wafer_Offset =
+  G4ThreeVector(BOX_Wafer_Length_Offset, BOX_Wafer_Width_Offset,0 );
+  
+  G4SubtractionSolid* PCB1 = new G4SubtractionSolid("PCB1", PCBFull, WaferShape,new G4RotationMatrix,Box_Wafer_Offset);
+  
+  G4SubtractionSolid* PCB = new G4SubtractionSolid("PCB", PCB1, SlotShape,new G4RotationMatrix,G4ThreeVector(-BOX_PCB_Slot_Position, 0,BOX_PCB_Slot_Deepness));
+  
+  // Master Volume
+  G4LogicalVolume* logicBoxDetector =
+  new G4LogicalVolume(BoxDetector,m_MaterialVacuum,"logicBoxDetector", 0, 0, 0);
+  logicBoxDetector->SetVisAttributes(G4VisAttributes::Invisible);
+  // Sub Volume PCB
+  G4LogicalVolume* logicPCB =
+  new G4LogicalVolume(PCB,m_MaterialPCB,"logicPCB", 0, 0, 0);
+  logicPCB->SetVisAttributes(PCBVisAtt);
+  
+  // Sub Volume Wafer
+  G4LogicalVolume* logicWafer =
+  new G4LogicalVolume(Wafer,m_MaterialSilicon,"logicWafer", 0, 0, 0);
+  logicWafer->SetVisAttributes(SiliconVisAtt);
+  
+  // Place the sub volume in the master volume
+  new G4PVPlacement(new G4RotationMatrix(0,0,0),
+                    G4ThreeVector(0,0,0),
+                    logicPCB,"Box_PCB",logicBoxDetector,false,0);
+  
+  new G4PVPlacement(new G4RotationMatrix(0,0,0),
+                    Box_Wafer_Offset,
+                    logicWafer,"Box_Wafer",logicBoxDetector,false,0);
+  
+  // Place the master volume in the world
+
+  new G4PVPlacement(new G4RotationMatrix(0,0,0),
+                    G4ThreeVector(0,0,100),
+                    logicBoxDetector,"Box_Wafer",world,false,0);
+
 }
 
 // Add Detector branch to the EventTree.
@@ -515,9 +642,10 @@ void Sharc::InitializeScorers()
 ////////////////////////////////////////////////////////////////
 void Sharc::InitializeMaterial()
 {
-  
+  G4Element* H   = new G4Element("Hydrogen" , "H"  , 1  , 1.015  * g / mole);
+  G4Element* C   = new G4Element("Carbon"   , "C"  , 6  , 12.011 * g / mole);
   G4Element* N   = new G4Element("Nitrogen" , "N"  , 7  , 14.01  * g / mole);
-  G4Element* O   = new G4Element("Oxigen"   , "O"  , 8  , 16.00  * g / mole);
+  G4Element* O   = new G4Element("Oxygen"   , "O"  , 8  , 15.99  * g / mole);
   
   G4double a, z, density;
   // Si
@@ -530,6 +658,12 @@ void Sharc::InitializeMaterial()
   a = 26.98 * g / mole;
   m_MaterialAl = new G4Material("Al", z = 13., a, density);
   
+  // PCB (should be FR-4, I took Epoxy Molded from LISE++)
+  density = 1.85 * g / cm3;
+  m_MaterialPCB = new G4Material("PCB", density, 3);
+  m_MaterialPCB->AddElement(H, .475);
+  m_MaterialPCB->AddElement(C, .45);
+  m_MaterialPCB->AddElement(O, .075);
   //  Vacuum
   density = 0.000000001 * mg / cm3;
   m_MaterialVacuum = new G4Material("Vacuum", density, 2);

@@ -1,0 +1,16 @@
+Transfert
+	Beam= 24Na
+	Target= 2H
+	Light= 1H
+	Heavy= 25Na
+	ExcitationEnergyLight= 0.0
+	ExcitationEnergyHeavy= 0.0
+	BeamEnergy= 192
+	BeamEnergySpread= 0
+	SigmaThetaX= 0.01
+	SigmaPhiY= 0.01
+	SigmaX= 0.5
+	SigmaY= 0.5
+	CrossSectionPath= flat.txt	
+	ShootLight= 1
+	ShootHeavy= 0

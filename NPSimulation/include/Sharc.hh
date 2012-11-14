@@ -8,7 +8,7 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
+ * Original Author: Adrien MATTA  contact address: a.matta@surrey.ac.uk      *
  *                                                                           *
  * Creation Date  : November 2012                                            *
  * Last update    :                                                          *
@@ -47,33 +47,48 @@ namespace SHARC
   const G4double ResoEnergy  = 0.035  ;// = zzkeV of Resolution   //   Unit is MeV/2.35
   
   // Geometry
+  
+  // BOX //
   // BOX PCB
-  const G4double BOX_PCB_Width  = 0;
-  const G4double BOX_PCB_Length = 0;
-  const G4double BOX_PCB_Thickness = 0;
-  const G4double BOX_PCB_Trench_Position = 0;
-  const G4double BOX_PCB_Trench_Width = 0;
-  const G4double BOX_PCB_Trench_Deepness = 0;
+  const G4double BOX_PCB_Width  = 61.0*mm;
+  const G4double BOX_PCB_Length = 104.00*mm;
+  const G4double BOX_PCB_Thickness = 3*mm;
+  const G4double BOX_PCB_Border_LongSide = 1*mm;
+  const G4double BOX_PCB_Border_ShortSide = 2*mm;
+  
+  const G4double BOX_PCB_Slot_Width = 3*mm;
+  const G4double BOX_PCB_Slot_Border = 5*mm;
+  const G4double BOX_PCB_Slot_Deepness = 1*mm;
   
   // BOX Wafer
-  const G4double BOX_Wafer_Width  = 0;
-  const G4double BOX_Wafer_Length = 0;
-  const G4double BOX_Wafer_Thickness = 0;
-  const G4double BOX_Wafer_DeadLayer_Thickness = 0;
+  const G4double BOX_Wafer_Width  = 51.00*mm;
+  const G4double BOX_Wafer_Length = 76.00*mm;
+  const G4double BOX_Wafer_Thickness = 100*um;
+  
+  const G4double BOX_Wafer_DeadLayer_Thickness = 0.1*um;
   const G4int    BOX_Wafer_Front_NumberOfStrip = 16 ;
   const G4int    BOX_Wafer_Back_NumberOfStrip = 16 ;
   
+  // Compute
+  const G4double BOX_Wafer_Width_Offset =
+  BOX_PCB_Width/2. - BOX_PCB_Border_LongSide - BOX_Wafer_Width/2.;
+  const G4double BOX_Wafer_Length_Offset =
+  BOX_PCB_Length/2. - BOX_PCB_Border_ShortSide - BOX_Wafer_Length/2.;
+  const G4double BOX_PCB_Slot_Position =(BOX_Wafer_Length/2.-BOX_Wafer_Length_Offset) + BOX_PCB_Slot_Border + BOX_PCB_Slot_Width/2.;
+
+  // QQQ //
   // QQQ PCB
-  const G4double QQQ_PCB_Outer_Radius = 0;
-  const G4double QQQ_PCB_Inner_Radius = 0;
-  const G4double QQQ_PCB_Thickness = 0;
-  
-  // BOX Wafer
-  const G4double QQQ_Wafer_Outer_Radius = 0;
-  const G4double QQQ_Wafer_Inner_Radius = 0;
-  const G4double QQQ_Wafer_Thickness = 0;
+  const G4double QQQ_PCB_Outer_Radius = 61*mm;
+  const G4double QQQ_PCB_Inner_Radius = 7.4*mm;
+  const G4double QQQ_PCB_Thickness = 2*mm;
+
+  // QQQ Wafer
+  const G4double QQQ_Wafer_Outer_Radius = 0*mm;
+  const G4double QQQ_Wafer_Inner_Radius = 0*mm;
+  const G4double QQQ_Wafer_Thickness = 0*mm;
   const G4int    QQQ_Wafer_Front_NumberOfStrip = 16 ;
   const G4int    QQQ_Wafer_Back_NumberOfStrip = 16 ;
+  
 }
 
 using namespace SHARC ;
@@ -92,17 +107,13 @@ public:
   ////////////////////////////////////////////////////
 public:
   // To add a box detector
-  void AddBoxDetector(G4ThreeVector Pos);
+  void AddBoxDetector(G4double Z,G4double Thickness1,G4double Thickness2,G4double Thickness3,G4double Thickness4);
   // To add a Quadrant detector
   void AddQQQDetector(G4ThreeVector Pos);
   
   // Effectively construct Volume
-  // Avoid to have two time same code for Angle and Point definition
-  void VolumeMaker(G4int DetectorNumber    ,
-                   G4ThreeVector     MMpos ,
-                   G4RotationMatrix* MMrot ,
-                   G4LogicalVolume*  world );
-  
+  void ConstructBOXDetector(G4LogicalVolume* world);
+  void ConstructQQQDetector(G4LogicalVolume* world);
   
   ////////////////////////////////////////////////////
   /////////  Inherite from VDetector class ///////////
@@ -150,6 +161,7 @@ private:
   G4Material* m_MaterialSilicon ;
   G4Material* m_MaterialAl      ;
   G4Material* m_MaterialVacuum  ;
+  G4Material* m_MaterialPCB     ;
   
   ////////////////////////////////////////////////////
   ///////////////Private intern Data//////////////////
@@ -158,8 +170,16 @@ private:
   // True if the detector is a Box, false if a quadrant
   vector<bool>   m_Type  ;
   
-  // Used for Box and Quadrant detectors
+  // Used for Quadrant detectors
   vector<G4ThreeVector>   m_Pos   ;
+  vector<G4double>        m_Thickness;
+  
+  // Used for Box detectors
+  vector<G4double>   m_Z   ;
+  vector<G4double>   m_Thickness1;
+  vector<G4double>   m_Thickness2;
+  vector<G4double>   m_Thickness3;
+  vector<G4double>   m_Thickness4;
   
   // Set to true if you want to see Telescope Frame in your visualisation
   bool m_non_sensitive_part_visiualisation ;

@@ -3,7 +3,7 @@ GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Target
 	THICKNESS= 0.001
-	RADIUS=	45
+	RADIUS=	5
 	MATERIAL= CD2
 	ANGLE= 0
 	X= 0
@@ -36,39 +36,20 @@ Sharc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % Upstream Box
   SharcBOX
-    X= 0
-    Y= -36
-    Z= -5
-  SharcBOX
-    X= 0
-    Y= 36
-    Z= -5
-  SharcBOX
-    X= 42.5
-    Y= 0
-    Z= -5
-  SharcBOX
-    X= -42.5
-    Y= 0
-    Z= -5
+    Z= -40
+    ThicknessDector1= 100
+    ThicknessDector2= 100
+    ThicknessDector3= 100
+    ThicknessDector4= 100
+    
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % Down Stream Box
   SharcBOX
-    X= 0
-    Y= -36
-    Z= 9
-  SharcBOX
-    X= 0
-    Y= 36
-    Z= 9
-  SharcBOX
-    X= 40.5
-    Y= 0
-    Z= 9
-  SharcBOX
-    X= -40.5
-    Y= 0
-    Z= 9
+    Z= 40
+    ThicknessDector1= 100
+    ThicknessDector2= 100
+    ThicknessDector3= 100
+    ThicknessDector4= 100
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % Down stream CD
   SharcCD
