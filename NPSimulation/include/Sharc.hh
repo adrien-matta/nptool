@@ -31,6 +31,7 @@
 #include "G4ThreeVector.hh"
 #include "G4RotationMatrix.hh"
 #include "G4LogicalVolume.hh"
+#include "G4VisAttributes.hh"
 
 // NPSimulation header
 #include "VDetector.hh"
@@ -205,21 +206,25 @@ private:
   
   // Used for Quadrant detectors
   vector<G4ThreeVector>   m_Pos   ; // R , Phi , Z
-  vector<G4double>        m_Thickness;
+  vector<G4double>        m_ThicknessQQQ;
   
   // Used for Box detectors
   vector<G4double>   m_Z   ;
-  vector<G4double>   m_Thickness1;
-  vector<G4double>   m_Thickness2;
-  vector<G4double>   m_Thickness3;
-  vector<G4double>   m_Thickness4;
-  vector<G4double>   m_ThicknessPAD1;
-  vector<G4double>   m_ThicknessPAD2;
-  vector<G4double>   m_ThicknessPAD3;
-  vector<G4double>   m_ThicknessPAD4;
+  vector< vector<G4double> >   m_ThicknessBOX;
+  vector< vector<G4double> >   m_ThicknessPAD;
   
   // Set to true if you want to see Telescope Frame in your visualisation
   bool m_non_sensitive_part_visiualisation ;
+  
+private:/// Visualisation Attribute:
+  // Dark Grey
+   G4VisAttributes* SiliconVisAtt  ;
+  // Green
+   G4VisAttributes* PCBVisAtt;
+  // Gold Yellow
+   G4VisAttributes* PADVisAtt  ;
+  // Light Grey
+   G4VisAttributes* FrameVisAtt ;
   
 };
 #endif

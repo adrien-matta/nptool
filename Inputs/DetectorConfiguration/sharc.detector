@@ -38,7 +38,7 @@ Sharc
   % Upstream Box
   SharcBOX
     Z= -40
-    ThicknessDector1= 100
+    ThicknessDector1= 0
     ThicknessDector2= 100
     ThicknessDector3= 100
     ThicknessDector4= 100

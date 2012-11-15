@@ -37,7 +37,6 @@
 #include "G4ElementTable.hh"
 #include "G4Transform3D.hh"
 #include "G4PVPlacement.hh"
-#include "G4VisAttributes.hh"
 #include "G4Colour.hh"
 #include "G4PVDivision.hh"
 #include "G4SubtractionSolid.hh"
@@ -45,6 +44,7 @@
 // NPTool header
 #include "Sharc.hh"
 #include "GeneralScorers.hh"
+
 //#include "SharcScorers.hh"
 #include "RootOutput.h"
 using namespace SHARC;
@@ -63,6 +63,14 @@ Sharc::Sharc()
 {
   InitializeMaterial();
   // m_Event = new TSSSDData();
+  // Dark Grey
+   SiliconVisAtt = new G4VisAttributes(G4Colour(0.3, 0.3, 0.3)) ;
+  // Green
+   PCBVisAtt = new G4VisAttributes(G4Colour(0.2, 0.5, 0.2)) ;
+  // Gold Yellow
+   PADVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.2)) ;
+  // Light Grey
+   FrameVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5)) ;
 }
 
 Sharc::~Sharc()
@@ -80,16 +88,21 @@ void Sharc::AddBoxDetector(G4double Z,G4double Thickness1,G4double Thickness2,G4
   
   m_Type.push_back(true);
   m_Z.push_back(Z);
-  m_Thickness1.push_back(Thickness1);
-  m_Thickness2.push_back(Thickness2);
-  m_Thickness3.push_back(Thickness3);
-  m_Thickness4.push_back(Thickness4);
   
-  m_ThicknessPAD1.push_back(ThicknessPAD1);
-  m_ThicknessPAD2.push_back(ThicknessPAD2);
-  m_ThicknessPAD3.push_back(ThicknessPAD3);
-  m_ThicknessPAD4.push_back(ThicknessPAD4);
+  vector<G4double> ThicknessBOX;
+  ThicknessBOX.push_back(Thickness1);
+  ThicknessBOX.push_back(Thickness2);
+  ThicknessBOX.push_back(Thickness3);
+  ThicknessBOX.push_back(Thickness4);
+  m_ThicknessBOX.push_back(ThicknessBOX);
   
+  vector<G4double> ThicknessPAD;
+  ThicknessPAD.push_back(ThicknessPAD1);
+  ThicknessPAD.push_back(ThicknessPAD2);
+  ThicknessPAD.push_back(ThicknessPAD3);
+  ThicknessPAD.push_back(ThicknessPAD4);
+  m_ThicknessPAD.push_back(ThicknessPAD);
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -323,9 +336,107 @@ void Sharc::ConstructDetector(G4LogicalVolume* world)
   ConstructBOXDetector(world);
   ConstructQQQDetector(world);
 }
-
 ///////////////////////////////////////////////////
 void Sharc::ConstructBOXDetector(G4LogicalVolume* world)
+{
+  for(unsigned int i = 0 ; i < m_Z.size() ; i++){
+    for (unsigned int j = 0 ; j < 4; j++) {
+      // create the Box DSSD
+      
+      // Make the a single detector geometry
+      G4Box*  BoxDetector = new G4Box("BoxDetector"  ,
+                                      BOX_PCB_Length/2.,
+                                      BOX_PCB_Width/2.,
+                                      BOX_PCB_Thickness/2.);
+      
+      G4Box*  PCBFull = new G4Box("PCBFull"  ,
+                                  BOX_PCB_Length/2.,
+                                  BOX_PCB_Width/2.,
+                                  BOX_PCB_Thickness/2.);
+      
+      G4Box*  WaferShape = new G4Box("WaferShape",
+                                     BOX_Wafer_Length/2.,
+                                     BOX_Wafer_Width/2.,
+                                     BOX_PCB_Thickness/2.+0.1*mm);
+      
+      G4Box*  Wafer       = new G4Box("Wafer",
+                                      BOX_Wafer_Length/2.,
+                                      BOX_Wafer_Width/2.,
+                                      m_ThicknessBOX[i][j]/2.);
+      
+      G4Box*  SlotShape = new G4Box("SlotShape",
+                                    BOX_PCB_Slot1_Width/2.,
+                                    BOX_PCB_Width/2.+0.1*mm,
+                                    BOX_PCB_Slot1_Deepness);
+      
+      G4ThreeVector Box_Wafer_Offset =
+      G4ThreeVector(BOX_Wafer_Length_Offset, BOX_Wafer_Width_Offset,0 );
+      
+      G4SubtractionSolid* PCB1 = new G4SubtractionSolid("PCB1", PCBFull, WaferShape,new G4RotationMatrix,Box_Wafer_Offset);
+      
+      G4SubtractionSolid* PCB = new G4SubtractionSolid("PCB", PCB1, SlotShape,new G4RotationMatrix,G4ThreeVector(-BOX_PCB_Slot1_Position, 0,BOX_PCB_Slot1_Deepness));
+      
+      // Master Volume
+      G4LogicalVolume* logicBoxDetector =
+      new G4LogicalVolume(BoxDetector,m_MaterialVacuum,"logicBoxDetector", 0, 0, 0);
+      logicBoxDetector->SetVisAttributes(G4VisAttributes::Invisible);
+      // Sub Volume PCB
+      G4LogicalVolume* logicPCB =
+      new G4LogicalVolume(PCB,m_MaterialPCB,"logicPCB", 0, 0, 0);
+      logicPCB->SetVisAttributes(PCBVisAtt);
+      
+      // Sub Volume Wafer
+      G4LogicalVolume* logicWafer =
+      new G4LogicalVolume(Wafer,m_MaterialSilicon,"logicWafer", 0, 0, 0);
+      logicWafer->SetVisAttributes(SiliconVisAtt);
+      
+      // Place the sub volume in the master volume
+      new G4PVPlacement(new G4RotationMatrix(0,0,0),
+                        G4ThreeVector(0,0,0),
+                        logicPCB,"Box_PCB",logicBoxDetector,false,i*4+j+1);
+      if(m_ThicknessBOX[i][j]>0)
+      new G4PVPlacement(new G4RotationMatrix(0,0,0),
+                        Box_Wafer_Offset,
+                        logicWafer,"Box_Wafer",logicBoxDetector,false,i*4+j+1);
+      
+       // Place the detector in the world
+      G4ThreeVector DetectorPosition =
+      -Box_Wafer_Offset+0.5*G4ThreeVector(BOX_PCB_Slot1_Border + 0.5*BOX_PCB_Slot1_Width -(BOX_PCB_Border_ShortSide - BOX_PCB_Slot1_Deepness),0,0);
+      
+      G4ThreeVector DetectorSpacing =
+      -G4ThreeVector(0, 0,0.5*(BOX_Wafer_Length+(BOX_PCB_Border_ShortSide- BOX_PCB_Slot1_Deepness)+BOX_PCB_Slot1_Border+0.5*BOX_PCB_Slot1_Width));
+      
+      DetectorPosition+=DetectorSpacing;
+      
+      G4RotationMatrix* DetectorRotation= new G4RotationMatrix;
+      // The Rotation Matrix is different for each detector
+      if(j==0){
+        DetectorRotation->rotateX(90*deg);
+      }
+      else if(j==1){
+        DetectorRotation->rotateZ(180*deg);
+        DetectorRotation->rotateX(-90*deg);
+      }
+      else if(j==2){
+        DetectorRotation->rotateX(90*deg);
+        DetectorRotation->rotateZ(90*deg);
+      }
+      else if(j==3){
+        DetectorRotation->rotateX(90*deg);
+        DetectorRotation->rotateZ(-90*deg);
+      }
+  
+      if(m_Z[i]>0) DetectorRotation->rotateY(180*deg);
+      
+      DetectorPosition.transform(*DetectorRotation);
+      DetectorPosition+=G4ThreeVector(0,0,m_Z[i]);
+      
+      new G4PVPlacement(G4Transform3D(*DetectorRotation,DetectorPosition), logicBoxDetector,"Box",world,true,i*4+j+1);
+    }
+  }
+}
+///////////////////////////////////////////////////
+/*void Sharc::ConstructBOXDetector(G4LogicalVolume* world)
 {
   // Vis Attribute:
   // Visual Attribute:
@@ -388,8 +499,6 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world)
   new G4LogicalVolume(Wafer,m_MaterialSilicon,"logicWafer", 0, 0, 0);
   logicWafer->SetVisAttributes(SiliconVisAtt);
 
-  
-  
   // Place the sub volume in the master volume
   new G4PVPlacement(new G4RotationMatrix(0,0,0),
                     G4ThreeVector(0,0,0),
@@ -417,8 +526,11 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world)
     DetectorPosition1.transform(*DetectorRotation1);
     DetectorPosition1+=G4ThreeVector(0,0,m_Z[i]);
     
-    new G4PVPlacement(G4Transform3D(*DetectorRotation1, DetectorPosition1),
-                      logicBoxDetector,"Box",world,false,i+0);
+    G4PVPlacement* detector1 = new G4PVPlacement(G4Transform3D(*DetectorRotation1,DetectorPosition1), logicBoxDetector,"Box",world,true,i+0);
+    
+    new G4PVPlacement(new G4RotationMatrix(0,0,0),
+                      Box_Wafer_Offset,
+                      logicWafer,"Box_Wafer",detector1->GetLogicalVolume(),false,0);
     
     // Det2
     G4RotationMatrix* DetectorRotation2= new G4RotationMatrix;
@@ -431,8 +543,7 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world)
     
     new G4PVPlacement(G4Transform3D(*DetectorRotation2, DetectorPosition2),
                       logicBoxDetector,"Box",world,false,i+1);
-    
-    // Det 3
+   
     G4RotationMatrix* DetectorRotation3= new G4RotationMatrix;
     DetectorRotation3->rotateX(90*deg);
     DetectorRotation3->rotateZ(90*deg);
@@ -582,22 +693,12 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world)
 
   
   
-  
-}
+ 
+}*/
 
 ///////////////////////////////////////////////////
 void Sharc::ConstructQQQDetector(G4LogicalVolume* world)
 {
-  // Vis Attribute:
-  // Visual Attribute:
-  // Dark Grey
-  const G4VisAttributes* SiliconVisAtt = new G4VisAttributes(G4Colour(0.3, 0.3, 0.3)) ;
-  // Green
-  const G4VisAttributes* PCBVisAtt = new G4VisAttributes(G4Colour(0.2, 0.5, 0.2)) ;
-  // Light Grey
-  const G4VisAttributes* FrameVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5)) ;
-  
-  
   // create the QQQ
   
   // Make the a single detector geometry

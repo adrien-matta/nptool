@@ -72,7 +72,7 @@ class TMust2Data : public TObject {
       virtual ~TMust2Data();
 
       void   Clear();
-    void  Clear(const Option_t*) {};
+      void  Clear(const Option_t*) {};
       void   Dump() const;
 
       /////////////////////           SETTERS           ////////////////////////
