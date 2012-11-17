@@ -51,26 +51,20 @@ namespace SHARC
   
   // BOX //
   // BOX PCB
-  const G4double BOX_PCB_Width  = 61.0*mm;
+  const G4double BOX_PCB_Width  = 61.10*mm;
   const G4double BOX_PCB_Length = 104.00*mm;
-  const G4double BOX_PCB_Thickness = 3.5*mm;
+  const G4double BOX_PCB_Thickness = 3.4*mm;
   const G4double BOX_PCB_Border_LongSide = 1*mm;
   const G4double BOX_PCB_Border_ShortSide = 2*mm;
   
   // Single stage box case (DSSD only)
-  const G4double BOX_PCB_Slot1_Width = 3.5*mm;
-  const G4double BOX_PCB_Slot1_Border = 5*mm;
-  const G4double BOX_PCB_Slot1_Deepness = 0.75*mm;
-  
-  // Double stage box case (DSSD+PAD)
-  const G4double BOX_PCB_Slot2_Width = 7*mm;
-  const G4double BOX_PCB_Slot2_Border = 3*mm;
-  const G4double BOX_PCB_Slot2_Deepness = 0.75*mm;
+  const G4double BOX_PCB_Slot1_Width = BOX_PCB_Thickness;
+  const G4double BOX_PCB_Slot1_Border = 4*mm;
+  const G4double BOX_PCB_Slot1_Deepness = 0.8*mm;
   
   // BOX Wafer
-  const G4double BOX_Wafer_Width  = 51.00*mm;
-  const G4double BOX_Wafer_Length = 77.00*mm;
-  const G4double BOX_Wafer_Thickness = 100*um;
+  const G4double BOX_Wafer_Width  = 52.20*mm;
+  const G4double BOX_Wafer_Length = 76.20*mm;
   
   const G4double BOX_Wafer_DeadLayer_Thickness = 0.1*um;
   const G4int    BOX_Wafer_Front_NumberOfStrip = 16 ;
@@ -81,25 +75,20 @@ namespace SHARC
   BOX_PCB_Width/2. - BOX_PCB_Border_LongSide - BOX_Wafer_Width/2.;
   const G4double BOX_Wafer_Length_Offset =
   BOX_PCB_Length/2. - BOX_PCB_Border_ShortSide - BOX_Wafer_Length/2.;
-  const G4double BOX_PCB_Slot1_Position =(BOX_Wafer_Length/2.-BOX_Wafer_Length_Offset) + BOX_PCB_Slot1_Border + BOX_PCB_Slot1_Width/2.;
-  const G4double BOX_PCB_Slot2_Position =(BOX_Wafer_Length/2.-BOX_Wafer_Length_Offset) + BOX_PCB_Slot2_Border + BOX_PCB_Slot2_Width/2.;
+  const G4double BOX_PCB_Slot1_Position =-(BOX_Wafer_Length_Offset-BOX_Wafer_Length/2.-BOX_PCB_Slot1_Border - BOX_PCB_Slot1_Width/2.);
+  
   
   // PAD //
   // PAD PCB
-  const G4double PAD_PCB_Width  = 61.0*mm;
+  const G4double PAD_PCB_Width  = 61.10*mm;
   const G4double PAD_PCB_Length = 104.00*mm;
-  const G4double PAD_PCB_Thickness = 3.5*mm;
+  const G4double PAD_PCB_Thickness = 3.4*mm;
   const G4double PAD_PCB_Border_LongSide = 1*mm;
-  const G4double PAD_PCB_Border_ShortSide = 2*mm;
-  
-  const G4double PAD_PCB_Slot_Width = 3*mm;
-  const G4double PAD_PCB_Slot_Border = 5*mm;
-  const G4double PAD_PCB_Slot_Deepness = 1*mm;
+  const G4double PAD_PCB_Border_ShortSide = 2.5*mm;
   
   // PAD Wafer
   const G4double PAD_Wafer_Width  = 51.00*mm;
   const G4double PAD_Wafer_Length = 77.00*mm;
-  const G4double PAD_Wafer_Thickness = 100*um;
   const G4double PAD_Wafer_DeadLayer_Thickness = 0.1*um;
   
   // Compute
@@ -107,6 +96,11 @@ namespace SHARC
   PAD_PCB_Width/2. - PAD_PCB_Border_LongSide - PAD_Wafer_Width/2.;
   const G4double PAD_Wafer_Length_Offset =
   PAD_PCB_Length/2. - PAD_PCB_Border_ShortSide - PAD_Wafer_Length/2.;
+  // Double stage box case (DSSD+PAD)
+  const G4double BOX_PCB_Slot2_Width = BOX_PCB_Thickness+PAD_PCB_Thickness;
+  const G4double BOX_PCB_Slot2_Border = 2.7*mm;
+  const G4double BOX_PCB_Slot2_Deepness = 0.8*mm;
+  const G4double BOX_PCB_Slot2_Position =(BOX_Wafer_Length/2.-BOX_Wafer_Length_Offset) + BOX_PCB_Slot2_Border + BOX_PCB_Slot2_Width/2.;
   
   // QQQ //
   // QQQ PCB

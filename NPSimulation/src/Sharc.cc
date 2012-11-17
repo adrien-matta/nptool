@@ -342,13 +342,7 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world)
   for(unsigned int i = 0 ; i < m_Z.size() ; i++){
     for (unsigned int j = 0 ; j < 4; j++) {
       // create the Box DSSD
-      
       // Make the a single detector geometry
-      G4Box*  BoxDetector = new G4Box("BoxDetector"  ,
-                                      BOX_PCB_Length/2.,
-                                      BOX_PCB_Width/2.,
-                                      BOX_PCB_Thickness/2.);
-      
       G4Box*  PCBFull = new G4Box("PCBFull"  ,
                                   BOX_PCB_Length/2.,
                                   BOX_PCB_Width/2.,
@@ -364,27 +358,48 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world)
                                       BOX_Wafer_Width/2.,
                                       m_ThicknessBOX[i][j]/2.);
       
+      
+      G4double BOX_PCB_Slot_Width;
+      G4double BOX_PCB_Slot_Deepness;
+      G4double BOX_PCB_Slot_Border;
+      G4double BOX_PCB_Slot_Position;
+      
+      if(m_ThicknessPAD[i][j]>0){
+        BOX_PCB_Slot_Width = BOX_PCB_Slot2_Width;
+        BOX_PCB_Slot_Deepness = BOX_PCB_Slot2_Deepness;
+        BOX_PCB_Slot_Border = BOX_PCB_Slot2_Border;
+        BOX_PCB_Slot_Position = BOX_PCB_Slot2_Position;
+      }
+      
+      else{
+        BOX_PCB_Slot_Width = BOX_PCB_Slot1_Width;
+        BOX_PCB_Slot_Deepness = BOX_PCB_Slot1_Deepness;
+        BOX_PCB_Slot_Border = BOX_PCB_Slot1_Border;
+        BOX_PCB_Slot_Position = BOX_PCB_Slot1_Position;
+      }
+      
       G4Box*  SlotShape = new G4Box("SlotShape",
-                                    BOX_PCB_Slot1_Width/2.,
+                                    BOX_PCB_Slot_Width/2.,
                                     BOX_PCB_Width/2.+0.1*mm,
-                                    BOX_PCB_Slot1_Deepness);
+                                    BOX_PCB_Slot_Deepness);
       
       G4ThreeVector Box_Wafer_Offset =
       G4ThreeVector(BOX_Wafer_Length_Offset, BOX_Wafer_Width_Offset,0 );
       
-      G4SubtractionSolid* PCB1 = new G4SubtractionSolid("PCB1", PCBFull, WaferShape,new G4RotationMatrix,Box_Wafer_Offset);
+      G4SubtractionSolid* PCB1 = new G4SubtractionSolid("PCB", PCBFull, SlotShape,new G4RotationMatrix,G4ThreeVector(-BOX_PCB_Slot_Position, 0,0.5*BOX_PCB_Thickness));
       
-      G4SubtractionSolid* PCB = new G4SubtractionSolid("PCB", PCB1, SlotShape,new G4RotationMatrix,G4ThreeVector(-BOX_PCB_Slot1_Position, 0,BOX_PCB_Slot1_Deepness));
+      G4SubtractionSolid* PCB = new G4SubtractionSolid("PCB", PCB1, WaferShape,new G4RotationMatrix,Box_Wafer_Offset);
       
       // Master Volume
       G4LogicalVolume* logicBoxDetector =
-      new G4LogicalVolume(BoxDetector,m_MaterialVacuum,"logicBoxDetector", 0, 0, 0);
+      new G4LogicalVolume(PCB1,m_MaterialVacuum,"logicBoxDetector", 0, 0, 0);
       logicBoxDetector->SetVisAttributes(G4VisAttributes::Invisible);
       // Sub Volume PCB
       G4LogicalVolume* logicPCB =
       new G4LogicalVolume(PCB,m_MaterialPCB,"logicPCB", 0, 0, 0);
-      logicPCB->SetVisAttributes(PCBVisAtt);
-      
+      //logicPCB->SetVisAttributes(PCBVisAtt);
+      logicPCB->SetVisAttributes(new G4VisAttributes(G4Colour(j/4., (4-j)/4., 0.5)) );
+
       // Sub Volume Wafer
       G4LogicalVolume* logicWafer =
       new G4LogicalVolume(Wafer,m_MaterialSilicon,"logicWafer", 0, 0, 0);
@@ -394,19 +409,104 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world)
       new G4PVPlacement(new G4RotationMatrix(0,0,0),
                         G4ThreeVector(0,0,0),
                         logicPCB,"Box_PCB",logicBoxDetector,false,i*4+j+1);
+      
       if(m_ThicknessBOX[i][j]>0)
       new G4PVPlacement(new G4RotationMatrix(0,0,0),
                         Box_Wafer_Offset,
                         logicWafer,"Box_Wafer",logicBoxDetector,false,i*4+j+1);
       
-       // Place the detector in the world
+      // create the PAD
+      
+      // Make the a single detector geometry
+      G4LogicalVolume* logicPADDetector;
+      G4ThreeVector PAD_Wafer_Offset =
+      G4ThreeVector(PAD_Wafer_Length_Offset, PAD_Wafer_Width_Offset,0 );
+      if(m_ThicknessPAD[i][j]>0){
+      G4Box*  PADDetector = new G4Box("PADDetector"  ,
+                                      PAD_PCB_Length/2.,
+                                      PAD_PCB_Width/2.,
+                                      PAD_PCB_Thickness/2.);
+      
+      G4Box*  PADPCBFull = new G4Box("PCBFull"  ,
+                                     PAD_PCB_Length/2.,
+                                     PAD_PCB_Width/2.,
+                                     PAD_PCB_Thickness/2.);
+      
+      G4Box*  PADWaferShape = new G4Box("PADWaferShape",
+                                        PAD_Wafer_Length/2.,
+                                        PAD_Wafer_Width/2.,
+                                        PAD_PCB_Thickness/2.+0.1*mm);
+      
+      G4Box*  PADWafer       = new G4Box("PADWafer",
+                                         PAD_Wafer_Length/2.,
+                                         PAD_Wafer_Width/2.,
+                                         m_ThicknessPAD[i][j]/2.);
+      
+      G4SubtractionSolid* PADPCB = new G4SubtractionSolid("PADPCB", PADPCBFull, PADWaferShape,new G4RotationMatrix,PAD_Wafer_Offset);
+      
+      // Master Volume
+      logicPADDetector =
+      new G4LogicalVolume(PADDetector,m_MaterialVacuum,"logicPADDetector", 0, 0, 0);
+      logicPADDetector->SetVisAttributes(G4VisAttributes::Invisible);
+      
+      // Sub Volume PCB
+      G4LogicalVolume* logicPADPCB =
+      new G4LogicalVolume(PADPCB,m_MaterialPCB,"logicPADPCB", 0, 0, 0);
+      logicPADPCB->SetVisAttributes(PADVisAtt);
+      
+      // Sub Volume Wafer
+      G4LogicalVolume* logicPADWafer =
+      new G4LogicalVolume(PADWafer,m_MaterialSilicon,"logicPADWafer", 0, 0, 0);
+      logicPADWafer->SetVisAttributes(SiliconVisAtt);
+        
+      
+      // Place the sub volume in the master volume
+      new G4PVPlacement(new G4RotationMatrix(0,0,0),
+                        G4ThreeVector(0,0,0),
+                        logicPADPCB,"PAD_PCB",logicPADDetector,false,i*4+j+1);
+      
+      new G4PVPlacement(new G4RotationMatrix(0,0,0),
+                        PAD_Wafer_Offset,
+                        logicPADWafer,"PAD_Wafer",logicPADDetector,false,i*4+j+1);
+      }
+      
+      ///////////////////////////////////////////////////////////////////////////////////
+      // Place the detector in the world
+      // Position of the center of the PCB
+      G4double Exposed_Length= BOX_PCB_Border_ShortSide - BOX_PCB_Slot_Deepness
+                              + BOX_Wafer_Length
+                              + BOX_PCB_Slot_Border + BOX_PCB_Slot_Width*0.5;
+      G4double DetectorOffset= -0.5*(BOX_PCB_Length-Exposed_Length);
+      
       G4ThreeVector DetectorPosition =
-      -Box_Wafer_Offset+0.5*G4ThreeVector(BOX_PCB_Slot1_Border + 0.5*BOX_PCB_Slot1_Width -(BOX_PCB_Border_ShortSide - BOX_PCB_Slot1_Deepness),0,0);
+      G4ThreeVector(DetectorOffset,-Box_Wafer_Offset.y(),0);
+
       
-      G4ThreeVector DetectorSpacing =
-      -G4ThreeVector(0, 0,0.5*(BOX_Wafer_Length+(BOX_PCB_Border_ShortSide- BOX_PCB_Slot1_Deepness)+BOX_PCB_Slot1_Border+0.5*BOX_PCB_Slot1_Width));
+      cout << "PCB Length " << BOX_PCB_Length << endl;
+      cout << " Sum " << BOX_Wafer_Length+BOX_PCB_Border_ShortSide+BOX_PCB_Slot_Border+BOX_PCB_Slot_Width << endl;
+      //-Box_Wafer_Offset+G4ThreeVector(DetectorOffset,0,0);
+      //-Box_Wafer_Offset+G4ThreeVector(BOX_PCB_Slot_Border + 0.5*BOX_PCB_Slot_Width +(BOX_PCB_Border_ShortSide - BOX_PCB_Slot_Deepness),0,0);
+     
+      // Distance of the PCB to the target
+       G4ThreeVector DetectorSpacing =
+      -G4ThreeVector(0, 0,0.5*Exposed_Length);
+      // -G4ThreeVector(0, 0,0.5*(BOX_Wafer_Length+(BOX_PCB_Border_ShortSide- BOX_PCB_Slot_Deepness)+BOX_PCB_Slot_Border+0.5*BOX_PCB_Slot_Width));
       
+      // If a PAD is present, DSSD is not in the center of the Slot:
+      G4ThreeVector PAD_OFFSET=-G4ThreeVector(0.5*PAD_PCB_Thickness,0,0);
+      if(m_ThicknessPAD[i][j]>0) DetectorPosition+=PAD_OFFSET;
+  
       DetectorPosition+=DetectorSpacing;
+      
+      G4ThreeVector PADDetectorPosition =
+      -PAD_Wafer_Offset+0.5*G4ThreeVector(BOX_PCB_Slot_Border + 0.5*BOX_PCB_Slot_Width -(BOX_PCB_Border_ShortSide - BOX_PCB_Slot_Deepness),0,-BOX_PCB_Thickness-PAD_PCB_Thickness+(BOX_PCB_Slot_Width-BOX_PCB_Thickness));
+      
+      G4ThreeVector PADDetectorSpacing =
+      -G4ThreeVector(0, 0,0.5*(PAD_Wafer_Length+(PAD_PCB_Border_ShortSide- BOX_PCB_Slot_Deepness)+BOX_PCB_Slot_Border+BOX_PCB_Slot_Width));
+      
+      if(m_ThicknessPAD[i][j]>0) PADDetectorPosition+=PAD_OFFSET;
+      
+      PADDetectorPosition+=PADDetectorSpacing;
       
       G4RotationMatrix* DetectorRotation= new G4RotationMatrix;
       // The Rotation Matrix is different for each detector
@@ -431,271 +531,17 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world)
       DetectorPosition.transform(*DetectorRotation);
       DetectorPosition+=G4ThreeVector(0,0,m_Z[i]);
       
-      new G4PVPlacement(G4Transform3D(*DetectorRotation,DetectorPosition), logicBoxDetector,"Box",world,true,i*4+j+1);
+      PADDetectorPosition.transform(*DetectorRotation);
+      PADDetectorPosition+=G4ThreeVector(0,0,m_Z[i]);
+      
+      new G4PVPlacement(G4Transform3D(*DetectorRotation,DetectorPosition), logicBoxDetector,"Box",world,false,i*4+j+1);
+      
+      if(logicPADDetector!=NULL)
+        new G4PVPlacement(G4Transform3D(*DetectorRotation, PADDetectorPosition),
+                          logicPADDetector,"PAD",world,false,i*4+j+1);
     }
   }
 }
-///////////////////////////////////////////////////
-/*void Sharc::ConstructBOXDetector(G4LogicalVolume* world)
-{
-  // Vis Attribute:
-  // Visual Attribute:
-  // Dark Grey
-  const G4VisAttributes* SiliconVisAtt = new G4VisAttributes(G4Colour(0.3, 0.3, 0.3)) ;
-  // Green
-  const G4VisAttributes* PCBVisAtt = new G4VisAttributes(G4Colour(0.2, 0.5, 0.2)) ;
-  // Gold Yellow
-  const G4VisAttributes* PADVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.2)) ;
-  // Light Grey
-  const G4VisAttributes* FrameVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5)) ;
- 
-  
-  // create the Box DSSD
-  
-  // Make the a single detector geometry
-  G4Box*  BoxDetector = new G4Box("BoxDetector"  ,
-                                  BOX_PCB_Length/2.,
-                                  BOX_PCB_Width/2.,
-                                  BOX_PCB_Thickness/2.);
-  
-  G4Box*  PCBFull = new G4Box("PCBFull"  ,
-                              BOX_PCB_Length/2.,
-                              BOX_PCB_Width/2.,
-                              BOX_PCB_Thickness/2.);
-  
-  G4Box*  WaferShape = new G4Box("WaferShape",
-                                 BOX_Wafer_Length/2.,
-                                 BOX_Wafer_Width/2.,
-                                 BOX_PCB_Thickness/2.+0.1*mm);
-  
-  G4Box*  Wafer       = new G4Box("Wafer",
-                                  BOX_Wafer_Length/2.,
-                                  BOX_Wafer_Width/2.,
-                                  BOX_Wafer_Thickness/2.);
-  
-  G4Box*  SlotShape = new G4Box("SlotShape",
-                                BOX_PCB_Slot1_Width/2.,
-                                BOX_PCB_Width/2.+0.1*mm,
-                                BOX_PCB_Slot1_Deepness);
-  
-  G4ThreeVector Box_Wafer_Offset =
-    G4ThreeVector(BOX_Wafer_Length_Offset, BOX_Wafer_Width_Offset,0 );
-  
-  G4SubtractionSolid* PCB1 = new G4SubtractionSolid("PCB1", PCBFull, WaferShape,new G4RotationMatrix,Box_Wafer_Offset);
-  
-  G4SubtractionSolid* PCB = new G4SubtractionSolid("PCB", PCB1, SlotShape,new G4RotationMatrix,G4ThreeVector(-BOX_PCB_Slot1_Position, 0,BOX_PCB_Slot1_Deepness));
-  
-  // Master Volume
-  G4LogicalVolume* logicBoxDetector =
-  new G4LogicalVolume(BoxDetector,m_MaterialVacuum,"logicBoxDetector", 0, 0, 0);
-  logicBoxDetector->SetVisAttributes(G4VisAttributes::Invisible);
-  // Sub Volume PCB
-  G4LogicalVolume* logicPCB =
-  new G4LogicalVolume(PCB,m_MaterialPCB,"logicPCB", 0, 0, 0);
-  logicPCB->SetVisAttributes(PCBVisAtt);
-  
-  // Sub Volume Wafer
-  G4LogicalVolume* logicWafer =
-  new G4LogicalVolume(Wafer,m_MaterialSilicon,"logicWafer", 0, 0, 0);
-  logicWafer->SetVisAttributes(SiliconVisAtt);
-
-  // Place the sub volume in the master volume
-  new G4PVPlacement(new G4RotationMatrix(0,0,0),
-                    G4ThreeVector(0,0,0),
-                    logicPCB,"Box_PCB",logicBoxDetector,false,0);
-  
-  new G4PVPlacement(new G4RotationMatrix(0,0,0),
-                    Box_Wafer_Offset,
-                    logicWafer,"Box_Wafer",logicBoxDetector,false,0);
-  
-  // Place the detector in the world
-  for(unsigned int i = 0 ; i < m_Z.size() ; i++){
-    G4ThreeVector DetectorPosition =
-    -Box_Wafer_Offset+0.5*G4ThreeVector(BOX_PCB_Slot1_Border + 0.5*BOX_PCB_Slot1_Width -(BOX_PCB_Border_ShortSide - BOX_PCB_Slot1_Deepness),0,0);
-    
-    G4ThreeVector DetectorSpacing =
-    -G4ThreeVector(0, 0,0.5*(BOX_Wafer_Length+(BOX_PCB_Border_ShortSide- BOX_PCB_Slot1_Deepness)+BOX_PCB_Slot1_Border+0.5*BOX_PCB_Slot1_Width));
-    
-    DetectorPosition+=DetectorSpacing;
-    
-    // Det 1
-    G4RotationMatrix* DetectorRotation1= new G4RotationMatrix;
-    DetectorRotation1->rotateX(90*deg);
-    if(m_Z[i]>0) DetectorRotation1->rotateY(180*deg);
-    G4ThreeVector DetectorPosition1=DetectorPosition;
-    DetectorPosition1.transform(*DetectorRotation1);
-    DetectorPosition1+=G4ThreeVector(0,0,m_Z[i]);
-    
-    G4PVPlacement* detector1 = new G4PVPlacement(G4Transform3D(*DetectorRotation1,DetectorPosition1), logicBoxDetector,"Box",world,true,i+0);
-    
-    new G4PVPlacement(new G4RotationMatrix(0,0,0),
-                      Box_Wafer_Offset,
-                      logicWafer,"Box_Wafer",detector1->GetLogicalVolume(),false,0);
-    
-    // Det2
-    G4RotationMatrix* DetectorRotation2= new G4RotationMatrix;
-    DetectorRotation2->rotateZ(180*deg);
-    DetectorRotation2->rotateX(-90*deg);
-    if(m_Z[i]>0) DetectorRotation2->rotateY(180*deg);
-    G4ThreeVector DetectorPosition2=DetectorPosition;
-    DetectorPosition2.transform(*DetectorRotation2);
-    DetectorPosition2+=G4ThreeVector(0,0,m_Z[i]);
-    
-    new G4PVPlacement(G4Transform3D(*DetectorRotation2, DetectorPosition2),
-                      logicBoxDetector,"Box",world,false,i+1);
-   
-    G4RotationMatrix* DetectorRotation3= new G4RotationMatrix;
-    DetectorRotation3->rotateX(90*deg);
-    DetectorRotation3->rotateZ(90*deg);
-    if(m_Z[i]>0) DetectorRotation3->rotateY(180*deg);
-    G4ThreeVector DetectorPosition3=DetectorPosition;
-    DetectorPosition3.transform(*DetectorRotation3);
-    DetectorPosition3+=G4ThreeVector(0,0,m_Z[i]);
-    
-    new G4PVPlacement(G4Transform3D(*DetectorRotation3, DetectorPosition3),
-                      logicBoxDetector,"Box",world,false,i+2);
-    
-    // Det 4
-    G4RotationMatrix* DetectorRotation4= new G4RotationMatrix;
-    DetectorRotation4->rotateX(90*deg);
-    DetectorRotation4->rotateZ(-90*deg);
-    if(m_Z[i]>0) DetectorRotation4->rotateY(180*deg);
-    G4ThreeVector DetectorPosition4=DetectorPosition;
-    DetectorPosition4.transform(*DetectorRotation4);
-    DetectorPosition4+=G4ThreeVector(0,0,m_Z[i]);
-    new G4PVPlacement(G4Transform3D(*DetectorRotation4, DetectorPosition4),
-                      logicBoxDetector,"Box",world,false,i+3);
-  }
-  
-  
-  
-  // create the PAD
-  
-  // Make the a single detector geometry
-  G4Box*  PADDetector = new G4Box("PADDetector"  ,
-                                  PAD_PCB_Length/2.,
-                                  PAD_PCB_Width/2.,
-                                  PAD_PCB_Thickness/2.);
-  
-  G4Box*  PADPCBFull = new G4Box("PCBFull"  ,
-                                 PAD_PCB_Length/2.,
-                                 PAD_PCB_Width/2.,
-                                 PAD_PCB_Thickness/2.);
-  
-  G4Box*  PADWaferShape = new G4Box("PADWaferShape",
-                                    PAD_Wafer_Length/2.,
-                                    PAD_Wafer_Width/2.,
-                                    PAD_PCB_Thickness/2.+0.1*mm);
-  
-  G4Box*  PADWafer       = new G4Box("PADWafer",
-                                     PAD_Wafer_Length/2.,
-                                     PAD_Wafer_Width/2.,
-                                     PAD_Wafer_Thickness/2.);
-  
-  G4ThreeVector PAD_Wafer_Offset =
-  G4ThreeVector(PAD_Wafer_Length_Offset, PAD_Wafer_Width_Offset,0 );
-  
-  G4SubtractionSolid* PADPCB = new G4SubtractionSolid("PADPCB", PADPCBFull, PADWaferShape,new G4RotationMatrix,PAD_Wafer_Offset);
-  
-  // Master Volume
-  G4LogicalVolume* logicPADDetector =
-  new G4LogicalVolume(PADDetector,m_MaterialVacuum,"logicPADDetector", 0, 0, 0);
-  logicPADDetector->SetVisAttributes(G4VisAttributes::Invisible);
- 
-  // Sub Volume PCB
-  G4LogicalVolume* logicPADPCB =
-  new G4LogicalVolume(PADPCB,m_MaterialPCB,"logicPADPCB", 0, 0, 0);
-  logicPADPCB->SetVisAttributes(PADVisAtt);
-  
-  // Sub Volume Wafer
-  G4LogicalVolume* logicPADWafer =
-  new G4LogicalVolume(PADWafer,m_MaterialSilicon,"logicPADWafer", 0, 0, 0);
-  logicPADWafer->SetVisAttributes(SiliconVisAtt);
-  
-  
-  
-  // Place the sub volume in the master volume
-  new G4PVPlacement(new G4RotationMatrix(0,0,0),
-                    G4ThreeVector(0,0,0),
-                    logicPADPCB,"PAD_PCB",logicPADDetector,false,0);
-  
-  new G4PVPlacement(new G4RotationMatrix(0,0,0),
-                    PAD_Wafer_Offset,
-                    logicPADWafer,"PAD_Wafer",logicPADDetector,false,0);
-  
-  // Place the detector in the world
-  for(unsigned int i = 0 ; i < m_Z.size() ; i++){
-    G4ThreeVector DetectorPosition =
-    -PAD_Wafer_Offset+0.5*G4ThreeVector(PAD_PCB_Slot_Border + 0.5*PAD_PCB_Slot_Width -(PAD_PCB_Border_ShortSide - PAD_PCB_Slot_Deepness),0,-BOX_PCB_Thickness-PAD_PCB_Thickness);
-    
-    G4ThreeVector DetectorSpacing =
-    -G4ThreeVector(0, 0,0.5*(PAD_Wafer_Length+(PAD_PCB_Border_ShortSide- PAD_PCB_Slot_Deepness)+PAD_PCB_Slot_Border+0.5*PAD_PCB_Slot_Width));
-    
-    DetectorPosition+=DetectorSpacing;
-    
-    // Det 1
-    if(m_ThicknessPAD1[i]!=0){
-    G4RotationMatrix* DetectorRotation1= new G4RotationMatrix;
-    
-    
-    DetectorRotation1->rotateX(90*deg);
-    if(m_Z[i]>0) DetectorRotation1->rotateY(180*deg);
-    G4ThreeVector DetectorPosition1=DetectorPosition;
-    DetectorPosition1.transform(*DetectorRotation1);
-    DetectorPosition1+=G4ThreeVector(0,0,m_Z[i]);
-    
-    new G4PVPlacement(G4Transform3D(*DetectorRotation1, DetectorPosition1),
-                      logicPADDetector,"PAD",world,false,i+0);
-    }
-    
-    // Det2
-    if(m_ThicknessPAD2[i]!=0){
-    G4RotationMatrix* DetectorRotation2= new G4RotationMatrix;
-    DetectorRotation2->rotateZ(180*deg);
-    DetectorRotation2->rotateX(-90*deg);
-    if(m_Z[i]>0) DetectorRotation2->rotateY(180*deg);
-    G4ThreeVector DetectorPosition2=DetectorPosition;
-    DetectorPosition2.transform(*DetectorRotation2);
-    DetectorPosition2+=G4ThreeVector(0,0,m_Z[i]);
-    
-    new G4PVPlacement(G4Transform3D(*DetectorRotation2, DetectorPosition2),
-                      logicPADDetector,"PAD",world,false,i+1);
-    }
-    
-    // Det 3
-    if(m_ThicknessPAD3[i]!=0){
-    G4RotationMatrix* DetectorRotation3= new G4RotationMatrix;
-    DetectorRotation3->rotateX(90*deg);
-    DetectorRotation3->rotateZ(90*deg);
-    if(m_Z[i]>0) DetectorRotation3->rotateY(180*deg);
-    G4ThreeVector DetectorPosition3=DetectorPosition;
-    DetectorPosition3.transform(*DetectorRotation3);
-    DetectorPosition3+=G4ThreeVector(0,0,m_Z[i]);
-    
-    new G4PVPlacement(G4Transform3D(*DetectorRotation3, DetectorPosition3),
-                      logicPADDetector,"PAD",world,false,i+2);
-    }
-    
-    // Det 4
-    if(m_ThicknessPAD4[i]!=0){
-    G4RotationMatrix* DetectorRotation4= new G4RotationMatrix;
-    DetectorRotation4->rotateX(90*deg);
-    DetectorRotation4->rotateZ(-90*deg);
-    if(m_Z[i]>0) DetectorRotation4->rotateY(180*deg);
-    G4ThreeVector DetectorPosition4=DetectorPosition;
-    DetectorPosition4.transform(*DetectorRotation4);
-    DetectorPosition4+=G4ThreeVector(0,0,m_Z[i]);
-    new G4PVPlacement(G4Transform3D(*DetectorRotation4, DetectorPosition4),
-                      logicPADDetector,"PAD",world,false,i+3);
-    }
-    
-  }
-
-  
-  
- 
-}*/
-
 ///////////////////////////////////////////////////
 void Sharc::ConstructQQQDetector(G4LogicalVolume* world)
 {
