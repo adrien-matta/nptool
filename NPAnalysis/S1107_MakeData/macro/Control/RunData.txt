@@ -1,0 +1,7 @@
+TTreeName 
+	t1
+RootFileName 
+  /media/rc66_1/data/runROOT/Li9exp0008.root
+  /media/rc66_1/data/runROOT/Li9exp0009.root
+  /media/rc66_1/data/runROOT/Li9exp001?.root
+  
