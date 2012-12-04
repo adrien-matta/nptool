@@ -42,23 +42,31 @@ TTigressData::~TTigressData()
 /////////////////////////
 void TTigressData::Clear()
 {
-  fTIG_CloverNbr.clear();
-  fTIG_CrystalNbr.clear();
-  fTIG_Energy.clear();
-  fTIG_Time.clear();
+  fTIG_Ge_CloverNbr.clear();
+  fTIG_Ge_CrystalNbr.clear();
+  fTIG_Ge_SegmentNbr.clear();
+  fTIG_Ge_Energy.clear();
+  fTIG_Ge_TimeCFD.clear();
+  fTIG_Ge_TimeLED.clear();
+
+  fTIG_BGO_CloverNbr.clear();
+  fTIG_BGO_PmNbr.clear();
+  fTIG_BGO_Energy.clear();
+  fTIG_BGO_TimeCFD.clear();
+  fTIG_BGO_TimeLED.clear();
 }
 
 /////////////////////////
 void TTigressData::Dump() const
 {
   // Energy
-  cout << "Tigress_Mult = " << fTIG_CloverNbr.size() << endl;
+ // cout << "Tigress_Mult = " << fTIG_CloverNbr.size() << endl;
   
   // Front
-  for (UShort_t i = 0; i < fTIG_CloverNbr.size(); i++){
-    cout << "Clover: " << fTIG_CloverNbr[i]
-         << " Crystal: " << fTIG_CrystalNbr[i]
-         << " Energy: " << fTIG_Energy[i]
-         << " Time: " << fTIG_Time[i] << endl;
-  }
+ // for (UShort_t i = 0; i < fTIG_CloverNbr.size(); i++){
+ //   cout << "Clover: " << fTIG_CloverNbr[i]
+ //        << " Crystal: " << fTIG_CrystalNbr[i]
+ //        << " Energy: " << fTIG_Energy[i]
+ //        << " Time: " << fTIG_Time[i] << endl;
+ // }
 }

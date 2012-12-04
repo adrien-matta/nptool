@@ -1,7 +1,7 @@
 include ../Makefile.arch
  
 #------------------------------------------------------------------------------
-SHARELIB      =  libSharcData.so 
+SHARELIB      =  libSharcData.so libSharcPhysics.so
 #libSharcPhysics.so
 
 all:            $(SHARELIB)
@@ -15,15 +15,15 @@ libSharcData.so:	TSharcData.o	TSharcDataDict.o
 TSharcDataDict.cxx:	TSharcData.h
 			rootcint -f $@ -c $^
 
-#libSharcPhysics.so:	TSharcPhysics.o	TSharcPhysicsDict.o
-#		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
+libSharcPhysics.so:	TSharcPhysics.o	TSharcPhysicsDict.o
+		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
-#TSharcPhysicsDict.cxx:	TSharcPhysics.h
-#			rootcint -f $@ -c $^
+TSharcPhysicsDict.cxx:	TSharcPhysics.h
+			rootcint -f $@ -c $^
 			
 # dependances
 TSharcData.o:		TSharcData.cxx	TSharcData.h
-#TSharcPhysics.o:	TSharcPhysics.cxx	TSharcPhysics.h
+TSharcPhysics.o:	TSharcPhysics.cxx	TSharcPhysics.h
 #######################################
 
 ############# Clean and More ##########

@@ -32,10 +32,20 @@ class TTigressData : public TObject {
 private:
   // Tigress
   // Energy
-  vector<UShort_t> fTIG_CloverNbr;
-  vector<UShort_t> fTIG_CrystalNbr;
-  vector<Double_t> fTIG_Energy;
-  vector<Double_t> fTIG_Time;
+  vector<UShort_t> fTIG_Ge_CloverNbr;
+  vector<UShort_t> fTIG_Ge_CrystalNbr;
+  vector<UShort_t> fTIG_Ge_SegmentNbr;
+  vector<Double_t> fTIG_Ge_Energy;
+  vector<Double_t> fTIG_Ge_TimeCFD;
+  vector<Double_t> fTIG_Ge_TimeLED;
+
+  vector<UShort_t> fTIG_BGO_CloverNbr;
+  vector<UShort_t> fTIG_BGO_PmNbr;
+  vector<Double_t> fTIG_BGO_Energy;
+  vector<Double_t> fTIG_BGO_TimeCFD;
+  vector<Double_t> fTIG_BGO_TimeLED;
+
+
 public:
   TTigressData();
   virtual ~TTigressData();
@@ -45,18 +55,57 @@ public:
   void Dump() const;
   
   /////////////////////           SETTERS           ////////////////////////
-  void SetCloverNbr(UShort_t CloverNbr){fTIG_CloverNbr.push_back(CloverNbr); }
-  void SetCrystalNbr(UShort_t CrystalNbr){fTIG_CrystalNbr.push_back(CrystalNbr);}
-  void SetEnergy(UShort_t Energy){fTIG_Energy.push_back(Energy);}
-  void SetTime(UShort_t Time){fTIG_Time.push_back(Time);}
-  
+  void SetGeCloverNbr(UShort_t GeCloverNbr){fTIG_Ge_CloverNbr.push_back(GeCloverNbr); }
+  void SetGeCrystalNbr(UShort_t GeCrystalNbr){fTIG_Ge_CrystalNbr.push_back(GeCrystalNbr);}
+  void SetGeSegmentNbr(UShort_t GeSegmentNbr){fTIG_Ge_SegmentNbr.push_back(GeSegmentNbr);}
+  void SetGeEnergy(UShort_t GeEnergy){fTIG_Ge_Energy.push_back(GeEnergy);}
+  void SetGeTimeCFD(UShort_t GeTimeCFD){fTIG_Ge_TimeCFD.push_back(GeTimeCFD);}
+  void SetGeTimeLED(UShort_t GeTimeLED){fTIG_Ge_TimeLED.push_back(GeTimeLED);}
+
+  void SetBGOCloverNbr(UShort_t BGOCloverNbr){fTIG_BGO_CloverNbr.push_back(BGOCloverNbr); }
+  void SetBGOPmNbr(UShort_t BGOPmNbr){fTIG_BGO_PmNbr.push_back(BGOPmNbr);}
+  void SetBGOEnergy(UShort_t BGOEnergy){fTIG_BGO_Energy.push_back(BGOEnergy);}
+  void SetBGOTimeCFD(UShort_t BGOTimeCFD){fTIG_BGO_TimeCFD.push_back(BGOTimeCFD);}
+  void SetBGOTimeLED(UShort_t BGOTimeLED){fTIG_BGO_TimeLED.push_back(BGOTimeLED);}
+
   /////////////////////           GETTERS           ////////////////////////
-  UShort_t GetCloverNbr(unsigned int i) {return fTIG_CloverNbr[i];}
-  UShort_t GetCrystalNbr(unsigned int i){return fTIG_CrystalNbr[i];}
-  Double_t GetEnergyl(unsigned int i)   {return fTIG_Energy[i];}
-  Double_t GetTime(unsigned int i)      {return fTIG_Time[i];}
+  UShort_t GetGeCloverNbr(unsigned int i){return fTIG_Ge_CloverNbr[i]; }
+  UShort_t GetGeCrystalNbr(unsigned int i){return fTIG_Ge_CrystalNbr[i]; }
+  UShort_t GetGeSegmentNbr(unsigned int i){return fTIG_Ge_SegmentNbr[i]; }
+  Double_t GetGeEnergy(unsigned int i)   {return fTIG_Ge_Energy[i];}
+  Double_t GetGeTimeCFD(unsigned int i)      {return fTIG_Ge_TimeCFD[i];}
+  Double_t GetGeTimeLED(unsigned int i)      {return fTIG_Ge_TimeLED[i];}
+
+
+  UShort_t GetBGOCloverNbr(unsigned int i){return fTIG_BGO_CloverNbr[i]; }
+  UShort_t GetBGOPmNbr(unsigned int i)    {return fTIG_BGO_PmNbr[i]; }
+  Double_t GetBGOEnergy(unsigned int i)   {return fTIG_BGO_Energy[i];}
+  Double_t GetBGOTimeCFD(unsigned int i)     {return fTIG_BGO_TimeCFD[i];}
+  Double_t GetBGOTimeLED(unsigned int i)     {return fTIG_BGO_TimeLED[i];}
+
+  unsigned int GetMultiplicityGe()  {return fTIG_Ge_CloverNbr.size();}
+  unsigned int GetMultiplicityBGO()  {return fTIG_BGO_CloverNbr.size();}
+
+
   
   ClassDef(TTigressData,1)  // TigressData structure
 };
 
 #endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

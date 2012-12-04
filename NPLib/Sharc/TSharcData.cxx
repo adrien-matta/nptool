@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2009-2010   this file is part of the NPTool Project         *
+ * Copyright (C) 2009-2012   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -8,7 +8,7 @@
 /*****************************************************************************
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
- * Creation Date  : febuary 2009                                             *
+ * Creation Date  : November 2012                                            *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
@@ -16,11 +16,11 @@
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *                                                                           *
+ *                                                                           *   
  *                                                                           *
  *****************************************************************************/
 #include <iostream>
-using namespace std;
+using namespace std; 
 
 #include "TSharcData.h"
 
@@ -51,6 +51,10 @@ void TSharcData::Clear()
   fSharc_StripBack_StripNbr.clear();
   fSharc_StripBack_Energy.clear();
   fSharc_StripBack_Time.clear();
+  
+  fSharc_PAD_DetectorNbr.clear();
+  fSharc_PAD_Energy.clear();
+  fSharc_PAD_Time.clear();
 }
 
 /////////////////////////
@@ -63,13 +67,22 @@ void TSharcData::Dump() const
   for (UShort_t i = 0; i < fSharc_StripFront_DetectorNbr.size(); i++){
     cout << "DetNbr: " << fSharc_StripFront_DetectorNbr[i]
          << " Strip: " << fSharc_StripFront_StripNbr[i]
-         << " Energy: " << fSharc_StripFront_Energy[i] << endl;
+         << " Energy: " << fSharc_StripFront_Energy[i]
+         << " Time: " << fSharc_StripFront_Time[i] << endl;
   }
   
   // Back
   for (UShort_t i = 0; i < fSharc_StripFront_DetectorNbr.size(); i++){
     cout << "DetNbr: " << fSharc_StripFront_DetectorNbr[i]
     << " Strip: " << fSharc_StripFront_StripNbr[i]
-    << " Energy: " << fSharc_StripFront_Energy[i] << endl;
+    << " Energy: " << fSharc_StripFront_Energy[i]
+    << " Time: " << fSharc_StripBack_Time[i] << endl;
+  }
+  
+  // PAD
+  for (UShort_t i = 0; i < fSharc_PAD_DetectorNbr.size(); i++){
+    cout << "DetNbr: " << fSharc_PAD_DetectorNbr[i]
+    << " Energy: " << fSharc_PAD_Energy[i]
+    << " Time: " << fSharc_PAD_Time[i] << endl;
   }
 }
