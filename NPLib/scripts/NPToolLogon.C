@@ -55,20 +55,40 @@ void NPToolLogon(bool verbosemode = false)
    // Test if the lib directory is empty or not
    if (listfile->GetEntries() > 2) gSystem->Load(libpath+"/libVDetector.so");
 
-   // Since the libMust2Physics.so library uses TVector2
-   // objects, the libPhysics.so ROOT library is loaded.
-   gSystem->Load("libPhysics.so");
-
-   // Loop on all libraries
+   gSystem->Load("libPhysics.so"); // Needed by Must2 and Sharc
+   gSystem->Load("libHist.so"); // Needed by TSpectra Class
+   gSystem->Load("libCore.so"); // Need by Maya
+   // Loop on Data libraries
    Int_t i = 0;
    while (listfile->At(i)) {
       TString libname = listfile->At(i++)->GetName();
-      if (libname.Contains("so") && !libname.Contains("libVDetector.so")) {
+      if (libname.Contains("so") && libname.Contains("Data") && !libname.Contains("libVDetector.so")) {
          TString lib = libpath + "/" + libname;
          gSystem->Load(lib);
       }
    }
-   
+	  
+   // Loop on Physics Library
+   i = 0;
+   while (listfile->At(i)) {
+      TString libname = listfile->At(i++)->GetName();
+      if (libname.Contains("so") && libname.Contains("Physics") &&!libname.Contains("libVDetector.so")) {
+         TString lib = libpath + "/" + libname;
+         gSystem->Load(lib);
+      }
+   }
+ 
+   // Loop on the Reset of the Library
+   i = 0;
+   while (listfile->At(i)) {
+      TString libname = listfile->At(i++)->GetName();
+      if (libname.Contains("so") && !libname.Contains("Physics") && !libname.Contains("Data")  &&!libname.Contains("libVDetector.so")) {
+         TString lib = libpath + "/" + libname;
+         gSystem->Load(lib);
+      }
+   }
+
+
    gROOT->ProcessLine(".L $NPTOOL/NPLib/include/RootInput.h+");   
    
    // Since the libdir.GetListOfFiles() commands cds to the

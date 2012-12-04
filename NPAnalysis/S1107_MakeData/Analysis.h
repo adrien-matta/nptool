@@ -5,11 +5,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 // -------------------------------------- VARIOUS INCLUDE ---------------------------------------
 
-// NPA
-#include "DetectorManager.h"
-#include "NPOptionManager.h"
-#include "TMust2Physics.h"
-
 // STL C++
 #include <iostream>
 #include <fstream>
@@ -18,200 +13,37 @@
 #include <cmath>
 #include <cstdlib>
 #include <time.h>
-
-// ROOT
-#include <TROOT.h>
-#include <TCutG.h>
-#include <TChain.h>
-#include <TFile.h>
-#include <TLeaf.h>
-#include <TVector3.h>
-#include <TRandom.h>
+using namespace std;
 
 // NPL
-#include "TPlasticData.h"
-#include "NPReaction.h"
-#include "RootInput.h"
-#include "RootOutput.h"
-#include "TInitialConditions.h"
+#include "TSharcData.h"
+#include "TTigressData.h"
 
 // Use CLHEP System of unit and Physical Constant
 #include "CLHEP/Units/GlobalSystemOfUnits.h"
 #include "CLHEP/Units/PhysicalConstants.h"
 
+// Global variable of the input tree
 
-// ----------------------------------------------------------------------------------------------
-double ThetaCalculation (TVector3 A , TVector3 B) ;
-/////////////////////////////////////////////////////////////////////////////////////////////////
-// ----------------------------------- DOUBLE, INT, BOOL AND MORE -------------------------------
-namespace VARIABLE
-	{
-		//	Declare your Variable here:
-		
-			double X1,Y1,Z1				;
-			int N1,N2 = 0				;
-			bool check= false			;
-	
-		//	A Usefull Simple Random Generator
-			TRandom Rand;
-	}
-	 
-using namespace VARIABLE ;
-// ----------------------------------------------------------------------------------------------
+// Attached what is needed in the input tree
+//int		tig_event_number;
+int tig_num_chan;
+int tig_event_id;
+
+int* tig_midas_id;
+int* tig_type; //0 for tig10 and 1 for tig 64, sound ok?  good.
+
+int* channel_number;
+int* channel_raw;
+int* cfd_value;
+int* led_value;
+int* charge_raw;
+float* charge_cal;
 
 
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
-// -----------------------------------GRAPH------------------------------------------------------
-#include <TObject.h>
-#include <TH1.h>
-#include <TH1F.h>
-#include <TH2.h>
-#include <TH2F.h>
-#include <TGraph2D.h>
-
-namespace GRAPH
-	{
-		//	Declare your Spectra here:
-	
-			TH1F *myHist1D = new TH1F("Hist1D","Histogramm 1D ; x ; count", 1000 , -5 , 5 )					;
-	
-			TH2F *myHist2D = new TH2F("Hist2D","Histogramm 2D ; x ; y ", 128 , 1 , 128 , 128 , 1 , 128 )	;
-
-	}
-
-using namespace GRAPH ;
-// --------------------------------------------------------------------------------------------
-
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////
-// -----------------------------------CUT------------------------------------------------------
-
-#include <TCutG.h>
-namespace CUT
-	{
-	 //open the ROOT file for cuts
-	 // TFile *FCuts = new TFile("cut_protons.root");
-	 // TCutG *cut_protons = (TCutG*) FCuts->Get("protons");
-        }
-
-using namespace CUT ;
-// --------------------------------------------------------------------------------------------
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////
-// -----------------------------------ENERGY LOSS----------------------------------------------
-#include "NPEnergyLoss.h"
-using namespace NPL ;
-namespace ENERGYLOSS
-	{
-	  // Beam Energy Loss
-	  
-	  EnergyLoss Fe60TargetCD2    = EnergyLoss      ("Fe60[0.0]_CD2.G4table",
-		 					 "G4Table"              ,
-							 1000                   );
-	  
-	  /*
-	  EnergyLoss Fe60TargetCD2    = EnergyLoss 	("60Fe_CD2_new.txt",
-							 "LISE"            ,
-							 1000		   ,
-							 3		   ,
-							 59.934            );
-
-	  EnergyLoss Fe60TargetCarbone= EnergyLoss 	("60Fe_carbone.txt",
-							 "LISE"            ,
-							 1000		   ,
-							 3		   ,
-							 59.934		  );
-	  */
-	  /*
-	  EnergyLoss S34TargetCD2    = EnergyLoss      ("S34[0.0]_CD2.G4table",
-							 "G4Table"              ,
-							 1000                   );
-	  */
-	  /*
-	  EnergyLoss Si34TargetCD2    = EnergyLoss 	("34Si_CD2.txt",
-							 "LISE"            ,
-							 1000		   ,
-							 1		   ,
-							 34		  );
-
-	  EnergyLoss Si34TargetCarbone= EnergyLoss 	("34Si_carbone.txt",
-							 "LISE"            ,
-							 1000		   ,
-							 1		   ,
-							 34		  );
-
-	  EnergyLoss S36TargetCD2    = EnergyLoss 	("36S_CD2.txt",
-							 "LISE"            ,
-							 1000		   ,
-							 1		   ,
-							 36		  );
-
-	  EnergyLoss S36TargetCarbone= EnergyLoss 	("36S_carbone.txt",
-							 "LISE"            ,
-							 1000		   ,
-							 1		   ,
-							 36		  );
-
-	  */
-	  //	proton Energy Loss
-	  
-	  EnergyLoss protonTargetCD2    = EnergyLoss      ("proton_CD2.G4table",
-							   "G4Table"              ,
-							   1000                   );
-	  
-	  EnergyLoss protonTargetWind = EnergyLoss 	("proton_Mylar.txt",
-							 "LISE"            ,
-							  1000		   ,
-							  3,
-							  1.008		  );
-		
-	  EnergyLoss protonTargetC   = EnergyLoss       ("proton_carbone.txt" 	,
-							 "LISE"                         ,
-							 1000		 		,
-							 3				,
-							 1.008				);
-
-	  /*
-	  EnergyLoss protonTargetCD2 = EnergyLoss       ("proton_cd2.txt" 	,
-							 "LISE"                         ,
-							 1000		 		,
-							 3				,
-							 1.008				);
-
-	  */
-	  EnergyLoss protonStripAl   = EnergyLoss 	("proton_Al.txt" 		,
-							 "LISE"                         ,
-							 1000				,
-							 3				,
-							 1.008				);
-
-	  EnergyLoss protonPadSi      = EnergyLoss      ("proton_Si.txt",
-							 "LISE"         ,
-							  1000          ,
-							  3             ,
-							  1.008            );
-	  
-	  
-	}
-	
-using namespace ENERGYLOSS ;
-// ----------------------------------------------------------------------------------------------
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
-// -----------------------------------Random Engine----------------------------------------------
-#include "TRandom3.h"
-namespace RANDOMENGINE
-	{
-	
-		TRandom3 RandomEngine = TRandom3();
-	
-	}
-	
-using namespace RANDOMENGINE ;
-// ----------------------------------------------------------------------------------------------
-/////////////////////////////////////////////////////////////////////////////////////////////////
+int* timestamp_low;
+int* timestamp_high;
+int* timestamp_live;
+int* timestamp_tr;  // triggers requested
+in*t timestamp_ta;  // triggers accepted
 
