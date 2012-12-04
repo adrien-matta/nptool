@@ -21,9 +21,17 @@
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
+
+// STL
 #include <vector>
-#include "TObject.h"
+#include <map>
 using namespace std ;
+
+// NPL
+#include "../Tigress/TTigEventFragment.h"
+
+// ROOT
+#include "TObject.h"
 
 class TSharcData : public TObject {
 private:
@@ -68,24 +76,44 @@ public:
   
   
   /////////////////////           GETTERS           ////////////////////////
-  UShort_t GetFront_DetectorNbr(unsigned int i) const {return fSharc_StripFront_DetectorNbr[i];}
-  UShort_t GetFront_StripNbr(unsigned int i)    const {return fSharc_StripFront_StripNbr[i];}
-  Double_t GetFront_Energy(unsigned int i)      const {return fSharc_StripFront_Energy[i];}
-  Double_t GetFront_Time(unsigned int i)       const {return fSharc_StripFront_Time[i];}
+  UShort_t GetFront_DetectorNbr(unsigned int i) const {return fSharc_StripFront_DetectorNbr[i];}//!
+  UShort_t GetFront_StripNbr(unsigned int i)    const {return fSharc_StripFront_StripNbr[i];}//!
+  Double_t GetFront_Energy(unsigned int i)      const {return fSharc_StripFront_Energy[i];}//!
+  Double_t GetFront_Time(unsigned int i)        const {return fSharc_StripFront_Time[i];}//!
   
-  UShort_t GetBack_DetectorNbr(unsigned int i) const {return fSharc_StripBack_DetectorNbr[i];}
-  UShort_t GetBack_StripNbr(unsigned int i)    const {return fSharc_StripBack_StripNbr[i];}
-  Double_t GetBack_Energy(unsigned int i)      const {return fSharc_StripBack_Energy[i];}
-  Double_t GetBack_Time(unsigned int i)        const {return fSharc_StripBack_Time[i];}
+  UShort_t GetBack_DetectorNbr(unsigned int i) const {return fSharc_StripBack_DetectorNbr[i];}//!
+  UShort_t GetBack_StripNbr(unsigned int i)    const {return fSharc_StripBack_StripNbr[i];}//!
+  Double_t GetBack_Energy(unsigned int i)      const {return fSharc_StripBack_Energy[i];}//!
+  Double_t GetBack_Time(unsigned int i)        const {return fSharc_StripBack_Time[i];}//!
   
-  UShort_t GetPAD_DetectorNbr(unsigned int i) const {return fSharc_PAD_DetectorNbr[i];}
-  Double_t GetPAD_Energy(unsigned int i)      const {return fSharc_PAD_Energy[i];}
-  Double_t GetPAD_Time(unsigned int i)        const {return fSharc_PAD_Time[i];}
+  UShort_t GetPAD_DetectorNbr(unsigned int i) const {return fSharc_PAD_DetectorNbr[i];}//!
+  Double_t GetPAD_Energy(unsigned int i)      const {return fSharc_PAD_Energy[i];}//!
+  Double_t GetPAD_Time(unsigned int i)        const {return fSharc_PAD_Time[i];}//!
 
-  unsigned int GetMultiplicityFront() const {return fSharc_StripFront_DetectorNbr.size();}
-  unsigned int GetMultiplicityBack()  const {return fSharc_StripBack_DetectorNbr.size();}
-  unsigned int GetMultiplicityPAD()   const {return fSharc_PAD_DetectorNbr.size();}
+  unsigned int GetMultiplicityFront() const {return fSharc_StripFront_DetectorNbr.size();}//!
+  unsigned int GetMultiplicityBack()  const {return fSharc_StripBack_DetectorNbr.size();}//!
+  unsigned int GetMultiplicityPAD()   const {return fSharc_PAD_DetectorNbr.size();}//!
 
+public: // Method and object to construct to fill the data event from a Tigress DAQ event tree
+  void ReadFSPCFile(string FSPCPath);//!
+  void FillData(TTigEventFragment* TigEvent);//!
+  void FillBoxFront(int DetNbr,int hit,TTigEventFragment* TigEvent);//!
+  void FillBoxBack1(int DetNbr,int hit,TTigEventFragment* TigEvent);//!
+  void FillBoxBack2(int DetNbr,int hit,TTigEventFragment* TigEvent);//!
+  
+  void FillQQQFront(int DetNbr,int hit,TTigEventFragment* TigEvent);//!
+  void FillQQQBack(int DetNbr,int hit,TTigEventFragment* TigEvent);//!
+  
+  void FillPAD(int DetNbr,int hit,TTigEventFragment* TigEvent)  ;//!
+  map< int,vector<int> > GetFSPC2Detector() const ;//!
+  
+private:// Key is the FSPC channel,
+        // vector[0] is the Detector Nbr
+        // vector[1] is 0: QQQ , 1: Box, 2: PAD
+        // vector[2] the type: 0: Front , 1: Back1 or Back , 2: Back2
+        // vector[3] strip nbr (FSPC ref)
+  map< int,vector<int> > m_FSPC2Detector;//!
+  
   
   ClassDef(TSharcData,1)  // SharcData structure
 };
