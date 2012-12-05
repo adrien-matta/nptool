@@ -21,7 +21,9 @@ class TTigEventFragment : public TObject{
 	   int tig_event_id;
 
 	  vector<int> tig_midas_id;
-	  vector<int> tig_type;        //0 for tig10 and 1 for tig 64, sound ok?  good. 
+  
+    //0 for tig10 and 1 for tig 64
+    vector<int> tig_type;
 
 	  vector<int> channel_number;
     vector<int> channel_raw;

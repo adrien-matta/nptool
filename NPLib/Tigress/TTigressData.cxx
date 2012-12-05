@@ -31,14 +31,11 @@ ClassImp(TTigressData)
 /////////////////////////
 TTigressData::TTigressData()
 {
-  // Default constructor
-  Clear();
 }
 
 /////////////////////////
 TTigressData::~TTigressData()
 {
-  Clear();
 }
 
 /////////////////////////
@@ -167,10 +164,8 @@ void TTigressData::ReadFSPCFile(string FSPCPath){
 
 
 void TTigressData::FillData(TTigEventFragment* TigEvent){
-  
-  for(unsigned int i = 0 ; i < TigEvent->channel_number.size() ; i++){
-    
-    vector<int> channel_number = TigEvent->channel_number;
+  vector<int> channel_number = TigEvent->channel_number;
+  for(unsigned int i = 0 ; i < channel_number.size() ; i++){
     if(m_FSPC2Detector.find(channel_number[i])!=m_FSPC2Detector.end()){
       int CloverNbr = m_FSPC2Detector[channel_number[i]][0];
       int CrystalNbr = m_FSPC2Detector[channel_number[i]][1];

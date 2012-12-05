@@ -32,14 +32,11 @@ ClassImp(TSharcData)
 /////////////////////////
 TSharcData::TSharcData()
 {
-  // Default constructor
-  Clear();
 }
 
 /////////////////////////
 TSharcData::~TSharcData()
 {
-  Clear();
 }
 
 /////////////////////////
@@ -48,16 +45,20 @@ void TSharcData::Clear()
   fSharc_StripFront_DetectorNbr.clear();
   fSharc_StripFront_StripNbr.clear();
   fSharc_StripFront_Energy.clear();
-  fSharc_StripFront_Time.clear();
-  
+  fSharc_StripFront_TimeCFD.clear();
+  fSharc_StripFront_TimeLED.clear();
+
   fSharc_StripBack_DetectorNbr.clear();
   fSharc_StripBack_StripNbr.clear();
   fSharc_StripBack_Energy.clear();
-  fSharc_StripBack_Time.clear();
+  fSharc_StripBack_TimeCFD.clear();
+  fSharc_StripBack_TimeLED.clear();
   
   fSharc_PAD_DetectorNbr.clear();
   fSharc_PAD_Energy.clear();
-  fSharc_PAD_Time.clear();
+  fSharc_PAD_TimeCFD.clear();
+  fSharc_PAD_TimeLED.clear();
+
 }
 
 /////////////////////////
@@ -71,7 +72,8 @@ void TSharcData::Dump() const
     cout << "DetNbr: " << fSharc_StripFront_DetectorNbr[i]
          << " Strip: " << fSharc_StripFront_StripNbr[i]
          << " Energy: " << fSharc_StripFront_Energy[i]
-         << " Time: " << fSharc_StripFront_Time[i] << endl;
+         << " Time CFD: " << fSharc_StripFront_TimeCFD[i]
+         << " Time LED: " << fSharc_StripFront_TimeLED[i] << endl;
   }
   
   // Back
@@ -79,14 +81,17 @@ void TSharcData::Dump() const
     cout << "DetNbr: " << fSharc_StripFront_DetectorNbr[i]
     << " Strip: " << fSharc_StripFront_StripNbr[i]
     << " Energy: " << fSharc_StripFront_Energy[i]
-    << " Time: " << fSharc_StripBack_Time[i] << endl;
+    << " Time CFD: " << fSharc_StripBack_TimeCFD[i]
+    << " Time LED: " << fSharc_StripBack_TimeLED[i] << endl;
   }
   
   // PAD
   for (UShort_t i = 0; i < fSharc_PAD_DetectorNbr.size(); i++){
     cout << "DetNbr: " << fSharc_PAD_DetectorNbr[i]
     << " Energy: " << fSharc_PAD_Energy[i]
-    << " Time: " << fSharc_PAD_Time[i] << endl;
+    << " Time CFD: " << fSharc_PAD_TimeCFD[i]
+    << " Time LED: " << fSharc_PAD_TimeLED[i] << endl;
+
   }
 }
 /////////////////////////
@@ -192,17 +197,13 @@ void TSharcData::ReadFSPCFile(string FSPCPath){
 
 
 void TSharcData::FillData(TTigEventFragment* TigEvent){
-  
-  for(unsigned int i = 0 ; i < TigEvent->channel_number.size() ; i++){
-    
-    
-    vector<int> channel_number = TigEvent->channel_number;
+  vector<int> channel_number = TigEvent->channel_number;
+  for(unsigned int i = 0 ; i < channel_number.size() ; i++){
     if(m_FSPC2Detector.find(channel_number[i])!=m_FSPC2Detector.end()){
       int DetNbr = m_FSPC2Detector[channel_number[i]][0];
       int type = m_FSPC2Detector[channel_number[i]][1];
       int FB = m_FSPC2Detector[channel_number[i]][2];
-      
-    
+
       if(type == 0 ){
              if (FB == 0 ) FillQQQFront(DetNbr , i , TigEvent);
         else if (FB == 1 ) FillQQQBack (DetNbr , i , TigEvent);
@@ -232,7 +233,9 @@ void TSharcData::FillBoxFront(int DetNbr, int hit,TTigEventFragment* TigEvent){
     SetFront_DetectorNbr(DetNbr);
     SetFront_StripNbr(StripNbr);
     SetFront_Energy(TigEvent->charge_raw[hit]);
-    SetFront_Time(TigEvent->cfd_value[hit]);
+    SetFront_TimeCFD(TigEvent->cfd_value[hit]);
+    SetFront_TimeLED(TigEvent->led_value[hit]);
+
   }
 }
 
@@ -245,7 +248,9 @@ void TSharcData::FillBoxBack1(int DetNbr, int hit,TTigEventFragment* TigEvent){
       StripNbr = 25 - StripNbr;
     SetBack_StripNbr(StripNbr);
   	SetBack_Energy(TigEvent->charge_raw[hit]);
-  	SetBack_Time(TigEvent->cfd_value[hit]);
+  	SetBack_TimeCFD(TigEvent->cfd_value[hit]);
+    SetBack_TimeLED(TigEvent->led_value[hit]);
+
   }
 }
 
@@ -258,7 +263,9 @@ void TSharcData::FillBoxBack2(int DetNbr, int hit,TTigEventFragment* TigEvent){
       StripNbr = 25 - StripNbr;
     SetBack_StripNbr(StripNbr+24);
   	SetBack_Energy(TigEvent->charge_raw[hit]);
-  	SetBack_Time(TigEvent->cfd_value[hit]);
+  	SetBack_TimeCFD(TigEvent->cfd_value[hit]);
+    SetBack_TimeLED(TigEvent->led_value[hit]);
+
   }
 }
 
@@ -272,7 +279,9 @@ void TSharcData::FillQQQFront(int DetNbr, int hit,TTigEventFragment* TigEvent){
     SetFront_DetectorNbr(DetNbr);
     SetFront_StripNbr(StripNbr);
     SetFront_Energy(TigEvent->charge_raw[hit]);
-    SetFront_Time(TigEvent->cfd_value[hit]);
+    SetFront_TimeCFD(TigEvent->cfd_value[hit]);
+    SetFront_TimeLED(TigEvent->led_value[hit]);
+
   }
 }
 
@@ -283,7 +292,9 @@ void TSharcData::FillQQQBack(int DetNbr, int hit,TTigEventFragment* TigEvent){
     SetBack_DetectorNbr(DetNbr);
     SetBack_StripNbr(StripNbr);
   	SetBack_Energy(TigEvent->charge_raw[hit]);
-  	SetBack_Time(TigEvent->cfd_value[hit]);
+  	SetBack_TimeCFD(TigEvent->cfd_value[hit]);
+    SetBack_TimeLED(TigEvent->led_value[hit]);
+
   }
 }
 
@@ -291,7 +302,9 @@ void TSharcData::FillQQQBack(int DetNbr, int hit,TTigEventFragment* TigEvent){
 void TSharcData::FillPAD(int DetNbr,int hit,TTigEventFragment* TigEvent){
   SetPAD_DetectorNbr(DetNbr);
   SetPAD_Energy(TigEvent->charge_raw[hit]);
-  SetPAD_Time(TigEvent->cfd_value[hit]);
+  SetPAD_TimeCFD(TigEvent->cfd_value[hit]);
+  SetPAD_TimeLED(TigEvent->led_value[hit]);
+
 }
 
 map< int,vector<int> > TSharcData::GetFSPC2Detector()const{

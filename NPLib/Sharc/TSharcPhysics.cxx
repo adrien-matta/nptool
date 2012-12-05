@@ -88,8 +88,8 @@ void TSharcPhysics::BuildPhysicalEvent()
                   int Back  = m_PreTreatedData->GetBack_StripNbr(couple[i].Y()) ;
                   double Front_E = m_PreTreatedData->GetFront_Energy( couple[i].X() ) ;
                   double Back_E  = m_PreTreatedData->GetBack_Energy( couple[i].Y() ) ;  
-                  double Front_T = m_PreTreatedData->GetFront_Time( couple[i].X() ) ;
-                  double Back_T  = m_PreTreatedData->GetBack_Time ( couple[i].Y() ) ;  
+                  double Front_T = m_PreTreatedData->GetFront_TimeCFD( couple[i].X() ) ;
+                  double Back_T  = m_PreTreatedData->GetBack_TimeCFD ( couple[i].Y() ) ;
 
                   DetectorNumber.push_back(N);
                   StripFront_E.push_back(Front_E);
@@ -114,7 +114,7 @@ void TSharcPhysics::BuildPhysicalEvent()
                   for(unsigned int j = 0 ; j < m_PreTreatedData-> GetMultiplicityPAD() ; ++j){
                     if(m_PreTreatedData->GetPAD_DetectorNbr(j)==N){
                       PAD_E.push_back( m_PreTreatedData-> GetPAD_Energy(j)) ;
-                      PAD_T.push_back( m_PreTreatedData-> GetPAD_Time(j)  ) ;
+                      PAD_T.push_back( m_PreTreatedData-> GetPAD_TimeCFD(j)  ) ;
                       check_PAD = true ;
                     }
                     
@@ -142,7 +142,7 @@ void TSharcPhysics::PreTreat()
              if( Front_E > m_StripFront_E_Threshold ){
                    m_PreTreatedData->SetFront_DetectorNbr( m_EventData->GetFront_DetectorNbr(i) );
                    m_PreTreatedData->SetFront_StripNbr( m_EventData->GetFront_StripNbr(i) );
-                   m_PreTreatedData->SetFront_Time( m_EventData->GetFront_Time(i) );
+                   m_PreTreatedData->SetFront_TimeCFD( m_EventData->GetFront_TimeCFD(i) );
                    m_PreTreatedData->SetFront_Energy( Front_E );
                    
                 }
@@ -157,7 +157,7 @@ void TSharcPhysics::PreTreat()
              if( Back_E > m_StripBack_E_Threshold ){
                    m_PreTreatedData->SetBack_DetectorNbr( m_EventData->GetBack_DetectorNbr(i) );
                    m_PreTreatedData->SetBack_StripNbr( m_EventData->GetBack_StripNbr(i) );
-                   m_PreTreatedData->SetBack_Time( m_EventData->GetBack_Time(i) );
+                   m_PreTreatedData->SetBack_TimeCFD( m_EventData->GetBack_TimeCFD(i) );
                    m_PreTreatedData->SetBack_Energy( Back_E );
                 }
               }
@@ -171,7 +171,7 @@ void TSharcPhysics::PreTreat()
              if( PAD_E > m_PAD_E_Threshold ){
                    m_PreTreatedData->SetPAD_DetectorNbr( m_EventData->GetPAD_DetectorNbr(i) );
                    m_PreTreatedData->SetPAD_Energy( PAD_E );
-                   m_PreTreatedData->SetPAD_Time( m_EventData->GetPAD_Time(i) );
+                   m_PreTreatedData->SetPAD_TimeCFD( m_EventData->GetPAD_TimeCFD(i) );
                 }
               }
             }
@@ -877,7 +877,7 @@ namespace Sharc_LOCAL
       double fStrip_Front_T(const TSharcData* m_EventData , const int i)
          {
             return CalibrationManager::getInstance()->ApplyCalibration(   "SHARC/D" + itoa( m_EventData->GetFront_DetectorNbr(i) ) + "_STRIP_FRONT" + itoa( m_EventData->GetFront_StripNbr(i) ) +"_T",   
-                                                                                                      m_EventData->GetFront_Time(i) );
+                                                                                                      m_EventData->GetFront_TimeCFD(i) );
          }
       
       //   Back 
@@ -890,7 +890,7 @@ namespace Sharc_LOCAL
       double fStrip_Back_T(const TSharcData* m_EventData , const int i)
          {
             return CalibrationManager::getInstance()->ApplyCalibration(   "SHARC/D" + itoa( m_EventData->GetBack_DetectorNbr(i) ) + "_STRIP_BACK" + itoa( m_EventData->GetBack_StripNbr(i) ) +"_T",   
-                                                                                                      m_EventData->GetFront_Time(i) );
+                                                                                                      m_EventData->GetFront_TimeCFD(i) );
          }
          
          
@@ -904,7 +904,7 @@ namespace Sharc_LOCAL
       double fPAD_T(const TSharcData* m_EventData , const int i)
          {
             return CalibrationManager::getInstance()->ApplyCalibration(   "SHARC/D" + itoa( m_EventData->GetPAD_DetectorNbr(i) ) + "_PAD" +"_T",   
-                                                                                                      m_EventData->GetPAD_Time(i) );
+                                                                                                      m_EventData->GetPAD_TimeCFD(i) );
          }
 
    }
