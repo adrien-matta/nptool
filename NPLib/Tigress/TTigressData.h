@@ -22,6 +22,7 @@
  *                                                                           *
  *****************************************************************************/
 // STL
+#include<stdlib.h>
 #include <vector>
 #include <map>
 using namespace std ;
