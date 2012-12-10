@@ -9,6 +9,7 @@
 #include "TMust2Physics.h"
 #include "TCATSPhysics.h"
 #include "TSSSDPhysics.h"
+#include "TTrifoilPhysics.h"
 #include "TPlasticPhysics.h"
 #include "GaspardTracker.h"
 #include "HydeTracker.h"
@@ -51,6 +52,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
    bool CATS                = false;
    bool SSSD                = false;
    bool ScintillatorPlastic = false;
+   bool Trifoil             = false;
    bool GeneralTarget       = false;
    bool GPDTracker          = false;
    bool HYDTracker          = false;
@@ -254,6 +256,23 @@ void DetectorManager::ReadConfigurationFile(string Path)
          AddDetector("Plastic", myDetector);
       }
 
+     ////////////////////////////////////////////
+     ///////////// Search for Trifoil ///////////
+     ////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 7, "Trifoil") == 0 && Trifoil == false) {
+        Trifoil = true;
+        cout << "//////// Trifoil ////////" << endl << endl;
+        
+        // Instantiate the new array as a VDetector Object
+        VDetector* myDetector = new TTrifoilPhysics();
+        // Read Position of Telescope
+        ConfigFile.close();
+        myDetector->ReadConfiguration(Path);
+        ConfigFile.open(Path.c_str());
+        
+        // Add array to the VDetector Vector
+        AddDetector("Trifoil", myDetector);
+      }
 
       ////////////////////////////////////////////
       //////////// Search for Target /////////////
