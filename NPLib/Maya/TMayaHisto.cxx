@@ -425,6 +425,7 @@ TCutG* TMayaHisto::GetPADXY(Double_t X, Double_t Y) {
 Double_t TMayaHisto::GetCdisp(Double_t C, Double_t R) {
 	Double_t fR, iR;
 	fR = modf(R, &iR);
+   fR *= 1;
 	return C + (int(iR - bShiftHexagon) % 2) / 2. + Xview_corr;
 }
 
@@ -1366,6 +1367,10 @@ TH1F* TMayaHisto::ProjectOnTrack(Int_t ID, Option_t *o, Double_t xo,
 				MarkMax->SetNextPoint(cp, rp);
 
 				// ** Graphics **
+
+            // remove compilation warnings
+            cd_min *= 1; cd_max *= 1;
+            rd_min *= 1; rd_max *= 1;
 
 				// pline = new TLine(cd_min,rd_min,cp_min,rp_min) ;
 				// pline->SetLineColor(3);//gStyle->GetCanvasColor());
