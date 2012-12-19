@@ -1,0 +1,18 @@
+CalibrationFilePath
+	/vol0/Laurent/NPTool/NPAnalysis/Analyse_e582/SPEG/macros/Calibration/Calibration/Cal_SPEG_Plastic_Right.cal
+	/vol0/Laurent/NPTool/NPAnalysis/Analyse_e582/SPEG/macros/Calibration/Calibration/Cal_SPEG_Plastic_Left.cal
+	/vol0/Laurent/NPTool/NPAnalysis/Analyse_e582/SPEG/macros/Calibration/Calibration/dsp11new.cal
+	/vol0/Laurent/NPTool/NPAnalysis/Analyse_e582/SPEG/macros/Calibration/Calibration/dsp12new.cal
+	/vol0/Laurent/NPTool/NPAnalysis/Analyse_e582/SPEG/macros/Calibration/Calibration/dsp21new.cal
+	/vol0/Laurent/NPTool/NPAnalysis/Analyse_e582/SPEG/macros/Calibration/Calibration/dsp22new.cal
+	/vol0/Laurent/NPTool/NPAnalysis/Analyse_e582/SPEG/macros/Calibration/Calibration/SPEG_DC_S11.cal
+	/vol0/Laurent/NPTool/NPAnalysis/Analyse_e582/SPEG/macros/Calibration/Calibration/SPEG_DC_S12.cal
+	/vol0/Laurent/NPTool/NPAnalysis/Analyse_e582/SPEG/macros/Calibration/Calibration/SPEG_DC_S21.cal
+	/vol0/Laurent/NPTool/NPAnalysis/Analyse_e582/SPEG/macros/Calibration/Calibration/SPEG_DC_S22.cal
+	/vol0/Laurent/NPTool/NPAnalysis/Analyse_e582/SPEG/macros/Correction/Correction/Correction_xfoc_tfoc.cal
+	/vol0/Laurent/NPTool/NPAnalysis/Analyse_e582/SPEG/macros/Correction/Correction/Correction_xfoc_phifoc.cal
+	/vol0/Laurent/NPTool/NPAnalysis/Analyse_e582/SPEG/macros/Calibration/Calibration/Cal_SPEG_xfoc.cal
+	/vol0/Laurent/NPTool/NPAnalysis/Analyse_e582/SPEG/macros/Correction/Correction/Correction_theta.cal
+	/vol0/Laurent/NPTool/NPAnalysis/Analyse_e582/SPEG/macros/Correction/Correction/Correction_phi.cal
+	/vol0/Laurent/NPTool/NPAnalysis/Analyse_e582/SPEG/macros/Calibration/Calibration/Cal_SPEG_theta.cal
+	/vol0/Laurent/NPTool/NPAnalysis/Analyse_e582/SPEG/macros/Calibration/Calibration/Cal_SPEG_phi.cal

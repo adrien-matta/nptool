@@ -1,0 +1,14 @@
+TTreeName 
+	AutoTree
+RootFileName
+ /vol0/Laurent/Data/Data_e582_converties/run_0186.01Jun11_08h35m31s.root
+  /vol0/Laurent/Data/Data_e582_converties/run_0187.01Jun11_08h43m36s.root
+  /vol0/Laurent/Data/Data_e582_converties/run_0188.01Jun11_09h13m57s.root
+  /vol0/Laurent/Data/Data_e582_converties/run_0189.01Jun11_09h44m37s.root
+  /vol0/Laurent/Data/Data_e582_converties/run_0190.01Jun11_10h08m49s.root
+
+
+
+
+
+

@@ -1,0 +1,3 @@
+CalibrationFilePath
+	/vol0/Laurent/NPTool/NPAnalysis/Analyse_e582/EXL/macros/Calibration/Energy/Calibration/Calibration_no_CT_run0018-52.cal
+
