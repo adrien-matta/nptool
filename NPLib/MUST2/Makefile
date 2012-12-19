@@ -1,7 +1,8 @@
 include ../Makefile.arch
 
 #------------------------------------------------------------------------------
-SHARELIB      =  libMust2Data.so	libMust2Physics.so   libMust2Spectra.so
+#SHARELIB      =  libMust2Data.so	libMust2Physics.so   libMust2Spectra.so
+SHARELIB      =  libMust2Data.so	libMust2Physics.so
 
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
