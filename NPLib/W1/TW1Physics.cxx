@@ -545,6 +545,7 @@ void TW1Physics::BuildSimplePhysicalEvent()
                 m_PreTreatedData->GetW1FrontTDetectorNbr(couple[i].X()) == m_PreTreatedData->GetW1FrontTDetectorNbr(t))
                TimeFront = m_PreTreatedData->GetW1FrontTTime(t);
          }
+         TimeFront *= 1;
          // Back
          double TimeBack = -1000;
          for (unsigned int t = 0; t < m_PreTreatedData->GetW1BackTMult(); t++) {
@@ -707,8 +708,8 @@ void TW1Physics::InitializeStandardParameter()
 void TW1Physics::ReadAnalysisConfig()
 {
    bool ReadingStatus = false;
-   bool check_mult    = false;
-   bool check_match   = false;
+//   bool check_mult    = false;
+//   bool check_match   = false;
 
    cout << "\t/////////// Reading ConfigW1.dat file ///////////" << endl;
 
@@ -750,14 +751,14 @@ void TW1Physics::ReadAnalysisConfig()
          }
          
          else if (DataBuffer.compare(0, 22, "MAX_STRIP_MULTIPLICITY") == 0) {
-            check_mult = true;
+//            check_mult = true;
             AnalysisConfigFile >> DataBuffer;
             m_MaximumStripMultiplicityAllowed = atoi(DataBuffer.c_str() );
             cout << "\tMaximun strip multiplicity= " << m_MaximumStripMultiplicityAllowed << endl;
          }
 
          else if (DataBuffer.compare(0, 31, "STRIP_ENERGY_MATCHING_TOLERANCE") == 0) {
-            check_match = true;
+//            check_match = true;
             AnalysisConfigFile >> DataBuffer;
             m_StripEnergyMatchingTolerance = atoi(DataBuffer.c_str() );
             cout << "\tStrip energy matching tolerance= " << m_StripEnergyMatchingTolerance << endl;
