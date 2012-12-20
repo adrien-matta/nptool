@@ -23,32 +23,24 @@
 
 //   STL
 #include <vector>
-
 //   ROOT
 #include "TObject.h"
 #include "TVector3.h"
-
+#include <TRandom1.h>
+#include <TRandom2.h>
+#include <TRandom3.h>
 //   NPLib
 #include "TCATSData.h"
 #include "../include/VDetector.h"
 #include "../include/CalibrationManager.h"
+#include "../include/DetectorManager.h"
+
+#define NBDETECTOR	2
+#define	NBSTRIPS	28
+
 
 using namespace std ;
-
-/* J'aime pas trop cette partie, je pense que deja ca pourrait etre mieux une variable interne te disant quel methode tu as utiliser
-et d'ailleur d'ecrire cette varaible dans l'arbre de sortie pour une question de tracabilite.
-Ensuite tu peux faire un Set et un Get de cette variable (je preconise un string avec un nom completement lisible... :p ).
-Ensuite dans ton build tu appelle une methode unique, qui elle appellera la methode correcte apres avoir fait les tests...
-
-Si apres tu veux vraiment ameliorer les performances le mieux est de definir un pointer de fonction que tu appelle a chaque event... 
-mais c'est un peu plus complique,
-voila un liens si jamais ca t'interresse: http://www.newty.de/fpt/intro.html
-
-Ceci dit ce n'est que des points de detail.
-*/
-
 enum reconstruction{NO,SECHS,GAUSS,BAR3,BAR4,BAR5};
-//enum correction{BAR3cor,BAR4cor,NOcor,GAUSScor};
 enum correction{NOcor,cor};
 
 class TCATSPhysics : public TObject, public NPA::VDetector
@@ -57,11 +49,15 @@ class TCATSPhysics : public TObject, public NPA::VDetector
  public:   //   Constructor and Destructor
   TCATSPhysics();
   ~TCATSPhysics();
-   
- public:   // Output data of interest
-  //for a CATS
 
-  // marker of the cats used
+ private:   //   Root Input and Output tree classes
+            
+         TCATSData*         m_EventData;//!
+         TCATSData*         m_PreTreatedData;//!
+         TCATSPhysics*      m_EventPhysics;//!
+
+ public :
+ // marker of the cats used
   int ff ;
 
   //   Vector of dim = multiplicity of event on all detector
@@ -70,8 +66,6 @@ class TCATSPhysics : public TObject, public NPA::VDetector
   vector<double>     ChargeX; 
      
   //   Vector of dim = number of CATS
-  vector<double>   ChargeSumX;
-  vector<int>      MultOverThreshX;  
   vector<int>      StripMaxX;
      
      
@@ -79,28 +73,26 @@ class TCATSPhysics : public TObject, public NPA::VDetector
   vector<int>        DetNumberY; 
   vector<int>        StripY;
   vector<double>     ChargeY;
-  //  vector<double>   ChargeY_test   ;
+     
+  //   Vector of dim = number of CATS  
+  vector<int>       StripMaxY;
      
   //   Vector of dim = number of CATS
-  vector<double>    ChargeSumY;  
-  vector<int>       MultOverThreshY;
-  vector<int>       StripMaxY;
-  //    vector<int>       StripMaxY_test;
-     
-  //   Calculate
   vector<int>       DetNumberX_Position;
   vector<int>       DetNumberY_Position;
   vector<int>       DetNumberZ_Position;
   vector<double>    PositionX;
   vector<double>    PositionY;
   vector<double>    PositionZ;
+	vector<double>	QsumX;
+	vector<double>	QsumY;
   double            PositionOnTargetX;
   double            PositionOnTargetY;
      
   TVector3      BeamDirection      ;  //!
 
-  double                Chargex[28];  //!
-  double                Chargey[28];  //!
+  double Buffer_X_Q[NBSTRIPS][NBDETECTOR];//!
+  double Buffer_Y_Q[NBSTRIPS][NBDETECTOR];//!
       
   int HitX;    //!
   int HitY;    //!
@@ -108,156 +100,136 @@ class TCATSPhysics : public TObject, public NPA::VDetector
   vector<reconstruction>   ReconstructionMethodX;
   vector<reconstruction>   ReconstructionMethodY;
 
+	
+		 private :
+        vector< vector< vector<double> > >   StripPositionX;//!
+        vector< vector< vector<double> > >   StripPositionY;//!
+        vector<double>                       StripPositionZ;//!  
+        int m_NumberOfCATS;
+		double m_TargetAngle;
+		double m_TargetThickness;
+		double m_CorrectionCoef_CATS1X;//!
+		double m_CorrectionCoef_CATS1Y;//!
+		double m_CorrectionCoef_CATS2X;//!
+		double m_CorrectionCoef_CATS2Y;//!
+	
+		
+		string m_correction_CATS1X;//!
+		string m_correction_CATS1Y;//!
+		string m_correction_CATS2X;//!
+		string m_correction_CATS2Y;//!
+	
+		string m_reconstruction_CATS1X;//!
+		string m_reconstruction_CATS1Y;//!
+		string m_reconstruction_CATS2X;//!
+		string m_reconstruction_CATS2Y;//!
+		reconstruction m_method_CATS1X;//!
+		reconstruction m_method_CATS1Y;//!
+		reconstruction m_method_CATS2X;//!
+		reconstruction m_method_CATS2Y;//!
+
+ private : 
+       //   Map of activated channel
+       map< int, vector<bool> > m_XChannelStatus;//!
+       map< int, vector<bool> > m_YChannelStatus;//! 
+       //   Map of inverted channel
+       map< int, vector<int> > m_CATSXInversion;//!
+       map< int, vector<int> > m_CATSYInversion;//! 
+   
+ public:   // Output data of interest
+      //   for a CATS
+	void SetTargetAngle(double m_TargetAngle) {m_TargetAngle = m_TargetAngle;}
+	void SetTargetThickness(double m_TargetThickness) {m_TargetThickness = m_TargetThickness;}
+	
+
+      //   Remove bad channel, calibrate the data and apply threshold
+      void PreTreat();
+
+      //   Activated associated Branches and link it to the private member DetectorData address
+      //   In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
+      void InitializeRootInputRaw() ;
+
+      //   Activated associated Branches and link it to the private member DetectorPhysics address
+      //   In this method mother Branches (Detector) AND daughter leaf (parameter) have to be activated
+      void InitializeRootInputPhysics() ;
+   
+      //   Create associated branches and associated private member DetectorPhysics address
+      void InitializeRootOutput() ;
     
-  // vector<reconstruction>       FailedReconstructionX;
-  vector<reconstruction> FailedReconstructionY;
-                                  
- private:   //   Root Input and Output tree classes
-     
-  TCATSData*      EventData;//!
-  TCATSPhysics*   EventPhysics;//!
-     
- public:      //   Innherited from VDetector Class
-     
-   //   Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-   void ReadConfiguration(string);
-     
-   //   Add Parameter to the CalibrationManger
-   void AddParameterToCalibrationManager();      
-     
-   //   Activated associated Branches and link it to the private member DetectorData address
-   //   In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
-   void InitializeRootInputRaw() ;
-
-   //   Activated associated Branches and link it to the private member DetectorPhysics address
-   //   In this method mother Branches (Detector) AND daughter leaf (parameter) have to be activated
-   void InitializeRootInputPhysics() ;
-   
-   //   Create associated branches and associated private member DetectorPhysics address
-   void InitializeRootOutput() ;
-     
-   //   This method is called at each event read from the Input Tree. Aim is to build treat Raw dat in order to extract physical parameter. 
-   void BuildPhysicalEvent();
-     
-   //   Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
-   //   This method aimed to be used for analysis performed during experiment, when speed is requiered.
-   //   NB: This method can eventually be the same as BuildPhysicalEvent.
-   void BuildSimplePhysicalEvent();
-   
-   // Same as above but for online analysis
-   void BuildOnlinePhysicalEvent()  {BuildPhysicalEvent();};
-
-   //   Those two method all to clear the Event Physics or Data
-   void ClearEventPhysics() {Clear();}      
-   void ClearEventData()    {EventData->Clear();}      
-
-   // Give and external TMustData object to TMust2Physics. Needed for online analysis for example.
-   void SetRawDataPointer(TCATSData* rawDataPointer) {EventData = rawDataPointer;}
-
-
- private :
-
-  // redundant information : could be optimized in the future
-  vector< vector< vector<double> > >   StripPositionX;//!
-  vector< vector< vector<double> > >   StripPositionY;//!
-  vector<double>                       StripPositionZ;//!  
-  int NumberOfCATS;//!   
-
-  vector< vector <double> >   Pedestal_X;//!
-  vector< vector <double> >   Pedestal_Y;//!
-     
-  vector< vector <double> >   Threshold_X;//!     
-  vector< vector <double> >   Threshold_Y;//!
-
+      //   Clear The PreTeated object
+      void ClearPreTreatedData()   {m_PreTreatedData->Clear();}
       
- public :   //   Specific to CATS
+      void BuildPhysicalEvent();
 
-  void   Clear();
-  void  Clear(const Option_t*) {};
-  void   Dump() const;
-     
-  void AddCATS(TVector3 C_X1_Y1, TVector3 C_X28_Y1, TVector3 C_X1_Y28, TVector3 C_X28_Y28);
+      void BuildSimplePhysicalEvent();
 
-  void ReadPedestal(string PedestalPath);
+      //   Those two method all to clear the Event Physics or Data
+      void ClearEventPhysics() {Clear();}      
+      void ClearEventData()    {m_EventData->Clear();}    
 
-  double AnalyseX(int ff,int NumberOfDetector);
+      void  Clear();
+      void  Clear(const Option_t*) {};  
+	
+	  // Give and external TCATSData object to TCATSPhysics, needed for online analysis
+	  void SetRawDataPointer(TCATSData* rawDataPointer) {m_EventData = rawDataPointer;}
 
-  double AnalyseY(int ff,int NumberOfDetector);
+      //   Return false if the channel is disabled by user
+      bool IsValidChannel(const string DetectorType, const int Detector , const int channel);
 
-  double CalculatePositionX( double CalculatedStripX, correction method);
+      void InitializeStandardParameter();
 
-  double CalculatePositionY( double CalculatedStripY, correction method);
+      void AddParameterToCalibrationManager();
 
+      void ReadAnalysisConfig();
 
-  reconstruction ChooseReconstruction(TString type);
+      void ReadConfiguration(string);
 
-  //   Calculate Strip touch using an array of Charge on Strip and Strip with Maximum Charge
-     
-  double HyperbolicSequentMethodX();
-  double GaussianMethodX();
-  double Barycentric5MethodX(); 
-  double Barycentric4MethodX(); 
-  double Barycentric3MethodX(); 
+      void AddCATS(TVector3 C_X1_Y1, TVector3 C_X28_Y1, TVector3 C_X1_Y28, TVector3 C_X28_Y28);
 
-  double HyperbolicSequentMethodY();
-  double GaussianMethodY();
-     
-  double Barycentric5MethodY(); 
-  double Barycentric4MethodY(); 
-  double Barycentric3MethodY(); 
-     
-     
-  double CorrectedPositionX3(double Position, double a) ;
-  double CorrectedPositionY3(double Position, double a) ;
-  double CorrectedPositionX4(double Position, double b); 
-  double CorrectedPositionY4(double Position, double b); 
+      double AnalyseX(int ff);
+
+      double AnalyseY(int ff);
+
+      double CalculatePositionX( double CalculatedStripX, correction method);
+
+      double CalculatePositionY( double CalculatedStripY, correction method);
+
+      reconstruction ChooseReconstruction(int ff, TString type);
+	
+	  reconstruction StringToEnum(string type);
+
+      double CorrectedPositionX3(double Position, double a) ;
+      double CorrectedPositionY3(double Position, double a) ;
+      double CorrectedPositionX4(double Position, double b); 
+      double CorrectedPositionY4(double Position, double b); 
+	double Corrected3PointsX(double Position, double c);
+	double Corrected3PointsY(double Position, double c);
+	double Corrected4PointsX(double Position, double d);
+	double Corrected4PointsY(double Position, double d);
+
+	
+      // Methode de reconstruction X
+      double HyperbolicSequentMethodX();
+      double GaussianMethodX();
+      double Barycentric5MethodX(); 
+      double Barycentric4MethodX(); 
+      double Barycentric3MethodX(); 
+
+      // Methode de Reconstruction Y
+      double HyperbolicSequentMethodY();
+      double GaussianMethodY();     
+      double Barycentric5MethodY(); 
+      double Barycentric4MethodY(); 
+      double Barycentric3MethodY(); 
+
+      TVector3 GetBeamDirection();
+      TVector3 GetPositionOnTarget();
     
-  // X
+      double GetPositionOnTargetX()  {return PositionOnTargetX;}  
+      double GetPositionOnTargetY()  {return PositionOnTargetY;}
 
-  //   Vector of dim = multiplicity of event on all detector
-  int       GetCATSDetNumberX(int i)         {return DetNumberX.at(i);}
-  int       GetCATSStripX(int i)             {return StripX.at(i);}
-  double    GetCATSChargeX(int i)            {return ChargeX.at(i);}
-     
-  int       GetCATSMultX()                {return DetNumberX.size();}
-    
-  //   Vector of dim = number of CATS
-  double    GetCATSChargeSumX(int i)          ;
-  int        GetCATSMultOverThreshX(int i)     ;
-  int       GetCATSStripMaxX(int i)           ;
-  // int       GetCATSDetNumberX_Position(int i) ;
-  double    GetCATSPositionX(int i)           ;
-
-  double    GetPositionOnTargetX()           {return PositionOnTargetX;}
-
-  // Y
-
-  //   Vector of dim = multiplicity of event on all detector
-  int       GetCATSDetNumberY(int i)         {return DetNumberY.at(i);}
-  int       GetCATSStripY(int i)             {return StripY.at(i);}
-  double    GetCATSChargeY(int i)            {return ChargeY.at(i);}
-
-  int       GetCATSMultY()                {return DetNumberY.size();}
-    
-  //   Vector of dim = number of CATS
-  double    GetCATSChargeSumY(int i)         ;
-  int        GetCATSMultOverThreshY(int i)    ;
-  int       GetCATSStripMaxY(int i)          ;
-  //  int       GetCATSDetNumberY_Position(int i);
-  double    GetCATSPositionY(int i)          ;
-     
-  double    GetPositionOnTargetY()           {return PositionOnTargetY;}
-
-  int       GetCATSMult()                    {return PositionX.size();}
-
-  TVector3  GetPositionOnTarget();
-  TVector3  GetBeamDirection()               {return BeamDirection;}
-
-  ClassDef(TCATSPhysics,1)  // CATSPhysics structure
-    };
-
-
-
+       ClassDef(TCATSPhysics,1)  // CATSPhysics structure
+};
 
 
 namespace LOCAL_CATS
@@ -265,6 +237,12 @@ namespace LOCAL_CATS
   //   tranform an integer to a string
   string itoa(int value);
 
+  double fCATS_X_Q(const TCATSData* Data, const int i);
+  double fCATS_Y_Q(const TCATSData* Data, const int i);
+  bool fCATS_Threshold_X(const TCATSData* Data, const int i);
+  bool fCATS_Threshold_Y(const TCATSData* Data, const int i);
+  double fCATS_Ped_X(const TCATSData* m_EventData, const int i);
+  double fCATS_Ped_Y(const TCATSData* m_EventData, const int i);
 }
 
 #endif

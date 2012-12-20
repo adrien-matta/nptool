@@ -9,7 +9,7 @@
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
  * Creation Date  : october 2009                                             *
- * Last update    :                                                          *
+ * Last update    : december 2012                                            *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  * This class manage the calibration coefficient of the detector in NPA      *
@@ -237,6 +237,73 @@ double CalibrationManager::ApplyCalibration(const string& ParameterPath , const 
       return CalibratedValue ;
       
    }
+
 //////////////////////////////////////////////////////////////////
+bool CalibrationManager::ApplyThreshold(const string& ParameterPath, const double& RawValue)
+{
+   map< string , vector<double> >::iterator it ;
+
+   //   Find the good parameter in the Map
+   // Using Find method of stl is the fastest way
+   it = fCalibrationCoeff.find(ParameterPath)  ;
+
+   // If the find methods return the end iterator it's mean the parameter was not found
+   if(it == fCalibrationCoeff.end() )
+   {
+      // cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
+      // cout << " ERROR: PARAMETER " << ParameterPath << " IS NOT FOUND IN THE CALIBRATION DATA BASE  " << endl ;
+      // cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;           
+      return false;
+   }
+
+   // Else we take the second part of the element (first is index, ie: parameter path)
+   // Second is the vector of Coeff
+   vector<double> Coeff = it->second  ;
+
+   // The vector size give the degree of calibration
+   // We just apply the coeff and returned the calibrated value
+
+   double ThresholdValue = 0 ;
+
+   if(Coeff.size()==2){ThresholdValue = Coeff[0] + 3*Coeff[1];}
+
+   if(RawValue > ThresholdValue)
+   {
+      return true;
+   }
+   else return false;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+double CalibrationManager::GetPedestal(const string& ParameterPath)
+{
+   map< string , vector<double> >::iterator it ;
+
+   //   Find the good parameter in the Map
+   // Using Find method of stl is the fastest way
+   it = fCalibrationCoeff.find(ParameterPath)  ;
+
+   // If the find methods return the end iterator it's mean the parameter was not found
+   if(it == fCalibrationCoeff.end() )
+   {
+      cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
+      cout << " ERROR: PARAMETER " << ParameterPath << " IS NOT FOUND IN THE CALIBRATION DATA BASE  " << endl ;
+      cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
+   }
+
+   // Else we take the second part of the element (first is index, ie: parameter path)
+   // Second is the vector of Coeff
+   vector<double> Coeff = it->second  ;
+
+   // The vector size give the degree of calibration
+   // We just apply the coeff and returned the calibrated value
+
+   double PedestalValue = 0 ;
+
+   if(Coeff.size()==2){PedestalValue = Coeff[0];}
+
+
+   return PedestalValue;
+}
 
 

@@ -53,35 +53,35 @@ class TCATSData : public TObject {
 
    /////////////////////           SETTERS           ////////////////////////
    // X
-   void	SetCATSDetX(UShort_t DetX)	 {fCATS_DetX.push_back(DetX);}
-   void SetCATSStripX(UShort_t StripX)	 {fCATS_StripX.push_back(StripX);}
-   void SetCATSChargeX(UShort_t ChargeX) {fCATS_ChargeX.push_back(ChargeX);}
+   void SetCATSDetX(UShort_t DetX)	      {fCATS_DetX.push_back(DetX);}
+   void SetCATSStripX(UShort_t StripX)	   {fCATS_StripX.push_back(StripX);}
+   void SetCATSChargeX(UShort_t ChargeX)  {fCATS_ChargeX.push_back(ChargeX);}
    // Y
-   void	SetCATSDetY(UShort_t DetY)	 {fCATS_DetY.push_back(DetY);}
-   void SetCATSStripY(UShort_t StripY)	 {fCATS_StripY.push_back(StripY);}
-   void SetCATSChargeY(UShort_t ChargeY) {fCATS_ChargeY.push_back(ChargeY);}
+   void SetCATSDetY(UShort_t DetY)	      {fCATS_DetY.push_back(DetY);}
+   void SetCATSStripY(UShort_t StripY)	   {fCATS_StripY.push_back(StripY);}
+   void SetCATSChargeY(UShort_t ChargeY)  {fCATS_ChargeY.push_back(ChargeY);}
 
    //Q fil
-   void	SetCATSDetQ(UShort_t DetQ)	 {fCATS_DetQ.push_back(DetQ);}
-   void SetCATSCharge(UShort_t Charge) {fCATS_Charge.push_back(Charge);}
+   void SetCATSDetQ(UShort_t DetQ)	      {fCATS_DetQ.push_back(DetQ);}
+   void SetCATSCharge(UShort_t Charge)    {fCATS_Charge.push_back(Charge);}
 
    /////////////////////           GETTERS           ////////////////////////
    // X
-   UShort_t	GetCATSMultX()		{return fCATS_DetX.size();}
-   UShort_t	GetCATSDetX(Int_t i)	{return fCATS_DetX.at(i);}
-   UShort_t	GetCATSStripX(Int_t i)  {return fCATS_StripX.at(i);}
-   UShort_t	GetCATSChargeX(Int_t i)	{return fCATS_ChargeX.at(i);}
+   UShort_t	GetCATSMultX()		            const {return fCATS_DetX.size();}
+   UShort_t	GetCATSDetX(Int_t i)	         const {return fCATS_DetX.at(i);}
+   UShort_t	GetCATSStripX(Int_t i)        const {return fCATS_StripX.at(i);}
+   UShort_t	GetCATSChargeX(Int_t i)	      const {return fCATS_ChargeX.at(i);}
    // Y
-   UShort_t	GetCATSMultY()		{return fCATS_DetY.size();}
-   UShort_t	GetCATSDetY(Int_t i)	{return fCATS_DetY.at(i);}
-   UShort_t	GetCATSStripY(Int_t i)  {return fCATS_StripY.at(i);}
-   UShort_t	GetCATSChargeY(Int_t i)	{return fCATS_ChargeY.at(i);}
+   UShort_t	GetCATSMultY()		            const {return fCATS_DetY.size();}
+   UShort_t	GetCATSDetY(Int_t i)	         const {return fCATS_DetY.at(i);}
+   UShort_t	GetCATSStripY(Int_t i)        const {return fCATS_StripY.at(i);}
+   UShort_t	GetCATSChargeY(Int_t i)	      const {return fCATS_ChargeY.at(i);}
    //Q fil
-   UShort_t	GetCATSMultQ()        {return fCATS_DetQ.size();}
-   UShort_t	GetCATSDetQ(Int_t i)  {return fCATS_DetQ.at(i);}
-   UShort_t	GetCATSCharge(Int_t i)  {return fCATS_Charge.at(i);}
+   UShort_t	GetCATSMultQ()                const {return fCATS_DetQ.size();}
+   UShort_t	GetCATSDetQ(Int_t i)          const {return fCATS_DetQ.at(i);}
+   UShort_t	GetCATSCharge(Int_t i)        const {return fCATS_Charge.at(i);}
 
-   ClassDef(TCATSData,1)  // CATSData structure
+   ClassDef(TCATSData,2)  // CATSData structure
 };
 
 #endif

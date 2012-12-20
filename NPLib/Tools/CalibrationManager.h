@@ -11,7 +11,7 @@
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
  * Creation Date  : october 2009                                             *
- * Last update    :                                                          *
+ * Last update    : december 2012                                            *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  * This class manage the calibration coefficient of the detector in NPA      *
@@ -59,6 +59,11 @@ class CalibrationManager
          // call like : myCalibrationManager->ApplyCalibration( "MUST2/Telescope5_Si_X38_E" , RawEnergy )
          // return the Calibrated value
          double ApplyCalibration(const string& ParameterPath , const double& RawValue);
+
+         bool ApplyThreshold(const string& ParameterPath, const double& RawValue);
+
+         double GetPedestal(const string& ParameterPath);
+
       
       
       public:   //   To be called after initialisation
@@ -68,7 +73,7 @@ class CalibrationManager
       public: //Clear calibration if we have some calibration files to read 
          void ClearCalibration();
 
-      public: //Get calibration coefficient vector
+      public: //Get correction coefficient vector
          vector<double> GetCorrection(const string& ParameterPath);
 
 
