@@ -16,6 +16,9 @@
 #include "Paris.h"
 #include "TW1Physics.h"
 #include "Shield.h"
+#include "TSpegPhysics.h"
+#include "TExlPhysics.h"
+#include "TTacPhysics.h"
 #include "NPOptionManager.h"
 #include "RootInput.h"
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,6 +62,9 @@ void DetectorManager::ReadConfigurationFile(string Path)
    bool ParisDet            = false;
    bool ShieldDet           = false;
    bool W1                  = false;
+   bool SPEG                = false;
+   bool EXL                 = false;
+   bool TAC                 = false;
 
    //////////////////////////////////////////////////////////////////////////////////////////
    string GlobalPath = getenv("NPTOOL");
@@ -256,22 +262,79 @@ void DetectorManager::ReadConfigurationFile(string Path)
          AddDetector("Plastic", myDetector);
       }
 
-     ////////////////////////////////////////////
-     ///////////// Search for Trifoil ///////////
-     ////////////////////////////////////////////
+      ////////////////////////////////////////////
+      ///////////// Search for SPEG //////////////
+      ////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 4, "SPEG") == 0 && SPEG == false) {
+         SPEG = true ;
+         cout << "//////// SPEG Spectrometer ////////" << endl;
+
+         // Instantiate the new array as a VDetector Object
+         VDetector* myDetector = new TSpegPhysics();
+
+         // Read Position of Telescope
+         ConfigFile.close();
+         myDetector->ReadConfiguration(Path);
+         ConfigFile.open(Path.c_str());
+
+         // Add array to the VDetector Vector
+         AddDetector("SPEG", myDetector);
+      }
+
+      ///////////////////////////////////////////////////////////
+      //////////// Search for EXL Csi gamma detector ////////////
+      ///////////////////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 3, "EXL") == 0 && EXL == false) {
+         EXL = true ;
+         cout << "//////// EXL Csi gamma detector ////////" << endl;
+
+         // Instantiate the new array as a VDetector Object
+         VDetector* myDetector = new TExlPhysics();
+
+         // Read Position of Telescope
+         ConfigFile.close();
+         myDetector->ReadConfiguration(Path);
+         ConfigFile.open(Path.c_str());
+
+         // Add array to the VDetector Vector
+         AddDetector("EXL", myDetector);
+      }
+
+      ////////////////////////////////////////////
+      ////////////// Search for TAC //////////////
+      ////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 3, "TAC") == 0 && TAC == false) {
+         TAC = true ;
+         cout << "//////// TAC ////////" << endl;
+
+         // Instantiate the new array as a VDetector Object
+         VDetector* myDetector = new TTacPhysics();
+
+         // Read Position of Telescope
+         ConfigFile.close();
+         myDetector->ReadConfiguration(Path);
+         ConfigFile.open(Path.c_str());
+
+         // Add array to the VDetector Vector
+         AddDetector("TAC", myDetector);
+      }
+
+      ////////////////////////////////////////////
+      ///////////// Search for Trifoil ///////////
+      ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 7, "Trifoil") == 0 && Trifoil == false) {
-        Trifoil = true;
-        cout << "//////// Trifoil ////////" << endl << endl;
-        
-        // Instantiate the new array as a VDetector Object
-        VDetector* myDetector = new TTrifoilPhysics();
-        // Read Position of Telescope
-        ConfigFile.close();
-        myDetector->ReadConfiguration(Path);
-        ConfigFile.open(Path.c_str());
-        
-        // Add array to the VDetector Vector
-        AddDetector("Trifoil", myDetector);
+         Trifoil = true;
+         cout << "//////// Trifoil ////////" << endl << endl;
+
+         // Instantiate the new array as a VDetector Object
+         VDetector* myDetector = new TTrifoilPhysics();
+         // Read Position of Telescope
+         ConfigFile.close();
+         myDetector->ReadConfiguration(Path);
+         ConfigFile.open(Path.c_str());
+
+         // Add array to the VDetector Vector
+         AddDetector("Trifoil", myDetector);
       }
 
       ////////////////////////////////////////////
@@ -286,7 +349,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
          getline(ConfigFile, LineBuffer);
 
          bool check_Thickness = false;
-         bool check_Angle     = false;
+//         bool check_Angle     = false;
          bool check_Radius    = false;
          bool check_Material  = false;
          bool check_X         = false;
@@ -309,7 +372,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
             }
 
             else if (DataBuffer.compare(0, 6, "ANGLE=") == 0) {
-               check_Angle = true ;
+//               check_Angle = true ;
                ConfigFile >> DataBuffer;
 //               m_TargetAngle = atof(DataBuffer.c_str()) * deg;
                m_TargetAngle = atof(DataBuffer.c_str());

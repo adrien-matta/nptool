@@ -64,8 +64,15 @@ class CalibrationManager
       public:   //   To be called after initialisation
          //   Loop over the file list and catch the file used for calibration
          void LoadParameterFromFile();
-            
-      
+
+      public: //Clear calibration if we have some calibration files to read 
+         void ClearCalibration();
+
+      public: //Get calibration coefficient vector
+         vector<double> GetCorrection(const string& ParameterPath);
+
+
+
       private:
          //   This map hold a vector of the calibration coefficient. Index is the Parameter path, like "MUST2/Telescope5_Si_X38_E"
          map< string , vector<double> >   fCalibrationCoeff ;

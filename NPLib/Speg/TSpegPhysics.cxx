@@ -118,7 +118,7 @@ void TSpegPhysics::ReadConfiguration(string Path)
    string LineBuffer                ;
    string DataBuffer                ;  
 
-      bool check_nmesx = false          ;
+//      bool check_nmesx = false          ;
       bool check_nomx  = false           ;
       bool check_zxx     = false          ;
       bool check_ievx     = false          ;
@@ -143,7 +143,7 @@ void TSpegPhysics::ReadConfiguration(string Path)
       bool check_zfx     = false          ;
       bool ReadingStatus1 = false ;
 
-      bool check_nmesy = false          ;
+//      bool check_nmesy = false          ;
       bool check_zyy     = false          ;
       bool check_ievy     = false          ;
       bool check_dy     = false          ;
@@ -214,7 +214,7 @@ void TSpegPhysics::ReadConfiguration(string Path)
                   ReadingStatus1 = false ;
                }               
                else if (DataBuffer=="nmesx=") {
-		  check_nmesx = true          ;
+//		  check_nmesx = true          ;
                   ConfigFile >> DataBuffer ;
 		  nmesx=atof(DataBuffer.c_str());
                   cout << "nmesx:  " << atof(DataBuffer.c_str()) <<  endl;
@@ -417,7 +417,7 @@ void TSpegPhysics::ReadConfiguration(string Path)
                }
                               
                else if (DataBuffer=="nmesy=") {
-		  check_nmesy = true          ;
+//		  check_nmesy = true          ;
                   ConfigFile >> DataBuffer ;
 		  nmesy=atof(DataBuffer.c_str());
                   cout << "nmesy:  " << atof(DataBuffer.c_str()) <<  endl;
@@ -1512,8 +1512,8 @@ else
 	if(xfoc>0 && tfoc>0)
 	{
 		//Correction of xfoc by thetafoc and phifoc
-		cor_xfoc_thetafoc=(CalibrationManager::getInstance()->GetCalibration("SPEG/_xfoc_cor_theta"));
-		cor_xfoc_phifoc=(CalibrationManager::getInstance()->GetCalibration("SPEG/_xfoc_cor_phi"));
+		cor_xfoc_thetafoc=(CalibrationManager::getInstance()->GetCorrection("SPEG/_xfoc_cor_theta"));
+		cor_xfoc_phifoc=(CalibrationManager::getInstance()->GetCorrection("SPEG/_xfoc_cor_phi"));
       	
 		xfoc_cor_thetafoc=xfoc;
 		for(unsigned int n = 0 ; n < cor_xfoc_thetafoc.size() ; n++)
@@ -1538,7 +1538,7 @@ else
 	     	for(int n = 0 ; n < degree_of_correction_angle_with_Brho+1 ; n++)
 	     	{
 			param_theta = 0;
-			cor_theta = (CalibrationManager::getInstance()->GetCalibration("SPEG/_tfoc_correction_with_Brho_"+itoa(n)));
+			cor_theta = (CalibrationManager::getInstance()->GetCorrection("SPEG/_tfoc_correction_with_Brho_"+itoa(n)));
 			for(unsigned int l=0; l<cor_theta.size() ; l++)
 			{
 				param_theta += cor_theta[l]*pow(xfoc_cor_phifoc,l);
@@ -1552,7 +1552,7 @@ else
 	     	for(int n = 0 ; n < degree_of_correction_angle_with_Brho+1 ; n++)
 	     	{
 	     		param_phi = 0;
-			cor_phi = (CalibrationManager::getInstance()->GetCalibration("SPEG/_phifoc_correction_with_Brho_"+itoa(n)));
+			cor_phi = (CalibrationManager::getInstance()->GetCorrection("SPEG/_phifoc_correction_with_Brho_"+itoa(n)));
 			for(unsigned int l=0; l<cor_phi.size() ; l++)
 			{
 				param_phi += cor_phi[l]*pow(xfoc_cor_phifoc,l);
@@ -1566,7 +1566,7 @@ else
 	     	for(int n = 0 ; n < degree_of_calibration_angle_with_Brho+1 ; n++)
 	     	{
 			param_theta = 0;
-			cal_theta = (CalibrationManager::getInstance()->GetCalibration("SPEG/_tfoc_calibration_with_Brho_"+itoa(n)));
+			cal_theta = (CalibrationManager::getInstance()->GetCorrection("SPEG/_tfoc_calibration_with_Brho_"+itoa(n)));
 			for(unsigned int l=0; l<cal_theta.size() ; l++)
 			{
 				param_theta += cal_theta[l]*pow(xfoc_cor_phifoc,l);
@@ -1588,7 +1588,7 @@ else
 	     	for(int n = 0 ; n < degree_of_calibration_angle_with_Brho+1 ; n++)
 	     	{
 			param_phi = 0;
-			cal_phi = (CalibrationManager::getInstance()->GetCalibration("SPEG/_phifoc_calibration_with_Brho_"+itoa(n)));
+			cal_phi = (CalibrationManager::getInstance()->GetCorrection("SPEG/_phifoc_calibration_with_Brho_"+itoa(n)));
 			for(unsigned int l=0; l<cal_phi.size() ; l++)
 			{
 				param_phi += cal_phi[l]*pow(xfoc_cor_phifoc,l);

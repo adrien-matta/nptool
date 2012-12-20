@@ -45,14 +45,14 @@ CalibrationManager* CalibrationManager::getInstance(string configFileName)
    
 //////////////////////////////////////////////////////////////////
 CalibrationManager::CalibrationManager(string configFileName)
-   {
+{
    // Read configuration file Buffer
    string lineBuffer, dataBuffer;
 
    // Open file
    ifstream inputConfigFile;
    inputConfigFile.open(configFileName.c_str());
-   
+
    cout << endl;
    cout << "/////////// Calibration Information ///////////" << endl;
    cout << "Getting list of Calibration File" << endl;
@@ -61,18 +61,18 @@ CalibrationManager::CalibrationManager(string configFileName)
       cout << "Calibration Path file :" << configFileName << " not found " << endl; 
       return;
    }
-   
+
    else 
-      {
-         cout << "Reading list of file from :" << configFileName << endl; 
+   {
+      cout << "Reading list of file from :" << configFileName << endl; 
       while (!inputConfigFile.eof()) {
          getline(inputConfigFile, lineBuffer);
-               
+
          // search for token giving the list of Root files to treat
          if ( lineBuffer.compare(0, 19, "CalibrationFilePath") == 0 ) {
-             while (!inputConfigFile.eof()) {
+            while (!inputConfigFile.eof()) {
                inputConfigFile >> dataBuffer;
-                        
+
                // ignore comment Line 
                if (dataBuffer.compare(0, 1, "%") == 0) {
                   inputConfigFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -82,37 +82,65 @@ CalibrationManager::CalibrationManager(string configFileName)
                   AddFile(dataBuffer);
                   cout << "Adding file " << dataBuffer << " to Calibration" << endl;
                }
-               }
             }
          }
-        }
-      cout << "/////////////////////////////////" << endl;
+      }
    }
-   
+   cout << "/////////////////////////////////" << endl;
+}
+
 //////////////////////////////////////////////////////////////////
 CalibrationManager::~CalibrationManager()
-   {}
-   
+{}
+
 //////////////////////////////////////////////////////////////////
 bool CalibrationManager::AddParameter(string DetectorName , string ParameterName , string Token )
+{
+   string ParameterPath = DetectorName + "/" + ParameterName ;
+   fToken[Token] = ParameterPath ;
+   return true;
+}
+
+/////////////////////////////////////////////////////////////////
+void CalibrationManager::ClearCalibration()
+{
+   fCalibrationCoeff.clear();
+}
+
+/////////////////////////////////////////////////////////////////
+vector<double> CalibrationManager::GetCorrection(const string& ParameterPath)
+{
+   vector<double> Coeff ;
+   map< string , vector<double> >::iterator it ;
+   it = fCalibrationCoeff.find(ParameterPath)  ;
+
+   if(it == fCalibrationCoeff.end() )
    {
-      string ParameterPath = DetectorName + "/" + ParameterName ;
-      fToken[Token] = ParameterPath ;
-      return true;
+      /* cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
+         cout << " ERROR: PARAMETER " << ParameterPath << " IS NOT FOUND IN THE CALIBRATION DATA BASE  " << endl ;
+         cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;*/
+
+      return Coeff ;
    }
+
+   Coeff = it->second  ;
+
+   return(Coeff);
+}
+
 
 //////////////////////////////////////////////////////////////////
 void CalibrationManager::LoadParameterFromFile()
-   {
-      ifstream CalibFile    ;
-      string    DataBuffer   ;
-      string   LineBuffer ;
-      
-      // Get pointer to the TAsciifile CalibrationFile in RootOuput
-      TAsciiFile* AcsiiCalibration = RootOutput::getInstance()->GetAsciiFileCalibration();
-      
-      
-      for(unsigned int i = 0 ; i < fFileList.size() ; i++)
+{
+   ifstream CalibFile    ;
+   string    DataBuffer   ;
+   string   LineBuffer ;
+
+   // Get pointer to the TAsciifile CalibrationFile in RootOuput
+   TAsciiFile* AcsiiCalibration = RootOutput::getInstance()->GetAsciiFileCalibration();
+
+
+   for(unsigned int i = 0 ; i < fFileList.size() ; i++)
          {
             CalibFile.open( fFileList[i].c_str() );
             map<string,string>::iterator it ;
