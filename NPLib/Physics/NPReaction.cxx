@@ -481,14 +481,13 @@ TGraph* Reaction::GetKinematicLine3()
 	int size = 360; 
 	double x[size];
 	double y[size];
-	double theta3,E3,theta4,E4,Brho;
+	double theta3,E3,theta4,E4;
 	
 	for (int i = 0; i < size; ++i)
 	{
 		SetThetaCM(((double)i)/2*deg); 
 		KineRelativistic(theta3, E3, theta4, E4);
 		fNuclei3->SetKineticEnergy(E3);
-		Brho = fNuclei3->GetBrho();
 		
 		x[i] = theta3/deg; 
 		y[i] = E3; 
@@ -506,14 +505,13 @@ TGraph* Reaction::GetKinematicLine4()
 	int size = 360; 
 	double x[size];
 	double y[size];
-	double theta3,E3,theta4,E4,Brho;
+	double theta3,E3,theta4,E4;
 
 	for (int i = 0; i < size; ++i)
 	{
 		SetThetaCM(((double)i)/2*deg); 
 		KineRelativistic(theta3, E3, theta4, E4);
 		fNuclei4->SetKineticEnergy(E4);
-		Brho = fNuclei4->GetBrho();
 		
 		x[i] = theta4/deg; 
 		y[i] = E4; 
