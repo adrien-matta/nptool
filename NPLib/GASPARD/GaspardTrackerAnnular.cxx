@@ -127,7 +127,7 @@ void GaspardTrackerAnnular::PreTreat()
 void GaspardTrackerAnnular::BuildPhysicalEvent()
 {
    // Check flags
-   bool Check_FirstStage  = false;
+//   bool Check_FirstStage  = false;
    bool Check_SecondStage = false; 
    bool Check_ThirdStage  = false;
 
@@ -171,7 +171,7 @@ void GaspardTrackerAnnular::BuildPhysicalEvent()
          // case of same strips on X and Y
          if (stripXE == stripXT  &&  stripYE == stripYT) {        // here we have a good strip event
             // various
-            Check_FirstStage = true;
+//            Check_FirstStage = true;
             // store strip ID
             m_EventPhysics->SetFirstStageFrontPosition(stripXE);
             m_EventPhysics->SetFirstStageBackPosition(stripYE);
