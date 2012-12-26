@@ -62,7 +62,7 @@ void THydeTrackerPhysics::BuildPhysicalEvent(THydeTrackerData* Data)
    int index[dim] = {0, 100, 200, 1000};
 
    // Check
-   bool Check_FirstStage = false ;bool Check_SecondStage = false ; bool Check_ThirdStage = false ;
+//   bool Check_FirstStage = false ;bool Check_SecondStage = false ; bool Check_ThirdStage = false ;
 
    // Thresholds
 /*
@@ -118,7 +118,7 @@ void THydeTrackerPhysics::BuildPhysicalEvent(THydeTrackerData* Data)
          // case of same strips on X and Y
          if (stripXE == stripXT  &&  stripYE == stripYT) {        // here we have a good strip event
             // various
-            Check_FirstStage = true;
+//            Check_FirstStage = true;
             EventMultiplicity = 1;
             // store strip ID
             FirstStage_X.push_back(stripXE);
@@ -141,7 +141,7 @@ void THydeTrackerPhysics::BuildPhysicalEvent(THydeTrackerData* Data)
 
             // check if we have a 2nd stage event
             if (mult2E==1 && mult2T==1) {
-               Check_SecondStage = true;
+//               Check_SecondStage = true;
                double EnergySecond = Data->GetHYDTrkSecondStageEEnergy(0);
                SecondStage_E.push_back(EnergySecond);
                EnergyTot += EnergySecond;
@@ -151,7 +151,7 @@ void THydeTrackerPhysics::BuildPhysicalEvent(THydeTrackerData* Data)
             }
             // check if we have a third stage event
             if (mult3E==1 && mult3T==1) {
-               Check_ThirdStage = true;
+//               Check_ThirdStage = true;
                double EnergyThird = Data->GetHYDTrkThirdStageEEnergy(0);
                ThirdStage_E.push_back(EnergyThird);
                EnergyTot += EnergyThird;

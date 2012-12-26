@@ -446,11 +446,11 @@ void HydeTracker::ReadConfiguration(string Path)
 void HydeTracker::ReadCalibrationFile(string Path)   
 {
    // Order of Polynom function used for calibration
-   int Calibration_Si_E_Order;
+/*   int Calibration_Si_E_Order;
    int Calibration_Si_T_Order;
    int Calibration_SiLi_E_Order;
    int Calibration_CsI_E_Order;
-
+*/
    // Calibration_Si_X_E[DetectorNumber][StripNumber][Order of Coeff]
    vector< vector< vector< double > > >   Calibration_Si_X_E   ;
    vector< vector< vector< double > > >   Calibration_Si_X_T   ;
@@ -464,11 +464,11 @@ void HydeTracker::ReadCalibrationFile(string Path)
    vector< vector< vector< double > > >   Calibration_CsI_E   ;
 
    if (Path == "Simulation") {   // Simulation case: data already calibrated
-      Calibration_Si_E_Order   = 1;
+ /*     Calibration_Si_E_Order   = 1;
       Calibration_Si_T_Order   = 1;
       Calibration_SiLi_E_Order = 1;
       Calibration_CsI_E_Order  = 1;
-
+*/
       vector<double> Coef;
       // Order 0            Order 1
       Coef.push_back(0) ; Coef.push_back(1)    ;
