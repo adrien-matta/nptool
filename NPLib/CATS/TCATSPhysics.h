@@ -163,6 +163,9 @@ class TCATSPhysics : public TObject, public NPA::VDetector
 
       void BuildSimplePhysicalEvent();
 
+      // Same as above but for online analysis
+      void BuildOnlinePhysicalEvent()  {BuildSimplePhysicalEvent();};
+
       //   Those two method all to clear the Event Physics or Data
       void ClearEventPhysics() {Clear();}      
       void ClearEventData()    {m_EventData->Clear();}    
