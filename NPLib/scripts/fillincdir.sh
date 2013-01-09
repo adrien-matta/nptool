@@ -21,6 +21,8 @@
 
 #! /bin/bash
 
+echo " + Copying header files to the include directory....."
+
 # previously, clean include directory
 cd include/
 rm -f *

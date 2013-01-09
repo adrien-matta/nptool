@@ -21,6 +21,8 @@
 
 #! /bin/bash
 
+echo " + Creating liblist file....."
+
 # output file
 outfile="liblist"
 

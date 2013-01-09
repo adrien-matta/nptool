@@ -21,6 +21,8 @@
 
 #! /bin/bash
 
+echo " + Copying libraries to the lib directory....."
+
 # previously, clean lib/ directory
 cd lib/
 rm -f *

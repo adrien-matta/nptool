@@ -26,15 +26,33 @@
 
 #! /bin/bash
 
+if [ $# = 0 ] ; then
+   echo " + Building detector libraries....."
+else
+   echo " + Cleaning $2 libraries....."
+fi ;
+
+# read .detector_libs or .core_libs file created by the configure script
+file=".""$2_libs"
+if [ $# = 0 ] ; then
+   file=".detector_libs"
+fi ;
+read -r detectorlibs < "$file" 
+
 # loop recursively on Makefile files in sub-directories
 for file in */Makefile
 do
    # remove "Makefile" string from file name
    name=${file%\/*}
-   # print informations
-   echo "Entering $name directory..."
-   # add "-C ./" pattern at the beginning of the name
-   cmd="-C ./$name"
-   # execute make command with target specified on command line
-   make --silent $1 $cmd
+   # file name in lower case
+   lname=$(echo "$name"  | tr '[A-Z]' '[a-z]')
+   # only build defined detector libraries
+   if echo "$detectorlibs" | grep -q "$lname" ; then
+      # print informations
+      echo "\tEntering $name directory..."
+      # add "-C ./" pattern at the beginning of the name
+      cmd="-C ./$name"
+      # execute make command with target specified on command line
+      make --silent $1 $cmd
+   fi ;
 done
