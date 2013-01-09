@@ -38,10 +38,12 @@ II) BUILDING NPLIB
 In order to build all the libraries of the NPLib module, use the two 
 following commands:
 	
-   + make distclean
-	Once this is done you should check that both the include and 
-	lib directories are empty. It this is not the case remove the 
-	remaining files manually.
+   + configure
+        This moves headers files to the include directory and compile
+	the core libraries.
+	One can specify a subset of detectors to compile, e.g:
+		./compile must2 cats exogam plastic
+	If no arguments are given, all detectors are considered
 
    + make
 	Once this is done the headers of each subdirectory are copied to 
@@ -49,4 +51,4 @@ following commands:
 	to each library are copied to the lib directory. If you are using 
 	a Mac OS system a symbolic link *.dylib is done with respect to 
 	each *.so library. The 'liblist' file used for linking NPS and NPA
-   is created.
+        is created.
