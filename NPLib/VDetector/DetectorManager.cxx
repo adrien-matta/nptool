@@ -6,6 +6,7 @@
 #include <cstdlib>
 
 //   Detector   
+#include "DetectorList.inc"
 #include "TMust2Physics.h"
 #include "TCATSPhysics.h"
 #include "TSSSDPhysics.h"
@@ -101,6 +102,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
       //////////// Search for Gaspard ////////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 14, "GaspardTracker") == 0 && GPDTracker == false) {
+#ifdef GASPARD
          GPDTracker = true ;
          cout << "//////// Gaspard Tracker ////////" << endl;
 
@@ -114,11 +116,13 @@ void DetectorManager::ReadConfigurationFile(string Path)
 
          // Add array to the VDetector Vector
          AddDetector("GASPARD", myDetector);
+#endif
       }
       ////////////////////////////////////////////
       //////////// Search for Hyde    ////////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 11, "HydeTracker") == 0 && HYDTracker == false) {
+#ifdef HYDE
          HYDTracker = true ;
          cout << "//////// Hyde Tracker ////////" << endl;
 
@@ -132,11 +136,13 @@ void DetectorManager::ReadConfigurationFile(string Path)
 
          // Add array to the VDetector Vector
          AddDetector("HYDE", myDetector);
+#endif
       }
       ////////////////////////////////////////////
       ///////////// Search for Paris /////////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 5, "Paris") == 0 && ParisDet == false) {
+#ifdef PARIS
          ParisDet = true;
          cout << "//////// Paris ////////" << endl << endl;
 
@@ -149,11 +155,13 @@ void DetectorManager::ReadConfigurationFile(string Path)
 
          // Add array to the VDetector Vector
          AddDetector("PARIS", myDetector);
+#endif
       }
       ////////////////////////////////////////////
       ///////////// Search for Paris' Shield /////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 6, "Shield") == 0 && ShieldDet == false) {
+#ifdef SHIELD
          ShieldDet = true;
          cout << "//////// Shield ////////" << endl << endl;
 
@@ -166,12 +174,14 @@ void DetectorManager::ReadConfigurationFile(string Path)
 
          // Add array to the VDetector Vector
          AddDetector("SHIELD", myDetector);
+#endif
       }
 
       ////////////////////////////////////////////
       ////////  Search for MUST2 Array    ////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 10, "MUST2Array") == 0 && MUST2 == false) {
+#ifdef MUST2
          MUST2 = true;
          cout << "//////// MUST2 Array ////////" << endl << endl;
 
@@ -185,12 +195,14 @@ void DetectorManager::ReadConfigurationFile(string Path)
 
          // Add array to the VDetector Vector
          AddDetector("MUST2", myDetector);
+#endif
       }
 
       ////////////////////////////////////////////
       ////////   Search for CATS Array    ////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 9, "CATSArray") == 0 && CATS == false) {
+#ifdef CATS
          MUST2 = true;
          cout << "//////// CATS Array ////////" << endl << endl;
 
@@ -204,12 +216,14 @@ void DetectorManager::ReadConfigurationFile(string Path)
 
          // Add array to the VDetector Vector
          AddDetector("CATS", myDetector);
+#endif
       }
       
       ////////////////////////////////////////////
       ////////// Search for W1 (Micron)  /////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 2, "W1") == 0 && W1 == false) {
+#ifdef W1
          W1 = true;
          cout << "//////// W1 ////////" << endl;
 
@@ -223,12 +237,14 @@ void DetectorManager::ReadConfigurationFile(string Path)
 
          // Add array to the VDetector Vector
          AddDetector("W1", myDetector);
+#endif
       }
 
       ////////////////////////////////////////////
       //////////      Search for SSSD    /////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 9, "SSSDArray") == 0 && SSSD == false) {
+#ifdef SSSD
          SSSD = true ;
          cout << "//////// SSSD ////////" << endl << endl;
 
@@ -242,12 +258,14 @@ void DetectorManager::ReadConfigurationFile(string Path)
 
          // Add array to the VDetector Vector
          AddDetector("SSSD", myDetector);
+#endif
       }
 
       ////////////////////////////////////////////
       ///////////// Search for Plastic ///////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 19, "ScintillatorPlastic") == 0 && ScintillatorPlastic == false) {
+#ifdef PLASTIC
          ScintillatorPlastic = true;
          cout << "//////// Plastic ////////" << endl << endl;
 
@@ -260,12 +278,14 @@ void DetectorManager::ReadConfigurationFile(string Path)
 
          // Add array to the VDetector Vector
          AddDetector("Plastic", myDetector);
+#endif
       }
 
       ////////////////////////////////////////////
       ///////////// Search for SPEG //////////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 4, "SPEG") == 0 && SPEG == false) {
+#ifdef SPEG
          SPEG = true ;
          cout << "//////// SPEG Spectrometer ////////" << endl;
 
@@ -279,12 +299,14 @@ void DetectorManager::ReadConfigurationFile(string Path)
 
          // Add array to the VDetector Vector
          AddDetector("SPEG", myDetector);
+#endif
       }
 
       ///////////////////////////////////////////////////////////
       //////////// Search for EXL Csi gamma detector ////////////
       ///////////////////////////////////////////////////////////
       else if (LineBuffer.compare(0, 3, "EXL") == 0 && EXL == false) {
+#ifdef EXL
          EXL = true ;
          cout << "//////// EXL Csi gamma detector ////////" << endl;
 
@@ -298,12 +320,14 @@ void DetectorManager::ReadConfigurationFile(string Path)
 
          // Add array to the VDetector Vector
          AddDetector("EXL", myDetector);
+#endif
       }
 
       ////////////////////////////////////////////
       ////////////// Search for TAC //////////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 3, "TAC") == 0 && TAC == false) {
+#ifdef TAC
          TAC = true ;
          cout << "//////// TAC ////////" << endl;
 
@@ -317,12 +341,14 @@ void DetectorManager::ReadConfigurationFile(string Path)
 
          // Add array to the VDetector Vector
          AddDetector("TAC", myDetector);
+#endif
       }
 
       ////////////////////////////////////////////
       ///////////// Search for Trifoil ///////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 7, "Trifoil") == 0 && Trifoil == false) {
+#ifdef TRIFOIL
          Trifoil = true;
          cout << "//////// Trifoil ////////" << endl << endl;
 
@@ -335,6 +361,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
 
          // Add array to the VDetector Vector
          AddDetector("Trifoil", myDetector);
+#endif
       }
 
       ////////////////////////////////////////////
