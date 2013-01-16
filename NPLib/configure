@@ -72,8 +72,6 @@ do
       if [ $# = 0 ] ; then 
          detector_string="$detector_string""$lname "
       else
-         # only add Makefile.detector target if it is in the
-         # arguments list
          if echo "$args" | grep -q "$lname" ; then
             detector_string="$detector_string""$lname "
          fi ;

@@ -10,6 +10,7 @@
 #include "TMust2Physics.h"
 #include "TCATSPhysics.h"
 #include "TSSSDPhysics.h"
+#include "TExogamPhysics.h"
 #include "TPlasticPhysics.h"
 #include "TTrifoilPhysics.h"
 #include "GaspardTracker.h"
@@ -55,6 +56,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
    bool MUST2               = false;
    bool CATS                = false;
    bool SSSD                = false;
+   bool Exogam		    = false;
    bool ScintillatorPlastic = false;
    bool Trifoil             = false;
    bool GeneralTarget       = false;
@@ -258,6 +260,27 @@ void DetectorManager::ReadConfigurationFile(string Path)
 
          // Add array to the VDetector Vector
          AddDetector("SSSD", myDetector);
+#endif
+      }
+
+      //////////////////////////////////////////////
+      //////////      Search for Exogam    /////////
+      //////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 11, "EXOGAMArray") == 0 && Exogam == false) {
+#ifdef EXOGAM
+         Exogam = true ;
+         cout << "//////// Exogam ////////" << endl << endl;
+
+         // Instantiate the new array as a VDetector Object
+         VDetector* myDetector = new TExogamPhysics();
+
+         // Read Position of Telescope
+         ConfigFile.close();
+         myDetector->ReadConfiguration(Path);
+         ConfigFile.open(Path.c_str());
+
+         // Add array to the VDetector Vector
+         AddDetector("EXOGAM", myDetector);
 #endif
       }
 
