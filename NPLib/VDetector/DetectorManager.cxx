@@ -6,7 +6,7 @@
 #include <cstdlib>
 
 //   Detector   
-#include "DetectorList.inc"
+#include "../DetectorList.inc"
 #include "TExogamPhysics.h"
 #include "TMust2Physics.h"
 #include "TCATSPhysics.h"

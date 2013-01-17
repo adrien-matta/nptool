@@ -133,7 +133,8 @@ done
 # only the detectors given in arguments                                  #
 ##########################################################################
 # output file
-outfile="VDetector/DetectorList.inc"
+outfile="DetectorList.inc"
+# outfile="VDetector/DetectorList.inc"
 echo " + Creating $outfile file....."
 
 # if output file exists delete it

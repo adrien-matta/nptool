@@ -17,7 +17,7 @@ libDetectorManager.so:	DetectorManager.o
 			
 # dependances
 VDetector.o:		VDetector.cxx	VDetector.h
-DetectorManager.o: DetectorManager.cxx DetectorManager.h	DetectorList.inc
+DetectorManager.o: DetectorManager.cxx DetectorManager.h	../DetectorList.inc
 #######################################
 
 ############# Clean and More ##########

@@ -28,26 +28,26 @@
 #/vis/verbose errors
 #
 # Draw geometry:
-/vis/drawVolume
+#/vis/drawVolume
 #
 # Specify view angle:
-/vis/viewer/set/viewpointThetaPhi 0. 90.
+#/vis/viewer/set/viewpointThetaPhi 0. 90.
 #
 # Specify zoom value:
 #/vis/viewer/zoom 2.
 #
 # Specify style (surface or wireframe):
-/vis/viewer/set/style surface
+#/vis/viewer/set/style surface
 #
 # Draw coordinate axes:
-/vis/scene/add/axes 0 0 0 20 cm
+#/vis/scene/add/axes 0 0 0 20 cm
 #
 # Draw smooth trajectories at end of event, showing trajectory points
 # as markers 2 pixels wide:
-/vis/scene/add/trajectories smooth
-/vis/modeling/trajectories/create/drawByCharge
-/vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true
-/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 1
+#/vis/scene/add/trajectories smooth
+#/vis/modeling/trajectories/create/drawByCharge
+#/vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true
+#/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 1
 # (if too many tracks cause core dump => /tracking/storeTrajectory 0)
 #
 # Draw hits at end of event:
@@ -67,11 +67,11 @@
 #/vis/modeling/trajectories/drawByParticleID-0/set e- blue
 #
 # To superimpose all of the events from a given run:
-/vis/scene/endOfEventAction accumulate
+#/vis/scene/endOfEventAction accumulate
 #
 # Re-establish auto refreshing and verbosity:
-/vis/viewer/set/autoRefresh true
-/vis/verbose 0
+#/vis/viewer/set/autoRefresh true
+#/vis/verbose 0
 #
 # For file-based drivers, use this to create an empty detector view:
-/vis/viewer/flush
+#/vis/viewer/flush

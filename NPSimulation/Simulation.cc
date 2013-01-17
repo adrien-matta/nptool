@@ -87,7 +87,7 @@ int main(int argc, char** argv)
    ///////////////////////////////////////////////////////////////
    ///////  Get the pointer to the User Interface manager ////////
    ///////////////////////////////////////////////////////////////
-   G4UImanager* UI = G4UImanager::GetUIpointer();
+//   G4UImanager* UI = G4UImanager::GetUIpointer();
 
    ///////////////////////////////////////////////////////////////
    /////////// Define UI terminal for interactive mode ///////////
@@ -97,9 +97,9 @@ int main(int argc, char** argv)
    visManager->Initialize();
 #endif
 
-   G4UIsession* session = 0;
+/*   G4UIsession* session = 0;
 
-/*#ifdef G4UI_USE_TCSH
+#ifdef G4UI_USE_TCSH
    session = new G4UIterminal(new G4UItcsh);
 #else
    session = new G4UIterminal();
@@ -109,7 +109,7 @@ int main(int argc, char** argv)
    session->SessionStart();
    delete session;
 */
-  
+
   // interactive mode : define UI session
   // Get the pointer to the User Interface manager
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
@@ -123,6 +123,7 @@ int main(int argc, char** argv)
   ui->SessionStart();
   delete ui;
 #endif
+
 #ifdef G4VIS_USE
    delete visManager;
 #endif

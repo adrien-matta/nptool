@@ -40,6 +40,7 @@
 #include "G4RotationMatrix.hh"
 
 // Detector class
+#include "../../NPLib/DetectorList.inc"
 #include "AnnularS1.hh"
 #include "Chamber.hh"
 #include "ComptonTelescope.hh"
@@ -224,6 +225,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
     //////////// Search for ComptonTelescope ////////////
     /////////////////////////////////////////////////////
     else if (LineBuffer.compare(0, 16, "ComptonTelescope") == 0 && cComptonTelescope == false) {
+#ifdef INC_COMPTONTELESCOPE
       cComptonTelescope = true;
       G4cout << "//////// ComptonTelescope  ////////" << G4endl;
       
@@ -237,6 +239,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       
       // Add array to the VDetector Vector
       AddDetector(myDetector);
+#endif
     }
     
     
@@ -244,6 +247,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
     //////////// Search for Eurogam ////////////
     ////////////////////////////////////////////
     else if (LineBuffer.compare(0, 7, "Eurogam") == 0 && cEurogam == false) {
+#ifdef INC_EUROGAM
       cEurogam = true;
       G4cout << "//////// Eurogam  ////////" << G4endl;
       
@@ -257,6 +261,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       
       // Add array to the VDetector Vector
       AddDetector(myDetector);
+#endif
     }
     
     
@@ -264,6 +269,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
     //////////// Search for Gaspard ////////////
     ////////////////////////////////////////////
     else if (LineBuffer.compare(0, 14, "GaspardTracker") == 0 && cGPDTracker == false) {
+#ifdef INC_GASPARD
       cGPDTracker = true ;
       G4cout << G4endl << "//////// Gaspard Tracker ////////" << G4endl   ;
       
@@ -277,6 +283,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       
       // Add array to the VDetector Vector
       AddDetector(myDetector)                            ;
+#endif
     }
     
     
@@ -284,6 +291,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
     //////////// Search for Hyde    ////////////
     ////////////////////////////////////////////
     else if (LineBuffer.compare(0, 11, "HydeTracker") == 0 && cHYDTracker == false) {
+#ifdef INC_HYDE
       cHYDTracker = true ;
       G4cout << G4endl << "//////// Hyde Tracker ////////" << G4endl   ;
       
@@ -297,6 +305,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       
       // Add array to the VDetector Vector
       AddDetector(myDetector)                            ;
+#endif
     }
     
     
@@ -304,6 +313,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
     //////////// Search for paris   ////////////
     ////////////////////////////////////////////
     else if (LineBuffer.compare(0, 5, "Paris") == 0 && cParis == false) {
+#ifdef INC_PARIS
       cParis = true ;
       G4cout << G4endl << "//////// Paris  ////////" << G4endl   ;
       
@@ -317,12 +327,14 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       
       // Add array to the VDetector Vector
       AddDetector(myDetector)                            ;
+#endif
     }
     
     ////////////////////////////////////////////
     //////////// Search for paris shield   ////////////
     ////////////////////////////////////////////
     else if (LineBuffer.compare(0, 6, "Shield") == 0 && cShield == false) {
+#ifdef INC_SHIELD
       cShield = true ;
       G4cout << G4endl << "//////// Shield  ////////" << G4endl   ;
       
@@ -336,12 +348,14 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       
       // Add array to the VDetector Vector
       AddDetector(myDetector)                            ;
+#endif
     }
     
     ////////////////////////////////////////////
     ///// Search for S1 Annular detector  //////
     ////////////////////////////////////////////
     else if (LineBuffer.compare(0, 9, "AnnularS1") == 0 && cS1 == false) {
+#ifdef INC_ANNULARSi1
       cS1 = true ;
       G4cout << G4endl << "//////// S1 Annular detector ////////" << G4endl   << G4endl   ;
       
@@ -355,12 +369,14 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       
       // Add array to the VDetector Vector
       AddDetector(myDetector)                               ;
+#endif
     }
     
     ////////////////////////////////////////////
     ///// Search for S1 Annular detector  //////
     ////////////////////////////////////////////
     else if (LineBuffer.compare(0, 2, "W1") == 0 && cW1 == false) {
+#ifdef INC_W1
       cW1 = true ;
       G4cout << G4endl << "//////// W1 Square detector ////////" << G4endl   << G4endl;
       
@@ -374,12 +390,14 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       
       // Add array to the VDetector Vector
       AddDetector(myDetector);
+#endif
     }
     
     ////////////////////////////////////////////
     //////// Search for MUST2 Array  ////////
     ////////////////////////////////////////////
     else if (LineBuffer.compare(0, 10, "MUST2Array") == 0 && cMUST2 == false) {
+#ifdef INC_MUST2
       cMUST2 = true ;
       G4cout << G4endl << "//////// MUST2 Array ////////" << G4endl   << G4endl   ;
       
@@ -393,12 +411,14 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       
       // Add array to the VDetector Vector
       AddDetector(myDetector)                               ;
+#endif
     }
     
     ////////////////////////////////////////////
     ////////// Search for     ThinSi ///////////
     ////////////////////////////////////////////
     else if (LineBuffer.compare(0, 9, "SSSDArray") == 0 && cAddThinSi == false) {
+#ifdef INC_SSSD
       cAddThinSi = true ;
       G4cout << G4endl << "//////// SSSD ////////" << G4endl << G4endl   ;
       
@@ -412,12 +432,14 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       
       // Add array to the VDetector Vector
       AddDetector(myDetector)                            ;
+#endif
     }
 
     ////////////////////////////////////////////
     ////////// Search for Sharc      ///////////
     ////////////////////////////////////////////
     else if (LineBuffer.compare(0, 5, "Sharc") == 0 && cSharc == false) {
+#ifdef INC_SHARC
       cSharc = true ;
       G4cout << G4endl << "//////// Sharc ////////" << G4endl << G4endl   ;
       
@@ -431,12 +453,14 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       
       // Add array to the VDetector Vector
       AddDetector(myDetector);
+#endif
     }
 
     ////////////////////////////////////////////
     ////////// Search for Plastic      ///////////
     ////////////////////////////////////////////
     else if (LineBuffer.compare(0, 19, "ScintillatorPlastic") == 0 && cPlastic == false) {
+#ifdef INC_PLASTIC
       cPlastic = true ;
       G4cout << G4endl << "//////// Plastic ////////" << G4endl << G4endl   ;
       
@@ -450,6 +474,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       
       // Add array to the VDetector Vector
       AddDetector(myDetector)                            ;
+#endif
     }
     
     ////////////////////////////////////////////
@@ -474,6 +499,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       // Add target to the VDetector Vector
       AddDetector(myDetector);
     }
+
     ////////////////////////////////////////////
     //////////// Search for Chamber /////////////
     ////////////////////////////////////////////
