@@ -7,10 +7,10 @@
 
 //   Detector   
 #include "DetectorList.inc"
+//#include "TExogamPhysics.h"
 #include "TMust2Physics.h"
 #include "TCATSPhysics.h"
 #include "TSSSDPhysics.h"
-#include "TExogamPhysics.h"
 #include "TPlasticPhysics.h"
 #include "TTrifoilPhysics.h"
 #include "GaspardTracker.h"
@@ -56,7 +56,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
    bool MUST2               = false;
    bool CATS                = false;
    bool SSSD                = false;
-   bool Exogam		    = false;
+//   bool Exogam		    = false;
    bool ScintillatorPlastic = false;
    bool Trifoil             = false;
    bool GeneralTarget       = false;
@@ -262,7 +262,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
          AddDetector("SSSD", myDetector);
 #endif
       }
-
+/*
       //////////////////////////////////////////////
       //////////      Search for Exogam    /////////
       //////////////////////////////////////////////
@@ -283,7 +283,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
          AddDetector("EXOGAM", myDetector);
 #endif
       }
-
+*/
       ////////////////////////////////////////////
       ///////////// Search for Plastic ///////////
       ////////////////////////////////////////////
