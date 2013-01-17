@@ -7,7 +7,7 @@
 
 //   Detector   
 #include "DetectorList.inc"
-//#include "TExogamPhysics.h"
+#include "TExogamPhysics.h"
 #include "TMust2Physics.h"
 #include "TCATSPhysics.h"
 #include "TSSSDPhysics.h"
@@ -53,21 +53,21 @@ void DetectorManager::ReadConfigurationFile(string Path)
    string DataBuffer;
 
    /////////Boolean////////////////////
-   bool MUST2               = false;
-   bool CATS                = false;
-   bool SSSD                = false;
-//   bool Exogam		    = false;
-   bool ScintillatorPlastic = false;
-   bool Trifoil             = false;
-   bool GeneralTarget       = false;
-   bool GPDTracker          = false;
-   bool HYDTracker          = false;
-   bool ParisDet            = false;
-   bool ShieldDet           = false;
-   bool W1                  = false;
-   bool SPEG                = false;
-   bool EXL                 = false;
-   bool TAC                 = false;
+   Bool_t MUST2               = false;
+   Bool_t CATS                = false;
+   Bool_t SSSD                = false;
+   Bool_t Exogam		    = false;
+   Bool_t ScintillatorPlastic = false;
+   Bool_t Trifoil             = false;
+   Bool_t GeneralTarget       = false;
+   Bool_t GPDTracker          = false;
+   Bool_t HYDTracker          = false;
+   Bool_t ParisDet            = false;
+   Bool_t ShieldDet           = false;
+   Bool_t W1                  = false;
+   Bool_t SPEG                = false;
+   Bool_t EXL                 = false;
+   Bool_t TAC                 = false;
 
    //////////////////////////////////////////////////////////////////////////////////////////
    string GlobalPath = getenv("NPTOOL");
@@ -104,7 +104,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
       //////////// Search for Gaspard ////////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 14, "GaspardTracker") == 0 && GPDTracker == false) {
-#ifdef GASPARD
+#ifdef INC_GASPARD
          GPDTracker = true ;
          cout << "//////// Gaspard Tracker ////////" << endl;
 
@@ -124,7 +124,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
       //////////// Search for Hyde    ////////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 11, "HydeTracker") == 0 && HYDTracker == false) {
-#ifdef HYDE
+#ifdef INC_HYDE
          HYDTracker = true ;
          cout << "//////// Hyde Tracker ////////" << endl;
 
@@ -144,7 +144,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
       ///////////// Search for Paris /////////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 5, "Paris") == 0 && ParisDet == false) {
-#ifdef PARIS
+#ifdef INC_PARIS
          ParisDet = true;
          cout << "//////// Paris ////////" << endl << endl;
 
@@ -163,7 +163,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
       ///////////// Search for Paris' Shield /////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 6, "Shield") == 0 && ShieldDet == false) {
-#ifdef SHIELD
+#ifdef INC_SHIELD
          ShieldDet = true;
          cout << "//////// Shield ////////" << endl << endl;
 
@@ -183,7 +183,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
       ////////  Search for MUST2 Array    ////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 10, "MUST2Array") == 0 && MUST2 == false) {
-#ifdef MUST2
+#ifdef INC_MUST2
          MUST2 = true;
          cout << "//////// MUST2 Array ////////" << endl << endl;
 
@@ -204,7 +204,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
       ////////   Search for CATS Array    ////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 9, "CATSArray") == 0 && CATS == false) {
-#ifdef CATS
+#ifdef INC_CATS
          MUST2 = true;
          cout << "//////// CATS Array ////////" << endl << endl;
 
@@ -225,7 +225,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
       ////////// Search for W1 (Micron)  /////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 2, "W1") == 0 && W1 == false) {
-#ifdef W1
+#ifdef INC_W1
          W1 = true;
          cout << "//////// W1 ////////" << endl;
 
@@ -246,7 +246,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
       //////////      Search for SSSD    /////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 9, "SSSDArray") == 0 && SSSD == false) {
-#ifdef SSSD
+#ifdef INC_SSSD
          SSSD = true ;
          cout << "//////// SSSD ////////" << endl << endl;
 
@@ -262,12 +262,12 @@ void DetectorManager::ReadConfigurationFile(string Path)
          AddDetector("SSSD", myDetector);
 #endif
       }
-/*
+
       //////////////////////////////////////////////
       //////////      Search for Exogam    /////////
       //////////////////////////////////////////////
       else if (LineBuffer.compare(0, 11, "EXOGAMArray") == 0 && Exogam == false) {
-#ifdef EXOGAM
+#ifdef INC_EXOGAM
          Exogam = true ;
          cout << "//////// Exogam ////////" << endl << endl;
 
@@ -283,12 +283,12 @@ void DetectorManager::ReadConfigurationFile(string Path)
          AddDetector("EXOGAM", myDetector);
 #endif
       }
-*/
+
       ////////////////////////////////////////////
       ///////////// Search for Plastic ///////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 19, "ScintillatorPlastic") == 0 && ScintillatorPlastic == false) {
-#ifdef PLASTIC
+#ifdef INC_PLASTIC
          ScintillatorPlastic = true;
          cout << "//////// Plastic ////////" << endl << endl;
 
@@ -308,7 +308,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
       ///////////// Search for SPEG //////////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 4, "SPEG") == 0 && SPEG == false) {
-#ifdef SPEG
+#ifdef INC_SPEG
          SPEG = true ;
          cout << "//////// SPEG Spectrometer ////////" << endl;
 
@@ -329,7 +329,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
       //////////// Search for EXL Csi gamma detector ////////////
       ///////////////////////////////////////////////////////////
       else if (LineBuffer.compare(0, 3, "EXL") == 0 && EXL == false) {
-#ifdef EXL
+#ifdef INC_EXL
          EXL = true ;
          cout << "//////// EXL Csi gamma detector ////////" << endl;
 
@@ -350,7 +350,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
       ////////////// Search for TAC //////////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 3, "TAC") == 0 && TAC == false) {
-#ifdef TAC
+#ifdef INC_TAC
          TAC = true ;
          cout << "//////// TAC ////////" << endl;
 
@@ -371,7 +371,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
       ///////////// Search for Trifoil ///////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 7, "Trifoil") == 0 && Trifoil == false) {
-#ifdef TRIFOIL
+#ifdef INC_TRIFOIL
          Trifoil = true;
          cout << "//////// Trifoil ////////" << endl << endl;
 

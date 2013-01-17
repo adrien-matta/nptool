@@ -159,13 +159,13 @@ do
    # by default
    if [ $# = 0 ] ; then 
       # build target
-      echo "#define $uname" >> $outfile
+      echo "#define INC_$uname" >> $outfile
    else
       # only add Makefile.detector target if it is in the
       # arguments list
       if echo "$args" | grep -q "$lname" ; then
          # build target
-         echo "#define $uname" >> $outfile
+         echo "#define INC_$uname" >> $outfile
       fi ;
    fi ;
 done

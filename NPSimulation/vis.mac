@@ -8,7 +8,7 @@
 /run/verbose 2
 #
 # Use this open statement to create an OpenGL view:
-/vis/open OGLIQt 600x600-0+0
+#/vis/open OGLIQt 600x600-0+0
 #
 # Use this open statement to create a .prim file suitable for
 # viewing in DAWN:
@@ -24,8 +24,8 @@
 #
 # Disable auto refresh and quieten vis messages whilst scene and
 # trajectories are established:
-/vis/viewer/set/autoRefresh false
-/vis/verbose errors
+#/vis/viewer/set/autoRefresh false
+#/vis/verbose errors
 #
 # Draw geometry:
 /vis/drawVolume
