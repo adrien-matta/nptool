@@ -195,7 +195,6 @@ void TSharcData::ReadFSPCFile(string FSPCPath){
   return;
 }
 
-
 void TSharcData::FillData(TTigEventFragment* TigEvent){
   vector<int> channel_number = TigEvent->channel_number;
   for(unsigned int i = 0 ; i < channel_number.size() ; i++){
@@ -203,7 +202,6 @@ void TSharcData::FillData(TTigEventFragment* TigEvent){
       int DetNbr = m_FSPC2Detector[channel_number[i]][0];
       int type = m_FSPC2Detector[channel_number[i]][1];
       int FB = m_FSPC2Detector[channel_number[i]][2];
-
       if(type == 0 ){
              if (FB == 0 ) FillQQQFront(DetNbr , i , TigEvent);
         else if (FB == 1 ) FillQQQBack (DetNbr , i , TigEvent);

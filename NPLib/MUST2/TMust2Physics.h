@@ -191,7 +191,7 @@ class TMust2Physics : public TObject, public NPA::VDetector
       
       
          //   Event over this value after pre-treatment are not treated / avoid long treatment time on spurious event   
-         int m_MaximumStripMultiplicityAllowed  ;//!
+         unsigned int m_MaximumStripMultiplicityAllowed  ;//!
          //   Give the allowance in percent of the difference in energy between X and Y
          double m_StripEnergyMatchingSigma  ; //!
          double m_StripEnergyMatchingNumberOfSigma  ; //!
