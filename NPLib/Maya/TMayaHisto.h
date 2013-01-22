@@ -85,7 +85,7 @@ public:
    virtual Int_t    GetShiftHexagon(void){ return bShiftHexagon ;};
    virtual Double_t SetHoneyCombSize(Double_t size){ fHoneyCombSize = size ; return fHoneyCombSize ;};
    virtual Int_t    SetShiftHexagon(Int_t shift){
-     if(bShiftHexagon>0) { bShiftHexagon = 1 ; } else {  bShiftHexagon = 0 ;};
+     if(bShiftHexagon>0) { bShiftHexagon = 1 ; } else {  bShiftHexagon = 0 ;}; shift *= 1;
      return bShiftHexagon ;};
    Bool_t    FitTrack(void){return FitTrack("chi2",1,GetXaxis()->GetNbins(),1,GetYaxis()->GetNbins(),NULL,-1,-1); }; // *MENU*
    Bool_t    FitTrack(Option_t *,Int_t,Int_t,Int_t,Int_t,TCutG*,Double_t, Double_t); // *MENU*

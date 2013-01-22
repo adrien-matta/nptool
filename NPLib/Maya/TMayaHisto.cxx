@@ -430,6 +430,7 @@ Double_t TMayaHisto::GetCdisp(Double_t C, Double_t R) {
 }
 
 Double_t TMayaHisto::GetRdisp(Double_t C, Double_t R) {
+	C *= 1;
 	return (GetYaxis()->GetNbins() - R) + Yview_corr + 1;
 }
 
