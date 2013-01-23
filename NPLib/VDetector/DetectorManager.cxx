@@ -21,6 +21,8 @@
 #include "TSpegPhysics.h"
 #include "TExlPhysics.h"
 #include "TTacPhysics.h"
+#include "TChio_digPhysics.h"
+#include "TChio_anPhysics.h"
 #include "NPOptionManager.h"
 #include "RootInput.h"
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,8 +58,9 @@ void DetectorManager::ReadConfigurationFile(string Path)
    Bool_t MUST2               = false;
    Bool_t CATS                = false;
    Bool_t SSSD                = false;
-   Bool_t Exogam		    = false;
+   Bool_t Exogam              = false;
    Bool_t ScintillatorPlastic = false;
+   Bool_t IonisationChamber   = false;
    Bool_t Trifoil             = false;
    Bool_t GeneralTarget       = false;
    Bool_t GPDTracker          = false;
@@ -205,7 +208,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 9, "CATSArray") == 0 && CATS == false) {
 #ifdef INC_CATS
-         MUST2 = true;
+         CATS = true;
          cout << "//////// CATS Array ////////" << endl << endl;
 
          // Instantiate the new array as a VDetector Object
@@ -304,6 +307,40 @@ void DetectorManager::ReadConfigurationFile(string Path)
 #endif
       }
 
+      ///////////////////////////////////////////////////////
+      ///////////// Search for Ionisation Chamber ///////////
+      ///////////////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 17, "IonisationChamber") == 0 && IonisationChamber == false) {
+#ifdef INC_CHIO
+         IonisationChamber = true;
+         cout << "//////// Ionisation Chamger ////////" << endl << endl;
+
+	 /////// Case with analog electronics
+         // Instantiate the new array as a VDetector Object
+         VDetector* myDetector_an = new TChio_anPhysics();
+         // Read Position of Telescope
+         ConfigFile.close();
+         myDetector_an->ReadConfiguration(Path);
+         ConfigFile.open(Path.c_str());
+
+         // Add array to the VDetector Vector
+         AddDetector("Chio_an", myDetector_an);
+
+
+	 /////// Case with digital electronics
+         // Instantiate the new array as a VDetector Object
+         VDetector* myDetector_dig = new TChio_digPhysics();
+         // Read Position of Telescope
+         ConfigFile.close();
+         myDetector_dig->ReadConfiguration(Path);
+         ConfigFile.open(Path.c_str());
+
+         // Add array to the VDetector Vector
+         AddDetector("Chio_dig", myDetector_dig);
+#endif
+      }
+
+
       ////////////////////////////////////////////
       ///////////// Search for SPEG //////////////
       ////////////////////////////////////////////
@@ -350,7 +387,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
       ////////////// Search for TAC //////////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 3, "TAC") == 0 && TAC == false) {
-#ifdef INC_TAC
+#ifdef INC_MISC
          TAC = true ;
          cout << "//////// TAC ////////" << endl;
 
