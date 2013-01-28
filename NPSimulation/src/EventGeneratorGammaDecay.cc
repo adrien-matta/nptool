@@ -191,6 +191,7 @@ void EventGeneratorGammaDecay::ReadConfiguration(string Path, int Occurence){
 
 
 void EventGeneratorGammaDecay::GenerateEvent(G4Event*){
+
     // Choose a Cascade to follow
     int ChoosenCascade = -1;
     double RandomNumber = RandFlat::shoot();
@@ -291,6 +292,7 @@ void EventGeneratorGammaDecay::GenerateEvent(G4Event*){
         Particle gammaParticle(gammaDefinition,GammaLV.E(),gammaDirection, decayingParticle.GetParticlePosition());
         m_ParticleStack->AddParticleToStack(gammaParticle);
     }
+
 }
 
 

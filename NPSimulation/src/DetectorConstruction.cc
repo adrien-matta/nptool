@@ -62,23 +62,19 @@
 #include<fstream>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-DetectorConstruction::DetectorConstruction()
-:  world_log(0), world_phys(0)
-{
+DetectorConstruction::DetectorConstruction():  world_log(0), world_phys(0){
   m_Target   = 0;
   m_Chamber  = 0;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-DetectorConstruction::~DetectorConstruction()
-{
+DetectorConstruction::~DetectorConstruction(){
   delete m_Target;
   delete m_Chamber;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-G4VPhysicalVolume* DetectorConstruction::Construct()
-{
+G4VPhysicalVolume* DetectorConstruction::Construct(){
   //------------------------------------------------------ materials
   
   G4double a;  // atomic mass
@@ -144,8 +140,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void DetectorConstruction::AddDetector(VDetector* NewDetector)
-{
+void DetectorConstruction::AddDetector(VDetector* NewDetector){
   // Add new detector to vector
   m_Detectors.push_back(NewDetector);
   
@@ -162,8 +157,7 @@ void DetectorConstruction::AddDetector(VDetector* NewDetector)
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void DetectorConstruction::ReadConfigurationFile(string Path)
-{
+void DetectorConstruction::ReadConfigurationFile(string Path){
   ////////General Reading needs////////
   string LineBuffer;
   string DataBuffer;
@@ -532,8 +526,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void DetectorConstruction::ReadAllSensitive(const G4Event* event)
-{
+void DetectorConstruction::ReadAllSensitive(const G4Event* event){
   // Before looping on each sub-detector, clear the static variable
   // ms_InterCoord
   // This is done on the first element of the m_Modules vector.

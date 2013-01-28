@@ -63,12 +63,13 @@ Reaction::Reaction()
    fNuclei4              = new Nucleus();
    fBeamEnergy           = 0;
    fThetaCM              = 0;
-   fExcitation3      = 0;
-   fExcitation4      = 0;
+   fExcitation3          = 0;
+   fExcitation4          = 0;
    fQValue               = 0;
    fCrossSectionAngleMin = 0;
    fCrossSectionAngleMax = 180;
    initializePrecomputeVariable();
+   fCrossSectionHist = new TH1F("Reaction_CS","Reaction_CS",180,0,180);
 }
 
 
@@ -96,7 +97,9 @@ void Reaction::SetEveryThing(string name1, string name2, string name3, string na
    fExcitation4 = ExcitationEnergyHeavy;
    fQValue          = (fNuclei1->GetMassExcess() + fNuclei2->GetMassExcess()
                       - fNuclei3->GetMassExcess() - fNuclei4->GetMassExcess()) / 1000;
-
+   fCrossSectionHist = new TH1F("Reaction_CS","Reaction_CS",180,0,180);
+  
+  
    int masse  = fNuclei1->GetA() + fNuclei2->GetA() - fNuclei3->GetA() - fNuclei4->GetA();
    int charge = fNuclei1->GetZ() + fNuclei2->GetZ() - fNuclei3->GetZ() - fNuclei4->GetZ();
    if (masse || charge) {
@@ -135,7 +138,8 @@ void Reaction::SetEveryThing(string name1, string name2, string name3, string na
       if (AngleBuffer < CSThetaMin || AngleBuffer > CSThetaMax) continue; 
       double CSFinal = CSBuffer*sin(AngleBuffer*deg);
       CrossSectionBuffer.push_back(CSFinal);
-      // determine theta min and max
+      fCrossSectionHist->Fill(AngleBuffer,CSFinal);
+     // determine theta min and max
       if (AngleBuffer < thetamin) thetamin = AngleBuffer;
       if (AngleBuffer > thetamax) thetamax = AngleBuffer;
    }
@@ -147,7 +151,9 @@ void Reaction::SetEveryThing(string name1, string name2, string name3, string na
    CSFile.close();
    fCrossSectionSize = CrossSectionBuffer.size();
    fCrossSection = new double[fCrossSectionSize] ;
-   for(int i = 0 ; i < fCrossSectionSize ; i++ )   fCrossSection[i] = CrossSectionBuffer[i];
+    for(int i = 0 ; i < fCrossSectionSize ; i++ ){
+      fCrossSection[i] = CrossSectionBuffer[i];
+    }
    initializePrecomputeVariable();
 }
 
@@ -187,7 +193,12 @@ bool Reaction::CheckKinematic()
 	}
 	
 }
-
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Reaction::ShootRandomThetaCM(){
+  double theta;
+  SetThetaCM( theta=fCrossSectionHist->GetRandom()*deg );
+  return theta;
+}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 void Reaction::KineRelativistic(double &ThetaLab3, double &KineticEnergyLab3,
                                 double &ThetaLab4, double &KineticEnergyLab4) 

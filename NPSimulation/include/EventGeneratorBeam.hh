@@ -29,44 +29,40 @@
 #include "G4ParticleGun.hh"
 #include "G4ParticleDefinition.hh"
 
-// NPTool header
+// NPSimulation header
 #include "VEventGenerator.hh"
-#include "TInitialConditions.h"
 #include "Target.hh"
+#include "ParticleStack.hh"
+
+// NPL Header
+#include "NPBeam.h"
+#include "TInitialConditions.h"
 
 using namespace std  ;
 
-class EventGeneratorBeam : public VEventGenerator
-{
+class EventGeneratorBeam : public VEventGenerator{
 public:     // Constructor and destructor
-   EventGeneratorBeam();
-   virtual ~EventGeneratorBeam();
-
-
+  EventGeneratorBeam();
+  virtual ~EventGeneratorBeam();
+  
 public:     // Inherit from VEventGenerator Class
-   void ReadConfiguration(string);
-   void GenerateEvent(G4Event*, G4ParticleGun*);
-   void InitializeRootOutput();
-
-   void SetTarget(Target* Target) ;
-
-
+  void ReadConfiguration(string,int);
+  void GenerateEvent(G4Event*);
+  void InitializeRootOutput();
+  void SetTarget(Target* Target) ;
+  
 private: // TTree to store initial value of beam and reaction
-   TInitialConditions*   m_InitConditions;
-
-         
+  TInitialConditions*   m_InitConditions;
+  
 private: // Source parameter
-   G4ParticleDefinition*   m_particle;  // Kind of particle to shoot
-   G4int     m_beamA;
-   G4int     m_beamZ;
-   G4double  m_BeamEnergy;
-   G4double  m_BeamEnergySpread;
-   G4double  m_SigmaX;
-   G4double  m_SigmaY;
-   G4double  m_SigmaThetaX;
-   G4double  m_SigmaPhiY;
-
+  G4ParticleDefinition*   m_particle;  // Kind of particle to shoot
+  NPL::Beam* m_Beam;
+  
 private: // Target Value
-   Target* m_Target;
+  Target* m_Target;
+  
+private: // Particle Stack
+  ParticleStack* m_ParticleStack;
+
 };
 #endif

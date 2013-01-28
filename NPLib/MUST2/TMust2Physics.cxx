@@ -186,17 +186,18 @@ void TMust2Physics::BuildPhysicalEvent(){
   bool check_SILI = false ;
   bool check_CSI  = false ;
   
+  m_StripXEMult = m_PreTreatedData->GetMMStripXEMult();
+  m_StripYEMult = m_PreTreatedData->GetMMStripYEMult();
+  m_StripXTMult = m_PreTreatedData->GetMMStripXTMult();
+  m_StripYTMult = m_PreTreatedData->GetMMStripYTMult();
+  m_SiLiEMult = m_PreTreatedData->GetMMSiLiEMult();
+  m_SiLiTMult = m_PreTreatedData->GetMMSiLiTMult();
+  m_CsIEMult = m_PreTreatedData->GetMMCsIEMult();
+  m_CsITMult = m_PreTreatedData->GetMMCsITMult();
+ 
   if( CheckEvent() == 1 ){
     vector< TVector2 > couple = Match_X_Y() ;
     EventMultiplicity = couple.size();
-    
-    // Get the size of the different vector
-    unsigned int StripXTMult = m_PreTreatedData->GetMMStripXTMult();
-    unsigned int StripYTMult = m_PreTreatedData->GetMMStripXTMult();
-    unsigned int SiLiEMult = m_PreTreatedData->GetMMSiLiEMult();
-    unsigned int SiLiTMult = m_PreTreatedData->GetMMSiLiTMult();
-    unsigned int CsIEMult =  m_PreTreatedData->GetMMCsIEMult();
-    unsigned int CsITMult = m_PreTreatedData->GetMMCsITMult();
     
     for(unsigned int i = 0 ; i < couple.size() ; ++i){
       check_SILI = false ;
@@ -213,7 +214,7 @@ void TMust2Physics::BuildPhysicalEvent(){
       //  Search for associate Time
       double Si_X_T = -1000 ;
       
-      for(unsigned int t = 0 ; t < StripXTMult ; ++t )
+      for(unsigned int t = 0 ; t < m_StripXTMult ; ++t )
           {
         if(  m_PreTreatedData->GetMMStripXTStripNbr( couple[i].X() ) == m_PreTreatedData->GetMMStripXTStripNbr(t)
            ||m_PreTreatedData->GetMMStripXTDetectorNbr( couple[i].X() ) == m_PreTreatedData->GetMMStripXTDetectorNbr(t))
@@ -222,7 +223,7 @@ void TMust2Physics::BuildPhysicalEvent(){
       
       double Si_Y_T = -1000 ;
       
-      for(unsigned int t = 0 ; t < StripYTMult ; ++t )
+      for(unsigned int t = 0 ; t < m_StripYTMult ; ++t )
           {
         if(  m_PreTreatedData->GetMMStripYTStripNbr( couple[i].Y() ) == m_PreTreatedData->GetMMStripYTStripNbr(t)
            ||m_PreTreatedData->GetMMStripYTDetectorNbr( couple[i].Y() ) == m_PreTreatedData->GetMMStripYTDetectorNbr(t))
@@ -244,7 +245,7 @@ void TMust2Physics::BuildPhysicalEvent(){
       Si_EY.push_back(Si_Y_E);            ;
       Si_TY.push_back(Si_Y_T);            ;
       
-      for(unsigned int j = 0 ; j < SiLiEMult; ++j){
+      for(unsigned int j = 0 ; j < m_SiLiEMult; ++j){
         if(m_PreTreatedData->GetMMSiLiEDetectorNbr(j)==N){
           // pad vs strip number match
           if( Match_Si_SiLi( X, Y , m_PreTreatedData->GetMMSiLiEPadNbr(j) ) ){
@@ -253,7 +254,7 @@ void TMust2Physics::BuildPhysicalEvent(){
             
             // Look for associate time
             // Note: in case of use of SiLi "Orsay" time is not coded.
-            for(unsigned int k =0 ; k  < SiLiTMult ; ++k){
+            for(unsigned int k =0 ; k  < m_SiLiTMult ; ++k){
               // Same Pad, same Detector
               if( m_PreTreatedData->GetMMSiLiEPadNbr(j)==m_PreTreatedData->GetMMSiLiTPadNbr(k) && m_PreTreatedData->GetMMSiLiEDetectorNbr(j)==m_PreTreatedData->GetMMSiLiTDetectorNbr(k))
                 SiLi_T.push_back( m_PreTreatedData->GetMMSiLiTTime(k) ) ; break ;}
@@ -264,14 +265,14 @@ void TMust2Physics::BuildPhysicalEvent(){
             }
           }
       
-      for(unsigned int j = 0 ; j < CsIEMult ; ++j){
+      for(unsigned int j = 0 ; j < m_CsIEMult ; ++j){
         if(m_PreTreatedData->GetMMCsIEDetectorNbr(j)==N){
           if(Match_Si_CsI( X, Y , m_PreTreatedData->GetMMCsIECristalNbr(j) ) ){
             CsI_N.push_back( m_PreTreatedData->GetMMCsIECristalNbr(j) ) ;
             CsI_E.push_back( m_PreTreatedData->GetMMCsIEEnergy(j) ) ;
             
             //   Look for associate Time
-            for(unsigned int k =0 ; k  <CsITMult ; ++k){
+            for(unsigned int k =0 ; k  < m_CsITMult ; ++k){
               // Same Cristal; Same Detector
               if(   m_PreTreatedData->GetMMCsIECristalNbr(j)==m_PreTreatedData->GetMMCsITCristalNbr(k)
                  && m_PreTreatedData->GetMMCsIEDetectorNbr(j)==m_PreTreatedData->GetMMCsITDetectorNbr(k) )
@@ -307,17 +308,18 @@ void TMust2Physics::BuildPhysicalEvent(){
 ///////////////////////////////////////////////////////////////////////////
 void TMust2Physics::PreTreat(){
   ClearPreTreatedData();
-  unsigned int StripXEMult = m_EventData->GetMMStripXEMult();
-  unsigned int StripYEMult = m_EventData->GetMMStripXEMult();
-  unsigned int StripXTMult = m_EventData->GetMMStripXTMult();
-  unsigned int StripYTMult = m_EventData->GetMMStripXTMult();
-  unsigned int SiLiEMult = m_EventData->GetMMSiLiEMult();
-  unsigned int SiLiTMult = m_EventData->GetMMSiLiTMult();
-  unsigned int CsIEMult =  m_EventData->GetMMCsIEMult();
-  unsigned int CsITMult = m_EventData->GetMMCsITMult();
+  m_StripXEMult = m_EventData->GetMMStripXEMult();
+  m_StripYEMult = m_EventData->GetMMStripYEMult();
+  m_StripXTMult = m_EventData->GetMMStripXTMult();
+  m_StripYTMult = m_EventData->GetMMStripYTMult();
+  m_SiLiEMult = m_EventData->GetMMSiLiEMult();
+  m_SiLiTMult = m_EventData->GetMMSiLiTMult();
+  m_CsIEMult = m_EventData->GetMMCsIEMult();
+  m_CsITMult = m_EventData->GetMMCsITMult();
+  
   //   X
   //   E
-  for(unsigned int i = 0 ; i < StripXEMult ; ++i){
+  for(unsigned int i = 0 ; i < m_StripXEMult ; ++i){
     if( m_EventData->GetMMStripXEEnergy(i)>m_Si_X_E_RAW_Threshold && IsValidChannel("X", m_EventData->GetMMStripXEDetectorNbr(i), m_EventData->GetMMStripXEStripNbr(i)) ){
       double EX = fSi_X_E(m_EventData , i);
       if( EX > m_Si_X_E_Threshold ){
@@ -330,7 +332,7 @@ void TMust2Physics::PreTreat(){
   }
   
   //   T
-  for(unsigned int i = 0 ; i < StripXTMult ; ++i){
+  for(unsigned int i = 0 ; i < m_StripXTMult ; ++i){
     if(IsValidChannel("X", m_EventData->GetMMStripXTDetectorNbr(i), m_EventData->GetMMStripXTStripNbr(i))){
       m_PreTreatedData->SetMMStripXTDetectorNbr( m_EventData->GetMMStripXTDetectorNbr(i) );
       m_PreTreatedData->SetMMStripXTStripNbr( m_EventData->GetMMStripXTStripNbr(i) );
@@ -341,7 +343,7 @@ void TMust2Physics::PreTreat(){
   
   //   Y
   //   E
-  for(unsigned int i = 0 ; i < StripYEMult ; ++i){
+  for(unsigned int i = 0 ; i < m_StripYEMult ; ++i){
     if( m_EventData->GetMMStripYEEnergy(i)<m_Si_Y_E_RAW_Threshold && IsValidChannel("Y", m_EventData->GetMMStripYEDetectorNbr(i), m_EventData->GetMMStripYEStripNbr(i))){
       double EY = fSi_Y_E(m_EventData , i);
       if( EY >m_Si_Y_E_Threshold ){
@@ -353,7 +355,7 @@ void TMust2Physics::PreTreat(){
   }
   
   //   T
-  for(unsigned int i = 0 ; i < StripYTMult ; ++i){
+  for(unsigned int i = 0 ; i < m_StripYTMult ; ++i){
     if(IsValidChannel("Y", m_EventData->GetMMStripYTDetectorNbr(i), m_EventData->GetMMStripYTStripNbr(i))){
       m_PreTreatedData->SetMMStripYTDetectorNbr( m_EventData->GetMMStripYTDetectorNbr(i) );
       m_PreTreatedData->SetMMStripYTStripNbr( m_EventData->GetMMStripYTStripNbr(i) );
@@ -364,7 +366,7 @@ void TMust2Physics::PreTreat(){
   
   //   CsI
   //   E
-  for(unsigned int i = 0 ; i < CsIEMult ; ++i){
+  for(unsigned int i = 0 ; i < m_CsIEMult ; ++i){
     if( m_EventData->GetMMCsIEEnergy(i)>m_CsI_E_RAW_Threshold && IsValidChannel("CsI", m_EventData->GetMMCsIEDetectorNbr(i), m_EventData->GetMMCsIECristalNbr(i))){
       double ECsI = fCsI_E(m_EventData , i);
       if( ECsI > m_CsI_E_Threshold ){
@@ -376,7 +378,7 @@ void TMust2Physics::PreTreat(){
   }
   
   //   T
-  for(unsigned int i = 0 ; i < CsITMult ; ++i){
+  for(unsigned int i = 0 ; i < m_CsITMult ; ++i){
     if(IsValidChannel("CsI", m_EventData->GetMMCsITDetectorNbr(i), m_EventData->GetMMCsITCristalNbr(i))){
       m_PreTreatedData->SetMMCsITDetectorNbr( m_EventData->GetMMCsITDetectorNbr(i) );
       m_PreTreatedData->SetMMCsITCristalNbr( m_EventData->GetMMCsITCristalNbr(i) );
@@ -387,7 +389,7 @@ void TMust2Physics::PreTreat(){
   
   //   SiLi
   //   E
-  for(unsigned int i = 0 ; i < SiLiEMult ; ++i){
+  for(unsigned int i = 0 ; i < m_SiLiEMult ; ++i){
     if( m_EventData->GetMMSiLiEEnergy(i)>m_SiLi_E_RAW_Threshold && IsValidChannel("SiLi", m_EventData->GetMMSiLiEDetectorNbr(i), m_EventData->GetMMSiLiEPadNbr(i))){
       double ESiLi = fSiLi_E(m_EventData , i);
       if( ESiLi > m_SiLi_E_Threshold ){
@@ -399,7 +401,7 @@ void TMust2Physics::PreTreat(){
   }
   
   //   T
-  for(unsigned int i = 0 ; i < SiLiTMult ; ++i){
+  for(unsigned int i = 0 ; i < m_SiLiTMult ; ++i){
     if(IsValidChannel("SiLi", m_EventData->GetMMSiLiTDetectorNbr(i), m_EventData->GetMMSiLiTPadNbr(i))){
       m_PreTreatedData->SetMMSiLiTDetectorNbr( m_EventData->GetMMSiLiTDetectorNbr(i) );
       m_PreTreatedData->SetMMSiLiTPadNbr( m_EventData->GetMMSiLiTPadNbr(i) );
@@ -433,16 +435,16 @@ bool TMust2Physics :: ResolvePseudoEvent(){
 ///////////////////////////////////////////////////////////////////////////
 vector < TVector2 > TMust2Physics :: Match_X_Y(){
   vector < TVector2 > ArrayOfGoodCouple ;
-  unsigned int StripXEMult = m_PreTreatedData->GetMMStripXEMult();
-  unsigned int StripYEMult = m_PreTreatedData->GetMMStripXEMult();
+  m_StripXEMult = m_PreTreatedData->GetMMStripXEMult();
+  m_StripYEMult = m_PreTreatedData->GetMMStripXEMult();
   
   // Prevent code from treating very high multiplicity Event
   // Those event are not physical anyway and that improve speed.
-  if( StripXEMult > m_MaximumStripMultiplicityAllowed || StripYEMult > m_MaximumStripMultiplicityAllowed )
+  if( m_StripXEMult > m_MaximumStripMultiplicityAllowed || m_StripYEMult > m_MaximumStripMultiplicityAllowed )
     return ArrayOfGoodCouple;
   
-  for(unsigned int i = 0 ; i < StripXEMult ; ++i){
-    for(unsigned int j = 0 ; j < StripYEMult ; j++){
+  for(unsigned int i = 0 ; i < m_StripXEMult ; ++i){
+    for(unsigned int j = 0 ; j < m_StripYEMult ; j++){
       //   if same detector check energy
       if ( m_PreTreatedData->GetMMStripXEDetectorNbr(i) == m_PreTreatedData->GetMMStripYEDetectorNbr(j) ){
         //   Look if energy match
@@ -479,7 +481,7 @@ vector < TVector2 > TMust2Physics :: Match_X_Y(){
   }
   
   //   Prevent to treat event with ambiguous matchin beetween X and Y
-  if( ArrayOfGoodCouple.size() > StripXEMult ) ArrayOfGoodCouple.clear() ;
+  if( ArrayOfGoodCouple.size() > m_StripXEMult ) ArrayOfGoodCouple.clear() ;
   
   return ArrayOfGoodCouple;
 }
@@ -707,19 +709,11 @@ bool TMust2Physics :: Match_Si_SiLi(int X, int Y , int PadNbr)
 {
   
   //remove the central part and surrounding
-  if( // Outter Part
-     X < 8  ||  X > 120
-     //|| Y < 0  ||  Y > 128
-     // Central Part
-     || (Y < 68 &&  Y > 60)
-     )
-      {
+  if( X < 8  ||  X > 120|| (Y < 68 &&  Y > 60) )
     return false;
-      }
   
   if( abs(m_SiLi_MatchingX[PadNbr-1] - X) < m_SiLi_Size/2.&&
-     abs(m_SiLi_MatchingY[PadNbr-1] - Y) < m_SiLi_Size/2.)
-    
+      abs(m_SiLi_MatchingY[PadNbr-1] - Y) < m_SiLi_Size/2.)
     return true ;
   
   else return false;
@@ -773,59 +767,54 @@ void TMust2Physics::Clear(){
 ///////////////////////////////////////////////////////////////////////////
 
 void TMust2Physics::ReadCalibrationRun(){
-  int StripXEMult = m_EventData->GetMMStripXEMult();
-  int StripYEMult = m_EventData->GetMMStripXEMult();
-  int StripXTMult = m_EventData->GetMMStripXTMult();
-  int StripYTMult = m_EventData->GetMMStripXTMult();
-  int CsIEMult =  m_EventData->GetMMCsIEMult();
-  int CsITMult = m_EventData->GetMMCsITMult();
+  m_StripXEMult = m_EventData->GetMMStripXEMult();
+  m_StripYEMult = m_EventData->GetMMStripYEMult();
+  m_StripXTMult = m_EventData->GetMMStripXTMult();
+  m_StripYTMult = m_EventData->GetMMStripYTMult();
+  m_SiLiEMult = m_EventData->GetMMSiLiEMult();
+  m_SiLiTMult = m_EventData->GetMMSiLiTMult();
+  m_CsIEMult = m_EventData->GetMMCsIEMult();
+  m_CsITMult = m_EventData->GetMMCsITMult();
+  
   //   X
   //   E
-  for(int i = 0 ; i < StripXEMult;++i)
-      {
+  for(unsigned int i = 0 ; i < m_StripXEMult;++i){
     TelescopeNumber_X.push_back(m_EventData->GetMMStripXEDetectorNbr(i));
     Si_EX.push_back( fSi_X_E( m_EventData , i) );
     Si_X.push_back(m_EventData->GetMMStripXEStripNbr(i));
-    
-      }
+  }
   //   T
-  for(int i = 0 ; i < StripXTMult;++i)
-      {
+  for(unsigned int i = 0 ; i < m_StripXTMult;++i){
     TelescopeNumber_X.push_back(m_EventData->GetMMStripXTDetectorNbr(i));
     Si_TX.push_back( fSi_X_T( m_EventData , i) );
     Si_X.push_back(m_EventData->GetMMStripXTStripNbr(i));
-    
-      }
+  }
   
   //   Y
   //   E
-  for(int i = 0 ; i < StripYEMult;++i)
-      {
+  for(unsigned int i = 0 ; i < m_StripYEMult;++i){
     TelescopeNumber_Y.push_back(m_EventData->GetMMStripYEDetectorNbr(i));
     Si_EY.push_back( fSi_Y_E( m_EventData , i) );
     Si_Y.push_back(m_EventData->GetMMStripYEStripNbr(i));
-      }
+  }
   
   //   T
-  for(int i = 0 ; i < StripYTMult;++i)
-      {
+  for(unsigned int i = 0 ; i < m_StripYTMult;++i){
         TelescopeNumber_Y.push_back(m_EventData->GetMMStripYTDetectorNbr(i));
         Si_TY.push_back( fSi_Y_T( m_EventData , i) );
         Si_Y.push_back(m_EventData->GetMMStripYTStripNbr(i));
-      }
+  }
   
   //CsI Energy
-  for( int j = 0 ; j < CsIEMult ; ++j)
-      {
+  for(unsigned int j = 0 ; j < m_CsIEMult ; ++j){
         CsI_N.push_back(m_EventData->GetMMCsIECristalNbr(j)) ;
         CsI_E.push_back(fCsI_E(m_EventData , j)) ;
-      }
+  }
   
   //CsI Time
-  for( int j = 0 ; j < CsITMult ; ++j)
-      {
+  for(unsigned int j = 0 ; j < m_CsITMult ; ++j){
         CsI_T.push_back(fCsI_T(m_EventData , j)) ;
-      }
+  }
   
 }
 

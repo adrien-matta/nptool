@@ -1,24 +1,22 @@
 include ../Makefile.arch
  
 #------------------------------------------------------------------------------
-SHARELIB      = libReaction.so libEnergyLoss.so
+SHARELIB      = libNPPhysics.so
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 
 ############# Various Tool ############
 
 ## Reaction ##
-libReaction.so:	NPReaction.o NPNucleus.o
-		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
-
-## EnergyLoss ##
-libEnergyLoss.so: NPEnergyLoss.o
+libNPPhysics.so: NPReaction.o NPNucleus.o NPBeam.o NPEnergyLoss.o NPFunction.o
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 		
 # dependances
 NPReaction.o:NPReaction.cxx NPReaction.h
 NPNucleus.o: NPNucleus.cxx NPNucleus.h
 NPEnergyLoss.o:NPEnergyLoss.cxx NPEnergyLoss.h
+NPBeam.o: NPBeam.cxx NPBeam.h
+NPFunction.o: NPFunction.cxx NPFunction.h
 #######################################
 
 ############# Clean and More ##########

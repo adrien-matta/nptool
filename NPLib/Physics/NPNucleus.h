@@ -40,7 +40,7 @@ namespace NPL
        private :
 		  //intrinsic properties
 		  const char* fName;         // Nucleus name
-		  string	  fNucleusName;
+		  string	    fNucleusName;
 		  int         fCharge;      // Nucleus charge
 		  int         fAtomicWeight;   // Nucleus atomic weight
 		  double      fMassExcess;   // Nucleus mass excess in keV

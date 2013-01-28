@@ -32,9 +32,14 @@ using namespace std;
 #include "TList.h"
 #include "TSystemDirectory.h"
 #include "TString.h"
+#include "TRandom.h"
+#include "TRandom2.h"
 
 void NPToolLogon(bool verbosemode = false)
 {
+   // Change the standard random generator to TRandom2
+   gRandom = new TRandom2();
+
    TString currentpath = gSystem->Getenv("PWD");
    TString path = gSystem->Getenv("NPTOOL");
    
@@ -89,7 +94,7 @@ void NPToolLogon(bool verbosemode = false)
    }
 
 
-   gROOT->ProcessLine(".L $NPTOOL/NPLib/include/RootInput.h+");   
+  // gROOT->ProcessLine(".L $NPTOOL/NPLib/include/RootInput.h+");   
  
    // Since the libdir.GetListOfFiles() commands cds to the
    // libidr directory, one has to return to the initial

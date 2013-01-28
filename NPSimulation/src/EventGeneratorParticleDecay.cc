@@ -166,8 +166,6 @@ void EventGeneratorParticleDecay::ReadConfiguration(string Path,int Occurence){
         G4cout << G4endl;
       }
       
-      
-      
       //////////////////////////////////////////////////////
       // If no Token and no comment, toggle out //
       else
@@ -190,10 +188,11 @@ void EventGeneratorParticleDecay::ReadConfiguration(string Path,int Occurence){
 
 
 void EventGeneratorParticleDecay::GenerateEvent(G4Event* anEvent){
+
   // Look for the decaying nucleus
   Particle decayingParticle = m_ParticleStack->SearchAndRemoveParticle(m_MotherNucleiName);
   if(decayingParticle.GetParticleDefinition()==NULL){
-    G4cout << "Gamma Decay Warning: The decaying particle " << m_MotherNucleiName
+    G4cout << "Particle Decay Warning: The decaying particle " << m_MotherNucleiName
     << " was not found in the particle stack " << G4endl;
     return ;
   }
@@ -260,9 +259,10 @@ void EventGeneratorParticleDecay::GenerateEvent(G4Event* anEvent){
                                       decayingParticle.GetParticlePosition(),
                                       m_shoot[1]);
       
-      ParticleStack::getInstance()->AddParticleToStack(FirstDaughterParticle);
-      ParticleStack::getInstance()->AddParticleToStack(SecondDaughterParticle);
+      m_ParticleStack->AddParticleToStack(FirstDaughterParticle);
+      m_ParticleStack->AddParticleToStack(SecondDaughterParticle);
     }
+
   }
   
   // Case of a TGenPhaseSpace
@@ -295,7 +295,7 @@ void EventGeneratorParticleDecay::GenerateEvent(G4Event* anEvent){
                                   daughterDirection.unit(),
                                   decayingParticle.GetParticlePosition(),
                                   m_shoot[i]);
-        ParticleStack::getInstance()->AddParticleToStack(daughterParticle);
+        m_ParticleStack->AddParticleToStack(daughterParticle);
       }
     }
   }

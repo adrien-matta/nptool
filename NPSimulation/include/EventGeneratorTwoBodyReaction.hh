@@ -1,5 +1,5 @@
-#ifndef EventGeneratorTransfert_H
-#define EventGeneratorTransfert_H
+#ifndef EventGeneratorTwoBodyReaction_H
+#define EventGeneratorTwoBodyReaction_H
 /*****************************************************************************
  * Copyright (C) 2009-2010   this file is part of the NPTool Project         *
  *                                                                           *
@@ -14,14 +14,16 @@
  * Last update    : January 2011                                             *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This event Generator is used to simulated two body TransfertReaction.    *
+ *  This event Generator is used to simulated two body two body reaction.    *
  *  A Relativistic computation is performed to determine angle and energy of *
  *   the different particle, knowing the ThetaCM angle given by a cross      *
  *   section shoot. Eleastic scattering can also be simulated.               *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *    + 20/01/2011: Add support for excitation energy for light ejectile     *
- *                  (N. de Sereville)                                      *
+ *                  (N. de Sereville)                                        *
+ *    + 23/01/2013: Class change name (ild name EventGeneratorTransfert)     *
+ *                  (A. MATTA)                                               *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
@@ -31,6 +33,8 @@
 // NPSimulation
 #include "VEventGenerator.hh"
 #include "Target.hh"
+#include "Particle.hh"
+#include "ParticleStack.hh"
 
 // NPLib header
 #include "NPReaction.h"
@@ -39,25 +43,19 @@ using namespace std;
 using namespace NPL ;
 
 
-class EventGeneratorTransfert : public VEventGenerator
+class EventGeneratorTwoBodyReaction : public VEventGenerator
 {
    public:     // Constructors and Destructors
       // Default constructor used to allocate memory
-      EventGeneratorTransfert();
+      EventGeneratorTwoBodyReaction();
 
       // This is the constructor to be used
-      EventGeneratorTransfert(string name1                  ,           // Beam nuclei
+      EventGeneratorTwoBodyReaction(string name1                  ,           // Beam nuclei
             string name2                  ,        // Target nuclei
             string name3                  ,        // Product of reaction
             string name4                  ,        // Product of reaction
-            double BeamEnergy             ,        // Beam Energy
             double ExcitationEnergyLight  ,        // Excitation of Light Nuclei
             double ExcitationEnergyHeavy  ,        // Excitation of Heavy Nuclei
-            double BeamEnergySpread       ,
-            double SigmaX                 ,
-            double SigmaY                 ,
-            double SigmaThetaX            ,
-            double SigmaPhiY              ,
             bool   ShootLight             ,
             bool   ShootHeavy             ,
             string Path,
@@ -65,16 +63,17 @@ class EventGeneratorTransfert : public VEventGenerator
             double CSThetaMax);                          // Path of the differentiel Cross Section
 
       // Default Destructor
-      virtual ~EventGeneratorTransfert();
+      virtual ~EventGeneratorTwoBodyReaction();
 
 
    public: // Inherit from VEventGenerator class
-      void ReadConfiguration(string);
+      void ReadConfiguration(string,int dump=0);
       void GenerateEvent(G4Event*);
       void SetTarget(Target* Target) ;
 
 
    private: // Particle Shoot Option
+      ParticleStack* m_ParticleStack;
       bool m_ShootLight;
       bool m_ShootHeavy;
 
@@ -90,12 +89,7 @@ class EventGeneratorTransfert : public VEventGenerator
 
 
    private: // Beam Parameters
-      double m_BeamEnergy;
-      double m_BeamEnergySpread;
-      double m_SigmaX;
-      double m_SigmaY;
-      double m_SigmaThetaX;
-      double m_SigmaPhiY;
+        string m_BeamName;
 
       // Other methods
       void Print() const;
@@ -105,14 +99,8 @@ class EventGeneratorTransfert : public VEventGenerator
                          string name2                     ,        // Target nuclei
                          string name3                     ,        // Product of reaction
                          string name4                     ,        // Product of reaction
-                         double BeamEnergy                ,        // Beam Energy
                          double ExcitationEnergyLight     ,        // Excitation of Light Nuclei
                          double ExcitationEnergyHeavy     ,        // Excitation of Heavy Nuclei
-                         double BeamEnergySpread          ,
-                         double SigmaX                    ,
-                         double SigmaY                    ,
-                         double SigmaThetaX               ,
-                         double SigmaPhiY                 ,
                          bool   ShootLight                ,
                          bool   ShootHeavy                ,
                          string Path,
