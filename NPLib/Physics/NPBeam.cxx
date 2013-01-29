@@ -33,6 +33,7 @@
 // NPL header
 #include "NPBeam.h"
 #include "NPFunction.h"
+#include "NPOptionManager.h"
 
 // Use CLHEP System of unit and Physical Constant
 #include "CLHEP/Units/GlobalSystemOfUnits.h"
@@ -60,7 +61,7 @@ Beam::Beam()
   fEffectiveTargetThickness = 0 ;
   fTargetAngle = 0 ;
   fTargetZ = 0 ;
-  
+  fVerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
   // case of user given distribution
   fEnergyHist  = new TH1F("EnergyHist","EnergyHist",1,0,1);
   fXThetaXHist = new TH2F("XThetaXHis","XThetaXHis",1,0,1,1,0,1);
@@ -115,7 +116,7 @@ void Beam::ReadConfigurationFile(string Path){
     getline(ReactionFile, LineBuffer);
     
     if (LineBuffer.compare(0, 4, "Beam") == 0) {
-      cout << "Beam Found" << endl ;
+      if(fVerboseLevel==1) cout << "Beam Found" << endl ;
       ReadingStatus = true ;
     }
     
@@ -131,83 +132,84 @@ void Beam::ReadConfigurationFile(string Path){
         ReactionFile >> DataBuffer;
         delete fBeamNucleus;
         fBeamNucleus = new Nucleus(DataBuffer);
-        cout << "Beam Particle: " << fBeamNucleus->GetName() << endl;
+        if(fVerboseLevel==1) cout << "Beam Particle: " << fBeamNucleus->GetName() << endl;
       }
       
       else if (DataBuffer == "Energy=") {
         check_Energy = true ;
         ReactionFile >> DataBuffer;
         fEnergy = atof(DataBuffer.c_str()) * MeV;
-        cout << "Beam Energy: " << fEnergy / MeV << " MeV" << endl;
+        if(fVerboseLevel==1) cout << "Beam Energy: " << fEnergy / MeV << " MeV" << endl;
       }
       
       else if (DataBuffer == "SigmaEnergy=") {
         check_SigmaEnergy = true ;
         ReactionFile >> DataBuffer;
         fSigmaEnergy= atof(DataBuffer.c_str()) * MeV;
-        cout << "Beam Energy Sigma: " << fSigmaEnergy / MeV << " MeV" << endl;
+        if(fVerboseLevel==1) cout << "Beam Energy Sigma: " << fSigmaEnergy / MeV << " MeV" << endl;
       }
       
       else if (DataBuffer=="MeanX=") {
         check_MeanX = true ;
         ReactionFile >> DataBuffer;
         fMeanX = atof(DataBuffer.c_str()) * mm;
-        cout << "Mean X: " << fMeanX / mm << " mm" << endl;
+        if(fVerboseLevel==1) cout << "Mean X: " << fMeanX / mm << " mm" << endl;
       }
       
       else if (DataBuffer=="MeanY=") {
         check_MeanY = true ;
         ReactionFile >> DataBuffer;
         fMeanY = atof(DataBuffer.c_str()) * mm;
-        cout << "Mean Y: " << fMeanY / mm << " mm" << endl;
+        if(fVerboseLevel==1) cout << "Mean Y: " << fMeanY / mm << " mm" << endl;
       }
       
       else if (DataBuffer=="SigmaX=") {
         check_SigmaX = true ;
         ReactionFile >> DataBuffer;
         fSigmaX = atof(DataBuffer.c_str()) * mm;
-        cout << "Sigma X: " << fSigmaX / mm << " mm" << endl;
+        if(fVerboseLevel==1) cout << "Sigma X: " << fSigmaX / mm << " mm" << endl;
       }
       
       else if (DataBuffer=="SigmaY=") {
         check_SigmaY = true ;
         ReactionFile >> DataBuffer;
         fSigmaY = atof(DataBuffer.c_str()) * mm;
-        cout << "Sigma Y: " << fSigmaY / mm << " mm" << endl;
+        if(fVerboseLevel==1) cout << "Sigma Y: " << fSigmaY / mm << " mm" << endl;
       }
       
       else if (DataBuffer == "MeanThetaX=" ) {
         check_MeanThetaX = true ;
         ReactionFile >> DataBuffer;
         fMeanThetaX = atof(DataBuffer.c_str()) * deg;
-        cout << "Mean Theta X: " << fMeanThetaX / deg << " deg" << endl;
+        if(fVerboseLevel==1) cout << "Mean Theta X: " << fMeanThetaX / deg << " deg" << endl;
       }
       
       else if (DataBuffer == "MeanPhiY=") {
         check_MeanPhiY = true ;
         ReactionFile >> DataBuffer;
         fMeanPhiY = atof(DataBuffer.c_str()) * deg;
-        cout << "Mean Phi Y: " << fMeanPhiY / deg << " deg" << endl;
+        if(fVerboseLevel==1) cout << "Mean Phi Y: " << fMeanPhiY / deg << " deg" << endl;
       }
       
       else if (DataBuffer == "SigmaThetaX=" ) {
         check_SigmaThetaX = true ;
         ReactionFile >> DataBuffer;
         fSigmaThetaX = atof(DataBuffer.c_str()) * deg;
-        cout << "Sigma Theta X: " << fSigmaThetaX / deg << " deg" << endl;
+        if(fVerboseLevel==1) cout << "Sigma Theta X: " << fSigmaThetaX / deg << " deg" << endl;
       }
       
       else if (DataBuffer == "SigmaPhiY=") {
         check_SigmaPhiY = true ;
         ReactionFile >> DataBuffer;
         fSigmaPhiY = atof(DataBuffer.c_str()) * deg;
-        cout << "Sigma Phi Y: " << fSigmaPhiY / deg << " deg" << endl;
+        if(fVerboseLevel==1) cout << "Sigma Phi Y: " << fSigmaPhiY / deg << " deg" << endl;
       }
       
       else if (DataBuffer == "EnergyProfilePath=") {
         check_EnergyProfilePath = true ;
         string FileName,HistName;
         ReactionFile >> FileName >> HistName;
+        if(fVerboseLevel==1) cout << "Reading Energy profile file: " << FileName << endl;
         fEnergyHist = Read1DProfile(FileName, HistName );
       }
       
@@ -215,6 +217,7 @@ void Beam::ReadConfigurationFile(string Path){
         check_XThetaXPath = true ;
         string FileName,HistName;
         ReactionFile >> FileName >> HistName;
+        if(fVerboseLevel==1) cout << "Reading X-ThetaX profile file: " << FileName << endl;
         fXThetaXHist = Read2DProfile(FileName, HistName );
       }
       
@@ -222,6 +225,7 @@ void Beam::ReadConfigurationFile(string Path){
         check_YPhiYPath = true ;
         string FileName,HistName;
         ReactionFile >> FileName >> HistName;
+        if(fVerboseLevel==1) cout << "Reading Y-ThetaY profile file: " << FileName << endl;
         fYPhiYHist = Read2DProfile(FileName, HistName );
       }
       

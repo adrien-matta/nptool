@@ -48,7 +48,10 @@ namespace NPL{
     
   public:  // Various Method
     void ReadConfigurationFile(string Path);
-    
+  
+  private:
+    int fVerboseLevel;
+  
   private:
     Nucleus* fBeamNucleus;
     double fEnergy;
@@ -84,7 +87,8 @@ namespace NPL{
     void SetEnergyHist  (TH1F*  EnergyHist)     {delete fEnergyHist; fEnergyHist   = new TH1F(*EnergyHist);}
     void SetXThetaXHist (TH2F*  XThetaXHist)    {delete fXThetaXHist; fXThetaXHist = new TH2F(*XThetaXHist);}
     void SetYPhiYHist   (TH2F*  YPhiYHist)      {delete fYPhiYHist; fYPhiYHist     = new TH2F(*YPhiYHist);}
-    
+    void SetVerboseLevel(int verbose)     {fVerboseLevel = verbose;}
+
     // Get
     Nucleus*  GetNucleus     () const {return fBeamNucleus;}
     double    GetEnergy      () const {return fEnergy;}
@@ -100,7 +104,8 @@ namespace NPL{
     TH1F*     GetEnergyHist  () const {return fEnergyHist;}
     TH2F*     GetXThetaXHist () const {return fXThetaXHist;}
     TH2F*     GetYPhiYHist   () const {return fYPhiYHist;}
-    
+    int      GetVerboseLevel()  const {return fVerboseLevel;}
+
   private: // Event Generation private variable
     double fTargetSize;
     double fEffectiveTargetSize; // target size has seen from the beam axis

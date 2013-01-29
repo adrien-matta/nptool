@@ -84,12 +84,14 @@ class NPOptionManager
       string GetOutputFile()               {return fOutputFileName;}
       bool   GetDisableAllBranchOption()   {return fDisableAllBranchOption;}
       bool   GetInputPhysicalTreeOption()  {return fInputPhysicalTreeOption;}
+      int    GetVerboseLevel()             {return fVerboseLevel;}
       
       // Setters
-      void SetReactionFile(string name)   {fReactionFileName = name;}
-      void SetDetectorFile(string name)   {fDetectorFileName = name;}
-      void SetRunToReadFile(string name)  {fRunToReadFileName = name;}
-
+      void SetReactionFile(string name)       {fReactionFileName = name;}
+      void SetDetectorFile(string name)       {fDetectorFileName = name;}
+      void SetRunToReadFile(string name)      {fRunToReadFileName = name;}
+      void GetVerboseLevel(int VerboseLevel)  {fVerboseLevel = VerboseLevel;}
+  
    private:
       // default values
       string fDefaultReactionFileName;
@@ -105,6 +107,7 @@ class NPOptionManager
       string fOutputFileName;
       bool   fDisableAllBranchOption;
       bool   fInputPhysicalTreeOption;
+      int    fVerboseLevel; // 0 for not talk, 1 for talking
 };
 
 #endif

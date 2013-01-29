@@ -9,7 +9,7 @@
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
  * Creation Date  : January 2009                                             *
- * Last update    : January 2011                                             *
+ * Last update    : January 2013                                             *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This event Generator is used to simulated two body two body reaction.    *
@@ -22,7 +22,6 @@
  *                  (N. de Sereville)                                        *
  *    + 23/01/2013: Class change name (ild name EventGeneratorTransfert)     *
  *                  (A. MATTA)                                               *
- *                                                                           *
  *                                                                           *
  *****************************************************************************/
 // C++ headers
@@ -52,9 +51,7 @@ EventGeneratorTwoBodyReaction::EventGeneratorTwoBodyReaction()
 :  m_ShootLight(0),
 m_ShootHeavy(0),
 m_Target(0),
-m_Reaction(new Reaction),
-m_HalfOpenAngleMin(0),
-m_HalfOpenAngleMax(180)
+m_Reaction(new Reaction)
 {
   //------------- Default Constructor -------------
   m_ParticleStack= ParticleStack::getInstance();
@@ -75,32 +72,6 @@ EventGeneratorTwoBodyReaction::~EventGeneratorTwoBodyReaction(){
   delete m_Reaction;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-EventGeneratorTwoBodyReaction::EventGeneratorTwoBodyReaction(  string name1                  ,  // Beam nuclei
-                                                             string name2                  ,  // Target nuclei
-                                                             string name3                  ,  // Product of reaction
-                                                             string name4                  ,  // Product of reaction
-                                                             double ExcitationEnergyLight  ,  // Excitation of Light Nuclei
-                                                             double ExcitationEnergyHeavy  ,  // Excitation of Heavy Nuclei
-                                                             bool   ShootLight             ,
-                                                             bool   ShootHeavy             ,
-                                                             string Path                   ,
-                                                             double CSThetaMin             ,
-                                                             double CSThetaMax)  // Path of the differentiel Cross Section
-{
-  SetEverything(   name1,
-                name2,
-                name3,
-                name4,
-                ExcitationEnergyLight,
-                ExcitationEnergyHeavy,
-                ShootLight,
-                ShootHeavy,
-                Path,
-                CSThetaMin,
-                CSThetaMax);
-  
-}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorTwoBodyReaction::InitializeRootOutput(){
@@ -121,162 +92,11 @@ void EventGeneratorTwoBodyReaction::Print() const{
 
 void EventGeneratorTwoBodyReaction::ReadConfiguration(string Path, int dump){
   dump = 0 ;
-  ////////General Reading needs////////
-  string LineBuffer;
-  string DataBuffer;
+  m_Reaction->ReadConfigurationFile(Path);
   
-  ////////Reaction Setting needs///////
-  string Beam, Target, Heavy, Light, CrossSectionPath ;
-  G4double ExcitationEnergyLight = 0, ExcitationEnergyHeavy = 0;
-  G4double CSHalfOpenAngleMin = 0, CSHalfOpenAngleMax = 180;
-  
-  bool  ShootLight = false ;
-  bool  ShootHeavy = false ;
-  
-  bool ReadingStatus = false ;
-  bool check_Beam = false ;
-  bool check_Target = false ;
-  bool check_Light = false ;
-  bool check_Heavy = false ;
-  bool check_ExcitationEnergyLight = false ;
-  bool check_ExcitationEnergyHeavy = false ;
-  bool check_CrossSectionPath = false ;
-  bool check_ShootLight = false ;
-  bool check_ShootHeavy = false ;
-  
-  //////////////////////////////////////////////////////////////////////////////////////////
-  ifstream ReactionFile;
-  ReactionFile.open(Path.c_str());
-  
-  if (ReactionFile.is_open()) {} else {
-    return;
-  }
-  
-  while (!ReactionFile.eof()) {
-    //Pick-up next line
-    getline(ReactionFile, LineBuffer);
-    if (LineBuffer.compare(0, 15, "TwoBodyReaction") == 0) {
-      ReadingStatus = true ;
-      
-      G4cout << "////////// Two Body Reaction found ///////////" << G4endl;
-    }
-    
-    
-    while(ReadingStatus){
-      
-      ReactionFile >> DataBuffer;
-      
-      //Search for comment Symbol %
-      if (DataBuffer.compare(0, 1, "%") == 0) {   ReactionFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
-      
-      else if (DataBuffer=="Beam=") {
-        check_Beam = true ;
-        ReactionFile >> DataBuffer;
-        Beam = DataBuffer;
-        m_BeamName = m_ParticleStack->ChangeNameToG4Standard(m_BeamName);
-        G4cout << "Beam " << Beam << G4endl;
-      }
-      
-      else if (DataBuffer=="Target=") {
-        check_Target = true ;
-        ReactionFile >> DataBuffer;
-        Target = DataBuffer;
-        G4cout << "Target " << Target << G4endl;
-      }
-      
-      else if (DataBuffer=="Light=") {
-        check_Light = true ;
-        ReactionFile >> DataBuffer;
-        Light = DataBuffer;
-        G4cout << "Light " << Light << G4endl;
-      }
-      
-      else if  (DataBuffer=="Heavy=") {
-        check_Heavy = true ;
-        ReactionFile >> DataBuffer;
-        Heavy = DataBuffer;
-        G4cout << "Heavy " << Heavy << G4endl;
-      }
-      
-      else if  (DataBuffer=="ExcitationEnergy3=" || DataBuffer=="ExcitationEnergyLight=") {
-        check_ExcitationEnergyLight = true ;
-        ReactionFile >> DataBuffer;
-        ExcitationEnergyLight = atof(DataBuffer.c_str()) * MeV;
-        G4cout << "Excitation Energy Nuclei 3: " << ExcitationEnergyLight / MeV << " MeV" << G4endl;
-      }
-      
-      else if  (DataBuffer=="ExcitationEnergy4=" || DataBuffer=="ExcitationEnergyHeavy=") {
-        check_ExcitationEnergyHeavy = true ;
-        ReactionFile >> DataBuffer;
-        ExcitationEnergyHeavy = atof(DataBuffer.c_str()) * MeV;
-        G4cout << "Excitation Energy Nuclei 4: " << ExcitationEnergyHeavy / MeV << " MeV" << G4endl;
-      }
+  m_ShootLight = m_Reaction->GetShoot3();
+  m_ShootHeavy = m_Reaction->GetShoot4();;
 
-      else if  (DataBuffer=="CrossSectionPath=") {
-        check_CrossSectionPath = true ;
-        ReactionFile >> CrossSectionPath;
-        G4cout << "Cross Section File: " << CrossSectionPath << G4endl ;
-      }
-      
-      else if (DataBuffer=="HalfOpenAngleMin=") {
-        ReactionFile >> DataBuffer;
-        CSHalfOpenAngleMin = atof(DataBuffer.c_str()) * deg;
-        G4cout << "HalfOpenAngleMin " << CSHalfOpenAngleMin / deg << " degree" << G4endl;
-      }
-      
-      else if (DataBuffer=="HalfOpenAngleMax=") {
-        ReactionFile >> DataBuffer;
-        CSHalfOpenAngleMax = atof(DataBuffer.c_str()) * deg;
-        G4cout << "HalfOpenAngleMax " << CSHalfOpenAngleMax / deg << " degree" << G4endl;
-      }
-      
-      else if  (DataBuffer=="ShootLight=") {
-        check_ShootLight = true ;
-        ReactionFile >> DataBuffer;
-        if (atof(DataBuffer.c_str()) == 1) ShootLight = true ;
-        if (ShootLight)    G4cout << "Shoot Light particle      : yes" << G4endl;
-        else           G4cout << "Shoot Light particle      : no"  << G4endl;
-      }
-      
-      else if  (DataBuffer=="ShootHeavy=") {
-        check_ShootHeavy = true ;
-        ReactionFile >> DataBuffer;
-        if (atof(DataBuffer.c_str()) == 1) ShootHeavy = true ;
-        if (ShootHeavy)    G4cout << "Shoot Heavy particle      : yes" << G4endl;
-        else           G4cout << "Shoot Heavy particle      : no"  << G4endl;
-      }
-      
-      
-      ///////////////////////////////////////////////////
-      //   If no Transfert Token and no comment, toggle out
-      else
-          {ReadingStatus = false; G4cout << "WARNING : Wrong Token Sequence: Getting out " << G4endl ;}
-      
-      ///////////////////////////////////////////////////
-      //   If all Token found toggle out
-      if(check_Beam && check_Target && check_Light && check_Heavy && check_ExcitationEnergyLight && check_ExcitationEnergyHeavy
-        && check_CrossSectionPath && check_ShootLight && check_ShootHeavy){
-        ReadingStatus = false ;
-        G4cout << "////////////////////////////////" << G4endl;
-      }
-    }
-    
-    
-  }
-  
-  SetEverything( Beam,
-                Target,
-                Light,
-                Heavy,
-                ExcitationEnergyLight,
-                ExcitationEnergyHeavy,
-                ShootLight,
-                ShootHeavy,
-                CrossSectionPath,
-                CSHalfOpenAngleMin/deg,
-                CSHalfOpenAngleMax/deg);
-  
-  ReactionFile.close();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -289,7 +109,7 @@ void EventGeneratorTwoBodyReaction::GenerateEvent(G4Event* anEvent){
     G4int LightAx = m_Reaction->GetNucleus3()->GetA();
         
     if (m_Target != 0) {
-      //m_Target->WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(LightZx,LightAx, 0.) ,0, 1*GeV);
+      m_Target->WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(LightZx,LightAx, 0.) ,0, 2*m_Reaction->GetBeamEnergy());
     }
   }
  
@@ -407,25 +227,3 @@ void EventGeneratorTwoBodyReaction::GenerateEvent(G4Event* anEvent){
   //Add the particle to the particle stack
   m_ParticleStack->AddParticleToStack(HeavyParticle);
 }
-
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventGeneratorTwoBodyReaction::SetEverything(string name1,                // Beam nuclei
-                                                  string name2,                // Target nuclei
-                                                  string name3,                // Product of reaction
-                                                  string name4,                // Product of reaction
-                                                  double ExcitationEnergyLight,// Excitation of Light Nuclei
-                                                  double ExcitationEnergyHeavy,// Excitation of Heavy Nuclei
-                                                  bool   ShootLight,
-                                                  bool   ShootHeavy,
-                                                  string Path,
-                                                  double CSThetaMin,
-                                                  double CSThetaMax)
-{
-  m_Reaction = new Reaction(name1, name2, name3, name4, 0,ExcitationEnergyLight, ExcitationEnergyHeavy, Path, CSThetaMin, CSThetaMax);
-  m_ShootLight       = ShootLight;
-  m_ShootHeavy       = ShootHeavy;
-  m_HalfOpenAngleMin = CSThetaMin;
-  m_HalfOpenAngleMax = CSThetaMax;
-}
-

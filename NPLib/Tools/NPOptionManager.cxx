@@ -51,6 +51,7 @@ NPOptionManager::NPOptionManager(int argc, char** argv)
   fOutputFileName             = fDefaultOutputFileName;
   fRunToReadFileName          = fDefaultRunToReadFileName;
   fCalibrationFileName        = fDefaultCalibrationFileName;
+  fVerboseLevel               = 1;
   fDisableAllBranchOption = false;
   fInputPhysicalTreeOption = false;
   
@@ -61,29 +62,33 @@ NPOptionManager::NPOptionManager(int argc, char** argv)
     
     else if (argument == "--event-generator" && argc >= i + 1)    fReactionFileName    = argv[i+1] ;
     
-    else if (argument == "-E" && argc >= i + 1)                  fReactionFileName    = argv[i+1] ;
+    else if (argument == "-E" && argc >= i + 1)                   fReactionFileName    = argv[i+1] ;
     
-    else if (argument == "--detector" && argc >= i + 1)    fDetectorFileName    = argv[i+1] ;
+    else if (argument == "--detector" && argc >= i + 1)           fDetectorFileName    = argv[i+1] ;
     
-    else if (argument == "-D" && argc >= i + 1)    fDetectorFileName    = argv[i+1] ;
+    else if (argument == "-D" && argc >= i + 1)                   fDetectorFileName    = argv[i+1] ;
+        
+    else if (argument == "--output" && argc >= i + 1)             fOutputFileName      = argv[i+1] ;
     
-    else if (argument == "--output" && argc >= i + 1)    fOutputFileName      = argv[i+1] ;
+    else if (argument == "-O" && argc >= i + 1)                   fOutputFileName      = argv[i+1] ;
     
-    else if (argument == "-O" && argc >= i + 1)    fOutputFileName      = argv[i+1] ;
+    else if (argument == "--run" && argc >= i + 1)                fRunToReadFileName   = argv[i+1] ;
     
-    else if (argument == "--run" && argc >= i + 1)  fRunToReadFileName   = argv[i+1] ;
+    else if (argument == "-R" && argc >= i + 1)                   fRunToReadFileName   = argv[i+1] ;
     
-    else if (argument == "-R" && argc >= i + 1)     fRunToReadFileName   = argv[i+1] ;
+    else if (argument == "--cal" && argc >= i + 1)                fCalibrationFileName = argv[i+1] ;
     
-    else if (argument == "--cal" && argc >= i + 1)  fCalibrationFileName = argv[i+1] ;
+    else if (argument == "-C" && argc >= i + 1)                   fCalibrationFileName = argv[i+1] ;
     
-    else if (argument == "-C" && argc >= i + 1)     fCalibrationFileName = argv[i+1] ;
+    else if (argument == "-V"  && argc >= i + 1)                  fVerboseLevel = atoi(argv[i+1]) ;
     
-    else if (argument == "--disable-branch")    fDisableAllBranchOption = true ;
+    else if (argument == "--verbose" && argc >= i + 1)            fVerboseLevel = atoi(argv[i+1]) ;
     
-    else if (argument == "--input-physical")    fInputPhysicalTreeOption = true ;
+    else if (argument == "--disable-branch")                      fDisableAllBranchOption = true ;
     
-    else if (argument == "-IP")    fInputPhysicalTreeOption = true ;
+    else if (argument == "--input-physical")                      fInputPhysicalTreeOption = true ;
+    
+    else if (argument == "-IP")                                   fInputPhysicalTreeOption = true ;
     
     //else ;
   }
@@ -231,6 +236,7 @@ void NPOptionManager::DisplayHelp()
   cout << "\t --detector　-D <arg>\t \t \t \t \t \t　Set arg as the detector configuration file" << endl ;
   cout << "\t --event-generator　-E <arg>\t \t \t \t \t　Set arg as the event generator file" << endl ;
   cout << "\t --output　-O <arg>\t \t \t \t \t \t　Set arg as the Output File Name (output tree)" << endl ;
+  cout << "\t --verbose -V <arg>\t \t \t \t \t \t \t　Set the verbose level of some of the object, 0 for nothing, 1 for normal printout. Error and warning are not affected" << endl ;
   cout << endl << "NPAnalysis only:"<<endl;
   cout << "\t --run -R <arg>\t \t \t \t \t \t \t　Set arg as the run to read file list" << endl  ;
   cout << "\t --cal -C <arg>\t \t \t \t \t \t \t　Set arg as the calibration file list" << endl ;

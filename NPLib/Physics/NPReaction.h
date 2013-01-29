@@ -34,12 +34,12 @@
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
-// C++ header
+  // C++ header
 #include <string>
 
 #include "NPNucleus.h"
 
-// ROOT header
+  // ROOT header
 #include "TLorentzVector.h"
 #include "TLorentzRotation.h"
 #include "TVector3.h"
@@ -54,12 +54,17 @@ namespace NPL{
     
   public:  // Constructors and Destructors
     Reaction();
-    Reaction(string name1, string name2, string name3, string name4, double BeamEnergy , double ExcitationEnergyLight, double ExcitationEnergyHeavy, string Path, double CSThetaMin = 0, double CSThetaMax = 180);
     ~Reaction();
     
   public:  // Various Method
-    void SetEveryThing(string name1, string name2, string name3, string name4, double BeamEnergy, double ExcitationEnergyLight, double ExcitationEnergyHeavy, string Path, double CSThetaMin, double CSThetaMax);
     void ReadConfigurationFile(string Path);
+    
+  private:
+    int fVerboseLevel;
+  
+  private: // use for Monte Carlo simulation
+    bool fshoot3;
+    bool fshoot4;
     
   private:
     Nucleus *fNuclei1;                 // Beam
@@ -72,17 +77,18 @@ namespace NPL{
     double   fExcitation3;             // Excitation energy in MeV
     double   fExcitation4;             // Excitation energy in MeV
     TH1F*    fCrossSectionHist;
-    double*  fCrossSection;             // Differential CrossSection
-    int      fCrossSectionSize;         // Size of array containing Differention CrossSection
-    double   fCrossSectionAngleMin;    // Minimum angle of the differential cross-section given by the user
-    double   fCrossSectionAngleMax;    // Maximum angle of the differential cross-section given by the user
-    
+
   public:
-    // Getters and Setters
+      // Getters and Setters
     void     SetBeamEnergy(double eBeam)      {fBeamEnergy = eBeam;     initializePrecomputeVariable();}
     void     SetThetaCM(double angle)         {fThetaCM = angle;        initializePrecomputeVariable();}
     void     SetExcitation3(double exci)      {fExcitation3 = exci; initializePrecomputeVariable();}
     void     SetExcitation4(double exci)      {fExcitation4 = exci; initializePrecomputeVariable();}
+      // For retro compatibility
+    void     SetExcitationLight(double exci)  {fExcitation3 = exci; initializePrecomputeVariable();}
+    void     SetExcitationHeavy(double exci)  {fExcitation4 = exci; initializePrecomputeVariable();}
+    void     SetVerboseLevel(int verbose)     {fVerboseLevel = verbose;}
+    
     double   GetBeamEnergy() const            {return fBeamEnergy;}
     double   GetThetaCM() const               {return fThetaCM;}
     double   GetExcitation3() const           {return fExcitation3;}
@@ -93,11 +99,13 @@ namespace NPL{
     Nucleus* GetNucleus3() const              {return fNuclei3;}
     Nucleus* GetNucleus4() const              {return fNuclei4;}
     TH1F*    GetCrossSectionHist() const      {return fCrossSectionHist;}
-    double*  GetCrossSection() const          {return fCrossSection;}
-    int      GetCrossSectionSize() const      {return fCrossSectionSize;}
-    double   GetCrossSectionAngleMin() const  {return fCrossSectionAngleMin;}
-    double   GetCrossSectionAngleMax() const  {return fCrossSectionAngleMax;}
-    
+    int      GetVerboseLevel()         const  {return fVerboseLevel;}
+    bool     GetShoot3()         const        {return fshoot3;}
+    bool     GetShoot4()         const        {return fshoot4;}
+
+  public:
+      // Modify the CS histo to so cross section shoot is within ]HalfOpenAngleMin,HalfOpenAngleMax[
+    void SetCSAngle(double CSHalfOpenAngleMin,double CSHalfOpenAngleMax);
     
 	private: // intern precompute variable
     void initializePrecomputeVariable();
@@ -106,7 +114,7 @@ namespace NPL{
     double m3;
     double m4;
     
-    // Lorents Vector
+      // Lorents Vector
     TLorentzVector fEnergyImpulsionLab_1;
     TLorentzVector fEnergyImpulsionLab_2;
     TLorentzVector fEnergyImpulsionLab_3;
@@ -119,7 +127,7 @@ namespace NPL{
     TLorentzVector fEnergyImpulsionCM_4;
     TLorentzVector fTotalEnergyImpulsionCM;
     
-    // Impulsion Vector3
+      // Impulsion Vector3
     TVector3 fImpulsionLab_1;
     TVector3 fImpulsionLab_2;
     TVector3 fImpulsionLab_3;
@@ -130,7 +138,7 @@ namespace NPL{
     TVector3 fImpulsionCM_3;
     TVector3 fImpulsionCM_4;
     
-    // CM Energy composante & CM impulsion norme
+      // CM Energy composante & CM impulsion norme
     Double_t ECM_1;
     Double_t ECM_2;
     Double_t ECM_3;
@@ -138,35 +146,33 @@ namespace NPL{
     Double_t pCM_3;
     Double_t pCM_4;
     
-    // Mandelstam variable
+      // Mandelstam variable
     Double_t s;
     
-    // Center of Mass Kinematic
+      // Center of Mass Kinematic
     Double_t BetaCM;
     
     
   public: // Kinematics
-    // Check that the reaction is alowed
+          // Check that the reaction is alowed
     bool CheckKinematic();
     
-    // Use fCrossSectionHist to shoot a Random ThetaCM and set fThetaCM to this value
+      // Use fCrossSectionHist to shoot a Random ThetaCM and set fThetaCM to this value
     double ShootRandomThetaCM();
     
-    // Compute ThetaLab and EnergyLab for product of reaction
+      // Compute ThetaLab and EnergyLab for product of reaction
     void KineRelativistic(double &ThetaLab3, double &KineticEnergyLab3,
                           double &ThetaLab4, double &KineticEnergyLab4);
     
-    // Return Excitation Energy
+      // Return Excitation Energy
     double ReconstructRelativistic(double EnergyLab, double ThetaLab);
     
-    
-    // Return ThetaCM
-    // EnergyLab: energy measured in the laboratory frame
-    // ExcitationEnergy: excitation energy previously calculated.
+      // Return ThetaCM
+      // EnergyLab: energy measured in the laboratory frame
+      // ExcitationEnergy: excitation energy previously calculated.
     double EnergyLabToThetaCM(double EnergyLab, double ThetaLab);
     
     void SetNuclei3(double EnergyLab, double ThetaLab);
-    
     
     TGraph* GetKinematicLine3();
     TGraph* GetKinematicLine4();
@@ -174,7 +180,7 @@ namespace NPL{
     TGraph* GetThetaLabVersusThetaCM();
     void PrintKinematic();
     
-    // Print private paremeter
+      // Print private paremeter
     void Print() const;
   };
 }

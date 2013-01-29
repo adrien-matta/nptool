@@ -35,7 +35,6 @@ TH1F* Read1DProfile(string filename,string HistName){
   
   bool type = OpenASCIIorROOTFile(filename, ASCII , ROOT);
   
-  
   // ASCII File case
   if(type){
     string LineBuffer;
@@ -57,7 +56,7 @@ TH1F* Read1DProfile(string filename,string HistName){
         w.push_back(wb);
       }
     }
-    
+
     // Look for the step size, min and max of the distribution
     double min = 0 ;
     double max = 0 ;
@@ -70,7 +69,7 @@ TH1F* Read1DProfile(string filename,string HistName){
       max = x[0] ;
       previous = x[0] ;
     }
-    
+
     for(unsigned int i = 0 ; i < size ; i++){
       if(x[i] > max) max = x[i] ;
       if(x[i] < min) min = x[i] ;
@@ -79,12 +78,12 @@ TH1F* Read1DProfile(string filename,string HistName){
       previous = x[i] ;
     }
     
-    
     h = new TH1F(HistName.c_str(),HistName.c_str(),step,min,max);
-    
+
     for(unsigned int i = 0 ; i < size ; i++){
       h->Fill(x[i],w[i]);
     }
+
   }
   
   // ROOT File case
@@ -95,6 +94,7 @@ TH1F* Read1DProfile(string filename,string HistName){
       exit(1);
     }
   }
+  
   return h;
 }
 
@@ -199,15 +199,21 @@ bool OpenASCIIorROOTFile(string filename, ifstream &ASCII , TFile &ROOT){
   // look for .root extension
   size_t pos = filename.find(".root");
   
+  string GlobalPath = getenv("NPTOOL");
+  string StandardPath = GlobalPath + "/Inputs/CrossSection/" + filename;
+
   // extension not found, file is assume to be a ASCII file
   if(pos > filename.size()) {
     ASCII.open(filename.c_str());
     
     if(!ASCII.is_open()){
-      cout << "Error, profile file " << filename << " not found " << endl ;
-      exit(1);
-      
+      ASCII.open(StandardPath.c_str());
+      if(!ASCII.is_open()){
+        cout << "Error, file " << filename << " not found " << endl ;
+        exit(1);
+      }
     }
+    
     return true;
   }
   

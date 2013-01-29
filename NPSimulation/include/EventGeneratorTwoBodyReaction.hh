@@ -11,7 +11,7 @@
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
  * Creation Date  : January 2009                                             *
- * Last update    : January 2011                                             *
+ * Last update    : January 2013                                             *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This event Generator is used to simulated two body two body reaction.    *
@@ -49,19 +49,6 @@ class EventGeneratorTwoBodyReaction : public VEventGenerator
       // Default constructor used to allocate memory
       EventGeneratorTwoBodyReaction();
 
-      // This is the constructor to be used
-      EventGeneratorTwoBodyReaction(string name1                  ,           // Beam nuclei
-            string name2                  ,        // Target nuclei
-            string name3                  ,        // Product of reaction
-            string name4                  ,        // Product of reaction
-            double ExcitationEnergyLight  ,        // Excitation of Light Nuclei
-            double ExcitationEnergyHeavy  ,        // Excitation of Heavy Nuclei
-            bool   ShootLight             ,
-            bool   ShootHeavy             ,
-            string Path,
-            double CSThetaMin,
-            double CSThetaMax);                          // Path of the differentiel Cross Section
-
       // Default Destructor
       virtual ~EventGeneratorTwoBodyReaction();
 
@@ -84,8 +71,6 @@ class EventGeneratorTwoBodyReaction : public VEventGenerator
 
    private: // Reaction and CrossSection Shoot
       Reaction* m_Reaction;
-      G4double  m_HalfOpenAngleMin;  // Min Half open angle of the source
-      G4double  m_HalfOpenAngleMax;  // Max Half open angle of the source
 
 
    private: // Beam Parameters
@@ -94,18 +79,6 @@ class EventGeneratorTwoBodyReaction : public VEventGenerator
       // Other methods
       void Print() const;
       void InitializeRootOutput();
-
-      void SetEverything(string name1                     ,         // Beam nuclei
-                         string name2                     ,        // Target nuclei
-                         string name3                     ,        // Product of reaction
-                         string name4                     ,        // Product of reaction
-                         double ExcitationEnergyLight     ,        // Excitation of Light Nuclei
-                         double ExcitationEnergyHeavy     ,        // Excitation of Heavy Nuclei
-                         bool   ShootLight                ,
-                         bool   ShootHeavy                ,
-                         string Path,
-                         double CSThetaMin,
-                         double CSThetaMax);                             // Path of the differentiel Cross Section
 };
 
 #endif

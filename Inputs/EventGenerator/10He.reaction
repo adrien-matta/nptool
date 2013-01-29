@@ -17,7 +17,7 @@ Beam
   %XThetaXProfilePath=
   %YPhiYProfilePath=
 
-%%Beam energy given in MeV ; Excitation in MeV
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 TwoBodyReaction
 	Beam= 11Li
@@ -26,29 +26,34 @@ TwoBodyReaction
 	Heavy= 10He
 	ExcitationEnergyLight= 0.0
 	ExcitationEnergyHeavy= 10.0
-  CrossSectionPath= 11Li(d,3He)10He.txt	
+  CrossSectionPath= 11Li(d,3He)10He.txt	CS10He
 	ShootLight= 1
 	ShootHeavy= 1
+  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
 ParticleDecay 10He
-    Daughter= 9He n
-    ExcitationEnergy= 0.5 0
-    DifferentialCrossSection= flat.txt
-    shoot= 1 1
+  Daughter= 9He n
+  ExcitationEnergy= 0.5 0
+  DifferentialCrossSection= flat.txt
+  shoot= 1 1
+    
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 GammaDecay 9He
-    Cascade
-        BranchingRatio= 30
-        Energies= 0.1
-        DifferentialCrossSection= flat.txt
-    Cascade
-        BranchingRatio= 70
-        Energies= 0.2 0.3
+  Cascade
+    BranchingRatio= 30
+    Energies= 0.1
+    DifferentialCrossSection= flat.txt
+  Cascade
+    BranchingRatio= 70
+    Energies= 0.2 0.3
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 ParticleDecay 9He
-    Daughter= 8He n
-    DifferentialCrossSection= flat.txt
-    shoot= 1 1
+  Daughter= 8He n
+  DifferentialCrossSection= flat.txt
+  shoot= 1 1
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
