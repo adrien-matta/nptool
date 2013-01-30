@@ -34,6 +34,7 @@
 
 // NPL
 #include "NPNucleus.h"
+#include "NPOptionManager.h"
 using namespace NPL;
 
 // ROOT
@@ -68,6 +69,8 @@ void EventGeneratorParticleDecay::ReadConfiguration(string Path,int Occurence){
   vector<bool>   shoot;
   string CSPath = "TGenPhaseSpace";
   
+  int VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
+
   //////////////////////////////////////////////////////////////////////////////////////////
   ifstream InputFile;
   InputFile.open(Path.c_str());
@@ -86,7 +89,7 @@ void EventGeneratorParticleDecay::ReadConfiguration(string Path,int Occurence){
       TokkenOccurence++;
       if(TokkenOccurence==Occurence){
         ReadingStatusParticleDecay = true ;
-        G4cout << "///////////////////////////////////////// " << G4endl;
+        if(VerboseLevel==1) G4cout << "///////////////////////////////////////// " << G4endl;
         // Get the nuclei name
         LineStream.clear();
         LineStream.str(LineBuffer);
@@ -94,7 +97,7 @@ void EventGeneratorParticleDecay::ReadConfiguration(string Path,int Occurence){
         DataBuffer.erase();
         LineStream >> DataBuffer;
         m_MotherNucleiName = DataBuffer ;
-        G4cout << "Particle Decay for " << m_MotherNucleiName << G4endl;
+        if(VerboseLevel==1) G4cout << "Particle Decay for " << m_MotherNucleiName << G4endl;
       }
     }
     
@@ -116,13 +119,13 @@ void EventGeneratorParticleDecay::ReadConfiguration(string Path,int Occurence){
         getline(InputFile, LineBuffer);
         LineStream.clear();
         LineStream.str(LineBuffer);
-        G4cout << "    Daughter: " ;
+        if(VerboseLevel==1) G4cout << "    Daughter: " ;
         while(LineStream >> DataBuffer){
           DaughterName.push_back(DataBuffer);
-          G4cout << DataBuffer << " " ;
+          if(VerboseLevel==1)G4cout << DataBuffer << " " ;
         }
         
-        G4cout << G4endl;
+        if(VerboseLevel==1)G4cout << G4endl;
         
       }
       
@@ -134,19 +137,19 @@ void EventGeneratorParticleDecay::ReadConfiguration(string Path,int Occurence){
         getline(InputFile, LineBuffer);
         LineStream.clear();
         LineStream.str(LineBuffer);
-        G4cout << "    Excitation Energy: " ;
+        if(VerboseLevel==1) G4cout << "    Excitation Energy: " ;
         while(LineStream >> DataBuffer){
           ExcitationEnergy.push_back( atof(DataBuffer.c_str()) );
-          G4cout << DataBuffer << " " ;
+          if(VerboseLevel==1) G4cout << DataBuffer << " " ;
         }
         
-        G4cout << G4endl;
+       if(VerboseLevel==1) G4cout << G4endl;
       }
       
       else if(DataBuffer == "DifferentialCrossSection=") {
         check_CrossSection = true;
         InputFile >> CSPath ;
-        G4cout << "    Cross Section: " << CSPath << G4endl;
+        if(VerboseLevel==1) G4cout << "    Cross Section: " << CSPath << G4endl;
       }
       
       else if(DataBuffer == "shoot=") {
@@ -157,13 +160,13 @@ void EventGeneratorParticleDecay::ReadConfiguration(string Path,int Occurence){
         getline(InputFile, LineBuffer);
         LineStream.clear();
         LineStream.str(LineBuffer);
-        G4cout << "    Shoot Particle: " ;
+        if(VerboseLevel==1) G4cout << "    Shoot Particle: " ;
         while(LineStream >> DataBuffer){
           shoot.push_back( atof(DataBuffer.c_str()) );
-          G4cout << DataBuffer << " " ;
+          if(VerboseLevel==1)G4cout << DataBuffer << " " ;
         }
         
-        G4cout << G4endl;
+        if(VerboseLevel==1)G4cout << G4endl;
       }
       
       //////////////////////////////////////////////////////
@@ -182,7 +185,7 @@ void EventGeneratorParticleDecay::ReadConfiguration(string Path,int Occurence){
     }
   }
   
-  G4cout << "///////////////////////////////////////// " << G4endl;
+  if(VerboseLevel==1) G4cout << "///////////////////////////////////////// " << G4endl;
   InputFile.close();
 }
 
@@ -375,12 +378,15 @@ void EventGeneratorParticleDecay::SetDecay(vector<string> DaughterName, vector<b
     ifstream CSFile;
     CSFile.open( StandardPath.c_str() );
     
-    if(CSFile.is_open()) cout << "Reading Cross Section File " << m_DifferentialCrossSection << endl;
-    
+    if(CSFile.is_open() ){
+      if(NPOptionManager::getInstance()->GetVerboseLevel()==1)
+      cout << "Reading Cross Section File " << m_DifferentialCrossSection << endl;
+    }
     // In case the file is not found in the standard path, the programm try to interpret the file name as an absolute or relative file path.
     else{
       CSFile.open( m_DifferentialCrossSection.c_str() );
-      if(CSFile.is_open()) {
+      if(CSFile.is_open()){
+       if( NPOptionManager::getInstance()->GetVerboseLevel()==1)
         cout << "Reading Cross Section File " << m_DifferentialCrossSection << endl;
       }
       

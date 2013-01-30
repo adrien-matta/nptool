@@ -34,6 +34,29 @@ using namespace std ;
 class TInitialConditions : public TObject
 {
 private:
+  /*
+  // Incident beam parament
+  double fIC_Incident_Emittance_Phi;
+  double fIC_Incident_Emittance_Theta;
+  double fIC_Incident_Initial_Energy;
+  
+  // Beam status at the initial interaction point
+  double fIC_Interaction_Energy;
+  double fIC_Interaction_Position_X;
+  double fIC_Interaction_Position_Y;
+  double fIC_Interaction_Position_Z;
+  
+  // emmitted particle
+  vector<string> fIC_Particle_Name;
+  vector<string> fIC_Process_Name;
+  vector<double> fIC_ThetaCM;
+  vector<double> fIC_Kinetic_Energy;
+  vector<double> fIC_Momentum_Direction_X;
+  vector<double> fIC_Momentum_Direction_Y;
+  vector<double> fIC_Momentum_Direction_Z;
+  
+  */
+  
    /*
     // Beam
     TLorentzVector fIC_Beam_LV;

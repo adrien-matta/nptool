@@ -30,6 +30,9 @@
 // NPS
 #include "Particle.hh"
 
+// NPL
+#include "NPOptionManager.h"
+
 // G4 headers including CLHEP headers
 // for generating random numbers
 #include "Randomize.hh"
@@ -63,7 +66,9 @@ void EventGeneratorGammaDecay::ReadConfiguration(string Path, int Occurence){
     bool check_BranchingRatio = false;
     bool check_CSPath = false ;
     bool check_created = false;
-    
+  
+    int VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
+  
     //////////////////////////////////////////////////////////////////////////////////////////
     ifstream InputFile;
     InputFile.open(Path.c_str());
@@ -80,7 +85,7 @@ void EventGeneratorGammaDecay::ReadConfiguration(string Path, int Occurence){
             TokenOccurence++;
             if (TokenOccurence == Occurence) {
                 ReadingStatusGammaDecay = true ;
-                G4cout << "///////////////////////////////////////// " << G4endl;
+                if(VerboseLevel==1) G4cout << "///////////////////////////////////////// " << G4endl;
                 // Get the nuclei name
                 LineStream.clear();
                 LineStream.str(LineBuffer);
@@ -88,7 +93,7 @@ void EventGeneratorGammaDecay::ReadConfiguration(string Path, int Occurence){
                 DataBuffer.erase();
                 LineStream >> DataBuffer;
                 m_NucleiName = DataBuffer ;
-                G4cout << "Gamma Decay for " << m_NucleiName << G4endl;
+                if(VerboseLevel==1) G4cout << "Gamma Decay for " << m_NucleiName << G4endl;
             }
         }
         
@@ -102,7 +107,7 @@ void EventGeneratorGammaDecay::ReadConfiguration(string Path, int Occurence){
             else if (DataBuffer == "Cascade") {
                 CascadeStatus = true ;
                 NumberOfCascade++;
-                G4cout << "  Cascade " << NumberOfCascade << G4endl;
+                if(VerboseLevel==1) G4cout << "  Cascade " << NumberOfCascade << G4endl;
                 
                 LineStream.clear();
                 LineStream.str(LineBuffer);
@@ -134,22 +139,22 @@ void EventGeneratorGammaDecay::ReadConfiguration(string Path, int Occurence){
                         LineStream >> DataBuffer ;
                         LineStream >> DataBuffer ;
                         BranchingRatio = atof(DataBuffer.c_str());
-                        G4cout << "    Branching Ratio: " << atof(DataBuffer.c_str()) << G4endl;
+                        if(VerboseLevel==1) G4cout << "    Branching Ratio: " << atof(DataBuffer.c_str()) << G4endl;
                         
                     }
                     
                     else if(DataBuffer == "Energies=") {
                         check_E = true;
-                        G4cout << "    Energies: " ;
+                        if(VerboseLevel==1) G4cout << "    Energies: " ;
                         LineStream.clear();
                         LineStream.str(LineBuffer);
                         LineStream >> DataBuffer;
                         while(LineStream >> DataBuffer){
                             E.push_back(atof(DataBuffer.c_str()));
-                            G4cout << atof(DataBuffer.c_str()) << " ";    
+                            if(VerboseLevel==1)G4cout << atof(DataBuffer.c_str()) << " ";    
                             
                         }
-                        G4cout << G4endl;
+                        if(VerboseLevel==1)G4cout << G4endl;
                     }
                     
                     else if(DataBuffer == "DifferentialCrossSection="){
@@ -157,7 +162,7 @@ void EventGeneratorGammaDecay::ReadConfiguration(string Path, int Occurence){
                         LineStream.str(LineBuffer);
                         LineStream >> DataBuffer >> DataBuffer ;
                         CSPath = DataBuffer;
-                        G4cout << "    Cross Section Path: " << DataBuffer << G4endl;
+                        if(VerboseLevel==1) G4cout << "    Cross Section Path: " << DataBuffer << G4endl;
                         check_CSPath = true;
                     }
                     
@@ -184,7 +189,7 @@ void EventGeneratorGammaDecay::ReadConfiguration(string Path, int Occurence){
             if(InputFile.eof()) {ReadingStatusGammaDecay=false;check_created=true;}
         }
     }
-    G4cout << "///////////////////////////////////////// " << G4endl;
+    if(VerboseLevel==1) G4cout << "///////////////////////////////////////// " << G4endl;
     InputFile.close();
     PrepareCascade();
 }
@@ -362,14 +367,23 @@ void EventGeneratorGammaDecay::PrepareCascade(){
             ifstream CSFile;
             CSFile.open( StandardPath.c_str() );
             
-            if(CSFile.is_open()) cout << "Reading Cross Section File " << m_CrossSectionPath[i] << endl;
-            
+          if(CSFile.is_open()){
+            if( NPOptionManager::getInstance()->GetVerboseLevel()==1)
+              cout << "Reading Cross Section File " << m_CrossSectionPath[i] << endl;
+          }
+          
             // In case the file is not found in the standard path, the programm try to interpret the file name as an absolute or relative file path.
             else{
                 CSFile.open( m_CrossSectionPath[i].c_str() );
-                if(CSFile.is_open()) { cout << "Reading Cross Section File " << m_CrossSectionPath[i] << endl;}
-                
-                else {cout << "Cross Section File " << m_CrossSectionPath[i] << " not found" << endl;return;}
+                if(CSFile.is_open()){
+                  if( NPOptionManager::getInstance()->GetVerboseLevel()==1)
+                    cout << "Reading Cross Section File " << m_CrossSectionPath[i] << endl;
+                }
+              
+                else {
+                  cout << "EROOR : Cross Section File " << m_CrossSectionPath[i] << " not found" << endl;
+                  exit(1);
+                }
             }
             
             double CSBuffer,AngleBuffer;

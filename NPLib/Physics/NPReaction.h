@@ -50,6 +50,9 @@
 using namespace std;
 
 namespace NPL{
+  // Needed to avoid warnig from multiple Th1 with same name
+  static int Global_ReactionHistOffset=0; 
+  
   class Reaction{
     
   public:  // Constructors and Destructors

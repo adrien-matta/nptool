@@ -40,6 +40,9 @@ using namespace std;
 using namespace NPL;
 
 namespace NPL{
+  // Needed to avoid warnig from multiple Th1 with same name
+  static int Global_BeamHistOffset=0;
+  
   class Beam{
     
   public:  // Constructors and Destructors

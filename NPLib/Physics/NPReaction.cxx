@@ -69,7 +69,9 @@ Reaction::Reaction(){
   fQValue               = 0;
   fVerboseLevel         = NPOptionManager::getInstance()->GetVerboseLevel();
   initializePrecomputeVariable();
-  fCrossSectionHist = new TH1F("Reaction_CS","Reaction_CS",180,0,180);
+  // Needed to avoid warning at compilation, not very clean...
+  Global_BeamHistOffset=Global_BeamHistOffset;
+  fCrossSectionHist = new TH1F(Form("Reaction_CS%i",Global_ReactionHistOffset++),"Reaction_CS",180,0,180);
   fshoot3=true;
   fshoot4=true;
 }

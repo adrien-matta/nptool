@@ -42,8 +42,7 @@
 using namespace NPL;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-Beam::Beam()
-{
+Beam::Beam(){
   fBeamNucleus = new Nucleus();
   fEnergy = 0;
   fSigmaEnergy = -1 ;
@@ -63,14 +62,14 @@ Beam::Beam()
   fTargetZ = 0 ;
   fVerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
   // case of user given distribution
-  fEnergyHist  = new TH1F("EnergyHist","EnergyHist",1,0,1);
-  fXThetaXHist = new TH2F("XThetaXHis","XThetaXHis",1,0,1,1,0,1);
-  fYPhiYHist   = new TH2F("YPhiYHist","YPhiYHist",1,0,1,1,0,1);
+  Global_BeamHistOffset++;
+  fEnergyHist  = new TH1F(Form("EnergyHist%i",Global_BeamHistOffset),"EnergyHist",1,0,1);
+  fXThetaXHist = new TH2F(Form("XThetaXHis%i",Global_BeamHistOffset),"XThetaXHis",1,0,1,1,0,1);
+  fYPhiYHist   = new TH2F(Form("YPhiYHist%i",Global_BeamHistOffset),"YPhiYHist",1,0,1,1,0,1);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-Beam::~Beam()
-{
+Beam::~Beam(){
   delete fBeamNucleus ;
   delete fEnergyHist  ;
   delete fXThetaXHist ;
@@ -232,8 +231,10 @@ void Beam::ReadConfigurationFile(string Path){
       
       ///////////////////////////////////////////////////
       //   If no Beam Token and no comment, toggle out
-      else
-          {ReadingStatus = false; cout << "WARNING : Wrong Token Sequence: Getting out " << endl ;}
+      else{
+        cout << "ERROR : Wrong Token Sequence: Getting out " << endl ;
+        exit(1);
+      }
       
       ///////////////////////////////////////////////////
       if(  ( check_MeanX && check_MeanY && check_SigmaX && check_SigmaY && check_SigmaThetaX && check_SigmaPhiY && check_MeanThetaX && check_MeanPhiY) || ( check_XThetaXPath && check_YPhiYPath ) ){
@@ -250,10 +251,12 @@ void Beam::ReadConfigurationFile(string Path){
     }
   }
   
-  if( !check_BeamName || !check_AllEnergy || !check_AllEnergy )
-      {cout << "WARNING : Token Sequence Incomplete, Beam definition could not be Fonctionnal" << endl ;}
+  if( !check_BeamName || !check_AllEnergy || !check_AllEnergy ){
+    cout << "ERROR : Token Sequence Incomplete, Beam definition could not be Fonctionnal" << endl ;
+    exit(1);
+  }
   
-  cout << "///////////////////////////////////////////////////" << endl << endl ;
+  if(fVerboseLevel==1) cout << "///////////////////////////////////////////////////" << endl << endl ;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
