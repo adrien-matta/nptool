@@ -79,8 +79,11 @@ public: // Getter and Setter
 
 public: // Particle management and shooting method
     // EventGenerator use this method to add particle in the stack
-    void AddParticleToStack(Particle);
-    
+    void AddParticleToStack(Particle&);
+  
+    // Add the Particle to the stack and fill Initial Condition Beam field 
+  void AddBeamParticleToStack(Particle&);
+  
     // Search for a specific particle in the stack
     Particle SearchAndRemoveParticle(string);
     

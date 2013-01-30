@@ -40,7 +40,6 @@ using namespace CLHEP;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorIsotropic::EventGeneratorIsotropic()
 {
-   m_InitConditions = new TInitialConditions();
 
    m_EnergyLow    =  0  ;
    m_EnergyHigh   =  0  ;
@@ -55,7 +54,6 @@ EventGeneratorIsotropic::EventGeneratorIsotropic()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorIsotropic::~EventGeneratorIsotropic()
 {
-   delete m_InitConditions;
 }
 
 
@@ -187,7 +185,6 @@ void EventGeneratorIsotropic::ReadConfiguration(string Path)
 void EventGeneratorIsotropic::GenerateEvent(G4Event* anEvent, G4ParticleGun* particleGun)
 {
    // Clear TInitialConditions
-   m_InitConditions->Clear();
 
    particleGun->SetParticleDefinition(m_particle);
 
@@ -209,28 +206,6 @@ void EventGeneratorIsotropic::GenerateEvent(G4Event* anEvent, G4ParticleGun* par
    particleGun->SetParticleEnergy(particle_energy)                                                ;
    particleGun->SetParticlePosition(G4ThreeVector(m_x0, m_y0, m_z0))                              ;
 
-   // Fill TInitialConditions class
-   // Interaction vertex
-   m_InitConditions->SetICPositionX(m_x0 / mm);
-   m_InitConditions->SetICPositionY(m_y0 / mm);
-   m_InitConditions->SetICPositionZ(m_z0 / mm);
-   // Incident "particles"
-   // Everything is zero for a source
-   m_InitConditions->SetICIncidentEmittanceTheta(0);
-   m_InitConditions->SetICIncidentEmittancePhi(0);
-   m_InitConditions->SetICIncidentAngleTheta(0);
-   m_InitConditions->SetICIncidentAnglePhi(0);
-   m_InitConditions->SetICIncidentEnergy(0);
-   // Emitted particle angles
-   m_InitConditions->SetICEmittedAngleThetaCM(theta / deg);
-   m_InitConditions->SetICEmittedAngleThetaLabIncidentFrame(theta / deg);
-   m_InitConditions->SetICEmittedAnglePhiIncidentFrame(phi / deg);
-   m_InitConditions->SetICEmittedAngleThetaLabWorldFrame(theta / deg);
-   m_InitConditions->SetICEmittedAnglePhiWorldFrame(phi / deg);
-   // Emitted particle energy
-   m_InitConditions->SetICEmittedEnergy(particle_energy / MeV);
-
-
    //Shoot particle
    particleGun->GeneratePrimaryVertex(anEvent)                                                    ;
 }
@@ -240,7 +215,5 @@ void EventGeneratorIsotropic::GenerateEvent(G4Event* anEvent, G4ParticleGun* par
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorIsotropic::InitializeRootOutput()
 {
-   RootOutput *pAnalysis = RootOutput::getInstance();
-   TTree *pTree = pAnalysis->GetTree();
-   pTree->Branch("InitialConditions", "TInitialConditions", &m_InitConditions);
+
 }

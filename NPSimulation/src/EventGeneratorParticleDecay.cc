@@ -247,6 +247,7 @@ void EventGeneratorParticleDecay::GenerateEvent(G4Event* anEvent){
                                                       FirstDaughterLV.Z()   );
       
       Particle FirstDaughterParticle( m_DaughterNuclei[0],
+                                     ThetaCM,
                                      FirstDaughterLV.E()-m_DaughterNuclei[0]->GetPDGMass(),
                                      DaughterDirection.unit(),
                                      decayingParticle.GetParticlePosition(),
@@ -257,6 +258,7 @@ void EventGeneratorParticleDecay::GenerateEvent(G4Event* anEvent){
                                         SecondDaughterLV.Z()   );
       
       Particle SecondDaughterParticle( m_DaughterNuclei[1],
+                                      ThetaCM+M_PI,
                                       SecondDaughterLV.E()-m_DaughterNuclei[1]->GetPDGMass(),
                                       DaughterDirection.unit(),
                                       decayingParticle.GetParticlePosition(),
@@ -288,12 +290,13 @@ void EventGeneratorParticleDecay::GenerateEvent(G4Event* anEvent){
         
         daughterLV = m_TPhaseSpace.GetDecay(i);
         G4ThreeVector daughterDirection = G4ThreeVector( daughterLV->X()   ,
-                                                        daughterLV->Y()   ,
-                                                        daughterLV->Z()   );
+                                                         daughterLV->Y()   ,
+                                                         daughterLV->Z()   );
         
         KineticEnergy   = daughterLV->E()-m_Masses[i] ;
         
         Particle daughterParticle( m_DaughterNuclei[i],
+                                  -1,
                                   KineticEnergy*GeV,
                                   daughterDirection.unit(),
                                   decayingParticle.GetParticlePosition(),

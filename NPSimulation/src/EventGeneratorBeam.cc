@@ -52,6 +52,7 @@ EventGeneratorBeam::EventGeneratorBeam(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorBeam::~EventGeneratorBeam(){
   delete m_InitConditions;
+  delete m_Beam;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -99,21 +100,22 @@ void EventGeneratorBeam::GenerateEvent(G4Event* anEvent){
   G4double Xdir = sin(Beam_thetaX);
   G4double Ydir = sin(Beam_phiY);
   G4double Zdir = cos(Beam_thetaX) + cos(Beam_phiY);
-  G4ThreeVector BeamDir = G4ThreeVector(Xdir,Ydir,Zdir)   ;
-  
+  G4ThreeVector BeamDir(Xdir,Ydir,Zdir);
+  G4ThreeVector BeamPos(x0,y0,z0);
   Beam_theta = BeamDir.theta()    ;
   Beam_phi   = BeamDir.phi()      ;
   FinalBeamEnergy = m_Target->SlowDownBeam(m_particle, InitialBeamEnergy,z0,Beam_theta);
   ///////////////////////////////////////////////////////
   ///// Add the Beam particle to the particle Stack /////
   ///////////////////////////////////////////////////////
-  
   Particle BeamParticle( m_particle,
-                         FinalBeamEnergy,
-                         BeamDir.unit(),
-                         G4ThreeVector(x0,y0,z0),
-                         1);
-  m_ParticleStack->AddParticleToStack(BeamParticle);
+                        InitialBeamEnergy,
+                        FinalBeamEnergy,
+                        BeamDir.unit(),
+                        BeamPos,
+                        1);
+  
+  m_ParticleStack->AddBeamParticleToStack(BeamParticle);
 
   }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

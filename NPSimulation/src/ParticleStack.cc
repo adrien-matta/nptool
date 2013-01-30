@@ -29,14 +29,17 @@
 // NPL
 #include "RootOutput.h"
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 ParticleStack* ParticleStack::instance = 0 ;
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 ParticleStack* ParticleStack::getInstance()
 {
   if (instance == 0) instance = new ParticleStack();
   return instance ;
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 ParticleStack::ParticleStack(){
   
   m_particleGun  = new G4ParticleGun(1);
@@ -56,37 +59,61 @@ ParticleStack::~ParticleStack(){
   
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 vector<Particle> ParticleStack::GetParticleStack(){
   return m_ParticleStack;
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void ParticleStack::SetParticleStack(vector<Particle> particle_stack){
   m_ParticleStack = particle_stack;
 }
 
-void ParticleStack::AddParticleToStack(Particle particle){
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void ParticleStack::AddParticleToStack(Particle& particle){
   m_ParticleStack.push_back(particle);
-  m_InitialConditions->SetICPositionX(particle.GetParticlePosition().x());
-  m_InitialConditions->SetICPositionY(particle.GetParticlePosition().y());
-  m_InitialConditions->SetICPositionZ(particle.GetParticlePosition().z());
-  m_InitialConditions->SetICEmittedAngleThetaLabWorldFrame(particle.GetParticleMomentumDirection().theta());
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void ParticleStack::AddBeamParticleToStack(Particle& particle){
+  m_InitialConditions->Clear();
+  m_ParticleStack.push_back(particle);
+  
+  // Incident beam parameter
+  m_InitialConditions-> SetIncidentParticleName   (particle.GetParticleDefinition()->GetParticleName());
+  m_InitialConditions-> SetIncidentKineticEnergy  (particle. GetParticleThetaCM());
+  
+  G4ThreeVector U(1,0,0);
+  G4ThreeVector V(0,1,0);
+  
+  m_InitialConditions-> SetIncidentEmittanceTheta (particle.GetParticleMomentumDirection().angle(U)/deg);
+  m_InitialConditions-> SetIncidentEmittancePhi   (particle.GetParticleMomentumDirection().angle(V)/deg);
+  
+  // Beam status at the initial interaction point
+  m_InitialConditions-> SetInteractionKineticEnergy (particle. GetParticleKineticEnergy());
+  m_InitialConditions-> SetInteractionPositionX     (particle. GetParticlePosition().x());
+  m_InitialConditions-> SetInteractionPositionY     (particle. GetParticlePosition().y());
+  m_InitialConditions-> SetInteractionPositionZ     (particle. GetParticlePosition().x());
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 Particle ParticleStack::SearchAndRemoveParticle(string name){
   
-  for(unsigned int i = 0 ; i < m_ParticleStack.size() ; i++){
+  unsigned int size = m_ParticleStack.size();
+  
+  for(unsigned int i = 0 ; i < size ; i++){
     string ParticleName = m_ParticleStack[i].GetParticleDefinition()->GetParticleName();
-    if(ParticleName.compare(0, name.length(), name) == 0)
-        {
+    if(ParticleName.compare(0, name.length(), name) == 0){
       Particle my_Particule = m_ParticleStack[i];
       m_ParticleStack.erase(m_ParticleStack.begin()+i);
       return my_Particule;
-        }
+    }
   }
   
   return Particle();
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 string ParticleStack::ChangeNameToG4Standard(string OriginalName){
   string NumberOfMass ;
   string Nucleid;
@@ -94,7 +121,7 @@ string ParticleStack::ChangeNameToG4Standard(string OriginalName){
   for (unsigned int i = 0; i < OriginalName.length(); i++) {
     ostringstream character;
     character << OriginalName[i];
-    if (character.str()=="0") NumberOfMass+="0";
+    if      (character.str()=="0") NumberOfMass+="0";
     else if (character.str()=="1") NumberOfMass+="1";
     else if (character.str()=="2") NumberOfMass+="2";
     else if (character.str()=="3") NumberOfMass+="3";
@@ -162,7 +189,7 @@ string ParticleStack::ChangeNameToG4Standard(string OriginalName){
   
   // Special case for light particles
   string FinalName=Nucleid+NumberOfMass;
-  if (FinalName=="H1")       FinalName="proton";
+  if      (FinalName=="H1")       FinalName="proton";
   else if (FinalName=="H2")       FinalName="deuteron";
   else if (FinalName=="H3")       FinalName="triton";
   else if (FinalName=="He4")      FinalName="alpha";
@@ -179,8 +206,11 @@ string ParticleStack::ChangeNameToG4Standard(string OriginalName){
   return(FinalName);
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void ParticleStack::ShootAllParticle(G4Event* anEvent){
-  for(unsigned int i = 0 ; i < m_ParticleStack.size() ; i++){
+  unsigned int size = m_ParticleStack.size();
+  
+  for(unsigned int i = 0 ; i < size ; i++){
     
     if(m_ParticleStack[i].GetShootStatus()){
       m_particleGun->SetParticleDefinition(m_ParticleStack[i].GetParticleDefinition());
@@ -188,8 +218,15 @@ void ParticleStack::ShootAllParticle(G4Event* anEvent){
       m_particleGun->SetParticleMomentumDirection(m_ParticleStack[i].GetParticleMomentumDirection());
       m_particleGun->SetParticlePosition(m_ParticleStack[i].GetParticlePosition());
       m_particleGun->GeneratePrimaryVertex(anEvent);
+      
+      //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+      m_InitialConditions-> SetParticleName       ( m_ParticleStack[i].GetParticleDefinition()->GetParticleName()) ;
+      m_InitialConditions-> SetThetaCM            ( m_ParticleStack[i].GetParticleThetaCM()/deg);
+      m_InitialConditions-> SetKineticEnergy      ( m_ParticleStack[i].GetParticleKineticEnergy());
+      m_InitialConditions-> SetMomentumDirectionX ( m_ParticleStack[i].GetParticleMomentumDirection().x());
+      m_InitialConditions-> SetMomentumDirectionY ( m_ParticleStack[i].GetParticleMomentumDirection().y());
+      m_InitialConditions-> SetMomentumDirectionZ ( m_ParticleStack[i].GetParticleMomentumDirection().z());
     }
   }
   m_ParticleStack.clear();
-  m_InitialConditions->Clear();
 }

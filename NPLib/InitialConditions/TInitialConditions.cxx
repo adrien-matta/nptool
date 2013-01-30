@@ -30,69 +30,72 @@ using namespace std;
 
 ClassImp(TInitialConditions)
 
-TInitialConditions::TInitialConditions()
-{
-   // Default constructor
-
-   Clear();
+TInitialConditions::TInitialConditions(){
+  // Default constructor
+  Clear();
 }
 
-TInitialConditions::~TInitialConditions()
-{}
-
-void TInitialConditions::Clear()
-{
-   // Incident particle properties (before interactions in the target)
-   // Vertex of interaction
-   fIC_Position_X.clear();
-   fIC_Position_Y.clear();
-   fIC_Position_Z.clear();
-   // Theta and Phi angles for the emittance
-   fIC_Incident_Emittance_Theta.clear();
-   fIC_Incident_Emittance_Phi.clear();
-   // Incident particle angles
-   fIC_Incident_Angle_Theta.clear();
-   fIC_Incident_Angle_Phi.clear();
-   // Incident particle energy
-   fIC_Incident_Energy.clear();
-
-   // Emitted particle angles
-   fIC_Emitted_Angle_ThetaCM.clear();
-   fIC_Emitted_Angle_ThetaLab_IncidentFrame.clear();
-   fIC_Emitted_Angle_Phi_IncidentFrame.clear();
-   fIC_Emitted_Angle_ThetaLab_WorldFrame.clear();
-   fIC_Emitted_Angle_Phi_WorldFrame.clear();
-   // Emitted particle energy
-   fIC_Emitted_Energy.clear();
+TInitialConditions::~TInitialConditions(){
 }
 
+void TInitialConditions::Clear(){
+  // Incident beam parameter
+  fIC_Incident_Particle_Name="";
+  fIC_Incident_Emittance_Phi=-1;
+  fIC_Incident_Emittance_Theta=-1;
+  fIC_Incident_Kinetic_Energy=-1;
+  
+  // Beam status at the initial interaction point
+  fIC_Interaction_Kinetic_Energy=-1;
+  fIC_Interaction_Position_X=-1;
+  fIC_Interaction_Position_Y=-1;
+  fIC_Interaction_Position_Z=-1;
+  
+  // emmitted particle
+  fIC_Particle_Name.clear();
+  fIC_Process_Name.clear();
+  fIC_ThetaCM.clear();
+  fIC_Kinetic_Energy.clear();
+  fIC_Momentum_Direction_X.clear();
+  fIC_Momentum_Direction_Y.clear();
+  fIC_Momentum_Direction_Z.clear();
+}
 
-
-void TInitialConditions::Dump() const
-{
-   cout << "XXXXXXXXXXXXX Initial conditions XXXXXXXXXXXXXXXX" << endl;
-
-   cout << "Vertex position : " << endl;
-   cout << "\tX : " << fIC_Position_X[0] << endl;  
-   cout << "\tY : " << fIC_Position_Y[0] << endl;  
-   cout << "\tZ : " << fIC_Position_Z[0] << endl;  
-   cout << "Theta and Phi angles for the emittance : " << endl;
-   cout << "\tTheta : " << fIC_Incident_Emittance_Theta[0] << endl;
-   cout << "\tPhi   : " << fIC_Incident_Emittance_Phi[0] << endl;
-   cout << "Incident particle angles : " << endl;
-   cout << "\tTheta : " << fIC_Incident_Angle_Theta[0] << endl;
-   cout << "\tPhi   : " << fIC_Incident_Angle_Phi[0] << endl;
-   cout << "Incident energy : " << endl;
-   cout << "\tEnergy : " << fIC_Incident_Energy[0] << endl;
-   cout << endl;
-   cout << "Emitted particle angles : " << endl;
-   cout << "\tTheta CM  : " << fIC_Emitted_Angle_ThetaCM[0] << endl;
-   cout << "  Incident frame :" << endl;
-   cout << "\tTheta Lab : " << fIC_Emitted_Angle_ThetaLab_IncidentFrame[0] << endl;
-   cout << "\tPhi       : " << fIC_Emitted_Angle_Phi_IncidentFrame[0] << endl;
-   cout << "  World frame :" << endl;
-   cout << "\tTheta Lab : " << fIC_Emitted_Angle_ThetaLab_WorldFrame[0] << endl;
-   cout << "\tPhi       : " << fIC_Emitted_Angle_Phi_WorldFrame[0] << endl;
-   cout << "Emitted energy : " << endl;
-   cout << "\tEnergy : " << fIC_Emitted_Energy[0] << endl;
+void TInitialConditions::Dump() const{
+  cout << "--------- Initial Condition Dump ---------" << endl ;
+  
+  // Incident beam parameter
+  cout << "\t ---- Incident Beam ---- " << endl;
+  cout << "\t Particle Name:  " << fIC_Incident_Particle_Name << endl;
+  cout << "\t Energy: " << fIC_Incident_Kinetic_Energy << endl;
+  cout << "\t Theta_X: " << fIC_Incident_Emittance_Theta << endl;
+  cout << "\t Phi_Y: " << fIC_Incident_Emittance_Phi << endl;
+  
+  
+  
+  // Beam status at the initial interaction point
+  cout << "\t ---- Interaction Point ---- " << endl;
+  cout << "\t Energy: " << fIC_Interaction_Kinetic_Energy << endl;
+  cout << "\t Position: ( "
+  << fIC_Interaction_Position_X << " ; "
+  << fIC_Interaction_Position_Y << " ; "
+  << fIC_Interaction_Position_Z << ")" << endl;
+  
+  
+  // emmitted particle
+  unsigned int size = fIC_Particle_Name.size();
+  for(unsigned int i = 0 ; i < size; i ++){
+    cout << "\t ---- Particle " << i << " ---- " << endl;
+    cout << "\t Particle Name" <<   fIC_Particle_Name[i] << endl;
+    //  cout << "\t Process Name" <<   fIC_Process_Name[i] << endl;
+    cout << "\t Theta CM" <<   fIC_ThetaCM[i] << endl;
+    cout << "\t Energy" <<   fIC_Kinetic_Energy[i] << endl;
+    cout << "\t Momentum Direction: ( "
+    << fIC_Momentum_Direction_X[i] << " ; "
+    << fIC_Momentum_Direction_Y[i] << " ; "
+    << fIC_Momentum_Direction_Z[i] << ")" << endl;
+    
+  }
+  
+  
 }

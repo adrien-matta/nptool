@@ -50,8 +50,6 @@
 using namespace std;
 
 namespace NPL{
-  // Needed to avoid warnig from multiple Th1 with same name
-  static int Global_ReactionHistOffset=0; 
   
   class Reaction{
     
@@ -91,6 +89,7 @@ namespace NPL{
     void     SetExcitationLight(double exci)  {fExcitation3 = exci; initializePrecomputeVariable();}
     void     SetExcitationHeavy(double exci)  {fExcitation4 = exci; initializePrecomputeVariable();}
     void     SetVerboseLevel(int verbose)     {fVerboseLevel = verbose;}
+    void     SetCrossSectionHist  (TH1F*  CrossSectionHist)     {delete fCrossSectionHist; fCrossSectionHist   = CrossSectionHist;}
     
     double   GetBeamEnergy() const            {return fBeamEnergy;}
     double   GetThetaCM() const               {return fThetaCM;}

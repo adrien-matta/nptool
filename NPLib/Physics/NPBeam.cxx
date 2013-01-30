@@ -35,6 +35,9 @@
 #include "NPFunction.h"
 #include "NPOptionManager.h"
 
+// ROOT Header
+#include "TDirectory.h"
+
 // Use CLHEP System of unit and Physical Constant
 #include "CLHEP/Units/GlobalSystemOfUnits.h"
 #include "CLHEP/Units/PhysicalConstants.h"
@@ -61,11 +64,16 @@ Beam::Beam(){
   fTargetAngle = 0 ;
   fTargetZ = 0 ;
   fVerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
+  
   // case of user given distribution
-  Global_BeamHistOffset++;
-  fEnergyHist  = new TH1F(Form("EnergyHist%i",Global_BeamHistOffset),"EnergyHist",1,0,1);
-  fXThetaXHist = new TH2F(Form("XThetaXHis%i",Global_BeamHistOffset),"XThetaXHis",1,0,1,1,0,1);
-  fYPhiYHist   = new TH2F(Form("YPhiYHist%i",Global_BeamHistOffset),"YPhiYHist",1,0,1,1,0,1);
+  // do that to avoid warning from multiple Hist with same name...
+  int offset = 0;
+  while(gDirectory->FindObjectAny(Form("EnergyHist_%i",offset))!=0)
+    ++offset;
+  
+  fEnergyHist  = new TH1F(Form("EnergyHist_%i",offset),"EnergyHist",1,0,1);
+  fXThetaXHist = new TH2F(Form("XThetaXHis_%i",offset),"XThetaXHis",1,0,1,1,0,1);
+  fYPhiYHist   = new TH2F(Form("YPhiYHist_%i",offset),"YPhiYHist",1,0,1,1,0,1);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -209,7 +217,7 @@ void Beam::ReadConfigurationFile(string Path){
         string FileName,HistName;
         ReactionFile >> FileName >> HistName;
         if(fVerboseLevel==1) cout << "Reading Energy profile file: " << FileName << endl;
-        fEnergyHist = Read1DProfile(FileName, HistName );
+        SetEnergyHist( Read1DProfile(FileName, HistName ));
       }
       
       else if (DataBuffer == "XThetaXProfilePath=") {
@@ -217,7 +225,7 @@ void Beam::ReadConfigurationFile(string Path){
         string FileName,HistName;
         ReactionFile >> FileName >> HistName;
         if(fVerboseLevel==1) cout << "Reading X-ThetaX profile file: " << FileName << endl;
-        fXThetaXHist = Read2DProfile(FileName, HistName );
+        SetXThetaXHist(Read2DProfile(FileName, HistName ) );
       }
       
       else if (DataBuffer == "YPhiYProfilePath=") {
@@ -225,7 +233,7 @@ void Beam::ReadConfigurationFile(string Path){
         string FileName,HistName;
         ReactionFile >> FileName >> HistName;
         if(fVerboseLevel==1) cout << "Reading Y-ThetaY profile file: " << FileName << endl;
-        fYPhiYHist = Read2DProfile(FileName, HistName );
+        SetYPhiYHist( Read2DProfile(FileName, HistName ));
       }
       
       

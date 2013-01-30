@@ -236,6 +236,7 @@ void EventGeneratorGammaDecay::GenerateEvent(G4Event*){
     = G4ParticleTable::GetParticleTable()->GetIon(decayingParticle.GetParticleDefinition()->GetAtomicNumber(), decayingParticle.GetParticleDefinition()->GetAtomicMass(), FinalExcitationEnergy*MeV);
     
     Particle FinalParticle = Particle(  FinalParticleDefition,
+                                        decayingParticle.GetParticleThetaCM(),
                                         decayingParticle.GetParticleKineticEnergy(),
                                         decayingParticle.GetParticleMomentumDirection(),
                                         decayingParticle.GetParticlePosition(),
@@ -294,7 +295,7 @@ void EventGeneratorGammaDecay::GenerateEvent(G4Event*){
                                         GammaLV.Py(),
                                         GammaLV.Pz());
         // Add the gamma to the stack
-        Particle gammaParticle(gammaDefinition,GammaLV.E(),gammaDirection, decayingParticle.GetParticlePosition());
+        Particle gammaParticle(gammaDefinition,theta,GammaLV.E(),gammaDirection, decayingParticle.GetParticlePosition());
         m_ParticleStack->AddParticleToStack(gammaParticle);
     }
 

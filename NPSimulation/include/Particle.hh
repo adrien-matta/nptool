@@ -28,33 +28,36 @@
 #include"G4ThreeVector.hh"
 
 class Particle{
-    
+  
 public: // Constructor and Destructor
-    //  Empty constructor (return geantino at zero degree)
-    Particle();
-    ~Particle();
-    //  Constructor to be used
-    Particle(G4ParticleDefinition* particle,double T,G4ThreeVector Direction, G4ThreeVector Position,bool ShootStatus=true);
-    
-private: // Private Member 
-    G4ParticleDefinition* m_ParticleDefinition;
-    double m_T ;
-    G4ThreeVector m_Direction;
-    G4ThreeVector m_Position;
-    bool m_ShootStatus;
-    
+        //  Empty constructor (return geantino at zero degree)
+  Particle();
+  ~Particle();
+  //  Constructor to be used
+  Particle(G4ParticleDefinition* particle,double ThetaCM,double T,G4ThreeVector Direction, G4ThreeVector Position,bool ShootStatus=true);
+  
+private: // Private Member
+  G4ParticleDefinition* m_ParticleDefinition;
+  double m_ThetaCM;
+  double m_T ;
+  G4ThreeVector m_Direction;
+  G4ThreeVector m_Position;
+  bool m_ShootStatus;
+  
 public: // Setter and Getter
-    // Getter
-    G4ParticleDefinition*   GetParticleDefinition();
-    double                  GetParticleKineticEnergy();
-    G4ThreeVector           GetParticleMomentumDirection();
-    G4ThreeVector           GetParticlePosition();
-    bool                    GetShootStatus();
-    // Setter
-    void SetParticleDefinition(G4ParticleDefinition*);
-    void SetParticleKineticEnergy(double);
-    void SetParticlePosition(G4ThreeVector);
-    void SetParticleMomentumDirection(G4ThreeVector);
-    void SetShootStatus(bool);
+  // Getter
+  G4ParticleDefinition*   GetParticleDefinition();
+  double                  GetParticleThetaCM();
+  double                  GetParticleKineticEnergy();
+  G4ThreeVector           GetParticleMomentumDirection();
+  G4ThreeVector           GetParticlePosition();
+  bool                    GetShootStatus();
+  // Setter
+  void SetParticleDefinition(G4ParticleDefinition*);
+  void SetParticleThetaCM(double);
+  void SetParticleKineticEnergy(double);
+  void SetParticlePosition(G4ThreeVector);
+  void SetParticleMomentumDirection(G4ThreeVector);
+  void SetShootStatus(bool);
 };
 #endif

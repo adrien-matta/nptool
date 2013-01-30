@@ -131,9 +131,10 @@ int main(int argc, char** argv)
    ///////////////////////////////////////////////////////////////
    ////////////////////// Job termination ////////////////////////
    ///////////////////////////////////////////////////////////////
-   RootOutput::getInstance()->Destroy();
-   NPOptionManager::getInstance()->Destroy();
+   // delete primary; delete detector;
 
    delete runManager;
+   NPOptionManager::getInstance()->Destroy();
+   RootOutput::getInstance()->Destroy();
    return 0;
 }

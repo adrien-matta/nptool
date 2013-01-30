@@ -55,8 +55,5 @@ private:    // Source parameter from input file
    G4double               m_y0               ;  // Vertex Position Y
    G4double               m_z0               ;  // Vertex Position Z
    G4ParticleDefinition*  m_particle         ;  // Kind of particle to shoot isotropically
-
-  private:    // Output ROOT class storing characteristics of source
-   TInitialConditions* m_InitConditions;
 };
 #endif

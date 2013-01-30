@@ -40,8 +40,6 @@ using namespace std;
 using namespace NPL;
 
 namespace NPL{
-  // Needed to avoid warnig from multiple Th1 with same name
-  static int Global_BeamHistOffset=0;
   
   class Beam{
     
@@ -87,10 +85,10 @@ namespace NPL{
     void SetMeanPhiY    (double MeanPhiY)       {fMeanPhiY=MeanPhiY;}
     void SetSigmaThetaX (double SigmaThetaX)    {fSigmaThetaX=SigmaThetaX;}
     void SetSigmaPhiY   (double SigmaPhiY)      {fSigmaPhiY=SigmaPhiY;}
-    void SetEnergyHist  (TH1F*  EnergyHist)     {delete fEnergyHist; fEnergyHist   = new TH1F(*EnergyHist);}
-    void SetXThetaXHist (TH2F*  XThetaXHist)    {delete fXThetaXHist; fXThetaXHist = new TH2F(*XThetaXHist);}
-    void SetYPhiYHist   (TH2F*  YPhiYHist)      {delete fYPhiYHist; fYPhiYHist     = new TH2F(*YPhiYHist);}
-    void SetVerboseLevel(int verbose)     {fVerboseLevel = verbose;}
+    void SetEnergyHist  (TH1F*  EnergyHist)     {delete fEnergyHist; fEnergyHist   = EnergyHist;}
+    void SetXThetaXHist (TH2F*  XThetaXHist)    {delete fXThetaXHist; fXThetaXHist = XThetaXHist;}
+    void SetYPhiYHist   (TH2F*  YPhiYHist)      {delete fYPhiYHist; fYPhiYHist     = YPhiYHist;}
+    void SetVerboseLevel(int verbose)           {fVerboseLevel = verbose;}
 
     // Get
     Nucleus*  GetNucleus     () const {return fBeamNucleus;}

@@ -69,9 +69,13 @@ Reaction::Reaction(){
   fQValue               = 0;
   fVerboseLevel         = NPOptionManager::getInstance()->GetVerboseLevel();
   initializePrecomputeVariable();
-  // Needed to avoid warning at compilation, not very clean...
-  Global_BeamHistOffset=Global_BeamHistOffset;
-  fCrossSectionHist = new TH1F(Form("Reaction_CS%i",Global_ReactionHistOffset++),"Reaction_CS",180,0,180);
+  
+  // do that to avoid warning from multiple Hist with same name...  int offset = 0;
+  int offset = 0;
+  while(gDirectory->FindObjectAny(Form("EnergyHist_%i",offset))!=0)
+    ++offset;
+  
+  fCrossSectionHist = new TH1F(Form("EnergyHist_%i",offset),"Reaction_CS",1,0,180);
   fshoot3=true;
   fshoot4=true;
 }
@@ -84,6 +88,7 @@ Reaction::~Reaction(){
   delete fNuclei2;
   delete fNuclei3;
   delete fNuclei4;
+  delete fCrossSectionHist;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -181,7 +186,7 @@ double  Reaction::EnergyLabToThetaCM(double EnergyLab, double ThetaLab){
   fEnergyImpulsionCM_3 = fEnergyImpulsionLab_3;
   fEnergyImpulsionCM_3.Boost(0,0,-BetaCM);
   
-  double ThetaCM = CLHEP::pi - fEnergyImpulsionCM_1.Angle(fEnergyImpulsionCM_3.Vect());
+  double ThetaCM = M_PI - fEnergyImpulsionCM_1.Angle(fEnergyImpulsionCM_3.Vect());
   
   return(ThetaCM);
 }
@@ -300,7 +305,8 @@ void Reaction::ReadConfigurationFile(string Path){
         string FileName,HistName;
         ReactionFile >> FileName >> HistName;
         if(fVerboseLevel==1) cout << "Reading Cross Section file: " << FileName << endl;
-        fCrossSectionHist = Read1DProfile(FileName, HistName );
+        SetCrossSectionHist( Read1DProfile(FileName, HistName ));
+        cout << "cccc "  << fCrossSectionHist->GetNbinsX() << endl;
       }
       
       else if (DataBuffer.compare(0, 17, "HalfOpenAngleMin=") == 0) {
@@ -352,7 +358,7 @@ void Reaction::ReadConfigurationFile(string Path){
   
   // Pick up the beam energy from the Beam event generator
   NPL::Beam* localBeam= new NPL::Beam();
-  //  localBeam->SetVerboseLevel(0);
+  localBeam->SetVerboseLevel(0);
   localBeam->ReadConfigurationFile(Path);
   
   // Modifiy the CS to shoot only within ]HalfOpenAngleMin,HalfOpenAngleMax[ 

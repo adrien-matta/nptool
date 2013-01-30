@@ -58,28 +58,21 @@ TH1F* Read1DProfile(string filename,string HistName){
     }
 
     // Look for the step size, min and max of the distribution
-    double min = 0 ;
-    double max = 0 ;
-    double previous = 0 ;
-    int step =0;
+    double min ;
+    double max ;
     unsigned int size = x.size();
     
     if(size > 0){
       min = x[0] ;
       max = x[0] ;
-      previous = x[0] ;
     }
 
     for(unsigned int i = 0 ; i < size ; i++){
       if(x[i] > max) max = x[i] ;
       if(x[i] < min) min = x[i] ;
-      
-      step= fabs(previous - x[i]) ;
-      previous = x[i] ;
     }
     
-    h = new TH1F(HistName.c_str(),HistName.c_str(),step,min,max);
-
+    h = new TH1F(HistName.c_str(),HistName.c_str(),size,min,max);
     for(unsigned int i = 0 ; i < size ; i++){
       h->Fill(x[i],w[i]);
     }
@@ -133,47 +126,35 @@ TH2F* Read2DProfile(string filename,string HistName){
     }
     
     // Look for the step size, min and max of the distribution
-    double xmin = 0 ;
-    double xmax = 0 ;
-    double xprevious = 0 ;
-    int xstep =0;
+    double xmin ;
+    double xmax ;
     unsigned int xsize = x.size();
     
-    double ymin = 0 ;
-    double ymax = 0 ;
-    double yprevious = 0 ;
-    int ystep =0;
+    double ymin ;
+    double ymax ;
     unsigned int ysize = y.size();
     
     if(xsize > 0){
       xmin = x[0] ;
       xmax = x[0] ;
-      xprevious = x[0] ;
     }
     
     if(ysize > 0){
       ymin = y[0] ;
       ymax = y[0] ;
-      yprevious = y[0] ;
     }
     
     for(unsigned int i = 0 ; i < xsize ; i++){
       if(x[i] > xmax) xmax = x[i] ;
       if(x[i] < xmin) xmin = x[i] ;
-      
-      xstep= fabs(xprevious - x[i]) ;
-      xprevious = x[i] ;
     }
     
     for(unsigned int i = 0 ; i < ysize ; i++){
       if(y[i] > ymax) ymax = y[i] ;
       if(y[i] < ymin) ymin = y[i] ;
-      
-      ystep= fabs(yprevious - y[i]) ;
-      yprevious = y[i] ;
     }
     
-    h = new TH2F(HistName.c_str(),HistName.c_str(),xstep,xmin,xmax,ystep,ymin,ymax);
+    h = new TH2F(HistName.c_str(),HistName.c_str(),xsize,xmin,xmax,ysize,ymin,ymax);
     
     for(unsigned int i = 0 ; i < xsize ; i++){
       h->Fill(x[i],y[i],w[i]);

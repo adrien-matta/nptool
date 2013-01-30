@@ -186,44 +186,20 @@ void EventGeneratorTwoBodyReaction::GenerateEvent(G4Event* anEvent){
   ///////// Set up everything for shooting /////////
   //////////////////////////////////////////////////
   // Case of light particle
-  // Instantiate a new particle
-  Particle LightParticle;
-  
-  // Particle type
-  LightParticle.SetParticleDefinition(LightName);
-  // Particle energy
-  LightParticle.SetParticleKineticEnergy(EnergyLight);
-  // Particle vertex position
-  LightParticle.SetParticlePosition(BeamParticle.GetParticlePosition());
   // Particle direction
   // Kinematical angles in the beam frame are transformed
   // to the "world" frame
   G4ThreeVector momentum_kine_world = BeamToWorld * momentum_kineLight_beam;
-  //Set the Momentum Direction
-  LightParticle.SetParticleMomentumDirection(momentum_kine_world);
-  // Set the shoot status
-  LightParticle.SetShootStatus(m_ShootLight) ;
   //Add the particle to the particle stack
+  Particle LightParticle(LightName, ThetaCM , EnergyLight,momentum_kine_world, BeamParticle.GetParticlePosition(), m_ShootLight);
   m_ParticleStack->AddParticleToStack(LightParticle);
   
   // Case of heavy particle
-  // Instantiate a new particle
-  Particle HeavyParticle;
-  
-  // Particle type
-  HeavyParticle.SetParticleDefinition(HeavyName);
-  // Particle energy
-  HeavyParticle.SetParticleKineticEnergy(EnergyHeavy);
-  // Particle vertex position
-  HeavyParticle.SetParticlePosition(BeamParticle.GetParticlePosition());
   // Particle direction
   // Kinematical angles in the beam frame are transformed
   // to the "world" frame
   momentum_kine_world = BeamToWorld * momentum_kineHeavy_beam;
-  //Set the Momentum Direction
-  HeavyParticle.SetParticleMomentumDirection(momentum_kine_world);
-  // Set the shoot status
-  HeavyParticle.SetShootStatus(m_ShootHeavy) ;
+  Particle HeavyParticle(HeavyName, ThetaCM + M_PI, EnergyHeavy,momentum_kine_world, BeamParticle.GetParticlePosition(), m_ShootHeavy);
   //Add the particle to the particle stack
   m_ParticleStack->AddParticleToStack(HeavyParticle);
 }

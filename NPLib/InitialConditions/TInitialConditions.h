@@ -26,22 +26,26 @@
 #ifndef __INITIALCONDITIONS__
 #define __INITIALCONDITIONS__
 
+// STL Header
 #include <vector>
-#include "TObject.h"
+#include <string>
+
 using namespace std ;
 
+// Root Header
+#include "TObject.h"
 
-class TInitialConditions : public TObject
-{
+class TInitialConditions : public TObject{
 private:
-  /*
-  // Incident beam parament
+  
+  // Incident beam parameter
+  string fIC_Incident_Particle_Name;
   double fIC_Incident_Emittance_Phi;
   double fIC_Incident_Emittance_Theta;
-  double fIC_Incident_Initial_Energy;
+  double fIC_Incident_Kinetic_Energy;
   
   // Beam status at the initial interaction point
-  double fIC_Interaction_Energy;
+  double fIC_Interaction_Kinetic_Energy;
   double fIC_Interaction_Position_X;
   double fIC_Interaction_Position_Y;
   double fIC_Interaction_Position_Z;
@@ -55,122 +59,60 @@ private:
   vector<double> fIC_Momentum_Direction_Y;
   vector<double> fIC_Momentum_Direction_Z;
   
-  */
-  
-   /*
-    // Beam
-    TLorentzVector fIC_Beam_LV;
-    double fIC_Beam_ThetaX;
-    double fIC_Beam_PhiY;    
-   
-    // Particle
-    // Emitted particle properties (after interactions in the target)
-    vector<Double_t>   fIC_Emitted_Angle_ThetaCM;
-    // Emitted particle angles in the incident frame
-    vector<Double_t>   fIC_Emitted_Angle_Theta_LocalFrame;
-    vector<Double_t>   fIC_Emitted_Angle_Phi_LocalFrame;
-    // Emitted particle angles in the world frame
-    vector<Double_t>   fIC_Emitted_Angle_Theta_LabFrame;
-    vector<Double_t>   fIC_Emitted_Angle_Phi_LabFrame;
-    // Emittedparticle energy
-    vector<Double_t>   fIC_Emitted_Energy;
-    vector<int>        fIC_Process;
-    vector<string>     fIC_Name;
-   */
-    
-    
-    
-    
-   // Incident particle properties (before interactions in the target)
-   // Vertex of interaction
-   vector<Double_t>   fIC_Position_X;
-   vector<Double_t>   fIC_Position_Y;
-   vector<Double_t>   fIC_Position_Z;
-   // Theta and Phi angles for the emittance
-   vector<Double_t>   fIC_Incident_Emittance_Theta;
-   vector<Double_t>   fIC_Incident_Emittance_Phi;
-   // Incident particle angles
-   vector<Double_t>   fIC_Incident_Angle_Theta;
-   vector<Double_t>   fIC_Incident_Angle_Phi;
-   // Incident particle energy
-   vector<Double_t>   fIC_Incident_Energy;
-
-   // Emitted particle properties (after interactions in the target)
-   vector<Double_t>   fIC_Emitted_Angle_ThetaCM;
-   // Emitted particle angles in the incident frame
-   vector<Double_t>   fIC_Emitted_Angle_ThetaLab_IncidentFrame;
-   vector<Double_t>   fIC_Emitted_Angle_Phi_IncidentFrame;
-   // Emitted particle angles in the world frame
-   vector<Double_t>   fIC_Emitted_Angle_ThetaLab_WorldFrame;
-   vector<Double_t>   fIC_Emitted_Angle_Phi_WorldFrame;
-   // Emittedparticle energy
-   vector<Double_t>   fIC_Emitted_Energy;
-
-
 public:
-   TInitialConditions();
-   virtual ~TInitialConditions();
-
-   void  Clear();
-   void  Clear(const Option_t*) {};
-   void  Dump() const;
-
-   /////////////////////           SETTERS           ////////////////////////
-   // Incident particle properties (before interactions in the target)
-   // Vertex of interaction
-   void SetICPositionX(Double_t PositionX)      {fIC_Position_X.push_back(PositionX);}
-   void SetICPositionY(Double_t PositionY)      {fIC_Position_Y.push_back(PositionY);}
-   void SetICPositionZ(Double_t PositionZ)      {fIC_Position_Z.push_back(PositionZ);}
-   // Theta and Phi angles for the emittance
-   void SetICIncidentEmittanceTheta(Double_t Theta)   {fIC_Incident_Emittance_Theta.push_back(Theta);}
-   void SetICIncidentEmittancePhi(Double_t Phi)       {fIC_Incident_Emittance_Phi.push_back(Phi);}
-   // Incident particle angles
-   void SetICIncidentAngleTheta(Double_t AngleTheta) {fIC_Incident_Angle_Theta.push_back(AngleTheta);}
-   void SetICIncidentAnglePhi(Double_t AnglePhi)     {fIC_Incident_Angle_Phi.push_back(AnglePhi);}
-   // Incident particle energy
-   void SetICIncidentEnergy(Double_t Energy)         {fIC_Incident_Energy.push_back(Energy);}
-   
-   // Emitted particle angles
-   // Center of mass
-   void SetICEmittedAngleThetaCM(Double_t AngleTheta) {fIC_Emitted_Angle_ThetaCM.push_back(AngleTheta);}
-   // Angles in the incident frame
-   void SetICEmittedAngleThetaLabIncidentFrame(Double_t AngleTheta)   {fIC_Emitted_Angle_ThetaLab_IncidentFrame.push_back(AngleTheta);}
-   void SetICEmittedAnglePhiIncidentFrame(Double_t AnglePhi)          {fIC_Emitted_Angle_Phi_IncidentFrame.push_back(AnglePhi);}
-   // Angles in the world frame
-   void SetICEmittedAngleThetaLabWorldFrame(Double_t AngleTheta)   {fIC_Emitted_Angle_ThetaLab_WorldFrame.push_back(AngleTheta);}
-   void SetICEmittedAnglePhiWorldFrame(Double_t AnglePhi)          {fIC_Emitted_Angle_Phi_WorldFrame.push_back(AnglePhi);}
-   // Emitted particle energy
-   void SetICEmittedEnergy(Double_t Energy) {fIC_Emitted_Energy.push_back(Energy);}
-
-
-   /////////////////////           GETTERS           ////////////////////////
-   // Incident particle properties (before interactions in the target)
-   // Vertex of interaction
-   Double_t GetICPositionX(Int_t i) {return fIC_Position_X.at(i);}
-   Double_t GetICPositionY(Int_t i) {return fIC_Position_Y.at(i);}
-   Double_t GetICPositionZ(Int_t i) {return fIC_Position_Z.at(i);}
-   // Theta and Phi angles for the emittance
-   Double_t GetICIncidentEmittanceTheta(Int_t i) {return fIC_Incident_Emittance_Theta.at(i);}
-   Double_t GetICIncidentEmittancePhi(Int_t i)   {return fIC_Incident_Emittance_Phi.at(i);}
-   // Incident particle angles
-   Double_t GetICIncidentAngleTheta(Int_t i)   {return fIC_Incident_Angle_Theta.at(i);}
-   Double_t GetICIncidentAnglePhi(Int_t i)     {return fIC_Incident_Angle_Phi.at(i);}
-   // Incident particle energy
-   Double_t GetICIncidentEnergy(Int_t i)   {return fIC_Incident_Energy.at(i);}
-   
-   // Emitted particle angles
-   // Center of Mass
-   Double_t GetICEmittedAngleThetaCM(Int_t i) {return fIC_Emitted_Angle_ThetaCM.at(i);}
-   // Angles in the incident frame
-   Double_t GetICEmittedAngleThetaLabIncidentFrame(Int_t i) {return fIC_Emitted_Angle_ThetaLab_IncidentFrame.at(i);}
-   Double_t GetICEmittedAnglePhiIncidentFrame(Int_t i)      {return fIC_Emitted_Angle_Phi_IncidentFrame.at(i);}
-   // Angles in the world frame
-   Double_t GetICEmittedAngleThetaLabWorldFrame(Int_t i) {return fIC_Emitted_Angle_ThetaLab_WorldFrame.at(i);}
-   Double_t GetICEmittedAnglePhiWorldFrame(Int_t i)      {return fIC_Emitted_Angle_Phi_WorldFrame.at(i);}
-   // Emitted particle energy
-   Double_t GetICEmittedEnergy(Int_t i) {return fIC_Emitted_Energy.at(i);}
-
-   ClassDef(TInitialConditions, 1) // InitialConditions structure
+  TInitialConditions();
+  virtual ~TInitialConditions();
+  
+  void  Clear();
+  void  Clear(const Option_t*) {};
+  void  Dump() const;
+  
+  /////////////////////           GetTERS           ////////////////////////
+  // Incident beam parameter
+  void SetIncidentParticleName   (string Incident_Particle_Name)   {fIC_Incident_Particle_Name   = Incident_Particle_Name;}
+  void SetIncidentKineticEnergy  (double Incident_Kinetic_Energy)  {fIC_Incident_Kinetic_Energy  = Incident_Kinetic_Energy;}
+  void SetIncidentEmittanceTheta (double Incident_Emittance_Theta) {fIC_Incident_Emittance_Theta = Incident_Emittance_Theta;}
+  void SetIncidentEmittancePhi   (double Incident_Emittance_Phi)   {fIC_Incident_Emittance_Phi   = Incident_Emittance_Phi;}
+  
+  // Beam status at the initial interaction point
+  void SetInteractionKineticEnergy (double Interaction_Kinetic_Energy)  {fIC_Interaction_Kinetic_Energy = Interaction_Kinetic_Energy;}
+  void SetInteractionPositionX     (double Interaction_Position_X)      {fIC_Interaction_Position_X     = Interaction_Position_X;}
+  void SetInteractionPositionY     (double Interaction_Position_Y)      {fIC_Interaction_Position_Y     = Interaction_Position_Y;}
+  void SetInteractionPositionZ     (double Interaction_Position_Z)      {fIC_Interaction_Position_Z     = Interaction_Position_Z;}
+  
+  // emmitted particle
+  void SetParticleName       (string Particle_Name)         {fIC_Particle_Name.push_back(Particle_Name);}
+  void SetProcessName        (string Process_Name)          {fIC_Process_Name.push_back(Process_Name);}
+  void SetThetaCM            (double ThetaCM)               {fIC_ThetaCM.push_back(ThetaCM);}
+  void SetKineticEnergy      (double Kinetic_Energy)        {fIC_Kinetic_Energy.push_back(Kinetic_Energy);}
+  void SetMomentumDirectionX (double Momentum_Direction_X)  {fIC_Momentum_Direction_X.push_back(Momentum_Direction_X);}
+  void SetMomentumDirectionY (double Momentum_Direction_Y)  {fIC_Momentum_Direction_Y.push_back(Momentum_Direction_Y);}
+  void SetMomentumDirectionZ (double Momentum_Direction_Z)  {fIC_Momentum_Direction_Z.push_back(Momentum_Direction_Z);}
+  /////////////////////           GETTERS           ////////////////////////
+  // Incident beam parameter
+  string GetIncidentParticleName   () const  {return fIC_Incident_Particle_Name   ;}
+  double GetIncidentKineticEnergy  () const  {return fIC_Incident_Kinetic_Energy  ;}
+  double GetIncidentEmittanceTheta () const  {return fIC_Incident_Emittance_Theta ;}
+  double GetIncidentEmittancePhi   () const  {return fIC_Incident_Emittance_Phi   ;}
+  
+  // Beam status at the initial interaction point
+  double GetInteractionKineticEnergy () const {return fIC_Interaction_Kinetic_Energy ;}
+  double GetInteractionPositionX     () const {return fIC_Interaction_Position_X     ;}
+  double GetInteractionPositionY     () const {return fIC_Interaction_Position_Y     ;}
+  double GetInteractionPositionZ     () const {return fIC_Interaction_Position_Z     ;}
+  
+  // emmitted particle
+  string GetParticleName        (int i) const {return fIC_Particle_Name[i];}
+  string GetProcessName         (int i) const {return fIC_Process_Name[i];}
+  double GetThetaCM             (int i) const {return fIC_ThetaCM[i];}
+  double GetKineticEnergy       (int i) const {return fIC_Kinetic_Energy[i];}
+  double GetMomentumDirectionX  (int i) const {return fIC_Momentum_Direction_X[i];}
+  double GetMomentumDirectionY  (int i) const {return fIC_Momentum_Direction_Y[i];}
+  double GetMomentumDirectionZ  (int i) const {return fIC_Momentum_Direction_Z[i];}
+  
+  unsigned int GetMult() const {return fIC_Particle_Name.size();}
+  
+  ClassDef(TInitialConditions, 1) // InitialConditions structure
 };
 
 #endif

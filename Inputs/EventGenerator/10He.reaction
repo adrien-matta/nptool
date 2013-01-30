@@ -7,8 +7,8 @@ Beam
 	SigmaEnergy= 0
 	SigmaThetaX= 0.01
 	SigmaPhiY= 0.01
-	SigmaX= 0.01
-	SigmaY= 0.01
+	SigmaX= 5
+	SigmaY= 5
   MeanThetaX= 0
   MeanPhiY= 0
   MeanX= 0
@@ -32,7 +32,7 @@ TwoBodyReaction
   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-ParticleDecay 10He
+%ParticleDecay 10He
   Daughter= 9He n
   ExcitationEnergy= 0.5 0
   DifferentialCrossSection= flat.txt
@@ -40,7 +40,7 @@ ParticleDecay 10He
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-GammaDecay 9He
+%GammaDecay 9He
   Cascade
     BranchingRatio= 30
     Energies= 0.1
@@ -51,7 +51,7 @@ GammaDecay 9He
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-ParticleDecay 9He
+%ParticleDecay 9He
   Daughter= 8He n
   DifferentialCrossSection= flat.txt
   shoot= 1 1
