@@ -22,6 +22,7 @@ if(myOptionManager->IsDefault("DetectorConfiguration"))
 
 //Get input files from NPOptionManager
 string detectorfileName = myOptionManager->GetDetectorFile();
+string reactionfileName    = myOptionManager->GetReactionFile();
 string calibrationfileName = myOptionManager->GetCalibrationFile();
 string OutputfileName = myOptionManager->GetOutputFile();
    
@@ -40,7 +41,7 @@ InitOutputBranch();
 
 //Instantiate some Reaction
 NPL::Reaction* Reaction_e582 = new Reaction;
-Reaction_e582->ReadConfigurationFile("40Ca.reaction");
+Reaction_e582->ReadConfigurationFile(reactionfileName);
 
 //Get TExlPhysics pointer
 TExlPhysics *Exl = (TExlPhysics*)  myDetector -> GetDetector("EXL")	;

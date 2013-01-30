@@ -58,8 +58,8 @@ TH1F* Read1DProfile(string filename,string HistName){
     }
 
     // Look for the step size, min and max of the distribution
-    double min ;
-    double max ;
+    double min = 0;
+    double max = 0;
     unsigned int size = x.size();
     
     if(size > 0){
@@ -126,12 +126,12 @@ TH2F* Read2DProfile(string filename,string HistName){
     }
     
     // Look for the step size, min and max of the distribution
-    double xmin ;
-    double xmax ;
+    double xmin = 0;
+    double xmax = 0;
     unsigned int xsize = x.size();
     
-    double ymin ;
-    double ymax ;
+    double ymin = 0;
+    double ymax = 0;
     unsigned int ysize = y.size();
     
     if(xsize > 0){
