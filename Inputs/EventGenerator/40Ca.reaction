@@ -1,22 +1,25 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%  Reaction file for 40Ar(40Ca,40Ca)40Ar reaction  %%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%Beam energy given in MeV ; Excitation in MeV ; emmitance in rad
-Transfert
-	Beam= 40Ar
-	Target= 40Ca
-	Light= 40Ar
-	Heavy= 40Ca
-	ExcitationEnergyLight= 0
-	ExcitationEnergyHeavy= 0
-	BeamEnergy= 1387.69
-	BeamEnergySpread= 0
-	SigmaX= 0
-	SigmaY= 0
-	SigmaThetaX= 0 
-	SigmaPhiY= 0
-	CrossSectionPath= flat.txt
-	ShootLight= 1
-	ShootHeavy= 1
+Beam
+  Particle= 40Ar
+  Energy= 1387.69
+  SigmaEnergy= 0
+  SigmaThetaX= 0.00
+  SigmaPhiY= 0.00
+  SigmaX= 0
+  SigmaY= 0
+  MeanThetaX= 0
+  MeanPhiY= 0
+  MeanX= 0
+  MeanY= 0
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+TwoBodyReaction
+  Beam= 40Ar
+  Target= 40Ca
+  Light= 40Ar
+  Heavy= 40Ca
+  ExcitationEnergyLight= 0.0
+  ExcitationEnergyHeavy= 0.0
+  CrossSectionPath= flat.txt   CS10He
+  ShootLight= 1
+  ShootHeavy= 1
