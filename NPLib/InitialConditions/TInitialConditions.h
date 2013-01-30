@@ -52,7 +52,6 @@ private:
   
   // emmitted particle
   vector<string> fIC_Particle_Name;
-  vector<string> fIC_Process_Name;
   vector<double> fIC_ThetaCM;
   vector<double> fIC_Kinetic_Energy;
   vector<double> fIC_Momentum_Direction_X;
@@ -82,7 +81,6 @@ public:
   
   // emmitted particle
   void SetParticleName       (string Particle_Name)         {fIC_Particle_Name.push_back(Particle_Name);}
-  void SetProcessName        (string Process_Name)          {fIC_Process_Name.push_back(Process_Name);}
   void SetThetaCM            (double ThetaCM)               {fIC_ThetaCM.push_back(ThetaCM);}
   void SetKineticEnergy      (double Kinetic_Energy)        {fIC_Kinetic_Energy.push_back(Kinetic_Energy);}
   void SetMomentumDirectionX (double Momentum_Direction_X)  {fIC_Momentum_Direction_X.push_back(Momentum_Direction_X);}
@@ -103,7 +101,6 @@ public:
   
   // emmitted particle
   string GetParticleName        (int i) const {return fIC_Particle_Name[i];}
-  string GetProcessName         (int i) const {return fIC_Process_Name[i];}
   double GetThetaCM             (int i) const {return fIC_ThetaCM[i];}
   double GetKineticEnergy       (int i) const {return fIC_Kinetic_Energy[i];}
   double GetMomentumDirectionX  (int i) const {return fIC_Momentum_Direction_X[i];}

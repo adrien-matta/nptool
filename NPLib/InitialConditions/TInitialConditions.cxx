@@ -53,7 +53,6 @@ void TInitialConditions::Clear(){
   
   // emmitted particle
   fIC_Particle_Name.clear();
-  fIC_Process_Name.clear();
   fIC_ThetaCM.clear();
   fIC_Kinetic_Energy.clear();
   fIC_Momentum_Direction_X.clear();
@@ -87,7 +86,6 @@ void TInitialConditions::Dump() const{
   for(unsigned int i = 0 ; i < size; i ++){
     cout << "\t ---- Particle " << i << " ---- " << endl;
     cout << "\t Particle Name" <<   fIC_Particle_Name[i] << endl;
-    //  cout << "\t Process Name" <<   fIC_Process_Name[i] << endl;
     cout << "\t Theta CM" <<   fIC_ThetaCM[i] << endl;
     cout << "\t Energy" <<   fIC_Kinetic_Energy[i] << endl;
     cout << "\t Momentum Direction: ( "
