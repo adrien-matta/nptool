@@ -306,7 +306,6 @@ void Reaction::ReadConfigurationFile(string Path){
         ReactionFile >> FileName >> HistName;
         if(fVerboseLevel==1) cout << "Reading Cross Section file: " << FileName << endl;
         SetCrossSectionHist( Read1DProfile(FileName, HistName ));
-        cout << "cccc "  << fCrossSectionHist->GetNbinsX() << endl;
       }
       
       else if (DataBuffer.compare(0, 17, "HalfOpenAngleMin=") == 0) {
