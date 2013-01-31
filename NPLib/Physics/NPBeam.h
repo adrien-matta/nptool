@@ -41,7 +41,7 @@ using namespace NPL;
 
 namespace NPL{
   
-  class Beam{
+  class Beam:public NPL::Nucleus{
     
   public:  // Constructors and Destructors
     Beam();
@@ -54,7 +54,7 @@ namespace NPL{
     int fVerboseLevel;
   
   private:
-    Nucleus* fBeamNucleus;
+    //Nucleus* fBeamNucleus;
     double fEnergy;
     double fSigmaEnergy;
     double fMeanX;
@@ -74,7 +74,7 @@ namespace NPL{
   public:
     // Getters and Setters
     // Set
-    void SetBeamNucleus (Nucleus* BeamNucleus)  {delete fBeamNucleus ; fBeamNucleus = new Nucleus(BeamNucleus->GetZ(),BeamNucleus->GetA());}
+    // void SetBeamNucleus (Nucleus* BeamNucleus)  {delete fBeamNucleus ; fBeamNucleus = new Nucleus(BeamNucleus->GetZ(),BeamNucleus->GetA());}
     void SetEnergy      (double Energy)         {fEnergy=Energy;}
     void SetSigmaEnergy (double SigmaEnergy)    {fSigmaEnergy=SigmaEnergy;}
     void SetMeanX       (double MeanX)          {fMeanX=MeanX;}
@@ -91,7 +91,7 @@ namespace NPL{
     void SetVerboseLevel(int verbose)           {fVerboseLevel = verbose;}
 
     // Get
-    Nucleus*  GetNucleus     () const {return fBeamNucleus;}
+    // Nucleus*  GetNucleus     () const {return fBeamNucleus;}
     double    GetEnergy      () const {return fEnergy;}
     double    GetSigmaEnergy () const {return fSigmaEnergy;}
     double    GetMeanX       () const {return fMeanX;}

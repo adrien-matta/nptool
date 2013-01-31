@@ -388,7 +388,7 @@ void EventGeneratorParticleDecay::SetDecay(vector<string> DaughterName, vector<b
   
   m_DifferentialCrossSection = CSPath;
   if(CSPath!="TGenPhaseSpace") {
-    if(m_CrossSectionPath!="_void_"){
+    if(m_CrossSectionPath!="_void_")
       m_CrossSectionHist = Read1DProfile(m_CrossSectionPath,m_CrossSectionName);
       
       else{

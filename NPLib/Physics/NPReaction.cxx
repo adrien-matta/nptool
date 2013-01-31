@@ -42,7 +42,6 @@
 #include <vector>
 
 #include "NPReaction.h"
-#include "NPBeam.h"
 #include "NPOptionManager.h"
 #include "NPFunction.h"
 
@@ -50,15 +49,11 @@
 #include "CLHEP/Units/GlobalSystemOfUnits.h"
 #include "CLHEP/Units/PhysicalConstants.h"
 
-
-using namespace NPL;
-
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 Reaction::Reaction(){
   //------------- Default Constructor -------------
   
-  fNuclei1              = new Nucleus();
+  fNuclei1              = new Beam();
   fNuclei2              = new Nucleus();
   fNuclei3              = new Nucleus();
   fNuclei4              = new Nucleus();
@@ -258,9 +253,11 @@ void Reaction::ReadConfigurationFile(string Path){
       else if (DataBuffer=="Beam=") {
         check_Beam = true ;
         ReactionFile >> DataBuffer;
-        fNuclei1         = new Nucleus(DataBuffer);
-        Beam = DataBuffer;
-        if(fVerboseLevel==1) cout << "Beam " << fNuclei1->GetName() << endl;
+        // Pick up the beam energy from the Beam event generator
+        fNuclei1->SetVerboseLevel(0);
+        fNuclei1->ReadConfigurationFile(Path);
+        fBeamEnergy= fNuclei1->GetEnergy();
+        if(fVerboseLevel==1) cout << "Beam " << fNuclei1->GetName() << " @ " << fBeamEnergy << " MeV" << endl;
       }
       
       else if (DataBuffer=="Target=") {
@@ -352,13 +349,6 @@ void Reaction::ReadConfigurationFile(string Path){
         ReadingStatus = false;
     }
   }
-  
-  // Pick up the beam energy from the Beam event generator
-  NPL::Beam* localBeam= new NPL::Beam();
-  localBeam->SetVerboseLevel(0);
-  localBeam->ReadConfigurationFile(Path);
-  fBeamEnergy= localBeam->GetEnergy();
-  delete localBeam;
 
   // Modifiy the CS to shoot only within ]HalfOpenAngleMin,HalfOpenAngleMax[
   SetCSAngle(CSHalfOpenAngleMin,CSHalfOpenAngleMax);

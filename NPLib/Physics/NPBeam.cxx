@@ -46,7 +46,6 @@ using namespace NPL;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 Beam::Beam(){
-  fBeamNucleus = new Nucleus();
   fEnergy = 0;
   fSigmaEnergy = -1 ;
   fMeanX = 0 ;
@@ -78,7 +77,6 @@ Beam::Beam(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 Beam::~Beam(){
-  delete fBeamNucleus ;
   delete fEnergyHist  ;
   delete fXThetaXHist ;
   delete fYPhiYHist   ;
@@ -137,9 +135,8 @@ void Beam::ReadConfigurationFile(string Path){
       else if (DataBuffer == "Particle=") {
         check_BeamName = true ;
         ReactionFile >> DataBuffer;
-        delete fBeamNucleus;
-        fBeamNucleus = new Nucleus(DataBuffer);
-        if(fVerboseLevel==1) cout << "Beam Particle: " << fBeamNucleus->GetName() << endl;
+        SetUp(DataBuffer);
+        if(fVerboseLevel==1) cout << "Beam Particle: " << GetName() << endl;
       }
       
       else if (DataBuffer == "Energy=") {

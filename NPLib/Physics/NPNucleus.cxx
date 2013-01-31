@@ -56,34 +56,39 @@ Nucleus::Nucleus()
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-Nucleus::Nucleus(string isotope)
-{
-   //----------- Constructor Using nubtab03.asc by name----------
-   // open the file to read and check if it is open
-   
-   const char* Isotope = isotope.c_str();
-   
-   ifstream inFile;
-   string Path = getenv("NPTOOL") ;
-   string FileName = Path + "/NPLib/Physics/nubtab03.asc";
-   inFile.open(FileName.c_str());
-   
-   // reading the file
-   string line, s_name;
-   size_t space;
-   if (inFile.is_open()) {
-      while (!inFile.eof()) {
-         getline(inFile,line);
+Nucleus::Nucleus(string isotope){
+  SetUp(isotope);
+}
 
-    s_name = line.substr(11,7);
-    space = s_name.find_first_of(" "); 
-    s_name.resize(space);
-
-    if (s_name.find(Isotope) != string::npos && s_name.length() == isotope.length()) break;
-      }
-      Extract(line.data());
-   }
-   else cout << "Unable to open file nuclear data base file " << FileName << endl;
+void Nucleus::SetUp(string isotope){
+  //----------- Constructor Using nubtab03.asc by name----------
+  // open the file to read and check if it is open
+  
+  const char* Isotope = isotope.c_str();
+  
+  ifstream inFile;
+  string Path = getenv("NPTOOL") ;
+  string FileName = Path + "/NPLib/Physics/nubtab03.asc";
+  inFile.open(FileName.c_str());
+  
+  // reading the file
+  string line, s_name;
+  size_t space;
+  if (inFile.is_open()) {
+    while (!inFile.eof()) {
+      getline(inFile,line);
+      
+      s_name = line.substr(11,7);
+      space = s_name.find_first_of(" ");
+      s_name.resize(space);
+      
+      if (s_name.find(Isotope) != string::npos && s_name.length() == isotope.length()) break;
+    }
+    Extract(line.data());
+  }
+  else cout << "Unable to open file nuclear data base file " << FileName << endl;
+  
+  
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 

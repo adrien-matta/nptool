@@ -34,12 +34,15 @@
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
-  // C++ header
+// C++ header
 #include <string>
 
+// NPL
 #include "NPNucleus.h"
+#include "NPBeam.h"
+using namespace NPL;
 
-  // ROOT header
+// ROOT header
 #include "TLorentzVector.h"
 #include "TLorentzRotation.h"
 #include "TVector3.h"
@@ -68,7 +71,7 @@ namespace NPL{
     bool fshoot4;
     
   private:
-    Nucleus *fNuclei1;                 // Beam
+    Beam    *fNuclei1;                 // Beam
     Nucleus *fNuclei2;                 // Target
     Nucleus *fNuclei3;                 // Light ejectile
     Nucleus *fNuclei4;                 // Heavy ejectile
