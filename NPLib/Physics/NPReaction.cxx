@@ -205,8 +205,6 @@ void Reaction::Print() const{
   cout << "Qgg = " << fQValue << " MeV" << endl;
 }
 
-
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 void Reaction::ReadConfigurationFile(string Path){
   ////////General Reading needs////////

@@ -39,39 +39,41 @@ using namespace std;
 #include "Target.hh"
 #include "ParticleStack.hh"
 
-class EventGeneratorGammaDecay : public VEventGenerator
-{
-    public: // Constructor and destructor
-        EventGeneratorGammaDecay();
-        ~EventGeneratorGammaDecay();
-    
-    public: // Inherit from VEventGenerator class
-        void ReadConfiguration(string,int);
-        void GenerateEvent(G4Event*);
-        void SetTarget(Target* Target) ;
-    
-    private: // Target Parameter
-        Target* m_Target;
+// ROOT
+#include "TH1F.h"
 
 
-    private: // The decaying nuclei
-        string m_NucleiName;
-    private: // the gamma rays property 
-        vector<double>  m_BranchingRatio;
-        vector<string>  m_CrossSectionPath;
-        vector<double*> m_CrossSectionArray;
-        vector<double>  m_CrossSectionThetaMin;
-        vector<double>  m_CrossSectionThetaMax;
-        vector<double>  m_CrossSectionSize;
-        vector<double>  m_CascadeTotalEnergy;
-        vector< vector<double> > m_Energies;
-        
-    private: // Pointer to the Particle stack for faster acces
-        ParticleStack* m_ParticleStack;
-    public: // Managing the different cascade
+
+class EventGeneratorGammaDecay : public VEventGenerator{
+public: // Constructor and destructor
+  EventGeneratorGammaDecay();
+  ~EventGeneratorGammaDecay();
+  
+public: // Inherit from VEventGenerator class
+  void ReadConfiguration(string,int);
+  void GenerateEvent(G4Event*);
+  void SetTarget(Target* Target) ;
+  
+private: // Target Parameter
+  Target* m_Target;
+  
+  
+private: // The decaying nuclei
+  string m_NucleiName;
+private: // the gamma rays property
+  vector<double>  m_BranchingRatio;
+  vector<string>  m_CrossSectionPath;
+  vector<string>  m_CrossSectionName;
+  vector<TH1F*>   m_CrossSectionHist;
+  vector<double>  m_CascadeTotalEnergy;
+  vector< vector<double> > m_Energies;
+  
+private: // Pointer to the Particle stack for faster acces
+  ParticleStack* m_ParticleStack;
+public: // Managing the different cascade
         // Add a new cascade
-        void AddCascade(vector<double> Energies, double BranchingRatio=-1, string CrossSectionPath="_void_");
-        // Read all the added cscade en instentiate every thing that is needed
-        void PrepareCascade();
+  void AddCascade(vector<double> Energies, double BranchingRatio=-1, string CrossSectionPath="_void_" , string CrossSectionName = "_void_");
+  // Read all the added cscade en instentiate every thing that is needed
+  void PrepareCascade();
 };
 #endif

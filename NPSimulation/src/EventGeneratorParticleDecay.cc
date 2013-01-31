@@ -32,6 +32,10 @@
 // G4
 #include "G4ParticleTable.hh"
 
+// G4 headers including CLHEP headers
+// for generating random numbers
+#include "Randomize.hh"
+
 // NPL
 #include "NPNucleus.h"
 #include "NPOptionManager.h"
@@ -40,14 +44,17 @@ using namespace NPL;
 // ROOT
 #include "TLorentzVector.h"
 #include "TVector3.h"
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorParticleDecay::EventGeneratorParticleDecay(){
   m_ParticleStack = ParticleStack::getInstance();
 }
 
 EventGeneratorParticleDecay::~EventGeneratorParticleDecay(){
-  
+  delete m_CrossSectionHist;
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorParticleDecay::ReadConfiguration(string Path,int Occurence){
   ////////General Reading needs////////
   string LineBuffer;
@@ -68,9 +75,9 @@ void EventGeneratorParticleDecay::ReadConfiguration(string Path,int Occurence){
   vector<double> ExcitationEnergy;
   vector<bool>   shoot;
   string CSPath = "TGenPhaseSpace";
-  
+  string CSName ;
   int VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
-
+  
   //////////////////////////////////////////////////////////////////////////////////////////
   ifstream InputFile;
   InputFile.open(Path.c_str());
@@ -143,13 +150,17 @@ void EventGeneratorParticleDecay::ReadConfiguration(string Path,int Occurence){
           if(VerboseLevel==1) G4cout << DataBuffer << " " ;
         }
         
-       if(VerboseLevel==1) G4cout << G4endl;
+        if(VerboseLevel==1) G4cout << G4endl;
       }
       
       else if(DataBuffer == "DifferentialCrossSection=") {
+        LineStream.clear();
+        getline(InputFile, LineBuffer);
+        
+        LineStream.str(LineBuffer);
+        LineStream >> CSPath >> CSName ;
+        if(VerboseLevel==1) G4cout << "    Cross Section Path: " << CSPath  << G4endl;
         check_CrossSection = true;
-        InputFile >> CSPath ;
-        if(VerboseLevel==1) G4cout << "    Cross Section: " << CSPath << G4endl;
       }
       
       else if(DataBuffer == "shoot=") {
@@ -172,13 +183,13 @@ void EventGeneratorParticleDecay::ReadConfiguration(string Path,int Occurence){
       //////////////////////////////////////////////////////
       // If no Token and no comment, toggle out //
       else
-          {ReadingStatusParticleDecay = false; G4cout << "ERROR : Wrong Token Sequence: Getting out " << G4endl ;
-            exit(1);
-          }
+        {ReadingStatusParticleDecay = false; G4cout << "ERROR : Wrong Token Sequence: Getting out " << G4endl ;
+          exit(1);
+        }
       
       // Decay ended
       if(check_Daughter && check_shoot){
-        SetDecay(DaughterName,shoot,ExcitationEnergy,CSPath);
+        SetDecay(DaughterName,shoot,ExcitationEnergy,CSPath,CSName);
         ReadingStatusParticleDecay = false;
         check_created=true;
       }
@@ -190,8 +201,9 @@ void EventGeneratorParticleDecay::ReadConfiguration(string Path,int Occurence){
 }
 
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorParticleDecay::GenerateEvent(G4Event* anEvent){
-
+  
   // Look for the decaying nucleus
   Particle decayingParticle = m_ParticleStack->SearchAndRemoveParticle(m_MotherNucleiName);
   if(decayingParticle.GetParticleDefinition()==NULL){
@@ -217,7 +229,7 @@ void EventGeneratorParticleDecay::GenerateEvent(G4Event* anEvent){
                             NucleiMomentum*Momentum.z(),
                             NucleiEnergy);
     // Shoot the angle in Center of Mass (CM) frame
-    G4double ThetaCM = (m_CrossSectionThetaMin + m_CrossSectionShoot->shoot() * (m_CrossSectionThetaMax - m_CrossSectionThetaMin)) * deg;
+    G4double ThetaCM = m_CrossSectionHist->GetRandom()* deg;
     G4double phi     = RandFlat::shoot()*2.*pi;
     
     // Build daughter particule CM LV
@@ -267,7 +279,7 @@ void EventGeneratorParticleDecay::GenerateEvent(G4Event* anEvent){
       m_ParticleStack->AddParticleToStack(FirstDaughterParticle);
       m_ParticleStack->AddParticleToStack(SecondDaughterParticle);
     }
-
+    
   }
   
   // Case of a TGenPhaseSpace
@@ -290,8 +302,8 @@ void EventGeneratorParticleDecay::GenerateEvent(G4Event* anEvent){
         
         daughterLV = m_TPhaseSpace.GetDecay(i);
         G4ThreeVector daughterDirection = G4ThreeVector( daughterLV->X()   ,
-                                                         daughterLV->Y()   ,
-                                                         daughterLV->Z()   );
+                                                        daughterLV->Y()   ,
+                                                        daughterLV->Z()   );
         
         KineticEnergy   = daughterLV->E()-m_Masses[i] ;
         
@@ -308,11 +320,16 @@ void EventGeneratorParticleDecay::GenerateEvent(G4Event* anEvent){
 }
 
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorParticleDecay::SetTarget(Target* Target){
   m_Target = Target;
 }
 
-void EventGeneratorParticleDecay::SetDecay(vector<string> DaughterName, vector<bool> shoot, vector<double> ExcitationEnergy, string CSPath){
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void EventGeneratorParticleDecay::SetDecay(vector<string> DaughterName, vector<bool> shoot, vector<double> ExcitationEnergy, string CSPath, string CSName){
+  
+  m_CrossSectionPath=CSPath;
+  m_CrossSectionName=CSName;
   
   // Check the validity of the given data:
   if (DaughterName.size() != shoot.size() || (DaughterName.size() != ExcitationEnergy.size() && ExcitationEnergy.size()!=0) ) {
@@ -321,7 +338,7 @@ void EventGeneratorParticleDecay::SetDecay(vector<string> DaughterName, vector<b
   }
   
   if ( DaughterName.size() != 2 && CSPath!="TGenPhaseSpace" ) {
-    G4cout << "ERROR 2: Missmatching information: Getting out " << G4endl ;
+    G4cout << "ERROR : Missmatching information (User CS allowed only for two body decay): Getting out " << G4endl ;
     exit(1);
   }
   
@@ -371,73 +388,32 @@ void EventGeneratorParticleDecay::SetDecay(vector<string> DaughterName, vector<b
   
   m_DifferentialCrossSection = CSPath;
   if(CSPath!="TGenPhaseSpace") {
-    unsigned int CrossSectionSize = 0;
-    double* m_CrossSection = new double[CrossSectionSize] ;
-    double  m_CrossSectionThetaMin = 0;
-    double  m_CrossSectionThetaMax = 0;
-    
-    string GlobalPath = getenv("NPTOOL");
-    string StandardPath = GlobalPath + "/Inputs/CrossSection/" + m_DifferentialCrossSection;
-    ifstream CSFile;
-    CSFile.open( StandardPath.c_str() );
-    
-    if(CSFile.is_open() ){
-      if(NPOptionManager::getInstance()->GetVerboseLevel()==1)
-      cout << "Reading Cross Section File " << m_DifferentialCrossSection << endl;
-    }
-    // In case the file is not found in the standard path, the programm try to interpret the file name as an absolute or relative file path.
-    else{
-      CSFile.open( m_DifferentialCrossSection.c_str() );
-      if(CSFile.is_open()){
-       if( NPOptionManager::getInstance()->GetVerboseLevel()==1)
-        cout << "Reading Cross Section File " << m_DifferentialCrossSection << endl;
+    if(m_CrossSectionPath!="_void_"){
+      m_CrossSectionHist = Read1DProfile(m_CrossSectionPath,m_CrossSectionName);
+      
+      else{
+        int offset = 0;
+        while(gDirectory->FindObjectAny(Form("_particlevoid_%i",offset))!=0)
+          ++offset;
+        
+        m_CrossSectionHist = new TH1F(Form("_particlevoid_%i",offset),Form("_particlevoid_%i",offset),1,0,1);
       }
       
-      else {
-        cout << "ERROR : Cross Section File " << m_DifferentialCrossSection << " not found" << endl;
-        exit(1);
+    }
+    
+    
+    else{
+      // Set up the array of masses
+      m_Masses = new double[m_DaughterNuclei.size()];
+      
+      // Mass of the daugther nuclei are set once
+      for (unsigned int i = 0 ; i < m_DaughterNuclei.size(); i++) {
+        m_Masses[i] = m_DaughterNuclei[i]->GetPDGMass()/GeV;
       }
+      
     }
     
-    double CSBuffer,AngleBuffer;
-    vector<double> CrossSectionBuffer;
-    m_CrossSectionThetaMin = 200;
-    m_CrossSectionThetaMax = -10;
-    while(!CSFile.eof()) {
-      CSFile >> AngleBuffer;
-      CSFile >> CSBuffer;
-      double CSFinal = CSBuffer*sin(AngleBuffer*deg);
-      CrossSectionBuffer.push_back(CSFinal);
-      if (AngleBuffer < m_CrossSectionThetaMin) m_CrossSectionThetaMin = AngleBuffer;
-      if (AngleBuffer > m_CrossSectionThetaMax) m_CrossSectionThetaMax = AngleBuffer;
-    }
-    
-    CSFile.close();
-    
-    m_CrossSectionSize = CrossSectionBuffer.size();
-    m_CrossSectionArray = new double[CrossSectionBuffer.size()] ;
-    
-    for(unsigned int i = 0 ; i < m_CrossSectionSize ; i++ ) {
-      m_CrossSectionArray[i] = CrossSectionBuffer[i];
-    }
-    
-    m_CrossSectionShoot = new RandGeneral(m_CrossSectionArray, m_CrossSectionSize);
+    // Change the name of the decaying nucleus to G4 standard
+    m_MotherNucleiName = m_ParticleStack->ChangeNameToG4Standard(m_MotherNucleiName);
     
   }
-  
-  
-  else{
-    // Set up the array of masses
-    m_Masses = new double[m_DaughterNuclei.size()];
-    
-    // Mass of the daugther nuclei are set once
-    for (unsigned int i = 0 ; i < m_DaughterNuclei.size(); i++) {
-      m_Masses[i] = m_DaughterNuclei[i]->GetPDGMass()/GeV;
-    }
-    
-  }
-  
-  // Change the name of the decaying nucleus to G4 standard
-  m_MotherNucleiName = m_ParticleStack->ChangeNameToG4Standard(m_MotherNucleiName);
-  
-}
