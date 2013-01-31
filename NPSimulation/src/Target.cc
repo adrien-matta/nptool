@@ -29,10 +29,8 @@
 #include <fstream>
 #include <limits>
 
-// G4 geometry header
+// G4 
 #include "G4Tubs.hh"
-
-//G4 various headers
 #include "G4Material.hh"
 #include "G4MaterialTable.hh"
 #include "G4Element.hh"
@@ -47,8 +45,12 @@
 #include "G4ParticleTable.hh"
 #include "Randomize.hh"
 using namespace CLHEP ;
-// NPTool header
+
+// NPS
 #include"Target.hh"
+
+// NPL
+#include "NPOptionManager.h"
 
 using namespace std;
 
@@ -270,15 +272,17 @@ void Target::ReadConfiguration(string Path)
   bool check_WinThickness = false ;
   bool check_WinMaterial = false ;
   
+  int VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
+
   while (!ConfigFile.eof()) {
     getline(ConfigFile, LineBuffer);
     if (LineBuffer.compare(0, 6, "Target") == 0) {
-      cout << "Target Found" << endl;
+      if(VerboseLevel==1) cout << "Target Found" << endl;
       m_TargetType = true ;
       ReadingStatusTarget = true ;
     }
     else if (LineBuffer.compare(0, 10, "CryoTarget") == 0) {
-      cout << "Cryogenic Target Found" << endl;
+      if(VerboseLevel==1) cout << "Cryogenic Target Found" << endl;
       m_TargetType = false ;
       ReadingStatusCryoTarget = true ;
     }
@@ -293,62 +297,63 @@ void Target::ReadConfiguration(string Path)
         check_Thickness = true ;
         ConfigFile >> DataBuffer;
         m_TargetThickness = atof(DataBuffer.c_str()) * micrometer;
-        cout << "Target Thickness: "  << m_TargetThickness / micrometer << " micrometer" << endl;
+        if(VerboseLevel==1) cout << "Target Thickness: "  << m_TargetThickness / micrometer << " micrometer" << endl;
       }
       
       else if (DataBuffer.compare(0, 6, "ANGLE=") == 0) {
         check_Angle = true ;
         ConfigFile >> DataBuffer;
         m_TargetAngle = atof(DataBuffer.c_str()) * deg;
-        cout << "Target Angle: "  << m_TargetAngle / deg << endl     ;
+        if(VerboseLevel==1) cout << "Target Angle: "  << m_TargetAngle / deg << endl     ;
       }
       
       else if (DataBuffer.compare(0, 7, "RADIUS=") == 0) {
         check_Radius = true ;
         ConfigFile >> DataBuffer;
         m_TargetRadius = atof(DataBuffer.c_str()) * mm;
-        cout << "Target Radius: "     <<  m_TargetRadius / mm << " mm " << endl;
+        if(VerboseLevel==1) cout << "Target Radius: "     <<  m_TargetRadius / mm << " mm " << endl;
       }
       
       else if (DataBuffer.compare(0, 9, "MATERIAL=") == 0) {
         check_Material = true ;
         ConfigFile >> DataBuffer;
         m_TargetMaterial = GetMaterialFromLibrary(DataBuffer);
-        cout << "Target Material: "      << m_TargetMaterial  << endl  ;
+        if(VerboseLevel==1) cout << "Target Material: "      << m_TargetMaterial  << endl  ;
       }
       
       else if (DataBuffer.compare(0, 2, "X=") == 0) {
         check_X = true ;
         ConfigFile >> DataBuffer;
         m_TargetX = atof(DataBuffer.c_str()) * mm;
-        cout << "Target coordinate (mm): ( " << m_TargetX / mm << " ; ";
+        if(VerboseLevel==1) cout << "Target coordinate (mm): ( " << m_TargetX / mm << " ; ";
       }
       
       else if (DataBuffer.compare(0, 2, "Y=") == 0) {
         check_Y = true ;
         ConfigFile >> DataBuffer;
         m_TargetY = atof(DataBuffer.c_str()) * mm;
-        cout << m_TargetY / mm << " ; ";
+        if(VerboseLevel==1) cout << m_TargetY / mm << " ; ";
       }
       
       else if (DataBuffer.compare(0, 2, "Z=") == 0) {
         check_Z = true ;
         ConfigFile >> DataBuffer;
         m_TargetZ = atof(DataBuffer.c_str()) * mm;
-        cout  << m_TargetZ / mm << " )" << endl ;
+        if(VerboseLevel==1) cout  << m_TargetZ / mm << " )" << endl ;
       }
       
       else if (DataBuffer.compare(0, 9, "NBLAYERS=") == 0) {
         check_m_TargetNbLayers = true ;
         ConfigFile >> DataBuffer;
         m_TargetNbLayers = atoi(DataBuffer.c_str());
-        cout  << "Number of steps for slowing down the beam in target: " << m_TargetNbLayers << endl;
+        if(VerboseLevel==1) cout  << "Number of steps for slowing down the beam in target: " << m_TargetNbLayers << endl;
       }
       
       ///////////////////////////////////////////////////
       //   If no Beam Token and no comment, toggle out
-      else
-          {ReadingStatusTarget = false; G4cout << "WARNING : Wrong Token Sequence: Getting out " << G4endl ;}
+      else{ReadingStatusTarget = false;
+        G4cout << "WARNING : Wrong Token Sequence: Getting out " << G4endl ;
+      }
       
       ///////////////////////////////////////////////////
       //   If all Token found toggle out
@@ -368,20 +373,20 @@ void Target::ReadConfiguration(string Path)
         check_Thickness = true ;
         ConfigFile >> DataBuffer;
         m_TargetThickness = atof(DataBuffer.c_str()) * micrometer;
-        cout << "Target Thickness: "  << m_TargetThickness / micrometer  << "um" << endl   ;
+        if(VerboseLevel==1) cout << "Target Thickness: "  << m_TargetThickness / micrometer  << "um" << endl   ;
       }
       
       else if (DataBuffer.compare(0, 7, "RADIUS=") == 0) {
         check_Radius = true ;
         ConfigFile >> DataBuffer;
         m_TargetRadius = atof(DataBuffer.c_str()) * mm;
-        cout << "Target Radius: "     <<  m_TargetRadius / mm           << "mm" << endl ;
+        if(VerboseLevel==1) cout << "Target Radius: "     <<  m_TargetRadius / mm           << "mm" << endl ;
       }
       
       else if (DataBuffer.compare(0, 12, "TEMPERATURE=") == 0) {
         check_Temperature = true ;
         ConfigFile >> DataBuffer;
-        m_TargetTemperature = atof(DataBuffer.c_str());
+        if(VerboseLevel==1) m_TargetTemperature = atof(DataBuffer.c_str());
       }
       
       else if (DataBuffer.compare(0, 9, "PRESSURE=") == 0) {
@@ -394,55 +399,57 @@ void Target::ReadConfiguration(string Path)
         check_Material = true ;
         ConfigFile >> DataBuffer;
         m_TargetMaterial = GetMaterialFromLibrary(DataBuffer, m_TargetTemperature, m_TargetPressure);
-        cout << "Target Material: "      << m_TargetMaterial          << endl         ;
+        if(VerboseLevel==1) cout << "Target Material: "      << m_TargetMaterial          << endl         ;
       }
       
       else if (DataBuffer.compare(0, 17, "WINDOWSTHICKNESS=") == 0) {
         check_WinThickness = true ;
         ConfigFile >> DataBuffer;
         m_WindowsThickness = atof(DataBuffer.c_str()) * micrometer;
-        cout << "Windows Thickness: " <<    m_WindowsThickness / micrometer << "um" << endl   ;
+        if(VerboseLevel==1) cout << "Windows Thickness: " <<    m_WindowsThickness / micrometer << "um" << endl   ;
       }
       
       else if (DataBuffer.compare(0, 16, "WINDOWSMATERIAL=") == 0) {
         check_WinMaterial = true ;
         ConfigFile >> DataBuffer;
         m_WindowsMaterial = GetMaterialFromLibrary(DataBuffer);
-        cout << "Windows Material: "  <<    m_WindowsMaterial         << endl         ;
+        if(VerboseLevel==1) cout << "Windows Material: "  <<    m_WindowsMaterial         << endl         ;
       }
       
       else if (DataBuffer.compare(0, 2, "X=") == 0) {
         check_X = true ;
         ConfigFile >> DataBuffer;
         m_TargetX = atof(DataBuffer.c_str()) * mm;
-        cout << "Target coordinate (mm): ( " << m_TargetX / mm << " ; ";
+        if(VerboseLevel==1) cout << "Target coordinate (mm): ( " << m_TargetX / mm << " ; ";
       }
       
       else if (DataBuffer.compare(0, 2, "Y=") == 0) {
         check_Y = true ;
         ConfigFile >> DataBuffer;
         m_TargetY = atof(DataBuffer.c_str()) * mm;
-        cout << m_TargetY / mm << " ; ";
+        if(VerboseLevel==1) cout << m_TargetY / mm << " ; ";
       }
       
       else if (DataBuffer.compare(0, 2, "Z=") == 0) {
         check_Z = true ;
         ConfigFile >> DataBuffer;
         m_TargetZ = atof(DataBuffer.c_str()) * mm;
-        cout << m_TargetZ / mm << " )" << endl ;
+        if(VerboseLevel==1) cout << m_TargetZ / mm << " )" << endl ;
       }
       
       else if (DataBuffer.compare(0, 9, "NBLAYERS=") == 0) {
         check_m_TargetNbLayers = true ;
         ConfigFile >> DataBuffer;
         m_TargetNbLayers = atoi(DataBuffer.c_str());
-        cout  << "Number of steps for slowing down the beam in target: " << m_TargetNbLayers << endl;
+        if(VerboseLevel==1) cout  << "Number of steps for slowing down the beam in target: " << m_TargetNbLayers << endl;
       }
       
       ///////////////////////////////////////////////////
       //   If no Beam Token and no comment, toggle out
-      else
-          {ReadingStatusCryoTarget = false; G4cout << "WARNING : Wrong Token Sequence: Getting out " << G4endl ;}
+      else{
+        ReadingStatusCryoTarget = false;
+        G4cout << "WARNING : Wrong Token Sequence: Getting out " << G4endl ;
+      }
       
       ///////////////////////////////////////////////////
       //   If all Token found toggle out

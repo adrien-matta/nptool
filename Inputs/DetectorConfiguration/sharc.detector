@@ -35,7 +35,7 @@ Sharc
     Phi= 270
     ThicknessDector= 100
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  % Upstream Box
+%Upstream Box
   SharcBOX
     Z= -40
     ThicknessDector1= 100
@@ -47,8 +47,8 @@ Sharc
     ThicknessPAD3= 0
     ThicknessPAD4= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  % Down Stream Box
-  %SharcBOX
+%Down Stream Box
+  SharcBOX
     Z= 40
     ThicknessDector1= 100
     ThicknessDector2= 100
