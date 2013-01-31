@@ -40,16 +40,16 @@ TInitialConditions::~TInitialConditions(){
 
 void TInitialConditions::Clear(){
   // Incident beam parameter
-  fIC_Incident_Particle_Name="";
-  fIC_Incident_Emittance_Phi=-1;
-  fIC_Incident_Emittance_Theta=-1;
-  fIC_Incident_Kinetic_Energy=-1;
-  
-  // Beam status at the initial interaction point
-  fIC_Interaction_Kinetic_Energy=-1;
-  fIC_Interaction_Position_X=-1;
-  fIC_Interaction_Position_Y=-1;
-  fIC_Interaction_Position_Z=-1;
+  fIC_Incident_Particle_Name = "";
+  fIC_Incident_Emittance_ThetaX = -1;
+  fIC_Incident_Emittance_PhiY = -1;
+  fIC_Incident_Emittance_Theta = -1;
+  fIC_Incident_Emittance_Phi = -1;
+  fIC_Incident_Initial_Kinetic_Energy = -1;
+  fIC_Incident_Final_Kinetic_Energy = -1;
+  fIC_Incident_Position_X = -1;
+  fIC_Incident_Position_Y = -1;
+  fIC_Incident_Position_Z = -1;
   
   // emmitted particle
   fIC_Particle_Name.clear();
@@ -66,19 +66,20 @@ void TInitialConditions::Dump() const{
   // Incident beam parameter
   cout << "\t ---- Incident Beam ---- " << endl;
   cout << "\t Particle Name:  " << fIC_Incident_Particle_Name << endl;
-  cout << "\t Energy: " << fIC_Incident_Kinetic_Energy << endl;
-  cout << "\t Theta_X: " << fIC_Incident_Emittance_Theta << endl;
-  cout << "\t Phi_Y: " << fIC_Incident_Emittance_Phi << endl;
-  
+  cout << "\t Energy: " << fIC_Incident_Initial_Kinetic_Energy << endl;
+  cout << "\t Theta_X: " << fIC_Incident_Emittance_ThetaX << endl;
+  cout << "\t Phi_Y: " << fIC_Incident_Emittance_PhiY << endl;
+  cout << "\t Theta: " << fIC_Incident_Emittance_Theta << endl;
+  cout << "\t Phi: " << fIC_Incident_Emittance_Phi << endl;
   
   
   // Beam status at the initial interaction point
   cout << "\t ---- Interaction Point ---- " << endl;
-  cout << "\t Energy: " << fIC_Interaction_Kinetic_Energy << endl;
+  cout << "\t Energy: " << fIC_Incident_Final_Kinetic_Energy << endl;
   cout << "\t Position: ( "
-  << fIC_Interaction_Position_X << " ; "
-  << fIC_Interaction_Position_Y << " ; "
-  << fIC_Interaction_Position_Z << ")" << endl;
+  << fIC_Incident_Position_X << " ; "
+  << fIC_Incident_Position_Y << " ; "
+  << fIC_Incident_Position_Z << ")" << endl;
   
   
   // emmitted particle

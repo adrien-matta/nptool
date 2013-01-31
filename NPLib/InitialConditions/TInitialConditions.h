@@ -40,15 +40,15 @@ private:
   
   // Incident beam parameter
   string fIC_Incident_Particle_Name;
-  double fIC_Incident_Emittance_Phi;
+  double fIC_Incident_Emittance_ThetaX;
+  double fIC_Incident_Emittance_PhiY;
   double fIC_Incident_Emittance_Theta;
-  double fIC_Incident_Kinetic_Energy;
-  
-  // Beam status at the initial interaction point
-  double fIC_Interaction_Kinetic_Energy;
-  double fIC_Interaction_Position_X;
-  double fIC_Interaction_Position_Y;
-  double fIC_Interaction_Position_Z;
+  double fIC_Incident_Emittance_Phi;
+  double fIC_Incident_Initial_Kinetic_Energy;
+  double fIC_Incident_Final_Kinetic_Energy;
+  double fIC_Incident_Position_X;
+  double fIC_Incident_Position_Y;
+  double fIC_Incident_Position_Z;
   
   // emmitted particle
   vector<string> fIC_Particle_Name;
@@ -68,16 +68,21 @@ public:
   
   /////////////////////           GetTERS           ////////////////////////
   // Incident beam parameter
-  void SetIncidentParticleName   (string Incident_Particle_Name)   {fIC_Incident_Particle_Name   = Incident_Particle_Name;}
-  void SetIncidentKineticEnergy  (double Incident_Kinetic_Energy)  {fIC_Incident_Kinetic_Energy  = Incident_Kinetic_Energy;}
+  void SetIncidentParticleName   (string Incident_Particle_Name)   {fIC_Incident_Particle_Name = Incident_Particle_Name;}
+  void SetIncidentInitialKineticEnergy  (double Incident_Initial_Kinetic_Energy)
+    {fIC_Incident_Initial_Kinetic_Energy  = Incident_Initial_Kinetic_Energy;}
+  void SetIncidentFinalKineticEnergy  (double Incident_Final_Kinetic_Energy)
+    {fIC_Incident_Final_Kinetic_Energy  = Incident_Final_Kinetic_Energy;}
+
   void SetIncidentEmittanceTheta (double Incident_Emittance_Theta) {fIC_Incident_Emittance_Theta = Incident_Emittance_Theta;}
   void SetIncidentEmittancePhi   (double Incident_Emittance_Phi)   {fIC_Incident_Emittance_Phi   = Incident_Emittance_Phi;}
+  void SetIncidentEmittanceThetaX (double Incident_Emittance_ThetaX) {fIC_Incident_Emittance_ThetaX = Incident_Emittance_ThetaX;}
+  void SetIncidentEmittancePhiY   (double Incident_Emittance_PhiY)   {fIC_Incident_Emittance_PhiY   = Incident_Emittance_PhiY;}
   
   // Beam status at the initial interaction point
-  void SetInteractionKineticEnergy (double Interaction_Kinetic_Energy)  {fIC_Interaction_Kinetic_Energy = Interaction_Kinetic_Energy;}
-  void SetInteractionPositionX     (double Interaction_Position_X)      {fIC_Interaction_Position_X     = Interaction_Position_X;}
-  void SetInteractionPositionY     (double Interaction_Position_Y)      {fIC_Interaction_Position_Y     = Interaction_Position_Y;}
-  void SetInteractionPositionZ     (double Interaction_Position_Z)      {fIC_Interaction_Position_Z     = Interaction_Position_Z;}
+  void SetIncidentPositionX     (double Incident_Position_X)      {fIC_Incident_Position_X     = Incident_Position_X;}
+  void SetIncidentPositionY     (double Incident_Position_Y)      {fIC_Incident_Position_Y     = Incident_Position_Y;}
+  void SetIncidentPositionZ     (double Incident_Position_Z)      {fIC_Incident_Position_Z     = Incident_Position_Z;}
   
   // emmitted particle
   void SetParticleName       (string Particle_Name)         {fIC_Particle_Name.push_back(Particle_Name);}
@@ -86,18 +91,19 @@ public:
   void SetMomentumDirectionX (double Momentum_Direction_X)  {fIC_Momentum_Direction_X.push_back(Momentum_Direction_X);}
   void SetMomentumDirectionY (double Momentum_Direction_Y)  {fIC_Momentum_Direction_Y.push_back(Momentum_Direction_Y);}
   void SetMomentumDirectionZ (double Momentum_Direction_Z)  {fIC_Momentum_Direction_Z.push_back(Momentum_Direction_Z);}
+  
   /////////////////////           GETTERS           ////////////////////////
   // Incident beam parameter
   string GetIncidentParticleName   () const  {return fIC_Incident_Particle_Name   ;}
-  double GetIncidentKineticEnergy  () const  {return fIC_Incident_Kinetic_Energy  ;}
+  double GetIncidentInitialKineticEnergy  () const  {return fIC_Incident_Initial_Kinetic_Energy  ;}
+  double GetIncidentFinalKineticEnergy () const {return fIC_Incident_Final_Kinetic_Energy ;}
   double GetIncidentEmittanceTheta () const  {return fIC_Incident_Emittance_Theta ;}
   double GetIncidentEmittancePhi   () const  {return fIC_Incident_Emittance_Phi   ;}
   
-  // Beam status at the initial interaction point
-  double GetInteractionKineticEnergy () const {return fIC_Interaction_Kinetic_Energy ;}
-  double GetInteractionPositionX     () const {return fIC_Interaction_Position_X     ;}
-  double GetInteractionPositionY     () const {return fIC_Interaction_Position_Y     ;}
-  double GetInteractionPositionZ     () const {return fIC_Interaction_Position_Z     ;}
+  // Beam status at the initial Incident point
+  double GetIncidentPositionX     () const {return fIC_Incident_Position_X     ;}
+  double GetIncidentPositionY     () const {return fIC_Incident_Position_Y     ;}
+  double GetIncidentPositionZ     () const {return fIC_Incident_Position_Z     ;}
   
   // emmitted particle
   string GetParticleName        (int i) const {return fIC_Particle_Name[i];}
@@ -107,7 +113,7 @@ public:
   double GetMomentumDirectionY  (int i) const {return fIC_Momentum_Direction_Y[i];}
   double GetMomentumDirectionZ  (int i) const {return fIC_Momentum_Direction_Z[i];}
   
-  unsigned int GetMult() const {return fIC_Particle_Name.size();}
+  unsigned int GetEmittedMult() const {return fIC_Particle_Name.size();}
   
   ClassDef(TInitialConditions, 1) // InitialConditions structure
 };

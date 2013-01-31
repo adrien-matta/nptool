@@ -301,3 +301,22 @@ void Beam::Print() const {
   
   
 }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void Beam::SetTargetSize(double TargetSize){
+  fTargetSize = TargetSize;
+  fEffectiveTargetSize = fTargetSize*cos(fTargetAngle);
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void Beam::SetTargetThickness(double TargetThickness){
+  fTargetThickness = TargetThickness;
+  fEffectiveTargetThickness = fTargetThickness/cos(fTargetAngle);
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void Beam::SetTargetAngle(double TargetAngle){
+  fTargetAngle = TargetAngle;
+  fEffectiveTargetSize = fTargetSize*cos(fTargetAngle);
+  fEffectiveTargetThickness = fTargetThickness/cos(fTargetAngle);
+}

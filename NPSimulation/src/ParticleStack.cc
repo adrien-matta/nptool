@@ -81,19 +81,21 @@ void ParticleStack::AddBeamParticleToStack(Particle& particle){
   
   // Incident beam parameter
   m_InitialConditions-> SetIncidentParticleName   (particle.GetParticleDefinition()->GetParticleName());
-  m_InitialConditions-> SetIncidentKineticEnergy  (particle. GetParticleThetaCM());
+  m_InitialConditions-> SetIncidentInitialKineticEnergy  (particle. GetParticleThetaCM());
   
   G4ThreeVector U(1,0,0);
   G4ThreeVector V(0,1,0);
   
-  m_InitialConditions-> SetIncidentEmittanceTheta (particle.GetParticleMomentumDirection().angle(U)/deg);
-  m_InitialConditions-> SetIncidentEmittancePhi   (particle.GetParticleMomentumDirection().angle(V)/deg);
+  m_InitialConditions-> SetIncidentEmittanceThetaX (particle.GetParticleMomentumDirection().angle(U)/deg);
+  m_InitialConditions-> SetIncidentEmittancePhiY   (particle.GetParticleMomentumDirection().angle(V)/deg);
+  m_InitialConditions-> SetIncidentEmittanceTheta (particle.GetParticleMomentumDirection().theta()/deg);
+  m_InitialConditions-> SetIncidentEmittancePhi  (particle.GetParticleMomentumDirection().phi()/deg);
   
   // Beam status at the initial interaction point
-  m_InitialConditions-> SetInteractionKineticEnergy (particle. GetParticleKineticEnergy());
-  m_InitialConditions-> SetInteractionPositionX     (particle. GetParticlePosition().x());
-  m_InitialConditions-> SetInteractionPositionY     (particle. GetParticlePosition().y());
-  m_InitialConditions-> SetInteractionPositionZ     (particle. GetParticlePosition().x());
+  m_InitialConditions-> SetIncidentFinalKineticEnergy (particle. GetParticleKineticEnergy());
+  m_InitialConditions-> SetIncidentPositionX     (particle. GetParticlePosition().x());
+  m_InitialConditions-> SetIncidentPositionY     (particle. GetParticlePosition().y());
+  m_InitialConditions-> SetIncidentPositionZ     (particle. GetParticlePosition().x());
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

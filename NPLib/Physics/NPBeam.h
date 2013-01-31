@@ -117,10 +117,10 @@ namespace NPL{
     
   public: // Event Generation
     void GenerateRandomEvent(double& E, double& X, double& Y, double& Z, double& ThetaX, double& PhiY );
-    void SetTargetSize(double TargetSize)             {fTargetSize = TargetSize; fEffectiveTargetSize = fTargetSize*cos(fTargetAngle);}
-    void SetTargetThickness(double TargetThickness)   {fTargetThickness = TargetThickness; fEffectiveTargetThickness = fTargetThickness/cos(fTargetAngle);}
-    void SetTargetAngle(double TargetAngle)           {fTargetAngle = TargetAngle; fEffectiveTargetSize = fTargetSize*cos(fTargetAngle);}
-    void SetTargetZ(double TargetZ)                   {fTargetZ = TargetZ;}
+    void SetTargetSize(double TargetSize);
+    void SetTargetThickness(double TargetThickness);
+    void SetTargetAngle(double TargetAngle);
+    void SetTargetZ(double TargetZ) {fTargetZ = TargetZ;}
 
   public: // Print private paremeter
     void Print() const;

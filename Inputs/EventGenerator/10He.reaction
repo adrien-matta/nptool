@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%% Reaction file for 11Li(d,3He)10He reaction %%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Isotropic
+%Isotropic
   EnergyLow= 100
   EnergyHigh= 100
   HalfOpenAngleMin= 0
@@ -12,7 +12,7 @@ Isotropic
   Particle= 10He
   ExcitationEnergy= 1.4
 
-%Beam
+Beam
   Particle= 11Li
   Energy= 550
 	SigmaEnergy= 0
@@ -30,7 +30,7 @@ Isotropic
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%TwoBodyReaction
+TwoBodyReaction
 	Beam= 11Li
 	Target= 2H
 	Light= 3He
@@ -43,7 +43,7 @@ Isotropic
   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-ParticleDecay 10He
+%ParticleDecay 10He
   Daughter= 9He n
   ExcitationEnergy= 0 0
   DifferentialCrossSection= flat.txt

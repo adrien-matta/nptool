@@ -359,10 +359,11 @@ void Reaction::ReadConfigurationFile(string Path){
   NPL::Beam* localBeam= new NPL::Beam();
   localBeam->SetVerboseLevel(0);
   localBeam->ReadConfigurationFile(Path);
-  
-  // Modifiy the CS to shoot only within ]HalfOpenAngleMin,HalfOpenAngleMax[ 
-  SetCSAngle(CSHalfOpenAngleMin,CSHalfOpenAngleMax);
+  fBeamEnergy= localBeam->GetEnergy();
   delete localBeam;
+
+  // Modifiy the CS to shoot only within ]HalfOpenAngleMin,HalfOpenAngleMax[
+  SetCSAngle(CSHalfOpenAngleMin,CSHalfOpenAngleMax);
   ReactionFile.close();
   initializePrecomputeVariable();
 }
