@@ -516,10 +516,10 @@ void TMust2Physics::ReadAnalysisConfig(){
   AnalysisConfigFile.open(FileName.c_str());
   
   if (!AnalysisConfigFile.is_open()) {
-    cout << " No ConfigMust2.dat found: Default parameter loaded for Analayis " << FileName << endl;
+    cout << " No ConfigMust2.dat found: Default parameters loaded for Analysis " << FileName << endl;
     return;
   }
-  cout << " Loading user parameter for Analysis from ConfigMust2.dat " << endl;
+  cout << " Loading user parameters for Analysis from ConfigMust2.dat " << endl;
   
   // Save it in a TAsciiFile
   TAsciiFile* asciiConfig = RootOutput::getInstance()->GetAsciiFileAnalysisConfig();
