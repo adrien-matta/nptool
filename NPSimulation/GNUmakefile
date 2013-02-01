@@ -3,6 +3,9 @@
 # GNUmakefile based on examples module by Gabriele Cosmo, 06/04/98.
 # --------------------------------------------------------------
 
+ROOTCONFIG   := root-config
+ARCH         := $(shell $(ROOTCONFIG) --arch)
+
 name := Simulation
 G4TARGET := $(name)
 G4EXLIB := true
@@ -19,7 +22,11 @@ G4BIN = ./bin
 
 CPPFLAGS += $(shell root-config --cflags) 
 CPPFLAGS += -I$(NPTOOL)/NPLib/include
+
+ifeq ($(ARCH),linuxx8664gcc)
 CPPFLAGS += -Xlinker --no-as-needed
+endif
+
 EXTRALIBS = $(shell root-config --glibs) -lMathMore
 EXTRALIBS += `$(NPTOOL)/NPLib/liblist`
 .PHONY: all
