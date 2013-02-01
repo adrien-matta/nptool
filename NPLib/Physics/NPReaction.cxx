@@ -208,7 +208,6 @@ void Reaction::ReadConfigurationFile(string Path){
   
   ////////Reaction Setting needs///////
   string Beam, Target, Heavy, Light, CrossSectionPath ;
-  double ExcitationEnergy3 , ExcitationEnergy4 ;
   double CSHalfOpenAngleMin = 0, CSHalfOpenAngleMax = 0;
   bool ReadingStatus = false ;
   bool check_Beam = false ;
@@ -285,14 +284,14 @@ void Reaction::ReadConfigurationFile(string Path){
         check_ExcitationEnergy3 = true ;
         ReactionFile >> DataBuffer;
         fExcitation3 = atof(DataBuffer.c_str()) * MeV;
-        if(fVerboseLevel==1) cout << "Excitation Energy Nuclei 3: " << ExcitationEnergy3 / MeV << " MeV" << endl;
+        if(fVerboseLevel==1) cout << "Excitation Energy Nuclei 3: " << fExcitation3 / MeV << " MeV" << endl;
       }
       
       else if  (DataBuffer=="ExcitationEnergy4=" || DataBuffer=="ExcitationEnergyHeavy=") {
         check_ExcitationEnergy4 = true ;
         ReactionFile >> DataBuffer;
         fExcitation4 = atof(DataBuffer.c_str()) * MeV;
-        if(fVerboseLevel==1) cout << "Excitation Energy Nuclei 4: " << ExcitationEnergy4 / MeV << " MeV" << endl;
+        if(fVerboseLevel==1) cout << "Excitation Energy Nuclei 4: " << fExcitation4 / MeV << " MeV" << endl;
       }
       
       else if  (DataBuffer== "CrossSectionPath=") {
