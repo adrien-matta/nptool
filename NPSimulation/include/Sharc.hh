@@ -71,13 +71,14 @@ namespace SHARC
   const G4int    BOX_Wafer_Back_NumberOfStrip = 16 ;
   
   // Compute
-  const G4double BOX_Wafer_Width_Offset =
-  BOX_PCB_Width/2. - BOX_PCB_Border_LongSide - BOX_Wafer_Width/2.;
-  const G4double BOX_Wafer_Length_Offset =
-  BOX_PCB_Length/2. - BOX_PCB_Border_ShortSide - BOX_Wafer_Length/2.;
+  const G4double BOX_Exposed_Length1 = BOX_Wafer_Length + BOX_PCB_Slot1_Border +0.5*BOX_PCB_Slot1_Width;
+  const G4double BOX_CenterOffset1 = 0.5* (BOX_PCB_Length-BOX_Exposed_Length1);
   
-  const G4double BOX_PCB_Slot1_Position =-(BOX_Wafer_Length_Offset-BOX_Wafer_Length/2.-BOX_PCB_Slot1_Border - BOX_PCB_Slot1_Width/2.);
-  //const G4double BOX_PCB_Slot1_Position = BOX_PCB_Width*0.5-(BOX_PCB_Width - (BOX_Wafer_Length+BOX_PCB_Border_ShortSide+BOX_PCB_Slot1_Border+BOX_PCB_Slot1_Width*0.5))-BOX_PCB_Slot1_Width*0.5;
+  const G4double BOX_Wafer_Width_Offset =
+  BOX_PCB_Width*0.5 - BOX_PCB_Border_LongSide - BOX_Wafer_Width*0.5;
+  const G4double BOX_Wafer_Length_Offset = BOX_CenterOffset1;
+  
+  const G4double BOX_PCB_Slot1_Position = (BOX_PCB_Slot1_Border+0.5*BOX_PCB_Slot1_Width+0.5*BOX_Wafer_Length-BOX_CenterOffset1);
   
   // PAD //
   // PAD PCB

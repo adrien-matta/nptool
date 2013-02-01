@@ -472,7 +472,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
             ConfigFile >> DataBuffer;
 
             // Search for comment Symbol %
-            if (DataBuffer.compare(0, 1, "%") == 0) {ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
+            if (DataBuffer.compare(0, 1, "%") == 0) {ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );getline(ConfigFile, LineBuffer);}
 
             else if (DataBuffer.compare(0, 10, "THICKNESS=") == 0) {
                check_Thickness = true ;

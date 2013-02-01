@@ -464,15 +464,12 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
       ///////////////////////////////////////////////////////////////////////////////////
       // Place the detector in the world
       // Position of the center of the PCB
-      //  G4double Exposed_Length= BOX_Wafer_Length + BOX_PCB_Slot_Border + BOX_PCB_Slot_Width;
-      //  G4double DetectorOffset= -0.5*(BOX_PCB_Length-Exposed_Length);
-      /*FIXME*///////////////////////////////////////////
       G4ThreeVector DetectorPosition =
-      G4ThreeVector(0,Box_Wafer_Offset.y(),0);
+      G4ThreeVector(-BOX_CenterOffset1,-Box_Wafer_Offset.y(),0);
 
       // Distance of the PCB to the target
       G4ThreeVector DetectorSpacing =
-      -G4ThreeVector(0, 0,Box_Wafer_Offset.y()+BOX_PCB_Slot_Position );
+        -G4ThreeVector(0, 0,BOX_Exposed_Length1*0.5);
 
       // If a PAD is present, DSSD is not in the center of the Slot:
       G4ThreeVector PAD_OFFSET=-G4ThreeVector(0.5*PAD_PCB_Thickness,0,0);
