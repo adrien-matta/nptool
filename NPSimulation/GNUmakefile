@@ -19,6 +19,7 @@ G4BIN = ./bin
 
 CPPFLAGS += $(shell root-config --cflags) 
 CPPFLAGS += -I$(NPTOOL)/NPLib/include
+CPPFLAGS += -Xlinker --no-as-needed
 EXTRALIBS = $(shell root-config --glibs) -lMathMore
 EXTRALIBS += `$(NPTOOL)/NPLib/liblist`
 .PHONY: all

@@ -110,7 +110,6 @@ void Beam::ReadConfigurationFile(string Path){
   bool check_AllEnergy = false;
   bool check_AllEmittance = false;
   
-  ifstream ReactionFile;
   string GlobalPath = getenv("NPTOOL");
   string StandardPath = GlobalPath + "/Inputs/EventGenerator/" + Path;
   ReactionFile.open(StandardPath.c_str());
