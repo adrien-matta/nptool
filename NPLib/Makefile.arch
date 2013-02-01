@@ -117,9 +117,9 @@ endif
 ifeq ($(ARCH),linuxx8664gcc)
 # AMD Opteron and Intel EM64T (64 bit mode) Linux with gcc 3.x
 CXX           = g++
-CXXFLAGS      = $(OPT2) -Wall -fPIC
+CXXFLAGS      = $(OPT2) -Wall -fPIC -Xlinker --no-as-needed
 LD            = g++
-LDFLAGS       = $(OPT2)
+LDFLAGS       = $(OPT2) -Xlinker --no-as-needed
 SOFLAGS       = -shared
 endif
 
