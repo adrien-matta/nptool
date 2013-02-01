@@ -89,7 +89,6 @@ void Beam::ReadConfigurationFile(string Path){
   string DataBuffer;
   //////////////////////////////////////////////////////////////////////////////////////////
   ifstream ReactionFile;
-  ReactionFile.open(Path.c_str());
   
   bool ReadingStatus      = false ;
   bool check_BeamName     = false ;
@@ -111,10 +110,20 @@ void Beam::ReadConfigurationFile(string Path){
   bool check_AllEnergy = false;
   bool check_AllEmittance = false;
   
-  if (!ReactionFile.is_open()) {
-    cout << "Error: File " << Path << " not found" << endl ;
-    exit(1);
+  ifstream ReactionFile;
+  string GlobalPath = getenv("NPTOOL");
+  string StandardPath = GlobalPath + "/Inputs/EventGenerator/" + Path;
+  ReactionFile.open(StandardPath.c_str());
+  if (ReactionFile.is_open()) {cout << "Reading Reaction File " << Path << endl ;}
+  
+  // In case the file is not found in the standard path, the programm try to interpret the file name as an absolute or relative file path.
+  else{
+    ReactionFile.open( Path.c_str() );
+    if(ReactionFile.is_open()) { if(fVerboseLevel==1) cout << "Reading Reaction File " << Path << endl;}
+    
+    else {cout << "Reaction File " << Path << " not found" << endl;exit(1);}
   }
+
 
   while (!ReactionFile.eof()) {
     //Pick-up next line
