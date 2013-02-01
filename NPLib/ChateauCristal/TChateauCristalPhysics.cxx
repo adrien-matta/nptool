@@ -37,10 +37,14 @@ using namespace ChateauCristal_LOCAL;
 
 //  ROOT
 #include "TChain.h"
-
+#include "TRandom.h"
 //  transform an integer to a string
 string itoa(int value)
 {
+/*          char buffer [33];
+          sprintf(buffer,"%d",value);
+          return buffer;
+*/
    std::ostringstream o;
    if (!(o << value))
       return ""  ;
@@ -51,24 +55,35 @@ ClassImp(TChateauCristalPhysics)
 
 ///////////////////////////////////////////////////////////////////////////
 TChateauCristalPhysics::TChateauCristalPhysics()
+	: m_NumberOfDetectors(0),
+	  m_EventData(new TChateauCristalData),
+	  m_PreTreatedData(new TChateauCristalData),
+	  m_EventPhysics(this),
+	  m_E_Threshold(0),
+	  m_Pedestal_Threshold(0),
+	  m_beta(0)
 {    
-   NumberOfDetectors = 0;
-   EventData = new TChateauCristalData;
-   PreTreatedData = new TChateauCristalData;
-   EventPhysics = this;
-   E_Threshold = 0.;
-   Pedestal_Threshold = 0;
+ //  cout << "***************** constructeur CCPhys" << endl;
+//   cout << "pointeur m_EventData " << m_EventData << endl;
+  ReadAddbackConfFile((char *)"/home/e611/ganacq_manip/e611/GRU_e611/calibrations/BaFnear.txt");
 }
 
 ///////////////////////////////////////////////////////////////////////////
 TChateauCristalPhysics::~TChateauCristalPhysics()
 {}
 
+
 ///////////////////////////////////////////////////////////////////////////
 void TChateauCristalPhysics::Clear()
 {
+
+  f_Energy_addback.clear();
+  f_Time_addback.clear();
+
    DetectorNumber  .clear() ;
    Energy          .clear() ;
+   EnergyDCgeom    .clear() ;
+   EnergyDCreal    .clear() ;
    Time            .clear() ;
 }
 
@@ -93,7 +108,7 @@ void TChateauCristalPhysics::ReadConfiguration(string Path)
          //if (LineBuffer.compare(0, 4, "BAF2") == 0) //individual detector
       {
          cout << "Chateau de Cristal found: " << endl   ;        
-         //         NumberOfDetectors=64;//simplify matters to read whole array at once sf
+         //         m_NumberOfDetectors=64;//simplify matters to read whole array at once sf
          ReadingStatus = true ;
       }
 
@@ -151,9 +166,9 @@ void TChateauCristalPhysics::AddParameterToCalibrationManager()
 {
    CalibrationManager* Cal = CalibrationManager::getInstance();
 
-   for(int i = 0 ; i < NumberOfDetectors ; ++i){
-      Cal->AddParameter("ChateauCristal", "Detector"+itoa(i+1)+"_E","ChateauCristal_DETECTOR_"+itoa(i+1)+"_E")  ;
-      Cal->AddParameter("ChateauCristal", "Detector"+itoa(i+1)+"_T","ChateauCristal_DETECTOR_"+itoa(i+1)+"_T")  ;  
+   for(int i = 0 ; i < m_NumberOfDetectors ; ++i){
+      Cal->AddParameter("ChateauCristal", "Detector"+itoa(i)+"_E","ChateauCristal_DETECTOR_"+itoa(i)+"_E")  ;
+      Cal->AddParameter("ChateauCristal", "Detector"+itoa(i)+"_T","ChateauCristal_DETECTOR_"+itoa(i)+"_T")  ;  
    }
 }
 
@@ -163,7 +178,7 @@ void TChateauCristalPhysics::InitializeRootInputRaw()
    TChain* inputChain = RootInput::getInstance()->GetChain();
    inputChain->SetBranchStatus ( "ChateauCristal"     , true );
    inputChain->SetBranchStatus ( "fChateauCristal_*"  , true );
-   inputChain->SetBranchAddress( "ChateauCristal"     , &EventData );
+   inputChain->SetBranchAddress( "ChateauCristal"     , &m_EventData );
 }     
 
 ///////////////////////////////////////////////////////////////////////////
@@ -174,67 +189,87 @@ void TChateauCristalPhysics::InitializeRootInputPhysics()
    inputChain->SetBranchStatus ( "DetectorNumber", true );
    inputChain->SetBranchStatus ( "Energy"        , true );
    inputChain->SetBranchStatus ( "Time"          , true );
-   inputChain->SetBranchAddress( "ChateauCristal"          , &EventPhysics );
+   inputChain->SetBranchAddress( "ChateauCristal"          , &m_EventPhysics );
 }
 
 ///////////////////////////////////////////////////////////////////////////
 void TChateauCristalPhysics::InitializeRootOutput()
 {
    TTree* outputTree = RootOutput::getInstance()->GetTree()      ;
-   outputTree->Branch( "ChateauCristal" , "TChateauCristalPhysics" , &EventPhysics )  ;
+   outputTree->Branch( "ChateauCristal" , "TChateauCristalPhysics" , &m_EventPhysics )  ;
 }
 
 ///////////////////////////////////////////////////////////////////////////
 void TChateauCristalPhysics::BuildPhysicalEvent()
 {
    BuildSimplePhysicalEvent()  ;
+   if( f_addback_possible) CalculateAddback();
 }
 
 ///////////////////////////////////////////////////////////////////////////
 void TChateauCristalPhysics::BuildSimplePhysicalEvent()
 {
+//	cout << "TCCPhys : BuildSimplePHysicalEvent" << endl;
    PreTreat();
 
-   for(unsigned int i = 0 ; i <   PreTreatedData->GetChateauCristalEnergyMult() ; ++i)
+   for(unsigned int i = 0 ; i <   m_PreTreatedData->GetChateauCristalEnergyMult() ; ++i)
    {
-      DetectorNumber  .push_back(   PreTreatedData->GetChateauCristalEDetectorNbr(i) )  ;
-      Energy          .push_back(   PreTreatedData->GetChateauCristalEnergy(i)       )  ; 
+      UShort_t det  = m_PreTreatedData->GetChateauCristalEDetectorNbr(i);
+      Double_t ener = m_PreTreatedData->GetChateauCristalEnergy(i);
+
+      if (ener > 0) {
+         DetectorNumber.push_back(det);
+	 Energy        .push_back(ener); 
+//         DetectorNumber.push_back(m_PreTreatedData->GetChateauCristalEDetectorNbr(i));
+//	 Energy        .push_back(m_PreTreatedData->GetChateauCristalEnergy(i)); 
+
+         // Doppler correction
+//         Double_t EDCgeom = DopplerCorrection(Energy.at(i), m_DetectorAngleGeom(DetectorNumber.at(i)));
+         Double_t EDCgeom = DopplerCorrection(ener, m_DetectorAngleGeom[det]);
+         Double_t EDCreal = DopplerCorrection(ener, m_DetectorAngleReal[det]);
+//	 cout << det << "\t" << ener << "\t" << m_beta << "\t" << m_DetectorAngleGeom[det] << "\t" << EDCgeom << "\t" << m_DetectorAngleReal[det] << "\t" << EDCreal << endl;
+         EnergyDCgeom.push_back(EDCgeom);
+         EnergyDCreal.push_back(EDCreal);
+      }
+
       // Look for associated time
-      for(unsigned int j = 0 ; j <   PreTreatedData->GetChateauCristalTimeMult() ; ++j )
+      for(unsigned int j = 0 ; j <   m_PreTreatedData->GetChateauCristalTimeMult() ; ++j )
       {
-         if(PreTreatedData->GetChateauCristalEDetectorNbr(i) == PreTreatedData->GetChateauCristalTDetectorNbr(j))
-            Time.push_back(PreTreatedData->GetChateauCristalTime(j));
+         if(m_PreTreatedData->GetChateauCristalEDetectorNbr(i) == m_PreTreatedData->GetChateauCristalTDetectorNbr(j))
+            Time.push_back(m_PreTreatedData->GetChateauCristalTime(j));
       }                        
    }
-   return;    
 }
 
 ///////////////////////////////////////////////////////////////////////////
 void TChateauCristalPhysics::PreTreat()
 {
+//	cout << "TCCPhys : PreTreat" << endl;
    ClearPreTreatedData();
 
    //  E
-   for(int i = 0 ; i < EventData->GetChateauCristalEnergyMult() ; ++i)
+//   cout << "mult = " << m_EventData->GetChateauCristalEnergyMult() << "\t" << m_EventData <<  endl;
+   for(int i = 0 ; i < m_EventData->GetChateauCristalEnergyMult() ; ++i)
    {
-      if(EventData->GetChateauCristalEnergy(i) > Pedestal_Threshold && ChannelStatus[EventData->GetChateauCristalEDetectorNbr(i)-1])
+   
+      if(m_EventData->GetChateauCristalEnergy(i) > m_Pedestal_Threshold && ChannelStatus[m_EventData->GetChateauCristalEDetectorNbr(i)-1])
       {
-         double E = fChateauCristal_E(EventData , i); 
-         if( E > E_Threshold )
+         double E = fChateauCristal_E(m_EventData , i); 
+         if( E > m_E_Threshold )
          {
-            PreTreatedData->SetChateauCristalEDetectorNbr( EventData->GetChateauCristalEDetectorNbr(i) )  ;
-            PreTreatedData->SetChateauCristalEnergy( E )                                              ;
+            m_PreTreatedData->SetChateauCristalEDetectorNbr( m_EventData->GetChateauCristalEDetectorNbr(i) )  ;
+            m_PreTreatedData->SetChateauCristalEnergy( E )                                              ;
          }
       } 
    }
 
    //  T
-   for(int i = 0 ; i < EventData->GetChateauCristalTimeMult() ; ++i)
+   for(int i = 0 ; i < m_EventData->GetChateauCristalTimeMult() ; ++i)
    {
-      if(ChannelStatus[EventData->GetChateauCristalTDetectorNbr(i)-1])
+      if(ChannelStatus[m_EventData->GetChateauCristalTDetectorNbr(i)-1])
       {
-         PreTreatedData->SetChateauCristalTDetectorNbr( EventData->GetChateauCristalTDetectorNbr(i) )  ;
-         PreTreatedData->SetChateauCristalTime( fChateauCristal_T(EventData , i) )                         ;
+         m_PreTreatedData->SetChateauCristalTDetectorNbr( m_EventData->GetChateauCristalTDetectorNbr(i) )  ;
+         m_PreTreatedData->SetChateauCristalTime( fChateauCristal_T(m_EventData , i) )                         ;
       }
    }
 }
@@ -246,7 +281,7 @@ void TChateauCristalPhysics::InitializeStandardParameter()
    bool TempChannelStatus;
    ChannelStatus.clear();
    TempChannelStatus=true;
-   for(int i = 0 ; i < NumberOfDetectors ; ++i)   
+   for(int i = 0 ; i < m_NumberOfDetectors ; ++i)   
       ChannelStatus[i] = TempChannelStatus;
 }
 
@@ -256,8 +291,7 @@ void TChateauCristalPhysics::ReadAnalysisConfig()
    bool ReadingStatus = false;
 
    // path to file
-   string FileName = string(getenv("E611")) + string("/configs/ConfigChateauCristal.dat");
-   //string FileName = "./configs/ConfigChateauCristal.dat";
+   string FileName = "./configs/ConfigChateauCristal.dat";
 
    // open analysis config file
    ifstream AnalysisConfigFile;
@@ -282,7 +316,7 @@ void TChateauCristalPhysics::ReadAnalysisConfig()
       getline(AnalysisConfigFile, LineBuffer);
 
       // search for "header"
-      if (LineBuffer.compare(0, 9, "ConfigChateauCristal") == 0) ReadingStatus = true;
+      if (LineBuffer.compare(0, 20, "ConfigChateauCristal") == 0) ReadingStatus = true;
 
       // loop on tokens and data
       while (ReadingStatus) {
@@ -297,14 +331,26 @@ void TChateauCristalPhysics::ReadAnalysisConfig()
 
          else if (whatToDo=="PEDESTAL_THRESHOLD") {
             AnalysisConfigFile >> DataBuffer;
-            Pedestal_Threshold = atoi(DataBuffer.c_str() );
-            cout << "PEDESTAL THRESHOLD  " << Pedestal_Threshold << endl;
+            m_Pedestal_Threshold = atof(DataBuffer.c_str() );
+            cout << "PEDESTAL THRESHOLD  " << m_Pedestal_Threshold << endl;
+         }
+
+         else if (whatToDo=="ENERGY_THRESHOLD") {
+            AnalysisConfigFile >> DataBuffer;
+            m_E_Threshold = atof(DataBuffer.c_str() );
+            cout << "ENERGY THRESHOLD  " << m_E_Threshold << endl;
+         }
+
+         else if (whatToDo=="BETA") {
+            AnalysisConfigFile >> DataBuffer;
+            m_beta = atof(DataBuffer.c_str() );
+            cout << "BETA  " << m_beta << endl;
          }
 
          else if (whatToDo=="DISABLE") {
             AnalysisConfigFile >> DataBuffer;
-            cout << whatToDo << "  " << DataBuffer << endl;
-            int Detector = atoi(DataBuffer.substr(2,1).c_str());
+            int Detector = atoi(DataBuffer.substr(5).c_str());
+            cout << whatToDo << "\t" << DataBuffer << "\t" << Detector << endl;
             bool ChannelStatusBuffer;
             ChannelStatusBuffer=false;
             ChannelStatus[Detector-1] = ChannelStatusBuffer;
@@ -322,32 +368,112 @@ void TChateauCristalPhysics::ReadAnalysisConfig()
 void TChateauCristalPhysics::AddModule(string AngleFile)
 {
    ifstream file;
-   //  TString filename = Form("posBaptiste/angles_exogam_clover%d.txt",NumberOfClover);
-   //  TString filename = Form("posz42_simu50mm/angles_exogam_clover%d.txt",NumberOfClover);
-   //  TString filename = Form("posz42_exp_stat_demiring/angles_exogam_clover%d.txt",NumberOfClover);
 
-   string path = "posz42_exp_stat_demiring/";
+   string path = "/home/e611/ganacq_manip/e611/GRU_e611/calibrations/";
    TString filename = path + AngleFile;
 
-   cout << filename << endl;
    file.open(filename);
    if (!file) cout << filename << " was not opened" << endl;
 
-   map<int, double> mapDetectorAngleCorrec, mapDetectorAngleGeo;
-
-
-   double angle_correc, angle_geo; 
+   Double_t angle_correc, angle_geo; 
    string buffer;
-   int det;
+   UShort_t det, dummy;
 
-   while (!file.eof()) {
-      file >> buffer >> det >> angle_correc >> angle_geo;
-      mapDetectorAngleCorrec[det] = angle_correc; 
-      mapDetectorAngleGeo[det]    = angle_geo; 
-      NumberOfDetectors++;
+   while (file >> buffer >> det >> angle_correc >> angle_geo >> dummy) {
+      cout << buffer << "\t" << det << "\t" << angle_correc << "\t" << angle_geo << "\t" << dummy << endl;
+      m_DetectorAngleReal[det] = angle_correc; 
+      m_DetectorAngleGeom[det] = angle_geo; 
+      m_NumberOfDetectors++;
    }
 
    file.close();
+
+//   cout << mapDetectorAngleCorrec[2] << "\t" << mapDetectorAngleGeo[2] << endl;
+}
+
+int TChateauCristalPhysics::ReadAddbackConfFile(char *file_name)
+{
+  ifstream in_f(file_name);
+  if (!in_f){
+    cout<<"\n No addback configuration found^\n";
+    f_addback_possible= false;
+    return -1;
+  }
+  cout<<"\n File "<<file_name<<" opened! Reading CdC detector configuration";
+  string line;
+  Short_t i=0,j=0,det,det_nr;
+  vector<UShort_t> det_cor;
+  det_cor.resize(6);
+  while(!in_f.eof()){
+    stringstream line_st;
+    getline(in_f,line);
+    line_st<<line;
+    line_st>>det_nr;
+    cout<<"\n Det "<< det_nr<<" has around ";
+    for(i=0;i<6;i++){
+      line_st>>det;
+      det_cor[i]=det;
+      cout<<det_cor[i]<<"\t";
+    }
+    
+    f_CdC_nearDet[j++]= det_cor;
+  }
+  f_addback_possible=true;
+  return 0;
+}
+
+void TChateauCristalPhysics::CalculateAddback()
+{
+  UShort_t i,j,k,l;
+  UShort_t index=-1;
+  Double_t ene,ene2,ene_s=0,t1=-100,t2=-2000;
+  for(i=0;i<DetectorNumber.size();i++){
+    ene=Energy[i];
+    for(j=0;j<Time.size();j++)
+      if( DetectorNumber[i]==m_EventData->GetChateauCristalTDetectorNbr(j))
+	t1=m_EventData->GetChateauCristalTime(j);
+    ene_s=ene;
+    if( ene< 400.) {
+      f_Energy_addback.push_back(0.);
+      f_Time_addback.push_back(0.);
+    }
+    else{
+      for(j=0;j<6;j++){
+	if(ene==0) break;
+	//	cout<<"\nbefore mat ene="<<ene<<" ene_s= "<<ene_s<<"index= "<<index<<"\n";
+	index=*(f_CdC_nearDet[DetectorNumber[i]].begin()+j);
+	//cout<<"\nafter mat\n";
+	ene2=0.;
+	for(k=0;k<DetectorNumber.size();k++){
+	  if(index==DetectorNumber[k]) {
+	    for(l=0;l<Time.size();l++)
+	      if( DetectorNumber[k]==m_EventData->GetChateauCristalTDetectorNbr(l))
+		t2=m_EventData->GetChateauCristalTime(l);
+	    if(abs(t1-t2)<2.) ene2=Energy[k];
+	    // cout<<"\nene2="<<ene2;
+	    if(ene2>ene) {
+	      ene_s=0.;
+	      ene=0.;
+	      ene2=0.;
+	      break;
+	    }
+	    if( ene2> 400 ){
+	      ene_s+=ene2;
+	      ene2=0.;
+	    }
+	    
+	    // cout<<"\n k= "<<k<<" max size = "<< DetectorNumber.size()<<"\n";
+	  }
+	}
+	
+      }
+      // cout<<"\nbefore addback i= "<<i<<" size max "<<f_Energy_addback.size()<<"ene_s "<<ene_s<<"\n";
+      f_Energy_addback.push_back(ene_s);
+      f_Time_addback.push_back(t1);
+      //      cout<<"index "<<i<<" energy "<<Energy[i]<<"addback = "<<f_Energy_addback[i]<<"ene2 "<<ene2<<endl;
+      //cout<<"\nafter addback\n";
+    }
+  }
 }
 
 
@@ -357,26 +483,23 @@ double TChateauCristalPhysics::DopplerCorrection(double E, double Theta)
    double Pi = 3.141592654 ;
 
    double E_corr = 0;
-   //double beta = 0.197;     // baptiste value
-   double beta = 0.23;
-   double gamma = 1./ sqrt(1-beta*beta);
-
-   E_corr = gamma * E * ( 1. - beta * cos(Theta*Pi/180.));
+   double gamma = 1./ sqrt(1 - m_beta*m_beta);
+   E_corr = gamma * E * (1 - m_beta * cos(Theta*Pi/180.));
 
    return E_corr;
 }
 
 ///////////////////////////////////////////////////////////////////////////
-double ChateauCristal_LOCAL::fChateauCristal_E( const TChateauCristalData* EventData , const int i )
+double ChateauCristal_LOCAL::fChateauCristal_E( const TChateauCristalData* m_EventData , const int i )
 {
-   return CalibrationManager::getInstance()->ApplyCalibration("ChateauCristal/Detector" + itoa( EventData->GetChateauCristalEDetectorNbr(i) ) +"_E",  
-         EventData->GetChateauCristalEnergy(i) );
+   return CalibrationManager::getInstance()->ApplyCalibration("ChateauCristal/Detector" + itoa( m_EventData->GetChateauCristalEDetectorNbr(i) ) +"_E",  
+							      m_EventData->GetChateauCristalEnergy(i)+gRandom->Uniform()-0.5 );
 }
 
-double ChateauCristal_LOCAL::fChateauCristal_T( const TChateauCristalData* EventData , const int i )
+double ChateauCristal_LOCAL::fChateauCristal_T( const TChateauCristalData* m_EventData , const int i )
 {
-   return CalibrationManager::getInstance()->ApplyCalibration("ChateauCristal/Detector" + itoa( EventData->GetChateauCristalTDetectorNbr(i) ) +"_T",  
-         EventData->GetChateauCristalTime(i) );
+   return CalibrationManager::getInstance()->ApplyCalibration("ChateauCristal/Detector" + itoa( m_EventData->GetChateauCristalTDetectorNbr(i) ) +"_T",  
+         m_EventData->GetChateauCristalTime(i) +gRandom->Uniform()-0.5);
 }  
 
 

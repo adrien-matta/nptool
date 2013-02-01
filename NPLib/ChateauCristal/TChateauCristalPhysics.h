@@ -24,6 +24,8 @@
 
 //   STL
 #include <vector>
+#include <map>
+#include <string>
 using namespace std ;
 //   ROOT
 #include "TObject.h"
@@ -41,10 +43,9 @@ class TChateauCristalPhysics : public TObject, public NPA::VDetector
  public:   //   Calibrated Data
    vector<UShort_t>   DetectorNumber;
    vector<Double_t>   Energy;
+   vector<Double_t>   EnergyDCgeom;
+   vector<Double_t>   EnergyDCreal;
    vector<Double_t>   Time;
-
-   map<Int_t, Double_t> mapDetectorAngleCorrec; //!
-   map<Int_t, Double_t> mapDetectorAngleGeo;    //!
 
  public:   //   inherited from VDetector
    // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
@@ -77,11 +78,11 @@ class TChateauCristalPhysics : public TObject, public NPA::VDetector
 
    // Those two method all to clear the Event Physics or Data
    void ClearEventPhysics() {Clear();}
-   void ClearEventData()    {EventData->Clear();}
+   void ClearEventData()    {m_EventData->Clear();}
 
  public: //   Specific to ChateauCristal
    // Clear The PreTeated object
-   void ClearPreTreatedData()   {PreTreatedData->Clear();}
+   void ClearPreTreatedData()   {m_PreTreatedData->Clear();}
       
    // Remove bad channel, calibrate the data and apply threshold
    void PreTreat();
@@ -94,33 +95,46 @@ class TChateauCristalPhysics : public TObject, public NPA::VDetector
    void ReadAnalysisConfig();
 
    // Give an external TChateauCristalData object to TChateauCristalPhysics, needed for online analysis
-   void SetRawDataPointer(TChateauCristalData* rawDataPointer) {EventData = rawDataPointer;}
+   void SetRawDataPointer(TChateauCristalData* rawDataPointer) {m_EventData = rawDataPointer;}
  
    // Retrieve pre-treated data
-   TChateauCristalData* GetPreTreatedData() const {return PreTreatedData;}
+   TChateauCristalData* GetPreTreatedData() const {return m_PreTreatedData;}
 
- protected:
    double DopplerCorrection(double Energy, double Theta);
+ protected:
 
    // Add a BaF2 module
    void AddModule(string AngleFile);
 
 private:   // Data not written in the tree
-   int           NumberOfDetectors;//!
-   TChateauCristalData*    EventData;//!
-   TChateauCristalData*    PreTreatedData;//!
-   TChateauCristalPhysics* EventPhysics;//!
+   int                     m_NumberOfDetectors;//!
+   TChateauCristalData*    m_EventData;//!
+   TChateauCristalData*    m_PreTreatedData;//!
+   TChateauCristalPhysics* m_EventPhysics;//!
 
-   double E_Threshold;//!
-   double Pedestal_Threshold;//!
+
+   double m_E_Threshold;		//!
+   double m_Pedestal_Threshold;	//!
+   double m_beta;		//!
             
  private: //  Map of activated Channel
    map< int, bool > ChannelStatus;//!
     
  public:  
+   map<UShort_t, Double_t> m_DetectorAngleReal;	//!
+   map<UShort_t, Double_t> m_DetectorAngleGeom;	//!
+
+   map < UShort_t,vector<UShort_t> > f_CdC_nearDet;
+   vector <Double_t> f_Energy_addback;
+   vector <Double_t> f_Time_addback;
+
+   bool f_addback_possible;
+   int ReadAddbackConfFile(char *file_name);
+   void CalculateAddback();
+
    void Clear();
    void Clear(const Option_t*) {};
-   
+
    ClassDef(TChateauCristalPhysics,1)  // ChateauCristalPhysics structure
 };
 

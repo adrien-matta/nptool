@@ -1,0 +1,91 @@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GeneralTarget
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Thickness in micrometer
+% Radius in mm
+% Temperature in K, Pressure in bar
+Target
+	THICKNESS= 2.92
+	RADIUS=	24
+	MATERIAL= CD2
+	ANGLE= 0
+	X= 0
+	Y= 0
+	Z= 0
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+CATSArray 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%% Cats 1 %%%%%%%%%%%
+CATSDetector
+   X1_Y1=          -34.36  -34.96  -1787
+   X28_Y1=         36.76   -34.96  -1787
+   X1_Y28=         -34.36  36.16   -1787
+   X28_Y28=        36.76   36.16   -1787
+
+%%%%%%%%%%%%% Cats 2 %%%%%%%%%%%
+CATSDetector
+   X1_Y1=          34.26   -35.46  -1155
+   X28_Y1=         -36.86  -35.46  -1155
+   X1_Y28=         34.26   35.66   -1155
+   X28_Y28=        -36.86  35.66   -1155
+
+%%%%%%%%%%%%%%%%%%%
+ChateauCristal
+%%%%%%%%%%%%%%%%%%%
+   ANGLES_FILE= BaF_geometry.geo.nicolas
+	
+%%%%%%%%%%%%%%%%%%%%			
+CDArray		
+%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%% Detector 1 %%%%%%%%			
+
+%%%%%%%%% Detector 2 %%%%%%%%			
+
+%%%%%%%%% Detector 3 %%%%%%%%			
+
+%%%%%%%%% Detector 4 %%%%%%%%			
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+LiseArray
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+IonisationChamber
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Chio 
+A=       -30.  -30.   600.
+B=        30.  -30.   600.
+C=       -30.   30.   600.
+D=        30.   30.   600.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ScintillatorPlastic
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% all parameters need to be there for routine to exit
+
+Plastic
+      THETA= 0
+      PHI= 0
+      R= 0
+      X= 0
+      Y= 0
+      Z= 800
+      Thickness= 20
+      Shape= Square
+      Height= 30 
+      Width= 30
+      Radius= 0
+      Scintillator= BC400
+      LeadThickness= 0
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+

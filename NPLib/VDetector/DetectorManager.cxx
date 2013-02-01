@@ -13,6 +13,7 @@
 #include "TSSSDPhysics.h"
 #include "TPlasticPhysics.h"
 #include "TTrifoilPhysics.h"
+#include "TChateauCristalPhysics.h"
 #include "GaspardTracker.h"
 #include "HydeTracker.h"
 #include "Paris.h"
@@ -58,6 +59,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
    Bool_t MUST2               = false;
    Bool_t CATS                = false;
    Bool_t SSSD                = false;
+   Bool_t ChateauCristal      = false;
    Bool_t Exogam              = false;
    Bool_t ScintillatorPlastic = false;
    Bool_t IonisationChamber   = false;
@@ -223,7 +225,29 @@ void DetectorManager::ReadConfigurationFile(string Path)
          AddDetector("CATS", myDetector);
 #endif
       }
+ 
+      ////////////////////////////////////////////////////
+      ////////   Search for Chateau de Cristal    ////////
+      ////////////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 9, "ChateauCristal") == 14 && ChateauCristal == false) {
+#ifdef INC_CHATEAUCRISTAL
+         ChateauCristal = true;
+         cout << "//////// Chateau de Cristal Array ////////" << endl << endl;
+
+         // Instantiate the new array as a VDetector Object
+         VDetector* myDetector = new TChateauCristalPhysics();
+
+         // Read Position of Telescope
+         ConfigFile.close();
+         myDetector->ReadConfiguration(Path);
+         ConfigFile.open(Path.c_str());
+
+         // Add array to the VDetector Vector
+         AddDetector("ChateauCristal", myDetector);
+#endif
+      }
       
+     
       ////////////////////////////////////////////
       ////////// Search for W1 (Micron)  /////////
       ////////////////////////////////////////////
