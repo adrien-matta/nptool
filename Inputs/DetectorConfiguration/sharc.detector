@@ -48,7 +48,7 @@ Sharc
     ThicknessPAD4= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Down Stream Box
-  SharcBOX
+ % SharcBOX
     Z= 40
     ThicknessDector1= 100
     ThicknessDector2= 100

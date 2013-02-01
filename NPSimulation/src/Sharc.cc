@@ -59,8 +59,6 @@ using namespace std;
 using namespace CLHEP;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Sharc Specific Method
 Sharc::Sharc(){
   InitializeMaterial();
@@ -111,11 +109,7 @@ void Sharc::AddQQQDetector(G4ThreeVector Pos){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Virtual Method of VDetector class
-
-
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
 void Sharc::ReadConfiguration(string Path){
@@ -327,13 +321,15 @@ void Sharc::ReadConfiguration(string Path){
   }
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Construct detector and inialise sensitive part.
 // Called After DetecorConstruction::AddDetector Method
 void Sharc::ConstructDetector(G4LogicalVolume* world){
   ConstructBOXDetector(world);
   ConstructQQQDetector(world);
 }
-///////////////////////////////////////////////////
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
   for(unsigned int i = 0 ; i < m_Z.size() ; i++){
     for (unsigned int j = 0 ; j < 4; j++) {
@@ -412,8 +408,7 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
                           logicWafer,"Box_Wafer",logicBoxDetector,false,i*4+j+1);
       
       // create the PAD
-      
-      // Make the a single detector geometry
+      // Make a single detector geometry
       G4LogicalVolume* logicPADDetector;
       G4ThreeVector PAD_Wafer_Offset =
       G4ThreeVector(PAD_Wafer_Length_Offset, PAD_Wafer_Width_Offset,0 );
@@ -469,25 +464,17 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
       ///////////////////////////////////////////////////////////////////////////////////
       // Place the detector in the world
       // Position of the center of the PCB
-      G4double Exposed_Length= BOX_PCB_Border_ShortSide - BOX_PCB_Slot_Deepness
-      + BOX_Wafer_Length
-      + BOX_PCB_Slot_Border + BOX_PCB_Slot_Width*0.5;
+      G4double Exposed_Length= BOX_Wafer_Length + BOX_PCB_Slot_Border + BOX_PCB_Slot_Width;
       G4double DetectorOffset= -0.5*(BOX_PCB_Length-Exposed_Length);
       
+      /*FIXME*///////////////////////////////////////////
       G4ThreeVector DetectorPosition =
-      G4ThreeVector(DetectorOffset,-Box_Wafer_Offset.y(),0);
-      
-      
-      cout << "PCB Length " << BOX_PCB_Length << endl;
-      cout << " Sum " << BOX_Wafer_Length+BOX_PCB_Border_ShortSide+BOX_PCB_Slot_Border+BOX_PCB_Slot_Width << endl;
-      //-Box_Wafer_Offset+G4ThreeVector(DetectorOffset,0,0);
-      //-Box_Wafer_Offset+G4ThreeVector(BOX_PCB_Slot_Border + 0.5*BOX_PCB_Slot_Width +(BOX_PCB_Border_ShortSide - BOX_PCB_Slot_Deepness),0,0);
-      
+      G4ThreeVector(DetectorOffset+0.25*mm,Box_Wafer_Offset.y(),0);
+
       // Distance of the PCB to the target
       G4ThreeVector DetectorSpacing =
       -G4ThreeVector(0, 0,0.5*Exposed_Length);
-      // -G4ThreeVector(0, 0,0.5*(BOX_Wafer_Length+(BOX_PCB_Border_ShortSide- BOX_PCB_Slot_Deepness)+BOX_PCB_Slot_Border+0.5*BOX_PCB_Slot_Width));
-      
+
       // If a PAD is present, DSSD is not in the center of the Slot:
       G4ThreeVector PAD_OFFSET=-G4ThreeVector(0.5*PAD_PCB_Thickness,0,0);
       if(m_ThicknessPAD[i][j]>0) DetectorPosition+=PAD_OFFSET;
@@ -532,13 +519,15 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
       
       new G4PVPlacement(G4Transform3D(*DetectorRotation,DetectorPosition), logicBoxDetector,"Box",world,false,i*4+j+1);
       
-      if(logicPADDetector!=NULL)
+      if(m_ThicknessPAD[i][j]>0){
         new G4PVPlacement(G4Transform3D(*DetectorRotation, PADDetectorPosition),
                           logicPADDetector,"PAD",world,false,i*4+j+1);
+      }
     }
   }
 }
-///////////////////////////////////////////////////
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Sharc::ConstructQQQDetector(G4LogicalVolume* world){
   // create the QQQ
   
@@ -605,6 +594,7 @@ void Sharc::ConstructQQQDetector(G4LogicalVolume* world){
   }
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Add Detector branch to the EventTree.
 // Called After DetecorConstruction::AddDetector Method
 void Sharc::InitializeRootOutput(){
@@ -613,6 +603,7 @@ void Sharc::InitializeRootOutput(){
    pTree->Branch("SSSD", "TSSSDData", &m_Event) ;*/
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
 void Sharc::ReadSensitive(const G4Event* event){
@@ -723,6 +714,7 @@ void Sharc::ReadSensitive(const G4Event* event){
 }
 
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Sharc::InitializeScorers(){
   /*
    //   Silicon Associate Scorer
@@ -744,6 +736,7 @@ void Sharc::InitializeScorers(){
    G4SDManager::GetSDMpointer()->AddNewDetector(m_StripScorer) ;*/
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 ////////////////////////////////////////////////////////////////
 /////////////////Material Definition ///////////////////////////
 ////////////////////////////////////////////////////////////////
