@@ -12,7 +12,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe the SHarc Silicon array                              *
+ *  This class describe the Sharc Silicon array                              *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -378,7 +378,7 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
       G4ThreeVector Box_Wafer_Offset =
       G4ThreeVector(BOX_Wafer_Length_Offset, BOX_Wafer_Width_Offset,0 );
       
-      G4SubtractionSolid* PCB1 = new G4SubtractionSolid("PCB", PCBFull, SlotShape,new G4RotationMatrix,G4ThreeVector(-BOX_PCB_Slot_Position, 0,0.5*BOX_PCB_Thickness));
+      G4SubtractionSolid* PCB1 = new G4SubtractionSolid("PCB", PCBFull, SlotShape,new G4RotationMatrix,G4ThreeVector(BOX_PCB_Slot_Position, 0,0.5*BOX_PCB_Thickness));
       
       G4SubtractionSolid* PCB = new G4SubtractionSolid("PCB", PCB1, WaferShape,new G4RotationMatrix,Box_Wafer_Offset);
       
@@ -469,7 +469,7 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
 
       // Distance of the PCB to the target
       G4ThreeVector DetectorSpacing =
-        -G4ThreeVector(0, 0,BOX_Exposed_Length1*0.5);
+        -G4ThreeVector(0, 0,BOX_DetectorSpacing);
 
       // If a PAD is present, DSSD is not in the center of the Slot:
       G4ThreeVector PAD_OFFSET=-G4ThreeVector(0.5*PAD_PCB_Thickness,0,0);
