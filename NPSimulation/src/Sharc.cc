@@ -404,7 +404,7 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
       
       if(m_ThicknessBOX[i][j]>0)
         new G4PVPlacement(new G4RotationMatrix(0,0,0),
-                          Box_Wafer_Offset,
+                          Box_Wafer_Offset+G4ThreeVector(0,0,0.5*BOX_PCB_Thickness-0.5*m_ThicknessBOX[i][j]),
                           logicWafer,"Box_Wafer",logicBoxDetector,false,i*4+j+1);
       
       // create the PAD
@@ -505,7 +505,7 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
         DetectorRotation->rotateZ(-90*deg);
       }
       
-      if(m_Z[i]>0) DetectorRotation->rotateY(180*deg);
+      if(m_Z[i]<0) DetectorRotation->rotateY(180*deg);
       
       DetectorPosition.transform(*DetectorRotation);
       DetectorPosition+=G4ThreeVector(0,0,m_Z[i]);
