@@ -618,7 +618,7 @@ void Sharc::ReadSensitive(const G4Event* event){
    G4THitsMap<G4double>*  EnergyHitMap;
    G4THitsMap<G4double>*  TimeHitMap;
    
-   std::map<G4int, G4int*>::iterator DetNbr_itr     ;
+   std::map<G4int, G4int*>::iterator DetNbr_itr    ;
    std::map<G4int, G4int*>::iterator StripNbr_itr  ;
    std::map<G4int, G4double*>::iterator Energy_itr ;
    std::map<G4int, G4double*>::iterator Time_itr   ;

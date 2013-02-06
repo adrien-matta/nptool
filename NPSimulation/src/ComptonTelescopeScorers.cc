@@ -6,13 +6,14 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: M. Labiche  contact address: marc.labiche@stfc.ac.uk     *
+ * Original Author: Nicolas de Sereville                                     *
+ * contact address: marc.labiche@stfc.ac.uk                                  *
  *                                                                           *
  * Creation Date  : 30/02/10                                                 *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription: This class holds all the scorers needed by the                *
- *             Paris*** objects.                                    *
+ *             Caompton telescope detector.                                  *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *                                                                           *
@@ -31,11 +32,12 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// Added by Adrien MATTA:
-// Those Scorer use TrackID as map index. This way ones can rebuild energy deposit,
-// time of flight or position,... particle by particle for each event. Because standard
-// scorer provide by G4 don't work this way but using a global ID for each event you should
-// not use those scorer with some G4 provided ones or being very carefull doing so.
+  /* Added by Adrien MATTA:
+   Those Scorer use TrackID as map index. This way ones can rebuild energy deposit,
+   time of flight or position,... particle by particle for each event. Because standard
+   scorer provide by G4 don't work this way but using a global ID for each event you should
+   not use those scorer with some G4 provided ones or being very carefull doing so.
+   */
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
