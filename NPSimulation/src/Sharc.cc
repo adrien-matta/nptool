@@ -43,7 +43,7 @@
 
 // NPS
 #include "Sharc.hh"
-#include "GeneralScorers.hh"
+#include "SharcScorers.hh"
 
 // NPL
 #include "NPOptionManager.h"
@@ -62,7 +62,7 @@ using namespace CLHEP;
 // Sharc Specific Method
 Sharc::Sharc(){
   InitializeMaterial();
-  // m_Event = new TSSSDData();
+  m_Event = new TSharcData();
   // Dark Grey
   SiliconVisAtt = new G4VisAttributes(G4Colour(0.3, 0.3, 0.3)) ;
   // Green
@@ -136,7 +136,7 @@ void Sharc::ReadConfiguration(string Path){
   bool ReadingStatusBOX = false ;
   bool ReadingStatus    = false ;
   while (!ConfigFile.eof()){
-  int VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
+    int VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
     
     getline(ConfigFile, LineBuffer);
     // cout << LineBuffer << endl;
@@ -409,6 +409,9 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
                           Box_Wafer_Offset+G4ThreeVector(0,0,0.5*BOX_PCB_Thickness-0.5*m_ThicknessBOX[i][j]),
                           logicWafer,"Box_Wafer",logicBoxDetector,false,i*4+j+1);
       
+      
+      logicWafer->SetSensitiveDetector(m_DSSDScorer);
+      
       // create the PAD
       // Make a single detector geometry
       G4LogicalVolume* logicPADDetector;
@@ -470,17 +473,17 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
       G4ThreeVector DetectorPosition;
       
       if(m_ThicknessPAD[i][j]>0){ //PAD Case
-       DetectorPosition = G4ThreeVector(-BOX_CenterOffset2,-Box_Wafer_Offset.y(),0);
+        DetectorPosition = G4ThreeVector(-BOX_CenterOffset2,-Box_Wafer_Offset.y(),0);
       }
       
       else{ // No Pad Case
         DetectorPosition = G4ThreeVector(-BOX_CenterOffset1,-Box_Wafer_Offset.y(),0);
       }
-
+      
       // Distance of the PCB to the target
       G4ThreeVector DetectorSpacing =
-        -G4ThreeVector(0, 0,BOX_DetectorSpacing);
-
+      -G4ThreeVector(0, 0,BOX_DetectorSpacing);
+      
       
       DetectorPosition+=DetectorSpacing;
       
@@ -598,142 +601,72 @@ void Sharc::ConstructQQQDetector(G4LogicalVolume* world){
 // Add Detector branch to the EventTree.
 // Called After DetecorConstruction::AddDetector Method
 void Sharc::InitializeRootOutput(){
-  /* RootOutput *pAnalysis = RootOutput::getInstance();
+   RootOutput *pAnalysis = RootOutput::getInstance();
    TTree *pTree = pAnalysis->GetTree();
-   pTree->Branch("SSSD", "TSSSDData", &m_Event) ;*/
+   pTree->Branch("Sharc", "TSharcData", &m_Event) ;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
 void Sharc::ReadSensitive(const G4Event* event){
-  /* m_Event->Clear();
-   //////////////////////////////////////////////////////////////////////////////////////
-   //////////////////////// Used to Read Event Map of detector //////////////////////////
-   //////////////////////////////////////////////////////////////////////////////////////
-   
-   // Si
-   G4THitsMap<G4int>*     DetNbrHitMap;
-   G4THitsMap<G4int>*     StripNbrHitMap;
-   G4THitsMap<G4double>*  EnergyHitMap;
-   G4THitsMap<G4double>*  TimeHitMap;
-   
-   std::map<G4int, G4int*>::iterator DetNbr_itr    ;
-   std::map<G4int, G4int*>::iterator StripNbr_itr  ;
-   std::map<G4int, G4double*>::iterator Energy_itr ;
-   std::map<G4int, G4double*>::iterator Time_itr   ;
-   //////////////////////////////////////////////////////////////////////////////////////
-   //////////////////////////////////////////////////////////////////////////////////////
-   // Read the Scorer associate to the Silicon Strip
-   
-   //DetectorNumber
-   G4int DetNbrCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Sharc_StripScorer/DetectorNumber");
-   DetNbrHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(DetNbrCollectionID));
-   DetNbr_itr = DetNbrHitMap->GetMap()->begin();
-   
-   //StripNumber
-   G4int StripNbrCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Sharc_StripScorer/StripNumber");
-   StripNbrHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripNbrCollectionID));
-   
-   //Energy
-   G4int StripEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Sharc_StripScorer/StripEnergy");
-   EnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripEnergyCollectionID));
-   
-   //Time
-   G4int StripTimeCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Sharc_StripScorer/StripTime");
-   TimeHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripTimeCollectionID));
-   
-   G4int sizeN = DetNbrHitMap      ->entries();
-   G4int sizeS = StripNbrHitMap    ->entries();
-   G4int sizeE = EnergyHitMap       ->entries();
-   G4int sizeT = TimeHitMap         ->entries();
-   
-   // Loop on Det Number
-   for (G4int l = 0 ; l < sizeN ; l++)
-   {
-   G4int N     =      *(DetNbr_itr->second);
-   G4int NTrackID  =   DetNbr_itr->first - N;
-   
-   if (N > 0)
-   {
-   m_Event->SetEnergyDetectorNbr(N);
-   m_Event->SetTimeDetectorNbr(N);
-   
-   //  Strip Number
-   StripNbr_itr = StripNbrHitMap->GetMap()->begin();
-   for (G4int h = 0 ; h < sizeS ; h++) {
-   G4int STrackID  =   StripNbr_itr->first  - N ;
-   G4int S         = *(StripNbr_itr->second);
-   
-   if (STrackID == NTrackID) {
-   m_Event->SetEnergyStripNbr(S);
-   m_Event->SetTimeStripNbr(S);
-   }
-   
-   StripNbr_itr++;
-   }
-   
-   //  Energy
-   Energy_itr = EnergyHitMap->GetMap()->begin();
-   for (G4int h = 0 ; h < sizeE ; h++) {
-   G4int ETrackID  =   Energy_itr->first  - N;
-   G4double E      = *(Energy_itr->second);
-   
-   if (ETrackID == NTrackID) {
-   m_Event->SetEnergy( RandGauss::shoot(E, ResoEnergy ) );
-   }
-   
-   Energy_itr++;
-   }
-   
-   
-   //  Time
-   Time_itr = TimeHitMap->GetMap()->begin();
-   for (G4int h = 0 ; h < sizeT ; h++) {
-   G4int TTrackID  =   Time_itr->first   - N ;
-   G4double T     = *(Time_itr->second);
-   
-   if (TTrackID == NTrackID) {
-   m_Event->SetTime( RandGauss::shoot(T, ResoTime ) );
-   }
-   
-   Time_itr++;
-   }
-   
-   }
-   
-   DetNbr_itr++;
-   }
-   
-   // clear map for next event
-   
-   DetNbrHitMap   ->clear();
-   StripNbrHitMap ->clear();
-   EnergyHitMap   ->clear();
-   TimeHitMap     ->clear();*/
+  m_Event->Clear();
+  
+  // DSSD
+  G4THitsMap<G4double*>*     DSSDHitMap;
+  std::map<G4int, G4double**>::iterator    DSSD_itr;
+
+  G4int DSSDCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Sharc_DSSDScorer/SharcDSSD");
+  DSSDHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(DSSDCollectionID));
+  
+  // Loop on the map
+  for (DSSD_itr = DSSDHitMap->GetMap()->begin() ; DSSD_itr != DSSDHitMap->GetMap()->end() ; DSSD_itr++){
+        
+    G4double* Info = *(DSSD_itr->second);
+    
+    double Energy =  Info[0];
+    double Time  = Info[1];
+    int DetNbr =     (int) Info[2];
+    int StripFront = (int) Info[3];
+    int StripBack =  (int) Info[4];
+
+    m_Event->SetFront_DetectorNbr(DetNbr);
+    m_Event->SetFront_StripNbr(StripFront);
+    m_Event->SetFront_Energy(RandGauss::shoot(Energy, ResoEnergy));
+    m_Event->SetFront_TimeCFD(RandGauss::shoot(Time, ResoTime));
+    m_Event->SetFront_TimeLED(RandGauss::shoot(Time, ResoTime));
+    
+    m_Event->SetBack_DetectorNbr(DetNbr);
+    m_Event->SetBack_StripNbr(StripBack);
+    m_Event->SetBack_Energy(RandGauss::shoot(Energy, ResoEnergy));
+    m_Event->SetBack_TimeCFD(RandGauss::shoot(Time, ResoTime));
+    m_Event->SetBack_TimeLED(RandGauss::shoot(Time, ResoTime));
+  }
+  
+  // clear map for next event
+  DSSDHitMap->clear();
 }
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Sharc::InitializeScorers(){
-  /*
-   //   Silicon Associate Scorer
-   m_StripScorer = new G4MultiFunctionalDetector("Sharc_StripScorer");
-   
-   G4VPrimitiveScorer* DetNbr   = new GENERALSCORERS::PSDetectorNumber("DetectorNumber","Sharc_", 0);
-   G4VPrimitiveScorer* StripNbr = new PSStripNumber("StripNumber",0,SiliconSize, NumberOfStrip);
-   G4VPrimitiveScorer* Energy   = new GENERALSCORERS::PSEnergy("StripEnergy","Sharc_", 0);
-   G4VPrimitiveScorer* TOF      = new GENERALSCORERS::PSTOF("StripTime","Sharc_", 0);
-   
-   
-   //and register it to the multifunctionnal detector
-   m_StripScorer->RegisterPrimitive(DetNbr);
-   m_StripScorer->RegisterPrimitive(StripNbr);
-   m_StripScorer->RegisterPrimitive(Energy);
-   m_StripScorer->RegisterPrimitive(TOF);
-   
-   //   Add All Scorer to the Global Scorer Manager
-   G4SDManager::GetSDMpointer()->AddNewDetector(m_StripScorer) ;*/
+  
+  //   Silicon Associate Scorer
+  m_DSSDScorer = new G4MultiFunctionalDetector("Sharc_DSSDScorer");
+  
+  G4VPrimitiveScorer* DSSDScorer =
+    new  SHARC::PS_Silicon_Rectangle("SharcDSSD",
+                                  BOX_Wafer_Length,
+                                  BOX_Wafer_Width,
+                                  BOX_Wafer_Back_NumberOfStrip ,
+                                  BOX_Wafer_Front_NumberOfStrip,
+                                  EnergyThreshold);
+
+  //and register it to the multifunctionnal detector
+  m_DSSDScorer->RegisterPrimitive(DSSDScorer);
+  
+  //   Add All Scorer to the Global Scorer Manager
+  G4SDManager::GetSDMpointer()->AddNewDetector(m_DSSDScorer) ;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

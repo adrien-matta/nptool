@@ -46,8 +46,7 @@ PS_Silicon_Rectangle::~PS_Silicon_Rectangle(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4bool PS_Silicon_Rectangle::ProcessHits(G4Step* aStep, G4TouchableHistory*){
-  G4double* EnergyAndTime = new G4double[2];
-  
+  G4double* EnergyAndTime = new G4double[5];
   EnergyAndTime[0] = aStep->GetTotalEnergyDeposit();
   
   // If the energy deposit is below the threshold, the deposit is ignored
@@ -62,9 +61,13 @@ G4bool PS_Silicon_Rectangle::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   m_Position  = aStep->GetPreStepPoint()->GetPosition();
   m_Position = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(m_Position);
   
-  m_StripLengthNumber = (int)((m_Position(1) + m_StripPlaneLength / 2.) / m_StripPitchLength ) + 1  ;
-  m_StripWidthNumber = (int)((m_Position(2) + m_StripPlaneWidth / 2.) / m_StripPitchWidth ) + 1  ;
+  m_StripLengthNumber = (int)((m_Position.x() + m_StripPlaneLength / 2.) / m_StripPitchLength ) + 1  ;
+  m_StripWidthNumber = (int)((m_Position.y() + m_StripPlaneWidth / 2.) / m_StripPitchWidth ) + 1  ;
 
+  EnergyAndTime[2] = m_DetectorNumber;
+  EnergyAndTime[3] = m_StripLengthNumber;
+  EnergyAndTime[4] = m_StripWidthNumber;
+  
   //Rare case where particle is close to edge of silicon plan
   if (m_StripLengthNumber == m_NumberOfStripLength+1) m_StripLengthNumber = m_StripLengthNumber;
   if (m_StripWidthNumber == m_NumberOfStripWidth+1) m_StripWidthNumber = m_StripWidthNumber;
@@ -72,7 +75,6 @@ G4bool PS_Silicon_Rectangle::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   m_Index =  aStep->GetTrack()->GetTrackID() + m_DetectorNumber * 1e3 + m_StripLengthNumber * 1e6 + m_StripWidthNumber * 1e9;
   EvtMap->set(m_Index, EnergyAndTime);
   return TRUE;
-
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -24,7 +24,7 @@ TwoBodyReaction
 	Heavy= 25Na
 	ExcitationEnergyLight= 0.0
 	ExcitationEnergyHeavy= 2.2
-  CrossSectionPath= 11Li(d,3He)10He.txt	CSR
+  CrossSectionPath= flat.txt	CSR
 	ShootLight= 1
 	ShootHeavy= 1
   

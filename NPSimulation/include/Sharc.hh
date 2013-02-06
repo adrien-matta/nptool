@@ -37,7 +37,7 @@
 #include "VDetector.hh"
 
 // NPLib
-//#include "TSharcData.h"
+#include "TSharcData.h"
 using namespace std;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -45,8 +45,8 @@ namespace SHARC
 {
   // Energy and time Resolution
   const G4double ResoTime    = 0      ;
-  const G4double ResoEnergy  = 0.035  ;// = zzkeV of Resolution   //   Unit is MeV/2.35
-  
+  const G4double ResoEnergy  = 0.035*MeV ;// = zzkeV of Resolution   //   Unit is MeV/2.35
+  const G4double EnergyThreshold = 0.4*MeV;
   // Geometry
   
   // BOX //
@@ -67,8 +67,8 @@ namespace SHARC
   const G4double BOX_Wafer_Length = 76.20*mm;
   
   const G4double BOX_Wafer_DeadLayer_Thickness = 0.1*um;
-  const G4int    BOX_Wafer_Front_NumberOfStrip = 16 ;
-  const G4int    BOX_Wafer_Back_NumberOfStrip = 16 ;
+  const G4int    BOX_Wafer_Front_NumberOfStrip = 48 ;
+  const G4int    BOX_Wafer_Back_NumberOfStrip = 24 ;
   
   // Compute
   const G4double BOX_LeftOver1 =  BOX_PCB_Length - BOX_PCB_Border_ShortSide - BOX_Wafer_Length - BOX_PCB_Slot_Border1 - BOX_PCB_Slot_Width1 ;
@@ -141,7 +141,7 @@ class Sharc : public VDetector
   ////////////////////////////////////////////////////
 public:
   Sharc() ;
-  virtual ~Sharc() ;
+   ~Sharc() ;
   
   ////////////////////////////////////////////////////
   //////// Specific Function of this Class ///////////
@@ -181,7 +181,7 @@ public:
   ///////////Event class to store Data////////////////
   ////////////////////////////////////////////////////
 private:
-  //TSharcData*    m_Event ;
+  TSharcData*    m_Event ;
   
   ////////////////////////////////////////////////////
   ///////////////// Scorer Related ///////////////////
@@ -192,7 +192,7 @@ private:
   void InitializeScorers() ;
   
   //   Scorer Associate to the Silicon
-  G4MultiFunctionalDetector*   m_StripScorer ;
+  G4MultiFunctionalDetector*   m_DSSDScorer ;
   
 private:
   //    Initialize material used in detector definition

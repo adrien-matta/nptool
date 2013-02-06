@@ -35,17 +35,17 @@ namespace SHARC {
     
   public: // with description
     PS_Silicon_Rectangle(G4String name, G4double StripPlaneLength, G4double StripPlaneWidth, G4int NumberOfStripLength,G4int NumberOfStripWidth,G4double TriggerThreshold,G4int depth=0);
-    virtual ~PS_Silicon_Rectangle();
+     ~PS_Silicon_Rectangle();
     
   protected: // with description
-    virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+     G4bool ProcessHits(G4Step*, G4TouchableHistory*);
     
   public:
-    virtual void Initialize(G4HCofThisEvent*);
-    virtual void EndOfEvent(G4HCofThisEvent*);
-    virtual void clear();
-    virtual void DrawAll();
-    virtual void PrintAll();
+    void Initialize(G4HCofThisEvent*);
+    void EndOfEvent(G4HCofThisEvent*);
+    void clear();
+    void DrawAll();
+    void PrintAll();
   
   private: // Threshold
     G4double m_TriggerThreshold;
