@@ -24,8 +24,8 @@
 using namespace SHARC ;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-PS_Silicon_Rectangle::PS_Silicon_Rectangle(G4String name, G4double StripPlaneLength, G4double StripPlaneWidth, G4int NumberOfStripLength,G4int NumberOfStripWidth,G4int depth)
-:G4VPrimitiveScorer(name, depth), HCID(-1){
+PS_Silicon_Rectangle::PS_Silicon_Rectangle(G4String name, G4double StripPlaneLength, G4double StripPlaneWidth, G4int NumberOfStripLength,G4int NumberOfStripWidth,G4double TriggerThreshold,G4int depth)
+:G4VPrimitiveScorer(name, depth), m_TriggerThreshold(TriggerThreshold),HCID(-1){
   m_StripPlaneLength = StripPlaneLength;
   m_StripPlaneWidth = StripPlaneWidth;
   m_NumberOfStripLength = NumberOfStripLength;
@@ -37,6 +37,7 @@ PS_Silicon_Rectangle::PS_Silicon_Rectangle(G4String name, G4double StripPlaneLen
   m_DetectorNumber = -1;
   m_StripLengthNumber = -1;
   m_StripWidthNumber = -1;
+  m_Index = -1 ;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -45,32 +46,38 @@ PS_Silicon_Rectangle::~PS_Silicon_Rectangle(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4bool PS_Silicon_Rectangle::ProcessHits(G4Step* aStep, G4TouchableHistory*){
-
+  G4double* EnergyAndTime = new G4double[2];
+  
+  EnergyAndTime[0] = aStep->GetTotalEnergyDeposit();
+  
+  // If the energy deposit is below the threshold, the deposit is ignored
+  if (EnergyAndTime[0] < m_TriggerThreshold){
+    delete EnergyAndTime;
+    return FALSE;
+  }
+  
+  EnergyAndTime[1] = aStep->GetPreStepPoint()->GetGlobalTime();
+  
   m_DetectorNumber = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(0);
   m_Position  = aStep->GetPreStepPoint()->GetPosition();
-  m_Position = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
+  m_Position = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(m_Position);
   
   m_StripLengthNumber = (int)((m_Position(1) + m_StripPlaneLength / 2.) / m_StripPitchLength ) + 1  ;
   m_StripWidthNumber = (int)((m_Position(2) + m_StripPlaneWidth / 2.) / m_StripPitchWidth ) + 1  ;
 
   //Rare case where particle is close to edge of silicon plan
   if (m_StripLengthNumber == m_NumberOfStripLength+1) m_StripLengthNumber = m_StripLengthNumber;
-  if (m_StripWidthNumber == m_NumberOfStripWidth+1) m_StripWidthhNumber = m_StripWidthNumber;
+  if (m_StripWidthNumber == m_NumberOfStripWidth+1) m_StripWidthNumber = m_StripWidthNumber;
   
-  G4double[2] EnergyAndTime;
-  
-  EnergyAndTime[0] = aStep->GetTotalEnergyDeposit();
-  EnergyAndTime[1] = aStep->GetPreStepPoint()->GetGlobalTime();;
-  
-  if (edep < TriggerThreshold) return FALSE;
-  G4int  index =  aStep->GetTrack()->GetTrackID();
-  EvtMap->set(index+DetNbr, X);
+  m_Index =  aStep->GetTrack()->GetTrackID() + m_DetectorNumber * 1e3 + m_StripLengthNumber * 1e6 + m_StripWidthNumber * 1e9;
+  EvtMap->set(m_Index, EnergyAndTime);
   return TRUE;
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PS_Silicon_Rectangle::Initialize(G4HCofThisEvent* HCE){
-  EvtMap = new G4THitsMap<G4int>(GetMultiFunctionalDetector()->GetName(), GetName());
+  EvtMap = new G4THitsMap<G4double*>(GetMultiFunctionalDetector()->GetName(), GetName());
   if (HCID < 0) {
     HCID = GetCollectionID(0);
   }

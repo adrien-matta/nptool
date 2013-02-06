@@ -34,7 +34,7 @@ namespace SHARC {
   class PS_Silicon_Rectangle : public G4VPrimitiveScorer{
     
   public: // with description
-    PS_Silicon_Rectangle(G4String name, G4double StripPlaneLength, G4double StripPlaneWidth, G4int NumberOfStripLength,G4int NumberOfStripWidth,G4int depth);
+    PS_Silicon_Rectangle(G4String name, G4double StripPlaneLength, G4double StripPlaneWidth, G4int NumberOfStripLength,G4int NumberOfStripWidth,G4double TriggerThreshold,G4int depth=0);
     virtual ~PS_Silicon_Rectangle();
     
   protected: // with description
@@ -46,6 +46,9 @@ namespace SHARC {
     virtual void clear();
     virtual void DrawAll();
     virtual void PrintAll();
+  
+  private: // Threshold
+    G4double m_TriggerThreshold;
     
   private: // Geometry of the detector
     G4double m_StripPlaneLength;
@@ -57,13 +60,15 @@ namespace SHARC {
     
   private: // inherited from G4VPrimitiveScorer
     G4int HCID;
-    G4THitsMap<G4int>* EvtMap;
+    G4THitsMap<G4double*>* EvtMap;
     
   private: // Needed for intermediate calculation (avoid multiple instantiation in Processing Hit)
     G4ThreeVector m_Position  ;
     G4int m_DetectorNumber    ;
     G4int m_StripLengthNumber ;
     G4int m_StripWidthNumber  ;
+    G4int m_Index             ;
+    
   };
 }
 
