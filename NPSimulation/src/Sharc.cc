@@ -355,19 +355,22 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
       G4double BOX_PCB_Slot_Deepness;
       G4double BOX_PCB_Slot_Border;
       G4double BOX_PCB_Slot_Position;
+      G4double BOX_DetectorSpacing;
       
-      if(m_ThicknessPAD[i][j]>0){
-        BOX_PCB_Slot_Width = BOX_PCB_Slot2_Width;
-        BOX_PCB_Slot_Deepness = BOX_PCB_Slot2_Deepness;
-        BOX_PCB_Slot_Border = BOX_PCB_Slot2_Border;
-        BOX_PCB_Slot_Position = BOX_PCB_Slot2_Position;
+      if(m_ThicknessPAD[i][j]>0){ //PAD Case
+        BOX_PCB_Slot_Width = BOX_PCB_Slot_Width2;
+        BOX_PCB_Slot_Deepness = BOX_PCB_Slot_Deepness2;
+        BOX_PCB_Slot_Border = BOX_PCB_Slot_Border2;
+        BOX_PCB_Slot_Position = BOX_PCB_Slot_Position2;
+        BOX_DetectorSpacing =  BOX_DetectorSpacing2;
       }
       
-      else{
-        BOX_PCB_Slot_Width = BOX_PCB_Slot1_Width;
-        BOX_PCB_Slot_Deepness = BOX_PCB_Slot1_Deepness;
-        BOX_PCB_Slot_Border = BOX_PCB_Slot1_Border;
-        BOX_PCB_Slot_Position = BOX_PCB_Slot1_Position;
+      else{ // No Pad Case
+        BOX_PCB_Slot_Width = BOX_PCB_Slot_Width1;
+        BOX_PCB_Slot_Deepness = BOX_PCB_Slot_Deepness1;
+        BOX_PCB_Slot_Border = BOX_PCB_Slot_Border1;
+        BOX_PCB_Slot_Position = BOX_PCB_Slot_Position1;
+        BOX_DetectorSpacing = BOX_DetectorSpacing1 ;
       }
       
       G4Box*  SlotShape = new G4Box("SlotShape",
@@ -376,7 +379,7 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
                                     BOX_PCB_Slot_Deepness);
       
       G4ThreeVector Box_Wafer_Offset =
-      G4ThreeVector(BOX_Wafer_Length_Offset, BOX_Wafer_Width_Offset,0 );
+      G4ThreeVector(BOX_Wafer_Length_Offset1, BOX_Wafer_Width_Offset1,0 );
       
       G4SubtractionSolid* PCB1 = new G4SubtractionSolid("PCB", PCBFull, SlotShape,new G4RotationMatrix,G4ThreeVector(BOX_PCB_Slot_Position, 0,0.5*BOX_PCB_Thickness));
       
@@ -389,8 +392,7 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
       // Sub Volume PCB
       G4LogicalVolume* logicPCB =
       new G4LogicalVolume(PCB,m_MaterialPCB,"logicPCB", 0, 0, 0);
-      //logicPCB->SetVisAttributes(PCBVisAtt);
-      logicPCB->SetVisAttributes(new G4VisAttributes(G4Colour(j/4., (4-j)/4., 0.5)) );
+      logicPCB->SetVisAttributes(PCBVisAtt);
       
       // Sub Volume Wafer
       G4LogicalVolume* logicWafer =
@@ -457,33 +459,35 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
                           logicPADPCB,"PAD_PCB",logicPADDetector,false,i*4+j+1);
         
         new G4PVPlacement(new G4RotationMatrix(0,0,0),
-                          PAD_Wafer_Offset,
+                          PAD_Wafer_Offset-G4ThreeVector(0,0,0.5*PAD_PCB_Thickness-0.5*m_ThicknessPAD[i][j]),
                           logicPADWafer,"PAD_Wafer",logicPADDetector,false,i*4+j+1);
       }
       
       ///////////////////////////////////////////////////////////////////////////////////
       // Place the detector in the world
       // Position of the center of the PCB
-      G4ThreeVector DetectorPosition =
-      G4ThreeVector(-BOX_CenterOffset1,-Box_Wafer_Offset.y(),0);
+      
+      G4ThreeVector DetectorPosition;
+      
+      if(m_ThicknessPAD[i][j]>0){ //PAD Case
+       DetectorPosition = G4ThreeVector(-BOX_CenterOffset2,-Box_Wafer_Offset.y(),0);
+      }
+      
+      else{ // No Pad Case
+        DetectorPosition = G4ThreeVector(-BOX_CenterOffset1,-Box_Wafer_Offset.y(),0);
+      }
 
       // Distance of the PCB to the target
       G4ThreeVector DetectorSpacing =
         -G4ThreeVector(0, 0,BOX_DetectorSpacing);
 
-      // If a PAD is present, DSSD is not in the center of the Slot:
-      G4ThreeVector PAD_OFFSET=-G4ThreeVector(0.5*PAD_PCB_Thickness,0,0);
-      if(m_ThicknessPAD[i][j]>0) DetectorPosition+=PAD_OFFSET;
       
       DetectorPosition+=DetectorSpacing;
       
-      G4ThreeVector PADDetectorPosition =
-      -PAD_Wafer_Offset+0.5*G4ThreeVector(BOX_PCB_Slot_Border + 0.5*BOX_PCB_Slot_Width -(BOX_PCB_Border_ShortSide - BOX_PCB_Slot_Deepness),0,-BOX_PCB_Thickness-PAD_PCB_Thickness+(BOX_PCB_Slot_Width-BOX_PCB_Thickness));
-      
+      G4ThreeVector PADDetectorPosition = DetectorPosition ;
       G4ThreeVector PADDetectorSpacing =
-      -G4ThreeVector(0, 0,0.5*(PAD_Wafer_Length+(PAD_PCB_Border_ShortSide- BOX_PCB_Slot_Deepness)+BOX_PCB_Slot_Border+BOX_PCB_Slot_Width));
+      -G4ThreeVector(0, 0,0.5*BOX_PCB_Thickness+0.5*PAD_PCB_Thickness);
       
-      if(m_ThicknessPAD[i][j]>0) PADDetectorPosition+=PAD_OFFSET;
       
       PADDetectorPosition+=PADDetectorSpacing;
       

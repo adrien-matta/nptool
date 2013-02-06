@@ -58,9 +58,9 @@ namespace SHARC
   const G4double BOX_PCB_Border_ShortSide = 2*mm;
   
   // Single stage box case (DSSD only)
-  const G4double BOX_PCB_Slot1_Width = BOX_PCB_Thickness;
-  const G4double BOX_PCB_Slot1_Border = 4*mm;
-  const G4double BOX_PCB_Slot1_Deepness = BOX_PCB_Border_ShortSide;
+  const G4double BOX_PCB_Slot_Width1 = BOX_PCB_Thickness;
+  const G4double BOX_PCB_Slot_Border1 = 4*mm;
+  const G4double BOX_PCB_Slot_Deepness1 = BOX_PCB_Border_ShortSide;
   
   // BOX Wafer
   const G4double BOX_Wafer_Width  = 52.20*mm;
@@ -71,16 +71,16 @@ namespace SHARC
   const G4int    BOX_Wafer_Back_NumberOfStrip = 16 ;
   
   // Compute
-  const G4double BOX_LeftOver =  BOX_PCB_Length - BOX_PCB_Border_ShortSide - BOX_Wafer_Length - BOX_PCB_Slot1_Border - BOX_PCB_Slot1_Width ;
-  const G4double BOX_Exposed_Length1 = BOX_Wafer_Length + BOX_PCB_Slot1_Border ;
+  const G4double BOX_LeftOver1 =  BOX_PCB_Length - BOX_PCB_Border_ShortSide - BOX_Wafer_Length - BOX_PCB_Slot_Border1 - BOX_PCB_Slot_Width1 ;
+  const G4double BOX_Exposed_Length1 = BOX_Wafer_Length + BOX_PCB_Slot_Border1 ;
   
   const G4double BOX_CenterOffset1 = - 0.5 * BOX_PCB_Length+BOX_PCB_Border_ShortSide+0.5*BOX_Exposed_Length1;
-  const G4double BOX_DetectorSpacing = 0.5*BOX_Exposed_Length1+0.5*BOX_PCB_Slot1_Width;
+  const G4double BOX_DetectorSpacing1 = 0.5*BOX_Exposed_Length1+0.5*BOX_PCB_Slot_Width1;
   
-  const G4double BOX_Wafer_Width_Offset = -0.5*BOX_PCB_Width + BOX_PCB_Border_LongSide + 0.5*BOX_Wafer_Width;
-  const G4double BOX_Wafer_Length_Offset = -0.5*BOX_PCB_Length + BOX_PCB_Border_ShortSide + 0.5*BOX_Wafer_Length;
+  const G4double BOX_Wafer_Width_Offset1 = -0.5*BOX_PCB_Width + BOX_PCB_Border_LongSide + 0.5*BOX_Wafer_Width;
+  const G4double BOX_Wafer_Length_Offset1 = -0.5*BOX_PCB_Length + BOX_PCB_Border_ShortSide + 0.5*BOX_Wafer_Length;
   
-  const G4double BOX_PCB_Slot1_Position = 0.5*BOX_PCB_Length-BOX_LeftOver - 0.5*BOX_PCB_Slot1_Width;
+  const G4double BOX_PCB_Slot_Position1 = 0.5*BOX_PCB_Length-BOX_LeftOver1 - 0.5*BOX_PCB_Slot_Width1;
 
   // PAD //
   // PAD PCB
@@ -96,13 +96,25 @@ namespace SHARC
   const G4double PAD_Wafer_DeadLayer_Thickness = 0.1*um;
   
   // Compute
-  const G4double PAD_Wafer_Width_Offset = PAD_PCB_Width/2. - PAD_PCB_Border_LongSide - PAD_Wafer_Width/2.;
-  const G4double PAD_Wafer_Length_Offset = PAD_PCB_Length/2. - PAD_PCB_Border_ShortSide - PAD_Wafer_Length/2.;
-  // Double stage box case (DSSD+PAD)
-  const G4double BOX_PCB_Slot2_Width = BOX_PCB_Thickness+PAD_PCB_Thickness;
-  const G4double BOX_PCB_Slot2_Border = 2.7*mm;
-  const G4double BOX_PCB_Slot2_Deepness = BOX_PCB_Border_ShortSide;
-  const G4double BOX_PCB_Slot2_Position =(BOX_Wafer_Length/2.-BOX_Wafer_Length_Offset) + BOX_PCB_Slot2_Border + BOX_PCB_Slot2_Width/2.;
+  const G4double PAD_Wafer_Width_Offset = -0.5*PAD_PCB_Width + PAD_PCB_Border_LongSide + 0.5*PAD_Wafer_Width;
+  const G4double PAD_Wafer_Length_Offset = -0.5*PAD_PCB_Length + PAD_PCB_Border_ShortSide + 0.5*PAD_Wafer_Length;
+
+  
+  // Double stage box case (DSSD+PAD) (the wafer is the same but the slot is different to accomodate the additional PAD)
+  const G4double BOX_PCB_Slot_Width2 = BOX_PCB_Thickness + PAD_PCB_Thickness ;
+  const G4double BOX_PCB_Slot_Border2 = 2.7*mm;
+  const G4double BOX_PCB_Slot_Deepness2 = BOX_PCB_Border_ShortSide;
+  
+  const G4double BOX_LeftOver2 =  BOX_PCB_Length - BOX_PCB_Border_ShortSide - BOX_Wafer_Length - BOX_PCB_Slot_Border2 - BOX_PCB_Slot_Width2;
+  const G4double BOX_Exposed_Length2 = BOX_Wafer_Length + BOX_PCB_Slot_Border2 ;
+  
+  const G4double BOX_CenterOffset2 = - 0.5*BOX_PCB_Length+BOX_PCB_Border_ShortSide + 0.5*BOX_Exposed_Length2;
+  const G4double BOX_DetectorSpacing2 = 0.5*BOX_Exposed_Length2 + 0.5*BOX_PCB_Thickness;
+
+  const G4double BOX_Wafer_Width_Offset2 = - 0.5*BOX_PCB_Width + BOX_PCB_Border_LongSide + 0.5*BOX_Wafer_Width;
+  const G4double BOX_Wafer_Length_Offset2 = - 0.5*BOX_PCB_Length + BOX_PCB_Border_ShortSide + 0.5*BOX_Wafer_Length;
+  
+  const G4double BOX_PCB_Slot_Position2 = 0.5*BOX_PCB_Length-BOX_LeftOver2 - 0.5*BOX_PCB_Slot_Width2;
   
   // QQQ //
   // QQQ PCB
@@ -122,7 +134,6 @@ namespace SHARC
 }
 
 using namespace SHARC ;
-
 class Sharc : public VDetector
 {
   ////////////////////////////////////////////////////
