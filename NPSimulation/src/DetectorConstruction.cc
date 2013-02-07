@@ -39,6 +39,12 @@
 #include "G4ios.hh"
 #include "G4String.hh"
 #include "G4RotationMatrix.hh"
+#include "MyMagneticField.hh"
+#include "G4FieldManager.hh"
+#include "G4TransportationManager.hh"
+#include "G4ChordFinder.hh"
+#include "G4MagIntegratorStepper.hh"
+#include "G4SubtractionSolid.hh"
 
 // Detector class
 #include "../../NPLib/DetectorList.inc"
@@ -48,6 +54,7 @@
 #include "DummyDetector.hh"
 #include "Eurogam.hh"
 #include "GaspardTracker.hh"
+#include "Helios.hh"
 #include "HydeTracker.hh"
 #include "MUST2Array.hh"
 #include "Paris.hh"
@@ -166,6 +173,9 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
   string LineBuffer;
   string DataBuffer;
   
+  // needed for Magnetic field
+  double Bz=0.;
+  
   bool cAddThinSi        = false;
   bool cComptonTelescope = false;
   bool cDummy            = false;
@@ -181,6 +191,8 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
   bool cSharc            = false;
   bool cShield           = false;  
   bool cW1               = false;
+  bool cHelios           = false;
+  bool check_MField      = false;
   
   int VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
   
@@ -475,7 +487,121 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
       AddDetector(myDetector)                            ;
 #endif
     }
-    
+    ////////////////////////////////////////////
+    //////////// Search for Helios ////////////
+    ////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 6, "Helios") == 0 && cHelios == false) {
+#ifdef INC_HELIOS
+      cHelios = true ;
+      G4cout << "//////// Helios detector ////////" << G4endl   ;
+      
+      ConfigFile >> DataBuffer ;
+      if (DataBuffer.compare(0, 7, "MField=") == 0){
+        check_MField = true;
+        ConfigFile >> DataBuffer ;
+        Bz = atof(DataBuffer.c_str()) ;
+        G4cout << "//////// Magentic Field set at Bz= " << Bz << " ////////" << G4endl   ;
+      }
+      
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector = new Helios()                  ;
+      
+      // Read Position of Telescope
+      ConfigFile.close()                                 ;
+      myDetector->ReadConfiguration(Path)                   ;
+      ConfigFile.open(Path.c_str())                      ;
+      
+      // Add array to the VDetector Vector
+      AddDetector(myDetector)                            ;
+      
+      //------------------------------world volume
+      //
+      
+      //  Aluminium material
+      G4double a= 26.98 * g / mole;
+      G4double density = 2.7 * g / cm3;
+      G4double z = 13.;
+      G4Material* Aluminium = new G4Material("Aluminium", z, a, density);
+      
+      
+      
+      // Add the Aluminium rod
+      G4double Al_rod_x = 1. * cm;
+      G4double Al_rod_y = 1. * cm;
+      //G4double Al_rod_z = 20.0 * cm;
+      G4double Al_rod_z = 40.0 * cm;
+      G4Box* Al_rod_box
+      = new G4Box("Al_rod_box", Al_rod_x, Al_rod_y, Al_rod_z);
+      
+      G4Tubs* Al_rod_tub
+      = new G4Tubs("Al_rod_tub", 0, 0.5*cm, Al_rod_z+1.*mm, 0.*deg, 360*deg);
+      
+      G4SubtractionSolid* Al_rod=new G4SubtractionSolid("Rod",Al_rod_box, Al_rod_tub, 0, G4ThreeVector(0.,0.,0.));
+      
+      G4LogicalVolume* Al_rod_log = new G4LogicalVolume(Al_rod, Aluminium, "Al_rod", 0, 0, 0);
+      
+      
+      new G4PVPlacement(0, G4ThreeVector(0.,0., Al_rod_z + 12.5*cm), Al_rod_log, "Al_rod", world_log, false, 0);
+      new G4PVPlacement(0, G4ThreeVector(0.,0., -(Al_rod_z + 12.5*cm)), Al_rod_log, "Al_rod", world_log, false, 1);
+      
+      
+      
+      // Add the Aluminium chamber
+      G4double Al_chamber_rmin = 50. * cm;
+      G4double Al_chamber_rmax = 55. * cm;
+      G4double Al_chamber_z = 100.0 * cm;
+      
+      //G4Tubs* Al_chamber_tub
+      //  = new G4Tubs("Al_chamber_tub", Al_chamber_rmin, Al_chamber_rmax, Al_chamber_z, 0.*deg, 180*deg);
+      G4Tubs* Al_chamber_tub
+      = new G4Tubs("Al_chamber_tub", Al_chamber_rmin, Al_chamber_rmax, Al_chamber_z, 0.*deg, 360*deg);
+      
+      G4LogicalVolume* Al_chamber_log = new G4LogicalVolume(Al_chamber_tub, Aluminium, "Al_chamber", 0, 0, 0);
+      
+      G4RotationMatrix* RotZ = new G4RotationMatrix();
+      RotZ->rotateZ(-90*deg);
+      
+      new G4PVPlacement(RotZ, G4ThreeVector(0.,0.,0.), Al_chamber_log, "Al_chamber", world_log, false, 0);
+      
+      
+      G4VisAttributes* VisAtt1 = new G4VisAttributes(G4Colour(0.2, 0.5, 0.8));
+      Al_rod_log->SetVisAttributes(VisAtt1);
+      G4VisAttributes* VisAtt2 = new G4VisAttributes(G4Colour(0., 0.5, 0.3));
+      Al_chamber_log->SetVisAttributes(VisAtt2);
+      
+      
+      //-------------------------------------------------------------------------
+      // add also My Magnetic field
+      //-------------------------------------------------------------------------
+      
+      
+      static G4bool fieldIsInitialized = false;
+      
+      if(!fieldIsInitialized)
+        {
+        MyMagneticField* myField = new MyMagneticField(G4ThreeVector(0.,0.,Bz));
+        
+        G4FieldManager* fieldMgr
+        = G4TransportationManager::GetTransportationManager()
+        ->GetFieldManager();
+        fieldMgr->SetDetectorField(myField);
+        
+        
+        /*
+	       G4MagIntegratorStepper *pItsStepper;
+	       G4ChordFinder* pChordFinder= new G4ChordFinder(myField,
+         1.0e-2*mm,  // stepper size
+         pItsStepper=0);
+         fieldMgr->SetChordFinder(pChordFinder);
+         */
+        
+        fieldMgr->CreateChordFinder(myField);
+        
+        fieldIsInitialized = true;
+        }
+      
+#endif      
+    }
     ////////////////////////////////////////////
     //////////// Search for Target /////////////
     ////////////////////////////////////////////

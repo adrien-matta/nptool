@@ -6,7 +6,7 @@ all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 ############### Detector ##############
 
-## MUST2 ##
+## Helios ##
 libHelios.so: THeliosData.o THeliosDataDict.o Helios.o THeliosPhysics.o THeliosPhysicsDict.o
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
