@@ -53,6 +53,6 @@ do
       # add "-C ./" pattern at the beginning of the name
       cmd="-C ./$name"
       # execute make command with target specified on command line
-      make --silent $1 $cmd
+      make -j --silent $1 $cmd
    fi ;
 done
