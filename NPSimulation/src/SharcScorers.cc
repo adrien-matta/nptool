@@ -46,6 +46,8 @@ PS_Silicon_Rectangle::~PS_Silicon_Rectangle(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4bool PS_Silicon_Rectangle::ProcessHits(G4Step* aStep, G4TouchableHistory*){
+
+  // contain Energy Time, DetNbr, StripFront and StripBack
   G4double* EnergyAndTime = new G4double[5];
   EnergyAndTime[0] = aStep->GetTotalEnergyDeposit();
   
@@ -102,6 +104,97 @@ void PS_Silicon_Rectangle::DrawAll(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PS_Silicon_Rectangle::PrintAll(){
+  G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl ;
+  G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
+  G4cout << " Number of entries " << EvtMap->entries() << G4endl     ;
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+PS_Silicon_Annular::PS_Silicon_Annular(G4String name, G4double StripPlaneInnerRadius, G4double StripPlaneOuterRadius, G4double DeltaTheta, G4int NumberOfStripRadial,G4int NumberOfStripTheta,G4double TriggerThreshold,G4int depth)
+:G4VPrimitiveScorer(name, depth), m_TriggerThreshold(TriggerThreshold),HCID(-1){
+  
+  m_StripPlaneInnerRadius = StripPlaneInnerRadius;
+  m_StripPlaneOuterRadius = StripPlaneOuterRadius;
+  m_DeltaTheta = DeltaTheta;
+  m_NumberOfStripRadial = NumberOfStripRadial;
+  m_NumberOfStripTheta = NumberOfStripTheta;
+  m_StripPitchRadial = DeltaTheta/m_NumberOfStripTheta;
+  m_StripPitchTheta = (m_StripPlaneOuterRadius-m_StripPlaneInnerRadius)/m_NumberOfStripRadial;
+  
+  m_Position = G4ThreeVector(-1000,-1000,-1000);
+  m_uz = G4ThreeVector(0,0,1);
+  m_DetectorNumber = -1;
+  m_StripRadialNumber  = -1;
+  m_StripThetaNumber = -1;
+  m_Index = -1 ;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+PS_Silicon_Annular::~PS_Silicon_Annular(){
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+G4bool PS_Silicon_Annular::ProcessHits(G4Step* aStep, G4TouchableHistory*){
+  
+  // contain Energy Time, DetNbr, StripFront and StripBack
+  G4double* EnergyAndTime = new G4double[5];
+  EnergyAndTime[0] = aStep->GetTotalEnergyDeposit();
+  
+  // If the energy deposit is below the threshold, the deposit is ignored
+  if (EnergyAndTime[0] < m_TriggerThreshold){
+    delete EnergyAndTime;
+    return FALSE;
+  }
+  
+  EnergyAndTime[1] = aStep->GetPreStepPoint()->GetGlobalTime();
+  
+  m_DetectorNumber = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(0);
+  m_Position = aStep->GetPreStepPoint()->GetPosition();
+  m_Position = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(m_Position);
+  
+  m_StripRadialNumber = (int)((m_Position.angle(m_uz) - m_DeltaTheta*0.5) / m_StripPitchRadial ) + 1  ;
+  m_StripThetaNumber = (int)((m_Position.rho()-m_StripPlaneInnerRadius) / m_StripPitchTheta ) + 1  ;
+  
+  EnergyAndTime[2] = m_DetectorNumber;
+  EnergyAndTime[3] = m_StripRadialNumber;
+  EnergyAndTime[4] = m_StripThetaNumber;
+  
+  //Rare case where particle is close to edge of silicon plan
+  if (m_StripRadialNumber == m_NumberOfStripRadial+1) m_StripRadialNumber = m_NumberOfStripRadial;
+  if (m_StripThetaNumber == m_NumberOfStripTheta+1) m_StripThetaNumber = m_NumberOfStripTheta;
+  
+  m_Index =  aStep->GetTrack()->GetTrackID() + m_DetectorNumber * 1e3 + m_StripRadialNumber * 1e6 + m_NumberOfStripTheta * 1e9;
+  EvtMap->set(m_Index, EnergyAndTime);
+  return TRUE;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void PS_Silicon_Annular::Initialize(G4HCofThisEvent* HCE){
+  EvtMap = new G4THitsMap<G4double*>(GetMultiFunctionalDetector()->GetName(), GetName());
+  if (HCID < 0) {
+    HCID = GetCollectionID(0);
+  }
+  HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void PS_Silicon_Annular::EndOfEvent(G4HCofThisEvent*){
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void PS_Silicon_Annular::clear(){
+  EvtMap->clear();
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void PS_Silicon_Annular::DrawAll(){
+  
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void PS_Silicon_Annular::PrintAll(){
   G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl ;
   G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
   G4cout << " Number of entries " << EvtMap->entries() << G4endl     ;

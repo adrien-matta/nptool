@@ -333,6 +333,10 @@ void Sharc::ConstructDetector(G4LogicalVolume* world){
 void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
   for(unsigned int i = 0 ; i < m_Z.size() ; i++){
     for (unsigned int j = 0 ; j < 4; j++) {
+      
+      int DetNbr = 0;
+      if(m_Z[i]<0) DetNbr=j+1+4;
+      else         DetNbr=j+1+8;
       // create the Box DSSD
       // Make the a single detector geometry
       G4Box*  PCBFull = new G4Box("PCBFull"  ,
@@ -402,15 +406,15 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
       // Place the sub volume in the master volume
       new G4PVPlacement(new G4RotationMatrix(0,0,0),
                         G4ThreeVector(0,0,0),
-                        logicPCB,"Box_PCB",logicBoxDetector,false,i*4+j+1);
+                        logicPCB,"Box_PCB",logicBoxDetector,false,DetNbr);
       
       if(m_ThicknessBOX[i][j]>0)
         new G4PVPlacement(new G4RotationMatrix(0,0,0),
                           Box_Wafer_Offset+G4ThreeVector(0,0,0.5*BOX_PCB_Thickness-0.5*m_ThicknessBOX[i][j]),
-                          logicWafer,"Box_Wafer",logicBoxDetector,false,i*4+j+1);
+                          logicWafer,"Box_Wafer",logicBoxDetector,false,DetNbr);
       
       
-      logicWafer->SetSensitiveDetector(m_DSSDScorer);
+      logicWafer->SetSensitiveDetector(m_BOXScorer);
       
       // create the PAD
       // Make a single detector geometry
@@ -455,15 +459,16 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
         new G4LogicalVolume(PADWafer,m_MaterialSilicon,"logicPADWafer", 0, 0, 0);
         logicPADWafer->SetVisAttributes(SiliconVisAtt);
         
+        logicPADWafer->SetSensitiveDetector(m_PADScorer);
         
         // Place the sub volume in the master volume
         new G4PVPlacement(new G4RotationMatrix(0,0,0),
                           G4ThreeVector(0,0,0),
-                          logicPADPCB,"PAD_PCB",logicPADDetector,false,i*4+j+1);
+                          logicPADPCB,"PAD_PCB",logicPADDetector,false,DetNbr);
         
         new G4PVPlacement(new G4RotationMatrix(0,0,0),
                           PAD_Wafer_Offset-G4ThreeVector(0,0,0.5*PAD_PCB_Thickness-0.5*m_ThicknessPAD[i][j]),
-                          logicPADWafer,"PAD_Wafer",logicPADDetector,false,i*4+j+1);
+                          logicPADWafer,"PAD_Wafer",logicPADDetector,false,DetNbr);
       }
       
       ///////////////////////////////////////////////////////////////////////////////////
@@ -520,11 +525,11 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
       PADDetectorPosition.transform(*DetectorRotation);
       PADDetectorPosition+=G4ThreeVector(0,0,m_Z[i]);
       
-      new G4PVPlacement(G4Transform3D(*DetectorRotation,DetectorPosition), logicBoxDetector,"Box",world,false,i*4+j+1);
+      new G4PVPlacement(G4Transform3D(*DetectorRotation,DetectorPosition), logicBoxDetector,"Box",world,false,DetNbr);
       
       if(m_ThicknessPAD[i][j]>0){
         new G4PVPlacement(G4Transform3D(*DetectorRotation, PADDetectorPosition),
-                          logicPADDetector,"PAD",world,false,i*4+j+1);
+                          logicPADDetector,"PAD",world,false,DetNbr);
       }
     }
   }
@@ -533,67 +538,72 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Sharc::ConstructQQQDetector(G4LogicalVolume* world){
   // create the QQQ
-  
-  // Make the a single detector geometry
-  G4Tubs*  QQQDetector = new G4Tubs("QQQDetector"  ,
-                                    QQQ_PCB_Inner_Radius,
-                                    QQQ_PCB_Outer_Radius,
-                                    QQQ_PCB_Thickness/2.,
-                                    0.,
-                                    M_PI/2.);
-  
-  G4Tubs*  PCBFull = new G4Tubs("PCBFull"  ,
-                                QQQ_PCB_Inner_Radius,
-                                QQQ_PCB_Outer_Radius,
-                                QQQ_PCB_Thickness/2.,
-                                0.,
-                                M_PI/2.);
-  
-  G4Tubs*  WaferShape = new G4Tubs("WaferShape"  ,
-                                   QQQ_Wafer_Inner_Radius,
-                                   QQQ_Wafer_Outer_Radius,
-                                   QQQ_PCB_Thickness/2.+0.1*mm,
-                                   QQQ_Wafer_Starting_Phi,
-                                   QQQ_Wafer_Stopping_Phi/2.);
-  
-  G4Tubs*  Wafer = new G4Tubs("Wafer"  ,
-                              QQQ_Wafer_Inner_Radius,
-                              QQQ_Wafer_Outer_Radius,
-                              QQQ_Wafer_Thickness/2.,
-                              QQQ_Wafer_Starting_Phi,
-                              QQQ_Wafer_Stopping_Phi/2.);
-  
-  G4SubtractionSolid* PCB = new G4SubtractionSolid("PCB", PCBFull, WaferShape,new G4RotationMatrix,G4ThreeVector(0, 0,0));
-  
-  // Master Volume
-  G4LogicalVolume* logicQQQDetector =
-  new G4LogicalVolume(QQQDetector,m_MaterialVacuum,"logicQQQDetector", 0, 0, 0);
-  logicQQQDetector->SetVisAttributes(G4VisAttributes::Invisible);
-  // Sub Volume PCB
-  G4LogicalVolume* logicPCB =
-  new G4LogicalVolume(PCB,m_MaterialPCB,"logicPCB", 0, 0, 0);
-  logicPCB->SetVisAttributes(PCBVisAtt);
-  
-  // Sub Volume Wafer
-  G4LogicalVolume* logicWafer =
-  new G4LogicalVolume(Wafer,m_MaterialSilicon,"logicWafer", 0, 0, 0);
-  logicWafer->SetVisAttributes(SiliconVisAtt);
-  
-  // Place the sub volume in the master volume
-  new G4PVPlacement(new G4RotationMatrix(0,0,0),
-                    G4ThreeVector(0,0,0),
-                    logicPCB,"QQQ_PCB",logicQQQDetector,false,0);
-  
-  new G4PVPlacement(new G4RotationMatrix(0,0,0),
-                    G4ThreeVector(0,0,0),
-                    logicWafer,"QQQ_Wafer",logicQQQDetector,false,0);
-  
-  // Place the masters volume in the world
   for(unsigned int i = 0 ; i < m_Pos.size() ; i++){
+    int DetNbr = 0;
+    if(m_Pos[i].z()<0) DetNbr = i+1;
+    else               DetNbr = i+1 + 8;
+    // Make the a single detector geometry
+    G4Tubs*  QQQDetector = new G4Tubs("QQQDetector"  ,
+                                      QQQ_PCB_Inner_Radius,
+                                      QQQ_PCB_Outer_Radius,
+                                      QQQ_PCB_Thickness*0.5,
+                                      0.,
+                                      M_PI/2.);
+    
+    G4Tubs*  PCBFull = new G4Tubs("PCBFull"  ,
+                                  QQQ_PCB_Inner_Radius,
+                                  QQQ_PCB_Outer_Radius,
+                                  QQQ_PCB_Thickness*0.5,
+                                  0.,
+                                  M_PI*0.5);
+    
+    G4Tubs*  WaferShape = new G4Tubs("WaferShape"  ,
+                                     QQQ_Wafer_Inner_Radius,
+                                     QQQ_Wafer_Outer_Radius,
+                                     QQQ_PCB_Thickness*0.5+0.1*mm,
+                                     QQQ_Wafer_Starting_Phi,
+                                     QQQ_Wafer_Stopping_Phi*0.5);
+    
+    G4Tubs*  Wafer = new G4Tubs("Wafer"  ,
+                                QQQ_Wafer_Inner_Radius,
+                                QQQ_Wafer_Outer_Radius,
+                                QQQ_Wafer_Thickness*0.5,
+                                QQQ_Wafer_Starting_Phi,
+                                QQQ_Wafer_Stopping_Phi*0.5);
+    
+    G4SubtractionSolid* PCB = new G4SubtractionSolid("PCB", PCBFull, WaferShape,new G4RotationMatrix,G4ThreeVector(0, 0,0));
+    
+    // Master Volume
+    G4LogicalVolume* logicQQQDetector =
+    new G4LogicalVolume(QQQDetector,m_MaterialVacuum,"logicQQQDetector", 0, 0, 0);
+    logicQQQDetector->SetVisAttributes(G4VisAttributes::Invisible);
+    // Sub Volume PCB
+    G4LogicalVolume* logicPCB =
+    new G4LogicalVolume(PCB,m_MaterialPCB,"logicPCB", 0, 0, 0);
+    logicPCB->SetVisAttributes(PCBVisAtt);
+    
+    // Sub Volume Wafer
+    G4LogicalVolume* logicWafer =
+    new G4LogicalVolume(Wafer,m_MaterialSilicon,"logicWafer", 0, 0, 0);
+    logicWafer->SetVisAttributes(SiliconVisAtt);
+    
+    logicWafer->SetSensitiveDetector(m_QQQScorer);
+    
+    
+    // Place the sub volume in the master volume
+    new G4PVPlacement(new G4RotationMatrix(0,0,0),
+                      G4ThreeVector(0,0,0),
+                      logicPCB,"QQQ_PCB",logicQQQDetector,false,DetNbr);
+    
+    new G4PVPlacement(new G4RotationMatrix(0,0,0),
+                      G4ThreeVector(0,0,0),
+                      logicWafer,"QQQ_Wafer",logicQQQDetector,false,DetNbr);
+    
+    // Place the masters volume in the world
     
     new G4PVPlacement(new G4RotationMatrix(0,0,m_Pos[i].y()),
                       G4ThreeVector(0,0,m_Pos[i].z()),
-                      logicQQQDetector,"QQQ",world,false,0);
+                      logicQQQDetector,"QQQ",world,false,DetNbr);
   }
 }
 
@@ -601,9 +611,9 @@ void Sharc::ConstructQQQDetector(G4LogicalVolume* world){
 // Add Detector branch to the EventTree.
 // Called After DetecorConstruction::AddDetector Method
 void Sharc::InitializeRootOutput(){
-   RootOutput *pAnalysis = RootOutput::getInstance();
-   TTree *pTree = pAnalysis->GetTree();
-   pTree->Branch("Sharc", "TSharcData", &m_Event) ;
+  RootOutput *pAnalysis = RootOutput::getInstance();
+  TTree *pTree = pAnalysis->GetTree();
+  pTree->Branch("Sharc", "TSharcData", &m_Event) ;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -612,24 +622,25 @@ void Sharc::InitializeRootOutput(){
 void Sharc::ReadSensitive(const G4Event* event){
   m_Event->Clear();
   
-  // DSSD
-  G4THitsMap<G4double*>*     DSSDHitMap;
-  std::map<G4int, G4double**>::iterator    DSSD_itr;
-
-  G4int DSSDCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Sharc_DSSDScorer/SharcDSSD");
-  DSSDHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(DSSDCollectionID));
+  ///////////
+  // BOX
+  G4THitsMap<G4double*>*     BOXHitMap;
+  std::map<G4int, G4double**>::iterator    BOX_itr;
   
-  // Loop on the map
-  for (DSSD_itr = DSSDHitMap->GetMap()->begin() ; DSSD_itr != DSSDHitMap->GetMap()->end() ; DSSD_itr++){
-        
-    G4double* Info = *(DSSD_itr->second);
+  G4int BOXCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Sharc_BOXScorer/SharcBOX");
+  BOXHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(BOXCollectionID));
+  
+  // Loop on the BOX map
+  for (BOX_itr = BOXHitMap->GetMap()->begin() ; BOX_itr != BOXHitMap->GetMap()->end() ; BOX_itr++){
+    
+    G4double* Info = *(BOX_itr->second);
     
     double Energy =  Info[0];
     double Time  = Info[1];
     int DetNbr =     (int) Info[2];
     int StripFront = (int) Info[3];
     int StripBack =  (int) Info[4];
-
+    
     m_Event->SetFront_DetectorNbr(DetNbr);
     m_Event->SetFront_StripNbr(StripFront);
     m_Event->SetFront_Energy(RandGauss::shoot(Energy, ResoEnergy));
@@ -644,29 +655,113 @@ void Sharc::ReadSensitive(const G4Event* event){
   }
   
   // clear map for next event
-  DSSDHitMap->clear();
+  BOXHitMap->clear();
+  
+  ///////////
+  // PAD
+  G4THitsMap<G4double*>*     PADHitMap;
+  std::map<G4int, G4double**>::iterator    PAD_itr;
+  
+  G4int PADCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Sharc_PADScorer/SharcPAD");
+  PADHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(PADCollectionID));
+  
+  // Loop on the BOX map
+  for (PAD_itr = PADHitMap->GetMap()->begin() ; PAD_itr != PADHitMap->GetMap()->end() ; PAD_itr++){
+    
+    G4double* Info = *(PAD_itr->second);
+    
+    double Energy =  Info[0];
+    double Time  = Info[1];
+    int DetNbr =     (int) Info[2];
+    
+    m_Event->SetPAD_DetectorNbr(DetNbr);
+    m_Event->SetPAD_Energy(RandGauss::shoot(Energy, ResoEnergy));
+    m_Event->SetPAD_TimeCFD(RandGauss::shoot(Time, ResoTime));
+    m_Event->SetPAD_TimeLED(RandGauss::shoot(Time, ResoTime));
+  }
+  
+  // clear map for next event
+  PADHitMap->clear();
+  
+  ///////////
+  // QQQ
+  G4THitsMap<G4double*>*     QQQHitMap;
+  std::map<G4int, G4double**>::iterator    QQQ_itr;
+  
+  G4int QQQCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Sharc_QQQScorer/SharcQQQ");
+  QQQHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(QQQCollectionID));
+  
+  // Loop on the BOX map
+  for (QQQ_itr = QQQHitMap->GetMap()->begin() ; QQQ_itr != QQQHitMap->GetMap()->end() ; QQQ_itr++){
+    
+    G4double* Info = *(QQQ_itr->second);
+    
+    double Energy =  Info[0];
+    double Time  = Info[1];
+    int DetNbr =     (int) Info[2];
+    int StripFront = (int) Info[3];
+    int StripBack =  (int) Info[4];
+    
+    m_Event->SetFront_DetectorNbr(DetNbr);
+    m_Event->SetFront_StripNbr(StripFront);
+    m_Event->SetFront_Energy(RandGauss::shoot(Energy, ResoEnergy));
+    m_Event->SetFront_TimeCFD(RandGauss::shoot(Time, ResoTime));
+    m_Event->SetFront_TimeLED(RandGauss::shoot(Time, ResoTime));
+    
+    m_Event->SetBack_DetectorNbr(DetNbr);
+    m_Event->SetBack_StripNbr(StripBack);
+    m_Event->SetBack_Energy(RandGauss::shoot(Energy, ResoEnergy));
+    m_Event->SetBack_TimeCFD(RandGauss::shoot(Time, ResoTime));
+    m_Event->SetBack_TimeLED(RandGauss::shoot(Time, ResoTime));
+  }
+  
+  // clear map for next event
+  QQQHitMap->clear();
+  
 }
-
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Sharc::InitializeScorers(){
   
   //   Silicon Associate Scorer
-  m_DSSDScorer = new G4MultiFunctionalDetector("Sharc_DSSDScorer");
+  m_BOXScorer = new G4MultiFunctionalDetector("Sharc_BOXScorer");
+  m_PADScorer = new G4MultiFunctionalDetector("Sharc_PADScorer");
+  m_QQQScorer = new G4MultiFunctionalDetector("Sharc_QQQScorer");
   
-  G4VPrimitiveScorer* DSSDScorer =
-    new  SHARC::PS_Silicon_Rectangle("SharcDSSD",
-                                  BOX_Wafer_Length,
-                                  BOX_Wafer_Width,
-                                  BOX_Wafer_Back_NumberOfStrip ,
-                                  BOX_Wafer_Front_NumberOfStrip,
-                                  EnergyThreshold);
-
+  G4VPrimitiveScorer* BOXScorer =
+  new  SHARC::PS_Silicon_Rectangle("SharcBOX",
+                                   BOX_Wafer_Length,
+                                   BOX_Wafer_Width,
+                                   BOX_Wafer_Back_NumberOfStrip ,
+                                   BOX_Wafer_Front_NumberOfStrip,
+                                   EnergyThreshold);
+  
+  G4VPrimitiveScorer* PADScorer =
+  new  SHARC::PS_Silicon_Rectangle("SharcPAD",
+                                   PAD_Wafer_Length,
+                                   PAD_Wafer_Width,
+                                   1 ,
+                                   1,
+                                   EnergyThreshold);
+  
+  G4VPrimitiveScorer* QQQScorer =
+  new  SHARC::PS_Silicon_Annular("SharcQQQ",
+                                 QQQ_Wafer_Inner_Radius,
+                                 QQQ_Wafer_Outer_Radius,
+                                 QQQ_Wafer_Stopping_Phi-QQQ_Wafer_Starting_Phi,
+                                 QQQ_Wafer_NumberOf_RadialStrip,
+                                 QQQ_Wafer_NumberOf_AnnularStrip,
+                                 EnergyThreshold);
+  
   //and register it to the multifunctionnal detector
-  m_DSSDScorer->RegisterPrimitive(DSSDScorer);
+  m_BOXScorer->RegisterPrimitive(BOXScorer);
+  m_PADScorer->RegisterPrimitive(PADScorer);
+  m_QQQScorer->RegisterPrimitive(QQQScorer);
   
   //   Add All Scorer to the Global Scorer Manager
-  G4SDManager::GetSDMpointer()->AddNewDetector(m_DSSDScorer) ;
+  G4SDManager::GetSDMpointer()->AddNewDetector(m_BOXScorer) ;
+  G4SDManager::GetSDMpointer()->AddNewDetector(m_PADScorer) ;
+  G4SDManager::GetSDMpointer()->AddNewDetector(m_QQQScorer) ;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

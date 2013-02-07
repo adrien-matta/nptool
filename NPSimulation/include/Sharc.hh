@@ -192,7 +192,10 @@ private:
   void InitializeScorers() ;
   
   //   Scorer Associate to the Silicon
-  G4MultiFunctionalDetector*   m_DSSDScorer ;
+  G4MultiFunctionalDetector*   m_BOXScorer ;
+  G4MultiFunctionalDetector*   m_PADScorer ;
+  G4MultiFunctionalDetector*   m_QQQScorer ;
+
   
 private:
   //    Initialize material used in detector definition
