@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2008   this file is part of the Ganil2Root Project          *
+ * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $GANIL2ROOT/Licence                           *
  * For the list of contributors see $GANIL2ROOT/README/CREDITS               *
@@ -7,7 +7,7 @@
 
 /*****************************************************************************
  * Original Author: L. Lefebvre  contact address: lefebvrl@ipno.in2p3.fr     *
- *                    							     *
+ *                    							                                         *
  *                                                                           *
  * Creation Date  : June 2011                                                *
  * Last update    :                                                          *
