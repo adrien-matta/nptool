@@ -197,7 +197,7 @@ do
       # add "-C ./" pattern at the beginning of the name
       cmd="-C ./$name"
       # execute make command with target specified on command line
-      make --silent $cmd
+      make -j --silent $cmd
    fi ;
 done
 

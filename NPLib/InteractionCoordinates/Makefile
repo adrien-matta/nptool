@@ -16,8 +16,8 @@ TInteractionCoordinatesDict.cxx:	TInteractionCoordinates.h
 
 
 # dependances
-TInteractionCoordinates.o:	TInteractionCoordinates.cxx	TInteractionCoordinates.h
-TInteractionCoordinatesDict.o: TInteractionCoordinatesDict.cxx TInteractionCoordinatesDict.h
+TInteractionCoordinates.o: TInteractionCoordinates.cxx TInteractionCoordinates.h
+TInteractionCoordinatesDict.o: TInteractionCoordinates.cxx TInteractionCoordinates.h
 #######################################
 
 ############# Clean and More ##########

@@ -15,7 +15,7 @@ TInitialConditionsDict.cxx:	TInitialConditions.h
 
 # dependances
 TInitialConditions.o:	TInitialConditions.cxx	TInitialConditions.h
-TInitialConditionsDict.o: TInitialConditionsDict.cxx TInitialConditionsDict.h
+TInitialConditionsDict.o: TInitialConditions.cxx	TInitialConditions.h
 #######################################
 
 ############# Clean and More ##########
