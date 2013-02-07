@@ -1,5 +1,7 @@
+#ifndef __CREADER__
+#define __CREADER__
 /*****************************************************************************
- * Copyright (C) 2008   this file is part of the NPTool Project              *
+ * Copyright (C) 2009-2013    this file is part of the NPTool Project        *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -18,8 +20,7 @@
  * Comment:                                                                  *
  *                                                                           *
  *****************************************************************************/
-#ifndef __CREADER__
-#define __CREADER__
+
 
 
 #include <string>

@@ -1,3 +1,27 @@
+#ifndef Constat_
+#define Constant_h
+/*****************************************************************************
+ * Copyright (C) 2009-2013    this file is part of the NPTool Project        *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Original Author:    contact address:                                      *
+ *                                                                           *
+ * Creation Date  :                                                          *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *                                                                           *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *****************************************************************************/
+
+
 // Quelques constantes utiles ....
 // 
 // en MeV
@@ -20,3 +44,5 @@
 
 // en C
 #define echarge	 1.602177e-19
+
+#endif

@@ -1,6 +1,25 @@
 #ifndef TTIGRESSCRYSTAL_H
 #define TTIGRESSCRYSTAL_H
+/*****************************************************************************
+ * Copyright (C) 2009-2013    this file is part of the NPTool Project        *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
 
+/*****************************************************************************
+ * Original Author:    contact address:                                      *
+ *                                                                           *
+ * Creation Date  :                                                          *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *                                                                           *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *****************************************************************************/
 #include <vector>
 #include <string>
 #include <math.h>

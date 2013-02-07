@@ -1,5 +1,7 @@
+#ifndef ROOTOUTPUT_HH
+#define ROOTOUTPUT_HH
 /*****************************************************************************
- * Copyright (C) 2009-2010   this file is part of the NPTool Project         *
+ * Copyright (C) 2009-2013    this file is part of the NPTool Project        *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -20,8 +22,7 @@
  *                                                                           *
  *****************************************************************************/
 
-#ifndef ROOTOUTPUT_HH
-#define ROOTOUTPUT_HH
+
 
 // NPL headers
 #include "TAsciiFile.h"

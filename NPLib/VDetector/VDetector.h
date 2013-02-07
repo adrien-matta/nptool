@@ -1,8 +1,8 @@
 #ifndef VDectector_H
 #define VDectector_H
 /*****************************************************************************
- * Copyright (C) 2009    this file is part of the NPTool Project              *
- *                                                                          *
+ * Copyright (C) 2009-2013    this file is part of the NPTool Project        *
+ *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
@@ -18,7 +18,7 @@
  * All detector class used in NPAnalysis should derived from this virtual    *
  *  class. Those VDetector daughter will deal with geometry, calibration and *
  *  basic data treatment.                                                    *
- *                                                                          *
+ *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *   See MUST2 array for exemple of VDetector derived class                  *

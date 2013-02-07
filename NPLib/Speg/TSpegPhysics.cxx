@@ -1518,13 +1518,13 @@ else
 		xfoc_cor_thetafoc=xfoc;
 		for(unsigned int n = 0 ; n < cor_xfoc_thetafoc.size() ; n++)
 		{
-			xfoc_cor_thetafoc -= cor_xfoc_thetafoc[n]*pow(tfoc,n);
+			xfoc_cor_thetafoc -= cor_xfoc_thetafoc[n]*pow(tfoc,(int)n);
 		}
 	
 		xfoc_cor_phifoc=xfoc_cor_thetafoc;
 		for(unsigned int n = 0 ; n < cor_xfoc_phifoc.size() ; n++)
 		{
-			xfoc_cor_phifoc -= cor_xfoc_phifoc[n]*pow(phifoc,n);
+			xfoc_cor_phifoc -= cor_xfoc_phifoc[n]*pow(phifoc,(int)n);
 		}
 
 		//Calibration of xfoc
@@ -1541,7 +1541,7 @@ else
 			cor_theta = (CalibrationManager::getInstance()->GetCorrection("SPEG/_tfoc_correction_with_Brho_"+itoa(n)));
 			for(unsigned int l=0; l<cor_theta.size() ; l++)
 			{
-				param_theta += cor_theta[l]*pow(xfoc_cor_phifoc,l);
+				param_theta += cor_theta[l]*pow(xfoc_cor_phifoc,(int)l);
 			}
 			correction_theta_with_Brho.push_back(param_theta);
 			thetafoc_cor -= correction_theta_with_Brho[n]*pow(phifoc,n);
@@ -1555,7 +1555,7 @@ else
 			cor_phi = (CalibrationManager::getInstance()->GetCorrection("SPEG/_phifoc_correction_with_Brho_"+itoa(n)));
 			for(unsigned int l=0; l<cor_phi.size() ; l++)
 			{
-				param_phi += cor_phi[l]*pow(xfoc_cor_phifoc,l);
+				param_phi += cor_phi[l]*pow(xfoc_cor_phifoc,(int)l);
 			}
 			correction_phi_with_Brho.push_back(param_phi);
 			phifoc_cor -= correction_phi_with_Brho[n]*pow(tfoc,n);
@@ -1569,7 +1569,7 @@ else
 			cal_theta = (CalibrationManager::getInstance()->GetCorrection("SPEG/_tfoc_calibration_with_Brho_"+itoa(n)));
 			for(unsigned int l=0; l<cal_theta.size() ; l++)
 			{
-				param_theta += cal_theta[l]*pow(xfoc_cor_phifoc,l);
+				param_theta += cal_theta[l]*pow(xfoc_cor_phifoc,(int)l);
 			}
 			calibration_theta_with_Brho.push_back(param_theta);
 			tfoc_calibrated += calibration_theta_with_Brho[n]*pow(thetafoc_cor,n);
@@ -1591,7 +1591,7 @@ else
 			cal_phi = (CalibrationManager::getInstance()->GetCorrection("SPEG/_phifoc_calibration_with_Brho_"+itoa(n)));
 			for(unsigned int l=0; l<cal_phi.size() ; l++)
 			{
-				param_phi += cal_phi[l]*pow(xfoc_cor_phifoc,l);
+				param_phi += cal_phi[l]*pow(xfoc_cor_phifoc,(int)l);
 			}
 			calibration_phi_with_Brho.push_back(param_phi);
 			phifoc_calibrated += calibration_phi_with_Brho[n]*pow(phifoc_cor,n);

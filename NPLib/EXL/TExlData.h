@@ -1,5 +1,7 @@
+#ifndef __EXLDATA__
+#define __EXLDATA__
 /*****************************************************************************
- * Copyright (C) 2008   this file is part of the Ganil2Root Project          *
+ * Copyright (C) 2009-2013    this file is part of the NPTool Project        *
  *                                                                           *
  * For the licensing terms see $GANIL2ROOT/Licence                           *
  * For the list of contributors see $GANIL2ROOT/README/CREDITS               *
@@ -19,8 +21,6 @@
  *                                                                           *
  *****************************************************************************/
 
-#ifndef __EXLDATA__
-#define __EXLDATA__
 
 #include <vector>
 

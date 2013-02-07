@@ -1,3 +1,5 @@
+#ifndef TGASPARDTRACKERPHYSICS_H
+#define TGASPARDTRACKERPHYSICS_H
 /*****************************************************************************
  * Copyright (C) 2009-2010   this file is part of the NPTool Project         *
  *                                                                           *
@@ -24,8 +26,7 @@
  *                                                                           *
  *****************************************************************************/
 
-#ifndef TGASPARDTRACKERPHYSICS_H
-#define TGASPARDTRACKERPHYSICS_H
+
 
 #include "TGaspardTrackerData.h"
 
