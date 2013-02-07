@@ -1,5 +1,7 @@
+#ifndef HydeTrackerModule_h
+#define HydeTrackerModule_h 1
 /*****************************************************************************
- * Copyright (C) 2009   this file is part of the NPTool Project              *
+ * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -12,15 +14,12 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription: This class is an Abstract Base Class (ABC) from which should  *
- *             derive all different modules from the Hyde tracker.        *
+ *             derive all different modules from the Hyde tracker.           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
-
-#ifndef HydeTrackerModule_h
-#define HydeTrackerModule_h 1
 
 // C++ headers
 #include <string>

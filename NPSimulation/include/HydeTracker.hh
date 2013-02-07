@@ -1,5 +1,8 @@
+#ifndef HydeTracker_h
+#define HydeTracker_h 1
+
 /*****************************************************************************
- * Copyright (C) 2009   this file is part of the NPTool Project              *
+ * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -11,17 +14,14 @@
  * Creation Date  : 10/06/09                                                 *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
- * Decription: This class manages different shapes of module for the Hyde *
- *             tracker. It allows to have Hyde geometries with an         *
+ * Decription: This class manages different shapes of module for the Hyde    *
+ *             tracker. It allows to have Hyde geometries with an            *
  *             heterogeneous set of modules                                  *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
-
-#ifndef HydeTracker_h
-#define HydeTracker_h 1
 
 // C++ headers
 #include <vector>

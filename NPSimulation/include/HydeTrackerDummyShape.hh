@@ -1,5 +1,7 @@
+#ifndef HydeTrackerDummyShape_h
+#define HydeTrackerDummyShape_h 1
 /*****************************************************************************
- * Copyright (C) 2009   this file is part of the NPTool Project              *
+ * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -11,18 +13,15 @@
  * Creation Date  : 03/09/09                                                 *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
- * Decription: Define a dummy module for the Hyde tracker                 *
+ * Decription: Define a dummy module for the Hyde tracker                    *
  *             The goal of this class is to be a starting point to create a  *
- *             new shape to be added to the Hyde tracker.                 *
+ *             new shape to be added to the Hyde tracker.                    *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
-
-#ifndef HydeTrackerDummyShape_h
-#define HydeTrackerDummyShape_h 1
 
 // C++ headers
 #include <vector>

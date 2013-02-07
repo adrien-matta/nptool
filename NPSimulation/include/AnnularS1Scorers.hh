@@ -1,5 +1,7 @@
+#ifndef AnnularS1Scorers_h
+#define AnnularS1Scorers_h 1
 /*****************************************************************************
- * Copyright (C) 2009-2010   this file is part of the NPTool Project         *
+ * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -19,12 +21,8 @@
  *                                                                           *
  *****************************************************************************/
 
-#ifndef AnnularS1Scorers_h
-#define AnnularS1Scorers_h 1
-
 #include "G4VPrimitiveScorer.hh"
 #include "G4THitsMap.hh"
-
 
 namespace S1SCORERS
 {

@@ -1,5 +1,7 @@
+#ifndef GaspardTrackerDummyShape_h
+#define GaspardTrackerDummyShape_h 1
 /*****************************************************************************
- * Copyright (C) 2009-2010   this file is part of the NPTool Project         *
+ * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -21,8 +23,7 @@
  *                                                                           *
  *****************************************************************************/
 
-#ifndef GaspardTrackerDummyShape_h
-#define GaspardTrackerDummyShape_h 1
+
 
 // C++ headers
 #include <vector>

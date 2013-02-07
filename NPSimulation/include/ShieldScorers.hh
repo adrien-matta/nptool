@@ -1,5 +1,7 @@
+#ifndef SHIELDScorer_h
+#define SHIELDScorer_h 1
 /*****************************************************************************
- * Copyright (C) 2009   this file is part of the NPTool Project              *
+ * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -19,8 +21,7 @@
  *                                                                           *
  *****************************************************************************/
 
-#ifndef SHIELDScorer_h
-#define SHIELDScorer_h 1
+
 
 #include "G4VPrimitiveScorer.hh"
 #include "G4THitsMap.hh"

@@ -1,5 +1,7 @@
+#ifndef HydeTrackerAnnular_h
+#define HydeTrackerAnnular_h 1
 /*****************************************************************************
- * Copyright (C) 2009   this file is part of the NPTool Project              *
+ * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -11,16 +13,13 @@
  * Creation Date  : 15/07/09                                                 *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
- * Decription: Define a module of annular shape for the Hyde tracker      *
+ * Decription: Define a module of annular shape for the Hyde tracker         *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
-
-#ifndef HydeTrackerAnnular_h
-#define HydeTrackerAnnular_h 1
 
 // C++ headers
 #include <vector>
