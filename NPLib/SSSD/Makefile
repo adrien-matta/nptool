@@ -1,21 +1,18 @@
 include ../Makefile.arch
  
 #------------------------------------------------------------------------------
-SHARELIB      =  libSSSDData.so libSSSDPhysics.so
+SHARELIB      =  libSSSD.so
 
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 ############### Detector ##############
 
 ## SSSD ##
-libSSSDData.so:	TSSSDData.o	TSSSDDataDict.o
+libSSSD.so: TSSSDData.o	TSSSDDataDict.o TSSSDPhysics.o	TSSSDPhysicsDict.o
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TSSSDDataDict.cxx:	TSSSDData.h
 			rootcint -f $@ -c $^
-
-libSSSDPhysics.so:	TSSSDPhysics.o	TSSSDPhysicsDict.o
-		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TSSSDPhysicsDict.cxx:	TSSSDPhysics.h
 			rootcint -f $@ -c $^

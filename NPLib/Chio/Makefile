@@ -1,33 +1,24 @@
 include ../Makefile.arch
 
 #------------------------------------------------------------------------------
-SHARELIB      =  libChio_anData.so libChio_digData.so libChio_anPhysics.so libChio_digPhysics.so
+SHARELIB      =  libChio.so
 
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 ############### Detector ##############
 
 ## Chio_an & Chio_dig ##
-libChio_anData.so:	TChio_anData.o	TChio_anDataDict.o
+libChio.so: TChio_anData.o TChio_anDataDict.o TChio_anPhysics.o TChio_anPhysicsDict.o TChio_digData.o	TChio_digDataDict.o TChio_digPhysics.o TChio_digPhysicsDict.o
 			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TChio_anDataDict.cxx:	TChio_anData.h
 			rootcint -f $@ -c $^
 
-libChio_anPhysics.so:      TChio_anPhysics.o TChio_anPhysicsDict.o
-			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
-
 TChio_anPhysicsDict.cxx:   TChio_anPhysics.h
 			rootcint -f $@ -c $^
 
-libChio_digData.so:	TChio_digData.o	TChio_digDataDict.o
-			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
-
 TChio_digDataDict.cxx:	TChio_digData.h
 			rootcint -f $@ -c $^
-
-libChio_digPhysics.so:      TChio_digPhysics.o TChio_digPhysicsDict.o
-			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TChio_digPhysicsDict.cxx:   TChio_digPhysics.h
 			rootcint -f $@ -c $^

@@ -128,7 +128,8 @@ class TMayaData : public TObject {
   virtual ~TMayaData();
 
   void	Clear();
-  void	Dump();
+  void	Clear(const Option_t*){Clear();}
+  void	Dump() const;
    
   /*           GETTERS           */
   // (E)

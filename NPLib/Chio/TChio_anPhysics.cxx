@@ -21,7 +21,6 @@
 
 
 #include "TChio_anPhysics.h"
-using namespace LOCAL_CHIO;
 
 // STL
 #include <cmath>
@@ -398,14 +397,14 @@ void TChio_anPhysics::BuildSimplePhysicalEvent()
 	// deduce amplitude
 	rawAmplitude.push_back(Energy[peak_stop[pid]]-fdecay->Eval(peak_stop[pid]));
 	// calibration
-	calAmplitude.push_back(CalibRawAmplitude(rawAmplitude[pid]));
+	calAmplitude.push_back(LOCAL_CHIO_AN::CalibRawAmplitude(rawAmplitude[pid]));
       }
     }
   }
   */
 }
 
-namespace LOCAL_CHIO
+namespace LOCAL_CHIO_AN
 {
   double CalibRawAmplitude(const double rawAmplitude) 
   {

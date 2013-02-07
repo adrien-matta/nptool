@@ -1,7 +1,7 @@
 include ../Makefile.arch
  
 #------------------------------------------------------------------------------
-SHARELIB      =  libSharcData.so libSharcPhysics.so
+SHARELIB      =  libSharc.so
 #libSharcPhysics.so
 
 all:            $(SHARELIB)
@@ -9,14 +9,11 @@ all:            $(SHARELIB)
 ############### Detector ##############
 
 ## Sharc ##
-libSharcData.so:	TSharcData.o	TSharcDataDict.o
+libSharc.so:	TSharcData.o	TSharcDataDict.o TSharcPhysics.o	TSharcPhysicsDict.o
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TSharcDataDict.cxx:	TSharcData.h
 			rootcint -f $@ -c $^
-
-libSharcPhysics.so:	TSharcPhysics.o	TSharcPhysicsDict.o
-		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TSharcPhysicsDict.cxx:	TSharcPhysics.h
 			rootcint -f $@ -c $^

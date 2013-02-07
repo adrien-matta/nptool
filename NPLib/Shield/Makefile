@@ -1,21 +1,18 @@
 include ../Makefile.arch
 
 #------------------------------------------------------------------------------
-SHARELIB      =  libShieldData.so 	libShieldPhysics.so
+SHARELIB      =  libShield.so
 
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 ############### Detector ##############
 
 ## Shield ##
-libShieldData.so:	TShieldData.o	TShieldDataDict.o
+libShield.so:	TShieldData.o	TShieldDataDict.o Shield.o TShieldPhysics.o TShieldPhysicsDict.o
 			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TShieldDataDict.cxx:	TShieldData.h
 			rootcint -f $@ -c $^
-
-libShieldPhysics.so:	Shield.o TShieldPhysics.o TShieldPhysicsDict.o
-			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TShieldPhysicsDict.cxx:	TShieldPhysics.h
 			rootcint -f $@ -c $^

@@ -1,34 +1,28 @@
 include ../Makefile.arch
 
 #------------------------------------------------------------------------------
-SHARELIB      =  libTacData.so   libTacPhysics.so	libTriggerData.so
+SHARELIB      =  libTacTrigger.so
 
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 
 ############### Detector ##############
-libTacData.so:	TTacData.o	TTacDataDict.o
+libTacTrigger.so: TTacData.o	TTacDataDict.o TTacPhysics.o	TTacPhysicsDict.o TTriggerData.o	TTriggerDataDict.o
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TTacDataDict.cxx:	TTacData.h
 			rootcint -f $@ -c $^
 
-libTacPhysics.so:	TTacPhysics.o	TTacPhysicsDict.o
-		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
-
 TTacPhysicsDict.cxx:	TTacPhysics.h
 			rootcint -f $@ -c $^
-
-libTriggerData.so:	TTriggerData.o	TTriggerDataDict.o
-		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TTriggerDataDict.cxx: TTriggerData.h
 			rootcint -f $@ -c $^
 
 # dependances
-TTacData.o:		   TTacData.cxx	   TTacData.h
-TTacPhysics.o:		TTacPhysics.cxx	TTacPhysics.h
-TTriggerData.o:	TTriggerData.cxx	TTriggerData.h
+TTacData.o: TTacData.cxx TTacData.h
+TTacPhysics.o: TTacPhysics.cxx	TTacPhysics.h
+TTriggerData.o:	 TTriggerData.cxx TTriggerData.h
 #######################################
 
 ############# Clean and More ##########

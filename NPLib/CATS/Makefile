@@ -1,29 +1,27 @@
 include ../Makefile.arch
 
 #------------------------------------------------------------------------------
-SHARELIB      =  libCATSData.so	libCATSPhysics.so
+SHARELIB      =  libCATS.so
 
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 ############### Detector ##############
 
-## CATS ##
-libCATSData.so:	TCATSData.o	TCATSDataDict.o
+## CATS ## 
+libCATS.so: TCATSData.o TCATSDataDict.o TCATSPhysics.o TCATSPhysicsDict.o
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TCATSDataDict.cxx:	TCATSData.h
 			rootcint -f $@ -c $^
 
-libCATSPhysics.so:	TCATSPhysics.o	TCATSPhysicsDict.o
-		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
-
 TCATSPhysicsDict.cxx: TCATSPhysics.h
 			rootcint -f $@ -c $^
 
 # dependances
-TCATSData.o:		TCATSData.cxx	TCATSData.h
-TCATSDataDict.o:		TCATSDataDict.cxx	TCATSDataDict.h
-TCATSPhysics.o:	TCATSPhysics.cxx	TCATSPhysics.h
+TCATSData.o: TCATSData.cxx TCATSData.h
+TCATSDataDict.o: TCATSData.cxx TCATSData.h
+TCATSPhysicsDict.o: TCATSPhysics.cxx TCATSPhysics.h
+TCATSPhysics.o:	TCATSPhysics.cxx TCATSPhysics.h
 #######################################
 
 ############# Clean and More ##########

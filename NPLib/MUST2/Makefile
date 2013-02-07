@@ -2,27 +2,21 @@ include ../Makefile.arch
 
 #------------------------------------------------------------------------------
 #SHARELIB      =  libMust2Data.so	libMust2Physics.so   libMust2Spectra.so
-SHARELIB      =  libMust2Data.so	libMust2Physics.so
+SHARELIB      =  libMust2.so
 
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 ############### Detector ##############
 
 ## MUST2 ##
-libMust2Data.so:	TMust2Data.o	TMust2DataDict.o
+libMust2.so: TMust2Data.o TMust2DataDict.o TMust2Physics.o TMust2Spectra.o TMust2SpectraDict.o TMust2PhysicsDict.o
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TMust2DataDict.cxx:	TMust2Data.h
 			rootcint -f $@ -c $^
 
-libMust2Physics.so:	TMust2Physics.o	TMust2PhysicsDict.o
-		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
-
 TMust2PhysicsDict.cxx: TMust2Physics.h
 			rootcint -f $@ -c $^
-
-libMust2Spectra.so:	TMust2Spectra.o	TMust2SpectraDict.o
-		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TMust2SpectraDict.cxx: TMust2Spectra.h
 			rootcint -f $@ -c $^

@@ -1,21 +1,18 @@
 include ../Makefile.arch
 
 #------------------------------------------------------------------------------
-SHARELIB      =  libExogamData.so	libExogamPhysics.so
+SHARELIB      =  libExogam.so
 
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 ############### Detector ##############
 
-## MUST2 ##
-libExogamData.so:	TExogamData.o	TExogamDataDict.o
+## EXOGAM ##
+libExogam.so:	TExogamData.o	TExogamDataDict.o TExogamPhysics.o	TExogamPhysicsDict.o
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TExogamDataDict.cxx:	TExogamData.h
 		rootcint -f $@ -c $^
-
-libExogamPhysics.so:	TExogamPhysics.o	TExogamPhysicsDict.o
-		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TExogamPhysicsDict.cxx: TExogamPhysics.h
 		rootcint -f $@ -c $^

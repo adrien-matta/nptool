@@ -1,21 +1,18 @@
 include ../Makefile.arch
 
 #------------------------------------------------------------------------------
-SHARELIB      =  libExlData.so libExlPhysics.so
+SHARELIB      =  libExl.so
 
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 ############### Detector ##############
 
 ## Exl ##
-libExlData.so:	TExlData.o	TExlDataDict.o
+libExl.so: TExlData.o TExlDataDict.o TExlPhysics.o TExlPhysicsDict.o
 			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TExlDataDict.cxx:	TExlData.h
 			rootcint -f $@ -c $^
-
-libExlPhysics.so:	TExlPhysics.o	TExlPhysicsDict.o
-			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TExlPhysicsDict.cxx:	TExlPhysics.h
 			rootcint -f $@ -c $^

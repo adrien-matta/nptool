@@ -1,14 +1,14 @@
 include ../Makefile.arch
  
 #------------------------------------------------------------------------------
-SHARELIB      =  libTigressData.so libTigressPhysics.so
+SHARELIB      =  libTigress.so
 
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 ############### Detector ##############
 
 ## Tigress ##
-libTigressData.so:	TTigressData.o	TTigressDataDict.o TTigEventFragment.o TTigEventFragmentDict.o
+libTigress.so:	TTigressData.o	TTigressDataDict.o TTigEventFragment.o TTigressPhysics.o TTigressPhysicsDict.o TTigressClover.o TTigressCrystal.o TTigEventFragmentDict.o
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TTigressDataDict.cxx:	TTigressData.h
@@ -16,8 +16,6 @@ TTigressDataDict.cxx:	TTigressData.h
 
 TTigEventFragmentDict.cxx:	TTigEventFragment.h
 			rootcint -f $@ -c $^
-libTigressPhysics.so:	TTigressPhysics.o TTigressPhysicsDict.o TTigressClover.o TTigressCrystal.o
-		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TTigressPhysicsDict.cxx:	TTigressPhysics.h
 			rootcint -f $@ -c $^

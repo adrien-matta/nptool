@@ -130,7 +130,7 @@ class TChio_anPhysics : public TObject, public NPA::VDetector
 };
 
 
-namespace LOCAL_CHIO
+namespace LOCAL_CHIO_AN
 {
   double CalibRawAmplitude(double);
 }

@@ -43,6 +43,7 @@ class TTigressPhysics :  public TObject, public NPA::VDetector{
     ~TTigressPhysics()  { };
 
     void Clear();
+    void Clear(const Option_t*){Clear();}
   
   public: // inherited from VDetector
     //   Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token

@@ -21,7 +21,6 @@
 
 
 #include "TChio_digPhysics.h"
-using namespace LOCAL_CHIO;
 
 // STL
 #include <cmath>
@@ -412,7 +411,7 @@ void TChio_digPhysics::BuildSimplePhysicalEvent()
 	    // cout << Energy[peak_stop[pid]] << " "<< fdecay->Eval(peak_stop[pid]) << endl;
 	    rawAmplitude.push_back(-Energy[peak_stop[pid]]+fdecay->Eval(peak_stop[pid]));
 	    // calibration
-	    calAmplitude.push_back(CalibRawAmplitude(rawAmplitude[pid]));
+	    calAmplitude.push_back(LOCAL_CHIO_DIG::CalibRawAmplitude(rawAmplitude[pid]));
 	  }
 	  //	}
 	  //}
@@ -421,7 +420,7 @@ void TChio_digPhysics::BuildSimplePhysicalEvent()
 
 }
 
-namespace LOCAL_CHIO
+namespace LOCAL_CHIO_DIG
 {
   double CalibRawAmplitude(const double rawAmplitude) 
   {

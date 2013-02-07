@@ -1,21 +1,18 @@
 include ../Makefile.arch
  
 #------------------------------------------------------------------------------
-SHARELIB      =  libTrifoilData.so libTrifoilPhysics.so
+SHARELIB      =  libTrifoil.so
 
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 ############### Detector ##############
 
 ## Trifoil ##
-libTrifoilData.so:	TTrifoilData.o	TTrifoilDataDict.o
+libTrifoil.so:	TTrifoilData.o	TTrifoilDataDict.o TTrifoilPhysics.o TTrifoilPhysicsDict.o
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TTrifoilDataDict.cxx:	TTrifoilData.h
 			rootcint -f $@ -c $^
-
-libTrifoilPhysics.so:	TTrifoilPhysics.o	TTrifoilPhysicsDict.o
-		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TTrifoilPhysicsDict.cxx:	TTrifoilPhysics.h
 			rootcint -f $@ -c $^

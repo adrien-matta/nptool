@@ -214,7 +214,7 @@ string RootInput::DumpAsciiFile(const char* type, const char* folder)
          {
             // build file name
             string title = aFile->GetTitle();
-            unsigned int pos = title.rfind("/");
+            size_t pos = title.rfind("/");
             if (pos != string::npos) name = sfolder + title.substr(pos);
             else name = sfolder + "/" + title;
             aFile->WriteToFile(name.c_str());
@@ -227,7 +227,7 @@ string RootInput::DumpAsciiFile(const char* type, const char* folder)
          {
             // build file name
             string title = aFile->GetTitle();
-            unsigned int pos = title.rfind("/");
+            size_t pos = title.rfind("/");
             if (pos != string::npos) name = sfolder + title.substr(pos);
             else name = sfolder + "/" + title;
             aFile->WriteToFile(name.c_str());
@@ -240,7 +240,7 @@ string RootInput::DumpAsciiFile(const char* type, const char* folder)
          {
             // build file name
             string title = aFile->GetTitle();
-            unsigned int pos = title.rfind("/");
+            size_t pos = title.rfind("/");
             if (pos != string::npos) name = sfolder + title.substr(pos);
             else name = sfolder + "/" + title;
             aFile->WriteToFile(name.c_str());

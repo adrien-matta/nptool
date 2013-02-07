@@ -1,21 +1,18 @@
 include ../Makefile.arch
 
 #------------------------------------------------------------------------------
-SHARELIB      =  libPlasticData.so libPlasticPhysics.so
+SHARELIB      =  libPlastic.so
 
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 ############### Detector ##############
 
 ## Plastic ##
-libPlasticData.so:	TPlasticData.o	TPlasticDataDict.o
+libPlastic.so: TPlasticData.o	TPlasticDataDict.o TPlasticPhysics.o	TPlasticPhysicsDict.o
 			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TPlasticDataDict.cxx:	TPlasticData.h
 			rootcint -f $@ -c $^
-
-libPlasticPhysics.so:	TPlasticPhysics.o	TPlasticPhysicsDict.o
-			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TPlasticPhysicsDict.cxx:	TPlasticPhysics.h
 			rootcint -f $@ -c $^

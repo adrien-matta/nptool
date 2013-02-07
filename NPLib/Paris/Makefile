@@ -1,20 +1,17 @@
 include ../Makefile.arch
  
 #------------------------------------------------------------------------------
-SHARELIB      =  libParisData.so	libParisPhysics.so 
+SHARELIB      =  libParis.so
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 ############### Detector ##############
 
 ## Paris ##
-libParisData.so:	TParisData.o	TParisDataDict.o
+libParis.so:	TParisData.o	TParisDataDict.o Paris.o TParisPhysics.o TParisPhysicsDict.o
 			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TParisDataDict.cxx:	TParisData.h
 			rootcint -f $@ -c $^
-
-libParisPhysics.so:	Paris.o TParisPhysics.o TParisPhysicsDict.o
-			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TParisPhysicsDict.cxx:	TParisPhysics.h
 			rootcint -f $@ -c $^

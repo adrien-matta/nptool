@@ -1,18 +1,14 @@
 include ../Makefile.arch
  
 #------------------------------------------------------------------------------
-SHARELIB      =  libVDetector.so libDetectorManager.so
+SHARELIB      =  libVDetector.so
 
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 ############### Detector ##############
 
 ## VDetector ##
-libVDetector.so:	VDetector.o
-		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@	
-
-## VDetector ##
-libDetectorManager.so:	DetectorManager.o
+libVDetector.so: VDetector.o DetectorManager.o
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@	
 			
 # dependances

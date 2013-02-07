@@ -1,34 +1,24 @@
 include ../Makefile.arch
 
 #------------------------------------------------------------------------------
-SHARELIB      =  libVamosPlasticData.so	libVamosFingerData.so \
-		 libVamosCHIOData.so	libVamosDCData.so
+SHARELIB      =  libVamos.so
 
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 ############### Detector ##############
 
-## MUST2 ##
-libVamosPlasticData.so: TVamosPlasticData.o   TVamosPlasticDataDict.o
+## Vamos ##
+libVamos.so: TVamosPlasticData.o   TVamosPlasticDataDict.o TVamosFingerData.o TVamosFingerDataDict.o TVamosCHIOData.o TVamosCHIODataDict.o TVamosDCData.o TVamosDCDataDict.o
 	$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TVamosPlasticDataDict.cxx: TVamosPlasticData.h
 	rootcint -f $@ -c $^
 
-libVamosFingerData.so:  TVamosFingerData.o   TVamosFingerDataDict.o
-	$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
-
 TVamosFingerDataDict.cxx:  TVamosFingerData.h
 	rootcint -f $@ -c $^
 
-libVamosCHIOData.so: TVamosCHIOData.o   TVamosCHIODataDict.o
-	$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
-
 TVamosCHIODataDict.cxx: TVamosCHIOData.h
 	rootcint -f $@ -c $^
-
-libVamosDCData.so:   TVamosDCData.o   TVamosDCDataDict.o
-	$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TVamosDCDataDict.cxx:   TVamosDCData.h
 	rootcint -f $@ -c $^

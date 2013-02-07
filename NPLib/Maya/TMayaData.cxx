@@ -182,7 +182,7 @@ void  TMayaData::SetTOF(UShort_t N,UShort_t T)  {
 }
 
 
-void TMayaData::Dump()
+void TMayaData::Dump() const
 {
    //cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event XXXXXXXXXXXXXXXXX" << endl;
    /*
