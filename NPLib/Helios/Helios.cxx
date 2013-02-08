@@ -711,7 +711,8 @@ void Helios::AddModuleDummyShape(TVector3 C_X1_Y1,
    TVector3 Strip_1_1;
 
    // Geometry Parameter
-   double Face = 50;		// mm
+   //Commented by Adrien Matta (produce a warning)
+  //  double Face = 50;		// mm
    double NumberOfStrip = 128;
    double StripPitch = 0.98; //Face/NumberOfStrip; // mm
 
