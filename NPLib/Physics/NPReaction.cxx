@@ -320,7 +320,7 @@ void Reaction::ReadConfigurationFile(string Path){
         ReactionFile >> DataBuffer;
         
         if(atoi(DataBuffer.c_str()) == 0 )
-          fshoot3 = true;
+          fshoot3 = false;
         
         if(fVerboseLevel==1 && fshoot3) cout << "Shoot 3 : Yes  " << endl;
         else if (fVerboseLevel==1 ) cout << "Shoot 3 : No  " << endl;
@@ -331,7 +331,7 @@ void Reaction::ReadConfigurationFile(string Path){
         ReactionFile >> DataBuffer;
         
         if(atoi(DataBuffer.c_str()) == 0 )
-          fshoot4 = true;
+          fshoot4 = false;
         
         if(fVerboseLevel==1 && fshoot4) cout << "Shoot 4 : Yes  " << endl;
         else if (fVerboseLevel==1 ) cout << "Shoot 4 : No  " << endl;

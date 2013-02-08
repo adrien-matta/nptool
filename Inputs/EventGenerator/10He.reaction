@@ -13,11 +13,11 @@
   ExcitationEnergy= 1.4
 
 Beam
-  Particle= 11Li
-  Energy= 550
-	SigmaEnergy= 0
-	SigmaThetaX= 0.01
-	SigmaPhiY= 0.01
+  Particle= 7Li
+  Energy= 20
+	SigmaEnergy= 20
+	SigmaThetaX= 25
+	SigmaPhiY= 25
 	SigmaX= 5
 	SigmaY= 5
   MeanThetaX= 0
@@ -30,20 +30,20 @@ Beam
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-TwoBodyReaction
-	Beam= 11Li
+%TwoBodyReaction
+	Beam= 9Li
 	Target= 2H
 	Light= 3He
-	Heavy= 10He
+	Heavy= 8He
 	ExcitationEnergyLight= 0.0
-	ExcitationEnergyHeavy= 10.0
-  CrossSectionPath= 11Li(d,3He)10He.txt	CS10He
-	ShootLight= 1
+	ExcitationEnergyHeavy= 0.0
+  CrossSectionPath= flat.txt	CS10He
+	ShootLight= 0
 	ShootHeavy= 1
   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-ParticleDecay 10He
+%ParticleDecay 10He
   Daughter= 9He n
   ExcitationEnergy= 0 0
   DifferentialCrossSection= 11Li(d,3He)10He.txt	particle9He
