@@ -9,11 +9,11 @@ all:            $(SHARELIB)
 
 ## MUST2 ##
 libIORoot.so:	RootInput.o RootOutput.o
-		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
+	$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 # dependances
-RootInput.o:	RootInput.cxx	RootInput.h
-RootOutput.o:	RootOutput.cxx	RootOutput.h
+RootInput.o: RootInput.cxx RootInput.h
+RootOutput.o: RootOutput.cxx RootOutput.h
 #######################################
 
 ############# Clean and More ##########

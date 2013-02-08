@@ -48,6 +48,7 @@
 // Use CLHEP System of unit and Physical Constant
 #include "CLHEP/Units/GlobalSystemOfUnits.h"
 #include "CLHEP/Units/PhysicalConstants.h"
+ClassImp(Reaction)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 Reaction::Reaction(){

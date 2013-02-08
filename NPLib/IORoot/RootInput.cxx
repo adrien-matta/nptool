@@ -29,7 +29,6 @@
 #include "RootInput.h"
 #include "TAsciiFile.h"
 
-
 RootInput *RootInput::instance = 0;
 
 RootInput* RootInput::getInstance(string configFileName)

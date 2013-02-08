@@ -87,6 +87,7 @@ private:
    TAsciiFile *pCalibrationFile;
    TAsciiFile *pRunToTreatFile;
    TAsciiFile *pAnalysisConfigFile;
+  
 };
 
 #endif // ROOTOUTPUT_HH

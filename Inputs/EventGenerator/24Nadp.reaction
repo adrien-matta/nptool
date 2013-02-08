@@ -3,11 +3,11 @@
 Beam
   Particle= 24Na
   Energy= 192
-	SigmaEnergy= 1
-	SigmaThetaX= 0.01
-	SigmaPhiY= 0.01
-	SigmaX= 0.5
-	SigmaY= 0.5
+  SigmaEnergy= 1
+  SigmaThetaX= 0.01 
+  SigmaPhiY= 0.01
+  SigmaX= 0.5
+  SigmaY= 0.5
   MeanThetaX= 0
   MeanPhiY= 0
   MeanX= 0
@@ -24,12 +24,12 @@ TwoBodyReaction
 	Heavy= 25Na
 	ExcitationEnergyLight= 0.0
 	ExcitationEnergyHeavy= 2.2
-  CrossSectionPath= flat.txt	CSR
+        CrossSectionPath= flat.txt	CSR
 	ShootLight= 1
 	ShootHeavy= 1
   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-GammaDecay 25Na
+%GammaDecay 25Na
   Cascade
     BranchingRatio= 70
     Energies= 2.2

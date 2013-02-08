@@ -187,6 +187,9 @@ namespace NPL{
     
       // Print private paremeter
     void Print() const;
+    
+ClassDef(Reaction,0)
+
   };
 }
 #endif

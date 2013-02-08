@@ -78,6 +78,7 @@ private:
    TChain   *pRootChain;
    TFile    *pRootFile;
    int NumberOfFriend;
+  
 };
 
 // A convenient function related to Root Input, coded Here so it can be called within ROOT CINT

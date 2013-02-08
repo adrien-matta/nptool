@@ -29,14 +29,15 @@
 #include "G4ParticleDefinition.hh"
 
 // NPL
-#include "PrimaryGeneratorAction.hh"
-#include "PhysicsList.hh"
-#include "Randomize.hh"
-#include "ParticleStack.hh"
+#include "NPOptionManager.h"
 
 // CLHEP
 #include "CLHEP/Random/RandGauss.h"
 #include "CLHEP/Random/RandGeneral.h"
+#include "PrimaryGeneratorAction.hh"
+#include "PhysicsList.hh"
+#include "Randomize.hh"
+#include "ParticleStack.hh"
 
 // Event Generator Class
 #include "EventGeneratorTwoBodyReaction.hh"
@@ -80,6 +81,8 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path){
   int   alreadyiInstantiate_ParticleDecay = 0;
   int   seenToken_ParticleDecay = 0;
   
+  if(NPOptionManager::getInstance()->GetVerboseLevel()==1) cout << "/////////////////////////////////////////////////// " << endl ;
+
   string LineBuffer;
   ifstream EventGeneratorFile;
   EventGeneratorFile.open(Path.c_str());
@@ -99,7 +102,6 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path){
     if (LineBuffer.compare(0, 1, "%") == 0) {   /*do nothing*/
       ;
     }
-    
     
     //Search for Isotropic source
     else if (LineBuffer.compare(0, 9, "Isotropic") == 0  && !check_Isotropic) {

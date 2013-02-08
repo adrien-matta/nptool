@@ -217,7 +217,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
     ////////////////////////////////////////////
     else if (LineBuffer.compare(0, 16, "TheDUMMYDetector") == 0 && cDummy == false) {
       cDummy = true ;
-      if(VerboseLevel==1)  G4cout << G4endl << "//////// DUMMY DETECTOR ////////" << G4endl << G4endl   ;
+      if(VerboseLevel==1)  cout << endl << "//////// DUMMY DETECTOR ////////" << endl << endl   ;
       
       // Instantiate the new array as a VDetector Object
       VDetector* myDetector = new DUMMYDetector()                  ;
@@ -238,7 +238,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
     else if (LineBuffer.compare(0, 16, "ComptonTelescope") == 0 && cComptonTelescope == false) {
 #ifdef INC_COMPTONTELESCOPE
       cComptonTelescope = true;
-      if(VerboseLevel==1) G4cout << "//////// ComptonTelescope  ////////" << G4endl;
+      if(VerboseLevel==1) cout << "//////// ComptonTelescope  ////////" << endl;
       
       // Instantiate the new array as a VDetector Object
       VDetector* myDetector = new ComptonTelescope();
@@ -260,7 +260,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
     else if (LineBuffer.compare(0, 7, "Eurogam") == 0 && cEurogam == false) {
 #ifdef INC_EUROGAM
       cEurogam = true;
-      if(VerboseLevel==1) G4cout << "//////// Eurogam  ////////" << G4endl;
+      if(VerboseLevel==1) cout << "//////// Eurogam  ////////" << endl;
       
       // Instantiate the new array as a VDetector Object
       VDetector* myDetector = new Eurogam();
@@ -282,7 +282,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
     else if (LineBuffer.compare(0, 14, "GaspardTracker") == 0 && cGPDTracker == false) {
 #ifdef INC_GASPARD
       cGPDTracker = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "//////// Gaspard Tracker ////////" << G4endl   ;
+      if(VerboseLevel==1) cout << endl << "//////// Gaspard Tracker ////////" << endl   ;
       
       // Instantiate the new array as a VDetector Object
       VDetector* myDetector = new GaspardTracker()                  ;
@@ -304,7 +304,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
     else if (LineBuffer.compare(0, 11, "HydeTracker") == 0 && cHYDTracker == false) {
 #ifdef INC_HYDE
       cHYDTracker = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "//////// Hyde Tracker ////////" << G4endl   ;
+      if(VerboseLevel==1) cout << endl << "//////// Hyde Tracker ////////" << endl   ;
       
       // Instantiate the new array as a VDetector Object
       VDetector* myDetector = new HydeTracker()                  ;
@@ -326,7 +326,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
     else if (LineBuffer.compare(0, 5, "Paris") == 0 && cParis == false) {
 #ifdef INC_PARIS
       cParis = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "//////// Paris  ////////" << G4endl   ;
+      if(VerboseLevel==1) cout << endl << "//////// Paris  ////////" << endl   ;
       
       // Instantiate the new array as a VDetector Object
       VDetector* myDetector = new Paris()                  ;
@@ -347,7 +347,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
     else if (LineBuffer.compare(0, 6, "Shield") == 0 && cShield == false) {
 #ifdef INC_SHIELD
       cShield = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "//////// Shield  ////////" << G4endl   ;
+      if(VerboseLevel==1) cout << endl << "//////// Shield  ////////" << endl   ;
       
       // Instantiate the new array as a VDetector Object
       VDetector* myDetector = new Shield()                  ;
@@ -368,7 +368,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
     else if (LineBuffer.compare(0, 9, "AnnularS1") == 0 && cS1 == false) {
 #ifdef INC_ANNULARSi1
       cS1 = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "//////// S1 Annular detector ////////" << G4endl   << G4endl   ;
+      if(VerboseLevel==1) cout << endl << "//////// S1 Annular detector ////////" << endl   << endl   ;
       
       // Instantiate the new array as a VDetector Object
       VDetector* myDetector = new AnnularS1()                 ;
@@ -389,7 +389,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
     else if (LineBuffer.compare(0, 2, "W1") == 0 && cW1 == false) {
 #ifdef INC_W1
       cW1 = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "//////// W1 Square detector ////////" << G4endl   << G4endl;
+      if(VerboseLevel==1) cout << endl << "//////// W1 Square detector ////////" << endl   << endl;
       
       // Instantiate the new array as a VDetector Object
       VDetector* myDetector = new W1();
@@ -410,7 +410,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
     else if (LineBuffer.compare(0, 10, "MUST2Array") == 0 && cMUST2 == false) {
 #ifdef INC_MUST2
       cMUST2 = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "//////// MUST2 Array ////////" << G4endl   << G4endl   ;
+      if(VerboseLevel==1) cout << endl << "//////// MUST2 Array ////////" << endl   << endl   ;
       
       // Instantiate the new array as a VDetector Object
       VDetector* myDetector = new MUST2Array()                 ;
@@ -431,7 +431,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
     else if (LineBuffer.compare(0, 9, "SSSDArray") == 0 && cAddThinSi == false) {
 #ifdef INC_SSSD
       cAddThinSi = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "//////// SSSD ////////" << G4endl << G4endl   ;
+      if(VerboseLevel==1) cout << endl << "//////// SSSD ////////" << endl << endl   ;
       
       // Instantiate the new array as a VDetector Object
       VDetector* myDetector = new ThinSi()                  ;
@@ -452,7 +452,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
     else if (LineBuffer.compare(0, 5, "Sharc") == 0 && cSharc == false) {
 #ifdef INC_SHARC
       cSharc = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "//////// Sharc ////////" << G4endl << G4endl   ;
+      if(VerboseLevel==1) cout << endl << "//////// Sharc ////////" << endl << endl   ;
       
       // Instantiate the new array as a VDetector Object
       VDetector* myDetector = new Sharc();
@@ -473,7 +473,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
     else if (LineBuffer.compare(0, 19, "ScintillatorPlastic") == 0 && cPlastic == false) {
 #ifdef INC_PLASTIC
       cPlastic = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "//////// Plastic ////////" << G4endl << G4endl   ;
+      if(VerboseLevel==1) cout << endl << "//////// Plastic ////////" << endl << endl   ;
       
       // Instantiate the new array as a VDetector Object
       VDetector* myDetector = new Plastic()                  ;
@@ -493,14 +493,14 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
     else if (LineBuffer.compare(0, 6, "Helios") == 0 && cHelios == false) {
 #ifdef INC_HELIOS
       cHelios = true ;
-      G4cout << "//////// Helios detector ////////" << G4endl   ;
+      cout << "//////// Helios detector ////////" << endl   ;
       
       ConfigFile >> DataBuffer ;
       if (DataBuffer.compare(0, 7, "MField=") == 0){
         check_MField = true;
         ConfigFile >> DataBuffer ;
         Bz = atof(DataBuffer.c_str()) ;
-        G4cout << "//////// Magentic Field set at Bz= " << Bz << " ////////" << G4endl   ;
+        cout << "//////// Magentic Field set at Bz= " << Bz << " ////////" << endl   ;
       }
       
       // Instantiate the new array as a VDetector Object
@@ -608,7 +608,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
     
     else if (LineBuffer.compare(0, 13, "GeneralTarget") == 0 && cGeneralTarget == false) {
       cGeneralTarget = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "////////// Target ///////////" << G4endl   << G4endl   ;
+      if(VerboseLevel==1) cout << endl << "////////// Target ///////////" << endl   << endl   ;
       
       // Instantiate the new array as a VDetector Objects
       VDetector* myDetector = new Target();
@@ -631,7 +631,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
     
     else if (LineBuffer.compare(0, 14, "GeneralChamber") == 0 && cGeneralChamber == false) {
       cGeneralChamber = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "////////// Chamber ///////////" << G4endl   << G4endl   ;
+      if(VerboseLevel==1) cout << endl << "////////// Chamber ///////////" << endl   << endl   ;
       
       // Instantiate the new array as a VDetector Objects
       VDetector* myDetector = new Chamber();

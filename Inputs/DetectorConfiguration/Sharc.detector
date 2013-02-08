@@ -60,12 +60,12 @@ Sharc
     ThicknessPAD4= 1000
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %Downstream CD
-  SharcQQQ
+ SharcQQQ
     Z= 100
     R= 0
     Phi= 0
     ThicknessDector= 100
-  SharcQQQ
+ SharcQQQ
     Z= 100
     R= 0
     Phi= 90
