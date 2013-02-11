@@ -174,7 +174,6 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
   string DataBuffer;
   
   // needed for Magnetic field
-  double Bz=0.;
   
   bool cAddThinSi        = false;
   bool cComptonTelescope = false;
@@ -192,8 +191,11 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
   bool cShield           = false;  
   bool cW1               = false;
   bool cHelios           = false;
-  bool check_MField      = false;
   
+#ifdef INC_HELIOS
+  bool check_MField      = false;
+  double Bz=0.;
+#endif
   int VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
   
   ifstream ConfigFile;
