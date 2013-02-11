@@ -445,10 +445,10 @@ void Helios::ReadConfiguration(string Path)
 void Helios::ReadCalibrationFile(string Path)	
 {
    // Order of Polynom function used for calibration
-   int Calibration_Si_E_Order;
-   int Calibration_Si_T_Order;
-   int Calibration_SiLi_E_Order;
-   int Calibration_CsI_E_Order;
+   int Calibration_Si_E_Order;      Calibration_Si_E_Order   = 0; Calibration_Si_E_Order *= 1;
+   int Calibration_Si_T_Order;      Calibration_Si_T_Order   = 0; Calibration_Si_T_Order *= 1;
+   int Calibration_SiLi_E_Order;    Calibration_SiLi_E_Order = 0; Calibration_SiLi_E_Order *= 1;
+   int Calibration_CsI_E_Order;     Calibration_CsI_E_Order  = 0; Calibration_CsI_E_Order *= 1;
 
    // Calibration_Si_X_E[DetectorNumber][StripNumber][Order of Coeff]
    vector< vector< vector< double > > >	Calibration_Si_X_E	;
