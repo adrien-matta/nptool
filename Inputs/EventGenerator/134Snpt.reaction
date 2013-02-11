@@ -2,20 +2,27 @@
 %%%%%%%%%  Reaction file for 60Fe(d,p)61Fe reaction  %%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%Beam energy given in MeV ; Excitation in MeV ; emmitance in rad
-Transfert
+Beam
+  Particle= 134Sn
+  Energy= 1340
+	SigmaEnergy= 0
+	SigmaX= 0
+	SigmaY= 0
+	SigmaThetaX= 0 
+	SigmaPhiY= 0
+  MeanThetaX= 0
+  MeanPhiY= 0
+  MeanX= 0
+  MeanY= 0
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+TwoBodyReaction
 	Beam= 134Sn
 	Target= 1H
 	Light= 3H
 	Heavy= 132Sn
 	ExcitationEnergyLight= 0.0
 	ExcitationEnergyHeavy= 0.0
-	BeamEnergy= 1340
-	BeamEnergySpread= 0
-	SigmaX= 0
-	SigmaY= 0
-	SigmaThetaX= 0 
-	SigmaPhiY= 0
-	CrossSectionPath= CS_Ep10MeV_sn134pt_gs_1h9demi.dat
+	CrossSectionPath= CS_Ep10MeV_sn134pt_gs_1h9demi.dat CS
 	ShootLight= 1
 	ShootHeavy= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

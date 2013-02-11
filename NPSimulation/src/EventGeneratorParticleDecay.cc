@@ -51,7 +51,6 @@ EventGeneratorParticleDecay::EventGeneratorParticleDecay(){
 }
 
 EventGeneratorParticleDecay::~EventGeneratorParticleDecay(){
-  delete m_CrossSectionHist;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

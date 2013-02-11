@@ -229,6 +229,11 @@ void RandomGaussian2D(double MeanX, double MeanY, double SigmaX, double SigmaY, 
     Y = MeanY;
     X = gRandom->Gaus(MeanX, SigmaX);
   }
+  
+  else {
+    X = MeanX;
+    Y = MeanY;
+  }
 }
 
 }

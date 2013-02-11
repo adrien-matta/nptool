@@ -20,6 +20,6 @@ TwoBodyReaction
   Heavy= 40Ca
   ExcitationEnergyLight= 0.0
   ExcitationEnergyHeavy= 0.0
-  CrossSectionPath= flat.txt   CS10He
+  CrossSectionPath= flat.txt   CS
   ShootLight= 1
   ShootHeavy= 1

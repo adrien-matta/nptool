@@ -2,24 +2,31 @@
 %%%%%%%%%  Reaction file for 60Fe(d,p)61Fe reaction  %%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%Beam energy given in MeV ; Excitation in MeV ; emmitance in rad
-Transfert
+Beam
+  Particle= 132Sn
+  Energy= 1320
+	SigmaEnergy= 0
+	SigmaThetaX= 0
+	SigmaPhiY= 0
+	SigmaX= 0
+	SigmaY= 0
+  MeanThetaX= 0
+  MeanPhiY= 0
+  MeanX= 0
+  MeanY= 0
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+TwoBodyReaction
 	Beam= 132Sn
 	Target= 2H
 	Light= 1H
 	Heavy= 133Sn
 	ExcitationEnergyLight= 0.0
 	ExcitationEnergyHeavy= 0.0
-	BeamEnergy= 1320
-	BeamEnergySpread= 0
-	SigmaX= 0
-	SigmaY= 0
-	SigmaThetaX= 0 
-	SigmaPhiY= 0
-	CrossSectionPath= sn132dp_gs_10AMeV.txt
-%	CrossSectionPath= 132Sndp_10A_MeV_2f7_ZR_FRC.lis
-%	CrossSectionPath= flat.txt
-   HalfOpenAngleMin= 0
-   HalfOpenAngleMax= 180
+  CrossSectionPath= sn132dp_gs_10AMeV.txt CS
+%CrossSectionPath= 132Sndp_10A_MeV_2f7_ZR_FRC.lis
+%CrossSectionPath= flat.txt
+  HalfOpenAngleMin= 0
+  HalfOpenAngleMax= 180
 	ShootLight= 1
 	ShootHeavy= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -2,20 +2,27 @@
 %%%  Reaction file for 208Pb(19C,19C)208Pb reaction  %%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%Beam energy given in MeV ; Excitation in MeV ; emmitance in rad
-Transfert
+Beam
+  Particle= 19C
+  Energy= 570
+	SigmaEnergy= 5.70
+	SigmaX= 1.
+	SigmaY= 1.
+	SigmaThetaX= 0. 
+	SigmaPhiY= 0.
+  MeanThetaX= 0
+  MeanPhiY= 0
+  MeanX= 0
+  MeanY= 0
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+TwoBodyReaction
 	Beam= 19C
 	Target= 208Pb
 	Light= 19C
 	Heavy= 208Pb
 	ExcitationEnergyLight= 0.0
 	ExcitationEnergyHeavy= 0.0
-	BeamEnergy= 570
-	BeamEnergySpread= 5.70
-	SigmaX= 1.
-	SigmaY= 1.
-	SigmaThetaX= 0. 
-	SigmaPhiY= 0.
-	CrossSectionPath= flat.txt
+	CrossSectionPath= flat.txt CS
 	ShootLight= 1
 	ShootHeavy= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

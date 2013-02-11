@@ -53,9 +53,6 @@ EventGeneratorGammaDecay::EventGeneratorGammaDecay(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorGammaDecay::~EventGeneratorGammaDecay(){
-  for(unsigned i = 0  ; i < m_CrossSectionHist.size() ; i++)
-    delete m_CrossSectionHist[i];
-  
   m_CrossSectionHist.clear();
 }
 

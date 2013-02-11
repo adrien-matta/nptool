@@ -2,25 +2,31 @@
 %%%%%%%%% Reaction file for 11Li(d,3He)10He reaction %%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%Beam energy given in MeV ; Excitation in MeV
-TransfertToResonance
+Beam
+  Particle= 1H
+  Energy= 18
+	SigmaEnergy= 0
+	SigmaThetaX= 0
+	SigmaPhiY= 0
+	SigmaX= 0
+	SigmaY= 0
+  MeanThetaX= 0
+  MeanPhiY= 0
+  MeanX= 0
+  MeanY= 0
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+TwoBodyReaction
 	Beam= 1H
 	Target= 27Al
 	Light= 1H
 	Heavy= 27Al
 	ExcitationEnergyLight= 0.0
 	ExcitationEnergyHeavy= 13.0
-	BeamEnergy= 18
-	BeamEnergySpread= 0
-	SigmaThetaX= 0
-	SigmaPhiY= 0
-	SigmaX= 0
-	SigmaY= 0
-	ResonanceWidth= 0
-	ResonanceDecayZ= 12
-	ResonanceDecayA= 26
-	CrossSectionPath= flat.txt
+	CrossSectionPath= flat.txt CS
 	ShootLight= 1
-	ShootHeavy= 0
-	ShootDecayProduct= 1
+	ShootHeavy= 1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+ParticleDecay 27Al
+  Daughter= 26Mg p
+  ExcitationEnergy= 0 0
+  shoot= 1 1
