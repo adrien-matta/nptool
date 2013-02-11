@@ -1,4 +1,5 @@
 #ifndef Paris_H
+#define Paris_H
 /*****************************************************************************
  * Copyright (C) 2009-2013    this file is part of the NPTool Project        *
  *                                                                           *

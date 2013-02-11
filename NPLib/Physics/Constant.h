@@ -1,4 +1,4 @@
-#ifndef Constat_
+#ifndef Constant_h
 #define Constant_h
 /*****************************************************************************
  * Copyright (C) 2009-2013    this file is part of the NPTool Project        *

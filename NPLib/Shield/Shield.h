@@ -1,4 +1,5 @@
 #ifndef Shield_H
+#define Shield_H
 /*****************************************************************************
  * Copyright (C) 2009-2013    this file is part of the NPTool Project        *
  *                                                                           *
