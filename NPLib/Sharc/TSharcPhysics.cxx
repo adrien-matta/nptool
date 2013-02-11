@@ -439,6 +439,7 @@ void TSharcPhysics::ReadConfiguration(string Path)
   string DataBuffer             ;
   
   double R,Phi,Z;
+  R = 0 ; Phi = 0 ; Z = 0;
   TVector3 Pos;
   bool check_R   = false ;
   bool check_Phi = false ;

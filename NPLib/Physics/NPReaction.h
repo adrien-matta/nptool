@@ -57,8 +57,8 @@ namespace NPL{
   class Reaction{
     
   public:  // Constructors and Destructors
-    Reaction();
-    ~Reaction();
+   Reaction();
+   virtual ~Reaction();
     
   public:  // Various Method
     void ReadConfigurationFile(string Path);
