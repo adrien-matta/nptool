@@ -265,8 +265,6 @@ void DUMMYDetector::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalV
       ////////////////////////////////////////////////////////////////
       ////////////// Starting Volume Definition //////////////////////
       ////////////////////////////////////////////////////////////////      
-      G4PVPlacement* PVPBuffer ;
-      
       // Name of the module
          std::ostringstream DetectorNumber                  ;
          DetectorNumber << DetNumber                         ;
@@ -303,7 +301,7 @@ void DUMMYDetector::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalV
              
              
            
-            PVPBuffer = new G4PVPlacement(   0,
+            G4PVPlacement(   0,
                                              Det_pos,
                                              logicDUMMYDetector,
                                              Name  + "_Scintillator",

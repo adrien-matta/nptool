@@ -173,7 +173,6 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
   string LineBuffer;
   string DataBuffer;
   
-  // needed for Magnetic field
   
   bool cAddThinSi        = false;
   bool cComptonTelescope = false;
@@ -192,10 +191,6 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
   bool cW1               = false;
   bool cHelios           = false;
   
-#ifdef INC_HELIOS
-  bool check_MField      = false;
-  double Bz=0.;
-#endif
   int VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
   
   ifstream ConfigFile;
@@ -497,9 +492,12 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
       cHelios = true ;
       cout << "//////// Helios detector ////////" << endl   ;
       
+//      bool check_MField      = false;
+      double Bz=0.;
+
       ConfigFile >> DataBuffer ;
       if (DataBuffer.compare(0, 7, "MField=") == 0){
-        check_MField = true;
+//        check_MField = true;
         ConfigFile >> DataBuffer ;
         Bz = atof(DataBuffer.c_str()) ;
         cout << "//////// Magentic Field set at Bz= " << Bz << " ////////" << endl   ;
