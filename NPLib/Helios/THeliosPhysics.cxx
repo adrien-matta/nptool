@@ -62,7 +62,7 @@ void THeliosPhysics::BuildPhysicalEvent(THeliosData* Data)
    int index[dim] = {0, 100, 200, 1000};
 
    // Check
-   bool Check_FirstStage = false ;
+   bool Check_FirstStage = false; if (Check_FirstStage) {};
 
 
    // Thresholds
