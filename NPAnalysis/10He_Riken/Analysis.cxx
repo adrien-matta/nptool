@@ -120,12 +120,12 @@ int main(int argc,char** argv)
 			myDetector -> BuildPhysicalEvent()				;
 			////
 			// Target (from initial condition)
-			XTarget = Init->GetICPositionX(0);
-			YTarget = Init->GetICPositionY(0);
-			ZTarget = Init->GetICPositionZ(0);
+			XTarget = Init->GetIncidentPositionX();
+			YTarget = Init->GetIncidentPositionY();
+			ZTarget = Init->GetIncidentPositionZ();
 			//	XTarget = RandomEngine.Gaus(Init->GetICPositionX(0),1);
 			//	YTarget = RandomEngine.Gaus(Init->GetICPositionY(0),1);
-			BeamTheta = Init->GetICIncidentAngleTheta(0)*deg ; BeamPhi = Init->GetICIncidentAnglePhi(0)*deg ; 
+			BeamTheta = Init->GetIncidentEmittanceTheta()*deg ; BeamPhi = Init->GetIncidentEmittancePhi()*deg ; 
 			TVector3 BeamDirection = TVector3(cos(BeamPhi)*sin(BeamTheta) , sin(BeamPhi)*sin(BeamTheta) , cos(BeamTheta)) ;
 			//// 
 			

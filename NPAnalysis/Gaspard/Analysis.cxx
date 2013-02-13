@@ -121,7 +121,7 @@ int main(int argc,char** argv)
       TVector3 A;
       if (E > -1000) {
          // Get c.m. angle
-         ThetaCM = initCond->GetICEmittedAngleThetaCM(0) * deg;
+         ThetaCM = initCond->GetThetaCM(0) * deg;
 
          // Get exact scattering angle from TInteractionCoordinates object
 //         interCoord->Dump();
@@ -136,10 +136,10 @@ int main(int argc,char** argv)
          A = GPDTrack->GetPositionOfInteraction();
 
          // Get beam interaction coordinates on target (from initial condition)
-         XTarget = initCond->GetICPositionX(0);
-         YTarget = initCond->GetICPositionY(0);
-         BeamTheta = initCond->GetICIncidentAngleTheta(0)*deg;
-         BeamPhi   = initCond->GetICIncidentAnglePhi(0)*deg;
+         XTarget = initCond->GetIncidentPositionX();
+         YTarget = initCond->GetIncidentPositionY();
+         BeamTheta = initCond->GetIncidentEmittanceTheta()*deg;
+         BeamPhi   = initCond->GetIncidentEmittanceTheta()*deg;
          TVector3 BeamDirection = TVector3(cos(BeamPhi)*sin(BeamTheta), sin(BeamPhi)*sin(BeamTheta), cos(BeamTheta));
 
          // Hit direction taking into account beam position on target

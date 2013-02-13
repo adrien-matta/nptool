@@ -115,16 +115,16 @@ int main(int argc,char** argv)
       myDetector->BuildPhysicalEvent();
 
       // Get Target information from TInitialConditions
-      XTarget = initCond->GetICPositionX(0);
-      YTarget = initCond->GetICPositionY(0);
-      BeamTheta = initCond->GetICIncidentAngleTheta(0)*deg;
-      BeamPhi   = initCond->GetICIncidentAnglePhi(0)*deg;
+      XTarget = initCond->GetIncidentPositionX();
+      YTarget = initCond->GetIncidentPositionY();
+      BeamTheta = initCond->GetIncidentEmittanceTheta()*deg;
+      BeamPhi   = initCond->GetIncidentEmittancePhi()*deg;
       TVector3 BeamDirection = TVector3(cos(BeamPhi)*sin(BeamTheta), sin(BeamPhi)*sin(BeamTheta), cos(BeamTheta));
 
       // loop on multiplicity event
       for (int hit = 0; hit < W1->GetEventMultiplicity(); hit++) {
          // Get c.m. angle
-         double ThetaCM = initCond->GetICEmittedAngleThetaCM(0) * deg;
+         double ThetaCM = initCond->GetThetaCM(0) * deg;
 
          // Get exact scattering angle from TInteractionCoordinates object
          double DetecX = interCoord->GetDetectedPositionX(hit);

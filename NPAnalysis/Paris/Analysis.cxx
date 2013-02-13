@@ -103,7 +103,7 @@ int main(int argc,char** argv)
 
 
      
-      double Einit= initCond->GetICEmittedEnergy(0);
+      double Einit= initCond->GetKineticEnergy(0);
 
       Ein->Fill(Einit);
 

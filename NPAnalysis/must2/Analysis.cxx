@@ -118,12 +118,12 @@ int main(int argc,char** argv)
       myDetector->BuildPhysicalEvent();
 	  
       //	Get target interaction position from initial conditions
-      double XTarget = initCond->GetICPositionX(0);
-      double YTarget = initCond->GetICPositionY(0);
-      double ZTarget = initCond->GetICPositionZ(0);
+      double XTarget = initCond->GetIncidentPositionX();
+      double YTarget = initCond->GetIncidentPositionY();
+      double ZTarget = initCond->GetIncidentPositionZ();
 		  
       // Calculate beam direction
-      double BeamTheta = initCond->GetICIncidentAngleTheta(0)*deg; double BeamPhi = initCond->GetICIncidentAnglePhi(0)*deg;
+      double BeamTheta = initCond->GetIncidentEmittanceTheta()*deg; double BeamPhi = initCond->GetIncidentEmittancePhi()*deg;
       TVector3 BeamDirection = TVector3(cos(BeamPhi)*sin(BeamTheta) , sin(BeamPhi)*sin(BeamTheta) , cos(BeamTheta));
 		  
       for (int hit = 0; hit < M2->Si_E.size(); hit++) {
