@@ -63,8 +63,8 @@ Chamber::Chamber()
 
 G4Material* Chamber::GetMaterialFromLibrary(G4String MaterialName, G4double Temperature, G4double Pressure)
 {
-   Temperature = 0 ;
-   Pressure = 0 ;
+   Temperature *= 1 ;
+   Pressure    *= 1 ;
    G4Material* myMaterial;
    
  
@@ -215,11 +215,6 @@ void Chamber::ReadConfiguration(string Path)
 // Called After DetecorConstruction::AddDetector Method
 void Chamber::ConstructDetector(G4LogicalVolume* world)
 {
-
-// Little trick to avoid warning in compilation: Use a PVPlacement "buffer".
-// If don't you will have a Warning unused variable 'myPVP'
-   G4VPhysicalVolume* PVPBuffer ;
-
    if (m_ChamberType) {   // case of standard Chamber
 
     G4Sphere* solidChamber
@@ -231,8 +226,7 @@ void Chamber::ConstructDetector(G4LogicalVolume* world)
          //G4RotationMatrix *rotation = new G4RotationMatrix();
          //rotation->rotateY(m_ChamberAngle);
 
-         PVPBuffer =
-            new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), logicChamber, "Chamber", world, false, 0);
+         new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), logicChamber, "Chamber", world, false, 0);
 
          G4VisAttributes* ChamberVisAtt = new G4VisAttributes(G4Colour(0., 1., 1.));
          logicChamber->SetVisAttributes(ChamberVisAtt);

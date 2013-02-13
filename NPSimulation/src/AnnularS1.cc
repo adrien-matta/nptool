@@ -166,10 +166,6 @@ void AnnularS1::VolumeMaker(G4int             DetecNumber,
    ////////////////////////////////////////////////////////////////
    ////////////// Starting Volume Definition //////////////////////
    ////////////////////////////////////////////////////////////////
-   // Little trick to avoid warning in compilation: Use a PVPlacement "buffer".
-   // If don't you will have a Warning unused variable 'myPVP'
-   G4PVPlacement* PVPBuffer ;
-
    // Name of the module
    G4String Name = "S1Annular" + DetectorNumber;
 
@@ -184,7 +180,7 @@ void AnnularS1::VolumeMaker(G4int             DetecNumber,
 //   G4LogicalVolume* logicAnnularS1 = new G4LogicalVolume(solidAnnularS1, Iron, Name, 0, 0, 0);
    G4LogicalVolume* logicAnnularS1 = new G4LogicalVolume(solidAnnularS1, Vacuum, Name, 0, 0, 0);
 
-   PVPBuffer     = new G4PVPlacement(G4Transform3D(*rotation, position),
+   new G4PVPlacement(G4Transform3D(*rotation, position),
                                      logicAnnularS1,
                                      Name,
                                      world,
@@ -209,8 +205,8 @@ void AnnularS1::VolumeMaker(G4int             DetecNumber,
 //   G4LogicalVolume* logicAluStrip = new G4LogicalVolume(solidAluStrip, Aluminium, "logicAluStrip", 0, 0, 0);
    G4LogicalVolume* logicAluStrip = new G4LogicalVolume(solidAluStrip, Vacuum, "logicAluStrip", 0, 0, 0);
 
-   PVPBuffer = new G4PVPlacement(0, positionAluStripFront, logicAluStrip, Name + "_AluStripFront", logicAnnularS1, false, 0);
-   PVPBuffer = new G4PVPlacement(0, positionAluStripBack,  logicAluStrip, Name + "_AluStripBack",  logicAnnularS1, false, 0);
+   new G4PVPlacement(0, positionAluStripFront, logicAluStrip, Name + "_AluStripFront", logicAnnularS1, false, 0);
+   new G4PVPlacement(0, positionAluStripBack,  logicAluStrip, Name + "_AluStripBack",  logicAnnularS1, false, 0);
 
    logicAluStrip->SetVisAttributes(G4VisAttributes::Invisible);
 
@@ -226,7 +222,7 @@ void AnnularS1::VolumeMaker(G4int             DetecNumber,
 
    G4LogicalVolume* logicSilicon = new G4LogicalVolume(solidSilicon, Silicon, "logicSilicon", 0, 0, 0);
 
-   PVPBuffer = new G4PVPlacement(0, positionSilicon, logicSilicon, Name + "_Silicon", logicAnnularS1, false, 0);
+   new G4PVPlacement(0, positionSilicon, logicSilicon, Name + "_Silicon", logicAnnularS1, false, 0);
 
    // Set Silicon strip sensible
    logicSilicon->SetSensitiveDetector(m_Scorer);
