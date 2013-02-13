@@ -393,76 +393,74 @@ void Plastic::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume*
       ////////////////////////////////////////////////////////////////
       ////////////// Starting Volume Definition //////////////////////
       ////////////////////////////////////////////////////////////////      
-      G4PVPlacement* PVPBuffer ;
-      
       // Name of the module
-         std::ostringstream DetectorNumber                  ;
-         DetectorNumber << DetNumber                         ;
+      std::ostringstream DetectorNumber                  ;
+      DetectorNumber << DetNumber                         ;
       G4String Name = "Plastic" + DetectorNumber.str()   ;
       
       int i = DetNumber-1;
 
       G4Material* PlasticMaterial ;
-      
-          if(m_Scintillator[i] == "BC400"    ) PlasticMaterial = m_MaterialPlastic_BC400    ;
+
+      if(m_Scintillator[i] == "BC400"    ) PlasticMaterial = m_MaterialPlastic_BC400    ;
       else if(m_Scintillator[i] == "BC452_2"  ) PlasticMaterial = m_MaterialPlastic_BC452_2    ;
       else if(m_Scintillator[i] == "BC452_5"  ) PlasticMaterial = m_MaterialPlastic_BC452_5   ;
       else if(m_Scintillator[i] == "BC452_10" ) PlasticMaterial = m_MaterialPlastic_BC452_10   ;
       else {   
-            G4cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl ;
-            G4cout << "WARNING: Material Not found, default material set : BC400" << endl ; 
-            G4cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl ;
-            PlasticMaterial = m_MaterialPlastic_BC400;
-         }
-      
-      
+         G4cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl ;
+         G4cout << "WARNING: Material Not found, default material set : BC400" << endl ; 
+         G4cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl ;
+         PlasticMaterial = m_MaterialPlastic_BC400;
+      }
+
+
       // Definition of the volume containing the sensitive detector
       
-      
+
       // Cylindrical Case
       if(m_PlasticRadius[i]!=-1)
+      {
+         if(m_PlasticThickness[i]>0 && m_PlasticRadius[i]>0)
+         { 
+            G4Tubs* solidPlastic = new G4Tubs(   Name                              ,    
+                  0                                    ,
+                  m_PlasticRadius[i]         ,
+                  m_PlasticThickness[i]/2   ,
+                  0*deg                              , 
+                  360*deg                           );
+
+            G4LogicalVolume* logicPlastic = new G4LogicalVolume(solidPlastic, PlasticMaterial, Name+ "_Scintillator", 0, 0, 0);
+            logicPlastic->SetSensitiveDetector(m_PlasticScorer);
+
+            G4VisAttributes* PlastVisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 0.9)) ;
+            logicPlastic->SetVisAttributes(PlastVisAtt) ;
+
+
+
+            new G4PVPlacement(   0                                       ,
+                  Det_pos                              ,
+                  logicPlastic                   ,
+                  Name  + "_Scintillator"   ,
+                  world                          ,
+                  false                          ,
+                  0                                       );   
+         }
+
+
+         if(m_LeadThickness[i]>0&& m_PlasticRadius[i]>0)
          {
-            if(m_PlasticThickness[i]>0 && m_PlasticRadius[i]>0)
-               { 
-                  G4Tubs* solidPlastic = new G4Tubs(   Name                              ,    
-                                                          0                                    ,
-                                                          m_PlasticRadius[i]         ,
-                                                          m_PlasticThickness[i]/2   ,
-                                                          0*deg                              , 
-                                                          360*deg                           );
-                                              
-                  G4LogicalVolume* logicPlastic = new G4LogicalVolume(solidPlastic, PlasticMaterial, Name+ "_Scintillator", 0, 0, 0);
-                  logicPlastic->SetSensitiveDetector(m_PlasticScorer);
-                  
-                  G4VisAttributes* PlastVisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 0.9)) ;
-                     logicPlastic->SetVisAttributes(PlastVisAtt) ;
-                   
-                   
-                 
-                  PVPBuffer = new G4PVPlacement(   0                                       ,
-                                                                  Det_pos                              ,
-                                                logicPlastic                   ,
-                                                Name  + "_Scintillator"   ,
-                                                world                          ,
-                                                false                          ,
-                                                0                                       );   
-               }
-            
-                                              
-              if(m_LeadThickness[i]>0&& m_PlasticRadius[i]>0)
-                 {
-                      G4Tubs* solidLead = new G4Tubs(   Name+"_Lead"              ,    
-                                                          0                                 ,
-                                                          m_PlasticRadius[i]      ,
-                                                          m_LeadThickness[i]/2   ,
-                                                          0*deg                           , 
-                                                          360*deg                        );
-                                                 
+            G4Tubs* solidLead = new G4Tubs(   Name+"_Lead"              ,    
+                  0                                 ,
+                  m_PlasticRadius[i]      ,
+                  m_LeadThickness[i]/2   ,
+                  0*deg                           , 
+                  360*deg                        );
+
                      G4LogicalVolume* logicLead = new G4LogicalVolume(solidLead, m_MaterialLead, Name+"_Lead", 0, 0, 0);
                      G4VisAttributes* LeadVisAtt = new G4VisAttributes(G4Colour(0.1, 0.1, 0.1)) ;
                         logicLead->SetVisAttributes(LeadVisAtt) ;
                         
-                     PVPBuffer = new G4PVPlacement(   0                                                                                                         ,
+                     G4PVPlacement(   0                                                                                                         ,
                                                                      Det_pos+(m_PlasticThickness[i]/2+m_LeadThickness[i]/2)*Det_pos.unit()   ,
                                                    logicLead                                                                                           ,
                                                    Name+"_Lead"                                                                                   ,   
@@ -486,7 +484,7 @@ void Plastic::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume*
                   G4VisAttributes* PlastVisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 0.9)) ;
                   logicPlastic->SetVisAttributes(PlastVisAtt) ;
                  
-                  PVPBuffer = new G4PVPlacement(   0                                    ,
+                  new G4PVPlacement(   0                                    ,
                                                                   Det_pos                           ,
                                                 logicPlastic                ,
                                                  Name  + "_Scintillator" ,
@@ -503,7 +501,7 @@ void Plastic::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume*
                         G4VisAttributes* LeadVisAtt = new G4VisAttributes(G4Colour(0.1, 0.1, 0.1)) ;
                         logicLead->SetVisAttributes(LeadVisAtt) ;
                         
-                        PVPBuffer = new G4PVPlacement(   0                                                                                                         ,
+                        new G4PVPlacement(   0                                                                                                         ,
                                                                         Det_pos+(m_PlasticThickness[i]/2+m_LeadThickness[i]/2)*Det_pos.unit()   ,
                                                               logicLead                                                                                             ,
                                                                  Name+"_Lead"                                                                                   ,   

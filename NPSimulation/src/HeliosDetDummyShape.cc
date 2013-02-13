@@ -167,8 +167,8 @@ void HeliosDetDummyShape::VolumeMaker(G4int TelescopeNumber,
    // Copper
    a = 63.546 * g / mole;
    density = 8.96 * g / cm3;
-   G4Material* Copper;
-   Copper = new G4Material("Cu", z = 29., a, density);
+//   G4Material* Copper;
+//   Copper = new G4Material("Cu", z = 29., a, density);
 
    //  Vacuum
    G4Element* N   = new G4Element("Nitrogen" , symbol = "N"  , z = 7  , a = 14.01  * g / mole);
@@ -197,15 +197,12 @@ void HeliosDetDummyShape::VolumeMaker(G4int TelescopeNumber,
    ////////////////////////////////////////////////////////////////
    ////////////// Starting Volume Definition //////////////////////
    ////////////////////////////////////////////////////////////////
-   // Little trick to avoid warning in compilation: Use a PVPlacement "buffer".
-   // If don't you will have a Warning unused variable 'myPVP'
-   G4PVPlacement* PVPBuffer;
    G4String Name = "HeliosDummyShape" + DetectorNumber ;
 
    G4Box*           solidHeliosDummyShape = new G4Box(Name, 0.5*FaceFrontWidth, 0.5*FaceFrontLength, 0.5*Thickness);
    G4LogicalVolume* logicHeliosDummyShape = new G4LogicalVolume(solidHeliosDummyShape, Vacuum, Name, 0, 0, 0);
 
-   PVPBuffer     = new G4PVPlacement(G4Transform3D(*MMrot, MMpos) ,
+   new G4PVPlacement(G4Transform3D(*MMrot, MMpos) ,
                                      logicHeliosDummyShape           ,
                                      Name                         ,
                                      world                        ,
@@ -249,7 +246,7 @@ void HeliosDetDummyShape::VolumeMaker(G4int TelescopeNumber,
       G4Box*           solidFirstStage = new G4Box("solidFirstStage", 0.5*FirstStageFaceWidth, 0.5*FirstStageFaceLength, 0.5*FirstStageThickness);
       G4LogicalVolume* logicFirstStage = new G4LogicalVolume(solidFirstStage, Silicon, "logicFirstStage", 0, 0, 0);
 
-      PVPBuffer = new G4PVPlacement(0, 
+      new G4PVPlacement(0, 
                                     positionFirstStage, 
                                     logicFirstStage, 
 //                                    "G" + DetectorNumber + "FirstStage", 
@@ -315,8 +312,9 @@ void HeliosDetDummyShape::ReadConfiguration(string Path)
    G4double Ax , Bx , Cx , Dx , Ay , By , Cy , Dy , Az , Bz , Cz , Dz          ;
    G4ThreeVector A , B , C , D                                                 ;
    G4double Theta = 0 , Phi = 0 , R = 0 , beta_u = 0 , beta_v = 0 , beta_w = 0 ;
-   int FIRSTSTAGE = 0 , SECONDSTAGE = 0 , THIRDSTAGE = 0                       ;
-   int NSTRIP = 128;
+   int FIRSTSTAGE = 0;
+//   int SECONDSTAGE = 0 , THIRDSTAGE = 0                       ;
+ //  int NSTRIP = 128;
 
    bool ReadingStatus = false;
 
@@ -328,12 +326,12 @@ void HeliosDetDummyShape::ReadConfiguration(string Path)
    bool check_Theta = false;
    bool check_Phi   = false;
    bool check_R     = false;
-   bool check_beta  = false;
+//   bool check_beta  = false;
    
    bool check_FirstStage = false;
-   bool check_SecondStage = false;
-   bool check_ThirdStage = false;
-   bool check_NStrip = false;
+//   bool check_SecondStage = false;
+//   bool check_ThirdStage = false;
+//   bool check_NStrip = false;
    bool checkVis = false;
 
    while (!ConfigFile.eof()) {
@@ -434,7 +432,7 @@ void HeliosDetDummyShape::ReadConfiguration(string Path)
             cout << "R:  " << R / mm << endl;
          }
          else if (DataBuffer.compare(0, 5, "BETA=") == 0) {
-            check_beta = true;
+//            check_beta = true;
             ConfigFile >> DataBuffer ;
             beta_u = atof(DataBuffer.c_str()) ;
             beta_u = beta_u * deg   ;
@@ -452,22 +450,22 @@ void HeliosDetDummyShape::ReadConfiguration(string Path)
             ConfigFile >> DataBuffer;
             FIRSTSTAGE = atoi(DataBuffer.c_str()) ;
          }
-         else if (DataBuffer.compare(0, 12, "SECONDSTAGE=") == 0) {
-            check_SecondStage = true ;
+/*         else if (DataBuffer.compare(0, 12, "SECONDSTAGE=") == 0) {
+//            check_SecondStage = true ;
             ConfigFile >> DataBuffer;
             SECONDSTAGE = atoi(DataBuffer.c_str()) ;
          }
          else if (DataBuffer.compare(0, 11, "THIRDSTAGE=") == 0) {
-            check_ThirdStage = true ;
+//            check_ThirdStage = true ;
             ConfigFile >> DataBuffer;
             THIRDSTAGE = atoi(DataBuffer.c_str()) ;
          }
 
          else if (DataBuffer.compare(0, 7, "NSTRIP=") == 0) {
-            check_NStrip = true ;
+//            check_NStrip = true ;
             ConfigFile >> DataBuffer;
             NSTRIP = atoi(DataBuffer.c_str()) ;
-         }
+         }*/
 
          else if (DataBuffer.compare(0, 4, "VIS=") == 0) {
             checkVis = true ;
@@ -499,7 +497,7 @@ void HeliosDetDummyShape::ReadConfiguration(string Path)
             check_Theta = false;
    	    check_Phi   = false;
    	    check_R     = false;
-   	    check_beta  = false;
+//   	    check_beta  = false;
 	    check_FirstStage = false;
 	    checkVis = false;
 		     
