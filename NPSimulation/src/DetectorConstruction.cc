@@ -56,6 +56,7 @@
 #include "GaspardTracker.hh"
 #include "Helios.hh"
 #include "HydeTracker.hh"
+#include "Hyde2Tracker.hh"
 #include "MUST2Array.hh"
 #include "Paris.hh"
 #include "Plastic.hh"
@@ -182,6 +183,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
   bool cGeneralChamber   = false;
   bool cGPDTracker       = false;   
   bool cHYDTracker       = false;  
+  bool cHYD2Tracker      = false;  
   bool cMUST2            = false;
   bool cPlastic          = false;
   bool cParis            = false;   
@@ -316,7 +318,29 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
 #endif
     }
     
+     
+    ////////////////////////////////////////////
+    //////////// Search for Hyde2   ////////////
+    ////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 12, "Hyde2Tracker") == 0 && cHYD2Tracker == false) {
+#ifdef INC_HYDE2
+      cHYD2Tracker = true ;
+      if(VerboseLevel==1) cout << endl << "//////// Hyde2 Tracker ////////" << endl   ;
+      
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector = new Hyde2Tracker()                  ;
+      
+      // Read Position of Telescope
+      ConfigFile.close()                                 ;
+      myDetector->ReadConfiguration(Path)                   ;
+      ConfigFile.open(Path.c_str())                      ;
+      
+      // Add array to the VDetector Vector
+      AddDetector(myDetector)                            ;
+#endif
+    }
     
+
     ////////////////////////////////////////////
     //////////// Search for paris   ////////////
     ////////////////////////////////////////////
