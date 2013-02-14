@@ -8,13 +8,10 @@ all:            $(SHARELIB)
 ############### Detector ##############
 
 ## Tigress ##
-libTigress.so:	TTigressData.o	TTigressDataDict.o TTigEventFragment.o TTigressPhysics.o TTigressPhysicsDict.o TTigressClover.o TTigressCrystal.o TTigEventFragmentDict.o
+libTigress.so:	TTigressData.o	TTigressDataDict.o TTigressPhysics.o TTigressPhysicsDict.o TTigressClover.o TTigressCrystal.o TTigEventFragmentDict.o
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TTigressDataDict.cxx:	TTigressData.h
-			rootcint -f $@ -c $^
-
-TTigEventFragmentDict.cxx:	TTigEventFragment.h
 			rootcint -f $@ -c $^
 
 TTigressPhysicsDict.cxx:	TTigressPhysics.h
@@ -22,7 +19,6 @@ TTigressPhysicsDict.cxx:	TTigressPhysics.h
 			
 # dependances
 TTigressData.o: TTigressData.cxx TTigressData.h 
-TTigEventFragment.o: TTigEventFragment.cxx TTigEventFragment.h 
 TTigressPhysics.o: TTigressPhysics.cxx TTigressPhysics.h
 TTigressClover.o:  TTigressClover.cxx TTigressClover.h
 TTigressCrystal.o: TTigressCrystal.cxx TTigressCrystal.h
