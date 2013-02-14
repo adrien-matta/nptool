@@ -28,9 +28,6 @@
 #include <map>
 using namespace std ;
 
-// NPL
-#include "../Tigress/TTigEventFragment.h"
-
 // ROOT
 #include "TObject.h"
 
@@ -103,27 +100,6 @@ public:
   unsigned int GetMultiplicityFront() const {return fSharc_StripFront_DetectorNbr.size();}//!
   unsigned int GetMultiplicityBack()  const {return fSharc_StripBack_DetectorNbr.size();}//!
   unsigned int GetMultiplicityPAD()   const {return fSharc_PAD_DetectorNbr.size();}//!
-
-public: // Method and object to construct to fill the data event from a Tigress DAQ event tree
-  void ReadFSPCFile(string FSPCPath);//!
-  void FillData(TTigEventFragment* TigEvent);//!
-  void FillBoxFront(int DetNbr,int hit,TTigEventFragment* TigEvent);//!
-  void FillBoxBack1(int DetNbr,int hit,TTigEventFragment* TigEvent);//!
-  void FillBoxBack2(int DetNbr,int hit,TTigEventFragment* TigEvent);//!
-  
-  void FillQQQFront(int DetNbr,int hit,TTigEventFragment* TigEvent);//!
-  void FillQQQBack(int DetNbr,int hit,TTigEventFragment* TigEvent);//!
-  
-  void FillPAD(int DetNbr,int hit,TTigEventFragment* TigEvent)  ;//!
-  map< int,vector<int> > GetFSPC2Detector() const ;//!
-  
-private:// Key is the FSPC channel,
-        // vector[0] is the Detector Nbr
-        // vector[1] is 0: QQQ , 1: Box, 2: PAD
-        // vector[2] the type: 0: Front , 1: Back1 or Back , 2: Back2
-        // vector[3] strip nbr (FSPC ref)
-  map< int,vector<int> > m_FSPC2Detector;//!
-  
   
   ClassDef(TSharcData,1)  // SharcData structure
 };

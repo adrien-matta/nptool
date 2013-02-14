@@ -28,9 +28,6 @@
 #include <map>
 using namespace std ;
 
-// NPL
-#include "../Tigress/TTigEventFragment.h"
-
 // ROOT
 #include "TObject.h"
 #include "TH1F.h"
@@ -62,13 +59,6 @@ public:
   Double_t GetTimeLED(int i) {return fTrifoil_TimeLED[i];}
 
   unsigned int GetMultiplicity() {return fTrifoil_TimeCFD.size();}
-public: // Method and object to construct to fill the data event from a Tigress DAQ event tree
-  void ReadFSPCFile(string FSPCPath);//!
-  void FillData(TTigEventFragment* TigEvent);//!
-  
-private:
-  int m_FSPC_Channel;//!
-  
   ClassDef(TTrifoilData,1)  // TrifoilData structure
 };
 
