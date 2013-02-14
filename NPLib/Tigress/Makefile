@@ -8,7 +8,7 @@ all:            $(SHARELIB)
 ############### Detector ##############
 
 ## Tigress ##
-libTigress.so:	TTigressData.o	TTigressDataDict.o TTigressPhysics.o TTigressPhysicsDict.o TTigressClover.o TTigressCrystal.o TTigEventFragmentDict.o
+libTigress.so:	TTigressData.o	TTigressDataDict.o TTigressPhysics.o TTigressPhysicsDict.o TTigressClover.o TTigressCrystal.o
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TTigressDataDict.cxx:	TTigressData.h
