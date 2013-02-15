@@ -102,7 +102,7 @@ void EventGeneratorBeam::GenerateEvent(G4Event* anEvent){
   G4ThreeVector BeamDir(Xdir,Ydir,Zdir);
   G4ThreeVector BeamPos(x0,y0,z0);
   Beam_theta = BeamDir.theta()    ;
-  Beam_phi   = BeamDir.phi()      ;
+  Beam_phi   = BeamDir.phi()      ; Beam_phi *= 1;
   FinalBeamEnergy = m_Target->SlowDownBeam(m_particle, InitialBeamEnergy,z0,Beam_theta);
   ///////////////////////////////////////////////////////
   ///// Add the Beam particle to the particle Stack /////

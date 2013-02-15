@@ -53,7 +53,7 @@ public:
    virtual ~VEventGenerator();
 
 public:
-  virtual void ReadConfiguration(string,int dump=0) {dump=0;};
+   virtual void ReadConfiguration(string,int dump=0) {dump*=1;};
    virtual void GenerateEvent(G4Event*) {};
    virtual void InitializeRootOutput() {};
 
