@@ -135,11 +135,6 @@ void ThinSi::VolumeMaker(  G4int             DetNumber ,
 ////////////////////////////////////////////////////////////////
 /////////General Geometry Parameter Definition /////////////////
 ////////////////////////////////////////////////////////////////
-
-// Little trick to avoid warning in compilation: Use a PVPlacement "buffer".
-// If don't you will have a Warning unused variable 'myPVP'
-   G4PVPlacement* PVPBuffer ;
-
 /////// Starting Volume Definition ///////
    G4String Name = "ThinSi" + DetectorNumber;
 
@@ -148,7 +143,7 @@ void ThinSi::VolumeMaker(  G4int             DetNumber ,
    G4LogicalVolume* logicThinSi =
       new G4LogicalVolume(solidThinSi, m_MaterialVacuum, Name, 0, 0);
 
-   PVPBuffer = new G4PVPlacement(   G4Transform3D(*Det_rot, Det_pos)  ,
+   G4PVPlacement(   G4Transform3D(*Det_rot, Det_pos)  ,
                                     logicThinSi                ,
                                     Name                    ,
                                     world                   ,
@@ -169,7 +164,7 @@ void ThinSi::VolumeMaker(  G4int             DetNumber ,
    G4ThreeVector FrameRightPosition  = G4ThreeVector(-0.5 * SiliconSize - 0.5 * (DetectorSize - SiliconSize) / 2 , 0 , 0) ;
 
 
-   PVPBuffer = new G4PVPlacement(   0,
+   new G4PVPlacement(   0,
                                     FrameTopPosition,
                                     logicFrameHorizontal,
                                     Name + "_Frame",
@@ -177,7 +172,7 @@ void ThinSi::VolumeMaker(  G4int             DetNumber ,
                                     false,
                                     0);
 
-   PVPBuffer = new G4PVPlacement(   0,
+   new G4PVPlacement(   0,
                                     FrameBottomPosition,
                                     logicFrameHorizontal,
                                     Name + "_Frame",
@@ -185,7 +180,7 @@ void ThinSi::VolumeMaker(  G4int             DetNumber ,
                                     false,
                                     0);
 
-   PVPBuffer = new G4PVPlacement(   0,
+   new G4PVPlacement(   0,
                                     FrameLeftPosition,
                                     logicFrameVertical,
                                     Name + "_Frame",
@@ -193,7 +188,7 @@ void ThinSi::VolumeMaker(  G4int             DetNumber ,
                                     false,
                                     0);
 
-   PVPBuffer = new G4PVPlacement(   0,
+   new G4PVPlacement(   0,
                                     FrameRightPosition,
                                     logicFrameVertical,
                                     Name + "_Frame",
@@ -212,10 +207,8 @@ void ThinSi::VolumeMaker(  G4int             DetNumber ,
    G4LogicalVolume* logicAlu  =
       new G4LogicalVolume(solidAlu, m_MaterialAl, "logicAlu", 0, 0, 0)    ;
 
-   PVPBuffer =
       new G4PVPlacement(0  ,  posAluFront ,  logicAlu ,  Name + "_AluFront"   ,  logicThinSi ,  true, 0)  ;
 
-   PVPBuffer =
       new G4PVPlacement(0  ,  posAluBack  ,  logicAlu ,  Name + "_AluBack"    ,  logicThinSi ,  true, 0)  ;
 
 
@@ -225,7 +218,6 @@ void ThinSi::VolumeMaker(  G4int             DetNumber ,
    G4LogicalVolume* logicSi  =
       new G4LogicalVolume(solidSi, m_MaterialSilicon, "logicSi", 0, 0, 0);
 
-   PVPBuffer =
       new G4PVPlacement(0, posSi, logicSi, Name + "_Si", logicThinSi, true, 0);
 
    //attach it to the Silicon plate

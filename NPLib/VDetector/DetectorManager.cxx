@@ -37,6 +37,7 @@
 #include "TChateauCristalPhysics.h"
 #include "GaspardTracker.h"
 #include "HydeTracker.h"
+#include "Hyde2Tracker.h"
 #include "Paris.h"
 #include "TW1Physics.h"
 #include "Shield.h"
@@ -88,6 +89,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
    Bool_t GeneralTarget       = false;
    Bool_t GPDTracker          = false;
    Bool_t HYDTracker          = false;
+   Bool_t HYD2Tracker         = false;
    Bool_t ParisDet            = false;
    Bool_t ShieldDet           = false;
    Bool_t W1                  = false;
@@ -164,6 +166,26 @@ void DetectorManager::ReadConfigurationFile(string Path)
 
          // Add array to the VDetector Vector
          AddDetector("HYDE", myDetector);
+#endif
+      }
+      ////////////////////////////////////////////
+      //////////// Search for Hyde    ////////////
+      ////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 12, "Hyde2Tracker") == 0 && HYD2Tracker == false) {
+#ifdef INC_HYDE2
+         HYD2Tracker = true ;
+         cout << "//////// Hyde2 Tracker ////////" << endl;
+
+         // Instantiate the new array as a VDetector Object
+         VDetector* myDetector = new Hyde2Tracker();
+
+         // Read Position of Telescope
+         ConfigFile.close();
+         myDetector->ReadConfiguration(Path);
+         ConfigFile.open(Path.c_str());
+
+         // Add array to the VDetector Vector
+         AddDetector("HYDE2", myDetector);
 #endif
       }
       ////////////////////////////////////////////

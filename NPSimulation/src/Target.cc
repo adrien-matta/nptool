@@ -260,12 +260,12 @@ void Target::ReadConfiguration(string Path)
   
   bool check_Thickness = false ;
   bool check_Radius = false ;
-  bool check_Angle = false ;
+//  bool check_Angle = false ;
   bool check_Material = false ;
   bool check_X = false ;
   bool check_Y = false ;
   bool check_Z = false ;
-  bool check_m_TargetNbLayers = false;
+//  bool check_m_TargetNbLayers = false;
   
   bool check_Temperature = false ;
   bool check_Pressure = false ;
@@ -301,7 +301,7 @@ void Target::ReadConfiguration(string Path)
       }
       
       else if (DataBuffer.compare(0, 6, "ANGLE=") == 0) {
-        check_Angle = true ;
+//        check_Angle = true ;
         ConfigFile >> DataBuffer;
         m_TargetAngle = atof(DataBuffer.c_str()) * deg;
         if(VerboseLevel==1) cout << "Target Angle: "  << m_TargetAngle / deg << endl     ;
@@ -343,7 +343,7 @@ void Target::ReadConfiguration(string Path)
       }
       
       else if (DataBuffer.compare(0, 9, "NBLAYERS=") == 0) {
-        check_m_TargetNbLayers = true ;
+//        check_m_TargetNbLayers = true ;
         ConfigFile >> DataBuffer;
         m_TargetNbLayers = atoi(DataBuffer.c_str());
         if(VerboseLevel==1) cout  << "Number of steps for slowing down the beam in target: " << m_TargetNbLayers << endl;
@@ -438,7 +438,7 @@ void Target::ReadConfiguration(string Path)
       }
       
       else if (DataBuffer.compare(0, 9, "NBLAYERS=") == 0) {
-        check_m_TargetNbLayers = true ;
+//        check_m_TargetNbLayers = true ;
         ConfigFile >> DataBuffer;
         m_TargetNbLayers = atoi(DataBuffer.c_str());
         if(VerboseLevel==1) cout  << "Number of steps for slowing down the beam in target: " << m_TargetNbLayers << endl;
@@ -468,11 +468,6 @@ void Target::ReadConfiguration(string Path)
 // Called After DetecorConstruction::AddDetector Method
 void Target::ConstructDetector(G4LogicalVolume* world)
 {
-  
-  // Little trick to avoid warning in compilation: Use a PVPlacement "buffer".
-  // If don't you will have a Warning unused variable 'myPVP'
-  G4VPhysicalVolume* PVPBuffer ;
-  
   if (m_TargetType) {   // case of standard target
     
     if (m_TargetThickness > 0) {
@@ -483,7 +478,6 @@ void Target::ConstructDetector(G4LogicalVolume* world)
       G4RotationMatrix *rotation = new G4RotationMatrix();
       rotation->rotateY(m_TargetAngle);
       
-      PVPBuffer =
       new G4PVPlacement(rotation, G4ThreeVector(m_TargetX, m_TargetY, m_TargetZ), logicTarget, "Target", world, false, 0);
       
       G4VisAttributes* TargetVisAtt = new G4VisAttributes(G4Colour(0., 0., 1.));//Blue
@@ -496,7 +490,6 @@ void Target::ConstructDetector(G4LogicalVolume* world)
     if (m_TargetThickness > 0) {
       G4Tubs*            solidTarget = new G4Tubs("solidTarget", 0, m_TargetRadius, 0.5*m_TargetThickness, 0*deg, 360*deg);
       G4LogicalVolume*   logicTarget = new G4LogicalVolume(solidTarget, m_TargetMaterial, "logicTarget");
-      PVPBuffer =
       new G4PVPlacement(0, G4ThreeVector(m_TargetX, m_TargetY, m_TargetZ), logicTarget, "Target", world, false, 0);
       
       G4VisAttributes* TargetVisAtt = new G4VisAttributes(G4Colour(0., 0., 1.));//Blue
@@ -515,7 +508,6 @@ void Target::ConstructDetector(G4LogicalVolume* world)
       new G4Tubs("solidTargetWindowsB", 0, m_TargetRadius, 0.5*m_WindowsThickness, 0*deg, 360*deg);
       G4LogicalVolume*   logicWindowsB = new G4LogicalVolume(solidWindowsB, m_WindowsMaterial, "logicTargetWindowsB");
       
-      PVPBuffer =
       new G4PVPlacement(   0                                                                                         ,
                         TargetPos + G4ThreeVector(0., 0., 0.5*(m_TargetThickness + m_WindowsThickness)) ,
                         logicWindowsF                                                                             ,
@@ -523,7 +515,6 @@ void Target::ConstructDetector(G4LogicalVolume* world)
                         world                                                                                     ,
                         false, 0                                                                                                            );
       
-      PVPBuffer =
       new G4PVPlacement(   0                                                                                            ,
                         TargetPos + G4ThreeVector(0., 0., -0.5*(m_TargetThickness + m_WindowsThickness))  ,
                         logicWindowsB                                                                                ,

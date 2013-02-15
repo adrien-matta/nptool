@@ -177,10 +177,6 @@ void HydeTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
    ////////////////////////////////////////////////////////////////
    ////////////// Starting Volume Definition //////////////////////
    ////////////////////////////////////////////////////////////////
-   // Little trick to avoid warning in compilation: Use a PVPlacement "buffer".
-   // If don't you will have a Warning unused variable 'myPVP'
-   G4PVPlacement* PVPBuffer ;
-
    // Name of the module
    G4String Name = "HYDAnnular" + DetectorNumber;
 
@@ -195,7 +191,7 @@ void HydeTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
 //   G4LogicalVolume* logicMM = new G4LogicalVolume(solidMM, Iron, Name, 0, 0, 0);
    G4LogicalVolume* logicMM = new G4LogicalVolume(solidMM, Vacuum, Name, 0, 0, 0);
 
-   PVPBuffer     = new G4PVPlacement(G4Transform3D(*MMrot, MMpos) ,
+   new G4PVPlacement(G4Transform3D(*MMrot, MMpos) ,
                                      logicMM                      ,
                                      Name                         ,
                                      world                        ,
@@ -217,7 +213,7 @@ void HydeTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
 
    G4LogicalVolume* logicVacBox = new G4LogicalVolume(solidVacBox, Vacuum, "logicVacBox", 0, 0, 0);
 
-   PVPBuffer = new G4PVPlacement(0, positionVacBox, logicVacBox, "G" + DetectorNumber + "VacBox", logicMM, false, 0);
+   new G4PVPlacement(0, positionVacBox, logicVacBox, "G" + DetectorNumber + "VacBox", logicMM, false, 0);
 
    logicVacBox->SetVisAttributes(G4VisAttributes::Invisible);
 
@@ -269,8 +265,8 @@ void HydeTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
 //      G4LogicalVolume* logicAluStrip = new G4LogicalVolume(solidAluStrip, Aluminium, "logicAluStrip", 0, 0, 0);
       G4LogicalVolume* logicAluStrip = new G4LogicalVolume(solidAluStrip, Vacuum, "logicAluStrip", 0, 0, 0);
 
-      PVPBuffer = new G4PVPlacement(0, positionAluStripFront, logicAluStrip, "G" + DetectorNumber + "AluStripFront", logicMM, false, 0);
-      PVPBuffer = new G4PVPlacement(0, positionAluStripBack,  logicAluStrip, "G" + DetectorNumber + "AluStripBack",  logicMM, false, 0);
+      new G4PVPlacement(0, positionAluStripFront, logicAluStrip, "G" + DetectorNumber + "AluStripFront", logicMM, false, 0);
+      new G4PVPlacement(0, positionAluStripBack,  logicAluStrip, "G" + DetectorNumber + "AluStripBack",  logicMM, false, 0);
 
       logicAluStrip->SetVisAttributes(G4VisAttributes::Invisible);
 
@@ -285,7 +281,7 @@ void HydeTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
                                          360*deg); 
       G4LogicalVolume* logicSilicon = new G4LogicalVolume(solidSilicon, Silicon, "logicSilicon", 0, 0, 0);
 
-      PVPBuffer = new G4PVPlacement(0, positionSilicon, logicSilicon, Name + "_Silicon", logicMM, false, 0);
+      new G4PVPlacement(0, positionSilicon, logicSilicon, Name + "_Silicon", logicMM, false, 0);
 
       // Set First Stage sensible
       logicSilicon->SetSensitiveDetector(m_FirstStageScorer);
@@ -318,7 +314,7 @@ void HydeTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
 
       G4LogicalVolume* logicThirdStage = new G4LogicalVolume(solidThirdStage, Silicon, "logicThirdStage", 0, 0, 0);
 
-      PVPBuffer = new G4PVPlacement(0, positionThirdStage, logicThirdStage, Name + "_ThirdStage", logicMM, false, 0);
+      new G4PVPlacement(0, positionThirdStage, logicThirdStage, Name + "_ThirdStage", logicMM, false, 0);
 
       ///Visualisation of Third Stage
       G4VisAttributes* ThirdStageVisAtt = new G4VisAttributes(G4Colour(0.0, 0.9, 0.)) ;
