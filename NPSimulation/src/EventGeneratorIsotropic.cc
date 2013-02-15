@@ -190,7 +190,7 @@ void EventGeneratorIsotropic::ReadConfiguration(string Path,int){
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventGeneratorIsotropic::GenerateEvent(G4Event* anEvent){
+void EventGeneratorIsotropic::GenerateEvent(G4Event*){
   
   if(m_particle==NULL){
     if(m_particleName!="gamma"){

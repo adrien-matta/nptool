@@ -417,9 +417,7 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
       
       // create the PAD
       // Make a single detector geometry
-      G4LogicalVolume* logicPADDetector=
-      new G4LogicalVolume(PADDetector,m_MaterialVacuum,"logicPADDetector", 0, 0, 0);
-      logicPADDetector->SetVisAttributes(G4VisAttributes::Invisible);
+      G4LogicalVolume* logicPADDetector = NULL;
       
       G4ThreeVector PAD_Wafer_Offset =
       G4ThreeVector(PAD_Wafer_Length_Offset, PAD_Wafer_Width_Offset,0 );
@@ -472,11 +470,6 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
                           PAD_Wafer_Offset-G4ThreeVector(0,0,0.5*PAD_PCB_Thickness-0.5*m_ThicknessPAD[i][j]),
                           logicPADWafer,"PAD_Wafer",logicPADDetector,false,DetNbr);
       }
-      
-      else{
-        delete logicPADDetector;
-      }
-      
       ///////////////////////////////////////////////////////////////////////////////////
       // Place the detector in the world
       // Position of the center of the PCB
