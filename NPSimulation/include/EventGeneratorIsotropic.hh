@@ -38,7 +38,7 @@ public:     // Constructor and destructor
   virtual ~EventGeneratorIsotropic();
   
 public:     // Inherit from VEventGenerator Class
-  void ReadConfiguration(string,int dump=0)               ;
+  void ReadConfiguration(string,int)               ;
   void GenerateEvent(G4Event*) ;
   void InitializeRootOutput()                  ;
   

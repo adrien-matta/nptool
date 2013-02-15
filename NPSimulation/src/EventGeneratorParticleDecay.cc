@@ -64,8 +64,6 @@ void EventGeneratorParticleDecay::ReadConfiguration(string Path,int Occurence){
   bool ReadingStatusParticleDecay  = false ;
   
   bool check_Daughter = false ;
-  bool check_CrossSection = false ;
-  bool check_ExcitationEnergy = false ;
   bool check_shoot = false ;
   bool check_created = false ;
   
@@ -136,7 +134,6 @@ void EventGeneratorParticleDecay::ReadConfiguration(string Path,int Occurence){
       }
       
       else if(DataBuffer == "ExcitationEnergy=") {
-        check_ExcitationEnergy = true;
         LineStream.clear();
         LineStream.str(LineBuffer);
         
@@ -159,7 +156,6 @@ void EventGeneratorParticleDecay::ReadConfiguration(string Path,int Occurence){
         LineStream.str(LineBuffer);
         LineStream >> CSPath >> CSName ;
         if(VerboseLevel==1) G4cout << "    Cross Section Path: " << CSPath  << G4endl;
-        check_CrossSection = true;
       }
       
       else if(DataBuffer == "shoot=") {
@@ -201,7 +197,7 @@ void EventGeneratorParticleDecay::ReadConfiguration(string Path,int Occurence){
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventGeneratorParticleDecay::GenerateEvent(G4Event* anEvent){
+void EventGeneratorParticleDecay::GenerateEvent(G4Event*){
   
   // Look for the decaying nucleus
   Particle decayingParticle = m_ParticleStack->SearchAndRemoveParticle(m_MotherNucleiName);

@@ -60,8 +60,7 @@ EventGeneratorIsotropic::~EventGeneratorIsotropic(){
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventGeneratorIsotropic::ReadConfiguration(string Path,int dump){
-  dump= 0;
+void EventGeneratorIsotropic::ReadConfiguration(string Path,int){
   ////////General Reading needs////////
   string LineBuffer;
   string DataBuffer;
@@ -191,7 +190,7 @@ void EventGeneratorIsotropic::ReadConfiguration(string Path,int dump){
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventGeneratorIsotropic::GenerateEvent(G4Event* anEvent){
+void EventGeneratorIsotropic::GenerateEvent(G4Event*){
   
   if(m_particle==NULL){
     if(m_particleName!="gamma"){

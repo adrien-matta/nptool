@@ -54,7 +54,7 @@ class EventGeneratorTwoBodyReaction : public VEventGenerator
 
 
    public: // Inherit from VEventGenerator class
-      void ReadConfiguration(string,int dump=0);
+      void ReadConfiguration(string,int);
       void GenerateEvent(G4Event*);
       void SetTarget(Target* Target) ;
 

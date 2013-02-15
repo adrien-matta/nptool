@@ -90,10 +90,8 @@ void EventGeneratorTwoBodyReaction::Print() const{
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //    Inherit from VEventGenerator
 
-void EventGeneratorTwoBodyReaction::ReadConfiguration(string Path, int dump){
-  dump = 0 ;
+void EventGeneratorTwoBodyReaction::ReadConfiguration(string Path, int){
   m_Reaction->ReadConfigurationFile(Path);
-  
   m_ShootLight = m_Reaction->GetShoot3();
   m_ShootHeavy = m_Reaction->GetShoot4();;
 
