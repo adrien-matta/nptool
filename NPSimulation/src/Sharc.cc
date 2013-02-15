@@ -119,6 +119,8 @@ void Sharc::ReadConfiguration(string Path){
   string DataBuffer             ;
   
   G4double R,Phi,Thickness1,Thickness2,Thickness3,Thickness4,ThicknessPAD1,ThicknessPAD2,ThicknessPAD3,ThicknessPAD4,Z;
+  R=Phi=Thickness1=Thickness2=Thickness3=Thickness4=ThicknessPAD1=ThicknessPAD2=ThicknessPAD3=ThicknessPAD4=Z=0;
+  
   G4ThreeVector Pos;
   bool check_R   = false ;
   bool check_Phi = false ;
@@ -357,14 +359,12 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
       
       G4double BOX_PCB_Slot_Width;
       G4double BOX_PCB_Slot_Deepness;
-      G4double BOX_PCB_Slot_Border;
       G4double BOX_PCB_Slot_Position;
       G4double BOX_DetectorSpacing;
       
       if(m_ThicknessPAD[i][j]>0){ //PAD Case
         BOX_PCB_Slot_Width = BOX_PCB_Slot_Width2;
         BOX_PCB_Slot_Deepness = BOX_PCB_Slot_Deepness2;
-        BOX_PCB_Slot_Border = BOX_PCB_Slot_Border2;
         BOX_PCB_Slot_Position = BOX_PCB_Slot_Position2;
         BOX_DetectorSpacing =  BOX_DetectorSpacing2;
       }
@@ -372,7 +372,6 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
       else{ // No Pad Case
         BOX_PCB_Slot_Width = BOX_PCB_Slot_Width1;
         BOX_PCB_Slot_Deepness = BOX_PCB_Slot_Deepness1;
-        BOX_PCB_Slot_Border = BOX_PCB_Slot_Border1;
         BOX_PCB_Slot_Position = BOX_PCB_Slot_Position1;
         BOX_DetectorSpacing = BOX_DetectorSpacing1 ;
       }
@@ -418,7 +417,10 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
       
       // create the PAD
       // Make a single detector geometry
-      G4LogicalVolume* logicPADDetector;
+      G4LogicalVolume* logicPADDetector=
+      new G4LogicalVolume(PADDetector,m_MaterialVacuum,"logicPADDetector", 0, 0, 0);
+      logicPADDetector->SetVisAttributes(G4VisAttributes::Invisible);
+      
       G4ThreeVector PAD_Wafer_Offset =
       G4ThreeVector(PAD_Wafer_Length_Offset, PAD_Wafer_Width_Offset,0 );
       if(m_ThicknessPAD[i][j]>0){
@@ -469,6 +471,10 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
         new G4PVPlacement(new G4RotationMatrix(0,0,0),
                           PAD_Wafer_Offset-G4ThreeVector(0,0,0.5*PAD_PCB_Thickness-0.5*m_ThicknessPAD[i][j]),
                           logicPADWafer,"PAD_Wafer",logicPADDetector,false,DetNbr);
+      }
+      
+      else{
+        delete logicPADDetector;
       }
       
       ///////////////////////////////////////////////////////////////////////////////////
