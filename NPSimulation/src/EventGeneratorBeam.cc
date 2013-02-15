@@ -69,8 +69,7 @@ void   EventGeneratorBeam::SetTarget(Target* Target){
   
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventGeneratorBeam::ReadConfiguration(string Path,int dump){
-  dump=0;
+void EventGeneratorBeam::ReadConfiguration(string Path,int){
   m_Beam->ReadConfigurationFile(Path);
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

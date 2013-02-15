@@ -60,8 +60,7 @@ EventGeneratorIsotropic::~EventGeneratorIsotropic(){
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventGeneratorIsotropic::ReadConfiguration(string Path,int dump){
-  dump= 0;
+void EventGeneratorIsotropic::ReadConfiguration(string Path,int){
   ////////General Reading needs////////
   string LineBuffer;
   string DataBuffer;
