@@ -579,7 +579,7 @@ void MUST2Array::ReadConfiguration(string Path)
    bool check_Theta = false   ;
    bool check_Phi  = false  ;
    bool check_R     = false   ;
-   bool check_beta = false  ;
+//   bool check_beta = false  ;
    
    bool check_SI = false   ;
    bool check_SILI  = false  ;
@@ -728,7 +728,7 @@ void MUST2Array::ReadConfiguration(string Path)
 
 		         //Angle method
 		         else if (DataBuffer.compare(0, 5, "BETA=") == 0) {
-		            check_beta = true;
+//		            check_beta = true;
 		            ConfigFile >> DataBuffer ;
 		            beta_u = atof(DataBuffer.c_str()) ;
 		            beta_u = beta_u * deg   ;
@@ -836,7 +836,7 @@ void MUST2Array::ReadConfiguration(string Path)
 	      				check_Theta = false   	;
 	      				check_Phi  = false  	;
 	      				check_R    = false   	;
-	      				check_beta = false  	;
+//	      				check_beta = false  	;
 	      
 	      				check_SI = false   		;
 	      				check_SILI  = false  	;

@@ -183,10 +183,11 @@ G4bool PSPadOrCristalNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
       std::string name = aStep->GetTrack()->GetVolume()->GetName();
       std::string nbr ;
 
-      G4int temp1,temp2 ;
+//      G4int temp1;
+      G4int temp2 ;
       G4int VolumeNumber;
       nbr = name[name.length()-1]   ;
-      temp1 = atoi( nbr.c_str() )   ;
+//      temp1 = atoi( nbr.c_str() )   ;
       
       nbr = name[name.length()-2]   ;
       temp2 = atoi( nbr.c_str() )   ;
