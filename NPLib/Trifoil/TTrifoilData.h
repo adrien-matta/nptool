@@ -14,7 +14,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold the Trifoil Silicon array raw data (Made for TIG64 card)   *
+ *  This class hold the Trifoil Silicon array raw data (Made for TIG64 card) *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -26,6 +26,7 @@
 #include<stdlib.h>
 #include <vector>
 #include <map>
+#include <iostream>
 using namespace std ;
 
 // ROOT
@@ -49,16 +50,16 @@ public:
   void Dump() const;
   
   /////////////////////           SETTERS           ////////////////////////
-  void SetWaveform(TH1F Waveform)   {fTrifoil_Waveform.push_back(Waveform);}
-  void SetTimeCFD(Double_t TimeCFD) {fTrifoil_TimeCFD.push_back(TimeCFD);}
-  void SetTimeLED(Double_t TimeLED) {fTrifoil_TimeLED.push_back(TimeLED);}
+  inline void SetWaveform(const TH1F &Waveform)   {fTrifoil_Waveform.push_back(Waveform);}
+  inline void SetTimeCFD(const Double_t &TimeCFD) {fTrifoil_TimeCFD.push_back(TimeCFD);}
+  inline void SetTimeLED(const Double_t &TimeLED) {fTrifoil_TimeLED.push_back(TimeLED);}
   
   /////////////////////           GETTERS           ////////////////////////
-  TH1F GetWaveform(int i)    {return fTrifoil_Waveform[i];}
-  Double_t GetTimeCFD(int i) {return fTrifoil_TimeCFD[i];}
-  Double_t GetTimeLED(int i) {return fTrifoil_TimeLED[i];}
+  inline TH1F GetWaveform(const unsigned int &i)    {return fTrifoil_Waveform[i];}
+  inline Double_t GetTimeCFD(const unsigned int &i) {return fTrifoil_TimeCFD[i];}
+  inline Double_t GetTimeLED(const unsigned int &i) {return fTrifoil_TimeLED[i];}
 
-  unsigned int GetMultiplicity() {return fTrifoil_TimeCFD.size();}
+  inline unsigned int GetMultiplicity() {return fTrifoil_TimeCFD.size();}
   ClassDef(TTrifoilData,1)  // TrifoilData structure
 };
 

@@ -61,45 +61,45 @@ public:
   void Dump() const;
   
   /////////////////////           SETTERS           ////////////////////////
-  void SetFront_DetectorNbr(UShort_t DetNbr){fSharc_StripFront_DetectorNbr.push_back(DetNbr);}
-  void SetFront_StripNbr(UShort_t StripNbr){fSharc_StripFront_StripNbr.push_back(StripNbr);}
-  void SetFront_Energy(Double_t Energy){fSharc_StripFront_Energy.push_back(Energy);}
-  void SetFront_TimeCFD(Double_t TimeCFD){fSharc_StripFront_TimeCFD.push_back(TimeCFD);}
-  void SetFront_TimeLED(Double_t TimeLED){fSharc_StripFront_TimeLED.push_back(TimeLED);}
+  inline void SetFront_DetectorNbr(const UShort_t &DetNbr){fSharc_StripFront_DetectorNbr.push_back(DetNbr);}
+  inline void SetFront_StripNbr(const UShort_t &StripNbr){fSharc_StripFront_StripNbr.push_back(StripNbr);}
+  inline void SetFront_Energy(const Double_t &Energy){fSharc_StripFront_Energy.push_back(Energy);}
+  inline void SetFront_TimeCFD(const Double_t &TimeCFD){fSharc_StripFront_TimeCFD.push_back(TimeCFD);}
+  inline void SetFront_TimeLED(const Double_t &TimeLED){fSharc_StripFront_TimeLED.push_back(TimeLED);}
   
-  void SetBack_DetectorNbr(UShort_t DetNbr){fSharc_StripBack_DetectorNbr.push_back(DetNbr);}
-  void SetBack_StripNbr(UShort_t StripNbr){fSharc_StripBack_StripNbr.push_back(StripNbr);}
-  void SetBack_Energy(Double_t Energy){fSharc_StripBack_Energy.push_back(Energy);}
-  void SetBack_TimeCFD(Double_t TimeCFD){fSharc_StripBack_TimeCFD.push_back(TimeCFD);}
-  void SetBack_TimeLED(Double_t TimeLED){fSharc_StripBack_TimeLED.push_back(TimeLED);}
+  inline void SetBack_DetectorNbr(const UShort_t &DetNbr){fSharc_StripBack_DetectorNbr.push_back(DetNbr);}
+  inline void SetBack_StripNbr(const UShort_t &StripNbr){fSharc_StripBack_StripNbr.push_back(StripNbr);}
+  inline void SetBack_Energy(const Double_t &Energy){fSharc_StripBack_Energy.push_back(Energy);}
+  inline void SetBack_TimeCFD(const Double_t &TimeCFD){fSharc_StripBack_TimeCFD.push_back(TimeCFD);}
+  inline void SetBack_TimeLED(const Double_t &TimeLED){fSharc_StripBack_TimeLED.push_back(TimeLED);}
  
-  void SetPAD_DetectorNbr(UShort_t DetNbr){fSharc_PAD_DetectorNbr.push_back(DetNbr);}
-  void SetPAD_Energy(Double_t Energy){fSharc_PAD_Energy.push_back(Energy);}
-  void SetPAD_TimeCFD(Double_t TimeCFD){fSharc_PAD_TimeCFD.push_back(TimeCFD);}
-  void SetPAD_TimeLED(Double_t TimeLED){fSharc_PAD_TimeLED.push_back(TimeLED);}
+  inline void SetPAD_DetectorNbr(const UShort_t &DetNbr){fSharc_PAD_DetectorNbr.push_back(DetNbr);}
+  inline void SetPAD_Energy(const Double_t &Energy){fSharc_PAD_Energy.push_back(Energy);}
+  inline void SetPAD_TimeCFD(const Double_t &TimeCFD){fSharc_PAD_TimeCFD.push_back(TimeCFD);}
+  inline void SetPAD_TimeLED(const Double_t &TimeLED){fSharc_PAD_TimeLED.push_back(TimeLED);}
 
   
   /////////////////////           GETTERS           ////////////////////////
-  UShort_t GetFront_DetectorNbr(unsigned int i) const {return fSharc_StripFront_DetectorNbr[i];}//!
-  UShort_t GetFront_StripNbr(unsigned int i)    const {return fSharc_StripFront_StripNbr[i];}//!
-  Double_t GetFront_Energy(unsigned int i)      const {return fSharc_StripFront_Energy[i];}//!
-  Double_t GetFront_TimeCFD(unsigned int i)     const {return fSharc_StripFront_TimeCFD[i];}//!
-  Double_t GetFront_TimeLED(unsigned int i)     const {return fSharc_StripFront_TimeLED[i];}//!
+  inline UShort_t GetFront_DetectorNbr(const unsigned int &i) const {return fSharc_StripFront_DetectorNbr[i];}//!
+  inline UShort_t GetFront_StripNbr(const unsigned int &i)    const {return fSharc_StripFront_StripNbr[i];}//!
+  inline Double_t GetFront_Energy(const unsigned int &i)      const {return fSharc_StripFront_Energy[i];}//!
+  inline Double_t GetFront_TimeCFD(const unsigned int &i)     const {return fSharc_StripFront_TimeCFD[i];}//!
+  inline Double_t GetFront_TimeLED(const unsigned int &i)     const {return fSharc_StripFront_TimeLED[i];}//!
 
-  UShort_t GetBack_DetectorNbr(unsigned int i) const {return fSharc_StripBack_DetectorNbr[i];}//!
-  UShort_t GetBack_StripNbr(unsigned int i)    const {return fSharc_StripBack_StripNbr[i];}//!
-  Double_t GetBack_Energy(unsigned int i)      const {return fSharc_StripBack_Energy[i];}//!
-  Double_t GetBack_TimeCFD(unsigned int i)     const {return fSharc_StripBack_TimeCFD[i];}//!
-  Double_t GetBack_TimeLED(unsigned int i)     const {return fSharc_StripBack_TimeLED[i];}//!
+  inline UShort_t GetBack_DetectorNbr(const unsigned int &i) const {return fSharc_StripBack_DetectorNbr[i];}//!
+  inline UShort_t GetBack_StripNbr(const unsigned int &i)    const {return fSharc_StripBack_StripNbr[i];}//!
+  inline Double_t GetBack_Energy(const unsigned int &i)      const {return fSharc_StripBack_Energy[i];}//!
+  inline Double_t GetBack_TimeCFD(const unsigned int &i)     const {return fSharc_StripBack_TimeCFD[i];}//!
+  inline Double_t GetBack_TimeLED(const unsigned int &i)     const {return fSharc_StripBack_TimeLED[i];}//!
 
-  UShort_t GetPAD_DetectorNbr(unsigned int i) const {return fSharc_PAD_DetectorNbr[i];}//!
-  Double_t GetPAD_Energy(unsigned int i)      const {return fSharc_PAD_Energy[i];}//!
-  Double_t GetPAD_TimeCFD(unsigned int i)     const {return fSharc_PAD_TimeCFD[i];}//!
-  Double_t GetPAD_TimeLED(unsigned int i)     const {return fSharc_PAD_TimeLED[i];}//!
+  inline UShort_t GetPAD_DetectorNbr(const unsigned int &i) const {return fSharc_PAD_DetectorNbr[i];}//!
+  inline Double_t GetPAD_Energy(const unsigned int &i)      const {return fSharc_PAD_Energy[i];}//!
+  inline Double_t GetPAD_TimeCFD(const unsigned int &i)     const {return fSharc_PAD_TimeCFD[i];}//!
+  inline Double_t GetPAD_TimeLED(const unsigned int &i)     const {return fSharc_PAD_TimeLED[i];}//!
 
-  unsigned int GetMultiplicityFront() const {return fSharc_StripFront_DetectorNbr.size();}//!
-  unsigned int GetMultiplicityBack()  const {return fSharc_StripBack_DetectorNbr.size();}//!
-  unsigned int GetMultiplicityPAD()   const {return fSharc_PAD_DetectorNbr.size();}//!
+  inline unsigned int GetMultiplicityFront() const {return fSharc_StripFront_DetectorNbr.size();}//!
+  inline unsigned int GetMultiplicityBack()  const {return fSharc_StripBack_DetectorNbr.size();}//!
+  inline unsigned int GetMultiplicityPAD()   const {return fSharc_PAD_DetectorNbr.size();}//!
   
   ClassDef(TSharcData,1)  // SharcData structure
 };
