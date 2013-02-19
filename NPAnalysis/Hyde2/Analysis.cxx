@@ -61,7 +61,7 @@ int main(int argc,char** argv)
    RootOutput::getInstance()->GetTree()->Branch("Y",&Y,"Y/D") ;
 
    // Get HydeTracker pointer
-   HydeTracker* HYDTrack = (HydeTracker*) myDetector->GetDetector("HYDE");
+   Hyde2Tracker* HYDTrack = (Hyde2Tracker*) myDetector->GetDetector("HYDE2");
 
    // Get the input TChain and treat it
    TChain* Chain = RootInput:: getInstance() -> GetChain();

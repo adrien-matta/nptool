@@ -40,9 +40,12 @@ using namespace std ;
 //#include "TObject.h"
 
 // Use CLHEP System of unit and Physical Constant
-#include "CLHEP/Units/GlobalSystemOfUnits.h"
-#include "CLHEP/Units/PhysicalConstants.h"
-using namespace CLHEP ;
+//#include "CLHEP/Units/GlobalSystemOfUnits.h"
+//#include "CLHEP/Units/PhysicalConstants.h"
+//using namespace CLHEP ;
+#include "NPGlobalSystemOfUnits.h"
+#include "NPPhysicalConstants.h"
+using namespace NPUNITS;
 
 // ROOT
 #include "Math/InterpolationTypes.h"

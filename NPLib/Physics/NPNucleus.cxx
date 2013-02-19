@@ -21,26 +21,29 @@
  *                                                                           *
  *****************************************************************************/
 
+// NPTOOL headers
+#include "NPNucleus.h"
+using namespace NPL;
+//#include "Constant.h"
+
+// Use CLHEP System of unit and Physical Constant
+//#include "CLHEP/Units/GlobalSystemOfUnits.h"
+//#include "CLHEP/Units/PhysicalConstants.h"
+#include "NPGlobalSystemOfUnits.h"
+#include "NPPhysicalConstants.h"
+using namespace NPUNITS;
+
 // C++ headers
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <cstdlib>
 #include <sstream>
-//#include <stdlib.h>
 #include <cmath>
 #include <vector>
-
-
-#include "NPNucleus.h"
-#include "Constant.h"
-
-// Use CLHEP System of unit and Physical Constant
-//#include "CLHEP/Units/GlobalSystemOfUnits.h"
-//#include "CLHEP/Units/PhysicalConstants.h"
-
 using namespace std;
-using namespace NPL;
+
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 Nucleus::Nucleus()
@@ -206,28 +209,28 @@ fNucleusName=string(fName,6);
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 void Nucleus::EnergyToBrho()
 {
-	fBrho = sqrt(pow(fKineticEnergy,2) + 2*fKineticEnergy*Mass()) * 1e6 * echarge / C / (GetZ() * echarge);
+	fBrho = sqrt(pow(fKineticEnergy,2) + 2*fKineticEnergy*Mass()) * 1e6 * e_SI / (c_light*1e6) / (GetZ() * e_SI);
 }
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 void Nucleus::EnergyToTof() // second/meter
 {
-	fTimeOfFlight = 1/sqrt(1-(Mass()*Mass())/(fKineticEnergy+Mass())/(fKineticEnergy+Mass()))/C;
+	fTimeOfFlight = 1/sqrt(1-(Mass()*Mass())/(fKineticEnergy+Mass())/(fKineticEnergy+Mass()))/(c_light*1e6);
 }
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 void Nucleus::TofToEnergy() 
 {
-	double Energy =  sqrt( Mass()*Mass()/(1-pow((1/(C*fTimeOfFlight)),2)) );
+	double Energy =  sqrt( Mass()*Mass()/(1-pow((1/((c_light*1e6)*fTimeOfFlight)),2)) );
 	fKineticEnergy = Energy - Mass();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 void Nucleus::BrhoToEnergy()
 {
-	fKineticEnergy =  sqrt( pow((fBrho*C*GetZ()*echarge)/(1e6*echarge),2) + pow(Mass(),2) ) - Mass();
+	fKineticEnergy =  sqrt( pow((fBrho*(c_light*1e6)*GetZ()*e_SI)/(1e6*e_SI),2) + pow(Mass(),2) ) - Mass();
 }
 
 
@@ -252,7 +255,7 @@ void Nucleus::BetaToGamma()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 void Nucleus::BetaToVelocity() // in cm/ns
 {
-	fVelocity = C*fBeta*1e-7;
+	fVelocity = (c_light*1e6)*fBeta*1e-7;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 

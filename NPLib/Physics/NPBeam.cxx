@@ -39,8 +39,11 @@
 #include "TDirectory.h"
 
 // Use CLHEP System of unit and Physical Constant
-#include "CLHEP/Units/GlobalSystemOfUnits.h"
-#include "CLHEP/Units/PhysicalConstants.h"
+//#include "CLHEP/Units/GlobalSystemOfUnits.h"
+//#include "CLHEP/Units/PhysicalConstants.h"
+#include "NPGlobalSystemOfUnits.h"
+#include "NPPhysicalConstants.h"
+using namespace NPUNITS;
 
 using namespace NPL;
 

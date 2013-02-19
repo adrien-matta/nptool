@@ -22,9 +22,15 @@
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
-#define uma      931.49432
-#include <string>
+// ROOT headers
 #include "TLorentzVector.h"
+
+// NPTOOL headers
+#include "NPPhysicalConstants.h"
+using namespace NPUNITS;
+
+// C++ headers
+#include <string>
 using namespace std;
 
 namespace NPL {
@@ -111,7 +117,7 @@ namespace NPL {
     void				SetBeta(double beta)					{fBeta = beta; BetaToGamma(); BetaToEnergy(); EnergyToTof(); EnergyToBrho();BetaToVelocity();}
     
     // Nuclear mass in MeV
-    double      Mass() const {return (fAtomicWeight*uma + fMassExcess/1000.);}
+    double      Mass() const {return (fAtomicWeight*amu_c2 + fMassExcess/1000.);}
     void        Print() const   ;
   };
 }

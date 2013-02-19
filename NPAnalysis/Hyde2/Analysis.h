@@ -8,7 +8,7 @@
 // NPA
 #include "DetectorManager.h"
 #include "NPOptionManager.h"
-#include "HydeTracker.h"
+#include "Hyde2Tracker.h"
 
 // STL C++
 #include <iostream>
