@@ -35,7 +35,7 @@
 
 // Use CLHEP System of unit and Physical Constant
 #include "CLHEP/Units/GlobalSystemOfUnits.h"
-#include "CLHEP/Units/PhysicalConstants.h"
+#include "NPPhysicalConstants.h"
 
 
 // ----------------------------------------------------------------------------------------------
