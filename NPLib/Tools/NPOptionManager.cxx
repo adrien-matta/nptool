@@ -23,7 +23,9 @@
 #include "NPOptionManager.h"
 
 #include <fstream>
+#include <sstream>
 #include <cstdlib>
+#include <vector>
 
 
 NPOptionManager* NPOptionManager::instance = 0 ;
@@ -36,9 +38,14 @@ NPOptionManager* NPOptionManager::getInstance(int argc, char** argv)
 }
 
 
+NPOptionManager* NPOptionManager::getInstance(string arg){
+  
+  if (instance == 0) instance = new NPOptionManager(arg);
 
-NPOptionManager::NPOptionManager(int argc, char** argv)
-{
+  return instance ;
+
+}
+void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
   // Default Setting
   fDefaultReactionFileName    = "defaultReaction.reaction";
   fDefaultDetectorFileName    = "defaultDetector.detector";
@@ -54,35 +61,35 @@ NPOptionManager::NPOptionManager(int argc, char** argv)
   fVerboseLevel               = 1;
   fDisableAllBranchOption = false;
   fInputPhysicalTreeOption = false;
+  fPROOFMode = false;
   
   for (int i = 0; i < argc; i++) {
     string argument = argv[i];
-    
     if (argument == "-H" || argument == "-h" || argument == "--help") DisplayHelp();
     
-    else if (argument == "--event-generator" && argc >= i + 1)    fReactionFileName    = argv[i+1] ;
+    else if (argument == "--event-generator" && argc >= i + 1)    fReactionFileName    = argv[++i] ;
     
-    else if (argument == "-E" && argc >= i + 1)                   fReactionFileName    = argv[i+1] ;
+    else if (argument == "-E" && argc >= i + 1)                   fReactionFileName    = argv[++i] ;
     
-    else if (argument == "--detector" && argc >= i + 1)           fDetectorFileName    = argv[i+1] ;
+    else if (argument == "--detector" && argc >= i + 1)           fDetectorFileName    = argv[++i] ;
     
-    else if (argument == "-D" && argc >= i + 1)                   fDetectorFileName    = argv[i+1] ;
-        
-    else if (argument == "--output" && argc >= i + 1)             fOutputFileName      = argv[i+1] ;
+    else if (argument == "-D" && argc >= i + 1)                   fDetectorFileName    = argv[++i] ;
     
-    else if (argument == "-O" && argc >= i + 1)                   fOutputFileName      = argv[i+1] ;
+    else if (argument == "--output" && argc >= i + 1)             fOutputFileName      = argv[++i] ;
     
-    else if (argument == "--run" && argc >= i + 1)                fRunToReadFileName   = argv[i+1] ;
+    else if (argument == "-O" && argc >= i + 1)                   fOutputFileName      = argv[++i] ;
     
-    else if (argument == "-R" && argc >= i + 1)                   fRunToReadFileName   = argv[i+1] ;
+    else if (argument == "--run" && argc >= i + 1)                fRunToReadFileName   = argv[++i] ;
     
-    else if (argument == "--cal" && argc >= i + 1)                fCalibrationFileName = argv[i+1] ;
+    else if (argument == "-R" && argc >= i + 1)                   fRunToReadFileName   = argv[++i] ;
     
-    else if (argument == "-C" && argc >= i + 1)                   fCalibrationFileName = argv[i+1] ;
+    else if (argument == "--cal" && argc >= i + 1)                fCalibrationFileName = argv[++i] ;
     
-    else if (argument == "-V"  && argc >= i + 1)                  fVerboseLevel = atoi(argv[i+1]) ;
+    else if (argument == "-C" && argc >= i + 1)                   fCalibrationFileName = argv[++i] ;
     
-    else if (argument == "--verbose" && argc >= i + 1)            fVerboseLevel = atoi(argv[i+1]) ;
+    else if (argument == "-V"  && argc >= i + 1)                  fVerboseLevel = atoi(argv[++i]) ;
+    
+    else if (argument == "--verbose" && argc >= i + 1)            fVerboseLevel = atoi(argv[++i]) ;
     
     else if (argument == "--disable-branch")                      fDisableAllBranchOption = true ;
     
@@ -90,13 +97,38 @@ NPOptionManager::NPOptionManager(int argc, char** argv)
     
     else if (argument == "-IP")                                   fInputPhysicalTreeOption = true ;
     
+    else if (argument == "--proof")                               fPROOFMode= true ;
+    
     //else ;
   }
-  
   CheckArguments();
 }
 
 
+NPOptionManager::NPOptionManager(int argc, char** argv){
+  ReadTheInputArgument(argc,argv);
+}
+
+NPOptionManager::NPOptionManager(string arg)
+{  
+  vector<char *> args;
+  istringstream iss(arg);
+
+  string token;
+  while(iss >> token) {
+    char *arg = new char[token.size() + 1];
+    copy(token.begin(), token.end(), arg);
+    arg[token.size()] = '\0';
+    args.push_back(arg);
+  }
+  args.push_back(0);
+  
+  ReadTheInputArgument(args.size()-1, &args[0]);
+
+  for(size_t i = 0; i < args.size(); i++)
+    delete[] args[i];
+  
+}
 
 void NPOptionManager::CheckArguments()
 {

@@ -46,7 +46,8 @@ TSharcPhysics::TSharcPhysics()
   m_EventPhysics      = this ;
   m_NumberOfDetector = 0 ;
   m_MaximumStripMultiplicityAllowed = 10;
-  m_StripEnergyMatchingSigma = 0.060    ;
+  //m_StripEnergyMatchingSigma = 0.060    ;
+  m_StripEnergyMatchingSigma = 50    ;
   m_StripEnergyMatchingNumberOfSigma = 3;
   
   // Threshold

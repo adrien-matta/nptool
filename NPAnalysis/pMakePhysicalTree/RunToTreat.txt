@@ -1,0 +1,4 @@
+TTreeName 
+	S1107Data
+RootFileName 
+	/Volumes/S1107/RootData/data2251*.root

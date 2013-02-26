@@ -37,6 +37,9 @@ class NPOptionManager
       // it does not yet exist:
       // (see the constructor for an explanation of the arguments)
       static NPOptionManager* getInstance(int argc = 0, char** argv = NULL);
+  
+      // Added for compatibility with pROOF 
+      static NPOptionManager* getInstance(string arg);
 
       // The analysis class instance can be deleted by calling the Destroy
       // method (NOTE: The class destructor is protected, and can thus not be
@@ -46,6 +49,7 @@ class NPOptionManager
    protected:
       // Constructor (protected)
       NPOptionManager(int argc, char** argv);
+      NPOptionManager(string arg);
 
       // Destructor (protected)
       ~NPOptionManager() {};
@@ -54,6 +58,10 @@ class NPOptionManager
       NPOptionManager(const NPOptionManager& only);
       const NPOptionManager& operator=(const NPOptionManager& only);
 
+  private:
+    // Read the input argument
+    void ReadTheInputArgument(int argc = 0, char** argv = NULL);
+  
    private:
       // The static instance of the NPOptionManager class:
       static NPOptionManager* instance;
@@ -84,6 +92,7 @@ class NPOptionManager
       string GetOutputFile()               {return fOutputFileName;}
       bool   GetDisableAllBranchOption()   {return fDisableAllBranchOption;}
       bool   GetInputPhysicalTreeOption()  {return fInputPhysicalTreeOption;}
+      bool   GetPROOF()                    {return fPROOFMode;}
       int    GetVerboseLevel()             {return fVerboseLevel;}
       
       // Setters
@@ -107,6 +116,7 @@ class NPOptionManager
       string fOutputFileName;
       bool   fDisableAllBranchOption;
       bool   fInputPhysicalTreeOption;
+      bool   fPROOFMode; // if true, the system run in a pROOF environment
       int    fVerboseLevel; // 0 for not talk, 1 for talking
 };
 

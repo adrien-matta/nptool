@@ -55,14 +55,24 @@ RootOutput::RootOutput(TString fileNameBase, TString treeNameBase)
 {
    // The file extension is added to the file name:
    TString GlobalPath = getenv("NPTOOL");
-   TString fileName = GlobalPath + "/Outputs/";
-   if (fileNameBase.Contains("root")) fileName += fileNameBase;
-   else fileName += fileNameBase + ".root"; 
+   
 
    // The ROOT file is created
+  if(!NPOptionManager::getInstance()->GetPROOF()){
+    TString fileName = GlobalPath + "/Outputs/";
+    if (fileNameBase.Contains("root")) fileName += fileNameBase;
+    else fileName += fileNameBase + ".root";
    pRootFile = new TFile(fileName, "RECREATE");
-   pRootTree = new TTree(treeNameBase, "Data created / analyzed with the NPTool package");
-   pRootList = new TList();
+
+   
+  }
+  
+  else{ // the file path must be the current directory
+    // Does not create the Output file at instantiation
+    pRootFile = 0 ;
+    pRootTree = new TTree(treeNameBase, "Data created / analyzed with the NPTool package");
+    pRootList = new TList();
+  }
 
    // Init TAsciiFile objects
    InitAsciiFiles();
@@ -114,12 +124,15 @@ void RootOutput::InitAsciiFiles()
 
 RootOutput::~RootOutput()
 {
-   // The data is written to the file and the tree is closed:
-   if (pRootFile) {
+    // The data is written to the file and the tree is closed:
+    if (pRootFile && !NPOptionManager::getInstance()->GetPROOF()) {
       cout << endl;
       cout << "Got histograms and Tree !" << endl;
-      pRootFile->Write();
-
+      cout << "  - Number of entries in the Tree: " << pRootTree->GetEntries() << endl;
+      cout << "  - Number of bites written to file: " << pRootTree->Write() << endl;
+      
+      gDirectory->Cd(pRootFile->GetName());
+      
       // write TAsciiFile if used
       // EventGenerator
       if (!pEventGenerator->IsEmpty()) pEventGenerator->Write();
@@ -131,9 +144,47 @@ RootOutput::~RootOutput()
       if (!pRunToTreatFile->IsEmpty()) pRunToTreatFile->Write();
       // Analysis ConfigFile
       if (!pAnalysisConfigFile->IsEmpty()) pAnalysisConfigFile->Write();
-
+      
+      pRootFile->Flush();
       pRootFile->Close();
-   } else {
+    }
+  
+    else if (pRootFile && NPOptionManager::getInstance()->GetPROOF()){
+      if (!pEventGenerator->IsEmpty()) pEventGenerator->Write();
+      // DetectorConfiguration
+      if (!pDetectorConfiguration->IsEmpty()) pDetectorConfiguration->Write();
+      // CalibrationFile
+      if (!pCalibrationFile->IsEmpty()) pCalibrationFile->Write();
+      // RunToTreatFile
+      if (!pRunToTreatFile->IsEmpty()) pRunToTreatFile->Write();
+      // Analysis ConfigFile
+      if (!pAnalysisConfigFile->IsEmpty()) pAnalysisConfigFile->Write();
+    }
+  
+    else if(!pRootFile && NPOptionManager::getInstance()->GetPROOF()){
+      
+    }
+  
+    else {
       cout << "No histograms and Tree !" << endl;
-   }
+    }
+  
+}
+
+TFile* RootOutput::InitFile(TString fileNameBase){
+  
+  if(NPOptionManager::getInstance()->GetPROOF()){
+    TString GlobalPath = getenv("NPTOOL");
+    TString fileName = GlobalPath + "/Outputs/Analysis/";
+    if (fileNameBase.Contains("root")) fileName += fileNameBase;
+    else fileName += fileNameBase + ".root";
+    pRootFile = new TFile(fileName, "RECREATE");
+    pRootFile->Flush();
+    return pRootFile;
+  }
+  
+  else{
+    cout << "ERROR: Do not use RootOutput::InitFile without a proof environment (use --proof option to NPTool)" << endl ;
+    exit(1);
+  }
 }

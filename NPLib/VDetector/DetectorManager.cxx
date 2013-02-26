@@ -32,6 +32,9 @@
 #include "TMust2Physics.h"
 #include "TCATSPhysics.h"
 #include "TSSSDPhysics.h"
+#include "TSharcPhysics.h"
+#include "TTigressPhysics.h"
+#include "TTrifoilPhysics.h"
 #include "TPlasticPhysics.h"
 #include "TTrifoilPhysics.h"
 #include "TChateauCristalPhysics.h"
@@ -80,6 +83,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
    Bool_t MUST2               = false;
    Bool_t CATS                = false;
    Bool_t SSSD                = false;
+   Bool_t Sharc               = false;
    Bool_t ChateauCristal      = false;
    Bool_t Exogam              = false;
    Bool_t ScintillatorPlastic = false;
@@ -310,7 +314,28 @@ void DetectorManager::ReadConfigurationFile(string Path)
          AddDetector("SSSD", myDetector);
 #endif
       }
-
+     
+     ////////////////////////////////////////////
+     /////////      Search for Sharc    /////////
+     ////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 5, "Sharc") == 0 && Sharc == false) {
+#ifdef INC_SHARC
+        Sharc = true ;
+        cout << "//////// Sharc ////////" << endl << endl;
+        
+        // Instantiate the new array as a VDetector Object
+        VDetector* myDetector = new TSharcPhysics();
+        
+        // Read Position of Telescope
+        ConfigFile.close();
+        myDetector->ReadConfiguration(Path);
+        ConfigFile.open(Path.c_str());
+        
+        // Add array to the VDetector Vector
+        AddDetector("Sharc", myDetector);
+#endif
+      }
+     
       //////////////////////////////////////////////
       //////////      Search for Exogam    /////////
       //////////////////////////////////////////////
