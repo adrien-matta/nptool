@@ -7,9 +7,13 @@ void MakePhysicalTree(string option){
   
   string runToReadfileName = NPOptionManager::getInstance(option)->GetRunToReadFile();
   TDSet* DSet = new TDSet( *(RootInput::getInstance(runToReadfileName)->GetChain()) );
-
+  TProof* plite;
   
-  TProof *plite = TProof::Open("lite://") ;
+  if(!gProof)
+    plite = TProof::Open("lite://") ;
+  else
+    plite = gProof;
+  
   plite->Process(DSet, "DataProcessor.cxx+", option.c_str());
   
   return ;

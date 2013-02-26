@@ -100,7 +100,6 @@ void EventGeneratorIsotropic::ReadConfiguration(string Path,int){
     while (ReadingStatus)
       {
       ReactionFile >> DataBuffer;
-      
       //Search for comment Symbol %
       if (DataBuffer.compare(0, 1, "%") == 0) {   ReactionFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
       
@@ -158,6 +157,11 @@ void EventGeneratorIsotropic::ReadConfiguration(string Path,int){
         ReactionFile >> m_particleName;
         G4cout << "Particle : " << m_particleName << endl ;
         
+        // Case of light particle
+             if(m_particleName=="proton"){ m_particleName="1H"  ; check_ExcitationEnergy = true ;}
+        else if(m_particleName=="deuton"){ m_particleName="2H"  ; check_ExcitationEnergy = true ;}
+        else if(m_particleName=="triton"){ m_particleName="3H"  ; check_ExcitationEnergy = true ;}
+        else if(m_particleName=="alpha") { m_particleName="4He" ; check_ExcitationEnergy = true ;}
       }
       
       else if (DataBuffer=="ExcitationEnergy=") {
@@ -181,7 +185,7 @@ void EventGeneratorIsotropic::ReadConfiguration(string Path,int){
   }
   
   if(    !check_EnergyLow || !check_EnergyHigh || !check_HalfOpenAngleMin || !check_HalfOpenAngleMax || !check_x0 || !check_y0 || !check_z0 || !check_particle )
-    {cout << "WARNING : Token Sequence Incomplete, Isotropic definition could not be Fonctionnal" << endl ;}
+    {cout << "ERROR : Token Sequence Incomplete, Isotropic definition can not be Fonctionnal" << endl ; exit(1);}
   
 
   

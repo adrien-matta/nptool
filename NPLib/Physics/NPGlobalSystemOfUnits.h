@@ -1,3 +1,4 @@
+#ifdef NP_SYSTEM_OF_UNITS_H
 
 #include "NPSystemOfUnits.h"
 
@@ -116,3 +117,5 @@ using NPUNITS::lux;
 using NPUNITS::perCent;
 using NPUNITS::perThousand;
 using NPUNITS::perMillion;
+
+#endif

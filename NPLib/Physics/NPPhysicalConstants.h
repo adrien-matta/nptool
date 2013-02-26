@@ -36,8 +36,11 @@
 // 29.04.08   use PDG 2006 values
 // 03.11.08   use PDG 2008 values
 
+// Prevent to use NPSystem of unit while HEP system of unit is in use (in G4 for example)
 #ifndef HEP_PHYSICAL_CONSTANTS_H
-#define HEP_PHYSICAL_CONSTANTS_H
+
+#ifndef NP_PHYSICAL_CONSTANTS_H
+#define NP_PHYSICAL_CONSTANTS_H
 
 #include "NPSystemOfUnits.h"
 
@@ -132,6 +135,7 @@ static const double universe_mean_density = 1.e-25*g/cm3;
 
 }  // namespace NPUNITS
 
+#endif
 #endif /* HEP_PHYSICAL_CONSTANTS_H */
 
 

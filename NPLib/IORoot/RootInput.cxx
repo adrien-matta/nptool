@@ -112,7 +112,7 @@ RootInput::RootInput(string configFileName)
          }
       }
      
-     cout << "ROOTInput has loaded  " << pRootChain->GetEntries() << " entries in the inout chain " << endl ;
+     cout << "ROOTInput:  " << pRootChain->GetEntries() << " entries loaded in the input chain " << endl ;
    }
          
    if (!CheckRootFileName || !CheckTreeName) 

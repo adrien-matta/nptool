@@ -32,6 +32,7 @@ using namespace Sharc_LOCAL;
 #include "RootInput.h"
 #include "RootOutput.h"
 #include "TAsciiFile.h"
+#include "NPOptionManager.h"
 //   ROOT
 #include "TChain.h"
 ///////////////////////////////////////////////////////////////////////////
@@ -449,6 +450,9 @@ void TSharcPhysics::ReadConfiguration(string Path)
   bool ReadingStatusQQQ = false ;
   bool ReadingStatusBOX = false ;
   bool ReadingStatus    = false ;
+  
+  bool VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel(); ;
+  
   while (!ConfigFile.eof()){
     
     getline(ConfigFile, LineBuffer);
@@ -463,15 +467,15 @@ void TSharcPhysics::ReadConfiguration(string Path)
       
       //   CD case
       if (DataBuffer=="SharcQQQ"){
-        cout << "///" << endl           ;
-        cout << "QQQ Quadrant found: " << endl   ;
+       if(VerboseLevel) cout << "///" << endl           ;
+        if(VerboseLevel) cout << "QQQ Quadrant found: " << endl   ;
         ReadingStatusQQQ = true ;
       }
       
       //  Box case
       else if (DataBuffer=="SharcBOX"){
-        cout << "///" << endl           ;
-        cout << "Box Detector found: " << endl   ;
+        if(VerboseLevel) cout << "///" << endl           ;
+        if(VerboseLevel) cout << "Box Detector found: " << endl   ;
         ReadingStatusBOX = true ;
       }
       
@@ -488,21 +492,21 @@ void TSharcPhysics::ReadConfiguration(string Path)
           check_Z = true;
           ConfigFile >> DataBuffer ;
           Z= atof(DataBuffer.c_str());
-          cout << "  Z= " << Z << "mm" << endl;
+          if(VerboseLevel) cout << "  Z= " << Z << "mm" << endl;
         }
         
         else if (DataBuffer == "R=") {
           check_R = true;
           ConfigFile >> DataBuffer ;
           R= atof(DataBuffer.c_str());
-          cout << "  R= " << R << "mm" << endl;
+          if(VerboseLevel) cout << "  R= " << R << "mm" << endl;
         }
         
         else if (DataBuffer == "Phi=") {
           check_Phi = true;
           ConfigFile >> DataBuffer ;
           Phi= atof(DataBuffer.c_str());
-          cout << "  Phi= " << Phi << "deg" << endl;
+          if(VerboseLevel) cout << "  Phi= " << Phi << "deg" << endl;
         }
         
         else if (DataBuffer == "ThicknessDector=") {
@@ -543,7 +547,7 @@ void TSharcPhysics::ReadConfiguration(string Path)
           check_Z = true;
           ConfigFile >> DataBuffer ;
           Z= atof(DataBuffer.c_str());
-          cout << "  Z= " << Z << "mm" << endl;
+          if(VerboseLevel) cout << "  Z= " << Z << "mm" << endl;
         }
         
         else if (DataBuffer == "ThicknessDector1=") {

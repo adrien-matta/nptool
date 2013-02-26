@@ -42,7 +42,9 @@
 // 03.11.08   use PDG 2008 value of e_SI
 
 #ifndef HEP_SYSTEM_OF_UNITS_H
-#define HEP_SYSTEM_OF_UNITS_H
+
+#ifndef NP_SYSTEM_OF_UNITS_H
+#define NP_SYSTEM_OF_UNITS_H
 
 namespace NPUNITS {
 
@@ -286,4 +288,5 @@ namespace NPUNITS {
 
 }  // namespace NPUNITS
 
+#endif
 #endif /* HEP_SYSTEM_OF_UNITS_H */

@@ -31,7 +31,9 @@ using namespace NPL;
 //#include "CLHEP/Units/PhysicalConstants.h"
 #include "NPGlobalSystemOfUnits.h"
 #include "NPPhysicalConstants.h"
+#ifdef NP_SYSTEM_OF_UNITS_H
 using namespace NPUNITS;
+#endif
 
 // C++ headers
 #include <iostream>

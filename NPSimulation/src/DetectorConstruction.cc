@@ -363,7 +363,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
     ///// Search for S1 Annular detector  //////
     ////////////////////////////////////////////
     else if (LineBuffer.compare(0, 9, "AnnularS1") == 0 && cS1 == false) {
-#ifdef INC_ANNULARSi1
+#ifdef INC_ANNULARS1
       cS1 = true ;
       if(VerboseLevel==1) cout << endl << "//////// S1 Annular detector ////////" << endl   << endl   ;
       

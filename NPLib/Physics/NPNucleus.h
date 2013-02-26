@@ -26,8 +26,11 @@
 #include "TLorentzVector.h"
 
 // NPTOOL headers
+#include "NPGlobalSystemOfUnits.h"
 #include "NPPhysicalConstants.h"
+#ifdef NP_SYSTEM_OF_UNITS_H
 using namespace NPUNITS;
+#endif
 
 // C++ headers
 #include <string>
