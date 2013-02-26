@@ -152,7 +152,7 @@ void EventGeneratorIsotropic::ReadConfiguration(string Path,int){
         G4cout << "z0 " << m_z0 << " mm" << G4endl;
       }
       
-      else if (DataBuffer=="Particle=") {
+      else if (DataBuffer=="Particle=" || DataBuffer=="particle=") {
         check_particle = true ;
         ReactionFile >> m_particleName;
         G4cout << "Particle : " << m_particleName << endl ;
