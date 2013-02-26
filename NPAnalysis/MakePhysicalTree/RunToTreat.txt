@@ -1,4 +1,5 @@
 TTreeName 
-	SimulatedTree
+	S1107Data
 RootFileName 
-	../../Outputs/Simulation/myResult.root
+	/Volumes/S1107/RootData/data2251*.root
+

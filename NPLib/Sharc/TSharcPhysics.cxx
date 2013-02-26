@@ -644,6 +644,7 @@ void TSharcPhysics::InitializeRootInputRaw()
   inputChain->SetBranchStatus( "Sharc" , true )               ;
   inputChain->SetBranchStatus( "fSharc_*" , true )               ;
   inputChain->SetBranchAddress( "Sharc" , &m_EventData )      ;
+
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -62,17 +62,17 @@ RootOutput::RootOutput(TString fileNameBase, TString treeNameBase)
     TString fileName = GlobalPath + "/Outputs/";
     if (fileNameBase.Contains("root")) fileName += fileNameBase;
     else fileName += fileNameBase + ".root";
-   pRootFile = new TFile(fileName, "RECREATE");
-
    
+      pRootFile = new TFile(fileName, "RECREATE");
   }
   
   else{ // the file path must be the current directory
     // Does not create the Output file at instantiation
     pRootFile = 0 ;
-    pRootTree = new TTree(treeNameBase, "Data created / analyzed with the NPTool package");
-    pRootList = new TList();
   }
+  
+  pRootTree = new TTree(treeNameBase, "Data created / analyzed with the NPTool package");
+  pRootList = new TList();
 
    // Init TAsciiFile objects
    InitAsciiFiles();
@@ -130,9 +130,7 @@ RootOutput::~RootOutput()
       cout << "Got histograms and Tree !" << endl;
       cout << "  - Number of entries in the Tree: " << pRootTree->GetEntries() << endl;
       cout << "  - Number of bites written to file: " << pRootTree->Write() << endl;
-      
-      gDirectory->Cd(pRootFile->GetName());
-      
+
       // write TAsciiFile if used
       // EventGenerator
       if (!pEventGenerator->IsEmpty()) pEventGenerator->Write();
