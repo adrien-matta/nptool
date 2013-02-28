@@ -43,7 +43,6 @@ using namespace CLHEP;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorBeam::EventGeneratorBeam(){
   m_ParticleStack  = ParticleStack::getInstance();
-  m_InitConditions = new TInitialConditions();
   m_Target         = NULL    ;
   m_particle       = NULL    ;
   m_Beam           = new NPL::Beam();
@@ -51,7 +50,6 @@ EventGeneratorBeam::EventGeneratorBeam(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorBeam::~EventGeneratorBeam(){
-  delete m_InitConditions;
   delete m_Beam;
 }
 
@@ -82,8 +80,6 @@ void EventGeneratorBeam::GenerateEvent(G4Event* anEvent){
       m_Target->WriteDEDXTable(m_particle ,0, m_Beam->GetEnergy()+4*m_Beam->GetSigmaEnergy());
     }
   }
-  
-  m_InitConditions->Clear();
   
   ///////////////////////////////////////////////////////////////////////
   ///// Calculate the incident beam direction as well as the vertex /////
@@ -118,8 +114,5 @@ void EventGeneratorBeam::GenerateEvent(G4Event* anEvent){
   }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorBeam::InitializeRootOutput(){
-  RootOutput *pAnalysis = RootOutput::getInstance();
-  TTree *pTree = pAnalysis->GetTree();
-  pTree->Branch("InitialConditions", "TInitialConditions", &m_InitConditions);
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

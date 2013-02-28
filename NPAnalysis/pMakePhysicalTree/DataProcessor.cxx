@@ -1,4 +1,5 @@
 #include "DataProcessor.h"
+#include <cstdlib>
 ClassImp(DataProcessor);
 
 //_____________________________________________________________________________
@@ -52,7 +53,7 @@ void DataProcessor::SlaveBegin(TTree*){
     m_ProofFile = new TProofOutputFile("Local.root",TProofOutputFile::kDataset, opt );
     m_OutputFile = m_ProofFile->OpenFile("RECREATE");
   
-  GetOutputList()->Add(m_ProofFile);
+  
   m_OutputTree->SetDirectory(m_OutputFile);
   m_OutputTree->AutoSave();
   m_OutputFile->Flush();
@@ -69,22 +70,18 @@ Bool_t DataProcessor::Process(Long64_t entry){
 
 //_____________________________________________________________________________
 void DataProcessor::Terminate(){
+  sleep(1000);
   cout << 1 << endl ;
-  string OutputfileName = NPOptionManager::getInstance(GetOption())->GetOutputFile();
-  cout << 2 << endl ;
-  RootOutput::getInstance(OutputfileName, "S1107Physics");
-  cout << 3 << endl ;
-  TFile* OutputFile = RootOutput::getInstance()->InitFile(  NPOptionManager::getInstance(GetOption())->GetOutputFile());
-  cout << 4 << endl ;
+  string OutputfileName = NPOptionManager::getInstance(GetOption())->GetOutputFile();cout << 2 << endl ;
+  RootOutput::getInstance(OutputfileName, "S1107Physics");cout << 3 << endl ;
+  TFile* OutputFile = RootOutput::getInstance()->InitFile(  NPOptionManager::getInstance(GetOption())->GetOutputFile());cout << 4 << endl ;
+  
   GetOutputList()->Print();
-  m_ProofFile = dynamic_cast<TProofOutputFile*>(GetOutputList()->FindObject("Local.root"));
-  cout << 5 << endl ;
-  TString outputFile(m_ProofFile->GetOutputFileName());
-  cout << 6 << endl ;
-  m_OutputFile = TFile::Open(outputFile);
-  cout << 7 << endl ;
-  m_OutputTree = (TTree*) m_OutputFile->Get("S1107Physics");
-  cout << 8 << endl ;
+  m_ProofFile = dynamic_cast<TProofOutputFile*>(GetOutputList()->FindObject("Local.root"));cout << 5 << endl ;
+
+  TString outputFile(m_ProofFile->GetOutputFileName());cout << 6 << endl ;
+  m_OutputFile = TFile::Open(outputFile);cout << 7 << endl ;
+  m_OutputTree = (TTree*) m_OutputFile->Get("S1107Physics");cout << 8 << endl ;
   m_OutputTree->SetDirectory(OutputFile);cout << 9 << endl ;
   m_OutputTree->Write();cout << 10 << endl ;
   OutputFile->Flush();cout << 11 << endl ;
@@ -105,6 +102,8 @@ void DataProcessor::Terminate(){
 void DataProcessor::SlaveTerminate(){
   m_OutputFile->cd();
   m_OutputTree->Write();
+  m_OutputFile->Flush();
+    GetOutputList()->Add(m_ProofFile);
   m_OutputFile->Close();
   RootOutput::getInstance()->Destroy();
   RootInput::getInstance()->Destroy();

@@ -36,7 +36,6 @@
 
 // NPL Header
 #include "NPBeam.h"
-#include "TInitialConditions.h"
 
 using namespace std  ;
 
@@ -50,9 +49,6 @@ public:     // Inherit from VEventGenerator Class
   void GenerateEvent(G4Event*);
   void InitializeRootOutput();
   void SetTarget(Target* Target) ;
-  
-private: // TTree to store initial value of beam and reaction
-  TInitialConditions*   m_InitConditions;
   
 private: // Source parameter
   G4ParticleDefinition*   m_particle;  // Kind of particle to shoot
