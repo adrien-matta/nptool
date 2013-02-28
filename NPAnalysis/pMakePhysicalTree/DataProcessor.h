@@ -44,6 +44,7 @@ class DataProcessor : public TSelector {
   
   NPA::DetectorManager* m_Detector ; // the detector
   TProofOutputFile* m_ProofFile; // For merging via file
+  TFile* m_OutputFile ;
   
   DataProcessor();
   virtual ~DataProcessor();

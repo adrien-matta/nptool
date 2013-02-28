@@ -1,4 +1,4 @@
 TTreeName 
 	S1107Data
 RootFileName 
-	/Users/adrienmatta/Desktop/S1107/data2251*.root
+	/Volumes/S1107/RootData/data225*.root

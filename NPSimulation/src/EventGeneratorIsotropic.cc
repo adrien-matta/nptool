@@ -162,6 +162,7 @@ void EventGeneratorIsotropic::ReadConfiguration(string Path,int){
         else if(m_particleName=="deuton"){ m_particleName="2H"  ; check_ExcitationEnergy = true ;}
         else if(m_particleName=="triton"){ m_particleName="3H"  ; check_ExcitationEnergy = true ;}
         else if(m_particleName=="alpha") { m_particleName="4He" ; check_ExcitationEnergy = true ;}
+        else if(m_particleName=="gamma") { check_ExcitationEnergy = true ;}
       }
       
       else if (DataBuffer=="ExcitationEnergy=") {

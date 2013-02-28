@@ -256,7 +256,6 @@ void PhysicsList::ConstructEM(){
     else if (particleName == "GenericIon") {
       pmanager->AddProcess(new G4hMultipleScattering(), -1, 1, 1) ;
       G4ionIonisation* iI = new G4ionIonisation ;
-      // mod by Nicolas [07/05/09]
       iI->ActivateStoppingData(true) ;
       pmanager->AddProcess(iI , -1, 2, 2) ;
     }
@@ -266,7 +265,6 @@ void PhysicsList::ConstructEM(){
                (particleName != "chargedgeantino")) {
       
       G4hIonisation* hI = new G4hIonisation ;
-      // mod by Nicolas [07/05/09]
       pmanager->AddProcess(new G4hMultipleScattering , -1, 1, 1) ;
       pmanager->AddProcess(hI , -1, 2, 2) ;
       

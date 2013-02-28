@@ -460,7 +460,8 @@ void Target::ReadConfiguration(string Path)
     }
     
   }
-  
+  // if the target as a null radius then no target exist
+  if(m_TargetRadius==0) {m_TargetThickness=0;m_TargetRadius=0.1*um;}
   
 }
 
@@ -468,6 +469,8 @@ void Target::ReadConfiguration(string Path)
 // Called After DetecorConstruction::AddDetector Method
 void Target::ConstructDetector(G4LogicalVolume* world)
 {
+
+  
   if (m_TargetType) {   // case of standard target
     
     if (m_TargetThickness > 0) {
@@ -599,40 +602,41 @@ void Target::RandomGaussian2D(double MeanX, double MeanY, double SigmaX, double 
 
 //   Generate a DEDX file table using the material used in the target
 void Target::WriteDEDXTable(G4ParticleDefinition* Particle ,G4double Emin,G4double Emax){
-  //   Opening hte output file
-  G4String GlobalPath = getenv("NPTOOL");
-  G4String Path = GlobalPath + "/Inputs/EnergyLoss/" + Particle->GetParticleName() + "_" + m_TargetMaterial->GetName() + ".G4table";
-  ofstream File      ;
-  File.open(Path)   ;
-
-  if(!File) return ;
-
-  File   << "Table from Geant4 generate using NPSimulation \t"
-  << "Particle: " << Particle->GetParticleName() << "\tMaterial: " << m_TargetMaterial->GetName() << endl ;
-
-  G4EmCalculator emCalculator;
-
-  for (G4double E=Emin; E < Emax; E+=(Emax-Emin)/10.){
-    G4double dedx = emCalculator.ComputeTotalDEDX(E, Particle, m_TargetMaterial);
-    File << E/MeV << "\t" << dedx/(MeV/micrometer) << endl ;
-  }
-
-  File.close();
-  if(!m_TargetType){
-    G4String Path = GlobalPath + "/Inputs/EnergyLoss/" + Particle->GetParticleName() + "_" + m_WindowsMaterial->GetName() + ".G4table";
-    File.open(Path)      ;
-    if(!File) return    ;
-    File   << "Table from Geant4 generate using NPSimulation \t "
-    << "Particle: " << Particle->GetParticleName() << "\tMaterial: " << m_WindowsMaterial->GetName() << endl ;
-
+  if(m_TargetThickness>0){
+    //   Opening hte output file
+    G4String GlobalPath = getenv("NPTOOL");
+    G4String Path = GlobalPath + "/Inputs/EnergyLoss/" + Particle->GetParticleName() + "_" + m_TargetMaterial->GetName() + ".G4table";
+    ofstream File      ;
+    File.open(Path)   ;
+    
+    if(!File) return ;
+    
+    File   << "Table from Geant4 generate using NPSimulation \t"
+    << "Particle: " << Particle->GetParticleName() << "\tMaterial: " << m_TargetMaterial->GetName() << endl ;
+    
+    G4EmCalculator emCalculator;
+    
     for (G4double E=Emin; E < Emax; E+=(Emax-Emin)/10.){
-      //                     G4double dedx = emCalculator.ComputeTotalDEDX(E, Particle, m_WindowsMaterial);
-      G4double dedx = emCalculator.ComputeDEDX(   E, Particle ,
-                                               "ionIoni",  m_WindowsMaterial);
+      G4double dedx = emCalculator.ComputeTotalDEDX(E, Particle, m_TargetMaterial);
       File << E/MeV << "\t" << dedx/(MeV/micrometer) << endl ;
     }
+    
+    File.close();
+    if(!m_TargetType){
+      G4String Path = GlobalPath + "/Inputs/EnergyLoss/" + Particle->GetParticleName() + "_" + m_WindowsMaterial->GetName() + ".G4table";
+      File.open(Path)      ;
+      if(!File) return    ;
+      File   << "Table from Geant4 generate using NPSimulation \t "
+      << "Particle: " << Particle->GetParticleName() << "\tMaterial: " << m_WindowsMaterial->GetName() << endl ;
+      
+      for (G4double E=Emin; E < Emax; E+=(Emax-Emin)/10.){
+        //                     G4double dedx = emCalculator.ComputeTotalDEDX(E, Particle, m_WindowsMaterial);
+        G4double dedx = emCalculator.ComputeDEDX(   E, Particle ,
+                                                 "ionIoni",  m_WindowsMaterial);
+        File << E/MeV << "\t" << dedx/(MeV/micrometer) << endl ;
+      }
+    }
+    File.close();
+    
   }
-  File.close();
-
-  
 }

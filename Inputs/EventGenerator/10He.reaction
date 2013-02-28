@@ -30,7 +30,7 @@ Beam
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%TwoBodyReaction
+TwoBodyReaction
 	Beam= 9Li
 	Target= 2H
 	Light= 3He

@@ -5,6 +5,9 @@
 
 void MakePhysicalTree(string option){
   
+  TFile* f = new TFile("Local.root","RECREATE");
+  f->Close();
+  
   string runToReadfileName = NPOptionManager::getInstance(option)->GetRunToReadFile();
   TDSet* DSet = new TDSet( *(RootInput::getInstance(runToReadfileName)->GetChain()) );
   TProof* plite;
