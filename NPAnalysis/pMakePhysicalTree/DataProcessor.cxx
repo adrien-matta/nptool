@@ -47,12 +47,9 @@ void DataProcessor::SlaveBegin(TTree*){
   m_OutputTree = RootOutput::getInstance()->GetTree();
   
   //Merging via file:
-    // Just create the object
     UInt_t opt = TProofOutputFile::kRegister | TProofOutputFile::kOverwrite | TProofOutputFile::kVerify;
-    
     m_ProofFile = new TProofOutputFile("Local.root",TProofOutputFile::kDataset, opt );
     m_OutputFile = m_ProofFile->OpenFile("RECREATE");
-  
   
   m_OutputTree->SetDirectory(m_OutputFile);
   m_OutputTree->AutoSave();
@@ -70,24 +67,22 @@ Bool_t DataProcessor::Process(Long64_t entry){
 
 //_____________________________________________________________________________
 void DataProcessor::Terminate(){
-  sleep(1000);
-  cout << 1 << endl ;
-  string OutputfileName = NPOptionManager::getInstance(GetOption())->GetOutputFile();cout << 2 << endl ;
-  RootOutput::getInstance(OutputfileName, "S1107Physics");cout << 3 << endl ;
-  TFile* OutputFile = RootOutput::getInstance()->InitFile(  NPOptionManager::getInstance(GetOption())->GetOutputFile());cout << 4 << endl ;
+  string OutputfileName = NPOptionManager::getInstance(GetOption())->GetOutputFile();
+  RootOutput::getInstance(OutputfileName, "S1107Physics");
+  TFile* OutputFile = RootOutput::getInstance()->InitFile(  NPOptionManager::getInstance(GetOption())->GetOutputFile());
   
   GetOutputList()->Print();
-  m_ProofFile = dynamic_cast<TProofOutputFile*>(GetOutputList()->FindObject("Local.root"));cout << 5 << endl ;
+  m_ProofFile = dynamic_cast<TProofOutputFile*>(GetOutputList()->FindObject("Local.root"));
 
-  TString outputFile(m_ProofFile->GetOutputFileName());cout << 6 << endl ;
-  m_OutputFile = TFile::Open(outputFile);cout << 7 << endl ;
-  m_OutputTree = (TTree*) m_OutputFile->Get("S1107Physics");cout << 8 << endl ;
-  m_OutputTree->SetDirectory(OutputFile);cout << 9 << endl ;
-  m_OutputTree->Write();cout << 10 << endl ;
-  OutputFile->Flush();cout << 11 << endl ;
-  m_OutputFile->Close();cout << 12 << endl ;
-  OutputFile->Close();cout << 13 << endl ;
-  RootOutput::getInstance()->Destroy();cout << 14 << endl ;
+  TString outputFile(m_ProofFile->GetOutputFileName());
+  m_OutputFile = TFile::Open(outputFile);
+  m_OutputTree = (TTree*) m_OutputFile->Get("S1107Physics");
+  m_OutputTree->SetDirectory(OutputFile);
+  m_OutputTree->Write();
+  OutputFile->Flush();
+  m_OutputFile->Close();
+  OutputFile->Close();
+  RootOutput::getInstance()->Destroy();
   
   
 /*  TFile* OutputFile = RootOutput::getInstance()->InitFile(  NPOptionManager::getInstance(GetOption())->GetOutputFile());
@@ -108,4 +103,11 @@ void DataProcessor::SlaveTerminate(){
   RootOutput::getInstance()->Destroy();
   RootInput::getInstance()->Destroy();
   NPOptionManager::getInstance()->Destroy();
+}
+
+//_____________________________________________________________________________
+void DataProcessor::Begin(TTree*){
+  
+  
+  
 }

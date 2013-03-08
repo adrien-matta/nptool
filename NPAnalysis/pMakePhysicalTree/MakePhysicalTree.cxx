@@ -3,7 +3,7 @@
 #include "TProof.h"
 #include "TDSet.h"
 
-void MakePhysicalTree(string option){
+void MakePhysicalTree(string option,int thread=-1){
   
   TFile* f = new TFile("Local.root","RECREATE");
   f->Close();
@@ -13,10 +13,14 @@ void MakePhysicalTree(string option){
   TProof* plite;
   
   if(!gProof)
-    plite = TProof::Open("lite://") ;
+    if(thread < 0 )
+      plite = TProof::Open("lite://") ;
+    else
+      plite = TProof::Open("lite://",Form("workers=%i",thread)) ;
   else
     plite = gProof;
   
+  option+=" --proof of=Local.root;stf";
   plite->Process(DSet, "DataProcessor.cxx+", option.c_str());
   
   return ;

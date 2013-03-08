@@ -103,9 +103,10 @@ void Sharc::AddBoxDetector(G4double Z,G4double Thickness1,G4double Thickness2,G4
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void Sharc::AddQQQDetector(G4ThreeVector Pos){
+void Sharc::AddQQQDetector(G4ThreeVector Pos,G4double Thickness){
   m_Type.push_back(false);
   m_Pos.push_back(Pos);
+  m_ThicknessQQQ.push_back(Thickness);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -118,12 +119,13 @@ void Sharc::ReadConfiguration(string Path){
   string LineBuffer             ;
   string DataBuffer             ;
   
-  G4double R,Phi,Thickness1,Thickness2,Thickness3,Thickness4,ThicknessPAD1,ThicknessPAD2,ThicknessPAD3,ThicknessPAD4,Z;
-  R=Phi=Thickness1=Thickness2=Thickness3=Thickness4=ThicknessPAD1=ThicknessPAD2=ThicknessPAD3=ThicknessPAD4=Z=0;
+  G4double R,Phi,Thickness,Thickness1,Thickness2,Thickness3,Thickness4,ThicknessPAD1,ThicknessPAD2,ThicknessPAD3,ThicknessPAD4,Z;
+  R=Phi=Thickness=Thickness1=Thickness2=Thickness3=Thickness4=ThicknessPAD1=ThicknessPAD2=ThicknessPAD3=ThicknessPAD4=Z=0;
   
   G4ThreeVector Pos;
   bool check_R   = false ;
   bool check_Phi = false ;
+  bool check_Thickness   = false ;
   bool check_Thickness1   = false ;
   bool check_Thickness2   = false ;
   bool check_Thickness3   = false ;
@@ -194,6 +196,13 @@ void Sharc::ReadConfiguration(string Path){
           if(VerboseLevel==1) cout << "  Phi= " << Phi/deg << "deg" << endl;
         }
         
+        else if (DataBuffer == "ThicknessDector=") {
+          check_Thickness = true;
+          ConfigFile >> DataBuffer ;
+          Thickness= atof(DataBuffer.c_str())*um;
+          if(VerboseLevel==1) cout << "  ThicknessDetector= " << Thickness/um << "mm" << endl;
+        }
+        
         ///////////////////////////////////////////////////
         //   If no Detector Token and no comment, toggle out
         else{
@@ -205,13 +214,14 @@ void Sharc::ReadConfiguration(string Path){
         /////////////////////////////////////////////////
         //   If All necessary information there, toggle out
         
-        if (check_R && check_Phi && check_Z){
+        if (check_R && check_Phi && check_Z && check_Thickness){
           
           ReadingStatusQQQ = false;
-          AddQQQDetector(G4ThreeVector(R,Phi,Z));
+          AddQQQDetector(G4ThreeVector(R,Phi,Z),Thickness);
           //   Reinitialisation of Check Boolean
           check_R   = false ;
           check_Phi = false ;
+          check_Thickness = false ;
         }
         
       }
@@ -566,7 +576,7 @@ void Sharc::ConstructQQQDetector(G4LogicalVolume* world){
     G4Tubs*  Wafer = new G4Tubs("Wafer"  ,
                                 QQQ_Wafer_Inner_Radius,
                                 QQQ_Wafer_Outer_Radius,
-                                QQQ_Wafer_Thickness*0.5,
+                                m_ThicknessQQQ[i]*0.5,
                                 QQQ_Wafer_Starting_Phi,
                                 QQQ_Wafer_Stopping_Phi*0.5);
     

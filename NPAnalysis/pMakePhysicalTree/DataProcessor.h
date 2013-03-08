@@ -50,6 +50,7 @@ class DataProcessor : public TSelector {
   virtual ~DataProcessor();
   virtual Int_t   Version() const { return 2; }
   virtual void    SlaveBegin(TTree *tree);
+  virtual void    Begin(TTree*);
   virtual Bool_t  Process(Long64_t entry);
   virtual void    SetOption(const char *option) { fOption = option; }
   virtual void    SetObject(TObject *obj) { fObject = obj; }

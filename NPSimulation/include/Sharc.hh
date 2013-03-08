@@ -125,7 +125,6 @@ namespace SHARC
   // QQQ Wafer
   const G4double QQQ_Wafer_Outer_Radius = 42.63*mm;
   const G4double QQQ_Wafer_Inner_Radius = 7.8*mm;
-  const G4double QQQ_Wafer_Thickness = 100*um;
   const G4double QQQ_Wafer_Starting_Phi = 8*deg;
   const G4double QQQ_Wafer_Stopping_Phi = 162*deg;
   const G4int    QQQ_Wafer_NumberOf_RadialStrip = 16 ;
@@ -150,7 +149,7 @@ public:
   // To add a box detector
   void AddBoxDetector(G4double Z,G4double Thickness1,G4double Thickness2,G4double Thickness3,G4double Thickness4,G4double ThicknessPAD1,G4double ThicknessPAD2,G4double ThicknessPAD3,G4double ThicknessPAD4);
   // To add a Quadrant detector
-  void AddQQQDetector(G4ThreeVector Pos);
+  void AddQQQDetector(G4ThreeVector Pos, G4double Thickness);
   
   // Effectively construct Volume
   void ConstructBOXDetector(G4LogicalVolume* world);
