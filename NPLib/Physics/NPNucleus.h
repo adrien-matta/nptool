@@ -120,7 +120,7 @@ namespace NPL {
     void				SetBeta(double beta)					{fBeta = beta; BetaToGamma(); BetaToEnergy(); EnergyToTof(); EnergyToBrho();BetaToVelocity();}
     
     // Nuclear mass in MeV
-    double      Mass() const {return (fAtomicWeight*amu_c2 + fMassExcess/1000.);}
+    double      Mass() const {return (fAtomicWeight*amu_c2 + fMassExcess/1000. - fCharge*electron_mass_c2);}
     void        Print() const   ;
   };
 }
