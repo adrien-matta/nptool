@@ -27,20 +27,22 @@
  *****************************************************************************/
 
 #include <iostream>
+#include <cmath>
 
 #include "TROOT.h"
 #include "TSystem.h"
 #include "TFile.h"
+#include "TF1.h"
 #include "TString.h"
 #include "TTree.h"
 #include "TBranch.h"
 #include "TH1F.h"
+#include "TCanvas.h"
 
 #include "TInitialConditions.h"
 #include "TInteractionCoordinates.h"
 
 using namespace std ;
-
 
 void GeometricalEfficiency(const char * fname = "myResult")
 {
@@ -56,11 +58,11 @@ void GeometricalEfficiency(const char * fname = "myResult")
    // TInitialConditions branch
    TInitialConditions *initCond = 0;
    tree->SetBranchAddress("InitialConditions", &initCond);
-   tree->SetBranchStatus("InitialConditions", 1);
+   tree->SetBranchStatus("InitialConditions", true);
    // TInteractionCoordinates branch
    TInteractionCoordinates *interCoord = 0;
    tree->SetBranchAddress("InteractionCoordinates", &interCoord);
-   tree->SetBranchStatus("InteractionCoordinates", 1);
+   tree->SetBranchStatus("InteractionCoordinates", true);
 
    // Prepare histograms
    TH1F *hDetecTheta = new TH1F("hDetecTheta", "DetecTheta", 180, 0, 180);
@@ -73,13 +75,13 @@ void GeometricalEfficiency(const char * fname = "myResult")
       //if (i%1000 == 0) cout << "Entry " << i << endl;
       tree->GetEntry(i);
       // Fill histos
-      hEmittTheta->Fill(initCond->GetICEmittedAngleThetaLabWorldFrame(0));
+     hEmittTheta->Fill(initCond->GetThetaLab_WorldFrame(0));
+          
       if (interCoord->GetDetectedMultiplicity() > 0)
          hDetecTheta->Fill(interCoord->GetDetectedAngleTheta(0));
    }
 
-   TCanvas *c1 = new TCanvas("c1", "c1");
-   c1->Draw();
+   TCanvas* c1 = new TCanvas("c1", "c1");
    // Compute relative efficiency in %
    TH1F *efficiency = new TH1F("hEfficiency", "Efficiency", 180, 0, 180);
 //   efficiency->SetTitle("Efficiency GASPARD (Spheric version);#Theta [deg];#epsilon [%]");
@@ -89,9 +91,21 @@ void GeometricalEfficiency(const char * fname = "myResult")
    efficiency->Draw();
 
 
-   TCanvas *c2 = new TCanvas("c2", "c2");
-   c2->Draw();
+   TCanvas* c2 = new TCanvas("c2", "c2");
    hEmittTheta->Draw();
    hDetecTheta->SetLineColor(kRed);
    hDetecTheta->Draw("same");
+  
+  TCanvas* c3 = new TCanvas("c3", "c3");
+  TH1F* SolidA = new TH1F(*hDetecTheta);
+  SolidA->Sumw2();
+  TF1* C = new TF1("C",Form("%i /(4*%f)",nentries,M_PI),0,180);
+  SolidA->Divide(C,1);
+  SolidA->Rebin(2);
+  SolidA->Draw();
+  TF1* f = new TF1("f",Form("2 * %f * sin(x*%f/180.) *2*%f/180.",M_PI,M_PI,M_PI),0,180);
+  f->Draw("SAME");
+  SolidA->GetXaxis()->SetTitle("#theta_{Lab} (deg)");
+  SolidA->GetYaxis()->SetTitle("d#Omega (sr) ");
+  c3->Update();
 }

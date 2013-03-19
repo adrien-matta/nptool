@@ -30,11 +30,19 @@
 // STL Header
 #include <vector>
 #include <string>
-
+#include <cmath>
 using namespace std ;
 
 // Root Header
 #include "TObject.h"
+#include "TVector3.h"
+
+// NPTOOL headers
+#include "../include/NPGlobalSystemOfUnits.h"
+#include "../include/NPPhysicalConstants.h"
+#ifdef NP_SYSTEM_OF_UNITS_H
+using namespace NPUNITS;
+#endif
 
 class TInitialConditions : public TObject{
 private:
@@ -69,29 +77,29 @@ public:
   
   /////////////////////           GetTERS           ////////////////////////
   // Incident beam parameter
-  void SetIncidentParticleName   (string Incident_Particle_Name)   {fIC_Incident_Particle_Name = Incident_Particle_Name;}
-  void SetIncidentInitialKineticEnergy  (double Incident_Initial_Kinetic_Energy)
+  void SetIncidentParticleName   (const string &Incident_Particle_Name)   {fIC_Incident_Particle_Name = Incident_Particle_Name;}
+  void SetIncidentInitialKineticEnergy  (const double &Incident_Initial_Kinetic_Energy)
     {fIC_Incident_Initial_Kinetic_Energy  = Incident_Initial_Kinetic_Energy;}
-  void SetIncidentFinalKineticEnergy  (double Incident_Final_Kinetic_Energy)
+  void SetIncidentFinalKineticEnergy  (const double &Incident_Final_Kinetic_Energy)
     {fIC_Incident_Final_Kinetic_Energy  = Incident_Final_Kinetic_Energy;}
 
-  void SetIncidentEmittanceTheta (double Incident_Emittance_Theta) {fIC_Incident_Emittance_Theta = Incident_Emittance_Theta;}
-  void SetIncidentEmittancePhi   (double Incident_Emittance_Phi)   {fIC_Incident_Emittance_Phi   = Incident_Emittance_Phi;}
-  void SetIncidentEmittanceThetaX (double Incident_Emittance_ThetaX) {fIC_Incident_Emittance_ThetaX = Incident_Emittance_ThetaX;}
-  void SetIncidentEmittancePhiY   (double Incident_Emittance_PhiY)   {fIC_Incident_Emittance_PhiY   = Incident_Emittance_PhiY;}
+  void SetIncidentEmittanceTheta (const double &Incident_Emittance_Theta) {fIC_Incident_Emittance_Theta = Incident_Emittance_Theta;}
+  void SetIncidentEmittancePhi   (const double &Incident_Emittance_Phi)   {fIC_Incident_Emittance_Phi   = Incident_Emittance_Phi;}
+  void SetIncidentEmittanceThetaX (const double &Incident_Emittance_ThetaX) {fIC_Incident_Emittance_ThetaX = Incident_Emittance_ThetaX;}
+  void SetIncidentEmittancePhiY   (const double &Incident_Emittance_PhiY)   {fIC_Incident_Emittance_PhiY   = Incident_Emittance_PhiY;}
   
   // Beam status at the initial interaction point
-  void SetIncidentPositionX     (double Incident_Position_X)      {fIC_Incident_Position_X     = Incident_Position_X;}
-  void SetIncidentPositionY     (double Incident_Position_Y)      {fIC_Incident_Position_Y     = Incident_Position_Y;}
-  void SetIncidentPositionZ     (double Incident_Position_Z)      {fIC_Incident_Position_Z     = Incident_Position_Z;}
+  void SetIncidentPositionX     (const double &Incident_Position_X)      {fIC_Incident_Position_X     = Incident_Position_X;}
+  void SetIncidentPositionY     (const double &Incident_Position_Y)      {fIC_Incident_Position_Y     = Incident_Position_Y;}
+  void SetIncidentPositionZ     (const double &Incident_Position_Z)      {fIC_Incident_Position_Z     = Incident_Position_Z;}
   
   // emmitted particle
-  void SetParticleName       (string Particle_Name)         {fIC_Particle_Name.push_back(Particle_Name);}
-  void SetThetaCM            (double ThetaCM)               {fIC_ThetaCM.push_back(ThetaCM);}
-  void SetKineticEnergy      (double Kinetic_Energy)        {fIC_Kinetic_Energy.push_back(Kinetic_Energy);}
-  void SetMomentumDirectionX (double Momentum_Direction_X)  {fIC_Momentum_Direction_X.push_back(Momentum_Direction_X);}
-  void SetMomentumDirectionY (double Momentum_Direction_Y)  {fIC_Momentum_Direction_Y.push_back(Momentum_Direction_Y);}
-  void SetMomentumDirectionZ (double Momentum_Direction_Z)  {fIC_Momentum_Direction_Z.push_back(Momentum_Direction_Z);}
+  void SetParticleName       (const string &Particle_Name)         {fIC_Particle_Name.push_back(Particle_Name);}
+  void SetThetaCM            (const double &ThetaCM)               {fIC_ThetaCM.push_back(ThetaCM);}
+  void SetKineticEnergy      (const double &Kinetic_Energy)        {fIC_Kinetic_Energy.push_back(Kinetic_Energy);}
+  void SetMomentumDirectionX (const double &Momentum_Direction_X)  {fIC_Momentum_Direction_X.push_back(Momentum_Direction_X);}
+  void SetMomentumDirectionY (const double &Momentum_Direction_Y)  {fIC_Momentum_Direction_Y.push_back(Momentum_Direction_Y);}
+  void SetMomentumDirectionZ (const double &Momentum_Direction_Z)  {fIC_Momentum_Direction_Z.push_back(Momentum_Direction_Z);}
   
   /////////////////////           GETTERS           ////////////////////////
   // Incident beam parameter
@@ -107,12 +115,17 @@ public:
   double GetIncidentPositionZ     () const {return fIC_Incident_Position_Z     ;}
   
   // emmitted particle
-  string GetParticleName        (int i) const {return fIC_Particle_Name[i];}
-  double GetThetaCM             (int i) const {return fIC_ThetaCM[i];}
-  double GetKineticEnergy       (int i) const {return fIC_Kinetic_Energy[i];}
-  double GetMomentumDirectionX  (int i) const {return fIC_Momentum_Direction_X[i];}
-  double GetMomentumDirectionY  (int i) const {return fIC_Momentum_Direction_Y[i];}
-  double GetMomentumDirectionZ  (int i) const {return fIC_Momentum_Direction_Z[i];}
+  string GetParticleName        (const int &i) const {return fIC_Particle_Name[i];}
+  double GetThetaCM             (const int &i) const {return fIC_ThetaCM[i];}
+  double GetKineticEnergy       (const int &i) const {return fIC_Kinetic_Energy[i];}
+  double GetMomentumDirectionX  (const int &i) const {return fIC_Momentum_Direction_X[i];}
+  double GetMomentumDirectionY  (const int &i) const {return fIC_Momentum_Direction_Y[i];}
+  double GetMomentumDirectionZ  (const int &i) const {return fIC_Momentum_Direction_Z[i];}
+  
+  TVector3 GetBeamDirection         () const ;
+  TVector3 GetParticleDirection     (const int &i) const ;
+  double GetThetaLab_WorldFrame     (const int &i) const ;
+  double GetThetaLab_IncidentFrame  (const int &i) const ;
   
   unsigned int GetEmittedMult() const {return fIC_Particle_Name.size();}
   

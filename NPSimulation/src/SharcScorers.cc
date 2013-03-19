@@ -48,7 +48,7 @@ PS_Silicon_Rectangle::~PS_Silicon_Rectangle(){
 G4bool PS_Silicon_Rectangle::ProcessHits(G4Step* aStep, G4TouchableHistory*){
 
   // contain Energy Time, DetNbr, StripFront and StripBack
-  G4double* EnergyAndTime = new G4double[5];
+  G4double* EnergyAndTime = new G4double[10];
   EnergyAndTime[0] = aStep->GetTotalEnergyDeposit();
   
   // If the energy deposit is below the threshold, the deposit is ignored
@@ -61,6 +61,14 @@ G4bool PS_Silicon_Rectangle::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   
   m_DetectorNumber = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(0);
   m_Position  = aStep->GetPreStepPoint()->GetPosition();
+  
+  // Interaction coordinates (used to fill the InteractionCoordinates branch)
+  EnergyAndTime[5] = m_Position.x();
+  EnergyAndTime[6] = m_Position.y();
+  EnergyAndTime[7] = m_Position.z();
+  EnergyAndTime[8] = m_Position.theta();
+  EnergyAndTime[9] = m_Position.phi();
+  
   m_Position = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(m_Position);
   
   m_StripLengthNumber = (int)((m_Position.x() + m_StripPlaneLength / 2.) / m_StripPitchLength ) + 1  ;
@@ -70,6 +78,7 @@ G4bool PS_Silicon_Rectangle::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   EnergyAndTime[3] = m_StripLengthNumber;
   EnergyAndTime[4] = m_StripWidthNumber;
   
+    
   //Rare case where particle is close to edge of silicon plan
   if (m_StripLengthNumber == m_NumberOfStripLength+1) m_StripLengthNumber = m_StripLengthNumber;
   if (m_StripWidthNumber == m_NumberOfStripWidth+1) m_StripWidthNumber = m_StripWidthNumber;
@@ -94,6 +103,11 @@ void PS_Silicon_Rectangle::EndOfEvent(G4HCofThisEvent*){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PS_Silicon_Rectangle::clear(){
+  std::map<G4int, G4double**>::iterator    MapIterator;
+  for (MapIterator = EvtMap->GetMap()->begin() ; MapIterator != EvtMap->GetMap()->end() ; MapIterator++){
+    delete *(MapIterator->second);
+  }
+  
   EvtMap->clear();
 }
 
@@ -139,7 +153,7 @@ PS_Silicon_Annular::~PS_Silicon_Annular(){
 G4bool PS_Silicon_Annular::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   
   // contain Energy Time, DetNbr, StripFront and StripBack
-  G4double* EnergyAndTime = new G4double[5];
+  G4double* EnergyAndTime = new G4double[10];
   EnergyAndTime[0] = aStep->GetTotalEnergyDeposit();
   
   // If the energy deposit is below the threshold, the deposit is ignored
@@ -152,6 +166,14 @@ G4bool PS_Silicon_Annular::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   
   m_DetectorNumber = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(0);
   m_Position = aStep->GetPreStepPoint()->GetPosition();
+  
+  // Interaction coordinates (used to fill the InteractionCoordinates branch)
+  EnergyAndTime[5] = m_Position.x();
+  EnergyAndTime[6] = m_Position.y();
+  EnergyAndTime[7] = m_Position.z();
+  EnergyAndTime[8] = m_Position.theta();
+  EnergyAndTime[9] = m_Position.phi();
+  
   m_Position = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(m_Position);
   
   m_StripRadialNumber = (int)((m_Position.angle(m_uz) - m_DeltaTheta*0.5) / m_StripPitchRadial ) + 1  ;
@@ -185,6 +207,11 @@ void PS_Silicon_Annular::EndOfEvent(G4HCofThisEvent*){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PS_Silicon_Annular::clear(){
+  std::map<G4int, G4double**>::iterator    MapIterator;
+  for (MapIterator = EvtMap->GetMap()->begin() ; MapIterator != EvtMap->GetMap()->end() ; MapIterator++){
+    delete *(MapIterator->second);
+  }
+  
   EvtMap->clear();
 }
 

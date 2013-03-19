@@ -70,12 +70,12 @@ public:
    Int_t    GetDetectedMultiplicity()      {return fDetected_Position_X.size();}
    // Incident particle properties (before interactions in the target)
    // Vertex of interaction
-   Double_t GetDetectedPositionX(Int_t i)   {return fDetected_Position_X.at(i);}
-   Double_t GetDetectedPositionY(Int_t i)   {return fDetected_Position_Y.at(i);}
-   Double_t GetDetectedPositionZ(Int_t i)   {return fDetected_Position_Z.at(i);}
+   Double_t GetDetectedPositionX(Int_t i)   {return fDetected_Position_X[i];}
+   Double_t GetDetectedPositionY(Int_t i)   {return fDetected_Position_Y[i];}
+   Double_t GetDetectedPositionZ(Int_t i)   {return fDetected_Position_Z[i];}
    // Incident particle angles
-   Double_t GetDetectedAngleTheta(Int_t i) {return fDetected_Angle_Theta.at(i);}
-   Double_t GetDetectedAnglePhi(Int_t i)   {return fDetected_Angle_Phi.at(i);}
+   Double_t GetDetectedAngleTheta(Int_t i) {return fDetected_Angle_Theta[i];}
+   Double_t GetDetectedAnglePhi(Int_t i)   {return fDetected_Angle_Phi[i];}
    
    ClassDef(TInteractionCoordinates, 1) // InteractionCoordinates structure
 };

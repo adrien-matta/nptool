@@ -661,6 +661,15 @@ void Sharc::ReadSensitive(const G4Event* event){
     m_Event->SetBack_Energy(RandGauss::shoot(Energy, ResoEnergy));
     m_Event->SetBack_TimeCFD(RandGauss::shoot(Time, ResoTime));
     m_Event->SetBack_TimeLED(RandGauss::shoot(Time, ResoTime));
+    
+    
+    // Interraction Coordinates
+    ms_InterCoord->SetDetectedPositionX(Info[5]) ;
+    ms_InterCoord->SetDetectedPositionY(Info[6]) ;
+    ms_InterCoord->SetDetectedPositionZ(Info[7]) ;
+    ms_InterCoord->SetDetectedAngleTheta(Info[8]/deg) ;
+    ms_InterCoord->SetDetectedAnglePhi(Info[9]/deg) ;
+    
   }
   
   // clear map for next event
@@ -687,6 +696,7 @@ void Sharc::ReadSensitive(const G4Event* event){
     m_Event->SetPAD_Energy(RandGauss::shoot(Energy, ResoEnergy));
     m_Event->SetPAD_TimeCFD(RandGauss::shoot(Time, ResoTime));
     m_Event->SetPAD_TimeLED(RandGauss::shoot(Time, ResoTime));
+
   }
   
   // clear map for next event
@@ -722,6 +732,14 @@ void Sharc::ReadSensitive(const G4Event* event){
     m_Event->SetBack_Energy(RandGauss::shoot(Energy, ResoEnergy));
     m_Event->SetBack_TimeCFD(RandGauss::shoot(Time, ResoTime));
     m_Event->SetBack_TimeLED(RandGauss::shoot(Time, ResoTime));
+    
+    // Interraction Coordinates
+    ms_InterCoord->SetDetectedPositionX(Info[5]) ;
+    ms_InterCoord->SetDetectedPositionY(Info[6]) ;
+    ms_InterCoord->SetDetectedPositionZ(Info[7]) ;
+    ms_InterCoord->SetDetectedAngleTheta(Info[8]/deg) ;
+    ms_InterCoord->SetDetectedAnglePhi(Info[9]/deg) ;
+    
   }
   
   // clear map for next event
@@ -761,6 +779,8 @@ void Sharc::InitializeScorers(){
                                  QQQ_Wafer_NumberOf_RadialStrip,
                                  QQQ_Wafer_NumberOf_AnnularStrip,
                                  EnergyThreshold);
+  
+  
   
   //and register it to the multifunctionnal detector
   m_BOXScorer->RegisterPrimitive(BOXScorer);

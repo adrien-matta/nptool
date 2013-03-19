@@ -98,3 +98,31 @@ void TInitialConditions::Dump() const{
   
   
 }
+
+
+TVector3 TInitialConditions::GetBeamDirection() const{
+  return TVector3( sin(fIC_Incident_Emittance_ThetaX),
+                   sin(fIC_Incident_Emittance_PhiY),
+                   cos(fIC_Incident_Emittance_ThetaX) + cos(fIC_Incident_Emittance_PhiY));
+}
+
+TVector3 TInitialConditions::GetParticleDirection (const int &i) const {
+  return TVector3(  fIC_Momentum_Direction_X[i],
+                    fIC_Momentum_Direction_Y[i],
+                    fIC_Momentum_Direction_Z[i]);
+}
+
+
+double TInitialConditions::GetThetaLab_WorldFrame (const int &i) const {
+  return (GetParticleDirection(i).Angle(TVector3(0,0,1)))/deg;
+  
+}
+
+
+
+
+double TInitialConditions::GetThetaLab_IncidentFrame (const int &i) const{
+  return (GetParticleDirection(i).Angle(GetBeamDirection()))/deg;
+}
+
+

@@ -194,7 +194,6 @@ private:
   G4MultiFunctionalDetector*   m_BOXScorer ;
   G4MultiFunctionalDetector*   m_PADScorer ;
   G4MultiFunctionalDetector*   m_QQQScorer ;
-
   
 private:
   //    Initialize material used in detector definition

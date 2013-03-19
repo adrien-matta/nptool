@@ -211,6 +211,7 @@ string ParticleStack::ChangeNameToG4Standard(string OriginalName){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void ParticleStack::ShootAllParticle(G4Event* anEvent){
   unsigned int size = m_ParticleStack.size();
+  m_InitialConditions->Clear();
   
   for(unsigned int i = 0 ; i < size ; i++){
     
