@@ -200,7 +200,7 @@ void Sharc::ReadConfiguration(string Path){
           check_Thickness = true;
           ConfigFile >> DataBuffer ;
           Thickness= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessDetector= " << Thickness/um << "mm" << endl;
+          if(VerboseLevel==1) cout << "  ThicknessDetector= " << Thickness/um << "um" << endl;
         }
         
         ///////////////////////////////////////////////////
@@ -245,56 +245,56 @@ void Sharc::ReadConfiguration(string Path){
           check_Thickness1 = true;
           ConfigFile >> DataBuffer ;
           Thickness1= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessDetector1= " << Thickness1/um << "mm" << endl;
+          if(VerboseLevel==1) cout << "  ThicknessDetector1= " << Thickness1/um << "um" << endl;
         }
         
         else if (DataBuffer == "ThicknessDector2=") {
           check_Thickness2 = true;
           ConfigFile >> DataBuffer ;
           Thickness2= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessDetector2= " << Thickness2/um << "mm" << endl;
+          if(VerboseLevel==1) cout << "  ThicknessDetector2= " << Thickness2/um << "um" << endl;
         }
         
         else if (DataBuffer == "ThicknessDector3=") {
           check_Thickness3 = true;
           ConfigFile >> DataBuffer ;
           Thickness3= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessDetector3= " << Thickness3/um << "mm" << endl;
+          if(VerboseLevel==1) cout << "  ThicknessDetector3= " << Thickness3/um << "um" << endl;
         }
         
         else if (DataBuffer == "ThicknessDector4=") {
           check_Thickness4 = true;
           ConfigFile >> DataBuffer ;
           Thickness4= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessDetector4= " << Thickness4/um << "mm" << endl;
+          if(VerboseLevel==1) cout << "  ThicknessDetector4= " << Thickness4/um << "um" << endl;
         }
         
         else if (DataBuffer == "ThicknessPAD1=") {
           check_PAD1 = true;
           ConfigFile >> DataBuffer ;
           ThicknessPAD1= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessPAD1= " << ThicknessPAD1 << endl;
+          if(VerboseLevel==1) cout << "  ThicknessPAD1= " << ThicknessPAD1<< "um"  << endl;
         }
         
         else if (DataBuffer == "ThicknessPAD2=") {
           check_PAD2 = true;
           ConfigFile >> DataBuffer ;
           ThicknessPAD2= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessPAD2= " << ThicknessPAD2 << endl;
+          if(VerboseLevel==1) cout << "  ThicknessPAD2= " << ThicknessPAD2<< "um"  << endl;
         }
         
         else if (DataBuffer == "ThicknessPAD3=") {
           check_PAD3 = true;
           ConfigFile >> DataBuffer ;
           ThicknessPAD3= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessPAD3= " << ThicknessPAD3 << endl;
+          if(VerboseLevel==1) cout << "  ThicknessPAD3= " << ThicknessPAD3<< "um"  << endl;
         }
         
         else if (DataBuffer == "ThicknessPAD4=") {
           check_PAD4 = true;
           ConfigFile >> DataBuffer ;
           ThicknessPAD4= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessPAD4= " << ThicknessPAD4 << endl;
+          if(VerboseLevel==1) cout << "  ThicknessPAD4= " << ThicknessPAD4<< "um"  << endl;
         }
         
         ///////////////////////////////////////////////////
@@ -633,8 +633,8 @@ void Sharc::ReadSensitive(const G4Event* event){
   
   ///////////
   // BOX
-  G4THitsMap<G4double*>*     BOXHitMap;
-  std::map<G4int, G4double**>::iterator    BOX_itr;
+  G4THitsMap<G4double*>* BOXHitMap;
+  std::map<G4int, G4double**>::iterator BOX_itr;
   
   G4int BOXCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Sharc_BOXScorer/SharcBOX");
   BOXHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(BOXCollectionID));
@@ -644,34 +644,35 @@ void Sharc::ReadSensitive(const G4Event* event){
     
     G4double* Info = *(BOX_itr->second);
     
-    double Energy =  Info[0];
-    double Time  = Info[1];
-    int DetNbr =     (int) Info[2];
-    int StripFront = (int) Info[3];
-    int StripBack =  (int) Info[4];
+    double Energy = Info[0];
     
-    m_Event->SetFront_DetectorNbr(DetNbr);
-    m_Event->SetFront_StripNbr(StripFront);
-    m_Event->SetFront_Energy(RandGauss::shoot(Energy, ResoEnergy));
-    m_Event->SetFront_TimeCFD(RandGauss::shoot(Time, ResoTime));
-    m_Event->SetFront_TimeLED(RandGauss::shoot(Time, ResoTime));
-    
-    m_Event->SetBack_DetectorNbr(DetNbr);
-    m_Event->SetBack_StripNbr(StripBack);
-    m_Event->SetBack_Energy(RandGauss::shoot(Energy, ResoEnergy));
-    m_Event->SetBack_TimeCFD(RandGauss::shoot(Time, ResoTime));
-    m_Event->SetBack_TimeLED(RandGauss::shoot(Time, ResoTime));
-    
-    
-    // Interraction Coordinates
-    ms_InterCoord->SetDetectedPositionX(Info[5]) ;
-    ms_InterCoord->SetDetectedPositionY(Info[6]) ;
-    ms_InterCoord->SetDetectedPositionZ(Info[7]) ;
-    ms_InterCoord->SetDetectedAngleTheta(Info[8]/deg) ;
-    ms_InterCoord->SetDetectedAnglePhi(Info[9]/deg) ;
-    
+    if(Energy>EnergyThreshold){
+      double Time       = Info[1];
+      int DetNbr        = (int) Info[2];
+      int StripFront    = (int) Info[3];
+      int StripBack     = (int) Info[4];
+      
+      m_Event->SetFront_DetectorNbr(DetNbr);
+      m_Event->SetFront_StripNbr(StripFront);
+      m_Event->SetFront_Energy(RandGauss::shoot(Energy, ResoEnergy));
+      m_Event->SetFront_TimeCFD(RandGauss::shoot(Time, ResoTime));
+      m_Event->SetFront_TimeLED(RandGauss::shoot(Time, ResoTime));
+      
+      m_Event->SetBack_DetectorNbr(DetNbr);
+      m_Event->SetBack_StripNbr(StripBack);
+      m_Event->SetBack_Energy(RandGauss::shoot(Energy, ResoEnergy));
+      m_Event->SetBack_TimeCFD(RandGauss::shoot(Time, ResoTime));
+      m_Event->SetBack_TimeLED(RandGauss::shoot(Time, ResoTime));
+      
+      // Interraction Coordinates
+      ms_InterCoord->SetDetectedPositionX(Info[5]) ;
+      ms_InterCoord->SetDetectedPositionY(Info[6]) ;
+      ms_InterCoord->SetDetectedPositionZ(Info[7]) ;
+      ms_InterCoord->SetDetectedAngleTheta(Info[8]/deg) ;
+      ms_InterCoord->SetDetectedAnglePhi(Info[9]/deg) ;
+      
+    }
   }
-  
   // clear map for next event
   BOXHitMap->clear();
   
@@ -689,14 +690,15 @@ void Sharc::ReadSensitive(const G4Event* event){
     G4double* Info = *(PAD_itr->second);
     
     double Energy =  Info[0];
-    double Time  = Info[1];
-    int DetNbr =     (int) Info[2];
-    
-    m_Event->SetPAD_DetectorNbr(DetNbr);
-    m_Event->SetPAD_Energy(RandGauss::shoot(Energy, ResoEnergy));
-    m_Event->SetPAD_TimeCFD(RandGauss::shoot(Time, ResoTime));
-    m_Event->SetPAD_TimeLED(RandGauss::shoot(Time, ResoTime));
-
+    if(Energy>EnergyThreshold){
+      double Time  = Info[1];
+      int DetNbr =     (int) Info[2];
+      
+      m_Event->SetPAD_DetectorNbr(DetNbr);
+      m_Event->SetPAD_Energy(RandGauss::shoot(Energy, ResoEnergy));
+      m_Event->SetPAD_TimeCFD(RandGauss::shoot(Time, ResoTime));
+      m_Event->SetPAD_TimeLED(RandGauss::shoot(Time, ResoTime));
+    }
   }
   
   // clear map for next event
@@ -704,8 +706,8 @@ void Sharc::ReadSensitive(const G4Event* event){
   
   ///////////
   // QQQ
-  G4THitsMap<G4double*>*     QQQHitMap;
-  std::map<G4int, G4double**>::iterator    QQQ_itr;
+  G4THitsMap<G4double*>* QQQHitMap;
+  std::map<G4int, G4double**>::iterator QQQ_itr;
   
   G4int QQQCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Sharc_QQQScorer/SharcQQQ");
   QQQHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(QQQCollectionID));
@@ -716,30 +718,31 @@ void Sharc::ReadSensitive(const G4Event* event){
     G4double* Info = *(QQQ_itr->second);
     
     double Energy =  Info[0];
-    double Time  = Info[1];
-    int DetNbr =     (int) Info[2];
-    int StripFront = (int) Info[3];
-    int StripBack =  (int) Info[4];
-    
-    m_Event->SetFront_DetectorNbr(DetNbr);
-    m_Event->SetFront_StripNbr(StripFront);
-    m_Event->SetFront_Energy(RandGauss::shoot(Energy, ResoEnergy));
-    m_Event->SetFront_TimeCFD(RandGauss::shoot(Time, ResoTime));
-    m_Event->SetFront_TimeLED(RandGauss::shoot(Time, ResoTime));
-    
-    m_Event->SetBack_DetectorNbr(DetNbr);
-    m_Event->SetBack_StripNbr(StripBack);
-    m_Event->SetBack_Energy(RandGauss::shoot(Energy, ResoEnergy));
-    m_Event->SetBack_TimeCFD(RandGauss::shoot(Time, ResoTime));
-    m_Event->SetBack_TimeLED(RandGauss::shoot(Time, ResoTime));
-    
-    // Interraction Coordinates
-    ms_InterCoord->SetDetectedPositionX(Info[5]) ;
-    ms_InterCoord->SetDetectedPositionY(Info[6]) ;
-    ms_InterCoord->SetDetectedPositionZ(Info[7]) ;
-    ms_InterCoord->SetDetectedAngleTheta(Info[8]/deg) ;
-    ms_InterCoord->SetDetectedAnglePhi(Info[9]/deg) ;
-    
+    if(Energy>EnergyThreshold){
+      double Time  = Info[1];
+      int DetNbr =     (int) Info[2];
+      int StripFront = (int) Info[3];
+      int StripBack =  (int) Info[4];
+      
+      m_Event->SetFront_DetectorNbr(DetNbr);
+      m_Event->SetFront_StripNbr(StripFront);
+      m_Event->SetFront_Energy(RandGauss::shoot(Energy, ResoEnergy));
+      m_Event->SetFront_TimeCFD(RandGauss::shoot(Time, ResoTime));
+      m_Event->SetFront_TimeLED(RandGauss::shoot(Time, ResoTime));
+      
+      m_Event->SetBack_DetectorNbr(DetNbr);
+      m_Event->SetBack_StripNbr(StripBack);
+      m_Event->SetBack_Energy(RandGauss::shoot(Energy, ResoEnergy));
+      m_Event->SetBack_TimeCFD(RandGauss::shoot(Time, ResoTime));
+      m_Event->SetBack_TimeLED(RandGauss::shoot(Time, ResoTime));
+      
+      // Interraction Coordinates
+      ms_InterCoord->SetDetectedPositionX(Info[5]) ;
+      ms_InterCoord->SetDetectedPositionY(Info[6]) ;
+      ms_InterCoord->SetDetectedPositionZ(Info[7]) ;
+      ms_InterCoord->SetDetectedAngleTheta(Info[8]/deg) ;
+      ms_InterCoord->SetDetectedAnglePhi(Info[9]/deg) ;
+    }
   }
   
   // clear map for next event
@@ -760,27 +763,23 @@ void Sharc::InitializeScorers(){
                                    BOX_Wafer_Length,
                                    BOX_Wafer_Width,
                                    BOX_Wafer_Back_NumberOfStrip ,
-                                   BOX_Wafer_Front_NumberOfStrip,
-                                   EnergyThreshold);
+                                   BOX_Wafer_Front_NumberOfStrip);
   
   G4VPrimitiveScorer* PADScorer =
   new  SHARC::PS_Silicon_Rectangle("SharcPAD",
                                    PAD_Wafer_Length,
                                    PAD_Wafer_Width,
                                    1 ,
-                                   1,
-                                   EnergyThreshold);
+                                   1);
   
   G4VPrimitiveScorer* QQQScorer =
   new  SHARC::PS_Silicon_Annular("SharcQQQ",
                                  QQQ_Wafer_Inner_Radius,
                                  QQQ_Wafer_Outer_Radius,
-                                 QQQ_Wafer_Stopping_Phi-QQQ_Wafer_Starting_Phi,
+                                 QQQ_Wafer_Starting_Phi,
+                                 QQQ_Wafer_Stopping_Phi,
                                  QQQ_Wafer_NumberOf_RadialStrip,
-                                 QQQ_Wafer_NumberOf_AnnularStrip,
-                                 EnergyThreshold);
-  
-  
+                                 QQQ_Wafer_NumberOf_AnnularStrip);
   
   //and register it to the multifunctionnal detector
   m_BOXScorer->RegisterPrimitive(BOXScorer);

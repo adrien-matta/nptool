@@ -24,8 +24,8 @@
 using namespace SHARC ;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-PS_Silicon_Rectangle::PS_Silicon_Rectangle(G4String name, G4double StripPlaneLength, G4double StripPlaneWidth, G4int NumberOfStripLength,G4int NumberOfStripWidth,G4double TriggerThreshold,G4int depth)
-:G4VPrimitiveScorer(name, depth), m_TriggerThreshold(TriggerThreshold),HCID(-1){
+PS_Silicon_Rectangle::PS_Silicon_Rectangle(G4String name, G4double StripPlaneLength, G4double StripPlaneWidth, G4int NumberOfStripLength,G4int NumberOfStripWidth,G4int depth)
+:G4VPrimitiveScorer(name, depth),HCID(-1){
   m_StripPlaneLength = StripPlaneLength;
   m_StripPlaneWidth = StripPlaneWidth;
   m_NumberOfStripLength = NumberOfStripLength;
@@ -51,11 +51,7 @@ G4bool PS_Silicon_Rectangle::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   G4double* EnergyAndTime = new G4double[10];
   EnergyAndTime[0] = aStep->GetTotalEnergyDeposit();
   
-  // If the energy deposit is below the threshold, the deposit is ignored
-  if (EnergyAndTime[0] < m_TriggerThreshold){
-    delete EnergyAndTime;
-    return FALSE;
-  }
+
   
   EnergyAndTime[1] = aStep->GetPreStepPoint()->GetGlobalTime();
   
@@ -74,6 +70,10 @@ G4bool PS_Silicon_Rectangle::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   m_StripLengthNumber = (int)((m_Position.x() + m_StripPlaneLength / 2.) / m_StripPitchLength ) + 1  ;
   m_StripWidthNumber = (int)((m_Position.y() + m_StripPlaneWidth / 2.) / m_StripPitchWidth ) + 1  ;
 
+  m_StripLengthNumber = m_NumberOfStripLength - m_StripLengthNumber + 1 ;
+  m_StripWidthNumber = m_NumberOfStripWidth - m_StripWidthNumber + 1 ;
+  
+  
   EnergyAndTime[2] = m_DetectorNumber;
   EnergyAndTime[3] = m_StripLengthNumber;
   EnergyAndTime[4] = m_StripWidthNumber;
@@ -84,6 +84,15 @@ G4bool PS_Silicon_Rectangle::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   if (m_StripWidthNumber == m_NumberOfStripWidth+1) m_StripWidthNumber = m_StripWidthNumber;
   
   m_Index =  aStep->GetTrack()->GetTrackID() + m_DetectorNumber * 1e3 + m_StripLengthNumber * 1e6 + m_StripWidthNumber * 1e9;
+  
+  // Check if the particle has interact before, if yes, add up the energies.
+    map<G4int, G4double**>::iterator it;
+    it= EvtMap->GetMap()->find(m_Index);
+    if(it!=EvtMap->GetMap()->end()){
+      G4double* dummy = *(it->second);
+      EnergyAndTime[0]+=dummy[0];
+    }
+  
   EvtMap->set(m_Index, EnergyAndTime);
   return TRUE;
 }
@@ -126,15 +135,16 @@ void PS_Silicon_Rectangle::PrintAll(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-PS_Silicon_Annular::PS_Silicon_Annular(G4String name, G4double StripPlaneInnerRadius, G4double StripPlaneOuterRadius, G4double DeltaTheta, G4int NumberOfStripRadial,G4int NumberOfStripTheta,G4double TriggerThreshold,G4int depth)
-:G4VPrimitiveScorer(name, depth), m_TriggerThreshold(TriggerThreshold),HCID(-1){
+PS_Silicon_Annular::PS_Silicon_Annular(G4String name, G4double StripPlaneInnerRadius, G4double StripPlaneOuterRadius, G4double PhiStart,G4double PhiStop, G4int NumberOfStripRadial,G4int NumberOfStripTheta,G4int depth)
+:G4VPrimitiveScorer(name, depth),HCID(-1){
   
   m_StripPlaneInnerRadius = StripPlaneInnerRadius;
   m_StripPlaneOuterRadius = StripPlaneOuterRadius;
-  m_DeltaTheta = DeltaTheta;
+  m_PhiStart = PhiStart;
+  m_PhiStop = PhiStop;
   m_NumberOfStripRadial = NumberOfStripRadial;
   m_NumberOfStripTheta = NumberOfStripTheta;
-  m_StripPitchRadial = DeltaTheta/m_NumberOfStripTheta;
+  m_StripPitchRadial = (m_PhiStop-m_PhiStart)/m_NumberOfStripTheta;
   m_StripPitchTheta = (m_StripPlaneOuterRadius-m_StripPlaneInnerRadius)/m_NumberOfStripRadial;
   
   m_Position = G4ThreeVector(-1000,-1000,-1000);
@@ -151,33 +161,26 @@ PS_Silicon_Annular::~PS_Silicon_Annular(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4bool PS_Silicon_Annular::ProcessHits(G4Step* aStep, G4TouchableHistory*){
-  
   // contain Energy Time, DetNbr, StripFront and StripBack
   G4double* EnergyAndTime = new G4double[10];
   EnergyAndTime[0] = aStep->GetTotalEnergyDeposit();
-  
-  // If the energy deposit is below the threshold, the deposit is ignored
-  if (EnergyAndTime[0] < m_TriggerThreshold){
-    delete EnergyAndTime;
-    return FALSE;
-  }
   
   EnergyAndTime[1] = aStep->GetPreStepPoint()->GetGlobalTime();
   
   m_DetectorNumber = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(0);
   m_Position = aStep->GetPreStepPoint()->GetPosition();
-  
+ 
   // Interaction coordinates (used to fill the InteractionCoordinates branch)
   EnergyAndTime[5] = m_Position.x();
   EnergyAndTime[6] = m_Position.y();
   EnergyAndTime[7] = m_Position.z();
   EnergyAndTime[8] = m_Position.theta();
   EnergyAndTime[9] = m_Position.phi();
-  
+    
   m_Position = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(m_Position);
-  
-  m_StripRadialNumber = (int)((m_Position.angle(m_uz) - m_DeltaTheta*0.5) / m_StripPitchRadial ) + 1  ;
-  m_StripThetaNumber = (int)((m_Position.rho()-m_StripPlaneInnerRadius) / m_StripPitchTheta ) + 1  ;
+  m_StripRadialNumber = (int) ((m_StripPlaneOuterRadius - m_Position.rho()) / m_StripPitchTheta ) + 1 ;
+
+  m_StripThetaNumber =  (int) ((m_Position.phi() - m_PhiStart*0.5) / m_StripPitchRadial ) + 1 ;
   
   EnergyAndTime[2] = m_DetectorNumber;
   EnergyAndTime[3] = m_StripRadialNumber;
@@ -188,6 +191,15 @@ G4bool PS_Silicon_Annular::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   if (m_StripThetaNumber == m_NumberOfStripTheta+1) m_StripThetaNumber = m_NumberOfStripTheta;
   
   m_Index =  aStep->GetTrack()->GetTrackID() + m_DetectorNumber * 1e3 + m_StripRadialNumber * 1e6 + m_NumberOfStripTheta * 1e9;
+  
+  // Check if the particle has interact before, if yes, add up the energies.
+  map<G4int, G4double**>::iterator it;
+  it= EvtMap->GetMap()->find(m_Index);
+  if(it!=EvtMap->GetMap()->end()){
+    G4double* dummy = *(it->second);
+    EnergyAndTime[0]+=dummy[0];
+  }
+  
   EvtMap->set(m_Index, EnergyAndTime);
   return TRUE;
 }

@@ -58,6 +58,11 @@ ClassImp(Reaction)
 Reaction::Reaction(){
   //------------- Default Constructor -------------
   
+  // Need to be done before initializePrecomputeVariable
+  fKineLine3 = 0 ;
+  fKineLine4 = 0 ;
+  
+  //
   fNuclei1              = new Beam();
   fNuclei2              = new Nucleus();
   fNuclei3              = new Nucleus();
@@ -78,8 +83,71 @@ Reaction::Reaction(){
   fCrossSectionHist = new TH1F(Form("EnergyHist_%i",offset),"Reaction_CS",1,0,180);
   fshoot3=true;
   fshoot4=true;
+ 
 }
-
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+// This constructor aim to provide a fast way to instantiate a reaction without input file
+// The string should be of the form "A(b,c)D@E" with E the ernegy of the beam in MeV
+Reaction::Reaction(string reaction){
+  // Instantiate the parameter to default  
+  // Analyse the reaction and extract revelant information
+  string A,b,c,D,E;
+  unsigned int i=0;
+  for(; i < reaction.length() ; i++){
+    if(reaction.compare(i,1,"(")!=0) A.push_back(reaction[i]);
+    else break;
+  }
+  
+  i++;
+  for(; i < reaction.length() ; i++){
+    if(reaction.compare(i,1,",")!=0) b.push_back(reaction[i]);
+    else break;
+  }
+  
+  i++;
+  for(; i < reaction.length() ; i++){
+    if(reaction.compare(i,1,")")!=0) c.push_back(reaction[i]);
+    else break;
+  }
+  
+  i++;
+  for(; i < reaction.length() ; i++){
+    if(reaction.compare(i,1,"@")!=0) D.push_back(reaction[i]);
+    else break;
+  }
+  
+  i++;
+  for(; i < reaction.length() ; i++){
+    E.push_back(reaction[i]);
+  }
+  
+  fKineLine3 = 0 ;
+  fKineLine4 = 0 ;
+  fNuclei1 = new Beam(A);
+  fNuclei2 = new Nucleus(b);
+  fNuclei3 = new Nucleus(c);
+  fNuclei4 = new Nucleus(D);
+  fBeamEnergy = atof(E.c_str());
+  fThetaCM              = 0;
+  fExcitation3          = 0;
+  fExcitation4          = 0;
+  fQValue               = 0;
+  fVerboseLevel         = NPOptionManager::getInstance()->GetVerboseLevel();
+  initializePrecomputeVariable();
+  
+  // do that to avoid warning from multiple Hist with same name...  int offset = 0;
+  int offset = 0;
+  while(gDirectory->FindObjectAny(Form("EnergyHist_%i",offset))!=0)
+    ++offset;
+  
+  fCrossSectionHist = new TH1F(Form("EnergyHist_%i",offset),"Reaction_CS",1,0,180);
+  fshoot3=true;
+  fshoot4=true;
+  
+  
+  
+  initializePrecomputeVariable();
+}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 Reaction::~Reaction(){
   //------------- Default Destructor ------------
@@ -363,6 +431,10 @@ void Reaction::ReadConfigurationFile(string Path){
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Reaction::initializePrecomputeVariable(){
+  // delete the previously calculated kinematical line:
+  if(fKineLine3!=0) {delete fKineLine3 ; fKineLine3 = 0;}
+  if(fKineLine4!=0) {delete fKineLine4 ; fKineLine4 = 0;}
+
   m1 = fNuclei1->Mass();
   m2 = fNuclei2->Mass();
   m3 = fNuclei3->Mass() + fExcitation3;
@@ -416,46 +488,51 @@ void Reaction::SetNuclei3(double EnergyLab, double ThetaLab){
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 TGraph* Reaction::GetKinematicLine3(){
-	int size = 360;
-	double x[size];
-	double y[size];
-	double theta3,E3,theta4,E4;
-	
-	for (int i = 0; i < size; ++i){
-		SetThetaCM(((double)i)/2*deg);
-		KineRelativistic(theta3, E3, theta4, E4);
-		fNuclei3->SetKineticEnergy(E3);
-		
-		x[i] = theta3/deg;
-		y[i] = E3;
-  }
   
-	TGraph* KineLine3 = new TGraph(size,x,y);
-	KineLine3->SetTitle("Kinematic Line of particule 3");
-	return(KineLine3);
+  if(fKineLine3==0){
+    int size = 360;
+    double x[size];
+    double y[size];
+    double theta3,E3,theta4,E4;
+    
+    for (int i = 0; i < size; ++i){
+      SetThetaCM(((double)i)/2*deg);
+      KineRelativistic(theta3, E3, theta4, E4);
+      fNuclei3->SetKineticEnergy(E3);
+      
+      x[i] = theta3/deg;
+      y[i] = E3;
+    }
+    
+    fKineLine3 = new TGraph(size,x,y);
+    //  fKineLine3->SetTitle("Kinematic Line of particule 3");
+  }
+	return(fKineLine3);
 }
 
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 TGraph* Reaction::GetKinematicLine4(){
-	int size = 360;
-	double x[size];
-	double y[size];
-	double theta3,E3,theta4,E4;
-  
-	for (int i = 0; i < size; ++i)
+  if(fKineLine4==0){
+    int size = 360;
+    double x[size];
+    double y[size];
+    double theta3,E3,theta4,E4;
+    
+    for (int i = 0; i < size; ++i)
       {
-		SetThetaCM(((double)i)/2*deg);
-		KineRelativistic(theta3, E3, theta4, E4);
-		fNuclei4->SetKineticEnergy(E4);
-		
-		x[i] = theta4/deg;
-		y[i] = E4;
+      SetThetaCM(((double)i)/2*deg);
+      KineRelativistic(theta3, E3, theta4, E4);
+      fNuclei4->SetKineticEnergy(E4);
+      
+      x[i] = theta4/deg;
+      y[i] = E4;
       }
-	TGraph* KineLine4= new TGraph(size,x,y);
-	KineLine4->SetTitle("Kinematic Line of particule 4");
-	return(KineLine4);
+    fKineLine4= new TGraph(size,x,y);
+    // fKineLine4->SetTitle("Kinematic Line of particule 4");
+  }
+	return(fKineLine4);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////

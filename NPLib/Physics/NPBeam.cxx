@@ -78,6 +78,38 @@ Beam::Beam(){
   fXThetaXHist = new TH2F(Form("XThetaXHis_%i",offset),"XThetaXHis",1,0,1,1,0,1);
   fYPhiYHist   = new TH2F(Form("YPhiYHist_%i",offset),"YPhiYHist",1,0,1,1,0,1);
 }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+Beam::Beam(string isotope){
+  SetUp(isotope);
+  fEnergy = 0;
+  fSigmaEnergy = -1 ;
+  fMeanX = 0 ;
+  fMeanY = 0 ;
+  fSigmaX = -1;
+  fSigmaY = -0;
+  fMeanThetaX = 0 ;
+  fMeanPhiY = 0 ;
+  fSigmaThetaX = -1 ;
+  fSigmaPhiY = -1 ;
+  fTargetSize = 0 ;
+  fEffectiveTargetSize = 0 ;
+  fTargetThickness = 0 ;
+  fEffectiveTargetThickness = 0 ;
+  fTargetAngle = 0 ;
+  fTargetZ = 0 ;
+  fVerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
+  
+  // case of user given distribution
+  // do that to avoid warning from multiple Hist with same name...
+  int offset = 0;
+  while(gDirectory->FindObjectAny(Form("EnergyHist_%i",offset))!=0)
+    ++offset;
+  
+  fEnergyHist  = new TH1F(Form("EnergyHist_%i",offset),"EnergyHist",1,0,1);
+  fXThetaXHist = new TH2F(Form("XThetaXHis_%i",offset),"XThetaXHis",1,0,1,1,0,1);
+  fYPhiYHist   = new TH2F(Form("YPhiYHist_%i",offset),"YPhiYHist",1,0,1,1,0,1);
+}
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 Beam::~Beam(){

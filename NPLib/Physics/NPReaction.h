@@ -58,6 +58,9 @@ namespace NPL{
     
   public:  // Constructors and Destructors
    Reaction();
+    // This constructor aim to provide a fast way to instantiate a reaction without input file
+    // The string should be of the form "A(b,c)D@E" with E the ernegy of the beam in MeV
+   Reaction(string);
    virtual ~Reaction();
     
   public:  // Various Method
@@ -70,11 +73,14 @@ namespace NPL{
     bool fshoot3;
     bool fshoot4;
     
+  private: // use to display the kinematical line
+    TGraph* fKineLine3 ;
+    TGraph* fKineLine4 ;
   private:
-    Beam    *fNuclei1;                 // Beam
-    Nucleus *fNuclei2;                 // Target
-    Nucleus *fNuclei3;                 // Light ejectile
-    Nucleus *fNuclei4;                 // Heavy ejectile
+    Beam*    fNuclei1;                 // Beam
+    Nucleus* fNuclei2;                 // Target
+    Nucleus* fNuclei3;                 // Light ejectile
+    Nucleus* fNuclei4;                 // Heavy ejectile
     double   fQValue;                  // Q-value in MeV
     double   fBeamEnergy;              // Beam energy in MeV
     double   fThetaCM;                 // Center-of-mass angle in radian

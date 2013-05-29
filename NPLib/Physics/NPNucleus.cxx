@@ -69,6 +69,12 @@ void Nucleus::SetUp(string isotope){
   //----------- Constructor Using nubtab03.asc by name----------
   // open the file to read and check if it is open
   
+  // Replace the p,d,t,a by there standard name:
+       if(isotope=="p") isotope="1H";
+  else if(isotope=="d") isotope="2H";
+  else if(isotope=="t") isotope="3H";
+  else if(isotope=="a") isotope="4He";
+  
   const char* Isotope = isotope.c_str();
   
   ifstream inFile;

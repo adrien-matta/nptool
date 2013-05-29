@@ -616,7 +616,7 @@ void Target::WriteDEDXTable(G4ParticleDefinition* Particle ,G4double Emin,G4doub
     
     G4EmCalculator emCalculator;
     
-    for (G4double E=Emin; E < Emax; E+=(Emax-Emin)/10.){
+    for (G4double E=Emin; E < Emax; E+=(Emax-Emin)/1000.){
       G4double dedx = emCalculator.ComputeTotalDEDX(E, Particle, m_TargetMaterial);
       File << E/MeV << "\t" << dedx/(MeV/micrometer) << endl ;
     }

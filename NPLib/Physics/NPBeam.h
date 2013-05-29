@@ -45,6 +45,7 @@ namespace NPL{
     
   public:  // Constructors and Destructors
     Beam();
+    Beam(string);
     ~Beam();
     
   public:  // Various Method

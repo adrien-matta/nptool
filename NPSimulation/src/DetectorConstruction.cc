@@ -63,6 +63,7 @@
 #include "ThinSi.hh"
 #include "Sharc.hh"
 #include "Shield.hh"
+#include "Tigress.hh"
 #include "W1.hh"
 
 // STL
@@ -187,7 +188,8 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
   bool cParis            = false;   
   bool cS1               = false;
   bool cSharc            = false;
-  bool cShield           = false;  
+  bool cShield           = false;
+  bool cTigress          = false;
   bool cW1               = false;
   bool cHelios           = false;
   
@@ -463,9 +465,30 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
       AddDetector(myDetector);
 #endif
     }
+    
+    ////////////////////////////////////////////
+    ////////// Search for Tigress    ///////////
+    ////////////////////////////////////////////
+    else if (LineBuffer.compare(0,7, "Tigress") == 0 && cTigress == false) {
+#ifdef INC_TIGRESS
+      cTigress = true ;
+      if(VerboseLevel==1) cout << endl << "//////// Tigress ////////" << endl << endl   ;
+      
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector = new Tigress();
+      
+      // Read Position of detector
+      ConfigFile.close();
+      myDetector->ReadConfiguration(Path);
+      ConfigFile.open(Path.c_str());
+      
+      // Add array to the VDetector Vector
+      AddDetector(myDetector);
+#endif
+    }
 
     ////////////////////////////////////////////
-    ////////// Search for Plastic      ///////////
+    ////////// Search for Plastic    ///////////
     ////////////////////////////////////////////
     else if (LineBuffer.compare(0, 19, "ScintillatorPlastic") == 0 && cPlastic == false) {
 #ifdef INC_PLASTIC

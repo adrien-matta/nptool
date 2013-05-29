@@ -6,7 +6,7 @@ ClassImp(DataProcessor);
 DataProcessor::DataProcessor(){
   m_InputChain = 0 ;
   m_OutputTree = 0 ;
-  m_ProofFile = 0 ;
+  m_ProofFile  = 0 ;
   m_OutputFile = 0 ;
 }
 
@@ -16,8 +16,6 @@ DataProcessor::~DataProcessor(){
 
 //_____________________________________________________________________________
 void DataProcessor::SlaveBegin(TTree*){
-  
-
   
   TString NPLPath = gSystem->Getenv("NPTOOL");
   gROOT->ProcessLine(Form(".x %s/NPLib/scripts/NPToolLogon.C+", NPLPath.Data()));
@@ -47,9 +45,9 @@ void DataProcessor::SlaveBegin(TTree*){
   m_OutputTree = RootOutput::getInstance()->GetTree();
   
   //Merging via file:
-    UInt_t opt = TProofOutputFile::kRegister | TProofOutputFile::kOverwrite | TProofOutputFile::kVerify;
-    m_ProofFile = new TProofOutputFile("Local.root",TProofOutputFile::kDataset, opt );
-    m_OutputFile = m_ProofFile->OpenFile("RECREATE");
+  UInt_t opt = TProofOutputFile::kRegister | TProofOutputFile::kOverwrite | TProofOutputFile::kVerify;
+  m_ProofFile = new TProofOutputFile("Local.root",TProofOutputFile::kDataset, opt );
+  m_OutputFile = m_ProofFile->OpenFile("RECREATE");
   
   m_OutputTree->SetDirectory(m_OutputFile);
   m_OutputTree->AutoSave();
@@ -98,7 +96,7 @@ void DataProcessor::SlaveTerminate(){
   m_OutputFile->cd();
   m_OutputTree->Write();
   m_OutputFile->Flush();
-    GetOutputList()->Add(m_ProofFile);
+  GetOutputList()->Add(m_ProofFile);
   m_OutputFile->Close();
   RootOutput::getInstance()->Destroy();
   RootInput::getInstance()->Destroy();

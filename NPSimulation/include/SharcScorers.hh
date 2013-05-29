@@ -26,15 +26,17 @@
  *****************************************************************************/
 #include "G4VPrimitiveScorer.hh"
 #include "G4THitsMap.hh"
+
+#include <map>
+using namespace std;
+
 namespace SHARC {
   //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-  //   This Threshold is used in the above scorer. Any energy deposit under this threshold will not create an entry.
-  const double TriggerThreshold = 0.1*keV ;
   
   class PS_Silicon_Rectangle : public G4VPrimitiveScorer{
     
   public: // with description
-    PS_Silicon_Rectangle(G4String name, G4double StripPlaneLength, G4double StripPlaneWidth, G4int NumberOfStripLength,G4int NumberOfStripWidth,G4double TriggerThreshold,G4int depth=0);
+    PS_Silicon_Rectangle(G4String name, G4double StripPlaneLength, G4double StripPlaneWidth, G4int NumberOfStripLength,G4int NumberOfStripWidth,G4int depth=0);
      ~PS_Silicon_Rectangle();
     
   protected: // with description
@@ -74,7 +76,7 @@ namespace SHARC {
   class PS_Silicon_Annular : public G4VPrimitiveScorer{
     
   public: // with description
-    PS_Silicon_Annular(G4String name, G4double StripPlaneInnerRadius, G4double StripPlaneOuterRadius, G4double DeltaTheta, G4int NumberOfStripRadial,G4int NumberOfStripTheta,G4double TriggerThreshold,G4int depth=0);
+    PS_Silicon_Annular(G4String name, G4double StripPlaneInnerRadius, G4double StripPlaneOuterRadius, G4double PhiStart,G4double PhiStop, G4int NumberOfStripRadial,G4int NumberOfStripTheta,G4int depth=0);
     ~PS_Silicon_Annular();
     
   protected: // with description
@@ -93,7 +95,8 @@ namespace SHARC {
   private: // Geometry of the detector
     G4double m_StripPlaneInnerRadius;
     G4double m_StripPlaneOuterRadius;
-    G4double m_DeltaTheta;
+    G4double m_PhiStart;
+    G4double m_PhiStop;
     G4int m_NumberOfStripRadial;
     G4int m_NumberOfStripTheta;
     G4double m_StripPitchRadial;
@@ -102,13 +105,13 @@ namespace SHARC {
   private: // inherited from G4VPrimitiveScorer
     G4int HCID;
     G4THitsMap<G4double*>* EvtMap;
-    
+
   private: // Needed for intermediate calculation (avoid multiple instantiation in Processing Hit)
     G4ThreeVector m_Position  ;
-    G4ThreeVector m_uz;
+    G4ThreeVector m_uz        ;
     G4int m_DetectorNumber    ;
     G4int m_StripRadialNumber ;
-    G4int m_StripThetaNumber ;
+    G4int m_StripThetaNumber  ;
     G4int m_Index             ;
     
   };

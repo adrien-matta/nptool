@@ -124,8 +124,14 @@ public:
   
   TVector3 GetBeamDirection         () const ;
   TVector3 GetParticleDirection     (const int &i) const ;
-  double GetThetaLab_WorldFrame     (const int &i) const ;
-  double GetThetaLab_IncidentFrame  (const int &i) const ;
+  
+  double GetThetaLab_WorldFrame (const int &i) const {
+    return (GetParticleDirection(i).Angle(TVector3(0,0,1)))/deg;
+  }
+
+  double GetThetaLab_IncidentFrame (const int &i) const{
+    return (GetParticleDirection(i).Angle(GetBeamDirection()))/deg;
+  }
   
   unsigned int GetEmittedMult() const {return fIC_Particle_Name.size();}
   

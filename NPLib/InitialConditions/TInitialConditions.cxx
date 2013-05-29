@@ -113,16 +113,6 @@ TVector3 TInitialConditions::GetParticleDirection (const int &i) const {
 }
 
 
-double TInitialConditions::GetThetaLab_WorldFrame (const int &i) const {
-  return (GetParticleDirection(i).Angle(TVector3(0,0,1)))/deg;
-  
-}
 
-
-
-
-double TInitialConditions::GetThetaLab_IncidentFrame (const int &i) const{
-  return (GetParticleDirection(i).Angle(GetBeamDirection()))/deg;
-}
 
 

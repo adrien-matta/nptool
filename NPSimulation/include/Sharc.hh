@@ -46,7 +46,10 @@ namespace SHARC
   // Energy and time Resolution
   const G4double ResoTime    = 0      ;
   const G4double ResoEnergy  = 0.035*MeV ;// = zzkeV of Resolution   //   Unit is MeV/2.35
-  const G4double EnergyThreshold = 0.4*MeV;
+  //const G4double EnergyThreshold = 0.4*MeV;
+  
+  // Change for TRex simulations
+  const G4double EnergyThreshold = 0.5*MeV;
   // Geometry
   
   // BOX //
@@ -124,7 +127,7 @@ namespace SHARC
 
   // QQQ Wafer
   const G4double QQQ_Wafer_Outer_Radius = 42.63*mm;
-  const G4double QQQ_Wafer_Inner_Radius = 7.8*mm;
+  const G4double QQQ_Wafer_Inner_Radius = 9.0*mm;
   const G4double QQQ_Wafer_Starting_Phi = 8*deg;
   const G4double QQQ_Wafer_Stopping_Phi = 162*deg;
   const G4int    QQQ_Wafer_NumberOf_RadialStrip = 16 ;
