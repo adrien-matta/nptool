@@ -52,6 +52,10 @@
 using namespace NPUNITS;
 #endif
 
+// ROOT
+#include"TF1.h"
+
+
 ClassImp(Reaction)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -372,7 +376,13 @@ void Reaction::ReadConfigurationFile(string Path){
         string FileName,HistName;
         ReactionFile >> FileName >> HistName;
         if(fVerboseLevel==1) cout << "Reading Cross Section file: " << FileName << endl;
-        SetCrossSectionHist( Read1DProfile(FileName, HistName ));
+        TH1F* CStemp = Read1DProfile(FileName, HistName );
+        
+        // multiply CStemp by sin(theta)
+        TF1* fsin = new TF1("sin",Form("1/(sin(x*%f/180.))",M_PI),0,180);
+        CStemp->Divide(fsin,1);
+        SetCrossSectionHist(CStemp);
+        delete fsin;
       }
       
       else if (DataBuffer.compare(0, 17, "HalfOpenAngleMin=") == 0) {

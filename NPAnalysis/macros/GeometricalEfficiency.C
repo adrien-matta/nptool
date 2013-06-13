@@ -27,6 +27,7 @@
  *****************************************************************************/
 
 #include <iostream>
+#include <fstream>
 #include <cmath>
 
 #include "TROOT.h"
@@ -44,68 +45,83 @@
 
 using namespace std ;
 
-void GeometricalEfficiency(const char * fname = "myResult")
-{
-   // Open output ROOT file from NPTool simulation run
-   TString path = gSystem->Getenv("NPTOOL");
-   path += "/Outputs/Simulation/";
-   TString inFileName = fname;
-   if (!inFileName.Contains("root")) inFileName += ".root";
-   TFile *inFile = new TFile(path + inFileName);
-   TTree *tree   = (TTree*) inFile->Get("SimulatedTree");
+void GeometricalEfficiency(const char * fname = "myResult"){
+  // Open output ROOT file from NPTool simulation run
+  TString path = gSystem->Getenv("NPTOOL");
+  path += "/Outputs/Simulation/";
+  TString inFileName = fname;
+  if (!inFileName.Contains("root")) inFileName += ".root";
+  TFile *inFile = new TFile(path + inFileName);
+  TTree *tree   = (TTree*) inFile->Get("SimulatedTree");
+  
+  // Connect the branches of the TTree and activate then if necessary
+  // TInitialConditions branch
+  TInitialConditions *initCond = 0;
+  tree->SetBranchAddress("InitialConditions", &initCond);
+  tree->SetBranchStatus("InitialConditions", true);
+  // TInteractionCoordinates branch
+  TInteractionCoordinates *interCoord = 0;
+  tree->SetBranchAddress("InteractionCoordinates", &interCoord);
+  tree->SetBranchStatus("InteractionCoordinates", true);
+  
+  // Prepare histograms
+  TH1F *hDetecTheta = new TH1F("hDetecTheta", "DetecTheta", 180, 0, 180);
+  TH1F *hDetecThetaCM = new TH1F("hDetecThetaCM", "hDetecThetaCM", 90, 0, 180);
+  TH1F *hEmittTheta = new TH1F("hEmittTheta", "EmittTheta", 180, 0, 180);
+  TH1F *hEmittThetaCM = new TH1F("hEmittThetaCM", "hEmittThetaCM", 180, 0, 180);
+  
+  // Read the TTree
+  Int_t nentries = tree->GetEntries();
+  // cout << "TTree contains " << nentries << " events" << endl;
+  for (Int_t i = 0; i < nentries; i++) {
+    //if (i%1000 == 0) cout << "Entry " << i << endl;
+    tree->GetEntry(i);
+    // Fill histos
+    hEmittTheta->Fill(initCond->GetThetaLab_WorldFrame(0));
+    hEmittTheta->Fill(initCond->GetThetaCM(0));
 
-   // Connect the branches of the TTree and activate then if necessary
-   // TInitialConditions branch
-   TInitialConditions *initCond = 0;
-   tree->SetBranchAddress("InitialConditions", &initCond);
-   tree->SetBranchStatus("InitialConditions", true);
-   // TInteractionCoordinates branch
-   TInteractionCoordinates *interCoord = 0;
-   tree->SetBranchAddress("InteractionCoordinates", &interCoord);
-   tree->SetBranchStatus("InteractionCoordinates", true);
-
-   // Prepare histograms
-   TH1F *hDetecTheta = new TH1F("hDetecTheta", "DetecTheta", 180, 0, 180);
-   TH1F *hEmittTheta = new TH1F("hEmittTheta", "EmittTheta", 180, 0, 180);
-
-   // Read the TTree
-   Int_t nentries = tree->GetEntries();
- // cout << "TTree contains " << nentries << " events" << endl;
-   for (Int_t i = 0; i < nentries; i++) {
-      //if (i%1000 == 0) cout << "Entry " << i << endl;
-      tree->GetEntry(i);
-      // Fill histos
-     hEmittTheta->Fill(initCond->GetThetaLab_WorldFrame(0));
-          
-      if (interCoord->GetDetectedMultiplicity() > 0)
-         hDetecTheta->Fill(interCoord->GetDetectedAngleTheta(0));
-   }
-
-   TCanvas* c1 = new TCanvas("c1", "c1");
-   // Compute relative efficiency in %
-   TH1F *efficiency = new TH1F("hEfficiency", "Efficiency", 180, 0, 180);
-//   efficiency->SetTitle("Efficiency GASPARD (Spheric version);#Theta [deg];#epsilon [%]");
-   efficiency->SetTitle("Efficiency GASPARD;#Theta [deg];#epsilon [%]");
-   efficiency->Divide(hDetecTheta,hEmittTheta,100);
-   efficiency->SetMaximum(110);
-   efficiency->Draw();
-
-
-   TCanvas* c2 = new TCanvas("c2", "c2");
-   hEmittTheta->Draw();
-   hDetecTheta->SetLineColor(kRed);
-   hDetecTheta->Draw("same");
+    if (interCoord->GetDetectedMultiplicity() > 0){
+      hDetecTheta->Fill(interCoord->GetDetectedAngleTheta(0));
+      hDetecThetaCM->Fill(initCond->GetThetaCM(0));
+    }
+  }
+  
+  TCanvas* c1 = new TCanvas("c1", "c1");
+  // Compute relative efficiency in %
+  TH1F *efficiency = new TH1F("hEfficiency", "Efficiency", 180, 0, 180);
+  //   efficiency->SetTitle("Efficiency GASPARD (Spheric version);#Theta [deg];#epsilon [%]");
+  efficiency->SetTitle("Efficiency;#Theta [deg];#epsilon [%]");
+  efficiency->Divide(hDetecTheta,hEmittTheta,100);
+  efficiency->SetMaximum(110);
+  efficiency->Draw();
+  
+  
+  TCanvas* c2 = new TCanvas("c2", "c2");
+  hEmittTheta->Draw();
+  hDetecTheta->SetLineColor(kRed);
+  hDetecTheta->Draw("same");
   
   TCanvas* c3 = new TCanvas("c3", "c3");
   TH1F* SolidA = new TH1F(*hDetecTheta);
   SolidA->Sumw2();
   TF1* C = new TF1("C",Form("%i /(4*%f)",nentries,M_PI),0,180);
   SolidA->Divide(C,1);
-  SolidA->Rebin(2);
+  // SolidA->Rebin(2);
   SolidA->Draw();
   TF1* f = new TF1("f",Form("2 * %f * sin(x*%f/180.) *2*%f/180.",M_PI,M_PI,M_PI),0,180);
   f->Draw("SAME");
   SolidA->GetXaxis()->SetTitle("#theta_{Lab} (deg)");
   SolidA->GetYaxis()->SetTitle("d#Omega (sr) ");
   c3->Update();
+  
+  
+  ofstream output;
+  output.open("data.txt");
+  
+  for(int i = 1 ; i < 90 ; i++)
+    output << hDetecThetaCM->GetBinCenter(i) << " "
+           << hDetecThetaCM->GetBinContent(i)<< endl ;
+  
+  
+  output.close();
 }
