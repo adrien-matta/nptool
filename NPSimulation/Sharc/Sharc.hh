@@ -32,6 +32,7 @@
 #include "G4RotationMatrix.hh"
 #include "G4LogicalVolume.hh"
 #include "G4VisAttributes.hh"
+#include "G4MultiFunctionalDetector.hh"
 
 // NPSimulation header
 #include "VDetector.hh"

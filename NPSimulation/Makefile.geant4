@@ -6,6 +6,9 @@
 ROOTCONFIG   := root-config
 ARCH         := $(shell $(ROOTCONFIG) --arch)
 
+#COPYFILES	= CopyIncSrcFiles
+
+# G4 makefile
 name := Simulation
 G4TARGET := $(name)
 G4EXLIB := true
@@ -30,7 +33,12 @@ endif
 EXTRALIBS = $(shell root-config --glibs) -lMathMore
 EXTRALIBS += `$(NPTOOL)/NPLib/liblist`
 .PHONY: all
+#all: $(COPYFILES) lib bin
 all: lib bin
+
+# copying files associated to selected detectors
+#CopyIncSrcFiles:
+#	./copyfiles.sh
 
 cleanVRML:
 	rm -r *.wrl

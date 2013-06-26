@@ -48,23 +48,70 @@
 
 // Detector class
 #include "../../NPLib/DetectorList.inc"
-#include "AnnularS1.hh"
 #include "Chamber.hh"
+
+#ifdef INC_ANNULARS1
+#include "AnnularS1.hh"
+#endif
+
+#ifdef INC_COMPTONTELESCOPE
 #include "ComptonTelescope.hh"
+#endif
+
+#ifdef INC_DUMMYDETECTOR
 #include "DummyDetector.hh"
+#endif
+
+#ifdef INC_EUROGAM
 #include "Eurogam.hh"
+#endif
+
+#ifdef INC_GASPARD
 #include "GaspardTracker.hh"
+#endif
+
+#ifdef INC_HELIOS
 #include "Helios.hh"
+#endif
+
+#ifdef INC_HYDE2
 #include "Hyde2Tracker.hh"
+#endif
+
+#ifdef INC_MUST2
 #include "MUST2Array.hh"
+#endif
+
+#ifdef INC_PARIS
 #include "Paris.hh"
+#endif
+
+#ifdef INC_PLASTIC
 #include "Plastic.hh"
+#endif
+
 #include "Target.hh"
+
+#ifdef INC_SSSD
 #include "ThinSi.hh"
+#endif
+
+#ifdef INC_SHARC
 #include "Sharc.hh"
+#endif
+
+#ifdef INC_SHIELD
 #include "Shield.hh"
+#endif
+
+#ifdef INC_TIGRESS
 #include "Tigress.hh"
+#endif
+
+#ifdef INC_W1
 #include "W1.hh"
+#endif
+
 
 // STL
 #include<cstdlib>
@@ -216,6 +263,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
     ////////////////////////////////////////////
     else if (LineBuffer.compare(0, 16, "TheDUMMYDetector") == 0 && cDummy == false) {
       cDummy = true ;
+#ifdef INC_DUMMYDETECTOR
       if(VerboseLevel==1)  cout << endl << "//////// DUMMY DETECTOR ////////" << endl << endl   ;
       
       // Instantiate the new array as a VDetector Object
@@ -228,6 +276,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
       
       // Add array to the VDetector Vector
       AddDetector(myDetector)                            ;
+#endif
     }
     
     

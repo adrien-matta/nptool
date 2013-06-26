@@ -54,7 +54,6 @@
 #include "GeneralScorers.hh"
 #include "GaspardScorers.hh"
 #include "RootOutput.h"
-#include "MUST2Array.hh"
 
 // CLHEP
 #include "CLHEP/Random/RandGauss.h"

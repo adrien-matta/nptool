@@ -29,7 +29,6 @@
 
 //G4 sensitive
 #include "G4SDManager.hh"
-#include "G4MultiFunctionalDetector.hh"
 
 //G4 various object
 #include "G4MaterialTable.hh"
