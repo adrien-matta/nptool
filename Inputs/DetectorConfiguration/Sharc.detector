@@ -17,22 +17,22 @@ Sharc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %Upstream CD
   SharcQQQ
-    Z= -66
+    Z= -62
     R= 0
     Phi= 0
     ThicknessDector= 500
   SharcQQQ
-    Z= -66
+    Z= -62
     R= 0
     Phi= 90
     ThicknessDector= 500
   SharcQQQ
-    Z= -66
+    Z= -62
     R= 0
     Phi= 180
     ThicknessDector= 500
   SharcQQQ
-    Z= -66
+    Z= -62
     R= 0
     Phi= 270
     ThicknessDector= 500

@@ -695,10 +695,10 @@ void TSharcPhysics::AddBoxDetector(double Z)
     m_NumberOfDetector++;
     if(Z<0){// Up Stream
       
-      if(i==0)      {U=TVector3(1,0,0);V=TVector3(0,0,1);  Strip_1_1=TVector3(-36.,42.5,-56.)   ;}
-      else if(i==1) {U=TVector3(0,1,0);V=TVector3(0,0,1);  Strip_1_1=TVector3(-42.5,-36.,-56.)  ;}
-      else if(i==2) {U=TVector3(-1,0,0);V=TVector3(0,0,1); Strip_1_1=TVector3(36.,-42.5,-56.)   ;}
-      else if(i==3) {U=TVector3(0,-1,0);V=TVector3(0,0,1); Strip_1_1=TVector3(42.5,36.,-56.)    ;}
+      if(i==0)      {U=TVector3(1,0,0);V=TVector3(0,0,1);  Strip_1_1=TVector3(-36.,40.5,-60)   ;}
+      else if(i==1) {U=TVector3(0,1,0);V=TVector3(0,0,1);  Strip_1_1=TVector3(-40.5,-36.,-60.)  ;}
+      else if(i==2) {U=TVector3(-1,0,0);V=TVector3(0,0,1); Strip_1_1=TVector3(36.,-40.5,-60.)   ;}
+      else if(i==3) {U=TVector3(0,-1,0);V=TVector3(0,0,1); Strip_1_1=TVector3(40.5,36.,-60.)    ;}
     }
     
     if(Z>0){//Down Stream

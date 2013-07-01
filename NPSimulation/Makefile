@@ -12,7 +12,7 @@ DelIncSrcFiles:
 	./scripts/deletefiles.sh
 
 NPSimulation:
-	make -f Makefile.geant4
+	make -j -f Makefile.geant4
 
 clean:
 	./scripts/deletefiles.sh

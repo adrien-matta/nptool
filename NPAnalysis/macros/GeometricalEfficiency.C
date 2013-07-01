@@ -89,24 +89,21 @@ void GeometricalEfficiency(const char * fname = "myResult"){
   TCanvas* c1 = new TCanvas("c1", "c1");
   // Compute relative efficiency in %
   TH1F *efficiency = new TH1F("hEfficiency", "Efficiency", 180, 0, 180);
-  //   efficiency->SetTitle("Efficiency GASPARD (Spheric version);#Theta [deg];#epsilon [%]");
   efficiency->SetTitle("Efficiency;#Theta [deg];#epsilon [%]");
   efficiency->Divide(hDetecTheta,hEmittTheta,100);
   efficiency->SetMaximum(110);
   efficiency->Draw();
-  
   
   TCanvas* c2 = new TCanvas("c2", "c2");
   hEmittTheta->Draw();
   hDetecTheta->SetLineColor(kRed);
   hDetecTheta->Draw("same");
   
-  TCanvas* c3 = new TCanvas("c3", "c3");
+  TCanvas* c3 = new TCanvas("c3", "Lab Frame (use with source)");
   TH1F* SolidA = new TH1F(*hDetecTheta);
   SolidA->Sumw2();
   TF1* C = new TF1("C",Form("%i /(4*%f)",nentries,M_PI),0,180);
   SolidA->Divide(C,1);
-  // SolidA->Rebin(2);
   SolidA->Draw();
   TF1* f = new TF1("f",Form("2 * %f * sin(x*%f/180.) *2*%f/180.",M_PI,M_PI,M_PI),0,180);
   f->Draw("SAME");
@@ -114,14 +111,14 @@ void GeometricalEfficiency(const char * fname = "myResult"){
   SolidA->GetYaxis()->SetTitle("d#Omega (sr) ");
   c3->Update();
   
-  
-  ofstream output;
-  output.open("data.txt");
-  
-  for(int i = 1 ; i < 90 ; i++)
-    output << hDetecThetaCM->GetBinCenter(i) << " "
-           << hDetecThetaCM->GetBinContent(i)<< endl ;
-  
-  
-  output.close();
+  TCanvas* c4 = new TCanvas("c4", "CM Frame (use with reaction)");
+  TH1F* SolidACM = new TH1F(*hDetecThetaCM);
+  SolidACM->Sumw2();
+  TF1* CCM = new TF1("CCM",Form("%i /(4*%f)",nentries,M_PI),0,180);
+  SolidACM->Divide(C,1);
+  SolidACM->Draw();
+  f->Draw("SAME");
+  SolidACM->GetXaxis()->SetTitle("#theta_{Lab} (deg)");
+  SolidACM->GetYaxis()->SetTitle("d#Omega (sr) ");
+  c4->Update();
 }
