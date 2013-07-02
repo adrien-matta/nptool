@@ -8,15 +8,14 @@
 # *****************************************************************************
 # * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
 # *                                                                           *
-# * Creation Date  : 16/11/10                                                 *
+# * Creation Date  : 26/06/13                                                 *
 # * Last update    :                                                          *
 # *---------------------------------------------------------------------------*
-# * Decription: This script loops on all subdirectories containing a Makefile *
-# *             and call it with the argument passed to the script.           *
-# *             Supported arguments are:                                      *
-# *               + no arguments: compile everything                          *
-# *               + clean: remove temporary files but not shared library      *
-# *               + distclean: remove temporary files and shared library      *
+# * Decription: This script loops on all subdirectories and make a symbolic   *
+# *             link of headers and source files to the include and src       *
+# *             directories, respectively                                     *
+# *             Files are copied *only* if the detector has been selected     *
+# *             during the NPLib configuration step                           *
 # *                                                                           *
 # *---------------------------------------------------------------------------*
 # * Comment:                                                                  *
@@ -26,13 +25,13 @@
 
 #! /bin/bash
 
-# read .detector_libs or .core_libs file created by the configure script
+# read .detector_libs file created by the $NPLib/configure script
 if [ $# = 0 ] ; then
    file="../NPLib/.detector_libs"
 fi ;
 read -r detectorlibs < "$file" 
 
-# loop recursively on Makefile files in sub-directories
+# loop on all sub-directories
 for dir in *
 do
    # only treat directories
@@ -43,13 +42,24 @@ do
       # only copy files associated to defined detector libraries
       if echo "$detectorlibs" | grep -q "$ldir" ; then
          # print informations
-         echo "\tCopying files from $ldir directory..."
+         echo " + Copying files from $ldir directory..."
          # enter directory
          cd $dir
-         # copy include files
-         cp *.hh ../include
-         # copy source files
-         cp *.cc ../src
+         # loop on files in directory
+	 for file in *
+	 do
+	    # get file extension
+	    ext=${file##*.}
+            # test if this is a header file
+	    if [ $ext = hh ]; then
+	       path="../$dir/$file"
+	       ln -s $path ../include
+	    # test if this is a source file
+	    elif [ $ext = cc ]; then
+	       path="../$dir/$file"
+	       ln -s $path ../src
+	    fi ;
+	 done
          # go back to top directory
          cd ../
       fi ;

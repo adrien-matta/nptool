@@ -126,10 +126,10 @@ void Tigress::ReadConfiguration(string Path){
   bool check_CloverId = false;
   
   vector<int> CloverId;
-  int    CloverId_Free;
-  double R;
-  double Theta;
-  double Phi;
+  int    CloverId_Free = 0;
+  double R     = 0;
+  double Theta = 0;
+  double Phi   = 0;
   double BetaX;
   double BetaY;
   double BetaZ;
@@ -336,11 +336,12 @@ void Tigress::ReadConfiguration(string Path){
           LineStream >> DataBuffer;
           m_RightFrame=atoi(DataBuffer.c_str());
           
-          if(VerboseLevel==1)
+          if (VerboseLevel==1) {
             if(m_RightFrame)
               cout << "Right frame: yes" << endl;
             else
               cout << "Right frame: no" << endl;
+	  }
         }
         
         else if ( DataBuffer == "LeftFrame=" ) {
@@ -349,11 +350,12 @@ void Tigress::ReadConfiguration(string Path){
           LineStream >> DataBuffer;
           m_LeftFrame=atoi(DataBuffer.c_str());
           
-          if(VerboseLevel==1)
+          if (VerboseLevel==1) {
             if(m_LeftFrame)
               cout << "Left frame: yes" << endl;
             else
               cout << "Left frame: no" << endl;
+	  }
         }
         
         ///////////////////////////////////////////////////
@@ -497,6 +499,7 @@ G4VSolid* Tigress::ConstructCapsule(){
 // Return a G4VSolid modeling the BGO
 G4VSolid* Tigress::ConstructBGO(){
   
+   return 0;
   
   
 }
@@ -797,6 +800,7 @@ void Tigress::InitializeRootOutput(){
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
 void Tigress::ReadSensitive(const G4Event* event){
+   event->GetHCofThisEvent(); // event should be used to remove compilation warning
   /*m_Event->Clear();
   
   ///////////
