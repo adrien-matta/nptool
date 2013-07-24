@@ -5,6 +5,7 @@
 #include "G4UImanager.hh"
 #include "G4UIterminal.hh"
 #include "G4UItcsh.hh"
+
 #ifdef G4VIS_USE
 #include "G4VisExecutive.hh"
 #endif
@@ -20,9 +21,6 @@
 
 // G4 General Source
 #include "SteppingVerbose.hh"
-#ifdef G4VIS_USE
-#include "G4VisExecutive.hh"
-#endif
 
 // NPS headers
 #include "EventAction.hh"

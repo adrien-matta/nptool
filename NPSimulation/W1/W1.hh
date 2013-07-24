@@ -29,6 +29,9 @@
 // NPTool header
 #include "VDetector.hh"
 
+// Geant4 headers
+#include "G4MultiFunctionalDetector.hh"
+
 // NPTool - ROOT headers
 #include "TW1Data.h"
 
