@@ -69,6 +69,10 @@ private:
     G4ParticleGun* m_particleGun;
     // Host the Initial conditions TObject
     TInitialConditions* m_InitialConditions;
+    // Needed to now if the IC has to be cleared or not
+    // true if the particle to be added is the first one
+    bool m_First;
+  
 private: // Private Member
     vector<Particle> m_ParticleStack;
 

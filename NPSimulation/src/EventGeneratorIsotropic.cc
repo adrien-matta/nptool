@@ -224,6 +224,7 @@ void EventGeneratorIsotropic::GenerateEvent(G4Event*){
   
   Particle particle(m_particle, theta,particle_energy,G4ThreeVector(momentum_x, momentum_y, momentum_z),G4ThreeVector(m_x0, m_y0, m_z0));
   
+  
   m_ParticleStack->AddParticleToStack(particle);
 }
 

@@ -53,8 +53,13 @@ ParticleStack::ParticleStack(){
   
   // Instantiate the TInitialConditions object and link it to the RootOutput tree
   m_InitialConditions = new TInitialConditions();
-  RootOutput::getInstance()->GetTree()->Branch("InitialConditions","TInitialConditions",&m_InitialConditions);}
+  RootOutput::getInstance()->GetTree()->Branch("InitialConditions","TInitialConditions",&m_InitialConditions);
+  
+  m_First=true;
 
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 ParticleStack::~ParticleStack(){
   
 }
@@ -71,14 +76,23 @@ void ParticleStack::SetParticleStack(vector<Particle> particle_stack){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void ParticleStack::AddParticleToStack(Particle& particle){
+  
+  // If the particle is the first one to be added, then the IC are cleared  
+  if(m_First)
+    m_InitialConditions->Clear();
+  
   m_ParticleStack.push_back(particle);
+  
+  m_First=false;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void ParticleStack::AddBeamParticleToStack(Particle& particle){
-  m_InitialConditions->Clear();
-  m_ParticleStack.push_back(particle);
+  // If the particle is the first one to be added, then the IC are cleared
+  if(m_First)
+    m_InitialConditions->Clear();
   
+  m_ParticleStack.push_back(particle);
   // Incident beam parameter
   m_InitialConditions-> SetIncidentParticleName   (particle.GetParticleDefinition()->GetParticleName());
   m_InitialConditions-> SetIncidentInitialKineticEnergy  (particle. GetParticleThetaCM());
@@ -96,6 +110,8 @@ void ParticleStack::AddBeamParticleToStack(Particle& particle){
   m_InitialConditions-> SetIncidentPositionX     (particle. GetParticlePosition().x());
   m_InitialConditions-> SetIncidentPositionY     (particle. GetParticlePosition().y());
   m_InitialConditions-> SetIncidentPositionZ     (particle. GetParticlePosition().x());
+  
+  m_First=false;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -211,7 +227,6 @@ string ParticleStack::ChangeNameToG4Standard(string OriginalName){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void ParticleStack::ShootAllParticle(G4Event* anEvent){
   unsigned int size = m_ParticleStack.size();
-  m_InitialConditions->Clear();
   
   for(unsigned int i = 0 ; i < size ; i++){
     
@@ -232,4 +247,5 @@ void ParticleStack::ShootAllParticle(G4Event* anEvent){
     }
   }
   m_ParticleStack.clear();
+  m_First=true;
 }

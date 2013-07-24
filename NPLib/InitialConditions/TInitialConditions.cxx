@@ -101,9 +101,9 @@ void TInitialConditions::Dump() const{
 
 
 TVector3 TInitialConditions::GetBeamDirection() const{
-  return TVector3( sin(fIC_Incident_Emittance_ThetaX),
-                   sin(fIC_Incident_Emittance_PhiY),
-                   cos(fIC_Incident_Emittance_ThetaX) + cos(fIC_Incident_Emittance_PhiY));
+  return TVector3( sin(fIC_Incident_Emittance_Theta*deg)*cos(fIC_Incident_Emittance_Phi*deg),
+                   sin(fIC_Incident_Emittance_Theta*deg)*sin(fIC_Incident_Emittance_Phi*deg),
+                   cos(fIC_Incident_Emittance_Theta*deg));
 }
 
 TVector3 TInitialConditions::GetParticleDirection (const int &i) const {
