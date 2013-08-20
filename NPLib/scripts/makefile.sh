@@ -49,7 +49,7 @@ do
    # only build defined detector libraries
    if echo "$detectorlibs" | grep -q "$lname" ; then
       # print informations
-      echo "\tEntering $name directory..."
+      echo "\011Entering $name directory..."
       # add "-C ./" pattern at the beginning of the name
       cmd="-C ./$name"
       # execute make command with target specified on command line

@@ -45,20 +45,20 @@ TwoBodyReaction
     
 ParticleDecay 10He
   Daughter= 9He n
-  ExcitationEnergy= 0 0
+  ExcitationEnergy= 0.1 0
   DifferentialCrossSection= 11Li(d,3He)10He.txt	particle9He
   shoot= 1 1
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-GammaDecay 10He
+GammaDecay 9He
   Cascade
     BranchingRatio= 30
     Energies= 0.1
     DifferentialCrossSection= 11Li(d,3He)10He.txt	Gamma9He
   Cascade
     BranchingRatio= 70
-    Energies= 0.2 0.3
+    Energies= 0.05 0.5
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

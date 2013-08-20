@@ -1,4 +1,4 @@
-/*****************************************************************************
+ /*****************************************************************************
  * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
@@ -80,8 +80,8 @@ G4bool PS_Silicon_Rectangle::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   
     
   //Rare case where particle is close to edge of silicon plan
-  if (m_StripLengthNumber == m_NumberOfStripLength+1) m_StripLengthNumber = m_StripLengthNumber;
-  if (m_StripWidthNumber == m_NumberOfStripWidth+1) m_StripWidthNumber = m_StripWidthNumber;
+  if (m_StripLengthNumber > m_NumberOfStripLength) m_StripLengthNumber = m_StripLengthNumber;
+  if (m_StripWidthNumber > m_NumberOfStripWidth) m_StripWidthNumber = m_StripWidthNumber;
   
   m_Index =  aStep->GetTrack()->GetTrackID() + m_DetectorNumber * 1e3 + m_StripLengthNumber * 1e6 + m_StripWidthNumber * 1e9;
   
@@ -183,12 +183,13 @@ G4bool PS_Silicon_Annular::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   m_StripThetaNumber =  (int) ((m_Position.phi() - m_PhiStart*0.5) / m_StripPitchRadial ) + 1 ;
   
   EnergyAndTime[2] = m_DetectorNumber;
-  EnergyAndTime[3] = m_StripRadialNumber;
-  EnergyAndTime[4] = m_StripThetaNumber;
+  EnergyAndTime[3] = m_StripThetaNumber;
+  EnergyAndTime[4] = m_StripRadialNumber;
+  
   
   //Rare case where particle is close to edge of silicon plan
-  if (m_StripRadialNumber == m_NumberOfStripRadial+1) m_StripRadialNumber = m_NumberOfStripRadial;
-  if (m_StripThetaNumber == m_NumberOfStripTheta+1) m_StripThetaNumber = m_NumberOfStripTheta;
+  if (m_StripRadialNumber > m_NumberOfStripRadial) m_StripRadialNumber = m_NumberOfStripRadial;
+  if (m_StripThetaNumber > m_NumberOfStripTheta) m_StripThetaNumber = m_NumberOfStripTheta;
   
   m_Index =  aStep->GetTrack()->GetTrackID() + m_DetectorNumber * 1e3 + m_StripRadialNumber * 1e6 + m_NumberOfStripTheta * 1e9;
   

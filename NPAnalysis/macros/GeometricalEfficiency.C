@@ -65,10 +65,10 @@ void GeometricalEfficiency(const char * fname = "myResult"){
   tree->SetBranchStatus("InteractionCoordinates", true);
   
   // Prepare histograms
-  TH1F *hDetecTheta = new TH1F("hDetecTheta", "DetecTheta", 180, 0, 180);
+  TH1F *hDetecTheta = new TH1F("hDetecTheta", "DetecTheta", 90, 0, 180);
   TH1F *hDetecThetaCM = new TH1F("hDetecThetaCM", "hDetecThetaCM", 90, 0, 180);
-  TH1F *hEmittTheta = new TH1F("hEmittTheta", "EmittTheta", 180, 0, 180);
-  TH1F *hEmittThetaCM = new TH1F("hEmittThetaCM", "hEmittThetaCM", 180, 0, 180);
+  TH1F *hEmittTheta = new TH1F("hEmittTheta", "EmittTheta", 90, 0, 180);
+  TH1F *hEmittThetaCM = new TH1F("hEmittThetaCM", "hEmittThetaCM", 90, 0, 180);
   
   // Read the TTree
   Int_t nentries = tree->GetEntries();
@@ -86,39 +86,17 @@ void GeometricalEfficiency(const char * fname = "myResult"){
     }
   }
   
-  TCanvas* c1 = new TCanvas("c1", "c1");
-  // Compute relative efficiency in %
-  TH1F *efficiency = new TH1F("hEfficiency", "Efficiency", 180, 0, 180);
-  efficiency->SetTitle("Efficiency;#Theta [deg];#epsilon [%]");
-  efficiency->Divide(hDetecTheta,hEmittTheta,100);
-  efficiency->SetMaximum(110);
-  efficiency->Draw();
-  
-  TCanvas* c2 = new TCanvas("c2", "c2");
-  hEmittTheta->Draw();
-  hDetecTheta->SetLineColor(kRed);
-  hDetecTheta->Draw("same");
-  
-  TCanvas* c3 = new TCanvas("c3", "Lab Frame (use with source)");
-  TH1F* SolidA = new TH1F(*hDetecTheta);
-  SolidA->Sumw2();
-  TF1* C = new TF1("C",Form("%i /(4*%f)",nentries,M_PI),0,180);
-  SolidA->Divide(C,1);
-  SolidA->Draw();
-  TF1* f = new TF1("f",Form("2 * %f * sin(x*%f/180.) *2*%f/180.",M_PI,M_PI,M_PI),0,180);
-  f->Draw("SAME");
-  SolidA->GetXaxis()->SetTitle("#theta_{Lab} (deg)");
-  SolidA->GetYaxis()->SetTitle("d#Omega (sr) ");
-  c3->Update();
-  
-  TCanvas* c4 = new TCanvas("c4", "CM Frame (use with reaction)");
+  TCanvas* c4 = new TCanvas("c4", "CM Frame");
   TH1F* SolidACM = new TH1F(*hDetecThetaCM);
   SolidACM->Sumw2();
   TF1* CCM = new TF1("CCM",Form("%i /(4*%f)",nentries,M_PI),0,180);
+  TF1* C = new TF1("C",Form("%i /(4*%f)",nentries,M_PI),0,180);
   SolidACM->Divide(C,1);
   SolidACM->Draw();
+  TF1* f = new TF1("f",Form("2 * %f * sin(x*%f/180.) *2*%f/180.",M_PI,M_PI,M_PI),0,180);
   f->Draw("SAME");
-  SolidACM->GetXaxis()->SetTitle("#theta_{Lab} (deg)");
+  f->Draw("SAME");
+  SolidACM->GetXaxis()->SetTitle("#theta_{CM} (deg)");
   SolidACM->GetYaxis()->SetTitle("d#Omega (sr) ");
   c4->Update();
 }

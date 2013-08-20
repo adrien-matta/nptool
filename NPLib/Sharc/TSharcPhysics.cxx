@@ -39,16 +39,15 @@ using namespace Sharc_LOCAL;
 
 ClassImp(TSharcPhysics)
 ///////////////////////////////////////////////////////////////////////////
-TSharcPhysics::TSharcPhysics()
-{
+TSharcPhysics::TSharcPhysics(){
   EventMultiplicity   = 0 ;
   m_EventData         = new TSharcData ;
   m_PreTreatedData    = new TSharcData ;
   m_EventPhysics      = this ;
   m_NumberOfDetector = 0 ;
   m_MaximumStripMultiplicityAllowed = 10;
-  //m_StripEnergyMatchingSigma = 0.060    ;
-  m_StripEnergyMatchingSigma = 50    ;
+  m_StripEnergyMatchingSigma = 0.060    ;
+  //m_StripEnergyMatchingSigma = 10    ;
   m_StripEnergyMatchingNumberOfSigma = 3;
   
   // Threshold
@@ -63,36 +62,36 @@ TSharcPhysics::TSharcPhysics()
 }
 
 ///////////////////////////////////////////////////////////////////////////
-void TSharcPhysics::BuildSimplePhysicalEvent()
-{
+void TSharcPhysics::BuildSimplePhysicalEvent(){
   BuildPhysicalEvent();
 }
 
 ///////////////////////////////////////////////////////////////////////////
 
-void TSharcPhysics::BuildPhysicalEvent()
-{
+void TSharcPhysics::BuildPhysicalEvent(){
   PreTreat();
   
   bool check_PAD = false ;
   
-  if( CheckEvent() == 1 )
-    {
+  if( CheckEvent() == 1 ){
     vector< TVector2 > couple = Match_Front_Back() ;
     EventMultiplicity = couple.size();
     
-    for(unsigned int i = 0 ; i < couple.size() ; ++i)
-      {
+    unsigned int size = couple.size();
+    for(unsigned int i = 0 ; i < size ; ++i){
       check_PAD = false ;
       
       int N = m_PreTreatedData->GetFront_DetectorNbr(couple[i].X()) ;
+      
       int Front = m_PreTreatedData->GetFront_StripNbr(couple[i].X()) ;
       int Back  = m_PreTreatedData->GetBack_StripNbr(couple[i].Y()) ;
+      
       double Front_E = m_PreTreatedData->GetFront_Energy( couple[i].X() ) ;
       double Back_E  = m_PreTreatedData->GetBack_Energy( couple[i].Y() ) ;
+      
       double Front_T = m_PreTreatedData->GetFront_TimeCFD( couple[i].X() ) ;
       double Back_T  = m_PreTreatedData->GetBack_TimeCFD ( couple[i].Y() ) ;
-      
+
       DetectorNumber.push_back(N);
       StripFront_E.push_back(Front_E);
       StripFront_T.push_back(Front_T) ;
@@ -113,7 +112,8 @@ void TSharcPhysics::BuildPhysicalEvent()
       Strip_Back.push_back(Back) ;
       
       // Search for associate PAD
-      for(unsigned int j = 0 ; j < m_PreTreatedData-> GetMultiplicityPAD() ; ++j){
+      unsigned int sizePAD = m_PreTreatedData-> GetMultiplicityPAD();
+      for(unsigned int j = 0 ; j < sizePAD ; ++j){
         if(m_PreTreatedData->GetPAD_DetectorNbr(j)==N){
           PAD_E.push_back( m_PreTreatedData-> GetPAD_Energy(j)) ;
           PAD_T.push_back( m_PreTreatedData-> GetPAD_TimeCFD(j)  ) ;
@@ -122,23 +122,24 @@ void TSharcPhysics::BuildPhysicalEvent()
         
       }
       
-      if(!check_PAD)
-        {
+      if(!check_PAD){
         PAD_E.push_back(-1000)   ;
         PAD_T.push_back(-1000)   ;
-        }
       }
     }
+  }
+  
+  if(DetectorNumber.size()==1)
   return;
 }
 
 ///////////////////////////////////////////////////////////////////////////
-void TSharcPhysics::PreTreat()
-{
+void TSharcPhysics::PreTreat(){
   ClearPreTreatedData();
   
   //   Front
-  for(unsigned int i = 0 ; i < m_EventData->GetMultiplicityFront() ; ++i){
+  unsigned int sizeFront = m_EventData->GetMultiplicityFront();
+  for(unsigned int i = 0 ; i < sizeFront ; ++i){
     if( m_EventData->GetFront_Energy(i)>m_StripFront_E_RAW_Threshold && IsValidChannel("Front", m_EventData->GetFront_DetectorNbr(i), m_EventData->GetFront_StripNbr(i)) ){
       double Front_E = fStrip_Front_E(m_EventData , i);
       if( Front_E > m_StripFront_E_Threshold ){
@@ -153,7 +154,8 @@ void TSharcPhysics::PreTreat()
   
   
   //  Back
-  for(unsigned int i = 0 ; i < m_EventData->GetMultiplicityBack() ; ++i){
+  unsigned int sizeBack = m_EventData->GetMultiplicityBack() ;
+  for(unsigned int i = 0 ; i < sizeBack ; ++i){
     if( m_EventData->GetBack_Energy(i)>m_StripBack_E_RAW_Threshold && IsValidChannel("Back", m_EventData->GetBack_DetectorNbr(i), m_EventData->GetBack_StripNbr(i)) ){
       double Back_E = fStrip_Back_E(m_EventData , i);
       if( Back_E > m_StripBack_E_Threshold ){
@@ -167,7 +169,8 @@ void TSharcPhysics::PreTreat()
   
   
   //  PAD
-  for(unsigned int i = 0 ; i < m_EventData->GetMultiplicityPAD() ; ++i){
+  unsigned int sizePAD = m_EventData->GetMultiplicityPAD();
+  for(unsigned int i = 0 ; i < sizePAD ; ++i){
     if( m_EventData->GetPAD_Energy(i)>m_PAD_E_RAW_Threshold && IsValidChannel("PAD", m_EventData->GetPAD_DetectorNbr(i),1) ){
       double PAD_E = fPAD_E(m_EventData , i);
       if( PAD_E > m_PAD_E_Threshold ){
@@ -185,8 +188,7 @@ void TSharcPhysics::PreTreat()
 
 
 ///////////////////////////////////////////////////////////////////////////
-int TSharcPhysics :: CheckEvent()
-{
+int TSharcPhysics :: CheckEvent(){
   // Check the size of the different elements
   if(         m_PreTreatedData->GetMultiplicityBack() == m_PreTreatedData->GetMultiplicityFront() )
     return 1 ; // Regular Event
@@ -197,8 +199,7 @@ int TSharcPhysics :: CheckEvent()
 }
 
 ///////////////////////////////////////////////////////////////////////////
-vector < TVector2 > TSharcPhysics :: Match_Front_Back()
-{
+vector < TVector2 > TSharcPhysics :: Match_Front_Back(){
   vector < TVector2 > ArrayOfGoodCouple ;
   
   // Prevent code from treating very high multiplicity Event
@@ -224,8 +225,7 @@ vector < TVector2 > TSharcPhysics :: Match_Front_Back()
 
 
 ////////////////////////////////////////////////////////////////////////////
-bool TSharcPhysics :: IsValidChannel(const string DetectorType, const int telescope , const int channel)
-{
+bool TSharcPhysics :: IsValidChannel(const string DetectorType, const int telescope , const int channel){
   
   if(DetectorType == "Front")
     return *(m_FrontChannelStatus[telescope-1].begin()+channel-1);
@@ -240,8 +240,7 @@ bool TSharcPhysics :: IsValidChannel(const string DetectorType, const int telesc
 }
 
 ///////////////////////////////////////////////////////////////////////////
-void TSharcPhysics::ReadAnalysisConfig()
-{
+void TSharcPhysics::ReadAnalysisConfig(){
   bool ReadingStatus = false;
   
   // path to file
@@ -404,8 +403,7 @@ void TSharcPhysics::ReadAnalysisConfig()
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TSharcPhysics::Clear()
-{
+void TSharcPhysics::Clear(){
   EventMultiplicity = 0;
   
   //   Provide a Classification of Event
@@ -433,8 +431,7 @@ void TSharcPhysics::Clear()
 ////   Innherited from VDetector Class   ////
 
 ///////////////////////////////////////////////////////////////////////////
-void TSharcPhysics::ReadConfiguration(string Path)
-{
+void TSharcPhysics::ReadConfiguration(string Path){
   ifstream ConfigFile           ;
   ConfigFile.open(Path.c_str()) ;
   string LineBuffer             ;
@@ -611,8 +608,7 @@ void TSharcPhysics::ReadConfiguration(string Path)
 }
 
 ///////////////////////////////////////////////////////////////////////////
-void TSharcPhysics::AddParameterToCalibrationManager()
-{
+void TSharcPhysics::AddParameterToCalibrationManager(){
   CalibrationManager* Cal = CalibrationManager::getInstance();
   
   for(int i = 0 ; i < m_NumberOfDetector ; ++i)
@@ -642,8 +638,7 @@ void TSharcPhysics::AddParameterToCalibrationManager()
 }
 
 ///////////////////////////////////////////////////////////////////////////
-void TSharcPhysics::InitializeRootInputRaw()
-{
+void TSharcPhysics::InitializeRootInputRaw(){
   TChain* inputChain = RootInput::getInstance()->GetChain()   ;
   inputChain->SetBranchStatus( "Sharc" , true )               ;
   inputChain->SetBranchStatus( "fSharc_*" , true )               ;
@@ -652,27 +647,25 @@ void TSharcPhysics::InitializeRootInputRaw()
 }
 
 ///////////////////////////////////////////////////////////////////////////
-void TSharcPhysics::InitializeRootInputPhysics()
-{
+void TSharcPhysics::InitializeRootInputPhysics(){
   TChain* inputChain = RootInput::getInstance()->GetChain();
   inputChain->SetBranchStatus( "EventMultiplicity" , true );
-  inputChain->SetBranchStatus( "EventType " , true );
-  inputChain->SetBranchStatus( "DetectorNumber " , true );
-  inputChain->SetBranchStatus( "Strip_E " , true );
-  inputChain->SetBranchStatus( "Strip_T " , true );
-  inputChain->SetBranchStatus( "StripFront_E " , true );
-  inputChain->SetBranchStatus( "StripBack_T " , true );
-  inputChain->SetBranchStatus( "StripFront_E " , true );
-  inputChain->SetBranchStatus( "StripBack_T " , true );
-  inputChain->SetBranchStatus( "Strip_Front " , true );
-  inputChain->SetBranchStatus( "Strip_Back " , true );
-  inputChain->SetBranchStatus( "PAD_E " , true );
-  inputChain->SetBranchStatus( "PAD_T " , true );
+  inputChain->SetBranchStatus( "EventType" , true );
+  inputChain->SetBranchStatus( "DetectorNumber" , true );
+  inputChain->SetBranchStatus( "Strip_E" , true );
+  inputChain->SetBranchStatus( "Strip_T" , true );
+  inputChain->SetBranchStatus( "StripFront_E" , true );
+  inputChain->SetBranchStatus( "StripBack_T" , true );
+  inputChain->SetBranchStatus( "StripFront_E" , true );
+  inputChain->SetBranchStatus( "StripBack_T" , true );
+  inputChain->SetBranchStatus( "Strip_Front" , true );
+  inputChain->SetBranchStatus( "Strip_Back" , true );
+  inputChain->SetBranchStatus( "PAD_E" , true );
+  inputChain->SetBranchStatus( "PAD_T" , true );
 }
 
 ///////////////////////////////////////////////////////////////////////////
-void TSharcPhysics::InitializeRootOutput()
-{
+void TSharcPhysics::InitializeRootOutput(){
   TTree* outputTree = RootOutput::getInstance()->GetTree();
   outputTree->Branch( "Sharc" , "TSharcPhysics" , &m_EventPhysics );
 }
@@ -680,32 +673,35 @@ void TSharcPhysics::InitializeRootOutput()
 
 /////   Specific to SharcArray   ////
 
-void TSharcPhysics::AddBoxDetector(double Z)
-{
+void TSharcPhysics::AddBoxDetector(double Z){
   double BOX_Wafer_Width  = 52.20;
-  double BOX_Wafer_Length = 76.20;
+  // double BOX_Wafer_Length = 76.20;
+  
+  double BOX_ActiveArea_Length = 72;
+  double BOX_ActiveArea_Width = 42;
+  
   int    BOX_Wafer_Front_NumberOfStrip = 24 ;
   int    BOX_Wafer_Back_NumberOfStrip = 48 ;
   
-  double StripPitchFront = BOX_Wafer_Length/BOX_Wafer_Front_NumberOfStrip ; //mm
-  double StripPitchBack  = BOX_Wafer_Width/BOX_Wafer_Back_NumberOfStrip ; //mm
+  double StripPitchFront = BOX_ActiveArea_Length/BOX_Wafer_Front_NumberOfStrip ; //mm
+  double StripPitchBack  = BOX_ActiveArea_Width/BOX_Wafer_Back_NumberOfStrip ; //mm
   
   TVector3 U; TVector3 V;TVector3 Strip_1_1;
   for(int i = 0 ; i < 4 ; i++){
     m_NumberOfDetector++;
     if(Z<0){// Up Stream
       
-      if(i==0)      {U=TVector3(1,0,0);V=TVector3(0,0,1);  Strip_1_1=TVector3(-36.,40.5,-60)   ;}
-      else if(i==1) {U=TVector3(0,1,0);V=TVector3(0,0,1);  Strip_1_1=TVector3(-40.5,-36.,-60.)  ;}
-      else if(i==2) {U=TVector3(-1,0,0);V=TVector3(0,0,1); Strip_1_1=TVector3(36.,-40.5,-60.)   ;}
-      else if(i==3) {U=TVector3(0,-1,0);V=TVector3(0,0,1); Strip_1_1=TVector3(40.5,36.,-60.)    ;}
+      if(i==0)      {U=TVector3(1,0,0);V=TVector3(0,0,1);  Strip_1_1=TVector3(-36.,40.5,Z-BOX_Wafer_Width/2.)   ;}
+      else if(i==1) {U=TVector3(0,1,0);V=TVector3(0,0,1);  Strip_1_1=TVector3(-40.5,-36.,Z-BOX_Wafer_Width/2.)  ;}
+      else if(i==2) {U=TVector3(-1,0,0);V=TVector3(0,0,1); Strip_1_1=TVector3(36.,-40.5,Z-BOX_Wafer_Width/2.)   ;}
+      else if(i==3) {U=TVector3(0,-1,0);V=TVector3(0,0,1); Strip_1_1=TVector3(40.5,36.,Z-BOX_Wafer_Width/2.)    ;}
     }
     
     if(Z>0){//Down Stream
-      if(i==0)      {U=TVector3(-1,0,0);V=TVector3(0,0,-1); Strip_1_1=TVector3(36.,40.5,60.)   ;}
-      else if(i==1) {U=TVector3(0,-1,0);V=TVector3(0,0,-1); Strip_1_1=TVector3(-40.5,36.,60.)  ;}
-      else if(i==2) {U=TVector3(1,0,0);V=TVector3(0,0,-1);  Strip_1_1=TVector3(-36.,-40.5,60.)  ;}
-      else if(i==3) {U=TVector3(0,1,0);V=TVector3(0,0,-1);  Strip_1_1=TVector3(40.5,-36.,60.)   ;}
+      if(i==0)      {U=TVector3(-1,0,0);V=TVector3(0,0,-1); Strip_1_1=TVector3(36.,40.5,Z+BOX_Wafer_Width/2.)   ;}
+      else if(i==1) {U=TVector3(0,-1,0);V=TVector3(0,0,-1); Strip_1_1=TVector3(-40.5,36.,Z+BOX_Wafer_Width/2.)  ;}
+      else if(i==2) {U=TVector3(1,0,0);V=TVector3(0,0,-1);  Strip_1_1=TVector3(-36.,-40.5,Z+BOX_Wafer_Width/2.) ;}
+      else if(i==3) {U=TVector3(0,1,0);V=TVector3(0,0,-1);  Strip_1_1=TVector3(40.5,-36.,Z+BOX_Wafer_Width/2.)   ;}
     }
     
     //   Buffer object to fill Position Array
@@ -794,8 +790,7 @@ void TSharcPhysics::AddQQQDetector( double R,double Phi,double Z){
   return;
 }
 
-TVector3 TSharcPhysics::GetDetectorNormal( const int i) const
-{
+TVector3 TSharcPhysics::GetDetectorNormal( const int i) const{
   /*  TVector3 U =    TVector3 ( GetStripPositionX( DetectorNumber[i] , 24 , 1 ) ,
    GetStripPositionY( DetectorNumber[i] , 24 , 1 ) ,
    GetStripPositionZ( DetectorNumber[i] , 24 , 1 ) )
@@ -820,11 +815,11 @@ TVector3 TSharcPhysics::GetDetectorNormal( const int i) const
   
 }
 
-TVector3 TSharcPhysics::GetPositionOfInteraction(const int i) const
-{
-  TVector3 Position = TVector3 (   GetStripPositionX( DetectorNumber[i] , Strip_Front[i] , Strip_Back[i] )    ,
-                                GetStripPositionY( DetectorNumber[i] , Strip_Front[i] , Strip_Back[i] )    ,
-                                GetStripPositionZ( DetectorNumber[i] , Strip_Front[i] , Strip_Back[i] )    ) ;
+TVector3 TSharcPhysics::GetPositionOfInteraction(const int i) const{
+  
+  TVector3    Position = TVector3 (  GetStripPositionX( DetectorNumber[i] , Strip_Front[i] , Strip_Back[i] )    ,
+                                  GetStripPositionY( DetectorNumber[i] , Strip_Front[i] , Strip_Back[i] )    ,
+                                  GetStripPositionZ( DetectorNumber[i] , Strip_Front[i] , Strip_Back[i] )    ) ;
   
   return(Position) ;
   
