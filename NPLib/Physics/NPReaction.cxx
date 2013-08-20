@@ -155,12 +155,21 @@ Reaction::Reaction(string reaction){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 Reaction::~Reaction(){
   //------------- Default Destructor ------------
+
+  if(fNuclei1)
+    delete fNuclei1;
   
-  delete fNuclei1;
-  delete fNuclei2;
-  delete fNuclei3;
-  delete fNuclei4;
-  delete fCrossSectionHist;
+  if(fNuclei2)
+    delete fNuclei2;
+  
+  if(fNuclei3)
+    delete fNuclei3;
+  
+  if(fNuclei4)
+    delete fNuclei4;
+  
+  if(fCrossSectionHist)
+    delete fCrossSectionHist;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

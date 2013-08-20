@@ -52,7 +52,7 @@ do
       # add trailing \
       name="$name \\"
       # add tab at the beginning
-      name=$(echo "\t $name")
-      echo "\t $name" >> $outfile
+      name=$(echo "\011 $name")
+      echo "\011 $name" >> $outfile
    fi ;
 done

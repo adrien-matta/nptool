@@ -48,6 +48,7 @@
 #include "G4RunManager.hh"
 #include "G4ios.hh"
 #include "G4SubtractionSolid.hh"
+#include "G4IntersectionSolid.hh"
 #include "G4UnionSolid.hh"
 #include "G4ThreeVector.hh"// NPS
 #include "Tigress.hh"
@@ -68,11 +69,28 @@ using namespace CLHEP;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 namespace {
-  const G4double CrystalOuterRadius  = 30.0*mm; // outer radius for crystal
-  const G4double CrystalInnerRadius  =  5.0*mm; // inner radius for hole in crystal
-  const G4double CrystalLength       = 90.0*mm; // crystal length
-  const G4double CrystalHoleDepth    = 15.0*mm; // depth at which starts the hole
   
+  // Ge crystal
+  // Cylindrical part
+  const G4double CrystalOuterRadius   = 30.0*mm; // outer radius for crystal
+  const G4double CrystalInnerRadius   =  5.0*mm; // inner radius for hole in crystal
+  const G4double CrystalLength        = 90.0*mm; // crystal length
+  const G4double CrystalHoleDepth     = 15.0*mm; // depth at which starts the hole
+  const G4double CrystaHoleRadius 		= 0*cm;
+  const G4double CrystalInterDistance =  0.6*mm; // Distance between two crystal
+  
+  // Squared part
+  const G4double CrystalWidth         = 56.5*mm;  	// Width of one crystal
+  const G4double CrystalsShift        = 1.05*mm;  	// this can't be more than 2.75mm. It is the amount by which one side is cut closer to the center than the other
+  
+  
+  // Bevel part 
+  const G4double CrystalBentLegth     = 3.62*cm;
+  // this->germanium_corner_cone_end_length     = 3.0*cm; 	  // the ending length of the cones
+  
+  
+  
+  // Exogam Stuff
   const G4double CrystalEdgeOffset1  = 26.0*mm; // distance of the edge from the center of the crystal
   const G4double CrystalEdgeOffset2  = 28.5*mm; // distance of the edge from the center of the crystal
   
@@ -99,7 +117,7 @@ Tigress::Tigress(){
  GreenVisAtt  = new G4VisAttributes(G4Colour(0, 1, 0)) ;
  RedVisAtt    = new G4VisAttributes(G4Colour(1, 0, 0)) ;
  WhiteVisAtt  = new G4VisAttributes(G4Colour(1, 1, 1)) ;
- TrGreyVisAtt  = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5, 0.5)) ;
+ TrGreyVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5, 0.5)) ;
   
   m_LogicClover = 0;
   
@@ -386,80 +404,29 @@ void Tigress::ReadConfiguration(string Path){
 // Return a G4VSolid modeling the Crystal
 G4VSolid* Tigress::ConstructCrystal(){
   
-  // Copy Past form Exogam collaboration
   
-  char sName[40]; // generic for named objects
+  G4Tubs* Crystal_Cylinder = new G4Tubs("Crystal_Cylinder", 0, CrystalOuterRadius, CrystalLength*0.5, 0, 2*M_PI);
+  G4Tubs* Crystal_Hole = new G4Tubs("Crystal_Hole", 0, CrystalInnerRadius, (CrystalLength-CrystalHoleDepth)*0.5, 0, 2*M_PI);
   
-  // define a coaxial shape that will be modify with SubstractSolid
-  G4int nbslice = 4;
-  G4double zSliceGe[4] = { 0.0*mm, CrystalHoleDepth, CrystalHoleDepth + 3.0*mm, CrystalLength};  // depth where is the hole
-  G4double InnRadGe[4] = { 0.0*mm, 0.0*mm, CrystalInnerRadius, CrystalInnerRadius};       // to define the hole in the crystal
-  G4double OutRadGe[4] = { CrystalOuterRadius, CrystalOuterRadius, CrystalOuterRadius, CrystalOuterRadius};  // to define the external surface
+  G4SubtractionSolid* Crystal_Stage1 = new G4SubtractionSolid("Crystal_Stage1",Crystal_Cylinder,Crystal_Hole,new G4RotationMatrix,G4ThreeVector(0,0,CrystalHoleDepth));
   
-  G4double Edge[3];
   
-    sprintf(sName, "coax");
-    G4Polycone *coax
-    = new G4Polycone(G4String(sName), 0.*deg, 360.*deg, nbslice, zSliceGe, InnRadGe, OutRadGe);
-    
-    // substract boxes to remove maters.
-    G4RotationMatrix rm; //  rm.SetName(G4String("RotationEdge"));
-    
-    // box definition to remove some matter to the crystal
-    sprintf(sName, "LongEdge1");
-    Edge[0] = (CrystalOuterRadius-CrystalEdgeOffset1);      // x half-width
-    Edge[1] = 1.001*CrystalOuterRadius;                     // y half-width
-    Edge[2] = 1.001*CrystalLength/2.0;                      // z half-width
-    G4Box *cutEdge1  = new G4Box(G4String(sName),Edge[0],Edge[1],Edge[2]);
-    
-    sprintf(sName, "LongEdge2");
-    Edge[0] = (CrystalOuterRadius-CrystalEdgeOffset2);      // x half-width
-    Edge[1] = 1.001*CrystalOuterRadius;                     // y half-width
-    Edge[2] = 1.001*CrystalLength/2.0;                      // z half-width
-    G4Box *cutEdge2  = new G4Box(G4String(sName),Edge[0],Edge[1],Edge[2]);
-    
-    sprintf(sName, "Bevel");
-    Edge[0] = 1.001*CrystalOuterRadius;
-    Edge[1] = sin(CrystalEdgeAngle)*(CrystalEdgeDepth);
-    Edge[2] = 1.001*CrystalLength/2.0;
-    
-    G4Box *cutBevel = new G4Box(G4String(sName),Edge[0],Edge[1],Edge[2]);
-    
-    // now remove previously defined box from coax. The box must be placed correctly before
-    // since the box definition goes from negative to positive values.
-    sprintf(sName, "coax_cut1_edge");
-    G4SubtractionSolid *coax_cut1
-    = new G4SubtractionSolid (G4String(sName), coax, cutEdge1, &rm, G4ThreeVector(-CrystalOuterRadius,0.0,CrystalLength/2.0));
-    
-    sprintf(sName, "coax_cut2_edge");
-    G4SubtractionSolid *coax_cut2
-    = new G4SubtractionSolid (G4String(sName), coax_cut1, cutEdge2, &rm, G4ThreeVector(CrystalOuterRadius,0.0,CrystalLength/2.0));
-    
-    sprintf(sName, "coax_cut3_edge");
-    rm.rotateZ(90.0*deg);
-    G4SubtractionSolid *coax_cut3
-    = new G4SubtractionSolid (G4String(sName), coax_cut2, cutEdge2, &rm, G4ThreeVector(0.0,CrystalOuterRadius,CrystalLength/2.0));
-    
-    sprintf(sName, "coax_cut4_edge");
-    G4SubtractionSolid *coax_cut4
-    = new G4SubtractionSolid (G4String(sName), coax_cut3, cutEdge1, &rm, G4ThreeVector(0.0,-CrystalOuterRadius,CrystalLength/2.0));
-    rm.rotateZ(-90.0*deg);
-    
-    sprintf(sName, "coax_cut5_edge");
-    rm.rotateX(CrystalEdgeAngle);
-    G4SubtractionSolid *coax_cut5
-    = new G4SubtractionSolid (G4String(sName), coax_cut4, cutBevel, &rm, G4ThreeVector(0.,CrystalEdgeOffset2,0.));
-    rm.rotateX(-CrystalEdgeAngle);
-    
-    sprintf(sName, "coax_cut6_edge");
-    rm.rotateZ(90.0*deg);
-    rm.rotateX(CrystalEdgeAngle);
-    G4SubtractionSolid *coax_cut6
-    = new G4SubtractionSolid (G4String(sName), coax_cut5, cutBevel, &rm, G4ThreeVector(CrystalEdgeOffset2,0.,0.));
-    rm.rotateX(-CrystalEdgeAngle);
-    rm.rotateZ(-90.0*deg);
+  G4Box* Crystal_Box1 = new G4Box("Crystal_Box1", CrystalWidth*0.5, CrystalWidth*0.5,CrystalLength*0.51);
+
+  G4SubtractionSolid* Crystal_Stage2 = new G4SubtractionSolid("Crystal_Stage2",Crystal_Stage1,Crystal_Box1,new G4RotationMatrix,G4ThreeVector(CrystalWidth,0,0));
+  G4SubtractionSolid* Crystal_Stage3 = new G4SubtractionSolid("Crystal_Stage3",Crystal_Stage2,Crystal_Box1,new G4RotationMatrix,G4ThreeVector(-CrystalWidth,0,0));
+  G4SubtractionSolid* Crystal_Stage4 = new G4SubtractionSolid("Crystal_Stage4",Crystal_Stage3,Crystal_Box1,new G4RotationMatrix,G4ThreeVector(0,CrystalWidth,0));
+  G4SubtractionSolid* Crystal_Stage5 = new G4SubtractionSolid("Crystal_Stage5",Crystal_Stage4,Crystal_Box1,new G4RotationMatrix,G4ThreeVector(0,-CrystalWidth,0));
   
-    return  coax_cut6;
+    /*const G4double CrystalOuterRadius   = 30.0*mm; // outer radius for crystal
+  const G4double CrystalInnerRadius   =  5.0*mm; // inner radius for hole in crystal
+  const G4double CrystalLength        = 90.0*mm; // crystal length
+  const G4double CrystalHoleDepth     = 15.0*mm; // depth at which starts the hole
+  const G4double CrystalInterDistance =  0.6*mm; // Distance between two quarter crystal
+     const G4double CrystalWidth         = 56.5*mm;  	// Width of one crystal
+     const G4double CrystalsShift        = 1.05*mm;  	// this can't be more than 2.75mm. It is the amount by which one side is cut closer to the
+*/
+   return  Crystal_Stage5;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -490,7 +457,7 @@ G4VSolid* Tigress::ConstructCapsule(){
     CrystalEdgeOffset1 + CrystalEdgeOffset2 + CrystalToCapsule,
     CrystalEdgeOffset1 + CrystalEdgeOffset2 + CrystalToCapsule};
   
-    G4Polyhedra *caps = new G4Polyhedra(G4String("Capsule"), 0.*deg, 360.*deg, 4, nbslice, zSlice, InnRad, OutRad);
+    G4Polyhedra *caps = new G4Polyhedra(G4String("Capsule"), 45.*deg, 360.*deg, 4, nbslice, zSlice, InnRad, OutRad);
   return caps;
   
 }
@@ -499,8 +466,7 @@ G4VSolid* Tigress::ConstructCapsule(){
 // Return a G4VSolid modeling the BGO
 G4VSolid* Tigress::ConstructBGO(){
   
-   return 0;
-  
+  return NULL;
   
 }
 
@@ -513,7 +479,16 @@ void Tigress::ConstructClover(string){
     // Construct the clover itself
     G4VSolid*   Capsule   = ConstructCapsule();
     // Place the cristal in the clover
-    G4ThreeVector CrystalPosition = G4ThreeVector(+113.6*0.5*0.5*mm,+113.6*0.5*0.5*mm,0);
+    
+    /*const G4double CrystalOuterRadius   = 30.0*mm; // outer radius for crystal
+     const G4double CrystalInnerRadius   =  5.0*mm; // inner radius for hole in crystal
+     const G4double CrystalLength        = 90.0*mm; // crystal length
+     const G4double CrystalHoleDepth     = 15.0*mm; // depth at which starts the hole
+     const G4double CrystalInterDistance =  0.6*mm; // Distance between two quarter crystal*/
+    
+    G4ThreeVector CrystalPosition ;
+    double CrystalOffset = (CrystalWidth+CrystalInterDistance)*0.5;
+    
     G4VSolid* CrystalB = ConstructCrystal();
     
     m_LogicClover =
@@ -532,25 +507,25 @@ void Tigress::ConstructClover(string){
     new G4LogicalVolume(CrystalB,m_MaterialVacuum,"LogicCrystalW", 0, 0, 0);
     
     G4RotationMatrix* CrystalRotation = new G4RotationMatrix(0,0,0);
-    CrystalPosition = G4ThreeVector(+113.6*0.5*0.5*mm,+113.6*0.5*0.5*mm,0);
+    CrystalPosition = G4ThreeVector(CrystalOffset,CrystalOffset,0);
     new G4PVPlacement(G4Transform3D(*CrystalRotation, CrystalPosition),
                       logicCrystalB,"LogicCrystalB",m_LogicClover,false,m_CloverId[0]);
     logicCrystalB->SetVisAttributes(BlueVisAtt);
     
     CrystalRotation->rotate(-180*deg, G4ThreeVector(0,0,1));
-    CrystalPosition = G4ThreeVector(+113.6*0.5*0.5*mm,-113.6*0.5*0.5*mm,0);
+    CrystalPosition = G4ThreeVector(+CrystalOffset,-CrystalOffset,0);
     new G4PVPlacement(G4Transform3D(*CrystalRotation, CrystalPosition),
                       logicCrystalG,"LogicCrystalG",m_LogicClover,false,m_CloverId[0]);
     logicCrystalG->SetVisAttributes(GreenVisAtt);
     
      CrystalRotation->rotate(-180*deg, G4ThreeVector(0,0,1));
-    CrystalPosition = G4ThreeVector(-113.6*0.5*0.5*mm,-113.6*0.5*0.5*mm,0);
+    CrystalPosition = G4ThreeVector(-CrystalOffset,-CrystalOffset,0);
     new G4PVPlacement(G4Transform3D(*CrystalRotation, CrystalPosition),
                       logicCrystalR,"LogicCrystalR",m_LogicClover,false,m_CloverId[0]);
     logicCrystalR->SetVisAttributes(RedVisAtt);
   
     CrystalRotation->rotate(-180*deg, G4ThreeVector(0,0,1));
-    CrystalPosition = G4ThreeVector(-113.6*0.5*0.5*mm,+113.6*0.5*0.5*mm,0);
+    CrystalPosition = G4ThreeVector(-CrystalOffset,CrystalOffset,0);
     new G4PVPlacement(G4Transform3D(*CrystalRotation, CrystalPosition),
                       logicCrystalW,"LogicCrystalW",m_LogicClover,false,m_CloverId[0]);
     logicCrystalW->SetVisAttributes(WhiteVisAtt);
@@ -593,7 +568,6 @@ void Tigress::ConstructDetector(G4LogicalVolume* world){
     DetectorRotation->rotate(m_BetaX[i], U);
     DetectorRotation->rotate(m_BetaY[i], V);
     DetectorRotation->rotate(m_BetaZ[i], W);
-    DetectorRotation->rotate(45*deg, W);
     G4ThreeVector DetectorPosition = m_R[i]*W;
     
     new G4PVPlacement(G4Transform3D(*DetectorRotation, DetectorPosition),

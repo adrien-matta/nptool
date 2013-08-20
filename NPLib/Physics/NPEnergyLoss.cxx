@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
+ * Copyright (C) 2009    this file is part of the NPTool Project              *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -119,9 +119,9 @@ EnergyLoss::EnergyLoss(string Path , string Source, int NumberOfSlice=100 ,  int
                if ( unit == "MeV" ) energy = energy*MeV;
                if ( unit == "GeV" ) energy = energy*GeV;
                fEnergy           .push_back ( energy );
-               fdEdX_Nuclear     .push_back ( nuclear );
-               fdEdX_Electronic  .push_back ( electronic );
-               fdEdX_Total       .push_back ( nuclear + electronic );
+               fdEdX_Nuclear     .push_back ( nuclear*MeV/mm );
+               fdEdX_Electronic  .push_back ( electronic*MeV/mm );
+               fdEdX_Total       .push_back ( nuclear*MeV/mm + electronic*MeV/mm );
             }
          
          // Close File
@@ -317,10 +317,76 @@ double   EnergyLoss::EvaluateMaterialThickness( double InitialEnergy    , // Ene
   }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+//   Evaluate Total Energy of particle from Energy loss in a giver thickness
+double   EnergyLoss::EvaluateEnergyFromDeltaE(  double DeltaE           , // Energy of the detected particle
+                                                double TargetThickness  , // Target Thickness at 0 degree
+                                                double Angle            , // Particle Angle
+                                                double EnergyMin        , // Starting Energy
+                                                double EnergyMax        , // Maximum Energy allowed
+                                                double EnergyResolution , // Resolution at which function stop
+                                                int    MaxStep          ) // Stop after MaxStep Whatever Precision is reached
+                                                const 
+   {
+   
+      if (Angle > halfpi) Angle = pi-Angle;
+         TargetThickness = TargetThickness / ( cos(Angle) );
+         
+      double step_size = 10.*MeV;
+      double Energy = EnergyMax;
+      double DE = 0 ;
+      bool check_low = false;
+      bool check_high = false ;
+      
+      for(int i = 0 ; i < MaxStep ; i++)
+         {
+            DE = Energy - Slow(Energy,TargetThickness,Angle) ;
+            if(abs(DeltaE-DE)<EnergyResolution) return Energy;
+            else if (DeltaE-DE > 0)
+               {
+                  if(Energy - step_size > EnergyMin)
+                     {
+                        Energy = Energy - step_size ;
+                        check_low = true ;
+                     }
+                  else 
+                     {
+                        step_size = step_size / 10.;
+                           Energy = Energy - step_size ;
+                     }
+                  
+               }
+               
+            else if (DeltaE-DE < 0)
+               {
+                  if(Energy + step_size < EnergyMax)
+                     {
+                        Energy = Energy + step_size ;
+                        check_high = true ;
+                     }
+                  else 
+                     {
+                        step_size = step_size / 10.;
+                           Energy = Energy + step_size ;
+                     }
+               }
+               
+            if(check_high && check_low)
+               {
+                  step_size = step_size/10.;
+                  check_high = false;
+                  check_low  = false;
+               }
+               
+               if(step_size < EnergyResolution) return Energy;
+               
+         }
+         
+//      cout << "NPL::NPEnergyLoss::EvaluateEnergyFromDeltaE : Max step was reach before requiered resolution was reach " << endl ;
+   return Energy;
+   }
 
 
-
-
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 
 

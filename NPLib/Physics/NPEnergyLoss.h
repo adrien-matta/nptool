@@ -1,7 +1,7 @@
 #ifndef __EnergyLoss__
 #define __EnergyLoss__
 /*****************************************************************************
- * Copyright (C) 2009-2013    this file is part of the NPTool Project        *
+ * Copyright (C) 2009    this file is part of the NPTool Project              *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -71,7 +71,7 @@ namespace NPL
          vector<double>    fdEdX_Nuclear     ; // Nuclear Stopping Power
          vector<double>    fdEdX_Electronic  ; // Electronic Stopping Power
          vector<double>    fdEdX_Total       ; // Total Stopping Power
-         Interpolator*    fInter             ; // Interpolator Used to evaluate Energy loss at given energy
+         Interpolator*     fInter            ; // Interpolator Used to evaluate Energy loss at given energy
          
       public :    //   General Function on dE/dX table      
          double   EvaluateNuclearLoss     (double ener)    const;
@@ -86,7 +86,7 @@ namespace NPL
                         double Angle            ) // Particle Angle
                         const;
                         
-      //   Calculate Energy Loss of a particle inside a material                        
+         //   Calculate Energy Loss of a particle inside a material                        
          double EnergyLossCalulation(  double Energy           , // Energy of the detected particle
                                        double TargetThickness  , // Target Thickness at 0 degree
                                        double Angle            ) // Particle Angle
@@ -98,6 +98,16 @@ namespace NPL
                                          double TargetThickness  , // Target Thickness at 0 degree
                                          double Angle            ) // Particle Angle
                                          const ;
+                                         
+         //   Evaluate Total Energy of particle from Energy loss in a giver thickness
+         double   EvaluateEnergyFromDeltaE( double DeltaE           , // Energy of the detected particle
+                                            double TargetThickness  , // Target Thickness at 0 degree
+                                            double Angle            , // Particle Angle
+                                            double EnergyMin        , // Starting Energy
+                                            double EnergyMax        , // Maximum Energy allowed
+                                            double EnergyResolution , // Resolution at which function stop
+                                            int    MaxStep = 1000000 ) // Stop after MaxStep Whatever Precision is reached
+                                            const ;
             
          // Evaluate the thickness the particle has been through using the energy loss and initial energy
          // usefull for thickness measurement using particle sources
