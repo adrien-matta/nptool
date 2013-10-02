@@ -89,7 +89,7 @@ double TrueE=0 ; double TrueTheta=0 ;
 																20*micrometer		, // Target Thickness at 0 degree
 																ThetaMM2Surface		);																
 					
-//						E = E + ThinSi ;
+						//E = E + ThinSi ;
 						
 						E= He3StripAl.EvaluateInitialEnergy(	E 					, // Energy of the detected particle
 																0.4*micrometer		, // Target Thickness at 0 degree
@@ -105,9 +105,9 @@ double TrueE=0 ; double TrueTheta=0 ;
 																		1.5*mm				, // Target Thickness at 0 degree
 																		ThetaN				);
 																		
-					ThetaCM = myReaction -> EnergyLabToThetaCM( E , 1 ) /deg ;
-					ResolThetaCM =ThetaCM - Init->GetICEmittedAngleThetaCM(0) ;
-					Ex = myReaction -> ReconstructRelativistic( E , Theta ) ;	
+					ThetaCM = myReaction -> EnergyLabToThetaCM( E , 1 ) /deg 	;
+					ResolThetaCM =ThetaCM - Init->GetICEmittedAngleThetaCM(0) 	;
+					Ex = myReaction -> ReconstructRelativistic( E , Theta ) 	;	
 					X = HitDirection . X();
 					Y = HitDirection . Y();	
 				}

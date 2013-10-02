@@ -16,16 +16,27 @@ VEventGenerator::~VEventGenerator()
 
 void VEventGenerator::RandomGaussian2D(double MeanX,double MeanY,double SigmaX,double SigmaY,double &X,double &Y)
 	{
-		X = m_RandomEngine.Gaus( MeanX , SigmaX) ;
+		if(SigmaX!=0)
+			{
+				X = m_RandomEngine.Gaus( MeanX , SigmaX) ;
 		
-		double NumberOfSigma ;
+				double NumberOfSigma ;
 			
-		NumberOfSigma = ( 2*X / SigmaX ) ;
-		NumberOfSigma =  TMath::Floor( sqrt(NumberOfSigma*NumberOfSigma) + 1) ;
+				NumberOfSigma = ( 2*X / SigmaX ) ;
+				NumberOfSigma =  TMath::Floor( sqrt(NumberOfSigma*NumberOfSigma) + 1) ;
 		
-		double SigmaYPrim = sqrt( NumberOfSigma*SigmaY/2 *NumberOfSigma*SigmaY/2 * ( 1 - 2*X*X / (SigmaX*NumberOfSigma*SigmaX*NumberOfSigma)) ) ;
-			SigmaYPrim = SigmaYPrim / NumberOfSigma ; 
+				double SigmaYPrim = sqrt( NumberOfSigma*SigmaY/2 *NumberOfSigma*SigmaY/2 * ( 1 - 2*X*X / (SigmaX*NumberOfSigma*SigmaX*NumberOfSigma)) ) ;
+				SigmaYPrim = SigmaYPrim / NumberOfSigma ; 
 			
-		Y = m_RandomEngine.Gaus( MeanY , SigmaYPrim) ;
+				Y = m_RandomEngine.Gaus( MeanY , SigmaYPrim) ;
+			
+			}
+	
+		 else
+		 	{
+		 		X= MeanX;
+		 		Y= MeanY;
+		 	}
+		
 
 	}
