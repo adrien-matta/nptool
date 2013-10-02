@@ -898,7 +898,6 @@ void MUST2Array::InitializeRootOutput()
 // Called at in the EventAction::EndOfEventAvtion
 void MUST2Array::ReadSensitive(const G4Event* event)
 {
-   bool checkSi = false     ;
    G4String DetectorNumber 	;
    m_Event->Clear()			;
    
@@ -939,7 +938,6 @@ void MUST2Array::ReadSensitive(const G4Event* event)
    G4THitsMap<G4double>* 				CsIEnergyHitMap 	;
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
-   checkSi = false;
 
     // Read the Scorer associate to the Silicon Strip
     
@@ -1017,11 +1015,9 @@ void MUST2Array::ReadSensitive(const G4Event* event)
         G4int ETrackID  =   Energy_itr->first     ;
         G4double E     = *(Energy_itr->second)    ;
         G4int N = 0								  ;
-        checkSi = false    						  ;
         
         if (E > 0) {
         
-	        checkSi = true   ;
 	        m_Event->SetMMStripXEEnergy(RandGauss::shoot(E, ResoStrip))    ;
 	        m_Event->SetMMStripYEEnergy(RandGauss::shoot(E, ResoStrip))    ;
 

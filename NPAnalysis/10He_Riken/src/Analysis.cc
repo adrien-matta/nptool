@@ -78,25 +78,20 @@ double TrueE=0 ; double TrueTheta=0 ;
 			TVector3 BeamDirection = TVector3(0,0,1) ;  BeamDirection.SetTheta(BeamTheta) ; BeamDirection.SetPhi(BeamPhi) ;
 			double Theta  = ThetaCalculation ( HitDirection , BeamDirection   ) ;				
 			double ThetaN = ThetaCalculation ( HitDirection , TVector3(0,0,1) ) ;
-			
+			double ThetaMM2Surface = ThetaCalculation ( HitDirection , M2 -> GetPositionOfInteraction() );
+
 			if(E>-1000 && ThinSi>0 )	
 				{
-		 				
-						//E=E+ThinSi; 
+						E= He3StripAl.EvaluateInitialEnergy(	E 					, // Energy of the detected particle
+																2*0.4*micrometer	, // Target Thickness at 0 degree
+																ThetaMM2Surface		);
+						E = E + ThinSi ;
 						
-//						E= He3StripAl.EvaluateInitialEnergy(		E 					, // Energy of the detected particle
-//																	2*2*0.4*micrometer	, // One for ThinSi and one for Must
-//																	0					);	
-						 	
-						E= He3StripAl.EvaluateInitialEnergy(		E 					, // Energy of the detected particle
-																	0.4*micrometer		, // Target Thickness at 0 degree
-																	0					);
-//				
-//						double Eb= He3StripSi.EvaluateInitialEnergy( 	E 					, // Energy of the detected particle
-//																 		20*micrometer		, // Target Thickness at 0 degree
-//																		0					);
+						E= He3StripAl.EvaluateInitialEnergy(	E 					, // Energy of the detected particle
+																0.4*micrometer		, // Target Thickness at 0 degree
+																ThetaMM2Surface		);
 
-						//cout << E << "  " << Eb-E << " " << ThinSi << endl ;
+					//	cout << E << "  " << Eb-E << " " << ThinSi << endl ;
 
 						E= He3TargetWind.EvaluateInitialEnergy( 		E 					, // Energy of the detected particle
 																 		15*micrometer		, // Target Thickness at 0 degree
@@ -138,12 +133,10 @@ double TrueE=0 ; double TrueTheta=0 ;
 
 			else if(E>-1000 )
 				{
-				
-				
-				
+			
 				E= He3StripAl.EvaluateInitialEnergy(	E 					, // Energy of the detected particle
-														0.4*micrometer		, 
-														0					);	
+														0.4*micrometer		, // Target Thickness at 0 degree
+														ThetaMM2Surface		);
 			
 				E= He3TargetWind.EvaluateInitialEnergy( E 					, // Energy of the detected particle
 														15*micrometer		, // Target Thickness at 0 degree
