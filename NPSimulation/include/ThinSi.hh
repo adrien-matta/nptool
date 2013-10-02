@@ -37,24 +37,21 @@ public:
    void AddTelescope(G4ThreeVector  TL       ,
          G4ThreeVector  BL       ,
          G4ThreeVector  BR       ,
-         G4ThreeVector  TR       ,
-         bool        RightOrLeft);
+         G4ThreeVector  TR       );
    // By Angle Method
    void AddTelescope(G4double    R        ,
          G4double    Theta    ,
          G4double    Phi         ,
          G4double    beta_u       ,
          G4double    beta_v       ,
-         G4double    beta_w       ,
-         bool        RightOrLeft);
+         G4double    beta_w       );
 
    // Effectively construct Volume
    // Avoid to have two time same code for Angle and Point definition
    void VolumeMaker(G4int DetectorNumber     ,
          G4ThreeVector     MMpos ,
          G4RotationMatrix* MMrot ,
-         G4LogicalVolume*  world ,
-         bool        RightOrLeft);
+         G4LogicalVolume*  world );
 
 
    ////////////////////////////////////////////////////
@@ -90,8 +87,6 @@ private:
 private:
    // True if Define by Position, False is Define by angle
    vector<bool>   m_DefinitionType  ;
-   // True=Right False = Left
-   vector<bool>   m_RightOrLeft     ;
 
    // Used for "By Point Definition"
    vector<G4ThreeVector>   m_TL     ; // Top Left Corner Position Vector

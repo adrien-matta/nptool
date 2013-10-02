@@ -20,7 +20,7 @@ int main(int argc,char** argv)
 	//	First of All instantiate RootInput and Output
 	//	Detector will be attached later
 	RootInput:: getInstance(runToReadfileName)	;
-	RootOutput::getInstance("Analysis/Template_AnalyzedData", "AnalyzedTree")					;
+	RootOutput::getInstance("Analysis/10HeRiken_AnalyzedData", "AnalyzedTree")					;
 	
 	//	Instantiate a Reaction
 	NPL::Reaction* myReaction = new Reaction					;
@@ -30,6 +30,21 @@ int main(int argc,char** argv)
 	DetectorManager* myDetector = new DetectorManager 			;
 	myDetector	->	ReadConfigurationFile(detectorfileName)		;
 	
+	//	Attach more branch to the output
+	double Ex = 0 ; double EE = 0 ; double TT = 0 ; double X = 0 ; double Y = 0 ; int det ;
+	RootOutput::getInstance()->GetTree()->Branch("ExcitationEnergy",&Ex,"Ex/D") ;
+	RootOutput::getInstance()->GetTree()->Branch("E",&EE,"EE/D") ;
+	RootOutput::getInstance()->GetTree()->Branch("A",&TT,"TT/D") ;
+	RootOutput::getInstance()->GetTree()->Branch("X",&X,"X/D") ;
+	RootOutput::getInstance()->GetTree()->Branch("Y",&Y,"Y/D") ;
+	
+	// Open the ThinSi Branch
+	RootInput::getInstance() -> GetChain()->SetBranchStatus("ThinSiEnergy",true)	;
+	double ThinSi=-1 ;
+	RootInput::getInstance() -> GetChain()->SetBranchAddress("ThinSiEnergy",&ThinSi)	;
+	
+	// Get Must2 Pointer:
+	MUST2Array* M2 = (MUST2Array*) myDetector -> m_Detector["MUST2"] ;
 	//	Get the formed Chained Tree and Treat it
 	TChain* Chain = RootInput:: getInstance() -> GetChain()	;
 	int i;	
@@ -41,12 +56,28 @@ int main(int argc,char** argv)
 			myDetector -> ClearEventPhysics()				;
 			myDetector -> BuildPhysicalEvent()				;
 			
-			/************************************************
-						
-			Put your code here
 			
-			************************************************/
+			double E = M2 -> GetEnergyDeposit();
+			TVector3 A = M2 -> GetPositionOfInteraction();
+			
+			if(ThinSi > 0) E = E + ThinSi ;
+			
+			double Theta = ThetaCalculation ( A , TVector3(0,0,1) ) ;
+			
+			E= He3Target.EvaluateInitialEnergy(	E 					, // Energy of the detected particle
+												15*micrometer		, // Target Thickness at 0 degree
+												Theta				);
+
+			if(E>-1000)		Ex = myReaction -> ReconstructRelativistic( E , Theta ) ;
+			else Ex = -100 ;
+			EE = E ; TT = Theta/deg ;
+			if(E>-1000){
+			X = A . X();
+			Y = A . Y();}
+			else{X = -1000 ; Y = -1000;}
+			
 			RootOutput::getInstance()->GetTree()->Fill()	;
+			ThinSi = -1 ;
 		}
 	cout << "A total of " << i << " event has been annalysed " << endl ;
 	
