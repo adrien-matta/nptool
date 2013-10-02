@@ -38,7 +38,6 @@ int main(int argc,char** argv)
 	RootOutput::getInstance()->GetTree()->Branch("A",&TT,"TT/D") ;
 	RootOutput::getInstance()->GetTree()->Branch("X",&X,"X/D") ;
 	RootOutput::getInstance()->GetTree()->Branch("Y",&Y,"Y/D") ;
-	RootOutput::getInstance()->GetTree()->Branch("Y",&Y,"Y/D") ;
 	RootOutput::getInstance()->GetTree()->Branch("ThinSi_E",&ThinSi,"ThinSi/D") ;
 	RootOutput::getInstance()->GetTree()->Branch("ThetaCM",&ThetaCM,"ThetaCM/D") ;
 	RootOutput::getInstance()->GetTree()->Branch("ResolThetaCM",&ResolThetaCM,"ResolThetaCM/D") ;
@@ -55,8 +54,7 @@ int main(int argc,char** argv)
 	Chain->SetBranchAddress("InitialConditions"	,&Init		);
 	
 	
- double TargetX=0 ; double TargetY=0; double BeamTheta = 0 ; double BeamPhi = 0 ;
-double TrueE=0 ; double TrueTheta=0 ;
+ double XTarget=0 ; double YTarget=0; double BeamTheta = 0 ; double BeamPhi = 0 ; double E=-1000;
 
 	// Get Must2 Pointer:
 	MUST2Array* M2 = (MUST2Array*) myDetector -> m_Detector["MUST2"] ;
@@ -69,15 +67,25 @@ double TrueE=0 ; double TrueTheta=0 ;
 			myDetector -> ClearEventPhysics()				;
 			myDetector -> BuildPhysicalEvent()				;
 			
-			double E = M2 -> GetEnergyDeposit();
-			TVector3 HitDirection  = M2 -> GetPositionOfInteraction() - TVector3(Init->GetICPositionX(0),Init->GetICPositionY(0),0);
+			E = M2 -> GetEnergyDeposit();
 			
-			BeamTheta = Init->GetICIncidentAngleTheta(0)*deg ; BeamPhi = Init->GetICIncidentAnglePhi(0)*deg ; 
+			XTarget = RandomEngine.Gaus(Init->GetICPositionX(0),1);
+			YTarget = RandomEngine.Gaus(Init->GetICPositionY(0),1);
+			
+			TVector3 HitDirection  = M2 -> GetPositionOfInteraction() - TVector3(XTarget,YTarget,0);
+			
+			BeamTheta = RandomEngine.Gaus( Init->GetICIncidentAngleTheta(0)*deg , 2*deg ) ;
+			BeamPhi   = RandomEngine.Gaus( Init->GetICIncidentAnglePhi(0)*deg   , 2*deg ) ;
+			 
+//			BeamTheta = Init->GetICIncidentAngleTheta(0)*deg ; BeamPhi = Init->GetICIncidentAnglePhi(0)*deg ; 
 
 			TVector3 BeamDirection = TVector3(cos(BeamPhi)*sin(BeamTheta) , sin(BeamPhi)*sin(BeamTheta) , cos(BeamTheta)) ;	
+			// Angle between beam and particle
 			double Theta  = ThetaCalculation ( HitDirection , BeamDirection   ) ;				
+			// Angle between particule and z axis (target Normal)
 			double ThetaN = ThetaCalculation ( HitDirection , TVector3(0,0,1) ) ;
-			double ThetaMM2Surface = ThetaCalculation ( HitDirection , M2 -> GetPositionOfInteraction() );
+			// ANgle between particule and Must2 Si surface
+			double ThetaMM2Surface = ThetaCalculation ( HitDirection , M2 -> GetTelescopeNormal() );
 
 			if(E>-1000 && ThinSi>0 )	
 				{
@@ -89,7 +97,7 @@ double TrueE=0 ; double TrueTheta=0 ;
 																20*micrometer		, // Target Thickness at 0 degree
 																ThetaMM2Surface		);																
 					
-						//E = E + ThinSi ;
+//						E = E + ThinSi ;
 						
 						E= He3StripAl.EvaluateInitialEnergy(	E 					, // Energy of the detected particle
 																0.4*micrometer		, // Target Thickness at 0 degree

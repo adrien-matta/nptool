@@ -74,7 +74,7 @@ class MUST2Array : public NPA::VDetector
 				double GetEnergyDeposit() ;
 				
 				TVector3 GetPositionOfInteraction();
-				
+				TVector3 GetTelescopeNormal()		;
 				void Print()	;
 
 			private:	//	Root Input and Output tree classes

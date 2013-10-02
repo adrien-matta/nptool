@@ -563,6 +563,36 @@ TVector3 MUST2Array::GetPositionOfInteraction()
 	
 	}
 	
+TVector3 MUST2Array::GetTelescopeNormal()
+	{
+		TVector3 Normal = TVector3(-1000,-1000,-1000);
+		
+		if(EventPhysics->TelescopeNumber.size()==1)
+		{
+				TVector3 U = TVector3 (		GetStripPositionX( EventPhysics->TelescopeNumber[0] , 128 , 1 ) 	,
+											GetStripPositionY( EventPhysics->TelescopeNumber[0] , 128 , 1 )		,
+											GetStripPositionZ( EventPhysics->TelescopeNumber[0] , 128 , 1 )		)
+											
+							- TVector3 (	GetStripPositionX( EventPhysics->TelescopeNumber[0] , 1 , 1 ) 		,
+											GetStripPositionY( EventPhysics->TelescopeNumber[0] , 1 , 1 )		,
+											GetStripPositionZ( EventPhysics->TelescopeNumber[0] , 1 , 1 )		);
+										
+				TVector3 V = TVector3 (		GetStripPositionX( EventPhysics->TelescopeNumber[0] , 128 , 128 ) 	,
+											GetStripPositionY( EventPhysics->TelescopeNumber[0] , 128 , 128 )	,
+											GetStripPositionZ( EventPhysics->TelescopeNumber[0] , 128 , 128 )	)
+											
+							- TVector3 (	GetStripPositionX( EventPhysics->TelescopeNumber[0] , 128 , 1 ) 	,
+											GetStripPositionY( EventPhysics->TelescopeNumber[0] , 128 , 1 )		,
+											GetStripPositionZ( EventPhysics->TelescopeNumber[0] , 128 , 1 )		);
+											
+				Normal = U.Cross(V);
+		}
+		
+		return(Normal.Unit()) ;	
+	
+	}	
+	
+	
 void MUST2Array::Print()
 	{
 		cout << "Number of telescope : " << NumberOfTelescope << endl ;

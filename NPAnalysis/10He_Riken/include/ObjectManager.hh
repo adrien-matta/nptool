@@ -106,22 +106,22 @@ namespace ENERGYLOSS
 	
 		//	Declare your Energy loss here	:
 			EnergyLoss He3TargetWind = EnergyLoss 	(	"3He_Mylar.txt" 		,
-														100000	 				,
+														1000	 				,
 														1						,
 														3						);
 		
 			EnergyLoss He3TargetGaz = EnergyLoss 	(	"3He_D2gaz_1b_26K.txt" 	,
-														100000	 				,
+														1000	 				,
 														1						,
 														3						);
 			
 			EnergyLoss He3StripAl   = EnergyLoss 	(	"3He_Al.txt" 			,
-														1000						,
+														10						,
 														1						,
 														3						);
 														
 			EnergyLoss He3StripSi   = EnergyLoss 	(	"3He_Si.txt" 			,
-														1000						,
+														10						,
 														1						,
 														3						);
 	
@@ -129,6 +129,18 @@ namespace ENERGYLOSS
 	
 using namespace ENERGYLOSS ;
 // ----------------------------------------------------------------------------------------------
-/////////////////////////////////////////////////////////////////////////////////////////////////
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+// -----------------------------------Random Engine----------------------------------------------
+#include "TRandom3.h"
+namespace RANDOMENGINE
+	{
+	
+		TRandom3 RandomEngine = TRandom3();
+	
+	}
+	
+using namespace RANDOMENGINE ;
+// ----------------------------------------------------------------------------------------------
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
