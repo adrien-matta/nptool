@@ -1,4 +1,25 @@
-			
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GeneralTarget
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Target
+	THICKNESS= 1
+	RADIUS=	45
+	MATERIAL= CD2
+	X= 10
+	Y= -10
+	Z= 50
+	
+CryoTarget
+	THICKNESS= 3000
+	RADIUS=	45
+	TEMPERATURE= 26
+	PRESSURE= 1
+	MATERIAL= D2	
+	WINDOWSTHICKNESS= 15
+	WINDOWSMATERIAL= Mylar
+	X= 0
+	Y= 0
+	Z= 0			
 %%%%%%%%%%%%%%%%%%%%%			
 MUST2Array			
 %%%%%%% Telescope 1 %%%%%%%			

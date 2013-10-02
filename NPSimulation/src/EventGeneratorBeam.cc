@@ -119,7 +119,7 @@ void EventGeneratorBeam::ReadConfiguration(string Path)
 	         else if (DataBuffer.compare(0, 13, "EmmitancePhi=") == 0) {
 	         	check_EmmitancePhi = true ;
 	            ReactionFile >> DataBuffer;
-	            m_BeamEmmitanceTheta = atof(DataBuffer.c_str()) * rad;
+	            m_BeamEmmitancePhi = atof(DataBuffer.c_str()) * rad;
 	            G4cout << "Beam Emmitance Phi: " << m_BeamEmmitancePhi / deg << " deg" << G4endl;
 	         }
 	          
@@ -153,24 +153,35 @@ void EventGeneratorBeam::GenerateEvent(G4Event* anEvent, G4ParticleGun* particle
    // 11Li Beam@Riken
    G4double x0 = 1000 * cm  ;
    G4double y0 = 1000 * cm  ;
-   //shoot inside the target.
-
+   G4double Beam_thetaX = 0  ;
+   G4double Beam_phiY   = 0  ;
+   
+   //shoot inside the target with correlated angle
    if (m_TargetRadius != 0) {
-      while (sqrt(x0*x0 + y0*y0) > m_TargetRadius) {
-         x0 = RandGauss::shoot(0, m_BeamFWHMX / 2.35) ;
-         y0 = RandGauss::shoot(0, m_BeamFWHMY / 2.35) ;
-      }
+      while (sqrt(x0*x0 + y0*y0) > m_TargetRadius) 
+      	{
+      		RandomGaussian2D(0,0,m_BeamFWHMX / 2.35,m_BeamEmmitanceTheta,x0,Beam_thetaX);
+      		RandomGaussian2D(0,0,m_BeamFWHMY / 2.35,m_BeamEmmitancePhi  ,y0,Beam_phiY  );
+      	}
    }
 
-   else {
-      x0 = 0 ;
-      y0 = 0 ;
+   else 
+   	{
+     	RandomGaussian2D(0,0,0,m_BeamEmmitanceTheta,x0,Beam_thetaX);
+     	RandomGaussian2D(0,0,0,m_BeamEmmitancePhi  ,y0,Beam_phiY  );
    }
-	// A changer pour prendre en compte correctement l'emmitance
-   G4double Beam_theta = RandGauss::shoot(0, m_BeamEmmitanceTheta)       ;
+
+	// Calculate Angle in spherical coordinate, passing by the direction vector dir	
+	G4double Xdir =  cos( pi/2. - Beam_thetaX ) 							;
+	G4double Ydir =  cos( pi/2. - Beam_phiY   )								;
+	G4double Zdir =  sin( pi/2. - Beam_thetaX ) + sin(  pi/2. - Beam_phiY) 	;
+	
+	G4double Beam_theta = acos ( Zdir / sqrt( Xdir*Xdir + Ydir*Ydir + Zdir*Zdir ) );
+	G4double Beam_phi   = atan2( Ydir , Xdir );
 
    //must shoot inside the target.
    G4double z0 = (-m_TargetThickness / 2 + CLHEP::RandFlat::shoot() * m_TargetThickness);
+
 
    // Move to the target
    x0 += m_TargetX ;
@@ -178,9 +189,9 @@ void EventGeneratorBeam::GenerateEvent(G4Event* anEvent, G4ParticleGun* particle
    z0 += m_TargetZ ;
 
    // Store initial value
-   m_InitialBeamX       =  x0       ;
-   m_InitialBeamY    =  y0          ;
-   m_InitialBeamTheta   =  Beam_theta  ;
+   m_InitialBeamX       =  x0       	;
+   m_InitialBeamY   	=  y0           ;
+   m_InitialBeamTheta   =  Beam_theta   ;
 
    //////////////////////////////////////////////////
    /////Now define everything for light particle/////
@@ -188,17 +199,15 @@ void EventGeneratorBeam::GenerateEvent(G4Event* anEvent, G4ParticleGun* particle
 
    particleGun->SetParticleDefinition(m_particle);
 
-   G4double theta = Beam_theta                     ;
-   G4double phi = CLHEP::RandFlat::shoot() * 2 * pi   ;
    G4double particle_energy = RandGauss::shoot(m_BeamEnergy, m_BeamEnergySpread);
    // Direction of particle, energy and laboratory angle
-   G4double momentum_x = sin(theta) * cos(phi)       ;
-   G4double momentum_y = sin(theta) * sin(phi)       ;
-   G4double momentum_z = cos(theta)             ;
+   G4double momentum_x = sin(Beam_theta) * cos(Beam_phi)       	;
+   G4double momentum_y = sin(Beam_theta) * sin(Beam_phi)      	;
+   G4double momentum_z = cos(Beam_theta)             		;
    //Set the gun to shoot
-   particleGun->SetParticleMomentumDirection(G4ThreeVector(momentum_x, momentum_y, momentum_z))   ;
-   particleGun->SetParticleEnergy(particle_energy)                                  ;
-   particleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0))                           ;
+   particleGun->SetParticleMomentumDirection(G4ThreeVector(momentum_x, momentum_y, momentum_z))   	;
+   particleGun->SetParticleEnergy(particle_energy)                                  				;
+   particleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0))                           			;
 
    //Shoot the light particle
    particleGun->GeneratePrimaryVertex(anEvent)        ;

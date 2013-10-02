@@ -153,4 +153,19 @@
  /usr/lib/gcc/i586-redhat-linux/4.4.1/../../../../include/c++/4.4.1/bits/stl_tree.h \
  /usr/lib/gcc/i586-redhat-linux/4.4.1/../../../../include/c++/4.4.1/bits/stl_map.h \
  /usr/lib/gcc/i586-redhat-linux/4.4.1/../../../../include/c++/4.4.1/bits/stl_multimap.h \
- /usr/local/geant4.9.1.p03/source/event/include/G4VUserEventInformation.hh
+ /usr/local/geant4.9.1.p03/source/event/include/G4VUserEventInformation.hh \
+ /usr/local/root/include/TRandom3.h /usr/local/root/include/TRandom.h \
+ /usr/local/root/include/TNamed.h /usr/local/root/include/TObject.h \
+ /usr/local/root/include/Rtypes.h /usr/local/root/include/RConfig.h \
+ /usr/local/root/include/RVersion.h /usr/local/root/include/DllImport.h \
+ /usr/local/root/include/Rtypeinfo.h \
+ /usr/lib/gcc/i586-redhat-linux/4.4.1/../../../../include/c++/4.4.1/typeinfo \
+ /usr/local/root/include/TGenericClassInfo.h \
+ /usr/local/root/include/TSchemaHelper.h \
+ /usr/local/root/include/TStorage.h \
+ /usr/local/root/include/TVersionCheck.h \
+ /usr/local/root/include/Riosfwd.h /usr/local/root/include/TBuffer.h \
+ /usr/local/root/include/TString.h /usr/local/root/include/TRefCnt.h \
+ /usr/local/root/include/TMathBase.h /usr/local/root/include/TMath.h \
+ /usr/local/root/include/TError.h \
+ /usr/lib/gcc/i586-redhat-linux/4.4.1/include/float.h
