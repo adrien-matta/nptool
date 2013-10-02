@@ -588,7 +588,6 @@ void ThinSi::InitializeRootOutput()
 void ThinSi::ReadSensitive(const G4Event* event)
 {
    G4String DetectorNumber    ;
-   bool  checkSi  = false  ;
    m_Energy = 0 ;
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////// Used to Read Event Map of detector //////////////////////////
@@ -602,7 +601,7 @@ void ThinSi::ReadSensitive(const G4Event* event)
 
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
-   G4int HitNumber = 0;
+
    G4int NumberOfDetector = m_DefinitionType.size()  ;
    for (G4int i = 0 ; i < NumberOfDetector ; i++) {
       G4int k = i + 1;
@@ -622,14 +621,9 @@ void ThinSi::ReadSensitive(const G4Event* event)
          G4double E     = *(Energy_itr->second)    ;
 
          if (E > 0) {
-            checkSi = true   ;
             m_Energy = RandGauss::shoot(E, ResoEnergy);
          }
 
-         Energy_itr++;
-         if (checkSi) {
-            HitNumber++ ;
-         }
       }
       // clear map for next event
       EnergyHitMap   ->clear()   ;

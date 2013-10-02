@@ -238,7 +238,7 @@ double EnergyLoss::EvaluateInitialEnergy(	double Energy 			, // Energy of the de
 		for (int i = 0; i < fNumberOfSlice ; i++) 
 			{
 			    double de = fInter->Eval(Energy) * SliceThickness	;
-			    Energy	+= de										;
+			    Energy	+= de/fNumberOfMass							;
 			}
 			
 		return (Energy*fNumberOfMass)	;
