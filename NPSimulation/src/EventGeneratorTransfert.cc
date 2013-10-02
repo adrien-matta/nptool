@@ -218,14 +218,14 @@ while(ReadingStatus){
 	        else if  (DataBuffer.compare(0, 19, "BeamEmmitanceTheta=") == 0) {
 	        	check_EmmitanceTheta = true ;
 	            ReactionFile >> DataBuffer;
-	            BeamEmmitanceTheta = atof(DataBuffer.c_str()) * deg;
+	            BeamEmmitanceTheta = atof(DataBuffer.c_str()) * rad;
 	            G4cout << "Beam Emmitance Theta " << BeamEmmitanceTheta / deg << " deg" << G4endl;
 	         }
 	         
 	        else if  (DataBuffer.compare(0, 17, "BeamEmmitancePhi=") == 0) {
 	        	check_EmmitancePhi = true ;
 	            ReactionFile >> DataBuffer;
-	            BeamEmmitancePhi = atof(DataBuffer.c_str()) * deg;
+	            BeamEmmitancePhi = atof(DataBuffer.c_str()) * rad;
 	            G4cout << "Beam Emmitance Phi " << BeamEmmitancePhi / deg << " deg" << G4endl;
 	         }
 
@@ -308,15 +308,35 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
    G4ParticleDefinition* HeavyName
    = G4ParticleTable::GetParticleTable()->GetIon(HeavyZ, HeavyA, m_Reaction->GetExcitation()*MeV);
 
-   ///////////////////////////////////////////////////
-   ///// Angles and direction for incident beam //////
-   ///// Angles are in the "world" frame        //////
-   ///////////////////////////////////////////////////
-   // Angles
+   // Vertex position and beam angle inte world frame
+   G4double x0 = 1000 * cm  ;
+   G4double y0 = 1000 * cm  ;
+   G4double Beam_thetaX = 0  ;
+   G4double Beam_phiY   = 0  ;
    
-   //FIXME	a changer pour prendre en compte correctement l'mmitance
-   G4double Beam_theta = RandGauss::shoot(0, m_BeamEmmitanceTheta / 2.35);
-   G4double Beam_phi   = RandFlat::shoot() * 2*pi;
+   //shoot inside the target with correlated angle
+   if (m_TargetRadius != 0) {
+      while (sqrt(x0*x0 + y0*y0) > m_TargetRadius) 
+      	{
+      		RandomGaussian2D(0,0,m_BeamFWHMX / 2.35,m_BeamEmmitanceTheta,x0,Beam_thetaX);
+      		RandomGaussian2D(0,0,m_BeamFWHMY / 2.35,m_BeamEmmitancePhi  ,y0,Beam_phiY  );
+      	}
+   }
+
+   else 
+   	{
+     	RandomGaussian2D(0,0,0,m_BeamEmmitanceTheta,x0,Beam_thetaX);
+     	RandomGaussian2D(0,0,0,m_BeamEmmitancePhi  ,y0,Beam_phiY  );
+   }
+
+	// Calculate Angle in spherical coordinate, passing by the direction vector dir	
+	G4double Xdir =  cos( pi/2. - Beam_thetaX ) 							;
+	G4double Ydir =  cos( pi/2. - Beam_phiY   )								;
+	G4double Zdir =  sin( pi/2. - Beam_thetaX ) + sin(  pi/2. - Beam_phiY) 	;
+	
+	G4double Beam_theta = acos ( Zdir / sqrt( Xdir*Xdir + Ydir*Ydir + Zdir*Zdir ) );
+	G4double Beam_phi   = atan2( Ydir , Xdir );   
+
    // write angles to ROOT file
    m_InitConditions->SetICIncidentAngleTheta(Beam_theta / deg);
    m_InitConditions->SetICIncidentAnglePhi(Beam_phi / deg);
@@ -371,34 +391,10 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
    G4ThreeVector momentum_kineHeavy_beam(sin(ThetaHeavy) * cos(phi),
                                          sin(ThetaHeavy) * sin(phi),
                                          cos(ThetaHeavy));
-   // tests
-//   G4cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXX" << G4endl;
-//   G4cout << "cinematique dans ref beam : " << G4endl;
-//   G4cout << "\t" << momentum_kineLight_beam << G4endl;
 
    // write angles/energy to ROOT file
    m_InitConditions->SetICEmittedAngleThetaLabIncidentFrame(ThetaLight / deg);
    m_InitConditions->SetICEmittedEnergy(EnergyLight);
-
-   //////////////////////////////////////////////////
-   ////////////// Vertex of interaction /////////////
-   //////////////////////////////////////////////////
-   // Vertex position and beam angle
-   // 11Li Beam@Riken
-   G4double x0 = 1000 * cm  ;
-   G4double y0 = 1000 * cm  ;
-
-   //shoot inside the target
-   if (m_TargetRadius != 0) {
-      while (sqrt(x0*x0 + y0*y0) > m_TargetRadius) {
-         x0 = RandGauss::shoot(0, m_BeamFWHMX / 2.35) ;
-         y0 = RandGauss::shoot(0, m_BeamFWHMY / 2.35) ;
-      }
-   }
-   else {
-      x0 = 0 ;
-      y0 = 0 ;
-   }
 
    //must shoot inside the target.
    G4double z0 = (-m_TargetThickness / 2 + RandFlat::shoot() * m_TargetThickness);

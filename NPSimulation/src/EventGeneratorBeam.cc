@@ -145,12 +145,7 @@ void EventGeneratorBeam::ReadConfiguration(string Path)
 void EventGeneratorBeam::GenerateEvent(G4Event* anEvent, G4ParticleGun* particleGun)
 {
 
-   //////////////////////////////////////////////////
-   /////Choose ThetaCM following Cross Section //////
-   //////////////////////////////////////////////////
-
    // Vertex position and beam angle
-   // 11Li Beam@Riken
    G4double x0 = 1000 * cm  ;
    G4double y0 = 1000 * cm  ;
    G4double Beam_thetaX = 0  ;

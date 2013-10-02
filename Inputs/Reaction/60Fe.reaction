@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%% Reaction file for 11Li(d,3He)10He reaction %%%%%%%%%
+%%%%%%%%%  Reaction file for 60Fe(d,p)61Fe reaction  %%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%Beam energy given in MeV ; Excitation in MeV
+%%Beam energy given in MeV ; Excitation in MeV ; emmitance in rad
 Transfert
 	Beam= 60Fe
 	Target= 2H
@@ -9,13 +9,13 @@ Transfert
 	Heavy= 61Fe
 	ExcitationEnergy= 2.0
 	BeamEnergy= 1200
-	BeamEnergySpread= 10
+	BeamEnergySpread= 0
 	BeamFWHMX= 1
 	BeamFWHMY= 1
-	BeamEmmitanceTheta= 2
-	BeamEmmitancePhi= 0
+	BeamEmmitanceTheta= 0.034
+	BeamEmmitancePhi= 0.01
 	CrossSectionPath= ni69_g7_01.n
 	ShootLight= 1
-	ShootHeavy= 0
+	ShootHeavy= 1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
