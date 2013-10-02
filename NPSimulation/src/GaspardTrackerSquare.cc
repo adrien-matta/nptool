@@ -760,11 +760,7 @@ void GaspardTrackerSquare::ConstructDetector(G4LogicalVolume* world)
       else {
          G4double Theta = m_Theta[i] ;
          G4double Phi   = m_Phi[i]   ;
-         //This part because if Phi and Theta = 0 equation are false
-         if (Theta == 0)        Theta = 0.0001 ;
-         if (Theta == 2*cos(0)) Theta = 2 * acos(0) - 0.00001 ;
-         if (Phi   == 0)        Phi   = 0.0001 ;
-
+         
          // (u,v,w) unitary vector associated to telescope referencial
          // (u,v) // to silicon plan
          // w perpendicular to (u,v) plan and pointing ThirdStage

@@ -453,46 +453,31 @@ void MUST2Array::AddTelescope(	double theta 	,
 		TVector3 W ;
 		//Vector position of Telescope Face center
 		TVector3 C ;
-
-		/*if(theta==180 && phi==90)
-			{
-				C = TVector3 (0,0,distance)	;
-				U = TVector3 (1,0,0)			;
-				V = TVector3 (0,1,0)			;
-				W = TVector3 (0,0,1)			;
-			}*/
 			
-		if(theta==0 && phi==0)
-			{
-				C = TVector3 (0,0,distance)	;
-				U = TVector3 (1,0,0)			;
-				V = TVector3 (0,1,0)			;
-				W = TVector3 (0,0,1)			;
-			}
-			
-		else
-			{
-				C = TVector3 (	distance * sin(theta) * cos(phi) ,
-								distance * sin(theta) * sin(phi) ,
-								distance * cos(theta)			 );
-					
-				W = C.Unit() ;
-				U = W .Cross ( TVector3(0,1,0) ) ;
-			    V = W .Cross ( U );
-				
-				U = U.Unit();
-				V = V.Unit();
-				
-				U.Rotate( beta_u * Pi/180. , U ) ;
-				V.Rotate( beta_u * Pi/180. , U ) ;
-				
-				U.Rotate( beta_v * Pi/180. , V ) ;
-				V.Rotate( beta_v * Pi/180. , V ) ;
-				
-				U.Rotate( beta_w * Pi/180. , W ) ;
-				V.Rotate( beta_w * Pi/180. , W ) ;
-			}
-
+		C = TVector3 (	distance * sin(theta) * cos(phi) ,
+						distance * sin(theta) * sin(phi) ,
+						distance * cos(theta)			 );
+		
+    	TVector3 P = TVector3(	cos(theta ) * cos(phi)	, 
+    							cos(theta ) * sin(phi)	,
+    							-sin(theta)				);
+		
+		W = C.Unit() ;
+		U = W .Cross ( P ) ;
+	    V = W .Cross ( U );
+		
+		U = U.Unit();
+		V = V.Unit();
+		
+		U.Rotate( beta_u * Pi/180. , U ) ;
+		V.Rotate( beta_u * Pi/180. , U ) ;
+		
+		U.Rotate( beta_v * Pi/180. , V ) ;
+		V.Rotate( beta_v * Pi/180. , V ) ;
+		
+		U.Rotate( beta_w * Pi/180. , W ) ;
+		V.Rotate( beta_w * Pi/180. , W ) ;
+		
 		double Face = 98 					  	; //mm
 		double NumberOfStrip = 128 				;
 		double StripPitch = Face/NumberOfStrip	; //mm
