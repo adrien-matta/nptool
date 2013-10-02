@@ -23,7 +23,7 @@ LDFLAGS+= -L$(NPLIB)/lib -lVDetector -lIORoot -lReaction -lEnergyLoss \
 LDFLAGS+= -L$(CLHEP_LIB_DIR) -l$(CLHEP_LIB) 
 
 SRC= $(wildcard *.cc)
-INC= $(wildcard *.hh)
+INC= $(wildcard $(NPAINCLUDES)/*.hh)
 OBJ=$(SRC:.cc=.o)
 
 #all:$(EXEC)

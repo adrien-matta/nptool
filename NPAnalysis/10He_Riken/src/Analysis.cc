@@ -87,7 +87,7 @@ double TrueE=0 ; double TrueTheta=0 ;
 //						E= He3StripAl.EvaluateInitialEnergy(		E 					, // Energy of the detected particle
 //																	2*2*0.4*micrometer	, // One for ThinSi and one for Must
 //																	0					);	
-							
+						 	
 						E= He3StripAl.EvaluateInitialEnergy(		E 					, // Energy of the detected particle
 																	0.4*micrometer		, // Target Thickness at 0 degree
 																	0					);
