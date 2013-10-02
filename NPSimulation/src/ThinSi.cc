@@ -44,15 +44,15 @@ namespace THINSI
    const G4double ResoEnergy  = 0.042 ;// = 100keV of Resolution   //   Unit is MeV/2.35
 
    // Geometry
-   const G4double DetectorSize   = 70*mm           ;
+   const G4double DetectorSize   	= 70*mm           ;
    const G4double SiliconThickness  = 20*micrometer      ;
-   const G4double SiliconSize    = 50*mm           ;
+   const G4double SiliconSize    	= 50*mm           ;
    const G4double AluThickness      = 0.4*micrometer  ;
-   const G4int  NumberOfStrip    = 32           ;
+   const G4int  NumberOfStrip    	= 32           ;
 
-   const G4double AluStripFront_PosZ = -0.5*SiliconThickness - 0.5*AluThickness ;
-   const G4double Si_PosZ        = 0                                 ;
-   const G4double AluStripBack_PosZ  = 0.5*SiliconThickness + 0.5*AluThickness  ;
+   const G4double AluStripFront_PosZ 	= -0.5*SiliconThickness - 0.5*AluThickness ;
+   const G4double Si_PosZ        		= 0                                 ;
+   const G4double AluStripBack_PosZ  	= 0.5*SiliconThickness + 0.5*AluThickness  ;
 
    const G4double Si_PosX_Shift = 4*mm ;
    const G4double Si_PosY_Shift = 2*mm ;
