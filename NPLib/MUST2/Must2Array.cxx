@@ -546,54 +546,36 @@ void MUST2Array::AddTelescope(	double theta 	,
 		StripPositionZ.push_back( OneTelescopeStripPositionZ ) ;
 	}
 	
-double MUST2Array::GetEnergyDeposit()		
-	{ 
-		if(EventPhysics->TotalEnergy.size()>0)
-		return EventPhysics->TotalEnergy[0] ; 
-		else return -1000 ;
-	}	
 	
-	
-	
-TVector3 MUST2Array::GetPositionOfInteraction()
+TVector3 MUST2Array::GetPositionOfInteraction(int i)
 	{
-		TVector3 Position = TVector3(-1000,-1000,-1000);
-		
-		if(EventPhysics->TelescopeNumber.size()==1)
-		{
-				Position = TVector3 (	GetStripPositionX( EventPhysics->TelescopeNumber[0] , EventPhysics->Si_X[0] , EventPhysics->Si_Y[0] ) 	,
-										GetStripPositionY( EventPhysics->TelescopeNumber[0] , EventPhysics->Si_X[0] , EventPhysics->Si_Y[0] )	,
-										GetStripPositionZ( EventPhysics->TelescopeNumber[0] , EventPhysics->Si_X[0] , EventPhysics->Si_Y[0] )	) ;
-		}
+		TVector3 Position = TVector3 (	GetStripPositionX( EventPhysics->TelescopeNumber[i] , EventPhysics->Si_X[i] , EventPhysics->Si_Y[i] ) 	,
+										GetStripPositionY( EventPhysics->TelescopeNumber[i] , EventPhysics->Si_X[i] , EventPhysics->Si_Y[i] )	,
+										GetStripPositionZ( EventPhysics->TelescopeNumber[i] , EventPhysics->Si_X[i] , EventPhysics->Si_Y[i] )	) ;
 		
 		return(Position) ;	
 	
 	}
 	
-TVector3 MUST2Array::GetTelescopeNormal()
+TVector3 MUST2Array::GetTelescopeNormal( int i)
 	{
-		TVector3 Normal = TVector3(-1000,-1000,-1000);
-		
-		if(EventPhysics->TelescopeNumber.size()==1)
-		{
-				TVector3 U = TVector3 (		GetStripPositionX( EventPhysics->TelescopeNumber[0] , 128 , 1 ) 	,
-											GetStripPositionY( EventPhysics->TelescopeNumber[0] , 128 , 1 )		,
-											GetStripPositionZ( EventPhysics->TelescopeNumber[0] , 128 , 1 )		)
+				TVector3 U = TVector3 (		GetStripPositionX( EventPhysics->TelescopeNumber[i] , 128 , 1 ) 	,
+											GetStripPositionY( EventPhysics->TelescopeNumber[i] , 128 , 1 )		,
+											GetStripPositionZ( EventPhysics->TelescopeNumber[i] , 128 , 1 )		)
 											
-							- TVector3 (	GetStripPositionX( EventPhysics->TelescopeNumber[0] , 1 , 1 ) 		,
-											GetStripPositionY( EventPhysics->TelescopeNumber[0] , 1 , 1 )		,
-											GetStripPositionZ( EventPhysics->TelescopeNumber[0] , 1 , 1 )		);
+							- TVector3 (	GetStripPositionX( EventPhysics->TelescopeNumber[i] , 1 , 1 ) 		,
+											GetStripPositionY( EventPhysics->TelescopeNumber[i] , 1 , 1 )		,
+											GetStripPositionZ( EventPhysics->TelescopeNumber[i] , 1 , 1 )		);
 										
-				TVector3 V = TVector3 (		GetStripPositionX( EventPhysics->TelescopeNumber[0] , 128 , 128 ) 	,
-											GetStripPositionY( EventPhysics->TelescopeNumber[0] , 128 , 128 )	,
-											GetStripPositionZ( EventPhysics->TelescopeNumber[0] , 128 , 128 )	)
+				TVector3 V = TVector3 (		GetStripPositionX( EventPhysics->TelescopeNumber[i] , 128 , 128 ) 	,
+											GetStripPositionY( EventPhysics->TelescopeNumber[i] , 128 , 128 )	,
+											GetStripPositionZ( EventPhysics->TelescopeNumber[i] , 128 , 128 )	)
 											
-							- TVector3 (	GetStripPositionX( EventPhysics->TelescopeNumber[0] , 128 , 1 ) 	,
-											GetStripPositionY( EventPhysics->TelescopeNumber[0] , 128 , 1 )		,
-											GetStripPositionZ( EventPhysics->TelescopeNumber[0] , 128 , 1 )		);
+							- TVector3 (	GetStripPositionX( EventPhysics->TelescopeNumber[i] , 128 , 1 ) 	,
+											GetStripPositionY( EventPhysics->TelescopeNumber[i] , 128 , 1 )		,
+											GetStripPositionZ( EventPhysics->TelescopeNumber[i] , 128 , 1 )		);
 											
-				Normal = U.Cross(V);
-		}
+				TVector3 Normal = U.Cross(V);
 		
 		return(Normal.Unit()) ;	
 	

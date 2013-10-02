@@ -144,7 +144,6 @@ void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 						for (int jj = 0 ; jj < 2 ; jj++)
 							{
 								Check_Si = false ;Check_SiLi = false ;Check_CsI = false ;
-								
 							
 								TelescopeNumber.push_back( Data->GetMMStripXEDetectorNbr(jj) )	;
 								EX = Data->GetMMStripXEEnergy(jj) 				;
@@ -167,9 +166,8 @@ void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 												EY = Data->GetMMStripXEEnergy(i) 				;
 												TY = Data->GetMMStripXTTime(i) 					;
 												
-												/*if (EX>EY)	Si_E.push_back(EX)	;
-												else	  	Si_E.push_back(EY)	;*/ 
-												Si_E.push_back(EX);
+												if (EX>EY)	Si_E.push_back(EX)	;
+												else	  	Si_E.push_back(EY)	;
 												
 												
 												if (TX>TY)	Si_T.push_back(TY)	;
@@ -186,23 +184,24 @@ void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 												if (	Data->GetMMSiLiEDetectorNbr(i) == Data->GetMMStripXEDetectorNbr(jj)
 													&&	Data->GetMMSiLiEEnergy(i) > SiLi_E_Threshold	)
 													{
-													SiLi_E.push_back(Data->GetMMSiLiEEnergy(i))	;
-													SiLi_N.push_back(Data->GetMMSiLiEPadNbr(i))	;
-													
-													if (	Data->GetMMSiLiTDetectorNbr(i) == Data->GetMMStripXEDetectorNbr(jj)
-														&&	Data->GetMMSiLiTPadNbr(i)      == Data->GetMMSiLiEPadNbr(i) )
-															{
-															SiLi_T.push_back(Data->GetMMSiLiTTime(i))	;
-															Check_SiLi = true ;
-															}
+														Check_SiLi = true ;
+														SiLi_E.push_back(Data->GetMMSiLiEEnergy(i))	;
+														SiLi_N.push_back(Data->GetMMSiLiEPadNbr(i))	;
+														
+														if (	Data->GetMMSiLiTDetectorNbr(i) == Data->GetMMStripXEDetectorNbr(jj)
+															&&	Data->GetMMSiLiTPadNbr(i)      == Data->GetMMSiLiEPadNbr(i) )
+																{
+																	SiLi_T.push_back(Data->GetMMSiLiTTime(i))	;
+																}
 													}
 													
-												else
-													{
-													SiLi_E.push_back(-1)	;
-													SiLi_T.push_back(-1)	;
-													SiLi_N.push_back(-1)	;
-													}
+											}
+											
+										if(!Check_SiLi)
+											{
+												SiLi_E.push_back(-1)	;
+												SiLi_T.push_back(-1)	;
+												SiLi_N.push_back(-1)	;
 											}
 								
 										//	CsI
@@ -211,22 +210,20 @@ void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 												if (	Data->GetMMCsIEDetectorNbr(i) == Data->GetMMStripXEDetectorNbr(jj)
 													&&	Data->GetMMCsIEEnergy(i) > CsI_E_Threshold	)
 													{
-													CsI_E.push_back(Data->GetMMCsIEEnergy(i))		;
-													CsI_N.push_back(Data->GetMMCsIECristalNbr(i))	;
-													if (	Data->GetMMCsITDetectorNbr(i) == Data->GetMMStripXEDetectorNbr(jj)
-														&&	Data->GetMMCsITCristalNbr(i)  == Data->GetMMCsIECristalNbr(i) )
-															{
-															CsI_T.push_back(Data->GetMMCsITTime(i))		;
-															Check_CsI = true ;
-															}
+														Check_CsI = true ;
+														CsI_E.push_back(Data->GetMMCsIEEnergy(i))		;
+//														cout << Data->GetMMCsIEEnergy(i) << endl;
+														CsI_N.push_back(Data->GetMMCsIECristalNbr(i))	;
+														CsI_T.push_back(Data->GetMMCsITTime(i))			;
 													}
 													
-												else
-													{
-													CsI_E.push_back(-1)	;
-													CsI_T.push_back(-1)	;
-													CsI_N.push_back(-1)	;
-													}
+											}
+										
+										if(!Check_CsI)
+											{
+												CsI_E.push_back(-200)	;
+												CsI_T.push_back(-2)	;
+												CsI_N.push_back(-2)	;
 											}
 										
 										TotalEnergy.push_back(Si_E.at(jj)) ;
@@ -242,7 +239,7 @@ void TMust2Physics::BuildPhysicalEvent(TMust2Data* Data)
 					&&	Data->GetMMStripYEDetectorNbr(0) == Data->GetMMStripYEDetectorNbr(1))
 					{
 					
-						EventMultiplicity = 3 ;
+						EventMultiplicity = -1 ;
 				
 						double EY1, EX1, TX1, TY1 = 0;
 						double EY2, EX2, TX2, TY2 = 0;

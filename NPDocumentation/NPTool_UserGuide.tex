@@ -19,9 +19,6 @@
    \renewcommand{\headrulewidth}{0pt} % and the line
 }
 
-
-
-
 %\documentclass[a4paper,12pt]{book}
 %\usepackage[T1]{fontenc}
 \usepackage [isolatin]{inputenc} % fontes avec caracteres accentues
@@ -55,7 +52,26 @@ In NPTool analysis and simulation are linked together. The proposed way of worki
 					\centering
 					\includegraphics[width=1\textwidth]{./pictures/nptool_scheme_Ana.png}
 					\caption{ \emph{Phase 2: Analysing an experiment} }
-				\end{figure}
+				\end{figure}	
+				
+				
+				
+\section{The directory layout}
+	NPTool come with a specific directory layout. The different make file and source are made to use this layout, using the environment variable. Here is the standard layout:
+		\begin{itemize}
+			\item[-] NPLib : hold the libraries used both in NPA and NPS (NB: those librairies can be use in your own independant code if you need)
+			\item[-] NPSimulation : hold the NPSimulation code
+			\item[-] NPAnalysis: this folder contain one folder for each analysis project, feel free to make new one on the basis of the template one for instance
+			\item[-] Inputs: this folder contain several folder, one for each type of intput, where you can find the input file used by the programm
+			\item[-] Outputs: find here the outputs file of your simulation and analysis project
+			\item[-] NPDocumentation: hold the documentation file
+			\item[-] Licence: Take a look to the licence file and the list of contributor
+			\item[-] \_MTN: you can some time find this folder, it not exactly part of the NPTool project, and is used only if you are working on the monotone data base (ie: if you are a contributor)
+			\item[] 		
+		\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 				
 \chapter[NPSimulation]{NPSimulation}
 
@@ -70,7 +86,7 @@ Because NPS is build on top of Geant4, you need C++ knowledge and Geant4 skills 
 		\item Generate Nuclear Physics Event (such as a transfert, a beam, an ion source,... ) 
 		\item Mange Detectors geometry (Number of module, positionning...)
 	\end{itemize}
-
+NPTool
 NPS used two input files, one for the EventGenerator, and one for the Detectors Geometry. Those file are regroup in the \$NPT/Input directory wher you can find the EventGenerator and the DetectorConfiguration folder. If you want to add a new case you just have to create a new file in those directory. Note that files in the input directory are token readable file. It mean that they are not compile with the code, just read at each programm lauch. This way you can change the position of your detector or the energy of your beam for example without recompile the code. You can also quickly exchange your file with collaborators.
 
 \subsection{ Running a simulation with existing detectors and event generator }
@@ -129,12 +145,16 @@ First you can have a look to the VDetector.hh file in the \$NPS/include director
 		\item[] ReadSensitive(const G4Event*): Read the scorer associate the to the sensitive method
 	\end{itemize}
 	
-	
 The two last methods are followed by a "{}" wich mean you are free to implemented or not. If not they will remain empty.
 	\begin{itemize}
 		\item[] InitializeRootOutput(): Instantiate a new Root Data object (see NPLib) and associate it to a new branch
 		\item[] InitializeScorers(): Initialize the scorer (see GeneralScorer.hh and Geant4 Documentation)
 	\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter[NPAnalysis]{NPAnalysis}
+
 
 
 \end{document}
