@@ -92,11 +92,12 @@ class MUST2Array : public NPA::VDetector
 				double GetNumberOfTelescope() 	{ return NumberOfTelescope ; }			;
 
 				// To be called after a build Physical Event 
+				int GetEventMultiplicity()	{ return  EventPhysics->EventMultiplicity; };
 				
-				double GetEnergyDeposit() ;
+				double GetEnergyDeposit(int i) { return EventPhysics->TotalEnergy[i] ;};
 				
-				TVector3 GetPositionOfInteraction();
-				TVector3 GetTelescopeNormal()		;
+				TVector3 GetPositionOfInteraction(int i)	 ;	
+				TVector3 GetTelescopeNormal(int i)		;
 				void Print()	;
 
 			private:	//	Root Input and Output tree classes

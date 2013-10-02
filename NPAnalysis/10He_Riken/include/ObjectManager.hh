@@ -117,12 +117,12 @@ namespace ENERGYLOSS
 														3						);
 			
 			EnergyLoss He3StripAl   = EnergyLoss 	(	"3He_Al.txt" 			,
-														10						,
+														100						,
 														1						,
 														3						);
 														
 			EnergyLoss He3StripSi   = EnergyLoss 	(	"3He_Si.txt" 			,
-														10						,
+														1000						,
 														1						,
 														3						);
 														
@@ -139,7 +139,7 @@ namespace ENERGYLOSS
 															1							);
 			
 			EnergyLoss protonStripAl   = EnergyLoss 	(	"proton_Al.txt" 			,
-															10							,
+															100							,
 															1							,
 															1							);
 														

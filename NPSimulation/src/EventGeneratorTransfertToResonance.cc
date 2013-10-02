@@ -609,7 +609,6 @@ void EventGeneratorTransfertToResonance::ResonanceDecay(  G4double EnergyHeavy  
 		for(int i = 0 ; i < NumberOfProtons ; i++)
 				{masses[ll] = mp/GeV ; ll++;}
 				
-
 		// Instentiate a Phase Space Generator, with flat distrution
 		TGenPhaseSpace TPhaseSpace ;
 
