@@ -1,8 +1,26 @@
-This file describes the content of the NPLib directory
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
 
-This directory contains a set of libraries which are used
-both in the NPSimulation and the NPAnalysis modules.
-The structure of this directory is:
+/*****************************************************************************
+ * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
+ *                                                                           *
+ * Creation Date  : 01/09/09                                                 *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *      This file describes the content of the NPLib directory               *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
+
+This directory contains a set of libraries which are used both in the 
+NPSimulation and the NPAnalysis modules. The structure of this directory is:
 NPLib / include
       / lib
       / IORoot
@@ -14,25 +32,64 @@ NPLib / include
       / GASPARD
       / VDetector
 
-A description of each library follows.
+A description of each directory follows.
 
 I) include directory
-
+	When compiling NPLib (see INSTALL file) all the headers of the libraries
+	are copied to this directory
 
 II) lib directory
+	When compiling NPLib (see INSTALL file) all the shared libraries are 
+	copied to this directory
 
 III) IORoot
+	This directory includes one library:
+		libIORoot.so
+	This library contains two singleton classes (RootOutput and RootInput) used
+	both in NPSimulation and NPAnalysis.
+	These classes are used to deal with the input and output ROOT files and trees.
 
 IV) Tools
 
 V) InitialConditions
+	This directory includes one library:
+		libInitialConditions.so
+	This library records all the information concerning the event generators, 
+	e.g. vertex of interaction, angles of emitted particles...                                                 
+	This class derives from TObject (ROOT) and its aim is to be stored in the 
+	output TTree of the G4 simulation 
 
 VI) InteractionCoordinates
+	This directory includes one library:
+		libInteractionCoordinates.so
+	This library mainly records the coordinates of interaction between a particle 
+	and a detector. 
+	This class derives from TObject (ROOT) and its aim is to be stored in the 
+	output TTree of the G4 simulation.
 
 VII) MUST2
 
 VIII) AnnularS1
+	This directory includes one library:
+		libAnnularS1Data.so
+	This library stores the results of the G4 simulation for the S1 detector. 
+	The format is the same as the one which is used for the GANIL experiments after 
+	conversion of the raw data with GRU. Ask N. de Sereville and J. Burgunder 
+	(burgunder@ganil.fr) for more informations.
+	This class derives from TObject (ROOT) and its aim is to be stored in the 
+	output TTree of the G4 simulation.
 
 IX) GASPARD
+	This directory includes two libraries:
+		libGaspardData.so
+		libGaspardPhysics.so
+	libGaspardData.so:
+		This library stores the results of the G4 simulation for the tracker part 
+		of the Gaspard detector.
+		The format mimics what was used for the GANIL experiments after conversion 
+		of the raw data with GRU. Ask N. de Sereville for more informations. 
+	libGaspardPhysics.so:
+		This library deals with the treatment applied to the ROOT output file 
+		obtained from NPSimulation. This library is *only* used by NPAnalysis.
 
 X) VDetector

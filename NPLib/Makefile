@@ -269,7 +269,7 @@ INCLUDE		= -I$(CLHEP_BASE_DIR)/include
  
 #------------------------------------------------------------------------------
 SHARELIB      =	Vdetec	InputOutputRoot InitCond	InterCoord \
-		Must2All	GaspardData	AnnularS1Data \
+		Must2All	GaspardData	AnnularS1Data PlasticData\
 		Reaction	EnergyLoss
 
 all:         $(SHARELIB)
@@ -308,6 +308,16 @@ GaspardData:
 		cp ./GASPARD/*.so ./lib ; cp ./GASPARD/*.h ./include
 ifeq ($(ARCH),macosx)
 		cd lib; ln -sf libGaspardData.so libGaspardData.dylib
+		cd lib; ln -sf libGaspardPyysics.so libGaspardPhysics.dylib
+endif
+
+## Gaspard ##
+PlasticData:
+		make -C ./Plastic
+		cp ./Plastic/*.so ./lib ; cp ./Plastic/*.h ./include
+ifeq ($(ARCH),macosx)
+		cd lib; ln -sf libPlasticData.so libPlasticData.dylib
+		cd lib; ln -sf libPlasticPyysics.so libPlasticPhysics.dylib
 endif
 
 

@@ -1,3 +1,24 @@
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
+ *                                                                           *
+ * Creation Date  : 10/06/09                                                 *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription: Define a module of square shape for the Gaspard tracker       *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
+
 #ifndef GaspardTrackerSquare_h
 #define GaspardTrackerSquare_h 1
 
@@ -147,6 +168,7 @@ namespace GPDSQUARE
    const G4double SiliconFace       = 98*mm          ;
 //   const G4double VacBoxThickness   = 3*cm           ;
    const G4double VacBoxThickness   = 0.5*cm           ;
+   const G4int    NumberOfStrips    = 128;
 
    // Second stage
    const G4double SiLiThickness     = 5.1*mm                      ;  // Must be checked

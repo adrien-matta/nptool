@@ -1,5 +1,23 @@
-This file describes the content of the NPTool package
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
 
+/*****************************************************************************
+ * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
+ *                                                                           *
+ * Creation Date  : 01/09/09                                                 *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *      This file describes the content of the NPTool package                *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
 
 The NPTool package has basically three modules: the NPSimulation
 module in charge of performing the G4 simulation, the NPAnalysis
@@ -26,8 +44,16 @@ I) NPLib
 	directory.
 
 II) NPSimulation
+	This directory contains all the files needed to run the
+	G4 simulation software. The structure of this directory
+	is the typical structure for G4 programs with a src and
+	include directory.
 
 III) NPAnalysis
+	This directory contains everything related to the analysis
+	program treating the output ROOT file from NPSimulation.
+	An example of such a program can be found in the subdirectory
+	Template which deals with the MUST2 detector.
 
 IV) Inputs
 	This directory contains all the input files needed for 
@@ -35,7 +61,7 @@ IV) Inputs
 	structure:
 	Inputs / CrossSection
 	       / DetectorConstruction
-	       / Reaction
+	       / EventGenerator
 	       / dEdx 
 
 V) Outputs

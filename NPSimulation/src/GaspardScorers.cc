@@ -1,12 +1,35 @@
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
+ *                                                                           *
+ * Creation Date  : 11/07/09                                                 *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription: This class holds all the scorers needed by the                *
+ *             GaspardTracker*** objects.                                    *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
+
 #include "GaspardScorers.hh"
 #include "G4UnitsTable.hh"
 
+#include "GaspardTrackerDummyShape.hh"
 #include "GaspardTrackerSquare.hh"
 #include "GaspardTrackerTrapezoid.hh"
 #include "GaspardTrackerAnnular.hh"
 using namespace GPDSQUARE;
 using namespace GPDTRAP;
 using namespace GPDANNULAR;
+using namespace GPDDUMMYSHAPE;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -264,11 +287,133 @@ void GPDScorerDetectorNumber::PrintAll()
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// FirstStage Front Strip position Scorer for Square geometry
-GPDScorerFirstStageFrontStripSquare::GPDScorerFirstStageFrontStripSquare(G4String name, G4int depth, G4double StripPlaneSize, G4int NumberOfStrip)
+// FirstStage Front Strip position Scorer for DummyShape geometry
+GPDScorerFirstStageFrontStripDummyShape::GPDScorerFirstStageFrontStripDummyShape(G4String name, G4int depth, G4int NumberOfStrip)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
-   m_StripPlaneSize =   StripPlaneSize ;
+   m_NumberOfStrip    = NumberOfStrip  ;
+}
+
+GPDScorerFirstStageFrontStripDummyShape::~GPDScorerFirstStageFrontStripDummyShape()
+{
+}
+
+G4bool GPDScorerFirstStageFrontStripDummyShape::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+{
+   G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
+   POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
+
+   G4double StripPitch = GPDDUMMYSHAPE::FirstStageFace / m_NumberOfStrip;
+
+   G4double temp = (POS(0) + GPDDUMMYSHAPE::FirstStageFace / 2.) / StripPitch   ;
+   G4double X = int(temp) + 1 ;
+
+   //Rare case where particle is close to edge of silicon plan
+   if (X == m_NumberOfStrip+1) X = m_NumberOfStrip;
+   G4double edep = aStep->GetTotalEnergyDeposit();
+   if (edep < 100*keV) return FALSE;
+   G4int  index =  aStep->GetTrack()->GetTrackID();
+   EvtMap->set(index, X);
+   return TRUE;
+}
+
+void GPDScorerFirstStageFrontStripDummyShape::Initialize(G4HCofThisEvent* HCE)
+{
+   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
+   if (HCID < 0) {
+      HCID = GetCollectionID(0);
+   }
+   HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
+}
+
+void GPDScorerFirstStageFrontStripDummyShape::EndOfEvent(G4HCofThisEvent*)
+{
+}
+
+void GPDScorerFirstStageFrontStripDummyShape::Clear()
+{
+   EvtMap->clear();
+}
+
+void GPDScorerFirstStageFrontStripDummyShape::DrawAll()
+{
+}
+
+void GPDScorerFirstStageFrontStripDummyShape::PrintAll()
+{
+   G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl ;
+   G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
+   G4cout << " Number of entries " << EvtMap->entries() << G4endl     ;
+}
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+// FirstStage Back Strip position Scorer for DummyShape geometry
+GPDScorerFirstStageBackStripDummyShape::GPDScorerFirstStageBackStripDummyShape(G4String name, G4int depth, G4int NumberOfStrip)
+      : G4VPrimitiveScorer(name, depth), HCID(-1)
+{
+   m_NumberOfStrip    = NumberOfStrip  ;
+}
+
+GPDScorerFirstStageBackStripDummyShape::~GPDScorerFirstStageBackStripDummyShape()
+{
+}
+
+G4bool GPDScorerFirstStageBackStripDummyShape::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+{
+   G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
+   POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
+
+   G4double StripPitch = GPDDUMMYSHAPE::FirstStageFace / m_NumberOfStrip;
+
+   G4double temp = (POS(1) + GPDDUMMYSHAPE::FirstStageFace / 2.) / StripPitch   ;
+   G4double X = int(temp) + 1 ;
+   //Rare case where particle is close to edge of silicon plan
+   if (X == m_NumberOfStrip+1) X = m_NumberOfStrip;
+   G4double edep = aStep->GetTotalEnergyDeposit();
+   if (edep < 100*keV) return FALSE;
+   G4int  index =  aStep->GetTrack()->GetTrackID();
+   EvtMap->set(index, X);
+   return TRUE;
+}
+
+void GPDScorerFirstStageBackStripDummyShape::Initialize(G4HCofThisEvent* HCE)
+{
+   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
+   if (HCID < 0) {
+      HCID = GetCollectionID(0);
+   }
+   HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
+}
+
+void GPDScorerFirstStageBackStripDummyShape::EndOfEvent(G4HCofThisEvent*)
+{
+}
+
+void GPDScorerFirstStageBackStripDummyShape::Clear()
+{
+   EvtMap->clear();
+}
+
+void GPDScorerFirstStageBackStripDummyShape::DrawAll()
+{
+}
+
+void GPDScorerFirstStageBackStripDummyShape::PrintAll()
+{
+   G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl ;
+   G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
+   G4cout << " Number of entries " << EvtMap->entries() << G4endl     ;
+}
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+// FirstStage Front Strip position Scorer for Square geometry
+GPDScorerFirstStageFrontStripSquare::GPDScorerFirstStageFrontStripSquare(G4String name, G4int depth, G4int NumberOfStrip)
+      : G4VPrimitiveScorer(name, depth), HCID(-1)
+{
    m_NumberOfStrip    = NumberOfStrip  ;
 }
 
@@ -281,9 +426,9 @@ G4bool GPDScorerFirstStageFrontStripSquare::ProcessHits(G4Step* aStep, G4Touchab
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
-   G4double StripPitch = m_StripPlaneSize / m_NumberOfStrip;
+   G4double StripPitch = GPDSQUARE::SiliconFace / m_NumberOfStrip;
 
-   G4double temp = (POS(0) + m_StripPlaneSize / 2.) / StripPitch   ;
+   G4double temp = (POS(0) + GPDSQUARE::SiliconFace / 2.) / StripPitch   ;
    G4double X = int(temp) + 1 ;
    //Rare case where particle is close to edge of silicon plan
    if (X == 129) X = 128;
@@ -326,10 +471,9 @@ void GPDScorerFirstStageFrontStripSquare::PrintAll()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // FirstStage Back Strip position Scorer for Square geometry
-GPDScorerFirstStageBackStripSquare::GPDScorerFirstStageBackStripSquare(G4String name, G4int depth, G4double StripPlaneSize, G4int NumberOfStrip)
+GPDScorerFirstStageBackStripSquare::GPDScorerFirstStageBackStripSquare(G4String name, G4int depth, G4int NumberOfStrip)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
-   m_StripPlaneSize =   StripPlaneSize ;
    m_NumberOfStrip    = NumberOfStrip  ;
 }
 
@@ -342,9 +486,9 @@ G4bool GPDScorerFirstStageBackStripSquare::ProcessHits(G4Step* aStep, G4Touchabl
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
-   G4double StripPitch = m_StripPlaneSize / m_NumberOfStrip;
+   G4double StripPitch = GPDSQUARE::SiliconFace / m_NumberOfStrip;
 
-   G4double temp = (POS(1) + m_StripPlaneSize / 2.) / StripPitch   ;
+   G4double temp = (POS(1) + GPDSQUARE::SiliconFace / 2.) / StripPitch   ;
    G4int temp2 = temp ;
    G4double Y = temp2 + 1                    ;
    //Rare case where particle is close to edge of silicon plan

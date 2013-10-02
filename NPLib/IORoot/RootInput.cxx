@@ -1,3 +1,24 @@
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
+ *                                                                           *
+ * Creation Date  : 21/07/09                                                 *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription: This class is a singleton class which deals with the ROOT     *
+ *             input file and tree both for NPSimulation and NPAnalysis.     *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
+
 #include <iostream>
 #include <fstream>
 
@@ -30,55 +51,57 @@ void RootInput::Destroy()
 // fileNameBase doit etre le nom du TChain.
 RootInput::RootInput(string configFileName)
 {
-	bool CheckTreeName 		= false	;
-	bool CheckRootFileName 	= false ;
+   bool CheckTreeName     = false;
+   bool CheckRootFileName = false;
 
-	// Read configuration file Buffer
+   // Read configuration file Buffer
    string lineBuffer, dataBuffer;
 
    // Open file
    ifstream inputConfigFile;
    inputConfigFile.open(configFileName.c_str());
 	
-   pRootChain = new TChain()	;
+   pRootChain = new TChain();
    
-   if(!inputConfigFile) { cout << "Run to Read file :" << configFileName << " not found " << endl ; return ;}
-   
-   else 
-		{
-			while (!inputConfigFile.eof()) 
-				{
-				      getline(inputConfigFile, lineBuffer);
-				      
-				      // search for token giving the TTree name
-				      if (lineBuffer.compare(0, 9, "TTreeName") == 0) 
-				      	{
-					         inputConfigFile >> dataBuffer;
-					         // initialize pRootChain
-					         pRootChain->SetName(dataBuffer.c_str());
-					         CheckTreeName = true ;
-				      	}
-				      
-				      // search for token giving the list of Root files to treat
-				      else if (lineBuffer.compare(0, 12, "RootFileName") == 0  &&  pRootChain)
-				      	{
-				      		inputConfigFile >> dataBuffer;
-					         while (!inputConfigFile.eof()) 
-					         	{
-						            inputConfigFile >> dataBuffer;
-						            pRootChain->Add(dataBuffer.c_str());
-						            CheckRootFileName = true ;
-				         		}
-				         
-				      	}
-		   		}
-		
-		}
+   cout << "/////////////////////////////////" << endl;
+   cout << "Initializing input TChain" << endl;
+
+   if (!inputConfigFile) {
+      cout << "Run to Read file :" << configFileName << " not found " << endl; 
+      return;
+   }
+   else {
+      while (!inputConfigFile.eof()) {
+         getline(inputConfigFile, lineBuffer);
+			      
+         // search for token giving the TTree name
+         if (lineBuffer.compare(0, 9, "TTreeName") == 0) {
+            inputConfigFile >> dataBuffer;
+            // initialize pRootChain
+            pRootChain->SetName(dataBuffer.c_str());
+            CheckTreeName = true ;
+         }
+     
+         // search for token giving the list of Root files to treat
+         else if (lineBuffer.compare(0, 12, "RootFileName") == 0  &&  pRootChain) {
+            CheckRootFileName = true ;
+
+            while (!inputConfigFile.eof()) {
+               inputConfigFile >> dataBuffer;
+
+               if (!inputConfigFile.eof()) {
+                  pRootChain->Add(dataBuffer.c_str());
+                  cout << "Adding file " << dataBuffer << " to TChain" << endl;
+               }
+            }
+         }
+      }
+   }
 		   
-   
-   if(!CheckRootFileName || !CheckTreeName) cout << "WARNING: Token not found for InputTree Declaration : Input Tree may not be instantiate properly" << endl ;
-   
-   
+   if (!CheckRootFileName || !CheckTreeName) 
+      cout << "WARNING: Token not found for InputTree Declaration : Input Tree may not be instantiate properly" << endl;
+
+   cout << "/////////////////////////////////" << endl;
 }
 
 

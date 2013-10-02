@@ -1,0 +1,20 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%% Reaction file for 11Li(d,3He)10He reaction %%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%Beam energy given in MeV ; Excitation in MeV
+Transfert
+	Beam= 68Ni
+	Target= 2H
+	Light= 1H
+	Heavy= 69Ni
+	ExcitationEnergy= 2.0
+	BeamEnergy= 1904
+	BeamEnergySpread= 0
+	SigmaX= 1.5
+	SigmaY= 1.5
+	SigmaThetaX= 0.005
+	SigmaPhiY= 0.005
+	CrossSectionPath= ./Data/CrossSection/ni69_d5_01.n
+	ShootLight= 1
+	ShootHeavy= 0
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

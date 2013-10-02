@@ -1,3 +1,27 @@
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
+ *                                                                           *
+ * Creation Date  : January 2009                                             *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *  This file describe the MUST2 charge particle Detector                    *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ * MUST2 is a modular array made of Telescope (1 to 8 telescope). Each       *
+ *  Telescope is made of Three Stage:                                        *
+ *  - A 300um Silicium, double-sided strip                                   *
+ *  - 16 Si(Li) pad                                                          *
+ *  - 16 CsI scintillator Crystal                                            *
+ *****************************************************************************/
 #include"MUST2Array.hh"
 
 //G4 Geometry object
@@ -832,37 +856,32 @@ void MUST2Array::ConstructDetector(G4LogicalVolume* world)
       else {
          G4double Theta = m_Theta[i]   ;
          G4double Phi   = m_Phi[i]  ;
-         //This part because if Phi and Theta = 0 equation are false
-         if (Theta == 0)      {
-            Theta   = 0.0001             ;
-         }
-         if (Theta == 2*cos(0))   {
-            Theta   = 2 * acos(0) - 0.00001  ;
-         }
-         if (Phi   == 0)         {
-            Phi     = 0.0001             ;
-         }
-
+         
          // (u,v,w) unitary vector associated to telescope referencial
          // (u,v) // to silicon plan
-         // w perpendicular to (u,v) plan and pointing CsI
+         // w perpendicular to (u,v) plan and pointing ThirdStage
          // Phi is angle between X axis and projection in (X,Y) plan
          // Theta is angle between  position vector and z axis
          G4double wX = m_R[i] * sin(Theta / rad) * cos(Phi / rad)   ;
          G4double wY = m_R[i] * sin(Theta / rad) * sin(Phi / rad)   ;
          G4double wZ = m_R[i] * cos(Theta / rad)             ;
-
          MMw = G4ThreeVector(wX, wY, wZ)                ;
-         G4ThreeVector CT = MMw                       ;
-         MMw = MMw.unit()                          ;
 
-         G4ThreeVector Y = G4ThreeVector(0 , 1 , 0)         ;
+         // vector corresponding to the center of the module
+         G4ThreeVector CT = MMw;
 
-         MMu = MMw.cross(Y)      ;
-         MMv = MMw.cross(MMu) ;
+         // vector parallel to one axis of silicon plane
+         G4double ii = cos(Theta / rad) * cos(Phi / rad);
+         G4double jj = cos(Theta / rad) * sin(Phi / rad);
+         G4double kk = -sin(Theta / rad);
+         G4ThreeVector Y = G4ThreeVector(ii, jj, kk);
 
+         MMw = MMw.unit();
+         MMu = MMw.cross(Y);
+         MMv = MMw.cross(MMu);
          MMv = MMv.unit();
          MMu = MMu.unit();
+
          // Passage Matrix from Lab Referential to Telescope Referential
          // MUST2
          MMrot = new G4RotationMatrix(MMu, MMv, MMw);
@@ -898,7 +917,6 @@ void MUST2Array::InitializeRootOutput()
 // Called at in the EventAction::EndOfEventAvtion
 void MUST2Array::ReadSensitive(const G4Event* event)
 {
-   bool checkSi = false     ;
    G4String DetectorNumber 	;
    m_Event->Clear()			;
    
@@ -939,7 +957,6 @@ void MUST2Array::ReadSensitive(const G4Event* event)
    G4THitsMap<G4double>* 				CsIEnergyHitMap 	;
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
-   checkSi = false;
 
     // Read the Scorer associate to the Silicon Strip
     
@@ -1017,11 +1034,9 @@ void MUST2Array::ReadSensitive(const G4Event* event)
         G4int ETrackID  =   Energy_itr->first     ;
         G4double E     = *(Energy_itr->second)    ;
         G4int N = 0								  ;
-        checkSi = false    						  ;
         
         if (E > 0) {
         
-	        checkSi = true   ;
 	        m_Event->SetMMStripXEEnergy(RandGauss::shoot(E, ResoStrip))    ;
 	        m_Event->SetMMStripYEEnergy(RandGauss::shoot(E, ResoStrip))    ;
 
@@ -1051,7 +1066,6 @@ void MUST2Array::ReadSensitive(const G4Event* event)
 	            G4double T     = *(Time_itr->second)      ;
 
 	            if (TTrackID == ETrackID) {
-	                T = RandGauss::shoot(T, ResoTimePPAC)   ;
 	                m_Event->SetMMStripXTTime(RandGauss::shoot(T, ResoTimeMust)) ;
 	                m_Event->SetMMStripYTTime(RandGauss::shoot(T, ResoTimeMust)) ;
 	            }
@@ -1185,6 +1199,7 @@ void MUST2Array::ReadSensitive(const G4Event* event)
     }
     
     // clear map for next event
+    DetectorNumberHitMap              ->clear();
     EnergyHitMap   		->clear() ;
     TimeHitMap     		->clear() ;
     XHitMap        		->clear() ;
@@ -1201,12 +1216,12 @@ void MUST2Array::ReadSensitive(const G4Event* event)
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void MUST2Array::InitializeScorer() 
+void MUST2Array::InitializeScorers() 
 	{ 
 		//	Silicon Associate Scorer
 		m_StripScorer = new G4MultiFunctionalDetector("StripScorer");
 		
-		G4VPrimitiveScorer* DetNbr 								= new PSDetectorNumber("DetectorNumber", 0, "Silicon")             	;
+		G4VPrimitiveScorer* DetNbr 								= new MUST2::PSDetectorNumber("DetectorNumber", 0, "Silicon")             	;
 		G4VPrimitiveScorer* Energy 								= new PSStripE("StripEnergy", 0)             						;
 		G4VPrimitiveScorer* TOF 								= new PSTOF("StripTime", 0)                  						;          					 
 		G4VPrimitiveScorer* StripPositionX						= new PSStripNumberX("StripNumberX", 0, SiliconFace, 128)  			;

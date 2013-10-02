@@ -5,7 +5,7 @@ CPP=g++
 EXEC=Analysis
 
 # local includes
-NPAINCLUDES = $(NPANA)/include
+NPAINCLUDES = ../include
 
 # ROOT includes
 CXXFLAGS += `root-config --cflags`
@@ -15,12 +15,13 @@ CXXFLAGS += -I$(CLHEP_INCLUDE_DIR)
 CXXFLAGS += -I$(NPAINCLUDES)
 CXXFLAGS += -I$(NPLIB)/include
 
-
 LDFLAGS  = `root-config --libs` -lMathMore
-#LDFLAGS += -L$(NPLIB) -lMust2Data -lReaction -lEnergyLossCorrection 
-LDFLAGS += -L$(NPLIB)/lib -lMust2Data -lGaspardData -lInteractionCoordinates \
-			-lInitialConditions -lReaction
-LDFLAGS += -L$(CLHEP_LIB_DIR) -l$(CLHEP_LIB)
+LDFLAGS+= -L$(NPLIB)/lib -lVDetector -lIORoot -lReaction -lEnergyLoss \
+			-lMust2Data -lMust2Physics \
+			-lGaspardData -lGaspardPhysics \
+			-lAnnularS1Data \
+			-lInitialConditions -lInteractionCoordinates
+LDFLAGS+= -L$(CLHEP_LIB_DIR) -l$(CLHEP_LIB) 
 
 SRC= $(wildcard *.cc)
 OBJ=$(SRC:.cc=.o)
@@ -33,8 +34,6 @@ Analysis:$(OBJ)
 	mv Analysis  ../Analysis
 
 %.o: %.cc
-	@echo "CXXFLAGS vaut $(CXXFLAGS)"
-	@echo "LDFLAGS vaut $(LDFLAGS)"
 	@$(CPP) $(CXXFLAGS) -o $@ -c $<
 	
 .PHONY: clean mrproper

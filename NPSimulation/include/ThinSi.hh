@@ -1,6 +1,25 @@
 #ifndef ThinSi_h
 #define ThinSi_h 1
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
 
+/*****************************************************************************
+ * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
+ *                                                                           *
+ * Creation Date  : January 2009                                             *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *  This class describe a 20um Silicium detector                             *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *****************************************************************************/
 // C++ header
 #include <string>
 #include <vector>
@@ -18,7 +37,28 @@
 
 using namespace std;
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+namespace THINSI
+{
+   // Energy and time Resolution
+   const G4double ResoTime    = 0      ;
+   const G4double ResoEnergy  = 0.042  ;// = 100keV of Resolution   //   Unit is MeV/2.35
 
+   // Geometry
+   const G4double DetectorSize   	= 68*mm           ;
+   const G4double SiliconThickness  = 20*micrometer   ;
+   const G4double FrameThickness    = 3*mm            ;
+   const G4double SiliconSize    	= 50*mm           ;
+   const G4double AluThickness      = 0.4*micrometer  ;
+   const G4int  NumberOfStrip    	= 32       		  ;
+
+   const G4double AluStripFront_PosZ 	= -0.5*SiliconThickness - 0.5*AluThickness ;
+   const G4double Si_PosZ        		= 0                                 ;
+   const G4double AluStripBack_PosZ  	= 0.5*SiliconThickness + 0.5*AluThickness  ;
+
+}
+
+using namespace THINSI ;
 
 class ThinSi : public VDetector
 {
@@ -37,24 +77,21 @@ public:
    void AddTelescope(G4ThreeVector  TL       ,
          G4ThreeVector  BL       ,
          G4ThreeVector  BR       ,
-         G4ThreeVector  CT       ,
-         bool        RightOrLeft);
+         G4ThreeVector  TR       );
    // By Angle Method
    void AddTelescope(G4double    R        ,
          G4double    Theta    ,
          G4double    Phi         ,
          G4double    beta_u       ,
          G4double    beta_v       ,
-         G4double    beta_w       ,
-         bool        RightOrLeft);
+         G4double    beta_w       );
 
    // Effectively construct Volume
    // Avoid to have two time same code for Angle and Point definition
    void VolumeMaker(G4int DetectorNumber     ,
          G4ThreeVector     MMpos ,
          G4RotationMatrix* MMrot ,
-         G4LogicalVolume*  world ,
-         bool        RightOrLeft);
+         G4LogicalVolume*  world );
 
 
    ////////////////////////////////////////////////////
@@ -90,14 +127,12 @@ private:
 private:
    // True if Define by Position, False is Define by angle
    vector<bool>   m_DefinitionType  ;
-   // True=Right False = Left
-   vector<bool>   m_RightOrLeft     ;
 
    // Used for "By Point Definition"
    vector<G4ThreeVector>   m_TL     ; // Top Left Corner Position Vector
    vector<G4ThreeVector>   m_BL     ; // Bottom Left Corner Position Vector
    vector<G4ThreeVector>   m_BR     ; // Bottom Right Corner Position Vector
-   vector<G4ThreeVector>   m_CT     ; // Center Corner Position Vector
+   vector<G4ThreeVector>   m_TR     ; // Center Corner Position Vector
 
    // Used for "By Angle Definition"
    vector<G4double>  m_R         ; //  |

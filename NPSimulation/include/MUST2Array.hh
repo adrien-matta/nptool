@@ -1,11 +1,69 @@
 #ifndef MUST2Array_h
 #define MUST2Array_h 1
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
 
+/*****************************************************************************
+ * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
+ *                                                                           *
+ * Creation Date  : January 2009                                             *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *  This file describe the MUST2 charge particle Detector                    *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ * MUST2 is a modular array made of Telescope (1 to 8 telescope). Each       *
+ *  Telescope is made of Three Stage:                                        *
+ *  - A 300um Silicium, double-sided strip                                   *
+ *  - 16 Si(Li) pad                                                          *
+ *  - 16 CsI scintillator Crystal                                            *
+ *****************************************************************************/
 #include "VDetector.hh"
 #include "TMust2Data.h"
 #include "G4SDManager.hh"
 #include "G4MultiFunctionalDetector.hh"
 #include <vector>
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+namespace MUST2
+{
+   // Resolution
+   const G4double ResoTimeMust = 0.212765957    ;// = 500ps                 //   Unit is  ns/2.35
+   const G4double ResoSiLi     = 0.055          ;// = 130 keV of resolution //   Unit is MeV/2.35
+   const G4double ResoCsI      = 0.08           ;// = 188 kev of resolution //   Unit is MeV/2.35
+   const G4double ResoStrip    = 0.022          ;// = 52keV of Resolution   //   Unit is MeV/2.35
+
+   // Geometry
+   const G4double FaceFront = 11.*cm   ;
+   const G4double FaceBack = 16.5*cm   ;
+   const G4double Length  = 7.2*cm  ;
+
+   const G4double AluStripThickness = 0.4*micrometer        ;
+   const G4double SiliconThickness  = 300*micrometer           ;
+   const G4double SiliconFace       = 98*mm                    ;
+   const G4double VacBoxThickness   = 3*cm                     ;
+
+   const G4double SiLiThickness     = 5.1*mm             ;  // Must be checked
+   const G4double SiLiFaceX         = 48.25*mm              ;
+   const G4double SiLiFaceY         = 92*mm                 ;
+   const G4double MylarCsIThickness = 3*micrometer          ;
+   const G4double CsIThickness      = 4.*cm + 2*MylarCsIThickness ;
+   const G4double CsIFaceFront      = 12.2*cm                  ;
+   const G4double CsIFaceBack    = 16*cm                    ;
+
+   // Starting at the front and going to CsI
+   const G4double AluStripFront_PosZ   = Length* -0.5 + 0.5*AluStripThickness                       ;
+   const G4double Silicon_PosZ      = AluStripFront_PosZ + 0.5*AluStripThickness + 0.5*SiliconThickness     ;
+   const G4double AluStripBack_PosZ = Silicon_PosZ + 0.5*SiliconThickness + 0.5*AluStripThickness     ;
+   const G4double VacBox_PosZ    = AluStripBack_PosZ + 0.5*AluStripThickness + 0.5* VacBoxThickness      ;
+   const G4double CsI_PosZ       = VacBox_PosZ + 0.5*VacBoxThickness + 0.5*CsIThickness               ;
+}
 
 class MUST2Array : public VDetector
 {
@@ -114,7 +172,7 @@ private:
 	////////////////////////////////////////////////////
 private:
 	//	Initialize all Scorer used by the MUST2Array
-	void InitializeScorer() ;
+	void InitializeScorers() ;
 
 	//	Silicon Associate Scorer
 	G4MultiFunctionalDetector* m_StripScorer				 ;
@@ -151,44 +209,6 @@ private:
 
 
 };
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-namespace MUST2
-{
-   // Resolution
-   const G4double ResoTimeMust = 0.212765957    ;// = 500ps                 //   Unit is  ns/2.35
-   const G4double ResoTimePPAC = 0.106382979    ;// = 250ps                 //   Unit is  ns/2.35
-   const G4double ResoSiLi     = 0.055          ;// = 130 keV of resolution //   Unit is MeV/2.35
-   const G4double ResoCsI      = 0.08           ;// = 188 kev of resolution //   Unit is MeV/2.35
-   const G4double ResoStrip    = 0.022          ;// = 52keV of Resolution   //   Unit is MeV/2.35
-
-   // Geometry
-   const G4double FaceFront = 11.*cm   ;
-   const G4double FaceBack = 16.5*cm   ;
-   const G4double Length  = 7.2*cm  ;
-
-   const G4double AluStripThickness = 0.4*micrometer        ;
-   const G4double SiliconThickness  = 300*micrometer           ;
-   const G4double SiliconFace       = 98*mm                    ;
-   const G4double VacBoxThickness   = 3*cm                     ;
-
-   const G4double SiLiThickness     = 5.1*mm             ;  // Must be checked
-   const G4double SiLiFaceX         = 48.25*mm              ;
-   const G4double SiLiFaceY         = 92*mm                 ;
-   const G4double MylarCsIThickness = 3*micrometer          ;
-   const G4double CsIThickness      = 4.*cm + 2*MylarCsIThickness ;
-   const G4double CsIFaceFront      = 12.2*cm                  ;
-   const G4double CsIFaceBack    = 16*cm                    ;
-
-   // Starting at the front and going to CsI
-   const G4double AluStripFront_PosZ   = Length* -0.5 + 0.5*AluStripThickness                       ;
-   const G4double Silicon_PosZ      = AluStripFront_PosZ + 0.5*AluStripThickness + 0.5*SiliconThickness     ;
-   const G4double AluStripBack_PosZ = Silicon_PosZ + 0.5*SiliconThickness + 0.5*AluStripThickness     ;
-   const G4double VacBox_PosZ    = AluStripBack_PosZ + 0.5*AluStripThickness + 0.5* VacBoxThickness      ;
-   const G4double CsI_PosZ       = VacBox_PosZ + 0.5*VacBoxThickness + 0.5*CsIThickness               ;
-}
-
-
 
 extern G4RotationMatrix* Rotation(double tetaX, double tetaY, double tetaZ);
 #endif

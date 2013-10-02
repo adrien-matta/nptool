@@ -1,3 +1,24 @@
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
+ *                                                                           *
+ * Creation Date  : January 2009                                             *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *  This class describe a 20um Silicium detector                             *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *****************************************************************************/
+
 // C++ headers
 #include <sstream>
 #include <cmath>
@@ -35,30 +56,6 @@
 using namespace std;
 using namespace CLHEP;
 
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-namespace THINSI
-{
-   // Energy and time Resolution
-   const G4double ResoTime    = 0      ;
-   const G4double ResoEnergy  = 0.022 ;// = 52keV of Resolution   //   Unit is MeV/2.35
-
-   // Geometry
-   const G4double DetectorSize   = 70*mm           ;
-   const G4double SiliconThickness  = 20*micrometer      ;
-   const G4double SiliconSize    = 50*mm           ;
-   const G4double AluThickness      = 0.4*micrometer  ;
-   const G4int  NumberOfStrip    = 32           ;
-
-   const G4double AluStripFront_PosZ = -0.5*SiliconThickness - 0.5*AluThickness ;
-   const G4double Si_PosZ        = 0                                 ;
-   const G4double AluStripBack_PosZ  = 0.5*SiliconThickness + 0.5*AluThickness  ;
-
-   const G4double Si_PosX_Shift = 4*mm ;
-   const G4double Si_PosY_Shift = 2*mm ;
-}
-
-using namespace THINSI ;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -74,16 +71,14 @@ ThinSi::~ThinSi()
 void ThinSi::AddTelescope(G4ThreeVector TL         ,
       G4ThreeVector BL        ,
       G4ThreeVector BR        ,
-      G4ThreeVector CT        ,
-      bool       RightOrLeft)
+      G4ThreeVector TR        )
 {
    m_DefinitionType.push_back(true) ;
-   m_RightOrLeft.push_back(RightOrLeft)   ;
 
    m_TL.push_back(TL)               ;
    m_BL.push_back(BL)               ;
    m_BR.push_back(BR)               ;
-   m_CT.push_back(CT)               ;
+   m_TR.push_back(TR)               ;
 
    m_R.push_back(0)              ;
    m_Theta.push_back(0)          ;
@@ -98,13 +93,11 @@ void ThinSi::AddTelescope(G4double R      ,
       G4double Phi   ,
       G4double beta_u   ,
       G4double beta_v   ,
-      G4double beta_w   ,
-      bool   RightOrLeft)
+      G4double beta_w   )
 {
    G4ThreeVector empty = G4ThreeVector(0, 0, 0)   ;
 
    m_DefinitionType.push_back(false)   ;
-   m_RightOrLeft.push_back(RightOrLeft);
 
    m_R.push_back(R)              ;
    m_Theta.push_back(Theta)         ;
@@ -116,16 +109,15 @@ void ThinSi::AddTelescope(G4double R      ,
    m_TL.push_back(empty)            ;
    m_BL.push_back(empty)            ;
    m_BR.push_back(empty)            ;
-   m_CT.push_back(empty)            ;
+   m_TR.push_back(empty)            ;
 
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void ThinSi::VolumeMaker(G4int            DetNumber      ,
-      G4ThreeVector     Det_pos        ,
-      G4RotationMatrix*    Det_rot        ,
-      G4LogicalVolume*  world       ,
-      bool           RightOrLeft)
+void ThinSi::VolumeMaker(	G4int            	DetNumber      	,
+      						G4ThreeVector     	Det_pos        	,
+      						G4RotationMatrix*   Det_rot        	,
+      						G4LogicalVolume*  	world       	)
 {
    G4double NbrTelescopes = DetNumber           ;
    G4String DetectorNumber                   ;
@@ -164,21 +156,10 @@ void ThinSi::VolumeMaker(G4int            DetNumber      ,
 // If don't you will have a Warning unused variable 'myPVP'
    G4PVPlacement* PVPBuffer ;
 
-   G4double Si_PosX = 0 ;
-   G4double Si_PosY = 0 ;
-   if (RightOrLeft)         Si_PosX = -Si_PosX_Shift   ;
-   else              Si_PosX =  Si_PosX_Shift   ;
-
-   if (Det_pos.y() > 0)    Si_PosY =  -Si_PosY_Shift  ;
-   else              Si_PosY =   Si_PosY_Shift  ;
-
-
-   G4ThreeVector Shift = G4ThreeVector(Si_PosX , Si_PosY , 0) ;
-   Det_pos = Det_pos + Shift ;
 /////// Starting Volume Definition ///////
    G4String Name = "ThinSi" + DetectorNumber;
 
-   G4Box* solidThinSi = new G4Box(Name, 0.5*DetectorSize, 0.5*DetectorSize, 0.5*3*mm);
+   G4Box* solidThinSi = new G4Box(Name, 0.5*DetectorSize, 0.5*DetectorSize, 0.5*FrameThickness*mm);
 
    G4LogicalVolume* logicThinSi =
       new G4LogicalVolume(solidThinSi, Vacuum, Name, 0, 0);
@@ -192,8 +173,8 @@ void ThinSi::VolumeMaker(G4int            DetNumber      ,
             0);
 
    // Frame is made of 4 thick box (2 Horizontal and 2 Vertical)
-   G4Box* solidFrameHorizontal = new G4Box(Name + "Frame", 0.5*SiliconSize, 0.5*(DetectorSize - SiliconSize) / 2, 0.5*3*mm)   ;
-   G4Box* solidFrameVertical  = new G4Box(Name + "Frame", 0.5*(DetectorSize - SiliconSize) / 2, 0.5*DetectorSize, 0.5*3*mm)   ;
+   G4Box* solidFrameHorizontal = new G4Box(Name + "Frame", 0.5*SiliconSize, 0.5*(DetectorSize - SiliconSize) / 2, 0.5*FrameThickness*mm)   ;
+   G4Box* solidFrameVertical  = new G4Box(Name + "Frame", 0.5*(DetectorSize - SiliconSize) / 2, 0.5*DetectorSize, 0.5*FrameThickness*mm)   ;
 
    G4LogicalVolume* logicFrameHorizontal =
       new G4LogicalVolume(solidFrameHorizontal, Al, Name, 0, 0);
@@ -303,10 +284,9 @@ void ThinSi::ReadConfiguration(string Path)
    string LineBuffer          ;
    string DataBuffer          ;
 
-   G4double TLX , BLX , BRX , CTX , TLY , BLY , BRY , CTY , TLZ , BLZ , BRZ , CTZ   ;
-   G4ThreeVector TL , BL , BR , CT                                      ;
+   G4double TLX , BLX , BRX , TRX , TLY , BLY , BRY , TRY , TLZ , BLZ , BRZ , TRZ   ;
+   G4ThreeVector TL , BL , BR , TR                                      ;
    G4double Theta = 0 , Phi = 0 , R = 0 , beta_u = 0 , beta_v = 0 , beta_w = 0                     ;
-   bool RightOrLeft = false ;
    bool check_A = false   ;
    bool check_B = false ;
    bool check_C = false   ;
@@ -316,7 +296,6 @@ void ThinSi::ReadConfiguration(string Path)
    bool check_Phi  = false  ;
    bool check_R     = false   ;
    bool check_beta = false  ;
-   bool check_side = false  ;
    bool ReadingStatus = false ;
 
  while (!ConfigFile.eof()) 
@@ -403,17 +382,17 @@ void ThinSi::ReadConfiguration(string Path)
 					else if (DataBuffer.compare(0, 3, "D=") == 0) {
 						check_D = true;
 						ConfigFile >> DataBuffer ;
-						CTX = atof(DataBuffer.c_str()) ;
-						CTX = CTX * mm;
+						TRX = atof(DataBuffer.c_str()) ;
+						TRX = TRX * mm;
 						ConfigFile >> DataBuffer ;
-						CTY = atof(DataBuffer.c_str()) ;
-						CTY = CTY * mm;
+						TRY = atof(DataBuffer.c_str()) ;
+						TRY = TRY * mm;
 						ConfigFile >> DataBuffer ;
-						CTZ = atof(DataBuffer.c_str()) ;
-						CTZ = CTZ * mm;
+						TRZ = atof(DataBuffer.c_str()) ;
+						TRZ = TRZ * mm;
 
-						CT = G4ThreeVector(CTX, CTY, CTZ);
-						G4cout << "Center position : (" << CTX << ";" << CTY << ";" << CTZ << ")" << G4endl << G4endl;
+						TR = G4ThreeVector(TRX, TRY, TRZ);
+						G4cout << "Center position : (" << TRX << ";" << TRY << ";" << TRZ << ")" << G4endl << G4endl;
 					}
 
 										
@@ -456,14 +435,6 @@ void ThinSi::ReadConfiguration(string Path)
 						beta_w = beta_w * deg   ;
 						G4cout << "Beta:  " << beta_u / deg <<  " " << beta_v / deg << " " << beta_w / deg << G4endl       ;
 					}
-
-					else if (DataBuffer.compare(0, 5, "SIDE=") == 0) {
-							check_side = true  ;
-							ConfigFile >> DataBuffer ;
-							if (DataBuffer == "right") RightOrLeft = true  ;
-							else               RightOrLeft = false  ;
-							G4cout << "Side:  " << DataBuffer << G4endl << G4endl;
-						}
 			      
 			         	///////////////////////////////////////////////////
 						//	If no Detector Token and no comment, toggle out
@@ -473,34 +444,31 @@ void ThinSi::ReadConfiguration(string Path)
 			         	/////////////////////////////////////////////////
 			         	//	If All necessary information there, toggle out
 			         
-			         if ( (check_A && check_B && check_C && check_D) || (check_Theta && check_Phi && check_R && check_beta && check_side) ) 
+			         if ( (check_A && check_B && check_C && check_D) || (check_Theta && check_Phi && check_R && check_beta) ) 
 			         	{ 
 					         	ReadingStatus = false; 
 					         	
 					         	///Add The previously define telescope
 			         			//With position method
 					         	 if ((check_A && check_B && check_C && check_D) || !(check_Theta && check_Phi && check_R)) {
-							            	  AddTelescope(TL      ,
-							                  BL    ,
-							                  BR    ,
-							                  CT    ,
-							                  RightOrLeft);
+							            	  AddTelescope(	TL      	,
+							                  				BL    		,
+							                  				BR    		,
+							                  				TR    		);
 							         }
 
 						         //with angle method
 						         else if ((check_Theta && check_Phi && check_R) || !(check_A && check_B && check_C && check_D)) {
-							         		  AddTelescope(R       ,
-							                  Theta    ,
-							                  Phi   ,
-							                  beta_u   ,
-							                  beta_v   ,
-							                  beta_w   ,
-							                  RightOrLeft);
+							         		  AddTelescope(	R       	,
+							                  				Theta    	,
+							                  				Phi   		,
+							                  				beta_u   	,
+							                  				beta_v   	,
+							                  				beta_w   	);
 							         }
 							         
 							        //	Reinitialisation of Check Boolean 
 							        
-									RightOrLeft = false ;
 									check_A = false   ;
 									check_B = false ;
 									check_C = false   ;
@@ -510,7 +478,6 @@ void ThinSi::ReadConfiguration(string Path)
 									check_Phi  = false  ;
 									check_R     = false   ;
 									check_beta = false  ;
-									check_side = false  ;
 									ReadingStatus = false ;
 								         
 			         	}
@@ -548,7 +515,7 @@ void ThinSi::ConstructDetector(G4LogicalVolume* world)
          // MUST2
          Det_rot = new G4RotationMatrix(Det_u, Det_v, Det_w);
          // translation to place Telescope
-         Det_pos = m_CT[i] ;
+         Det_pos =  (m_TR[i]+m_TL[i]+m_BL[i]+m_BR[i])/4 ;
       }
 
       // By Angle
@@ -568,24 +535,29 @@ void ThinSi::ConstructDetector(G4LogicalVolume* world)
 
          // (u,v,w) unitary vector associated to telescope referencial
          // (u,v) // to silicon plan
-         // w perpendicular to (u,v) plan and pointing outside
+         // w perpendicular to (u,v) plan and pointing ThirdStage
          // Phi is angle between X axis and projection in (X,Y) plan
          // Theta is angle between  position vector and z axis
          G4double wX = m_R[i] * sin(Theta / rad) * cos(Phi / rad)   ;
          G4double wY = m_R[i] * sin(Theta / rad) * sin(Phi / rad)   ;
          G4double wZ = m_R[i] * cos(Theta / rad)             ;
+         Det_w = G4ThreeVector(wX, wY, wZ)                ;
 
-         Det_w = G4ThreeVector(wX, wY, wZ)                 ;
-         G4ThreeVector CT = Det_w                        ;
-         Det_w = Det_w.unit()                         ;
+         // vector corresponding to the center of the module
+         G4ThreeVector CT = Det_w;
 
-         G4ThreeVector Y = G4ThreeVector(0 , 1 , 0)         ;
+         // vector parallel to one axis of silicon plane
+         G4double ii = cos(Theta / rad) * cos(Phi / rad);
+         G4double jj = cos(Theta / rad) * sin(Phi / rad);
+         G4double kk = -sin(Theta / rad);
+         G4ThreeVector Y = G4ThreeVector(ii, jj, kk);
 
-         Det_u = Det_w.cross(Y)     ;
-         Det_v = Det_w.cross(Det_u) ;
-
+         Det_w = Det_w.unit();
+         Det_u = Det_w.cross(Y);
+         Det_v = Det_w.cross(Det_u);
          Det_v = Det_v.unit();
          Det_u = Det_u.unit();
+
          // Passage Matrix from Lab Referential to Telescope Referential
          // MUST2
          Det_rot = new G4RotationMatrix(Det_u, Det_v, Det_w);
@@ -594,12 +566,12 @@ void ThinSi::ConstructDetector(G4LogicalVolume* world)
          Det_rot->rotate(m_beta_v[i], Det_v);
          Det_rot->rotate(m_beta_w[i], Det_w);
          // translation to place Telescope
-         Det_pos = CT ;
+         Det_pos = Det_w + CT ;
       }
 
 
 
-      VolumeMaker(i + 1 , Det_pos , Det_rot , world, m_RightOrLeft[i]);
+      VolumeMaker(i + 1 , Det_pos , Det_rot , world);
    }
 
    delete Det_rot ;
@@ -619,8 +591,7 @@ void ThinSi::InitializeRootOutput()
 void ThinSi::ReadSensitive(const G4Event* event)
 {
    G4String DetectorNumber    ;
-   bool  checkSi  = false  ;
-
+   m_Energy = 0 ;
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////// Used to Read Event Map of detector //////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
@@ -629,9 +600,11 @@ void ThinSi::ReadSensitive(const G4Event* event)
    std::map<G4int, G4double*>::iterator Energy_itr     ;
    G4THitsMap<G4double>* EnergyHitMap              ;
 
+
+
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
-   G4int HitNumber = 0;
+
    G4int NumberOfDetector = m_DefinitionType.size()  ;
    for (G4int i = 0 ; i < NumberOfDetector ; i++) {
       G4int k = i + 1;
@@ -651,14 +624,9 @@ void ThinSi::ReadSensitive(const G4Event* event)
          G4double E     = *(Energy_itr->second)    ;
 
          if (E > 0) {
-            checkSi = true   ;
             m_Energy = RandGauss::shoot(E, ResoEnergy);
          }
 
-         Energy_itr++;
-         if (checkSi) {
-            HitNumber++ ;
-         }
       }
       // clear map for next event
       EnergyHitMap   ->clear()   ;

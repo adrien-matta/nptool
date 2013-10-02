@@ -1,6 +1,29 @@
 #ifndef Must2Scorers_h
 #define Must2Scorers_h 1
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
 
+/*****************************************************************************
+ * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
+ *                                                                           *
+ * Creation Date  : January 2009                                             *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *  File old the scorer specific to the MUST2 Detector                       *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ * Those Scorer use TrackID as map index. This way ones can rebuild energy   *
+ *  deposit, time of flight or position,... particle by particle for each    *
+ *  event.Because standard scorer provide by G4 don't work this way but using* 
+ *  a global ID for each event you should not use those scorer with some G4  *
+ *  provided ones or being very carefull doing so.                           *
+ *****************************************************************************/
 #include "G4VPrimitiveScorer.hh"
 #include "G4THitsMap.hh"
 namespace MUST2 {
@@ -76,8 +99,7 @@ namespace MUST2 {
 	   G4int HCID;
 	   G4THitsMap<G4double>* EvtMap;
 	};
-
-
+	
 	class PSDetectorNumber : public G4VPrimitiveScorer
 	{
 
@@ -100,6 +122,7 @@ namespace MUST2 {
 	   G4THitsMap<G4int>* EvtMap;
 	   G4String m_VolumeName ;
 	};
+	
 }
 
 #endif

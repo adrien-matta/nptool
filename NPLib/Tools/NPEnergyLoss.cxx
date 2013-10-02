@@ -1,3 +1,35 @@
+/*****************************************************************************
+ * Copyright (C) 2009 	this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ *                                                                           *
+ * Original Author :  Adrien MATTA    contact address: matta@ipno.in2p3.fr   *
+ *                                                                           *
+ * Creation Date   : April 2009                                              *
+ * Last update     :                                                         *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *  Deal with energy loss on basis of a dEdX input file, from SRIM or LISE++ *
+ *   The class can be used to evaluate energy loss in material or to Evaluate* 
+ *   initial energy before crossing the material.                            *
+ *                                                                           *
+ *   The use of Interpolator derived form the GSL insure a very good speed of*
+ *   execution.                                                              *
+ *                                                                           *
+ *   Table Should come in the following unit:                                *
+ *   Particle Energy: MeV/u                                                  *
+ *   dEdX:            MeV/micrometer                                         *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
+ 
+
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -10,11 +42,6 @@ using namespace std;
 #include "TSpline.h"
 #include "TAxis.h"
 
-// ROOT
-#include "Math/InterpolationTypes.h"
-#include "Math/Interpolator.h"
-using namespace ROOT::Math;
-
 //	NPL
 using namespace NPL;
 
@@ -22,7 +49,7 @@ using namespace NPL;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 EnergyLoss::EnergyLoss() 
-	{}
+	{fInter = NULL	;}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 EnergyLoss::~EnergyLoss() 
@@ -31,8 +58,16 @@ EnergyLoss::~EnergyLoss()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 EnergyLoss::EnergyLoss(string Path , int NumberOfSlice=100 , int LiseColumn=0 , int NumberOfMass=1) 
 	{ 
+	
 	fNumberOfSlice = NumberOfSlice ; 
 	fNumberOfMass  = NumberOfMass  ;
+	
+	string globalPath = getenv("NPTOOL");
+	Path = globalPath + "/Inputs/dEdX/" + Path;
+	
+	cout << "///////////////////////////////// " << endl ;
+	cout << "Initialising an EnergyLoss object " << endl ;
+	
 	 //If LiseColumn is set to 0 File type is expected to be from SRIM
 	 if (LiseColumn == 0)
 	 	{
@@ -91,7 +126,9 @@ EnergyLoss::EnergyLoss(string Path , int NumberOfSlice=100 , int LiseColumn=0 , 
 				   	{ cout << "Reading Energy Loss File: " << Path << endl ;
 						// Reading Data
 						double energy=0, energyloss=0;
-						string dummy;						
+						string dummy;				
+						// skipping comment first line		
+						getline(TableFile,dummy);
 						
 						while ( TableFile >> energy )
 							{ 
@@ -110,6 +147,8 @@ EnergyLoss::EnergyLoss(string Path , int NumberOfSlice=100 , int LiseColumn=0 , 
 					
 			
 			}
+			fInter = new Interpolator( fEnergy , fdEdX_Total	)		;
+			cout << "///////////////////////////////// " << endl ;
 	}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
@@ -224,18 +263,16 @@ double EnergyLoss::EvaluateInitialEnergy(	double Energy 			, // Energy of the de
 		Energy = Energy / (double) fNumberOfMass ;
 	
 		if (Angle > halfpi) Angle = pi-Angle								;
-		TargetThickness = TargetThickness / ( 2*cos(Angle) ) 				;
+		TargetThickness = TargetThickness / ( cos(Angle) ) 					;
+		
 		double SliceThickness = TargetThickness / (double)fNumberOfSlice 	;
-
-		Interpolator* s = new Interpolator( fEnergy , fdEdX_Total	)		;
 
 		for (int i = 0; i < fNumberOfSlice ; i++) 
 			{
-			    double de = s->Eval(Energy) * SliceThickness	;
-			    Energy	+= de									;
+			    double de = fInter->Eval(Energy) * SliceThickness	;
+			    Energy	+= de/fNumberOfMass							;
 			}
 			
-		delete s						;
 		return (Energy*fNumberOfMass)	;
 	}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

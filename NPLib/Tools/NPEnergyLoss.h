@@ -1,6 +1,36 @@
 #ifndef __EnergyLoss__
 #define __EnergyLoss__
+/*****************************************************************************
+ * Copyright (C) 2009 	this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
 
+/*****************************************************************************
+ *                                                                           *
+ * Original Author :  Adrien MATTA    contact address: matta@ipno.in2p3.fr   *
+ *                                                                           *
+ * Creation Date   : April 2009                                              *
+ * Last update     :                                                         *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *  Deal with energy loss on basis of a dEdX input file, from SRIM or LISE++ *
+ *   The class can be used to evaluate energy loss in material or to Evaluate* 
+ *   initial energy before crossing the material.                            *
+ *                                                                           *
+ *   The use of Interpolator derived form the GSL insure a very good speed of*
+ *   execution.                                                              *
+ *                                                                           *
+ *   Table Should come in the following unit:                                *
+ *   Particle Energy: MeV/u                                                  *
+ *   dEdX:            MeV/micrometer                                         *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
+ 
 #include <string>
 #include <vector>
 using namespace std ;
@@ -12,6 +42,12 @@ using namespace std ;
 #include "CLHEP/Units/GlobalSystemOfUnits.h"
 #include "CLHEP/Units/PhysicalConstants.h"
 using namespace CLHEP ;
+
+// ROOT
+#include "Math/InterpolationTypes.h"
+#include "Math/Interpolator.h"
+using namespace ROOT::Math;
+
 // Class by Nicolas de Sereville.
 // Added and update June 2009
 
@@ -37,7 +73,7 @@ namespace NPL
 		   vector<double> 	fdEdX_Nuclear		;    // Nuclear Stopping Power
 		   vector<double> 	fdEdX_Electronic	;    // Electronic Stopping Power
 		   vector<double> 	fdEdX_Total			;    // Total Stopping Power
-		   	
+		   Interpolator*    fInter				;	 // Interpolator Used to evaluate Energy loss at given energy
 		   
 		public : 	//	General Function on dE/dX table		
 		   double	EvaluateNuclearLoss		(double ener) 	const;
@@ -53,7 +89,7 @@ namespace NPL
 		   					const;
 		   					
 		   //	Evaluate Initial Energy of particle before crossing material knowing Angle, final Energy 
-		   //   and Target Thickness. Interaction is supposed to be in the middle of Target.
+		   //   and Target Thickness.
 		   double	EvaluateInitialEnergy(	double energy 			, // Energy of the detected particle
 		   									double TargetThickness	, // Target Thickness at 0 degree
 		   									double Angle			) // Particle Angle

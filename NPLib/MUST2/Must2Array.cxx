@@ -1,5 +1,27 @@
 #include "Must2Array.h"
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
 
+/*****************************************************************************
+ * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
+ *                                                                           *
+ * Creation Date  : febuary 2009                                             *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *  This class manage the geometry of an array of MUST2 Telescope            *
+ * 	It is used in NPAnalysis Programm                                        *
+ *	It also meant to manage calibration file (to be done)                    *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *   Calibration need to be done                                             *
+ *                                                                           *
+ *****************************************************************************/
 //	STL
 #include <cmath>
 #include <iostream>	
@@ -239,9 +261,9 @@ void MUST2Array::ReadConfiguration(string Path)
 		         	    //with angle method
        				  else if ( check_Theta && check_Phi && check_R && check_beta ) 
        				  	{
-				            AddTelescope(	R       ,
-				                  			Theta   ,
+				            AddTelescope(	Theta   ,
 				                  			Phi   	,
+				                  			R       ,
 				                  			beta_u  ,
 				                  			beta_v  ,
 				                  			beta_w  );
@@ -373,10 +395,10 @@ void MUST2Array::AddTelescope(	TVector3 C_X1_Y1 		,
 		NumberOfTelescope++;
 	
 		//	Vector U on Telescope Face (paralelle to Y Strip) (NB: remember that Y strip are allong X axis)
-		TVector3 U = C_X128_Y1 - C_X1_Y1 				;	
-		U = -U.Unit()									;
+		TVector3 U = C_X1_Y1 - C_X128_Y1 				;	
+		U = U.Unit()									;
 		//	Vector V on Telescope Face (parallele to X Strip)
-		TVector3 V = C_X1_Y128 - C_X1_Y1 				;
+		TVector3 V = C_X128_Y128 - C_X128_Y1 				;
 		V = V.Unit()									;
 
 		//	Position Vector of Strip Center
@@ -453,46 +475,31 @@ void MUST2Array::AddTelescope(	double theta 	,
 		TVector3 W ;
 		//Vector position of Telescope Face center
 		TVector3 C ;
-
-		/*if(theta==180 && phi==90)
-			{
-				C = TVector3 (0,0,distance)	;
-				U = TVector3 (1,0,0)			;
-				V = TVector3 (0,1,0)			;
-				W = TVector3 (0,0,1)			;
-			}*/
 			
-		if(theta==0 && phi==0)
-			{
-				C = TVector3 (0,0,distance)	;
-				U = TVector3 (1,0,0)			;
-				V = TVector3 (0,1,0)			;
-				W = TVector3 (0,0,1)			;
-			}
-			
-		else
-			{
-				C = TVector3 (	distance * sin(theta) * cos(phi) ,
-								distance * sin(theta) * sin(phi) ,
-								distance * cos(theta)			 );
-					
-				W = C.Unit() ;
-				U = W .Cross ( TVector3(0,1,0) ) ;
-			    V = W .Cross ( U );
-				
-				U = U.Unit();
-				V = V.Unit();
-				
-				U.Rotate( beta_u * Pi/180. , U ) ;
-				V.Rotate( beta_u * Pi/180. , U ) ;
-				
-				U.Rotate( beta_v * Pi/180. , V ) ;
-				V.Rotate( beta_v * Pi/180. , V ) ;
-				
-				U.Rotate( beta_w * Pi/180. , W ) ;
-				V.Rotate( beta_w * Pi/180. , W ) ;
-			}
-
+		C = TVector3 (	distance * sin(theta) * cos(phi) ,
+						distance * sin(theta) * sin(phi) ,
+						distance * cos(theta)			 );
+		
+    	TVector3 P = TVector3(	cos(theta ) * cos(phi)	, 
+    							cos(theta ) * sin(phi)	,
+    							-sin(theta)				);
+		
+		W = C.Unit() ;
+		U = W .Cross ( P ) ;
+	    V = W .Cross ( U );
+		
+		U = U.Unit();
+		V = V.Unit();
+		
+		U.Rotate( beta_u * Pi/180. , U ) ;
+		V.Rotate( beta_u * Pi/180. , U ) ;
+		
+		U.Rotate( beta_v * Pi/180. , V ) ;
+		V.Rotate( beta_v * Pi/180. , V ) ;
+		
+		U.Rotate( beta_w * Pi/180. , W ) ;
+		V.Rotate( beta_w * Pi/180. , W ) ;
+		
 		double Face = 98 					  	; //mm
 		double NumberOfStrip = 128 				;
 		double StripPitch = Face/NumberOfStrip	; //mm
@@ -519,14 +526,14 @@ void MUST2Array::AddTelescope(	double theta 	,
 				
 				for( int j = 0 ; j < 128 ; j++ )
 					{
-					X = C.X() + StripPitch * ( U.X()*i + V.X()*j )	;
-					Y = C.Y() + StripPitch * ( U.Y()*i + V.Y()*j )	;
-					Z = C.Z() + StripPitch * ( U.Z()*i + V.Z()*j )	;
-								
-					lineX.push_back(X)	;
-					lineY.push_back(Y)	;
-					lineZ.push_back(Z)	;		
-					
+						X = C.X() + StripPitch * ( U.X()*i + V.X()*j )	;
+						Y = C.Y() + StripPitch * ( U.Y()*i + V.Y()*j )	;
+						Z = C.Z() + StripPitch * ( U.Z()*i + V.Z()*j )	;
+									
+						lineX.push_back(X)	;
+						lineY.push_back(Y)	;
+						lineZ.push_back(Z)	;		
+						
 					}
 				
 				OneTelescopeStripPositionX.push_back(lineX)	;
@@ -562,6 +569,36 @@ TVector3 MUST2Array::GetPositionOfInteraction()
 		return(Position) ;	
 	
 	}
+	
+TVector3 MUST2Array::GetTelescopeNormal()
+	{
+		TVector3 Normal = TVector3(-1000,-1000,-1000);
+		
+		if(EventPhysics->TelescopeNumber.size()==1)
+		{
+				TVector3 U = TVector3 (		GetStripPositionX( EventPhysics->TelescopeNumber[0] , 128 , 1 ) 	,
+											GetStripPositionY( EventPhysics->TelescopeNumber[0] , 128 , 1 )		,
+											GetStripPositionZ( EventPhysics->TelescopeNumber[0] , 128 , 1 )		)
+											
+							- TVector3 (	GetStripPositionX( EventPhysics->TelescopeNumber[0] , 1 , 1 ) 		,
+											GetStripPositionY( EventPhysics->TelescopeNumber[0] , 1 , 1 )		,
+											GetStripPositionZ( EventPhysics->TelescopeNumber[0] , 1 , 1 )		);
+										
+				TVector3 V = TVector3 (		GetStripPositionX( EventPhysics->TelescopeNumber[0] , 128 , 128 ) 	,
+											GetStripPositionY( EventPhysics->TelescopeNumber[0] , 128 , 128 )	,
+											GetStripPositionZ( EventPhysics->TelescopeNumber[0] , 128 , 128 )	)
+											
+							- TVector3 (	GetStripPositionX( EventPhysics->TelescopeNumber[0] , 128 , 1 ) 	,
+											GetStripPositionY( EventPhysics->TelescopeNumber[0] , 128 , 1 )		,
+											GetStripPositionZ( EventPhysics->TelescopeNumber[0] , 128 , 1 )		);
+											
+				Normal = U.Cross(V);
+		}
+		
+		return(Normal.Unit()) ;	
+	
+	}	
+	
 	
 void MUST2Array::Print()
 	{

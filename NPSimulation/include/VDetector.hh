@@ -1,6 +1,29 @@
 #ifndef VDectector_H
 #define VDectector_H
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
 
+/*****************************************************************************
+ * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
+ *                                                                           *
+ * Creation Date  : January 2009                                             *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *  All detector added in the project should derive from this virtual class  *
+ *  A vector of VDetector object is manage in the DetectorConstruction class *
+ *  and call the virtual method of this class implemented in the daughter    *
+ *  class object.                                                            *
+ *  This inheritance insure homogeneity and modularity of the code           *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *****************************************************************************/
 // C++ header
 #include <string>
 
@@ -42,7 +65,7 @@ public:
    
    // Add Detector branch to the EventTree.
    // Called After DetecorConstruction::AddDetector Method
-   virtual void InitializeScorer() {};
+   virtual void InitializeScorers() {};
 
 public:
    TInteractionCoordinates*     GetInterCoordPointer()  {return ms_InterCoord;};

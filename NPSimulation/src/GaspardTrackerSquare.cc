@@ -1,3 +1,26 @@
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
+ *                                                                           *
+ * Creation Date  : 10/06/09                                                 *
+ * Last update    : 07/09/09                                                 *
+ *---------------------------------------------------------------------------*
+ * Decription: Define a module of square shape for the Gaspard tracker       *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *    + 07/09/09: Fix bug for placing module with (r,theta,phi) method.      *
+ *                (N. de Sereville)                                          *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
+
 // C++ headers
 #include <sstream>
 #include <string>
@@ -737,11 +760,7 @@ void GaspardTrackerSquare::ConstructDetector(G4LogicalVolume* world)
       else {
          G4double Theta = m_Theta[i] ;
          G4double Phi   = m_Phi[i]   ;
-         //This part because if Phi and Theta = 0 equation are false
-         if (Theta == 0)        Theta = 0.0001 ;
-         if (Theta == 2*cos(0)) Theta = 2 * acos(0) - 0.00001 ;
-         if (Phi   == 0)        Phi   = 0.0001 ;
-
+         
          // (u,v,w) unitary vector associated to telescope referencial
          // (u,v) // to silicon plan
          // w perpendicular to (u,v) plan and pointing ThirdStage
@@ -750,19 +769,23 @@ void GaspardTrackerSquare::ConstructDetector(G4LogicalVolume* world)
          G4double wX = m_R[i] * sin(Theta / rad) * cos(Phi / rad)   ;
          G4double wY = m_R[i] * sin(Theta / rad) * sin(Phi / rad)   ;
          G4double wZ = m_R[i] * cos(Theta / rad)             ;
-
          MMw = G4ThreeVector(wX, wY, wZ)                ;
-//         G4ThreeVector CT = MMw                       ;
-         CT = MMw                       ;
-         MMw = MMw.unit()                          ;
 
-         G4ThreeVector Y = G4ThreeVector(0 , 1 , 0)         ;
+         // vector corresponding to the center of the module
+         CT = MMw;
 
-         MMu = MMw.cross(Y)      ;
-         MMv = MMw.cross(MMu) ;
+         // vector parallel to one axis of silicon plane
+         G4double ii = cos(Theta / rad) * cos(Phi / rad);
+         G4double jj = cos(Theta / rad) * sin(Phi / rad);
+         G4double kk = -sin(Theta / rad);
+         G4ThreeVector Y = G4ThreeVector(ii, jj, kk);
 
+         MMw = MMw.unit();
+         MMu = MMw.cross(Y);
+         MMv = MMw.cross(MMu);
          MMv = MMv.unit();
          MMu = MMu.unit();
+
          // Passage Matrix from Lab Referential to Telescope Referential
          // MUST2
          MMrot = new G4RotationMatrix(MMu, MMv, MMw);
@@ -1088,6 +1111,7 @@ void GaspardTrackerSquare::ReadSensitive(const G4Event* event)
          if (checkSi) HitNumber++ ;
       }
       // clear map for next event
+      DetectorNumberHitMap ->clear();
       EnergyHitMap   ->clear()   ;
       TimeHitMap     ->clear()   ;
       XHitMap        ->clear()   ;
@@ -1111,8 +1135,8 @@ void GaspardTrackerSquare::InitializeScorers()
    G4VPrimitiveScorer* DetNbr                           = new GPDScorerDetectorNumber("DetectorNumber", 0, "Silicon");
    G4VPrimitiveScorer* Energy                           = new GPDScorerFirstStageEnergy("StripEnergy", 0);
    G4VPrimitiveScorer* TOF                              = new PSTOF("StripTime", 0);
-   G4VPrimitiveScorer* StripPositionX                   = new GPDScorerFirstStageFrontStripSquare("StripNumberX", 0, SiliconFace, 128);
-   G4VPrimitiveScorer* StripPositionY                   = new GPDScorerFirstStageBackStripSquare("StripNumberY", 0, SiliconFace, 128);
+   G4VPrimitiveScorer* StripPositionX                   = new GPDScorerFirstStageFrontStripSquare("StripNumberX", 0, NumberOfStrips);
+   G4VPrimitiveScorer* StripPositionY                   = new GPDScorerFirstStageBackStripSquare("StripNumberY", 0, NumberOfStrips);
    G4VPrimitiveScorer* InteractionCoordinatesX          = new PSInteractionCoordinatesX("InterCoordX", 0);
    G4VPrimitiveScorer* InteractionCoordinatesY          = new PSInteractionCoordinatesY("InterCoordY", 0);
    G4VPrimitiveScorer* InteractionCoordinatesZ          = new PSInteractionCoordinatesZ("InterCoordZ", 0);

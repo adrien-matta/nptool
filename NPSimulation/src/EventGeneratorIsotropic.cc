@@ -1,3 +1,24 @@
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
+ *                                                                           *
+ * Creation Date  : January 2009                                             *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *  This event Generator is used to simulated Isotropic ion Source           *
+ *  Very usefull to figure out Geometric Efficacity of experimental Set-Up   *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
 // G4 headers
 #include "G4ParticleTable.hh"
 
@@ -78,7 +99,7 @@ void EventGeneratorIsotropic::ReadConfiguration(string Path)
 	    		 ReactionFile >> DataBuffer;
 	    	
 	    		 //Search for comment Symbol %
-			     if (LineBuffer.compare(0, 1, "%") == 0) {/*Do Nothing*/;}
+			     if (DataBuffer.compare(0, 1, "%") == 0) {/*Do Nothing*/;}
 
 		         else if (DataBuffer.compare(0, 10, "EnergyLow=") == 0) {
 		         	check_EnergyLow = true ;
@@ -189,6 +210,13 @@ void EventGeneratorIsotropic::GenerateEvent(G4Event* anEvent, G4ParticleGun* par
    m_InitConditions->SetICPositionX(m_x0 / mm);
    m_InitConditions->SetICPositionY(m_y0 / mm);
    m_InitConditions->SetICPositionZ(m_z0 / mm);
+   // Incident "particles"
+   // Everything is zero for a source
+   m_InitConditions->SetICIncidentEmittanceTheta(0);
+   m_InitConditions->SetICIncidentEmittancePhi(0);
+   m_InitConditions->SetICIncidentAngleTheta(0);
+   m_InitConditions->SetICIncidentAnglePhi(0);
+   m_InitConditions->SetICIncidentEnergy(0);
    // Emitted particle angles
    m_InitConditions->SetICEmittedAngleThetaCM(theta / deg);
    m_InitConditions->SetICEmittedAngleThetaLabIncidentFrame(theta / deg);

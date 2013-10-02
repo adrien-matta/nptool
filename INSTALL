@@ -1,5 +1,23 @@
-This file describes the installation steps of the NPTool package
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
 
+/*****************************************************************************
+ * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
+ *                                                                           *
+ * Creation Date  : 01/09/09                                                 *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *      This file describes the installation steps of the NPTool package     *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
 
 I) REQUIREMENTS
 	The NPTool package depends on 4 third-party softwares:
@@ -28,9 +46,9 @@ III) INSTALLATION
 	        mtn pull ipnvcs.in2p3.fr --db=/path/to/pipo.mtn NPTool.pro
 
 	  3) last, checkout your local database and get the NPTool code 
-	     for the developement or production:
-	       mtn checkout --branch=NPTool.dev
-	       mtn checkout --branch=NPTool.pro
+	     for the developement or production version of NPTool:
+	       mtn checkout --db=/path/to/pipo.mtn --branch=NPTool.dev
+	       mtn checkout --db=/path/to/pipo.mtn --branch=NPTool.pro
 
 
 	b) First, you need to define some environment variables. You can

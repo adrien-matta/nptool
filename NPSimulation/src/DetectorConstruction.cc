@@ -1,3 +1,26 @@
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
+ *                                                                           *
+ * Creation Date  : January 2009                                             *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *  This Class manage the virtual detector and call their method.            *
+ *	Every time a new detector is added to the project, a few line in the     *
+ *	ReadConfigurationFile method are needed in order to detect the associate *
+ *	token.                                                                   *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
 #include "DetectorConstruction.hh"
 
 #include "G4Material.hh"
@@ -19,6 +42,7 @@
 #include "AnnularS1.hh"
 #include "Target.hh"
 #include "ThinSi.hh"
+#include "Plastic.hh"
 //Not G4
 #include <cstdlib>
 #include<fstream>
@@ -81,7 +105,7 @@ void DetectorConstruction::AddDetector(VDetector* NewDetector)
    // Add new detector to vector
    m_Detectors.push_back(NewDetector)        ;
    // Initialize Scorer
-   NewDetector->InitializeScorer();
+   NewDetector->InitializeScorers();
    // Construct new detector
    NewDetector->ConstructDetector(world_log) ;
    // Add Detector to TTree
@@ -102,6 +126,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
    bool GeneralTarget   = false;
    bool GPDTracker      = false;	// Gaspard Tracker
    bool S1              = false;
+   bool cPlastic         = false;
    //////////////////////////////////////////////////////////////////////////////////////////
    // added by Nicolas [07/05/09]
    string GlobalPath = getenv("NPTOOL");
@@ -121,9 +146,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       //Pick-up next line
       getline(ConfigFile, LineBuffer);
       //Search for comment Symbol: %
-      if (LineBuffer.compare(0, 1, "%") == 0) {   /*Do  Nothing*/
-         ;
-      }
+      if (LineBuffer.compare(0, 1, "%") == 0) {   /*Do  Nothing*/;}
 
       ////////////////////////////////////////////
       //////////// Search for Gaspard ////////////
@@ -183,7 +206,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
       }
 
       ////////////////////////////////////////////
-      ////////// Search for Add.ThinSi ///////////
+      ////////// Search for     ThinSi ///////////
       ////////////////////////////////////////////
       else if (LineBuffer.compare(0, 9, "AddThinSi") == 0 && AddThinSi == false) {
          AddThinSi = true ;
@@ -193,6 +216,25 @@ void DetectorConstruction::ReadConfigurationFile(string Path)
          VDetector* myDetector = new ThinSi()                  ;
 
          // Read Position of Telescope
+         ConfigFile.close()                                 ;
+         myDetector->ReadConfiguration(Path)                   ;
+         ConfigFile.open(Path.c_str())                      ;
+
+         // Add array to the VDetector Vector
+         AddDetector(myDetector)                            ;
+      }
+      
+      ////////////////////////////////////////////
+      ////////// Search for Plastic	   ///////////
+      ////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 19, "ScintillatorPlastic") == 0 && cPlastic == false) {
+         cPlastic = true ;
+         G4cout << "//////// Plastic ////////" << G4endl << G4endl   ;
+
+         // Instantiate the new array as a VDetector Object
+         VDetector* myDetector = new Plastic()                  ;
+
+         // Read Position of detector
          ConfigFile.close()                                 ;
          myDetector->ReadConfiguration(Path)                   ;
          ConfigFile.open(Path.c_str())                      ;
@@ -246,7 +288,7 @@ void DetectorConstruction::ReadAllSensitive(const G4Event* event)
    if(m_Detectors.size()>0)
    m_Detectors[0]->GetInterCoordPointer()->Clear();
 
-   for (G4int i = 0 ; i < m_Detectors.size() ; i++) {
+   for (ushort i = 0 ; i < m_Detectors.size() ; i++) {
       m_Detectors[i]->ReadSensitive(event);
    }
 }
