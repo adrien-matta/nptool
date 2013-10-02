@@ -12,6 +12,12 @@ using namespace std ;
 #include "CLHEP/Units/GlobalSystemOfUnits.h"
 #include "CLHEP/Units/PhysicalConstants.h"
 using namespace CLHEP ;
+
+// ROOT
+#include "Math/InterpolationTypes.h"
+#include "Math/Interpolator.h"
+using namespace ROOT::Math;
+
 // Class by Nicolas de Sereville.
 // Added and update June 2009
 
@@ -37,7 +43,7 @@ namespace NPL
 		   vector<double> 	fdEdX_Nuclear		;    // Nuclear Stopping Power
 		   vector<double> 	fdEdX_Electronic	;    // Electronic Stopping Power
 		   vector<double> 	fdEdX_Total			;    // Total Stopping Power
-		   	
+		   Interpolator*    fInter				;	 // Interpolator Used to evaluate Energy loss at given energy
 		   
 		public : 	//	General Function on dE/dX table		
 		   double	EvaluateNuclearLoss		(double ener) 	const;

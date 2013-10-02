@@ -23,12 +23,13 @@ LDFLAGS+= -L$(NPLIB)/lib -lVDetector -lIORoot -lReaction -lEnergyLoss \
 LDFLAGS+= -L$(CLHEP_LIB_DIR) -l$(CLHEP_LIB) 
 
 SRC= $(wildcard *.cc)
+INC= $(wildcard *.hh)
 OBJ=$(SRC:.cc=.o)
 
 #all:$(EXEC)
 #	@$(CPP) -o $@ -c $< $(CXXFLAGS)
 
-Analysis:$(OBJ)
+Analysis:$(OBJ) $(INC)
 	@$(CPP) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 	mv Analysis  ../Analysis
 

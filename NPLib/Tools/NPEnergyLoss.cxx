@@ -10,11 +10,6 @@ using namespace std;
 #include "TSpline.h"
 #include "TAxis.h"
 
-// ROOT
-#include "Math/InterpolationTypes.h"
-#include "Math/Interpolator.h"
-using namespace ROOT::Math;
-
 //	NPL
 using namespace NPL;
 
@@ -22,7 +17,7 @@ using namespace NPL;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 EnergyLoss::EnergyLoss() 
-	{}
+	{fInter = NULL	;}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 EnergyLoss::~EnergyLoss() 
@@ -120,7 +115,7 @@ EnergyLoss::EnergyLoss(string Path , int NumberOfSlice=100 , int LiseColumn=0 , 
 					
 			
 			}
-			
+			fInter = new Interpolator( fEnergy , fdEdX_Total	)		;
 			cout << "///////////////////////////////// " << endl ;
 	}
 
@@ -236,18 +231,16 @@ double EnergyLoss::EvaluateInitialEnergy(	double Energy 			, // Energy of the de
 		Energy = Energy / (double) fNumberOfMass ;
 	
 		if (Angle > halfpi) Angle = pi-Angle								;
-		TargetThickness = TargetThickness / ( cos(Angle) ) 				;
+		TargetThickness = TargetThickness / ( cos(Angle) ) 					;
+		
 		double SliceThickness = TargetThickness / (double)fNumberOfSlice 	;
-
-		Interpolator* s = new Interpolator( fEnergy , fdEdX_Total	)		;
 
 		for (int i = 0; i < fNumberOfSlice ; i++) 
 			{
-			    double de = s->Eval(Energy) * SliceThickness	;
-			    Energy	+= de									;
+			    double de = fInter->Eval(Energy) * SliceThickness	;
+			    Energy	+= de										;
 			}
 			
-		delete s						;
 		return (Energy*fNumberOfMass)	;
 	}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
