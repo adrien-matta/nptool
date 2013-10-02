@@ -52,7 +52,7 @@ void ReadConfiguration( string Path , array* myArray)
 		if(LineBuffer.compare(0,1,"%")==0) {;}
 		
 		//Search for Telescope
-		else if(LineBuffer.compare(0,9,"GPDSquare")==0) 
+		else if(LineBuffer.compare(0,9,"GPDSquare")==0 || LineBuffer.compare(0,13,"GPDDummyShape")==0) 
 		{
 		
 		//A MUST2 Telescope is detected:

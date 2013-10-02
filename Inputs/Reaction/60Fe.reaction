@@ -16,6 +16,6 @@ Transfert
 	BeamEmmitancePhi= 0.01
 	CrossSectionPath= ni69_g7_01.n
 	ShootLight= 1
-	ShootHeavy= 1
+	ShootHeavy= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
