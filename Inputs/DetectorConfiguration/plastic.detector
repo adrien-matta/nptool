@@ -1,0 +1,21 @@
+%Fichier de configuration manip E225
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ScintillatorPlastic
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Plastic
+	THETA= 0
+	PHI= 0
+	R= 150
+	Thickness= 20
+	Radius= 50
+	LeadThickness= 0
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Plastic
+	THETA= 0
+	PHI= 0
+	R= 175
+	Thickness= 20
+	Radius= 50
+	LeadThickness= 0
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

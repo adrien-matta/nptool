@@ -1066,7 +1066,6 @@ void MUST2Array::ReadSensitive(const G4Event* event)
 	            G4double T     = *(Time_itr->second)      ;
 
 	            if (TTrackID == ETrackID) {
-	                T = RandGauss::shoot(T, ResoTimePPAC)   ;
 	                m_Event->SetMMStripXTTime(RandGauss::shoot(T, ResoTimeMust)) ;
 	                m_Event->SetMMStripYTTime(RandGauss::shoot(T, ResoTimeMust)) ;
 	            }

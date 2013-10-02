@@ -22,7 +22,7 @@
  *  deposit, time of flight or position,... particle by particle for each    *
  *  event.Because standard scorer provide by G4 don't work this way but using* 
  *  a global ID for each event you should not use those scorer with some G4  *
- *  provided ones or being very carefull doing so.                           *                                            *
+ *  provided ones or being very carefull doing so.                           *s
  *****************************************************************************/
 #include "G4VPrimitiveScorer.hh"
 #include "G4THitsMap.hh"
