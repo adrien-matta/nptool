@@ -464,9 +464,6 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
       particleGun->GeneratePrimaryVertex(anEvent);
    }
    if (m_ShootHeavy) { // Case of recoil particle
-      //
-      // The case of recoil particle has not been tested with the new version of the event generator
-      //
       // Particle type
       particleGun->SetParticleDefinition(HeavyName);
       // Particle energy
@@ -484,10 +481,6 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
       // write angles in ROOT file
       m_InitConditions->SetICEmittedAngleThetaLabWorldFrame(theta_world / deg);
       m_InitConditions->SetICEmittedAnglePhiWorldFrame(phi_world / deg);
-      // tests
-//      G4cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXX" << G4endl;
-//      G4cout << "cinematique dans ref world : " << G4endl;
-//      G4cout << "\t" << momentum_kine_world << G4endl;
       //Set the gun to shoot
       particleGun->SetParticleMomentumDirection(momentum_kine_world);
       //Shoot the light particle

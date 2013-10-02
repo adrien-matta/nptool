@@ -26,8 +26,10 @@
 // C++ headers
 #include <string>
 
-// NPTool headers
+// NPSimulation
 #include "VEventGenerator.hh"
+
+// NPLib
 #include "TInitialConditions.h"
 
 // NPLib header
@@ -52,8 +54,8 @@ class EventGeneratorTransfert : public VEventGenerator
 		             double BeamEnergy        ,        // Beam Energy
 		             double ExcitationEnergy  ,        // Excitation of Heavy Nuclei
 		             double BeamEnergySpread  ,
-		             double BeamFWHMX         ,
-		             double BeamFWHMY         ,
+		             double SigmaX         ,
+		             double SigmaY         ,
 		             double SigmaThetaX       ,
 		             double SigmaPhiY  ,
 		             bool   ShootLight        ,
@@ -118,8 +120,8 @@ class EventGeneratorTransfert : public VEventGenerator
 		             double BeamEnergy        ,        // Beam Energy
 		             double ExcitationEnergy  ,        // Excitation of Heavy Nuclei
 		             double BeamEnergySpread  ,
-		             double BeamFWHMX         ,
-		             double BeamFWHMY         ,
+		             double SigmaX         ,
+		             double SigmaY         ,
 		             double SigmaThetaX       ,
 		             double SigmaPhiY  ,
 		             bool   ShootLight        ,

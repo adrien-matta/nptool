@@ -68,16 +68,17 @@ int main(int argc,char** argv)
 			myDetector -> BuildPhysicalEvent()				;
 			
 			E = M2 -> GetEnergyDeposit();
-
-			XTarget = RandomEngine.Gaus(Init->GetICPositionX(0),1);
-			YTarget = RandomEngine.Gaus(Init->GetICPositionY(0),1);
+			XTarget = Init->GetICPositionX(0);
+			YTarget = Init->GetICPositionY(0);
+//			XTarget = RandomEngine.Gaus(Init->GetICPositionX(0),1);
+//			YTarget = RandomEngine.Gaus(Init->GetICPositionY(0),1);
 			
 			TVector3 HitDirection  = M2 -> GetPositionOfInteraction() - TVector3(XTarget,YTarget,0);
 			
-			BeamTheta = RandomEngine.Gaus( Init->GetICIncidentAngleTheta(0)*deg , 2*deg ) ;
-			BeamPhi   = RandomEngine.Gaus( Init->GetICIncidentAnglePhi(0)*deg   , 2*deg ) ;
+//			BeamTheta = RandomEngine.Gaus( Init->GetICIncidentAngleTheta(0)*deg , 2*deg ) ;
+//			BeamPhi   = RandomEngine.Gaus( Init->GetICIncidentAnglePhi(0)*deg   , 2*deg ) ;
 			 
-//			BeamTheta = Init->GetICIncidentAngleTheta(0)*deg ; BeamPhi = Init->GetICIncidentAnglePhi(0)*deg ; 
+			BeamTheta = Init->GetICIncidentAngleTheta(0)*deg ; BeamPhi = Init->GetICIncidentAnglePhi(0)*deg ; 
 
 			TVector3 BeamDirection = TVector3(cos(BeamPhi)*sin(BeamTheta) , sin(BeamPhi)*sin(BeamTheta) , cos(BeamTheta)) ;	
 			// Angle between beam and particle
@@ -98,7 +99,7 @@ int main(int argc,char** argv)
 																	20*micrometer		, // Target Thickness at 0 degree
 																	ThetaMM2Surface		);																
 						
-	//						E = E + ThinSi ;
+//							E = E + ThinSi ;
 							
 							E= He3StripAl.EvaluateInitialEnergy(	E 					, // Energy of the detected particle
 																	0.4*micrometer		, // Target Thickness at 0 degree

@@ -239,9 +239,9 @@ void MUST2Array::ReadConfiguration(string Path)
 		         	    //with angle method
        				  else if ( check_Theta && check_Phi && check_R && check_beta ) 
        				  	{
-				            AddTelescope(	R       ,
-				                  			Theta   ,
+				            AddTelescope(	Theta   ,
 				                  			Phi   	,
+				                  			R       ,
 				                  			beta_u  ,
 				                  			beta_v  ,
 				                  			beta_w  );
@@ -504,14 +504,14 @@ void MUST2Array::AddTelescope(	double theta 	,
 				
 				for( int j = 0 ; j < 128 ; j++ )
 					{
-					X = C.X() + StripPitch * ( U.X()*i + V.X()*j )	;
-					Y = C.Y() + StripPitch * ( U.Y()*i + V.Y()*j )	;
-					Z = C.Z() + StripPitch * ( U.Z()*i + V.Z()*j )	;
-								
-					lineX.push_back(X)	;
-					lineY.push_back(Y)	;
-					lineZ.push_back(Z)	;		
-					
+						X = C.X() + StripPitch * ( U.X()*i + V.X()*j )	;
+						Y = C.Y() + StripPitch * ( U.Y()*i + V.Y()*j )	;
+						Z = C.Z() + StripPitch * ( U.Z()*i + V.Z()*j )	;
+									
+						lineX.push_back(X)	;
+						lineY.push_back(Y)	;
+						lineZ.push_back(Z)	;		
+						
 					}
 				
 				OneTelescopeStripPositionX.push_back(lineX)	;
