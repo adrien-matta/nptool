@@ -78,7 +78,7 @@ void EventGeneratorIsotropic::ReadConfiguration(string Path)
 	    		 ReactionFile >> DataBuffer;
 	    	
 	    		 //Search for comment Symbol %
-			     if (LineBuffer.compare(0, 1, "%") == 0) {/*Do Nothing*/;}
+			     if (DataBuffer.compare(0, 1, "%") == 0) {/*Do Nothing*/;}
 
 		         else if (DataBuffer.compare(0, 10, "EnergyLow=") == 0) {
 		         	check_EnergyLow = true ;

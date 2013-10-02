@@ -164,7 +164,7 @@ while(ReadingStatus){
  			 ReactionFile >> DataBuffer;
  			 
  			 //Search for comment Symbol %
-	      	 if (LineBuffer.compare(0, 1, "%") == 0) {/* Do Nothing */;}
+	      	 if (DataBuffer.compare(0, 1, "%") == 0) {/* Do Nothing */;}
  			 
 	         else if (DataBuffer.compare(0, 5, "Beam=") == 0) {
 	         	check_Beam = true ;
