@@ -41,16 +41,16 @@ VEventGenerator::~VEventGenerator()
 
 void VEventGenerator::RandomGaussian2D(double MeanX,double MeanY,double SigmaX,double SigmaY,double &X,double &Y)
 	{
-		if(SigmaX!=0)
+			if(SigmaX!=0)
 			{
 				X = m_RandomEngine.Gaus( MeanX , SigmaX) ;
 		
 				double NumberOfSigma ;
 			
-				NumberOfSigma = ( 2*X / SigmaX ) ;
+				NumberOfSigma = ( X / SigmaX ) ;
 				NumberOfSigma =  TMath::Floor( sqrt(NumberOfSigma*NumberOfSigma) + 1) ;
 		
-				double SigmaYPrim = sqrt( NumberOfSigma*SigmaY/2 *NumberOfSigma*SigmaY/2 * ( 1 - 2*X*X / (SigmaX*NumberOfSigma*SigmaX*NumberOfSigma)) ) ;
+				double SigmaYPrim = sqrt( NumberOfSigma*SigmaY *NumberOfSigma*SigmaY * ( 1 - X*X / (SigmaX*NumberOfSigma*SigmaX*NumberOfSigma)) ) ;
 				SigmaYPrim = SigmaYPrim / NumberOfSigma ; 
 			
 				Y = m_RandomEngine.Gaus( MeanY , SigmaYPrim) ;
@@ -62,6 +62,28 @@ void VEventGenerator::RandomGaussian2D(double MeanX,double MeanY,double SigmaX,d
 		 		X= MeanX;
 		 		Y = m_RandomEngine.Gaus( MeanY , SigmaY) ;
 		 	}
+	
+//		if(SigmaX!=0)
+//			{
+//				X = m_RandomEngine.Gaus( MeanX , SigmaX) ;
+//		
+//				double NumberOfSigma ;
+//			
+//				NumberOfSigma = ( 2*X / SigmaX ) ;
+//				NumberOfSigma =  TMath::Floor( sqrt(NumberOfSigma*NumberOfSigma) + 1) ;
+//		
+//				double SigmaYPrim = sqrt( NumberOfSigma*SigmaY/2 *NumberOfSigma*SigmaY/2 * ( 1 - 2*X*X / (SigmaX*NumberOfSigma*SigmaX*NumberOfSigma)) ) ;
+//				SigmaYPrim = SigmaYPrim / NumberOfSigma ; 
+//			
+//				Y = m_RandomEngine.Gaus( MeanY , SigmaYPrim) ;
+//			
+//			}
+//	
+//		 else
+//		 	{
+//		 		X= MeanX;
+//		 		Y = m_RandomEngine.Gaus( MeanY , SigmaY) ;
+//		 	}
 		
 
 	}

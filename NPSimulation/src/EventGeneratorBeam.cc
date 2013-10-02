@@ -37,6 +37,7 @@ using namespace CLHEP;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorBeam::EventGeneratorBeam()
 {
+m_InitConditions	= new TInitialConditions()	;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorBeam::~EventGeneratorBeam()
@@ -61,8 +62,8 @@ void EventGeneratorBeam::ReadConfiguration(string Path)
 	bool check_EnergySpread 	= false ;
 	bool check_FWHMX 			= false ;
 	bool check_FWHMY 			= false ;
-	bool check_EmmitanceTheta 	= false ;
-	bool check_EmmitancePhi 	= false ;
+	bool check_SigmaThetaX	 	= false ;
+	bool check_SigmaPhiY  	 	= false ;
 	
    if (ReactionFile.is_open()) {} else {
       return;
@@ -116,32 +117,32 @@ void EventGeneratorBeam::ReadConfiguration(string Path)
 	            G4cout << "Beam Energy Spread: " << m_BeamEnergySpread / MeV << " MeV" << G4endl;
 	         }
 
-	         else if (DataBuffer.compare(0, 10, "BeamFWHMX=") == 0) {
+	         else if (DataBuffer.compare(0, 7, "SigmaX=") == 0) {
 	         	check_FWHMX = true ;
 	            ReactionFile >> DataBuffer;
-	            m_BeamFWHMX = atof(DataBuffer.c_str()) * mm;
-	            G4cout << "Beam FWHM X: " << m_BeamFWHMX / mm << " mm" << G4endl;
+	            m_SigmaX = atof(DataBuffer.c_str()) * mm;
+	            G4cout << "Sigma X: " << m_SigmaX / mm << " mm" << G4endl;
 	         }
 
-	         else if (DataBuffer.compare(0, 10, "BeamFWHMY=") == 0) {
+	         else if (DataBuffer.compare(0, 7, "SigmaY=") == 0) {
 	            check_FWHMY = true ;
 	            ReactionFile >> DataBuffer;
-	            m_BeamFWHMY = atof(DataBuffer.c_str()) * mm;
-	            G4cout << "Beam FWHM Y: " << m_BeamFWHMY / mm << " mm" << G4endl;
+	            m_SigmaY = atof(DataBuffer.c_str()) * mm;
+	            G4cout << "Sigma Y: " << m_SigmaY / mm << " mm" << G4endl;
 	         }
 
-	         else if (DataBuffer.compare(0, 15, "EmmitanceTheta=") == 0) {
-	            check_EmmitanceTheta = true ;
+	         else if (DataBuffer.compare(0, 12, "SigmaThetaX=") == 0) {
+	            check_SigmaThetaX = true ;
 	            ReactionFile >> DataBuffer;
-	            m_BeamEmmitanceTheta = atof(DataBuffer.c_str()) * rad;
-	            G4cout << "Beam Emmitance Theta: " << m_BeamEmmitanceTheta / deg << " deg" << G4endl;
+	            m_SigmaThetaX = atof(DataBuffer.c_str()) * deg;
+	            G4cout << "Sigma Theta X: " << m_SigmaThetaX / deg << " deg" << G4endl;
 	         }
 	         
-	         else if (DataBuffer.compare(0, 13, "EmmitancePhi=") == 0) {
-	         	check_EmmitancePhi = true ;
+	         else if (DataBuffer.compare(0, 10, "SigmaPhiY=") == 0) {
+	         	check_SigmaPhiY = true ;
 	            ReactionFile >> DataBuffer;
-	            m_BeamEmmitancePhi = atof(DataBuffer.c_str()) * rad;
-	            G4cout << "Beam Emmitance Phi: " << m_BeamEmmitancePhi / deg << " deg" << G4endl;
+	            m_SigmaPhiY = atof(DataBuffer.c_str()) * deg;
+	            G4cout << "Sigma Phi Y: " << m_SigmaPhiY / deg << " deg" << G4endl;
 	         }
 	          
          	///////////////////////////////////////////////////
@@ -151,12 +152,12 @@ void EventGeneratorBeam::ReadConfiguration(string Path)
 	         	
 	         ///////////////////////////////////////////////////
 			//	If all Token found toggle out
-	         if( check_Z && check_A && check_Energy && check_EnergySpread && check_FWHMX && check_FWHMY && check_EmmitanceTheta && check_EmmitancePhi )
+	         if( check_Z && check_A && check_Energy && check_EnergySpread && check_FWHMX && check_FWHMY && check_SigmaThetaX && check_SigmaPhiY )
 	         	ReadingStatus = false ;	
      	}
    }
    
-   if( !check_Z || !check_A || !check_Energy || !check_EnergySpread || !check_FWHMX || !check_FWHMY || !check_EmmitanceTheta || !check_EmmitancePhi )	
+   if( !check_Z || !check_A || !check_Energy || !check_EnergySpread || !check_FWHMX || !check_FWHMY || !check_SigmaThetaX || !check_SigmaPhiY )	
    		{cout << "WARNING : Token Sequence Incomplete, Beam definition could not be Fonctionnal" << endl ;}
    		
   cout << "///////////////////////////////////////////////////" << endl << endl ;
@@ -165,7 +166,7 @@ void EventGeneratorBeam::ReadConfiguration(string Path)
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorBeam::GenerateEvent(G4Event* anEvent, G4ParticleGun* particleGun)
 {
-
+   m_InitConditions->Clear();
    // Vertex position and beam angle
    G4double x0 = 1000 * cm  ;
    G4double y0 = 1000 * cm  ;
@@ -176,16 +177,20 @@ void EventGeneratorBeam::GenerateEvent(G4Event* anEvent, G4ParticleGun* particle
    if (m_TargetRadius != 0) {
       while (sqrt(x0*x0 + y0*y0) > m_TargetRadius) 
       	{
-      		RandomGaussian2D(0,0,m_BeamFWHMX / 2.35,m_BeamEmmitanceTheta,x0,Beam_thetaX);
-      		RandomGaussian2D(0,0,m_BeamFWHMY / 2.35,m_BeamEmmitancePhi  ,y0,Beam_phiY  );
+      		RandomGaussian2D(0 , 0 , m_SigmaX , m_SigmaThetaX , x0 , Beam_thetaX );
+      		RandomGaussian2D(0 , 0 , m_SigmaY , m_SigmaPhiY   , y0 , Beam_phiY   );
       	}
    }
 
    else 
    	{
-     	RandomGaussian2D(0,0,0,m_BeamEmmitanceTheta,x0,Beam_thetaX);
-     	RandomGaussian2D(0,0,0,m_BeamEmmitancePhi  ,y0,Beam_phiY  );
+     	RandomGaussian2D( 0 , 0 , 0 , m_SigmaThetaX , x0 , Beam_thetaX );
+     	RandomGaussian2D( 0 , 0 , 0 , m_SigmaPhiY   , y0 , Beam_phiY   );
    }
+
+	 m_InitConditions->SetICIncidentEmittanceTheta(Beam_thetaX / deg);
+     m_InitConditions->SetICIncidentEmittancePhi(Beam_phiY / deg);
+
 
 	// Calculate Angle in spherical coordinate, passing by the direction vector dir	
 	G4double Xdir =  cos( pi/2. - Beam_thetaX ) 							;
@@ -203,12 +208,13 @@ void EventGeneratorBeam::GenerateEvent(G4Event* anEvent, G4ParticleGun* particle
    x0 += m_TargetX ;
    y0 += m_TargetY ;
    z0 += m_TargetZ ;
-
+   
    // Store initial value
-   m_InitialBeamX       =  x0       	;
-   m_InitialBeamY   	=  y0           ;
-   m_InitialBeamTheta   =  Beam_theta   ;
-
+   m_InitConditions->SetICIncidentAngleTheta(Beam_theta / deg);
+   m_InitConditions->SetICIncidentAnglePhi(Beam_phi / deg);
+   m_InitConditions->SetICPositionX(x0);
+   m_InitConditions->SetICPositionY(y0);
+   m_InitConditions->SetICPositionZ(z0);
    //////////////////////////////////////////////////
    /////Now define everything for light particle/////
    //////////////////////////////////////////////////
@@ -234,8 +240,6 @@ void EventGeneratorBeam::InitializeRootOutput()
 {
    RootOutput *pAnalysis = RootOutput::getInstance();
    TTree *pTree = pAnalysis->GetTree();
-   pTree->Branch("InitialBeamX"     , &m_InitialBeamX    ,  "InitialBeamX/D");
-   pTree->Branch("InitialBeamY"     , &m_InitialBeamY    ,  "InitialBeamX/D");
-   pTree->Branch("InitialBeamTheta" , &m_InitialBeamTheta   ,  "InitialBeamTheta/D");
+   pTree->Branch("InitialConditions", "TInitialConditions", &m_InitConditions);
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

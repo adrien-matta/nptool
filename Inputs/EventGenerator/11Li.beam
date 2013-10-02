@@ -8,8 +8,8 @@ Beam
 		ParticleA= 11
 		BeamEnergy= 550
 		BeamEnergySpread= 0
-		BeamFWHMX= 6.232
-		BeamFWHMY= 9.069
-		EmmitanceTheta= 0.01208
-		EmmitancePhi= 0.01681
+		SigmaX= 6.232
+		SigmaY= 9.069
+		SigmaThetaX= 0.01208
+		SigmaPhiY= 0.01681
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
