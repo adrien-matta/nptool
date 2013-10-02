@@ -31,8 +31,16 @@ EnergyLoss::~EnergyLoss()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 EnergyLoss::EnergyLoss(string Path , int NumberOfSlice=100 , int LiseColumn=0 , int NumberOfMass=1) 
 	{ 
+	
 	fNumberOfSlice = NumberOfSlice ; 
 	fNumberOfMass  = NumberOfMass  ;
+	
+	string globalPath = getenv("NPTOOL");
+	Path = globalPath + "/Inputs/dEdX/" + Path;
+	
+	cout << "///////////////////////////////// " << endl ;
+	cout << "Initialising an EnergyLoss object " << endl ;
+	
 	 //If LiseColumn is set to 0 File type is expected to be from SRIM
 	 if (LiseColumn == 0)
 	 	{
@@ -91,7 +99,9 @@ EnergyLoss::EnergyLoss(string Path , int NumberOfSlice=100 , int LiseColumn=0 , 
 				   	{ cout << "Reading Energy Loss File: " << Path << endl ;
 						// Reading Data
 						double energy=0, energyloss=0;
-						string dummy;						
+						string dummy;				
+						// skipping comment first line		
+						getline(TableFile,dummy);
 						
 						while ( TableFile >> energy )
 							{ 
@@ -110,6 +120,8 @@ EnergyLoss::EnergyLoss(string Path , int NumberOfSlice=100 , int LiseColumn=0 , 
 					
 			
 			}
+			
+			cout << "///////////////////////////////// " << endl ;
 	}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 

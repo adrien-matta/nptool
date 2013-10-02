@@ -265,8 +265,8 @@ void Reaction::ReadConfigurationFile(string Path)
 		   
 		//////////////////////////////////////////////////////////////////////////////////////////
 		   ifstream ReactionFile;
-		      string GlobalPath = getenv("NPTOOL");
-   Path = GlobalPath + "/Inputs/Reaction/" + Path;
+		   string GlobalPath = getenv("NPTOOL");
+ 		   Path = GlobalPath + "/Inputs/Reaction/" + Path;
 		   ReactionFile.open(Path.c_str());
 			
 		   if (ReactionFile.is_open()) {cout << "Reading Reaction File " << Path << endl ;}

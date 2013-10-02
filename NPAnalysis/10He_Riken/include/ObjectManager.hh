@@ -104,10 +104,11 @@ namespace ENERGYLOSS
 	{
 	
 		//	Declare your Energy loss here	:
-	/*		EnergyLoss ProtonTarget = EnergyLoss 	(	"CD2.txt" 	,
-														100 		,
-														1			);
-	*/
+			EnergyLoss He3Target = EnergyLoss 	(	"3He_Mylar.txt" 	,
+													100 				,
+													1					,
+													3					);
+	
 	}
 	
 using namespace ENERGYLOSS ;

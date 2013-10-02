@@ -39,8 +39,9 @@ int main(int argc,char** argv)
 	RootOutput::getInstance()->GetTree()->Branch("Y",&Y,"Y/D") ;
 	
 	// Open the ThinSi Branch
-	RootInput::getInstance() -> GetTree()->SetBranchStatus(ThinSi,true)	;
-	RootInput::getInstance() -> GetTree()->SetBranchAddress(ThinSiEnergy,true)	;
+	RootInput::getInstance() -> GetChain()->SetBranchStatus("ThinSiEnergy",true)	;
+	double ThinSi=-1 ;
+	RootInput::getInstance() -> GetChain()->SetBranchAddress("ThinSiEnergy",&ThinSi)	;
 	
 	// Get Must2 Pointer:
 	MUST2Array* M2 = (MUST2Array*) myDetector -> m_Detector["MUST2"] ;
@@ -58,7 +59,15 @@ int main(int argc,char** argv)
 			
 			double E = M2 -> GetEnergyDeposit();
 			TVector3 A = M2 -> GetPositionOfInteraction();
+			
+			if(ThinSi > 0) E = E + ThinSi ;
+			
 			double Theta = ThetaCalculation ( A , TVector3(0,0,1) ) ;
+			
+			E= He3Target.EvaluateInitialEnergy(	E 					, // Energy of the detected particle
+												15*micrometer		, // Target Thickness at 0 degree
+												Theta				);
+
 			if(E>-1000)		Ex = myReaction -> ReconstructRelativistic( E , Theta ) ;
 			else Ex = -100 ;
 			EE = E ; TT = Theta/deg ;
@@ -68,6 +77,7 @@ int main(int argc,char** argv)
 			else{X = -1000 ; Y = -1000;}
 			
 			RootOutput::getInstance()->GetTree()->Fill()	;
+			ThinSi = -1 ;
 		}
 	cout << "A total of " << i << " event has been annalysed " << endl ;
 	
