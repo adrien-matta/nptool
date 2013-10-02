@@ -84,6 +84,7 @@ EventGeneratorTransfertToResonance::EventGeneratorTransfertToResonance(	  string
 																	      double   	SigmaY         	,
 																	      double   	SigmaThetaX  ,
 																	      double   	SigmaPhiY    ,
+																	      double    ResonanceWidth,
 																	      int      	ResonanceDecayZ     ,
 																	      int      	ResonanceDecayA     ,
 																	      bool  	ShootLight        	,
@@ -104,6 +105,7 @@ EventGeneratorTransfertToResonance::EventGeneratorTransfertToResonance(	  string
 		            SigmaY         	,
 		            SigmaThetaX  ,
 		            SigmaPhiY    ,
+		            ResonanceWidth ,
 		            ResonanceDecayZ     ,
 		            ResonanceDecayA     ,
 		           	ShootLight        	,
@@ -140,7 +142,7 @@ void EventGeneratorTransfertToResonance::ReadConfiguration(string Path)
 
 ////////Reaction Setting needs///////
    string Beam, Target, Heavy, Light, CrossSectionPath ;
-   G4double BeamEnergy = 0 , ExcitationEnergy = 0 , BeamEnergySpread = 0 , SigmaX = 0 , SigmaY = 0 , SigmaThetaX = 0 , SigmaPhiY=0, ResonanceDecayZ = 0 , ResonanceDecayA = 0  ;
+   G4double BeamEnergy = 0 , ExcitationEnergy = 0 , BeamEnergySpread = 0 , SigmaX = 0 , SigmaY = 0 , SigmaThetaX = 0 , SigmaPhiY=0,  ResonanceWidth = 0 ,ResonanceDecayZ = 0 , ResonanceDecayA = 0  ;
    bool  ShootLight     = false ;
    bool  ShootHeavy      = false ;
    bool ShootDecayProduct = false ;
@@ -160,6 +162,7 @@ void EventGeneratorTransfertToResonance::ReadConfiguration(string Path)
    bool check_CrossSectionPath = false ;
    bool check_ShootLight = false ;
    bool check_ShootHeavy = false ;
+   bool check_ResonanceWidth = false ;
    bool check_ResonanceDecayZ = false ;
    bool check_ResonanceDecayA = false ;
    bool check_ShootDecayProduct = false ;
@@ -265,6 +268,13 @@ while(ReadingStatus){
 	            G4cout << "Beam Emmitance Phi " << SigmaPhiY / deg << " deg" << G4endl;
 	         }
 
+			else if (DataBuffer.compare(0, 15, "ResonanceWidth=") == 0) {
+				check_ResonanceWidth = true ;
+            	ReactionFile >> DataBuffer;
+            	ResonanceWidth = atof(DataBuffer.c_str())*MeV;
+            	G4cout << "Resonance Width " << ResonanceWidth/MeV << " MeV" << G4endl;
+         	 }
+
 			else if (DataBuffer.compare(0, 17, "ResonanceDecayZ=") == 0) {
 				check_ResonanceDecayZ = true ;
             	ReactionFile >> DataBuffer;
@@ -320,7 +330,7 @@ while(ReadingStatus){
 	         if(   	check_Beam && check_Target && check_Light && check_Heavy && check_ExcitationEnergy 
 	         	&&  check_BeamEnergy && check_BeamEnergySpread && check_FWHMX && check_FWHMY && check_EmmitanceTheta 
 	         	&&  check_EmmitancePhi && check_CrossSectionPath && check_ShootLight && check_ShootHeavy 
-	         	&& check_ResonanceDecayZ && check_ResonanceDecayA && check_ShootDecayProduct)
+	         	&& check_ResonanceWidth && check_ResonanceDecayZ && check_ResonanceDecayA && check_ShootDecayProduct)
 	         	ReadingStatus = false ;	
 
 		}
@@ -339,6 +349,7 @@ while(ReadingStatus){
 			         SigmaY         	,
 			         SigmaThetaX ,
 			         SigmaPhiY 	,
+			         ResonanceWidth,
 			         ResonanceDecayZ    ,
 			         ResonanceDecayA    ,
 			         ShootLight        	,
@@ -346,7 +357,6 @@ while(ReadingStatus){
 			         ShootDecayProduct  ,
 			         CrossSectionPath	);
 
-         
    		ReactionFile.close();
 }
 
@@ -370,6 +380,14 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
 
    G4ParticleDefinition* HeavyName
    = G4ParticleTable::GetParticleTable()->GetIon(HeavyZ, HeavyA, m_Reaction->GetExcitation()*MeV);
+
+   // Shoot the Resonance energy following the mean and width value
+   double EXX = -10 ;
+   
+   while(EXX<0)
+   EXX = RandGauss::shoot(m_ResonanceMean,m_ResonanceWidth) ;
+
+	m_Reaction->SetExcitation( EXX  );
 
    // Vertex position and beam angle inte world frame
    G4double x0 = 1000 * cm  	;
@@ -427,7 +445,7 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
    /////////////////////////////////////////////////////////////////
    // Beam incident energy
    G4double NominalBeamEnergy = m_BeamEnergy;
-   G4double IncidentBeamEnergy = RandGauss::shoot(NominalBeamEnergy, m_BeamEnergySpread / 2.35);
+   G4double IncidentBeamEnergy = RandGauss::shoot(NominalBeamEnergy, m_BeamEnergySpread);
    m_Reaction->SetBeamEnergy(IncidentBeamEnergy);
    m_InitConditions->SetICIncidentEnergy(IncidentBeamEnergy / MeV);
    // Angles
@@ -702,6 +720,7 @@ void EventGeneratorTransfertToResonance::SetEverything(	  string    name1       
 													      double   SigmaY         			,
 													      double   SigmaThetaX      		,
 													      double   SigmaPhiY       			,
+													      double    ResonanceWidth          ,
 													      int      ResonanceDecayZ      	,
 													      int      ResonanceDecayA      	,
 													      bool  ShootLight        			,
@@ -724,6 +743,8 @@ void EventGeneratorTransfertToResonance::SetEverything(	  string    name1       
    m_SigmaY       =  SigmaY         	;
    m_SigmaThetaX    =  SigmaThetaX    	 ;
    m_SigmaPhiY    =  SigmaPhiY    	 ;
+   m_ResonanceWidth	=	ResonanceWidth	;
+   m_ResonanceMean	= Excitation		;
    m_ResonanceDecayZ =  ResonanceDecayZ      ;
    m_ResonanceDecayA =  ResonanceDecayA      ;
    m_ShootLight      =  ShootLight       	 ;

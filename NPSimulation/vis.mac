@@ -9,7 +9,7 @@
 # choose a graphic system
 #/vis/open OGLIX
 #/vis/open OGLSX
-/vis/open VRML2FILE
+#/vis/open VRML2FILE
 /vis/scene/create
 /vis/drawVolume
 /vis/viewer/set/viewpointThetaPhi 0 0 deg

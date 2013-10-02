@@ -59,6 +59,7 @@ class EventGeneratorTransfertToResonance : public VEventGenerator
 	         double   SigmaY         ,
 	         double   SigmaThetaX       ,
 	         double	  SigmaPhiY,
+	         double   ResonanceWidth,
 	         int      ResonanceDecayZ      ,
 	         int      ResonanceDecayA      ,
 	         bool  ShootLight        ,
@@ -114,8 +115,10 @@ class EventGeneratorTransfertToResonance : public VEventGenerator
 		Reaction*	m_Reaction				;
 
 	private: // Resonance decay channel
-	   int            m_ResonanceDecayZ    ;
-	   int            m_ResonanceDecayA    ;
+		double			m_ResonanceWidth	;
+		double			m_ResonanceMean		;
+	   	int            	m_ResonanceDecayZ   ;
+	   	int            	m_ResonanceDecayA   ;
 
 	   //Other
 	   void     Print() const        ;
@@ -144,6 +147,7 @@ class EventGeneratorTransfertToResonance : public VEventGenerator
 		         double   SigmaY         ,
 		         double   SigmaThetaX       ,
 		         double   SigmaPhiY       ,
+		         double   ResonanceWidth,
 		         int      ResonanceDecayZ      ,
 		         int      ResonanceDecayA      ,
 		         bool  ShootLight        ,
