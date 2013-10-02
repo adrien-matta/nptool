@@ -60,12 +60,12 @@ void Reaction::SetEveryThing(string name1, string name2, string name3, string na
    string GlobalPath = getenv("NPTOOL");
    Path = GlobalPath + "/Inputs/CrossSection/" + Path;
    ifstream CSFile;
-   CSFile.open(Path.c_str());
-   double CSBuffer,AngleBuffer;
-   string echo ;
+   CSFile.open( Path.c_str() );
+   
    if(CSFile.is_open()) { cout << "Reading Cross Section File " << Path << endl;}
    else {cout << "Cross Section File " << Path << " not found" << endl;return;}
 
+	double CSBuffer,AngleBuffer;
 	vector<double> CrossSectionBuffer ;
 	
    while(!CSFile.eof())
@@ -245,105 +245,132 @@ void Reaction::Print() const
 	
 	
 void Reaction::ReadConfigurationFile(string Path)
-	{
-	
-	////////General Reading needs////////
-	string LineBuffer;
-	string DataBuffer;
-	
-////////Reaction Setting needs///////
-string Beam,Target,Heavy,Light,CrossSectionPath;
-double BeamEnergy,ExcitationEnergy;
-Reaction* myReaction;
+	{   
+		////////General Reading needs////////
+		   string LineBuffer;
+		   string DataBuffer;
 
-//////////////////////////////////////////////////////////////////////////////////////////
-	ifstream ReactionFile;
-	string GlobalPath = getenv("NPTOOL");
-   	Path = GlobalPath + "/Inputs/Reaction/" + Path;
-	
-	ReactionFile.open(Path.c_str());
-	
-	if( ReactionFile.is_open() ) 
-	cout << " Reaction file " << Path << " loading " << endl;
-	else{
-	cout << " Error, no Reaction file" << Path << " found" << endl; }
-	
-	
-	int i=0;
-	while( !ReactionFile.eof() )	
-	{
-		//Pick-up next line
-		getline(ReactionFile, LineBuffer); i++;
+		////////Reaction Setting needs///////
+		   string Beam, Target, Heavy, Light, CrossSectionPath ;
+		   double BeamEnergy = 0 , ExcitationEnergy = 0 ;		   
+		   bool ReadingStatus = false ;
+		   bool check_Beam = false ;
+		   bool check_Target = false ;
+		   bool check_Light = false ;
+		   bool check_Heavy = false ;
+		   bool check_ExcitationEnergy = false ;
+		   bool check_BeamEnergy = false ;
+		   bool check_CrossSectionPath = false ;
 
-		//Search for comment Symbol %
-		if(LineBuffer.compare(0,1,"%")==0) {;}
-		
-		else if(LineBuffer.compare(0,9,"Transfert")==0)  
-		{
-		
-			ReactionFile >> DataBuffer;
-			if(DataBuffer.compare(0,5,"Beam=")==0) 
-				{
-				ReactionFile >> DataBuffer;
-				Beam = DataBuffer;
-				cout << "Beam " << Beam << endl;
-				}
+		   
+		//////////////////////////////////////////////////////////////////////////////////////////
+		   ifstream ReactionFile;
+		      string GlobalPath = getenv("NPTOOL");
+   Path = GlobalPath + "/Inputs/Reaction/" + Path;
+		   ReactionFile.open(Path.c_str());
 			
-			ReactionFile >> DataBuffer;
-			if(DataBuffer.compare(0,7,"Target=")==0) 
-				{
-				ReactionFile >> DataBuffer;
-				Target = DataBuffer;
-				cout << "Target " << Target << endl;
-				}
-				
-			ReactionFile >> DataBuffer;
-			if(DataBuffer.compare(0,6,"Light=")==0) 
-				{
-				ReactionFile >> DataBuffer;
-				Light = DataBuffer;
-				cout << "Light " << Light << endl;
-				}
+		   if (ReactionFile.is_open()) {cout << "Reading Reaction File " << Path << endl ;}
+		   else 
+		   	{
+		   		cout << "Reaction File " << Path << " not Found! " << endl ;
+		      	return;
+		   	}
+
+		   while (!ReactionFile.eof()) {
+		      //Pick-up next line
+		      getline(ReactionFile, LineBuffer);
+
+		      
+
+		      if (LineBuffer.compare(0, 9, "Transfert") == 0) { ReadingStatus = true ;}
+
+
+		while(ReadingStatus){
+		 			
+		 			 ReactionFile >> DataBuffer;
+		 			 
+		 			 //Search for comment Symbol %
+			      	 if (LineBuffer.compare(0, 1, "%") == 0) {/* Do Nothing */;}
+		 			 
+			         else if (DataBuffer.compare(0, 5, "Beam=") == 0) {
+			         	check_Beam = true ;
+			            ReactionFile >> DataBuffer;
+			            Beam = DataBuffer;
+			            cout << "Beam " << Beam << endl;
+			         }
 			
-			ReactionFile >> DataBuffer;
-			if(DataBuffer.compare(0,6,"Heavy=")==0) 
-				{
-				ReactionFile >> DataBuffer;
-				Heavy = DataBuffer;
-				cout << "Heavy " << Heavy << endl;
+			         else if (DataBuffer.compare(0, 7, "Target=") == 0) {
+			            check_Target = true ;
+			            ReactionFile >> DataBuffer;
+			            Target = DataBuffer;
+			            cout << "Target " << Target << endl;
+			         }
+
+			         else if (DataBuffer.compare(0, 6, "Light=") == 0) {
+			         	check_Light = true ;
+			            ReactionFile >> DataBuffer;
+			            Light = DataBuffer;
+			            cout << "Light " << Light << endl;
+			         }
+
+			        else if  (DataBuffer.compare(0, 6, "Heavy=") == 0) {
+			            check_Heavy = true ;
+			            ReactionFile >> DataBuffer;
+			            Heavy = DataBuffer;
+			            cout << "Heavy " << Heavy << endl;
+			         }
+
+			        else if  (DataBuffer.compare(0, 17, "ExcitationEnergy=") == 0) {
+			        	check_ExcitationEnergy = true ;
+			            ReactionFile >> DataBuffer;
+			            ExcitationEnergy = atof(DataBuffer.c_str()) * MeV;
+			            cout << "Excitation Energy " << ExcitationEnergy / MeV << " MeV" << endl;
+			         }
+
+			        else if  (DataBuffer.compare(0, 11, "BeamEnergy=") == 0) {
+			        	check_BeamEnergy = true ;
+			            ReactionFile >> DataBuffer;
+			            BeamEnergy = atof(DataBuffer.c_str()) * MeV;
+			            cout << "Beam Energy " << BeamEnergy / MeV << " MeV" << endl;
+			         }
+
+			        else if  (DataBuffer.compare(0, 17, "CrossSectionPath=") == 0) {
+			        	check_CrossSectionPath = true ;
+			            ReactionFile >> CrossSectionPath;
+			            cout << "Cross Section File: " << CrossSectionPath << endl ;
+			         }
+
+					  
+		         	///////////////////////////////////////////////////
+					//	If no Transfert Token and no comment, toggle out
+			         else 
+			         	{/*Ignore Token used by G4*/}
+			         	
+			         ///////////////////////////////////////////////////
+					//	If all Token found toggle out
+			         if(   	check_Beam && check_Target && check_Light && check_Heavy && check_ExcitationEnergy 
+			         	&&  check_BeamEnergy && check_CrossSectionPath )
+			         	ReadingStatus = false ;	
+
 				}
-			
-			ReactionFile >> DataBuffer;
-			if(DataBuffer.compare(0,17,"ExcitationEnergy=")==0) 
-				{
-				ReactionFile >> DataBuffer;
-				ExcitationEnergy = atof(DataBuffer.c_str());
-				cout << "ExcitationEnergy " << ExcitationEnergy << " MeV" << endl;
-				}
-				
-			ReactionFile >> DataBuffer;
-			if(DataBuffer.compare(0,11,"BeamEnergy=")==0) 
-				{
-				ReactionFile >> DataBuffer;
-				BeamEnergy = atof(DataBuffer.c_str());
-				cout << "EnergyBeam " << BeamEnergy << " MeV" << endl;
-				}
-				
-			ReactionFile >> DataBuffer;ReactionFile >> DataBuffer;
-			ReactionFile >> DataBuffer;ReactionFile >> DataBuffer;
-			ReactionFile >> DataBuffer;ReactionFile >> DataBuffer;
-			ReactionFile >> DataBuffer;ReactionFile >> DataBuffer;
-		
-				
-			ReactionFile >> DataBuffer;
-			if(DataBuffer.compare(0,17,"CrossSectionPath=")==0) 
-				{
-				ReactionFile >> CrossSectionPath;
-				cout << "CrossSectionPath " << CrossSectionPath << endl;
-				}
-		}
+			        
+
+			}
+		   
+		   
+		   SetEveryThing(Beam, Target, Light, Heavy,BeamEnergy,ExcitationEnergy,CrossSectionPath);
+
+		   		ReactionFile.close();
 	}
 	
-SetEveryThing(Beam, Target, Light, Heavy,BeamEnergy,ExcitationEnergy,CrossSectionPath);
-
-	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

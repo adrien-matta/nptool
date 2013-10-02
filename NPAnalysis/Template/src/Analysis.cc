@@ -26,7 +26,7 @@ int main(int argc,char** argv)
 	NPL::Reaction* myReaction = new Reaction					;
 	myReaction	->	ReadConfigurationFile(reactionfileName)		;
 
-	//	Instantiate the detector using a file 
+		//	Instantiate the detector using a file 
 	DetectorManager* myDetector = new DetectorManager 			;
 	myDetector	->	ReadConfigurationFile(detectorfileName)		;
 	
