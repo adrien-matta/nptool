@@ -41,14 +41,15 @@ namespace THINSI
 {
    // Energy and time Resolution
    const G4double ResoTime    = 0      ;
-   const G4double ResoEnergy  = 0.042 ;// = 100keV of Resolution   //   Unit is MeV/2.35
+   const G4double ResoEnergy  = 0.042  ;// = 100keV of Resolution   //   Unit is MeV/2.35
 
    // Geometry
-   const G4double DetectorSize   	= 70*mm           ;
-   const G4double SiliconThickness  = 20*micrometer      ;
+   const G4double DetectorSize   	= 68*mm           ;
+   const G4double SiliconThickness  = 20*micrometer   ;
+   const G4double FrameThickness    = 1*mm            ;
    const G4double SiliconSize    	= 50*mm           ;
    const G4double AluThickness      = 0.4*micrometer  ;
-   const G4int  NumberOfStrip    	= 32           ;
+   const G4int  NumberOfStrip    	= 32       		  ;
 
    const G4double AluStripFront_PosZ 	= -0.5*SiliconThickness - 0.5*AluThickness ;
    const G4double Si_PosZ        		= 0                                 ;
@@ -178,7 +179,7 @@ void ThinSi::VolumeMaker(G4int            DetNumber      ,
 /////// Starting Volume Definition ///////
    G4String Name = "ThinSi" + DetectorNumber;
 
-   G4Box* solidThinSi = new G4Box(Name, 0.5*DetectorSize, 0.5*DetectorSize, 0.5*3*mm);
+   G4Box* solidThinSi = new G4Box(Name, 0.5*DetectorSize, 0.5*DetectorSize, 0.5*FrameThickness*mm);
 
    G4LogicalVolume* logicThinSi =
       new G4LogicalVolume(solidThinSi, Vacuum, Name, 0, 0);
@@ -192,8 +193,8 @@ void ThinSi::VolumeMaker(G4int            DetNumber      ,
             0);
 
    // Frame is made of 4 thick box (2 Horizontal and 2 Vertical)
-   G4Box* solidFrameHorizontal = new G4Box(Name + "Frame", 0.5*SiliconSize, 0.5*(DetectorSize - SiliconSize) / 2, 0.5*3*mm)   ;
-   G4Box* solidFrameVertical  = new G4Box(Name + "Frame", 0.5*(DetectorSize - SiliconSize) / 2, 0.5*DetectorSize, 0.5*3*mm)   ;
+   G4Box* solidFrameHorizontal = new G4Box(Name + "Frame", 0.5*SiliconSize, 0.5*(DetectorSize - SiliconSize) / 2, 0.5*FrameThickness*mm)   ;
+   G4Box* solidFrameVertical  = new G4Box(Name + "Frame", 0.5*(DetectorSize - SiliconSize) / 2, 0.5*DetectorSize, 0.5*FrameThickness*mm)   ;
 
    G4LogicalVolume* logicFrameHorizontal =
       new G4LogicalVolume(solidFrameHorizontal, Al, Name, 0, 0);

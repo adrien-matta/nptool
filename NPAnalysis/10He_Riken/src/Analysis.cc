@@ -38,6 +38,10 @@ int main(int argc,char** argv)
 	RootOutput::getInstance()->GetTree()->Branch("X",&X,"X/D") ;
 	RootOutput::getInstance()->GetTree()->Branch("Y",&Y,"Y/D") ;
 	
+	// Open the ThinSi Branch
+	RootInput::getInstance() -> GetTree()->SetBranchStatus(ThinSi,true)	;
+	RootInput::getInstance() -> GetTree()->SetBranchAddress(ThinSiEnergy,true)	;
+	
 	// Get Must2 Pointer:
 	MUST2Array* M2 = (MUST2Array*) myDetector -> m_Detector["MUST2"] ;
 	//	Get the formed Chained Tree and Treat it
