@@ -28,12 +28,12 @@ EventGeneratorTransfertToResonance::EventGeneratorTransfertToResonance()
    //------------- Default Constructor -------------
 
 	m_Reaction = new Reaction() ;
-   m_BeamFWHMX       =  0           ;
-   m_BeamFWHMY       =  0           ;
-   m_BeamEmmitanceTheta     =  0           ;
-   m_BeamEmmitancePhi = 0 ;
-   m_ResonanceDecayZ =  0           ;
-   m_ResonanceDecayA =  0           ;
+   m_BeamFWHMX       		=  0 ;
+   m_BeamFWHMY       		=  0 ;
+   m_BeamEmmitanceTheta     =  0 ;
+   m_BeamEmmitancePhi 		=  0 ;
+   m_ResonanceDecayZ 		=  0 ;
+   m_ResonanceDecayA 		=  0 ;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -45,43 +45,43 @@ EventGeneratorTransfertToResonance::~EventGeneratorTransfertToResonance()
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-EventGeneratorTransfertToResonance::EventGeneratorTransfertToResonance(string  name1          ,
-      string   name2          ,
-      string   name3          ,
-      string   name4          ,
-      double   BeamEnergy        ,
-      double   ExcitationEnergy        ,
-      double   BeamEnergySpread  ,
-      double   BeamFWHMX         ,
-      double   BeamFWHMY         ,
-      double   BeamEmmitanceTheta       ,
-      double   BeamEmmitancePhi       ,
-      int      ResonanceDecayZ      ,
-      int      ResonanceDecayA      ,
-      bool  ShootLight        ,
-      bool  ShootHeavy        ,
-      bool  ShootDecayProduct      ,
-      string   Path)
+EventGeneratorTransfertToResonance::EventGeneratorTransfertToResonance(	  string  	name1          		,
+																	      string   	name2          		,
+																	      string   	name3          		,
+																	      string   	name4          		,
+																	      double   	BeamEnergy        	,
+																	      double   	ExcitationEnergy    ,
+																	      double   	BeamEnergySpread  	,
+																	      double   	BeamFWHMX         	,
+																	      double   	BeamFWHMY         	,
+																	      double   	BeamEmmitanceTheta  ,
+																	      double   	BeamEmmitancePhi    ,
+																	      int      	ResonanceDecayZ     ,
+																	      int      	ResonanceDecayA     ,
+																	      bool  	ShootLight        	,
+																	      bool  	ShootHeavy        	,
+																	      bool  	ShootDecayProduct   ,
+																	      string   	Path				)
 {
    //------------- Constructor with nuclei names and beam energy ------------
 
-   	SetEverything(    name1          ,         //Beam nuclei
-            name2          ,        //Target nuclei
-            name3          ,        //Product of reaction
-            name4          ,        //Product of reaction
-            BeamEnergy        ,        //Beam Energy
-            ExcitationEnergy  ,        //Excitation of Heavy Nuclei
-            BeamEnergySpread  ,
-            BeamFWHMX         ,
-            BeamFWHMY         ,
-            BeamEmmitanceTheta       ,
-            BeamEmmitancePhi       ,
-               ResonanceDecayZ      ,
-               ResonanceDecayA      ,
-           ShootLight        ,
-           ShootHeavy        ,
-           ShootDecayProduct      ,
-            Path);        
+   	SetEverything(  name1          		,        //Beam nuclei
+		            name2          		,        //Target nuclei
+		            name3          		,        //Product of reaction
+		            name4          		,        //Product of reaction
+		            BeamEnergy        	,        //Beam Energy
+		            ExcitationEnergy 	,        //Excitation of Heavy Nuclei
+		            BeamEnergySpread  	,
+		            BeamFWHMX         	,
+		            BeamFWHMY         	,
+		            BeamEmmitanceTheta  ,
+		            BeamEmmitancePhi    ,
+		            ResonanceDecayZ     ,
+		            ResonanceDecayA     ,
+		           	ShootLight        	,
+		           	ShootHeavy        	,
+		           	ShootDecayProduct   ,
+		            Path				);        
 
 }
 
@@ -232,14 +232,14 @@ while(ReadingStatus){
 	        else if  (DataBuffer.compare(0, 19, "BeamEmmitanceTheta=") == 0) {
 	        	check_EmmitanceTheta = true ;
 	            ReactionFile >> DataBuffer;
-	            BeamEmmitanceTheta = atof(DataBuffer.c_str()) * deg;
+	            BeamEmmitanceTheta = atof(DataBuffer.c_str()) * rad;
 	            G4cout << "Beam Emmitance Theta " << BeamEmmitanceTheta / deg << " deg" << G4endl;
 	         }
 	         
 	        else if  (DataBuffer.compare(0, 17, "BeamEmmitancePhi=") == 0) {
 	        	check_EmmitancePhi = true ;
 	            ReactionFile >> DataBuffer;
-	            BeamEmmitancePhi = atof(DataBuffer.c_str()) * deg;
+	            BeamEmmitancePhi = atof(DataBuffer.c_str()) * rad;
 	            G4cout << "Beam Emmitance Phi " << BeamEmmitancePhi / deg << " deg" << G4endl;
 	         }
 
@@ -306,23 +306,23 @@ while(ReadingStatus){
 
 	}
    
-   SetEverything(Beam            ,
-         Target            ,
-         Light          ,
-         Heavy          ,
-         BeamEnergy        ,
-         ExcitationEnergy  ,
-         BeamEnergySpread  ,
-         BeamFWHMX         ,
-         BeamFWHMY         ,
-         BeamEmmitanceTheta       ,
-         BeamEmmitancePhi ,
-         ResonanceDecayZ      ,
-         ResonanceDecayA      ,
-         ShootLight        ,
-         ShootHeavy        ,
-         ShootDecayProduct      ,
-         CrossSectionPath);
+   SetEverything(	Beam            	,
+			         Target            	,
+			         Light          	,
+			         Heavy          	,
+			         BeamEnergy       	,
+			         ExcitationEnergy  	,
+			         BeamEnergySpread  	,
+			         BeamFWHMX         	,
+			         BeamFWHMY         	,
+			         BeamEmmitanceTheta ,
+			         BeamEmmitancePhi 	,
+			         ResonanceDecayZ    ,
+			         ResonanceDecayA    ,
+			         ShootLight        	,
+			         ShootHeavy        	,
+			         ShootDecayProduct  ,
+			         CrossSectionPath	);
 
          
    		ReactionFile.close();

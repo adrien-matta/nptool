@@ -37,7 +37,7 @@ public:
    void AddTelescope(G4ThreeVector  TL       ,
          G4ThreeVector  BL       ,
          G4ThreeVector  BR       ,
-         G4ThreeVector  CT       ,
+         G4ThreeVector  TR       ,
          bool        RightOrLeft);
    // By Angle Method
    void AddTelescope(G4double    R        ,
@@ -97,7 +97,7 @@ private:
    vector<G4ThreeVector>   m_TL     ; // Top Left Corner Position Vector
    vector<G4ThreeVector>   m_BL     ; // Bottom Left Corner Position Vector
    vector<G4ThreeVector>   m_BR     ; // Bottom Right Corner Position Vector
-   vector<G4ThreeVector>   m_CT     ; // Center Corner Position Vector
+   vector<G4ThreeVector>   m_TR     ; // Center Corner Position Vector
 
    // Used for "By Angle Definition"
    vector<G4double>  m_R         ; //  |

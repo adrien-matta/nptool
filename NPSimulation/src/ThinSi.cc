@@ -74,7 +74,7 @@ ThinSi::~ThinSi()
 void ThinSi::AddTelescope(G4ThreeVector TL         ,
       G4ThreeVector BL        ,
       G4ThreeVector BR        ,
-      G4ThreeVector CT        ,
+      G4ThreeVector TR        ,
       bool       RightOrLeft)
 {
    m_DefinitionType.push_back(true) ;
@@ -83,7 +83,7 @@ void ThinSi::AddTelescope(G4ThreeVector TL         ,
    m_TL.push_back(TL)               ;
    m_BL.push_back(BL)               ;
    m_BR.push_back(BR)               ;
-   m_CT.push_back(CT)               ;
+   m_TR.push_back(TR)               ;
 
    m_R.push_back(0)              ;
    m_Theta.push_back(0)          ;
@@ -116,7 +116,7 @@ void ThinSi::AddTelescope(G4double R      ,
    m_TL.push_back(empty)            ;
    m_BL.push_back(empty)            ;
    m_BR.push_back(empty)            ;
-   m_CT.push_back(empty)            ;
+   m_TR.push_back(empty)            ;
 
 }
 
@@ -303,8 +303,8 @@ void ThinSi::ReadConfiguration(string Path)
    string LineBuffer          ;
    string DataBuffer          ;
 
-   G4double TLX , BLX , BRX , CTX , TLY , BLY , BRY , CTY , TLZ , BLZ , BRZ , CTZ   ;
-   G4ThreeVector TL , BL , BR , CT                                      ;
+   G4double TLX , BLX , BRX , TRX , TLY , BLY , BRY , TRY , TLZ , BLZ , BRZ , TRZ   ;
+   G4ThreeVector TL , BL , BR , TR                                      ;
    G4double Theta = 0 , Phi = 0 , R = 0 , beta_u = 0 , beta_v = 0 , beta_w = 0                     ;
    bool RightOrLeft = false ;
    bool check_A = false   ;
@@ -403,17 +403,17 @@ void ThinSi::ReadConfiguration(string Path)
 					else if (DataBuffer.compare(0, 3, "D=") == 0) {
 						check_D = true;
 						ConfigFile >> DataBuffer ;
-						CTX = atof(DataBuffer.c_str()) ;
-						CTX = CTX * mm;
+						TRX = atof(DataBuffer.c_str()) ;
+						TRX = TRX * mm;
 						ConfigFile >> DataBuffer ;
-						CTY = atof(DataBuffer.c_str()) ;
-						CTY = CTY * mm;
+						TRY = atof(DataBuffer.c_str()) ;
+						TRY = TRY * mm;
 						ConfigFile >> DataBuffer ;
-						CTZ = atof(DataBuffer.c_str()) ;
-						CTZ = CTZ * mm;
+						TRZ = atof(DataBuffer.c_str()) ;
+						TRZ = TRZ * mm;
 
-						CT = G4ThreeVector(CTX, CTY, CTZ);
-						G4cout << "Center position : (" << CTX << ";" << CTY << ";" << CTZ << ")" << G4endl << G4endl;
+						TR = G4ThreeVector(TRX, TRY, TRZ);
+						G4cout << "Center position : (" << TRX << ";" << TRY << ";" << TRZ << ")" << G4endl << G4endl;
 					}
 
 										
@@ -480,22 +480,22 @@ void ThinSi::ReadConfiguration(string Path)
 					         	///Add The previously define telescope
 			         			//With position method
 					         	 if ((check_A && check_B && check_C && check_D) || !(check_Theta && check_Phi && check_R)) {
-							            	  AddTelescope(TL      ,
-							                  BL    ,
-							                  BR    ,
-							                  CT    ,
-							                  RightOrLeft);
+							            	  AddTelescope(	TL      	,
+							                  				BL    		,
+							                  				BR    		,
+							                  				TR    		,
+							                  				false		);
 							         }
 
 						         //with angle method
 						         else if ((check_Theta && check_Phi && check_R) || !(check_A && check_B && check_C && check_D)) {
-							         		  AddTelescope(R       ,
-							                  Theta    ,
-							                  Phi   ,
-							                  beta_u   ,
-							                  beta_v   ,
-							                  beta_w   ,
-							                  RightOrLeft);
+							         		  AddTelescope(	R       	,
+							                  				Theta    	,
+							                  				Phi   		,
+							                  				beta_u   	,
+							                  				beta_v   	,
+							                  				beta_w   	,
+							                  				RightOrLeft	);
 							         }
 							         
 							        //	Reinitialisation of Check Boolean 
@@ -548,7 +548,7 @@ void ThinSi::ConstructDetector(G4LogicalVolume* world)
          // MUST2
          Det_rot = new G4RotationMatrix(Det_u, Det_v, Det_w);
          // translation to place Telescope
-         Det_pos = m_CT[i] ;
+         Det_pos =  (m_TR[i]+m_TL[i]+m_BL[i]+m_BR[i])/4 ;
       }
 
       // By Angle

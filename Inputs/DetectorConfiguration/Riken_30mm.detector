@@ -1,3 +1,31 @@
+%%%%%%%%%%%Target%%%%%%%%%%%%%%%%%%%1
+%Thickness in micrometer
+%Radius in mm
+%Temperature in K, Pressure in bar
+%Material name according to the target library
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GeneralTarget
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Target
+	THICKNESS= 1
+	RADIUS=	45
+	MATERIAL= CD2
+	X= 10
+	Y= -10
+	Z= 50
+	
+CryoTarget
+	THICKNESS= 3000
+	RADIUS=	45
+	TEMPERATURE= 26
+	PRESSURE= 1
+	MATERIAL= D2	
+	WINDOWSTHICKNESS= 15
+	WINDOWSMATERIAL= Mylar
+	X= 0
+	Y= 0
+	Z= 0			
 			
 %%%%%%%%%%%%%%%%%%%%%			
 MUST2Array			
@@ -67,23 +95,22 @@ D=	12.57	56.09	145.14
 			
 %%%%%%%%% Det 2 %%%%%%%%			
 ThinSi			
-A=	-116.04	9.84	154.55
-B=	-22.8	9.84	191.95
-C=	-104.09	105.03	124.76
-D=	-10.85	105.03	162.16
-			
-%%%%%%%%% Det 3 %%%%%%%%			
-ThinSi			
 A=	-12.57	56.09	145.14
 B=	-59.44	56.09	126.34
 C=	-65.26	9.66	140.87
 D=	-18.39	9.66	159.67
 			
+%%%%%%%%% Det 3 %%%%%%%%			
+ThinSi			
+A=	-18.39	-9.66	159.67
+B=	-65.26	-9.66	140.87
+C=	-59.44	-56.09	126.34
+D=	-12.57	-56.09	145.14
+			
 %%%%%%%%% Det 4 %%%%%%%%			
 ThinSi			
-A=	-10.85	-105.03	162.16
-B=	-22.8	-9.84	191.95
-C=	-104.09	-105.03	124.76
-D=	-116.04	-9.84	154.55
-			
+A=	12.57	-56.09	145.14
+B=	59.44	-56.09	126.34
+C=	65.26	-9.66	140.87
+D=	18.39	-9.66	159.67
 
