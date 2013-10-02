@@ -227,7 +227,6 @@ void PSStripNumberY::PrintAll()
    G4cout << " Number of entries " << EvtMap->entries() << G4endl     ;
 }
 
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 		//Detector Number Scorer

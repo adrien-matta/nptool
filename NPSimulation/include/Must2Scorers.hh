@@ -99,8 +99,7 @@ namespace MUST2 {
 	   G4int HCID;
 	   G4THitsMap<G4double>* EvtMap;
 	};
-
-
+	
 	class PSDetectorNumber : public G4VPrimitiveScorer
 	{
 
@@ -123,6 +122,7 @@ namespace MUST2 {
 	   G4THitsMap<G4int>* EvtMap;
 	   G4String m_VolumeName ;
 	};
+	
 }
 
 #endif

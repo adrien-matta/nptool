@@ -27,7 +27,27 @@
 #include "G4VPrimitiveScorer.hh"
 #include "G4THitsMap.hh"
 
+class PSEnergy : public G4VPrimitiveScorer
+	{
 
+	public: // with description
+	   PSEnergy(G4String name, G4int depth = 0);
+	   virtual ~PSEnergy();
+
+	protected: // with description
+	   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+
+	public:
+	   virtual void Initialize(G4HCofThisEvent*);
+	   virtual void EndOfEvent(G4HCofThisEvent*);
+	   virtual void clear();
+	   virtual void DrawAll();
+	   virtual void PrintAll();
+
+	private:
+	   G4int HCID;
+	   G4THitsMap<G4double>* EvtMap;
+	};
 
 class PSTOF : public G4VPrimitiveScorer
 {
@@ -52,9 +72,6 @@ class PSTOF : public G4VPrimitiveScorer
 };
 
 
-
-
-
 class PSInteractionCoordinatesX : public G4VPrimitiveScorer
 	{
 	public: // with description
@@ -75,8 +92,6 @@ class PSInteractionCoordinatesX : public G4VPrimitiveScorer
 	   G4int HCID;
 	   G4THitsMap<G4double>* EvtMap;
 	};
-
-
 
 class PSInteractionCoordinatesY : public G4VPrimitiveScorer
 	{
@@ -167,4 +182,28 @@ private:
    G4int HCID;
    G4THitsMap<G4double>* EvtMap;
 };
+
+
+class PSDetectorNumber : public G4VPrimitiveScorer
+	{
+
+	public: // with description
+	   PSDetectorNumber(G4String name, G4int depth = 0 , G4String VolumeName = "xxx");
+	   virtual ~PSDetectorNumber();
+
+	protected: // with description
+	   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+
+	public:
+	   virtual void Initialize(G4HCofThisEvent*);
+	   virtual void EndOfEvent(G4HCofThisEvent*);
+	   virtual void clear();
+	   virtual void DrawAll();
+	   virtual void PrintAll();
+
+	private:
+	   G4int HCID;
+	   G4THitsMap<G4int>* EvtMap;
+	   G4String m_VolumeName ;
+	};
 #endif

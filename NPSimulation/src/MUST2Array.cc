@@ -1222,7 +1222,7 @@ void MUST2Array::InitializeScorers()
 		//	Silicon Associate Scorer
 		m_StripScorer = new G4MultiFunctionalDetector("StripScorer");
 		
-		G4VPrimitiveScorer* DetNbr 								= new PSDetectorNumber("DetectorNumber", 0, "Silicon")             	;
+		G4VPrimitiveScorer* DetNbr 								= new MUST2::PSDetectorNumber("DetectorNumber", 0, "Silicon")             	;
 		G4VPrimitiveScorer* Energy 								= new PSStripE("StripEnergy", 0)             						;
 		G4VPrimitiveScorer* TOF 								= new PSTOF("StripTime", 0)                  						;          					 
 		G4VPrimitiveScorer* StripPositionX						= new PSStripNumberX("StripNumberX", 0, SiliconFace, 128)  			;
