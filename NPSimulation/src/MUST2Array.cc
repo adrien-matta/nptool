@@ -382,9 +382,7 @@ void MUST2Array::VolumeMaker(G4int TelescopeNumber ,
 ////////////////////////////////////////////////////////////////
 
    if (wCsI) {
-      //G4double DistInterCsI= 1.*mm;//<-Set the distance between CsI cristal. Exact value yet unknown
-      G4double DistInterCsI = 0.2 * mm;
-
+   
       G4ThreeVector positionCsI = G4ThreeVector(0, 0, CsI_PosZ);
       G4Trd* solidCsI = new G4Trd("csI", 0.5*CsIFaceFront, 0.5*CsIFaceBack, 0.5*CsIFaceFront, 0.5*CsIFaceBack, 0.5*CsIThickness);
 
