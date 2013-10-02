@@ -74,8 +74,15 @@ int main(int argc,char** argv)
 	// Get Must2 Pointer:
 	MUST2Array* M2 = (MUST2Array*) myDetector -> m_Detector["MUST2"] ;
 	
-	int i;
-	for ( i = 0 ; i < Chain -> GetEntries() ; i ++ )
+	cout <<  " ///////// Starting Analysis ///////// "<< endl << endl ;
+	
+	int i ,N=Chain -> GetEntries();
+	
+	cout << " Number of Event to be treated : " << N << endl ;
+	
+	clock_t begin=clock();
+	clock_t end=begin;
+	for ( i = 0 ; i < N ; i ++ )
 		{
 			// Clear local branch
 			for(int hh = 0 ; hh <2 ; hh++)
@@ -87,7 +94,20 @@ int main(int argc,char** argv)
 				}
 
 			// Minimum code
-			if( i%100000 == 0 && i!=0) {cout << i << " Event annalysed "<<endl;	}					
+			if( i%10000 == 0 && i!=0) 	{	
+											cout.precision(3);
+											end=clock();										
+											double TimeElapsed = (end-begin)/CLOCKS_PER_SEC;
+											double percent = (double)i/N ;
+											double TimeToWait = (TimeElapsed/percent) - TimeElapsed	;					
+											cout << "\r Progression:" << percent*100 
+												 << " % \t | \t Remaining time : ~" 
+												 <<  TimeToWait <<"s"<< flush;
+										}	
+										
+			else if (i==N-1) 	cout << "\r Progression:" 
+								 << " 100% " <<endl;
+					
 			Chain -> GetEntry(i);
 			// Clear Previous Event
 			myDetector -> ClearEventPhysics()				;
@@ -121,25 +141,26 @@ int main(int argc,char** argv)
 						{
 							if(ELab[hit]>-1000 && ThinSi_E>0 )	
 								{
-										ELab[hit]= He3StripAl.EvaluateInitialEnergy(	ELab[hit] 					, // Energy of the detected particle
-																				2*0.4*micrometer	, // Target Thickness at 0 degree
-																				ThetaMM2Surface		);
+										ELab[hit]= He3StripAl.EvaluateInitialEnergy(	ELab[hit] 			, // Energy of the detected particle
+																						2*0.4*micrometer	, // Target Thickness at 0 degree
+																						ThetaMM2Surface		);
 																				
-										ELab[hit]= He3StripSi.EvaluateInitialEnergy(	ELab[hit] 					, // Energy of the detected particle
-																				20*micrometer		, // Target Thickness at 0 degree
-																				ThetaMM2Surface		);																
+										ELab[hit]= He3StripSi.EvaluateInitialEnergy(	ELab[hit] 			, // Energy of the detected particle
+																						20*micrometer		, // Target Thickness at 0 degree
+																						ThetaMM2Surface		);																
 										
-										ELab[hit]= He3StripAl.EvaluateInitialEnergy(	ELab[hit] 					, // Energy of the detected particle
-																				0.4*micrometer		, // Target Thickness at 0 degree
-																				ThetaMM2Surface		);
 
-										ELab[hit]= He3TargetWind.EvaluateInitialEnergy( ELab[hit] 					, // Energy of the detected particle
-																				15*micrometer		, // Target Thickness at 0 degree
-																				ThetaN				);
+										ELab[hit]= He3StripAl.EvaluateInitialEnergy(	ELab[hit] 			, // Energy of the detected particle
+																					0.4*micrometer		, // Target Thickness at 0 degree
+																						ThetaMM2Surface		);
+
+										ELab[hit]= He3TargetWind.EvaluateInitialEnergy( ELab[hit] 			, // Energy of the detected particle
+																						15*micrometer		, // Target Thickness at 0 degree
+																						ThetaN				);
 																			
-										ELab[hit]= He3TargetGaz.EvaluateInitialEnergy(	ELab[hit] 					, // Energy of the detected particle
-																				1.5*mm				, // Target Thickness at 0 degree
-																				ThetaN				);
+										ELab[hit]= He3TargetGaz.EvaluateInitialEnergy(	ELab[hit] 			, // Energy of the detected particle
+																						1.5*mm				, // Target Thickness at 0 degree
+																						ThetaN				);
 																						
 									ThetaCM[hit] = myReaction -> EnergyLabToThetaCM( ELab[hit] , 1 ) /deg 	;
 									ExcitationEnergy[hit] = myReaction -> ReconstructRelativistic( ELab[hit] , ThetaLab[hit] ) 		;	
@@ -152,23 +173,23 @@ int main(int argc,char** argv)
 								{
 									if(ELab[hit]>21.66)//CsI are inside a Mylar foil, plus rear alu strip
 										{
-											ELab[hit]= He3TargetWind.EvaluateInitialEnergy( ELab[hit] 			, // Energy of the detected particle
+											ELab[hit]= He3TargetWind.EvaluateInitialEnergy( ELab[hit] 		, // Energy of the detected particle
 																						3*micrometer		, // Target Thickness at 0 degree
 																						ThetaMM2Surface		);
-											ELab[hit]= He3StripAl.EvaluateInitialEnergy(	ELab[hit] 				, // Energy of the detected particle
+											ELab[hit]= He3StripAl.EvaluateInitialEnergy(	ELab[hit] 		, // Energy of the detected particle
 																						0.4*micrometer		, // Target Thickness at 0 degree
 																						ThetaMM2Surface		);
 										}
 								
-									ELab[hit]= He3StripAl.EvaluateInitialEnergy(	ELab[hit] 				, // Energy of the detected particle
+									ELab[hit]= He3StripAl.EvaluateInitialEnergy(	ELab[hit] 		, // Energy of the detected particle
 																				0.4*micrometer		, // Target Thickness at 0 degree
 																				ThetaMM2Surface		);
 								
-									ELab[hit]= He3TargetWind.EvaluateInitialEnergy( ELab[hit] 			, // Energy of the detected particle
+									ELab[hit]= He3TargetWind.EvaluateInitialEnergy( ELab[hit] 		, // Energy of the detected particle
 																				15*micrometer		, // Target Thickness at 0 degree
 																				ThetaN				);
 									
-									ELab[hit]= He3TargetGaz.EvaluateInitialEnergy(	ELab[hit] 				, // Energy of the detected particle
+									ELab[hit]= He3TargetGaz.EvaluateInitialEnergy(	ELab[hit] 		, // Energy of the detected particle
 																				1.5*mm				, // Target Thickness at 0 degree
 																				ThetaN				);
 																				
@@ -231,8 +252,8 @@ int main(int argc,char** argv)
 			RootOutput::getInstance()->GetTree()->Fill()	;
 		}
 
-	cout << "A total of " << i << " event has been annalysed " << endl ;
-	
+	cout << " A total of " << i << " event has been annalysed " << endl ;
+	cout << endl << " ///////////////////////////////////// "<< endl<< endl ;
 	RootOutput::getInstance()->Destroy();
 	return 0	;
 }

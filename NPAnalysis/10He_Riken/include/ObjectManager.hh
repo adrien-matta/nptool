@@ -16,6 +16,7 @@
 #include <string>
 #include <cmath>
 #include <cstdlib>
+#include <time.h>
 
 // ROOT
 #include <TROOT.h>
@@ -117,7 +118,7 @@ namespace ENERGYLOSS
 														3						);
 			
 			EnergyLoss He3StripAl   = EnergyLoss 	(	"3He_Al.txt" 			,
-														100						,
+														1000						,
 														1						,
 														3						);
 														
