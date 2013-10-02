@@ -1,6 +1,29 @@
 #ifndef MUST2Array_h
 #define MUST2Array_h 1
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
 
+/*****************************************************************************
+ * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
+ *                                                                           *
+ * Creation Date  : January 2009                                             *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *  This file describe the MUST2 charge particle Detector                    *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ * MUST2 is a modular array made of Telescope (1 to 8 telescope). Each       *
+ *  Telescope is made of Three Stage:                                        *
+ *  - A 300um Silicium, double-sided strip                                   *
+ *  - 16 Si(Li) pad                                                          *
+ *  - 16 CsI scintillator Crystal                                            *
+ *****************************************************************************/
 #include "VDetector.hh"
 #include "TMust2Data.h"
 #include "G4SDManager.hh"

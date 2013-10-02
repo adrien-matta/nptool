@@ -1,3 +1,25 @@
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
+ *                                                                           *
+ * Creation Date  : January 2009                                             *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *  This event Generator is used to simulated two body TransfertReaction.    *
+ *  A Phase Space calculation is then performed to decay the Heavy product.  *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *   This class is not yet operationnal.                                     *
+ *                                                                           *
+ *****************************************************************************/
+
 // C++ headers
 #include <iostream>
 #include <fstream>

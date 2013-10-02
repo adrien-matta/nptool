@@ -1,3 +1,26 @@
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
+ *                                                                           *
+ * Creation Date  : January 2009                                             *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *  This class manage the event Generator used in simulation                 *
+ *  Every time you had a new kind of event generator, you need to add a few  *
+ *  line in the ReadConfiguration method to detect the associate Token       *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *****************************************************************************/
+
 #include "PrimaryGeneratorAction.hh"
 #include "PhysicsList.hh"
 #include "G4ParticleTable.hh"

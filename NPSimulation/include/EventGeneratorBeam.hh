@@ -1,6 +1,26 @@
 #ifndef EventGeneratorBeam_h
 #define EventGeneratorBeam_h
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
 
+/*****************************************************************************
+ * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
+ *                                                                           *
+ * Creation Date  : January 2009                                             *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *  This event Generator is used to simulated Radioactive Ion beam           *
+ *  Emmitance, Energy spread and dispersion are taken into account           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
 // C++ header
 #include <string>
 

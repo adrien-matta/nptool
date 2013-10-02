@@ -1,12 +1,36 @@
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
+ *                                                                           *
+ * Creation Date  : January 2009                                             *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *  This class old some of the General Scorer, shared by different detector.
+    Thos scorer could be a could basis for your own scorer                   *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ * Those Scorer use TrackID as map index. This way ones can rebuild energy   *
+ *  deposit, time of flight or position,... particle by particle for each    *
+ *  event.Because standard scorer provide by G4 don't work this way but using* 
+ *  a global ID for each event you should not use those scorer with some G4  *
+ *  provided ones or being very carefull doing so.                           *                                            *
+ *****************************************************************************/
 #include "GeneralScorers.hh"
 #include "G4UnitsTable.hh"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Added by Adrien MATTA:
-// Those Scorer use TrackID as map index. This way ones can rebuild energy deposit,
-// time of flight or position,... particle by particle for each event. Because standard
-// scorer provide by G4 don't work this way but using a global ID for each event you should
-// not use those scorer with some G4 provided ones or being very carefull doing so.
+// 
+// 
+// 
+// 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //Strip Energy Scorer (deal with multiple particle hit)
