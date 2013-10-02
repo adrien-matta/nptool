@@ -959,6 +959,7 @@ void GaspardTrackerTrapezoid::ReadSensitive(const G4Event* event)
       }
 
       // clear map for next event
+      DetectorNumberHitMap ->clear();
       EnergyHitMap   ->clear();
       TimeHitMap     ->clear();
       XHitMap        ->clear();

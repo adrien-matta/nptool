@@ -42,7 +42,7 @@ public:
    
    // Add Detector branch to the EventTree.
    // Called After DetecorConstruction::AddDetector Method
-   virtual void InitializeScorer() {};
+   virtual void InitializeScorers() {};
 
 public:
    TInteractionCoordinates*     GetInterCoordPointer()  {return ms_InterCoord;};

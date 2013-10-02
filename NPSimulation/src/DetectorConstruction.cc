@@ -81,7 +81,7 @@ void DetectorConstruction::AddDetector(VDetector* NewDetector)
    // Add new detector to vector
    m_Detectors.push_back(NewDetector)        ;
    // Initialize Scorer
-   NewDetector->InitializeScorer();
+   NewDetector->InitializeScorers();
    // Construct new detector
    NewDetector->ConstructDetector(world_log) ;
    // Add Detector to TTree

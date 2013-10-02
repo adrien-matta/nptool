@@ -1088,6 +1088,7 @@ void GaspardTrackerSquare::ReadSensitive(const G4Event* event)
          if (checkSi) HitNumber++ ;
       }
       // clear map for next event
+      DetectorNumberHitMap ->clear();
       EnergyHitMap   ->clear()   ;
       TimeHitMap     ->clear()   ;
       XHitMap        ->clear()   ;
