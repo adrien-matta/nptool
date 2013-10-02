@@ -1,5 +1,27 @@
 #include "Must2Array.h"
+/*****************************************************************************
+ * Copyright (C) 2009   this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
 
+/*****************************************************************************
+ * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
+ *                                                                           *
+ * Creation Date  : febuary 2009                                             *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *  This class manage the geometry of an array of MUST2 Telescope            *
+ * 	It is used in NPAnalysis Programm                                        *
+ *	It also meant to manage calibration file (to be done)                    *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *   Calibration need to be done                                             *
+ *                                                                           *
+ *****************************************************************************/
 //	STL
 #include <cmath>
 #include <iostream>	
