@@ -86,7 +86,7 @@ int main(int argc,char** argv)
 				}
 				
 			
-	/*		myDetector -> ClearEventPhysics()				;
+			myDetector -> ClearEventPhysics()				;
 			myDetector -> BuildPhysicalEvent()				;
 			FullTheta = Init->GetICEmittedAngleThetaLabWorldFrame(0);
 			E = M2 -> GetEnergyDeposit();
@@ -214,7 +214,6 @@ int main(int argc,char** argv)
 				
 								
 			EE = E ; TT = Theta/deg ;
-			*/
 			RootOutput::getInstance()->GetTree()->Fill()	;
 			ThinSi = -1 ;
 		}

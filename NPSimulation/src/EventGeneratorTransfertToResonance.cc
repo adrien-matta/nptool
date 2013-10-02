@@ -71,7 +71,6 @@ EventGeneratorTransfertToResonance::~EventGeneratorTransfertToResonance()
    //------------- Default Destructor ------------
 	delete m_InitConditions;
 	delete m_Reaction ;
-	delete m_Target;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -259,14 +258,14 @@ while(ReadingStatus){
 	        else if  (DataBuffer.compare(0, 19, "SigmaThetaX=") == 0) {
 	        	check_EmmitanceTheta = true ;
 	            ReactionFile >> DataBuffer;
-	            SigmaThetaX = atof(DataBuffer.c_str()) * rad;
+	            SigmaThetaX = atof(DataBuffer.c_str()) * deg;
 	            G4cout << "Beam Emmitance Theta " << SigmaThetaX / deg << " deg" << G4endl;
 	         }
 	         
 	        else if  (DataBuffer.compare(0, 17, "SigmaPhiY=") == 0) {
 	        	check_EmmitancePhi = true ;
 	            ReactionFile >> DataBuffer;
-	            SigmaPhiY = atof(DataBuffer.c_str()) * rad;
+	            SigmaPhiY = atof(DataBuffer.c_str()) * deg;
 	            G4cout << "Beam Emmitance Phi " << SigmaPhiY / deg << " deg" << G4endl;
 	         }
 
@@ -398,11 +397,18 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
    G4ThreeVector InterCoord;
    G4double Beam_thetaX = 0, Beam_phiY = 0;
    G4double Beam_theta  = 0, Beam_phi  = 0;
-   CalculateBeamInteraction(0, m_SigmaX, 0, m_SigmaThetaX,
-                            0, m_SigmaY, 0, m_SigmaPhiY,
-                            m_Target,
-                            InterCoord, Beam_thetaX, Beam_phiY,
-                            Beam_theta, Beam_phi);
+   
+   	if(m_SigmaX==0 && m_SigmaY==0 && m_SigmaThetaX == 0 && m_SigmaPhiY==0) InterCoord = G4ThreeVector(0,0,0);
+   
+	else if( m_Target !=0)   
+  	 CalculateBeamInteraction(	0, m_SigmaX, 0, m_SigmaThetaX,
+                           	 	0, m_SigmaY, 0, m_SigmaPhiY,
+                            	m_Target,
+                            	InterCoord, Beam_thetaX, Beam_phiY,
+                            	Beam_theta, Beam_phi);
+                            	
+	else 
+		InterCoord = G4ThreeVector(0,0,0);
 
    // write vertex position to ROOT file
    G4double x0 = InterCoord.x();
@@ -471,9 +477,7 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
                                          sin(ThetaHeavy) * sin(phi),
                                          cos(ThetaHeavy));
 
-   // write angles/energy to ROOT file
-   m_InitConditions->SetICEmittedAngleThetaLabIncidentFrame(ThetaLight / deg);
-   m_InitConditions->SetICEmittedEnergy(EnergyLight/MeV);
+
 
    // Move to the target
    x0 += m_Target->GetTargetX() ;
@@ -506,14 +510,17 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
       // write angles in ROOT file
       m_InitConditions->SetICEmittedAngleThetaLabWorldFrame(theta_world / deg);
       m_InitConditions->SetICEmittedAnglePhiWorldFrame(phi_world / deg);
+         // write angles/energy to ROOT file
+   		m_InitConditions->SetICEmittedAngleThetaLabIncidentFrame(ThetaLight / deg);
+   		m_InitConditions->SetICEmittedEnergy(EnergyLight/MeV);
       //Set the gun to shoot
       particleGun->SetParticleMomentumDirection(momentum_kine_world);
       //Shoot the light particle
       particleGun->GeneratePrimaryVertex(anEvent);
    }
    
-   if (m_ShootHeavy) { // Case of recoil particle
-      // Particle type
+   // Case of recoil particle
+   /*   // Particle type
       particleGun->SetParticleDefinition(HeavyName);
       // Particle energy
       particleGun->SetParticleEnergy(EnergyHeavy);
@@ -521,7 +528,7 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
       particleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0));
       // Particle direction
       // Kinematical angles in the beam frame are transformed 
-      // to the "world" frame
+      // to the "world" frame*/
       G4ThreeVector momentum_kine_world = BeamToWorld * momentum_kineHeavy_beam;
       // get theta and phi in the world frame
       G4double theta_world = momentum_kine_world.theta();
@@ -537,7 +544,7 @@ void EventGeneratorTransfertToResonance::GenerateEvent(G4Event* anEvent , G4Part
       														anEvent        	,
       														particleGun		);
       
-   }
+   
 }
 
 
@@ -581,20 +588,20 @@ void EventGeneratorTransfertToResonance::ResonanceDecay(  G4double EnergyHeavy  
 		G4double md = daughter -> GetPDGMass()     ;
 		G4double mn = neutron  -> GetPDGMass()     ;
 		G4double mp = proton   -> GetPDGMass()     ;
-
-		// Initial Lab Momentum
-		G4double InitialE      	  = sqrt(EnergyHeavy * EnergyHeavy + M * M)   			;
-		G4double InitialMomentumX = EnergyHeavy * sin(ThetaHeavy) * cos(PhiHeavy) 		;
-		G4double InitialMomentumY = EnergyHeavy * sin(ThetaHeavy) * sin(PhiHeavy) 		;
-		G4double InitialMomentumZ = EnergyHeavy * cos(ThetaHeavy)                 		;
+		
+		G4double InitialE      	  = EnergyHeavy + M   			;
+		G4double InitialMomentumX = sqrt( InitialE*InitialE - M*M) * sin(ThetaHeavy) * cos(PhiHeavy) 		;
+		G4double InitialMomentumY = sqrt( InitialE*InitialE - M*M) * sin(ThetaHeavy) * sin(PhiHeavy) 		;
+		G4double InitialMomentumZ = sqrt( InitialE*InitialE - M*M) * cos(ThetaHeavy)                 		;
 
 		TLorentzVector Initial = TLorentzVector(InitialMomentumX/GeV, InitialMomentumY/GeV, InitialMomentumZ/GeV,InitialE/GeV);
-		
+
 		// Array of masses express in GeV/c2
 		double* masses = new double[NumberOfDecayProducts+1];
+
 		//	Filling Array
 		masses[0] = md/GeV ;
-
+	
 		int ll = 1 ;
 		for(int i = 0 ; i < NumberOfNeutrons ; i++)
 				{masses[ll] = mn/GeV ; ll++;}
@@ -607,7 +614,6 @@ void EventGeneratorTransfertToResonance::ResonanceDecay(  G4double EnergyHeavy  
 		TGenPhaseSpace TPhaseSpace ;
 
 		if( !TPhaseSpace.SetDecay(Initial, NumberOfDecayProducts+1, masses) ) cout << "Warning: Phase Space Decay forbiden by kinematic, or more than 18 particles "<<endl;
-		
 		double MaxWt=TPhaseSpace.GetWtMax() ;
 		double Weight = 0 	;
 		double Rand   = 1	; 
@@ -619,42 +625,49 @@ void EventGeneratorTransfertToResonance::ResonanceDecay(  G4double EnergyHeavy  
 			}
 		
 		
-		TLorentzVector* daugterLV = TPhaseSpace.GetDecay(0);
+		TLorentzVector* daugterLV ;
+		double Energy;
+		G4ThreeVector Momentum;
+		 if (m_ShootHeavy) 
+		 	{
+		 		daugterLV = TPhaseSpace.GetDecay(0);
+		 	
+		 		Momentum = G4ThreeVector(	daugterLV->X()*GeV	,
+											daugterLV->Y()*GeV	,
+											daugterLV->Z()*GeV 	);				
 		
-		G4ThreeVector Momentum = G4ThreeVector(	daugterLV->X()*GeV	,
-												daugterLV->Y()*GeV	,
-												daugterLV->Z()*GeV 	);		
-												
-		double Energy   = Momentum.mag() ;
-		Momentum.unit() ;
+				Energy   = daugterLV->E()*GeV-md ;
+				Momentum.unit() ;		 	
+		 	
+				//Set the gun to shoot
+				particleGun->SetParticleDefinition(daughter)                    ;
+				particleGun->SetParticleMomentumDirection(Momentum)     		;
+				particleGun->SetParticleEnergy(Energy)                          ;
+				particleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0))     ;
+				// Shoot the Daugter
+				particleGun->GeneratePrimaryVertex(anEvent) ;
+				
+			   // get theta and phi in the world frame
+		       G4double theta_world = Momentum.theta();
+		       G4double phi_world   = Momentum.phi();
+		       if (phi_world < 1e-6) phi_world += 2*pi;
+		       // write angles in ROOT file
+		       m_InitConditions->SetICEmittedAngleThetaLabWorldFrame(theta_world / deg);
+		       m_InitConditions->SetICEmittedAnglePhiWorldFrame(phi_world / deg);		
+			   m_InitConditions->SetICEmittedEnergy(Energy);
+			}
 		
-		//Set the gun to shoot
-		particleGun->SetParticleDefinition(daughter)                    ;
-		particleGun->SetParticleMomentumDirection(Momentum)     		;
-		particleGun->SetParticleEnergy(Energy)                          ;
-		particleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0))     ;
-		// Shoot the Daugter
-		particleGun->GeneratePrimaryVertex(anEvent) ;
-		
-	   // get theta and phi in the world frame
-       G4double theta_world = Momentum.theta();
-       G4double phi_world   = Momentum.phi();
-       if (phi_world < 1e-6) phi_world += 2*pi;
-       // write angles in ROOT file
-       m_InitConditions->SetICEmittedAngleThetaLabWorldFrame(theta_world / deg);
-       m_InitConditions->SetICEmittedAnglePhiWorldFrame(phi_world / deg);		
-
 		if (m_ShootDecayProduct) 
 			{
 				G4int jj = 1   ;
 				for ( int u = 0; u < NumberOfNeutrons ; u++) 
 					{
-						TLorentzVector* neutronLV = TPhaseSpace.GetDecay(jj);
+						daugterLV = TPhaseSpace.GetDecay(jj);
 
 						Momentum = G4ThreeVector(	daugterLV->X()*GeV	,
 													daugterLV->Y()*GeV	,
 													daugterLV->Z()*GeV 	);
-						Energy   = Momentum.mag() ;
+						Energy   = daugterLV->E()*GeV-mn ;
 						Momentum.unit() ;
 						//Set the gun to shoot
 						particleGun->SetParticleDefinition(neutron)                    	;
@@ -663,17 +676,27 @@ void EventGeneratorTransfertToResonance::ResonanceDecay(  G4double EnergyHeavy  
 						particleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0))     ;
 						// Shoot the Daugter
 						particleGun->GeneratePrimaryVertex(anEvent) ;
+						
+						// get theta and phi in the world frame
+						G4double theta_world = Momentum.theta();
+						G4double phi_world   = Momentum.phi();
+						if (phi_world < 1e-6) phi_world += 2*pi;
+						// write angles in ROOT file
+						m_InitConditions->SetICEmittedAngleThetaLabWorldFrame(theta_world / deg);
+						m_InitConditions->SetICEmittedAnglePhiWorldFrame(phi_world / deg);		
+						m_InitConditions->SetICEmittedEnergy(Energy);
+						
 						jj++;
 					}
 				
 				for ( int u = 0; u < NumberOfProtons ; u++) 
 					{
-						TLorentzVector* protonLV = TPhaseSpace.GetDecay(jj);
+						daugterLV = TPhaseSpace.GetDecay(jj);
 
 						Momentum = G4ThreeVector(	daugterLV->X()*GeV	,
 													daugterLV->Y()*GeV	,
 													daugterLV->Z()*GeV 	);
-						Energy   = Momentum.mag() ;
+						Energy   = daugterLV->E()*GeV-mp ;
 						Momentum.unit() ;
 						//Set the gun to shoot
 						particleGun->SetParticleDefinition(proton)                      ;
@@ -682,11 +705,21 @@ void EventGeneratorTransfertToResonance::ResonanceDecay(  G4double EnergyHeavy  
 						particleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0))     ;
 						// Shoot the Daugter
 						particleGun->GeneratePrimaryVertex(anEvent) ;
+						
+					 	// get theta and phi in the world frame
+						G4double theta_world = Momentum.theta();
+						G4double phi_world   = Momentum.phi();
+						if (phi_world < 1e-6) phi_world += 2*pi;
+						// write angles in ROOT file
+						m_InitConditions->SetICEmittedAngleThetaLabWorldFrame(theta_world / deg);
+						m_InitConditions->SetICEmittedAnglePhiWorldFrame(phi_world / deg);		
+						m_InitConditions->SetICEmittedEnergy(Energy);
 						jj++;
 					}
 				
 			
 		}
+		
 		delete masses 	;
 	}
 }
@@ -735,6 +768,4 @@ void EventGeneratorTransfertToResonance::SetEverything(	  string    name1       
    m_ShootDecayProduct    =  ShootDecayProduct      	;
 
 }
-
-
 
