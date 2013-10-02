@@ -1,3 +1,36 @@
+/*****************************************************************************
+ * Copyright (C) 2009 	this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ *                                                                           *
+ * Original Author :  Adrien MATTA    contact address: matta@ipno.in2p3.fr   *
+ *                                                                           *
+ * Creation Date   : March 2009                                              *
+ * Last update     :                                                         *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *	This class deal with Two Body transfert Reaction                         *
+ *	Physical parameter (Nuclei mass) are loaded from the nubtab03.asc file   *
+ *	(2003 nuclear table of isotopes mass).                                   *
+ *	                                                                         *
+ *	KineRelativistic: Used in NPSimulation                                   *
+ *	A relativistic calculation is made to compute Light and Heavy nuclei     * 
+ *	angle given the Theta CM angle.                                          *
+ *	                                                                         * 
+ *	ReconstructRelativistic: Used in NPAnalysis                              *
+ *	A relativistic calculation is made to compute Excitation energy given the*
+ *	light angle and energy in Lab frame.                                     *
+ *	                                                                         *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
+ 
 #include <iostream>
 #include <fstream>
 #include <string>

@@ -1,6 +1,36 @@
 #ifndef __EnergyLoss__
 #define __EnergyLoss__
+/*****************************************************************************
+ * Copyright (C) 2009 	this file is part of the NPTool Project              *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
 
+/*****************************************************************************
+ *                                                                           *
+ * Original Author :  Adrien MATTA    contact address: matta@ipno.in2p3.fr   *
+ *                                                                           *
+ * Creation Date   : April 2009                                              *
+ * Last update     :                                                         *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *  Deal with energy loss on basis of a dEdX input file, from SRIM or LISE++ *
+ *   The class can be used to evaluate energy loss in material or to Evaluate* 
+ *   initial energy before crossing the material.                            *
+ *                                                                           *
+ *   The use of Interpolator derived form the GSL insure a very good speed of*
+ *   execution.                                                              *
+ *                                                                           *
+ *   Table Should come in the following unit:                                *
+ *   Particle Energy: MeV/u                                                  *
+ *   dEdX:            MeV/micrometer                                         *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
+ 
 #include <string>
 #include <vector>
 using namespace std ;
