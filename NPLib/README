@@ -1,0 +1,38 @@
+This file describes the content of the NPLib directory
+
+This directory contains a set of libraries which are used
+both in the NPSimulation and the NPAnalysis modules.
+The structure of this directory is:
+NPLib / include
+      / lib
+      / IORoot
+      / Tools
+      / InitialConditions
+      / InteractionCoordinates
+      / MUST2
+      / AnnularS1
+      / GASPARD
+      / VDetector
+
+A description of each library follows.
+
+I) include directory
+
+
+II) lib directory
+
+III) IORoot
+
+IV) Tools
+
+V) InitialConditions
+
+VI) InteractionCoordinates
+
+VII) MUST2
+
+VIII) AnnularS1
+
+IX) GASPARD
+
+X) VDetector

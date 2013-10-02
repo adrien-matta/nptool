@@ -1,0 +1,64 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+MUST2Array
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+M2Telescope
+	THETA= 18
+	PHI= 0
+	R= 210
+	BETA= 0 -15 -0
+	SI= 1
+	SILI= 0
+	CSI= 1
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+M2Telescope
+	THETA= -18
+	PHI= -0
+	R= 210
+	BETA= 0 15 0
+	SI= 1
+	SILI= 0
+	CSI= 1	
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+M2Telescope
+	THETA= 40
+	PHI= 90
+	R= 90
+	BETA= 5 -0 -0
+	SI= 1
+	SILI= 0
+	CSI= 1
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+M2Telescope
+	THETA= -40
+	PHI= 90
+	R= 90
+	BETA= -5 0 0
+	SI= 1
+	SILI= 0
+	CSI= 1	
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%M2Telescope
+	THETA= 0.01
+	PHI= 0.01
+	R= 320
+	BETA= 0 0 0
+	SI= 1
+	SILI= 0
+	CSI= 1	
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%M2Telescope
+	THETA= 75
+	PHI= 0.01
+	R= 90
+	BETA= 0 20 0
+	SI= 1
+	SILI= 0
+	CSI= 1	
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,17 @@
+This file describes the installation procedure of the NPLib
+
+
+In order to build all the libraries of the NPLib module, use the two 
+following commands:
+	
++  make distclean
+	Once this is done you should check that both the include and 
+	lib directories are empty. It this is not the case remove the 
+	remaining files manually.
+
++ make
+	Once this is done the headers of each subdirectory are copied to 
+	the include directory and the shared libraries (*.so) associated 
+	to each library are copied to the lib directory. If you are using 
+	a Mac OS system a symbolic link *.dylib is done with respect to 
+	each *.so library. 

@@ -1,0 +1,51 @@
+This file describes the content of the NPTool package
+
+
+The NPTool package has basically three modules: the NPSimulation
+module in charge of performing the G4 simulation, the NPAnalysis
+module in charge of analysing the results of NPSimulation as well
+as data from real experiments (e.g. MUST2 @ GANIL) and the NPLib 
+module which contains a set of libraries needed both by the 
+NPSimulation and NPAnalysis modules.
+
+The detailed structure of the NPTool package is:
+NPTool	/ NPLib
+	/ NPSimulation
+	/ NPAnalysis
+	/ Inputs
+	/ Outputs
+	/ NPDocumentation
+
+
+I) NPLib
+	This directory contains a set of libraries (each one in 
+	a dedicated directory) used both in the NPSimulation and
+	NPAnalysis modules. 
+	Complementary informations concerning each library of
+	the NPLib can be found in the README file of the NPLib 
+	directory.
+
+II) NPSimulation
+
+III) NPAnalysis
+
+IV) Inputs
+	This directory contains all the input files needed for 
+	the G4 simulation (NPSimulation). It has the following
+	structure:
+	Inputs / CrossSection
+	       / DetectorConstruction
+	       / Reaction
+	       / dEdx 
+
+V) Outputs
+	This directory contains the ROOT ouput files of the 
+	G4 simulation (NPSimulation) and of the analysis
+	tools (NPAnalysis). It has the following structure:
+	Outputs / Analysis
+		/ Simulation
+
+VI) NPDocumentation
+	You will find here in the (near?) future some detailed 
+	documentation concerning NPSimulation and on how to add
+	a new detector to NPSimulation.

@@ -1,0 +1,47 @@
+This file describes the installation steps of the NPTool package
+
+
+I) REQUIREMENTS
+	The NPTool package depends on 4 third-party softwares:
+	+ Geant4 (http://geant4.web.cern.ch/geant4/)
+	+ ROOT (http://root.cern.ch)
+	+ CLHEP (http://www.cern.ch/clhep)
+	+ GSL (http://www.gnu.org/software/gsl/)
+
+II) WORKING CONFIGURATIONS
+	The NPTool package has been mainly tested (and developped) with 
+	the two following configurations:
+	1) Mac OS X (10.5.7) + G4 (4.9.2) + CLHEP (2.0.4.2) + ROOT (5.22/00) + GSL ()
+	2) Linux Fedora (kernel ) + G4 () + CLHEP () + ROOT () + GSL ()
+	Please, report any working or non-working configuration.
+
+III) INSTALLATION
+	a) The NPTool package is available via monotone (cvs-like) at 
+	ipnvcs.in2p3.fr
+	You can fetch the NPTool package using the following command line:
+	... ...
+
+	b) First, you need to define some environment variables. You can
+	source the NPEnvironment.bash or NPEnvironment.tchrc files 
+	depending on your shell.
+	This step is mandatory since the Makefiles used to build the package
+	depend on some of these environment variables.
+
+	c) Then, you need to compile the NPLib.
+	Go in the NPLib directory and compile doing:
+		make distclean
+		make
+	Complementary informations can be found in the INSTALL file of the 
+	NPLib directory.
+
+	d) Then you need to compile the G4 simulation program itself.
+	Go in the NPSimulation directory and compile doing:
+		make clean
+		make
+
+	e) Last, you can compile the NPAnalysis part of the NPTool
+	package.
+	Go to the NPAnalysis directory and compile doing:
+		cd Template
+		make
+	This step is not mandatory for the G4 simulation to work.

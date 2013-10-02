@@ -1,0 +1,107 @@
+%Fichier de configuration manip E225
+%%%%%%%%%%%Target%%%%%%%%%%%%%%%%%%%1
+%Thickness in micrometer
+%Radius in mm
+%Temperature in K, Pressure in bar
+%Material name according to the target library
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%GeneralTarget
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%CryoTarget
+	THICKNESS= 3000
+	RADIUS=	45
+	TEMPERATURE= 26
+	PRESSURE= 1
+	MATERIAL= D2	
+	WINDOWSTHICKNESS= 8
+	WINDOWSMATERIAL= Mylar
+%%%%%%%%%%Detector%%%%%%%%%%%%%%%%%%%
+%%Position and R given in mm
+%%Angle given in degree
+%%Option: 0,1 for Si SiLi and CSI
+%%Option: all or sensible for VISualisation
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+MUST2Array
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+M2Telescope
+	THETA= 33
+	PHI= 41
+	R= 150
+	BETA= 0 -0 -0
+	SI= 1
+	SILI= 0
+	CSI= 1
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
+M2Telescope
+	THETA= 33
+	PHI= -41
+	R= 150
+	BETA= 0 -0 0
+	SI= 1
+	SILI= 0
+	CSI= 1	
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%3
+M2Telescope
+	THETA= -33
+	PHI= 41
+	R= 150
+	BETA= 0 0 -0
+	SI= 1
+	SILI= 0
+	CSI= 1
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%4
+M2Telescope
+	THETA= -33
+	PHI= -41
+	R= 150
+	BETA= 0 0 0
+	SI= 1
+	SILI= 0
+	CSI= 1
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+%M2Telescope
+	THETA= 0
+	PHI= 0
+	R= 280
+	BETA= 0 0 0
+	SI= 1
+	SILI= 0
+	CSI= 1	
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+AddThinSi
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ThinSi
+	THETA= 33
+	PHI= 41
+	R= 110
+	BETA= 0 0 -0
+	SIDE= right
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ThinSi
+	THETA= -33
+	PHI= 41
+	R= 110
+	BETA= 0 0 -0
+	SIDE= left	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ThinSi
+	THETA= 33
+	PHI= -41
+	R= 110
+	BETA= 0 0 0
+	SIDE= right
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ThinSi
+	THETA= -33
+	PHI= -41
+	R= 110
+	BETA= 0 0 0
+	SIDE= left
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,19 @@
+# This File content all environment variable needed by NPTool.
+# On linux system, include it in your bashrc or tcshrc file.
+# using command:  source /path/NPEnvironment
+
+# NPTool Needs
+setenv NPTOOL /home/Adrien/Desktop/NPTool
+setenv NPLIB $NPTOOL/NPLib
+setenv NPSIM $NPTOOL/NPSimulation
+setenv NPANA $NPTOOL/NPAnalysis
+setenv LD_LIBRARY_PATH $LD_LIBRARY_PATH:$NPLIB/lib
+
+# alias
+alias Simulation '$NPSIM/bin/Linux-g++/Simulation'
+alias Analysis '$NPANA/Analysis'
+
+alias NPT 'cd Desktop/NPTool'	
+alias NPL 'cd Desktop/NPTool/NPLib/'	
+alias NPS 'cd Desktop/NPTool/NPSimulation/'	
+alias NPA 'cd Desktop/NPTool/NPAnalysis/'

@@ -1,0 +1,85 @@
+%Fichier de configuration manip E225
+%%%%%%%%%%%Target%%%%%%%%%%%%%%%%%%%1
+%Thickness in micrometer
+%Radius in mm
+%Temperature in K. Pressure in bar
+%Material name according to the target library
+GeneralTarget
+
+Target
+	THICKNESS= 10
+	RADIUS=	15
+	MATERIAL= CD2
+%%%%%%%%%%Detector%%%%%%%%%%%%%%%%%%%
+%%Position and distance given in mm
+%%Angle given in degree
+%%Option: 0.1 for Si SiLi and CSI
+%%Option: all or sensible for VISualisation
+MUST2Array
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+M2Telescope
+	TL= 104.146 105.098 124.716
+	BL= 116.093 9.902 154.501
+	BR= 22.854 9.902 191.9
+	CT= 63.5 57.5 158.308
+	SI= 1
+	SILI= 0
+	CSI= 1
+	VIS= all
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
+M2Telescope
+	TL= -10.907 105.098 162.116
+	BL= -22.854 9.902 191.9
+	BR= -116.093 9.902 154.501
+	CT= -63.5 57.5 158.308
+	SI= 1
+	SILI= 0
+	CSI= 1
+	VIS= all
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%3
+M2Telescope
+	TL= -22.854 -9.902 191.9
+	BL= -10.907 -105.098 162.116
+	BR= -104.146 -105.098 124.716
+	CT= -63.5 -57.5 158.308
+	SI= 1
+	SILI= 0
+	CSI= 1
+	VIS= all
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%4
+M2Telescope
+	TL= 116.093 -9.902 154.501
+	BL= 104.146 -105.098 124.716
+	BR= 10.907 -105.098 162.116
+	CT= 63.5 -57.5 158.308
+	SI= 1
+	SILI= 0
+	CSI= 1
+	VIS= all
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+M2Telescope
+	TL= 172.96 -110.03 -4.04
+	BL= 146 -110.03 92.82
+	BR= 214.71 -19.4 7.67
+	CT= 180.36 -64.72 50.24
+	SI= 1
+	SILI= 1
+	CSI= 0
+	VIS= all
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%4
+M2Telescope
+	TL=  215.8 -3.7 8
+	BL=  188.9 -3.7 104.8
+	BR=  187.2 92.3 0
+	CT=  188 44.3 52.4
+	SI= 1
+	SILI= 1
+	CSI= 0
+	VIS= all
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%4

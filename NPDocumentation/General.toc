@@ -1,0 +1,4 @@
+\contentsline {section}{\numberline {1}Introduction}{3}
+\contentsline {section}{\numberline {2}NPSimulation}{3}
+\contentsline {subsection}{\numberline {2.1} The way it's work }{3}
+\contentsline {subsection}{\numberline {2.2} Adding a detector to NPS }{3}

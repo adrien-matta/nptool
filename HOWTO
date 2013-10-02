@@ -1,0 +1,42 @@
+This file describes how to use the NPTool package.
+
+
+I) NPSIMULATION
+I.a) HOW TO RUN THE G4 SIMULATION
+To invoke the G4 simulation module do the following:
+	cd NPSimulation
+	./bin/Darwin-g++/Simulation xxx.reaction yyy.detector (for Mac OS X platform)
+	./bin/Linux-g++/Simulation  xxx.reaction yyy.detector (for Linux platform)
+where xxx.reaction is one of the available event generator and 
+yyy.detector is one of the available detector geometry
+
+I.b) EVENT GENERATORS
+All the event generators are and should be located in the directory:
+	NPTool/Inputs/Reaction 
+Several event generators are available for the moment:
+	+ isotropic.source
+		this is an isotropic event generator for charged particles,
+		gamma-rays (in the near future) in a given angular region and 
+		for a given energy range.
+	+ 60Fe.reaction
+		this is the typical case of a one-nucleon transfer reaction
+		where beam characteristics as well as the differential 
+		cross-section are taken into account
+	+ 11Li.beam
+		... ...
+
+I.c) DETECTOR GEOMETRIES
+All the detector geometries are and should be located in the directory:
+	NPTool/Inputs/DetectorConfiguration
+As the first release of the NPTool package several detectors are available:
+	+ MUST2
+	+ Annular S1 (Micron)
+	+ GASPARD with elements of square, trapezoid and annular shapes
+	+ Eurogam, Exogam will come soon
+	+ EDEN will come soon
+
+I.d) MESSENGERS
+
+
+
+II) NPANALYSIS

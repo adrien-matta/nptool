@@ -1,0 +1,59 @@
+%%%%%%%%%%Detector%%%%%%%%%%%%%%%%%%%
+%%Position and distance given in mm
+%%Angle given in degree
+%% using the data from the experimental mesurement
+%% special care is given for the X Y direction
+%% NOTATTION USED IN THE FOLLOWING:
+%%
+%% X1_Y1 		--> X:1    Y:1
+%% X128_Y1 		--> X:128  Y:1
+%% X1_Y128 		--> X:1    Y:128
+%% X128_Y128 	--> X:128  Y:128
+%%Option: 0,1 for Si SiLi and CSI
+%%Option: all or sensible for VISualisation
+% 1.2 12.371134021
+% 2   20.618556701
+% 30  309.278350515
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+GeneralTarget
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+Target
+	THICKNESS= 0.001
+	RADIUS=	7.5
+	MATERIAL= CD2
+	X= 0
+	Y= 0
+	Z= 0
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
+GaspardTracker
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Barrel
+GPDSquare 
+	X1_Y1=	 	49.1	66.08	-135.41
+	X128_Y1=	-48.9	66.22	-135.41
+	X1_Y128=	-48.8	135.51	-66.1
+	X128_Y128=	49.2	135.36	-66.1
+	FIRSTSTAGE= 1
+	SECONDSTAGE= 0
+	THIRDSTAGE= 1
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
+GPDTrapezoid 
+	THETA= 0
+	PHI= 0
+	R= 20
+	BETA= 0
+	FIRSTSTAGE= 0
+	SECONDSTAGE= 0
+	THIRDSTAGE= 0
+	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Barrel
+GPDTrapezoid
+	X1_Y1=	 	122.02	14.32	-4.45
+	X128_Y1=	122.02	38.86	76.58
+	X1_Y128=	122.02	-38.88	76.58
+	X128_Y128=	122.02	-14.29	-4.45
+	FIRSTSTAGE= 0
+	SECONDSTAGE= 0
+	THIRDSTAGE= 0
+	VIS= all
