@@ -75,10 +75,10 @@ VIS=	all
 			
 %%%%%%% Telescope 5 %%%%%%%			
 M2Telescope 			
-X1_Y1=		-50.23	-50.23	350
-X1_Y128=	50.23	-50.23	350
-X128_Y1=	-50.23	50.23	350
-X128_Y128=	50.23	50.23	350
+X1_Y1=		-50.23	-50.23	365
+X1_Y128=	50.23	-50.23	365
+X128_Y1=	-50.23	50.23	365
+X128_Y128=	50.23	50.23	365
 SI=	1		
 SILI=	0		
 CSI=	1		
@@ -150,7 +150,7 @@ ScintillatorPlastic
 Plastic
 	THETA= 0
 	PHI= 0
-	R= 303
+	R= 318
 	Thickness= 20
 	Radius= 20
 	Scintillator= BC452_10
@@ -159,7 +159,7 @@ Plastic
 Plastic
 	THETA= 0
 	PHI= 0
-	R= 328
+	R= 343
 	Thickness= 30
 	Radius= 20
 	Scintillator= BC452_10

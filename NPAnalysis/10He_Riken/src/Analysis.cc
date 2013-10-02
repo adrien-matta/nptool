@@ -95,7 +95,7 @@ int main(int argc,char** argv)
 
 			// Minimum code
 			if( i%10000 == 0 && i!=0) 	{	
-											cout.precision(3);
+											cout.precision(5);
 											end=clock();										
 											double TimeElapsed = (end-begin)/CLOCKS_PER_SEC;
 											double percent = (double)i/N ;
