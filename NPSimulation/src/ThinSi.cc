@@ -55,8 +55,6 @@ namespace THINSI
    const G4double Si_PosZ        		= 0                                 ;
    const G4double AluStripBack_PosZ  	= 0.5*SiliconThickness + 0.5*AluThickness  ;
 
-   const G4double Si_PosX_Shift = 4*mm ;
-   const G4double Si_PosY_Shift = 2*mm ;
 }
 
 using namespace THINSI ;
@@ -75,11 +73,9 @@ ThinSi::~ThinSi()
 void ThinSi::AddTelescope(G4ThreeVector TL         ,
       G4ThreeVector BL        ,
       G4ThreeVector BR        ,
-      G4ThreeVector TR        ,
-      bool       RightOrLeft)
+      G4ThreeVector TR        )
 {
    m_DefinitionType.push_back(true) ;
-   m_RightOrLeft.push_back(RightOrLeft)   ;
 
    m_TL.push_back(TL)               ;
    m_BL.push_back(BL)               ;
@@ -99,13 +95,11 @@ void ThinSi::AddTelescope(G4double R      ,
       G4double Phi   ,
       G4double beta_u   ,
       G4double beta_v   ,
-      G4double beta_w   ,
-      bool   RightOrLeft)
+      G4double beta_w   )
 {
    G4ThreeVector empty = G4ThreeVector(0, 0, 0)   ;
 
    m_DefinitionType.push_back(false)   ;
-   m_RightOrLeft.push_back(RightOrLeft);
 
    m_R.push_back(R)              ;
    m_Theta.push_back(Theta)         ;
@@ -122,11 +116,10 @@ void ThinSi::AddTelescope(G4double R      ,
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void ThinSi::VolumeMaker(G4int            DetNumber      ,
-      G4ThreeVector     Det_pos        ,
-      G4RotationMatrix*    Det_rot        ,
-      G4LogicalVolume*  world       ,
-      bool           RightOrLeft)
+void ThinSi::VolumeMaker(	G4int            	DetNumber      	,
+      						G4ThreeVector     	Det_pos        	,
+      						G4RotationMatrix*   Det_rot        	,
+      						G4LogicalVolume*  	world       	)
 {
    G4double NbrTelescopes = DetNumber           ;
    G4String DetectorNumber                   ;
@@ -165,17 +158,6 @@ void ThinSi::VolumeMaker(G4int            DetNumber      ,
 // If don't you will have a Warning unused variable 'myPVP'
    G4PVPlacement* PVPBuffer ;
 
-   G4double Si_PosX = 0 ;
-   G4double Si_PosY = 0 ;
-   if (RightOrLeft)         Si_PosX = -Si_PosX_Shift   ;
-   else              Si_PosX =  Si_PosX_Shift   ;
-
-   if (Det_pos.y() > 0)    Si_PosY =  -Si_PosY_Shift  ;
-   else              Si_PosY =   Si_PosY_Shift  ;
-
-
-   G4ThreeVector Shift = G4ThreeVector(Si_PosX , Si_PosY , 0) ;
-   Det_pos = Det_pos + Shift ;
 /////// Starting Volume Definition ///////
    G4String Name = "ThinSi" + DetectorNumber;
 
@@ -307,7 +289,6 @@ void ThinSi::ReadConfiguration(string Path)
    G4double TLX , BLX , BRX , TRX , TLY , BLY , BRY , TRY , TLZ , BLZ , BRZ , TRZ   ;
    G4ThreeVector TL , BL , BR , TR                                      ;
    G4double Theta = 0 , Phi = 0 , R = 0 , beta_u = 0 , beta_v = 0 , beta_w = 0                     ;
-   bool RightOrLeft = false ;
    bool check_A = false   ;
    bool check_B = false ;
    bool check_C = false   ;
@@ -317,7 +298,6 @@ void ThinSi::ReadConfiguration(string Path)
    bool check_Phi  = false  ;
    bool check_R     = false   ;
    bool check_beta = false  ;
-   bool check_side = false  ;
    bool ReadingStatus = false ;
 
  while (!ConfigFile.eof()) 
@@ -457,14 +437,6 @@ void ThinSi::ReadConfiguration(string Path)
 						beta_w = beta_w * deg   ;
 						G4cout << "Beta:  " << beta_u / deg <<  " " << beta_v / deg << " " << beta_w / deg << G4endl       ;
 					}
-
-					else if (DataBuffer.compare(0, 5, "SIDE=") == 0) {
-							check_side = true  ;
-							ConfigFile >> DataBuffer ;
-							if (DataBuffer == "right") RightOrLeft = true  ;
-							else               RightOrLeft = false  ;
-							G4cout << "Side:  " << DataBuffer << G4endl << G4endl;
-						}
 			      
 			         	///////////////////////////////////////////////////
 						//	If no Detector Token and no comment, toggle out
@@ -474,7 +446,7 @@ void ThinSi::ReadConfiguration(string Path)
 			         	/////////////////////////////////////////////////
 			         	//	If All necessary information there, toggle out
 			         
-			         if ( (check_A && check_B && check_C && check_D) || (check_Theta && check_Phi && check_R && check_beta && check_side) ) 
+			         if ( (check_A && check_B && check_C && check_D) || (check_Theta && check_Phi && check_R && check_beta) ) 
 			         	{ 
 					         	ReadingStatus = false; 
 					         	
@@ -484,8 +456,7 @@ void ThinSi::ReadConfiguration(string Path)
 							            	  AddTelescope(	TL      	,
 							                  				BL    		,
 							                  				BR    		,
-							                  				TR    		,
-							                  				false		);
+							                  				TR    		);
 							         }
 
 						         //with angle method
@@ -495,13 +466,11 @@ void ThinSi::ReadConfiguration(string Path)
 							                  				Phi   		,
 							                  				beta_u   	,
 							                  				beta_v   	,
-							                  				beta_w   	,
-							                  				RightOrLeft	);
+							                  				beta_w   	);
 							         }
 							         
 							        //	Reinitialisation of Check Boolean 
 							        
-									RightOrLeft = false ;
 									check_A = false   ;
 									check_B = false ;
 									check_C = false   ;
@@ -511,7 +480,6 @@ void ThinSi::ReadConfiguration(string Path)
 									check_Phi  = false  ;
 									check_R     = false   ;
 									check_beta = false  ;
-									check_side = false  ;
 									ReadingStatus = false ;
 								         
 			         	}
@@ -600,7 +568,7 @@ void ThinSi::ConstructDetector(G4LogicalVolume* world)
 
 
 
-      VolumeMaker(i + 1 , Det_pos , Det_rot , world, m_RightOrLeft[i]);
+      VolumeMaker(i + 1 , Det_pos , Det_rot , world);
    }
 
    delete Det_rot ;
