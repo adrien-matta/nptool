@@ -60,7 +60,7 @@ void VEventGenerator::RandomGaussian2D(double MeanX,double MeanY,double SigmaX,d
 		 else
 		 	{
 		 		X= MeanX;
-		 		Y= MeanY;
+		 		Y = m_RandomEngine.Gaus( MeanY , SigmaY) ;
 		 	}
 		
 
