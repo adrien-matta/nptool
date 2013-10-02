@@ -30,16 +30,6 @@ int main(int argc,char** argv)
 	DetectorManager* myDetector = new DetectorManager 			;
 	myDetector	->	ReadConfigurationFile(detectorfileName)		;
 	
-	//	Attach more branch to the output
-	double Ex = 0 ; double EE = 0 ; double TT = 0 ; double X = 0 ; double Y = 0 ; int det ;
-	RootOutput::getInstance()->GetTree()->Branch("ExcitationEnergy",&Ex,"Ex/D") ;
-	RootOutput::getInstance()->GetTree()->Branch("E",&EE,"EE/D") ;
-	RootOutput::getInstance()->GetTree()->Branch("A",&TT,"TT/D") ;
-	RootOutput::getInstance()->GetTree()->Branch("X",&X,"X/D") ;
-	RootOutput::getInstance()->GetTree()->Branch("Y",&Y,"Y/D") ;
-	
-	// Get Must2 Pointer:
-	MUST2Array* M2 = (MUST2Array*) myDetector -> m_Detector["MUST2"] ;
 	//	Get the formed Chained Tree and Treat it
 	TChain* Chain = RootInput:: getInstance() -> GetChain()	;
 	int i;	
@@ -51,18 +41,11 @@ int main(int argc,char** argv)
 			myDetector -> ClearEventPhysics()				;
 			myDetector -> BuildPhysicalEvent()				;
 			
+			/************************************************
+						
+			Put your code here
 			
-			double E = M2 -> GetEnergyDeposit();
-			TVector3 A = M2 -> GetPositionOfInteraction();
-			double Theta = ThetaCalculation ( A , TVector3(0,0,1) ) ;
-			if(E>-1000)		Ex = myReaction -> ReconstructRelativistic( E , Theta ) ;
-			else Ex = -100 ;
-			EE = E ; TT = Theta/deg ;
-			if(E>-1000){
-			X = A . X();
-			Y = A . Y();}
-			else{X = -1000 ; Y = -1000;}
-			
+			************************************************/
 			RootOutput::getInstance()->GetTree()->Fill()	;
 		}
 	cout << "A total of " << i << " event has been annalysed " << endl ;
