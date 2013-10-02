@@ -4,14 +4,14 @@ using namespace std;
 
 int main(int argc,char** argv)
 {	
-	
+	 
 	if(argc!=4) 
 		{
 			cout << 
 			"you need to specify both a Reaction file and a Detector file such as : Analysis 	myReaction.reaction myDetector.detector runToRead.run" 
 			<< endl;
 			return 0;
-		}
+		} 
 	
 	string reactionfileName 	= argv[1]	;
 	string detectorfileName 	= argv[2]	;
@@ -44,12 +44,12 @@ int main(int argc,char** argv)
 	RootOutput::getInstance()->GetTree()->Branch("ResolThetaCM",&ResolThetaCM,"ResolThetaCM/D") ;
 	//	Get the formed Chained Tree and Treat it
 	TChain* Chain = RootInput:: getInstance() -> GetChain()	;
-	
+ 	   
 	// Open the ThinSi Branch
 	Chain->SetBranchStatus("ThinSiEnergy",true)	;
 	Chain->SetBranchStatus("InitialConditions",true)	;
-	Chain->SetBranchStatus("fIC_*",true)	;
-
+	Chain->SetBranchStatus("fIC_*",true)	; 
+ 
 	 TInitialConditions* Init = new TInitialConditions();
 	Chain->SetBranchAddress("ThinSiEnergy"		,&ThinSi	);
 	Chain->SetBranchAddress("InitialConditions"	,&Init		);

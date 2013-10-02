@@ -111,17 +111,17 @@ namespace ENERGYLOSS
 														3						);
 		
 			EnergyLoss He3TargetGaz = EnergyLoss 	(	"3He_D2gaz_1b_26K.txt" 	,
-														1000	 				,
+														100000	 				,
 														1						,
 														3						);
 			
 			EnergyLoss He3StripAl   = EnergyLoss 	(	"3He_Al.txt" 			,
-														10					,
+														1000						,
 														1						,
 														3						);
 														
 			EnergyLoss He3StripSi   = EnergyLoss 	(	"3He_Si.txt" 			,
-														10					,
+														1000						,
 														1						,
 														3						);
 	
