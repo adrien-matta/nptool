@@ -46,7 +46,7 @@ namespace THINSI
    // Geometry
    const G4double DetectorSize   	= 68*mm           ;
    const G4double SiliconThickness  = 20*micrometer   ;
-   const G4double FrameThickness    = 1*mm            ;
+   const G4double FrameThickness    = 3*mm            ;
    const G4double SiliconSize    	= 50*mm           ;
    const G4double AluThickness      = 0.4*micrometer  ;
    const G4int  NumberOfStrip    	= 32       		  ;
@@ -589,7 +589,7 @@ void ThinSi::ReadSensitive(const G4Event* event)
 {
    G4String DetectorNumber    ;
    bool  checkSi  = false  ;
-
+   m_Energy = 0 ;
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////// Used to Read Event Map of detector //////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
@@ -597,6 +597,8 @@ void ThinSi::ReadSensitive(const G4Event* event)
 // Si
    std::map<G4int, G4double*>::iterator Energy_itr     ;
    G4THitsMap<G4double>* EnergyHitMap              ;
+
+
 
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////

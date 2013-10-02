@@ -373,10 +373,10 @@ void MUST2Array::AddTelescope(	TVector3 C_X1_Y1 		,
 		NumberOfTelescope++;
 	
 		//	Vector U on Telescope Face (paralelle to Y Strip) (NB: remember that Y strip are allong X axis)
-		TVector3 U = C_X128_Y1 - C_X1_Y1 				;	
-		U = -U.Unit()									;
+		TVector3 U = C_X1_Y1 - C_X128_Y1 				;	
+		U = U.Unit()									;
 		//	Vector V on Telescope Face (parallele to X Strip)
-		TVector3 V = C_X1_Y128 - C_X1_Y1 				;
+		TVector3 V = C_X128_Y128 - C_X128_Y1 				;
 		V = V.Unit()									;
 
 		//	Position Vector of Strip Center

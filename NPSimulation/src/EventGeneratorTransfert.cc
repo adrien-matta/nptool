@@ -334,8 +334,10 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
 	G4double Ydir =  cos( pi/2. - Beam_phiY   )								;
 	G4double Zdir =  sin( pi/2. - Beam_thetaX ) + sin(  pi/2. - Beam_phiY) 	;
 	
+	
 	G4double Beam_theta = acos ( Zdir / sqrt( Xdir*Xdir + Ydir*Ydir + Zdir*Zdir ) );
-	G4double Beam_phi   = atan2( Ydir , Xdir );   
+	
+	G4double Beam_phi   = atan2( Ydir , Xdir ) ;   
 
    // write angles to ROOT file
    m_InitConditions->SetICIncidentAngleTheta(Beam_theta / deg);
@@ -394,8 +396,7 @@ void EventGeneratorTransfert::GenerateEvent(G4Event* anEvent , G4ParticleGun* pa
 
    // write angles/energy to ROOT file
    m_InitConditions->SetICEmittedAngleThetaLabIncidentFrame(ThetaLight / deg);
-   m_InitConditions->SetICEmittedEnergy(EnergyLight);
-
+   m_InitConditions->SetICEmittedEnergy(EnergyLight/MeV);
    //must shoot inside the target.
    G4double z0 = (-m_TargetThickness / 2 + RandFlat::shoot() * m_TargetThickness);
 

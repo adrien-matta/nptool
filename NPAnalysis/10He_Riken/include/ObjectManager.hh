@@ -31,6 +31,7 @@
 #include "NPReaction.h"
 #include "RootInput.h"
 #include "RootOutput.h"
+#include "TInitialConditions.h"
 
 // Use CLHEP System of unit and Physical Constant
 #include "CLHEP/Units/GlobalSystemOfUnits.h"
@@ -104,10 +105,20 @@ namespace ENERGYLOSS
 	{
 	
 		//	Declare your Energy loss here	:
-			EnergyLoss He3Target = EnergyLoss 	(	"3He_Mylar.txt" 	,
-													100 				,
-													1					,
-													3					);
+			EnergyLoss He3TargetWind = EnergyLoss 	(	"3He_Mylar.txt" 	,
+														1000 				,
+														1					,
+														3					);
+		
+			EnergyLoss He3TargetGaz = EnergyLoss 	(	"3He_D2gaz_1b_26K.txt" 	,
+														100 				,
+														1					,
+														3					);
+			
+			EnergyLoss He3StripAl   = EnergyLoss 	(	"3He_Al.txt" 		,
+														100 				,
+														1					,
+														3					);
 	
 	}
 	

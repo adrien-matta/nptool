@@ -53,7 +53,7 @@ namespace NPL
 		   					const;
 		   					
 		   //	Evaluate Initial Energy of particle before crossing material knowing Angle, final Energy 
-		   //   and Target Thickness. Interaction is supposed to be in the middle of Target.
+		   //   and Target Thickness.
 		   double	EvaluateInitialEnergy(	double energy 			, // Energy of the detected particle
 		   									double TargetThickness	, // Target Thickness at 0 degree
 		   									double Angle			) // Particle Angle

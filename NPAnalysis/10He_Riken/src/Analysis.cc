@@ -31,50 +31,131 @@ int main(int argc,char** argv)
 	myDetector	->	ReadConfigurationFile(detectorfileName)		;
 	
 	//	Attach more branch to the output
-	double Ex = 0 ; double EE = 0 ; double TT = 0 ; double X = 0 ; double Y = 0 ; int det ;
+	double ThinSi=-1 ;double Ex = 0 ; double EE = 0 ; double TT = 0 ; double X = 0 ; double Y = 0 ; int det ; double ResolTheta=0;
 	RootOutput::getInstance()->GetTree()->Branch("ExcitationEnergy",&Ex,"Ex/D") ;
 	RootOutput::getInstance()->GetTree()->Branch("E",&EE,"EE/D") ;
 	RootOutput::getInstance()->GetTree()->Branch("A",&TT,"TT/D") ;
 	RootOutput::getInstance()->GetTree()->Branch("X",&X,"X/D") ;
 	RootOutput::getInstance()->GetTree()->Branch("Y",&Y,"Y/D") ;
+	RootOutput::getInstance()->GetTree()->Branch("Y",&Y,"Y/D") ;
+	RootOutput::getInstance()->GetTree()->Branch("ThinSi_E",&ThinSi,"ThinSi/D") ;
 	
-	// Open the ThinSi Branch
-	RootInput::getInstance() -> GetChain()->SetBranchStatus("ThinSiEnergy",true)	;
-	double ThinSi=-1 ;
-	RootInput::getInstance() -> GetChain()->SetBranchAddress("ThinSiEnergy",&ThinSi)	;
-	
-	// Get Must2 Pointer:
-	MUST2Array* M2 = (MUST2Array*) myDetector -> m_Detector["MUST2"] ;
 	//	Get the formed Chained Tree and Treat it
 	TChain* Chain = RootInput:: getInstance() -> GetChain()	;
+	
+	// Open the ThinSi Branch
+	Chain->SetBranchStatus("ThinSiEnergy",true)	;
+	Chain->SetBranchStatus("InitialConditions",true)	;
+	Chain->SetBranchStatus("fIC_*",true)	;
+
+	 TInitialConditions* Init = new TInitialConditions();
+	Chain->SetBranchAddress("ThinSiEnergy"		,&ThinSi	);
+	Chain->SetBranchAddress("InitialConditions"	,&Init		);
+	
+	
+ double TargetX=0 ; double TargetY=0; double BeamTheta = 0 ; double BeamPhi = 0 ;
+double TrueE=0 ; double TrueTheta=0 ;
+
+	// Get Must2 Pointer:
+	MUST2Array* M2 = (MUST2Array*) myDetector -> m_Detector["MUST2"] ;
+	
 	int i;	
 	for ( i = 0 ; i < Chain -> GetEntries() ; i ++ )
 		{
 			if( i%10000 == 0 && i!=0) cout << i << " Event annalysed " << endl ;						
 			Chain -> GetEntry(i);
-			
 			myDetector -> ClearEventPhysics()				;
 			myDetector -> BuildPhysicalEvent()				;
 			
-			
 			double E = M2 -> GetEnergyDeposit();
-			TVector3 A = M2 -> GetPositionOfInteraction();
+			TVector3 HitDirection  = M2 -> GetPositionOfInteraction() - TVector3(Init->GetICPositionX(0),Init->GetICPositionY(0),0);
 			
-			if(ThinSi > 0) E = E + ThinSi ;
-			
-			double Theta = ThetaCalculation ( A , TVector3(0,0,1) ) ;
-			
-			E= He3Target.EvaluateInitialEnergy(	E 					, // Energy of the detected particle
-												15*micrometer		, // Target Thickness at 0 degree
-												Theta				);
+			BeamTheta = Init->GetICIncidentAngleTheta(0)*deg ; BeamPhi = Init->GetICIncidentAnglePhi(0)*deg ; 
 
-			if(E>-1000)		Ex = myReaction -> ReconstructRelativistic( E , Theta ) ;
-			else Ex = -100 ;
+//			TVector3 BeamDirection = TVector3(cos(BeamPhi)*sin(BeamTheta) , sin(BeamPhi)*sin(BeamTheta) , cos(BeamTheta)) ;	
+			TVector3 BeamDirection = TVector3(0,0,1) ;  BeamDirection.SetTheta(BeamTheta) ; BeamDirection.SetPhi(BeamPhi) ;
+			double Theta = ThetaCalculation ( HitDirection , BeamDirection ) ;				
+
+			if(E>-1000 && ThinSi>0 )	
+				{
+						
+						E=E+ThinSi;
+						
+//						E= He3StripAl.EvaluateInitialEnergy(		E 					, // Energy of the detected particle
+//																	2*2*0.4*micrometer	, // One for ThinSi and one for Must
+//																	0					);	
+							
+//						E= He3StripAl.EvaluateInitialEnergy(		E 					, // Energy of the detected particle
+//																	2*0.4*micrometer	, // Target Thickness at 0 degree
+//																	0					);
+//				
+//						E= He3TargetWind.EvaluateInitialEnergy( 	E 					, // Energy of the detected particle
+//																 	2*15*micrometer		, // Target Thickness at 0 degree
+//																	Theta				);
+															
+//						E= He3TargetGaz.EvaluateInitialEnergy(		E 					, // Energy of the detected particle
+//																	3*mm				, // Target Thickness at 0 degree
+//																	Theta				);
+				
+							
+					
+					
+					E=E+ThinSi;
+					
+					Ex = myReaction -> ReconstructRelativistic( E , Theta ) ;	
+					X = HitDirection . X();
+					Y = HitDirection . Y();	
+				}
+				
+			else if(ThinSi>0)
+				{
+				
+//					ThinSi= He3StripAl.EvaluateInitialEnergy(	ThinSi 				, // Energy of the detected particle
+//																2*0.4*micrometer	, // Target Thickness at 0 degree
+//																0					);
+//				
+//					ThinSi= He3TargetWind.EvaluateInitialEnergy( ThinSi 			, // Energy of the detected particle
+//																 2*15*micrometer	, // Target Thickness at 0 degree
+//																 Theta				);
+//															
+//						ThinSi= He3TargetGaz.EvaluateInitialEnergy(	ThinSi 			, // Energy of the detected particle
+//																3*mm				, // Target Thickness at 0 degree
+//																Theta				);
+				 
+					E= ThinSi;
+					
+					Ex = myReaction -> ReconstructRelativistic( E , Theta ) ;	
+					X = HitDirection . X();
+					Y = HitDirection . Y();	
+					
+				}
+			if(E>-1000 )
+				{
+				
+				
+				
+//				E= He3StripAl.EvaluateInitialEnergy(	E 					, // Energy of the detected particle
+//														2*0.4*micrometer	, 
+//														0					);	
+//				
+//				E= He3TargetWind.EvaluateInitialEnergy( E 					, // Energy of the detected particle
+//														2*15*micrometer		, // Target Thickness at 0 degree
+//														Theta				);
+//				
+//				E= He3TargetGaz.EvaluateInitialEnergy(	E 					, // Energy of the detected particle
+//														3*mm				, // Target Thickness at 0 degree
+//														Theta				);
+					
+				ResolTheta = Theta/deg - Init->GetICEmittedAngleThetaLabWorldFrame(0);
+				Ex = myReaction -> ReconstructRelativistic( E, Theta ) ;	
+				X = HitDirection . X();
+				Y = HitDirection . Y();	
+				
+				}	
+				
+			else {Ex=-100 ; X = -100 ; Y = -100 ;}
+								
 			EE = E ; TT = Theta/deg ;
-			if(E>-1000){
-			X = A . X();
-			Y = A . Y();}
-			else{X = -1000 ; Y = -1000;}
 			
 			RootOutput::getInstance()->GetTree()->Fill()	;
 			ThinSi = -1 ;
@@ -89,6 +170,6 @@ int main(int argc,char** argv)
 double ThetaCalculation (TVector3 A , TVector3 B)
 	{
 		double Theta = acos( (A.Dot(B)) / (A.Mag()*B.Mag()) ) ;
-		return Theta ;
+		return Theta*rad ;
 	}
 

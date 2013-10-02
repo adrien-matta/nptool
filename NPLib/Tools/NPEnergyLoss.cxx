@@ -236,7 +236,7 @@ double EnergyLoss::EvaluateInitialEnergy(	double Energy 			, // Energy of the de
 		Energy = Energy / (double) fNumberOfMass ;
 	
 		if (Angle > halfpi) Angle = pi-Angle								;
-		TargetThickness = TargetThickness / ( 2*cos(Angle) ) 				;
+		TargetThickness = TargetThickness / ( cos(Angle) ) 				;
 		double SliceThickness = TargetThickness / (double)fNumberOfSlice 	;
 
 		Interpolator* s = new Interpolator( fEnergy , fdEdX_Total	)		;

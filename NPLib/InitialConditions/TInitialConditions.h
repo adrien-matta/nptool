@@ -94,7 +94,7 @@ public:
    // Vertex of interaction
    Double_t GetICPositionX(Int_t i) 		{return fIC_Position_X.at(i);}
    Double_t GetICPositionY(Int_t i) 		{return fIC_Position_Y.at(i);}
-   Double_t GetICPositionZ(Int_t i)		{return fIC_Position_Z.at(i);}
+   Double_t GetICPositionZ(Int_t i)		    {return fIC_Position_Z.at(i);}
    // Incident particle angles
    Double_t GetICIncidentAngleTheta(Int_t i){return fIC_Incident_Angle_Theta.at(i);}
    Double_t GetICIncidentAnglePhi(Int_t i)	{return fIC_Incident_Angle_Phi.at(i);}
