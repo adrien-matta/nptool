@@ -1,0 +1,5 @@
+NPTool is a free software under the GPL2.0 free softwate licence and may be freely distributed and modified as long as that disclaimer is always attached to it.
+The programs are provided as is without any guarantees or warranty. Although the authors had attempted to find and correct any bugs in the free software programs, the authors are not responsible for any damage or losses of any kind caused by the use or misuse of the programs. The authors are under no obligation to provide support, service, corrections, or upgrades to the free software programs.
+
+
+NPTool uses the Geant4 toolkit for simulation , the cern ROOT analysis framework , the GNU Scientific Library (GSL) and the Class Library for High Energy Physics (CLHEP) and need them to work, therefore it does not include source code from those collaboration, and is not part of them.
