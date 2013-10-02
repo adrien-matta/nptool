@@ -61,7 +61,7 @@ double TrueE=0 ; double TrueTheta=0 ;
 	// Get Must2 Pointer:
 	MUST2Array* M2 = (MUST2Array*) myDetector -> m_Detector["MUST2"] ;
 	
-	int i;	
+	int i;
 	for ( i = 0 ; i < Chain -> GetEntries() ; i ++ )
 		{
 			if( i%10000 == 0 && i!=0) cout << i << " Event annalysed " << endl ;						
@@ -74,8 +74,7 @@ double TrueE=0 ; double TrueTheta=0 ;
 			
 			BeamTheta = Init->GetICIncidentAngleTheta(0)*deg ; BeamPhi = Init->GetICIncidentAnglePhi(0)*deg ; 
 
-//			TVector3 BeamDirection = TVector3(cos(BeamPhi)*sin(BeamTheta) , sin(BeamPhi)*sin(BeamTheta) , cos(BeamTheta)) ;	
-			TVector3 BeamDirection = TVector3(0,0,1) ;  BeamDirection.SetTheta(BeamTheta) ; BeamDirection.SetPhi(BeamPhi) ;
+			TVector3 BeamDirection = TVector3(cos(BeamPhi)*sin(BeamTheta) , sin(BeamPhi)*sin(BeamTheta) , cos(BeamTheta)) ;	
 			double Theta  = ThetaCalculation ( HitDirection , BeamDirection   ) ;				
 			double ThetaN = ThetaCalculation ( HitDirection , TVector3(0,0,1) ) ;
 			double ThetaMM2Surface = ThetaCalculation ( HitDirection , M2 -> GetPositionOfInteraction() );
@@ -85,7 +84,12 @@ double TrueE=0 ; double TrueTheta=0 ;
 						E= He3StripAl.EvaluateInitialEnergy(	E 					, // Energy of the detected particle
 																2*0.4*micrometer	, // Target Thickness at 0 degree
 																ThetaMM2Surface		);
-						E = E + ThinSi ;
+																
+						E= He3StripSi.EvaluateInitialEnergy(	E 					, // Energy of the detected particle
+																20*micrometer		, // Target Thickness at 0 degree
+																ThetaMM2Surface		);																
+					
+//						E = E + ThinSi ;
 						
 						E= He3StripAl.EvaluateInitialEnergy(	E 					, // Energy of the detected particle
 																0.4*micrometer		, // Target Thickness at 0 degree
@@ -133,6 +137,15 @@ double TrueE=0 ; double TrueTheta=0 ;
 
 			else if(E>-1000 )
 				{
+				if(E>18)//CsI are inside a Mylar foil, plus rear alu strip
+				{
+					E= He3TargetWind.EvaluateInitialEnergy( E 					, // Energy of the detected particle
+															3*micrometer		, // Target Thickness at 0 degree
+															ThetaMM2Surface		);
+					E= He3StripAl.EvaluateInitialEnergy(	E 					, // Energy of the detected particle
+															0.4*micrometer		, // Target Thickness at 0 degree
+															ThetaMM2Surface		);
+				}
 			
 				E= He3StripAl.EvaluateInitialEnergy(	E 					, // Energy of the detected particle
 														0.4*micrometer		, // Target Thickness at 0 degree
