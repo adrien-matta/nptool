@@ -1,0 +1,24 @@
+%%%%%%%%%%%%%%%%%%%%%			
+MUST2Array			
+%%%%%%% Telescope 1 %%%%%%%			
+M2Telescope 			
+X1_Y1=		10.85	105.03	146.16
+X1_Y128=	22.8	9.84	175.95
+X128_Y1=	104.09	105.03	108.76
+X128_Y128=	116.04	9.84	138.55
+SI=	1		
+SILI=	0		
+CSI=	1		
+VIS=	all		
+			
+%%%%%%% Telescope 2 %%%%%%%			
+M2Telescope
+	THETA= -130
+	PHI= 0
+	R= 150
+	BETA= 0 0 0
+	SI= 1
+	SILI= 1
+	CSI= 0
+	VIS= all					
+
