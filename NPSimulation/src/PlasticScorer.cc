@@ -12,7 +12,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class old some of the Platic Scorer, shared by different detector.  *
+ *  This class old some of the Platic Scorer.                                *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *****************************************************************************/

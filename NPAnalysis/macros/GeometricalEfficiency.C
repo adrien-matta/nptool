@@ -36,8 +36,10 @@
 #include "TBranch.h"
 #include "TH1F.h"
 
-#include "TInitialConditions.h"
-#include "TInteractionCoordinates.h"
+#include "/home/Adrien/Desktop/NPTool/NPTool.dev/NPLib/include/TInitialConditions.h"
+#include "/home/Adrien/Desktop/NPTool/NPTool.dev/NPLib/include/TInteractionCoordinates.h"
+
+using namespace std ;
 
 void GeometricalEfficiency(const char * fname = "Efficiency_10000")
 {
@@ -65,9 +67,9 @@ void GeometricalEfficiency(const char * fname = "Efficiency_10000")
 
    // Read the TTree
    Int_t nentries = tree->GetEntries();
-   cout << "TTree contains " << nentries << " events" << endl;
+ // cout << "TTree contains " << nentries << " events" << endl;
    for (Int_t i = 0; i < nentries; i++) {
-      if (i%1000 == 0) cout << "Entry " << i << endl;
+      //if (i%1000 == 0) cout << "Entry " << i << endl;
       tree->GetEntry(i);
       // Fill histos
       hEmittTheta->Fill(initCond->GetICEmittedAngleThetaLabWorldFrame(0));

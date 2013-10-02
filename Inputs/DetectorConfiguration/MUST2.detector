@@ -22,3 +22,13 @@ M2Telescope
 	CSI= 0
 	VIS= all					
 
+%%%%%%% Telescope 2 %%%%%%%			
+M2Telescope
+	THETA= -40
+	PHI= 0
+	R= 150
+	BETA= 0 0 0
+	SI= 1
+	SILI= 1
+	CSI= 1
+	VIS= all			

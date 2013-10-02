@@ -43,7 +43,7 @@
 #include "Plastic.hh"
 #include "PlasticScorers.hh"
 #include "RootOutput.h"
-
+using namespace PLASTIC;
 // CLHEP header
 #include "CLHEP/Random/RandGauss.h"
 
@@ -56,7 +56,7 @@ namespace PLASTIC
 {
    // Energy and time Resolution
    const G4double ResoTime    = 4.2      	;// = 10ns of Resolution   //   Unit is MeV/2.35
-   const G4double ResoEnergy  = 0.42   		;// = 1MeV of Resolution   //   Unit is MeV/2.35
+   const G4double ResoEnergy  = 5.0   		;// Resolution in %
 
 }
 
@@ -393,7 +393,7 @@ void Plastic::ReadSensitive(const G4Event* event)
 	            G4double E     = *(Energy_itr->second)      	;
 
 	            if (ETrackID == NTrackID) {
-	                m_Event->SetEnergy(RandGauss::shoot(E, ResoEnergy))    ;
+	                m_Event->SetEnergy(RandGauss::shoot(E, E*ResoEnergy/100./2.35))    ;
 	            }
 	            
 	            Energy_itr++;
@@ -419,8 +419,10 @@ void Plastic::ReadSensitive(const G4Event* event)
     }
     
     // clear map for next event
-    DetectorNumberHitMap    ->clear();
-    EnergyHitMap   			->clear() ;     
+    TimeHitMap				->clear()	;    
+    DetectorNumberHitMap    ->clear()	;
+    EnergyHitMap   			->clear() 	; 
+   
 }
 
 ////////////////////////////////////////////////////////////////
@@ -449,10 +451,10 @@ void Plastic::InitializeMaterial()
 
 
 		   // Plastic
-		   density = 1.243 * g / cm3;
+		   density = 1.032 * g / cm3;
 		   m_MaterialPlastic = new G4Material("Plastic", density, ncomponents = 2);
 		   m_MaterialPlastic->AddElement(H , natoms = 10);
-		   m_MaterialPlastic->AddElement(C  , natoms = 14);
+		   m_MaterialPlastic->AddElement(C  , natoms = 9);
 	
 	}
 

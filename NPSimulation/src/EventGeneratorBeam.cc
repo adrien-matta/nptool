@@ -172,7 +172,7 @@ void EventGeneratorBeam::GenerateEvent(G4Event* anEvent, G4ParticleGun* particle
    G4double y0 = 1000 * cm  ;
    G4double Beam_thetaX = 0  ;
    G4double Beam_phiY   = 0  ;
-   
+
    //shoot inside the target with correlated angle
    if (m_TargetRadius != 0) 
 	   	{
@@ -188,7 +188,6 @@ void EventGeneratorBeam::GenerateEvent(G4Event* anEvent, G4ParticleGun* particle
 	     	RandomGaussian2D( 0 , 0 , 0 , m_SigmaThetaX , x0 , Beam_thetaX );
 	     	RandomGaussian2D( 0 , 0 , 0 , m_SigmaPhiY   , y0 , Beam_phiY   );
 	   	}
-
 	 m_InitConditions->SetICIncidentEmittanceTheta(Beam_thetaX / deg);
      m_InitConditions->SetICIncidentEmittancePhi(Beam_phiY / deg);
 

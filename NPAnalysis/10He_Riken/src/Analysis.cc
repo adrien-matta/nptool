@@ -31,8 +31,8 @@ int main(int argc,char** argv)
 	myDetector	->	ReadConfigurationFile(detectorfileName)		;
 	
 	//	Attach more branch to the output
-	double ThinSi=-1 ;double Ex = 0 ; double EE = 0 ; double TT = 0 ; double X = 0 ; double Y = 0 ; int det ; double ResolThetaCM=0;
-	double ThetaCM=0;
+	double ThinSi=-1 ;double Ex = 0 ; double EE = 0 ; double TT = 0 ; double X = 0 ; double Y = 0 ; int det ; double ResolThetaCM=0; double FullTheta = 0 ;
+	double ThetaCM=0; double EPl=0; double DEPl=0 ;
 	RootOutput::getInstance()->GetTree()->Branch("ExcitationEnergy",&Ex,"Ex/D") ;
 	RootOutput::getInstance()->GetTree()->Branch("E",&EE,"EE/D") ;
 	RootOutput::getInstance()->GetTree()->Branch("A",&TT,"TT/D") ;
@@ -41,6 +41,10 @@ int main(int argc,char** argv)
 	RootOutput::getInstance()->GetTree()->Branch("ThinSi_E",&ThinSi,"ThinSi/D") ;
 	RootOutput::getInstance()->GetTree()->Branch("ThetaCM",&ThetaCM,"ThetaCM/D") ;
 	RootOutput::getInstance()->GetTree()->Branch("ResolThetaCM",&ResolThetaCM,"ResolThetaCM/D") ;
+	RootOutput::getInstance()->GetTree()->Branch("FullTheta",&FullTheta,"FullTheta/D") ;
+	RootOutput::getInstance()->GetTree()->Branch("EPl",&EPl,"EPl/D") ;
+	RootOutput::getInstance()->GetTree()->Branch("DEPl",&DEPl,"DEPl/D") ;
+	
 	//	Get the formed Chained Tree and Treat it
 	TChain* Chain = RootInput:: getInstance() -> GetChain()	;
  	   
@@ -48,11 +52,14 @@ int main(int argc,char** argv)
 	Chain->SetBranchStatus("ThinSiEnergy",true)	;
 	Chain->SetBranchStatus("InitialConditions",true)	;
 	Chain->SetBranchStatus("fIC_*",true)	; 
- 
-	 TInitialConditions* Init = new TInitialConditions();
+ 	Chain->SetBranchStatus("fPlastic_*",true);
+ 		
+	TInitialConditions* Init = new TInitialConditions();
 	Chain->SetBranchAddress("ThinSiEnergy"		,&ThinSi	);
 	Chain->SetBranchAddress("InitialConditions"	,&Init		);
 	
+	TPlasticData* Plastic = new TPlasticData() ;
+	Chain->SetBranchAddress("Plastic",&Plastic	);
 	
  double XTarget=0 ; double YTarget=0; double BeamTheta = 0 ; double BeamPhi = 0 ; double E=-1000;
 
@@ -62,11 +69,26 @@ int main(int argc,char** argv)
 	int i;
 	for ( i = 0 ; i < Chain -> GetEntries() ; i ++ )
 		{
-			if( i%10000 == 0 && i!=0) cout << i << " Event annalysed " << endl ;						
+			if( i%100000 == 0 && i!=0) {cout << i << " Event annalysed "<<endl;	}					
 			Chain -> GetEntry(i);
-			myDetector -> ClearEventPhysics()				;
-			myDetector -> BuildPhysicalEvent()				;
 			
+			// Plastic
+			if(Plastic->GetEnergySize()==2)
+				{
+					DEPl=Plastic->GetEnergy(0);
+					EPl=Plastic->GetEnergy(1);
+				}
+			
+			else
+				{
+					EPl	 =0	;
+					DEPl =0	;
+				}
+				
+			
+	/*		myDetector -> ClearEventPhysics()				;
+			myDetector -> BuildPhysicalEvent()				;
+			FullTheta = Init->GetICEmittedAngleThetaLabWorldFrame(0);
 			E = M2 -> GetEnergyDeposit();
 			XTarget = Init->GetICPositionX(0);
 			YTarget = Init->GetICPositionY(0);
@@ -126,9 +148,9 @@ int main(int argc,char** argv)
 					{
 					if(E>18)//CsI are inside a Mylar foil, plus rear alu strip
 					{
-	//					E= He3TargetWind.EvaluateInitialEnergy( E 					, // Energy of the detected particle
-	//															3*micrometer		, // Target Thickness at 0 degree
-	//															ThetaMM2Surface		);
+						E= He3TargetWind.EvaluateInitialEnergy( E 					, // Energy of the detected particle
+																3*micrometer		, // Target Thickness at 0 degree
+																ThetaMM2Surface		);
 						E= He3StripAl.EvaluateInitialEnergy(	E 					, // Energy of the detected particle
 																0.4*micrometer		, // Target Thickness at 0 degree
 																ThetaMM2Surface		);
@@ -192,7 +214,7 @@ int main(int argc,char** argv)
 				
 								
 			EE = E ; TT = Theta/deg ;
-			
+			*/
 			RootOutput::getInstance()->GetTree()->Fill()	;
 			ThinSi = -1 ;
 		}
