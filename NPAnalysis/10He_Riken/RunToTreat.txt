@@ -1,6 +1,0 @@
-TTreeName 
-	SimulatedTree
-RootFileName 
-	../../Outputs/Simulation/mySimul_0.root
-	../../Outputs/Simulation/mySimul_1.root
-	../../Outputs/Simulation/mySimul_0.root

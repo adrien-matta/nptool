@@ -7,7 +7,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Target
+Target
 	THICKNESS= 1
 	RADIUS=	45
 	MATERIAL= CD2

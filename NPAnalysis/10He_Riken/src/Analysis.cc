@@ -42,7 +42,7 @@ int main(int argc,char** argv)
 	RootOutput::getInstance()->GetTree()->Branch("ThetaCM",&ThetaCM,"ThetaCM/D") ;
 	RootOutput::getInstance()->GetTree()->Branch("ResolThetaCM",&ResolThetaCM,"ResolThetaCM/D") ;
 	//	Get the formed Chained Tree and Treat it
-	TChain* Chain = RootInput:: getInstance() -> GetChain()	;
+	//TChain* Chain = RootInput:: getInstance() -> GetChain()	;
  	   
 	// Open the ThinSi Branch
 	Chain->SetBranchStatus("ThinSiEnergy",true)	;
@@ -68,7 +68,7 @@ int main(int argc,char** argv)
 			myDetector -> BuildPhysicalEvent()				;
 			
 			E = M2 -> GetEnergyDeposit();
-			
+
 			XTarget = RandomEngine.Gaus(Init->GetICPositionX(0),1);
 			YTarget = RandomEngine.Gaus(Init->GetICPositionY(0),1);
 			
@@ -119,29 +119,6 @@ int main(int argc,char** argv)
 					X = HitDirection . X();
 					Y = HitDirection . Y();	
 				}
-				
-//			else if(ThinSi>0)
-//				{
-//				
-////					ThinSi= He3StripAl.EvaluateInitialEnergy(	ThinSi 				, // Energy of the detected particle
-////																2*0.4*micrometer	, // Target Thickness at 0 degree
-////																0					);
-////				
-//					ThinSi= He3TargetWind.EvaluateInitialEnergy( ThinSi 			, // Energy of the detected particle
-//																 15*micrometer	, // Target Thickness at 0 degree
-//																 ThetaN				);
-////															
-////						ThinSi= He3TargetGaz.EvaluateInitialEnergy(	ThinSi 			, // Energy of the detected particle
-////																3*mm				, // Target Thickness at 0 degree
-////																ThetaN				);
-//				 
-//					E= ThinSi;
-//					
-//					Ex = myReaction -> ReconstructRelativistic( E , Theta ) ;	
-//					X = HitDirection . X();
-//					Y = HitDirection . Y();	
-//					
-//				} 
 
 			else if(E>-1000 )
 				{
