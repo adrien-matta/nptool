@@ -24,9 +24,7 @@
 echo " + Copying header files to the include directory....."
 
 # previously, clean include directory
-cd include/
-rm -f *
-cd ../
+rm -f include/*.h
 
 # loop recursively on header files in all directories
 for file in */*.h
@@ -36,5 +34,4 @@ do
 done
 
 # remove include file with *Dict*
-cd include/
-rm -f *Dict*
+rm -f include/*Dict*
