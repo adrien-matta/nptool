@@ -54,8 +54,8 @@ class EventGeneratorTransfert : public VEventGenerator
 		             double BeamEnergySpread  ,
 		             double BeamFWHMX         ,
 		             double BeamFWHMY         ,
-		             double BeamEmmitanceTheta       ,
-		             double BeamEmmitancePhi  ,
+		             double SigmaThetaX       ,
+		             double SigmaPhiY  ,
 		             bool   ShootLight        ,
 		             bool   ShootHeavy        ,
 		             string Path);                     // Path of the differentiel Cross Section
@@ -92,10 +92,10 @@ class EventGeneratorTransfert : public VEventGenerator
 		private: // Beam Parameter
 		   double         m_BeamEnergy ;
 		   double         m_BeamEnergySpread ;
-		   double         m_BeamFWHMX        ;
-		   double         m_BeamFWHMY        ;
-		   double         m_BeamEmmitanceTheta      ;
-		   double         m_BeamEmmitancePhi      ;
+		   double         m_SigmaX        ;
+		   double         m_SigmaY        ;
+		   double         m_SigmaThetaX      ;
+		   double         m_SigmaPhiY      ;
 
 		private: // Target Parameter
 		   double         m_TargetThickness ;
@@ -120,8 +120,8 @@ class EventGeneratorTransfert : public VEventGenerator
 		             double BeamEnergySpread  ,
 		             double BeamFWHMX         ,
 		             double BeamFWHMY         ,
-		             double BeamEmmitanceTheta       ,
-		             double BeamEmmitancePhi  ,
+		             double SigmaThetaX       ,
+		             double SigmaPhiY  ,
 		             bool   ShootLight        ,
 		             bool   ShootHeavy        ,
 		             string Path);                     // Path of the differentiel Cross Section

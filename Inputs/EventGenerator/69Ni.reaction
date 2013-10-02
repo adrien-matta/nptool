@@ -10,10 +10,10 @@ Transfert
 	ExcitationEnergy= 2.0
 	BeamEnergy= 1904
 	BeamEnergySpread= 0
-	BeamFWHMX= 1.5
-	BeamFWHMY= 1.5
-	BeamSpreadX= 0.005
-	BeamSpreadY= 0.005
+	SigmaX= 1.5
+	SigmaY= 1.5
+	SigmaThetaX= 0.005
+	SigmaPhiY= 0.005
 	CrossSectionPath= ./Data/CrossSection/ni69_d5_01.n
 	ShootLight= 1
 	ShootHeavy= 0

@@ -10,9 +10,10 @@ Transfert
 	ExcitationEnergy= 0.0
 	BeamEnergy= 252
 	BeamEnergySpread= 0
-	BeamFWHMX= 2
-	BeamFWHMY= 1.5
-	BeamSpreadX= 0
+	SigmaX= 2
+	SigmaY= 1.5
+	SigmaThetaX= 0
+	SigmaPhiY= 0
 	CrossSectionPath= ../Data/CrossSection/flat.txt
 	ShootLight= 1
 	ShootHeavy= 0

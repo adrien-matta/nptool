@@ -10,10 +10,10 @@ Transfert
 	ExcitationEnergy= 2.0
 	BeamEnergy= 1200
 	BeamEnergySpread= 0
-	BeamFWHMX= 1
-	BeamFWHMY= 1
-	BeamEmmitanceTheta= 0.034
-	BeamEmmitancePhi= 0.01
+	SigmaX= 1
+	SigmaY= 1
+	SigmaThetaX= 0.034
+	SigmaPhiY= 0.01
 	CrossSectionPath= ni69_g7_01.n
 	ShootLight= 1
 	ShootHeavy= 0
