@@ -73,9 +73,9 @@ RootOutput::RootOutput(TString fileNameBase, TString treeNameBase)
   
   pRootTree = new TTree(treeNameBase, "Data created / analyzed with the NPTool package");
   pRootList = new TList();
-
-   // Init TAsciiFile objects
-   InitAsciiFiles();
+  
+  // Init TAsciiFile objects
+  InitAsciiFiles();
 }
 
 
@@ -126,11 +126,13 @@ RootOutput::~RootOutput()
 {
     // The data is written to the file and the tree is closed:
     if (pRootFile && !NPOptionManager::getInstance()->GetPROOF()) {
+      pRootFile->cd();
       cout << endl;
       cout << "Got histograms and Tree !" << endl;
       cout << "  - Number of entries in the Tree: " << pRootTree->GetEntries() << endl;
       cout << "  - Number of bites written to file: " << pRootTree->Write() << endl;
 
+      
       // write TAsciiFile if used
       // EventGenerator
       if (!pEventGenerator->IsEmpty()) pEventGenerator->Write();

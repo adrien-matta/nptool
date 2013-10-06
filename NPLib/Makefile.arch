@@ -31,7 +31,7 @@ OPT           = -g
 OPT2          = -g
 else
 OPT           = -O
-OPT2          = -O2
+OPT2          = -O3
 endif
 endif
 

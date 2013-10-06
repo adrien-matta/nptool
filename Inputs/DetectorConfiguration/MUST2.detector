@@ -1,4 +1,15 @@
-%%%%%%%%%%%%%%%%%%%%%			
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GeneralTarget
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Target
+	THICKNESS= 4.8
+	RADIUS=	5
+	MATERIAL= CD2
+	ANGLE= 0
+	X= 0
+	Y= 0
+	Z= 0
+%%%%%%%%%%%%%%%%%%%%%
 MUST2Array			
 %%%%%%% Telescope 1 %%%%%%%			
 M2Telescope 			

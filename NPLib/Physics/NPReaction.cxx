@@ -324,7 +324,7 @@ void Reaction::ReadConfigurationFile(string Path){
   while (!ReactionFile.eof()) {
     //Pick-up next line
     getline(ReactionFile, LineBuffer);
-    
+
     if (LineBuffer.compare(0, 15, "TwoBodyReaction") == 0) { ReadingStatus = true ;}
     
     
