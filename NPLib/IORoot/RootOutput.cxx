@@ -126,7 +126,6 @@ RootOutput::~RootOutput()
 {
     // The data is written to the file and the tree is closed:
     if (pRootFile && !NPOptionManager::getInstance()->GetPROOF()) {
-      pRootFile->cd();
       cout << endl;
       cout << "Got histograms and Tree !" << endl;
       cout << "  - Number of entries in the Tree: " << pRootTree->GetEntries() << endl;
