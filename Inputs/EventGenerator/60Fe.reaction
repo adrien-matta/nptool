@@ -21,7 +21,7 @@ TwoBodyReaction
 	Heavy= 61Fe
 	ExcitationEnergyHeavy= 0.0
 	ExcitationEnergyLight= 0.0
-  CrossSectionPath= fe61_p3_2gs.n CS
+  CrossSectionPath= fe61_p3_2gs.txt CS
 	ShootLight= 1
 	ShootHeavy= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

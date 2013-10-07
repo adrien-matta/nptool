@@ -23,7 +23,7 @@ TwoBodyReaction
 	Heavy= 69Ni
 	ExcitationEnergyLight= 0.0
 	ExcitationEnergyHeavy= 2.0
-	%CrossSectionPath= ./Data/CrossSection/ni69_d5_01.n CS
+	%CrossSectionPath= ./Data/CrossSection/ni69_d5_01.txt CS
   CrossSectionPath= flat.txt CS
 	ShootLight= 1
 	ShootHeavy= 0
