@@ -60,6 +60,26 @@ class TTiaraBarrelData : public TNamed {
     void Clear();
     void Clear(const Option_t*) {};
     void Dump() const;
+    /////////////////////        FAST SETTERS         ////////////////////////
+    inline void Set_Front_Upstream( const unsigned short& DetNbr , 
+                                    const unsigned short StripNbr , 
+                                    const double& Energy , 
+                                    const double& Time);
+
+    inline void Set_Front_Downstreamm( const unsigned short& DetNbr , 
+                                       const unsigned short StripNbr , 
+                                       const double& Energy , 
+                                       const double& Time);
+
+    inline void Set_Back( const unsigned short& DetNbr , 
+                          const double& Energy , 
+                          const double& Time);
+
+
+    inline void Set_Outer( const unsigned short& DetNbr , 
+                           const unsigned short StripNbr , 
+                           const double& Energy , 
+                           const double& Time);
 
     /////////////////////           SETTERS           ////////////////////////
     inline void Set_Front_Upstream_DetectorNbr(const unsigned short& Front_Upstream_DetectorNbr)
