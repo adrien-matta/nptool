@@ -138,8 +138,8 @@ class TCATSPhysics : public TObject, public NPA::VDetector
    
  public:   // Output data of interest
       //   for a CATS
-	void SetTargetAngle(double m_TargetAngle) {m_TargetAngle = m_TargetAngle;}
-	void SetTargetThickness(double m_TargetThickness) {m_TargetThickness = m_TargetThickness;}
+	void SetTargetAngle(double TargetAngle) {m_TargetAngle = TargetAngle;}
+	void SetTargetThickness(double TargetThickness) {m_TargetThickness = TargetThickness;}
 	
 
       //   Remove bad channel, calibrate the data and apply threshold
