@@ -34,8 +34,10 @@ int main(int argc, char** argv){
   // Initialize NPOptionManager object
   NPOptionManager* OptionManager  = NPOptionManager::getInstance(argc, argv);
   // Test if input files are found. If not, exit
-  if (OptionManager->IsDefault("EventGenerator"))        OptionManager->SendErrorAndExit("EventGenerator");
-  if (OptionManager->IsDefault("DetectorConfiguration")) OptionManager->SendErrorAndExit("DetectorConfiguration");
+  if (OptionManager->IsDefault("EventGenerator"))
+    OptionManager->SendErrorAndExit("EventGenerator");
+  if (OptionManager->IsDefault("DetectorConfiguration"))
+    OptionManager->SendErrorAndExit("DetectorConfiguration");
   // case when input files are here
   G4String EventGeneratorFileName = OptionManager->GetReactionFile();
   G4String DetectorFileName       = OptionManager->GetDetectorFile();

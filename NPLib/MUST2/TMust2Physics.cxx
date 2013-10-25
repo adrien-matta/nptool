@@ -889,13 +889,10 @@ void TMust2Physics::ReadConfiguration(string Path){
         check_A = true;
         ConfigFile >> DataBuffer ;
         Ax = atof(DataBuffer.c_str()) ;
-        Ax = Ax  ;
         ConfigFile >> DataBuffer ;
         Ay = atof(DataBuffer.c_str()) ;
-        Ay = Ay  ;
         ConfigFile >> DataBuffer ;
         Az = atof(DataBuffer.c_str()) ;
-        Az = Az  ;
         
         A = TVector3(Ax, Ay, Az);
         cout << "X1 Y1 corner position : (" << A.X() << ";" << A.Y() << ";" << A.Z() << ")" << endl;
@@ -907,13 +904,10 @@ void TMust2Physics::ReadConfiguration(string Path){
         check_B = true;
         ConfigFile >> DataBuffer ;
         Bx = atof(DataBuffer.c_str()) ;
-        Bx = Bx  ;
         ConfigFile >> DataBuffer ;
         By = atof(DataBuffer.c_str()) ;
-        By = By  ;
         ConfigFile >> DataBuffer ;
         Bz = atof(DataBuffer.c_str()) ;
-        Bz = Bz  ;
         
         B = TVector3(Bx, By, Bz);
         cout << "X128 Y1 corner position : (" << B.X() << ";" << B.Y() << ";" << B.Z() << ")" << endl;
@@ -925,13 +919,10 @@ void TMust2Physics::ReadConfiguration(string Path){
         check_C = true;
         ConfigFile >> DataBuffer ;
         Cx = atof(DataBuffer.c_str()) ;
-        Cx = Cx  ;
         ConfigFile >> DataBuffer ;
         Cy = atof(DataBuffer.c_str()) ;
-        Cy = Cy  ;
         ConfigFile >> DataBuffer ;
         Cz = atof(DataBuffer.c_str()) ;
-        Cz = Cz  ;
         
         C = TVector3(Cx, Cy, Cz);
         cout << "X1 Y128 corner position : (" << C.X() << ";" << C.Y() << ";" << C.Z() << ")" << endl;
@@ -942,13 +933,10 @@ void TMust2Physics::ReadConfiguration(string Path){
         check_D = true;
         ConfigFile >> DataBuffer ;
         Dx = atof(DataBuffer.c_str()) ;
-        Dx = Dx  ;
         ConfigFile >> DataBuffer ;
         Dy = atof(DataBuffer.c_str()) ;
-        Dy = Dy  ;
         ConfigFile >> DataBuffer ;
         Dz = atof(DataBuffer.c_str()) ;
-        Dz = Dz  ;
         
         D = TVector3(Dx, Dy, Dz);
         cout << "X128 Y128 corner position : (" << D.X() << ";" << D.Y() << ";" << D.Z() << ")" << endl;
@@ -962,7 +950,6 @@ void TMust2Physics::ReadConfiguration(string Path){
         check_Theta = true;
         ConfigFile >> DataBuffer ;
         Theta = atof(DataBuffer.c_str()) ;
-        Theta = Theta ;
         cout << "Theta:  " << Theta << endl;
         
       }
@@ -972,7 +959,6 @@ void TMust2Physics::ReadConfiguration(string Path){
         check_Phi = true;
         ConfigFile >> DataBuffer ;
         Phi = atof(DataBuffer.c_str()) ;
-        Phi = Phi ;
         cout << "Phi:  " << Phi << endl;
         
       }
@@ -982,7 +968,6 @@ void TMust2Physics::ReadConfiguration(string Path){
         check_R = true;
         ConfigFile >> DataBuffer ;
         R = atof(DataBuffer.c_str()) ;
-        R = R ;
         cout << "R:  " << R << endl;
         
       }
@@ -992,13 +977,10 @@ void TMust2Physics::ReadConfiguration(string Path){
         check_beta = true;
         ConfigFile >> DataBuffer ;
         beta_u = atof(DataBuffer.c_str()) ;
-        beta_u = beta_u    ;
         ConfigFile >> DataBuffer ;
         beta_v = atof(DataBuffer.c_str()) ;
-        beta_v = beta_v    ;
         ConfigFile >> DataBuffer ;
         beta_w = atof(DataBuffer.c_str()) ;
-        beta_w = beta_w    ;
         cout << "Beta:  " << beta_u << " " << beta_v << " " << beta_w << endl  ;
         
       }
