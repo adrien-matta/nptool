@@ -61,25 +61,37 @@ class TTiaraBarrelData : public TNamed {
     void Clear(const Option_t*) {};
     void Dump() const;
     /////////////////////        FAST SETTERS         ////////////////////////
-    inline void Set_Front_Upstream( const unsigned short& DetNbr , 
-        const unsigned short StripNbr , 
-        const double& Energy , 
-        const double& Time);
+    inline void Set_Front_Upstream(const unsigned short& DetNbr , const unsigned short& StripNbr , const double& Energy , const double& Time){
+      Set_Front_Upstream_DetectorNbr(DetNbr);
+      Set_Front_Upstream_StripNbr(StripNbr);
+      Set_Front_Upstream_Energy(Energy);
+      Set_Front_Upstream_Time(Time);
+    }
+    ///////////////////// 
+    inline void Set_Front_Downstreamm( const unsigned short& DetNbr , const unsigned short& StripNbr , const double& Energy , const double& Time){
 
-    inline void Set_Front_Downstreamm( const unsigned short& DetNbr , 
-        const unsigned short StripNbr , 
-        const double& Energy , 
-        const double& Time);
+      Set_Front_Downstream_DetectorNbr(DetNbr);
+      Set_Front_Downstream_StripNbr(StripNbr);
+      Set_Front_Downstream_Energy(Energy);
+      Set_Front_Downstream_Time(Time);
+    }
+    
+    ///////////////////// 
+    inline void Set_Back( const unsigned short& DetNbr , const double& Energy , const double& Time){
 
-    inline void Set_Back( const unsigned short& DetNbr , 
-        const double& Energy , 
-        const double& Time);
+      Set_Back_DetectorNbr(DetNbr);
+      Set_Back_Energy(Energy);
+      Set_Back_Time(Time);
+    }
 
+    ///////////////////// 
+    inline void Set_Outer( const unsigned short& DetNbr , const unsigned short StripNbr, const double& Energy , const double& Time){
 
-    inline void Set_Outer( const unsigned short& DetNbr , 
-        const unsigned short StripNbr , 
-        const double& Energy , 
-        const double& Time);
+      Set_Outer_DetectorNbr(DetNbr);
+      Set_Outer_StripNbr(StripNbr);
+      Set_Outer_Energy(Energy);
+      Set_Outer_Time(Time);
+    }
 
     /////////////////////           SETTERS           ////////////////////////
     inline void Set_Front_Upstream_DetectorNbr(const unsigned short& Front_Upstream_DetectorNbr)
