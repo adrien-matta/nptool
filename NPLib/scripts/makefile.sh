@@ -27,9 +27,9 @@
 #! /bin/bash
 
 if [ $# = 0 ] ; then
-   echo " + Building detector libraries....."
+   printf " + Building detector libraries.....\n"
 else
-   echo " + Cleaning $2 libraries....."
+   printf " + Cleaning $2 libraries.....\n"
 fi ;
 
 # read .detector_libs or .core_libs file created by the configure script
@@ -47,9 +47,9 @@ do
    # file name in lower case
    lname=$(echo "$name"  | tr '[A-Z]' '[a-z]')
    # only build defined detector libraries
-   if echo "$detectorlibs" | grep -q "$lname" ; then
+   if printf  "$detectorlibs" | grep -q "$lname" ; then
       # print informations
-      echo "\011Entering $name directory..."
+      printf "\tEntering $name directory...\n"
       # add "-C ./" pattern at the beginning of the name
       cmd="-C ./$name"
       # execute make command with target specified on command line

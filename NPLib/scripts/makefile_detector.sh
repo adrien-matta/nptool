@@ -28,19 +28,19 @@
 
 
 # build message 
-echo -e "\t@echo \"Entering $1 directory...\"" >> $2
+printf  "\t@echo \"Entering $1 directory...\"" >> $2
 # execute make command with target specified on command line
-echo -e "\tmake --silent -C ./$1" >> $2
+printf  "\tmake --silent -C ./$1" >> $2
 # copy header files
-echo -e "\tcd $1; cp -f *.h ../include" >> $2
+printf  "\tcd $1; cp -f *.h ../include" >> $2
 # remove *Dict header files
-echo -e "\tcd include; rm *Dict.h" >> $2
+printf  "\tcd include; rm *Dict.h" >> $2
 # copy library files
-echo -e "\tcd $1; cp -f *.so ../lib" >> $2
+printf  "\tcd $1; cp -f *.so ../lib" >> $2
 # deal with mac osx dylib files
 #echo "ifeq (\$(findstring macosx, \$(ARCH)), macosx)" >> $2
 #echo "\t@echo \"to be done\""
 #echo "endif" >> $2
 # newline
-echo "" >> $2
+printf "" >> $2
 
