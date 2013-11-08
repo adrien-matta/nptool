@@ -10,7 +10,7 @@
 /*****************************************************************************
  * Original Author: Adrien MATTA  contact address: a.matta@surrey.ac.uk      *
  *                                                                           *
- * Creation Date  : November 2012                                            *
+ * Creation Date  : November 2013                                            *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
@@ -32,6 +32,16 @@ using namespace std ;
 #include "TNamed.h"
 
 class TTiaraHyballData : public TNamed {
+  
+  public: 
+    TTiaraHyballData();
+    ~TTiaraHyballData();
+ 
+  public:
+    void Clear();
+    void Clear(const Option_t*) {};
+    void Dump() const;
+
   private:
     vector<unsigned short>   fTiaraHyball_Ring_DetectorNbr;
     vector<unsigned short>   fTiaraHyball_Ring_StripNbr;
@@ -45,49 +55,61 @@ class TTiaraHyballData : public TNamed {
 
     ///////////// Fast Setters ////////////////////
   public:
+     inline void Set_Ring(const unsigned short& DetNbr, const unsigned short& StripNbr, const double& Energy, const double& Time){
+      Set_Ring_DetectorNbr(DetNbr);
+      Set_Ring_StripNbr(StripNbr);
+      Set_Ring_Energy(Energy);
+      Set_Ring_Time(Time);
+    };
 
+   inline void Set_Sector(const unsigned short& DetNbr, const unsigned short& StripNbr, const double& Energy, const double& Time){
+      Set_Sector_DetectorNbr(DetNbr);
+      Set_Sector_StripNbr(StripNbr);
+      Set_Sector_Energy(Energy);
+      Set_Sector_Time(Time);
+    };
 
 
     ///////////// Getter and Setter ////////////////
   public:
-    inline void Set_Ring_DetectorNbr(unsigned short& Ring_DetectorNbr)
+    inline void Set_Ring_DetectorNbr(const unsigned short& Ring_DetectorNbr)
     {fTiaraHyball_Ring_DetectorNbr.push_back(Ring_DetectorNbr);}
-    inline unsigned short Get_Ring_DetectorNbr(unsigned int& i)
+    inline unsigned short Get_Ring_DetectorNbr(const unsigned int& i) const 
     {return fTiaraHyball_Ring_DetectorNbr[i];}
 
-    inline void Set_Ring_StripNbr(unsigned short& Ring_StripNbr)
+    inline void Set_Ring_StripNbr(const unsigned short& Ring_StripNbr)
     {fTiaraHyball_Ring_StripNbr.push_back(Ring_StripNbr);}
-    inline unsigned short Get_Ring_StripNbr(unsigned int& i)
+    inline unsigned short Get_Ring_StripNbr(const unsigned int& i) const 
     {return fTiaraHyball_Ring_StripNbr[i];}
 
-    inline void Set_Ring_Energy(double& Ring_Energy)
+    inline void Set_Ring_Energy(const double& Ring_Energy)
     {fTiaraHyball_Ring_Energy.push_back(Ring_Energy);}
-    inline double Get_Ring_Energy(unsigned int& i)
+    inline double Get_Ring_Energy(const unsigned int& i) const 
     {return fTiaraHyball_Ring_Energy[i];}
 
-    inline void Set_Ring_Time(double& Ring_Time)
+    inline void Set_Ring_Time(const double& Ring_Time)
     {fTiaraHyball_Ring_Time.push_back(Ring_Time);}
-    inline double Get_Ring_Time(unsigned int& i)
+    inline double Get_Ring_Time(const unsigned int& i) const 
     {return fTiaraHyball_Ring_Time[i];}
 
-    inline void Set_Sector_DetectorNbr(unsigned short& Sector_DetectorNbr)
+    inline void Set_Sector_DetectorNbr(const unsigned short& Sector_DetectorNbr)
     {fTiaraHyball_Sector_DetectorNbr.push_back(Sector_DetectorNbr);}
-    inline unsigned short Get_Sector_DetectorNbr(unsigned int& i)
+    inline unsigned short Get_Sector_DetectorNbr(const unsigned int& i) const
     {return fTiaraHyball_Sector_DetectorNbr[i];}
 
-    inline void Set_Sector_StripNbr(unsigned short& Sector_StripNbr)
+    inline void Set_Sector_StripNbr(const unsigned short& Sector_StripNbr)
     {fTiaraHyball_Sector_StripNbr.push_back(Sector_StripNbr);}
-    inline unsigned short Get_Sector_StripNbr(unsigned int& i)
+    inline unsigned short Get_Sector_StripNbr(const unsigned int& i) const
     {return fTiaraHyball_Sector_StripNbr[i];}
 
-    inline void Set_Sector_Energy(double& Sector_Energy)
+    inline void Set_Sector_Energy(const double& Sector_Energy)
     {fTiaraHyball_Sector_Energy.push_back(Sector_Energy);}
-    inline double Get_Sector_Energy(unsigned int& i)
+    inline double Get_Sector_Energy(const unsigned int& i) const
     {return fTiaraHyball_Sector_Energy[i];}
 
-    inline void Set_Sector_Time(double& Sector_Time)
+    inline void Set_Sector_Time(const double& Sector_Time)
     {fTiaraHyball_Sector_Time.push_back(Sector_Time);}
-    inline double Get_Sector_Time(unsigned int& i)
+    inline double Get_Sector_Time(const unsigned int& i) const 
     {return fTiaraHyball_Sector_Time[i];}
 
 

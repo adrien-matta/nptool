@@ -9,13 +9,20 @@ all:            $(SHARELIB)
 ############### Detector ##############
 
 ## Sharc ##
-libTiara.so:	TTiaraBarrelData.o	TTiaraBarrelDataDict.o
+libTiara.so:	TTiaraBarrelData.o	TTiaraBarrelDataDict.o TTiaraHyballData.o	TTiaraHyballDataDict.o
+
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TTiaraBarrelDataDict.cxx:	TTiaraBarrelData.h
 			rootcint -f $@ -c $^
+
+TTiaraHyballDataDict.cxx:	TTiaraHyballData.h
+			rootcint -f $@ -c $^
+
 # dependances
 TTiaraBarrelData.o:		TTiaraBarrelData.cxx	TTiaraBarrelData.h
+TTiaraHyballData.o:		TTiaraHyballData.cxx	TTiaraHyballData.h
+
 #######################################
 
 ############# Clean and More ##########
