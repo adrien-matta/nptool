@@ -108,6 +108,10 @@
 #include "Tigress.hh"
 #endif
 
+#ifdef INC_TIARA
+#include "Tiara.hh"
+#endif
+
 #ifdef INC_W1
 #include "W1.hh"
 #endif
@@ -237,6 +241,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
   bool cSharc            = false;
   bool cShield           = false;
   bool cTigress          = false;
+  bool cTiara            = false;
   bool cW1               = false;
   bool cHelios           = false;
   
@@ -535,6 +540,28 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
       AddDetector(myDetector);
 #endif
     }
+  
+    ////////////////////////////////////////////
+    ////////// Search for Tiara      ///////////
+    ////////////////////////////////////////////
+    else if (LineBuffer.compare(0,5, "Tiara") == 0 && cTiara == false) {
+#ifdef INC_TIARA
+      cTiara = true ;
+      if(VerboseLevel==1) cout << endl << "//////// Tiara ////////" << endl << endl   ;
+      
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector = new Tiara();
+      
+      // Read Position of detector
+      ConfigFile.close();
+      myDetector->ReadConfiguration(Path);
+      ConfigFile.open(Path.c_str());
+      
+      // Add array to the VDetector Vector
+      AddDetector(myDetector);
+#endif
+    }
+
 
     ////////////////////////////////////////////
     ////////// Search for Plastic    ///////////

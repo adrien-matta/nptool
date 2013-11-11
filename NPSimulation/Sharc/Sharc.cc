@@ -579,7 +579,9 @@ void Sharc::ConstructQQQDetector(G4LogicalVolume* world){
                                 QQQ_Wafer_Starting_Phi,
                                 QQQ_Wafer_Stopping_Phi*0.5);
     
-    G4SubtractionSolid* PCB = new G4SubtractionSolid("PCB", PCBFull, WaferShape,new G4RotationMatrix,G4ThreeVector(0, 0,0));
+    G4SubtractionSolid* PCB = 
+      new G4SubtractionSolid("PCB", PCBFull, WaferShape,new G4RotationMatrix,
+                              G4ThreeVector(0, 0,0));
     
     // Master Volume
     G4LogicalVolume* logicQQQDetector =

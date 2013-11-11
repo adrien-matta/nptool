@@ -26,6 +26,8 @@
 //G4 Geometry object
 #include "G4Box.hh"
 #include "G4Tubs.hh"
+#include "G4Cons.hh"
+#include "G4UnionSolid.hh" 
 
 //G4 sensitive
 #include "G4SDManager.hh"
@@ -85,26 +87,8 @@ void Tiara::ReadConfiguration(string Path){
   string LineBuffer             ;
   string DataBuffer             ;
   
-  G4double R,Phi,Thickness,Thickness1,Thickness2,Thickness3,Thickness4,ThicknessPAD1,ThicknessPAD2,ThicknessPAD3,ThicknessPAD4,Z;
-  R=Phi=Thickness=Thickness1=Thickness2=Thickness3=Thickness4=ThicknessPAD1=ThicknessPAD2=ThicknessPAD3=ThicknessPAD4=Z=0;
-  
-  G4ThreeVector Pos;
-  bool check_R   = false ;
-  bool check_Phi = false ;
-  bool check_Thickness   = false ;
-  bool check_Thickness1   = false ;
-  bool check_Thickness2   = false ;
-  bool check_Thickness3   = false ;
-  bool check_Thickness4   = false ;
-  bool check_PAD1   = false ;
-  bool check_PAD2   = false ;
-  bool check_PAD3   = false ;
-  bool check_PAD4   = false ;
-  bool check_Z      = false ;
-  
-  bool ReadingStatusQQQ = false ;
-  bool ReadingStatusBOX = false ;
-  bool ReadingStatus    = false ;
+
+
   while (!ConfigFile.eof()){
     int VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
     
@@ -118,185 +102,31 @@ void Tiara::ReadConfiguration(string Path){
       //   Comment Line
       if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
       
-      //   CD case
-      if (DataBuffer=="TiaraQQQ"){
+      // Tiara Chamber
+      if (DataBuffer=="TiaraChambe="){
         if(VerboseLevel==1) G4cout << "///" << G4endl           ;
-        if(VerboseLevel==1) G4cout << "QQQ Quadrant found: " << G4endl   ;
-        ReadingStatusQQQ = true ;
+        if(VerboseLevel==1) G4cout << "Chamber Found:: " << G4endl   ;
+        bool bool_Chamber;
+        ConfigFile >> bool_Chamber;
       }
       
-      //  Box case
-      else if (DataBuffer=="TiaraBOX"){
+      //  Barrel case
+      else if (DataBuffer=="TiaraBarrel"){
         if(VerboseLevel==1) G4cout << "///" << G4endl           ;
-        if(VerboseLevel==1) G4cout << "Box Detector found: " << G4endl   ;
-        ReadingStatusBOX = true ;
+        if(VerboseLevel==1) G4cout << "Barrel found: " << G4endl   ;
+       // ReadingStatusBOX = true ;
       }
       
-      //   Reading Block
-      while(ReadingStatusQQQ){
-        // Pickup Next Word
-        ConfigFile >> DataBuffer ;
-        
-        //   Comment Line
-        if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
-        
-        //Position method
-        else if (DataBuffer == "Z=") {
-          check_Z = true;
-          ConfigFile >> DataBuffer ;
-          Z= atof(DataBuffer.c_str())*mm;
-          if(VerboseLevel==1) cout << "  Z= " << Z/mm << "mm" << endl;
-        }
-        
-        else if (DataBuffer == "R=") {
-          check_R = true;
-          ConfigFile >> DataBuffer ;
-          R= atof(DataBuffer.c_str())*mm;
-          if(VerboseLevel==1) cout << "  R= " << R/mm << "mm" << endl;
-        }
-        
-        else if (DataBuffer == "Phi=") {
-          check_Phi = true;
-          ConfigFile >> DataBuffer ;
-          Phi= atof(DataBuffer.c_str())*deg;
-          if(VerboseLevel==1) cout << "  Phi= " << Phi/deg << "deg" << endl;
-        }
-        
-        else if (DataBuffer == "ThicknessDector=") {
-          check_Thickness = true;
-          ConfigFile >> DataBuffer ;
-          Thickness= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessDetector= " << Thickness/um << "um" << endl;
-        }
-        
-        ///////////////////////////////////////////////////
-        //   If no Detector Token and no comment, toggle out
-        else{
-          ReadingStatusQQQ = false;
-          G4cout << "Error: Wrong Token Sequence: Getting out " << DataBuffer << G4endl ;
-          exit(1);
-        }
-        
-        /////////////////////////////////////////////////
-        //   If All necessary information there, toggle out
-        
-        if (check_R && check_Phi && check_Z && check_Thickness){
-          
-          ReadingStatusQQQ = false;
-          AddQQQDetector(G4ThreeVector(R,Phi,Z),Thickness);
-          //   Reinitialisation of Check Boolean
-          check_R   = false ;
-          check_Phi = false ;
-          check_Thickness = false ;
-        }
-        
-      }
-      
-      while(ReadingStatusBOX){
-        // Pickup Next Word
-        ConfigFile >> DataBuffer ;
-        
-        //   Comment Line
-        if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
-        
-        //Position method
-        else if (DataBuffer == "Z=") {
-          check_Z = true;
-          ConfigFile >> DataBuffer ;
-          Z= atof(DataBuffer.c_str())*mm;
-          if(VerboseLevel==1) cout << "  Z= " << Z/mm << "mm" << endl;
-        }
-        
-        else if (DataBuffer == "ThicknessDector1=") {
-          check_Thickness1 = true;
-          ConfigFile >> DataBuffer ;
-          Thickness1= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessDetector1= " << Thickness1/um << "um" << endl;
-        }
-        
-        else if (DataBuffer == "ThicknessDector2=") {
-          check_Thickness2 = true;
-          ConfigFile >> DataBuffer ;
-          Thickness2= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessDetector2= " << Thickness2/um << "um" << endl;
-        }
-        
-        else if (DataBuffer == "ThicknessDector3=") {
-          check_Thickness3 = true;
-          ConfigFile >> DataBuffer ;
-          Thickness3= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessDetector3= " << Thickness3/um << "um" << endl;
-        }
-        
-        else if (DataBuffer == "ThicknessDector4=") {
-          check_Thickness4 = true;
-          ConfigFile >> DataBuffer ;
-          Thickness4= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessDetector4= " << Thickness4/um << "um" << endl;
-        }
-        
-        else if (DataBuffer == "ThicknessPAD1=") {
-          check_PAD1 = true;
-          ConfigFile >> DataBuffer ;
-          ThicknessPAD1= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessPAD1= " << ThicknessPAD1<< "um"  << endl;
-        }
-        
-        else if (DataBuffer == "ThicknessPAD2=") {
-          check_PAD2 = true;
-          ConfigFile >> DataBuffer ;
-          ThicknessPAD2= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessPAD2= " << ThicknessPAD2<< "um"  << endl;
-        }
-        
-        else if (DataBuffer == "ThicknessPAD3=") {
-          check_PAD3 = true;
-          ConfigFile >> DataBuffer ;
-          ThicknessPAD3= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessPAD3= " << ThicknessPAD3<< "um"  << endl;
-        }
-        
-        else if (DataBuffer == "ThicknessPAD4=") {
-          check_PAD4 = true;
-          ConfigFile >> DataBuffer ;
-          ThicknessPAD4= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessPAD4= " << ThicknessPAD4<< "um"  << endl;
-        }
-        
-        ///////////////////////////////////////////////////
-        //   If no Detector Token and no comment, toggle out
-        else{
-          ReadingStatusBOX = false;
-          G4cout << "Error: Wrong Token Sequence: Getting out " << DataBuffer << G4endl ;
-          exit(1);
-        }
-        
-        /////////////////////////////////////////////////
-        //   If All necessary information there, toggle out
-        
-        if (check_Thickness1 && check_Thickness2 && check_Thickness3 && check_Thickness4
-            && check_PAD1 && check_PAD2 && check_PAD3 && check_PAD4
-            && check_Z){
-          ReadingStatusBOX = false;
-          AddBoxDetector(Z,Thickness1,Thickness2,Thickness3,Thickness4,
-                         ThicknessPAD1,ThicknessPAD2,ThicknessPAD3,ThicknessPAD4);
-          //   Reinitialisation of Check Boolean
-          check_R = false ;
-          check_Phi = false ;
-          check_Thickness1 = false;
-          check_Thickness2 = false;
-          check_Thickness3 = false;
-          check_Thickness4 = false;
-          check_PAD1 = false;
-          check_PAD2 = false;
-          check_PAD3 = false;
-          check_PAD4 = false;
-          check_Z = false ;
-          
-        }
-      }
+      // Hyball case
+      else if (DataBuffer=="TiaraHyball")  
+        if(VerboseLevel==1) G4cout << "///" << G4endl           ;
+        if(VerboseLevel==1) G4cout << "Hyball  found: " << G4endl   ;
+       
     }
-  }*/
+  }
+
+
+*/
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -304,9 +134,10 @@ void Tiara::ReadConfiguration(string Path){
 // Called After DetecorConstruction::AddDetector Method
 void Tiara::ConstructDetector(G4LogicalVolume* world){
 
-}
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+ ConstructChamber(world);
+
+}
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
 void Tiara::ReadSensitive(const G4Event* event){
@@ -321,4 +152,97 @@ void Tiara::InitializeScorers(){
 void Tiara::InitializeRootOutput(){
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void Tiara::ConstructChamber(G4LogicalVolume* world){
+  // Vaccum Chamber of Tiara
+  // The chamber is made of a central cylinder surrounding the barrel Si
+  // Two Cone that expeand out of the central cylinder to let room for Exogam
+  // Two outer cylinder surrounding Hyball
+  // Hyball is hold on a back plate that close the Diabolo Shaped Chamber
+
+
+  // Geometry Information to be moved in Tiara Name Space //
+  // Central Tube
+  G4double CHAMBER_CentralTube_Inner_Radius = 4.86*cm;	//4.05->Original Value for the Single stage barrel
+  G4double CHAMBER_CentralTube_Outer_Radius = 5.05*cm;	//4.25->Original Value for the Single stage barrel
+  G4double CHAMBER_CentralTube_Length = 4.12*cm;
+  
+  // Outer Cone
+  G4double CHAMBER_OuterCone_Length = 4.94*cm;
+  G4double CHAMBER_OuterCone_Z_Pos = 9.06*cm;
+
+  // Outer Cylinder
+  G4double CHAMBER_OuterCylinder_Inner_Radius = 24.6*cm;
+  G4double CHAMBER_OuterCylinder_Outer_Radius = 25.0*cm;
+  G4double CHAMBER_OuterCylinder_Length = 6.04*cm;
+  G4double CHAMBER_OuterCylinder_Z_Pos = 19.96*cm;
+
+  // Material to be moved in a Material Function //
+  // Al
+  G4double density = 2.702*g/cm3;
+  G4double a = 26.98*g/mole;
+  G4Material* Aluminium = new G4Material("Aluminium", 13., a, density);
+
+  // Making the Chamber //
+  // We make the individual pieces, starting from the inside to the outside 
+  // Then we merge them together using the a G4AdditionSolid
+  // The whole chamber is then placed 
+ 
+  //  Central Tube
+  G4Tubs* solidCentralTube = 
+    new G4Tubs("TiaraChamberCentralTube",CHAMBER_CentralTube_Inner_Radius,
+               CHAMBER_CentralTube_Outer_Radius,CHAMBER_CentralTube_Length,
+               0*deg,360*deg);
+ 
+  // Forward-Backward Cones
+  G4Cons* solidOuterCone = 
+    new G4Cons("TiaraChamberOuterCone",CHAMBER_CentralTube_Inner_Radius,
+                CHAMBER_CentralTube_Outer_Radius,CHAMBER_OuterCylinder_Inner_Radius,
+                CHAMBER_OuterCylinder_Outer_Radius,CHAMBER_OuterCone_Length,
+                0*deg,360*deg);
+ 
+  // Outer Cylinder
+  G4Tubs* solidOuterCylinder = 
+    new G4Tubs("TiaraChamberOuterCylinder",CHAMBER_OuterCylinder_Inner_Radius,
+                CHAMBER_OuterCylinder_Outer_Radius,CHAMBER_OuterCylinder_Length,
+                0*deg,360*deg);
+
+  // Add the volume together
+  G4UnionSolid* solidTiaraChamberStep1 =
+    new G4UnionSolid("TiaraChamber", solidCentralTube, solidOuterCone,
+                     new G4RotationMatrix,
+                     G4ThreeVector(0,0,CHAMBER_OuterCone_Z_Pos)); 
+
+  G4UnionSolid* solidTiaraChamberStep2 =
+    new G4UnionSolid("TiaraChamber", solidTiaraChamberStep1, solidOuterCone,
+                     new G4RotationMatrix(0,180*deg,0),
+                     G4ThreeVector(0,0,-CHAMBER_OuterCone_Z_Pos)); 
+  
+  G4UnionSolid* solidTiaraChamberStep3 =
+    new G4UnionSolid("TiaraChamber", solidTiaraChamberStep2, solidOuterCylinder,
+                     new G4RotationMatrix,
+                     G4ThreeVector(0,0,CHAMBER_OuterCylinder_Z_Pos)); 
+
+  G4UnionSolid* solidTiaraChamberStep4 =
+    new G4UnionSolid("TiaraChamber", solidTiaraChamberStep3, solidOuterCylinder,
+                     new G4RotationMatrix,
+                     G4ThreeVector(0,0,-CHAMBER_OuterCylinder_Z_Pos)); 
+
+   // Create Logic Volume
+    G4LogicalVolume* logicTiaraChamber =
+    new G4LogicalVolume(solidTiaraChamberStep4,Aluminium,"logicTiaraChamber", 0, 0, 0);
+
+    // Visual Attribute
+    G4VisAttributes* ChamberVisAtt
+    = new G4VisAttributes(G4Colour(0.6,0.6,0.6));
+
+    ChamberVisAtt->SetForceWireframe(true);
+    ChamberVisAtt->SetForceAuxEdgeVisible (true);
+    logicTiaraChamber->SetVisAttributes(ChamberVisAtt);
+
+  // Place the whole chamber
+  new G4PVPlacement(new G4RotationMatrix(0,0,0), G4ThreeVector(0,0,0),
+                      logicTiaraChamber,"TiaraChamber",world,false,0);
+
+}
 
