@@ -226,8 +226,9 @@ ifeq ($(ARCH),macosx64)
 # Only specific option (-m64) comes from root-config
 MACOSX_MINOR := $(shell sw_vers | sed -n 's/ProductVersion://p' | cut -d . -f 2)
 MACOSXTARGET := MACOSX_DEPLOYMENT_TARGET=10.$(MACOSX_MINOR)
-CXX           = clang++
-LDFLAGS       = $(OPT2) -bind_at_load -e start
+CXX           = $(ALTCXX)
+LD						= $(ALTLD)
+LDFLAGS       = $(OPT2) $(ROOTLDFLAGS) 
 # The SOFLAGS will be used to create the .dylib,
 # the .so will be created separately
 ifeq ($(subst $(MACOSX_MINOR),,1234),1234)
