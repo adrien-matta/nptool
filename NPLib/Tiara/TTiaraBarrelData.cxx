@@ -108,49 +108,74 @@ void TTiaraBarrelData::Clear(){
 
 /////////////////////////
 void TTiaraBarrelData::Dump() const{
-/*  cout << "************* TTiaraBarrelData Event ************"<< endl;
+  cout << "************* TTiaraBarrelData Event ************"<< endl;
   cout << "*** Inner Barrel Front Upstream ***" << endl ;
-  for( unsigned int i = 0; i < fTiaraBarrel_Front_Upstream_DetectorNbr.size(); i ++){
+  for( unsigned int i = 0; i < fTiaraBarrel_FrontUpstreamE_DetectorNbr.size(); i ++){
     cout << "Detector Number = " 
-      << fTiaraBarrel_Front_Upstream_DetectorNbr[i] << endl ;
+      << fTiaraBarrel_FrontUpstreamE_DetectorNbr[i] << " | " ;
     cout << "Strip Number = " 
-      << fTiaraBarrel_Front_Upstream_StripNbr[i] << endl;
+      << fTiaraBarrel_FrontUpstreamE_StripNbr[i] << " | ";
     cout << "Energy = " 
-      << fTiaraBarrel_Front_Upstream_Energy[i]<< endl ;
+      << fTiaraBarrel_FrontUpstreamE_Energy[i]<< endl ;
+  }
+  
+  for( unsigned int i = 0; i < fTiaraBarrel_FrontUpstreamT_DetectorNbr.size(); i ++){
+    cout << "Detector Number = " 
+      << fTiaraBarrel_FrontUpstreamT_DetectorNbr[i] << " | " ;
+    cout << "Strip Number = " 
+      << fTiaraBarrel_FrontUpstreamT_StripNbr[i] << " | ";
     cout << "Time = " 
-      << fTiaraBarrel_Front_Upstream_Time[i] << endl ;  
+      << fTiaraBarrel_FrontUpstreamT_Time[i] << endl ;  
   }
 
 
   cout << "*** Inner Barrel Front Downstream ***" << endl ;
-  for( unsigned int i = 0; i < fTiaraBarrel_Front_Downstream_DetectorNbr.size(); i ++){
+  for( unsigned int i = 0; i < fTiaraBarrel_FrontDownstreamE_DetectorNbr.size(); i ++){
     cout << "Detector Number = " 
-      << fTiaraBarrel_Front_Downstream_DetectorNbr[i] << endl;  
+      << fTiaraBarrel_FrontDownstreamE_DetectorNbr[i] << " | ";  
     cout << "Strip Number = " 
-      << fTiaraBarrel_Front_Downstream_StripNbr[i] << endl;
+      << fTiaraBarrel_FrontDownstreamE_StripNbr[i] << " | ";
     cout << "Energy = " 
-      << fTiaraBarrel_Front_Downstream_Energy[i] << endl ;
+      << fTiaraBarrel_FrontDownstreamE_Energy[i] << endl ;
+  }
+
+  for( unsigned int i = 0; i < fTiaraBarrel_FrontDownstreamT_DetectorNbr.size(); i ++){
+    cout << "Detector Number = " 
+      << fTiaraBarrel_FrontDownstreamT_DetectorNbr[i] << " | ";  
+    cout << "Strip Number = " 
+      << fTiaraBarrel_FrontDownstreamT_StripNbr[i] << " | ";
     cout << "Time = " 
-      << fTiaraBarrel_Front_Downstream_Time[i] << endl ;  
+      << fTiaraBarrel_FrontDownstreamT_Time[i] << endl ;  
   }
 
   cout << "*** Inner Barrel Back ***" << endl ;
-  for( unsigned int i = 0; i < fTiaraBarrel_Back_DetectorNbr.size(); i ++){
+  for( unsigned int i = 0; i < fTiaraBarrel_BackE_DetectorNbr.size(); i ++){
     cout << "Detector Number = " 
-      << fTiaraBarrel_Back_DetectorNbr[i] << endl;  
+      << fTiaraBarrel_BackE_DetectorNbr[i] << " | ";  
     cout << "Energy = " 
-      << fTiaraBarrel_Back_Energy[i] << endl ;
-    cout << "Time = " 
-      << fTiaraBarrel_Back_Time[i] << endl ;  
+      << fTiaraBarrel_BackE_Energy[i] << endl ;
   }
-  cout << "*** Outer Barrel ***" << endl;
-  for( unsigned int i = 0; i < fTiaraBarrel_Outer_DetectorNbr.size() ; i ++){
+
+  for( unsigned int i = 0; i < fTiaraBarrel_BackT_DetectorNbr.size(); i ++){
     cout << "Detector Number = " 
-      << fTiaraBarrel_Outer_DetectorNbr[i] << endl;  
-    cout << "Energy = " 
-      << fTiaraBarrel_Outer_Energy[i] << endl ;
+      << fTiaraBarrel_BackT_DetectorNbr[i] << " | ";  
     cout << "Time = " 
-      << fTiaraBarrel_Outer_Time[i] << endl ;  
-  }*/
+      << fTiaraBarrel_BackT_Time[i] << endl ;  
+  }
+
+  cout << "*** Outer Barrel ***" << endl;
+  for( unsigned int i = 0; i < fTiaraBarrel_OuterE_DetectorNbr.size() ; i ++){
+    cout << "Detector Number = " 
+      << fTiaraBarrel_OuterE_DetectorNbr[i] << " | ";  
+    cout << "Energy = " 
+      << fTiaraBarrel_OuterE_Energy[i] << endl ;
+  }
+
+  for( unsigned int i = 0; i < fTiaraBarrel_OuterT_DetectorNbr.size() ; i ++){
+    cout << "Detector Number = " 
+      << fTiaraBarrel_OuterT_DetectorNbr[i] << " | ";  
+    cout << "Time = " 
+      << fTiaraBarrel_OuterT_Time[i] << endl ;  
+  }
 }
 

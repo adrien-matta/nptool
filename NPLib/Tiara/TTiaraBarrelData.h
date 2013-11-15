@@ -246,10 +246,6 @@ class TTiaraBarrelData : public TNamed {
     {return fTiaraBarrel_OuterT_Time[i];}
 
 
-
-
-
-
     ClassDef(TTiaraBarrelData,1)  // TiaraData structure
 };
 
