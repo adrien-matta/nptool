@@ -32,16 +32,22 @@ ClassImp(TTiaraHyballData)
   TTiaraHyballData::TTiaraHyballData(){
 
     // Reserve the space for the full array 
-    fTiaraHyball_Ring_DetectorNbr.reserve(6*32);
-    fTiaraHyball_Ring_StripNbr.reserve(6*32);
-    fTiaraHyball_Ring_Energy.reserve(6*32);
-    fTiaraHyball_Ring_Time.reserve(6*32);
+    fTiaraHyball_RingE_DetectorNbr.reserve(6*32);
+    fTiaraHyball_RingE_StripNbr.reserve(6*32);
+    fTiaraHyball_RingE_Energy.reserve(6*32);
 
-    fTiaraHyball_Sector_DetectorNbr.reserve(6*24);
-    fTiaraHyball_Sector_StripNbr.reserve(6*24);
-    fTiaraHyball_Sector_Energy.reserve(6*24);
-    fTiaraHyball_Sector_Time.reserve(6*24);
-  }
+    fTiaraHyball_SectorE_DetectorNbr.reserve(6*24);
+    fTiaraHyball_SectorE_StripNbr.reserve(6*24);
+    fTiaraHyball_SectorE_Energy.reserve(6*24);
+   
+    fTiaraHyball_RingT_DetectorNbr.reserve(6*32);
+    fTiaraHyball_RingT_StripNbr.reserve(6*32);
+    fTiaraHyball_RingT_Time.reserve(6*32);
+
+    fTiaraHyball_SectorT_DetectorNbr.reserve(6*24);
+    fTiaraHyball_SectorT_StripNbr.reserve(6*24);
+    fTiaraHyball_SectorT_Time.reserve(6*24);
+}
 
 /////////////////////////
 TTiaraHyballData::~TTiaraHyballData(){
@@ -50,15 +56,21 @@ TTiaraHyballData::~TTiaraHyballData(){
 
 /////////////////////////
 void TTiaraHyballData::Clear(){
-  fTiaraHyball_Ring_DetectorNbr.clear();
-  fTiaraHyball_Ring_StripNbr.clear();
-  fTiaraHyball_Ring_Energy.clear();
-  fTiaraHyball_Ring_Time.clear();
+    fTiaraHyball_RingE_DetectorNbr.clear();
+    fTiaraHyball_RingE_StripNbr.clear();
+    fTiaraHyball_RingE_Energy.clear();
 
-  fTiaraHyball_Sector_DetectorNbr.clear();
-  fTiaraHyball_Sector_StripNbr.clear();
-  fTiaraHyball_Sector_Energy.clear();
-  fTiaraHyball_Sector_Time.clear();
+    fTiaraHyball_SectorE_DetectorNbr.clear();
+    fTiaraHyball_SectorE_StripNbr.clear();
+    fTiaraHyball_SectorE_Energy.clear();
+   
+    fTiaraHyball_RingT_DetectorNbr.clear();
+    fTiaraHyball_RingT_StripNbr.clear();
+    fTiaraHyball_RingT_Time.clear();
+
+    fTiaraHyball_SectorT_DetectorNbr.clear();
+    fTiaraHyball_SectorT_StripNbr.clear();
+    fTiaraHyball_SectorT_Time.clear();
 }
 
 
@@ -66,25 +78,43 @@ void TTiaraHyballData::Clear(){
 void TTiaraHyballData::Dump() const{
   cout << "************* TTiaraHyballData Event ************"<< endl;
   cout << "*** Ring ***" << endl;
-  for( unsigned int i = 0; i < fTiaraHyball_Ring_DetectorNbr.size() ; i ++){
+  for( unsigned int i = 0; i < fTiaraHyball_RingE_DetectorNbr.size() ; i ++){
     cout << "Detector Number = " 
-      << fTiaraHyball_Ring_DetectorNbr[i] << endl;  
-    cout << "Ring Number = " 
-      << fTiaraHyball_Ring_StripNbr[i] << endl;  
+      << fTiaraHyball_RingE_DetectorNbr[i] << " | ";  
+    cout << "RingE Number = " 
+      << fTiaraHyball_RingE_StripNbr[i] << " | ";  
     cout << "Energy = " 
-      << fTiaraHyball_Ring_Energy[i] << endl ;
-    cout << "Time = " 
-      << fTiaraHyball_Ring_Time[i] << endl ;  
+      << fTiaraHyball_RingE_Energy[i] << endl ;
   }
-  cout << "*** Sector ***" << endl;
-  for( unsigned int i = 0; i < fTiaraHyball_Sector_DetectorNbr.size() ; i ++){
+
+  for( unsigned int i = 0; i < fTiaraHyball_RingT_DetectorNbr.size() ; i ++){
     cout << "Detector Number = " 
-      << fTiaraHyball_Sector_DetectorNbr[i] << endl;  
-    cout << "Sector Number = " 
-      << fTiaraHyball_Sector_StripNbr[i] << endl;  
+      << fTiaraHyball_RingT_DetectorNbr[i] << " | ";  
+    cout << "RingT Number = " 
+      << fTiaraHyball_RingT_StripNbr[i] << " | ";  
+    cout << "Time = " 
+      << fTiaraHyball_RingT_Time[i] << endl ;  
+  }
+
+
+
+  cout << "*** Sector ***" << endl;
+  for( unsigned int i = 0; i < fTiaraHyball_SectorE_DetectorNbr.size() ; i ++){
+    cout << "Detector Number = " 
+      << fTiaraHyball_SectorE_DetectorNbr[i] << " | ";  
+    cout << "SectorE Number = " 
+      << fTiaraHyball_SectorE_StripNbr[i] << " | ";  
     cout << "Energy = " 
-      << fTiaraHyball_Sector_Energy[i] << endl ;
-    cout << "Time = " << fTiaraHyball_Sector_Time[i] << endl ;  
+      << fTiaraHyball_SectorE_Energy[i] << endl ;
+  }
+  
+  for( unsigned int i = 0; i < fTiaraHyball_SectorT_DetectorNbr.size() ; i ++){
+    cout << "Detector Number = " 
+      << fTiaraHyball_SectorT_DetectorNbr[i] << " | ";  
+    cout << "SectorT Number = " 
+      << fTiaraHyball_SectorT_StripNbr[i] << " | ";  
+    cout << "Time = " 
+      << fTiaraHyball_SectorT_Time[i] << endl;  
   }
 
 }
