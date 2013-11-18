@@ -57,25 +57,28 @@ namespace TIARA
   // Central Tube
   const G4double CHAMBER_CentralTube_Inner_Radius = 4.86*cm;	//4.05->Original Value for the Single stage barrel
   const G4double CHAMBER_CentralTube_Outer_Radius = 5.05*cm;	//4.25->Original Value for the Single stage barrel
-  const G4double CHAMBER_CentralTube_Length = 4.12*cm;
+  const G4double CHAMBER_CentralTube_Length = 8.24*cm;
   
   // Outer Cone
-  const G4double CHAMBER_OuterCone_Length = 4.94*cm;
+  const G4double CHAMBER_OuterCone_Length = 9.88*cm;
   const G4double CHAMBER_OuterCone_Z_Pos = 9.06*cm;
 
   // Outer Cylinder
   const G4double CHAMBER_OuterCylinder_Inner_Radius = 24.6*cm;
   const G4double CHAMBER_OuterCylinder_Outer_Radius = 25.0*cm;
-  const G4double CHAMBER_OuterCylinder_Length = 6.04*cm;
+  const G4double CHAMBER_OuterCylinder_Length = 12.08*cm;
   const G4double CHAMBER_OuterCylinder_Z_Pos = 19.96*cm;
-
 
   // Inner Barrel //
   const G4double INNERBARREL_PCB_Length = 98.00*mm;
   const G4double INNERBARREL_PCB_Width  = 27.76*mm;
   const G4double INNERBARREL_PCB_Thickness = 1.60*mm;
-  const G4double INNERBARREL_PCB_Offset = 15*mm; // offset between the edge of the PCB and the Edge of the Waffer
-  const G4double INNERBARREL_Wafer_Length = 82.00*mm;// Different from Marc code, to be checked
+  const G4double INNERBARREL_PCB_Bevel1_Theta = 50*deg ;
+  const G4double INNERBARREL_PCB_Bevel2_Theta = 67.5*deg;
+  // offset between the edge of the PCB and the Edge of the Waffer
+  const G4double INNERBARREL_PCB_Offset = 15*mm; 
+  // Different from Marc code, to be checked
+  const G4double INNERBARREL_Wafer_Length = 82.00*mm;
   const G4double INNERBARREL_Wafer_Width = 24.80*mm;
   const G4double INNERBARREL_Wafer_Thickness =400*um;
  
