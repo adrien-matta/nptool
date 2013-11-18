@@ -28,7 +28,8 @@
 #include "G4Tubs.hh"
 #include "G4Cons.hh"
 #include "G4UnionSolid.hh" 
-
+#include "G4ExtrudedSolid.hh"
+#include "G4TwoVector.hh"
 //G4 sensitive
 #include "G4SDManager.hh"
 
@@ -174,20 +175,20 @@ void Tiara::ConstructChamber(G4LogicalVolume* world){
   //  Central Tube
   G4Tubs* solidCentralTube = 
     new G4Tubs("TiaraChamberCentralTube",CHAMBER_CentralTube_Inner_Radius,
-        CHAMBER_CentralTube_Outer_Radius,CHAMBER_CentralTube_Length,
+        CHAMBER_CentralTube_Outer_Radius,CHAMBER_CentralTube_Length/2.,
         0*deg,360*deg);
 
   // Forward-Backward Cones
   G4Cons* solidOuterCone = 
     new G4Cons("TiaraChamberOuterCone",CHAMBER_CentralTube_Inner_Radius,
         CHAMBER_CentralTube_Outer_Radius,CHAMBER_OuterCylinder_Inner_Radius,
-        CHAMBER_OuterCylinder_Outer_Radius,CHAMBER_OuterCone_Length,
+        CHAMBER_OuterCylinder_Outer_Radius,CHAMBER_OuterCone_Length/2.,
         0*deg,360*deg);
 
   // Outer Cylinder
   G4Tubs* solidOuterCylinder = 
     new G4Tubs("TiaraChamberOuterCylinder",CHAMBER_OuterCylinder_Inner_Radius,
-        CHAMBER_OuterCylinder_Outer_Radius,CHAMBER_OuterCylinder_Length,
+        CHAMBER_OuterCylinder_Outer_Radius,CHAMBER_OuterCylinder_Length/2.,
         0*deg,360*deg);
 
   // Add the volume together
@@ -233,7 +234,7 @@ void Tiara::ConstructChamber(G4LogicalVolume* world){
 void Tiara::ConstructBarrel(G4LogicalVolume* world){
   // Tiara Barrel
   // The Barrel is made of 8 identical resistive strip detector
-  // The detector are rectangular shape with a pcb and a wafer
+  // The PCB is made from a G4ExtrudeSolid, because it has beveled edge
   // the pcb is a substracted volume
   // the wafer goes into the hole
   // the whole things is design so the local reference is the one of the wafer
@@ -243,36 +244,48 @@ void Tiara::ConstructBarrel(G4LogicalVolume* world){
   G4double density = 2.702*g/cm3;
   G4double a = 26.98*g/mole;
   G4Material* Aluminium = new G4Material("Aluminium", 13., a, density);
-  
-  PCBVisAtt = new G4VisAttributes(G4Colour(0.2, 0.5, 0.2)) ;
-
-
 
   int DetNbr=0;
   // Start by making a full pcb
-  G4Box*  PCBFull = new G4Box("PCBFull"  ,
-      INNERBARREL_PCB_Length/2.,
-      INNERBARREL_PCB_Width/2.,
-      INNERBARREL_PCB_Thickness/2.);
+  // We start by the definition of the point forming a PCB cross section
+
+  vector<G4TwoVector> PCBCrossSection;
+  double l1 = INNERBARREL_PCB_Thickness*0.5/tan(INNERBARREL_PCB_Bevel1_Theta);
+  double l2 = INNERBARREL_PCB_Thickness*0.5/tan(INNERBARREL_PCB_Bevel2_Theta);
+  
+  PCBCrossSection.push_back(G4TwoVector(INNERBARREL_PCB_Width/2.-l2,-INNERBARREL_PCB_Thickness*0.5));
+  PCBCrossSection.push_back(G4TwoVector(INNERBARREL_PCB_Width/2.,0));
+  PCBCrossSection.push_back(G4TwoVector(INNERBARREL_PCB_Width/2.-l1,INNERBARREL_PCB_Thickness*0.5));
+
+  PCBCrossSection.push_back(G4TwoVector(-INNERBARREL_PCB_Width/2.+l1,INNERBARREL_PCB_Thickness*0.5));
+  PCBCrossSection.push_back(G4TwoVector(-INNERBARREL_PCB_Width/2.,0));
+  PCBCrossSection.push_back(G4TwoVector(-INNERBARREL_PCB_Width/2.+l2,-INNERBARREL_PCB_Thickness*0.5));
+
+  G4ExtrudedSolid* PCBFull = 
+    new G4ExtrudedSolid("PCBFull",
+                       PCBCrossSection,
+                       INNERBARREL_PCB_Length/2.,
+                       G4TwoVector(0,0),1,
+                       G4TwoVector(0,0),1);
 
   G4Box*  WaferShape = new G4Box("WaferShape",
-      INNERBARREL_Wafer_Length/2.,
       INNERBARREL_Wafer_Width/2.,
-      INNERBARREL_PCB_Thickness/2.+0.1*mm);
+      INNERBARREL_PCB_Thickness/2.+0.1*mm,
+      INNERBARREL_Wafer_Length/2.);
 
   G4Box*  Wafer = new G4Box("Wafer",
-      INNERBARREL_Wafer_Length/2.,
       INNERBARREL_Wafer_Width/2.,
-      INNERBARREL_Wafer_Thickness/2.);
+      INNERBARREL_Wafer_Thickness/2,
+      INNERBARREL_Wafer_Length/2.);
 
   // Calculate the wafer shift within the PCB
   G4ThreeVector WaferShift = G4ThreeVector(
-    INNERBARREL_PCB_Offset-(INNERBARREL_PCB_Length/2-INNERBARREL_Wafer_Length/2),
     0,
-    0);
+    0,
+    INNERBARREL_PCB_Offset-(INNERBARREL_PCB_Length/2-INNERBARREL_Wafer_Length/2));
 
   G4SubtractionSolid* PCB = new G4SubtractionSolid("PCB", PCBFull, WaferShape,
-      new G4RotationMatrix,WaferShift);
+    new G4RotationMatrix,WaferShift);
 
   // Master Volume
   G4LogicalVolume* logicBarrelDetector =
@@ -287,26 +300,38 @@ void Tiara::ConstructBarrel(G4LogicalVolume* world){
   // Sub Volume Wafer
   G4LogicalVolume* logicWafer =
     new G4LogicalVolume(Wafer,Aluminium,"logicWafer", 0, 0, 0);
+  logicWafer->SetVisAttributes(SiliconVisAtt);
+  
+  // The Distance from target is given by half the lenght of a detector
+  // plus the length of a detector inclined by 45 deg.
+  G4double DistanceFromTarget = INNERBARREL_PCB_Width*(0.5+sin(45*deg)) ; 
 
-  // Place the sub volume in the master volume
-  new G4PVPlacement(new G4RotationMatrix(0,0,0),
-      G4ThreeVector(0,0,0),
-      logicPCB,"Tiara_Barrel_PCB",logicBarrelDetector,
-      false,DetNbr);
+  for( unsigned int i = 0; i < 8; i ++){
+    // Place the sub volume in the master volume
+    new G4PVPlacement(new G4RotationMatrix(0,0,0),
+        G4ThreeVector(0,0,0),
+        logicPCB,"Tiara_Barrel_PCB",logicBarrelDetector,
+        false,i+1);
 
-  new G4PVPlacement(new G4RotationMatrix(0,0,0),
-      WaferShift,
-      logicWafer,"Barrel_Wafer",
-      logicBarrelDetector,false,DetNbr);
+    new G4PVPlacement(new G4RotationMatrix(0,0,0),
+        WaferShift,
+        logicWafer,"Barrel_Wafer",
+        logicBarrelDetector,false,i+1);
 
-  new G4PVPlacement(new G4RotationMatrix(0,0,0),
-      G4ThreeVector(0,5*mm,10*cm),
-      logicBarrelDetector,"Tiara_Barrel_Detector",
-      world,false,DetNbr);
-
-  // Substract a square to make a hole in it
-  // create the wafer
-  // place the wafer in the pcb
+    G4RotationMatrix* DetectorRotation = 
+      new G4RotationMatrix(0*deg,0*deg,i*45*deg);
+    
+    G4ThreeVector DetectorPosition(0,DistanceFromTarget,-WaferShift.z());
+    DetectorPosition.rotate(i*45*deg,G4ThreeVector(0,0,-1));   
+   
+    new G4PVPlacement(G4Transform3D(*DetectorRotation,DetectorPosition),
+        logicBarrelDetector,"Tiara_Barrel_Detector",
+        world,false,i+1);
+  }
 
 }
+
+
+
+
 
