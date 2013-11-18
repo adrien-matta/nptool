@@ -141,7 +141,8 @@ void Tiara::ReadConfiguration(string Path){
 void Tiara::ConstructDetector(G4LogicalVolume* world){
   ConstructChamber(world);
   ConstructInnerBarrel(world);
-
+  ConstructOuterBarrel(world);
+  ConstructHyball(world);
 }
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
@@ -164,7 +165,7 @@ void Tiara::ConstructInnerBarrel(G4LogicalVolume* world){
   // The Barrel is made of 8 identical resistive strip detector
   // The PCB is made from a G4ExtrudeSolid, because it has beveled edge
   // the pcb is a substracted volume
-  // the wafer goes into the hole
+  // the wafer goes into the hole, but a 15mm part is still covered by some PCB
   // the whole things is design so the local reference is the one of the wafer
 
   // Start by making a full pcb
@@ -190,9 +191,21 @@ void Tiara::ConstructInnerBarrel(G4LogicalVolume* world){
 
   // A box having Wafer dimension but thicker than the PCB
   // Will be used to remove material from the PCB to have space for the wafer
-  G4Box*  WaferShape = new G4Box("WaferShape",
+
+  // Calculate the hole shift within the PCB
+   G4ThreeVector HoleShift = G4ThreeVector(
+   0,
+   0,
+   INNERBARREL_PCB_Offset-(INNERBARREL_PCB_Length/2-INNERBARREL_PCB_HoleLength/2));
+
+  G4Box*  HoleShape = new G4Box("HoleShape",
       INNERBARREL_Wafer_Width/2.,
       INNERBARREL_PCB_Thickness/2.+0.1*mm,
+      INNERBARREL_PCB_HoleLength/2.);
+
+  G4Box*  WaferShape = new G4Box("WaferShape",
+      INNERBARREL_Wafer_Width/2.,
+      INNERBARREL_PCB_Thickness/2.,
       INNERBARREL_Wafer_Length/2.);
 
   // The Silicon Wafer itself
@@ -201,21 +214,19 @@ void Tiara::ConstructInnerBarrel(G4LogicalVolume* world){
       INNERBARREL_Wafer_Thickness/2,
       INNERBARREL_Wafer_Length/2.);
 
-  // Calculate the wafer shift within the PCB
-  G4ThreeVector WaferShift = G4ThreeVector(
-    0,
-    0,
-    INNERBARREL_PCB_Offset-(INNERBARREL_PCB_Length/2-INNERBARREL_Wafer_Length/2));
+  // Substracting the hole Shape from the Stock PCB
+  G4SubtractionSolid* PCB_1 = new G4SubtractionSolid("PCB_1", PCBFull, HoleShape,
+  new G4RotationMatrix,HoleShift);
 
-  // Substracting the Wafer Shape from the Stock PCB
-  G4SubtractionSolid* PCB = new G4SubtractionSolid("PCB", PCBFull, WaferShape,
-    new G4RotationMatrix,WaferShift);
+  // Substracting the wafer space from the Stock PCB
+  G4SubtractionSolid* PCB = new G4SubtractionSolid("PCB", PCB_1, WaferShape,
+  new G4RotationMatrix,G4ThreeVector(0,INNERBARREL_PCB_Thickness/2.+INNERBARREL_PCB_WaferDepth,0));
 
   // Master Volume that encompass everything else
   G4LogicalVolume* logicBarrelDetector =
     new G4LogicalVolume(PCBFull,m_MaterialVacuum,"logicBoxDetector", 0, 0, 0);
   logicBarrelDetector->SetVisAttributes(G4VisAttributes::Invisible);
-  
+
   // Sub Volume PCB
   G4LogicalVolume* logicPCB =
     new G4LogicalVolume(PCB,m_MaterialPCB,"logicPCB", 0, 0, 0);
@@ -240,7 +251,7 @@ void Tiara::ConstructInnerBarrel(G4LogicalVolume* world){
         false,i+1);
 
     new G4PVPlacement(new G4RotationMatrix(0,0,0),
-        WaferShift,
+        G4ThreeVector(0,0.5*(-INNERBARREL_PCB_WaferDepth-INNERBARREL_Wafer_Thickness),0),
         logicWafer,"Barrel_Wafer",
         logicBarrelDetector,false,i+1);
 
@@ -250,9 +261,9 @@ void Tiara::ConstructInnerBarrel(G4LogicalVolume* world){
     // Detector are rotate by 45deg with each other 
     G4RotationMatrix* DetectorRotation = 
       new G4RotationMatrix(0*deg,0*deg,i*45*deg);
-    
+   
     // There center is also rotated by 45deg
-    G4ThreeVector DetectorPosition(0,DistanceFromTarget,-WaferShift.z());
+    G4ThreeVector DetectorPosition(0,DistanceFromTarget,0);
     DetectorPosition.rotate(i*45*deg,G4ThreeVector(0,0,-1));   
   
     // Place the Master volume with its two daugther volume at the final place 

@@ -73,12 +73,15 @@ namespace TIARA
   const G4double INNERBARREL_PCB_Length = 98.00*mm;
   const G4double INNERBARREL_PCB_Width  = 27.76*mm;
   const G4double INNERBARREL_PCB_Thickness = 1.60*mm;
+  const G4double INNERBARREL_PCB_HoleLength = 82*mm;
+  const G4double INNERBARREL_PCB_WaferDepth = 1.1*mm;
   const G4double INNERBARREL_PCB_Bevel1_Theta = 50*deg ;
   const G4double INNERBARREL_PCB_Bevel2_Theta = 67.5*deg;
-  // offset between the edge of the PCB and the Edge of the Waffer
-  const G4double INNERBARREL_PCB_Offset = 15*mm; 
+  // offset between the edge of the PCB and the Edge of the hole
+  // 15mm - 1mm for the edge at the top
+  const G4double INNERBARREL_PCB_Offset = 14*mm; 
   // Different from Marc code, to be checked
-  const G4double INNERBARREL_Wafer_Length = 82.00*mm;
+  const G4double INNERBARREL_Wafer_Length = 94.00*mm;
   const G4double INNERBARREL_Wafer_Width = 24.80*mm;
   const G4double INNERBARREL_Wafer_Thickness =400*um;
  
