@@ -102,7 +102,8 @@ public:
 public:
   // To add a box detector
   // Effectively construct Volume
-  void ConstructBarrel(G4LogicalVolume* world);
+  void ConstructInnerBarrel(G4LogicalVolume* world);
+  void ConstructOuterBarrel(G4LogicalVolume* world);
   void ConstructHyball(G4LogicalVolume* world);
   void ConstructChamber(G4LogicalVolume* world);
 
@@ -156,10 +157,10 @@ private:
   //   Initialize all Scorer
   void InitializeScorers() ;
   
-  //   Scorer Associate to the Silicon
-  G4MultiFunctionalDetector*   m_BOXScorer ;
-  G4MultiFunctionalDetector*   m_PADScorer ;
-  G4MultiFunctionalDetector*   m_QQQScorer ;
+  //   Scorer Associate with the Silicon
+  G4MultiFunctionalDetector*   m_InnerBarrelScorer ;
+  G4MultiFunctionalDetector*   m_OuterBarrelScorer ;
+  G4MultiFunctionalDetector*   m_HyballScorer ;
  
   ////////////////////////////////////////////////////
   ///////////////Private intern Data//////////////////
