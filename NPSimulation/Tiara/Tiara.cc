@@ -140,7 +140,7 @@ void Tiara::ReadConfiguration(string Path){
 // Called After DetecorConstruction::AddDetector Method
 void Tiara::ConstructDetector(G4LogicalVolume* world){
   ConstructChamber(world);
-  ConstructBarrel(world);
+  ConstructInnerBarrel(world);
 
 }
 // Read sensitive part and fill the Root tree.
@@ -157,86 +157,9 @@ void Tiara::InitializeScorers(){
 void Tiara::InitializeRootOutput(){
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void Tiara::ConstructChamber(G4LogicalVolume* world){
-  // Vaccum Chamber of Tiara
-  // The chamber is made of a central cylinder surrounding the barrel Si
-  // Two Cone that expeand out of the central cylinder to let room for Exogam
-  // Two outer cylinder surrounding Hyball
-  // Hyball is hold on a back plate that close the Diabolo Shaped Chamber
-
-
-  // Material to be moved in a Material Function //
-  // Al
-  G4double density = 2.702*g/cm3;
-  G4double a = 26.98*g/mole;
-  G4Material* Aluminium = new G4Material("Aluminium", 13., a, density);
-
-  // Making the Chamber //
-  // We make the individual pieces, starting from the inside to the outside 
-  // Then we merge them together using the a G4AdditionSolid
-  // The whole chamber is then placed 
-
-  //  Central Tube
-  G4Tubs* solidCentralTube = 
-    new G4Tubs("TiaraChamberCentralTube",CHAMBER_CentralTube_Inner_Radius,
-        CHAMBER_CentralTube_Outer_Radius,CHAMBER_CentralTube_Length/2.,
-        0*deg,360*deg);
-
-  // Forward-Backward Cones
-  G4Cons* solidOuterCone = 
-    new G4Cons("TiaraChamberOuterCone",CHAMBER_CentralTube_Inner_Radius,
-        CHAMBER_CentralTube_Outer_Radius,CHAMBER_OuterCylinder_Inner_Radius,
-        CHAMBER_OuterCylinder_Outer_Radius,CHAMBER_OuterCone_Length/2.,
-        0*deg,360*deg);
-
-  // Outer Cylinder
-  G4Tubs* solidOuterCylinder = 
-    new G4Tubs("TiaraChamberOuterCylinder",CHAMBER_OuterCylinder_Inner_Radius,
-        CHAMBER_OuterCylinder_Outer_Radius,CHAMBER_OuterCylinder_Length/2.,
-        0*deg,360*deg);
-
-  // Add the volume together
-  G4UnionSolid* solidTiaraChamberStep1 =
-    new G4UnionSolid("TiaraChamber", solidCentralTube, solidOuterCone,
-        new G4RotationMatrix,
-        G4ThreeVector(0,0,CHAMBER_OuterCone_Z_Pos)); 
-
-  G4UnionSolid* solidTiaraChamberStep2 =
-    new G4UnionSolid("TiaraChamber", solidTiaraChamberStep1, solidOuterCone,
-        new G4RotationMatrix(0,180*deg,0),
-        G4ThreeVector(0,0,-CHAMBER_OuterCone_Z_Pos)); 
-
-  G4UnionSolid* solidTiaraChamberStep3 =
-    new G4UnionSolid("TiaraChamber", solidTiaraChamberStep2, solidOuterCylinder,
-        new G4RotationMatrix,
-        G4ThreeVector(0,0,CHAMBER_OuterCylinder_Z_Pos)); 
-
-  G4UnionSolid* solidTiaraChamberStep4 =
-    new G4UnionSolid("TiaraChamber", solidTiaraChamberStep3, solidOuterCylinder,
-        new G4RotationMatrix,
-        G4ThreeVector(0,0,-CHAMBER_OuterCylinder_Z_Pos)); 
-
-  // Create Logic Volume
-  G4LogicalVolume* logicTiaraChamber =
-    new G4LogicalVolume(solidTiaraChamberStep4,Aluminium,"logicTiaraChamber", 0, 0, 0);
-
-  // Visual Attribute
-  G4VisAttributes* ChamberVisAtt
-    = new G4VisAttributes(G4Colour(0.0,0.4,0.5));
-
-  ChamberVisAtt->SetForceWireframe(true);
-  ChamberVisAtt->SetForceAuxEdgeVisible (true);
-  logicTiaraChamber->SetVisAttributes(ChamberVisAtt);
-
-  // Place the whole chamber
-  new G4PVPlacement(new G4RotationMatrix(0,0,0), G4ThreeVector(0,0,0),
-      logicTiaraChamber,"TiaraChamber",world,false,0);
-
-}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void Tiara::ConstructBarrel(G4LogicalVolume* world){
+void Tiara::ConstructInnerBarrel(G4LogicalVolume* world){
   // Tiara Barrel
   // The Barrel is made of 8 identical resistive strip detector
   // The PCB is made from a G4ExtrudeSolid, because it has beveled edge
@@ -337,6 +260,102 @@ void Tiara::ConstructBarrel(G4LogicalVolume* world){
         logicBarrelDetector,"Tiara_Barrel_Detector",
         world,false,i+1);
   }
+
+}
+ //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void Tiara::ConstructOuterBarrel(G4LogicalVolume* world){
+// TO BE DONE //
+
+// Put the needed geometry parameter definition here instead of the namespace
+// to facilitate the merge
+// Respect Naming convention :example : OUTERBARREL_PCB_Length / OUTERBARREL_Wafer_Length
+}
+
+ //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void Tiara::ConstructHyball(G4LogicalVolume* world){
+ 
+// TO BE DONE //
+
+// Put the needed geometry parameter definition here instead of the namespace
+// to facilitate the merge
+// Respect Naming convention: example HYBALL_PCB_Radius / HYBALL_Wafer_Radius
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void Tiara::ConstructChamber(G4LogicalVolume* world){
+  // Vaccum Chamber of Tiara
+  // The chamber is made of a central cylinder surrounding the barrel Si
+  // Two Cone that expeand out of the central cylinder to let room for Exogam
+  // Two outer cylinder surrounding Hyball
+  // Hyball is hold on a back plate that close the Diabolo Shaped Chamber
+
+
+  // Material to be moved in a Material Function //
+  // Al
+  G4double density = 2.702*g/cm3;
+  G4double a = 26.98*g/mole;
+  G4Material* Aluminium = new G4Material("Aluminium", 13., a, density);
+
+  // Making the Chamber //
+  // We make the individual pieces, starting from the inside to the outside 
+  // Then we merge them together using the a G4AdditionSolid
+  // The whole chamber is then placed 
+
+  //  Central Tube
+  G4Tubs* solidCentralTube = 
+    new G4Tubs("TiaraChamberCentralTube",CHAMBER_CentralTube_Inner_Radius,
+        CHAMBER_CentralTube_Outer_Radius,CHAMBER_CentralTube_Length/2.,
+        0*deg,360*deg);
+
+  // Forward-Backward Cones
+  G4Cons* solidOuterCone = 
+    new G4Cons("TiaraChamberOuterCone",CHAMBER_CentralTube_Inner_Radius,
+        CHAMBER_CentralTube_Outer_Radius,CHAMBER_OuterCylinder_Inner_Radius,
+        CHAMBER_OuterCylinder_Outer_Radius,CHAMBER_OuterCone_Length/2.,
+        0*deg,360*deg);
+
+  // Outer Cylinder
+  G4Tubs* solidOuterCylinder = 
+    new G4Tubs("TiaraChamberOuterCylinder",CHAMBER_OuterCylinder_Inner_Radius,
+        CHAMBER_OuterCylinder_Outer_Radius,CHAMBER_OuterCylinder_Length/2.,
+        0*deg,360*deg);
+
+  // Add the volume together
+  G4UnionSolid* solidTiaraChamberStep1 =
+    new G4UnionSolid("TiaraChamber", solidCentralTube, solidOuterCone,
+        new G4RotationMatrix,
+        G4ThreeVector(0,0,CHAMBER_OuterCone_Z_Pos)); 
+
+  G4UnionSolid* solidTiaraChamberStep2 =
+    new G4UnionSolid("TiaraChamber", solidTiaraChamberStep1, solidOuterCone,
+        new G4RotationMatrix(0,180*deg,0),
+        G4ThreeVector(0,0,-CHAMBER_OuterCone_Z_Pos)); 
+
+  G4UnionSolid* solidTiaraChamberStep3 =
+    new G4UnionSolid("TiaraChamber", solidTiaraChamberStep2, solidOuterCylinder,
+        new G4RotationMatrix,
+        G4ThreeVector(0,0,CHAMBER_OuterCylinder_Z_Pos)); 
+
+  G4UnionSolid* solidTiaraChamberStep4 =
+    new G4UnionSolid("TiaraChamber", solidTiaraChamberStep3, solidOuterCylinder,
+        new G4RotationMatrix,
+        G4ThreeVector(0,0,-CHAMBER_OuterCylinder_Z_Pos)); 
+
+  // Create Logic Volume
+  G4LogicalVolume* logicTiaraChamber =
+    new G4LogicalVolume(solidTiaraChamberStep4,Aluminium,"logicTiaraChamber", 0, 0, 0);
+
+  // Visual Attribute
+  G4VisAttributes* ChamberVisAtt
+    = new G4VisAttributes(G4Colour(0.0,0.4,0.5));
+
+  ChamberVisAtt->SetForceWireframe(true);
+  ChamberVisAtt->SetForceAuxEdgeVisible (true);
+  logicTiaraChamber->SetVisAttributes(ChamberVisAtt);
+
+  // Place the whole chamber
+  new G4PVPlacement(new G4RotationMatrix(0,0,0), G4ThreeVector(0,0,0),
+      logicTiaraChamber,"TiaraChamber",world,false,0);
 
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
