@@ -134,7 +134,20 @@ private:
   TTiaraBarrelData*    m_EventBarrel ;
   TTiaraHyballData*    m_EventHyball ;
 
+
+  ////////////////////////////////////////////////////
+  /////////////////// Material ///////////////////////
+  ////////////////////////////////////////////////////
+private:
+  //    Initialize material used in detector definition
+  void InitializeMaterial();
   
+  //   List of material
+  G4Material* m_MaterialSilicon ;
+  G4Material* m_MaterialAl      ;
+  G4Material* m_MaterialVacuum  ;
+  G4Material* m_MaterialPCB     ;
+   
   ////////////////////////////////////////////////////
   ///////////////// Scorer Related ///////////////////
   ////////////////////////////////////////////////////
@@ -147,17 +160,7 @@ private:
   G4MultiFunctionalDetector*   m_BOXScorer ;
   G4MultiFunctionalDetector*   m_PADScorer ;
   G4MultiFunctionalDetector*   m_QQQScorer ;
-  
-private:
-  //    Initialize material used in detector definition
-  void InitializeMaterial();
-  
-  //   List of material
-  G4Material* m_MaterialSilicon ;
-  G4Material* m_MaterialAl      ;
-  G4Material* m_MaterialVacuum  ;
-  G4Material* m_MaterialPCB     ;
-  
+ 
   ////////////////////////////////////////////////////
   ///////////////Private intern Data//////////////////
   ////////////////////////////////////////////////////
