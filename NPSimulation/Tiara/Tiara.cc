@@ -73,7 +73,8 @@ Tiara::Tiara(){
   PADVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.2)) ;
   // Light Grey
   FrameVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5)) ;
-
+  // Light Blue
+  GuardRingVisAtt = new G4VisAttributes(G4Colour(0.0, 0.8, 0.9)) ;  
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 Tiara::~Tiara(){
@@ -199,20 +200,31 @@ void Tiara::ConstructInnerBarrel(G4LogicalVolume* world){
    INNERBARREL_PCB_Offset-(INNERBARREL_PCB_Length/2-INNERBARREL_PCB_HoleLength/2));
 
   G4Box*  HoleShape = new G4Box("HoleShape",
-      INNERBARREL_Wafer_Width/2.,
+      INNERBARREL_ActiveWafer_Width/2.,
       INNERBARREL_PCB_Thickness/2.+0.1*mm,
       INNERBARREL_PCB_HoleLength/2.);
 
   G4Box*  WaferShape = new G4Box("WaferShape",
-      INNERBARREL_Wafer_Width/2.,
+      INNERBARREL_InertWafer_Width/2.,
       INNERBARREL_PCB_Thickness/2.,
-      INNERBARREL_Wafer_Length/2.);
+      INNERBARREL_InertWafer_Length/2.);
 
   // The Silicon Wafer itself
-  G4Box*  Wafer = new G4Box("Wafer",
-      INNERBARREL_Wafer_Width/2.,
-      INNERBARREL_Wafer_Thickness/2,
-      INNERBARREL_Wafer_Length/2.);
+  G4Box*  InertWaferFull = new G4Box("InertWaferFull",
+      INNERBARREL_InertWafer_Width/2.,
+      INNERBARREL_ActiveWafer_Thickness/2.,
+      INNERBARREL_InertWafer_Length/2.);
+
+  G4Box*  ActiveWafer = new G4Box("ActiveWafer",
+      INNERBARREL_ActiveWafer_Width/2.,
+      INNERBARREL_ActiveWafer_Thickness/2.,
+      INNERBARREL_ActiveWafer_Length/2.);
+
+  G4Box*  ActiveWaferShape = new G4Box("ActiveWaferShape",
+      INNERBARREL_ActiveWafer_Width/2.,
+      INNERBARREL_PCB_Thickness/2.,
+      INNERBARREL_ActiveWafer_Length/2.);
+
 
   // Substracting the hole Shape from the Stock PCB
   G4SubtractionSolid* PCB_1 = new G4SubtractionSolid("PCB_1", PCBFull, HoleShape,
@@ -220,7 +232,13 @@ void Tiara::ConstructInnerBarrel(G4LogicalVolume* world){
 
   // Substracting the wafer space from the Stock PCB
   G4SubtractionSolid* PCB = new G4SubtractionSolid("PCB", PCB_1, WaferShape,
-  new G4RotationMatrix,G4ThreeVector(0,INNERBARREL_PCB_Thickness/2.+INNERBARREL_PCB_WaferDepth,0));
+  new G4RotationMatrix,
+  G4ThreeVector(0,INNERBARREL_PCB_Thickness/2.-INNERBARREL_PCB_WaferDepth,0));
+
+  // Substract active part from inert part of the Wafer
+  G4SubtractionSolid* InertWafer = new G4SubtractionSolid("InertWafer", InertWaferFull, ActiveWaferShape,
+  new G4RotationMatrix,
+  G4ThreeVector(0,0,0));
 
   // Master Volume that encompass everything else
   G4LogicalVolume* logicBarrelDetector =
@@ -233,9 +251,13 @@ void Tiara::ConstructInnerBarrel(G4LogicalVolume* world){
   logicPCB->SetVisAttributes(PCBVisAtt);
 
   // Sub Volume Wafer
-  G4LogicalVolume* logicWafer =
-    new G4LogicalVolume(Wafer,m_MaterialSilicon,"logicWafer", 0, 0, 0);
-  logicWafer->SetVisAttributes(SiliconVisAtt);
+  G4LogicalVolume* logicInertWafer =
+    new G4LogicalVolume(InertWafer,m_MaterialSilicon,"logicInertWafer", 0, 0, 0);
+  logicInertWafer->SetVisAttributes(GuardRingVisAtt);
+ 
+  G4LogicalVolume* logicActiveWafer =
+    new G4LogicalVolume(ActiveWafer,m_MaterialSilicon,"logicActiveWafer", 0, 0, 0);
+  logicActiveWafer->SetVisAttributes(SiliconVisAtt);
   
   // The Distance from target is given by half the lenght of a detector
   // plus the length of a detector inclined by 45 deg.
@@ -249,13 +271,22 @@ void Tiara::ConstructInnerBarrel(G4LogicalVolume* world){
         G4ThreeVector(0,0,0),
         logicPCB,"Tiara_Barrel_PCB",logicBarrelDetector,
         false,i+1);
+    
 
+    G4ThreeVector WaferPosition(0,0.5*(INNERBARREL_PCB_Thickness-INNERBARREL_PCB_WaferDepth+INNERBARREL_ActiveWafer_Thickness),0); 
+ 
     new G4PVPlacement(new G4RotationMatrix(0,0,0),
-        G4ThreeVector(0,0.5*(-INNERBARREL_PCB_WaferDepth-INNERBARREL_Wafer_Thickness),0),
-        logicWafer,"Barrel_Wafer",
+        WaferPosition,
+        logicActiveWafer,"Barrel_Wafer",
         logicBarrelDetector,false,i+1);
 
-    // The following build the barrel, with detector one at the top
+    new G4PVPlacement(new G4RotationMatrix(0,0,0),
+        WaferPosition,
+        logicInertWafer,"Barrel_Wafer_GuardRing",
+        logicBarrelDetector,false,i+1);
+
+
+        // The following build the barrel, with detector one at the top
     // and going clowise looking upstrea
     
     // Detector are rotate by 45deg with each other 
@@ -279,7 +310,7 @@ void Tiara::ConstructOuterBarrel(G4LogicalVolume* world){
 
 // Put the needed geometry parameter definition here instead of the namespace
 // to facilitate the merge
-// Respect Naming convention :example : OUTERBARREL_PCB_Length / OUTERBARREL_Wafer_Length
+// Respect Naming convention :example : OUTERBARREL_PCB_Length / OUTERBARREL_ActiveWafer_Length
 }
 
  //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -289,7 +320,7 @@ void Tiara::ConstructHyball(G4LogicalVolume* world){
 
 // Put the needed geometry parameter definition here instead of the namespace
 // to facilitate the merge
-// Respect Naming convention: example HYBALL_PCB_Radius / HYBALL_Wafer_Radius
+// Respect Naming convention: example HYBALL_PCB_Radius / HYBALL_ActiveWafer_Radius
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

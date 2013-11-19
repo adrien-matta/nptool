@@ -78,15 +78,13 @@ namespace TIARA
   const G4double INNERBARREL_PCB_Bevel1_Theta = 50*deg ;
   const G4double INNERBARREL_PCB_Bevel2_Theta = 67.5*deg;
   // offset between the edge of the PCB and the Edge of the hole
-  // 15mm - 1mm for the edge at the top
-  const G4double INNERBARREL_PCB_Offset = 14*mm; 
+  const G4double INNERBARREL_PCB_Offset = 15*mm; 
   // Different from Marc code, to be checked
-  const G4double INNERBARREL_Wafer_Length = 94.00*mm;
-  const G4double INNERBARREL_Wafer_Width = 24.80*mm;
-  const G4double INNERBARREL_Wafer_Thickness =400*um;
- 
-
-
+  const G4double INNERBARREL_ActiveWafer_Length = 94.00*mm;
+  const G4double INNERBARREL_ActiveWafer_Width = 24.0*mm;
+  const G4double INNERBARREL_ActiveWafer_Thickness =400*um;
+  const G4double INNERBARREL_InertWafer_Length = 97.00*mm;
+  const G4double INNERBARREL_InertWafer_Width = 24.80*mm;
 }
 
 using namespace TIARA;
@@ -193,6 +191,7 @@ private:/// Visualisation Attribute:
    G4VisAttributes* PADVisAtt  ;
   // Light Grey
    G4VisAttributes* FrameVisAtt ;
-  
+   // Light Blue
+   G4VisAttributes* GuardRingVisAtt ; 
 };
 #endif
