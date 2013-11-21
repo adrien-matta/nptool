@@ -303,6 +303,13 @@ void TMust2Physics::BuildPhysicalEvent(){
       
         }
       }
+
+
+  // Fill the control Histo if requested by user
+  if(NPOptionManager::getInstance()->GetGenerateHistoOption()){
+   m_Spectra -> FillRawSpectra(m_EventData);
+   m_Spectra -> FillPreTreatedSpectra(m_PreTreatedData);
+  }
   
   return;
   

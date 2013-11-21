@@ -259,7 +259,7 @@ void TMust2Spectra::FillPreTreatedSpectra(TMust2Data* PreTreatedData){
   // STRX_E
   for (Int_t i = 0; i < PreTreatedData->GetMMStripXEMult(); i++) {
     name = Form("MM%d_STRX_E_CAL", PreTreatedData->GetMMStripXEDetectorNbr(i) );
-    family = "MUST2/CAL/STRIPXE";
+    family = "MUST2/CAL/STRXE";
 
     GetHisto(family,name)
       -> Fill(PreTreatedData->GetMMStripXEStripNbr(i), 
@@ -295,7 +295,7 @@ void TMust2Spectra::FillPreTreatedSpectra(TMust2Data* PreTreatedData){
   // SILI_E
   for (Int_t i = 0; i < PreTreatedData->GetMMSiLiEMult(); i++) {
     name = Form("MM%d_SILI_E_CAL", PreTreatedData->GetMMSiLiEDetectorNbr(i) );
-    family = "MUST2/CAL/SILIET";
+    family = "MUST2/CAL/SILIE";
 
     GetHisto(family,name)
       -> Fill(PreTreatedData->GetMMSiLiEPadNbr(i), 
@@ -365,7 +365,7 @@ TH1* TMust2Spectra::GetHisto(TString family, TString name){
   vector<TString> index ;
   index.push_back(family);
   index.push_back(name);
-
+  
   // fill map
   return fMapHisto.at(index);
 }

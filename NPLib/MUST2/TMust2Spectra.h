@@ -52,12 +52,11 @@ class TMust2Spectra {
     // Initialization methods
     void InitRawSpectra();
     void InitPreTreatedSpectra();
-    void InitPhysicsSpectra();
 
     // Filling methods
-   void FillRawSpectra(TMust2Data*);
-   void FillPreTreatedSpectra(TMust2Data*);
-                            
+    void FillRawSpectra(TMust2Data*);
+    void FillPreTreatedSpectra(TMust2Data*);
+
     // get map histo which will be used for GSpectra in GUser
     map< vector<TString>, TH1* > GetMapHisto() const {return fMapHisto;}
     TH1* GetHisto(TString family,TString name);    
@@ -72,9 +71,6 @@ class TMust2Spectra {
   private:
     // map holding histo pointers and their family names
     map< vector<TString>, TH1* > fMapHisto;
-
-
-//  ClassDef(TMust2Spectra,1)  // Must2Spectra structure
 };
 
 #endif
