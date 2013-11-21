@@ -45,7 +45,7 @@ TMust2Physics::TMust2Physics(){
   m_EventData         = new TMust2Data ;
   m_PreTreatedData    = new TMust2Data ;
   m_EventPhysics      = this ;
-
+  m_Spectra           = NULL;
   m_NumberOfTelescope = 0 ;
   m_MaximumStripMultiplicityAllowed = 10;
   m_StripEnergyMatchingSigma = 0.020    ;
@@ -176,6 +176,10 @@ TMust2Physics::TMust2Physics(){
   
 }
 
+///////////////////////////////////////////////////////////////////////////
+TMust2Physics::~TMust2Physics(){
+
+}
 ///////////////////////////////////////////////////////////////////////////
 void TMust2Physics::BuildSimplePhysicalEvent(){
   BuildPhysicalEvent();

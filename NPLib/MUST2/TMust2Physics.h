@@ -40,7 +40,7 @@ using namespace std ;
 class TMust2Physics : public TObject, public NPA::VDetector{
 public:
   TMust2Physics();
-  ~TMust2Physics() {};
+  ~TMust2Physics(); 
   
 public:
   void Clear();
@@ -210,13 +210,13 @@ private:   //   Parameter used in the analysis
   int m_Si_X_E_RAW_Threshold ;//!
   int m_Si_Y_E_RAW_Threshold ;//!
   int m_SiLi_E_RAW_Threshold ;//!
-  int m_CsI_E_RAW_Threshold    ;//!
+  int m_CsI_E_RAW_Threshold  ;//!
   
   // Calibrated Threshold
   double m_Si_X_E_Threshold ;//!
   double m_Si_Y_E_Threshold ;//!
   double m_SiLi_E_Threshold ;//!
-  double m_CsI_E_Threshold   ;//!
+  double m_CsI_E_Threshold  ;//!
   
   // Geometric Matching
   // size in strip of a pad
@@ -260,7 +260,9 @@ private:   //   Spatial Position of Strip Calculated on bases of detector positi
 
 private: // Spectra Class   
   TMust2Spectra*      m_Spectra;//! 
- 
+
+public: // Spectra Getter
+  TMust2Spectra* GetSpectra() {return m_Spectra; } 
   ClassDef(TMust2Physics,1)  // Must2Physics structure
 };
 
