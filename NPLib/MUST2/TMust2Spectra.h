@@ -34,8 +34,11 @@
 
 // NPLib headers
 #include "TMust2Data.h"
-
+#include "TMust2Physics.h"
 using namespace std;
+
+// ForwardDeclaration
+class TMust2Physics ;
 
 class TMust2Spectra {
   public:
@@ -53,12 +56,13 @@ class TMust2Spectra {
     // Initialization methods
     void InitRawSpectra();
     void InitPreTreatedSpectra();
+    void InitPhysicsSpectra();
 
-public:
+  public:
     // Filling methods
     void FillRawSpectra(TMust2Data*);
     void FillPreTreatedSpectra(TMust2Data*);
-
+    void FillPhysicsSpectra(TMust2Physics*);
 
   public:
     // get map histo which will be used for GSpectra in GUser

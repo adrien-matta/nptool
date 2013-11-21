@@ -20,8 +20,18 @@
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
+
+// NPL
 #include "TMust2Spectra.h"
 #include "NPOptionManager.h"
+#include "NPGlobalSystemOfUnits.h"
+#include "NPPhysicalConstants.h"
+#ifdef NP_SYSTEM_OF_UNITS_H
+using namespace NPUNITS;
+#endif
+
+   
+// ROOT
 #include "TString.h"
 #include "TDirectory.h"
 #include "TFile.h"
@@ -52,6 +62,7 @@ TMust2Spectra::TMust2Spectra(unsigned int NumberOfTelescope){
 
   InitRawSpectra();
   InitPreTreatedSpectra();
+  InitPhysicsSpectra();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -167,6 +178,27 @@ void TMust2Spectra::InitPreTreatedSpectra()
 
   }  // end loop on number of detectors
 }
+
+////////////////////////////////////////////////////////////////////////////////
+void TMust2Spectra::InitPhysicsSpectra(){
+  TString name;
+  // X-Y Impact Matrix
+  name = "MM_IMPACT_MATRIX";
+  AddHisto2D(name, name,500,-150,150,500,-150,150, "MUST2/PHY");
+  
+  // X-Y Impact Matrix
+  name = "MM_THETA_E";
+  AddHisto2D(name, name, 360, 0, 180,500,0,50,"MUST2/PHY");
+
+  // X-Y Energy Correlation
+  for (Int_t i = 0 ; i < fNumberOfTelescope ; i++) { // loop on number of detectors
+    // STRX_E_CAL
+    name = Form("MM%d_XY_COR", i+1);
+    AddHisto2D(name, name, 500,0,50,500,0,50, "MUST2/PHY"); 
+   }
+
+}
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -457,6 +489,41 @@ void TMust2Spectra::FillPreTreatedSpectra(TMust2Data* PreTreatedData){
   }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+void TMust2Spectra::FillPhysicsSpectra(TMust2Physics* Physics){
+  TString name;
+  TString family= "MUST2/PHY";
+  // X-Y Impact Matrix
+  
+  for(Int_t i = 0 ; i < Physics->Si_E.size(); i++){
+    name = "MM_IMPACT_MATRIX";
+    double x = Physics->GetPositionOfInteraction(i).x();
+    double y = Physics->GetPositionOfInteraction(i).y();
+    GetHisto(family,name)-> Fill(x,y);
+  
+    name = "MM_THETA_E";
+    double Theta = Physics->GetPositionOfInteraction(i).Angle(TVector3(0,0,1));
+    Theta = Theta/deg;
+    GetHisto(family,name)-> Fill(Theta,Physics->Si_E[i]);
+
+  }
+/*
+  name = "MM_THETA_E";
+  AddHisto2D(name, name, 180, 0, 180,5000,0,500,"MUST2/PHY");
+
+  // X-Y Energy Correlation
+  for (Int_t i = 0 ; i < fNumberOfTelescope ; i++) { // loop on number of detectors
+    // STRX_E_CAL
+    name = Form("MM%d_XY_COR", i+1);
+    AddHisto2D(name, name, 500,0,50,500,0,50, "MUST2/PHY"); 
+   }
+*/
+
+
+
+
+
+}
 ////////////////////////////////////////////////////////////////////////////////
 TH1* TMust2Spectra::AddHisto1D(TString name, TString title, Int_t nbinsx, Double_t xlow, Double_t xup, TString family){
   // create histo

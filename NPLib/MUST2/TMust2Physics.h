@@ -37,6 +37,9 @@
 
 using namespace std ;
 
+// Forward Declaration
+class TMust2Spectra;
+
 class TMust2Physics : public TObject, public NPA::VDetector{
 public:
   TMust2Physics();
