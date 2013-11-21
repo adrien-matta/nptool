@@ -36,15 +36,19 @@
 ////////////////////////////////////////////////////////////////////////////////
 TMust2Spectra::TMust2Spectra(unsigned int NumberOfTelescope){
  if(NPOptionManager::getInstance()->GetVerboseLevel()>0)
-    cout << "TMust2Spectra : Initalising control spectra for " 
-         << fNumberOfTelescope 
-         << " Telescopes" << endl ;
+    cout << "************************************************" << endl
+         << "TMust2Spectra : Initalising control spectra for " 
+         << NumberOfTelescope << " Telescopes" << endl
+         << "************************************************" << endl ;
 
   fNumberOfTelescope = NumberOfTelescope;
   fStripX=128;
   fStripY=128;
   fPadSili=16;
   fCrystalCsI=16;
+
+  InitRawSpectra();
+  InitPreTreatedSpectra();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -87,20 +91,20 @@ void TMust2Spectra::InitRawSpectra(){
     name = Form("MM%d_CSI_T_RAW", i+1);
     AddHisto2D(name, name, fCrystalCsI, 1, fCrystalCsI+1, 512, 0, 8192, "MUST2/RAW/CSIT");
 
-    // STRX_MULT
-    name = Form("MM%d_STRX_MULT", i+1);
+    // STRX_RAW_MULT
+    name = Form("MM%d_STRX_RAW_MULT", i+1);
     AddHisto1D(name, name, fStripX, 1, fStripX+1, "MUST2/RAW/MULT");
 
-    // STRY_MULT
-    name = Form("MM%d_STRY_MULT", i+1);
+    // STRY_RAW_MULT
+    name = Form("MM%d_STRY_RAW_MULT", i+1);
     AddHisto1D(name, name, fStripX, 1, fStripX+1, "MUST2/RAW/MULT");
 
-    // SILI_MULT
-    name = Form("MM%d_SILI_MULT", i+1);
+    // SILI_RAW_MULT
+    name = Form("MM%d_SILI_RAW_MULT", i+1);
     AddHisto1D(name, name, fPadSili, 1, fPadSili+1, "MUST2/RAW/MULT");
 
-    // CSI_MULT
-    name = Form("MM%d_CSI_MULT", i+1);
+    // CSI_RAW_MULT
+    name = Form("MM%d_CSI_RAW_MULT", i+1);
     AddHisto1D(name, name, fCrystalCsI, 1, fCrystalCsI+1, "MUST2/RAW/MULT");
   } // end loop on number of detectors
 }
@@ -142,20 +146,20 @@ void TMust2Spectra::InitPreTreatedSpectra()
     name = Form("MM%d_CSI_T_CAL", i+1);
     AddHisto2D(name, name, fCrystalCsI, 1, fCrystalCsI+1, 500, 0, 50, "MUST2/CAL/CSIT");
 
-    // STRX_MULT
-    name = Form("MM%d_STRX_MULT", i+1);
+    // STRX_CAL_MULT
+    name = Form("MM%d_STRX_CAL_MULT", i+1);
     AddHisto1D(name, name, fStripX, 1, fStripX+1, "MUST2/CAL/MULT");
 
-    // STRY_MULT
-    name = Form("MM%d_STRY_MULT", i+1);
+    // STRY_CAL_MULT
+    name = Form("MM%d_STRY_CAL_MULT", i+1);
     AddHisto1D(name, name, fStripX, 1, fStripX+1, "MUST2/CAL/MULT");
 
-    // SILI_MULT
-    name = Form("MM%d_SILI_MULT", i+1);
+    // SILI_CAL_MULT
+    name = Form("MM%d_SILI_CAL_MULT", i+1);
     AddHisto1D(name, name, fPadSili, 1, fPadSili+1, "MUST2/CAL/MULT");
 
-    // CSI_MULT
-    name = Form("MM%d_CSI_MULT", i+1);
+    // CSI_CAL_MULT
+    name = Form("MM%d_CSI_CAL_MULT", i+1);
     AddHisto1D(name, name, fCrystalCsI, 1, fCrystalCsI+1, "MUST2/CAL/MULT");
 
   }  // end loop on number of detectors

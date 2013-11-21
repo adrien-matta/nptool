@@ -32,6 +32,8 @@ using namespace MUST2_LOCAL;
 #include "RootInput.h"
 #include "RootOutput.h"
 #include "TAsciiFile.h"
+#include "NPOptionManager.h"
+
 //   ROOT
 #include "TChain.h"
 ///////////////////////////////////////////////////////////////////////////
@@ -1028,6 +1030,10 @@ void TMust2Physics::ReadConfiguration(string Path){
   
   InitializeStandardParameter();
   ReadAnalysisConfig();
+
+  if(NPOptionManager::getInstance()->GetGenerateHistoOption()){
+   m_Spectra = new TMust2Spectra(m_NumberOfTelescope);
+  }
   
   cout << endl << "/////////////////////////////" << endl << endl;
   
