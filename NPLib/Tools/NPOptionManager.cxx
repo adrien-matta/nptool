@@ -61,6 +61,7 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
   fVerboseLevel               = 1;
   fDisableAllBranchOption = false;
   fInputPhysicalTreeOption = false;
+  fGenerateHistoOption = false ;
   fPROOFMode = false;
   
   for (int i = 0; i < argc; i++) {
@@ -96,8 +97,12 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
     else if (argument == "--input-physical")                      fInputPhysicalTreeOption = true ;
     
     else if (argument == "-IP")                                   fInputPhysicalTreeOption = true ;
-    
-    else if (argument == "--proof")                               fPROOFMode= true ;
+   
+    else if (argument == "-GH")                                   fGenerateHistoOption = true ;
+ 
+    else if (argument == "--generate-histo")                      fGenerateHistoOption = true ;
+
+    else if (argument == "--proof")                               fPROOFMode = true ;
     
     //else ;
   }
@@ -268,11 +273,12 @@ void NPOptionManager::DisplayHelp()
   cout << "\t --detector　-D <arg>\t \t \t \t \t \t　Set arg as the detector configuration file" << endl ;
   cout << "\t --event-generator　-E <arg>\t \t \t \t \t　Set arg as the event generator file" << endl ;
   cout << "\t --output　-O <arg>\t \t \t \t \t \t　Set arg as the Output File Name (output tree)" << endl ;
-  cout << "\t --verbose -V <arg>\t \t \t \t \t \t \t　Set the verbose level of some of the object, 0 for nothing, 1 for normal printout. Error and warning are not affected" << endl ;
+  cout << "\t --verbose -V <arg>\t \t \t \t \t \t　Set the verbose level of some of the object, 0 for nothing, 1 for normal printout. Error and warning are not affected" << endl ;
   cout << endl << "NPAnalysis only:"<<endl;
   cout << "\t --run -R <arg>\t \t \t \t \t \t \t　Set arg as the run to read file list" << endl  ;
   cout << "\t --cal -C <arg>\t \t \t \t \t \t \t　Set arg as the calibration file list" << endl ;
   cout << "\t --disable-branch\t \t \t \t \t \t　Disable of branch of Input tree except the one of the detector (faster)" << endl  ;
+  cout << "\t --generate-histo -GH\t \t \t \t \t \t  Instantiate the T*Spectra class of each detector" << endl ;
   cout << "\t --input-physical -IP\t \t \t \t \t \t　Consider the Input file is containing Physics Class instead of Data Class. Output branches associate to the detector are not activated" << endl  ;
   cout << endl << endl ;
   
