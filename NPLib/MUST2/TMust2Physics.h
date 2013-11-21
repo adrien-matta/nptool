@@ -27,6 +27,7 @@
 
 // NPL
 #include "TMust2Data.h"
+#include "TMust2Spectra.h"
 #include "../include/CalibrationManager.h"
 #include "../include/VDetector.h"
 // ROOT
@@ -242,8 +243,7 @@ private:   //   Root Input and Output tree classes
   TMust2Data*         m_EventData;//!
   TMust2Data*         m_PreTreatedData;//!
   TMust2Physics*      m_EventPhysics;//!
-  
-  
+    
 private:   //   Map of activated channel
   map< int, vector<bool> > m_XChannelStatus;//!
   map< int, vector<bool> > m_YChannelStatus;//!
@@ -257,7 +257,10 @@ private:   //   Spatial Position of Strip Calculated on bases of detector positi
   vector< vector < vector < double > > >   m_StripPositionX;//!
   vector< vector < vector < double > > >   m_StripPositionY;//!
   vector< vector < vector < double > > >   m_StripPositionZ;//!
-  
+
+private: // Spectra Class   
+  TMust2Spectra*      m_Spectra;//! 
+ 
   ClassDef(TMust2Physics,1)  // Must2Physics structure
 };
 

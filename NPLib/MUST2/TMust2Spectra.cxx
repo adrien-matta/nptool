@@ -21,12 +21,10 @@
  *                                                                           *
  *****************************************************************************/
 #include "TMust2Spectra.h"
-
+#include "NPOptionManager.h"
 #include "TString.h"
 
-
-ClassImp(TMust2Spectra)
-  ////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
   TMust2Spectra::TMust2Spectra(){
     fNumberOfTelescope = 0;
     fStripX=128;
@@ -37,13 +35,17 @@ ClassImp(TMust2Spectra)
 
 ////////////////////////////////////////////////////////////////////////////////
 TMust2Spectra::TMust2Spectra(unsigned int NumberOfTelescope){
+ if(NPOptionManager::getInstance()->GetVerboseLevel()>0)
+    cout << "TMust2Spectra : Initalising control spectra for " 
+         << fNumberOfTelescope 
+         << " Telescopes" << endl ;
+
   fNumberOfTelescope = NumberOfTelescope;
   fStripX=128;
   fStripY=128;
   fPadSili=16;
   fCrystalCsI=16;
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 TMust2Spectra::~TMust2Spectra(){
@@ -55,51 +57,51 @@ void TMust2Spectra::InitRawSpectra(){
   for (Int_t i = 0; i < fNumberOfTelescope; i++) { // loop on number of detectors
     // STRX_E_RAW
     name = Form("MM%d_STRX_E_RAW", i+1);
-    AddTH2(name, name, fStripX, 1, fStripX+1, 512, 0, 8192, "MUST2/RAW/STRXE");
+    AddHisto2D(name, name, fStripX, 1, fStripX+1, 512, 0, 8192, "MUST2/RAW/STRXE");
 
     // STRY_E_RAW
     name = Form("MM%d_STRY_E_RAW", i+1);
-    AddTH2(name, name, fStripY, 1, fStripY+1, 512, 0, 8192, "MUST2/RAW/STRYE");
+    AddHisto2D(name, name, fStripY, 1, fStripY+1, 512, 0, 8192, "MUST2/RAW/STRYE");
 
     // STRX_T_RAW
     name = Form("MM%d_STRX_T_RAW", i+1);
-    AddTH2(name, name, fStripX, 1, fStripX+1, 512, 0, 8192, "MUST2/RAW/STRXT");
+    AddHisto2D(name, name, fStripX, 1, fStripX+1, 512, 0, 8192, "MUST2/RAW/STRXT");
 
     // STRY_T_RAW
     name = Form("MM%d_STRY_T_RAW", i+1);
-    AddTH2(name, name, fStripY, 1, fStripY+1, 512, 0, 8192, "MUST2/RAW/STRYT");
+    AddHisto2D(name, name, fStripY, 1, fStripY+1, 512, 0, 8192, "MUST2/RAW/STRYT");
 
     // SILI_E_RAW
     name = Form("MM%d_SILI_E_RAW", i+1);
-    AddTH2(name, name, fPadSili, 1, fPadSili+1, 512, 0, 8192, "MUST2/RAW/SILIE");
+    AddHisto2D(name, name, fPadSili, 1, fPadSili+1, 512, 0, 8192, "MUST2/RAW/SILIE");
 
     // SILI_T_RAW
     name = Form("MM%d_SILI_T_RAW", i+1);
-    AddTH2(name, name, fPadSili, 1, fPadSili+1, 512, 0, 8192, "MUST2/RAW/SILIT");
+    AddHisto2D(name, name, fPadSili, 1, fPadSili+1, 512, 0, 8192, "MUST2/RAW/SILIT");
 
     // CSI_E_RAW
     name = Form("MM%d_CSI_E_RAW", i+1);
-    AddTH2(name, name, fCrystalCsI, 1, fCrystalCsI+1, 512, 0, 8192, "MUST2/RAW/CSIE");
+    AddHisto2D(name, name, fCrystalCsI, 1, fCrystalCsI+1, 512, 0, 8192, "MUST2/RAW/CSIE");
 
     // CSI_T_RAW
     name = Form("MM%d_CSI_T_RAW", i+1);
-    AddTH2(name, name, fCrystalCsI, 1, fCrystalCsI+1, 512, 0, 8192, "MUST2/RAW/CSIT");
+    AddHisto2D(name, name, fCrystalCsI, 1, fCrystalCsI+1, 512, 0, 8192, "MUST2/RAW/CSIT");
 
     // STRX_MULT
     name = Form("MM%d_STRX_MULT", i+1);
-    AddTH1(name, name, fStripX, 1, fStripX+1, "MUST2/RAW/MULT");
+    AddHisto1D(name, name, fStripX, 1, fStripX+1, "MUST2/RAW/MULT");
 
     // STRY_MULT
     name = Form("MM%d_STRY_MULT", i+1);
-    AddTH1(name, name, fStripX, 1, fStripX+1, "MUST2/RAW/MULT");
+    AddHisto1D(name, name, fStripX, 1, fStripX+1, "MUST2/RAW/MULT");
 
     // SILI_MULT
     name = Form("MM%d_SILI_MULT", i+1);
-    AddTH1(name, name, fPadSili, 1, fPadSili+1, "MUST2/RAW/MULT");
+    AddHisto1D(name, name, fPadSili, 1, fPadSili+1, "MUST2/RAW/MULT");
 
     // CSI_MULT
     name = Form("MM%d_CSI_MULT", i+1);
-    AddTH1(name, name, fCrystalCsI, 1, fCrystalCsI+1, "MUST2/RAW/MULT");
+    AddHisto1D(name, name, fCrystalCsI, 1, fCrystalCsI+1, "MUST2/RAW/MULT");
   } // end loop on number of detectors
 }
 
@@ -110,51 +112,51 @@ void TMust2Spectra::InitPreTreatedSpectra()
   for (Int_t i = 0; i < fNumberOfTelescope; i++) { // loop on number of detectors
     // STRX_E_CAL
     name = Form("MM%d_STRX_E_CAL", i+1);
-    AddTH2(name, name, fStripX, 1, fStripX+1, 500, 0, 50, "MUST2/CAL/STRXE");
+    AddHisto2D(name, name, fStripX, 1, fStripX+1, 500, 0, 50, "MUST2/CAL/STRXE");
 
     // STRY_E_CAL
     name = Form("MM%d_STRY_E_CAL", i+1);
-    AddTH2(name, name, fStripY, 1, fStripY+1, 500, 0, 50, "MUST2/CAL/STRYE");
+    AddHisto2D(name, name, fStripY, 1, fStripY+1, 500, 0, 50, "MUST2/CAL/STRYE");
 
     // STRX_T_CAL
     name = Form("MM%d_STRX_T_CAL", i+1);
-    AddTH2(name, name, fStripX, 1, fStripX+1, 500, 0, 500, "MUST2/CAL/STRXT");
+    AddHisto2D(name, name, fStripX, 1, fStripX+1, 500, 0, 500, "MUST2/CAL/STRXT");
 
     // STRY_T_CAL
     name = Form("MM%d_STRY_T_CAL", i+1);
-    AddTH2(name, name, fStripY, 1, fStripY+1, 500, 0, 500, "MUST2/CAL/STRYT");
+    AddHisto2D(name, name, fStripY, 1, fStripY+1, 500, 0, 500, "MUST2/CAL/STRYT");
 
     // SILI_E_CAL
     name = Form("MM%d_SILI_E_CAL", i+1);
-    AddTH2(name, name, fPadSili, 1, fPadSili+1, 500, 0, 50, "MUST2/CAL/SILIE");
+    AddHisto2D(name, name, fPadSili, 1, fPadSili+1, 500, 0, 50, "MUST2/CAL/SILIE");
 
     // SILI_T_CAL
     name = Form("MM%d_SILI_T_CAL", i+1);
-    AddTH2(name, name, fPadSili, 1, fPadSili+1, 500, 0, 50, "MUST2/CAL/SILIT");
+    AddHisto2D(name, name, fPadSili, 1, fPadSili+1, 500, 0, 50, "MUST2/CAL/SILIT");
 
     // CSI_E_CAL
     name = Form("MM%d_CSI_E_CAL", i+1);
-    AddTH2(name, name, fCrystalCsI, 1, fCrystalCsI+1, 500, 0, 50, "MUST2/CAL/CSIE");
+    AddHisto2D(name, name, fCrystalCsI, 1, fCrystalCsI+1, 500, 0, 50, "MUST2/CAL/CSIE");
 
     // CSI_T_CAL
     name = Form("MM%d_CSI_T_CAL", i+1);
-    AddTH2(name, name, fCrystalCsI, 1, fCrystalCsI+1, 500, 0, 50, "MUST2/CAL/CSIT");
+    AddHisto2D(name, name, fCrystalCsI, 1, fCrystalCsI+1, 500, 0, 50, "MUST2/CAL/CSIT");
 
     // STRX_MULT
     name = Form("MM%d_STRX_MULT", i+1);
-    AddTH1(name, name, fStripX, 1, fStripX+1, "MUST2/CAL/MULT");
+    AddHisto1D(name, name, fStripX, 1, fStripX+1, "MUST2/CAL/MULT");
 
     // STRY_MULT
     name = Form("MM%d_STRY_MULT", i+1);
-    AddTH1(name, name, fStripX, 1, fStripX+1, "MUST2/CAL/MULT");
+    AddHisto1D(name, name, fStripX, 1, fStripX+1, "MUST2/CAL/MULT");
 
     // SILI_MULT
     name = Form("MM%d_SILI_MULT", i+1);
-    AddTH1(name, name, fPadSili, 1, fPadSili+1, "MUST2/CAL/MULT");
+    AddHisto1D(name, name, fPadSili, 1, fPadSili+1, "MUST2/CAL/MULT");
 
     // CSI_MULT
     name = Form("MM%d_CSI_MULT", i+1);
-    AddTH1(name, name, fCrystalCsI, 1, fCrystalCsI+1, "MUST2/CAL/MULT");
+    AddHisto1D(name, name, fCrystalCsI, 1, fCrystalCsI+1, "MUST2/CAL/MULT");
 
   }  // end loop on number of detectors
 }
@@ -325,12 +327,7 @@ void TMust2Spectra::FillPreTreatedSpectra(TMust2Data* PreTreatedData){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TMust2Spectra::FillPhysicsSpectra(TMust2Physics* Physics){
-
-}
-
-////////////////////////////////////////////////////////////////////////////////
-TH1* TMust2Spectra::AddTH1(TString name, TString title, Int_t nbinsx, Double_t xlow, Double_t xup, TString family){
+TH1* TMust2Spectra::AddHisto1D(TString name, TString title, Int_t nbinsx, Double_t xlow, Double_t xup, TString family){
   // create histo
   TH1 *hist = new TH1D(name, title, nbinsx, xlow, xup);
 
@@ -344,9 +341,8 @@ TH1* TMust2Spectra::AddTH1(TString name, TString title, Int_t nbinsx, Double_t x
   return hist;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
-TH1* TMust2Spectra::AddTH2(TString name, TString title, Int_t nbinsx, Double_t xlow, Double_t xup, Int_t nbinsy, Double_t ylow, Double_t yup, TString family){
+TH1* TMust2Spectra::AddHisto2D(TString name, TString title, Int_t nbinsx, Double_t xlow, Double_t xup, Int_t nbinsy, Double_t ylow, Double_t yup, TString family){
   // create histo
   TH1 *hist = new TH2D(name, title, nbinsx, xlow, xup, nbinsy, ylow, yup);
 
