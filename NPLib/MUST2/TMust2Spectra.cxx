@@ -506,18 +506,11 @@ void TMust2Spectra::FillPhysicsSpectra(TMust2Physics* Physics){
     Theta = Theta/deg;
     GetHisto(family,name)-> Fill(Theta,Physics->Si_E[i]);
 
-  }
-/*
-  name = "MM_THETA_E";
-  AddHisto2D(name, name, 180, 0, 180,5000,0,500,"MUST2/PHY");
-
-  // X-Y Energy Correlation
-  for (Int_t i = 0 ; i < fNumberOfTelescope ; i++) { // loop on number of detectors
     // STRX_E_CAL
-    name = Form("MM%d_XY_COR", i+1);
-    AddHisto2D(name, name, 500,0,50,500,0,50, "MUST2/PHY"); 
-   }
-*/
+    name = Form("MM%d_XY_COR", Physics->TelescopeNumber[i]);
+    GetHisto(family,name)-> Fill(Physics->Si_EX[i],Physics->Si_EY[i]);
+  }
+
 
 
 
