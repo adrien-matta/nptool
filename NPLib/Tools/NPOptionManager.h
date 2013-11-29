@@ -93,6 +93,7 @@ class NPOptionManager
       bool   GetDisableAllBranchOption()   {return fDisableAllBranchOption;}
       bool   GetInputPhysicalTreeOption()  {return fInputPhysicalTreeOption;}
       bool   GetGenerateHistoOption()      {return fGenerateHistoOption;}
+      bool   GetCheckHistoOption()         {return fCheckHistoOption;}
       bool   GetPROOF()                    {return fPROOFMode;}
       int    GetVerboseLevel()             {return fVerboseLevel;}
       
@@ -118,6 +119,7 @@ class NPOptionManager
       bool   fDisableAllBranchOption;
       bool   fInputPhysicalTreeOption;
       bool   fGenerateHistoOption;
+      bool   fCheckHistoOption;
       bool   fPROOFMode; // if true, the system run in a pROOF environment
       int    fVerboseLevel; // 0 for not talk, 1 for talking
 };

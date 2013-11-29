@@ -309,13 +309,7 @@ void TMust2Physics::BuildPhysicalEvent(){
       }
 
 
-  // Fill the control Histo if requested by user
-  if(NPOptionManager::getInstance()->GetGenerateHistoOption()){
-   m_Spectra -> FillRawSpectra(m_EventData);
-   m_Spectra -> FillPreTreatedSpectra(m_PreTreatedData);
-   m_Spectra -> FillPhysicsSpectra(m_EventPhysics);
-  }
-  
+ 
   return;
   
 }
@@ -1042,15 +1036,29 @@ void TMust2Physics::ReadConfiguration(string Path){
   
   InitializeStandardParameter();
   ReadAnalysisConfig();
-
-  if(NPOptionManager::getInstance()->GetGenerateHistoOption()){
-   m_Spectra = new TMust2Spectra(m_NumberOfTelescope);
-  }
   
   cout << endl << "/////////////////////////////" << endl << endl;
   
 }
+///////////////////////////////////////////////////////////////////////////
+void TMust2Physics::InitSpectra(){  
+   m_Spectra = new TMust2Spectra(m_NumberOfTelescope);
+}
 
+///////////////////////////////////////////////////////////////////////////
+void TMust2Physics::FillSpectra(){  
+   m_Spectra -> FillRawSpectra(m_EventData);
+   m_Spectra -> FillPreTreatedSpectra(m_PreTreatedData);
+   m_Spectra -> FillPhysicsSpectra(m_EventPhysics);
+}
+///////////////////////////////////////////////////////////////////////////
+void TMust2Physics::CheckSpectra(){  
+  // To be done
+}
+///////////////////////////////////////////////////////////////////////////
+void TMust2Physics::ClearSpectra(){  
+  // To be done
+}
 ///////////////////////////////////////////////////////////////////////////
 void TMust2Physics::AddParameterToCalibrationManager()
 {
