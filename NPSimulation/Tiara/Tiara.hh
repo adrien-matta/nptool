@@ -50,6 +50,41 @@ namespace TIARA
   const G4double ResoTime    = 0      ;
   //const G4double ResoEnergy  = 0.035*MeV ;// = zzkeV of Resolution   //   Unit is MeV/2.35
   const G4double ResoEnergy  = 0.042*MeV ;// = zzkeV of Resolution   //   Unit is MeV/2.35
+
+
+  // Geometric Information //
+  // Chanber //
+  // Central Tube
+  const G4double CHAMBER_CentralTube_Inner_Radius = 4.86*cm;	//4.05->Original Value for the Single stage barrel
+  const G4double CHAMBER_CentralTube_Outer_Radius = 5.05*cm;	//4.25->Original Value for the Single stage barrel
+  const G4double CHAMBER_CentralTube_Length = 8.24*cm;
+  
+  // Outer Cone
+  const G4double CHAMBER_OuterCone_Length = 9.88*cm;
+  const G4double CHAMBER_OuterCone_Z_Pos = 9.06*cm;
+
+  // Outer Cylinder
+  const G4double CHAMBER_OuterCylinder_Inner_Radius = 24.6*cm;
+  const G4double CHAMBER_OuterCylinder_Outer_Radius = 25.0*cm;
+  const G4double CHAMBER_OuterCylinder_Length = 12.08*cm;
+  const G4double CHAMBER_OuterCylinder_Z_Pos = 19.96*cm;
+
+  // Inner Barrel //
+  const G4double INNERBARREL_PCB_Length = 98.00*mm;
+  const G4double INNERBARREL_PCB_Width  = 27.76*mm;
+  const G4double INNERBARREL_PCB_Thickness = 1.60*mm;
+  const G4double INNERBARREL_PCB_HoleLength = 82*mm;
+  const G4double INNERBARREL_PCB_WaferDepth = 1.1*mm;
+  const G4double INNERBARREL_PCB_Bevel1_Theta = 50*deg ;
+  const G4double INNERBARREL_PCB_Bevel2_Theta = 67.5*deg;
+  // offset between the edge of the PCB and the Edge of the hole
+  const G4double INNERBARREL_PCB_Offset = 15*mm; 
+  // Different from Marc code, to be checked
+  const G4double INNERBARREL_ActiveWafer_Length = 94.00*mm;
+  const G4double INNERBARREL_ActiveWafer_Width = 24.0*mm;
+  const G4double INNERBARREL_ActiveWafer_Thickness =400*um;
+  const G4double INNERBARREL_InertWafer_Length = 97.00*mm;
+  const G4double INNERBARREL_InertWafer_Width = 24.80*mm;
 }
 
 using namespace TIARA;
@@ -68,7 +103,8 @@ public:
 public:
   // To add a box detector
   // Effectively construct Volume
-  void ConstructBarrel(G4LogicalVolume* world);
+  void ConstructInnerBarrel(G4LogicalVolume* world);
+  void ConstructOuterBarrel(G4LogicalVolume* world);
   void ConstructHyball(G4LogicalVolume* world);
   void ConstructChamber(G4LogicalVolume* world);
 
@@ -100,20 +136,10 @@ private:
   TTiaraBarrelData*    m_EventBarrel ;
   TTiaraHyballData*    m_EventHyball ;
 
-  
+
   ////////////////////////////////////////////////////
-  ///////////////// Scorer Related ///////////////////
+  /////////////////// Material ///////////////////////
   ////////////////////////////////////////////////////
-  
-private:
-  //   Initialize all Scorer
-  void InitializeScorers() ;
-  
-  //   Scorer Associate to the Silicon
-  G4MultiFunctionalDetector*   m_BOXScorer ;
-  G4MultiFunctionalDetector*   m_PADScorer ;
-  G4MultiFunctionalDetector*   m_QQQScorer ;
-  
 private:
   //    Initialize material used in detector definition
   void InitializeMaterial();
@@ -123,7 +149,20 @@ private:
   G4Material* m_MaterialAl      ;
   G4Material* m_MaterialVacuum  ;
   G4Material* m_MaterialPCB     ;
+   
+  ////////////////////////////////////////////////////
+  ///////////////// Scorer Related ///////////////////
+  ////////////////////////////////////////////////////
   
+private:
+  //   Initialize all Scorer
+  void InitializeScorers() ;
+  
+  //   Scorer Associate with the Silicon
+  G4MultiFunctionalDetector*   m_InnerBarrelScorer ;
+  G4MultiFunctionalDetector*   m_OuterBarrelScorer ;
+  G4MultiFunctionalDetector*   m_HyballScorer ;
+ 
   ////////////////////////////////////////////////////
   ///////////////Private intern Data//////////////////
   ////////////////////////////////////////////////////
@@ -152,6 +191,7 @@ private:/// Visualisation Attribute:
    G4VisAttributes* PADVisAtt  ;
   // Light Grey
    G4VisAttributes* FrameVisAtt ;
-  
+   // Light Blue
+   G4VisAttributes* GuardRingVisAtt ; 
 };
 #endif

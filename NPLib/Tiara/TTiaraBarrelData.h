@@ -34,24 +34,35 @@ using namespace std ;
 class TTiaraBarrelData : public TNamed {
   private:
     // Tiara
-    vector<unsigned short>   fTiaraBarrel_Front_Upstream_DetectorNbr;         
-    vector<unsigned short>   fTiaraBarrel_Front_Upstream_StripNbr;         
-    vector<double>           fTiaraBarrel_Front_Upstream_Energy;        
-    vector<double>           fTiaraBarrel_Front_Upstream_Time;          
+    vector<unsigned short>   fTiaraBarrel_FrontUpstreamE_DetectorNbr;         
+    vector<unsigned short>   fTiaraBarrel_FrontUpstreamE_StripNbr;         
+    vector<double>           fTiaraBarrel_FrontUpstreamE_Energy;        
 
-    vector<unsigned short>   fTiaraBarrel_Front_Downstream_DetectorNbr;     
-    vector<unsigned short>   fTiaraBarrel_Front_Downstream_StripNbr;           
-    vector<double>           fTiaraBarrel_Front_Downstream_Energy;          
-    vector<double>           fTiaraBarrel_Front_Downstream_Time;            
+    vector<unsigned short>   fTiaraBarrel_FrontUpstreamT_DetectorNbr;         
+    vector<unsigned short>   fTiaraBarrel_FrontUpstreamT_StripNbr;         
+    vector<double>           fTiaraBarrel_FrontUpstreamT_Time;          
 
-    vector<unsigned short>   fTiaraBarrel_Back_DetectorNbr;                  
-    vector<double>           fTiaraBarrel_Back_Energy;                    
-    vector<double>           fTiaraBarrel_Back_Time;                      
+    vector<unsigned short>   fTiaraBarrel_FrontDownstreamE_DetectorNbr;     
+    vector<unsigned short>   fTiaraBarrel_FrontDownstreamE_StripNbr;           
+    vector<double>           fTiaraBarrel_FrontDownstreamE_Energy;          
 
-    vector<unsigned short>   fTiaraBarrel_Outer_DetectorNbr;               
-    vector<unsigned short>   fTiaraBarrel_Outer_StripNbr;                    
-    vector<double>           fTiaraBarrel_Outer_Energy;                        
-    vector<double>           fTiaraBarrel_Outer_Time;
+    vector<unsigned short>   fTiaraBarrel_FrontDownstreamT_DetectorNbr;     
+    vector<unsigned short>   fTiaraBarrel_FrontDownstreamT_StripNbr;           
+    vector<double>           fTiaraBarrel_FrontDownstreamT_Time;            
+
+    vector<unsigned short>   fTiaraBarrel_BackE_DetectorNbr;                  
+    vector<double>           fTiaraBarrel_BackE_Energy;                    
+
+    vector<unsigned short>   fTiaraBarrel_BackT_DetectorNbr;                  
+    vector<double>           fTiaraBarrel_BackT_Time;                      
+
+    vector<unsigned short>   fTiaraBarrel_OuterE_DetectorNbr;               
+    vector<unsigned short>   fTiaraBarrel_OuterE_StripNbr;                    
+    vector<double>           fTiaraBarrel_OuterE_Energy;                        
+
+    vector<unsigned short>   fTiaraBarrel_OuterT_DetectorNbr;               
+    vector<unsigned short>   fTiaraBarrel_OuterT_StripNbr;                    
+    vector<double>           fTiaraBarrel_OuterT_Time;
 
   public:
     TTiaraBarrelData();
@@ -61,113 +72,179 @@ class TTiaraBarrelData : public TNamed {
     void Clear(const Option_t*) {};
     void Dump() const;
     /////////////////////        FAST SETTERS         ////////////////////////
-    inline void Set_Front_Upstream(const unsigned short& DetNbr , const unsigned short& StripNbr , const double& Energy , const double& Time){
-      Set_Front_Upstream_DetectorNbr(DetNbr);
-      Set_Front_Upstream_StripNbr(StripNbr);
-      Set_Front_Upstream_Energy(Energy);
-      Set_Front_Upstream_Time(Time);
+    // E
+    inline void Set_FrontE_Upstream(const unsigned short& DetNbr , const unsigned short& StripNbr , const double& Energy){
+      Set_FrontUpstreamE_DetectorNbr(DetNbr);
+      Set_FrontUpstreamE_StripNbr(StripNbr);
+      Set_FrontUpstreamE_Energy(Energy);
     }
-    ///////////////////// 
-    inline void Set_Front_Downstreamm( const unsigned short& DetNbr , const unsigned short& StripNbr , const double& Energy , const double& Time){
 
-      Set_Front_Downstream_DetectorNbr(DetNbr);
-      Set_Front_Downstream_StripNbr(StripNbr);
-      Set_Front_Downstream_Energy(Energy);
-      Set_Front_Downstream_Time(Time);
-    }
-    
-    ///////////////////// 
-    inline void Set_Back( const unsigned short& DetNbr , const double& Energy , const double& Time){
-
-      Set_Back_DetectorNbr(DetNbr);
-      Set_Back_Energy(Energy);
-      Set_Back_Time(Time);
+    // T
+    inline void Set_FrontT_Upstream(const unsigned short& DetNbr , const unsigned short& StripNbr , const double& Time){
+      Set_FrontUpstreamT_DetectorNbr(DetNbr);
+      Set_FrontUpstreamT_StripNbr(StripNbr);
+      Set_FrontUpstreamT_Time(Time);
     }
 
     ///////////////////// 
-    inline void Set_Outer( const unsigned short& DetNbr , const unsigned short StripNbr, const double& Energy , const double& Time){
-
-      Set_Outer_DetectorNbr(DetNbr);
-      Set_Outer_StripNbr(StripNbr);
-      Set_Outer_Energy(Energy);
-      Set_Outer_Time(Time);
+    // E
+    inline void Set_FrontE_Downstreamm( const unsigned short& DetNbr , const unsigned short& StripNbr , const double& Energy){
+      Set_FrontDownstreamE_DetectorNbr(DetNbr);
+      Set_FrontDownstreamE_StripNbr(StripNbr);
+      Set_FrontDownstreamE_Energy(Energy);
     }
 
-    /////////////////////           SETTERS           ////////////////////////
-    inline void Set_Front_Upstream_DetectorNbr(const unsigned short& Front_Upstream_DetectorNbr)
-    {fTiaraBarrel_Front_Upstream_DetectorNbr.push_back(Front_Upstream_DetectorNbr);}
-    inline unsigned short Get_Front_Upstream_DetectorNbr(const unsigned int& i) const 
-    {return fTiaraBarrel_Front_Upstream_DetectorNbr[i];}
+    // T
+    inline void Set_FrontT_Downstreamm( const unsigned short& DetNbr , const unsigned short& StripNbr , const double& Time){
+      Set_FrontDownstreamT_DetectorNbr(DetNbr);
+      Set_FrontDownstreamT_StripNbr(StripNbr);
+      Set_FrontDownstreamT_Time(Time);
+    }
 
-    inline void Set_Front_Upstream_StripNbr(const unsigned short& Front_Upstream_StripNbr)
-    {fTiaraBarrel_Front_Upstream_StripNbr.push_back(Front_Upstream_StripNbr);}
-    inline unsigned short Get_Front_Upstream_StripNbr(const unsigned int& i) const
-    {return fTiaraBarrel_Front_Upstream_StripNbr[i];}
+    ///////////////////// 
+    // E
+    inline void Set_BackE( const unsigned short& DetNbr , const double& Energy){
+      Set_BackE_DetectorNbr(DetNbr);
+      Set_BackE_Energy(Energy);
+    }
 
-    inline void Set_Front_Upstream_Energy(const double& Front_Upstream_Energy)
-    {fTiaraBarrel_Front_Upstream_Energy.push_back(Front_Upstream_Energy);}
-    inline double Get_Front_Upstream_Energy(const unsigned int& i) const
-    {return fTiaraBarrel_Front_Upstream_Energy[i];}
+    // T
+    inline void Set_BackT( const unsigned short& DetNbr , const double& Time){
+      Set_BackT_DetectorNbr(DetNbr);
+      Set_BackT_Time(Time);
+    }
 
-    inline void Set_Front_Upstream_Time(const double& Front_Upstream_Time)
-    {fTiaraBarrel_Front_Upstream_Time.push_back(Front_Upstream_Time);}
-    inline double Get_Front_Upstream_Time(const unsigned int& i) const 
-    {return fTiaraBarrel_Front_Upstream_Time[i];}
+    ///////////////////// 
+    // E 
+    inline void Set_OuterE( const unsigned short& DetNbr , const unsigned short StripNbr, const double& Energy){
 
-    inline void Set_Front_Downstream_DetectorNbr(const unsigned short& Front_Downstream_DetectorNbr)
-    {fTiaraBarrel_Front_Downstream_DetectorNbr.push_back(Front_Downstream_DetectorNbr);}
-    inline unsigned short Get_Front_Downstream_DetectorNbr(const unsigned int& i) const
-    {return fTiaraBarrel_Front_Downstream_DetectorNbr[i];}
+      Set_OuterE_DetectorNbr(DetNbr);
+      Set_OuterE_StripNbr(StripNbr);
+      Set_OuterE_Energy(Energy);
+    }
 
-    inline void Set_Front_Downstream_StripNbr(const unsigned short& Front_Downstream_StripNbr)
-    {fTiaraBarrel_Front_Downstream_StripNbr.push_back(Front_Downstream_StripNbr);}
-    inline unsigned short Get_Front_Downstream_StripNbr(const unsigned int& i) const
-    {return fTiaraBarrel_Front_Downstream_StripNbr[i];}
+    // T 
+    inline void Set_OuterT( const unsigned short& DetNbr , const unsigned short StripNbr , const double& Time){
 
-    inline void Set_Front_Downstream_Energy(const double& Front_Downstream_Energy)
-    {fTiaraBarrel_Front_Downstream_Energy.push_back(Front_Downstream_Energy);}
-    inline double Get_Front_Downstream_Energy(const unsigned int& i) const 
-    {return fTiaraBarrel_Front_Downstream_Energy[i];}
+      Set_OuterT_DetectorNbr(DetNbr);
+      Set_OuterT_StripNbr(StripNbr);
+      Set_OuterT_Time(Time);
+    }
 
-    inline void Set_Front_Downstream_Time(const double& Front_Downstream_Time)
-    {fTiaraBarrel_Front_Downstream_Time.push_back(Front_Downstream_Time);}
-    inline double Get_Front_Downstream_Time(const unsigned int& i) const 
-    {return fTiaraBarrel_Front_Downstream_Time[i];}
 
-    inline void Set_Back_DetectorNbr(const unsigned short& Back_DetectorNbr)
-    {fTiaraBarrel_Back_DetectorNbr.push_back(Back_DetectorNbr);}
-    inline unsigned short Get_Back_DetectorNbr(const unsigned int& i) const 
-    {return fTiaraBarrel_Back_DetectorNbr[i];}
 
-    inline void Set_Back_Energy(const double& Back_Energy)
-    {fTiaraBarrel_Back_Energy.push_back(Back_Energy);}
-    inline double Get_Back_Energy(const unsigned int& i) const 
-    {return fTiaraBarrel_Back_Energy[i];}
+    //////////////////////     SETTERS And GETTERS    /////////////////////////
+    inline void Set_FrontUpstreamE_DetectorNbr(const unsigned short& FrontUpstreamE_DetectorNbr)
+    {fTiaraBarrel_FrontUpstreamE_DetectorNbr.push_back(FrontUpstreamE_DetectorNbr);}
+    inline unsigned short Get_FrontUpstreamE_DetectorNbr(const unsigned int& i)
+    {return fTiaraBarrel_FrontUpstreamE_DetectorNbr[i];}
 
-    inline void Set_Back_Time(const double& Back_Time)
-    {fTiaraBarrel_Back_Time.push_back(Back_Time);}
-    inline double Get_Back_Time(const unsigned int& i) const 
-    {return fTiaraBarrel_Back_Time[i];}
+    inline void Set_FrontUpstreamE_StripNbr(const unsigned short& FrontUpstreamE_StripNbr)
+    {fTiaraBarrel_FrontUpstreamE_StripNbr.push_back(FrontUpstreamE_StripNbr);}
+    inline unsigned short Get_FrontUpstreamE_StripNbr(const unsigned int& i)
+    {return fTiaraBarrel_FrontUpstreamE_StripNbr[i];}
 
-    inline void Set_Outer_DetectorNbr(const unsigned short& Outer_DetectorNbr)
-    {fTiaraBarrel_Outer_DetectorNbr.push_back(Outer_DetectorNbr);}
-    inline unsigned short Get_Outer_DetectorNbr(const unsigned int& i) const 
-    {return fTiaraBarrel_Outer_DetectorNbr[i];}
+    inline void Set_FrontUpstreamE_Energy(const double& FrontUpstreamE_Energy)
+    {fTiaraBarrel_FrontUpstreamE_Energy.push_back(FrontUpstreamE_Energy);}
+    inline double Get_FrontUpstreamE_Energy(const unsigned int& i)
+    {return fTiaraBarrel_FrontUpstreamE_Energy[i];}
 
-    inline void Set_Outer_StripNbr(const unsigned short& Outer_StripNbr)
-    {fTiaraBarrel_Outer_StripNbr.push_back(Outer_StripNbr);}
-    inline unsigned short Get_Outer_StripNbr(const unsigned int& i) const 
-    {return fTiaraBarrel_Outer_StripNbr[i];}
+    inline void Set_FrontUpstreamT_DetectorNbr(const unsigned short& FrontUpstreamT_DetectorNbr)
+    {fTiaraBarrel_FrontUpstreamT_DetectorNbr.push_back(FrontUpstreamT_DetectorNbr);}
+    inline unsigned short Get_FrontUpstreamT_DetectorNbr(const unsigned int& i)
+    {return fTiaraBarrel_FrontUpstreamT_DetectorNbr[i];}
 
-    inline void Set_Outer_Energy(const double& Outer_Energy)
-    {fTiaraBarrel_Outer_Energy.push_back(Outer_Energy);}
-    inline double Get_Outer_Energy(const unsigned int& i) const 
-    {return fTiaraBarrel_Outer_Energy[i];}
+    inline void Set_FrontUpstreamT_StripNbr(const unsigned short& FrontUpstreamT_StripNbr)
+    {fTiaraBarrel_FrontUpstreamT_StripNbr.push_back(FrontUpstreamT_StripNbr);}
+    inline unsigned short Get_FrontUpstreamT_StripNbr(const unsigned int& i)
+    {return fTiaraBarrel_FrontUpstreamT_StripNbr[i];}
 
-    inline void Set_Outer_Time(const double& Outer_Time)
-    {fTiaraBarrel_Outer_Time.push_back(Outer_Time);}
-    inline double Get_Outer_Time(const unsigned int& i) const 
-    {return fTiaraBarrel_Outer_Time[i];}
+    inline void Set_FrontUpstreamT_Time(const double& FrontUpstreamT_Time)
+    {fTiaraBarrel_FrontUpstreamT_Time.push_back(FrontUpstreamT_Time);}
+    inline double Get_FrontUpstreamT_Time(const unsigned int& i)
+    {return fTiaraBarrel_FrontUpstreamT_Time[i];}
+
+    inline void Set_FrontDownstreamE_DetectorNbr(const unsigned short& FrontDownstreamE_DetectorNbr)
+    {fTiaraBarrel_FrontDownstreamE_DetectorNbr.push_back(FrontDownstreamE_DetectorNbr);}
+    inline unsigned short Get_FrontDownstreamE_DetectorNbr(const unsigned int& i)
+    {return fTiaraBarrel_FrontDownstreamE_DetectorNbr[i];}
+
+    inline void Set_FrontDownstreamE_StripNbr(const unsigned short& FrontDownstreamE_StripNbr)
+    {fTiaraBarrel_FrontDownstreamE_StripNbr.push_back(FrontDownstreamE_StripNbr);}
+    inline unsigned short Get_FrontDownstreamE_StripNbr(const unsigned int& i)
+    {return fTiaraBarrel_FrontDownstreamE_StripNbr[i];}
+
+    inline void Set_FrontDownstreamE_Energy(const double& FrontDownstreamE_Energy)
+    {fTiaraBarrel_FrontDownstreamE_Energy.push_back(FrontDownstreamE_Energy);}
+    inline double Get_FrontDownstreamE_Energy(const unsigned int& i)
+    {return fTiaraBarrel_FrontDownstreamE_Energy[i];}
+
+    inline void Set_FrontDownstreamT_DetectorNbr(const unsigned short& FrontDownstreamT_DetectorNbr)
+    {fTiaraBarrel_FrontDownstreamT_DetectorNbr.push_back(FrontDownstreamT_DetectorNbr);}
+    inline unsigned short Get_FrontDownstreamT_DetectorNbr(const unsigned int& i)
+    {return fTiaraBarrel_FrontDownstreamT_DetectorNbr[i];}
+
+    inline void Set_FrontDownstreamT_StripNbr(const unsigned short& FrontDownstreamT_StripNbr)
+    {fTiaraBarrel_FrontDownstreamT_StripNbr.push_back(FrontDownstreamT_StripNbr);}
+    inline unsigned short Get_FrontDownstreamT_StripNbr(const unsigned int& i)
+    {return fTiaraBarrel_FrontDownstreamT_StripNbr[i];}
+
+    inline void Set_FrontDownstreamT_Time(const double& FrontDownstreamT_Time)
+    {fTiaraBarrel_FrontDownstreamT_Time.push_back(FrontDownstreamT_Time);}
+    inline double Get_FrontDownstreamT_Time(const unsigned int& i)
+    {return fTiaraBarrel_FrontDownstreamT_Time[i];}
+
+    inline void Set_BackE_DetectorNbr(const unsigned short& BackE_DetectorNbr)
+    {fTiaraBarrel_BackE_DetectorNbr.push_back(BackE_DetectorNbr);}
+    inline unsigned short Get_BackE_DetectorNbr(const unsigned int& i)
+    {return fTiaraBarrel_BackE_DetectorNbr[i];}
+
+    inline void Set_BackE_Energy(const double& BackE_Energy)
+    {fTiaraBarrel_BackE_Energy.push_back(BackE_Energy);}
+    inline double Get_BackE_Energy(const unsigned int& i)
+    {return fTiaraBarrel_BackE_Energy[i];}
+
+    inline void Set_BackT_DetectorNbr(const unsigned short& BackT_DetectorNbr)
+    {fTiaraBarrel_BackT_DetectorNbr.push_back(BackT_DetectorNbr);}
+    inline unsigned short Get_BackT_DetectorNbr(const unsigned int& i)
+    {return fTiaraBarrel_BackT_DetectorNbr[i];}
+
+    inline void Set_BackT_Time(const double& BackT_Time)
+    {fTiaraBarrel_BackT_Time.push_back(BackT_Time);}
+    inline double Get_BackT_Time(const unsigned int& i)
+    {return fTiaraBarrel_BackT_Time[i];}
+
+    inline void Set_OuterE_DetectorNbr(const unsigned short& OuterE_DetectorNbr)
+    {fTiaraBarrel_OuterE_DetectorNbr.push_back(OuterE_DetectorNbr);}
+    inline unsigned short Get_OuterE_DetectorNbr(const unsigned int& i)
+    {return fTiaraBarrel_OuterE_DetectorNbr[i];}
+
+    inline void Set_OuterE_StripNbr(const unsigned short& OuterE_StripNbr)
+    {fTiaraBarrel_OuterE_StripNbr.push_back(OuterE_StripNbr);}
+    inline unsigned short Get_OuterE_StripNbr(const unsigned int& i)
+    {return fTiaraBarrel_OuterE_StripNbr[i];}
+
+    inline void Set_OuterE_Energy(const double& OuterE_Energy)
+    {fTiaraBarrel_OuterE_Energy.push_back(OuterE_Energy);}
+    inline double Get_OuterE_Energy(const unsigned int& i)
+    {return fTiaraBarrel_OuterE_Energy[i];}
+
+
+    inline void Set_OuterT_DetectorNbr(const unsigned short& OuterT_DetectorNbr)
+    {fTiaraBarrel_OuterT_DetectorNbr.push_back(OuterT_DetectorNbr);}
+    inline unsigned short Get_OuterT_DetectorNbr(const unsigned int& i)
+    {return fTiaraBarrel_OuterT_DetectorNbr[i];}
+
+    inline void Set_OuterT_StripNbr(const unsigned short& OuterT_StripNbr)
+    {fTiaraBarrel_OuterT_StripNbr.push_back(OuterT_StripNbr);}
+    inline unsigned short Get_OuterT_StripNbr(const unsigned int& i)
+    {return fTiaraBarrel_OuterT_StripNbr[i];}
+
+    inline void Set_OuterT_Time(const double& OuterT_Time)
+    {fTiaraBarrel_OuterT_Time.push_back(OuterT_Time);}
+    inline double Get_OuterT_Time(const unsigned int& i)
+    {return fTiaraBarrel_OuterT_Time[i];}
+
 
     ClassDef(TTiaraBarrelData,1)  // TiaraData structure
 };
