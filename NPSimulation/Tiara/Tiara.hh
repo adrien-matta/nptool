@@ -79,13 +79,33 @@ namespace TIARA
   const G4double INNERBARREL_PCB_Bevel2_Theta = 67.5*deg;
   // offset between the edge of the PCB and the Edge of the hole
   const G4double INNERBARREL_PCB_Offset = 15*mm; 
-  // Different from Marc code, to be checked
-  const G4double INNERBARREL_ActiveWafer_Length = 94.00*mm;
+  const G4double INNERBARREL_ActiveWafer_Length = 94.80*mm;
   const G4double INNERBARREL_ActiveWafer_Width = 24.0*mm;
   const G4double INNERBARREL_ActiveWafer_Thickness =400*um;
   const G4double INNERBARREL_InertWafer_Length = 97.00*mm;
   const G4double INNERBARREL_InertWafer_Width = 24.80*mm;
+
+  // Outer Barrel //
+  const G4double OUTERBARREL_PCB_Length = 98.00*mm;
+  const G4double OUTERBARREL_PCB_Width  = 33.16*mm;
+  const G4double OUTERBARREL_PCB_Thickness = 1.60*mm;
+  const G4double OUTERBARREL_PCB_HoleLength = 82*mm;
+  const G4double OUTERBARREL_PCB_WaferDepth = 1.1*mm;
+  const G4double OUTERBARREL_PCB_Bevel1_Theta = 50*deg ;
+  const G4double OUTERBARREL_PCB_Bevel2_Theta = 67.5*deg;
+  // offset between the edge of the PCB and the Edge of the hole
+  const G4double OUTERBARREL_PCB_Offset = 15*mm; 
+  // Different from Marc code, to be checked
+  const G4double OUTERBARREL_ActiveWafer_Length = 94.80*mm;
+  const G4double OUTERBARREL_ActiveWafer_Width = 29.4*mm;
+  const G4double OUTERBARREL_ActiveWafer_Thickness =700*um;
+  const G4double OUTERBARREL_InertWafer_Length = 97.00*mm;
+  const G4double OUTERBARREL_InertWafer_Width = 30.2*mm;
+
+
+
 }
+
 
 using namespace TIARA;
 class Tiara : public VDetector
