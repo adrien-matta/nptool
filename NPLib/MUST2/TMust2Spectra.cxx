@@ -72,7 +72,7 @@ TMust2Spectra::~TMust2Spectra(){
 ////////////////////////////////////////////////////////////////////////////////
 void TMust2Spectra::InitRawSpectra(){
   TString name;
-  for (Int_t i = 0; i < fNumberOfTelescope; i++) { // loop on number of detectors
+  for (unsigned int i = 0; i < fNumberOfTelescope; i++) { // loop on number of detectors
     // STRX_E_RAW
     name = Form("MM%d_STRX_E_RAW", i+1);
     AddHisto2D(name, name, fStripX, 1, fStripX+1, 512, 0, 8192, "MUST2/RAW/STRXE");
@@ -127,7 +127,7 @@ void TMust2Spectra::InitRawSpectra(){
 void TMust2Spectra::InitPreTreatedSpectra()
 {
   TString name;
-  for (Int_t i = 0; i < fNumberOfTelescope; i++) { // loop on number of detectors
+  for (unsigned int i = 0; i < fNumberOfTelescope; i++) { // loop on number of detectors
     // STRX_E_CAL
     name = Form("MM%d_STRX_E_CAL", i+1);
     AddHisto2D(name, name, fStripX, 1, fStripX+1, 500, 0, 50, "MUST2/CAL/STRXE");
@@ -191,7 +191,7 @@ void TMust2Spectra::InitPhysicsSpectra(){
   AddHisto2D(name, name, 360, 0, 180,500,0,50,"MUST2/PHY");
 
   // X-Y Energy Correlation
-  for (Int_t i = 0 ; i < fNumberOfTelescope ; i++) { // loop on number of detectors
+  for (unsigned int i = 0 ; i < fNumberOfTelescope ; i++) { // loop on number of detectors
     // STRX_E_CAL
     name = Form("MM%d_XY_COR", i+1);
     AddHisto2D(name, name, 500,0,50,500,0,50, "MUST2/PHY"); 
