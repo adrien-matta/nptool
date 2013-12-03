@@ -42,6 +42,7 @@
 #include "Hyde2Tracker.h"
 #include "Paris.h"
 #include "TW1Physics.h"
+#include "TS2Physics.h"
 #include "Shield.h"
 #include "TSpegPhysics.h"
 #include "TExlPhysics.h"
@@ -95,6 +96,7 @@ void DetectorManager::ReadConfigurationFile(string Path)
    Bool_t ParisDet            = false;
    Bool_t ShieldDet           = false;
    Bool_t W1                  = false;
+   Bool_t S2                  = false;
    Bool_t SPEG                = false;
    Bool_t EXL                 = false;
    Bool_t TAC                 = false;
@@ -272,6 +274,26 @@ void DetectorManager::ReadConfigurationFile(string Path)
 #endif
       }
       
+      ////////////////////////////////////////////
+      ////////// Search for S2 (Micron)  /////////
+      ////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 2, "S2") == 0 && S2 == false) {
+#ifdef INC_S2
+         S2 = true;
+         cout << "//////// S2 ////////" << endl;
+
+         // Instantiate the new array as a VDetector Object
+         VDetector* myDetector = new TS2Physics();
+
+         // Read Position of Telescope
+         ConfigFile.close();
+         myDetector->ReadConfiguration(Path);
+         ConfigFile.open(Path.c_str());
+
+         // Add array to the VDetector Vector
+         AddDetector("S2", myDetector);
+#endif
+      }
      
       ////////////////////////////////////////////
       ////////// Search for W1 (Micron)  /////////
