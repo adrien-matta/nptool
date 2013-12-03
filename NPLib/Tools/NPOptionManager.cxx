@@ -100,6 +100,10 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
    
     else if (argument == "-GH")                                   fGenerateHistoOption = true ;
  
+    else if (argument == "-CH")                                   fCheckHistoOption = true ;
+
+    else if (argument == "-check-histo")                          fCheckHistoOption = true ;
+
     else if (argument == "--generate-histo")                      fGenerateHistoOption = true ;
 
     else if (argument == "--proof")                               fPROOFMode = true ;
@@ -279,6 +283,7 @@ void NPOptionManager::DisplayHelp()
   cout << "\t --cal -C <arg>\t \t \t \t \t \t \t　Set arg as the calibration file list" << endl ;
   cout << "\t --disable-branch\t \t \t \t \t \t　Disable of branch of Input tree except the one of the detector (faster)" << endl  ;
   cout << "\t --generate-histo -GH\t \t \t \t \t \t  Instantiate the T*Spectra class of each detector" << endl ;
+  cout << "\t --check-histo -CH\t \t \t \t \t \t  Check if the Histogram looks ok and change there color if not" << endl ;
   cout << "\t --input-physical -IP\t \t \t \t \t \t　Consider the Input file is containing Physics Class instead of Data Class. Output branches associate to the detector are not activated" << endl  ;
   cout << endl << endl ;
   

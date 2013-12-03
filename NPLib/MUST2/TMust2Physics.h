@@ -128,7 +128,17 @@ public:      //   Innherited from VDetector Class
   //   Those two method all to clear the Event Physics or Data
   void ClearEventPhysics() {Clear();}
   void ClearEventData()    {m_EventData->Clear();}
-  
+ 
+  // Method related to the TSpectra classes, aimed at providing a framework for online applications
+  // Instantiate the Spectra class and the histogramm throught it
+  void InitSpectra();
+  // Fill the spectra hold by the spectra class
+  void FillSpectra();
+  // Used for Online mainly, perform check on the histo and for example change their color if issues are found
+  void CheckSpectra();
+  // Used for Online only, clear all the spectra hold by the Spectra class
+  void ClearSpectra();
+ 
 public:      //   Specific to MUST2 Array
   
   //   Clear The PreTeated object

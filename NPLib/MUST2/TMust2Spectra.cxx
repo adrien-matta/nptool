@@ -207,7 +207,7 @@ void TMust2Spectra::FillRawSpectra(TMust2Data* RawData){
   TString family;
 
   // STRX_E 
-  for (Int_t i = 0; i < RawData->GetMMStripXEMult(); i++) {
+  for (unsigned int i = 0; i < RawData->GetMMStripXEMult(); i++) {
     name = Form("MM%d_STRX_E_RAW", RawData->GetMMStripXEDetectorNbr(i) );
     family = "MUST2/RAW/STRXE";
 
@@ -217,7 +217,7 @@ void TMust2Spectra::FillRawSpectra(TMust2Data* RawData){
   }
 
   // STRY_E
-  for (Int_t i = 0; i < RawData->GetMMStripYEMult(); i++) {
+  for (unsigned int i = 0; i < RawData->GetMMStripYEMult(); i++) {
     name = Form("MM%d_STRY_E_RAW", RawData->GetMMStripYEDetectorNbr(i) );
     family = "MUST2/RAW/STRYE";
 
@@ -227,7 +227,7 @@ void TMust2Spectra::FillRawSpectra(TMust2Data* RawData){
   }
 
   // STRX_T
-  for (Int_t i = 0; i < RawData->GetMMStripXTMult(); i++) {
+  for (unsigned int i = 0; i < RawData->GetMMStripXTMult(); i++) {
     name = Form("MM%d_STRX_T_RAW", RawData->GetMMStripXTDetectorNbr(i) );
     family = "MUST2/RAW/STRXT";
 
@@ -236,7 +236,7 @@ void TMust2Spectra::FillRawSpectra(TMust2Data* RawData){
           RawData->GetMMStripXTTime(i) - 8192);
   }
   // STRY_T
-  for (Int_t i = 0; i < RawData->GetMMStripYTMult(); i++) {
+  for (unsigned int i = 0; i < RawData->GetMMStripYTMult(); i++) {
     name = Form("MM%d_STRY_T_RAW", RawData->GetMMStripYTDetectorNbr(i) );
     family = "MUST2/RAW/STRYT";
 
@@ -246,7 +246,7 @@ void TMust2Spectra::FillRawSpectra(TMust2Data* RawData){
   }
 
   // SILI_E
-  for (Int_t i = 0; i < RawData->GetMMSiLiEMult(); i++) {
+  for (unsigned int i = 0; i < RawData->GetMMSiLiEMult(); i++) {
     name = Form("MM%d_SILI_E_RAW", RawData->GetMMSiLiEDetectorNbr(i) );
     family = "MUST2/RAW/SILIE";
 
@@ -256,7 +256,7 @@ void TMust2Spectra::FillRawSpectra(TMust2Data* RawData){
   }
 
   // SILI_T
-  for (Int_t i = 0; i < RawData->GetMMSiLiTMult(); i++) {
+  for (unsigned int i = 0; i < RawData->GetMMSiLiTMult(); i++) {
     name = Form("MM%d_SILI_T_RAW", RawData->GetMMSiLiTDetectorNbr(i) );
     family = "MUST2/RAW/SILIT";
 
@@ -266,7 +266,7 @@ void TMust2Spectra::FillRawSpectra(TMust2Data* RawData){
   }
 
   // CSI_E
-  for (Int_t i = 0; i < RawData->GetMMCsIEMult(); i++) {
+  for (unsigned int i = 0; i < RawData->GetMMCsIEMult(); i++) {
     name = Form("MM%d_CSI_E_RAW", RawData->GetMMCsIEDetectorNbr(i) );
     family = "MUST2/RAW/CSIE";
 
@@ -276,7 +276,7 @@ void TMust2Spectra::FillRawSpectra(TMust2Data* RawData){
   }
 
   // CSI_T
-  for (Int_t i = 0; i < RawData->GetMMCsITMult(); i++) {
+  for (unsigned int i = 0; i < RawData->GetMMCsITMult(); i++) {
     name = Form("MM%d_CSI_T_RAW", RawData->GetMMCsITDetectorNbr(i) );
     family = "MUST2/RAW/CSIT";
 
@@ -287,14 +287,14 @@ void TMust2Spectra::FillRawSpectra(TMust2Data* RawData){
   
   // STRX MULT
   int myMULT[fNumberOfTelescope];
-  for( Int_t i = 0; i < fNumberOfTelescope; i++)
+  for( unsigned int i = 0; i < fNumberOfTelescope; i++)
     myMULT[i] = 0 ; 
   
-  for(Int_t i = 0 ; i < RawData->GetMMStripXEMult();i++){
+  for(unsigned int i = 0 ; i < RawData->GetMMStripXEMult();i++){
     myMULT[RawData->GetMMStripXEDetectorNbr(i)-1] += 1;  
   }
   
-  for( Int_t i = 0; i < fNumberOfTelescope; i++){
+  for( unsigned int i = 0; i < fNumberOfTelescope; i++){
 
     name = Form("MM%d_STRX_RAW_MULT", i+1);
     family= "MUST2/RAW/MULT";
@@ -303,14 +303,14 @@ void TMust2Spectra::FillRawSpectra(TMust2Data* RawData){
   }
   
   // STRY MULT
- for( Int_t i = 0; i < fNumberOfTelescope; i++)
+ for( unsigned int i = 0; i < fNumberOfTelescope; i++)
     myMULT[i] = 0 ; 
  
-  for(Int_t i = 0 ; i < RawData->GetMMStripYEMult();i++){
+  for(unsigned int i = 0 ; i < RawData->GetMMStripYEMult();i++){
     myMULT[RawData->GetMMStripYEDetectorNbr(i)-1] += 1;  
   }
   
-  for( Int_t i = 0; i < fNumberOfTelescope; i++){
+  for( unsigned int i = 0; i < fNumberOfTelescope; i++){
     name = Form("MM%d_STRY_RAW_MULT", i+1);
     family= "MUST2/RAW/MULT";
     GetHisto(family,name)
@@ -318,14 +318,14 @@ void TMust2Spectra::FillRawSpectra(TMust2Data* RawData){
   }
 
   // SILI MULT
-  for( Int_t i = 0; i < fNumberOfTelescope; i++)
+  for( unsigned int i = 0; i < fNumberOfTelescope; i++)
     myMULT[i] = 0 ; 
 
-  for(Int_t i = 0 ; i < RawData->GetMMSiLiEMult();i++){
+  for(unsigned int i = 0 ; i < RawData->GetMMSiLiEMult();i++){
     myMULT[RawData->GetMMSiLiEDetectorNbr(i)-1] += 1;  
   }
   
-  for( Int_t i = 0; i < fNumberOfTelescope; i++){
+  for( unsigned int i = 0; i < fNumberOfTelescope; i++){
     name = Form("MM%d_SILI_RAW_MULT", i+1);
     family= "MUST2/RAW/MULT";
     GetHisto(family,name)
@@ -333,14 +333,14 @@ void TMust2Spectra::FillRawSpectra(TMust2Data* RawData){
   }
   
   // CSI MULT
-  for( Int_t i = 0; i < fNumberOfTelescope; i++)
+  for( unsigned int i = 0; i < fNumberOfTelescope; i++)
     myMULT[i] = 0 ; 
   
-  for(Int_t i = 0 ; i < RawData->GetMMCsIEMult();i++){
+  for(unsigned int i = 0 ; i < RawData->GetMMCsIEMult();i++){
     myMULT[RawData->GetMMCsIEDetectorNbr(i)-1] += 1;  
   }
   
-  for( Int_t i = 0; i < fNumberOfTelescope; i++){
+  for( unsigned int i = 0; i < fNumberOfTelescope; i++){
     name = Form("MM%d_CSI_RAW_MULT", i+1);
     family= "MUST2/RAW/MULT";
     GetHisto(family,name)
@@ -354,7 +354,7 @@ void TMust2Spectra::FillPreTreatedSpectra(TMust2Data* PreTreatedData){
   TString name ;
   TString family;
   // STRX_E
-  for (Int_t i = 0; i < PreTreatedData->GetMMStripXEMult(); i++) {
+  for (unsigned int i = 0; i < PreTreatedData->GetMMStripXEMult(); i++) {
     name = Form("MM%d_STRX_E_CAL", PreTreatedData->GetMMStripXEDetectorNbr(i) );
     family = "MUST2/CAL/STRXE";
 
@@ -363,7 +363,7 @@ void TMust2Spectra::FillPreTreatedSpectra(TMust2Data* PreTreatedData){
           PreTreatedData->GetMMStripXEEnergy(i));
   }
   // STRY_E
-  for (Int_t i = 0; i < PreTreatedData->GetMMStripYEMult(); i++) {
+  for (unsigned int i = 0; i < PreTreatedData->GetMMStripYEMult(); i++) {
     name = Form("MM%d_STRY_E_CAL", PreTreatedData->GetMMStripYEDetectorNbr(i) );
     family = "MUST2/CAL/STRYE";
 
@@ -372,7 +372,7 @@ void TMust2Spectra::FillPreTreatedSpectra(TMust2Data* PreTreatedData){
           PreTreatedData->GetMMStripYEEnergy(i));
   }
   // STRX_T
-  for (Int_t i = 0; i < PreTreatedData->GetMMStripXTMult(); i++) {
+  for (unsigned int i = 0; i < PreTreatedData->GetMMStripXTMult(); i++) {
     name = Form("MM%d_STRX_T_CAL", PreTreatedData->GetMMStripXTDetectorNbr(i) );
     family = "MUST2/CAL/STRXT";
 
@@ -381,7 +381,7 @@ void TMust2Spectra::FillPreTreatedSpectra(TMust2Data* PreTreatedData){
           PreTreatedData->GetMMStripXTTime(i));
   }
   // STRY_T
-  for (Int_t i = 0; i < PreTreatedData->GetMMStripYTMult(); i++) {
+  for (unsigned int i = 0; i < PreTreatedData->GetMMStripYTMult(); i++) {
    name = Form("MM%d_STRY_T_CAL", PreTreatedData->GetMMStripYTDetectorNbr(i) );
     family = "MUST2/CAL/STRYT";
 
@@ -390,7 +390,7 @@ void TMust2Spectra::FillPreTreatedSpectra(TMust2Data* PreTreatedData){
           PreTreatedData->GetMMStripYTTime(i));
   }
   // SILI_E
-  for (Int_t i = 0; i < PreTreatedData->GetMMSiLiEMult(); i++) {
+  for (unsigned int i = 0; i < PreTreatedData->GetMMSiLiEMult(); i++) {
     name = Form("MM%d_SILI_E_CAL", PreTreatedData->GetMMSiLiEDetectorNbr(i) );
     family = "MUST2/CAL/SILIE";
 
@@ -399,7 +399,7 @@ void TMust2Spectra::FillPreTreatedSpectra(TMust2Data* PreTreatedData){
           PreTreatedData->GetMMSiLiEEnergy(i));
   }
   // SILI_T
-  for (Int_t i = 0; i < PreTreatedData->GetMMSiLiTMult(); i++) {
+  for (unsigned int i = 0; i < PreTreatedData->GetMMSiLiTMult(); i++) {
     name = Form("MM%d_SILI_T_CAL", PreTreatedData->GetMMSiLiTDetectorNbr(i) );
     family = "MUST2/CAL/SILIT";
 
@@ -408,7 +408,7 @@ void TMust2Spectra::FillPreTreatedSpectra(TMust2Data* PreTreatedData){
           PreTreatedData->GetMMSiLiTTime(i));
   }
   // CSI_E
-  for (Int_t i = 0; i < PreTreatedData->GetMMCsIEMult(); i++) {
+  for (unsigned int i = 0; i < PreTreatedData->GetMMCsIEMult(); i++) {
     name = Form("MM%d_CSI_E_CAL", PreTreatedData->GetMMCsIEDetectorNbr(i) );
     family = "MUST2/CAL/CSIE";
 
@@ -417,7 +417,7 @@ void TMust2Spectra::FillPreTreatedSpectra(TMust2Data* PreTreatedData){
           PreTreatedData->GetMMCsIEEnergy(i));
   }
   // CSI_T
-  for (Int_t i = 0; i < PreTreatedData->GetMMCsITMult(); i++) {
+  for (unsigned int i = 0; i < PreTreatedData->GetMMCsITMult(); i++) {
     name = Form("MM%d_CSI_T_CAL", PreTreatedData->GetMMCsITDetectorNbr(i) );
     family = "MUST2/CAL/CSIT";
 
@@ -428,14 +428,14 @@ void TMust2Spectra::FillPreTreatedSpectra(TMust2Data* PreTreatedData){
  
   // STRX MULT
   int myMULT[fNumberOfTelescope];
-  for( Int_t i = 0; i < fNumberOfTelescope; i++)
+  for( unsigned int i = 0; i < fNumberOfTelescope; i++)
     myMULT[i] = 0 ; 
   
-  for(Int_t i = 0 ; i < PreTreatedData->GetMMStripXEMult();i++){
+  for(unsigned int i = 0 ; i < PreTreatedData->GetMMStripXEMult();i++){
     myMULT[PreTreatedData->GetMMStripXEDetectorNbr(i)-1] += 1;  
   }
   
-  for( Int_t i = 0; i < fNumberOfTelescope; i++){
+  for( unsigned int i = 0; i < fNumberOfTelescope; i++){
 
     name = Form("MM%d_STRX_CAL_MULT", i+1);
     family= "MUST2/CAL/MULT";
@@ -444,14 +444,14 @@ void TMust2Spectra::FillPreTreatedSpectra(TMust2Data* PreTreatedData){
   }
   
   // STRY MULT
- for( Int_t i = 0; i < fNumberOfTelescope; i++)
+ for( unsigned int i = 0; i < fNumberOfTelescope; i++)
     myMULT[i] = 0 ; 
  
-  for(Int_t i = 0 ; i < PreTreatedData->GetMMStripYEMult();i++){
+  for(unsigned int i = 0 ; i < PreTreatedData->GetMMStripYEMult();i++){
     myMULT[PreTreatedData->GetMMStripYEDetectorNbr(i)-1] += 1;  
   }
   
-  for( Int_t i = 0; i < fNumberOfTelescope; i++){
+  for( unsigned int i = 0; i < fNumberOfTelescope; i++){
     name = Form("MM%d_STRY_CAL_MULT", i+1);
     family= "MUST2/CAL/MULT";
     GetHisto(family,name)
@@ -459,14 +459,14 @@ void TMust2Spectra::FillPreTreatedSpectra(TMust2Data* PreTreatedData){
   }
 
   // SILI MULT
-  for( Int_t i = 0; i < fNumberOfTelescope; i++)
+  for( unsigned int i = 0; i < fNumberOfTelescope; i++)
     myMULT[i] = 0 ; 
 
-  for(Int_t i = 0 ; i < PreTreatedData->GetMMSiLiEMult();i++){
+  for(unsigned int i = 0 ; i < PreTreatedData->GetMMSiLiEMult();i++){
     myMULT[PreTreatedData->GetMMSiLiEDetectorNbr(i)-1] += 1;  
   }
   
-  for( Int_t i = 0; i < fNumberOfTelescope; i++){
+  for( unsigned int i = 0; i < fNumberOfTelescope; i++){
     name = Form("MM%d_SILI_CAL_MULT", i+1);
     family= "MUST2/CAL/MULT";
     GetHisto(family,name)
@@ -474,14 +474,14 @@ void TMust2Spectra::FillPreTreatedSpectra(TMust2Data* PreTreatedData){
   }
   
   // CSI MULT
-  for( Int_t i = 0; i < fNumberOfTelescope; i++)
+  for( unsigned int i = 0; i < fNumberOfTelescope; i++)
     myMULT[i] = 0 ; 
   
-  for(Int_t i = 0 ; i < PreTreatedData->GetMMCsIEMult();i++){
+  for(unsigned int i = 0 ; i < PreTreatedData->GetMMCsIEMult();i++){
     myMULT[PreTreatedData->GetMMCsIEDetectorNbr(i)-1] += 1;  
   }
   
-  for( Int_t i = 0; i < fNumberOfTelescope; i++){
+  for( unsigned int i = 0; i < fNumberOfTelescope; i++){
     name = Form("MM%d_CSI_CAL_MULT", i+1);
     family= "MUST2/CAL/MULT";
     GetHisto(family,name)
@@ -495,7 +495,7 @@ void TMust2Spectra::FillPhysicsSpectra(TMust2Physics* Physics){
   TString family= "MUST2/PHY";
   // X-Y Impact Matrix
   
-  for(Int_t i = 0 ; i < Physics->Si_E.size(); i++){
+  for(unsigned int i = 0 ; i < Physics->Si_E.size(); i++){
     name = "MM_IMPACT_MATRIX";
     double x = Physics->GetPositionOfInteraction(i).x();
     double y = Physics->GetPositionOfInteraction(i).y();
@@ -506,18 +506,11 @@ void TMust2Spectra::FillPhysicsSpectra(TMust2Physics* Physics){
     Theta = Theta/deg;
     GetHisto(family,name)-> Fill(Theta,Physics->Si_E[i]);
 
-  }
-/*
-  name = "MM_THETA_E";
-  AddHisto2D(name, name, 180, 0, 180,5000,0,500,"MUST2/PHY");
-
-  // X-Y Energy Correlation
-  for (Int_t i = 0 ; i < fNumberOfTelescope ; i++) { // loop on number of detectors
     // STRX_E_CAL
-    name = Form("MM%d_XY_COR", i+1);
-    AddHisto2D(name, name, 500,0,50,500,0,50, "MUST2/PHY"); 
-   }
-*/
+    name = Form("MM%d_XY_COR", Physics->TelescopeNumber[i]);
+    GetHisto(family,name)-> Fill(Physics->Si_EX[i],Physics->Si_EY[i]);
+  }
+
 
 
 
@@ -566,7 +559,7 @@ TH1* TMust2Spectra::GetHisto(TString family, TString name){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TMust2Spectra::WriteHisto(TString filename){
-  TFile* f; 
+  TFile* f=NULL; 
   
   if(filename!="VOID"){
     f = new TFile(filename,"RECREATE");
