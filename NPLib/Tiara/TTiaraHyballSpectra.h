@@ -31,7 +31,7 @@
 
 // NPLib headers
 #include "TTiaraHyballData.h"
-//#include "TTiaraHyballPhysics.h"
+#include "TTiaraHyballPhysics.h"
 
 // C++ STL headers
 #include <map>
@@ -39,7 +39,7 @@ using namespace std;
 
 
 // Forward Declaration
-//class TTiaraHyballPhysics;
+class TTiaraHyballPhysics;
 
 
 class TTiaraHyballSpectra {
@@ -63,7 +63,7 @@ class TTiaraHyballSpectra {
     // Filling methods
     void FillRawSpectra(TTiaraHyballData*);
     void FillPreTreatedSpectra(TTiaraHyballData*);
-//    void FillPhysicsSpectra(TTiaraHyballPhysics*);
+    void FillPhysicsSpectra(TTiaraHyballPhysics*);
 
   public:
     // get map histo which will be used for GSpectra in GUser
