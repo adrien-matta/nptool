@@ -9,8 +9,7 @@ all:            $(SHARELIB)
 ############### Detector ##############
 
 ## Sharc ##
-libTiara.so:	TTiaraBarrelData.o	TTiaraBarrelDataDict.o TTiaraHyballData.o	TTiaraHyballDataDict.o
-
+libTiara.so:	TTiaraBarrelData.o	TTiaraBarrelDataDict.o TTiaraHyballData.o	TTiaraHyballDataDict.o TTiaraHyballSpectra.o
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TTiaraBarrelDataDict.cxx:	TTiaraBarrelData.h
@@ -20,8 +19,9 @@ TTiaraHyballDataDict.cxx:	TTiaraHyballData.h
 			rootcint -f $@ -c $^
 
 # dependances
-TTiaraBarrelData.o:		TTiaraBarrelData.cxx	TTiaraBarrelData.h
-TTiaraHyballData.o:		TTiaraHyballData.cxx	TTiaraHyballData.h
+TTiaraBarrelData.o:		TTiaraBarrelData.cxx	   TTiaraBarrelData.h
+TTiaraHyballData.o:		TTiaraHyballData.cxx	   TTiaraHyballData.h
+TTiaraHyballSpectra.o:	TTiaraHyballSpectra.cxx	TTiaraHyballSpectra.h
 
 #######################################
 
@@ -38,5 +38,3 @@ distclean:
 
 .$(SrcSuf).$(ObjSuf):
 	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $<
-
-
