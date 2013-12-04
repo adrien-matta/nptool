@@ -411,7 +411,6 @@ void TTiaraHyballPhysics::ReadConfiguration(string Path){
   bool check_Z   = false ;
 
   bool ReadingStatusWedge = false ;
-  bool ReadingStatusBOX = false ;
   bool ReadingStatus    = false ;
 
   bool VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel(); ;
