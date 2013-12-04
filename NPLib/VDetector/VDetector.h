@@ -25,8 +25,14 @@
  *                                                                           *  
  *   Adding Fill Spectra Method to fill control Histogramm                   *
  *****************************************************************************/
+
+// ROOT headers
+#include "TH1.h"
+
 //   STL header
 #include <string>
+#include <vector>
+#include <map>
 using namespace std;
 
 namespace NPA {
@@ -76,6 +82,8 @@ namespace NPA {
       virtual void CheckSpectra() {};
       // Used for Online only, clear all the spectra hold by the Spectra class
       virtual void ClearSpectra() {};
+      // Used for Online only, get all the spectra hold by the Spectra class
+      virtual  map< vector<TString> , TH1*> GetSpectra() {map< vector<TString>, TH1* > x; return x;};
 
     private:   //   The list below is here to help you building your own detector
       /*

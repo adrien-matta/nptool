@@ -748,3 +748,16 @@ void DetectorManager::InitSpectra(){
     it->second->InitSpectra();
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////   
+vector< map< vector<TString>, TH1* > > DetectorManager::GetSpectra()
+{
+   vector< map< vector<TString>, TH1* > > myVector;
+
+   map<string,VDetector*>::iterator it;
+   // loop on detectors
+   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {
+      myVector.push_back(it->second->GetSpectra());
+   }
+
+   return myVector;
+}

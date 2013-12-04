@@ -23,11 +23,15 @@
 //   NPL
 #include "VDetector.h"
 
+// ROOT
+#include "TH1.h"
+#include "TString.h"
+
 //   STL
 #include <string>
 #include <map>
-
 using namespace std ;
+
 using namespace NPA ;
 
 // This class manage a map of virtual detector
@@ -49,6 +53,7 @@ namespace NPA{
       void        ClearEventPhysics();
       void        ClearEventData();
       void        InitSpectra();
+      vector< map< vector<TString>, TH1* > > GetSpectra();  
 
     private:   
       // The map containning all detectors
