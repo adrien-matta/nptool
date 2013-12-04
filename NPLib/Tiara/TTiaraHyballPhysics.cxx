@@ -431,7 +431,7 @@ void TTiaraHyballPhysics::ReadConfiguration(string Path){
       //   Hyball case
       if (DataBuffer=="TiaraHyballWedge"){
         if(VerboseLevel) cout << "///" << endl           ;
-        if(VerboseLevel) cout << "Wedge Quadrant found: " << endl   ;
+        if(VerboseLevel) cout << "Wedge found: " << endl   ;
         ReadingStatusWedge = true ;
       }
 
@@ -590,7 +590,6 @@ void TTiaraHyballPhysics::AddWedgeDetector( double R,double Phi,double Z){
       lineY.push_back( StripCenter.Y() );
       lineZ.push_back( StripCenter.Z() );
     }
-
     OneWedgeStripPositionX.push_back(lineX);
     OneWedgeStripPositionY.push_back(lineY);
     OneWedgeStripPositionZ.push_back(lineZ);
@@ -628,7 +627,6 @@ TVector3 TTiaraHyballPhysics::GetDetectorNormal( const int i) const{
 }
 
 TVector3 TTiaraHyballPhysics::GetPositionOfInteraction(const int i) const{
-
   TVector3 Position = TVector3 ( GetStripPositionX(DetectorNumber[i],Strip_Ring[i],Strip_Sector[i] )    ,
       GetStripPositionY( DetectorNumber[i],Strip_Ring[i],Strip_Sector[i] )    ,
       GetStripPositionZ( DetectorNumber[i],Strip_Ring[i],Strip_Sector[i] )    ) ;
@@ -662,7 +660,7 @@ void TTiaraHyballPhysics::InitializeStandardParameter(){
 ///////////////////////////////////////////////////////////////////////////
 namespace TiaraHyball_LOCAL{
 
-  //   tranform an integer to a string
+  //   transform an integer to a string
   string itoa(unsigned int value){
     char buffer [33];
     sprintf(buffer,"%d",value);
