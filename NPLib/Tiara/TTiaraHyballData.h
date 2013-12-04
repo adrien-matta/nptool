@@ -61,21 +61,10 @@ class TTiaraHyballData : public TNamed {
 
     ///////////// Multiplicity Getter  ////////////////////
   public:
-    inline unsigned int GetRingE(const unsigned short& DetNbr, const unsigned short& StripNbr, const double& Energy){
-    return fTiaraHyball_RingE_DetectorNbr.size() ; 
- 	 };
-
-    inline unsigned int GetRingT(const unsigned short& DetNbr, const unsigned short& StripNbr,const double& Time){
-    return fTiaraHyball_RingT_DetectorNbr.size() ; 
- 	 };
-
-    inline unsigned int GetSectorE(const unsigned short& DetNbr, const unsigned short& StripNbr, const double& Energy){
-    return fTiaraHyball_SectorE_DetectorNbr.size() ; 
- 	 };
-
-    inline unsigned int GetSectorT(const unsigned short& DetNbr, const unsigned short& StripNbr, const double& Time){
-    return fTiaraHyball_SectorT_DetectorNbr.size() ; 
- 	 };
+    inline unsigned int GetRingEMult()    const {return fTiaraHyball_RingE_DetectorNbr.size();}
+    inline unsigned int GetRingTMult()    const {return fTiaraHyball_RingT_DetectorNbr.size();}
+    inline unsigned int GetSectorEMult()  const {return fTiaraHyball_SectorE_DetectorNbr.size();}
+    inline unsigned int GetSectorTMult()  const {return fTiaraHyball_SectorT_DetectorNbr.size();}
 
     ///////////// Fast Setters ////////////////////
   public:
