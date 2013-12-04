@@ -14,7 +14,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold TiaraHyball treated data                                       *
+ *  This class hold TiaraHyball treated data                                 *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -195,7 +195,7 @@ class TTiaraHyballPhysics : public TObject, public NPA::VDetector{
     TTiaraHyballSpectra*      m_Spectra;//!
 
   public:
-    map< vector<TString>,TH1* > GetSpectra() {return m_Spectra->GetMapHisto();} 
+    map< vector<TString>,TH1* > GetSpectra(); 
 
     ClassDef(TTiaraHyballPhysics,1)  // SharcPhysics structure
 };

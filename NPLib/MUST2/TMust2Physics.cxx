@@ -1060,6 +1060,10 @@ void TMust2Physics::ClearSpectra(){
   // To be done
 }
 ///////////////////////////////////////////////////////////////////////////
+map< vector<TString> , TH1*> TMust2Physics::GetSpectra() {
+return m_Spectra->GetMapHisto();
+} 
+///////////////////////////////////////////////////////////////////////////
 void TMust2Physics::AddParameterToCalibrationManager()
 {
   CalibrationManager* Cal = CalibrationManager::getInstance();
