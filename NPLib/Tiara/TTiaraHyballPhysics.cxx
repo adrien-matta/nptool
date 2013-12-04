@@ -149,7 +149,7 @@ void TTiaraHyballPhysics::PreTreat(){
       double Ring_T = fStrip_Ring_T(m_EventData , i);
       m_PreTreatedData->SetRingTDetectorNbr( m_EventData->GetRingTDetectorNbr(i) );
       m_PreTreatedData->SetRingTStripNbr( m_EventData->GetRingTStripNbr(i) );
-      m_PreTreatedData->SetRingTTime( m_EventData->GetRingTTime(i) );
+      m_PreTreatedData->SetRingTTime( Ring_T );
     }
   }
 
@@ -173,7 +173,7 @@ void TTiaraHyballPhysics::PreTreat(){
       double Sector_T = fStrip_Sector_T(m_EventData , i);
       m_PreTreatedData->SetSectorTDetectorNbr( m_EventData->GetSectorTDetectorNbr(i) );
       m_PreTreatedData->SetSectorTStripNbr( m_EventData->GetSectorTStripNbr(i) );
-      m_PreTreatedData->SetSectorTTime( m_EventData->GetSectorTTime(i) );
+      m_PreTreatedData->SetSectorTTime( Sector_T );
     }
   }
   return;
