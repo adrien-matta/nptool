@@ -24,15 +24,20 @@
  *****************************************************************************/
 // STL
 #include <vector>
-
+#include <map>
 // NPL
 #include "TTiaraHyballData.h"
+#include "TTiaraHyballSpectra.h"
 #include "../include/CalibrationManager.h"
 #include "../include/VDetector.h"
+
 // ROOT 
 #include "TVector2.h" 
 #include "TVector3.h" 
 #include "TObject.h"
+#include "TH1.h"
+
+class TTiaraHyballSpectra;
 
 using namespace std ;
 
@@ -101,6 +106,17 @@ class TTiaraHyballPhysics : public TObject, public NPA::VDetector{
     //   Those two method all to clear the Event Physics or Data
     void ClearEventPhysics() {Clear();}      
     void ClearEventData()    {m_EventData->Clear();}   
+
+    // Method related to the TSpectra classes, aimed at providing a framework for online applications
+    // Instantiate the Spectra class and the histogramm throught it
+    void InitSpectra();
+    // Fill the spectra hold by the spectra class
+    void FillSpectra();
+    // Used for Online mainly, perform check on the histo and for example change their color if issues are found
+    void CheckSpectra();
+    // Used for Online only, clear all the spectra hold by the Spectra class
+    void ClearSpectra();
+
 
   public:      //   Specific to TiaraHyball Array
 
@@ -174,6 +190,12 @@ class TTiaraHyballPhysics : public TObject, public NPA::VDetector{
     vector< vector < vector < double > > >   m_StripPositionX;//!
     vector< vector < vector < double > > >   m_StripPositionY;//!
     vector< vector < vector < double > > >   m_StripPositionZ;//!
+
+  private: // Spectra
+    TTiaraHyballSpectra*      m_Spectra;//!
+
+  public:
+    map< vector<TString>,TH1* > GetSpectra() {return m_Spectra->GetMapHisto();} 
 
     ClassDef(TTiaraHyballPhysics,1)  // SharcPhysics structure
 };

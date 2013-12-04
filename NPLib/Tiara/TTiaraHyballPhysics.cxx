@@ -495,7 +495,25 @@ void TTiaraHyballPhysics::ReadConfiguration(string Path){
   InitializeStandardParameter();
   ReadAnalysisConfig();
 }
+///////////////////////////////////////////////////////////////////////////
+void TTiaraHyballPhysics::InitSpectra(){  
+   m_Spectra = new TTiaraHyballSpectra();
+}
 
+///////////////////////////////////////////////////////////////////////////
+void TTiaraHyballPhysics::FillSpectra(){  
+   m_Spectra -> FillRawSpectra(m_EventData);
+   m_Spectra -> FillPreTreatedSpectra(m_PreTreatedData);
+  // m_Spectra -> FillPhysicsSpectra(m_EventPhysics);
+}
+///////////////////////////////////////////////////////////////////////////
+void TTiaraHyballPhysics::CheckSpectra(){  
+  // To be done
+}
+///////////////////////////////////////////////////////////////////////////
+void TTiaraHyballPhysics::ClearSpectra(){  
+  // To be done
+}
 ///////////////////////////////////////////////////////////////////////////
 void TTiaraHyballPhysics::AddParameterToCalibrationManager(){
   CalibrationManager* Cal = CalibrationManager::getInstance();
