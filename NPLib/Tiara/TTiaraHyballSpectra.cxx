@@ -85,13 +85,16 @@ void TTiaraHyballSpectra::InitRawSpectra()
    name = "HYB_SECT_E_RAW";
    AddHisto2D(name, name, fWedgesNumber*fSectorsNumber, 0, fWedgesNumber*fSectorsNumber, 512, 0, 8192, "TIARA/HYBALL/RAW/ENERGY");
 
-   // RING_RAW_MULT
-   name = "HYB_RING_E_RAW_MULT";
-   AddHisto1D(name, name, fWedgesNumber*fRingsNumber, 1, fWedgesNumber*fRingsNumber+1, "TIARA/HYBALL/RAW/MULT");
+   // MULT
+   for (unsigned int i = 0; i < fWedgesNumber; ++i) {   // loop on number of wedges
+      // RING_RAW_MULT
+      name = Form("HYB_W%d_RING_E_RAW_MULT", i);
+      AddHisto1D(name, name, fRingsNumber, 1, fRingsNumber+1, "TIARA/HYBALL/RAW/MULT");
 
-   // SECTOR_RAW_MULT
-   name = "HYB_SECT_E_RAW_MULT";
-   AddHisto1D(name, name, fWedgesNumber*fSectorsNumber, 1, fWedgesNumber*fSectorsNumber+1, "TIARA/HYBALL/RAW/MULT");
+      // SECTOR_RAW_MULT
+      name = Form("HYB_W%d_SECT_E_RAW_MULT", i);
+      AddHisto1D(name, name, fSectorsNumber, 1, fSectorsNumber+1, "TIARA/HYBALL/RAW/MULT");
+   } // end loop on number of wedges
 }
 
 
@@ -117,13 +120,16 @@ void TTiaraHyballSpectra::InitPreTreatedSpectra()
    name = "HYB_SECT_E_CAL";
    AddHisto2D(name, name, fWedgesNumber*fSectorsNumber, 0, fWedgesNumber*fSectorsNumber, 500, 0, 50, "TIARA/HYBALL/CAL/ENERGY");
 
-   // RING_CAL_MULT
-   name = "HYB_RING_E_CAL_MULT";
-   AddHisto1D(name, name, fWedgesNumber*fRingsNumber, 1, fWedgesNumber*fRingsNumber+1, "TIARA/HYBALL/CAL/MULT");
+   // MULT
+   for (unsigned int i = 0; i < fWedgesNumber; ++i) {   // loop on number of wedges
+      // RING_CAL_MULT
+      name = Form("HYB_W%d_RING_E_CAL_MULT", i);
+      AddHisto1D(name, name, fRingsNumber, 1, fRingsNumber+1, "TIARA/HYBALL/CAL/MULT");
 
-   // SECTOR_CAL_MULT
-   name = "HYB_SECT_E_CAL_MULT";
-   AddHisto1D(name, name, fWedgesNumber*fSectorsNumber, 1, fWedgesNumber*fSectorsNumber+1, "TIARA/HYBALL/CAL/MULT");
+      // SECTOR_CAL_MULT
+      name = Form("HYB_W%d_SECT_E_CAL_MULT", i);
+      AddHisto1D(name, name, fSectorsNumber, 1, fSectorsNumber+1, "TIARA/HYBALL/CAL/MULT");
+   } // end loop on number of wedges
 }
 
 
@@ -141,7 +147,6 @@ void TTiaraHyballSpectra::InitPhysicsSpectra()
    AddHisto2D(name, name, 360, 0, 180, 500, 0, 50, "TIARA/HYBALL/PHY");
 
    // Ring v.s. Sector Energy Correlation
-   // STRX_E_CAL
    name = "HYB_XY_COR";
    AddHisto2D(name, name, 500, 0, 50, 500, 0, 50, "TIARA/HYBALL/PHY"); 
 }
@@ -185,39 +190,27 @@ void TTiaraHyballSpectra::FillRawSpectra(TTiaraHyballData* RawData)
       unsigned short channel = RawData->GetRingEDetectorNbr(i) * fSectorsNumber + RawData->GetSectorEStripNbr(i);
       GetHisto(family, name) -> Fill(channel, RawData->GetRingEEnergy(i));
    }
-/*
-   // STRX MULT
-   int myMULT[fNumberOfTelescope];
-   for( unsigned int i = 0; i < fNumberOfTelescope; i++)
-      myMULT[i] = 0 ; 
 
-   for(unsigned int i = 0 ; i < RawData->GetMMStripXEMult();i++){
-      myMULT[RawData->GetMMStripXEDetectorNbr(i)-1] += 1;  
+   // RING_RAW_MULT
+   int myMULT[fWedgesNumber];
+   for (unsigned int i = 0; i < fWedgesNumber; i++) myMULT[i] = 0;
+   for (unsigned int i = 0; i < RawData->GetRingEMult(); i++) myMULT[RawData->GetRingEDetectorNbr(i)] += 1;
+
+   for (unsigned int i = 0; i < fWedgesNumber; i++) {
+      name   = Form("HYB_W%d_RING_E_RAW_MULT", i);
+      family = "TIARA/HYBALL/RAW/MULT";
+      GetHisto(family,name) -> Fill(myMULT[i]);
    }
 
-   for( unsigned int i = 0; i < fNumberOfTelescope; i++){
+   // RING_RAW_MULT
+   for (unsigned int i = 0; i < fWedgesNumber; i++) myMULT[i] = 0;
+   for (unsigned int i = 0; i < RawData->GetSectorEMult(); i++) myMULT[RawData->GetSectorEDetectorNbr(i)] += 1;
 
-      name = Form("MM%d_STRX_RAW_MULT", i+1);
-      family= "TIARA/HYBALL/RAW/MULT";
-      GetHisto(family,name)
-         -> Fill(myMULT[i]);
+   for (unsigned int i = 0; i < fWedgesNumber; i++) {
+      name   = Form("HYB_W%d_SECT_E_RAW_MULT", i);
+      family = "TIARA/HYBALL/RAW/MULT";
+      GetHisto(family,name) -> Fill(myMULT[i]);
    }
-
-   // STRY MULT
-   for( unsigned int i = 0; i < fNumberOfTelescope; i++)
-      myMULT[i] = 0 ; 
-
-   for(unsigned int i = 0 ; i < RawData->GetMMStripYEMult();i++){
-      myMULT[RawData->GetMMStripYEDetectorNbr(i)-1] += 1;  
-   }
-
-   for( unsigned int i = 0; i < fNumberOfTelescope; i++){
-      name = Form("MM%d_STRY_RAW_MULT", i+1);
-      family= "TIARA/HYBALL/RAW/MULT";
-      GetHisto(family,name)
-         -> Fill(myMULT[i]);
-   }
-   */
 }
 
 
@@ -260,39 +253,26 @@ void TTiaraHyballSpectra::FillPreTreatedSpectra(TTiaraHyballData* PreTreatedData
       GetHisto(family, name) -> Fill(channel, PreTreatedData->GetRingEEnergy(i));
    }
 
-/*
-   // STRX MULT
-   int myMULT[fNumberOfTelescope];
-   for( unsigned int i = 0; i < fNumberOfTelescope; i++)
-      myMULT[i] = 0 ; 
+   // RING_CAL_MULT
+   int myMULT[fWedgesNumber];
+   for (unsigned int i = 0; i < fWedgesNumber; i++) myMULT[i] = 0;
+   for (unsigned int i = 0; i < PreTreatedData->GetRingEMult(); i++) myMULT[PreTreatedData->GetRingEDetectorNbr(i)] += 1;
 
-   for(unsigned int i = 0 ; i < PreTreatedData->GetMMStripXEMult();i++){
-      myMULT[PreTreatedData->GetMMStripXEDetectorNbr(i)-1] += 1;  
+   for (unsigned int i = 0; i < fWedgesNumber; i++) {
+      name   = Form("HYB_W%d_RING_E_CAL_MULT", i);
+      family = "TIARA/HYBALL/CAL/MULT";
+      GetHisto(family,name) -> Fill(myMULT[i]);
    }
 
-   for( unsigned int i = 0; i < fNumberOfTelescope; i++){
+   // RING_CAL_MULT
+   for (unsigned int i = 0; i < fWedgesNumber; i++) myMULT[i] = 0;
+   for (unsigned int i = 0; i < PreTreatedData->GetSectorEMult(); i++) myMULT[PreTreatedData->GetSectorEDetectorNbr(i)] += 1;
 
-      name = Form("MM%d_STRX_CAL_MULT", i+1);
-      family= "TIARA/HYBALL/CAL/MULT";
-      GetHisto(family,name)
-         -> Fill(myMULT[i]);
+   for (unsigned int i = 0; i < fWedgesNumber; i++) {
+      name   = Form("HYB_W%d_SECT_E_CAL_MULT", i);
+      family = "TIARA/HYBALL/CAL/MULT";
+      GetHisto(family,name) -> Fill(myMULT[i]);
    }
-
-   // STRY MULT
-   for( unsigned int i = 0; i < fNumberOfTelescope; i++)
-      myMULT[i] = 0 ; 
-
-   for(unsigned int i = 0 ; i < PreTreatedData->GetMMStripYEMult();i++){
-      myMULT[PreTreatedData->GetMMStripYEDetectorNbr(i)-1] += 1;  
-   }
-
-   for( unsigned int i = 0; i < fNumberOfTelescope; i++){
-      name = Form("MM%d_STRY_CAL_MULT", i+1);
-      family= "TIARA/HYBALL/CAL/MULT";
-      GetHisto(family,name)
-         -> Fill(myMULT[i]);
-   }
-   */
 }
 
 
