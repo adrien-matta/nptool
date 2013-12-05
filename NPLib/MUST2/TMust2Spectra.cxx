@@ -649,11 +649,14 @@ void TMust2Spectra::WriteHisto(TString filename){
 ///////////////////////////////////////////////////////////////////////////////
 void TMust2Spectra::CheckSpectra(){
 map< vector<TString>, TH1* >::iterator it;
+  Color_t ok_color = kTeal+9
+  Color_t warning_color = kOrange+8
+  Color_t bad_color = kRed;
 
   for (it=fMapHisto.begin(); it!=fMapHisto.end(); ++it){
-    it->second->SetLineColor(kGreen);
+    it->second->SetLineColor(ok_color);
     it->second->SetFillStyle(1001);
-    it->second->SetFillColor(kGreen);
+    it->second->SetFillColor(ok_color);
   }
 
 }
