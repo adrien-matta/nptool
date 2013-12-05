@@ -31,6 +31,7 @@
 #include <TRandom3.h>
 //   NPLib
 #include "TCATSData.h"
+#include "TCATSSpectra.h"
 #include "../include/VDetector.h"
 #include "../include/CalibrationManager.h"
 #include "../include/DetectorManager.h"
@@ -38,6 +39,8 @@
 #define NBDETECTOR	2
 #define	NBSTRIPS	28
 
+// forward declaration
+class TCATSSpectra;
 
 using namespace std ;
 enum reconstruction{NO,SECHS,GAUSS,BAR3,BAR4,BAR5};
@@ -51,10 +54,9 @@ class TCATSPhysics : public TObject, public NPA::VDetector
   ~TCATSPhysics();
 
  private:   //   Root Input and Output tree classes
-            
-         TCATSData*         m_EventData;//!
-         TCATSData*         m_PreTreatedData;//!
-         TCATSPhysics*      m_EventPhysics;//!
+  TCATSData*         m_EventData;//!
+  TCATSData*         m_PreTreatedData;//!
+  TCATSPhysics*      m_EventPhysics;//!
 
  public :
  // marker of the cats used
@@ -170,6 +172,16 @@ class TCATSPhysics : public TObject, public NPA::VDetector
       void ClearEventPhysics() {Clear();}      
       void ClearEventData()    {m_EventData->Clear();}    
 
+      // Method related to the TSpectra classes, aimed at providing a framework for online applications
+      // Instantiate the Spectra class and the histogramm throught it
+      void InitSpectra();
+      // Fill the spectra hold by the spectra class
+      void FillSpectra();
+      // Used for Online mainly, perform check on the histo and for example change their color if issues are found
+      void CheckSpectra();
+      // Used for Online only, clear all the spectra hold by the Spectra class
+      void ClearSpectra();
+
       void  Clear();
       void  Clear(const Option_t*) {};  
 	
@@ -231,7 +243,14 @@ class TCATSPhysics : public TObject, public NPA::VDetector
       double GetPositionOnTargetX()  {return PositionOnTargetX;}  
       double GetPositionOnTargetY()  {return PositionOnTargetY;}
 
-       ClassDef(TCATSPhysics,1)  // CATSPhysics structure
+ private: // Spectra Class   
+   TCATSSpectra*      m_Spectra;//! 
+
+ public: // Spectra Getter
+   map< vector<TString> , TH1*> GetSpectra();
+
+
+   ClassDef(TCATSPhysics,1)  // CATSPhysics structure
 };
 
 

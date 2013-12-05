@@ -43,9 +43,10 @@ ClassImp(TCATSPhysics)
 TCATSPhysics::TCATSPhysics()
 {
   m_EventData 				= new TCATSData	;
-  m_PreTreatedData          = new TCATSData ;
+  m_PreTreatedData      = new TCATSData ;
   m_EventPhysics 			= this			;
-  m_NumberOfCATS            = 0             ;
+  m_Spectra             = 0;
+  m_NumberOfCATS        = 0             ;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -776,12 +777,37 @@ void TCATSPhysics::ReadAnalysisConfig()
    }
 } 
 
+
+///////////////////////////////////////////////////////////////////////////
+void TCATSPhysics::InitSpectra(){
+   m_Spectra = new TCATSSpectra(m_NumberOfCATS);
+}
+
+///////////////////////////////////////////////////////////////////////////
+void TCATSPhysics::FillSpectra(){
+   m_Spectra -> FillRawSpectra(m_EventData);
+   m_Spectra -> FillPreTreatedSpectra(m_PreTreatedData);
+   m_Spectra -> FillPhysicsSpectra(m_EventPhysics);
+}
+///////////////////////////////////////////////////////////////////////////
+void TCATSPhysics::CheckSpectra(){
+   // To be done
+}
+///////////////////////////////////////////////////////////////////////////
+void TCATSPhysics::ClearSpectra(){
+   // To be done
+}
+///////////////////////////////////////////////////////////////////////////
+map< vector<TString> , TH1*> TCATSPhysics::GetSpectra() {
+   return m_Spectra->GetMapHisto();
+}
+
 /////////////////////////////////////////////////////////////////////
 //	Add Parameter to the CalibrationManger
 void TCATSPhysics::AddParameterToCalibrationManager()	
 {
-  CalibrationManager* Cal = CalibrationManager::getInstance();
-  for(int i = 0 ; i < m_NumberOfCATS ; i++)
+   CalibrationManager* Cal = CalibrationManager::getInstance();
+   for(int i = 0 ; i < m_NumberOfCATS ; i++)
     {
       
       for( int j = 0 ; j < 28 ; j++)

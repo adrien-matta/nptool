@@ -71,19 +71,19 @@ void TTiaraHyballSpectra::InitRawSpectra()
 
    // HIT_RING_RAW
    name = "HYB_HIT_RING_RAW";
-   AddHisto1D(name, name, fWedgesNumber*fRingsNumber, 0, fWedgesNumber*fRingsNumber, "TIARA/HYBALL/RAW/HIT");
+   AddHisto1D(name, name, fWedgesNumber*fRingsNumber, 1, fWedgesNumber*fRingsNumber+1, "TIARA/HYBALL/RAW/HIT");
 
    // HIT_SECTOR_RAW
    name = "HYB_HIT_SECT_RAW";
-   AddHisto1D(name, name, fWedgesNumber*fRingsNumber, 0, fWedgesNumber*fSectorsNumber, "TIARA/HYBALL/RAW/HIT");
+   AddHisto1D(name, name, fWedgesNumber*fSectorsNumber, 1, fWedgesNumber*fSectorsNumber+1, "TIARA/HYBALL/RAW/HIT");
 
    // RING_E_RAW
    name = "HYB_RING_E_RAW";
-   AddHisto2D(name, name, fWedgesNumber*fRingsNumber, 0, fWedgesNumber*fRingsNumber, 512, 0, 8192, "TIARA/HYBALL/RAW/ENERGY");
+   AddHisto2D(name, name, fWedgesNumber*fRingsNumber, 1, fWedgesNumber*fRingsNumber+1, 512, 0, 16384, "TIARA/HYBALL/RAW/ENERGY");
 
    // SECTOR_E_RAW
    name = "HYB_SECT_E_RAW";
-   AddHisto2D(name, name, fWedgesNumber*fSectorsNumber, 0, fWedgesNumber*fSectorsNumber, 512, 0, 8192, "TIARA/HYBALL/RAW/ENERGY");
+   AddHisto2D(name, name, fWedgesNumber*fSectorsNumber, 1, fWedgesNumber*fSectorsNumber+1, 512, 0, 16384, "TIARA/HYBALL/RAW/ENERGY");
 
    // MULT
    for (unsigned int i = 0; i < fWedgesNumber; ++i) {   // loop on number of wedges
@@ -106,19 +106,19 @@ void TTiaraHyballSpectra::InitPreTreatedSpectra()
 
    // HIT_RING_CAL
    name = "HYB_HIT_RING_CAL";
-   AddHisto1D(name, name, fWedgesNumber*fRingsNumber, 0, fWedgesNumber*fRingsNumber, "TIARA/HYBALL/CAL/HIT");
+   AddHisto1D(name, name, fWedgesNumber*fRingsNumber, 1, fWedgesNumber*fRingsNumber+1, "TIARA/HYBALL/CAL/HIT");
 
    // HIT_SECTOR_CAL
    name = "HYB_HIT_SECT_CAL";
-   AddHisto1D(name, name, fWedgesNumber*fRingsNumber, 0, fWedgesNumber*fSectorsNumber, "TIARA/HYBALL/CAL/HIT");
+   AddHisto1D(name, name, fWedgesNumber*fSectorsNumber, 1, fWedgesNumber*fSectorsNumber+1, "TIARA/HYBALL/CAL/HIT");
 
    // RING_E_CAL
    name = "HYB_RING_E_CAL";
-   AddHisto2D(name, name, fWedgesNumber*fRingsNumber, 0, fWedgesNumber*fRingsNumber, 500, 0, 50, "TIARA/HYBALL/CAL/ENERGY");
+   AddHisto2D(name, name, fWedgesNumber*fRingsNumber, 1, fWedgesNumber*fRingsNumber+1, 500, 0, 50, "TIARA/HYBALL/CAL/ENERGY");
 
    // SECTOR_E_CAL
    name = "HYB_SECT_E_CAL";
-   AddHisto2D(name, name, fWedgesNumber*fSectorsNumber, 0, fWedgesNumber*fSectorsNumber, 500, 0, 50, "TIARA/HYBALL/CAL/ENERGY");
+   AddHisto2D(name, name, fWedgesNumber*fSectorsNumber, 1, fWedgesNumber*fSectorsNumber+1, 500, 0, 50, "TIARA/HYBALL/CAL/ENERGY");
 
    // MULT
    for (unsigned int i = 0; i < fWedgesNumber; ++i) {   // loop on number of wedges
@@ -163,7 +163,7 @@ void TTiaraHyballSpectra::FillRawSpectra(TTiaraHyballData* RawData)
    family = "TIARA/HYBALL/RAW/HIT";
    name = "HYB_HIT_RING_RAW";
    for (unsigned int i = 0; i < RawData->GetRingEMult(); i++) {
-      unsigned short channel = RawData->GetRingEDetectorNbr(i) * fRingsNumber + RawData->GetRingEStripNbr(i);
+      unsigned short channel = (RawData->GetRingEDetectorNbr(i)-1) * fRingsNumber + RawData->GetRingEStripNbr(i);
       GetHisto(family, name) -> Fill(channel);
    }
 
@@ -171,7 +171,7 @@ void TTiaraHyballSpectra::FillRawSpectra(TTiaraHyballData* RawData)
    family = "TIARA/HYBALL/RAW/HIT";
    name = "HYB_HIT_SECT_RAW";
    for (unsigned int i = 0; i < RawData->GetSectorEMult(); i++) {
-      unsigned short channel = RawData->GetSectorEDetectorNbr(i) * fSectorsNumber + RawData->GetSectorEStripNbr(i);
+      unsigned short channel = (RawData->GetSectorEDetectorNbr(i)-1) * fSectorsNumber + RawData->GetSectorEStripNbr(i);
       GetHisto(family, name) -> Fill(channel);
    }
 
@@ -179,7 +179,7 @@ void TTiaraHyballSpectra::FillRawSpectra(TTiaraHyballData* RawData)
    family = "TIARA/HYBALL/RAW/ENERGY";
    name = "HYB_RING_E_RAW";
    for (unsigned int i = 0; i < RawData->GetRingEMult(); i++) {
-      unsigned short channel = RawData->GetRingEDetectorNbr(i) * fRingsNumber + RawData->GetRingEStripNbr(i);
+      unsigned short channel = (RawData->GetRingEDetectorNbr(i)-1) * fRingsNumber + RawData->GetRingEStripNbr(i);
       GetHisto(family, name) -> Fill(channel, RawData->GetRingEEnergy(i));
    }
 
@@ -187,14 +187,14 @@ void TTiaraHyballSpectra::FillRawSpectra(TTiaraHyballData* RawData)
    family = "TIARA/HYBALL/RAW/ENERGY";
    name = "HYB_SECT_E_RAW";
    for (unsigned int i = 0; i < RawData->GetRingEMult(); i++) {
-      unsigned short channel = RawData->GetRingEDetectorNbr(i) * fSectorsNumber + RawData->GetSectorEStripNbr(i);
+      unsigned short channel = (RawData->GetRingEDetectorNbr(i)-1) * fSectorsNumber + RawData->GetSectorEStripNbr(i);
       GetHisto(family, name) -> Fill(channel, RawData->GetRingEEnergy(i));
    }
 
    // RING_RAW_MULT
    int myMULT[fWedgesNumber];
    for (unsigned int i = 0; i < fWedgesNumber; i++) myMULT[i] = 0;
-   for (unsigned int i = 0; i < RawData->GetRingEMult(); i++) myMULT[RawData->GetRingEDetectorNbr(i)] += 1;
+   for (unsigned int i = 0; i < RawData->GetRingEMult(); i++) myMULT[(RawData->GetRingEDetectorNbr(i)-1)] += 1;
 
    for (unsigned int i = 0; i < fWedgesNumber; i++) {
       name   = Form("HYB_W%d_RING_E_RAW_MULT", i);
@@ -204,7 +204,7 @@ void TTiaraHyballSpectra::FillRawSpectra(TTiaraHyballData* RawData)
 
    // RING_RAW_MULT
    for (unsigned int i = 0; i < fWedgesNumber; i++) myMULT[i] = 0;
-   for (unsigned int i = 0; i < RawData->GetSectorEMult(); i++) myMULT[RawData->GetSectorEDetectorNbr(i)] += 1;
+   for (unsigned int i = 0; i < RawData->GetSectorEMult(); i++) myMULT[(RawData->GetSectorEDetectorNbr(i)-1)] += 1;
 
    for (unsigned int i = 0; i < fWedgesNumber; i++) {
       name   = Form("HYB_W%d_SECT_E_RAW_MULT", i);
@@ -225,7 +225,7 @@ void TTiaraHyballSpectra::FillPreTreatedSpectra(TTiaraHyballData* PreTreatedData
    family = "TIARA/HYBALL/CAL/HIT";
    name = "HYB_HIT_RING_CAL";
    for (unsigned int i = 0; i < PreTreatedData->GetRingEMult(); i++) {
-      unsigned short channel = PreTreatedData->GetRingEDetectorNbr(i) * fRingsNumber + PreTreatedData->GetRingEStripNbr(i);
+      unsigned short channel = (PreTreatedData->GetRingEDetectorNbr(i)-1) * fRingsNumber + PreTreatedData->GetRingEStripNbr(i);
       GetHisto(family, name) -> Fill(channel);
    }
 
@@ -233,7 +233,7 @@ void TTiaraHyballSpectra::FillPreTreatedSpectra(TTiaraHyballData* PreTreatedData
    family = "TIARA/HYBALL/CAL/HIT";
    name = "HYB_HIT_SECT_CAL";
    for (unsigned int i = 0; i < PreTreatedData->GetSectorEMult(); i++) {
-      unsigned short channel = PreTreatedData->GetSectorEDetectorNbr(i) * fSectorsNumber + PreTreatedData->GetSectorEStripNbr(i);
+      unsigned short channel = (PreTreatedData->GetSectorEDetectorNbr(i)-1) * fSectorsNumber + PreTreatedData->GetSectorEStripNbr(i);
       GetHisto(family, name) -> Fill(channel);
    }
 
@@ -241,7 +241,7 @@ void TTiaraHyballSpectra::FillPreTreatedSpectra(TTiaraHyballData* PreTreatedData
    family = "TIARA/HYBALL/CAL/ENERGY";
    name = "HYB_RING_E_CAL";
    for (unsigned int i = 0; i < PreTreatedData->GetRingEMult(); i++) {
-      unsigned short channel = PreTreatedData->GetRingEDetectorNbr(i) * fRingsNumber + PreTreatedData->GetRingEStripNbr(i);
+      unsigned short channel = (PreTreatedData->GetRingEDetectorNbr(i)-1) * fRingsNumber + PreTreatedData->GetRingEStripNbr(i);
       GetHisto(family, name) -> Fill(channel, PreTreatedData->GetRingEEnergy(i));
    }
 
@@ -249,14 +249,14 @@ void TTiaraHyballSpectra::FillPreTreatedSpectra(TTiaraHyballData* PreTreatedData
    family = "TIARA/HYBALL/CAL/ENERGY";
    name = "HYB_SECT_E_CAL";
    for (unsigned int i = 0; i < PreTreatedData->GetRingEMult(); i++) {
-      unsigned short channel = PreTreatedData->GetRingEDetectorNbr(i) * fSectorsNumber + PreTreatedData->GetSectorEStripNbr(i);
+      unsigned short channel = (PreTreatedData->GetRingEDetectorNbr(i)-1) * fSectorsNumber + PreTreatedData->GetSectorEStripNbr(i);
       GetHisto(family, name) -> Fill(channel, PreTreatedData->GetRingEEnergy(i));
    }
 
    // RING_CAL_MULT
    int myMULT[fWedgesNumber];
    for (unsigned int i = 0; i < fWedgesNumber; i++) myMULT[i] = 0;
-   for (unsigned int i = 0; i < PreTreatedData->GetRingEMult(); i++) myMULT[PreTreatedData->GetRingEDetectorNbr(i)] += 1;
+   for (unsigned int i = 0; i < PreTreatedData->GetRingEMult(); i++) myMULT[(PreTreatedData->GetRingEDetectorNbr(i)-1)] += 1;
 
    for (unsigned int i = 0; i < fWedgesNumber; i++) {
       name   = Form("HYB_W%d_RING_E_CAL_MULT", i);
@@ -266,7 +266,7 @@ void TTiaraHyballSpectra::FillPreTreatedSpectra(TTiaraHyballData* PreTreatedData
 
    // RING_CAL_MULT
    for (unsigned int i = 0; i < fWedgesNumber; i++) myMULT[i] = 0;
-   for (unsigned int i = 0; i < PreTreatedData->GetSectorEMult(); i++) myMULT[PreTreatedData->GetSectorEDetectorNbr(i)] += 1;
+   for (unsigned int i = 0; i < PreTreatedData->GetSectorEMult(); i++) myMULT[(PreTreatedData->GetSectorEDetectorNbr(i)-1)] += 1;
 
    for (unsigned int i = 0; i < fWedgesNumber; i++) {
       name   = Form("HYB_W%d_SECT_E_CAL_MULT", i);
