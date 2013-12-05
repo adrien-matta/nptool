@@ -33,6 +33,13 @@ using namespace TiaraHyball_LOCAL;
 #include "RootOutput.h"
 #include "TAsciiFile.h"
 #include "NPOptionManager.h"
+#include "NPGlobalSystemOfUnits.h"
+#include "NPPhysicalConstants.h"
+#ifdef NP_SYSTEM_OF_UNITS_H
+using namespace NPUNITS;
+#endif
+
+
 //   ROOT
 #include "TChain.h"
 ///////////////////////////////////////////////////////////////////////////
