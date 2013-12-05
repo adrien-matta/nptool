@@ -343,7 +343,7 @@ template<typename T> int ConfigReader::Read(string token, std::vector<std::vecto
   return npar ;
 }
 
-template<typename T> int ConfigReader::Read(string token, std::vector<T> &v1, int dimension = 1){
+template<typename T> int ConfigReader::Read(string token, std::vector<T> &v1, int dimension){
   if((dimension<1) || (token.size()==0) ) return 0 ;
   if(!files_already_read) {
     if (FindAllToken() == -1) {
