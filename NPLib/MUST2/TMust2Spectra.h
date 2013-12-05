@@ -63,6 +63,8 @@ class TMust2Spectra {
     void FillRawSpectra(TMust2Data*);
     void FillPreTreatedSpectra(TMust2Data*);
     void FillPhysicsSpectra(TMust2Physics*);
+    // Check the Spectra
+    void CheckSpectra();
 
   public:
     // get map histo which will be used for GSpectra in GUser
