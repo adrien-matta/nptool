@@ -217,19 +217,19 @@ void TMust2Spectra::InitPhysicsSpectra(){
   // ID plot detector by detector
   for (unsigned int i = 0; i < fNumberOfTelescope; i++) { // loop on number of detectors
     // E-TOF:
-    name = Form("MM%d_E_TOF",i);
+    name = Form("MM%d_E_TOF",i+1);
     AddHisto2D(name, name,500,0,50,1000,200,1200,"MUST2/PHY");
 
     // SILIE-DE:
-    name = Form("MM%d_SILIE_E",i);
+    name = Form("MM%d_SILIE_E",i+1);
     AddHisto2D(name, name,500,0,200,500,0,50,"MUST2/PHY");
 
     // CSI-DE:
-    name = Form("MM%d_CSIE_E",i);
+    name = Form("MM%d_CSIE_E",i+1);
     AddHisto2D(name, name,500,0,500,500,0,50,"MUST2/PHY");
 
     // Etot-DE:
-    name = Form("MM%d_Etot_E",i);
+    name = Form("MM%d_Etot_E",i+1);
     AddHisto2D(name, name,500,0,500,500,0,50,"MUST2/PHY");
   }
 }
