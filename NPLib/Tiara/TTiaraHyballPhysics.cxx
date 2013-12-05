@@ -83,7 +83,6 @@ void TTiaraHyballPhysics::BuildPhysicalEvent(){
       double Ring_E = m_PreTreatedData->GetRingEEnergy( couple[i].X() ) ;
       double Sector_E  = m_PreTreatedData->GetSectorEEnergy( couple[i].Y() ) ;
 
-
       // Search for associate Time:
       double Ring_T = -1000 ;
       unsigned int StripRingTMult = m_PreTreatedData->GetRingTMult(); 
@@ -120,7 +119,6 @@ void TTiaraHyballPhysics::BuildPhysicalEvent(){
 
       Strip_Ring.push_back(Ring) ;
       Strip_Sector.push_back(Sector) ;
-
     }
   }
 }
@@ -215,7 +213,6 @@ vector < TVector2 > TTiaraHyballPhysics :: Match_Ring_Sector(){
   if( ArrayOfGoodCouple.size() > m_PreTreatedData->GetRingEMult() ) ArrayOfGoodCouple.clear() ;
   return ArrayOfGoodCouple;
 }
-
 
 ////////////////////////////////////////////////////////////////////////////
 bool TTiaraHyballPhysics :: IsValidChannel(const string DetectorType, const int telescope , const int channel){
@@ -390,7 +387,6 @@ void TTiaraHyballPhysics::Clear(){
   StripSector_T.clear() ;
   Strip_Ring.clear() ;
   Strip_Sector.clear() ;
-
 }
 ///////////////////////////////////////////////////////////////////////////
 
@@ -542,7 +538,6 @@ void TTiaraHyballPhysics::InitializeRootInputRaw(){
   inputChain->SetBranchStatus( "TiaraHyball" , true )               ;
   inputChain->SetBranchStatus( "fTiaraHyball_*" , true )               ;
   inputChain->SetBranchAddress( "TiaraHyball" , &m_EventData )      ;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -567,22 +562,20 @@ void TTiaraHyballPhysics::InitializeRootOutput(){
   outputTree->Branch( "TiaraHyball" , "TTiaraHyballPhysics" , &m_EventPhysics );
 }
 
-
 /////   Specific to TiaraHyballArray   ////
 void TTiaraHyballPhysics::AddWedgeDetector( double R,double Phi,double Z){
 
-  double Wedge_R_Min = 9.+R;
-  double Wedge_R_Max = 41.0+R;
+  double Wedge_R_Min = 32.6+R;
+  double Wedge_R_Max = 135.1+R;
+  double Wedge_Phi_Min = -27.2*deg/rad  ;
+  double Wedge_Phi_Max = 27.2*deg/rad ;
+  Phi= Phi*deg/rad;
 
-  double Wedge_Phi_Min = 2.0*M_PI/180.  ;
-  double Wedge_Phi_Max = 83.6*M_PI/180. ;
-  Phi= Phi*M_PI/180.;
-
-  int    Wedge_Ring_NumberOfStrip = 16 ;
-  int    Wedge_Sector_NumberOfStrip = 24 ;
+  int Wedge_Ring_NumberOfStrip = 16 ;
+  int Wedge_Sector_NumberOfStrip = 8 ;
 
   double StripPitchSector = (Wedge_Phi_Max-Wedge_Phi_Min)/Wedge_Sector_NumberOfStrip ;
-  double StripPitchRing = (Wedge_R_Max-Wedge_R_Min)/Wedge_Ring_NumberOfStrip  ; 
+  double StripPitchRing   = (Wedge_R_Max-Wedge_R_Min)/Wedge_Ring_NumberOfStrip  ; 
 
   TVector3 Strip_1_1;
 
@@ -623,25 +616,6 @@ void TTiaraHyballPhysics::AddWedgeDetector( double R,double Phi,double Z){
 }
 
 TVector3 TTiaraHyballPhysics::GetDetectorNormal( const int i) const{
-  /*  TVector3 U =    TVector3 ( GetStripPositionX( DetectorNumber[i] , 24 , 1 ) ,
-      GetStripPositionY( DetectorNumber[i] , 24 , 1 ) ,
-      GetStripPositionZ( DetectorNumber[i] , 24 , 1 ) )
-
-      -TVector3 ( GetStripPositionX( DetectorNumber[i] , 1 , 1 ) ,
-      GetStripPositionY( DetectorNumber[i] , 1 , 1 ) ,
-      GetStripPositionZ( DetectorNumber[i] , 1 , 1 ) );
-
-      TVector3 V =    TVector3 ( GetStripPositionX( DetectorNumber[i] , 24 , 48 ) ,
-      GetStripPositionY( DetectorNumber[i] , 24 , 48 ) ,
-      GetStripPositionZ( DetectorNumber[i] , 24 , 48 ) )
-
-      -TVector3 ( GetStripPositionX( DetectorNumber[i] , 24 , 1 ) ,
-      GetStripPositionY( DetectorNumber[i] , 24 , 1 ) ,
-      GetStripPositionZ( DetectorNumber[i] , 24 , 1 ) );
-
-      TVector3 Normal = U.Cross(V);
-
-      return(Normal.Unit()) ;*/
 
   return (TVector3(0,0,i));
 
@@ -662,12 +636,12 @@ void TTiaraHyballPhysics::InitializeStandardParameter(){
   m_RingChannelStatus.clear()    ;
   m_SectorChannelStatus.clear()    ;
 
-  ChannelStatus.resize(24,true);
+  ChannelStatus.resize(16,true);
   for(int i = 0 ; i < m_NumberOfDetector ; ++i){
     m_RingChannelStatus[i] = ChannelStatus;
   }
 
-  ChannelStatus.resize(48,true);
+  ChannelStatus.resize(8,true);
   for(int i = 0 ; i < m_NumberOfDetector ; ++i){
     m_SectorChannelStatus[i] = ChannelStatus;
   }
