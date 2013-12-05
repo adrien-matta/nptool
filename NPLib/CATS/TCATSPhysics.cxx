@@ -1652,7 +1652,7 @@ namespace LOCAL_CATS
 
 	double fCATS_X_Q(const TCATSData* m_EventData , const int i)
 		{
-			return CalibrationManager::getInstance()->ApplyCalibration( "CATS/D" + itoa( m_EventData->GetCATSDetX(i) ) + "_X" + itoa( m_EventData->GetCATSStripX(i) ) + "_Q",   
+         return CalibrationManager::getInstance()->ApplyCalibration( "CATS/D" + itoa( m_EventData->GetCATSDetX(i) ) + "_X" + itoa( m_EventData->GetCATSStripX(i) ) + "_Q",   
 																					m_EventData->GetCATSChargeX(i) + gRandom->Rndm() - fCATS_Ped_X(m_EventData, i) );
 		}
 	
