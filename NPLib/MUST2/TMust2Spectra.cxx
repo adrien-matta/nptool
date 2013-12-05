@@ -563,7 +563,7 @@ void TMust2Spectra::FillPhysicsSpectra(TMust2Physics* Physics){
       Etot = Physics->SiLi_E[i];
       GetHisto(family,name)->Fill(Physics->SiLi_E[i],Physics->Si_E[i]);
       
-      name = Form("MM%d_SILIE_SIE", Physics->TelescopeNumber[i]);
+      name = Form("MM%d_SILIE_E", Physics->TelescopeNumber[i]);
       GetHisto(family,name)->Fill(Physics->SiLi_E[i],Physics->Si_E[i]);
      }
 
