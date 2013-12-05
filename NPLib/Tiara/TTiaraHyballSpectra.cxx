@@ -75,7 +75,7 @@ void TTiaraHyballSpectra::InitRawSpectra()
 
    // HIT_SECTOR_RAW
    name = "HYB_HIT_SECT_RAW";
-   AddHisto1D(name, name, fWedgesNumber*fRingsNumber, 0, fWedgesNumber*fRingsNumber, "TIARA/HYBALL/RAW/HIT");
+   AddHisto1D(name, name, fWedgesNumber*fRingsNumber, 0, fWedgesNumber*fSectorsNumber, "TIARA/HYBALL/RAW/HIT");
 
    // RING_E_RAW
    name = "HYB_RING_E_RAW";
@@ -110,7 +110,7 @@ void TTiaraHyballSpectra::InitPreTreatedSpectra()
 
    // HIT_SECTOR_CAL
    name = "HYB_HIT_SECT_CAL";
-   AddHisto1D(name, name, fWedgesNumber*fRingsNumber, 0, fWedgesNumber*fRingsNumber, "TIARA/HYBALL/CAL/HIT");
+   AddHisto1D(name, name, fWedgesNumber*fRingsNumber, 0, fWedgesNumber*fSectorsNumber, "TIARA/HYBALL/CAL/HIT");
 
    // RING_E_CAL
    name = "HYB_RING_E_CAL";
