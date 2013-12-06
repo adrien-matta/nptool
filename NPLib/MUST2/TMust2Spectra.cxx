@@ -650,8 +650,8 @@ void TMust2Spectra::WriteHisto(TString filename){
 void TMust2Spectra::CheckSpectra(){
 map< vector<TString>, TH1* >::iterator it;
   Color_t ok_color = kTeal+9;
-  Color_t warning_color = kOrange+8;
-  Color_t bad_color = kRed;
+  Color_t warning_color = kOrange+8;   warning_color *= 1;
+  Color_t bad_color = kRed;            bad_color *= 1;
 
   for (it=fMapHisto.begin(); it!=fMapHisto.end(); ++it){
     it->second->SetLineColor(ok_color);
