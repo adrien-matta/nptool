@@ -1,5 +1,5 @@
-#ifndef __MUST2DATA__
-#define __MUST2DATA__
+#ifndef __CHARISSADATA__
+#define __CHARISSADATA__
 /*****************************************************************************
  * Copyright (C) 2009-2013    this file is part of the NPTool Project        *
  *                                                                           *
