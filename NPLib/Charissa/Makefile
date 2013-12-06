@@ -10,7 +10,7 @@ all:            $(SHARELIB)
 
 ## MUST2 ##
 #libCharissa.so: TCharissaData.o TCharissaDataDict.o TCharissaPhysics.o  TCharissaPhysicsDict.o TCharissaSpectra.o 
-libCharissa.so: TCharissaData.o TCharissaDataDict.o
+libCharissa.so: TCharissaData.o TCharissaDataDict.o TCharissaSpectra.o
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TCharissaDataDict.cxx:	TCharissaData.h
