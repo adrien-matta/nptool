@@ -422,7 +422,7 @@ void TTiaraHyballPhysics::ReadConfiguration(string Path){
 
     getline(ConfigFile, LineBuffer);
     // cout << LineBuffer << endl;
-    if (LineBuffer.compare(0, 5, "TiaraHyball") == 0)
+    if (LineBuffer.compare(0, 11, "TiaraHyball") == 0)
       ReadingStatus = true;
 
     while (ReadingStatus && !ConfigFile.eof()) {

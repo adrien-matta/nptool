@@ -9,11 +9,14 @@ all:            $(SHARELIB)
 ############### Detector ##############
 
 ## Sharc ##
-libTiara.so:	TTiaraBarrelData.o	TTiaraBarrelDataDict.o TTiaraHyballData.o	TTiaraHyballDataDict.o TTiaraHyballPhysics.o TTiaraHyballPhysicsDict.o TTiaraHyballSpectra.o
+libTiara.so:	TTiaraBarrelData.o	TTiaraBarrelDataDict.o TTiaraBarrelPhysics.o TTiaraBarrelPhysicsDict.o TTiaraHyballData.o	TTiaraHyballDataDict.o TTiaraHyballPhysics.o TTiaraHyballPhysicsDict.o TTiaraHyballSpectra.o
 
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TTiaraBarrelDataDict.cxx:	TTiaraBarrelData.h
+			rootcint -f $@ -c $^
+
+TTiaraBarrelPhysicsDict.cxx:	TTiaraBarrelPhysics.h
 			rootcint -f $@ -c $^
 
 TTiaraHyballDataDict.cxx:	TTiaraHyballData.h

@@ -66,24 +66,31 @@ TiaraHyball
 TiaraHyballWedge
    Z= -147
    R= 0
-   PHI= 0
+   Phi= 0
 TiaraHyballWedge
    Z= -147
    R= 0
-   PHI= 60
+   Phi= 60
 TiaraHyballWedge
    Z= -147
    R= 0
-   PHI= 120
+   Phi= 120
 TiaraHyballWedge
    Z= -147
    R= 0
-   PHI= 180
+   Phi= 180
 TiaraHyballWedge
    Z= -147
    R= 0
-   PHI= 240
+   Phi= 240
 TiaraHyballWedge
    Z= -147
    R= 0
-   PHI= 300
+   Phi= 300
+%%%%%%%%%%%%%%%%%%%%%%%%%%%         
+TiaraBarrel
+   X= 0
+   Y= 0
+   Z= 0
+   OuterBarrel= 1
+   InnerBarrel= 1

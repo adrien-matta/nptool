@@ -38,6 +38,7 @@
 #include "TPlasticPhysics.h"
 #include "TTrifoilPhysics.h"
 #include "TTiaraHyballPhysics.h"
+#include "TTiaraBarrelPhysics.h"
 #include "TChateauCristalPhysics.h"
 #include "GaspardTracker.h"
 #include "Hyde2Tracker.h"
@@ -95,7 +96,8 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
    Bool_t EXL                 = false;
    Bool_t TAC                 = false;
    Bool_t TiaraHyball         = false;
-  //////////////////////////////////////////////////////////////////////////////////////////
+   Bool_t TiaraBarrel         = false;
+//////////////////////////////////////////////////////////////////////////////////////////
   string GlobalPath = getenv("NPTOOL");
   string StandardPath = GlobalPath + "/Inputs/DetectorConfiguration/" + Path;
   ifstream ConfigFile;
@@ -528,6 +530,26 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
       AddDetector("TiaraHyball", myDetector);
 #endif
     }
+    
+    ////////////////////////////////////////////
+    ///////// Search for Tiara barrel //////////
+    ////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 11, "TiaraBarrel") == 0 && TiaraBarrel == false) {
+#ifdef INC_TIARA
+      TiaraBarrel = true;
+      cout << "//////// Tiara Barrel ////////" << endl << endl;
+
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector = new TTiaraBarrelPhysics();
+      // Read Position of Telescope
+      ConfigFile.close();
+      myDetector->ReadConfiguration(Path);
+      ConfigFile.open(Path.c_str());
+
+      // Add array to the VDetector Vector
+      AddDetector("TiaraBarrel", myDetector);
+#endif
+    } 
     ////////////////////////////////////////////
     //////////// Search for Target /////////////
     ////////////////////////////////////////////
