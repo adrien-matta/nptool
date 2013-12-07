@@ -74,45 +74,45 @@ class TTiaraBarrelData : public TNamed {
 
     //////////////////        MULTIPLICITY GETTER         /////////////////////
     // E
-    inline unsigned int GetFrontUpstreamEMult(const unsigned short& DetNbr , const unsigned short& StripNbr , const double& Energy){
+    inline unsigned int GetFrontUpstreamEMult(){
       return fTiaraBarrel_FrontUpstreamE_DetectorNbr.size();
     }
 
     // T
-    inline unsigned int GetFrontUpstreamTMult(const unsigned short& DetNbr , const unsigned short& StripNbr , const double& Energy){
+    inline unsigned int GetFrontUpstreamTMult(){
       return fTiaraBarrel_FrontUpstreamT_DetectorNbr.size();
     }
 
     ///////////////////// 
     // E
-    inline unsigned int GetFrontDownstreamEMult(const unsigned short& DetNbr , const unsigned short& StripNbr , const double& Energy){
+    inline unsigned int GetFrontDownstreamEMult(){
       return fTiaraBarrel_FrontDownstreamE_DetectorNbr.size();
     }
 
     // T
-     inline unsigned int GetFrontDownstreamTMult(const unsigned short& DetNbr , const unsigned short& StripNbr , const double& Energy){
+     inline unsigned int GetFrontDownstreamTMult(){
       return fTiaraBarrel_FrontDownstreamT_DetectorNbr.size();
     }
     
     ///////////////////// 
     // E
-    inline unsigned int GetBackEMult(const unsigned short& DetNbr , const unsigned short& StripNbr , const double& Energy){
+    inline unsigned int GetBackEMult(){
       return fTiaraBarrel_BackE_DetectorNbr.size();
     }
 
     // T
-    inline unsigned int GetFrontBackTMult(const unsigned short& DetNbr , const unsigned short& StripNbr , const double& Energy){
+    inline unsigned int GetFrontBackTMult(){
       return fTiaraBarrel_BackT_DetectorNbr.size();
     }
 
     ///////////////////// 
      // E
-    inline unsigned int GetOuterEMult(const unsigned short& DetNbr , const unsigned short& StripNbr , const double& Energy){
+    inline unsigned int GetOuterEMult(){
       return fTiaraBarrel_OuterE_DetectorNbr.size();
     }
 
     // T
-    inline unsigned int GetFrontOuterTMult(const unsigned short& DetNbr , const unsigned short& StripNbr , const double& Energy){
+    inline unsigned int GetOuterTMult(){
       return fTiaraBarrel_OuterT_DetectorNbr.size();
     }
    
