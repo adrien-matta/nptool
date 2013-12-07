@@ -27,7 +27,7 @@
 #include <map>
 // NPL
 #include "TTiaraBarrelData.h"
-//#include "TTiaraBarrelSpectra.h"
+#include "TTiaraBarrelSpectra.h"
 #include "../include/CalibrationManager.h"
 #include "../include/VDetector.h"
 
@@ -37,7 +37,7 @@
 #include "TObject.h"
 #include "TH1.h"
 
-//class TTiaraBarrelSpectra;
+class TTiaraBarrelSpectra;
 
 using namespace std ;
 
@@ -117,14 +117,14 @@ class TTiaraBarrelPhysics : public TObject, public NPA::VDetector{
     // Method related to the TSpectra classes, aimed at providing a framework 
     // for online applications
     // Instantiate the Spectra class and the histogramm throught it
- //   void InitSpectra();
+    void InitSpectra();
     // Fill the spectra hold by the spectra class
-   // void FillSpectra();
+    void FillSpectra();
     // Used for Online mainly, perform check on the histo and for example change 
     // their color if issues are found
-   // void CheckSpectra();
+    void CheckSpectra();
     // Used for Online only, clear all the spectra hold by the Spectra class
-   // void ClearSpectra();
+    void ClearSpectra();
 
   public://   Specific to TiaraBarrel Array
     //   Clear The PreTeated object
@@ -191,10 +191,10 @@ class TTiaraBarrelPhysics : public TObject, public NPA::VDetector{
     vector< vector<double> > m_StripPositionZ;//!
 
   private: // Spectra
-    //  TTiaraBarrelSpectra*      m_Spectra;//!
+    TTiaraBarrelSpectra*      m_Spectra;//!
 
   public:
-    //map< vector<TString>,TH1* > GetSpectra(); 
+    map< vector<TString>,TH1* > GetSpectra(); 
 
   ClassDef(TTiaraBarrelPhysics,1)  // SharcPhysics structure
 };

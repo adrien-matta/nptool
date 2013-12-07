@@ -428,16 +428,16 @@ void TTiaraBarrelPhysics::ReadConfiguration(string Path){
   InitializeStandardParameter();
   ReadAnalysisConfig();
 }
-/*///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelPhysics::InitSpectra(){  
-  //m_Spectra = new TTiaraBarrelSpectra();
+  m_Spectra = new TTiaraBarrelSpectra(m_NumberOfDetector);
 }
 
 ///////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelPhysics::FillSpectra(){  
-  //m_Spectra -> FillRawSpectra(m_EventData);
-  //m_Spectra -> FillPreTreatedSpectra(m_PreTreatedData);
-  //m_Spectra -> FillPhysicsSpectra(m_EventPhysics);
+ m_Spectra -> FillRawSpectra(m_EventData);
+ m_Spectra -> FillPreTreatedSpectra(m_PreTreatedData);
+ m_Spectra -> FillPhysicsSpectra(m_EventPhysics);
 }
 ///////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelPhysics::CheckSpectra(){  
@@ -450,7 +450,7 @@ void TTiaraBarrelPhysics::ClearSpectra(){
 ///////////////////////////////////////////////////////////////////////////
 map< vector<TString>,TH1* > TTiaraBarrelPhysics::GetSpectra() {
   return m_Spectra->GetMapHisto();
-} */
+} 
 ///////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelPhysics::AddParameterToCalibrationManager(){
   CalibrationManager* Cal = CalibrationManager::getInstance();
