@@ -98,28 +98,13 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
    Bool_t TiaraHyball         = false;
    Bool_t TiaraBarrel         = false;
 //////////////////////////////////////////////////////////////////////////////////////////
-  string GlobalPath = getenv("NPTOOL");
-  string StandardPath = GlobalPath + "/Inputs/DetectorConfiguration/" + Path;
   ifstream ConfigFile;
-  ConfigFile.open(StandardPath.c_str());
+  ConfigFile.open(Path.c_str());
 
   if (ConfigFile.is_open()) {
     cout << endl << "/////////// Detector geometry ///////////" << endl;
     cout << "Configuration file " << Path << " loading " << endl;
-    Path = StandardPath;
   }
-
-  else {
-    ConfigFile.open( Path.c_str() );
-    if(ConfigFile.is_open()) {
-      cout << endl << "/////////// Detector geometry ///////////" << endl;
-      cout << " Configuration file " << Path << " loading " << endl;
-    }
-
-    else 
-      cout << "Configuration File " << Path << " not found" << endl;return;
-  }
-
 
   while (!ConfigFile.eof()) {
     // Pick-up next line
