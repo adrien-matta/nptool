@@ -755,7 +755,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
   
   if(m_Target==NULL){
     cout << "ERROR: No target define in detector file. Cannot perform simulation without target" << endl ;
-    exit(-1);
+    exit(1);
   }
   
   return   ;
