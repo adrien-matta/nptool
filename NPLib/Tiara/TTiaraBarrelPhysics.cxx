@@ -52,12 +52,12 @@ ClassImp(TTiaraBarrelPhysics)
     m_EventPhysics      = this ;
     m_NumberOfDetector = 0 ;
 
-    m_Take_E_Strip;
-    m_Take_T_Back;
-    m_Strip_E_RAW_Threshold ;
-    m_Back_E_Threshold ;
-    m_OuterStrip_E_RAW_Threshold ;
-    m_OuterBack_E_Threshold ;
+    m_Take_E_Strip= true;
+    m_Take_T_Back=true;
+    m_Strip_E_RAW_Threshold=0 ;
+    m_Back_E_Threshold =0;
+    m_OuterStrip_E_RAW_Threshold =0;
+    m_OuterBack_E_Threshold =0;
   }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -564,9 +564,9 @@ TVector3 TTiaraBarrelPhysics::GetPositionOfInteraction(const int i) const{
 /*  TVector3 Position = TVector3 ( GetStripPositionX(DetectorNumber[i],Strip_Ring[i],Strip_Sector[i] )    ,
       GetStripPositionY( DetectorNumber[i],Strip_Ring[i],Strip_Sector[i] )    ,
       GetStripPositionZ( DetectorNumber[i],Strip_Ring[i],Strip_Sector[i] )    ) ;
-
-  return(Position) ;
 */
+  return(TVector3(0,0,0)) ;
+
 }
 ///////////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelPhysics::InitializeStandardParameter(){
