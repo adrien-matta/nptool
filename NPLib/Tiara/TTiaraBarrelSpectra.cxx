@@ -132,13 +132,13 @@ void TTiaraBarrelSpectra::FillRawSpectra(TTiaraBarrelData* RawData){
     family = BaseFamily+"HIT";
 
     GetHisto(family,name)
-      ->Fill(RawData->GetFrontUpstreamEDetectorNbr(i)*fInnerBarrelStrip
+      ->Fill((RawData->GetFrontUpstreamEDetectorNbr(i)-1)*fInnerBarrelStrip
           +RawData->GetFrontUpstreamEStripNbr(i));
 
     family = BaseFamily+"E";
     name = "INNER_BARREL_US_E_RAW";
     GetHisto(family,name)
-      ->Fill(RawData->GetFrontUpstreamEDetectorNbr(i)*fInnerBarrelStrip
+      ->Fill((RawData->GetFrontUpstreamEDetectorNbr(i)-1)*fInnerBarrelStrip
           +RawData->GetFrontUpstreamEStripNbr(i),RawData->GetFrontUpstreamEEnergy(i));
   }
   // INNER_BARREL_DS_HIT_RAW
@@ -147,13 +147,13 @@ void TTiaraBarrelSpectra::FillRawSpectra(TTiaraBarrelData* RawData){
     family = BaseFamily+"HIT";
 
     GetHisto(family,name)
-      ->Fill(RawData->GetFrontDownstreamEDetectorNbr(i)*fInnerBarrelStrip
+      ->Fill((RawData->GetFrontDownstreamEDetectorNbr(i)-1)*fInnerBarrelStrip
           +RawData->GetFrontDownstreamEStripNbr(i));
 
     name = "INNER_BARREL_DS_E_RAW";
     family = BaseFamily+"E";
     GetHisto(family,name)
-      ->Fill(RawData->GetFrontDownstreamEDetectorNbr(i)*fInnerBarrelStrip
+      ->Fill((RawData->GetFrontDownstreamEDetectorNbr(i)-1)*fInnerBarrelStrip
           +RawData->GetFrontDownstreamEStripNbr(i),RawData->GetFrontDownstreamEEnergy(i));
   }
 
@@ -163,12 +163,12 @@ void TTiaraBarrelSpectra::FillRawSpectra(TTiaraBarrelData* RawData){
     family = BaseFamily+"HIT";
 
     GetHisto(family,name)
-      ->Fill(RawData->GetBackEDetectorNbr(i)*fInnerBarrelStrip);
+      ->Fill((RawData->GetBackEDetectorNbr(i)-1)*fInnerBarrelStrip);
 
     name = "INNER_BARREL_BACK_E_RAW";
     family = BaseFamily+"E";
     GetHisto(family,name)
-      ->Fill(RawData->GetBackEDetectorNbr(i)*fInnerBarrelStrip, RawData->GetBackEEnergy(i));
+      ->Fill((RawData->GetBackEDetectorNbr(i)-1)*fInnerBarrelStrip, RawData->GetBackEEnergy(i));
   }
 
   // OUTER_BARREL_STRIP_HIT_RAW
@@ -177,13 +177,13 @@ void TTiaraBarrelSpectra::FillRawSpectra(TTiaraBarrelData* RawData){
     family = BaseFamily+"HIT";
 
     GetHisto(family,name)
-      ->Fill(RawData->GetOuterEDetectorNbr(i)*fInnerBarrelStrip
+      ->Fill((RawData->GetOuterEDetectorNbr(i)-1)*fInnerBarrelStrip
           +RawData->GetOuterEStripNbr(i));
     
     family = BaseFamily+"E";
     name = "OUTER_BARREL_STRIP_E_RAW";
     GetHisto(family,name)
-      ->Fill(RawData->GetOuterEDetectorNbr(i)*fInnerBarrelStrip
+      ->Fill((RawData->GetOuterEDetectorNbr(i)-1)*fInnerBarrelStrip
           +RawData->GetOuterEStripNbr(i),RawData->GetOuterEEnergy(i));
   }
 
@@ -192,9 +192,9 @@ void TTiaraBarrelSpectra::FillRawSpectra(TTiaraBarrelData* RawData){
     name = "INNER_BARREL_STRIP_SUM_RAW";
     family = BaseFamily+"SUM";
     for (unsigned int j = 0; j < RawData->GetFrontDownstreamEMult(); j++) {
-      int channelUP = RawData->GetFrontDownstreamEDetectorNbr(i)*fInnerBarrelStrip
+      int channelUP = (RawData->GetFrontDownstreamEDetectorNbr(i)-1)*fInnerBarrelStrip
         +RawData->GetFrontDownstreamEStripNbr(i) ;
-      int channelDW = RawData->GetFrontDownstreamEDetectorNbr(j)*fInnerBarrelStrip
+      int channelDW = (RawData->GetFrontDownstreamEDetectorNbr(j)-1)*fInnerBarrelStrip
         +RawData->GetFrontDownstreamEStripNbr(j) ;
 
       if(channelUP==channelDW)

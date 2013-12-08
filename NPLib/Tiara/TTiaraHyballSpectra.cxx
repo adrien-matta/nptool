@@ -81,11 +81,11 @@ void TTiaraHyballSpectra::InitRawSpectra(){
   // MULT
   for (unsigned int i = 0; i < fWedgesNumber; ++i) {   // loop on number of wedges
     // RING_RAW_MULT
-    name = Form("HYB_W%d_RING_E_RAW_MULT", i);
+    name = Form("HYB_W%d_RING_E_RAW_MULT", i+1);
     AddHisto1D(name, name, fRingsNumber, 1, fRingsNumber+1, "TIARA/HYBALL/RAW/MULT");
 
     // SECTOR_RAW_MULT
-    name = Form("HYB_W%d_SECT_E_RAW_MULT", i);
+    name = Form("HYB_W%d_SECT_E_RAW_MULT", i+1);
     AddHisto1D(name, name, fSectorsNumber, 1, fSectorsNumber+1, "TIARA/HYBALL/RAW/MULT");
   } // end loop on number of wedges
 }
