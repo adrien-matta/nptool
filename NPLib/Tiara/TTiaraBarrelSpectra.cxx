@@ -247,7 +247,6 @@ TH1* TTiaraBarrelSpectra::GetHisto(TString family, TString name){
   vector<TString> index ;
   index.push_back(family);
   index.push_back(name);
-
   // fill map
   return fMapHisto.at(index);
 }
