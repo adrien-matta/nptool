@@ -360,7 +360,7 @@ void TTiaraBarrelPhysics::ReadConfiguration(string Path){
   bool check_Y   = false ;
   bool check_Z   = false ;
 
-  bool ReadingStatusWedge = false ;
+//  bool ReadingStatusWedge = false ;
   bool ReadingStatus    = false ;
 
   bool VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel(); ;
