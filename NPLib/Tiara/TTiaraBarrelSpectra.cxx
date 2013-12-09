@@ -104,12 +104,14 @@ void TTiaraBarrelSpectra::InitRawSpectra(){
   name = "OUTER_BARREL_STRIP_E_RAW";
   AddHisto2D(name, name, fNumberOfDetector*fOuterBarrelStrip, 1, fNumberOfDetector*fOuterBarrelStrip+1,512,0,16384, BaseFamily+"E");
 
-  //// SUM ////
+  //// VS ////
   // Inner Barrel
-  // Sum Up Stream
-  name = "INNER_BARREL_STRIP_SUM_RAW";
-  AddHisto2D(name, name, fNumberOfDetector*fInnerBarrelStrip, 1, fNumberOfDetector*fInnerBarrelStrip+1, 1024,0,32768,BaseFamily+"SUM");
-
+  for(unsigned int i  = 0 ; i < fNumberOfDetector ; i++){
+    for(unsigned int j = 0 ; j < fInnerBarrelStrip;j++){
+      name = Form("IB%d_VS%d_RAW",i+1,j+1);
+      AddHisto2D(name, name,1024,0,16384,1024,0,16384,BaseFamily+"VS");
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -186,20 +188,21 @@ void TTiaraBarrelSpectra::FillRawSpectra(TTiaraBarrelData* RawData){
       ->Fill((RawData->GetOuterEDetectorNbr(i)-1)*fInnerBarrelStrip
           +RawData->GetOuterEStripNbr(i),RawData->GetOuterEEnergy(i));
   }
-
-  // INNER_BARREL_US_HIT_RAW
+  
+  // INNER_BARREL_VS_RAW
+  family = BaseFamily+"VS";
   for (unsigned int i = 0; i < RawData->GetFrontUpstreamEMult(); i++) {
-    name = "INNER_BARREL_STRIP_SUM_RAW";
-    family = BaseFamily+"SUM";
+    int UpStreamDetNbr = RawData->GetFrontUpstreamEDetectorNbr(i);
+    int UpStreamStrNbr = RawData->GetFrontUpstreamEStripNbr(i);
+    
     for (unsigned int j = 0; j < RawData->GetFrontDownstreamEMult(); j++) {
-      int channelUP = (RawData->GetFrontDownstreamEDetectorNbr(i)-1)*fInnerBarrelStrip
-        +RawData->GetFrontDownstreamEStripNbr(i) ;
-      int channelDW = (RawData->GetFrontDownstreamEDetectorNbr(j)-1)*fInnerBarrelStrip
-        +RawData->GetFrontDownstreamEStripNbr(j) ;
-
-      if(channelUP==channelDW)
-        GetHisto(family,name)
-          ->Fill(channelUP,RawData->GetFrontDownstreamEEnergy(i)+RawData->GetFrontDownstreamEEnergy(i));
+      int DoStreamDetNbr = RawData->GetFrontDownstreamEDetectorNbr(j);
+      int DoStreamStrNbr = RawData->GetFrontDownstreamEStripNbr(j);
+     if(UpStreamDetNbr==DoStreamDetNbr && UpStreamStrNbr==DoStreamStrNbr){
+       name = Form("IB%d_VS%d_RAW",UpStreamDetNbr,UpStreamStrNbr); 
+       GetHisto(family,name)
+        ->Fill(RawData->GetFrontUpstreamEEnergy(i),RawData->GetFrontDownstreamEEnergy(j));
+      } 
     }
   }
 }

@@ -77,8 +77,14 @@ G4Material* Target::GetMaterialFromLibrary(G4String MaterialName, G4double Tempe
   
   if (MaterialName == "D2") {
     G4double density = 0;
-    
-    if (Pressure == 1) {
+   
+    if(Pressure == 0 )
+     if (Temperature == 0) {
+        density = 0.000083771* g / cm3;
+        G4cout << "CryoTarget temp set to 300K with P = 1bar" << G4endl;
+      }
+ 
+    else if (Pressure == 1) {
       G4cout << "CryoTarget pressure set to 1 bar" << G4endl;
       
       if (Temperature == 24) {
@@ -100,6 +106,12 @@ G4Material* Target::GetMaterialFromLibrary(G4String MaterialName, G4double Tempe
         density = 0.00020475 * g / cm3;
         G4cout << "CryoTarget temp set to 30K" << G4endl;
       }
+      
+      else if (Temperature == 300) {
+        density = 8.3771e-5* g / cm3;
+        G4cout << "CryoTarget temp set to 30K" << G4endl;
+      }
+      
       
       else {
         G4cout << ">>>  !!!!WARNING INVALID TEMP FOR CRYOGENIC TARGET!!!!  <<<" << G4endl;
