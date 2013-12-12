@@ -447,68 +447,59 @@ void TCharissaSpectra::FillPreTreatedSpectra(TCharissaData* PreTreatedData)
 }
 
 
-/*
+
 ////////////////////////////////////////////////////////////////////////////////
 void TCharissaSpectra::FillPhysicsSpectra(TCharissaPhysics* Physics)
 {
+	cout << "TCharissaSpactra::FillPhysicsSpectra has to be implemented !" << endl;
+	
   TString name;
   TString family= "CHARISSA/PHY";
   // X-Y Impact Matrix
 
-  for(unsigned int i = 0 ; i < Physics->Si_E.size(); i++){
+  for(unsigned int i = 0 ; i < Physics->Layer1_Si_E.size(); i++){
     name = "CHA_IMPACT_MATRIX";
     double x = Physics->GetPositionOfInteraction(i).x();
     double y = Physics->GetPositionOfInteraction(i).y();
     GetHisto(family,name)-> Fill(x,y);
 
-    name = "CHA_THETA_E";
+    name = "L1_CHA_THETA_E";
     double Theta = Physics->GetPositionOfInteraction(i).Angle(TVector3(0,0,1));
     Theta = Theta/deg;
-    GetHisto(family,name)-> Fill(Theta,Physics->Si_E[i]);
+    GetHisto(family,name)-> Fill(Theta,Physics->Layer1_Si_E[i]);
 
     // STRX_E_CAL
-    name = Form("CHA%d_XY_COR", Physics->TelescopeNumber[i]);
-    GetHisto(family,name)-> Fill(Physics->Si_EX[i],Physics->Si_EY[i]);
-
-
-    // Fill only for particle stopped in the first stage
-    if(Physics->SiLi_E[i]<0 && Physics->CsI_E[i]<0){
+    name = Form("CHA%d_XY_COR", Physics->Layer1_TelescopeNumber[i]);
+    GetHisto(family,name)-> Fill(Physics->Layer1_Si_EX[i],Physics->Layer1_Si_EY[i]);
+	  
+	  
       // E-TOF:
       name = "CHA_E_TOF";
-      GetHisto(family,name)->Fill(Physics->Si_E[i],Physics->Si_T[i]);
+      GetHisto(family,name)->Fill(Physics->Layer1_Si_E[i],Physics->Layer1_Si_T[i]);
       
-      name = Form("CHA%d_E_TOF", Physics->TelescopeNumber[i]);
-      GetHisto(family,name)->Fill(Physics->Si_E[i],Physics->Si_T[i]);
-    }
+      name = Form("CHA%d_E_TOF", Physics->Layer1_TelescopeNumber[i]);
+      GetHisto(family,name)->Fill(Physics->Layer1_Si_E[i],Physics->Layer1_Si_T[i]);
 
-    double Etot=0;
-    if(Physics->SiLi_E[i]>0){
-      name = "CHA_SILIE_E";
-      Etot = Physics->SiLi_E[i];
-      GetHisto(family,name)->Fill(Physics->SiLi_E[i],Physics->Si_E[i]);
-      
-      name = Form("CHA%d_SILIE_E", Physics->TelescopeNumber[i]);
-      GetHisto(family,name)->Fill(Physics->SiLi_E[i],Physics->Si_E[i]);
-     }
 
+	double Etot;
     if(Physics->CsI_E[i]>0){
       name = "CHA_CSIE_E";
-      Etot += Physics->CsI_E[i];
-      GetHisto(family,name)->Fill(Physics->CsI_E[i],Physics->Si_E[i]);
-      name = Form("CHA%d_CSIE_E", Physics->TelescopeNumber[i]);
-      GetHisto(family,name)->Fill(Physics->CsI_E[i],Physics->Si_E[i]);
+      Etot = Physics->Layer1_Si_E[i]+Physics->Layer2_Si_E[i]+Physics->CsI_E[i];
+      GetHisto(family,name)->Fill(Physics->CsI_E[i],Physics->Layer1_Si_E[i]+Physics->Layer2_Si_E[i]);
+      name = Form("CHA%d_CSIE_E", Physics->Layer1_TelescopeNumber[i]);
+      GetHisto(family,name)->Fill(Physics->CsI_E[i],Physics->Layer1_Si_E[i]+Physics->Layer2_Si_E[i]);
 
     }
 
     if(Etot>0){
       name = "CHA_Etot_E";
-      GetHisto(family,name)->Fill(Etot,Physics->Si_E[i]);
-      name = Form("CHA%d_Etot_E", Physics->TelescopeNumber[i]);
-      GetHisto(family,name)->Fill(Etot,Physics->Si_E[i]);
+      GetHisto(family,name)->Fill(Etot,Physics->Layer1_Si_E[i]);
+      name = Form("CHA%d_Etot_E", Physics->Layer1_TelescopeNumber[i]);
+      GetHisto(family,name)->Fill(Etot,Physics->Layer1_Si_E[i]);
     }
 
   }
-}*/
+}
 
 
 

@@ -1,16 +1,14 @@
 include ../Makefile.arch
 
 #------------------------------------------------------------------------------
-#SHARELIB      =  libCharissaData.so	libCharissaPhysics.so   libCharissaSpectra.so
-SHARELIB      =  libCharissa.so
+SHARELIB      =  libCharissa.so 
 
 all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 ############### Detector ##############
 
 ## MUST2 ##
-#libCharissa.so: TCharissaData.o TCharissaDataDict.o TCharissaPhysics.o  TCharissaPhysicsDict.o TCharissaSpectra.o 
-libCharissa.so: TCharissaData.o TCharissaDataDict.o TCharissaSpectra.o
+libCharissa.so: TCharissaData.o TCharissaDataDict.o TCharissaPhysics.o  TCharissaPhysicsDict.o TCharissaSpectra.o 
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TCharissaDataDict.cxx:	TCharissaData.h

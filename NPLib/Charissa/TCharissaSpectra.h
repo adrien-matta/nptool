@@ -1,5 +1,5 @@
-#ifndef TMUST2SPECTRA_H
-#define TMUST2SPECTRA_H
+#ifndef TCHARISSASPECTRA_H
+#define TCHARISSASPECTRA_H
 /*****************************************************************************
  * Copyright (C) 2009-2013    this file is part of the NPTool Project        *
  *                                                                           *
@@ -34,11 +34,11 @@
 
 // NPLib headers
 #include "TCharissaData.h"
-//#include "TCharissaPhysics.h"
+#include "TCharissaPhysics.h"
 using namespace std;
 
 // ForwardDeclaration
-//class TCharissaPhysics;
+class TCharissaPhysics;
 
 class TCharissaSpectra {
   public:
@@ -62,7 +62,7 @@ class TCharissaSpectra {
     // Filling methods
     void FillRawSpectra(TCharissaData*);
     void FillPreTreatedSpectra(TCharissaData*);
-//    void FillPhysicsSpectra(TCharissaPhysics*);
+    void FillPhysicsSpectra(TCharissaPhysics*);
     // Check the Spectra
     void CheckSpectra();
 
@@ -72,7 +72,7 @@ class TCharissaSpectra {
     TH1* GetHisto(TString family,TString name);    
     void WriteHisto(TString filename="VOID");      
 
-  private: // Information on MUST2
+  private: // Information on CHARISSA
     unsigned int fNumberOfTelescope;
     unsigned int fStripX;
     unsigned int fStripY;
