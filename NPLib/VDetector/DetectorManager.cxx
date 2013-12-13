@@ -45,6 +45,7 @@
 #include "Paris.h"
 #include "TW1Physics.h"
 #include "TS2Physics.h"
+#include "TCharissaPhysics.h"
 #include "Shield.h"
 #include "TSpegPhysics.h"
 #include "TExlPhysics.h"
@@ -85,6 +86,7 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
    Bool_t ScintillatorPlastic = false;
    Bool_t IonisationChamber   = false;
    Bool_t Trifoil             = false;
+	Bool_t Charissa = false;
    Bool_t GeneralTarget       = false;
    Bool_t GPDTracker          = false;
    Bool_t HYD2Tracker         = false;
@@ -209,6 +211,27 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
 
       // Add array to the VDetector Vector
       AddDetector("MUST2", myDetector);
+#endif
+    }
+	  
+	  ////////////////////////////////////////////
+	  ////////  Search for CHARISSA Array    ////////
+	  ////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 13, "CharissaArray") == 0 && Charissa == false) {
+#ifdef INC_CHARISSA
+		Charissa = true;
+		cout << "//////// Charissa Array ////////" << endl << endl;
+		
+		// Instantiate the new array as a VDetector Object
+		VDetector* myDetector = new TCharissaPhysics();
+		
+		// Read Position of Telescope
+		ConfigFile.close();
+		myDetector->ReadConfiguration(Path);
+		ConfigFile.open(Path.c_str());
+		
+		// Add array to the VDetector Vector
+		AddDetector("Charissa", myDetector);
 #endif
     }
 

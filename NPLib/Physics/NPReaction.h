@@ -74,8 +74,11 @@ namespace NPL{
     bool fshoot4;
     
   private: // use to display the kinematical line
-    TGraph* fKineLine3 ;
-    TGraph* fKineLine4 ;
+	  TGraph* fKineLine3 ;
+	  TGraph* fKineLine4 ;
+	  TGraph* fTheta3VsTheta4;
+	  TGraph* fLineBrho3;
+	  TGraph* fAngleLine;
   private:
     Beam*    fNuclei1;                 // Beam
     Nucleus* fNuclei2;                 // Target
@@ -150,12 +153,14 @@ namespace NPL{
     TVector3 fImpulsionCM_4;
     
       // CM Energy composante & CM impulsion norme
-    Double_t ECM_1;
-    Double_t ECM_2;
-    Double_t ECM_3;
-    Double_t ECM_4;
-    Double_t pCM_3;
-    Double_t pCM_4;
+	  Double_t ECM_1;
+	  Double_t ECM_2;
+	  Double_t ECM_3;
+	  Double_t ECM_4;
+	  Double_t pCM_1;
+	  Double_t pCM_2;
+	  Double_t pCM_3;
+	  Double_t pCM_4;
     
       // Mandelstam variable
     Double_t s;
@@ -185,11 +190,20 @@ namespace NPL{
     
     void SetNuclei3(double EnergyLab, double ThetaLab);
     
-    TGraph* GetKinematicLine3();
-    TGraph* GetKinematicLine4();
-    TGraph* GetBrhoLine3();
-    TGraph* GetThetaLabVersusThetaCM();
-    void PrintKinematic();
+	  TGraph* GetKinematicLine3(double AngleStep_CM=1);
+	  TGraph* GetKinematicLine4(double AngleStep_CM=1);
+	  TGraph* GetBrhoLine3(double AngleStep_CM=1);
+	  TGraph* GetThetaLabVersusThetaCM(double AngleStep_CM=1);
+	  TGraph* GetTheta3VsTheta4(double AngleStep_CM=1);
+	  void PrintKinematic();
+	  double	GetP_CM_1()	{return pCM_1;}
+	  double	GetP_CM_2()	{return pCM_2;}
+	  double	GetP_CM_3()	{return pCM_3;}
+	  double	GetP_CM_4()	{return pCM_4;}
+	  double	GetE_CM_1()	{return ECM_1;}
+	  double	GetE_CM_2()	{return ECM_2;}
+	  double	GetE_CM_3()	{return ECM_3;}
+	  double	GetE_CM_4()	{return ECM_4;}
     
       // Print private paremeter
     void Print() const;
