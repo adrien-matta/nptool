@@ -669,6 +669,7 @@ void DetectorManager::BuildPhysicalEvent(){
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 void DetectorManager::BuildSimplePhysicalEvent(){
+
   map<string,VDetector*>::iterator it;
 
   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {
@@ -676,7 +677,7 @@ void DetectorManager::BuildSimplePhysicalEvent(){
     if(NPOptionManager::getInstance()->GetGenerateHistoOption()){
       it->second->FillSpectra();
       if(NPOptionManager::getInstance()->GetCheckHistoOption())
-        it->second->CheckSpectra();
+      it->second->CheckSpectra();
     }
   }
 }

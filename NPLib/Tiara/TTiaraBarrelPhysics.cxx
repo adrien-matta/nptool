@@ -128,6 +128,9 @@ void TTiaraBarrelPhysics::PreTreat(){
   ClearPreTreatedData();
   // Match Stick Calibration
   // Gain Calibration
+  
+  
+
   // Position
   // Ballistic Deficit correction
 }
@@ -455,17 +458,25 @@ map< vector<TString>,TH1* > TTiaraBarrelPhysics::GetSpectra() {
 void TTiaraBarrelPhysics::AddParameterToCalibrationManager(){
   CalibrationManager* Cal = CalibrationManager::getInstance();
 
-  for(int i = 0 ; i < m_NumberOfDetector ; ++i){
-    for( int j = 0 ; j < 24 ; ++j){
-      Cal->AddParameter("TIARABARREL", "D"+itoa(i+1)+"_STRIP_RING"+itoa(j+1)+"_E","TIARABARREL_D"+itoa(i+1)+"_STRIP_RING"+itoa(j+1)+"_E")   ;
-      Cal->AddParameter("TIARABARREL", "D"+itoa(i+1)+"_STRIP_RING"+itoa(j+1)+"_T","TIARABARREL_D"+itoa(i+1)+"_STRIP_RING"+itoa(j+1)+"_T")   ;
-    }
 
-    for( int j = 0 ; j < 48 ; ++j){
-      Cal->AddParameter("TIARABARREL", "D"+itoa(i+1)+"_STRIP_SECTOR"+itoa(j+1)+"_E","TIARABARREL_D"+itoa(i+1)+"_STRIP_SECTOR"+itoa(j+1)+"_E")   ;
-      Cal->AddParameter("TIARABARREL", "D"+itoa(i+1)+"_STRIP_SECTOR"+itoa(j+1)+"_T","TIARABARREL_D"+itoa(i+1)+"_STRIP_SECTOR"+itoa(j+1)+"_T")   ;
+  // E and T
+  for(int i = 0 ; i < m_NumberOfDetector ; ++i){
+    for( int j = 0 ; j < 4 ; ++j){
+      Cal->AddParameter("TIARABARREL_B", itoa(i+1)+"_UPSTREAM"+itoa(j+1)+"_E","TIARABARREL_B"+itoa(i+1)+"_DOWNSTREAM"+itoa(j+1)+"_E")   ;
+      Cal->AddParameter("TIARABARREL_B", itoa(i+1)+"_UPSTREAM"+itoa(j+1)+"_T","TIARABARREL_B"+itoa(i+1)+"_DOWNSTREAM"+itoa(j+1)+"_T")   ;
+      Cal->AddParameter("TIARABARREL_B", itoa(i+1)+"_DOWNSTREAM"+itoa(j+1)+"_E","TIARABARREL_B"+itoa(i+1)+"_DOWNSTREAM"+itoa(j+1)+"_E")   ;
+      Cal->AddParameter("TIARABARREL_B", itoa(i+1)+"_DOWNSTREAM"+itoa(j+1)+"_T","TIARABARREL_B"+itoa(i+1)+"_DOWNSTREAM"+itoa(j+1)+"_T")   ;
     }
   }
+  
+  // POS
+  for(int i = 0 ; i < m_NumberOfDetector ; ++i){
+    for( int j = 0 ; j < 4 ; ++j){
+      Cal->AddParameter("TIARABARREL_B", itoa(i+1)+"_UPSTREAM"+itoa(j+1)+"_POS","TIARABARREL_B"+itoa(i+1)+"_DOWNSTREAM"+itoa(j+1)+"_POS")   ;
+      Cal->AddParameter("TIARABARREL_B", itoa(i+1)+"_DOWNSTREAM"+itoa(j+1)+"_POS","TIARABARREL_B"+itoa(i+1)+"_DOWNSTREAM"+itoa(j+1)+"_POS")   ;
+    }
+  }
+
   return;
 
 }

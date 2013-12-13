@@ -189,7 +189,7 @@ void TTiaraBarrelSpectra::FillRawSpectra(TTiaraBarrelData* RawData){
           +RawData->GetOuterEStripNbr(i),RawData->GetOuterEEnergy(i));
   }
   
-  // INNER_BARREL_VS_RAW
+  // INNER_BARREL_VS_RAW                    
   family = BaseFamily+"VS";
   for (unsigned int i = 0; i < RawData->GetFrontUpstreamEMult(); i++) {
     int UpStreamDetNbr = RawData->GetFrontUpstreamEDetectorNbr(i);
