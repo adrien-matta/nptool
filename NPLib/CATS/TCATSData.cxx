@@ -71,7 +71,7 @@ void TCATSData::Dump() const
    for (UShort_t i = 0; i < fCATS_DetY.size(); i++)
       cout << "DetY: " << fCATS_DetY[i] << " StripY: " << fCATS_StripY[i] << " EnergyY: " << fCATS_ChargeY[i] << endl;
    // (Qfil)
-   cout << "MM_MultQ = " << fCATS_DetQ.size() << endl;
+   cout << "CATS_MultQ = " << fCATS_DetQ.size() << endl;
    for (UShort_t i = 0; i < fCATS_DetQ.size(); i++)
       cout << "DetQ: " << fCATS_DetQ[i] << " Charge: " << fCATS_Charge[i] << endl;
 }

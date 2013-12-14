@@ -165,12 +165,12 @@ void TTiaraBarrelSpectra::FillRawSpectra(TTiaraBarrelData* RawData){
     family = BaseFamily+"HIT";
 
     GetHisto(family,name)
-      ->Fill((RawData->GetBackEDetectorNbr(i)-1)*fInnerBarrelStrip);
+      ->Fill((RawData->GetBackEDetectorNbr(i)-1));
 
     name = "INNER_BARREL_BACK_E_RAW";
     family = BaseFamily+"E";
     GetHisto(family,name)
-      ->Fill((RawData->GetBackEDetectorNbr(i)-1)*fInnerBarrelStrip, RawData->GetBackEEnergy(i));
+      ->Fill((RawData->GetBackEDetectorNbr(i)-1), RawData->GetBackEEnergy(i));
   }
 
   // OUTER_BARREL_STRIP_HIT_RAW
@@ -209,6 +209,18 @@ void TTiaraBarrelSpectra::FillRawSpectra(TTiaraBarrelData* RawData){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelSpectra::FillPreTreatedSpectra(TTiaraBarrelData* PreTreatedData){
+/*string BaseFamily = "/TIARA/BARREL/CAL/";
+string name ;
+  //// E POS ////
+  // Inner Barrel
+  for(unsigned int i  = 0 ; i < fNumberOfDetector ; i++){
+    for(unsigned int j = 0 ; j < fInnerBarrelStrip;j++){
+      name = Form("IB%d_EPOS%d_CAL",i+1,j+1);
+      AddHisto2D(name, name,100,0,1,100,0,50,BaseFamily+"POS");
+    }
+  }
+
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

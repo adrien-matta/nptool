@@ -19,7 +19,6 @@
  *                                                                           *
  *****************************************************************************/
 #include "TTiaraBarrelPhysics.h"
-using namespace TiaraBarrel_LOCAL;
 
 //   STL
 #include <sstream>
@@ -67,14 +66,14 @@ void TTiaraBarrelPhysics::BuildSimplePhysicalEvent(){
 
 ///////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelPhysics::BuildPhysicalEvent(){
-/*  PreTreat();
+  /*  PreTreat();
 
-  if( CheckEvent() == 1 ){
-    vector< TVector2 > couple = Match_Ring_Sector() ;
-    EventMultiplicity = couple.size();
+      if( CheckEvent() == 1 ){
+      vector< TVector2 > couple = Match_Ring_Sector() ;
+      EventMultiplicity = couple.size();
 
-    unsigned int size = couple.size();
-    for(unsigned int i = 0 ; i < size ; ++i){
+      unsigned int size = couple.size();
+      for(unsigned int i = 0 ; i < size ; ++i){
 
       int N = m_PreTreatedData->GetRingEDetectorNbr(couple[i].X()) ;
       int Ring = m_PreTreatedData->GetRingEStripNbr(couple[i].X()) ;
@@ -83,53 +82,65 @@ void TTiaraBarrelPhysics::BuildPhysicalEvent(){
       double Ring_E = m_PreTreatedData->GetRingEEnergy( couple[i].X() ) ;
       double Sector_E  = m_PreTreatedData->GetSectorEEnergy( couple[i].Y() ) ;
 
-      // Search for associate Time:
-      double Ring_T = -1000 ;
-      unsigned int StripRingTMult = m_PreTreatedData->GetRingTMult(); 
-      for(unsigned int t = 0 ; t < StripRingTMult ; ++t ){
-        if(  m_PreTreatedData->GetRingEStripNbr( couple[i].X() ) == m_PreTreatedData->GetRingTStripNbr(t)
-            &&m_PreTreatedData->GetRingEDetectorNbr( couple[i].X() ) == m_PreTreatedData->GetRingTDetectorNbr(t))
-          Ring_T = m_PreTreatedData->GetRingTTime(t);
-      }
+  // Search for associate Time:
+  double Ring_T = -1000 ;
+  unsigned int StripRingTMult = m_PreTreatedData->GetRingTMult(); 
+  for(unsigned int t = 0 ; t < StripRingTMult ; ++t ){
+  if(  m_PreTreatedData->GetRingEStripNbr( couple[i].X() ) == m_PreTreatedData->GetRingTStripNbr(t)
+  &&m_PreTreatedData->GetRingEDetectorNbr( couple[i].X() ) == m_PreTreatedData->GetRingTDetectorNbr(t))
+  Ring_T = m_PreTreatedData->GetRingTTime(t);
+  }
 
-      // Search for associate Time:
-      double Sector_T = -1000 ;
-      unsigned int StripSectorTMult = m_PreTreatedData->GetSectorTMult(); 
-      for(unsigned int t = 0 ; t < StripSectorTMult ; ++t ){
-        if(  m_PreTreatedData->GetSectorEStripNbr( couple[i].X() ) == m_PreTreatedData->GetSectorTStripNbr(t)
-            &&m_PreTreatedData->GetSectorEDetectorNbr( couple[i].X() ) == m_PreTreatedData->GetSectorTDetectorNbr(t))
-          Sector_T = m_PreTreatedData->GetSectorTTime(t);
-      }
+  // Search for associate Time:
+  double Sector_T = -1000 ;
+  unsigned int StripSectorTMult = m_PreTreatedData->GetSectorTMult(); 
+  for(unsigned int t = 0 ; t < StripSectorTMult ; ++t ){
+  if(  m_PreTreatedData->GetSectorEStripNbr( couple[i].X() ) == m_PreTreatedData->GetSectorTStripNbr(t)
+  &&m_PreTreatedData->GetSectorEDetectorNbr( couple[i].X() ) == m_PreTreatedData->GetSectorTDetectorNbr(t))
+  Sector_T = m_PreTreatedData->GetSectorTTime(t);
+  }
 
-      DetectorNumber.push_back(N);
-      StripRing_E.push_back(Ring_E);
-      StripRing_T.push_back(Ring_T) ;
-      StripSector_E.push_back(Sector_E) ;
-      StripSector_T.push_back(Sector_T) ;
+  DetectorNumber.push_back(N);
+  StripRing_E.push_back(Ring_E);
+  StripRing_T.push_back(Ring_T) ;
+  StripSector_E.push_back(Sector_E) ;
+  StripSector_T.push_back(Sector_T) ;
 
-      if(m_Take_E_Ring)
-        Strip_E.push_back(Ring_E) ;
-      else
-        Strip_E.push_back(Sector_E) ;
+  if(m_Take_E_Ring)
+  Strip_E.push_back(Ring_E) ;
+  else
+  Strip_E.push_back(Sector_E) ;
 
-      if(m_Take_T_Sector)
-        Strip_T.push_back(Sector_T) ;
-      else
-        Strip_T.push_back(Ring_T) ;
+  if(m_Take_T_Sector)
+  Strip_T.push_back(Sector_T) ;
+  else
+  Strip_T.push_back(Ring_T) ;
 
-      Strip_Ring.push_back(Ring) ;
-      Strip_Sector.push_back(Sector) ;
-    }
+  Strip_Ring.push_back(Ring) ;
+  Strip_Sector.push_back(Sector) ;
+  }
   }*/
 }
 
 ///////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelPhysics::PreTreat(){
   ClearPreTreatedData();
+
   // Match Stick Calibration
   // Gain Calibration
+  unsigned int  size = m_EventData-> GetFrontUpstreamEMult();
+  for(unsigned int i = 0 ; i < size; i++){  
+   m_PreTreatedData->SetFrontUpstreamEEnergy(fStrip_Upstream_E(i));
+   m_PreTreatedData->SetFrontUpstreamEDetectorNbr(m_EventData->GetFrontUpstreamEDetectorNbr(i));
+   m_PreTreatedData->SetFrontDownstreamEStripNbr(m_EventData->GetFrontDownstreamEStripNbr(i));
   
-  
+   m_PreTreatedData->SetFrontDownstreamEEnergy(fStrip_Downstream_E(i));
+   m_PreTreatedData->SetFrontDownstreamEDetectorNbr(m_EventData->GetFrontDownstreamEDetectorNbr(i));
+   m_PreTreatedData->SetFrontDownstreamEStripNbr(m_EventData->GetFrontDownstreamEStripNbr(i));
+
+
+  }
+
 
   // Position
   // Ballistic Deficit correction
@@ -138,25 +149,25 @@ void TTiaraBarrelPhysics::PreTreat(){
 ///////////////////////////////////////////////////////////////////////////
 vector < TVector2 > TTiaraBarrelPhysics :: Match_Upstream_Downstream(){
   vector < TVector2 > ArrayOfGoodCouple ;
-/*
+  /*
   // Prevent code from treating very high multiplicity Event
   // Those event are not physical anyway and that improve speed.
   if( m_PreTreatedData->GetRingEMult() > m_MaximumStripMultiplicityAllowed || m_PreTreatedData->GetSectorEMult() > m_MaximumStripMultiplicityAllowed )
-    return ArrayOfGoodCouple;
+  return ArrayOfGoodCouple;
 
   for(unsigned int i = 0 ; i < m_PreTreatedData->GetRingEMult(); i++) {
-    for(unsigned int j = 0 ; j < m_PreTreatedData->GetSectorEMult(); j++){
-      //   if same detector check energy
-      if ( m_PreTreatedData->GetRingEDetectorNbr(i) == m_PreTreatedData->GetSectorEDetectorNbr(j) ){
-        //   Look if energy match
-        if( abs( (m_PreTreatedData->GetRingEEnergy(i)-m_PreTreatedData->GetSectorEEnergy(j))/2. ) < m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma )
-          ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;
-      }
-    }
+  for(unsigned int j = 0 ; j < m_PreTreatedData->GetSectorEMult(); j++){
+  //   if same detector check energy
+  if ( m_PreTreatedData->GetRingEDetectorNbr(i) == m_PreTreatedData->GetSectorEDetectorNbr(j) ){
+  //   Look if energy match
+  if( abs( (m_PreTreatedData->GetRingEEnergy(i)-m_PreTreatedData->GetSectorEEnergy(j))/2. ) < m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma )
+  ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;
   }
-*/
+  }
+  }
+  */
   //   Prevent to treat event with ambiguous matchin beetween X and Y
- // if( ArrayOfGoodCouple.size() > m_PreTreatedData->GetRingEMult() ) ArrayOfGoodCouple.clear() ;
+  // if( ArrayOfGoodCouple.size() > m_PreTreatedData->GetRingEMult() ) ArrayOfGoodCouple.clear() ;
   return ArrayOfGoodCouple;
 }
 
@@ -363,7 +374,7 @@ void TTiaraBarrelPhysics::ReadConfiguration(string Path){
   bool check_Y   = false ;
   bool check_Z   = false ;
 
-//  bool ReadingStatusWedge = false ;
+  //  bool ReadingStatusWedge = false ;
   bool ReadingStatus    = false ;
 
   bool VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel(); ;
@@ -427,7 +438,6 @@ void TTiaraBarrelPhysics::ReadConfiguration(string Path){
       }
     }
   }
-
   InitializeStandardParameter();
   ReadAnalysisConfig();
 }
@@ -438,9 +448,9 @@ void TTiaraBarrelPhysics::InitSpectra(){
 
 ///////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelPhysics::FillSpectra(){  
- m_Spectra -> FillRawSpectra(m_EventData);
- m_Spectra -> FillPreTreatedSpectra(m_PreTreatedData);
- m_Spectra -> FillPhysicsSpectra(m_EventPhysics);
+  m_Spectra -> FillRawSpectra(m_EventData);
+  m_Spectra -> FillPreTreatedSpectra(m_PreTreatedData);
+  m_Spectra -> FillPhysicsSpectra(m_EventPhysics);
 }
 ///////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelPhysics::CheckSpectra(){  
@@ -468,7 +478,7 @@ void TTiaraBarrelPhysics::AddParameterToCalibrationManager(){
       Cal->AddParameter("TIARABARREL_B", itoa(i+1)+"_DOWNSTREAM"+itoa(j+1)+"_T","TIARABARREL_B"+itoa(i+1)+"_DOWNSTREAM"+itoa(j+1)+"_T")   ;
     }
   }
-  
+
   // POS
   for(int i = 0 ; i < m_NumberOfDetector ; ++i){
     for( int j = 0 ; j < 4 ; ++j){
@@ -524,13 +534,13 @@ void TTiaraBarrelPhysics::AddDetector(double X,double Y,double Z){
   m_NumberOfDetector+=8;
 
   /*  
-  double StripPitchSector = (Wedge_Phi_Max-Wedge_Phi_Min)/Wedge_Sector_NumberOfStrip ;
-  double StripPitchRing   = (Wedge_R_Max-Wedge_R_Min)/Wedge_Ring_NumberOfStrip  ; 
+      double StripPitchSector = (Wedge_Phi_Max-Wedge_Phi_Min)/Wedge_Sector_NumberOfStrip ;
+      double StripPitchRing   = (Wedge_R_Max-Wedge_R_Min)/Wedge_Ring_NumberOfStrip  ; 
 
-  TVector3 Strip_1_1;
+      TVector3 Strip_1_1;
 
-  m_NumberOfDetector++;
-  Strip_1_1=TVector3(0,0,Z);
+      m_NumberOfDetector++;
+      Strip_1_1=TVector3(0,0,Z);
 
   //   Buffer object to fill Position Array
   vector<double> lineX ; vector<double> lineY ; vector<double> lineZ ;
@@ -541,22 +551,22 @@ void TTiaraBarrelPhysics::AddDetector(double X,double Y,double Z){
 
   TVector3 StripCenter = Strip_1_1;
   for(int f = 0 ; f < Wedge_Ring_NumberOfStrip ; f++){
-    lineX.clear()   ;
-    lineY.clear()   ;
-    lineZ.clear()   ;
+  lineX.clear()   ;
+  lineY.clear()   ;
+  lineZ.clear()   ;
 
-    for(int b = 0 ; b < Wedge_Sector_NumberOfStrip ; b++){
-      StripCenter = Strip_1_1;
-      StripCenter.SetY(Wedge_R_Max-f*StripPitchRing);
-      StripCenter.SetZ(Z);
-      StripCenter.RotateZ(Phi+Wedge_Phi_Min+b*StripPitchSector);
-      lineX.push_back( StripCenter.X() );
-      lineY.push_back( StripCenter.Y() );
-      lineZ.push_back( StripCenter.Z() );
-    }
-    OneWedgeStripPositionX.push_back(lineX);
-    OneWedgeStripPositionY.push_back(lineY);
-    OneWedgeStripPositionZ.push_back(lineZ);
+  for(int b = 0 ; b < Wedge_Sector_NumberOfStrip ; b++){
+  StripCenter = Strip_1_1;
+  StripCenter.SetY(Wedge_R_Max-f*StripPitchRing);
+  StripCenter.SetZ(Z);
+  StripCenter.RotateZ(Phi+Wedge_Phi_Min+b*StripPitchSector);
+  lineX.push_back( StripCenter.X() );
+  lineY.push_back( StripCenter.Y() );
+  lineZ.push_back( StripCenter.Z() );
+  }
+  OneWedgeStripPositionX.push_back(lineX);
+  OneWedgeStripPositionY.push_back(lineY);
+  OneWedgeStripPositionZ.push_back(lineZ);
   }
   m_StripPositionX.push_back( OneWedgeStripPositionX ) ;
   m_StripPositionY.push_back( OneWedgeStripPositionY ) ;
@@ -572,67 +582,50 @@ TVector3 TTiaraBarrelPhysics::GetDetectorNormal( const int i) const{
 }
 ///////////////////////////////////////////////////////////////////////////////
 TVector3 TTiaraBarrelPhysics::GetPositionOfInteraction(const int i) const{
-/*  TVector3 Position = TVector3 ( GetStripPositionX(DetectorNumber[i],Strip_Ring[i],Strip_Sector[i] )    ,
+  /*  TVector3 Position = TVector3 ( GetStripPositionX(DetectorNumber[i],Strip_Ring[i],Strip_Sector[i] )    ,
       GetStripPositionY( DetectorNumber[i],Strip_Ring[i],Strip_Sector[i] )    ,
       GetStripPositionZ( DetectorNumber[i],Strip_Ring[i],Strip_Sector[i] )    ) ;
-*/
+      */
   return(TVector3(0,0,0)) ;
 
 }
 ///////////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelPhysics::InitializeStandardParameter(){
-/*  //   Enable all channel
-  vector< bool > ChannelStatus;
-  m_RingChannelStatus.clear()    ;
-  m_SectorChannelStatus.clear()    ;
+  /*  //   Enable all channel
+      vector< bool > ChannelStatus;
+      m_RingChannelStatus.clear()    ;
+      m_SectorChannelStatus.clear()    ;
 
-  ChannelStatus.resize(16,true);
-  for(int i = 0 ; i < m_NumberOfDetector ; ++i){
-    m_RingChannelStatus[i] = ChannelStatus;
-  }
+      ChannelStatus.resize(16,true);
+      for(int i = 0 ; i < m_NumberOfDetector ; ++i){
+      m_RingChannelStatus[i] = ChannelStatus;
+      }
 
-  ChannelStatus.resize(8,true);
-  for(int i = 0 ; i < m_NumberOfDetector ; ++i){
-    m_SectorChannelStatus[i] = ChannelStatus;
-  }
+      ChannelStatus.resize(8,true);
+      for(int i = 0 ; i < m_NumberOfDetector ; ++i){
+      m_SectorChannelStatus[i] = ChannelStatus;
+      }
 
-  m_MaximumStripMultiplicityAllowed = m_NumberOfDetector   ;
-*/
+      m_MaximumStripMultiplicityAllowed = m_NumberOfDetector   ;
+      */
   return;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-namespace TiaraBarrel_LOCAL{
-
-  //   transform an integer to a string
-  string itoa(unsigned int value){
-    char buffer [33];
-    sprintf(buffer,"%d",value);
-    return buffer;
-  }
-/*
-  //   DSSD
-  //   Ring
-  double fStrip_Ring_E(const TTiaraBarrelData* m_EventData , const int i){
-    return CalibrationManager::getInstance()->ApplyCalibration(   "TIARABARREL/D" + itoa( m_EventData->GetRingEDetectorNbr(i) ) + "_STRIP_RING" + itoa( m_EventData->GetRingEStripNbr(i) ) + "_E",
-        m_EventData->GetRingEEnergy(i) );
-  }
-
-  double fStrip_Ring_T(const TTiaraBarrelData* m_EventData , const int i){
-    return CalibrationManager::getInstance()->ApplyCalibration(   "TIARABARREL/D" + itoa( m_EventData->GetRingTDetectorNbr(i) ) + "_STRIP_RING" + itoa( m_EventData->GetRingTStripNbr(i) ) +"_T",
-        m_EventData->GetRingTTime(i) );
-  }
-
-  //   Sector
-  double fStrip_Sector_E(const TTiaraBarrelData* m_EventData , const int i){
-    return CalibrationManager::getInstance()->ApplyCalibration(   "TIARABARREL/D" + itoa( m_EventData->GetSectorTDetectorNbr(i) ) + "_STRIP_SECTOR" + itoa( m_EventData->GetSectorTStripNbr(i) ) +"_E",
-        m_EventData->GetSectorEEnergy(i) );
-  }
-
-  double fStrip_Sector_T(const TTiaraBarrelData* m_EventData , const int i){
-    return CalibrationManager::getInstance()->ApplyCalibration(   "TIARABARREL/D" + itoa( m_EventData->GetSectorTDetectorNbr(i) ) + "_STRIP_SECTOR" + itoa( m_EventData->GetSectorTStripNbr(i) ) +"_T",
-        m_EventData->GetRingTTime(i) );
-  }
-*/
+//   transform an integer to a string
+string TTiaraBarrelPhysics::itoa(unsigned int value){
+  char buffer [33];
+  sprintf(buffer,"%d",value);
+  return buffer;
+}
+///////////////////////////////////////////////////////////////////////////////
+double TTiaraBarrelPhysics::fStrip_Upstream_E(const int i){
+  return CalibrationManager::getInstance()->ApplyCalibration(   "TIARABARREL/B" + itoa( m_EventData->GetFrontUpstreamEDetectorNbr(i) ) + "_UPSTREAM" + itoa( m_EventData->GetFrontUpstreamEStripNbr(i) ) + "_E",
+      m_EventData->GetFrontUpstreamEEnergy(i) );
+}
+///////////////////////////////////////////////////////////////////////////////
+double TTiaraBarrelPhysics::fStrip_Downstream_E(const int i){
+  return CalibrationManager::getInstance()->ApplyCalibration(   "TIARABARREL/B" + itoa( m_EventData->GetFrontDownstreamEDetectorNbr(i) ) + "_DOWNSTREAM" + itoa( m_EventData->GetFrontDownstreamEStripNbr(i) ) + "_E",
+      m_EventData->GetFrontDownstreamEEnergy(i) );
 }
 
