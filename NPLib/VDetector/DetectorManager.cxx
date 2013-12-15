@@ -678,9 +678,9 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////   
 void DetectorManager::BuildPhysicalEvent(){
+  ClearEventPhysics();
   map<string,VDetector*>::iterator it;
-
-  for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {
+   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {
     it->second->BuildPhysicalEvent();
     if(NPOptionManager::getInstance()->GetGenerateHistoOption()){
       it->second->FillSpectra();
@@ -692,6 +692,7 @@ void DetectorManager::BuildPhysicalEvent(){
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 void DetectorManager::BuildSimplePhysicalEvent(){
+  ClearEventPhysics();
   map<string,VDetector*>::iterator it;
   
   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {

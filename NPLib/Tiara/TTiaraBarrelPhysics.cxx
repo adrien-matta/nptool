@@ -66,8 +66,10 @@ void TTiaraBarrelPhysics::BuildSimplePhysicalEvent(){
 
 ///////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelPhysics::BuildPhysicalEvent(){
-  /*  PreTreat();
+ PreTreat();
 
+
+ /*  
       if( CheckEvent() == 1 ){
       vector< TVector2 > couple = Match_Ring_Sector() ;
       EventMultiplicity = couple.size();
@@ -128,19 +130,29 @@ void TTiaraBarrelPhysics::PreTreat(){
 
   // Match Stick Calibration
   // Gain Calibration
+  
   unsigned int  size = m_EventData-> GetFrontUpstreamEMult();
   for(unsigned int i = 0 ; i < size; i++){  
-   m_PreTreatedData->SetFrontUpstreamEEnergy(fStrip_Upstream_E(i));
-   m_PreTreatedData->SetFrontUpstreamEDetectorNbr(m_EventData->GetFrontUpstreamEDetectorNbr(i));
-   m_PreTreatedData->SetFrontDownstreamEStripNbr(m_EventData->GetFrontDownstreamEStripNbr(i));
-  
-   m_PreTreatedData->SetFrontDownstreamEEnergy(fStrip_Downstream_E(i));
-   m_PreTreatedData->SetFrontDownstreamEDetectorNbr(m_EventData->GetFrontDownstreamEDetectorNbr(i));
-   m_PreTreatedData->SetFrontDownstreamEStripNbr(m_EventData->GetFrontDownstreamEStripNbr(i));
-
-
+    double E = Cal_Strip_Upstream_E(i) ;
+    cout << m_EventData->GetFrontUpstreamEEnergy(i)  << " " << E << endl ;
+    if( m_EventData->GetFrontUpstreamEEnergy(i) > m_Strip_E_RAW_Threshold 
+        && E > m_Strip_E_Threshold){
+      m_PreTreatedData->SetFrontUpstreamEEnergy(E);
+      m_PreTreatedData->SetFrontUpstreamEDetectorNbr(m_EventData->GetFrontUpstreamEDetectorNbr(i));
+      m_PreTreatedData->SetFrontDownstreamEStripNbr(m_EventData->GetFrontDownstreamEStripNbr(i));
+    }
   }
-
+  
+  size = m_EventData-> GetFrontDownstreamEMult();
+  for(unsigned int i = 0 ; i < size; i++){  
+    double E = Cal_Strip_Downstream_E(i) ;
+    if( m_EventData->GetFrontDownstreamEEnergy(i) > m_Strip_E_RAW_Threshold 
+        && E > m_Strip_E_Threshold){
+      m_PreTreatedData->SetFrontDownstreamEEnergy(E);
+      m_PreTreatedData->SetFrontDownstreamEDetectorNbr(m_EventData->GetFrontDownstreamEDetectorNbr(i));
+      m_PreTreatedData->SetFrontDownstreamEStripNbr(m_EventData->GetFrontDownstreamEStripNbr(i));
+    }
+  }
 
   // Position
   // Ballistic Deficit correction
@@ -619,12 +631,12 @@ string TTiaraBarrelPhysics::itoa(unsigned int value){
   return buffer;
 }
 ///////////////////////////////////////////////////////////////////////////////
-double TTiaraBarrelPhysics::fStrip_Upstream_E(const int i){
+double TTiaraBarrelPhysics::Cal_Strip_Upstream_E(const int i){
   return CalibrationManager::getInstance()->ApplyCalibration(   "TIARABARREL/B" + itoa( m_EventData->GetFrontUpstreamEDetectorNbr(i) ) + "_UPSTREAM" + itoa( m_EventData->GetFrontUpstreamEStripNbr(i) ) + "_E",
       m_EventData->GetFrontUpstreamEEnergy(i) );
 }
 ///////////////////////////////////////////////////////////////////////////////
-double TTiaraBarrelPhysics::fStrip_Downstream_E(const int i){
+double TTiaraBarrelPhysics::Cal_Strip_Downstream_E(const int i){
   return CalibrationManager::getInstance()->ApplyCalibration(   "TIARABARREL/B" + itoa( m_EventData->GetFrontDownstreamEDetectorNbr(i) ) + "_DOWNSTREAM" + itoa( m_EventData->GetFrontDownstreamEStripNbr(i) ) + "_E",
       m_EventData->GetFrontDownstreamEEnergy(i) );
 }

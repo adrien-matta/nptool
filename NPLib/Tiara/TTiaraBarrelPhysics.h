@@ -168,6 +168,7 @@ class TTiaraBarrelPhysics : public TObject, public NPA::VDetector{
 
     //  Threshold
     double m_Strip_E_RAW_Threshold ;//!
+    double m_Strip_E_Threshold ;//!
     double m_Back_E_Threshold ;//!
     double m_OuterStrip_E_RAW_Threshold ;//!
     double m_OuterBack_E_Threshold ;//!
@@ -200,8 +201,8 @@ class TTiaraBarrelPhysics : public TObject, public NPA::VDetector{
   //   tranform an integer to a string
   string itoa(unsigned int value);
   // Calibrate data
-  double fStrip_Upstream_E(const int i);
-  double fStrip_Downstream_E(const int i);
+  double Cal_Strip_Upstream_E(const int i);
+  double Cal_Strip_Downstream_E(const int i);
   
 
   ClassDef(TTiaraBarrelPhysics,1)  // SharcPhysics structure
