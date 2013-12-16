@@ -120,6 +120,17 @@ void TTiaraBarrelSpectra::InitPreTreatedSpectra(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelSpectra::InitPhysicsSpectra(){
+string BaseFamily = "/TIARA/BARREL/PHY/";
+string name ;
+  //// E POS ////
+  // Inner Barrel
+  for(unsigned int i  = 0 ; i < fNumberOfDetector ; i++){
+    for(unsigned int j = 0 ; j < fInnerBarrelStrip;j++){
+      name = Form("IB%d_EPOS%d_CAL",i+1,j+1);
+      AddHisto2D(name, name,10000,-10,10,100,0,10,BaseFamily);
+    }
+  }
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -209,22 +220,20 @@ void TTiaraBarrelSpectra::FillRawSpectra(TTiaraBarrelData* RawData){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelSpectra::FillPreTreatedSpectra(TTiaraBarrelData* PreTreatedData){
-/*string BaseFamily = "/TIARA/BARREL/CAL/";
-string name ;
-  //// E POS ////
-  // Inner Barrel
-  for(unsigned int i  = 0 ; i < fNumberOfDetector ; i++){
-    for(unsigned int j = 0 ; j < fInnerBarrelStrip;j++){
-      name = Form("IB%d_EPOS%d_CAL",i+1,j+1);
-      AddHisto2D(name, name,100,0,1,100,0,50,BaseFamily+"POS");
-    }
-  }
-
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelSpectra::FillPhysicsSpectra(TTiaraBarrelPhysics* Physics){
+string family = "/TIARA/BARREL/PHY/";
+string name ;
+  //// E POS ////
+  // Inner Barrel
+  unsigned int size = Physics->Strip_E.size();
+  for(unsigned int i  = 0 ; i < Physics->Strip_E.size() ; i++){
+      name = Form("IB%d_EPOS%d_CAL",Physics->DetectorNumber[i],Physics->Strip_N[i]);
+        GetHisto(family,name)
+        ->Fill(Physics->Strip_Pos[i],Physics->Strip_E[i]);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

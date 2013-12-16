@@ -62,8 +62,7 @@ CalibrationManager::CalibrationManager(string configFileName)
       return;
    }
 
-   else 
-   {
+   else { 
       cout << "Reading list of file from :" << configFileName << endl; 
       while (!inputConfigFile.eof()) {
          getline(inputConfigFile, lineBuffer);
@@ -175,16 +174,14 @@ void CalibrationManager::LoadParameterFromFile()
                         
                     //   Search word in the token list
                     it=fToken.find(DataBuffer);
-                  
-                    //   if the word is find, values are read
+                                      //   if the word is find, values are read
                     if( it!=fToken.end() )
-                       {
+                      { 
                           vector<double> Coeff ;
-                          while( !theLine.eof() )
-                             {
+                          while( !theLine.eof() ){
                                 theLine >> DataBuffer ; Coeff.push_back( atof(DataBuffer.c_str()) ) ;
-                             }
-                           
+                          }
+                         
                           //   Check this parameter is not already define
                           if( fCalibrationCoeff.find(it->second) != fCalibrationCoeff.end() ) 
                              cout << "WARNING: Parameter " << it->second << " Already found. It will be rewritted " << endl;
@@ -214,9 +211,10 @@ double CalibrationManager::ApplyCalibration(const string& ParameterPath , const 
       // If the find methods return the end iterator it's mean the parameter was not found
       if(it == fCalibrationCoeff.end() )
          {
-         /*   cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
+       /*     cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
             cout << " ERROR: PARAMETER " << ParameterPath << " IS NOT FOUND IN THE CALIBRATION DATA BASE  " << endl ;
-            cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;*/
+            cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl;
+exit(1); */
             
             return RawValue ;
          }
@@ -237,6 +235,38 @@ double CalibrationManager::ApplyCalibration(const string& ParameterPath , const 
       return CalibratedValue ;
       
    }
+
+//////////////////////////////////////////////////////////////////
+double CalibrationManager::ApplyResistivePositionCalibration(const string& ParameterPath , const double& DeltaRawValue){
+      map< string , vector<double> >::iterator it ;
+      
+      //   Find the good parameter in the Map
+      // Using Find method of stl is the fastest way
+      it = fCalibrationCoeff.find(ParameterPath)  ;
+      
+      // If the find methods return the end iterator it's mean the parameter was not found
+      if(it == fCalibrationCoeff.end() )
+         {
+       /*     cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
+            cout << " ERROR: PARAMETER " << ParameterPath << " IS NOT FOUND IN THE CALIBRATION DATA BASE  " << endl ;
+            cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl;
+exit(1); */
+            
+            return DeltaRawValue ;
+         }
+      
+      // Else we take the second part of the element (first is index, ie: parameter path)
+      // Second is the vector of Coeff
+      vector<double> Coeff = it->second  ;
+      
+      // Check that the number of coeff is ok
+      if(Coeff.size()!=2) return DeltaRawValue ; 
+      
+      double CalibratedValue = (DeltaRawValue-Coeff[0])/(Coeff[1]-Coeff[0]) ;
+      return CalibratedValue ;
+      
+   }
+
 
 //////////////////////////////////////////////////////////////////
 bool CalibrationManager::ApplyThreshold(const string& ParameterPath, const double& RawValue)
