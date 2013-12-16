@@ -79,8 +79,7 @@ void TCharissaPhysics::BuildSimplePhysicalEvent(){
 ///////////////////////////////////////////////////////////////////////////
 
 void TCharissaPhysics::BuildPhysicalEvent(){
-	PreTreat();
-  
+  PreTreat();
   bool check_CSI  = false ;
   
 	m_Layer1_StripXEMult = m_PreTreatedData->GetCharissaLayer1StripXEMult();
@@ -156,7 +155,6 @@ void TCharissaPhysics::BuildPhysicalEvent(){
 			check_CSI = false ;
 				
 			int Layer2_N = m_PreTreatedData->GetCharissaLayer2StripXEDetectorNbr(Layer2_couple[i].X()) ;
-			
 			int Layer2_X = m_PreTreatedData->GetCharissaLayer2StripXEStripNbr(Layer2_couple[i].X()) ;
 			int Layer2_Y = m_PreTreatedData->GetCharissaLayer2StripYEStripNbr(Layer2_couple[i].Y()) ;
 			
@@ -238,6 +236,7 @@ void TCharissaPhysics::PreTreat(){
 	m_Layer1_StripYEMult = m_EventData->GetCharissaLayer1StripYEMult();
 	m_Layer1_StripXTMult = m_EventData->GetCharissaLayer1StripXTMult();
 	m_Layer1_StripYTMult = m_EventData->GetCharissaLayer1StripYTMult();
+
 	m_Layer2_StripXEMult = m_PreTreatedData->GetCharissaLayer2StripXEMult();
 	m_Layer2_StripYEMult = m_PreTreatedData->GetCharissaLayer2StripYEMult();
 	m_Layer2_StripXTMult = m_PreTreatedData->GetCharissaLayer2StripXTMult();
@@ -269,7 +268,6 @@ void TCharissaPhysics::PreTreat(){
     }
   }
   
-  
   //   Y  Layer1
   //   E
   for(unsigned int i = 0 ; i < m_Layer1_StripYEMult ; ++i){
@@ -282,6 +280,7 @@ void TCharissaPhysics::PreTreat(){
       }
     }
   }
+
 	//   T
 	for(unsigned int i = 0 ; i < m_Layer1_StripYTMult ; ++i){
 		if(IsValidChannel("Y", m_EventData->GetCharissaLayer1StripYTDetectorNbr(i), m_EventData->GetCharissaLayer1StripYTStripNbr(i))){
@@ -291,6 +290,7 @@ void TCharissaPhysics::PreTreat(){
 		}
 	}
 	
+
 	//   X Layer2
 	//   E
 	for(unsigned int i = 0 ; i < m_Layer2_StripXEMult ; ++i){
@@ -301,10 +301,10 @@ void TCharissaPhysics::PreTreat(){
 				m_PreTreatedData->SetCharissaLayer2StripXEStripNbr( m_EventData->GetCharissaLayer2StripXEStripNbr(i) );
 				m_PreTreatedData->SetCharissaLayer2StripXEEnergy( Layer2_EX );
 			}
-			
 		}
 	}
 	
+
 	//   T
 	for(unsigned int i = 0 ; i < m_Layer2_StripXTMult ; ++i){
 		if(IsValidChannel("X", m_EventData->GetCharissaLayer2StripXTDetectorNbr(i), m_EventData->GetCharissaLayer2StripXTStripNbr(i))){
@@ -313,7 +313,6 @@ void TCharissaPhysics::PreTreat(){
 			m_PreTreatedData->SetCharissaLayer2StripXTTime( fSi_X_T(m_EventData , i) );
 		}
 	}
-	
 	
 	//   Y  Layer2
 	//   E
@@ -328,9 +327,15 @@ void TCharissaPhysics::PreTreat(){
 		}
 	}
 	
+  //   T
+	for(unsigned int i = 0 ; i < m_Layer2_StripYTMult ; ++i){
+		if( IsValidChannel("Y", m_EventData->GetCharissaLayer2StripYTDetectorNbr(i), m_EventData->GetCharissaLayer1StripYTStripNbr(i))){
+				m_PreTreatedData->SetCharissaLayer2StripYTDetectorNbr( m_EventData->GetCharissaLayer2StripYTDetectorNbr(i) );
+				m_PreTreatedData->SetCharissaLayer2StripYTStripNbr( m_EventData->GetCharissaLayer2StripYTStripNbr(i) );
+				m_PreTreatedData->SetCharissaLayer2StripYTTime( fSi_Y_T(m_EventData,i) );
+		}
+	}
 	
-
-  
   //   CsI
   //   E
   for(unsigned int i = 0 ; i < m_CsIEMult ; ++i){
@@ -352,8 +357,6 @@ void TCharissaPhysics::PreTreat(){
       m_PreTreatedData->SetCharissaCsITTime( fCsI_T(m_EventData , i) );
     }
   }
-  
-
   
   return;
 }
@@ -1034,7 +1037,6 @@ void TCharissaPhysics::InitSpectra(){
 void TCharissaPhysics::FillSpectra(){  
 	m_Spectra -> FillRawSpectra(m_EventData);
 	m_Spectra -> FillPreTreatedSpectra(m_PreTreatedData);
-//	m_Spectra -> FillPhysicsSpectra(m_EventPhysics);
 }
 ///////////////////////////////////////////////////////////////////////////
 void TCharissaPhysics::CheckSpectra(){  

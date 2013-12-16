@@ -253,7 +253,6 @@ void TCharissaSpectra::FillRawSpectra(TCharissaData* RawData)
 {
    TString name;
    TString family;
-
    // L1_STRX_E 
    for (unsigned int i = 0; i < RawData->GetCharissaLayer1StripXEMult(); i++) {
       name   = Form("CHA%d_L1_STRX_E_RAW", RawData->GetCharissaLayer1StripXEDetectorNbr(i));
