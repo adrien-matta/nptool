@@ -567,7 +567,8 @@ void TExogamPhysics::AddClover(string AngleFile)
 	      Angles.push_back(angle);   // Theta (k = 0)   Phi (k = 1)
 
 	      //cout << angle << endl;
-	       cout << NumberOfClover << " " << Angles[0] << endl;
+	       if(Angles.size()==2)
+	       cout << "Clover " << NumberOfClover << ": Theta=" << Angles[0] << " Phi=" << Angles[1]<< endl;
 	      
 	    }
 	  
