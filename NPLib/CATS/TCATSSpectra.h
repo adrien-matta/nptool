@@ -75,10 +75,14 @@ class TCATSSpectra {
   private: // Information on MUST2
     unsigned int fNumberOfCats;
     unsigned int fStripsNumber;
+    int fEventLoopSize;
+    int fEventLoopStep;
+    int fEventLoopIndex;
+    vector<double> fEventLoopQSum;
 
   private:
-    // map holding histo pointers and their family names
-    map< vector<TString>, TH1* > fMapHisto;
+// map holding histo pointers and their family names
+map< vector<TString>, TH1* > fMapHisto;
 };
 
 #endif

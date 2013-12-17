@@ -203,7 +203,8 @@ class TTiaraBarrelPhysics : public TObject, public NPA::VDetector{
   // Calibrate data
   double Cal_Strip_Upstream_E(const int i);
   double Cal_Strip_Downstream_E(const int i);
-  
+  double Match_Strip_Upstream_E(const int i);
+  double Match_Strip_Downstream_E(const int i);
 
   ClassDef(TTiaraBarrelPhysics,1)  // SharcPhysics structure
 

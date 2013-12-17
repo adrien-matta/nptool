@@ -116,6 +116,16 @@ void TTiaraBarrelSpectra::InitRawSpectra(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelSpectra::InitPreTreatedSpectra(){
+  TString BaseFamily = "TIARA/BARREL/CAL/";
+  TString name ;
+  //// VS ////
+  // Inner Barrel
+  for(unsigned int i  = 0 ; i < fNumberOfDetector ; i++){
+    for(unsigned int j = 0 ; j < fInnerBarrelStrip;j++){
+      name = Form("IB%d_VS%d_CAL",i+1,j+1);
+      AddHisto2D(name,name,2048,-1,100,2048,-1,100,BaseFamily+"VS");
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -127,10 +137,9 @@ string name ;
   for(unsigned int i  = 0 ; i < fNumberOfDetector ; i++){
     for(unsigned int j = 0 ; j < fInnerBarrelStrip;j++){
       name = Form("IB%d_EPOS%d_CAL",i+1,j+1);
-      AddHisto2D(name, name,10000,-10,10,100,0,10,BaseFamily);
+      AddHisto2D(name, name,100,-2,2,100,0,10,BaseFamily);
     }
   }
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -220,6 +229,24 @@ void TTiaraBarrelSpectra::FillRawSpectra(TTiaraBarrelData* RawData){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelSpectra::FillPreTreatedSpectra(TTiaraBarrelData* PreTreatedData){
+TString BaseFamily = "TIARA/BARREL/CAL/";
+// INNER_BARREL_VS_CAL                 
+  TString family = BaseFamily+"VS";
+  TString name ;
+  for (unsigned int i = 0; i < PreTreatedData->GetFrontUpstreamEMult(); i++) {
+    int UpStreamDetNbr = PreTreatedData->GetFrontUpstreamEDetectorNbr(i);
+    int UpStreamStrNbr = PreTreatedData->GetFrontUpstreamEStripNbr(i);
+    
+    for (unsigned int j = 0; j < PreTreatedData->GetFrontDownstreamEMult(); j++) {
+      int DoStreamDetNbr = PreTreatedData->GetFrontDownstreamEDetectorNbr(j);
+      int DoStreamStrNbr = PreTreatedData->GetFrontDownstreamEStripNbr(j);
+     if(UpStreamDetNbr==DoStreamDetNbr && UpStreamStrNbr==DoStreamStrNbr){
+       name = Form("IB%d_VS%d_CAL",UpStreamDetNbr,UpStreamStrNbr); 
+       GetHisto(family,name)
+        ->Fill(PreTreatedData->GetFrontUpstreamEEnergy(i),PreTreatedData->GetFrontDownstreamEEnergy(j));
+      } 
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
