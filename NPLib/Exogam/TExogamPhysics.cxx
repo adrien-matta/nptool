@@ -67,10 +67,8 @@ void TExogamPhysics::PreTreat()
 {
   ClearPreTreatedData();
 
-  //ECC
-
   //E 
-  
+
   for(unsigned int i = 0 ; i < EventData -> GetECCEMult(); i++) {
     UShort_t cristal_E = 10000 ; UShort_t cristal_T = 2000;
     //if(IsValidChannel)
@@ -84,12 +82,14 @@ void TExogamPhysics::PreTreat()
     
       if(cristal_E > Threshold_ECC)
 	{      
-	  if(EventData -> GetECCTMult() !=0)
-	    {
-	      for(unsigned int k = 0; k < EventData -> GetECCTMult(); k++)
-		{
-		  if(clover == EventData -> GetECCTClover(k) && cristal == EventData -> GetECCTCristal(k))
-		    {
+
+	PreTreatedData->SetECCEClover ( clover )        ;
+	PreTreatedData->SetECCECristal( cristal )	;
+	PreTreatedData->SetECCEEnergy ( cristal_E )	;
+
+	      bool checkT = false;
+	      for(unsigned int k = 0; k < EventData -> GetECCTMult(); k++){
+		  if(clover == EventData -> GetECCTClover(k) && cristal == EventData -> GetECCTCristal(k)){
 		      // cout << EventData -> GetECCTTime(k) << endl;
 
 		      if(EventData -> GetECCTTime(k) < 16383)  cristal_T = CalibrationManager::getInstance()-> ApplyCalibration("EXOGAM/Cl"+itoa(clover)+"_Cr"+itoa(cristal)+"_T", EventData -> GetECCTTime(k));
@@ -97,35 +97,24 @@ void TExogamPhysics::PreTreat()
 		  
 		      //if(cristal_T >5000 && cristal_T !=25000 ) cout << "PreTreat " << cristal_T << " " << EventData -> GetECCTTime(k) << " " << clover << " " << cristal << " " << EventData->GetECCTMult() << endl;
 		  	      
-		      PreTreatedData->SetECCEClover ( EventData->GetECCEClover(i) )        ;
-		      PreTreatedData->SetECCECristal( EventData->GetECCECristal(i) )	;
-		      PreTreatedData->SetECCEEnergy ( cristal_E )	;
-		      PreTreatedData->SetECCTClover ( EventData->GetECCEClover(i) )        ;
-		      PreTreatedData->SetECCTCristal( EventData->GetECCECristal(i) )	;
+		     checkT=true;
+		      PreTreatedData->SetECCTClover (clover )        ;
+		      PreTreatedData->SetECCTCristal( cristal )	;
 		      PreTreatedData->SetECCTTime   ( cristal_T )	;
 
 		      ECC_Multiplicity ++;
 		      GOCCE_Multiplicity++;
 		    }
-		  else { }
+		 
 		}
-	    }
 
-	  else    // case of calibration with ECCTMult = 0
-	    {
-	      cristal_T = 3000;
-	      //cout << cristal_E << endl;
-	      
-	      PreTreatedData->SetECCEClover ( EventData->GetECCEClover(i) )        ;
-	      PreTreatedData->SetECCECristal( EventData->GetECCECristal(i) )	;
-	      PreTreatedData->SetECCEEnergy ( cristal_E )	;
-	      PreTreatedData->SetECCTClover ( EventData->GetECCEClover(i) )        ;
-	      PreTreatedData->SetECCTCristal( EventData->GetECCECristal(i) )	;
-	      PreTreatedData->SetECCTTime   ( cristal_T )	;
-	      // if(cristal_T > 5000 && cristal_T !=30000) cout << "PreTreat (default = 30000)  " << cristal_T << " " << clover << " " << cristal << endl;
-	      
-	      
-	    }
+ 		if(!checkT) {
+ 			PreTreatedData->SetECCTClover (clover )        ;
+		      	PreTreatedData->SetECCTCristal( cristal )	;
+		      	PreTreatedData->SetECCTTime   ( -1000 )	;
+	 	}
+
+	    
 	}
     }
   }
@@ -174,8 +163,6 @@ void TExogamPhysics::PreTreat()
 	
 void TExogamPhysics::BuildPhysicalEvent()
 { 
-  //cout << "Exogam Build ?" << endl;
-
   PreTreat();
   
   if(PreTreatedData -> GetECCEMult() != PreTreatedData -> GetECCTMult()) cout << PreTreatedData -> GetECCEMult() << " " <<  PreTreatedData -> GetECCTMult() << endl;
@@ -580,7 +567,7 @@ void TExogamPhysics::AddClover(string AngleFile)
 	      Angles.push_back(angle);   // Theta (k = 0)   Phi (k = 1)
 
 	      //cout << angle << endl;
-	      // cout << NumberOfClover << " " << Angles[0] << endl;
+	       cout << NumberOfClover << " " << Angles[0] << endl;
 	      
 	    }
 	  
@@ -624,7 +611,7 @@ void TExogamPhysics::AddParameterToCalibrationManager()
 
 //	Activated associated Branches and link it to the private member DetectorData address
 //	In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
-void TExogamPhysics::InitializeRootInput() 		
+void TExogamPhysics::InitializeRootInputRaw() 		
 {
   TChain* inputChain = RootInput::getInstance()->GetChain()	;
   inputChain->SetBranchStatus( "EXOGAM" , true )			;
