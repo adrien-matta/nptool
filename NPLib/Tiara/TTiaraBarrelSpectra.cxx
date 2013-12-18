@@ -123,7 +123,7 @@ void TTiaraBarrelSpectra::InitPreTreatedSpectra(){
   for(unsigned int i  = 0 ; i < fNumberOfDetector ; i++){
     for(unsigned int j = 0 ; j < fInnerBarrelStrip;j++){
       name = Form("IB%d_VS%d_CAL",i+1,j+1);
-      AddHisto2D(name,name,2048,-1,100,2048,-1,100,BaseFamily+"VS");
+      AddHisto2D(name,name,2048,-1,30,2048,-1,30,BaseFamily+"VS");
     }
   }
 }
@@ -137,7 +137,7 @@ string name ;
   for(unsigned int i  = 0 ; i < fNumberOfDetector ; i++){
     for(unsigned int j = 0 ; j < fInnerBarrelStrip;j++){
       name = Form("IB%d_EPOS%d_CAL",i+1,j+1);
-      AddHisto2D(name, name,100,-2,2,100,0,10,BaseFamily);
+      AddHisto2D(name, name,100,-0.5,1.5,100,0,30,BaseFamily);
     }
   }
 }

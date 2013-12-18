@@ -144,20 +144,22 @@ void TTiaraBarrelPhysics::PreTreat(){
         m_PreTreatedData->SetFrontDownstreamE(m_EventData-> GetFrontDownstreamEDetectorNbr(i),
                                            m_EventData-> GetFrontDownstreamEStripNbr(i),
                                            ED);
-      if(EU>0 && ED>0)
-      if(m_EventData->GetFrontUpstreamEDetectorNbr(i) == m_EventData->GetFrontDownstreamEDetectorNbr(j) )
-        if(m_EventData->GetFrontUpstreamEStripNbr(i) == m_EventData->GetFrontDownstreamEStripNbr(j)){
-          Strip_E.push_back(EU+ED);
-
-                   double POS =CalibrationManager::getInstance()->ApplyResistivePositionCalibration("TIARABARREL/B"+itoa(m_EventData->GetFrontUpstreamEDetectorNbr(i))+"_STRIP"+itoa(m_EventData->GetFrontUpstreamEDetectorNbr(i))+"_POS",(ED-EU)/(EU+ED));
-
-           Strip_Pos.push_back(POS); 
-          Strip_N.push_back(m_EventData->GetFrontUpstreamEStripNbr(i));
-          DetectorNumber.push_back(m_EventData->GetFrontUpstreamEDetectorNbr(i));
+      if(EU>0 && ED>0){
+        if( m_EventData->GetFrontUpstreamEDetectorNbr(i) 
+        == m_EventData->GetFrontDownstreamEDetectorNbr(j)
+        && m_EventData->GetFrontUpstreamEStripNbr(i) 
+        == m_EventData->GetFrontDownstreamEStripNbr(j)){
+            
+            Strip_E.push_back(EU+ED);
+            double POS =
+              CalibrationManager::getInstance()->ApplyResistivePositionCalibration("TIARABARREL/B"+itoa(m_EventData->GetFrontUpstreamEDetectorNbr(i))+"_STRIP"+itoa(m_EventData->GetFrontUpstreamEStripNbr(i))+"_POS",(ED-EU)/(EU+ED));
+            Strip_Pos.push_back(POS); 
+            Strip_N.push_back(m_EventData->GetFrontUpstreamEStripNbr(i));
+            DetectorNumber.push_back(m_EventData->GetFrontUpstreamEDetectorNbr(i));
+        }
       }
     }
   }
-  // Position
   
   // Ballistic Deficit correction
 }
