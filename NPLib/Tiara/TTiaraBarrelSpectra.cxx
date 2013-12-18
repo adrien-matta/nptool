@@ -137,7 +137,7 @@ string name ;
   for(unsigned int i  = 0 ; i < fNumberOfDetector ; i++){
     for(unsigned int j = 0 ; j < fInnerBarrelStrip;j++){
       name = Form("IB%d_EPOS%d_CAL",i+1,j+1);
-      AddHisto2D(name, name,100,-0.5,1.5,100,0,30,BaseFamily);
+      AddHisto2D(name, name,1000,-0.5,1.5,1000,0,30,BaseFamily);
     }
   }
 }

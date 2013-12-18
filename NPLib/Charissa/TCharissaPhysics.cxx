@@ -51,9 +51,9 @@ TCharissaPhysics::TCharissaPhysics(){
 	m_StripEnergyMatchingSigma = 0.020    ;
 	m_StripEnergyMatchingNumberOfSigma = 3;
 	// Raw Threshold
-	m_Si_X_E_RAW_Threshold = 8200 ;
-	m_Si_Y_E_RAW_Threshold = 8200 ;
-	m_CsI_E_RAW_Threshold  = 8200 ;
+	m_Si_X_E_RAW_Threshold = 0 ;
+	m_Si_Y_E_RAW_Threshold = 0 ;
+	m_CsI_E_RAW_Threshold  = 0 ;
 	// Calibrated Threshold
 	m_Si_X_E_Threshold = 0 ;
 	m_Si_Y_E_Threshold = 0 ;
@@ -249,13 +249,12 @@ void TCharissaPhysics::PreTreat(){
   //   E
   for(unsigned int i = 0 ; i < m_Layer1_StripXEMult ; ++i){
     if( m_EventData->GetCharissaLayer1StripXEEnergy(i)>m_Si_X_E_RAW_Threshold && IsValidChannel("X", m_EventData->GetCharissaLayer1StripXEDetectorNbr(i), m_EventData->GetCharissaLayer1StripXEStripNbr(i)) ){
-      double Layer1_EX = fSi_X_E(m_EventData , i);
+      double Layer1_EX = fDE_X_E(m_EventData , i);
       if( Layer1_EX > m_Si_X_E_Threshold ){
         m_PreTreatedData->SetCharissaLayer1StripXEDetectorNbr( m_EventData->GetCharissaLayer1StripXEDetectorNbr(i) );
         m_PreTreatedData->SetCharissaLayer1StripXEStripNbr( m_EventData->GetCharissaLayer1StripXEStripNbr(i) );
         m_PreTreatedData->SetCharissaLayer1StripXEEnergy( Layer1_EX );
       }
-      
     }
   }
   
@@ -264,7 +263,7 @@ void TCharissaPhysics::PreTreat(){
     if(IsValidChannel("X", m_EventData->GetCharissaLayer1StripXTDetectorNbr(i), m_EventData->GetCharissaLayer1StripXTStripNbr(i))){
       m_PreTreatedData->SetCharissaLayer1StripXTDetectorNbr( m_EventData->GetCharissaLayer1StripXTDetectorNbr(i) );
       m_PreTreatedData->SetCharissaLayer1StripXTStripNbr( m_EventData->GetCharissaLayer1StripXTStripNbr(i) );
-      m_PreTreatedData->SetCharissaLayer1StripXTTime( fSi_X_T(m_EventData , i) );
+      m_PreTreatedData->SetCharissaLayer1StripXTTime( fDE_X_T(m_EventData , i) );
     }
   }
   
@@ -272,7 +271,7 @@ void TCharissaPhysics::PreTreat(){
   //   E
   for(unsigned int i = 0 ; i < m_Layer1_StripYEMult ; ++i){
     if( m_EventData->GetCharissaLayer1StripYEEnergy(i)<m_Si_Y_E_RAW_Threshold && IsValidChannel("Y", m_EventData->GetCharissaLayer1StripYEDetectorNbr(i), m_EventData->GetCharissaLayer1StripYEStripNbr(i))){
-      double Layer1_EY = fSi_Y_E(m_EventData , i);
+      double Layer1_EY = fDE_Y_E(m_EventData , i);
       if( Layer1_EY >m_Si_Y_E_Threshold ){
         m_PreTreatedData->SetCharissaLayer1StripYEDetectorNbr( m_EventData->GetCharissaLayer1StripYEDetectorNbr(i) );
         m_PreTreatedData->SetCharissaLayer1StripYEStripNbr( m_EventData->GetCharissaLayer1StripYEStripNbr(i) );
@@ -286,7 +285,7 @@ void TCharissaPhysics::PreTreat(){
 		if(IsValidChannel("Y", m_EventData->GetCharissaLayer1StripYTDetectorNbr(i), m_EventData->GetCharissaLayer1StripYTStripNbr(i))){
 			m_PreTreatedData->SetCharissaLayer1StripYTDetectorNbr( m_EventData->GetCharissaLayer1StripYTDetectorNbr(i) );
 			m_PreTreatedData->SetCharissaLayer1StripYTStripNbr( m_EventData->GetCharissaLayer1StripYTStripNbr(i) );
-			m_PreTreatedData->SetCharissaLayer1StripYTTime( fSi_Y_T(m_EventData , i) );
+			m_PreTreatedData->SetCharissaLayer1StripYTTime( fDE_Y_T(m_EventData , i) );
 		}
 	}
 	
@@ -295,7 +294,7 @@ void TCharissaPhysics::PreTreat(){
 	//   E
 	for(unsigned int i = 0 ; i < m_Layer2_StripXEMult ; ++i){
 		if( m_EventData->GetCharissaLayer2StripXEEnergy(i)>m_Si_X_E_RAW_Threshold && IsValidChannel("X", m_EventData->GetCharissaLayer2StripXEDetectorNbr(i), m_EventData->GetCharissaLayer1StripXEStripNbr(i)) ){
-			double Layer2_EX = fSi_X_E(m_EventData , i);
+			double Layer2_EX = fE_X_E(m_EventData , i);
 			if( Layer2_EX > m_Si_X_E_Threshold ){
 				m_PreTreatedData->SetCharissaLayer2StripXEDetectorNbr( m_EventData->GetCharissaLayer2StripXEDetectorNbr(i) );
 				m_PreTreatedData->SetCharissaLayer2StripXEStripNbr( m_EventData->GetCharissaLayer2StripXEStripNbr(i) );
@@ -310,7 +309,7 @@ void TCharissaPhysics::PreTreat(){
 		if(IsValidChannel("X", m_EventData->GetCharissaLayer2StripXTDetectorNbr(i), m_EventData->GetCharissaLayer2StripXTStripNbr(i))){
 			m_PreTreatedData->SetCharissaLayer2StripXTDetectorNbr( m_EventData->GetCharissaLayer2StripXTDetectorNbr(i) );
 			m_PreTreatedData->SetCharissaLayer2StripXTStripNbr( m_EventData->GetCharissaLayer2StripXTStripNbr(i) );
-			m_PreTreatedData->SetCharissaLayer2StripXTTime( fSi_X_T(m_EventData , i) );
+			m_PreTreatedData->SetCharissaLayer2StripXTTime( fE_X_T(m_EventData , i) );
 		}
 	}
 	
@@ -318,7 +317,7 @@ void TCharissaPhysics::PreTreat(){
 	//   E
 	for(unsigned int i = 0 ; i < m_Layer2_StripYEMult ; ++i){
 		if( m_EventData->GetCharissaLayer2StripYEEnergy(i)<m_Si_Y_E_RAW_Threshold && IsValidChannel("Y", m_EventData->GetCharissaLayer2StripYEDetectorNbr(i), m_EventData->GetCharissaLayer1StripYEStripNbr(i))){
-			double Layer2_EY = fSi_Y_E(m_EventData , i);
+			double Layer2_EY = fE_Y_E(m_EventData , i);
 			if( Layer2_EY >m_Si_Y_E_Threshold ){
 				m_PreTreatedData->SetCharissaLayer2StripYEDetectorNbr( m_EventData->GetCharissaLayer2StripYEDetectorNbr(i) );
 				m_PreTreatedData->SetCharissaLayer2StripYEStripNbr( m_EventData->GetCharissaLayer2StripYEStripNbr(i) );
@@ -332,7 +331,7 @@ void TCharissaPhysics::PreTreat(){
 		if( IsValidChannel("Y", m_EventData->GetCharissaLayer2StripYTDetectorNbr(i), m_EventData->GetCharissaLayer1StripYTStripNbr(i))){
 				m_PreTreatedData->SetCharissaLayer2StripYTDetectorNbr( m_EventData->GetCharissaLayer2StripYTDetectorNbr(i) );
 				m_PreTreatedData->SetCharissaLayer2StripYTStripNbr( m_EventData->GetCharissaLayer2StripYTStripNbr(i) );
-				m_PreTreatedData->SetCharissaLayer2StripYTTime( fSi_Y_T(m_EventData,i) );
+				m_PreTreatedData->SetCharissaLayer2StripYTTime( fE_Y_T(m_EventData,i) );
 		}
 	}
 	
@@ -746,13 +745,13 @@ void TCharissaPhysics::ReadCalibrationRun(){
   //   E
   for(unsigned int i = 0 ; i < m_Layer1_StripXEMult;++i){
     Layer1_TelescopeNumber_X.push_back(m_EventData->GetCharissaLayer1StripXEDetectorNbr(i));
-    Layer1_Si_EX.push_back( fSi_X_E( m_EventData , i) );
+    Layer1_Si_EX.push_back( fDE_X_E( m_EventData , i) );
     Layer1_Si_X.push_back(m_EventData->GetCharissaLayer1StripXEStripNbr(i));
   }
   //   T
   for(unsigned int i = 0 ; i < m_Layer1_StripXTMult;++i){
     Layer1_TelescopeNumber_X.push_back(m_EventData->GetCharissaLayer1StripXTDetectorNbr(i));
-    Layer1_Si_TX.push_back( fSi_X_T( m_EventData , i) );
+    Layer1_Si_TX.push_back( fDE_X_T( m_EventData , i) );
     Layer1_Si_X.push_back(m_EventData->GetCharissaLayer1StripXTStripNbr(i));
   }
   
@@ -760,14 +759,14 @@ void TCharissaPhysics::ReadCalibrationRun(){
   //   E
   for(unsigned int i = 0 ; i < m_Layer1_StripYEMult;++i){
     Layer1_TelescopeNumber_Y.push_back(m_EventData->GetCharissaLayer1StripYEDetectorNbr(i));
-    Layer1_Si_EY.push_back( fSi_Y_E( m_EventData , i) );
+    Layer1_Si_EY.push_back( fDE_Y_E( m_EventData , i) );
     Layer1_Si_Y.push_back(m_EventData->GetCharissaLayer1StripYEStripNbr(i));
   }
   
   //   T
   for(unsigned int i = 0 ; i < m_Layer1_StripYTMult;++i){
         Layer1_TelescopeNumber_Y.push_back(m_EventData->GetCharissaLayer1StripYTDetectorNbr(i));
-        Layer1_Si_TY.push_back( fSi_Y_T( m_EventData , i) );
+        Layer1_Si_TY.push_back( fDE_Y_T( m_EventData , i) );
         Layer1_Si_Y.push_back(m_EventData->GetCharissaLayer1StripYTStripNbr(i));
   }
  
@@ -776,13 +775,13 @@ void TCharissaPhysics::ReadCalibrationRun(){
 	//   E
 	for(unsigned int i = 0 ; i < m_Layer2_StripXEMult;++i){
 		Layer2_TelescopeNumber_X.push_back(m_EventData->GetCharissaLayer2StripXEDetectorNbr(i));
-		Layer2_Si_EX.push_back( fSi_X_E( m_EventData , i) );
+		Layer2_Si_EX.push_back( fE_X_E( m_EventData , i) );
 		Layer2_Si_X.push_back(m_EventData->GetCharissaLayer2StripXEStripNbr(i));
 	}
 	//   T
 	for(unsigned int i = 0 ; i < m_Layer2_StripXTMult;++i){
 		Layer2_TelescopeNumber_X.push_back(m_EventData->GetCharissaLayer2StripXTDetectorNbr(i));
-		Layer2_Si_TX.push_back( fSi_X_T( m_EventData , i) );
+		Layer2_Si_TX.push_back( fE_X_T( m_EventData , i) );
 		Layer2_Si_X.push_back(m_EventData->GetCharissaLayer2StripXTStripNbr(i));
 	}
 	
@@ -790,14 +789,14 @@ void TCharissaPhysics::ReadCalibrationRun(){
 	//   E
 	for(unsigned int i = 0 ; i < m_Layer2_StripYEMult;++i){
 		Layer2_TelescopeNumber_Y.push_back(m_EventData->GetCharissaLayer2StripYEDetectorNbr(i));
-		Layer2_Si_EY.push_back( fSi_Y_E( m_EventData , i) );
+		Layer2_Si_EY.push_back( fE_Y_E( m_EventData , i) );
 		Layer2_Si_Y.push_back(m_EventData->GetCharissaLayer2StripYEStripNbr(i));
 	}
 	
 	//   T
 	for(unsigned int i = 0 ; i < m_Layer2_StripYTMult;++i){
         Layer2_TelescopeNumber_Y.push_back(m_EventData->GetCharissaLayer2StripYTDetectorNbr(i));
-        Layer2_Si_TY.push_back( fSi_Y_T( m_EventData , i) );
+        Layer2_Si_TY.push_back( fE_Y_T( m_EventData , i) );
         Layer2_Si_Y.push_back(m_EventData->GetCharissaLayer2StripYTStripNbr(i));
 	}
 	
@@ -1058,16 +1057,20 @@ void TCharissaPhysics::AddParameterToCalibrationManager()
   for(int i = 0 ; i < m_NumberOfTelescope ; ++i){
     
     for( int j = 0 ; j <  m_NumberOfStrip ; ++j){
-      Cal->AddParameter("CHARISSA", "T"+itoa(i+1)+"_Si_X"+itoa(j+1)+"_E","CHARISSA_T"+itoa(i+1)+"_Si_X"+itoa(j+1)+"_E")   ;
-      Cal->AddParameter("CHARISSA", "T"+itoa(i+1)+"_Si_Y"+itoa(j+1)+"_E","CHARISSA_T"+itoa(i+1)+"_Si_Y"+itoa(j+1)+"_E")   ;
-      Cal->AddParameter("CHARISSA", "T"+itoa(i+1)+"_Si_X"+itoa(j+1)+"_T","CHARISSA_T"+itoa(i+1)+"_Si_X"+itoa(j+1)+"_T")   ;
-      Cal->AddParameter("CHARISSA", "T"+itoa(i+1)+"_Si_Y"+itoa(j+1)+"_T","CHARISSA_T"+itoa(i+1)+"_Si_Y"+itoa(j+1)+"_T")   ;
-    }
+      Cal->AddParameter("CHARISSA", "T"+itoa(i+1)+"_DE_X"+itoa(j+1)+"_E","CHARISSA_T"+itoa(i+1)+"_DE_X"+itoa(j+1)+"_E")   ;
+      Cal->AddParameter("CHARISSA", "T"+itoa(i+1)+"_DE_Y"+itoa(j+1)+"_E","CHARISSA_T"+itoa(i+1)+"_DE_Y"+itoa(j+1)+"_E")   ;
+      Cal->AddParameter("CHARISSA", "T"+itoa(i+1)+"_DE_X"+itoa(j+1)+"_T","CHARISSA_T"+itoa(i+1)+"_DE_X"+itoa(j+1)+"_T")   ;
+      Cal->AddParameter("CHARISSA", "T"+itoa(i+1)+"_DE_Y"+itoa(j+1)+"_T","CHARISSA_T"+itoa(i+1)+"_DE_Y"+itoa(j+1)+"_T")   ;
+      
+      Cal->AddParameter("CHARISSA", "T"+itoa(i+1)+"_E_X"+itoa(j+1)+"_E","CHARISSA_T"+itoa(i+1)+"_E_X"+itoa(j+1)+"_E")   ;
+      Cal->AddParameter("CHARISSA", "T"+itoa(i+1)+"_E_Y"+itoa(j+1)+"_E","CHARISSA_T"+itoa(i+1)+"_E_Y"+itoa(j+1)+"_E")   ;
+      Cal->AddParameter("CHARISSA", "T"+itoa(i+1)+"_E_X"+itoa(j+1)+"_T","CHARISSA_T"+itoa(i+1)+"_E_X"+itoa(j+1)+"_T")   ;
+      Cal->AddParameter("CHARISSA", "T"+itoa(i+1)+"_E_Y"+itoa(j+1)+"_T","CHARISSA_T"+itoa(i+1)+"_E_Y"+itoa(j+1)+"_T")   ;
+     }
     
-    for( int j = 0 ; j < m_NumberOfStrip ; ++j){
-      Cal->AddParameter("CHARISSA", "T"+itoa(i+1)+"_CsI"+itoa(j+1)+"_E","CHARISSA_T"+itoa(i+1)+"_CsI"+itoa(j+1)+"_E")      ;
-      Cal->AddParameter("CHARISSA", "T"+itoa(i+1)+"_CsI"+itoa(j+1)+"_T","CHARISSA_T"+itoa(i+1)+"_CsI"+itoa(j+1)+"_T")      ;
-    }
+      Cal->AddParameter("CHARISSA", "T"+itoa(i+1)+"_CsI_E","CHARISSA_T"+itoa(i+1)+"_CsI_E")      ;
+      Cal->AddParameter("CHARISSA", "T"+itoa(i+1)+"_CsI_T","CHARISSA_T"+itoa(i+1)+"_CsI_T")      ;
+    
   }
   
   return;
@@ -1078,9 +1081,9 @@ void TCharissaPhysics::AddParameterToCalibrationManager()
 void TCharissaPhysics::InitializeRootInputRaw()
 {
   TChain* inputChain = RootInput::getInstance()->GetChain()   ;
-  inputChain->SetBranchStatus( "CHARISSA" , true )               ;
-  inputChain->SetBranchStatus( "fMM_*" , true )               ;
-  inputChain->SetBranchAddress( "CHARISSA" , &m_EventData )      ;
+  inputChain->SetBranchStatus( "Charissa" , true )               ;
+  inputChain->SetBranchStatus( "fCharissa_*" , true )               ;
+  inputChain->SetBranchAddress( "Charissa" , &m_EventData )      ;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1357,7 +1360,6 @@ TVector3 TCharissaPhysics::GetTelescopeNormal( const int i) const
 ///////////////////////////////////////////////////////////////////////////
 namespace CHARISSA_LOCAL
 {
-  
   //   tranform an integer to a string
   string itoa(int value)
   {
@@ -1366,33 +1368,61 @@ sprintf(buffer,"%d",value);
 return buffer;
   }
   
-  //   DSSD
+  //   E
   //   X
-  double fSi_X_E(const TCharissaData* m_EventData , const int i)
+  double fDE_X_E(const TCharissaData* m_EventData , const int i)
   {
-return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + itoa( m_EventData->GetCharissaLayer1StripXEDetectorNbr(i) ) + "_Si_X" + itoa( m_EventData->GetCharissaLayer1StripXEStripNbr(i) ) + "_E",
+return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + itoa( m_EventData->GetCharissaLayer1StripXEDetectorNbr(i) ) + "_DE_X" + itoa( m_EventData->GetCharissaLayer1StripXEStripNbr(i) ) + "_E",
                                                            m_EventData->GetCharissaLayer1StripXEEnergy(i) );
   }
   
-  double fSi_X_T(const TCharissaData* m_EventData , const int i)
+  double fDE_X_T(const TCharissaData* m_EventData , const int i)
   {
-return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + itoa( m_EventData->GetCharissaLayer1StripXTDetectorNbr(i) ) + "_Si_X" + itoa( m_EventData->GetCharissaLayer1StripXTStripNbr(i) ) +"_T",
+return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + itoa( m_EventData->GetCharissaLayer1StripXTDetectorNbr(i) ) + "_DE_X" + itoa( m_EventData->GetCharissaLayer1StripXTStripNbr(i) ) +"_T",
                                                            m_EventData->GetCharissaLayer1StripXTTime(i) );
   }
   
   //   Y
-  double fSi_Y_E(const TCharissaData* m_EventData , const int i)
+  double fDE_Y_E(const TCharissaData* m_EventData , const int i)
   {
-return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + itoa( m_EventData->GetCharissaLayer1StripYEDetectorNbr(i) ) + "_Si_Y" + itoa( m_EventData->GetCharissaLayer1StripYEStripNbr(i) ) +"_E",
+return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + itoa( m_EventData->GetCharissaLayer1StripYEDetectorNbr(i) ) + "_DE_Y" + itoa( m_EventData->GetCharissaLayer1StripYEStripNbr(i) ) +"_E",
                                                            m_EventData->GetCharissaLayer1StripYEEnergy(i) );
   }
   
-  double fSi_Y_T(const TCharissaData* m_EventData , const int i)
+  double fDE_Y_T(const TCharissaData* m_EventData , const int i)
   {
-return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + itoa( m_EventData->GetCharissaLayer1StripYTDetectorNbr(i) ) + "_Si_Y" + itoa( m_EventData->GetCharissaLayer1StripYTStripNbr(i) ) +"_T",
+return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + itoa( m_EventData->GetCharissaLayer1StripYTDetectorNbr(i) ) + "_DE_Y" + itoa( m_EventData->GetCharissaLayer1StripYTStripNbr(i) ) +"_T",
                                                            m_EventData->GetCharissaLayer1StripYTTime(i) );
   }
   
+  //   E
+  //   X
+  double fE_X_E(const TCharissaData* m_EventData , const int i)
+  {
+return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + itoa( m_EventData->GetCharissaLayer2StripXEDetectorNbr(i) ) + "_E_X" + itoa( m_EventData->GetCharissaLayer2StripXEStripNbr(i) ) + "_E",
+                                                           m_EventData->GetCharissaLayer2StripXEEnergy(i) );
+  }
+  
+  double fE_X_T(const TCharissaData* m_EventData , const int i)
+  {
+return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + itoa( m_EventData->GetCharissaLayer2StripXTDetectorNbr(i) ) + "_E_X" + itoa( m_EventData->GetCharissaLayer2StripXTStripNbr(i) ) +"_T",
+                                                           m_EventData->GetCharissaLayer2StripXTTime(i) );
+  }
+  
+  //   Y
+  double fE_Y_E(const TCharissaData* m_EventData , const int i)
+  {
+return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + itoa( m_EventData->GetCharissaLayer2StripYEDetectorNbr(i) ) + "_E_Y" + itoa( m_EventData->GetCharissaLayer2StripYEStripNbr(i) ) +"_E",
+                                                           m_EventData->GetCharissaLayer2StripYEEnergy(i) );
+  }
+  
+  double fE_Y_T(const TCharissaData* m_EventData , const int i)
+  {
+return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + itoa( m_EventData->GetCharissaLayer2StripYTDetectorNbr(i) ) + "_E_Y" + itoa( m_EventData->GetCharissaLayer2StripYTStripNbr(i) ) +"_T",
+                                                           m_EventData->GetCharissaLayer2StripYTTime(i) );
+  }
+  
+
   //   CsI
   double fCsI_E(const TCharissaData* m_EventData , const int i)
   {

@@ -48,8 +48,6 @@ TCATSSpectra::TCATSSpectra(){
   fEventLoopIndex = 0;
 }
 
-
-
 ////////////////////////////////////////////////////////////////////////////////
 TCATSSpectra::TCATSSpectra(unsigned int NumberOfCats){
   if (NPOptionManager::getInstance()->GetVerboseLevel() > 0) {
@@ -70,14 +68,9 @@ TCATSSpectra::TCATSSpectra(unsigned int NumberOfCats){
   InitPhysicsSpectra();
 }
 
-
-
-
 ////////////////////////////////////////////////////////////////////////////////
 TCATSSpectra::~TCATSSpectra(){
 }
-
-
 
 ////////////////////////////////////////////////////////////////////////////////
 void TCATSSpectra::InitRawSpectra(){
@@ -101,8 +94,6 @@ void TCATSSpectra::InitRawSpectra(){
     AddHisto1D(name, name, fStripsNumber, 1, fStripsNumber+1, "CATS/RAW/MULT");
   } // end loop on number of cats
 }
-
-
 
 ////////////////////////////////////////////////////////////////////////////////
 void TCATSSpectra::InitPreTreatedSpectra(){
@@ -140,24 +131,29 @@ void TCATSSpectra::InitPhysicsSpectra(){
 
     name = Form("CATS%d_QSUM_STRMAX_Y_CAL", i+1);
     AddHisto2D(name, name, fStripsNumber, 1, fStripsNumber+1, 512, 0, 16384, family);
-  } // end loop on number of cats
+  }
 
   family = "CATS/PHY/CTRL";
   for (unsigned int i = 0; i < fNumberOfCats; ++i) {   // loop on number of cats
     name = Form("CATS%d_QMEAN_TIME", i+1);
     AddHisto1D(name, name, fEventLoopSize,0,fEventLoopSize,family); 
     fEventLoopQSum.push_back(0);
-  } // end loop on number of cats
+  }
 
   family = "CATS/PHY/POS";
   for (unsigned int i = 0; i < fNumberOfCats; ++i) {   // loop on number of cats
     name = Form("CATS%d_POS", i+1);
     AddHisto2D(name, name,100,-50,50,100,-50,50,family); 
-  } // end loop on number of cats
+  } 
 
   name = "TARGET_POS";
   AddHisto2D(name, name,100,-50,50,100,-50,50,family); 
 
+  name = "TRAJECTORY_XZ";
+  AddHisto2D(name, name,100,-50,50,100,-50,50,family); 
+
+  name = "TRAJECTORY_YZ";
+  AddHisto2D(name, name,100,-50,50,100,-50,50,family); 
 
 }
 
@@ -201,8 +197,6 @@ void TCATSSpectra::FillRawSpectra(TCATSData* RawData){
     GetHisto(family,name) -> Fill(myMULT[i]);
   }
 }
-
-
 
 ////////////////////////////////////////////////////////////////////////////////
 void TCATSSpectra::FillPreTreatedSpectra(TCATSData* PreTreatedData){
@@ -289,13 +283,23 @@ void TCATSSpectra::FillPhysicsSpectra(TCATSPhysics* Physics){
       GetHisto(family,name) -> Fill(Physics->PositionX[i],Physics->PositionY[i]);
     }
 
-    name = "TARGET_POS";
-    GetHisto(family,name)->Fill(Physics->PositionOnTargetX,Physics->PositionOnTargetY);
-}
+    if(Physics->PositionOnTargetX > -1000 && Physics->PositionOnTargetY > -1000){
+      name = "TARGET_POS";
+      GetHisto(family,name)->Fill(Physics->PositionOnTargetX,Physics->PositionOnTargetY);
+    }
+  }
+
+/*name = "TARGET_POS";
+  AddHisto2D(name, name,100,-50,50,100,-50,50,family); 
+
+  name = "TRAJECTORY_XZ";
+  AddHisto2D(name, name,100,-50,50,100,-50,50,family); 
+
+  name = "TRAJECTORY_YZ";
+  AddHisto2D(name, name,100,-50,50,100,-50,50,family); 
+*/
 
 }
-
-
 
 ////////////////////////////////////////////////////////////////////////////////
 TH1* TCATSSpectra::AddHisto1D(TString name, TString title, Int_t nbinsx, Double_t xlow, Double_t xup, TString family){
@@ -312,8 +316,6 @@ TH1* TCATSSpectra::AddHisto1D(TString name, TString title, Int_t nbinsx, Double_
   return hist;
 }
 
-
-
 ////////////////////////////////////////////////////////////////////////////////
 TH1* TCATSSpectra::AddHisto2D(TString name, TString title, Int_t nbinsx, Double_t xlow, Double_t xup, Int_t nbinsy, Double_t ylow, Double_t yup, TString family){
   // create histo
@@ -329,8 +331,6 @@ TH1* TCATSSpectra::AddHisto2D(TString name, TString title, Int_t nbinsx, Double_
   return hist;
 }
 
-
-
 ////////////////////////////////////////////////////////////////////////////////
 TH1* TCATSSpectra::GetHisto(TString family, TString name){
   vector<TString> index;
@@ -339,8 +339,6 @@ TH1* TCATSSpectra::GetHisto(TString family, TString name){
 
   return fMapHisto.at(index);
 }
-
-
 
 ////////////////////////////////////////////////////////////////////////////////
 void TCATSSpectra::WriteHisto(TString filename){

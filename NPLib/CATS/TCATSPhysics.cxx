@@ -556,13 +556,11 @@ void TCATSPhysics::InitializeStandardParameter()
 
   ChannelStatus.resize(28,true);
   InversionStatus.resize(28);
-  for(unsigned int j = 0 ; j < InversionStatus.size() ; j++)
-  {
+  for(unsigned int j = 0 ; j < InversionStatus.size() ; j++){
     InversionStatus[j] = j+1;
   }
 
-  for(int i = 0 ; i < m_NumberOfCATS ; ++i)      
-  {
+  for(int i = 0 ; i < m_NumberOfCATS ; ++i)      {
     m_XChannelStatus[i] = ChannelStatus;
     m_YChannelStatus[i] = ChannelStatus;
     m_CATSXInversion[i] = InversionStatus;

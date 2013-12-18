@@ -175,7 +175,12 @@ void TMust2Spectra::InitPreTreatedSpectra()
     // CSI_CAL_MULT
     name = Form("MM%d_CSI_CAL_MULT", i+1);
     AddHisto1D(name, name, fCrystalCsI, 1, fCrystalCsI+1, "MUST2/CAL/MULT");
-
+   
+    // CSI_CAL_ID 
+    for(unsigned int j = 0 ; j < fCrystalCsI ; j++){
+     name = Form("MM%d_CSI%d_CAL_ID", i+1,j+1);
+     AddHisto2D(name, name,8192,0,16384,500,0,50, "MUST2/CAL/ID");
+    }
   }  // end loop on number of detectors
 }
 
@@ -523,6 +528,24 @@ void TMust2Spectra::FillPreTreatedSpectra(TMust2Data* PreTreatedData){
     GetHisto(family,name)
       -> Fill(myMULT[i]);
   }
+
+  //E-CSI ID
+  family = "MUST2/CAL/ID";
+  for (unsigned int i = 0; i < PreTreatedData->GetMMStripXEMult(); i++) {
+   for (unsigned int j = 0; j < PreTreatedData->GetMMCsIEMult(); j++) {
+    
+    if(PreTreatedData->GetMMStripXEDetectorNbr(i) == PreTreatedData->GetMMCsIEDetectorNbr(j)){ 
+      name = Form("MM%d_CSI%d_CAL_ID",
+      PreTreatedData->GetMMStripXEDetectorNbr(i),PreTreatedData->GetMMCsIECristalNbr(j));
+    
+      GetHisto(family,name)
+        -> Fill(PreTreatedData->GetMMCsIEEnergy(j), 
+          PreTreatedData->GetMMStripXEEnergy(i));
+      }
+    }
+  }
+
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -552,7 +575,7 @@ void TMust2Spectra::FillPhysicsSpectra(TMust2Physics* Physics){
       // E-TOF:
       name = "MM_E_TOF";
       GetHisto(family,name)->Fill(Physics->Si_E[i],Physics->Si_T[i]);
-      
+
       name = Form("MM%d_E_TOF", Physics->TelescopeNumber[i]);
       GetHisto(family,name)->Fill(Physics->Si_E[i],Physics->Si_T[i]);
     }
@@ -562,10 +585,10 @@ void TMust2Spectra::FillPhysicsSpectra(TMust2Physics* Physics){
       name = "MM_SILIE_E";
       Etot = Physics->SiLi_E[i];
       GetHisto(family,name)->Fill(Physics->SiLi_E[i],Physics->Si_E[i]);
-      
+
       name = Form("MM%d_SILIE_E", Physics->TelescopeNumber[i]);
       GetHisto(family,name)->Fill(Physics->SiLi_E[i],Physics->Si_E[i]);
-     }
+    }
 
     if(Physics->CsI_E[i]>0){
       name = "MM_CSIE_E";
@@ -648,7 +671,7 @@ void TMust2Spectra::WriteHisto(TString filename){
 }
 ///////////////////////////////////////////////////////////////////////////////
 void TMust2Spectra::CheckSpectra(){
-map< vector<TString>, TH1* >::iterator it;
+  map< vector<TString>, TH1* >::iterator it;
   Color_t ok_color = kTeal+9;
   Color_t warning_color = kOrange+8;   warning_color *= 1;
   Color_t bad_color = kRed;            bad_color *= 1;

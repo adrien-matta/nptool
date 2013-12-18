@@ -292,13 +292,25 @@ namespace CHARISSA_LOCAL
   //   tranform an integer to a string
   string itoa(int value);
   //   DSSD
+  
+  // Layer 1 
   //   X
-  double fSi_X_E(const TCharissaData* Data, const int i);
-  double fSi_X_T(const TCharissaData* Data, const int i);
+  double fDE_X_E(const TCharissaData* Data, const int i);
+  double fDE_X_T(const TCharissaData* Data, const int i);
 
   //   Y
-  double fSi_Y_E(const TCharissaData* Data, const int i);
-  double fSi_Y_T(const TCharissaData* Data, const int i);
+  double fDE_Y_E(const TCharissaData* Data, const int i);
+  double fDE_Y_T(const TCharissaData* Data, const int i);
+
+  // Layer 2
+  // X
+  double fE_X_E(const TCharissaData* Data, const int i);
+  double fE_X_T(const TCharissaData* Data, const int i);
+
+  //   Y
+  double fE_Y_E(const TCharissaData* Data, const int i);
+  double fE_Y_T(const TCharissaData* Data, const int i);
+
 
   //   CsI
   double fCsI_E(const TCharissaData* Data, const int i);
