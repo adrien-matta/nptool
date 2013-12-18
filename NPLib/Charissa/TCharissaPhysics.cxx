@@ -237,10 +237,10 @@ void TCharissaPhysics::PreTreat(){
 	m_Layer1_StripXTMult = m_EventData->GetCharissaLayer1StripXTMult();
 	m_Layer1_StripYTMult = m_EventData->GetCharissaLayer1StripYTMult();
 
-	m_Layer2_StripXEMult = m_PreTreatedData->GetCharissaLayer2StripXEMult();
-	m_Layer2_StripYEMult = m_PreTreatedData->GetCharissaLayer2StripYEMult();
-	m_Layer2_StripXTMult = m_PreTreatedData->GetCharissaLayer2StripXTMult();
-	m_Layer2_StripYTMult = m_PreTreatedData->GetCharissaLayer2StripYTMult();
+	m_Layer2_StripXEMult = m_EventData->GetCharissaLayer2StripXEMult();
+	m_Layer2_StripYEMult = m_EventData->GetCharissaLayer2StripYEMult();
+	m_Layer2_StripXTMult = m_EventData->GetCharissaLayer2StripXTMult();
+	m_Layer2_StripYTMult = m_EventData->GetCharissaLayer2StripYTMult();
 	
 	m_CsIEMult = m_EventData->GetCharissaCsIEMult();
 	m_CsITMult = m_EventData->GetCharissaCsITMult();
@@ -248,7 +248,7 @@ void TCharissaPhysics::PreTreat(){
   //   X Layer1
   //   E
   for(unsigned int i = 0 ; i < m_Layer1_StripXEMult ; ++i){
-    if( m_EventData->GetCharissaLayer1StripXEEnergy(i)>m_Si_X_E_RAW_Threshold && IsValidChannel("X", m_EventData->GetCharissaLayer1StripXEDetectorNbr(i), m_EventData->GetCharissaLayer1StripXEStripNbr(i)) ){
+    if( m_EventData->GetCharissaLayer1StripXEEnergy(i)>m_Si_X_E_RAW_Threshold){
       double Layer1_EX = fDE_X_E(m_EventData , i);
       if( Layer1_EX > m_Si_X_E_Threshold ){
         m_PreTreatedData->SetCharissaLayer1StripXEDetectorNbr( m_EventData->GetCharissaLayer1StripXEDetectorNbr(i) );
@@ -270,7 +270,7 @@ void TCharissaPhysics::PreTreat(){
   //   Y  Layer1
   //   E
   for(unsigned int i = 0 ; i < m_Layer1_StripYEMult ; ++i){
-    if( m_EventData->GetCharissaLayer1StripYEEnergy(i)<m_Si_Y_E_RAW_Threshold && IsValidChannel("Y", m_EventData->GetCharissaLayer1StripYEDetectorNbr(i), m_EventData->GetCharissaLayer1StripYEStripNbr(i))){
+    if( m_EventData->GetCharissaLayer1StripYEEnergy(i)>m_Si_Y_E_RAW_Threshold){
       double Layer1_EY = fDE_Y_E(m_EventData , i);
       if( Layer1_EY >m_Si_Y_E_Threshold ){
         m_PreTreatedData->SetCharissaLayer1StripYEDetectorNbr( m_EventData->GetCharissaLayer1StripYEDetectorNbr(i) );
@@ -293,9 +293,10 @@ void TCharissaPhysics::PreTreat(){
 	//   X Layer2
 	//   E
 	for(unsigned int i = 0 ; i < m_Layer2_StripXEMult ; ++i){
-		if( m_EventData->GetCharissaLayer2StripXEEnergy(i)>m_Si_X_E_RAW_Threshold && IsValidChannel("X", m_EventData->GetCharissaLayer2StripXEDetectorNbr(i), m_EventData->GetCharissaLayer1StripXEStripNbr(i)) ){
+    if( m_EventData->GetCharissaLayer2StripXEEnergy(i)>m_Si_X_E_RAW_Threshold){
 			double Layer2_EX = fE_X_E(m_EventData , i);
-			if( Layer2_EX > m_Si_X_E_Threshold ){
+      if( Layer2_EX > m_Si_X_E_Threshold ){
+        
 				m_PreTreatedData->SetCharissaLayer2StripXEDetectorNbr( m_EventData->GetCharissaLayer2StripXEDetectorNbr(i) );
 				m_PreTreatedData->SetCharissaLayer2StripXEStripNbr( m_EventData->GetCharissaLayer2StripXEStripNbr(i) );
 				m_PreTreatedData->SetCharissaLayer2StripXEEnergy( Layer2_EX );
@@ -316,7 +317,7 @@ void TCharissaPhysics::PreTreat(){
 	//   Y  Layer2
 	//   E
 	for(unsigned int i = 0 ; i < m_Layer2_StripYEMult ; ++i){
-		if( m_EventData->GetCharissaLayer2StripYEEnergy(i)<m_Si_Y_E_RAW_Threshold && IsValidChannel("Y", m_EventData->GetCharissaLayer2StripYEDetectorNbr(i), m_EventData->GetCharissaLayer1StripYEStripNbr(i))){
+		if( m_EventData->GetCharissaLayer2StripYEEnergy(i)>m_Si_Y_E_RAW_Threshold){
 			double Layer2_EY = fE_Y_E(m_EventData , i);
 			if( Layer2_EY >m_Si_Y_E_Threshold ){
 				m_PreTreatedData->SetCharissaLayer2StripYEDetectorNbr( m_EventData->GetCharissaLayer2StripYEDetectorNbr(i) );

@@ -134,19 +134,19 @@ void TCharissaSpectra::InitPreTreatedSpectra()
    for (unsigned int i = 0; i < fNumberOfTelescope; i++) { // loop on number of detectors
       // L1_STRX_E_CAL
       name = Form("CHA%d_L1_STRX_E_CAL", i+1);
-      AddHisto2D(name, name, fStripX, 1, fStripX+1, 1000, 0, 20000, "CHARISSA/CAL/STRXE");
+      AddHisto2D(name, name, fStripX, 1, fStripX+1, 1000, 0, 16000, "CHARISSA/CAL/STRXE");
 
       // L1_STRY_E_CAL
       name = Form("CHA%d_L1_STRY_E_CAL", i+1);
-      AddHisto2D(name, name, fStripY, 1, fStripY+1, 1000, 0, 20000, "CHARISSA/CAL/STRYE");
+      AddHisto2D(name, name, fStripY, 1, fStripY+1, 1000, 0, 16000, "CHARISSA/CAL/STRYE");
 
       // L2_STRX_E_CAL
       name = Form("CHA%d_L2_STRX_E_CAL", i+1);
-      AddHisto2D(name, name, fStripX, 1, fStripX+1, 1000, 0, 20000, "CHARISSA/CAL/STRXE");
+      AddHisto2D(name, name, fStripX, 1, fStripX+1, 1000, 0, 16000, "CHARISSA/CAL/STRXE");
 
       // L2_STRY_E_CAL
       name = Form("CHA%d_L2_STRY_E_CAL", i+1);
-      AddHisto2D(name, name, fStripY, 1, fStripY+1, 1000, 0, 20000, "CHARISSA/CAL/STRYE");
+      AddHisto2D(name, name, fStripY, 1, fStripY+1, 1000, 0, 16000, "CHARISSA/CAL/STRYE");
 
       // CSI_E_CAL
       name = Form("CHA%d_CSI_E_CAL", i+1);
