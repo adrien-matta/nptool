@@ -34,6 +34,7 @@
 #include "G4ThreeVector.hh"
 #include "G4RotationMatrix.hh"
 #include "G4LogicalVolume.hh"
+#include "G4MultiFunctionalDetector.hh"
 
 // NPTool header
 #include "VDetector.hh"
@@ -101,8 +102,10 @@ public: // Material
    G4Material* m_MaterialPlastic_BC452_2   ; //BC452:BC-400 loaded with 2%Pb type plastic
    G4Material* m_MaterialPlastic_BC452_5   ; //BC452:BC-400 loaded with 5%Pb type plastic
    G4Material* m_MaterialPlastic_BC452_10  ; //BC452:BC-400 loaded with 10%Pb type plastic
+   G4Material* m_MaterialKapton  ; //BC452:BC-400 loaded with 10%Pb type plastic
    // Lead
    G4Material* m_MaterialLead ;
+   G4Material* m_MaterialAl ;
    
 public:   //   Scorer
    //   Initialize all Scorer used by the MUST2Array

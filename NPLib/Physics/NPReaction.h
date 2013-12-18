@@ -114,6 +114,7 @@ namespace NPL{
     bool     GetShoot3()         const        {return fshoot3;}
     bool     GetShoot4()         const        {return fshoot4;}
 
+
   public:
       // Modify the CS histo to so cross section shoot is within ]HalfOpenAngleMin,HalfOpenAngleMax[
     void SetCSAngle(double CSHalfOpenAngleMin,double CSHalfOpenAngleMax);
@@ -162,6 +163,12 @@ namespace NPL{
     
       // Center of Mass Kinematic
     Double_t BetaCM;
+
+  public:
+    TLorentzVector GetEnergyImpulsionLab_1() const {return fEnergyImpulsionLab_1;}
+    TLorentzVector GetEnergyImpulsionLab_2() const {return fEnergyImpulsionLab_2;}
+    TLorentzVector GetEnergyImpulsionLab_3() const {return fEnergyImpulsionLab_3;}
+    TLorentzVector GetEnergyImpulsionLab_4() const {return fEnergyImpulsionLab_4;}
     
     
   public: // Kinematics

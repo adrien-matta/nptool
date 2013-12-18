@@ -81,6 +81,8 @@ Plastic::~Plastic()
    delete m_MaterialPlastic_BC452_5   ;
    delete m_MaterialPlastic_BC452_10   ;
    delete m_MaterialLead                     ;
+   delete m_MaterialAl                     ;
+   delete m_MaterialKapton                    ;
    delete m_PlasticScorer                  ;
 }
 
@@ -406,6 +408,7 @@ void Plastic::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume*
       else if(m_Scintillator[i] == "BC452_2"  ) PlasticMaterial = m_MaterialPlastic_BC452_2    ;
       else if(m_Scintillator[i] == "BC452_5"  ) PlasticMaterial = m_MaterialPlastic_BC452_5   ;
       else if(m_Scintillator[i] == "BC452_10" ) PlasticMaterial = m_MaterialPlastic_BC452_10   ;
+      else if(m_Scintillator[i] == "Kapton" ) PlasticMaterial = m_MaterialKapton   ;
       else {   
          G4cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl ;
          G4cout << "WARNING: Material Not found, default material set : BC400" << endl ; 
@@ -456,7 +459,7 @@ void Plastic::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume*
                   0*deg                           , 
                   360*deg                        );
 
-                     G4LogicalVolume* logicLead = new G4LogicalVolume(solidLead, m_MaterialLead, Name+"_Lead", 0, 0, 0);
+                     G4LogicalVolume* logicLead = new G4LogicalVolume(solidLead, m_MaterialLead, Name+"_Lead", 0, 0, 0);//AC changed lead to Al
                      G4VisAttributes* LeadVisAtt = new G4VisAttributes(G4Colour(0.1, 0.1, 0.1)) ;
                         logicLead->SetVisAttributes(LeadVisAtt) ;
                         
@@ -484,13 +487,25 @@ void Plastic::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume*
                   G4VisAttributes* PlastVisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 0.9)) ;
                   logicPlastic->SetVisAttributes(PlastVisAtt) ;
                  
-                  new G4PVPlacement(   0                                    ,
+                  /*new G4PVPlacement(   0                                    ,
                                                                   Det_pos                           ,
                                                 logicPlastic                ,
                                                  Name  + "_Scintillator" ,
                                                 world                       ,
                                                 false                       ,
+                                                0                                    );   */
+  		//G4RotationMatrix Rot3D;
+    		//Rot3D.set(0, 0, 0);
+    		//Rot3D.rotateX(70*degree);
+    		//Rot3D.rotateY(theta*degree);  
+    		//Rot3D.rotateZ(phi*degree);  
+                  new G4PVPlacement(  G4Transform3D(Rot3D,Det_pos)                   ,
+                                                logicPlastic                ,
+                                                 Name  + "_Scintillator" ,
+                                                world                       ,
+                                                false                       ,
                                                 0                                    );   
+
                }
             
               if(m_LeadThickness[i]>0&& m_PlasticHeight[i]>0 && m_PlasticWidth[i]>0)
@@ -502,7 +517,7 @@ void Plastic::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume*
                         logicLead->SetVisAttributes(LeadVisAtt) ;
                         
                         new G4PVPlacement(   0                                                                                                         ,
-                                                                        Det_pos+(m_PlasticThickness[i]/2+m_LeadThickness[i]/2)*Det_pos.unit()   ,
+                                                                        Det_pos+(m_PlasticThickness[i]/2+m_LeadThickness[i]/2)*Det_pos.unit() +G4ThreeVector(0,0,-10*cm)  ,
                                                               logicLead                                                                                             ,
                                                                  Name+"_Lead"                                                                                   ,   
                                                                  world                                                                                            ,
@@ -537,10 +552,12 @@ void Plastic::ReadSensitive(const G4Event* event)
    std::map<G4int, G4int*>::iterator DetectorNumber_itr    ;
    std::map<G4int, G4double*>::iterator Energy_itr        ;
    std::map<G4int, G4double*>::iterator Time_itr          ;
+   std::map<G4int, G4double*>::iterator Pos_Z_itr         ;
    
    G4THitsMap<G4int>*     DetectorNumberHitMap            ;      
    G4THitsMap<G4double>* EnergyHitMap                    ;
    G4THitsMap<G4double>* TimeHitMap                      ;
+   G4THitsMap<G4double>* PosZHitMap                 ;
    
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
@@ -562,9 +579,15 @@ void Plastic::ReadSensitive(const G4Event* event)
    TimeHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripTimeCollectionID))               ;
    Time_itr = TimeHitMap->GetMap()->begin()                                                                    ;
 
-     G4int sizeN = DetectorNumberHitMap->entries()    ;
+	    //Interaction Coordinate Z
+	    G4int InterCoordZCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("PlasticScorer/InterCoordZ");
+	    PosZHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordZCollectionID));
+	    Pos_Z_itr = PosZHitMap->GetMap()->begin();
+
+    G4int sizeN = DetectorNumberHitMap->entries()    ;
     G4int sizeE = EnergyHitMap->entries()          ;
     G4int sizeT = TimeHitMap->entries()          ;
+    G4int sizeZ = PosZHitMap->entries();
 
     // Loop on Plastic Number
     for (G4int l = 0 ; l < sizeN ; l++) {
@@ -603,6 +626,17 @@ void Plastic::ReadSensitive(const G4Event* event)
                Time_itr++;
            }
 
+	        // Pos Z
+	        Pos_Z_itr = PosZHitMap->GetMap()->begin();
+	        for (G4int h = 0 ; h < PosZHitMap->entries() ; h++) {
+	            G4int PosZTrackID =   Pos_Z_itr->first   - N  ;
+	            G4double PosZ     = *(Pos_Z_itr->second)      ;
+	            if (PosZTrackID == NTrackID) {
+	                ms_InterCoord->SetDetectedPositionZ(PosZ) ;
+	            }
+	            Pos_Z_itr++;
+	        
+           }
         }
 
         DetectorNumber_itr++;
@@ -612,6 +646,7 @@ void Plastic::ReadSensitive(const G4Event* event)
     TimeHitMap            ->clear()   ;    
     DetectorNumberHitMap    ->clear()   ;
     EnergyHitMap            ->clear()    ; 
+    PosZHitMap					->clear() ;
    
 }
 
@@ -629,6 +664,7 @@ void Plastic::InitializeMaterial()
          // for Plastic
             G4Element* H   = new G4Element("Hydrogen"    , symbol = "H"     , z = 1  , a = 1.01   * g / mole);
             G4Element* C   = new G4Element("Carbon"      , symbol = "C"     , z = 6  , a = 12.011 * g / mole);
+            G4Element* O   = new G4Element("Oxygen"    , symbol = "O"     , z = 8  , a = 16   * g / mole);
           G4Element* Pb  = new G4Element("Lead"      , symbol = "Pb"     , z = 82 , a = 207.2  * g / mole);
       ////////////////////////////////////////////////////////////////
       /////////////////Material Definition ///////////////////////////
@@ -639,6 +675,10 @@ void Plastic::InitializeMaterial()
          density = 11.34 * g / cm3;
          m_MaterialLead = new G4Material("Lead", z = 82 , a, density);
 
+         // Al
+         a = 13 * g / mole;
+         density = 2.7 * g / cm3;
+         m_MaterialAl = new G4Material("Al", z = 13 , a, density);
 
          // Plastic BC-400
          density = 1.032 * g / cm3;
@@ -666,6 +706,13 @@ void Plastic::InitializeMaterial()
          m_MaterialPlastic_BC452_10->AddElement(H  , natoms = 10);
          m_MaterialPlastic_BC452_10->AddElement(C  , natoms = 9);
          m_MaterialPlastic_BC452_10->AddElement(Pb , fractionmass=10*perCent);         
+
+         // Kapton    
+	 density = 1.39*g/cm3;
+	 m_MaterialKapton = new G4Material("Kapton", density, ncomponents=3);
+	 m_MaterialKapton->AddElement(O,2);
+	 m_MaterialKapton->AddElement(C,5);
+	 m_MaterialKapton->AddElement(H,4);
    
    }
 
@@ -678,12 +725,13 @@ void Plastic::InitializeScorers()
       G4VPrimitiveScorer* DetNbr = new PSDetectorNumber("PlasticNumber","Plastic", 0) ;
       G4VPrimitiveScorer* Energy = new PSEnergy("Energy","Plastic", 0)                   ;
       G4VPrimitiveScorer* Time   = new PSTOF("Time","Plastic", 0)                         ;
-       
+      G4VPrimitiveScorer* InteractionCoordinatesZ  			= new GENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","Plastic", 0);       
       //and register it to the multifunctionnal detector
       m_PlasticScorer->RegisterPrimitive(DetNbr)                         ;
       m_PlasticScorer->RegisterPrimitive(Energy)                         ;
       m_PlasticScorer->RegisterPrimitive(Time)                            ;      
-      
+      m_PlasticScorer->RegisterPrimitive(InteractionCoordinatesZ);      
+      G4SDManager::GetSDMpointer()->AddNewDetector(m_PlasticScorer) ;
       
    }
 ////////////////////////////////////////////////////////////////

@@ -101,7 +101,8 @@ int main(int argc, char** argv){
   /////////// Define UI terminal for interactive mode ///////////
   ///////////////////////////////////////////////////////////////
 #ifdef G4VIS_USE
-  G4VisManager* visManager = new G4VisExecutive("Quiet");
+  //G4VisManager* visManager = new G4VisExecutive("Quiet");
+  G4VisManager* visManager = new G4VisExecutive();
   visManager->Initialize();
 #endif
   
