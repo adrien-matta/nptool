@@ -30,7 +30,7 @@
 #include "../include/CalibrationManager.h"
 #include "../include/VDetector.h"
 #include "TExogamData.h"
-
+#include "TExogamSpectra.h"
 // ROOT 
 #include "TVector2.h" 
 #include "TVector3.h" 
@@ -38,6 +38,8 @@
 //#include "TH1.h"
 
 using namespace std ;
+// Forward Declaration
+class TExogamSpectra;
 
 class TExogamPhysics : public TObject, public NPA::VDetector
 {
@@ -129,6 +131,16 @@ class TExogamPhysics : public TObject, public NPA::VDetector
   void ClearEventData()			{EventData->Clear();}	
   void ClearPreTreatedData()	        {PreTreatedData->Clear();}
 
+    // Method related to the TSpectra classes, aimed at providing a framework for online applications
+    // Instantiate the Spectra class and the histogramm throught it
+    void InitSpectra();
+    // Fill the spectra hold by the spectra class
+    void FillSpectra();
+    // Used for Online mainly, perform check on the histo and for example change their color if issues are found
+    void CheckSpectra();
+    // Used for Online only, clear all the spectra hold by the Spectra class
+    void ClearSpectra();
+
  private:	//	Root Input and Output tree classes
 
  				
@@ -148,7 +160,11 @@ class TExogamPhysics : public TObject, public NPA::VDetector
   Double_t GetSegmentAnglePhi(int Clover, int Cristal, int Segment)    {return(Clover_Angles_Theta_Phi[Clover][Cristal][Segment][1]);};
   Double_t GetSegmentAngleTheta(int Clover, int Cristal, int Segment)  {return(Clover_Angles_Theta_Phi[Clover][Cristal][Segment][0]);};
   
-		
+  private: // Spectra Class   
+    TExogamSpectra*      m_Spectra;//! 
+
+  public: // Spectra Getter
+    map< vector<TString> , TH1*> GetSpectra(); 		
 
   ClassDef(TExogamPhysics,1)  // ExogamPhysics structure
     };

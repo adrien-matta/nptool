@@ -52,7 +52,7 @@ class TExogamData : public TObject {
   vector<UShort_t>	fEXO_GOCCE_T_Time;
   // GeFill
   UShort_t             fEXO_Fill;
-
+  int m_NumberOfClover;
  public:
   TExogamData();
   virtual ~TExogamData();
