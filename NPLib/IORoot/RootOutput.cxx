@@ -28,7 +28,7 @@
 
 using namespace std;
 
-RootOutput *RootOutput::instance = 0;
+RootOutput* RootOutput::instance = 0;
 
 RootOutput* RootOutput::getInstance(TString fileNameBase, TString treeNameBase)
 {
@@ -131,7 +131,6 @@ RootOutput::~RootOutput()
       cout << "  - Number of entries in the Tree: " << pRootTree->GetEntries() << endl;
       cout << "  - Number of bites written to file: " << pRootTree->Write() << endl;
 
-      
       // write TAsciiFile if used
       // EventGenerator
       if (!pEventGenerator->IsEmpty()) pEventGenerator->Write();
@@ -143,7 +142,6 @@ RootOutput::~RootOutput()
       if (!pRunToTreatFile->IsEmpty()) pRunToTreatFile->Write();
       // Analysis ConfigFile
       if (!pAnalysisConfigFile->IsEmpty()) pAnalysisConfigFile->Write();
-      
       pRootFile->Flush();
       pRootFile->Close();
     }
@@ -167,7 +165,6 @@ RootOutput::~RootOutput()
     else {
       cout << "No histograms and Tree !" << endl;
     }
-  
 }
 
 TFile* RootOutput::InitFile(TString fileNameBase){

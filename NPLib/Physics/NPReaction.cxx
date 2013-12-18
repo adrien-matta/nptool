@@ -65,6 +65,9 @@ Reaction::Reaction(){
   // Need to be done before initializePrecomputeVariable
   fKineLine3 = 0 ;
   fKineLine4 = 0 ;
+  fLineBrho3 = 0 ;
+	fTheta3VsTheta4 = 0;
+	fAngleLine = 0;
   
   //
   fNuclei1              = new Beam();
@@ -127,6 +130,9 @@ Reaction::Reaction(string reaction){
   
   fKineLine3 = 0 ;
   fKineLine4 = 0 ;
+	fLineBrho3 = 0;
+	fTheta3VsTheta4 = 0;
+	fAngleLine = 0;
   fNuclei1 = new Beam(A);
   fNuclei2 = new Nucleus(b);
   fNuclei3 = new Nucleus(c);
@@ -450,9 +456,6 @@ void Reaction::ReadConfigurationFile(string Path){
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Reaction::initializePrecomputeVariable(){
-  // delete the previously calculated kinematical line:
-  if(fKineLine3!=0) {delete fKineLine3 ; fKineLine3 = 0;}
-  if(fKineLine4!=0) {delete fKineLine4 ; fKineLine4 = 0;}
 
   m1 = fNuclei1->Mass();
   m2 = fNuclei2->Mass();
@@ -463,13 +466,15 @@ void Reaction::initializePrecomputeVariable(){
   
   fTotalEnergyImpulsionCM = TLorentzVector(0,0,0,sqrt(s));
   
-  ECM_1 = (s + m1*m1 - m2*m2)/(2*sqrt(s));
-  ECM_2 = (s + m2*m2 - m1*m1)/(2*sqrt(s));
-  ECM_3 = (s + m3*m3 - m4*m4)/(2*sqrt(s));
-  ECM_4 = (s + m4*m4 - m3*m3)/(2*sqrt(s));
+	ECM_1 = (s + m1*m1 - m2*m2)/(2*sqrt(s));
+	ECM_2 = (s + m2*m2 - m1*m1)/(2*sqrt(s));
+	ECM_3 = (s + m3*m3 - m4*m4)/(2*sqrt(s));
+	ECM_4 = (s + m4*m4 - m3*m3)/(2*sqrt(s));
   
-  pCM_3 = sqrt(ECM_3*ECM_3 - m3*m3);
-  pCM_4 = sqrt(ECM_4*ECM_4 - m4*m4);
+	pCM_1 = sqrt(ECM_1*ECM_1 - m1*m1);
+	pCM_2 = sqrt(ECM_2*ECM_2 - m2*m2);
+	pCM_3 = sqrt(ECM_3*ECM_3 - m3*m3);
+	pCM_4 = sqrt(ECM_4*ECM_4 - m4*m4);
   
   fImpulsionLab_1 = TVector3(0,0,sqrt(fBeamEnergy*fBeamEnergy + 2*fBeamEnergy*m1));
   fImpulsionLab_2 = TVector3(0,0,0);
@@ -506,93 +511,103 @@ void Reaction::SetNuclei3(double EnergyLab, double ThetaLab){
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-TGraph* Reaction::GetKinematicLine3(){
-  
-  if(fKineLine3==0){
-    int size = 360;
-    double x[size];
-    double y[size];
-    double theta3,E3,theta4,E4;
+TGraph* Reaction::GetKinematicLine3(double AngleStep_CM){
+	
+	vector<double> vx;
+	vector<double> vy;
+	double theta3,E3,theta4,E4;
     
-    for (int i = 0; i < size; ++i){
-      SetThetaCM(((double)i)/2*deg);
-      KineRelativistic(theta3, E3, theta4, E4);
-      fNuclei3->SetKineticEnergy(E3);
-      
-      x[i] = theta3/deg;
-      y[i] = E3;
-    }
-    
-    fKineLine3 = new TGraph(size,x,y);
-    //  fKineLine3->SetTitle("Kinematic Line of particule 3");
-  }
+	for (double angle=0 ; angle < 360 ; angle+=AngleStep_CM){
+		SetThetaCM(angle*deg);
+		KineRelativistic(theta3, E3, theta4, E4);
+		fNuclei3->SetKineticEnergy(E3);
+		
+		vx.push_back(theta3/deg);
+		vy.push_back(E3);
+	}
+	fKineLine3 = new TGraph(vx.size(),&vx[0],&vy[0]);
+	
 	return(fKineLine3);
 }
 
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////
-TGraph* Reaction::GetKinematicLine4(){
-  if(fKineLine4==0){
-    int size = 360;
-    double x[size];
-    double y[size];
+TGraph* Reaction::GetKinematicLine4(double AngleStep_CM){
+
+	vector<double> vx;
+	vector<double> vy;
     double theta3,E3,theta4,E4;
     
-    for (int i = 0; i < size; ++i)
-      {
-      SetThetaCM(((double)i)/2*deg);
-      KineRelativistic(theta3, E3, theta4, E4);
-      fNuclei4->SetKineticEnergy(E4);
-      
-      x[i] = theta4/deg;
-      y[i] = E4;
-      }
-    fKineLine4= new TGraph(size,x,y);
-    // fKineLine4->SetTitle("Kinematic Line of particule 4");
-  }
+	for (double angle=0 ; angle < 360 ; angle+=AngleStep_CM){
+		SetThetaCM(angle*deg);
+		KineRelativistic(theta3, E3, theta4, E4);
+		fNuclei4->SetKineticEnergy(E4);
+		
+		vx.push_back(theta3/deg);
+		vy.push_back(E4);
+	}
+    fKineLine4= new TGraph(vx.size(),&vx[0],&vy[0]);
+  
 	return(fKineLine4);
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////   
+TGraph* Reaction::GetTheta3VsTheta4(double AngleStep_CM)
+{	
+
+	vector<double> vx;
+	vector<double> vy;
+	double theta3,E3,theta4,E4;
+	
+	for (double angle=0 ; angle < 360 ; angle+=AngleStep_CM){
+		SetThetaCM(angle*deg); 
+		KineRelativistic(theta3, E3, theta4, E4);
+		
+		vx.push_back(theta3/deg); 
+		vy.push_back(theta4/deg); 
+	}
+	fTheta3VsTheta4= new TGraph(vx.size(),&vx[0],&vy[0]);
+	return(fTheta3VsTheta4);
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////
-TGraph* Reaction::GetBrhoLine3(){
-	int size = 360;
-	double x[size];
-	double y[size];
+TGraph* Reaction::GetBrhoLine3(double AngleStep_CM){
+
+	vector<double> vx;
+	vector<double> vy;
 	double theta3,E3,theta4,E4;
 	double Brho;
 	
-	for (int i = 0; i < size; ++i)
-      {
-		SetThetaCM(((double)i)/2*deg);
+	for (double angle=0 ; angle < 360 ; angle+=AngleStep_CM){
+		SetThetaCM(angle*deg);
 		KineRelativistic(theta3, E3, theta4, E4);
 		fNuclei3->SetKineticEnergy(E3);
 		Brho = fNuclei3->GetBrho();
 		
-		x[i] = theta3/deg;
-		y[i] = Brho;
+		vx.push_back(theta3/deg);
+		vy.push_back(Brho);
       }
-	TGraph* LineBrho3= new TGraph(size,x,y);
-	return(LineBrho3);
+	fLineBrho3= new TGraph(vx.size(),&vx[0],&vy[0]);
+	return(fLineBrho3);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-TGraph* Reaction::GetThetaLabVersusThetaCM(){
-	int size = 360;
-	double x[size];
-	double y[size];
+TGraph* Reaction::GetThetaLabVersusThetaCM(double AngleStep_CM){
+
+	vector<double> vx;
+	vector<double> vy;
 	double theta3,E3,theta4,E4;
 	
-	for (int i = 0; i < size; ++i){
-		SetThetaCM(((double)i)/2*deg);
+	for (double angle=0 ; angle < 360 ; angle+=AngleStep_CM){
+		SetThetaCM(angle*deg);
 		KineRelativistic(theta3, E3, theta4, E4);
 		
-		x[i] = fThetaCM/deg;
-		y[i] = theta3/deg;
+		vx.push_back(fThetaCM/deg);
+		vy.push_back(theta3/deg);
   }
   
-	TGraph* AngleLine= new TGraph(size,x,y);
-	return(AngleLine);
+	fAngleLine= new TGraph(vx.size(),&vx[0],&vy[0]);
+	return(fAngleLine);
 }
 
 

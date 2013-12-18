@@ -4,7 +4,6 @@ include $(NPTOOL)/NPLib/Makefile.arch
 
 # additional libraries
 LIBRARY  = `$(NPTOOL)/NPLib/liblist`
-LIBRARY += -L$(CLHEP_LIB_DIR) -l$(CLHEP_LIB)
 
 PROGRAMS	= Analysis
 

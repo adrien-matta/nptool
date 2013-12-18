@@ -32,6 +32,8 @@ using namespace MUST2_LOCAL;
 #include "RootInput.h"
 #include "RootOutput.h"
 #include "TAsciiFile.h"
+#include "NPOptionManager.h"
+
 //   ROOT
 #include "TChain.h"
 ///////////////////////////////////////////////////////////////////////////
@@ -43,6 +45,7 @@ TMust2Physics::TMust2Physics(){
   m_EventData         = new TMust2Data ;
   m_PreTreatedData    = new TMust2Data ;
   m_EventPhysics      = this ;
+  m_Spectra           = NULL;
   m_NumberOfTelescope = 0 ;
   m_MaximumStripMultiplicityAllowed = 10;
   m_StripEnergyMatchingSigma = 0.020    ;
@@ -174,6 +177,10 @@ TMust2Physics::TMust2Physics(){
 }
 
 ///////////////////////////////////////////////////////////////////////////
+TMust2Physics::~TMust2Physics(){
+
+}
+///////////////////////////////////////////////////////////////////////////
 void TMust2Physics::BuildSimplePhysicalEvent(){
   BuildPhysicalEvent();
 }
@@ -300,7 +307,9 @@ void TMust2Physics::BuildPhysicalEvent(){
       
         }
       }
-  
+
+
+ 
   return;
   
 }
@@ -1031,7 +1040,29 @@ void TMust2Physics::ReadConfiguration(string Path){
   cout << endl << "/////////////////////////////" << endl << endl;
   
 }
+///////////////////////////////////////////////////////////////////////////
+void TMust2Physics::InitSpectra(){  
+   m_Spectra = new TMust2Spectra(m_NumberOfTelescope);
+}
 
+///////////////////////////////////////////////////////////////////////////
+void TMust2Physics::FillSpectra(){  
+   m_Spectra -> FillRawSpectra(m_EventData);
+   m_Spectra -> FillPreTreatedSpectra(m_PreTreatedData);
+   m_Spectra -> FillPhysicsSpectra(m_EventPhysics);
+}
+///////////////////////////////////////////////////////////////////////////
+void TMust2Physics::CheckSpectra(){  
+  m_Spectra->CheckSpectra();  
+}
+///////////////////////////////////////////////////////////////////////////
+void TMust2Physics::ClearSpectra(){  
+  // To be done
+}
+///////////////////////////////////////////////////////////////////////////
+map< vector<TString> , TH1*> TMust2Physics::GetSpectra() {
+return m_Spectra->GetMapHisto();
+} 
 ///////////////////////////////////////////////////////////////////////////
 void TMust2Physics::AddParameterToCalibrationManager()
 {

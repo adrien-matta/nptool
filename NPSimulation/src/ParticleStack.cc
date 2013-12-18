@@ -109,7 +109,7 @@ void ParticleStack::AddBeamParticleToStack(Particle& particle){
   m_InitialConditions-> SetIncidentFinalKineticEnergy (particle. GetParticleKineticEnergy());
   m_InitialConditions-> SetIncidentPositionX     (particle. GetParticlePosition().x());
   m_InitialConditions-> SetIncidentPositionY     (particle. GetParticlePosition().y());
-  m_InitialConditions-> SetIncidentPositionZ     (particle. GetParticlePosition().x());
+  m_InitialConditions-> SetIncidentPositionZ     (particle. GetParticlePosition().z());
   
   m_First=false;
 }

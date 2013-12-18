@@ -31,6 +31,7 @@
 #include <TRandom3.h>
 //   NPLib
 #include "TCATSData.h"
+#include "TCATSSpectra.h"
 #include "../include/VDetector.h"
 #include "../include/CalibrationManager.h"
 #include "../include/DetectorManager.h"
@@ -38,6 +39,8 @@
 #define NBDETECTOR	2
 #define	NBSTRIPS	28
 
+// forward declaration
+class TCATSSpectra;
 
 using namespace std ;
 enum reconstruction{NO,SECHS,GAUSS,BAR3,BAR4,BAR5};
@@ -45,193 +48,209 @@ enum correction{NOcor,cor};
 
 class TCATSPhysics : public TObject, public NPA::VDetector
 {
-  
- public:   //   Constructor and Destructor
-  TCATSPhysics();
-  ~TCATSPhysics();
 
- private:   //   Root Input and Output tree classes
-            
-         TCATSData*         m_EventData;//!
-         TCATSData*         m_PreTreatedData;//!
-         TCATSPhysics*      m_EventPhysics;//!
+  public:   //   Constructor and Destructor
+    TCATSPhysics();
+    ~TCATSPhysics();
 
- public :
- // marker of the cats used
-  int ff ;
+  private:   //   Root Input and Output tree classes
+    TCATSData*         m_EventData;//!
+    TCATSData*         m_PreTreatedData;//!
+    TCATSPhysics*      m_EventPhysics;//!
 
-  //   Vector of dim = multiplicity of event on all detector
-  vector<int>        DetNumberX; 
-  vector<int>        StripX;
-  vector<double>     ChargeX; 
-     
-  //   Vector of dim = number of CATS
-  vector<int>      StripMaxX;
-     
-     
-  //   Vector of dim = multiplicity of event on all detector
-  vector<int>        DetNumberY; 
-  vector<int>        StripY;
-  vector<double>     ChargeY;
-     
-  //   Vector of dim = number of CATS  
-  vector<int>       StripMaxY;
-     
-  //   Vector of dim = number of CATS
-  vector<int>       DetNumberX_Position;
-  vector<int>       DetNumberY_Position;
-  vector<int>       DetNumberZ_Position;
-  vector<double>    PositionX;
-  vector<double>    PositionY;
-  vector<double>    PositionZ;
-	vector<double>	QsumX;
-	vector<double>	QsumY;
-  double            PositionOnTargetX;
-  double            PositionOnTargetY;
-     
-  TVector3      BeamDirection      ;  //!
+  public :
+    // marker of the cats used
+    int ff ;
 
-  double Buffer_X_Q[NBSTRIPS][NBDETECTOR];//!
-  double Buffer_Y_Q[NBSTRIPS][NBDETECTOR];//!
-      
-  int HitX;    //!
-  int HitY;    //!
+    //   Vector of dim = multiplicity of event on all detector
+    vector<int>        DetNumberX; 
+    vector<int>        StripX;
+    vector<double>     ChargeX; 
 
-  vector<reconstruction>   ReconstructionMethodX;
-  vector<reconstruction>   ReconstructionMethodY;
+    //   Vector of dim = number of CATS
+    vector<int>      StripMaxX;
 
-	
-		 private :
-        vector< vector< vector<double> > >   StripPositionX;//!
-        vector< vector< vector<double> > >   StripPositionY;//!
-        vector<double>                       StripPositionZ;//!  
-        int m_NumberOfCATS;
-		double m_TargetAngle;
-		double m_TargetThickness;
-		double m_CorrectionCoef_CATS1X;//!
-		double m_CorrectionCoef_CATS1Y;//!
-		double m_CorrectionCoef_CATS2X;//!
-		double m_CorrectionCoef_CATS2Y;//!
-	
-		
-		string m_correction_CATS1X;//!
-		string m_correction_CATS1Y;//!
-		string m_correction_CATS2X;//!
-		string m_correction_CATS2Y;//!
-	
-		string m_reconstruction_CATS1X;//!
-		string m_reconstruction_CATS1Y;//!
-		string m_reconstruction_CATS2X;//!
-		string m_reconstruction_CATS2Y;//!
-		reconstruction m_method_CATS1X;//!
-		reconstruction m_method_CATS1Y;//!
-		reconstruction m_method_CATS2X;//!
-		reconstruction m_method_CATS2Y;//!
 
- private : 
-       //   Map of activated channel
-       map< int, vector<bool> > m_XChannelStatus;//!
-       map< int, vector<bool> > m_YChannelStatus;//! 
-       //   Map of inverted channel
-       map< int, vector<int> > m_CATSXInversion;//!
-       map< int, vector<int> > m_CATSYInversion;//! 
-   
- public:   // Output data of interest
-      //   for a CATS
-	void SetTargetAngle(double TargetAngle) {m_TargetAngle = TargetAngle;}
-	void SetTargetThickness(double TargetThickness) {m_TargetThickness = TargetThickness;}
-	
+    //   Vector of dim = multiplicity of event on all detector
+    vector<int>        DetNumberY; 
+    vector<int>        StripY;
+    vector<double>     ChargeY;
 
-      //   Remove bad channel, calibrate the data and apply threshold
-      void PreTreat();
+    //   Vector of dim = number of CATS  
+    vector<int>       StripMaxY;
 
-      //   Activated associated Branches and link it to the private member DetectorData address
-      //   In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
-      void InitializeRootInputRaw() ;
+    //   Vector of dim = number of CATS
+    vector<int>       DetNumberX_Position;
+    vector<int>       DetNumberY_Position;
+    vector<int>       DetNumberZ_Position;
+    vector<double>    PositionX;
+    vector<double>    PositionY;
+    vector<double>    PositionZ;
+    vector<double>	  QsumX;
+    vector<double>	  QsumY;
+    double            PositionOnTargetX;
+    double            PositionOnTargetY;
 
-      //   Activated associated Branches and link it to the private member DetectorPhysics address
-      //   In this method mother Branches (Detector) AND daughter leaf (parameter) have to be activated
-      void InitializeRootInputPhysics() ;
-   
-      //   Create associated branches and associated private member DetectorPhysics address
-      void InitializeRootOutput() ;
-    
-      //   Clear The PreTeated object
-      void ClearPreTreatedData()   {m_PreTreatedData->Clear();}
-      
-      void BuildPhysicalEvent();
+    TVector3      BeamDirection      ;  //!
 
-      void BuildSimplePhysicalEvent();
+    double Buffer_X_Q[NBSTRIPS][NBDETECTOR];//!
+    double Buffer_Y_Q[NBSTRIPS][NBDETECTOR];//!
 
-      // Same as above but for online analysis
-      void BuildOnlinePhysicalEvent()  {BuildSimplePhysicalEvent();};
+    int HitX;    //!
+    int HitY;    //!
 
-      //   Those two method all to clear the Event Physics or Data
-      void ClearEventPhysics() {Clear();}      
-      void ClearEventData()    {m_EventData->Clear();}    
+    vector<reconstruction>   ReconstructionMethodX;
+    vector<reconstruction>   ReconstructionMethodY;
 
-      void  Clear();
-      void  Clear(const Option_t*) {};  
-	
-	  // Give and external TCATSData object to TCATSPhysics, needed for online analysis
-	  void SetRawDataPointer(TCATSData* rawDataPointer) {m_EventData = rawDataPointer;}
 
-      //   Return false if the channel is disabled by user
-      bool IsValidChannel(const string DetectorType, const int Detector , const int channel);
+  private :
+    vector< vector< vector<double> > >   StripPositionX;//!
+    vector< vector< vector<double> > >   StripPositionY;//!
+    vector<double>                       StripPositionZ;//!  
+    int m_NumberOfCATS;
+    double m_TargetAngle;
+    double m_TargetThickness;
+    double m_CorrectionCoef_CATS1X;//!
+    double m_CorrectionCoef_CATS1Y;//!
+    double m_CorrectionCoef_CATS2X;//!
+    double m_CorrectionCoef_CATS2Y;//!
 
-      void InitializeStandardParameter();
 
-      void AddParameterToCalibrationManager();
+    string m_correction_CATS1X;//!
+    string m_correction_CATS1Y;//!
+    string m_correction_CATS2X;//!
+    string m_correction_CATS2Y;//!
 
-      void ReadAnalysisConfig();
+    string m_reconstruction_CATS1X;//!
+    string m_reconstruction_CATS1Y;//!
+    string m_reconstruction_CATS2X;//!
+    string m_reconstruction_CATS2Y;//!
+    reconstruction m_method_CATS1X;//!
+    reconstruction m_method_CATS1Y;//!
+    reconstruction m_method_CATS2X;//!
+    reconstruction m_method_CATS2Y;//!
 
-      void ReadConfiguration(string);
+  private : 
+    //   Map of activated channel
+    map< int, vector<bool> > m_XChannelStatus;//!
+    map< int, vector<bool> > m_YChannelStatus;//! 
+    //   Map of inverted channel
+    map< int, vector<int> > m_CATSXInversion;//!
+    map< int, vector<int> > m_CATSYInversion;//! 
 
-      void AddCATS(TVector3 C_X1_Y1, TVector3 C_X28_Y1, TVector3 C_X1_Y28, TVector3 C_X28_Y28);
+  public:   // Output data of interest
+    //   for a CATS
+    void SetTargetAngle(double TargetAngle) {m_TargetAngle = TargetAngle;}
+    void SetTargetThickness(double TargetThickness) {m_TargetThickness = TargetThickness;}
 
-      double AnalyseX(int ff);
 
-      double AnalyseY(int ff);
+    //   Remove bad channel, calibrate the data and apply threshold
+    void PreTreat();
 
-      double CalculatePositionX( double CalculatedStripX, correction method);
+    //   Activated associated Branches and link it to the private member DetectorData address
+    //   In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
+    void InitializeRootInputRaw() ;
 
-      double CalculatePositionY( double CalculatedStripY, correction method);
+    //   Activated associated Branches and link it to the private member DetectorPhysics address
+    //   In this method mother Branches (Detector) AND daughter leaf (parameter) have to be activated
+    void InitializeRootInputPhysics() ;
 
-      reconstruction ChooseReconstruction(int ff, TString type);
-	
-	  reconstruction StringToEnum(string type);
+    //   Create associated branches and associated private member DetectorPhysics address
+    void InitializeRootOutput() ;
 
-      double CorrectedPositionX3(double Position, double a) ;
-      double CorrectedPositionY3(double Position, double a) ;
-      double CorrectedPositionX4(double Position, double b); 
-      double CorrectedPositionY4(double Position, double b); 
-	double Corrected3PointsX(double Position, double c);
-	double Corrected3PointsY(double Position, double c);
-	double Corrected4PointsX(double Position, double d);
-	double Corrected4PointsY(double Position, double d);
+    //   Clear The PreTeated object
+    void ClearPreTreatedData()   {m_PreTreatedData->Clear();}
 
-	
-      // Methode de reconstruction X
-      double HyperbolicSequentMethodX();
-      double GaussianMethodX();
-      double Barycentric5MethodX(); 
-      double Barycentric4MethodX(); 
-      double Barycentric3MethodX(); 
+    void BuildPhysicalEvent();
 
-      // Methode de Reconstruction Y
-      double HyperbolicSequentMethodY();
-      double GaussianMethodY();     
-      double Barycentric5MethodY(); 
-      double Barycentric4MethodY(); 
-      double Barycentric3MethodY(); 
+    void BuildSimplePhysicalEvent();
 
-      TVector3 GetBeamDirection();
-      TVector3 GetPositionOnTarget();
-    
-      double GetPositionOnTargetX()  {return PositionOnTargetX;}  
-      double GetPositionOnTargetY()  {return PositionOnTargetY;}
+    // Same as above but for online analysis
+    void BuildOnlinePhysicalEvent()  {BuildSimplePhysicalEvent();};
 
-       ClassDef(TCATSPhysics,1)  // CATSPhysics structure
+    //   Those two method all to clear the Event Physics or Data
+    void ClearEventPhysics() {Clear();}      
+    void ClearEventData()    {m_EventData->Clear();}    
+
+    // Method related to the TSpectra classes, aimed at providing a framework for online applications
+    // Instantiate the Spectra class and the histogramm throught it
+    void InitSpectra();
+    // Fill the spectra hold by the spectra class
+    void FillSpectra();
+    // Used for Online mainly, perform check on the histo and for example change their color if issues are found
+    void CheckSpectra();
+    // Used for Online only, clear all the spectra hold by the Spectra class
+    void ClearSpectra();
+
+    void  Clear();
+    void  Clear(const Option_t*) {};  
+
+    // Give and external TCATSData object to TCATSPhysics, needed for online analysis
+    void SetRawDataPointer(TCATSData* rawDataPointer) {m_EventData = rawDataPointer;}
+
+    //   Return false if the channel is disabled by user
+    bool IsValidChannel(const string DetectorType, const int Detector , const int channel);
+
+    void InitializeStandardParameter();
+
+    void AddParameterToCalibrationManager();
+
+    void ReadAnalysisConfig();
+
+    void ReadConfiguration(string);
+
+    void AddCATS(TVector3 C_X1_Y1, TVector3 C_X28_Y1, TVector3 C_X1_Y28, TVector3 C_X28_Y28);
+
+    double AnalyseX(int ff);
+
+    double AnalyseY(int ff);
+
+    double CalculatePositionX( double CalculatedStripX, correction method);
+
+    double CalculatePositionY( double CalculatedStripY, correction method);
+
+    reconstruction ChooseReconstruction(int ff, TString type);
+
+    reconstruction StringToEnum(string type);
+
+    double CorrectedPositionX3(double Position, double a) ;
+    double CorrectedPositionY3(double Position, double a) ;
+    double CorrectedPositionX4(double Position, double b); 
+    double CorrectedPositionY4(double Position, double b); 
+    double Corrected3PointsX(double Position, double c);
+    double Corrected3PointsY(double Position, double c);
+    double Corrected4PointsX(double Position, double d);
+    double Corrected4PointsY(double Position, double d);
+
+
+    // Methode de reconstruction X
+    double HyperbolicSequentMethodX();
+    double GaussianMethodX();
+    double Barycentric5MethodX(); 
+    double Barycentric4MethodX(); 
+    double Barycentric3MethodX(); 
+
+    // Methode de Reconstruction Y
+    double HyperbolicSequentMethodY();
+    double GaussianMethodY();     
+    double Barycentric5MethodY(); 
+    double Barycentric4MethodY(); 
+    double Barycentric3MethodY(); 
+
+    TVector3 GetBeamDirection();
+    TVector3 GetPositionOnTarget();
+
+    double GetPositionOnTargetX()  {return PositionOnTargetX;}  
+    double GetPositionOnTargetY()  {return PositionOnTargetY;}
+
+  private: // Spectra Class   
+    TCATSSpectra*      m_Spectra;//! 
+
+  public: // Spectra Getter
+    map< vector<TString> , TH1*> GetSpectra();
+
+
+    ClassDef(TCATSPhysics,1)  // CATSPhysics structure
 };
 
 

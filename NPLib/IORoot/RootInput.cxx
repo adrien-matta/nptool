@@ -29,7 +29,7 @@
 #include "RootInput.h"
 #include "TAsciiFile.h"
 
-RootInput *RootInput::instance = 0;
+RootInput* RootInput::instance = 0;
 
 RootInput* RootInput::getInstance(string configFileName)
 {
@@ -268,8 +268,8 @@ RootInput::~RootInput()
       if (system("rm -rf ./.tmp") != 0) cout << "RootInput::~RootInput() problem deleting ./.tmp directory" << endl; 
    }
 
-   delete pRootFile;
-   delete pRootChain;
+   //delete pRootFile;
+   //delete pRootChain;
 }
 
 /////////////////////////////////////////////////////////////////////

@@ -9,16 +9,13 @@ all:            $(SHARELIB)
 ############### Detector ##############
 
 ## MUST2 ##
-libMust2.so: TMust2Data.o TMust2DataDict.o TMust2Physics.o TMust2Spectra.o TMust2SpectraDict.o TMust2PhysicsDict.o
+libMust2.so: TMust2Data.o TMust2DataDict.o TMust2Physics.o  TMust2PhysicsDict.o TMust2Spectra.o 
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TMust2DataDict.cxx:	TMust2Data.h
 			rootcint -f $@ -c $^
 
 TMust2PhysicsDict.cxx: TMust2Physics.h
-			rootcint -f $@ -c $^
-
-TMust2SpectraDict.cxx: TMust2Spectra.h
 			rootcint -f $@ -c $^
 
 # dependances

@@ -59,12 +59,9 @@ class CalibrationManager
          // call like : myCalibrationManager->ApplyCalibration( "MUST2/Telescope5_Si_X38_E" , RawEnergy )
          // return the Calibrated value
          double ApplyCalibration(const string& ParameterPath , const double& RawValue);
-
+         double ApplyResistivePositionCalibration(const string& ParameterPath , const double& RawValue);
          bool ApplyThreshold(const string& ParameterPath, const double& RawValue);
-
          double GetPedestal(const string& ParameterPath);
-
-      
       
       public:   //   To be called after initialisation
          //   Loop over the file list and catch the file used for calibration
