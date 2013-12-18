@@ -47,6 +47,8 @@ TExogamPhysics::TExogamPhysics()
   GOCCE_Multiplicity    = 0                     ;
   NumberOfHitClover     = 0                     ;
   NumberOfHitCristal    = 0                     ;
+  m_Spectra             = NULL;
+  NumberOfClover=0;
 
   PreTreatedData	= new TExogamData	;
   EventData 		= new TExogamData	;
@@ -529,6 +531,29 @@ void TExogamPhysics::ReadConfiguration(string Path)
 
 }
 
+///////////////////////////////////////////////////////////////////////////
+void TExogamPhysics::InitSpectra(){  
+   m_Spectra = new TExogamSpectra(NumberOfClover);
+}
+
+///////////////////////////////////////////////////////////////////////////
+void TExogamPhysics::FillSpectra(){  
+   m_Spectra -> FillRawSpectra(EventData);
+   m_Spectra -> FillPreTreatedSpectra(PreTreatedData);
+   m_Spectra -> FillPhysicsSpectra(EventPhysics);
+}
+///////////////////////////////////////////////////////////////////////////
+void TExogamPhysics::CheckSpectra(){  
+  m_Spectra->CheckSpectra();  
+}
+///////////////////////////////////////////////////////////////////////////
+void TExogamPhysics::ClearSpectra(){  
+  // To be done
+}
+///////////////////////////////////////////////////////////////////////////
+map< vector<TString> , TH1*> TExogamPhysics::GetSpectra() {
+return m_Spectra->GetMapHisto();
+} 
 
 void TExogamPhysics::AddClover(string AngleFile)
 {
