@@ -25,7 +25,7 @@
 
 // STL
 #include <vector>
-
+using namespace std;
 #include "TObject.h"
 
 

@@ -8,7 +8,7 @@ all:            $(SHARELIB)
 ############### Detector ##############
 
 ## EXOGAM ##
-libExogam.so:	TExogamData.o	TExogamDataDict.o TExogamPhysics.o	TExogamPhysicsDict.o
+libExogam.so:	TExogamData.o	TExogamDataDict.o TExogamPhysics.o	TExogamPhysicsDict.o  TExogamSpectra.o 
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TExogamDataDict.cxx:	TExogamData.h
@@ -20,6 +20,7 @@ TExogamPhysicsDict.cxx: TExogamPhysics.h
 # dependances
 TExogamData.o:		TExogamData.cxx		TExogamData.h
 TExogamPhysics.o:	TExogamPhysics.cxx	TExogamPhysics.h
+TExogamSpectra.o:       TExogamSpectra.cxx	TExogamSpectra.h
 #######################################
 
 ############# Clean and More ##########
