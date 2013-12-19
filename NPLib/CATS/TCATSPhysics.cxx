@@ -485,7 +485,6 @@ void TCATSPhysics::AddCATS(TVector3 C_X1_Y1, TVector3 C_X28_Y1, TVector3 C_X1_Y2
   //	Moving StripCenter to 1.1 corner (strip center!) :
   Strip_1_1 = C_X1_Y1 + (U+V) * (StripPitch/2) 	;
 
-
   for( int i = 0 ; i < 28 ; i++ )
   {
     lineX.clear()	;
