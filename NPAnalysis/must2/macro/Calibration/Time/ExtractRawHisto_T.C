@@ -16,18 +16,25 @@
 #include "TBranch.h"
 #include "TH1F.h"
 
+//#include "TMust2Data.h"
+//#include "/home/e628/nptool/NPLib/include/TMust2Data.h"///
+//#include "/home/e628/nptool/NPLib/include/RootInput.h"////
 #include "TMust2Data.h"
+#include "RootInput.h"
 
-#define NBTELESCOPE	8
+#define NBTELESCOPE	4
 #define	NBSTRIPS	128
 #define NBSILI     16
 
 
-void ExtractMust2Histos(const char* fname = "run_0040")
+void ExtractMust2Histos(const char* fname = "run_033")
 {
    // open the ROOT file to process
-   TString path  = gSystem->Getenv("RUN_NPT_ROOT");
-   path+="/runGRU/";
+   //TString path  = gSystem->Getenv("RUN_NPT_ROOT");//
+  // path+="/data/e644X/e644/acquisition/run_root/";
+ //  path+="/runGRU/";//
+
+   TString path  = "/data/e644X/e644/acquisition/run_root/";
    TString inFileName = fname;
    inFileName += ".root";
    TFile *inFile = new TFile(path + inFileName);

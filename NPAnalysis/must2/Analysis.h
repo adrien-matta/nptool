@@ -9,7 +9,7 @@
 #include "DetectorManager.h"
 #include "NPOptionManager.h"
 #include "TMust2Physics.h"
-
+#include "TExogamPhysics.h"
 // STL C++
 #include <iostream>
 #include <fstream>
@@ -109,7 +109,7 @@ namespace ENERGYLOSS
 	{
 	  // Beam Energy Loss
 	  
-	  EnergyLoss Fe60TargetCD2    = EnergyLoss      ("Fe60[0.0]_CD2.G4table",
+	  EnergyLoss BeamTargetCD2    = EnergyLoss      ("O18[0.0]_CD2.G4table",
 		 					 "G4Table"              ,
 							 1000                   );
 	  
@@ -169,13 +169,13 @@ namespace ENERGYLOSS
 							  3,
 							  1.008		  );
 		
-	  EnergyLoss protonTargetC   = EnergyLoss       ("proton_carbone.txt" 	,
+	  /*EnergyLoss protonTargetC   = EnergyLoss       ("proton_carbone.txt" 	,
 							 "LISE"                         ,
 							 1000		 		,
 							 3				,
 							 1.008				);
 
-	  /*
+	  
 	  EnergyLoss protonTargetCD2 = EnergyLoss       ("proton_cd2.txt" 	,
 							 "LISE"                         ,
 							 1000		 		,

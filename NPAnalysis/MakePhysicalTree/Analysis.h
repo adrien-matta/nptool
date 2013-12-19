@@ -33,6 +33,7 @@
 #include "TPlasticData.h"
 #include "TMust2Data.h"
 #include "TMust2Physics.h"
+#include "TExogamPhysics.h"
 #include "TSSSDPhysics.h"
 #include "TPlasticPhysics.h"
 #include "GaspardTracker.h"
