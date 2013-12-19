@@ -808,11 +808,12 @@ double TCATSPhysics::AnalyseX(int ff)
   ReconstructionMethodX[ff] = ChooseReconstruction(ff,"X");
 
   if(ReconstructionMethodX[ff] == SECHS)CalculatedStripX = HyperbolicSequentMethodX();
-  if(ReconstructionMethodX[ff] == GAUSS)CalculatedStripX = GaussianMethodX();
-  if(ReconstructionMethodX[ff] == BAR3) CalculatedStripX = Barycentric3MethodX(); 
-  if(ReconstructionMethodX[ff] == BAR4) CalculatedStripX = Barycentric4MethodX(); 
-  if(ReconstructionMethodX[ff] == BAR5) CalculatedStripX = Barycentric5MethodX(); 
-
+  else if(ReconstructionMethodX[ff] == GAUSS)CalculatedStripX = GaussianMethodX();
+  else if(ReconstructionMethodX[ff] == BAR3) CalculatedStripX = Barycentric3MethodX(); 
+  else if(ReconstructionMethodX[ff] == BAR4) CalculatedStripX = Barycentric4MethodX(); 
+  else if(ReconstructionMethodX[ff] == BAR5) CalculatedStripX = Barycentric5MethodX(); 
+  else CalculatedStripX = Barycentric3MethodX();
+ 
   return(CalculatedStripX);
 }
 
@@ -824,11 +825,11 @@ double TCATSPhysics::AnalyseY(int ff)
   ReconstructionMethodY[ff] = ChooseReconstruction(ff,"Y");
 
   if(ReconstructionMethodY[ff] == SECHS)CalculatedStripY = HyperbolicSequentMethodY();
-  if(ReconstructionMethodY[ff] == GAUSS)CalculatedStripY = GaussianMethodY();
-  if(ReconstructionMethodY[ff] == BAR3) CalculatedStripY = Barycentric3MethodY(); 
-  if(ReconstructionMethodY[ff] == BAR4) CalculatedStripY = Barycentric4MethodY(); 
-  if(ReconstructionMethodY[ff] == BAR5) CalculatedStripY = Barycentric5MethodY(); 
-
+  else if(ReconstructionMethodY[ff] == GAUSS)CalculatedStripY = GaussianMethodY();
+  else if(ReconstructionMethodY[ff] == BAR3) CalculatedStripY = Barycentric3MethodY(); 
+  else if(ReconstructionMethodY[ff] == BAR4) CalculatedStripY = Barycentric4MethodY(); 
+  else if(ReconstructionMethodY[ff] == BAR5) CalculatedStripY = Barycentric5MethodY(); 
+  else CalculatedStripY = Barycentric3MethodY();
 
   return(CalculatedStripY);
 }
