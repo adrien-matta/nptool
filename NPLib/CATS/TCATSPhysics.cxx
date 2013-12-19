@@ -180,7 +180,7 @@ void TCATSPhysics::BuildPhysicalEvent(){
   double CalculatedStripX = 0, CalculatedStripY = 0;
   double posX = 0 , posY = 0;
 
-  for(ff = 1 ; ff < NumberOfCATSHit ; ff++ ){       
+  for(ff = 0 ; ff < NumberOfCATSHit ; ff++ ){       
     CalculatedStripX = AnalyseX(ff);         
     CalculatedStripY = AnalyseY(ff); 
 
