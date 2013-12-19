@@ -99,7 +99,7 @@ void TMust2Spectra::InitRawSpectra(){
 
     // CSI_E_RAW
     name = Form("MM%d_CSI_E_RAW", i+1);
-    AddHisto2D(name, name, fCrystalCsI, 1, fCrystalCsI+1, 512, 0, 8192, "MUST2/RAW/CSIE");
+    AddHisto2D(name, name, fCrystalCsI, 1, fCrystalCsI+1, 512, 0, 16384, "MUST2/RAW/CSIE");
 
     // CSI_T_RAW
     name = Form("MM%d_CSI_T_RAW", i+1);
@@ -154,7 +154,7 @@ void TMust2Spectra::InitPreTreatedSpectra()
 
     // CSI_E_CAL
     name = Form("MM%d_CSI_E_CAL", i+1);
-    AddHisto2D(name, name, fCrystalCsI, 1, fCrystalCsI+1, 500, 0, 50, "MUST2/CAL/CSIE");
+    AddHisto2D(name, name, fCrystalCsI, 1, fCrystalCsI+1, 500, 0, 500, "MUST2/CAL/CSIE");
 
     // CSI_T_CAL
     name = Form("MM%d_CSI_T_CAL", i+1);
