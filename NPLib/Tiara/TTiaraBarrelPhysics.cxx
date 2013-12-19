@@ -49,11 +49,11 @@ ClassImp(TTiaraBarrelPhysics)
     m_EventData         = new TTiaraBarrelData ;
     m_PreTreatedData    = new TTiaraBarrelData ;
     m_EventPhysics      = this ;
-    m_NumberOfDetector = 0 ;
+    m_NumberOfDetector  = 0 ;
 
     m_Take_E_Strip= true;
     m_Take_T_Back=true;
-    m_Strip_E_RAW_Threshold=0 ;
+    m_Strip_E_Threshold=0.4 ;
     m_Back_E_Threshold =0;
     m_OuterStrip_E_RAW_Threshold =0;
     m_OuterBack_E_Threshold =0;
@@ -69,65 +69,12 @@ void TTiaraBarrelPhysics::BuildPhysicalEvent(){
   PreTreat();
 
 
-  /*  
-      if( CheckEvent() == 1 ){
-      vector< TVector2 > couple = Match_Ring_Sector() ;
-      EventMultiplicity = couple.size();
 
-      unsigned int size = couple.size();
-      for(unsigned int i = 0 ; i < size ; ++i){
-
-      int N = m_PreTreatedData->GetRingEDetectorNbr(couple[i].X()) ;
-      int Ring = m_PreTreatedData->GetRingEStripNbr(couple[i].X()) ;
-      int Sector  = m_PreTreatedData->GetSectorEStripNbr(couple[i].Y()) ;
-
-      double Ring_E = m_PreTreatedData->GetRingEEnergy( couple[i].X() ) ;
-      double Sector_E  = m_PreTreatedData->GetSectorEEnergy( couple[i].Y() ) ;
-
-  // Search for associate Time:
-  double Ring_T = -1000 ;
-  unsigned int StripRingTMult = m_PreTreatedData->GetRingTMult(); 
-  for(unsigned int t = 0 ; t < StripRingTMult ; ++t ){
-  if(  m_PreTreatedData->GetRingEStripNbr( couple[i].X() ) == m_PreTreatedData->GetRingTStripNbr(t)
-  &&m_PreTreatedData->GetRingEDetectorNbr( couple[i].X() ) == m_PreTreatedData->GetRingTDetectorNbr(t))
-  Ring_T = m_PreTreatedData->GetRingTTime(t);
-  }
-
-  // Search for associate Time:
-  double Sector_T = -1000 ;
-  unsigned int StripSectorTMult = m_PreTreatedData->GetSectorTMult(); 
-  for(unsigned int t = 0 ; t < StripSectorTMult ; ++t ){
-  if(  m_PreTreatedData->GetSectorEStripNbr( couple[i].X() ) == m_PreTreatedData->GetSectorTStripNbr(t)
-  &&m_PreTreatedData->GetSectorEDetectorNbr( couple[i].X() ) == m_PreTreatedData->GetSectorTDetectorNbr(t))
-  Sector_T = m_PreTreatedData->GetSectorTTime(t);
-  }
-
-  DetectorNumber.push_back(N);
-  StripRing_E.push_back(Ring_E);
-  StripRing_T.push_back(Ring_T) ;
-  StripSector_E.push_back(Sector_E) ;
-  StripSector_T.push_back(Sector_T) ;
-
-  if(m_Take_E_Ring)
-  Strip_E.push_back(Ring_E) ;
-  else
-  Strip_E.push_back(Sector_E) ;
-
-  if(m_Take_T_Sector)
-  Strip_T.push_back(Sector_T) ;
-  else
-  Strip_T.push_back(Ring_T) ;
-
-  Strip_Ring.push_back(Ring) ;
-  Strip_Sector.push_back(Sector) ;
-  }
-  }*/
 }
 
 ///////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelPhysics::PreTreat(){
   ClearPreTreatedData();
-
   // Gain Calibration
   // The cal function first call the MatchStick one
   unsigned int sizeU = m_EventData-> GetFrontUpstreamEMult();
@@ -144,13 +91,13 @@ void TTiaraBarrelPhysics::PreTreat(){
         m_PreTreatedData->SetFrontDownstreamE(m_EventData-> GetFrontDownstreamEDetectorNbr(i),
                                            m_EventData-> GetFrontDownstreamEStripNbr(i),
                                            ED);
-      if(EU>0 && ED>0){
+      if(EU>0 && ED>0 && EU+ED > m_Strip_E_Threshold){
         if( m_EventData->GetFrontUpstreamEDetectorNbr(i) 
         == m_EventData->GetFrontDownstreamEDetectorNbr(j)
         && m_EventData->GetFrontUpstreamEStripNbr(i) 
         == m_EventData->GetFrontDownstreamEStripNbr(j)){
             
-        //  
+       
         double POS =
               CalibrationManager::getInstance()->ApplyResistivePositionCalibration("TIARABARREL/B"+itoa(m_EventData->GetFrontUpstreamEDetectorNbr(i))+"_STRIP"+itoa(m_EventData->GetFrontUpstreamEStripNbr(i))+"_POS",(ED-EU)/(EU+ED));
             Strip_Pos.push_back(POS); 
@@ -163,6 +110,10 @@ void TTiaraBarrelPhysics::PreTreat(){
         + itoa(m_EventData->GetFrontDownstreamEStripNbr(i)),
         POS);
 
+
+        DetectorNumber.push_back(m_EventData->GetFrontDownstreamEDetectorNbr(i));
+        Strip_N.push_back(m_EventData->GetFrontDownstreamEStripNbr(i)); 
+        Strip_Pos.push_back(POS);
         Strip_E.push_back(E);
         }
       }
@@ -601,11 +552,19 @@ TVector3 TTiaraBarrelPhysics::GetDetectorNormal( const int i) const{
 }
 ///////////////////////////////////////////////////////////////////////////////
 TVector3 TTiaraBarrelPhysics::GetPositionOfInteraction(const int i) const{
-  /*  TVector3 Position = TVector3 ( GetStripPositionX(DetectorNumber[i],Strip_Ring[i],Strip_Sector[i] )    ,
-      GetStripPositionY( DetectorNumber[i],Strip_Ring[i],Strip_Sector[i] )    ,
-      GetStripPositionZ( DetectorNumber[i],Strip_Ring[i],Strip_Sector[i] )    ) ;
-      */
-  return(TVector3(0,0,0)) ;
+ // All in mm 
+  double INNERBARREL_PCB_Width  = 27.76;
+  double INNERBARREL_ActiveWafer_Length = 94.80; 
+  double INNERBARREL_ActiveWafer_Width = 24.0;
+
+  double StripPitch = INNERBARREL_ActiveWafer_Width/4. ;
+
+  double X = Strip_N[i]*StripPitch-0.5*INNERBARREL_ActiveWafer_Width;
+  double Y = INNERBARREL_PCB_Width*(0.5+sin(45*deg))  ; 
+  double Z = (Strip_Pos[i]-0.5)*INNERBARREL_ActiveWafer_Length ;
+  TVector3 POS(X,Y,Z);
+  POS.RotateZ((DetectorNumber[i]-1)*45*deg);
+  return( POS ) ;
 
 }
 ///////////////////////////////////////////////////////////////////////////////

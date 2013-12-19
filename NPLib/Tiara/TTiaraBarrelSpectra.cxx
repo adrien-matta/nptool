@@ -140,6 +140,16 @@ string name ;
       AddHisto2D(name, name,1000,-0.5,1.5,1000,0,30,BaseFamily);
     }
   }
+  //// E Theta ////
+  // Inner Barrel
+  for(unsigned int i  = 0 ; i < fNumberOfDetector ; i++){
+    for(unsigned int j = 0 ; j < fInnerBarrelStrip;j++){
+      name = Form("IB%d_ETHETA%d_CAL",i+1,j+1);
+      AddHisto2D(name, name,360,0,180,1000,0,30,BaseFamily);
+    }
+  }
+
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -258,8 +268,14 @@ string name ;
   unsigned int size = Physics->Strip_E.size();
   for(unsigned int i  = 0 ; i < Physics->Strip_E.size() ; i++){
       name = Form("IB%d_EPOS%d_CAL",Physics->DetectorNumber[i],Physics->Strip_N[i]);
-        GetHisto(family,name)
+      GetHisto(family,name)
         ->Fill(Physics->Strip_Pos[i],Physics->Strip_E[i]);
+    
+       name = Form("IB%d_ETHETA%d_CAL",Physics->DetectorNumber[i],Physics->Strip_N[i]);
+       double Theta = Physics->GetPositionOfInteraction(i).Angle(TVector3(0,0,1));
+
+       GetHisto(family,name)
+        ->Fill(Theta*rad/deg,Physics->Strip_E[i]);
     }
 }
 
