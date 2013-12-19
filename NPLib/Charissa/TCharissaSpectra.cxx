@@ -83,6 +83,10 @@ void TCharissaSpectra::InitRawSpectra()
 
    for (unsigned int i = 0; i < fNumberOfTelescope; i++) { // loop on number of detectors
       // DE_STRX_E_RAW
+      name = Form("CHA%d_DE_IMPACT_RAW", i+1);
+      AddHisto2D(name, name, fStripX, 1, fStripX+1, fStripY, 1, fStripY+1, "CHARISSA/RAW/IMPACT");
+
+      // DE_STRX_E_RAW
       name = Form("CHA%d_DE_STRX_E_RAW", i+1);
       AddHisto2D(name, name, fStripX, 1, fStripX+1, 512, 0, 16384, "CHARISSA/RAW/STRXE");
 
@@ -132,20 +136,20 @@ void TCharissaSpectra::InitPreTreatedSpectra()
    TString name;
 
    for (unsigned int i = 0; i < fNumberOfTelescope; i++) { // loop on number of detectors
-      // L1_STRX_E_CAL
-      name = Form("CHA%d_L1_STRX_E_CAL", i+1);
+      // DE_STRX_E_CAL
+      name = Form("CHA%d_DE_STRX_E_CAL", i+1);
       AddHisto2D(name, name, fStripX, 1, fStripX+1, 1000, 0, 16000, "CHARISSA/CAL/STRXE");
 
-      // L1_STRY_E_CAL
-      name = Form("CHA%d_L1_STRY_E_CAL", i+1);
+      // DE_STRY_E_CAL
+      name = Form("CHA%d_DE_STRY_E_CAL", i+1);
       AddHisto2D(name, name, fStripY, 1, fStripY+1, 1000, 0, 16000, "CHARISSA/CAL/STRYE");
 
-      // L2_STRX_E_CAL
-      name = Form("CHA%d_L2_STRX_E_CAL", i+1);
+      // E_STRX_E_CAL
+      name = Form("CHA%d_E_STRX_E_CAL", i+1);
       AddHisto2D(name, name, fStripX, 1, fStripX+1, 1000, 0, 16000, "CHARISSA/CAL/STRXE");
 
-      // L2_STRY_E_CAL
-      name = Form("CHA%d_L2_STRY_E_CAL", i+1);
+      // E_STRY_E_CAL
+      name = Form("CHA%d_E_STRY_E_CAL", i+1);
       AddHisto2D(name, name, fStripY, 1, fStripY+1, 1000, 0, 16000, "CHARISSA/CAL/STRYE");
 
 
@@ -255,6 +259,16 @@ void TCharissaSpectra::FillRawSpectra(TCharissaData* RawData)
 {
    TString name;
    TString family;
+  
+ for (unsigned int i = 0; i < RawData->GetCharissaLayer1StripXEMult(); i++) {
+   for (unsigned int j = 0; j < RawData->GetCharissaLayer1StripYEMult(); j++) {
+     if(RawData->GetCharissaLayer1StripXEEnergy(i)> 500 &&  RawData->GetCharissaLayer1StripYEEnergy(j)>500){
+      name = Form("CHA%d_DE_IMPACT_RAW", RawData->GetCharissaLayer1StripXEDetectorNbr(i));
+      family = "CHARISSA/RAW/IMPACT";
+      GetHisto(family,name) -> Fill(RawData->GetCharissaLayer1StripXEStripNbr(i), RawData->GetCharissaLayer1StripYEStripNbr(j));
+      }
+    }
+  }
    // DE_STRX_E 
    for (unsigned int i = 0; i < RawData->GetCharissaLayer1StripXEMult(); i++) {
       name   = Form("CHA%d_DE_STRX_E_RAW", RawData->GetCharissaLayer1StripXEDetectorNbr(i));
@@ -345,6 +359,7 @@ void TCharissaSpectra::FillRawSpectra(TCharissaData* RawData)
       family = "CHARISSA/RAW/MULT";
       GetHisto(family,name) -> Fill(myMULT[i]);
    }
+
 }
 
 
@@ -565,7 +580,6 @@ TH1* TCharissaSpectra::GetHisto(TString family, TString name){
   vector<TString> index ;
   index.push_back(family);
   index.push_back(name);
-
   // fill map
   return fMapHisto.at(index);
 }
