@@ -148,7 +148,10 @@ string name ;
       AddHisto2D(name, name,360,0,180,1000,0,30,BaseFamily);
     }
   }
-
+  //// E Theta ////
+  // Inner Barrel
+ name = "IB_ETHETA_CAL";
+ AddHisto2D(name, name,360,0,180,1000,0,30,BaseFamily);
 
 }
 
@@ -275,6 +278,10 @@ string name ;
        double Theta = Physics->GetPositionOfInteraction(i).Angle(TVector3(0,0,1));
 
        GetHisto(family,name)
+        ->Fill(Theta*rad/deg,Physics->Strip_E[i]);
+    
+      name = "IB_ETHETA_CAL";
+      GetHisto(family,name)
         ->Fill(Theta*rad/deg,Physics->Strip_E[i]);
     }
 }

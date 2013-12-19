@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
+ * Copyright (C) 2009-2010   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -43,10 +43,9 @@ ClassImp(TCATSPhysics)
 TCATSPhysics::TCATSPhysics()
 {
   m_EventData 				= new TCATSData	;
-  m_PreTreatedData      = new TCATSData ;
+  m_PreTreatedData          = new TCATSData ;
   m_EventPhysics 			= this			;
-  m_Spectra             = 0;
-  m_NumberOfCATS        = 0             ;
+  m_NumberOfCATS            = 0             ;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -56,52 +55,50 @@ TCATSPhysics::~TCATSPhysics()
 
 ///////////////////////////////////////////////////////////////////////////
 void TCATSPhysics::PreTreat()
-{ 
+{
   ClearPreTreatedData();   
   gRandom->SetSeed(0);
   // X
-  for(int i = 0 ; i < m_EventData->GetCATSMultX() ; i++)
-  {
+  for(int i = 0 ; i < m_EventData->GetCATSMultX() ; i++){
     // Valid Channel X
-    if(IsValidChannel("X", m_EventData->GetCATSDetX(i), m_EventData->GetCATSStripX(i)) )
-    {
-      if( fCATS_Threshold_X(m_EventData , i) )
-      {
+    if(IsValidChannel("X", m_EventData->GetCATSDetX(i), m_EventData->GetCATSStripX(i)) ){
+      if( fCATS_Threshold_X(m_EventData , i) ){
         double QX = fCATS_X_Q(m_EventData , i);
         m_PreTreatedData->SetCATSChargeX( QX );
         //Inversion X
-        if( *(m_CATSXInversion[m_EventData->GetCATSDetX(i)-1].begin() + m_EventData->GetCATSStripX(i)-1) != m_EventData->GetCATSStripX(i) )
-        {
+        if( *(m_CATSXInversion[m_EventData->GetCATSDetX(i)-1].begin() + m_EventData->GetCATSStripX(i)-1) != m_EventData->GetCATSStripX(i) ){
           m_PreTreatedData->SetCATSStripX( *(m_CATSXInversion[m_EventData->GetCATSDetX(i)-1].begin() + m_EventData->GetCATSStripX(i)-1) );
         }
-        else {m_PreTreatedData->SetCATSStripX( m_EventData->GetCATSStripX(i) );}
+        else {
+          m_PreTreatedData->SetCATSStripX( m_EventData->GetCATSStripX(i) );
+        }
+
         m_PreTreatedData->SetCATSDetX( m_EventData->GetCATSDetX(i) );
+
       }
     }
   }
 
   // Y
-  for(int i = 0 ; i < m_EventData->GetCATSMultY() ; i++)
-  {
+  for(int i = 0 ; i < m_EventData->GetCATSMultY() ; i++){
     // Valid Channel Y
-    if(IsValidChannel("Y", m_EventData->GetCATSDetY(i), m_EventData->GetCATSStripY(i)))
-    {
-      if( fCATS_Threshold_Y(m_EventData , i) )
-      {
+    if(IsValidChannel("Y", m_EventData->GetCATSDetY(i), m_EventData->GetCATSStripY(i))){
+      if( fCATS_Threshold_Y(m_EventData , i) ){
         double QY = fCATS_Y_Q(m_EventData , i);
         m_PreTreatedData->SetCATSChargeY( QY );
         //Inversion Y
-        if( *(m_CATSYInversion[m_EventData->GetCATSDetY(i)-1].begin() + m_EventData->GetCATSStripY(i)-1) != m_EventData->GetCATSStripY(i) )
-        {
+        if( *(m_CATSYInversion[m_EventData->GetCATSDetY(i)-1].begin() + m_EventData->GetCATSStripY(i)-1) != m_EventData->GetCATSStripY(i) ){
           m_PreTreatedData->SetCATSStripY( *(m_CATSYInversion[m_EventData->GetCATSDetY(i)-1].begin() + m_EventData->GetCATSStripY(i)-1) );
         }
-        else {m_PreTreatedData->SetCATSStripY( m_EventData->GetCATSStripY(i) );}
+        else {
+          m_PreTreatedData->SetCATSStripY( m_EventData->GetCATSStripY(i) );
+        }
+
         m_PreTreatedData->SetCATSDetY( m_EventData->GetCATSDetY(i) );
+
       }
     }
   }
-  
-
   return;
 }
 
@@ -112,17 +109,22 @@ void TCATSPhysics::BuildSimplePhysicalEvent()
 }
 
 //////////////////////////////////////////////////////////////////////////////		
-void TCATSPhysics::BuildPhysicalEvent(){
+void TCATSPhysics::BuildPhysicalEvent()					
+{
   PreTreat();
   double Pi = 3.14159265;
+
   //	How many CATS?
   int NumberOfCATSHit = 0 ;
   int DetectorID = -1;
   double SumChargeX[2];
   double SumChargeY[2];
+
+
   for( unsigned short i = 0 ; i < m_PreTreatedData->GetCATSMultX() ; i++ ){ 
     if( m_PreTreatedData->GetCATSDetX(i) != DetectorID)  {
       NumberOfCATSHit++;
+      DetectorID = m_PreTreatedData->GetCATSDetX(i);
     }
     if(NumberOfCATSHit == m_NumberOfCATS) break;	
   }
@@ -140,43 +142,46 @@ void TCATSPhysics::BuildPhysicalEvent(){
     ReconstructionMethodY.push_back(NO);
     SumChargeY[k] = 0;
   }
+
   for(int p = 0 ; p < m_NumberOfCATS ; p++){
     for(int z=0; z<28; z++) {
       Buffer_X_Q[z][p] = -1;
       Buffer_Y_Q[z][p] = -1;
     }
   }
-  
-  for(unsigned int i = 0 ; i < m_PreTreatedData->GetCATSMultX() ; i++ ){
-    int StrX					= m_PreTreatedData->GetCATSStripX(i);
-    int NX						= m_PreTreatedData->GetCATSDetX(i);
-    double CATS_X_Q		= m_PreTreatedData->GetCATSChargeX(i) ;            
 
-    Buffer_X_Q[StrX-1][NX-1]	= CATS_X_Q;
-    SumChargeX[NX-1]			+= CATS_X_Q;
+  for(unsigned int i = 0 ; i < m_PreTreatedData->GetCATSMultX() ; i++ ){
+    int StrX					         = m_PreTreatedData->GetCATSStripX(i);
+    int NX						         = m_PreTreatedData->GetCATSDetX(i);
+    double CATS_X_Q				     = m_PreTreatedData->GetCATSChargeX(i) ;            
+    Buffer_X_Q[StrX-1][NX-1]	 = CATS_X_Q;
+    SumChargeX[NX-1]			    += CATS_X_Q;	
     ChargeX.push_back(CATS_X_Q);
     StripX.push_back(StrX);
     DetNumberX.push_back(NX);
     HitX++;
-    if(HitX==1) StripMaxX[NX-1] = StrX; 
-    else if(ChargeX[HitX-1] > Buffer_X_Q[StripMaxX[NX-1] -1][NX-1] ) StripMaxX[NX-1] = StrX ;  
-}
+    if(HitX==1) 
+      StripMaxX[NX-1] = StrX; 
+    else if(ChargeX[HitX-1] > Buffer_X_Q[StripMaxX[NX-1] -1][NX-1] ) 
+      StripMaxX[NX-1] = StrX ;  
+  }
+
   for(unsigned int j = 0 ; j < m_PreTreatedData->GetCATSMultY() ; j++ ){
-    int StrY					= m_PreTreatedData->GetCATSStripY(j);
-    int NY						= m_PreTreatedData->GetCATSDetY(j);
-    double CATS_Y_Q		= m_PreTreatedData->GetCATSChargeY(j) ;
-
+    int StrY					        = m_PreTreatedData->GetCATSStripY(j);
+    int NY						        = m_PreTreatedData->GetCATSDetY(j);
+    double CATS_Y_Q				    = m_PreTreatedData->GetCATSChargeY(j) ;
     Buffer_Y_Q[StrY-1][NY-1]	= CATS_Y_Q;
-    SumChargeY[NY-1]			+= CATS_Y_Q;
-
+    SumChargeY[NY-1]			   += CATS_Y_Q;
     ChargeY.push_back(CATS_Y_Q);
     StripY.push_back(StrY);
     DetNumberY.push_back(NY);
     HitY++;
-    if(HitY==1) StripMaxY[NY-1] = StrY; 
-    else if(ChargeY[HitY-1] > Buffer_Y_Q[StripMaxY[NY-1] -1][NY-1] ) StripMaxY[NY-1] = StrY ; 
+    if(HitY==1) 
+      StripMaxY[NY-1] = StrY; 
+    else if(ChargeY[HitY-1] > Buffer_Y_Q[StripMaxY[NY-1] -1][NY-1] ) 
+      StripMaxY[NY-1] = StrY ;  
   }
-  
+
   double CalculatedStripX = 0, CalculatedStripY = 0;
   double posX = 0 , posY = 0;
 
@@ -200,7 +205,8 @@ void TCATSPhysics::BuildPhysicalEvent(){
   }
 
   if(NumberOfCATSHit > 1){
-    if(PositionX[0] != -1000 && PositionY[0] != -1000 && PositionX[1] != -1000 && PositionY[1] != -1000) {
+    if(PositionX[0] != -1000 && PositionY[0] != -1000 && PositionX[1] != -1000 && PositionY[1] != -1000) 
+    {
       double PositionOnTargetX_1;
       double PositionOnTargetY_1;
       double l = sqrt((PositionZ[0]-PositionZ[1])*(PositionZ[0]-PositionZ[1]));
@@ -210,7 +216,8 @@ void TCATSPhysics::BuildPhysicalEvent(){
       PositionOnTargetX_1 = PositionX[0] + (PositionX[1] - PositionX[0]) * t ;
       PositionOnTargetY_1 = PositionY[0] + (PositionY[1] - PositionY[0]) * t ;
 
-      if(m_TargetAngle != 0){
+      if(m_TargetAngle != 0)
+      {
         double a = (PositionZ[1]-PositionZ[0])/(PositionX[1]-PositionX[0]);
         double b = PositionZ[0] - a*PositionX[0];
         PositionOnTargetX = b/(tan(m_TargetAngle*Pi/180.) - a);
@@ -224,11 +231,12 @@ void TCATSPhysics::BuildPhysicalEvent(){
         PositionOnTargetX = PositionOnTargetX_1;
         PositionOnTargetY = PositionOnTargetY_1;
       }
+      GetPositionOnTarget();
+      GetBeamDirection();
     }
 
     else{
       BeamDirection = TVector3 (1,0,0);
-
       PositionOnTargetX = -1000	;
       PositionOnTargetY = -1000	;
     }
@@ -239,6 +247,7 @@ void TCATSPhysics::BuildPhysicalEvent(){
     PositionOnTargetX = -1000	;
     PositionOnTargetY = -1000	;
   }
+
   return;
 
 }
@@ -504,25 +513,24 @@ void TCATSPhysics::AddCATS(TVector3 C_X1_Y1, TVector3 C_X28_Y1, TVector3 C_X1_Y2
 ///////////////////////////////////////////////////////////////
 void TCATSPhysics::Clear()
 {  
-  DetNumberX.clear()				; 
-  StripX.clear()				;
-  ChargeX.clear()                		;  
-  StripMaxX.clear()				;
-  DetNumberY.clear()				; 
-  StripY.clear()				;
-  ChargeY.clear()				; 
-  StripMaxY.clear() 				;
-  DetNumberX_Position.clear()                   ;
-  DetNumberY_Position.clear()                   ;
-  DetNumberZ_Position.clear()                   ;
-  PositionX.clear() 				;
-  PositionY.clear() 				;
-  PositionZ.clear() 				;
+  DetNumberX.clear(); 
+  StripX.clear();
+  ChargeX.clear();  
+  StripMaxX.clear();
+  DetNumberY.clear(); 
+  StripY.clear();
+  ChargeY.clear(); 
+  StripMaxY.clear();
+  DetNumberX_Position.clear();
+  DetNumberY_Position.clear();
+  DetNumberZ_Position.clear();
+  PositionX.clear();
+  PositionY.clear();
+  PositionZ.clear();
   QsumX.clear();
   QsumY.clear();
-  ReconstructionMethodX.clear()                 ;
-  ReconstructionMethodY.clear()                 ;
-
+  ReconstructionMethodX.clear();
+  ReconstructionMethodY.clear();
 
   ff = 0;
   HitX = 0;
@@ -556,11 +564,13 @@ void TCATSPhysics::InitializeStandardParameter()
 
   ChannelStatus.resize(28,true);
   InversionStatus.resize(28);
-  for(unsigned int j = 0 ; j < InversionStatus.size() ; j++){
+  for(unsigned int j = 0 ; j < InversionStatus.size() ; j++)
+  {
     InversionStatus[j] = j+1;
   }
 
-  for(int i = 0 ; i < m_NumberOfCATS ; ++i)      {
+  for(int i = 0 ; i < m_NumberOfCATS ; ++i)      
+  {
     m_XChannelStatus[i] = ChannelStatus;
     m_YChannelStatus[i] = ChannelStatus;
     m_CATSXInversion[i] = InversionStatus;
@@ -754,8 +764,6 @@ void TCATSPhysics::ReadAnalysisConfig()
     }
   }
 } 
-
-
 ///////////////////////////////////////////////////////////////////////////
 void TCATSPhysics::InitSpectra(){
   m_Spectra = new TCATSSpectra(m_NumberOfCATS);
@@ -808,12 +816,11 @@ double TCATSPhysics::AnalyseX(int ff)
   ReconstructionMethodX[ff] = ChooseReconstruction(ff,"X");
 
   if(ReconstructionMethodX[ff] == SECHS)CalculatedStripX = HyperbolicSequentMethodX();
-  else if(ReconstructionMethodX[ff] == GAUSS)CalculatedStripX = GaussianMethodX();
-  else if(ReconstructionMethodX[ff] == BAR3) CalculatedStripX = Barycentric3MethodX(); 
-  else if(ReconstructionMethodX[ff] == BAR4) CalculatedStripX = Barycentric4MethodX(); 
-  else if(ReconstructionMethodX[ff] == BAR5) CalculatedStripX = Barycentric5MethodX(); 
-  else CalculatedStripX = Barycentric3MethodX();
- 
+  if(ReconstructionMethodX[ff] == GAUSS)CalculatedStripX = GaussianMethodX();
+  if(ReconstructionMethodX[ff] == BAR3) CalculatedStripX = Barycentric3MethodX(); 
+  if(ReconstructionMethodX[ff] == BAR4) CalculatedStripX = Barycentric4MethodX(); 
+  if(ReconstructionMethodX[ff] == BAR5) CalculatedStripX = Barycentric5MethodX(); 
+
   return(CalculatedStripX);
 }
 
@@ -825,11 +832,11 @@ double TCATSPhysics::AnalyseY(int ff)
   ReconstructionMethodY[ff] = ChooseReconstruction(ff,"Y");
 
   if(ReconstructionMethodY[ff] == SECHS)CalculatedStripY = HyperbolicSequentMethodY();
-  else if(ReconstructionMethodY[ff] == GAUSS)CalculatedStripY = GaussianMethodY();
-  else if(ReconstructionMethodY[ff] == BAR3) CalculatedStripY = Barycentric3MethodY(); 
-  else if(ReconstructionMethodY[ff] == BAR4) CalculatedStripY = Barycentric4MethodY(); 
-  else if(ReconstructionMethodY[ff] == BAR5) CalculatedStripY = Barycentric5MethodY(); 
-  else CalculatedStripY = Barycentric3MethodY();
+  if(ReconstructionMethodY[ff] == GAUSS)CalculatedStripY = GaussianMethodY();
+  if(ReconstructionMethodY[ff] == BAR3) CalculatedStripY = Barycentric3MethodY(); 
+  if(ReconstructionMethodY[ff] == BAR4) CalculatedStripY = Barycentric4MethodY(); 
+  if(ReconstructionMethodY[ff] == BAR5) CalculatedStripY = Barycentric5MethodY(); 
+
 
   return(CalculatedStripY);
 }
