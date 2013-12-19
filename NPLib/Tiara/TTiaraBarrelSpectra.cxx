@@ -130,7 +130,7 @@ void TTiaraBarrelSpectra::InitPreTreatedSpectra(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelSpectra::InitPhysicsSpectra(){
-string BaseFamily = "/TIARA/BARREL/PHY/";
+string BaseFamily = "TIARA/BARREL/PHY/";
 string name ;
   //// E POS ////
   // Inner Barrel
@@ -264,7 +264,7 @@ TString BaseFamily = "TIARA/BARREL/CAL/";
 
 ////////////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelSpectra::FillPhysicsSpectra(TTiaraBarrelPhysics* Physics){
-string family = "/TIARA/BARREL/PHY/";
+string family = "TIARA/BARREL/PHY/";
 string name ;
   //// E POS ////
   // Inner Barrel
