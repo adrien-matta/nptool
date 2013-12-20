@@ -126,6 +126,12 @@ class TExogamPhysics : public TObject, public NPA::VDetector
 
   double DopplerCorrection(double Energy, double Theta);
 
+    // Give and external TMustData object to TMust2Physics. Needed for online analysis for example.
+    void SetRawDataPointer(TExogamData* rawDataPointer) {EventData = rawDataPointer;}
+    // Retrieve raw and pre-treated data
+    TExogamData* GetRawData()        const {return EventData;}
+    TExogamData* GetPreTreatedData() const {return PreTreatedData;}
+
   //	Those two method all to clear the Event Physics or Data
   void ClearEventPhysics()		{Clear();}		
   void ClearEventData()			{EventData->Clear();}	

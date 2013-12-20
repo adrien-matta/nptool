@@ -400,7 +400,7 @@ double TExogamPhysics::DopplerCorrection(double E, double Theta)
 
   double E_corr = 0;
   //double beta = 0.197;     // baptiste value
-  double beta = 0.23;
+  double beta = 0.17; //beta for 18O@15MeV/u
   double gamma = 1./ sqrt(1-beta*beta);
 
   E_corr = gamma * E * ( 1. - beta * cos(Theta*Pi/180.)); 
