@@ -250,11 +250,9 @@ void TCATSSpectra::FillPhysicsSpectra(TCATSPhysics* Physics){
     GetHisto(family,name) -> Fill(Physics->StripMaxX[i],Physics->QsumX[i]); 
     name   = Form("CATS%d_QSUM_STRMAX_Y_CAL", Physics->DetNumberX[i]);
     GetHisto(family,name) -> Fill(Physics->StripMaxY[i],Physics->QsumY[i]); 
-    
   }
   // An histo of size fEventLoopSize is reset every fEventLoopSize to monitor the
   // Keep Track of how many event elapsed
-  
   if(Physics->StripMaxX.size()==fNumberOfCats){
     fEventLoopIndex++;
     family = "CATS/PHY/CTRL";
@@ -276,28 +274,24 @@ void TCATSSpectra::FillPhysicsSpectra(TCATSPhysics* Physics){
   if(fEventLoopIndex > fEventLoopSize)
       fEventLoopIndex = 0 ;
 
- if(Physics->StripMaxX.size()==fNumberOfCats){
-    for (unsigned int i = 0; i < Physics->StripMaxX.size(); ++i) {
-      family = "CATS/PHY/POS";
-      name = Form("CATS%d_POS", i+1);
-      GetHisto(family,name) -> Fill(Physics->PositionX[i],Physics->PositionY[i]);
-    }
-
-    if(Physics->PositionOnTargetX > -1000 && Physics->PositionOnTargetY > -1000){
-      name = "TARGET_POS";
-      GetHisto(family,name)->Fill(Physics->PositionOnTargetX,Physics->PositionOnTargetY);
-    }
+  for (unsigned int i = 0; i < Physics->PositionX.size(); ++i) {
+    family = "CATS/PHY/POS";
+    name = Form("CATS%d_POS", Physics->DetMaxX[i]);
+    GetHisto(family,name) -> Fill(Physics->PositionX[i],Physics->PositionY[i]);
   }
 
-/*name = "TARGET_POS";
-  AddHisto2D(name, name,100,-50,50,100,-50,50,family); 
+  if(Physics->PositionOnTargetX > -1000 && Physics->PositionOnTargetY > -1000){
+    name = "TARGET_POS";
+    GetHisto(family,name)->Fill(Physics->PositionOnTargetX,Physics->PositionOnTargetY);
+  }
 
-  name = "TRAJECTORY_XZ";
-  AddHisto2D(name, name,100,-50,50,100,-50,50,family); 
+    /*
+    name = "TRAJECTORY_XZ";
+    AddHisto2D(name, name,100,-50,50,100,-50,50,family); 
 
-  name = "TRAJECTORY_YZ";
-  AddHisto2D(name, name,100,-50,50,100,-50,50,family); 
-*/
+    name = "TRAJECTORY_YZ";
+    AddHisto2D(name, name,100,-50,50,100,-50,50,family); 
+    */
 
 }
 

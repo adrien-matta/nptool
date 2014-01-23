@@ -47,7 +47,7 @@ TCharissaPhysics::TCharissaPhysics(){
 	m_EventPhysics      = this ;
 	m_Spectra           = NULL;
 	m_NumberOfTelescope = 0 ;
-	m_MaximumStripMultiplicityAllowed = 10;
+	m_MaximumStripMultiplicityAllowed = 100;
 	m_StripEnergyMatchingSigma = 0.020    ;
 	m_StripEnergyMatchingNumberOfSigma = 3;
 	// Raw Threshold
@@ -81,7 +81,9 @@ void TCharissaPhysics::BuildSimplePhysicalEvent(){
 void TCharissaPhysics::BuildPhysicalEvent(){
   PreTreat();
   bool check_CSI  = false ;
-  
+  double CsIE = -1000;
+  double CsIT = -1000;
+
 	m_Layer1_StripXEMult = m_PreTreatedData->GetCharissaLayer1StripXEMult();
 	m_Layer1_StripYEMult = m_PreTreatedData->GetCharissaLayer1StripYEMult();
 	m_Layer1_StripXTMult = m_PreTreatedData->GetCharissaLayer1StripXTMult();
@@ -99,8 +101,6 @@ void TCharissaPhysics::BuildPhysicalEvent(){
 	  EventMultiplicity = Layer1_couple.size();
     
 	  for(unsigned int i = 0 ; i < Layer1_couple.size() ; ++i){
-		  check_CSI = false ;
-      
 		  int Layer1_N = m_PreTreatedData->GetCharissaLayer1StripXEDetectorNbr(Layer1_couple[i].X()) ;
       
 		  int Layer1_X = m_PreTreatedData->GetCharissaLayer1StripXEStripNbr(Layer1_couple[i].X()) ;
@@ -112,22 +112,22 @@ void TCharissaPhysics::BuildPhysicalEvent(){
 		  //  Search for associate Time
 		  double Layer1_Si_X_T = -1000 ;
       
-		  for(unsigned int t = 0 ; t < m_Layer1_StripXTMult ; ++t )
-          {
+		  for(unsigned int t = 0 ; t < m_Layer1_StripXTMult ; ++t ){
 			  if(  m_PreTreatedData->GetCharissaLayer1StripXTStripNbr( Layer1_couple[i].X() ) == m_PreTreatedData->GetCharissaLayer1StripXTStripNbr(t)
 				 ||m_PreTreatedData->GetCharissaLayer1StripXTDetectorNbr( Layer1_couple[i].X() ) == m_PreTreatedData->GetCharissaLayer1StripXTDetectorNbr(t))
 				  Layer1_Si_X_T = m_PreTreatedData->GetCharissaLayer1StripXTTime(t);
-          }
+      }
       
 		  double Layer1_Si_Y_T = -1000 ;
       
-		  for(unsigned int t = 0 ; t < m_Layer1_StripYTMult ; ++t )
-          {
+		  for(unsigned int t = 0 ; t < m_Layer1_StripYTMult ; ++t ){
 			  if(  m_PreTreatedData->GetCharissaLayer1StripYTStripNbr( Layer1_couple[i].Y() ) == m_PreTreatedData->GetCharissaLayer1StripYTStripNbr(t)
 				 ||m_PreTreatedData->GetCharissaLayer1StripYTDetectorNbr( Layer1_couple[i].Y() ) == m_PreTreatedData->GetCharissaLayer1StripYTDetectorNbr(t))
 				  Layer1_Si_Y_T = m_PreTreatedData->GetCharissaLayer1StripYTTime(t);
-          }
-      
+       }
+     
+
+
 		  Layer1_Si_X.push_back(Layer1_X) ; Layer1_Si_Y.push_back(Layer1_Y) ; Layer1_TelescopeNumber.push_back(Layer1_N) ;
       
 		  if(m_Take_E_Y) Layer1_Si_E.push_back(Layer1_Si_Y_E);
@@ -140,20 +140,20 @@ void TCharissaPhysics::BuildPhysicalEvent(){
 		  Layer1_Si_EX.push_back(Layer1_Si_X_E);            
 		  Layer1_Si_TX.push_back(Layer1_Si_X_T);            
 		  Layer1_Si_EY.push_back(Layer1_Si_Y_E);            
-		  Layer1_Si_TY.push_back(Layer1_Si_Y_T);  
-	  }
+		  Layer1_Si_TY.push_back(Layer1_Si_Y_T); 
+    }
   }
 
 		
 	// Layer 2
 	if( Layer2_CheckEvent() == 1 ){
+    check_CSI = false;
 		vector< TVector2 > Layer2_couple = Layer2_Match_X_Y() ;
 		EventMultiplicity = Layer2_couple.size();
 		
-		for(unsigned int i = 0 ; i < Layer2_couple.size() ; ++i){
-				
+		for(unsigned int i = 0 ; i < Layer2_couple.size() ; ++i){	
 			check_CSI = false ;
-				
+	
 			int Layer2_N = m_PreTreatedData->GetCharissaLayer2StripXEDetectorNbr(Layer2_couple[i].X()) ;
 			int Layer2_X = m_PreTreatedData->GetCharissaLayer2StripXEStripNbr(Layer2_couple[i].X()) ;
 			int Layer2_Y = m_PreTreatedData->GetCharissaLayer2StripYEStripNbr(Layer2_couple[i].Y()) ;
@@ -164,8 +164,7 @@ void TCharissaPhysics::BuildPhysicalEvent(){
 				//  Search for associate Time
 			double Layer2_Si_X_T = -1000 ;
 				
-			for(unsigned int t = 0 ; t < m_Layer2_StripXTMult ; ++t )
-			{
+			for(unsigned int t = 0 ; t < m_Layer2_StripXTMult ; ++t ){
 				if(  m_PreTreatedData->GetCharissaLayer2StripXTStripNbr( Layer2_couple[i].X() ) == m_PreTreatedData->GetCharissaLayer2StripXTStripNbr(t)
 					||m_PreTreatedData->GetCharissaLayer2StripXTDetectorNbr( Layer2_couple[i].X() ) == m_PreTreatedData->GetCharissaLayer2StripXTDetectorNbr(t))
 					Layer2_Si_X_T = m_PreTreatedData->GetCharissaLayer2StripXTTime(t);
@@ -173,8 +172,7 @@ void TCharissaPhysics::BuildPhysicalEvent(){
 				
 			double Layer2_Si_Y_T = -1000 ;
 				
-			for(unsigned int t = 0 ; t < m_Layer2_StripYTMult ; ++t )
-			{
+			for(unsigned int t = 0 ; t < m_Layer2_StripYTMult ; ++t ){
 				if(  m_PreTreatedData->GetCharissaLayer2StripYTStripNbr( Layer2_couple[i].Y() ) == m_PreTreatedData->GetCharissaLayer2StripYTStripNbr(t)
 					||m_PreTreatedData->GetCharissaLayer2StripYTDetectorNbr( Layer2_couple[i].Y() ) == m_PreTreatedData->GetCharissaLayer2StripYTDetectorNbr(t))
 					Layer2_Si_Y_T = m_PreTreatedData->GetCharissaLayer2StripYTTime(t);
@@ -193,30 +191,31 @@ void TCharissaPhysics::BuildPhysicalEvent(){
 			Layer2_Si_TX.push_back(Layer2_Si_X_T);            
 			Layer2_Si_EY.push_back(Layer2_Si_Y_E);            
 			Layer2_Si_TY.push_back(Layer2_Si_Y_T); 
-		
-			for(unsigned int j = 0 ; j < m_CsIEMult ; ++j){
-				if(m_PreTreatedData->GetCharissaCsIEDetectorNbr(j)==Layer2_N){
-					if(Match_Si_CsI( Layer2_X, Layer2_Y , m_PreTreatedData->GetCharissaCsIECristalNbr(j) ) ){
-						CsI_N.push_back( m_PreTreatedData->GetCharissaCsIECristalNbr(j) ) ;
-						CsI_E.push_back( m_PreTreatedData->GetCharissaCsIEEnergy(j) ) ;
-		
-						//   Look for associate Time
-						for(unsigned int k =0 ; k  < m_CsITMult ; ++k){
-							// Same Cristal; Same Detector
-							if(   m_PreTreatedData->GetCharissaCsIECristalNbr(j)==m_PreTreatedData->GetCharissaCsITCristalNbr(k)
-							   && m_PreTreatedData->GetCharissaCsIEDetectorNbr(j)==m_PreTreatedData->GetCharissaCsITDetectorNbr(k) )
-								CsI_T.push_back( m_PreTreatedData->GetCharissaCsITTime(j) ) ; break ;
-						}
-						check_CSI = true ;
-					}
-				}
-			}
+
+
+    CsIE = -1000;
+    // Look for an associate CsI E
+    for(unsigned int t = 0 ; t < m_CsIEMult ; ++t ){
+		  if(!check_CSI &&  m_PreTreatedData->GetCharissaLayer2StripXEDetectorNbr( Layer2_couple[i].X() ) == m_PreTreatedData->GetCharissaCsIEDetectorNbr(t)){
+				  CsIE = m_PreTreatedData->GetCharissaCsIEEnergy(t);
+          check_CSI = true;
+      }
+    }
       
-			if(!check_CSI){
-				CsI_N.push_back(0)       ;
-				CsI_E.push_back(-1000)   ;
-				CsI_T.push_back(-1000)   ;
-			}
+
+    CsIT = -1000;
+    // Look for an associate CsI T
+    if(check_CSI ){
+      for(unsigned int t = 0 ; t < m_CsIEMult ; ++t ){
+			  if(!check_CSI &&  m_PreTreatedData->GetCharissaLayer2StripXEDetectorNbr( Layer2_couple[i].X() ) == m_PreTreatedData->GetCharissaCsITDetectorNbr(t))
+				  CsIT = m_PreTreatedData->GetCharissaCsITTime(t);
+      }
+    }
+    
+
+      CsI_E.push_back(CsIE);
+      CsI_N.push_back(Layer2_N);
+      CsI_T.push_back(CsIT); 
 		}
 	}
 

@@ -562,7 +562,7 @@ TVector3 TTiaraBarrelPhysics::GetPositionOfInteraction(const int i) const{
   double X = Strip_N[i]*StripPitch-0.5*INNERBARREL_ActiveWafer_Width;
   double Y = INNERBARREL_PCB_Width*(0.5+sin(45*deg))  ; 
   double Z = (Strip_Pos[i]-0.5)*INNERBARREL_ActiveWafer_Length ;
-  TVector3 POS(X,Y,Z);
+  TVector3 POS(X,Y,-Z);
   POS.RotateZ((DetectorNumber[i]-1)*45*deg);
   return( POS ) ;
 

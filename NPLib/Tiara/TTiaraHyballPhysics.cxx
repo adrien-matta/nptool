@@ -188,10 +188,10 @@ void TTiaraHyballPhysics::PreTreat(){
 ///////////////////////////////////////////////////////////////////////////
 int TTiaraHyballPhysics :: CheckEvent(){
   // Check the size of the different elements
-  if(m_PreTreatedData->GetSectorEMult() == m_PreTreatedData->GetRingEMult() )
+//  if(m_PreTreatedData->GetSectorEMult() == m_PreTreatedData->GetRingEMult() )
     return 1 ; // Regular Event
 
-  else
+ // else
     return -1 ; // Rejected Event
 
 }
