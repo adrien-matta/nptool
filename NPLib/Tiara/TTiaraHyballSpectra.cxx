@@ -179,7 +179,7 @@ void TTiaraHyballSpectra::FillRawSpectra(TTiaraHyballData* RawData){
   for (unsigned int i = 0; i < RawData->GetSectorEMult(); i++) {
     unsigned short channel = (RawData->GetSectorEDetectorNbr(i)-1) * fSectorsNumber + RawData->GetSectorEStripNbr(i);
     GetHisto(family, name) -> Fill(channel, RawData->GetSectorEEnergy(i));
-  }
+}
 
   // RING_RAW_MULT
   int myMULT[fWedgesNumber];
@@ -287,6 +287,7 @@ void TTiaraHyballSpectra::FillPhysicsSpectra(TTiaraHyballPhysics* Physics){
   name = Form("MM%d_XY_COR", Physics->TelescopeNumber[i]);
   GetHisto(family,name)-> Fill(Physics->Si_EX[i],Physics->Si_EY[i]);
   }*/
+
 }
 
 
@@ -330,11 +331,19 @@ TH1* TTiaraHyballSpectra::GetHisto(TString family, TString name){
   vector<TString> index;
   index.push_back(family);
   index.push_back(name);
-  return fMapHisto.at(index);
+  TH1* histo ; 
+  
+  try{
+    histo = fMapHisto.at(index); 
+  }
+
+  catch(const std::out_of_range& oor){
+  cout << "ERROR : the folowing Histo has been requested by THyballSpectra and does not exist: family:" << family << " name: "  << name << endl ;
+  exit(1);
+  }
+
+  return histo;
 }
-
-
-
 ////////////////////////////////////////////////////////////////////////////////
 void TTiaraHyballSpectra::WriteHisto(TString filename){
   TFile* f = NULL; 

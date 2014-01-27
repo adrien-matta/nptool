@@ -641,12 +641,21 @@ TH1* TMust2Spectra::AddHisto2D(TString name, TString title, Int_t nbinsx, Double
 
 ////////////////////////////////////////////////////////////////////////////////
 TH1* TMust2Spectra::GetHisto(TString family, TString name){
-  vector<TString> index ;
+  vector<TString> index;
   index.push_back(family);
   index.push_back(name);
+  TH1* histo ; 
+  
+  try{
+    histo = fMapHisto.at(index); 
+  }
 
-  // fill map
-  return fMapHisto.at(index);
+  catch(const std::out_of_range& oor){
+  cout << "ERROR : the folowing Histo has been requested by TMust2Spectra and does not exist: family:" << family << " name: "  << name << endl ;
+  exit(1);
+  }
+
+  return histo;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -330,8 +330,18 @@ TH1* TCATSSpectra::GetHisto(TString family, TString name){
   vector<TString> index;
   index.push_back(family);
   index.push_back(name);
+  TH1* histo ; 
+  
+  try{
+    histo = fMapHisto.at(index); 
+  }
 
-  return fMapHisto.at(index);
+  catch(const std::out_of_range& oor){
+  cout << "ERROR : the folowing Histo has been requested by TCATSSpectra and does not exist: family:" << family << " name: "  << name << endl ;
+  exit(1);
+  }
+
+  return histo;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
