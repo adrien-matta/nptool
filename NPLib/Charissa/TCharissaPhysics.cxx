@@ -150,31 +150,31 @@ void TCharissaPhysics::BuildPhysicalEvent(){
       double tLayer2_Si_E= -1000;
       double tLayer2_Si_T = -1000;
 
-      for(unsigned int i = 0 ; i < Layer2_couple.size() ; ++i){	
-        int Layer2_N = m_PreTreatedData->GetCharissaLayer2StripXEDetectorNbr(Layer2_couple[i].X()) ;
+      for(unsigned int ll = 0 ; ll < Layer2_couple.size() ; ++ll){	
+        int Layer2_N = m_PreTreatedData->GetCharissaLayer2StripXEDetectorNbr(Layer2_couple[ll].X()) ;
         // Same detector
         // This requierement should maybe stronger (same strip number?)
         if(Layer2_N==Layer1_N){
-          tLayer2_X = m_PreTreatedData->GetCharissaLayer2StripXEStripNbr(Layer2_couple[i].X()) ;
-          tLayer2_Y = m_PreTreatedData->GetCharissaLayer2StripYEStripNbr(Layer2_couple[i].Y()) ;
+          tLayer2_X = m_PreTreatedData->GetCharissaLayer2StripXEStripNbr(Layer2_couple[ll].X()) ;
+          tLayer2_Y = m_PreTreatedData->GetCharissaLayer2StripYEStripNbr(Layer2_couple[ll].Y()) ;
 
-          tLayer2_Si_X_E = m_PreTreatedData->GetCharissaLayer2StripXEEnergy( Layer2_couple[i].X() ) ;
-          tLayer2_Si_Y_E = m_PreTreatedData->GetCharissaLayer2StripYEEnergy( Layer2_couple[i].Y() ) ;
+          tLayer2_Si_X_E = m_PreTreatedData->GetCharissaLayer2StripXEEnergy( Layer2_couple[ll].X() ) ;
+          tLayer2_Si_Y_E = m_PreTreatedData->GetCharissaLayer2StripYEEnergy( Layer2_couple[ll].Y() ) ;
 
           //  Search for associate Time
           tLayer2_Si_X_T = -1000 ;
 
           for(unsigned int t = 0 ; t < m_Layer2_StripXTMult ; ++t ){
-            if(  m_PreTreatedData->GetCharissaLayer2StripXTStripNbr( Layer2_couple[i].X() ) == m_PreTreatedData->GetCharissaLayer2StripXTStripNbr(t)
-                ||m_PreTreatedData->GetCharissaLayer2StripXTDetectorNbr( Layer2_couple[i].X() ) == m_PreTreatedData->GetCharissaLayer2StripXTDetectorNbr(t))
+            if(  m_PreTreatedData->GetCharissaLayer2StripXTStripNbr( Layer2_couple[ll].X() ) == m_PreTreatedData->GetCharissaLayer2StripXTStripNbr(t)
+                ||m_PreTreatedData->GetCharissaLayer2StripXTDetectorNbr( Layer2_couple[ll].X() ) == m_PreTreatedData->GetCharissaLayer2StripXTDetectorNbr(t))
               tLayer2_Si_X_T = m_PreTreatedData->GetCharissaLayer2StripXTTime(t);
           }
 
           tLayer2_Si_Y_T = -1000 ;
 
           for(unsigned int t = 0 ; t < m_Layer2_StripYTMult ; ++t ){
-            if(  m_PreTreatedData->GetCharissaLayer2StripYTStripNbr( Layer2_couple[i].Y() ) == m_PreTreatedData->GetCharissaLayer2StripYTStripNbr(t)
-                ||m_PreTreatedData->GetCharissaLayer2StripYTDetectorNbr( Layer2_couple[i].Y() ) == m_PreTreatedData->GetCharissaLayer2StripYTDetectorNbr(t))
+            if(  m_PreTreatedData->GetCharissaLayer2StripYTStripNbr( Layer2_couple[ll].Y() ) == m_PreTreatedData->GetCharissaLayer2StripYTStripNbr(t)
+                ||m_PreTreatedData->GetCharissaLayer2StripYTDetectorNbr( Layer2_couple[ll].Y() ) == m_PreTreatedData->GetCharissaLayer2StripYTDetectorNbr(t))
               tLayer2_Si_Y_T = m_PreTreatedData->GetCharissaLayer2StripYTTime(t);
           }
         }

@@ -138,24 +138,24 @@ void TCharissaSpectra::InitPreTreatedSpectra()
    for (unsigned int i = 0; i < fNumberOfTelescope; i++) { // loop on number of detectors
       // DE_STRX_E_CAL
       name = Form("CHA%d_DE_STRX_E_CAL", i+1);
-      AddHisto2D(name, name, fStripX, 1, fStripX+1, 1000, 0, 16000, "CHARISSA/CAL/STRXE");
+      AddHisto2D(name, name, fStripX, 1, fStripX+1, 1000, 0, 500, "CHARISSA/CAL/STRXE");
 
       // DE_STRY_E_CAL
       name = Form("CHA%d_DE_STRY_E_CAL", i+1);
-      AddHisto2D(name, name, fStripY, 1, fStripY+1, 1000, 0, 16000, "CHARISSA/CAL/STRYE");
+      AddHisto2D(name, name, fStripY, 1, fStripY+1, 1000, 0, 500, "CHARISSA/CAL/STRYE");
 
       // E_STRX_E_CAL
       name = Form("CHA%d_E_STRX_E_CAL", i+1);
-      AddHisto2D(name, name, fStripX, 1, fStripX+1, 1000, 0, 16000, "CHARISSA/CAL/STRXE");
+      AddHisto2D(name, name, fStripX, 1, fStripX+1, 1000, 0, 500, "CHARISSA/CAL/STRXE");
 
       // E_STRY_E_CAL
       name = Form("CHA%d_E_STRY_E_CAL", i+1);
-      AddHisto2D(name, name, fStripY, 1, fStripY+1, 1000, 0, 16000, "CHARISSA/CAL/STRYE");
+      AddHisto2D(name, name, fStripY, 1, fStripY+1, 1000, 0, 500, "CHARISSA/CAL/STRYE");
 
 
       // CSI_E_CAL
       name = Form("CHA%d_CSI_E_CAL", i+1);
-      AddHisto2D(name, name, fCrystalCsI, 1, fCrystalCsI+1, 500, 0, 50, "CHARISSA/CAL/CSIE");
+      AddHisto2D(name, name, fCrystalCsI, 1, fCrystalCsI+1, 500, 0, 16000, "CHARISSA/CAL/CSIE");
 
       // STRX_DE_CAL_MULT
       name = Form("CHA%d_DE_STRX_CAL_MULT", i+1);
@@ -209,8 +209,6 @@ void TCharissaSpectra::InitPhysicsSpectra()
       name = Form("CHA%d_E_XY_COR", i+1);
       AddHisto2D(name, name, 500, 0, 500, 500, 0, 500, "CHARISSA/PHY"); 
    }
-
-  
 
    // ID plot detector by detector
    for (unsigned int i = 0; i < fNumberOfTelescope; i++) { // loop on number of detectors
@@ -487,14 +485,14 @@ void TCharissaSpectra::FillPhysicsSpectra(TCharissaPhysics* Physics)
     // DE-E:
     if(Physics->Layer1_Si_E[i]>0 && Physics->Layer2_Si_E[i]> 0 ){
       name = "CHA_DE_E";
-      GetHisto(family,name)->Fill(Physics->Layer1_Si_E[i],Physics->Layer2_Si_E[i]);
+      GetHisto(family,name)->Fill(Physics->Layer2_Si_E[i],Physics->Layer1_Si_E[i]);
     }
   
     name = "CHA_DE_CSIE";
-    GetHisto(family,name)->Fill(Physics->Layer1_Si_E[i],Physics->CsI_E[i]);
+    GetHisto(family,name)->Fill(Physics->CsI_E[i],Physics->Layer1_Si_E[i]);
 
     name = "CHA_E_CSIE";
-    GetHisto(family,name)->Fill(Physics->Layer2_Si_E[i],Physics->CsI_E[i]);
+    GetHisto(family,name)->Fill(Physics->CsI_E[i],Physics->Layer2_Si_E[i]);
     
     // X-Y Corr
     name = Form("CHA%d_DE_XY_COR", Physics->TelescopeNumber[i]);
