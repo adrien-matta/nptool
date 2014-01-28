@@ -482,19 +482,19 @@ void TCharissaSpectra::FillPhysicsSpectra(TCharissaPhysics* Physics)
     // DE-TOF:
     if(Physics->Layer1_Si_E[i]>0 && Physics->Layer2_Si_E[i]< 0 ){
       name = "CHA_DE_TOF";
-      GetHisto(family,name)->Fill(Physics->Layer1_Si_T[i],Physics->Layer1_Si_E[i]);
+      GetHisto(family,name)->Fill(Physics->Layer1_Si_E[i],Physics->Layer1_Si_T[i]);
     }
     // DE-E:
     if(Physics->Layer1_Si_E[i]>0 && Physics->Layer2_Si_E[i]> 0 ){
       name = "CHA_DE_E";
-      GetHisto(family,name)->Fill(Physics->Layer2_Si_E[i],Physics->Layer1_Si_E[i]);
+      GetHisto(family,name)->Fill(Physics->Layer1_Si_E[i],Physics->Layer2_Si_E[i]);
     }
   
     name = "CHA_DE_CSIE";
-    GetHisto(family,name)->Fill(Physics->CsI_E[i],Physics->Layer1_Si_E[i]);
+    GetHisto(family,name)->Fill(Physics->Layer1_Si_E[i],Physics->CsI_E[i]);
 
     name = "CHA_E_CSIE";
-    GetHisto(family,name)->Fill(Physics->CsI_E[i],Physics->Layer2_Si_E[i]);
+    GetHisto(family,name)->Fill(Physics->Layer2_Si_E[i],Physics->CsI_E[i]);
     
     // X-Y Corr
     name = Form("CHA%d_DE_XY_COR", Physics->TelescopeNumber[i]);
