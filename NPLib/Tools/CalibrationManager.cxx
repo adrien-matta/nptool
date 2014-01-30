@@ -178,8 +178,8 @@ void CalibrationManager::LoadParameterFromFile()
                     if( it!=fToken.end() )
                       { 
                           vector<double> Coeff ;
-                          while( !theLine.eof() ){
-                                theLine >> DataBuffer ; Coeff.push_back( atof(DataBuffer.c_str()) ) ;
+                          while( theLine >> DataBuffer ){
+                            Coeff.push_back( atof(DataBuffer.c_str()) ) ;
                           }
                          
                           //   Check this parameter is not already define
