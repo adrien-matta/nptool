@@ -25,7 +25,7 @@ ifeq ($(findstring macosx, $(ARCH)), macosx)
 endif
 
 ############### liblist ##############
-liblistfile: $(SHARELIB) $(FILLINC)
+liblistfile: $(SHARELIB) $(FILLIB)
 		./scripts/buildliblist.sh
 
 ############### sharedlib ##############
