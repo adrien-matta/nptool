@@ -3,38 +3,50 @@ include $(NPTOOL)/NPLib/Makefile.arch
 
 #include /usr/local/root-5.32.01/etc/Makefile.arch
 #------------------------------------------------------------------------------
-SHARELIB	= SharedLib
+SHARELIB	= $(shell cat .core_libs)
+SHARELIB += $(shell cat .detector_libs)
 FILLINC		= FillIncludeDir
 FILLLIB		= FillLibraryDir
 LIBLIST		= liblistfile
 
-all:	$(SHARELIB) $(FILLLIB) $(LIBLIST)
+#Silence the process
+all: .SILENT
+.SILENT: $(SHARELIB) $(FILLLIB) $(LIBLIST)
+
 #------------------------------------------------------------------------------
 ############### fillinclib ##############
 FillIncludeDir:
 		./scripts/fillincdir.sh
 
-FillLibraryDir:
+FillLibraryDir: $(SHARELIB) $(FILLINC)
 		./scripts/filllibdir.sh
-#ifeq ($(ARCH),macosx)
 ifeq ($(findstring macosx, $(ARCH)), macosx)
 		./scripts/filllibmacdir.sh
 endif
 
 ############### liblist ##############
-liblistfile:
+liblistfile: $(SHARELIB) $(FILLINC)
 		./scripts/buildliblist.sh
 
 ############### sharedlib ##############
 SharedLib:
-		./scripts/makefile.sh
+	./scripts/makefile.sh core	
+	./scripts/makefile.sh detector
+
+########### actual target ##############
+# include makefile created by the configure script
+# where the wanted detector are defined
+include $(NPTOOL)/NPLib/Makefile.detector
+
 
 ############# Clean and More ##########
-clean:
-	$(NPTOOL)/NPLib/scripts/makefile.sh clean detector
-	
+clean: cleandetector cleancore
+
 cleancore:
 	$(NPTOOL)/NPLib/scripts/makefile.sh clean core
+
+cleandetector:
+	$(NPTOOL)/NPLib/scripts/makefile.sh clean detector
 	
 distclean:
 	@echo " + Deleting libraries in lib directory....."
@@ -46,16 +58,3 @@ distclean:
 	rm -f ./scripts/NPToolLogon_C*
 	./scripts/makefile.sh distclean detector
 	./scripts/makefile.sh distclean core
-
-# include makefile created by the configure script
-# where the wanted detector are defined
-include $(NPTOOL)/NPLib/Makefile.detector
-
-.SUFFIXES: .$(SrcSuf)
-
-###
-
-.$(SrcSuf).$(ObjSuf):
-	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $<
-
-
