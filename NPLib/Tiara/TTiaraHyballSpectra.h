@@ -27,7 +27,6 @@
 #include "TObject.h"
 #include <TH1.h>
 #include <TH2.h>
-#include <TString.h>
 
 // NPLib headers
 #include "TTiaraHyballData.h"
@@ -50,9 +49,9 @@ class TTiaraHyballSpectra {
 
   private:
     // Instantiate and register histo to maps
-    TH1* AddHisto1D(TString name, TString title, Int_t nbinsx, Double_t xlow, Double_t xup, TString family);
-    TH1* AddHisto2D(TString name, TString title, Int_t nbinsx, Double_t xlow, Double_t xup, 
-                                                 Int_t nbinsy, Double_t ylow, Double_t yup, TString family);
+    TH1* AddHisto1D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, string family);
+    TH1* AddHisto2D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, 
+                                                 Int_t nbinsy, Double_t ylow, Double_t yup, string family);
 
     // Initialization methods
     void InitRawSpectra();
@@ -67,9 +66,9 @@ class TTiaraHyballSpectra {
 
   public:
     // get map histo which will be used for GSpectra in GUser
-    map< vector<TString>, TH1* > GetMapHisto() const {return fMapHisto;}
-    TH1* GetHisto(TString family, TString name);    
-    void WriteHisto(TString filename = "VOID");      
+    map< vector<string>, TH1* > GetMapHisto() const {return fMapHisto;}
+    TH1* GetHisto(string& family, string& name);    
+    void WriteHisto(string filename = "VOID");      
 
   private: // Information on MUST2
     unsigned int fRingsNumber;
@@ -78,7 +77,7 @@ class TTiaraHyballSpectra {
 
   private:
     // map holding histo pointers and their family names
-    map< vector<TString>, TH1* > fMapHisto;
+    map< vector<string>, TH1* > fMapHisto;
 };
 
 #endif

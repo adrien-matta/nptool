@@ -164,7 +164,7 @@ class TExogamPhysics : public TObject, public NPA::VDetector
     TExogamSpectra*      m_Spectra;//! 
 
   public: // Spectra Getter
-    map< vector<TString> , TH1*> GetSpectra(); 		
+    map< vector<string> , TH1*> GetSpectra(); 		
 
   ClassDef(TExogamPhysics,1)  // ExogamPhysics structure
     };

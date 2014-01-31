@@ -25,7 +25,6 @@
 
 // ROOT
 #include "TH1.h"
-#include "TString.h"
 
 //   STL
 #include <string>
@@ -53,7 +52,7 @@ namespace NPA{
       void        ClearEventPhysics();
       void        ClearEventData();
       void        InitSpectra();
-      vector< map< vector<TString>, TH1* > > GetSpectra();  
+      vector< map< vector<string>, TH1* > > GetSpectra();  
 
     private:   
       // The map containning all detectors

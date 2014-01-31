@@ -21,6 +21,11 @@
  *                                                                           *
  *****************************************************************************/
 
+// STL
+#include <iostream>
+#include <cstdlib>
+#include <stdexcept>
+
 // NPL
 #include "TTiaraBarrelSpectra.h"
 #include "NPOptionManager.h"
@@ -32,7 +37,7 @@ using namespace NPUNITS;
 
 
 // ROOT
-#include "TString.h"
+#include "string.h"
 #include "TDirectory.h"
 #include "TFile.h"
 
@@ -67,8 +72,8 @@ TTiaraBarrelSpectra::~TTiaraBarrelSpectra(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelSpectra::InitRawSpectra(){
-  TString name;
-  TString BaseFamily = "TIARA/BARREL/RAW/";
+  string name;
+  string BaseFamily = "TIARA/BARREL/RAW/";
 
   //// HIT ////
   // Inner Barrel
@@ -108,7 +113,7 @@ void TTiaraBarrelSpectra::InitRawSpectra(){
   // Inner Barrel
   for(unsigned int i  = 0 ; i < fNumberOfDetector ; i++){
     for(unsigned int j = 0 ; j < fInnerBarrelStrip;j++){
-      name = Form("IB%d_VS%d_RAW",i+1,j+1);
+      name = "IB"+TiaraBarrel_LOCAL::itoa(i+1)+"_VS"+TiaraBarrel_LOCAL::itoa(j+1)+"_RAW";
       AddHisto2D(name, name,1024,0,16384,1024,0,16384,BaseFamily+"VS");
     }
   }
@@ -116,13 +121,13 @@ void TTiaraBarrelSpectra::InitRawSpectra(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelSpectra::InitPreTreatedSpectra(){
-  TString BaseFamily = "TIARA/BARREL/CAL/";
-  TString name ;
+  string BaseFamily = "TIARA/BARREL/CAL/";
+  string name ;
   //// VS ////
   // Inner Barrel
   for(unsigned int i  = 0 ; i < fNumberOfDetector ; i++){
     for(unsigned int j = 0 ; j < fInnerBarrelStrip;j++){
-      name = Form("IB%d_VS%d_CAL",i+1,j+1);
+      name = "IB"+TiaraBarrel_LOCAL::itoa(i+1)+"_VS"+TiaraBarrel_LOCAL::itoa(j+1)+"_CAL";
       AddHisto2D(name,name,2048,-1,30,2048,-1,30,BaseFamily+"VS");
     }
   }
@@ -136,7 +141,7 @@ string name ;
   // Inner Barrel
   for(unsigned int i  = 0 ; i < fNumberOfDetector ; i++){
     for(unsigned int j = 0 ; j < fInnerBarrelStrip;j++){
-      name = Form("IB%d_EPOS%d_CAL",i+1,j+1);
+      name = "IB"+TiaraBarrel_LOCAL::itoa(i+1)+"_EPOS"+TiaraBarrel_LOCAL::itoa(j+1)+"_CAL";
       AddHisto2D(name, name,1000,-0.5,1.5,1000,0,30,BaseFamily);
     }
   }
@@ -144,7 +149,7 @@ string name ;
   // Inner Barrel
   for(unsigned int i  = 0 ; i < fNumberOfDetector ; i++){
     for(unsigned int j = 0 ; j < fInnerBarrelStrip;j++){
-      name = Form("IB%d_ETHETA%d_CAL",i+1,j+1);
+      name = "IB"+TiaraBarrel_LOCAL::itoa(i+1)+"_ETHETA"+TiaraBarrel_LOCAL::itoa(j+1)+"_CAL";
       AddHisto2D(name, name,360,0,180,1000,0,30,BaseFamily);
     }
   }
@@ -157,9 +162,9 @@ string name ;
 
 ////////////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelSpectra::FillRawSpectra(TTiaraBarrelData* RawData){
-  TString name;
-  TString family;
-  TString BaseFamily = "TIARA/BARREL/RAW/";
+  string name;
+  string family;
+  string BaseFamily = "TIARA/BARREL/RAW/";
 
   // INNER_BARREL_US_HIT_RAW
   for (unsigned int i = 0; i < RawData->GetFrontUpstreamEMult(); i++) {
@@ -232,7 +237,7 @@ void TTiaraBarrelSpectra::FillRawSpectra(TTiaraBarrelData* RawData){
       int DoStreamDetNbr = RawData->GetFrontDownstreamEDetectorNbr(j);
       int DoStreamStrNbr = RawData->GetFrontDownstreamEStripNbr(j);
      if(UpStreamDetNbr==DoStreamDetNbr && UpStreamStrNbr==DoStreamStrNbr){
-       name = Form("IB%d_VS%d_RAW",UpStreamDetNbr,UpStreamStrNbr); 
+       name = "IB"+TiaraBarrel_LOCAL::itoa(UpStreamDetNbr)+"_VS"+TiaraBarrel_LOCAL::itoa(UpStreamStrNbr)+"_RAW"; 
        GetHisto(family,name)
         ->Fill(RawData->GetFrontUpstreamEEnergy(i),RawData->GetFrontDownstreamEEnergy(j));
       } 
@@ -242,10 +247,10 @@ void TTiaraBarrelSpectra::FillRawSpectra(TTiaraBarrelData* RawData){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelSpectra::FillPreTreatedSpectra(TTiaraBarrelData* PreTreatedData){
-TString BaseFamily = "TIARA/BARREL/CAL/";
+string BaseFamily = "TIARA/BARREL/CAL/";
 // INNER_BARREL_VS_CAL                 
-  TString family = BaseFamily+"VS";
-  TString name ;
+  string family = BaseFamily+"VS";
+  string name ;
   for (unsigned int i = 0; i < PreTreatedData->GetFrontUpstreamEMult(); i++) {
     int UpStreamDetNbr = PreTreatedData->GetFrontUpstreamEDetectorNbr(i);
     int UpStreamStrNbr = PreTreatedData->GetFrontUpstreamEStripNbr(i);
@@ -254,7 +259,7 @@ TString BaseFamily = "TIARA/BARREL/CAL/";
       int DoStreamDetNbr = PreTreatedData->GetFrontDownstreamEDetectorNbr(j);
       int DoStreamStrNbr = PreTreatedData->GetFrontDownstreamEStripNbr(j);
      if(UpStreamDetNbr==DoStreamDetNbr && UpStreamStrNbr==DoStreamStrNbr){
-       name = Form("IB%d_VS%d_CAL",UpStreamDetNbr,UpStreamStrNbr); 
+       name = "IB"+TiaraBarrel_LOCAL::itoa(UpStreamDetNbr)+"_VS"+TiaraBarrel_LOCAL::itoa(UpStreamStrNbr)+"_CAL"; 
        GetHisto(family,name)
         ->Fill(PreTreatedData->GetFrontUpstreamEEnergy(i),PreTreatedData->GetFrontDownstreamEEnergy(j));
       } 
@@ -270,11 +275,11 @@ string name ;
   // Inner Barrel
   unsigned int size = Physics->Strip_E.size();
   for(unsigned int i  = 0 ; i < Physics->Strip_E.size() ; i++){
-      name = Form("IB%d_EPOS%d_CAL",Physics->DetectorNumber[i],Physics->Strip_N[i]);
+      name ="IB"+TiaraBarrel_LOCAL::itoa(Physics->DetectorNumber[i])+"_EPOS"+TiaraBarrel_LOCAL::itoa(Physics->Strip_N[i])+"_CAL";
       GetHisto(family,name)
         ->Fill(Physics->Strip_Pos[i],Physics->Strip_E[i]);
     
-       name = Form("IB%d_ETHETA%d_CAL",Physics->DetectorNumber[i],Physics->Strip_N[i]);
+       name = "IB"+TiaraBarrel_LOCAL::itoa(Physics->DetectorNumber[i])+"_ETHETA"+TiaraBarrel_LOCAL::itoa(Physics->Strip_N[i])+"_CAL";
        double Theta = Physics->GetPositionOfInteraction(i).Angle(TVector3(0,0,1));
 
        GetHisto(family,name)
@@ -287,11 +292,11 @@ string name ;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TH1* TTiaraBarrelSpectra::AddHisto1D(TString name, TString title, Int_t nbinsx, Double_t xlow, Double_t xup, TString family){
+TH1* TTiaraBarrelSpectra::AddHisto1D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, string family){
   // create histo
-  TH1 *hist = new TH1D(name, title, nbinsx, xlow, xup);
+  TH1 *hist = new TH1D(name.c_str(), title.c_str(), nbinsx, xlow, xup);
 
-  vector<TString> index ;
+  vector<string> index ;
   index.push_back(family);
   index.push_back(name);
 
@@ -302,11 +307,11 @@ TH1* TTiaraBarrelSpectra::AddHisto1D(TString name, TString title, Int_t nbinsx, 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TH1* TTiaraBarrelSpectra::AddHisto2D(TString name, TString title, Int_t nbinsx, Double_t xlow, Double_t xup, Int_t nbinsy, Double_t ylow, Double_t yup, TString family){
+TH1* TTiaraBarrelSpectra::AddHisto2D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, Int_t nbinsy, Double_t ylow, Double_t yup, string family){
   // create histo
-  TH1 *hist = new TH2D(name, title, nbinsx, xlow, xup, nbinsy, ylow, yup);
+  TH1 *hist = new TH2D(name.c_str(), title.c_str(), nbinsx, xlow, xup, nbinsy, ylow, yup);
 
-  vector<TString> index ;
+  vector<string> index ;
   index.push_back(family);
   index.push_back(name);
 
@@ -317,8 +322,9 @@ TH1* TTiaraBarrelSpectra::AddHisto2D(TString name, TString title, Int_t nbinsx, 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TH1* TTiaraBarrelSpectra::GetHisto(TString family, TString name){
-  vector<TString> index;
+TH1* TTiaraBarrelSpectra::GetHisto(string& family, string& name){
+  vector<string> index;
+  index.reserve(2);
   index.push_back(family);
   index.push_back(name);
   TH1* histo ; 
@@ -336,14 +342,14 @@ TH1* TTiaraBarrelSpectra::GetHisto(TString family, TString name){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TTiaraBarrelSpectra::WriteHisto(TString filename){
+void TTiaraBarrelSpectra::WriteHisto(string filename){
   TFile* f=NULL; 
 
   if(filename!="VOID"){
-    f = new TFile(filename,"RECREATE");
+    f = new TFile(filename.c_str(),"RECREATE");
   }
 
-  map< vector<TString>, TH1* >::iterator it;
+  map< vector<string>, TH1* >::iterator it;
 
   for (it=fMapHisto.begin(); it!=fMapHisto.end(); ++it){
     it->second->Write();
@@ -357,7 +363,7 @@ void TTiaraBarrelSpectra::WriteHisto(TString filename){
 }
 ///////////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelSpectra::CheckSpectra(){
-  map< vector<TString>, TH1* >::iterator it;
+  map< vector<string>, TH1* >::iterator it;
   Color_t ok_color = kTeal+9;
   Color_t warning_color = kOrange+8;   warning_color *= 1;
   Color_t bad_color = kRed;            bad_color *= 1;

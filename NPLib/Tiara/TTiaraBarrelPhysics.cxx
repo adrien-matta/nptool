@@ -19,7 +19,7 @@
  *                                                                           *
  *****************************************************************************/
 #include "TTiaraBarrelPhysics.h"
-
+using namespace TiaraBarrel_LOCAL;
 //   STL
 #include <sstream>
 #include <iostream>
@@ -438,7 +438,7 @@ void TTiaraBarrelPhysics::ClearSpectra(){
   // To be done
 }
 ///////////////////////////////////////////////////////////////////////////
-map< vector<TString>,TH1* > TTiaraBarrelPhysics::GetSpectra() {
+map< vector<string>,TH1* > TTiaraBarrelPhysics::GetSpectra() {
   return m_Spectra->GetMapHisto();
 } 
 ///////////////////////////////////////////////////////////////////////////
@@ -591,10 +591,12 @@ void TTiaraBarrelPhysics::InitializeStandardParameter(){
 
 ///////////////////////////////////////////////////////////////////////////////
 //   transform an integer to a string
-string TTiaraBarrelPhysics::itoa(unsigned int value){
+namespace TiaraBarrel_LOCAL{
+string itoa(unsigned int value){
   char buffer [33];
   sprintf(buffer,"%d",value);
   return buffer;
+}
 }
 ///////////////////////////////////////////////////////////////////////////////
 double TTiaraBarrelPhysics::Cal_Strip_Upstream_E(const int i){

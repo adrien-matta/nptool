@@ -195,12 +195,10 @@ class TTiaraBarrelPhysics : public TObject, public NPA::VDetector{
     TTiaraBarrelSpectra*      m_Spectra;//!
 
   public:
-    map< vector<TString>,TH1* > GetSpectra(); 
+    map< vector<string>,TH1* > GetSpectra(); 
 
   private: // Usefull method
-  //   tranform an integer to a string
-  string itoa(unsigned int value);
-  // Calibrate data
+   // Calibrate data
   double Cal_Strip_Upstream_E(const int i);
   double Cal_Strip_Downstream_E(const int i);
   double Match_Strip_Upstream_E(const int i);
@@ -209,5 +207,7 @@ class TTiaraBarrelPhysics : public TObject, public NPA::VDetector{
   ClassDef(TTiaraBarrelPhysics,1)  // SharcPhysics structure
 
 };
-
+namespace TiaraBarrel_LOCAL{
+ string itoa(unsigned int value);
+}
 #endif

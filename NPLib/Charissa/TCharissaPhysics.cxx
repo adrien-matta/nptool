@@ -48,7 +48,7 @@ ClassImp(TCharissaPhysics)
     m_Spectra           = NULL;
     m_NumberOfTelescope = 0 ;
     m_MaximumStripMultiplicityAllowed = 100;
-    m_StripEnergyMatchingSigma = 0.020    ;
+    m_StripEnergyMatchingSigma = 0.1    ;
     m_StripEnergyMatchingNumberOfSigma = 300;
     // Raw Threshold
     m_Si_X_E_RAW_Threshold = 1500 ;
@@ -231,8 +231,8 @@ void TCharissaPhysics::BuildPhysicalEvent(){
       int Layer2_X = m_PreTreatedData->GetCharissaLayer2StripXEStripNbr(Layer2_couple[i].X()) ;
       int Layer2_Y = m_PreTreatedData->GetCharissaLayer2StripYEStripNbr(Layer2_couple[i].Y()) ;
 
-      double Layer2_Si_X_E = m_PreTreatedData->GetCharissaLayer1StripXEEnergy( Layer2_couple[i].X() ) ;
-      double Layer2_Si_Y_E = m_PreTreatedData->GetCharissaLayer1StripYEEnergy( Layer2_couple[i].Y() ) ;
+      double Layer2_Si_X_E = m_PreTreatedData->GetCharissaLayer2StripXEEnergy( Layer2_couple[i].X() ) ;
+      double Layer2_Si_Y_E = m_PreTreatedData->GetCharissaLayer2StripYEEnergy( Layer2_couple[i].Y() ) ;
 
       //  Search for associate Time
       double Layer2_Si_X_T = -1000 ;
@@ -473,7 +473,7 @@ vector < TVector2 > TCharissaPhysics :: Layer1_Match_X_Y(){
     return ArrayOfGoodCouple;
 
   for(unsigned int i = 0 ; i < m_Layer1_StripXEMult ; ++i){
-    for(unsigned int j = 0 ; j < m_Layer1_StripYEMult ; j++){
+    for(unsigned int j = 0 ; j < m_Layer1_StripYEMult ; ++j){
       //   if same detector check energy
       if ( m_PreTreatedData->GetCharissaLayer1StripXEDetectorNbr(i) == m_PreTreatedData->GetCharissaLayer1StripYEDetectorNbr(j) ){
         //   Look if energy match
@@ -483,7 +483,7 @@ vector < TVector2 > TCharissaPhysics :: Layer1_Match_X_Y(){
     }
   }
 
-  //   Prevent to treat event with ambiguous matchin beetween X and Y
+  //   Prevent to treat event with ambiguous matching beetween X and Y
   if( ArrayOfGoodCouple.size() > m_Layer1_StripXEMult ) ArrayOfGoodCouple.clear() ;
 
   return ArrayOfGoodCouple;
@@ -501,7 +501,7 @@ vector < TVector2 > TCharissaPhysics :: Layer2_Match_X_Y(){
     return ArrayOfGoodCouple;
 
   for(unsigned int i = 0 ; i < m_Layer2_StripXEMult ; ++i){
-    for(unsigned int j = 0 ; j < m_Layer2_StripYEMult ; j++){
+    for(unsigned int j = 0 ; j < m_Layer2_StripYEMult ; ++j){
       //   if same detector check energy
       if ( m_PreTreatedData->GetCharissaLayer2StripXEDetectorNbr(i) == m_PreTreatedData->GetCharissaLayer2StripYEDetectorNbr(j) ){
         //   Look if energy match
@@ -511,7 +511,7 @@ vector < TVector2 > TCharissaPhysics :: Layer2_Match_X_Y(){
     }
   }
 
-  //   Prevent to treat event with ambiguous matchin beetween X and Y
+  //   Prevent to treat event with ambiguous matching beetween X and Y
   if( ArrayOfGoodCouple.size() > m_Layer2_StripXEMult ) ArrayOfGoodCouple.clear() ;
 
   return ArrayOfGoodCouple;
@@ -973,7 +973,7 @@ void TCharissaPhysics::ClearSpectra(){
   // To be done
 }
 ///////////////////////////////////////////////////////////////////////////
-map< vector<TString> , TH1*> TCharissaPhysics::GetSpectra() {
+map< vector<string> , TH1*> TCharissaPhysics::GetSpectra() {
   return m_Spectra->GetMapHisto();
 } 
 ///////////////////////////////////////////////////////////////////////////

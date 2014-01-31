@@ -207,14 +207,13 @@ class TCATSPhysics : public TObject, public NPA::VDetector
     TCATSSpectra*      m_Spectra;//! 
 
   public: // Spectra Getter
-    map< vector<TString> , TH1*> GetSpectra();
+    map< vector<string> , TH1*> GetSpectra();
 
     ClassDef(TCATSPhysics,1)  // CATSPhysics structure
 };
 
 
-namespace LOCAL_CATS
-{
+namespace CATS_LOCAL{
   // The reconstruction methods need to be outside the class for practical purpose
   // of dealing with the function pointer
   double AnalyticHyperbolicSecant(vector<double>& ChargeArray,int& StripMax);

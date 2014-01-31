@@ -551,7 +551,7 @@ void TExogamPhysics::ClearSpectra(){
   // To be done
 }
 ///////////////////////////////////////////////////////////////////////////
-map< vector<TString> , TH1*> TExogamPhysics::GetSpectra() {
+map< vector<string> , TH1*> TExogamPhysics::GetSpectra() {
 return m_Spectra->GetMapHisto();
 } 
 

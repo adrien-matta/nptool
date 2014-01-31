@@ -21,6 +21,11 @@
  *                                                                           *
  *****************************************************************************/
 
+// STL
+#include <iostream>
+#include <cstdlib>
+#include <stdexcept>
+
 // NPL
 #include "TTiaraHyballSpectra.h"
 #include "NPOptionManager.h"
@@ -31,7 +36,6 @@ using namespace NPUNITS;
 #endif
 
 // ROOT
-#include "TString.h"
 #include "TDirectory.h"
 #include "TFile.h"
 
@@ -60,7 +64,7 @@ TTiaraHyballSpectra::~TTiaraHyballSpectra(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TTiaraHyballSpectra::InitRawSpectra(){
-  TString name;
+  string name;
 
   // HIT_RING_RAW
   name = "HYB_HIT_RING_RAW";
@@ -81,11 +85,11 @@ void TTiaraHyballSpectra::InitRawSpectra(){
   // MULT
   for (unsigned int i = 0; i < fWedgesNumber; ++i) {   // loop on number of wedges
     // RING_RAW_MULT
-    name = Form("HYB_W%d_RING_E_RAW_MULT", i+1);
+    name = "HYB_W"+TiaraHyball_LOCAL::itoa(i+1)+"_RING_E_RAW_MULT";
     AddHisto1D(name, name, fRingsNumber, 1, fRingsNumber+1, "TIARA/HYBALL/RAW/MULT");
 
     // SECTOR_RAW_MULT
-    name = Form("HYB_W%d_SECT_E_RAW_MULT", i+1);
+    name = "HYB_W"+TiaraHyball_LOCAL::itoa(i+1)+"_SECT_E_RAW_MULT";
     AddHisto1D(name, name, fSectorsNumber, 1, fSectorsNumber+1, "TIARA/HYBALL/RAW/MULT");
   } // end loop on number of wedges
 }
@@ -94,7 +98,7 @@ void TTiaraHyballSpectra::InitRawSpectra(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TTiaraHyballSpectra::InitPreTreatedSpectra(){
-  TString name;
+  string name;
 
   // HIT_RING_CAL
   name = "HYB_HIT_RING_CAL";
@@ -115,11 +119,11 @@ void TTiaraHyballSpectra::InitPreTreatedSpectra(){
   // MULT
   for (unsigned int i = 0; i < fWedgesNumber; ++i) {   // loop on number of wedges
     // RING_CAL_MULT
-    name = Form("HYB_W%d_RING_E_CAL_MULT", i+1);
+    name = "HYB_W"+TiaraHyball_LOCAL::itoa(i+1)+"_RING_E_CAL_MULT";
     AddHisto1D(name, name, fRingsNumber, 1, fRingsNumber+1, "TIARA/HYBALL/CAL/MULT");
 
     // SECTOR_CAL_MULT
-    name = Form("HYB_W%d_SECT_E_CAL_MULT", i+1);
+    name = "HYB_W"+TiaraHyball_LOCAL::itoa(i+1)+"_SECT_E_CAL_MULT";
     AddHisto1D(name, name, fSectorsNumber, 1, fSectorsNumber+1, "TIARA/HYBALL/CAL/MULT");
   } // end loop on number of wedges
 }
@@ -128,7 +132,7 @@ void TTiaraHyballSpectra::InitPreTreatedSpectra(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TTiaraHyballSpectra::InitPhysicsSpectra(){
-  TString name;
+  string name;
   // X-Y Impact Matrix
   name = "HYB_IMPACT_MATRIX";
   AddHisto2D(name, name, 500, -150, 150, 500, -150, 150, "TIARA/HYBALL/PHY");
@@ -146,8 +150,8 @@ void TTiaraHyballSpectra::InitPhysicsSpectra(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TTiaraHyballSpectra::FillRawSpectra(TTiaraHyballData* RawData){
-  TString name;
-  TString family;
+  string name;
+  string family;
 
   // HIT_RING_RAW
   family = "TIARA/HYBALL/RAW/HIT";
@@ -187,7 +191,7 @@ void TTiaraHyballSpectra::FillRawSpectra(TTiaraHyballData* RawData){
   for (unsigned int i = 0; i < RawData->GetRingEMult(); i++) myMULT[(RawData->GetRingEDetectorNbr(i)-1)] += 1;
 
   for (unsigned int i = 0; i < fWedgesNumber; i++) {
-    name   = Form("HYB_W%d_RING_E_RAW_MULT", i+1);
+    name   = "HYB_W"+TiaraHyball_LOCAL::itoa(i+1)+"_RING_E_RAW_MULT";
     family = "TIARA/HYBALL/RAW/MULT";
     GetHisto(family,name) -> Fill(myMULT[i]);
   }
@@ -197,7 +201,7 @@ void TTiaraHyballSpectra::FillRawSpectra(TTiaraHyballData* RawData){
   for (unsigned int i = 0; i < RawData->GetSectorEMult(); i++) myMULT[(RawData->GetSectorEDetectorNbr(i)-1)] += 1;
 
   for (unsigned int i = 0; i < fWedgesNumber; i++) {
-    name   = Form("HYB_W%d_SECT_E_RAW_MULT", i+1);
+    name   = "HYB_W"+TiaraHyball_LOCAL::itoa(i+1)+"_SECT_E_RAW_MULT";
     family = "TIARA/HYBALL/RAW/MULT";
     GetHisto(family,name) -> Fill(myMULT[i]);
   }
@@ -207,8 +211,8 @@ void TTiaraHyballSpectra::FillRawSpectra(TTiaraHyballData* RawData){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TTiaraHyballSpectra::FillPreTreatedSpectra(TTiaraHyballData* PreTreatedData){
-  TString name;
-  TString family;
+  string name;
+  string family;
 
   // HIT_RING_CAL
   family = "TIARA/HYBALL/CAL/HIT";
@@ -248,7 +252,7 @@ void TTiaraHyballSpectra::FillPreTreatedSpectra(TTiaraHyballData* PreTreatedData
   for (unsigned int i = 0; i < PreTreatedData->GetRingEMult(); i++) myMULT[(PreTreatedData->GetRingEDetectorNbr(i)-1)] += 1;
 
   for (unsigned int i = 0; i < fWedgesNumber; i++) {
-    name   = Form("HYB_W%d_RING_E_CAL_MULT", i+1);
+    name   = "HYB_W"+TiaraHyball_LOCAL::itoa(i+1)+"_RING_E_CAL_MULT";
     family = "TIARA/HYBALL/CAL/MULT";
     GetHisto(family,name) -> Fill(myMULT[i]);
   }
@@ -258,7 +262,7 @@ void TTiaraHyballSpectra::FillPreTreatedSpectra(TTiaraHyballData* PreTreatedData
   for (unsigned int i = 0; i < PreTreatedData->GetSectorEMult(); i++) myMULT[(PreTreatedData->GetSectorEDetectorNbr(i)-1)] += 1;
 
   for (unsigned int i = 0; i < fWedgesNumber; i++) {
-    name   = Form("HYB_W%d_SECT_E_CAL_MULT", i+1);
+    name   = "HYB_W"+TiaraHyball_LOCAL::itoa(i+1)+"_SECT_E_CAL_MULT";
     family = "TIARA/HYBALL/CAL/MULT";
     GetHisto(family,name) -> Fill(myMULT[i]);
   }
@@ -268,8 +272,8 @@ void TTiaraHyballSpectra::FillPreTreatedSpectra(TTiaraHyballData* PreTreatedData
 
 ////////////////////////////////////////////////////////////////////////////////
 void TTiaraHyballSpectra::FillPhysicsSpectra(TTiaraHyballPhysics* Physics){
-  /*   TString name;
-       TString family= "TIARA/HYBALL/PHY";
+  /*   string name;
+       string family= "TIARA/HYBALL/PHY";
   // X-Y Impact Matrix
 
   for(unsigned int i = 0 ; i < Physics->Si_E.size(); i++){
@@ -293,11 +297,11 @@ void TTiaraHyballSpectra::FillPhysicsSpectra(TTiaraHyballPhysics* Physics){
 
 
 ////////////////////////////////////////////////////////////////////////////////
-TH1* TTiaraHyballSpectra::AddHisto1D(TString name, TString title, Int_t nbinsx, Double_t xlow, Double_t xup, TString family){
+TH1* TTiaraHyballSpectra::AddHisto1D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, string family){
   // create histo
-  TH1 *hist = new TH1D(name, title, nbinsx, xlow, xup);
+  TH1 *hist = new TH1D(name.c_str(), title.c_str(), nbinsx, xlow, xup);
 
-  vector<TString> index;
+  vector<string> index;
   index.push_back(family);
   index.push_back(name);
 
@@ -310,11 +314,11 @@ TH1* TTiaraHyballSpectra::AddHisto1D(TString name, TString title, Int_t nbinsx, 
 
 
 ////////////////////////////////////////////////////////////////////////////////
-TH1* TTiaraHyballSpectra::AddHisto2D(TString name, TString title, Int_t nbinsx, Double_t xlow, Double_t xup, Int_t nbinsy, Double_t ylow, Double_t yup, TString family){
+TH1* TTiaraHyballSpectra::AddHisto2D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, Int_t nbinsy, Double_t ylow, Double_t yup, string family){
   // create histo
-  TH1 *hist = new TH2D(name, title, nbinsx, xlow, xup, nbinsy, ylow, yup);
+  TH1 *hist = new TH2D(name.c_str(), title.c_str(), nbinsx, xlow, xup, nbinsy, ylow, yup);
 
-  vector<TString> index;
+  vector<string> index;
   index.push_back(family);
   index.push_back(name);
 
@@ -327,8 +331,9 @@ TH1* TTiaraHyballSpectra::AddHisto2D(TString name, TString title, Int_t nbinsx, 
 
 
 ////////////////////////////////////////////////////////////////////////////////
-TH1* TTiaraHyballSpectra::GetHisto(TString family, TString name){
-  vector<TString> index;
+TH1* TTiaraHyballSpectra::GetHisto(string& family, string& name){
+  vector<string> index;
+  index.reserve(2);
   index.push_back(family);
   index.push_back(name);
   TH1* histo ; 
@@ -345,14 +350,14 @@ TH1* TTiaraHyballSpectra::GetHisto(TString family, TString name){
   return histo;
 }
 ////////////////////////////////////////////////////////////////////////////////
-void TTiaraHyballSpectra::WriteHisto(TString filename){
+void TTiaraHyballSpectra::WriteHisto(string filename){
   TFile* f = NULL; 
 
   if (filename != "VOID") {
-    f = new TFile(filename,"RECREATE");
+    f = new TFile(filename.c_str(),"RECREATE");
   }
 
-  map< vector<TString>, TH1* >::iterator it;
+  map< vector<string>, TH1* >::iterator it;
   for (it=fMapHisto.begin(); it!=fMapHisto.end(); ++it) {
     it->second->Write();
   }

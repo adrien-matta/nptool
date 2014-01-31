@@ -21,7 +21,7 @@
  *****************************************************************************/
 
 #include "TCATSPhysics.h"
-using namespace LOCAL_CATS;
+using namespace CATS_LOCAL;
 
 //	STL
 #include <cmath>
@@ -733,7 +733,7 @@ void TCATSPhysics::ClearSpectra(){
   // To be done
 }
 ///////////////////////////////////////////////////////////////////////////
-map< vector<TString> , TH1*> TCATSPhysics::GetSpectra() {
+map< vector<string> , TH1*> TCATSPhysics::GetSpectra() {
   return m_Spectra->GetMapHisto();
 }
 
@@ -861,7 +861,7 @@ TVector3 TCATSPhysics::GetPositionOnTarget(){
 }
 
 ////////////////////////////////////////////////////////////////////////
-namespace LOCAL_CATS{
+namespace CATS_LOCAL{
   ////////////////////////////////////////////////////////////////////
   double AnalyticGaussian(vector<double>& Buffer_Q,int& StripMax){
     double gauss = -1000;
@@ -995,17 +995,6 @@ namespace LOCAL_CATS{
 
     return sech ;
   }
-
-
-
-
-
-
-
-
-
-
-
 
   //	transform an integer to a string
   string itoa(int value){

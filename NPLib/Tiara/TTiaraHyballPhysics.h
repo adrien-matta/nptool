@@ -195,7 +195,7 @@ class TTiaraHyballPhysics : public TObject, public NPA::VDetector{
     TTiaraHyballSpectra*      m_Spectra;//!
 
   public:
-    map< vector<TString>,TH1* > GetSpectra(); 
+    map< vector<string>,TH1* > GetSpectra(); 
 
     ClassDef(TTiaraHyballPhysics,1)  // SharcPhysics structure
 };

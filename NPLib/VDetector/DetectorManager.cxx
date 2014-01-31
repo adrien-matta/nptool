@@ -780,9 +780,9 @@ void DetectorManager::InitSpectra(){
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////   
-vector< map< vector<TString>, TH1* > > DetectorManager::GetSpectra()
+vector< map< vector<string>, TH1* > > DetectorManager::GetSpectra()
 {
-   vector< map< vector<TString>, TH1* > > myVector;
+   vector< map< vector<string>, TH1* > > myVector;
 
    map<string,VDetector*>::iterator it;
    // loop on detectors

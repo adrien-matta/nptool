@@ -31,7 +31,7 @@ using namespace NPUNITS;
 #endif
 
 // ROOT
-#include "TString.h"
+#include "string.h"
 #include "TDirectory.h"
 #include "TFile.h"
 
@@ -70,7 +70,7 @@ TExogamSpectra::~TExogamSpectra(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TExogamSpectra::InitRawSpectra(){
-  TString name;
+  string name;
   for (unsigned int i = 0; i < fNumberOfClover; i++) { // loop on number of detectors
    for (unsigned int j = 0; j < fNumberOfCores; j++) { // loop on number of cores
 
@@ -93,7 +93,7 @@ void TExogamSpectra::InitRawSpectra(){
 ////////////////////////////////////////////////////////////////////////////////
 void TExogamSpectra::InitPreTreatedSpectra()
 {
-  TString name;
+  string name;
   for (unsigned int i = 0; i < fNumberOfClover; i++) { // loop on number of detectors
    for (unsigned int j = 0; j < fNumberOfCores; j++) { // loop on number of cores
     	name = Form("ExogamEnergyCal_Clover%d_ECC%d", i+1, j+1);
@@ -113,7 +113,7 @@ void TExogamSpectra::InitPreTreatedSpectra()
 
 ////////////////////////////////////////////////////////////////////////////////
 void TExogamSpectra::InitPhysicsSpectra(){
-  TString name;
+  string name;
   name = "ExogamEnergyAddBack";
   AddHisto1D(name, name, fnbinsRaw, fbinRawMin, fbinRawMax, "Exogam/DC");
 
@@ -123,8 +123,8 @@ void TExogamSpectra::InitPhysicsSpectra(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TExogamSpectra::FillRawSpectra(TExogamData* RawData){
-  TString name;
-  TString family;
+  string name;
+  string family;
 
   // Energy and Time RAw 
   for (unsigned int i = 0; i < RawData->GetECCEMult(); i++) {
@@ -152,8 +152,8 @@ void TExogamSpectra::FillRawSpectra(TExogamData* RawData){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TExogamSpectra::FillPreTreatedSpectra(TExogamData* PreTreatedData){
-  TString name ;
-  TString family;
+  string name ;
+  string family;
   // Energy and Time RAw 
   for (unsigned int i = 0; i < PreTreatedData->GetECCEMult(); i++) {
     name = Form("ExogamEnergyCal_Clover%d_ECC%d", PreTreatedData->GetECCEClover(i)+1,PreTreatedData->GetECCECristal(i)+1);
@@ -178,8 +178,8 @@ void TExogamSpectra::FillPreTreatedSpectra(TExogamData* PreTreatedData){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TExogamSpectra::FillPhysicsSpectra(TExogamPhysics* Physics){
-  TString name;
-  TString family= "Exogam/PHY";
+  string name;
+  string family= "Exogam/PHY";
   // Doppler Correct and Add Back
   name = "ExogamEnergyAddBack";
   family = "Exogam/DC";
@@ -190,11 +190,11 @@ void TExogamSpectra::FillPhysicsSpectra(TExogamPhysics* Physics){
 
 }
 ////////////////////////////////////////////////////////////////////////////////
-TH1* TExogamSpectra::AddHisto1D(TString name, TString title, Int_t nbinsx, Double_t xlow, Double_t xup, TString family){
+TH1* TExogamSpectra::AddHisto1D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, string family){
   // create histo
-  TH1 *hist = new TH1D(name, title, nbinsx, xlow, xup);
+  TH1 *hist = new TH1D(name.c_str(), title.c_str(), nbinsx, xlow, xup);
 
-  vector<TString> index ;
+  vector<string> index ;
   index.push_back(family);
   index.push_back(name);
 
@@ -205,11 +205,11 @@ TH1* TExogamSpectra::AddHisto1D(TString name, TString title, Int_t nbinsx, Doubl
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TH1* TExogamSpectra::AddHisto2D(TString name, TString title, Int_t nbinsx, Double_t xlow, Double_t xup, Int_t nbinsy, Double_t ylow, Double_t yup, TString family){
+TH1* TExogamSpectra::AddHisto2D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, Int_t nbinsy, Double_t ylow, Double_t yup, string family){
   // create histo
-  TH1 *hist = new TH2D(name, title, nbinsx, xlow, xup, nbinsy, ylow, yup);
+  TH1 *hist = new TH2D(name.c_str(), title.c_str(), nbinsx, xlow, xup, nbinsy, ylow, yup);
 
-  vector<TString> index ;
+  vector<string> index ;
   index.push_back(family);
   index.push_back(name);
 
@@ -220,8 +220,8 @@ TH1* TExogamSpectra::AddHisto2D(TString name, TString title, Int_t nbinsx, Doubl
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TH1* TExogamSpectra::GetHisto(TString family, TString name){
-  vector<TString> index ;
+TH1* TExogamSpectra::GetHisto(string family, string name){
+  vector<string> index ;
   index.push_back(family);
   index.push_back(name);
 
@@ -230,14 +230,14 @@ TH1* TExogamSpectra::GetHisto(TString family, TString name){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TExogamSpectra::WriteHisto(TString filename){
+void TExogamSpectra::WriteHisto(string filename){
   TFile* f=NULL; 
 
   if(filename!="VOID"){
-    f = new TFile(filename,"RECREATE");
+    f = new TFile(filename.c_str(),"RECREATE");
   }
 
-  map< vector<TString>, TH1* >::iterator it;
+  map< vector<string>, TH1* >::iterator it;
 
   for (it=fMapHisto.begin(); it!=fMapHisto.end(); ++it){
     it->second->Write();
@@ -251,7 +251,7 @@ void TExogamSpectra::WriteHisto(TString filename){
 }
 ///////////////////////////////////////////////////////////////////////////////
 void TExogamSpectra::CheckSpectra(){
-map< vector<TString>, TH1* >::iterator it;
+map< vector<string>, TH1* >::iterator it;
   Color_t ok_color = kTeal+9;
   Color_t warning_color = kOrange+8;   warning_color *= 1;
   Color_t bad_color = kRed;            bad_color *= 1;

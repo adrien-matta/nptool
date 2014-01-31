@@ -83,7 +83,7 @@ namespace NPA {
       // Used for Online only, clear all the spectra hold by the Spectra class
       virtual void ClearSpectra() {};
       // Used for Online only, get all the spectra hold by the Spectra class
-      virtual  map< vector<TString> , TH1*> GetSpectra() {map< vector<TString>, TH1* > x; return x;};
+      virtual  map< vector<string> , TH1*> GetSpectra() {map< vector<string>, TH1* > x; return x;};
 
     private:   //   The list below is here to help you building your own detector
       /*

@@ -276,7 +276,7 @@ class TMust2Physics : public TObject, public NPA::VDetector{
     TMust2Spectra*      m_Spectra;//! 
 
   public: // Spectra Getter
-    map< vector<TString> , TH1*> GetSpectra(); 
+    map< vector<string> , TH1*> GetSpectra(); 
 
     ClassDef(TMust2Physics,1)  // Must2Physics structure
 };

@@ -517,7 +517,7 @@ void TTiaraHyballPhysics::ClearSpectra(){
   // To be done
 }
 ///////////////////////////////////////////////////////////////////////////
-map< vector<TString>,TH1* > TTiaraHyballPhysics::GetSpectra() {
+map< vector<string>,TH1* > TTiaraHyballPhysics::GetSpectra() {
 return m_Spectra->GetMapHisto();
 } 
 ///////////////////////////////////////////////////////////////////////////

@@ -268,7 +268,7 @@ class TCharissaPhysics : public TObject, public NPA::VDetector{
     TCharissaSpectra*      m_Spectra;//! 
 
   public: // Spectra Getter
-    map< vector<TString> , TH1*> GetSpectra(); 
+    map< vector<string> , TH1*> GetSpectra(); 
 
     ClassDef(TCharissaPhysics,1)  // CharissaPhysics structure
 };
