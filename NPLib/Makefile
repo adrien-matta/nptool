@@ -9,6 +9,7 @@ FILLINC		= FillIncludeDir
 FILLLIB		= FillLibraryDir
 LIBLIST		= liblistfile
 
+
 #Silence the process
 all: .SILENT
 .SILENT: $(SHARELIB) $(FILLLIB) $(LIBLIST)
@@ -25,13 +26,8 @@ ifeq ($(findstring macosx, $(ARCH)), macosx)
 endif
 
 ############### liblist ##############
-liblistfile: $(SHARELIB) $(FILLIB)
+liblistfile:  $(FILLLIB) $(SHARELIB) $(FILLIB)
 		./scripts/buildliblist.sh
-
-############### sharedlib ##############
-SharedLib:
-	./scripts/makefile.sh core	
-	./scripts/makefile.sh detector
 
 ########### actual target ##############
 # include makefile created by the configure script
