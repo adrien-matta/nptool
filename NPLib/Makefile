@@ -52,4 +52,4 @@ distclean:
 	rm -f ./*/*Dict*
 	rm -f ./*/*.o
 	@echo " + Deleting shared libraries files in detector directory"
-	rm -f ./*/*.s
+	rm -f ./*/*.so
