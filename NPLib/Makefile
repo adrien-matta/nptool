@@ -9,10 +9,9 @@ FILLINC		= FillIncludeDir
 FILLLIB		= FillLibraryDir
 LIBLIST		= liblistfile
 
-
 #Silence the process
 all: .SILENT
-.SILENT: $(SHARELIB) $(FILLLIB) $(LIBLIST)
+.SILENT: $(SHARELIB) $(LIBLIST)
 
 #------------------------------------------------------------------------------
 ############### fillinclib ##############
@@ -20,7 +19,6 @@ FillIncludeDir:
 		./scripts/fillincdir.sh
 
 FillLibraryDir: $(SHARELIB) $(FILLINC)
-		./scripts/filllibdir.sh
 ifeq ($(findstring macosx, $(ARCH)), macosx)
 		./scripts/filllibmacdir.sh
 endif
@@ -34,23 +32,24 @@ liblistfile:  $(FILLLIB) $(SHARELIB) $(FILLIB)
 # where the wanted detector are defined
 include $(NPTOOL)/NPLib/Makefile.detector
 
-
 ############# Clean and More ##########
-clean: cleandetector cleancore
+clean:
+	rm -f ./*/*.o
 
-cleancore:
-	$(NPTOOL)/NPLib/scripts/makefile.sh clean core
-
-cleandetector:
-	$(NPTOOL)/NPLib/scripts/makefile.sh clean detector
-	
 distclean:
-	@echo " + Deleting libraries in lib directory....."
+	@echo " + Deleting libraries in lib directory"
 	rm -f ./lib/*
-	@echo " + Deleting header files in include directory....."
+	@echo " + Deleting header files in include directory"
 	rm -f ./include/* 
-	@echo " + Deleting liblist file....."
+	@echo " + Deleting liblist file"
 	rm -f liblist
+	@echo " + Emptying Makefile.detector"
+	rm -f Makefile.detector
+	touch Makefile.detector
+	@echo " + Deleting NPToolLogon"
 	rm -f ./scripts/NPToolLogon_C*
-	./scripts/makefile.sh distclean detector
-	./scripts/makefile.sh distclean core
+	@echo " + Deleting intermediate compilation files"
+	rm -f ./*/*Dict*
+	rm -f ./*/*.o
+	@echo " + Deleting shared libraries files in detector directory"
+	rm -f ./*/*.s
