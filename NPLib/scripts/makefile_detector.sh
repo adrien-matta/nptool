@@ -34,7 +34,7 @@ printf "FillIncludeDir \n" >> $2
 # build message 
 printf  "\t@echo \"Entering $1 directory...\"\n" >> $2
 # execute make command with target specified on command line
-printf  "\tmake --silent -C ./$1\n" >> $2
+printf  "\t+make --silent -C ./$1\n" >> $2
 printf  "\tcp ./$1/*.so lib/\n" >> $2
 printf "\n" >> $2
 
