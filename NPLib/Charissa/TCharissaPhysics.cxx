@@ -713,7 +713,7 @@ void TCharissaPhysics::ReadAnalysisConfig(){
 ///////////////////////////////////////////////////////////////////////////
 void TCharissaPhysics::Clear(){
   EventMultiplicity= 0 ;
-
+  TelescopeNumber.clear();
   // Si X
   Layer1_Si_E.clear();
   Layer1_Si_T.clear();
