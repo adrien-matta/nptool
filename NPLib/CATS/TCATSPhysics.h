@@ -84,6 +84,8 @@ class TCATSPhysics : public TObject, public NPA::VDetector
     vector<int>       DetNumber_PositionZ;
     vector<double>    PositionX;
     vector<double>    PositionY;
+    vector<double>    StripNumberX;
+    vector<double>    StripNumberY;
     vector<double>    PositionZ;
     vector<double>	  QsumX;
     vector<double>	  QsumY;

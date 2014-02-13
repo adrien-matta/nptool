@@ -148,14 +148,16 @@ void TCATSSpectra::InitPhysicsSpectra(){
   family = "CATS/PHY/POS";
   for (unsigned int i = 0; i < fNumberOfCats; ++i) {   // loop on number of cats
     name = "CATS"+CATS_LOCAL::itoa(i+1)+"_POS";
-    AddHisto2D(name, name,500,-50,50,500,-50,50,family); 
+    AddHisto2D(name, name,120,-40,40,120,-40,40,family);
+    name = "CATS_STRIP_"+CATS_LOCAL::itoa(i+1)+"_POS";
+    AddHisto2D(name, name,120,1,28,120,1,28,family);
+ 
   } 
 
   name = "TARGET_POS";
-  AddHisto2D(name, name,500,-50,50,500,-50,50,family); 
-
+  AddHisto2D(name, name,320,-40,40,320,-40,40,family);
   name = "TRAJECTORY_XZ";
-  AddHisto2D(name, name,100,-50,50,100,-50,50,family); 
+  AddHisto2D(name, name,100,-40,40,100,-40,40,family); 
 
   name = "TRAJECTORY_YZ";
   AddHisto2D(name, name,100,-50,50,100,-50,50,family); 
@@ -283,6 +285,9 @@ void TCATSSpectra::FillPhysicsSpectra(TCATSPhysics* Physics){
     family = "CATS/PHY/POS";
     name = "CATS"+CATS_LOCAL::itoa(Physics->DetMaxX[i])+"_POS";
     GetHisto(family,name) -> Fill(Physics->PositionX[i],Physics->PositionY[i]);
+    
+    name = "CATS_STRIP_"+CATS_LOCAL::itoa(Physics->DetMaxX[i])+"_POS";
+    GetHisto(family,name) -> Fill(Physics->StripNumberX[i],Physics->StripNumberY[i]);
   }
 
   if(Physics->PositionOnTargetX > -1000 && Physics->PositionOnTargetY > -1000){
