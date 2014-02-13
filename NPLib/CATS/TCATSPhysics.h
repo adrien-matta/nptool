@@ -103,8 +103,8 @@ class TCATSPhysics : public TObject, public NPA::VDetector
     vector< vector< vector<double> > >   StripPositionY;//!
     vector<double>                       StripPositionZ;//!  
     int m_NumberOfCATS;
-    double m_TargetAngle;
-    double m_TargetThickness;
+    double m_TargetAngle; //!
+    double m_TargetThickness; //!
 
     // Those two vector contain a pointer to the reconstruction function that should be used for each detector 
     // Method take as argument a vector<double> representing the Charge distribution and uint giving the Strip with Max Q
@@ -119,10 +119,6 @@ class TCATSPhysics : public TObject, public NPA::VDetector
   public:
     // Set the reconstruction Method used for the CATS plane
     void SetReconstructionMethod(unsigned int CATSNumber, string XorY, string MethodName);
-    // Set the Correction method used to correct results from the reconstruction
-    void SetCorrectionMethod(unsigned int CATSNumber,string XorY, string MethodName); 
-    // Set the Coeff to be used in the correction
-    void SetCorrectionCoef(unsigned int CATSNumber,string XorY,double coef); 
 
   private : 
     //   Map of activated channel
@@ -187,15 +183,6 @@ class TCATSPhysics : public TObject, public NPA::VDetector
     void ReadAnalysisConfig();
     void ReadConfiguration(string);
     void AddCATS(TVector3 C_X1_Y1, TVector3 C_X28_Y1, TVector3 C_X1_Y28, TVector3 C_X28_Y28);
-
-    double CorrectedPositionX3(double Position, double a) ;
-    double CorrectedPositionY3(double Position, double a) ;
-    double CorrectedPositionX4(double Position, double b); 
-    double CorrectedPositionY4(double Position, double b); 
-    double Corrected3PointsX(double Position, double c);
-    double Corrected3PointsY(double Position, double c);
-    double Corrected4PointsX(double Position, double d);
-    double Corrected4PointsY(double Position, double d);
 
   public:
     TVector3 GetBeamDirection();
