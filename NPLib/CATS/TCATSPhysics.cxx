@@ -193,7 +193,7 @@ void TCATSPhysics::BuildPhysicalEvent(){
   double posX = 0 , posY = 0;
   
   for(unsigned int i  = 0 ; i < NumberOfCATSHit ; i++ ){       
-     // Return the position in strip unit
+    // Return the position in strip unit
     double PosX =  ReconstructionFunctionX[DetMaxX[i]-1](Buffer_X_Q[i],StripMaxX[i]);
     double PosY =  ReconstructionFunctionY[DetMaxY[i]-1](Buffer_Y_Q[i],StripMaxY[i]);
     StripNumberX.push_back(PosX);
@@ -201,27 +201,27 @@ void TCATSPhysics::BuildPhysicalEvent(){
 
    // Convert in mm by doing a linear interpolation
 
-   // coordinate of nearest known point:
-   // pxi in mm sxi in strip unit
-   double sx0 = (int) PosX;
-   double sx1 = (int) PosX+1; 
-   double sy0 = (int) PosY;
-   double sy1 = (int) PosY+1; 
+   // sx and sy are the X and Y strip number between which the PosX and PosY are
+   int sx0 = (int) PosX;
+   int sx1 = sx0+1; 
+   int sy0 = (int) PosY;
+   int sy1 = sy0+1; 
 
-  if(PosX>-1000 && PosY>-1000 && sx0 > -1 && sx1 < 28 && sy0 > -1  && sy1 < 28){ 
-   double px0 = StripPositionX[DetMaxX[i]-1][sx0][sy0];
-   double px1 = StripPositionX[DetMaxX[i]-1][sx1][sy1];
+    if(PosX>-1000 && PosY>-1000 && sx0 > -1 && sx1 < 28 && sy0 > -1  && sy1 < 28){
+      // px and py are the x and y coordinate of strip sx and sy 
+      double px0 = StripPositionX[DetMaxX[i]-1][sx0][sy0];
+      double px1 = StripPositionX[DetMaxX[i]-1][sx1][sy1];
     
-   double py0 = StripPositionY[DetMaxY[i]-1][sx0][sy0];
-   double py1 = StripPositionY[DetMaxY[i]-1][sx1][sy1];
-    
-    PositionX.push_back(px0+(px1-px0)*(PosX-sx0)/(sx1-sx0));  
-    PositionY.push_back(py0+(py1-py0)*(PosY-sy0)/(sy1-sy0));  
-    PositionZ.push_back(StripPositionZ[DetMaxX[i]-1]);
-   }
-  
+      double py0 = StripPositionY[DetMaxY[i]-1][sx0][sy0];
+      double py1 = StripPositionY[DetMaxY[i]-1][sx1][sy1];
+   
+      PositionX.push_back(px0+(px1-px0)*(PosX-sx0));  
+      PositionY.push_back(py0+(py1-py0)*(PosY-sy0));  
+      PositionZ.push_back(StripPositionZ[DetMaxX[i]-1]);
+    }
+
   }
-  
+
   // At least two CATS need to gave back position in order to reconstruct on Target 
   if(PositionX.size()>1){
     if(DetMaxX[0]<DetMaxX[1]){
@@ -229,7 +229,7 @@ void TCATSPhysics::BuildPhysicalEvent(){
       PositionOnTargetX= PositionX[1] + (PositionX[1]-PositionX[0])*t;
       PositionOnTargetY= PositionY[1] + (PositionY[1]-PositionY[0])*t; 
       BeamDirection = GetBeamDirection();
-    }
+     }
 
     else{
       double t = -PositionZ[0]/(PositionZ[0]-PositionZ[1]);
@@ -406,7 +406,6 @@ void TCATSPhysics::InitializeRootInputRaw() {
 void TCATSPhysics::InitializeRootInputPhysics() {
   TChain* inputChain = RootInput::getInstance()->GetChain();
   inputChain->SetBranchStatus( "CATS" , true );
-  inputChain->SetBranchStatus( "ff" , true );
   inputChain->SetBranchStatus( "DetNumberX" , true );
   inputChain->SetBranchStatus( "StripX" , true );
   inputChain->SetBranchStatus( "ChargeX" , true );
@@ -415,9 +414,8 @@ void TCATSPhysics::InitializeRootInputPhysics() {
   inputChain->SetBranchStatus( "StripY" , true );
   inputChain->SetBranchStatus( "ChargeY" , true );
   inputChain->SetBranchStatus( "StripMaxY" , true );
-  inputChain->SetBranchStatus( "DetNumber_PositionX" , true );
-  inputChain->SetBranchStatus( "DetNumber_PositionY" , true );
-  inputChain->SetBranchStatus( "DetNumber_PositionZ" , true );
+  inputChain->SetBranchStatus( "DetMaxX" , true );
+  inputChain->SetBranchStatus( "DetMaxY" , true );
   inputChain->SetBranchStatus( "PositionX" , true );
   inputChain->SetBranchStatus( "PositionY" , true );
   inputChain->SetBranchStatus( "PositionZ" , true );
@@ -510,9 +508,6 @@ void TCATSPhysics::Clear(){
   StripMaxY.clear();
   ChargeMaxY.clear();
   DetMaxY.clear();
-  DetNumber_PositionX.clear();
-  DetNumber_PositionY.clear();
-  DetNumber_PositionZ.clear();
   PositionX.clear();
   PositionY.clear();
   PositionZ.clear();
@@ -761,7 +756,7 @@ TVector3 TCATSPhysics::GetPositionOnTarget(){
 namespace CATS_LOCAL{
   ////////////////////////////////////////////////////////////////////
   double AnalyticGaussian(vector<double>& Buffer_Q,int& StripMax){
-    double gauss = -1000;
+    double gauss = -1000;  
     double Q[3];
     double StripPos[3];
     for(int j = 0; j<3 ; j++){
@@ -832,8 +827,6 @@ namespace CATS_LOCAL{
   ///////////////////////////////////////////////////////////////
   double Centroide(vector<double>& Buffer_Q, int& StripMax){
     double Centroide = 0 ;
-
-    StripMax = StripMax; 
     double ChargeTotal = 0;
     
     unsigned int sizeQ = Buffer_Q.size(); 
@@ -886,7 +879,7 @@ namespace CATS_LOCAL{
 
   /////////////////////////////////////////////////////////////////////
   double FittedHyperbolicSecant(vector<double>& Buffer_Q, int& StripMax){
-    // Warning: No need to delete static variable
+    // Warning: should not delete static variable
     static TF1* f = new TF1("sechs","[0]/(cosh(TMath::Pi()*(x-[1])/[2])*cosh(TMath::Pi()*(x-[1])/[2]))",1,28);
 
     // Help the fit by computing the position of the maximum by analytic method

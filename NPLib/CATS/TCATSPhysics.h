@@ -53,15 +53,15 @@ class TCATSPhysics : public TObject, public NPA::VDetector
 
   private:   //   Root Input and Output tree classes
 
-    TCATSData*         m_EventData;//!
-    TCATSData*         m_PreTreatedData;//!
-    TCATSPhysics*      m_EventPhysics;//!
+    TCATSData*       m_EventData;//!
+    TCATSData*       m_PreTreatedData;//!
+    TCATSPhysics*    m_EventPhysics;//!
 
   public :
     //   Vector of dim = multiplicity of event on all detector
-    vector<int>        DetNumberX; 
-    vector<int>        StripX;
-    vector<double>     ChargeX; 
+    vector<int>      DetNumberX; 
+    vector<int>      StripX;
+    vector<double>   ChargeX; 
 
     //   Vector of dim = number of CATS
     vector<int>      StripMaxX;
@@ -69,30 +69,27 @@ class TCATSPhysics : public TObject, public NPA::VDetector
     vector<int>      DetMaxX;
 
     //   Vector of dim = multiplicity of event on all detector
-    vector<int>        DetNumberY; 
-    vector<int>        StripY;
-    vector<double>     ChargeY;
+    vector<int>      DetNumberY; 
+    vector<int>      StripY;
+    vector<double>   ChargeY;
 
     //   Vector of dim = number of CATS  
-    vector<int>       StripMaxY;
-    vector<double>    ChargeMaxY;
-    vector<int>       DetMaxY;
+    vector<int>      StripMaxY;
+    vector<double>   ChargeMaxY;
+    vector<int>      DetMaxY;
 
     //   Vector of dim = number of CATS
-    vector<int>       DetNumber_PositionX;
-    vector<int>       DetNumber_PositionY;
-    vector<int>       DetNumber_PositionZ;
-    vector<double>    PositionX;
-    vector<double>    PositionY;
-    vector<double>    StripNumberX;
-    vector<double>    StripNumberY;
-    vector<double>    PositionZ;
-    vector<double>	  QsumX;
-    vector<double>	  QsumY;
-    double            PositionOnTargetX;
-    double            PositionOnTargetY;
+    vector<double>   PositionX;
+    vector<double>   PositionY;
+    vector<double>   StripNumberX;
+    vector<double>   StripNumberY;
+    vector<double>   PositionZ;
+    vector<double>	 QsumX;
+    vector<double>	 QsumY;
+    double           PositionOnTargetX;
+    double           PositionOnTargetY;
 
-    TVector3          BeamDirection;//!
+    TVector3         BeamDirection;//!
 
     // Vector of Charge Array (one for each CATS fired)
     vector< vector<double> > Buffer_X_Q;//!

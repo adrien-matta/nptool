@@ -294,7 +294,6 @@ void TCATSSpectra::FillPhysicsSpectra(TCATSPhysics* Physics){
     name = "TARGET_POS";
     GetHisto(family,name)->Fill(Physics->PositionOnTargetX,Physics->PositionOnTargetY);
   }
-
     /*
     name = "TRAJECTORY_XZ";
     AddHisto2D(name, name,100,-50,50,100,-50,50,family); 
