@@ -552,7 +552,12 @@ void TExogamPhysics::ClearSpectra(){
 }
 ///////////////////////////////////////////////////////////////////////////
 map< vector<string> , TH1*> TExogamPhysics::GetSpectra() {
-return m_Spectra->GetMapHisto();
+  if(m_Spectra)
+    return m_Spectra->GetMapHisto();
+  else{
+    map< vector<string> , TH1*> empty;
+    return empty;
+  }
 } 
 
 void TExogamPhysics::AddClover(string AngleFile)

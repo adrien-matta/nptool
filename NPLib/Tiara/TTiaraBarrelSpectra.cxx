@@ -114,7 +114,7 @@ void TTiaraBarrelSpectra::InitRawSpectra(){
   for(unsigned int i  = 0 ; i < fNumberOfDetector ; i++){
     for(unsigned int j = 0 ; j < fInnerBarrelStrip;j++){
       name = "IB"+TiaraBarrel_LOCAL::itoa(i+1)+"_VS"+TiaraBarrel_LOCAL::itoa(j+1)+"_RAW";
-      AddHisto2D(name, name,1024,0,16384,1024,0,16384,BaseFamily+"VS");
+      AddHisto2D(name, name,1024,0,0,1024,0,0,BaseFamily+"VS");
     }
   }
 }
@@ -128,8 +128,10 @@ void TTiaraBarrelSpectra::InitPreTreatedSpectra(){
   for(unsigned int i  = 0 ; i < fNumberOfDetector ; i++){
     for(unsigned int j = 0 ; j < fInnerBarrelStrip;j++){
       name = "IB"+TiaraBarrel_LOCAL::itoa(i+1)+"_VS"+TiaraBarrel_LOCAL::itoa(j+1)+"_CAL";
-      AddHisto2D(name,name,2048,-1,30,2048,-1,30,BaseFamily+"VS");
+      AddHisto2D(name,name,2048,0,0,2048,0,0,BaseFamily+"VS");
     }
+    name = "IB"+TiaraBarrel_LOCAL::itoa(i+1)+"_VS_BACK_CAL"; 
+    AddHisto2D(name,name,2048,0,0,2048,0,0,BaseFamily+"VS");
   }
 }
 
@@ -251,17 +253,32 @@ string BaseFamily = "TIARA/BARREL/CAL/";
 // INNER_BARREL_VS_CAL                 
   string family = BaseFamily+"VS";
   string name ;
-  for (unsigned int i = 0; i < PreTreatedData->GetFrontUpstreamEMult(); i++) {
+
+  unsigned int sizeU = PreTreatedData->GetFrontUpstreamEMult();
+  unsigned int sizeD = PreTreatedData->GetFrontDownstreamEMult();
+  unsigned int sizeB = PreTreatedData->GetBackEMult(); 
+  
+  for (unsigned int i = 0; i < sizeU ; i++) {
     int UpStreamDetNbr = PreTreatedData->GetFrontUpstreamEDetectorNbr(i);
     int UpStreamStrNbr = PreTreatedData->GetFrontUpstreamEStripNbr(i);
     
-    for (unsigned int j = 0; j < PreTreatedData->GetFrontDownstreamEMult(); j++) {
+    for (unsigned int j = 0; j < sizeD ; j++) {
       int DoStreamDetNbr = PreTreatedData->GetFrontDownstreamEDetectorNbr(j);
       int DoStreamStrNbr = PreTreatedData->GetFrontDownstreamEStripNbr(j);
      if(UpStreamDetNbr==DoStreamDetNbr && UpStreamStrNbr==DoStreamStrNbr){
-       name = "IB"+TiaraBarrel_LOCAL::itoa(UpStreamDetNbr)+"_VS"+TiaraBarrel_LOCAL::itoa(UpStreamStrNbr)+"_CAL"; 
+      name = "IB"+TiaraBarrel_LOCAL::itoa(UpStreamDetNbr)+"_VS"+TiaraBarrel_LOCAL::itoa(UpStreamStrNbr)+"_CAL"; 
        GetHisto(family,name)
-        ->Fill(PreTreatedData->GetFrontUpstreamEEnergy(i),PreTreatedData->GetFrontDownstreamEEnergy(j));
+         ->Fill(PreTreatedData->GetFrontUpstreamEEnergy(i),PreTreatedData->GetFrontDownstreamEEnergy(j));
+     
+        for (unsigned int k = 0; k < sizeB; k++) {
+          if(UpStreamDetNbr == PreTreatedData->GetBackEDetectorNbr(k)){     
+            name = "IB"+TiaraBarrel_LOCAL::itoa(UpStreamDetNbr)+"_VS_BACK_CAL"; 
+            GetHisto(family,name)
+              ->Fill(PreTreatedData->GetFrontUpstreamEEnergy(i)
+                      +PreTreatedData->GetFrontDownstreamEEnergy(j),
+                      PreTreatedData->GetBackEEnergy(k));
+          }
+        }
       } 
     }
   }
@@ -269,26 +286,26 @@ string BaseFamily = "TIARA/BARREL/CAL/";
 
 ////////////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelSpectra::FillPhysicsSpectra(TTiaraBarrelPhysics* Physics){
-string family = "TIARA/BARREL/PHY";
-string name ;
+  string family = "TIARA/BARREL/PHY";
+  string name ;
   //// E POS ////
   // Inner Barrel
   unsigned int size = Physics->Strip_E.size();
   for(unsigned int i  = 0 ; i < Physics->Strip_E.size() ; i++){
-      name ="IB"+TiaraBarrel_LOCAL::itoa(Physics->DetectorNumber[i])+"_EPOS"+TiaraBarrel_LOCAL::itoa(Physics->Strip_N[i])+"_CAL";
-      GetHisto(family,name)
-        ->Fill(Physics->Strip_Pos[i],Physics->Strip_E[i]);
-    
-       name = "IB"+TiaraBarrel_LOCAL::itoa(Physics->DetectorNumber[i])+"_ETHETA"+TiaraBarrel_LOCAL::itoa(Physics->Strip_N[i])+"_CAL";
-       double Theta = Physics->GetPositionOfInteraction(i).Angle(TVector3(0,0,1));
+    name ="IB"+TiaraBarrel_LOCAL::itoa(Physics->DetectorNumber[i])+"_EPOS"+TiaraBarrel_LOCAL::itoa(Physics->Strip_N[i])+"_CAL";
+    GetHisto(family,name)
+      ->Fill(Physics->Strip_Pos[i],Physics->Strip_E[i]);
 
-       GetHisto(family,name)
-        ->Fill(Theta*rad/deg,Physics->Strip_E[i]);
-    
-      name = "IB_ETHETA_CAL";
-      GetHisto(family,name)
-        ->Fill(Theta*rad/deg,Physics->Strip_E[i]);
-    }
+    name = "IB"+TiaraBarrel_LOCAL::itoa(Physics->DetectorNumber[i])+"_ETHETA"+TiaraBarrel_LOCAL::itoa(Physics->Strip_N[i])+"_CAL";
+    double Theta = Physics->GetPositionOfInteraction(i).Angle(TVector3(0,0,1));
+
+    GetHisto(family,name)
+      ->Fill(Theta*rad/deg,Physics->Strip_E[i]);
+
+    name = "IB_ETHETA_CAL";
+    GetHisto(family,name)
+      ->Fill(Theta*rad/deg,Physics->Strip_E[i]);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -328,14 +345,14 @@ TH1* TTiaraBarrelSpectra::GetHisto(string& family, string& name){
   index.push_back(family);
   index.push_back(name);
   TH1* histo ; 
-  
+
   try{
     histo = fMapHisto.at(index); 
   }
 
   catch(const std::out_of_range& oor){
-  cout << "ERROR : the folowing Histo has been requested by TTiaraBarrelSpectra and does not exist: family:" << family << " name: "  << name << endl ;
-  exit(1);
+    cout << "ERROR : the folowing Histo has been requested by TTiaraBarrelSpectra and does not exist: family:" << family << " name: "  << name << endl ;
+    exit(1);
   }
 
   return histo;

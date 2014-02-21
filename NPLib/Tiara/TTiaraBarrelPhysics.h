@@ -50,9 +50,6 @@ class TTiaraBarrelPhysics : public TObject, public NPA::VDetector{
     void Clear();   
     void Clear(const Option_t*) {};
 
-  public: 
-    vector < TVector2 > Match_Upstream_Downstream() ;
-
   public:
     //   Provide Physical Multiplicity
     Int_t EventMultiplicity;
@@ -167,12 +164,10 @@ class TTiaraBarrelPhysics : public TObject, public NPA::VDetector{
     bool m_Take_T_Back;//!
 
     //  Threshold
-    double m_Strip_E_RAW_Threshold ;//!
     double m_Strip_E_Threshold ;//!
     double m_Back_E_Threshold ;//!
-    double m_OuterStrip_E_RAW_Threshold ;//!
     double m_OuterBack_E_Threshold ;//!
-
+    double m_Maximum_FrontBack_Difference ;//!
   private:   //   Root Input and Output tree classes
     TTiaraBarrelData*         m_EventData;//!
     TTiaraBarrelData*         m_PreTreatedData;//!
@@ -201,6 +196,7 @@ class TTiaraBarrelPhysics : public TObject, public NPA::VDetector{
    // Calibrate data
   double Cal_Strip_Upstream_E(const int i);
   double Cal_Strip_Downstream_E(const int i);
+  double Cal_Back_E(const int i);
   double Match_Strip_Upstream_E(const int i);
   double Match_Strip_Downstream_E(const int i);
 

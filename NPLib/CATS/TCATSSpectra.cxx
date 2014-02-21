@@ -268,7 +268,7 @@ void TCATSSpectra::FillPhysicsSpectra(TCATSPhysics* Physics){
       fEventLoopQSum[i]+=Physics->QsumX[i]/1000000.;
       name = "CATS"+CATS_LOCAL::itoa(i+1)+"_QMEAN_TIME";
 
-      GetHisto(family,name) ->SetBinContent(fEventLoopIndex/fEventLoopStep,fEventLoopQSum[i]/fEventLoopStep);
+      GetHisto(family,name) ->SetBinContent(fEventLoopIndex/fEventLoopIndex,fEventLoopQSum[i]/fEventLoopIndex);
     }
   }
  

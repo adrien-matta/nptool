@@ -974,7 +974,12 @@ void TCharissaPhysics::ClearSpectra(){
 }
 ///////////////////////////////////////////////////////////////////////////
 map< vector<string> , TH1*> TCharissaPhysics::GetSpectra() {
-  return m_Spectra->GetMapHisto();
+  if(m_Spectra)
+    return m_Spectra->GetMapHisto();
+  else{
+    map< vector<string> , TH1*> empty;
+    return empty;
+  }
 } 
 ///////////////////////////////////////////////////////////////////////////
 void TCharissaPhysics::AddParameterToCalibrationManager()
