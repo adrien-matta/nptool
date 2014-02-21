@@ -25,10 +25,12 @@ using namespace CATS_LOCAL;
 
 //	STL
 #include <cmath>
+#include <algorithm>
 #include <sstream>
 #include <fstream>
 #include <iostream>
 #include <set>
+#include <cstdlib>
 using namespace std;
 //	NPL
 #include "RootInput.h"
