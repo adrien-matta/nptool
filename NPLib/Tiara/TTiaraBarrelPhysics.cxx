@@ -53,8 +53,8 @@ ClassImp(TTiaraBarrelPhysics)
     
     m_Take_E_Strip= true;
     m_Take_T_Back=true;
-    m_Strip_E_Threshold = 400 ;
-    m_Back_E_Threshold = 400 ;
+    m_Strip_E_Threshold = 0.40 ;
+    m_Back_E_Threshold = 0.40 ;
     m_Maximum_FrontBack_Difference = 0.4;
     m_OuterBack_E_Threshold =0;
   }
@@ -71,10 +71,10 @@ void TTiaraBarrelPhysics::BuildPhysicalEvent(){
   unsigned int sizeU = m_PreTreatedData->GetFrontUpstreamEMult();
   unsigned int sizeD = m_PreTreatedData->GetFrontDownstreamEMult();
   unsigned int sizeB = m_EventData->GetBackEMult(); 
- 
  for(unsigned int k = 0 ; k < sizeB ; k++){
   for(unsigned int i = 0 ; i < sizeU ; i++){  
     if(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i) == m_PreTreatedData->GetBackEDetectorNbr(k))
+    
     for(unsigned int j = 0 ; j < sizeD ; j++){  
         // same detector, same strip
         if( m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i) 
@@ -86,8 +86,10 @@ void TTiaraBarrelPhysics::BuildPhysicalEvent(){
             double ED = m_PreTreatedData->GetFrontDownstreamEEnergy(j); 
       
             // Front back Energy match
-            if(abs(m_PreTreatedData->GetBackEEnergy(k)-(EU+ED)) < m_Maximum_FrontBack_Difference){
-              double POS =
+   //         if(abs(m_PreTreatedData->GetBackEEnergy(k)-(EU+ED)) < m_Maximum_FrontBack_Difference){
+            // I have no calibration of the back so replace by nothing ;)
+            if(true){ 
+             double POS =
                 CalibrationManager::getInstance()
                   ->ApplyResistivePositionCalibration("TIARABARREL/B"
                     +itoa(m_EventData->GetFrontUpstreamEDetectorNbr(i))
