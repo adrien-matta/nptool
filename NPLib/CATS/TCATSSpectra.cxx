@@ -113,7 +113,7 @@ void TCATSSpectra::InitPreTreatedSpectra(){
     // CATS_STRY_Q_CAL
     name = "CATS"+CATS_LOCAL::itoa(i+1)+"_STRY_Q_CAL";
     AddHisto2D(name, name, fStripsNumber, 1, fStripsNumber+1, 512, 0, 16384, family);
-   // end loop on number of cats
+    // end loop on number of cats
 
     // STRX_MULT
     name = "CATS"+CATS_LOCAL::itoa(i+1)+"_STRX_CAL_MULT";
@@ -151,16 +151,16 @@ void TCATSSpectra::InitPhysicsSpectra(){
     AddHisto2D(name, name,120,-40,40,120,-40,40,family);
     name = "CATS_STRIP_"+CATS_LOCAL::itoa(i+1)+"_POS";
     AddHisto2D(name, name,120,1,28,120,1,28,family);
- 
+
   } 
 
   name = "TARGET_POS";
   AddHisto2D(name, name,320,-40,40,320,-40,40,family);
   name = "TRAJECTORY_XZ";
-  AddHisto2D(name, name,100,-40,40,100,-40,40,family); 
+  AddHisto2D(name, name,500,-700,500,200,-200,400,family); 
 
   name = "TRAJECTORY_YZ";
-  AddHisto2D(name, name,100,-50,50,100,-50,50,family); 
+  AddHisto2D(name, name,500,-700,500,200,-200,400,family); 
 
 }
 
@@ -271,7 +271,7 @@ void TCATSSpectra::FillPhysicsSpectra(TCATSPhysics* Physics){
       GetHisto(family,name) ->SetBinContent(fEventLoopIndex/fEventLoopIndex,fEventLoopQSum[i]/fEventLoopIndex);
     }
   }
- 
+
   // Reset the mean every bin 
   if(fEventLoopIndex%fEventLoopStep>fEventLoopStep)
     for (unsigned int i = 0; i < fNumberOfCats; ++i)  
@@ -279,13 +279,13 @@ void TCATSSpectra::FillPhysicsSpectra(TCATSPhysics* Physics){
 
   // Restart histo
   if(fEventLoopIndex > fEventLoopSize)
-      fEventLoopIndex = 0 ;
+    fEventLoopIndex = 0 ;
 
   for (unsigned int i = 0; i < Physics->PositionX.size(); ++i) {
     family = "CATS/PHY/POS";
     name = "CATS"+CATS_LOCAL::itoa(Physics->DetMaxX[i])+"_POS";
     GetHisto(family,name) -> Fill(Physics->PositionX[i],Physics->PositionY[i]);
-    
+
     name = "CATS_STRIP_"+CATS_LOCAL::itoa(Physics->DetMaxX[i])+"_POS";
     GetHisto(family,name) -> Fill(Physics->StripNumberX[i],Physics->StripNumberY[i]);
   }
@@ -293,16 +293,39 @@ void TCATSSpectra::FillPhysicsSpectra(TCATSPhysics* Physics){
   if(Physics->PositionOnTargetX > -1000 && Physics->PositionOnTargetY > -1000){
     name = "TARGET_POS";
     GetHisto(family,name)->Fill(Physics->PositionOnTargetX,Physics->PositionOnTargetY);
-  }
-    /*
+
+
     name = "TRAJECTORY_XZ";
-    AddHisto2D(name, name,100,-50,50,100,-50,50,family); 
+    TH2F* histo1  = (TH2F*) GetHisto(family,name);
 
     name = "TRAJECTORY_YZ";
-    AddHisto2D(name, name,100,-50,50,100,-50,50,family); 
-    */
+    TH2F* histo2  = (TH2F*) GetHisto(family,name);
 
+
+    for(int i = 0 ; i < histo1->GetNbinsX() ; i++){ 
+      double z = histo1->GetXaxis()->GetBinCenter(i);
+      double PositionOnTargetX;
+      double PositionOnTargetY;
+      double PositionZ0 = Physics->PositionZ[0];
+      double PositionZ1 = Physics->PositionZ[1];
+      if(Physics->DetMaxX[0]<Physics->DetMaxX[2]){
+        double t = -(PositionZ1-z)/(PositionZ1-PositionZ0);
+        PositionOnTargetX= Physics->PositionX[1] + (Physics->PositionX[1]-Physics->PositionX[0])*t;
+        PositionOnTargetY= Physics->PositionY[1] + (Physics->PositionY[1]-Physics->PositionY[0])*t; 
+      }
+
+      else{
+        double t = -(PositionZ0-z)/(PositionZ0-PositionZ1);
+        PositionOnTargetX= Physics->PositionX[0] + (Physics->PositionX[0]-Physics->PositionX[1])*t;
+        PositionOnTargetY= Physics->PositionY[0] + (Physics->PositionY[0]-Physics->PositionY[1])*t; 
+      }
+
+      histo1->Fill(z,PositionOnTargetX);
+      histo2->Fill(z,PositionOnTargetY);
+    }
+  }
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 TH1* TCATSSpectra::AddHisto1D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, string family){
@@ -341,14 +364,14 @@ TH1* TCATSSpectra::GetHisto(string& family, string& name){
   index.push_back(family);
   index.push_back(name);
   TH1* histo ; 
-  
+
   try{
     histo = fMapHisto.at(index); 
   }
 
   catch(const std::out_of_range& oor){
-  cout << "ERROR : the folowing Histo has been requested by TCATSSpectra and does not exist: family:" << family << " name: "  << name << endl ;
-  exit(1);
+    cout << "ERROR : the folowing Histo has been requested by TCATSSpectra and does not exist: family:" << family << " name: "  << name << endl ;
+    exit(1);
   }
 
   return histo;
