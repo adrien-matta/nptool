@@ -33,7 +33,6 @@ int main(int argc, char** argv)
 
    // Get the formed Chained Tree and Treat it
    TChain* Chain = RootInput:: getInstance() -> GetChain();
-   TExogamPhysics *Exo 	 = (TExogamPhysics*)  myDetector -> GetDetector("EXOGAM")	;
 
    // Get number of events to treat
    cout << endl << "///////// Starting Analysis ///////// "<< endl;
@@ -66,19 +65,6 @@ int main(int argc, char** argv)
       Put your code here
 
       ************************************************/
-      for(int i=0; i<4; i++) EGammaDC[i]=0;
-      for(int i=0; i<Exo->TotalEnergy_lab.size(); i++)
-	{
-		float mytheta=Exo->GetSegmentAnglePhi(Exo->CloverNumber[i], Exo->CristalNumber[i], Exo->SegmentNumber[i]);
-		float myphi=Exo->GetSegmentAngleTheta(Exo->CloverNumber[i], Exo->CristalNumber[i], Exo->SegmentNumber[i]);	
-		//myv(Exo->TotalEnergy_lab[i]*sin(mytheta)*sin(myphi),Exo->TotalEnergy_lab[i]*sin(mytheta)*cos(myphi) , Exo->TotalEnergy_lab[i]*cos(mytheta),(Exo->TotalEnergy_lab)[i]); 
-		//cout<<Exo->TotalEnergy_lab[i]<<endl;
-		EGammaDC[i]=Exo->TotalEnergy_lab[i]*(1-beta*cos(mytheta*TMath::DegToRad()))/sqrt(1-beta*beta);
-		//TVector3 boost= imp4.BoostVector(); 
-		//myv.Boost(-boost);
-		//DopplerCorrectedEnergy.push_back(myv.T());
-		//h_DopplerCorrectedEnergy->Fill(myv.T());
-	}
       RootOutput::getInstance()->GetTree()->Fill();
    }
 
