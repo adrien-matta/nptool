@@ -254,7 +254,7 @@ double CalibrationManager::ApplyCalibrationDebug(const string& ParameterPath , c
     cout << Coeff[i] << " " ;
     CalibratedValue += Coeff[i]*pow(RawValue, (double)i);
   }
-cout << endl ;
+cout << "results = " << CalibratedValue << endl ;
   return CalibratedValue ;
 }
 //////////////////////////////////////////////////////////////////
