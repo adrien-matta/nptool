@@ -29,16 +29,16 @@ using namespace CATS_LOCAL;
 #include <sstream>
 #include <fstream>
 #include <iostream>
-#include <stdlib.h>
 #include <set>
+#include <cstdlib>
 using namespace std;
 //	NPL
 #include "RootInput.h"
 #include "RootOutput.h"
 //	ROOT
 #include "TChain.h"
-#include "TRandom.h"
-
+#include "TF1.h"
+#include "TGraph.h"
 ClassImp(TCATSPhysics)
 
   ///////////////////////////////////////////////////////////////////////////
@@ -107,27 +107,30 @@ void TCATSPhysics::BuildSimplePhysicalEvent(){
 //////////////////////////////////////////////////////////////////////////////		
 void TCATSPhysics::BuildPhysicalEvent(){
   PreTreat();
-  double Pi = 3.14159265;
-
   // Look how many CATS were fired
   // use a set to identify which detector has been hit
-  set<int> DetectorHit;
+  set<int> DetectorHitX; // X only
+  set<int> DetectorHit; // X and Y
+
   unsigned int sizeX = m_PreTreatedData->GetCATSMultX() ;
   for( unsigned short i = 0 ; i < m_PreTreatedData->GetCATSMultX() ; i++ ){ 
     // Insert detector number in the set, if the key already exist, do nothing
-    DetectorHit.insert(m_PreTreatedData->GetCATSDetX(i));
+    DetectorHitX.insert(m_PreTreatedData->GetCATSDetX(i));
   }
   
+  // Correspond to CATS with both X and Y
   unsigned int sizeY = m_PreTreatedData->GetCATSMultY() ;
   for( unsigned short i = 0 ; i < m_PreTreatedData->GetCATSMultY() ; i++ ){ 
     // Insert detector number in the set, if the key already exist, do nothing
-    DetectorHit.insert(m_PreTreatedData->GetCATSDetY(i));
+    // Only if the detector was hit on X as well
+    if(DetectorHitX.find(m_PreTreatedData->GetCATSDetY(i))!=DetectorHitX.end())
+      DetectorHit.insert(m_PreTreatedData->GetCATSDetY(i));
   }
   // The number of CATS hit, i.e. the number of CATS that we are going to analyse
   unsigned int NumberOfCATSHit = DetectorHit.size();
 
    vector<double> ChargeArray;
-   ChargeArray.resize(28,-1);
+   ChargeArray.resize(28,0);
 
   // INITIALISATION OF VECTORS : DIM = NumberOfCATSHit
   for(set<int>::iterator it=DetectorHit.begin(); it!=DetectorHit.end(); ++it){
@@ -135,12 +138,12 @@ void TCATSPhysics::BuildPhysicalEvent(){
     DetMaxX.push_back(*it);
     DetMaxY.push_back(*it);
     // X
-    StripMaxX.push_back(-1); 
-    ChargeMaxX.push_back(-1);
+    StripMaxX.push_back(1); 
+    ChargeMaxX.push_back(1);
     QsumX.push_back(0);
     // Y
-    StripMaxY.push_back(-1); 
-    ChargeMaxY.push_back(-1);
+    StripMaxY.push_back(1); 
+    ChargeMaxY.push_back(1);
     QsumY.push_back(0);
   
     Buffer_X_Q.push_back(ChargeArray);
@@ -148,7 +151,6 @@ void TCATSPhysics::BuildPhysicalEvent(){
   }
   
   // Fill up the Charge And Max field for X
-  int HitX = 0 ;
   for(unsigned int i = 0 ; i < sizeX ; i++ ){
     int StrX					         = m_PreTreatedData->GetCATSStripX(i);
     int NX						         = m_PreTreatedData->GetCATSDetX(i);
@@ -156,15 +158,11 @@ void TCATSPhysics::BuildPhysicalEvent(){
     ChargeX.push_back(CATS_X_Q);
     StripX.push_back(StrX);
     DetNumberX.push_back(NX);
-        for(unsigned int j = 0 ; j < NumberOfCATSHit ; j++){
+    for(unsigned int j = 0 ; j < NumberOfCATSHit ; j++){
       if(NX == DetMaxX[j] ){
         Buffer_X_Q[j][StrX-1]= CATS_X_Q;
         QsumX[j]+= CATS_X_Q;	
-        HitX++;
-        if(HitX==1) {
-           StripMaxX[j] = StrX;
-        } 
-        else if(CATS_X_Q > Buffer_X_Q[j][StripMaxX[j] -1]){ 
+        if(CATS_X_Q > Buffer_X_Q[j][StripMaxX[j] -1]){ 
           StripMaxX[j] = StrX ; 
           ChargeMaxX[j]= CATS_X_Q; 
         }
@@ -173,7 +171,6 @@ void TCATSPhysics::BuildPhysicalEvent(){
   }
   
   // Fill up the Charge And Max field for Y
-  int HitY = 0;
   for(unsigned int i = 0 ; i < sizeY ; i++ ){
     int StrY					         = m_PreTreatedData->GetCATSStripY(i);
     int NY						         = m_PreTreatedData->GetCATSDetY(i);
@@ -181,15 +178,12 @@ void TCATSPhysics::BuildPhysicalEvent(){
     ChargeY.push_back(CATS_Y_Q);
     StripY.push_back(StrY);
     DetNumberY.push_back(NY);
-        for(unsigned int j = 0 ; j < NumberOfCATSHit ; j++){
-      if(NY == DetMaxY[j] ){
+   
+   for(unsigned int j = 0 ; j < NumberOfCATSHit ; j++){
+       if(NY == DetMaxY[j] ){
         Buffer_Y_Q[j][StrY-1]= CATS_Y_Q;
         QsumY[j]+= CATS_Y_Q;	
-        HitY++;
-        if(HitY==1) {
-           StripMaxY[j] = StrY;
-        } 
-        else if(CATS_Y_Q > Buffer_Y_Q[j][StripMaxY[j] -1]){ 
+        if(CATS_Y_Q > Buffer_Y_Q[j][StripMaxY[j] -1]){ 
           StripMaxY[j] = StrY ; 
           ChargeMaxY[j]= CATS_Y_Q; 
         }
@@ -201,54 +195,58 @@ void TCATSPhysics::BuildPhysicalEvent(){
   double posX = 0 , posY = 0;
   
   for(unsigned int i  = 0 ; i < NumberOfCATSHit ; i++ ){       
-     // Return the position in strip unit
+    // Return the position in strip unit
     double PosX =  ReconstructionFunctionX[DetMaxX[i]-1](Buffer_X_Q[i],StripMaxX[i]);
     double PosY =  ReconstructionFunctionY[DetMaxY[i]-1](Buffer_Y_Q[i],StripMaxY[i]);
-      
-    // Correct the position
-    // Convert it in mm
-    int floorX = (int) PosX;
-    int floorY = (int) PosY;
-    // If Reconstruction are successfull then floorX and floorY should be a valid strip number 
-    if(floorX > -1 && floorX < 28 && floorY>-1 && floorY <28){ 
-    PositionX.push_back(StripPositionX[DetMaxX[i]-1][floorX-1][floorY-1]+(PosX-floorX)*2.54);
-    PositionY.push_back(StripPositionY[DetMaxX[i]-1][floorX-1][floorY-1]+(PosY-floorY)*2.54);
-    PositionZ.push_back(StripPositionZ[DetMaxX[i]-1]);
+    StripNumberX.push_back(PosX);
+    StripNumberY.push_back(PosY);   
+
+   // Convert in mm by doing a linear interpolation
+
+   // sx and sy are the X and Y strip number between which the PosX and PosY are
+   int sx0 = (int) PosX;
+   int sx1 = sx0+1; 
+   int sy0 = (int) PosY;
+   int sy1 = sy0+1; 
+
+    if(PosX>-1000 && PosY>-1000 && sx0 > -1 && sx1 < 28 && sy0 > -1  && sy1 < 28){
+      // px and py are the x and y coordinate of strip sx and sy 
+      double px0 = StripPositionX[DetMaxX[i]-1][sx0][sy0];
+      double px1 = StripPositionX[DetMaxX[i]-1][sx1][sy1];
+    
+      double py0 = StripPositionY[DetMaxY[i]-1][sx0][sy0];
+      double py1 = StripPositionY[DetMaxY[i]-1][sx1][sy1];
+   
+      PositionX.push_back(px0+(px1-px0)*(PosX-sx0));  
+      PositionY.push_back(py0+(py1-py0)*(PosY-sy0));  
+      PositionZ.push_back(StripPositionZ[DetMaxX[i]-1]);
     }
+
   }
-  
+
   // At least two CATS need to gave back position in order to reconstruct on Target 
   if(PositionX.size()>1){
-      double PositionOnTargetX_1;
-      double PositionOnTargetY_1;
-      double l = sqrt((PositionZ[0]-PositionZ[1])*(PositionZ[0]-PositionZ[1]));
-      double L = - PositionZ[1];
-      double t = (l+L) / l;
-      PositionOnTargetX_1 = PositionX[0] + (PositionX[1] - PositionX[0]) * t ;
-      PositionOnTargetY_1 = PositionY[0] + (PositionY[1] - PositionY[0]) * t ;
-      if(m_TargetAngle != 0){
-        double a = (PositionZ[1]-PositionZ[0])/(PositionX[1]-PositionX[0]);
-        double b = PositionZ[0] - a*PositionX[0];
-        PositionOnTargetX = b/(tan(m_TargetAngle*Pi/180.) - a);
-        double t_new = (l + L + PositionOnTargetX*tan(m_TargetAngle*Pi/180.)) / l;
-        PositionOnTargetY = PositionY[0] + (PositionY[1] - PositionY[0]) * t_new ;
-      }
+    if(DetMaxX[0]<DetMaxX[1]){
+      double t = -PositionZ[1]/(PositionZ[1]-PositionZ[0]);
+      PositionOnTargetX= PositionX[1] + (PositionX[1]-PositionX[0])*t;
+      PositionOnTargetY= PositionY[1] + (PositionY[1]-PositionY[0])*t; 
+      BeamDirection = GetBeamDirection();
+     }
 
-      else{
-        PositionOnTargetX = PositionOnTargetX_1;
-        PositionOnTargetY = PositionOnTargetY_1;
-      }
-      GetPositionOnTarget();
-      GetBeamDirection();
-
+    else{
+      double t = -PositionZ[0]/(PositionZ[0]-PositionZ[1]);
+      PositionOnTargetX= PositionX[0] + (PositionX[0]-PositionX[1])*t;
+      PositionOnTargetY= PositionY[0] + (PositionY[0]-PositionY[1])*t; 
+      BeamDirection = GetBeamDirection();
+    }
   }
-  
+
   // Does not meet the conditions for target position and beam direction 
   else{
-      BeamDirection = TVector3 (1,0,0);
-      PositionOnTargetX = -1000	;
-      PositionOnTargetY = -1000	;
-    }
+    BeamDirection = TVector3 (1,0,0);
+    PositionOnTargetX = -1000	;
+    PositionOnTargetY = -1000	;
+  }
   return;
 }
 
@@ -410,7 +408,6 @@ void TCATSPhysics::InitializeRootInputRaw() {
 void TCATSPhysics::InitializeRootInputPhysics() {
   TChain* inputChain = RootInput::getInstance()->GetChain();
   inputChain->SetBranchStatus( "CATS" , true );
-  inputChain->SetBranchStatus( "ff" , true );
   inputChain->SetBranchStatus( "DetNumberX" , true );
   inputChain->SetBranchStatus( "StripX" , true );
   inputChain->SetBranchStatus( "ChargeX" , true );
@@ -419,12 +416,13 @@ void TCATSPhysics::InitializeRootInputPhysics() {
   inputChain->SetBranchStatus( "StripY" , true );
   inputChain->SetBranchStatus( "ChargeY" , true );
   inputChain->SetBranchStatus( "StripMaxY" , true );
-  inputChain->SetBranchStatus( "DetNumber_PositionX" , true );
-  inputChain->SetBranchStatus( "DetNumber_PositionY" , true );
-  inputChain->SetBranchStatus( "DetNumber_PositionZ" , true );
+  inputChain->SetBranchStatus( "DetMaxX" , true );
+  inputChain->SetBranchStatus( "DetMaxY" , true );
   inputChain->SetBranchStatus( "PositionX" , true );
   inputChain->SetBranchStatus( "PositionY" , true );
   inputChain->SetBranchStatus( "PositionZ" , true );
+  inputChain->SetBranchStatus( "StripNumberX" , true );
+  inputChain->SetBranchStatus( "StripNumberY" , true );
   inputChain->SetBranchStatus( "PositionOnTargetX" , true );
   inputChain->SetBranchStatus( "PositionOnTargetY" , true );
   inputChain->SetBranchStatus( "QsumX" , true );
@@ -512,12 +510,11 @@ void TCATSPhysics::Clear(){
   StripMaxY.clear();
   ChargeMaxY.clear();
   DetMaxY.clear();
-  DetNumber_PositionX.clear();
-  DetNumber_PositionY.clear();
-  DetNumber_PositionZ.clear();
   PositionX.clear();
   PositionY.clear();
   PositionZ.clear();
+  StripNumberX.clear();
+  StripNumberY.clear();
   QsumX.clear();
   QsumY.clear();
 
@@ -653,7 +650,7 @@ void TCATSPhysics::ReadAnalysisConfig(){
 
       else if (whatToDo == "RECONSTRUCTION_METHOD") {
         AnalysisConfigFile >> DataBuffer;
-        cout << whatToDo << "  " << DataBuffer;
+        cout << whatToDo << "  " << DataBuffer ;
         // DataBuffer is of form CATSNX 
         // Look for the CATS Number removing the first 4 letters and the trailling letter
         string Duplicate = DataBuffer.substr(4); // Duplicate is of form NX
@@ -665,47 +662,9 @@ void TCATSPhysics::ReadAnalysisConfig(){
 
         // Get the Reconstruction Methods Name
         AnalysisConfigFile >> DataBuffer;       
-
+        cout << " " << DataBuffer << endl ;
         // Set the Reconstruction Methods using above information 
         SetReconstructionMethod(CATSNumber,XorY,DataBuffer);
-      }
-
-      else if (whatToDo == "CORRECTION_METHOD") {
-        AnalysisConfigFile >> DataBuffer;
-        cout << whatToDo << "  " << DataBuffer;
-        // DataBuffer is of form CATSNX 
-        // Look for the CATS Number removing the first 4 letters and the trailling letter
-        string Duplicate = DataBuffer.substr(4); // Duplicate is of form NX
-        Duplicate.resize(Duplicate.size()-1); // Duplicate is of form
-        unsigned int CATSNumber =  atoi(Duplicate.c_str());
-
-        // Look for the X or Y part of the Detector, Basically the last character
-        string XorY(string(1,DataBuffer[DataBuffer.size()-1])) ; 
-
-        // Get the Reconstruction Methods Name
-        AnalysisConfigFile >> DataBuffer;       
-
-        // Set the Reconstruction Methods using above information 
-        SetCorrectionMethod(CATSNumber,XorY,DataBuffer);
-      }
-
-      else if (whatToDo == "CORRECTION_COEF") {
-        AnalysisConfigFile >> DataBuffer;
-        cout << whatToDo << "  " << DataBuffer;
-        // DataBuffer is of form CATSNX 
-        // Look for the CATS Number removing the first 4 letters and the trailling letter
-        string Duplicate = DataBuffer.substr(4); // Duplicate is of form NX
-        Duplicate.resize(Duplicate.size()-1); // Duplicate is of form
-        unsigned int CATSNumber =  atoi(Duplicate.c_str());
-
-        // Look for the X or Y part of the Detector, Basically the last character
-        string XorY(string(1,DataBuffer[DataBuffer.size()-1])) ; 
-
-        // Get the Reconstruction Methods Name
-        AnalysisConfigFile >> DataBuffer;       
-
-        // Set the Reconstruction Methods using above information 
-        SetCorrectionCoef(CATSNumber,XorY,atof(DataBuffer.c_str()));
       }
 
       else {ReadingStatus = false;}
@@ -734,7 +693,13 @@ void TCATSPhysics::ClearSpectra(){
 }
 ///////////////////////////////////////////////////////////////////////////
 map< vector<string> , TH1*> TCATSPhysics::GetSpectra() {
-  return m_Spectra->GetMapHisto();
+  if(m_Spectra)
+    return m_Spectra->GetMapHisto();
+  
+  else{
+   map< vector<string> , TH1*> empty; 
+   return empty;
+  }
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -759,7 +724,8 @@ void TCATSPhysics::SetReconstructionMethod(unsigned int CATSNumber, string XorY,
     if(ReconstructionFunctionX.size() < CATSNumber)
       ReconstructionFunctionX.resize(CATSNumber);
 
-    if(MethodName=="ASECH") ReconstructionFunctionX[CATSNumber-1] = &(AnalyticHyperbolicSecant);
+         if(MethodName=="ASECH") ReconstructionFunctionX[CATSNumber-1] = &(AnalyticHyperbolicSecant);
+    else if(MethodName=="FSECH") ReconstructionFunctionX[CATSNumber-1] = &(FittedHyperbolicSecant);
     else if(MethodName=="AGAUSS") ReconstructionFunctionX[CATSNumber-1] = &(AnalyticGaussian);
     else if(MethodName=="CENTROIDE")  ReconstructionFunctionX[CATSNumber-1] = &(Centroide); 
   }
@@ -768,86 +734,21 @@ void TCATSPhysics::SetReconstructionMethod(unsigned int CATSNumber, string XorY,
     if(ReconstructionFunctionY.size() < CATSNumber)
       ReconstructionFunctionY.resize(CATSNumber);
 
-    if(MethodName=="ASECH") ReconstructionFunctionY[CATSNumber-1] = &(AnalyticHyperbolicSecant);
+         if(MethodName=="ASECH") ReconstructionFunctionY[CATSNumber-1] = &(AnalyticHyperbolicSecant);
+    else if(MethodName=="FSECH") ReconstructionFunctionY[CATSNumber-1] = &(FittedHyperbolicSecant);
     else if(MethodName=="AGAUSS") ReconstructionFunctionY[CATSNumber-1] = &(AnalyticGaussian);
     else if(MethodName=="CENTROIDE")  ReconstructionFunctionY[CATSNumber-1] = &(Centroide); 
   }
 
 }
 
-
-/*
-/////////////////////////////////////////////////////////////////////////
-double TCATSPhysics::Corrected3Points(double Position, double c) {
-double Corrected_Position = 0;
-int StripMax_ = StripMaxX[ff] -1;
-double xmax = StripPositionX[ff][StripMax_][0] ;
-
-Corrected_Position = (Position - xmax) / c + xmax;
-
-return Corrected_Position;
-}
-
-/////////////////////////////////////////////////////////////////////////
-double TCATSPhysics::Corrected4Points(double Position, double d) {
-double Corrected_Position = 0;
-double xmax = 0;
-int StripMax_ = StripMaxX[ff] -1;
-
-if(Buffer_X_Q[StripMax_+1][ff] > Buffer_X_Q[StripMax_-1][ff]) {
-if(ff==0)     xmax = StripPositionX[ff][StripMax_][0] - 1.27;
-else  xmax = StripPositionX[ff][StripMax_][0] + 1.27;
-}
-
-else{
-if(ff==0)     xmax = StripPositionX[ff][StripMax_-1][0] - 1.27;
-else  xmax = StripPositionX[ff][StripMax_-1][0]  + 1.27;
-}
-
-Corrected_Position = (Position - xmax) / d + xmax;
-
-return Corrected_Position;
-}
-
-///////////////////////////////////////////////////////////////
-double TCATSPhysics::CorrectedPositionX(double Position, double a) {
-double Corrected_Position = 0;
-int StripMax_ = StripMaxX[ff] -1;
-double xmax = StripPositionX[ff][StripMax_][0] ;
-
-Corrected_Position = (Position - xmax) / a + xmax;
-
-return Corrected_Position;
-}
-
-///////////////////////////////////////////////////////////////
-double TCATSPhysics::CorrectedPosition4(double Position, double b) {
-double Corrected_Position = 0;
-double xmax = 0;
-int StripMax_ = StripMaxX[ff] -1;
-
-if(Buffer_X_Q[StripMax_+1][ff] > Buffer_X_Q[StripMax_-1][ff]) {
-if(ff ==0)     xmax = StripPositionX[ff][StripMax_][0] - 1.27;
-else  xmax = StripPositionX[ff][StripMax_][0] + 1.27;
-}
-
-else{
-if(ff ==0)     xmax = StripPositionX[ff][StripMax_-1][0] - 1.27;
-else  xmax = StripPositionX[ff][StripMax_-1][0]  + 1.27;
-}
-
-Corrected_Position = (Position - xmax) / b + xmax;
-
-return Corrected_Position;
-}
-*/
 ///////////////////////////////////////////////////////////////
 TVector3 TCATSPhysics::GetBeamDirection(){
-  TVector3 Position = TVector3 (PositionX[1]-PositionX[0] ,
+  TVector3 Direction = TVector3 (PositionX[1]-PositionX[0] ,
       PositionY[1]-PositionY[0] ,
       PositionZ[1]-PositionZ[0] );
-  Position.Unit();
-  return(Position) ;	
+  Direction.Unit();
+  return(Direction) ;	
 }
 
 ///////////////////////////////////////////////////////////////
@@ -856,7 +757,6 @@ TVector3 TCATSPhysics::GetPositionOnTarget(){
   TVector3 Position = TVector3 (GetPositionOnTargetX() 	,
       GetPositionOnTargetY() 	,
       GetPositionOnTargetX()*tan(m_TargetAngle*Pi/180)); 
-  Position.Unit();
   return(Position) ;	
 }
 
@@ -864,7 +764,7 @@ TVector3 TCATSPhysics::GetPositionOnTarget(){
 namespace CATS_LOCAL{
   ////////////////////////////////////////////////////////////////////
   double AnalyticGaussian(vector<double>& Buffer_Q,int& StripMax){
-    double gauss = -1000;
+    double gauss = -1000;  
     double Q[3];
     double StripPos[3];
     for(int j = 0; j<3 ; j++){
@@ -935,31 +835,21 @@ namespace CATS_LOCAL{
   ///////////////////////////////////////////////////////////////
   double Centroide(vector<double>& Buffer_Q, int& StripMax){
     double Centroide = 0 ;
-
-    if(StripMax > 2 && StripMax < 27){
-      int StripMax = StripMax -1 ; 
-      double NumberOfPoint = 0 ;
-      double ChargeTotal =0;
-
-      for(int i = -2 ; i < 3 ; i++){
-        if(Buffer_Q[StripMax+i]!=-1){ 
-          Centroide += (StripMax+i)*Buffer_Q[StripMax+i] ;
-          NumberOfPoint++;
-          ChargeTotal+=Buffer_Q[StripMax+i];
-        }
+    double ChargeTotal = 0;
+    
+    unsigned int sizeQ = Buffer_Q.size(); 
+    for(unsigned int i = 0 ; i < sizeQ ; i++){
+      if(Buffer_Q[i]>0){ 
+        Centroide += (i)*Buffer_Q[i-1] ;
+        ChargeTotal+=Buffer_Q[i-1];
       }
-
-      if(ChargeTotal>0) Centroide = Centroide / ChargeTotal ;
-
-      else {
-        Centroide = -1000 ; 
-      } 
-
     }
 
-    else{
-      Centroide = -1000 ;
-    }
+    if(ChargeTotal>0) Centroide = Centroide / ChargeTotal ;
+
+    else {
+      Centroide = -1000 ; 
+    } 
 
     return Centroide ;
   }
@@ -968,34 +858,74 @@ namespace CATS_LOCAL{
   double AnalyticHyperbolicSecant(vector<double>& Buffer_Q, int& StripMax){
     double sech = -1000 ;
 
-    if(StripMax > 2 && StripMax<27){		
+    if(StripMax > 2 && StripMax<27){	
+      if(Buffer_Q[StripMax-1+1]==0||Buffer_Q[StripMax-1-1]==0)
+        return sech;
+
       double vs1 = sqrt( Buffer_Q[StripMax-1]/Buffer_Q[StripMax-1+1] );
       double vs2 = sqrt( Buffer_Q[StripMax-1]/Buffer_Q[StripMax-1-1] );
       double vs3 = 0.5*( vs1 + vs2 );
       double vs4 = log( vs3 + sqrt(vs3*vs3-1.0) );
       double vs5 = (vs1 - vs2)/(2.0*sinh(vs4));	
 
-      if(vs5<0) vs5=-vs5 ;
+      if(vs5<0) 
+        vs5=-vs5 ;
 
       double vs6 = 0.5*log( (1.0+vs5)/(1.0-vs5) ) ;
 
-      if ( Buffer_Q[StripMax-1+1]>Buffer_Q[StripMax-1-1] ){ 
+      if ( Buffer_Q[StripMax-1+1]>Buffer_Q[StripMax-1-1] ) 
         sech = StripMax + vs6/vs4 ;
-      }
 
-      else{ 
+
+      else 
         sech = StripMax - vs6/vs4 ;
-      }	
 
-    }
-
-    else { 
-      sech = -1000; 
     }
 
     return sech ;
   }
 
+  /////////////////////////////////////////////////////////////////////
+  double FittedHyperbolicSecant(vector<double>& Buffer_Q, int& StripMax){
+    // Warning: should not delete static variable
+    static TF1* f = new TF1("sechs","[0]/(cosh(TMath::Pi()*(x-[1])/[2])*cosh(TMath::Pi()*(x-[1])/[2]))",1,28);
+
+    // Help the fit by computing the position of the maximum by analytic method
+    double StartingPoint = AnalyticHyperbolicSecant(Buffer_Q,StripMax);
+    // if analytic method fails then the starting point in strip max
+    if(StartingPoint==-1000) StartingPoint = StripMax; 
+
+    // Maximum is close to charge max, Mean value is close to Analytic one, typical width is 3.8 strip
+    f->SetParameters(Buffer_Q[StripMax-1],StartingPoint,3.8);
+
+    static vector<double> y ;
+    static vector<double> q ; 
+    y.clear(); q.clear();
+    double final_size = 0 ;
+    unsigned int sizeQ = Buffer_Q.size(); 
+
+    for(unsigned int i = 0 ; i < sizeQ ; i++){
+      if(Buffer_Q[i] > Buffer_Q[StripMax-1]*0.2){
+        q.push_back(Buffer_Q[i]);
+        y.push_back(i+1);
+        final_size++;
+      }
+    }
+
+    // requiered at least 3 point to perfom a fit
+    if(final_size<3){
+      return -1000 ;
+    }
+
+    TGraph* g = new TGraph(q.size(),&y[0],&q[0]);
+    g->Fit(f,"QN0");
+    delete g;
+    return f->GetParameter(1)  ;
+  }
+
+
+
+  ////////////////////////////////////////////////////////////////////////
   //	transform an integer to a string
   string itoa(int value){
     std::ostringstream o;
@@ -1005,31 +935,31 @@ namespace CATS_LOCAL{
 
     return o.str();
   }
-
+  ////////////////////////////////////////////////////////////////////////
   double fCATS_X_Q(const TCATSData* m_EventData , const int i){
     return CalibrationManager::getInstance()->ApplyCalibration( "CATS/D" + itoa( m_EventData->GetCATSDetX(i) ) + "_X" + itoa( m_EventData->GetCATSStripX(i) ) + "_Q",   
         m_EventData->GetCATSChargeX(i) + gRandom->Rndm() - fCATS_Ped_X(m_EventData, i) );
   }
-
+  ////////////////////////////////////////////////////////////////////////
   double fCATS_Y_Q(const TCATSData* m_EventData , const int i){
     return CalibrationManager::getInstance()->ApplyCalibration( "CATS/D" + itoa( m_EventData->GetCATSDetY(i) ) + "_Y" + itoa( m_EventData->GetCATSStripY(i) ) + "_Q",   
         m_EventData->GetCATSChargeY(i) + gRandom->Rndm() - fCATS_Ped_Y(m_EventData, i) );
   }
-
+  ////////////////////////////////////////////////////////////////////////
   bool fCATS_Threshold_X(const TCATSData* m_EventData , const int i){
     return CalibrationManager::getInstance()->ApplyThreshold( "CATS/D" + itoa( m_EventData->GetCATSDetX(i) ) + "_X" + itoa( m_EventData->GetCATSStripX(i) ),
         m_EventData->GetCATSChargeX(i));
   }
-
+  ////////////////////////////////////////////////////////////////////////
   bool fCATS_Threshold_Y(const TCATSData* m_EventData , const int i){
     return CalibrationManager::getInstance()->ApplyThreshold( "CATS/D" + itoa( m_EventData->GetCATSDetY(i) ) + "_Y" + itoa( m_EventData->GetCATSStripY(i) ),
         m_EventData->GetCATSChargeY(i));
   }
-
+  ////////////////////////////////////////////////////////////////////////
   double fCATS_Ped_X(const TCATSData* m_EventData, const int i){
     return CalibrationManager::getInstance()->GetPedestal( "CATS/D" + itoa( m_EventData->GetCATSDetX(i) ) + "_X" + itoa( m_EventData->GetCATSStripX(i) ) );
   }
-
+  ////////////////////////////////////////////////////////////////////////
   double fCATS_Ped_Y(const TCATSData* m_EventData, const int i){
     return CalibrationManager::getInstance()->GetPedestal( "CATS/D" + itoa( m_EventData->GetCATSDetY(i) ) + "_Y" + itoa( m_EventData->GetCATSStripY(i) ) );
   }

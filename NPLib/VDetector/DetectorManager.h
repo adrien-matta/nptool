@@ -53,7 +53,7 @@ namespace NPA{
       void        ClearEventData();
       void        InitSpectra();
       vector< map< vector<string>, TH1* > > GetSpectra();  
-
+      vector<string>                        GetDetectorList();
     private:   
       // The map containning all detectors
       // Using a Map one can access to any detector using its name

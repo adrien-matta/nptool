@@ -43,7 +43,7 @@ RootOutput* RootOutput::getInstance(TString fileNameBase, TString treeNameBase)
 
 
 void RootOutput::Destroy()
-{
+{ 
    if (instance != 0) {
       delete instance;
       instance = 0;
@@ -126,7 +126,7 @@ void RootOutput::InitAsciiFiles()
 
 
 RootOutput::~RootOutput()
-{
+{ 
     // The data is written to the file and the tree is closed:
     if (pRootFile && !NPOptionManager::getInstance()->GetPROOF()) {
       TDirectory* currentPath= gDirectory;

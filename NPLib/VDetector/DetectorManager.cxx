@@ -792,3 +792,15 @@ vector< map< vector<string>, TH1* > > DetectorManager::GetSpectra()
 
    return myVector;
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////   
+vector<string> DetectorManager::GetDetectorList(){
+  map<string,VDetector*>::iterator it;
+  vector<string> DetectorList;
+  for (it = m_Detector.begin(); it != m_Detector.end(); ++it) { 
+    DetectorList.push_back(it->first);
+  }
+
+  return DetectorList;
+}
+
