@@ -149,7 +149,7 @@ void TCharissaPhysics::BuildPhysicalEvent(){
       double tLayer2_Si_Y_T= -1000;
       double tLayer2_Si_E= -1000;
       double tLayer2_Si_T = -1000;
-
+      
       for(unsigned int ll = 0 ; ll < Layer2_couple.size() ; ++ll){	
         int Layer2_N = m_PreTreatedData->GetCharissaLayer2StripXEDetectorNbr(Layer2_couple[ll].X()) ;
         // Same detector
@@ -195,18 +195,18 @@ void TCharissaPhysics::BuildPhysicalEvent(){
 
       double CsIE = -1000;
       int CsIN = -1000;
+      
       // Look for an associate CsI E
       for(unsigned int t = 0 ; t < m_CsIEMult ; ++t ){
-        if(m_PreTreatedData->GetCharissaLayer2StripXEDetectorNbr( Layer1_couple[i].X() ) == m_PreTreatedData->GetCharissaCsIEDetectorNbr(t)){
+        if(m_PreTreatedData->GetCharissaLayer1StripXEDetectorNbr( Layer1_couple[i].X() ) == m_PreTreatedData->GetCharissaCsIEDetectorNbr(t)){
           CsIE = m_PreTreatedData->GetCharissaCsIEEnergy(t);
           CsIN = m_PreTreatedData->GetCharissaCsIECristalNbr(t);
         }
       }
-
       double CsIT = -1000;
       // Look for an associate CsI T
       for(unsigned int t = 0 ; t < m_CsITMult ; ++t ){
-          if(m_PreTreatedData->GetCharissaLayer2StripXEDetectorNbr( Layer1_couple[i].X() ) == m_PreTreatedData->GetCharissaCsITDetectorNbr(t))
+          if(m_PreTreatedData->GetCharissaLayer1StripXEDetectorNbr( Layer1_couple[i].X() ) == m_PreTreatedData->GetCharissaCsITDetectorNbr(t))
             CsIT = m_PreTreatedData->GetCharissaCsITTime(t);
       }
       

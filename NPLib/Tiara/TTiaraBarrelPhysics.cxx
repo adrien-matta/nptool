@@ -57,6 +57,7 @@ ClassImp(TTiaraBarrelPhysics)
     m_Back_E_Threshold = 0.40 ;
     m_Maximum_FrontBack_Difference = 0.4;
     m_OuterBack_E_Threshold =0;
+    m_Spectra = NULL ;
   }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -65,6 +65,7 @@ ClassImp(TTiaraHyballPhysics)
 
     m_Take_E_Ring=false;
     m_Take_T_Sector=true;
+    m_Spectra = NULL;
   }
 
 ///////////////////////////////////////////////////////////////////////////

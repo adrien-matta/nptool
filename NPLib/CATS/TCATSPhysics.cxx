@@ -47,6 +47,7 @@ ClassImp(TCATSPhysics)
     m_PreTreatedData    = new TCATSData ;
     m_EventPhysics 			= this			    ;
     m_NumberOfCATS      = 0             ;
+    m_Spectra           = NULL          ;
   }
 
 ///////////////////////////////////////////////////////////////////////////
