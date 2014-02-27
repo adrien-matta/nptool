@@ -321,6 +321,21 @@ void TLaBr3Spectra::FillPreTreatedSpectra(TLaBr3Data* PreTreatedData)
 ////////////////////////////////////////////////////////////////////////////////
 void TLaBr3Spectra::FillPhysicsSpectra(TLaBr3Physics* Physics)
 {
+   string name;
+   string family = "LABR3/PHY";
+
+
+   // Energy-Time Correlation
+   for (unsigned int i = 0 ; i < Physics->DetectorNumber.size(); i++) { // loop on number of detectors
+      name = Form("LABR3_%d_E_TOF", i+1);
+      GetHisto(family,name) -> Fill(Physics->Time[i], Physics->Energy[i]);
+   }
+
+   // E-TOF:
+   name = "LABR3_E_TOF";
+   for (unsigned int i = 0 ; i < Physics->DetectorNumber.size(); i++) { // loop on number of detectors
+      GetHisto(family,name) -> Fill(Physics->Time[i], Physics->Energy[i]);
+   }
 }
 
 
