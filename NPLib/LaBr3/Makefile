@@ -8,7 +8,7 @@ all:            $(SHARELIB)
 ############### Detector ##############
 
 ## LaBr3 ##
-libLaBr3.so: TLaBr3Data.o	TLaBr3DataDict.o TLaBr3Physics.o	TLaBr3PhysicsDict.o
+libLaBr3.so: TLaBr3Data.o	TLaBr3DataDict.o TLaBr3Physics.o	TLaBr3PhysicsDict.o TLaBr3Spectra.o
 			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TLaBr3DataDict.cxx:	TLaBr3Data.h
@@ -20,6 +20,7 @@ TLaBr3PhysicsDict.cxx:	TLaBr3Physics.h
 # dependances
 TLaBr3Data.o:	TLaBr3Data.cxx	TLaBr3Data.h
 TLaBr3Physics.o:	TLaBr3Physics.cxx	TLaBr3Physics.h
+TLaBr3Spectra.o:	TLaBr3Spectra.cxx	TLaBr3Spectra.h
 #######################################
 
 ############# Clean and More ##########

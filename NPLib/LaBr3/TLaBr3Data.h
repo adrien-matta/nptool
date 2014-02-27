@@ -45,13 +45,13 @@ class TLaBr3Data : public TObject {
 
    /////////////////////           GETTERS           ////////////////////////
    // Energy
-   int      GetEnergyMult()   {return fLaBr3_E_Number.size();}
-   int      GetENumber(int i) {return fLaBr3_E_Number[i];}
-   double   GetEEnergy(int i) {return fLaBr3_E_Energy[i];}
+   unsigned int   GetEnergyMult()   {return fLaBr3_E_Number.size();}
+   int            GetENumber(int i) {return fLaBr3_E_Number[i];}
+   double         GetEEnergy(int i) {return fLaBr3_E_Energy[i];}
    // Time 
-   int      GetTimeMult()     {return fLaBr3_T_Number.size();}
-   int      GetTNumber(int i) {return fLaBr3_T_Number[i];}
-   double   GetTTime(int i)   {return fLaBr3_T_Time[i];}
+   unsigned int   GetTimeMult()     {return fLaBr3_T_Number.size();}
+   int            GetTNumber(int i) {return fLaBr3_T_Number[i];}
+   double         GetTTime(int i)   {return fLaBr3_T_Time[i];}
 
    /////////////////////           SETTERS           ////////////////////////
    // Energy
