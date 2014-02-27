@@ -397,10 +397,15 @@ void TExogamPhysics::BuildPhysicalEvent()
 double TExogamPhysics::DopplerCorrection(double E, double Theta)
 {
   double Pi = 3.141592654 ;
+  TString filename = "configs/beta.txt";
+  ifstream file;
+  cout << filename << endl;
+  file.open(filename);
+  if(!file) cout << filename << " was not opened" << endl;
 
   double E_corr = 0;
-  //double beta = 0.197;     // baptiste value
-  double beta = 0.17; //e628 test
+  double beta = 0.; 
+  file>>beta;
   double gamma = 1./ sqrt(1-beta*beta);
 
   E_corr = gamma * E * ( 1. - beta * cos(Theta*Pi/180.)); 
@@ -567,7 +572,7 @@ void TExogamPhysics::AddClover(string AngleFile)
   //  TString filename = Form("posz42_simu50mm/angles_exogam_clover%d.txt",NumberOfClover);
   //  TString filename = Form("posz42_exp_stat_demiring/angles_exogam_clover%d.txt",NumberOfClover);
   
-  string path = "posz42_exp_stat_demiring/";
+  string path = "configs/";
   TString filename = path + AngleFile;
   
   cout << filename << endl;
