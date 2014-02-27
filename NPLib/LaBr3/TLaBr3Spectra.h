@@ -1,5 +1,5 @@
-#ifndef TCHARISSASPECTRA_H
-#define TCHARISSASPECTRA_H
+#ifndef TLABR3SPECTRA_H
+#define TLABR3SPECTRA_H
 /*****************************************************************************
  * Copyright (C) 2009-2013    this file is part of the NPTool Project        *
  *                                                                           *
