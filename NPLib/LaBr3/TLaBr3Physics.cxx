@@ -289,9 +289,9 @@ void TLaBr3Physics::BuildSimplePhysicalEvent()
    {
       for(unsigned int i = 0 ; i < EventData->GetEnergyMult() ; i++)
          {
-            DetectorNumber.push_back( EventData->GetLaBr3Number(i) )   ;
-            Energy.push_back( CalibrationManager::getInstance()->ApplyCalibration("LaBr3/Detector" + itoa( EventData->GetLaBr3Number(i) ) +"_E",EventData->GetEnergy(i) ) );
-            Time.push_back( CalibrationManager::getInstance()->ApplyCalibration(   "LaBr3/Detector" + itoa( EventData->GetLaBr3Number(i) ) +"_T",EventData->GetTime(i) ) );
+//            DetectorNumber.push_back( EventData->GetLaBr3Number(i) )   ;
+//            Energy.push_back( CalibrationManager::getInstance()->ApplyCalibration("LaBr3/Detector" + itoa( EventData->GetLaBr3Number(i) ) +"_E",EventData->GetEnergy(i) ) );
+//            Time.push_back( CalibrationManager::getInstance()->ApplyCalibration(   "LaBr3/Detector" + itoa( EventData->GetLaBr3Number(i) ) +"_T",EventData->GetTime(i) ) );
          }
 
    }

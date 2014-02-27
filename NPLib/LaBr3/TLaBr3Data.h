@@ -28,10 +28,12 @@ using namespace std ;
 
 class TLaBr3Data : public TObject {
  private:
-   // ADC
-   vector<double>  fLaBr3_Energy;   
-   vector<double>  fLaBr3_Time ;
-   vector<short>   fLaBr3_Number ;
+   // Energy 
+   vector<short>   fLaBr3_E_Number;
+   vector<double>  fLaBr3_E_Energy;   
+   // Time
+   vector<short>   fLaBr3_T_Number;
+   vector<double>  fLaBr3_T_Time;
    
  public:
    TLaBr3Data();
@@ -42,27 +44,23 @@ class TLaBr3Data : public TObject {
    void   Dump() const;
 
    /////////////////////           GETTERS           ////////////////////////
-   // (E)
-   double   GetEnergy(int i)        {return fLaBr3_Energy[i];}
-   // (T)
-   double   GetTime(int i)          {return fLaBr3_Time[i];}
-   // (N)
-   int      GetLaBr3Number(int i)   {return fLaBr3_Number[i];}
-
-   //Mult
-   // E
-   double   GetEnergyMult()      {return fLaBr3_Energy.size();}
-   // (T)
-   double   GetTimeMult()        {return fLaBr3_Time.size();}
-   // (N)
-   int      GetLaBr3NumberMult() {return fLaBr3_Number.size();}
+   // Energy
+   int      GetEnergyMult()   {return fLaBr3_E_Number.size();}
+   int      GetENumber(int i) {return fLaBr3_E_Number[i];}
+   double   GetEEnergy(int i) {return fLaBr3_E_Energy[i];}
+   // Time 
+   int      GetTimeMult()     {return fLaBr3_T_Number.size();}
+   int      GetTNumber(int i) {return fLaBr3_T_Number[i];}
+   double   GetTTime(int i)   {return fLaBr3_T_Time[i];}
 
    /////////////////////           SETTERS           ////////////////////////
-   // (E)
-   void     SetEnergy(double E)     {fLaBr3_Energy.push_back(E);}
-   void     SetTime(double T)       {fLaBr3_Time.push_back(T);}
-   void     SetLaBr3Number(int N)   {fLaBr3_Number.push_back(N);}
-   //
+   // Energy
+   void     SetENumber(int N)    {fLaBr3_E_Number.push_back(N);}
+   void     SetEEnergy(double E) {fLaBr3_E_Energy.push_back(E);}
+   // time
+   void     SetTNumber(int N)    {fLaBr3_T_Number.push_back(N);}
+   void     SetTTime(double T)   {fLaBr3_T_Time.push_back(T);}
+
    ClassDef(TLaBr3Data,1)  // LaBr3Data structure
 };
 
