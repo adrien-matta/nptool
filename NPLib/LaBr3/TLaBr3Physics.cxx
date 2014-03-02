@@ -60,8 +60,7 @@ TLaBr3Physics::~TLaBr3Physics()
 ///////////////////////////////////////////////////////////////////////////
 void TLaBr3Physics::Clear()
    {
-      DetectorTNumber.clear() ;
-      DetectorENumber.clear() ;
+      DetectorNumber.clear() ;
       Energy.clear() ;
       Time.clear() ;
    }
@@ -286,13 +285,9 @@ void TLaBr3Physics::BuildSimplePhysicalEvent()
    {
       for(unsigned int i = 0 ; i < EventData->GetEnergyMult() ; i++)
          {
-            DetectorENumber.push_back( EventData->GetENumber(i) )   ;
+            DetectorNumber.push_back( EventData->GetENumber(i) )   ;
             Energy.push_back( CalibrationManager::getInstance()->ApplyCalibration("LaBr3/Detector" + itoa( EventData->GetENumber(i) ) +"_E",EventData->GetEEnergy(i) ) );
-          }
-      for(unsigned int i = 0 ; i < EventData->GetEnergyMult() ; i++)
-         {
-            DetectorTNumber.push_back( EventData->GetTNumber(i) )   ;
-            Time.push_back( CalibrationManager::getInstance()->ApplyCalibration(   "LaBr3/Detector" + itoa( EventData->GetTNumber(i) ) +"_T",EventData->GetTTime(i) ) );
+            Time.push_back( CalibrationManager::getInstance()->ApplyCalibration(   "LaBr3/Detector" + itoa( EventData->GetENumber(i) ) +"_T",EventData->GetTTime(i) ) );
          }
 
    }
