@@ -60,7 +60,8 @@ TSiLiPhysics::~TSiLiPhysics()
 ///////////////////////////////////////////////////////////////////////////
 void TSiLiPhysics::Clear()
    {
-      DetectorNumber.clear() ;
+      DetectorENumber.clear() ;
+      DetectorTNumber.clear() ;
       Energy.clear() ;
       Time.clear() ;
    }
@@ -244,12 +245,8 @@ void TSiLiPhysics::AddParameterToCalibrationManager()
       
       for(int i = 0 ; i < NumberOfDetector ; i++)
          {
-            for( int j = 0 ; j < 16 ; j++)
-               {
                   Cal->AddParameter("SiLi", "Detector"+itoa(i+1)+"_E","SiLi_Detector"+itoa(i+1)+"_E")   ;
-                  Cal->AddParameter("SiLi", "Detector"+itoa(i+1)+"_T","SiLi_Detector"+itoa(i+1)+"_T")   ;   
-               }
-      
+                  Cal->AddParameter("SiLi", "Detector"+itoa(i+1)+"_T","SiLi_Detector"+itoa(i+1)+"_T")   ;         
          }
    }
    
@@ -266,7 +263,8 @@ void TSiLiPhysics::InitializeRootInputPhysics()
    {
       TChain* inputChain = RootInput::getInstance()->GetChain();
       inputChain->SetBranchStatus ( "SiLi", true );
-      inputChain->SetBranchStatus ( "DetectorNumber", true );
+      inputChain->SetBranchStatus ( "DetectorENumber", true );
+      inputChain->SetBranchStatus ( "DetectorTNumber", true );
       inputChain->SetBranchStatus ( "Energy", true );
       inputChain->SetBranchStatus ( "Time", true );
       inputChain->SetBranchAddress( "SiLi", &EventPhysics );
@@ -289,9 +287,13 @@ void TSiLiPhysics::BuildSimplePhysicalEvent()
    {
       for(unsigned int i = 0 ; i < EventData->GetEnergyMult() ; i++)
          {
-//            DetectorNumber.push_back( EventData->GetSiLiNumber(i) )   ;
-//            Energy.push_back( CalibrationManager::getInstance()->ApplyCalibration("SiLi/Detector" + itoa( EventData->GetSiLiNumber(i) ) +"_E",EventData->GetEnergy(i) ) );
-//            Time.push_back( CalibrationManager::getInstance()->ApplyCalibration(   "SiLi/Detector" + itoa( EventData->GetSiLiNumber(i) ) +"_T",EventData->GetTime(i) ) );
+            DetectorENumber.push_back( EventData->GetENumber(i) )   ;
+            Energy.push_back( CalibrationManager::getInstance()->ApplyCalibration("SiLi/Detector" + itoa( EventData->GetENumber(i) ) +"_E",EventData->GetEEnergy(i) ) );
+         }
+      for(unsigned int i = 0 ; i < EventData->GetTimeMult() ; i++)
+         {
+            DetectorTNumber.push_back( EventData->GetTNumber(i) )   ;
+            Time.push_back( CalibrationManager::getInstance()->ApplyCalibration(   "SiLi/Detector" + itoa( EventData->GetTNumber(i) ) +"_T",EventData->GetTTime(i) ) );
          }
 
    }

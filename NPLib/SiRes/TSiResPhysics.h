@@ -1,5 +1,5 @@
-#ifndef __LaBr3Physics__
-#define __LaBr3Physics__
+#ifndef __SiResPhysics__
+#define __SiResPhysics__
 /*****************************************************************************
  * Copyright (C) 2009-2013    this file is part of the NPTool Project        *
  *                                                                           *
@@ -14,7 +14,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold theLaBr3 Detector  Physics                             *
+ *  This class hold theSiRes Detector  Physics                             *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -30,25 +30,28 @@ using namespace std ;
 #include "TObject.h"
 
 //   NPL
-#include "TLaBr3Data.h"
+#include "TSiResData.h"
 #include "../include/VDetector.h"
 #include "../include/CalibrationManager.h"
 
-class TLaBr3Physics : public TObject, public NPA::VDetector
+class TSiResPhysics : public TObject, public NPA::VDetector
 {
    public:   //   Constructor and Destructor
-      TLaBr3Physics();
-      ~TLaBr3Physics();
+      TSiResPhysics();
+      ~TSiResPhysics();
 
    public:
       void  Clear();
       void  Clear(const Option_t*) {};
    
    public:   //   Calibrated Data
-      vector<UShort_t>   DetectorENumber ;
-      vector<UShort_t>   DetectorTNumber ;
+      vector<UShort_t>   DetectorNumber ;
+      vector<UShort_t>   ChannelNumber ;
       vector<Double_t>   Energy;
+      vector<Double_t>   EnergyBack;
       vector<Double_t>   Time;
+      vector<Double_t>   x;
+      vector<Double_t>   y;
 
    public:   //   inherrited from VDetector
       //   Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
@@ -71,6 +74,7 @@ class TLaBr3Physics : public TObject, public NPA::VDetector
       
       //   This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
       void BuildPhysicalEvent();
+      void Treat();
       
       //   Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
       //   This method aimed to be used for analysis performed during experiment, when speed is requiered.
@@ -80,8 +84,8 @@ class TLaBr3Physics : public TObject, public NPA::VDetector
       // Same as above but for online analysis
       void BuildOnlinePhysicalEvent()  {BuildPhysicalEvent();};
 
-      // Give and external TLaBr3Data object to TLaBr3Physics. Needed for online analysis for example.
-      void SetRawDataPointer(TLaBr3Data* rawDataPointer) {EventData = rawDataPointer;}
+      // Give and external TSiResData object to TSiResPhysics. Needed for online analysis for example.
+      void SetRawDataPointer(TSiResData* rawDataPointer) {EventData = rawDataPointer;}
 
       //   Those two method all to clear the Event Physics or Data
       void ClearEventPhysics() {Clear();}      
@@ -89,10 +93,10 @@ class TLaBr3Physics : public TObject, public NPA::VDetector
 
    private:   // Data not writted in the tree
       int                   NumberOfDetector ;//!
-      TLaBr3Data*         EventData ;//!
-      TLaBr3Physics*      EventPhysics ;//!
+      TSiResData*         EventData ;//!
+      TSiResPhysics*      EventPhysics ;//!
 
-      ClassDef(TLaBr3Physics,1)  // LaBr3Physics structure
+      ClassDef(TSiResPhysics,1)  // SiResPhysics structure
 };
 
 #endif

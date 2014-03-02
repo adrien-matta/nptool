@@ -12,7 +12,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold LaBr3  Physics                                         *
+ *  This class hold SiRes  Physics                                         *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -21,7 +21,7 @@
  *****************************************************************************/
 
 //   NPL
-#include "TLaBr3Physics.h"
+#include "TSiResPhysics.h"
 #include "../include/RootOutput.h"
 #include "../include/RootInput.h"
 
@@ -44,30 +44,33 @@ string itoa(int value)
    return buffer;
 }
 
-ClassImp(TLaBr3Physics)
+ClassImp(TSiResPhysics)
 ///////////////////////////////////////////////////////////////////////////
-TLaBr3Physics::TLaBr3Physics()
+TSiResPhysics::TSiResPhysics()
    {      
       NumberOfDetector = 0 ;
-      EventData = new TLaBr3Data ;
+      EventData = new TSiResData ;
       EventPhysics = this ;
    }
    
 ///////////////////////////////////////////////////////////////////////////
-TLaBr3Physics::~TLaBr3Physics()
+TSiResPhysics::~TSiResPhysics()
    {}
    
 ///////////////////////////////////////////////////////////////////////////
-void TLaBr3Physics::Clear()
+void TSiResPhysics::Clear()
    {
-      DetectorTNumber.clear() ;
-      DetectorENumber.clear() ;
+      DetectorNumber.clear() ;
+      ChannelNumber.clear() ;
       Energy.clear() ;
       Time.clear() ;
+      EnergyBack.clear() ;
+      x.clear() ;
+      y.clear() ;
    }
    
 ///////////////////////////////////////////////////////////////////////////
-void TLaBr3Physics::ReadConfiguration(string Path) 
+void TSiResPhysics::ReadConfiguration(string Path) 
    {
       ifstream ConfigFile           ;
       ConfigFile.open(Path.c_str()) ;
@@ -94,8 +97,8 @@ void TLaBr3Physics::ReadConfiguration(string Path)
          
          getline(ConfigFile, LineBuffer);
 
-         //   If line is a Start Up LaBr3 bloc, Reading toggle to true      
-         if (LineBuffer.compare(0, 5, "LaBr3") == 0) 
+         //   If line is a Start Up SiRes bloc, Reading toggle to true      
+         if (LineBuffer.compare(0, 5, "SiRes") == 0) 
             {
                cout << "///" << endl ;
                cout << "Platic found: " << endl ;        
@@ -115,7 +118,7 @@ void TLaBr3Physics::ReadConfiguration(string Path)
                if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
 
                   //   Finding another telescope (safety), toggle out
-               else if (DataBuffer.compare(0, 5, "LaBr3") == 0) {
+               else if (DataBuffer.compare(0, 5, "SiRes") == 0) {
                   cout << "WARNING: Another Detector is find before standard sequence of Token, Error may occured in Telecope definition" << endl ;
                   ReadingStatus = false ;
                }
@@ -170,33 +173,33 @@ void TLaBr3Physics::ReadConfiguration(string Path)
                else if (DataBuffer== "Radius=") {
                   check_Radius = true;
                   ConfigFile >> DataBuffer ;
-                  cout << "LaBr3 Radius:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
+                  cout << "SiRes Radius:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
                }
                
                // Squared shape
                else if (DataBuffer=="Width=") {
                   check_Width = true;
                   ConfigFile >> DataBuffer ;
-                  cout << "LaBr3 Width:  " <<atof( DataBuffer.c_str() ) << "mm" << endl;
+                  cout << "SiRes Width:  " <<atof( DataBuffer.c_str() ) << "mm" << endl;
                }
                
                else if (DataBuffer== "Height=") {
                   check_Height = true;
                   ConfigFile >> DataBuffer ;
-                  cout << "LaBr3 Height:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
+                  cout << "SiRes Height:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
                }
                
                // Common
                else if (DataBuffer=="Thickness=") {
                   check_Thickness = true;
                   ConfigFile >> DataBuffer ;
-                  cout << "LaBr3 Thickness:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
+                  cout << "SiRes Thickness:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
                }
                
                else if (DataBuffer== "Scintillator=") {
                   check_Scintillator = true ;
                   ConfigFile >> DataBuffer ;
-                  cout << "LaBr3 Scintillator type:  " << DataBuffer << endl;
+                  cout << "SiRes Scintillator type:  " << DataBuffer << endl;
                }
                
                else if (DataBuffer=="LeadThickness=") {
@@ -239,61 +242,87 @@ void TLaBr3Physics::ReadConfiguration(string Path)
    }
 
 ///////////////////////////////////////////////////////////////////////////
-void TLaBr3Physics::AddParameterToCalibrationManager()
+void TSiResPhysics::AddParameterToCalibrationManager()
    {
       CalibrationManager* Cal = CalibrationManager::getInstance();
       
       for(int i = 0 ; i < NumberOfDetector ; i++)
          {
-                  Cal->AddParameter("LaBr3", "Detector"+itoa(i+1)+"_E","LaBr3_Detector"+itoa(i+1)+"_E")   ;
-                  Cal->AddParameter("LaBr3", "Detector"+itoa(i+1)+"_T","LaBr3_Detector"+itoa(i+1)+"_T")   ;   
+            for( int j = 0 ; j < 16 ; j++)
+               {
+                  Cal->AddParameter("SiRes", "Detector"+itoa(i+1)+"_E","SiRes_Detector"+itoa(i+1)+"_E")   ;
+               }
+               Cal->AddParameter("SiRes", "Detector"+itoa(i+1)+"_EBack","SiRes_Detector"+itoa(i+1)+"_EBack")   ;   
+               Cal->AddParameter("SiRes", "Detector"+itoa(i+1)+"_T","SiRes_Detector"+itoa(i+1)+"_T")   ;   
+      
          }
    }
    
 ///////////////////////////////////////////////////////////////////////////
-void TLaBr3Physics::InitializeRootInputRaw() 
+void TSiResPhysics::InitializeRootInputRaw() 
    {
       TChain* inputChain = RootInput::getInstance()->GetChain()     ;
-      inputChain->SetBranchStatus ( "LaBr3"       , true )        ;
-      inputChain->SetBranchStatus ( "fLaBr3_*"    , true )        ;
-      inputChain->SetBranchAddress( "LaBr3"       , &EventData )  ;
+      inputChain->SetBranchStatus ( "SiRes"       , true )        ;
+      inputChain->SetBranchStatus ( "fSiRes_*"    , true )        ;
+      inputChain->SetBranchAddress( "SiRes"       , &EventData )  ;
    }
 ///////////////////////////////////////////////////////////////////////////
-void TLaBr3Physics::InitializeRootInputPhysics()
+void TSiResPhysics::InitializeRootInputPhysics()
    {
       TChain* inputChain = RootInput::getInstance()->GetChain();
-      inputChain->SetBranchStatus ( "LaBr3", true );
+      inputChain->SetBranchStatus ( "SiRes", true );
       inputChain->SetBranchStatus ( "DetectorNumber", true );
+      inputChain->SetBranchStatus ( "ChannelNumber", true );
       inputChain->SetBranchStatus ( "Energy", true );
+      inputChain->SetBranchStatus ( "EnergyBack", true );
       inputChain->SetBranchStatus ( "Time", true );
-      inputChain->SetBranchAddress( "LaBr3", &EventPhysics );
+      inputChain->SetBranchAddress( "SiRes", &EventPhysics );
    }
 ///////////////////////////////////////////////////////////////////////////
-void TLaBr3Physics::InitializeRootOutput()
+void TSiResPhysics::InitializeRootOutput()
    {
       TTree* outputTree = RootOutput::getInstance()->GetTree()            ;
-      outputTree->Branch( "LaBr3" , "TLaBr3Physics" , &EventPhysics ) ;
+      outputTree->Branch( "SiRes" , "TSiResPhysics" , &EventPhysics ) ;
    }
 
 ///////////////////////////////////////////////////////////////////////////
-void TLaBr3Physics::BuildPhysicalEvent()
+void TSiResPhysics::BuildPhysicalEvent()
    {
       BuildSimplePhysicalEvent()   ;
    }
 
 ///////////////////////////////////////////////////////////////////////////
-void TLaBr3Physics::BuildSimplePhysicalEvent()
+void TSiResPhysics::BuildSimplePhysicalEvent()
    {
       for(unsigned int i = 0 ; i < EventData->GetEnergyMult() ; i++)
          {
-            DetectorENumber.push_back( EventData->GetENumber(i) )   ;
-            Energy.push_back( CalibrationManager::getInstance()->ApplyCalibration("LaBr3/Detector" + itoa( EventData->GetENumber(i) ) +"_E",EventData->GetEEnergy(i) ) );
+            DetectorNumber.push_back( EventData->GetENumber(i) )   ;
+            ChannelNumber.push_back( EventData->GetEChannel(i) )   ;
+            Energy.push_back( CalibrationManager::getInstance()->ApplyCalibration("SiRes/Detector" + itoa( EventData->GetENumber(i) ) +"_E",EventData->GetEEnergy(i) ) );
           }
-      for(unsigned int i = 0 ; i < EventData->GetEnergyMult() ; i++)
+       for(unsigned int i = 0 ; i < EventData->GetTimeMult() ; i++)
          {
-            DetectorTNumber.push_back( EventData->GetTNumber(i) )   ;
-            Time.push_back( CalibrationManager::getInstance()->ApplyCalibration(   "LaBr3/Detector" + itoa( EventData->GetTNumber(i) ) +"_T",EventData->GetTTime(i) ) );
+            Time.push_back( CalibrationManager::getInstance()->ApplyCalibration(   "SiRes/Detector" + itoa( EventData->GetTNumber(i) ) +"_T",EventData->GetTTime(i) ) );
          }
+       for(unsigned int i = 0 ; i < EventData->GetEnergyBackMult() ; i++)
+         {
+            EnergyBack.push_back( CalibrationManager::getInstance()->ApplyCalibration(   "SiRes/Detector" + itoa( EventData->GetEEnergyBackNumber(i) ) +"_EnergyBack",EventData->GetEEnergyBack(i) ) );
+         }
+     if(EventData->GetEnergyMult()==4)Treat();
 
    }
-
+///////////////////////////////////////////////////////////////////////////
+void TSiResPhysics::Treat()
+   {
+      double x1=-5; double x2=5; double y1=-5; double y2=5;
+      double E1=-1000; double E2=-1000; double E3=-1000; double E4=-1000; 
+      for(unsigned int i = 0 ; i < EventData->GetEnergyMult() ; i++)
+         {
+         	if(ChannelNumber[i]==0)E1=Energy[i];
+         	if(ChannelNumber[i]==1)E2=Energy[i];
+         	if(ChannelNumber[i]==2)E3=Energy[i];
+         	if(ChannelNumber[i]==3)E4=Energy[i];
+         }
+      	x.push_back( (x1*E1+x2*E2) / (E1+E2) ) ;
+      	y.push_back( (y1*E3+y2*E4) / (E3+E4) ) ;
+   }
