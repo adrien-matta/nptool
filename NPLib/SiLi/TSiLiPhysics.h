@@ -45,8 +45,7 @@ class TSiLiPhysics : public TObject, public NPA::VDetector
       void  Clear(const Option_t*) {};
    
    public:   //   Calibrated Data
-      vector<UShort_t>   DetectorENumber ;
-      vector<UShort_t>   DetectorTNumber ;
+      vector<UShort_t>   DetectorNumber ;
       vector<Double_t>   Energy;
       vector<Double_t>   Time;
 

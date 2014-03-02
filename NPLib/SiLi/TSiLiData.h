@@ -46,7 +46,7 @@ class TSiLiData : public TObject {
    /////////////////////           GETTERS           ////////////////////////
    // Energy
    unsigned int   GetEnergyMult()   {return fSiLi_E_Number.size();}
-   int            GetENumber(int i) {return fSiLi_E_Number[i];}
+   int            GetENumber(int i)  {return fSiLi_E_Number[i];}
    double         GetEEnergy(int i) {return fSiLi_E_Energy[i];}
    // Time 
    unsigned int   GetTimeMult()     {return fSiLi_T_Number.size();}

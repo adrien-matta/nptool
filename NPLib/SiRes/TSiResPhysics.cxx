@@ -248,7 +248,7 @@ void TSiResPhysics::AddParameterToCalibrationManager()
       
       for(int i = 0 ; i < NumberOfDetector ; i++)
          {
-            for( int j = 0 ; j < 16 ; j++)
+            for( int j = 0 ; j < 4 ; j++)
                {
                   Cal->AddParameter("SiRes", "Detector"+itoa(i+1)+"_E","SiRes_Detector"+itoa(i+1)+"_E")   ;
                }

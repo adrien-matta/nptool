@@ -60,8 +60,8 @@ TSiLiPhysics::~TSiLiPhysics()
 ///////////////////////////////////////////////////////////////////////////
 void TSiLiPhysics::Clear()
    {
-      DetectorENumber.clear() ;
-      DetectorTNumber.clear() ;
+
+      DetectorNumber.clear() ;
       Energy.clear() ;
       Time.clear() ;
    }
@@ -287,13 +287,9 @@ void TSiLiPhysics::BuildSimplePhysicalEvent()
    {
       for(unsigned int i = 0 ; i < EventData->GetEnergyMult() ; i++)
          {
-            DetectorENumber.push_back( EventData->GetENumber(i) )   ;
+            DetectorNumber.push_back( EventData->GetENumber(i) )   ;
             Energy.push_back( CalibrationManager::getInstance()->ApplyCalibration("SiLi/Detector" + itoa( EventData->GetENumber(i) ) +"_E",EventData->GetEEnergy(i) ) );
-         }
-      for(unsigned int i = 0 ; i < EventData->GetTimeMult() ; i++)
-         {
-            DetectorTNumber.push_back( EventData->GetTNumber(i) )   ;
-            Time.push_back( CalibrationManager::getInstance()->ApplyCalibration(   "SiLi/Detector" + itoa( EventData->GetTNumber(i) ) +"_T",EventData->GetTTime(i) ) );
+             Time.push_back( CalibrationManager::getInstance()->ApplyCalibration(   "SiLi/Detector" + itoa( EventData->GetTNumber(i) ) +"_T",EventData->GetTTime(i) ) );
          }
 
    }
