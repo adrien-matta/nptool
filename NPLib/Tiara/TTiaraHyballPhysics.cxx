@@ -52,9 +52,9 @@ ClassImp(TTiaraHyballPhysics)
     m_PreTreatedData    = new TTiaraHyballData ;
     m_EventPhysics      = this ;
     m_NumberOfDetector = 0 ;
-    m_MaximumStripMultiplicityAllowed = 10;
-    m_StripEnergyMatchingSigma = 0.10    ;
-    m_StripEnergyMatchingNumberOfSigma = 3;
+    m_MaximumStripMultiplicityAllowed = 100;
+    m_StripEnergyMatchingSigma = 1.00    ;
+    m_StripEnergyMatchingNumberOfSigma = 30;
 
     // Threshold
     m_StripRing_E_RAW_Threshold = 0 ;
@@ -134,7 +134,6 @@ void TTiaraHyballPhysics::BuildPhysicalEvent(){
 ///////////////////////////////////////////////////////////////////////////
 void TTiaraHyballPhysics::PreTreat(){
   ClearPreTreatedData();
-
   //   Ring E
   unsigned int sizeRingE = m_EventData->GetRingEMult();
   for(unsigned int i = 0 ; i < sizeRingE ; ++i){
@@ -208,6 +207,7 @@ vector < TVector2 > TTiaraHyballPhysics :: Match_Ring_Sector(){
  
   unsigned int sizeR = m_PreTreatedData->GetRingEMult();
   unsigned int sizeS = m_PreTreatedData->GetSectorEMult();
+
   for(unsigned int i = 0 ; i < sizeR ; i++) {
     for(unsigned int j = 0 ; j < sizeS ; j++){
       //   if same detector check energy
