@@ -1,0 +1,17 @@
+exogam_seg_02A0_theta	 117.844969  exogam_seg_02A0_phi  13.113141
+exogam_seg_02A1_theta	 99.581160   exogam_seg_02A1_phi  13.113141
+exogam_seg_02A2_theta	 101.033306  exogam_seg_02A2_phi  33.756229
+exogam_seg_02A3_theta	 121.390958  exogam_seg_02A3_phi  33.756229
+exogam_seg_02B0_theta	 62.155036   exogam_seg_02B0_phi  13.113141
+exogam_seg_02B1_theta	 58.609034   exogam_seg_02B1_phi  33.756229
+exogam_seg_02B2_theta	 78.966693   exogam_seg_02B2_phi  33.756229
+exogam_seg_02B3_theta	 80.418845   exogam_seg_02B3_phi  13.113141
+exogam_seg_02C0_theta	 62.155036   exogam_seg_02C0_phi  76.886856
+exogam_seg_02C1_theta	 80.418845   exogam_seg_02C1_phi  76.886856
+exogam_seg_02C2_theta	 78.966693   exogam_seg_02C2_phi  56.243771
+exogam_seg_02C3_theta	 58.609034   exogam_seg_02C3_phi  56.243771
+exogam_seg_02D0_theta	 117.844969  exogam_seg_02D0_phi  76.886856
+exogam_seg_02D1_theta	 121.390958  exogam_seg_02D1_phi  56.243771
+exogam_seg_02D2_theta	 101.033306  exogam_seg_02D2_phi  56.243771
+exogam_seg_02D3_theta	 99.581160   exogam_seg_02D3_phi  76.886856
+

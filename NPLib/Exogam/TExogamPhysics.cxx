@@ -399,7 +399,7 @@ double TExogamPhysics::DopplerCorrection(double E, double Theta)
   double Pi = 3.141592654 ;
   TString filename = "configs/beta.txt";
   ifstream file;
-//  cout << filename << endl;
+  cout << filename << endl;
   file.open(filename);
   if(!file) cout << filename << " was not opened" << endl;
 
