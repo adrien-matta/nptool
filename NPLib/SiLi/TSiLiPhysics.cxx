@@ -12,7 +12,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold LaBr3  Physics                                         *
+ *  This class hold SiLi  Physics                                         *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -21,7 +21,7 @@
  *****************************************************************************/
 
 //   NPL
-#include "TLaBr3Physics.h"
+#include "TSiLiPhysics.h"
 #include "../include/RootOutput.h"
 #include "../include/RootInput.h"
 
@@ -44,29 +44,30 @@ string itoa(int value)
    return buffer;
 }
 
-ClassImp(TLaBr3Physics)
+ClassImp(TSiLiPhysics)
 ///////////////////////////////////////////////////////////////////////////
-TLaBr3Physics::TLaBr3Physics()
+TSiLiPhysics::TSiLiPhysics()
    {      
       NumberOfDetector = 0 ;
-      EventData = new TLaBr3Data ;
+      EventData = new TSiLiData ;
       EventPhysics = this ;
    }
    
 ///////////////////////////////////////////////////////////////////////////
-TLaBr3Physics::~TLaBr3Physics()
+TSiLiPhysics::~TSiLiPhysics()
    {}
    
 ///////////////////////////////////////////////////////////////////////////
-void TLaBr3Physics::Clear()
+void TSiLiPhysics::Clear()
    {
+
       DetectorNumber.clear() ;
       Energy.clear() ;
       Time.clear() ;
    }
    
 ///////////////////////////////////////////////////////////////////////////
-void TLaBr3Physics::ReadConfiguration(string Path) 
+void TSiLiPhysics::ReadConfiguration(string Path) 
    {
       ifstream ConfigFile           ;
       ConfigFile.open(Path.c_str()) ;
@@ -93,8 +94,8 @@ void TLaBr3Physics::ReadConfiguration(string Path)
          
          getline(ConfigFile, LineBuffer);
 
-         //   If line is a Start Up LaBr3 bloc, Reading toggle to true      
-         if (LineBuffer.compare(0, 5, "LaBr3") == 0) 
+         //   If line is a Start Up SiLi bloc, Reading toggle to true      
+         if (LineBuffer.compare(0, 5, "SiLi") == 0) 
             {
                cout << "///" << endl ;
                cout << "Platic found: " << endl ;        
@@ -114,7 +115,7 @@ void TLaBr3Physics::ReadConfiguration(string Path)
                if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
 
                   //   Finding another telescope (safety), toggle out
-               else if (DataBuffer.compare(0, 5, "LaBr3") == 0) {
+               else if (DataBuffer.compare(0, 5, "SiLi") == 0) {
                   cout << "WARNING: Another Detector is find before standard sequence of Token, Error may occured in Telecope definition" << endl ;
                   ReadingStatus = false ;
                }
@@ -169,33 +170,33 @@ void TLaBr3Physics::ReadConfiguration(string Path)
                else if (DataBuffer== "Radius=") {
                   check_Radius = true;
                   ConfigFile >> DataBuffer ;
-                  cout << "LaBr3 Radius:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
+                  cout << "SiLi Radius:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
                }
                
                // Squared shape
                else if (DataBuffer=="Width=") {
                   check_Width = true;
                   ConfigFile >> DataBuffer ;
-                  cout << "LaBr3 Width:  " <<atof( DataBuffer.c_str() ) << "mm" << endl;
+                  cout << "SiLi Width:  " <<atof( DataBuffer.c_str() ) << "mm" << endl;
                }
                
                else if (DataBuffer== "Height=") {
                   check_Height = true;
                   ConfigFile >> DataBuffer ;
-                  cout << "LaBr3 Height:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
+                  cout << "SiLi Height:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
                }
                
                // Common
                else if (DataBuffer=="Thickness=") {
                   check_Thickness = true;
                   ConfigFile >> DataBuffer ;
-                  cout << "LaBr3 Thickness:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
+                  cout << "SiLi Thickness:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
                }
                
                else if (DataBuffer== "Scintillator=") {
                   check_Scintillator = true ;
                   ConfigFile >> DataBuffer ;
-                  cout << "LaBr3 Scintillator type:  " << DataBuffer << endl;
+                  cout << "SiLi Scintillator type:  " << DataBuffer << endl;
                }
                
                else if (DataBuffer=="LeadThickness=") {
@@ -238,56 +239,57 @@ void TLaBr3Physics::ReadConfiguration(string Path)
    }
 
 ///////////////////////////////////////////////////////////////////////////
-void TLaBr3Physics::AddParameterToCalibrationManager()
+void TSiLiPhysics::AddParameterToCalibrationManager()
    {
       CalibrationManager* Cal = CalibrationManager::getInstance();
       
       for(int i = 0 ; i < NumberOfDetector ; i++)
          {
-                  Cal->AddParameter("LaBr3", "Detector"+itoa(i+1)+"_E","LaBr3_Detector"+itoa(i+1)+"_E")   ;
-                  Cal->AddParameter("LaBr3", "Detector"+itoa(i+1)+"_T","LaBr3_Detector"+itoa(i+1)+"_T")   ;   
+                  Cal->AddParameter("SiLi", "Detector"+itoa(i+1)+"_E","SiLi_Detector"+itoa(i+1)+"_E")   ;
+                  Cal->AddParameter("SiLi", "Detector"+itoa(i+1)+"_T","SiLi_Detector"+itoa(i+1)+"_T")   ;         
          }
    }
    
 ///////////////////////////////////////////////////////////////////////////
-void TLaBr3Physics::InitializeRootInputRaw() 
+void TSiLiPhysics::InitializeRootInputRaw() 
    {
       TChain* inputChain = RootInput::getInstance()->GetChain()     ;
-      inputChain->SetBranchStatus ( "LaBr3"       , true )        ;
-      inputChain->SetBranchStatus ( "fLaBr3_*"    , true )        ;
-      inputChain->SetBranchAddress( "LaBr3"       , &EventData )  ;
+      inputChain->SetBranchStatus ( "SiLi"       , true )        ;
+      inputChain->SetBranchStatus ( "fSiLi_*"    , true )        ;
+      inputChain->SetBranchAddress( "SiLi"       , &EventData )  ;
    }
 ///////////////////////////////////////////////////////////////////////////
-void TLaBr3Physics::InitializeRootInputPhysics()
+void TSiLiPhysics::InitializeRootInputPhysics()
    {
       TChain* inputChain = RootInput::getInstance()->GetChain();
-      inputChain->SetBranchStatus ( "LaBr3", true );
-      inputChain->SetBranchStatus ( "DetectorNumber", true );
+      inputChain->SetBranchStatus ( "SiLi", true );
+      inputChain->SetBranchStatus ( "DetectorENumber", true );
+      inputChain->SetBranchStatus ( "DetectorTNumber", true );
       inputChain->SetBranchStatus ( "Energy", true );
       inputChain->SetBranchStatus ( "Time", true );
-      inputChain->SetBranchAddress( "LaBr3", &EventPhysics );
+      inputChain->SetBranchAddress( "SiLi", &EventPhysics );
    }
 ///////////////////////////////////////////////////////////////////////////
-void TLaBr3Physics::InitializeRootOutput()
+void TSiLiPhysics::InitializeRootOutput()
    {
       TTree* outputTree = RootOutput::getInstance()->GetTree()            ;
-      outputTree->Branch( "LaBr3" , "TLaBr3Physics" , &EventPhysics ) ;
+      outputTree->Branch( "SiLi" , "TSiLiPhysics" , &EventPhysics ) ;
    }
 
 ///////////////////////////////////////////////////////////////////////////
-void TLaBr3Physics::BuildPhysicalEvent()
+void TSiLiPhysics::BuildPhysicalEvent()
    {
       BuildSimplePhysicalEvent()   ;
    }
 
 ///////////////////////////////////////////////////////////////////////////
-void TLaBr3Physics::BuildSimplePhysicalEvent()
+void TSiLiPhysics::BuildSimplePhysicalEvent()
    {
       for(unsigned int i = 0 ; i < EventData->GetEnergyMult() ; i++)
          {
             DetectorNumber.push_back( EventData->GetENumber(i) )   ;
-            Energy.push_back( CalibrationManager::getInstance()->ApplyCalibration("LaBr3/Detector" + itoa( EventData->GetENumber(i) ) +"_E",EventData->GetEEnergy(i) ) );
-            Time.push_back( CalibrationManager::getInstance()->ApplyCalibration(   "LaBr3/Detector" + itoa( EventData->GetENumber(i) ) +"_T",EventData->GetTTime(i) ) );
+            Energy.push_back( CalibrationManager::getInstance()->ApplyCalibration("SiLi/Detector" + itoa( EventData->GetENumber(i) ) +"_E",EventData->GetEEnergy(i) ) );
+             Time.push_back( CalibrationManager::getInstance()->ApplyCalibration(   "SiLi/Detector" + itoa( EventData->GetTNumber(i) ) +"_T",EventData->GetTTime(i) ) );
          }
 
    }
