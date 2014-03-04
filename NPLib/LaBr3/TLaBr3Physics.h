@@ -26,11 +26,13 @@
 #include <vector>
 using namespace std ;
 
+class TLaBr3Spectra;
 //   ROOT
 #include "TObject.h"
 
 //   NPL
 #include "TLaBr3Data.h"
+#include "TLaBr3Spectra.h"
 #include "../include/VDetector.h"
 #include "../include/CalibrationManager.h"
 
@@ -86,10 +88,31 @@ class TLaBr3Physics : public TObject, public NPA::VDetector
       void ClearEventPhysics() {Clear();}      
       void ClearEventData()    {EventData->Clear();}      
 
+    // Method related to the TSpectra classes, aimed at providing a framework for online applications
+    // Instantiate the Spectra class and the histogramm throught it
+    void InitSpectra();
+    // Fill the spectra hold by the spectra class
+    void FillSpectra();
+    // Used for Online mainly, perform check on the histo and for example change their color if issues are found
+    void CheckSpectra();
+    // Used for Online only, clear all the spectra hold by the Spectra class
+    void ClearSpectra();
+    //   Clear The PreTeated object
+    void ClearPreTreatedData()   {PreTreatedData->Clear();}
+
+    //   Remove bad channel, calibrate the data and apply threshold
+    void PreTreat();
+    
    private:   // Data not writted in the tree
-      int                   NumberOfDetector ;//!
+      int                NumberOfDetector ;//!
       TLaBr3Data*         EventData ;//!
+      TLaBr3Data*         PreTreatedData ;//!
       TLaBr3Physics*      EventPhysics ;//!
+      TLaBr3Spectra*	 m_Spectra;
+      double 		 m_LaBr3_E_Threshold;   
+      double 		 m_LaBr3_RAW_Threshold;   
+  public: // Spectra Getter
+    map< vector<string> , TH1*> GetSpectra(); 
 
       ClassDef(TLaBr3Physics,1)  // LaBr3Physics structure
 };

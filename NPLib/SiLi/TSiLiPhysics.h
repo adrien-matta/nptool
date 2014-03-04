@@ -26,11 +26,13 @@
 #include <vector>
 using namespace std ;
 
+class TSiLiSpectra;
 //   ROOT
 #include "TObject.h"
 
 //   NPL
 #include "TSiLiData.h"
+#include "TSiLiSpectra.h"
 #include "../include/VDetector.h"
 #include "../include/CalibrationManager.h"
 
@@ -86,10 +88,31 @@ class TSiLiPhysics : public TObject, public NPA::VDetector
       void ClearEventPhysics() {Clear();}      
       void ClearEventData()    {EventData->Clear();}      
 
+    // Method related to the TSpectra classes, aimed at providing a framework for online applications
+    // Instantiate the Spectra class and the histogramm throught it
+    void InitSpectra();
+    // Fill the spectra hold by the spectra class
+    void FillSpectra();
+    // Used for Online mainly, perform check on the histo and for example change their color if issues are found
+    void CheckSpectra();
+    // Used for Online only, clear all the spectra hold by the Spectra class
+    void ClearSpectra();
+    //   Clear The PreTeated object
+    void ClearPreTreatedData()   {PreTreatedData->Clear();}
+
+    //   Remove bad channel, calibrate the data and apply threshold
+    void PreTreat();
+    
    private:   // Data not writted in the tree
-      int                   NumberOfDetector ;//!
+      int                NumberOfDetector ;//!
       TSiLiData*         EventData ;//!
+      TSiLiData*         PreTreatedData ;//!
       TSiLiPhysics*      EventPhysics ;//!
+      TSiLiSpectra*	 m_Spectra;
+      double 		 m_SiLi_E_Threshold;   
+      double 		 m_SiLi_RAW_Threshold;   
+  public: // Spectra Getter
+    map< vector<string> , TH1*> GetSpectra(); 
 
       ClassDef(TSiLiPhysics,1)  // SiLiPhysics structure
 };

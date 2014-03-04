@@ -26,11 +26,13 @@
 #include <vector>
 using namespace std ;
 
+class TSiResSpectra;
 //   ROOT
 #include "TObject.h"
 
 //   NPL
 #include "TSiResData.h"
+#include "TSiResSpectra.h"
 #include "../include/VDetector.h"
 #include "../include/CalibrationManager.h"
 
@@ -46,8 +48,8 @@ class TSiResPhysics : public TObject, public NPA::VDetector
    
    public:   //   Calibrated Data
       vector<UShort_t>   DetectorNumber ;
-      vector<UShort_t>   ChannelNumber ;
       vector<Double_t>   Energy;
+      vector<UShort_t>   ChannelNumber;
       vector<Double_t>   EnergyBack;
       vector<Double_t>   Time;
       vector<Double_t>   x;
@@ -74,7 +76,6 @@ class TSiResPhysics : public TObject, public NPA::VDetector
       
       //   This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
       void BuildPhysicalEvent();
-      void Treat();
       
       //   Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
       //   This method aimed to be used for analysis performed during experiment, when speed is requiered.
@@ -91,10 +92,34 @@ class TSiResPhysics : public TObject, public NPA::VDetector
       void ClearEventPhysics() {Clear();}      
       void ClearEventData()    {EventData->Clear();}      
 
+    // Method related to the TSpectra classes, aimed at providing a framework for online applications
+    // Instantiate the Spectra class and the histogramm throught it
+    void InitSpectra();
+    // Fill the spectra hold by the spectra class
+    void FillSpectra();
+    // Used for Online mainly, perform check on the histo and for example change their color if issues are found
+    void CheckSpectra();
+    // Used for Online only, clear all the spectra hold by the Spectra class
+    void ClearSpectra();
+    //   Clear The PreTeated object
+    void ClearPreTreatedData()   {PreTreatedData->Clear();}
+
+    //   Remove bad channel, calibrate the data and apply threshold
+    void PreTreat();
+    void Treat();
+    
    private:   // Data not writted in the tree
-      int                   NumberOfDetector ;//!
+      int                NumberOfDetector ;//!
       TSiResData*         EventData ;//!
+      TSiResData*         PreTreatedData ;//!
       TSiResPhysics*      EventPhysics ;//!
+      TSiResSpectra*	 m_Spectra;
+      double 		 m_SiRes_E_Threshold;   
+      double 		 m_SiRes_RAW_Threshold;   
+      double 		 m_SiRes_EBack_Threshold;   
+      double 		 m_SiRes_RAWBack_Threshold;   
+  public: // Spectra Getter
+    map< vector<string> , TH1*> GetSpectra(); 
 
       ClassDef(TSiResPhysics,1)  // SiResPhysics structure
 };

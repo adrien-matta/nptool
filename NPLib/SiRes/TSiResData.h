@@ -49,26 +49,27 @@ class TSiResData : public TObject {
    /////////////////////           GETTERS           ////////////////////////
    // Energy
    unsigned int   GetEnergyMult()   {return fSiRes_E_Number.size();}
-   int            GetEChannel(int i) {return fSiRes_E_Channel[i];}
-   int            GetENumber(int i) {return fSiRes_E_Number[i];}
+   int            GetEChannelNumber(int i) {return fSiRes_E_Channel[i];}
+   int            GetEDetectorNumber(int i) {return fSiRes_E_Number[i];}
    double         GetEEnergy(int i) {return fSiRes_E_Energy[i];}
    // Time 
    unsigned int   GetTimeMult()     {return fSiRes_T_Number.size();}
-   int            GetTNumber(int i) {return fSiRes_T_Number[i];}
+   int            GetTDetectorNumber(int i) {return fSiRes_T_Number[i];}
    double         GetTTime(int i)   {return fSiRes_T_Time[i];}
    double         GetEEnergyBack(int i)   	{return fSiRes_E_EnergyBack[i];}
-   double         GetEEnergyBackNumber(int i)   {return fSiRes_E_EnergyBack_Number[i];}
-   double         GetEnergyBackMult()   	{return fSiRes_E_EnergyBack.size();}
+   double         GetEEnergyBackDetectorNumber(int i)   {return fSiRes_E_EnergyBack_Number[i];}
+   double         GetEEnergyBackMult()   	{return fSiRes_E_EnergyBack.size();}
 
    /////////////////////           SETTERS           ////////////////////////
    // Energy
-   void     SetENumber(int N)    {fSiRes_E_Number.push_back(N);}
-   void     SetEChannel(int channel)    {fSiRes_E_Number.push_back(channel);}
+   void     SetEDetectorNumber(int N)    {fSiRes_E_Number.push_back(N);}
+   void     SetEChannelNumber(int channel)    {fSiRes_E_Number.push_back(channel);}
    void     SetEEnergy(double E) {fSiRes_E_Energy.push_back(E);}
    // time
-   void     SetTNumber(int N)    {fSiRes_T_Number.push_back(N);}
+   void     SetTDetectorNumber(int N)    {fSiRes_T_Number.push_back(N);}
    void     SetTTime(double T)   {fSiRes_T_Time.push_back(T);}
-   void     SetEEnergyBack(double T)   {fSiRes_E_EnergyBack.push_back(T);}
+   void     SetEEnergyBack(double E)   {fSiRes_E_EnergyBack.push_back(E);}
+   void     SetEEnergyBackDetectorNumber(int N)    {fSiRes_E_EnergyBack_Number.push_back(N);}
 
    ClassDef(TSiResData,1)  // SiResData structure
 };

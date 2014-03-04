@@ -51,6 +51,10 @@ TSiResPhysics::TSiResPhysics()
       NumberOfDetector = 0 ;
       EventData = new TSiResData ;
       EventPhysics = this ;
+      m_SiRes_E_Threshold   = 0;   
+      m_SiRes_RAW_Threshold   = 0;     
+      m_SiRes_EBack_Threshold   = 0;   
+      m_SiRes_RAWBack_Threshold   = 0;     
    }
    
 ///////////////////////////////////////////////////////////////////////////
@@ -284,29 +288,102 @@ void TSiResPhysics::InitializeRootOutput()
       TTree* outputTree = RootOutput::getInstance()->GetTree()            ;
       outputTree->Branch( "SiRes" , "TSiResPhysics" , &EventPhysics ) ;
    }
+///////////////////////////////////////////////////////////////////////////
+void TSiResPhysics::InitSpectra(){  
+   m_Spectra = new TSiResSpectra(NumberOfDetector);
+}
 
+///////////////////////////////////////////////////////////////////////////
+void TSiResPhysics::FillSpectra(){  
+   m_Spectra -> FillRawSpectra(EventData);
+   m_Spectra -> FillPreTreatedSpectra(PreTreatedData);
+   m_Spectra -> FillPhysicsSpectra(EventPhysics);
+}
+///////////////////////////////////////////////////////////////////////////
+void TSiResPhysics::CheckSpectra(){  
+  m_Spectra->CheckSpectra();  
+}
+///////////////////////////////////////////////////////////////////////////
+void TSiResPhysics::ClearSpectra(){  
+  // To be done
+}
+///////////////////////////////////////////////////////////////////////////
+map< vector<string> , TH1*> TSiResPhysics::GetSpectra() {
+  if(m_Spectra)
+    return m_Spectra->GetMapHisto();
+  else{
+    map< vector<string> , TH1*> empty;
+    return empty;
+  }
+} 
+///////////////////////////////////////////////////////////////////////////
+
+void TSiResPhysics::PreTreat(){  
+
+  //   X
+  //   E
+  ClearPreTreatedData();
+  double E,T;
+  E=-1000; T=-1000;
+  int N=-1000;
+
+  for(unsigned int i = 0 ; i < EventData->GetEnergyMult() ; ++i)
+    {
+    	if( EventData->GetEEnergy(i)>m_SiRes_RAW_Threshold )
+    	{
+		E=CalibrationManager::getInstance()->ApplyCalibration("SiRes/Detector" + itoa( EventData->GetEDetectorNumber(i) ) +"_Channel"+itoa( EventData->GetEChannelNumber(i) )+"_E",EventData->GetEEnergy(i));
+    		if(E>m_SiRes_E_Threshold)
+    		{
+        		N=EventData->GetEDetectorNumber(i);
+        		PreTreatedData->SetEDetectorNumber( N );
+        		PreTreatedData->SetEChannelNumber( EventData->GetEChannelNumber(i) );
+        		PreTreatedData->SetEEnergy( E );
+    		}
+    	}
+    }
+  for(unsigned int i = 0 ; i < EventData->GetEEnergyBackMult() ; ++i)
+    {
+	if( EventData->GetEEnergyBack(i)>m_SiRes_RAWBack_Threshold && EventData->GetEEnergyBackDetectorNumber(i)==N )
+	{
+		E=CalibrationManager::getInstance()->ApplyCalibration("SiRes/Detector"+itoa(EventData->GetEEnergyBackDetectorNumber(i))+"_EBack",EventData->GetEEnergyBack(i) ) ;  
+		if(E>m_SiRes_EBack_Threshold)
+		{    
+			PreTreatedData->SetEEnergyBackDetectorNumber( EventData->GetEEnergyBackDetectorNumber(i) );
+			PreTreatedData->SetEEnergyBack( E );
+			if(EventData->GetTimeMult()>0)
+			{
+				T=CalibrationManager::getInstance()->ApplyCalibration("SiRes/Detector"+itoa(EventData->GetTDetectorNumber(i))+"_T",EventData->GetTTime(i) ) ;      
+			}            
+			PreTreatedData->SetTTime( T );
+		}
+	}
+    }  
+
+}
 ///////////////////////////////////////////////////////////////////////////
 void TSiResPhysics::BuildPhysicalEvent()
    {
       BuildSimplePhysicalEvent()   ;
    }
 
+
 ///////////////////////////////////////////////////////////////////////////
 void TSiResPhysics::BuildSimplePhysicalEvent()
    {
-      for(unsigned int i = 0 ; i < EventData->GetEnergyMult() ; i++)
+	PreTreat();
+      for(unsigned int i = 0 ; i < PreTreatedData->GetEnergyMult() ; i++)
          {
-            DetectorNumber.push_back( EventData->GetENumber(i) )   ;
-            ChannelNumber.push_back( EventData->GetEChannel(i) )   ;
-            Energy.push_back( CalibrationManager::getInstance()->ApplyCalibration("SiRes/Detector" + itoa( EventData->GetENumber(i) ) +"_E",EventData->GetEEnergy(i) ) );
+            DetectorNumber.push_back( PreTreatedData->GetEDetectorNumber(i) )   ;
+            ChannelNumber.push_back( PreTreatedData->GetEChannelNumber(i) )   ;
+            Energy.push_back( PreTreatedData->GetEEnergy(i) );
           }
        for(unsigned int i = 0 ; i < EventData->GetTimeMult() ; i++)
          {
-            Time.push_back( CalibrationManager::getInstance()->ApplyCalibration(   "SiRes/Detector" + itoa( EventData->GetTNumber(i) ) +"_T",EventData->GetTTime(i) ) );
+            Time.push_back( PreTreatedData->GetTTime(i) );
          }
-       for(unsigned int i = 0 ; i < EventData->GetEnergyBackMult() ; i++)
+       for(unsigned int i = 0 ; i < EventData->GetEEnergyBackMult() ; i++)
          {
-            EnergyBack.push_back( CalibrationManager::getInstance()->ApplyCalibration(   "SiRes/Detector" + itoa( EventData->GetEEnergyBackNumber(i) ) +"_EnergyBack",EventData->GetEEnergyBack(i) ) );
+            EnergyBack.push_back( PreTreatedData->GetEEnergyBack(i) );
          }
      if(EventData->GetEnergyMult()==4)Treat();
 

@@ -208,7 +208,7 @@ void TSiResSpectra::FillRawSpectra(TSiResData* RawData)
   
 	   // E_RAW
 	   for (unsigned int i = 0; i < RawData->GetEnergyMult(); i++) {
-	      name   = Form("SiRes_%d_%d_E_RAW", j+1, RawData->GetEChannel(i));
+	      name   = Form("SiRes_%d_%d_E_RAW", j+1, RawData->GetEChannelNumber(i));
 	      family = "SiRes/RAW/ENERGY";
 	      GetHisto(family,name) -> Fill(RawData->GetEEnergy(i));
 	   }
@@ -218,7 +218,7 @@ void TSiResSpectra::FillRawSpectra(TSiResData* RawData)
 	   name = Form("SiRes_%d_E_RAW",j+1);
 	   family = "SiRes/RAW/ENERGY";
 	   for (unsigned int i = 0; i < RawData->GetEnergyMult(); i++) {
-	      GetHisto(family,name) -> Fill(RawData->GetEChannel(i), RawData->GetEEnergy(i));
+	      GetHisto(family,name) -> Fill(RawData->GetEChannelNumber(i), RawData->GetEEnergy(i));
 	   }
 
 	   // SiRes_E_RAW
@@ -271,7 +271,7 @@ void TSiResSpectra::FillPreTreatedSpectra(TSiResData* PreTreatedData)
    for(unsigned int j=0; j<fNumberDetector; j++)
    {
 	   for (unsigned int i = 0; i < PreTreatedData->GetEnergyMult(); i++) {
-	      name   = Form("SiRes_%d_%d_E_CAL", j+1, PreTreatedData->GetEChannel(i));
+	      name   = Form("SiRes_%d_%d_E_CAL", j+1, PreTreatedData->GetEChannelNumber(i));
 	      family = "SiRes/CAL/ENERGY";
 	      GetHisto(family,name) -> Fill(PreTreatedData->GetEEnergy(i));
 	   }
