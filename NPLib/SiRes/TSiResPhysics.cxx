@@ -385,21 +385,20 @@ void TSiResPhysics::BuildSimplePhysicalEvent()
          {
             EnergyBack.push_back( PreTreatedData->GetEEnergyBack(i) );
          }
-     if(EventData->GetEnergyMult()==4)Treat();
+     if(PreTreatedData->GetEnergyMult()==4)Treat();
 
    }
 ///////////////////////////////////////////////////////////////////////////
 void TSiResPhysics::Treat()
    {
-      double x1=-5; double x2=5; double y1=-5; double y2=5;
       double E1=-1000; double E2=-1000; double E3=-1000; double E4=-1000; 
       for(unsigned int i = 0 ; i < EventData->GetEnergyMult() ; i++)
          {
-         	if(ChannelNumber[i]==0)E1=Energy[i];
-         	if(ChannelNumber[i]==1)E2=Energy[i];
-         	if(ChannelNumber[i]==2)E3=Energy[i];
-         	if(ChannelNumber[i]==3)E4=Energy[i];
+         	if(ChannelNumber[i]==0)E1=Energy[i];//DH
+         	if(ChannelNumber[i]==1)E2=Energy[i];//DB
+         	if(ChannelNumber[i]==2)E3=Energy[i];//GB
+         	if(ChannelNumber[i]==3)E4=Energy[i];//GH
          }
-      	x.push_back( (x1*E1+x2*E2) / (E1+E2) ) ;
-      	y.push_back( (y1*E3+y2*E4) / (E3+E4) ) ;
+      	x.push_back( 1+(E1+E2-E3-E4) / (E1+E2+E3+E4) ) ;
+      	y.push_back( 1+(E1+E4-E2-E3) / (E1+E2+E3+E4) ) ;
    }
