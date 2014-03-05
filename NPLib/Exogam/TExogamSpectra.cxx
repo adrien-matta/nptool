@@ -21,6 +21,12 @@
  *                                                                           *
  *****************************************************************************/
 
+// STL
+#include <iostream>
+#include <cstdlib>
+#include <stdexcept>
+
+
 // NPL
 #include "TExogamSpectra.h"
 #include "NPOptionManager.h"
@@ -126,20 +132,14 @@ void TExogamSpectra::FillRawSpectra(TExogamData* RawData){
   string name;
   string family;
 
-  // Energy and Time RAw 
+  // Energy 
   for (unsigned int i = 0; i < RawData->GetECCEMult(); i++) {
     name = Form("ExogamEnergyRaw_Clover%d_ECC%d", RawData->GetECCEClover(i)+1,RawData->GetECCECristal(i)+1);
     family = "Exogam/RAW";
 
     GetHisto(family,name)
       -> Fill(RawData->GetECCEEnergy(i));
-
-    name = Form("ExogamTimeRaw_Clover%d_ECC%d", RawData->GetECCTClover(i)+1,RawData->GetECCTCristal(i)+1);
-    family = "Exogam/RAW";
-
-    GetHisto(family,name)
-      -> Fill(RawData->GetECCTTime(i));
-    
+   
     name = Form("ExogamEnergyRaw_Clover%d_ECC%d_GOCCE%d", RawData->GetECCEClover(i)+1,RawData->GetECCECristal(i)+1,RawData->GetGOCCEESegment(i)+1);
     family = "Exogam/RAW";
 
@@ -147,14 +147,21 @@ void TExogamSpectra::FillRawSpectra(TExogamData* RawData){
       -> Fill(RawData->GetGOCCEEEnergy(i));
     }
 
+  // Time
+  for (unsigned int i = 0; i < RawData->GetECCTMult(); i++) {
+   name = Form("ExogamTimeRaw_Clover%d_ECC%d", RawData->GetECCTClover(i)+1,RawData->GetECCTCristal(i)+1);
+    family = "Exogam/RAW";
 
+    GetHisto(family,name)
+      -> Fill(RawData->GetECCTTime(i));
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TExogamSpectra::FillPreTreatedSpectra(TExogamData* PreTreatedData){
   string name ;
   string family;
-  // Energy and Time RAw 
+  // Energy 
   for (unsigned int i = 0; i < PreTreatedData->GetECCEMult(); i++) {
     name = Form("ExogamEnergyCal_Clover%d_ECC%d", PreTreatedData->GetECCEClover(i)+1,PreTreatedData->GetECCECristal(i)+1);
     family = "Exogam/Cal";
@@ -162,18 +169,23 @@ void TExogamSpectra::FillPreTreatedSpectra(TExogamData* PreTreatedData){
     GetHisto(family,name)
       -> Fill(PreTreatedData->GetECCEEnergy(i));
 
-    name = Form("ExogamTimeCal_Clover%d_ECC%d", PreTreatedData->GetECCTClover(i)+1,PreTreatedData->GetECCTCristal(i)+1);
-    family = "Exogam/Cal";
-
-    GetHisto(family,name)
-      -> Fill(PreTreatedData->GetECCTTime(i));
-    
+   
     name = Form("ExogamEnergyCal_Clover%d_ECC%d_GOCCE%d", PreTreatedData->GetECCEClover(i)+1,PreTreatedData->GetECCECristal(i)+1,PreTreatedData->GetGOCCEESegment(i)+1);
     family = "Exogam/Cal";
 
     GetHisto(family,name)
       -> Fill(PreTreatedData->GetGOCCEEEnergy(i));
     }
+
+  // Time
+  for (unsigned int i = 0; i < PreTreatedData->GetECCTMult(); i++) {
+  name = Form("ExogamTimeCal_Clover%d_ECC%d", PreTreatedData->GetECCTClover(i)+1,PreTreatedData->GetECCTCristal(i)+1);
+    family = "Exogam/Cal";
+
+    GetHisto(family,name)
+      -> Fill(PreTreatedData->GetECCTTime(i));
+   }
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -221,13 +233,24 @@ TH1* TExogamSpectra::AddHisto2D(string name, string title, Int_t nbinsx, Double_
 
 ////////////////////////////////////////////////////////////////////////////////
 TH1* TExogamSpectra::GetHisto(string family, string name){
-  vector<string> index ;
+vector<string> index;
+  index.reserve(2);
   index.push_back(family);
   index.push_back(name);
+  TH1* histo ; 
 
-  // fill map
-  return fMapHisto.at(index);
+  try{
+    histo = fMapHisto.at(index); 
+  }
+
+  catch(const std::out_of_range& oor){
+    cout << "ERROR : the folowing Histo has been requested by TCATSSpectra and does not exist: family:" << family << " name: "  << name << endl ;
+    exit(1);
+  }
+
+  return histo;
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 void TExogamSpectra::WriteHisto(string filename){

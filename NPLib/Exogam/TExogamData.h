@@ -88,26 +88,26 @@ class TExogamData : public TObject {
       // ECC / Energy
       // UShort_t	GetCloverMult()		{return fEXO_ECC_E_Clover.size();}       
       UShort_t	GetECCEMult()		{return fEXO_ECC_E_Clover.size();}             
-      UShort_t	GetECCEClover(Int_t i)	{return fEXO_ECC_E_Clover.at(i);}
-      UShort_t	GetECCECristal(Int_t i)	{return fEXO_ECC_E_Cristal.at(i);}
-      UShort_t	GetECCEEnergy(Int_t i)	{return fEXO_ECC_E_Energy.at(i);}
+      UShort_t	GetECCEClover(Int_t i)	{return fEXO_ECC_E_Clover[i];}
+      UShort_t	GetECCECristal(Int_t i)	{return fEXO_ECC_E_Cristal[i];}
+      UShort_t	GetECCEEnergy(Int_t i)	{return fEXO_ECC_E_Energy[i];}
       // ECC / Time
       UShort_t	GetECCTMult()		{return fEXO_ECC_T_Clover.size();}
-      UShort_t	GetECCTClover(Int_t i)	{return fEXO_ECC_T_Clover.at(i);}
-      UShort_t	GetECCTCristal(Int_t i)	{return fEXO_ECC_T_Cristal.at(i);}
-      UShort_t	GetECCTTime(Int_t i)	{return fEXO_ECC_T_Time.at(i);}
+      UShort_t	GetECCTClover(Int_t i)	{return fEXO_ECC_T_Clover[i];}
+      UShort_t	GetECCTCristal(Int_t i)	{return fEXO_ECC_T_Cristal[i];}
+      UShort_t	GetECCTTime(Int_t i)	{return fEXO_ECC_T_Time[i];}
       // GOCCE / Energy
       UShort_t	GetGOCCEEMult()			{return fEXO_GOCCE_E_Clover.size();}    // multiplicity of segments hit in one clover
-      UShort_t	GetGOCCEEClover(Int_t i)	{return fEXO_GOCCE_E_Clover.at(i);}
-      UShort_t	GetGOCCEECristal(Int_t i)	{return fEXO_GOCCE_E_Cristal.at(i);}
-      UShort_t	GetGOCCEESegment(Int_t i)	{return fEXO_GOCCE_E_Segment.at(i);}
-      UShort_t	GetGOCCEEEnergy(Int_t i)	{return fEXO_GOCCE_E_Energy.at(i);}
+      UShort_t	GetGOCCEEClover(Int_t i)	{return fEXO_GOCCE_E_Clover[i];}
+      UShort_t	GetGOCCEECristal(Int_t i)	{return fEXO_GOCCE_E_Cristal[i];}
+      UShort_t	GetGOCCEESegment(Int_t i)	{return fEXO_GOCCE_E_Segment[i];}
+      UShort_t	GetGOCCEEEnergy(Int_t i)	{return fEXO_GOCCE_E_Energy[i];}
       // GOCCE / Time
       UShort_t	GetGOCCETMult()			{return fEXO_GOCCE_T_Clover.size();}
-      UShort_t	GetGOCCETClover(Int_t i)	{return fEXO_GOCCE_T_Clover.at(i);}
-      UShort_t	GetGOCCETCristal(Int_t i)	{return fEXO_GOCCE_T_Cristal.at(i);}
-      UShort_t	GetGOCCETSegment(Int_t i)	{return fEXO_GOCCE_T_Segment.at(i);}
-      UShort_t	GetGOCCETTime(Int_t i)		{return fEXO_GOCCE_T_Time.at(i);}
+      UShort_t	GetGOCCETClover(Int_t i)	{return fEXO_GOCCE_T_Clover[i];}
+      UShort_t	GetGOCCETCristal(Int_t i)	{return fEXO_GOCCE_T_Cristal[i];}
+      UShort_t	GetGOCCETSegment(Int_t i)	{return fEXO_GOCCE_T_Segment[i];}
+      UShort_t	GetGOCCETTime(Int_t i)		{return fEXO_GOCCE_T_Time[i];}
       //GeFill
       UShort_t     GetGeFill()               {return fEXO_Fill;}
 
