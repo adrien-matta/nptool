@@ -480,8 +480,9 @@ void TTiaraBarrelPhysics::InitializeRootInputRaw(){
 ///////////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelPhysics::InitializeRootInputPhysics(){
   TChain* inputChain = RootInput::getInstance()->GetChain();
+  inputChain->SetBranchStatus("TiaraBarrel" , true );
   inputChain->SetBranchStatus("EventMultiplicity",true);
-  inputChain->SetBranchStatus("DetectorNumber ",true);
+  inputChain->SetBranchStatus("DetectorNumber",true);
   inputChain->SetBranchStatus("Strip_E",true);
   inputChain->SetBranchStatus("Strip_T",true);
   inputChain->SetBranchStatus("Strip_N",true);
@@ -497,6 +498,8 @@ void TTiaraBarrelPhysics::InitializeRootInputPhysics(){
   inputChain->SetBranchStatus("Outer_Strip_N",true);
   inputChain->SetBranchStatus("Outer_Back_E",true);
   inputChain->SetBranchStatus("Outer_Back_T",true);
+  inputChain->SetBranchAddress("TiaraBarrel" , &m_EventPhysics );
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -566,7 +569,6 @@ TVector3 TTiaraBarrelPhysics::GetPositionOfInteraction(const int i) const{
   double INNERBARREL_ActiveWafer_Width = 24.0;
 
   double StripPitch = INNERBARREL_ActiveWafer_Width/4. ;
-
   double X = Strip_N[i]*StripPitch-0.5*INNERBARREL_ActiveWafer_Width;
   double Y = INNERBARREL_PCB_Width*(0.5+sin(45*deg))  ; 
   double Z = (Strip_Pos[i]-0.5)*INNERBARREL_ActiveWafer_Length ;

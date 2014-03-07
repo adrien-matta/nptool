@@ -118,7 +118,7 @@ void TCATSPhysics::BuildPhysicalEvent(){
     // Insert detector number in the set, if the key already exist, do nothing
     DetectorHitX.insert(m_PreTreatedData->GetCATSDetX(i));
   }
-  
+
   // Correspond to CATS with both X and Y
   unsigned int sizeY = m_PreTreatedData->GetCATSMultY() ;
   for( unsigned short i = 0 ; i < m_PreTreatedData->GetCATSMultY() ; i++ ){ 
@@ -130,8 +130,8 @@ void TCATSPhysics::BuildPhysicalEvent(){
   // The number of CATS hit, i.e. the number of CATS that we are going to analyse
   unsigned int NumberOfCATSHit = DetectorHit.size();
 
-   vector<double> ChargeArray;
-   ChargeArray.resize(28,0);
+  vector<double> ChargeArray;
+  ChargeArray.resize(28,0);
 
   // INITIALISATION OF VECTORS : DIM = NumberOfCATSHit
   for(set<int>::iterator it=DetectorHit.begin(); it!=DetectorHit.end(); ++it){
@@ -146,11 +146,11 @@ void TCATSPhysics::BuildPhysicalEvent(){
     StripMaxY.push_back(1); 
     ChargeMaxY.push_back(1);
     QsumY.push_back(0);
-  
+
     Buffer_X_Q.push_back(ChargeArray);
     Buffer_Y_Q.push_back(ChargeArray);  
   }
-  
+
   // Fill up the Charge And Max field for X
   for(unsigned int i = 0 ; i < sizeX ; i++ ){
     int StrX					         = m_PreTreatedData->GetCATSStripX(i);
@@ -170,7 +170,7 @@ void TCATSPhysics::BuildPhysicalEvent(){
       }
     }
   }
-  
+
   // Fill up the Charge And Max field for Y
   for(unsigned int i = 0 ; i < sizeY ; i++ ){
     int StrY					         = m_PreTreatedData->GetCATSStripY(i);
@@ -179,9 +179,9 @@ void TCATSPhysics::BuildPhysicalEvent(){
     ChargeY.push_back(CATS_Y_Q);
     StripY.push_back(StrY);
     DetNumberY.push_back(NY);
-   
-   for(unsigned int j = 0 ; j < NumberOfCATSHit ; j++){
-       if(NY == DetMaxY[j] ){
+
+    for(unsigned int j = 0 ; j < NumberOfCATSHit ; j++){
+      if(NY == DetMaxY[j] ){
         Buffer_Y_Q[j][StrY-1]= CATS_Y_Q;
         QsumY[j]+= CATS_Y_Q;	
         if(CATS_Y_Q > Buffer_Y_Q[j][StripMaxY[j] -1]){ 
@@ -191,10 +191,10 @@ void TCATSPhysics::BuildPhysicalEvent(){
       }
     }
   }
-  
+
   double CalculatedStripX = 0, CalculatedStripY = 0;
   double posX = 0 , posY = 0;
-  
+
   for(unsigned int i  = 0 ; i < NumberOfCATSHit ; i++ ){       
     // Return the position in strip unit
     double PosX =  ReconstructionFunctionX[DetMaxX[i]-1](Buffer_X_Q[i],StripMaxX[i]);
@@ -202,22 +202,22 @@ void TCATSPhysics::BuildPhysicalEvent(){
     StripNumberX.push_back(PosX);
     StripNumberY.push_back(PosY);   
 
-   // Convert in mm by doing a linear interpolation
+    // Convert in mm by doing a linear interpolation
 
-   // sx and sy are the X and Y strip number between which the PosX and PosY are
-   int sx0 = (int) PosX;
-   int sx1 = sx0+1; 
-   int sy0 = (int) PosY;
-   int sy1 = sy0+1; 
+    // sx and sy are the X and Y strip number between which the PosX and PosY are
+    int sx0 = (int) PosX;
+    int sx1 = sx0+1; 
+    int sy0 = (int) PosY;
+    int sy1 = sy0+1; 
 
     if(PosX>-1000 && PosY>-1000 && sx0 > -1 && sx1 < 28 && sy0 > -1  && sy1 < 28){
       // px and py are the x and y coordinate of strip sx and sy 
       double px0 = StripPositionX[DetMaxX[i]-1][sx0][sy0];
       double px1 = StripPositionX[DetMaxX[i]-1][sx1][sy1];
-    
+
       double py0 = StripPositionY[DetMaxY[i]-1][sx0][sy0];
       double py1 = StripPositionY[DetMaxY[i]-1][sx1][sy1];
-   
+
       PositionX.push_back(px0+(px1-px0)*(PosX-sx0));  
       PositionY.push_back(py0+(py1-py0)*(PosY-sy0));  
       PositionZ.push_back(StripPositionZ[DetMaxX[i]-1]);
@@ -232,7 +232,7 @@ void TCATSPhysics::BuildPhysicalEvent(){
       PositionOnTargetX= PositionX[1] + (PositionX[1]-PositionX[0])*t;
       PositionOnTargetY= PositionY[1] + (PositionY[1]-PositionY[0])*t; 
       BeamDirection = GetBeamDirection();
-     }
+    }
 
     else{
       double t = -PositionZ[0]/(PositionZ[0]-PositionZ[1]);
@@ -696,10 +696,10 @@ void TCATSPhysics::ClearSpectra(){
 map< vector<string> , TH1*> TCATSPhysics::GetSpectra() {
   if(m_Spectra)
     return m_Spectra->GetMapHisto();
-  
+
   else{
-   map< vector<string> , TH1*> empty; 
-   return empty;
+    map< vector<string> , TH1*> empty; 
+    return empty;
   }
 }
 
@@ -725,7 +725,7 @@ void TCATSPhysics::SetReconstructionMethod(unsigned int CATSNumber, string XorY,
     if(ReconstructionFunctionX.size() < CATSNumber)
       ReconstructionFunctionX.resize(CATSNumber);
 
-         if(MethodName=="ASECH") ReconstructionFunctionX[CATSNumber-1] = &(AnalyticHyperbolicSecant);
+    if(MethodName=="ASECH") ReconstructionFunctionX[CATSNumber-1] = &(AnalyticHyperbolicSecant);
     else if(MethodName=="FSECH") ReconstructionFunctionX[CATSNumber-1] = &(FittedHyperbolicSecant);
     else if(MethodName=="AGAUSS") ReconstructionFunctionX[CATSNumber-1] = &(AnalyticGaussian);
     else if(MethodName=="CENTROIDE")  ReconstructionFunctionX[CATSNumber-1] = &(Centroide); 
@@ -735,7 +735,7 @@ void TCATSPhysics::SetReconstructionMethod(unsigned int CATSNumber, string XorY,
     if(ReconstructionFunctionY.size() < CATSNumber)
       ReconstructionFunctionY.resize(CATSNumber);
 
-         if(MethodName=="ASECH") ReconstructionFunctionY[CATSNumber-1] = &(AnalyticHyperbolicSecant);
+    if(MethodName=="ASECH") ReconstructionFunctionY[CATSNumber-1] = &(AnalyticHyperbolicSecant);
     else if(MethodName=="FSECH") ReconstructionFunctionY[CATSNumber-1] = &(FittedHyperbolicSecant);
     else if(MethodName=="AGAUSS") ReconstructionFunctionY[CATSNumber-1] = &(AnalyticGaussian);
     else if(MethodName=="CENTROIDE")  ReconstructionFunctionY[CATSNumber-1] = &(Centroide); 
@@ -745,10 +745,23 @@ void TCATSPhysics::SetReconstructionMethod(unsigned int CATSNumber, string XorY,
 
 ///////////////////////////////////////////////////////////////
 TVector3 TCATSPhysics::GetBeamDirection(){
-  TVector3 Direction = TVector3 (PositionX[1]-PositionX[0] ,
-      PositionY[1]-PositionY[0] ,
-      PositionZ[1]-PositionZ[0] );
-  Direction.Unit();
+  TVector3 Direction;
+  if(PositionX.size() <2)return Direction;
+
+  if(DetMaxX[0]<DetMaxX[1]){
+    Direction = TVector3 (PositionX[1]-PositionX[0] ,
+        PositionY[1]-PositionY[0] ,
+        PositionZ[1]-PositionZ[0] );
+    Direction.Unit();
+  }
+
+  else{
+    Direction = TVector3 (PositionX[0]-PositionX[1] ,
+        PositionY[0]-PositionY[1] ,
+        PositionZ[0]-PositionZ[1] );
+    Direction.Unit();
+  }
+
   return(Direction) ;	
 }
 
@@ -837,7 +850,7 @@ namespace CATS_LOCAL{
   double Centroide(vector<double>& Buffer_Q, int& StripMax){
     double Centroide = 0 ;
     double ChargeTotal = 0;
-    
+
     unsigned int sizeQ = Buffer_Q.size(); 
     for(unsigned int i = 0 ; i < sizeQ ; i++){
       if(Buffer_Q[i]>0){ 
