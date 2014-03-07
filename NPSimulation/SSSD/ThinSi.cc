@@ -131,7 +131,6 @@ void ThinSi::VolumeMaker(  G4int             DetNumber ,
    Number << NbrTelescopes ;
    DetectorNumber = Number.str() ;
 
-
 ////////////////////////////////////////////////////////////////
 /////////General Geometry Parameter Definition /////////////////
 ////////////////////////////////////////////////////////////////
@@ -445,8 +444,8 @@ void ThinSi::ReadConfiguration(string Path)
 
 // Construct detector and inialise sensitive part.
 // Called After DetecorConstruction::AddDetector Method
-void ThinSi::ConstructDetector(G4LogicalVolume* world)
-{
+void ThinSi::ConstructDetector(G4LogicalVolume* world){
+
    G4RotationMatrix* Det_rot  = NULL;
    G4ThreeVector     Det_pos  = G4ThreeVector(0, 0, 0);
    G4ThreeVector     Det_u    = G4ThreeVector(0, 0, 0);
@@ -545,6 +544,17 @@ void ThinSi::ReadSensitive(const G4Event* event)
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////// Used to Read Event Map of detector //////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
 
 // Si
    G4THitsMap<G4int>*     DetNbrHitMap;  
