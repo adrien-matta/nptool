@@ -81,8 +81,8 @@ void TTiaraHyballPhysics::BuildPhysicalEvent(){
     vector< TVector2 > couple = Match_Ring_Sector() ;
     EventMultiplicity = couple.size();
 
-    unsigned int size = couple.size();
-    for(unsigned int i = 0 ; i < size ; ++i){
+    unsigned int MatchSize = couple.size();
+    for(unsigned int i = 0 ; i < MatchSize ; ++i){
 
       int N = m_PreTreatedData->GetRingEDetectorNbr(couple[i].X()) ;
       int Ring = m_PreTreatedData->GetRingEStripNbr(couple[i].X()) ;
@@ -223,7 +223,7 @@ vector < TVector2 > TTiaraHyballPhysics :: Match_Ring_Sector(){
   }
   //   Prevent to treat event with ambiguous matchin beetween X and Y
   if( ArrayOfGoodCouple.size() > m_PreTreatedData->GetRingEMult() ) ArrayOfGoodCouple.clear() ;
- 
+
   return ArrayOfGoodCouple;
 }
 
