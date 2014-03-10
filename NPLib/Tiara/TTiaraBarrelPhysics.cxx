@@ -71,11 +71,10 @@ void TTiaraBarrelPhysics::BuildPhysicalEvent(){
 
   unsigned int sizeU = m_PreTreatedData->GetFrontUpstreamEMult();
   unsigned int sizeD = m_PreTreatedData->GetFrontDownstreamEMult();
-  unsigned int sizeB = m_EventData->GetBackEMult(); 
+  unsigned int sizeB = m_PreTreatedData->GetBackEMult(); 
  for(unsigned int k = 0 ; k < sizeB ; k++){
   for(unsigned int i = 0 ; i < sizeU ; i++){  
     if(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i) == m_PreTreatedData->GetBackEDetectorNbr(k))
-    
     for(unsigned int j = 0 ; j < sizeD ; j++){  
         // same detector, same strip
         if( m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i) 
@@ -93,18 +92,18 @@ void TTiaraBarrelPhysics::BuildPhysicalEvent(){
              double POS =
                 CalibrationManager::getInstance()
                   ->ApplyResistivePositionCalibration("TIARABARREL/B"
-                    +itoa(m_EventData->GetFrontUpstreamEDetectorNbr(i))
-                    +"_STRIP"+itoa(m_EventData->GetFrontUpstreamEStripNbr(i))
+                    +itoa(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i))
+                    +"_STRIP"+itoa(m_PreTreatedData->GetFrontUpstreamEStripNbr(i))
                     +"_POS",(ED-EU)/(EU+ED));
                 
                 Strip_Pos.push_back(POS); 
-                Strip_N.push_back(m_EventData->GetFrontUpstreamEStripNbr(i));
-                DetectorNumber.push_back(m_EventData->GetFrontUpstreamEDetectorNbr(i));
+                Strip_N.push_back(m_PreTreatedData->GetFrontUpstreamEStripNbr(i));
+                DetectorNumber.push_back(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i));
                 double E = (EU+ED) / CalibrationManager::getInstance()
                   ->ApplyCalibration("TIARABARREL/BALLISTIC_B" 
-                  + itoa(m_EventData->GetFrontDownstreamEDetectorNbr(i)) 
+                  + itoa(m_PreTreatedData->GetFrontDownstreamEDetectorNbr(i)) 
                   + "_STRIP" 
-                  + itoa(m_EventData->GetFrontDownstreamEStripNbr(i)),
+                  + itoa(m_PreTreatedData->GetFrontDownstreamEStripNbr(i)),
                   POS);
                   Strip_E.push_back(E);
           }

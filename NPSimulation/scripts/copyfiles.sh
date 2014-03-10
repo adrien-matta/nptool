@@ -42,7 +42,7 @@ do
       # only copy files associated to defined detector libraries
       if echo "$detectorlibs" | grep -q "$ldir" ; then
          # print informations
-         echo " + Copying files from $ldir directory..."
+         # echo " + Copying files from $ldir directory..."
          # enter directory
          cd $dir
          # loop on files in directory
