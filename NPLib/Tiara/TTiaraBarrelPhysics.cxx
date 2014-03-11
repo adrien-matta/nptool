@@ -71,11 +71,10 @@ void TTiaraBarrelPhysics::BuildPhysicalEvent(){
 
   unsigned int sizeU = m_PreTreatedData->GetFrontUpstreamEMult();
   unsigned int sizeD = m_PreTreatedData->GetFrontDownstreamEMult();
-  unsigned int sizeB = m_EventData->GetBackEMult(); 
+  unsigned int sizeB = m_PreTreatedData->GetBackEMult(); 
  for(unsigned int k = 0 ; k < sizeB ; k++){
   for(unsigned int i = 0 ; i < sizeU ; i++){  
     if(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i) == m_PreTreatedData->GetBackEDetectorNbr(k))
-    
     for(unsigned int j = 0 ; j < sizeD ; j++){  
         // same detector, same strip
         if( m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i) 
@@ -93,18 +92,18 @@ void TTiaraBarrelPhysics::BuildPhysicalEvent(){
              double POS =
                 CalibrationManager::getInstance()
                   ->ApplyResistivePositionCalibration("TIARABARREL/B"
-                    +itoa(m_EventData->GetFrontUpstreamEDetectorNbr(i))
-                    +"_STRIP"+itoa(m_EventData->GetFrontUpstreamEStripNbr(i))
+                    +itoa(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i))
+                    +"_STRIP"+itoa(m_PreTreatedData->GetFrontUpstreamEStripNbr(i))
                     +"_POS",(ED-EU)/(EU+ED));
                 
                 Strip_Pos.push_back(POS); 
-                Strip_N.push_back(m_EventData->GetFrontUpstreamEStripNbr(i));
-                DetectorNumber.push_back(m_EventData->GetFrontUpstreamEDetectorNbr(i));
+                Strip_N.push_back(m_PreTreatedData->GetFrontUpstreamEStripNbr(i));
+                DetectorNumber.push_back(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i));
                 double E = (EU+ED) / CalibrationManager::getInstance()
                   ->ApplyCalibration("TIARABARREL/BALLISTIC_B" 
-                  + itoa(m_EventData->GetFrontDownstreamEDetectorNbr(i)) 
+                  + itoa(m_PreTreatedData->GetFrontDownstreamEDetectorNbr(i)) 
                   + "_STRIP" 
-                  + itoa(m_EventData->GetFrontDownstreamEStripNbr(i)),
+                  + itoa(m_PreTreatedData->GetFrontDownstreamEStripNbr(i)),
                   POS);
                   Strip_E.push_back(E);
           }
@@ -480,8 +479,9 @@ void TTiaraBarrelPhysics::InitializeRootInputRaw(){
 ///////////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelPhysics::InitializeRootInputPhysics(){
   TChain* inputChain = RootInput::getInstance()->GetChain();
+  inputChain->SetBranchStatus("TiaraBarrel" , true );
   inputChain->SetBranchStatus("EventMultiplicity",true);
-  inputChain->SetBranchStatus("DetectorNumber ",true);
+  inputChain->SetBranchStatus("DetectorNumber",true);
   inputChain->SetBranchStatus("Strip_E",true);
   inputChain->SetBranchStatus("Strip_T",true);
   inputChain->SetBranchStatus("Strip_N",true);
@@ -497,6 +497,8 @@ void TTiaraBarrelPhysics::InitializeRootInputPhysics(){
   inputChain->SetBranchStatus("Outer_Strip_N",true);
   inputChain->SetBranchStatus("Outer_Back_E",true);
   inputChain->SetBranchStatus("Outer_Back_T",true);
+  inputChain->SetBranchAddress("TiaraBarrel" , &m_EventPhysics );
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -566,7 +568,6 @@ TVector3 TTiaraBarrelPhysics::GetPositionOfInteraction(const int i) const{
   double INNERBARREL_ActiveWafer_Width = 24.0;
 
   double StripPitch = INNERBARREL_ActiveWafer_Width/4. ;
-
   double X = Strip_N[i]*StripPitch-0.5*INNERBARREL_ActiveWafer_Width;
   double Y = INNERBARREL_PCB_Width*(0.5+sin(45*deg))  ; 
   double Z = (Strip_Pos[i]-0.5)*INNERBARREL_ActiveWafer_Length ;

@@ -159,7 +159,14 @@ class TExogamPhysics : public TObject, public NPA::VDetector
 
   Double_t GetSegmentAnglePhi(int Clover, int Cristal, int Segment)    {return(Clover_Angles_Theta_Phi[Clover][Cristal][Segment][1]);};
   Double_t GetSegmentAngleTheta(int Clover, int Cristal, int Segment)  {return(Clover_Angles_Theta_Phi[Clover][Cristal][Segment][0]);};
-  
+ 
+  // Give and external TMustData object to TExogamPhysics. Needed for online analysis for example.
+  void SetRawDataPointer(TExogamData* rawDataPointer) {EventData = rawDataPointer;}
+  // Retrieve raw and pre-treated data
+  TExogamData* GetRawData()        const {return EventData;}
+  TExogamData* GetPreTreatedData() const {return PreTreatedData;}
+
+ 
   private: // Spectra Class   
     TExogamSpectra*      m_Spectra;//! 
 
