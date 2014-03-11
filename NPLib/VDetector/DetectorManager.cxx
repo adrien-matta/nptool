@@ -411,7 +411,7 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
     ///////////// Search for LaBr3 ///////////
     ////////////////////////////////////////////
     else if (LineBuffer.compare(0, 5, "LaBr3") == 0 && LaBr3 == false) {
-#ifdef INC_PLASTIC
+#ifdef INC_LABR3
       LaBr3 = true;
       cout << "//////// Plastic ////////" << endl << endl;
 
@@ -429,7 +429,7 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
     ///////////// Search for SiLi ///////////
     ////////////////////////////////////////////
     else if (LineBuffer.compare(0, 4, "SiLi") == 0 && SiLi == false) {
-#ifdef INC_PLASTIC
+#ifdef INC_SILI
       SiLi = true;
       cout << "//////// Plastic ////////" << endl << endl;
 
@@ -447,7 +447,7 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
     ///////////// Search for SiRes ///////////
     ////////////////////////////////////////////
     else if (LineBuffer.compare(0, 5, "SiRes") == 0 && SiRes == false) {
-#ifdef INC_PLASTIC
+#ifdef INC_SIRES
       SiRes = true;
       cout << "//////// Plastic ////////" << endl << endl;
 
