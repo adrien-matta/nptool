@@ -147,8 +147,8 @@ void TCharissaPhysics::BuildPhysicalEvent(){
       double tLayer2_Si_Y_E= -1000;
       double tLayer2_Si_X_T= -1000;
       double tLayer2_Si_Y_T= -1000;
-      double tLayer2_Si_E= -1000;
-      double tLayer2_Si_T = -1000;
+//      double tLayer2_Si_E= -1000;
+//      double tLayer2_Si_T = -1000;
       
       for(unsigned int ll = 0 ; ll < Layer2_couple.size() ; ++ll){	
         int Layer2_N = m_PreTreatedData->GetCharissaLayer2StripXEDetectorNbr(Layer2_couple[ll].X()) ;
@@ -986,9 +986,9 @@ void TCharissaPhysics::AddParameterToCalibrationManager()
 {
   CalibrationManager* Cal = CalibrationManager::getInstance();
 
-  for(int i = 0 ; i < m_NumberOfTelescope ; ++i){
+  for(unsigned int i = 0 ; i < m_NumberOfTelescope ; ++i){
 
-    for( int j = 0 ; j <  m_NumberOfStrip ; ++j){
+    for(unsigned int j = 0 ; j <  m_NumberOfStrip ; ++j){
       Cal->AddParameter("CHARISSA", "T"+itoa(i+1)+"_DE_X"+itoa(j+1)+"_E","CHARISSA_T"+itoa(i+1)+"_DE_X"+itoa(j+1)+"_E")   ;
       Cal->AddParameter("CHARISSA", "T"+itoa(i+1)+"_DE_Y"+itoa(j+1)+"_E","CHARISSA_T"+itoa(i+1)+"_DE_Y"+itoa(j+1)+"_E")   ;
       Cal->AddParameter("CHARISSA", "T"+itoa(i+1)+"_DE_X"+itoa(j+1)+"_T","CHARISSA_T"+itoa(i+1)+"_DE_X"+itoa(j+1)+"_T")   ;
@@ -1093,13 +1093,13 @@ void TCharissaPhysics::AddTelescope(TVector3 C_X1_Y1, TVector3 C_X16_Y1,
   Strip_1_1 = C_X1_Y1 + (U+V) * (StripPitch/2.)    ;
   Strip_1_1+= U*Ushift+V*Vshift ;
 
-  for( int i = 0 ; i <  m_NumberOfStrip ; ++i )
+  for(unsigned int i = 0 ; i <  m_NumberOfStrip ; ++i )
   {
     lineX.clear()   ;
     lineY.clear()   ;
     lineZ.clear()   ;
 
-    for( int j = 0 ; j <  m_NumberOfStrip ; ++j )
+    for(unsigned int j = 0 ; j <  m_NumberOfStrip ; ++j )
     {
       StripCenter  = Strip_1_1 + StripPitch*( i*U + j*V  );
       lineX.push_back( StripCenter.X() );
@@ -1128,14 +1128,14 @@ void TCharissaPhysics::InitializeStandardParameter()
   m_CsIChannelStatus.clear()  ;
 
   ChannelStatus.resize(m_NumberOfStrip,true);
-  for(int i = 0 ; i < m_NumberOfTelescope ; ++i)
+  for(unsigned int i = 0 ; i < m_NumberOfTelescope ; ++i)
   {
     m_XChannelStatus[i] = ChannelStatus;
     m_YChannelStatus[i] = ChannelStatus;
   }
 
   ChannelStatus.resize(m_NumberOfStrip,true);
-  for(int i = 0 ; i < m_NumberOfTelescope ; ++i)
+  for(unsigned int i = 0 ; i < m_NumberOfTelescope ; ++i)
   {
     m_CsIChannelStatus[i]  = ChannelStatus;
   }
@@ -1215,14 +1215,14 @@ void TCharissaPhysics::AddTelescope(   double theta,
   C.SetY( C.Y() - ( Face/2 - StripPitch/2 ) * ( V.Y() + U.Y() ) )  ;
   C.SetZ( C.Z() - ( Face/2 - StripPitch/2 ) * ( V.Z() + U.Z() ) )  ;
 
-  for( int i = 0 ; i <  m_NumberOfStrip ; ++i )
+  for(unsigned int i = 0 ; i <  m_NumberOfStrip ; ++i )
   {
 
     lineX.clear()   ;
     lineY.clear()   ;
     lineZ.clear()   ;
 
-    for( int j = 0 ; j <  m_NumberOfStrip ; ++j )
+    for(unsigned int j = 0 ; j <  m_NumberOfStrip ; ++j )
     {
       X = C.X() + StripPitch * ( U.X()*i + V.X()*j )   ;
       Y = C.Y() + StripPitch * ( U.Y()*i + V.Y()*j )   ;
