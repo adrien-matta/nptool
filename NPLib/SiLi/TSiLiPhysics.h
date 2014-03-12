@@ -108,7 +108,7 @@ class TSiLiPhysics : public TObject, public NPA::VDetector
       TSiLiData*         EventData ;//!
       TSiLiData*         PreTreatedData ;//!
       TSiLiPhysics*      EventPhysics ;//!
-      TSiLiSpectra*	 m_Spectra;
+      TSiLiSpectra*	    m_Spectra;//!
       double 		 m_SiLi_E_Threshold;   
       double 		 m_SiLi_RAW_Threshold;   
   public: // Spectra Getter
