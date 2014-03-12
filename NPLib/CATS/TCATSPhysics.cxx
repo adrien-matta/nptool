@@ -192,8 +192,8 @@ void TCATSPhysics::BuildPhysicalEvent(){
     }
   }
 
-  double CalculatedStripX = 0, CalculatedStripY = 0;
-  double posX = 0 , posY = 0;
+//  double CalculatedStripX = 0, CalculatedStripY = 0;
+//  double posX = 0 , posY = 0;
 
   for(unsigned int i  = 0 ; i < NumberOfCATSHit ; i++ ){       
     // Return the position in strip unit
