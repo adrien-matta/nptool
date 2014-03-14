@@ -1,3 +1,17 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+CATSArray
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+CATSDetector
+   X1_Y1=         38.86    -34.36  -1193
+   X28_Y1=        -32.26   -34.36  -1193
+   X1_Y28=        38.86    37.36   -1193
+   X28_Y28=       -32.26   37.36   -1193
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
+CATSDetector
+   X1_Y1=         -35.56  -35.36  -684
+   X28_Y1=        35.56  -35.36  -684
+   X1_Y28=        -35.56   35.76  -684
+   X28_Y28=       35.56   35.76  -684
 %%%%%%%%%%%%%%%%%%%%%%%%%%%         
 MUST2Array        
 %%%%%%% Telescope 1 %%%%%%%         
@@ -11,7 +25,7 @@ SILI= 0
 CSI=  1     
 VIS=  all      
          
-%%%%%%% Telescope 2 %%%%%%%         
+%%%%%%% Telescope 2 %%%%%%% 
 M2Telescope          
 X1_Y1=      -116.04  9.84  138.55
 X1_Y128= -22.8 9.84  175.95
@@ -43,7 +57,6 @@ SI=   1
 SILI= 0     
 CSI=  1     
 VIS=  all      
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 EXOGAMArray
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
@@ -61,28 +74,42 @@ EXOGAMClover
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%0
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%         
-%TiaraHyball
-%TiaraHyballWedge
-%   Z= -147
-%   R= 0
-%   PHI= 0
-%TiaraHyballWedge
-%   Z= -147
-%   R= 0
-%   PHI= 60
-%TiaraHyballWedge
-%   Z= -147
-%   R= 0
-%   PHI= 120
-%TiaraHyballWedge
-%   Z= -147
-%   R= 0
-%   PHI= 180
-%TiaraHyballWedge
-%   Z= -147
-%   R= 0
-%   PHI= 240
-%TiaraHyballWedge
-%   Z= -147
-%   R= 0
- %  PHI= 300
+TiaraHyball
+TiaraHyballWedge
+   Z= -154.3
+   R= 0
+   Phi= 0
+TiaraHyballWedge
+   Z= -154.3
+   R= 0
+   Phi= 60
+TiaraHyballWedge
+   Z= -154.3
+   R= 0
+   Phi= 120
+TiaraHyballWedge
+   Z= -154.3
+   R= 0
+   Phi= 180
+TiaraHyballWedge
+   Z= -154.3
+   R= 0
+   Phi= 240
+TiaraHyballWedge
+   Z= -154.3
+   R= 0
+   Phi= 300
+%%%%%%%%%%%%%%%%%%%%%%%%%%%         
+TiaraBarrel
+   X= 0
+   Y= 0
+   Z= 0
+   OuterBarrel= 1
+   InnerBarrel= 1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%      
+CharissaArray
+CharissaTelescope          
+X1_Y1=      10   -10 350
+X1_Y16= -10  -10 350
+X16_Y1= -10   10  350
+X16_Y16=  10 10  350

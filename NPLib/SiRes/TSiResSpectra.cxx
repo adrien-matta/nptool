@@ -90,7 +90,7 @@ void TSiResSpectra::InitRawSpectra()
 	      AddHisto1D(name, name, NbrBin, MinBin, MaxBin, "SiRes/RAW/ENERGY");
 	   } // end loop on number of detectors
 
-	   // SiRes_E_RAW
+	   //SiRes_E_RAW
 	   name = Form("SiRes_%d_E_RAW",j+1);
 	   AddHisto2D(name, name, fNumberDetector, 1, fNumberDetector+1, NbrBin, MinBin, MaxBin, "SiRes/RAW/ENERGY");
 
@@ -106,17 +106,7 @@ void TSiResSpectra::InitRawSpectra()
 	   name = Form("SiRes_%d_E_RAW_MULT", j+1);
 	   AddHisto1D(name, name, fNumberDetector, 1, fNumberDetector+1, "SiRes/RAW/MULT");
 
-	   // T_RAW_MULT
-	   /*name = Form("SiRes_%d_T_RAW_MULT",j+1);
-	   AddHisto1D(name, name, fNumberDetector, 1, fNumberDetector+1, "SiRes/RAW/MULT");*/
    }
-   /*// SiRes_HIT_E_RAW
-   name = "SiRes_HITPATTERN_E_RAW";
-   AddHisto1D(name, name, fNumberDetector, 1, fNumberDetector+1, "SiRes/RAW/ENERGY");
-
-   // SiRes_HIT_T_RAW
-   name = "SiRes_HITPATTERN_T_RAW";
-   AddHisto1D(name, name, fNumberDetector, 1, fNumberDetector+1, "SiRes/RAW/TIME");*/
 }
 
 
@@ -126,43 +116,35 @@ void TSiResSpectra::InitPreTreatedSpectra()
 {
    string name;
    int NbrBin  = 512;
-   int MinBinE = 0;
-   int MaxBinE = 10;    // MeV
+   int MinBin = 0;
+   int MaxBin = 10;    // MeV
    int MinBinT = 0;
    int MaxBinT = 1;     // us 
-   for (unsigned int j = 0; j < fNumberDetector; j++) 
-   { 
-	   for (unsigned int i = 0; i < 4; i++) { // loop on number of detectors
-	      // SiRes_E_CAL
+  for(unsigned int j=0; j<fNumberDetector; j++)
+   {
+	   for (unsigned int i = 0; i < 4; i++) { // loop on channels
+	      // SiRes_E_RAW
 	      name = Form("SiRes_%d_%d_E_CAL", j+1, i+1);
-	      AddHisto1D(name, name, NbrBin, MinBinE, MaxBinE, "SiRes/CAL/ENERGY");
-
+	      AddHisto1D(name, name, NbrBin, MinBin, MaxBin, "SiRes/CAL/ENERGY");
 	   } // end loop on number of detectors
 
-	   // SiRes_E_CAL
+	   //SiRes_E_RAW
+	   name = Form("SiRes_%d_E_CAL",j+1);
+	   AddHisto2D(name, name, fNumberDetector, 1, fNumberDetector+1, NbrBin, MinBin, MaxBin, "SiRes/CAL/ENERGY");
+
+	   // SiRes_E_RAW
 	   name = Form("SiRes_%d_EBack_CAL", j+1);
-	   AddHisto1D(name, name, NbrBin, MinBinE, MaxBinE, "SiRes/CAL/ENERGY");
+	   AddHisto1D(name, name, NbrBin, MinBin, MaxBin, "SiRes/CAL/ENERGY");
 
-	   // SiRes_T_CAL
+	   // SiRes_T_RAW
 	   name = Form("SiRes_%d_T_CAL",j+1);
-	   AddHisto1D(name, name, NbrBin, MinBinT, MaxBinT, "SiRes/CAL/TIME");
+	   AddHisto1D(name, name, NbrBin, MinBin, MaxBin, "SiRes/CAL/TIME");
 
-	   // E_CAL_MULT
+	   // E_RAW_MULT
 	   name = Form("SiRes_%d_E_CAL_MULT", j+1);
 	   AddHisto1D(name, name, fNumberDetector, 1, fNumberDetector+1, "SiRes/CAL/MULT");
 
-	   // T_CAL_MULT
-	   /*name = Form("SiRes_%d_T_CAL_MULT", j+1);
-	   AddHisto1D(name, name, fNumberDetector, 1, fNumberDetector+1, "SiRes/CAL/MULT");*/
    }
-   /*// SiRes_HIT_E_CAL
-   name = "SiRes_HITPATTERN_E_CAL";
-   AddHisto1D(name, name, fNumberDetector, 1, fNumberDetector+1, "SiRes/CAL/ENERGY");
-
-   // SiRes_HIT_T_CAL
-   name = "SiRes_HITPATTERN_T_CAL";
-   AddHisto1D(name, name, fNumberDetector, 1, fNumberDetector+1, "SiRes/CAL/TIME");*/
-
 
 }
 
@@ -173,26 +155,18 @@ void TSiResSpectra::InitPhysicsSpectra()
 {
    string name;
 
-   int NbrBin  = 512;
-   int MinBinE = 0;
-   int MaxBinE = 10;
+   int NbrBin  = 100;
+   int MinBin = 0;
+   int MaxBin = 10;
    int MinBinT = 0;
-   int MaxBinT = 1;
+   int MaxBinT = 1;     // us 
    for (unsigned int j = 0; j < fNumberDetector; j++) 
    { 
-	   // Energy-Time Correlation
-	   for (unsigned int i = 0 ; i < 4 ; i++) { // loop on number of detectors
-	      name = Form("SiRes_%d_%d_E_TOF", j+1, i+1);
-	      AddHisto2D(name, name, NbrBin, MinBinE, MaxBinE, NbrBin, MinBinT, MaxBinT, "SiRes/PHY"); 
-	   }
-
+	   name = Form("SiRes_%d_XY", j+1);
+	   AddHisto2D(name, name, NbrBin, MinBin, MaxBin, NbrBin, MinBin, MaxBin, "SiRes/PHY");
 	   // EBack-TOF:
 	   name = Form("SiRes_%d_EBack_TOF", j+1);
-	   AddHisto2D(name, name, NbrBin, MinBinE, MaxBinE, NbrBin, MinBinT, MaxBinT, "SiRes/PHY");
-
-	   // E-TOF:
-	   name = Form("SiRes_%d_E_TOF", j+1);
-	   AddHisto2D(name, name, NbrBin, MinBinE, MaxBinE, NbrBin, MinBinT, MaxBinT, "SiRes/PHY");
+	   AddHisto2D(name, name, NbrBin, MinBin, MaxBin, NbrBin, MinBinT, MaxBinT, "SiRes/PHY");
    }
 }
 
@@ -203,59 +177,38 @@ void TSiResSpectra::FillRawSpectra(TSiResData* RawData)
 {
    string name;
    string family;
-   for (unsigned int j = 0; j < fNumberDetector; j++) 
-   { 
-  
-	   // E_RAW
-	   for (unsigned int i = 0; i < RawData->GetEnergyMult(); i++) {
-	      name   = Form("SiRes_%d_%d_E_RAW", j+1, RawData->GetEChannelNumber(i));
+   int NbrBin  = 100;
+   int MinBin = 0;
+   int MaxBin = 10;
+	for (unsigned int i = 0; i < RawData->GetEnergyMult(); i++) {
+	      name   = Form("SiRes_%d_%d_E_RAW", RawData->GetEDetectorNumber(i), RawData->GetEChannelNumber(i));
 	      family = "SiRes/RAW/ENERGY";
 	      GetHisto(family,name) -> Fill(RawData->GetEEnergy(i));
+
+	      name   = Form("SiRes_%d_E_RAW", RawData->GetEDetectorNumber(i));
+	      family = "SiRes/RAW/ENERGY";
+	      GetHisto(family,name) -> Fill(RawData->GetEChannelNumber(i),RawData->GetEEnergy(i));
+
+	   }
+// SiRes_E_RAW
+	for (unsigned int i = 0; i < RawData->GetEEnergyBackMult(); i++) {
+	   name = Form("SiRes_%d_EBack_RAW",RawData->GetEEnergyBackDetectorNumber(i));
+	   family = "SiRes/RAW/ENERGY";
+	      GetHisto(family,name) -> Fill(RawData->GetEEnergyBack(i));
 	   }
 
-
-	   // SiRes_E_RAW
-	   name = Form("SiRes_%d_E_RAW",j+1);
-	   family = "SiRes/RAW/ENERGY";
-	   for (unsigned int i = 0; i < RawData->GetEnergyMult(); i++) {
-	      GetHisto(family,name) -> Fill(RawData->GetEChannelNumber(i), RawData->GetEEnergy(i));
-	   }
-
-	   // SiRes_E_RAW
-	   name = Form("SiRes_%d_EBack_RAW", j+1);
-	   family = "SiRes/RAW/ENERGY";
-	   GetHisto(family,name) -> Fill(RawData->GetEEnergyBack(j));
-
-	   // SiRes_T_RAW
-	   name = Form("SiRes_%d_T_RAW", j+1);
+	for (unsigned int i = 0; i < RawData->GetTimeMult(); i++) {
+	   name = Form("SiRes_%d_T_RAW",RawData->GetTDetectorNumber(i));
 	   family = "SiRes/RAW/TIME";
-	   GetHisto(family,name) -> Fill(RawData->GetTTime(j));
-	   
-
-	   // SiRes_HIT_E_RAW
-	   /*name = "SiRes_HITPATTERN_E_RAW";
-	   family = "SiRes/RAW/ENERGY";
-	   for (unsigned int i = 0; i < RawData->GetEnergyMult(); i++) {
-	      GetHisto(family,name) -> Fill(RawData->GetENumber(i));
+	      GetHisto(family,name) -> Fill(RawData->GetTTime(i));
 	   }
+	
+	for (unsigned int i = 0; i < RawData->GetEnergyMult(); i++) {
+	      name   = Form("SiRes_%d_E_RAW_MULT", RawData->GetEDetectorNumber(i));
+	      family = "SiRes/RAW/MULT";
+	      GetHisto(family,name) -> Fill(RawData->GetEnergyMult());
 
-	   // SiRes_HIT_T_RAW
-	   name = "SiRes_HITPATTERN_T_RAW";
-	   family = "SiRes/RAW/TIME";
-	   for (unsigned int i = 0; i < RawData->GetTimeMult(); i++) {
-	      GetHisto(family,name) -> Fill(RawData->GetTNumber(i));
-	   }*/
-
-	   // E_RAW_MULT
-	   name = Form("SiRes_%d_E_RAW_MULT", j+1);
-	   family = "SiRes/RAW/MULT";
-	   GetHisto(family,name) -> Fill(RawData->GetEnergyMult());
-
-	   // T_RAW_MULT
-	   /*name = Form("SiRes_%d_T_RAW_MULT", j+1);
-	   family = "SiRes/RAW/MULT";
-	   GetHisto(family,name) -> Fill(RawData->GetTimeMult());*/
-   }
+	   }
 
 }
 
@@ -266,53 +219,40 @@ void TSiResSpectra::FillPreTreatedSpectra(TSiResData* PreTreatedData)
 {
    string name;
    string family;
-  
-   // E_CAL
-   for(unsigned int j=0; j<fNumberDetector; j++)
-   {
-	   for (unsigned int i = 0; i < PreTreatedData->GetEnergyMult(); i++) {
-	      name   = Form("SiRes_%d_%d_E_CAL", j+1, PreTreatedData->GetEChannelNumber(i));
+ 
+   int NbrBin  = 100;
+   int MinBin = 0;
+   int MaxBin = 10;
+	for (unsigned int i = 0; i < PreTreatedData->GetEnergyMult(); i++) {
+	      name   = Form("SiRes_%d_%d_E_CAL", PreTreatedData->GetEDetectorNumber(i), PreTreatedData->GetEChannelNumber(i));
 	      family = "SiRes/CAL/ENERGY";
 	      GetHisto(family,name) -> Fill(PreTreatedData->GetEEnergy(i));
+
+	      name   = Form("SiRes_%d_E_CAL", PreTreatedData->GetEDetectorNumber(i));
+	      family = "SiRes/CAL/ENERGY";
+	      GetHisto(family,name) -> Fill(PreTreatedData->GetEChannelNumber(i),PreTreatedData->GetEEnergy(i));
+
+	   }
+// SiRes_E_RAW
+	for (unsigned int i = 0; i < PreTreatedData->GetEEnergyBackMult(); i++) {
+	   name = Form("SiRes_%d_EBack_CAL",PreTreatedData->GetEEnergyBackDetectorNumber(i));
+	   family = "SiRes/CAL/ENERGY";
+	      GetHisto(family,name) -> Fill(PreTreatedData->GetEEnergyBack(i));
 	   }
 
-	   // T_CAL
-	   name   = Form("SiRes_%d_T_CAL", j+1);
+	for (unsigned int i = 0; i < PreTreatedData->GetTimeMult(); i++) {
+	   name = Form("SiRes_%d_T_CAL",PreTreatedData->GetTDetectorNumber(i));
 	   family = "SiRes/CAL/TIME";
-	   GetHisto(family,name) -> Fill(PreTreatedData->GetTTime(j));
-
-
-	   // SiRes_E_CAL
-	   name = Form("SiRes_%d_EBack_CAL", j+1);
-	   family = "SiRes/CAL/ENERGY";
-	   GetHisto(family,name) -> Fill(PreTreatedData->GetEEnergyBack(j));
-	   
-
-	   /*
-	   // SiRes_HIT_E_CAL
-	   name = "SiRes_HITPATTERN_E_CAL";
-	   family = "SiRes/CAL/ENERGY";
-	   for (unsigned int i = 0; i < PreTreatedData->GetEnergyMult(); i++) {
-	      GetHisto(family,name) -> Fill(PreTreatedData->GetENumber(i));
+	      GetHisto(family,name) -> Fill(PreTreatedData->GetTTime(i));
 	   }
+	
+	for (unsigned int i = 0; i < PreTreatedData->GetEnergyMult(); i++) {
+	      name   = Form("SiRes_%d_E_CAL_MULT", PreTreatedData->GetEDetectorNumber(i));
+	      family = "SiRes/CAL/MULT";
+	      GetHisto(family,name) -> Fill(PreTreatedData->GetEnergyMult());
 
-	   // SiRes_HIT_T_CAL
-	   name = "SiRes_HITPATTERN_T_CAL";
-	   family = "SiRes/CAL/TIME";
-	   for (unsigned int i = 0; i < PreTreatedData->GetTimeMult(); i++) {
-	      GetHisto(family,name) -> Fill(PreTreatedData->GetTNumber(i));
-	   }*/
+	   }   // E_CAL
 
-	   // E_CAL_MULT
-	   name = Form("SiRes_%d_E_CAL_MULT", j+1);
-	   family = "SiRes/CAL/MULT";
-	   GetHisto(family,name) -> Fill(PreTreatedData->GetEnergyMult());
-
-	   // T_CAL_MULT
-	   /*name = Form("SiRes_%d_T_CAL_MULT", j+1);
-	   family = "SiRes/CAL/MULT";
-	   GetHisto(family,name) -> Fill(PreTreatedData->GetTimeMult());*/
-   }
 }
 
 
@@ -322,26 +262,18 @@ void TSiResSpectra::FillPhysicsSpectra(TSiResPhysics* Physics)
 {
    string name;
    string family = "SiRes/PHY";
-
-   for (unsigned int j = 0; j < fNumberDetector; j++) 
-   { 
-
-	   // Energy-Time Correlation
-	   for (unsigned int i = 0 ; i < Physics->DetectorNumber.size(); i++) { // loop on number of detectors
-	      name = Form("SiRes_%d_E_TOF", i+1);
-	      GetHisto(family,name) -> Fill(Physics->Time[j], Physics->Energy[i]);
+	
+	for (unsigned int i = 0; i < Physics->x.size(); i++) {
+	   name = Form("SiRes_%d_XY",Physics->DetectorNumber[i]);
+	      GetHisto(family,name) -> Fill(Physics->x[i],Physics->y[i]);
 	   }
-	   
-	   // E-TOF:
-	   name =Form("SiRes_%d_EBack_TOF", j+1);
-	   GetHisto(family,name) -> Fill(Physics->Time[j], Physics->EnergyBack[j]);
 
-	   // E-TOF:
-	   name = Form("SiRes_%d_E_TOF", j+1);
-	   for (unsigned int i = 0 ; i < Physics->DetectorNumber.size(); i++) { // loop on number of detectors
-	      GetHisto(family,name) -> Fill(Physics->Time[j], Physics->Energy[i]);
+	for (unsigned int i = 0; i < Physics->EnergyBack.size(); i++) {
+	   name = Form("SiRes_%d_EBack_TOF",Physics->DetectorNumber[i]);
+	      GetHisto(family,name) -> Fill(Physics->EnergyBack[i],Physics->Time[i]);
 	   }
-   }
+	
+
 }
 
 

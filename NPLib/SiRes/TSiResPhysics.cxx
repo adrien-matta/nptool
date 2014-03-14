@@ -50,6 +50,7 @@ TSiResPhysics::TSiResPhysics()
    {      
       NumberOfDetector = 0 ;
       EventData = new TSiResData ;
+      PreTreatedData    = new TSiResData ;     
       EventPhysics = this ;
       m_SiRes_E_Threshold   = 0;   
       m_SiRes_RAW_Threshold   = 0;     
@@ -81,16 +82,9 @@ void TSiResPhysics::ReadConfiguration(string Path)
       string LineBuffer             ;
       string DataBuffer             ;
 
-      bool check_Theta = false          ;
-      bool check_Phi  = false           ;
-      bool check_R     = false          ;
       bool check_Thickness = false      ;
-      bool check_Radius = false         ;
-      bool check_LeadThickness = false  ;
-      bool check_Scintillator = false   ;
       bool check_Height = false         ;
       bool check_Width = false          ;
-      bool check_Shape = false          ;
       bool check_X = false              ;
       bool check_Y = false              ;
       bool check_Z = false              ;      
@@ -105,7 +99,7 @@ void TSiResPhysics::ReadConfiguration(string Path)
          if (LineBuffer.compare(0, 5, "SiRes") == 0) 
             {
                cout << "///" << endl ;
-               cout << "Platic found: " << endl ;        
+               cout << "SiRes found: " << endl ;        
                ReadingStatus = true ;
             }
             
@@ -127,25 +121,6 @@ void TSiResPhysics::ReadConfiguration(string Path)
                   ReadingStatus = false ;
                }
                               
-                                    //Angle method
-               else if (DataBuffer=="THETA=") {
-                  check_Theta = true;
-                  ConfigFile >> DataBuffer ;
-                  cout << "Theta:  " << atof(DataBuffer.c_str()) << "deg" << endl;
-               }
-
-               else if (DataBuffer=="PHI=") {
-                  check_Phi = true;
-                  ConfigFile >> DataBuffer ;
-                  cout << "Phi:  " << atof( DataBuffer.c_str() ) << "deg" << endl;
-               }
-
-               else if (DataBuffer=="R=") {
-                  check_R = true;
-                  ConfigFile >> DataBuffer ;
-                  cout << "R:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
-               }
-               
                //Position method
                else if (DataBuffer=="X=") {
                   check_X = true;
@@ -166,21 +141,8 @@ void TSiResPhysics::ReadConfiguration(string Path)
                }
                
                
-               //General
-               else if (DataBuffer=="Shape=") {
-                  check_Shape = true;
-                  ConfigFile >> DataBuffer ;
-                  cout << "Shape:  " << DataBuffer << endl;
-               }
-               
-               // Cylindrical shape
-               else if (DataBuffer== "Radius=") {
-                  check_Radius = true;
-                  ConfigFile >> DataBuffer ;
-                  cout << "SiRes Radius:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
-               }
-               
-               // Squared shape
+
+                 // Squared shape
                else if (DataBuffer=="Width=") {
                   check_Width = true;
                   ConfigFile >> DataBuffer ;
@@ -200,17 +162,6 @@ void TSiResPhysics::ReadConfiguration(string Path)
                   cout << "SiRes Thickness:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
                }
                
-               else if (DataBuffer== "Scintillator=") {
-                  check_Scintillator = true ;
-                  ConfigFile >> DataBuffer ;
-                  cout << "SiRes Scintillator type:  " << DataBuffer << endl;
-               }
-               
-               else if (DataBuffer=="LeadThickness=") {
-                  check_LeadThickness = true;
-                  ConfigFile >> DataBuffer ;
-                  cout << "Lead Thickness :  " << atof( DataBuffer.c_str() ) << "mm" << endl;
-               }
                                                 
                ///////////////////////////////////////////////////
                //   If no Detector Token and no comment, toggle out
@@ -220,21 +171,14 @@ void TSiResPhysics::ReadConfiguration(string Path)
                   /////////////////////////////////////////////////
                   //   If All necessary information there, toggle out
                
-               if ( check_Theta && check_Phi && check_R && check_Thickness && check_Radius &&   check_LeadThickness && check_Scintillator &&   check_Height &&   check_Width && check_Shape && check_X && check_Y && check_Z ) 
+               if ( check_Thickness && check_Height &&   check_Width && check_X && check_Y && check_Z ) 
                   { 
                      NumberOfDetector++;
                      
                      //   Reinitialisation of Check Boolean  
-                     check_Theta = false          ;
-                     check_Phi  = false           ;
-                     check_R     = false          ;
                      check_Thickness = false      ;
-                     check_Radius = false         ;
-                     check_LeadThickness = false  ;
-                     check_Scintillator = false   ;
                      check_Height = false         ;
                      check_Width = false          ;
-                     check_Shape = false          ;
                      check_X = false              ;
                      check_Y = false              ;
                      check_Z = false              ;
@@ -326,13 +270,13 @@ void TSiResPhysics::PreTreat(){
   double E,T;
   E=-1000; T=-1000;
   int N=-1000;
-
-  for(unsigned int i = 0 ; i < EventData->GetEnergyMult() ; ++i)
+  for(unsigned int i = 0 ; i < EventData->GetEnergyMult() ; i++)
     {
-    	if( EventData->GetEEnergy(i)>m_SiRes_RAW_Threshold )
+	if( EventData->GetEEnergy(i)>m_SiRes_RAW_Threshold )
     	{
+		
 		E=CalibrationManager::getInstance()->ApplyCalibration("SiRes/Detector" + itoa( EventData->GetEDetectorNumber(i) ) +"_Channel"+itoa( EventData->GetEChannelNumber(i) )+"_E",EventData->GetEEnergy(i));
-    		if(E>m_SiRes_E_Threshold)
+    		//if(E>m_SiRes_E_Threshold)
     		{
         		N=EventData->GetEDetectorNumber(i);
         		PreTreatedData->SetEDetectorNumber( N );
@@ -341,11 +285,11 @@ void TSiResPhysics::PreTreat(){
     		}
     	}
     }
-  for(unsigned int i = 0 ; i < EventData->GetEEnergyBackMult() ; ++i)
+  for(unsigned int i = 0 ; i < EventData->GetEEnergyBackMult() ; i++)
     {
 	if( EventData->GetEEnergyBack(i)>m_SiRes_RAWBack_Threshold && EventData->GetEEnergyBackDetectorNumber(i)==N )
 	{
-		E=CalibrationManager::getInstance()->ApplyCalibration("SiRes/Detector"+itoa(EventData->GetEEnergyBackDetectorNumber(i))+"_EBack",EventData->GetEEnergyBack(i) ) ;  
+		E=CalibrationManager::getInstance()->ApplyCalibration("SiRes/Detector" + itoa( EventData->GetEEnergyBackDetectorNumber(i) ) +"_E",EventData->GetEEnergyBack(i));
 		if(E>m_SiRes_EBack_Threshold)
 		{    
 			PreTreatedData->SetEEnergyBackDetectorNumber( EventData->GetEEnergyBackDetectorNumber(i) );
@@ -357,8 +301,7 @@ void TSiResPhysics::PreTreat(){
 			PreTreatedData->SetTTime( T );
 		}
 	}
-    }  
-
+    } 
 }
 ///////////////////////////////////////////////////////////////////////////
 void TSiResPhysics::BuildPhysicalEvent()
@@ -377,13 +320,14 @@ void TSiResPhysics::BuildSimplePhysicalEvent()
             ChannelNumber.push_back( PreTreatedData->GetEChannelNumber(i) )   ;
             Energy.push_back( PreTreatedData->GetEEnergy(i) );
           }
-       for(unsigned int i = 0 ; i < EventData->GetTimeMult() ; i++)
-         {
-            Time.push_back( PreTreatedData->GetTTime(i) );
-         }
        for(unsigned int i = 0 ; i < EventData->GetEEnergyBackMult() ; i++)
          {
             EnergyBack.push_back( PreTreatedData->GetEEnergyBack(i) );
+//to be corrected when we read time
+         //}
+       //for(unsigned int i = 0 ; i < EventData->GetTimeMult() ; i++)
+        //{
+            Time.push_back( PreTreatedData->GetTTime(i) );
          }
      if(PreTreatedData->GetEnergyMult()==4)Treat();
 
