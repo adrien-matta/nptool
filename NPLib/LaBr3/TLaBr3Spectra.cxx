@@ -82,10 +82,9 @@ void TLaBr3Spectra::InitRawSpectra()
    int NbrBin = 512;
    int MinBin = 0;
    int MaxBin = 16384;
-
    for (unsigned int i = 0; i < fNumberDetector; i++) { // loop on number of detectors
       // LABR3_E_RAW
-      name = Form("LABR3_%d_E_RAW", i+1);
+      name = Form("LABR3_%d_E_RAW", i+1);cout<<Form("LABR3_%d_E_RAW", i+1)<<endl;
       AddHisto1D(name, name, NbrBin, MinBin, MaxBin, "LABR3/RAW/ENERGY");
 
       // LABR3_T_RAW

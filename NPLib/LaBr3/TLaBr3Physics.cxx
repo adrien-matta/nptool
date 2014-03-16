@@ -81,13 +81,8 @@ void TLaBr3Physics::ReadConfiguration(string Path)
       bool check_Theta = false          ;
       bool check_Phi  = false           ;
       bool check_R     = false          ;
-      bool check_Thickness = false      ;
       bool check_Radius = false         ;
-      bool check_LeadThickness = false  ;
-      bool check_Scintillator = false   ;
       bool check_Height = false         ;
-      bool check_Width = false          ;
-      bool check_Shape = false          ;
       bool check_X = false              ;
       bool check_Y = false              ;
       bool check_Z = false              ;      
@@ -102,7 +97,7 @@ void TLaBr3Physics::ReadConfiguration(string Path)
          if (LineBuffer.compare(0, 5, "LaBr3") == 0) 
             {
                cout << "///" << endl ;
-               cout << "Platic found: " << endl ;        
+               cout << "LaBr3 found: " << endl ;        
                ReadingStatus = true ;
             }
             
@@ -163,26 +158,14 @@ void TLaBr3Physics::ReadConfiguration(string Path)
                }
                
                
-               //General
-               else if (DataBuffer=="Shape=") {
-                  check_Shape = true;
-                  ConfigFile >> DataBuffer ;
-                  cout << "Shape:  " << DataBuffer << endl;
-               }
-               
+                 
                // Cylindrical shape
                else if (DataBuffer== "Radius=") {
                   check_Radius = true;
                   ConfigFile >> DataBuffer ;
                   cout << "LaBr3 Radius:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
                }
-               
-               // Squared shape
-               else if (DataBuffer=="Width=") {
-                  check_Width = true;
-                  ConfigFile >> DataBuffer ;
-                  cout << "LaBr3 Width:  " <<atof( DataBuffer.c_str() ) << "mm" << endl;
-               }
+ 
                
                else if (DataBuffer== "Height=") {
                   check_Height = true;
@@ -190,25 +173,7 @@ void TLaBr3Physics::ReadConfiguration(string Path)
                   cout << "LaBr3 Height:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
                }
                
-               // Common
-               else if (DataBuffer=="Thickness=") {
-                  check_Thickness = true;
-                  ConfigFile >> DataBuffer ;
-                  cout << "LaBr3 Thickness:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
-               }
-               
-               else if (DataBuffer== "Scintillator=") {
-                  check_Scintillator = true ;
-                  ConfigFile >> DataBuffer ;
-                  cout << "LaBr3 Scintillator type:  " << DataBuffer << endl;
-               }
-               
-               else if (DataBuffer=="LeadThickness=") {
-                  check_LeadThickness = true;
-                  ConfigFile >> DataBuffer ;
-                  cout << "Lead Thickness :  " << atof( DataBuffer.c_str() ) << "mm" << endl;
-               }
-                                                
+                                                 
                ///////////////////////////////////////////////////
                //   If no Detector Token and no comment, toggle out
                else 
@@ -217,7 +182,7 @@ void TLaBr3Physics::ReadConfiguration(string Path)
                   /////////////////////////////////////////////////
                   //   If All necessary information there, toggle out
                
-               if ( check_Theta && check_Phi && check_R && check_Thickness && check_Radius &&   check_LeadThickness && check_Scintillator &&   check_Height &&   check_Width && check_Shape && check_X && check_Y && check_Z ) 
+               if ( check_Theta && check_Phi && check_R &&  check_Radius &&      check_Height &&    check_X && check_Y && check_Z ) 
                   { 
                      NumberOfDetector++;
                      
@@ -225,13 +190,8 @@ void TLaBr3Physics::ReadConfiguration(string Path)
                      check_Theta = false          ;
                      check_Phi  = false           ;
                      check_R     = false          ;
-                     check_Thickness = false      ;
                      check_Radius = false         ;
-                     check_LeadThickness = false  ;
-                     check_Scintillator = false   ;
                      check_Height = false         ;
-                     check_Width = false          ;
-                     check_Shape = false          ;
                      check_X = false              ;
                      check_Y = false              ;
                      check_Z = false              ;
