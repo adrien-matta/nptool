@@ -88,6 +88,8 @@ Reaction::Reaction(){
     ++offset;
   
   fCrossSectionHist = new TH1F(Form("EnergyHist_%i",offset),"Reaction_CS",1,0,180);
+  fExcitationEnergyHist = NULL;
+  
   fshoot3=true;
   fshoot4=true;
  
@@ -151,10 +153,10 @@ Reaction::Reaction(string reaction){
     ++offset;
   
   fCrossSectionHist = new TH1F(Form("EnergyHist_%i",offset),"Reaction_CS",1,0,180);
+  fCrossSectionHist = NULL;
+
   fshoot3=true;
   fshoot4=true;
-  
-  
   
   initializePrecomputeVariable();
 }
@@ -176,6 +178,9 @@ Reaction::~Reaction(){
   
   if(fCrossSectionHist)
     delete fCrossSectionHist;
+
+  if(fExcitationEnergyHist)
+    delete fExcitationEnergyHist;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -208,6 +213,13 @@ double Reaction::ShootRandomThetaCM(){
   SetThetaCM( theta=fCrossSectionHist->GetRandom()*deg );
   return theta;
 }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void Reaction::ShootRandomExcitationEnergy(){
+  if(fExcitationEnergyHist){
+    SetExcitation4(fExcitationEnergyHist->GetRandom());
+  }
+}
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Reaction::KineRelativistic(double &ThetaLab3, double &KineticEnergyLab3,
                                 double &ThetaLab4, double &KineticEnergyLab4){
@@ -308,6 +320,7 @@ void Reaction::ReadConfigurationFile(string Path){
   bool check_Heavy = false ;
   bool check_ExcitationEnergy3 = false ;
   bool check_ExcitationEnergy4 = false ;
+  bool check_ExcitationEnergyDistribution = false;
   bool check_CrossSectionPath = false ;
   bool check_shoot3 = false ;
   bool check_shoot4 = false;
@@ -385,7 +398,16 @@ void Reaction::ReadConfigurationFile(string Path){
         fExcitation4 = atof(DataBuffer.c_str()) * MeV;
         if(fVerboseLevel==1) cout << "Excitation Energy Nuclei 4: " << fExcitation4 / MeV << " MeV" << endl;
       }
-      
+     
+      else if (DataBuffer=="ExcitationEnergyDistribution="){
+        check_ExcitationEnergyDistribution = true;
+        string FileName,HistName;
+        ReactionFile >> FileName >> HistName;
+        if(fVerboseLevel==1) cout << "Reading Excitation Energy Distribution file: " << FileName << endl;
+        fExcitationEnergyHist = Read1DProfile(FileName, HistName );
+        fExcitation4 = 0 ;
+      }
+ 
       else if  (DataBuffer== "CrossSectionPath=") {
         check_CrossSectionPath = true ;
         string FileName,HistName;
@@ -442,7 +464,7 @@ void Reaction::ReadConfigurationFile(string Path){
       ///////////////////////////////////////////////////
       //   If all Token found toggle out
       if (check_Beam && check_Target && check_Light && check_Heavy && check_ExcitationEnergy3
-          && check_ExcitationEnergy4 && check_CrossSectionPath && check_shoot4 && check_shoot3)
+          && (check_ExcitationEnergy4 || check_ExcitationEnergyDistribution ) && check_CrossSectionPath && check_shoot4 && check_shoot3)
         ReadingStatus = false;
     }
   }

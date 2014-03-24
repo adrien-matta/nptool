@@ -212,15 +212,16 @@ void ParisCluster::VolumeMaker(G4int             DetecNumber,
                      false                        ,
                      0);
 
-   logicParisCluster->SetVisAttributes(G4VisAttributes::Invisible);
-   if (m_non_sensitive_part_visiualisation) logicParisCluster->SetVisAttributes(G4VisAttributes(G4Colour(0.90, 0.90, 0.90)));
-
+   G4VisAttributes* ClusterVisAtt = new G4VisAttributes(G4Colour(0.90, 0.90, 0.90));
+   ClusterVisAtt->SetForceWireframe(true);
+   logicParisCluster->SetVisAttributes(ClusterVisAtt);
    // Phoswich volume construction (empty volume)
 
    G4ThreeVector  positionPhoSwStage = G4ThreeVector(LaBr3Face+InterSpace, LaBr3Face+InterSpace, 0.);
    G4Box*           solidPhoSwStage = new G4Box(Name+"_PhoSwStage", 0.5*LaBr3Face, 0.5*LaBr3Face, 0.5*Length);
    G4LogicalVolume* logicPhoSwStage = new G4LogicalVolume(solidPhoSwStage, Vacuum, "logicPhoSwStage", 0, 0, 0);
-
+   logicPhoSwStage->SetVisAttributes(G4VisAttributes::Invisible);
+ 
    new G4PVPlacement(0, 
                      positionPhoSwStage, 
                      logicPhoSwStage, 
@@ -230,7 +231,7 @@ void ParisCluster::VolumeMaker(G4int             DetecNumber,
    // 0);
    
    positionPhoSwStage = G4ThreeVector(0., LaBr3Face+InterSpace, 0.);
-   G4PVPlacement(0, 
+   new G4PVPlacement(0, 
                                  positionPhoSwStage, 
                                  logicPhoSwStage, 
                                  Name+"_PhoSwStage", 
@@ -323,7 +324,7 @@ void ParisCluster::VolumeMaker(G4int             DetecNumber,
    logicLaBr3Stage->SetSensitiveDetector(m_LaBr3StageScorer);
 
    // Visualisation of LaBr3Stage Strip
-   G4VisAttributes* LaBr3VisAtt = new G4VisAttributes(G4Colour(0., 0., 1.));
+   G4VisAttributes* LaBr3VisAtt = new G4VisAttributes(G4Colour(0., 0.5, 1.));
    logicLaBr3Stage->SetVisAttributes(LaBr3VisAtt);
 
    // CsI or NaI
@@ -345,7 +346,7 @@ void ParisCluster::VolumeMaker(G4int             DetecNumber,
    logicCsIStage->SetSensitiveDetector(m_CsIStageScorer);
 
    // Visualisation of CsIStage Strip
-   G4VisAttributes* CsIVisAtt = new G4VisAttributes(G4Colour(1., 0., 0.));
+   G4VisAttributes* CsIVisAtt = new G4VisAttributes(G4Colour(1., 0.25, 0.));
    logicCsIStage->SetVisAttributes(CsIVisAtt);
 }
 
