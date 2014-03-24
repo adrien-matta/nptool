@@ -108,7 +108,7 @@ class TLaBr3Physics : public TObject, public NPA::VDetector
       TLaBr3Data*         EventData ;//!
       TLaBr3Data*         PreTreatedData ;//!
       TLaBr3Physics*      EventPhysics ;//!
-      TLaBr3Spectra*	 m_Spectra;
+      TLaBr3Spectra*	     m_Spectra;//!
       double 		 m_LaBr3_E_Threshold;   
       double 		 m_LaBr3_RAW_Threshold;   
   public: // Spectra Getter

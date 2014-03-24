@@ -113,7 +113,7 @@ class TSiResPhysics : public TObject, public NPA::VDetector
       TSiResData*         EventData ;//!
       TSiResData*         PreTreatedData ;//!
       TSiResPhysics*      EventPhysics ;//!
-      TSiResSpectra*	 m_Spectra;
+      TSiResSpectra*	     m_Spectra;//!
       double 		 m_SiRes_E_Threshold;   
       double 		 m_SiRes_RAW_Threshold;   
       double 		 m_SiRes_EBack_Threshold;   

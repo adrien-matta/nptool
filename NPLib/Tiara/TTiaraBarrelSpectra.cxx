@@ -290,7 +290,7 @@ void TTiaraBarrelSpectra::FillPhysicsSpectra(TTiaraBarrelPhysics* Physics){
   string name ;
   //// E POS ////
   // Inner Barrel
-  unsigned int size = Physics->Strip_E.size();
+  //unsigned int size = Physics->Strip_E.size();
   for(unsigned int i  = 0 ; i < Physics->Strip_E.size() ; i++){
     name ="IB"+TiaraBarrel_LOCAL::itoa(Physics->DetectorNumber[i])+"_EPOS"+TiaraBarrel_LOCAL::itoa(Physics->Strip_N[i])+"_CAL";
     GetHisto(family,name)
