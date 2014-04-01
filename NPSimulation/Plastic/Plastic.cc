@@ -494,8 +494,8 @@ void Plastic::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume*
                                                 world                       ,
                                                 false                       ,
                                                 0                                    );   */
-  		//G4RotationMatrix Rot3D;
-    		//Rot3D.set(0, 0, 0);
+  		G4RotationMatrix Rot3D;
+    	Rot3D.set(0, 0, 0);
     		//Rot3D.rotateX(70*degree);
     		//Rot3D.rotateY(theta*degree);  
     		//Rot3D.rotateZ(phi*degree);  

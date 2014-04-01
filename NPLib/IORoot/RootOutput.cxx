@@ -43,7 +43,7 @@ RootOutput* RootOutput::getInstance(TString fileNameBase, TString treeNameBase)
 
 
 void RootOutput::Destroy()
-{
+{ 
    if (instance != 0) {
       delete instance;
       instance = 0;
@@ -53,6 +53,8 @@ void RootOutput::Destroy()
 
 RootOutput::RootOutput(TString fileNameBase, TString treeNameBase)
 {
+   TDirectory* currentPath= gDirectory;
+
    // The file extension is added to the file name:
    TString GlobalPath = getenv("NPTOOL");
    
@@ -76,6 +78,7 @@ RootOutput::RootOutput(TString fileNameBase, TString treeNameBase)
   
   // Init TAsciiFile objects
   InitAsciiFiles();
+  gDirectory->cd(currentPath->GetPath()); 
 }
 
 
@@ -123,9 +126,11 @@ void RootOutput::InitAsciiFiles()
 
 
 RootOutput::~RootOutput()
-{
+{ 
     // The data is written to the file and the tree is closed:
     if (pRootFile && !NPOptionManager::getInstance()->GetPROOF()) {
+      TDirectory* currentPath= gDirectory;
+      gDirectory->cd(pRootFile->GetPath());
       cout << endl;
       cout << "Got histograms and Tree !" << endl;
       cout << "  - Number of entries in the Tree: " << pRootTree->GetEntries() << endl;
@@ -143,6 +148,7 @@ RootOutput::~RootOutput()
       // Analysis ConfigFile
       if (!pAnalysisConfigFile->IsEmpty()) pAnalysisConfigFile->Write();
       pRootFile->Flush();
+       gDirectory->cd(currentPath->GetPath());
       pRootFile->Close();
     }
   

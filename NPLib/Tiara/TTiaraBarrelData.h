@@ -101,7 +101,7 @@ class TTiaraBarrelData : public TNamed {
     }
 
     // T
-    inline unsigned int GetFrontBackTMult(){
+    inline unsigned int GetBackTMult(){
       return fTiaraBarrel_BackT_DetectorNbr.size();
     }
 

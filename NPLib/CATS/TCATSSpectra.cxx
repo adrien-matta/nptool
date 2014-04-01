@@ -21,6 +21,11 @@
  *                                                                           *
  *****************************************************************************/
 
+//STL
+#include <iostream>
+#include <cstdlib>
+#include <stdexcept>
+
 // NPL
 #include "TCATSSpectra.h"
 #include "NPOptionManager.h"
@@ -32,7 +37,7 @@ using namespace NPUNITS;
 
 
 // ROOT
-#include "TString.h"
+#include "string.h"
 #include "TDirectory.h"
 #include "TFile.h"
 
@@ -74,105 +79,107 @@ TCATSSpectra::~TCATSSpectra(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TCATSSpectra::InitRawSpectra(){
-  TString name;
+  string name;
 
   for (unsigned int i = 0; i < fNumberOfCats; ++i) {   // loop on number of cats
     // CATS_STRX_Q_RAW
-    name = Form("CATS%d_STRX_Q_RAW", i+1);
+    name = "CATS"+CATS_LOCAL::itoa(i+1)+"_STRX_Q_RAW";
     AddHisto2D(name, name, fStripsNumber, 1, fStripsNumber+1, 512, 0, 16384, "CATS/RAW/STRQ");
 
     // CATS_STRY_Q_RAW
-    name = Form("CATS%d_STRY_Q_RAW", i+1);
+    name = "CATS"+CATS_LOCAL::itoa(i+1)+"_STRY_Q_RAW";
     AddHisto2D(name, name, fStripsNumber, 1, fStripsNumber+1, 512, 0, 16384, "CATS/RAW/STRQ");
 
     // STRX_MULT
-    name = Form("CATS%d_STRX_MULT", i+1);
+    name = "CATS"+CATS_LOCAL::itoa(i+1)+"_STRX_MULT";
     AddHisto1D(name, name, fStripsNumber, 1, fStripsNumber+1, "CATS/RAW/MULT");
 
     // STRY_MULT
-    name = Form("CATS%d_STRY_MULT", i+1);
+    name = "CATS"+CATS_LOCAL::itoa(i+1)+"_STRY_MULT";
     AddHisto1D(name, name, fStripsNumber, 1, fStripsNumber+1, "CATS/RAW/MULT");
   } // end loop on number of cats
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TCATSSpectra::InitPreTreatedSpectra(){
-  TString family = "CATS/CAL/STRQ" ;
-  TString name;
+  string family = "CATS/CAL/STRQ" ;
+  string name;
 
   for (unsigned int i = 0; i < fNumberOfCats; ++i) {   // loop on number of cats
     // CATS_STRX_Q_CAL
-    name = Form("CATS%d_STRX_Q_CAL", i+1);
+    name = "CATS"+CATS_LOCAL::itoa(i+1)+"_STRX_Q_CAL";
     AddHisto2D(name, name, fStripsNumber, 1, fStripsNumber+1, 512, 0, 16384, family);
 
     // CATS_STRY_Q_CAL
-    name = Form("CATS%d_STRY_Q_CAL", i+1);
+    name = "CATS"+CATS_LOCAL::itoa(i+1)+"_STRY_Q_CAL";
     AddHisto2D(name, name, fStripsNumber, 1, fStripsNumber+1, 512, 0, 16384, family);
-   // end loop on number of cats
+    // end loop on number of cats
 
     // STRX_MULT
-    name = Form("CATS%d_STRX_CAL_MULT", i+1);
+    name = "CATS"+CATS_LOCAL::itoa(i+1)+"_STRX_CAL_MULT";
     AddHisto1D(name, name, fStripsNumber, 1, fStripsNumber+1, "CATS/CAL/MULT");
 
     // STRY_MULT
-    name = Form("CATS%d_STRY_CAL_MULT", i+1);
+    name = "CATS"+CATS_LOCAL::itoa(i+1)+"_STRY_CAL_MULT";
     AddHisto1D(name, name, fStripsNumber, 1, fStripsNumber+1, "CATS/CAL/MULT");
   } // end loop on number of cats
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TCATSSpectra::InitPhysicsSpectra(){
-  TString family = "CATS/PHY/QSUM" ;
-  TString name;
+  string family = "CATS/PHY/QSUM" ;
+  string name;
 
   for (unsigned int i = 0; i < fNumberOfCats; ++i) {   // loop on number of cats
-    name = Form("CATS%d_QSUM_STRMAX_X_CAL", i+1);
+    name = "CATS"+CATS_LOCAL::itoa(i+1)+"_QSUM_STRMAX_X_CAL";
     AddHisto2D(name, name, fStripsNumber, 1, fStripsNumber+1, 512, 0, 16384, family);
 
-    name = Form("CATS%d_QSUM_STRMAX_Y_CAL", i+1);
+    name = "CATS"+CATS_LOCAL::itoa(i+1)+"_QSUM_STRMAX_Y_CAL";
     AddHisto2D(name, name, fStripsNumber, 1, fStripsNumber+1, 512, 0, 16384, family);
   }
 
   family = "CATS/PHY/CTRL";
   for (unsigned int i = 0; i < fNumberOfCats; ++i) {   // loop on number of cats
-    name = Form("CATS%d_QMEAN_TIME", i+1);
+    name = "CATS"+CATS_LOCAL::itoa(i+1)+"_QMEAN_TIME";
     AddHisto1D(name, name, fEventLoopSize,0,fEventLoopSize,family); 
     fEventLoopQSum.push_back(0);
   }
 
   family = "CATS/PHY/POS";
   for (unsigned int i = 0; i < fNumberOfCats; ++i) {   // loop on number of cats
-    name = Form("CATS%d_POS", i+1);
-    AddHisto2D(name, name,500,-50,50,500,-50,50,family); 
+    name = "CATS"+CATS_LOCAL::itoa(i+1)+"_POS";
+    AddHisto2D(name, name,120,-40,40,120,-40,40,family);
+    name = "CATS_STRIP_"+CATS_LOCAL::itoa(i+1)+"_POS";
+    AddHisto2D(name, name,120,1,28,120,1,28,family);
+
   } 
 
   name = "TARGET_POS";
-  AddHisto2D(name, name,500,-50,50,500,-50,50,family); 
-
+  AddHisto2D(name, name,320,-40,40,320,-40,40,family);
   name = "TRAJECTORY_XZ";
-  AddHisto2D(name, name,100,-50,50,100,-50,50,family); 
+  AddHisto2D(name, name,500,-700,500,200,-200,400,family); 
 
   name = "TRAJECTORY_YZ";
-  AddHisto2D(name, name,100,-50,50,100,-50,50,family); 
+  AddHisto2D(name, name,500,-700,500,200,-200,400,family); 
 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TCATSSpectra::FillRawSpectra(TCATSData* RawData){
-  TString name;
-  TString family;
+  string name;
+  string family;
 
   // CATS_STRX_Q_RAW
   for (unsigned int i = 0; i < RawData->GetCATSMultX(); ++i) {   // loop on vector
     family = "CATS/RAW/STRQ";
-    name   = Form("CATS%d_STRX_Q_RAW", RawData->GetCATSDetX(i));
+    name   = "CATS"+CATS_LOCAL::itoa(RawData->GetCATSDetX(i))+"_STRX_Q_RAW";
     GetHisto(family, name) -> Fill(RawData->GetCATSStripX(i), RawData->GetCATSChargeX(i)); 
   } // end loop on vector
 
   // CATS_STRY_Q_RAW
   for (unsigned int i = 0; i < RawData->GetCATSMultY(); ++i) {   // loop on vector
     family = "CATS/RAW/STRQ";
-    name   = Form("CATS%d_STRY_Q_RAW", RawData->GetCATSDetY(i));
+    name   = "CATS"+CATS_LOCAL::itoa(RawData->GetCATSDetY(i))+"_STRY_Q_RAW";
     GetHisto(family, name) -> Fill(RawData->GetCATSStripY(i), RawData->GetCATSChargeY(i)); 
   } // end loop on vector
 
@@ -182,7 +189,7 @@ void TCATSSpectra::FillRawSpectra(TCATSData* RawData){
   for (unsigned int i = 0; i < RawData->GetCATSMultX(); i++) myMULT[RawData->GetCATSDetX(i)-1] += 1;
 
   for (unsigned int i = 0; i < fNumberOfCats; i++) {
-    name   = Form("CATS%d_STRX_MULT", i+1);
+    name   = "CATS"+CATS_LOCAL::itoa(i+1)+"_STRX_MULT";
     family = "CATS/RAW/MULT";
     GetHisto(family,name) -> Fill(myMULT[i]);
   }
@@ -192,7 +199,7 @@ void TCATSSpectra::FillRawSpectra(TCATSData* RawData){
   for (unsigned int i = 0; i < RawData->GetCATSMultY(); i++) myMULT[RawData->GetCATSDetY(i)-1] += 1;
 
   for (unsigned int i = 0; i < fNumberOfCats; i++) {
-    name   = Form("CATS%d_STRY_MULT", i+1);
+    name   = "CATS"+CATS_LOCAL::itoa(i+1)+"_STRY_MULT";
     family = "CATS/RAW/MULT";
     GetHisto(family,name) -> Fill(myMULT[i]);
   }
@@ -200,20 +207,20 @@ void TCATSSpectra::FillRawSpectra(TCATSData* RawData){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TCATSSpectra::FillPreTreatedSpectra(TCATSData* PreTreatedData){
-  TString name;
-  TString family;
+  string name;
+  string family;
 
   // CATS_STRX_Q_CAL
   for (unsigned int i = 0; i < PreTreatedData->GetCATSMultX(); ++i) {   // loop on vector
     family = "CATS/CAL/STRQ";
-    name   = Form("CATS%d_STRX_Q_CAL", PreTreatedData->GetCATSDetX(i));
+    name   = "CATS"+CATS_LOCAL::itoa(PreTreatedData->GetCATSDetX(i))+"_STRX_Q_CAL";
     GetHisto(family,name) -> Fill(PreTreatedData->GetCATSStripX(i), PreTreatedData->GetCATSChargeX(i)); 
   } // end loop on vector
 
   // CATS_STRY_Q_CAL
   for (unsigned int i = 0; i < PreTreatedData->GetCATSMultY(); ++i) {   // loop on vector
     family = "CATS/CAL/STRQ";
-    name   = Form("CATS%d_STRY_Q_CAL", PreTreatedData->GetCATSDetY(i));
+    name   = "CATS"+CATS_LOCAL::itoa(PreTreatedData->GetCATSDetY(i))+"_STRY_Q_CAL";
     GetHisto(family,name) -> Fill(PreTreatedData->GetCATSStripY(i), PreTreatedData->GetCATSChargeY(i)); 
   } // end loop on vector
 
@@ -223,7 +230,7 @@ void TCATSSpectra::FillPreTreatedSpectra(TCATSData* PreTreatedData){
   for (unsigned int i = 0; i < PreTreatedData->GetCATSMultX(); i++) myMULT[PreTreatedData->GetCATSDetX(i)-1] += 1;
 
   for (unsigned int i = 0; i < fNumberOfCats; i++) {
-    name   = Form("CATS%d_STRX_CAL_MULT", i+1);
+    name   = "CATS"+CATS_LOCAL::itoa(i+1)+"_STRX_CAL_MULT";
     family = "CATS/CAL/MULT";
     GetHisto(family,name) -> Fill(myMULT[i]);
   }
@@ -233,7 +240,7 @@ void TCATSSpectra::FillPreTreatedSpectra(TCATSData* PreTreatedData){
   for (unsigned int i = 0; i < PreTreatedData->GetCATSMultY(); i++) myMULT[PreTreatedData->GetCATSDetY(i)-1] += 1;
 
   for (unsigned int i = 0; i < fNumberOfCats; i++) {
-    name   = Form("CATS%d_STRY_CAL_MULT", i+1);
+    name   = "CATS"+CATS_LOCAL::itoa(i+1)+"_STRY_CAL_MULT";
     family = "CATS/CAL/MULT";
     GetHisto(family,name) -> Fill(myMULT[i]);
   }
@@ -242,31 +249,29 @@ void TCATSSpectra::FillPreTreatedSpectra(TCATSData* PreTreatedData){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TCATSSpectra::FillPhysicsSpectra(TCATSPhysics* Physics){
-  TString name,family;
+  string name,family;
   // CATS_STRX_Q_CAL
   for (unsigned int i = 0; i < Physics->DetNumberX.size() ; ++i) {   // loop on vector
     family="CATS/PHY/QSUM";
-    name   = Form("CATS%d_QSUM_STRMAX_X_CAL", Physics->DetNumberX[i]);
+    name   = "CATS"+CATS_LOCAL::itoa(Physics->DetNumberX[i])+"_QSUM_STRMAX_X_CAL";
     GetHisto(family,name) -> Fill(Physics->StripMaxX[i],Physics->QsumX[i]); 
-    name   = Form("CATS%d_QSUM_STRMAX_Y_CAL", Physics->DetNumberX[i]);
+    name   = "CATS"+CATS_LOCAL::itoa(Physics->DetNumberX[i])+"_QSUM_STRMAX_Y_CAL";
     GetHisto(family,name) -> Fill(Physics->StripMaxY[i],Physics->QsumY[i]); 
-    
   }
   // An histo of size fEventLoopSize is reset every fEventLoopSize to monitor the
   // Keep Track of how many event elapsed
-  
   if(Physics->StripMaxX.size()==fNumberOfCats){
     fEventLoopIndex++;
     family = "CATS/PHY/CTRL";
 
     for (unsigned int i = 0; i < Physics->StripMaxX.size(); ++i) {
       fEventLoopQSum[i]+=Physics->QsumX[i]/1000000.;
-      name = Form("CATS%d_QMEAN_TIME",i+1);
+      name = "CATS"+CATS_LOCAL::itoa(i+1)+"_QMEAN_TIME";
 
-      GetHisto(family,name) ->SetBinContent(fEventLoopIndex/fEventLoopStep,fEventLoopQSum[i]/fEventLoopStep);
+      GetHisto(family,name) ->SetBinContent(fEventLoopIndex/fEventLoopIndex,fEventLoopQSum[i]/fEventLoopIndex);
     }
   }
- 
+
   // Reset the mean every bin 
   if(fEventLoopIndex%fEventLoopStep>fEventLoopStep)
     for (unsigned int i = 0; i < fNumberOfCats; ++i)  
@@ -274,39 +279,60 @@ void TCATSSpectra::FillPhysicsSpectra(TCATSPhysics* Physics){
 
   // Restart histo
   if(fEventLoopIndex > fEventLoopSize)
-      fEventLoopIndex = 0 ;
+    fEventLoopIndex = 0 ;
 
- if(Physics->StripMaxX.size()==fNumberOfCats){
-    for (unsigned int i = 0; i < Physics->StripMaxX.size(); ++i) {
-      family = "CATS/PHY/POS";
-      name = Form("CATS%d_POS", i+1);
-      GetHisto(family,name) -> Fill(Physics->PositionX[i],Physics->PositionY[i]);
-    }
+  for (unsigned int i = 0; i < Physics->PositionX.size(); ++i) {
+    family = "CATS/PHY/POS";
+    name = "CATS"+CATS_LOCAL::itoa(Physics->DetMaxX[i])+"_POS";
+    GetHisto(family,name) -> Fill(Physics->PositionX[i],Physics->PositionY[i]);
 
-    if(Physics->PositionOnTargetX > -1000 && Physics->PositionOnTargetY > -1000){
-      name = "TARGET_POS";
-      GetHisto(family,name)->Fill(Physics->PositionOnTargetX,Physics->PositionOnTargetY);
-    }
+    name = "CATS_STRIP_"+CATS_LOCAL::itoa(Physics->DetMaxX[i])+"_POS";
+    GetHisto(family,name) -> Fill(Physics->StripNumberX[i],Physics->StripNumberY[i]);
   }
 
-/*name = "TARGET_POS";
-  AddHisto2D(name, name,100,-50,50,100,-50,50,family); 
+  if(Physics->PositionOnTargetX > -1000 && Physics->PositionOnTargetY > -1000){
+    name = "TARGET_POS";
+    GetHisto(family,name)->Fill(Physics->PositionOnTargetX,Physics->PositionOnTargetY);
 
-  name = "TRAJECTORY_XZ";
-  AddHisto2D(name, name,100,-50,50,100,-50,50,family); 
 
-  name = "TRAJECTORY_YZ";
-  AddHisto2D(name, name,100,-50,50,100,-50,50,family); 
-*/
+    name = "TRAJECTORY_XZ";
+    TH2F* histo1  = (TH2F*) GetHisto(family,name);
 
+    name = "TRAJECTORY_YZ";
+    TH2F* histo2  = (TH2F*) GetHisto(family,name);
+
+
+    for(int i = 0 ; i < histo1->GetNbinsX() ; i++){ 
+      double z = histo1->GetXaxis()->GetBinCenter(i);
+      double PositionOnTargetX;
+      double PositionOnTargetY;
+      double PositionZ0 = Physics->PositionZ[0];
+      double PositionZ1 = Physics->PositionZ[1];
+      if(Physics->DetMaxX[0]<Physics->DetMaxX[2]){
+        double t = -(PositionZ1-z)/(PositionZ1-PositionZ0);
+        PositionOnTargetX= Physics->PositionX[1] + (Physics->PositionX[1]-Physics->PositionX[0])*t;
+        PositionOnTargetY= Physics->PositionY[1] + (Physics->PositionY[1]-Physics->PositionY[0])*t; 
+      }
+
+      else{
+        double t = -(PositionZ0-z)/(PositionZ0-PositionZ1);
+        PositionOnTargetX= Physics->PositionX[0] + (Physics->PositionX[0]-Physics->PositionX[1])*t;
+        PositionOnTargetY= Physics->PositionY[0] + (Physics->PositionY[0]-Physics->PositionY[1])*t; 
+      }
+
+      histo1->Fill(z,PositionOnTargetX);
+      histo2->Fill(z,PositionOnTargetY);
+    }
+  }
 }
 
-////////////////////////////////////////////////////////////////////////////////
-TH1* TCATSSpectra::AddHisto1D(TString name, TString title, Int_t nbinsx, Double_t xlow, Double_t xup, TString family){
-  // create histo
-  TH1 *hist = new TH1D(name, title, nbinsx, xlow, xup);
 
-  vector<TString> index;
+////////////////////////////////////////////////////////////////////////////////
+TH1* TCATSSpectra::AddHisto1D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, string family){
+  // create histo
+  TH1 *hist = new TH1D(name.c_str(), title.c_str(), nbinsx, xlow, xup);
+
+  vector<string> index;
   index.push_back(family);
   index.push_back(name);
 
@@ -317,11 +343,11 @@ TH1* TCATSSpectra::AddHisto1D(TString name, TString title, Int_t nbinsx, Double_
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TH1* TCATSSpectra::AddHisto2D(TString name, TString title, Int_t nbinsx, Double_t xlow, Double_t xup, Int_t nbinsy, Double_t ylow, Double_t yup, TString family){
+TH1* TCATSSpectra::AddHisto2D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, Int_t nbinsy, Double_t ylow, Double_t yup, string family){
   // create histo
-  TH1 *hist = new TH2D(name, title, nbinsx, xlow, xup, nbinsy, ylow, yup);
+  TH1 *hist = new TH2D(name.c_str(), title.c_str(), nbinsx, xlow, xup, nbinsy, ylow, yup);
 
-  vector<TString> index;
+  vector<string> index;
   index.push_back(family);
   index.push_back(name);
 
@@ -332,23 +358,34 @@ TH1* TCATSSpectra::AddHisto2D(TString name, TString title, Int_t nbinsx, Double_
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TH1* TCATSSpectra::GetHisto(TString family, TString name){
-  vector<TString> index;
+TH1* TCATSSpectra::GetHisto(string& family, string& name){
+  vector<string> index;
+  index.reserve(2);
   index.push_back(family);
   index.push_back(name);
+  TH1* histo ; 
 
-  return fMapHisto.at(index);
+  try{
+    histo = fMapHisto.at(index); 
+  }
+
+  catch(const std::out_of_range& oor){
+    cout << "ERROR : the folowing Histo has been requested by TCATSSpectra and does not exist: family:" << family << " name: "  << name << endl ;
+    exit(1);
+  }
+
+  return histo;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TCATSSpectra::WriteHisto(TString filename){
+void TCATSSpectra::WriteHisto(string filename){
   TFile* f = NULL; 
 
   if (filename != "VOID") {
-    f = new TFile(filename,"RECREATE");
+    f = new TFile(filename.c_str(),"RECREATE");
   }
 
-  map< vector<TString>, TH1* >::iterator it;
+  map< vector<string>, TH1* >::iterator it;
   for (it=fMapHisto.begin(); it!=fMapHisto.end(); ++it) {
     it->second->Write();
   }

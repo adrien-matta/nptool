@@ -53,9 +53,8 @@ class TCharissaPhysics : public TObject, public NPA::VDetector{
   public:
     vector < TVector2 > Layer1_Match_X_Y();
 	vector < TVector2 > Layer2_Match_X_Y();
-    bool	Match_Si_CsI(int X, int Y , int CristalNbr);
 	bool	ResolvePseudoEvent();
-    int		Layer1_CheckEvent();
+  int		Layer1_CheckEvent();
 	int		Layer2_CheckEvent();
 
   public:
@@ -67,8 +66,7 @@ class TCharissaPhysics : public TObject, public NPA::VDetector{
     vector<int> EventType ;
 
     // Telescope
-    vector<int> Layer1_TelescopeNumber ;
-    vector<int> Layer2_TelescopeNumber ;
+    vector<int> TelescopeNumber ;
 
     //   Si
     vector<double> Layer1_Si_E ;
@@ -76,7 +74,7 @@ class TCharissaPhysics : public TObject, public NPA::VDetector{
     vector<int>    Layer1_Si_X ;
     vector<int>    Layer1_Si_Y ;
 	
-	vector<double> Layer2_Si_E ;
+	  vector<double> Layer2_Si_E ;
     vector<double> Layer2_Si_T ;
     vector<int>    Layer2_Si_X ;
     vector<int>    Layer2_Si_Y ;
@@ -89,23 +87,17 @@ class TCharissaPhysics : public TObject, public NPA::VDetector{
     vector<int>    Layer1_TelescopeNumber_X ;
     vector<int>    Layer1_TelescopeNumber_Y ;
 	
-	vector<double> Layer2_Si_EX ;
+	  vector<double> Layer2_Si_EX ;
     vector<double> Layer2_Si_TX ;
     vector<double> Layer2_Si_EY ;
     vector<double> Layer2_Si_TY ;
     vector<int>    Layer2_TelescopeNumber_X ;
     vector<int>    Layer2_TelescopeNumber_Y ;
-    //   Si(Li)
-
 
     //   CsI
     vector<double>  CsI_E ;
     vector<double>  CsI_T ;
     vector<int>     CsI_N ;
-
-    // Physical Value
-    vector<double>   TotalEnergy ;
-
 
   public:      //   Innherited from VDetector Class
 
@@ -185,9 +177,6 @@ class TCharissaPhysics : public TObject, public NPA::VDetector{
         double beta_v,
         double beta_w);
 
-    // Use for reading Calibration Run, very simple methods; only apply calibration, no condition
-    void ReadCalibrationRun();
-
     // Give and external TMustData object to TCharissaPhysics. Needed for online analysis for example.
     void SetRawDataPointer(TCharissaData* rawDataPointer) {m_EventData = rawDataPointer;}
     // Retrieve raw and pre-treated data
@@ -203,8 +192,6 @@ class TCharissaPhysics : public TObject, public NPA::VDetector{
 
     // To be called after a build Physical Event
     int GetEventMultiplicity() const { return EventMultiplicity; };
-
-    double GetEnergyDeposit(const int i) const{ return TotalEnergy[i] ;};
 
     TVector3 GetPositionOfInteraction(const int i) const;
     TVector3 GetTelescopeNormal(const int i) const;
@@ -281,7 +268,7 @@ class TCharissaPhysics : public TObject, public NPA::VDetector{
     TCharissaSpectra*      m_Spectra;//! 
 
   public: // Spectra Getter
-    map< vector<TString> , TH1*> GetSpectra(); 
+    map< vector<string> , TH1*> GetSpectra(); 
 
     ClassDef(TCharissaPhysics,1)  // CharissaPhysics structure
 };

@@ -50,6 +50,9 @@
 #include "TSpegPhysics.h"
 #include "TExlPhysics.h"
 #include "TTacPhysics.h"
+#include "TSiLiPhysics.h"
+#include "TSiResPhysics.h"
+#include "TLaBr3Physics.h"
 #include "TChio_digPhysics.h"
 #include "TChio_anPhysics.h"
 #include "NPOptionManager.h"
@@ -84,9 +87,12 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
    Bool_t ChateauCristal      = false;
    Bool_t Exogam              = false;
    Bool_t ScintillatorPlastic = false;
+   Bool_t SiLi		      = false;
+   Bool_t SiRes		      = false;
+   Bool_t LaBr3		      = false;
    Bool_t IonisationChamber   = false;
    Bool_t Trifoil             = false;
-	Bool_t Charissa = false;
+   Bool_t Charissa 	      = false;
    Bool_t GeneralTarget       = false;
    Bool_t GPDTracker          = false;
    Bool_t HYD2Tracker         = false;
@@ -401,7 +407,61 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
       AddDetector("Plastic", myDetector);
 #endif
     }
+    ////////////////////////////////////////////
+    ///////////// Search for LaBr3 ///////////
+    ////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 5, "LaBr3") == 0 && LaBr3 == false) {
+#ifdef INC_LABR3
+      LaBr3 = true;
+      cout << "//////// Plastic ////////" << endl << endl;
 
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector = new TLaBr3Physics();
+      // Read Position of Telescope
+      ConfigFile.close();
+      myDetector->ReadConfiguration(Path);
+      ConfigFile.open(Path.c_str());
+
+      // Add array to the VDetector Vector
+      AddDetector("LaBr3", myDetector);
+#endif
+    }    ////////////////////////////////////////////
+    ///////////// Search for SiLi ///////////
+    ////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 4, "SiLi") == 0 && SiLi == false) {
+#ifdef INC_SILI
+      SiLi = true;
+      cout << "//////// Plastic ////////" << endl << endl;
+
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector = new TSiLiPhysics();
+      // Read Position of Telescope
+      ConfigFile.close();
+      myDetector->ReadConfiguration(Path);
+      ConfigFile.open(Path.c_str());
+
+      // Add array to the VDetector Vector
+      AddDetector("SiLi", myDetector);
+#endif
+    }    ////////////////////////////////////////////
+    ///////////// Search for SiRes ///////////
+    ////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 5, "SiRes") == 0 && SiRes == false) {
+#ifdef INC_SIRES
+      SiRes = true;
+      cout << "//////// Plastic ////////" << endl << endl;
+
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector = new TSiResPhysics();
+      // Read Position of Telescope
+      ConfigFile.close();
+      myDetector->ReadConfiguration(Path);
+      ConfigFile.open(Path.c_str());
+
+      // Add array to the VDetector Vector
+      AddDetector("SiRes", myDetector);
+#endif
+    }
     ///////////////////////////////////////////////////////
     ///////////// Search for Ionisation Chamber ///////////
     ///////////////////////////////////////////////////////
@@ -780,9 +840,9 @@ void DetectorManager::InitSpectra(){
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////   
-vector< map< vector<TString>, TH1* > > DetectorManager::GetSpectra()
+vector< map< vector<string>, TH1* > > DetectorManager::GetSpectra()
 {
-   vector< map< vector<TString>, TH1* > > myVector;
+   vector< map< vector<string>, TH1* > > myVector;
 
    map<string,VDetector*>::iterator it;
    // loop on detectors
@@ -792,3 +852,15 @@ vector< map< vector<TString>, TH1* > > DetectorManager::GetSpectra()
 
    return myVector;
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////   
+vector<string> DetectorManager::GetDetectorList(){
+  map<string,VDetector*>::iterator it;
+  vector<string> DetectorList;
+  for (it = m_Detector.begin(); it != m_Detector.end(); ++it) { 
+    DetectorList.push_back(it->first);
+  }
+
+  return DetectorList;
+}
+

@@ -48,17 +48,17 @@ class TCATSData : public TObject {
    virtual ~TCATSData();
 
    void	Clear();
-   void  Clear(const Option_t*) {};
+   void Clear(const Option_t*) {};
    void	Dump() const;
 
    /////////////////////           SETTERS           ////////////////////////
    // X
    void SetCATSDetX(UShort_t DetX)	      {fCATS_DetX.push_back(DetX);}
-   void SetCATSStripX(UShort_t StripX)	   {fCATS_StripX.push_back(StripX);}
+   void SetCATSStripX(UShort_t StripX)	  {fCATS_StripX.push_back(StripX);}
    void SetCATSChargeX(UShort_t ChargeX)  {fCATS_ChargeX.push_back(ChargeX);}
    // Y
    void SetCATSDetY(UShort_t DetY)	      {fCATS_DetY.push_back(DetY);}
-   void SetCATSStripY(UShort_t StripY)	   {fCATS_StripY.push_back(StripY);}
+   void SetCATSStripY(UShort_t StripY)	  {fCATS_StripY.push_back(StripY);}
    void SetCATSChargeY(UShort_t ChargeY)  {fCATS_ChargeY.push_back(ChargeY);}
 
    //Q fil

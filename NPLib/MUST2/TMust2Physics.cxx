@@ -1060,8 +1060,13 @@ void TMust2Physics::ClearSpectra(){
   // To be done
 }
 ///////////////////////////////////////////////////////////////////////////
-map< vector<TString> , TH1*> TMust2Physics::GetSpectra() {
-return m_Spectra->GetMapHisto();
+map< vector<string> , TH1*> TMust2Physics::GetSpectra() {
+  if(m_Spectra)
+    return m_Spectra->GetMapHisto();
+  else{
+    map< vector<string> , TH1*> empty;
+    return empty;
+  }
 } 
 ///////////////////////////////////////////////////////////////////////////
 void TMust2Physics::AddParameterToCalibrationManager()

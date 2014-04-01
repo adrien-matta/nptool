@@ -21,6 +21,11 @@
  *                                                                           *
  *****************************************************************************/
 
+// STL
+#include <iostream>
+#include <cstdlib>
+#include <stdexcept>
+
 // NPL
 #include "TCharissaSpectra.h"
 #include "NPOptionManager.h"
@@ -32,7 +37,7 @@ using namespace NPUNITS;
 
 
 // ROOT
-#include "TString.h"
+#include "string.h"
 #include "TDirectory.h"
 #include "TFile.h"
 
@@ -79,7 +84,10 @@ TCharissaSpectra::~TCharissaSpectra(){
 ////////////////////////////////////////////////////////////////////////////////
 void TCharissaSpectra::InitRawSpectra()
 {
-   TString name;
+   string name;
+   int NbrBin = 512;
+   int MinBin = 0;
+   int MaxBin = 16384;
 
    for (unsigned int i = 0; i < fNumberOfTelescope; i++) { // loop on number of detectors
       // DE_STRX_E_RAW
@@ -88,23 +96,23 @@ void TCharissaSpectra::InitRawSpectra()
 
       // DE_STRX_E_RAW
       name = Form("CHA%d_DE_STRX_E_RAW", i+1);
-      AddHisto2D(name, name, fStripX, 1, fStripX+1, 512, 0, 16384, "CHARISSA/RAW/STRXE");
+      AddHisto2D(name, name, fStripX, 1, fStripX+1, NbrBin, MinBin, MaxBin, "CHARISSA/RAW/STRXE");
 
       // DE_STRY_E_RAW
       name = Form("CHA%d_DE_STRY_E_RAW", i+1);
-      AddHisto2D(name, name, fStripY, 1, fStripY+1, 512, 0, 16384, "CHARISSA/RAW/STRYE");
+      AddHisto2D(name, name, fStripY, 1, fStripY+1, NbrBin, MinBin, MaxBin, "CHARISSA/RAW/STRYE");
 
       // E_STRX_E_RAW
       name = Form("CHA%d_E_STRX_E_RAW", i+1);
-      AddHisto2D(name, name, fStripX, 1, fStripX+1, 512, 0, 16384, "CHARISSA/RAW/STRXE");
+      AddHisto2D(name, name, fStripX, 1, fStripX+1, NbrBin, MinBin, MaxBin, "CHARISSA/RAW/STRXE");
 
       // E_STRY_E_RAW
       name = Form("CHA%d_E_STRY_E_RAW", i+1);
-      AddHisto2D(name, name, fStripY, 1, fStripY+1, 512, 0, 16384, "CHARISSA/RAW/STRYE");
+      AddHisto2D(name, name, fStripY, 1, fStripY+1, NbrBin, MinBin, MaxBin, "CHARISSA/RAW/STRYE");
 
       // CSI_E_RAW
       name = Form("CHA%d_CSI_E_RAW", i+1);
-      AddHisto2D(name, name, fCrystalCsI, 1, fCrystalCsI+1, 512, 0, 16384, "CHARISSA/RAW/CSIE");
+      AddHisto2D(name, name, fCrystalCsI, 1, fCrystalCsI+1, NbrBin, MinBin, MaxBin, "CHARISSA/RAW/CSIE");
 
       // DE_STRX_RAW_MULT
       name = Form("CHA%d_DE_STRX_RAW_MULT", i+1);
@@ -133,29 +141,32 @@ void TCharissaSpectra::InitRawSpectra()
 ////////////////////////////////////////////////////////////////////////////////
 void TCharissaSpectra::InitPreTreatedSpectra()
 {
-   TString name;
-
+   string name;
+   int NbrBin = 512;
+   int MinBin = 0;
+   int MaxBin = 1;
+ 
    for (unsigned int i = 0; i < fNumberOfTelescope; i++) { // loop on number of detectors
       // DE_STRX_E_CAL
       name = Form("CHA%d_DE_STRX_E_CAL", i+1);
-      AddHisto2D(name, name, fStripX, 1, fStripX+1, 1000, 0, 16000, "CHARISSA/CAL/STRXE");
+      AddHisto2D(name, name, fStripX, 1, fStripX+1, NbrBin, MinBin, MaxBin, "CHARISSA/CAL/STRXE");
 
       // DE_STRY_E_CAL
       name = Form("CHA%d_DE_STRY_E_CAL", i+1);
-      AddHisto2D(name, name, fStripY, 1, fStripY+1, 1000, 0, 16000, "CHARISSA/CAL/STRYE");
+      AddHisto2D(name, name, fStripY, 1, fStripY+1, NbrBin, MinBin, MaxBin, "CHARISSA/CAL/STRYE");
 
       // E_STRX_E_CAL
       name = Form("CHA%d_E_STRX_E_CAL", i+1);
-      AddHisto2D(name, name, fStripX, 1, fStripX+1, 1000, 0, 16000, "CHARISSA/CAL/STRXE");
+      AddHisto2D(name, name, fStripX, 1, fStripX+1, NbrBin, MinBin, MaxBin, "CHARISSA/CAL/STRXE");
 
       // E_STRY_E_CAL
       name = Form("CHA%d_E_STRY_E_CAL", i+1);
-      AddHisto2D(name, name, fStripY, 1, fStripY+1, 1000, 0, 16000, "CHARISSA/CAL/STRYE");
+      AddHisto2D(name, name, fStripY, 1, fStripY+1, NbrBin, MinBin, MaxBin, "CHARISSA/CAL/STRYE");
 
 
       // CSI_E_CAL
       name = Form("CHA%d_CSI_E_CAL", i+1);
-      AddHisto2D(name, name, fCrystalCsI, 1, fCrystalCsI+1, 500, 0, 50, "CHARISSA/CAL/CSIE");
+      AddHisto2D(name, name, fCrystalCsI, 1, fCrystalCsI+1, MaxBin, MinBin, MaxBin, "CHARISSA/CAL/CSIE");
 
       // STRX_DE_CAL_MULT
       name = Form("CHA%d_DE_STRX_CAL_MULT", i+1);
@@ -184,7 +195,7 @@ void TCharissaSpectra::InitPreTreatedSpectra()
 ////////////////////////////////////////////////////////////////////////////////
 void TCharissaSpectra::InitPhysicsSpectra()
 {
-   TString name;
+   string name;
 
    // DE X-Y Impact Matrix
    name = "CHA_DE_IMPACT_MATRIX";
@@ -196,59 +207,44 @@ void TCharissaSpectra::InitPhysicsSpectra()
 
    // DE kinematic line
    name = "CHA_DE_THETA";
-   AddHisto2D(name, name, 360, 0, 180, 500, 0, 50, "CHARISSA/PHY");
+   AddHisto2D(name, name, 360, 0, 180, 500, 0, 500, "CHARISSA/PHY");
 
-
+   int NbrBin = 1000;
+   int MinBin = 0;
+   int MaxBin = 1;
+   int MaxBinCsI = 20000; 
    // X-Y Energy Correlation
    for (unsigned int i = 0 ; i < fNumberOfTelescope ; i++) { // loop on number of detectors
       // DE
       name = Form("CHA%d_DE_XY_COR", i+1);
-      AddHisto2D(name, name, 500, 0, 50, 500, 0, 50, "CHARISSA/PHY"); 
+      AddHisto2D(name, name, NbrBin, MinBin, MaxBin, NbrBin, MinBin, MaxBin, "CHARISSA/PHY"); 
 
       // En
       name = Form("CHA%d_E_XY_COR", i+1);
-      AddHisto2D(name, name, 500, 0, 50, 500, 0, 50, "CHARISSA/PHY"); 
+      AddHisto2D(name, name, NbrBin, MinBin, MaxBin, NbrBin, MinBin, MaxBin, "CHARISSA/PHY"); 
    }
 
-  
-
    // ID plot detector by detector
-   for (unsigned int i = 0; i < fNumberOfTelescope; i++) { // loop on number of detectors
+   for (unsigned int i = MinBin; i < fNumberOfTelescope; i++) { // loop on number of detectors
       // E-TOF:
       name = "CHA_E_TOF";
-      //AddHisto2D(name, name,500,0,50,1000,200,1200,"CHARISSA/PHY"); 
-      AddHisto2D(name, name,500,0,20000,500,0,20000,"CHARISSA/PHY");
+      AddHisto2D(name, name,NbrBin,MinBin,MaxBin,NbrBin,MinBin,MaxBin,"CHARISSA/PHY");
 
       // DE-TOF:
       name = "CHA_DE_TOF";
-      AddHisto2D(name, name,500,0,20000,500,0,20000,"CHARISSA/PHY");
+      AddHisto2D(name, name,NbrBin,MinBin,MaxBin,NbrBin,MinBin,MaxBin,"CHARISSA/PHY");
 
       // E-CSIE:
       name = "CHA_E_CSIE";
-      AddHisto2D(name, name,500,0,20000,500,0,20000,"CHARISSA/PHY");
+      AddHisto2D(name, name,NbrBin,MinBin,MaxBinCsI,NbrBin,MinBin,MaxBin,"CHARISSA/PHY");
       
       // DE-CSIE:
       name = "CHA_DE_CSIE";
-      AddHisto2D(name, name,500,0,20000,500,0,20000,"CHARISSA/PHY");
+      AddHisto2D(name, name,NbrBin,MinBin,MaxBinCsI,NbrBin,MinBin,MaxBin,"CHARISSA/PHY");
 
       // DE-E:
       name = "CHA_DE_E";
-      AddHisto2D(name, name,500,0,20000,500,0,20000,"CHARISSA/PHY");    
-
-      //E_CORR
-      name = "CHA_EXY_COR";
-      AddHisto2D(name, name,500,0,20000,500,0,20000,"CHARISSA/PHY");   
-      //DE_CORR
-      name = "CHA_DEXY_COR";
-      AddHisto2D(name, name,500,0,20000,500,0,20000,"CHARISSA/PHY");  
-      
-      // DEY-DEX:
-      name = "CHA_DEY_DEX";
-      AddHisto2D(name, name,500,0,20000,500,0,20000,"CHARISSA/PHY"); 
-
-      // EY-EX:
-      name = "CHA_EY_EX";
-      AddHisto2D(name, name,500,0,20000,500,0,20000,"CHARISSA/PHY");
+      AddHisto2D(name, name,NbrBin,MinBin,MaxBin,NbrBin,MinBin,MaxBin,"CHARISSA/PHY");    
    }
 }
 
@@ -257,8 +253,8 @@ void TCharissaSpectra::InitPhysicsSpectra()
 ////////////////////////////////////////////////////////////////////////////////
 void TCharissaSpectra::FillRawSpectra(TCharissaData* RawData)
 {
-   TString name;
-   TString family;
+   string name;
+   string family;
   
  for (unsigned int i = 0; i < RawData->GetCharissaLayer1StripXEMult(); i++) {
    for (unsigned int j = 0; j < RawData->GetCharissaLayer1StripYEMult(); j++) {
@@ -269,7 +265,7 @@ void TCharissaSpectra::FillRawSpectra(TCharissaData* RawData)
       }
     }
   }
-   // DE_STRX_E 
+   // DE_STRX_E
    for (unsigned int i = 0; i < RawData->GetCharissaLayer1StripXEMult(); i++) {
       name   = Form("CHA%d_DE_STRX_E_RAW", RawData->GetCharissaLayer1StripXEDetectorNbr(i));
       family = "CHARISSA/RAW/STRXE";
@@ -367,8 +363,8 @@ void TCharissaSpectra::FillRawSpectra(TCharissaData* RawData)
 ////////////////////////////////////////////////////////////////////////////////
 void TCharissaSpectra::FillPreTreatedSpectra(TCharissaData* PreTreatedData)
 {
-   TString name;
-   TString family;
+   string name;
+   string family;
    // DE_STRX_E 
    for (unsigned int i = 0; i < PreTreatedData->GetCharissaLayer1StripXEMult(); i++) {
       name   = Form("CHA%d_DE_STRX_E_CAL", PreTreatedData->GetCharissaLayer1StripXEDetectorNbr(i));
@@ -467,86 +463,70 @@ void TCharissaSpectra::FillPreTreatedSpectra(TCharissaData* PreTreatedData)
 ////////////////////////////////////////////////////////////////////////////////
 void TCharissaSpectra::FillPhysicsSpectra(TCharissaPhysics* Physics)
 {
-	cout << "TCharissaSpactra::FillPhysicsSpectra has to be implemented !" << endl;
-	
-  TString name;
-  TString family= "CHARISSA/PHY";
-  // X-Y Impact Matrix
-
-
-  // LAYER 1 DE
-  for(unsigned int i = 0 ; i < Physics->Layer1_Si_E.size(); i++){
-    name = "CHA_IMPACT_MATRIX";
+  string name;
+  string family= "CHARISSA/PHY";
+  for(unsigned int i = 0 ; i < Physics->EventMultiplicity; i++){
     double x = Physics->GetPositionOfInteraction(i).x();
     double y = Physics->GetPositionOfInteraction(i).y();
-    GetHisto(family,name)-> Fill(x,y);
+    
+    if(Physics->Layer1_Si_E[i]>0){ 
+      name = "CHA_DE_IMPACT_MATRIX";
+      GetHisto(family,name)-> Fill(x,y);
+    }
+
+    if(Physics->Layer2_Si_E[i]>0){ 
+      name = "CHA_E_IMPACT_MATRIX";
+      GetHisto(family,name)-> Fill(x,y);
+    }
+
     name = "CHA_DE_THETA";
     double Theta = Physics->GetPositionOfInteraction(i).Angle(TVector3(0,0,1));
     Theta = Theta/deg;
-    GetHisto(family,name)-> Fill(Theta,Physics->Layer1_Si_E[i]); 
-    
-    
-    //E_CORR
-    name = "CHA_EXY_COR";
-    GetHisto(family,name)-> Fill(Physics->Layer2_Si_EX[i],Physics->Layer2_Si_EY[i]);
-    
 
-    //DE_CORR
-    name = "CHA_DEXY_COR";
-    GetHisto(family,name)-> Fill(Physics->Layer1_Si_EX[i],Physics->Layer1_Si_EY[i]); 
-	
-  
+    double TotalE = 0 ;
+    if(Physics->Layer1_Si_E[i]>0) TotalE += Physics->Layer1_Si_E[i];
+    if(Physics->Layer2_Si_E[i]>0) TotalE += Physics->Layer2_Si_E[i];
+    if(Physics->CsI_E[i]>0) TotalE += Physics->CsI_E[i];
+    
+    GetHisto(family,name)-> Fill(Theta,TotalE); 
+    
     // DE-TOF:
-    name = "CHA_DE_TOF";
-    GetHisto(family,name)->Fill(Physics->Layer1_Si_T[i],Physics->Layer1_Si_E[i]);
-    
-    //E-TOF
-    name = "CHA_E_TOF";
-    GetHisto(family,name)->Fill(Physics->Layer2_Si_T[i],Physics->Layer2_Si_E[i]);
-
-    // DE-E:
-    name = "CHA_DE_E";
-    GetHisto(family,name)->Fill(Physics->Layer2_Si_E[i],Physics->Layer1_Si_E[i]);
-    
-    
-    //DE_XY
-    name = "CHA_DEY_DEX";
-    GetHisto(family,name)-> Fill(Physics->Layer1_Si_EX[i],Physics->Layer1_Si_EY[i]);
-    
-
-    //E_XY
-    name = "CHA_EY_EX";
-    GetHisto(family,name)-> Fill(Physics->Layer2_Si_EX[i],Physics->Layer2_Si_EY[i]); 
-
- 
-    //double Etot;
-    if(Physics->CsI_E[i]>0){
-      name = "CHA_E_CSIE";
-      //Etot = Physics->Layer1_Si_E[i]+Physics->Layer2_Si_E[i]+Physics->CsI_E[i];
-      //Etot = Physics->CsI_E[i];
-      GetHisto(family,name)->Fill(Physics->CsI_E[i],Physics->Layer1_Si_E[i]);
-      name = "CHA_DE_CSIE"; 
-      GetHisto(family,name)->Fill(Physics->CsI_E[i],Physics->Layer2_Si_E[i]);
-
+    if(Physics->Layer1_Si_E[i]>0 && Physics->Layer2_Si_E[i]< 0 ){
+      name = "CHA_DE_TOF";
+      GetHisto(family,name)->Fill(Physics->Layer1_Si_E[i],Physics->Layer1_Si_T[i]);
     }
-    
+    // DE-E:
+    if(Physics->Layer1_Si_E[i]>0 && Physics->Layer2_Si_E[i]> 0 ){
+      name = "CHA_DE_E";
+      GetHisto(family,name)->Fill(Physics->Layer2_Si_E[i],Physics->Layer1_Si_E[i]);
+    }
   
+    name = "CHA_DE_CSIE";
+    GetHisto(family,name)->Fill(Physics->CsI_E[i],Physics->Layer1_Si_E[i]);
+
+    name = "CHA_E_CSIE";
+    GetHisto(family,name)->Fill(Physics->CsI_E[i],Physics->Layer2_Si_E[i]);
+    
+    // X-Y Corr
+    name = Form("CHA%d_DE_XY_COR", Physics->TelescopeNumber[i]);
+    GetHisto(family,name)->Fill(Physics->Layer1_Si_EX[i],Physics->Layer1_Si_EY[i]);
+    
+    // X-Y Corr
+    name = Form("CHA%d_E_XY_COR", Physics->TelescopeNumber[i]);
+    GetHisto(family,name)->Fill(Physics->Layer2_Si_EX[i],Physics->Layer2_Si_EY[i]);
 
   }
-
-
-   
  
 }
 
 
 
 ////////////////////////////////////////////////////////////////////////////////
-TH1* TCharissaSpectra::AddHisto1D(TString name, TString title, Int_t nbinsx, Double_t xlow, Double_t xup, TString family){
+TH1* TCharissaSpectra::AddHisto1D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, string family){
   // create histo
-  TH1 *hist = new TH1D(name, title, nbinsx, xlow, xup);
+  TH1 *hist = new TH1D(name.c_str(), title.c_str(), nbinsx, xlow, xup);
 
-  vector<TString> index ;
+  vector<string> index ;
   index.push_back(family);
   index.push_back(name);
 
@@ -559,11 +539,11 @@ TH1* TCharissaSpectra::AddHisto1D(TString name, TString title, Int_t nbinsx, Dou
 
 
 ////////////////////////////////////////////////////////////////////////////////
-TH1* TCharissaSpectra::AddHisto2D(TString name, TString title, Int_t nbinsx, Double_t xlow, Double_t xup, Int_t nbinsy, Double_t ylow, Double_t yup, TString family){
+TH1* TCharissaSpectra::AddHisto2D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, Int_t nbinsy, Double_t ylow, Double_t yup, string family){
   // create histo
-  TH1 *hist = new TH2D(name, title, nbinsx, xlow, xup, nbinsy, ylow, yup);
+  TH1 *hist = new TH2D(name.c_str(), title.c_str(), nbinsx, xlow, xup, nbinsy, ylow, yup);
 
-  vector<TString> index ;
+  vector<string> index ;
   index.push_back(family);
   index.push_back(name);
 
@@ -576,26 +556,36 @@ TH1* TCharissaSpectra::AddHisto2D(TString name, TString title, Int_t nbinsx, Dou
 
 
 ////////////////////////////////////////////////////////////////////////////////
-TH1* TCharissaSpectra::GetHisto(TString family, TString name){
-  vector<TString> index ;
+TH1* TCharissaSpectra::GetHisto(string& family, string& name){
+  vector<string> index;
   index.push_back(family);
   index.push_back(name);
-  // fill map
-  return fMapHisto.at(index);
+  TH1* histo ; 
+  
+  try{
+    histo = fMapHisto.at(index); 
+  }
+
+  catch(const std::out_of_range& oor){
+  cout << "ERROR : the folowing Histo has been requested by TCharissaSpectra and does not exist: family:" << family << " name: "  << name << endl ;
+  exit(1);
+  }
+
+  return histo;
 }
 
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void TCharissaSpectra::WriteHisto(TString filename)
+void TCharissaSpectra::WriteHisto(string filename)
 {
    TFile *f = NULL; 
 
    if (filename != "VOID") {
-      f = new TFile(filename, "RECREATE");
+      f = new TFile(filename.c_str(), "RECREATE");
    }
 
-   map< vector<TString>, TH1* >::iterator it;
+   map< vector<string>, TH1* >::iterator it;
    for (it=fMapHisto.begin(); it!=fMapHisto.end(); ++it) {
       it->second->Write();
    }
@@ -611,7 +601,7 @@ void TCharissaSpectra::WriteHisto(TString filename)
 ///////////////////////////////////////////////////////////////////////////////
 void TCharissaSpectra::CheckSpectra()
 {
-   map< vector<TString>, TH1* >::iterator it;
+   map< vector<string>, TH1* >::iterator it;
    Color_t ok_color      = kTeal+9;
    Color_t warning_color = kOrange+8;  warning_color *= 1;
    Color_t bad_color     = kRed;       bad_color     *= 1;

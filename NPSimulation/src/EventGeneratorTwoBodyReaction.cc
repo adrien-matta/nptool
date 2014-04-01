@@ -126,6 +126,9 @@ void EventGeneratorTwoBodyReaction::GenerateEvent(G4Event* anEvent){
   G4int HeavyZ = m_Reaction->GetNucleus4()->GetZ() ;
   G4int HeavyA = m_Reaction->GetNucleus4()->GetA() ;
   
+  // Generate the excitation energy if a distribution is given
+  m_Reaction->ShootRandomExcitationEnergy();
+
   G4ParticleDefinition* HeavyName
   = G4ParticleTable::GetParticleTable()->GetIon(HeavyZ, HeavyA, m_Reaction->GetExcitation4()*MeV);
   

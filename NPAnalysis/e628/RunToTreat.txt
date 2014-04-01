@@ -1,0 +1,10 @@
+TTreeName 
+	AutoTree
+RootFileName 
+	/data/e628X/e628/acquisition/run_root/run_1377.0.root
+	/data/e628X/e628/acquisition/run_root/run_1377.1.root
+%	/data/e628X/e628/acquisition/run_root/run_1336.2.root
+	
+	
+
+

@@ -36,8 +36,8 @@ TwoBodyReaction
 	Light= 3He
 	Heavy= 10He
 	ExcitationEnergyLight= 0.0
-	ExcitationEnergyHeavy= 3.0
-  CrossSectionPath= flat.txt	CS10He
+	ExcitationEnergyHeavy= 1.3
+  CrossSectionPath= 11Li(d,3He)10He.txt	CS10He
 	ShootLight= 1
 	ShootHeavy= 1
   

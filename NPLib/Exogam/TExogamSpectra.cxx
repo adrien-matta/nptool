@@ -21,6 +21,12 @@
  *                                                                           *
  *****************************************************************************/
 
+// STL
+#include <iostream>
+#include <cstdlib>
+#include <stdexcept>
+
+
 // NPL
 #include "TExogamSpectra.h"
 #include "NPOptionManager.h"
@@ -31,7 +37,7 @@ using namespace NPUNITS;
 #endif
 
 // ROOT
-#include "TString.h"
+#include "string.h"
 #include "TDirectory.h"
 #include "TFile.h"
 
@@ -75,7 +81,7 @@ TExogamSpectra::~TExogamSpectra(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TExogamSpectra::InitRawSpectra(){
-  TString name;
+  string name;
   for (unsigned int i = 0; i < fNumberOfClover; i++) { // loop on number of detectors
    for (unsigned int j = 0; j < fNumberOfCores; j++) { // loop on number of cores
 
@@ -96,7 +102,7 @@ void TExogamSpectra::InitRawSpectra(){
 ////////////////////////////////////////////////////////////////////////////////
 void TExogamSpectra::InitPreTreatedSpectra()
 {
-  TString name;
+  string name;
   for (unsigned int i = 0; i < fNumberOfClover; i++) { // loop on number of detectors
    for (unsigned int j = 0; j < fNumberOfCores; j++) { // loop on number of cores
     	name = Form("ExogamEnergyCal_Clover%d_ECC%d", i+1, j+1);
@@ -115,7 +121,7 @@ void TExogamSpectra::InitPreTreatedSpectra()
 
 ////////////////////////////////////////////////////////////////////////////////
 void TExogamSpectra::InitPhysicsSpectra(){
-  TString name;
+  string name;
   name = "ExogamEnergyAddBack";
   AddHisto1D(name, name, 5000, 0, 5000, "Exogam/DC");
 
@@ -125,25 +131,39 @@ void TExogamSpectra::InitPhysicsSpectra(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TExogamSpectra::FillRawSpectra(TExogamData* RawData){
+<<<<<<< HEAD
   TString name;
   TString family;
   // Energy and Time RAw 
+=======
+  string name;
+  string family;
+
+  // Energy 
+>>>>>>> a51372fab418d17126a214991f612e6da2c5c9be
   for (unsigned int i = 0; i < RawData->GetECCEMult(); i++) {
 
     name = Form("ExogamEnergyRaw_Clover%d_ECC%d", RawData->GetECCEClover(i)+1,RawData->GetECCECristal(i)+1);
     family = "Exogam/ERAW/ECC";
     GetHisto(family,name)
       -> Fill(RawData->GetECCEEnergy(i));
+<<<<<<< HEAD
    }
 
   for (unsigned int i = 0; i < RawData->GetGOCCEEMult(); i++) {
     name = Form("ExogamEnergyRaw_Clover%d_ECC%d_GOCCE%d", RawData->GetGOCCEEClover(i)+1,RawData->GetGOCCEECristal(i)+1,RawData->GetGOCCEESegment(i)+1);
     family = "Exogam/ERAW/GOCCE";
+=======
+   
+    name = Form("ExogamEnergyRaw_Clover%d_ECC%d_GOCCE%d", RawData->GetECCEClover(i)+1,RawData->GetECCECristal(i)+1,RawData->GetGOCCEESegment(i)+1);
+    family = "Exogam/RAW";
+>>>>>>> a51372fab418d17126a214991f612e6da2c5c9be
 
     GetHisto(family,name)
       -> Fill(RawData->GetGOCCEEEnergy(i));
     }
 
+<<<<<<< HEAD
   for (unsigned int i = 0; i < RawData->GetECCTMult(); i++) {
     name = Form("ExogamTimeRaw_Clover%d_ECC%d", RawData->GetECCTClover(i)+1,RawData->GetECCTCristal(i)+1);
     family = "Exogam/TRAW/ECC";
@@ -151,14 +171,29 @@ void TExogamSpectra::FillRawSpectra(TExogamData* RawData){
     GetHisto(family,name)
       -> Fill(RawData->GetECCTTime(i));
    }
+=======
+  // Time
+  for (unsigned int i = 0; i < RawData->GetECCTMult(); i++) {
+   name = Form("ExogamTimeRaw_Clover%d_ECC%d", RawData->GetECCTClover(i)+1,RawData->GetECCTCristal(i)+1);
+    family = "Exogam/RAW";
+>>>>>>> a51372fab418d17126a214991f612e6da2c5c9be
 
+    GetHisto(family,name)
+      -> Fill(RawData->GetECCTTime(i));
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TExogamSpectra::FillPreTreatedSpectra(TExogamData* PreTreatedData){
+<<<<<<< HEAD
   TString name ;
   TString family;
   // Energy and Time Cal
+=======
+  string name ;
+  string family;
+  // Energy 
+>>>>>>> a51372fab418d17126a214991f612e6da2c5c9be
   for (unsigned int i = 0; i < PreTreatedData->GetECCEMult(); i++) {
     name = Form("ExogamEnergyCal_Clover%d_ECC%d", PreTreatedData->GetECCEClover(i)+1,PreTreatedData->GetECCECristal(i)+1);
     family = "Exogam/ECal/ECC";
@@ -175,6 +210,7 @@ void TExogamSpectra::FillPreTreatedSpectra(TExogamData* PreTreatedData){
       -> Fill(PreTreatedData->GetGOCCEEEnergy(i));
     }
 
+<<<<<<< HEAD
   for (unsigned int i = 0; i < PreTreatedData->GetECCTMult(); i++) {
     name = Form("ExogamTimeCal_Clover%d_ECC%d", PreTreatedData->GetECCTClover(i)+1,PreTreatedData->GetECCTCristal(i)+1);
     family = "Exogam/TCal/ECC";
@@ -183,13 +219,31 @@ void TExogamSpectra::FillPreTreatedSpectra(TExogamData* PreTreatedData){
       -> Fill(PreTreatedData->GetECCTTime(i));
 
   }
+=======
+   
+    name = Form("ExogamEnergyCal_Clover%d_ECC%d_GOCCE%d", PreTreatedData->GetECCEClover(i)+1,PreTreatedData->GetECCECristal(i)+1,PreTreatedData->GetGOCCEESegment(i)+1);
+    family = "Exogam/Cal";
+
+    GetHisto(family,name)
+      -> Fill(PreTreatedData->GetGOCCEEEnergy(i));
+    }
+
+  // Time
+  for (unsigned int i = 0; i < PreTreatedData->GetECCTMult(); i++) {
+  name = Form("ExogamTimeCal_Clover%d_ECC%d", PreTreatedData->GetECCTClover(i)+1,PreTreatedData->GetECCTCristal(i)+1);
+    family = "Exogam/Cal";
+
+    GetHisto(family,name)
+      -> Fill(PreTreatedData->GetECCTTime(i));
+   }
+>>>>>>> a51372fab418d17126a214991f612e6da2c5c9be
 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TExogamSpectra::FillPhysicsSpectra(TExogamPhysics* Physics){
-  TString name;
-  TString family= "Exogam/PHY";
+  string name;
+  string family= "Exogam/PHY";
   // Doppler Correct and Add Back
   name = "ExogamEnergyAddBack";
   family = "Exogam/DC";
@@ -200,11 +254,11 @@ void TExogamSpectra::FillPhysicsSpectra(TExogamPhysics* Physics){
 
 }
 ////////////////////////////////////////////////////////////////////////////////
-TH1* TExogamSpectra::AddHisto1D(TString name, TString title, Int_t nbinsx, Double_t xlow, Double_t xup, TString family){
+TH1* TExogamSpectra::AddHisto1D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, string family){
   // create histo
-  TH1 *hist = new TH1D(name, title, nbinsx, xlow, xup);
+  TH1 *hist = new TH1D(name.c_str(), title.c_str(), nbinsx, xlow, xup);
 
-  vector<TString> index ;
+  vector<string> index ;
   index.push_back(family);
   index.push_back(name);
 
@@ -215,11 +269,11 @@ TH1* TExogamSpectra::AddHisto1D(TString name, TString title, Int_t nbinsx, Doubl
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TH1* TExogamSpectra::AddHisto2D(TString name, TString title, Int_t nbinsx, Double_t xlow, Double_t xup, Int_t nbinsy, Double_t ylow, Double_t yup, TString family){
+TH1* TExogamSpectra::AddHisto2D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, Int_t nbinsy, Double_t ylow, Double_t yup, string family){
   // create histo
-  TH1 *hist = new TH2D(name, title, nbinsx, xlow, xup, nbinsy, ylow, yup);
+  TH1 *hist = new TH2D(name.c_str(), title.c_str(), nbinsx, xlow, xup, nbinsy, ylow, yup);
 
-  vector<TString> index ;
+  vector<string> index ;
   index.push_back(family);
   index.push_back(name);
 
@@ -230,24 +284,35 @@ TH1* TExogamSpectra::AddHisto2D(TString name, TString title, Int_t nbinsx, Doubl
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TH1* TExogamSpectra::GetHisto(TString family, TString name){
-  vector<TString> index ;
+TH1* TExogamSpectra::GetHisto(string family, string name){
+vector<string> index;
+  index.reserve(2);
   index.push_back(family);
   index.push_back(name);
+  TH1* histo ; 
 
-  // fill map
-  return fMapHisto.at(index);
+  try{
+    histo = fMapHisto.at(index); 
+  }
+
+  catch(const std::out_of_range& oor){
+    cout << "ERROR : the folowing Histo has been requested by TCATSSpectra and does not exist: family:" << family << " name: "  << name << endl ;
+    exit(1);
+  }
+
+  return histo;
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////
-void TExogamSpectra::WriteHisto(TString filename){
+void TExogamSpectra::WriteHisto(string filename){
   TFile* f=NULL; 
 
   if(filename!="VOID"){
-    f = new TFile(filename,"RECREATE");
+    f = new TFile(filename.c_str(),"RECREATE");
   }
 
-  map< vector<TString>, TH1* >::iterator it;
+  map< vector<string>, TH1* >::iterator it;
 
   for (it=fMapHisto.begin(); it!=fMapHisto.end(); ++it){
     it->second->Write();
@@ -261,7 +326,7 @@ void TExogamSpectra::WriteHisto(TString filename){
 }
 ///////////////////////////////////////////////////////////////////////////////
 void TExogamSpectra::CheckSpectra(){
-map< vector<TString>, TH1* >::iterator it;
+map< vector<string>, TH1* >::iterator it;
   Color_t ok_color = kTeal+9;
   Color_t warning_color = kOrange+8;   warning_color *= 1;
   Color_t bad_color = kRed;            bad_color *= 1;

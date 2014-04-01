@@ -52,19 +52,20 @@ ClassImp(TTiaraHyballPhysics)
     m_PreTreatedData    = new TTiaraHyballData ;
     m_EventPhysics      = this ;
     m_NumberOfDetector = 0 ;
-    m_MaximumStripMultiplicityAllowed = 10;
-    m_StripEnergyMatchingSigma = 0.060    ;
-    m_StripEnergyMatchingNumberOfSigma = 3;
+    m_MaximumStripMultiplicityAllowed = 100;
+    m_StripEnergyMatchingSigma = 1.00    ;
+    m_StripEnergyMatchingNumberOfSigma = 30;
 
     // Threshold
     m_StripRing_E_RAW_Threshold = 0 ;
-    m_StripRing_E_Threshold = 0.4 ;
+    m_StripRing_E_Threshold = 0.0 ;
 
     m_StripSector_E_RAW_Threshold = 0 ;
-    m_StripSector_E_Threshold = 0.4 ;
+    m_StripSector_E_Threshold = 0.0 ;
 
     m_Take_E_Ring=false;
     m_Take_T_Sector=true;
+    m_Spectra = NULL;
   }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -80,8 +81,8 @@ void TTiaraHyballPhysics::BuildPhysicalEvent(){
     vector< TVector2 > couple = Match_Ring_Sector() ;
     EventMultiplicity = couple.size();
 
-    unsigned int size = couple.size();
-    for(unsigned int i = 0 ; i < size ; ++i){
+    unsigned int MatchSize = couple.size();
+    for(unsigned int i = 0 ; i < MatchSize ; ++i){
 
       int N = m_PreTreatedData->GetRingEDetectorNbr(couple[i].X()) ;
       int Ring = m_PreTreatedData->GetRingEStripNbr(couple[i].X()) ;
@@ -133,7 +134,6 @@ void TTiaraHyballPhysics::BuildPhysicalEvent(){
 ///////////////////////////////////////////////////////////////////////////
 void TTiaraHyballPhysics::PreTreat(){
   ClearPreTreatedData();
-
   //   Ring E
   unsigned int sizeRingE = m_EventData->GetRingEMult();
   for(unsigned int i = 0 ; i < sizeRingE ; ++i){
@@ -181,6 +181,7 @@ void TTiaraHyballPhysics::PreTreat(){
       m_PreTreatedData->SetSectorTTime( Sector_T );
     }
   }
+
   return;
 }
 
@@ -188,10 +189,10 @@ void TTiaraHyballPhysics::PreTreat(){
 ///////////////////////////////////////////////////////////////////////////
 int TTiaraHyballPhysics :: CheckEvent(){
   // Check the size of the different elements
-  if(m_PreTreatedData->GetSectorEMult() == m_PreTreatedData->GetRingEMult() )
+//  if(m_PreTreatedData->GetSectorEMult() == m_PreTreatedData->GetRingEMult() )
     return 1 ; // Regular Event
 
-  else
+ // else
     return -1 ; // Rejected Event
 
 }
@@ -204,20 +205,25 @@ vector < TVector2 > TTiaraHyballPhysics :: Match_Ring_Sector(){
   // Those event are not physical anyway and that improve speed.
   if( m_PreTreatedData->GetRingEMult() > m_MaximumStripMultiplicityAllowed || m_PreTreatedData->GetSectorEMult() > m_MaximumStripMultiplicityAllowed )
     return ArrayOfGoodCouple;
+ 
+  unsigned int sizeR = m_PreTreatedData->GetRingEMult();
+  unsigned int sizeS = m_PreTreatedData->GetSectorEMult();
 
-  for(unsigned int i = 0 ; i < m_PreTreatedData->GetRingEMult(); i++) {
-    for(unsigned int j = 0 ; j < m_PreTreatedData->GetSectorEMult(); j++){
+  for(unsigned int i = 0 ; i < sizeR ; i++) {
+    for(unsigned int j = 0 ; j < sizeS ; j++){
       //   if same detector check energy
       if ( m_PreTreatedData->GetRingEDetectorNbr(i) == m_PreTreatedData->GetSectorEDetectorNbr(j) ){
-        //   Look if energy match
-        if( abs( (m_PreTreatedData->GetRingEEnergy(i)-m_PreTreatedData->GetSectorEEnergy(j))/2. ) < m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma )
-          ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;
+      //   Look if energy match
+        if( abs( (m_PreTreatedData->GetRingEEnergy(i)-m_PreTreatedData->GetSectorEEnergy(j))/2. ) 
+            < m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma ) {
+                    ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;
+        }
       }
     }
   }
-
   //   Prevent to treat event with ambiguous matchin beetween X and Y
   if( ArrayOfGoodCouple.size() > m_PreTreatedData->GetRingEMult() ) ArrayOfGoodCouple.clear() ;
+
   return ArrayOfGoodCouple;
 }
 
@@ -517,8 +523,14 @@ void TTiaraHyballPhysics::ClearSpectra(){
   // To be done
 }
 ///////////////////////////////////////////////////////////////////////////
-map< vector<TString>,TH1* > TTiaraHyballPhysics::GetSpectra() {
-return m_Spectra->GetMapHisto();
+map< vector<string>,TH1* > TTiaraHyballPhysics::GetSpectra() {
+  if(m_Spectra)
+    return m_Spectra->GetMapHisto();
+  else{
+    map< vector<string>,TH1* > empty;
+    return empty ;
+  }
+    
 } 
 ///////////////////////////////////////////////////////////////////////////
 void TTiaraHyballPhysics::AddParameterToCalibrationManager(){
@@ -676,7 +688,7 @@ namespace TiaraHyball_LOCAL{
   //   Ring
   double fStrip_Ring_E(const TTiaraHyballData* m_EventData , const int i){
     return CalibrationManager::getInstance()->ApplyCalibration(   "TIARAHYBALL/D" + itoa( m_EventData->GetRingEDetectorNbr(i) ) + "_STRIP_RING" + itoa( m_EventData->GetRingEStripNbr(i) ) + "_E",
-        m_EventData->GetRingEEnergy(i) );
+        fStrip_Ring_Matchstick(m_EventData,i) );
   }
   double fStrip_Ring_Matchstick(const TTiaraHyballData* m_EventData , const int i){
     return CalibrationManager::getInstance()->ApplyCalibration(   "TIARAHYBALL/D" + itoa( m_EventData->GetRingEDetectorNbr(i) ) + "_STRIP_RING" + itoa( m_EventData->GetRingEStripNbr(i) ) + "_MATCHSTICK",
@@ -690,12 +702,12 @@ namespace TiaraHyball_LOCAL{
 
   //   Sector
   double fStrip_Sector_E(const TTiaraHyballData* m_EventData , const int i){
-    return CalibrationManager::getInstance()->ApplyCalibration(   "TIARAHYBALL/D" + itoa( m_EventData->GetSectorTDetectorNbr(i) ) + "_STRIP_SECTOR" + itoa( m_EventData->GetSectorTStripNbr(i) ) +"_E",
-        m_EventData->GetSectorEEnergy(i) );
+    return CalibrationManager::getInstance()->ApplyCalibration(   "TIARAHYBALL/D" + itoa( m_EventData->GetSectorEDetectorNbr(i) ) + "_STRIP_SECTOR" + itoa( m_EventData->GetSectorEStripNbr(i) ) +"_E",
+        fStrip_Sector_Matchstick(m_EventData,i) );
   }
 
   double fStrip_Sector_Matchstick(const TTiaraHyballData* m_EventData , const int i){
-    return CalibrationManager::getInstance()->ApplyCalibration(   "TIARAHYBALL/D" + itoa( m_EventData->GetSectorTDetectorNbr(i) ) + "_STRIP_SECTOR" + itoa( m_EventData->GetSectorTStripNbr(i) ) +"_MATCHSTICK",
+    return CalibrationManager::getInstance()->ApplyCalibration(   "TIARAHYBALL/D" + itoa( m_EventData->GetSectorEDetectorNbr(i) ) + "_STRIP_SECTOR" + itoa( m_EventData->GetSectorEStripNbr(i) ) +"_MATCHSTICK",
         m_EventData->GetSectorEEnergy(i) );
   }
 

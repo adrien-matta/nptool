@@ -556,11 +556,19 @@ void TExogamPhysics::ClearSpectra(){
   // To be done
 }
 ///////////////////////////////////////////////////////////////////////////
+<<<<<<< HEAD
 map< vector<TString> , TH1*> TExogamPhysics::GetSpectra() {
   if(m_Spectra)
     return m_Spectra->GetMapHisto();
   else{
     map< vector<TString> , TH1*> empty;
+=======
+map< vector<string> , TH1*> TExogamPhysics::GetSpectra() {
+  if(m_Spectra)
+    return m_Spectra->GetMapHisto();
+  else{
+    map< vector<string> , TH1*> empty;
+>>>>>>> a51372fab418d17126a214991f612e6da2c5c9be
     return empty;
   }
 } 

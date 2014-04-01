@@ -175,7 +175,7 @@ class TTiaraHyballPhysics : public TObject, public NPA::VDetector{
     double m_StripRing_E_Threshold ;//!
     double m_StripSector_E_RAW_Threshold ;//!
     double m_StripSector_E_Threshold ;//!
-
+    double m_Maximum_FrontBack_Difference;//!
   private:   //   Root Input and Output tree classes
     TTiaraHyballData*         m_EventData;//!
     TTiaraHyballData*         m_PreTreatedData;//!
@@ -195,7 +195,7 @@ class TTiaraHyballPhysics : public TObject, public NPA::VDetector{
     TTiaraHyballSpectra*      m_Spectra;//!
 
   public:
-    map< vector<TString>,TH1* > GetSpectra(); 
+    map< vector<string>,TH1* > GetSpectra(); 
 
     ClassDef(TTiaraHyballPhysics,1)  // SharcPhysics structure
 };
@@ -211,7 +211,7 @@ namespace TiaraHyball_LOCAL{
 
   //   Sector   
   double fStrip_Sector_E(const TTiaraHyballData* Data, const int i);
-  double fStrip_Sector_MatchStick(const TTiaraHyballData* Data, const int i);
+  double fStrip_Sector_Matchstick(const TTiaraHyballData* Data, const int i);
   double fStrip_Sector_T(const TTiaraHyballData* Data, const int i);
 }
 

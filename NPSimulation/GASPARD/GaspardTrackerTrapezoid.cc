@@ -235,8 +235,9 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
 
    new G4PVPlacement(G4Transform3D(*MMrot, MMpos), logicGPDTrapezoid, Name, world, false, 0);
 
-   logicGPDTrapezoid->SetVisAttributes(G4VisAttributes::Invisible);
-   if (m_non_sensitive_part_visiualisation) logicGPDTrapezoid->SetVisAttributes(G4VisAttributes(G4Colour(0.90, 0.90, 0.90)));
+   G4VisAttributes* TrapezoideVisAtt = new G4VisAttributes(G4Colour(0.90, 0.90, 0.90));
+   TrapezoideVisAtt->SetForceWireframe(true); 
+    logicGPDTrapezoid->SetVisAttributes(TrapezoideVisAtt);
 
    //Place two marker to identify the u and v axis on silicon face:
    //marker are placed a bit before the silicon itself so they don't perturbate simulation
@@ -286,7 +287,7 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
       logicFirstStage->SetSensitiveDetector(m_FirstStageScorer);
 
       ///Visualisation of FirstStage Strip
-      G4VisAttributes* FirstStageVisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 0.9));   // blue
+      G4VisAttributes* FirstStageVisAtt = new G4VisAttributes(G4Colour(0.3, 0.3, 0.3));   // blue
       logicFirstStage->SetVisAttributes(FirstStageVisAtt);
    }
 
@@ -315,7 +316,7 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
       logicSecondStage->SetSensitiveDetector(m_SecondStageScorer);
 
       ///Visualisation of SecondStage Strip
-      G4VisAttributes* SecondStageVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5));
+      G4VisAttributes* SecondStageVisAtt = new G4VisAttributes(G4Colour(0.3, 0.3, 0.3));
       logicSecondStage->SetVisAttributes(SecondStageVisAtt);
    }
 
@@ -344,7 +345,7 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
       logicThirdStage->SetSensitiveDetector(m_ThirdStageScorer);
 
       ///Visualisation of Third Stage
-      G4VisAttributes* ThirdStageVisAtt = new G4VisAttributes(G4Colour(0.0, 0.9, 0.0));   // red
+      G4VisAttributes* ThirdStageVisAtt = new G4VisAttributes(G4Colour(0.3, 0.3, 0.3));   // red
       logicThirdStage->SetVisAttributes(ThirdStageVisAtt);
    }
 }
