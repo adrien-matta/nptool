@@ -7,8 +7,8 @@
 
 /*****************************************************************************
  * Original Author: Sandra GIRON  contact address: giron@ipno.in2p3.fr       *
- *                                                                           *
- * Creation Date  : july    2010                                             *
+ *                  Benjamin LE CROM		   lecrom@ipno.in2p3.fr                                                        *
+ * Creation Date  : march 2014                                            *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
@@ -397,10 +397,15 @@ void TExogamPhysics::BuildPhysicalEvent()
 double TExogamPhysics::DopplerCorrection(double E, double Theta)
 {
   double Pi = 3.141592654 ;
+  TString filename = "configs/beta.txt";
+  ifstream file;
+  //cout << filename << endl;
+  file.open(filename);
+  if(!file) cout << filename << " was not opened" << endl;
 
   double E_corr = 0;
-  //double beta = 0.197;     // baptiste value
-  double beta = 0.17; //beta for 18O@15MeV/u
+  double beta = 0.; 
+  file>>beta;
   double gamma = 1./ sqrt(1-beta*beta);
 
   E_corr = gamma * E * ( 1. - beta * cos(Theta*Pi/180.)); 
@@ -552,7 +557,12 @@ void TExogamPhysics::ClearSpectra(){
 }
 ///////////////////////////////////////////////////////////////////////////
 map< vector<TString> , TH1*> TExogamPhysics::GetSpectra() {
-return m_Spectra->GetMapHisto();
+  if(m_Spectra)
+    return m_Spectra->GetMapHisto();
+  else{
+    map< vector<TString> , TH1*> empty;
+    return empty;
+  }
 } 
 
 void TExogamPhysics::AddClover(string AngleFile)
@@ -562,7 +572,7 @@ void TExogamPhysics::AddClover(string AngleFile)
   //  TString filename = Form("posz42_simu50mm/angles_exogam_clover%d.txt",NumberOfClover);
   //  TString filename = Form("posz42_exp_stat_demiring/angles_exogam_clover%d.txt",NumberOfClover);
   
-  string path = "posz42_exp_stat_demiring/";
+  string path = "configs/";
   TString filename = path + AngleFile;
   
   cout << filename << endl;
@@ -654,6 +664,36 @@ void TExogamPhysics::InitializeRootInputRaw()
   */
 }
 
+/////////////////////////////////////////////////////////////////////
+//   Activated associated Branches and link it to the private member DetectorPhysics address
+//   In this method mother Branches (Detector) AND daughter leaf (parameter) have to be activated
+void TExogamPhysics::InitializeRootInputPhysics() {
+  TChain* inputChain = RootInput::getInstance()->GetChain();
+  inputChain->SetBranchStatus( "EventMultiplicty" , true );
+  inputChain->SetBranchStatus( "ECC_Multiplicity" , true );
+  inputChain->SetBranchStatus( "GOCCE_Multiplicity" , true );
+  inputChain->SetBranchStatus( "ECC_CloverNumber" , true );
+  inputChain->SetBranchStatus( "ECC_CristalNumber" , true );
+  inputChain->SetBranchStatus( "GOCCE_CloverNumber" , true );
+  inputChain->SetBranchStatus( "GOCCE_CristalNumber" , true );
+  inputChain->SetBranchStatus( "GOCCE_SegmentNumber" , true );
+  inputChain->SetBranchStatus( "ECC_E" , true );
+  inputChain->SetBranchStatus( "ECC_T" , true );
+  inputChain->SetBranchStatus( "GOCCE_E" , true );
+  inputChain->SetBranchStatus( "CristalNumber" , true );
+  inputChain->SetBranchStatus( "SegmentNumber" , true );
+  inputChain->SetBranchStatus( "CloverNumber" , true );
+  inputChain->SetBranchStatus( "CloverMult" , true );
+  inputChain->SetBranchStatus( "TotalEnergy_lab" , true );
+  inputChain->SetBranchStatus( "Time" , true );
+  inputChain->SetBranchStatus( "DopplerCorrectedEnergy" , true );
+  inputChain->SetBranchStatus( "Position" , true );
+  inputChain->SetBranchStatus( "Theta" , true );
+  inputChain->SetBranchAddress( "EXOGAM" , &EventPhysics );
+
+}
+
+/////////////////////////////////////////////////////////////////////
 
 //	Create associated branches and associated private member DetectorPhysics address
 void TExogamPhysics::InitializeRootOutput() 	

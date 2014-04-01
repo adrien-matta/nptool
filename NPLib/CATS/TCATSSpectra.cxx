@@ -143,11 +143,11 @@ void TCATSSpectra::InitPhysicsSpectra(){
   family = "CATS/PHY/POS";
   for (unsigned int i = 0; i < fNumberOfCats; ++i) {   // loop on number of cats
     name = Form("CATS%d_POS", i+1);
-    AddHisto2D(name, name,100,-50,50,100,-50,50,family); 
+    AddHisto2D(name, name,500,-50,50,500,-50,50,family); 
   } 
 
   name = "TARGET_POS";
-  AddHisto2D(name, name,100,-50,50,100,-50,50,family); 
+  AddHisto2D(name, name,500,-50,50,500,-50,50,family); 
 
   name = "TRAJECTORY_XZ";
   AddHisto2D(name, name,100,-50,50,100,-50,50,family); 

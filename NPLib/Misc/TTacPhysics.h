@@ -49,10 +49,6 @@ class TTacPhysics : public TObject, public NPA::VDetector
       Double_t   Time_TAC_2 ;
       Double_t   Time_TAC_3 ;
       Double_t   Time_TAC_4 ;
-      Double_t   Time_TAC_5 ;
-      Double_t   Time_TAC_6 ;
-      Double_t   Time_TAC_7 ;
-      Double_t   Time_TAC_8 ;
       vector<UShort_t>   TacNumber;
 
    public:   //   inherrited from VDetector

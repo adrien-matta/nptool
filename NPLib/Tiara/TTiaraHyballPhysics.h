@@ -206,10 +206,12 @@ namespace TiaraHyball_LOCAL{
   //   DSSD
   //   Ring
   double fStrip_Ring_E(const TTiaraHyballData* Data, const int i);
+  double fStrip_Ring_Matchstick(const TTiaraHyballData* Data, const int i);
   double fStrip_Ring_T(const TTiaraHyballData* Data, const int i);
 
   //   Sector   
   double fStrip_Sector_E(const TTiaraHyballData* Data, const int i);
+  double fStrip_Sector_MatchStick(const TTiaraHyballData* Data, const int i);
   double fStrip_Sector_T(const TTiaraHyballData* Data, const int i);
 }
 

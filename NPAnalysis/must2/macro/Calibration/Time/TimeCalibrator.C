@@ -14,7 +14,7 @@
 #include "TF1.h"
 
 using namespace std;
-#define TELESCOPE_START	1
+#define TELESCOPE_START	4
 #define TELESCOPE_END	4
 #define STRIP_START	1
 #define STRIP_END 	128
@@ -31,8 +31,8 @@ Double_t pol2 (Double_t *,Double_t *);
 		
 ofstream peaks_file, calib_file, dispersion_file,calib_online_file; 
 	
-void TimeCalibrator(const char* frun = "run_0042", TString xy = "Y",Int_t
-npeak= 49)
+void TimeCalibrator(const char* frun = "run_033", TString xy = "Y",Int_t
+npeak= 30)//49
 {
 	// open the ROOT file to process
 	TString path  = "./Histograms/";

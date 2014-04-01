@@ -51,7 +51,7 @@ int main(int argc,char** argv)
    Double_t BeamEnergyNominal = myReaction->GetBeamEnergy() * MeV;
    cout << "Nominal beam energy (MeV): " << BeamEnergyNominal << endl;
    // Slow beam at target middle
-   Double_t BeamEnergy = Fe60TargetCD2.Slow(BeamEnergyNominal, myDetector->GetTargetThickness()/2 * micrometer, 0);
+   Double_t BeamEnergy = BeamTargetCD2.Slow(BeamEnergyNominal, myDetector->GetTargetThickness()/2 * micrometer, 0);
    cout << "Middle-target beam energy (MeV): " << BeamEnergy << endl;
    // Set energy beam at target middle
    myReaction->SetBeamEnergy(BeamEnergy);

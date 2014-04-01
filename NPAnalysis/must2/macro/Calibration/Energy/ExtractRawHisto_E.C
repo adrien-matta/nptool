@@ -16,14 +16,14 @@
 #include "TBranch.h"
 #include "TH1F.h"
 
-#include "../NPLib/include/TMust2Data.h"
-#include "../NPLib/include/RootInput.h"
+#include "/home/e628/nptool/NPLib/include/TMust2Data.h"
+#include "/home/e628/nptool/NPLib/include/RootInput.h"
 
-#define NBTELESCOPE	8
+#define NBTELESCOPE	4
 #define	NBSTRIPS	128
 #define NBSILI     16
 
-void ExtractMust2Histos(const char* fname = "run_13-22")
+void ExtractMust2Histos(const char* fname = "run_1007")
 {
 	
 	RootInput* Input = RootInput::getInstance("RunToTreat.txt");
@@ -36,7 +36,7 @@ void ExtractMust2Histos(const char* fname = "run_13-22")
    Chain->SetBranchAddress("MUST2",&rawMust2);
 
    // open the output ROOT file
-   TString outFileName = "./Histograms/";
+   TString outFileName = "/data/e628X/e628/acquisition/spectre/Histograms/";
    outFileName += fname;
    outFileName += "_RawMust2Histos.root";
    cout<< outFileName<< endl;

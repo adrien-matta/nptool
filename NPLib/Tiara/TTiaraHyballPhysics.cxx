@@ -58,10 +58,10 @@ ClassImp(TTiaraHyballPhysics)
 
     // Threshold
     m_StripRing_E_RAW_Threshold = 0 ;
-    m_StripRing_E_Threshold = 0 ;
+    m_StripRing_E_Threshold = 0.4 ;
 
     m_StripSector_E_RAW_Threshold = 0 ;
-    m_StripSector_E_Threshold = 0 ;
+    m_StripSector_E_Threshold = 0.4 ;
 
     m_Take_E_Ring=false;
     m_Take_T_Sector=true;
@@ -527,11 +527,14 @@ void TTiaraHyballPhysics::AddParameterToCalibrationManager(){
   for(int i = 0 ; i < m_NumberOfDetector ; ++i){
     for( int j = 0 ; j < 24 ; ++j){
       Cal->AddParameter("TIARAHYBALL", "D"+itoa(i+1)+"_STRIP_RING"+itoa(j+1)+"_E","TIARAHYBALL_D"+itoa(i+1)+"_STRIP_RING"+itoa(j+1)+"_E")   ;
+       Cal->AddParameter("TIARAHYBALL", "D"+itoa(i+1)+"_STRIP_RING"+itoa(j+1)+"_MATCHSTICK","TIARAHYBALL_D"+itoa(i+1)+"_STRIP_RING"+itoa(j+1)+"_MATCHSTICK")   ;
+ 
       Cal->AddParameter("TIARAHYBALL", "D"+itoa(i+1)+"_STRIP_RING"+itoa(j+1)+"_T","TIARAHYBALL_D"+itoa(i+1)+"_STRIP_RING"+itoa(j+1)+"_T")   ;
     }
 
     for( int j = 0 ; j < 48 ; ++j){
       Cal->AddParameter("TIARAHYBALL", "D"+itoa(i+1)+"_STRIP_SECTOR"+itoa(j+1)+"_E","TIARAHYBALL_D"+itoa(i+1)+"_STRIP_SECTOR"+itoa(j+1)+"_E")   ;
+      Cal->AddParameter("TIARAHYBALL", "D"+itoa(i+1)+"_STRIP_SECTOR"+itoa(j+1)+"_MATCHSTICK","TIARAHYBALL_D"+itoa(i+1)+"_STRIP_SECTOR"+itoa(j+1)+"_MATCHSTICK")   ;
       Cal->AddParameter("TIARAHYBALL", "D"+itoa(i+1)+"_STRIP_SECTOR"+itoa(j+1)+"_T","TIARAHYBALL_D"+itoa(i+1)+"_STRIP_SECTOR"+itoa(j+1)+"_T")   ;
     }
   }
@@ -675,6 +678,10 @@ namespace TiaraHyball_LOCAL{
     return CalibrationManager::getInstance()->ApplyCalibration(   "TIARAHYBALL/D" + itoa( m_EventData->GetRingEDetectorNbr(i) ) + "_STRIP_RING" + itoa( m_EventData->GetRingEStripNbr(i) ) + "_E",
         m_EventData->GetRingEEnergy(i) );
   }
+  double fStrip_Ring_Matchstick(const TTiaraHyballData* m_EventData , const int i){
+    return CalibrationManager::getInstance()->ApplyCalibration(   "TIARAHYBALL/D" + itoa( m_EventData->GetRingEDetectorNbr(i) ) + "_STRIP_RING" + itoa( m_EventData->GetRingEStripNbr(i) ) + "_MATCHSTICK",
+        m_EventData->GetRingEEnergy(i) );
+  }
 
   double fStrip_Ring_T(const TTiaraHyballData* m_EventData , const int i){
     return CalibrationManager::getInstance()->ApplyCalibration(   "TIARAHYBALL/D" + itoa( m_EventData->GetRingTDetectorNbr(i) ) + "_STRIP_RING" + itoa( m_EventData->GetRingTStripNbr(i) ) +"_T",
@@ -684,6 +691,11 @@ namespace TiaraHyball_LOCAL{
   //   Sector
   double fStrip_Sector_E(const TTiaraHyballData* m_EventData , const int i){
     return CalibrationManager::getInstance()->ApplyCalibration(   "TIARAHYBALL/D" + itoa( m_EventData->GetSectorTDetectorNbr(i) ) + "_STRIP_SECTOR" + itoa( m_EventData->GetSectorTStripNbr(i) ) +"_E",
+        m_EventData->GetSectorEEnergy(i) );
+  }
+
+  double fStrip_Sector_Matchstick(const TTiaraHyballData* m_EventData , const int i){
+    return CalibrationManager::getInstance()->ApplyCalibration(   "TIARAHYBALL/D" + itoa( m_EventData->GetSectorTDetectorNbr(i) ) + "_STRIP_SECTOR" + itoa( m_EventData->GetSectorTStripNbr(i) ) +"_MATCHSTICK",
         m_EventData->GetSectorEEnergy(i) );
   }
 

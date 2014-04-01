@@ -9,8 +9,8 @@
 
 /*****************************************************************************
  * Original Author: S. Giron   contact address: giron@ipno.in2p3.fr          *
- *                                                                           *
- * Creation Date  : febuary 2009                                             *
+ *                  B. Le Crom                  lecrom@ipno.in2p3.fr                                       *
+ * Creation Date  : march 2014                                            *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
@@ -108,6 +108,9 @@ class TExogamPhysics : public TObject, public NPA::VDetector
   //	In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
   void InitializeRootInputRaw() 					;
 
+    //   Activated associated Branches and link it to the private member DetectorPhysics address
+    //   In this method mother Branches (Detector) AND daughter leaf (parameter) have to be activated
+    void InitializeRootInputPhysics() ;/////////////////////////////////////////////////////////////////////////
 
   //	Create associated branches and associated private member DetectorPhysics address
   void InitializeRootOutput() 		 		;
@@ -125,12 +128,6 @@ class TExogamPhysics : public TObject, public NPA::VDetector
   void BuildSimplePhysicalEvent()	       ;
 
   double DopplerCorrection(double Energy, double Theta);
-
-    // Give and external TMustData object to TMust2Physics. Needed for online analysis for example.
-    void SetRawDataPointer(TExogamData* rawDataPointer) {EventData = rawDataPointer;}
-    // Retrieve raw and pre-treated data
-    TExogamData* GetRawData()        const {return EventData;}
-    TExogamData* GetPreTreatedData() const {return PreTreatedData;}
 
   //	Those two method all to clear the Event Physics or Data
   void ClearEventPhysics()		{Clear();}		
@@ -165,7 +162,14 @@ class TExogamPhysics : public TObject, public NPA::VDetector
 
   Double_t GetSegmentAnglePhi(int Clover, int Cristal, int Segment)    {return(Clover_Angles_Theta_Phi[Clover][Cristal][Segment][1]);};
   Double_t GetSegmentAngleTheta(int Clover, int Cristal, int Segment)  {return(Clover_Angles_Theta_Phi[Clover][Cristal][Segment][0]);};
-  
+ 
+  // Give and external TMustData object to TExogamPhysics. Needed for online analysis for example.
+  void SetRawDataPointer(TExogamData* rawDataPointer) {EventData = rawDataPointer;}
+  // Retrieve raw and pre-treated data
+  TExogamData* GetRawData()        const {return EventData;}
+  TExogamData* GetPreTreatedData() const {return PreTreatedData;}
+
+ 
   private: // Spectra Class   
     TExogamSpectra*      m_Spectra;//! 
 
