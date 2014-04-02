@@ -9,8 +9,8 @@
 
 /*****************************************************************************
  * Original Author: S. Giron   contact address: giron@ipno.in2p3.fr          *
- *                                                                           *
- * Creation Date  : febuary 2009                                             *
+ *                  B. Le Crom                  lecrom@ipno.in2p3.fr                                       *
+ * Creation Date  : march 2014                                            *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
@@ -108,6 +108,9 @@ class TExogamPhysics : public TObject, public NPA::VDetector
   //	In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
   void InitializeRootInputRaw() 					;
 
+    //   Activated associated Branches and link it to the private member DetectorPhysics address
+    //   In this method mother Branches (Detector) AND daughter leaf (parameter) have to be activated
+    void InitializeRootInputPhysics() ;/////////////////////////////////////////////////////////////////////////
 
   //	Create associated branches and associated private member DetectorPhysics address
   void InitializeRootOutput() 		 		;

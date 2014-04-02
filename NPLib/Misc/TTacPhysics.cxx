@@ -64,10 +64,7 @@ void TTacPhysics::Clear()
       Time_TAC_2 =0;
       Time_TAC_3 =0;
       Time_TAC_4 =0;
-      Time_TAC_5 =0;
-      Time_TAC_6 =0;
-      Time_TAC_7 =0;
-      Time_TAC_8 =0;
+
    }
    
 ///////////////////////////////////////////////////////////////////////////
@@ -105,10 +102,7 @@ void TTacPhysics::InitializeRootInputPhysics()
       inputChain->SetBranchStatus ( "Time_TAC_2", true );
       inputChain->SetBranchStatus ( "Time_TAC_3", true );
       inputChain->SetBranchStatus ( "Time_TAC_4", true );
-      inputChain->SetBranchStatus ( "Time_TAC_5", true );
-      inputChain->SetBranchStatus ( "Time_TAC_6", true );
-      inputChain->SetBranchStatus ( "Time_TAC_7", true );
-      inputChain->SetBranchStatus ( "Time_TAC_8", true );
+    
       inputChain->SetBranchAddress( "Tac", &EventPhysics );
    }
 ///////////////////////////////////////////////////////////////////////////
@@ -135,9 +129,6 @@ void TTacPhysics::BuildSimplePhysicalEvent()
 		Time_TAC_2=CalibrationManager::getInstance()->ApplyCalibration("TAC/_T" + itoa( EventData->GetTAC_MM_HF_DetectorNbr(1) ),EventData->GetTAC_MM2_HF() );
 		Time_TAC_3=CalibrationManager::getInstance()->ApplyCalibration("TAC/_T" + itoa( EventData->GetTAC_MM_HF_DetectorNbr(2) ),EventData->GetTAC_MM3_HF() );
 		Time_TAC_4=CalibrationManager::getInstance()->ApplyCalibration("TAC/_T" + itoa( EventData->GetTAC_MM_HF_DetectorNbr(3) ),EventData->GetTAC_MM4_HF() );
-		Time_TAC_5=CalibrationManager::getInstance()->ApplyCalibration("TAC/_T" + itoa( EventData->GetTAC_MM_HF_DetectorNbr(4) ),EventData->GetTAC_MM5_HF() );
-		Time_TAC_6=CalibrationManager::getInstance()->ApplyCalibration("TAC/_T" + itoa( EventData->GetTAC_MM_HF_DetectorNbr(5) ),EventData->GetTAC_MM6_HF() );
-		Time_TAC_7=CalibrationManager::getInstance()->ApplyCalibration("TAC/_T" + itoa( EventData->GetTAC_MM_HF_DetectorNbr(6) ),EventData->GetTAC_MM7_HF() );
-		Time_TAC_8=CalibrationManager::getInstance()->ApplyCalibration("TAC/_T" + itoa( EventData->GetTAC_MM_HF_DetectorNbr(7) ),EventData->GetTAC_MM8_HF() );
+		
    }
 

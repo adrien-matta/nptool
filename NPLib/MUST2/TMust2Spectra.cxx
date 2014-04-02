@@ -7,8 +7,8 @@
 
 /*****************************************************************************
  * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
- *                                                                           *
- * Creation Date  : march 2011                                               *
+ *                  B. Le Crom                        lecrom@ipno.in2p3.fr   *
+ * Creation Date  : April 2014                                               *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
@@ -276,7 +276,7 @@ void TMust2Spectra::FillRawSpectra(TMust2Data* RawData){
 
     GetHisto(family,name)
       -> Fill(RawData->GetMMStripXTStripNbr(i),
-          RawData->GetMMStripXTTime(i) - 8192);
+          8192 - RawData->GetMMStripXTTime(i));
   }
   // STRY_T
   for (unsigned int i = 0; i < RawData->GetMMStripYTMult(); i++) {
@@ -285,7 +285,7 @@ void TMust2Spectra::FillRawSpectra(TMust2Data* RawData){
 
     GetHisto(family,name)
       -> Fill(RawData->GetMMStripYTStripNbr(i),
-          8192 - RawData->GetMMStripYTTime(i));
+          RawData->GetMMStripYTTime(i) - 8192);
   }
 
   // SILI_E

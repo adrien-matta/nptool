@@ -7,8 +7,8 @@
 
 /*****************************************************************************
  * Original Author: Sandra GIRON  contact address: giron@ipno.in2p3.fr       *
- *                                                                           *
- * Creation Date  : july    2010                                             *
+ *                  Benjamin LE CROM		   lecrom@ipno.in2p3.fr                                                        *
+ * Creation Date  : march 2014                                            *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
@@ -556,11 +556,19 @@ void TExogamPhysics::ClearSpectra(){
   // To be done
 }
 ///////////////////////////////////////////////////////////////////////////
+<<<<<<< HEAD
+map< vector<TString> , TH1*> TExogamPhysics::GetSpectra() {
+  if(m_Spectra)
+    return m_Spectra->GetMapHisto();
+  else{
+    map< vector<TString> , TH1*> empty;
+=======
 map< vector<string> , TH1*> TExogamPhysics::GetSpectra() {
   if(m_Spectra)
     return m_Spectra->GetMapHisto();
   else{
     map< vector<string> , TH1*> empty;
+>>>>>>> a51372fab418d17126a214991f612e6da2c5c9be
     return empty;
   }
 } 
@@ -664,6 +672,36 @@ void TExogamPhysics::InitializeRootInputRaw()
   */
 }
 
+/////////////////////////////////////////////////////////////////////
+//   Activated associated Branches and link it to the private member DetectorPhysics address
+//   In this method mother Branches (Detector) AND daughter leaf (parameter) have to be activated
+void TExogamPhysics::InitializeRootInputPhysics() {
+  TChain* inputChain = RootInput::getInstance()->GetChain();
+  inputChain->SetBranchStatus( "EventMultiplicty" , true );
+  inputChain->SetBranchStatus( "ECC_Multiplicity" , true );
+  inputChain->SetBranchStatus( "GOCCE_Multiplicity" , true );
+  inputChain->SetBranchStatus( "ECC_CloverNumber" , true );
+  inputChain->SetBranchStatus( "ECC_CristalNumber" , true );
+  inputChain->SetBranchStatus( "GOCCE_CloverNumber" , true );
+  inputChain->SetBranchStatus( "GOCCE_CristalNumber" , true );
+  inputChain->SetBranchStatus( "GOCCE_SegmentNumber" , true );
+  inputChain->SetBranchStatus( "ECC_E" , true );
+  inputChain->SetBranchStatus( "ECC_T" , true );
+  inputChain->SetBranchStatus( "GOCCE_E" , true );
+  inputChain->SetBranchStatus( "CristalNumber" , true );
+  inputChain->SetBranchStatus( "SegmentNumber" , true );
+  inputChain->SetBranchStatus( "CloverNumber" , true );
+  inputChain->SetBranchStatus( "CloverMult" , true );
+  inputChain->SetBranchStatus( "TotalEnergy_lab" , true );
+  inputChain->SetBranchStatus( "Time" , true );
+  inputChain->SetBranchStatus( "DopplerCorrectedEnergy" , true );
+  inputChain->SetBranchStatus( "Position" , true );
+  inputChain->SetBranchStatus( "Theta" , true );
+  inputChain->SetBranchAddress( "EXOGAM" , &EventPhysics );
+
+}
+
+/////////////////////////////////////////////////////////////////////
 
 //	Create associated branches and associated private member DetectorPhysics address
 void TExogamPhysics::InitializeRootOutput() 	

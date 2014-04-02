@@ -8,7 +8,7 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author:    contact address:                                      *
+ * Original Author: Benjamin Le Crom   contact address: lecrom@ipno.in2p3.fr *
  *                                                                           *
  * Creation Date  :                                                          *
  * Last update    :                                                          *
@@ -29,23 +29,26 @@ class TTacData : public TObject {
  private:
    // TAC
    UShort_t	fTAC_MM_CATS1;
-   UShort_t	fTAC_MM_CATS2;
-   UShort_t	fTAC_PL_CATS1;
-   UShort_t	fTAC_PL_CATS2;
    UShort_t	fTAC_CATS12;
-   UShort_t	fTAC_PL_GAL;
+   UShort_t	fTAC_CATS1_PLD4;
    UShort_t	fTAC_CATS1_HF;
-   UShort_t	fTAC_CATS2_HF;
+   UShort_t	fTAC_CATS1_EXO;
    UShort_t	fTAC_MM_HF;
-   UShort_t fTAC_MM1_HF;
-   UShort_t fTAC_MM2_HF;
-   UShort_t fTAC_MM3_HF;
-   UShort_t fTAC_MM4_HF;
-   UShort_t fTAC_MM5_HF;
-   UShort_t fTAC_MM6_HF;
-   UShort_t fTAC_MM7_HF;
-   UShort_t fTAC_MM8_HF;
    vector<UShort_t>   fTAC_MM_HF_DetectorNbr;
+   UShort_t fTAC_MM_EXO;
+   UShort_t fTAC_BARREL_EXO;
+   UShort_t fTAC_BARREL_CATS1FAG;
+   UShort_t fTAC_HYB_EXO;
+   UShort_t fTAC_HYB_CATS1FAG;
+   UShort_t fTAC_CHAR_EXO;
+   UShort_t fTAC_CHAR_CATS1FAG;
+   UShort_t fTAC_CHAR_PLD4;
+   UShort_t fTAC_CHAR_GALOTTE;
+   UShort_t fTAC_CATS1_CATS2;
+   UShort_t fTAC_CATS1_GALOTTE;
+   UShort_t fTAC_FAG_CATS2;
+
+
 
  public:
    TTacData();
@@ -57,45 +60,47 @@ class TTacData : public TObject {
 
    /////////////////////           GETTERS           ////////////////////////
    // (TAC)
-   UShort_t	GetTAC_MM_CATS1()             {return fTAC_MM_CATS1;}
-   UShort_t	GetTAC_MM_CATS2()             {return fTAC_MM_CATS2;}
-   UShort_t	GetTAC_PL_CATS1()             {return fTAC_PL_CATS1;}
-   UShort_t	GetTAC_PL_CATS2()             {return fTAC_PL_CATS2;}
-   UShort_t	GetTAC_CATS12()		         {return fTAC_CATS12;}
-   UShort_t	GetTAC_PL_GAL()               {return fTAC_PL_GAL;}
-   UShort_t	GetTAC_CATS1_HF()             {return fTAC_CATS1_HF;}
-   UShort_t	GetTAC_CATS2_HF()             {return fTAC_CATS2_HF;}
-   UShort_t	GetTAC_MM_HF()         	      {return fTAC_MM_HF;}
-   Double_t GetTAC_MM1_HF()               {return fTAC_MM1_HF;}
-   Double_t GetTAC_MM2_HF()               {return fTAC_MM2_HF;}
-   Double_t GetTAC_MM3_HF()               {return fTAC_MM3_HF;}
-   Double_t GetTAC_MM4_HF()               {return fTAC_MM4_HF;}
-   Double_t GetTAC_MM5_HF()               {return fTAC_MM5_HF;}
-   Double_t GetTAC_MM6_HF()               {return fTAC_MM6_HF;}
-   Double_t GetTAC_MM7_HF()               {return fTAC_MM7_HF;}
-   Double_t GetTAC_MM8_HF()               {return fTAC_MM8_HF;}
+   UShort_t GetTAC_MM_CATS1()             {return fTAC_MM_CATS1;}
+   UShort_t GetTAC_CATS12()		  {return fTAC_CATS12;}
+   UShort_t GetTAC_CATS1_PLD4()		  {return fTAC_CATS1_PLD4;}
+   UShort_t GetTAC_CATS1_HF()             {return fTAC_CATS1_HF;}
+   UShort_t GetTAC_CATS1_EXO()             {return fTAC_CATS1_EXO;}
+   UShort_t GetTAC_MM_HF()         	  {return fTAC_MM_HF;}
    Double_t GetTAC_MM_HF_DetectorNbr(const Int_t i) const {return fTAC_MM_HF_DetectorNbr[i];}
+   Double_t GetTAC_MM_EXO()		  {return fTAC_MM_EXO;}
+   Double_t GetTAC_BARREL_EXO()		  {return fTAC_BARREL_EXO;}
+   Double_t GetTAC_BARREL_CATS1FAG()	  {return fTAC_BARREL_CATS1FAG;}
+   Double_t GetTAC_HYB_EXO()		  {return fTAC_HYB_EXO;}
+   Double_t GetTAC_HYB_CATS1FAG()	  {return fTAC_HYB_CATS1FAG;}
+   Double_t GetTAC_CHAR_EXO()		  {return fTAC_CHAR_EXO;}
+   Double_t GetTAC_CHAR_CATS1FAG()	  {return fTAC_CHAR_CATS1FAG;}
+   Double_t GetTAC_CHAR_PLD4()		  {return fTAC_CHAR_PLD4;}
+   Double_t GetTAC_CHAR_GALOTTE()	  {return fTAC_CHAR_GALOTTE;}
+   Double_t GetTAC_CATS1_CATS2()	  {return fTAC_CATS1_CATS2;}
+   Double_t GetTAC_CATS1_GALOTTE()	  {return fTAC_CATS1_GALOTTE;}
+   Double_t GetTAC_FAG_CATS2()	          {return fTAC_FAG_CATS2;}
 
    /////////////////////           SETTERS           ////////////////////////
    // (TAC)
    void	SetTAC_MM_CATS1(UShort_t T)			{fTAC_MM_CATS1 = T;}
-   void	SetTAC_MM_CATS2(UShort_t T)			{fTAC_MM_CATS2 = T;}
-   void	SetTAC_PL_CATS1(UShort_t T)			{fTAC_PL_CATS1 = T;}
-   void	SetTAC_PL_CATS2(UShort_t T)			{fTAC_PL_CATS2 = T;}
-   void	SetTAC_CATS12(UShort_t T)			   {fTAC_CATS12 = T;}
-   void	SetTAC_PL_GAL(UShort_t T)			   {fTAC_PL_GAL = T;}
+   void	SetTAC_CATS12(UShort_t T)			{fTAC_CATS12 = T;}
+   void	SetTAC_CATS1_PLD4(UShort_t T)			{fTAC_CATS1_PLD4 = T;}
    void	SetTAC_CATS1_HF(UShort_t T)			{fTAC_CATS1_HF = T;}
-   void	SetTAC_CATS2_HF(UShort_t T)			{fTAC_CATS2_HF = T;}
-   void	SetTAC_MM_HF(UShort_t T)			   {fTAC_MM_HF = T;}
-   void  SetTAC_MM1_HF(UShort_t T)           {fTAC_MM1_HF = T;}
-   void  SetTAC_MM2_HF(UShort_t T)           {fTAC_MM2_HF = T;}
-   void  SetTAC_MM3_HF(UShort_t T)           {fTAC_MM3_HF = T;}
-   void  SetTAC_MM4_HF(UShort_t T)           {fTAC_MM4_HF = T;}
-   void  SetTAC_MM5_HF(UShort_t T)           {fTAC_MM5_HF = T;}
-   void  SetTAC_MM6_HF(UShort_t T)           {fTAC_MM6_HF = T;}
-   void  SetTAC_MM7_HF(UShort_t T)           {fTAC_MM7_HF = T;}
-   void  SetTAC_MM8_HF(UShort_t T)           {fTAC_MM8_HF = T;}
-   void  SetTAC_MM_HF_DetectorNbr(const UShort_t DetNbr) {fTAC_MM_HF_DetectorNbr.push_back(DetNbr);}
+   void	SetTAC_CATS1_EXO(UShort_t T)			{fTAC_CATS1_EXO = T;}
+   void	SetTAC_MM_HF(UShort_t T)			{fTAC_MM_HF = T;}
+   void SetTAC_MM_HF_DetectorNbr(const UShort_t DetNbr) {fTAC_MM_HF_DetectorNbr.push_back(DetNbr);}
+   void	SetTAC_MM_EXO(UShort_t T)			{fTAC_MM_EXO = T;}
+   void	SetTAC_BARREL_EXO(UShort_t T)			{fTAC_BARREL_EXO = T;}
+   void	SetTAC_BARREL_CATS1FAG(UShort_t T)		{fTAC_BARREL_CATS1FAG = T;}
+   void	SetTAC_HYB_EXO(UShort_t T)			{fTAC_HYB_EXO = T;}
+   void	SetTAC_HYB_CATS1FAG(UShort_t T)			{fTAC_HYB_CATS1FAG = T;}
+   void	SetTAC_CHAR_EXO(UShort_t T)			{fTAC_CHAR_EXO = T;}
+   void	SetTAC_CHAR_CATS1FAG(UShort_t T)		{fTAC_CHAR_CATS1FAG = T;}
+   void	SetTAC_CHAR_PLD4(UShort_t T)			{fTAC_CHAR_PLD4 = T;}
+   void	SetTAC_CHAR_GALOTTE(UShort_t T)			{fTAC_CHAR_GALOTTE = T;}
+   void	SetTAC_CATS1_CATS2(UShort_t T)			{fTAC_CATS1_CATS2 = T;}
+   void	SetTAC_CATS1_GALOTTE(UShort_t T)		{fTAC_CATS1_GALOTTE = T;}
+   void	SetTAC_FAG_CATS2(UShort_t T)			{fTAC_FAG_CATS2 = T;}
 
 
    ClassDef(TTacData,2)  // TacData structure
