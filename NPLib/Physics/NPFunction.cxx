@@ -60,21 +60,22 @@ TH1F* Read1DProfile(string filename,string HistName){
     // Look for the step size, min and max of the distribution
     double min = 0;
     double max = 0;
-    unsigned int size = x.size();
+    unsigned int thesize = x.size();
     
-    if(size > 0){
+    if(thesize > 0){
       min = x[0] ;
       max = x[0] ;
     }
 
-    for(unsigned int i = 0 ; i < size ; i++){
+    for(unsigned int i = 0 ; i < thesize ; i++){
       if(x[i] > max) max = x[i] ;
       if(x[i] < min) min = x[i] ;
     }
     
-    h = new TH1F(HistName.c_str(),HistName.c_str(),size,min,max);
-    for(unsigned int i = 0 ; i < size ; i++){
-      h->Fill(x[i],w[i]);
+    h = new TH1F(HistName.c_str(),HistName.c_str(),thesize,min,max);
+    for(unsigned int i = 0 ; i < thesize ; i++){
+      int bin = h->FindBin(x[i]);
+      h->SetBinContent(bin,w[i]);
     }
 
   }
@@ -157,7 +158,8 @@ TH2F* Read2DProfile(string filename,string HistName){
     h = new TH2F(HistName.c_str(),HistName.c_str(),xsize,xmin,xmax,ysize,ymin,ymax);
     
     for(unsigned int i = 0 ; i < xsize ; i++){
-      h->Fill(x[i],y[i],w[i]);
+      int bin = h->FindBin(x[i],y[i]);
+      h->SetBinContent(bin,w[i]);
     }
   }
   
