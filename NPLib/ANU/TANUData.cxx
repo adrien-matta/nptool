@@ -9,19 +9,21 @@
  * Original Author: Marc Labiche    contact address: marc.labiche@stfc.ac.uk *
  *                                                                           *
  * Creation Date  : 30/01/12                                                 *
- * Last update    :                                                          *
+ * Last update    : 04/04/14                                                 *
  *---------------------------------------------------------------------------*
  * Decription: This class stores the results of the G4 simulation for the    *
- *             tracker part of the Gaspard detector.                         *
+ *             tracker part of the ANU detector.                         	 *
  *             The format mimics what was used for the GANIL experiments     *
  *             after conversion of the raw data with GRU. Ask                *
  *             N. de Sereville for more informations.                        *
+ *             The same format will be used for the ANU Setup                *
+ *             for developpement puposes                                     *
  *             This class derives from TObject (ROOT) and its aim is to be   *
  *             stored in the output TTree of the G4 simulation               *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *                                                                           *
- *                                                                           *
+ *         The ANU detector is an array of 6 identical SiLi detectors        *
+ *         having the shape of a camembert. It has no strips                 *
  *****************************************************************************/
 
 #include <iostream>
@@ -50,13 +52,11 @@ void TANUData::Clear()
 {
    // DSSD
    // (X,E)
-   fANU_FirstStage_E_DetectorNbr.clear();
-   fANU_FirstStage_E_StripNbr.clear()  ;
-   fANU_FirstStage_E_Energy.clear()    ;
+   fANU_SiLi_E_DetectorNbr.clear();
+   fANU_SiLi_E_Energy.clear()    ;
    // (X,T)
-   fANU_FirstStage_T_DetectorNbr.clear()  ;
-   fANU_FirstStage_T_StripNbr.clear()  ;
-   fANU_FirstStage_T_Time.clear()      ;
+   fANU_SiLi_T_DetectorNbr.clear()  ;
+   fANU_SiLi_T_Time.clear()      ;
 
 }
 
@@ -68,12 +68,12 @@ void TANUData::Dump() const
 
    // DSSD
    // (X,E)
-   cout << "ANU_FirstStage_FrontE_Mult = " << fANU_FirstStage_E_DetectorNbr.size() << endl;
-   for (UShort_t i = 0; i < fANU_FirstStage_E_DetectorNbr.size(); i++)
-      cout << "DetNbr: " << fANU_FirstStage_E_DetectorNbr[i] << " Strip: " << fANU_FirstStage_E_StripNbr[i] << " Energy: " << fANU_FirstStage_E_Energy[i] << endl;
+   cout << "ANU_SiLi_FrontE_Mult = " << fANU_SiLi_E_DetectorNbr.size() << endl;
+   for (UShort_t i = 0; i < fANU_SiLi_E_DetectorNbr.size(); i++)
+      cout << "DetNbr: " << fANU_SiLi_E_DetectorNbr[i] << " Energy: " << fANU_SiLi_E_Energy[i] << endl;
    // (X,T)
-   cout << "ANU_FirstStage_FrontT_Mult = " << fANU_FirstStage_T_DetectorNbr.size() << endl;
-   for (UShort_t i = 0; i < fANU_FirstStage_T_DetectorNbr.size(); i++)
-      cout << "DetNbr: " << fANU_FirstStage_T_DetectorNbr[i] << " Strip: " << fANU_FirstStage_T_StripNbr[i] << " Time: " << fANU_FirstStage_T_Time[i] << endl;
+   cout << "ANU_SiLi_FrontT_Mult = " << fANU_SiLi_T_DetectorNbr.size() << endl;
+   for (UShort_t i = 0; i < fANU_SiLi_T_DetectorNbr.size(); i++)
+      cout << "DetNbr: " << fANU_SiLi_T_DetectorNbr[i] << " Time: " << fANU_SiLi_T_Time[i] << endl;
  
 }

@@ -11,19 +11,21 @@
  * Original Author: Marc Labiche    contact address: marc.labiche@stfc.ac.uk *
  *                                                                           *
  * Creation Date  : 30/01/12                                                 *
- * Last update    :                                                          *
+ * Last update    : 04/04/14                                                 *
  *---------------------------------------------------------------------------*
  * Decription: This class stores the results of the G4 simulation for the    *
- *             tracker part of the Gaspard detector.                         *
+ *             tracker part of the ANU detector.                         	 *
  *             The format mimics what was used for the GANIL experiments     *
  *             after conversion of the raw data with GRU. Ask                *
  *             N. de Sereville for more informations.                        *
+ *             The same format will be used for the ANU Setup                *
+ *             for developpement puposes                                     *
  *             This class derives from TObject (ROOT) and its aim is to be   *
  *             stored in the output TTree of the G4 simulation               *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *                                                                           *
- *                                                                           *
+ *         The ANU detector is an array of 6 identical SiLi detectors        *
+ *         having the shape of a camembert. It has no strips                 *
  *****************************************************************************/
 
 #include <vector>
@@ -36,13 +38,11 @@ class TANUData : public TObject
 protected:
    // First Stage
    // Energy
-   vector<UShort_t>  fANU_FirstStage_E_DetectorNbr;
-   vector<UShort_t>  fANU_FirstStage_E_StripNbr;
-   vector<Double_t>  fANU_FirstStage_E_Energy;
+   vector<UShort_t>  fANU_SiLi_E_DetectorNbr;
+   vector<Double_t>  fANU_SiLi_E_Energy;
    // Time
-   vector<UShort_t>  fANU_FirstStage_T_DetectorNbr;
-   vector<UShort_t>  fANU_FirstStage_T_StripNbr;
-   vector<Double_t>  fANU_FirstStage_T_Time;
+   vector<UShort_t>  fANU_SiLi_T_DetectorNbr;
+   vector<Double_t>  fANU_SiLi_T_Time;
 
 
 
@@ -57,54 +57,42 @@ public:
    /////////////////////           SETTERS           ////////////////////////
    // RSD
    // (E)
-   void  SetANUFirstStageEDetectorNbr(UShort_t DetNbr) {
-      fANU_FirstStage_E_DetectorNbr.push_back(DetNbr);
+   void  SetANUSiLiEDetectorNbr(UShort_t DetNbr) {
+      fANU_SiLi_E_DetectorNbr.push_back(DetNbr);
    }
-   void  SetANUFirstStageEStripNbr(UShort_t StripNbr)  {
-      fANU_FirstStage_E_StripNbr.push_back(StripNbr);
-   }
-   void  SetANUFirstStageEEnergy(Double_t Energy)      {
-      fANU_FirstStage_E_Energy.push_back(Energy);
+   void  SetANUSiLiEEnergy(Double_t Energy)      {
+      fANU_SiLi_E_Energy.push_back(Energy);
    }
    // (T)
-   void  SetANUFirstStageTDetectorNbr(UShort_t DetNbr) {
-      fANU_FirstStage_T_DetectorNbr.push_back(DetNbr);
+   void  SetANUSiLiTDetectorNbr(UShort_t DetNbr) {
+      fANU_SiLi_T_DetectorNbr.push_back(DetNbr);
    }
-   void  SetANUFirstStageTStripNbr(UShort_t StripNbr)  {
-      fANU_FirstStage_T_StripNbr.push_back(StripNbr);
-   }
-   void  SetANUFirstStageTTime(Double_t Time)          {
-      fANU_FirstStage_T_Time.push_back(Time);
+   void  SetANUSiLiTTime(Double_t Time)          {
+      fANU_SiLi_T_Time.push_back(Time);
    }
 
 
    /////////////////////           GETTERS           ////////////////////////
    // RSD
    // (E)
-   UShort_t GetANUFirstStageEMult()               {
-      return fANU_FirstStage_E_DetectorNbr.size();
+   UShort_t GetANUSiLiEMult()               {
+      return fANU_SiLi_E_DetectorNbr.size();
    }
-   UShort_t GetANUFirstStageEDetectorNbr(Int_t i) {
-      return fANU_FirstStage_E_DetectorNbr.at(i);
+   UShort_t GetANUSiLiEDetectorNbr(Int_t i) {
+      return fANU_SiLi_E_DetectorNbr.at(i);
    }
-   UShort_t GetANUFirstStageEStripNbr(Int_t i)    {
-      return fANU_FirstStage_E_StripNbr.at(i);
-   }
-   Double_t GetANUFirstStageEEnergy(Int_t i)      {
-      return fANU_FirstStage_E_Energy.at(i);
+   Double_t GetANUSiLiEEnergy(Int_t i)      {
+      return fANU_SiLi_E_Energy.at(i);
    }
    // (T)
-   UShort_t GetANUFirstStageTMult()               {
-      return fANU_FirstStage_T_DetectorNbr.size();
+   UShort_t GetANUSiLiTMult()               {
+      return fANU_SiLi_T_DetectorNbr.size();
    }
-   UShort_t GetANUFirstStageTDetectorNbr(Int_t i) {
-      return fANU_FirstStage_T_DetectorNbr.at(i);
+   UShort_t GetANUSiLiTDetectorNbr(Int_t i) {
+      return fANU_SiLi_T_DetectorNbr.at(i);
    }
-   UShort_t GetANUFirstStageTStripNbr(Int_t i)    {
-      return fANU_FirstStage_T_StripNbr.at(i);
-   }
-   Double_t GetANUFirstStageTTime(Int_t i)      {
-      return fANU_FirstStage_T_Time.at(i);
+   Double_t GetANUSiLiTTime(Int_t i)      {
+      return fANU_SiLi_T_Time.at(i);
    }
 
  
