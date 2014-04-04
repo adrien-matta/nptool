@@ -102,12 +102,12 @@ void ANU::ReadConfiguration(string Path)
       //    LineBuffer.compare(0, 15, "ANUTrapezoid")  == 0  ||
       //    LineBuffer.compare(0, 13, "ANUAnnular")    == 0  ||
       //    LineBuffer.compare(0, 16, "ANUDummyShape") == 0) {
-      if (LineBuffer.compare(0, 16, "ANUDummyShape") == 0) {
+      if (LineBuffer.compare(0, 13, "ANUDummyShape") == 0) {
          cout << "///////////////////////" << endl;
          cout << "Module found:" << endl;        
 
 	 // if (LineBuffer.compare(0,  12, "ANUSquare")     == 0) isSquare     = true;
-	 if (LineBuffer.compare(0, 16, "ANUDummyShape") == 0) isDummyShape = true;
+	 if (LineBuffer.compare(0, 13, "ANUDummyShape") == 0) isDummyShape = true;
 	 // if (LineBuffer.compare(0, 15, "ANUTrapezoid")  == 0) isTrapezoid  = true;
 	 // if (LineBuffer.compare(0, 13, "ANUAnnular")    == 0) isAnnular    = true;
          ReadingStatus = true;
@@ -278,7 +278,7 @@ void ANU::ReadConfiguration(string Path)
                ConfigFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n' );
             }
             // Finding another telescope (safety), toggle out
-            else if (DataBuffer.compare(0, 16, "ANUDummyShape") == 0) {
+            else if (DataBuffer.compare(0, 13, "ANUDummyShape") == 0) {
                cout << "WARNING: Another Module is find before standard sequence of Token, Error may occured in Telecope definition" << endl;
                ReadingStatus = false;
             }

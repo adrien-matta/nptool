@@ -300,6 +300,7 @@ void ANUDetDummyShape::VolumeMaker(G4int TelescopeNumber,
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
 void ANUDetDummyShape::ReadConfiguration(string Path)
 {
+	std::cout << "**********************HERE?!" << std::endl;
    ifstream ConfigFile;
    ConfigFile.open(Path.c_str());
    string LineBuffer, DataBuffer; 
@@ -336,7 +337,8 @@ void ANUDetDummyShape::ReadConfiguration(string Path)
 
    while (!ConfigFile.eof()) {
       getline(ConfigFile, LineBuffer);
-      if (LineBuffer.compare(0, 16, "ANUDummyShape") == 0) {
+      
+      if (LineBuffer.compare(0, 13, "ANUDummyShape") == 0) {
          G4cout << "///" << G4endl           ;
          G4cout << "DummyShape element found: " << G4endl   ;
          ReadingStatus = true ;
