@@ -54,6 +54,10 @@
 #include "AnnularS1.hh"
 #endif
 
+#ifdef INC_ANU
+#include "ANU.hh"
+#endif
+
 #ifdef INC_COMPTONTELESCOPE
 #include "ComptonTelescope.hh"
 #endif
@@ -223,9 +227,11 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
   
   
   bool cAddThinSi        = false;
+  bool cANU              = false;
   bool cComptonTelescope = false;
   bool cDummy            = false;
   bool cEurogam          = false;
+  bool cHelios           = false;
   bool cGeneralTarget    = false;
   bool cGeneralChamber   = false;
   bool cGPDTracker       = false;   
@@ -239,7 +245,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
   bool cTigress          = false;
   bool cTiara            = false;
   bool cW1               = false;
-  bool cHelios           = false;
+  
   
   int VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
   
@@ -697,6 +703,115 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
       
 #endif      
     }
+    
+    ////////////////////////////////////////////
+    //////////// Search for ANU ////////////
+    ////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 3, "ANU") == 0 && cANU == false) {
+#ifdef INC_ANU
+      cANU = true ;
+      cout << "//////// ANU detector ////////" << endl   ;
+      
+//      bool check_MField      = false;
+      double Bz=0.;
+
+      ConfigFile >> DataBuffer ;
+      if (DataBuffer.compare(0, 7, "MField=") == 0){
+//        check_MField = true;
+        ConfigFile >> DataBuffer ;
+        Bz = atof(DataBuffer.c_str()) ;
+        cout << "//////// Magentic Field set at Bz= " << Bz << " ////////" << endl   ;
+      }
+      
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector = new ANU();
+      std::cout << "**********************HERE?!" << std::endl; // REMLEE
+      // Read Position of Telescope
+      ConfigFile.close()                                 ;
+      myDetector->ReadConfiguration(Path)                   ;
+      ConfigFile.open(Path.c_str())                      ;
+      
+      // Add array to the VDetector Vector
+      AddDetector(myDetector)                            ;
+      
+      //------------------------------world volume
+      //
+      
+      //  Aluminium material
+      G4double a= 26.98 * g / mole;
+      G4double density = 2.7 * g / cm3;
+      G4double z = 13.;
+      G4Material* Aluminium = new G4Material("Aluminium", z, a, density);
+      
+      
+      
+      // Add the Aluminium rod
+      G4double Al_rod_x = 1. * cm;
+      G4double Al_rod_y = 1. * cm;
+      //G4double Al_rod_z = 20.0 * cm;
+      G4double Al_rod_z = 40.0 * cm;
+      G4Box* Al_rod_box
+      = new G4Box("Al_rod_box", Al_rod_x, Al_rod_y, Al_rod_z);
+      
+      G4Tubs* Al_rod_tub
+      = new G4Tubs("Al_rod_tub", 0, 0.5*cm, Al_rod_z+1.*mm, 0.*deg, 360*deg);
+      
+      G4SubtractionSolid* Al_rod=new G4SubtractionSolid("Rod",Al_rod_box, Al_rod_tub, 0, G4ThreeVector(0.,0.,0.));
+      
+      G4LogicalVolume* Al_rod_log = new G4LogicalVolume(Al_rod, Aluminium, "Al_rod", 0, 0, 0);
+      
+      
+      new G4PVPlacement(0, G4ThreeVector(0.,0., Al_rod_z + 12.5*cm), Al_rod_log, "Al_rod", world_log, false, 0);
+      new G4PVPlacement(0, G4ThreeVector(0.,0., -(Al_rod_z + 12.5*cm)), Al_rod_log, "Al_rod", world_log, false, 1);
+      
+      
+      
+      // Add the Aluminium chamber
+      G4double Al_chamber_rmin = 50. * cm;
+      G4double Al_chamber_rmax = 55. * cm;
+      G4double Al_chamber_z = 100.0 * cm;
+      
+      //G4Tubs* Al_chamber_tub
+      //  = new G4Tubs("Al_chamber_tub", Al_chamber_rmin, Al_chamber_rmax, Al_chamber_z, 0.*deg, 180*deg);
+      G4Tubs* Al_chamber_tub
+      = new G4Tubs("Al_chamber_tub", Al_chamber_rmin, Al_chamber_rmax, Al_chamber_z, 0.*deg, 360*deg);
+      
+      G4LogicalVolume* Al_chamber_log = new G4LogicalVolume(Al_chamber_tub, Aluminium, "Al_chamber", 0, 0, 0);
+      
+      G4RotationMatrix* RotZ = new G4RotationMatrix();
+      RotZ->rotateZ(-90*deg);
+      
+      new G4PVPlacement(RotZ, G4ThreeVector(0.,0.,0.), Al_chamber_log, "Al_chamber", world_log, false, 0);
+      
+      
+      G4VisAttributes* VisAtt1 = new G4VisAttributes(G4Colour(0.2, 0.5, 0.8));
+      Al_rod_log->SetVisAttributes(VisAtt1);
+      G4VisAttributes* VisAtt2 = new G4VisAttributes(G4Colour(0., 0.5, 0.3));
+      Al_chamber_log->SetVisAttributes(VisAtt2);
+      
+      
+      //-------------------------------------------------------------------------
+      // add also My Magnetic field
+      //-------------------------------------------------------------------------
+      
+      
+      static G4bool fieldIsInitialized = false;
+      
+      if(!fieldIsInitialized)
+        {
+        MyMagneticField* myField = new MyMagneticField(G4ThreeVector(0.,0.,Bz));
+        
+        G4FieldManager* fieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
+        fieldMgr->SetDetectorField(myField);
+        
+        fieldMgr->CreateChordFinder(myField);
+        
+        fieldIsInitialized = true;
+        }
+      
+#endif      
+    }
+    
     ////////////////////////////////////////////
     //////////// Search for Target /////////////
     ////////////////////////////////////////////

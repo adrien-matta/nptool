@@ -118,7 +118,7 @@ void ANU::ReadConfiguration(string Path)
       }
       else 
       */
-      if (LineBuffer.compare(0, 16, "ANUDummyShape") == 0  &&  ANUDummyShape == false) {
+      if (LineBuffer.compare(0, 13, "ANUDummyShape") == 0  &&  ANUDummyShape == false) {
          ANUDummyShape = true;
 
          // instantiate a new "detector" corresponding to the Shape elements
