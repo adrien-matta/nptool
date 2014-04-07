@@ -28,6 +28,8 @@
 
 // G4 Geometry headers
 #include "G4Cons.hh"
+#include "G4UnionSolid.hh"
+#include "G4SubtractionSolid.hh"
 
 // G4 various headers
 #include "G4MaterialTable.hh"
@@ -183,15 +185,26 @@ void ANUDetDummyShape::ReadConfiguration(string Path)
 // Construct detector, called in [DetecorConstruction::AddDetector]
 void ANUDetDummyShape::ConstructDetector(G4LogicalVolume* world)
 {
+  
+  G4int NbrOfDetectors = m_Z.size();
 
   // Define Si
   G4double a = 28.0855 * g / mole;
   G4double density = 2.321 * g / cm3;
   G4Material* Si = new G4Material("Si", 14., a, density);
   
+  // Define Al
+  a = 26.9815 * g / mole;
+  density = 2.7 * g / cm3;
+  G4Material* Al = new G4Material("Al", 13., a, density);
+  
   G4RotationMatrix* rotate = new G4RotationMatrix(0.,0.,0.);
+  G4ThreeVector locate = G4ThreeVector(0.,0.,0.);
+  
+  G4Cons* ANUDetectorLogical[NbrOfDetectors];
+  G4UnionSolid* ANUCombinedLogical[NbrOfDetectors-1];
 
-  for (G4int i = 0; i < m_Z.size(); i++) {
+  for (G4int i = 0; i < NbrOfDetectors; i++) {
     G4double Z = m_Z[i];
     G4double T = m_T[i];
     // Make flush:
@@ -208,15 +221,30 @@ void ANUDetDummyShape::ConstructDetector(G4LogicalVolume* world)
     // Define volume
     G4String Name = "ANUDummyShape" + DetectorNumber ;
 
-    // Build logical volume
-    G4Cons* solidANUDummyShape = new G4Cons(Name, m_R1[i], m_R2[i], m_R1[i], m_R2[i], 0.5*T, P1, P2-P1);
-    G4LogicalVolume* logicANUDummyShape = new G4LogicalVolume(solidANUDummyShape, Si, Name, 0, 0, 0);
+    // Build logical volume (& combine them, to be used in building the absorber)
+    ANUDetectorLogical[i] = new G4Cons(Name, m_R1[i], m_R2[i], m_R1[i], m_R2[i], 0.5*T, P1, P2-P1);
+    if (i != 0) {
+      if (i == 1) 
+        ANUCombinedLogical[i-1] = new G4UnionSolid("CombinedDetector", ANUDetectorLogical[i-1], ANUDetectorLogical[i]);
+      else
+        ANUCombinedLogical[i-1] = new G4UnionSolid("CombinedDetector", ANUCombinedLogical[i-2], ANUDetectorLogical[i]);
+    }
+    G4LogicalVolume* logicANUDummyShape = new G4LogicalVolume(ANUDetectorLogical[i], Si, Name, 0, 0, 0);
     
     // Place volume
-    G4ThreeVector locate = G4ThreeVector(0.,0.,Z);
+    locate.setZ(Z);
     new G4PVPlacement(rotate, locate, logicANUDummyShape, Name, world, false, 0);
     logicANUDummyShape->SetVisAttributes(G4VisAttributes(G4Colour(1, 0., 0.0)));  // red
   }
+  
+  // Build the absorber (by subtracting the combined detector volume)
+  G4Cons* ANUAbsorber = new G4Cons("ANUAbsorber", 2.*mm, 40.*mm, 2.*mm, 40.*mm, 2.*mm, 0., 2.*M_PI*rad);
+  G4SubtractionSolid* ANUAbsorberSubtraction = new G4SubtractionSolid("ANUAbsorberSubtraction", ANUAbsorber, ANUCombinedLogical[NbrOfDetectors-2]);
+  G4LogicalVolume* ANUAbsorberLogic = new G4LogicalVolume(ANUAbsorberSubtraction, Al, "ANUAbsorber", 0, 0, 0);
+  locate.setZ(352*mm);
+  new G4PVPlacement(rotate, locate, ANUAbsorberLogic, "ANUAbsorber", world, false, 0);
+  
+
 }
 // --------------------
 

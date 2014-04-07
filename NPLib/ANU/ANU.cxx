@@ -871,9 +871,9 @@ TVector3 ANU::GetPositionOfInteraction()
    TVector3 Position = TVector3(-1000,-1000,-1000);
 
    if (m_EventPhysics->ModuleNumber.size() == 1) {
-      Position = TVector3(GetStripPositionX(m_EventPhysics->ModuleNumber[0], m_EventPhysics->FirstStage_X[0], m_EventPhysics->FirstStage_Y[0]),
-                          GetStripPositionY(m_EventPhysics->ModuleNumber[0], m_EventPhysics->FirstStage_X[0], m_EventPhysics->FirstStage_Y[0]),
-                          GetStripPositionZ(m_EventPhysics->ModuleNumber[0], m_EventPhysics->FirstStage_X[0], m_EventPhysics->FirstStage_Y[0])); 
+      Position = TVector3(GetStripPositionX(m_EventPhysics->ModuleNumber[0], m_EventPhysics->SiLi_X[0], m_EventPhysics->SiLi_Y[0]),
+                          GetStripPositionY(m_EventPhysics->ModuleNumber[0], m_EventPhysics->SiLi_X[0], m_EventPhysics->SiLi_Y[0]),
+                          GetStripPositionZ(m_EventPhysics->ModuleNumber[0], m_EventPhysics->SiLi_X[0], m_EventPhysics->SiLi_Y[0])); 
    }
 
    return(Position);
