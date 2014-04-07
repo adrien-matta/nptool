@@ -54,11 +54,11 @@ public:
    // Telescope
    vector<int>		ModuleNumber;
 
-   //	FirstStage
-   vector<double>	FirstStage_E;
-   vector<double>	FirstStage_T;
-   vector<int>		FirstStage_X;
-   vector<int>		FirstStage_Y;
+   //	SiLi
+   vector<double>	SiLi_E;
+   vector<double>	SiLi_T;
+   vector<int>		SiLi_X;
+   vector<int>		SiLi_Y;
 
 
    // Physical Value  

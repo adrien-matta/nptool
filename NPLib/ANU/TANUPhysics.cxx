@@ -62,19 +62,19 @@ void TANUPhysics::BuildPhysicalEvent(TANUData* Data)
    int index[dim] = {0, 100, 200, 1000};
 
    // Check
-   bool Check_FirstStage = false; if (Check_FirstStage) {};
+   bool Check_SiLi = false; if (Check_SiLi) {};
 
 
    // Thresholds
 /*
-   double FirstStage_Front_E_Threshold = 0; double FirstStage_Front_T_Threshold = 0;
-   double FirstStage_Back_E_Threshold  = 0; double FirstStage_Back_T_Threshold  = 0;
+   double SiLi_Front_E_Threshold = 0; double SiLi_Front_T_Threshold = 0;
+   double SiLi_Back_E_Threshold  = 0; double SiLi_Back_T_Threshold  = 0;
    double SecondStage_E_Threshold      = 0; double SecondStage_T_Threshold      = 0;
    double ThirdStage_E_Threshold       = 0; double ThirdStage_T_Threshold	= 0;
 */
    // calculate multipicity in the first stage
-   int multXE = Data->GetANUFirstStageEMult();
-   int multXT = Data->GetANUFirstStageTMult();
+   int multXE = Data->GetANUSiLiEMult();
+   int multXT = Data->GetANUSiLiTMult();
 
 
    //cout << multXE << " " <<multYE << " " <<multXT << " " <<multYT << endl;
@@ -82,9 +82,9 @@ void TANUPhysics::BuildPhysicalEvent(TANUData* Data)
    // Deal with multiplicity 1 for the first layer
    if (multXE==1 && multXT==1) {
       // calculate detector number
-      int det_ref = Data->GetANUFirstStageEDetectorNbr(0);
-      int detecXE = Data->GetANUFirstStageEDetectorNbr(0) / det_ref;
-      int detecXT = Data->GetANUFirstStageTDetectorNbr(0) / det_ref;
+      int det_ref = Data->GetANUSiLiEDetectorNbr(0);
+      int detecXE = Data->GetANUSiLiEDetectorNbr(0) / det_ref;
+      int detecXT = Data->GetANUSiLiTDetectorNbr(0) / det_ref;
       // convert detector number in order to it begins at 0
       // this is needed to access the strip position information
       // WARNING: this method may not work for an heteregneous detector 
@@ -105,27 +105,27 @@ void TANUPhysics::BuildPhysicalEvent(TANUData* Data)
          // store module number
          ModuleNumber.push_back(det_ref);
          // calculate strip number
-         int stripXE = Data->GetANUFirstStageEStripNbr(0);
-         int stripXT = Data->GetANUFirstStageTStripNbr(0);
+         //int stripXE = Data->GetANUSiLiEStripNbr(0);
+         //int stripXT = Data->GetANUSiLiTStripNbr(0);
 
          // case of same strips on X and Y
-         if (stripXE == stripXT ) {        // here we have a good strip event
+         //if (stripXE == stripXT ) {        // here we have a good strip event
             // various
-            Check_FirstStage = true;
+            Check_SiLi = true;
             EventMultiplicity = 1;
             // store strip ID
-            FirstStage_X.push_back(stripXE);
+            //SiLi_X.push_back(stripXE);
             // get energy from strips and store it
-            double EnergyStrip = Data->GetANUFirstStageEEnergy(0);
-            FirstStage_E.push_back(EnergyStrip);
+            double EnergyStrip = Data->GetANUSiLiEEnergy(0);
+            SiLi_E.push_back(EnergyStrip);
             double EnergyTot = EnergyStrip;
 	    //	    cout << "XXXXXXXXXXXXXXXXXXXXXXX" << endl;
 	    //	    cout << "EnergyTot=" << EnergyTot << endl;
 
 
             // get time from strips and store it
-            double TimeStrip = Data->GetANUFirstStageTTime(0);
-             FirstStage_T.push_back(TimeStrip);
+            double TimeStrip = Data->GetANUSiLiTTime(0);
+             SiLi_T.push_back(TimeStrip);
 	    double TimeTot = TimeStrip;
 	    //      cout << "TimeTot=" << TimeTot << endl;
 
@@ -133,10 +133,10 @@ void TANUPhysics::BuildPhysicalEvent(TANUData* Data)
             TotalEnergy.push_back(EnergyTot);
             // Fill time detection
             TotalTime.push_back(TimeTot);
-         }
-         else {
-            cout << "Not same strips" << endl;
-         }
+         //}
+         //else {
+         //   cout << "Not same strips" << endl;
+         //}
       }
       else {
          cout << "Not same detector" << endl;
@@ -162,9 +162,9 @@ void TANUPhysics::Clear()
    TotalTime.clear();
 
    // Si X
-   FirstStage_E.clear();
-   FirstStage_T.clear();
-   FirstStage_X.clear();
-   FirstStage_Y.clear();
+   SiLi_E.clear();
+   SiLi_T.clear();
+   SiLi_X.clear();
+   SiLi_Y.clear();
 
 }

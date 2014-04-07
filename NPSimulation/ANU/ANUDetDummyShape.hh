@@ -1,22 +1,22 @@
 /*****************************************************************************
- * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
+ * Copyright (C) 2009-2014   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Marc Labiche  contact   address: marc.labiche@stfc.ac.uk *
+ * Original Author: Marc Labiche    contact address: marc.labiche@stfc.ac.uk *
+ * Modified for ANU by: Lee Evitts  contact address: evitts@triumf.ca        *
  *                                                                           *
  * Creation Date  : 31/01/12                                                 *
- * Last update    :                                                          *
+ * Modified Date  : 07/04/14                                                 *
  *---------------------------------------------------------------------------*
- * Decription: Define a dummy module for the ANU detector                 *
- *             The goal of this class is to be a starting point to create a  *
- *             new shape to be added to the ANU detector.                 *
+ * Decription: Define a dummy module for the ANU detector                    *
+ *             Taken from the HELIOS detector and modified
  *                                                                           *
  *---------------------------------------------------------------------------*
- * Comment:                                                                  *
+ * Comment: 
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
@@ -45,36 +45,7 @@ public:
    virtual ~ANUDetDummyShape();
 
    ////////////////////////////////////////////////////
-   //////// Specific Function of this Class ///////////
-   ////////////////////////////////////////////////////
-public:
-   // By Position Method
-   void AddModule(G4ThreeVector TL           ,
-                  G4ThreeVector BL           ,
-                  G4ThreeVector BR           ,
-                  G4ThreeVector CT           ,
-                  bool          wFirstStage  );
-
-   // By Angle Method
-   void AddModule(G4double R            ,
-                  G4double Theta        ,
-                  G4double Phi          ,
-                  G4double beta_u       ,
-                  G4double beta_v       ,
-                  G4double beta_w       ,
-                  bool     wFirstStage  );
-
-   // Effectively construct Volume
-   // Avoid to have two time same code for Angle and Point definition
-   void VolumeMaker(G4int TelescopeNumber          ,
-                    G4ThreeVector     MMpos        ,
-                    G4RotationMatrix* MMrot        ,
-                    bool              wFirstStage  ,
-                    G4LogicalVolume*  world);
-
-
-   ////////////////////////////////////////////////////
-   ////  Inherite from ANUModule class /////
+   ////  Inherit from ANUModule class /////
    ////////////////////////////////////////////////////
 public:
    // Read stream at Configfile to pick-up parameters of detector (Position,...)
@@ -103,40 +74,31 @@ public:
    TInteractionCoordinates* GetInterCoordPointer()	{return ms_InterCoord;};
 
 
-   ////////////////////////////////////////////////////
-   ///////////////Private intern Data//////////////////
-   ////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////
+  ///////////////Private intern Data//////////////////
+  ////////////////////////////////////////////////////
 private:
-   // Interaction Coordinates coming from VDetector through the 
-   // SetInteractionCoordinatesPointer method
-   TInteractionCoordinates* ms_InterCoord;
+  // Interaction Coordinates coming from VDetector through the 
+  // SetInteractionCoordinatesPointer method
+  TInteractionCoordinates* ms_InterCoord;
 
-   // True if Define by Position, False is Define by angle
-   vector<bool>   m_DefinitionType  ;
+  // Arrays used to describe position/size of detector element
+  vector<G4double>  m_Z  ; 
+  vector<G4double>  m_T  ; 
+  vector<G4double>  m_R1 ; 
+  vector<G4double>  m_R2 ; 
+  vector<G4double>  m_P1 ; 
+  vector<G4double>  m_P2 ; 
 
-   // Used for "By Point Definition"
-   vector<G4ThreeVector>   m_X1_Y1     ; // Top Left Corner Position Vector
-   vector<G4ThreeVector>   m_X1_Y128   ; // Bottom Left Corner Position Vector
-   vector<G4ThreeVector>   m_X128_Y1   ; // Bottom Right Corner Position Vector
-   vector<G4ThreeVector>   m_X128_Y128 ; // Center Corner Position Vector
-
-   // Used for "By Angle Definition"
-   vector<G4double>  m_R      ; //  |
-   vector<G4double>  m_Theta  ; //  > Spherical coordinate of Strips Silicium Plate
-   vector<G4double>  m_Phi    ; //  |
-
-   vector<G4double>  m_beta_u ; //  |
-   vector<G4double>  m_beta_v ; //  > Tilt angle of the Telescope
-   vector<G4double>  m_beta_w ; //  |
 };
 
 
 
 namespace ANUDUMMYSHAPE
 {
+  // TODO: Check all these, what they do etc..
    // Resolution
-
-  const G4double ResoFirstStage  = 0.0085;	// = 20 keV of Resolution   //   Unit is MeV/2.35
+  const G4double ResoSiLi  = 0.0085;	// = 20 keV of Resolution   //   Unit is MeV/2.35
   const G4double ResoTimeGpd     = 0.4255; // = 1ns        // 0.212765957;// = 500ps                 //   Unit is  ns/2.35
   const G4double ResoPosZ     = 0.4255;// = 1mm  for ANU               //   Unit is  mm/2.35
 
@@ -147,24 +109,17 @@ namespace ANUDUMMYSHAPE
    const G4double FaceBackLength          = 5.6*cm;
    const G4double Thickness             = 0.1*cm;  // ie: thickness 1 mm
    const G4double InterStageDistance = 5*mm;
-   // for testing the excitation energy reconstruction
-//   const G4double Length             = 4*cm;
-//   const G4double InterStageDistance = 15*mm;
-
+   
    // First stage
-   const G4double FirstStageFaceWidth       = 0.9*cm;
-   const G4double FirstStageFaceLength      = 5.05*cm;
-   const G4double FirstStageThickness  = 700*micrometer;
-//   const G4double FirstStageThickness  = 2*mm;
+   const G4double SiLiFaceWidth       = 0.9*cm;
+   const G4double SiLiFaceLength      = 5.05*cm;
+   const G4double SiLiThickness  = 700*micrometer;
+//   const G4double SiLiThickness  = 2*mm;
 //   for testing the excitation energy reconstruction
-//   const G4double FirstStageThickness  = 1.3*cm;
+//   const G4double SiLiThickness  = 1.3*cm;
   const G4int NumberOfStrips	       = 1; // PSD resistive strip
-  //const G4int NumberOfStrips	       = 500; // 100 um strip pitch
 
 
-   // Starting at the front of the first stage and going to the third stage 
-   //const G4double FirstStage_PosZ  = Thickness* -0.5 + 0.5*FirstStageThickness;
-   const G4double FirstStage_PosZ  = 0.;
 }
 
 #endif

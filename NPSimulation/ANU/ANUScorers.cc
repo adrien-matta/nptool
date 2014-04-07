@@ -44,18 +44,18 @@ using namespace ANUDUMMYSHAPE;
 // not use those scorer with some G4 provided ones or being very carefull doing so.
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// FirstStage Energy Scorer (deal with multiple particle hit)
-ANUScorerFirstStageEnergy::ANUScorerFirstStageEnergy(G4String name, G4String volumeName, G4int depth)
+// SiLi Energy Scorer (deal with multiple particle hit)
+ANUScorerSiLiEnergy::ANUScorerSiLiEnergy(G4String name, G4String volumeName, G4int depth)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
    m_VolumeName = volumeName;
 }
 
-ANUScorerFirstStageEnergy::~ANUScorerFirstStageEnergy()
+ANUScorerSiLiEnergy::~ANUScorerSiLiEnergy()
 {
 }
 
-G4bool ANUScorerFirstStageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+G4bool ANUScorerSiLiEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
    int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
@@ -72,7 +72,7 @@ G4bool ANUScorerFirstStageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*
    return TRUE;
 }
 
-void ANUScorerFirstStageEnergy::Initialize(G4HCofThisEvent* HCE)
+void ANUScorerSiLiEnergy::Initialize(G4HCofThisEvent* HCE)
 {
    EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
@@ -81,20 +81,20 @@ void ANUScorerFirstStageEnergy::Initialize(G4HCofThisEvent* HCE)
    HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
 }
 
-void ANUScorerFirstStageEnergy::EndOfEvent(G4HCofThisEvent*)
+void ANUScorerSiLiEnergy::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void ANUScorerFirstStageEnergy::Clear()
+void ANUScorerSiLiEnergy::Clear()
 {
    EvtMap->clear();
 }
 
-void ANUScorerFirstStageEnergy::DrawAll()
+void ANUScorerSiLiEnergy::DrawAll()
 {
 }
 
-void ANUScorerFirstStageEnergy::PrintAll()
+void ANUScorerSiLiEnergy::PrintAll()
 {
    G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl;
    G4cout << " PrimitiveScorer " << GetName() << G4endl;
@@ -110,18 +110,18 @@ void ANUScorerFirstStageEnergy::PrintAll()
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// FirstStage Front Strip position Scorer for DummyShape geometry
-ANUScorerFirstStageFrontStripDummyShape::ANUScorerFirstStageFrontStripDummyShape(G4String name, G4int depth, G4int NumberOfStrip)
+// SiLi Front Strip position Scorer for DummyShape geometry
+ANUScorerSiLiFrontStripDummyShape::ANUScorerSiLiFrontStripDummyShape(G4String name, G4int depth, G4int NumberOfStrip)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
    m_NumberOfStrip    = NumberOfStrip  ;
 }
 
-ANUScorerFirstStageFrontStripDummyShape::~ANUScorerFirstStageFrontStripDummyShape()
+ANUScorerSiLiFrontStripDummyShape::~ANUScorerSiLiFrontStripDummyShape()
 {
 }
 
-G4bool ANUScorerFirstStageFrontStripDummyShape::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+G4bool ANUScorerSiLiFrontStripDummyShape::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
    int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "ANUDummyShape");
@@ -130,9 +130,9 @@ G4bool ANUScorerFirstStageFrontStripDummyShape::ProcessHits(G4Step* aStep, G4Tou
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
-   G4double StripPitch = ANUDUMMYSHAPE::FirstStageFaceWidth / m_NumberOfStrip;  // longitudinal strip
+   G4double StripPitch = ANUDUMMYSHAPE::SiLiFaceWidth / m_NumberOfStrip;  // longitudinal strip
 
-   G4double temp = (POS(0) + ANUDUMMYSHAPE::FirstStageFaceWidth / 2.) / StripPitch   ;
+   G4double temp = (POS(0) + ANUDUMMYSHAPE::SiLiFaceWidth / 2.) / StripPitch   ;
    G4double X = int(temp) + 1 ;
 
    //Rare case where particle is close to edge of silicon plan
@@ -145,7 +145,7 @@ G4bool ANUScorerFirstStageFrontStripDummyShape::ProcessHits(G4Step* aStep, G4Tou
    return TRUE;
 }
 
-void ANUScorerFirstStageFrontStripDummyShape::Initialize(G4HCofThisEvent* HCE)
+void ANUScorerSiLiFrontStripDummyShape::Initialize(G4HCofThisEvent* HCE)
 {
    EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
@@ -154,20 +154,20 @@ void ANUScorerFirstStageFrontStripDummyShape::Initialize(G4HCofThisEvent* HCE)
    HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
 }
 
-void ANUScorerFirstStageFrontStripDummyShape::EndOfEvent(G4HCofThisEvent*)
+void ANUScorerSiLiFrontStripDummyShape::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void ANUScorerFirstStageFrontStripDummyShape::Clear()
+void ANUScorerSiLiFrontStripDummyShape::Clear()
 {
    EvtMap->clear();
 }
 
-void ANUScorerFirstStageFrontStripDummyShape::DrawAll()
+void ANUScorerSiLiFrontStripDummyShape::DrawAll()
 {
 }
 
-void ANUScorerFirstStageFrontStripDummyShape::PrintAll()
+void ANUScorerSiLiFrontStripDummyShape::PrintAll()
 {
    G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl ;
    G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
@@ -177,18 +177,18 @@ void ANUScorerFirstStageFrontStripDummyShape::PrintAll()
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// FirstStage Back Strip position Scorer for DummyShape geometry
-ANUScorerFirstStageBackStripDummyShape::ANUScorerFirstStageBackStripDummyShape(G4String name, G4int depth, G4int NumberOfStrip)
+// SiLi Back Strip position Scorer for DummyShape geometry
+ANUScorerSiLiBackStripDummyShape::ANUScorerSiLiBackStripDummyShape(G4String name, G4int depth, G4int NumberOfStrip)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
    m_NumberOfStrip    = NumberOfStrip  ;
 }
 
-ANUScorerFirstStageBackStripDummyShape::~ANUScorerFirstStageBackStripDummyShape()
+ANUScorerSiLiBackStripDummyShape::~ANUScorerSiLiBackStripDummyShape()
 {
 }
 
-G4bool ANUScorerFirstStageBackStripDummyShape::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+G4bool ANUScorerSiLiBackStripDummyShape::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
    int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "ANUDummyShape");
@@ -197,9 +197,9 @@ G4bool ANUScorerFirstStageBackStripDummyShape::ProcessHits(G4Step* aStep, G4Touc
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
-   G4double StripPitch = ANUDUMMYSHAPE::FirstStageFaceLength / m_NumberOfStrip;    // transversal strip
+   G4double StripPitch = ANUDUMMYSHAPE::SiLiFaceLength / m_NumberOfStrip;    // transversal strip
 
-   G4double temp = (POS(1) + ANUDUMMYSHAPE::FirstStageFaceLength / 2.) / StripPitch   ;
+   G4double temp = (POS(1) + ANUDUMMYSHAPE::SiLiFaceLength / 2.) / StripPitch   ;
    G4double X = int(temp) + 1 ;
    //Rare case where particle is close to edge of silicon plan
    if (X == m_NumberOfStrip+1) X = m_NumberOfStrip;
@@ -211,7 +211,7 @@ G4bool ANUScorerFirstStageBackStripDummyShape::ProcessHits(G4Step* aStep, G4Touc
    return TRUE;
 }
 
-void ANUScorerFirstStageBackStripDummyShape::Initialize(G4HCofThisEvent* HCE)
+void ANUScorerSiLiBackStripDummyShape::Initialize(G4HCofThisEvent* HCE)
 {
    EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
@@ -220,21 +220,21 @@ void ANUScorerFirstStageBackStripDummyShape::Initialize(G4HCofThisEvent* HCE)
    HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
 }
 
-void ANUScorerFirstStageBackStripDummyShape::EndOfEvent(G4HCofThisEvent*)
+void ANUScorerSiLiBackStripDummyShape::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void ANUScorerFirstStageBackStripDummyShape::Clear()   
+void ANUScorerSiLiBackStripDummyShape::Clear()   
 
 {
    EvtMap->clear();
 }
 
-void ANUScorerFirstStageBackStripDummyShape::DrawAll()
+void ANUScorerSiLiBackStripDummyShape::DrawAll()
 {
 }
 
-void ANUScorerFirstStageBackStripDummyShape::PrintAll()
+void ANUScorerSiLiBackStripDummyShape::PrintAll()
 {
    G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl ;
    G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
@@ -244,18 +244,18 @@ void ANUScorerFirstStageBackStripDummyShape::PrintAll()
 
 /*
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// FirstStage Front Strip position Scorer for Square geometry
-ANUScorerFirstStageFrontStripSquare::ANUScorerFirstStageFrontStripSquare(G4String name, G4int depth, G4int NumberOfStrip)
+// SiLi Front Strip position Scorer for Square geometry
+ANUScorerSiLiFrontStripSquare::ANUScorerSiLiFrontStripSquare(G4String name, G4int depth, G4int NumberOfStrip)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
    m_NumberOfStrip    = NumberOfStrip  ;
 }
 
-ANUScorerFirstStageFrontStripSquare::~ANUScorerFirstStageFrontStripSquare()
+ANUScorerSiLiFrontStripSquare::~ANUScorerSiLiFrontStripSquare()
 {
 }
 
-G4bool ANUScorerFirstStageFrontStripSquare::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+G4bool ANUScorerSiLiFrontStripSquare::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
    int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "ANUSquare");
@@ -278,7 +278,7 @@ G4bool ANUScorerFirstStageFrontStripSquare::ProcessHits(G4Step* aStep, G4Touchab
    return TRUE;
 }
 
-void ANUScorerFirstStageFrontStripSquare::Initialize(G4HCofThisEvent* HCE)
+void ANUScorerSiLiFrontStripSquare::Initialize(G4HCofThisEvent* HCE)
 {
    EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
@@ -287,20 +287,20 @@ void ANUScorerFirstStageFrontStripSquare::Initialize(G4HCofThisEvent* HCE)
    HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
 }
 
-void ANUScorerFirstStageFrontStripSquare::EndOfEvent(G4HCofThisEvent*)
+void ANUScorerSiLiFrontStripSquare::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void ANUScorerFirstStageFrontStripSquare::Clear()
+void ANUScorerSiLiFrontStripSquare::Clear()
 {
    EvtMap->clear();
 }
 
-void ANUScorerFirstStageFrontStripSquare::DrawAll()
+void ANUScorerSiLiFrontStripSquare::DrawAll()
 {
 }
 
-void ANUScorerFirstStageFrontStripSquare::PrintAll()
+void ANUScorerSiLiFrontStripSquare::PrintAll()
 {
    G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl ;
    G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
@@ -309,18 +309,18 @@ void ANUScorerFirstStageFrontStripSquare::PrintAll()
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// FirstStage Back Strip position Scorer for Square geometry
-ANUScorerFirstStageBackStripSquare::ANUScorerFirstStageBackStripSquare(G4String name, G4int depth, G4int NumberOfStrip)
+// SiLi Back Strip position Scorer for Square geometry
+ANUScorerSiLiBackStripSquare::ANUScorerSiLiBackStripSquare(G4String name, G4int depth, G4int NumberOfStrip)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
    m_NumberOfStrip    = NumberOfStrip  ;
 }
 
-ANUScorerFirstStageBackStripSquare::~ANUScorerFirstStageBackStripSquare()
+ANUScorerSiLiBackStripSquare::~ANUScorerSiLiBackStripSquare()
 {
 }
 
-G4bool ANUScorerFirstStageBackStripSquare::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+G4bool ANUScorerSiLiBackStripSquare::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
    int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "ANUSquare");
@@ -345,7 +345,7 @@ G4bool ANUScorerFirstStageBackStripSquare::ProcessHits(G4Step* aStep, G4Touchabl
    return TRUE;
 }
 
-void ANUScorerFirstStageBackStripSquare::Initialize(G4HCofThisEvent* HCE)
+void ANUScorerSiLiBackStripSquare::Initialize(G4HCofThisEvent* HCE)
 {
    EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
@@ -354,20 +354,20 @@ void ANUScorerFirstStageBackStripSquare::Initialize(G4HCofThisEvent* HCE)
    HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
 }
 
-void ANUScorerFirstStageBackStripSquare::EndOfEvent(G4HCofThisEvent*)
+void ANUScorerSiLiBackStripSquare::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void ANUScorerFirstStageBackStripSquare::Clear()
+void ANUScorerSiLiBackStripSquare::Clear()
 {
    EvtMap->clear();
 }
 
-void ANUScorerFirstStageBackStripSquare::DrawAll()
+void ANUScorerSiLiBackStripSquare::DrawAll()
 {
 }
 
-void ANUScorerFirstStageBackStripSquare::PrintAll()
+void ANUScorerSiLiBackStripSquare::PrintAll()
 {
    G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl ;
    G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
@@ -376,18 +376,18 @@ void ANUScorerFirstStageBackStripSquare::PrintAll()
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// FirstStage Front Strip position Scorer for Trapezoid geometry
-ANUScorerFirstStageFrontStripTrapezoid::ANUScorerFirstStageFrontStripTrapezoid(G4String name, G4int depth, G4int NumberOfStrip)
+// SiLi Front Strip position Scorer for Trapezoid geometry
+ANUScorerSiLiFrontStripTrapezoid::ANUScorerSiLiFrontStripTrapezoid(G4String name, G4int depth, G4int NumberOfStrip)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
    m_NumberOfStrip = NumberOfStrip;
 }
 
-ANUScorerFirstStageFrontStripTrapezoid::~ANUScorerFirstStageFrontStripTrapezoid()
+ANUScorerSiLiFrontStripTrapezoid::~ANUScorerSiLiFrontStripTrapezoid()
 {
 }
 
-G4bool ANUScorerFirstStageFrontStripTrapezoid::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+G4bool ANUScorerSiLiFrontStripTrapezoid::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
    int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "ANUTrapezoid");
@@ -396,9 +396,9 @@ G4bool ANUScorerFirstStageFrontStripTrapezoid::ProcessHits(G4Step* aStep, G4Touc
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
-   G4double StripPitch = ANUTRAP::FirstStageBaseLarge / m_NumberOfStrip;
+   G4double StripPitch = ANUTRAP::SiLiBaseLarge / m_NumberOfStrip;
 
-   G4double temp = (POS(0) + ANUTRAP::FirstStageBaseLarge / 2.) / StripPitch   ;
+   G4double temp = (POS(0) + ANUTRAP::SiLiBaseLarge / 2.) / StripPitch   ;
    G4double X = int(temp) + 1 ;
    //Rare case where particle is close to edge of silicon plan
    if (X == 129) X = 128;
@@ -410,7 +410,7 @@ G4bool ANUScorerFirstStageFrontStripTrapezoid::ProcessHits(G4Step* aStep, G4Touc
    return TRUE;
 }
 
-void ANUScorerFirstStageFrontStripTrapezoid::Initialize(G4HCofThisEvent* HCE)
+void ANUScorerSiLiFrontStripTrapezoid::Initialize(G4HCofThisEvent* HCE)
 {
    EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
@@ -419,20 +419,20 @@ void ANUScorerFirstStageFrontStripTrapezoid::Initialize(G4HCofThisEvent* HCE)
    HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
 }
 
-void ANUScorerFirstStageFrontStripTrapezoid::EndOfEvent(G4HCofThisEvent*)
+void ANUScorerSiLiFrontStripTrapezoid::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void ANUScorerFirstStageFrontStripTrapezoid::Clear()
+void ANUScorerSiLiFrontStripTrapezoid::Clear()
 {
    EvtMap->clear();
 }
 
-void ANUScorerFirstStageFrontStripTrapezoid::DrawAll()
+void ANUScorerSiLiFrontStripTrapezoid::DrawAll()
 {
 }
 
-void ANUScorerFirstStageFrontStripTrapezoid::PrintAll()
+void ANUScorerSiLiFrontStripTrapezoid::PrintAll()
 {
    G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl ;
    G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
@@ -441,18 +441,18 @@ void ANUScorerFirstStageFrontStripTrapezoid::PrintAll()
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// FirstStage Back Strip position Scorer for Trapezoid geometry
-ANUScorerFirstStageBackStripTrapezoid::ANUScorerFirstStageBackStripTrapezoid(G4String name, G4int depth, G4int NumberOfStrip)
+// SiLi Back Strip position Scorer for Trapezoid geometry
+ANUScorerSiLiBackStripTrapezoid::ANUScorerSiLiBackStripTrapezoid(G4String name, G4int depth, G4int NumberOfStrip)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
    m_NumberOfStrip = NumberOfStrip;
 }
 
-ANUScorerFirstStageBackStripTrapezoid::~ANUScorerFirstStageBackStripTrapezoid()
+ANUScorerSiLiBackStripTrapezoid::~ANUScorerSiLiBackStripTrapezoid()
 {
 }
 
-G4bool ANUScorerFirstStageBackStripTrapezoid::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+G4bool ANUScorerSiLiBackStripTrapezoid::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
    int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "ANUTrapezoid");
@@ -461,9 +461,9 @@ G4bool ANUScorerFirstStageBackStripTrapezoid::ProcessHits(G4Step* aStep, G4Touch
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
 
-   G4double StripPitch = ANUTRAP::FirstStageHeight / m_NumberOfStrip;
+   G4double StripPitch = ANUTRAP::SiLiHeight / m_NumberOfStrip;
 
-   G4double temp = (POS(1) + ANUTRAP::FirstStageHeight / 2.) / StripPitch   ;
+   G4double temp = (POS(1) + ANUTRAP::SiLiHeight / 2.) / StripPitch   ;
    G4int temp2 = temp ;
    G4double Y = temp2 + 1                    ;
    //Rare case where particle is close to edge of silicon plan
@@ -477,7 +477,7 @@ G4bool ANUScorerFirstStageBackStripTrapezoid::ProcessHits(G4Step* aStep, G4Touch
    return TRUE;
 }
 
-void ANUScorerFirstStageBackStripTrapezoid::Initialize(G4HCofThisEvent* HCE)
+void ANUScorerSiLiBackStripTrapezoid::Initialize(G4HCofThisEvent* HCE)
 {
    EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
@@ -486,20 +486,20 @@ void ANUScorerFirstStageBackStripTrapezoid::Initialize(G4HCofThisEvent* HCE)
    HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
 }
 
-void ANUScorerFirstStageBackStripTrapezoid::EndOfEvent(G4HCofThisEvent*)
+void ANUScorerSiLiBackStripTrapezoid::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void ANUScorerFirstStageBackStripTrapezoid::Clear()
+void ANUScorerSiLiBackStripTrapezoid::Clear()
 {
    EvtMap->clear();
 }
 
-void ANUScorerFirstStageBackStripTrapezoid::DrawAll()
+void ANUScorerSiLiBackStripTrapezoid::DrawAll()
 {
 }
 
-void ANUScorerFirstStageBackStripTrapezoid::PrintAll()
+void ANUScorerSiLiBackStripTrapezoid::PrintAll()
 {
    G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl ;
    G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
@@ -508,19 +508,19 @@ void ANUScorerFirstStageBackStripTrapezoid::PrintAll()
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// FirstStage Front Strip position Scorer for Annular geometry
-ANUScorerFirstStageFrontStripAnnular::ANUScorerFirstStageFrontStripAnnular(G4String name, G4int depth, G4double StripPlaneSize, G4int NumberOfStrip)
+// SiLi Front Strip position Scorer for Annular geometry
+ANUScorerSiLiFrontStripAnnular::ANUScorerSiLiFrontStripAnnular(G4String name, G4int depth, G4double StripPlaneSize, G4int NumberOfStrip)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
    m_StripPlaneSize =   StripPlaneSize ;
    m_NumberOfStrip    = NumberOfStrip  ;
 }
 
-ANUScorerFirstStageFrontStripAnnular::~ANUScorerFirstStageFrontStripAnnular()
+ANUScorerSiLiFrontStripAnnular::~ANUScorerSiLiFrontStripAnnular()
 {
 }
 
-G4bool ANUScorerFirstStageFrontStripAnnular::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+G4bool ANUScorerSiLiFrontStripAnnular::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
    int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "ANUAnnular");
@@ -543,7 +543,7 @@ G4bool ANUScorerFirstStageFrontStripAnnular::ProcessHits(G4Step* aStep, G4Toucha
    return TRUE;
 }
 
-void ANUScorerFirstStageFrontStripAnnular::Initialize(G4HCofThisEvent* HCE)
+void ANUScorerSiLiFrontStripAnnular::Initialize(G4HCofThisEvent* HCE)
 {
    EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
@@ -552,20 +552,20 @@ void ANUScorerFirstStageFrontStripAnnular::Initialize(G4HCofThisEvent* HCE)
    HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
 }
 
-void ANUScorerFirstStageFrontStripAnnular::EndOfEvent(G4HCofThisEvent*)
+void ANUScorerSiLiFrontStripAnnular::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void ANUScorerFirstStageFrontStripAnnular::Clear()
+void ANUScorerSiLiFrontStripAnnular::Clear()
 {
    EvtMap->clear();
 }
 
-void ANUScorerFirstStageFrontStripAnnular::DrawAll()
+void ANUScorerSiLiFrontStripAnnular::DrawAll()
 {
 }
 
-void ANUScorerFirstStageFrontStripAnnular::PrintAll()
+void ANUScorerSiLiFrontStripAnnular::PrintAll()
 {
    G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl ;
    G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
@@ -574,19 +574,19 @@ void ANUScorerFirstStageFrontStripAnnular::PrintAll()
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// FirstStage Back Strip position Scorer for Annular geometry
-ANUScorerFirstStageBackStripAnnular::ANUScorerFirstStageBackStripAnnular(G4String name, G4int depth, G4double StripPlaneSize, G4int NumberOfStrip)
+// SiLi Back Strip position Scorer for Annular geometry
+ANUScorerSiLiBackStripAnnular::ANUScorerSiLiBackStripAnnular(G4String name, G4int depth, G4double StripPlaneSize, G4int NumberOfStrip)
       : G4VPrimitiveScorer(name, depth), HCID(-1)
 {
    m_StripPlaneSize =   StripPlaneSize ;
    m_NumberOfStrip    = NumberOfStrip  ;
 }
 
-ANUScorerFirstStageBackStripAnnular::~ANUScorerFirstStageBackStripAnnular()
+ANUScorerSiLiBackStripAnnular::~ANUScorerSiLiBackStripAnnular()
 {
 }
 
-G4bool ANUScorerFirstStageBackStripAnnular::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+G4bool ANUScorerSiLiBackStripAnnular::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
    int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "ANUAnnular");
@@ -611,7 +611,7 @@ G4bool ANUScorerFirstStageBackStripAnnular::ProcessHits(G4Step* aStep, G4Touchab
    return TRUE;
 }
 
-void ANUScorerFirstStageBackStripAnnular::Initialize(G4HCofThisEvent* HCE)
+void ANUScorerSiLiBackStripAnnular::Initialize(G4HCofThisEvent* HCE)
 {
    EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
@@ -620,20 +620,20 @@ void ANUScorerFirstStageBackStripAnnular::Initialize(G4HCofThisEvent* HCE)
    HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
 }
 
-void ANUScorerFirstStageBackStripAnnular::EndOfEvent(G4HCofThisEvent*)
+void ANUScorerSiLiBackStripAnnular::EndOfEvent(G4HCofThisEvent*)
 {
 }
 
-void ANUScorerFirstStageBackStripAnnular::Clear()
+void ANUScorerSiLiBackStripAnnular::Clear()
 {
    EvtMap->clear();
 }
 
-void ANUScorerFirstStageBackStripAnnular::DrawAll()
+void ANUScorerSiLiBackStripAnnular::DrawAll()
 {
 }
 
-void ANUcorerFirstStageBackStripAnnular::PrintAll()
+void ANUcorerSiLiBackStripAnnular::PrintAll()
 {
    G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl ;
    G4cout << " PrimitiveScorer " << GetName() << G4endl               ;

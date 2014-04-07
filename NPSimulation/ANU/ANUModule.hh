@@ -85,7 +85,7 @@ protected:
 
 protected:
    // First stage Associate Scorer
-   G4MultiFunctionalDetector* m_FirstStageScorer;
+   G4MultiFunctionalDetector* m_SiLiScorer;
 
 
 protected:

@@ -28,11 +28,11 @@
 namespace ANUSCORERS
 {
 
-class ANUScorerFirstStageEnergy : public G4VPrimitiveScorer
+class ANUScorerSiLiEnergy : public G4VPrimitiveScorer
 {
 public: // with description
-   ANUScorerFirstStageEnergy(G4String name, G4String volumeName, G4int depth = 0);
-   virtual ~ANUScorerFirstStageEnergy();
+   ANUScorerSiLiEnergy(G4String name, G4String volumeName, G4int depth = 0);
+   virtual ~ANUScorerSiLiEnergy();
 
 protected: // with description
    virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
@@ -51,11 +51,11 @@ private:
 };
 
 
-class ANUScorerFirstStageFrontStripDummyShape : public G4VPrimitiveScorer
+class ANUScorerSiLiFrontStripDummyShape : public G4VPrimitiveScorer
 {
 public: // with description
-   ANUScorerFirstStageFrontStripDummyShape(G4String name, G4int depth = 0, G4int NumberOfStrip = 128);
-   virtual ~ANUScorerFirstStageFrontStripDummyShape();
+   ANUScorerSiLiFrontStripDummyShape(G4String name, G4int depth = 0, G4int NumberOfStrip = 128);
+   virtual ~ANUScorerSiLiFrontStripDummyShape();
 
 protected: // with description
    virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
@@ -75,11 +75,11 @@ private:
 
 
 
-class ANUScorerFirstStageBackStripDummyShape : public G4VPrimitiveScorer
+class ANUScorerSiLiBackStripDummyShape : public G4VPrimitiveScorer
 {
 public: // with description
-   ANUScorerFirstStageBackStripDummyShape(G4String name, G4int depth = 0, G4int NumberOfStrip = 128);
-   virtual ~ANUScorerFirstStageBackStripDummyShape();
+   ANUScorerSiLiBackStripDummyShape(G4String name, G4int depth = 0, G4int NumberOfStrip = 128);
+   virtual ~ANUScorerSiLiBackStripDummyShape();
 
 protected: // with description
    virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
@@ -99,11 +99,11 @@ private:
 
 
 
-class ANUScorerFirstStageFrontStripSquare : public G4VPrimitiveScorer
+class ANUScorerSiLiFrontStripSquare : public G4VPrimitiveScorer
 {
 public: // with description
-   ANUScorerFirstStageFrontStripSquare(G4String name, G4int depth = 0, G4int NumberOfStrip = 128);
-   virtual ~ANUScorerFirstStageFrontStripSquare();
+   ANUScorerSiLiFrontStripSquare(G4String name, G4int depth = 0, G4int NumberOfStrip = 128);
+   virtual ~ANUScorerSiLiFrontStripSquare();
 
 protected: // with description
    virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
@@ -123,11 +123,11 @@ private:
 
 
 
-class ANUScorerFirstStageBackStripSquare : public G4VPrimitiveScorer
+class ANUScorerSiLiBackStripSquare : public G4VPrimitiveScorer
 {
 public: // with description
-   ANUScorerFirstStageBackStripSquare(G4String name, G4int depth = 0, G4int NumberOfStrip = 128);
-   virtual ~ANUScorerFirstStageBackStripSquare();
+   ANUScorerSiLiBackStripSquare(G4String name, G4int depth = 0, G4int NumberOfStrip = 128);
+   virtual ~ANUScorerSiLiBackStripSquare();
 
 protected: // with description
    virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
@@ -147,11 +147,11 @@ private:
 
 
 
-class ANUScorerFirstStageFrontStripTrapezoid : public G4VPrimitiveScorer
+class ANUScorerSiLiFrontStripTrapezoid : public G4VPrimitiveScorer
 {
 public: // with description
-   ANUScorerFirstStageFrontStripTrapezoid(G4String name, G4int depth = 0, G4int NumberOfStrip = 128);
-   virtual ~ANUScorerFirstStageFrontStripTrapezoid();
+   ANUScorerSiLiFrontStripTrapezoid(G4String name, G4int depth = 0, G4int NumberOfStrip = 128);
+   virtual ~ANUScorerSiLiFrontStripTrapezoid();
 
 protected: // with description
    virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
@@ -171,11 +171,11 @@ private:
 
 
 
-class ANUScorerFirstStageBackStripTrapezoid : public G4VPrimitiveScorer
+class ANUScorerSiLiBackStripTrapezoid : public G4VPrimitiveScorer
 {
 public: // with description
-   ANUScorerFirstStageBackStripTrapezoid(G4String name, G4int depth = 0, G4int NumberOfStrip = 128);
-   virtual ~ANUScorerFirstStageBackStripTrapezoid();
+   ANUScorerSiLiBackStripTrapezoid(G4String name, G4int depth = 0, G4int NumberOfStrip = 128);
+   virtual ~ANUScorerSiLiBackStripTrapezoid();
 
 protected: // with description
    virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
@@ -195,11 +195,11 @@ private:
 
 
 
-class ANUScorerFirstStageFrontStripAnnular : public G4VPrimitiveScorer
+class ANUScorerSiLiFrontStripAnnular : public G4VPrimitiveScorer
 {
 public: // with description
-   ANUScorerFirstStageFrontStripAnnular(G4String name, G4int depth = 0, G4double StripPlaneSize = 98, G4int NumberOfStrip = 128);
-   virtual ~ANUScorerFirstStageFrontStripAnnular();
+   ANUScorerSiLiFrontStripAnnular(G4String name, G4int depth = 0, G4double StripPlaneSize = 98, G4int NumberOfStrip = 128);
+   virtual ~ANUScorerSiLiFrontStripAnnular();
 
 protected: // with description
    virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
@@ -220,11 +220,11 @@ private:
 
 
 
-class ANUScorerFirstStageBackStripAnnular : public G4VPrimitiveScorer
+class ANUScorerSiLiBackStripAnnular : public G4VPrimitiveScorer
 {
 public: // with description
-   ANUScorerFirstStageBackStripAnnular(G4String name, G4int depth = 0, G4double StripPlaneSize = 98, G4int NumberOfStrip = 128);
-   virtual ~ANUScorerFirstStageBackStripAnnular();
+   ANUScorerSiLiBackStripAnnular(G4String name, G4int depth = 0, G4double StripPlaneSize = 98, G4int NumberOfStrip = 128);
+   virtual ~ANUScorerSiLiBackStripAnnular();
 
 protected: // with description
    virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
