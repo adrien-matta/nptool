@@ -87,8 +87,8 @@ private:
   vector<G4double>  m_T  ; 
   vector<G4double>  m_R1 ; 
   vector<G4double>  m_R2 ; 
-  vector<G4double>  m_P1 ; 
-  vector<G4double>  m_P2 ; 
+  vector<G4double>  m_PC ; 
+  vector<G4double>  m_PD ; 
 
 };
 

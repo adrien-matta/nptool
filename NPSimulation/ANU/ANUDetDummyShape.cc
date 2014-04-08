@@ -86,7 +86,7 @@ void ANUDetDummyShape::ReadConfiguration(string Path)
   ConfigFile.open(Path.c_str());
   string LineBuffer, DataBuffer; 
 
-  G4double Z, T, R1, R2, P1, P2;
+  G4double Z, T, R1, R2, PC, PD;
 
   bool ReadingStatus = false;
 
@@ -94,8 +94,8 @@ void ANUDetDummyShape::ReadConfiguration(string Path)
   bool check_T = false;
   bool check_R1 = false;
   bool check_R2 = false;
-  bool check_P1 = false;
-  bool check_P2 = false;
+  bool check_PC = false;
+  bool check_PD = false;
    
   bool checkVis = false;
 
@@ -138,18 +138,18 @@ void ANUDetDummyShape::ReadConfiguration(string Path)
         R2 = atof(DataBuffer.c_str()) ;
         R2 = R2 * mm;
         G4cout << "R2:  " << R2 / mm << G4endl;
-      } else if (DataBuffer.compare(0, 3, "P1=") == 0) {
-        check_P1 = true;
+      } else if (DataBuffer.compare(0, 3, "PC=") == 0) {
+        check_PC = true;
         ConfigFile >> DataBuffer ;
-        P1 = atof(DataBuffer.c_str()) ;
-        P1 = P1 * deg;
-        G4cout << "P1:  " << P1 / deg << G4endl;
-      } else if (DataBuffer.compare(0, 3, "P2=") == 0) {
-        check_P2 = true;
+        PC = atof(DataBuffer.c_str()) ;
+        PC = PC * deg;
+        G4cout << "PC:  " << PC / deg << G4endl;
+      } else if (DataBuffer.compare(0, 3, "PD=") == 0) {
+        check_PD = true;
         ConfigFile >> DataBuffer ;
-        P2 = atof(DataBuffer.c_str()) ;
-        P2 = P2 * deg;
-        G4cout << "P2:  " << P2 / deg << G4endl;
+        PD = atof(DataBuffer.c_str()) ;
+        PD = PD * deg;
+        G4cout << "PD:  " << PD / deg << G4endl;
       } else if (DataBuffer.compare(0, 4, "VIS=") == 0) {
         checkVis = true ;
         ConfigFile >> DataBuffer;
@@ -157,14 +157,14 @@ void ANUDetDummyShape::ReadConfiguration(string Path)
       } else G4cout << "WARNING: Wrong Token, ANUDummyShape: DummyShape Element not added" << G4endl;
 
       // Add the recently defined element
-      if (check_Z && check_T && check_R1 && check_R2 && check_P1 && check_P2 && checkVis) {
+      if (check_Z && check_T && check_R1 && check_R2 && check_PC && check_PD && checkVis) {
         ReadingStatus =     false;
         check_Z =           false;
         check_T =           false;
         check_R1   =        false;
         check_R2     =      false;
-        check_P1   =        false;
-        check_P2     =      false;
+        check_PC   =        false;
+        check_PD     =      false;
         checkVis =          false;
 		     
 		    // Add element to array
@@ -172,8 +172,8 @@ void ANUDetDummyShape::ReadConfiguration(string Path)
         m_T.push_back(T);
         m_R1.push_back(R1);
         m_R2.push_back(R2);
-        m_P1.push_back(P1);
-        m_P2.push_back(P2);
+        m_PC.push_back(PC);
+        m_PD.push_back(PD);
       }
     }
   }
@@ -188,63 +188,78 @@ void ANUDetDummyShape::ConstructDetector(G4LogicalVolume* world)
   
   G4int NbrOfDetectors = m_Z.size();
 
-  // Define Si
+  // Define Materials
   G4double a = 28.0855 * g / mole;
   G4double density = 2.321 * g / cm3;
   G4Material* Si = new G4Material("Si", 14., a, density);
   
-  // Define Al
   a = 26.9815 * g / mole;
   density = 2.7 * g / cm3;
   G4Material* Al = new G4Material("Al", 13., a, density);
   
+  // Declare Variables/Arrays
   G4RotationMatrix* rotate = new G4RotationMatrix(0.,0.,0.);
   G4ThreeVector locate = G4ThreeVector(0.,0.,0.);
+  G4SubtractionSolid* ANUHolderSubtraction[NbrOfDetectors];
   
-  G4Cons* ANUDetectorLogical[NbrOfDetectors];
-  G4UnionSolid* ANUCombinedLogical[NbrOfDetectors-1];
+  // Construct shape of detector holder
+  G4double ANUHolder_InnerRadius = 2.*mm;
+  G4double ANUHolder_OuterRadius = 15.*mm;
+  G4double ANUHolder_HalfThickness = 2.*mm;
+  G4double ANUHolder_TargetDistance = 352.*mm;
+  G4Cons* ANUHolder = new G4Cons("ANUHolder", ANUHolder_InnerRadius, ANUHolder_OuterRadius, 
+          ANUHolder_InnerRadius, ANUHolder_OuterRadius, ANUHolder_HalfThickness, 0., 2.*M_PI*rad);
 
+  // Build detector elements ...
   for (G4int i = 0; i < NbrOfDetectors; i++) {
     G4double Z = m_Z[i];
     G4double T = m_T[i];
-    // Make flush:
+    //  ... make flush:
     if (Z >= 0.0) Z += T/2.0; else Z -= T/2.0;
-    G4double P1 = m_P1[i] / rad;
-    G4double P2 = m_P2[i] / rad;
+    G4double PC = m_PC[i] / rad;
+    G4double PD = m_PD[i] / rad;
 
-    // Give the element a name
+    // ... give the element a name
     G4String DetectorNumber;
     ostringstream Number;
     Number << static_cast<double>(i);
     DetectorNumber = Number.str();
 
-    // Define volume
+    // ... define volume
     G4String Name = "ANUDummyShape" + DetectorNumber ;
 
-    // Build logical volume (& combine them, to be used in building the absorber)
-    ANUDetectorLogical[i] = new G4Cons(Name, m_R1[i], m_R2[i], m_R1[i], m_R2[i], 0.5*T, P1, P2-P1);
-    if (i != 0) {
-      if (i == 1) 
-        ANUCombinedLogical[i-1] = new G4UnionSolid("CombinedDetector", ANUDetectorLogical[i-1], ANUDetectorLogical[i]);
-      else
-        ANUCombinedLogical[i-1] = new G4UnionSolid("CombinedDetector", ANUCombinedLogical[i-2], ANUDetectorLogical[i]);
-    }
-    G4LogicalVolume* logicANUDummyShape = new G4LogicalVolume(ANUDetectorLogical[i], Si, Name, 0, 0, 0);
+    // ... build logical volume (& combine them, to be used in building the absorber)
+    G4Cons* ANUDetectorShape = new G4Cons(Name, 0, m_R2[i], 0, m_R2[i], 0.5*T, PC-PD, 2.*PD);    
+    G4LogicalVolume* ANUDetectorLogical = new G4LogicalVolume(ANUDetectorShape, Si, Name, 0, 0, 0);
     
-    // Place volume
+    // ... place volume
+    locate.setX(m_R1[i] * cos(PC));
+    locate.setY(m_R1[i] * sin(PC));
+    locate.setZ(0);
+    
+    // ... need to recreate the detector shape with a different thickness (for subtraction purposes)
+    G4Cons* ANUDetectorShapeThick = new G4Cons("ANUDetectorShapeThick", 0, m_R2[i], 0, m_R2[i], 
+                                                2.*ANUHolder_HalfThickness, PC-PD, 2.*PD);    
+    if (i == 0)
+      ANUHolderSubtraction[i] = new G4SubtractionSolid("ANUHolderSubtraction", ANUHolder, ANUDetectorShapeThick, rotate, locate);
+    else
+      ANUHolderSubtraction[i] = new G4SubtractionSolid("ANUHolderSubtraction", ANUHolderSubtraction[i-1], ANUDetectorShapeThick, rotate, locate);
+      
     locate.setZ(Z);
-    new G4PVPlacement(rotate, locate, logicANUDummyShape, Name, world, false, 0);
-    logicANUDummyShape->SetVisAttributes(G4VisAttributes(G4Colour(1, 0., 0.0)));  // red
+    
+    
+    
+    new G4PVPlacement(rotate, locate, ANUDetectorLogical, Name, world, false, 0);
+    ANUDetectorLogical->SetVisAttributes(G4VisAttributes(G4Colour(1, 0., 0.0)));  // red
   }
   
-  // Build the absorber (by subtracting the combined detector volume)
-  G4Cons* ANUAbsorber = new G4Cons("ANUAbsorber", 2.*mm, 40.*mm, 2.*mm, 40.*mm, 2.*mm, 0., 2.*M_PI*rad);
-  G4SubtractionSolid* ANUAbsorberSubtraction = new G4SubtractionSolid("ANUAbsorberSubtraction", ANUAbsorber, ANUCombinedLogical[NbrOfDetectors-2]);
-  G4LogicalVolume* ANUAbsorberLogic = new G4LogicalVolume(ANUAbsorberSubtraction, Al, "ANUAbsorber", 0, 0, 0);
-  locate.setZ(352*mm);
-  new G4PVPlacement(rotate, locate, ANUAbsorberLogic, "ANUAbsorber", world, false, 0);
+  // Build the detector holder   
+  G4LogicalVolume* ANUHolderLogic = new G4LogicalVolume(ANUHolderSubtraction[NbrOfDetectors-1], Al, "ANUHolder", 0, 0, 0);
+  locate.setX(0.);
+  locate.setY(0.);
+  locate.setZ(ANUHolder_TargetDistance);
+  new G4PVPlacement(rotate, locate, ANUHolderLogic, "ANUHolder", world, false, 0);
   
-
 }
 // --------------------
 

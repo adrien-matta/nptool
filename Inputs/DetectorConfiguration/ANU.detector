@@ -15,10 +15,10 @@
 %%
 %% Z	        --> Target-Detector edge distance (mm)
 %% T          --> Detector thickness (mm)
-%% R1         --> Inner Radius (mm)
-%% R2	        --> Outer Radius (mm)
-%% P1	        --> Inner Phi (Degrees)
-%% P2	        --> Outer Phi (Degrees)
+%% R1         --> Radius from detector-axis to inner point of detector element (mm)
+%% R2	        --> Radial length of detector element (mm)
+%% PC	        --> Central phi of detector element (degrees)
+%% PD	        --> Half-phi-width of detector element [delta phi/2] (degrees)
 %% VIS        --> Visualization (all/sensible)
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
@@ -37,54 +37,54 @@ ANU
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
 ANUDummyShape 
 	Z=	350.0
-	T= 5.0
+	T= 1.0
 	R1=	5.0
-	R2=	25.0
-	P1=	0.0
-	P2= 55.0
+	R2=	8.66
+	PC=	30.0
+	PD= 30.0
 	VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
 ANUDummyShape 
 	Z=	350.0
-  T= 5.0
+  T= 1.0
 	R1=	5.0
-	R2=	25.0
-	P1=	60.0
-	P2= 115.0
+	R2=	8.66
+	PC=	90.0
+	PD= 30.0
 	VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%3
 ANUDummyShape 
 	Z=	350.0
-	T= 5.0
+	T= 1.0
 	R1=	5.0
-	R2=	25.0
-	P1=	120.0
-	P2= 175.0
+	R2=	8.66
+	PC=	150.0
+	PD= 30.0
 	VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%4
 ANUDummyShape 
 	Z=	350.0
-	T= 5.0
+	T= 1.0
 	R1=	5.0
-	R2=	25.0
-	P1=	180.0
-	P2= 235.0
+	R2=	8.66
+	PC=	210.0
+	PD= 30.0
 	VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 ANUDummyShape 
 	Z=	350.0
-	T= 5.0
+	T= 1.0
 	R1=	5.0
-	R2=	25.0
-	P1=	240.0
-	P2= 295.0
+	R2=	8.66
+	PC=	270.0
+	PD= 30.0
 	VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%6
 ANUDummyShape 
 	Z=	350.0
-	T= 5.0
+	T= 1.0
 	R1=	5.0
-	R2=	25.0
-	P1=	300.0
-	P2= 355.0
+	R2=	8.66
+	PC=	330.0
+	PD= 30.0
 	VIS= all
