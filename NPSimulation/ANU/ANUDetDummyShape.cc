@@ -203,8 +203,8 @@ void ANUDetDummyShape::ConstructDetector(G4LogicalVolume* world)
   G4SubtractionSolid* ANUHolderSubtraction[NbrOfDetectors];
   
   // Construct shape of detector holder
-  G4double ANUHolder_InnerRadius = 2.*mm;
-  G4double ANUHolder_OuterRadius = 15.*mm;
+  G4double ANUHolder_InnerRadius = 1.*mm;
+  G4double ANUHolder_OuterRadius = 25.*mm;
   G4double ANUHolder_HalfThickness = 2.*mm;
   G4double ANUHolder_TargetDistance = 352.*mm;
   G4Cons* ANUHolder = new G4Cons("ANUHolder", ANUHolder_InnerRadius, ANUHolder_OuterRadius, 
@@ -226,7 +226,7 @@ void ANUDetDummyShape::ConstructDetector(G4LogicalVolume* world)
     DetectorNumber = Number.str();
 
     // ... define volume
-    G4String Name = "ANUDummyShape" + DetectorNumber ;
+    G4String Name = "ANUDummyShape" + DetectorNumber  + "_";
 
     // ... build logical volume (& combine them, to be used in building the absorber)
     G4Cons* ANUDetectorShape = new G4Cons(Name, 0, m_R2[i], 0, m_R2[i], 0.5*T, PC-PD, 2.*PD);    
@@ -245,12 +245,11 @@ void ANUDetDummyShape::ConstructDetector(G4LogicalVolume* world)
     else
       ANUHolderSubtraction[i] = new G4SubtractionSolid("ANUHolderSubtraction", ANUHolderSubtraction[i-1], ANUDetectorShapeThick, rotate, locate);
       
-    locate.setZ(Z);
-    
-    
+    locate.setZ(Z);  
     
     new G4PVPlacement(rotate, locate, ANUDetectorLogical, Name, world, false, 0);
     ANUDetectorLogical->SetVisAttributes(G4VisAttributes(G4Colour(1, 0., 0.0)));  // red
+    ANUDetectorLogical->SetSensitiveDetector(m_SiLiScorer);
   }
   
   // Build the detector holder   
@@ -287,6 +286,7 @@ void ANUDetDummyShape::ReadSensitive(const G4Event* event)
    //////////////////////////////////////////////////////////////////////////////////////
    //////////////////////// Used to Read Event Map of detector //////////////////////////
    //////////////////////////////////////////////////////////////////////////////////////
+   
    // First Stage
    std::map<G4int, G4int*>::iterator    DetectorNumber_itr;
    std::map<G4int, G4double*>::iterator Energy_itr;
@@ -310,7 +310,7 @@ void ANUDetDummyShape::ReadSensitive(const G4Event* event)
    G4THitsMap<G4double>* AngThetaHitMap;
    G4THitsMap<G4double>* AngPhiHitMap;
 
-
+  
 
    // Read the Scorer associate to the Silicon Strip
    //Detector Number
@@ -328,7 +328,7 @@ void ANUDetDummyShape::ReadSensitive(const G4Event* event)
    TimeHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripTimeCollectionID))                        ;
    Time_itr = TimeHitMap->GetMap()->begin()                                                              ;
 
-  /*
+  
    //Strip Number X
    G4int StripXCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("SiLiScorerANUDummyShape/StripIDFront")    ;
    XHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripXCollectionID))                              ;
@@ -338,7 +338,7 @@ void ANUDetDummyShape::ReadSensitive(const G4Event* event)
    G4int StripYCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("SiLiScorerANUDummyShape/StripIDBack");
    YHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripYCollectionID))                              ;
    Y_itr = YHitMap->GetMap()->begin()                                                                    ;
-  */
+  
   
    //Interaction Coordinate X
    G4int InterCoordXCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("SiLiScorerANUDummyShape/InterCoordX")    ;
@@ -513,15 +513,15 @@ void ANUDetDummyShape::InitializeScorers()
    G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new GENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","ANUDummyShape", 0);
    G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new GENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","ANUDummyShape", 0);
    G4VPrimitiveScorer* Energy                           = new ANUScorerSiLiEnergy("StripEnergy", "ANUDummyShape", 0);
-   //G4VPrimitiveScorer* StripPositionX                   = new ANUScorerSiLiFrontStripDummyShape("StripIDFront", 0, NumberOfStrips);
-   //G4VPrimitiveScorer* StripPositionY                   = new ANUScorerSiLiBackStripDummyShape("StripIDBack", 0, NumberOfStrips);
+   G4VPrimitiveScorer* StripPositionX                   = new ANUScorerSiLiFrontStripDummyShape("StripIDFront", 0, NumberOfStrips);
+   G4VPrimitiveScorer* StripPositionY                   = new ANUScorerSiLiBackStripDummyShape("StripIDBack", 0, NumberOfStrips);
 
    //and register it to the multifunctionnal detector
    m_SiLiScorer->RegisterPrimitive(DetNbr);
    m_SiLiScorer->RegisterPrimitive(Energy);
    m_SiLiScorer->RegisterPrimitive(TOF);
-   //m_SiLiScorer->RegisterPrimitive(StripPositionX);
-   //m_SiLiScorer->RegisterPrimitive(StripPositionY);
+   m_SiLiScorer->RegisterPrimitive(StripPositionX);
+   m_SiLiScorer->RegisterPrimitive(StripPositionY);
    m_SiLiScorer->RegisterPrimitive(InteractionCoordinatesX);
    m_SiLiScorer->RegisterPrimitive(InteractionCoordinatesY);
    m_SiLiScorer->RegisterPrimitive(InteractionCoordinatesZ);

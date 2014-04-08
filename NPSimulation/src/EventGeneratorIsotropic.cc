@@ -162,6 +162,7 @@ void EventGeneratorIsotropic::ReadConfiguration(string Path,int){
         else if(m_particleName=="deuton"){ m_particleName="2H"  ; check_ExcitationEnergy = true ;}
         else if(m_particleName=="triton"){ m_particleName="3H"  ; check_ExcitationEnergy = true ;}
         else if(m_particleName=="alpha") { m_particleName="4He" ; check_ExcitationEnergy = true ;}
+        else if(m_particleName=="electron") { check_ExcitationEnergy = true ;}
         else if(m_particleName=="gamma") { check_ExcitationEnergy = true ;}
       }
       
@@ -198,12 +199,14 @@ void EventGeneratorIsotropic::ReadConfiguration(string Path,int){
 void EventGeneratorIsotropic::GenerateEvent(G4Event*){
   
   if(m_particle==NULL){
-    if(m_particleName!="gamma"){
+    if(m_particleName!="gamma" && m_particleName!="electron"){
       NPL::Nucleus* N = new NPL::Nucleus(m_particleName);
       m_particle = G4ParticleTable::GetParticleTable()->GetIon(N->GetZ(), N->GetA(),m_ExcitationEnergy);
       delete N;
     }
-    else{
+    else if(m_particleName=="electron") {
+      m_particle = G4ParticleTable::GetParticleTable()->FindParticle("e-");
+    } else {
       m_particle =  G4ParticleTable::GetParticleTable()->FindParticle("gamma");
     }
     

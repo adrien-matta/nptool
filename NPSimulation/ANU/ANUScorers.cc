@@ -57,6 +57,7 @@ ANUScorerSiLiEnergy::~ANUScorerSiLiEnergy()
 
 G4bool ANUScorerSiLiEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+  
    // get detector number
    int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
 

@@ -712,7 +712,7 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
       cANU = true ;
       if(VerboseLevel==1) cout << "//////// ANU detector ////////" << endl   ;
       
-      double Bz=0.;
+      G4double Bz=0.;
 
       ConfigFile >> DataBuffer ;
       if (DataBuffer.compare(0, 7, "MField=") == 0){
@@ -816,9 +816,9 @@ void DetectorConstruction::ReadAllSensitive(const G4Event* event){
   // This is done on the first element of the m_Modules vector.
   // This should be done here since this variable (of type TIneractionCoordinates)
   // deals with multiplicity of events > 1.
+     
   if(m_Detectors.size()>0)
     m_Detectors[0]->GetInterCoordPointer()->Clear();
-  
   for (unsigned short i = 0 ; i < m_Detectors.size() ; i++) {
     m_Detectors[i]->ReadSensitive(event);
   }

@@ -78,7 +78,7 @@ protected:
    static TANUData*		ms_Event;
 
    // Set to true if you want this stage on you telescope
-   vector<bool>      m_wFirstStage;
+   vector<bool>      m_wSiLi;
 
    // Set to true if you want to see Telescope Frame in your visualisation
    bool              m_non_sensitive_part_visiualisation;

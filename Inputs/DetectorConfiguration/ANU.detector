@@ -33,13 +33,13 @@ Target
 	Z= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
 ANU
-	MField=	2.
+	MField=	0.21
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
 ANUDummyShape 
 	Z=	350.0
 	T= 1.0
-	R1=	5.0
-	R2=	8.66
+	R1=	2.0
+	R2=	22.0
 	PC=	30.0
 	PD= 30.0
 	VIS= all
@@ -47,8 +47,8 @@ ANUDummyShape
 ANUDummyShape 
 	Z=	350.0
   T= 1.0
-	R1=	5.0
-	R2=	8.66
+	R1=	2.0
+	R2=	22.0
 	PC=	90.0
 	PD= 30.0
 	VIS= all
@@ -56,8 +56,8 @@ ANUDummyShape
 ANUDummyShape 
 	Z=	350.0
 	T= 1.0
-	R1=	5.0
-	R2=	8.66
+	R1=	2.0
+	R2=	22.0
 	PC=	150.0
 	PD= 30.0
 	VIS= all
@@ -65,8 +65,8 @@ ANUDummyShape
 ANUDummyShape 
 	Z=	350.0
 	T= 1.0
-	R1=	5.0
-	R2=	8.66
+	R1=	2.0
+	R2=	22.0
 	PC=	210.0
 	PD= 30.0
 	VIS= all
@@ -74,8 +74,8 @@ ANUDummyShape
 ANUDummyShape 
 	Z=	350.0
 	T= 1.0
-	R1=	5.0
-	R2=	8.66
+	R1=	2.0
+	R2=	22.0
 	PC=	270.0
 	PD= 30.0
 	VIS= all
@@ -83,8 +83,8 @@ ANUDummyShape
 ANUDummyShape 
 	Z=	350.0
 	T= 1.0
-	R1=	5.0
-	R2=	8.66
+	R1=	2.0
+	R2=	22.0
 	PC=	330.0
 	PD= 30.0
 	VIS= all
