@@ -49,20 +49,22 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
   // Default Setting
   fDefaultReactionFileName    = "defaultReaction.reaction";
   fDefaultDetectorFileName    = "defaultDetector.detector";
+  fDefaultBFieldFileName      = "defaultBField.field";
   fDefaultOutputFileName      = "myResult.root";
   fDefaultRunToReadFileName   = "defaultRunToTreat.txt";
   fDefaultCalibrationFileName = "defaultCalibration.txt";
   // Assigned values
   fReactionFileName           = fDefaultReactionFileName;
   fDetectorFileName           = fDefaultDetectorFileName;
+  fBFieldFileName             = fDefaultBFieldFileName;
   fOutputFileName             = fDefaultOutputFileName;
   fRunToReadFileName          = fDefaultRunToReadFileName;
   fCalibrationFileName        = fDefaultCalibrationFileName;
   fVerboseLevel               = 1;
-  fDisableAllBranchOption = false;
-  fInputPhysicalTreeOption = false;
-  fGenerateHistoOption = false ;
-  fPROOFMode = false;
+  fDisableAllBranchOption     = false;
+  fInputPhysicalTreeOption    = false;
+  fGenerateHistoOption        = false;
+  fPROOFMode                  = false;
   
   for (int i = 0; i < argc; i++) {
     string argument = argv[i];
@@ -75,6 +77,10 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
     else if (argument == "--detector" && argc >= i + 1)           fDetectorFileName    = argv[++i] ;
     
     else if (argument == "-D" && argc >= i + 1)                   fDetectorFileName    = argv[++i] ;
+    
+    else if (argument == "--magnetic-field" && argc >= i + 1)     fBFieldFileName      = argv[++i] ;
+    
+    else if (argument == "-B" && argc >= i + 1)                   fBFieldFileName      = argv[++i] ;
     
     else if (argument == "--output" && argc >= i + 1)             fOutputFileName      = argv[++i] ;
     
@@ -143,6 +149,7 @@ void NPOptionManager::CheckArguments()
 {
   CheckEventGenerator();
   CheckDetectorConfiguration();
+  if (fBFieldFileName != fDefaultBFieldFileName) CheckMagneticFieldFile();
 }
 
 
@@ -210,6 +217,36 @@ void NPOptionManager::CheckDetectorConfiguration()
 }
 
 
+void NPOptionManager::CheckMagneticFieldFile()
+{
+  bool checkFile = true;
+  
+  // NPTool path
+  string GlobalPath = getenv("NPTOOL");
+  string StandardPath = GlobalPath + "/Inputs/DetectorConfiguration/" + fBFieldFileName;
+  
+  // ifstream to configfile
+  ifstream ConfigFile;
+  
+  // test if config file is in local path
+  ConfigFile.open(fBFieldFileName.c_str());
+  if (!ConfigFile.is_open()) {
+    ConfigFile.open(StandardPath.c_str());
+    if (!ConfigFile.is_open()) {  // if not, assign standard path
+      checkFile = false;
+    }
+    else {
+      fBFieldFileName = StandardPath;
+    }
+  }
+  if (!checkFile && fBFieldFileName != fDefaultBFieldFileName) {   // if file does not exist
+    SendErrorAndExit("MagneticField");
+  }
+  
+  // close ConfigFile
+  ConfigFile.close();
+}
+
 
 // This method tests if the input files are the default ones
 bool NPOptionManager::IsDefault(const char* type) const
@@ -230,7 +267,7 @@ bool NPOptionManager::IsDefault(const char* type) const
     if (fRunToReadFileName == fDefaultRunToReadFileName) result = true;
   }
   else {
-    cout << "NPOptionManager::IsDefault() unkwown keyword" << endl;
+    cout << "NPOptionManager::IsDefault() unknown keyword" << endl;
   }
   
   return result;
@@ -252,18 +289,26 @@ void NPOptionManager::SendErrorAndExit(const char* type) const
   }
   else if (stype == "DetectorConfiguration") {
     cout << endl;
-    cout << "***********************************       Error       ***********************************" << endl;
-    cout << "* No detector geometry file found in $NPTool/Inputs/EventGenerator or local directories *" << endl;
-    cout << "*****************************************************************************************" << endl;
+    cout << "**************************************       Error       ***************************************" << endl;
+    cout << "* No detector geometry file found in $NPTool/Inputs/DetectorConfiguration or local directories *" << endl;
+    cout << "************************************************************************************************" << endl;
     cout << endl;
     exit(1);
+  }
+  else if (stype == "MagneticField") {
+    cout << endl;
+    cout << "******************************************       Error       *******************************************" << endl;
+    cout << "* Specified magnetic field file not found in $NPTool/Inputs/DetectorConfiguration or local directories *" << endl;
+    cout << "********************************************************************************************************" << endl;
+    cout << endl;
+    exit(1); 
   }
   else if (stype == "Calibration") {
   }
   else if (stype == "RunToTreat") {
   }
   else {
-    cout << "NPOptionManager::SendErrorAndExit() unkwown keyword" << endl;
+    cout << "NPOptionManager::SendErrorAndExit() unknown keyword" << endl;
   }
 }
 
@@ -276,6 +321,7 @@ void NPOptionManager::DisplayHelp()
   cout << "\t --help　-H -h\t \t \t \t \t \t \t　Display this help message" << endl ;
   cout << "\t --detector　-D <arg>\t \t \t \t \t \t　Set arg as the detector configuration file" << endl ;
   cout << "\t --event-generator　-E <arg>\t \t \t \t \t　Set arg as the event generator file" << endl ;
+  cout << "\t --magnetic-field  -B <arg>\t \t \t \t \t Set arg as the magnetic field file" << endl ;
   cout << "\t --output　-O <arg>\t \t \t \t \t \t　Set arg as the Output File Name (output tree)" << endl ;
   cout << "\t --verbose -V <arg>\t \t \t \t \t \t　Set the verbose level of some of the object, 0 for nothing, 1 for normal printout. Error and warning are not affected" << endl ;
   cout << endl << "NPAnalysis only:"<<endl;

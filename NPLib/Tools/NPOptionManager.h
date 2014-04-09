@@ -71,6 +71,7 @@ class NPOptionManager
       void CheckArguments();
       void CheckEventGenerator();
       void CheckDetectorConfiguration();
+      void CheckMagneticFieldFile();
 
    public:
       bool IsDefault(const char* type) const;
@@ -81,12 +82,14 @@ class NPOptionManager
       // default values
       string GetDefaultReactionFile()     {return fDefaultReactionFileName;}
       string GetDefaultDetectorFile()     {return fDefaultDetectorFileName;}
+      string GetDefaultBFieldFile()       {return fDefaultBFieldFileName;}
       string GetDefaultRunToReadFile()    {return fDefaultRunToReadFileName;}
       string GetDefaultCalibrationFile()  {return fDefaultCalibrationFileName;}
       string GetDefaultOutputFile()       {return fDefaultOutputFileName;}
       // assigned values
       string GetReactionFile()             {return fReactionFileName;}
       string GetDetectorFile()             {return fDetectorFileName;}
+      string GetBFieldFile()               {return fBFieldFileName;}
       string GetRunToReadFile()            {return fRunToReadFileName;}
       string GetCalibrationFile()          {return fCalibrationFileName;}
       string GetOutputFile()               {return fOutputFileName;}
@@ -100,6 +103,7 @@ class NPOptionManager
       // Setters
       void SetReactionFile(string name)       {fReactionFileName = name;}
       void SetDetectorFile(string name)       {fDetectorFileName = name;}
+      void SetBFieldFile(string name)         {fBFieldFileName = name;}
       void SetRunToReadFile(string name)      {fRunToReadFileName = name;}
       void GetVerboseLevel(int VerboseLevel)  {fVerboseLevel = VerboseLevel;}
   
@@ -107,12 +111,14 @@ class NPOptionManager
       // default values
       string fDefaultReactionFileName;
       string fDefaultDetectorFileName;
+      string fDefaultBFieldFileName;
       string fDefaultRunToReadFileName;
       string fDefaultCalibrationFileName;
       string fDefaultOutputFileName;
       // assigned values
       string fReactionFileName;
       string fDetectorFileName;
+      string fBFieldFileName;
       string fRunToReadFileName;
       string fCalibrationFileName;
       string fOutputFileName;
