@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
+ * Copyright (C) 2009-2014   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -9,14 +9,16 @@
  * Original Author: A. MATTA  contact address: matta@ipno.in2p3.fr           *
  *                                                                           *
  * Creation Date  : 21/07/09                                                 *
- * Last update    :                                                          *
+ * Last update    : 11/04/14                                                 *
  *---------------------------------------------------------------------------*
  * Decription: This class is a singleton class which deals with input        *
  * arguments of the different NPTool programm (NPS and NPA)                  *
  *---------------------------------------------------------------------------*
  * Comment: The singleton form allow users to call the object from anywhere  *
  * in the code                                                               *
- *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Updates:                                                                  *
+ *   11/04/14 - Included user non-uniform magnetic field (evitts@triumf.ca)  *
  *                                                                           *
  *****************************************************************************/
 
@@ -259,6 +261,9 @@ bool NPOptionManager::IsDefault(const char* type) const
   }
   else if (stype == "DetectorConfiguration") {
     if (fDetectorFileName == fDefaultDetectorFileName) result = true;
+  }
+  else if (stype == "MagneticField") {
+    if (fBFieldFileName == fDefaultBFieldFileName) result = true;
   }
   else if (stype == "Calibration") {
     if (fCalibrationFileName == fDefaultCalibrationFileName) result = true;

@@ -7,10 +7,6 @@
 %% Y          --> "
 %% Z          --> "
 %%
-%%%ANU%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%
-%% MField     --> Magnetic Field (Tesla)
-%%
 %%%ANUDummyShape%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
 %% Z	        --> Target-Detector edge distance (mm)
@@ -31,9 +27,6 @@ Target
 	X= 0
 	Y= 0
 	Z= 0
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
-ANU
-	MField=	0.21
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
 ANUDummyShape 
 	Z=	350.0

@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
+ * Copyright (C) 2009-2014   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -9,7 +9,7 @@
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
  * Creation Date  : January 2009                                             *
- * Last update    : 26/08/2010  (M. Labiche)                                 *
+ * Last update    : 11/04/14  (L. Evitts)                                    *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This Class manage the virtual detector and call their method.            *
@@ -18,6 +18,8 @@
  *  token.                                                                   *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
+ *    11/04/14: Added Magnetic Field  (evitts@triumf.ca)                     *
+ *    08/04/14: Added ANU detector  (evitts@triumf.ca)                       *
  *    25/08/10: Added Shield around PARIS   (marc.labiche@stfc.ac.uk)        *
  *    15/01/10: Added Chamber (marc.labiche@stfc.ac.uk)                      *
  *    04/12/09: Added PARIS detector (marc.labiche@stfc.ac.uk)               *
@@ -40,6 +42,7 @@
 #include "G4String.hh"
 #include "G4RotationMatrix.hh"
 #include "MyMagneticField.hh"
+#include "G4MagneticField.hh"
 #include "G4FieldManager.hh"
 #include "G4TransportationManager.hh"
 #include "G4ChordFinder.hh"
@@ -120,6 +123,8 @@
 #include "W1.hh"
 #endif
 
+// Magnetic Field
+#include "GlobalField.hh"
 
 // STL
 #include<cstdlib>
@@ -710,17 +715,8 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
     else if (LineBuffer.compare(0, 3, "ANU") == 0 && cANU == false) {
 #ifdef INC_ANU
       cANU = true ;
-      if(VerboseLevel==1) cout << "//////// ANU detector ////////" << endl   ;
-      
-      G4double Bz=0.;
-
-      ConfigFile >> DataBuffer ;
-      if (DataBuffer.compare(0, 7, "MField=") == 0){
-        ConfigFile >> DataBuffer ;
-        Bz = atof(DataBuffer.c_str()) ;
-        if(VerboseLevel==1) cout << "//////// Magentic Field set at Bz= " << Bz << " ////////" << endl   ;
-      }
-      
+      if(VerboseLevel==1) G4cout << "//////// ANU detector ////////" << G4endl   ;
+           
       // Instantiate the new array as a VDetector Object
       VDetector* myDetector = new ANU();
 
@@ -732,19 +728,6 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
       // Add array to the VDetector Vector
       AddDetector(myDetector)                            ;
     
-      static G4bool fieldIsInitialized = false;
-      
-      if(!fieldIsInitialized)
-        {
-        MyMagneticField* myField = new MyMagneticField(G4ThreeVector(0.,0.,Bz));
-        
-        G4FieldManager* fieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
-        fieldMgr->SetDetectorField(myField);
-        
-        fieldMgr->CreateChordFinder(myField);
-        
-        fieldIsInitialized = true;
-        }
       
 #endif      
     }
@@ -823,6 +806,28 @@ void DetectorConstruction::ReadAllSensitive(const G4Event* event){
     m_Detectors[i]->ReadSensitive(event);
   }
 }
+
+// -----------------------------------
+// Define the magnetic field from file
+void DetectorConstruction::DefineMagneticField(string Path) {
+
+  fMagneticField = new GlobalField(Path);
+    
+  // Set user magnetic field as the global magnetic field
+  fFieldManager = G4TransportationManager::GetTransportationManager()->GetFieldManager();
+  fFieldManager->SetDetectorField( fMagneticField );
+  
+  // Define equation of motion and the stepper used to integrate
+  fEquation = new G4Mag_UsualEqRhs( fMagneticField );
+  fStepper = new G4ClassicalRK4( fEquation );
+  
+  // Chord finder calculates the trajectory (using equation and stepper)
+  G4double MinStep = 0.001*mm;
+  fChordFinder = new G4ChordFinder( fMagneticField, MinStep, fStepper );
+  fFieldManager->SetChordFinder( fChordFinder );
+  
+}
+// ------------------------------------
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4LogicalVolume* DetectorConstruction::GetWorldLogic()
