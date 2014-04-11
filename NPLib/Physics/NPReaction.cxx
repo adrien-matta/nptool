@@ -176,11 +176,6 @@ Reaction::~Reaction(){
   if(fNuclei4)
     delete fNuclei4;
   
-//  if(fCrossSectionHist)
-//    delete fCrossSectionHist;
-
-//  if(fExcitationEnergyHist)
-//    delete fExcitationEnergyHist;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
