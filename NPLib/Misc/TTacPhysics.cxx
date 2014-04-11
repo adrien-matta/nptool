@@ -125,10 +125,10 @@ void TTacPhysics::BuildSimplePhysicalEvent()
 	{
 	   	TacNumber.push_back(EventData->GetTAC_MM_HF_DetectorNbr(i));
 	}
-		Time_TAC_1=CalibrationManager::getInstance()->ApplyCalibration("TAC/_T" + itoa( EventData->GetTAC_MM_HF_DetectorNbr(0) ),EventData->GetTAC_MM1_HF() );
-		Time_TAC_2=CalibrationManager::getInstance()->ApplyCalibration("TAC/_T" + itoa( EventData->GetTAC_MM_HF_DetectorNbr(1) ),EventData->GetTAC_MM2_HF() );
-		Time_TAC_3=CalibrationManager::getInstance()->ApplyCalibration("TAC/_T" + itoa( EventData->GetTAC_MM_HF_DetectorNbr(2) ),EventData->GetTAC_MM3_HF() );
-		Time_TAC_4=CalibrationManager::getInstance()->ApplyCalibration("TAC/_T" + itoa( EventData->GetTAC_MM_HF_DetectorNbr(3) ),EventData->GetTAC_MM4_HF() );
+		Time_TAC_1=CalibrationManager::getInstance()->ApplyCalibration("TAC/_T" + itoa( EventData->GetTAC_MM_HF_DetectorNbr(0) ),EventData->GetTAC_MM_HF() );
+		Time_TAC_2=CalibrationManager::getInstance()->ApplyCalibration("TAC/_T" + itoa( EventData->GetTAC_MM_HF_DetectorNbr(1) ),EventData->GetTAC_MM_HF() );
+		Time_TAC_3=CalibrationManager::getInstance()->ApplyCalibration("TAC/_T" + itoa( EventData->GetTAC_MM_HF_DetectorNbr(2) ),EventData->GetTAC_MM_HF() );
+		Time_TAC_4=CalibrationManager::getInstance()->ApplyCalibration("TAC/_T" + itoa( EventData->GetTAC_MM_HF_DetectorNbr(3) ),EventData->GetTAC_MM_HF() );
 		
    }
 
