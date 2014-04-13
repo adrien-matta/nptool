@@ -238,10 +238,10 @@ void EventGeneratorGammaDecay::GenerateEvent(G4Event*){
   }
   
   // Put back the decaying nucleus with its new excitation energy
-  G4ParticleDefinition* FinalParticleDefition
+  G4ParticleDefinition* FinalParticleDefinition
   = G4ParticleTable::GetParticleTable()->GetIon(decayingParticle.GetParticleDefinition()->GetAtomicNumber(), decayingParticle.GetParticleDefinition()->GetAtomicMass(), FinalExcitationEnergy*MeV);
   
-  Particle FinalParticle = Particle(  FinalParticleDefition,
+  Particle FinalParticle = Particle(  FinalParticleDefinition,
                                     decayingParticle.GetParticleThetaCM(),
                                     decayingParticle.GetParticleKineticEnergy(),
                                     decayingParticle.GetParticleMomentumDirection(),
@@ -286,8 +286,8 @@ void EventGeneratorGammaDecay::GenerateEvent(G4Event*){
                            gammaEnergy*cos(theta),
                            gammaEnergy);
     
-    double NucleiEnergy= decayingParticle.GetParticleKineticEnergy()+FinalParticleDefition->GetPDGMass();
-    double NucleiMomentum= sqrt(NucleiEnergy*NucleiEnergy-FinalParticleDefition->GetPDGMass()*FinalParticleDefition->GetPDGMass());
+    double NucleiEnergy= decayingParticle.GetParticleKineticEnergy()+FinalParticleDefinition->GetPDGMass();
+    double NucleiMomentum= sqrt(NucleiEnergy*NucleiEnergy-FinalParticleDefinition->GetPDGMass()*FinalParticleDefinition->GetPDGMass());
     TLorentzVector NuvleiLV( NucleiMomentum*decayingParticle.GetParticleMomentumDirection().x(),
                             NucleiMomentum*decayingParticle.GetParticleMomentumDirection().y(),
                             NucleiMomentum*decayingParticle.GetParticleMomentumDirection().z(),

@@ -37,3 +37,28 @@ TwoBodyReaction
   Cascade
     BranchingRatio= 30
     Energies= 1.0 1.2
+    
+%PairDecay 25Na
+  Cascade
+    BranchingRatio= 10
+    Energies= 2.2
+    FieldTypes= E
+    PolarityOrders= 0
+    InternalPairCoeff= 80
+    InternalElectronCoeff= 20
+    DifferentialCrossSectionLepton= test_cs_2d.txt	E0Pair
+  Cascade
+    BranchingRatio= 50
+    Energies= 1.1  1.2
+    FieldTypes= E M 
+    PolarityOrders= 2 2  
+    InternalPairCoeff= 0.1 0.2 
+    InternalElectronCoeff= 0.4 0.1  
+    DifferentialCrossSectionLepton=  born_approx 	E2Pair         test_cs_2d.txt	M2Pair      
+    
+  Cascade
+    BranchingRatio= 40
+    Energies= 2.2
+    DifferentialCrossSectionGamma= 11Li(d,3He)10He.txt	Gamma25Na
+    
+    
