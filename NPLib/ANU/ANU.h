@@ -14,7 +14,7 @@
  * Last update    : 30/01/12                                                 *
  *---------------------------------------------------------------------------*
  * Decription: This class is mainly an interface to the                      *
- *             TANUPhysics class and it deals with the geometrical        *
+ *             TANUPhysics class and it deals with the geometrical       	 *
  *             correspondance between strip number and absolute coordinates  *
  *             (X, Y, Z) of interaction.                                     *
  *---------------------------------------------------------------------------*
