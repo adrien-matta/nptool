@@ -45,7 +45,7 @@
 #include "EventGeneratorBeam.hh"
 #include "EventGeneratorGammaDecay.hh"
 #include "EventGeneratorParticleDecay.hh"
-
+#include "EventGeneratorInternalPairFormation.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 PrimaryGeneratorAction::~PrimaryGeneratorAction(){
@@ -78,6 +78,8 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path){
   // You can have more than one of those
   int   alreadyiInstantiate_GammaDecay = 0;
   int   seenToken_GammaDecay = 0;
+  int   alreadyiInstantiate_PairDecay = 0;
+  int   seenToken_PairDecay = 0;
   int   alreadyiInstantiate_ParticleDecay = 0;
   int   seenToken_ParticleDecay = 0;
   
@@ -151,6 +153,23 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path){
         myEventGenerator->SetTarget(m_detector->GetTarget());
         m_EventGenerator.push_back(myEventGenerator);
         seenToken_GammaDecay=0;
+      }
+      
+    }
+    
+        //Search for InternalPairFormation decay
+    else if ( LineBuffer.compare(0, 9, "PairDecay") == 0 ) {
+      seenToken_PairDecay++;
+      if (seenToken_PairDecay>alreadyiInstantiate_PairDecay) {
+        alreadyiInstantiate_PairDecay++;
+        VEventGenerator* myEventGenerator = new EventGeneratorInternalPairFormation();
+        EventGeneratorFile.close();
+        myEventGenerator->ReadConfiguration(Path,alreadyiInstantiate_PairDecay);
+        EventGeneratorFile.open(Path.c_str());
+        myEventGenerator->InitializeRootOutput();
+        myEventGenerator->SetTarget(m_detector->GetTarget());
+        m_EventGenerator.push_back(myEventGenerator);
+        seenToken_PairDecay=0;
       }
       
     }

@@ -56,7 +56,6 @@ EventGeneratorInternalPairFormation::EventGeneratorInternalPairFormation(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorInternalPairFormation::~EventGeneratorInternalPairFormation(){
-  m_CrossSectionGammaHist.clear();
   m_CrossSectionLeptonHist2D.clear();
   
 }
@@ -73,13 +72,10 @@ void EventGeneratorInternalPairFormation::ReadConfiguration(string Path, int Occ
   bool ReadingStatusInternalPairFormation  = false ;
   bool CascadeStatus = false ;
   
-//Gamma specific
+//Lepton conversion specefic 
   bool check_created = false;
   bool check_E = false;
   bool check_BranchingRatio = false;
-  bool check_CSGammaPath = false ;
-
-//Lepton conversion specefic 
   bool check_Field = false;
   bool check_Polarity = false ;
   bool check_Ipf = false ;
@@ -100,7 +96,7 @@ void EventGeneratorInternalPairFormation::ReadConfiguration(string Path, int Occ
     //Pick-up next line
     getline(InputFile, LineBuffer);
     
-    if (LineBuffer.compare(0, 10, "InternalPairFormation") == 0) {
+    if (LineBuffer.compare(0, 9, "PairDecay") == 0) {
       TokenOccurence++;
       if (TokenOccurence == Occurence) {
         ReadingStatusInternalPairFormation = true ;
@@ -112,12 +108,12 @@ void EventGeneratorInternalPairFormation::ReadConfiguration(string Path, int Occ
         DataBuffer.erase();
         LineStream >> DataBuffer;
         m_NucleiName = DataBuffer ;
-        if(VerboseLevel==1) G4cout << "Gamma Decay for " << m_NucleiName << G4endl;
+        if(VerboseLevel==1) G4cout << "Pair Decay for " << m_NucleiName << G4endl;
       }
     }
     
     ///////////////////////////////
-    /// Gamma Decay case
+    /// Pair Decay case
     while(ReadingStatusInternalPairFormation){
       InputFile >> DataBuffer;
       //Search for comment Symbol %
@@ -126,7 +122,7 @@ void EventGeneratorInternalPairFormation::ReadConfiguration(string Path, int Occ
       else if (DataBuffer == "Cascade") {
         CascadeStatus = true ;
         NumberOfCascade++;
-        if(VerboseLevel==1) G4cout << "  Cascade " << NumberOfCascade << G4endl;
+        if(VerboseLevel==1)         G4cout << "  Cascade " << NumberOfCascade << G4endl;
         
         LineStream.clear();
         LineStream.str(LineBuffer);
@@ -138,7 +134,6 @@ void EventGeneratorInternalPairFormation::ReadConfiguration(string Path, int Occ
         check_Ipf = false;
         check_Ice = false;
         check_BranchingRatio = false;
-        check_CSGammaPath = false ;
         check_CSLeptonPath = false ; 
                
         double BranchingRatio = -1;
@@ -149,7 +144,6 @@ void EventGeneratorInternalPairFormation::ReadConfiguration(string Path, int Occ
         vector<double> InternalElectronCoeff ; // InternalElectronCoeff
         vector<string> CSpairPath ;
         vector<string> CSpairName ;
-        string CSGammaPath,CSGammaName;
                 
         while (CascadeStatus) {
           getline(InputFile, LineBuffer);
@@ -157,7 +151,7 @@ void EventGeneratorInternalPairFormation::ReadConfiguration(string Path, int Occ
           LineStream.str(LineBuffer);
           LineStream >> DataBuffer ;
           
-          // G4cout << DataBuffer << G4endl;
+           G4cout << DataBuffer << G4endl;
           
           //Search for comment Symbol %
           if (DataBuffer.compare(0, 1, "%") == 0) {   InputFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
@@ -169,13 +163,13 @@ void EventGeneratorInternalPairFormation::ReadConfiguration(string Path, int Occ
             LineStream >> DataBuffer ;
             LineStream >> DataBuffer ;
             BranchingRatio = atof(DataBuffer.c_str());
-            if(VerboseLevel==1) G4cout << "    Branching Ratio: " << atof(DataBuffer.c_str()) << G4endl;
+            if(VerboseLevel==1)             G4cout << "    Branching Ratio: " << atof(DataBuffer.c_str()) << G4endl;
             
           }
          
           else if(DataBuffer == "Energies=") {
             check_E = true;
-            if(VerboseLevel==1) G4cout << "    Energies: " ;
+            if(VerboseLevel==1)             G4cout << "    Energies: " ;
             LineStream.clear();
             LineStream.str(LineBuffer);
             LineStream >> DataBuffer;
@@ -189,7 +183,7 @@ void EventGeneratorInternalPairFormation::ReadConfiguration(string Path, int Occ
           
           else if(DataBuffer == "FieldTypes=") {
             check_Field = true;
-            if(VerboseLevel==1) G4cout << "    Field types: " ;
+            if(VerboseLevel==1)             G4cout << "    Field types: " ;
             LineStream.clear();
             LineStream.str(LineBuffer);
             LineStream >> DataBuffer;
@@ -204,7 +198,7 @@ void EventGeneratorInternalPairFormation::ReadConfiguration(string Path, int Occ
           
           else if(DataBuffer == "PolarityOrders=") {
             check_Polarity = true;
-            if(VerboseLevel==1) G4cout << "    Polarity Orders: " ;
+            if(VerboseLevel==1)             G4cout << "    Polarity Orders: " ;
             LineStream.clear();
             LineStream.str(LineBuffer);
             LineStream >> DataBuffer;
@@ -218,7 +212,7 @@ void EventGeneratorInternalPairFormation::ReadConfiguration(string Path, int Occ
 
           else if(DataBuffer == "InternalPairCoeff=") {
             check_Ipf = true;
-            if(VerboseLevel==1) G4cout << "    Total Internal Pair Coeffecients: " ;
+            if(VerboseLevel==1)             G4cout << "    Total Internal Pair Coeffecients: " ;
             LineStream.clear();
             LineStream.str(LineBuffer);
             LineStream >> DataBuffer;
@@ -232,7 +226,7 @@ void EventGeneratorInternalPairFormation::ReadConfiguration(string Path, int Occ
                        
           else if(DataBuffer == "InternalElectronCoeff=") {
             check_Ice = true;
-            if(VerboseLevel==1) G4cout << "    Total Internal Conversion Coeffecients: " ;
+            if(VerboseLevel==1)             G4cout << "    Total Internal Conversion Coeffecients: " ;
             LineStream.clear();
             LineStream.str(LineBuffer);
             LineStream >> DataBuffer;
@@ -243,48 +237,30 @@ void EventGeneratorInternalPairFormation::ReadConfiguration(string Path, int Occ
             }
             if(VerboseLevel==1)G4cout << G4endl;
           }    
-
+                      
           else if(DataBuffer == "DifferentialCrossSectionLepton=") {
-            check_Ice = true;
-            if(VerboseLevel==1) G4cout << "    Pair Cross Section : " ;
+            if(VerboseLevel==1)             G4cout << "    Pair Cross Section : " ; 
             LineStream.clear();
             LineStream.str(LineBuffer);
             LineStream >> DataBuffer;
             while(LineStream >> DataBuffer){ // path       
               CSpairPath.push_back(DataBuffer);
-              if(VerboseLevel==1) G4cout << "        Path:" << DataBuffer << G4endl;
+              if(VerboseLevel==1) 				G4cout << "        Path:" << DataBuffer << "\t";
               LineStream >> DataBuffer ; // name 
               CSpairName.push_back(DataBuffer);
-              if(VerboseLevel==1) G4cout << "        Name:" << DataBuffer << G4endl;              
+              if(VerboseLevel==1)               G4cout << "        Name:" << DataBuffer << G4endl;              
             }
-            if(VerboseLevel==1)G4cout << G4endl;
+            if(VerboseLevel==1)            G4cout << G4endl;
             check_CSLeptonPath = true;
-          }   
-                             
-          else if(DataBuffer == "DifferentialCrossSectionGamma="){
-            LineStream.clear();
-            LineStream.str(LineBuffer);
-            LineStream >> DataBuffer >> CSGammaPath >> CSGammaName ;
-            if(VerboseLevel==1) G4cout << "    Cross Section Path: " << CSGammaPath << G4endl;
-            check_CSGammaPath = true;
-          }
+          }                   
           
           // Cascade ended
-          if(check_E && check_BranchingRatio && E.size()>1){ 
-			AddGammaCascade(E, BranchingRatio, "_void_", "_void_");
-			// append the lepton cascade if any 
-			if (check_Field && check_Polarity && check_Ice && check_Ipf )
-			AddLeptonCascade(Field, Polarity, InternalPairCoeff, InternalElectronCoeff, CSpairPath, CSpairName);
+          if(check_E && check_BranchingRatio && check_Field && check_Polarity && check_Ice && check_Ipf && check_CSLeptonPath){ 
+			// add the lepton cascade
+			AddLeptonCascade(E, BranchingRatio, Field, Polarity, InternalPairCoeff, InternalElectronCoeff, CSpairPath, CSpairName);
             CascadeStatus = false;
           }
-          
-          if(check_E && check_BranchingRatio && (E.size()<2 && check_CSGammaPath)){
-          	AddGammaCascade(E, BranchingRatio, CSGammaPath , CSGammaName);
-          	// append the lepton cascade if any 
-            if (check_Field && check_Polarity && check_Ice && check_Ipf )
-			AddLeptonCascade(Field, Polarity, InternalPairCoeff, InternalElectronCoeff, CSpairPath, CSpairName);
-            CascadeStatus = false;
-          }
+         
           
         }
         
@@ -321,7 +297,7 @@ void EventGeneratorInternalPairFormation::GenerateEvent(G4Event*){
   Particle decayingParticle = m_ParticleStack->SearchAndRemoveParticle(m_NucleiName);
   
   if(decayingParticle.GetParticleDefinition()==NULL){
-    G4cout << "Gamma Decay Warning: The decaying particle " << m_NucleiName
+    G4cout << "Pair Decay Warning: The decaying particle " << m_NucleiName
     << " was not found in the particle stack " << G4endl;
     return ;
   }
@@ -334,7 +310,7 @@ void EventGeneratorInternalPairFormation::GenerateEvent(G4Event*){
   // Compute the final excitation energy of the decaying nuclei
   double FinalExcitationEnergy = ExcitationEnergy-m_CascadeTotalEnergy[ChoosenCascade];
   if(FinalExcitationEnergy<0){
-    G4cout << "Gamma Decay Warning: The cascade energy exceed the excitation energy of the decaying nuclei: "
+    G4cout << "Pair Decay Warning: The cascade energy exceed the excitation energy of the decaying nuclei: "
     << G4endl << " Excitation Energy : " << ExcitationEnergy
     << G4endl << " Cascade Energy : "    <<    m_CascadeTotalEnergy[ChoosenCascade] << G4endl;
     FinalExcitationEnergy=0;
@@ -373,13 +349,6 @@ void EventGeneratorInternalPairFormation::GenerateEvent(G4Event*){
     }
     
     // Only one gamma to shoot, use the given cross section
-    else{
-      theta = m_CrossSectionGammaHist[ChoosenCascade]->GetRandom()*deg;
-      phi   = RandFlat::shoot() * 2. *pi;
-      gammaDirection= G4ThreeVector(  cos(phi)*sin(theta),
-                                    sin(phi)*sin(theta),
-                                    cos(theta));
-    }
     
     // Doppler shifted gamma emission
     decayingParticle.GetParticleMomentumDirection();
@@ -414,37 +383,37 @@ void EventGeneratorInternalPairFormation::SetTarget(Target* Target){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-   void EventGeneratorInternalPairFormation::AddGammaCascade(vector<double> Energies, double BranchingRatio, 
-   														string CrossSectionGammaPath, string CrossSectionGammaName) {  // only the Internal pair production is supported   
-	m_Energies.push_back(Energies);   								
-	m_BranchingRatio.push_back(BranchingRatio);
-	m_CrossSectionGammaPath.push_back(CrossSectionGammaPath);
-	m_CrossSectionGammaName.push_back(CrossSectionGammaName);
-}
 
-   void EventGeneratorInternalPairFormation::AddLeptonCascade(vector<string> FieldTypes, vector<double> PolarityOrders, 
-   																vector<double> InternalPairCoeff, vector<double> InternalElectronCoeff, 
-																vector<string> InternalCSPairPath, vector<string> InternalCSPairName) { 
+void EventGeneratorInternalPairFormation::AddLeptonCascade(vector<double> Energies, double BranchingRatio,
+														vector<string> FieldTypes, vector<double> PolarityOrders, 
+														vector<double> InternalPairCoeff, vector<double> InternalElectronCoeff, 
+														vector<string> InternalCSPairPath, vector<string> InternalCSPairName) { 											
+	
+	m_BranchingRatio.push_back(BranchingRatio);
+	m_Energies.push_back(Energies);																
 	m_FieldTypes.push_back(FieldTypes);
 	m_PolarityOrders.push_back(PolarityOrders);
 	m_InternalPairCoeff.push_back(InternalPairCoeff);
 	m_InternalElectronCoeff.push_back(InternalElectronCoeff);
+	cout<< "InternalCSPairPath " << InternalCSPairPath.size() <<  endl ; 
 	m_CrossSectionLeptonPath.push_back(InternalCSPairPath); // For internal pair formation distribution 
+		cout<< "InternalCSPairName " << InternalCSPairName.size() <<  endl ; 
 	m_CrossSectionLeptonName.push_back(InternalCSPairName); // For internal pair formation distribution 
 }
 					
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorInternalPairFormation::PrepareCascade(){
+		 
   // Change the given branching ratio so total is one (always have a decay during the event)
   double TotalRatio=0;
   for (unsigned int i = 0; i < m_BranchingRatio.size(); i++) {
     TotalRatio+=m_BranchingRatio[i]/100.;
   }
-  
+    
   // Check that the total ratio is not over 100% (below is allowed)
   if(TotalRatio>1) {
-    G4cout << "Gamma Decay Error: Sum of branching ratio is over 100%" << endl;
+    G4cout << "Pair Decay Error: Sum of branching ratio is over 100%" << endl;
     exit(1);
   }
   
@@ -474,82 +443,93 @@ void EventGeneratorInternalPairFormation::PrepareCascade(){
       m_NucleiName=="triton"   ||
       m_NucleiName=="3He"      ||
       m_NucleiName=="alpha"    ){
-    G4cout << "Gamma Decay Error: Gamma Decay not allowed for light particles" << endl;
+    G4cout << "Pair Decay Error: Pair Decay not allowed for light particles" << endl;
     exit(1);
   }
-  
-  /// Load the differential cross section
 
-  for (unsigned int i = 0; i < m_BranchingRatio.size(); i++) {
+
+  // Set the size of vector (holding the TH2F vectors) to the number of cascades
+  m_CrossSectionLeptonHist2D.resize(m_BranchingRatio.size()); 
     
-    //Gamma distribution  
-    TH1F* h ;
-	if(m_CrossSectionGammaPath[i]!="_void_")
-	h = Read1DProfile(m_CrossSectionGammaPath[i],m_CrossSectionGammaName[i]);
-	else{
-	int offset = 0;
-	while(gDirectory->FindObjectAny(Form("_gammavoid_%i",offset))!=0)
-	++offset;
-	h = new TH1F(Form("_gammavoid_%i",offset),Form("_gammavoid_%i",offset),1,0,1);
-	}
-	m_CrossSectionGammaHist.push_back(h);
-
+  /// Load the differential cross section
+  for (unsigned int i = 0; i < m_BranchingRatio.size(); i++) {
 	//Lepton distribution    
-	for (unsigned int j = 0; j < m_Energies[i].size(); j++) {
-		
+	for (unsigned int j = 0; j < m_Energies[i].size(); j++) {				 
 		TH2F* h2 ;
-		if(m_CrossSectionLeptonPath[i].at(j)!="born_approx") {
-		h2 = Read2DProfile(m_CrossSectionLeptonPath[i].at(j),m_CrossSectionLeptonName[i].at(j));
+		if(m_CrossSectionLeptonPath[i][j]!="born_approx") {
+		h2 = Read2DProfile(m_CrossSectionLeptonPath[i][j],m_CrossSectionLeptonName[i][j]);
 		}
 		else{ // Use Born Approximation,
-		double transition_energy = m_Energies[i].at(j);
-		string FieldType = m_FieldTypes[i].at(j); 
-		double PolarityOrder = m_PolarityOrders[i].at(j); 
-
-		h2 = BuildCrossSection(transition_energy, FieldType, PolarityOrder, m_CrossSectionLeptonName[i].at(j)) ;
+		double transition_energy = m_Energies[i][j];
+		string FieldType = m_FieldTypes[i][j];
+		double PolarityOrder = m_PolarityOrders[i][j]; 
+		h2 = BuildCrossSection(transition_energy, FieldType, PolarityOrder, m_CrossSectionLeptonName[i][j]) ;
 		}
-		m_CrossSectionLeptonHist2D[i].push_back(h2);
+		(m_CrossSectionLeptonHist2D[i]).push_back(h2);
 	}
 	
   }
+
+//Inspect the histograms 
+
+TFile f("/opt/NPTool/Outputs/Simulation/InspectPair.root","RECREATE") ;
+	f.cd();
+	for (unsigned int i = 0; i < m_CrossSectionLeptonHist2D.size(); i++) {
+		 G4cout << "Hello born_approx " << m_CrossSectionLeptonHist2D.size() << endl;	 std::cin.get() ; 
+		for (unsigned int j = 0 ; j < m_CrossSectionLeptonHist2D[i].size(); j++) {
+		
+		G4cout << "Hello born_approx " << m_CrossSectionLeptonHist2D[i][j]->GetEntries()<< endl;	 std::cin.get() ; 
+		G4cout << "Hello born_approx " << (m_CrossSectionLeptonHist2D[i]).size() << endl;	 std::cin.get() ; 	
+					
+		m_CrossSectionLeptonHist2D[i][j]->Write();
+		}
+	}
+	f.Write();
+	f.Close();
+////////////////
+
 
 }
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 TH2F*  EventGeneratorInternalPairFormation::BuildCrossSection( double GammaEnergy, string FieldType, double PolarityOrder, string HistName) {
-
+	
 // prepare the fixed parameters
-double Wp_max = GammaEnergy * 0.5  ; // maximum energy of the positron including it's rest mass
+double Wp_max = GammaEnergy - 2*electron_mass_c2  ; // maximum energy of the positron including it's rest mass
 double Ep_max = Wp_max - electron_mass_c2  ; // maximum kinetic energy of the positron
-double Ep_step = Ep_max / 100.0 ; // a step of 0.01 maximum positron energy
+double Wp_step = Wp_max / 200.0 ; // a step of 0.01 maximum positron energy
 int    l = (int)PolarityOrder ; 
 double k = GammaEnergy/electron_mass_c2 ; // Ratio used to simplify calculations
 
+cout << Wp_max << "  " <<   Ep_max << "  " << Wp_step << endl ; cin.get(); 
+ 
 //prepare the variables
 double Wp, Wm, Ep ; // energy of e+ and e- including it's rest mass
 double angle ; // angle of separation between e+ and e-
 double cross_section ; // giving the number of pairs per unit energy, per |dCos(theta)|, per Quantum 
 
-//Calculat the histogram
-TH2F* h2  = new TH2F (HistName.c_str(),HistName.c_str(), 100,0,Ep_max*MeV,  180,0,180*deg) ; 
+//Calculate the histogram
+TH2F* h2  = new TH2F (HistName.c_str(),HistName.c_str(), 200,0,Wp_max*MeV,  1800,0,180) ; 
 
-for (int i = 0 ; i < 100 ; i++) // iterates on energy (x-axis)
-	for (int j = 0 ; j< 180 ; j++) { // iterates on angle (y-axis)
-
+for (int i = 0 ; i < 200 ; i++) // iterates on energy (x-axis)
+	for (int j = 0 ; j< 1800 ; j++) { // iterates on angle (y-axis)
+		
 	 Wp = Wm = Ep = 0 ; //instantiate
-	 Ep = i * Ep_step ; // calculate kinetic energy of e+
-	 angle = j*deg; // calculate angle
+	 //Ep = i * Ep_step ; // calculate kinetic energy of e+
+	 angle = j*0.1; // calculate angle
 	
-	 Wp = Ep - electron_mass_c2 ; // calculate total energy of e+
+	 Wp = i * Wp_step ; // calculate kinetic energy of e+
+	 //Wp = Ep + electron_mass_c2 ; // calculate total energy of e+
 	 Wm = Wp_max - Wp ; // calculate total energy of e-
 	 
 	 //Get Cross section in Born approximation and fill the histogram
-	 cross_section = GetBornCrossSection(FieldType, k, l, Wp, Wm, angle) ; 	
-	 int bin = h2->FindBin(Ep,angle);
+	 cross_section = GetBornCrossSection(FieldType, k, l, Wp, Wm, angle*deg) ;
+	 int bin = h2->FindBin(Wp,angle);
+	 	 
      h2->SetBinContent(bin,cross_section);
 	}
-
+		
 return h2 ; 
 
 }	
@@ -580,12 +560,12 @@ double EventGeneratorInternalPairFormation::GetBornCrossSection(string FieldType
  double cs1, cs2  ; // cross section 
  
  cs1 = cs2 = 0 ;
-  
+    		
  if (FieldType == "M" || FieldType == "Magnetic" || FieldType == "MAGNETIC") {
  	if (l!=0) {
 	 cs1 = api * pp_Q * pow(Q_k,(2*l+1)) / kk_QQ_2 ; 
 	 cs2 = 1 + (Wp*Wm) - ( pp_Q * Pm_Ppcos * Pp_Pmcos ) ;  
-	 return (cs1*cs2) ; 
+	 return (cs1*cs2*sin(angle)) ; 
 	}
 	else cout << " Magnetic monopoles does not exist. Will exit " << endl ; 
  }
@@ -596,12 +576,12 @@ double EventGeneratorInternalPairFormation::GetBornCrossSection(string FieldType
 		 cs2 = (2*l+1) * (Wp*Wm + 1 - (1./3 * Pp * Pm * cos(angle) ) )  ; 
 		 cs2 = cs2 + l * ( Q_k*Q_k - 2 ) * ( Wp*Wm - 1 + ( Pp * Pm * cos(angle) ) ) ; 
 		 cs2 = cs2 + (1./3 * (l+1) * (Pp*Pm)) * ( (3/Q/Q) * (Pm_Ppcos) * (Pp_Pmcos) - cos(angle) ) ; 
-		 return (cs1*cs2) ; 
+		 return (cs1*cs2*sin(angle)) ; 
 	 	} 
  		else {
  		 cs1 = Pp*Pm ;
  		 cs2 = Wp*Wm - M*M + Pp*Pm*cos(angle) ; //  
- 		 return (cs1*cs2) ; 
+ 		 return (cs1*cs2*sin(angle)) ; 
  		}
     }
   	else { 

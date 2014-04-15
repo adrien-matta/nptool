@@ -64,14 +64,10 @@ private: // Target Parameter
   
 private: // The decaying nuclei
   string m_NucleiName;
-private: // the gamma rays property
+private: // lepton conversion properties
   vector<double>  m_BranchingRatio;
   vector<double>  m_CascadeTotalEnergy;
   vector< vector<double> > m_Energies;
-	  vector<string>  m_CrossSectionGammaPath;
-	  vector<string>  m_CrossSectionGammaName;
-	  vector<TH1F*>   m_CrossSectionGammaHist;
- 		 // lepton conversion properties
   vector< vector<string> > m_FieldTypes;
   vector< vector<double> > m_PolarityOrders;
   vector< vector<double> > m_InternalPairCoeff;
@@ -88,11 +84,9 @@ private: // Function providing the distribution of Internal Pair formation event
  double GetBornCrossSection(string field_type, double transition_energy_ratio, int multipolarity, double tot_energy_p, double tot_energy_m, double angle_positron_electron) ;
 
 public: // Managing the different cascade
-        // Add a new Gamma cascade
-   void AddGammaCascade(vector<double> Energies, double BranchingRatio=-1,  
-					string CrossSectionGammaPath="_void_", string CrossSectionGammaName="_void_");
-		// "Append" the information about a Lepton cascade			
-   void AddLeptonCascade(vector<string> FieldTypes, vector<double> PolarityOrders, 
+		// Add the information about a Lepton cascade			
+   void AddLeptonCascade(vector<double> Energies, double BranchingRatio,
+   					vector<string> FieldTypes, vector<double> PolarityOrders, 
 					vector<double> InternalPairCoeff, vector<double> InternalElectronCoeff, 
 					vector<string> InternalCSPairPath, vector<string> InternalCSPairName);  
 										
