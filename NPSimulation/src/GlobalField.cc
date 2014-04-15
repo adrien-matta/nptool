@@ -17,7 +17,10 @@
  *  it to an array.  Each time G4 calculates the next step, it calls         *
  *  GetFieldValue which reads from the array.                                *
  *                                                                           *
- *  The user file must be in the format of x, y, z (mm), bx, by, bz (tesla)  *
+ *  The first line of the user file must be the number of x, y & z points,   *
+ *  then the rest of the data should follow the format of                    *
+ *                           x y z bx by bz                                  *
+ *  where x, y & z are in mm and bx, by & bz are in tesla.                   *
  *  where x, y & z start off at their smallest values... x increases first,  *
  *  then y, then z.                                                          *
  *---------------------------------------------------------------------------*
