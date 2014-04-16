@@ -27,9 +27,10 @@
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
+ *    + Redesign using LorentzVector by Pierre Morfouace                     *
  *    + 20/01/2011: Add support for excitation energy for light ejectile     *
  *                  (N. de Sereville)                                        *
- *     Based on previous work by N.de Sereville                              *
+ *    + Based on previous work by N.de Sereville                             *
  *                                                                           *
  *****************************************************************************/
 
@@ -54,7 +55,6 @@ using namespace NPUNITS;
 
 // ROOT
 #include"TF1.h"
-
 
 ClassImp(Reaction)
 
@@ -89,7 +89,8 @@ Reaction::Reaction(){
   
   fCrossSectionHist = new TH1F(Form("EnergyHist_%i",offset),"Reaction_CS",1,0,180);
   fExcitationEnergyHist = NULL;
-  
+  fDoubleDifferentialCrossSectionHist = NULL ; 
+ 
   fshoot3=true;
   fshoot4=true;
  
@@ -154,8 +155,9 @@ Reaction::Reaction(string reaction){
   
   fCrossSectionHist = new TH1F(Form("EnergyHist_%i",offset),"Reaction_CS",1,0,180);
   fCrossSectionHist = NULL;
-
-  fshoot3=true;
+  fDoubleDifferentialCrossSectionHist = NULL ;
+  
+fshoot3=true;
   fshoot4=true;
   
   initializePrecomputeVariable();
@@ -205,7 +207,15 @@ bool Reaction::CheckKinematic(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 double Reaction::ShootRandomThetaCM(){
   double theta;
-  SetThetaCM( theta=fCrossSectionHist->GetRandom()*deg );
+  if(fDoubleDifferentialCrossSectionHist){
+    // Take a slice in energy
+    TAxis* Y = fDoubleDifferentialCrossSectionHist->GetYaxis();
+    TH1D* Proj = fDoubleDifferentialCrossSectionHist
+          ->ProjectionY("proj",Y->FindBin(fBeamEnergy),Y->FindBin(fBeamEnergy));
+    SetThetaCM( theta=Proj->GetRandom()*deg );
+   }
+  else
+    SetThetaCM( theta=fCrossSectionHist->GetRandom()*deg );
   return theta;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -252,7 +262,6 @@ void Reaction::KineRelativistic(double &ThetaLab3, double &KineticEnergyLab3,
 		cout << "Problem for energy conservation" << endl;
 }
 
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 double Reaction::ReconstructRelativistic(double EnergyLab, double ThetaLab){
   // EnergyLab in MeV
@@ -267,8 +276,6 @@ double Reaction::ReconstructRelativistic(double EnergyLab, double ThetaLab){
   
 	return Eex;
 }
-
-
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //Return ThetaCM
@@ -316,6 +323,7 @@ void Reaction::ReadConfigurationFile(string Path){
   bool check_ExcitationEnergy3 = false ;
   bool check_ExcitationEnergy4 = false ;
   bool check_ExcitationEnergyDistribution = false;
+  bool check_DoubleDifferentialCrossSectionPath = false;
   bool check_CrossSectionPath = false ;
   bool check_shoot3 = false ;
   bool check_shoot4 = false;
@@ -408,7 +416,7 @@ void Reaction::ReadConfigurationFile(string Path){
         string FileName,HistName;
         ReactionFile >> FileName >> HistName;
         if(fVerboseLevel==1) cout << "Reading Cross Section file: " << FileName << endl;
-        TH1F* CStemp = Read1DProfile(FileName, HistName );
+        TH1F* CStemp = Read1DProfile(FileName, HistName);
         
         // multiply CStemp by sin(theta)
         TF1* fsin = new TF1("sin",Form("1/(sin(x*%f/180.))",M_PI),0,180);
@@ -417,6 +425,27 @@ void Reaction::ReadConfigurationFile(string Path){
         delete fsin;
       }
       
+      // Use for multi energy beam simulation
+      // This distribution is the differential Cross section for each Beam energy
+      // The Beam energy distribution itself should not be included originally
+      else if (DataBuffer== "DoubleDifferentialCrossSectionPath=") {
+        check_DoubleDifferentialCrossSectionPath = true ;
+        string FileName,HistName;
+        ReactionFile >> FileName >> HistName;
+        if(fVerboseLevel==1) cout << "Reading Double Differential Cross Section file: " << FileName << endl;
+        TH2F* CStemp = Read2DProfile(FileName, HistName);
+        
+        // multiply CStemp by sin(theta)
+        // X axis is theta CM
+        // Y axis is beam energy
+        // Division affect only X axis
+        TF1* fsin = new TF1("sin",Form("1/(sin(x*%f/180.))",M_PI),0,180);
+        CStemp->Divide(fsin,1);
+
+        SetDoubleDifferentialCrossSectionHist(CStemp);
+        delete fsin;
+      }
+ 
       else if (DataBuffer.compare(0, 17, "HalfOpenAngleMin=") == 0) {
         ReactionFile >> DataBuffer;
         CSHalfOpenAngleMin = atof(DataBuffer.c_str()) * deg;
@@ -459,7 +488,9 @@ void Reaction::ReadConfigurationFile(string Path){
       ///////////////////////////////////////////////////
       //   If all Token found toggle out
       if (check_Beam && check_Target && check_Light && check_Heavy && check_ExcitationEnergy3
-          && (check_ExcitationEnergy4 || check_ExcitationEnergyDistribution ) && check_CrossSectionPath && check_shoot4 && check_shoot3)
+          && (check_ExcitationEnergy4 || check_ExcitationEnergyDistribution ) 
+          && (check_CrossSectionPath || check_DoubleDifferentialCrossSectionPath) 
+          && check_shoot4 && check_shoot3)
         ReadingStatus = false;
     }
   }
@@ -469,7 +500,6 @@ void Reaction::ReadConfigurationFile(string Path){
   ReactionFile.close();
   initializePrecomputeVariable();
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Reaction::initializePrecomputeVariable(){
@@ -524,9 +554,6 @@ void Reaction::SetNuclei3(double EnergyLab, double ThetaLab){
 	fExcitation4 = ReconstructRelativistic(EnergyLab, ThetaLab);
 }
 
-
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////
 TGraph* Reaction::GetKinematicLine3(double AngleStep_CM){
 	
@@ -546,7 +573,6 @@ TGraph* Reaction::GetKinematicLine3(double AngleStep_CM){
 	
 	return(fKineLine3);
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 TGraph* Reaction::GetKinematicLine4(double AngleStep_CM){
@@ -627,8 +653,6 @@ TGraph* Reaction::GetThetaLabVersusThetaCM(double AngleStep_CM){
 	return(fAngleLine);
 }
 
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Reaction::PrintKinematic(){
 	int size = 360;
@@ -651,7 +675,6 @@ void Reaction::PrintKinematic(){
   }
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Reaction::SetCSAngle(double CSHalfOpenAngleMin,double CSHalfOpenAngleMax){
   
@@ -660,17 +683,4 @@ void Reaction::SetCSAngle(double CSHalfOpenAngleMin,double CSHalfOpenAngleMax){
       fCrossSectionHist->SetBinContent(i,0);
   
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 

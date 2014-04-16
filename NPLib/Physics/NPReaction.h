@@ -90,6 +90,7 @@ namespace NPL{
       double   fExcitation3;             // Excitation energy in MeV
       double   fExcitation4;             // Excitation energy in MeV
       TH1F*    fCrossSectionHist;        // Differential cross section in CM frame
+      TH2F*    fDoubleDifferentialCrossSectionHist; // Diff. CS CM frame vs Beam E
       TH1F*    fExcitationEnergyHist;    // Distribution of Excitation energy
     public:
       // Getters and Setters
@@ -101,8 +102,11 @@ namespace NPL{
       void     SetExcitationLight(double exci)  {fExcitation3 = exci; initializePrecomputeVariable();}
       void     SetExcitationHeavy(double exci)  {fExcitation4 = exci; initializePrecomputeVariable();}
       void     SetVerboseLevel(int verbose)     {fVerboseLevel = verbose;}
-      void     SetCrossSectionHist  (TH1F*  CrossSectionHist)     {delete fCrossSectionHist; fCrossSectionHist   = CrossSectionHist;}
+      void     SetCrossSectionHist  (TH1F*  CrossSectionHist)     
+        {delete fCrossSectionHist; fCrossSectionHist   = CrossSectionHist;}
 
+      void     SetDoubleDifferentialCrossSectionHist(TH2F* CrossSectionHist) 
+        {fDoubleDifferentialCrossSectionHist = CrossSectionHist;}
       double   GetBeamEnergy() const            {return fBeamEnergy;}
       double   GetThetaCM() const               {return fThetaCM;}
       double   GetExcitation3() const           {return fExcitation3;}
