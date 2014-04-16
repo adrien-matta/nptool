@@ -28,6 +28,7 @@
 
 // G4 Geometry headers
 #include "G4Cons.hh"
+#include "G4Tubs.hh"
 #include "G4UnionSolid.hh"
 #include "G4SubtractionSolid.hh"
 
@@ -205,8 +206,9 @@ void ANUDetDummyShape::ConstructDetector(G4LogicalVolume* world)
   // Construct shape of detector holder
   G4double ANUHolder_InnerRadius = 1.*mm;
   G4double ANUHolder_OuterRadius = 25.*mm;
-  G4double ANUHolder_HalfThickness = 2.*mm;
-  G4double ANUHolder_TargetDistance = 352.*mm;
+  G4double ANUHolder_HalfThickness = 4.5*mm;
+  G4double ANUHolder_TargetDistance = 350.*mm;
+  G4double ANUHolder_TargetFaceLip = 0.*mm;
   G4Cons* ANUHolder = new G4Cons("ANUHolder", ANUHolder_InnerRadius, ANUHolder_OuterRadius, 
           ANUHolder_InnerRadius, ANUHolder_OuterRadius, ANUHolder_HalfThickness, 0., 2.*M_PI*rad);
 
@@ -256,8 +258,45 @@ void ANUDetDummyShape::ConstructDetector(G4LogicalVolume* world)
   G4LogicalVolume* ANUHolderLogic = new G4LogicalVolume(ANUHolderSubtraction[NbrOfDetectors-1], Al, "ANUHolder", 0, 0, 0);
   locate.setX(0.);
   locate.setY(0.);
-  locate.setZ(ANUHolder_TargetDistance);
+  locate.setZ(ANUHolder_TargetDistance + ANUHolder_HalfThickness - ANUHolder_TargetFaceLip);
   new G4PVPlacement(rotate, locate, ANUHolderLogic, "ANUHolder", world, false, 0);
+  
+  // Build the tube that contains all the physical elements
+  G4double ANUTubeInnerRadius = 42.5*mm;
+  G4double ANUTubeOuterRadius = 50.*mm;
+  G4double ANUTubeHalfLength = 250.*mm;
+  G4double ANUTubeZOffset = 150.*mm;
+  G4Tubs* ANUTubeShape = new G4Tubs("ANUTubeShape", ANUTubeInnerRadius, ANUTubeOuterRadius, ANUTubeHalfLength, 0., 2.*M_PI);
+  G4LogicalVolume* ANUTube = new G4LogicalVolume(ANUTubeShape, Al, "ANUTube", 0, 0, 0);
+  G4VisAttributes* ANUTubeVisAtt = new G4VisAttributes(G4Colour(0.,1.,1.,0.1));
+  ANUTube->SetVisAttributes(ANUTubeVisAtt);  
+  locate.setZ(ANUTubeZOffset);
+  new G4PVPlacement(rotate, locate, ANUTube, "ANUTube", world, false, 0);
+  
+  // Build the first (target end) baffle
+  G4double ANUBaffleOneSmallRadius = 4.*mm;
+  G4double ANUBaffleOneLargeRadius = 8.*mm;
+  G4double ANUBaffleOneHalfLength = 20.*mm;
+  G4double ANUBaffleOneZOffset = 15.*mm;
+  G4Cons* ANUBaffleOneShape = new G4Cons("ANUBaffleOneShape",
+                                         0., ANUBaffleOneSmallRadius, 0., ANUBaffleOneLargeRadius,
+                                         ANUBaffleOneHalfLength, 0., 2.*M_PI);
+  G4LogicalVolume* ANUBaffleOne = new G4LogicalVolume(ANUBaffleOneShape, Al, "ANUBaffleOne", 0, 0, 0);
+  locate.setZ(ANUBaffleOneZOffset + ANUBaffleOneHalfLength);
+  new G4PVPlacement(rotate, locate, ANUBaffleOne, "ANUBaffleOne", world, false, 0);
+  
+  // Build the second (detector end) baffle
+  G4double ANUBaffleTwoSmallRadius = 4.*mm;
+  G4double ANUBaffleTwoLargeRadius = 8.*mm;
+  G4double ANUBaffleTwoHalfLength = 20.*mm;
+  G4double ANUBaffleTwoZOffset = 150.*mm;
+  G4Cons* ANUBaffleTwoShape = new G4Cons("ANUBaffleTwoShape", 
+                                          0., ANUBaffleTwoSmallRadius, 0., ANUBaffleTwoLargeRadius,
+                                          ANUBaffleTwoHalfLength, 0., 2.*M_PI);
+  G4LogicalVolume* ANUBaffleTwo = new G4LogicalVolume(ANUBaffleTwoShape, Al, "ANUBaffleTwo", 0, 0, 0);
+  locate.setZ(ANUBaffleTwoZOffset + ANUBaffleTwoHalfLength);
+  new G4PVPlacement(rotate, locate, ANUBaffleTwo, "ANUBaffleTwo", world, false, 0);
+  
   
 }
 // --------------------
@@ -404,7 +443,7 @@ void ANUDetDummyShape::ReadSensitive(const G4Event* event)
          Energy_itr = EnergyHitMap->GetMap()->begin();
          for (G4int l = 0 ; l < sizeE ; l++) {
             G4int ETrackID  =   Energy_itr->first - N;
-            G4double E     = *(Energy_itr->second); // This
+            G4double E     = *(Energy_itr->second); 
             if (ETrackID == NTrackID) {
                ms_Event->SetANUSiLiEEnergy(RandGauss::shoot(E, ResoSiLi));
               }
