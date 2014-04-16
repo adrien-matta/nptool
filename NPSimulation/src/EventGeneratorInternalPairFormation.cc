@@ -256,8 +256,8 @@ void EventGeneratorInternalPairFormation::ReadConfiguration(string Path, int Occ
           
           // Cascade ended
           if(check_E && check_BranchingRatio && check_Field && check_Polarity && check_Ice && check_Ipf && check_CSLeptonPath){ 
-			// add the lepton cascade
-			AddLeptonCascade(E, BranchingRatio, Field, Polarity, InternalPairCoeff, InternalElectronCoeff, CSpairPath, CSpairName);
+		// add the lepton cascade
+		AddLeptonCascade(E, BranchingRatio, Field, Polarity, InternalPairCoeff, InternalElectronCoeff, CSpairPath, CSpairName);
             CascadeStatus = false;
           }
          
@@ -475,11 +475,11 @@ void EventGeneratorInternalPairFormation::PrepareCascade(){
 TFile f("/opt/NPTool/Outputs/Simulation/InspectPair.root","RECREATE") ;
 	f.cd();
 	for (unsigned int i = 0; i < m_CrossSectionLeptonHist2D.size(); i++) {
-		 G4cout << "Hello born_approx " << m_CrossSectionLeptonHist2D.size() << endl;	 std::cin.get() ; 
-		for (unsigned int j = 0 ; j < m_CrossSectionLeptonHist2D[i].size(); j++) {
 		
-		G4cout << "Hello born_approx " << m_CrossSectionLeptonHist2D[i][j]->GetEntries()<< endl;	 std::cin.get() ; 
 		G4cout << "Hello born_approx " << (m_CrossSectionLeptonHist2D[i]).size() << endl;	 std::cin.get() ; 	
+
+		for (unsigned int j = 0 ; j < m_CrossSectionLeptonHist2D[i].size(); j++) {
+		G4cout << "Hello born_approx " << m_CrossSectionLeptonHist2D[i][j]->GetEntries()<< endl;	 std::cin.get() ; 
 					
 		m_CrossSectionLeptonHist2D[i][j]->Write();
 		}
@@ -493,94 +493,127 @@ TFile f("/opt/NPTool/Outputs/Simulation/InspectPair.root","RECREATE") ;
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-TH2F*  EventGeneratorInternalPairFormation::BuildCrossSection( double GammaEnergy, string FieldType, double PolarityOrder, string HistName) {
-	
-// prepare the fixed parameters
-double Wp_max = GammaEnergy - 2*electron_mass_c2  ; // maximum energy of the positron including it's rest mass
-double Ep_max = Wp_max - electron_mass_c2  ; // maximum kinetic energy of the positron
-double Wp_step = Wp_max / 200.0 ; // a step of 0.01 maximum positron energy
-int    l = (int)PolarityOrder ; 
-double k = GammaEnergy/electron_mass_c2 ; // Ratio used to simplify calculations
+TH2F*  EventGeneratorInternalPairFormation::BuildCrossSection( double TransitionEnergy, string FieldType, double PolarityOrder, string HistName) {
 
-cout << Wp_max << "  " <<   Ep_max << "  " << Wp_step << endl ; cin.get(); 
- 
 //prepare the variables
-double Wp, Wm, Ep ; // energy of e+ and e- including it's rest mass
+double Ep, Em ; // kinetic energy of e+ and e-
 double angle ; // angle of separation between e+ and e-
 double cross_section ; // giving the number of pairs per unit energy, per |dCos(theta)|, per Quantum 
 
-//Calculate the histogram
-TH2F* h2  = new TH2F (HistName.c_str(),HistName.c_str(), 200,0,Wp_max*MeV,  1800,0,180) ; 
+// prepare the fixed parameters
+int    l = (int)PolarityOrder ; 
+int Nbinx = 90 ; // energy
+int Nbiny = 180; // angle
 
-for (int i = 0 ; i < 200 ; i++) // iterates on energy (x-axis)
-	for (int j = 0 ; j< 1800 ; j++) { // iterates on angle (y-axis)
-		
-	 Wp = Wm = Ep = 0 ; //instantiate
-	 //Ep = i * Ep_step ; // calculate kinetic energy of e+
-	 angle = j*0.1; // calculate angle
-	
-	 Wp = i * Wp_step ; // calculate kinetic energy of e+
-	 //Wp = Ep + electron_mass_c2 ; // calculate total energy of e+
-	 Wm = Wp_max - Wp ; // calculate total energy of e-
-	 
+double Ep_max = TransitionEnergy - 2*electron_mass_c2  ; // maximum energy of the positron
+double Ep_min = 0 ; // minimum energy of the positron
+double angle_max = 180  ; // maximum separation angle
+double angle_min = 0  ; // minimum separation angle
+
+double M = electron_mass_c2 ; 
+ 
+//prepare the histogram
+TH2F* h2  = new TH2F (HistName.c_str(),HistName.c_str(),       Nbinx,Ep_min,Ep_max,      Nbiny,angle_min,angle_max) ; 
+
+// intantiate the start values
+angle = angle_min ; 
+Ep = Ep_min ;
+Em = Ep_max - Ep ;  
+
+int counter = 0 ;  
+while (Ep < Ep_max) // iterates on energy (x-axis)
+{
+
+	while (angle < angle_max) // iterates on angle (y-axis)
+	{		
 	 //Get Cross section in Born approximation and fill the histogram
-	 cross_section = GetBornCrossSection(FieldType, k, l, Wp, Wm, angle*deg) ;
-	 int bin = h2->FindBin(Wp,angle);
-	 	 
-     h2->SetBinContent(bin,cross_section);
-	}
-		
+	 int bin = h2->FindBin(Ep,angle);
+	 cross_section = GetBornCrossSection(FieldType, TransitionEnergy, l, Ep*MeV, Em*MeV, angle*deg) ;	 
+     	 //if(cross_section < 0.01 )
+	 h2->SetBinContent(bin,cross_section);
+	 
+	 // increment angle 
+	 angle = angle + ((angle_max - angle_min)/Nbiny);
+	 
+	 counter ++ ;
+	  
+	} 
+	 // reset the angle
+	 angle = angle_min ;
+	 //increment kinetic energy values of e- and e+
+	 Ep = Ep + ((Ep_max - Ep_min)/Nbinx) ; 
+	 Em = Ep_max - Ep ;
+}
+
+cout << counter << endl ; cin.get() ; 	
+	
 return h2 ; 
 
 }	
 	
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-double EventGeneratorInternalPairFormation::GetBornCrossSection(string FieldType, double k, int l, double Wp, double Wm, double angle) { //Born approximation  (units for indication)
+double EventGeneratorInternalPairFormation::GetBornCrossSection(string FieldType, double TransitionEnergy, int l, double Ep, double Em, double angle) { //Born approximation 
  
 // for PolarityOrder > 0 : the cross section is a parametric function calculated by M.E.Rose [Phys. Rev. 76 (1949) 678 ] 
 // this calculation is valid for Z < 41, Gamma Energy > 2.5 MeV
 // for PolarityOrder = 0 : the cross section is as parametric function calculated by J.R.Oppenheimer [Phys. Rev. 60 (1941) 159 ]
 // this calculation is valid for Z < ??, Gamma Energy > ?? MeV 
 // In both cases more precise calculations could be made that are not addressed here and could be found in the litterature.
-	  		
+
+// N.B : in Rose paper,  hbar =  c  =  electron mass = 1, 
+// all energy values should be devided by electron rest mass energy, 
+// fine structure constant = elm_coupling/hbarc is multiplied by hbarc.
+// This will not affect 
+
 //Calculate primary parameters 
- double api = 2*fine_structure_const/pi ;
- double M = electron_mass_c2 ; // electron mass
+ double api = 2*(fine_structure_const*hbarc)/pi ; 
+ double M = electron_mass_c2 /electron_mass_c2  ; // electron mass in units of electron_mass
+ double k = TransitionEnergy /electron_mass_c2 ; // Energy of Transition in units of electron_mass
+ 	Ep = Ep /electron_mass_c2 ; // Energy of Transition in units of electron_mass
+ 	Em = Em /electron_mass_c2 ; // Energy of Transition in units of electron_mass
  
+// calculate total (kinetic + rest mass) energy of e+ and e-
+ double Wp = Ep + M ;   
+ double Wm = Em + M ;
  double Pp = sqrt(Wp*Wp - M*M) ; //  momentum magnitudes of e+ 
  double Pm = sqrt(Wm*Wm - M*M) ; //                         e- 	
- double Q = Pp*Pp+ Pm*Pm + 2*Pp*Pm*cos(angle) ; // sum of momneta 	
- 
+ double Q = Pp*Pp + Pm*Pm + 2*Pp*Pm*cos(angle) ; // sum of momenta 	
+	 
  //Calculate secondary parameters
  double Q_k = Q/k ; 
- double kk_QQ_2 = (k*k - Q*Q) * (k*k - Q*Q)  ;  
+ double kk_QQ = 1 ; //(k*k - Q*Q)  ;   MHD : Need to check the theory! 
  double pp_Q =  Pp*Pm/Q ;
- double Pp_Pmcos =  Pp + Pm * cos(angle) ;
- double Pm_Ppcos =  Pm + Pp * cos(angle) ; 
- double cs1, cs2  ; // cross section 
- 
- cs1 = cs2 = 0 ;
-    		
+ double pp_QQ =  Pp*Pm/(Q*Q) ;
+ double Pp_Pmcos =  Pp + (Pm * cos(angle)) ;
+ double Pm_Ppcos =  Pm + (Pp * cos(angle)) ; 
+  
+ // cross section parts
+ double cs1 = 0  ; 
+ double cs2 = 0  ;
+     		
  if (FieldType == "M" || FieldType == "Magnetic" || FieldType == "MAGNETIC") {
- 	if (l!=0) {
-	 cs1 = api * pp_Q * pow(Q_k,(2*l+1)) / kk_QQ_2 ; 
-	 cs2 = 1 + (Wp*Wm) - ( pp_Q * Pm_Ppcos * Pp_Pmcos ) ;  
+ 	if (l!=0) { // Ml (l>0)
+	 cs1 = api * pp_Q * pow(Q_k,(2*l+1)) / (kk_QQ*kk_QQ) ;
+	 //cs2 = 1 + (Wp*Wm) - ( pp_QQ * Pm_Ppcos * Pp_Pmcos ) ;
+	 cs2 = M*M + (Wp*Wm) - ( pp_QQ * Pm_Ppcos * Pp_Pmcos ) ; 
+
+	 //return ( pow(Q_k,(2*l+1)) / kk_QQ_2 ) ; 
 	 return (cs1*cs2*sin(angle)) ; 
 	}
 	else cout << " Magnetic monopoles does not exist. Will exit " << endl ; 
  }
  else 
 	if (FieldType == "E" || FieldType == "Electric" || FieldType == "ELECTRIC") {
-		if (l>0) {
-		 cs1 = api/(l+1) * pp_Q * pow(Q_k,(2*l-1)) / kk_QQ_2 ; 
-		 cs2 = (2*l+1) * (Wp*Wm + 1 - (1./3 * Pp * Pm * cos(angle) ) )  ; 
+		if (l>0) { // El (l>0) 
+		 cs1 = api/(l+1) * pp_Q * pow(Q_k,(2*l-1)) / (kk_QQ*kk_QQ) ;
+		 cs2 = (2*l+1) * (Wp*Wm + 1 - (1./3 * Pp * Pm * cos(angle) ) )  ;
 		 cs2 = cs2 + l * ( Q_k*Q_k - 2 ) * ( Wp*Wm - 1 + ( Pp * Pm * cos(angle) ) ) ; 
-		 cs2 = cs2 + (1./3 * (l+1) * (Pp*Pm)) * ( (3/Q/Q) * (Pm_Ppcos) * (Pp_Pmcos) - cos(angle) ) ; 
+		 cs2 = cs2 +  1./3 * (l-1) * (Pp*Pm)  * ( (3/(Q*Q)) * (Pm_Ppcos) * (Pp_Pmcos) - cos(angle) ) ;
 		 return (cs1*cs2*sin(angle)) ; 
 	 	} 
- 		else {
+ 		else { // E0 case 
  		 cs1 = Pp*Pm ;
- 		 cs2 = Wp*Wm - M*M + Pp*Pm*cos(angle) ; //  
+ 		 cs2 = (Wp*Wm - M*M + Pp*Pm*cos(angle)) ;  
  		 return (cs1*cs2*sin(angle)) ; 
  		}
     }

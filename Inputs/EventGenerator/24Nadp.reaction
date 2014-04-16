@@ -45,18 +45,26 @@ PairDecay 25Na
     FieldTypes= E
     PolarityOrders= 0
     InternalPairCoeff= 80
-    DifferentialCrossSectionLepton= born_approx	E0Pair
+    DifferentialCrossSectionLepton= born_approx	 E0Pair
     InternalElectronCoeff= 20
 
     
   Cascade
-    BranchingRatio= 50
-    Energies= 3.2148  3.2148
-    FieldTypes= E M 
-    PolarityOrders= 2 2  
-    InternalPairCoeff= 0.1 0.2 
-    InternalElectronCoeff= 0.4 0.1  
-    DifferentialCrossSectionLepton=  born_approx 	E2Pair         born_approx	M2Pair      
+    BranchingRatio= 40
+    Energies= 3.2148  3.2148  3.2148  3.2148
+    FieldTypes= E E E E  
+    PolarityOrders= 1 2 3 4   
+    InternalPairCoeff= 0.1 0.2  0.3 0.4
+    InternalElectronCoeff= 0.4 0.4  0.4 0.4
+    DifferentialCrossSectionLepton=  born_approx E1Pair    born_approx	E2Pair     born_approx	E3Pair    born_approx    E4Pair 
     
+   Cascade
+    BranchingRatio= 50
+    Energies= 3.2148  3.2148  3.2148  3.2148
+    FieldTypes= M M M M
+    PolarityOrders= 2 3 4 5  
+    InternalPairCoeff= 0.1 0.2  0.3 0.4
+    InternalElectronCoeff= 0.4 0.4  0.4 0.4
+    DifferentialCrossSectionLepton=     born_approx	M2Pair     born_approx	M3Pair    born_approx    M4Pair  born_approx M5Pair
     
     
