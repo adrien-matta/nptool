@@ -287,12 +287,11 @@ void ANUDetDummyShape::ReadSensitive(const G4Event* event)
    //////////////////////// Used to Read Event Map of detector //////////////////////////
    //////////////////////////////////////////////////////////////////////////////////////
    
-   // First Stage
    std::map<G4int, G4int*>::iterator    DetectorNumber_itr;
    std::map<G4int, G4double*>::iterator Energy_itr;
    std::map<G4int, G4double*>::iterator Time_itr;
-   std::map<G4int, G4double*>::iterator X_itr;
-   std::map<G4int, G4double*>::iterator Y_itr;
+   std::map<G4int, G4int*>::iterator    X_itr;
+   std::map<G4int, G4int*>::iterator    Y_itr;
    std::map<G4int, G4double*>::iterator Pos_X_itr;
    std::map<G4int, G4double*>::iterator Pos_Y_itr;
    std::map<G4int, G4double*>::iterator Pos_Z_itr;
@@ -302,8 +301,8 @@ void ANUDetDummyShape::ReadSensitive(const G4Event* event)
    G4THitsMap<G4int>*    DetectorNumberHitMap;
    G4THitsMap<G4double>* EnergyHitMap;
    G4THitsMap<G4double>* TimeHitMap;
-   G4THitsMap<G4double>* XHitMap;
-   G4THitsMap<G4double>* YHitMap;
+   G4THitsMap<G4int>*    XHitMap;
+   G4THitsMap<G4int>*    YHitMap;
    G4THitsMap<G4double>* PosXHitMap;
    G4THitsMap<G4double>* PosYHitMap;
    G4THitsMap<G4double>* PosZHitMap;
@@ -328,18 +327,16 @@ void ANUDetDummyShape::ReadSensitive(const G4Event* event)
    TimeHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripTimeCollectionID))                        ;
    Time_itr = TimeHitMap->GetMap()->begin()                                                              ;
 
-  
    //Strip Number X
    G4int StripXCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("SiLiScorerANUDummyShape/StripIDFront")    ;
-   XHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripXCollectionID))                              ;
+   XHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripXCollectionID))                              ;
    X_itr = XHitMap->GetMap()->begin()                                                                    ;
 
    //Strip Number Y
    G4int StripYCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("SiLiScorerANUDummyShape/StripIDBack");
-   YHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripYCollectionID))                              ;
+   YHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripYCollectionID))                              ;
    Y_itr = YHitMap->GetMap()->begin()                                                                    ;
-  
-  
+
    //Interaction Coordinate X
    G4int InterCoordXCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("SiLiScorerANUDummyShape/InterCoordX")    ;
    PosXHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordXCollectionID))                              ;
@@ -363,7 +360,7 @@ void ANUDetDummyShape::ReadSensitive(const G4Event* event)
    //Interaction Coordinate Angle Phi
    G4int InterCoordAngPhiCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("SiLiScorerANUDummyShape/InterCoordAngPhi")    ;
    AngPhiHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordAngPhiCollectionID))                              ;
-   Ang_Phi_itr = AngPhiHitMap->GetMap()->begin()                                                                    ;
+   Ang_Phi_itr = AngPhiHitMap->GetMap()->begin()  ;
 
 
 
@@ -375,8 +372,7 @@ void ANUDetDummyShape::ReadSensitive(const G4Event* event)
    G4int sizeX = XHitMap->entries();
    G4int sizeY = YHitMap->entries();
 
-
-   //G4cout << "sizeN:" << sizeN << G4endl;
+   // std::cout << "sizeN:" << sizeN << std::endl;
 
 
    if (sizeE != sizeT || sizeT != sizeX || sizeX != sizeY) {
@@ -391,12 +387,12 @@ void ANUDetDummyShape::ReadSensitive(const G4Event* event)
 
    // Loop on SiLi number
    for (G4int l = 0; l < sizeN; l++) {
-      G4int N     = *(DetectorNumber_itr->second);
+      G4double N     = *(DetectorNumber_itr->second);
       G4int NTrackID =   DetectorNumber_itr->first - N;
 
-      //G4cout <<"N:" <<N << G4endl;
-      //G4cout <<"DetectorNumber_itr->first:" << DetectorNumber_itr->first <<  G4endl;
-      //G4cout <<"NTrackID:" <<NTrackID << G4endl;
+      // std::cout <<"N:" <<N << std::endl;
+      // std::cout <<"DetectorNumber_itr->first:" << DetectorNumber_itr->first <<  std::endl;
+      // std::cout <<"NTrackID:" <<NTrackID << std::endl;
 
 
       if (N > 0) {
@@ -405,9 +401,10 @@ void ANUDetDummyShape::ReadSensitive(const G4Event* event)
          ms_Event->SetANUSiLiTDetectorNbr(m_index["DummyShape"] + N);
 
          // Energy
+         Energy_itr = EnergyHitMap->GetMap()->begin();
          for (G4int l = 0 ; l < sizeE ; l++) {
             G4int ETrackID  =   Energy_itr->first - N;
-            G4double E     = *(Energy_itr->second);
+            G4double E     = *(Energy_itr->second); // This
             if (ETrackID == NTrackID) {
                ms_Event->SetANUSiLiEEnergy(RandGauss::shoot(E, ResoSiLi));
               }
@@ -420,15 +417,36 @@ void ANUDetDummyShape::ReadSensitive(const G4Event* event)
             G4int TTrackID  =   Time_itr->first - N;
             G4double T     = *(Time_itr->second);
             if (TTrackID == NTrackID) {
-               T = RandGauss::shoot(T, ResoTimeGpd);
                ms_Event->SetANUSiLiTTime(RandGauss::shoot(T, ResoTimeGpd));
            }
             Time_itr++;
          }
+         
+         // Strip X
+         X_itr = XHitMap->GetMap()->begin();
+         for (G4int h = 0 ; h < sizeX ; h++) {
+            G4int XTrackID  =   X_itr->first - N;
+            G4int X         = *(X_itr->second);
+            if (XTrackID == NTrackID) {
+               //ms_Event->SetSiLiFrontEStripNbr(X);
+            }
+            X_itr++;
+         }
+
+         // Strip Y
+         Y_itr = YHitMap->GetMap()->begin()  ;
+         for (G4int h = 0 ; h < sizeY ; h++) {
+            G4int YTrackID  =   Y_itr->first - N;
+            G4int Y         = *(Y_itr->second);
+            if (YTrackID == NTrackID) {
+               //ms_Event->SetSiLiBackEStripNbr(Y);
+            }
+            Y_itr++;
+         }
 
          // Pos X
          Pos_X_itr = PosXHitMap->GetMap()->begin();
-         for (G4int h = 0 ; h < sizeX ; h++) {
+         for (G4int h = 0 ; h < PosXHitMap->entries() ; h++) {
             G4int PosXTrackID =   Pos_X_itr->first - N    ;
             G4double PosX     = *(Pos_X_itr->second)      ;
             if (PosXTrackID == NTrackID) {
@@ -439,7 +457,7 @@ void ANUDetDummyShape::ReadSensitive(const G4Event* event)
 
          // Pos Y
          Pos_Y_itr = PosYHitMap->GetMap()->begin();
-         for (G4int h = 0 ; h < sizeX ; h++) {
+         for (G4int h = 0 ; h < PosYHitMap->entries() ; h++) {
             G4int PosYTrackID =   Pos_Y_itr->first - N    ;
             G4double PosY     = *(Pos_Y_itr->second)      ;
             if (PosYTrackID == NTrackID) {
@@ -450,18 +468,18 @@ void ANUDetDummyShape::ReadSensitive(const G4Event* event)
 
          // Pos Z
          Pos_Z_itr = PosZHitMap->GetMap()->begin();
-         for (G4int h = 0 ; h < sizeX ; h++) {
+         for (G4int h = 0 ; h < PosZHitMap->entries() ; h++) {
             G4int PosZTrackID =   Pos_Z_itr->first - N    ;
             G4double PosZ     = *(Pos_Z_itr->second)      ;
             if (PosZTrackID == NTrackID) {
-	      ms_InterCoord->SetDetectedPositionZ(RandGauss::shoot(PosZ, ResoSiLi)) ; // for ANU !!!!
+	            ms_InterCoord->SetDetectedPositionZ(PosZ) ;
             }
             Pos_Z_itr++;
          }
 
          // Angle Theta
          Ang_Theta_itr = AngThetaHitMap->GetMap()->begin();
-         for (G4int h = 0 ; h < sizeX ; h++) {
+         for (G4int h = 0; h < AngThetaHitMap->entries(); h++) {
             G4int AngThetaTrackID =   Ang_Theta_itr->first - N    ;
             G4double AngTheta     = *(Ang_Theta_itr->second)      ;
             if (AngThetaTrackID == NTrackID) {
@@ -472,7 +490,7 @@ void ANUDetDummyShape::ReadSensitive(const G4Event* event)
 
          // Angle Phi
          Ang_Phi_itr = AngPhiHitMap->GetMap()->begin();
-         for (G4int h = 0 ; h < sizeX ; h++) {
+         for (G4int h = 0 ; h < AngPhiHitMap->entries() ; h++) {
             G4int AngPhiTrackID =   Ang_Phi_itr->first - N    ;
             G4double AngPhi     = *(Ang_Phi_itr->second)      ;
             if (AngPhiTrackID == NTrackID) {
@@ -482,21 +500,22 @@ void ANUDetDummyShape::ReadSensitive(const G4Event* event)
          }
 
 
-         DetectorNumber_itr++;
+         
       }
-
-      // clear map for next event
-      DetectorNumberHitMap    -> clear();
-      EnergyHitMap            -> clear();
-      TimeHitMap              -> clear();
-      XHitMap                 -> clear();
-      YHitMap                 -> clear();
-      PosXHitMap              -> clear();
-      PosYHitMap              -> clear();
-      PosZHitMap              -> clear();
-      AngThetaHitMap          -> clear();
-      AngPhiHitMap            -> clear();
+      DetectorNumber_itr++;
+      
    }
+  // clear map for next event
+  DetectorNumberHitMap    -> clear();
+  EnergyHitMap            -> clear();
+  TimeHitMap              -> clear();
+  XHitMap                 -> clear();
+  YHitMap                 -> clear();
+  PosXHitMap              -> clear();
+  PosYHitMap              -> clear();
+  PosZHitMap              -> clear();
+  AngThetaHitMap          -> clear();
+  AngPhiHitMap            -> clear();
 }
 
 
