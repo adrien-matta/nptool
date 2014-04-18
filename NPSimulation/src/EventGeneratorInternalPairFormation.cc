@@ -517,7 +517,7 @@ void EventGeneratorInternalPairFormation::PrepareCascade(){
 
 //Inspect the histograms 
 
-TFile f("/opt/NPTool/Outputs/Simulation/InspectPair.root","RECREATE") ;
+TFile f("../Outputs/Simulation/InspectPair.root","RECREATE") ;
 	f.cd();
 	for (unsigned int i = 0; i < m_CrossSectionLeptonHist2D.size(); i++) {
 		for (unsigned int j = 0 ; j < m_CrossSectionLeptonHist2D[i].size(); j++) {
