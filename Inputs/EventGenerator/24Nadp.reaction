@@ -23,7 +23,7 @@ TwoBodyReaction
 	Light= 1H
 	Heavy= 25Na
 	ExcitationEnergyLight= 0.0
-	ExcitationEnergyHeavy= 2.2
+	ExcitationEnergyHeavy= 10
         CrossSectionPath= flat.txt	CSR
 	ShootLight= 1
 	ShootHeavy= 1
@@ -40,7 +40,7 @@ TwoBodyReaction
     
 PairDecay 25Na
   Cascade
-    BranchingRatio= 10
+    BranchingRatio= 90
     Energies= 7.654
     FieldTypes= E
     PolarityOrders= 0
@@ -50,7 +50,7 @@ PairDecay 25Na
 
     
   Cascade
-    BranchingRatio= 40
+    BranchingRatio= 5
     Energies= 3.2148  3.2148  3.2148  3.2148
     FieldTypes= E E E E  
     PolarityOrders= 1 2 3 4   
@@ -59,7 +59,7 @@ PairDecay 25Na
     DifferentialCrossSectionLepton=  born_approx E1Pair    born_approx	E2Pair     born_approx	E3Pair    born_approx    E4Pair 
     
    Cascade
-    BranchingRatio= 50
+    BranchingRatio= 5
     Energies= 3.2148  3.2148  3.2148  3.2148
     FieldTypes= M M M M 
     PolarityOrders= 1 2 3 4   

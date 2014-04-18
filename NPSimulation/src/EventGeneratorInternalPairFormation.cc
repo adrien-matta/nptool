@@ -333,7 +333,7 @@ void EventGeneratorInternalPairFormation::GenerateEvent(G4Event*){
   for (unsigned int i = 0; i < m_Energies[ChoosenCascade].size(); i++) {
     
 	// positron parameters and definition
-	G4ParticleDefinition* positronDefinition = G4ParticleTable::GetParticleTable()->FindParticle("positron");
+	G4ParticleDefinition* positronDefinition = G4ParticleTable::GetParticleTable()->FindParticle("e+");
 	G4ThreeVector positronDirection;
 	double theta_positron=0;
 	double phi_positron=0;
@@ -341,7 +341,7 @@ void EventGeneratorInternalPairFormation::GenerateEvent(G4Event*){
 
 	
 	//electron parameters and definition     
-	G4ParticleDefinition* electronDefinition = G4ParticleTable::GetParticleTable()->FindParticle("electron");
+	G4ParticleDefinition* electronDefinition = G4ParticleTable::GetParticleTable()->FindParticle("e-");
 	G4ThreeVector electronDirection;
 	double theta_electron=0;
 	double phi_electron=0;
@@ -352,40 +352,33 @@ void EventGeneratorInternalPairFormation::GenerateEvent(G4Event*){
 	double phi_separation=0;
 	
 	 // Get the separation angle and the positron energy from the given cross section (theta_separation vs Energy_positron)   
-      m_CrossSectionHist2D[ChoosenCascade]->GetRandom2(&energy_positron, &theta_separation);
-      cout << energy_positron << "  " << theta_separation << endl ; cin.get() ;
-      
-
-	  // Build electron direction with respect to the z-axis direction 
-      phi_separation   = RandFlat::shoot() * 2. *pi; 
+      m_CrossSectionLeptonHist2D[ChoosenCascade][i]->GetRandom2(energy_positron, theta_separation);
       theta_separation = theta_separation*deg ;
       
-	  cout << energy_positron << "  " << theta_separation << endl ; cin.get() ;        
-      
-      //create the positron direction according to isotropic distribution
+      //Build the positron direction according to isotropic distribution
       double cos_theta = RandFlat::shoot();   
       theta_positron = acos(cos_theta); 
       phi_positron   = RandFlat::shoot() * 2. *pi;
       positronDirection= G4ThreeVector(cos(phi_positron)*sin(theta_positron),
                                     sin(phi_positron)*sin(theta_positron),
-                                    cos(theta_positron));
-  
-     //create the electron direction as a copy of the positron distribution where the polar angle is incremented by theta_separation
-     double phi_electron = phi_positron ; // for now  
-     electronDirection= G4ThreeVector(cos(phi_positron)*sin(theta_positron+theta_separation),
-                                    sin(phi_positron)*sin(theta_positron+theta_separation),
-                                    cos(theta_positron+theta_separation));
-                                    
+                                    cos(theta_positron));     
+  	  
+     //Build the electron direction as a copy of the positron distribution where the polar angle is incremented by theta_separation
+     phi_electron = phi_positron ; // copy the same value for now 
+     theta_electron = theta_positron+theta_separation ;
+     electronDirection= G4ThreeVector(cos(phi_electron)*sin(theta_electron),
+                                    sin(phi_electron)*sin(theta_electron),
+                                    cos(theta_electron)); 
+  	                                  
      //rotate the electron direction around the positron vector, this will conserve theta separation.
-     phi_separation   = RandFlat::shoot() * 2. *pi;
+     phi_separation   = RandFlat::shoot() * 2. * pi; 
      electronDirection.rotate(phi_separation,positronDirection);         
-   
                                         
    // build energies for pair
     double TransitionEnergy = m_Energies[ChoosenCascade][i];
     double total_energy_positron = energy_positron + electron_mass_c2 ;
     double total_energy_electron = TransitionEnergy - total_energy_positron ;
-
+  	 
     // Build Lorentz Vector for pair and decaying particle
     decayingParticle.GetParticleMomentumDirection();
     double NucleiEnergy= decayingParticle.GetParticleKineticEnergy()+FinalParticleDefition->GetPDGMass();
@@ -527,13 +520,10 @@ void EventGeneratorInternalPairFormation::PrepareCascade(){
 TFile f("/opt/NPTool/Outputs/Simulation/InspectPair.root","RECREATE") ;
 	f.cd();
 	for (unsigned int i = 0; i < m_CrossSectionLeptonHist2D.size(); i++) {
-		
-		G4cout << "Hello born_approx " << (m_CrossSectionLeptonHist2D[i]).size() << endl;	 std::cin.get() ; 	
-
 		for (unsigned int j = 0 ; j < m_CrossSectionLeptonHist2D[i].size(); j++) {
-		G4cout << "Hello born_approx " << m_CrossSectionLeptonHist2D[i][j]->GetEntries()<< endl;	 std::cin.get() ; 
 					
 		m_CrossSectionLeptonHist2D[i][j]->Write();
+		
 		}
 	}
 	f.Write();
@@ -554,15 +544,13 @@ double cross_section ; // giving the number of pairs per unit energy, per |dCos(
 
 // prepare the fixed parameters
 int    l = (int)PolarityOrder ; 
-int Nbinx = 90 ; // energy
+int Nbinx = 180 ; // energy
 int Nbiny = 180; // angle
 
 double Ep_max = TransitionEnergy - 2*electron_mass_c2  ; // maximum energy of the positron
 double Ep_min = 0 ; // minimum energy of the positron
 double angle_max = 180  ; // maximum separation angle
 double angle_min = 0  ; // minimum separation angle
-
-double M = electron_mass_c2 ; 
  
 //prepare the histogram
 TH2F* h2  = new TH2F (HistName.c_str(),HistName.c_str(),       Nbinx,Ep_min,Ep_max,      Nbiny,angle_min,angle_max) ; 
@@ -586,9 +574,7 @@ while (Ep < Ep_max) // iterates on energy (x-axis)
 	 
 	 // increment angle 
 	 angle = angle + ((angle_max - angle_min)/Nbiny);
-	 
-	 counter ++ ;
-	  
+	 	  
 	} 
 	 // reset the angle
 	 angle = angle_min ;
@@ -597,7 +583,6 @@ while (Ep < Ep_max) // iterates on energy (x-axis)
 	 Em = Ep_max - Ep ;
 }
 
-cout << counter << endl ; cin.get() ; 	
 	
 return h2 ; 
 
