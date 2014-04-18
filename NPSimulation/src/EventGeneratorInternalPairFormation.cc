@@ -329,35 +329,65 @@ void EventGeneratorInternalPairFormation::GenerateEvent(G4Event*){
   
   m_ParticleStack->AddParticleToStack(FinalParticle);
   
-  // Instantiate and add the gamma to the particle stack
+  // Instantiate and add the pair e+e- to the particle stack
   for (unsigned int i = 0; i < m_Energies[ChoosenCascade].size(); i++) {
-    G4ParticleDefinition* gammaDefinition = G4ParticleTable::GetParticleTable()->FindParticle("gamma");
-    G4ThreeVector gammaDirection;
-    double theta=0;
-    double phi=0;
-    // If more than one gamma shoot no cross section to follow
-    if(m_Energies[ChoosenCascade].size()>1){
-      
-      // Shoot flat in cos(theta) and Phi to have isotropic emission
-      double cos_theta = RandFlat::shoot();
-      theta = acos(cos_theta);
-      phi = RandFlat::shoot()*2.*pi;
-      
-      gammaDirection= G4ThreeVector(  cos(phi)*sin(theta),
-                                    sin(phi)*sin(theta),
-                                    cos(theta));
-    }
     
-    // Only one gamma to shoot, use the given cross section
-    
-    // Doppler shifted gamma emission
+	// positron parameters and definition
+	G4ParticleDefinition* positronDefinition = G4ParticleTable::GetParticleTable()->FindParticle("positron");
+	G4ThreeVector positronDirection;
+	double theta_positron=0;
+	double phi_positron=0;
+	double energy_positron=0;
+
+	
+	//electron parameters and definition     
+	G4ParticleDefinition* electronDefinition = G4ParticleTable::GetParticleTable()->FindParticle("electron");
+	G4ThreeVector electronDirection;
+	double theta_electron=0;
+	double phi_electron=0;
+	double energy_electron=0;
+	
+	//pair parameteres
+	double theta_separation=0;
+	double phi_separation=0;
+	
+	 // Get the separation angle and the positron energy from the given cross section (theta_separation vs Energy_positron)   
+      m_CrossSectionHist2D[ChoosenCascade]->GetRandom2(&energy_positron, &theta_separation);
+      cout << energy_positron << "  " << theta_separation << endl ; cin.get() ;
+      
+
+	  // Build electron direction with respect to the z-axis direction 
+      phi_separation   = RandFlat::shoot() * 2. *pi; 
+      theta_separation = theta_separation*deg ;
+      
+	  cout << energy_positron << "  " << theta_separation << endl ; cin.get() ;        
+      
+      //create the positron direction according to isotropic distribution
+      double cos_theta = RandFlat::shoot();   
+      theta_positron = acos(cos_theta); 
+      phi_positron   = RandFlat::shoot() * 2. *pi;
+      positronDirection= G4ThreeVector(cos(phi_positron)*sin(theta_positron),
+                                    sin(phi_positron)*sin(theta_positron),
+                                    cos(theta_positron));
+  
+     //create the electron direction as a copy of the positron distribution where the polar angle is incremented by theta_separation
+     double phi_electron = phi_positron ; // for now  
+     electronDirection= G4ThreeVector(cos(phi_positron)*sin(theta_positron+theta_separation),
+                                    sin(phi_positron)*sin(theta_positron+theta_separation),
+                                    cos(theta_positron+theta_separation));
+                                    
+     //rotate the electron direction around the positron vector, this will conserve theta separation.
+     phi_separation   = RandFlat::shoot() * 2. *pi;
+     electronDirection.rotate(phi_separation,positronDirection);         
+   
+                                        
+   // build energies for pair
+    double TransitionEnergy = m_Energies[ChoosenCascade][i];
+    double total_energy_positron = energy_positron + electron_mass_c2 ;
+    double total_energy_electron = TransitionEnergy - total_energy_positron ;
+
+    // Build Lorentz Vector for pair and decaying particle
     decayingParticle.GetParticleMomentumDirection();
-    double gammaEnergy = m_Energies[ChoosenCascade][i];
-    TLorentzVector GammaLV( gammaEnergy*cos(phi)*sin(theta),
-                           gammaEnergy*sin(phi)*sin(theta),
-                           gammaEnergy*cos(theta),
-                           gammaEnergy);
-    
     double NucleiEnergy= decayingParticle.GetParticleKineticEnergy()+FinalParticleDefition->GetPDGMass();
     double NucleiMomentum= sqrt(NucleiEnergy*NucleiEnergy-FinalParticleDefition->GetPDGMass()*FinalParticleDefition->GetPDGMass());
     TLorentzVector NuvleiLV( NucleiMomentum*decayingParticle.GetParticleMomentumDirection().x(),
@@ -365,13 +395,35 @@ void EventGeneratorInternalPairFormation::GenerateEvent(G4Event*){
                             NucleiMomentum*decayingParticle.GetParticleMomentumDirection().z(),
                             NucleiEnergy);
     
-    GammaLV.Boost(NuvleiLV.BoostVector());
-    gammaDirection= G4ThreeVector(  GammaLV.Px(),
-                                  GammaLV.Py(),
-                                  GammaLV.Pz());
-    // Add the gamma to the stack
-    Particle gammaParticle(gammaDefinition,theta,GammaLV.E(),gammaDirection, decayingParticle.GetParticlePosition());
-    m_ParticleStack->AddParticleToStack(gammaParticle);
+   double positronMomentum = sqrt(total_energy_positron*total_energy_positron - electron_mass_c2*electron_mass_c2) ;  
+    TLorentzVector positronLV( positronMomentum*positronDirection.x(),
+                           positronMomentum*positronDirection.y(),
+                           positronMomentum*positronDirection.z(),
+                           total_energy_positron);
+                           
+   double electronMomentum = sqrt(total_energy_electron*total_energy_electron - electron_mass_c2*electron_mass_c2)  ;    
+   TLorentzVector electronLV( electronMomentum*electronDirection.x(),
+                           electronMomentum*electronDirection.y(),
+                           electronMomentum*electronDirection.z(),
+                           total_energy_electron);
+                           
+     // CM to lab boost positron emission                                  
+    positronLV.Boost(NuvleiLV.BoostVector());
+    positronDirection= G4ThreeVector(positronLV.Px(),
+                                  positronLV.Py(),
+                                  positronLV.Pz());
+
+    electronLV.Boost(NuvleiLV.BoostVector());
+    electronDirection= G4ThreeVector(electronLV.Px(),
+                                  electronLV.Py(),
+                                  electronLV.Pz());
+                         
+    // Add the pair to the stack
+    Particle positronParticle(positronDefinition,theta_positron,positronLV.E(),positronDirection, decayingParticle.GetParticlePosition());
+    m_ParticleStack->AddParticleToStack(positronParticle);
+    Particle electronParticle(electronDefinition,theta_electron,electronLV.E(),electronDirection, decayingParticle.GetParticlePosition());
+    m_ParticleStack->AddParticleToStack(electronParticle);
+    
   }
   
 }
