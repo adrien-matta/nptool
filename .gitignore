@@ -1,0 +1,19 @@
+# ignore root file
+*.root
+# ignore G4table
+*.G4table
+#ignore input file
+*.reaction
+*.detector
+Inputs/*
+# G4 crap
+NPSimulation/bin
+NPSimulation/tmp
+*.macro
+#various crap
+*.swp
+*.o
+*.d
+*LinkDef*
+*.png
+*.pdf
