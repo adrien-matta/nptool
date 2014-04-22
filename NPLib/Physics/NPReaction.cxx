@@ -210,8 +210,21 @@ double Reaction::ShootRandomThetaCM(){
   if(fDoubleDifferentialCrossSectionHist){
     // Take a slice in energy
     TAxis* Y = fDoubleDifferentialCrossSectionHist->GetYaxis();
-    TH1D* Proj = fDoubleDifferentialCrossSectionHist
-          ->ProjectionY("proj",Y->FindBin(fBeamEnergy),Y->FindBin(fBeamEnergy));
+    int binY;
+      
+    // Those test are there for the tail event of the energy distribution
+    // In case the energy is outside the range of the 2D histo we take the 
+    // closest availabile CS
+    if(Y->FindBin(fBeamEnergy) > Y->GetLast())
+      binY = Y->GetLast()-1;
+
+    else if(Y->FindBin(fBeamEnergy) < Y->GetFirst())
+      binY = Y->GetFirst();
+
+    else
+      binY = Y->FindBin(fBeamEnergy);
+
+    TH1D* Proj = fDoubleDifferentialCrossSectionHist->ProjectionX("proj",binY,binY);
     SetThetaCM( theta=Proj->GetRandom()*deg );
    }
   else
