@@ -5,6 +5,8 @@ CUR_DIR="$PWD"
 SCRIPTFILE=$0 
 if [ "${SCRIPTFILE}" = "-bash" ] ; then  
   SCRIPTFILE=${BASH_ARGV[0]} 
+elif [ "${SCRIPTFILE}" = "bash" ] ; then  
+  SCRIPTFILE=${BASH_ARGV[0]} 
 fi 
 
 SCRIPTPATH="${SCRIPTFILE}" 
