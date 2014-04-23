@@ -22,7 +22,7 @@ In order to compile the core libraries NPLib, you will need ROOT to be installed
 
 ###Building
 The first step is to define the variable of environment that the system needs. For this open your .profile / .bashrc / .tcshrc file in your home directory and add the following line:
-source /path/to/nptool/nptool.sh
+>source /path/to/nptool/nptool.sh
 
 Restart your terminal. You should now have all aliases and environment variable properly defined. Type:
 NPL
@@ -30,10 +30,10 @@ NPL
 and you shoudl be in the NPLib directory. 
 Before the compilation of the libraries you need to specify the detector you plan to use by calling the configure script. If you give no argument to configure, all detector will be compile. If you wish to limit the number of detector to be compiled, simply specify the detector name in lowercase (e.g. MUST2 -> must2). You can specify more than one detector:
 
-./configure must2 sharc plastic riken
+>./configure must2 sharc plastic riken
 
 Then you can compile NPLib by calling
-make -jn
+>make -jn
 
 where n is the number of core to be used in the compilation.
 
