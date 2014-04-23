@@ -32,6 +32,11 @@ liblistfile:  $(FILLLIB) $(SHARELIB) $(FILLIB)
 # where the wanted detector are defined
 include $(NPTOOL)/NPLib/Makefile.detector
 
+######## rootlogon modification ########
+rootlogon:
+	./scripts/RootLogon.sh
+
+
 ############# Clean and More ##########
 clean:
 	rm -f ./*/*.o
