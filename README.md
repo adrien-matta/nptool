@@ -20,8 +20,8 @@ Alternatively you can browse the following page https://github.com/adrien-matta/
 ###Requierement
 In order to compile the core libraries NPLib, you will need ROOT to be installed with the libMathMore.so librairy. This is suffisant to compile NPLib and any analysis project. In order to compile NPSimulation, you will need a recent installation of Geant4.
 
-###Building
-The first step is to define the variable of environment that the system needs. For this open your .profile / .bashrc / .tcshrc file in your home directory and add the following line:
+###Building NPLib
+NPLib is the core of the NPTool package, holding most of the actual code. It is made of a collection of stand alone C++ classes that can be used in programmes and macro. The first step is to define the variable of environment that the system needs. For this open your .profile / .bashrc / .tcshrc file in your home directory and add the following line:
 >source /path/to/nptool/nptool.sh
 
 Restart your terminal. You should now have all aliases and environment variable properly defined. Type:
@@ -36,6 +36,19 @@ Then you can compile NPLib by calling
 >make -jn
 
 where n is the number of core to be used in the compilation.
+
+In order to load the nptool librairies when you lauch root, you need to add a few line to your ~/.rootlogon.C file. NPTool can do that safely for you using a script. To lauch the script simply type:
+> make rootlogon
+
+Depending on the existance of the .rootlogon.C file in your home directory, the output of the script might be different. If you already have a .rootlogon.C file that make reference to nptool then the script will leave it unchanged.
+
+###Building NPSimulation
+This part of the package rely on Geant4 to perform Monte Carlo simulation. You need to first compile and configure correctly NPLib in order for NPSimulation to compile and run. The compilation is done as follow:
+>NPS
+>make -jn
+
+This should produce the NPSimulation executable, you can check this by running the help display
+>NPSimulation -h
 
 
 
