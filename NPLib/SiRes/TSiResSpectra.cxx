@@ -118,8 +118,6 @@ void TSiResSpectra::InitPreTreatedSpectra()
    int NbrBin  = 512;
    int MinBin = 0;
    int MaxBin = 10;    // MeV
-   int MinBinT = 0;
-   int MaxBinT = 1;     // us 
   for(unsigned int j=0; j<fNumberDetector; j++)
    {
 	   for (unsigned int i = 0; i < 4; i++) { // loop on channels
@@ -177,9 +175,6 @@ void TSiResSpectra::FillRawSpectra(TSiResData* RawData)
 {
    string name;
    string family;
-   int NbrBin  = 100;
-   int MinBin = 0;
-   int MaxBin = 10;
 	for (unsigned int i = 0; i < RawData->GetEnergyMult(); i++) {
 	      name   = Form("SiRes_%d_%d_E_RAW", RawData->GetEDetectorNumber(i), RawData->GetEChannelNumber(i));
 	      family = "SiRes/RAW/ENERGY";
@@ -220,9 +215,6 @@ void TSiResSpectra::FillPreTreatedSpectra(TSiResData* PreTreatedData)
    string name;
    string family;
  
-   int NbrBin  = 100;
-   int MinBin = 0;
-   int MaxBin = 10;
 	for (unsigned int i = 0; i < PreTreatedData->GetEnergyMult(); i++) {
 	      name   = Form("SiRes_%d_%d_E_CAL", PreTreatedData->GetEDetectorNumber(i), PreTreatedData->GetEChannelNumber(i));
 	      family = "SiRes/CAL/ENERGY";

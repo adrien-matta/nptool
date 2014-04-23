@@ -60,7 +60,7 @@ class TCharissaPhysics : public TObject, public NPA::VDetector{
   public:
 
     //   Provide Physical Multiplicity
-    Int_t EventMultiplicity;
+    unsigned int EventMultiplicity;
 
     //   Provide a Classification of Event
     vector<int> EventType ;
