@@ -42,7 +42,7 @@ then
 
 else
   echo 'File .rootlogon.C was created'
-  cp rootlogon_basic.C ~/.rootlogon.C
+  cp scripts/rootlogon_basic.C ~/.rootlogon.C
 fi
 
 
