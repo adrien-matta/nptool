@@ -26,7 +26,7 @@
  *****************************************************************************/
 #include "G4VPrimitiveScorer.hh"
 #include "G4THitsMap.hh"
-
+using namespace CLHEP;
 namespace GENERALSCORERS
    {
          //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

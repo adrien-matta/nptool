@@ -40,6 +40,7 @@
 // NPLib
 #include "TTigressData.h"
 using namespace std;
+using namespace CLHEP;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace TIGRESS

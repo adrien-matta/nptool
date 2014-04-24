@@ -33,7 +33,6 @@
 #include <string>
 #include <iostream>
 using namespace std;
-
 // NPSimulation
 #include "VEventGenerator.hh"
 #include "Target.hh"

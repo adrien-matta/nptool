@@ -37,6 +37,7 @@
 #include "VDetector.hh"
 
 using namespace std;
+using namespace CLHEP;
 
 class Chamber : public VDetector
 {

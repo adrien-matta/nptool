@@ -31,6 +31,7 @@
 #include "HeliosModule.hh"
 
 using namespace std;
+using namespace CLHEP;
 
 
 

@@ -25,7 +25,7 @@
 #include "GeneralScorers.hh"
 #include "G4UnitsTable.hh"
 using namespace GENERALSCORERS ;
-
+using namespace CLHEP;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 //   The following function is used in many scorer. following the Detector Volume Nomenclature

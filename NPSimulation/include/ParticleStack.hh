@@ -32,6 +32,7 @@
 #include <vector>
 #include <string>
 using namespace std;
+using namespace CLHEP;
 
 // G4
 #include "G4ParticleGun.hh"

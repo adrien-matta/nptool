@@ -26,7 +26,8 @@
  *****************************************************************************/
 #include "G4VPrimitiveScorer.hh"
 #include "G4THitsMap.hh"
-
+#include "CLHEP/Units/SystemOfUnits.h"
+using namespace CLHEP;
 namespace THINSI {
    //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
    //   This Threshold is used in the above scorer. Any energy deposit under this threshold will not create an entry.

@@ -25,6 +25,7 @@
 // C++ headers
 #include <vector>
 using namespace std;
+using namespace CLHEP;
 
 // NPTool header
 #include "VDetector.hh"
@@ -114,20 +115,16 @@ namespace ANNULARS1
 {
    // Energy/Time resolutions for the different layers
    const G4double ResoFirstStage  = 0              ;// = 52keV of Resolution   //   Unit is MeV/2.35
-//   const G4double ResoFirstStage  = 0.022          ;// = 52keV of Resolution   //   Unit is MeV/2.35
    const G4double ResoSecondStage = 0.055          ;// = 130 keV of resolution //   Unit is MeV/2.35
    const G4double ResoThirdStage  = 0              ;// = 100 keV of resolution //   Unit is MeV/2.35
-//   const G4double ResoThirdStage  = 0.043          ;// = 100 kev of resolution //   Unit is MeV/2.35
    const G4double ResoTimeGpd     = 0.212765957    ;// = 500ps                 //   Unit is  ns/2.35
    const G4double ResoTimePPAC    = 0.106382979    ;// = 250ps                 //   Unit is  ns/2.35
 
    // Geometry
    const G4double Rmin   =  46/2*mm;
    const G4double Rmax   = 100/2*mm;
-   const G4double Length = 10*mm;
-
+   
    // First stage
-//   const G4double AluStripThickness = 0.00000001*micrometer;
    const G4double AluStripThickness   = 0.4*micrometer;
    const G4double FirstStageThickness = 500*micrometer;
    const G4double FirstStageRmin      = 48/2*mm;
@@ -137,6 +134,8 @@ namespace ANNULARS1
    const G4int NbPhiStrips     = 16;
    const G4int NbThetaStrips   = 16;
    const G4int NbThetaQuadrant = 4;
+
+   const G4double Length = AluStripThickness*2+FirstStageThickness;
 
    // Starting at the front and going in direction of third stage
    const G4double AluStripFront_PosZ = Length* -0.5       + 0.5*AluStripThickness;

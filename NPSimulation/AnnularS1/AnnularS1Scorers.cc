@@ -23,7 +23,6 @@
 #include "AnnularS1Scorers.hh"
 #include "G4UnitsTable.hh"
 #include "AnnularS1.hh"
-
 using namespace ANNULARS1;
 using namespace S1SCORERS;
 

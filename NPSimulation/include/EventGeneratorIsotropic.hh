@@ -24,6 +24,7 @@
 // C++ header
 #include <string>
 using namespace std;
+using namespace CLHEP;
 
 // G4 headers
 #include "G4Event.hh"

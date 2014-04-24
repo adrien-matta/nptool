@@ -26,6 +26,8 @@
  *****************************************************************************/
 #include "G4VPrimitiveScorer.hh"
 #include "G4THitsMap.hh"
+using namespace CLHEP;
+
 namespace MUST2 {
    //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
    //   This Threshold is used in the above scorer. Any energy deposit under this threshold will not create an entry.

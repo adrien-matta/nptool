@@ -50,6 +50,7 @@
 #include "TInteractionCoordinates.h"
 
 using namespace std;
+using namespace CLHEP;
 
 
 class VDetector

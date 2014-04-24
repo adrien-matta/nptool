@@ -40,6 +40,7 @@
 #include "TEurogamData.h"
 
 using namespace std;
+using namespace CLHEP;
 
 class Eurogam : public VDetector
 {

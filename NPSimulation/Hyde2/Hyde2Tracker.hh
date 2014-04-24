@@ -31,6 +31,7 @@
 #include "Hyde2TrackerModule.hh"
 
 using namespace std;
+using namespace CLHEP;
 
 
 

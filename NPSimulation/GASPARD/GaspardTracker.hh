@@ -30,6 +30,8 @@
 #include "GaspardTrackerModule.hh"
 
 using namespace std;
+using namespace CLHEP;
+using namespace CLHEP;
 
 
 

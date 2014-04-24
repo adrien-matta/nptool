@@ -34,6 +34,7 @@
 #include "DetectorConstruction.hh"
 
 using namespace std;
+using namespace CLHEP;
 
 
 

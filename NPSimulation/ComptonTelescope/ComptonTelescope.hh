@@ -36,6 +36,7 @@
 // C++ headers
 #include <vector>
 using namespace std;
+using namespace CLHEP;
 
 
 

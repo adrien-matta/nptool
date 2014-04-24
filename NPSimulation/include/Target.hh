@@ -42,6 +42,7 @@
 #include "VDetector.hh"
 
 using namespace std;
+using namespace CLHEP;
 
 class Target : public VDetector{
 public:

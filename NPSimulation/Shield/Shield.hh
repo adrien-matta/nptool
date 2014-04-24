@@ -32,6 +32,7 @@
 #include "ShieldModule.hh"
 
 using namespace std;
+using namespace CLHEP;
 
 
 

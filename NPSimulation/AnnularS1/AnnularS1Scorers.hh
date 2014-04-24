@@ -23,7 +23,7 @@
 
 #include "G4VPrimitiveScorer.hh"
 #include "G4THitsMap.hh"
-
+using namespace CLHEP;
 namespace S1SCORERS
 {
    // This Threshold is used in all scorers

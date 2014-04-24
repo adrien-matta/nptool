@@ -40,6 +40,7 @@
 #include "NPReaction.h"
 
 using namespace std;
+using namespace CLHEP;
 using namespace NPL ;
 
 

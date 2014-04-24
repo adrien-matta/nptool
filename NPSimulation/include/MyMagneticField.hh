@@ -26,6 +26,8 @@
 #include "globals.hh"
 #include "G4MagneticField.hh"
 #include "G4ThreeVector.hh"
+#include "CLHEP/Units/SystemOfUnits.h"
+using namespace CLHEP;
 
 class MyMagneticField : public G4MagneticField
 {

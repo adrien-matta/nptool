@@ -29,6 +29,7 @@
 
 #include <map>
 using namespace std;
+using namespace CLHEP;
 
 namespace SHARC {
   //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

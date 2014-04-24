@@ -30,9 +30,9 @@
 // NPTool header
 #include "VDetector.hh"
 #include "ParisModule.hh"
-
 using namespace std;
-
+#include "CLHEP/Units/SystemOfUnits.h"
+using namespace CLHEP;
 
 
 class Paris : public VDetector

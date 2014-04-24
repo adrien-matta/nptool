@@ -24,7 +24,8 @@
  *****************************************************************************/
 #include "G4VUserPhysicsList.hh"
 #include "globals.hh"
-
+#include "CLHEP/Units/SystemOfUnits.h"
+using namespace CLHEP;
 class PhysicsList: public G4VUserPhysicsList
 {
 public:

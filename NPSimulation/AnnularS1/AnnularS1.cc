@@ -63,24 +63,21 @@ using namespace S1SCORERS;
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-AnnularS1::AnnularS1()
-{
+AnnularS1::AnnularS1(){
    m_Event = new TS1Data();
 }
 
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-AnnularS1::~AnnularS1()
-{
+AnnularS1::~AnnularS1(){
    delete m_Event;
 }
 
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void AnnularS1::AddModule(G4double PosZ)
-{
+void AnnularS1::AddModule(G4double PosZ){
    m_PosZ.push_back(PosZ);
 }
 
@@ -127,42 +124,15 @@ void AnnularS1::VolumeMaker(G4int             DetecNumber,
    G4Material* Silicon = new G4Material("Si", z = 14., a, density);
 
    // Al
-//   density = 2.702 * g / cm3;
-//   a = 26.98 * g / mole;
-//   G4Material* Aluminium = new G4Material("Aluminium", z = 13., a, density);
-
-   // Iron
-//   density = 7.874 * g / cm3;
-//   a = 55.847 * g / mole;
-//   G4Material* Iron = new G4Material("Iron", z = 26., a, density);
-
-   // CsI
-   density = 4.51 * g / cm3;
-   G4Material* CsI = new G4Material("CsI", density, ncomponents = 2);
-   CsI->AddElement(Cs , natoms = 1);
-   CsI->AddElement(I  , natoms = 1);
+   density = 2.702 * g / cm3;
+   a = 26.98 * g / mole;
+   G4Material* Aluminium = new G4Material("Aluminium", z = 13., a, density);
 
    //  Vacuum
    density = 0.000000001 * mg / cm3;
    G4Material* Vacuum = new G4Material("Vacuum", density, ncomponents = 2);
    Vacuum->AddElement(N, .7);
    Vacuum->AddElement(O, .3);
-
-   //  Mylar
-   density = 1.397 * g / cm3;
-   G4Material* Myl = new G4Material("Mylar", density, ncomponents = 3);
-   Myl->AddElement(C, natoms = 10);
-   Myl->AddElement(H, natoms = 8);
-   Myl->AddElement(O, natoms = 4);
-
-   // Havar
-   G4Material* Harvar = new G4Material("Havar", 8.3*g / cm3, 5);
-   Harvar->AddElement(Co , 42);
-   Harvar->AddElement(Cr , 20);
-   Harvar->AddElement(Ni , 13);
-   Harvar->AddElement(Fe , 19);
-   Harvar->AddElement(W  ,  1);
-
    ////////////////////////////////////////////////////////////////
    ////////////// Starting Volume Definition //////////////////////
    ////////////////////////////////////////////////////////////////
@@ -177,7 +147,6 @@ void AnnularS1::VolumeMaker(G4int             DetecNumber,
                                 0*deg, 
                                 360*deg);
 
-//   G4LogicalVolume* logicAnnularS1 = new G4LogicalVolume(solidAnnularS1, Iron, Name, 0, 0, 0);
    G4LogicalVolume* logicAnnularS1 = new G4LogicalVolume(solidAnnularS1, Vacuum, Name, 0, 0, 0);
 
    new G4PVPlacement(G4Transform3D(*rotation, position),
@@ -188,7 +157,6 @@ void AnnularS1::VolumeMaker(G4int             DetecNumber,
                                      0);
 
    logicAnnularS1->SetVisAttributes(G4VisAttributes::Invisible);
-   if (m_non_sensitive_part_visiualisation) logicAnnularS1->SetVisAttributes(G4VisAttributes(G4Colour(0.90, 0.90, 0.90)));
 
 
    // Aluminium dead layers
@@ -202,8 +170,7 @@ void AnnularS1::VolumeMaker(G4int             DetecNumber,
                                       0*deg, 
                                       360*deg); 
 
-//   G4LogicalVolume* logicAluStrip = new G4LogicalVolume(solidAluStrip, Aluminium, "logicAluStrip", 0, 0, 0);
-   G4LogicalVolume* logicAluStrip = new G4LogicalVolume(solidAluStrip, Vacuum, "logicAluStrip", 0, 0, 0);
+   G4LogicalVolume* logicAluStrip = new G4LogicalVolume(solidAluStrip, Aluminium, "logicAluStrip", 0, 0, 0);
 
    new G4PVPlacement(0, positionAluStripFront, logicAluStrip, Name + "_AluStripFront", logicAnnularS1, false, 0);
    new G4PVPlacement(0, positionAluStripBack,  logicAluStrip, Name + "_AluStripBack",  logicAnnularS1, false, 0);
@@ -229,7 +196,7 @@ void AnnularS1::VolumeMaker(G4int             DetecNumber,
 
    ///Visualisation of Silicon Strip
 //   G4VisAttributes* SiliconVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5));
-   G4VisAttributes* SiliconVisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 0.9));
+   G4VisAttributes* SiliconVisAtt = new G4VisAttributes(G4Colour(0.3, 0.3, 0.3));
    logicSilicon->SetVisAttributes(SiliconVisAtt);
 }
 
@@ -242,8 +209,7 @@ void AnnularS1::VolumeMaker(G4int             DetecNumber,
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void AnnularS1::ReadConfiguration(string Path)
-{
+void AnnularS1::ReadConfiguration(string Path){
    ifstream ConfigFile;
    ConfigFile.open(Path.c_str());
    string LineBuffer, DataBuffer;
