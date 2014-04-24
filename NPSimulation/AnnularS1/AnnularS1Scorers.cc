@@ -70,8 +70,8 @@ G4bool AnnularS1ScorerThetaStripNumber::ProcessHits(G4Step* aStep, G4TouchableHi
 
    // Theta strip pitch
    // Interstrip should be taken into account here. To be done
-   G4double ThetaStripPitch = (FirstStageRmax - FirstStageRmin) / NbThetaStrips;
-   G4double dummy = (r - FirstStageRmin);
+   G4double ThetaStripPitch = (ActiveWaferOutterRadius - ActiveWaferInnerRadius) / NbThetaStrips;
+   G4double dummy = (r - ActiveWaferInnerRadius);
    if (dummy < 0 && fabs(dummy) < 1e-6) dummy *= -1;
    G4double ThetaStripNumber = floor(dummy / ThetaStripPitch);
    ThetaStripNumber += PhiQuadrantNumber*NbThetaStrips;

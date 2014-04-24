@@ -117,30 +117,35 @@ namespace ANNULARS1
    const G4double ResoFirstStage  = 0              ;// = 52keV of Resolution   //   Unit is MeV/2.35
    const G4double ResoSecondStage = 0.055          ;// = 130 keV of resolution //   Unit is MeV/2.35
    const G4double ResoThirdStage  = 0              ;// = 100 keV of resolution //   Unit is MeV/2.35
-   const G4double ResoTimeGpd     = 0.212765957    ;// = 500ps                 //   Unit is  ns/2.35
-   const G4double ResoTimePPAC    = 0.106382979    ;// = 250ps                 //   Unit is  ns/2.35
+   const G4double ResoTimeGpd     = 0.212765957    ;// = 500 ps                //   Unit is  ns/2.35
+   const G4double ResoTimePPAC    = 0.106382979    ;// = 250 ps                //   Unit is  ns/2.35
 
-   // Geometry
-   const G4double Rmin   =  46/2*mm;
-   const G4double Rmax   = 100/2*mm;
-   
-   // First stage
+   // PCB
+   const G4double PCBPointsX[8]={-50,50,60,60,50,-50,-60,-60};
+   const G4double PCBPointsY[8]={60,60,50,-50,-60,-60,-50,50};
+   const G4double PCBThickness=2*mm;
+   const G4double PCBInnerRadius=20*mm;
+   // Wafer
+   const G4double WaferOutterRadius = 50*mm;
+   const G4double WaferInnerRadius  = 23*mm;
+   const G4double WaferThickness    = 500*micrometer;
+   const G4double WaferRCut         = 45*mm; 
+   const G4double ActiveWaferOutterRadius = 48*mm;
+   const G4double ActiveWaferInnerRadius  = 24*mm;
    const G4double AluStripThickness   = 0.4*micrometer;
-   const G4double FirstStageThickness = 500*micrometer;
-   const G4double FirstStageRmin      = 48/2*mm;
-   const G4double FirstStageRmax      = 96/2*mm;
 
    // Characteristics
    const G4int NbPhiStrips     = 16;
    const G4int NbThetaStrips   = 16;
    const G4int NbThetaQuadrant = 4;
 
-   const G4double Length = AluStripThickness*2+FirstStageThickness;
+   // total WaferLength
+   const G4double Length = AluStripThickness*2+WaferThickness;
 
    // Starting at the front and going in direction of third stage
    const G4double AluStripFront_PosZ = Length* -0.5       + 0.5*AluStripThickness;
-   const G4double Silicon_PosZ       = AluStripFront_PosZ + 0.5*AluStripThickness   + 0.5*FirstStageThickness;
-   const G4double AluStripBack_PosZ  = Silicon_PosZ       + 0.5*FirstStageThickness + 0.5*AluStripThickness;
+   const G4double Silicon_PosZ       = AluStripFront_PosZ + 0.5*AluStripThickness   + 0.5*WaferThickness;
+   const G4double AluStripBack_PosZ  = Silicon_PosZ       + 0.5*WaferThickness + 0.5*AluStripThickness;
 }
 
 #endif

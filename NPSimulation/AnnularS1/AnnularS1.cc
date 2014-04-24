@@ -39,7 +39,8 @@
 #include "G4Transform3D.hh"
 #include "G4PVPlacement.hh"
 #include "G4PVDivision.hh"
-
+#include "G4ExtrudedSolid.hh"
+#include "G4SubtractionSolid.hh"
 // G4 sensitive
 #include "G4SDManager.hh"
 #include "G4MultiFunctionalDetector.hh"
@@ -102,20 +103,7 @@ void AnnularS1::VolumeMaker(G4int             DetecNumber,
    G4double density = 0. , a = 0, z = 0 ;
    G4int ncomponents = 0, natoms = 0    ;
 
-   G4Element* H   = new G4Element("Hydrogen" , symbol = "H"  , z = 1  , a = 1.01   * g / mole);
-   G4Element* C   = new G4Element("Carbon"   , symbol = "C"  , z = 6  , a = 12.011 * g / mole);
-   G4Element* N   = new G4Element("Nitrogen" , symbol = "N"  , z = 7  , a = 14.01  * g / mole);
-   G4Element* O   = new G4Element("Oxigen"   , symbol = "O"  , z = 8  , a = 16.00  * g / mole);
-   G4Element* I   = new G4Element("Iode"     , symbol = "I"  , z = 53 , a = 126.9  * g / mole);
-   G4Element* Cs  = new G4Element("Cesium"   , symbol = "Cs" , z = 55 , a = 132.9  * g / mole);
-
-   G4Element* Co  = new G4Element("Cobalt"  , symbol = "Co" , z = 27 , a = 58.933 * g / mole);
-   G4Element* Cr  = new G4Element("Cromium"  , symbol = "Cr" , z = 24 , a = 51.996 * g / mole);
-   G4Element* Ni  = new G4Element("Nickel"   , symbol = "Ni" , z = 28 , a = 58.69  * g / mole);
-   G4Element* Fe  = new G4Element("Iron"     , symbol = "Fe" , z = 26 , a = 55.847 * g / mole);
-   G4Element* W   = new G4Element("Tungsten" , symbol = "W"  , z = 74 , a = 183.5  * g / mole);
-
-   ////////////////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////
    /////////////////Material Definition ///////////////////////////
    ////////////////////////////////////////////////////////////////
    // Si
@@ -131,6 +119,8 @@ void AnnularS1::VolumeMaker(G4int             DetecNumber,
    //  Vacuum
    density = 0.000000001 * mg / cm3;
    G4Material* Vacuum = new G4Material("Vacuum", density, ncomponents = 2);
+   G4Element* N = new G4Element("Nitrogen" , symbol = "N"  , z = 7  , a = 14.01  * g / mole);
+   G4Element* O = new G4Element("Oxigen"   , symbol = "O"  , z = 8  , a = 16.00  * g / mole);
    Vacuum->AddElement(N, .7);
    Vacuum->AddElement(O, .3);
    ////////////////////////////////////////////////////////////////
@@ -139,14 +129,22 @@ void AnnularS1::VolumeMaker(G4int             DetecNumber,
    // Name of the module
    G4String Name = "S1Annular" + DetectorNumber;
 
-   // Definition of the volume containing the sensitive detector
-   G4Tubs* solidAnnularS1 = new G4Tubs(Name, 
-                                Rmin,
-                                Rmax,
-                                Length/2,
-                                0*deg, 
-                                360*deg);
+   // Building the PCB
+   // The PCB is a simple extruded volume from 8reference point
+   vector<G4TwoVector> polygon;
+   for(unsigned int i = 0 ; i < 8 ; i++){
+    G4TwoVector Point(PCBPointsX[i],PCBPointsY[i]);
+    polygon.push_back(Point);
+   }
 
+  // Mast volume containing all the detector
+  G4ExtrudedSolid* solidAnnularS1 = new G4ExtrudedSolid(Name,
+                                                       polygon,
+                                                       PCBThickness*0.5,
+                                                       G4TwoVector(0,0),1,
+                                                       G4TwoVector(0,0),1);
+
+   // Definition of the volume containing the sensitive detector
    G4LogicalVolume* logicAnnularS1 = new G4LogicalVolume(solidAnnularS1, Vacuum, Name, 0, 0, 0);
 
    new G4PVPlacement(G4Transform3D(*rotation, position),
@@ -155,49 +153,128 @@ void AnnularS1::VolumeMaker(G4int             DetecNumber,
                                      world,
                                      false,
                                      0);
-
+   
    logicAnnularS1->SetVisAttributes(G4VisAttributes::Invisible);
 
+   // PCB Base
+   G4ExtrudedSolid* solidPCBBase = new G4ExtrudedSolid("PCBBase",
+                                                       polygon,
+                                                       PCBThickness*0.5,
+                                                       G4TwoVector(0,0),1,
+                                                       G4TwoVector(0,0),1);   
 
-   // Aluminium dead layers
-   G4ThreeVector positionAluStripFront = G4ThreeVector(0, 0, AluStripFront_PosZ);
-   G4ThreeVector positionAluStripBack  = G4ThreeVector(0, 0, AluStripBack_PosZ);
+   // Wafer Shape to be substracted to the PCB
+   G4Tubs* solidWaferShapeBase = new G4Tubs("WaferShape", 
+                                            WaferInnerRadius,
+                                            WaferOutterRadius,
+                                            PCBThickness,
+                                            0*deg, 
+                                            360*deg); 
+G4RotationMatrix* norotation = new  G4RotationMatrix();                        
 
-   G4Tubs* solidAluStrip = new G4Tubs("AluBox", 
-                                      FirstStageRmin,
-                                      FirstStageRmax,
-                                      AluStripThickness/2, 
-                                      0*deg, 
-                                      360*deg); 
+  G4RotationMatrix* cutrotation = new  G4RotationMatrix(G4ThreeVector(0,0,1),45*deg);                        
+  G4ThreeVector cutposition1(80*mm+WaferRCut,0,0); cutposition1.setPhi(45*deg);
+  G4Transform3D transform1(*cutrotation,cutposition1);
 
-   G4LogicalVolume* logicAluStrip = new G4LogicalVolume(solidAluStrip, Aluminium, "logicAluStrip", 0, 0, 0);
+  G4Box* solidCutout = new G4Box("cuttout",80*mm,80*mm,80*mm); 
 
-   new G4PVPlacement(0, positionAluStripFront, logicAluStrip, Name + "_AluStripFront", logicAnnularS1, false, 0);
-   new G4PVPlacement(0, positionAluStripBack,  logicAluStrip, Name + "_AluStripBack",  logicAnnularS1, false, 0);
+  G4SubtractionSolid* solidWaferShape1 = new G4SubtractionSolid("WaferShape1",
+                                                                 solidWaferShapeBase,
+                                                                 solidCutout,
+                                                                 transform1);
 
-   logicAluStrip->SetVisAttributes(G4VisAttributes::Invisible);
+  
+  G4ThreeVector cutposition2(-80*mm-WaferRCut,0,0); cutposition2.setPhi(-135*deg);
+  G4Transform3D transform2(*cutrotation,cutposition2);
+  G4SubtractionSolid* solidWaferShape = new G4SubtractionSolid("WaferShape",
+                                                                 solidWaferShape1,
+                                                                 solidCutout,
+                                                                 transform2);
 
-   // Silicon detector itself
-   G4ThreeVector  positionSilicon = G4ThreeVector(0, 0, Silicon_PosZ);
 
-   G4Tubs* solidSilicon = new G4Tubs("solidSilicon", 
-                                     FirstStageRmin,
-                                     FirstStageRmax,
-                                     FirstStageThickness/2, 
-                                     0*deg, 
-                                     360*deg); 
+   // PCB final
+   G4SubtractionSolid* solidPCB1 = new G4SubtractionSolid("AnnularS1_PCB1",
+                                                                 solidPCBBase,
+                                                                 solidWaferShape);
+  
+   G4Tubs* solidTub = 
+    new G4Tubs("central_hole",0,PCBInnerRadius,PCBThickness,0,360*deg); 
+   G4SubtractionSolid* solidPCB = new G4SubtractionSolid("AnnularS1_PCB",
+                                                                 solidPCB1,
+                                                                 solidTub);
 
-   G4LogicalVolume* logicSilicon = new G4LogicalVolume(solidSilicon, Silicon, "logicSilicon", 0, 0, 0);
 
-   new G4PVPlacement(0, positionSilicon, logicSilicon, Name + "_Silicon", logicAnnularS1, false, 0);
+    G4LogicalVolume* logicPCB = new G4LogicalVolume(solidPCB, Vacuum, "AnnularS1_PCB", 0, 0, 0);
 
-   // Set Silicon strip sensible
-   logicSilicon->SetSensitiveDetector(m_Scorer);
+    new G4PVPlacement(G4Transform3D(*norotation, G4ThreeVector()),
+                                     logicPCB,
+                                     "AnnularS1_PCB",
+                                     logicAnnularS1,
+                                     false,
+                                     0);
+   
+   G4VisAttributes* PCBVisAtt = new G4VisAttributes(G4Colour(0.2, 0.5, 0.2)) ;
+   logicPCB->SetVisAttributes(PCBVisAtt);
 
-   ///Visualisation of Silicon Strip
-//   G4VisAttributes* SiliconVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5));
-   G4VisAttributes* SiliconVisAtt = new G4VisAttributes(G4Colour(0.3, 0.3, 0.3));
-   logicSilicon->SetVisAttributes(SiliconVisAtt);
+
+   // Wafer itself
+   G4Tubs* solidWaferBase = new G4Tubs("Wafer", 
+                                            WaferInnerRadius,
+                                            WaferOutterRadius,
+                                            WaferThickness,
+                                            0*deg, 
+                                            360*deg); 
+  
+  G4SubtractionSolid* solidWafer1 = new G4SubtractionSolid("Wafer1",
+                                                            solidWaferBase,
+                                                            solidCutout,
+                                                            transform1);
+
+  G4SubtractionSolid* solidWafer = new G4SubtractionSolid("Wafer",
+                                                           solidWafer1,
+                                                           solidCutout,
+                                                           transform2);
+
+  G4LogicalVolume* logicWafer = new G4LogicalVolume(solidWafer, Silicon, "AnnularS1_Wafer", 0, 0, 0);
+  new G4PVPlacement(G4Transform3D(*norotation, G4ThreeVector()),
+                                     logicWafer,
+                                     "AnnularS1_Wafer",
+                                     logicAnnularS1,
+                                     false,
+                                     0);
+
+     G4VisAttributes* SiVisAtt = new G4VisAttributes(G4Colour(0.3, 0.3, 0.3)) ;
+     logicWafer->SetVisAttributes(SiVisAtt); 
+   
+   // Active Wafer
+   G4Tubs* solidActiveWaferBase = new G4Tubs("ActiveWafer", 
+                                            ActiveWaferInnerRadius,
+                                            ActiveWaferOutterRadius,
+                                            WaferThickness,
+                                            0*deg, 
+                                            360*deg); 
+  
+  G4SubtractionSolid* solidActiveWafer1 = new G4SubtractionSolid("ActiveWafer1",
+                                                            solidActiveWaferBase,
+                                                            solidCutout,
+                                                            transform1);
+
+  G4SubtractionSolid* solidActiveWafer = new G4SubtractionSolid("ActiveWafer",
+                                                           solidActiveWafer1,
+                                                           solidCutout,
+                                                           transform2);
+
+  G4LogicalVolume* logicActiveWafer = new G4LogicalVolume(solidActiveWafer, Silicon, "AnnularS1_ActiveWafer", 0, 0, 0);
+  new G4PVPlacement(G4Transform3D(*norotation, G4ThreeVector()),
+                                     logicActiveWafer,
+                                     "AnnularS1_ActiveWafer",
+                                     logicWafer,
+                                     false,
+                                     0);
+  logicActiveWafer->SetVisAttributes(SiVisAtt);
+  
+  // Set Silicon strip sensible
+   logicActiveWafer->SetSensitiveDetector(m_Scorer);
 }
 
 
