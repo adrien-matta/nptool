@@ -134,7 +134,7 @@ RootOutput::~RootOutput()
       cout << endl;
       cout << "Got histograms and Tree !" << endl;
       cout << "  - Number of entries in the Tree: " << pRootTree->GetEntries() << endl;
-      cout << "  - Number of bites written to file: " << pRootTree->Write() << endl;
+      cout << "  - Number of bites written to file: " << pRootTree->Write("", TObject::kOverwrite) << endl;
 
       // write TAsciiFile if used
       // EventGenerator
