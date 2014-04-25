@@ -44,6 +44,7 @@
 #include "EventGeneratorIsotropic.hh"
 #include "EventGeneratorBeam.hh"
 #include "EventGeneratorGammaDecay.hh"
+#include "EventGeneratorNuclearDeexcitation.hh"
 #include "EventGeneratorParticleDecay.hh"
 #include "EventGeneratorInternalPairFormation.hh"
 
@@ -82,6 +83,8 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path){
   int   seenToken_PairDecay = 0;
   int   alreadyiInstantiate_ParticleDecay = 0;
   int   seenToken_ParticleDecay = 0;
+  int   alreadyiInstantiate_NuclearDeexcitation = 0;
+  int   seenToken_NuclearDeexcitation = 0;
   
   if(NPOptionManager::getInstance()->GetVerboseLevel()==1) cout << "/////////////////////////////////////////////////// " << endl ;
 
@@ -156,6 +159,23 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path){
       }
       
     }
+    
+    //Search for NuclearDeexcitation
+    else if ( LineBuffer.compare(0, 19, "NuclearDeexcitation") == 0 ) {
+      seenToken_NuclearDeexcitation++;
+      if (seenToken_NuclearDeexcitation>alreadyiInstantiate_NuclearDeexcitation) {
+        alreadyiInstantiate_NuclearDeexcitation++;
+        VEventGenerator* myEventGenerator = new EventGeneratorNuclearDeexcitation();
+        EventGeneratorFile.close();
+        myEventGenerator->ReadConfiguration(Path,alreadyiInstantiate_NuclearDeexcitation);
+        EventGeneratorFile.open(Path.c_str());
+        myEventGenerator->InitializeRootOutput();
+        myEventGenerator->SetTarget(m_detector->GetTarget());
+        m_EventGenerator.push_back(myEventGenerator);
+        seenToken_NuclearDeexcitation=0;
+      }
+      
+    }    
     
         //Search for InternalPairFormation decay
     else if ( LineBuffer.compare(0, 9, "PairDecay") == 0 ) {

@@ -98,9 +98,9 @@ namespace ANUDUMMYSHAPE
 {
   // TODO: Check all these, what they do etc..
    // Resolution
-  const G4double ResoSiLi  = 0.0085;	// = 20 keV of Resolution   //   Unit is MeV/2.35
-  const G4double ResoTimeGpd     = 0.4255; // = 1ns        // 0.212765957;// = 500ps                 //   Unit is  ns/2.35
-  const G4double ResoPosZ     = 0.4255;// = 1mm  for ANU               //   Unit is  mm/2.35
+  const G4double ResoSiLi     = 0.00085;	  // = 2 keV of Resolution   //   Unit is MeV/2.35
+  const G4double ResoTimeGpd  = 0.4255;     // = 1ns                   //   Unit is  ns/2.35
+  const G4double ResoPosZ     = 0.4255;     // = 1mm  for ANU          //   Unit is  mm/2.35
 
    // Geometry for the mother volume containing the different layers of your dummy shape module
    const G4double FaceFrontWidth          = 1.2*cm;
