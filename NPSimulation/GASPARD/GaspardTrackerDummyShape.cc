@@ -54,7 +54,7 @@
 
 // NPTool headers
 #include "GaspardTrackerDummyShape.hh"
-#include "GeneralScorers.hh"
+#include "ObsoleteGeneralScorers.hh"
 #include "GaspardScorers.hh"
 #include "RootOutput.h"
 
@@ -970,13 +970,13 @@ void GaspardTrackerDummyShape::InitializeScorers()
 {
    // First stage Associate Scorer
    m_FirstStageScorer                                   = new G4MultiFunctionalDetector("FirstStageScorerGPDDummyShape");
-   G4VPrimitiveScorer* DetNbr                           = new GENERALSCORERS::PSDetectorNumber("DetectorNumber", "GPDDummyShape", 0);
-   G4VPrimitiveScorer* TOF                              = new GENERALSCORERS::PSTOF("StripTime","GPDDummyShape", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesX          = new GENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","GPDDummyShape", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesY          = new GENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","GPDDummyShape", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesZ          = new GENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","GPDDummyShape", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new GENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","GPDDummyShape", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new GENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","GPDDummyShape", 0);
+   G4VPrimitiveScorer* DetNbr                           = new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber", "GPDDummyShape", 0);
+   G4VPrimitiveScorer* TOF                              = new OBSOLETEGENERALSCORERS::PSTOF("StripTime","GPDDummyShape", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesX          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","GPDDummyShape", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesY          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","GPDDummyShape", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesZ          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","GPDDummyShape", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","GPDDummyShape", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","GPDDummyShape", 0);
    G4VPrimitiveScorer* Energy                           = new GPDScorerFirstStageEnergy("StripEnergy", "GPDDummyShape", 0);
    G4VPrimitiveScorer* StripPositionX                   = new GPDScorerFirstStageFrontStripDummyShape("StripIDFront", 0, NumberOfStrips);
    G4VPrimitiveScorer* StripPositionY                   = new GPDScorerFirstStageBackStripDummyShape("StripIDBack", 0, NumberOfStrips);

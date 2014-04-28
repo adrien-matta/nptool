@@ -25,7 +25,7 @@
 #include "G4VProcess.hh"
 
 // NPTool headers
-#include "GeneralScorers.hh"
+#include "ObsoleteGeneralScorers.hh"
 
 #include "ComptonTelescopeScorers.hh"
 
@@ -149,7 +149,7 @@ ComptonTelescopeScorerTrackerTowerNumber::~ComptonTelescopeScorerTrackerTowerNum
 G4bool ComptonTelescopeScorerTrackerTowerNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
    // int DetNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(0); // this line does exactly the same than the line above
    int DSSSDNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(0);
 
@@ -213,7 +213,7 @@ ComptonTelescopeScorerTrackerEnergy::~ComptonTelescopeScorerTrackerEnergy()
 G4bool ComptonTelescopeScorerTrackerEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
    int DSSSDNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);
 
    // get energy
@@ -279,7 +279,7 @@ ComptonTelescopeScorerTrackerDSSSDNumber::~ComptonTelescopeScorerTrackerDSSSDNum
 G4bool ComptonTelescopeScorerTrackerDSSSDNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
 
    //G4int CrystalNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetReplicaNumber(1);
    //Adde by Anna:
@@ -358,7 +358,7 @@ ComptonTelescopeScorerTrackerTOF::~ComptonTelescopeScorerTrackerTOF()
 G4bool ComptonTelescopeScorerTrackerTOF::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
    int DSSSDNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);
 
    // get TOF
@@ -420,7 +420,7 @@ ComptonTelescopeScorerCalorimeterTowerNumber::~ComptonTelescopeScorerCalorimeter
 G4bool ComptonTelescopeScorerCalorimeterTowerNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
    // int DetNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(0); // this line does exactly the same than the line above
    int DSSSDNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);
 
@@ -483,7 +483,7 @@ ComptonTelescopeScorerCalorimeterEnergy::~ComptonTelescopeScorerCalorimeterEnerg
 G4bool ComptonTelescopeScorerCalorimeterEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
    int DSSSDNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);
 
    // get energy
@@ -551,7 +551,7 @@ ComptonTelescopeScorerCalorimeterDetectorNumber::~ComptonTelescopeScorerCalorime
 G4bool ComptonTelescopeScorerCalorimeterDetectorNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
 
    // get energy
    G4int DetectorNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);

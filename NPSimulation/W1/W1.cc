@@ -44,7 +44,7 @@
 #include "G4MultiFunctionalDetector.hh"
 
 // NPTool headers
-#include "GeneralScorers.hh"
+#include "ObsoleteGeneralScorers.hh"
 #include "W1.hh"
 #include "W1Scorers.hh"
 #include "TW1Data.h"
@@ -742,14 +742,14 @@ void W1::InitializeScorers()
 {
    // Associate Scorer
    m_Scorer = new G4MultiFunctionalDetector("ScorerW1");
-   G4VPrimitiveScorer* DetNbr                           = new GENERALSCORERS::PSDetectorNumber("DetectorNumber", "W1Square", 0);
-   G4VPrimitiveScorer* Energy                           = new GENERALSCORERS::PSEnergy("StripEnergy", "W1Square", 0);
-   G4VPrimitiveScorer* TOF                              = new GENERALSCORERS::PSTOF("StripTime", "W1Square", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesX          = new GENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","W1Square", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesY          = new GENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","W1Square", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesZ          = new GENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","W1Square", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new GENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","W1Square", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new GENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","W1Square", 0);
+   G4VPrimitiveScorer* DetNbr                           = new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber", "W1Square", 0);
+   G4VPrimitiveScorer* Energy                           = new OBSOLETEGENERALSCORERS::PSEnergy("StripEnergy", "W1Square", 0);
+   G4VPrimitiveScorer* TOF                              = new OBSOLETEGENERALSCORERS::PSTOF("StripTime", "W1Square", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesX          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","W1Square", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesY          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","W1Square", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesZ          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","W1Square", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","W1Square", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","W1Square", 0);
    G4VPrimitiveScorer* ThetaStripPosition               = new W1ScorerFrontStripNumber("FrontStripNumber", 0, NbStrips);
    G4VPrimitiveScorer* PhiStripPosition                 = new W1ScorerBackStripNumber("BackStripNumber", 0, NbStrips);
 

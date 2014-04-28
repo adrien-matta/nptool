@@ -45,9 +45,9 @@
 
 // NPTool header
 #include "DummyDetector.hh"
-#include "GeneralScorers.hh"
+#include "ObsoleteGeneralScorers.hh"
 #include "RootOutput.h"
-using namespace GENERALSCORERS ;
+using namespace OBSOLETEGENERALSCORERS ;
 // CLHEP header
 #include "CLHEP/Random/RandGauss.h"
 

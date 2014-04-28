@@ -22,9 +22,9 @@
  *  a global ID for each event you should not use those scorer with some G4  *
  *  provided ones or being very carefull doing so.                           * 
  *****************************************************************************/
-#include "GeneralScorers.hh"
+#include "ObsoleteGeneralScorers.hh"
 #include "G4UnitsTable.hh"
-using namespace GENERALSCORERS ;
+using namespace OBSOLETEGENERALSCORERS ;
 using namespace CLHEP;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -32,7 +32,7 @@ using namespace CLHEP;
 //   DetectorNameX_SubPart_SubPart
 //  where X stand for the detector number.
 
-int GENERALSCORERS::PickUpDetectorNumber(G4Step* aStep, std::string DetName)
+int OBSOLETEGENERALSCORERS::PickUpDetectorNumber(G4Step* aStep, std::string DetName)
 {
    std::string name = aStep->GetTrack()->GetVolume()->GetName();
    std::string nbr;

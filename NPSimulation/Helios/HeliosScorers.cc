@@ -23,7 +23,7 @@
 #include "G4UnitsTable.hh"
 
 // NPTool headers
-#include "GeneralScorers.hh"
+#include "ObsoleteGeneralScorers.hh"
 #include "HeliosScorers.hh"
 
 #include "HeliosDetDummyShape.hh"
@@ -58,7 +58,7 @@ HeliosScorerFirstStageEnergy::~HeliosScorerFirstStageEnergy()
 G4bool HeliosScorerFirstStageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
 
    // get energy
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -124,7 +124,7 @@ HeliosScorerFirstStageFrontStripDummyShape::~HeliosScorerFirstStageFrontStripDum
 G4bool HeliosScorerFirstStageFrontStripDummyShape::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "HeliosDummyShape");
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "HeliosDummyShape");
 
    // get front strip number
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -191,7 +191,7 @@ HeliosScorerFirstStageBackStripDummyShape::~HeliosScorerFirstStageBackStripDummy
 G4bool HeliosScorerFirstStageBackStripDummyShape::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "HeliosDummyShape");
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "HeliosDummyShape");
 
    // get back strip number
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -258,7 +258,7 @@ HeliosScorerFirstStageFrontStripSquare::~HeliosScorerFirstStageFrontStripSquare(
 G4bool HeliosScorerFirstStageFrontStripSquare::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "HeliosSquare");
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "HeliosSquare");
 
    // get front strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -323,7 +323,7 @@ HeliosScorerFirstStageBackStripSquare::~HeliosScorerFirstStageBackStripSquare()
 G4bool HeliosScorerFirstStageBackStripSquare::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "HeliosSquare");
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "HeliosSquare");
 
    // get back strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -390,7 +390,7 @@ HeliosScorerFirstStageFrontStripTrapezoid::~HeliosScorerFirstStageFrontStripTrap
 G4bool HeliosScorerFirstStageFrontStripTrapezoid::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "HeliosTrapezoid");
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "HeliosTrapezoid");
 
    // get front strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -455,7 +455,7 @@ HeliosScorerFirstStageBackStripTrapezoid::~HeliosScorerFirstStageBackStripTrapez
 G4bool HeliosScorerFirstStageBackStripTrapezoid::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "HeliosTrapezoid");
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "HeliosTrapezoid");
 
    // get back strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -523,7 +523,7 @@ HeliosScorerFirstStageFrontStripAnnular::~HeliosScorerFirstStageFrontStripAnnula
 G4bool HeliosScorerFirstStageFrontStripAnnular::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "HeliosAnnular");
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "HeliosAnnular");
 
    // get front strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -589,7 +589,7 @@ HeliosScorerFirstStageBackStripAnnular::~HeliosScorerFirstStageBackStripAnnular(
 G4bool HeliosScorerFirstStageBackStripAnnular::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "HeliosAnnular");
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "HeliosAnnular");
 
    // get back strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();

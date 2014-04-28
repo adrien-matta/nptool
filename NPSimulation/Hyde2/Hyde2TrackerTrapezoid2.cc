@@ -48,7 +48,7 @@
 
 // NPTool headers
 #include "Hyde2TrackerTrapezoid2.hh"
-#include "GeneralScorers.hh"
+#include "ObsoleteGeneralScorers.hh"
 #include "Hyde2Scorers.hh"
 #include "RootOutput.h"
 
@@ -1228,13 +1228,13 @@ void Hyde2TrackerTrapezoid2::InitializeScorers()
 {
    // First stage Associate Scorer
    m_FirstStageScorer = new G4MultiFunctionalDetector("FirstStageScorerHYD2Trapezoid2");
-   G4VPrimitiveScorer* DetNbr                           = new GENERALSCORERS::PSDetectorNumber("DetectorNumber", "HYD2Trapezoid2", 0);
-   G4VPrimitiveScorer* TOF                              = new GENERALSCORERS::PSTOF("StripTime","HYD2Trapezoid2", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesX          = new GENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","HYD2Trapezoid2", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesY          = new GENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","HYD2Trapezoid2", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesZ          = new GENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","HYD2Trapezoid2", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new GENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","HYD2Trapezoid2", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new GENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","HYD2Trapezoid2", 0);
+   G4VPrimitiveScorer* DetNbr                           = new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber", "HYD2Trapezoid2", 0);
+   G4VPrimitiveScorer* TOF                              = new OBSOLETEGENERALSCORERS::PSTOF("StripTime","HYD2Trapezoid2", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesX          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","HYD2Trapezoid2", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesY          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","HYD2Trapezoid2", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesZ          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","HYD2Trapezoid2", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","HYD2Trapezoid2", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","HYD2Trapezoid2", 0);
    G4VPrimitiveScorer* Energy                           = new HYD2ScorerFirstStageEnergy("StripEnergy", "HYD2Trapezoid2", 0);
    G4VPrimitiveScorer* StripPositionX                   = new HYD2ScorerFirstStageFrontStripTrapezoid2("StripNumberX", 0, NumberOfStripsX);
    G4VPrimitiveScorer* StripPositionY                   = new HYD2ScorerFirstStageBackStripTrapezoid2("StripNumberY",  0, NumberOfStripsY);

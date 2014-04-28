@@ -51,7 +51,7 @@
 // NPTool headers
 #include "ComptonTelescope.hh"
 #include "ComptonTelescopeScorers.hh"
-#include "GeneralScorers.hh"
+#include "ObsoleteGeneralScorers.hh"
 #include "RootOutput.h"
 
 // CLHEP
@@ -1016,11 +1016,11 @@ void ComptonTelescope::InitializeScorers()
    G4VPrimitiveScorer* ProcessTypeCompt = new ComptonTelescopeScorerProcess("Process", "ComptonTelescopeTower", "compt", 0);
 /*   G4VPrimitiveScorer* StripPositionX                   = new GPDScorerFirstStageFrontStripSquare("StripNumberX", 0, m_NumberOfStrips);
    G4VPrimitiveScorer* StripPositionY                   = new GPDScorerFirstStageBackStripSquare("StripNumberY", 0, m_NumberOfStrips);
-   G4VPrimitiveScorer* InteractionCoordinatesX          = new GENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesY          = new GENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesZ          = new GENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new GENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new GENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesX          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesY          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesZ          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","", 0);
 */
    //and register it to the multifunctionnal detector
    m_TrackerScorer->RegisterPrimitive(TowerNbr);

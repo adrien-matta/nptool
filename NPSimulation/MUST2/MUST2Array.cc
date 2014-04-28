@@ -42,7 +42,7 @@
 #include "G4PVDivision.hh"
 
 //G4 sensitive
-#include "GeneralScorers.hh"
+#include "ObsoleteGeneralScorers.hh"
 #include "MUST2Scorers.hh"
 
 //Not G4
@@ -1270,18 +1270,18 @@ void MUST2Array::InitializeScorers() {
   //	Silicon Associate Scorer
   m_StripScorer = new G4MultiFunctionalDetector("MUST2_StripScorer");
 
-  G4VPrimitiveScorer* DetNbr 									= new GENERALSCORERS::PSDetectorNumber("DetectorNumber","MUST2Telescope", 0);
-  G4VPrimitiveScorer* Energy 									= new GENERALSCORERS::PSEnergy("StripEnergy","MUST2Telescope", 0);			
-  G4VPrimitiveScorer* TOF 										= new GENERALSCORERS::PSTOF("StripTime","MUST2Telescope", 0);          					 		 
+  G4VPrimitiveScorer* DetNbr 									= new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber","MUST2Telescope", 0);
+  G4VPrimitiveScorer* Energy 									= new OBSOLETEGENERALSCORERS::PSEnergy("StripEnergy","MUST2Telescope", 0);			
+  G4VPrimitiveScorer* TOF 										= new OBSOLETEGENERALSCORERS::PSTOF("StripTime","MUST2Telescope", 0);          					 		 
 
   G4VPrimitiveScorer* StripPositionX							= new PSStripNumberX("StripNumberX", 0, SiliconFace, 128);
   G4VPrimitiveScorer* StripPositionY							= new PSStripNumberY("StripNumberY", 0, SiliconFace, 128);  		
 
-  G4VPrimitiveScorer* InteractionCoordinatesX 				= new GENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","MUST2Telescope", 0);
-  G4VPrimitiveScorer* InteractionCoordinatesY				= new GENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","MUST2Telescope", 0);
-  G4VPrimitiveScorer* InteractionCoordinatesZ  			= new GENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","MUST2Telescope", 0);	 		 
-  G4VPrimitiveScorer* InteractionCoordinatesAngleTheta	= new GENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","MUST2Telescope", 0);
-  G4VPrimitiveScorer* InteractionCoordinatesAnglePhi    = new GENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","MUST2Telescope", 0) ;	    
+  G4VPrimitiveScorer* InteractionCoordinatesX 				= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","MUST2Telescope", 0);
+  G4VPrimitiveScorer* InteractionCoordinatesY				= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","MUST2Telescope", 0);
+  G4VPrimitiveScorer* InteractionCoordinatesZ  			= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","MUST2Telescope", 0);	 		 
+  G4VPrimitiveScorer* InteractionCoordinatesAngleTheta	= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","MUST2Telescope", 0);
+  G4VPrimitiveScorer* InteractionCoordinatesAnglePhi    = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","MUST2Telescope", 0) ;	    
 
 
   //and register it to the multifunctionnal detector
@@ -1298,14 +1298,14 @@ void MUST2Array::InitializeScorers() {
 
   //	SiLi Associate Scorer
   m_SiLiScorer	= new G4MultiFunctionalDetector("MUST2_SiLiScorer");
-  G4VPrimitiveScorer* SiLiEnergy 			= new GENERALSCORERS::PSEnergy("SiLiEnergy","MUST2Telescope", 0) ;
+  G4VPrimitiveScorer* SiLiEnergy 			= new OBSOLETEGENERALSCORERS::PSEnergy("SiLiEnergy","MUST2Telescope", 0) ;
   G4VPrimitiveScorer* SiLiPadNbr 			= new PSPadOrCristalNumber("SiLiPadNbr",0) ;
   m_SiLiScorer->RegisterPrimitive(SiLiEnergy);
   m_SiLiScorer->RegisterPrimitive(SiLiPadNbr);
 
   //	CsI Associate Scorer 
   m_CsIScorer	= new G4MultiFunctionalDetector("MUST2_CsIScorer");
-  G4VPrimitiveScorer* CsIEnergy 		= new GENERALSCORERS::PSEnergy("CsIEnergy","MUST2Telescope", 0) 	;
+  G4VPrimitiveScorer* CsIEnergy 		= new OBSOLETEGENERALSCORERS::PSEnergy("CsIEnergy","MUST2Telescope", 0) 	;
   G4VPrimitiveScorer* CsICristalNbr 	= new PSPadOrCristalNumber("CsICristalNbr",0) ;
   m_CsIScorer->RegisterPrimitive(CsIEnergy) ;
   m_CsIScorer->RegisterPrimitive(CsICristalNbr) ;

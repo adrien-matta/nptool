@@ -23,7 +23,7 @@
 #include "G4UnitsTable.hh"
 
 // NPTool headers
-#include "GeneralScorers.hh"
+#include "ObsoleteGeneralScorers.hh"
 #include "ShieldScorers.hh"
 
 #include "ShieldClParis.hh"
@@ -58,7 +58,7 @@ SHIELDScorerCsIDetectorNumber::~SHIELDScorerCsIDetectorNumber()
 G4bool SHIELDScorerCsIDetectorNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
 
    // get energy
    G4double edep = aStep->GetTotalEnergyDeposit();
@@ -119,7 +119,7 @@ SHIELDScorerCsIEnergy::~SHIELDScorerCsIEnergy()
 G4bool SHIELDScorerCsIEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
 
    // get energy
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -184,7 +184,7 @@ SHIELDScorerCsITOF::~SHIELDScorerCsITOF()
 G4bool SHIELDScorerCsITOF::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
 
    // get TOF
    G4double TOF  = aStep->GetPreStepPoint()->GetGlobalTime();

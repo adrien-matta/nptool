@@ -23,7 +23,7 @@
 #include "G4UnitsTable.hh"
 
 // NPTool headers
-#include "GeneralScorers.hh"
+#include "ObsoleteGeneralScorers.hh"
 #include "GaspardScorers.hh"
 
 #include "GaspardTrackerDummyShape.hh"
@@ -60,7 +60,7 @@ GPDScorerFirstStageEnergy::~GPDScorerFirstStageEnergy()
 G4bool GPDScorerFirstStageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
 
    // get energy
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -125,7 +125,7 @@ GPDScorerSecondStageEnergy::~GPDScorerSecondStageEnergy()
 G4bool GPDScorerSecondStageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
 
    // get energy
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -190,7 +190,7 @@ GPDScorerThirdStageEnergy::~GPDScorerThirdStageEnergy()
 G4bool GPDScorerThirdStageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
 
    // get energy
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -256,7 +256,7 @@ GPDScorerFirstStageFrontStripDummyShape::~GPDScorerFirstStageFrontStripDummyShap
 G4bool GPDScorerFirstStageFrontStripDummyShape::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "GPDDummyShape");
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "GPDDummyShape");
 
    // get front strip number
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -325,7 +325,7 @@ GPDScorerFirstStageBackStripDummyShape::~GPDScorerFirstStageBackStripDummyShape(
 G4bool GPDScorerFirstStageBackStripDummyShape::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "GPDDummyShape");
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "GPDDummyShape");
 
    // get back strip number
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -392,7 +392,7 @@ GPDScorerFirstStageFrontStripSquare::~GPDScorerFirstStageFrontStripSquare()
 G4bool GPDScorerFirstStageFrontStripSquare::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "GPDSquare");
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "GPDSquare");
 
    // get front strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -456,7 +456,7 @@ GPDScorerFirstStageBackStripSquare::~GPDScorerFirstStageBackStripSquare()
 G4bool GPDScorerFirstStageBackStripSquare::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "GPDSquare");
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "GPDSquare");
 
    // get back strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -522,7 +522,7 @@ GPDScorerFirstStageFrontStripTrapezoid::~GPDScorerFirstStageFrontStripTrapezoid(
 G4bool GPDScorerFirstStageFrontStripTrapezoid::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "GPDTrapezoid");
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "GPDTrapezoid");
 
    // get front strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -586,7 +586,7 @@ GPDScorerFirstStageBackStripTrapezoid::~GPDScorerFirstStageBackStripTrapezoid()
 G4bool GPDScorerFirstStageBackStripTrapezoid::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "GPDTrapezoid");
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "GPDTrapezoid");
 
    // get back strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -653,7 +653,7 @@ GPDScorerFirstStageFrontStripAnnular::~GPDScorerFirstStageFrontStripAnnular()
 G4bool GPDScorerFirstStageFrontStripAnnular::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "GPDAnnular");
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "GPDAnnular");
 
    // Hit position in the world frame
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -749,7 +749,7 @@ GPDScorerFirstStageBackStripAnnular::~GPDScorerFirstStageBackStripAnnular()
 G4bool GPDScorerFirstStageBackStripAnnular::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "GPDAnnular");
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "GPDAnnular");
 
    // Hit position in the world frame
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();

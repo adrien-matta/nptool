@@ -24,7 +24,7 @@
  *****************************************************************************/
 #include "MUST2Scorers.hh"
 #include "G4UnitsTable.hh"
-#include "GeneralScorers.hh"
+#include "ObsoleteGeneralScorers.hh"
 #include <string>
 using namespace MUST2 ;
 
@@ -47,7 +47,7 @@ PSStripNumberX::~PSStripNumberX()
 
 G4bool PSStripNumberX::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
-    int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "MUST2Telescope");
+    int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "MUST2Telescope");
 
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);
@@ -112,7 +112,7 @@ PSStripNumberY::~PSStripNumberY()
 
 G4bool PSStripNumberY::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
-    int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "MUST2Telescope");
+    int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "MUST2Telescope");
 
 
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -198,7 +198,7 @@ G4bool PSPadOrCristalNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
       
       else              { nbr= name[name.length()-1]   ; VolumeNumber = atoi( nbr.c_str() )   ;}
 
-       G4int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "MUST2Telescope");
+       G4int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "MUST2Telescope");
 
       G4double edep = aStep->GetTotalEnergyDeposit();
       if (edep < TriggerThreshold) return FALSE;

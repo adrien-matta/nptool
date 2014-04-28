@@ -114,12 +114,9 @@ private:
 namespace ANNULARS1
 {
    // Energy/Time resolutions for the different layers
-   const G4double ResoFirstStage  = 0              ;// = 52keV of Resolution   //   Unit is MeV/2.35
-   const G4double ResoSecondStage = 0.055          ;// = 130 keV of resolution //   Unit is MeV/2.35
-   const G4double ResoThirdStage  = 0              ;// = 100 keV of resolution //   Unit is MeV/2.35
-   const G4double ResoTimeGpd     = 0.212765957    ;// = 500 ps                //   Unit is  ns/2.35
-   const G4double ResoTimePPAC    = 0.106382979    ;// = 250 ps                //   Unit is  ns/2.35
-
+   const G4double ResoEnergy      = 0              ;// = 52keV of Resolution   //   Unit is MeV/2.35
+   const G4double ResoTime        = 0.106382979    ;// = 250 ps                //   Unit is  ns/2.35
+   const G4double EnergyThreshold = 0.300          ;// = 300 keV
    // PCB
    const G4double PCBPointsX[8]={-50,50,60,60,50,-50,-60,-60};
    const G4double PCBPointsY[8]={60,60,50,-50,-60,-60,-50,50};
@@ -135,9 +132,9 @@ namespace ANNULARS1
    const G4double AluStripThickness   = 0.4*micrometer;
 
    // Characteristics
-   const G4int NbPhiStrips     = 16;
-   const G4int NbThetaStrips   = 16;
-   const G4int NbThetaQuadrant = 4;
+   const G4int NbrRingStrips  = 16;
+   const G4int NbrSectorStrips = 16;
+   const G4int NbQuadrant      = 4;
 
    // total WaferLength
    const G4double Length = AluStripThickness*2+WaferThickness;

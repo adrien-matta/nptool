@@ -49,7 +49,7 @@
 
 // NPTool headers
 #include "HeliosDetDummyShape.hh"
-#include "GeneralScorers.hh"
+#include "ObsoleteGeneralScorers.hh"
 #include "HeliosScorers.hh"
 #include "RootOutput.h"
 
@@ -853,13 +853,13 @@ void HeliosDetDummyShape::InitializeScorers()
 {
    // First stage Associate Scorer
    m_FirstStageScorer                                   = new G4MultiFunctionalDetector("FirstStageScorerHeliosDummyShape");
-   G4VPrimitiveScorer* DetNbr                           = new GENERALSCORERS::PSDetectorNumber("DetectorNumber", "HeliosDummyShape", 0);
-   G4VPrimitiveScorer* TOF                              = new GENERALSCORERS::PSTOF("StripTime","HeliosDummyShape", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesX          = new GENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","HeliosDummyShape", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesY          = new GENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","HeliosDummyShape", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesZ          = new GENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","HeliosDummyShape", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new GENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","HeliosDummyShape", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new GENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","HeliosDummyShape", 0);
+   G4VPrimitiveScorer* DetNbr                           = new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber", "HeliosDummyShape", 0);
+   G4VPrimitiveScorer* TOF                              = new OBSOLETEGENERALSCORERS::PSTOF("StripTime","HeliosDummyShape", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesX          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","HeliosDummyShape", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesY          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","HeliosDummyShape", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesZ          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","HeliosDummyShape", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","HeliosDummyShape", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","HeliosDummyShape", 0);
    G4VPrimitiveScorer* Energy                           = new HeliosScorerFirstStageEnergy("StripEnergy", "HeliosDummyShape", 0);
    G4VPrimitiveScorer* StripPositionX                   = new HeliosScorerFirstStageFrontStripDummyShape("StripIDFront", 0, NumberOfStrips);
    G4VPrimitiveScorer* StripPositionY                   = new HeliosScorerFirstStageBackStripDummyShape("StripIDBack", 0, NumberOfStrips);

@@ -24,7 +24,7 @@
  *****************************************************************************/
 #include "ThinSiScorers.hh"
 #include "G4UnitsTable.hh"
-#include "GeneralScorers.hh"
+#include "ObsoleteGeneralScorers.hh"
 #include <string>
 using namespace THINSI ;
 
@@ -47,7 +47,7 @@ PSStripNumber::~PSStripNumber()
 
 G4bool PSStripNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
-    int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "ThinSi");
+    int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "ThinSi");
 
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
    POS = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(POS);

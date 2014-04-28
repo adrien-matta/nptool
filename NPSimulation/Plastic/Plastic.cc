@@ -44,9 +44,9 @@
 
 // NPTool header
 #include "Plastic.hh"
-#include "GeneralScorers.hh"
+#include "ObsoleteGeneralScorers.hh"
 #include "RootOutput.h"
-using namespace GENERALSCORERS ;
+using namespace OBSOLETEGENERALSCORERS ;
 // CLHEP header
 #include "CLHEP/Random/RandGauss.h"
 
@@ -725,7 +725,7 @@ void Plastic::InitializeScorers()
       G4VPrimitiveScorer* DetNbr = new PSDetectorNumber("PlasticNumber","Plastic", 0) ;
       G4VPrimitiveScorer* Energy = new PSEnergy("Energy","Plastic", 0)                   ;
       G4VPrimitiveScorer* Time   = new PSTOF("Time","Plastic", 0)                         ;
-      G4VPrimitiveScorer* InteractionCoordinatesZ  			= new GENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","Plastic", 0);       
+      G4VPrimitiveScorer* InteractionCoordinatesZ  			= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","Plastic", 0);       
       //and register it to the multifunctionnal detector
       m_PlasticScorer->RegisterPrimitive(DetNbr)                         ;
       m_PlasticScorer->RegisterPrimitive(Energy)                         ;

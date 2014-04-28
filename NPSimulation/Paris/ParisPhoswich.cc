@@ -47,7 +47,7 @@
 
 // NPTool headers
 #include "ParisPhoswich.hh"
-#include "GeneralScorers.hh"
+#include "ObsoleteGeneralScorers.hh"
 #include "ParisScorers.hh"
 #include "RootOutput.h"
 
@@ -1074,15 +1074,15 @@ void ParisPhoswich::InitializeScorers()
    // LaBr3 Associate Scorer
    m_LaBr3StageScorer = new G4MultiFunctionalDetector("LaBr3StageScorerParisPhoswich");
   
-   //   G4VPrimitiveScorer* DetNbr                           = new GENERALSCORERS::PSDetectorNumber("DetectorNumber", "ParisPhoswich", 0);
+   //   G4VPrimitiveScorer* DetNbr                           = new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber", "ParisPhoswich", 0);
    G4VPrimitiveScorer* DetNbr                           = new PARISScorerLaBr3StageDetectorNumber("DetectorNumber", "ParisPhoswich", 0);
-   //   G4VPrimitiveScorer* TOF                              = new GENERALSCORERS::PSTOF("StripTime","ParisPhoswich", 0);
+   //   G4VPrimitiveScorer* TOF                              = new OBSOLETEGENERALSCORERS::PSTOF("StripTime","ParisPhoswich", 0);
    G4VPrimitiveScorer* TOF                              = new PARISScorerLaBr3StageTOF("StripTime","ParisPhoswich", 0);
-   //G4VPrimitiveScorer* InteractionCoordinatesX          = new GENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","ParisPhoswich", 0);
-   //G4VPrimitiveScorer* InteractionCoordinatesY          = new GENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","ParisPhoswich", 0);
-   //G4VPrimitiveScorer* InteractionCoordinatesZ          = new GENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","ParisPhoswich", 0);
-   //G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new GENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","ParisPhoswich", 0);
-   //G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new GENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","ParisPhoswich", 0);
+   //G4VPrimitiveScorer* InteractionCoordinatesX          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","ParisPhoswich", 0);
+   //G4VPrimitiveScorer* InteractionCoordinatesY          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","ParisPhoswich", 0);
+   //G4VPrimitiveScorer* InteractionCoordinatesZ          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","ParisPhoswich", 0);
+   //G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","ParisPhoswich", 0);
+   //G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","ParisPhoswich", 0);
 
    G4VPrimitiveScorer* Energy                           = new PARISScorerLaBr3StageEnergy("StripEnergy", "ParisPhoswich", 0);
    G4VPrimitiveScorer* CrystNbr                         = new PARISScorerLaBr3StageCrystal("CrystalNumber", "ParisPhoswich", 0);

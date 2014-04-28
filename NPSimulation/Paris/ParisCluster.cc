@@ -48,7 +48,7 @@
 // NPTool headers
 #include "ParisCluster.hh"
 #include "ParisScorers.hh"
-#include "GeneralScorers.hh"
+#include "ObsoleteGeneralScorers.hh"
 #include "RootOutput.h"
 
 // CLHEP
@@ -1193,15 +1193,15 @@ void ParisCluster::InitializeScorers()
    // LaBr3 Associate Scorer
    m_LaBr3StageScorer = new G4MultiFunctionalDetector("LaBr3StageScorerParisCluster");
    /**/
-   //   G4VPrimitiveScorer* DetNbr                           = new GENERALSCORERS::PSDetectorNumber("DetectorNumber", "ParisCluster", 0);
+   //   G4VPrimitiveScorer* DetNbr                           = new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber", "ParisCluster", 0);
    G4VPrimitiveScorer* DetNbr                           = new PARISScorerLaBr3StageDetectorNumber("DetectorNumber", "ParisCluster", 0);
-   //   G4VPrimitiveScorer* TOF                              = new GENERALSCORERS::PSTOF("StripTime","ParisCluster", 0);
+   //   G4VPrimitiveScorer* TOF                              = new OBSOLETEGENERALSCORERS::PSTOF("StripTime","ParisCluster", 0);
    G4VPrimitiveScorer* TOF                              = new PARISScorerLaBr3StageTOF("StripTime","ParisCluster", 0);
-   //G4VPrimitiveScorer* InteractionCoordinatesX          = new GENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","ParisCluster", 0);
-   //G4VPrimitiveScorer* InteractionCoordinatesY          = new GENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","ParisCluster", 0);
-   //G4VPrimitiveScorer* InteractionCoordinatesZ          = new GENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","ParisCluster", 0);
-   //G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new GENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","ParisCluster", 0);
-   //G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new GENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","ParisCluster", 0);
+   //G4VPrimitiveScorer* InteractionCoordinatesX          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","ParisCluster", 0);
+   //G4VPrimitiveScorer* InteractionCoordinatesY          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","ParisCluster", 0);
+   //G4VPrimitiveScorer* InteractionCoordinatesZ          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","ParisCluster", 0);
+   //G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","ParisCluster", 0);
+   //G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","ParisCluster", 0);
 
    G4VPrimitiveScorer* Energy                           = new PARISScorerLaBr3StageEnergy("StripEnergy", "ParisCluster", 0);
    G4VPrimitiveScorer* CrystNbr                         = new PARISScorerLaBr3StageCrystal("CrystalNumber", "ParisCluster", 0);

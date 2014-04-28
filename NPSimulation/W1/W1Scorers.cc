@@ -23,7 +23,7 @@
 #include "G4UnitsTable.hh"
 
 // NPTool headers
-#include "GeneralScorers.hh"
+#include "ObsoleteGeneralScorers.hh"
 #include "W1Scorers.hh"
 
 #include "W1.hh"
@@ -54,7 +54,7 @@ W1ScorerFrontStripNumber::~W1ScorerFrontStripNumber()
 G4bool W1ScorerFrontStripNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "W1Square");
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "W1Square");
 
    // get front strip number
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -123,7 +123,7 @@ W1ScorerBackStripNumber::~W1ScorerBackStripNumber()
 G4bool W1ScorerBackStripNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "W1Square");
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "W1Square");
 
    // get back strip number
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();

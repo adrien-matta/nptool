@@ -23,7 +23,7 @@
 #include "G4UnitsTable.hh"
 
 // NPTool headers
-#include "GeneralScorers.hh"
+#include "ObsoleteGeneralScorers.hh"
 #include "Hyde2Scorers.hh"
 
 #include "Hyde2TrackerSquare1.hh"
@@ -56,7 +56,7 @@ HYD2ScorerFirstStageEnergy::~HYD2ScorerFirstStageEnergy()
 G4bool HYD2ScorerFirstStageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
 
    // get energy
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -121,7 +121,7 @@ HYD2ScorerSecondStageEnergy::~HYD2ScorerSecondStageEnergy()
 G4bool HYD2ScorerSecondStageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
 
    // get energy
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -186,7 +186,7 @@ HYD2ScorerThirdStageEnergy::~HYD2ScorerThirdStageEnergy()
 G4bool HYD2ScorerThirdStageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
 
    // get energy
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -249,7 +249,7 @@ HYD2ScorerFourthStageEnergy::~HYD2ScorerFourthStageEnergy()
 G4bool HYD2ScorerFourthStageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
 
    // get energy
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -312,7 +312,7 @@ HYD2ScorerFifthStageEnergy::~HYD2ScorerFifthStageEnergy()
 G4bool HYD2ScorerFifthStageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
 
    // get energy
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -375,7 +375,7 @@ HYD2ScorerSixthStageEnergy::~HYD2ScorerSixthStageEnergy()
 G4bool HYD2ScorerSixthStageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
 
    // get energy
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -439,7 +439,7 @@ HYD2ScorerFirstStageFrontStripSquare1::~HYD2ScorerFirstStageFrontStripSquare1()
 G4bool HYD2ScorerFirstStageFrontStripSquare1::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "HYD2Square1");
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "HYD2Square1");
 
    // get front strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -504,7 +504,7 @@ HYD2ScorerFirstStageBackStripSquare1::~HYD2ScorerFirstStageBackStripSquare1()
 G4bool HYD2ScorerFirstStageBackStripSquare1::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "HYD2Square1");
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "HYD2Square1");
 
    // get back strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -571,7 +571,7 @@ HYD2ScorerFirstStageFrontStripTrapezoid1::~HYD2ScorerFirstStageFrontStripTrapezo
 G4bool HYD2ScorerFirstStageFrontStripTrapezoid1::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "HYD2Trapezoid1");
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "HYD2Trapezoid1");
 
    // get front strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -636,7 +636,7 @@ HYD2ScorerFirstStageBackStripTrapezoid1::~HYD2ScorerFirstStageBackStripTrapezoid
 G4bool HYD2ScorerFirstStageBackStripTrapezoid1::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "HYD2Trapezoid1");
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "HYD2Trapezoid1");
 
    // get back strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -702,7 +702,7 @@ HYD2ScorerFirstStageFrontStripTrapezoid2::~HYD2ScorerFirstStageFrontStripTrapezo
 G4bool HYD2ScorerFirstStageFrontStripTrapezoid2::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "HYD2Trapezoid2");
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "HYD2Trapezoid2");
 
    // get front strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
@@ -767,7 +767,7 @@ HYD2ScorerFirstStageBackStripTrapezoid2::~HYD2ScorerFirstStageBackStripTrapezoid
 G4bool HYD2ScorerFirstStageBackStripTrapezoid2::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, "HYD2Trapezoid2");
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "HYD2Trapezoid2");
 
    // get back strip
    G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();

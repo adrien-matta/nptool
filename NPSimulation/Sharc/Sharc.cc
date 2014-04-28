@@ -42,7 +42,7 @@
 
 // NPS
 #include "Sharc.hh"
-#include "SharcScorers.hh"
+#include "SiliconScorers.hh"
 
 // NPL
 #include "NPOptionManager.h"
@@ -649,9 +649,9 @@ void Sharc::ReadSensitive(const G4Event* event){
     
     if(Energy>EnergyThreshold){
       double Time       = Info[1];
-      int DetNbr        = (int) Info[2];
-      int StripFront    = (int) Info[3];
-      int StripBack     = (int) Info[4];
+      int DetNbr        = (int) Info[7];
+      int StripFront    = (int) Info[8];
+      int StripBack     = (int) Info[9];
       
       m_Event->SetFront_DetectorNbr(DetNbr);
       m_Event->SetFront_StripNbr(StripFront);
@@ -666,11 +666,11 @@ void Sharc::ReadSensitive(const G4Event* event){
       m_Event->SetBack_TimeLED(RandGauss::shoot(Time, ResoTime));
       
       // Interraction Coordinates
-      ms_InterCoord->SetDetectedPositionX(Info[5]) ;
-      ms_InterCoord->SetDetectedPositionY(Info[6]) ;
-      ms_InterCoord->SetDetectedPositionZ(Info[7]) ;
-      ms_InterCoord->SetDetectedAngleTheta(Info[8]/deg) ;
-      ms_InterCoord->SetDetectedAnglePhi(Info[9]/deg) ;
+      ms_InterCoord->SetDetectedPositionX(Info[2]) ;
+      ms_InterCoord->SetDetectedPositionY(Info[3]) ;
+      ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
+      ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
+      ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
       
     }
   }
@@ -721,12 +721,12 @@ void Sharc::ReadSensitive(const G4Event* event){
     double Energy =  Info[0];
     if(Energy>EnergyThreshold){
       double Time  = Info[1];
-      int DetNbr =     (int) Info[2];
-      int StripFront = (int) Info[3];
-      int StripBack =  (int) Info[4];
+      int DetNbr =     (int) Info[7];
+      int StripFront = (int) Info[8];
+      int StripBack =  (int) Info[9];
       
       m_Event->SetFront_DetectorNbr(DetNbr);
-      m_Event->SetFront_StripNbr(StripFront);
+      m_Event->SetFront_StripNbr(QQQ_Wafer_NumberOf_AnnularStrip-StripFront+1); // Order is reverse (1 is outtermost strip)
       m_Event->SetFront_Energy(RandGauss::shoot(Energy, ResoEnergy));
       m_Event->SetFront_TimeCFD(RandGauss::shoot(Time, ResoTime));
       m_Event->SetFront_TimeLED(RandGauss::shoot(Time, ResoTime));
@@ -738,11 +738,11 @@ void Sharc::ReadSensitive(const G4Event* event){
       m_Event->SetBack_TimeLED(RandGauss::shoot(Time, ResoTime));
       
       // Interraction Coordinates
-      ms_InterCoord->SetDetectedPositionX(Info[5]) ;
-      ms_InterCoord->SetDetectedPositionY(Info[6]) ;
-      ms_InterCoord->SetDetectedPositionZ(Info[7]) ;
-      ms_InterCoord->SetDetectedAngleTheta(Info[8]/deg) ;
-      ms_InterCoord->SetDetectedAnglePhi(Info[9]/deg) ;
+      ms_InterCoord->SetDetectedPositionX(Info[2]) ;
+      ms_InterCoord->SetDetectedPositionY(Info[3]) ;
+      ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
+      ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
+      ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
     }
   }
   
@@ -760,21 +760,21 @@ void Sharc::InitializeScorers(){
   m_QQQScorer = new G4MultiFunctionalDetector("Sharc_QQQScorer");
   
   G4VPrimitiveScorer* BOXScorer =
-  new  SHARC::PS_Silicon_Rectangle("SharcBOX",
+  new  SILICONSCORERS::PS_Silicon_Rectangle("SharcBOX",
                                    BOX_Wafer_Length,
                                    BOX_Wafer_Width,
                                    BOX_Wafer_Back_NumberOfStrip ,
                                    BOX_Wafer_Front_NumberOfStrip);
   
   G4VPrimitiveScorer* PADScorer =
-  new  SHARC::PS_Silicon_Rectangle("SharcPAD",
+  new  SILICONSCORERS::PS_Silicon_Rectangle("SharcPAD",
                                    PAD_Wafer_Length,
                                    PAD_Wafer_Width,
                                    1 ,
                                    1);
   
   G4VPrimitiveScorer* QQQScorer =
-  new  SHARC::PS_Silicon_Annular("SharcQQQ",
+  new  SILICONSCORERS::PS_Silicon_Annular("SharcQQQ",
                                  QQQ_Wafer_Inner_Radius,
                                  QQQ_Wafer_Outer_Radius,
                                  QQQ_Wafer_Starting_Phi,

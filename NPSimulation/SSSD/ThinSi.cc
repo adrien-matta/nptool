@@ -45,7 +45,7 @@
 
 // NPTool header
 #include "ThinSi.hh"
-#include "GeneralScorers.hh"
+#include "ObsoleteGeneralScorers.hh"
 #include "ThinSiScorers.hh"
 #include "RootOutput.h"
 using namespace THINSI;
@@ -654,10 +654,10 @@ void ThinSi::InitializeScorers(){
   //   Silicon Associate Scorer
   m_StripScorer = new G4MultiFunctionalDetector("ThinSi_StripScorer");
 
-  G4VPrimitiveScorer* DetNbr   = new GENERALSCORERS::PSDetectorNumber("DetectorNumber","ThinSi_", 0);
+  G4VPrimitiveScorer* DetNbr   = new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber","ThinSi_", 0);
   G4VPrimitiveScorer* StripNbr = new PSStripNumber("StripNumber",0,SiliconSize, NumberOfStrip); 
-  G4VPrimitiveScorer* Energy   = new GENERALSCORERS::PSEnergy("StripEnergy","ThinSi_", 0);         
-  G4VPrimitiveScorer* TOF      = new GENERALSCORERS::PSTOF("StripTime","ThinSi_", 0);                                 
+  G4VPrimitiveScorer* Energy   = new OBSOLETEGENERALSCORERS::PSEnergy("StripEnergy","ThinSi_", 0);         
+  G4VPrimitiveScorer* TOF      = new OBSOLETEGENERALSCORERS::PSTOF("StripTime","ThinSi_", 0);                                 
 
 
   //and register it to the multifunctionnal detector

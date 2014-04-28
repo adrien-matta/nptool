@@ -52,7 +52,7 @@
 #include "ShieldPhParis.hh"
 //#include "ParisScorers.hh"
 #include "ShieldScorers.hh"
-#include "GeneralScorers.hh"
+#include "ObsoleteGeneralScorers.hh"
 #include "RootOutput.h"
 
 // CLHEP
@@ -762,15 +762,15 @@ void ShieldPhParis::InitializeScorers()
    // CsIShield Associate Scorer
    m_CsIShieldScorer = new G4MultiFunctionalDetector("CsIScorerShieldPhParis");
    
-   //   G4VPrimitiveScorer* DetNbr                           = new GENERALSCORERS::PSDetectorNumber("DetectorNumber", "ShieldPhParis", 0);
+   //   G4VPrimitiveScorer* DetNbr                           = new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber", "ShieldPhParis", 0);
    G4VPrimitiveScorer* DetNbr                           = new SHIELDScorerCsIDetectorNumber("CsIShieldDetectorNumber", "ShieldPhParis", 0);
-   //   G4VPrimitiveScorer* TOF                              = new GENERALSCORERS::PSTOF("StripTime","ShieldPhParis", 0);
+   //   G4VPrimitiveScorer* TOF                              = new OBSOLETEGENERALSCORERS::PSTOF("StripTime","ShieldPhParis", 0);
    G4VPrimitiveScorer* TOF                              = new SHIELDScorerCsITOF("CsIShieldTime","ShieldPhParis", 0);
-   //G4VPrimitiveScorer* InteractionCoordinatesX          = new GENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","ShieldPhParis", 0);
-   //G4VPrimitiveScorer* InteractionCoordinatesY          = new GENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","ShieldPhParis", 0);
-   //G4VPrimitiveScorer* InteractionCoordinatesZ          = new GENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","ShieldPhParis", 0);
-   //G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new GENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","ShieldPhParis", 0);
-   //G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new GENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","ShieldPhParis", 0);
+   //G4VPrimitiveScorer* InteractionCoordinatesX          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","ShieldPhParis", 0);
+   //G4VPrimitiveScorer* InteractionCoordinatesY          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","ShieldPhParis", 0);
+   //G4VPrimitiveScorer* InteractionCoordinatesZ          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","ShieldPhParis", 0);
+   //G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","ShieldPhParis", 0);
+   //G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","ShieldPhParis", 0);
 
    G4VPrimitiveScorer* Energy                           = new SHIELDScorerCsIEnergy("CsIShieldEnergy", "ShieldPhParis", 0);
 

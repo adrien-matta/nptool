@@ -47,9 +47,9 @@
 
 // NPTool header
 #include "Eurogam.hh"
-#include "GeneralScorers.hh"
+#include "ObsoleteGeneralScorers.hh"
 #include "RootOutput.h"
-using namespace GENERALSCORERS;
+using namespace OBSOLETEGENERALSCORERS;
 
 // CLHEP header
 #include "CLHEP/Random/RandGauss.h"
@@ -670,14 +670,14 @@ void Eurogam::InitializeScorers()
 { 
    // Eurogam associated scorer
    m_EurogamScorer                                      = new G4MultiFunctionalDetector("EurogamScorer");
-   G4VPrimitiveScorer* DetNbr                           = new GENERALSCORERS::PSDetectorNumber("DetectorNumber", "Eurogam", 0);
-   G4VPrimitiveScorer* Energy                           = new GENERALSCORERS::PSEnergy("Energy","Eurogam", 0);
-   G4VPrimitiveScorer* TOF                              = new GENERALSCORERS::PSTOF("Time", "Eurogam", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesX          = new GENERALSCORERS::PSInteractionCoordinatesX("InterCoordX", "Eurogam", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesY          = new GENERALSCORERS::PSInteractionCoordinatesY("InterCoordY", "Eurogam", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesZ          = new GENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ", "Eurogam", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new GENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta", "Eurogam", 0);
-   G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new GENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi", "Eurogam", 0);
+   G4VPrimitiveScorer* DetNbr                           = new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber", "Eurogam", 0);
+   G4VPrimitiveScorer* Energy                           = new OBSOLETEGENERALSCORERS::PSEnergy("Energy","Eurogam", 0);
+   G4VPrimitiveScorer* TOF                              = new OBSOLETEGENERALSCORERS::PSTOF("Time", "Eurogam", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesX          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesX("InterCoordX", "Eurogam", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesY          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesY("InterCoordY", "Eurogam", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesZ          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ", "Eurogam", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta", "Eurogam", 0);
+   G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi", "Eurogam", 0);
 
    //and register it to the multifunctionnal detector
    m_EurogamScorer->RegisterPrimitive(DetNbr);

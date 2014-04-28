@@ -23,7 +23,7 @@
 #include "G4UnitsTable.hh"
 
 // NPTool headers
-#include "GeneralScorers.hh"
+#include "ObsoleteGeneralScorers.hh"
 #include "ParisScorers.hh"
 
 #include "ParisCluster.hh"
@@ -57,7 +57,7 @@ PARISScorerLaBr3StageDetectorNumber::~PARISScorerLaBr3StageDetectorNumber()
 G4bool PARISScorerLaBr3StageDetectorNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
    // int DetNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(0); // this line does exactly the same than the line above
    int CrystalNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);
 
@@ -120,7 +120,7 @@ PARISScorerLaBr3StageEnergy::~PARISScorerLaBr3StageEnergy()
 G4bool PARISScorerLaBr3StageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
    int CrystalNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);
 
    // get energy
@@ -186,7 +186,7 @@ PARISScorerLaBr3StageCrystal::~PARISScorerLaBr3StageCrystal()
 G4bool PARISScorerLaBr3StageCrystal::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
 
    //G4int CrystalNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetReplicaNumber(1);
    //Adde by Anna:
@@ -265,7 +265,7 @@ PARISScorerLaBr3StageTOF::~PARISScorerLaBr3StageTOF()
 G4bool PARISScorerLaBr3StageTOF::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
    int CrystalNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);
 
    // get TOF
@@ -327,7 +327,7 @@ PARISScorerCsIStageDetectorNumber::~PARISScorerCsIStageDetectorNumber()
 G4bool PARISScorerCsIStageDetectorNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
    // int DetNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(0); // this line does exactly the same than the line above
    int CrystalNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);
 
@@ -389,7 +389,7 @@ PARISScorerCsIStageEnergy::~PARISScorerCsIStageEnergy()
 G4bool PARISScorerCsIStageEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
    int CrystalNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);
 
    // get energy
@@ -457,7 +457,7 @@ PARISScorerCsIStageCrystalNumber::~PARISScorerCsIStageCrystalNumber()
 G4bool PARISScorerCsIStageCrystalNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
    // get detector number
-   int DetNbr = GENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
+   int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, m_VolumeName);
 
    // get energy
    G4int CrystalNbr  = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);
