@@ -28,6 +28,7 @@
 
 //   Detector   
 #include "../DetectorList.inc"
+#include "TAnnularS1Physics.h"
 #include "TExogamPhysics.h"
 #include "TMust2Physics.h"
 #include "TCATSPhysics.h"
@@ -80,31 +81,32 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
   string DataBuffer;
 
    /////////Boolean////////////////////
-   Bool_t MUST2               = false;
-   Bool_t CATS                = false;
-   Bool_t SSSD                = false;
-   Bool_t Sharc               = false;
-   Bool_t ChateauCristal      = false;
-   Bool_t Exogam              = false;
-   Bool_t ScintillatorPlastic = false;
-   Bool_t SiLi		      = false;
-   Bool_t SiRes		      = false;
-   Bool_t LaBr3		      = false;
-   Bool_t IonisationChamber   = false;
-   Bool_t Trifoil             = false;
-   Bool_t Charissa 	      = false;
-   Bool_t GeneralTarget       = false;
-   Bool_t GPDTracker          = false;
-   Bool_t HYD2Tracker         = false;
-   Bool_t ParisDet            = false;
-   Bool_t ShieldDet           = false;
-   Bool_t W1                  = false;
-   Bool_t S2                  = false;
-   Bool_t SPEG                = false;
-   Bool_t EXL                 = false;
-   Bool_t TAC                 = false;
-   Bool_t TiaraHyball         = false;
-   Bool_t TiaraBarrel         = false;
+   bool AnnularS1           = false; 
+   bool MUST2               = false;
+   bool CATS                = false;
+   bool SSSD                = false;
+   bool Sharc               = false;
+   bool ChateauCristal      = false;
+   bool Exogam              = false;
+   bool ScintillatorPlastic = false;
+   bool SiLi		      = false;
+   bool SiRes		      = false;
+   bool LaBr3		      = false;
+   bool IonisationChamber   = false;
+   bool Trifoil             = false;
+   bool Charissa 	      = false;
+   bool GeneralTarget       = false;
+   bool GPDTracker          = false;
+   bool HYD2Tracker         = false;
+   bool ParisDet            = false;
+   bool ShieldDet           = false;
+   bool W1                  = false;
+   bool S2                  = false;
+   bool SPEG                = false;
+   bool EXL                 = false;
+   bool TAC                 = false;
+   bool TiaraHyball         = false;
+   bool TiaraBarrel         = false;
 //////////////////////////////////////////////////////////////////////////////////////////
   ifstream ConfigFile;
   ConfigFile.open(Path.c_str());
@@ -199,6 +201,27 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
 #endif
     }
 
+    ////////////////////////////////////////////
+    //////  Search for Annular S1 Array   //////
+    ////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 10, "AnnularS1") == 0 && AnnularS1 == false) {
+#ifdef INC_ANNULARS1
+      AnnularS1 = true;
+      cout << "//////// Annular S1 Array ////////" << endl << endl;
+
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector = new TAnnularS1Physics();
+
+      // Read Position of Telescope
+      ConfigFile.close();
+      myDetector->ReadConfiguration(Path);
+      ConfigFile.open(Path.c_str());
+
+      // Add array to the VDetector Vector
+      AddDetector("AnnularS1", myDetector);
+#endif
+    }
+	
     ////////////////////////////////////////////
     ////////  Search for MUST2 Array    ////////
     ////////////////////////////////////////////
