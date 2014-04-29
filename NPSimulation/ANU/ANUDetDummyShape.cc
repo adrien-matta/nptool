@@ -259,7 +259,7 @@ void ANUDetDummyShape::ConstructDetector(G4LogicalVolume* world)
   locate.setX(0.);
   locate.setY(0.);
   locate.setZ(ANUHolder_TargetDistance + ANUHolder_HalfThickness - ANUHolder_TargetFaceLip);
-  //new G4PVPlacement(rotate, locate, ANUHolderLogic, "ANUHolder", world, false, 0);
+  new G4PVPlacement(rotate, locate, ANUHolderLogic, "ANUHolder", world, false, 0);
   
   // Build the tube that contains all the physical elements
   G4double ANUTubeInnerRadius = 42.5*mm;
@@ -272,7 +272,7 @@ void ANUDetDummyShape::ConstructDetector(G4LogicalVolume* world)
   ANUTubeVisAtt->SetVisibility(false);
   ANUTube->SetVisAttributes(ANUTubeVisAtt);  
   locate.setZ(ANUTubeZOffset);
-  //new G4PVPlacement(rotate, locate, ANUTube, "ANUTube", world, false, 0);
+  new G4PVPlacement(rotate, locate, ANUTube, "ANUTube", world, false, 0);
   
   // Build the first (target end) baffle
   G4double ANUBaffleOneSmallRadius = 4.*mm;
@@ -284,7 +284,7 @@ void ANUDetDummyShape::ConstructDetector(G4LogicalVolume* world)
                                          ANUBaffleOneHalfLength, 0., 2.*M_PI);
   G4LogicalVolume* ANUBaffleOne = new G4LogicalVolume(ANUBaffleOneShape, Al, "ANUBaffleOne", 0, 0, 0);
   locate.setZ(ANUBaffleOneZOffset + ANUBaffleOneHalfLength);
-  //new G4PVPlacement(rotate, locate, ANUBaffleOne, "ANUBaffleOne", world, false, 0);
+  new G4PVPlacement(rotate, locate, ANUBaffleOne, "ANUBaffleOne", world, false, 0);
   
   // Build the second (detector end) baffle
   G4double ANUBaffleTwoSmallRadius = 4.*mm;
@@ -296,7 +296,7 @@ void ANUDetDummyShape::ConstructDetector(G4LogicalVolume* world)
                                           ANUBaffleTwoHalfLength, 0., 2.*M_PI);
   G4LogicalVolume* ANUBaffleTwo = new G4LogicalVolume(ANUBaffleTwoShape, Al, "ANUBaffleTwo", 0, 0, 0);
   locate.setZ(ANUBaffleTwoZOffset + ANUBaffleTwoHalfLength);
-  //new G4PVPlacement(rotate, locate, ANUBaffleTwo, "ANUBaffleTwo", world, false, 0);
+  new G4PVPlacement(rotate, locate, ANUBaffleTwo, "ANUBaffleTwo", world, false, 0);
   
   
 }
