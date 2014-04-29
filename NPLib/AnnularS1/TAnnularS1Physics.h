@@ -194,17 +194,12 @@ namespace ANNULARS1_LOCAL
   string itoa(unsigned int value);
   //   DSSD
   //   Ring
-  double fStrip_Ring_E(const TS1Data* Data, const int i);
-  double fStrip_Ring_T(const TS1Data* Data, const int i);
+  double fStrip_Ring_E(const TS1Data* Data, const int& i);
+  double fStrip_Ring_T(const TS1Data* Data, const int& i);
 
   //   Sector   
-  double fStrip_Sector_E(const TS1Data* Data, const int i);
-  double fStrip_Sector_T(const TS1Data* Data, const int i);
-
-  //   PAD   
-  double fPAD_E(const TS1Data* Data, const int i);
-  double fPAD_T(const TS1Data* Data, const int i);
-
+  double fStrip_Sector_E(const TS1Data* Data, const int& i);
+  double fStrip_Sector_T(const TS1Data* Data, const int& i);
 }
 
 

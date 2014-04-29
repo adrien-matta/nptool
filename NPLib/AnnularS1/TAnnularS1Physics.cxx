@@ -69,8 +69,6 @@ void TAnnularS1Physics::BuildSimplePhysicalEvent(){
 
 void TAnnularS1Physics::BuildPhysicalEvent(){
   PreTreat();
-
-
   if( CheckEvent() == 1 ){
     vector< TVector2 > couple = Match_Ring_Sector() ;
     EventMultiplicity = couple.size();
@@ -114,7 +112,6 @@ void TAnnularS1Physics::BuildPhysicalEvent(){
 ///////////////////////////////////////////////////////////////////////////
 void TAnnularS1Physics::PreTreat(){
   ClearPreTreatedData();
-
   //   Ring E
   unsigned int sizeRingE = m_EventData->GetS1ThetaEMult();
   for(unsigned int i = 0 ; i < sizeRingE ; ++i){
@@ -132,9 +129,9 @@ void TAnnularS1Physics::PreTreat(){
   //   Ring T
   unsigned int sizeRingT = m_EventData->GetS1ThetaTMult();
   for(unsigned int i = 0 ; i < sizeRingT ; ++i){
-        m_PreTreatedData->SetS1ThetaTDetectorNbr( m_EventData->GetS1ThetaTDetectorNbr(i) );
-        m_PreTreatedData->SetS1ThetaTStripNbr( m_EventData->GetS1ThetaTStripNbr(i) );
-        m_PreTreatedData->SetS1ThetaTTime( m_EventData->GetS1ThetaTTime(i) );
+    m_PreTreatedData->SetS1ThetaTDetectorNbr( m_EventData->GetS1ThetaTDetectorNbr(i) );
+    m_PreTreatedData->SetS1ThetaTStripNbr( m_EventData->GetS1ThetaTStripNbr(i) );
+    m_PreTreatedData->SetS1ThetaTTime( m_EventData->GetS1ThetaTTime(i) );
   }
 
   //   Sector E
@@ -154,9 +151,9 @@ void TAnnularS1Physics::PreTreat(){
   //   Sector T
   unsigned int sizeSectorT = m_EventData->GetS1ThetaTMult();
   for(unsigned int i = 0 ; i < sizeSectorT ; ++i){
-        m_PreTreatedData->SetS1PhiTDetectorNbr( m_EventData->GetS1PhiTDetectorNbr(i) );
-        m_PreTreatedData->SetS1PhiTStripNbr( m_EventData->GetS1PhiTStripNbr(i) );
-        m_PreTreatedData->SetS1PhiTTime( m_EventData->GetS1PhiTTime(i) );
+    m_PreTreatedData->SetS1PhiTDetectorNbr( m_EventData->GetS1PhiTDetectorNbr(i) );
+    m_PreTreatedData->SetS1PhiTStripNbr( m_EventData->GetS1PhiTStripNbr(i) );
+    m_PreTreatedData->SetS1PhiTTime( m_EventData->GetS1PhiTTime(i) );
   }
 
   return;
@@ -201,13 +198,13 @@ vector < TVector2 > TAnnularS1Physics :: Match_Ring_Sector(){
 
 
 ////////////////////////////////////////////////////////////////////////////
-bool TAnnularS1Physics :: IsValidChannel(const string DetectorType, const int telescope , const int channel){
+bool TAnnularS1Physics :: IsValidChannel(const string DetectorType, const int detector , const int channel){
 
-  if(DetectorType == "Ring")
-    return *(m_RingChannelStatus[telescope-1].begin()+channel-1);
-
+  if(DetectorType == "Ring"){
+    return *(m_RingChannelStatus[detector-1].begin()+channel-1);
+  }
   else if(DetectorType == "Sector")
-    return *(m_SectorChannelStatus[telescope-1].begin()+channel-1);
+    return *(m_SectorChannelStatus[detector-1].begin()+channel-1);
 
   else return false;
 }
@@ -277,9 +274,9 @@ void TAnnularS1Physics::ReadAnalysisConfig(){
         cout << whatToDo << "  " << DataBuffer << endl;
         int Detector = atoi(DataBuffer.substr(2,1).c_str());
         vector< bool > ChannelStatus;
-        ChannelStatus.resize(24,false);
+        ChannelStatus.resize(64,false);
         m_RingChannelStatus[Detector-1] = ChannelStatus;
-        ChannelStatus.resize(48,false);
+        ChannelStatus.resize(16,false);
         m_SectorChannelStatus[Detector-1] = ChannelStatus;
       }
 
@@ -399,56 +396,45 @@ void TAnnularS1Physics::ReadConfiguration(string Path){
   while (!ConfigFile.eof()){
 
     getline(ConfigFile, LineBuffer);
+
     // cout << LineBuffer << endl;
-    if (LineBuffer.compare(0, 5, "AnnularS1") == 0)
+    if (LineBuffer.compare(0, 9, "AnnularS1") == 0)
       ReadingStatus = true;
 
     while (ReadingStatus && !ConfigFile.eof()) {
+      if(VerboseLevel) cout << "///" << endl           ;
+      if(VerboseLevel) cout << "AnnularS1 found: " << endl   ;
+      
+      // Take next word
       ConfigFile >> DataBuffer ;
+      cout << "xxxxxxxxxxxxxxxxxxx " << DataBuffer << endl; 
       //   Comment Line
       if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
 
-      //   CD case
-      if (DataBuffer=="AnnularS1"){
-        if(VerboseLevel) cout << "///" << endl           ;
-        if(VerboseLevel) cout << "AnnularS1 found: " << endl   ;
-        ReadingStatus = true ;
+      //Position method
+      else if (DataBuffer == "Z=") {
+        check_Z = true;
+        ConfigFile >> DataBuffer ;
+        Z= atof(DataBuffer.c_str());
+        if(VerboseLevel) cout << "  Z= " << Z << "mm" << endl;
       }
 
-      //   Reading Block
-      while(ReadingStatus){
-        // Pickup Next Word
-        ConfigFile >> DataBuffer ;
+      ///////////////////////////////////////////////////
+      //   If no Detector Token and no comment, toggle out
+      else{
+        ReadingStatus = false;
+        cout << "Error: Wrong Token Sequence: Getting out " << DataBuffer << endl ;
+        exit(1);
+      }
 
-        //   Comment Line
-        if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
+      /////////////////////////////////////////////////
+      //   If All necessary information there, toggle out
 
-        //Position method
-        else if (DataBuffer == "Z=") {
-          check_Z = true;
-          ConfigFile >> DataBuffer ;
-          Z= atof(DataBuffer.c_str());
-          if(VerboseLevel) cout << "  Z= " << Z << "mm" << endl;
-        }
-
-        ///////////////////////////////////////////////////
-        //   If no Detector Token and no comment, toggle out
-        else{
-          ReadingStatus = false;
-          cout << "Error: Wrong Token Sequence: Getting out " << DataBuffer << endl ;
-          exit(1);
-        }
-
-        /////////////////////////////////////////////////
-        //   If All necessary information there, toggle out
-
-        if (check_Z){
-          ReadingStatus = false;
-          AddDetector(Z);
-          //   Reinitialisation of Check Boolean
-          check_Z   = false ;
-        }
-
+      if (check_Z){
+        ReadingStatus = false;
+        AddDetector(Z);
+        //   Reinitialisation of Check Boolean
+        check_Z   = false ;
       }
     }
   }
@@ -485,7 +471,7 @@ void TAnnularS1Physics::AddParameterToCalibrationManager(){
 void TAnnularS1Physics::InitializeRootInputRaw(){
   TChain* inputChain = RootInput::getInstance()->GetChain();
   inputChain->SetBranchStatus( "AnnularS1" , true );
-  inputChain->SetBranchStatus( "fAnnularS1_*" , true );
+  inputChain->SetBranchStatus( "fS1_*" , true );
   inputChain->SetBranchAddress( "AnnularS1" , &m_EventData );
 
 }
@@ -512,6 +498,7 @@ void TAnnularS1Physics::AddDetector(double Z){
   double Phi_Max = 360;
 
   int    Ring_NumberOfStrip = 16 ;
+  int    Ring_NumberOfQuadrant = 4 ;
   int    Sector_NumberOfStrip = 16 ;
 
   double StripPitchSector = (Phi_Max-Phi_Min)/Sector_NumberOfStrip ; //radial strip spacing in rad
@@ -531,6 +518,7 @@ void TAnnularS1Physics::AddDetector(double Z){
 
   TVector3 StripCenter = Strip_1_1;
   for(int f = 0 ; f < Ring_NumberOfStrip ; f++){
+    for(int q = 0 ; q < Ring_NumberOfQuadrant ; q++){
     lineX.clear()   ;
     lineY.clear()   ;
     lineZ.clear()   ;
@@ -548,6 +536,7 @@ void TAnnularS1Physics::AddDetector(double Z){
     OneStripPositionX.push_back(lineX);
     OneStripPositionY.push_back(lineY);
     OneStripPositionZ.push_back(lineZ);
+    }
   }
   m_StripPositionX.push_back( OneStripPositionX ) ;
   m_StripPositionY.push_back( OneStripPositionY ) ;
@@ -561,7 +550,6 @@ TVector3 TAnnularS1Physics::GetDetectorNormal( const int i) const{
 }
 //////////////////////////////
 TVector3 TAnnularS1Physics::GetPositionOfInteraction(const int i) const{
-
   TVector3    Position = TVector3 (  GetStripPositionX( DetectorNumber[i] , Strip_Ring[i] , Strip_Sector[i] )    ,
       GetStripPositionY( DetectorNumber[i] , Strip_Ring[i] , Strip_Sector[i] )    ,
       GetStripPositionZ( DetectorNumber[i] , Strip_Ring[i] , Strip_Sector[i] )    ) ;
@@ -576,12 +564,12 @@ void TAnnularS1Physics::InitializeStandardParameter(){
   m_RingChannelStatus.clear()    ;
   m_SectorChannelStatus.clear()    ;
 
-  ChannelStatus.resize(24,true);
+  ChannelStatus.resize(64,true);
   for(int i = 0 ; i < m_NumberOfDetector ; ++i){
     m_RingChannelStatus[i] = ChannelStatus;
   }
 
-  ChannelStatus.resize(48,true);
+  ChannelStatus.resize(16,true);
   for(int i = 0 ; i < m_NumberOfDetector ; ++i){
     m_SectorChannelStatus[i] = ChannelStatus;
   }
@@ -602,23 +590,23 @@ namespace ANNULARS1_LOCAL{
 
   //   DSSD
   //   Ring
-  double fStrip_S1ThetaE(const TS1Data* m_EventData , const int i){
+  double fStrip_Ring_E(const TS1Data* m_EventData , const int& i){
     return CalibrationManager::getInstance()->ApplyCalibration(   "ANNULARS1/D" + itoa( m_EventData->GetS1ThetaEDetectorNbr(i) ) + "_STRIP_FRONT" + itoa( m_EventData->GetS1ThetaEStripNbr(i) ) + "_E",
         m_EventData->GetS1ThetaEEnergy(i) );
   }
 
-  double fStrip_S1ThetaT(const TS1Data* m_EventData , const int i){
+  double fStrip_Ring_T(const TS1Data* m_EventData , const int& i){
     return CalibrationManager::getInstance()->ApplyCalibration(   "ANNULARS1/D" + itoa( m_EventData->GetS1ThetaTDetectorNbr(i) ) + "_STRIP_FRONT" + itoa( m_EventData->GetS1ThetaTStripNbr(i) ) +"_T",
         m_EventData->GetS1ThetaTTime(i) );
   }
 
   //   Sector
-  double fStrip_S1PhiE(const TS1Data* m_EventData , const int i){
+  double fStrip_Sector_E(const TS1Data* m_EventData , const int& i){
     return CalibrationManager::getInstance()->ApplyCalibration(   "ANNULARS1/D" + itoa( m_EventData->GetS1PhiEDetectorNbr(i) ) + "_STRIP_BACK" + itoa( m_EventData->GetS1PhiEStripNbr(i) ) +"_E",
         m_EventData->GetS1PhiEEnergy(i) );
   }
 
-  double fStrip_S1PhiT(const TS1Data* m_EventData , const int i){
+  double fStrip_Sector_T(const TS1Data* m_EventData , const int& i){
     return CalibrationManager::getInstance()->ApplyCalibration(   "ANNULARS1/D" + itoa( m_EventData->GetS1PhiTDetectorNbr(i) ) + "_STRIP_BACK" + itoa( m_EventData->GetS1PhiTStripNbr(i) ) +"_T",
         m_EventData->GetS1PhiTTime(i) );
   }
