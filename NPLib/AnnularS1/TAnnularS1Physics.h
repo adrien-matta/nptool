@@ -1,5 +1,5 @@
-#ifndef TTIARABARRELPHYSICS_H
-#define TTIARABARRELPHYSICS_H
+#ifndef TANNULARS1PHYSICS_H
+#define TANNULARS1PHYSICS_H
 /*****************************************************************************
  * Copyright (C) 2009-2014    this file is part of the NPTool Project        *
  *                                                                           *
@@ -10,11 +10,11 @@
 /*****************************************************************************
  * Original Author: Adrien MATTA  contact address: a.matta@surrey.ac.uk      *
  *                                                                           *
- * Creation Date  : December 2013                                            *
+ * Creation Date  : April 2014                                               *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold TiaraBarrel treated data                                 *
+ *  This class hold AnnularS1 treated data                                   *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -24,61 +24,54 @@
  *****************************************************************************/
 // STL
 #include <vector>
-#include <map>
+
 // NPL
-#include "TTiaraBarrelData.h"
-#include "TTiaraBarrelSpectra.h"
+#include "TS1Data.h"
 #include "../include/CalibrationManager.h"
 #include "../include/VDetector.h"
-
 // ROOT 
 #include "TVector2.h" 
 #include "TVector3.h" 
 #include "TObject.h"
-#include "TH1.h"
-
-class TTiaraBarrelSpectra;
 
 using namespace std ;
 
-class TTiaraBarrelPhysics : public TObject, public NPA::VDetector{
+class TAnnularS1Physics : public TObject, public NPA::VDetector{
   public:
-    TTiaraBarrelPhysics();
-    ~TTiaraBarrelPhysics() {};
+    TAnnularS1Physics();
+    ~TAnnularS1Physics() {};
 
   public: 
     void Clear();   
     void Clear(const Option_t*) {};
 
+  public: 
+    vector < TVector2 > Match_Ring_Sector() ;
+    int  CheckEvent();
+
   public:
+
     //   Provide Physical Multiplicity
     Int_t EventMultiplicity;
+
+    //   Provide a Classification of Event
+    vector<int> EventType ;
 
     // Detector
     vector<int> DetectorNumber ;
 
-    // Inner Barrel
-    vector<double> Strip_E;
-    vector<double> Strip_T;
-    vector<int>    Strip_N;
-    vector<double> Strip_Pos;
-   
-    // Control stuff 
-    vector<double> DownStream_E;
-    vector<double> DownStream_T;
-    vector<double> UpStream_E;
-    vector<double> UpStream_T;
-    vector<double> Back_E;
-    vector<double> Back_T;
-
-    // Outter Barrel
-    vector<double> Outer_Strip_E;
-    vector<double> Outer_Strip_T;
-    vector<double> Outer_Strip_N;
-    vector<double> Outer_Back_E;
-    vector<double> Outer_Back_T;
+    //   DSSD
+    vector<double> Strip_E ;
+    vector<double> Strip_T ;
+    vector<double> StripRing_E ;
+    vector<double> StripRing_T ;
+    vector<double> StripSector_E ;
+    vector<double> StripSector_T ;
+    vector<int>    Strip_Ring ;
+    vector<int>    Strip_Sector ;
 
   public:      //   Innherited from VDetector Class
+
     //   Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
     void ReadConfiguration(string) ;
 
@@ -96,10 +89,12 @@ class TTiaraBarrelPhysics : public TObject, public NPA::VDetector{
     //   Create associated branches and associated private member DetectorPhysics address
     void InitializeRootOutput() ;
 
-    //   This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
+    //   This method is called at each event read from the Input Tree. 
+    //   Aim is to build treat Raw dat in order to extract physical parameter. 
     void BuildPhysicalEvent() ;
 
-    //   Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
+    //   Same as above, but only the simplest event and/or simple method 
+    //   are used (low multiplicity, faster algorythm but less efficient ...).
     //   This method aimed to be used for analysis performed during experiment, when speed is requiered.
     //   NB: This method can eventually be the same as BuildPhysicalEvent.
     void BuildSimplePhysicalEvent() ;
@@ -111,19 +106,8 @@ class TTiaraBarrelPhysics : public TObject, public NPA::VDetector{
     void ClearEventPhysics() {Clear();}      
     void ClearEventData()    {m_EventData->Clear();}   
 
-    // Method related to the TSpectra classes, aimed at providing a framework 
-    // for online applications
-    // Instantiate the Spectra class and the histogramm throught it
-    void InitSpectra();
-    // Fill the spectra hold by the spectra class
-    void FillSpectra();
-    // Used for Online mainly, perform check on the histo and for example change 
-    // their color if issues are found
-    void CheckSpectra();
-    // Used for Online only, clear all the spectra hold by the Spectra class
-    void ClearSpectra();
+  public:      //   Specific to AnnularS1 Array
 
-  public://   Specific to TiaraBarrel Array
     //   Clear The PreTeated object
     void ClearPreTreatedData()   {m_PreTreatedData->Clear();}
 
@@ -132,23 +116,28 @@ class TTiaraBarrelPhysics : public TObject, public NPA::VDetector{
 
     //   Return false if the channel is disabled by user
     //   Frist argument is either "X","Y","SiLi","CsI"
-    bool IsValidChannel(const string DetectorType, const int detector , const int channel);
+    bool IsValidChannel(const string DetectorType, const int telescope , const int channel);
 
     //   Initialize the standard parameter for analysis
-    //   ie: all channel enable, maximum multiplicity for strip = number of detector
+    //   ie: all channel enable, maximum multiplicity for strip = number of telescope
     void InitializeStandardParameter();
 
     //   Read the user configuration file; if no file found, load standard one
     void ReadAnalysisConfig();
 
     //   Add a Detector
-    void AddDetector( double X,double Y,double Z);
- 
-    // Give and external TMustData object to TTiaraBarrelPhysics. Needed for online analysis for example.
-    void SetRawDataPointer(TTiaraBarrelData* rawDataPointer) {m_EventData = rawDataPointer;}
+    void AddDetector( double Z);
+
+    // Give and external TMustData object to TAnnularS1Physics. Needed for online analysis for example.
+    void SetRawDataPointer(TS1Data* rawDataPointer) {m_EventData = rawDataPointer;}
     // Retrieve raw and pre-treated data
-    TTiaraBarrelData* GetRawData()        const {return m_EventData;}
-    TTiaraBarrelData* GetPreTreatedData() const {return m_PreTreatedData;}
+    TS1Data* GetRawData()        const {return m_EventData;}
+    TS1Data* GetPreTreatedData() const {return m_PreTreatedData;}
+
+    // Use to access the strip position
+    double GetStripPositionX( const int N , const int Ring , const int Sector )   const{ return m_StripPositionX[N-1][Ring-1][Sector-1] ; }  ;
+    double GetStripPositionY( const int N , const int Ring , const int Sector )   const{ return m_StripPositionY[N-1][Ring-1][Sector-1] ; }  ;
+    double GetStripPositionZ( const int N , const int Ring , const int Sector )   const{ return m_StripPositionZ[N-1][Ring-1][Sector-1] ; }  ;
 
     double GetNumberOfDetector() const { return m_NumberOfDetector; };
 
@@ -159,51 +148,64 @@ class TTiaraBarrelPhysics : public TObject, public NPA::VDetector{
     TVector3 GetDetectorNormal(const int i) const;
 
   private:   //   Parameter used in the analysis
+
     // By default take EX and TY.
-    bool m_Take_E_Strip;//!
-    bool m_Take_T_Back;//!
+    bool m_Take_E_Ring;//!
+    bool m_Take_T_Sector;//!
+
+
+    //   Event over this value after pre-treatment are not treated / avoid long treatment time on spurious event   
+    unsigned int m_MaximumStripMultiplicityAllowed  ;//!
+    //   Give the allowance in percent of the difference in energy between X and Y
+    double m_StripEnergyMatchingSigma  ; //!
+    double m_StripEnergyMatchingNumberOfSigma  ; //!
 
     //  Threshold
-    double m_Strip_E_Threshold ;//!
-    double m_Back_E_Threshold ;//!
-    double m_OuterBack_E_Threshold ;//!
-    double m_Maximum_FrontBack_Difference ;//!
+    double m_StripRing_E_RAW_Threshold ;//!
+    double m_StripRing_E_Threshold ;//!
+    double m_StripSector_E_RAW_Threshold ;//!
+    double m_StripSector_E_Threshold ;//!
+
   private:   //   Root Input and Output tree classes
-    TTiaraBarrelData*         m_EventData;//!
-    TTiaraBarrelData*         m_PreTreatedData;//!
-    TTiaraBarrelPhysics*      m_EventPhysics;//!
+
+    TS1Data*                m_EventData;//!
+    TS1Data*                m_PreTreatedData;//!
+    TAnnularS1Physics*      m_EventPhysics;//!
+
 
   private:   //   Map of activated channel
-    map< int, vector<bool> > m_InnerBarrelStripUpstreamChannelStatus;//!
-    map< int, vector<bool> > m_InnerBarrelStripDownstreamChannelStatus;//!
-    map< int, vector<bool> > m_OuterBarrelStripChannelStatus;//!
-    map< int, vector<bool> > m_InnerBarrelBackChannelStatus;//!
-    map< int, vector<bool> > m_OuterBarrelBackChannelStatus;//!
+    map< int, vector<bool> > m_RingChannelStatus;//!
+    map< int, vector<bool> > m_SectorChannelStatus;//! 
+    map< int, vector<bool> > m_PADChannelStatus;//!
 
   private:   //   Spatial Position of Strip Calculated on bases of detector position
+
     int m_NumberOfDetector;//!
-    vector< vector<double> > m_StripPositionX;//!
-    vector< vector<double> > m_StripPositionY;//!
-    vector< vector<double> > m_StripPositionZ;//!
+    vector< vector < vector < double > > >   m_StripPositionX;//!
+    vector< vector < vector < double > > >   m_StripPositionY;//!
+    vector< vector < vector < double > > >   m_StripPositionZ;//!
 
-  private: // Spectra
-    TTiaraBarrelSpectra*      m_Spectra;//!
-
-  public:
-    map< vector<string>,TH1* > GetSpectra(); 
-
-  private: // Usefull method
-   // Calibrate data
-  double Cal_Strip_Upstream_E(const int i);
-  double Cal_Strip_Downstream_E(const int i);
-  double Cal_Back_E(const int i);
-  double Match_Strip_Upstream_E(const int i);
-  double Match_Strip_Downstream_E(const int i);
-
-  ClassDef(TTiaraBarrelPhysics,1)  // SharcPhysics structure
-
+    ClassDef(TAnnularS1Physics,1)  // AnnularS1Physics structure
 };
-namespace TiaraBarrel_LOCAL{
- string itoa(unsigned int value);
+
+namespace ANNULARS1_LOCAL
+{
+  //   tranform an integer to a string
+  string itoa(unsigned int value);
+  //   DSSD
+  //   Ring
+  double fStrip_Ring_E(const TS1Data* Data, const int i);
+  double fStrip_Ring_T(const TS1Data* Data, const int i);
+
+  //   Sector   
+  double fStrip_Sector_E(const TS1Data* Data, const int i);
+  double fStrip_Sector_T(const TS1Data* Data, const int i);
+
+  //   PAD   
+  double fPAD_E(const TS1Data* Data, const int i);
+  double fPAD_T(const TS1Data* Data, const int i);
+
 }
+
+
 #endif

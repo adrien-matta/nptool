@@ -9,7 +9,7 @@
 
 /*****************************************************************************
  *                                                                           *
- * Original Author :  Adrien MATTA    contact address: matta@ipno.in2p3.fr   *
+ * Original Author :  Adrien MATTA    contact address: a.matta@surrey.ac.uk  *
  *                                                                           *
  * Creation Date   : April 2009                                              *
  * Last update     :                                                         *
