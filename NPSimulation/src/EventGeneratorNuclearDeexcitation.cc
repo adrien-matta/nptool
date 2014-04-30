@@ -1,3 +1,25 @@
+/*****************************************************************************
+ * Copyright (C) 2009-2014   this file is part of the NPTool Project         *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * NPTool Author: Adrien MATTA        contact address: matta@ipno.in2p3.fr   *
+ * Class Author: Lee Evitts           contact address: evitts@triumf.ca      *
+ *                                                                           *
+ * Creation Date  : April 2014                                               *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ * Read in a decay scheme for nuclear de-excitation (involving gamma rays,   *
+ * ICC electrons and IPF e-/e+ pairs                                         *  
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *****************************************************************************/
 #include "EventGeneratorNuclearDeexcitation.hh"
 
 // NPS
@@ -40,6 +62,7 @@ void EventGeneratorNuclearDeexcitation::ReadConfiguration(string Path, int Occur
   int TokenOccurence = 0;
   bool ReadingStatus = false;
   bool BindingRead = false;
+  fEmitSecondIPF = false;
   
   int CurrentLevelID, TransitionID, PolarityOrder, FinalLevelID;
   double CurrentLevelProb, CurrentLevelEnergy, TransitionProbability, ICC, IPFC;
@@ -239,7 +262,7 @@ void EventGeneratorNuclearDeexcitation::ReadConfiguration(string Path, int Occur
     
   } // END for (int i=0; i<mLevelID.size(); i++)
 
-  
+  fInCascade = false;
 }
   
   
@@ -248,47 +271,47 @@ void EventGeneratorNuclearDeexcitation::ReadConfiguration(string Path, int Occur
 void EventGeneratorNuclearDeexcitation::GenerateEvent(G4Event*) { 
 
   // Variable Declaration
-  int ChosenLevel = -1;
   int ChosenTrans = -1;
   int FinalLevel = 1000;
-  
   int NbrTrans;
   double RandNumber;
 
-  // Decide on which level is populated
-  RandNumber = RandFlat::shoot();
-  ChosenLevel = mLevelID[0];
-  for (int i=1; i<mLevelID.size(); i++) {
-    if (RandNumber >= mLevelProb[i-1] && RandNumber < mLevelProb[i])
-      ChosenLevel = mLevelID[i];
-  } // END for (int i=0; i<mLevelID.size(); i++)
-  
-  while (FinalLevel > 0) {
+  // Decide on which level is populated, if not already within a cascade
+  if (!fInCascade) {
+    RandNumber = RandFlat::shoot();
+    fChosenLevel = mLevelID[0];
+    for (int i=1; i<mLevelID.size(); i++) {
+      if (RandNumber >= mLevelProb[i-1] && RandNumber < mLevelProb[i])
+        fChosenLevel = mLevelID[i];
+    } // END for (int i=0; i<mLevelID.size(); i++)
+  } // END if (!fInCascade)
+
+  if (!fEmitSecondIPF) {  
 
     // Decide on transition ...
     RandNumber = RandFlat::shoot();
     NbrTrans = 0;
     // .. get the number of transitions in the level
-    for (int i=0; i<mLevelID.size(); i++) { if (mLevelID[i] == ChosenLevel) NbrTrans++; }
+    for (int i=0; i<mLevelID.size(); i++) { if (mLevelID[i] == fChosenLevel) NbrTrans++; }
     // .. if there is only 1 transition, return it as the chosen transition ID
     if (NbrTrans == 1) { 
-      for (int i=0; i<mLevelID.size(); i++) { if (mLevelID[i] == ChosenLevel) ChosenTrans = mTransID[i]; }
+      for (int i=0; i<mLevelID.size(); i++) { if (mLevelID[i] == fChosenLevel) ChosenTrans = mTransID[i]; }
     } else if (NbrTrans > 1) {
       // .. if there is more than 1 transition, loop through until the first transition, get that ID
       for (int i=0; i<mLevelID.size(); i++) {
-        if (mLevelID[i] == ChosenLevel) ChosenTrans = mTransID[i];
+        if (mLevelID[i] == fChosenLevel) ChosenTrans = mTransID[i];
         break;
       } // END for (int i=0; i<mLevelID.size(); i++)
       // .. then with the random number, choose which transition
       for (int i=1; i<mLevelID.size(); i++) {
-        if (mLevelID[i] == ChosenLevel && mLevelID[i-1] == ChosenLevel) {
+        if (mLevelID[i] == fChosenLevel && mLevelID[i-1] == fChosenLevel) {
           if (RandNumber >= mTransProb[i-1] && RandNumber < mTransProb[i]) ChosenTrans = mTransID[i];
         }
       } // END for (int i=1; i<mLevelID.size(); i++)
     } // END if (NbrTrans ...
-  
-  
-    double cos_theta = RandFlat::shoot();
+
+    // Randomise direction of particle
+    double cos_theta = RandFlat::shoot(-1., 1.);
     fEmissionTheta = acos(cos_theta);
     double phi = RandFlat::shoot()*2.*pi;    
     fParticleDirection= G4ThreeVector(  cos(phi)*sin(fEmissionTheta), sin(phi)*sin(fEmissionTheta), cos(fEmissionTheta));
@@ -296,55 +319,56 @@ void EventGeneratorNuclearDeexcitation::GenerateEvent(G4Event*) {
     
     // Decide on transition type
     RandNumber = RandFlat::shoot();
-    if (RandNumber < mTransICC[ChosenTrans-1]) {
+    if (RandNumber < mTransICC[ChosenTrans-1]) { // Emit ICC
       fParticleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("e-");
       fParticleEnergy = mTransEnergy[ChosenTrans-1] - fBindingEnergy;
-
     } 
-    else if ( RandNumber < (mTransICC[ChosenTrans-1] + mTransIPFC[ChosenTrans-1]) ) {
+    else if ( RandNumber < (mTransICC[ChosenTrans-1] + mTransIPFC[ChosenTrans-1]) ) { // Emit IPF
+      // Define e+      
       fParticleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("e+");
     
-      G4ParticleDefinition* electronDefinition = G4ParticleTable::GetParticleTable()->FindParticle("e-");
-      G4ThreeVector electronDirection;
-      G4double thetaSeparation;
-           
+      // Define e-
+      fElectronDefinition = G4ParticleTable::GetParticleTable()->FindParticle("e-");
+
+      // Get the e+ energy and theta separation from cross section
+      double thetaSeparation;     
       mCrossSectionLeptonHist2D[ChosenTrans-1]->GetRandom2(fParticleEnergy, thetaSeparation);
       thetaSeparation *= deg;
+
+      // ... from which, get the e- energy
+      fElectronEnergy = mTransEnergy[ChosenTrans-1] - fParticleEnergy - 1.022;
+      fEmitSecondIPF = true;
       
       // Build the electron direction as a copy of the positron distribution where the polar angle is incremented by thetaSeparation
-      double electronPhi = phi; // copy the same value for now 
-      double electronTheta = fEmissionTheta + thetaSeparation;
-      electronDirection= G4ThreeVector( cos(electronPhi)*sin(electronTheta), sin(electronPhi)*sin(electronTheta), cos(electronTheta) ); 
+      fElectronPhi = phi; // copy the same value for now 
+      fElectronTheta = fEmissionTheta + thetaSeparation;
+      fElectronDirection= G4ThreeVector( cos(fElectronPhi)*sin(fElectronTheta), sin(fElectronPhi)*sin(fElectronTheta), cos(fElectronTheta) ); 
       
       // Rotate the electron direction around the positron vector, this will conserve theta separation.
       double phiSeparation   = RandFlat::shoot() * 2. * pi; 
-      electronDirection.rotate(phiSeparation,fParticleDirection);  
-      
-      // electron energy
-      double electronEnergy = mTransEnergy[ChosenTrans-1] - fParticleEnergy - 1.022;
-      
-      // add electron to stack, positron is added later
-      Particle electronParticle(electronDefinition,electronTheta,electronEnergy,electronDirection, fPosition);
-      fParticleStack->AddParticleToStack(electronParticle);
+      fElectronDirection.rotate(phiSeparation,fParticleDirection);  
 
-    }
-    else {
+    } else { // Emit gamma
       fParticleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("gamma");
-      fParticleEnergy = mTransEnergy[ChosenTrans-1];
-
-    
-    
+      fParticleEnergy = mTransEnergy[ChosenTrans-1];   
     }
   
+    // Add particle to stack
     Particle fParticle(fParticleDefinition, fEmissionTheta, fParticleEnergy, fParticleDirection, fPosition);
     fParticleStack->AddParticleToStack(fParticle);
     
-    // If the final level isn't ground state (0) then repeat emission
+    // If the final level isn't ground state (0) then emit next transition in next generateevent
     FinalLevel = mTransFID[ChosenTrans-1];
-    ChosenLevel = FinalLevel;
+    fChosenLevel = FinalLevel;
+    if (FinalLevel != 0) fInCascade = true;
+    else if (FinalLevel == 0) fInCascade = false;
+  } // END   if (!fEmitSecondIPF)
+  else if (fEmitSecondIPF) {
+    Particle electronParticle(fElectronDefinition,fElectronTheta,fElectronEnergy,fElectronDirection, fPosition);
+    fParticleStack->AddParticleToStack(electronParticle);
+    fEmitSecondIPF = false;
+  } // END else if (fEmitSecondIPF) {
     
-  } // END while (FinalLevel > 0)
-
 }
 
 

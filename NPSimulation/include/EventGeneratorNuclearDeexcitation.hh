@@ -1,5 +1,27 @@
 #ifndef EventGeneratorNuclearDeexcitation_H
 #define EventGeneratorNuclearDeexcitation_H
+/*****************************************************************************
+ * Copyright (C) 2009-2014   this file is part of the NPTool Project         *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * NPTool Author: Adrien MATTA        contact address: matta@ipno.in2p3.fr   *
+ * Class Author: Lee Evitts           contact address: evitts@triumf.ca      *
+ *                                                                           *
+ * Creation Date  : April 2014                                               *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ * Read in a decay scheme for nuclear de-excitation (involving gamma rays,   *
+ * ICC electrons and IPF e-/e+ pairs                                         *  
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *****************************************************************************/
 
 // STL
 #include <string>
@@ -24,7 +46,7 @@ public: // Inherit from VEventGenerator class
   void ReadConfiguration(string, int);
   void GenerateEvent(G4Event*);
 
-private:
+private: // Transition and level properties
   string                  fNucleiName;
   double                  fBindingEnergy;
   vector<int>             mLevelID;
@@ -40,6 +62,7 @@ private:
   vector<double>          mTransIPFC;
   vector<int>             mTransFID;
   
+private: // Particle properties that are passed to the stack
   G4ParticleDefinition*   fParticleDefinition;
   G4ThreeVector           fParticleDirection;
   G4double                fEmissionTheta;
@@ -47,6 +70,18 @@ private:
   G4double                fParticleEnergy;
   
   ParticleStack*          fParticleStack;
+
+private: // Flags used such that only one particle is emitted per event
+  G4bool                  fInCascade;
+  G4int                   fChosenLevel;
+
+private: // Store the IPF e- data, emitted next event
+  G4bool                  fEmitSecondIPF;
+  G4ParticleDefinition*   fElectronDefinition;
+  double                  fElectronTheta;
+  double                  fElectronEnergy;
+  G4ThreeVector           fElectronDirection;
+  double                  fElectronPhi;
   
 private:
   void AddTransition(int CurrentLevelID, double CurrentLevelProb, double CurrentLevelEnergy,
