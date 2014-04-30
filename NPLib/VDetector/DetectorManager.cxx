@@ -28,36 +28,37 @@
 
 //   Detector   
 #include "../DetectorList.inc"
-#include "TAnnularS1Physics.h"
-#include "TExogamPhysics.h"
-#include "TMust2Physics.h"
-#include "TCATSPhysics.h"
-#include "TSSSDPhysics.h"
-#include "TSharcPhysics.h"
-#include "TTigressPhysics.h"
-#include "TTrifoilPhysics.h"
-#include "TPlasticPhysics.h"
-#include "TTrifoilPhysics.h"
-#include "TTiaraHyballPhysics.h"
-#include "TTiaraBarrelPhysics.h"
-#include "TChateauCristalPhysics.h"
 #include "GaspardTracker.h"
 #include "Hyde2Tracker.h"
 #include "Paris.h"
-#include "TW1Physics.h"
-#include "TS2Physics.h"
-#include "TCharissaPhysics.h"
 #include "Shield.h"
-#include "TSpegPhysics.h"
+#include "TAnnularS1Physics.h"
+#include "TCATSPhysics.h"
+#include "TCharissaPhysics.h"
+#include "TChateauCristalPhysics.h"
+#include "TChio_anPhysics.h"
+#include "TChio_digPhysics.h"
 #include "TExlPhysics.h"
-#include "TTacPhysics.h"
+#include "TExogamPhysics.h"
+#include "TLaBr3Physics.h"
+#include "TMust2Physics.h"
+#include "TPlasticPhysics.h"
+#include "TS2Physics.h"
+#include "TSSSDPhysics.h"
+#include "TSharcPhysics.h"
 #include "TSiLiPhysics.h"
 #include "TSiResPhysics.h"
-#include "TLaBr3Physics.h"
-#include "TChio_digPhysics.h"
-#include "TChio_anPhysics.h"
-#include "NPOptionManager.h"
+#include "TSpegPhysics.h"
+#include "TTacPhysics.h"
+#include "TTiaraBarrelPhysics.h"
+#include "TTiaraHyballPhysics.h"
+#include "TTigressPhysics.h"
+#include "TTrifoilPhysics.h"
+#include "TTrifoilPhysics.h"
+#include "TW1Physics.h"
 #include "RootInput.h"
+#include "NPOptionManager.h"
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //   Default Constructor
 DetectorManager::DetectorManager()   {
@@ -82,31 +83,31 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
 
    /////////Boolean////////////////////
    bool AnnularS1           = false; 
-   bool MUST2               = false;
    bool CATS                = false;
-   bool SSSD                = false;
-   bool Sharc               = false;
+   bool Charissa 	          = false;
    bool ChateauCristal      = false;
+   bool EXL                 = false;
    bool Exogam              = false;
-   bool ScintillatorPlastic = false;
-   bool SiLi		      = false;
-   bool SiRes		      = false;
-   bool LaBr3		      = false;
-   bool IonisationChamber   = false;
-   bool Trifoil             = false;
-   bool Charissa 	      = false;
-   bool GeneralTarget       = false;
    bool GPDTracker          = false;
+   bool GeneralTarget       = false;
    bool HYD2Tracker         = false;
+   bool IonisationChamber   = false;
+   bool LaBr3		            = false;
+   bool MUST2               = false;
    bool ParisDet            = false;
-   bool ShieldDet           = false;
-   bool W1                  = false;
    bool S2                  = false;
    bool SPEG                = false;
-   bool EXL                 = false;
+   bool SSSD                = false;
+   bool ScintillatorPlastic = false;
+   bool Sharc               = false;
+   bool ShieldDet           = false;
+   bool SiLi		            = false;
+   bool SiRes		            = false;
    bool TAC                 = false;
-   bool TiaraHyball         = false;
    bool TiaraBarrel         = false;
+   bool TiaraHyball         = false;
+   bool Trifoil             = false;
+   bool W1                  = false;
 //////////////////////////////////////////////////////////////////////////////////////////
   ifstream ConfigFile;
   ConfigFile.open(Path.c_str());
@@ -122,6 +123,133 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
     //Search for comment Symbol: %
     if (LineBuffer.compare(0, 1, "%") == 0) {   /*Do  Nothing*/ ;}
 
+    ////////////////////////////////////////////
+    //////  Search for Annular S1 Array   //////
+    ////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 10, "AnnularS1") == 0 && AnnularS1 == false) {
+#ifdef INC_ANNULARS1
+      AnnularS1 = true;
+      cout << "//////// Annular S1 Array ////////" << endl << endl;
+
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector = new TAnnularS1Physics();
+
+      // Read Position of Telescope
+      ConfigFile.close();
+      myDetector->ReadConfiguration(Path);
+      ConfigFile.open(Path.c_str());
+
+      // Add array to the VDetector Vector
+      AddDetector("AnnularS1", myDetector);
+#endif
+    }
+	  
+    ////////////////////////////////////////////
+    ////////   Search for CATS Array    ////////
+    ////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 9, "CATSArray") == 0 && CATS == false) {
+#ifdef INC_CATS
+      CATS = true;
+      cout << "//////// CATS Array ////////" << endl << endl;
+
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector = new TCATSPhysics();
+
+      // Read Position of Telescope
+      ConfigFile.close();
+      myDetector->ReadConfiguration(Path);
+      ConfigFile.open(Path.c_str());
+
+      // Add array to the VDetector Vector
+      AddDetector("CATS", myDetector);
+#endif
+    }
+
+	  ////////////////////////////////////////////
+	  ///////  Search for CHARISSA Array    //////
+	  ////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 13, "CharissaArray") == 0 && Charissa == false) {
+#ifdef INC_CHARISSA
+		Charissa = true;
+		cout << "//////// Charissa Array ////////" << endl << endl;
+		
+		// Instantiate the new array as a VDetector Object
+		VDetector* myDetector = new TCharissaPhysics();
+		
+		// Read Position of Telescope
+		ConfigFile.close();
+		myDetector->ReadConfiguration(Path);
+		ConfigFile.open(Path.c_str());
+		
+		// Add array to the VDetector Vector
+		AddDetector("Charissa", myDetector);
+#endif
+    }
+
+    ////////////////////////////////////////////////////
+    ////////   Search for Chateau de Cristal    ////////
+    ////////////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 9, "ChateauCristal") == 14 && ChateauCristal == false) {
+#ifdef INC_CHATEAUCRISTAL
+      ChateauCristal = true;
+      cout << "//////// Chateau de Cristal Array ////////" << endl << endl;
+
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector = new TChateauCristalPhysics();
+
+      // Read Position of Telescope
+      ConfigFile.close();
+      myDetector->ReadConfiguration(Path);
+      ConfigFile.open(Path.c_str());
+
+      // Add array to the VDetector Vector
+      AddDetector("ChateauCristal", myDetector);
+#endif
+      }
+ 
+    /////////////////////////////////////////
+    //////////// Search for EXL  ////////////
+    /////////////////////////////////////////
+    else if (LineBuffer.compare(0, 3, "EXL") == 0 && EXL == false) {
+#ifdef INC_EXL
+      EXL = true ;
+      cout << "//////// EXL Csi gamma detector ////////" << endl;
+
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector = new TExlPhysics();
+
+      // Read Position of Telescope
+      ConfigFile.close();
+      myDetector->ReadConfiguration(Path);
+      ConfigFile.open(Path.c_str());
+
+      // Add array to the VDetector Vector
+      AddDetector("EXL", myDetector);
+#endif
+    }
+
+    //////////////////////////////////////////////
+    //////////      Search for Exogam    /////////
+    //////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 11, "EXOGAMArray") == 0 && Exogam == false) {
+#ifdef INC_EXOGAM
+      Exogam = true ;
+      cout << "//////// Exogam ////////" << endl << endl;
+
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector = new TExogamPhysics();
+
+      // Read Position of Telescope
+      ConfigFile.close();
+      myDetector->ReadConfiguration(Path);
+      ConfigFile.open(Path.c_str());
+
+      // Add array to the VDetector Vector
+      AddDetector("EXOGAM", myDetector);
+#endif
+    }
+
+   
     ////////////////////////////////////////////
     //////////// Search for Gaspard ////////////
     ////////////////////////////////////////////
@@ -162,6 +290,81 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
       AddDetector("HYDE2", myDetector);
 #endif
     }
+    
+    ///////////////////////////////////////////////////////
+    ///////////// Search for Ionisation Chamber ///////////
+    ///////////////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 17, "IonisationChamber") == 0 && IonisationChamber == false) {
+#ifdef INC_CHIO
+      IonisationChamber = true;
+      cout << "//////// Ionisation Chamger ////////" << endl << endl;
+
+      /////// Case with analog electronics
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector_an = new TChio_anPhysics();
+      // Read Position of Telescope
+      ConfigFile.close();
+      myDetector_an->ReadConfiguration(Path);
+      ConfigFile.open(Path.c_str());
+
+      // Add array to the VDetector Vector
+      AddDetector("Chio_an", myDetector_an);
+
+
+      /////// Case with digital electronics
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector_dig = new TChio_digPhysics();
+      // Read Position of Telescope
+      ConfigFile.close();
+      myDetector_dig->ReadConfiguration(Path);
+      ConfigFile.open(Path.c_str());
+
+      // Add array to the VDetector Vector
+      AddDetector("Chio_dig", myDetector_dig);
+#endif
+    }
+
+    ////////////////////////////////////////////
+    ///////////// Search for LaBr3 ///////////
+    ////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 5, "LaBr3") == 0 && LaBr3 == false) {
+#ifdef INC_LABR3
+      LaBr3 = true;
+      cout << "//////// Plastic ////////" << endl << endl;
+
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector = new TLaBr3Physics();
+      // Read Position of Telescope
+      ConfigFile.close();
+      myDetector->ReadConfiguration(Path);
+      ConfigFile.open(Path.c_str());
+
+      // Add array to the VDetector Vector
+      AddDetector("LaBr3", myDetector);
+#endif
+    }
+
+    ////////////////////////////////////////////
+    ////////  Search for MUST2 Array    ////////
+    ////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 10, "MUST2Array") == 0 && MUST2 == false) {
+#ifdef INC_MUST2
+      MUST2 = true;
+      cout << "//////// MUST2 Array ////////" << endl << endl;
+
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector = new TMust2Physics();
+
+      // Read Position of Telescope
+      ConfigFile.close();
+      myDetector->ReadConfiguration(Path);
+      ConfigFile.open(Path.c_str());
+
+      // Add array to the VDetector Vector
+      AddDetector("MUST2", myDetector);
+#endif
+    }
+
     ////////////////////////////////////////////
     ///////////// Search for Paris /////////////
     ////////////////////////////////////////////
@@ -201,111 +404,10 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
 #endif
     }
 
-    ////////////////////////////////////////////
-    //////  Search for Annular S1 Array   //////
-    ////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 10, "AnnularS1") == 0 && AnnularS1 == false) {
-#ifdef INC_ANNULARS1
-      AnnularS1 = true;
-      cout << "//////// Annular S1 Array ////////" << endl << endl;
 
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new TAnnularS1Physics();
 
-      // Read Position of Telescope
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-
-      // Add array to the VDetector Vector
-      AddDetector("AnnularS1", myDetector);
-#endif
-    }
-	
-    ////////////////////////////////////////////
-    ////////  Search for MUST2 Array    ////////
-    ////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 10, "MUST2Array") == 0 && MUST2 == false) {
-#ifdef INC_MUST2
-      MUST2 = true;
-      cout << "//////// MUST2 Array ////////" << endl << endl;
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new TMust2Physics();
-
-      // Read Position of Telescope
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-
-      // Add array to the VDetector Vector
-      AddDetector("MUST2", myDetector);
-#endif
-    }
 	  
-	  ////////////////////////////////////////////
-	  ////////  Search for CHARISSA Array    ////////
-	  ////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 13, "CharissaArray") == 0 && Charissa == false) {
-#ifdef INC_CHARISSA
-		Charissa = true;
-		cout << "//////// Charissa Array ////////" << endl << endl;
-		
-		// Instantiate the new array as a VDetector Object
-		VDetector* myDetector = new TCharissaPhysics();
-		
-		// Read Position of Telescope
-		ConfigFile.close();
-		myDetector->ReadConfiguration(Path);
-		ConfigFile.open(Path.c_str());
-		
-		// Add array to the VDetector Vector
-		AddDetector("Charissa", myDetector);
-#endif
-    }
-
-    ////////////////////////////////////////////
-    ////////   Search for CATS Array    ////////
-    ////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 9, "CATSArray") == 0 && CATS == false) {
-#ifdef INC_CATS
-      CATS = true;
-      cout << "//////// CATS Array ////////" << endl << endl;
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new TCATSPhysics();
-
-      // Read Position of Telescope
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-
-      // Add array to the VDetector Vector
-      AddDetector("CATS", myDetector);
-#endif
-    }
-
-    ////////////////////////////////////////////////////
-    ////////   Search for Chateau de Cristal    ////////
-    ////////////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 9, "ChateauCristal") == 14 && ChateauCristal == false) {
-#ifdef INC_CHATEAUCRISTAL
-      ChateauCristal = true;
-      cout << "//////// Chateau de Cristal Array ////////" << endl << endl;
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new TChateauCristalPhysics();
-
-      // Read Position of Telescope
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-
-      // Add array to the VDetector Vector
-      AddDetector("ChateauCristal", myDetector);
-#endif
-      }
-      
+     
       ////////////////////////////////////////////
       ////////// Search for S2 (Micron)  /////////
       ////////////////////////////////////////////
@@ -326,17 +428,17 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
          AddDetector("S2", myDetector);
 #endif
       }
-     
-      ////////////////////////////////////////////
-      ////////// Search for W1 (Micron)  /////////
-      ////////////////////////////////////////////
-      else if (LineBuffer.compare(0, 2, "W1") == 0 && W1 == false) {
-#ifdef INC_W1
-      W1 = true;
-      cout << "//////// W1 ////////" << endl;
+
+    ////////////////////////////////////////////
+    ///////////// Search for SPEG //////////////
+    ////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 4, "SPEG") == 0 && SPEG == false) {
+#ifdef INC_SPEG
+      SPEG = true ;
+      cout << "//////// SPEG Spectrometer ////////" << endl;
 
       // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new TW1Physics();
+      VDetector* myDetector = new TSpegPhysics();
 
       // Read Position of Telescope
       ConfigFile.close();
@@ -344,7 +446,7 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
       ConfigFile.open(Path.c_str());
 
       // Add array to the VDetector Vector
-      AddDetector("W1", myDetector);
+      AddDetector("SPEG", myDetector);
 #endif
     }
 
@@ -370,6 +472,27 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
     }
 
     ////////////////////////////////////////////
+    ///////////// Search for Plastic ///////////
+    ////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 19, "ScintillatorPlastic") == 0 && ScintillatorPlastic == false) {
+#ifdef INC_PLASTIC
+      ScintillatorPlastic = true;
+      cout << "//////// Plastic ////////" << endl << endl;
+
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector = new TPlasticPhysics();
+      // Read Position of Telescope
+      ConfigFile.close();
+      myDetector->ReadConfiguration(Path);
+      ConfigFile.open(Path.c_str());
+
+      // Add array to the VDetector Vector
+      AddDetector("Plastic", myDetector);
+#endif
+    }
+
+
+    ////////////////////////////////////////////
     /////////      Search for Sharc    /////////
     ////////////////////////////////////////////
     else if (LineBuffer.compare(0, 5, "Sharc") == 0 && Sharc == false) {
@@ -389,66 +512,8 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
       AddDetector("Sharc", myDetector);
 #endif
     }
-
-    //////////////////////////////////////////////
-    //////////      Search for Exogam    /////////
-    //////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 11, "EXOGAMArray") == 0 && Exogam == false) {
-#ifdef INC_EXOGAM
-      Exogam = true ;
-      cout << "//////// Exogam ////////" << endl << endl;
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new TExogamPhysics();
-
-      // Read Position of Telescope
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-
-      // Add array to the VDetector Vector
-      AddDetector("EXOGAM", myDetector);
-#endif
-    }
-
+    
     ////////////////////////////////////////////
-    ///////////// Search for Plastic ///////////
-    ////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 19, "ScintillatorPlastic") == 0 && ScintillatorPlastic == false) {
-#ifdef INC_PLASTIC
-      ScintillatorPlastic = true;
-      cout << "//////// Plastic ////////" << endl << endl;
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new TPlasticPhysics();
-      // Read Position of Telescope
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-
-      // Add array to the VDetector Vector
-      AddDetector("Plastic", myDetector);
-#endif
-    }
-    ////////////////////////////////////////////
-    ///////////// Search for LaBr3 ///////////
-    ////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 5, "LaBr3") == 0 && LaBr3 == false) {
-#ifdef INC_LABR3
-      LaBr3 = true;
-      cout << "//////// Plastic ////////" << endl << endl;
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new TLaBr3Physics();
-      // Read Position of Telescope
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-
-      // Add array to the VDetector Vector
-      AddDetector("LaBr3", myDetector);
-#endif
-    }    ////////////////////////////////////////////
     ///////////// Search for SiLi ///////////
     ////////////////////////////////////////////
     else if (LineBuffer.compare(0, 4, "SiLi") == 0 && SiLi == false) {
@@ -466,7 +531,8 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
       // Add array to the VDetector Vector
       AddDetector("SiLi", myDetector);
 #endif
-    }    ////////////////////////////////////////////
+    } 
+    ////////////////////////////////////////////
     ///////////// Search for SiRes ///////////
     ////////////////////////////////////////////
     else if (LineBuffer.compare(0, 5, "SiRes") == 0 && SiRes == false) {
@@ -485,82 +551,7 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
       AddDetector("SiRes", myDetector);
 #endif
     }
-    ///////////////////////////////////////////////////////
-    ///////////// Search for Ionisation Chamber ///////////
-    ///////////////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 17, "IonisationChamber") == 0 && IonisationChamber == false) {
-#ifdef INC_CHIO
-      IonisationChamber = true;
-      cout << "//////// Ionisation Chamger ////////" << endl << endl;
-
-      /////// Case with analog electronics
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector_an = new TChio_anPhysics();
-      // Read Position of Telescope
-      ConfigFile.close();
-      myDetector_an->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-
-      // Add array to the VDetector Vector
-      AddDetector("Chio_an", myDetector_an);
-
-
-      /////// Case with digital electronics
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector_dig = new TChio_digPhysics();
-      // Read Position of Telescope
-      ConfigFile.close();
-      myDetector_dig->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-
-      // Add array to the VDetector Vector
-      AddDetector("Chio_dig", myDetector_dig);
-#endif
-    }
-
-
-    ////////////////////////////////////////////
-    ///////////// Search for SPEG //////////////
-    ////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 4, "SPEG") == 0 && SPEG == false) {
-#ifdef INC_SPEG
-      SPEG = true ;
-      cout << "//////// SPEG Spectrometer ////////" << endl;
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new TSpegPhysics();
-
-      // Read Position of Telescope
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-
-      // Add array to the VDetector Vector
-      AddDetector("SPEG", myDetector);
-#endif
-    }
-
-    ///////////////////////////////////////////////////////////
-    //////////// Search for EXL Csi gamma detector ////////////
-    ///////////////////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 3, "EXL") == 0 && EXL == false) {
-#ifdef INC_EXL
-      EXL = true ;
-      cout << "//////// EXL Csi gamma detector ////////" << endl;
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new TExlPhysics();
-
-      // Read Position of Telescope
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-
-      // Add array to the VDetector Vector
-      AddDetector("EXL", myDetector);
-#endif
-    }
-
+ 
     ////////////////////////////////////////////
     ////////////// Search for TAC //////////////
     ////////////////////////////////////////////
@@ -582,28 +573,9 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
 #endif
     }
 
+   
     ////////////////////////////////////////////
-    ///////////// Search for Trifoil ///////////
-    ////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 7, "Trifoil") == 0 && Trifoil == false) {
-#ifdef INC_TRIFOIL
-      Trifoil = true;
-      cout << "//////// Trifoil ////////" << endl << endl;
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new TTrifoilPhysics();
-      // Read Position of Telescope
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-
-      // Add array to the VDetector Vector
-      AddDetector("Trifoil", myDetector);
-#endif
-    }
-    
-    ////////////////////////////////////////////
-    ///////////// Search for Hyball ////////////
+    ////////// Search for Tiara Hyball /////////
     ////////////////////////////////////////////
     else if (LineBuffer.compare(0, 11, "TiaraHyball") == 0 && TiaraHyball == false) {
 #ifdef INC_TIARA
@@ -623,7 +595,7 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
     }
     
     ////////////////////////////////////////////
-    ///////// Search for Tiara barrel //////////
+    ///////// Search for Tiara Barrel //////////
     ////////////////////////////////////////////
     else if (LineBuffer.compare(0, 11, "TiaraBarrel") == 0 && TiaraBarrel == false) {
 #ifdef INC_TIARA
@@ -640,7 +612,53 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
       // Add array to the VDetector Vector
       AddDetector("TiaraBarrel", myDetector);
 #endif
-    } 
+    }
+ 
+    ////////////////////////////////////////////
+    ///////////// Search for Trifoil ///////////
+    ////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 7, "Trifoil") == 0 && Trifoil == false) {
+#ifdef INC_TRIFOIL
+      Trifoil = true;
+      cout << "//////// Trifoil ////////" << endl << endl;
+
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector = new TTrifoilPhysics();
+      // Read Position of Telescope
+      ConfigFile.close();
+      myDetector->ReadConfiguration(Path);
+      ConfigFile.open(Path.c_str());
+
+      // Add array to the VDetector Vector
+      AddDetector("Trifoil", myDetector);
+#endif
+    }
+ 
+      ////////////////////////////////////////////
+      ////////// Search for W1 (Micron)  /////////
+      ////////////////////////////////////////////
+      else if (LineBuffer.compare(0, 2, "W1") == 0 && W1 == false) {
+#ifdef INC_W1
+      W1 = true;
+      cout << "//////// W1 ////////" << endl;
+
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector = new TW1Physics();
+
+      // Read Position of Telescope
+      ConfigFile.close();
+      myDetector->ReadConfiguration(Path);
+      ConfigFile.open(Path.c_str());
+
+      // Add array to the VDetector Vector
+      AddDetector("W1", myDetector);
+#endif
+    }
+
+///////////////////////////////////////////////////////////////////////////////
+//                           END OF DETECTOR                                 //
+///////////////////////////////////////////////////////////////////////////////
+
     ////////////////////////////////////////////
     //////////// Search for Target /////////////
     ////////////////////////////////////////////
