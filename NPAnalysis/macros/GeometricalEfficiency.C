@@ -65,20 +65,18 @@ void GeometricalEfficiency(const char * fname = "myResult"){
   tree->SetBranchStatus("InteractionCoordinates", true);
   
   // Prepare histograms
-  TH1F *hDetecTheta = new TH1F("hDetecTheta", "DetecTheta", 90, 0, 180);
-  TH1F *hDetecThetaCM = new TH1F("hDetecThetaCM", "hDetecThetaCM", 90, 0, 180);
-  TH1F *hEmittTheta = new TH1F("hEmittTheta", "EmittTheta", 90, 0, 180);
-  TH1F *hEmittThetaCM = new TH1F("hEmittThetaCM", "hEmittThetaCM", 90, 0, 180);
+  TH1F *hDetecTheta = new TH1F("hDetecTheta", "DetecTheta", 180,0,180);
+  TH1F *hDetecThetaCM = new TH1F("hDetecThetaCM", "hDetecThetaCM", 180,0,180);
+  TH1F *hEmittTheta = new TH1F("hEmittTheta", "EmittTheta", 180,0,180);
+  TH1F *hEmittThetaCM = new TH1F("hEmittThetaCM", "hEmittThetaCM", 180,0,180);
   
   // Read the TTree
-  Int_t nentries = tree->GetEntries();
-  // cout << "TTree contains " << nentries << " events" << endl;
-  for (Int_t i = 0; i < nentries; i++) {
-    //if (i%1000 == 0) cout << "Entry " << i << endl;
+  int nentries = tree->GetEntries();
+  for (int i = 0; i < nentries; i++) {
     tree->GetEntry(i);
     // Fill histos
     hEmittTheta->Fill(initCond->GetThetaLab_WorldFrame(0));
-    hEmittTheta->Fill(initCond->GetThetaCM(0));
+    hEmittThetaCM->Fill(initCond->GetThetaCM(0));
 
     if (interCoord->GetDetectedMultiplicity() > 0){
       hDetecTheta->Fill(interCoord->GetDetectedAngleTheta(0));
@@ -87,13 +85,14 @@ void GeometricalEfficiency(const char * fname = "myResult"){
   }
   
   TCanvas* c4 = new TCanvas("c4", "CM Frame");
+
   TH1F* SolidACM = new TH1F(*hDetecThetaCM);
   SolidACM->Sumw2();
-  TF1* CCM = new TF1("CCM",Form("%i /(4*%f)",nentries,M_PI),0,180);
   TF1* C = new TF1("C",Form("%i /(4*%f)",nentries,M_PI),0,180);
   SolidACM->Divide(C,1);
+  SolidACM->Divide(hEmittThetaCM);
   SolidACM->Draw();
-  TF1* f = new TF1("f",Form("2 * %f * sin(x*%f/180.) *2*%f/180.",M_PI,M_PI,M_PI),0,180);
+  TF1* f = new TF1("f",Form("2 * %f * sin(x*%f/180.) *1*%f/180.",M_PI,M_PI,M_PI),0,180);
   f->Draw("SAME");
   f->Draw("SAME");
   SolidACM->GetXaxis()->SetTitle("#theta_{CM} (deg)");
