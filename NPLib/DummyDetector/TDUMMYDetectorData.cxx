@@ -24,30 +24,27 @@
 #include "TDUMMYDetectorData.h"
 ClassImp(TDUMMYDetectorData)
 
-TDUMMYDetectorData::TDUMMYDetectorData()
-{
+////////////////////////////////////////////////////////////////////////////////
+TDUMMYDetectorData::TDUMMYDetectorData(){
 }
 
 
-
-TDUMMYDetectorData::~TDUMMYDetectorData()
-{
+////////////////////////////////////////////////////////////////////////////////
+TDUMMYDetectorData::~TDUMMYDetectorData(){
 }
 
 
-
-void TDUMMYDetectorData::Clear()
-{
+////////////////////////////////////////////////////////////////////////////////
+void TDUMMYDetectorData::Clear(){
     fDUMMYDetector_Energy.clear();
     fDUMMYDetector_Number.clear();
     fDUMMYDetector_Time.clear();
 }
 
 
-
-void TDUMMYDetectorData::Dump() const
-{
-   cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event XXXXXXXXXXXXXXXXX" << endl;
+////////////////////////////////////////////////////////////////////////////////
+void TDUMMYDetectorData::Dump() const{
+   cout << "XXXXXXXXXXXXXXXXX New Event XXXXXXXXXXXXXXXXX" << endl;
 
    for(unsigned short i = 0 ; i<fDUMMYDetector_Energy.size() ; i ++)
       {

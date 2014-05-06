@@ -309,8 +309,7 @@ void Beam::ReadConfigurationFile(string Path){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void Beam::GenerateRandomEvent(double& E, double& X, double& Y, double& Z, double& ThetaX, double& PhiY )
-{
+void Beam::GenerateRandomEvent(double& E, double& X, double& Y, double& Z, double& ThetaX, double& PhiY ){
   X = Y = 1000000*cm;
   
   if(fSigmaEnergy!=-1)
@@ -319,7 +318,6 @@ void Beam::GenerateRandomEvent(double& E, double& X, double& Y, double& Z, doubl
     E = fEnergyHist->GetRandom();
   
   if(fSigmaX!=-1){
-    
   // Shoot within the target unless target size is null (no limit)
     while(sqrt(X*X+Y*Y>fEffectiveTargetSize) || fEffectiveTargetSize == 0){
       NPL::RandomGaussian2D(fMeanX, fMeanThetaX, fSigmaX, fSigmaThetaX, X, ThetaX);
@@ -333,7 +331,6 @@ void Beam::GenerateRandomEvent(double& E, double& X, double& Y, double& Z, doubl
       fYPhiYHist->GetRandom2(Y,PhiY);
     }
   }
-  
   Z = fTargetZ + fEffectiveTargetThickness*(gRandom->Uniform()-0.5);
 }
 

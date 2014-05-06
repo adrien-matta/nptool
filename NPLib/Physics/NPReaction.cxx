@@ -214,12 +214,12 @@ double Reaction::ShootRandomThetaCM(){
       
     // Those test are there for the tail event of the energy distribution
     // In case the energy is outside the range of the 2D histo we take the 
-    // closest availabile CS
+    // closest available CS
     if(Y->FindBin(fBeamEnergy) > Y->GetLast())
       binY = Y->GetLast()-1;
 
     else if(Y->FindBin(fBeamEnergy) < Y->GetFirst())
-      binY = Y->GetFirst();
+      binY = Y->GetFirst()+1;
 
     else
       binY = Y->FindBin(fBeamEnergy);
@@ -248,11 +248,11 @@ void Reaction::KineRelativistic(double &ThetaLab3, double &KineticEnergyLab3,
 	// case of inverse kinematics
 	double theta = fThetaCM;
 	if (m1 > m2) theta = M_PI - fThetaCM;
-  
+
 	fEnergyImpulsionCM_3	= TLorentzVector(pCM_3*sin(theta),0,pCM_3*cos(theta),ECM_3);
 	fEnergyImpulsionCM_4	= fTotalEnergyImpulsionCM - fEnergyImpulsionCM_3;
 	
-	fEnergyImpulsionLab_3 = fEnergyImpulsionCM_3;
+  fEnergyImpulsionLab_3 = fEnergyImpulsionCM_3;
 	fEnergyImpulsionLab_3.Boost(0,0,BetaCM);
 	fEnergyImpulsionLab_4 = fEnergyImpulsionCM_4;
 	fEnergyImpulsionLab_4.Boost(0,0,BetaCM);
@@ -517,13 +517,15 @@ void Reaction::ReadConfigurationFile(string Path){
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Reaction::initializePrecomputeVariable(){
 
+  if(fBeamEnergy < 0)
+    fBeamEnergy = 0 ;
+
   m1 = fNuclei1->Mass();
   m2 = fNuclei2->Mass();
   m3 = fNuclei3->Mass() + fExcitation3;
   m4 = fNuclei4->Mass() + fExcitation4;
   
   s = m1*m1 + m2*m2 + 2*m2*(fBeamEnergy + m1);
-  
   fTotalEnergyImpulsionCM = TLorentzVector(0,0,0,sqrt(s));
   
 	ECM_1 = (s + m1*m1 - m2*m2)/(2*sqrt(s));
@@ -537,7 +539,7 @@ void Reaction::initializePrecomputeVariable(){
 	pCM_4 = sqrt(ECM_4*ECM_4 - m4*m4);
   
   fImpulsionLab_1 = TVector3(0,0,sqrt(fBeamEnergy*fBeamEnergy + 2*fBeamEnergy*m1));
-  fImpulsionLab_2 = TVector3(0,0,0);
+  fImpulsionLab_3 = TVector3(0,0,0);
   
   fEnergyImpulsionLab_1 = TLorentzVector(fImpulsionLab_1,m1+fBeamEnergy);
   fEnergyImpulsionLab_2 = TLorentzVector(fImpulsionLab_2,m2);

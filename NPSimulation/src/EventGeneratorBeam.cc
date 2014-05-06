@@ -72,6 +72,7 @@ void EventGeneratorBeam::ReadConfiguration(string Path,int){
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorBeam::GenerateEvent(G4Event* anEvent){
+
   //--------------write the DeDx Table -------------------
   if( anEvent->GetEventID()==0){
     // Define the particle to be shoot
@@ -98,7 +99,7 @@ void EventGeneratorBeam::GenerateEvent(G4Event* anEvent){
   G4ThreeVector BeamPos(x0,y0,z0);
   Beam_theta = BeamDir.theta()    ;
   Beam_phi   = BeamDir.phi()      ; Beam_phi *= 1;
-  FinalBeamEnergy = m_Target->SlowDownBeam(m_particle, InitialBeamEnergy,z0,Beam_theta);
+  FinalBeamEnergy = m_Target->SlowDownBeam(m_particle, InitialBeamEnergy,z0-m_Beam->GetTargetZ(),Beam_theta);
   ///////////////////////////////////////////////////////
   ///// Add the Beam particle to the particle Stack /////
   ///////////////////////////////////////////////////////

@@ -115,14 +115,22 @@ namespace NPL{
     double fEffectiveTargetThickness; // target thickness has seen by the beam
     double fTargetAngle;
     double fTargetZ;
-    
-  public: // Event Generation
-    void GenerateRandomEvent(double& E, double& X, double& Y, double& Z, double& ThetaX, double& PhiY );
+ 
+  public:
     void SetTargetSize(double TargetSize);
     void SetTargetThickness(double TargetThickness);
     void SetTargetAngle(double TargetAngle);
     void SetTargetZ(double TargetZ) {fTargetZ = TargetZ;}
+    double GetTargetSize(){return fTargetSize;}
+    double GetTargetThickness(){return fTargetThickness;}
+    double GetTargetAngle(){return fTargetAngle;}
+    double GetTargetZ() {return fTargetZ;}
+    double GetTargetEffectiveThickness(){return fEffectiveTargetThickness;}
+    double GetTargetEffectiveTargetSize(){return fEffectiveTargetSize;}
 
+   
+  public: // Event Generation
+    void GenerateRandomEvent(double& E, double& X, double& Y, double& Z, double& ThetaX, double& PhiY );
   public: // Print private paremeter
     void Print() const;
   };

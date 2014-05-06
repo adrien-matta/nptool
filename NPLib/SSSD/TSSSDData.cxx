@@ -26,8 +26,8 @@ using namespace std;
 
 ClassImp(TSSSDData)
 
-TSSSDData::TSSSDData()
-{
+////////////////////////////////////////////////////////////////////////////////
+TSSSDData::TSSSDData(){
    // Default constructor
 
    // SSSD
@@ -42,11 +42,12 @@ TSSSDData::TSSSDData()
 
 }
 
-TSSSDData::~TSSSDData()
-{}
+////////////////////////////////////////////////////////////////////////////////
+TSSSDData::~TSSSDData(){
+}
 
-void TSSSDData::Clear()
-{
+////////////////////////////////////////////////////////////////////////////////
+void TSSSDData::Clear(){
    // DSSD
    // Energy
    fSSSD_StripE_DetectorNbr.clear();
@@ -59,19 +60,23 @@ void TSSSDData::Clear()
 }
 
 
-
-void TSSSDData::Dump() const
-{
-   cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event XXXXXXXXXXXXXXXXX" << endl;
+////////////////////////////////////////////////////////////////////////////////
+void TSSSDData::Dump() const{
+   cout << "XXXXXXXXXXXXXXXXX New Event XXXXXXXXXXXXXXXXX" << endl;
 
    // SSSD
    // Energy
    cout << "SSSD_StripE_Mult = " << fSSSD_StripE_DetectorNbr.size() << endl;
    for (UShort_t i = 0; i < fSSSD_StripE_DetectorNbr.size(); i++)
-      cout << "DetNbr: " << fSSSD_StripE_DetectorNbr[i] << " Strip: " << fSSSD_StripE_StripNbr[i] << " Energy: " << fSSSD_StripE_Energy[i] << endl;
+      cout << "DetNbr: "  << fSSSD_StripE_DetectorNbr[i] 
+           << " Strip: "  << fSSSD_StripE_StripNbr[i] 
+           << " Energy: " << fSSSD_StripE_Energy[i] << endl;
+
    // Time
    cout << "SSSD_StripXT_Mult = " << fSSSD_StripT_DetectorNbr.size() << endl;
    for (UShort_t i = 0; i < fSSSD_StripT_DetectorNbr.size(); i++)
-      cout << "DetNbr: " << fSSSD_StripT_DetectorNbr[i] << " Strip: " << fSSSD_StripT_StripNbr[i] << " Time: " << fSSSD_StripT_Time[i] << endl;
+      cout << "DetNbr: " << fSSSD_StripT_DetectorNbr[i] 
+           << " Strip: " << fSSSD_StripT_StripNbr[i] 
+           << " Time: "  << fSSSD_StripT_Time[i] << endl;
   
 }

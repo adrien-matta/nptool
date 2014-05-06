@@ -19,7 +19,6 @@
  * Comment:                                                                  *
  *                                                                           *
  *****************************************************************************/
-
 // NPS
 #include"ParticleStack.hh"
 
@@ -236,7 +235,6 @@ void ParticleStack::ShootAllParticle(G4Event* anEvent){
       m_particleGun->SetParticleMomentumDirection(m_ParticleStack[i].GetParticleMomentumDirection());
       m_particleGun->SetParticlePosition(m_ParticleStack[i].GetParticlePosition());
       m_particleGun->GeneratePrimaryVertex(anEvent);
-      
       //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
       m_InitialConditions-> SetParticleName       ( m_ParticleStack[i].GetParticleDefinition()->GetParticleName()) ;
       m_InitialConditions-> SetThetaCM            ( m_ParticleStack[i].GetParticleThetaCM()/deg);

@@ -111,7 +111,6 @@ void EventGeneratorTwoBodyReaction::GenerateEvent(G4Event* anEvent){
     }
   }
  
-
   //////////////////////////////////////////////////
   //////Define the kind of particle to shoot////////
   //////////////////////////////////////////////////
@@ -135,9 +134,9 @@ void EventGeneratorTwoBodyReaction::GenerateEvent(G4Event* anEvent){
   // Get the beam particle form the Particle Stack
   Particle BeamParticle = m_ParticleStack->SearchAndRemoveParticle(m_BeamName);
   m_Reaction->SetBeamEnergy(BeamParticle.GetParticleKineticEnergy());
+  
   G4double Beam_theta = BeamParticle.GetParticleMomentumDirection().theta();
   G4double Beam_phi = BeamParticle.GetParticleMomentumDirection().phi();
-
   
   //////////////////////////////////////////////////////////
   ///// Build rotation matrix to go from the incident //////
@@ -163,7 +162,7 @@ void EventGeneratorTwoBodyReaction::GenerateEvent(G4Event* anEvent){
   // Shoot and Set a Random ThetaCM
   G4double ThetaCM = m_Reaction->ShootRandomThetaCM();
   G4double phi     = RandFlat::shoot() * 2. * pi;
-  
+ 
   //////////////////////////////////////////////////
   /////  Momentum and angles from  kinematics  /////
   /////  Angles are in the beam frame          /////
@@ -173,6 +172,7 @@ void EventGeneratorTwoBodyReaction::GenerateEvent(G4Event* anEvent){
   
   // Compute Kinematic using previously defined ThetaCM
   m_Reaction->KineRelativistic(ThetaLight, EnergyLight, ThetaHeavy, EnergyHeavy);
+  
   // Momentum in beam frame for light particle
   G4ThreeVector momentum_kineLight_beam(sin(ThetaLight) * cos(phi),
                                         sin(ThetaLight) * sin(phi),

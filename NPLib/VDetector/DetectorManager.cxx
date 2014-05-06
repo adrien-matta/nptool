@@ -61,7 +61,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //   Default Constructor
-DetectorManager::DetectorManager()   {
+DetectorManager::DetectorManager(){
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////   
@@ -81,7 +81,7 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
   string LineBuffer;
   string DataBuffer;
 
-   /////////Boolean////////////////////
+   //////// List of Detector ///////
    bool AnnularS1           = false; 
    bool CATS                = false;
    bool Charissa 	          = false;
@@ -89,7 +89,6 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
    bool EXL                 = false;
    bool Exogam              = false;
    bool GPDTracker          = false;
-   bool GeneralTarget       = false;
    bool HYD2Tracker         = false;
    bool IonisationChamber   = false;
    bool LaBr3		            = false;
@@ -108,6 +107,10 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
    bool TiaraHyball         = false;
    bool Trifoil             = false;
    bool W1                  = false;
+   ////////////////////////////////
+   bool GeneralTarget       = false;
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
   ifstream ConfigFile;
   ConfigFile.open(Path.c_str());
