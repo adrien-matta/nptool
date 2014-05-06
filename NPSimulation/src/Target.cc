@@ -618,9 +618,19 @@ void Target::WriteDEDXTable(G4ParticleDefinition* Particle ,G4double Emin,G4doub
       << "Particle: " << Particle->GetParticleName() << "\tMaterial: " << m_TargetMaterial->GetName() << endl ;
 
     G4EmCalculator emCalculator;
+    // Tipical Range needed, if Emax is larger, then adapted
+    if(Emax < 25000) Emax = 25000;    
 
-    for (G4double E=Emin; E < Emax; E+=(Emax-Emin)/1000.){
+    double step = 1*keV;
+    double before = 0 ;
+    for (G4double E=Emin; E < Emax; E+=step){
       G4double dedx = emCalculator.ComputeTotalDEDX(E, Particle, m_TargetMaterial);
+
+      if(before){
+        if(abs(before-dedx)/abs(before)<0.01) step*=10; 
+      }
+
+      before = dedx;
       File << E/MeV << "\t" << dedx/(MeV/micrometer) << endl ;
     }
 
@@ -632,12 +642,19 @@ void Target::WriteDEDXTable(G4ParticleDefinition* Particle ,G4double Emin,G4doub
       File   << "Table from Geant4 generate using NPSimulation \t "
         << "Particle: " << Particle->GetParticleName() << "\tMaterial: " << m_WindowsMaterial->GetName() << endl ;
 
-      for (G4double E=Emin; E < Emax; E+=(Emax-Emin)/10.){
-        //                     G4double dedx = emCalculator.ComputeTotalDEDX(E, Particle, m_WindowsMaterial);
-        G4double dedx = emCalculator.ComputeDEDX(   E, Particle ,
-            "ionIoni",  m_WindowsMaterial);
+      step = 1*keV;
+      before = 0 ;
+      for (G4double E=Emin; E < Emax; E+=step){
+        G4double dedx = emCalculator.ComputeTotalDEDX(E, Particle,m_WindowsMaterial);
+
+        if(before){
+          if(abs(before-dedx)/abs(before)<0.01) step*=10; 
+        }
+
+        before = dedx;
         File << E/MeV << "\t" << dedx/(MeV/micrometer) << endl ;
       }
+
     }
     File.close();
 
