@@ -27,7 +27,7 @@ if [ -f ~/.rootlogon.C ];
 then
   echo 'File .rootlogon.C already exist: attempt to modified it'
   # Check if NPTOOL stuff is already in
-  SEARCH=$(grep NPTOOL ~/test.C)
+  SEARCH=$(grep NPTOOL ~/.rootlogon.C)
   echo $SEARCH
   if [ ! -n "$SEARCH" ];
   then
