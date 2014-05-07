@@ -240,15 +240,22 @@ void AnnularS1::VolumeMaker(G4int             DetecNumber,
       0*deg, 
       360*deg); 
 
+
+  G4ThreeVector activecutposition1(80*mm+ActiveWaferRCut,0,0); activecutposition1.setPhi(45*deg);
+  G4Transform3D activetransform1(*cutrotation,activecutposition1);
+
   G4SubtractionSolid* solidActiveWafer1 = new G4SubtractionSolid("ActiveWafer1",
       solidActiveWaferBase,
       solidCutout,
-      transform1);
+      activetransform1);
 
+  G4ThreeVector activecutposition2(-80*mm-ActiveWaferRCut,0,0); activecutposition2.setPhi(-135*deg);
+  G4Transform3D activetransform2(*cutrotation,activecutposition2);
+ 
   G4SubtractionSolid* solidActiveWafer = new G4SubtractionSolid("ActiveWafer",
       solidActiveWafer1,
       solidCutout,
-      transform2);
+      activetransform2);
 
   G4LogicalVolume* logicActiveWafer = new G4LogicalVolume(solidActiveWafer, Silicon, "AnnularS1_ActiveWafer", 0, 0, 0);
   new G4PVPlacement(G4Transform3D(*norotation, G4ThreeVector()),

@@ -25,7 +25,7 @@
 // C++ headers
 #include <vector>
 using namespace std;
-using namespace CLHEP;
+using namespace CLHEP;
 
 // NPTool header
 #include "VDetector.hh"
@@ -117,18 +117,19 @@ namespace ANNULARS1{
    const G4double ResoTime        = 0.106382979    ;// = 250 ps                //   Unit is  ns/2.35
    const G4double EnergyThreshold = 0.300          ;// = 300 keV
    // PCB
-   const G4double PCBPointsX[8]={-50,50,60,60,50,-50,-60,-60};
-   const G4double PCBPointsY[8]={60,60,50,-50,-60,-60,-50,50};
+   const G4double PCBPointsX[8]={-40,40,60,60,40,-40,-60,-60};
+   const G4double PCBPointsY[8]={60,60,40,-40,-60,-60,-40,40};
    const G4double PCBThickness=2*mm;
    const G4double PCBInnerRadius=20*mm;
    // Wafer
    const G4double WaferOutterRadius = 50*mm;
    const G4double WaferInnerRadius  = 23*mm;
    const G4double WaferThickness    = 500*micrometer;
-   const G4double WaferRCut         = 45*mm; 
+   const G4double WaferRCut         = 45.5*mm; 
    const G4double ActiveWaferOutterRadius = 48*mm;
    const G4double ActiveWaferInnerRadius  = 24*mm;
    const G4double AluStripThickness   = 0.4*micrometer;
+   const G4double ActiveWaferRCut     = 44.5*mm; 
 
    // Characteristics
    const G4int NbrRingStrips  = 16;
