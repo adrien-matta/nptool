@@ -21,7 +21,8 @@ In order to compile the core libraries NPLib, you will need ROOT to be installed
 
 ###Building NPLib
 NPLib is the core of the NPTool package, holding most of the actual code. It is made of a collection of stand alone C++ classes that can be used in programs and macro. The first step is to define the variable of environment that the system needs. For this open your .profile / .bashrc / .tcshrc file in your home directory and add the following line:
->source /path/to/nptool/nptool.sh
+
+> source /path/to/nptool/nptool.sh
 
 Restart your terminal. You should now have all aliases and environment variable properly defined and can now access the NPLib folder by using the command:
 ````
@@ -45,7 +46,7 @@ where you replace n is the number of core to be used in the compilation.
 If you wish to compile only one subdirectory, simply add the name of the directory in lower case, e.g. for compiling the Physics directory:
 
 ````
-$ make -jn Physics
+$ make -jn physics
 ````
 
 In order to load the nptool libraries when you launch root, you need to add a few line to your ~/.rootlogon.C file. NPTool can do that safely for you using a script. To launch the script simply type:
