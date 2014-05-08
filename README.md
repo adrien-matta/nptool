@@ -8,7 +8,7 @@ The NPTool package is based on Root and Geant4. It is aimed to assist experiment
 The recommended method to obtain the code is to use git. This insure an easy way to access the update version of the code. First make sure you got git installed, if not, just use your package manager to get it. Then go to the directory where you want to install the nptool folder and type:
 ````
 $ git clone https://github.com/adrien-matta/nptool
-````:
+````
 This will create the nptool folder with the latest version of nptool.
 
 ### Downloading from Git Hub
