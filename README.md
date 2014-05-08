@@ -43,9 +43,10 @@ Depending on the existence of the .rootlogon.C file in your home directory, the 
 
 ###Building NPSimulation
 This part of the package rely on Geant4 to perform Monte Carlo simulation. You need to first compile and configure correctly NPLib in order for NPSimulation to compile and run. The compilation is done as follow:
-> NPS
-> make -jn
-
+````
+NPS
+make -jn
+`````
 This should produce the NPSimulation executable, you can check this by running the help display
 > NPSimulation -h
 
