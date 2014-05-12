@@ -524,6 +524,7 @@ void Reaction::initializePrecomputeVariable(){
   m2 = fNuclei2->Mass();
   m3 = fNuclei3->Mass() + fExcitation3;
   m4 = fNuclei4->Mass() + fExcitation4;
+  fQValue =fNuclei1->Mass()+fNuclei2->Mass()-fNuclei3->Mass()-fNuclei4->Mass();
   
   s = m1*m1 + m2*m2 + 2*m2*(fBeamEnergy + m1);
   fTotalEnergyImpulsionCM = TLorentzVector(0,0,0,sqrt(s));
