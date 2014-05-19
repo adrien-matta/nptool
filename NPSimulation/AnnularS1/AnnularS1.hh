@@ -119,8 +119,8 @@ namespace ANNULARS1{
    // PCB
    const G4double PCBPointsX[8]={-40,40,60,60,40,-40,-60,-60};
    const G4double PCBPointsY[8]={60,60,40,-40,-60,-60,-40,40};
-   const G4double PCBThickness=2*mm;
-   const G4double PCBInnerRadius=20*mm;
+   const G4double PCBThickness=3.2*mm;
+   const G4double PCBInnerRadius=0*mm;
    // Wafer
    const G4double WaferOutterRadius = 50*mm;
    const G4double WaferInnerRadius  = 23*mm;

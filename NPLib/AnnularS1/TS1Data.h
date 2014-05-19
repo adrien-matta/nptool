@@ -61,22 +61,22 @@ class TS1Data : public TObject {
 
     /////////////////////           GETTERS           ////////////////////////
     // (Th,E)
-    const int   GetS1ThetaEMult()                 const {return fS1_Theta_E_DetNbr.size();}
+    const unsigned int   GetS1ThetaEMult()                 const {return fS1_Theta_E_DetNbr.size();}
     const int   GetS1ThetaEDetectorNbr(const int& i)   const {return fS1_Theta_E_DetNbr.at(i);}
     const int   GetS1ThetaEStripNbr(const int& i)      const {return fS1_Theta_E_StripNbr.at(i);}
     const double   GetS1ThetaEEnergy(const int& i)        const {return fS1_Theta_E_Energy.at(i);}
     // (Th,T)
-    const int   GetS1ThetaTMult()                 const {return fS1_Theta_T_DetNbr.size();}
+    const unsigned int   GetS1ThetaTMult()                 const {return fS1_Theta_T_DetNbr.size();}
     const int   GetS1ThetaTDetectorNbr(const int& i)   const {return fS1_Theta_T_DetNbr.at(i);}
     const int   GetS1ThetaTStripNbr(const int& i)      const {return fS1_Theta_T_StripNbr.at(i);}
     const double   GetS1ThetaTTime(const int& i)          const {return fS1_Theta_T_Time.at(i);}
     // (Ph,E)
-    const int   GetS1PhiEMult()                const {return fS1_Phi_E_DetNbr.size();}
+    const unsigned int   GetS1PhiEMult()                const {return fS1_Phi_E_DetNbr.size();}
     const int   GetS1PhiEDetectorNbr(const int& i)  const {return fS1_Phi_E_DetNbr.at(i);}
     const int   GetS1PhiEStripNbr(const int& i)     const {return fS1_Phi_E_StripNbr.at(i);}
     const double   GetS1PhiEEnergy(const int& i)       const {return fS1_Phi_E_Energy.at(i);}
     // (Ph,T)
-    const int   GetS1PhiTMult()                const {return fS1_Phi_T_DetNbr.size();}
+    const unsigned int   GetS1PhiTMult()                const {return fS1_Phi_T_DetNbr.size();}
     const int   GetS1PhiTDetectorNbr(const int& i)  const {return fS1_Phi_T_DetNbr.at(i);}
     const int   GetS1PhiTStripNbr(const int& i)     const {return fS1_Phi_T_StripNbr.at(i);}
     const double   GetS1PhiTTime(const int& i)         const {return fS1_Phi_T_Time.at(i);}

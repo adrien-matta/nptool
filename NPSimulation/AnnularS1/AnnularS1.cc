@@ -149,7 +149,7 @@ void AnnularS1::VolumeMaker(G4int             DetecNumber,
 
   // Wafer Shape to be substracted to the PCB
   G4Tubs* solidWaferShapeBase = new G4Tubs("WaferShape", 
-      WaferInnerRadius,
+      0,
       WaferOutterRadius,
       PCBThickness,
       0*deg, 
@@ -179,16 +179,9 @@ void AnnularS1::VolumeMaker(G4int             DetecNumber,
 
 
   // PCB final
-  G4SubtractionSolid* solidPCB1 = new G4SubtractionSolid("AnnularS1_PCB1",
+  G4SubtractionSolid* solidPCB = new G4SubtractionSolid("AnnularS1_PCB1",
       solidPCBBase,
       solidWaferShape);
-
-  G4Tubs* solidTub = 
-    new G4Tubs("central_hole",0,PCBInnerRadius,PCBThickness,0,360*deg); 
-  G4SubtractionSolid* solidPCB = new G4SubtractionSolid("AnnularS1_PCB",
-      solidPCB1,
-      solidTub);
-
 
   G4LogicalVolume* logicPCB = new G4LogicalVolume(solidPCB, Vacuum, "AnnularS1_PCB", 0, 0, 0);
 

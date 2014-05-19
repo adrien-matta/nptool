@@ -4,7 +4,7 @@ NPSIM		= NPSimulation
 
 all:	$(DELFILES) $(COPYFILES) $(NPSIM)
 
-DelIncSrcFiles:
+DelIncSrcFiles: $(NPTOOL)/NPLib/liblist
 	./scripts/deletefiles.sh
 
 CopyIncSrcFiles: DelIncSrcFiles
