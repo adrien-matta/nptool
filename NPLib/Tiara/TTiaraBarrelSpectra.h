@@ -25,6 +25,7 @@
 
 // C++ STL headers
 #include <map>
+using namespace std;
 
 // ROOT headers
 #include "TObject.h"
@@ -32,14 +33,14 @@
 #include <TH2.h>
 
 // NPLib headers
+#include "../include/VSpectra.h"
 #include "TTiaraBarrelData.h"
 #include "TTiaraBarrelPhysics.h"
-using namespace std;
 
 // ForwardDeclaration
 class TTiaraBarrelPhysics ;
 
-class TTiaraBarrelSpectra {
+class TTiaraBarrelSpectra: public VSpectra {
   public:
     // constructor and destructor
     TTiaraBarrelSpectra();
@@ -62,23 +63,11 @@ class TTiaraBarrelSpectra {
     void FillRawSpectra(TTiaraBarrelData*);
     void FillPreTreatedSpectra(TTiaraBarrelData*);
     void FillPhysicsSpectra(TTiaraBarrelPhysics*);
-    // Check the Spectra
-    void CheckSpectra();
-
-  public:
-    // get map histo which will be used for GSpectra in GUser
-    map< vector<string>, TH1* > GetMapHisto() const {return fMapHisto;}
-    TH1* GetHisto(string& family,string& name);    
-    void WriteHisto(string filename="VOID");      
 
   private: // Information on TIARA/BARREL
     unsigned int fNumberOfDetector;
     unsigned int fInnerBarrelStrip;
     unsigned int fOuterBarrelStrip;
-
-  private:
-    // map holding histo pointers and their family names
-    map< vector<string>, TH1* > fMapHisto;
 };
 
 #endif

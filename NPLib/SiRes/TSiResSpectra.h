@@ -14,17 +14,17 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class holds all the online spectra needed for SiRes              *
+ *  This class holds all the online spectra needed for SiRes                 *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *    + first version (not complete yet)                                     *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
 
 // C++ STL headers
 #include <map>
+using namespace std;
 
 // ROOT headers
 #include "TObject.h"
@@ -32,14 +32,14 @@
 #include <TH2.h>
 
 // NPLib headers
+#include "../include/VSpectra.h"
 #include "TSiResData.h"
 #include "TSiResPhysics.h"
-using namespace std;
 
 // ForwardDeclaration
 class TSiResPhysics;
 
-class TSiResSpectra {
+class TSiResSpectra: public VSpectra {
   public:
     // constructor and destructor
     TSiResSpectra();
@@ -62,21 +62,9 @@ class TSiResSpectra {
     void FillRawSpectra(TSiResData*);
     void FillPreTreatedSpectra(TSiResData*);
     void FillPhysicsSpectra(TSiResPhysics*);
-    // Check the Spectra
-    void CheckSpectra();
 
-  public:
-    // get map histo which will be used for GSpectra in GUser
-    map< vector<string>, TH1* > GetMapHisto() const {return fMapHisto;}
-    TH1* GetHisto(string& family,string& name);    
-    void WriteHisto(string filename="VOID");      
-
-  private: // Information on CHARISSA
+  private: 
     unsigned int fNumberDetector;
-
-  private:
-    // map holding histo pointers and their family names
-    map< vector<string>, TH1* > fMapHisto;
 };
 
 #endif

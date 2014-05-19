@@ -1,5 +1,5 @@
-#ifndef TTIARAHYBALLSPECTRA_H
-#define TTIARAHYBALLSPECTRA_H
+#ifndef TCATSSPECTRA_H
+#define TCATSSPECTRA_H
 /*****************************************************************************
  * Copyright (C) 2009-2014    this file is part of the NPTool Project        *
  *                                                                           *
@@ -8,17 +8,16 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
+ * Original Author: A. Matta         contact address: a.matta@surrey.ac.uk   *
  *                                                                           *
  * Creation Date  : dec 2013                                                 *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class holds all the online spectra needed for Tiara/Hyball          *
+ *  This class holds all the online spectra needed for CATS                  *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *    + first version (not complete yet)                                     *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
@@ -29,6 +28,7 @@
 #include <TH2.h>
 
 // NPLib headers
+#include "../include/VSpectra.h"
 #include "TCATSData.h"
 #include "TCATSPhysics.h"
 
@@ -41,7 +41,7 @@ using namespace std;
 class TCATSPhysics;
 
 
-class TCATSSpectra {
+class TCATSSpectra:public VSpectra {
   public:
     // constructor and destructor
     TCATSSpectra();
@@ -52,7 +52,7 @@ class TCATSSpectra {
     // Instantiate and register histo to maps
     TH1* AddHisto1D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, string family);
     TH1* AddHisto2D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, 
-                                                 Int_t nbinsy, Double_t ylow, Double_t yup, string family);
+        Int_t nbinsy, Double_t ylow, Double_t yup, string family);
 
     // Initialization methods
     void InitRawSpectra();
@@ -65,12 +65,6 @@ class TCATSSpectra {
     void FillPreTreatedSpectra(TCATSData*);
     void FillPhysicsSpectra(TCATSPhysics*);
 
-  public:
-    // get map histo which will be used for GSpectra in GUser
-    map< vector<string>, TH1* > GetMapHisto() const {return fMapHisto;}
-    TH1* GetHisto(string& family, string& name);    
-    void WriteHisto(string filename = "VOID");      
-
   private: // Information on MUST2
     unsigned int fNumberOfCats;
     unsigned int fStripsNumber;
@@ -79,9 +73,6 @@ class TCATSSpectra {
     int fEventLoopIndex;
     vector<double> fEventLoopQSum;
 
-  private:
-// map holding histo pointers and their family names
-map< vector<string>, TH1* > fMapHisto;
 };
 
 #endif

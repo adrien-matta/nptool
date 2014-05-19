@@ -18,7 +18,6 @@
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *    + first version (not complete yet)                                     *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
@@ -29,6 +28,7 @@
 #include <TH2.h>
 
 // NPLib headers
+#include "../include/VSpectra.h"
 #include "TTiaraHyballData.h"
 #include "TTiaraHyballPhysics.h"
 
@@ -41,7 +41,7 @@ using namespace std;
 class TTiaraHyballPhysics;
 
 
-class TTiaraHyballSpectra {
+class TTiaraHyballSpectra:public VSpectra {
   public:
     // constructor and destructor
     TTiaraHyballSpectra();
@@ -64,20 +64,10 @@ class TTiaraHyballSpectra {
     void FillPreTreatedSpectra(TTiaraHyballData*);
     void FillPhysicsSpectra(TTiaraHyballPhysics*);
 
-  public:
-    // get map histo which will be used for GSpectra in GUser
-    map< vector<string>, TH1* > GetMapHisto() const {return fMapHisto;}
-    TH1* GetHisto(string& family, string& name);    
-    void WriteHisto(string filename = "VOID");      
-
   private: // Information on MUST2
     unsigned int fRingsNumber;
     unsigned int fSectorsNumber;
     unsigned int fWedgesNumber;
-
-  private:
-    // map holding histo pointers and their family names
-    map< vector<string>, TH1* > fMapHisto;
 };
 
 #endif

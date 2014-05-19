@@ -25,6 +25,7 @@
 
 // C++ STL headers
 #include <map>
+using namespace std;
 
 // ROOT headers
 #include "TObject.h"
@@ -32,14 +33,14 @@
 #include <TH2.h>
 
 // NPLib headers
+#include "../include/VSpectra.h"
 #include "TLaBr3Data.h"
 #include "TLaBr3Physics.h"
-using namespace std;
 
 // ForwardDeclaration
 class TLaBr3Physics;
 
-class TLaBr3Spectra {
+class TLaBr3Spectra: public VSpectra {
   public:
     // constructor and destructor
     TLaBr3Spectra();
@@ -62,21 +63,10 @@ class TLaBr3Spectra {
     void FillRawSpectra(TLaBr3Data*);
     void FillPreTreatedSpectra(TLaBr3Data*);
     void FillPhysicsSpectra(TLaBr3Physics*);
-    // Check the Spectra
-    void CheckSpectra();
 
-  public:
-    // get map histo which will be used for GSpectra in GUser
-    map< vector<string>, TH1* > GetMapHisto() const {return fMapHisto;}
-    TH1* GetHisto(string& family,string& name);    
-    void WriteHisto(string filename="VOID");      
-
-  private: // Information on CHARISSA
+  private: // Information on LaBr3
     unsigned int fNumberDetector;
 
-  private:
-    // map holding histo pointers and their family names
-    map< vector<string>, TH1* > fMapHisto;
 };
 
 #endif

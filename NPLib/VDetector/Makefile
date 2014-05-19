@@ -8,11 +8,12 @@ all:            $(SHARELIB)
 ############### Detector ##############
 
 ## VDetector ##
-libVDetector.so: VDetector.o DetectorManager.o
+libVDetector.so: VDetector.o DetectorManager.o VSpectra.o
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@	
 			
 # dependances
-VDetector.o:		VDetector.cxx	VDetector.h
+VDetector.o: VDetector.cxx	VDetector.h
+VSpectra.o: VSpectra.cxx VSpectra.h
 DetectorManager.o: DetectorManager.cxx DetectorManager.h	../DetectorList.inc
 #######################################
 

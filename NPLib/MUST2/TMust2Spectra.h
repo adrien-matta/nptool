@@ -18,13 +18,13 @@
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *    + first version (not complete yet)                                     *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
 
 // C++ STL headers
 #include <map>
+using namespace std;
 
 // ROOT headers
 #include "TObject.h"
@@ -32,14 +32,14 @@
 #include <TH2.h>
 
 // NPLib headers
+#include "../include/VSpectra.h"
 #include "TMust2Data.h"
 #include "TMust2Physics.h"
-using namespace std;
 
 // ForwardDeclaration
 class TMust2Physics ;
 
-class TMust2Spectra {
+class TMust2Spectra:public VSpectra {
   public:
     // constructor and destructor
     TMust2Spectra();
@@ -62,14 +62,6 @@ class TMust2Spectra {
     void FillRawSpectra(TMust2Data*);
     void FillPreTreatedSpectra(TMust2Data*);
     void FillPhysicsSpectra(TMust2Physics*);
-    // Check the Spectra
-    void CheckSpectra();
-
-  public:
-    // get map histo which will be used for GSpectra in GUser
-    map< vector<string>, TH1* > GetMapHisto() const {return fMapHisto;}
-    TH1* GetHisto(string& family,string& name);    
-    void WriteHisto(string filename="VOID");      
 
   private: // Information on MUST2
     unsigned int fNumberOfTelescope;
@@ -77,10 +69,6 @@ class TMust2Spectra {
     unsigned int fStripY;
     unsigned int fPadSili;
     unsigned int fCrystalCsI;
-
-  private:
-    // map holding histo pointers and their family names
-    map< vector<string>, TH1* > fMapHisto;
 };
 
 #endif

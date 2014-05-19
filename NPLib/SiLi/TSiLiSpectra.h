@@ -14,17 +14,17 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class holds all the online spectra needed for SiLi              *
+ *  This class holds all the online spectra needed for SiLi                  *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *    + first version (not complete yet)                                     *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
 
 // C++ STL headers
 #include <map>
+using namespace std;
 
 // ROOT headers
 #include "TObject.h"
@@ -32,14 +32,14 @@
 #include <TH2.h>
 
 // NPLib headers
+#include "../include/VSpectra.h"
 #include "TSiLiData.h"
 #include "TSiLiPhysics.h"
-using namespace std;
 
 // ForwardDeclaration
 class TSiLiPhysics;
 
-class TSiLiSpectra {
+class TSiLiSpectra:public VSpectra {
   public:
     // constructor and destructor
     TSiLiSpectra();
@@ -62,21 +62,9 @@ class TSiLiSpectra {
     void FillRawSpectra(TSiLiData*);
     void FillPreTreatedSpectra(TSiLiData*);
     void FillPhysicsSpectra(TSiLiPhysics*);
-    // Check the Spectra
-    void CheckSpectra();
-
-  public:
-    // get map histo which will be used for GSpectra in GUser
-    map< vector<string>, TH1* > GetMapHisto() const {return fMapHisto;}
-    TH1* GetHisto(string& family,string& name);    
-    void WriteHisto(string filename="VOID");      
 
   private: // Information on CHARISSA
     unsigned int fNumberDetector;
-
-  private:
-    // map holding histo pointers and their family names
-    map< vector<string>, TH1* > fMapHisto;
 };
 
 #endif

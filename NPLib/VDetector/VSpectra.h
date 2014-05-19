@@ -1,5 +1,5 @@
-#ifndef TCHARISSASPECTRA_H
-#define TCHARISSASPECTRA_H
+#ifndef VSPECTRA_H
+#define VSPECTRA_H
 /*****************************************************************************
  * Copyright (C) 2009-2014    this file is part of the NPTool Project        *
  *                                                                           *
@@ -10,11 +10,11 @@
 /*****************************************************************************
  * Original Author: A. Matta         contact address: a.matta@surrey.ac.uk   *
  *                                                                           *
- * Creation Date  : dec 2013                                                 *
+ * Creation Date  : may 2014                                                 *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class holds all the online spectra needed for Charissa              *
+ *  Virtual class for the TDetectorSpectra classes                           *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -22,56 +22,48 @@
  *                                                                           *
  *****************************************************************************/
 
-// C++ STL headers
-#include <map>
-using namespace std;
-
 // ROOT headers
 #include "TObject.h"
 #include <TH1.h>
 #include <TH2.h>
 
-// NPLib headers
-#include "../include/VSpectra.h"
-#include "TCharissaData.h"
-#include "TCharissaPhysics.h"
+// C++ STL headers
+#include <map>
+#include <string>
+using namespace std;
 
-
-// ForwardDeclaration
-class TCharissaPhysics;
-
-class TCharissaSpectra: public VSpectra {
+class VSpectra {
   public:
     // constructor and destructor
-    TCharissaSpectra();
-    TCharissaSpectra(unsigned int NumberOfTelescope);
-    ~TCharissaSpectra();
+    VSpectra();
+    ~VSpectra();
 
   private:
     // Instantiate and register histo to maps
     TH1* AddHisto1D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, string family);
     TH1* AddHisto2D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, 
-                                                 Int_t nbinsy, Double_t ylow, Double_t yup, string family);
+        Int_t nbinsy, Double_t ylow, Double_t yup, string family);
 
     // Initialization methods
-    void InitRawSpectra();
-    void InitPreTreatedSpectra();
-    void InitPhysicsSpectra();
+    virtual void InitRawSpectra(){};
+    virtual void InitPreTreatedSpectra(){};
+    virtual void InitPhysicsSpectra(){};
 
   public:
     // Filling methods
-    void FillRawSpectra(TCharissaData*);
-    void FillPreTreatedSpectra(TCharissaData*);
-    void FillPhysicsSpectra(TCharissaPhysics*);
-    // Check the Spectra
-    void CheckSpectra();
+    virtual void FillRawSpectra(void*){};
+    virtual void FillPreTreatedSpectra(void*){};
+    virtual void FillPhysicsSpectra(void*){};
+    virtual void CheckSpectra(){};
 
-
-  private: // Information on CHARISSA
-    unsigned int fNumberOfTelescope;
-    unsigned int fStripX;
-    unsigned int fStripY;
-    unsigned int fCrystalCsI;
+  public:
+    // get map histo which will be used for GSpectra in GUser
+    map< vector<string>, TH1* > GetMapHisto() const {return fMapHisto;}
+    TH1* GetHisto(string& family, string& name);    
+    void WriteHisto(string filename = "VOID");      
+      private:
+    // map holding histo pointers and their family names
+    map< vector<string>, TH1* > fMapHisto;
 };
 
 #endif
