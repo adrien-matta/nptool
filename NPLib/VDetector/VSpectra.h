@@ -24,11 +24,11 @@
 
 // ROOT headers
 #include "TObject.h"
-#include <TH1.h>
-#include <TH2.h>
+#include "TH1.h"
 
 // C++ STL headers
 #include <map>
+#include <vector>
 #include <string>
 using namespace std;
 
@@ -36,24 +36,26 @@ class VSpectra {
   public:
     // constructor and destructor
     VSpectra();
-    ~VSpectra();
+    virtual ~VSpectra();
 
-  private:
+//  private:
+  public:
     // Instantiate and register histo to maps
     TH1* AddHisto1D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, string family);
     TH1* AddHisto2D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, 
         Int_t nbinsy, Double_t ylow, Double_t yup, string family);
 
+  public:
     // Initialization methods
-    virtual void InitRawSpectra(){};
-    virtual void InitPreTreatedSpectra(){};
-    virtual void InitPhysicsSpectra(){};
+    virtual void InitRawSpectra()         = 0;
+    virtual void InitPreTreatedSpectra()  = 0;
+    virtual void InitPhysicsSpectra()     = 0;
 
   public:
     // Filling methods
-    virtual void FillRawSpectra(void*){};
-    virtual void FillPreTreatedSpectra(void*){};
-    virtual void FillPhysicsSpectra(void*){};
+    virtual void FillRawSpectra(void*) {};
+    virtual void FillPreTreatedSpectra(void*) {};
+    virtual void FillPhysicsSpectra(void*) {}; 
     virtual void CheckSpectra(){};
 
   public:
@@ -61,7 +63,8 @@ class VSpectra {
     map< vector<string>, TH1* > GetMapHisto() const {return fMapHisto;}
     TH1* GetHisto(string& family, string& name);    
     void WriteHisto(string filename = "VOID");      
-      private:
+
+  private:
     // map holding histo pointers and their family names
     map< vector<string>, TH1* > fMapHisto;
 };

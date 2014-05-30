@@ -25,6 +25,8 @@
 #include <iostream>
 #include <cstdlib>
 #include <stdexcept>
+#include <string>
+using namespace std;
 
 // NPL
 #include "TLaBr3Spectra.h"
@@ -35,11 +37,6 @@
 using namespace NPUNITS;
 #endif
 
-
-// ROOT
-#include "string.h"
-#include "TDirectory.h"
-#include "TFile.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////

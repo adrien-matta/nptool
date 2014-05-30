@@ -21,10 +21,6 @@
  *                                                                           *
  *****************************************************************************/
 
-// STL
-#include <stdexcept>
-#include <iostream>  
-#include <cstdlib>
 // NPL
 #include "TMust2Spectra.h"
 #include "NPOptionManager.h"
@@ -34,11 +30,13 @@
 using namespace NPUNITS;
 #endif
 
+// STL
+#include <stdexcept>
+#include <iostream>  
+#include <cstdlib>
+#include <string>
+using namespace std;
 
-// ROOT
-#include "string.h"
-#include "TDirectory.h"
-#include "TFile.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 TMust2Spectra::TMust2Spectra(){

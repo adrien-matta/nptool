@@ -21,11 +21,6 @@
  *                                                                           *
  *****************************************************************************/
 
-//STL
-#include <iostream>
-#include <cstdlib>
-#include <stdexcept>
-
 // NPL
 #include "TCATSSpectra.h"
 #include "NPOptionManager.h"
@@ -35,11 +30,16 @@
 using namespace NPUNITS;
 #endif
 
-
 // ROOT
-#include "string.h"
-#include "TDirectory.h"
-#include "TFile.h"
+#include "TH2.h"
+
+//STL
+#include <iostream>
+#include <cstdlib>
+#include <stdexcept>
+#include <string>
+using namespace std;
+
 
 
 ////////////////////////////////////////////////////////////////////////////////

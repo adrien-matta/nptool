@@ -22,18 +22,13 @@
  *                                                                           *
  *****************************************************************************/
 
-// ROOT headers
-#include "TObject.h"
-#include <TH1.h>
-#include <TH2.h>
-
 // NPLib headers
 #include "../include/VSpectra.h"
 #include "TCATSData.h"
 #include "TCATSPhysics.h"
 
 // C++ STL headers
-#include <map>
+#include <vector>
 using namespace std;
 
 
@@ -48,22 +43,17 @@ class TCATSSpectra:public VSpectra {
     TCATSSpectra(unsigned int NumberOfCats);
     ~TCATSSpectra();
 
-  private:
-    // Instantiate and register histo to maps
-    TH1* AddHisto1D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, string family);
-    TH1* AddHisto2D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, 
-        Int_t nbinsy, Double_t ylow, Double_t yup, string family);
-
+  public:
     // Initialization methods
-    void InitRawSpectra();
-    void InitPreTreatedSpectra();
-    void InitPhysicsSpectra();
+    virtual void InitRawSpectra();
+    virtual void InitPreTreatedSpectra();
+    virtual void InitPhysicsSpectra();
 
   public:
     // Filling methods
-    void FillRawSpectra(TCATSData*);
-    void FillPreTreatedSpectra(TCATSData*);
-    void FillPhysicsSpectra(TCATSPhysics*);
+    virtual void FillRawSpectra(TCATSData*);
+    virtual void FillPreTreatedSpectra(TCATSData*);
+    virtual void FillPhysicsSpectra(TCATSPhysics*);
 
   private: // Information on MUST2
     unsigned int fNumberOfCats;

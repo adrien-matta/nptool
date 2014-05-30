@@ -21,17 +21,31 @@
  *                                                                           *
  *****************************************************************************/
 
-//STL
-#include <iostream>
-#include <cstdlib>
 // NPL
 #include "VSpectra.h"
 #include "NPOptionManager.h"
 
-
 // ROOT
-#include "TDirectory.h"
 #include "TFile.h"
+#include "TH2.h"
+
+//STL
+#include <iostream>
+#include <cstdlib>
+using namespace std;
+
+
+VSpectra::VSpectra()
+{
+}
+
+
+
+VSpectra::~VSpectra()
+{
+}
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 TH1* VSpectra::AddHisto1D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, string family){

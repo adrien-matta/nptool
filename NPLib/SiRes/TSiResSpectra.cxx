@@ -25,6 +25,8 @@
 #include <iostream>
 #include <cstdlib>
 #include <stdexcept>
+#include <string>
+using namespace std;
 
 // NPL
 #include "TSiResSpectra.h"
@@ -34,12 +36,6 @@
 #ifdef NP_SYSTEM_OF_UNITS_H
 using namespace NPUNITS;
 #endif
-
-
-// ROOT
-#include "string.h"
-#include "TDirectory.h"
-#include "TFile.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
