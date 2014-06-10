@@ -570,14 +570,14 @@ void Sharc::ConstructQQQDetector(G4LogicalVolume* world){
                                      QQQ_Wafer_Outer_Radius,
                                      QQQ_PCB_Thickness*0.5+0.1*mm,
                                      QQQ_Wafer_Starting_Phi,
-                                     QQQ_Wafer_Stopping_Phi*0.5);
+                                     QQQ_Wafer_Stopping_Phi);
     
     G4Tubs*  Wafer = new G4Tubs("Wafer"  ,
                                 QQQ_Wafer_Inner_Radius,
                                 QQQ_Wafer_Outer_Radius,
                                 m_ThicknessQQQ[i]*0.5,
                                 QQQ_Wafer_Starting_Phi,
-                                QQQ_Wafer_Stopping_Phi*0.5);
+                                QQQ_Wafer_Stopping_Phi);
     
     G4SubtractionSolid* PCB = 
       new G4SubtractionSolid("PCB", PCBFull, WaferShape,new G4RotationMatrix,
@@ -625,6 +625,7 @@ void Sharc::InitializeRootOutput(){
   TTree *pTree = pAnalysis->GetTree();
   pTree->Branch("Sharc", "TSharcData", &m_Event) ;
 }
+     
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
@@ -652,7 +653,7 @@ void Sharc::ReadSensitive(const G4Event* event){
       int DetNbr        = (int) Info[7];
       int StripFront    = (int) Info[8];
       int StripBack     = (int) Info[9];
-      
+
       m_Event->SetFront_DetectorNbr(DetNbr);
       m_Event->SetFront_StripNbr(StripFront);
       m_Event->SetFront_Energy(RandGauss::shoot(Energy, ResoEnergy));
@@ -660,7 +661,7 @@ void Sharc::ReadSensitive(const G4Event* event){
       m_Event->SetFront_TimeLED(RandGauss::shoot(Time, ResoTime));
       
       m_Event->SetBack_DetectorNbr(DetNbr);
-      m_Event->SetBack_StripNbr(StripBack);
+      m_Event->SetBack_StripNbr(BOX_Wafer_Back_NumberOfStrip-StripBack+1);
       m_Event->SetBack_Energy(RandGauss::shoot(Energy, ResoEnergy));
       m_Event->SetBack_TimeCFD(RandGauss::shoot(Time, ResoTime));
       m_Event->SetBack_TimeLED(RandGauss::shoot(Time, ResoTime));
@@ -693,7 +694,7 @@ void Sharc::ReadSensitive(const G4Event* event){
     double Energy =  Info[0];
     if(Energy>EnergyThreshold){
       double Time  = Info[1];
-      int DetNbr =     (int) Info[2];
+      int DetNbr =     (int) Info[7];
       
       m_Event->SetPAD_DetectorNbr(DetNbr);
       m_Event->SetPAD_Energy(RandGauss::shoot(Energy, ResoEnergy));
@@ -763,8 +764,8 @@ void Sharc::InitializeScorers(){
   new  SILICONSCORERS::PS_Silicon_Rectangle("SharcBOX",
                                    BOX_Wafer_Length,
                                    BOX_Wafer_Width,
-                                   BOX_Wafer_Back_NumberOfStrip ,
-                                   BOX_Wafer_Front_NumberOfStrip);
+                                   BOX_Wafer_Front_NumberOfStrip ,
+                                   BOX_Wafer_Back_NumberOfStrip);
   
   G4VPrimitiveScorer* PADScorer =
   new  SILICONSCORERS::PS_Silicon_Rectangle("SharcPAD",
@@ -779,8 +780,8 @@ void Sharc::InitializeScorers(){
                                  QQQ_Wafer_Outer_Radius,
                                  QQQ_Wafer_Starting_Phi,
                                  QQQ_Wafer_Stopping_Phi,
-                                 QQQ_Wafer_NumberOf_RadialStrip,
-                                 QQQ_Wafer_NumberOf_AnnularStrip);
+                                 QQQ_Wafer_NumberOf_AnnularStrip,
+                                 QQQ_Wafer_NumberOf_RadialStrip,1);
   
   //and register it to the multifunctionnal detector
   m_BOXScorer->RegisterPrimitive(BOXScorer);

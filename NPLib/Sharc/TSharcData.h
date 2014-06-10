@@ -64,30 +64,29 @@ public:
   void Dump() const;
   
   /////////////////////           SETTERS           ////////////////////////
-  inline void SetFront_DetectorNbr(const UShort_t &DetNbr){fSharc_StripFront_DetectorNbr.push_back(DetNbr);}
-  inline void SetFront_StripNbr(const UShort_t &StripNbr){fSharc_StripFront_StripNbr.push_back(StripNbr);}
-  inline void SetFront_Energy(const Double_t &Energy){fSharc_StripFront_Energy.push_back(Energy);}
-  inline void SetFront_TimeCFD(const Double_t &TimeCFD){fSharc_StripFront_TimeCFD.push_back(TimeCFD);}
-  inline void SetFront_TimeLED(const Double_t &TimeLED){fSharc_StripFront_TimeLED.push_back(TimeLED);}
-  inline void SetFront_Time(const Double_t &Time){fSharc_StripFront_Time.push_back(Time);}
+  inline void SetFront_DetectorNbr(const UShort_t& DetNbr){fSharc_StripFront_DetectorNbr.push_back(DetNbr);}
+  inline void SetFront_StripNbr(const UShort_t& StripNbr){fSharc_StripFront_StripNbr.push_back(StripNbr);}
+  inline void SetFront_Energy(const Double_t& Energy){fSharc_StripFront_Energy.push_back(Energy);}
+  inline void SetFront_TimeCFD(const Double_t& TimeCFD){fSharc_StripFront_TimeCFD.push_back(TimeCFD);}
+  inline void SetFront_TimeLED(const Double_t& TimeLED){fSharc_StripFront_TimeLED.push_back(TimeLED);}
+  inline void SetFront_Time(const Double_t& Time){fSharc_StripFront_Time.push_back(Time);}
+
+  inline void SetBack_DetectorNbr(const UShort_t& DetNbr){fSharc_StripBack_DetectorNbr.push_back(DetNbr);}
+  inline void SetBack_StripNbr(const UShort_t& StripNbr){fSharc_StripBack_StripNbr.push_back(StripNbr);}
+  inline void SetBack_Energy(const Double_t& Energy){fSharc_StripBack_Energy.push_back(Energy);}
+  inline void SetBack_TimeCFD(const Double_t& TimeCFD){fSharc_StripBack_TimeCFD.push_back(TimeCFD);}
+  inline void SetBack_TimeLED(const Double_t& TimeLED){fSharc_StripBack_TimeLED.push_back(TimeLED);}
+  inline void SetBack_Time(const Double_t& Time){fSharc_StripBack_Time.push_back(Time);}
 
 
-  inline void SetBack_DetectorNbr(const UShort_t &DetNbr){fSharc_StripBack_DetectorNbr.push_back(DetNbr);}
-  inline void SetBack_StripNbr(const UShort_t &StripNbr){fSharc_StripBack_StripNbr.push_back(StripNbr);}
-  inline void SetBack_Energy(const Double_t &Energy){fSharc_StripBack_Energy.push_back(Energy);}
-  inline void SetBack_TimeCFD(const Double_t &TimeCFD){fSharc_StripBack_TimeCFD.push_back(TimeCFD);}
-  inline void SetBack_TimeLED(const Double_t &TimeLED){fSharc_StripBack_TimeLED.push_back(TimeLED);}
-  inline void SetBack_Time(const Double_t &Time){fSharc_StripBack_Time.push_back(Time);}
+  inline void SetPAD_DetectorNbr(const UShort_t& DetNbr){fSharc_PAD_DetectorNbr.push_back(DetNbr);}
+  inline void SetPAD_Energy(const Double_t& Energy){fSharc_PAD_Energy.push_back(Energy);}
+  inline void SetPAD_TimeCFD(const Double_t& TimeCFD){fSharc_PAD_TimeCFD.push_back(TimeCFD);}
+  inline void SetPAD_TimeLED(const Double_t& TimeLED){fSharc_PAD_TimeLED.push_back(TimeLED);}
+  inline void SetPAD_Time(const Double_t& Time){fSharc_PAD_Time.push_back(Time);}
 
 
-  inline void SetPAD_DetectorNbr(const UShort_t &DetNbr){fSharc_PAD_DetectorNbr.push_back(DetNbr);}
-  inline void SetPAD_Energy(const Double_t &Energy){fSharc_PAD_Energy.push_back(Energy);}
-  inline void SetPAD_TimeCFD(const Double_t &TimeCFD){fSharc_PAD_TimeCFD.push_back(TimeCFD);}
-  inline void SetPAD_TimeLED(const Double_t &TimeLED){fSharc_PAD_TimeLED.push_back(TimeLED);}
-  inline void SetPAD_Time(const Double_t &Time){fSharc_PAD_Time.push_back(Time);}
-
-
-  inline void SetFront(const UShort_t &DetNbr,const UShort_t &StripNbr,const Double_t &Energy,const Double_t &TimeCFD,const Double_t &TimeLED,const Double_t &Time = 0)	{
+  inline void SetFront(const UShort_t& DetNbr,const UShort_t& StripNbr,const Double_t& Energy,const Double_t& TimeCFD,const Double_t& TimeLED,const Double_t& Time = 0)	{
 		SetFront_DetectorNbr(DetNbr);
 		SetFront_StripNbr(StripNbr);
 		SetFront_Energy(Energy);

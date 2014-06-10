@@ -69,8 +69,8 @@ void TSharcPhysics::BuildSimplePhysicalEvent(){
 ///////////////////////////////////////////////////////////////////////////
 
 void TSharcPhysics::BuildPhysicalEvent(){
+
   PreTreat();
-  
   bool check_PAD = false ;
   
   if( CheckEvent() == 1 ){
@@ -136,13 +136,14 @@ void TSharcPhysics::BuildPhysicalEvent(){
 ///////////////////////////////////////////////////////////////////////////
 void TSharcPhysics::PreTreat(){
   ClearPreTreatedData();
-  
   //   Front
   unsigned int sizeFront = m_EventData->GetMultiplicityFront();
   for(unsigned int i = 0 ; i < sizeFront ; ++i){
     if( m_EventData->GetFront_Energy(i)>m_StripFront_E_RAW_Threshold && IsValidChannel("Front", m_EventData->GetFront_DetectorNbr(i), m_EventData->GetFront_StripNbr(i)) ){
       double Front_E = fStrip_Front_E(m_EventData , i);
       if( Front_E > m_StripFront_E_Threshold ){
+        if( m_EventData->GetFront_StripNbr(i)==0)
+          cout << m_EventData->GetFront_StripNbr(i) << endl;
         m_PreTreatedData->SetFront_DetectorNbr( m_EventData->GetFront_DetectorNbr(i) );
         m_PreTreatedData->SetFront_StripNbr( m_EventData->GetFront_StripNbr(i) );
         m_PreTreatedData->SetFront_TimeCFD( m_EventData->GetFront_TimeCFD(i) );
@@ -151,7 +152,6 @@ void TSharcPhysics::PreTreat(){
       }
     }
   }
-  
   
   //  Back
   unsigned int sizeBack = m_EventData->GetMultiplicityBack() ;
@@ -167,7 +167,6 @@ void TSharcPhysics::PreTreat(){
     }
   }
   
-  
   //  PAD
   unsigned int sizePAD = m_EventData->GetMultiplicityPAD();
   for(unsigned int i = 0 ; i < sizePAD ; ++i){
@@ -180,8 +179,6 @@ void TSharcPhysics::PreTreat(){
       }
     }
   }
-  
-  
   
   return;
 }
@@ -680,8 +677,8 @@ void TSharcPhysics::AddBoxDetector(double Z){
   double BOX_ActiveArea_Length = 72;
   double BOX_ActiveArea_Width = 42;
   
-  int    BOX_Wafer_Front_NumberOfStrip = 24 ;
   int    BOX_Wafer_Back_NumberOfStrip = 48 ;
+  int    BOX_Wafer_Front_NumberOfStrip = 24 ;
   
   double StripPitchFront = BOX_ActiveArea_Length/BOX_Wafer_Front_NumberOfStrip ; //mm
   double StripPitchBack  = BOX_ActiveArea_Width/BOX_Wafer_Back_NumberOfStrip ; //mm
@@ -690,20 +687,21 @@ void TSharcPhysics::AddBoxDetector(double Z){
   for(int i = 0 ; i < 4 ; i++){
     m_NumberOfDetector++;
     if(Z<0){// Up Stream
-      
-      if(i==0)      {U=TVector3(1,0,0);V=TVector3(0,0,1);  Strip_1_1=TVector3(-36.,40.5,Z-BOX_Wafer_Width/2.)   ;}
-      else if(i==1) {U=TVector3(0,1,0);V=TVector3(0,0,1);  Strip_1_1=TVector3(-40.5,-36.,Z-BOX_Wafer_Width/2.)  ;}
-      else if(i==2) {U=TVector3(-1,0,0);V=TVector3(0,0,1); Strip_1_1=TVector3(36.,-40.5,Z-BOX_Wafer_Width/2.)   ;}
-      else if(i==3) {U=TVector3(0,-1,0);V=TVector3(0,0,1); Strip_1_1=TVector3(40.5,36.,Z-BOX_Wafer_Width/2.)    ;}
+      if(i==0)      {U=TVector3(1,0,0);V=TVector3(0,0,1);  Strip_1_1=TVector3(-36,40.5,Z-BOX_Wafer_Width/2.+5.4)   ;}
+      else if(i==1) {U=TVector3(0,1,0);V=TVector3(0,0,1);  Strip_1_1=TVector3(-40.5,-36,Z-BOX_Wafer_Width/2.+5.4)  ;}
+      else if(i==2) {U=TVector3(-1,0,0);V=TVector3(0,0,1); Strip_1_1=TVector3(36,-40.5,Z-BOX_Wafer_Width/2.+5.4)   ;}
+      else if(i==3) {U=TVector3(0,-1,0);V=TVector3(0,0,1); Strip_1_1=TVector3(40.5,36,Z-BOX_Wafer_Width/2.+5.4)    ;}
     }
     
     if(Z>0){//Down Stream
-      if(i==0)      {U=TVector3(-1,0,0);V=TVector3(0,0,-1); Strip_1_1=TVector3(36.,40.5,Z+BOX_Wafer_Width/2.)   ;}
-      else if(i==1) {U=TVector3(0,-1,0);V=TVector3(0,0,-1); Strip_1_1=TVector3(-40.5,36.,Z+BOX_Wafer_Width/2.)  ;}
-      else if(i==2) {U=TVector3(1,0,0);V=TVector3(0,0,-1);  Strip_1_1=TVector3(-36.,-40.5,Z+BOX_Wafer_Width/2.) ;}
-      else if(i==3) {U=TVector3(0,1,0);V=TVector3(0,0,-1);  Strip_1_1=TVector3(40.5,-36.,Z+BOX_Wafer_Width/2.)   ;}
+      if(i==0)      {U=TVector3(-1,0,0);V=TVector3(0,0,-1); Strip_1_1=TVector3(36,40.5,Z+BOX_Wafer_Width/2.)   ;}
+      else if(i==1) {U=TVector3(0,-1,0);V=TVector3(0,0,-1); Strip_1_1=TVector3(-40.5,36,Z+BOX_Wafer_Width/2.)  ;}
+      else if(i==2) {U=TVector3(1,0,0);V=TVector3(0,0,-1);  Strip_1_1=TVector3(-36,-40.5,Z+BOX_Wafer_Width/2.) ;}
+      else if(i==3) {U=TVector3(0,1,0);V=TVector3(0,0,-1);  Strip_1_1=TVector3(40.5,-36,Z+BOX_Wafer_Width/2.)   ;}
     }
-    
+   
+cout << Z-BOX_Wafer_Width/2. << endl;
+ 
     //   Buffer object to fill Position Array
     vector<double> lineX ; vector<double> lineY ; vector<double> lineZ ;
     
@@ -723,7 +721,6 @@ void TSharcPhysics::AddBoxDetector(double Z){
         lineX.push_back( StripCenter.X() );
         lineY.push_back( StripCenter.Y() );
         lineZ.push_back( StripCenter.Z() );
-        //   cout << "D" << m_NumberOfDetector << " F"<<f << " B" <<b<< "("<< StripCenter.X() << ";"<<StripCenter.Y()<< ";"<<StripCenter.Z()<<")"<<endl;
       }
       
       OneBoxStripPositionX.push_back(lineX);
@@ -816,11 +813,9 @@ TVector3 TSharcPhysics::GetDetectorNormal( const int i) const{
 }
 
 TVector3 TSharcPhysics::GetPositionOfInteraction(const int i) const{
-  
   TVector3    Position = TVector3 (  GetStripPositionX( DetectorNumber[i] , Strip_Front[i] , Strip_Back[i] )    ,
                                   GetStripPositionY( DetectorNumber[i] , Strip_Front[i] , Strip_Back[i] )    ,
                                   GetStripPositionZ( DetectorNumber[i] , Strip_Front[i] , Strip_Back[i] )    ) ;
-  
   return(Position) ;
   
 }

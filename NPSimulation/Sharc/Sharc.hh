@@ -74,8 +74,8 @@ namespace SHARC
   const G4double BOX_Wafer_Length = 76.20*mm;
   
   const G4double BOX_Wafer_DeadLayer_Thickness = 0.1*um;
-  const G4int    BOX_Wafer_Front_NumberOfStrip = 48 ;
-  const G4int    BOX_Wafer_Back_NumberOfStrip = 24 ;
+  const G4int    BOX_Wafer_Front_NumberOfStrip = 24 ;
+  const G4int    BOX_Wafer_Back_NumberOfStrip = 48 ;
   
   // Compute
   const G4double BOX_LeftOver1 =  BOX_PCB_Length - BOX_PCB_Border_ShortSide - BOX_Wafer_Length - BOX_PCB_Slot_Border1 - BOX_PCB_Slot_Width1 ;
@@ -98,14 +98,16 @@ namespace SHARC
   const G4double PAD_PCB_Border_ShortSide = 2.5*mm;
   
   // PAD Wafer
-  const G4double PAD_Wafer_Width  = 51.00*mm;
-  const G4double PAD_Wafer_Length = 77.00*mm;
+//  const G4double PAD_Wafer_Width  = 51.00*mm;
+//  const G4double PAD_Wafer_Length = 77.00*mm;
+    const G4double PAD_Wafer_Width  = 42.00*mm;
+    const G4double PAD_Wafer_Length = 72.00*mm;
+  
   const G4double PAD_Wafer_DeadLayer_Thickness = 0.1*um;
   
   // Compute
   const G4double PAD_Wafer_Width_Offset = -0.5*PAD_PCB_Width + PAD_PCB_Border_LongSide + 0.5*PAD_Wafer_Width;
   const G4double PAD_Wafer_Length_Offset = -0.5*PAD_PCB_Length + PAD_PCB_Border_ShortSide + 0.5*PAD_Wafer_Length;
-
   
   // Double stage box case (DSSD+PAD) (the wafer is the same but the slot is different to accomodate the additional PAD)
   const G4double BOX_PCB_Slot_Width2 = BOX_PCB_Thickness + PAD_PCB_Thickness ;
@@ -133,9 +135,9 @@ namespace SHARC
   const G4double QQQ_Wafer_Outer_Radius = 42.63*mm;
   const G4double QQQ_Wafer_Inner_Radius = 9.0*mm;
   const G4double QQQ_Wafer_Starting_Phi = 8*deg;
-  const G4double QQQ_Wafer_Stopping_Phi = 162*deg;
-  const G4int    QQQ_Wafer_NumberOf_RadialStrip = 16 ;
-  const G4int    QQQ_Wafer_NumberOf_AnnularStrip = 24 ;
+  const G4double QQQ_Wafer_Stopping_Phi = 81*deg;
+  const G4int    QQQ_Wafer_NumberOf_RadialStrip = 24 ;
+  const G4int    QQQ_Wafer_NumberOf_AnnularStrip = 16 ;
   
 }
 

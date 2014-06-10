@@ -78,7 +78,9 @@ namespace MUST2{
 
   const G4double FaceFront = 11.*cm ;
   const G4double FaceBack = 16.5*cm ;
-  const G4double Length  = 7.2*cm ;
+  const G4double Length = 7.1*cm;
+  const G4double LengthLong  = 119.5*mm ;
+  const G4double LengthShort  = 67.5*mm ;
 
   const G4double VacBoxThickness   = 3*cm ;
 
@@ -145,6 +147,11 @@ class MUST2Array : public VDetector{
     G4LogicalVolume* GetLogicalVolumeMUST2Short();
     G4LogicalVolume* GetLogicalVolumeMUST2NoSiLi();
     G4LogicalVolume* GetLogicalVolumeMUST2Full();
+
+    private:
+      G4LogicalVolume* m_MUST2Short;
+      G4LogicalVolume* m_MUST2NoSiLi;
+      G4LogicalVolume* m_MUST2Full;
 
     ////////////////////////////////////////////////////
     /////////  Inherite from VDetector class ///////////

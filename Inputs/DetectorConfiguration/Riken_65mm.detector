@@ -8,7 +8,7 @@
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Target
-THICKNESS= 250000
+THICKNESS= 20
 RADIUS=	45
 MATERIAL= D2
 ANGLE= 0

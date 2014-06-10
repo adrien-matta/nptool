@@ -67,17 +67,13 @@ G4bool PS_Silicon_Rectangle::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   m_StripLengthNumber = (int)((m_Position.x() + m_StripPlaneLength / 2.) / m_StripPitchLength ) + 1  ;
   m_StripWidthNumber = (int)((m_Position.y() + m_StripPlaneWidth / 2.) / m_StripPitchWidth ) + 1  ;
 
-  m_StripLengthNumber = m_NumberOfStripLength - m_StripLengthNumber + 1 ;
-  m_StripWidthNumber = m_NumberOfStripWidth - m_StripWidthNumber + 1 ;
- 
   //Rare case where particle is close to edge of silicon plan
-  if (m_StripLengthNumber > m_NumberOfStripLength) m_StripLengthNumber = m_StripLengthNumber;
-  if (m_StripWidthNumber > m_NumberOfStripWidth) m_StripWidthNumber = m_StripWidthNumber;
-  
+  if (m_StripLengthNumber > m_NumberOfStripLength) m_StripLengthNumber = m_NumberOfStripLength;
+  if (m_StripWidthNumber > m_NumberOfStripWidth) m_StripWidthNumber = m_NumberOfStripWidth;
+ 
   Infos[7] = m_DetectorNumber;
   Infos[8] = m_StripLengthNumber;
   Infos[9] = m_StripWidthNumber;
-    
  
   m_Index =  aStep->GetTrack()->GetTrackID() + m_DetectorNumber * 1e3 + m_StripLengthNumber * 1e6 + m_StripWidthNumber * 1e9;
   
@@ -141,7 +137,6 @@ PS_Silicon_Annular::PS_Silicon_Annular(G4String name, G4double StripPlaneInnerRa
   m_NumberOfStripRing = NumberOfStripRing;
   m_NumberOfStripSector = NumberOfStripSector;
   m_NumberOfStripQuadrant  = NumberOfQuadrant;
-
   m_StripPitchRing =  (m_StripPlaneOuterRadius-m_StripPlaneInnerRadius)/m_NumberOfStripRing;
   m_StripPitchSector = (m_PhiStop-m_PhiStart)/m_NumberOfStripSector;
   m_StripPitchQuadrant = (m_PhiStop-m_PhiStart)/m_NumberOfStripQuadrant;  
@@ -179,7 +174,7 @@ G4bool PS_Silicon_Annular::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   m_Position = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(m_Position);
   m_StripRingNumber = (int) ((m_Position.rho() - m_StripPlaneInnerRadius) / m_StripPitchRing ) + 1 ;
 
-  double phi = m_Position.phi()+M_PI;
+  double phi = m_Position.phi();
   m_StripSectorNumber   = (int) ((phi - m_PhiStart)  / m_StripPitchSector ) + 1 ;
   m_StripQuadrantNumber = (int) ((phi - m_PhiStart)  /m_StripPitchQuadrant) + 1 ; 
 
@@ -187,7 +182,7 @@ G4bool PS_Silicon_Annular::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   if (m_StripRingNumber > m_NumberOfStripRing) m_StripRingNumber = m_NumberOfStripRing;
   if (m_StripSectorNumber > m_NumberOfStripSector) m_StripSectorNumber = m_NumberOfStripSector;
   if (m_StripQuadrantNumber > m_NumberOfStripQuadrant) m_StripQuadrantNumber = m_NumberOfStripQuadrant; 
- 
+
   Infos[7] = m_DetectorNumber;
   Infos[8] = m_StripRingNumber;
   Infos[9] = m_StripSectorNumber;
