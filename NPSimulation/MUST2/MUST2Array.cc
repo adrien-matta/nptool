@@ -9,7 +9,7 @@
  * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
  *                                                                           *
  * Creation Date  : January 2009                                             *
- * Last update    : May 2014                                                 *
+ * Last update    : October 2009                                             *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This file describe the MUST2 charge particle Detector                    *
@@ -28,10 +28,9 @@
 #include "G4Trd.hh"
 #include "G4Box.hh"
 #include "G4Trap.hh"
-#include "G4ExtrudedSolid.hh"     
-#include "G4SubtractionSolid.hh" 
 
 //G4 various object
+
 #include "G4MaterialTable.hh"
 #include "G4Element.hh"
 #include "G4ElementTable.hh"
@@ -63,18 +62,6 @@ using namespace MUST2   ;
 MUST2Array::MUST2Array(){
   m_Event = new TMust2Data() ;
   InitializeMaterial();
-
-  // Common vis attribute:
-  m_PCBVisAtt = new G4VisAttributes(G4Colour(0.2, 0.5, 0.2)) ; 
-  m_SiliconVisAtt = new G4VisAttributes(G4Colour(0.3, 0.3, 0.3)) ;
-  m_SiLiVisAtt = new G4VisAttributes(G4Colour(0.3, 1, 0.3));
-  m_CsIVisAtt = new G4VisAttributes(G4Colour(1, 0.5, 0));
-  m_CoolingVisAtt = new G4VisAttributes(G4Colour(0.5, 0.25, 0.25));
-
-  m_MUST2Short=0;
-  m_MUST2NoSiLi=0;
-  m_MUST2Full=0;
-
 }
 
 MUST2Array::~MUST2Array(){
@@ -83,6 +70,7 @@ MUST2Array::~MUST2Array(){
   delete m_MaterialCsI;
   delete m_MaterialVacuum ;
   delete m_MaterialMyl;
+  delete m_MaterialHarvar;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -144,1003 +132,6 @@ void MUST2Array::AddTelescope(   G4double R,
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-G4LogicalVolume* MUST2Array::GetLogicalVolumeMUST2Short(){
-if(m_MUST2Short!=0) return m_MUST2Short;
-
-  ////////////////////////////////////////////////////////////////
-  ////////////// Starting Volume Definition //////////////////////
-  ////////////////////////////////////////////////////////////////
-  // Create the front support frame for Si and SiLi
-  vector<G4TwoVector> polygon;
-  for(unsigned int i = 0 ; i < 4 ; i++){   
-    G4TwoVector Point(PCBPointsX[i],PCBPointsY[i]);   
-    polygon.push_back(Point);  
-  } 
-
-  // The PCB lenth is used to rescale different part of the detector
-  G4double PCBlength = PCBPointsX[0] - PCBPointsX[1];
-
-  G4ExtrudedSolid* solidMM = new G4ExtrudedSolid("Must2 Telescope",
-      polygon,   
-      LengthShort*0.5,
-      G4TwoVector(0,0),FrontFrameFrontSize/PCBlength,
-      G4TwoVector(0,0),FrontFrameBackSize/PCBlength); 
-
-
-
-
-//  G4Trd*           solidMM = new G4Trd("MUST2Telescope" , 0.5*FaceFront, 0.5*FaceBack, 0.5*FaceFront, 0.5*FaceBack, 0.5*Length);
-  G4LogicalVolume* logicMM = new G4LogicalVolume(solidMM, m_MaterialIron, "MUST2Telescope" , 0, 0, 0);
-  G4String Name = "MUST2Telescope" ;
-
-  if (m_non_sensitive_part_visiualisation){
-    G4VisAttributes* FrameVisAtt = new G4VisAttributes(G4Colour(0.80, 0.80, 0.80));
-    FrameVisAtt->SetForceWireframe(true);
-    logicMM->SetVisAttributes(FrameVisAtt)  ;
-  }
-
-  else logicMM->SetVisAttributes(G4VisAttributes::Invisible)               ;
-
-  G4ThreeVector positionVacBox = G4ThreeVector(0, 0, VacBox_PosZ);
-
-  G4Trd* solidVacBox = 
-    new G4Trd("solidVacBox", 0.5*ActiveWaferSize, 0.5*CsIFaceFront, 0.5*ActiveWaferSize, 0.5*CsIFaceFront, 0.5*VacBoxThickness);
-
-  G4LogicalVolume* logicVacBox = new G4LogicalVolume(solidVacBox, m_MaterialVacuum, "logicVacBox", 0, 0, 0);
-
-
-  new G4PVPlacement(0, positionVacBox, logicVacBox, Name + "_VacBox", logicMM, false, 0);
-
-  logicVacBox->SetVisAttributes(G4VisAttributes::Invisible);
-
-
-  ////////////////////////////////////////////////////////////////
-  /////////////////Si Strip Construction//////////////////////////
-  ////////////////////////////////////////////////////////////////
-  // A no rotation matrix is always handy ;) 
-  G4RotationMatrix* norotation = new  G4RotationMatrix();   
-
-  G4ExtrudedSolid* solidFrontFrameBase = new G4ExtrudedSolid("Must2 Front Frame",
-      polygon,   
-      FrontFrameThickness*0.5,
-      G4TwoVector(0,0),FrontFrameFrontSize/PCBlength,
-      G4TwoVector(0,0),FrontFrameBackSize/PCBlength); 
-
-  G4ExtrudedSolid* solidCavityShape1 = new G4ExtrudedSolid("Cavity1",
-      polygon,   
-      FrontFrameThickness*0.5+PCBThickness,
-      G4TwoVector(0,0),CavityShape1FrontSize/PCBlength,
-      G4TwoVector(0,0),CavityShape1BackSize/PCBlength); 
-
-  G4SubtractionSolid* solidFrontFrame1 = new G4SubtractionSolid("Frame1",
-      solidFrontFrameBase,
-      solidCavityShape1,
-      G4Transform3D(*norotation,G4ThreeVector(0,0,0))); 
-
-  G4Box* solidCavityShape2 = new G4Box("Cavity2", 0.5*CavityShape2Width, (0.5+0.5)*CavityShape2Width, 0.5*CavityShape2Thickness);
-
-  G4SubtractionSolid* solidFrontFrame2 = new G4SubtractionSolid("Frame2",
-      solidFrontFrame1,
-      solidCavityShape2,
-      G4Transform3D(*norotation,G4ThreeVector(0,0.5*CavityShape2Width,CavityShape2Center))); 
-
-  G4ExtrudedSolid* solidCutOut = new G4ExtrudedSolid("Cutout",
-      polygon,   
-      FrontFrameThickness*0.8,
-      G4TwoVector(0,0),1.1*FrontFrameBackSize/PCBlength,
-      G4TwoVector(0,0),1.1*FrontFrameBackSize/PCBlength); 
-
-
-  G4SubtractionSolid* solidFrontFrame3 = new G4SubtractionSolid("Must2 Front Frame",
-      solidFrontFrame2,
-      solidCutOut,
-      G4Transform3D(*norotation,G4ThreeVector(0,FrontFrameBackSize*0.5*1.1+66*mm,0))); 
-
-  G4SubtractionSolid* solidFrontFrame = new G4SubtractionSolid("Must2 Front Frame",
-      solidFrontFrame3,
-      solidCutOut,
-      G4Transform3D(*norotation,G4ThreeVector(-FrontFrameBackSize*0.5*1.1-66*mm,0,0))); 
-
-
-  G4LogicalVolume* logicFrontFrame = new G4LogicalVolume(solidFrontFrame,m_MaterialAluminium,"Must2 Front Frame", 0, 0, 0); 
-
-  new G4PVPlacement(G4Transform3D(*norotation,G4ThreeVector(0,0,Silicon_PosZ+FrontFrameThickness*0.5+0.5*PCBThickness)),
-      logicFrontFrame, 
-      "Must2 Front Fame",
-      logicMM,
-      false,
-      0); 
-
-
-  // Electronic bloc
-  G4Box* solidMUFEE  = new G4Box("solidMUFEE", 0.5*MUFEESize, 0.5*MUFEESize, 0.5*MUFEEThickness);
-  G4Box* solidCooling = new G4Box("solidCooling", 0.5*MUFEESize, 0.5*MUFEESize, 0.5*CoolingThickness);
-  G4ExtrudedSolid* solidElecFrameShort = new G4ExtrudedSolid("SolidElecFrame",
-      polygon,   
-      CoolingThickness*0.5,
-      G4TwoVector(0,0),FrontFrameBackSize/PCBlength,
-      G4TwoVector(0,0),FrontFrameBackSize/PCBlength); 
-
-
-  G4LogicalVolume* logicMUFEE   = new G4LogicalVolume(solidMUFEE,m_MaterialAluminium,"Must2 MUFEE", 0, 0, 0); 
-  G4LogicalVolume* logicCooling = new G4LogicalVolume(solidCooling,m_MaterialAluminium,"Must2 Cooling", 0, 0, 0); 
-  G4LogicalVolume* logicElecFrame = new G4LogicalVolume(solidElecFrameShort,m_MaterialAluminium,"Must2 Frame", 0, 0, 0); 
-
-  logicMUFEE->SetVisAttributes(m_PCBVisAtt);
-  logicCooling->SetVisAttributes(m_CoolingVisAtt);
-
-  G4double CoolingPosition = FrontFrameThickness+Silicon_PosZ+0.5*CoolingThickness;
-
-  new G4PVPlacement(G4Transform3D(*norotation,G4ThreeVector(0,0,CoolingPosition)),
-      logicCooling, 
-      "Must2 Cooling",
-      logicMM,
-      false,
-      0); 
-
-  new G4PVPlacement(G4Transform3D(*norotation,G4ThreeVector(0,0,CoolingPosition)),
-      logicElecFrame, 
-      "Must2 Fame",
-      logicMM,
-      false,
-      0); 
-
-
-  new G4PVPlacement(G4Transform3D(*norotation,G4ThreeVector(0,0,CoolingPosition-0.5*MUFEEThickness-0.5*CoolingThickness)),
-      logicMUFEE, 
-      "Must2 Front Fame",
-      logicMM,
-      false,
-      0); 
-
-  new G4PVPlacement(G4Transform3D(*norotation,G4ThreeVector(0,0,CoolingPosition+0.5*MUFEEThickness+0.5*CoolingThickness)),
-      logicMUFEE, 
-      "Must2 Front Fame",
-      logicMM,
-      false,
-      0); 
-
-
-  // Si  
-  // Volume containing the Silicon detector
-  G4ExtrudedSolid* solidSilicon = new G4ExtrudedSolid(Name,
-      polygon,   
-      PCBThickness*0.5,
-      G4TwoVector(0,0),1,
-      G4TwoVector(0,0),1); 
-
-  G4LogicalVolume* logicSilicon = new G4LogicalVolume(solidSilicon,m_MaterialVacuum, Name, 0, 0, 0); 
-
-  new G4PVPlacement(G4Transform3D(*norotation,G4ThreeVector(0,0,Silicon_PosZ)),
-      logicSilicon, 
-      "Silicon",
-      logicMM,
-      false,
-      0); 
-
-  logicSilicon->SetVisAttributes(G4VisAttributes::Invisible);
-
-  // PCB Base
-  G4ExtrudedSolid* solidPCBBase = new G4ExtrudedSolid("PCBBase",
-      polygon,   
-      PCBThickness*0.5,
-      G4TwoVector(0,0),1,
-      G4TwoVector(0,0),1); 
-
-  // Wafer Shape 
-  G4Box* solidWaferShape = new G4Box("solidWaferShape", 0.5*WaferSize, 0.5*WaferSize, 0.6*PCBThickness);
-
-  // PCB
-
-  G4SubtractionSolid* solidPCB = new G4SubtractionSolid("PCB",
-      solidPCBBase,
-      solidWaferShape,
-      G4Transform3D(*norotation,G4ThreeVector(0,0,0))); 
-
-  G4LogicalVolume* logicPCB = new G4LogicalVolume(solidPCB, m_MaterialSilicon, "logicPCB", 0, 0, 0);
-
-  new G4PVPlacement(0, G4ThreeVector(0,0,0), logicPCB, Name + "_Silicon", logicSilicon, false, 0);
-
-  logicPCB->SetVisAttributes(m_PCBVisAtt); 
-
-
-  // Wafer
-  G4Box* solidWafer = new G4Box("solidWaferShape", 0.5*WaferSize, 0.5*WaferSize, 0.5*WaferThickness);
-  G4LogicalVolume* logicWafer = new G4LogicalVolume(solidWafer, m_MaterialSilicon, "logicWafer", 0, 0, 0);
-  new G4PVPlacement(0, G4ThreeVector(0,0,0), logicWafer, Name + "_Silicon", logicSilicon, false, 0);
-
-
-  // Active Wafer
-  G4Box* solidActiveWafer = new G4Box("solidActiveWaferShape", 0.5*ActiveWaferSize, 0.5*ActiveWaferSize, 0.5*WaferThickness);
-  G4LogicalVolume* logicActiveWafer = new G4LogicalVolume(solidActiveWafer, m_MaterialSilicon, "logicActiveWafer", 0, 0, 0);
-
-  new G4PVPlacement(0, G4ThreeVector(0,0,0), logicActiveWafer, Name + "_Silicon", logicSilicon, false, 0);
-
-  G4ThreeVector positionAluStripFront = G4ThreeVector(0, 0, 0.5*WaferThickness+0.5*AluStripThickness);
-  G4ThreeVector positionAluStripBack  = G4ThreeVector(0, 0, -0.5*WaferThickness-0.5*AluStripThickness);
-
-  G4Box*           solidAluStrip = new G4Box("AluBox", 0.5*ActiveWaferSize, 0.5*ActiveWaferSize, 0.5*AluStripThickness);
-  G4LogicalVolume* logicAluStrip = new G4LogicalVolume(solidAluStrip, m_MaterialAluminium, "logicAluStrip", 0, 0, 0);
-
-  new G4PVPlacement(0, positionAluStripFront, logicAluStrip, "AluStripFront", logicSilicon, false, 0);
-  new G4PVPlacement(0, positionAluStripBack, logicAluStrip, "AluStripBack", logicSilicon, false, 0);
-
-  logicAluStrip->SetVisAttributes(G4VisAttributes::Invisible);
-
-  G4ThreeVector  positionSilicon = G4ThreeVector(0, 0, Silicon_PosZ);
-
-  new G4PVPlacement(0, G4ThreeVector(0, 0, Silicon_PosZ), logicSilicon, "Silicon", logicMM, false, 0);
-
-  // Set Silicon strip sensible
-  logicActiveWafer->SetSensitiveDetector(m_StripScorer);
-
-  // Visualisation of Silicon Strip
-  logicWafer->SetVisAttributes(m_SiliconVisAtt);
-  logicActiveWafer->SetVisAttributes(m_SiliconVisAtt);
-  ////////////////////////////////////////////////////////////////
-  //////////////////// SiLi  Construction ////////////////////////
-  ////////////////////////////////////////////////////////////////
-
-  G4double SiLiSpace = 8 * mm;
-  G4RotationMatrix* rotSiLi = new G4RotationMatrix(0,0,0); 
-  G4Box* solidSiLi = new G4Box("SiLi", 0.5*ActiveWaferSize+0.5*SiLiSpace, 0.5*ActiveWaferSize, 0.5*SiLiThickness);
-  G4LogicalVolume* logicSiLi = new G4LogicalVolume(solidSiLi, m_MaterialAluminium, Name + "_SiLi" , 0, 0, 0);
-
-  logicSiLi->SetVisAttributes(G4VisAttributes::Invisible);
-
-  new G4PVPlacement(  G4Transform3D(*rotSiLi, G4ThreeVector(0,0,0) ) 	,
-      logicSiLi ,
-      Name + "_SiLi",
-      logicVacBox ,
-      false ,
-      0);
-
-  // SiLi are placed inside of the VacBox...
-  // Left/Right define when looking to detector from Si to CsI
-  G4double SiLi_HighY_Upper 	= 19.86 * mm;
-  G4double SiLi_HighY_Center = 25.39 * mm;
-  G4double SiLi_WidthX_Left  = 22.85 * mm;
-  G4double SiLi_WidthX_Right = 24.9  * mm;
-  G4double SiLi_ShiftX    	= 0.775 * mm;
-
-  //	SiLi are organized by two group of 8 Up(9 to 15) and Down(1 to 8).
-  G4ThreeVector ShiftSiLiUp 	 = G4ThreeVector(-0.25 * ActiveWaferSize - 0.5 * SiLiSpace, 0, 0)	;
-  G4ThreeVector ShiftSiLiDown  = G4ThreeVector(0.25  * ActiveWaferSize + 0.5 * SiLiSpace, 0, 0)	;
-
-  // SiLi : left side of SiLi detector
-  G4Box* solidSiLi_LT  = new G4Box("SiLi_LT"  , 0.5*SiLi_WidthX_Left  , 0.5*SiLi_HighY_Upper   , 0.5*SiLiThickness);
-  G4Box* solidSiLi_RT  = new G4Box("SiLi_RT"  , 0.5*SiLi_WidthX_Right , 0.5*SiLi_HighY_Upper   , 0.5*SiLiThickness);
-  G4Box* solidSiLi_LC1 = new G4Box("SiLi_LC1" , 0.5*SiLi_WidthX_Left  , 0.5*SiLi_HighY_Center  , 0.5*SiLiThickness);
-  G4Box* solidSiLi_RC1 = new G4Box("SiLi_RC1" , 0.5*SiLi_WidthX_Right , 0.5*SiLi_HighY_Center  , 0.5*SiLiThickness);
-  G4Box* solidSiLi_LB  = new G4Box("SiLi_LB"  , 0.5*SiLi_WidthX_Left  , 0.5*SiLi_HighY_Upper   , 0.5*SiLiThickness);
-  G4Box* solidSiLi_RB  = new G4Box("SiLi_RB"  , 0.5*SiLi_WidthX_Right , 0.5*SiLi_HighY_Upper   , 0.5*SiLiThickness);
-  G4Box* solidSiLi_LC2 = new G4Box("SiLi_LC2" , 0.5*SiLi_WidthX_Left  , 0.5*SiLi_HighY_Center  , 0.5*SiLiThickness);
-  G4Box* solidSiLi_RC2 = new G4Box("SiLi_RC2" , 0.5*SiLi_WidthX_Right , 0.5*SiLi_HighY_Center  , 0.5*SiLiThickness);
-
-  G4LogicalVolume* logicSiLi_LT    = new G4LogicalVolume(solidSiLi_LT   , m_MaterialSilicon , "SiLi_LT"  , 0 , 0 , 0);
-  G4LogicalVolume* logicSiLi_RT    = new G4LogicalVolume(solidSiLi_RT   , m_MaterialSilicon , "SiLi_RT"  , 0 , 0 , 0);
-  G4LogicalVolume* logicSiLi_LC1   = new G4LogicalVolume(solidSiLi_LC1  , m_MaterialSilicon , "SiLi_LC1" , 0 , 0 , 0);
-  G4LogicalVolume* logicSiLi_RC1   = new G4LogicalVolume(solidSiLi_RC1  , m_MaterialSilicon , "SiLi_RC1" , 0 , 0 , 0);
-  G4LogicalVolume* logicSiLi_LB    = new G4LogicalVolume(solidSiLi_LB   , m_MaterialSilicon , "SiLi_LB"  , 0 , 0 , 0);
-  G4LogicalVolume* logicSiLi_RB    = new G4LogicalVolume(solidSiLi_RB   , m_MaterialSilicon , "SiLi_RB"  , 0 , 0 , 0);
-  G4LogicalVolume* logicSiLi_LC2   = new G4LogicalVolume(solidSiLi_LC2  , m_MaterialSilicon , "SiLi_LC2" , 0 , 0 , 0);
-  G4LogicalVolume* logicSiLi_RC2   = new G4LogicalVolume(solidSiLi_RC2  , m_MaterialSilicon , "SiLi_RC2" , 0 , 0 , 0);
-
-  G4double interSiLi = 0.5 * mm;
-
-  // Top
-  G4ThreeVector positionSiLi_LT_up = G4ThreeVector(  -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX ,
-      0.5 * SiLi_HighY_Upper  + SiLi_HighY_Center + 1.5 * interSiLi,
-      0);
-
-  positionSiLi_LT_up += ShiftSiLiUp ;
-
-  G4ThreeVector positionSiLi_RT_up = G4ThreeVector(  0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
-      0.5 * SiLi_HighY_Upper  + SiLi_HighY_Center + 1.5 * interSiLi,
-      0);
-
-  positionSiLi_RT_up += ShiftSiLiUp ;
-
-  G4ThreeVector positionSiLi_LC1_up = G4ThreeVector( -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX ,
-      0.5 * SiLi_HighY_Center + 0.5 * interSiLi,
-      0);
-
-  positionSiLi_LC1_up += ShiftSiLiUp ;
-
-  G4ThreeVector positionSiLi_RC1_up = G4ThreeVector( 0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
-      0.5 * SiLi_HighY_Center + 0.5 * interSiLi,
-      0);
-
-  positionSiLi_RC1_up += ShiftSiLiUp ;
-
-  G4ThreeVector positionSiLi_LB_up = G4ThreeVector(  -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX ,
-      -0.5 * SiLi_HighY_Upper  - SiLi_HighY_Center - 1.5 * interSiLi ,
-      0);
-
-  positionSiLi_LB_up += ShiftSiLiUp ;
-
-  G4ThreeVector positionSiLi_RB_up = G4ThreeVector(  0.5 * SiLi_WidthX_Right - SiLi_ShiftX ,
-      -0.5 * SiLi_HighY_Upper  - SiLi_HighY_Center - 1.5 * interSiLi ,
-      0);
-
-  positionSiLi_RB_up += ShiftSiLiUp ;
-
-  G4ThreeVector positionSiLi_LC2_up = G4ThreeVector( -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX ,
-      -0.5 * SiLi_HighY_Center - 0.5 * interSiLi,
-      0);
-
-  positionSiLi_LC2_up += ShiftSiLiUp ;
-
-  G4ThreeVector positionSiLi_RC2_up = G4ThreeVector( 0.5 * SiLi_WidthX_Right - SiLi_ShiftX ,
-      -0.5 * SiLi_HighY_Center - 0.5 * interSiLi  ,
-      0);
-
-  positionSiLi_RC2_up += ShiftSiLiUp ;
-
-
-  // Down
-  G4ThreeVector positionSiLi_LT_down = G4ThreeVector(   -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX,
-      0.5 * SiLi_HighY_Upper  + SiLi_HighY_Center + 1.5 * interSiLi,
-      0);
-
-  positionSiLi_LT_down += ShiftSiLiDown ;
-
-  G4ThreeVector positionSiLi_RT_down = G4ThreeVector(   0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
-      0.5 * SiLi_HighY_Upper  + SiLi_HighY_Center + 1.5 * interSiLi,
-      0);
-
-  positionSiLi_RT_down += ShiftSiLiDown ;
-
-  G4ThreeVector positionSiLi_LC1_down = G4ThreeVector(  -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX,
-      0.5 * SiLi_HighY_Center + 0.5 * interSiLi,
-      0);
-
-  positionSiLi_LC1_down += ShiftSiLiDown ;
-
-  G4ThreeVector positionSiLi_RC1_down = G4ThreeVector(  0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
-      0.5 * SiLi_HighY_Center + 0.5 * interSiLi ,
-      0);
-
-  positionSiLi_RC1_down += ShiftSiLiDown ;
-
-  G4ThreeVector positionSiLi_LB_down = G4ThreeVector(   -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX,
-      -0.5 * SiLi_HighY_Upper  - SiLi_HighY_Center - 1.5 * interSiLi,
-      0);
-
-  positionSiLi_LB_down += ShiftSiLiDown ;
-
-  G4ThreeVector positionSiLi_RB_down = G4ThreeVector(   0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
-      -0.5 * SiLi_HighY_Upper  - SiLi_HighY_Center - 1.5 * interSiLi,
-      0);
-
-  positionSiLi_RB_down += ShiftSiLiDown ;
-
-  G4ThreeVector positionSiLi_LC2_down = G4ThreeVector(  -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX,
-      -0.5 * SiLi_HighY_Center - 0.5 * interSiLi,
-      0);
-
-  positionSiLi_LC2_down += ShiftSiLiDown ;
-
-  G4ThreeVector positionSiLi_RC2_down = G4ThreeVector(  0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
-      -0.5 * SiLi_HighY_Center - 0.5 * interSiLi,
-      0);
-
-  positionSiLi_RC2_down += ShiftSiLiDown ;
-
-
-  // up
-  new G4PVPlacement(0 , positionSiLi_LT_up  , logicSiLi_LT  , Name + "_SiLi_Pad9"   , logicSiLi , false , 0)  ;
-  new G4PVPlacement(0 , positionSiLi_RT_up  , logicSiLi_RT  , Name + "_SiLi_Pad10"  , logicSiLi , false , 0)  ;
-  new G4PVPlacement(0 , positionSiLi_LC1_up , logicSiLi_LC1 , Name + "_SiLi_Pad11" 	, logicSiLi , false , 0);
-  new G4PVPlacement(0 , positionSiLi_RC1_up , logicSiLi_RC1 , Name + "_SiLi_Pad12" 	, logicSiLi , false , 0);
-
-  new G4PVPlacement(0 , positionSiLi_LB_up  , logicSiLi_LB  , Name + "_SiLi_Pad16"  , logicSiLi , false , 0)  ;
-  new G4PVPlacement(0 , positionSiLi_RB_up  , logicSiLi_RB  , Name + "_SiLi_Pad15"  , logicSiLi , false , 0)  ;
-  new G4PVPlacement(0 , positionSiLi_LC2_up , logicSiLi_LC2 , Name + "_SiLi_Pad14" 	, logicSiLi , false , 0);
-  new G4PVPlacement(0 , positionSiLi_RC2_up , logicSiLi_RC2 , Name + "_SiLi_Pad13" 	, logicSiLi , false , 0);
-
-
-  // down
-  new G4PVPlacement(0 , positionSiLi_LT_down  , logicSiLi_LT  , Name + "_SiLi_Pad2"  , logicSiLi , false , 0) ;
-  new G4PVPlacement(0 , positionSiLi_RT_down  , logicSiLi_RT  , Name + "_SiLi_Pad1"  , logicSiLi , false , 0) ;
-  new G4PVPlacement(0 , positionSiLi_LC1_down , logicSiLi_LC1 , Name + "_SiLi_Pad4" 	, logicSiLi , false , 0) ;
-  new G4PVPlacement(0 , positionSiLi_RC1_down , logicSiLi_RC1 , Name + "_SiLi_Pad3" 	, logicSiLi , false , 0) ;
-
-  new G4PVPlacement(0 , positionSiLi_LB_down  , logicSiLi_LB  , Name + "_SiLi_Pad7"  , logicSiLi , false , 0) ;
-  new G4PVPlacement(0 , positionSiLi_RB_down  , logicSiLi_RB  , Name + "_SiLi_Pad8"  , logicSiLi , false , 0) ;
-  new G4PVPlacement(0 , positionSiLi_LC2_down , logicSiLi_LC2 , Name + "_SiLi_Pad5" 	, logicSiLi , false , 0) ;
-  new G4PVPlacement(0 , positionSiLi_RC2_down , logicSiLi_RC2 , Name + "_SiLi_Pad6" 	, logicSiLi , false , 0) ;
-
-  // Set SiLi sensible
-  logicSiLi_LT->SetSensitiveDetector(m_SiLiScorer);
-  logicSiLi_RT->SetSensitiveDetector(m_SiLiScorer);
-  logicSiLi_LC1->SetSensitiveDetector(m_SiLiScorer);
-  logicSiLi_RC1->SetSensitiveDetector(m_SiLiScorer);
-
-  logicSiLi_LB->SetSensitiveDetector(m_SiLiScorer);
-  logicSiLi_RB->SetSensitiveDetector(m_SiLiScorer);
-  logicSiLi_LC2->SetSensitiveDetector(m_SiLiScorer);
-  logicSiLi_RC2->SetSensitiveDetector(m_SiLiScorer);
-
-  // Mark blue a SiLi to see telescope orientation
-
-  logicSiLi_LT->SetVisAttributes(m_SiLiVisAtt);
-  logicSiLi_RT->SetVisAttributes(m_SiLiVisAtt);
-  logicSiLi_LC1->SetVisAttributes(m_SiLiVisAtt);
-  logicSiLi_RC1->SetVisAttributes(m_SiLiVisAtt);
-
-  logicSiLi_LB->SetVisAttributes(m_SiLiVisAtt);
-  logicSiLi_RB->SetVisAttributes(m_SiLiVisAtt);
-  logicSiLi_LC2->SetVisAttributes(m_SiLiVisAtt);
-  logicSiLi_RC2->SetVisAttributes(m_SiLiVisAtt);
-
-
-  delete rotSiLi;
-
-  m_MUST2Short=logicMM;
-  return m_MUST2Short;
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-G4LogicalVolume* MUST2Array::GetLogicalVolumeMUST2Full(){
-if(m_MUST2Full!=0 ) return m_MUST2Full;
-
-  ////////////////////////////////////////////////////////////////
-  ////////////// Starting Volume Definition //////////////////////
-  ////////////////////////////////////////////////////////////////
- // Create the front support frame for Si and SiLi
-  vector<G4TwoVector> polygon;
-  for(unsigned int i = 0 ; i < 4 ; i++){   
-    G4TwoVector Point(PCBPointsX[i],PCBPointsY[i]);   
-    polygon.push_back(Point);  
-  } 
-
-  // The PCB lenth is used to rescale different part of the detector
-  G4double PCBlength = PCBPointsX[0] - PCBPointsX[1];
-
-  G4ExtrudedSolid* solidMM = new G4ExtrudedSolid("Must2 Telescope",
-      polygon,   
-      LengthLong*0.5,
-      G4TwoVector(0,0),FrontFrameFrontSize/PCBlength,
-      G4TwoVector(0,0),FrontFrameBackSize/PCBlength); 
-  
-  G4LogicalVolume* logicMM = new G4LogicalVolume(solidMM, m_MaterialIron, "MUST2Telescope" , 0, 0, 0);
-  G4String Name = "MUST2Telescope" ;
-
-  if (m_non_sensitive_part_visiualisation){
-    G4VisAttributes* FrameVisAtt = new G4VisAttributes(G4Colour(0.80, 0.80, 0.80));
-    FrameVisAtt->SetForceWireframe(true);
-    logicMM->SetVisAttributes(FrameVisAtt)  ;
-  }
-
-  else logicMM->SetVisAttributes(G4VisAttributes::Invisible)               ;
-
-  G4ThreeVector positionVacBox = G4ThreeVector(0, 0, VacBox_PosZ);
-
-  G4Trd* solidVacBox = 
-    new G4Trd("solidVacBox", 0.5*ActiveWaferSize, 0.5*CsIFaceFront, 0.5*ActiveWaferSize, 0.5*CsIFaceFront, 0.5*VacBoxThickness);
-
-  G4LogicalVolume* logicVacBox = new G4LogicalVolume(solidVacBox, m_MaterialVacuum, "logicVacBox", 0, 0, 0);
-
-
-  new G4PVPlacement(0, positionVacBox, logicVacBox, Name + "_VacBox", logicMM, false, 0);
-
-  logicVacBox->SetVisAttributes(G4VisAttributes::Invisible);
-
-
-  ////////////////////////////////////////////////////////////////
-  /////////////////Si Strip Construction//////////////////////////
-  ////////////////////////////////////////////////////////////////
-  // A no rotation matrix is always handy ;) 
-  G4RotationMatrix* norotation = new  G4RotationMatrix();   
-
-  G4ExtrudedSolid* solidFrontFrameBase = new G4ExtrudedSolid("Must2 Front Frame",
-      polygon,   
-      FrontFrameThickness*0.5,
-      G4TwoVector(0,0),FrontFrameFrontSize/PCBlength,
-      G4TwoVector(0,0),FrontFrameBackSize/PCBlength); 
-
-  G4ExtrudedSolid* solidCavityShape1 = new G4ExtrudedSolid("Cavity1",
-      polygon,   
-      FrontFrameThickness*0.5+PCBThickness,
-      G4TwoVector(0,0),CavityShape1FrontSize/PCBlength,
-      G4TwoVector(0,0),CavityShape1BackSize/PCBlength); 
-
-  G4SubtractionSolid* solidFrontFrame1 = new G4SubtractionSolid("Frame1",
-      solidFrontFrameBase,
-      solidCavityShape1,
-      G4Transform3D(*norotation,G4ThreeVector(0,0,0))); 
-
-  G4Box* solidCavityShape2 = new G4Box("Cavity2", 0.5*CavityShape2Width, (0.5+0.5)*CavityShape2Width, 0.5*CavityShape2Thickness);
-
-  G4SubtractionSolid* solidFrontFrame2 = new G4SubtractionSolid("Frame2",
-      solidFrontFrame1,
-      solidCavityShape2,
-      G4Transform3D(*norotation,G4ThreeVector(0,0.5*CavityShape2Width,CavityShape2Center))); 
-
-  G4ExtrudedSolid* solidCutOut = new G4ExtrudedSolid("Cutout",
-      polygon,   
-      FrontFrameThickness*0.8,
-      G4TwoVector(0,0),1.1*FrontFrameBackSize/PCBlength,
-      G4TwoVector(0,0),1.1*FrontFrameBackSize/PCBlength); 
-
-
-  G4SubtractionSolid* solidFrontFrame3 = new G4SubtractionSolid("Must2 Front Frame",
-      solidFrontFrame2,
-      solidCutOut,
-      G4Transform3D(*norotation,G4ThreeVector(0,FrontFrameBackSize*0.5*1.1+66*mm,0))); 
-
-  G4SubtractionSolid* solidFrontFrame = new G4SubtractionSolid("Must2 Front Frame",
-      solidFrontFrame3,
-      solidCutOut,
-      G4Transform3D(*norotation,G4ThreeVector(-FrontFrameBackSize*0.5*1.1-66*mm,0,0))); 
-
-
-  G4LogicalVolume* logicFrontFrame = new G4LogicalVolume(solidFrontFrame,m_MaterialAluminium,"Must2 Front Frame", 0, 0, 0); 
-
-  new G4PVPlacement(G4Transform3D(*norotation,G4ThreeVector(0,0,Silicon_PosZ+FrontFrameThickness*0.5+0.5*PCBThickness)),
-      logicFrontFrame, 
-      "Must2 Front Fame",
-      logicMM,
-      false,
-      0); 
-
-
-  // Electronic bloc
-  G4Box* solidMUFEE  = new G4Box("solidMUFEE", 0.5*MUFEESize, 0.5*MUFEESize, 0.5*MUFEEThickness);
-  G4Box* solidCooling = new G4Box("solidCooling", 0.5*MUFEESize, 0.5*MUFEESize, 0.5*CoolingThickness);
-  G4ExtrudedSolid* solidElecFrameShort = new G4ExtrudedSolid("SolidElecFrame",
-      polygon,   
-      CoolingThickness*0.5,
-      G4TwoVector(0,0),FrontFrameBackSize/PCBlength,
-      G4TwoVector(0,0),FrontFrameBackSize/PCBlength); 
-
-
-  G4LogicalVolume* logicMUFEE   = new G4LogicalVolume(solidMUFEE,m_MaterialAluminium,"Must2 MUFEE", 0, 0, 0); 
-  G4LogicalVolume* logicCooling = new G4LogicalVolume(solidCooling,m_MaterialAluminium,"Must2 Cooling", 0, 0, 0); 
-  G4LogicalVolume* logicElecFrame = new G4LogicalVolume(solidElecFrameShort,m_MaterialAluminium,"Must2 Frame", 0, 0, 0); 
-
-  logicMUFEE->SetVisAttributes(m_PCBVisAtt);
-  logicCooling->SetVisAttributes(m_CoolingVisAtt);
-
-  G4double CoolingPosition = CoolingDistanceLong;
-
-  new G4PVPlacement(G4Transform3D(*norotation,G4ThreeVector(0,0,CoolingPosition)),
-      logicCooling, 
-      "Must2 Cooling",
-      logicMM,
-      false,
-      0); 
-
-  new G4PVPlacement(G4Transform3D(*norotation,G4ThreeVector(0,0,CoolingPosition)),
-      logicElecFrame, 
-      "Must2 Fame",
-      logicMM,
-      false,
-      0); 
-
-
-  new G4PVPlacement(G4Transform3D(*norotation,G4ThreeVector(0,0,CoolingPosition-0.5*MUFEEThickness-0.5*CoolingThickness)),
-      logicMUFEE, 
-      "Must2 Front Fame",
-      logicMM,
-      false,
-      0); 
-
-  new G4PVPlacement(G4Transform3D(*norotation,G4ThreeVector(0,0,CoolingPosition+0.5*MUFEEThickness+0.5*CoolingThickness)),
-      logicMUFEE, 
-      "Must2 Front Fame",
-      logicMM,
-      false,
-      0); 
-
-
-  // Si  
-  // Volume containing the Silicon detector
-  G4ExtrudedSolid* solidSilicon = new G4ExtrudedSolid(Name,
-      polygon,   
-      PCBThickness*0.5,
-      G4TwoVector(0,0),1,
-      G4TwoVector(0,0),1); 
-
-  G4LogicalVolume* logicSilicon = new G4LogicalVolume(solidSilicon,m_MaterialVacuum, Name, 0, 0, 0); 
-
-  new G4PVPlacement(G4Transform3D(*norotation,G4ThreeVector(0,0,Silicon_PosZ)),
-      logicSilicon, 
-      "Silicon",
-      logicMM,
-      false,
-      0); 
-
-  logicSilicon->SetVisAttributes(G4VisAttributes::Invisible);
-
-  // PCB Base
-  G4ExtrudedSolid* solidPCBBase = new G4ExtrudedSolid("PCBBase",
-      polygon,   
-      PCBThickness*0.5,
-      G4TwoVector(0,0),1,
-      G4TwoVector(0,0),1); 
-
-  // Wafer Shape 
-  G4Box* solidWaferShape = new G4Box("solidWaferShape", 0.5*WaferSize, 0.5*WaferSize, 0.6*PCBThickness);
-
-  // PCB
-
-  G4SubtractionSolid* solidPCB = new G4SubtractionSolid("PCB",
-      solidPCBBase,
-      solidWaferShape,
-      G4Transform3D(*norotation,G4ThreeVector(0,0,0))); 
-
-  G4LogicalVolume* logicPCB = new G4LogicalVolume(solidPCB, m_MaterialSilicon, "logicPCB", 0, 0, 0);
-
-  new G4PVPlacement(0, G4ThreeVector(0,0,0), logicPCB, Name + "_Silicon", logicSilicon, false, 0);
-
-  logicPCB->SetVisAttributes(m_PCBVisAtt); 
-
-
-  // Wafer
-  G4Box* solidWafer = new G4Box("solidWaferShape", 0.5*WaferSize, 0.5*WaferSize, 0.5*WaferThickness);
-  G4LogicalVolume* logicWafer = new G4LogicalVolume(solidWafer, m_MaterialSilicon, "logicWafer", 0, 0, 0);
-  new G4PVPlacement(0, G4ThreeVector(0,0,0), logicWafer, Name + "_Silicon", logicSilicon, false, 0);
-
-
-  // Active Wafer
-  G4Box* solidActiveWafer = new G4Box("solidActiveWaferShape", 0.5*ActiveWaferSize, 0.5*ActiveWaferSize, 0.5*WaferThickness);
-  G4LogicalVolume* logicActiveWafer = new G4LogicalVolume(solidActiveWafer, m_MaterialSilicon, "logicActiveWafer", 0, 0, 0);
-
-  new G4PVPlacement(0, G4ThreeVector(0,0,0), logicActiveWafer, Name + "_Silicon", logicSilicon, false, 0);
-
-  G4ThreeVector positionAluStripFront = G4ThreeVector(0, 0, 0.5*WaferThickness+0.5*AluStripThickness);
-  G4ThreeVector positionAluStripBack  = G4ThreeVector(0, 0, -0.5*WaferThickness-0.5*AluStripThickness);
-
-  G4Box*           solidAluStrip = new G4Box("AluBox", 0.5*ActiveWaferSize, 0.5*ActiveWaferSize, 0.5*AluStripThickness);
-  G4LogicalVolume* logicAluStrip = new G4LogicalVolume(solidAluStrip, m_MaterialAluminium, "logicAluStrip", 0, 0, 0);
-
-  new G4PVPlacement(0, positionAluStripFront, logicAluStrip, "AluStripFront", logicSilicon, false, 0);
-  new G4PVPlacement(0, positionAluStripBack, logicAluStrip, "AluStripBack", logicSilicon, false, 0);
-
-  logicAluStrip->SetVisAttributes(G4VisAttributes::Invisible);
-
-  G4ThreeVector  positionSilicon = G4ThreeVector(0, 0, Silicon_PosZ);
-
-  new G4PVPlacement(0, G4ThreeVector(0, 0, Silicon_PosZ), logicSilicon, "Silicon", logicMM, false, 0);
-
-  // Set Silicon strip sensible
-  logicActiveWafer->SetSensitiveDetector(m_StripScorer);
-
-  // Visualisation of Silicon Strip
-  logicWafer->SetVisAttributes(m_SiliconVisAtt);
-  logicActiveWafer->SetVisAttributes(m_SiliconVisAtt);
-  ////////////////////////////////////////////////////////////////
-  //////////////////// SiLi  Construction ////////////////////////
-  ////////////////////////////////////////////////////////////////
-
-  G4double SiLiSpace = 8 * mm;
-  G4RotationMatrix* rotSiLi = new G4RotationMatrix(0,0,0); 
-  G4Box* solidSiLi = new G4Box("SiLi", 0.5*ActiveWaferSize+0.5*SiLiSpace, 0.5*ActiveWaferSize, 0.5*SiLiThickness);
-  G4LogicalVolume* logicSiLi = new G4LogicalVolume(solidSiLi, m_MaterialAluminium, Name + "_SiLi" , 0, 0, 0);
-
-  logicSiLi->SetVisAttributes(G4VisAttributes::Invisible);
-
-  new G4PVPlacement(  G4Transform3D(*rotSiLi, G4ThreeVector(0,0,0) ) 	,
-      logicSiLi ,
-      Name + "_SiLi",
-      logicVacBox ,
-      false ,
-      0);
-
-  // SiLi are placed inside of the VacBox...
-  // Left/Right define when looking to detector from Si to CsI
-  G4double SiLi_HighY_Upper 	= 19.86 * mm;
-  G4double SiLi_HighY_Center = 25.39 * mm;
-  G4double SiLi_WidthX_Left  = 22.85 * mm;
-  G4double SiLi_WidthX_Right = 24.9  * mm;
-  G4double SiLi_ShiftX    	= 0.775 * mm;
-
-  //	SiLi are organized by two group of 8 Up(9 to 15) and Down(1 to 8).
-  G4ThreeVector ShiftSiLiUp 	 = G4ThreeVector(-0.25 * ActiveWaferSize - 0.5 * SiLiSpace, 0, 0)	;
-  G4ThreeVector ShiftSiLiDown  = G4ThreeVector(0.25  * ActiveWaferSize + 0.5 * SiLiSpace, 0, 0)	;
-
-  // SiLi : left side of SiLi detector
-  G4Box* solidSiLi_LT  = new G4Box("SiLi_LT"  , 0.5*SiLi_WidthX_Left  , 0.5*SiLi_HighY_Upper   , 0.5*SiLiThickness);
-  G4Box* solidSiLi_RT  = new G4Box("SiLi_RT"  , 0.5*SiLi_WidthX_Right , 0.5*SiLi_HighY_Upper   , 0.5*SiLiThickness);
-  G4Box* solidSiLi_LC1 = new G4Box("SiLi_LC1" , 0.5*SiLi_WidthX_Left  , 0.5*SiLi_HighY_Center  , 0.5*SiLiThickness);
-  G4Box* solidSiLi_RC1 = new G4Box("SiLi_RC1" , 0.5*SiLi_WidthX_Right , 0.5*SiLi_HighY_Center  , 0.5*SiLiThickness);
-  G4Box* solidSiLi_LB  = new G4Box("SiLi_LB"  , 0.5*SiLi_WidthX_Left  , 0.5*SiLi_HighY_Upper   , 0.5*SiLiThickness);
-  G4Box* solidSiLi_RB  = new G4Box("SiLi_RB"  , 0.5*SiLi_WidthX_Right , 0.5*SiLi_HighY_Upper   , 0.5*SiLiThickness);
-  G4Box* solidSiLi_LC2 = new G4Box("SiLi_LC2" , 0.5*SiLi_WidthX_Left  , 0.5*SiLi_HighY_Center  , 0.5*SiLiThickness);
-  G4Box* solidSiLi_RC2 = new G4Box("SiLi_RC2" , 0.5*SiLi_WidthX_Right , 0.5*SiLi_HighY_Center  , 0.5*SiLiThickness);
-
-  G4LogicalVolume* logicSiLi_LT    = new G4LogicalVolume(solidSiLi_LT   , m_MaterialSilicon , "SiLi_LT"  , 0 , 0 , 0);
-  G4LogicalVolume* logicSiLi_RT    = new G4LogicalVolume(solidSiLi_RT   , m_MaterialSilicon , "SiLi_RT"  , 0 , 0 , 0);
-  G4LogicalVolume* logicSiLi_LC1   = new G4LogicalVolume(solidSiLi_LC1  , m_MaterialSilicon , "SiLi_LC1" , 0 , 0 , 0);
-  G4LogicalVolume* logicSiLi_RC1   = new G4LogicalVolume(solidSiLi_RC1  , m_MaterialSilicon , "SiLi_RC1" , 0 , 0 , 0);
-  G4LogicalVolume* logicSiLi_LB    = new G4LogicalVolume(solidSiLi_LB   , m_MaterialSilicon , "SiLi_LB"  , 0 , 0 , 0);
-  G4LogicalVolume* logicSiLi_RB    = new G4LogicalVolume(solidSiLi_RB   , m_MaterialSilicon , "SiLi_RB"  , 0 , 0 , 0);
-  G4LogicalVolume* logicSiLi_LC2   = new G4LogicalVolume(solidSiLi_LC2  , m_MaterialSilicon , "SiLi_LC2" , 0 , 0 , 0);
-  G4LogicalVolume* logicSiLi_RC2   = new G4LogicalVolume(solidSiLi_RC2  , m_MaterialSilicon , "SiLi_RC2" , 0 , 0 , 0);
-
-  G4double interSiLi = 0.5 * mm;
-
-  // Top
-  G4ThreeVector positionSiLi_LT_up = G4ThreeVector(  -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX ,
-      0.5 * SiLi_HighY_Upper  + SiLi_HighY_Center + 1.5 * interSiLi,
-      0);
-
-  positionSiLi_LT_up += ShiftSiLiUp ;
-
-  G4ThreeVector positionSiLi_RT_up = G4ThreeVector(  0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
-      0.5 * SiLi_HighY_Upper  + SiLi_HighY_Center + 1.5 * interSiLi,
-      0);
-
-  positionSiLi_RT_up += ShiftSiLiUp ;
-
-  G4ThreeVector positionSiLi_LC1_up = G4ThreeVector( -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX ,
-      0.5 * SiLi_HighY_Center + 0.5 * interSiLi,
-      0);
-
-  positionSiLi_LC1_up += ShiftSiLiUp ;
-
-  G4ThreeVector positionSiLi_RC1_up = G4ThreeVector( 0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
-      0.5 * SiLi_HighY_Center + 0.5 * interSiLi,
-      0);
-
-  positionSiLi_RC1_up += ShiftSiLiUp ;
-
-  G4ThreeVector positionSiLi_LB_up = G4ThreeVector(  -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX ,
-      -0.5 * SiLi_HighY_Upper  - SiLi_HighY_Center - 1.5 * interSiLi ,
-      0);
-
-  positionSiLi_LB_up += ShiftSiLiUp ;
-
-  G4ThreeVector positionSiLi_RB_up = G4ThreeVector(  0.5 * SiLi_WidthX_Right - SiLi_ShiftX ,
-      -0.5 * SiLi_HighY_Upper  - SiLi_HighY_Center - 1.5 * interSiLi ,
-      0);
-
-  positionSiLi_RB_up += ShiftSiLiUp ;
-
-  G4ThreeVector positionSiLi_LC2_up = G4ThreeVector( -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX ,
-      -0.5 * SiLi_HighY_Center - 0.5 * interSiLi,
-      0);
-
-  positionSiLi_LC2_up += ShiftSiLiUp ;
-
-  G4ThreeVector positionSiLi_RC2_up = G4ThreeVector( 0.5 * SiLi_WidthX_Right - SiLi_ShiftX ,
-      -0.5 * SiLi_HighY_Center - 0.5 * interSiLi  ,
-      0);
-
-  positionSiLi_RC2_up += ShiftSiLiUp ;
-
-
-  // Down
-  G4ThreeVector positionSiLi_LT_down = G4ThreeVector(   -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX,
-      0.5 * SiLi_HighY_Upper  + SiLi_HighY_Center + 1.5 * interSiLi,
-      0);
-
-  positionSiLi_LT_down += ShiftSiLiDown ;
-
-  G4ThreeVector positionSiLi_RT_down = G4ThreeVector(   0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
-      0.5 * SiLi_HighY_Upper  + SiLi_HighY_Center + 1.5 * interSiLi,
-      0);
-
-  positionSiLi_RT_down += ShiftSiLiDown ;
-
-  G4ThreeVector positionSiLi_LC1_down = G4ThreeVector(  -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX,
-      0.5 * SiLi_HighY_Center + 0.5 * interSiLi,
-      0);
-
-  positionSiLi_LC1_down += ShiftSiLiDown ;
-
-  G4ThreeVector positionSiLi_RC1_down = G4ThreeVector(  0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
-      0.5 * SiLi_HighY_Center + 0.5 * interSiLi ,
-      0);
-
-  positionSiLi_RC1_down += ShiftSiLiDown ;
-
-  G4ThreeVector positionSiLi_LB_down = G4ThreeVector(   -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX,
-      -0.5 * SiLi_HighY_Upper  - SiLi_HighY_Center - 1.5 * interSiLi,
-      0);
-
-  positionSiLi_LB_down += ShiftSiLiDown ;
-
-  G4ThreeVector positionSiLi_RB_down = G4ThreeVector(   0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
-      -0.5 * SiLi_HighY_Upper  - SiLi_HighY_Center - 1.5 * interSiLi,
-      0);
-
-  positionSiLi_RB_down += ShiftSiLiDown ;
-
-  G4ThreeVector positionSiLi_LC2_down = G4ThreeVector(  -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX,
-      -0.5 * SiLi_HighY_Center - 0.5 * interSiLi,
-      0);
-
-  positionSiLi_LC2_down += ShiftSiLiDown ;
-
-  G4ThreeVector positionSiLi_RC2_down = G4ThreeVector(  0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
-      -0.5 * SiLi_HighY_Center - 0.5 * interSiLi,
-      0);
-
-  positionSiLi_RC2_down += ShiftSiLiDown ;
-
-
-  // up
-  new G4PVPlacement(0 , positionSiLi_LT_up  , logicSiLi_LT  , Name + "_SiLi_Pad9"   , logicSiLi , false , 0)  ;
-  new G4PVPlacement(0 , positionSiLi_RT_up  , logicSiLi_RT  , Name + "_SiLi_Pad10"  , logicSiLi , false , 0)  ;
-  new G4PVPlacement(0 , positionSiLi_LC1_up , logicSiLi_LC1 , Name + "_SiLi_Pad11" 	, logicSiLi , false , 0);
-  new G4PVPlacement(0 , positionSiLi_RC1_up , logicSiLi_RC1 , Name + "_SiLi_Pad12" 	, logicSiLi , false , 0);
-
-  new G4PVPlacement(0 , positionSiLi_LB_up  , logicSiLi_LB  , Name + "_SiLi_Pad16"  , logicSiLi , false , 0)  ;
-  new G4PVPlacement(0 , positionSiLi_RB_up  , logicSiLi_RB  , Name + "_SiLi_Pad15"  , logicSiLi , false , 0)  ;
-  new G4PVPlacement(0 , positionSiLi_LC2_up , logicSiLi_LC2 , Name + "_SiLi_Pad14" 	, logicSiLi , false , 0);
-  new G4PVPlacement(0 , positionSiLi_RC2_up , logicSiLi_RC2 , Name + "_SiLi_Pad13" 	, logicSiLi , false , 0);
-
-
-  // down
-  new G4PVPlacement(0 , positionSiLi_LT_down  , logicSiLi_LT  , Name + "_SiLi_Pad2"  , logicSiLi , false , 0) ;
-  new G4PVPlacement(0 , positionSiLi_RT_down  , logicSiLi_RT  , Name + "_SiLi_Pad1"  , logicSiLi , false , 0) ;
-  new G4PVPlacement(0 , positionSiLi_LC1_down , logicSiLi_LC1 , Name + "_SiLi_Pad4" 	, logicSiLi , false , 0) ;
-  new G4PVPlacement(0 , positionSiLi_RC1_down , logicSiLi_RC1 , Name + "_SiLi_Pad3" 	, logicSiLi , false , 0) ;
-
-  new G4PVPlacement(0 , positionSiLi_LB_down  , logicSiLi_LB  , Name + "_SiLi_Pad7"  , logicSiLi , false , 0) ;
-  new G4PVPlacement(0 , positionSiLi_RB_down  , logicSiLi_RB  , Name + "_SiLi_Pad8"  , logicSiLi , false , 0) ;
-  new G4PVPlacement(0 , positionSiLi_LC2_down , logicSiLi_LC2 , Name + "_SiLi_Pad5" 	, logicSiLi , false , 0) ;
-  new G4PVPlacement(0 , positionSiLi_RC2_down , logicSiLi_RC2 , Name + "_SiLi_Pad6" 	, logicSiLi , false , 0) ;
-
-  // Set SiLi sensible
-  logicSiLi_LT->SetSensitiveDetector(m_SiLiScorer);
-  logicSiLi_RT->SetSensitiveDetector(m_SiLiScorer);
-  logicSiLi_LC1->SetSensitiveDetector(m_SiLiScorer);
-  logicSiLi_RC1->SetSensitiveDetector(m_SiLiScorer);
-
-  logicSiLi_LB->SetSensitiveDetector(m_SiLiScorer);
-  logicSiLi_RB->SetSensitiveDetector(m_SiLiScorer);
-  logicSiLi_LC2->SetSensitiveDetector(m_SiLiScorer);
-  logicSiLi_RC2->SetSensitiveDetector(m_SiLiScorer);
-
-  // Mark blue a SiLi to see telescope orientation
-
-  logicSiLi_LT->SetVisAttributes(m_SiLiVisAtt);
-  logicSiLi_RT->SetVisAttributes(m_SiLiVisAtt);
-  logicSiLi_LC1->SetVisAttributes(m_SiLiVisAtt);
-  logicSiLi_RC1->SetVisAttributes(m_SiLiVisAtt);
-
-  logicSiLi_LB->SetVisAttributes(m_SiLiVisAtt);
-  logicSiLi_RB->SetVisAttributes(m_SiLiVisAtt);
-  logicSiLi_LC2->SetVisAttributes(m_SiLiVisAtt);
-  logicSiLi_RC2->SetVisAttributes(m_SiLiVisAtt);
-
-
-  delete rotSiLi;
-  ////////////////////////////////////////////////////////////////
-  //////////////////// CsI  Construction//////////////////////////
-  ////////////////////////////////////////////////////////////////
-  G4ThreeVector positionCsI = G4ThreeVector(0, 0, CsI_PosZ);
-  G4Trd* solidCsI = new G4Trd("csI", 0.5*CsIFaceFront, 0.5*CsIFaceBack, 0.5*CsIFaceFront, 0.5*CsIFaceBack, 0.5*CsIThickness);
-
-  G4LogicalVolume* logicCsI = new G4LogicalVolume(solidCsI, m_MaterialAluminium, Name + "_CsI_Mylar", 0, 0, 0);
-  new G4PVPlacement(0, positionCsI, logicCsI, Name + "_CsI_Mylar", logicMM, false, 0);
-
-  G4ThreeVector   positionMylarCsI = G4ThreeVector(0, 0, MylarCsIThickness * 0.5 - CsIThickness * 0.5);
-
-  G4Box*           solidMylarCsI = new G4Box("MylarCsIBox", 0.5*CsIFaceFront, 0.5*CsIFaceFront, 0.5*MylarCsIThickness);
-  G4LogicalVolume* logicMylarCsI = new G4LogicalVolume(solidMylarCsI, m_MaterialMyl, Name + "_CsI_Mylar", 0, 0, 0);
-
-  new G4PVPlacement(0, positionMylarCsI, logicMylarCsI, Name + "_CsI_Mylar", logicCsI, false, 0);
-
-
-  logicCsI->SetVisAttributes(G4VisAttributes::Invisible);
-  logicMylarCsI->SetVisAttributes(G4VisAttributes::Invisible);
-
-  // Cristal1
-  G4Trap* solidCristal1 = new G4Trap("Cristal1", 40.*mm / 2., 6.693896*deg, 41.97814*deg, 33.1*mm / 2., 37.39*mm / 2., 37.39*mm / 2., 0.*deg, 26.9*mm / 2., 30.41*mm / 2., 30.41*mm / 2., 0.*deg);
-  G4LogicalVolume* logicCristal1 = new G4LogicalVolume(solidCristal1, m_MaterialCsI, Name + "_CsI_Cristal1", 0, 0, 0);
-
-  // Cristal2
-  G4Trap* solidCristal2 = new G4Trap("Cristal2", 40.*mm / 2., 17.8836*deg, (74.3122 + 180)*deg, 43.49*mm / 2., 37.39*mm / 2., 37.39*mm / 2., 0.*deg, 31.0377*mm / 2., 30.41*mm / 2., 30.41*mm / 2., 0.*deg);
-  G4LogicalVolume* logicCristal2 = new G4LogicalVolume(solidCristal2, m_MaterialCsI, Name + "_CsI_Cristal2", 0, 0, 0);
-
-  // Cristal3
-  G4Trap* solidCristal3 = new G4Trap("Cristal3", 40.*mm / 2., 18.243*deg, 13.5988*deg, 33.11*mm / 2., 39.25*mm / 2., 39.25*mm / 2., 0.*deg, 26.91*mm / 2., 27.58*mm / 2., 27.58*mm / 2., 0.*deg);
-  G4LogicalVolume* logicCristal3 = new G4LogicalVolume(solidCristal3, m_MaterialCsI, Name + "_CsI_Cristal3", 0, 0, 0);
-
-  // Cristal4
-
-  G4Trap* solidCristal4 = new G4Trap("Cristal4", 40.*mm / 2., 24.0482*deg, 44.1148*deg, 43.49*mm / 2., 39.19*mm / 2., 39.19*mm / 2., 0.*deg, 31.04*mm / 2., 27.52*mm / 2., 27.52*mm / 2., 0.*deg);
-  G4LogicalVolume* logicCristal4 = new G4LogicalVolume(solidCristal4, m_MaterialCsI, Name + "_CsI_Cristal4", 0, 0, 0);
-
-
-  // Cristal1s
-
-  G4Trap* solidCristal1s = new G4Trap("Cristal1s", 40.*mm / 2., 6.693896*deg, -41.97814*deg, 33.1*mm / 2., 37.39*mm / 2., 37.39*mm / 2., 0.*deg, 26.9*mm / 2., 30.41*mm / 2., 30.41*mm / 2., 0.*deg);
-  G4LogicalVolume* logicCristal1s = new G4LogicalVolume(solidCristal1s, m_MaterialCsI, Name + "_CsI_Cristal1s", 0, 0, 0);
-
-  // Cristal2s
-
-  G4Trap* solidCristal2s = new G4Trap("Cristal2s", 40.*mm / 2., 17.8836*deg, -(74.3122 + 180)*deg, 43.49*mm / 2., 37.39*mm / 2., 37.39*mm / 2., 0.*deg, 31.0377*mm / 2., 30.41*mm / 2., 30.41*mm / 2., 0.*deg);
-  G4LogicalVolume* logicCristal2s = new G4LogicalVolume(solidCristal2s, m_MaterialCsI, Name + "_CsI_Cristal2s", 0, 0, 0);
-
-  // Cristal3s
-
-  G4Trap* solidCristal3s = new G4Trap("Cristal3s", 40.*mm / 2., 18.243*deg, -13.5988*deg, 33.11*mm / 2., 39.25*mm / 2., 39.25*mm / 2., 0.*deg, 26.91*mm / 2., 27.58*mm / 2., 27.58*mm / 2., 0.*deg);
-  G4LogicalVolume* logicCristal3s = new G4LogicalVolume(solidCristal3s, m_MaterialCsI, Name + "_CsI_Cristal3s", 0, 0, 0);
-
-  // Cristal4s
-
-  G4Trap* solidCristal4s = new G4Trap("Cristal4s", 40.*mm / 2., 24.0482*deg, -44.1148*deg, 43.49*mm / 2., 39.19*mm / 2., 39.19*mm / 2., 0.*deg, 31.04*mm / 2., 27.52*mm / 2., 27.52*mm / 2., 0.*deg);
-  G4LogicalVolume* logicCristal4s = new G4LogicalVolume(solidCristal4s, m_MaterialCsI, Name + "_CsI_Cristal4s", 0, 0, 0);
-
-  G4double XEdge1 = 16.96 * mm + DistInterCsI * 0.5;
-  G4double YEdge1 = 15.01 * mm + DistInterCsI * 0.5;
-  G4double XEdge2 = 50.63 * mm + DistInterCsI * 1.5;
-  G4double YEdge2 = 48.67 * mm + DistInterCsI * 1.5;
-
-  G4ThreeVector positionCristal1 = G4ThreeVector(-XEdge1, YEdge1, 0 * mm);
-  G4ThreeVector positionCristal2 = G4ThreeVector(-XEdge1, YEdge2, 0);
-  G4ThreeVector positionCristal3 = G4ThreeVector(-XEdge2, YEdge1, 0);
-  G4ThreeVector positionCristal4 = G4ThreeVector(-XEdge2, YEdge2, 0);
-
-  new G4PVPlacement(Rotation(180., 0., 0.), positionCristal1, logicCristal1, Name + "_CsI_Cristal1", logicCsI, false, 1);
-  new G4PVPlacement(Rotation(180., 0., 180.), positionCristal2, logicCristal2, Name + "_CsI_Cristal2", logicCsI, false, 2);
-  new G4PVPlacement(Rotation(180., 0., 0.), positionCristal3, logicCristal3, Name + "_CsI_Cristal3", logicCsI, false, 3);
-  new G4PVPlacement(Rotation(180., 0., 0.), positionCristal4, logicCristal4, Name + "_CsI_Cristal4", logicCsI, false, 4);
-
-
-  G4ThreeVector positionCristal1b = G4ThreeVector(XEdge1, -YEdge1, 0 * mm);
-  G4ThreeVector positionCristal2b = G4ThreeVector(XEdge1, -YEdge2, 0);
-  G4ThreeVector positionCristal3b = G4ThreeVector(XEdge2, -YEdge1, 0);
-  G4ThreeVector positionCristal4b = G4ThreeVector(XEdge2, -YEdge2, 0);
-
-  new G4PVPlacement(Rotation(180., 0., 180.), positionCristal1b, logicCristal1, Name + "_CsI_Cristal5", logicCsI, false, 5);
-  new G4PVPlacement(Rotation(180., 0., 0.), positionCristal2b, logicCristal2, Name + "_CsI_Cristal6", logicCsI, false, 6);
-  new G4PVPlacement(Rotation(180., 0., 180.), positionCristal3b, logicCristal3, Name + "_CsI_Cristal7", logicCsI, false, 7);
-  new G4PVPlacement(Rotation(180., 0., 180.), positionCristal4b, logicCristal4, Name + "_CsI_Cristal8", logicCsI, false, 8);
-
-  G4ThreeVector positionCristal1s = G4ThreeVector(-XEdge1, -YEdge1, 0 * mm);
-  G4ThreeVector positionCristal2s = G4ThreeVector(-XEdge1, -YEdge2, 0);
-  G4ThreeVector positionCristal3s = G4ThreeVector(-XEdge2, -YEdge1, 0);
-  G4ThreeVector positionCristal4s = G4ThreeVector(-XEdge2, -YEdge2, 0);
-
-  new G4PVPlacement(Rotation(180., 0., 0.), positionCristal1s, logicCristal1s, Name + "_CsI_Cristal9", logicCsI, false, 9);
-  new G4PVPlacement(Rotation(180., 0., 180.), positionCristal2s, logicCristal2s, Name + "_CsI_Cristal10", logicCsI, false, 10);
-  new G4PVPlacement(Rotation(180., 0., 0.), positionCristal3s, logicCristal3s, Name + "_CsI_Cristal11", logicCsI, false, 11);
-  new G4PVPlacement(Rotation(180., 0., 0.), positionCristal4s, logicCristal4s, Name + "_CsI_Cristal12", logicCsI, false, 12);
-
-  G4ThreeVector positionCristal1sb = G4ThreeVector(XEdge1, YEdge1, 0 * mm);
-  G4ThreeVector positionCristal2sb = G4ThreeVector(XEdge1, YEdge2, 0);
-  G4ThreeVector positionCristal3sb = G4ThreeVector(XEdge2, YEdge1, 0);
-  G4ThreeVector positionCristal4sb = G4ThreeVector(XEdge2, YEdge2, 0);
-
-  new G4PVPlacement(Rotation(180., 0., 180.), positionCristal1sb, logicCristal1s, Name + "_CsI_Cristal13", logicCsI, false, 13);
-  new G4PVPlacement(Rotation(180, 0, 0), positionCristal2sb, logicCristal2s, Name + "_CsI_Cristal14", logicCsI, false, 14);
-  new G4PVPlacement(Rotation(180., 0., 180.), positionCristal3sb, logicCristal3s, Name + "_CsI_Cristal15", logicCsI, false, 15);
-  new G4PVPlacement(Rotation(180., 0., 180.), positionCristal4sb, logicCristal4s, Name + "_CsI_Cristal16", logicCsI, false, 16);
-
-  ///Set CsI sensible
-  logicCristal1->SetSensitiveDetector(m_CsIScorer);
-  logicCristal2->SetSensitiveDetector(m_CsIScorer);
-  logicCristal3->SetSensitiveDetector(m_CsIScorer);
-  logicCristal4->SetSensitiveDetector(m_CsIScorer);
-
-  logicCristal1s->SetSensitiveDetector(m_CsIScorer);
-  logicCristal2s->SetSensitiveDetector(m_CsIScorer);
-  logicCristal3s->SetSensitiveDetector(m_CsIScorer);
-  logicCristal4s->SetSensitiveDetector(m_CsIScorer);
-
-  //Mark blue a CsI corner crystal to see telescope orientation
-  logicCristal1  ->SetVisAttributes(m_CsIVisAtt);
-  logicCristal2  ->SetVisAttributes(m_CsIVisAtt);
-  logicCristal3  ->SetVisAttributes(m_CsIVisAtt);
-  logicCristal4  ->SetVisAttributes(m_CsIVisAtt);
-  logicCristal1s ->SetVisAttributes(m_CsIVisAtt);
-  logicCristal2s ->SetVisAttributes(m_CsIVisAtt);
-  logicCristal3s ->SetVisAttributes(m_CsIVisAtt);
-  logicCristal4s ->SetVisAttributes(m_CsIVisAtt);
-
-  m_MUST2Full=logicMM;
-  return m_MUST2Full;
-}
-
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void MUST2Array::VolumeMaker( G4int TelescopeNumber,
     G4ThreeVector MMpos,
     G4RotationMatrix* MMrot,
@@ -1149,12 +140,409 @@ void MUST2Array::VolumeMaker( G4int TelescopeNumber,
     bool wCsI,
     G4LogicalVolume* world)
 {
+  G4double NbrTelescopes = TelescopeNumber;
+  G4String DetectorNumber;
+  std::ostringstream Number;
+  Number << NbrTelescopes ;
+  DetectorNumber = Number.str();
 
-  G4LogicalVolume* Must2Telescope;
-  if(wCsI)  Must2Telescope= GetLogicalVolumeMUST2Full();
-  else Must2Telescope= GetLogicalVolumeMUST2Short();
+  ////////////////////////////////////////////////////////////////
+  ////////////// Starting Volume Definition //////////////////////
+  ////////////////////////////////////////////////////////////////
+  G4Trd*           solidMM = new G4Trd("MUST2Telescope" + DetectorNumber, 0.5*FaceFront, 0.5*FaceBack, 0.5*FaceFront, 0.5*FaceBack, 0.5*Length);
+  G4LogicalVolume* logicMM = new G4LogicalVolume(solidMM, m_MaterialIron, "MUST2Telescope" + DetectorNumber, 0, 0, 0);
+  G4String Name = "MUST2Telescope" + DetectorNumber ;
 
-  new G4PVPlacement(G4Transform3D(*MMrot, MMpos), Must2Telescope,"MUST2 Telescope", world, false, TelescopeNumber);
+  new G4PVPlacement(	G4Transform3D(*MMrot, MMpos),
+      logicMM               ,
+      Name                  ,
+      world                 ,
+      false                 ,
+      0                     );
+
+  if (m_non_sensitive_part_visiualisation){
+    G4VisAttributes* FrameVisAtt = new G4VisAttributes(G4Colour(0.80, 0.80, 0.80));
+    FrameVisAtt->SetForceWireframe(true);
+    logicMM->SetVisAttributes(FrameVisAtt)  ;
+  }
+  else                          logicMM->SetVisAttributes(G4VisAttributes::Invisible)               ;
+
+  G4ThreeVector positionVacBox = G4ThreeVector(0, 0, VacBox_PosZ);
+
+  G4Trd*           solidVacBox = new G4Trd("solidVacBox", 0.5*SiliconFace, 0.5*CsIFaceFront, 0.5*SiliconFace, 0.5*CsIFaceFront, 0.5*VacBoxThickness);
+  G4LogicalVolume* logicVacBox = new G4LogicalVolume(solidVacBox, m_MaterialVacuum, "logicVacBox", 0, 0, 0);
+
+
+  new G4PVPlacement(0, positionVacBox, logicVacBox, Name + "_VacBox", logicMM, false, 0);
+
+  logicVacBox->SetVisAttributes(G4VisAttributes::Invisible);
+ 
+  G4VisAttributes* SiliconVisAtt = new G4VisAttributes(G4Colour(0.3, 0.3, 0.3)) ;
+
+  ////////////////////////////////////////////////////////////////
+  /////////////////Si Strip Construction//////////////////////////
+  ////////////////////////////////////////////////////////////////
+
+  if (wSi) {
+    G4ThreeVector positionAluStripFront = G4ThreeVector(0, 0, AluStripFront_PosZ);
+    G4ThreeVector positionAluStripBack  = G4ThreeVector(0, 0, AluStripBack_PosZ);
+
+    G4Box*           solidAluStrip = new G4Box("AluBox", 0.5*SiliconFace, 0.5*SiliconFace, 0.5*AluStripThickness);
+    G4LogicalVolume* logicAluStrip = new G4LogicalVolume(solidAluStrip, m_MaterialAluminium, "logicAluStrip", 0, 0, 0);
+
+    new G4PVPlacement(0, positionAluStripFront, logicAluStrip, Name + "_AluStripFront", logicMM, false, 0);
+    new G4PVPlacement(0, positionAluStripBack, logicAluStrip, Name + "_AluStripBack", logicMM, false, 0);
+
+    logicAluStrip->SetVisAttributes(G4VisAttributes::Invisible);
+
+    G4ThreeVector  positionSilicon = G4ThreeVector(0, 0, Silicon_PosZ);
+
+    G4Box*           solidSilicon = new G4Box("solidSilicon", 0.5*SiliconFace, 0.5*SiliconFace, 0.5*SiliconThickness);
+    G4LogicalVolume* logicSilicon = new G4LogicalVolume(solidSilicon, m_MaterialSilicon, "logicSilicon", 0, 0, 0);
+
+    new G4PVPlacement(0, positionSilicon, logicSilicon, Name + "_Silicon", logicMM, false, 0);
+
+
+    ///Set Silicon strip sensible
+    logicSilicon->SetSensitiveDetector(m_StripScorer);
+     
+    ///Visualisation of Silicon Strip
+    logicSilicon->SetVisAttributes(SiliconVisAtt)                        ;
+  }
+
+  ////////////////////////////////////////////////////////////////
+  //////////////////// SiLi  Construction ////////////////////////
+  ////////////////////////////////////////////////////////////////
+
+  if (wSiLi) {
+    G4double SiLiSpace = 8 * mm;
+    G4RotationMatrix* rotSiLi = new G4RotationMatrix(0,0,0); 
+    G4Box* solidSiLi = new G4Box("SiLi", 0.5*SiliconFace+0.5*SiLiSpace, 0.5*SiliconFace, 0.5*SiLiThickness);
+    G4LogicalVolume* logicSiLi = new G4LogicalVolume(solidSiLi, m_MaterialAluminium, Name + "_SiLi" , 0, 0, 0);
+
+    logicSiLi->SetVisAttributes(G4VisAttributes::Invisible);
+
+    new G4PVPlacement(  G4Transform3D(*rotSiLi, G4ThreeVector(0,0,0) ) 	,
+        logicSiLi ,
+        Name + "_SiLi",
+        logicVacBox ,
+        false ,
+        0);
+
+    // SiLi are placed inside of the VacBox...
+    // Left/Right define when looking to detector from Si to CsI
+    G4double SiLi_HighY_Upper 	= 19.86 * mm;
+    G4double SiLi_HighY_Center = 25.39 * mm;
+    G4double SiLi_WidthX_Left  = 22.85 * mm;
+    G4double SiLi_WidthX_Right = 24.9  * mm;
+    G4double SiLi_ShiftX    	= 0.775 * mm;
+
+    //	SiLi are organized by two group of 8 Up(9 to 15) and Down(1 to 8).
+    G4ThreeVector ShiftSiLiUp 	 = G4ThreeVector(-0.25 * SiliconFace - 0.5 * SiLiSpace, 0, 0)	;
+    G4ThreeVector ShiftSiLiDown  = G4ThreeVector(0.25  * SiliconFace + 0.5 * SiLiSpace, 0, 0)	;
+
+    // SiLi : left side of SiLi detector
+    G4Box* solidSiLi_LT  = new G4Box("SiLi_LT"  , 0.5*SiLi_WidthX_Left  , 0.5*SiLi_HighY_Upper   , 0.5*SiLiThickness);
+    G4Box* solidSiLi_RT  = new G4Box("SiLi_RT"  , 0.5*SiLi_WidthX_Right , 0.5*SiLi_HighY_Upper   , 0.5*SiLiThickness);
+    G4Box* solidSiLi_LC1 = new G4Box("SiLi_LC1" , 0.5*SiLi_WidthX_Left  , 0.5*SiLi_HighY_Center  , 0.5*SiLiThickness);
+    G4Box* solidSiLi_RC1 = new G4Box("SiLi_RC1" , 0.5*SiLi_WidthX_Right , 0.5*SiLi_HighY_Center  , 0.5*SiLiThickness);
+    G4Box* solidSiLi_LB  = new G4Box("SiLi_LB"  , 0.5*SiLi_WidthX_Left  , 0.5*SiLi_HighY_Upper   , 0.5*SiLiThickness);
+    G4Box* solidSiLi_RB  = new G4Box("SiLi_RB"  , 0.5*SiLi_WidthX_Right , 0.5*SiLi_HighY_Upper   , 0.5*SiLiThickness);
+    G4Box* solidSiLi_LC2 = new G4Box("SiLi_LC2" , 0.5*SiLi_WidthX_Left  , 0.5*SiLi_HighY_Center  , 0.5*SiLiThickness);
+    G4Box* solidSiLi_RC2 = new G4Box("SiLi_RC2" , 0.5*SiLi_WidthX_Right , 0.5*SiLi_HighY_Center  , 0.5*SiLiThickness);
+
+    G4LogicalVolume* logicSiLi_LT    = new G4LogicalVolume(solidSiLi_LT   , m_MaterialSilicon , "SiLi_LT"  , 0 , 0 , 0);
+    G4LogicalVolume* logicSiLi_RT    = new G4LogicalVolume(solidSiLi_RT   , m_MaterialSilicon , "SiLi_RT"  , 0 , 0 , 0);
+    G4LogicalVolume* logicSiLi_LC1   = new G4LogicalVolume(solidSiLi_LC1  , m_MaterialSilicon , "SiLi_LC1" , 0 , 0 , 0);
+    G4LogicalVolume* logicSiLi_RC1   = new G4LogicalVolume(solidSiLi_RC1  , m_MaterialSilicon , "SiLi_RC1" , 0 , 0 , 0);
+    G4LogicalVolume* logicSiLi_LB    = new G4LogicalVolume(solidSiLi_LB   , m_MaterialSilicon , "SiLi_LB"  , 0 , 0 , 0);
+    G4LogicalVolume* logicSiLi_RB    = new G4LogicalVolume(solidSiLi_RB   , m_MaterialSilicon , "SiLi_RB"  , 0 , 0 , 0);
+    G4LogicalVolume* logicSiLi_LC2   = new G4LogicalVolume(solidSiLi_LC2  , m_MaterialSilicon , "SiLi_LC2" , 0 , 0 , 0);
+    G4LogicalVolume* logicSiLi_RC2   = new G4LogicalVolume(solidSiLi_RC2  , m_MaterialSilicon , "SiLi_RC2" , 0 , 0 , 0);
+
+    G4double interSiLi = 0.5 * mm;
+
+    // Top
+    G4ThreeVector positionSiLi_LT_up = G4ThreeVector(  -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX ,
+        0.5 * SiLi_HighY_Upper  + SiLi_HighY_Center + 1.5 * interSiLi,
+        0);
+
+    positionSiLi_LT_up += ShiftSiLiUp ;
+
+    G4ThreeVector positionSiLi_RT_up = G4ThreeVector(  0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
+        0.5 * SiLi_HighY_Upper  + SiLi_HighY_Center + 1.5 * interSiLi,
+        0);
+
+    positionSiLi_RT_up += ShiftSiLiUp ;
+
+    G4ThreeVector positionSiLi_LC1_up = G4ThreeVector( -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX ,
+        0.5 * SiLi_HighY_Center + 0.5 * interSiLi,
+        0);
+
+    positionSiLi_LC1_up += ShiftSiLiUp ;
+
+    G4ThreeVector positionSiLi_RC1_up = G4ThreeVector( 0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
+        0.5 * SiLi_HighY_Center + 0.5 * interSiLi,
+        0);
+
+    positionSiLi_RC1_up += ShiftSiLiUp ;
+
+    G4ThreeVector positionSiLi_LB_up = G4ThreeVector(  -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX ,
+        -0.5 * SiLi_HighY_Upper  - SiLi_HighY_Center - 1.5 * interSiLi ,
+        0);
+
+    positionSiLi_LB_up += ShiftSiLiUp ;
+
+    G4ThreeVector positionSiLi_RB_up = G4ThreeVector(  0.5 * SiLi_WidthX_Right - SiLi_ShiftX ,
+        -0.5 * SiLi_HighY_Upper  - SiLi_HighY_Center - 1.5 * interSiLi ,
+        0);
+
+    positionSiLi_RB_up += ShiftSiLiUp ;
+
+    G4ThreeVector positionSiLi_LC2_up = G4ThreeVector( -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX ,
+        -0.5 * SiLi_HighY_Center - 0.5 * interSiLi,
+        0);
+
+    positionSiLi_LC2_up += ShiftSiLiUp ;
+
+    G4ThreeVector positionSiLi_RC2_up = G4ThreeVector( 0.5 * SiLi_WidthX_Right - SiLi_ShiftX ,
+        -0.5 * SiLi_HighY_Center - 0.5 * interSiLi  ,
+        0);
+
+    positionSiLi_RC2_up += ShiftSiLiUp ;
+
+
+    // Down
+    G4ThreeVector positionSiLi_LT_down = G4ThreeVector(   -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX,
+        0.5 * SiLi_HighY_Upper  + SiLi_HighY_Center + 1.5 * interSiLi,
+        0);
+
+    positionSiLi_LT_down += ShiftSiLiDown ;
+
+    G4ThreeVector positionSiLi_RT_down = G4ThreeVector(   0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
+        0.5 * SiLi_HighY_Upper  + SiLi_HighY_Center + 1.5 * interSiLi,
+        0);
+
+    positionSiLi_RT_down += ShiftSiLiDown ;
+
+    G4ThreeVector positionSiLi_LC1_down = G4ThreeVector(  -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX,
+        0.5 * SiLi_HighY_Center + 0.5 * interSiLi,
+        0);
+
+    positionSiLi_LC1_down += ShiftSiLiDown ;
+
+    G4ThreeVector positionSiLi_RC1_down = G4ThreeVector(  0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
+        0.5 * SiLi_HighY_Center + 0.5 * interSiLi ,
+        0);
+
+    positionSiLi_RC1_down += ShiftSiLiDown ;
+
+    G4ThreeVector positionSiLi_LB_down = G4ThreeVector(   -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX,
+        -0.5 * SiLi_HighY_Upper  - SiLi_HighY_Center - 1.5 * interSiLi,
+        0);
+
+    positionSiLi_LB_down += ShiftSiLiDown ;
+
+    G4ThreeVector positionSiLi_RB_down = G4ThreeVector(   0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
+        -0.5 * SiLi_HighY_Upper  - SiLi_HighY_Center - 1.5 * interSiLi,
+        0);
+
+    positionSiLi_RB_down += ShiftSiLiDown ;
+
+    G4ThreeVector positionSiLi_LC2_down = G4ThreeVector(  -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX,
+        -0.5 * SiLi_HighY_Center - 0.5 * interSiLi,
+        0);
+
+    positionSiLi_LC2_down += ShiftSiLiDown ;
+
+    G4ThreeVector positionSiLi_RC2_down = G4ThreeVector(  0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
+        -0.5 * SiLi_HighY_Center - 0.5 * interSiLi,
+        0);
+
+    positionSiLi_RC2_down += ShiftSiLiDown ;
+
+
+    // up
+    new G4PVPlacement(0 , positionSiLi_LT_up  , logicSiLi_LT  , Name + "_SiLi_Pad9"   , logicSiLi , false , 0)  ;
+    new G4PVPlacement(0 , positionSiLi_RT_up  , logicSiLi_RT  , Name + "_SiLi_Pad10"  , logicSiLi , false , 0)  ;
+    new G4PVPlacement(0 , positionSiLi_LC1_up , logicSiLi_LC1 , Name + "_SiLi_Pad11" 	, logicSiLi , false , 0);
+    new G4PVPlacement(0 , positionSiLi_RC1_up , logicSiLi_RC1 , Name + "_SiLi_Pad12" 	, logicSiLi , false , 0);
+
+    new G4PVPlacement(0 , positionSiLi_LB_up  , logicSiLi_LB  , Name + "_SiLi_Pad16"  , logicSiLi , false , 0)  ;
+    new G4PVPlacement(0 , positionSiLi_RB_up  , logicSiLi_RB  , Name + "_SiLi_Pad15"  , logicSiLi , false , 0)  ;
+    new G4PVPlacement(0 , positionSiLi_LC2_up , logicSiLi_LC2 , Name + "_SiLi_Pad14" 	, logicSiLi , false , 0);
+    new G4PVPlacement(0 , positionSiLi_RC2_up , logicSiLi_RC2 , Name + "_SiLi_Pad13" 	, logicSiLi , false , 0);
+
+
+    // down
+    new G4PVPlacement(0 , positionSiLi_LT_down  , logicSiLi_LT  , Name + "_SiLi_Pad2"  , logicSiLi , false , 0) ;
+    new G4PVPlacement(0 , positionSiLi_RT_down  , logicSiLi_RT  , Name + "_SiLi_Pad1"  , logicSiLi , false , 0) ;
+    new G4PVPlacement(0 , positionSiLi_LC1_down , logicSiLi_LC1 , Name + "_SiLi_Pad4" 	, logicSiLi , false , 0) ;
+    new G4PVPlacement(0 , positionSiLi_RC1_down , logicSiLi_RC1 , Name + "_SiLi_Pad3" 	, logicSiLi , false , 0) ;
+
+    new G4PVPlacement(0 , positionSiLi_LB_down  , logicSiLi_LB  , Name + "_SiLi_Pad7"  , logicSiLi , false , 0) ;
+    new G4PVPlacement(0 , positionSiLi_RB_down  , logicSiLi_RB  , Name + "_SiLi_Pad8"  , logicSiLi , false , 0) ;
+    new G4PVPlacement(0 , positionSiLi_LC2_down , logicSiLi_LC2 , Name + "_SiLi_Pad5" 	, logicSiLi , false , 0) ;
+    new G4PVPlacement(0 , positionSiLi_RC2_down , logicSiLi_RC2 , Name + "_SiLi_Pad6" 	, logicSiLi , false , 0) ;
+
+    // Set SiLi sensible
+    logicSiLi_LT->SetSensitiveDetector(m_SiLiScorer);
+    logicSiLi_RT->SetSensitiveDetector(m_SiLiScorer);
+    logicSiLi_LC1->SetSensitiveDetector(m_SiLiScorer);
+    logicSiLi_RC1->SetSensitiveDetector(m_SiLiScorer);
+
+    logicSiLi_LB->SetSensitiveDetector(m_SiLiScorer);
+    logicSiLi_RB->SetSensitiveDetector(m_SiLiScorer);
+    logicSiLi_LC2->SetSensitiveDetector(m_SiLiScorer);
+    logicSiLi_RC2->SetSensitiveDetector(m_SiLiScorer);
+
+    // Mark blue a SiLi to see telescope orientation
+    G4VisAttributes* SiLiVisAtt = new G4VisAttributes(G4Colour(0.3, 1, 0.3));
+
+    logicSiLi_LT->SetVisAttributes(SiLiVisAtt);
+    logicSiLi_RT->SetVisAttributes(SiLiVisAtt);
+    logicSiLi_LC1->SetVisAttributes(SiLiVisAtt);
+    logicSiLi_RC1->SetVisAttributes(SiLiVisAtt);
+
+    logicSiLi_LB->SetVisAttributes(SiLiVisAtt);
+    logicSiLi_RB->SetVisAttributes(SiLiVisAtt);
+    logicSiLi_LC2->SetVisAttributes(SiLiVisAtt);
+    logicSiLi_RC2->SetVisAttributes(SiLiVisAtt);
+
+
+    delete rotSiLi;
+  }
+
+  ////////////////////////////////////////////////////////////////
+  //////////////////// CsI  Construction//////////////////////////
+  ////////////////////////////////////////////////////////////////
+
+  if (wCsI) {
+
+    G4ThreeVector positionCsI = G4ThreeVector(0, 0, CsI_PosZ);
+    G4Trd* solidCsI = new G4Trd("csI", 0.5*CsIFaceFront, 0.5*CsIFaceBack, 0.5*CsIFaceFront, 0.5*CsIFaceBack, 0.5*CsIThickness);
+
+    G4LogicalVolume* logicCsI = new G4LogicalVolume(solidCsI, m_MaterialAluminium, Name + "_CsI_Mylar", 0, 0, 0);
+    new G4PVPlacement(0, positionCsI, logicCsI, Name + "_CsI_Mylar", logicMM, false, 0);
+
+    G4ThreeVector   positionMylarCsI = G4ThreeVector(0, 0, MylarCsIThickness * 0.5 - CsIThickness * 0.5);
+
+    G4Box*           solidMylarCsI = new G4Box("MylarCsIBox", 0.5*CsIFaceFront, 0.5*CsIFaceFront, 0.5*MylarCsIThickness);
+    G4LogicalVolume* logicMylarCsI = new G4LogicalVolume(solidMylarCsI, m_MaterialMyl, Name + "_CsI_Mylar", 0, 0, 0);
+
+    new G4PVPlacement(0, positionMylarCsI, logicMylarCsI, Name + "_CsI_Mylar", logicCsI, false, 0);
+
+
+    logicCsI->SetVisAttributes(G4VisAttributes::Invisible);
+    logicMylarCsI->SetVisAttributes(G4VisAttributes::Invisible);
+
+    // Cristal1
+    G4Trap* solidCristal1 = new G4Trap("Cristal1", 40.*mm / 2., 6.693896*deg, 41.97814*deg, 33.1*mm / 2., 37.39*mm / 2., 37.39*mm / 2., 0.*deg, 26.9*mm / 2., 30.41*mm / 2., 30.41*mm / 2., 0.*deg);
+    G4LogicalVolume* logicCristal1 = new G4LogicalVolume(solidCristal1, m_MaterialCsI, Name + "_CsI_Cristal1", 0, 0, 0);
+
+    // Cristal2
+    G4Trap* solidCristal2 = new G4Trap("Cristal2", 40.*mm / 2., 17.8836*deg, (74.3122 + 180)*deg, 43.49*mm / 2., 37.39*mm / 2., 37.39*mm / 2., 0.*deg, 31.0377*mm / 2., 30.41*mm / 2., 30.41*mm / 2., 0.*deg);
+    G4LogicalVolume* logicCristal2 = new G4LogicalVolume(solidCristal2, m_MaterialCsI, Name + "_CsI_Cristal2", 0, 0, 0);
+
+    // Cristal3
+    G4Trap* solidCristal3 = new G4Trap("Cristal3", 40.*mm / 2., 18.243*deg, 13.5988*deg, 33.11*mm / 2., 39.25*mm / 2., 39.25*mm / 2., 0.*deg, 26.91*mm / 2., 27.58*mm / 2., 27.58*mm / 2., 0.*deg);
+    G4LogicalVolume* logicCristal3 = new G4LogicalVolume(solidCristal3, m_MaterialCsI, Name + "_CsI_Cristal3", 0, 0, 0);
+
+    // Cristal4
+
+    G4Trap* solidCristal4 = new G4Trap("Cristal4", 40.*mm / 2., 24.0482*deg, 44.1148*deg, 43.49*mm / 2., 39.19*mm / 2., 39.19*mm / 2., 0.*deg, 31.04*mm / 2., 27.52*mm / 2., 27.52*mm / 2., 0.*deg);
+    G4LogicalVolume* logicCristal4 = new G4LogicalVolume(solidCristal4, m_MaterialCsI, Name + "_CsI_Cristal4", 0, 0, 0);
+
+
+    // Cristal1s
+
+    G4Trap* solidCristal1s = new G4Trap("Cristal1s", 40.*mm / 2., 6.693896*deg, -41.97814*deg, 33.1*mm / 2., 37.39*mm / 2., 37.39*mm / 2., 0.*deg, 26.9*mm / 2., 30.41*mm / 2., 30.41*mm / 2., 0.*deg);
+    G4LogicalVolume* logicCristal1s = new G4LogicalVolume(solidCristal1s, m_MaterialCsI, Name + "_CsI_Cristal1s", 0, 0, 0);
+
+    // Cristal2s
+
+    G4Trap* solidCristal2s = new G4Trap("Cristal2s", 40.*mm / 2., 17.8836*deg, -(74.3122 + 180)*deg, 43.49*mm / 2., 37.39*mm / 2., 37.39*mm / 2., 0.*deg, 31.0377*mm / 2., 30.41*mm / 2., 30.41*mm / 2., 0.*deg);
+    G4LogicalVolume* logicCristal2s = new G4LogicalVolume(solidCristal2s, m_MaterialCsI, Name + "_CsI_Cristal2s", 0, 0, 0);
+
+    // Cristal3s
+
+    G4Trap* solidCristal3s = new G4Trap("Cristal3s", 40.*mm / 2., 18.243*deg, -13.5988*deg, 33.11*mm / 2., 39.25*mm / 2., 39.25*mm / 2., 0.*deg, 26.91*mm / 2., 27.58*mm / 2., 27.58*mm / 2., 0.*deg);
+    G4LogicalVolume* logicCristal3s = new G4LogicalVolume(solidCristal3s, m_MaterialCsI, Name + "_CsI_Cristal3s", 0, 0, 0);
+
+    // Cristal4s
+
+    G4Trap* solidCristal4s = new G4Trap("Cristal4s", 40.*mm / 2., 24.0482*deg, -44.1148*deg, 43.49*mm / 2., 39.19*mm / 2., 39.19*mm / 2., 0.*deg, 31.04*mm / 2., 27.52*mm / 2., 27.52*mm / 2., 0.*deg);
+    G4LogicalVolume* logicCristal4s = new G4LogicalVolume(solidCristal4s, m_MaterialCsI, Name + "_CsI_Cristal4s", 0, 0, 0);
+
+    G4double XEdge1 = 16.96 * mm + DistInterCsI * 0.5;
+    G4double YEdge1 = 15.01 * mm + DistInterCsI * 0.5;
+    G4double XEdge2 = 50.63 * mm + DistInterCsI * 1.5;
+    G4double YEdge2 = 48.67 * mm + DistInterCsI * 1.5;
+
+    G4ThreeVector positionCristal1 = G4ThreeVector(-XEdge1, YEdge1, 0 * mm);
+    G4ThreeVector positionCristal2 = G4ThreeVector(-XEdge1, YEdge2, 0);
+    G4ThreeVector positionCristal3 = G4ThreeVector(-XEdge2, YEdge1, 0);
+    G4ThreeVector positionCristal4 = G4ThreeVector(-XEdge2, YEdge2, 0);
+
+    new G4PVPlacement(Rotation(180., 0., 0.), positionCristal1, logicCristal1, Name + "_CsI_Cristal1", logicCsI, false, 1);
+    new G4PVPlacement(Rotation(180., 0., 180.), positionCristal2, logicCristal2, Name + "_CsI_Cristal2", logicCsI, false, 2);
+    new G4PVPlacement(Rotation(180., 0., 0.), positionCristal3, logicCristal3, Name + "_CsI_Cristal3", logicCsI, false, 3);
+    new G4PVPlacement(Rotation(180., 0., 0.), positionCristal4, logicCristal4, Name + "_CsI_Cristal4", logicCsI, false, 4);
+
+
+    G4ThreeVector positionCristal1b = G4ThreeVector(XEdge1, -YEdge1, 0 * mm);
+    G4ThreeVector positionCristal2b = G4ThreeVector(XEdge1, -YEdge2, 0);
+    G4ThreeVector positionCristal3b = G4ThreeVector(XEdge2, -YEdge1, 0);
+    G4ThreeVector positionCristal4b = G4ThreeVector(XEdge2, -YEdge2, 0);
+
+    new G4PVPlacement(Rotation(180., 0., 180.), positionCristal1b, logicCristal1, Name + "_CsI_Cristal5", logicCsI, false, 5);
+    new G4PVPlacement(Rotation(180., 0., 0.), positionCristal2b, logicCristal2, Name + "_CsI_Cristal6", logicCsI, false, 6);
+    new G4PVPlacement(Rotation(180., 0., 180.), positionCristal3b, logicCristal3, Name + "_CsI_Cristal7", logicCsI, false, 7);
+    new G4PVPlacement(Rotation(180., 0., 180.), positionCristal4b, logicCristal4, Name + "_CsI_Cristal8", logicCsI, false, 8);
+
+    G4ThreeVector positionCristal1s = G4ThreeVector(-XEdge1, -YEdge1, 0 * mm);
+    G4ThreeVector positionCristal2s = G4ThreeVector(-XEdge1, -YEdge2, 0);
+    G4ThreeVector positionCristal3s = G4ThreeVector(-XEdge2, -YEdge1, 0);
+    G4ThreeVector positionCristal4s = G4ThreeVector(-XEdge2, -YEdge2, 0);
+
+    new G4PVPlacement(Rotation(180., 0., 0.), positionCristal1s, logicCristal1s, Name + "_CsI_Cristal9", logicCsI, false, 9);
+    new G4PVPlacement(Rotation(180., 0., 180.), positionCristal2s, logicCristal2s, Name + "_CsI_Cristal10", logicCsI, false, 10);
+    new G4PVPlacement(Rotation(180., 0., 0.), positionCristal3s, logicCristal3s, Name + "_CsI_Cristal11", logicCsI, false, 11);
+    new G4PVPlacement(Rotation(180., 0., 0.), positionCristal4s, logicCristal4s, Name + "_CsI_Cristal12", logicCsI, false, 12);
+
+    G4ThreeVector positionCristal1sb = G4ThreeVector(XEdge1, YEdge1, 0 * mm);
+    G4ThreeVector positionCristal2sb = G4ThreeVector(XEdge1, YEdge2, 0);
+    G4ThreeVector positionCristal3sb = G4ThreeVector(XEdge2, YEdge1, 0);
+    G4ThreeVector positionCristal4sb = G4ThreeVector(XEdge2, YEdge2, 0);
+
+    new G4PVPlacement(Rotation(180., 0., 180.), positionCristal1sb, logicCristal1s, Name + "_CsI_Cristal13", logicCsI, false, 13);
+    new G4PVPlacement(Rotation(180, 0, 0), positionCristal2sb, logicCristal2s, Name + "_CsI_Cristal14", logicCsI, false, 14);
+    new G4PVPlacement(Rotation(180., 0., 180.), positionCristal3sb, logicCristal3s, Name + "_CsI_Cristal15", logicCsI, false, 15);
+    new G4PVPlacement(Rotation(180., 0., 180.), positionCristal4sb, logicCristal4s, Name + "_CsI_Cristal16", logicCsI, false, 16);
+
+    ///Set CsI sensible
+    logicCristal1->SetSensitiveDetector(m_CsIScorer);
+    logicCristal2->SetSensitiveDetector(m_CsIScorer);
+    logicCristal3->SetSensitiveDetector(m_CsIScorer);
+    logicCristal4->SetSensitiveDetector(m_CsIScorer);
+
+    logicCristal1s->SetSensitiveDetector(m_CsIScorer);
+    logicCristal2s->SetSensitiveDetector(m_CsIScorer);
+    logicCristal3s->SetSensitiveDetector(m_CsIScorer);
+    logicCristal4s->SetSensitiveDetector(m_CsIScorer);
+
+    //Mark blue a CsI corner crystal to see telescope orientation
+    G4VisAttributes* CsIVisAtt = new G4VisAttributes(G4Colour(1, 0.5, 0));
+    logicCristal1  ->SetVisAttributes(CsIVisAtt);
+    logicCristal2  ->SetVisAttributes(CsIVisAtt);
+    logicCristal3  ->SetVisAttributes(CsIVisAtt);
+    logicCristal4  ->SetVisAttributes(CsIVisAtt);
+    logicCristal1s ->SetVisAttributes(CsIVisAtt);
+    logicCristal2s ->SetVisAttributes(CsIVisAtt);
+    logicCristal3s ->SetVisAttributes(CsIVisAtt);
+    logicCristal4s ->SetVisAttributes(CsIVisAtt);
+
+  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -1886,8 +1274,8 @@ void MUST2Array::InitializeScorers() {
   G4VPrimitiveScorer* Energy 									= new OBSOLETEGENERALSCORERS::PSEnergy("StripEnergy","MUST2Telescope", 0);			
   G4VPrimitiveScorer* TOF 										= new OBSOLETEGENERALSCORERS::PSTOF("StripTime","MUST2Telescope", 0);          					 		 
 
-  G4VPrimitiveScorer* StripPositionX							= new PSStripNumberX("StripNumberX", 0, ActiveWaferSize, 128);
-  G4VPrimitiveScorer* StripPositionY							= new PSStripNumberY("StripNumberY", 0, ActiveWaferSize, 128);  		
+  G4VPrimitiveScorer* StripPositionX							= new PSStripNumberX("StripNumberX", 0, SiliconFace, 128);
+  G4VPrimitiveScorer* StripPositionY							= new PSStripNumberY("StripNumberY", 0, SiliconFace, 128);  		
 
   G4VPrimitiveScorer* InteractionCoordinatesX 				= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","MUST2Telescope", 0);
   G4VPrimitiveScorer* InteractionCoordinatesY				= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","MUST2Telescope", 0);
@@ -1944,7 +1332,12 @@ void MUST2Array::InitializeMaterial(){
   G4Element* O   = new G4Element("Oxigen"   , symbol = "O"  , z = 8  , a = 16.00  * g / mole);
   G4Element* I   = new G4Element("Iode"     , symbol = "I"  , z = 53 , a = 126.9  * g / mole);
   G4Element* Cs  = new G4Element("Cesium"   , symbol = "Cs" , z = 55 , a = 132.9  * g / mole);
+
+  G4Element* Co  = new G4Element("Cobalt"  , symbol = "Co" , z = 27 , a = 58.933 * g / mole);
+  G4Element* Cr  = new G4Element("Cromium"  , symbol = "Cr" , z = 24 , a = 51.996 * g / mole);
+  G4Element* Ni  = new G4Element("Nickel"   , symbol = "Ni" , z = 28 , a = 58.69  * g / mole);
   G4Element* Fe  = new G4Element("Iron"     , symbol = "Fe" , z = 26 , a = 55.847 * g / mole);
+  G4Element* W   = new G4Element("Tungsten" , symbol = "W"  , z = 74 , a = 183.5  * g / mole);
 
   ////////////////////////////////////////////////////////////////
   /////////////////Material Definition ///////////////////////////
@@ -1984,6 +1377,13 @@ void MUST2Array::InitializeMaterial(){
   m_MaterialMyl->AddElement(H, natoms = 8);
   m_MaterialMyl->AddElement(O, natoms = 4);
 
+  // Havar
+  m_MaterialHarvar = new G4Material("Havar", 8.3*g / cm3, 5);
+  m_MaterialHarvar->AddElement(Co , 42);
+  m_MaterialHarvar->AddElement(Cr , 20);
+  m_MaterialHarvar->AddElement(Ni , 13);
+  m_MaterialHarvar->AddElement(Fe , 19);
+  m_MaterialHarvar->AddElement(W  ,  1);
 }
 
 

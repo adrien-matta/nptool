@@ -687,10 +687,10 @@ void TSharcPhysics::AddBoxDetector(double Z){
   for(int i = 0 ; i < 4 ; i++){
     m_NumberOfDetector++;
     if(Z<0){// Up Stream
-      if(i==0)      {U=TVector3(1,0,0);V=TVector3(0,0,1);  Strip_1_1=TVector3(-36,40.5,Z-BOX_Wafer_Width/2.+5.4)   ;}
-      else if(i==1) {U=TVector3(0,1,0);V=TVector3(0,0,1);  Strip_1_1=TVector3(-40.5,-36,Z-BOX_Wafer_Width/2.+5.4)  ;}
-      else if(i==2) {U=TVector3(-1,0,0);V=TVector3(0,0,1); Strip_1_1=TVector3(36,-40.5,Z-BOX_Wafer_Width/2.+5.4)   ;}
-      else if(i==3) {U=TVector3(0,-1,0);V=TVector3(0,0,1); Strip_1_1=TVector3(40.5,36,Z-BOX_Wafer_Width/2.+5.4)    ;}
+      if(i==0)      {U=TVector3(1,0,0);V=TVector3(0,0,1);  Strip_1_1=TVector3(-36,40.5,Z-BOX_Wafer_Width/2.)   ;}
+      else if(i==1) {U=TVector3(0,1,0);V=TVector3(0,0,1);  Strip_1_1=TVector3(-40.5,-36,Z-BOX_Wafer_Width/2.)  ;}
+      else if(i==2) {U=TVector3(-1,0,0);V=TVector3(0,0,1); Strip_1_1=TVector3(36,-40.5,Z-BOX_Wafer_Width/2.)   ;}
+      else if(i==3) {U=TVector3(0,-1,0);V=TVector3(0,0,1); Strip_1_1=TVector3(40.5,36,Z-BOX_Wafer_Width/2.)    ;}
     }
     
     if(Z>0){//Down Stream

@@ -98,4 +98,4 @@ void GeometricalEfficiency(const char * fname = "myResult"){
   SolidACM->GetXaxis()->SetTitle("#theta_{CM} (deg)");
   SolidACM->GetYaxis()->SetTitle("d#Omega (sr) ");
   c4->Update();
-}
+
