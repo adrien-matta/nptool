@@ -253,7 +253,12 @@ void PhysicsList::ConstructEM(){
                particleName == "mu-") {
     }
     
-    else if (particleName == "GenericIon") {
+    else if ( particleName == "GenericIon" 
+              || particleName == "He3"
+              || particleName == "alpha"
+              || particleName == "deuteron"
+              || particleName == "triton"
+              || particleName == "proton") {
       pmanager->AddProcess(new G4hMultipleScattering(), -1, 1, 1) ;
       G4ionIonisation* iI = new G4ionIonisation ;
       iI->ActivateStoppingData(true) ;
@@ -275,7 +280,7 @@ void PhysicsList::ConstructEM(){
   G4EmProcessOptions opt        ;
   opt.SetSubCutoff(true)        ;
   opt.SetMinEnergy(0.001*eV)    ;
-  opt.SetMaxEnergy(1000.*MeV)    ;
+  opt.SetMaxEnergy(10.*MeV)    ;
   opt.SetDEDXBinning(1000)       ;
   opt.SetLambdaBinning(1000)     ;
 }

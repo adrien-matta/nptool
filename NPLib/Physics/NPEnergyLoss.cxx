@@ -96,7 +96,7 @@ EnergyLoss::EnergyLoss(string Path , string Source, int NumberOfSlice=100 ,  int
             {
                fEnergy.push_back ( energy*MeV );
                TableFile >> total;
-               fdEdX_Total.push_back ( total*MeV/micrometer );
+               fdEdX_Total.push_back ( total*(MeV/micrometer) );
             }
       
          // Close File

@@ -618,20 +618,21 @@ void Target::WriteDEDXTable(G4ParticleDefinition* Particle ,G4double Emin,G4doub
       << "Particle: " << Particle->GetParticleName() << "\tMaterial: " << m_TargetMaterial->GetName() << endl ;
 
     G4EmCalculator emCalculator;
+   G4double dedx ;
     // Tipical Range needed, if Emax is larger, then adapted
     if(Emax < 25000) Emax = 25000;    
-
     double step = 1*keV;
     double before = 0 ;
     for (G4double E=Emin; E < Emax; E+=step){
-      G4double dedx = emCalculator.ComputeTotalDEDX(E, Particle, m_TargetMaterial);
+       
+      dedx = emCalculator.ComputeTotalDEDX(E, Particle, m_TargetMaterial)/(MeV/micrometer);
 
       if(before){
         if(abs(before-dedx)/abs(before)<0.01) step*=10; 
       }
 
       before = dedx;
-      File << E/MeV << "\t" << dedx/(MeV/micrometer) << endl ;
+      File << E/MeV << "\t" << dedx << endl ;
     }
 
     File.close();

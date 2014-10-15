@@ -14,16 +14,16 @@
 
 Beam
   Particle= 11Li
-  Energy= 550
-	SigmaEnergy= 0
-	SigmaThetaX= 1
-	SigmaPhiY= 1
-	SigmaX= 1
-	SigmaY= 1
+  Energy= 553
+	SigmaEnergy= 20
+	SigmaThetaX= 0.6138
+	SigmaPhiY= 0.3812
+	SigmaX= 6.216
+	SigmaY= 6.109
   MeanThetaX= 0
   MeanPhiY= 0
-  MeanX= 0
-  MeanY= 0
+  MeanX= 1.773
+  MeanY= -0.1375
   %EnergyProfilePath=
   %XThetaXProfilePath=
   %YPhiYProfilePath=
@@ -36,10 +36,10 @@ TwoBodyReaction
 	Light= 3He
 	Heavy= 10He
 	ExcitationEnergyLight= 0.0
-	ExcitationEnergyHeavy= 1.3
+	ExcitationEnergyHeavy= 10.0
   CrossSectionPath= 11Li(d,3He)10He.txt	CS10He
 	ShootLight= 1
-	ShootHeavy= 1
+	ShootHeavy= 0
   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
