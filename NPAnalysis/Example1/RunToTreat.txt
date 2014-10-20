@@ -1,15 +1,5 @@
 TTreeName 
 	SimulatedTree
 RootFileName 
-	../../Outputs/Simulation/He10_10.root
-%  ../../Outputs/Simulation/He10_1.root
-%  ../../Outputs/Simulation/He10_2.root
-%  ../../Outputs/Simulation/He10_3.root
-%  ../../Outputs/Simulation/He10_4.root
-%  ../../Outputs/Simulation/He10_5.root
-%  ../../Outputs/Simulation/He10_6.root
-%  ../../Outputs/Simulation/He10_7.root
-%  ../../Outputs/Simulation/He10_8.root
-%  ../../Outputs/Simulation/He10_9.root
-%  ../../Outputs/Simulation/He10_10.root
+	../../Outputs/Simulation/Example1.root
 

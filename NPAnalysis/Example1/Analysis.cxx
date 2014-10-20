@@ -109,7 +109,8 @@ int main(int argc, char** argv)
         int SiNumber = SSSD->DetectorNumber[countSSSD];
 
         /************************************************/
-        if(TelescopeNumber==SiNumber ){
+        // Matching between Thin Si and MUST2, and Forward Telescope Only
+        if(TelescopeNumber==SiNumber && TelescopeNumber<5){
           DetectorNumber = TelescopeNumber ;
           /************************************************/
           // Part 1 : Impact Angle
