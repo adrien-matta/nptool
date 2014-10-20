@@ -6,11 +6,11 @@ include $(NPLIB)/Makefile.arch
 LIBRARY  = `$(NPLIB)/liblist`
 LIBRARY += -L$(CLHEP_LIB_DIR) -l$(CLHEP_LIB)
 
-PROGRAMS	= Analysis
+PROGRAMS	= NPAnalysis
 
 all:	$(PROGRAMS)
 
-Analysis:	Analysis.o
+NPAnalysis:	Analysis.o
 	$(LD) $(LDFLAGS) $^ $(LIBS) $(LIBRARY) $(OutPutOpt) $@
 	@echo "$@ done"
 	
