@@ -76,13 +76,12 @@ To run a standardise test case, you can run the following command:
 $ NPSimulation -D Example1.detector -E Example1.reaction -O Example1
 ````
 This will open the NPSimulation GUI (if you are using Qt) or the prompt terminal. In either case you can generate event using:
-
 ````
 > run/beamOn/ 10000
 > exit
 ````
 
-This will run the 11Li(d,3He)10He->8He+n+n simulation and produce a root file located in $NPTOOL/Outputs/Simulation/Example1.root.
+This will run the 11Li(d,3He)10He->8He+n+n simulation and produce a root file located in $NPTOOL/Outputs/Simulation/Example1.root. One can have a look at the Example1.detector, located in $NPTOOL/Inputs/DetectorConfiguration, and Example1.reaction, located in $NPTOOL/Inputs/EventGenerator, to see how the input file are formated. They usually are self explenatory using easy to understand token.
 
 You can now try to analyse this simulated tree using the associated NPAnalysis project:
 ````
@@ -92,11 +91,13 @@ $ make
 $ ./NPAnalysis -D Example1.detector -R RunToTreat.txt -O Example1
 ````
 
-This will produce the analysed tree located in $NPTOOL/Outputs/Analysis/Example1.root. You can display the result of the simulation using root:
+This will produce the analysed tree located in $NPTOOL/Outputs/Analysis/Example1.root. You can then display the result of the simulation using root:
 ````
 $ root ShowResult.C
 ````
 
 You should be able to see the light particle identification, the light particle kinematical line and the associated excitation nergy spectrum.
  
+The Example1 input files and NPAnalysis project are simple basis that can be used to start doing your own simulations.
+
 THIS FILE IS UNDER DEVELOPMENT
