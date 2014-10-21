@@ -1,7 +1,6 @@
 #include "Analysis.h"
 
-int main(int argc, char** argv)
-{
+int main(int argc, char** argv){
   // command line parsing
   NPOptionManager* myOptionManager = NPOptionManager::getInstance(argc,argv);
 
@@ -57,43 +56,53 @@ int main(int argc, char** argv)
   double Si_Y_M2 = 0;
   double ZTarget = 0;
   double TargetThickness = 18*micrometer;
-  double ThetaCM = 0 ;
   // Get number of events to treat
   cout << endl << "///////// Starting Analysis ///////// "<< endl;
   int nentries = Chain->GetEntries();
-  //      int nentries = 100000;
   cout << " Number of Event to be treated : " << nentries << endl;
   clock_t begin = clock();
   clock_t end = begin;
   cout.precision(5);
-  // main loop on entries
+  //////////////////////////////////////////////////////////////////////////////
+  // main loop on entries //
   for (int i = 0 ; i < nentries; i++) {
     if (i%10000 == 0 && i!=0)  {
       end = clock();
       long double TimeElapsed = (long double) (end-begin) / CLOCKS_PER_SEC;
       double percent = (double)i/nentries;
       double TimeToWait = (TimeElapsed/percent) - TimeElapsed;       
-      cout  << "                                                       "<< flush;
-      cout  << "\r Progression:" << percent*100 << " % \t | \t Remaining time : ~" <<  TimeToWait <<"s |  Analysis Rate : "<< (double) i/TimeElapsed << flush;
+      cout  << "                                                      "<< flush;
+      cout  << "\r Progression:" 
+            << percent*100 << " % \t | \t Remaining time : ~" 
+            <<  TimeToWait <<"s |  Analysis Rate : "
+            << (double) i/TimeElapsed << flush;
     }
     else if (i == nentries-1)  cout << "\r Progression:" << " 100% " <<endl;
 
 
-    // get data
+    // Get the raw Data
     Chain -> GetEntry(i);
+    // Clear previous Event
     myDetector->ClearEventPhysics();
+    // Build the current event
     myDetector->BuildPhysicalEvent();
+    // Reinitiate calculated variable
     ReInitValue();
 
-    // Get the Init information on beam positio nand energy
+    // Get the Init information on beam position and energy
     // and apply by hand the experimental resolution
-		double XTarget = Rand.Gaus(Init->GetIncidentPositionX(),1);
+    // This is because the beam diagnosis are not simulated
+
+    // PPAC position resolution on target is assumed to be 1mm
+    double XTarget = Rand.Gaus(Init->GetIncidentPositionX(),1);
     double YTarget = Rand.Gaus(Init->GetIncidentPositionY(),1);
-    double BeamEnergy = Rand.Gaus(Init->GetIncidentInitialKineticEnergy(),4.5);
     TVector3 BeamDirection = Init->GetBeamDirection();
+
+    // Beam energy is measured using F3 and F2 plastic TOF
+    double BeamEnergy = Rand.Gaus(Init->GetIncidentInitialKineticEnergy(),4.5);
     BeamEnergy = Li11CD2.Slow(BeamEnergy,TargetThickness/2.,0);
     He10Reaction->SetBeamEnergy(BeamEnergy);
-        
+
     //////////////////////////// LOOP on MUST2 + SSSD Hit //////////////////
     for(unsigned int countSSSD = 0 ; countSSSD < SSSD->Energy.size() ; countSSSD++){
       for(unsigned int countMust2 = 0 ; countMust2 < M2->Si_E.size() ; countMust2++){
@@ -145,30 +154,34 @@ int main(int argc, char** argv)
           E_SSSD = SSSD->Energy[countSSSD];
 
           // if CsI
-            if(CsI_E_M2>0 ){
-              // The energy in CsI is calculate form dE/dx Table bevause calibration for 3He is not good
-              Energy = He3Si.EvaluateEnergyFromDeltaE(Si_E_M2,300*micrometer,ThetaM2Surface, 0.01*MeV, 450.*MeV,0.001*MeV ,1000);
-              E_M2=CsI_E_M2;
-            }
+          if(CsI_E_M2>0 ){
+            // The energy in CsI is calculate form dE/dx Table because 
+            // 20um resolution is poor
+            Energy = 
+              He3Si.EvaluateEnergyFromDeltaE(Si_E_M2,300*micrometer,
+                  ThetaM2Surface, 0.01*MeV, 
+                  450.*MeV,0.001*MeV ,1000);
+            E_M2=CsI_E_M2;
+          }
 
-            else
-              Energy = Si_E_M2;
+          else
+            Energy = Si_E_M2;
 
-            E_M2 += Si_E_M2;
+          E_M2 += Si_E_M2;
 
-            // Evaluate energy using the thickness 
-              ELab   = He3Al.EvaluateInitialEnergy( Energy ,2*0.4*micrometer , ThetaM2Surface); 
-              ELab   = He3Si.EvaluateInitialEnergy( ELab ,20*micrometer , ThetaM2Surface);
-              ELab   = He3Al.EvaluateInitialEnergy( ELab ,0.4*micrometer , ThetaM2Surface);
-              // Target Correction
-              ELab   = He3CD2.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
+          // Evaluate energy using the thickness 
+          ELab = He3Al.EvaluateInitialEnergy( Energy ,2*0.4*micrometer , ThetaM2Surface); 
+          ELab = He3Si.EvaluateInitialEnergy( ELab ,20*micrometer , ThetaM2Surface);
+          ELab = He3Al.EvaluateInitialEnergy( ELab ,0.4*micrometer , ThetaM2Surface);
+          // Target Correction
+          ELab   = He3CD2.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
           /************************************************/
 
-          /***********M2->Si_E[countMust2];*************************************/
+          /***********888888888888888888888****************/
           // Part 3 : Excitation Energy Calculation
           Ex = He10Reaction -> ReconstructRelativistic( ELab , ThetaLab );
           ThetaLab=ThetaLab/deg;
-           /************************************************/
+          /************************************************/
 
           /************************************************/
           // Part 4 : Theta CM Calculation
@@ -187,27 +200,31 @@ int main(int argc, char** argv)
   RootOutput::getInstance()->Destroy();
   RootInput::getInstance()->Destroy();
   NPOptionManager::getInstance()->Destroy();
-  /////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
   return 0 ;
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 void InitOutputBranch() {
   RootOutput::getInstance()->GetTree()->Branch("Ex",&Ex,"Ex/D");
   RootOutput::getInstance()->GetTree()->Branch("ELab",&ELab,"ELab/D");
   RootOutput::getInstance()->GetTree()->Branch("ThetaLab",&ThetaLab,"ThetaLab/D");
+  RootOutput::getInstance()->GetTree()->Branch("ThetaCM",&ThetaCM,"ThetaCM/D");
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 void InitInputBranch(){
   RootInput:: getInstance()->GetChain()->SetBranchAddress("InitialConditions",&Init );
   RootInput:: getInstance()->GetChain()->SetBranchStatus("InitialConditions",true );
   RootInput:: getInstance()->GetChain()->SetBranchStatus("fIC_*",true );
 }
-////////////////////////////////////////////////////////////////////////////////////////////////////     
-////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////     
 void ReInitValue(){
   Ex = -1000 ;
   ELab = -1000;
   ThetaLab = -1000;
+  ThetaCM = -1000;
 }
+
+
+////////////////////////////////////////////////////////////////////////////////

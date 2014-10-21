@@ -41,9 +41,10 @@ ETOF->Draw("same");
 
 // Kinematical Line //
 c1->cd(3);
-chain->Draw("ELab:ThetaLab>>hKine(1000,0,90,400,0,40)","MUST2.CsI_E<0 && MUST2.TelescopeNumber<5 && EDE && ETOF","colz");
+chain->Draw("ELab:ThetaLab>>hKine(500,0,45,400,0,40)","MUST2.CsI_E<0 && MUST2.TelescopeNumber<5 && EDE && ETOF","colz");
 
 NPL::Reaction r("11Li(d,3He)10He@553");
+r.SetExcitationHeavy(1.4);
 TGraph* Kine = r.GetKinematicLine3(); 
 Kine->SetLineWidth(2);
 Kine->SetLineColor(kOrange-3);
@@ -51,9 +52,9 @@ Kine->Draw("c");
 
 // Excitation Energy //
 c1->cd(4);
-int bin=100;
-double Emin = -10;
-double Emax = 10;
+int bin=50;
+double Emin = -5;
+double Emax = 5;
 
 chain->Draw(Form("Ex>>hEx(%d,%f,%f)",bin,Emin,Emax),"MUST2.CsI_E<0 && MUST2.TelescopeNumber<5 && EDE && ETOF");
 TH1F* hEx = (TH1F*) gDirectory->FindObjectAny("hEx");
@@ -62,4 +63,12 @@ hEx->GetXaxis()->SetTitle("E_{10He}");
 hEx->SetFillStyle(1001);
 hEx->SetLineColor(kAzure+7);
 hEx->SetFillColor(kAzure+7);
+
+hEx->Fit("gaus");
+
+TF1* f = hEx->GetFunction("gaus");
+f->SetLineWidth(2);
+f->SetLineColor(kOrange-3);
+f->SetNpx(1000);
+
 }
