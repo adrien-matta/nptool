@@ -108,7 +108,7 @@ namespace NPA {
       nothing   noCalibration   ;
 
 */
-
+  ClassDef(VDetector,1)  // Must2Data structure
   };
 
 }

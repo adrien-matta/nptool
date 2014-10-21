@@ -26,6 +26,8 @@
 
 using namespace NPA ;
 
+ClassImp(VDetector);
+
 // Constructor
 VDetector::VDetector()
 {
