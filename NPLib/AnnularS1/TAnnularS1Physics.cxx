@@ -407,7 +407,6 @@ void TAnnularS1Physics::ReadConfiguration(string Path){
       
       // Take next word
       ConfigFile >> DataBuffer ;
-      cout << "xxxxxxxxxxxxxxxxxxx " << DataBuffer << endl; 
       //   Comment Line
       if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
 
