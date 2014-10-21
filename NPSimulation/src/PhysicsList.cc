@@ -45,26 +45,6 @@
 #include "G4eBremsstrahlung.hh"
 #include "G4eplusAnnihilation.hh"
 
-// Penelope
-//#include "G4PenelopeIonisation.hh"
-//#include "G4PenelopeBremsstrahlung.hh"
-//#include "G4PenelopeAnnihilation.hh"
-
-//#include "G4PenelopeCompton.hh"
-//#include "G4PenelopeGammaConversion.hh"
-//#include "G4PenelopePhotoElectric.hh"
-//#include "G4PenelopeRayleigh.hh"
-
-// Low energy ~ Penelope
-//#include "G4LowEnergyIonisation.hh"
-//#include "G4LowEnergyBremsstrahlung.hh"
-
-//#include "G4LowEnergyCompton.hh"
-//#include "G4LowEnergyGammaConversion.hh"
-//#include "G4LowEnergyPhotoElectric.hh"
-//#include "G4LowEnergyRayleigh.hh"
-
-
 #include "G4MuIonisation.hh"
 #include "G4MuMultipleScattering.hh"
 #include "G4MuBremsstrahlung.hh"
@@ -73,7 +53,6 @@
 #include "G4hIonisation.hh"
 #include "G4ionIonisation.hh"
 #include "G4hMultipleScattering.hh"
-//#include "G4hLowEnergyIonisation.hh"
 
 #include "G4EmProcessOptions.hh"
 #include "G4ProcessManager.hh"
@@ -209,17 +188,6 @@ void PhysicsList::ConstructEM(){
       pmanager->AddDiscreteProcess(new G4PhotoElectricEffect) ;
       pmanager->AddDiscreteProcess(new G4ComptonScattering) ;
       pmanager->AddDiscreteProcess(new G4GammaConversion) ;
-      //Low energy
-      //pmanager->AddDiscreteProcess(new G4LowEnergyPhotoElectric) ;
-      //pmanager->AddDiscreteProcess(new G4LowEnergyCompton) ;
-      //pmanager->AddDiscreteProcess(new G4LowEnergyGammaConversion) ;
-      //pmanager->AddDiscreteProcess(new G4LowEnergyRayleigh) ;
-      // Penelope
-      //pmanager->AddDiscreteProcess(new G4PenelopePhotoElectric) ;
-      //pmanager->AddDiscreteProcess(new G4PenelopeCompton) ;
-      //pmanager->AddDiscreteProcess(new G4PenelopeGammaConversion) ;
-      //pmanager->AddDiscreteProcess(new G4PenelopeRayleigh) ;
-      
     }
     else if (particleName == "e-") {
       //electron
@@ -227,12 +195,6 @@ void PhysicsList::ConstructEM(){
       //standard geant4:
       pmanager->AddProcess(new G4eIonisation         , -1,  2, 2)     ;
       pmanager->AddProcess(new G4eBremsstrahlung     , -1, -1, 3)     ;
-      // Low energy:
-      //pmanager->AddProcess(new G4LowEnergyIonisation         , -1,  2, 2)     ;
-      //pmanager->AddProcess(new G4LowEnergyBremsstrahlung     , -1, -1, 3)     ;
-      // Penelope:
-      // pmanager->AddProcess(new G4PenelopeIonisation         , -1,  2, 2)     ;
-      // pmanager->AddProcess(new G4PenelopeBremsstrahlung     , -1, -1, 3)     ;
     }
     
     else if (particleName == "e+") {
@@ -257,8 +219,7 @@ void PhysicsList::ConstructEM(){
               || particleName == "He3"
               || particleName == "alpha"
               || particleName == "deuteron"
-              || particleName == "triton"
-              || particleName == "proton") {
+              || particleName == "triton") {
       pmanager->AddProcess(new G4hMultipleScattering(), -1, 1, 1) ;
       G4ionIonisation* iI = new G4ionIonisation ;
       iI->ActivateStoppingData(true) ;
