@@ -180,9 +180,9 @@ private:
   void InitializeScorers() ;
   
   //   Scorer Associate with the Silicon
-  G4MultiFunctionalDetector*   m_InnerBarrelScorer ;
-  G4MultiFunctionalDetector*   m_OuterBarrelScorer ;
-  G4MultiFunctionalDetector*   m_HyballScorer ;
+//  G4MultiFunctionalDetector*   m_InnerBarrelScorer ;
+//  G4MultiFunctionalDetector*   m_OuterBarrelScorer ;
+//  G4MultiFunctionalDetector*   m_HyballScorer ;
  
   ////////////////////////////////////////////////////
   ///////////////Private intern Data//////////////////
@@ -199,10 +199,7 @@ private:
   vector<G4double>   m_Z   ;
   vector< vector<G4double> >   m_ThicknessBOX;
   vector< vector<G4double> >   m_ThicknessPAD;
-  
-  // Set to true if you want to see Telescope Frame in your visualisation
-  bool m_non_sensitive_part_visiualisation ;
-  
+
 private:/// Visualisation Attribute:
   // Dark Grey
    G4VisAttributes* SiliconVisAtt  ;

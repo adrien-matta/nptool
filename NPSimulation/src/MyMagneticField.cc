@@ -29,7 +29,6 @@ MyMagneticField::MyMagneticField(const G4ThreeVector& FieldVector)
   fFieldComponents[1]= FieldVector.y()*tesla;
   fFieldComponents[2]= FieldVector.z()*tesla;
 
-  //Bz = 2.0*tesla;
   //rmax = std::sqrt(625.)*cm;
   rmax = 50.*cm;
   zmin = 5.*cm;

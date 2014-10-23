@@ -577,8 +577,7 @@ void Plastic::ReadSensitive(const G4Event* event)
   G4int sizeN = DetectorNumberHitMap->entries()    ;
   G4int sizeE = EnergyHitMap->entries()          ;
   G4int sizeT = TimeHitMap->entries()          ;
-  G4int sizeZ = PosZHitMap->entries();
-
+  
   // Loop on Plastic Number
   for (G4int l = 0 ; l < sizeN ; l++) {
     G4int N     =      *(DetectorNumber_itr->second)    ;

@@ -78,7 +78,7 @@ G4Material* Target::GetMaterialFromLibrary(G4String MaterialName, G4double Tempe
   if (MaterialName == "cryoD2") {
     G4double density = 0;
 
-    if(Pressure == 0 )
+    if(Pressure == 0 ){
       if (Temperature == 0) {
         density = 0.000083771* g / cm3;
         G4cout << "CryoTarget temp set to 300K with P = 1bar" << G4endl;
@@ -151,14 +151,14 @@ G4Material* Target::GetMaterialFromLibrary(G4String MaterialName, G4double Tempe
           G4cout << ">>>  !!!!WARNING INVALID TEMP FOR CRYOGENIC TARGET!!!!  <<<" << G4endl;
         }
       }
-
+    }
     G4Element* D  = new G4Element("Deuteron"  , "D" , 1., 2.0141*g / mole);
     myMaterial    = new G4Material("cryoD2", density, 1, kStateGas, Temperature, Pressure);
     myMaterial->AddElement(D, 2);
     MaterialManager::getInstance()->AddMaterialToLibrary(myMaterial);
     return(myMaterial);
-  }
 
+  }
   else{
     return MaterialManager::getInstance()->GetMaterialFromLibrary(MaterialName);
   }
@@ -271,7 +271,7 @@ void Target::ReadConfiguration(string Path){
         m_TargetNbLayers = atoi(DataBuffer.c_str());
         if(VerboseLevel==1) 
           cout  << "Number of steps for slowing down the beam in target: " 
-                << m_TargetNbLayers << endl;
+            << m_TargetNbLayers << endl;
       }
 
       ///////////////////////////////////////////////////
@@ -283,7 +283,7 @@ void Target::ReadConfiguration(string Path){
       ///////////////////////////////////////////////////
       //   If all Token found toggle out
       if( check_Thickness && check_Radius && check_Material 
-        && check_X && check_Y && check_Z ){
+          && check_X && check_Y && check_Z ){
         ReadingStatusTarget = false ;
       }
     }
@@ -301,7 +301,7 @@ void Target::ReadConfiguration(string Path){
         m_TargetThickness = atof(DataBuffer.c_str()) * micrometer;
         if(VerboseLevel==1) 
           cout << "Target Thickness: " << m_TargetThickness / micrometer  
-          << "um" << endl   ;
+            << "um" << endl   ;
       }
 
       else if (DataBuffer.compare(0, 7, "RADIUS=") == 0) {
@@ -338,8 +338,8 @@ void Target::ReadConfiguration(string Path){
         ConfigFile >> DataBuffer;
         m_WindowsThickness = atof(DataBuffer.c_str()) * micrometer;
         if(VerboseLevel==1) 
-        cout << "Windows Thickness: " 
-             << m_WindowsThickness / micrometer << "um" << endl   ;
+          cout << "Windows Thickness: " 
+            << m_WindowsThickness / micrometer << "um" << endl   ;
       }
 
       else if (DataBuffer.compare(0, 16, "WINDOWSMATERIAL=") == 0) {
@@ -378,7 +378,7 @@ void Target::ReadConfiguration(string Path){
         m_TargetNbLayers = atoi(DataBuffer.c_str());
         if(VerboseLevel==1) 
           cout  << "Number of steps for slowing down the beam in target: " 
-                << m_TargetNbLayers << endl;
+            << m_TargetNbLayers << endl;
       }
 
       ///////////////////////////////////////////////////
@@ -416,7 +416,7 @@ void Target::ConstructDetector(G4LogicalVolume* world){
     if (m_TargetThickness > 0) {
       G4Tubs* solidTarget = 
         new G4Tubs("solidTarget", 0, m_TargetRadius, 
-                   0.5*m_TargetThickness, 0*deg, 360*deg);
+            0.5*m_TargetThickness, 0*deg, 360*deg);
       G4LogicalVolume* logicTarget = 
         new G4LogicalVolume(solidTarget, m_TargetMaterial, "logicTarget");
 
@@ -425,7 +425,7 @@ void Target::ConstructDetector(G4LogicalVolume* world){
       rotation->rotateY(m_TargetAngle);
 
       new G4PVPlacement(rotation, G4ThreeVector(m_TargetX, m_TargetY, m_TargetZ), 
-                        logicTarget, "Target", world, false, 0);
+          logicTarget, "Target", world, false, 0);
 
       G4VisAttributes* TargetVisAtt = new G4VisAttributes(G4Colour(0., 0., 1.));
       logicTarget->SetVisAttributes(TargetVisAtt);
@@ -436,12 +436,12 @@ void Target::ConstructDetector(G4LogicalVolume* world){
     if (m_TargetThickness > 0) {
       G4Tubs* solidTarget = 
         new G4Tubs("solidTarget", 0, m_TargetRadius, 
-                   0.5*m_TargetThickness, 0*deg, 360*deg);
+            0.5*m_TargetThickness, 0*deg, 360*deg);
       G4LogicalVolume* logicTarget = 
         new G4LogicalVolume(solidTarget, m_TargetMaterial, "logicTarget");
-      
+
       new G4PVPlacement(0, G4ThreeVector(m_TargetX, m_TargetY, m_TargetZ), 
-                        logicTarget, "Target", world, false, 0);
+          logicTarget, "Target", world, false, 0);
 
       G4VisAttributes* TargetVisAtt = new G4VisAttributes(G4Colour(0., 0., 1.));
       logicTarget->SetVisAttributes(TargetVisAtt);
@@ -453,22 +453,22 @@ void Target::ConstructDetector(G4LogicalVolume* world){
 
       G4Tubs* solidWindowsF =
         new G4Tubs("solidTargetWindowsF", 0, m_TargetRadius, 
-                    0.5*m_WindowsThickness, 0*deg, 360*deg);
+            0.5*m_WindowsThickness, 0*deg, 360*deg);
       G4LogicalVolume* logicWindowsF = 
         new G4LogicalVolume(solidWindowsF, m_WindowsMaterial, 
-                            "logicTargetWindowsF");
+            "logicTargetWindowsF");
 
       G4Tubs* solidWindowsB =
         new G4Tubs("solidTargetWindowsB", 0, m_TargetRadius, 
-                    0.5*m_WindowsThickness, 0*deg, 360*deg);
+            0.5*m_WindowsThickness, 0*deg, 360*deg);
       G4LogicalVolume* logicWindowsB = 
         new G4LogicalVolume(solidWindowsB, m_WindowsMaterial, 
-                            "logicTargetWindowsB");
+            "logicTargetWindowsB");
 
       new G4PVPlacement(0,
-                        TargetPos 
-                        +G4ThreeVector(0., 0., 0.5*(m_TargetThickness + m_WindowsThickness)) ,
-                        logicWindowsF,"Target Window Front",world,false, 0);
+          TargetPos 
+          +G4ThreeVector(0., 0., 0.5*(m_TargetThickness + m_WindowsThickness)) ,
+          logicWindowsF,"Target Window Front",world,false, 0);
 
       new G4PVPlacement(   0,
           TargetPos + G4ThreeVector(0., 0., -0.5*(m_TargetThickness + m_WindowsThickness)),
@@ -497,9 +497,9 @@ void Target::ReadSensitive(const G4Event*)
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Return the slow down beam energy after interaction at ZInteraction with initial beam energy before target IncidentEnergy
 G4double Target::SlowDownBeam(G4ParticleDefinition* Beam, 
-                              G4double IncidentEnergy, 
-                              G4double ZInteraction, 
-                              G4double IncidentTheta){
+    G4double IncidentEnergy, 
+    G4double ZInteraction, 
+    G4double IncidentTheta){
   G4double ThicknessBeforeInteraction = 
     abs(ZInteraction - 0.5*m_EffectiveThickness) / cos(m_TargetAngle);
   G4double dedx,de;

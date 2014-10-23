@@ -230,9 +230,6 @@ private:
   vector< vector<G4double> >   m_ThicknessBOX;
   vector< vector<G4double> >   m_ThicknessPAD;
   
-  // Set to true if you want to see Telescope Frame in your visualisation
-  bool m_non_sensitive_part_visiualisation ;
-  
 private:/// Visualisation Attribute:
   // Dark Grey
    G4VisAttributes* SiliconVisAtt  ;

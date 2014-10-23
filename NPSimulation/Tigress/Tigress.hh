@@ -133,8 +133,8 @@ private:
   void InitializeScorers() ;
   
   //   Scorer Associate to the Silicon
-  G4MultiFunctionalDetector*   m_GermaniumScorer ;
-  G4MultiFunctionalDetector*   m_BGOScorer ;
+  //G4MultiFunctionalDetector*   m_GermaniumScorer ;
+  //G4MultiFunctionalDetector*   m_BGOScorer ;
 private:
   //    Initialize material used in detector definition
   void InitializeMaterial();
@@ -158,9 +158,6 @@ private:
   // Frame: true if the frame is to be done
   bool m_LeftFrame;
   bool m_RightFrame;
-  
-    // Set to true if you want to see Telescope Frame in your visualisation
-  bool m_non_sensitive_part_visiualisation ;
   
 private:/// Visualisation Attribute:
   G4VisAttributes* BlueVisAtt;

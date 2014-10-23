@@ -140,9 +140,6 @@ void ShieldClParis::VolumeMaker(G4int             DetecNumber,
 
    G4Material* Vacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
    G4Material* NaI = MaterialManager::getInstance()->GetMaterialFromLibrary("NaI");
-   G4Material* CsI = MaterialManager::getInstance()->GetMaterialFromLibrary("CsI");
-   G4Material* LaBr3 = MaterialManager::getInstance()->GetMaterialFromLibrary("LaBr3");
-   G4Material* BaF2 = MaterialManager::getInstance()->GetMaterialFromLibrary("BaF2");
 
    ////////////////////////////////////////////////////////////////
    ////////////// Starting Volume Definition //////////////////////

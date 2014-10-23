@@ -80,7 +80,6 @@ void AnnularS1::VolumeMaker(G4int             DetecNumber,
     G4LogicalVolume*  world)
 {
   G4Material* Silicon = MaterialManager::getInstance()->GetMaterialFromLibrary("Si");
-  G4Material* Aluminium = MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
   G4Material* Vacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
   ////////////////////////////////////////////////////////////////
   ////////////// Starting Volume Definition //////////////////////

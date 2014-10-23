@@ -47,7 +47,6 @@ public:
 
 private:
    DetectorConstruction*  m_detector         ;
-   G4double               m_edepPerEvent    ;
    G4int                  m_printModulo     ;
 };
 

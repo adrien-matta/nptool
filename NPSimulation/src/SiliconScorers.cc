@@ -33,6 +33,7 @@ PS_Silicon_Rectangle::PS_Silicon_Rectangle(G4String name, G4double StripPlaneLen
   m_StripPitchLength = m_StripPlaneLength / m_NumberOfStripLength;
   m_StripPitchWidth = m_StripPlaneWidth / m_NumberOfStripWidth;
   
+  m_TriggerThreshold=1*eV; 
   m_Position = G4ThreeVector(-1000,-1000,-1000);
   m_DetectorNumber = -1;
   m_StripLengthNumber = -1;
@@ -140,7 +141,8 @@ PS_Silicon_Annular::PS_Silicon_Annular(G4String name, G4double StripPlaneInnerRa
   m_StripPitchRing =  (m_StripPlaneOuterRadius-m_StripPlaneInnerRadius)/m_NumberOfStripRing;
   m_StripPitchSector = (m_PhiStop-m_PhiStart)/m_NumberOfStripSector;
   m_StripPitchQuadrant = (m_PhiStop-m_PhiStart)/m_NumberOfStripQuadrant;  
- 
+
+  m_TriggerThreshold = 1*eV; 
   m_Position = G4ThreeVector(-1000,-1000,-1000);
   m_uz = G4ThreeVector(0,0,1);
   m_DetectorNumber = -1;

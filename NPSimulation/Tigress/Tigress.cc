@@ -35,7 +35,7 @@
 #include "G4MultiFunctionalDetector.hh"
 
 //G4 various object
-#include "G4Material.hh""
+#include "G4Material.hh"
 #include "G4Polycone.hh"
 #include "G4Polyhedra.hh"
 #include "G4LogicalVolume.hh"
@@ -77,16 +77,16 @@ namespace {
   const G4double CrystalInnerRadius   =  5.0*mm; // inner radius for hole in crystal
   const G4double CrystalLength        = 90.0*mm; // crystal length
   const G4double CrystalHoleDepth     = 15.0*mm; // depth at which starts the hole
-  const G4double CrystaHoleRadius 		= 0*cm;
+  //const G4double CrystaHoleRadius 		= 0*cm;
   const G4double CrystalInterDistance =  0.6*mm; // Distance between two crystal
   
   // Squared part
   const G4double CrystalWidth         = 56.5*mm;  	// Width of one crystal
-  const G4double CrystalsShift        = 1.05*mm;  	// this can't be more than 2.75mm. It is the amount by which one side is cut closer to the center than the other
+//  const G4double CrystalsShift        = 1.05*mm;  	// this can't be more than 2.75mm. It is the amount by which one side is cut closer to the center than the other
   
   
   // Bevel part 
-  const G4double CrystalBentLegth     = 3.62*cm;
+ // const G4double CrystalBentLegth     = 3.62*cm;
   // this->germanium_corner_cone_end_length     = 3.0*cm; 	  // the ending length of the cones
   
   
@@ -95,18 +95,18 @@ namespace {
   const G4double CrystalEdgeOffset1  = 26.0*mm; // distance of the edge from the center of the crystal
   const G4double CrystalEdgeOffset2  = 28.5*mm; // distance of the edge from the center of the crystal
   
-  const G4double CrystalEdgeDepth    = 30.0*mm;  // depth to which the crystal is shaped
-  const G4double CrystalEdgeAngle    = 22.5*deg; // bevel angle
+//  const G4double CrystalEdgeDepth    = 30.0*mm;  // depth to which the crystal is shaped
+ // const G4double CrystalEdgeAngle    = 22.5*deg; // bevel angle
   
   const G4double CapsuleWidth        = 1.5*mm;   // capsule width
   const G4double CapsuleLength       = 110.*mm;   // capsule length
   const G4double CapsuleEdgeDepth    = 3.3*cm;   // same as crystal !
   const G4double CrystalToCapsule    = 3.5*mm;   // to be adjusted ..
   
-  const G4double BGOLength           = 120.0*mm;
-  const G4double BGOWidth            = 25.0*mm;
+  //const G4double BGOLength           = 120.0*mm;
+  //const G4double BGOWidth            = 25.0*mm;
   
-  const G4double CsILength           = 20.0*mm;
+  //const G4double CsILength           = 20.0*mm;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Tigress Specific Method

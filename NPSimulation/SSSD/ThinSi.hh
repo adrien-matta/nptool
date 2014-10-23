@@ -167,8 +167,5 @@ private:
    vector<G4double>  m_beta_u ; //  |
    vector<G4double>  m_beta_v ; //  >Tilt angle of the Telescope
    vector<G4double>  m_beta_w ; //  |
-   // Set to true if you want to see Telescope Frame in your visualisation
-   bool m_non_sensitive_part_visiualisation ;
-
 };
 #endif

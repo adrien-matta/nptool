@@ -204,11 +204,6 @@ private:
    G4Material* m_MaterialVacuum ;
    //  Mylar
    G4Material* m_MaterialMyl;
-   // Havar
-   G4Material* m_MaterialHavar;
-
-
-
 };
 
 extern G4RotationMatrix* Rotation(double tetaX, double tetaY, double tetaZ);

@@ -29,7 +29,8 @@ PS_Silicon_Resistive::PS_Silicon_Resistive(G4String name, G4double StripPlaneLen
   m_StripPlaneWidth = StripPlaneWidth;
   m_NumberOfStripWidth = NumberOfStripWidth;
   m_StripPitchWidth = m_StripPlaneWidth / m_NumberOfStripWidth;
-  
+
+  m_TriggerThreshold = 1*eV;  
   m_Position = G4ThreeVector(-1000,-1000,-1000);
   m_DetectorNumber = -1;
   m_StripWidthNumber = -1;
