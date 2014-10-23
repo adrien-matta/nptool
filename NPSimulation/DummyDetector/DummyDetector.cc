@@ -35,9 +35,7 @@
 #include "G4MultiFunctionalDetector.hh"
 
 //G4 various object
-#include "G4MaterialTable.hh"
-#include "G4Element.hh"
-#include "G4ElementTable.hh"
+#include "G4Material.hh"
 #include "G4Transform3D.hh"
 #include "G4PVPlacement.hh"
 #include "G4VisAttributes.hh"
@@ -45,6 +43,7 @@
 
 // NPTool header
 #include "DummyDetector.hh"
+#include "MaterialManager.hh"
 #include "ObsoleteGeneralScorers.hh"
 #include "RootOutput.h"
 using namespace OBSOLETEGENERALSCORERS ;
@@ -416,33 +415,10 @@ void DUMMYDetector::ReadSensitive(const G4Event* event)
 void DUMMYDetector::InitializeMaterial()
    {
       ////////////////////////////////////////////////////////////////
-      /////////////////Element  Definition ///////////////////////////
-      ////////////////////////////////////////////////////////////////
-         G4String symbol                                 ;
-         G4double density = 0. , a = 0, z = 0               ;
-         G4int ncomponents = 0, natoms = 0, fractionmass = 0   ;
-
-         // for DUMMYDetector
-            G4Element* H   = new G4Element ("Hydrogen"    , symbol = "H"     , z = 1  , a = 1.01   * g / mole);
-            G4Element* C   = new G4Element ("Carbon"      , symbol = "C"     , z = 6  , a = 12.011 * g / mole);
-            G4Element* Pb  = new G4Element ("Lead"        , symbol = "Pb"    , z = 82 , a = 207.2  * g / mole);
-      ////////////////////////////////////////////////////////////////
       /////////////////Material Definition ///////////////////////////
       ////////////////////////////////////////////////////////////////
-
-
-         // DUMMYDetector BC-400
-         density = 1.032 * g / cm3;
-         m_MaterialDUMMYDetector_material1 = new G4Material("DUMMYDetector_material1", density, ncomponents = 2);
-         m_MaterialDUMMYDetector_material1->AddElement(H , natoms = 10);
-         m_MaterialDUMMYDetector_material1->AddElement(C  , natoms = 9);
-         
-         // DUMMYDetector BC-452 Pb 2%
-         density = 1.05 * g / cm3;
-         m_MaterialDUMMYDetector_material2 = new G4Material("DUMMYDetector_material2", density, ncomponents = 3);
-         m_MaterialDUMMYDetector_material2->AddElement(H  , natoms = 10);
-         m_MaterialDUMMYDetector_material2->AddElement(C  , natoms = 9);
-         m_MaterialDUMMYDetector_material2->AddElement(Pb , fractionmass=2*perCent);
+         m_MaterialDUMMYDetector_material1 = MaterialManager::getInstance()->GetMaterialFromLibrary("BC400");
+         m_MaterialDUMMYDetector_material2 = MaterialManager::getInstance()->GetMaterialFromLibrary("Kapton");
 
    }
 

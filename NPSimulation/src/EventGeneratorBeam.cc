@@ -73,13 +73,9 @@ void EventGeneratorBeam::ReadConfiguration(string Path,int){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorBeam::GenerateEvent(G4Event* anEvent){
 
-  //--------------write the DeDx Table -------------------
   if( anEvent->GetEventID()==0){
     // Define the particle to be shoot
     m_particle = G4ParticleTable::GetParticleTable()->GetIon(m_Beam->GetZ(), m_Beam->GetA() , 0.);
-    if(m_Target!=0 ){
-      m_Target->WriteDEDXTable(m_particle ,0, m_Beam->GetEnergy()+4*m_Beam->GetSigmaEnergy()+50*MeV);
-    }
   }
   
   ///////////////////////////////////////////////////////////////////////

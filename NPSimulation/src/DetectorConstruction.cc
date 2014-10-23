@@ -122,8 +122,8 @@
 #include<fstream>
 
 // NPL
-#include"NPOptionManager.h"
-
+#include "NPOptionManager.h"
+#include "MaterialManager.hh"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 DetectorConstruction::DetectorConstruction():  world_log(0), world_phys(0){
   m_Target   = 0;
@@ -138,19 +138,7 @@ DetectorConstruction::~DetectorConstruction(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4VPhysicalVolume* DetectorConstruction::Construct(){
-  //------------------------------------------------------ materials
-  G4double a;  // atomic mass
-  G4double z;  // atomic number
-  G4double density;
-  
-  G4Element* N = new G4Element("Nitrogen", "N", z = 7., a = 14.01 * g / mole);
-  G4Element* O = new G4Element("Oxygen"  , "O", z = 8., a = 16.00 * g / mole);
-  
-  //  Vacuum
-  density = 0.000000001 * mg / cm3;
-  G4Material* Vacuum = new G4Material("Vacuum", density, 2);
-  Vacuum->AddElement(N,.7);
-  Vacuum->AddElement(O,.3);
+  G4Material* Vacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
   
   //------------------------------world volume
   G4double world_x = 10.0 * m;

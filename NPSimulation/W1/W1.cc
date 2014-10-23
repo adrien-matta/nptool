@@ -29,9 +29,7 @@
 #include "G4Tubs.hh"
 
 // G4 various headers
-#include "G4MaterialTable.hh"
-#include "G4Element.hh"
-#include "G4ElementTable.hh"
+#include "G4Material.hh"
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
 #include "G4RotationMatrix.hh"
@@ -45,6 +43,7 @@
 
 // NPTool headers
 #include "ObsoleteGeneralScorers.hh"
+#include "MaterialManager.hh"
 #include "W1.hh"
 #include "W1Scorers.hh"
 #include "TW1Data.h"
@@ -699,47 +698,16 @@ void W1::ReadSensitive(const G4Event* event)
 
 
 
-void W1::InitializeMaterials()
-{           
-   ////////////////////////////////////////////////////////////////
-   /////////////////Element  Definition ///////////////////////////
-   ////////////////////////////////////////////////////////////////
-   G4String symbol;
-   G4double density = 0, a = 0, z = 0;
-   G4int ncomponents = 0;
-
-   G4Element* N   = new G4Element("Nitrogen" , symbol = "N"  , z = 7  , a = 14.01  * g / mole);
-   G4Element* O   = new G4Element("Oxigen"   , symbol = "O"  , z = 8  , a = 16.00  * g / mole);
-
-   ////////////////////////////////////////////////////////////////
-   /////////////////Material Definition ///////////////////////////
-   ////////////////////////////////////////////////////////////////
-   // Si
-   a = 28.0855 * g / mole;
-   density = 2.321 * g / cm3;
-   m_MaterialSilicon = new G4Material("Si", z = 14., a, density);
-
-   // Al
-   density = 2.702 * g / cm3;
-   a = 26.98 * g / mole;
-   m_MaterialAluminium = new G4Material("Aluminium", z = 13., a, density);
-
-   // Iron
-   density = 7.874 * g / cm3;
-   a = 55.847 * g / mole;
-   m_MaterialIron = new G4Material("Iron", z = 26., a, density);
-
-   //  Vacuum
-   density = 0.000000001 * mg / cm3;
-   m_MaterialVacuum = new G4Material("Vacuum", density, ncomponents = 2);
-   m_MaterialVacuum->AddElement(N, .7);
-   m_MaterialVacuum->AddElement(O, .3);
+void W1::InitializeMaterials(){           
+   m_MaterialSilicon = MaterialManager::getInstance()->GetMaterialFromLibrary("Si");
+   m_MaterialAluminium =MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
+   m_MaterialIron = MaterialManager::getInstance()->GetMaterialFromLibrary("Fe");
+   m_MaterialVacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
 }
 
 
 
-void W1::InitializeScorers()
-{
+void W1::InitializeScorers(){
    // Associate Scorer
    m_Scorer = new G4MultiFunctionalDetector("ScorerW1");
    G4VPrimitiveScorer* DetNbr                           = new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber", "W1Square", 0);

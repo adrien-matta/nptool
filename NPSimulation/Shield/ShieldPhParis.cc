@@ -34,9 +34,7 @@
 #include "G4SubtractionSolid.hh"
 
 // G4 various headers
-#include "G4MaterialTable.hh"
-#include "G4Element.hh"
-#include "G4ElementTable.hh"
+#include "G4Material.hh"
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
 #include "G4RotationMatrix.hh"
@@ -52,6 +50,7 @@
 #include "ShieldPhParis.hh"
 //#include "ParisScorers.hh"
 #include "ShieldScorers.hh"
+#include "MaterialManager.hh"
 #include "ObsoleteGeneralScorers.hh"
 #include "RootOutput.h"
 
@@ -141,63 +140,11 @@ void ShieldPhParis::VolumeMaker(G4int             DetecNumber,
    Number << NbrTelescopes;
    DetectorNumber = Number.str();
 
-   /////////////////////////////////////////////////////////////////
-   /////////////////Element  Definition ///////////////////////////
-   ////////////////////////////////////////////////////////////////
-   G4String symbol, name;
-   G4double density = 0. , a = 0, z = 0;
-   G4int ncomponents = 0;
-   G4int nel = 0, natoms = 0;
-
-   ////////////////////////////////////////////////////////////////
-   /////////////////Material Definition ///////////////////////////
-   ////////////////////////////////////////////////////////////////
-   a=137.327*g/mole;
-   G4Element* Ba = new G4Element(name="Barium",symbol="Ba",z=56.,a);
-   a=18.9984032*g/mole;
-   G4Element* F = new G4Element(name="Fluorine",symbol="F",z=9.,a);
-   a=22.99*g/mole;
-   G4Element* Na = new G4Element(name="Sodium",symbol="Na",z=11.,a);
-   a=79.904*g/mole;
-   G4Element* Br = new G4Element(name="Bromine",symbol="Br",z=35.,a);
-   a=126.90477*g/mole;
-   G4Element* I  = new G4Element(name="Iodine",symbol="I",z=53.,a);
-   a=132.90545*g/mole;
-   G4Element* Cs = new G4Element(name="Cesium",symbol="Cs",z=55.,a);
-   a=138.9055*g/mole;
-   G4Element* La = new G4Element(name="Lanthanum",symbol="La",z=57.,a);
-   //  Vacuum
-   G4Element* N   = new G4Element("Nitrogen" , symbol = "N"  , z = 7  , a = 14.01  * g / mole);
-   G4Element* O   = new G4Element("Oxigen"   , symbol = "O"  , z = 8  , a = 16.00  * g / mole);
-
-   density = 0.000000001 * mg / cm3;
-   G4Material* Vacuum = new G4Material("Vacuum", density, ncomponents = 2);
-   Vacuum->AddElement(N, .7);
-   Vacuum->AddElement(O, .3);
-
-   // NaI
-   density = 3.67*g/cm3, nel = 2; 
-   G4Material* NaI = new G4Material(name="NaI",density,nel);
-   NaI->AddElement(Na, natoms = 1);
-   NaI->AddElement(I,  natoms = 1);
-
-   // CsI
-   density  = 4.51*g/cm3, nel = 2; 
-   G4Material* CsI = new G4Material(name="CsI", density, nel);
-   CsI->AddElement(Cs, natoms = 1);
-   CsI->AddElement(I,  natoms = 1);
-
-   // LaBr3
-   density = 5.29*g/cm3, nel = 2; 
-   G4Material* LaBr3 = new G4Material(name="LaBr3",density,nel);
-   LaBr3->AddElement(La, natoms = 1);
-   LaBr3->AddElement(Br, natoms = 3);
-
-   // BaF2
-   density = 4.89*g/cm3, nel = 2;
-   G4Material* BaF2 = new G4Material(name="BaF2", density, nel);
-   BaF2->AddElement(Ba, natoms = 1);
-   BaF2->AddElement(F,  natoms = 2);
+   G4Material* Vacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
+   G4Material* NaI = MaterialManager::getInstance()->GetMaterialFromLibrary("NaI");
+   G4Material* CsI = MaterialManager::getInstance()->GetMaterialFromLibrary("CsI");
+   G4Material* LaBr3 = MaterialManager::getInstance()->GetMaterialFromLibrary("LaBr3");
+   G4Material* BaF2 = MaterialManager::getInstance()->GetMaterialFromLibrary("BaF2");
 
    ////////////////////////////////////////////////////////////////
    ////////////// Starting Volume Definition //////////////////////

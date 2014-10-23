@@ -99,18 +99,6 @@ void EventGeneratorTwoBodyReaction::ReadConfiguration(string Path, int){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorTwoBodyReaction::GenerateEvent(G4Event* anEvent){
-  // If first time, write the DeDx table
-  if (anEvent->GetEventID() == 0) {
-    //-------------- Before living, wrtie the DeDx Table -------------------
-    G4int LightZx = m_Reaction->GetNucleus3()->GetZ();
-    G4int LightAx = m_Reaction->GetNucleus3()->GetA();
-    G4ParticleTable::GetParticleTable()->GetIon(LightZx,LightAx, 0.);
-
-    if (m_Target != 0) {
-      m_Target->WriteDEDXTable(G4ParticleTable::GetParticleTable()->GetIon(LightZx,LightAx, 0.) ,0, 2*m_Reaction->GetBeamEnergy());
-    }
-  }
- 
   //////////////////////////////////////////////////
   //////Define the kind of particle to shoot////////
   //////////////////////////////////////////////////

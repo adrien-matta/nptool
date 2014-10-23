@@ -29,9 +29,6 @@
 
 //G4 various headers
 #include "G4Material.hh"
-#include "G4MaterialTable.hh"
-#include "G4Element.hh"
-#include "G4ElementTable.hh"
 #include "G4RotationMatrix.hh"
 #include "G4PVPlacement.hh"
 #include "G4VPhysicalVolume.hh"
@@ -44,6 +41,7 @@
 using namespace CLHEP ;
 // NPTool header
 #include"Chamber.hh"
+#include"MaterialManager.hh"
 
 using namespace std;
 
@@ -69,32 +67,18 @@ G4Material* Chamber::GetMaterialFromLibrary(G4String MaterialName, G4double Temp
    
  
    if (MaterialName == "Alu") {
-  
-      G4Material* myMaterial = new G4Material("Alu", 13, 26.98*g/mole, 2.7*g/cm3);
-    
-      return myMaterial;
+    return MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
    }
    if (MaterialName == "Cu") {
-  
-      G4Material* myMaterial = new G4Material("Cu", 29, 63.546*g/mole, 8.96*g/cm3);
-    
-      return myMaterial;
+    return MaterialManager::getInstance()->GetMaterialFromLibrary("Cu");
    }
-   if (MaterialName == "12C") {
-  
-      G4Material* myMaterial = new G4Material("12C", 6, 12.011*g/mole, 2.62*g/cm3);
-    
-      return myMaterial;
+   if (MaterialName == "C" || MaterialName == "12C") { // keeping legacy name
+    return MaterialManager::getInstance()->GetMaterialFromLibrary("C");
    }
 
    else {
       G4cout << "No Matching Material in the Chamber Library Default is Vacuum" << G4endl;
-      G4Element* N = new G4Element("Nitrogen", "N", 7., 14.01*g / mole);
-      G4Element* O = new G4Element("Oxygen"  , "O", 8., 16.00*g / mole);
-      myMaterial = new G4Material("Vacuum", 0.000000001*mg / cm3, 2);
-      myMaterial->AddElement(N, .7);
-      myMaterial->AddElement(O, .3);
-      return(myMaterial);
+      return  MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
    }
 }
 

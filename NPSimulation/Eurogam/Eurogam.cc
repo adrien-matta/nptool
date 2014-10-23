@@ -37,9 +37,7 @@
 #include "G4MultiFunctionalDetector.hh"
 
 //G4 various object
-#include "G4MaterialTable.hh"
-#include "G4Element.hh"
-#include "G4ElementTable.hh"
+#include "G4Material.hh"
 #include "G4Transform3D.hh"
 #include "G4PVPlacement.hh"
 #include "G4VisAttributes.hh"
@@ -48,6 +46,7 @@
 // NPTool header
 #include "Eurogam.hh"
 #include "ObsoleteGeneralScorers.hh"
+#include "MaterialManager.hh"
 #include "RootOutput.h"
 using namespace OBSOLETEGENERALSCORERS;
 
@@ -625,42 +624,11 @@ void Eurogam::ReadSensitive(const G4Event* event)
 
 ////////////////////////////////////////////////////////////////
 void Eurogam::InitializeMaterial()
-{
-   ////////////////////////////////////////////////////////////////
-   /////////////////Element  Definition ///////////////////////////
-   ////////////////////////////////////////////////////////////////
-   G4String symbol;
-   G4double density = 0, a = 0, z = 0;
-   G4int ncomponents = 0;
-
-   // Elements
-   G4Element* N  = new G4Element("Nitrogen" , symbol = "N",  z = 7, a = 14.01  * g / mole);
-   G4Element* O  = new G4Element("Oxigen"   , symbol = "O",  z = 8, a = 16.00  * g / mole);
-   G4Element* Al = new G4Element("Aluminium", symbol = "Al", z= 13, a = 26.98  * g / mole);
-   G4Element* Si = new G4Element("Silicon"  , symbol = "Si", z= 14, a = 28.09  * g / mole);
-   G4Element* Ge = new G4Element("Germanium", symbol = "Ge", z= 32, a = 72.61  * g / mole);
-
-
-   ////////////////////////////////////////////////////////////////
-   /////////////////Material Definition ///////////////////////////
-   ////////////////////////////////////////////////////////////////
-   //  Vacuum
-   density = 0.000000001 * mg / cm3;
-   m_Material_Vacuum = new G4Material("Vacuum", density, ncomponents = 2);
-   m_Material_Vacuum->AddElement(N, .7);
-   m_Material_Vacuum->AddElement(O, .3);
-
-   // Aluminium
-   m_Material_Aluminium = new G4Material("Aluminium", density= 2.699*g/cm3, ncomponents=1);
-   m_Material_Aluminium->AddElement(Al, 1);
-
-   // Siliclum
-   m_Material_Silicon = new G4Material("Silicium", density = 2.321*g/cm3, ncomponents=1);
-   m_Material_Silicon->AddElement(Si, 1);
-
-   // Germanium
-   m_Material_Germanium = new G4Material("Germanium", density= 5.323*g/cm3, ncomponents=1);
-   m_Material_Germanium->AddElement(Ge, 1);
+{ 
+   m_Material_Vacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
+   m_Material_Aluminium = MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
+   m_Material_Silicon = MaterialManager::getInstance()->GetMaterialFromLibrary("Si");
+   m_Material_Germanium = MaterialManager::getInstance()->GetMaterialFromLibrary("Ge");
 }
 
 

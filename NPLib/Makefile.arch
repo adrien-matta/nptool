@@ -11,7 +11,7 @@ ROOTCONFIG   := root-config
 ARCH         := $(shell $(ROOTCONFIG) --arch)
 PLATFORM     := $(shell $(ROOTCONFIG) --platform)
 ALTCC        := $(shell $(ROOTCONFIG) --cc)
-ALTCXX       := $(shell $(ROOTCONFIG) --cxx)
+ALTCXX       := $(shell $(ROOTCONFIG) --cxx) -Wno-deprecated-register
 ALTF77       := $(shell $(ROOTCONFIG) --f77)
 ALTLD        := $(shell $(ROOTCONFIG) --ld)
 

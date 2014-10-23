@@ -12,7 +12,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe the Tigress Silicon array                              *
+ *  This class describe the Tigress Germanium array                          *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -35,7 +35,7 @@
 #include "G4MultiFunctionalDetector.hh"
 
 //G4 various object
-#include "G4Material.hh"
+#include "G4Material.hh""
 #include "G4Polycone.hh"
 #include "G4Polyhedra.hh"
 #include "G4LogicalVolume.hh"
@@ -50,14 +50,15 @@
 #include "G4SubtractionSolid.hh"
 #include "G4IntersectionSolid.hh"
 #include "G4UnionSolid.hh"
-#include "G4ThreeVector.hh"// NPS
+#include "G4ThreeVector.hh"
+
+// NPS
 #include "Tigress.hh"
 //#include "TigressScorers.hh"
+#include "MaterialManager.hh"
 
 // NPL
 #include "NPOptionManager.h"
-
-//#include "TigressScorers.hh"
 #include "RootOutput.h"
 using namespace TIGRESS;
 
@@ -124,10 +125,7 @@ Tigress::Tigress(){
 }
 
 Tigress::~Tigress(){
-  delete m_MaterialSilicon;
-  delete m_MaterialAl;
   delete m_MaterialVacuum;
-  delete m_MaterialPCB;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -518,7 +516,7 @@ void Tigress::ConstructClover(string){
                       logicCrystalG,"LogicCrystalG",m_LogicClover,false,m_CloverId[0]);
     logicCrystalG->SetVisAttributes(GreenVisAtt);
     
-     CrystalRotation->rotate(-180*deg, G4ThreeVector(0,0,1));
+    CrystalRotation->rotate(-180*deg, G4ThreeVector(0,0,1));
     CrystalPosition = G4ThreeVector(-CrystalOffset,-CrystalOffset,0);
     new G4PVPlacement(G4Transform3D(*CrystalRotation, CrystalPosition),
                       logicCrystalR,"LogicCrystalR",m_LogicClover,false,m_CloverId[0]);
@@ -944,33 +942,7 @@ void Tigress::InitializeScorers(){
 /////////////////Material Definition ///////////////////////////
 ////////////////////////////////////////////////////////////////
 void Tigress::InitializeMaterial(){
-  G4Element* H   = new G4Element("Hydrogen" , "H"  , 1  , 1.015  * g / mole);
-  G4Element* C   = new G4Element("Carbon"   , "C"  , 6  , 12.011 * g / mole);
-  G4Element* N   = new G4Element("Nitrogen" , "N"  , 7  , 14.01  * g / mole);
-  G4Element* O   = new G4Element("Oxygen"   , "O"  , 8  , 15.99  * g / mole);
-  
-  G4double a, z, density;
-  // Si
-  a = 28.0855 * g / mole;
-  density = 2.321 * g / cm3;
-  m_MaterialSilicon = new G4Material("Si", z = 14., a, density);
-  
-  // Al
-  density = 2.702 * g / cm3;
-  a = 26.98 * g / mole;
-  m_MaterialAl = new G4Material("Al", z = 13., a, density);
-  
-  // PCB (should be FR-4, I took Epoxy Molded from LISE++)
-  density = 1.85 * g / cm3;
-  m_MaterialPCB = new G4Material("PCB", density, 3);
-  m_MaterialPCB->AddElement(H, .475);
-  m_MaterialPCB->AddElement(C, .45);
-  m_MaterialPCB->AddElement(O, .075);
-  //  Vacuum
-  density = 0.000000001 * mg / cm3;
-  m_MaterialVacuum = new G4Material("Vacuum", density, 2);
-  m_MaterialVacuum->AddElement(N, .7);
-  m_MaterialVacuum->AddElement(O, .3);
+  m_MaterialVacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
 }
 
 

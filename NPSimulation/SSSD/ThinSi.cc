@@ -33,9 +33,7 @@
 #include "G4MultiFunctionalDetector.hh"
 
 //G4 various object
-#include "G4MaterialTable.hh"
-#include "G4Element.hh"
-#include "G4ElementTable.hh"
+#include "G4Material.hh"
 #include "G4Transform3D.hh"
 #include "G4PVPlacement.hh"
 #include "G4VisAttributes.hh"
@@ -45,6 +43,7 @@
 
 // NPTool header
 #include "ThinSi.hh"
+#include "MaterialManager.hh"
 #include "ObsoleteGeneralScorers.hh"
 #include "ThinSiScorers.hh"
 #include "RootOutput.h"
@@ -674,26 +673,9 @@ void ThinSi::InitializeScorers(){
 /////////////////Material Definition ///////////////////////////
 ////////////////////////////////////////////////////////////////
 void ThinSi::InitializeMaterial(){
-
-  G4Element* N   = new G4Element("Nitrogen" , "N"  , 7  , 14.01  * g / mole);
-  G4Element* O   = new G4Element("Oxigen"   , "O"  , 8  , 16.00  * g / mole);
-
-  G4double a, z, density;
-  // Si
-  a = 28.0855 * g / mole;
-  density = 2.321 * g / cm3;
-  m_MaterialSilicon = new G4Material("Si", z = 14., a, density);
-
-  // Al
-  density = 2.702 * g / cm3;
-  a = 26.98 * g / mole;
-  m_MaterialAl = new G4Material("Al", z = 13., a, density);
-
-  //  Vacuum
-  density = 0.000000001 * mg / cm3;
-  m_MaterialVacuum = new G4Material("Vacuum", density, 2);
-  m_MaterialVacuum->AddElement(N, .7);
-  m_MaterialVacuum->AddElement(O, .3);
+  m_MaterialSilicon = MaterialManager::getInstance()->GetMaterialFromLibrary("Si");
+  m_MaterialAl = MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
+  m_MaterialVacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
 }
 
 

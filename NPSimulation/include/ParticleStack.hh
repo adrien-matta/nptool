@@ -74,6 +74,10 @@ class ParticleStack{
     // true if the particle to be added is the first one
     bool m_First;
 
+    // USed to know if it the very first event generated, so we can write DEDX 
+    // table for the beam
+    bool m_EventZero;
+
   private: // Private Member
     vector<Particle> m_ParticleStack;
 

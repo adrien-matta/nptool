@@ -32,7 +32,7 @@
 using namespace std;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-MaterialManager* MaterialManager::MaterialManager::instance = 0 ;
+MaterialManager* MaterialManager::instance = 0 ;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 MaterialManager* MaterialManager::getInstance(){
@@ -44,6 +44,12 @@ MaterialManager* MaterialManager::getInstance(){
 MaterialManager::~MaterialManager(){
 
 }
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+MaterialManager::MaterialManager(){
+
+}
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void MaterialManager::Destroy(){
@@ -96,7 +102,7 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       return material; 
     }
 
-    else  if(Name == "Harvar"){
+    else  if(Name == "Havar"){
       G4Material* material = new G4Material(Name, 8.3*g / cm3,5);
       material->AddElement(GetElementFromLibrary("Co"),42);
       material->AddElement(GetElementFromLibrary("Cr"),20);
@@ -120,6 +126,20 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       G4Material* material = new G4Material(Name, 0.93*g/cm3,2);
       material->AddElement(GetElementFromLibrary("C"),1);
       material->AddElement(GetElementFromLibrary("D"),2);
+      m_Material[Name]=material;
+      return material; 
+    }
+
+    else  if(Name == "Cu"){
+      G4Material* material = new G4Material(Name, 8.96*g/cm3,1);
+      material->AddElement(GetElementFromLibrary("Cu"),1);
+      m_Material[Name]=material;
+      return material; 
+    }
+
+    else  if(Name == "C"){ // Graphite
+      G4Material* material = new G4Material(Name, 2.267*g/cm3,1);
+      material->AddElement(GetElementFromLibrary("C"),1);
       m_Material[Name]=material;
       return material; 
     }
@@ -226,6 +246,10 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
 
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void MaterialManager::AddMaterialToLibrary(G4Material* material){
+  m_Material[material->GetName()]=material;
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4Element* MaterialManager::GetElementFromLibrary(string Name){
@@ -367,6 +391,19 @@ G4Element* MaterialManager::GetElementFromLibrary(string Name){
       return element;
     }
 
+    else if(Name == "Cs"){
+      G4Element* element = new G4Element(Name,Name,55, 132.90545196*g/mole);
+      m_Element[Name] = element;
+      return element;
+    }
+
+    else if(Name == "Cu"){
+      G4Element* element = new G4Element(Name,Name,29, 63.546*g/mole);
+      m_Element[Name] = element;
+      return element;
+    }
+
+
     else{
       cout << "ERROR: Element requested \""<< Name <<"\" is not available in the Material Librairy" << endl;
       exit(1);
@@ -398,13 +435,12 @@ void MaterialManager::WriteDEDXTable(G4ParticleDefinition* Particle ,G4double Em
     G4EmCalculator emCalculator;
     G4double dedx ;
     // Tipical Range needed, if Emax is larger, then adapted
-    if(Emax < 25000) Emax = 25000;    
+    if(Emax < 1*TeV) Emax = 1*TeV;    
     double step = 1*keV;
     double before = 0 ;
+    
     for (G4double E=Emin; E < Emax; E+=step){
-       
       dedx = emCalculator.ComputeTotalDEDX(E, Particle, it->second)/(MeV/micrometer);
-
       if(before){
         if(abs(before-dedx)/abs(before)<0.01) step*=10; 
       }

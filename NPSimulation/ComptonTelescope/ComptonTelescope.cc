@@ -38,9 +38,7 @@
 #include "G4Trap.hh"
 
 // G4 various headers
-#include "G4MaterialTable.hh"
-#include "G4Element.hh"
-#include "G4ElementTable.hh"
+#include "G4Material.hh"
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
 #include "G4RotationMatrix.hh"
@@ -52,6 +50,7 @@
 #include "ComptonTelescope.hh"
 #include "ComptonTelescopeScorers.hh"
 #include "ObsoleteGeneralScorers.hh"
+#include "MaterialManager.hh"
 #include "RootOutput.h"
 
 // CLHEP
@@ -963,44 +962,10 @@ void ComptonTelescope::ReadSensitive(const G4Event* event)
 
 void ComptonTelescope::InitializeMaterial()
 {
-
-   ////////////////////////////////////////////////////////////////
-   /////////////////Element  Definition ///////////////////////////
-   ////////////////////////////////////////////////////////////////
-   G4String symbol;
-   G4double density = 0, a = 0, z = 0;
-   G4int ncomponents = 0, natoms = 0;
-
-   G4Element* N   = new G4Element("Nitrogen" , symbol = "N"  , z = 7  , a = 14.01  * g / mole);
-   G4Element* O   = new G4Element("Oxigen"   , symbol = "O"  , z = 8  , a = 16.00  * g / mole);
-   G4Element* Br  = new G4Element("Bromine"  , symbol = "Br" , z = 35 , a =  79.9  * g / mole);
-   G4Element* La  = new G4Element("Lanthanum", symbol = "La" , z = 57 , a = 138.9  * g / mole);
-
-   ////////////////////////////////////////////////////////////////
-   /////////////////Material Definition ///////////////////////////
-   ////////////////////////////////////////////////////////////////
-
-   // Si
-   a = 28.0855 * g / mole;
-   density = 2.321 * g / cm3;
-   m_MaterialSilicon = new G4Material("Si", z = 14., a, density);
-
-   // Al
-   density = 2.702 * g / cm3;
-   a = 26.98 * g / mole;
-   m_MaterialAluminium = new G4Material("Aluminium", z = 13., a, density);
-
-   // LaBr3
-   density = 5.06 * g / cm3;
-   m_MaterialLaBr3 = new G4Material("LaBr3", density, ncomponents = 2);
-   m_MaterialLaBr3->AddElement(La , natoms = 1);
-   m_MaterialLaBr3->AddElement(Br , natoms = 3);
-
-   //  Vacuum
-   density = 0.000000001 * mg / cm3;
-   m_MaterialVacuum = new G4Material("Vacuum", density, ncomponents = 2);
-   m_MaterialVacuum->AddElement(N, .7);
-   m_MaterialVacuum->AddElement(O, .3);
+   m_MaterialSilicon =  MaterialManager::getInstance()->GetMaterialFromLibrary("Si");
+   m_MaterialAluminium = MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
+   m_MaterialLaBr3 = MaterialManager::getInstance()->GetMaterialFromLibrary("LaBr3");
+   m_MaterialVacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
 }
 
 

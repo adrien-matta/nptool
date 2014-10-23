@@ -61,8 +61,20 @@ private:
   map<string,G4Material*> m_Material; 
  
 public:
+  // Look for a known material named Name.
+  // If the Material is known but not instantiate it is created and return
+  // If the Material is instantiate it return it
   G4Material* GetMaterialFromLibrary(string Name);
+
+  // Same as above but for Element.
   G4Element*  GetElementFromLibrary(string Name);
+  
+  // Let the user directly add a custom material to the library
+  // It is howver overwritting existing material having the same name
+  void AddMaterialToLibrary(G4Material*);
+
+  // Write the DEDx table for all material instantiate in the MaterialManager
+  // for a given particle
   void WriteDEDXTable(G4ParticleDefinition* Particle ,G4double Emin,G4double Emax);
 };
 #endif

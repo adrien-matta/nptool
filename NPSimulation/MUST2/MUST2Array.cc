@@ -24,13 +24,10 @@
  *****************************************************************************/
 #include"MUST2Array.hh"
 
-//G4 Geometry object
+//Geant4
 #include "G4Trd.hh"
 #include "G4Box.hh"
 #include "G4Trap.hh"
-
-//G4 various object
-
 #include "G4MaterialTable.hh"
 #include "G4Element.hh"
 #include "G4ElementTable.hh"
@@ -41,13 +38,18 @@
 #include "G4Colour.hh"
 #include "G4PVDivision.hh"
 
-//G4 sensitive
+// NPS
+#include "MaterialManager.hh"
 #include "ObsoleteGeneralScorers.hh"
 #include "MUST2Scorers.hh"
 
-//Not G4
+//ROOT
 #include "RootOutput.h"
+
+// CLHEP
 #include "CLHEP/Random/RandGauss.h"
+
+// STL
 #include "sstream"
 #include "string"
 #include <cmath>
@@ -65,12 +67,6 @@ MUST2Array::MUST2Array(){
 }
 
 MUST2Array::~MUST2Array(){
-  delete m_MaterialAluminium;
-  delete m_MaterialIron;
-  delete m_MaterialCsI;
-  delete m_MaterialVacuum ;
-  delete m_MaterialMyl;
-  delete m_MaterialHarvar;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -1319,73 +1315,13 @@ void MUST2Array::InitializeScorers() {
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void MUST2Array::InitializeMaterial(){
 
-  ////////////////////////////////////////////////////////////////
-  /////////////////Element  Definition ///////////////////////////
-  ////////////////////////////////////////////////////////////////
-  G4String symbol               ;
-  G4double density = 0. , a = 0, z = 0   ;
-  G4int ncomponents = 0, natoms = 0  ;
-
-  G4Element* H   = new G4Element("Hydrogen" , symbol = "H"  , z = 1  , a = 1.01   * g / mole);
-  G4Element* C   = new G4Element("Carbon"   , symbol = "C"  , z = 6  , a = 12.011 * g / mole);
-  G4Element* N   = new G4Element("Nitrogen" , symbol = "N"  , z = 7  , a = 14.01  * g / mole);
-  G4Element* O   = new G4Element("Oxigen"   , symbol = "O"  , z = 8  , a = 16.00  * g / mole);
-  G4Element* I   = new G4Element("Iode"     , symbol = "I"  , z = 53 , a = 126.9  * g / mole);
-  G4Element* Cs  = new G4Element("Cesium"   , symbol = "Cs" , z = 55 , a = 132.9  * g / mole);
-
-  G4Element* Co  = new G4Element("Cobalt"  , symbol = "Co" , z = 27 , a = 58.933 * g / mole);
-  G4Element* Cr  = new G4Element("Cromium"  , symbol = "Cr" , z = 24 , a = 51.996 * g / mole);
-  G4Element* Ni  = new G4Element("Nickel"   , symbol = "Ni" , z = 28 , a = 58.69  * g / mole);
-  G4Element* Fe  = new G4Element("Iron"     , symbol = "Fe" , z = 26 , a = 55.847 * g / mole);
-  G4Element* W   = new G4Element("Tungsten" , symbol = "W"  , z = 74 , a = 183.5  * g / mole);
-
-  ////////////////////////////////////////////////////////////////
-  /////////////////Material Definition ///////////////////////////
-  ////////////////////////////////////////////////////////////////
-
-  // Si
-  a = 28.0855 * g / mole;
-  density = 2.321 * g / cm3;
-  m_MaterialSilicon = new G4Material("Si", z = 14., a, density);
-
-  // Al
-  density = 2.702 * g / cm3;
-  a = 26.98 * g / mole;
-  m_MaterialAluminium = new G4Material("Aluminium", z = 13., a, density);
-
-  // Iron
-  density = 7.874 * g / cm3;
-  a = 55.847 * g / mole;
-  m_MaterialIron = new G4Material("Iron", z = 26., a, density);
-
-  // CsI
-  density = 4.51 * g / cm3;
-  m_MaterialCsI = new G4Material("CsI", density, ncomponents = 2);
-  m_MaterialCsI->AddElement(Cs , natoms = 1);
-  m_MaterialCsI->AddElement(I  , natoms = 1);
-
-  //  Vacuum
-  density = 0.000000001 * mg / cm3;
-  m_MaterialVacuum = new G4Material("Vacuum", density, ncomponents = 2);
-  m_MaterialVacuum->AddElement(N, .7);
-  m_MaterialVacuum->AddElement(O, .3);
-
-  //  Mylar
-  density = 1.397 * g / cm3;
-  m_MaterialMyl = new G4Material("Mylar", density, ncomponents = 3);
-  m_MaterialMyl->AddElement(C, natoms = 10);
-  m_MaterialMyl->AddElement(H, natoms = 8);
-  m_MaterialMyl->AddElement(O, natoms = 4);
-
-  // Havar
-  m_MaterialHarvar = new G4Material("Havar", 8.3*g / cm3, 5);
-  m_MaterialHarvar->AddElement(Co , 42);
-  m_MaterialHarvar->AddElement(Cr , 20);
-  m_MaterialHarvar->AddElement(Ni , 13);
-  m_MaterialHarvar->AddElement(Fe , 19);
-  m_MaterialHarvar->AddElement(W  ,  1);
+  m_MaterialSilicon = MaterialManager::getInstance()->GetMaterialFromLibrary("Si");
+  m_MaterialAluminium = MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
+  m_MaterialCsI = MaterialManager::getInstance()->GetMaterialFromLibrary("CsI");
+  m_MaterialIron = MaterialManager::getInstance()->GetMaterialFromLibrary("Fe");
+  m_MaterialMyl = MaterialManager::getInstance()->GetMaterialFromLibrary("Mylar");
+  m_MaterialVacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
 }
-
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4RotationMatrix* Rotation(double tetaX, double tetaY, double tetaZ){

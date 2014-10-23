@@ -30,9 +30,7 @@
 #include "G4Tubs.hh"
 
 // G4 various headers
-#include "G4MaterialTable.hh"
-#include "G4Element.hh"
-#include "G4ElementTable.hh"
+#include "G4Material.hh"
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
 #include "G4RotationMatrix.hh"
@@ -47,6 +45,7 @@
 
 // NPTool headers
 #include "ObsoleteGeneralScorers.hh"
+#include "MaterialManager.hh"
 #include "AnnularS1.hh"
 #include "SiliconScorers.hh"
 #include "TS1Data.h"
@@ -80,33 +79,9 @@ void AnnularS1::VolumeMaker(G4int             DetecNumber,
     G4RotationMatrix* rotation,
     G4LogicalVolume*  world)
 {
-  ////////////////////////////////////////////////////////////////
-  /////////////////Element  Definition ///////////////////////////
-  ////////////////////////////////////////////////////////////////
-  G4String symbol                      ;
-  G4double density = 0. , a = 0, z = 0 ;
-  G4int ncomponents = 0, natoms = 0    ;
-
-  ////////////////////////////////////////////////////////////////
-  /////////////////Material Definition ///////////////////////////
-  ////////////////////////////////////////////////////////////////
-  // Si
-  a = 28.0855 * g / mole;
-  density = 2.321 * g / cm3;
-  G4Material* Silicon = new G4Material("Si", z = 14., a, density);
-
-  // Al
-  density = 2.702 * g / cm3;
-  a = 26.98 * g / mole;
-  G4Material* Aluminium = new G4Material("Aluminium", z = 13., a, density);
-
-  //  Vacuum
-  density = 0.000000001 * mg / cm3;
-  G4Material* Vacuum = new G4Material("Vacuum", density, ncomponents = 2);
-  G4Element* N = new G4Element("Nitrogen" , symbol = "N"  , z = 7  , a = 14.01  * g / mole);
-  G4Element* O = new G4Element("Oxigen"   , symbol = "O"  , z = 8  , a = 16.00  * g / mole);
-  Vacuum->AddElement(N, .7);
-  Vacuum->AddElement(O, .3);
+  G4Material* Silicon = MaterialManager::getInstance()->GetMaterialFromLibrary("Si");
+  G4Material* Aluminium = MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
+  G4Material* Vacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
   ////////////////////////////////////////////////////////////////
   ////////////// Starting Volume Definition //////////////////////
   ////////////////////////////////////////////////////////////////

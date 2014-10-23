@@ -34,9 +34,7 @@
 #include "G4SDManager.hh"
 
 //G4 various object
-#include "G4MaterialTable.hh"
-#include "G4Element.hh"
-#include "G4ElementTable.hh"
+#include "G4Material.hh"
 #include "G4Transform3D.hh"
 #include "G4PVPlacement.hh"
 #include "G4Colour.hh"
@@ -45,7 +43,7 @@
 
 // NPS
 #include "Tiara.hh"
-
+#include "MaterialManager.hh"
 // NPL
 #include "NPOptionManager.h"
 
@@ -463,13 +461,6 @@ void Tiara::ConstructChamber(G4LogicalVolume* world){
   // Two outer cylinder surrounding Hyball
   // Hyball is hold on a back plate that close the Diabolo Shaped Chamber
 
-
-  // Material to be moved in a Material Function //
-  // Al
-  G4double density = 2.702*g/cm3;
-  G4double a = 26.98*g/mole;
-  G4Material* Aluminium = new G4Material("Aluminium", 13., a, density);
-
   // Making the Chamber //
   // We make the individual pieces, starting from the inside to the outside 
   // Then we merge them together using the a G4AdditionSolid
@@ -517,7 +508,7 @@ void Tiara::ConstructChamber(G4LogicalVolume* world){
 
   // Create Logic Volume
   G4LogicalVolume* logicTiaraChamber =
-    new G4LogicalVolume(solidTiaraChamberStep4,Aluminium,"logicTiaraChamber", 0, 0, 0);
+    new G4LogicalVolume(solidTiaraChamberStep4,m_MaterialAl,"logicTiaraChamber", 0, 0, 0);
 
   // Visual Attribute
   G4VisAttributes* ChamberVisAtt
@@ -534,33 +525,10 @@ void Tiara::ConstructChamber(G4LogicalVolume* world){
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Tiara::InitializeMaterial(){
-  G4Element* H   = new G4Element("Hydrogen" , "H"  , 1  , 1.015  * g / mole);
-  G4Element* C   = new G4Element("Carbon"   , "C"  , 6  , 12.011 * g / mole);
-  G4Element* N   = new G4Element("Nitrogen" , "N"  , 7  , 14.01  * g / mole);
-  G4Element* O   = new G4Element("Oxygen"   , "O"  , 8  , 15.99  * g / mole);
-  
-  G4double a, z, density;
-  // Si
-  a = 28.0855 * g / mole;
-  density = 2.321 * g / cm3;
-  m_MaterialSilicon = new G4Material("Si", z = 14., a, density);
-  
-  // Al
-  density = 2.702 * g / cm3;
-  a = 26.98 * g / mole;
-  m_MaterialAl = new G4Material("Al", z = 13., a, density);
-  
-  // PCB (should be FR-4, I took Epoxy Molded from LISE++)
-  density = 1.85 * g / cm3;
-  m_MaterialPCB = new G4Material("PCB", density, 3);
-  m_MaterialPCB->AddElement(H, .475);
-  m_MaterialPCB->AddElement(C, .45);
-  m_MaterialPCB->AddElement(O, .075);
-  //  Vacuum
-  density = 0.000000001 * mg / cm3;
-  m_MaterialVacuum = new G4Material("Vacuum", density, 2);
-  m_MaterialVacuum->AddElement(N, .7);
-  m_MaterialVacuum->AddElement(O, .3);
+  m_MaterialSilicon = MaterialManager::getInstance()->GetMaterialFromLibrary("Si");
+  m_MaterialAl = MaterialManager::getInstance()->GetMaterialFromLibrary("Al"); 
+  m_MaterialPCB = MaterialManager::getInstance()->GetMaterialFromLibrary("PCB");
+  m_MaterialVacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
 }
 
 

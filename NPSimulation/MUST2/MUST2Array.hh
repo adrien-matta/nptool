@@ -205,7 +205,7 @@ private:
    //  Mylar
    G4Material* m_MaterialMyl;
    // Havar
-   G4Material* m_MaterialHarvar;
+   G4Material* m_MaterialHavar;
 
 
 

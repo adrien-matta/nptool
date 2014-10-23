@@ -21,6 +21,7 @@
  *****************************************************************************/
 // NPS
 #include"ParticleStack.hh"
+#include"MaterialManager.hh"
 
 // G4 headers
 #include "G4ParticleTable.hh"
@@ -32,8 +33,7 @@
 ParticleStack* ParticleStack::instance = 0 ;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-ParticleStack* ParticleStack::getInstance()
-{
+ParticleStack* ParticleStack::getInstance(){
   if (instance == 0) instance = new ParticleStack();
   return instance ;
 }
@@ -53,7 +53,8 @@ ParticleStack::ParticleStack(){
   // Instantiate the TInitialConditions object and link it to the RootOutput tree
   m_InitialConditions = new TInitialConditions();
   RootOutput::getInstance()->GetTree()->Branch("InitialConditions","TInitialConditions",&m_InitialConditions);
-  
+ 
+  m_EventZero = true; 
   m_First=true;
 
 }
@@ -109,7 +110,16 @@ void ParticleStack::AddBeamParticleToStack(Particle& particle){
   m_InitialConditions-> SetIncidentPositionX     (particle. GetParticlePosition().x());
   m_InitialConditions-> SetIncidentPositionY     (particle. GetParticlePosition().y());
   m_InitialConditions-> SetIncidentPositionZ     (particle. GetParticlePosition().z());
-  
+
+
+  // The beam is not shoot most of the time, but the DEDx table are still usefull  
+  if( m_EventZero && particle.GetParticleDefinition()->GetPDGCharge()!=0){
+       MaterialManager::getInstance()
+        ->WriteDEDXTable(particle.GetParticleDefinition(),
+                         1e-3*eV,particle.GetParticleKineticEnergy());
+      m_EventZero = false;  
+    }
+
   m_First=false;
 }
 
@@ -229,7 +239,16 @@ void ParticleStack::ShootAllParticle(G4Event* anEvent){
   
   for(unsigned int i = 0 ; i < size ; i++){
     
-    if(m_ParticleStack[i].GetShootStatus()){
+    if(    m_ParticleStack[i].GetShootStatus()){
+      // Write the DEDX table for charged particle and 
+      // all material used in the simulation 
+      if( anEvent->GetEventID()==0
+          && m_ParticleStack[i].GetParticleDefinition()->GetPDGCharge()!=0){
+       MaterialManager::getInstance()
+        ->WriteDEDXTable(m_ParticleStack[i].GetParticleDefinition(),
+                         1e-3*eV,m_ParticleStack[i].GetParticleKineticEnergy());
+      }
+
       m_particleGun->SetParticleDefinition(m_ParticleStack[i].GetParticleDefinition());
       m_particleGun->SetParticleEnergy(m_ParticleStack[i].GetParticleKineticEnergy());
       m_particleGun->SetParticleMomentumDirection(m_ParticleStack[i].GetParticleMomentumDirection());
