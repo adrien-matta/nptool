@@ -23,7 +23,7 @@ endif
 G4WORKDIR = ./
 G4BIN = ./bin
 
-CPPFLAGS += $(shell root-config --cflags)
+CPPFLAGS += $(shell root-config --cflags) -Wno-deprecated-register
 CPPFLAGS += -I$(NPTOOL)/NPLib/include
 
 ifeq ($(ARCH),linuxx8664gcc)
