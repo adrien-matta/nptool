@@ -414,6 +414,8 @@ void MUST2Array::VolumeMaker( G4int TelescopeNumber,
   ////////////////////////////////////////////////////////////////
 
   if (wCsI) {
+    m_MaterialMyl = MaterialManager::getInstance()->GetMaterialFromLibrary("Mylar");
+    m_MaterialCsI = MaterialManager::getInstance()->GetMaterialFromLibrary("CsI");
 
     G4ThreeVector positionCsI = G4ThreeVector(0, 0, CsI_PosZ);
     G4Trd* solidCsI = new G4Trd("csI", 0.5*CsIFaceFront, 0.5*CsIFaceBack, 0.5*CsIFaceFront, 0.5*CsIFaceBack, 0.5*CsIThickness);
@@ -1317,9 +1319,7 @@ void MUST2Array::InitializeMaterial(){
 
   m_MaterialSilicon = MaterialManager::getInstance()->GetMaterialFromLibrary("Si");
   m_MaterialAluminium = MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
-  m_MaterialCsI = MaterialManager::getInstance()->GetMaterialFromLibrary("CsI");
   m_MaterialIron = MaterialManager::getInstance()->GetMaterialFromLibrary("Fe");
-  m_MaterialMyl = MaterialManager::getInstance()->GetMaterialFromLibrary("Mylar");
   m_MaterialVacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
 }
 

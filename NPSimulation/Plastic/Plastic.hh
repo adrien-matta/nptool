@@ -96,15 +96,6 @@ public:
    // Called at in the EventAction::EndOfEventAvtion
    void ReadSensitive(const G4Event* event) ;
 
-public: // Material 
-   void InitializeMaterial() ;
-   // Platic
-   G4Material* m_MaterialPlastic_BC400     ; //BC-400 type plastic
-   G4Material* m_MaterialKapton  ; //BC452:BC-400 loaded with 10%Pb type plastic
-   // Lead
-   G4Material* m_MaterialLead ;
-   G4Material* m_MaterialAl ;
-   
 public:   //   Scorer
    //   Initialize all Scorer used by the MUST2Array
    void InitializeScorers() ;

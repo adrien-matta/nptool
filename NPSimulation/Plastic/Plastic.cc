@@ -67,16 +67,10 @@ using namespace PLASTIC ;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Plastic Specific Method
 Plastic::Plastic(){
-  InitializeMaterial();
   m_Event = new TPlasticData() ;
 }
 
 Plastic::~Plastic(){
-  delete m_MaterialPlastic_BC400      ; 
-  delete m_MaterialLead                     ;
-  delete m_MaterialAl                     ;
-  delete m_MaterialKapton                    ;
-  delete m_PlasticScorer                  ;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -100,6 +94,7 @@ void Plastic::AddPlastic(   G4double  R                       ,
   m_PlasticWidth.push_back(-1)                              ; // squared shape
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Plastic::AddPlastic(   G4double R                      ,
     G4double Theta                ,
     G4double Phi                     ,
@@ -130,40 +125,37 @@ void Plastic::AddPlastic(   G4double R                      ,
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void Plastic::ReadConfiguration(string Path)
-{
+void Plastic::ReadConfiguration(string Path){
   ifstream ConfigFile           ;
   ConfigFile.open(Path.c_str()) ;
   string LineBuffer          ;
   string DataBuffer          ;
 
-  G4double Theta = 0 , Phi = 0 , R = 0 , Thickness = 0 , Radius = 0 , LeadThickness = 0, X = 0 , Y = 0 , Z = 0 , Width = 0 , Height = 0 ;
+  G4double Theta = 0 , Phi = 0 , R = 0 , Thickness = 0 , Radius = 0 ;
+  G4double  LeadThickness = 0, X = 0 , Y = 0 , Z = 0 , Width = 0 , Height = 0 ;
   G4String Scintillator, Shape ;
 
-  bool check_Theta = false               ;
-  bool check_Phi  = false                 ;
-  bool check_R     = false               ;
-  bool check_Thickness = false        ;
-  bool check_Radius = false              ;
-  bool check_LeadThickness = false   ;
-  bool check_Scintillator = false      ;
-  bool check_Height = false             ;
-  bool check_Width = false                ;
-  bool check_Shape = false                ;
-  bool check_X = false                      ;
-  bool check_Y = false                      ;
-  bool check_Z = false                      ;      
-  bool ReadingStatus = false             ;
+  bool check_Theta = false ;
+  bool check_Phi = false ;
+  bool check_R = false ;
+  bool check_Thickness = false ;
+  bool check_Radius = false ;
+  bool check_LeadThickness = false ;
+  bool check_Scintillator = false ;
+  bool check_Height = false ;
+  bool check_Width = false ;
+  bool check_Shape = false ;
+  bool check_X = false ;
+  bool check_Y = false ;
+  bool check_Z = false ;      
+  bool ReadingStatus = false ;
 
 
-  while (!ConfigFile.eof()) 
-  {
-
+  while (!ConfigFile.eof()) {
     getline(ConfigFile, LineBuffer);
 
     //   If line is a Start Up Plastic bloc, Reading toggle to true      
-    if (LineBuffer.compare(0, 7, "Plastic") == 0) 
-    {
+    if (LineBuffer.compare(0, 7, "Plastic") == 0) {
       G4cout << "///" << G4endl           ;
       G4cout << "Platic found: " << G4endl   ;        
       ReadingStatus = true ;
@@ -174,13 +166,14 @@ void Plastic::ReadConfiguration(string Path)
     else ReadingStatus = false ;
 
     //   Reading Block
-    while(ReadingStatus)
-    {
+    while(ReadingStatus){
       // Pickup Next Word 
       ConfigFile >> DataBuffer ;
 
       //   Comment Line 
-      if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
+      if (DataBuffer.compare(0, 1, "%") == 0) {   
+        ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
+      }
 
       //   Finding another telescope (safety), toggle out
       else if (DataBuffer.compare(0, 6, "Plastic") == 0) {
@@ -299,25 +292,32 @@ void Plastic::ReadConfiguration(string Path)
 
       ///////////////////////////////////////////////////
       //   If no Detector Token and no comment, toggle out
-      else 
-      {ReadingStatus = false; G4cout << "Wrong Token Sequence: Getting out " << DataBuffer << G4endl ;}
+      else{
+        ReadingStatus = false; 
+        G4cout << "Wrong Token Sequence: Getting out " << DataBuffer << G4endl ;
+      }
 
       /////////////////////////////////////////////////
       //   If All necessary information there, toggle out
 
-      if (       ( check_Theta && check_Phi && check_R && check_Thickness && check_Radius && check_LeadThickness && check_Scintillator && check_Shape) // Cylindrical case
-          ||    ( check_X && check_Y && check_Z && check_Thickness && check_Radius && check_LeadThickness && check_Scintillator )
+      if (( check_Theta && check_Phi && check_R && check_Thickness 
+            && check_Radius && check_LeadThickness && check_Scintillator 
+            && check_Shape) // Cylindrical case
+          ||    
+          ( check_X && check_Y && check_Z && check_Thickness && check_Radius 
+            && check_LeadThickness && check_Scintillator )
+          ||   
+          ( check_Theta && check_Phi && check_R && check_Thickness 
+            && check_Width && check_Height && check_LeadThickness 
+            && check_Scintillator && check_Shape ) // Squared case
+          ||   
+          ( check_X && check_Y && check_Z && check_Thickness && check_Width 
+            && check_Height && check_LeadThickness && check_Scintillator )) { 
 
-          ||   ( check_Theta && check_Phi && check_R && check_Thickness && check_Width && check_Height && check_LeadThickness && check_Scintillator && check_Shape ) // Squared case
-          ||   ( check_X && check_Y && check_Z && check_Thickness && check_Width && check_Height && check_LeadThickness && check_Scintillator )
-         ) 
-      { 
-
-        if (check_X && check_Y && check_Z)
-        {
-          R       = sqrt (X*X+Y*Y+Z*Z)         ;
-          Theta   =   acos(Z / (R) )      ;
-          Phi    = atan2(Y,X)    ;
+        if (check_X && check_Y && check_Z){
+          R = sqrt (X*X+Y*Y+Z*Z);
+          Theta = acos(Z / (R) );
+          Phi = atan2(Y,X);
         }
 
         if (Shape == "Cylinder")
@@ -341,86 +341,65 @@ void Plastic::ReadConfiguration(string Path)
 
         //   Reinitialisation of Check Boolean 
 
-        check_Theta = false            ;
-        check_Phi  = false              ;
-        check_R     = false            ;
-        check_Thickness = false        ;
-        check_Radius = false           ;
-        check_LeadThickness = false   ;
-        check_Scintillator = false    ;
-        check_Height = false             ;
-        check_Width = false             ;
-        check_Shape = false             ;
-        check_X = false                   ;
-        check_Y = false                   ;
-        check_Z = false                   ;
-        ReadingStatus = false          ;   
-        cout << "///"<< endl             ;            
+        check_Theta = false ;
+        check_Phi = false ;
+        check_R = false ;
+        check_Thickness = false ;
+        check_Radius = false ;
+        check_LeadThickness = false ;
+        check_Scintillator = false ;
+        check_Height = false ;
+        check_Width = false ;
+        check_Shape = false ;
+        check_X = false ;
+        check_Y = false ;
+        check_Z = false ;
+        ReadingStatus = false ;   
+        cout << "///"<< endl ;            
       }
-
     }
   }
-
 }
 
 // Construct detector and inialise sensitive part.
 // Called After DetecorConstruction::AddDetector Method
-void Plastic::ConstructDetector(G4LogicalVolume* world)
-{
+void Plastic::ConstructDetector(G4LogicalVolume* world){
   G4ThreeVector Det_pos = G4ThreeVector(0, 0, 0)  ;
 
-  for (unsigned short i = 0 ; i < m_R.size() ; i++) 
-  {
-    G4double wX = m_R[i] * sin(m_Theta[i] ) * cos(m_Phi[i] )   ;
-    G4double wY = m_R[i] * sin(m_Theta[i] ) * sin(m_Phi[i] )   ;
-    G4double wZ = m_R[i] * cos(m_Theta[i] )                   ;
-
-    Det_pos = G4ThreeVector(wX, wY, wZ)                 ;
-    //         G4LogicalVolume* logicPlastic = NULL ;
-
+  for (unsigned short i = 0 ; i < m_R.size() ; i++) {
+    G4double wX = m_R[i] * sin(m_Theta[i] ) * cos(m_Phi[i] ) ;
+    G4double wY = m_R[i] * sin(m_Theta[i] ) * sin(m_Phi[i] ) ;
+    G4double wZ = m_R[i] * cos(m_Theta[i] ) ;
+    Det_pos = G4ThreeVector(wX, wY, wZ) ;
     VolumeMaker(Det_pos , i+1, world) ;
   }
 
 }
 
-void Plastic::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume* world)
-{
+void Plastic::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume* world){
   ////////////////////////////////////////////////////////////////
   ////////////// Starting Volume Definition //////////////////////
   ////////////////////////////////////////////////////////////////      
   // Name of the module
-  std::ostringstream DetectorNumber                  ;
-  DetectorNumber << DetNumber                         ;
-  G4String Name = "Plastic" + DetectorNumber.str()   ;
+  std::ostringstream DetectorNumber ;
+  DetectorNumber << DetNumber ;
+  G4String Name = "Plastic" + DetectorNumber.str() ;
 
   int i = DetNumber-1;
 
-  G4Material* PlasticMaterial ;
-
-  if(m_Scintillator[i] == "BC400"    ) PlasticMaterial = m_MaterialPlastic_BC400    ;
-  else if(m_Scintillator[i] == "Kapton" ) PlasticMaterial = m_MaterialKapton   ;
-  else {   
-    G4cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl ;
-    G4cout << "WARNING: Material Not found, default material set : BC400" << endl ; 
-    G4cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl ;
-    PlasticMaterial = m_MaterialPlastic_BC400;
-  }
-
+  G4Material* PlasticMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary(m_Scintillator[i]) ;
 
   // Definition of the volume containing the sensitive detector
 
-
   // Cylindrical Case
-  if(m_PlasticRadius[i]!=-1)
-  {
-    if(m_PlasticThickness[i]>0 && m_PlasticRadius[i]>0)
-    { 
-      G4Tubs* solidPlastic = new G4Tubs(   Name                              ,    
-          0                                    ,
-          m_PlasticRadius[i]         ,
-          m_PlasticThickness[i]/2   ,
-          0*deg                              , 
-          360*deg                           );
+  if(m_PlasticRadius[i]!=-1){
+    if(m_PlasticThickness[i]>0 && m_PlasticRadius[i]>0){ 
+      G4Tubs* solidPlastic = new G4Tubs( Name ,    
+          0 ,
+          m_PlasticRadius[i] ,
+          m_PlasticThickness[i]/2 ,
+          0*deg , 
+          360*deg);
 
       G4LogicalVolume* logicPlastic = new G4LogicalVolume(solidPlastic, PlasticMaterial, Name+ "_Scintillator", 0, 0, 0);
       logicPlastic->SetSensitiveDetector(m_PlasticScorer);
@@ -430,46 +409,42 @@ void Plastic::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume*
 
 
 
-      new G4PVPlacement(   0                                       ,
-          Det_pos                              ,
-          logicPlastic                   ,
-          Name  + "_Scintillator"   ,
-          world                          ,
-          false                          ,
-          0                                       );   
+      new G4PVPlacement(0 ,
+          Det_pos ,
+          logicPlastic ,
+          Name  + "_Scintillator" ,
+          world ,
+          false ,
+          0 );   
     }
 
 
-    if(m_LeadThickness[i]>0&& m_PlasticRadius[i]>0)
-    {
-      G4Tubs* solidLead = new G4Tubs(   Name+"_Lead"              ,    
-          0                                 ,
-          m_PlasticRadius[i]      ,
-          m_LeadThickness[i]/2   ,
-          0*deg                           , 
-          360*deg                        );
+    if(m_LeadThickness[i]>0&& m_PlasticRadius[i]>0){
+      G4Tubs* solidLead = new G4Tubs(Name+"_Lead",    
+          0,
+          m_PlasticRadius[i],
+          m_LeadThickness[i]/2,
+          0*deg, 
+          360*deg);
 
-      G4LogicalVolume* logicLead = new G4LogicalVolume(solidLead, m_MaterialLead, Name+"_Lead", 0, 0, 0);//AC changed lead to Al
+      G4Material* MaterialLead = MaterialManager::getInstance()->GetMaterialFromLibrary("Pb");
+      G4LogicalVolume* logicLead = new G4LogicalVolume(solidLead, MaterialLead, Name+"_Lead", 0, 0, 0);//AC changed lead to Al
       G4VisAttributes* LeadVisAtt = new G4VisAttributes(G4Colour(0.1, 0.1, 0.1)) ;
       logicLead->SetVisAttributes(LeadVisAtt) ;
 
-      G4PVPlacement(   0                                                                                                         ,
-          Det_pos+(m_PlasticThickness[i]/2+m_LeadThickness[i]/2)*Det_pos.unit()   ,
-          logicLead                                                                                           ,
-          Name+"_Lead"                                                                                   ,   
-          world                                                                                            ,
-          false                                                                                            ,
-          0                                                                                                         );
-
+      G4PVPlacement( 0,
+          Det_pos+(m_PlasticThickness[i]/2+m_LeadThickness[i]/2)*Det_pos.unit(),
+          logicLead,
+          Name+"_Lead",   
+          world,
+          false,
+          0);
     }   
   }
 
   // Squared case
-  if(m_PlasticHeight[i]!=-1)
-  {
-
-    if(m_PlasticThickness[i]>0 && m_PlasticHeight[i]>0 && m_PlasticWidth[i]>0)
-    { 
+  if(m_PlasticHeight[i]!=-1){
+    if(m_PlasticThickness[i]>0 && m_PlasticHeight[i]>0 && m_PlasticWidth[i]>0){ 
       G4Box* solidPlastic = new G4Box(Name, 0.5*m_PlasticWidth[i], 0.5*m_PlasticHeight[i], 0.5*m_PlasticThickness[i]);
       G4LogicalVolume* logicPlastic = new G4LogicalVolume(solidPlastic, PlasticMaterial, Name+ "_Scintillator", 0, 0, 0);
       logicPlastic->SetSensitiveDetector(m_PlasticScorer);
@@ -477,52 +452,38 @@ void Plastic::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume*
       G4VisAttributes* PlastVisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 0.9)) ;
       logicPlastic->SetVisAttributes(PlastVisAtt) ;
 
-      /*new G4PVPlacement(   0                                    ,
-        Det_pos                           ,
-        logicPlastic                ,
-        Name  + "_Scintillator" ,
-        world                       ,
-        false                       ,
-        0                                    );   */
       G4RotationMatrix Rot3D;
       Rot3D.set(0, 0, 0);
-      //Rot3D.rotateX(70*degree);
-      //Rot3D.rotateY(theta*degree);  
-      //Rot3D.rotateZ(phi*degree);  
-      new G4PVPlacement(  G4Transform3D(Rot3D,Det_pos)                   ,
-          logicPlastic                ,
+      new G4PVPlacement(  G4Transform3D(Rot3D,Det_pos),
+          logicPlastic,
           Name  + "_Scintillator" ,
-          world                       ,
-          false                       ,
-          0                                    );   
-
+          world,
+          false,
+          0);   
     }
 
-    if(m_LeadThickness[i]>0&& m_PlasticHeight[i]>0 && m_PlasticWidth[i]>0)
-    {
+    if(m_LeadThickness[i]>0&& m_PlasticHeight[i]>0 && m_PlasticWidth[i]>0){
       G4Box* solidLead = new G4Box(Name+"_Lead", 0.5*m_PlasticWidth[i], 0.5*m_PlasticHeight[i], 0.5*m_LeadThickness[i]);
 
-      G4LogicalVolume* logicLead = new G4LogicalVolume(solidLead, m_MaterialLead, Name+"_Lead", 0, 0, 0);
+      G4Material* MaterialLead = MaterialManager::getInstance()->GetMaterialFromLibrary("Pb");
+      G4LogicalVolume* logicLead = new G4LogicalVolume(solidLead, MaterialLead, Name+"_Lead", 0, 0, 0);
       G4VisAttributes* LeadVisAtt = new G4VisAttributes(G4Colour(0.1, 0.1, 0.1)) ;
       logicLead->SetVisAttributes(LeadVisAtt) ;
 
-      new G4PVPlacement(   0                                                                                                         ,
+      new G4PVPlacement(0,
           Det_pos+(m_PlasticThickness[i]/2+m_LeadThickness[i]/2)*Det_pos.unit() +G4ThreeVector(0,0,-10*cm)  ,
-          logicLead                                                                                             ,
-          Name+"_Lead"                                                                                   ,   
-          world                                                                                            ,
-          false                                                                                            ,
-          0                                                                                                         );
-
+          logicLead,
+          Name+"_Lead",   
+          world,
+          false,
+          0);
     }   
   }
-
 }
 
 // Add Detector branch to the EventTree.
 // Called After DetecorConstruction::AddDetector Method
-void Plastic::InitializeRootOutput()
-{
+void Plastic::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
   pTree->Branch("Plastic", "TPlasticData", &m_Event) ;
@@ -530,24 +491,23 @@ void Plastic::InitializeRootOutput()
 
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
-void Plastic::ReadSensitive(const G4Event* event)
-{
-  G4String DetectorNumber    ;
-  m_Event->Clear()         ;
+void Plastic::ReadSensitive(const G4Event* event){
+  G4String DetectorNumber;
+  m_Event->Clear();
 
   //////////////////////////////////////////////////////////////////////////////////////
   //////////////////////// Used to Read Event Map of detector //////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
 
-  std::map<G4int, G4int*>::iterator DetectorNumber_itr    ;
-  std::map<G4int, G4double*>::iterator Energy_itr        ;
-  std::map<G4int, G4double*>::iterator Time_itr          ;
-  std::map<G4int, G4double*>::iterator Pos_Z_itr         ;
+  std::map<G4int, G4int*>::iterator DetectorNumber_itr;
+  std::map<G4int, G4double*>::iterator Energy_itr;
+  std::map<G4int, G4double*>::iterator Time_itr;
+  std::map<G4int, G4double*>::iterator Pos_Z_itr;
 
-  G4THitsMap<G4int>*     DetectorNumberHitMap            ;      
-  G4THitsMap<G4double>* EnergyHitMap                    ;
-  G4THitsMap<G4double>* TimeHitMap                      ;
-  G4THitsMap<G4double>* PosZHitMap                 ;
+  G4THitsMap<G4int>* DetectorNumberHitMap;      
+  G4THitsMap<G4double>* EnergyHitMap;
+  G4THitsMap<G4double>* TimeHitMap;
+  G4THitsMap<G4double>* PosZHitMap;
 
   //////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
@@ -577,7 +537,7 @@ void Plastic::ReadSensitive(const G4Event* event)
   G4int sizeN = DetectorNumberHitMap->entries()    ;
   G4int sizeE = EnergyHitMap->entries()          ;
   G4int sizeT = TimeHitMap->entries()          ;
-  
+
   // Loop on Plastic Number
   for (G4int l = 0 ; l < sizeN ; l++) {
     G4int N     =      *(DetectorNumber_itr->second)    ;
@@ -585,19 +545,15 @@ void Plastic::ReadSensitive(const G4Event* event)
 
 
     if (N > 0) {
-
       m_Event->SetPlasticNumber(N) ;
-
       //  Energy
       Energy_itr = EnergyHitMap->GetMap()->begin();
       for (G4int h = 0 ; h < sizeE ; h++) {
         G4int ETrackID  =   Energy_itr->first  - N      ;
         G4double E     = *(Energy_itr->second)         ;
-
         if (ETrackID == NTrackID) {
           m_Event->SetEnergy(RandGauss::shoot(E, E*ResoEnergy/100./2.35))    ;
         }
-
         Energy_itr++;
       }
 
@@ -607,11 +563,9 @@ void Plastic::ReadSensitive(const G4Event* event)
       for (G4int h = 0 ; h < sizeT ; h++) {
         G4int TTrackID  =   Time_itr->first   - N    ;
         G4double T     = *(Time_itr->second)      ;
-
         if (TTrackID == NTrackID) {
           m_Event->SetTime(RandGauss::shoot(T, ResoTime)) ;
         }
-
         Time_itr++;
       }
 
@@ -624,7 +578,6 @@ void Plastic::ReadSensitive(const G4Event* event)
           ms_InterCoord->SetDetectedPositionZ(PosZ) ;
         }
         Pos_Z_itr++;
-
       }
     }
 
@@ -639,15 +592,6 @@ void Plastic::ReadSensitive(const G4Event* event)
 
 }
 
-////////////////////////////////////////////////////////////////
-void Plastic::InitializeMaterial(){
-
-  m_MaterialLead = MaterialManager::getInstance()->GetMaterialFromLibrary("Pb");
-  m_MaterialAl = MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
-  m_MaterialPlastic_BC400 = MaterialManager::getInstance()->GetMaterialFromLibrary("BC400");
-  m_MaterialKapton = MaterialManager::getInstance()->GetMaterialFromLibrary("Kapton");
-
-}
 
 ////////////////////////////////////////////////////////////////   
 void Plastic::InitializeScorers() { 

@@ -431,7 +431,8 @@ void MaterialManager::WriteDEDXTable(G4ParticleDefinition* Particle ,G4double Em
 
     File   << "Table from Geant4 generate using NPSimulation \t"
       << "Particle: " << Particle->GetParticleName() << "\tMaterial: " << it->second->GetName() << endl ;
-
+    // cout <<  Particle->GetParticleName() << "\tMaterial: " << it->second->GetName()  <<endl;
+    
     G4EmCalculator emCalculator;
     G4double dedx ;
     // Tipical Range needed, if Emax is larger, then adapted
