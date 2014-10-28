@@ -106,6 +106,7 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
    bool TiaraBarrel         = false;
    bool TiaraHyball         = false;
    bool Trifoil             = false;
+   bool Tigress             = false;
    bool W1                  = false;
    ////////////////////////////////
    bool GeneralTarget       = false;
@@ -634,6 +635,26 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
 
       // Add array to the VDetector Vector
       AddDetector("Trifoil", myDetector);
+#endif
+    }
+ 
+    ////////////////////////////////////////////
+    ///////////// Search for Tigress ///////////
+    ////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 7, "Tigress") == 0 && Tigress == false) {
+#ifdef INC_TIGRESS
+      Tigress = true;
+      cout << "//////// Tigress ////////" << endl << endl;
+
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector = new TTigressPhysics();
+      // Read Position of Telescope
+      ConfigFile.close();
+      myDetector->ReadConfiguration(Path);
+      ConfigFile.open(Path.c_str());
+
+      // Add array to the VDetector Vector
+      AddDetector("Tigress", myDetector);
 #endif
     }
  
