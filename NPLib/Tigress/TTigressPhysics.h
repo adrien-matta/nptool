@@ -27,8 +27,6 @@ using namespace std;
 
 // NPL
 #include "TTigressData.h"
-#include "TTigressClover.h"
-#include "TTigressCrystal.h"
 #include "../include/CalibrationManager.h"
 #include "../include/VDetector.h"
 
@@ -78,12 +76,6 @@ class TTigressPhysics :  public TObject, public NPA::VDetector{
   public:
     void PreTreat();
   
-  private:
-    
-    std::map<int,TTigressClover*> m_Clover;
-    void AddClover(int,double,double,double);
-
-    
   private:   //   Root Input and Output tree classes
             
          TTigressData*         m_EventData;//!

@@ -74,8 +74,6 @@ void TTigressPhysics::BuildPhysicalEvent(){
 }
 /////////////////////////////////////////////////
 TVector3 TTigressPhysics::GetPositionOfInteraction(int i){
-
-  return m_Clover[Clover_Number[i]]->GetCrystal(Crystal_Number[i]).GetCrystalPosition();
 }
 /////////////////////////////////////////////////
 void TTigressPhysics::PreTreat(){
@@ -85,16 +83,8 @@ void TTigressPhysics::PreTreat(){
  
 /////////////////////////////////////////////////
 void TTigressPhysics::Clear() {
-  std::map<int,TTigressClover*>::iterator it;
-  for ( it=m_Clover.begin() ; it != m_Clover.end(); it++ )  { (*it).second->Clear(); }
 };
 
-/////////////////////////////////////////////////
-void TTigressPhysics::AddClover(int DetNbr,double r, double theta, double phi)  {
-  
-  m_Clover[DetNbr]=new TTigressClover(DetNbr,r,theta,phi);
-  
-};
 
 /////////////////////////////////////////////////
 void TTigressPhysics::ReadConfiguration(string Path)  {
@@ -179,7 +169,6 @@ void TTigressPhysics::ReadConfiguration(string Path)  {
         /////////////////////////////////////////////////
         //   If All necessary information there, toggle out
         if ( check_Theta && check_Phi && check_R && check_CloverId) { 
-          AddClover(CloverId,R,Theta,Phi); 
           ReadingStatus = false;
            check_CloverId= false;
            check_R= false; 
