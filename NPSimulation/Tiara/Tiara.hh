@@ -188,17 +188,10 @@ private:
   ///////////////Private intern Data//////////////////
   ////////////////////////////////////////////////////
 private:
-  // True if the detector is a Box, false if a quadrant
-  vector<bool>   m_Type  ;
-  
-  // Used for Quadrant detectors
-  vector<G4ThreeVector>   m_Pos   ; // R , Phi , Z
-  vector<G4double>        m_ThicknessQQQ;
-  
-  // Used for Box detectors
-  vector<G4double>   m_Z   ;
-  vector< vector<G4double> >   m_ThicknessBOX;
-  vector< vector<G4double> >   m_ThicknessPAD;
+  bool m_boolChamber;
+  bool m_boolInner;
+  bool m_boolOuter;
+
 
 private:/// Visualisation Attribute:
   // Dark Grey

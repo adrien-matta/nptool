@@ -14,5 +14,7 @@ Target
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Tiara
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-TiaraChamber= 1
+  TiaraInnerBarrel= 1
+  TiaraOuterBarrel= 1
+  TiaraChamber= 1
+
