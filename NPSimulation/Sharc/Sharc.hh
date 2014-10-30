@@ -210,7 +210,6 @@ private:
   
   //   List of material
   G4Material* m_MaterialSilicon ;
-  G4Material* m_MaterialAl      ;
   G4Material* m_MaterialVacuum  ;
   G4Material* m_MaterialPCB     ;
   

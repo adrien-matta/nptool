@@ -29,49 +29,49 @@
 
 #include <map>
 using namespace std;
-using namespace CLHEP;
+using namespace CLHEP;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+namespace SILICONSCORERS{
+  class PS_Silicon_Resistive : public G4VPrimitiveScorer{
 
-class PS_Silicon_Resistive : public G4VPrimitiveScorer{
+    public: // with description
+      PS_Silicon_Resistive(G4String name, 
+          G4double StripPlaneLength, G4double StripPlaneWidth, 
+          G4int NumberOfStripWidth,G4int depth=0);
 
-  public: // with description
-    PS_Silicon_Resistive(G4String name, 
-                         G4double StripPlaneLength, G4double StripPlaneWidth, 
-                         G4int NumberOfStripWidth,G4int depth=0);
+      ~PS_Silicon_Resistive();
 
-    ~PS_Silicon_Resistive();
+    protected: // with description
+      G4bool ProcessHits(G4Step*, G4TouchableHistory*);
 
-  protected: // with description
-    G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+    public:
+      void Initialize(G4HCofThisEvent*);
+      void EndOfEvent(G4HCofThisEvent*);
+      void clear();
+      void DrawAll();
+      void PrintAll();
 
-  public:
-    void Initialize(G4HCofThisEvent*);
-    void EndOfEvent(G4HCofThisEvent*);
-    void clear();
-    void DrawAll();
-    void PrintAll();
+    private: // Threshold
+      G4double m_TriggerThreshold;
 
-  private: // Threshold
-    G4double m_TriggerThreshold;
+    private: // Geometry of the detector
+      G4double m_StripPlaneLength;
+      G4double m_StripPlaneWidth;
+      G4int    m_NumberOfStripWidth;
+      G4double m_StripPitchWidth;
 
-  private: // Geometry of the detector
-    G4double m_StripPlaneLength;
-    G4double m_StripPlaneWidth;
-    G4int    m_NumberOfStripWidth;
-    G4double m_StripPitchWidth;
+    private: // inherited from G4VPrimitiveScorer
+      G4int HCID;
+      G4THitsMap<G4double*>* EvtMap;
 
-  private: // inherited from G4VPrimitiveScorer
-    G4int HCID;
-    G4THitsMap<G4double*>* EvtMap;
+    private: // Needed for intermediate calculation (avoid multiple instantiation in Processing Hit)
+      G4ThreeVector m_Position  ;
+      G4int m_DetectorNumber    ;
+      G4int m_StripWidthNumber  ;
+      G4int m_Index             ;
 
-  private: // Needed for intermediate calculation (avoid multiple instantiation in Processing Hit)
-    G4ThreeVector m_Position  ;
-    G4int m_DetectorNumber    ;
-    G4int m_StripWidthNumber  ;
-    G4int m_Index             ;
+  };
 
-};
-
-
+}
 #endif

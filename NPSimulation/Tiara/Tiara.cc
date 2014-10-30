@@ -44,10 +44,11 @@
 // NPS
 #include "Tiara.hh"
 #include "MaterialManager.hh"
+#include "ResistiveStripScorers.hh"
+#include "SiliconScorers.hh"
+
 // NPL
 #include "NPOptionManager.h"
-
-//#include "TiaraScorers.hh"
 #include "RootOutput.h"
 using namespace TIARA;
 
@@ -146,15 +147,99 @@ void Tiara::ConstructDetector(G4LogicalVolume* world){
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
 void Tiara::ReadSensitive(const G4Event* event){
+  m_EventBarrel->Clear();
+  m_EventHyball->Clear();
+ 
+   // InnerBarrel //
+  G4THitsMap<G4double*>* InnerBarrelHitMap;
+  std::map<G4int, G4double**>::iterator InnerBarrel_itr;
+  G4int InnerBarrelCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Tiara_InnerBarrelScorer/InnerBarrel");
+  InnerBarrelHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(InnerBarrelCollectionID));
+ 
+   // Loop on the InnerBarrel map 
+  for (InnerBarrel_itr = InnerBarrelHitMap->GetMap()->begin() ; InnerBarrel_itr != InnerBarrelHitMap->GetMap()->end() ; InnerBarrel_itr++){
+    G4double* Info = *(InnerBarrel_itr->second); 
+   
+    cout << Info[0] << " " << Info[1] << " " << Info[2] << " " << Info[3] << " " << Info[4] << endl ;
+   
+    // Upstream Energy
+    double EU = RandGauss::shoot(Info[0],ResoEnergy);
+    if(EU>EnergyThreshold){
+      m_EventBarrel->SetFrontUpstreamE(Info[3],Info[4],EU);
+      m_EventBarrel->SetFrontUpstreamT(Info[3],Info[4],Info[2]); 
+    }
+    
+   // Downstream Energy
+    double ED = RandGauss::shoot(Info[1],ResoEnergy); 
+    if(ED>EnergyThreshold){
+      m_EventBarrel->SetFrontDownstreamE(Info[3],Info[4],ED);
+      m_EventBarrel->SetFrontDownstreamT(Info[3],Info[4],Info[2]); 
+    }
+  
+   // Back Energy
+   double EB = RandGauss::shoot(Info[1]+Info[0],ResoEnergy);
+   if(ED>EnergyThreshold){
+     m_EventBarrel->SetBackE(Info[3],EB);
+     m_EventBarrel->SetBackT(Info[3],Info[2]); 
+   }
 
+  }
+  // Clear Map for next event
+  InnerBarrelHitMap->clear();
+
+  // OuterBarrel //
+  G4THitsMap<G4double*>* OuterBarrelHitMap;
+  std::map<G4int, G4double**>::iterator OuterBarrel_itr;
+  G4int OuterBarrelCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Tiara_OuterBarrelScorer/OuterBarrel");
+  OuterBarrelHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(OuterBarrelCollectionID));
+ 
+   // Loop on the OuterBarrel map 
+  for (OuterBarrel_itr = OuterBarrelHitMap->GetMap()->begin() ; OuterBarrel_itr != OuterBarrelHitMap->GetMap()->end() ; OuterBarrel_itr++){
+    G4double* Info = *(OuterBarrel_itr->second); 
+    
+    double E = RandGauss::shoot(Info[0],ResoEnergy);
+    if(E>EnergyThreshold){
+      m_EventBarrel->SetOuterE(Info[7],Info[9],E);
+      m_EventBarrel->SetOuterT(Info[7],Info[9],Info[1]); 
+    }
+  }
+  // Clear Map for next event
+  OuterBarrelHitMap->clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Tiara::InitializeScorers(){
+
+  m_InnerBarrelScorer = new G4MultiFunctionalDetector("Tiara_InnerBarrelScorer");
+  m_OuterBarrelScorer = new G4MultiFunctionalDetector("Tiara_OuterBarrelScorer");
+
+  G4VPrimitiveScorer* InnerBarrel = new SILICONSCORERS::PS_Silicon_Resistive("InnerBarrel",
+                                                             INNERBARREL_ActiveWafer_Length,
+                                                             INNERBARREL_ActiveWafer_Width,
+                                                             INNERBARREL_NumberOfStrip);
+
+  m_InnerBarrelScorer->RegisterPrimitive(InnerBarrel);
+
+  G4VPrimitiveScorer* OuterBarrel = new SILICONSCORERS::PS_Silicon_Rectangle("OuterBarrel",
+                                                            INNERBARREL_ActiveWafer_Length,
+                                                            INNERBARREL_ActiveWafer_Width,
+                                                            1,
+                                                            OUTERBARREL_NumberOfStrip);
+
+  m_OuterBarrelScorer->RegisterPrimitive(OuterBarrel);
+
+
+  //   Add All Scorer to the Global Scorer Manager 
+  G4SDManager::GetSDMpointer()->AddNewDetector(m_InnerBarrelScorer) ;
+  G4SDManager::GetSDMpointer()->AddNewDetector(m_OuterBarrelScorer) ;  
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Tiara::InitializeRootOutput(){
+RootOutput *pAnalysis = RootOutput::getInstance(); 
+TTree *pTree = pAnalysis->GetTree();   
+pTree->Branch("TiaraBarrel", "TTiaraBarrelData", &m_EventBarrel) ;
+pTree->Branch("TiaraHyball", "TTiaraHyballData", &m_EventHyball) ;
 }
 
 
@@ -256,12 +341,16 @@ void Tiara::ConstructInnerBarrel(G4LogicalVolume* world){
   G4LogicalVolume* logicActiveWafer =
     new G4LogicalVolume(ActiveWafer,m_MaterialSilicon,"logicActiveWafer", 0, 0, 0);
   logicActiveWafer->SetVisAttributes(SiliconVisAtt);
+
+  // Set the sensitive volume
+  logicActiveWafer->SetSensitiveDetector(m_InnerBarrelScorer);
   
   // The Distance from target is given by half the lenght of a detector
   // plus the length of a detector inclined by 45 deg.
   G4double DistanceFromTarget = INNERBARREL_PCB_Width*(0.5+sin(45*deg)) ; 
 
   for( unsigned int i = 0; i < 8; i ++){
+    cout << i << endl;
     // Place the sub volumes in the master volume
     // Last argument is the detector number, used in the scorer to get the
     // revelant information
@@ -300,7 +389,6 @@ void Tiara::ConstructInnerBarrel(G4LogicalVolume* world){
         logicBarrelDetector,"Tiara_Barrel_Detector",
         world,false,i+1);
   }
-
 }
  //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Tiara::ConstructOuterBarrel(G4LogicalVolume* world){
@@ -397,7 +485,10 @@ void Tiara::ConstructOuterBarrel(G4LogicalVolume* world){
   G4LogicalVolume* logicActiveWafer =
     new G4LogicalVolume(ActiveWafer,m_MaterialSilicon,"logicActiveWafer", 0, 0, 0);
   logicActiveWafer->SetVisAttributes(SiliconVisAtt);
-  
+ 
+  // Set the sensitive detector
+  logicActiveWafer->SetSensitiveDetector(m_OuterBarrelScorer);
+ 
   // The Distance from target is given by half the lenght of a detector
   // plus the length of a detector inclined by 45 deg.
   G4double DistanceFromTarget = OUTERBARREL_PCB_Width*(0.5+sin(45*deg)) ; 

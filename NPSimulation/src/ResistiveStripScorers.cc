@@ -21,7 +21,7 @@
  *****************************************************************************/
 #include "ResistiveStripScorers.hh"
 #include "G4UnitsTable.hh"
-
+using namespace SILICONSCORERS;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 PS_Silicon_Resistive::PS_Silicon_Resistive(G4String name, G4double StripPlaneLength, G4double StripPlaneWidth, G4int NumberOfStripWidth,G4int depth)
 :G4VPrimitiveScorer(name, depth),HCID(-1){
@@ -46,11 +46,10 @@ G4bool PS_Silicon_Resistive::ProcessHits(G4Step* aStep, G4TouchableHistory*){
 
   // contain Energy Total, E1, E2, Time, DetNbr,  and StripWidth
   G4double* EnergyAndTime = new G4double[10];
-  EnergyAndTime[0] = aStep->GetTotalEnergyDeposit();
+ 
+  EnergyAndTime[2] = aStep->GetPreStepPoint()->GetGlobalTime();
   
-  EnergyAndTime[1] = aStep->GetPreStepPoint()->GetGlobalTime();
-  
-  m_DetectorNumber = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(0);
+  m_DetectorNumber = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);
   m_Position  = aStep->GetPreStepPoint()->GetPosition();
   
   // Interaction coordinates (used to fill the InteractionCoordinates branch)
@@ -64,8 +63,18 @@ G4bool PS_Silicon_Resistive::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   
   m_StripWidthNumber = (int)((m_Position.y() + m_StripPlaneWidth / 2.) / m_StripPitchWidth ) + 1  ;
   m_StripWidthNumber = m_NumberOfStripWidth - m_StripWidthNumber + 1 ;
+
+  // The energy is divided in two depending on the position
+  // position along the resistive strip 
+  double P = (m_Position.x())/(0.5*m_StripPlaneLength);
+
+  // Upstream Energy  
+  EnergyAndTime[0] = aStep->GetTotalEnergyDeposit()*(1+P)*0.5;
   
-  EnergyAndTime[2] = m_DetectorNumber;
+  // Downstream Energy
+  EnergyAndTime[1] = aStep->GetTotalEnergyDeposit()-EnergyAndTime[0];
+
+  EnergyAndTime[3] = m_DetectorNumber;
   EnergyAndTime[4] = m_StripWidthNumber;
     
   //Rare case where particle is close to edge of silicon plan

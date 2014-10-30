@@ -69,9 +69,10 @@ void TTiaraBarrelPhysics::BuildSimplePhysicalEvent(){
 void TTiaraBarrelPhysics::BuildPhysicalEvent(){
   PreTreat();
 
-  unsigned int sizeU = m_PreTreatedData->GetFrontUpstreamEMult();
-  unsigned int sizeD = m_PreTreatedData->GetFrontDownstreamEMult();
-  unsigned int sizeB = m_PreTreatedData->GetBackEMult(); 
+ unsigned int sizeU = m_PreTreatedData->GetFrontUpstreamEMult();
+ unsigned int sizeD = m_PreTreatedData->GetFrontDownstreamEMult();
+ unsigned int sizeB = m_PreTreatedData->GetBackEMult(); 
+ 
  for(unsigned int k = 0 ; k < sizeB ; k++){
   for(unsigned int i = 0 ; i < sizeU ; i++){  
     if(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i) == m_PreTreatedData->GetBackEDetectorNbr(k))

@@ -49,9 +49,8 @@ namespace TIARA
 {
   // Energy and time Resolution
   const G4double ResoTime    = 0      ;
-  //const G4double ResoEnergy  = 0.035*MeV ;// = zzkeV of Resolution   //   Unit is MeV/2.35
   const G4double ResoEnergy  = 0.042*MeV ;// = zzkeV of Resolution   //   Unit is MeV/2.35
-
+  const G4double EnergyThreshold = 200*keV;
 
   // Geometric Information //
   // Chanber //
@@ -85,6 +84,7 @@ namespace TIARA
   const G4double INNERBARREL_ActiveWafer_Thickness =400*um;
   const G4double INNERBARREL_InertWafer_Length = 97.00*mm;
   const G4double INNERBARREL_InertWafer_Width = 24.80*mm;
+  const G4int    INNERBARREL_NumberOfStrip = 4;
 
   // Outer Barrel //
   const G4double OUTERBARREL_PCB_Length = 98.00*mm;
@@ -102,7 +102,7 @@ namespace TIARA
   const G4double OUTERBARREL_ActiveWafer_Thickness =700*um;
   const G4double OUTERBARREL_InertWafer_Length = 97.00*mm;
   const G4double OUTERBARREL_InertWafer_Width = 30.2*mm;
-
+  const G4int    OUTERBARREL_NumberOfStrip = 4;
 
 
 }
@@ -180,8 +180,8 @@ private:
   void InitializeScorers() ;
   
   //   Scorer Associate with the Silicon
-//  G4MultiFunctionalDetector*   m_InnerBarrelScorer ;
-//  G4MultiFunctionalDetector*   m_OuterBarrelScorer ;
+  G4MultiFunctionalDetector*   m_InnerBarrelScorer ;
+  G4MultiFunctionalDetector*   m_OuterBarrelScorer ;
 //  G4MultiFunctionalDetector*   m_HyballScorer ;
  
   ////////////////////////////////////////////////////

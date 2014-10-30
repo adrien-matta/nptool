@@ -505,7 +505,7 @@ void Tigress::ConstructClover(string){
     new G4LogicalVolume(CrystalB,m_MaterialVacuum,"LogicCrystalW", 0, 0, 0);
     
     G4RotationMatrix* CrystalRotation = new G4RotationMatrix(0,0,0);
-    CrystalPosition = G4ThreeVector(CrystalOffset,CrystalOffset,0);
+    CrystalPosition = G4ThreeVector(CrystalOffset,CrystalOffset,-0.5*CapsuleWidth);
     new G4PVPlacement(G4Transform3D(*CrystalRotation, CrystalPosition),
                       logicCrystalB,"LogicCrystalB",m_LogicClover,false,m_CloverId[0]);
     logicCrystalB->SetVisAttributes(BlueVisAtt);

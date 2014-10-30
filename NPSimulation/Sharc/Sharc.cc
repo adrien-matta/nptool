@@ -796,7 +796,6 @@ void Sharc::InitializeScorers(){
 ////////////////////////////////////////////////////////////////
 void Sharc::InitializeMaterial(){
   m_MaterialSilicon = MaterialManager::getInstance()->GetMaterialFromLibrary("Si");
-  m_MaterialAl = MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
   m_MaterialPCB = MaterialManager::getInstance()->GetMaterialFromLibrary("PCB");
   m_MaterialVacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
 
