@@ -97,19 +97,22 @@ int main(int argc, char** argv){
   ///////////////////////////////////////////////////////////////
   // interactive mode : define UI session
   // Get the pointer to the User Interface manager
+  G4cout << "//////////// Starting UI ////////////"<< endl;
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
- cout <<  UImanager->GetVerboseLevel() << endl ;
 #ifdef G4UI_USE
   G4UIExecutive* ui = new G4UIExecutive(argc, argv);
 #ifdef G4VIS_USE
+  UImanager->ApplyCommand("/control/execute macro/aliases.mac");
   G4VisManager* visManager = new G4VisExecutive("Quiet");
   visManager->Initialize();
-  UImanager->ApplyCommand("/control/execute vis.mac");
+  UImanager->ApplyCommand("/control/execute macro/vis.mac");
 #endif
-  if (ui->IsGUI())
-    UImanager->ApplyCommand("/control/execute gui.mac");
-   ui->SessionStart();
-  delete ui;
+    if (ui->IsGUI()){
+            UImanager->ApplyCommand("/control/execute macro/gui.mac");
+    }
+
+    ui->SessionStart();
+    delete ui;
 #endif
   
 #ifdef G4VIS_USE

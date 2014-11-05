@@ -1,0 +1,18 @@
+# Aliases are needed to avoid warning
+/control/alias gui_beamon "/run/beamOn 1"
+/control/alias gui_vis "/control/execute vis.mac "
+/control/alias gui_tracking "/tracking/verbose 1"
+/control/alias gui_surface "/vis/viewer/set/style surface"
+/control/alias gui_wireframe "/vis/viewer/set/style wireframe"
+/control/alias gui_beam "/vis/scene/add/arrow 0 0 -1 0 0 1 m"
+/control/alias gui_home "/vis/viewer/set/viewpointThetaPhi 45. 45."
+/control/alias gui_front "/vis/viewer/set/viewpointThetaPhi 0. 0."
+/control/alias gui_back "/vis/viewer/set/viewpointThetaPhi 180. 0."
+/control/alias gui_left "/vis/viewer/set/viewpointThetaPhi 90. 0." 
+/control/alias gui_right "/vis/viewer/set/viewpointThetaPhi -90. 0."
+/control/alias gui_zoomin "/vis/viewer/zoom 2"
+/control/alias gui_zoomout "/vis/viewer/zoom 0.5"
+/control/alias gui_empty "/"
+/control/alias gui_exit "exit"
+
+

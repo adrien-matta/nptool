@@ -1,0 +1,41 @@
+#
+#  This file permits to customize, with commands,
+# the menu bar of the G4UIXm, G4UIQt, G4UIWin32 sessions.
+# It has no effect with G4UIterminal.
+#
+# File
+#
+#
+# Viewer menu :
+/gui/addMenu viewer Viewer
+/gui/addButton viewer "New viewer" "{gui_vis}"
+/gui/addButton viewer "Set style surface" "{gui_surface}"
+/gui/addButton viewer "Set style wireframe" "{gui_wireframe}"
+
+/gui/addMenu tracking Tracking
+/gui/addButton tracking "Set Tracking verbose" "/tracking/verbose"
+
+/gui/addMenu run Run
+/gui/addButton run "Run beam on" "/run/beamOn"
+
+/gui/addMenu custom "Custom View"
+/gui/addButton custom "Add Axis" "/vis/scene/add/axes"
+/gui/addButton custom "Add Beam axis" "{gui_beam}"
+/gui/addButton custom "Add Scorer Hits" "/vis/scene/add/psHits"
+/gui/addButton custom "Add Hits" "/vis/scene/add/hits"
+/gui/addButton custom "Add Event ID" "/vis/scene/add/eventID"
+
+/gui/addIcon "Exit" user_icon "{gui_exit}" icons/power.png
+/gui/addIcon "There is nothing here" user_icon "{gui_empty}" icons/empty.png 
+/gui/addIcon "Run beam on" user_icon "/run/beamOn" icons/rocket.png
+/gui/addIcon "One event" user_icon "{gui_beamon}" icons/play.png
+/gui/addIcon "Activate tracking verbose" user_icon "{gui_tracking}" icons/shoeprints.png
+/gui/addIcon "Only borring emptyness" user_icon "{gui_empty}" icons/empty.png 
+/gui/addIcon "Home" user_icon     "{gui_home}" icons/videocameraclassic.png
+/gui/addIcon "Front" user_icon    "{gui_front}" icons/arrow-up.png
+/gui/addIcon "Back" user_icon     "{gui_back}" icons/arrow-down.png
+/gui/addIcon "Left" user_icon     "{gui_left}" icons/arrow-left.png
+/gui/addIcon "Right" user_icon    "{gui_right}" icons/arrow-right.png
+/gui/addIcon "Zoom in" user_icon  "{gui_zoomin}" icons/zoomin.png
+/gui/addIcon "Zoom out" user_icon "{gui_zoomout}" icons/zoomout.png
+
