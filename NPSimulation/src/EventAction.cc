@@ -52,7 +52,6 @@ EventAction::~EventAction(){
 void EventAction::BeginOfEventAction(const G4Event* event){
 
    if ((event->GetEventID() + 1) % m_printModulo == 0)
-//      G4cout << "Event: " << event->GetEventID() + 1 << G4endl;
       G4cout << "\rEvent: " << event->GetEventID() + 1 << flush;
 }
 

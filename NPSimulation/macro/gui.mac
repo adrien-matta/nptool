@@ -21,10 +21,13 @@
 /gui/addMenu custom "Custom View"
 /gui/addButton custom "Add Axis" "/vis/scene/add/axes"
 /gui/addButton custom "Add Beam axis" "{gui_beam}"
-/gui/addButton custom "Add Scorer Hits" "/vis/scene/add/psHits"
-/gui/addButton custom "Add Hits" "/vis/scene/add/hits"
 /gui/addButton custom "Add Event ID" "/vis/scene/add/eventID"
 
+# No hit collection is implemented
+#/gui/addButton custom "Add Scorer Hits" "/vis/scene/add/psHits"
+#/gui/addButton custom "Add Hits" "/vis/scene/add/hits"
+
+/gui/addIcon "nptool" user_icon "/gui/system {gui_nptool}" icons/NPToolLogo.png
 /gui/addIcon "Exit" user_icon "{gui_exit}" icons/power.png
 /gui/addIcon "There is nothing here" user_icon "{gui_empty}" icons/empty.png 
 /gui/addIcon "Run beam on" user_icon "/run/beamOn" icons/rocket.png

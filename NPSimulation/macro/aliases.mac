@@ -14,5 +14,5 @@
 /control/alias gui_zoomout "/vis/viewer/zoom 0.5"
 /control/alias gui_empty "/"
 /control/alias gui_exit "exit"
-
+/control/alias gui_nptool "./scripts/url.sh"
 
