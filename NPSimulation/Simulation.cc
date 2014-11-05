@@ -93,43 +93,22 @@ int main(int argc, char** argv){
   runManager->SetUserAction(event_action)       ;
   
   ///////////////////////////////////////////////////////////////
-  ///////  Get the pointer to the User Interface manager ////////
-  ///////////////////////////////////////////////////////////////
-  //   G4UImanager* UI = G4UImanager::GetUIpointer();
-  
-  ///////////////////////////////////////////////////////////////
   /////////// Define UI terminal for interactive mode ///////////
   ///////////////////////////////////////////////////////////////
-#ifdef G4VIS_USE
-  //G4VisManager* visManager = new G4VisExecutive("Quiet");
-  G4VisManager* visManager = new G4VisExecutive();
-  visManager->Initialize();
-#endif
-  
-  /*   G4UIsession* session = 0;
-   
-   #ifdef G4UI_USE_TCSH
-   session = new G4UIterminal(new G4UItcsh);
-   #else
-   session = new G4UIterminal();
-   #endif
-   
-   UI->ApplyCommand("/control/execute vis.mac");
-   session->SessionStart();
-   delete session;
-   */
-  
   // interactive mode : define UI session
   // Get the pointer to the User Interface manager
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
+ cout <<  UImanager->GetVerboseLevel() << endl ;
 #ifdef G4UI_USE
   G4UIExecutive* ui = new G4UIExecutive(argc, argv);
 #ifdef G4VIS_USE
+  G4VisManager* visManager = new G4VisExecutive("Quiet");
+  visManager->Initialize();
   UImanager->ApplyCommand("/control/execute vis.mac");
 #endif
   if (ui->IsGUI())
     UImanager->ApplyCommand("/control/execute gui.mac");
-  ui->SessionStart();
+   ui->SessionStart();
   delete ui;
 #endif
   

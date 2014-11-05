@@ -84,8 +84,11 @@ namespace TIARA
   const G4double INNERBARREL_ActiveWafer_Thickness =400*um;
   const G4double INNERBARREL_InertWafer_Length = 97.00*mm;
   const G4double INNERBARREL_InertWafer_Width = 24.80*mm;
+  const G4double INNERBARREL_ActiveWafer_DeadLayerThickness = 1*um;
+  const G4double INNERBARREL_InertWafer_Thickness = 
+    INNERBARREL_ActiveWafer_Thickness+ 2*INNERBARREL_ActiveWafer_DeadLayerThickness;
   const G4int    INNERBARREL_NumberOfStrip = 4;
-
+ 
   // Outer Barrel //
   const G4double OUTERBARREL_PCB_Length = 98.00*mm;
   const G4double OUTERBARREL_PCB_Width  = 33.16*mm;

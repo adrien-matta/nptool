@@ -6,20 +6,38 @@
 # File
 #
 #
-# Vis menu :
-/gui/addMenu vis Vis
-/gui/addButton vis DAWNFILE  "/control/execute visTutor/exN03Vis0.mac"
-/gui/addButton vis OpenInventor "/control/execute visTutor/exN03Vis5.mac"
-/gui/addButton vis TimeSlicing "/control/execute visTutor/exN03Vis12.mac"
-/gui/addButton vis EmShower "/control/execute visTutor/exN03Vis13.mac"
-#
+
 # Viewer menu :
 /gui/addMenu viewer Viewer
+/gui/addButton viewer "New viewer" "/control/execute vis.mac"
 /gui/addButton viewer "Set style surface" "/vis/viewer/set/style surface"
-/gui/addButton viewer "Set style wireframe" "/vis/viewer/set/style wire"
-/gui/addButton viewer "Refresh viewer" "/vis/viewer/refresh"
-/gui/addButton viewer "Update viewer (interaction or end-of-file)" "/vis/viewer/update"
-/gui/addButton viewer "Flush viewer (= refresh + update)" "/vis/viewer/flush"
-/gui/addButton viewer "Update scene" "/vis/scene/notifyHandlers"
-#
-# To limit the output flow in the "dump" widget :
+/gui/addButton viewer "Set style wireframe" "/vis/viewer/set/style wireframe"
+
+/gui/addMenu tracking Tracking
+/gui/addButton tracking "Set Tracking verbose" "/tracking/verbose"
+
+/gui/addMenu run Run
+/gui/addButton run "Run beam on" "/run/beamOn"
+
+/gui/addMenu custom "Custom View"
+/gui/addButton custom "Add Axis" "/vis/scene/add/axes"
+/gui/addButton custom "Add Beam axis" "/vis/scene/add/arrow 0 0 -1 0 0 1 m"
+/gui/addButton custom "Add Scorer Hits" "/vis/scene/add/psHits"
+/gui/addButton custom "Add Hits" "/vis/scene/add/hits"
+/gui/addButton custom "Add Event ID" "/vis/scene/add/eventID"
+
+/gui/addIcon "Exit" user_icon "exit" icons/power.png
+/gui/addIcon "There is nothing here" user_icon "/" icons/empty.png 
+/gui/addIcon "Run beam on" user_icon "/run/beamOn" icons/rocket.png
+/gui/addIcon "One event" user_icon "/run/beamOn 1" icons/play.png
+/gui/addIcon "Seriously?" user_icon "/" icons/empty.png 
+/gui/addIcon "Activate tracking verbose" user_icon "/tracking/verbose 1" icons/shoeprints.png
+/gui/addIcon "Only borring emptyness" user_icon "/" icons/empty.png 
+/gui/addIcon "Home" user_icon "/vis/viewer/set/viewpointThetaPhi 45. 45." icons/videocameraclassic.png
+/gui/addIcon "Front" user_icon "/vis/viewer/set/viewpointThetaPhi 0. 0." icons/arrow-up.png
+/gui/addIcon "Back" user_icon "/vis/viewer/set/viewpointThetaPhi 180. 0." icons/arrow-down.png
+/gui/addIcon "Left" user_icon "/vis/viewer/set/viewpointThetaPhi 90. 0." icons/arrow-left.png
+/gui/addIcon "Right" user_icon "/vis/viewer/set/viewpointThetaPhi -90. 0." icons/arrow-right.png
+/gui/addIcon "Zoom in" user_icon "/vis/viewer/zoom 2" icons/zoomin.png
+/gui/addIcon "Zoom out" user_icon "/vis/viewer/zoom 0.5" icons/zoomout.png
+

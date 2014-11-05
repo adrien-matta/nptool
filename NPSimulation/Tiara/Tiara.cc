@@ -281,9 +281,6 @@ void Tiara::ReadSensitive(const G4Event* event){
   }
   // Clear Map for next event
   HyballHitMap->clear();
-
-
-
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -384,12 +381,17 @@ void Tiara::ConstructInnerBarrel(G4LogicalVolume* world){
   // The Silicon Wafer itself
   G4Box*  InertWaferFull = new G4Box("InertWaferFull",
       INNERBARREL_InertWafer_Width/2.,
-      INNERBARREL_ActiveWafer_Thickness/2.,
+      INNERBARREL_InertWafer_Thickness/2.,
       INNERBARREL_InertWafer_Length/2.);
 
   G4Box*  ActiveWafer = new G4Box("ActiveWafer",
       INNERBARREL_ActiveWafer_Width/2.,
       INNERBARREL_ActiveWafer_Thickness/2.,
+      INNERBARREL_ActiveWafer_Length/2.);
+
+  G4Box*  DeadLayer = new G4Box("DeadLayer",
+      INNERBARREL_ActiveWafer_Width/2.,
+      INNERBARREL_ActiveWafer_DeadLayerThickness/2.,
       INNERBARREL_ActiveWafer_Length/2.);
 
   G4Box*  ActiveWaferShape = new G4Box("ActiveWaferShape",
@@ -431,37 +433,57 @@ void Tiara::ConstructInnerBarrel(G4LogicalVolume* world){
     new G4LogicalVolume(ActiveWafer,m_MaterialSilicon,"logicActiveWafer", 0, 0, 0);
   logicActiveWafer->SetVisAttributes(SiliconVisAtt);
 
+  G4LogicalVolume* logicDeadLayer =
+    new G4LogicalVolume(DeadLayer,m_MaterialSilicon,"logicActiveWaferDeadLayer", 0, 0, 0);
+  logicDeadLayer->SetVisAttributes(SiliconVisAtt);
+
   // Set the sensitive volume
   logicActiveWafer->SetSensitiveDetector(m_InnerBarrelScorer);
+
+  // Place the sub volumes in the master volume
+  // Last argument is the detector number, used in the scorer to get the
+  // revelant information
+  new G4PVPlacement(new G4RotationMatrix(0,0,0),
+        G4ThreeVector(0,0,0),
+        logicPCB,"Tiara_Barrel_PCB",logicBarrelDetector,
+        false,0);
+
+  G4ThreeVector WaferPosition(0,
+     0.5*(INNERBARREL_PCB_Thickness-INNERBARREL_PCB_WaferDepth+INNERBARREL_ActiveWafer_Thickness)
+    ,0); 
+
+  G4ThreeVector DeadLayerPositionF = WaferPosition + G4ThreeVector(0,-INNERBARREL_ActiveWafer_Thickness*0.5-INNERBARREL_ActiveWafer_DeadLayerThickness*0.5,0);
+
+  G4ThreeVector DeadLayerPositionB = WaferPosition + G4ThreeVector(0,INNERBARREL_ActiveWafer_Thickness*0.5+INNERBARREL_ActiveWafer_DeadLayerThickness*0.5,0);
+
+
+
+  new G4PVPlacement(new G4RotationMatrix(0,0,0),
+        WaferPosition,
+        logicActiveWafer,"Barrel_Wafer",
+        logicBarrelDetector,false,0);
+
+  new G4PVPlacement(new G4RotationMatrix(0,0,0),
+        DeadLayerPositionF,
+        logicDeadLayer,"Barrel_WaferDeadLayer",
+        logicBarrelDetector,false,0);
+
+  new G4PVPlacement(new G4RotationMatrix(0,0,0),
+        DeadLayerPositionB,
+        logicDeadLayer,"Barrel_WaferDeadLayer",
+        logicBarrelDetector,false,0);
+
+
+  new G4PVPlacement(new G4RotationMatrix(0,0,0),
+        WaferPosition,
+        logicInertWafer,"Barrel_Wafer_GuardRing",
+        logicBarrelDetector,false,0);
 
   // The Distance from target is given by half the lenght of a detector
   // plus the length of a detector inclined by 45 deg.
   G4double DistanceFromTarget = INNERBARREL_PCB_Width*(0.5+sin(45*deg)) ; 
-
   for( unsigned int i = 0; i < 8; i ++){
-    // Place the sub volumes in the master volume
-    // Last argument is the detector number, used in the scorer to get the
-    // revelant information
-    new G4PVPlacement(new G4RotationMatrix(0,0,0),
-        G4ThreeVector(0,0,0),
-        logicPCB,"Tiara_Barrel_PCB",logicBarrelDetector,
-        false,i+1);
-
-
-    G4ThreeVector WaferPosition(0,0.5*(INNERBARREL_PCB_Thickness-INNERBARREL_PCB_WaferDepth+INNERBARREL_ActiveWafer_Thickness),0); 
-
-    new G4PVPlacement(new G4RotationMatrix(0,0,0),
-        WaferPosition,
-        logicActiveWafer,"Barrel_Wafer",
-        logicBarrelDetector,false,i+1);
-
-    new G4PVPlacement(new G4RotationMatrix(0,0,0),
-        WaferPosition,
-        logicInertWafer,"Barrel_Wafer_GuardRing",
-        logicBarrelDetector,false,i+1);
-
-
-    // The following build the barrel, with detector one at the top
+   // The following build the barrel, with detector one at the top
     // and going clowise looking upstrea
 
     // Detector are rotate by 45deg with each other 

@@ -14,9 +14,9 @@ Target
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Tiara
-  TiaraInnerBarrel= 0
-  TiaraOuterBarrel= 0
- TiaraChamber= 0
+  TiaraInnerBarrel= 1
+  TiaraOuterBarrel= 1
+  TiaraChamber= 1
   TiaraHyballWedge
     Z= -147
     R= 0

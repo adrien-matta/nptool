@@ -3,12 +3,12 @@
 #
 # Sets some default verbose
 #
-/control/verbose 2
+/control/verbose 0
 /control/saveHistory
-/run/verbose 2
+/run/verbose 0
 #
 # Use this open statement to create an OpenGL view:
-/vis/open OGLI 600x600-0+0
+/vis/open OGLI 1200x600-0+0
 #
 # Use this open statement to create a .prim file suitable for
 # viewing in DAWN:
@@ -31,16 +31,16 @@
 /vis/drawVolume
 #
 # Specify view angle:
-/vis/viewer/set/viewpointThetaPhi 0. 90.
+/vis/viewer/set/viewpointThetaPhi 45. 45.
 #
 # Specify zoom value:
-/vis/viewer/zoom 2.
+/vis/viewer/zoom 1.
 #
 # Specify style (surface or wireframe):
 /vis/viewer/set/style surface
 #
 # Draw coordinate axes:
-/vis/scene/add/axes 0 0 0 20 cm
+#/vis/scene/add/axes 0 0 0 20 cm
 #
 # Draw smooth trajectories at end of event, showing trajectory points
 # as markers 2 pixels wide:
@@ -71,7 +71,7 @@
 #
 # Re-establish auto refreshing and verbosity:
 /vis/viewer/set/autoRefresh true
-#/vis/verbose 0
+/vis/verbose 0
 #
 # For file-based drivers, use this to create an empty detector view:
 #/vis/viewer/flush
