@@ -27,7 +27,7 @@
 #include"G4Material.hh"
 #include"G4Element.hh"
 #include"G4ParticleDefinition.hh"
-
+#include"G4LogicalVolume.hh"
 // STL
 #include<map>
 using namespace std;
@@ -72,6 +72,10 @@ public:
   // Let the user directly add a custom material to the library
   // It is howver overwritting existing material having the same name
   void AddMaterialToLibrary(G4Material*);
+
+  // Create tiny block of active material so the DEDX tables are generated 
+  // prevent crash if the user define material but don't use it
+  void CreateSampleVolumes(G4LogicalVolume* world_log);
 
   // Write the DEDx table for all material instantiate in the MaterialManager
   // for a given particle

@@ -104,7 +104,14 @@ namespace TIARA
   const G4double OUTERBARREL_InertWafer_Width = 30.2*mm;
   const G4int    OUTERBARREL_NumberOfStrip = 4;
 
-
+  // Hyball //
+  const G4double HYBALL_PCB_THICKNESS = 1.6*mm;
+  const G4double HYBALL_ActiveWafer_InnerRadius = 32.6*mm;
+  const G4double HYBALL_ActiveWafer_OuterRadius = 135.1*mm;
+  const G4double HYBALL_ActiveWafer_Thickness = 400*um;
+  const G4double HYBALL_ActiveWafer_Angle = 54.8*deg;
+  const G4double HYBALL_NumberOfAnnularStrip = 16;
+  const G4double HYBALL_NumberOfRadialStrip = 8 ;
 }
 
 
@@ -182,7 +189,7 @@ private:
   //   Scorer Associate with the Silicon
   G4MultiFunctionalDetector*   m_InnerBarrelScorer ;
   G4MultiFunctionalDetector*   m_OuterBarrelScorer ;
-//  G4MultiFunctionalDetector*   m_HyballScorer ;
+  G4MultiFunctionalDetector*   m_HyballScorer ;
  
   ////////////////////////////////////////////////////
   ///////////////Private intern Data//////////////////
@@ -192,6 +199,9 @@ private:
   bool m_boolInner;
   bool m_boolOuter;
 
+  vector<double> m_HyballZ;
+  vector<double> m_HyballR;
+  vector<double> m_HyballPhi;
 
 private:/// Visualisation Attribute:
   // Dark Grey

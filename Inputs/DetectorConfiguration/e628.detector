@@ -1,3 +1,17 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GeneralTarget
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%0.5mg/cm2
+Target
+	THICKNESS= 4.8
+	RADIUS=	5
+	MATERIAL= CD2
+	ANGLE= 0
+	X= 0
+	Y= 0
+	Z= 0
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 CATSArray
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -88,9 +102,6 @@ TiaraHyballWedge
    R= 0
    Phi= 300
 %%%%%%%%%%%%%%%%%%%%%%%%%%%         
-TiaraBarrel
-   X= 0
-   Y= 0
-   Z= 0
-   OuterBarrel= 1
-   InnerBarrel= 1
+TiaraInnerBarrel= 1
+TiaraOuterBarrel= 1
+TiaraChamber= 1

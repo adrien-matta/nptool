@@ -127,13 +127,11 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 DetectorConstruction::DetectorConstruction():  world_log(0), world_phys(0){
   m_Target   = 0;
-  m_Chamber  = 0;
+  m_Chamber  = 0 ;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 DetectorConstruction::~DetectorConstruction(){
-  delete m_Target;
-  delete m_Chamber;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -151,35 +149,12 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
   world_log = new G4LogicalVolume(world_box, Vacuum, "world_log", 0, 0, 0);
   world_phys = new G4PVPlacement(0, G4ThreeVector(), world_log, "world", 0, false, 0);
   
-  //G4VisAttributes* VisAtt = new G4VisAttributes(G4Colour(0.2, 0.2, 0.2));
   G4VisAttributes* VisAtt = new G4VisAttributes(G4VisAttributes::Invisible);
   world_log->SetVisAttributes(VisAtt);
   
   //------------------------------------------------------------------
   
-  //------------------------------Reaction Chamber volume
-  /*
-   G4double Chamber_Rmin = 20.0 * cm;
-   G4double Chamber_Rmax = 20.2 * cm;
-   G4double Chamber_ThetaMin = 0.0 * rad;
-   G4double Chamber_ThetaMax = 3.14 * rad;
-   G4double Chamber_PhiMin = 0.0 * rad;
-   G4double Chamber_PhiMax = 6.26 * rad;
-   
-   G4Sphere* Chamber_sphere
-   = new G4Sphere("Chamber_sphere", Chamber_Rmin, Chamber_Rmax, Chamber_PhiMin, Chamber_PhiMax, Chamber_ThetaMin, Chamber_ThetaMax );
-   
-   Chamber_log = new G4LogicalVolume(Chamber_sphere, Vacuum, "Chamber_log", 0, 0, 0);
-   
-   Chamber_phys = new G4PVPlacement(0, G4ThreeVector(), Chamber_log, "Chamber", world_log, false, 0);
-   
-   G4VisAttributes* VisAttChamber = new G4VisAttributes(G4Colour(0.2, 0.2, 0.2));
-   //G4VisAttributes* VisAtt = new G4VisAttributes(G4VisAttributes::Invisible);
-   Chamber_log->SetVisAttributes(VisAttChamber);
-   */
   //------------------------------------------------------------------
-  
-  
   
   return world_phys;
 }
@@ -741,8 +716,11 @@ void DetectorConstruction::ReadConfigurationFile(string Path){
     cout << "ERROR: No target define in detector file. Cannot perform simulation without target" << endl ;
     exit(1);
   }
+
+  // Create the Material sample for DEDX tables
+  MaterialManager::getInstance()->CreateSampleVolumes(world_log);
   
-  return   ;
+  return;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -761,7 +739,6 @@ void DetectorConstruction::ReadAllSensitive(const G4Event* event){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-G4LogicalVolume* DetectorConstruction::GetWorldLogic()
-{
+G4LogicalVolume* DetectorConstruction::GetWorldLogic(){
   return world_log;
 }

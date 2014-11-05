@@ -26,7 +26,9 @@
 
 // Geant4
 #include "G4EmCalculator.hh"
-
+#include "G4Box.hh"
+#include "G4PVPlacement.hh"
+#include "G4VisAttributes.hh"
 // STL
 #include<iostream>
 using namespace std;
@@ -453,4 +455,22 @@ void MaterialManager::WriteDEDXTable(G4ParticleDefinition* Particle ,G4double Em
     File.close();
   }
 }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void MaterialManager::CreateSampleVolumes(G4LogicalVolume* world_log){
 
+// Crate a micrometer big cube for each material
+  G4double SampleSize = 10 * cm;
+  G4double WorldSize = 10.0 * m ;
+  G4Box* sample_box = new G4Box("sample_box",SampleSize ,SampleSize ,SampleSize);  
+  G4int i = 1;
+  G4double Coord1 = WorldSize-SampleSize;
+  G4double Coord2 = 0 ;
+  map<string,G4Material*>::iterator it;
+  for(it = m_Material.begin() ; it != m_Material.end() ; it++){
+    G4LogicalVolume* sample_log = new G4LogicalVolume(sample_box, it->second, "sample_log", 0, 0, 0);
+    sample_log->SetVisAttributes(G4VisAttributes::Invisible); 
+    Coord2 = WorldSize-i*SampleSize;
+    i++;
+    new G4PVPlacement(0, G4ThreeVector(Coord1,Coord2,-Coord1), sample_log, "sample", world_log, false, 0);
+  }
+} 

@@ -14,7 +14,32 @@ Target
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Tiara
-  TiaraInnerBarrel= 1
-  TiaraOuterBarrel= 1
-  TiaraChamber= 1
+  TiaraInnerBarrel= 0
+  TiaraOuterBarrel= 0
+ TiaraChamber= 0
+  TiaraHyballWedge
+    Z= -147
+    R= 0
+    Phi= 0
+  TiaraHyballWedge
+    Z= -147
+    R= 0
+    Phi= 60
+  TiaraHyballWedge
+    Z= -147
+    R= 0
+    Phi= 120
+  TiaraHyballWedge
+    Z= -147
+    R= 0
+    Phi= 180
+  TiaraHyballWedge
+    Z= -147
+    R= 0
+    Phi= 240
+  TiaraHyballWedge
+    Z= -147
+    R= 0
+    Phi= 300
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

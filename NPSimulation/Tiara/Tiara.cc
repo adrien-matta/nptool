@@ -73,7 +73,7 @@ Tiara::Tiara(){
   // Light Grey
   FrameVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5)) ;
   // Light Blue
-  GuardRingVisAtt = new G4VisAttributes(G4Colour(0.0, 0.8, 0.9)) ;  
+  GuardRingVisAtt = new G4VisAttributes(G4Colour(0.1, 0.1, 0.1)) ;  
 
   m_boolChamber = false;
   m_boolInner = false;
@@ -98,7 +98,7 @@ void Tiara::ReadConfiguration(string Path){
   int VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
 
   while (getline(ConfigFile, LineBuffer)){
-    
+
     if (LineBuffer.compare(0, 5, "Tiara") == 0)
       ReadingStatus = true;
 
@@ -125,8 +125,49 @@ void Tiara::ReadConfiguration(string Path){
       }
 
       // Hyball case
-      else if (DataBuffer=="TiaraHyball") { 
-        if(VerboseLevel==1) G4cout << "Hyball  found: " << G4endl   ;
+      else if (DataBuffer=="TiaraHyballWedge") { 
+        if(VerboseLevel==1) G4cout << "// \n Hyball  found: " << G4endl   ;
+        bool ReadingHyball = true;
+        double Z,R,Phi;
+        bool  boolZ= false;
+        bool  boolR= false;
+        bool  boolPhi= false;
+        while(ReadingHyball && ConfigFile >> DataBuffer){
+          if (DataBuffer.compare(0, 1, "%") == 0) { 
+            ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
+          }
+
+          else if(DataBuffer == "Z="){
+            ConfigFile >> Z ;
+            boolZ = true;
+            if(VerboseLevel==1) G4cout << "\t" << DataBuffer << Z << endl;
+
+          }
+
+          else if(DataBuffer == "R="){
+            ConfigFile >> R ;
+            boolR = true; 
+            if(VerboseLevel==1) G4cout <<"\t" << DataBuffer << R << endl;
+          }
+
+          else if(DataBuffer == "Phi="){
+            ConfigFile >> Phi ;
+            boolPhi = true;
+            if(VerboseLevel==1) G4cout <<"\t" <<  DataBuffer << Phi << endl;
+          }
+
+          else{
+            cout << "Error: Wrong Token Sequence for Tiara Hyball : Getting out " << DataBuffer << endl;
+            exit(1);
+          }
+
+          if(boolPhi && boolR && boolZ){
+            ReadingHyball = false;
+            m_HyballZ.push_back(Z*mm);
+            m_HyballR.push_back(R*mm);
+            m_HyballPhi.push_back(Phi*deg);
+          }
+        }
       }
     }
   }
@@ -142,14 +183,15 @@ void Tiara::ConstructDetector(G4LogicalVolume* world){
 
   if(m_boolChamber)
     ConstructChamber(world);
-  
+
   if(m_boolInner)
     ConstructInnerBarrel(world);
-  
+
   if(m_boolOuter)
     ConstructOuterBarrel(world);
-  
-  ConstructHyball(world);
+
+  if(m_HyballZ.size())
+    ConstructHyball(world);
 }
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
@@ -183,7 +225,7 @@ void Tiara::ReadSensitive(const G4Event* event){
 
     // Back Energy
     double EB = RandGauss::shoot(Info[1]+Info[0],ResoEnergy);
-    if(ED>EnergyThreshold){
+    if(EB>EnergyThreshold){
       m_EventBarrel->SetBackE(Info[3],EB);
       m_EventBarrel->SetBackT(Info[3],Info[2]); 
     }
@@ -210,6 +252,38 @@ void Tiara::ReadSensitive(const G4Event* event){
   }
   // Clear Map for next event
   OuterBarrelHitMap->clear();
+
+
+  // Hyball //
+  G4THitsMap<G4double*>* HyballHitMap;
+  std::map<G4int, G4double**>::iterator Hyball_itr;
+  G4int HyballCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Tiara_HyballScorer/Hyball");
+  HyballHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(HyballCollectionID));
+
+  // Loop on the Hyball map 
+  for (Hyball_itr = HyballHitMap->GetMap()->begin() ; Hyball_itr != HyballHitMap->GetMap()->end() ; Hyball_itr++){
+    G4double* Info = *(Hyball_itr->second); 
+
+    // Front Energy
+    double EF = RandGauss::shoot(Info[0],ResoEnergy);
+    if(EF>EnergyThreshold){
+      m_EventHyball->SetRingE(Info[7],Info[8],EF);
+      m_EventHyball->SetRingT(Info[7],Info[8],Info[1]); 
+    }
+
+    // Back Energy
+    double EB = RandGauss::shoot(Info[1]+Info[0],ResoEnergy);
+    if(EB>EnergyThreshold){
+      m_EventHyball->SetSectorE(Info[7],Info[9],EF);
+      m_EventHyball->SetSectorT(Info[7],Info[9],Info[1]); 
+    }
+
+  }
+  // Clear Map for next event
+  HyballHitMap->clear();
+
+
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -217,7 +291,8 @@ void Tiara::InitializeScorers(){
 
   m_InnerBarrelScorer = new G4MultiFunctionalDetector("Tiara_InnerBarrelScorer");
   m_OuterBarrelScorer = new G4MultiFunctionalDetector("Tiara_OuterBarrelScorer");
-
+  m_HyballScorer      = new G4MultiFunctionalDetector("Tiara_HyballScorer"); 
+ 
   G4VPrimitiveScorer* InnerBarrel = new SILICONSCORERS::PS_Silicon_Resistive("InnerBarrel",
       INNERBARREL_ActiveWafer_Length,
       INNERBARREL_ActiveWafer_Width,
@@ -232,11 +307,20 @@ void Tiara::InitializeScorers(){
       OUTERBARREL_NumberOfStrip);
 
   m_OuterBarrelScorer->RegisterPrimitive(OuterBarrel);
-
-
+  
+  G4VPrimitiveScorer* Hyball= new SILICONSCORERS::PS_Silicon_Annular("Hyball", 
+      HYBALL_ActiveWafer_InnerRadius, 
+      HYBALL_ActiveWafer_OuterRadius, 
+      -0.5*HYBALL_ActiveWafer_Angle,HYBALL_ActiveWafer_Angle, 
+      HYBALL_NumberOfAnnularStrip,
+      HYBALL_NumberOfRadialStrip);
+  
+  m_HyballScorer->RegisterPrimitive(Hyball);
+  
   //   Add All Scorer to the Global Scorer Manager 
   G4SDManager::GetSDMpointer()->AddNewDetector(m_InnerBarrelScorer) ;
   G4SDManager::GetSDMpointer()->AddNewDetector(m_OuterBarrelScorer) ;  
+  G4SDManager::GetSDMpointer()->AddNewDetector(m_HyballScorer) ;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -540,12 +624,111 @@ void Tiara::ConstructOuterBarrel(G4LogicalVolume* world){
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Tiara::ConstructHyball(G4LogicalVolume* world){
+  vector<G4TwoVector> PCBCrossSection;
+  PCBCrossSection.push_back(G4TwoVector(28.108*mm ,-14.551*mm));
+  PCBCrossSection.push_back(G4TwoVector(128.808*mm,-66.683*mm));
+  PCBCrossSection.push_back(G4TwoVector(163.618*mm,-30.343*mm));
+  PCBCrossSection.push_back(G4TwoVector(163.618*mm, 30.941*mm));
+  PCBCrossSection.push_back(G4TwoVector(125.718*mm, 73.677*mm));
+  PCBCrossSection.push_back(G4TwoVector(28.108*mm , 16.473*mm));
 
-  // TO BE DONE //
+  G4ExtrudedSolid* PCBFull = 
+    new G4ExtrudedSolid("PCBFull",
+        PCBCrossSection,
+        0.5*HYBALL_PCB_THICKNESS,
+        G4TwoVector(0,0),1,
+        G4TwoVector(0,0),1);
 
-  // Put the needed geometry parameter definition here instead of the namespace
-  // to facilitate the merge
-  // Respect Naming convention: example HYBALL_PCB_Radius / HYBALL_ActiveWafer_Radius
+  vector<G4TwoVector> WaferCrossSection;
+  WaferCrossSection.push_back(G4TwoVector(29.108*mm ,-13.943*mm ));
+  WaferCrossSection.push_back(G4TwoVector(123.022*mm,-62.561*mm ));
+  WaferCrossSection.push_back(G4TwoVector(137.00*mm ,-24.157*mm ));
+  WaferCrossSection.push_back(G4TwoVector(137.00*mm , 24.157*mm ));
+  WaferCrossSection.push_back(G4TwoVector(122.677*mm, 63.508*mm ));
+  WaferCrossSection.push_back(G4TwoVector(29.108*mm , 15.069*mm));
+
+  G4ExtrudedSolid* WaferFull = 
+    new G4ExtrudedSolid("WaferFull",
+        WaferCrossSection,
+        0.5*HYBALL_ActiveWafer_Thickness,
+        G4TwoVector(0,0),1,
+        G4TwoVector(0,0),1);
+
+  G4ExtrudedSolid* WaferShape = 
+    new G4ExtrudedSolid("WaferShape",
+        WaferCrossSection,
+        0.6*HYBALL_PCB_THICKNESS,
+        G4TwoVector(0,0),1,
+        G4TwoVector(0,0),1);
+
+  // Active Wafer
+  G4Tubs* ActiveWafer = 
+    new G4Tubs("HyballActiveWafer",HYBALL_ActiveWafer_InnerRadius,
+        HYBALL_ActiveWafer_OuterRadius,0.5*HYBALL_ActiveWafer_Thickness,
+          -0.5*HYBALL_ActiveWafer_Angle,HYBALL_ActiveWafer_Angle);
+
+  G4Tubs* ActiveWaferShape = 
+    new G4Tubs("HyballActiveWaferShape",HYBALL_ActiveWafer_InnerRadius,
+        HYBALL_ActiveWafer_OuterRadius,0.6*HYBALL_ActiveWafer_Thickness,
+        -0.5*HYBALL_ActiveWafer_Angle,HYBALL_ActiveWafer_Angle);
+
+
+  // Substract Active Wafer from Wafer
+  G4SubtractionSolid* InertWafer = new G4SubtractionSolid("Hyball_InertWafer", WaferFull, ActiveWaferShape,
+      new G4RotationMatrix(0,0,0),G4ThreeVector(0,0,0));
+
+
+  // Substract Wafer shape from PCB
+  G4SubtractionSolid* PCB = new G4SubtractionSolid("Hyball_PCB", PCBFull, WaferShape,
+      new G4RotationMatrix,G4ThreeVector(0,0,0));
+
+  // Logic Volume //
+  // Logic Mother Volume
+  G4LogicalVolume* logicHyball =
+    new G4LogicalVolume(PCBFull,m_MaterialVacuum,"logicHyball", 0, 0, 0);
+  logicHyball->SetVisAttributes(G4VisAttributes::Invisible);
+
+  //  logic PCB
+  G4LogicalVolume* logicPCB =
+    new G4LogicalVolume(PCB,m_MaterialPCB,"logicPCB", 0, 0, 0);
+  logicPCB->SetVisAttributes(PCBVisAtt);
+
+  // logic Inert Wafer
+  G4LogicalVolume* logicIW =
+    new G4LogicalVolume(InertWafer,m_MaterialSilicon,"logicIW", 0, 0, 0);
+  logicIW->SetVisAttributes(GuardRingVisAtt);
+
+  // logic Active Wafer
+  G4LogicalVolume* logicAW =
+    new G4LogicalVolume(ActiveWafer,m_MaterialSilicon,"logicAW", 0, 0, 0);
+  logicAW->SetVisAttributes(SiliconVisAtt);
+  logicAW->SetSensitiveDetector(m_HyballScorer);
+
+  // Place all the Piece in the mother volume
+  new G4PVPlacement(new G4RotationMatrix(0,0,0),
+      G4ThreeVector(0,0,0),
+      logicPCB,"Hyball_PCB",
+      logicHyball,false,0);
+
+  new G4PVPlacement(new G4RotationMatrix(0,0,0),
+      G4ThreeVector(0,0,0),
+      logicIW,"Hyball_InertWafer",
+      logicHyball,false,0);
+
+  new G4PVPlacement(new G4RotationMatrix(0,0,0),
+      G4ThreeVector(0,0,0),
+      logicAW,"Hyball_ActiveWafer",
+      logicHyball,false,0);
+
+
+
+  for(unsigned int i = 0 ; i < m_HyballZ.size() ; i++){
+    // Place mother volume
+    new G4PVPlacement(new G4RotationMatrix(0,0,m_HyballPhi[i]),
+        G4ThreeVector(0,0,m_HyballZ[i]),
+        logicHyball,"Hyball",
+        world,false,i+1);
+  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
