@@ -107,13 +107,13 @@ void Chamber::ReadConfiguration(string Path)
    while (!ConfigFile.eof()) {
       getline(ConfigFile, LineBuffer);
       if (LineBuffer.compare(0, 8, "Chamber") == 0) {
-         cout << "Chamber Found" << endl;
+         G4cout << "Chamber Found" << G4endl;
          m_ChamberType = true ;
          ReadingStatusChamber = true ;
       }
       /*
       else if (LineBuffer.compare(0, 10, "CryoChamber") == 0) {
-         cout << "Cryogenic Chamber Found" << endl;
+         G4cout << "Cryogenic Chamber Found" << G4endl;
          m_ChamberType = false ;
          ReadingStatusCryoChamber = true ;
       }
@@ -129,46 +129,46 @@ void Chamber::ReadConfiguration(string Path)
               check_Rmin = true ;
                ConfigFile >> DataBuffer;
                m_ChamberRmin = atof(DataBuffer.c_str()) * mm;
-                cout << "Chamber inner radius: "  << m_ChamberRmin << endl     ;
+                G4cout << "Chamber inner radius: "  << m_ChamberRmin << G4endl     ;
             }
 
            else if (DataBuffer.compare(0, 5, "Rmax=") == 0) {
               check_Rmax = true ;
                ConfigFile >> DataBuffer;
                m_ChamberRmax = atof(DataBuffer.c_str()) * mm;
-                cout << "Chamber outer radius: "  << m_ChamberRmax << endl     ;
+                G4cout << "Chamber outer radius: "  << m_ChamberRmax << G4endl     ;
             }
 
            else if (DataBuffer.compare(0, 8, "PhiMin=") == 0) {
               check_PhiMin = true ;
                ConfigFile >> DataBuffer;
                m_ChamberPhiMin = atof(DataBuffer.c_str()) * rad;
-               cout << "Chamber PhiMin: "     <<  m_ChamberPhiMin      << endl     ;
+               G4cout << "Chamber PhiMin: "     <<  m_ChamberPhiMin      << G4endl     ;
             }
            else if (DataBuffer.compare(0, 8, "PhiMax=") == 0) {
               check_PhiMax = true ;
                ConfigFile >> DataBuffer;
                m_ChamberPhiMax = atof(DataBuffer.c_str()) * rad;
-               cout << "Chamber PhiMax: "     <<  m_ChamberPhiMax      << endl     ;
+               G4cout << "Chamber PhiMax: "     <<  m_ChamberPhiMax      << G4endl     ;
             }
            else if (DataBuffer.compare(0, 9, "ThetaMin=") == 0) {
               check_ThetaMin = true ;
                ConfigFile >> DataBuffer;
                m_ChamberThetaMin = atof(DataBuffer.c_str()) * rad;
-               cout << "Chamber ThetaMin: "     <<  m_ChamberThetaMin      << endl     ;
+               G4cout << "Chamber ThetaMin: "     <<  m_ChamberThetaMin      << G4endl     ;
             }
            else if (DataBuffer.compare(0, 9, "ThetaMax=") == 0) {
               check_ThetaMax = true ;
                ConfigFile >> DataBuffer;
                m_ChamberThetaMax = atof(DataBuffer.c_str()) * rad;
-               cout << "Chamber ThetaMax: "     <<  m_ChamberThetaMax      << endl     ;
+               G4cout << "Chamber ThetaMax: "     <<  m_ChamberThetaMax      << G4endl     ;
             }
 
            else if (DataBuffer.compare(0, 9, "MATERIAL=") == 0) {
               check_Material = true ;
                ConfigFile >> DataBuffer;
                m_ChamberMaterial = GetMaterialFromLibrary(DataBuffer);
-               cout << "Chamber Material: "      << m_ChamberMaterial  << endl  ;
+               G4cout << "Chamber Material: "      << m_ChamberMaterial  << G4endl  ;
             }
 
            ///////////////////////////////////////////////////

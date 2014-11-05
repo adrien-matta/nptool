@@ -268,7 +268,7 @@ void ParisPhoswich::ReadConfiguration(string Path)
             Az = Az * mm ;
 
             A = G4ThreeVector(Ax, Ay, Az);
-            cout << "X1 Y1 corner position : " << A << endl;
+            G4cout << "X1 Y1 corner position : " << A << G4endl;
          }
          else if (DataBuffer.compare(0, 8, "X128_Y1=") == 0) {
             check_B = true;
@@ -283,7 +283,7 @@ void ParisPhoswich::ReadConfiguration(string Path)
             Bz = Bz * mm ;
 
             B = G4ThreeVector(Bx, By, Bz);
-            cout << "X128 Y1 corner position : " << B << endl;
+            G4cout << "X128 Y1 corner position : " << B << G4endl;
          }
          else if (DataBuffer.compare(0, 8, "X1_Y128=") == 0) {
             check_C = true;
@@ -298,7 +298,7 @@ void ParisPhoswich::ReadConfiguration(string Path)
             Cz = Cz * mm ;
 
             C = G4ThreeVector(Cx, Cy, Cz);
-            cout << "X1 Y128 corner position : " << C << endl;
+            G4cout << "X1 Y128 corner position : " << C << G4endl;
          }
          else if (DataBuffer.compare(0, 10, "X128_Y128=") == 0) {
             check_D = true;
@@ -313,7 +313,7 @@ void ParisPhoswich::ReadConfiguration(string Path)
             Dz = Dz * mm ;
 
             D = G4ThreeVector(Dx, Dy, Dz);
-            cout << "X128 Y128 corner position : " << D << endl;
+            G4cout << "X128 Y128 corner position : " << D << G4endl;
          }
 
          // Angle method
@@ -322,21 +322,21 @@ void ParisPhoswich::ReadConfiguration(string Path)
             ConfigFile >> DataBuffer ;
             Theta = atof(DataBuffer.c_str()) ;
             Theta = Theta * deg;
-            cout << "Theta:  " << Theta / deg << endl;
+            G4cout << "Theta:  " << Theta / deg << G4endl;
          }
          else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
             check_Phi = true;
             ConfigFile >> DataBuffer ;
             Phi = atof(DataBuffer.c_str()) ;
             Phi = Phi * deg;
-            cout << "Phi:  " << Phi / deg << endl;
+            G4cout << "Phi:  " << Phi / deg << G4endl;
          }
          else if (DataBuffer.compare(0, 2, "R=") == 0) {
             check_R = true;
             ConfigFile >> DataBuffer ;
             R = atof(DataBuffer.c_str()) ;
             R = R * mm;
-            cout << "R:  " << R / mm << endl;
+            G4cout << "R:  " << R / mm << G4endl;
          }
          else if (DataBuffer.compare(0, 5, "BETA=") == 0) {
             ConfigFile >> DataBuffer ;
@@ -637,21 +637,21 @@ void ParisPhoswich::ReadSensitive(const G4Event* event)
    sizeC    *= 1;      // remove warning at compilation  added by Marc
    sizeCCsI *= 1;      // remove warning at compilation  added by Marc
    sizeECsI *= 1;   // remove warning at compilation  added by Marc
-   //G4cout <<"SizeN=" << sizeN << endl;
-   //G4cout <<"SizeC=" << sizeC << endl;
-   //G4cout <<"SizeN CsI =" << sizeNCsI << endl;
-   //G4cout <<"SizeE CsI =" << sizeECsI << endl;
+   //G4cout <<"SizeN=" << sizeN << G4endl;
+   //G4cout <<"SizeC=" << sizeC << G4endl;
+   //G4cout <<"SizeN CsI =" << sizeNCsI << G4endl;
+   //G4cout <<"SizeE CsI =" << sizeECsI << G4endl;
 
    //DetectorNumberHitMap->PrintAllHits();
 		       
 
     if (sizeE != sizeT) {
       G4cout << "No match size PARIS Event Map: sE:"
-      << sizeE << " sT:" << sizeT << endl ;
+      << sizeE << " sT:" << sizeT << G4endl ;
 
       //   if (sizeE != sizeX) {
       //G4cout << "No match size PARIS Event Map: sE:"
-      //<< sizeE << " sT:" << sizeT << " sX:" << sizeX << " sY:" << sizeY << endl ;
+      //<< sizeE << " sT:" << sizeT << " sX:" << sizeX << " sY:" << sizeY << G4endl ;
       return;
      }
 
@@ -677,7 +677,7 @@ void ParisPhoswich::ReadSensitive(const G4Event* event)
        G4cout <<"CrystalNumber_first=" << NCryst << G4endl;
        G4cout <<"Energy first=" << E << G4endl;
        G4cout <<"Time first =" << T << G4endl;
-       cout<<"*******"<<endl;
+       G4cout<<"*******"<<endl;
 
 	//added by Nicolas on the model of gaspard scorers 8/7/11
          CrystalNumber_itr = CrystalNumberHitMap->GetMap()->begin();
@@ -792,7 +792,7 @@ void ParisPhoswich::ReadSensitive(const G4Event* event)
 	       ms_Event->SetPARISLaBr3StageEDetectorNbr(m_index["Phoswich"] + N_first);
 	       ms_Event->SetPARISLaBr3StageTDetectorNbr(m_index["Phoswich"] + N_first);
 	       ms_Event->SetPARISLaBr3StageECrystalNbr(NCryst); // added by Anna
-	       cout<<NTrackID<<" filled at the end "<<NCryst<<endl;
+	       G4cout<<NTrackID<<" filled at the end "<<NCryst<<endl;
 	       // Fill Energy
 	       // ms_Event->SetPARISLaBr3StageEEnergy(RandGauss::shoot(E, ResoFirstStage));
 	       E=RandGauss::shoot(E, ResoFirstStage);
@@ -815,7 +815,7 @@ void ParisPhoswich::ReadSensitive(const G4Event* event)
 	       ms_Event->SetPARISLaBr3StageEDetectorNbr(m_index["Phoswich"] + N_first);
 	       ms_Event->SetPARISLaBr3StageTDetectorNbr(m_index["Phoswich"] + N_first);
 	       ms_Event->SetPARISLaBr3StageECrystalNbr(NCryst);
-	       cout<<NTrackID<<" filled with sizeN=1 "<<NCryst<<endl;
+	       G4cout<<NTrackID<<" filled with sizeN=1 "<<NCryst<<endl;
 	       // Fill Energy
 	       // ms_Event->SetPARISLaBr3StageEEnergy(RandGauss::shoot(E, ResoFirstStage));
 		       E=RandGauss::shoot(E, ResoFirstStage);

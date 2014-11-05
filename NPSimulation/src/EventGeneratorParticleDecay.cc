@@ -234,7 +234,7 @@ void EventGeneratorParticleDecay::GenerateEvent(G4Event*){
     double m2 = m_DaughterNuclei[1]->GetPDGMass();
     
     if(M<(m1+m2))
-      cout << "Warning: Particle Decay forbiden by kinematic, no particle emitted "<<endl;
+      G4cout << "Warning: Particle Decay forbiden by kinematic, no particle emitted "<<endl;
     
     else {
       double Energy = ( 1./(2.*M) )*( M*M + m1*m1 - m2*m2);
@@ -285,7 +285,7 @@ void EventGeneratorParticleDecay::GenerateEvent(G4Event*){
                             NucleiEnergy/GeV);
     
     if( !m_TPhaseSpace.SetDecay(NucleiLV, m_DaughterNuclei.size(), m_Masses) )
-      cout << "Warning: Phase Space Decay forbiden by kinematic, or more than 18 particles, no particle emitted "<<endl;
+      G4cout << "Warning: Phase Space Decay forbiden by kinematic, or more than 18 particles, no particle emitted "<<endl;
     
     else{
       m_TPhaseSpace.Generate();

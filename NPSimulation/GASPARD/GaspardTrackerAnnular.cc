@@ -358,7 +358,7 @@ void GaspardTrackerAnnular::ReadConfiguration(string Path)
             ConfigFile >> DataBuffer ;
             Z = atof(DataBuffer.c_str()) ;
             Z = Z * mm;
-            cout << "Z:  " << Z / mm << endl;
+            G4cout << "Z:  " << Z / mm << G4endl;
          }
 
          //Position method
@@ -367,7 +367,7 @@ void GaspardTrackerAnnular::ReadConfiguration(string Path)
             ConfigFile >> DataBuffer ;
             Rmin = atof(DataBuffer.c_str()) ;
             Rmin = Rmin * mm;
-            cout << "Rmin:  " << Rmin / mm << endl;
+            G4cout << "Rmin:  " << Rmin / mm << G4endl;
          }
 
          //Position method
@@ -376,7 +376,7 @@ void GaspardTrackerAnnular::ReadConfiguration(string Path)
             ConfigFile >> DataBuffer ;
             Rmax = atof(DataBuffer.c_str()) ;
             Rmax = Rmax * mm;
-            cout << "Rmax:  " << Rmax / mm << endl;
+            G4cout << "Rmax:  " << Rmax / mm << G4endl;
          }
 
          else if (DataBuffer.compare(0, 11, "FIRSTSTAGE=") == 0) {
@@ -594,7 +594,7 @@ void GaspardTrackerAnnular::ReadSensitive(const G4Event* event)
 
    if (sizeE != sizeT || sizeT != sizeX || sizeX != sizeY) {
       G4cout << "No match size Si Event Map: sE:"
-         << sizeE << " sT:" << sizeT << " sX:" << sizeX << " sY:" << sizeY << endl ;
+         << sizeE << " sT:" << sizeT << " sX:" << sizeX << " sY:" << sizeY << G4endl ;
       return;
    }
 

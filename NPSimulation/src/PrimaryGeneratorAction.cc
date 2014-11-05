@@ -81,17 +81,17 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path){
   int   alreadyiInstantiate_ParticleDecay = 0;
   int   seenToken_ParticleDecay = 0;
   
-  if(NPOptionManager::getInstance()->GetVerboseLevel()==1) cout << "/////////////////////////////////////////////////// " << endl ;
+  if(NPOptionManager::getInstance()->GetVerboseLevel()==1) G4cout << "/////////////////////////////////////////////////// " << G4endl ;
 
   string LineBuffer;
   ifstream EventGeneratorFile;
   EventGeneratorFile.open(Path.c_str());
   
   if (EventGeneratorFile.is_open()) { // should always be true
-    cout << "Event Generator file " << Path << " loading " << endl  ;
+    G4cout << "Event Generator file " << Path << " loading " << G4endl  ;
   }
   else {
-    cout << "Error, Event Generator file " << Path << " found" << endl;
+    G4cout << "Error, Event Generator file " << Path << " found" << G4endl;
   }
   
   while (!EventGeneratorFile.eof()) {

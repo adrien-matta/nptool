@@ -279,7 +279,7 @@ void AnnularS1::ReadConfiguration(string Path){
         ConfigFile >> DataBuffer ;
         Z = atof(DataBuffer.c_str()) ;
         Z = Z * mm;
-        cout << "Z:  " << Z / mm << endl;
+        G4cout << "Z:  " << Z / mm << G4endl;
       }
       else if (DataBuffer.compare(0, 4, "VIS=") == 0) {
         check_VIS = true;
@@ -299,7 +299,7 @@ void AnnularS1::ReadConfiguration(string Path){
         check_Z       = false;
         check_VIS     = false;
         ReadingStatus = false;
-        cout << "///"<< endl;
+        G4cout << "///"<< G4endl;
       }
     }
   }

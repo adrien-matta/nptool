@@ -177,7 +177,7 @@ void Plastic::ReadConfiguration(string Path){
 
       //   Finding another telescope (safety), toggle out
       else if (DataBuffer.compare(0, 6, "Plastic") == 0) {
-        cout << "WARNING: Another Telescope is find before standard sequence of Token, Error may occured in Telecope definition" << endl ;
+        G4cout << "WARNING: Another Telescope is find before standard sequence of Token, Error may occured in Telecope definition" << G4endl ;
         ReadingStatus = false ;
       }
 
@@ -187,7 +187,7 @@ void Plastic::ReadConfiguration(string Path){
         ConfigFile >> DataBuffer ;
         Theta = atof(DataBuffer.c_str()) ;
         Theta = Theta * deg;
-        cout << "Theta:  " << Theta / deg << endl;
+        G4cout << "Theta:  " << Theta / deg << G4endl;
       }
 
       else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
@@ -195,7 +195,7 @@ void Plastic::ReadConfiguration(string Path){
         ConfigFile >> DataBuffer ;
         Phi = atof(DataBuffer.c_str()) ;
         Phi = Phi * deg;
-        cout << "Phi:  " << Phi / deg << endl;
+        G4cout << "Phi:  " << Phi / deg << G4endl;
       }
 
       else if (DataBuffer.compare(0, 2, "R=") == 0) {
@@ -203,7 +203,7 @@ void Plastic::ReadConfiguration(string Path){
         ConfigFile >> DataBuffer ;
         R = atof(DataBuffer.c_str()) ;
         R = R * mm;
-        cout << "R:  " << R/mm << endl;
+        G4cout << "R:  " << R/mm << G4endl;
       }
 
       //Position method
@@ -212,7 +212,7 @@ void Plastic::ReadConfiguration(string Path){
         ConfigFile >> DataBuffer ;
         X = atof(DataBuffer.c_str()) ;
         X = X * mm;
-        cout << "X:  " << X / mm << endl;
+        G4cout << "X:  " << X / mm << G4endl;
       }
 
       else if (DataBuffer.compare(0, 2, "Y=") == 0) {
@@ -220,7 +220,7 @@ void Plastic::ReadConfiguration(string Path){
         ConfigFile >> DataBuffer ;
         Y = atof(DataBuffer.c_str()) ;
         Y = Y * mm;
-        cout << "Y:  " << Y / mm << endl;
+        G4cout << "Y:  " << Y / mm << G4endl;
       }
 
       else if (DataBuffer.compare(0, 2, "Z=") == 0) {
@@ -228,7 +228,7 @@ void Plastic::ReadConfiguration(string Path){
         ConfigFile >> DataBuffer ;
         Z = atof(DataBuffer.c_str()) ;
         Z = Z * mm;
-        cout << "Z:  " << Z / mm << endl;
+        G4cout << "Z:  " << Z / mm << G4endl;
       }
 
 
@@ -237,7 +237,7 @@ void Plastic::ReadConfiguration(string Path){
         check_Shape = true;
         ConfigFile >> DataBuffer ;
         Shape = DataBuffer ;
-        cout << "Shape:  " << Shape << endl;
+        G4cout << "Shape:  " << Shape << G4endl;
       }
 
       // Cylindrical shape
@@ -246,7 +246,7 @@ void Plastic::ReadConfiguration(string Path){
         ConfigFile >> DataBuffer ;
         Radius = atof(DataBuffer.c_str()) ;
         Radius = Radius * mm;
-        cout << "Plastic Radius:  " << Radius/mm << endl;
+        G4cout << "Plastic Radius:  " << Radius/mm << G4endl;
       }
 
       // Squared shape
@@ -255,7 +255,7 @@ void Plastic::ReadConfiguration(string Path){
         ConfigFile >> DataBuffer ;
         Width = atof(DataBuffer.c_str()) ;
         Width = Width * mm;
-        cout << "Plastic Width:  " << Width/mm << endl;
+        G4cout << "Plastic Width:  " << Width/mm << G4endl;
       }
 
       else if (DataBuffer.compare(0, 7, "Height=") == 0) {
@@ -263,7 +263,7 @@ void Plastic::ReadConfiguration(string Path){
         ConfigFile >> DataBuffer ;
         Height = atof(DataBuffer.c_str()) ;
         Height = Height * mm;
-        cout << "Plastic Height:  " << Height/mm << endl;
+        G4cout << "Plastic Height:  " << Height/mm << G4endl;
       }
 
       // Common
@@ -272,14 +272,14 @@ void Plastic::ReadConfiguration(string Path){
         ConfigFile >> DataBuffer ;
         Thickness = atof(DataBuffer.c_str()) ;
         Thickness = Thickness * mm;
-        cout << "Plastic Thickness:  " << Thickness/mm << endl;
+        G4cout << "Plastic Thickness:  " << Thickness/mm << G4endl;
       }
 
       else if (DataBuffer.compare(0, 13, "Scintillator=") == 0) {
         check_Scintillator = true ;
         ConfigFile >> DataBuffer ;
         Scintillator = DataBuffer ;
-        cout << "Plastic Scintillator type:  " << Scintillator << endl;
+        G4cout << "Plastic Scintillator type:  " << Scintillator << G4endl;
       }
 
       else if (DataBuffer.compare(0, 14, "LeadThickness=") == 0) {
@@ -287,7 +287,7 @@ void Plastic::ReadConfiguration(string Path){
         ConfigFile >> DataBuffer ;
         LeadThickness = atof(DataBuffer.c_str()) ;
         LeadThickness = LeadThickness * mm;
-        cout << "Lead Thickness :  " << LeadThickness/mm << endl;
+        G4cout << "Lead Thickness :  " << LeadThickness/mm << G4endl;
       }
 
       ///////////////////////////////////////////////////
@@ -355,7 +355,7 @@ void Plastic::ReadConfiguration(string Path){
         check_Y = false ;
         check_Z = false ;
         ReadingStatus = false ;   
-        cout << "///"<< endl ;            
+        G4cout << "///"<< G4endl ;            
       }
     }
   }

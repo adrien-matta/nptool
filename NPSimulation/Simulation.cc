@@ -41,7 +41,6 @@ int main(int argc, char** argv){
   // case when input files are here
   G4String EventGeneratorFileName = OptionManager->GetReactionFile();
   G4String DetectorFileName       = OptionManager->GetDetectorFile();
-  
   // my Verbose output class
   G4VSteppingVerbose::SetInstance(new SteppingVerbose);
   
@@ -70,6 +69,17 @@ int main(int argc, char** argv){
   physicsList->MyOwnConstruction();
   
   ///////////////////////////////////////////////////////////////
+  /////////// Define UI terminal for interactive mode ///////////
+  ///////////////////////////////////////////////////////////////
+  // interactive mode : define UI session
+  // Get the pointer to the User Interface manager
+  G4cout << "//////////// Starting UI ////////////"<< endl;
+  G4UImanager* UImanager = G4UImanager::GetUIpointer();
+#ifdef G4UI_USE
+  G4UIExecutive* ui = new G4UIExecutive(argc, argv);
+#endif 
+
+  ///////////////////////////////////////////////////////////////
   ///////////////// Initializing the Root Output ////////////////
   ///////////////////////////////////////////////////////////////
   RootOutput::getInstance("Simulation/" + OptionManager->GetOutputFile());
@@ -91,23 +101,16 @@ int main(int argc, char** argv){
   EventAction* event_action = new EventAction() ;
   event_action->SetDetector(detector)           ;
   runManager->SetUserAction(event_action)       ;
-  
-  ///////////////////////////////////////////////////////////////
-  /////////// Define UI terminal for interactive mode ///////////
-  ///////////////////////////////////////////////////////////////
-  // interactive mode : define UI session
-  // Get the pointer to the User Interface manager
-  G4cout << "//////////// Starting UI ////////////"<< endl;
-  G4UImanager* UImanager = G4UImanager::GetUIpointer();
+
+
 #ifdef G4UI_USE
-  G4UIExecutive* ui = new G4UIExecutive(argc, argv);
 #ifdef G4VIS_USE
   UImanager->ApplyCommand("/control/execute macro/aliases.mac");
   G4VisManager* visManager = new G4VisExecutive("Quiet");
   visManager->Initialize();
   UImanager->ApplyCommand("/control/execute macro/vis.mac");
 #endif
-    if (ui->IsGUI()){
+   if (ui->IsGUI()){
             UImanager->ApplyCommand("/control/execute macro/gui.mac");
     }
 

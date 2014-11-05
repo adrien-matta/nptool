@@ -238,7 +238,7 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
     }
 
     else{
-      cout << "ERROR: Material requested \""<< Name <<"\" is not available in the Material Librairy" << endl;
+      G4cout << "ERROR: Material requested \""<< Name <<"\" is not available in the Material Librairy" << G4endl;
       exit(1);
     }
 
@@ -407,7 +407,7 @@ G4Element* MaterialManager::GetElementFromLibrary(string Name){
 
 
     else{
-      cout << "ERROR: Element requested \""<< Name <<"\" is not available in the Material Librairy" << endl;
+      G4cout << "ERROR: Element requested \""<< Name <<"\" is not available in the Material Librairy" << G4endl;
       exit(1);
     }
 
@@ -432,8 +432,8 @@ void MaterialManager::WriteDEDXTable(G4ParticleDefinition* Particle ,G4double Em
     if(!File) return ;
 
     File   << "Table from Geant4 generate using NPSimulation \t"
-      << "Particle: " << Particle->GetParticleName() << "\tMaterial: " << it->second->GetName() << endl ;
-    // cout <<  Particle->GetParticleName() << "\tMaterial: " << it->second->GetName()  <<endl;
+      << "Particle: " << Particle->GetParticleName() << "\tMaterial: " << it->second->GetName() << G4endl ;
+    // G4cout <<  Particle->GetParticleName() << "\tMaterial: " << it->second->GetName()  <<endl;
     
     G4EmCalculator emCalculator;
     G4double dedx ;
@@ -449,7 +449,7 @@ void MaterialManager::WriteDEDXTable(G4ParticleDefinition* Particle ,G4double Em
       }
 
       before = dedx;
-      File << E/MeV << "\t" << dedx << endl ;
+      File << E/MeV << "\t" << dedx << G4endl ;
     }
 
     File.close();

@@ -140,24 +140,24 @@ void Tiara::ReadConfiguration(string Path){
           else if(DataBuffer == "Z="){
             ConfigFile >> Z ;
             boolZ = true;
-            if(VerboseLevel==1) G4cout << "\t" << DataBuffer << Z << endl;
+            if(VerboseLevel==1) G4cout << "\t" << DataBuffer << Z << G4endl;
 
           }
 
           else if(DataBuffer == "R="){
             ConfigFile >> R ;
             boolR = true; 
-            if(VerboseLevel==1) G4cout <<"\t" << DataBuffer << R << endl;
+            if(VerboseLevel==1) G4cout <<"\t" << DataBuffer << R << G4endl;
           }
 
           else if(DataBuffer == "Phi="){
             ConfigFile >> Phi ;
             boolPhi = true;
-            if(VerboseLevel==1) G4cout <<"\t" <<  DataBuffer << Phi << endl;
+            if(VerboseLevel==1) G4cout <<"\t" <<  DataBuffer << Phi << G4endl;
           }
 
           else{
-            cout << "Error: Wrong Token Sequence for Tiara Hyball : Getting out " << DataBuffer << endl;
+            G4cout << "Error: Wrong Token Sequence for Tiara Hyball : Getting out " << DataBuffer << G4endl;
             exit(1);
           }
 

@@ -284,7 +284,7 @@ void ThinSi::ReadConfiguration(string Path){
 
       //   Finding another telescope (safety), toggle out
       else if (DataBuffer=="SSSD") {
-        cout << "WARNING: Another Telescope is found before standard sequence of Token, Error may occured in detector definition" << endl ;
+        G4cout << "WARNING: Another Telescope is found before standard sequence of Token, Error may occured in detector definition" << G4endl ;
         ReadingStatus = false ;
       }
 
@@ -302,7 +302,7 @@ void ThinSi::ReadConfiguration(string Path){
         TLZ = TLZ * mm;
 
         TL = G4ThreeVector(TLX, TLY, TLZ);
-        cout << "Top Left position : (" << TLX << ";" << TLY << ";" << TLZ << ")" << endl;
+        G4cout << "Top Left position : (" << TLX << ";" << TLY << ";" << TLZ << ")" << G4endl;
       }
 
       else if (DataBuffer.compare(0, 3, "B=") == 0) {
@@ -318,7 +318,7 @@ void ThinSi::ReadConfiguration(string Path){
         BLZ = BLZ * mm;
 
         BL = G4ThreeVector(BLX, BLY, BLZ);
-        cout << "Top Right position : (" << BLX << ";" << BLY << ";" << BLZ << ")" << endl;
+        G4cout << "Top Right position : (" << BLX << ";" << BLY << ";" << BLZ << ")" << G4endl;
       }
 
       else if (DataBuffer.compare(0, 3, "C=") == 0) {
@@ -334,7 +334,7 @@ void ThinSi::ReadConfiguration(string Path){
         BRZ = BRZ * mm;
 
         BR = G4ThreeVector(BRX, BRY, BRZ);
-        cout << "Bottom Right position : (" << BRX << ";" << BRY << ";" << BRZ << ")" << endl;
+        G4cout << "Bottom Right position : (" << BRX << ";" << BRY << ";" << BRZ << ")" << G4endl;
       }
 
       else if (DataBuffer.compare(0, 3, "D=") == 0) {
@@ -360,7 +360,7 @@ void ThinSi::ReadConfiguration(string Path){
         ConfigFile >> DataBuffer ;
         Theta = atof(DataBuffer.c_str()) ;
         Theta = Theta * deg;
-        cout << "Theta:  " << Theta / deg << endl;
+        G4cout << "Theta:  " << Theta / deg << G4endl;
       }
 
       else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
@@ -368,7 +368,7 @@ void ThinSi::ReadConfiguration(string Path){
         ConfigFile >> DataBuffer ;
         Phi = atof(DataBuffer.c_str()) ;
         Phi = Phi * deg;
-        cout << "Phi:  " << Phi / deg << endl;
+        G4cout << "Phi:  " << Phi / deg << G4endl;
       }
 
       else if (DataBuffer.compare(0, 2, "R=") == 0) {
@@ -376,7 +376,7 @@ void ThinSi::ReadConfiguration(string Path){
         ConfigFile >> DataBuffer ;
         R = atof(DataBuffer.c_str()) ;
         R = R * mm;
-        cout << "R:  " << R*mm << endl;
+        G4cout << "R:  " << R*mm << G4endl;
       }
 
 

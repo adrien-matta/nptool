@@ -153,7 +153,7 @@ void DUMMYDetector::ReadConfiguration(string Path)
 
                   //   Finding another telescope (safety), toggle out
                else if (DataBuffer.compare(0, 13, "DUMMYDetector") == 0) {
-                  cout << "WARNING: Another Detector is find before standard sequence of Token, Error may occured in Telecope definition" << endl ;
+                  G4cout << "WARNING: Another Detector is find before standard sequence of Token, Error may occured in Telecope definition" << G4endl ;
                   ReadingStatus = false ;
                }
                               
@@ -163,7 +163,7 @@ void DUMMYDetector::ReadConfiguration(string Path)
                   ConfigFile >> DataBuffer ;
                   Theta = atof(DataBuffer.c_str()) ;
                   Theta = Theta * deg;
-                  cout << "Theta:  " << Theta / deg << endl;
+                  G4cout << "Theta:  " << Theta / deg << G4endl;
                }
 
                else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
@@ -171,7 +171,7 @@ void DUMMYDetector::ReadConfiguration(string Path)
                   ConfigFile >> DataBuffer ;
                   Phi = atof(DataBuffer.c_str()) ;
                   Phi = Phi * deg;
-                  cout << "Phi:  " << Phi / deg << endl;
+                  G4cout << "Phi:  " << Phi / deg << G4endl;
                }
 
                else if (DataBuffer.compare(0, 2, "R=") == 0) {
@@ -179,7 +179,7 @@ void DUMMYDetector::ReadConfiguration(string Path)
                   ConfigFile >> DataBuffer ;
                   R = atof(DataBuffer.c_str()) ;
                   R = R * mm;
-                  cout << "R:  " << R/mm << endl;
+                  G4cout << "R:  " << R/mm << G4endl;
                }
                
                else if (DataBuffer.compare(0, 7, "Radius=") == 0) {
@@ -187,7 +187,7 @@ void DUMMYDetector::ReadConfiguration(string Path)
                   ConfigFile >> DataBuffer ;
                   Radius = atof(DataBuffer.c_str()) ;
                   Radius = Radius * mm;
-                  cout << "DUMMYDetector Radius:  " << Radius/mm << endl;
+                  G4cout << "DUMMYDetector Radius:  " << Radius/mm << G4endl;
                }
                
                else if (DataBuffer.compare(0, 10, "Thickness=") == 0) {
@@ -195,14 +195,14 @@ void DUMMYDetector::ReadConfiguration(string Path)
                   ConfigFile >> DataBuffer ;
                   Thickness = atof(DataBuffer.c_str()) ;
                   Thickness = Thickness * mm;
-                  cout << "DUMMYDetector Thickness:  " << Thickness/mm << endl;
+                  G4cout << "DUMMYDetector Thickness:  " << Thickness/mm << G4endl;
                }
                
                else if (DataBuffer.compare(0, 13, "Material=") == 0) {
                   check_Scintillator = true ;
                   ConfigFile >> DataBuffer ;
                   Scintillator = DataBuffer ;
-                  cout << "DUMMYDetector material type:  " << Scintillator << endl;
+                  G4cout << "DUMMYDetector material type:  " << Scintillator << G4endl;
                }
                
                        ///////////////////////////////////////////////////
@@ -231,7 +231,7 @@ void DUMMYDetector::ReadConfiguration(string Path)
                      check_Radius = false         ;
                      check_Scintillator = false   ;
                      ReadingStatus = false        ;   
-                     cout << "///"<< endl         ;            
+                     G4cout << "///"<< G4endl         ;            
                      }
                      
             }
@@ -276,9 +276,9 @@ void DUMMYDetector::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalV
            if(m_Scintillator[i] == "material1"  ) DUMMYDetectorMaterial = m_MaterialDUMMYDetector_material1    ;
       else if(m_Scintillator[i] == "material2"  ) DUMMYDetectorMaterial = m_MaterialDUMMYDetector_material2    ;
       else {   
-            G4cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl ;
-            G4cout << "WARNING: Material Not found, default material set : material1"  << endl ; 
-            G4cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl ;
+            G4cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << G4endl ;
+            G4cout << "WARNING: Material Not found, default material set : material1"  << G4endl ; 
+            G4cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << G4endl ;
             DUMMYDetectorMaterial = m_MaterialDUMMYDetector_material1;
          }
       

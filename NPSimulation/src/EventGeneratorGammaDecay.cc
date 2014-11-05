@@ -328,7 +328,7 @@ void EventGeneratorGammaDecay::PrepareCascade(){
   
   // Check that the total ratio is not over 100% (below is allowed)
   if(TotalRatio>1) {
-    G4cout << "Gamma Decay Error: Sum of branching ratio is over 100%" << endl;
+    G4cout << "Gamma Decay Error: Sum of branching ratio is over 100%" << G4endl;
     exit(1);
   }
   
@@ -358,7 +358,7 @@ void EventGeneratorGammaDecay::PrepareCascade(){
       m_NucleiName=="triton"   ||
       m_NucleiName=="3He"      ||
       m_NucleiName=="alpha"    ){
-    G4cout << "Gamma Decay Error: Gamma Decay not allowed for light particles" << endl;
+    G4cout << "Gamma Decay Error: Gamma Decay not allowed for light particles" << G4endl;
     exit(1);
   }
   

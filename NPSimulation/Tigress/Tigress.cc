@@ -220,7 +220,7 @@ void Tigress::ReadConfiguration(string Path){
         if ( DataBuffer == "CloverId=" ) {
           check_CloverId = true;
                     
-          if(VerboseLevel==1) cout << "CloverId: " ;
+          if(VerboseLevel==1) G4cout << "CloverId: " ;
           while(LineStream >> DataBuffer){
             CloverId.push_back(atoi(DataBuffer.c_str()));
             if(VerboseLevel==1) G4cout << atoi(DataBuffer.c_str()) << " ";
@@ -266,7 +266,7 @@ void Tigress::ReadConfiguration(string Path){
           LineStream >> DataBuffer;
           CloverId_Free = atoi(DataBuffer.c_str());
           if(VerboseLevel==1)
-            cout << "CloverId: " << atoi(DataBuffer.c_str()) << " " << endl ;
+            G4cout << "CloverId: " << atoi(DataBuffer.c_str()) << " " << G4endl ;
         }
         
         else if ( DataBuffer == "R=" ) {
@@ -274,7 +274,7 @@ void Tigress::ReadConfiguration(string Path){
           LineStream >> DataBuffer;
           R = atof(DataBuffer.c_str())*mm;
           if(VerboseLevel==1)
-            cout << "R: " << R/mm << " " << endl ;
+            G4cout << "R: " << R/mm << " " << G4endl ;
         }
         
         else if ( DataBuffer == "Theta=" ) {
@@ -282,7 +282,7 @@ void Tigress::ReadConfiguration(string Path){
           LineStream >> DataBuffer;
           Theta = atof(DataBuffer.c_str())*deg;
           if(VerboseLevel==1)
-            cout << "Theta: " << Theta/deg << " " << endl ;
+            G4cout << "Theta: " << Theta/deg << " " << G4endl ;
         }
         
         else if ( DataBuffer == "Phi=" ) {
@@ -290,7 +290,7 @@ void Tigress::ReadConfiguration(string Path){
           LineStream >> DataBuffer;
           Phi = atof(DataBuffer.c_str())*deg;
           if(VerboseLevel==1)
-            cout << "Phi: " << Phi/deg << " " << endl ;
+            G4cout << "Phi: " << Phi/deg << " " << G4endl ;
         }
         
         else if ( DataBuffer == "Beta=" ) {
@@ -298,15 +298,15 @@ void Tigress::ReadConfiguration(string Path){
           LineStream >> DataBuffer;
           BetaX = atof(DataBuffer.c_str())*deg;
           if(VerboseLevel==1)
-            cout << "BetaX: " << BetaX/deg << " " << endl ;
+            G4cout << "BetaX: " << BetaX/deg << " " << G4endl ;
           LineStream >> DataBuffer;
           BetaY = atof(DataBuffer.c_str())*deg;
           if(VerboseLevel==1)
-            cout << "BetaY: " << BetaY/deg << " " << endl ;
+            G4cout << "BetaY: " << BetaY/deg << " " << G4endl ;
           LineStream >> DataBuffer;
           BetaZ = atof(DataBuffer.c_str())*deg;
           if(VerboseLevel==1)
-            cout << "BetaZ: " << BetaZ/deg << " " << endl ;
+            G4cout << "BetaZ: " << BetaZ/deg << " " << G4endl ;
         }
         
         
@@ -354,9 +354,9 @@ void Tigress::ReadConfiguration(string Path){
           
           if (VerboseLevel==1) {
             if(m_RightFrame)
-              cout << "Right frame: yes" << endl;
+              G4cout << "Right frame: yes" << G4endl;
             else
-              cout << "Right frame: no" << endl;
+              G4cout << "Right frame: no" << G4endl;
 	  }
         }
         
@@ -368,9 +368,9 @@ void Tigress::ReadConfiguration(string Path){
           
           if (VerboseLevel==1) {
             if(m_LeftFrame)
-              cout << "Left frame: yes" << endl;
+              G4cout << "Left frame: yes" << G4endl;
             else
-              cout << "Left frame: no" << endl;
+              G4cout << "Left frame: no" << G4endl;
 	  }
         }
         

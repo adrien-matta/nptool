@@ -521,7 +521,7 @@ void Hyde2TrackerTrapezoid1::ReadConfiguration(string Path)
             Az = Az * mm ;
 
             A = G4ThreeVector(Ax, Ay, Az);
-            cout << "X1 Y1 corner position : " << A << endl;
+            G4cout << "X1 Y1 corner position : " << A << G4endl;
          }
         
          else if (DataBuffer.compare(0, 8, "X128_Y1=") == 0) {
@@ -537,7 +537,7 @@ void Hyde2TrackerTrapezoid1::ReadConfiguration(string Path)
             Bz = Bz * mm ;
 
             B = G4ThreeVector(Bx, By, Bz);
-            cout << "X128 Y1 corner position : " << B << endl;
+            G4cout << "X128 Y1 corner position : " << B << G4endl;
          }
          
          else if (DataBuffer.compare(0, 8, "X1_Y128=") == 0) {
@@ -553,7 +553,7 @@ void Hyde2TrackerTrapezoid1::ReadConfiguration(string Path)
             Cz = Cz * mm ;
 
             C = G4ThreeVector(Cx, Cy, Cz);
-            cout << "X1 Y128 corner position : " << C << endl;
+            G4cout << "X1 Y128 corner position : " << C << G4endl;
          }
         
          else if (DataBuffer.compare(0, 10, "X128_Y128=") == 0) {
@@ -569,7 +569,7 @@ void Hyde2TrackerTrapezoid1::ReadConfiguration(string Path)
             Dz = Dz * mm ;
 
             D = G4ThreeVector(Dx, Dy, Dz);
-            cout << "X128 Y128 corner position : " << D << endl;
+            G4cout << "X128 Y128 corner position : " << D << G4endl;
          }
          
 
@@ -579,7 +579,7 @@ void Hyde2TrackerTrapezoid1::ReadConfiguration(string Path)
             ConfigFile >> DataBuffer ;
             Theta = atof(DataBuffer.c_str()) ;
             Theta = Theta * deg;
-            cout << "Theta:  " << Theta / deg << endl;
+            G4cout << "Theta:  " << Theta / deg << G4endl;
          }
 
          else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
@@ -587,7 +587,7 @@ void Hyde2TrackerTrapezoid1::ReadConfiguration(string Path)
             ConfigFile >> DataBuffer ;
             Phi = atof(DataBuffer.c_str()) ;
             Phi = Phi * deg;
-            cout << "Phi:  " << Phi / deg << endl;
+            G4cout << "Phi:  " << Phi / deg << G4endl;
          }
 
          else if (DataBuffer.compare(0, 2, "R=") == 0) {
@@ -595,7 +595,7 @@ void Hyde2TrackerTrapezoid1::ReadConfiguration(string Path)
             ConfigFile >> DataBuffer ;
             R = atof(DataBuffer.c_str()) ;
             R = R * mm;
-            cout << "R:  " << R / mm << endl;
+            G4cout << "R:  " << R / mm << G4endl;
          }
 
          else if (DataBuffer.compare(0, 5, "BETA=") == 0) {
@@ -988,7 +988,7 @@ void Hyde2TrackerTrapezoid1::ReadSensitive(const G4Event* event)
 
       if (sizeE != sizeT || sizeT != sizeX || sizeX != sizeY) {
          G4cout << "No match size Si Event Map: sE:"
-         << sizeE << " sT:" << sizeT << " sX:" << sizeX << " sY:" << sizeY << endl ;
+         << sizeE << " sT:" << sizeT << " sX:" << sizeX << " sY:" << sizeY << G4endl ;
          return;
       }
 

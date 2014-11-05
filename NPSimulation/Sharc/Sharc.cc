@@ -138,7 +138,7 @@ void Sharc::ReadConfiguration(string Path){
     int VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
     
     getline(ConfigFile, LineBuffer);
-    // cout << LineBuffer << endl;
+    // G4cout << LineBuffer << G4endl;
     if (LineBuffer.compare(0, 5, "Sharc") == 0)
       ReadingStatus = true;
     
@@ -174,28 +174,28 @@ void Sharc::ReadConfiguration(string Path){
           check_Z = true;
           ConfigFile >> DataBuffer ;
           Z= atof(DataBuffer.c_str())*mm;
-          if(VerboseLevel==1) cout << "  Z= " << Z/mm << "mm" << endl;
+          if(VerboseLevel==1) G4cout << "  Z= " << Z/mm << "mm" << G4endl;
         }
         
         else if (DataBuffer == "R=") {
           check_R = true;
           ConfigFile >> DataBuffer ;
           R= atof(DataBuffer.c_str())*mm;
-          if(VerboseLevel==1) cout << "  R= " << R/mm << "mm" << endl;
+          if(VerboseLevel==1) G4cout << "  R= " << R/mm << "mm" << G4endl;
         }
         
         else if (DataBuffer == "Phi=") {
           check_Phi = true;
           ConfigFile >> DataBuffer ;
           Phi= atof(DataBuffer.c_str())*deg;
-          if(VerboseLevel==1) cout << "  Phi= " << Phi/deg << "deg" << endl;
+          if(VerboseLevel==1) G4cout << "  Phi= " << Phi/deg << "deg" << G4endl;
         }
         
         else if (DataBuffer == "ThicknessDector=") {
           check_Thickness = true;
           ConfigFile >> DataBuffer ;
           Thickness= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessDetector= " << Thickness/um << "um" << endl;
+          if(VerboseLevel==1) G4cout << "  ThicknessDetector= " << Thickness/um << "um" << G4endl;
         }
         
         ///////////////////////////////////////////////////
@@ -233,63 +233,63 @@ void Sharc::ReadConfiguration(string Path){
           check_Z = true;
           ConfigFile >> DataBuffer ;
           Z= atof(DataBuffer.c_str())*mm;
-          if(VerboseLevel==1) cout << "  Z= " << Z/mm << "mm" << endl;
+          if(VerboseLevel==1) G4cout << "  Z= " << Z/mm << "mm" << G4endl;
         }
         
         else if (DataBuffer == "ThicknessDector1=") {
           check_Thickness1 = true;
           ConfigFile >> DataBuffer ;
           Thickness1= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessDetector1= " << Thickness1/um << "um" << endl;
+          if(VerboseLevel==1) G4cout << "  ThicknessDetector1= " << Thickness1/um << "um" << G4endl;
         }
         
         else if (DataBuffer == "ThicknessDector2=") {
           check_Thickness2 = true;
           ConfigFile >> DataBuffer ;
           Thickness2= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessDetector2= " << Thickness2/um << "um" << endl;
+          if(VerboseLevel==1) G4cout << "  ThicknessDetector2= " << Thickness2/um << "um" << G4endl;
         }
         
         else if (DataBuffer == "ThicknessDector3=") {
           check_Thickness3 = true;
           ConfigFile >> DataBuffer ;
           Thickness3= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessDetector3= " << Thickness3/um << "um" << endl;
+          if(VerboseLevel==1) G4cout << "  ThicknessDetector3= " << Thickness3/um << "um" << G4endl;
         }
         
         else if (DataBuffer == "ThicknessDector4=") {
           check_Thickness4 = true;
           ConfigFile >> DataBuffer ;
           Thickness4= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessDetector4= " << Thickness4/um << "um" << endl;
+          if(VerboseLevel==1) G4cout << "  ThicknessDetector4= " << Thickness4/um << "um" << G4endl;
         }
         
         else if (DataBuffer == "ThicknessPAD1=") {
           check_PAD1 = true;
           ConfigFile >> DataBuffer ;
           ThicknessPAD1= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessPAD1= " << ThicknessPAD1<< "um"  << endl;
+          if(VerboseLevel==1) G4cout << "  ThicknessPAD1= " << ThicknessPAD1<< "um"  << G4endl;
         }
         
         else if (DataBuffer == "ThicknessPAD2=") {
           check_PAD2 = true;
           ConfigFile >> DataBuffer ;
           ThicknessPAD2= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessPAD2= " << ThicknessPAD2<< "um"  << endl;
+          if(VerboseLevel==1) G4cout << "  ThicknessPAD2= " << ThicknessPAD2<< "um"  << G4endl;
         }
         
         else if (DataBuffer == "ThicknessPAD3=") {
           check_PAD3 = true;
           ConfigFile >> DataBuffer ;
           ThicknessPAD3= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessPAD3= " << ThicknessPAD3<< "um"  << endl;
+          if(VerboseLevel==1) G4cout << "  ThicknessPAD3= " << ThicknessPAD3<< "um"  << G4endl;
         }
         
         else if (DataBuffer == "ThicknessPAD4=") {
           check_PAD4 = true;
           ConfigFile >> DataBuffer ;
           ThicknessPAD4= atof(DataBuffer.c_str())*um;
-          if(VerboseLevel==1) cout << "  ThicknessPAD4= " << ThicknessPAD4<< "um"  << endl;
+          if(VerboseLevel==1) G4cout << "  ThicknessPAD4= " << ThicknessPAD4<< "um"  << G4endl;
         }
         
         ///////////////////////////////////////////////////
