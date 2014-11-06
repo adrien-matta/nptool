@@ -42,11 +42,10 @@
 #include "TTiaraHyballData.h"
 
 using namespace std;
-using namespace CLHEP;
+using namespace CLHEP;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-namespace TIARA
-{
+namespace TIARA{
   // Energy and time Resolution
   const G4double ResoTime    = 0      ;
   const G4double ResoEnergy  = 0.042*MeV ;// = zzkeV of Resolution   //   Unit is MeV/2.35

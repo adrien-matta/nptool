@@ -289,7 +289,7 @@ void Tiara::InitializeScorers(){
   m_InnerBarrelScorer = new G4MultiFunctionalDetector("Tiara_InnerBarrelScorer");
   m_OuterBarrelScorer = new G4MultiFunctionalDetector("Tiara_OuterBarrelScorer");
   m_HyballScorer      = new G4MultiFunctionalDetector("Tiara_HyballScorer"); 
- 
+
   G4VPrimitiveScorer* InnerBarrel = new SILICONSCORERS::PS_Silicon_Resistive("InnerBarrel",
       INNERBARREL_ActiveWafer_Length,
       INNERBARREL_ActiveWafer_Width,
@@ -304,16 +304,16 @@ void Tiara::InitializeScorers(){
       OUTERBARREL_NumberOfStrip);
 
   m_OuterBarrelScorer->RegisterPrimitive(OuterBarrel);
-  
+
   G4VPrimitiveScorer* Hyball= new SILICONSCORERS::PS_Silicon_Annular("Hyball", 
       HYBALL_ActiveWafer_InnerRadius, 
       HYBALL_ActiveWafer_OuterRadius, 
       -0.5*HYBALL_ActiveWafer_Angle,HYBALL_ActiveWafer_Angle, 
       HYBALL_NumberOfAnnularStrip,
       HYBALL_NumberOfRadialStrip);
-  
+
   m_HyballScorer->RegisterPrimitive(Hyball);
-  
+
   //   Add All Scorer to the Global Scorer Manager 
   G4SDManager::GetSDMpointer()->AddNewDetector(m_InnerBarrelScorer) ;
   G4SDManager::GetSDMpointer()->AddNewDetector(m_OuterBarrelScorer) ;  
@@ -444,13 +444,13 @@ void Tiara::ConstructInnerBarrel(G4LogicalVolume* world){
   // Last argument is the detector number, used in the scorer to get the
   // revelant information
   new G4PVPlacement(new G4RotationMatrix(0,0,0),
-        G4ThreeVector(0,0,0),
-        logicPCB,"Tiara_Barrel_PCB",logicBarrelDetector,
-        false,0);
+      G4ThreeVector(0,0,0),
+      logicPCB,"Tiara_Barrel_PCB",logicBarrelDetector,
+      false,0);
 
   G4ThreeVector WaferPosition(0,
-     0.5*(INNERBARREL_PCB_Thickness-INNERBARREL_PCB_WaferDepth+INNERBARREL_ActiveWafer_Thickness)
-    ,0); 
+      0.5*(INNERBARREL_PCB_Thickness+INNERBARREL_InertWafer_Thickness)-INNERBARREL_PCB_WaferDepth
+      ,0); 
 
   G4ThreeVector DeadLayerPositionF = WaferPosition + G4ThreeVector(0,-INNERBARREL_ActiveWafer_Thickness*0.5-INNERBARREL_ActiveWafer_DeadLayerThickness*0.5,0);
 
@@ -459,31 +459,31 @@ void Tiara::ConstructInnerBarrel(G4LogicalVolume* world){
 
 
   new G4PVPlacement(new G4RotationMatrix(0,0,0),
-        WaferPosition,
-        logicActiveWafer,"Barrel_Wafer",
-        logicBarrelDetector,false,0);
+      WaferPosition,
+      logicActiveWafer,"Barrel_Wafer",
+      logicBarrelDetector,false,0);
 
   new G4PVPlacement(new G4RotationMatrix(0,0,0),
-        DeadLayerPositionF,
-        logicDeadLayer,"Barrel_WaferDeadLayer",
-        logicBarrelDetector,false,0);
+      DeadLayerPositionF,
+      logicDeadLayer,"Barrel_WaferDeadLayerFront",
+      logicBarrelDetector,false,0);
 
   new G4PVPlacement(new G4RotationMatrix(0,0,0),
-        DeadLayerPositionB,
-        logicDeadLayer,"Barrel_WaferDeadLayer",
-        logicBarrelDetector,false,0);
+      DeadLayerPositionB,
+      logicDeadLayer,"Barrel_WaferDeadLayerBack",
+      logicBarrelDetector,false,0);
 
 
   new G4PVPlacement(new G4RotationMatrix(0,0,0),
-        WaferPosition,
-        logicInertWafer,"Barrel_Wafer_GuardRing",
-        logicBarrelDetector,false,0);
+      WaferPosition,
+      logicInertWafer,"Barrel_Wafer_GuardRing",
+      logicBarrelDetector,false,0);
 
   // The Distance from target is given by half the lenght of a detector
   // plus the length of a detector inclined by 45 deg.
   G4double DistanceFromTarget = INNERBARREL_PCB_Width*(0.5+sin(45*deg)) ; 
   for( unsigned int i = 0; i < 8; i ++){
-   // The following build the barrel, with detector one at the top
+    // The following build the barrel, with detector one at the top
     // and going clowise looking upstrea
 
     // Detector are rotate by 45deg with each other 
@@ -496,7 +496,7 @@ void Tiara::ConstructInnerBarrel(G4LogicalVolume* world){
 
     // Place the Master volume with its two daugther volume at the final place 
     new G4PVPlacement(G4Transform3D(*DetectorRotation,DetectorPosition),
-        logicBarrelDetector,"Tiara_Barrel_Detector",
+        logicBarrelDetector,"Tiara_InnerBarrel_Detector",
         world,false,i+1);
   }
 }
@@ -603,32 +603,33 @@ void Tiara::ConstructOuterBarrel(G4LogicalVolume* world){
   // plus the length of a detector inclined by 45 deg.
   G4double DistanceFromTarget = OUTERBARREL_PCB_Width*(0.5+sin(45*deg)) ; 
 
+  // Place the sub volumes in the master volume
+  // Last argument is the detector number, used in the scorer to get the
+  // revelant information
+  new G4PVPlacement(new G4RotationMatrix(0,0,0),
+      G4ThreeVector(0,0,0),
+      logicPCB,"Tiara_OuterBarrel_PCB",logicBarrelDetector,
+      false,0);
+
+
+  G4ThreeVector WaferPosition(0,
+      0.5*(OUTERBARREL_PCB_Thickness+OUTERBARREL_ActiveWafer_Thickness)-OUTERBARREL_PCB_WaferDepth
+      ,0); 
+
+  new G4PVPlacement(new G4RotationMatrix(0,0,0),
+      WaferPosition,
+      logicActiveWafer,"OuterBarrel_Wafer",
+      logicBarrelDetector,false,0);
+
+  new G4PVPlacement(new G4RotationMatrix(0,0,0),
+      WaferPosition,
+      logicInertWafer,"OuterBarrel_Wafer_GuardRing",
+      logicBarrelDetector,false,0);
+
+
+  // The following build the barrel, with detector one at the top
+  // and going clowise looking upstrea
   for( unsigned int i = 0; i < 8; i ++){
-    // Place the sub volumes in the master volume
-    // Last argument is the detector number, used in the scorer to get the
-    // revelant information
-    new G4PVPlacement(new G4RotationMatrix(0,0,0),
-        G4ThreeVector(0,0,0),
-        logicPCB,"Tiara_Barrel_PCB",logicBarrelDetector,
-        false,i+1);
-
-
-    G4ThreeVector WaferPosition(0,0.5*(OUTERBARREL_PCB_Thickness-OUTERBARREL_PCB_WaferDepth+OUTERBARREL_ActiveWafer_Thickness),0); 
-
-    new G4PVPlacement(new G4RotationMatrix(0,0,0),
-        WaferPosition,
-        logicActiveWafer,"Barrel_Wafer",
-        logicBarrelDetector,false,i+1);
-
-    new G4PVPlacement(new G4RotationMatrix(0,0,0),
-        WaferPosition,
-        logicInertWafer,"Barrel_Wafer_GuardRing",
-        logicBarrelDetector,false,i+1);
-
-
-    // The following build the barrel, with detector one at the top
-    // and going clowise looking upstrea
-
     // Detector are rotate by 45deg with each other 
     G4RotationMatrix* DetectorRotation = 
       new G4RotationMatrix(0*deg,0*deg,i*45*deg);
@@ -637,9 +638,9 @@ void Tiara::ConstructOuterBarrel(G4LogicalVolume* world){
     G4ThreeVector DetectorPosition(0,DistanceFromTarget,0);
     DetectorPosition.rotate(i*45*deg,G4ThreeVector(0,0,-1));   
 
-    // Place the Master volume with its two daugther volume at the final place 
+    // Place the Master volume with its daugthers at the final place 
     new G4PVPlacement(G4Transform3D(*DetectorRotation,DetectorPosition),
-        logicBarrelDetector,"Tiara_Barrel_Detector",
+        logicBarrelDetector,"Tiara_OuterBarrel_Detector",
         world,false,i+1);
   }
 
@@ -687,7 +688,7 @@ void Tiara::ConstructHyball(G4LogicalVolume* world){
   G4Tubs* ActiveWafer = 
     new G4Tubs("HyballActiveWafer",HYBALL_ActiveWafer_InnerRadius,
         HYBALL_ActiveWafer_OuterRadius,0.5*HYBALL_ActiveWafer_Thickness,
-          -0.5*HYBALL_ActiveWafer_Angle,HYBALL_ActiveWafer_Angle);
+        -0.5*HYBALL_ActiveWafer_Angle,HYBALL_ActiveWafer_Angle);
 
   G4Tubs* ActiveWaferShape = 
     new G4Tubs("HyballActiveWaferShape",HYBALL_ActiveWafer_InnerRadius,
