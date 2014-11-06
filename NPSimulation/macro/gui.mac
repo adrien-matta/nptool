@@ -34,6 +34,7 @@
 /gui/addIcon "One event" user_icon "{gui_beamon}" icons/play.png
 /gui/addIcon "Activate tracking verbose" user_icon "{gui_tracking}" icons/shoeprints.png
 /gui/addIcon "Only borring emptyness" user_icon "{gui_empty}" icons/empty.png 
+/gui/addIcon "View Browser" user_icon "{gui_browser}" icons/browser.png
 /gui/addIcon "Home" user_icon     "{gui_home}" icons/videocameraclassic.png
 /gui/addIcon "Front" user_icon    "{gui_front}" icons/arrow-up.png
 /gui/addIcon "Back" user_icon     "{gui_back}" icons/arrow-down.png

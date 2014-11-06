@@ -1,6 +1,7 @@
 # Aliases are needed to avoid warning
 /control/alias gui_beamon "/run/beamOn 1"
-/control/alias gui_vis "/control/execute vis.mac "
+/control/alias gui_vis "/control/execute macro/vis.mac"
+/control/alias gui_browser "/control/execute macro/browser.mac"
 /control/alias gui_tracking "/tracking/verbose 1"
 /control/alias gui_surface "/vis/viewer/set/style surface"
 /control/alias gui_wireframe "/vis/viewer/set/style wireframe"
