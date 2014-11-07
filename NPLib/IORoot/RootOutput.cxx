@@ -29,9 +29,8 @@
 using namespace std;
 
 RootOutput* RootOutput::instance = 0;
-
-RootOutput* RootOutput::getInstance(TString fileNameBase, TString treeNameBase)
-{
+////////////////////////////////////////////////////////////////////////////////
+RootOutput* RootOutput::getInstance(TString fileNameBase, TString treeNameBase){
    // A new instance of RootOutput is created if it does not exist:
    if (instance == 0) {
       instance = new RootOutput(fileNameBase, treeNameBase);
@@ -41,16 +40,15 @@ RootOutput* RootOutput::getInstance(TString fileNameBase, TString treeNameBase)
    return instance;
 }
 
-
-void RootOutput::Destroy()
-{ 
+////////////////////////////////////////////////////////////////////////////////
+void RootOutput::Destroy(){ 
    if (instance != 0) {
       delete instance;
       instance = 0;
    }
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 RootOutput::RootOutput(TString fileNameBase, TString treeNameBase)
 {
    TDirectory* currentPath= gDirectory;
@@ -82,7 +80,7 @@ RootOutput::RootOutput(TString fileNameBase, TString treeNameBase)
 }
 
 
-
+////////////////////////////////////////////////////////////////////////////////
 void RootOutput::InitAsciiFiles()
 {
    // get NPOptionManager pointer
@@ -173,6 +171,7 @@ RootOutput::~RootOutput()
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
 TFile* RootOutput::InitFile(TString fileNameBase){
   
   if(NPOptionManager::getInstance()->GetPROOF()){

@@ -16,4 +16,5 @@
 /control/alias gui_empty "/"
 /control/alias gui_exit "exit"
 /control/alias gui_nptool "./scripts/url.sh"
-
+/control/alias gui_update "/control/execute macro/reload.mac"
+/control/alias gui_open "/det/open"

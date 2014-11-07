@@ -45,47 +45,51 @@
 // G4 headers
 #include "G4LogicalVolume.hh"
 #include "G4Event.hh"
-
+#include "G4MultiFunctionalDetector.hh"
 // NPLib header
 #include "TInteractionCoordinates.h"
 
 using namespace std;
-using namespace CLHEP;
+using namespace CLHEP;
 
 
-class VDetector
-{
-public:
-   //  Default Constructor and destructor
-   VDetector()   ;
-   virtual ~VDetector()   ;
+class VDetector{
+  public:
+    //  Default Constructor and destructor
+    VDetector()   ;
+    virtual ~VDetector()   ;
 
-   // Read stream at Configfile to pick-up parameters of detector (Position,...)
-   // Called in DetectorConstruction::ReadDetectorConfiguration Method
-   virtual void ReadConfiguration(string) = 0;
+    // Read stream at Configfile to pick-up parameters of detector (Position,...)
+    // Called in DetectorConstruction::ReadDetectorConfiguration Method
+    virtual void ReadConfiguration(string) = 0;
 
-   // Construct detector and inialise sensitive part.
-   // Called After DetecorConstruction::AddDetector Method
-   virtual void ConstructDetector(G4LogicalVolume*) = 0;
+    // Construct detector and inialise sensitive part.
+    // Called After DetecorConstruction::AddDetector Method
+    virtual void ConstructDetector(G4LogicalVolume*) = 0;
 
-   // Read sensitive part and fill the Root tree.
-   // Called at in the EventAction::EndOfEventAvtion
-   virtual void ReadSensitive(const G4Event*) = 0;
+    // Read sensitive part and fill the Root tree.
+    // Called at in the EventAction::EndOfEventAvtion
+    virtual void ReadSensitive(const G4Event*) = 0;
 
-   // Add Detector branch to the EventTree.
-   // Called After DetecorConstruction::AddDetector Method
-   virtual void InitializeRootOutput() ;
-   
-   // Add Detector branch to the EventTree.
-   // Called After DetecorConstruction::AddDetector Method
-   virtual void InitializeScorers() {};
+    // Add Detector branch to the EventTree.
+    // Called After DetecorConstruction::AddDetector Method
+    virtual void InitializeRootOutput() ;
 
-public:
-   TInteractionCoordinates*     GetInterCoordPointer()  {return ms_InterCoord;};
+    // Add Detector branch to the EventTree.
+    // Called After DetecorConstruction::AddDetector Method
+    virtual void InitializeScorers() {};
 
-protected:
-   // Class to store the interaction data (i.e. X,Y,Z,theta,phi)
-   static TInteractionCoordinates*      ms_InterCoord;
+    // Check if the scorer already exist, if yes, return it
+    // else create one and return it
+    // used for updating geometry
+    static G4MultiFunctionalDetector* CheckScorer(string ScorerName, bool& exist);
+
+  public:
+    TInteractionCoordinates*     GetInterCoordPointer()  {return ms_InterCoord;};
+
+  protected:
+    // Class to store the interaction data (i.e. X,Y,Z,theta,phi)
+    static TInteractionCoordinates*      ms_InterCoord;
 };
 
 #endif

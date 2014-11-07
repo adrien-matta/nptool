@@ -50,6 +50,9 @@ void HeliosModule::InitializeRootOutput()
    // if the branch does not exist yet, create it
    if (!pTree->GetBranch("HELIOS"))
       pTree->Branch("HELIOS", "THeliosData", &ms_Event);
+
+  pTree->SetBranchAddress("HELIOS", &ms_Event);
+
 }
 
 

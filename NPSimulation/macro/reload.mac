@@ -1,0 +1,6 @@
+/det/update
+/vis/drawVolume
+/vis/viewer/zoom 1.
+/vis/scene/add/trajectories smooth 
+/vis/scene/endOfEventAction accumulate
+/vis/viewer/set/autoRefresh true

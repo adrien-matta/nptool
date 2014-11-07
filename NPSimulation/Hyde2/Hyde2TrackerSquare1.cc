@@ -54,7 +54,7 @@
 #include "ObsoleteGeneralScorers.hh"
 #include "Hyde2Scorers.hh"
 #include "RootOutput.h"
-
+#include "VDetector.hh"
 // CLHEP
 #include "CLHEP/Random/RandGauss.h"
 
@@ -1192,8 +1192,16 @@ void Hyde2TrackerSquare1::ReadSensitive(const G4Event* event)
 
 void Hyde2TrackerSquare1::InitializeScorers()
 {
+  bool already_exist = false; 
+  m_FirstStageScorer = VDetector::CheckScorer("FirstStageScorerHYD2Square1",already_exist);
+  m_SecondStageScorer = VDetector::CheckScorer("SecondStageScorerHYD2Square1",already_exist);
+  m_ThirdStageScorer = VDetector::CheckScorer("ThirdStageScorerHYD2Square1",already_exist);
+  m_FourthStageScorer = VDetector::CheckScorer("FourthStageScorerHYD2Square1",already_exist);
+  m_FifthStageScorer = VDetector::CheckScorer("FifthStageScorerHYD2Square1",already_exist);
+  m_SixthStageScorer = VDetector::CheckScorer("SixthStageScorerHYD2Square1",already_exist);
+  if(already_exist) return;
+
    // First stage Associate Scorer
-   m_FirstStageScorer = new G4MultiFunctionalDetector("FirstStageScorerHYD2Square1");
    G4VPrimitiveScorer* DetNbr                           = new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber", "HYD2Square1", 0);
    G4VPrimitiveScorer* TOF                              = new OBSOLETEGENERALSCORERS::PSTOF("StripTime","HYD2Square1", 0);
    G4VPrimitiveScorer* InteractionCoordinatesX          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","HYD2Square1", 0);
@@ -1218,27 +1226,22 @@ void Hyde2TrackerSquare1::InitializeScorers()
    m_FirstStageScorer->RegisterPrimitive(InteractionCoordinatesAnglePhi);
 
    // Second stage Associate Scorer
-   m_SecondStageScorer = new G4MultiFunctionalDetector("SecondStageScorerHYD2Square1");
    G4VPrimitiveScorer* SecondStageEnergy = new HYD2ScorerSecondStageEnergy("SecondStageEnergy", "HYD2Square1", 0);
    m_SecondStageScorer->RegisterPrimitive(SecondStageEnergy);
 
    //  Third stage Associate Scorer 
-   m_ThirdStageScorer = new G4MultiFunctionalDetector("ThirdStageScorerHYD2Square1");
    G4VPrimitiveScorer* ThirdStageEnergy = new HYD2ScorerThirdStageEnergy("ThirdStageEnergy", "HYD2Square1", 0);
    m_ThirdStageScorer->RegisterPrimitive(ThirdStageEnergy);
 
    //  Fourth stage Associate Scorer 
-   m_FourthStageScorer = new G4MultiFunctionalDetector("FourthStageScorerHYD2Square1");
    G4VPrimitiveScorer* FourthStageEnergy = new HYD2ScorerFourthStageEnergy("FourthStageEnergy", "HYD2Square1", 0);
    m_FourthStageScorer->RegisterPrimitive(FourthStageEnergy);
 
    //  Fifth stage Associate Scorer 
-   m_FifthStageScorer = new G4MultiFunctionalDetector("FifthStageScorerHYD2Square1");
    G4VPrimitiveScorer* FifthStageEnergy = new HYD2ScorerFifthStageEnergy("FifthStageEnergy", "HYD2Square1", 0);
    m_FifthStageScorer->RegisterPrimitive(FifthStageEnergy);
 
    //  Sixth stage Associate Scorer 
-   m_SixthStageScorer = new G4MultiFunctionalDetector("SixthStageScorerHYD2Square1");
    G4VPrimitiveScorer* SixthStageEnergy = new HYD2ScorerSixthStageEnergy("SixthStageEnergy", "HYD2Square1", 0);
    m_SixthStageScorer->RegisterPrimitive(SixthStageEnergy);
 

@@ -78,6 +78,9 @@ Tiara::Tiara(){
   m_boolChamber = false;
   m_boolInner = false;
   m_boolOuter = false;
+  m_InnerBarrelScorer = 0 ;
+  m_OuterBarrelScorer = 0 ; 
+  m_HyballScorer = 0 ;     
 
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -285,10 +288,14 @@ void Tiara::ReadSensitive(const G4Event* event){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Tiara::InitializeScorers(){
+  //Look for previous definition of the scorer (geometry reload)
+  bool already_exist = false;
+  m_InnerBarrelScorer = CheckScorer("Tiara_InnerBarrelScorer",already_exist);
+  m_OuterBarrelScorer = CheckScorer("Tiara_OuterBarrelScorer",already_exist);
+  m_HyballScorer = CheckScorer("Tiara_HyballScorer",already_exist);
 
-  m_InnerBarrelScorer = new G4MultiFunctionalDetector("Tiara_InnerBarrelScorer");
-  m_OuterBarrelScorer = new G4MultiFunctionalDetector("Tiara_OuterBarrelScorer");
-  m_HyballScorer      = new G4MultiFunctionalDetector("Tiara_HyballScorer"); 
+  // if the scorer were created previously nothing else need to be made
+  if(already_exist) return;
 
   G4VPrimitiveScorer* InnerBarrel = new SILICONSCORERS::PS_Silicon_Resistive("InnerBarrel",
       INNERBARREL_ActiveWafer_Length,
@@ -326,6 +333,13 @@ void Tiara::InitializeRootOutput(){
   TTree *pTree = pAnalysis->GetTree();   
   pTree->Branch("TiaraBarrel", "TTiaraBarrelData", &m_EventBarrel) ;
   pTree->Branch("TiaraHyball", "TTiaraHyballData", &m_EventHyball) ;
+
+  // This insure that the object are correctly bind in case of 
+  // a redifinition of the geometry in the simulation
+  pTree->SetBranchAddress("TiaraBarrel", &m_EventBarrel) ;
+  pTree->SetBranchAddress("TiaraHyball", &m_EventHyball) ;
+
+
 }
 
 
@@ -813,10 +827,8 @@ void Tiara::ConstructChamber(G4LogicalVolume* world){
 
   // Visual Attribute
   G4VisAttributes* ChamberVisAtt
-    = new G4VisAttributes(G4Colour(0.0,0.4,0.5));
+    = new G4VisAttributes(G4Colour(0.0,0.4,0.5,0.2));
 
-  ChamberVisAtt->SetForceWireframe(true);
-  ChamberVisAtt->SetForceAuxEdgeVisible (true);
   logicTiaraChamber->SetVisAttributes(ChamberVisAtt);
 
   // Place the whole chamber

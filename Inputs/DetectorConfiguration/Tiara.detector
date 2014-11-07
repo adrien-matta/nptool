@@ -33,11 +33,11 @@ Tiara
     Z= -147
     R= 0
     Phi= 180
-  TiaraHyballWedge
+  %TiaraHyballWedge
     Z= -147
     R= 0
     Phi= 240
-  TiaraHyballWedge
+  %TiaraHyballWedge
     Z= -147
     R= 0
     Phi= 300

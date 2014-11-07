@@ -50,6 +50,9 @@ void ParisModule::InitializeRootOutput()
    // if the branch does not exist yet, create it
    if (!pTree->GetBranch("PARIS"))
       pTree->Branch("PARIS", "TParisData", &ms_Event);
+
+  pTree->SetBranchAddress("PARIS", &ms_Event);
+
 }
 
 

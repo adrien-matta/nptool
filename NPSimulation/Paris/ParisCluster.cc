@@ -49,7 +49,7 @@
 #include "ObsoleteGeneralScorers.hh"
 #include "MaterialManager.hh"
 #include "RootOutput.h"
-
+#include "VDetector.hh"
 // CLHEP
 #include "CLHEP/Random/RandGauss.h"
 
@@ -63,6 +63,8 @@ using namespace PARISCLUSTER;
 ParisCluster::ParisCluster()
 {
    ms_InterCoord = 0;
+   m_LaBr3StageScorer=0;
+   m_CsIStageScorer=0;
 }
 
 
@@ -1134,9 +1136,15 @@ void ParisCluster::ReadSensitive(const G4Event* event)
 
 void ParisCluster::InitializeScorers()
 {
+   bool already_exist = false; 
+   
    // LaBr3 Associate Scorer
-   m_LaBr3StageScorer = new G4MultiFunctionalDetector("LaBr3StageScorerParisCluster");
-   /**/
+   m_LaBr3StageScorer = VDetector::CheckScorer("LaBr3StageScorerParisCluster",already_exist);
+   m_CsIStageScorer = VDetector::CheckScorer("CsIStageScorerParisCluster",already_exist);
+   
+   if(already_exist) return;
+
+    /**/
    //   G4VPrimitiveScorer* DetNbr                           = new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber", "ParisCluster", 0);
    G4VPrimitiveScorer* DetNbr                           = new PARISScorerLaBr3StageDetectorNumber("DetectorNumber", "ParisCluster", 0);
    //   G4VPrimitiveScorer* TOF                              = new OBSOLETEGENERALSCORERS::PSTOF("StripTime","ParisCluster", 0);
@@ -1171,8 +1179,7 @@ void ParisCluster::InitializeScorers()
    /**/
 
    // Second stage Associate Scorer
-   m_CsIStageScorer = new G4MultiFunctionalDetector("CsIStageScorerParisCluster");
-   /**/
+      /**/
    G4VPrimitiveScorer* CsIDetNbr                        = new PARISScorerCsIStageDetectorNumber("CsIDetectorNumber", "ParisCluster", 0);
    G4VPrimitiveScorer* CsICryNbr                        = new PARISScorerCsIStageCrystalNumber("CsICrystalNumber", "ParisCluster", 0);
    G4VPrimitiveScorer* CsIStageEnergy                   = new PARISScorerCsIStageEnergy("CsIStageEnergy", "ParisCluster", 0);

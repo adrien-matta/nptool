@@ -459,6 +459,7 @@ void W1::InitializeRootOutput()
    RootOutput *pAnalysis = RootOutput::getInstance();
    TTree *pTree = pAnalysis->GetTree();
    pTree->Branch("W1", "TW1Data", &m_Event);
+   pTree->SetBranchAddress("W1", &m_Event);
 }
 
 
@@ -708,8 +709,11 @@ void W1::InitializeMaterials(){
 
 
 void W1::InitializeScorers(){
+  bool already_exist = false;
    // Associate Scorer
-   m_Scorer = new G4MultiFunctionalDetector("ScorerW1");
+   m_Scorer = CheckScorer("ScorerW1",already_exist);
+   if(already_exist) return;
+
    G4VPrimitiveScorer* DetNbr                           = new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber", "W1Square", 0);
    G4VPrimitiveScorer* Energy                           = new OBSOLETEGENERALSCORERS::PSEnergy("StripEnergy", "W1Square", 0);
    G4VPrimitiveScorer* TOF                              = new OBSOLETEGENERALSCORERS::PSTOF("StripTime", "W1Square", 0);

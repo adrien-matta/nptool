@@ -50,6 +50,9 @@ void ShieldModule::InitializeRootOutput()
    // if the branch does not exist yet, create it
    if (!pTree->GetBranch("SHIELD"))
       pTree->Branch("SHIELD", "TShieldData", &ms_Event);
+  
+  pTree->SetBranchAddress("SHIELD", &ms_Event);
+
 }
 
 

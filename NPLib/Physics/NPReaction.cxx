@@ -540,7 +540,7 @@ void Reaction::initializePrecomputeVariable(){
 	pCM_4 = sqrt(ECM_4*ECM_4 - m4*m4);
   
   fImpulsionLab_1 = TVector3(0,0,sqrt(fBeamEnergy*fBeamEnergy + 2*fBeamEnergy*m1));
-  fImpulsionLab_3 = TVector3(0,0,0);
+  fImpulsionLab_2 = TVector3(0,0,0);
   
   fEnergyImpulsionLab_1 = TLorentzVector(fImpulsionLab_1,m1+fBeamEnergy);
   fEnergyImpulsionLab_2 = TLorentzVector(fImpulsionLab_2,m2);

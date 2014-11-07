@@ -424,6 +424,8 @@ void Eurogam::InitializeRootOutput()
    RootOutput *pAnalysis = RootOutput::getInstance();
    TTree *pTree = pAnalysis->GetTree();
    pTree->Branch("Eurogam", "TEurogamData", &m_Event) ;
+   pTree->SetBranchAddress("Eurogam", &m_Event) ;
+
 }
 
 
@@ -635,10 +637,13 @@ void Eurogam::InitializeMaterial()
 
 ////////////////////////////////////////////////////////////////	
 void Eurogam::InitializeScorers() 
-{ 
+{
+   bool already_exist = false; 
    // Eurogam associated scorer
-   m_EurogamScorer                                      = new G4MultiFunctionalDetector("EurogamScorer");
-   G4VPrimitiveScorer* DetNbr                           = new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber", "Eurogam", 0);
+   m_EurogamScorer = CheckScorer("EurogamScorer",already_exist);
+   if(already_exist) return;
+   
+    G4VPrimitiveScorer* DetNbr                           = new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber", "Eurogam", 0);
    G4VPrimitiveScorer* Energy                           = new OBSOLETEGENERALSCORERS::PSEnergy("Energy","Eurogam", 0);
    G4VPrimitiveScorer* TOF                              = new OBSOLETEGENERALSCORERS::PSTOF("Time", "Eurogam", 0);
    G4VPrimitiveScorer* InteractionCoordinatesX          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesX("InterCoordX", "Eurogam", 0);

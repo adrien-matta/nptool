@@ -49,7 +49,7 @@
 #include "ParisScorers.hh"
 #include "MaterialManager.hh"
 #include "RootOutput.h"
-
+#include "VDetector.hh"
 // CLHEP
 #include "CLHEP/Random/RandGauss.h"
 
@@ -1011,9 +1011,12 @@ void ParisPhoswich::ReadSensitive(const G4Event* event)
 
 void ParisPhoswich::InitializeScorers()
 {
+   bool already_exist = false; 
+   
    // LaBr3 Associate Scorer
-   m_LaBr3StageScorer = new G4MultiFunctionalDetector("LaBr3StageScorerParisPhoswich");
-  
+   m_LaBr3StageScorer = VDetector::CheckScorer("LaBr3StageScorerParisCluster",already_exist);
+   m_CsIStageScorer = VDetector::CheckScorer("CsIStageScorerParisCluster",already_exist);
+ 
    //   G4VPrimitiveScorer* DetNbr                           = new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber", "ParisPhoswich", 0);
    G4VPrimitiveScorer* DetNbr                           = new PARISScorerLaBr3StageDetectorNumber("DetectorNumber", "ParisPhoswich", 0);
    //   G4VPrimitiveScorer* TOF                              = new OBSOLETEGENERALSCORERS::PSTOF("StripTime","ParisPhoswich", 0);
@@ -1048,7 +1051,6 @@ void ParisPhoswich::InitializeScorers()
    /**/
 
    // Second stage Associate Scorer
-   m_CsIStageScorer = new G4MultiFunctionalDetector("CsIStageScorerParisPhoswich");
    /**/
    G4VPrimitiveScorer* CsIDetNbr                        = new PARISScorerCsIStageDetectorNumber("CsIDetectorNumber", "ParisPhoswich", 0);
    G4VPrimitiveScorer* CsICryNbr                        = new PARISScorerCsIStageCrystalNumber("CsICrystalNumber", "ParisPhoswich", 0); // added by Marc

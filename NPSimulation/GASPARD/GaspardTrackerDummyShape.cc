@@ -57,7 +57,7 @@
 #include "ObsoleteGeneralScorers.hh"
 #include "GaspardScorers.hh"
 #include "RootOutput.h"
-
+#include "VDetector.hh"
 // CLHEP
 #include "CLHEP/Random/RandGauss.h"
 
@@ -968,8 +968,13 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
 
 void GaspardTrackerDummyShape::InitializeScorers()
 {
+   bool already_exist = false;
+   m_FirstStageScorer = VDetector::CheckScorer("FirstStageScorerGPDDummyShape", already_exist);
+   m_SecondStageScorer = VDetector::CheckScorer("SecondStageScorerGPDDummyShape",already_exist);
+   m_ThirdStageScorer = VDetector::CheckScorer("ThirdStageScorerGPDDummyShape",already_exist);
+   if(already_exist) return;
+
    // First stage Associate Scorer
-   m_FirstStageScorer                                   = new G4MultiFunctionalDetector("FirstStageScorerGPDDummyShape");
    G4VPrimitiveScorer* DetNbr                           = new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber", "GPDDummyShape", 0);
    G4VPrimitiveScorer* TOF                              = new OBSOLETEGENERALSCORERS::PSTOF("StripTime","GPDDummyShape", 0);
    G4VPrimitiveScorer* InteractionCoordinatesX          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","GPDDummyShape", 0);
@@ -995,13 +1000,11 @@ void GaspardTrackerDummyShape::InitializeScorers()
 
 
    // Second stage Associate Scorer
-   m_SecondStageScorer = new G4MultiFunctionalDetector("SecondStageScorerGPDDummyShape");
-   G4VPrimitiveScorer* SecondStageEnergy = new GPDScorerSecondStageEnergy("SecondStageEnergy", "GPDDummyShape", 0);
+     G4VPrimitiveScorer* SecondStageEnergy = new GPDScorerSecondStageEnergy("SecondStageEnergy", "GPDDummyShape", 0);
    m_SecondStageScorer->RegisterPrimitive(SecondStageEnergy);
 
 
    //  Third stage Associate Scorer 
-   m_ThirdStageScorer = new G4MultiFunctionalDetector("ThirdStageScorerGPDDummyShape");
    G4VPrimitiveScorer* ThirdStageEnergy = new GPDScorerThirdStageEnergy("ThirdStageEnergy", "GPDDummyShape", 0);
    m_ThirdStageScorer->RegisterPrimitive(ThirdStageEnergy);
 

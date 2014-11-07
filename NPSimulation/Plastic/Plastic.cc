@@ -58,7 +58,6 @@ namespace PLASTIC{
   // Energy and time Resolution
   const G4double ResoTime    = 4.2         ;// = 10ns of Resolution   //   Unit is MeV/2.35
   const G4double ResoEnergy  = 5.0         ;// Resolution in %
-
 }
 
 using namespace PLASTIC ;
@@ -68,6 +67,7 @@ using namespace PLASTIC ;
 // Plastic Specific Method
 Plastic::Plastic(){
   m_Event = new TPlasticData() ;
+  m_PlasticScorer = 0;
 }
 
 Plastic::~Plastic(){
@@ -487,6 +487,7 @@ void Plastic::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
   pTree->Branch("Plastic", "TPlasticData", &m_Event) ;
+  pTree->SetBranchAddress("Plastic", &m_Event) ;
 }
 
 // Read sensitive part and fill the Root tree.
@@ -595,8 +596,10 @@ void Plastic::ReadSensitive(const G4Event* event){
 
 ////////////////////////////////////////////////////////////////   
 void Plastic::InitializeScorers() { 
-  m_PlasticScorer = new G4MultiFunctionalDetector("PlasticScorer") ;
-  G4SDManager::GetSDMpointer()->AddNewDetector(m_PlasticScorer);
+  bool already_exist = false; 
+  m_PlasticScorer = CheckScorer("PlasticScorer",already_exist) ;
+  
+  if(already_exist) return ;
 
   G4VPrimitiveScorer* DetNbr = new PSDetectorNumber("PlasticNumber","Plastic", 0) ;
   G4VPrimitiveScorer* Energy = new PSEnergy("Energy","Plastic", 0)                   ;

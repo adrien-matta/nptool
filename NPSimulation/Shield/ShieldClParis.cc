@@ -51,7 +51,7 @@
 #include "MaterialManager.hh"
 #include "ObsoleteGeneralScorers.hh"
 #include "RootOutput.h"
-
+#include "VDetector.hh"
 // CLHEP
 #include "CLHEP/Random/RandGauss.h"
 
@@ -692,10 +692,12 @@ void ShieldClParis::ReadSensitive(const G4Event* event)
 
 void ShieldClParis::InitializeScorers()
 {
+
+   bool already_exist = false; 
  
    // CsIShield Associate Scorer
-   m_CsIShieldScorer = new G4MultiFunctionalDetector("CsIScorerShieldClParis");
-   
+   m_CsIShieldScorer = VDetector::CheckScorer("CsIScorerShieldClParis",already_exist);
+   if(already_exist) return;
    //   G4VPrimitiveScorer* DetNbr                           = new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber", "ShieldClParis", 0);
    G4VPrimitiveScorer* DetNbr                           = new SHIELDScorerCsIDetectorNumber("CsIShieldDetectorNumber", "ShieldClParis", 0);
    //   G4VPrimitiveScorer* TOF                              = new OBSOLETEGENERALSCORERS::PSTOF("StripTime","ShieldClParis", 0);

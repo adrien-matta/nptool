@@ -33,7 +33,7 @@ class G4VPhysicalVolume;
 // G4 headers
 #include "G4VUserDetectorConstruction.hh"
 #include "G4Event.hh"
-
+#include "DetectorMessenger.hh"
 // NPTool headers
 #include "VDetector.hh"
 #include "Target.hh"
@@ -50,8 +50,11 @@ public:
 
    G4VPhysicalVolume* Construct();
    G4LogicalVolume* GetWorldLogic();
-
-
+   // Delete every existing bit
+   void ClearGeometry();
+   // Reload the file configuration
+   void RedefineGeometry(string file="");
+ 
 public:
    void ReadConfigurationFile(string);
    void AddDetector(VDetector*);
@@ -74,7 +77,7 @@ private:
 private: // Data about the target
    Target*  m_Target;
    Chamber* m_Chamber;
-
+   DetectorMessenger* m_Messenger;
 public:  // Getter and Setter
    Target*  GetTarget()    {return m_Target;}
    Chamber* GetChamber()   {return m_Chamber;}

@@ -70,6 +70,11 @@ Sharc::Sharc(){
   PADVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.2)) ;
   // Light Grey
   FrameVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5)) ;
+
+  m_BOXScorer = 0 ;
+  m_PADScorer = 0 ;
+  m_QQQScorer = 0;
+
 }
 
 Sharc::~Sharc(){
@@ -620,6 +625,8 @@ void Sharc::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
   pTree->Branch("Sharc", "TSharcData", &m_Event) ;
+  pTree->SetBranchAddress("Sharc", &m_Event) ;
+
 }
      
 
@@ -752,10 +759,14 @@ void Sharc::ReadSensitive(const G4Event* event){
 void Sharc::InitializeScorers(){
   
   //   Silicon Associate Scorer
-  m_BOXScorer = new G4MultiFunctionalDetector("Sharc_BOXScorer");
-  m_PADScorer = new G4MultiFunctionalDetector("Sharc_PADScorer");
-  m_QQQScorer = new G4MultiFunctionalDetector("Sharc_QQQScorer");
-  
+  bool already_exist = false;
+  m_BOXScorer = CheckScorer("Sharc_BOXScorer",already_exist);
+  m_PADScorer = CheckScorer("Sharc_PADScorer",already_exist);
+  m_QQQScorer = CheckScorer("Sharc_QQQScorer",already_exist);
+ 
+  // if the scorer were created previously nothing else need to be made
+  if(already_exist) return;
+ 
   G4VPrimitiveScorer* BOXScorer =
   new  SILICONSCORERS::PS_Silicon_Rectangle("SharcBOX",
                                    BOX_Wafer_Length,

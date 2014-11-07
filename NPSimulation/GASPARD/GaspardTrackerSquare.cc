@@ -54,7 +54,7 @@
 #include "ObsoleteGeneralScorers.hh"
 #include "GaspardScorers.hh"
 #include "RootOutput.h"
-
+#include "VDetector.hh"
 // CLHEP
 #include "CLHEP/Random/RandGauss.h"
 
@@ -959,8 +959,15 @@ void GaspardTrackerSquare::ReadSensitive(const G4Event* event)
 
 void GaspardTrackerSquare::InitializeScorers()
 {
+   bool already_exist = false;
+   m_FirstStageScorer = VDetector::CheckScorer("FirstStageScorerGPDSquare", already_exist);
+   m_SecondStageScorer = VDetector::CheckScorer("SecondStageScorerGPDSquare",already_exist);
+   m_ThirdStageScorer = VDetector::CheckScorer("ThirdStageScorerGPDSquare",already_exist);
+   if(already_exist) return;
+
+
+
    // First stage Associate Scorer
-   m_FirstStageScorer = new G4MultiFunctionalDetector("FirstStageScorerGPDSquare");
    G4VPrimitiveScorer* DetNbr                           = new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber", "GPDSquare", 0);
    G4VPrimitiveScorer* TOF                              = new OBSOLETEGENERALSCORERS::PSTOF("StripTime","GPDSquare", 0);
    G4VPrimitiveScorer* InteractionCoordinatesX          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","GPDSquare", 0);
@@ -985,12 +992,10 @@ void GaspardTrackerSquare::InitializeScorers()
    m_FirstStageScorer->RegisterPrimitive(InteractionCoordinatesAnglePhi);
 
    // Second stage Associate Scorer
-   m_SecondStageScorer = new G4MultiFunctionalDetector("SecondStageScorerGPDSquare");
    G4VPrimitiveScorer* SecondStageEnergy = new GPDScorerSecondStageEnergy("SecondStageEnergy", "GPDSquare", 0);
    m_SecondStageScorer->RegisterPrimitive(SecondStageEnergy);
 
    //  Third stage Associate Scorer 
-   m_ThirdStageScorer = new G4MultiFunctionalDetector("ThirdStageScorerGPDSquare");
    G4VPrimitiveScorer* ThirdStageEnergy = new GPDScorerThirdStageEnergy("ThirdStageEnergy", "GPDSquare", 0);
    m_ThirdStageScorer->RegisterPrimitive(ThirdStageEnergy);
 

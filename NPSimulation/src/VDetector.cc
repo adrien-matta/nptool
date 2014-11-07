@@ -24,31 +24,41 @@
  *****************************************************************************/
 #include "VDetector.hh"
 #include "RootOutput.h"
-
+#include "G4SDManager.hh"
 
 TInteractionCoordinates *VDetector::ms_InterCoord = 0;
 
-
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Constructor
-VDetector::VDetector()
-{
+VDetector::VDetector(){
    if (ms_InterCoord == 0) ms_InterCoord = new TInteractionCoordinates();
-
    InitializeRootOutput();
 }
 
 
 // Destructor
-VDetector::~VDetector()
-{
+VDetector::~VDetector(){
 }
 
-
-void VDetector::InitializeRootOutput()
-{
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void VDetector::InitializeRootOutput(){
    RootOutput *pAnalysis = RootOutput::getInstance();
    TTree *pTree = pAnalysis->GetTree();
    // if the branch does not exist yet, create it
    if (!pTree->GetBranch("InteractionCoordinates"))
       pTree->Branch("InteractionCoordinates", "TInteractionCoordinates", &ms_InterCoord);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+G4MultiFunctionalDetector* VDetector::CheckScorer(string name,bool &exist){
+  exist = true;
+  G4MultiFunctionalDetector* ptr =
+    (G4MultiFunctionalDetector*) G4SDManager::GetSDMpointer()->FindSensitiveDetector(name.c_str(),false);
+
+ if(!ptr){ 
+    ptr = new G4MultiFunctionalDetector(name.c_str());
+    exist = false;
+  }
+
+  return ptr;
 }

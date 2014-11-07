@@ -6,64 +6,56 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
+ * Original Author: Adrien MATTA  contact address: a.matta@surrey.ac.uk      *
  *                                                                           *
- * Creation Date  : January 2009                                             *
+ * Creation Date  : November 2014                                            *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  A quite Standard Geant4 EventAction class.                               *
- *  Call the Fill method of the output tree.                                 *
+ *  This class describe the Detector Messenger                               *
+ *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *                                                                           *
- *                                                                           *
  *****************************************************************************/
-// G4 headers
-#include "G4Event.hh"
-#include "G4UnitsTable.hh"
-#include "G4SDManager.hh"
-#include "G4RunManager.hh"
-#include "G4Trajectory.hh"
-#include "G4TrajectoryContainer.hh"
+///....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-// NPTool headers
-#include "EventAction.hh"
+#include "DetectorMessenger.hh"
+
 #include "DetectorConstruction.hh"
-#include "RootOutput.h"
+#include "G4UIparameter.hh"
+#include "G4UIcommand.hh"
+#include "G4UIdirectory.hh"
+#include "G4UIcmdWithAString.hh"
+#include "G4UIcmdWithoutParameter.hh"
 
-#include<iostream>
-using namespace std;
-
-
-#include "G4THitsMap.hh"
+#include <dirent.h>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-EventAction::EventAction(): m_printModulo(10000){
+DetectorMessenger::DetectorMessenger(DetectorConstruction* Det):Detector(Det){ 
+  detDir = new G4UIdirectory("/det/");
+  detDir->SetGuidance("detector geometry control");
+  
+  UpdateCmd = new G4UIcmdWithoutParameter("/det/update",this);
+  UpdateCmd->SetGuidance("Update detector geometry.");
+  UpdateCmd->SetGuidance("Apply this command after editing your geometry file ");
+  UpdateCmd->AvailableForStates(G4State_Idle);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-EventAction::~EventAction(){
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventAction::BeginOfEventAction(const G4Event* event){
-   if ((event->GetEventID() + 1) % m_printModulo == 0)
-      G4cout << "\rEvent: " << event->GetEventID() + 1 << flush;
+DetectorMessenger::~DetectorMessenger(){
+  delete UpdateCmd;
+  delete detDir;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void EventAction::EndOfEventAction(const G4Event* event){
-   m_detector->ReadAllSensitive(event) ;
-   RootOutput *pAnalysis = RootOutput::getInstance();
-   pAnalysis->GetTree()->Fill();
+void DetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue){ 
+  if( command == UpdateCmd )
+   { Detector->RedefineGeometry(""); }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventAction::SetDetector(DetectorConstruction* detector){
-   m_detector = detector   ;
-}
-

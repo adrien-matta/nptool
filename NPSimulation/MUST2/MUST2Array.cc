@@ -64,10 +64,14 @@ using namespace MUST2   ;
 MUST2Array::MUST2Array(){
   m_Event = new TMust2Data() ;
   InitializeMaterial();
+  m_StripScorer=0;
+  m_SiLiScorer=0;
+  m_CsIScorer=0;
 }
 
 MUST2Array::~MUST2Array(){
 }
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void MUST2Array::AddTelescope(   G4ThreeVector X1_Y1,
@@ -940,6 +944,7 @@ void MUST2Array::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
   pTree->Branch("MUST2", "TMust2Data", &m_Event) ;
+  pTree->SetBranchAddress("MUST2", &m_Event) ;
 }
 
 // Read sensitive part and fill the Root tree.
@@ -1266,7 +1271,14 @@ void MUST2Array::ReadSensitive(const G4Event* event){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void MUST2Array::InitializeScorers() { 
   //	Silicon Associate Scorer
-  m_StripScorer = new G4MultiFunctionalDetector("MUST2_StripScorer");
+
+  bool already_exist = false; 
+  m_StripScorer = CheckScorer("MUST2_StripScorer",already_exist);
+  m_SiLiScorer	= CheckScorer("MUST2_SiLiScorer",already_exist);
+  m_CsIScorer	= CheckScorer("MUST2_CsIScorer",already_exist);
+
+   // if the scorer were created previously nothing else need to be made
+   if(already_exist) return; 
 
   G4VPrimitiveScorer* DetNbr 									= new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber","MUST2Telescope", 0);
   G4VPrimitiveScorer* Energy 									= new OBSOLETEGENERALSCORERS::PSEnergy("StripEnergy","MUST2Telescope", 0);			
@@ -1295,14 +1307,12 @@ void MUST2Array::InitializeScorers() {
   m_StripScorer->RegisterPrimitive(InteractionCoordinatesAnglePhi);
 
   //	SiLi Associate Scorer
-  m_SiLiScorer	= new G4MultiFunctionalDetector("MUST2_SiLiScorer");
-  G4VPrimitiveScorer* SiLiEnergy 			= new OBSOLETEGENERALSCORERS::PSEnergy("SiLiEnergy","MUST2Telescope", 0) ;
+    G4VPrimitiveScorer* SiLiEnergy 			= new OBSOLETEGENERALSCORERS::PSEnergy("SiLiEnergy","MUST2Telescope", 0) ;
   G4VPrimitiveScorer* SiLiPadNbr 			= new PSPadOrCristalNumber("SiLiPadNbr",0) ;
   m_SiLiScorer->RegisterPrimitive(SiLiEnergy);
   m_SiLiScorer->RegisterPrimitive(SiLiPadNbr);
 
   //	CsI Associate Scorer 
-  m_CsIScorer	= new G4MultiFunctionalDetector("MUST2_CsIScorer");
   G4VPrimitiveScorer* CsIEnergy 		= new OBSOLETEGENERALSCORERS::PSEnergy("CsIEnergy","MUST2Telescope", 0) 	;
   G4VPrimitiveScorer* CsICristalNbr 	= new PSPadOrCristalNumber("CsICristalNbr",0) ;
   m_CsIScorer->RegisterPrimitive(CsIEnergy) ;

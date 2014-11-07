@@ -46,7 +46,7 @@
 // G4 sensitive
 #include "G4SDManager.hh"
 #include "G4MultiFunctionalDetector.hh"
-
+#include "VDetector.hh"
 // NPTool headers
 #include "HeliosDetDummyShape.hh"
 #include "ObsoleteGeneralScorers.hh"
@@ -851,8 +851,12 @@ void HeliosDetDummyShape::ReadSensitive(const G4Event* event)
 
 void HeliosDetDummyShape::InitializeScorers()
 {
+   bool already_exist = false; 
    // First stage Associate Scorer
-   m_FirstStageScorer                                   = new G4MultiFunctionalDetector("FirstStageScorerHeliosDummyShape");
+   m_FirstStageScorer = VDetector::CheckScorer("FirstStageScorerHeliosDummyShape",already_exist);
+   if(already_exist) return;
+
+
    G4VPrimitiveScorer* DetNbr                           = new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber", "HeliosDummyShape", 0);
    G4VPrimitiveScorer* TOF                              = new OBSOLETEGENERALSCORERS::PSTOF("StripTime","HeliosDummyShape", 0);
    G4VPrimitiveScorer* InteractionCoordinatesX          = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","HeliosDummyShape", 0);

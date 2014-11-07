@@ -50,6 +50,8 @@ void GaspardTrackerModule::InitializeRootOutput()
    // if the branch does not exist yet, create it
    if (!pTree->GetBranch("GASPARD"))
       pTree->Branch("GASPARD", "TGaspardTrackerData", &ms_Event);
+    pTree->SetBranchAddress("GASPARD", &ms_Event);
+
 }
 
 

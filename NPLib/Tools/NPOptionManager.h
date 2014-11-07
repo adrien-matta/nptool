@@ -98,8 +98,8 @@ class NPOptionManager
       int    GetVerboseLevel()             {return fVerboseLevel;}
       
       // Setters
-      void SetReactionFile(string name)       {fReactionFileName = name;}
-      void SetDetectorFile(string name)       {fDetectorFileName = name;}
+      void SetReactionFile(string name)       {fReactionFileName = name;CheckEventGenerator();}
+      void SetDetectorFile(string name)       {fDetectorFileName = name;CheckDetectorConfiguration();}
       void SetRunToReadFile(string name)      {fRunToReadFileName = name;}
       void GetVerboseLevel(int VerboseLevel)  {fVerboseLevel = VerboseLevel;}
   

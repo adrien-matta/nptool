@@ -536,6 +536,7 @@ void ThinSi::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
   pTree->Branch("SSSD", "TSSSDData", &m_Event) ;
+  pTree->SetBranchAddress("SSSD", &m_Event) ;
 }
 
 // Read sensitive part and fill the Root tree.
@@ -649,9 +650,10 @@ void ThinSi::ReadSensitive(const G4Event* event){
 
 
 void ThinSi::InitializeScorers(){
-
+  bool already_exist = false;
   //   Silicon Associate Scorer
-  m_StripScorer = new G4MultiFunctionalDetector("ThinSi_StripScorer");
+  m_StripScorer = CheckScorer("ThinSi_StripScorer",already_exist);
+  if(already_exist) return;
 
   G4VPrimitiveScorer* DetNbr   = new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber","ThinSi_", 0);
   G4VPrimitiveScorer* StripNbr = new PSStripNumber("StripNumber",0,SiliconSize, NumberOfStrip); 
