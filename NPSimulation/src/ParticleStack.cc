@@ -25,7 +25,8 @@
 
 // G4 headers
 #include "G4ParticleTable.hh"
-
+#include "G4RunManager.hh"
+#include "G4Run.hh"
 // NPL
 #include "RootOutput.h"
 
@@ -243,6 +244,7 @@ void ParticleStack::ShootAllParticle(G4Event* anEvent){
       // Write the DEDX table for charged particle and 
       // all material used in the simulation 
       if( anEvent->GetEventID()==0
+          && G4RunManager::GetRunManager()->GetCurrentRun()->GetRunID()==0
           && m_ParticleStack[i].GetParticleDefinition()->GetPDGCharge()!=0){
        MaterialManager::getInstance()
         ->WriteDEDXTable(m_ParticleStack[i].GetParticleDefinition(),

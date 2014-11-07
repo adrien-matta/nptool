@@ -581,7 +581,7 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
     ////////////////////////////////////////////
     ////////// Search for Tiara Hyball /////////
     ////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 11, "TiaraHyball") == 0 && TiaraHyball == false) {
+    else if (LineBuffer.compare(0, 5, "Tiara") == 0 && TiaraHyball == false) {
 #ifdef INC_TIARA
       TiaraHyball = true;
       cout << "//////// Tiara Hyball ////////" << endl << endl;

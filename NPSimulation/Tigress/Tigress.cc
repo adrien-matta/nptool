@@ -766,6 +766,7 @@ void Tigress::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
   pTree->Branch("Tigress", "TTigressData", &m_Event) ;
+  pTree->SetBranchAddress("Tigress", &m_Event) ;    
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

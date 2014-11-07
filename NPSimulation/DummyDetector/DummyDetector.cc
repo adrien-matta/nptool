@@ -317,6 +317,7 @@ void DUMMYDetector::InitializeRootOutput()
    RootOutput *pAnalysis = RootOutput::getInstance();
    TTree *pTree = pAnalysis->GetTree();
    pTree->Branch("DUMMYDetector", "TDUMMYDetectorData", &m_Event) ;
+   pTree->SetBranchAddress("DUMMYDetector", &m_Event) ;
 }
 
 // Read sensitive part and fill the Root tree.
@@ -424,9 +425,10 @@ void DUMMYDetector::InitializeMaterial()
 
 ////////////////////////////////////////////////////////////////   
 void DUMMYDetector::InitializeScorers() 
-   { 
-      m_DUMMYDetectorScorer = new G4MultiFunctionalDetector("DUMMYDetectorScorer") ;
-      G4SDManager::GetSDMpointer()->AddNewDetector(m_DUMMYDetectorScorer);
+   {
+      bool already_exist = false;  
+      m_DUMMYDetectorScorer = CheckScorer("DUMMYDetectorScorer",already_exist) ;
+      if(already_exist) return;
       
       G4VPrimitiveScorer* DetNbr = new PSDetectorNumber("DUMMYDetectorNumber","DUMMYDetector", 0) ;
       G4VPrimitiveScorer* Energy = new PSEnergy("Energy","DUMMYDetector", 0);
@@ -436,7 +438,7 @@ void DUMMYDetector::InitializeScorers()
       m_DUMMYDetectorScorer->RegisterPrimitive(DetNbr);
       m_DUMMYDetectorScorer->RegisterPrimitive(Energy);
       m_DUMMYDetectorScorer->RegisterPrimitive(Time);      
-      
-      
+ 
+      G4SDManager::GetSDMpointer()->AddNewDetector(m_DUMMYDetectorScorer);
    }
 ////////////////////////////////////////////////////////////////

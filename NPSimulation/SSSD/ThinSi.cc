@@ -62,6 +62,7 @@ using namespace CLHEP;
 ThinSi::ThinSi(){
   InitializeMaterial();
   m_Event = new TSSSDData();
+  m_StripScorer=0;
 }
 
 ThinSi::~ThinSi(){

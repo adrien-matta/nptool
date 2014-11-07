@@ -47,6 +47,9 @@ void VDetector::InitializeRootOutput(){
    // if the branch does not exist yet, create it
    if (!pTree->GetBranch("InteractionCoordinates"))
       pTree->Branch("InteractionCoordinates", "TInteractionCoordinates", &ms_InterCoord);
+
+  pTree->SetBranchAddress("InteractionCoordinates", &ms_InterCoord);
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

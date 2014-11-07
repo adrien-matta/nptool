@@ -335,6 +335,7 @@ void AnnularS1::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
   pTree->Branch("AnnularS1", "TS1Data", &m_Event);
+  pTree->SetBranchAddress("AnnularS1",&m_Event);
 }
 
 // Read sensitive part and fill the Root tree.
@@ -393,9 +394,10 @@ void AnnularS1::ReadSensitive(const G4Event* event){
 // Initilize the Scorer use to read out the sensitive volume 
 void AnnularS1::InitializeScorers()
 {
+ bool already_exist = false;  
   // Associate Scorer
-  m_Scorer = new G4MultiFunctionalDetector("AnnularS1_Scorer");
-
+  m_Scorer = CheckScorer("AnnularS1_Scorer",already_exist);
+  if(already_exist) return;
 
   G4VPrimitiveScorer* AnnularScorer =
     new  SILICONSCORERS::PS_Silicon_Annular("AnnularS1_Scorer",

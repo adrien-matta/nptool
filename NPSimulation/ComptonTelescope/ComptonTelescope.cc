@@ -614,6 +614,9 @@ void ComptonTelescope::InitializeRootOutput()
    TTree *pTree = pAnalysis->GetTree();
    pTree->Branch("ComptonTelescope",        "TComptonTelescopeData",        &m_Event);
    pTree->Branch("ComptonTelescopeProcess", "TComptonTelescopeProcessData", &m_ProcessEvent);
+   pTree->SetBranchAddress("ComptonTelescope", &m_Event);
+   pTree->SetBranchAddress("ComptonTelescopeProcess", &m_ProcessEvent);
+  
 }
 
 
@@ -972,8 +975,12 @@ void ComptonTelescope::InitializeMaterial()
 
 void ComptonTelescope::InitializeScorers()
 {
+
+  bool already_exist = false; 
    // First stage Associate Scorer
-   m_TrackerScorer = new G4MultiFunctionalDetector("TrackerScorerComptonTelescope");
+   m_TrackerScorer = CheckScorer("TrackerScorerComptonTelescope",already_exist);
+   if(already_exist) return;
+
    G4VPrimitiveScorer* TowerNbr    = new ComptonTelescopeScorerTrackerTowerNumber("TowerNumber", "ComptonTelescopeTower", 0);
    G4VPrimitiveScorer* DSSSDNbr    = new ComptonTelescopeScorerTrackerDSSSDNumber("DSSSDNumber", "ComptonTelescopeTower", 0);
    G4VPrimitiveScorer* Energy      = new ComptonTelescopeScorerTrackerEnergy("Energy", "ComptonTelescopeTower", 0);
