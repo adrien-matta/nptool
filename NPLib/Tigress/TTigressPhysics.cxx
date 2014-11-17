@@ -49,23 +49,65 @@ TTigressPhysics::TTigressPhysics()  {
 void TTigressPhysics::BuildPhysicalEvent(){
   PreTreat();
  
-  if(m_EventData->GetMultiplicityGe()<10){
-    for(unsigned int i = 0 ; i < m_EventData->GetMultiplicityGe() ; i++){
-      if( m_EventData->GetGeSegmentNbr(i)==9 && m_EventData->GetGeEnergy(i)>20){
-        Gamma_Energy.push_back( m_EventData->GetGeEnergy(i));
-        Crystal_Number.push_back( m_EventData->GetGeCrystalNbr(i));
-        Clover_Number.push_back( m_EventData->GetGeCloverNbr(i));
+  if(m_PreTreatedData->GetMultiplicityGe()<10){
+    vector < vector < unsigned int > > HitIndex;
+    vector<unsigned int> Number;
+    Number.resize(4,0);
+    HitIndex.resize(16, Number);
+    for(unsigned int i = 0 ; i < m_PreTreatedData->GetMultiplicityGe() ; i++){
+      if( m_PreTreatedData->GetGeSegmentNbr(i)==9 && m_PreTreatedData->GetGeEnergy(i)>20){
         
+        //int CloverNbr, CrystalNbr, SegmentNbr;
+        //double Ge_Energy;
+        //CrystalNbr = m_PreTreatedData->GetGeCrystalNbr(i);
+        //SegmentNbr = m_PreTreatedData->GetGeSegmentNbr(i);
+        //Ge_Energy = m_PreTreatedData->GetGeEnergyr(i);
+        
+        HitIndex[m_PreTreatedData->GetGeCloverNbr(i)].push_back(i);
+
         // Look for Associate BGO
         bool BGOcheck = false ;
         for(unsigned j = 0 ;  j <  m_EventData->GetMultiplicityBGO() ; j++){
-        
           if( m_EventData->GetBGOCloverNbr(j)== m_EventData->GetGeCloverNbr(i) && m_EventData->GetBGOEnergy(j)>20 )
              BGOcheck = true ;
         }
         BGO.push_back(BGOcheck);
       }
     }
+
+    //Applying Addback
+    for(unsigned int clover = 0; clover<HitIndex.size(); clover++){
+      if(HitIndex[clover].size() == 0) continue;
+      else if(HitIndex[clover].size() == 1) {
+        Gamma_Energy.push_back(m_PreTreatedData->GetGeEnergy(HitIndex[clover][0]) );
+        Clover_Number.push_back(m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]) );
+        Crystal_Number.push_back(m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]) );
+      }
+      else if(HitIndex[clover].size() == 2){
+        unsigned int Cl1 = m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]);
+        unsigned int Cl2 = m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][1]);
+        if(AdjacentCrystal(Cl1, Cl2) == true) {   //Case where crystals are adjacent
+          double E_sum = m_PreTreatedData->GetGeEnergy(HitIndex[clover][0]) + m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][1]);
+
+          Gamma_Energy.push_back( E_sum );
+          Clover_Number.push_back(m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]) );
+          Crystal_Number.push_back(m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]) );
+        }
+        else {    //Case were crystals are not adjacent
+          Gamma_Energy.push_back(m_PreTreatedData->GetGeEnergy(HitIndex[clover][0]) );
+          Clover_Number.push_back(m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]) );
+          Crystal_Number.push_back(m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]) );
+
+          Gamma_Energy.push_back(m_PreTreatedData->GetGeEnergy(HitIndex[clover][1]) );
+          Clover_Number.push_back(m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][1]) );
+          Crystal_Number.push_back(m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][1]) );
+        }                  
+      }
+      else continue;
+    }
+    HitIndex.clear();
+        //Crystal_Number.push_back( );
+        //Clover_Number.push_back( );
   }
   
   
@@ -76,7 +118,48 @@ TVector3 TTigressPhysics::GetPositionOfInteraction(int i){
 }
 /////////////////////////////////////////////////
 void TTigressPhysics::PreTreat(){
+  //ClearPreTreatedData();
 
+  //Calibration vector not standard in NPTool. Standardise later
+  ifstream CalFile;
+  CalFile.open(".home/ak00128/Desktop/PhD/S1107/GammaCal/Calibration_Parameters.dat");
+
+  int Clover, Crystal, Segment, Count, u = 400;
+  double par_a, par_b;
+  vector< vector< double > > Calibration;
+
+  if(CalFile.is_open()){
+    for(unsigned int loop = 0; loop<u; loop++){
+      CalFile >> Clover >> Crystal >> Segment >> Count >> par_a >> par_b;
+      Calibration[loop].push_back(Clover);
+      Calibration[loop].push_back(Crystal);
+      Calibration[loop].push_back(Segment);
+      Calibration[loop].push_back(Count);
+      Calibration[loop].push_back(par_a);
+      Calibration[loop].push_back(par_b);
+    }
+  }
+  
+  CalFile.close();
+  //Ge Crystals
+  for(unsigned int i = 0 ; i < m_EventData->GetMultiplicityGe(); ++i){
+    double grad, intercept;
+    for(unsigned int vec = 0; vec < u; vec++){
+      if( (Calibration[vec][0] == m_EventData->GetGeCloverNbr(i) ) && (Calibration[vec][1] == m_EventData->GetGeCrystalNbr(i) )
+      && (Calibration[vec][2] == m_EventData->GetGeSegmentNbr(i) ) ){
+        grad = Calibration[vec][4];
+        intercept = Calibration[vec][5];
+        break;
+      }
+    }
+    double Energy = (m_EventData->GetGeEnergy(i))*grad + intercept;
+    m_PreTreatedData->SetGeCloverNbr( m_EventData->GetGeCloverNbr(i) );
+    m_PreTreatedData->SetGeCrystalNbr( m_EventData->GetGeCrystalNbr(i) );
+    m_PreTreatedData->SetGeSegmentNbr( m_EventData->GetGeSegmentNbr(i) );
+    m_PreTreatedData->SetGeEnergy( Energy );
+    m_PreTreatedData->SetGeTimeCFD( m_EventData->GetGeTimeCFD(i) );
+    m_PreTreatedData->SetGeTimeLED( m_EventData->GetGeTimeLED(i) );
+  }
 
 } 
  
@@ -178,6 +261,18 @@ void TTigressPhysics::ReadConfiguration(string Path)  {
     }
  }
  
+///////////////////////////////////////////////////////////////////////////
+bool TTigressPhysics::AdjacentCrystal(unsigned int CrNbr1, unsigned int CrNbr2){
+  if(CrNbr2 == CrNbr1 + 1 || CrNbr2 == CrNbr1 - 1){
+    return true;
+  }
+  else if( (CrNbr1 == 1 && CrNbr2 == 4) || (CrNbr1 == 4 && CrNbr2 == 1) ){
+    return true;
+  }
+  else {
+    return false;
+  }
+}
 ///////////////////////////////////////////////////////////////////////////
 void TTigressPhysics::InitializeRootInputRaw() 
    {

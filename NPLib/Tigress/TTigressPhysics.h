@@ -47,6 +47,8 @@ class TTigressPhysics :  public TObject, public NPA::VDetector{
     //   Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
      void ReadConfiguration(string);
 
+    //   Checks to see whether crystals are adjacent
+    bool AdjacentCrystal(unsigned int, unsigned int) ;
     //   Add Parameter to the CalibrationManger
      void AddParameterToCalibrationManager(){} ;      
 
@@ -75,7 +77,7 @@ class TTigressPhysics :  public TObject, public NPA::VDetector{
 
   public:
     void PreTreat();
-  
+
   private:   //   Root Input and Output tree classes
             
          TTigressData*         m_EventData;//!
