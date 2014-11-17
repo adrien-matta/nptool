@@ -1,5 +1,5 @@
-#ifndef PrimaryGeneratorAction_h
-#define PrimaryGeneratorAction_h 1
+#ifndef PrimaryGeneratorActionMessenger_h
+#define PrimaryGeneratorActionMessenger_h 1
 /*****************************************************************************
  * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
  *                                                                           *
@@ -8,55 +8,51 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
+ * Original Author: Adrien MATTA  contact address: a.matta@surrey.ac.uk      *
  *                                                                           *
- * Creation Date  : January 2009                                             *
+ * Creation Date  : November 2014                                            *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class manages the Event Generators used in NPSimulation             *
- *  Every time you add a new kind of event generator, you need to add a few  *
- *  line in the ReadConfiguration method to detect the associate Token       *
+ *  This class describe the PrimaryGeneratorAction Messenger                               *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *                                                                           *
  *****************************************************************************/
-// C++ headers
-#include <string>
+///....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-// G4 headers
-#include "G4VUserPrimaryGeneratorAction.hh"
-#include "G4Event.hh"
+#include "globals.hh"
+#include "G4UImessenger.hh"
 
-// NPTool headers
-#include "VEventGenerator.hh"
-#include "DetectorConstruction.hh"
-#include "PrimaryGeneratorActionMessenger.hh"
-using namespace std;
-using namespace CLHEP;
+class PrimaryGeneratorAction;
+class G4UIdirectory;
+class G4UICommand;
+class G4UIcmdWithAString;
+class G4UIcmdWithAnInteger;
+class G4UIcmdWithADoubleAndUnit;
+class G4UIcmdWithoutParameter;
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-
-class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction{
+class PrimaryGeneratorActionMessenger: public G4UImessenger{
   public:
-    PrimaryGeneratorAction(DetectorConstruction*);
-    virtual ~PrimaryGeneratorAction();
-
-  public:
-    void GeneratePrimaries(G4Event*);
-
-  public:
-    void ReadEventGeneratorFile(string Path);
-    void ClearEventGenerator();
-
-  public:
-    void SetTarget();
-
+    PrimaryGeneratorActionMessenger(PrimaryGeneratorAction* );
+   ~PrimaryGeneratorActionMessenger();
+    
+    void SetNewValue(G4UIcommand*, G4String);
+    
   private:
-    DetectorConstruction* m_detector;
-    vector<VEventGenerator*> m_EventGenerator;
-    PrimaryGeneratorActionMessenger* m_Messenger;
+    PrimaryGeneratorAction* PGA;
+    
+    G4UIdirectory* GenDir;
+    G4UIcmdWithoutParameter* UpdateCmd;
+    G4UIcmdWithAString* OpenCmd;
+
 };
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 #endif
+

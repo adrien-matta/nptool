@@ -23,6 +23,8 @@
 /gui/addIcon "nptool" user_icon "/gui/system {gui_nptool}" icons/NPToolLogo.png
 /gui/addIcon "Exit" user_icon "{gui_exit}" icons/power.png
 /gui/addIcon "Update geometry" user_icon "{gui_update}" icons/recycle.png
+/gui/addIcon "Update generator" user_icon "/gen/update" icons/bolt.png
+/gui/addIcon "Open generator" user_icon "/gen/open" icons/folder.png
 /gui/addIcon "There is nothing here" user_icon "{gui_empty}" icons/empty.png 
 /gui/addIcon "Run beam on" user_icon "/run/beamOn" icons/rocket.png
 /gui/addIcon "One event" user_icon "{gui_beamon}" icons/play.png

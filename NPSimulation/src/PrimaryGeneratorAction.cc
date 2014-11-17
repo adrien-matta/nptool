@@ -58,7 +58,7 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 PrimaryGeneratorAction::PrimaryGeneratorAction(DetectorConstruction* det): m_detector(det){
-
+  m_Messenger = new PrimaryGeneratorActionMessenger(this);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -178,6 +178,16 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path){
   }
 
   EventGeneratorFile.close();
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void PrimaryGeneratorAction::ClearEventGenerator(){
+  unsigned int mysize = m_EventGenerator.size();
+  for (unsigned int i = 0 ; i < mysize; i++) {
+    delete m_EventGenerator[i];
+  }
+  
+  m_EventGenerator.clear();
+
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PrimaryGeneratorAction::SetTarget(){
