@@ -74,6 +74,7 @@ class TTigressPhysics :  public TObject, public NPA::VDetector{
     //   Those two method all to clear the Event Physics or Data
      void ClearEventPhysics() ;
      void ClearEventData() ;
+     void ClearPreTreatedData();
 
   public:
     void PreTreat();

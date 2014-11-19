@@ -48,8 +48,10 @@ TTigressPhysics::TTigressPhysics()  {
 /////////////////////////////////////////////////
 void TTigressPhysics::BuildPhysicalEvent(){
   PreTreat();
- 
+  cout << "Multiplicity:\t" << m_PreTreatedData->GetMultiplicityGe() << endl;
+
   if(m_PreTreatedData->GetMultiplicityGe()<10){
+cout << "here" << endl;
     vector < vector < unsigned int > > HitIndex;
     vector<unsigned int> Number;
     Number.resize(4,0);
@@ -76,14 +78,15 @@ void TTigressPhysics::BuildPhysicalEvent(){
     }
 
     //Applying Addback
+    
     for(unsigned int clover = 0; clover<HitIndex.size(); clover++){
-      if(HitIndex[clover].size() == 0) continue;
-      else if(HitIndex[clover].size() == 1) {
+      if(HitIndex[clover].size() == 0) {cout << "size == 0" << endl; continue;}
+      else if(HitIndex[clover].size() == 1) {cout << "size == 1" << endl;
         Gamma_Energy.push_back(m_PreTreatedData->GetGeEnergy(HitIndex[clover][0]) );
         Clover_Number.push_back(m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]) );
         Crystal_Number.push_back(m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]) );
       }
-      else if(HitIndex[clover].size() == 2){
+      else if(HitIndex[clover].size() == 2){cout << "size == 2" << endl;
         unsigned int Cl1 = m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]);
         unsigned int Cl2 = m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][1]);
         if(AdjacentCrystal(Cl1, Cl2) == true) {   //Case where crystals are adjacent
@@ -93,7 +96,7 @@ void TTigressPhysics::BuildPhysicalEvent(){
           Clover_Number.push_back(m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]) );
           Crystal_Number.push_back(m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]) );
         }
-        else {    //Case were crystals are not adjacent
+        else {   cout << "size > 2" << endl; //Case were crystals are not adjacent
           Gamma_Energy.push_back(m_PreTreatedData->GetGeEnergy(HitIndex[clover][0]) );
           Clover_Number.push_back(m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]) );
           Crystal_Number.push_back(m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]) );
@@ -118,25 +121,31 @@ TVector3 TTigressPhysics::GetPositionOfInteraction(int i){
 }
 /////////////////////////////////////////////////
 void TTigressPhysics::PreTreat(){
-  //ClearPreTreatedData();
-
+  ClearPreTreatedData();
+ 
   //Calibration vector not standard in NPTool. Standardise later
   ifstream CalFile;
-  CalFile.open(".home/ak00128/Desktop/PhD/S1107/GammaCal/Calibration_Parameters.dat");
+  CalFile.open("/home/ak00128/Desktop/PhD/S1107/GammaCal/Calibration_Parameters.dat");
 
   int Clover, Crystal, Segment, Count, u = 400;
   double par_a, par_b;
-  vector< vector< double > > Calibration;
+  vector< double > vClover;
+  vector< double > vCrystal;
+  vector< double > vSegment;
+  vector< double > vCount;
+  vector< double > vPar_A;
+  vector< double > vPar_B;
 
-  if(CalFile.is_open()){
+  if(CalFile.is_open()){//cout << "here" <<endl;
     for(unsigned int loop = 0; loop<u; loop++){
+      
       CalFile >> Clover >> Crystal >> Segment >> Count >> par_a >> par_b;
-      Calibration[loop].push_back(Clover);
-      Calibration[loop].push_back(Crystal);
-      Calibration[loop].push_back(Segment);
-      Calibration[loop].push_back(Count);
-      Calibration[loop].push_back(par_a);
-      Calibration[loop].push_back(par_b);
+      vClover.push_back(Clover);//cout << Clover << endl;
+      vCrystal.push_back(Crystal);
+      vSegment.push_back(Segment);
+      vCount.push_back(Count);
+      vPar_A.push_back(par_a);
+      vPar_B.push_back(par_b);
     }
   }
   
@@ -145,10 +154,10 @@ void TTigressPhysics::PreTreat(){
   for(unsigned int i = 0 ; i < m_EventData->GetMultiplicityGe(); ++i){
     double grad, intercept;
     for(unsigned int vec = 0; vec < u; vec++){
-      if( (Calibration[vec][0] == m_EventData->GetGeCloverNbr(i) ) && (Calibration[vec][1] == m_EventData->GetGeCrystalNbr(i) )
-      && (Calibration[vec][2] == m_EventData->GetGeSegmentNbr(i) ) ){
-        grad = Calibration[vec][4];
-        intercept = Calibration[vec][5];
+      if( (vClover[vec] == m_EventData->GetGeCloverNbr(i) ) && (vCrystal[vec] == m_EventData->GetGeCrystalNbr(i) )
+      && (vSegment[vec] == m_EventData->GetGeSegmentNbr(i) ) ){
+        grad = vPar_A[vec];
+        intercept = vPar_B[vec];
         break;
       }
     }
@@ -300,5 +309,10 @@ void TTigressPhysics::ClearEventData() {
 
 m_EventData->Clear();
 m_PreTreatedData->Clear();
+}
+//////////////////////////////////////////////////////////////////////////
+void TTigressPhysics::ClearPreTreatedData() {
+
+  m_PreTreatedData->Clear();
 }
 
