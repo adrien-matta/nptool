@@ -57,6 +57,16 @@ MaterialManager::MaterialManager(){
 void MaterialManager::Destroy(){
 
 }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
+void MaterialManager::ClearMaterialLibrary(){
+  map<string,G4Material*>::iterator it;
+  for(it = m_Material.begin() ; it != m_Material.end() ; it++){
+    delete it->second;
+  }
+
+  m_Material.clear();
+}
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 G4Material* MaterialManager::GetMaterialFromLibrary(string Name){

@@ -65,7 +65,6 @@ AnnularS1::AnnularS1(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 AnnularS1::~AnnularS1(){
-  delete m_Event;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

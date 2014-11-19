@@ -56,7 +56,7 @@ public:
    void RedefineGeometry(string file="");
  
 public:
-   void ReadConfigurationFile(string);
+   G4VPhysicalVolume* ReadConfigurationFile();
    void AddDetector(VDetector*);
    void ReadAllSensitive(const G4Event*);
 

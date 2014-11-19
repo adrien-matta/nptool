@@ -20,16 +20,17 @@
 #/gui/addButton custom "Add Hits" "/vis/scene/add/hits"
 
 # NPS tool bar
-/gui/addIcon "nptool" user_icon "/gui/system {gui_nptool}" icons/NPToolLogo.png
+/gui/addIcon "Follow us on GitHub" user_icon "/gui/system {gui_nptool}" icons/NPToolLogo.png
 /gui/addIcon "Exit" user_icon "{gui_exit}" icons/power.png
+/gui/addIcon "the star gaze" user_icon "{gui_empty}" icons/empty.png 
 /gui/addIcon "Update geometry" user_icon "{gui_update}" icons/recycle.png
 /gui/addIcon "Update generator" user_icon "/gen/update" icons/bolt.png
 /gui/addIcon "Open generator" user_icon "/gen/open" icons/folder.png
-/gui/addIcon "There is nothing here" user_icon "{gui_empty}" icons/empty.png 
+/gui/addIcon "the moon beyond the clouds" user_icon "{gui_empty}" icons/empty.png 
 /gui/addIcon "Run beam on" user_icon "/run/beamOn" icons/rocket.png
 /gui/addIcon "One event" user_icon "{gui_beamon}" icons/play.png
 /gui/addIcon "Activate tracking verbose" user_icon "{gui_tracking}" icons/shoeprints.png
-/gui/addIcon "Only borring emptiness" user_icon "{gui_empty}" icons/empty.png 
+/gui/addIcon "fill the empty dark" user_icon "{gui_empty}" icons/empty.png 
 /gui/addIcon "View Browser" user_icon "{gui_browser}" icons/browser.png
 /gui/addIcon "Take a screen shot" user_icon "/vis/ogl/printEPS" icons/camera.png
 /gui/addIcon "Home" user_icon     "{gui_home}" icons/eye.png

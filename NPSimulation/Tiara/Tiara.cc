@@ -329,8 +329,7 @@ void Tiara::InitializeScorers(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Tiara::InitializeRootOutput(){
-  RootOutput *pAnalysis = RootOutput::getInstance(); 
-  TTree *pTree = pAnalysis->GetTree();   
+  TTree *pTree = RootOutput::getInstance()->GetTree();   
   pTree->Branch("TiaraBarrel", "TTiaraBarrelData", &m_EventBarrel) ;
   pTree->Branch("TiaraHyball", "TTiaraHyballData", &m_EventHyball) ;
 
@@ -338,10 +337,7 @@ void Tiara::InitializeRootOutput(){
   // a redifinition of the geometry in the simulation
   pTree->SetBranchAddress("TiaraBarrel", &m_EventBarrel) ;
   pTree->SetBranchAddress("TiaraHyball", &m_EventHyball) ;
-
-
 }
-
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Tiara::ConstructInnerBarrel(G4LogicalVolume* world){

@@ -61,6 +61,9 @@ private:
   map<string,G4Material*> m_Material; 
  
 public:
+  // clear all exising material from the library
+  void ClearMaterialLibrary();
+
   // Look for a known material named Name.
   // If the Material is known but not instantiate it is created and return
   // If the Material is instantiate it return it

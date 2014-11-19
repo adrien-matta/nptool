@@ -66,10 +66,6 @@ ThinSi::ThinSi(){
 }
 
 ThinSi::~ThinSi(){
-  delete m_MaterialSilicon;
-  delete m_MaterialAl;
-  delete m_MaterialVacuum;
-
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void ThinSi::AddTelescope( G4ThreeVector TL,
@@ -220,8 +216,7 @@ void ThinSi::VolumeMaker(  G4int             DetNumber ,
   G4LogicalVolume* logicSi  =
     new G4LogicalVolume(solidSi, m_MaterialSilicon, "logicSi", 0, 0, 0);
 
-  G4VisAttributes* VisAtt2 = new G4VisAttributes(G4Colour(0.3, 0.3, 0.3));
-  logicAlu->SetVisAttributes(VisAtt2);  
+  logicAlu->SetVisAttributes(G4VisAttributes::Invisible);  
 
   new G4PVPlacement(0, posSi, logicSi, Name + "_Si", logicThinSi, true, 0);
 
