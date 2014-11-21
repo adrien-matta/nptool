@@ -48,14 +48,14 @@ TTigressPhysics::TTigressPhysics()  {
 /////////////////////////////////////////////////
 void TTigressPhysics::BuildPhysicalEvent(){
   PreTreat();
-  cout << "Multiplicity:\t" << m_PreTreatedData->GetMultiplicityGe() << endl;
 
-  if(m_PreTreatedData->GetMultiplicityGe()<10){
-cout << "here" << endl;
+  //if(m_PreTreatedData->GetMultiplicityGe()<11){
+
     vector < vector < unsigned int > > HitIndex;
     vector<unsigned int> Number;
-    Number.resize(4,0);
-    HitIndex.resize(16, Number);
+    Number.resize(4);
+    HitIndex.resize(16);
+    
     for(unsigned int i = 0 ; i < m_PreTreatedData->GetMultiplicityGe() ; i++){
       if( m_PreTreatedData->GetGeSegmentNbr(i)==9 && m_PreTreatedData->GetGeEnergy(i)>20){
         
@@ -64,8 +64,7 @@ cout << "here" << endl;
         //CrystalNbr = m_PreTreatedData->GetGeCrystalNbr(i);
         //SegmentNbr = m_PreTreatedData->GetGeSegmentNbr(i);
         //Ge_Energy = m_PreTreatedData->GetGeEnergyr(i);
-        
-        HitIndex[m_PreTreatedData->GetGeCloverNbr(i)].push_back(i);
+        HitIndex[m_PreTreatedData->GetGeCloverNbr(i)-1].push_back(i);
 
         // Look for Associate BGO
         bool BGOcheck = false ;
@@ -80,23 +79,23 @@ cout << "here" << endl;
     //Applying Addback
     
     for(unsigned int clover = 0; clover<HitIndex.size(); clover++){
-      if(HitIndex[clover].size() == 0) {cout << "size == 0" << endl; continue;}
-      else if(HitIndex[clover].size() == 1) {cout << "size == 1" << endl;
+      if(HitIndex[clover].size() == 0) continue;
+      else if(HitIndex[clover].size() == 1) {
         Gamma_Energy.push_back(m_PreTreatedData->GetGeEnergy(HitIndex[clover][0]) );
         Clover_Number.push_back(m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]) );
         Crystal_Number.push_back(m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]) );
       }
-      else if(HitIndex[clover].size() == 2){cout << "size == 2" << endl;
+      else if(HitIndex[clover].size() == 2){
         unsigned int Cl1 = m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]);
         unsigned int Cl2 = m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][1]);
-        if(AdjacentCrystal(Cl1, Cl2) == true) {   //Case where crystals are adjacent
+        if(AdjacentCrystal(Cl1, Cl2) == true) {         //Case where crystals are adjacent
           double E_sum = m_PreTreatedData->GetGeEnergy(HitIndex[clover][0]) + m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][1]);
 
           Gamma_Energy.push_back( E_sum );
           Clover_Number.push_back(m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]) );
           Crystal_Number.push_back(m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]) );
         }
-        else {   cout << "size > 2" << endl; //Case were crystals are not adjacent
+        else if (AdjacentCrystal(Cl1, Cl2) == false) {  //Case were crystals are not adjacent
           Gamma_Energy.push_back(m_PreTreatedData->GetGeEnergy(HitIndex[clover][0]) );
           Clover_Number.push_back(m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]) );
           Crystal_Number.push_back(m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]) );
@@ -109,9 +108,7 @@ cout << "here" << endl;
       else continue;
     }
     HitIndex.clear();
-        //Crystal_Number.push_back( );
-        //Clover_Number.push_back( );
-  }
+  //}
   
   
 
@@ -136,11 +133,11 @@ void TTigressPhysics::PreTreat(){
   vector< double > vPar_A;
   vector< double > vPar_B;
 
-  if(CalFile.is_open()){//cout << "here" <<endl;
+  if(CalFile.is_open()){
     for(unsigned int loop = 0; loop<u; loop++){
       
       CalFile >> Clover >> Crystal >> Segment >> Count >> par_a >> par_b;
-      vClover.push_back(Clover);//cout << Clover << endl;
+      vClover.push_back(Clover);
       vCrystal.push_back(Crystal);
       vSegment.push_back(Segment);
       vCount.push_back(Count);
