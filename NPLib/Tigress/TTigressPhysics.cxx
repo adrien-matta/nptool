@@ -78,13 +78,14 @@ void TTigressPhysics::BuildPhysicalEvent(){
         Clover_Number.push_back(m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]) );
         Crystal_Number.push_back(m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]) );
 
-        //bool BGOcheck = false ;
+        BGOcheck = false ;
         for(unsigned j = 0 ;  j <  m_EventData->GetMultiplicityBGO() ; j++){
           if( m_EventData->GetBGOCloverNbr(j)== clover && m_EventData->GetBGOEnergy(j)>20 ){
              BGOcheck = true ;
           }
-        BGO.push_back(BGOcheck);
+        
         }
+        BGO.push_back(BGOcheck);
       }
       else if(HitIndex[clover].size() == 2){
         unsigned int Cl1 = m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]);
@@ -96,38 +97,41 @@ void TTigressPhysics::BuildPhysicalEvent(){
           Clover_Number.push_back(m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]) );
           Crystal_Number.push_back(m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]) );
 
-          //bool BGOcheck = false ;
+          BGOcheck = false ;
           for(unsigned j = 0 ;  j <  m_EventData->GetMultiplicityBGO() ; j++){
             if( m_EventData->GetBGOCloverNbr(j)== clover && m_EventData->GetBGOEnergy(j)>20 ){
                BGOcheck = true ;
             }
-          BGO.push_back(BGOcheck);
+          
           }
+          BGO.push_back(BGOcheck);
         }
         else if (!AdjacentCrystal(Cl1, Cl2)) {  //Case were crystals are not adjacent
           Gamma_Energy.push_back(m_PreTreatedData->GetGeEnergy(HitIndex[clover][0]) );
           Clover_Number.push_back(m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]) );
           Crystal_Number.push_back(m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]) );
 
-          //bool BGOcheck = false ;
+          BGOcheck = false ;
           for(unsigned j = 0 ;  j <  m_EventData->GetMultiplicityBGO() ; j++){
             if( m_EventData->GetBGOCloverNbr(j)== clover && m_EventData->GetBGOEnergy(j)>20 ){
                BGOcheck = true ;
             }
-          BGO.push_back(BGOcheck);
+          
           }
+          BGO.push_back(BGOcheck);
 
           Gamma_Energy.push_back(m_PreTreatedData->GetGeEnergy(HitIndex[clover][1]) );
           Clover_Number.push_back(m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][1]) );
           Crystal_Number.push_back(m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][1]) );
           
-          //bool BGOcheck = false ;
+          BGOcheck = false ;
           for(unsigned j = 0 ;  j <  m_EventData->GetMultiplicityBGO() ; j++){
             if( m_EventData->GetBGOCloverNbr(j)== clover && m_EventData->GetBGOEnergy(j)>20 ){
                BGOcheck = true ;
             }
-          BGO.push_back(BGOcheck);
+          
           }
+          BGO.push_back(BGOcheck);
         }                  
       }
       else continue;
