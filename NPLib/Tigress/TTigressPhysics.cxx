@@ -65,44 +65,69 @@ void TTigressPhysics::BuildPhysicalEvent(){
         //SegmentNbr = m_PreTreatedData->GetGeSegmentNbr(i);
         //Ge_Energy = m_PreTreatedData->GetGeEnergyr(i);
         HitIndex[m_PreTreatedData->GetGeCloverNbr(i)-1].push_back(i);
-
-        // Look for Associate BGO
-        bool BGOcheck = false ;
-        for(unsigned j = 0 ;  j <  m_EventData->GetMultiplicityBGO() ; j++){
-          if( m_EventData->GetBGOCloverNbr(j)== m_EventData->GetGeCloverNbr(i) && m_EventData->GetBGOEnergy(j)>20 )
-             BGOcheck = true ;
-        }
-        BGO.push_back(BGOcheck);
       }
     }
 
     //Applying Addback
     
     for(unsigned int clover = 0; clover<HitIndex.size(); clover++){
-      if(HitIndex[clover].size() == 0) continue;
-      else if(HitIndex[clover].size() == 1) {
+      bool BGOcheck = false ;
+
+      if(HitIndex[clover].size() == 1) {
         Gamma_Energy.push_back(m_PreTreatedData->GetGeEnergy(HitIndex[clover][0]) );
         Clover_Number.push_back(m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]) );
         Crystal_Number.push_back(m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]) );
+
+        //bool BGOcheck = false ;
+        for(unsigned j = 0 ;  j <  m_EventData->GetMultiplicityBGO() ; j++){
+          if( m_EventData->GetBGOCloverNbr(j)== clover && m_EventData->GetBGOEnergy(j)>20 ){
+             BGOcheck = true ;
+          }
+        BGO.push_back(BGOcheck);
+        }
       }
       else if(HitIndex[clover].size() == 2){
         unsigned int Cl1 = m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]);
         unsigned int Cl2 = m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][1]);
-        if(AdjacentCrystal(Cl1, Cl2) == true) {         //Case where crystals are adjacent
+        if(AdjacentCrystal(Cl1, Cl2)) {         //Case where crystals are adjacent
           double E_sum = m_PreTreatedData->GetGeEnergy(HitIndex[clover][0]) + m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][1]);
 
           Gamma_Energy.push_back( E_sum );
           Clover_Number.push_back(m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]) );
           Crystal_Number.push_back(m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]) );
+
+          //bool BGOcheck = false ;
+          for(unsigned j = 0 ;  j <  m_EventData->GetMultiplicityBGO() ; j++){
+            if( m_EventData->GetBGOCloverNbr(j)== clover && m_EventData->GetBGOEnergy(j)>20 ){
+               BGOcheck = true ;
+            }
+          BGO.push_back(BGOcheck);
+          }
         }
-        else if (AdjacentCrystal(Cl1, Cl2) == false) {  //Case were crystals are not adjacent
+        else if (!AdjacentCrystal(Cl1, Cl2)) {  //Case were crystals are not adjacent
           Gamma_Energy.push_back(m_PreTreatedData->GetGeEnergy(HitIndex[clover][0]) );
           Clover_Number.push_back(m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]) );
           Crystal_Number.push_back(m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]) );
 
+          //bool BGOcheck = false ;
+          for(unsigned j = 0 ;  j <  m_EventData->GetMultiplicityBGO() ; j++){
+            if( m_EventData->GetBGOCloverNbr(j)== clover && m_EventData->GetBGOEnergy(j)>20 ){
+               BGOcheck = true ;
+            }
+          BGO.push_back(BGOcheck);
+          }
+
           Gamma_Energy.push_back(m_PreTreatedData->GetGeEnergy(HitIndex[clover][1]) );
           Clover_Number.push_back(m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][1]) );
           Crystal_Number.push_back(m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][1]) );
+          
+          //bool BGOcheck = false ;
+          for(unsigned j = 0 ;  j <  m_EventData->GetMultiplicityBGO() ; j++){
+            if( m_EventData->GetBGOCloverNbr(j)== clover && m_EventData->GetBGOEnergy(j)>20 ){
+               BGOcheck = true ;
+            }
+          BGO.push_back(BGOcheck);
+          }
         }                  
       }
       else continue;
@@ -122,7 +147,7 @@ void TTigressPhysics::PreTreat(){
  
   //Calibration vector not standard in NPTool. Standardise later
   ifstream CalFile;
-  CalFile.open("/home/ak00128/Desktop/PhD/S1107/GammaCal/Calibration_Parameters.dat");
+  CalFile.open("/home/ak00128/Desktop/PhD/S1107/GammaCal/Calibration_Parameters_152Eu.dat");
 
   int Clover, Crystal, Segment, Count, u = 400;
   double par_a, par_b;
@@ -165,6 +190,7 @@ void TTigressPhysics::PreTreat(){
     m_PreTreatedData->SetGeEnergy( Energy );
     m_PreTreatedData->SetGeTimeCFD( m_EventData->GetGeTimeCFD(i) );
     m_PreTreatedData->SetGeTimeLED( m_EventData->GetGeTimeLED(i) );
+    //cout << grad << "\t" << intercept << "\t" << endl;
   }
 
 } 
@@ -293,6 +319,7 @@ void TTigressPhysics::InitializeRootOutput()
    {
       TTree* outputTree = RootOutput::getInstance()->GetTree();
       outputTree->Branch( "Tigress" , "TTigressPhysics" , &m_EventPhysics );
+      outputTree->Branch( "TigressPreTreated" , "TTigressData" , &m_PreTreatedData );
    }
  ///////////////////////////////////////////////////////////////////////////  
 void TTigressPhysics::ClearEventPhysics() {
