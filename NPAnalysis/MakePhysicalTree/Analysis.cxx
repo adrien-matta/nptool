@@ -37,7 +37,7 @@ int main(int argc, char** argv)
    // Get number of events to treat
    cout << endl << "///////// Starting Analysis ///////// "<< endl;
    //int nentries = Chain->GetEntries();
-   int nentries = 10000;
+   int nentries = 30000;
    cout << " Number of Event to be treated : " << nentries << endl;
    clock_t begin = clock();
    clock_t end = begin;

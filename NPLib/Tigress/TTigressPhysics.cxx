@@ -71,49 +71,55 @@ void TTigressPhysics::BuildPhysicalEvent(){
     //Applying Addback
     
     for(unsigned int clover = 0; clover<HitIndex.size(); clover++){
-      bool BGOcheck = false ;
+      //bool BGOcheck = false ;
 
       if(HitIndex[clover].size() == 1) {
+        //cout << "HitIndex[clover].size() == 1" << endl;
         Gamma_Energy.push_back(m_PreTreatedData->GetGeEnergy(HitIndex[clover][0]) );
         Clover_Number.push_back(m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]) );
         Crystal_Number.push_back(m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]) );
 
-        BGOcheck = false ;
+        bool BGOcheck = false ;
         for(unsigned j = 0 ;  j <  m_EventData->GetMultiplicityBGO() ; j++){
-          if( m_EventData->GetBGOCloverNbr(j)== clover && m_EventData->GetBGOEnergy(j)>20 ){
-             BGOcheck = true ;
+          if( m_EventData->GetBGOCloverNbr(j)== clover+1 && m_EventData->GetBGOEnergy(j)>20 ){
+            //cout << m_EventData->GetBGOCloverNbr(j) << "\t" << clover+1 << endl;
+            //cout << m_EventData->GetBGOCloverNbr(j) << "\t" << clover << endl;
+            BGOcheck = true ;
+
           }
         
         }
         BGO.push_back(BGOcheck);
       }
       else if(HitIndex[clover].size() == 2){
-        unsigned int Cl1 = m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]);
-        unsigned int Cl2 = m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][1]);
-        if(AdjacentCrystal(Cl1, Cl2)) {         //Case where crystals are adjacent
+        //cout << "HitIndex[clover].size() == 2" << endl;
+        unsigned int Cr1 = m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]);
+        unsigned int Cr2 = m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][1]);
+        if(AdjacentCrystal(Cr1, Cr2)) {         //Case where crystals are adjacent
           double E_sum = m_PreTreatedData->GetGeEnergy(HitIndex[clover][0]) + m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][1]);
 
           Gamma_Energy.push_back( E_sum );
           Clover_Number.push_back(m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]) );
           Crystal_Number.push_back(m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]) );
 
-          BGOcheck = false ;
-          for(unsigned j = 0 ;  j <  m_EventData->GetMultiplicityBGO() ; j++){
-            if( m_EventData->GetBGOCloverNbr(j)== clover && m_EventData->GetBGOEnergy(j)>20 ){
-               BGOcheck = true ;
+          bool BGOcheck ;
+          for(unsigned j = 0 ;  j <  m_EventData->GetMultiplicityBGO() ; j++){BGOcheck = false ;
+            if( m_EventData->GetBGOCloverNbr(j)== clover+1 && m_EventData->GetBGOEnergy(j)>20 ){  
+              BGOcheck = true ;
+              
             }
           
           }
           BGO.push_back(BGOcheck);
         }
-        else if (!AdjacentCrystal(Cl1, Cl2)) {  //Case were crystals are not adjacent
+        else if (!AdjacentCrystal(Cr1, Cr2)) {  //Case were crystals are not adjacent
           Gamma_Energy.push_back(m_PreTreatedData->GetGeEnergy(HitIndex[clover][0]) );
           Clover_Number.push_back(m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]) );
           Crystal_Number.push_back(m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]) );
 
-          BGOcheck = false ;
+          bool BGOcheck = false ;
           for(unsigned j = 0 ;  j <  m_EventData->GetMultiplicityBGO() ; j++){
-            if( m_EventData->GetBGOCloverNbr(j)== clover && m_EventData->GetBGOEnergy(j)>20 ){
+            if( m_EventData->GetBGOCloverNbr(j)== clover+1 && m_EventData->GetBGOEnergy(j)>20 ){
                BGOcheck = true ;
             }
           
@@ -126,15 +132,19 @@ void TTigressPhysics::BuildPhysicalEvent(){
           
           BGOcheck = false ;
           for(unsigned j = 0 ;  j <  m_EventData->GetMultiplicityBGO() ; j++){
-            if( m_EventData->GetBGOCloverNbr(j)== clover && m_EventData->GetBGOEnergy(j)>20 ){
+
+            if( m_EventData->GetBGOCloverNbr(j)== clover+1 && m_EventData->GetBGOEnergy(j)>20 ){
                BGOcheck = true ;
             }
           
           }
           BGO.push_back(BGOcheck);
         }                  
-      }
-      else continue;
+      } 
+      else  continue;
+    }
+    if(Gamma_Energy.size()!=BGO.size()){
+      cout << "Herer" << BGO.size() << "\t" << Gamma_Energy.size() << endl;
     }
     HitIndex.clear();
   //}
