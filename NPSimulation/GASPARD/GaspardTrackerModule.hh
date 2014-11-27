@@ -88,6 +88,17 @@ protected:
    bool              m_non_sensitive_part_visiualisation;
 
 protected:
+   ////////////////////////////////////////////////////
+   //////////////////// Material //////////////////////
+   ////////////////////////////////////////////////////
+   //   Declare all material used by Gaspard 
+   void InitializeMaterial() ;
+   // Si
+   G4Material* m_MaterialSilicon;
+   //  Vacuum
+   G4Material* m_MaterialVacuum ;
+
+protected:
    // First stage Associate Scorer
    G4MultiFunctionalDetector* m_FirstStageScorer;
 

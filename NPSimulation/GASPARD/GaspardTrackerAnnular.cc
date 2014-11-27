@@ -112,71 +112,6 @@ void GaspardTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
    DetectorNumber = Number.str()             ;
 
    ////////////////////////////////////////////////////////////////
-   /////////////////Element  Definition ///////////////////////////
-   ////////////////////////////////////////////////////////////////
-   G4String symbol                      ;
-   G4double density = 0. , a = 0, z = 0 ;
-   G4int ncomponents = 0, natoms = 0    ;
-
-   G4Element* H   = new G4Element("Hydrogen" , symbol = "H"  , z = 1  , a = 1.01   * g / mole);
-   G4Element* C   = new G4Element("Carbon"   , symbol = "C"  , z = 6  , a = 12.011 * g / mole);
-   G4Element* N   = new G4Element("Nitrogen" , symbol = "N"  , z = 7  , a = 14.01  * g / mole);
-   G4Element* O   = new G4Element("Oxigen"   , symbol = "O"  , z = 8  , a = 16.00  * g / mole);
-   G4Element* I   = new G4Element("Iode"     , symbol = "I"  , z = 53 , a = 126.9  * g / mole);
-   G4Element* Cs  = new G4Element("Cesium"   , symbol = "Cs" , z = 55 , a = 132.9  * g / mole);
-
-   G4Element* Co  = new G4Element("Cobalt"  , symbol = "Co" , z = 27 , a = 58.933 * g / mole);
-   G4Element* Cr  = new G4Element("Cromium"  , symbol = "Cr" , z = 24 , a = 51.996 * g / mole);
-   G4Element* Ni  = new G4Element("Nickel"   , symbol = "Ni" , z = 28 , a = 58.69  * g / mole);
-   G4Element* Fe  = new G4Element("Iron"     , symbol = "Fe" , z = 26 , a = 55.847 * g / mole);
-   G4Element* W   = new G4Element("Tungsten" , symbol = "W"  , z = 74 , a = 183.5  * g / mole);
-
-   ////////////////////////////////////////////////////////////////
-   /////////////////Material Definition ///////////////////////////
-   ////////////////////////////////////////////////////////////////
-   // Si
-   a = 28.0855 * g / mole;
-   density = 2.321 * g / cm3;
-   G4Material* Silicon = new G4Material("Si", z = 14., a, density);
-
-   // Al
-//   density = 2.702 * g / cm3;
-//   a = 26.98 * g / mole;
-//   G4Material* Aluminium = new G4Material("Aluminium", z = 13., a, density);
-
-   // Iron
-//   density = 7.874 * g / cm3;
-//   a = 55.847 * g / mole;
-//   G4Material* Iron = new G4Material("Iron", z = 26., a, density);
-
-   // CsI
-   density = 4.51 * g / cm3;
-   G4Material* CsI = new G4Material("CsI", density, ncomponents = 2);
-   CsI->AddElement(Cs , natoms = 1);
-   CsI->AddElement(I  , natoms = 1);
-
-   //  Vacuum
-   density = 0.000000001 * mg / cm3;
-   G4Material* Vacuum = new G4Material("Vacuum", density, ncomponents = 2);
-   Vacuum->AddElement(N, .7);
-   Vacuum->AddElement(O, .3);
-
-   //  Mylar
-   density = 1.397 * g / cm3;
-   G4Material* Myl = new G4Material("Mylar", density, ncomponents = 3);
-   Myl->AddElement(C, natoms = 10);
-   Myl->AddElement(H, natoms = 8);
-   Myl->AddElement(O, natoms = 4);
-
-   // Havar
-   G4Material* Harvar = new G4Material("Havar", 8.3*g / cm3, 5);
-   Harvar->AddElement(Co , 42);
-   Harvar->AddElement(Cr , 20);
-   Harvar->AddElement(Ni , 13);
-   Harvar->AddElement(Fe , 19);
-   Harvar->AddElement(W  ,  1);
-
-   ////////////////////////////////////////////////////////////////
    ////////////// Starting Volume Definition //////////////////////
    ////////////////////////////////////////////////////////////////
    // Name of the module
@@ -191,7 +126,7 @@ void GaspardTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
                                 360*deg);
 
 //   G4LogicalVolume* logicMM = new G4LogicalVolume(solidMM, Iron, Name, 0, 0, 0);
-   G4LogicalVolume* logicMM = new G4LogicalVolume(solidMM, Vacuum, Name, 0, 0, 0);
+   G4LogicalVolume* logicMM = new G4LogicalVolume(solidMM, m_MaterialVacuum, Name, 0, 0, 0);
 
    new G4PVPlacement(G4Transform3D(*MMrot, MMpos), logicMM, Name, world, false, 0);
 
@@ -208,7 +143,7 @@ void GaspardTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
                                     0*deg, 
                                     360*deg); 
 
-   G4LogicalVolume* logicVacBox = new G4LogicalVolume(solidVacBox, Vacuum, "logicVacBox", 0, 0, 0);
+   G4LogicalVolume* logicVacBox = new G4LogicalVolume(solidVacBox, m_MaterialVacuum, "logicVacBox", 0, 0, 0);
 
    G4PVPlacement(0, positionVacBox, logicVacBox, "G" + DetectorNumber + "VacBox", logicMM, false, 0);
 
@@ -230,7 +165,7 @@ void GaspardTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
                                          360*deg); 
 
 //      G4LogicalVolume* logicAluStrip = new G4LogicalVolume(solidAluStrip, Aluminium, "logicAluStrip", 0, 0, 0);
-      G4LogicalVolume* logicAluStrip = new G4LogicalVolume(solidAluStrip, Vacuum, "logicAluStrip", 0, 0, 0);
+      G4LogicalVolume* logicAluStrip = new G4LogicalVolume(solidAluStrip, m_MaterialVacuum, "logicAluStrip", 0, 0, 0);
 
       new G4PVPlacement(0, positionAluStripFront, logicAluStrip, "G" + DetectorNumber + "AluStripFront", logicMM, false, 0);
       new G4PVPlacement(0, positionAluStripBack,  logicAluStrip, "G" + DetectorNumber + "AluStripBack",  logicMM, false, 0);
@@ -246,7 +181,7 @@ void GaspardTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
                                          FirstStageThickness/2, 
                                          0*deg, 
                                          360*deg); 
-      G4LogicalVolume* logicSilicon = new G4LogicalVolume(solidSilicon, Silicon, "logicSilicon", 0, 0, 0);
+      G4LogicalVolume* logicSilicon = new G4LogicalVolume(solidSilicon, m_MaterialSilicon, "logicSilicon", 0, 0, 0);
 
       new G4PVPlacement(0, positionSilicon, logicSilicon, Name + "_Silicon", logicMM, false, 0);
 
@@ -272,7 +207,7 @@ void GaspardTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
                                             0*deg, 
                                             360*deg); 
 
-      G4LogicalVolume* logicSecondStage = new G4LogicalVolume(solidSecondStage, Silicon, "logicSecondStage", 0, 0, 0);
+      G4LogicalVolume* logicSecondStage = new G4LogicalVolume(solidSecondStage, m_MaterialSilicon, "logicSecondStage", 0, 0, 0);
 
       new G4PVPlacement(0, positionSecondStage, logicSecondStage, Name + "_SecondStage", logicMM, false, 0);
 
@@ -298,7 +233,7 @@ void GaspardTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
                                             0*deg, 
                                             360*deg); 
 
-      G4LogicalVolume* logicThirdStage = new G4LogicalVolume(solidThirdStage, Silicon, "logicThirdStage", 0, 0, 0);
+      G4LogicalVolume* logicThirdStage = new G4LogicalVolume(solidThirdStage, m_MaterialSilicon, "logicThirdStage", 0, 0, 0);
 
       new G4PVPlacement(0, positionThirdStage, logicThirdStage, Name + "_ThirdStage", logicMM, false, 0);
 
