@@ -74,6 +74,9 @@ void TTigressPhysics::BuildPhysicalEvent(){
 }
 /////////////////////////////////////////////////
 TVector3 TTigressPhysics::GetPositionOfInteraction(int i){
+   TVector3 dummy;
+
+   return dummy;
 }
 /////////////////////////////////////////////////
 void TTigressPhysics::PreTreat(){
