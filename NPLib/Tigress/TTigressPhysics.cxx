@@ -51,8 +51,8 @@ void TTigressPhysics::BuildPhysicalEvent(){
 
   //if(m_PreTreatedData->GetMultiplicityGe()<11){
 
-    vector < vector < unsigned int > > HitIndex;
-    vector<unsigned int> Number;
+    //vector < vector < unsigned int > > HitIndex;
+    //vector<unsigned int> Number;
     Number.resize(4);
     HitIndex.resize(16);
     
