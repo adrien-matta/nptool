@@ -166,41 +166,12 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
    DetectorNumber = Number.str()             ;
 
    /////////////////////////////////////////////////////////////////
-   /////////////////Element  Definition ///////////////////////////
-   ////////////////////////////////////////////////////////////////
-   G4String symbol;
-   G4double density = 0. , a = 0, z = 0;
-   G4int ncomponents = 0;
-
-   ////////////////////////////////////////////////////////////////
-   /////////////////Material Definition ///////////////////////////
-   ////////////////////////////////////////////////////////////////
-   // Al
-//   density = 2.702 * g / cm3;
-//   a = 26.98 * g / mole;
-//   G4Material* Aluminium = new G4Material("Aluminium", z = 13., a, density);
-
-   // Si
-   a = 28.0855 * g / mole;
-   density = 2.321 * g / cm3;
-   G4Material* Silicon = new G4Material("Si", z = 14., a, density);
-
-   //  Vacuum
-   G4Element* N   = new G4Element("Nitrogen" , symbol = "N"  , z = 7  , a = 14.01  * g / mole);
-   G4Element* O   = new G4Element("Oxigen"   , symbol = "O"  , z = 8  , a = 16.00  * g / mole);
-
-   density = 0.000000001 * mg / cm3;
-   G4Material* Vacuum = new G4Material("Vacuum", density, ncomponents = 2);
-   Vacuum->AddElement(N, .7);
-   Vacuum->AddElement(O, .3);
-
-   ////////////////////////////////////////////////////////////////
    ////////////// Starting Volume Definition //////////////////////
    ////////////////////////////////////////////////////////////////
    G4String Name = "GPDDummyShape" + DetectorNumber ;
 
    G4Box*           solidGPDDummyShape = new G4Box(Name, 0.5*FaceFront, 0.5*FaceFront, 0.5*Length);
-   G4LogicalVolume* logicGPDDummyShape = new G4LogicalVolume(solidGPDDummyShape, Vacuum, Name, 0, 0, 0);
+   G4LogicalVolume* logicGPDDummyShape = new G4LogicalVolume(solidGPDDummyShape, m_MaterialVacuum, Name, 0, 0, 0);
 
    new G4PVPlacement(G4Transform3D(*MMrot, MMpos) ,
                                      logicGPDDummyShape           ,
@@ -219,7 +190,7 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
    //Remember G4 is limitationg step on geometry constraints.
    G4ThreeVector positionMarkerU = MMCenter*0.8 + MMu*FirstStageFace/4;
    G4Box*           solidMarkerU = new G4Box("solidMarkerU", FirstStageFace/4, 1*mm, 1*mm);
-   G4LogicalVolume* logicMarkerU = new G4LogicalVolume(solidMarkerU, Vacuum, "logicMarkerU", 0, 0, 0);
+   G4LogicalVolume* logicMarkerU = new G4LogicalVolume(solidMarkerU, m_MaterialVacuum, "logicMarkerU", 0, 0, 0);
    new G4PVPlacement(G4Transform3D(*MMrot,positionMarkerU), logicMarkerU, "MarkerU", world, false, 0);
 
    G4VisAttributes* MarkerUVisAtt= new G4VisAttributes(G4Colour(0.,0.,0.5)); //blue
@@ -227,7 +198,7 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
 
    G4ThreeVector positionMarkerV = MMCenter*0.8 + MMv*FirstStageFace/4;
    G4Box*           solidMarkerV = new G4Box("solidMarkerU", 1*mm, FirstStageFace/4, 1*mm);
-   G4LogicalVolume* logicMarkerV = new G4LogicalVolume(solidMarkerV, Vacuum, "logicMarkerV", 0, 0, 0);
+   G4LogicalVolume* logicMarkerV = new G4LogicalVolume(solidMarkerV, m_MaterialVacuum, "logicMarkerV", 0, 0, 0);
    new G4PVPlacement(G4Transform3D(*MMrot,positionMarkerV), logicMarkerV, "MarkerV", world, false, 0);
 
    G4VisAttributes* MarkerVVisAtt= new G4VisAttributes(G4Colour(0.,0.5,0.)); //green
@@ -254,7 +225,7 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
       G4ThreeVector  positionFirstStage = G4ThreeVector(0, 0, FirstStage_PosZ);
 
       G4Box*           solidFirstStage = new G4Box("solidFirstStage", 0.5*FirstStageFace, 0.5*FirstStageFace, 0.5*FirstStageThickness);
-      G4LogicalVolume* logicFirstStage = new G4LogicalVolume(solidFirstStage, Silicon, "logicFirstStage", 0, 0, 0);
+      G4LogicalVolume* logicFirstStage = new G4LogicalVolume(solidFirstStage, m_MaterialSilicon, "logicFirstStage", 0, 0, 0);
 
       new G4PVPlacement(0, 
                                     positionFirstStage, 
@@ -293,7 +264,7 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
       G4ThreeVector  positionSecondStage = G4ThreeVector(0, 0, SecondStage_PosZ);
 
       G4Box*           solidSecondStage = new G4Box("solidSecondStage", 0.5*SecondStageFace, 0.5*SecondStageFace, 0.5*SecondStageThickness);
-      G4LogicalVolume* logicSecondStage = new G4LogicalVolume(solidSecondStage, Silicon, "logicSecondStage", 0, 0, 0);
+      G4LogicalVolume* logicSecondStage = new G4LogicalVolume(solidSecondStage, m_MaterialSilicon, "logicSecondStage", 0, 0, 0);
 
       new G4PVPlacement(0, 
                                     positionSecondStage, 
@@ -332,7 +303,7 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
       G4ThreeVector  positionThirdStage = G4ThreeVector(0, 0, ThirdStage_PosZ);
 
       G4Box*           solidThirdStage = new G4Box("solidThirdStage", 0.5*ThirdStageFace, 0.5*ThirdStageFace, 0.5*ThirdStageThickness);
-      G4LogicalVolume* logicThirdStage = new G4LogicalVolume(solidThirdStage, Silicon, "logicThirdStage", 0, 0, 0);
+      G4LogicalVolume* logicThirdStage = new G4LogicalVolume(solidThirdStage, m_MaterialSilicon, "logicThirdStage", 0, 0, 0);
 
       new G4PVPlacement(0, 
                                     positionThirdStage, 
