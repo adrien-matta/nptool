@@ -53,7 +53,7 @@ DetectorMessenger::~DetectorMessenger(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void DetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue){ 
+void DetectorMessenger::SetNewValue(G4UIcommand* command, G4String){ 
   if( command == UpdateCmd )
    { Detector->RedefineGeometry(""); }
 }

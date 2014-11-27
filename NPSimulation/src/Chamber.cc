@@ -61,6 +61,10 @@ Chamber::Chamber()
 
 G4Material* Chamber::GetMaterialFromLibrary(G4String MaterialName, G4double Temperature, G4double Pressure)
 {
+   // avoid compilation warnings
+   Temperature *= 1;
+   Pressure *= 1;
+
    if (MaterialName == "Alu") {
     return MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
    }

@@ -98,7 +98,7 @@ void EventGeneratorTwoBodyReaction::ReadConfiguration(string Path, int){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventGeneratorTwoBodyReaction::GenerateEvent(G4Event* anEvent){
+void EventGeneratorTwoBodyReaction::GenerateEvent(G4Event*){
   //////////////////////////////////////////////////
   //////Define the kind of particle to shoot////////
   //////////////////////////////////////////////////
