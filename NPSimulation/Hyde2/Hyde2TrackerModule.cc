@@ -20,6 +20,7 @@
  *****************************************************************************/
 
 #include "Hyde2TrackerModule.hh"
+#include "MaterialManager.hh"
 #include "RootOutput.h"
 
 
@@ -63,3 +64,12 @@ void Hyde2TrackerModule::InitializeIndex()
    m_index["Trapezoid1"]  =  2200;
    m_index["Trapezoid2"]  =  2300;
 }
+
+
+
+void Hyde2TrackerModule::InitializeMaterial()
+{
+   m_MaterialSilicon = MaterialManager::getInstance()->GetMaterialFromLibrary("Si");
+   m_MaterialVacuum  = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
+}
+
