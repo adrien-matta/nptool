@@ -88,7 +88,8 @@ class TTigressPhysics :  public TObject, public NPA::VDetector{
   public: // Data Member
     vector<double> Gamma_Energy;
     vector<int> Crystal_Number;
-     vector<int> Clover_Number;
+    vector<int> Clover_Number;
+    //vector<int> Segment_Number;
     vector<bool>   BGO;
     
    public:
