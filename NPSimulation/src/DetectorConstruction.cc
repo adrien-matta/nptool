@@ -73,6 +73,10 @@
 #include "Eurogam.hh"
 #endif
 
+#ifdef INC_FATIMA
+#include "Fatima.hh"
+#endif
+
 #ifdef INC_GASPARD
 #include "GaspardTracker.hh"
 #endif
@@ -202,10 +206,12 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
   bool cComptonTelescope = false;
   bool cDummy            = false;
   bool cEurogam          = false;
+  bool cFatima           = false;
   bool cGeneralTarget    = false;
   bool cGeneralChamber   = false;
   bool cGPDTracker       = false;   
-  bool cHYD2Tracker      = false;  
+  bool cHYD2Tracker      = false;
+  bool cHelios           = false;
   bool cMUST2            = false;
   bool cPlastic          = false;
   bool cParis            = false;   
@@ -215,7 +221,6 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
   bool cTigress          = false;
   bool cTiara            = false;
   bool cW1               = false;
-  bool cHelios           = false;
 
   int VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
 
@@ -301,6 +306,26 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
 #endif
     }
 
+    ////////////////////////////////////////////
+    //////////// Search for FATIMA   ///////////
+    ////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 6, "Fatima") == 0 && cFatima == false) {
+#ifdef INC_FATIMA
+      cFatima = true ;
+      G4cout << "//////// Fatima  ////////" << G4endl   ;
+      
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector = new Fatima()                  ;
+      
+      // Read Position of Telescope
+      ConfigFile.close()                                 ;
+      myDetector->ReadConfiguration(Path)                   ;
+      ConfigFile.open(Path.c_str())                      ;
+      
+      // Add array to the VDetector Vector
+      AddDetector(myDetector)                            ;
+#endif
+    }
 
     ////////////////////////////////////////////
     //////////// Search for Gaspard ////////////

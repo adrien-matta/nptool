@@ -1,3 +1,4 @@
+
 /*****************************************************************************
  * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
  *                                                                           *
@@ -32,6 +33,7 @@
 #include "Hyde2Tracker.h"
 #include "Paris.h"
 #include "Shield.h"
+#include "Fatima.h"
 #include "TAnnularS1Physics.h"
 #include "TCATSPhysics.h"
 #include "TCharissaPhysics.h"
@@ -93,6 +95,7 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
    bool IonisationChamber   = false;
    bool LaBr3		            = false;
    bool MUST2               = false;
+   bool FatimaDet           = false;
    bool ParisDet            = false;
    bool S2                  = false;
    bool SPEG                = false;
@@ -252,8 +255,25 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
       AddDetector("EXOGAM", myDetector);
 #endif
     }
-
-   
+    ////////////////////////////////////////////
+    ///////////// Search for Fatima ////////////
+    ////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 6, "Fatima") == 0 && FatimaDet == false) {
+#ifdef INC_FATIMA
+      FatimaDet = true;
+      cout << "//////// FATIMA ////////" << endl << endl;
+      
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector = new Fatima();
+      // Read Position of Telescope
+      ConfigFile.close();
+      myDetector->ReadConfiguration(Path);
+      ConfigFile.open(Path.c_str());
+      
+      // Add array to the VDetector Vector
+      AddDetector("FATIMA", myDetector);
+#endif
+    } 
     ////////////////////////////////////////////
     //////////// Search for Gaspard ////////////
     ////////////////////////////////////////////
