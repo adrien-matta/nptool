@@ -23,14 +23,17 @@
 
 // NPS
 #include "MaterialManager.hh"
+#include "MaterialManagerData.hh"
 
 // Geant4
 #include "G4EmCalculator.hh"
 #include "G4Box.hh"
 #include "G4PVPlacement.hh"
 #include "G4VisAttributes.hh"
+
 // STL
-#include<iostream>
+#include <iostream>
+#include <string>
 using namespace std;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -49,7 +52,7 @@ MaterialManager::~MaterialManager(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 MaterialManager::MaterialManager(){
-
+   ReadElementDataBase();
 }
 
 
@@ -57,6 +60,9 @@ MaterialManager::MaterialManager(){
 void MaterialManager::Destroy(){
 
 }
+
+
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 void MaterialManager::ClearMaterialLibrary(){
   map<string,G4Material*>::iterator it;
@@ -263,6 +269,23 @@ void MaterialManager::AddMaterialToLibrary(G4Material* material){
   m_Material[material->GetName()]=material;
 }
 
+
+
+void MaterialManager::ReadElementDataBase()
+{
+   G4Element *element;
+   for (G4int i = 0; i < 103; ++i) {   // loop on elements
+      string   elName   = ELU[i];
+      G4double elCharge = Z[i];
+      G4double elWeight = A[i];
+      element = new G4Element(elName, elName, elCharge, elWeight*g/mole);
+//      G4cout << elName << "\t" << elCharge << "\t" << elWeight << "\t" << element << G4endl;
+      m_Element[elName] = element;
+   } // end loop on elements
+}
+
+
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4Element* MaterialManager::GetElementFromLibrary(string Name){
   // Search if the element is already instantiate  
@@ -270,158 +293,9 @@ G4Element* MaterialManager::GetElementFromLibrary(string Name){
   it = m_Element.find(Name);
 
   // The element is not found
-  if(it==m_Element.end()){
-    if(Name == "H"){
-      G4Element* element = new G4Element(Name,Name,1, 1.008*g/mole);
-      m_Element[Name] = element;
-      return element;
-    }
-
-    else if(Name == "D"){
-      G4Element* element = new G4Element(Name,Name,1, 2.01410178*g/mole);
-      m_Element[Name] = element;
-      return element;
-    }
-
-    else if(Name == "T"){
-      G4Element* element = new G4Element(Name,Name,1, 3.0160492*g/mole);
-      m_Element[Name] = element;
-      return element;
-    }
-
-    else if(Name == "C"){
-      G4Element* element = new G4Element(Name,Name,6, 12.011*g/mole);
-      m_Element[Name] = element;
-      return element;
-    }
-
-    else if(Name == "O"){
-      G4Element* element = new G4Element(Name,Name,8, 15.999*g/mole);
-      m_Element[Name] = element;
-      return element;
-    }
-
-    else if(Name == "N"){
-      G4Element* element = new G4Element(Name,Name,7, 14.007*g/mole);
-      m_Element[Name] = element;
-      return element;
-    }
-
-    else if(Name == "Si"){
-      G4Element* element = new G4Element(Name,Name,14, 28.085*g/mole);
-      m_Element[Name] = element;
-      return element;
-    }
-
-    else if(Name == "Al"){
-      G4Element* element = new G4Element(Name,Name,13, 26.9815385*g/mole);
-      m_Element[Name] = element;
-      return element;
-    }
-
-    else if(Name == "Co"){
-      G4Element* element = new G4Element(Name,Name,27, 58.933194*g/mole);
-      m_Element[Name] = element;
-      return element;
-    }
-
-    else if(Name == "Cr"){
-      G4Element* element = new G4Element(Name,Name,24, 51.9961*g/mole);
-      m_Element[Name] = element;
-      return element;
-    }
-
-    else if(Name == "Ni"){
-      G4Element* element = new G4Element(Name,Name,28, 58.6934*g/mole);
-      m_Element[Name] = element;
-      return element;
-    }
-
-    else if(Name == "Fe"){
-      G4Element* element = new G4Element(Name,Name,26, 55.845*g/mole);
-      m_Element[Name] = element;
-      return element;
-    }
-
-    else if(Name == "W"){
-      G4Element* element = new G4Element(Name,Name,74, 183.84*g/mole);
-      m_Element[Name] = element;
-      return element;
-    }
-
-    else if(Name == "Pb"){
-      G4Element* element = new G4Element(Name,Name,82, 207.2*g/mole);
-      m_Element[Name] = element;
-      return element;
-    }
-
-    else if(Name == "Ge"){
-      G4Element* element = new G4Element(Name,Name,32, 72.630*g/mole);
-      m_Element[Name] = element;
-      return element;
-    }
-
-    else if(Name == "Na"){
-      G4Element* element = new G4Element(Name,Name,11, 22.98976928*g/mole);
-      m_Element[Name] = element;
-      return element;
-    }
-
-    else if(Name == "I"){
-      G4Element* element = new G4Element(Name,Name,53, 126.90447*g/mole);
-      m_Element[Name] = element;
-      return element;
-    }
-
-    else if(Name == "La"){
-      G4Element* element = new G4Element(Name,Name,57, 138.90547*g/mole);
-      m_Element[Name] = element;
-      return element;
-    }
-
-    else if(Name == "Br"){
-      G4Element* element = new G4Element(Name,Name,35, 79.904*g/mole);
-      m_Element[Name] = element;
-      return element;
-    }
-
-    else if(Name == "Bi"){
-      G4Element* element = new G4Element(Name,Name,83, 208.98040*g/mole);
-      m_Element[Name] = element;
-      return element;
-    }
-
-    else if(Name == "Ba"){
-      G4Element* element = new G4Element(Name,Name,56, 137.327*g/mole);
-      m_Element[Name] = element;
-      return element;
-    }
-
-    else if(Name == "F"){
-      G4Element* element = new G4Element(Name,Name,9, 18.998403163*g/mole);
-      m_Element[Name] = element;
-      return element;
-    }
-
-    else if(Name == "Cs"){
-      G4Element* element = new G4Element(Name,Name,55, 132.90545196*g/mole);
-      m_Element[Name] = element;
-      return element;
-    }
-
-    else if(Name == "Cu"){
-      G4Element* element = new G4Element(Name,Name,29, 63.546*g/mole);
-      m_Element[Name] = element;
-      return element;
-    }
-
-
-    else{
+  if (it == m_Element.end()) {
       G4cout << "ERROR: Element requested \""<< Name <<"\" is not available in the Material Librairy" << G4endl;
       exit(1);
-    }
-
-
   }
 
   else return it->second;

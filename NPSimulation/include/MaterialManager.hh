@@ -60,6 +60,16 @@ private:
   map<string,G4Element*> m_Element;
   map<string,G4Material*> m_Material; 
  
+private:
+  static const G4String        ELU[112];
+  static const G4String        ELL[112];
+  static const G4String        EUU[112];
+  static const G4double        A[112];
+  static const G4double        Z[112];
+
+  // read data base from MaterialManagerData.hh and populate m_Element map
+  void ReadElementDataBase();
+
 public:
   // clear all exising material from the library
   void ClearMaterialLibrary();
