@@ -44,6 +44,7 @@
 #include "TExogamPhysics.h"
 #include "TLaBr3Physics.h"
 #include "TMust2Physics.h"
+#include "Nana.h"
 #include "TPlasticPhysics.h"
 #include "TS2Physics.h"
 #include "TSSSDPhysics.h"
@@ -93,8 +94,9 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
    bool GPDTracker          = false;
    bool HYD2Tracker         = false;
    bool IonisationChamber   = false;
-   bool LaBr3		            = false;
+   bool LaBr3		    = false;
    bool MUST2               = false;
+   bool NanaDet             = false;
    bool FatimaDet           = false;
    bool ParisDet            = false;
    bool S2                  = false;
@@ -388,7 +390,25 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
       AddDetector("MUST2", myDetector);
 #endif
     }
-
+    ////////////////////////////////////////////
+    ////////////// Search for Nana /////////////
+    ////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 4, "Nana") == 0 && NanaDet == false) {
+#ifdef INC_NANA
+      NanaDet = true;
+      cout << "//////// NANA ////////" << endl << endl;
+      
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector = new Nana();
+      // Read Position of Telescope
+      ConfigFile.close();
+      myDetector->ReadConfiguration(Path);
+      ConfigFile.open(Path.c_str());
+      
+      // Add array to the VDetector Vector
+      AddDetector("NANA", myDetector);
+#endif
+    } 
     ////////////////////////////////////////////
     ///////////// Search for Paris /////////////
     ////////////////////////////////////////////

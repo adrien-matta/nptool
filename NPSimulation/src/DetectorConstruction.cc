@@ -93,6 +93,11 @@
 #include "MUST2Array.hh"
 #endif
 
+#ifdef INC_NANA
+#include "Nana.hh"
+#endif
+
+
 #ifdef INC_PARIS
 #include "Paris.hh"
 #endif
@@ -213,6 +218,7 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
   bool cHYD2Tracker      = false;
   bool cHelios           = false;
   bool cMUST2            = false;
+  bool cNana             = false;
   bool cPlastic          = false;
   bool cParis            = false;   
   bool cS1               = false;
@@ -473,6 +479,27 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
 
       // Add array to the VDetector Vector
       AddDetector(myDetector)                               ;
+#endif
+    }
+  
+    ////////////////////////////////////////////
+    ///////////// Search for Nana //////////////
+    ////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 4, "Nana") == 0 && cNana == false) {
+#ifdef INC_NANA
+      cNana = true ;
+      G4cout << "//////// Nana  ////////" << G4endl   ;
+      
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector = new Nana()                  ;
+      
+      // Read Position of Telescope
+      ConfigFile.close()                                 ;
+      myDetector->ReadConfiguration(Path)                   ;
+      ConfigFile.open(Path.c_str())                      ;
+      
+      // Add array to the VDetector Vector
+      AddDetector(myDetector)                            ;
 #endif
     }
 
