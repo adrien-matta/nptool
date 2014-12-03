@@ -82,20 +82,26 @@ void TTigressPhysics::BuildPhysicalEvent(){
 
         for(unsigned int seg = 0; seg<Seg_HitIndex[clover].size(); seg++ ){
           Seg_Energy = m_PreTreatedData->GetGeEnergy(Seg_HitIndex[clover][seg]);
-            if(Seg_Energy > Max_Seg_Energy){
-              Max_Seg_Energy = Seg_Energy;
-              seg_index = Seg_HitIndex[clover][seg];
-            }
+          if(Seg_Energy > Max_Seg_Energy){
+            Max_Seg_Energy = Seg_Energy;
+            seg_index = Seg_HitIndex[clover][seg];
+          }
         }
         //Segment_Number.push_back(m_PreTreatedData->GetGeSegmentNbr(seg_index));
 
         BGOcheck = false ;
-        for(unsigned j = 0 ;  j <  m_EventData->GetMultiplicityBGO() ; j++){
-          if( m_EventData->GetBGOCloverNbr(j)== clover+1 && m_EventData->GetBGOEnergy(j)>20 ){
-            BGOcheck = true ;
+        //if( m_PreTreatedData->GetMultiplicityBGO()== 0){cout << "This is zero\n";}
+        for(unsigned j = 0 ;  j <  m_PreTreatedData->GetMultiplicityBGO() ; j++){
+          int BGO_Crystal = m_PreTreatedData->GetBGOCrystalNbr(j);
+          int Ge_Crystal = m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]);
+          if( m_PreTreatedData->GetBGOCloverNbr(j) == clover+1 && BGO_Crystal == Ge_Crystal && m_PreTreatedData->GetBGOEnergy(j)>20 ){
 
-          }
-        
+            if(m_PreTreatedData->GetGeEnergy(HitIndex[clover][0]) > 119 && m_PreTreatedData->GetGeEnergy(HitIndex[clover][0]) < 125){
+              cout << "\t\t" << m_PreTreatedData->GetBGOCloverNbr(j) << "\t" << m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]) 
+              << "\t" << BGO_Crystal << "\t" << Ge_Crystal << endl;
+            }
+            BGOcheck = true ;
+          }        
         }
         BGO.push_back(BGOcheck);
       }
@@ -119,8 +125,10 @@ void TTigressPhysics::BuildPhysicalEvent(){
           //Segment_Number.push_back(m_PreTreatedData->GetGeSegmentNbr(seg_index));
 
           BGOcheck = false;
-          for(unsigned int j = 0 ;  j <  m_EventData->GetMultiplicityBGO() ; j++){
-            if( m_EventData->GetBGOCloverNbr(j)== clover+1 && m_EventData->GetBGOEnergy(j)>20 ){  
+          for(unsigned int j = 0 ;  j <  m_PreTreatedData->GetMultiplicityBGO() ; j++){
+          int BGO_Crystal = m_PreTreatedData->GetBGOCrystalNbr(j);
+          int Ge_Crystal = m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]);
+            if( m_PreTreatedData->GetBGOCloverNbr(j)== clover+1 && m_PreTreatedData->GetBGOEnergy(j)>20 ){  
               BGOcheck = true ;
               
             }
@@ -137,17 +145,19 @@ void TTigressPhysics::BuildPhysicalEvent(){
 
           for(unsigned int seg = 0; seg<Seg_HitIndex[clover].size(); seg++ ){
             Seg_Energy = m_PreTreatedData->GetGeEnergy(Seg_HitIndex[clover][seg]);
-              if(Seg_Energy > Max_Seg_Energy && Core_Crystal == m_PreTreatedData->GetGeCrystalNbr(Seg_HitIndex[clover][seg])){
-                Max_Seg_Energy = Seg_Energy;
-                seg_index = Seg_HitIndex[clover][seg];
-              }
+            if(Seg_Energy > Max_Seg_Energy && Core_Crystal == m_PreTreatedData->GetGeCrystalNbr(Seg_HitIndex[clover][seg])){
+              Max_Seg_Energy = Seg_Energy;
+              seg_index = Seg_HitIndex[clover][seg];
+            }
           }
           //Segment_Number.push_back(m_PreTreatedData->GetGeSegmentNbr(seg_index));
           Max_Seg_Energy = -10000;
 
           BGOcheck = false ;
-          for(unsigned int j = 0 ;  j <  m_EventData->GetMultiplicityBGO() ; j++){
-            if( m_EventData->GetBGOCloverNbr(j)== clover+1 && m_EventData->GetBGOEnergy(j)>20 ){
+          for(unsigned int j = 0 ;  j <  m_PreTreatedData->GetMultiplicityBGO() ; j++){
+          int BGO_Crystal = m_PreTreatedData->GetBGOCrystalNbr(j);
+          int Ge_Crystal = m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]);
+            if( m_PreTreatedData->GetBGOCloverNbr(j)== clover+1 && m_PreTreatedData->GetBGOEnergy(j)>20 ){
                BGOcheck = true ;
             }
           
@@ -162,23 +172,24 @@ void TTigressPhysics::BuildPhysicalEvent(){
 
           for(unsigned int seg = 0; seg<Seg_HitIndex[clover].size(); seg++ ){
             Seg_Energy = m_PreTreatedData->GetGeEnergy(Seg_HitIndex[clover][seg]);
-              if(Seg_Energy > Max_Seg_Energy && Core_Crystal == m_PreTreatedData->GetGeCrystalNbr(Seg_HitIndex[clover][seg])){
-                Max_Seg_Energy = Seg_Energy;
-                seg_index = Seg_HitIndex[clover][seg];
-              }
+            if(Seg_Energy > Max_Seg_Energy && Core_Crystal == m_PreTreatedData->GetGeCrystalNbr(Seg_HitIndex[clover][seg])){
+              Max_Seg_Energy = Seg_Energy;
+              seg_index = Seg_HitIndex[clover][seg];
+            }
           }
           //Segment_Number.push_back(m_PreTreatedData->GetGeSegmentNbr(seg_index));
 
           BGOcheck = false ;
-          for(unsigned int j = 0 ;  j <  m_EventData->GetMultiplicityBGO() ; j++){
-
-            if( m_EventData->GetBGOCloverNbr(j)== clover+1 && m_EventData->GetBGOEnergy(j)>20 ){
+          for(unsigned int j = 0 ;  j <  m_PreTreatedData->GetMultiplicityBGO() ; j++){
+          int BGO_Crystal = m_PreTreatedData->GetBGOCrystalNbr(j);
+          int Ge_Crystal = m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]);
+            if( m_PreTreatedData->GetBGOCloverNbr(j)== clover+1 && m_PreTreatedData->GetBGOEnergy(j)>20 ){
                BGOcheck = true ;
             }
           
           }
           BGO.push_back(BGOcheck);
-        }                  
+        }                 
       } 
       else  continue;
     }
@@ -200,9 +211,10 @@ void TTigressPhysics::PreTreat(){
  
   //Calibration vector not standard in NPTool. Standardise later
   ifstream CalFile;
-  CalFile.open("/home/ak00128/Desktop/PhD/S1107/GammaCal/Calibration_Parameters_152Eu.dat");
+  //CalFile.open("/home/ak00128/Desktop/PhD/S1107/GammaCal/Calibration_Parameters_152Eu.dat");
+  CalFile.open("/home/ak00128/Desktop/PhD/S1107/GammaCal/Calibration_Parameters_133Ba.dat");
 
-  int Clover, Crystal, Segment, Count, u = 400;
+  int Clover, Crystal, Segment, Count, u = 480;
   double par_a, par_b;
   vector< double > vClover;
   vector< double > vCrystal;
@@ -246,6 +258,17 @@ void TTigressPhysics::PreTreat(){
     //cout << grad << "\t" << intercept << "\t" << endl;
   }
 
+
+  //BGO
+  for(unsigned int i = 0 ; i < m_EventData->GetMultiplicityBGO(); ++i){
+    
+    m_PreTreatedData->SetBGOCloverNbr( m_EventData->GetBGOCloverNbr(i) );
+    m_PreTreatedData->SetBGOCrystalNbr( m_EventData->GetBGOCrystalNbr(i) );
+    m_PreTreatedData->SetBGOEnergy( m_EventData->GetBGOEnergy(i) );
+    m_PreTreatedData->SetBGOTimeCFD( m_EventData->GetBGOTimeCFD(i) );
+    m_PreTreatedData->SetBGOTimeLED( m_EventData->GetBGOTimeLED(i) );
+
+  }
 } 
  
 /////////////////////////////////////////////////
