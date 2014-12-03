@@ -52,11 +52,11 @@ void TTigressPhysics::BuildPhysicalEvent(){
   //if(m_PreTreatedData->GetMultiplicityGe()<11){
 
     vector < vector < unsigned int > > HitIndex;
-    vector < vector < unsigned int > > Seg_HitIndex;
-    //vector<unsigned int> Number;
-    //Number.resize(4);
+    vector < vector < vector < unsigned int > > > Seg_HitIndex;
+    vector < vector <unsigned int> > Crystal_Number;
+    Crystal_Number.resize(4);
     HitIndex.resize(16);
-    Seg_HitIndex.resize(16);
+    Seg_HitIndex.resize(16, Crystal_Number);
     
     for(unsigned int i = 0 ; i < m_PreTreatedData->GetMultiplicityGe() ; i++){
       int Segment = m_PreTreatedData->GetGeSegmentNbr(i);
@@ -64,7 +64,7 @@ void TTigressPhysics::BuildPhysicalEvent(){
         HitIndex[m_PreTreatedData->GetGeCloverNbr(i)-1].push_back(i);
       }
       else if( (Segment!=9 || Segment!=0) &&  m_PreTreatedData->GetGeEnergy(i)>20){
-        Seg_HitIndex[m_PreTreatedData->GetGeCloverNbr(i)-1].push_back(i);
+        Seg_HitIndex[m_PreTreatedData->GetGeCloverNbr(i)-1][m_PreTreatedData->GetGeCrystalNbr(i)-1].push_back(i);
       }
     }
 
@@ -80,11 +80,13 @@ void TTigressPhysics::BuildPhysicalEvent(){
         Clover_Number.push_back(m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]) );
         Crystal_Number.push_back(m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]) );
 
-        for(unsigned int seg = 0; seg<Seg_HitIndex[clover].size(); seg++ ){
-          Seg_Energy = m_PreTreatedData->GetGeEnergy(Seg_HitIndex[clover][seg]);
-          if(Seg_Energy > Max_Seg_Energy){
-            Max_Seg_Energy = Seg_Energy;
-            seg_index = Seg_HitIndex[clover][seg];
+        for(unsigned int cry = 0; cry<Seg_HitIndex[clover].size(); cry++ ){
+          for(unsigned int seg = 0; seg < Seg_HitIndex[clover][cry].size(); seg++)
+            Seg_Energy = m_PreTreatedData->GetGeEnergy(Seg_HitIndex[clover][cry][seg]);
+            if(Seg_Energy > Max_Seg_Energy){
+              Max_Seg_Energy = Seg_Energy;
+              seg_index = Seg_HitIndex[clover][cry][seg];
+            }
           }
         }
         //Segment_Number.push_back(m_PreTreatedData->GetGeSegmentNbr(seg_index));
@@ -96,10 +98,10 @@ void TTigressPhysics::BuildPhysicalEvent(){
           int Ge_Crystal = m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]);
           if( m_PreTreatedData->GetBGOCloverNbr(j) == clover+1 && BGO_Crystal == Ge_Crystal && m_PreTreatedData->GetBGOEnergy(j)>20 ){
 
-            if(m_PreTreatedData->GetGeEnergy(HitIndex[clover][0]) > 119 && m_PreTreatedData->GetGeEnergy(HitIndex[clover][0]) < 125){
+            /*if(m_PreTreatedData->GetGeEnergy(HitIndex[clover][0]) > 119 && m_PreTreatedData->GetGeEnergy(HitIndex[clover][0]) < 125){
               cout << "\t\t" << m_PreTreatedData->GetBGOCloverNbr(j) << "\t" << m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]) 
               << "\t" << BGO_Crystal << "\t" << Ge_Crystal << endl;
-            }
+            }*/
             BGOcheck = true ;
           }        
         }
