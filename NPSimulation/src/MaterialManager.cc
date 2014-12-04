@@ -23,14 +23,14 @@
 
 // NPS
 #include "MaterialManager.hh"
-#include "MaterialManagerData.hh"
 
 // Geant4
+#include "G4Element.hh"
 #include "G4EmCalculator.hh"
 #include "G4Box.hh"
 #include "G4PVPlacement.hh"
 #include "G4VisAttributes.hh"
-
+#include "G4NistManager.hh"
 // STL
 #include <iostream>
 #include <string>
@@ -52,7 +52,9 @@ MaterialManager::~MaterialManager(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 MaterialManager::MaterialManager(){
-   ReadElementDataBase();
+  m_D = NULL;
+  m_T = NULL;
+  m_He3 = NULL;
 }
 
 
@@ -130,9 +132,9 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       m_Material[Name]=material;
       return material; 
     }
-    
+
     // Usual Target
-     else if(Name == "CD2"){
+    else if(Name == "CD2"){
       G4Material* material = new G4Material(Name, 1.06*g/cm3,2);
       material->AddElement(GetElementFromLibrary("C"),1);
       material->AddElement(GetElementFromLibrary("D"),2);
@@ -182,7 +184,7 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       m_Material[Name]=material;
       return material; 
     }
-    
+
     // Usual detector material
     else  if(Name == "Si"){
       G4Material* material = new G4Material(Name,2.321*g/cm3 ,1);
@@ -197,7 +199,7 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       m_Material[Name]=material;
       return material; 
     }
-   
+
     else  if(Name == "BC400"){
       G4Material* material = new G4Material(Name,1.032*g/cm3 ,2);
       material->AddElement(GetElementFromLibrary("H"),10);
@@ -205,7 +207,7 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       m_Material[Name]=material;
       return material; 
     }
-    
+
     else  if(Name == "NaI"){
       G4Material* material = new G4Material(Name, 3.67*g/cm3,2);
       material->AddElement(GetElementFromLibrary("Na"),1);
@@ -269,36 +271,39 @@ void MaterialManager::AddMaterialToLibrary(G4Material* material){
   m_Material[material->GetName()]=material;
 }
 
-
-
-void MaterialManager::ReadElementDataBase()
-{
-   G4Element *element;
-   for (G4int i = 0; i < 103; ++i) {   // loop on elements
-      string   elName   = ELU[i];
-      G4double elCharge = Z[i];
-      G4double elWeight = A[i];
-      element = new G4Element(elName, elName, elCharge, elWeight*g/mole);
-//      G4cout << elName << "\t" << elCharge << "\t" << elWeight << "\t" << element << G4endl;
-      m_Element[elName] = element;
-   } // end loop on elements
-}
-
-
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4Element* MaterialManager::GetElementFromLibrary(string Name){
-  // Search if the element is already instantiate  
-  map<string,G4Element*>::iterator it;
-  it = m_Element.find(Name);
-
-  // The element is not found
-  if (it == m_Element.end()) {
-      G4cout << "ERROR: Element requested \""<< Name <<"\" is not available in the Material Librairy" << G4endl;
-      exit(1);
+cout << Name << endl;
+  if(Name=="D" || Name=="d"){
+    if(!m_D){
+      m_D = new G4Element(Name.c_str(), Name.c_str(),1);
+      G4Isotope* isotope = new G4Isotope(Name.c_str(), 1,2,2.01410178*g/mole);
+      m_D->AddIsotope(isotope,1);
+    }
+    return m_D; 
   }
 
-  else return it->second;
+  else if(Name=="T" || Name=="t"){
+    if(!m_T){
+      m_T = new G4Element(Name.c_str(), Name.c_str(),1);
+      G4Isotope* isotope = new G4Isotope(Name.c_str(), 1,3,3.0160492*g/mole);
+      m_T->AddIsotope(isotope,1);
+    }
+    return m_T;
+  }
+
+  else if(Name=="He3" || Name=="3He"){
+    if(!m_He3){
+      m_He3 = new G4Element(Name.c_str(), Name.c_str(),1);
+      G4Isotope* isotope = new G4Isotope(Name.c_str(), 2,1,3.0160293*g/mole);
+      m_He3->AddIsotope(isotope,1);
+    }
+    return m_He3; 
+  }
+
+  G4NistManager* man = G4NistManager::Instance();
+  return man->FindOrBuildElement(Name.c_str());
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -309,7 +314,7 @@ void MaterialManager::WriteDEDXTable(G4ParticleDefinition* Particle ,G4double Em
     //   Opening hte output file
     G4String GlobalPath = getenv("NPTOOL");
     G4String Path = GlobalPath + "/Inputs/EnergyLoss/" + Particle->GetParticleName() + "_" + it->second->GetName() + ".G4table";
-  
+
     ofstream File ;
     File.open(Path) ;
 
@@ -318,14 +323,14 @@ void MaterialManager::WriteDEDXTable(G4ParticleDefinition* Particle ,G4double Em
     File   << "Table from Geant4 generate using NPSimulation \t"
       << "Particle: " << Particle->GetParticleName() << "\tMaterial: " << it->second->GetName() << G4endl ;
     // G4cout <<  Particle->GetParticleName() << "\tMaterial: " << it->second->GetName()  <<endl;
-    
+
     G4EmCalculator emCalculator;
     G4double dedx ;
     // Tipical Range needed, if Emax is larger, then adapted
     if(Emax < 1*TeV) Emax = 1*TeV;    
     double step = 1*keV;
     double before = 0 ;
-    
+
     for (G4double E=Emin; E < Emax; E+=step){
       dedx = emCalculator.ComputeTotalDEDX(E, Particle, it->second)/(MeV/micrometer);
       if(before){
@@ -342,7 +347,7 @@ void MaterialManager::WriteDEDXTable(G4ParticleDefinition* Particle ,G4double Em
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void MaterialManager::CreateSampleVolumes(G4LogicalVolume* world_log){
 
-// Crate a micrometer big cube for each material
+  // Crate a micrometer big cube for each material
   G4double SampleSize = 10 * cm;
   G4double WorldSize = 10.0 * m ;
   G4Box* sample_box = new G4Box("sample_box",SampleSize ,SampleSize ,SampleSize);  
