@@ -151,7 +151,7 @@ void GaspardTrackerDummyShape::AddModule(G4double R        ,
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
+void GaspardTrackerDummyShape::VolumeMaker(G4int DetectorNumber,
                                            G4ThreeVector MMpos,
                                            G4RotationMatrix* MMrot,
                                            bool wFirstStage,
@@ -159,11 +159,11 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
                                            bool wThirdStage,
                                            G4LogicalVolume* world)
 {
-   G4double NbrTelescopes = TelescopeNumber  ;
-   G4String DetectorNumber                   ;
+   G4double NbrTelescopes = DetectorNumber  ;
+   G4String DetNumber                   ;
    ostringstream Number                      ;
    Number << NbrTelescopes                   ;
-   DetectorNumber = Number.str()             ;
+   DetNumber = Number.str()             ;
 
    /////////////////////////////////////////////////////////////////
    ////////////// Starting Volume Definition //////////////////////
@@ -178,7 +178,7 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
                                      Name                         ,
                                      world                        ,
                                      false                        ,
-                                     0);
+                                     DetectorNumber);
 
    logicGPDDummyShape->SetVisAttributes(G4VisAttributes::Invisible);
    if (m_non_sensitive_part_visiualisation) logicGPDDummyShape->SetVisAttributes(G4VisAttributes(G4Colour(0.90, 0.90, 0.90)));
@@ -228,12 +228,12 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
       G4LogicalVolume* logicFirstStage = new G4LogicalVolume(solidFirstStage, m_MaterialSilicon, "logicFirstStage", 0, 0, 0);
 
       new G4PVPlacement(0, 
-                                    positionFirstStage, 
-                                    logicFirstStage, 
-                                    Name + "_FirstStage", 
-                                    logicGPDDummyShape, 
-                                    false, 
-                                    0);
+                        positionFirstStage, 
+                        logicFirstStage, 
+                        Name + "_FirstStage", 
+                        logicGPDDummyShape, 
+                        false, 
+                        DetectorNumber);
 
       // Set First Stage sensible
       logicFirstStage->SetSensitiveDetector(m_FirstStageScorer);
@@ -267,12 +267,12 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
       G4LogicalVolume* logicSecondStage = new G4LogicalVolume(solidSecondStage, m_MaterialSilicon, "logicSecondStage", 0, 0, 0);
 
       new G4PVPlacement(0, 
-                                    positionSecondStage, 
-                                    logicSecondStage, 
-                                    Name + "_SecondStage", 
-                                    logicGPDDummyShape, 
-                                    false, 
-                                    0);
+                        positionSecondStage, 
+                        logicSecondStage, 
+                        Name + "_SecondStage", 
+                        logicGPDDummyShape, 
+                        false, 
+                        DetectorNumber);
 
       // Set Second Stage sensible
       logicSecondStage->SetSensitiveDetector(m_SecondStageScorer);
@@ -306,12 +306,12 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int TelescopeNumber,
       G4LogicalVolume* logicThirdStage = new G4LogicalVolume(solidThirdStage, m_MaterialSilicon, "logicThirdStage", 0, 0, 0);
 
       new G4PVPlacement(0, 
-                                    positionThirdStage, 
-                                    logicThirdStage, 
-                                    Name + "_ThirdStage", 
-                                    logicGPDDummyShape, 
-                                    false, 
-                                    0);
+                        positionThirdStage, 
+                        logicThirdStage, 
+                        Name + "_ThirdStage", 
+                        logicGPDDummyShape, 
+                        false, 
+                        DetectorNumber);
 
       // Set Third Stage sensible
       logicThirdStage->SetSensitiveDetector(m_ThirdStageScorer);

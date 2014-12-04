@@ -97,25 +97,25 @@ void GaspardTrackerAnnular::AddModule(G4double PosZ,
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void GaspardTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
-                                        G4ThreeVector MMpos     ,
-                                        G4RotationMatrix* MMrot ,
-                                        bool wFirstStage                ,
-                                        bool wSecondStage              ,
-                                        bool wThirdStage               ,
+void GaspardTrackerAnnular::VolumeMaker(G4int DetectorNumber,
+                                        G4ThreeVector MMpos,
+                                        G4RotationMatrix* MMrot,
+                                        bool wFirstStage,
+                                        bool wSecondStage,
+                                        bool wThirdStage,
                                         G4LogicalVolume* world)
 {
-   G4double NbrTelescopes = TelescopeNumber  ;
-   G4String DetectorNumber                   ;
+   G4double NbrTelescopes = DetectorNumber  ;
+   G4String DetNumber                   ;
    ostringstream Number                      ;
    Number << NbrTelescopes                   ;
-   DetectorNumber = Number.str()             ;
+   DetNumber = Number.str()             ;
 
    ////////////////////////////////////////////////////////////////
    ////////////// Starting Volume Definition //////////////////////
    ////////////////////////////////////////////////////////////////
    // Name of the module
-   G4String Name = "GPDAnnular" + DetectorNumber;
+   G4String Name = "GPDAnnular" + DetNumber;
 
    // Definition of the volume containing the sensitive detector
    G4Tubs* solidMM = new G4Tubs(Name, 
@@ -128,7 +128,7 @@ void GaspardTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
 //   G4LogicalVolume* logicMM = new G4LogicalVolume(solidMM, Iron, Name, 0, 0, 0);
    G4LogicalVolume* logicMM = new G4LogicalVolume(solidMM, m_MaterialVacuum, Name, 0, 0, 0);
 
-   new G4PVPlacement(G4Transform3D(*MMrot, MMpos), logicMM, Name, world, false, 0);
+   new G4PVPlacement(G4Transform3D(*MMrot, MMpos), logicMM, Name, world, false, DetectorNumber);
 
    logicMM->SetVisAttributes(G4VisAttributes::Invisible);
    if (m_non_sensitive_part_visiualisation) logicMM->SetVisAttributes(G4VisAttributes(G4Colour(0.90, 0.90, 0.90)));
@@ -145,7 +145,7 @@ void GaspardTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
 
    G4LogicalVolume* logicVacBox = new G4LogicalVolume(solidVacBox, m_MaterialVacuum, "logicVacBox", 0, 0, 0);
 
-   G4PVPlacement(0, positionVacBox, logicVacBox, "G" + DetectorNumber + "VacBox", logicMM, false, 0);
+   G4PVPlacement(0, positionVacBox, logicVacBox, "G" + DetNumber + "VacBox", logicMM, false, DetectorNumber);
 
    logicVacBox->SetVisAttributes(G4VisAttributes::Invisible);
 
@@ -167,8 +167,8 @@ void GaspardTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
 //      G4LogicalVolume* logicAluStrip = new G4LogicalVolume(solidAluStrip, Aluminium, "logicAluStrip", 0, 0, 0);
       G4LogicalVolume* logicAluStrip = new G4LogicalVolume(solidAluStrip, m_MaterialVacuum, "logicAluStrip", 0, 0, 0);
 
-      new G4PVPlacement(0, positionAluStripFront, logicAluStrip, "G" + DetectorNumber + "AluStripFront", logicMM, false, 0);
-      new G4PVPlacement(0, positionAluStripBack,  logicAluStrip, "G" + DetectorNumber + "AluStripBack",  logicMM, false, 0);
+      new G4PVPlacement(0, positionAluStripFront, logicAluStrip, "G" + DetNumber + "AluStripFront", logicMM, false, DetectorNumber);
+      new G4PVPlacement(0, positionAluStripBack,  logicAluStrip, "G" + DetNumber + "AluStripBack",  logicMM, false, DetectorNumber);
 
       logicAluStrip->SetVisAttributes(G4VisAttributes::Invisible);
 
@@ -183,7 +183,7 @@ void GaspardTrackerAnnular::VolumeMaker(G4int TelescopeNumber   ,
                                          360*deg); 
       G4LogicalVolume* logicSilicon = new G4LogicalVolume(solidSilicon, m_MaterialSilicon, "logicSilicon", 0, 0, 0);
 
-      new G4PVPlacement(0, positionSilicon, logicSilicon, Name + "_Silicon", logicMM, false, 0);
+      new G4PVPlacement(0, positionSilicon, logicSilicon, Name + "_Silicon", logicMM, false, DetectorNumber);
 
       // Set First Stage sensible
       logicSilicon->SetSensitiveDetector(m_FirstStageScorer);
