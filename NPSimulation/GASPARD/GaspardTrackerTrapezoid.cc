@@ -142,24 +142,24 @@ void GaspardTrackerTrapezoid::AddModule(G4double R        ,
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
-                                          G4ThreeVector MMpos     ,
-                                          G4RotationMatrix* MMrot ,
-                                          bool wFirstStage                ,
-                                          bool wSecondStage              ,
-                                          bool wThirdStage               ,
+void GaspardTrackerTrapezoid::VolumeMaker(G4int DetectorNumber,
+                                          G4ThreeVector MMpos,
+                                          G4RotationMatrix* MMrot,
+                                          bool wFirstStage,
+                                          bool wSecondStage,
+                                          bool wThirdStage,
                                           G4LogicalVolume* world)
 {
-   G4double NbrTelescopes = TelescopeNumber  ;
-   G4String DetectorNumber                   ;
+   G4double NbrTelescopes = DetectorNumber  ;
+   G4String DetNumber                   ;
    ostringstream Number                      ;
    Number << NbrTelescopes                   ;
-   DetectorNumber = Number.str()             ;
+   DetNumber = Number.str()             ;
 
    ////////////////////////////////////////////////////////////////
    ////////////// Starting Volume Definition //////////////////////
    ////////////////////////////////////////////////////////////////
-   G4String Name = "GPDTrapezoid" + DetectorNumber ;
+   G4String Name = "GPDTrapezoid" + DetNumber ;
 
    // Definition of the volume containing the sensitive detector
    G4Trap* solidGPDTrapezoid = new G4Trap(Name, 
@@ -168,7 +168,7 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
                                           Height/2, BaseLarge/2, BaseSmall/2, 0*deg);
    G4LogicalVolume* logicGPDTrapezoid = new G4LogicalVolume(solidGPDTrapezoid, m_MaterialVacuum, Name, 0, 0, 0);
 
-   new G4PVPlacement(G4Transform3D(*MMrot, MMpos), logicGPDTrapezoid, Name, world, false, 0);
+   new G4PVPlacement(G4Transform3D(*MMrot, MMpos), logicGPDTrapezoid, Name, world, false, DetectorNumber);
 
    G4VisAttributes* TrapezoideVisAtt = new G4VisAttributes(G4Colour(0.90, 0.90, 0.90));
    TrapezoideVisAtt->SetForceWireframe(true); 
@@ -211,12 +211,12 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
       G4LogicalVolume* logicFirstStage = new G4LogicalVolume(solidFirstStage, m_MaterialSilicon, "logicFirstStage", 0, 0, 0);
 
       new G4PVPlacement(0,
-                                    positionFirstStage,
-                                    logicFirstStage,
-                                    Name + "_FirstStage",
-                                    logicGPDTrapezoid,
-                                    false,
-                                    0);
+                        positionFirstStage,
+                        logicFirstStage,
+                        Name + "_FirstStage",
+                        logicGPDTrapezoid,
+                        false,
+                        DetectorNumber);
 
       // Set First Stage sensible
       logicFirstStage->SetSensitiveDetector(m_FirstStageScorer);
@@ -240,12 +240,12 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
       G4LogicalVolume* logicSecondStage = new G4LogicalVolume(solidSecondStage, m_MaterialSilicon, "logicSecondStage", 0, 0, 0);
 
       new G4PVPlacement(0,
-                                    positionSecondStage,
-                                    logicSecondStage,
-                                    Name + "_SecondStage",
-                                    logicGPDTrapezoid,
-                                    false,
-                                    0);
+                        positionSecondStage,
+                        logicSecondStage,
+                        Name + "_SecondStage",
+                        logicGPDTrapezoid,
+                        false,
+                        DetectorNumber);
 
       // Set Second Stage sensible
       logicSecondStage->SetSensitiveDetector(m_SecondStageScorer);
@@ -269,12 +269,12 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int TelescopeNumber   ,
       G4LogicalVolume* logicThirdStage = new G4LogicalVolume(solidThirdStage, m_MaterialSilicon, "logicThirdStage", 0, 0, 0);
 
       new G4PVPlacement(0,
-                                    positionThirdStage,
-                                    logicThirdStage,
-                                    Name + "_ThirdStage",
-                                    logicGPDTrapezoid,
-                                    false,
-                                    0);
+                        positionThirdStage,
+                        logicThirdStage,
+                        Name + "_ThirdStage",
+                        logicGPDTrapezoid,
+                        false,
+                        DetectorNumber);
 
       // Set Third Stage sensible
       logicThirdStage->SetSensitiveDetector(m_ThirdStageScorer);

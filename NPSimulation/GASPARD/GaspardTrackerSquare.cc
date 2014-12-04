@@ -145,7 +145,7 @@ void GaspardTrackerSquare::AddModule(G4double R        ,
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void GaspardTrackerSquare::VolumeMaker(G4int TelescopeNumber,
+void GaspardTrackerSquare::VolumeMaker(G4int DetectorNumber,
                                        G4ThreeVector MMpos,
                                        G4RotationMatrix* MMrot,
                                        bool wFirstStage,
@@ -153,21 +153,21 @@ void GaspardTrackerSquare::VolumeMaker(G4int TelescopeNumber,
                                        bool wThirdStage,
                                        G4LogicalVolume* world)
 {
-   G4double NbrTelescopes = TelescopeNumber  ;
-   G4String DetectorNumber                   ;
+   G4double NbrTelescopes = DetectorNumber  ;
+   G4String DetNumber                   ;
    ostringstream Number                      ;
    Number << NbrTelescopes                   ;
-   DetectorNumber = Number.str()             ;
+   DetNumber = Number.str()             ;
 
    ////////////////////////////////////////////////////////////////
    ////////////// Starting Volume Definition //////////////////////
    ////////////////////////////////////////////////////////////////
-   G4String Name = "GPDSquare" + DetectorNumber;
+   G4String Name = "GPDSquare" + DetNumber;
 
    G4Box*           solidGPDSquare = new G4Box(Name, 0.5*FaceFront, 0.5*FaceFront, 0.5*Length);
    G4LogicalVolume* logicGPDSquare = new G4LogicalVolume(solidGPDSquare, m_MaterialVacuum, Name, 0, 0, 0);
 
-   new G4PVPlacement(G4Transform3D(*MMrot, MMpos), logicGPDSquare, Name, world, false, 0);
+   new G4PVPlacement(G4Transform3D(*MMrot, MMpos), logicGPDSquare, Name, world, false, DetectorNumber);
 
 
    G4VisAttributes* SquareVisAtt = new G4VisAttributes(G4Colour(0.90, 0.90, 0.90)); 
@@ -207,7 +207,7 @@ void GaspardTrackerSquare::VolumeMaker(G4int TelescopeNumber,
       G4Box*           solidFirstStage = new G4Box("solidFirstStage", 0.5*FirstStageFace, 0.5*FirstStageFace, 0.5*FirstStageThickness);
       G4LogicalVolume* logicFirstStage = new G4LogicalVolume(solidFirstStage, m_MaterialSilicon, "logicFirstStage", 0, 0, 0);
 
-      new G4PVPlacement(0, positionFirstStage, logicFirstStage, Name + "_FirstStage", logicGPDSquare, false, 0);
+      new G4PVPlacement(0, positionFirstStage, logicFirstStage, Name + "_FirstStage", logicGPDSquare, false, DetectorNumber);
 
       // Set First Stage sensible
       logicFirstStage->SetSensitiveDetector(m_FirstStageScorer);
@@ -227,7 +227,7 @@ void GaspardTrackerSquare::VolumeMaker(G4int TelescopeNumber,
       G4Box*           solidSecondStage = new G4Box("solidSecondStage", 0.5*SecondStageFace, 0.5*SecondStageFace, 0.5*SecondStageThickness);
       G4LogicalVolume* logicSecondStage = new G4LogicalVolume(solidSecondStage, m_MaterialSilicon, "logicSecondStage", 0, 0, 0);
 
-      new G4PVPlacement(0, positionSecondStage, logicSecondStage, Name + "_SecondStage", logicGPDSquare, false, 0);
+      new G4PVPlacement(0, positionSecondStage, logicSecondStage, Name + "_SecondStage", logicGPDSquare, false, DetectorNumber);
 
       // Set Second Stage sensible
       logicSecondStage->SetSensitiveDetector(m_SecondStageScorer);
@@ -247,7 +247,7 @@ void GaspardTrackerSquare::VolumeMaker(G4int TelescopeNumber,
       G4Box*           solidThirdStage = new G4Box("solidThirdStage", 0.5*ThirdStageFace, 0.5*ThirdStageFace, 0.5*ThirdStageThickness);
       G4LogicalVolume* logicThirdStage = new G4LogicalVolume(solidThirdStage, m_MaterialSilicon, "logicThirdStage", 0, 0, 0);
 
-      new G4PVPlacement(0, positionThirdStage, logicThirdStage, Name + "_ThirdStage", logicGPDSquare, false, 0);
+      new G4PVPlacement(0, positionThirdStage, logicThirdStage, Name + "_ThirdStage", logicGPDSquare, false, DetectorNumber);
 
       // Set Third Stage sensible
       logicThirdStage->SetSensitiveDetector(m_ThirdStageScorer);

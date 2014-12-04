@@ -57,12 +57,12 @@ public:
 
    // Effectively construct Volume
    // Avoid to have two time same code for Angle and Point definition
-   void VolumeMaker(G4int TelescopeNumber          ,
-                    G4ThreeVector     MMpos        ,
-                    G4RotationMatrix* MMrot        ,
-                    bool              wFirstStage  ,
-                    bool              wSecondStage ,
-                    bool              wThirdStage  ,
+   void VolumeMaker(G4int             DetectorNumber,
+                    G4ThreeVector     MMpos,
+                    G4RotationMatrix* MMrot,
+                    bool              wFirstStage,
+                    bool              wSecondStage,
+                    bool              wThirdStage,
                     G4LogicalVolume*  world);
 
 
