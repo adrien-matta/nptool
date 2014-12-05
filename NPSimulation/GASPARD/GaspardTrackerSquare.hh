@@ -145,6 +145,9 @@ namespace GPDSQUARE
    const G4double ResoTimeGpd     = 0.212765957    ;// = 500ps                 //   Unit is  ns/2.35
    const G4double ResoTimePPAC    = 0.106382979    ;// = 250ps                 //   Unit is  ns/2.35
 
+   // Threshold
+   const G4double EnergyThreshold = 0.2*MeV;
+
    // Geometry
    const G4double FaceFront          = 11*cm;
    const G4double FaceBack           = 11*cm;
