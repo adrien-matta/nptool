@@ -23,61 +23,164 @@
  *                                                                           *
  *****************************************************************************/
 
-
-
+// STD
 #include <vector>
-#include "TObject.h"
-#include "TParisData.h"
 #include <cstdlib>
 
+// NPL
+#include "../include/VDetector.h"
+#include "TParisData.h"
+
+// Root
+#include "TObject.h"
+#include "TVector3.h"
 using namespace std ;
 
-class TParisPhysics : public TObject
-{
-public:
-   TParisPhysics();
-   ~TParisPhysics();
+class TParisPhysics : public TObject, public NPA::VDetector{
+  public:
+    TParisPhysics();
+    ~TParisPhysics();
 
-public: 
-   void Clear();   
-   void Clear(const Option_t*) {};   
-   void BuildPhysicalEvent(TParisData* Data);
-   void BuildSimplePhysicalEvent(TParisData* Data);
+  public: 
+    void Clear();   
+    void Clear(const Option_t*) {};   
+    void BuildPhysicalEvent(TParisData* Data);
+    void BuildSimplePhysicalEvent(TParisData* Data);
 
-public:
-   // Provide Physical Multiplicity
-   Int_t      ParisEventMult;
+  public:
+    /////////////////////////////////////
+    // Innherited from VDetector Class //
+    /////////////////////////////////////
+    // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
+    void ReadConfiguration(string);
 
-   // Provide a Classification of Event
-   //vector<int>      EventType;
+    // Read stream at CalibFile and pick-up calibration parameter using Token
+    // If argument is "Simulation" no change calibration is loaded
+    void ReadCalibrationFile(string);
 
-   // Telescope
-   //vector<int>      ModuleNumber;
+    // Activated associated Branches and link it to the private member DetectorData address
+    // In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
+    void InitializeRootInputRaw();
 
-   //   FirstStage
-   vector<double>   ParisLaBr_E;
-   //vector<double>   FirstStage_T;
-   //vector<int>      FirstStage_X;
-   //vector<int>      FirstStage_Y;
+    // Create associated branches and associated private member DetectorPhysics address
+    void InitializeRootOutput();
 
-   //   SecondStage
-   vector<double>   ParisCsI_E;
-   //vector<double>   SecondStage_T;
-   //vector<int>      SecondStage_N;
+    // This method is called at each event read from the Input Tree.
+    // The aim is to build treat Raw dat in order to extract physical parameter.
+    void BuildPhysicalEvent();
 
-   /*
-   //   ThirdStage
-   vector<double>   ThirdStage_E;
-   vector<double>   ThirdStage_T;
-   vector<int>      ThirdStage_N;
-   */
+    // Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
+    // This method aimed to be used for analysis performed during experiment, when speed is requiered.
+    // NB: This method can eventually be the same as BuildPhysicalEvent.
+    void BuildSimplePhysicalEvent();
 
-   // Physical Value  
-   vector<double>   ParisTotalEnergy;
-   vector<double>   ParisInTotalEnergy;
-   vector<double>   ParisOutTotalEnergy;
+    // Those two method all to clear the Event Physics or Data
+    void ClearEventPhysics()  {m_EventPhysics->Clear();}
+    void ClearEventData()     {m_EventData->Clear();}
 
-   ClassDef(TParisPhysics,1)  // GaspardTrackerPHysics structure
+  public:
+    ////////////////////////////////
+    // Specific to Paris //
+    ////////////////////////////////
+    // Case of a Square module
+    // Add a Module using Corner Coordinate information
+    void AddModuleSquare(TVector3 C_X1_Y1,
+        TVector3 C_X128_Y1,
+        TVector3 C_X1_Y128,
+        TVector3 C_X128_Y128);//!
+
+    // Add a Module using R Theta Phi of Si center information
+    void AddModuleSquare(double theta,
+        double phi,
+        double distance,
+        double beta_u,
+        double beta_v,
+        double beta_w);//!
+
+    // Case of a DummyShape module
+    // Add a Module using Corner Coordinate information
+    void AddModuleDummyShape(TVector3 C_X1_Y1,
+        TVector3 C_X128_Y1,
+        TVector3 C_X1_Y128,
+        TVector3 C_X128_Y128);//!
+
+    // Add a Module using R Theta Phi of Si center information
+    void AddModuleDummyShape(double theta,
+        double phi,
+        double distance,
+        double beta_u,
+        double beta_v,
+        double beta_w);//!
+
+    // Getters to retrieve the (X,Y,Z) coordinates of a pixel defined by strips (X,Y)
+    double GetStripPositionX(int N ,int X ,int Y)   { return m_StripPositionX[N-1][X-1][Y-1]; }
+    double GetStripPositionY(int N ,int X ,int Y)   { return m_StripPositionY[N-1][X-1][Y-1]; }
+    double GetStripPositionZ(int N ,int X ,int Y)   { return m_StripPositionZ[N-1][X-1][Y-1]; }
+    double GetNumberOfModule()             { return m_NumberOfModule; }
+
+    // Get Root input and output objects
+    TParisData*    GetEventData()      {return m_EventData;}//!
+    TParisPhysics*   GetEventPhysics()   {return m_EventPhysics;}//!
+
+    // To be called after a build Physical Event
+    double   GetEnergyDeposit();
+    double   GetEnergyInDeposit();
+    double   GetEnergyOutDeposit();
+    TVector3   GetPositionOfInteraction();
+
+    void      Print();
+
+
+  private:
+    ////////////////////////////////////////
+    // Root Input and Output tree classes //
+    ////////////////////////////////////////
+    TParisData*      m_EventData;//!
+    TParisPhysics*   m_EventPhysics;//!
+
+
+  private:
+    // Spatial Position of Strip Calculated on basis of detector position
+    int m_NumberOfModule;
+    vector< vector < vector < double > > >   m_StripPositionX;//!
+    vector< vector < vector < double > > >   m_StripPositionY;//!
+    vector< vector < vector < double > > >   m_StripPositionZ;//!
+
+
+  public: // Data Member
+    // Provide Physical Multiplicity
+    Int_t      ParisEventMult;
+
+    // Provide a Classification of Event
+    //vector<int>      EventType;
+
+    // Telescope
+    //vector<int>      ModuleNumber;
+
+    //   FirstStage
+    vector<double>   ParisLaBr_E;
+    //vector<double>   FirstStage_T;
+    //vector<int>      FirstStage_X;
+    //vector<int>      FirstStage_Y;
+
+    //   SecondStage
+    vector<double>   ParisCsI_E;
+    //vector<double>   SecondStage_T;
+    //vector<int>      SecondStage_N;
+
+    /*
+    //   ThirdStage
+    vector<double>   ThirdStage_E;
+    vector<double>   ThirdStage_T;
+    vector<int>      ThirdStage_N;
+    */
+
+    // Physical Value  
+    vector<double>   ParisTotalEnergy;
+    vector<double>   ParisInTotalEnergy;
+    vector<double>   ParisOutTotalEnergy;
+
+    ClassDef(TParisPhysics,1)
 };
 
 #endif

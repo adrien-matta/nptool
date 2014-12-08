@@ -7,7 +7,7 @@ all:            $(SHARELIB)
 ############### Detector ##############
 
 ## Paris ##
-libParis.so:	TParisData.o	TParisDataDict.o Paris.o TParisPhysics.o TParisPhysicsDict.o
+libParis.so: TParisData.o TParisDataDict.o TParisPhysics.o TParisPhysicsDict.o
 			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TParisDataDict.cxx:	TParisData.h
@@ -18,9 +18,8 @@ TParisPhysicsDict.cxx:	TParisPhysics.h
 
 
 # dependances
-Paris.o:	Paris.cxx	Paris.h
-TParisData.o:	TParisData.cxx	TParisData.h
-TParisPhysics.o:	TParisPhysics.cxx	TParisPhysics.h
+TParisData.o: TParisData.cxx TParisData.h
+TParisPhysics.o: TParisPhysics.cxx TParisPhysics.h
 
 #######################################
 
