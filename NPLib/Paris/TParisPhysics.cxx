@@ -32,6 +32,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <limits>
+#include <cmath>
 
 // Root
 #include "TChain.h"
