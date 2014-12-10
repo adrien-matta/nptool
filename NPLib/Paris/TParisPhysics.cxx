@@ -54,15 +54,15 @@ TParisPhysics::~TParisPhysics(){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TParisPhysics::BuildSimplePhysicalEvent(TParisData* Data){
-  BuildPhysicalEvent(Data);
+void TParisPhysics::BuildSimplePhysicalEvent(){
+  BuildPhysicalEvent();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TParisPhysics::BuildPhysicalEvent(TParisData* Data){
+void TParisPhysics::BuildPhysicalEvent(){
 
-  int multLaBrE = Data->GetPARISLaBr3StageEMult();
-  int multCsIE = Data->GetPARISCsIStageEMult();
+  int multLaBrE = m_EventData->GetPARISLaBr3StageEMult();
+  int multCsIE = m_EventData->GetPARISCsIStageEMult();
 
   //cout << "multLaBr= " << multLaBrE << endl;
   //cout << "multCsI= " << multCsIE << endl;
@@ -76,7 +76,7 @@ void TParisPhysics::BuildPhysicalEvent(TParisData* Data){
 
     if(multLaBrE>=1){
       //cout << "cava1b" <<endl;
-      //cout <<  Data->GetPARISLaBr3StageEEnergy(0) <<endl;
+      //cout <<  m_EventData->GetPARISLaBr3StageEEnergy(0) <<endl;
       //cout << "cava1b" <<endl;
 
       double EnergyStripFront;
@@ -84,7 +84,7 @@ void TParisPhysics::BuildPhysicalEvent(TParisData* Data){
 
       for(int j=0;j<multLaBrE;j++)
       {
-        EnergyStripFront= Data->GetPARISLaBr3StageEEnergy(j);
+        EnergyStripFront= m_EventData->GetPARISLaBr3StageEEnergy(j);
 
         EnergyStrip  = EnergyStripFront;
         ParisLaBr_E.push_back(EnergyStrip);
@@ -102,7 +102,7 @@ void TParisPhysics::BuildPhysicalEvent(TParisData* Data){
       double EnergyTotSecond;
       for(int j=0;j<multCsIE;j++)
       {
-        EnergySecond = Data->GetPARISCsIStageEEnergy(j);
+        EnergySecond = m_EventData->GetPARISCsIStageEEnergy(j);
         ParisCsI_E.push_back(EnergySecond);
         EnergyTotSecond +=EnergySecond;
 

@@ -26,6 +26,7 @@
 // STD
 #include <vector>
 #include <cstdlib>
+using namespace std ;
 
 // NPL
 #include "../include/VDetector.h"
@@ -34,7 +35,7 @@
 // Root
 #include "TObject.h"
 #include "TVector3.h"
-using namespace std ;
+
 
 class TParisPhysics : public TObject, public NPA::VDetector{
   public:
@@ -44,8 +45,6 @@ class TParisPhysics : public TObject, public NPA::VDetector{
   public: 
     void Clear();   
     void Clear(const Option_t*) {};   
-    void BuildPhysicalEvent(TParisData* Data);
-    void BuildSimplePhysicalEvent(TParisData* Data);
 
   public:
     /////////////////////////////////////
