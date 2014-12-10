@@ -28,7 +28,7 @@ Target
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
 GaspardTracker
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Annular Back
-%GPDAnnular
+GPDAnnular
         Z=      -156.5
         RMIN=   16
         RMAX=	52
@@ -37,7 +37,7 @@ GaspardTracker
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Annular Front
-%GPDAnnular
+GPDAnnular
         Z=      156.5
         RMIN=	16
         RMAX=	52
@@ -206,7 +206,7 @@ GaspardTracker
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Barrel
-GPDSquare
+%GPDSquare
         X1_Y1=          142.516	 49.00  -49.00
         X128_Y1=        142.516  49.00   49.00
         X1_Y128=        142.516 -49.00  -49.00
@@ -216,7 +216,7 @@ GPDSquare
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
-GPDSquare
+%GPDSquare
         X1_Y1=           66.125	135.422  -49.00
         X128_Y1=         66.125 135.422   49.00
         X1_Y128=        135.422  66.126  -49.00
@@ -226,7 +226,7 @@ GPDSquare
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%3
-GPDSquare
+%GPDSquare
         X1_Y1=          -49.00	142.516  -49.00
         X128_Y1=        -49.00  142.516   49.00
         X1_Y128=         49.00  142.516  -49.00
@@ -236,7 +236,7 @@ GPDSquare
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%4
-GPDSquare
+%GPDSquare
         X1_Y1=         -135.422	 66.125  -49.00
         X128_Y1=       -135.422  66.125   49.00
         X1_Y128=        -66.126 135.422  -49.00
@@ -246,7 +246,7 @@ GPDSquare
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
-GPDSquare
+%GPDSquare
         X1_Y1=          -142.516 -49.00  -49.00
         X128_Y1=        -142.516 -49.00   49.00
         X1_Y128=        -142.516  49.00  -49.00
@@ -256,7 +256,7 @@ GPDSquare
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%6
-GPDSquare
+%GPDSquare
         X1_Y1=           -66.125 -135.422  -49.00
         X128_Y1=         -66.125 -135.422   49.00
         X1_Y128=        -135.422  -66.126  -49.00
@@ -266,7 +266,7 @@ GPDSquare
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%7
-GPDSquare
+%GPDSquare
         X1_Y1=           49.00 -142.516  -49.00
         X128_Y1=         49.00 -142.516   49.00
         X1_Y128=        -49.00 -142.516  -49.00
@@ -276,7 +276,7 @@ GPDSquare
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%8
-GPDSquare
+%GPDSquare
         X1_Y1=          135.422	 -66.125  -49.00
         X128_Y1=        135.422  -66.125   49.00
         X1_Y128=         66.126 -135.422  -49.00

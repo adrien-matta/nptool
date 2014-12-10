@@ -50,6 +50,7 @@
 #include "GaspardTrackerAnnular.hh"
 #include "ObsoleteGeneralScorers.hh"
 #include "GaspardScorers.hh"
+#include "SiliconScorers.hh"
 #include "TGaspardTrackerData.h"
 #include "RootOutput.h"
 #include "VDetector.hh"
@@ -423,6 +424,137 @@ void GaspardTrackerAnnular::SetInterCoordPointer(TInteractionCoordinates* interC
 // Called at in the EventAction::EndOfEventAvtion
 void GaspardTrackerAnnular::ReadSensitive(const G4Event* event)
 {
+   //////////////
+   // First stage
+   G4THitsMap<G4double*>* GPD1HitMap;
+   std::map<G4int, G4double**>::iterator GPD1_itr;
+
+   G4int GPD1CollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerGPDAnnular/GPDAnnularFirstStage");
+   GPD1HitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(GPD1CollectionID));
+
+   // Loop on the GPD map
+   for (GPD1_itr = GPD1HitMap->GetMap()->begin(); GPD1_itr != GPD1HitMap->GetMap()->end(); GPD1_itr++) {
+      G4double* Info = *(GPD1_itr->second);
+
+      double Energy = Info[0];
+      if (Energy > EnergyThreshold) {
+         double Time       = Info[1];
+         int DetNbr        = (int) Info[7];
+         int StripFront    = (int) Info[8];
+         int StripBack     = (int) Info[9];
+
+         // detector number
+         ms_Event->SetGPDTrkFirstStageFrontEDetectorNbr(m_index["Annular"] + DetNbr);
+         ms_Event->SetGPDTrkFirstStageFrontTDetectorNbr(m_index["Annular"] + DetNbr);
+         ms_Event->SetGPDTrkFirstStageBackEDetectorNbr(m_index["Annular"] + DetNbr);
+         ms_Event->SetGPDTrkFirstStageBackTDetectorNbr(m_index["Annular"] + DetNbr);
+
+         // energy
+         ms_Event->SetGPDTrkFirstStageFrontEEnergy(RandGauss::shoot(Energy, ResoFirstStage));
+         ms_Event->SetGPDTrkFirstStageBackEEnergy(RandGauss::shoot(Energy, ResoFirstStage));
+
+         // time
+         Time = RandGauss::shoot(Time, ResoTimePPAC);
+         ms_Event->SetGPDTrkFirstStageFrontTTime(RandGauss::shoot(Time, ResoTimeGpd));
+         ms_Event->SetGPDTrkFirstStageBackTTime(RandGauss::shoot(Time, ResoTimeGpd));
+
+         // strips X and Y
+         ms_Event->SetGPDTrkFirstStageFrontEStripNbr(StripFront);
+         ms_Event->SetGPDTrkFirstStageFrontTStripNbr(StripFront);
+         ms_Event->SetGPDTrkFirstStageBackEStripNbr(StripBack);
+         ms_Event->SetGPDTrkFirstStageBackTStripNbr(StripBack);
+
+         // Interaction Coordinates
+         ms_InterCoord->SetDetectedPositionX(Info[2]);
+         ms_InterCoord->SetDetectedPositionY(Info[3]);
+         ms_InterCoord->SetDetectedPositionZ(Info[4]);
+         ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg);
+         ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg);
+
+      }
+   }
+   // clear map for next event
+   GPD1HitMap->clear();
+
+
+   //////////////
+   // Second stage
+   G4THitsMap<G4double*>* GPD2HitMap;
+   std::map<G4int, G4double**>::iterator GPD2_itr;
+
+   G4int GPD2CollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("SecondStageScorerGPDAnnular/GPDAnnularSecondStage");
+   GPD2HitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(GPD2CollectionID));
+
+   // Loop on the GPD map
+   for (GPD2_itr = GPD2HitMap->GetMap()->begin(); GPD2_itr != GPD2HitMap->GetMap()->end(); GPD2_itr++) {
+      G4double* Info = *(GPD2_itr->second);
+
+      double Energy = Info[0];
+      if (Energy > EnergyThreshold) {
+         double Time       = Info[1];
+         int DetNbr        = (int) Info[7];
+         int StripFront    = (int) Info[8];
+
+         // detector number
+         ms_Event->SetGPDTrkSecondStageEDetectorNbr(m_index["Annular"] + DetNbr);
+         ms_Event->SetGPDTrkSecondStageTDetectorNbr(m_index["Annular"] + DetNbr);
+
+         // energy
+         ms_Event->SetGPDTrkSecondStageEEnergy(RandGauss::shoot(Energy, ResoSecondStage));
+
+         // time
+         Time = RandGauss::shoot(Time, ResoTimePPAC);
+         ms_Event->SetGPDTrkSecondStageTTime(RandGauss::shoot(Time, ResoTimeGpd));
+
+         // strips X and Y
+         ms_Event->SetGPDTrkSecondStageEPadNbr(StripFront);
+         ms_Event->SetGPDTrkSecondStageTPadNbr(StripFront);
+      }
+   }
+   // clear map for next event
+   GPD2HitMap->clear();
+
+
+   //////////////
+   // Third stage
+   G4THitsMap<G4double*>* GPD3HitMap;
+   std::map<G4int, G4double**>::iterator GPD3_itr;
+
+   G4int GPD3CollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThirdStageScorerGPDAnnular/GPDAnnularThirdStage");
+   GPD3HitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(GPD3CollectionID));
+
+   // Loop on the GPD map
+   for (GPD3_itr = GPD3HitMap->GetMap()->begin(); GPD3_itr != GPD3HitMap->GetMap()->end(); GPD3_itr++) {
+      G4double* Info = *(GPD3_itr->second);
+
+      double Energy = Info[0];
+      if (Energy > EnergyThreshold) {
+         double Time       = Info[1];
+         int DetNbr        = (int) Info[7];
+         int StripFront    = (int) Info[8];
+
+         // detector number
+         ms_Event->SetGPDTrkThirdStageEDetectorNbr(m_index["Annular"] + DetNbr);
+         ms_Event->SetGPDTrkThirdStageTDetectorNbr(m_index["Annular"] + DetNbr);
+
+         // energy
+         ms_Event->SetGPDTrkThirdStageEEnergy(RandGauss::shoot(Energy, ResoThirdStage));
+
+         // time
+         Time = RandGauss::shoot(Time, ResoTimePPAC);
+         ms_Event->SetGPDTrkThirdStageTTime(RandGauss::shoot(Time, ResoTimeGpd));
+
+         // strips X and Y
+         ms_Event->SetGPDTrkThirdStageEPadNbr(StripFront);
+         ms_Event->SetGPDTrkThirdStageTPadNbr(StripFront);
+      }
+   }
+   // clear map for next event
+   GPD3HitMap->clear();
+
+
+/*
+
    //////////////////////////////////////////////////////////////////////////////////////
    //////////////////////// Used to Read Event Map of detector //////////////////////////
    //////////////////////////////////////////////////////////////////////////////////////
@@ -704,20 +836,62 @@ void GaspardTrackerAnnular::ReadSensitive(const G4Event* event)
    AngPhiHitMap            -> clear();
    SecondStageEnergyHitMap -> clear();
    ThirdStageEnergyHitMap  -> clear();
+*/
 }
 
 
 
 void GaspardTrackerAnnular::InitializeScorers()
 {
-   bool already_exist = false;
-   m_FirstStageScorer = VDetector::CheckScorer("FirstStageScorerGPDAnnular", already_exist);
-   m_SecondStageScorer = VDetector::CheckScorer("SecondStageScorerGPDAnnular",already_exist);
-   m_ThirdStageScorer = VDetector::CheckScorer("ThirdStageScorerGPDAnnular",already_exist);
-   if(already_exist) return;
+   // check whether scorers are already defined
+   bool already_exist  = false;
+   m_FirstStageScorer  = VDetector::CheckScorer("FirstStageScorerGPDAnnular",  already_exist);
+   m_SecondStageScorer = VDetector::CheckScorer("SecondStageScorerGPDAnnular", already_exist);
+   m_ThirdStageScorer  = VDetector::CheckScorer("ThirdStageScorerGPDAnnular",  already_exist);
+   if (already_exist) return;
+
+
+   // First stage scorer
+   G4VPrimitiveScorer* GPDScorerFirstStage =
+      new SILICONSCORERS::PS_Silicon_Annular("GPDAnnularFirstStage",
+                                             FirstStageRmin,
+                                             FirstStageRmax,
+                                             0*deg,
+                                             360*deg,
+                                             NbThetaStrips,
+                                             NbPhiStrips,
+                                             NbThetaQuadrant);
+
+   // Second stage scorer
+   G4VPrimitiveScorer* GPDScorerSecondStage =
+      new SILICONSCORERS::PS_Silicon_Annular("GPDAnnularSecondStage",
+                                             FirstStageRmin,
+                                             FirstStageRmax,
+                                             0*deg,
+                                             360*deg,
+                                             1,
+                                             1,
+                                             1);
+
+   // Third stage scorer
+   G4VPrimitiveScorer* GPDScorerThirdStage =
+      new SILICONSCORERS::PS_Silicon_Annular("GPDAnnularThirdStage",
+                                             FirstStageRmin,
+                                             FirstStageRmax,
+                                             0*deg,
+                                             360*deg,
+                                             1,
+                                             1,
+                                             1);
+
+   // register scorers to the multifunctionnal detector
+   m_FirstStageScorer  ->RegisterPrimitive(GPDScorerFirstStage);
+   m_SecondStageScorer ->RegisterPrimitive(GPDScorerSecondStage);
+   m_ThirdStageScorer  ->RegisterPrimitive(GPDScorerThirdStage);
 
 
 
+/*
    // First stage Associate Scorer
    G4VPrimitiveScorer* DetNbr                           = new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber", "GPDAnnular", 0);
    G4VPrimitiveScorer* TOF                              = new OBSOLETEGENERALSCORERS::PSTOF("StripTime","GPDAnnular", 0);
@@ -749,7 +923,7 @@ void GaspardTrackerAnnular::InitializeScorers()
    //  Third stage Associate Scorer 
    G4VPrimitiveScorer* ThirdStageEnergy = new GPDScorerThirdStageEnergy("ThirdStageEnergy", "GPDAnnular", 0);
    m_ThirdStageScorer->RegisterPrimitive(ThirdStageEnergy);
-
+*/
    //  Add All Scorer to the Global Scorer Manager
    G4SDManager::GetSDMpointer()->AddNewDetector(m_FirstStageScorer);
    G4SDManager::GetSDMpointer()->AddNewDetector(m_SecondStageScorer);

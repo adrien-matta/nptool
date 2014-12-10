@@ -31,7 +31,7 @@
 #include "../DetectorList.inc"
 #include "GaspardTracker.h"
 #include "Hyde2Tracker.h"
-#include "Paris.h"
+#include "TParisPhysics.h"
 #include "Shield.h"
 #include "Fatima.h"
 #include "TAnnularS1Physics.h"
@@ -398,7 +398,7 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
       cout << "//////// Paris ////////" << endl << endl;
 
       // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new Paris();
+      VDetector* myDetector = new TParisPhysics();
       // Read Position of Telescope
       ConfigFile.close();
       myDetector->ReadConfiguration(Path);
