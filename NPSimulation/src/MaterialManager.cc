@@ -273,7 +273,6 @@ void MaterialManager::AddMaterialToLibrary(G4Material* material){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4Element* MaterialManager::GetElementFromLibrary(string Name){
-cout << Name << endl;
   if(Name=="D" || Name=="d"){
     if(!m_D){
       m_D = new G4Element(Name.c_str(), Name.c_str(),1);
