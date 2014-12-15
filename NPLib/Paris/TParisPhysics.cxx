@@ -63,12 +63,12 @@ void TParisPhysics::BuildSimplePhysicalEvent(){
 void TParisPhysics::BuildPhysicalEvent(){
 
   int multLaBrE = m_EventData->GetPARISLaBr3StageEMult();
-  int multCsIE = m_EventData->GetPARISCsIStageEMult();
+  int multNaIE = m_EventData->GetPARISNaIStageEMult();
 
   //cout << "multLaBr= " << multLaBrE << endl;
-  //cout << "multCsI= " << multCsIE << endl;
+  //cout << "multNaI= " << multNaIE << endl;
 
-  ParisEventMult=multLaBrE+multCsIE;
+  ParisEventMult=multLaBrE+multNaIE;
   // get energy from strips and store it
   if(ParisEventMult>=1)
   {
@@ -98,18 +98,18 @@ void TParisPhysics::BuildPhysicalEvent(){
       ParisInTotalEnergy.push_back(EnergyTot);
     }
 
-    if(multCsIE>=1){
+    if(multNaIE>=1){
       double EnergySecond;
       double EnergyTotSecond;
-      for(int j=0;j<multCsIE;j++)
+      for(int j=0;j<multNaIE;j++)
       {
-        EnergySecond = m_EventData->GetPARISCsIStageEEnergy(j);
-        ParisCsI_E.push_back(EnergySecond);
+        EnergySecond = m_EventData->GetPARISNaIStageEEnergy(j);
+        ParisNaI_E.push_back(EnergySecond);
         EnergyTotSecond +=EnergySecond;
 
         EnergyTot += EnergySecond;
-        //cout << "Energy CsI=" << EnergySecond << endl;
-        //cout << "Energytot CsI=" << EnergyTot << endl;
+        //cout << "Energy NaI=" << EnergySecond << endl;
+        //cout << "Energytot NaI=" << EnergyTot << endl;
       }
 
       // Fill total energy in outter shell
@@ -138,13 +138,13 @@ void TParisPhysics::Clear(){
   //FirstStage_X.clear();
   //FirstStage_Y.clear();
 
-  // CsI
-  ParisCsI_E.clear();
+  // NaI
+  ParisNaI_E.clear();
   //SecondStage_T.clear();
   //SecondStage_N.clear();
 
   /*
-  // CsI   
+  // NaI   
   ThirdStage_E.clear();
   ThirdStage_T.clear();
   ThirdStage_N.clear();
@@ -157,11 +157,6 @@ void TParisPhysics::ReadConfiguration(string Path)    {
   ConfigFile.open(Path.c_str())    ;
   string LineBuffer                ;
   string DataBuffer                ;
-
-  // A:X1_Y1     --> X:1    Y:1
-  // B:X128_Y1   --> X:128  Y:1
-  // C:X1_Y128   --> X:1    Y:128
-  // D:X128_Y128 --> X:128  Y:128
 
   double   Ax, Bx, Cx, Dx, Ay, By, Cy, Dy, Az, Bz, Cz, Dz;
   TVector3 A, B, C, D;
@@ -214,7 +209,7 @@ void TParisPhysics::ReadConfiguration(string Path)    {
         }
 
         // Position method
-        else if (DataBuffer.compare(0, 6, "X1_Y1=") == 0) {
+        else if (DataBuffer=="A=") {
           check_A = true;
           ConfigFile >> DataBuffer ;
           Ax = atof(DataBuffer.c_str()) ;
@@ -229,7 +224,7 @@ void TParisPhysics::ReadConfiguration(string Path)    {
           A = TVector3(Ax, Ay, Az);
           cout << "X1 Y1 corner position : (" << A.X() << ";" << A.Y() << ";" << A.Z() << ")" << endl;
         }
-        else if (DataBuffer.compare(0, 8, "X128_Y1=") == 0) {
+        else if (DataBuffer=="B=") {
           check_B = true;
           ConfigFile >> DataBuffer ;
           Bx = atof(DataBuffer.c_str()) ;
@@ -244,7 +239,7 @@ void TParisPhysics::ReadConfiguration(string Path)    {
           B = TVector3(Bx, By, Bz);
           cout << "X128 Y1 corner position : (" << B.X() << ";" << B.Y() << ";" << B.Z() << ")" << endl;
         }
-        else if (DataBuffer.compare(0, 8, "X1_Y128=") == 0) {
+        else if (DataBuffer=="C=") {
           check_C = true;
           ConfigFile >> DataBuffer ;
           Cx = atof(DataBuffer.c_str()) ;
@@ -259,7 +254,7 @@ void TParisPhysics::ReadConfiguration(string Path)    {
           C = TVector3(Cx, Cy, Cz);
           cout << "X1 Y128 corner position : (" << C.X() << ";" << C.Y() << ";" << C.Z() << ")" << endl;
         }
-        else if (DataBuffer.compare(0, 10, "X128_Y128=") == 0) {
+        else if (DataBuffer=="D=") {
           check_D = true;
           ConfigFile >> DataBuffer ;
           Dx = atof(DataBuffer.c_str()) ;
@@ -276,28 +271,28 @@ void TParisPhysics::ReadConfiguration(string Path)    {
         } // End Position Method
 
         // Angle method
-        else if (DataBuffer.compare(0, 6, "THETA=") == 0) {
+        else if (DataBuffer== "Theta="){
           check_Theta = true;
           ConfigFile >> DataBuffer ;
           Theta = atof(DataBuffer.c_str()) ;
           Theta = Theta ;
           cout << "Theta:  " << Theta << endl;
         }
-        else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
+        else if (DataBuffer == "Phi=") {
           check_Phi = true;
           ConfigFile >> DataBuffer ;
           Phi = atof(DataBuffer.c_str()) ;
           Phi = Phi ;
           cout << "Phi:  " << Phi << endl;
         }
-        else if (DataBuffer.compare(0, 2, "R=") == 0) {
+        else if (DataBuffer =="R="){
           check_R = true;
           ConfigFile >> DataBuffer ;
           R = atof(DataBuffer.c_str()) ;
           R = R ;
           cout << "R:  " << R << endl;
         }
-        else if (DataBuffer.compare(0, 5, "BETA=") == 0) {
+        else if (DataBuffer=="beta=") {
           check_beta = true;
           ConfigFile >> DataBuffer ;
           beta_u = atof(DataBuffer.c_str()) ;
@@ -518,7 +513,7 @@ void TParisPhysics::ReadCalibrationFile(string Path){
   /*   int Calibration_Si_E_Order;
        int Calibration_Si_T_Order;
        int Calibration_SiLi_E_Order;
-       int Calibration_CsI_E_Order;
+       int Calibration_NaI_E_Order;
        */
   // Calibration_Si_X_E[DetectorNumber][StripNumber][Order of Coeff]
   vector< vector< vector< double > > >   Calibration_Si_X_E   ;
@@ -530,13 +525,13 @@ void TParisPhysics::ReadCalibrationFile(string Path){
   vector< vector< vector< double > > >   Calibration_SiLi_E   ;
 
   // Calibration_SiLi_E[DetectorNumber][CrystalNumber][Order of Coeff]
-  vector< vector< vector< double > > >   Calibration_CsI_E   ;
+  vector< vector< vector< double > > >   Calibration_NaI_E   ;
 
   if (Path == "Simulation") {   // Simulation case: data already calibrated
     /*      Calibration_Si_E_Order   = 1;
             Calibration_Si_T_Order   = 1;
             Calibration_SiLi_E_Order = 1;
-            Calibration_CsI_E_Order  = 1;
+            Calibration_NaI_E_Order  = 1;
             */
     vector<double> Coef;
     // Order 0            Order 1
@@ -551,7 +546,7 @@ void TParisPhysics::ReadCalibrationFile(string Path){
     Calibration_Si_Y_T.resize( m_NumberOfModule , StripLine)   ;
 
     Calibration_SiLi_E.resize( m_NumberOfModule , StripLine)   ;
-    Calibration_CsI_E .resize( m_NumberOfModule , StripLine)   ;
+    Calibration_NaI_E .resize( m_NumberOfModule , StripLine)   ;
   }
 }
 
@@ -652,7 +647,7 @@ void TParisPhysics::AddModuleSquare(double theta,
   TVector3 U ;
   // Vector V on Module Face (parallele to X Strip)
   TVector3 V ;
-  // Vector W normal to Module Face (pointing CsI)
+  // Vector W normal to Module Face (pointing NaI)
   TVector3 W ;
   // Vector position of Module Face center
   TVector3 C ;

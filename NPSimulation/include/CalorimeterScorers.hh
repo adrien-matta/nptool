@@ -1,5 +1,5 @@
-#ifndef SharcScorers_h
-#define SharcScorers_h 1
+#ifndef CalorimeterScorers_h
+#define CalorimeterScorers_h 1
 /*****************************************************************************
  * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
  *                                                                           *
@@ -14,7 +14,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  File old the scorer specific to the Sharc Detector                       *
+ *  File old the scorer specific to the Silicon Detector                     *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -31,47 +31,37 @@
 using namespace std;
 using namespace CLHEP;
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-namespace SILICONSCORERS{
-  class PS_Silicon_Resistive : public G4VPrimitiveScorer{
+namespace CALORIMETERSCORERS {
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......  
+  class PS_Calorimeter : public G4VPrimitiveScorer{
+    
+  public: // with description
+    PS_Calorimeter(G4String name, vector<G4int> NestingLevel,G4int depth=0);
+     ~PS_Calorimeter();
+    
+  protected: // with description
+     G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+    
+  public:
+    void Initialize(G4HCofThisEvent*);
+    void EndOfEvent(G4HCofThisEvent*);
+    void clear();
+    void DrawAll();
+    void PrintAll();
+  
+  private: // Threshold
+    G4double m_TriggerThreshold;
+    
+  private: // How much level of volume nesting should be considered
+   // Give the list of the nesting level at which the copy number should be return.
+   // 0 is the lowest level possible (the actual volume copy number in which the interaction happen)
+   vector<G4int> m_NestingLevel;
+   G4int m_Index; 
 
-    public: // with description
-      PS_Silicon_Resistive(G4String name, 
-          G4double StripPlaneLength, G4double StripPlaneWidth, 
-          G4int NumberOfStripWidth,G4int depth=0);
-
-      ~PS_Silicon_Resistive();
-
-    protected: // with description
-      G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-
-    public:
-      void Initialize(G4HCofThisEvent*);
-      void EndOfEvent(G4HCofThisEvent*);
-      void clear();
-      void DrawAll();
-      void PrintAll();
-
-    private: // Threshold
-      G4double m_TriggerThreshold;
-
-    private: // Geometry of the detector
-      G4double m_StripPlaneLength;
-      G4double m_StripPlaneWidth;
-      G4int    m_NumberOfStripWidth;
-      G4double m_StripPitchWidth;
-
-    private: // inherited from G4VPrimitiveScorer
-      G4int HCID;
-      G4THitsMap<G4double*>* EvtMap;
-
-    private: // Needed for intermediate calculation (avoid multiple instantiation in Processing Hit)
-      G4ThreeVector m_Position  ;
-      G4int m_DetectorNumber    ;
-      G4int m_StripWidthNumber  ;
-      G4int m_Index             ;
-
+  private: // inherited from G4VPrimitiveScorer
+    G4int HCID;
+    G4THitsMap<G4double*>* EvtMap;
   };
-
 }
+
 #endif

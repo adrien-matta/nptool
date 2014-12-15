@@ -23,56 +23,36 @@
 #include "TParisData.h"
 ClassImp(TParisData)
 
-TParisData::TParisData()
-{
-  // Default constructor
-  Clear();
+////////////////////////////////////////////////////////////////////////////////
+TParisData::TParisData(){
 }
 
-
-
-TParisData::~TParisData()
-{
+TParisData::~TParisData(){
 }
 
-
-
-void TParisData::Clear()
-{
-
-  /*
-    fParis_Energy.clear();
-    fParis_Number.clear();
-    fParis_Time.clear();
-  */
-
-
-   fPARIS_LaBr3Stage_E_DetectorNbr.clear();
-   fPARIS_LaBr3Stage_E_CrystalNbr.clear();
+////////////////////////////////////////////////////////////////////////////////
+void TParisData::Clear(){
+   fPARIS_LaBr3Stage_E_ClusterNbr.clear();
+   fPARIS_LaBr3Stage_E_PhoswichNbr.clear();
    fPARIS_LaBr3Stage_E_Energy.clear();
-   fPARIS_LaBr3Stage_Eff_phpeak.clear();
    // Time
-   fPARIS_LaBr3Stage_T_DetectorNbr.clear();
-   fPARIS_LaBr3Stage_T_CrystalNbr.clear();
+   fPARIS_LaBr3Stage_T_ClusterNbr.clear();
+   fPARIS_LaBr3Stage_T_PhoswichNbr.clear();
    fPARIS_LaBr3Stage_T_Time.clear();
 
-
-   // Second Stage CsI
-   // CsI
+   // Second Stage NaI
+   // NaI
    // Energy
-   fPARIS_CsIStage_E_DetectorNbr.clear();
-   fPARIS_CsIStage_E_CrystalNbr.clear();
-   fPARIS_CsIStage_E_Energy.clear();
-   fPARIS_CsIStage_Eff_phpeak.clear();
+   fPARIS_NaIStage_E_ClusterNbr.clear();
+   fPARIS_NaIStage_E_PhoswichNbr.clear();
+   fPARIS_NaIStage_E_Energy.clear();
    // Time
-   fPARIS_CsIStage_T_DetectorNbr.clear();
-   fPARIS_CsIStage_T_CrystalNbr.clear();
-   fPARIS_CsIStage_T_Time.clear();
-
+   fPARIS_NaIStage_T_ClusterNbr.clear();
+   fPARIS_NaIStage_T_PhoswichNbr.clear();
+   fPARIS_NaIStage_T_Time.clear();
 }
 
-
-
+////////////////////////////////////////////////////////////////////////////////
 void TParisData::Dump() const
 {
    cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event XXXXXXXXXXXXXXXXX" << endl;
@@ -82,23 +62,21 @@ void TParisData::Dump() const
    }
    */
 
-   for (UShort_t i = 0; i < fPARIS_LaBr3Stage_E_DetectorNbr.size(); i++)
-      cout << "DetNbr: " << fPARIS_LaBr3Stage_E_DetectorNbr[i] << " Crystal: " << fPARIS_LaBr3Stage_E_CrystalNbr[i] << " Energy: " << fPARIS_LaBr3Stage_E_Energy[i] << endl;
+   for (UShort_t i = 0; i < fPARIS_LaBr3Stage_E_ClusterNbr.size(); i++)
+      cout << "DetNbr: " << fPARIS_LaBr3Stage_E_ClusterNbr[i] << " Phoswich: " << fPARIS_LaBr3Stage_E_PhoswichNbr[i] << " Energy: " << fPARIS_LaBr3Stage_E_Energy[i] << endl;
    // (X,T)
-   cout << "PARIS_LaBr3Stage_T_Mult = " << fPARIS_LaBr3Stage_T_DetectorNbr.size() << endl;
-   for (UShort_t i = 0; i < fPARIS_LaBr3Stage_T_DetectorNbr.size(); i++)
-      cout << "DetNbr: " << fPARIS_LaBr3Stage_T_DetectorNbr[i] << " Crystal: " << fPARIS_LaBr3Stage_T_CrystalNbr[i] << " Time: " << fPARIS_LaBr3Stage_T_Time[i] << endl;
+   cout << "PARIS_LaBr3Stage_T_Mult = " << fPARIS_LaBr3Stage_T_ClusterNbr.size() << endl;
+   for (UShort_t i = 0; i < fPARIS_LaBr3Stage_T_ClusterNbr.size(); i++)
+      cout << "DetNbr: " << fPARIS_LaBr3Stage_T_ClusterNbr[i] << " Phoswich: " << fPARIS_LaBr3Stage_T_PhoswichNbr[i] << " Time: " << fPARIS_LaBr3Stage_T_Time[i] << endl;
 
    // Second Stage
    // Energy
-   cout << "PARIS_CsIStage_E_Mult = " << fPARIS_CsIStage_E_DetectorNbr.size() << endl;
-   for (UShort_t i = 0; i < fPARIS_CsIStage_E_DetectorNbr.size(); i++)
-      cout << "Det: " << fPARIS_CsIStage_E_DetectorNbr[i] << " Crystal: " << fPARIS_CsIStage_E_CrystalNbr[i] << " Energy: " << fPARIS_CsIStage_E_Energy[i] << endl;
+   cout << "PARIS_NaIStage_E_Mult = " << fPARIS_NaIStage_E_ClusterNbr.size() << endl;
+   for (UShort_t i = 0; i < fPARIS_NaIStage_E_ClusterNbr.size(); i++)
+      cout << "Det: " << fPARIS_NaIStage_E_ClusterNbr[i] << " Phoswich: " << fPARIS_NaIStage_E_PhoswichNbr[i] << " Energy: " << fPARIS_NaIStage_E_Energy[i] << endl;
    // Time
-   cout << "PARIS_CsIStage_T_Mult = " << fPARIS_CsIStage_T_DetectorNbr.size() << endl;
-   for (UShort_t i = 0; i < fPARIS_CsIStage_T_DetectorNbr.size(); i++)
-      cout << "Det: " << fPARIS_CsIStage_T_DetectorNbr[i] << " Crystal: " << fPARIS_CsIStage_T_CrystalNbr[i] << " Time: " << fPARIS_CsIStage_T_Time[i] << endl;
-
-
-
+   cout << "PARIS_NaIStage_T_Mult = " << fPARIS_NaIStage_T_ClusterNbr.size() << endl;
+   for (UShort_t i = 0; i < fPARIS_NaIStage_T_ClusterNbr.size(); i++)
+      cout << "Det: " << fPARIS_NaIStage_T_ClusterNbr[i] << " Phoswich: " << fPARIS_NaIStage_T_PhoswichNbr[i] << " Time: " << fPARIS_NaIStage_T_Time[i] << endl;
 }
+

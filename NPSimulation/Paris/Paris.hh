@@ -8,67 +8,169 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: M. Labiche  contact address: marc.labiche@stfc.ac.uk     *
+ * Original Author: Adrien MATTA  contact address: a.matta@surrey.ac.uk      *
  *                                                                           *
- * Creation Date  : 04/12/09                                                 *
+ * Creation Date  : November 2012                                            *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
- * Decription: This class manages different shapes of module for the Paris   *
- *             detector. It allows to have Paris geometries with an          *
- *             heterogeneous set of modules                                  *
+ * Decription:                                                               *
+ *  This class describe the Paris Silicon detector                           *
+ *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *                                                                           *
- *                                                                           *
  *****************************************************************************/
-
-
-
-// C++ headers
+// C++ header
+#include <string>
 #include <vector>
 
-// NPTool header
+// G4 header defining G4 types
+#include "globals.hh"
+
+// G4 headers
+#include "G4ThreeVector.hh"
+#include "G4RotationMatrix.hh"
+#include "G4LogicalVolume.hh"
+#include "G4VisAttributes.hh"
+#include "G4MultiFunctionalDetector.hh"
+
+// NPSimulation header
 #include "VDetector.hh"
-#include "ParisModule.hh"
+
+// NPLib
+#include "TParisData.h"
 using namespace std;
-#include "CLHEP/Units/SystemOfUnits.h"
 using namespace CLHEP;
 
-
-class Paris : public VDetector
-{
-   ////////////////////////////////////////////////////
-   /////// Default Constructor and Destructor /////////
-   ////////////////////////////////////////////////////
+class Paris : public VDetector{
+  ////////////////////////////////////////////////////
+  /////// Default Constructor and Destructor /////////
+  ////////////////////////////////////////////////////
 public:
-   Paris();
-   virtual ~Paris();
-
-   ////////////////////////////////////////////////////
-   /////////  Inherite from VDetector class ///////////
-   ////////////////////////////////////////////////////
+  Paris() ;
+   ~Paris() ;
+  
+  ////////////////////////////////////////////////////
+  //////// Specific Function of this Class ///////////
+  ////////////////////////////////////////////////////
 public:
-   // Read stream at Configfile to pick-up parameters of detector (Position,...)
-   // Called in DetecorConstruction::ReadDetextorConfiguration Method
-   void ReadConfiguration(string Path);
+  // To add a Cluster detector
+  // By corner position
+  void AddCluster(G4ThreeVector Pos1, G4ThreeVector Pos2, G4ThreeVector Pos3, G4ThreeVector Pos4);
+  // By Center position
+  void AddCluster(G4ThreeVector Pos, double beta_u=0, double beta_v=0, double beta_w=0);
+  // To add a Phoswich detector
+  // By corner position
+  void AddPhoswich(G4ThreeVector Pos1,G4ThreeVector Pos2,G4ThreeVector Pos3,G4ThreeVector Pos4);
+  // By Center position
+  void AddPhoswich(G4ThreeVector Pos, double beta_u=0, double beta_v=0, double beta_w=0);
+  
+  // Return a logical volume of the detector
+  G4LogicalVolume* ConstructPhoswich();
+  G4LogicalVolume* ConstructCluster();
 
-   // Construct detector and inialise sensitive part.
-   // Called After DetecorConstruction::AddDetector Method
-   void ConstructDetector(G4LogicalVolume* world);
+private: // Guarranty that each volume is created only once
+ G4LogicalVolume* m_LogicalPhoswich;
+ G4LogicalVolume* m_LogicalCluster;
 
-   // Add Detector branch to the EventTree.
-   // Called After DetecorConstruction::AddDetector Method
-   void InitializeRootOutput();
-
-   // Read sensitive part and fill the Root tree.
-   // Called at in the EventAction::EndOfEventAvtion
-   void ReadSensitive(const G4Event* event);
-
+  ////////////////////////////////////////////////////
+  /////////  Inherite from VDetector class ///////////
+  ////////////////////////////////////////////////////
 public:
-   // Initialize all scorers necessary for each detector
-   void InitializeScorers();
+  // Read stream at Configfile to pick-up parameters of detector (Position,...)
+  // Called in DetecorConstruction::ReadDetextorConfiguration Method
+  void ReadConfiguration(string Path) ;
+  
+  // Construct detector and inialise sensitive part.
+  // Called After DetecorConstruction::AddDetector Method
+  void ConstructDetector(G4LogicalVolume* world) ;
+  
+  // Add Detector branch to the EventTree.
+  // Called After DetecorConstruction::AddDetector Method
+  void InitializeRootOutput() ;
+  
+  // Read sensitive part and fill the Root tree.
+  // Called at in the EventAction::EndOfEventAvtion
+  void ReadSensitive(const G4Event* event) ;
+  
+  
+  ////////////////////////////////////////////////////
+  ///////////Event class to store Data////////////////
+  ////////////////////////////////////////////////////
+private:
+  TParisData* m_Event ;
+  
+  ////////////////////////////////////////////////////
+  ///////////////// Scorer Related ///////////////////
+  ////////////////////////////////////////////////////
+  
+private:
+  //   Initialize all Scorer
+  void InitializeScorers() ;
+  
+  //   Scorer Associate to the Silicon
+  G4MultiFunctionalDetector* m_NaIScorer ;
+  G4MultiFunctionalDetector* m_LaBr3Scorer ;
 
 private:
-   vector<ParisModule*> m_Modules;
+  ////////////////////////////////////////////////////
+  ///////////////Private intern Data//////////////////
+  ////////////////////////////////////////////////////
+private:
+  // True if the detector is a Cluster, false if a single Phoswich
+  vector<bool> m_Type;
+  
+  // Detector position
+  vector<G4ThreeVector> m_Pos;
+  vector<G4RotationMatrix*> m_Rot;
+ 
+private:/// Visualisation Attribute:
+   G4VisAttributes* m_NaIVisAtt  ;
+   G4VisAttributes* m_LaBr3VisAtt;
+   G4VisAttributes* m_PhoswichCasingVisAtt  ;
+   G4VisAttributes* m_ClusterCasingVisAtt ;
+   G4VisAttributes* m_PMTVisAtt; 
 };
+
+namespace PARIS{
+
+  // Resolution and Threshold
+  const G4double EnergyThreshold = 100*keV;
+  const G4double ResoFirstStage = 0.0085;	// = 3% at .662 MeV of Resolution   //   Unit is MeV/2.35
+  const G4double ResoSecondStage = 0.0366;	// = 13% at .662 MeV of resolution //   Unit is MeV/2.35
+  const G4double ResoTime = 0.212765957;// = 500ps                 //   Unit is  ns/2.35
+  
+  // Phoswich geometry
+  const G4double PhoswichCasingLenth = 226*mm;
+  const G4double PhoswichCasingWidth = 56*mm;
+  
+  // LaBr3
+  const G4double LaBr3Face = 50.8*mm;
+  const G4double LaBr3Thickness =  50.8*mm; // for phoswich 2x2x3
+  const G4double InterSpace = 0*mm;
+  
+  // NaI
+  const G4double NaIFace = LaBr3Face;
+  const G4double NaIThickness = 152.4*mm; // for phoswich 2x2x6
+ 
+  // PMT geometry
+  const G4double PMTRadius = 26*mm;
+  const G4double PMTLength = 150*mm; // PMT + connector
+ 
+  // Starting form the LaBr3 and going to the NaI
+  const G4double CasingThickness     = 0.5*(PhoswichCasingWidth-LaBr3Face);
+  const G4double LaBr3Stage_PosZ =CasingThickness+PhoswichCasingLenth* -0.5 + 0.5*LaBr3Thickness;
+  const G4double NaIStage_PosZ = CasingThickness+ PhoswichCasingLenth* -0.5 + LaBr3Thickness + 0.5*NaIThickness;
+
+  // Cluster geometry
+  const G4double ClusterFrameWidth = 188*mm;
+  const G4double ClusterFrameLength = 15*mm;
+  const G4double ClusterOffset = 30*mm;
+  const G4double FaceFront = 3*PhoswichCasingWidth;
+  const G4double FaceBack = FaceFront;
+  const G4double Length = PhoswichCasingLenth+PMTLength;
+ 
+
+}
+
 #endif

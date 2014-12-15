@@ -29,200 +29,169 @@ using namespace std ;
 
 class TParisData : public TObject {
 
- protected:
-   // First Stage LaBr
-   // LaBr3
-   // Energy
-   vector<UShort_t>  fPARIS_LaBr3Stage_E_DetectorNbr;
-   vector<UShort_t>  fPARIS_LaBr3Stage_E_CrystalNbr;
-   vector<Double_t>  fPARIS_LaBr3Stage_E_Energy;
-   vector<Double_t>  fPARIS_LaBr3Stage_Eff_phpeak;
-   // Time
-   vector<UShort_t>  fPARIS_LaBr3Stage_T_DetectorNbr;
-   vector<UShort_t>  fPARIS_LaBr3Stage_T_CrystalNbr;
-   vector<Double_t>  fPARIS_LaBr3Stage_T_Time;
+  protected:
+    // First Stage LaBr3
+    // Energy
+    vector<UShort_t>  fPARIS_LaBr3Stage_E_ClusterNbr;
+    vector<UShort_t>  fPARIS_LaBr3Stage_E_PhoswichNbr;
+    vector<Double_t>  fPARIS_LaBr3Stage_E_Energy;
+    // Time
+    vector<UShort_t>  fPARIS_LaBr3Stage_T_ClusterNbr;
+    vector<UShort_t>  fPARIS_LaBr3Stage_T_PhoswichNbr;
+    vector<Double_t>  fPARIS_LaBr3Stage_T_Time;
 
+    // Second Stage NaI
+    // Energy
+    vector<UShort_t>  fPARIS_NaIStage_E_ClusterNbr;
+    vector<UShort_t>  fPARIS_NaIStage_E_PhoswichNbr;
+    vector<Double_t>  fPARIS_NaIStage_E_Energy;
+    // Time
+    vector<UShort_t>  fPARIS_NaIStage_T_ClusterNbr;
+    vector<UShort_t>  fPARIS_NaIStage_T_PhoswichNbr;
+    vector<Double_t>  fPARIS_NaIStage_T_Time;
 
-   // Second Stage CsI
-   // CsI
-   // Energy
-   vector<UShort_t>  fPARIS_CsIStage_E_DetectorNbr;
-   vector<UShort_t>  fPARIS_CsIStage_E_CrystalNbr;
-   vector<Double_t>  fPARIS_CsIStage_E_Energy;
-   vector<Double_t>  fPARIS_CsIStage_Eff_phpeak;
-   // Time
-   vector<UShort_t>  fPARIS_CsIStage_T_DetectorNbr;
-   vector<UShort_t>  fPARIS_CsIStage_T_CrystalNbr;
-   vector<Double_t>  fPARIS_CsIStage_T_Time;
+  public:
+    TParisData();
+    virtual ~TParisData();
 
-   /*
- private:
-   vector<double>   fParis_Energy;
-   vector<double>   fParis_Time;
-   vector<short>   fParis_Number;
-   */
+    void   Clear();
+    void   Clear(const Option_t*) {};
+    void   Dump() const;
 
- public:
-   TParisData();
-   virtual ~TParisData();
-
-   void   Clear();
-   void   Clear(const Option_t*) {};
-   void   Dump() const;
-
-   /////////////////////           GETTERS           ////////////////////////
-
-   //
-   // First stage 
-   //
-   // (E)
-   UShort_t GetPARISLaBr3StageEMult()               {
-     return fPARIS_LaBr3Stage_E_DetectorNbr.size();  // TODO: Maybe change to CrystalNbr for multiplicity
-   }
-   UShort_t GetPARISLaBr3StageEDetectorNbr(Int_t i) {
-      return fPARIS_LaBr3Stage_E_DetectorNbr.at(i);
-   }
-   UShort_t GetPARISLaBr3StageECrystalNbr(Int_t i)    {
-      return fPARIS_LaBr3Stage_E_CrystalNbr.at(i);
-   }
-   Double_t GetPARISLaBr3StageEEnergy(Int_t i)      {
+    /////////////////////           GETTERS           ////////////////////////
+    // First stage 
+    // (E)
+    UShort_t GetPARISLaBr3StageEMult()               {
+      return fPARIS_LaBr3Stage_E_ClusterNbr.size();
+    }
+    UShort_t GetPARISLaBr3StageEClusterNbr(Int_t i) {
+      return fPARIS_LaBr3Stage_E_ClusterNbr.at(i);
+    }
+    UShort_t GetPARISLaBr3StageEPhoswichNbr(Int_t i)    {
+      return fPARIS_LaBr3Stage_E_PhoswichNbr.at(i);
+    }
+    Double_t GetPARISLaBr3StageEEnergy(Int_t i)      {
       return fPARIS_LaBr3Stage_E_Energy.at(i);
-   }
-   Double_t GetPARISLaBr3StageEffphpeak(Int_t i)      {
-      return fPARIS_LaBr3Stage_Eff_phpeak.at(i);
-   }
-   
+    }
 
-   // (T)
-   UShort_t GetPARISLaBr3StageTMult()               {
-      return fPARIS_LaBr3Stage_E_DetectorNbr.size();
-   }
-   UShort_t GetPARISLaBr3StageTDetectorNbr(Int_t i) {
-      return fPARIS_LaBr3Stage_T_DetectorNbr.at(i);
-   }
-   UShort_t GetPARISLaBr3StageTCrystalNbr(Int_t i)    {
-      return fPARIS_LaBr3Stage_T_CrystalNbr.at(i);
-   }
-   Double_t GetPARISLaBr3StageTTime(Int_t i)      {
+
+    // (T)
+    UShort_t GetPARISLaBr3StageTMult()               {
+      return fPARIS_LaBr3Stage_E_ClusterNbr.size();
+    }
+    UShort_t GetPARISLaBr3StageTClusterNbr(Int_t i) {
+      return fPARIS_LaBr3Stage_T_ClusterNbr.at(i);
+    }
+    UShort_t GetPARISLaBr3StageTPhoswichNbr(Int_t i)    {
+      return fPARIS_LaBr3Stage_T_PhoswichNbr.at(i);
+    }
+    Double_t GetPARISLaBr3StageTTime(Int_t i)      {
       return fPARIS_LaBr3Stage_T_Time.at(i);
-   }
+    }
 
-   //
-   // Second stage (CsI
-   //
-   // (E)
-   UShort_t GetPARISCsIStageEMult()               {
-      return fPARIS_CsIStage_E_DetectorNbr.size();
-   }
-   UShort_t GetPARISCsIStageEDetectorNbr(Int_t i) {
-      return fPARIS_CsIStage_E_DetectorNbr.at(i);
-   }
-   UShort_t GetPARISCsIStageECrystalNbr(Int_t i)    {
-      return fPARIS_CsIStage_E_CrystalNbr.at(i);
-   }
-   Double_t GetPARISCsIStageEEnergy(Int_t i)      {
-      return fPARIS_CsIStage_E_Energy.at(i);
-   }
-   Double_t GetPARISCsIStageEffphpeak(Int_t i)      {
-      return fPARIS_CsIStage_Eff_phpeak.at(i);
-   }
-   
-   // (T)
-   UShort_t GetPARISCsIStageTMult()               {
-      return fPARIS_CsIStage_E_DetectorNbr.size();
-   }
-   UShort_t GetPARISCsIStageTDetectorNbr(Int_t i) {
-      return fPARIS_CsIStage_T_DetectorNbr.at(i);
-   }
-   UShort_t GetPARISCsIStageTCrystalNbr(Int_t i)    {
-      return fPARIS_CsIStage_T_CrystalNbr.at(i);
-   }
-   Double_t GetPARISCsIStageTTime(Int_t i)      {
-      return fPARIS_CsIStage_T_Time.at(i);
-   }
+    // Second stage NaI
+    // (E)
+    UShort_t GetPARISNaIStageEMult()               {
+      return fPARIS_NaIStage_E_ClusterNbr.size();
+    }
+    UShort_t GetPARISNaIStageEClusterNbr(Int_t i) {
+      return fPARIS_NaIStage_E_ClusterNbr.at(i);
+    }
+    UShort_t GetPARISNaIStageEPhoswichNbr(Int_t i)    {
+      return fPARIS_NaIStage_E_PhoswichNbr.at(i);
+    }
+    Double_t GetPARISNaIStageEEnergy(Int_t i)      {
+      return fPARIS_NaIStage_E_Energy.at(i);
+    }
 
-   /*
-   // (E)
-   //double   GetEnergy(int i)      {return fParis_Energy[i];}
-   // (T)
-   //double   GetTime(int i)         {return fParis_Time[i];}
-   // (N)
-   int      GetParisNumber(int i)      {return fParis_Number[i];}   
-   double   GetEnergySize()         {return fParis_Energy.size();}
-   // (T)
-   double   GetTimeSize()         {return fParis_Time.size();}
-   // (N)
-   int         GetParisNumberSize()      {return fParis_Number.size();}
-   */
-   
-   /////////////////////           SETTERS           ////////////////////////
+    // (T)
+    UShort_t GetPARISNaIStageTMult()               {
+      return fPARIS_NaIStage_E_ClusterNbr.size();
+    }
+    UShort_t GetPARISNaIStageTClusterNbr(Int_t i) {
+      return fPARIS_NaIStage_T_ClusterNbr.at(i);
+    }
+    UShort_t GetPARISNaIStageTPhoswichNbr(Int_t i)    {
+      return fPARIS_NaIStage_T_PhoswichNbr.at(i);
+    }
+    Double_t GetPARISNaIStageTTime(Int_t i)      {
+      return fPARIS_NaIStage_T_Time.at(i);
+    }
 
-   //
-   // First stage 
-   //
-   // (E)
+    /////////////////////           SETTERS           ////////////////////////
+    // First stage 
+    // (E)
+    void SetParisLaBr3E(UShort_t DetNbr,UShort_t PhoswichNbr, Double_t E){
+      fPARIS_LaBr3Stage_E_ClusterNbr.push_back(DetNbr); 
+      fPARIS_LaBr3Stage_E_PhoswichNbr.push_back(PhoswichNbr); 
+      fPARIS_LaBr3Stage_E_Energy.push_back(E); 
+    }
 
-   void SetPARISLaBr3StageEDetectorNbr(UShort_t DetNbr) {
-      fPARIS_LaBr3Stage_E_DetectorNbr.push_back(DetNbr);
-   }
-   void SetPARISLaBr3StageECrystalNbr(UShort_t CrystalNbr)    {
-      fPARIS_LaBr3Stage_E_CrystalNbr.push_back(CrystalNbr);
-   }
-   void SetPARISLaBr3StageEEnergy(Double_t Energy)      {
+    void SetPARISLaBr3StageEClusterNbr(UShort_t DetNbr) {
+      fPARIS_LaBr3Stage_E_ClusterNbr.push_back(DetNbr);
+    }
+    void SetPARISLaBr3StageEPhoswichNbr(UShort_t PhoswichNbr)    {
+      fPARIS_LaBr3Stage_E_PhoswichNbr.push_back(PhoswichNbr);
+    }
+    void SetPARISLaBr3StageEEnergy(Double_t Energy)      {
       fPARIS_LaBr3Stage_E_Energy.push_back(Energy);
-   }
-   void SetPARISLaBr3StageEffphpeak(Double_t Energy)      {
-      fPARIS_LaBr3Stage_Eff_phpeak.push_back(Energy);
-   }
-   
+    }
 
-   // (T)
-   void SetPARISLaBr3StageTDetectorNbr(UShort_t DetNbr) {
-      fPARIS_LaBr3Stage_T_DetectorNbr.push_back(DetNbr);
-   }
-   void SetPARISLaBr3StageTCrystalNbr(UShort_t CrystalNbr)    {
-      fPARIS_LaBr3Stage_T_CrystalNbr.push_back(CrystalNbr);
-   }
-   void SetPARISLaBr3StageTTime(Double_t Time)      {
+    // (T)
+    void SetParisLaBr3T(UShort_t DetNbr,UShort_t PhoswichNbr, Double_t T){
+      fPARIS_LaBr3Stage_T_ClusterNbr.push_back(DetNbr); 
+      fPARIS_LaBr3Stage_T_PhoswichNbr.push_back(PhoswichNbr); 
+      fPARIS_LaBr3Stage_T_Time.push_back(T); 
+    }
+
+
+
+    void SetPARISLaBr3StageTClusterNbr(UShort_t DetNbr) {
+      fPARIS_LaBr3Stage_T_ClusterNbr.push_back(DetNbr);
+    }
+    void SetPARISLaBr3StageTPhoswichNbr(UShort_t PhoswichNbr)    {
+      fPARIS_LaBr3Stage_T_PhoswichNbr.push_back(PhoswichNbr);
+    }
+    void SetPARISLaBr3StageTTime(Double_t Time)      {
       fPARIS_LaBr3Stage_T_Time.push_back(Time);
-   }
+    }
 
-   //
-   // Second stage (CsI
-   //
-   // (E)
-   void SetPARISCsIStageEDetectorNbr(UShort_t DetNbr) {
-      fPARIS_CsIStage_E_DetectorNbr.push_back(DetNbr);
-   }
-   void SetPARISCsIStageECrystalNbr(UShort_t CrystalNbr)    {
-      fPARIS_CsIStage_E_CrystalNbr.push_back(CrystalNbr);
-   }
-   void SetPARISCsIStageEEnergy(Double_t Energy)      {
-      fPARIS_CsIStage_E_Energy.push_back(Energy);
-   }
-   void SetPARISCsIStageEffphpeak(Double_t Energy)      {
-      fPARIS_CsIStage_Eff_phpeak.push_back(Energy);
-   }
-   
-   // (T)
-   void SetPARISCsIStageTDetectorNbr(UShort_t DetNbr) {
-      fPARIS_CsIStage_T_DetectorNbr.push_back(DetNbr);
-   }
-   void SetPARISCsIStageTCrystalNbr(UShort_t CrystalNbr)    {
-      fPARIS_CsIStage_T_CrystalNbr.push_back(CrystalNbr);
-   }
-   void SetPARISCsIStageTTime(Double_t Time)  {
-      fPARIS_CsIStage_T_Time.push_back(Time);
-   }
+    // Second stage NaI
+    // (E)
+    void SetParisNaIE(UShort_t DetNbr,UShort_t PhoswichNbr, Double_t E){
+      fPARIS_NaIStage_E_ClusterNbr.push_back(DetNbr); 
+      fPARIS_NaIStage_E_PhoswichNbr.push_back(PhoswichNbr); 
+      fPARIS_NaIStage_E_Energy.push_back(E); 
+    }
 
+    void SetPARISNaIStageEClusterNbr(UShort_t DetNbr) {
+      fPARIS_NaIStage_E_ClusterNbr.push_back(DetNbr);
+    }
+    void SetPARISNaIStageEPhoswichNbr(UShort_t PhoswichNbr)    {
+      fPARIS_NaIStage_E_PhoswichNbr.push_back(PhoswichNbr);
+    }
+    void SetPARISNaIStageEEnergy(Double_t Energy)      {
+      fPARIS_NaIStage_E_Energy.push_back(Energy);
+    }
 
-   /*
-   // (E)
-   void   SetEnergy(double E)         {fParis_Energy.push_back(E);}
-   void   SetTime(double T)         {fParis_Time.push_back(T);}
-   void   SetParisNumber(int N)         {fParis_Number.push_back(N);}
-   */
-   ClassDef(TParisData,1)  // ParisData structure
+    // (T)
+    void SetParisNaIT(UShort_t DetNbr,UShort_t PhoswichNbr, Double_t T){
+      fPARIS_NaIStage_T_ClusterNbr.push_back(DetNbr); 
+      fPARIS_NaIStage_T_PhoswichNbr.push_back(PhoswichNbr); 
+      fPARIS_NaIStage_T_Time.push_back(T); 
+    }   
+
+    void SetPARISNaIStageTClusterNbr(UShort_t DetNbr) {
+      fPARIS_NaIStage_T_ClusterNbr.push_back(DetNbr);
+    }
+    void SetPARISNaIStageTPhoswichNbr(UShort_t PhoswichNbr)    {
+      fPARIS_NaIStage_T_PhoswichNbr.push_back(PhoswichNbr);
+    }
+    void SetPARISNaIStageTTime(Double_t Time)  {
+      fPARIS_NaIStage_T_Time.push_back(Time);
+    }
+
+    ClassDef(TParisData,1)  // ParisData structure
 };
 
 #endif

@@ -44,7 +44,7 @@ class TParisPhysics : public TObject, public NPA::VDetector{
 
   public: 
     void Clear();   
-    void Clear(const Option_t*) {};   
+    void Clear(const Option_t*) {};
 
   public:
     /////////////////////////////////////
@@ -150,29 +150,11 @@ class TParisPhysics : public TObject, public NPA::VDetector{
     // Provide Physical Multiplicity
     Int_t      ParisEventMult;
 
-    // Provide a Classification of Event
-    //vector<int>      EventType;
-
-    // Telescope
-    //vector<int>      ModuleNumber;
-
     //   FirstStage
     vector<double>   ParisLaBr_E;
-    //vector<double>   FirstStage_T;
-    //vector<int>      FirstStage_X;
-    //vector<int>      FirstStage_Y;
 
     //   SecondStage
-    vector<double>   ParisCsI_E;
-    //vector<double>   SecondStage_T;
-    //vector<int>      SecondStage_N;
-
-    /*
-    //   ThirdStage
-    vector<double>   ThirdStage_E;
-    vector<double>   ThirdStage_T;
-    vector<int>      ThirdStage_N;
-    */
+    vector<double>   ParisNaI_E;
 
     // Physical Value  
     vector<double>   ParisTotalEnergy;
