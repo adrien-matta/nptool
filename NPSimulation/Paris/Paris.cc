@@ -528,7 +528,7 @@ void Paris::ReadSensitive(const G4Event* event){
 
     G4double* Info = *(LaBr3_itr->second);
 
-    double Energy = Info[0];
+    double Energy = RandGauss::shoot(Info[0],ResoFirstStage);
 
     if(Energy>EnergyThreshold){
       double Time = Info[1];
@@ -555,7 +555,7 @@ void Paris::ReadSensitive(const G4Event* event){
 
     G4double* Info = *(NaI_itr->second);
 
-    double Energy = Info[0];
+    double Energy = RandGauss::shoot(Info[0],ResoSecondStage);
 
     if(Energy>EnergyThreshold){
       double Time = Info[1];
