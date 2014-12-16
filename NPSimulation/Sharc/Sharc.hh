@@ -43,8 +43,7 @@ using namespace std;
 using namespace CLHEP;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-namespace SHARC
-{
+namespace SHARC{
   // Energy and time Resolution
   const G4double ResoTime    = 0      ;
   //const G4double ResoEnergy  = 0.035*MeV ;// = zzkeV of Resolution   //   Unit is MeV/2.35
@@ -183,7 +182,6 @@ public:
   // Read sensitive part and fill the Root tree.
   // Called at in the EventAction::EndOfEventAvtion
   void ReadSensitive(const G4Event* event) ;
-  
   
   ////////////////////////////////////////////////////
   ///////////Event class to store Data////////////////

@@ -32,7 +32,6 @@
 #include "GaspardTracker.h"
 #include "Hyde2Tracker.h"
 #include "TParisPhysics.h"
-#include "Shield.h"
 #include "Fatima.h"
 #include "TAnnularS1Physics.h"
 #include "TCATSPhysics.h"
@@ -102,7 +101,6 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
    bool SSSD                = false;
    bool ScintillatorPlastic = false;
    bool Sharc               = false;
-   bool ShieldDet           = false;
    bool SiLi		            = false;
    bool SiRes		            = false;
    bool TAC                 = false;
@@ -408,29 +406,6 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
       AddDetector("PARIS", myDetector);
 #endif
     }
-    ////////////////////////////////////////////
-    ///////////// Search for Paris' Shield /////
-    ////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 6, "Shield") == 0 && ShieldDet == false) {
-#ifdef INC_SHIELD
-      ShieldDet = true;
-      cout << "//////// Shield ////////" << endl << endl;
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new Shield();
-      // Read Position of Telescope
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-
-      // Add array to the VDetector Vector
-      AddDetector("SHIELD", myDetector);
-#endif
-    }
-
-
-
-	  
      
       ////////////////////////////////////////////
       ////////// Search for S2 (Micron)  /////////

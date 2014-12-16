@@ -768,21 +768,21 @@ void Sharc::InitializeScorers(){
   if(already_exist) return;
  
   G4VPrimitiveScorer* BOXScorer =
-  new  SILICONSCORERS::PS_Silicon_Rectangle("SharcBOX",
+  new  SILICONSCORERS::PS_Silicon_Rectangle("SharcBOX",0,
                                    BOX_Wafer_Length,
                                    BOX_Wafer_Width,
                                    BOX_Wafer_Front_NumberOfStrip ,
                                    BOX_Wafer_Back_NumberOfStrip);
   
   G4VPrimitiveScorer* PADScorer =
-  new  SILICONSCORERS::PS_Silicon_Rectangle("SharcPAD",
+  new  SILICONSCORERS::PS_Silicon_Rectangle("SharcPAD",0,
                                    PAD_Wafer_Length,
                                    PAD_Wafer_Width,
                                    1 ,
                                    1);
   
   G4VPrimitiveScorer* QQQScorer =
-  new  SILICONSCORERS::PS_Silicon_Annular("SharcQQQ",
+  new  SILICONSCORERS::PS_Silicon_Annular("SharcQQQ",0,
                                  QQQ_Wafer_Inner_Radius,
                                  QQQ_Wafer_Outer_Radius,
                                  QQQ_Wafer_Starting_Phi,

@@ -18,7 +18,6 @@
  *  token.                                                                   *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *    25/08/10: Added Shield around PARIS   (marc.labiche@stfc.ac.uk)        *
  *    15/01/10: Added Chamber (marc.labiche@stfc.ac.uk)                      *
  *    04/12/09: Added PARIS detector (marc.labiche@stfc.ac.uk)               *
  *****************************************************************************/
@@ -109,10 +108,6 @@
 
 #ifdef INC_SHARC
 #include "Sharc.hh"
-#endif
-
-#ifdef INC_SHIELD
-#include "Shield.hh"
 #endif
 
 #ifdef INC_TIGRESS
@@ -217,7 +212,6 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
   bool cParis            = false;   
   bool cS1               = false;
   bool cSharc            = false;
-  bool cShield           = false;
   bool cTigress          = false;
   bool cTiara            = false;
   bool cW1               = false;
@@ -381,27 +375,6 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
 
       // Instantiate the new array as a VDetector Object
       VDetector* myDetector = new Paris()                  ;
-
-      // Read Position of Telescope
-      ConfigFile.close()                                 ;
-      myDetector->ReadConfiguration(Path)                   ;
-      ConfigFile.open(Path.c_str())                      ;
-
-      // Add array to the VDetector Vector
-      AddDetector(myDetector)                            ;
-#endif
-    }
-
-    ////////////////////////////////////////////
-    //////////// Search for paris shield   ////////////
-    ////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 6, "Shield") == 0 && cShield == false) {
-#ifdef INC_SHIELD
-      cShield = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "//////// Shield  ////////" << G4endl   ;
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new Shield()                  ;
 
       // Read Position of Telescope
       ConfigFile.close()                                 ;
