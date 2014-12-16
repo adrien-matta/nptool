@@ -36,7 +36,7 @@ namespace SILICONSCORERS {
   class PS_Silicon_Rectangle : public G4VPrimitiveScorer{
     
   public: // with description
-    PS_Silicon_Rectangle(G4String name, G4double StripPlaneLength, G4double StripPlaneWidth, G4int NumberOfStripLength,G4int NumberOfStripWidth,G4int depth=0);
+    PS_Silicon_Rectangle(G4String name, G4int Level, G4double StripPlaneLength, G4double StripPlaneWidth, G4int NumberOfStripLength,G4int NumberOfStripWidth,G4int depth=0);
      ~PS_Silicon_Rectangle();
     
   protected: // with description
@@ -56,7 +56,9 @@ namespace SILICONSCORERS {
     G4int    m_NumberOfStripWidth;
     G4double m_StripPitchLength;
     G4double m_StripPitchWidth;
-    
+    // Level at which to find the copy number linked to the detector number
+    G4int    m_Level;
+
   private: // inherited from G4VPrimitiveScorer
     G4int HCID;
     G4THitsMap<G4double*>* EvtMap;
@@ -74,7 +76,7 @@ namespace SILICONSCORERS {
   class PS_Silicon_Annular : public G4VPrimitiveScorer{
     
   public: // with description
-    PS_Silicon_Annular(G4String name, G4double StripPlaneInnerRadius, G4double StripPlaneOuterRadius, G4double PhiStart,G4double PhiStop, G4int NumberOfStripRing,G4int NumberOfStripSector=1, G4int NumberOfQuadrant=1,G4int depth=0);
+    PS_Silicon_Annular(G4String name,G4int Level, G4double StripPlaneInnerRadius, G4double StripPlaneOuterRadius, G4double PhiStart,G4double PhiStop, G4int NumberOfStripRing,G4int NumberOfStripSector=1, G4int NumberOfQuadrant=1,G4int depth=0);
     ~PS_Silicon_Annular();
     
   protected: // with description
@@ -98,7 +100,9 @@ namespace SILICONSCORERS {
     G4double m_StripPitchRing;
     G4double m_StripPitchSector;
     G4double m_StripPitchQuadrant; 
-    
+    // Level at which to find the copy number linked to the detector number
+    G4int    m_Level;
+
   private: // inherited from G4VPrimitiveScorer
     G4int HCID;
     G4THitsMap<G4double*>* EvtMap;
@@ -117,7 +121,7 @@ namespace SILICONSCORERS {
   class PS_Silicon_Resistive : public G4VPrimitiveScorer{
     
   public: // with description
-    PS_Silicon_Resistive(G4String name,
+    PS_Silicon_Resistive(G4String name, G4int Level,
                          G4double StripPlaneLength, G4double StripPlaneWidth,
                          G4int NumberOfStripWidth,G4int depth=0);
     
@@ -138,7 +142,9 @@ namespace SILICONSCORERS {
     G4double m_StripPlaneWidth;
     G4int    m_NumberOfStripWidth;
     G4double m_StripPitchWidth;
-    
+    // Level at which to find the copy number linked to the detector number
+    G4int    m_Level;
+   
   private: // inherited from G4VPrimitiveScorer
     G4int HCID;
     G4THitsMap<G4double*>* EvtMap;

@@ -33,12 +33,11 @@ using namespace CLHEP;
 // NPTool - ROOT headers
 #include "TS1Data.h"
 
-// Geant4Header
+// Geant4
 #include "G4MultiFunctionalDetector.hh"
+#include "G4LogicalVolume.hh"
 
-
-class AnnularS1 : public VDetector
-{
+class AnnularS1 : public VDetector{
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
    ////////////////////////////////////////////////////
@@ -53,13 +52,11 @@ public:
    // By Position Method
    void AddModule(G4double PosZ);
 
-   // Effectively construct Volume
-   // Avoid to have two time same code for Angle and Point definition
-   void VolumeMaker(G4int             DetecNumber,
-                    G4ThreeVector     pos,
-                    G4RotationMatrix* rot,
-                    G4LogicalVolume*  world);
+   // Produce the logical volume of the detector
+   G4LogicalVolume* ConstructVolume();
 
+private:
+  G4LogicalVolume* m_LogicalDetector;
 
    ////////////////////////////////////////////////////
    ////  Inherite from GaspardTrackerModule class /////

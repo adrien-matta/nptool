@@ -24,7 +24,7 @@
 using namespace SILICONSCORERS ;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-PS_Silicon_Rectangle::PS_Silicon_Rectangle(G4String name, G4double StripPlaneLength, G4double StripPlaneWidth, G4int NumberOfStripLength,G4int NumberOfStripWidth,G4int depth)
+PS_Silicon_Rectangle::PS_Silicon_Rectangle(G4String name,G4int Level, G4double StripPlaneLength, G4double StripPlaneWidth, G4int NumberOfStripLength,G4int NumberOfStripWidth,G4int depth)
 :G4VPrimitiveScorer(name, depth),HCID(-1){
   m_StripPlaneLength = StripPlaneLength;
   m_StripPlaneWidth = StripPlaneWidth;
@@ -32,7 +32,8 @@ PS_Silicon_Rectangle::PS_Silicon_Rectangle(G4String name, G4double StripPlaneLen
   m_NumberOfStripWidth = NumberOfStripWidth;
   m_StripPitchLength = m_StripPlaneLength / m_NumberOfStripLength;
   m_StripPitchWidth = m_StripPlaneWidth / m_NumberOfStripWidth;
-  
+  m_Level = Level;
+
   m_Position = G4ThreeVector(-1000,-1000,-1000);
   m_DetectorNumber = -1;
   m_StripLengthNumber = -1;
@@ -52,7 +53,7 @@ G4bool PS_Silicon_Rectangle::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   Infos[0] = aStep->GetTotalEnergyDeposit();
   Infos[1] = aStep->GetPreStepPoint()->GetGlobalTime();
   
-  m_DetectorNumber = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);
+  m_DetectorNumber = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_Level);
   m_Position  = aStep->GetPreStepPoint()->GetPosition();
   
   // Interaction coordinates (used to fill the InteractionCoordinates branch)
@@ -127,7 +128,7 @@ void PS_Silicon_Rectangle::PrintAll(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-PS_Silicon_Annular::PS_Silicon_Annular(G4String name, G4double StripPlaneInnerRadius, G4double StripPlaneOuterRadius, G4double PhiStart,G4double PhiStop, G4int NumberOfStripRing,G4int NumberOfStripSector,G4int NumberOfQuadrant,G4int depth)
+PS_Silicon_Annular::PS_Silicon_Annular(G4String name,G4int Level, G4double StripPlaneInnerRadius, G4double StripPlaneOuterRadius, G4double PhiStart,G4double PhiStop, G4int NumberOfStripRing,G4int NumberOfStripSector,G4int NumberOfQuadrant,G4int depth)
 :G4VPrimitiveScorer(name, depth),HCID(-1){
   
   m_StripPlaneInnerRadius = StripPlaneInnerRadius;
@@ -140,6 +141,7 @@ PS_Silicon_Annular::PS_Silicon_Annular(G4String name, G4double StripPlaneInnerRa
   m_StripPitchRing =  (m_StripPlaneOuterRadius-m_StripPlaneInnerRadius)/m_NumberOfStripRing;
   m_StripPitchSector = (m_PhiStop-m_PhiStart)/m_NumberOfStripSector;
   m_StripPitchQuadrant = (m_PhiStop-m_PhiStart)/m_NumberOfStripQuadrant;  
+  m_Level = Level;
 
   m_Position = G4ThreeVector(-1000,-1000,-1000);
   m_uz = G4ThreeVector(0,0,1);
@@ -161,7 +163,7 @@ G4bool PS_Silicon_Annular::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   
   Infos[1] = aStep->GetPreStepPoint()->GetGlobalTime();
   
-  m_DetectorNumber = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);
+  m_DetectorNumber = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_Level);
   m_Position = aStep->GetPreStepPoint()->GetPosition();
  
   // Interaction coordinates (used to fill the InteractionCoordinates branch)
@@ -238,13 +240,14 @@ void PS_Silicon_Annular::PrintAll(){
   G4cout << " Number of entries " << EvtMap->entries() << G4endl     ;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-PS_Silicon_Resistive::PS_Silicon_Resistive(G4String name, G4double StripPlaneLength, G4double StripPlaneWidth, G4int NumberOfStripWidth,G4int depth)
+PS_Silicon_Resistive::PS_Silicon_Resistive(G4String name,G4int Level, G4double StripPlaneLength, G4double StripPlaneWidth, G4int NumberOfStripWidth,G4int depth)
 :G4VPrimitiveScorer(name, depth),HCID(-1){
   m_StripPlaneLength = StripPlaneLength;
   m_StripPlaneWidth = StripPlaneWidth;
   m_NumberOfStripWidth = NumberOfStripWidth;
   m_StripPitchWidth = m_StripPlaneWidth / m_NumberOfStripWidth;
-  
+  m_Level = Level;
+
   m_Position = G4ThreeVector(-1000,-1000,-1000);
   m_DetectorNumber = -1;
   m_StripWidthNumber = -1;
@@ -263,7 +266,7 @@ G4bool PS_Silicon_Resistive::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   
   EnergyAndTime[2] = aStep->GetPreStepPoint()->GetGlobalTime();
   
-  m_DetectorNumber = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);
+  m_DetectorNumber = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_Level);
   m_Position  = aStep->GetPreStepPoint()->GetPosition();
   
   // Interaction coordinates (used to fill the InteractionCoordinates branch)

@@ -1,20 +1,20 @@
 #ifndef Paris_h
 #define Paris_h 1
 /*****************************************************************************
- * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
+ * Copyright (C) 2009-2014   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Adrien MATTA  contact address: a.matta@surrey.ac.uk      *
+ * Original Author: M. Labiche  contact address: marc.labiche@stfc.ac.uk     *
  *                                                                           *
- * Creation Date  : November 2012                                            *
- * Last update    :                                                          *
+ * Creation Date  : December 2009                                            *
+ * Last update    : December 2014                                            *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe the Paris Silicon detector                           *
+ *  This class describe the Paris scintillator array                         *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
