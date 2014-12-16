@@ -44,7 +44,6 @@
 // NPS
 #include "Tiara.hh"
 #include "MaterialManager.hh"
-#include "ResistiveStripScorers.hh"
 #include "SiliconScorers.hh"
 
 // NPL

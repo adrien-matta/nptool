@@ -43,13 +43,13 @@ G4bool PS_Calorimeter::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   Infos[0] = aStep->GetTotalEnergyDeposit();
   Infos[1] = aStep->GetPreStepPoint()->GetGlobalTime();
 
-  for(G4int i = 0 ; i < mysize ; i++){ 
+  for(unsigned int i = 0 ; i < mysize ; i++){ 
     Infos[i+2] = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_NestingLevel[i]);
   }
 
   m_Index = 0 ;
   G4int multiplier = 1;
-   for(G4int i = 0 ; i < mysize ; i++){ 
+   for(unsigned int i = 0 ; i < mysize ; i++){ 
     m_Index+= aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_NestingLevel[i])*multiplier;
     multiplier*=10; 
   }
