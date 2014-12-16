@@ -1,0 +1,5 @@
+CalibrationFilePath
+  ./Calibration/CATS_Calib_D1_X.txt
+  ./Calibration/CATS_Calib_D1_Y.txt
+  ./Calibration/CATS_Calib_D2_X.txt
+  ./Calibration/CATS_Calib_D2_Y.txt

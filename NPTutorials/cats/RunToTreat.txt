@@ -1,0 +1,4 @@
+TTreeName 
+	AutoTree
+RootFileName
+  ../../NPData/cats_mask_e644.root

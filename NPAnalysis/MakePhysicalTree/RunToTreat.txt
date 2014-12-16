@@ -1,7 +1,7 @@
 TTreeName 
-	SimulatedTree
+	AutoTree
 RootFileName
-  ../../Outputs/Simulation/Test1.root 
+  /Users/pierremorfouace/Desktop/NPDoc/cats/run_2003.root
 %	/data/e628X/e628/acquisition/run_root/run_1352.1.root
 %	/data/e628X/e628/acquisition/run_root/run_1353.0.root
 % /data/e628X/e628/acquisition/run_root/run_1354.0.root

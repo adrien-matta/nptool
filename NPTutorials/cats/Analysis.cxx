@@ -22,7 +22,8 @@ int main(int argc, char** argv)
    string OutputfileName      = myOptionManager->GetOutputFile();
    
    // Instantiate RootOutput
-   RootOutput::getInstance("Analysis/"+OutputfileName, "AnalysedTree");
+   //RootOutput::getInstance("Analysis/"+OutputfileName, "AnalysedTree");
+    RootOutput::getInstance("Analysis/Analysed_test_cats_mask_e644", "AnalysedTree");
    
    // Instantiate the detector using a file
    NPA::DetectorManager* myDetector = new DetectorManager();
