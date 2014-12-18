@@ -40,7 +40,7 @@
 // NPLib
 #include "TSharcData.h"
 using namespace std;
-using namespace CLHEP;
+using namespace CLHEP;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace SHARC{

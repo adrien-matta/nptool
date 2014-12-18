@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2009   this file is part of the NPTool Project              *
+ * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -8,8 +8,8 @@
 /*****************************************************************************
  * Original Author:  M. Labiche    contact address: marc.labiche@stfc.ac.uk  *
  *                                                                           *
- * Creation Date  : 04/01/13                                                 *
- * Last update    : 02/07/2014                                                         *
+ * Creation Date  : 04/12/09                                                 *
+ * Last update    : 8/12/14 by A. MATTA                                      *
  *---------------------------------------------------------------------------*
  * Decription: This class stores the physical results after NPAnalysis is run*
  *             for the FATIMA detector.                                       *
@@ -17,340 +17,552 @@
  *             stored in the output TTree of NPAnalysis.                     *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *                                                                           *
+ *    Last update: Merging of Fatima and TFatimaPhyscis class                  *
  *                                                                           *
  *****************************************************************************/
 
+// NPL
 #include "TFatimaPhysics.h"
+#include "RootInput.h"
+#include "RootOutput.h"
+
+//  STL
 #include <vector>
 #include <iostream>
+#include <fstream>
 #include <cstdlib>
+#include <limits>
+#include <cmath>
 
+// Root
+#include "TChain.h"
+#include "TTree.h"
+
+using namespace std;
 
 ClassImp(TFatimaPhysics)
 
+  ////////////////////////////////////////////////////////////////////////////////
+  TFatimaPhysics::TFatimaPhysics(){
+    m_NumberOfModule = 0;
+    m_EventData    = new TFatimaData();
+    m_EventPhysics = new TFatimaPhysics();
+  }
 
-TFatimaPhysics::TFatimaPhysics() 
-{
-  //EventMultiplicity = 0;
+////////////////////////////////////////////////////////////////////////////////
+TFatimaPhysics::~TFatimaPhysics(){
+  Clear();
 }
 
-
-
-TFatimaPhysics::~TFatimaPhysics()
-{
-   Clear();
+////////////////////////////////////////////////////////////////////////////////
+void TFatimaPhysics::BuildSimplePhysicalEvent(){
+  BuildPhysicalEvent();
 }
 
+////////////////////////////////////////////////////////////////////////////////
+void TFatimaPhysics::BuildPhysicalEvent(){
 
-
-void TFatimaPhysics::BuildSimplePhysicalEvent(TFatimaData* Data)
-{
-   BuildPhysicalEvent(Data);
-}
-
-
-
-void TFatimaPhysics::BuildPhysicalEvent(TFatimaData* Data)
-{
-
-  int multLaBrE = Data->GetFATIMALaBr3StageEMult();
-  //  int multCsIE = Data->GetFATIMACsIStageEMult();
-
-  cout << "%%%%%%%%%%%%%%%%%%%%%%%" << endl;
-  cout << "multLaBr= " << multLaBrE << endl;
-  //cout << "multCsI= " << multCsIE << endl;
+  int multLaBrE = m_EventData->GetFatimaLaBr3EMult();
 
   FatimaEventMult=multLaBrE;
-  //FatimaEventMult=multLaBrE+multCsIE;
+  // get energy from strips and store it
+  if(FatimaEventMult>=1){
+    double EnergyTot=0.;
+    double EnergyStripFront;
+    double EnergyStrip;
 
- // Get energy from strips and store it
+    for(int j=0;j<multLaBrE;j++){
+      EnergyStripFront= m_EventData->GetFatimaLaBr3EEnergy(j);
 
-  if(FatimaEventMult>=1)
-    {
+      EnergyStrip  = EnergyStripFront;
+      FatimaLaBr_E.push_back(EnergyStrip);
 
-      double EnergyTot=0.;
-
-      double HighestEnergy;
-      int DetID_HighestE;
-      double CrystID_HighestE;
-      // Initialisation
-      HighestEnergy=0;
-      DetID_HighestE=-1;
-      CrystID_HighestE=-1;
-
-      /*
-      double HighestEnergy, Outer_HighestEnergy;
-      int DetID_HighestE, OuterDetID_HighestE;
-      double CrystID_HighestE, OuterCrystID_HighestE;
-     
-      // Initialisation
-      HighestEnergy=Outer_HighestEnergy=0;
-      DetID_HighestE=OuterDetID_HighestE=-1;
-      CrystID_HighestE=OuterCrystID_HighestE=-1;
-      */
-
-      if(multLaBrE>=1){
-	//cout << "cava1b" <<endl;
-	//cout <<  Data->GetFATIMALaBr3StageEEnergy(0) <<endl;
-	//cout << "cava1b" <<endl;
-
-	    double EnergyTotFirst;
-            double EnergyStripFront;
-	    double EnergyStrip;
-	    //double HighestEnergyStrip;
-
-	    for(int j=0;j<multLaBrE;j++)
-	    {
-	     EnergyStripFront= Data->GetFATIMALaBr3StageEEnergy(j);
-
-             EnergyStrip  = EnergyStripFront;
- 	     cout << "Energy LaBr=" << EnergyStrip << endl;
-	     FatimaLaBr_E.push_back(EnergyStrip);
-  
-             EnergyTotFirst += EnergyStrip;
-             EnergyTot += EnergyStrip;
-
-	     //Let's find the first  detector hit:
-	     if(HighestEnergy<EnergyStripFront)
-	       {
-		 HighestEnergy=EnergyStripFront;
-		 DetID_HighestE=Data->GetFATIMALaBr3StageEDetectorNbr(j);
-		 CrystID_HighestE=Data->GetFATIMALaBr3StageECrystalNbr(j);
-	       }
-
-
-	    }
-
-      // Fill total energy in inner shell and the first detector/crystal hit
-
-      FatimaInTotalEnergy.push_back(EnergyTotFirst);
-
-      cout << " Id of Fatima detector hit= " << DetID_HighestE << endl;
-      cout << " EnergyTotFirst= " <<  EnergyTotFirst << endl;
-      cout << " EnergyTot= " <<  EnergyTot << endl;
-
-      if(DetID_HighestE>100)// Cluster case
-	{
-	  //ModuleNumber.push_back(DetID_HighestE);
-	  DetectorNumber.push_back(-1);
-	}else               // Detector case
-	  {
-	    //ModuleNumber.push_back(-1);
-           DetectorNumber.push_back(DetID_HighestE);
-	  }
-
-      if(DetID_HighestE<100)  // Detector case
-	{
-	  FirstStage_X.push_back(0);
-	  FirstStage_Y.push_back(0);
-	}
-
-
-      /*
-     if(DetID_HighestE>100)  // Cluster case
-	{
-
-	  if(CrystID_HighestE==0)
-	    {
-	      FirstStage_X.push_back(0);
-	      FirstStage_Y.push_back(0);
-	    }
-	  if(CrystID_HighestE==1)
-	    {
-	      FirstStage_X.push_back(1);
-	      FirstStage_Y.push_back(0);
-	    }
-	  if(CrystID_HighestE==2)
-	    {
-	      FirstStage_X.push_back(2);
-	      FirstStage_Y.push_back(0);
-	    }
-	  if(CrystID_HighestE==3)
-	    {
-	      FirstStage_X.push_back(0);
-	      FirstStage_Y.push_back(1);
-	    }
-	  if(CrystID_HighestE==4)
-	    {
-	      FirstStage_X.push_back(1);
-	      FirstStage_Y.push_back(1);
-	    }
-	  if(CrystID_HighestE==5)
-	    {
-	      FirstStage_X.push_back(2);
-	      FirstStage_Y.push_back(1);
-	    }
-	  if(CrystID_HighestE==6)
-	    {
-	      FirstStage_X.push_back(0);
-	      FirstStage_Y.push_back(2);
-	    }
-	  if(CrystID_HighestE==7)
-	    {
-	      FirstStage_X.push_back(1);
-	      FirstStage_Y.push_back(2);
-	    }
-	  if(CrystID_HighestE==8)
-	    {
-	      FirstStage_X.push_back(2);
-	      FirstStage_Y.push_back(2);
-	    }
-	}  // end of cluster case
-      */
-
-      }
-
-      /*
-      if(multCsIE>=1){
-	double EnergySecond;
-	double EnergyTotSecond;
-	    for(int j=0;j<multCsIE;j++)
-	    {
-	      EnergySecond = Data->GetFATIMACsIStageEEnergy(j);
-	      FatimaCsI_E.push_back(EnergySecond);
-	      EnergyTotSecond +=EnergySecond;
-
-	      EnergyTot += EnergySecond;
-	      cout << "Energy CsI=" << EnergySecond << endl;
-	      //cout << "Energytot CsI=" << EnergyTot << endl;
-
-	     //Let's find the first outer detector hit:
-	     if(Outer_HighestEnergy<EnergySecond)
-	       {
-		 Outer_HighestEnergy=EnergySecond;
-		 OuterDetID_HighestE=Data->GetFATIMACsIStageEDetectorNbr(j);
-		 OuterCrystID_HighestE=Data->GetFATIMACsIStageECrystalNbr(j);
-	       }
-	    }
-
-	    // Fill total energy in outer shell
-	    FatimaOutTotalEnergy.push_back(EnergyTotSecond);
- 
-            cout << " Id of Fatima outer detector hit= " << OuterDetID_HighestE << endl;
-            cout << " EnergyTotSecond= " <<  EnergyTotSecond << endl;
-            cout << " EnergyTot= " <<  EnergyTot << endl;
-
-	    if(multLaBrE==0 || (EnergyTotSecond>EnergyTot) ) {  // = only if Outer layer is hit first
-
-	      FirstStage_X.push_back(-1);
-	      FirstStage_Y.push_back(-1);
-
-	      cout << " Id of Fatima (CsI) detector hit= " << OuterDetID_HighestE << endl;
-
-	      if(OuterDetID_HighestE>100)
-		{
-		  ModuleNumber.push_back(OuterDetID_HighestE);
-		  DetectorNumber.push_back(-1);
-		}else
-		  {
-		    ModuleNumber.push_back(-1);
-		    DetectorNumber.push_back(OuterDetID_HighestE);
-		  }
-
-
-	      if(OuterDetID_HighestE<100)  // Detector case
-		{
-		  SecondStage_X.push_back(0);
-		  SecondStage_Y.push_back(0);
-		}
-
-
-	      if(OuterDetID_HighestE>100)  // Cluster case
-		{
-		  if(OuterCrystID_HighestE==0)
-		    {
-		      SecondStage_X.push_back(0);
-		      SecondStage_Y.push_back(0);
-		    }
-		  if(OuterCrystID_HighestE==1)
-		    {
-		      SecondStage_X.push_back(1);
-		      SecondStage_Y.push_back(0);
-		    }
-		  if(OuterCrystID_HighestE==2)
-		    {
-		      SecondStage_X.push_back(2);
-		      SecondStage_Y.push_back(0);
-		    }
-		  if(OuterCrystID_HighestE==3)
-		    {
-		      SecondStage_X.push_back(0);
-		      SecondStage_Y.push_back(1);
-		    }
-		  if(OuterCrystID_HighestE==4)
-		    {
-		      SecondStage_X.push_back(1);
-		      SecondStage_Y.push_back(1);
-		    }
-		  if(OuterCrystID_HighestE==5)
-		    {
-		      SecondStage_X.push_back(2);
-		      SecondStage_Y.push_back(1);
-		    }
-		  if(OuterCrystID_HighestE==6)
-		    {
-		      SecondStage_X.push_back(0);
-		      SecondStage_Y.push_back(2);
-		    }
-		  if(OuterCrystID_HighestE==7)
-		    {
-		      SecondStage_X.push_back(1);
-		      SecondStage_Y.push_back(2);
-		    }
-		  if(OuterCrystID_HighestE==8)
-		    {
-		      SecondStage_X.push_back(2);
-		      SecondStage_Y.push_back(2);
-		    }
-
-		}
-	    }
-
-      }
-      */
-
-      // Fill total energy
-      FatimaTotalEnergy.push_back(EnergyTot);
+      EnergyTot += EnergyStrip;
+      //cout << "Energytot LaBr=" << EnergyTot << endl;
     }
+
+    // Fill total energy in inner shell
+    FatimaInTotalEnergy.push_back(EnergyTot);
+  }
 }
 
-
-
-void TFatimaPhysics::Clear()
-{
-   //EventMultiplicity= 0;
-   FatimaEventMult= 0;
-    DetectorNumber.clear();  // phoswich #
- 
+////////////////////////////////////////////////////////////////////////////////
+void TFatimaPhysics::Clear(){
+  //EventMultiplicity= 0;
+  FatimaEventMult= 0;
+  //ModuleNumber.clear();
   //EventType.clear();
-   FatimaInTotalEnergy.clear();   // inner shell
-   //FatimaOutTotalEnergy.clear();  // outter shell
-   FatimaTotalEnergy.clear();
+  FatimaInTotalEnergy.clear();   // inner shell
+  FatimaOutTotalEnergy.clear();  // outter shell
+  FatimaTotalEnergy.clear();
 
+  // LaBr
+  FatimaLaBr_E.clear();
+  //First_T.clear();
+  //First_X.clear();
+  //First_Y.clear();
 
-   // LaBr
-   FatimaLaBr_E.clear();
-   //FatimaIn_1stDetId.clear();
-   //FatimaIn_1stCrystId.clear();
-   //FirstStage_T.clear();
-   FirstStage_X.clear();
-   FirstStage_Y.clear();
+  // NaI
+  FatimaNaI_E.clear();
+  //Second_T.clear();
+  //Second_N.clear();
 
-   /*   // CsI
-   FatimaCsI_E.clear();
-   //FatimaOut_1stDetId.clear();
-   //FatimaOut_1stCrystId.clear();
-   //SecondStage_T.clear();
-   //SecondStage_N.clear();
-   SecondStage_X.clear();
-   SecondStage_Y.clear();
-   */
-
-   /*
-   // CsI	
-   ThirdStage_E.clear();
-   ThirdStage_T.clear();
-   ThirdStage_N.clear();
-   */
+  /*
+  // NaI   
+  Third_E.clear();
+  Third_T.clear();
+  Third_N.clear();
+  */
 }
+
+////////////////////////////////////////////////////////////////////////////////
+void TFatimaPhysics::ReadConfiguration(string Path)    {
+  ifstream ConfigFile              ;
+  ConfigFile.open(Path.c_str())    ;
+  string LineBuffer                ;
+  string DataBuffer                ;
+
+  double   Ax, Bx, Cx, Dx, Ay, By, Cy, Dy, Az, Bz, Cz, Dz;
+  TVector3 A, B, C, D;
+  double   Theta = 0, Phi = 0, R = 0, beta_u = 0 , beta_v = 0 , beta_w = 0;
+
+  bool check_A = false;
+  bool check_C = false;
+  bool check_B = false;
+  bool check_D = false;
+
+  bool check_Theta = false;
+  bool check_Phi   = false;
+  bool check_R     = false;
+  bool check_beta  = false;
+
+  bool ReadingStatus = false;
+
+  while (!ConfigFile.eof()) {
+    getline(ConfigFile, LineBuffer);
+
+    // If line is a Fatima bloc, reading toggle to true
+    // and toggle to true flags indicating which shape is treated.
+    if (LineBuffer.compare(0, 12, "FatimaCluster") == 0 ) {
+      cout << "///////////////////////" << endl;
+      cout << "Detector found:" << endl;
+      ReadingStatus = true;
+    }
+    // Reading Block
+    while (ReadingStatus) {
+      ConfigFile >> DataBuffer ;
+      // Comment Line
+      if (DataBuffer.compare(0, 1, "%") == 0) {
+        ConfigFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n' );
+      }
+      // Finding another telescope (safety), toggle out
+      else if (DataBuffer.compare(0, 13, "FatimaDetector") == 0) {
+        cout << "WARNING: Another Module is find before standard sequence of Token, Error may occured in Telecope definition" << endl;
+        ReadingStatus = false;
+      }
+
+      // Position method
+      else if (DataBuffer=="A=") {
+        check_A = true;
+        ConfigFile >> DataBuffer ;
+        Ax = atof(DataBuffer.c_str()) ;
+        Ax = Ax  ;
+        ConfigFile >> DataBuffer ;
+        Ay = atof(DataBuffer.c_str()) ;
+        Ay = Ay  ;
+        ConfigFile >> DataBuffer ;
+        Az = atof(DataBuffer.c_str()) ;
+        Az = Az  ;
+
+        A = TVector3(Ax, Ay, Az);
+        cout << "X1 Y1 corner position : (" << A.X() << ";" << A.Y() << ";" << A.Z() << ")" << endl;
+      }
+      else if (DataBuffer=="B=") {
+        check_B = true;
+        ConfigFile >> DataBuffer ;
+        Bx = atof(DataBuffer.c_str()) ;
+        Bx = Bx  ;
+        ConfigFile >> DataBuffer ;
+        By = atof(DataBuffer.c_str()) ;
+        By = By  ;
+        ConfigFile >> DataBuffer ;
+        Bz = atof(DataBuffer.c_str()) ;
+        Bz = Bz  ;
+
+        B = TVector3(Bx, By, Bz);
+        cout << "X128 Y1 corner position : (" << B.X() << ";" << B.Y() << ";" << B.Z() << ")" << endl;
+      }
+      else if (DataBuffer == "C=") {
+        check_C = true;
+        ConfigFile >> DataBuffer ;
+        Cx = atof(DataBuffer.c_str()) ;
+        Cx = Cx  ;
+        ConfigFile >> DataBuffer ;
+        Cy = atof(DataBuffer.c_str()) ;
+        Cy = Cy  ;
+        ConfigFile >> DataBuffer ;
+        Cz = atof(DataBuffer.c_str()) ;
+        Cz = Cz  ;
+
+        C = TVector3(Cx, Cy, Cz);
+        cout << "X1 Y128 corner position : (" << C.X() << ";" << C.Y() << ";" << C.Z() << ")" << endl;
+      }
+      else if (DataBuffer=="D=") {
+        check_D = true;
+        ConfigFile >> DataBuffer ;
+        Dx = atof(DataBuffer.c_str()) ;
+        Dx = Dx  ;
+        ConfigFile >> DataBuffer ;
+        Dy = atof(DataBuffer.c_str()) ;
+        Dy = Dy  ;
+        ConfigFile >> DataBuffer ;
+        Dz = atof(DataBuffer.c_str()) ;
+        Dz = Dz  ;
+
+        D = TVector3(Dx, Dy, Dz);
+        cout << "X128 Y128 corner position : (" << D.X() << ";" << D.Y() << ";" << D.Z() << ")" << endl;
+      } // End Position Method
+
+      // Angle method
+      else if (DataBuffer.compare(0, 6, "Theta=") == 0) {
+        check_Theta = true;
+        ConfigFile >> DataBuffer ;
+        Theta = atof(DataBuffer.c_str()) ;
+        Theta = Theta ;
+        cout << "Theta:  " << Theta << endl;
+      }
+      else if (DataBuffer.compare(0, 4, "Phi=") == 0) {
+        check_Phi = true;
+        ConfigFile >> DataBuffer ;
+        Phi = atof(DataBuffer.c_str()) ;
+        Phi = Phi ;
+        cout << "Phi:  " << Phi << endl;
+      }
+      else if (DataBuffer.compare(0, 2, "R=") == 0) {
+        check_R = true;
+        ConfigFile >> DataBuffer ;
+        R = atof(DataBuffer.c_str()) ;
+        R = R ;
+        cout << "R:  " << R << endl;
+      }
+      else if (DataBuffer.compare(0, 5, "Beta=") == 0) {
+        check_beta = true;
+        ConfigFile >> DataBuffer ;
+        beta_u = atof(DataBuffer.c_str()) ;
+        beta_u = beta_u    ;
+        ConfigFile >> DataBuffer ;
+        beta_v = atof(DataBuffer.c_str()) ;
+        beta_v = beta_v    ;
+        ConfigFile >> DataBuffer ;
+        beta_w = atof(DataBuffer.c_str()) ;
+        beta_w = beta_w    ;
+        cout << "Beta:  " << beta_u << " " << beta_v << " " << beta_w << endl  ;
+      }
+
+      /////////////////////////////////////////////////
+      // If All necessary information there, toggle out
+      if ( (check_A && check_B && check_C && check_D) || (check_Theta && check_Phi && check_R && check_beta)  ) {
+        ReadingStatus = false;
+
+        // Add The previously define telescope
+        // With position method
+        if ( check_A && check_B && check_C && check_D ) {
+          AddDetector(A   ,
+              B   ,
+              C   ,
+              D   ) ;
+        }
+
+        // with angle method
+        else if ( check_Theta && check_Phi && check_R && check_beta ) {
+          AddDetector(Theta,
+              Phi,
+              R,
+              beta_u,
+              beta_v,
+              beta_w);
+        }
+
+        // reset boolean flag for point positioning
+        check_A = false;
+        check_B = false;
+        check_C = false;
+        check_D = false;
+
+        // reset boolean flag for angle positioning
+        check_Theta = false;
+        check_Phi   = false;
+        check_R     = false;
+        check_beta  = false;
+
+      } // end test for adding a module
+
+
+    } // end while for reading block
+  } // end while for reading file
+
+  cout << endl << "/////////////////////////////" << endl<<endl;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TFatimaPhysics::ReadCalibrationFile(string Path){
+  // Order of Polynom function used for calibration
+  /*   int Calibration_Si_E_Order;
+       int Calibration_Si_T_Order;
+       int Calibration_SiLi_E_Order;
+       int Calibration_NaI_E_Order;
+       */
+  // Calibration_Si_X_E[DetectorNumber][StripNumber][Order of Coeff]
+  vector< vector< vector< double > > >   Calibration_Si_X_E   ;
+  vector< vector< vector< double > > >   Calibration_Si_X_T   ;
+  vector< vector< vector< double > > >   Calibration_Si_Y_E   ;
+  vector< vector< vector< double > > >   Calibration_Si_Y_T   ;
+
+  // Calibration_SiLi_E[DetectorNumber][PadNumber][Order of Coeff]
+  vector< vector< vector< double > > >   Calibration_SiLi_E   ;
+
+  // Calibration_SiLi_E[DetectorNumber][CrystalNumber][Order of Coeff]
+  vector< vector< vector< double > > >   Calibration_NaI_E   ;
+
+  if (Path == "Simulation") {   // Simulation case: data already calibrated
+    /*      Calibration_Si_E_Order   = 1;
+            Calibration_Si_T_Order   = 1;
+            Calibration_SiLi_E_Order = 1;
+            Calibration_NaI_E_Order  = 1;
+            */
+    vector<double> Coef;
+    // Order 0            Order 1
+    Coef.push_back(0) ; Coef.push_back(1)    ;
+
+    vector< vector<double> > StripLine       ;
+    StripLine.resize( 128 , Coef)         ;
+
+    Calibration_Si_X_E.resize( m_NumberOfModule , StripLine)   ;
+    Calibration_Si_X_T.resize( m_NumberOfModule , StripLine)   ;
+    Calibration_Si_Y_E.resize( m_NumberOfModule , StripLine)   ;
+    Calibration_Si_Y_T.resize( m_NumberOfModule , StripLine)   ;
+
+    Calibration_SiLi_E.resize( m_NumberOfModule , StripLine)   ;
+    Calibration_NaI_E .resize( m_NumberOfModule , StripLine)   ;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TFatimaPhysics::InitializeRootInputRaw(){
+  TChain* inputChain = RootInput::getInstance()->GetChain();
+  inputChain->SetBranchStatus("FATIMA", true);
+  inputChain->SetBranchStatus("fFATIMA*", true);
+  inputChain->SetBranchAddress("FATIMA", &m_EventData);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+void TFatimaPhysics::InitializeRootOutput(){
+  TTree* outputTree = RootOutput::getInstance()->GetTree();
+  outputTree->Branch("FATIMA", "TFatimaPhysics", &m_EventPhysics);
+}
+void TFatimaPhysics::AddDetector(TVector3 A,
+    TVector3 B,
+    TVector3 C,
+    TVector3 D)
+{
+  m_NumberOfModule++;
+
+  // remove warning using D
+  D.Unit();
+
+  // Vector U on Module Face (paralelle to Y Strip) (NB: remember that Y strip are allong X axis)
+  TVector3 U = B - A;
+  U = U.Unit();
+
+  // Vector V on Module Face (parallele to X Strip)
+  TVector3 V = C - A;
+  V = V.Unit();
+
+  // Position Vector of Strip Center
+  TVector3 StripCenter = TVector3(0,0,0);
+  // Position Vector of X=1 Y=1 Strip
+  TVector3 Strip_1_1;
+
+  // Geometry Parameter
+  double Face = 98;      // mm
+  double NumberOfStrip = 128;
+  double StripPitch = Face/NumberOfStrip; // mm
+
+  // Buffer object to fill Position Array
+  vector<double> lineX;
+  vector<double> lineY;
+  vector<double> lineZ;
+
+  vector< vector< double > >   OneModulePositionX;
+  vector< vector< double > >   OneModulePositionY;
+  vector< vector< double > >   OneModulePositionZ;
+
+  // Moving StripCenter to 1.1 corner:
+  Strip_1_1 = A + (U+V) * (StripPitch/2.);
+
+  for (int i = 0; i < NumberOfStrip; i++) {
+    lineX.clear();
+    lineY.clear();
+    lineZ.clear();
+
+    for (int j = 0; j < NumberOfStrip; j++) {
+      StripCenter  = Strip_1_1 + StripPitch*( i*U + j*V  );
+      //         StripCenter += -TargetPosition;
+
+      lineX.push_back( StripCenter.X() );
+      lineY.push_back( StripCenter.Y() );
+      lineZ.push_back( StripCenter.Z() );
+    }
+
+    OneModulePositionX.push_back(lineX);
+    OneModulePositionY.push_back(lineY);
+    OneModulePositionZ.push_back(lineZ);
+  }
+
+  m_PositionX.push_back( OneModulePositionX );
+  m_PositionY.push_back( OneModulePositionY );
+  m_PositionZ.push_back( OneModulePositionZ );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TFatimaPhysics::AddDetector(double theta,
+    double phi,
+    double R,
+    double beta_u,
+    double beta_v,
+    double beta_w)
+{
+  m_NumberOfModule++;
+
+  // convert from degree to radian:
+  double Pi = 3.141592654;
+  theta = theta * Pi/180. ;
+  phi   = phi   * Pi/180. ;
+
+  // Vector U on Module Face (paralelle to Y Strip) (NB: remember that Y strip are allong X axis)
+  TVector3 U ;
+  // Vector V on Module Face (parallele to X Strip)
+  TVector3 V ;
+  // Vector W normal to Module Face (pointing NaI)
+  TVector3 W ;
+  // Vector position of Module Face center
+  TVector3 C ;
+
+  C = TVector3(R * sin(theta) * cos(phi),
+      R * sin(theta) * sin(phi),
+      R * cos(theta));
+
+  TVector3 YperpC = TVector3( cos(theta) * cos(phi),
+      cos(theta) * sin(phi),
+      -sin(theta));
+
+  W = C.Unit();
+  U = W.Cross(YperpC);
+  V = W.Cross(U);
+
+  U = U.Unit();
+  V = V.Unit();
+
+  U.Rotate( beta_u * Pi/180. , U ) ;
+  V.Rotate( beta_u * Pi/180. , U ) ;
+
+  U.Rotate( beta_v * Pi/180. , V ) ;
+  V.Rotate( beta_v * Pi/180. , V ) ;
+
+  U.Rotate( beta_w * Pi/180. , W ) ;
+  V.Rotate( beta_w * Pi/180. , W ) ;
+
+  double Face = 98; // mm
+  double NumberOfStrip = 128;
+  double StripPitch = Face/NumberOfStrip; // mm
+
+  vector<double> lineX;
+  vector<double> lineY;
+  vector<double> lineZ;
+
+  vector< vector< double > >   OneModulePositionX;
+  vector< vector< double > >   OneModulePositionY;
+  vector< vector< double > >   OneModulePositionZ;
+
+  double X, Y, Z;
+
+  // Moving C to the 1.1 corner:
+  C.SetX( C.X() - ( Face/2 - StripPitch/2 ) * ( V.X() + U.X() ) )  ;
+  C.SetY( C.Y() - ( Face/2 - StripPitch/2 ) * ( V.Y() + U.Y() ) )  ;
+  C.SetZ( C.Z() - ( Face/2 - StripPitch/2 ) * ( V.Z() + U.Z() ) )  ;
+
+  for (int i = 0; i < NumberOfStrip; i++) {
+    lineX.clear();
+    lineY.clear();
+    lineZ.clear();
+
+    for (int j = 0; j < NumberOfStrip; j++) {
+      X = C.X() + StripPitch * ( U.X()*i + V.X()*j );
+      Y = C.Y() + StripPitch * ( U.Y()*i + V.Y()*j );
+      Z = C.Z() + StripPitch * ( U.Z()*i + V.Z()*j );
+
+      lineX.push_back(X);
+      lineY.push_back(Y);
+      lineZ.push_back(Z);
+    }
+
+    OneModulePositionX.push_back(lineX);
+    OneModulePositionY.push_back(lineY);
+    OneModulePositionZ.push_back(lineZ);
+  }
+
+  m_PositionX.push_back( OneModulePositionX );
+  m_PositionY.push_back( OneModulePositionY );
+  m_PositionZ.push_back( OneModulePositionZ );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+double TFatimaPhysics::GetEnergyDeposit(){
+  if (m_EventPhysics->FatimaTotalEnergy.size() > 0)
+    return m_EventPhysics->FatimaTotalEnergy[0];
+  else
+    return -1000;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+double TFatimaPhysics::GetEnergyInDeposit(){// inner Layer
+  if (m_EventPhysics->FatimaInTotalEnergy.size() > 0)
+    return m_EventPhysics->FatimaInTotalEnergy[0];
+  else
+    return -1000;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+double TFatimaPhysics::GetEnergyOutDeposit(){// Outer Layer
+  if (m_EventPhysics->FatimaOutTotalEnergy.size() > 0)
+    return m_EventPhysics->FatimaOutTotalEnergy[0];
+  else
+    return -1000;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+TVector3 TFatimaPhysics::GetPositionOfInteraction(){
+  TVector3 Position = TVector3(-1000,-1000,-1000);
+  return(Position);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TFatimaPhysics::Print(){
+  cout << "Number of Modules: " << m_NumberOfModule << endl;
+
+  for (int f = 0; f < m_NumberOfModule; f++) {
+    cout << "Module " << f+1 << endl;
+
+    for (int i = 0; i < 128; i++) {
+      for (int j = 0; j < 128; j++) {
+        cout << i+1 << "  "<< j+1 << "  "
+          << m_PositionX[f][i][j]   << "  "
+          << m_PositionY[f][i][j]   << "  "
+          << m_PositionZ[f][i][j]   << "  "
+          << endl ;
+      }
+    }
+  }
+}
+

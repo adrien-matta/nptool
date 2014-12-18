@@ -1,5 +1,5 @@
 include ../Makefile.arch
-
+ 
 #------------------------------------------------------------------------------
 SHARELIB      =  libFatima.so
 all:            $(SHARELIB)
@@ -7,8 +7,8 @@ all:            $(SHARELIB)
 ############### Detector ##############
 
 ## Fatima ##
-libFatima.so: TFatimaData.o TFatimaDataDict.o Fatima.o TFatimaPhysics.o TFatimaPhysicsDict.o
-		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
+libFatima.so: TFatimaData.o TFatimaDataDict.o TFatimaPhysics.o TFatimaPhysicsDict.o
+			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TFatimaDataDict.cxx:	TFatimaData.h
 			rootcint -f $@ -c $^
@@ -16,12 +16,10 @@ TFatimaDataDict.cxx:	TFatimaData.h
 TFatimaPhysicsDict.cxx:	TFatimaPhysics.h
 			rootcint -f $@ -c $^
 
+
 # dependances
-Fatima.o: Fatima.cxx Fatima.h
 TFatimaData.o: TFatimaData.cxx TFatimaData.h
-TFatimaDataDict.o: TFatimaData.cxx TFatimaData.h
 TFatimaPhysics.o: TFatimaPhysics.cxx TFatimaPhysics.h
-TFatimaPhysicsDict.o: TFatimaPhysics.cxx TFatimaPhysics.h
 
 #######################################
 

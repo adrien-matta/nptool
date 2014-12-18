@@ -31,8 +31,6 @@
 #include "../DetectorList.inc"
 #include "GaspardTracker.h"
 #include "Hyde2Tracker.h"
-#include "TParisPhysics.h"
-#include "Fatima.h"
 #include "TAnnularS1Physics.h"
 #include "TCATSPhysics.h"
 #include "TCharissaPhysics.h"
@@ -41,8 +39,10 @@
 #include "TChio_digPhysics.h"
 #include "TExlPhysics.h"
 #include "TExogamPhysics.h"
+#include "TFatimaPhysics.h"
 #include "TLaBr3Physics.h"
 #include "TMust2Physics.h"
+#include "TParisPhysics.h"
 #include "TPlasticPhysics.h"
 #include "TS2Physics.h"
 #include "TSSSDPhysics.h"
@@ -262,7 +262,7 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
       cout << "//////// FATIMA ////////" << endl << endl;
       
       // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new Fatima();
+      VDetector* myDetector = new TFatimaPhysics();
       // Read Position of Telescope
       ConfigFile.close();
       myDetector->ReadConfiguration(Path);
