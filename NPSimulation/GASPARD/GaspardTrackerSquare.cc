@@ -750,6 +750,7 @@ void GaspardTrackerSquare::InitializeScorers()
    // First stage scorer
    G4VPrimitiveScorer* GPDScorerFirstStage =
       new SILICONSCORERS::PS_Silicon_Rectangle("GPDSquareFirstStage",
+                                               0,
                                                FirstStageFace,
                                                FirstStageFace,
                                                NumberOfStrips,
@@ -758,6 +759,7 @@ void GaspardTrackerSquare::InitializeScorers()
    // Second stage scorer
    G4VPrimitiveScorer* GPDScorerSecondStage =
       new SILICONSCORERS::PS_Silicon_Rectangle("GPDSquareSecondStage",
+                                               0,
                                                SecondStageFace,
                                                SecondStageFace,
                                                1,
@@ -766,6 +768,7 @@ void GaspardTrackerSquare::InitializeScorers()
    // Third stage scorer
    G4VPrimitiveScorer* GPDScorerThirdStage =
       new SILICONSCORERS::PS_Silicon_Rectangle("GPDSquareThirdStage",
+                                               0,
                                                ThirdStageFace,
                                                ThirdStageFace,
                                                1,

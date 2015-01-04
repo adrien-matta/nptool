@@ -854,6 +854,7 @@ void GaspardTrackerAnnular::InitializeScorers()
    // First stage scorer
    G4VPrimitiveScorer* GPDScorerFirstStage =
       new SILICONSCORERS::PS_Silicon_Annular("GPDAnnularFirstStage",
+                                             0,
                                              FirstStageRmin,
                                              FirstStageRmax,
                                              0*deg,
@@ -865,6 +866,7 @@ void GaspardTrackerAnnular::InitializeScorers()
    // Second stage scorer
    G4VPrimitiveScorer* GPDScorerSecondStage =
       new SILICONSCORERS::PS_Silicon_Annular("GPDAnnularSecondStage",
+                                             0,
                                              FirstStageRmin,
                                              FirstStageRmax,
                                              0*deg,
@@ -876,6 +878,7 @@ void GaspardTrackerAnnular::InitializeScorers()
    // Third stage scorer
    G4VPrimitiveScorer* GPDScorerThirdStage =
       new SILICONSCORERS::PS_Silicon_Annular("GPDAnnularThirdStage",
+                                             0,
                                              FirstStageRmin,
                                              FirstStageRmax,
                                              0*deg,
