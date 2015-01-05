@@ -296,14 +296,14 @@ void Tiara::InitializeScorers(){
   // if the scorer were created previously nothing else need to be made
   if(already_exist) return;
 
-  G4VPrimitiveScorer* InnerBarrel = new SILICONSCORERS::PS_Silicon_Resistive("InnerBarrel",
+  G4VPrimitiveScorer* InnerBarrel = new SILICONSCORERS::PS_Silicon_Resistive("InnerBarrel",1,
       INNERBARREL_ActiveWafer_Length,
       INNERBARREL_ActiveWafer_Width,
       INNERBARREL_NumberOfStrip);
 
   m_InnerBarrelScorer->RegisterPrimitive(InnerBarrel);
 
-  G4VPrimitiveScorer* OuterBarrel = new SILICONSCORERS::PS_Silicon_Rectangle("OuterBarrel",
+  G4VPrimitiveScorer* OuterBarrel = new SILICONSCORERS::PS_Silicon_Rectangle("OuterBarrel",1,
       INNERBARREL_ActiveWafer_Length,
       INNERBARREL_ActiveWafer_Width,
       1,
@@ -311,7 +311,7 @@ void Tiara::InitializeScorers(){
 
   m_OuterBarrelScorer->RegisterPrimitive(OuterBarrel);
 
-  G4VPrimitiveScorer* Hyball= new SILICONSCORERS::PS_Silicon_Annular("Hyball", 
+  G4VPrimitiveScorer* Hyball= new SILICONSCORERS::PS_Silicon_Annular("Hyball",1, 
       HYBALL_ActiveWafer_InnerRadius, 
       HYBALL_ActiveWafer_OuterRadius, 
       -0.5*HYBALL_ActiveWafer_Angle,HYBALL_ActiveWafer_Angle, 
