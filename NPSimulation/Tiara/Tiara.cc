@@ -314,7 +314,7 @@ void Tiara::InitializeScorers(){
   G4VPrimitiveScorer* Hyball= new SILICONSCORERS::PS_Silicon_Annular("Hyball",1, 
       HYBALL_ActiveWafer_InnerRadius, 
       HYBALL_ActiveWafer_OuterRadius, 
-      -0.5*HYBALL_ActiveWafer_Angle,HYBALL_ActiveWafer_Angle, 
+      -0.5*HYBALL_ActiveWafer_Angle,0.5*HYBALL_ActiveWafer_Angle,
       HYBALL_NumberOfAnnularStrip,
       HYBALL_NumberOfRadialStrip);
 
