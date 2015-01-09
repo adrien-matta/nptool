@@ -49,8 +49,8 @@ GPDAnnular
 %GPDTrapezoid
         X128_Y128=      55.338  -14.346  -146.501
         X1_Y128=        55.338   14.346  -146.501
-        X128_Y1=	138.519  -48.717   -69.236
-        X1_Y1=		138.518   48.726   -69.237
+        X128_Y1=	     138.519  -48.717   -69.236
+        X1_Y1=		     138.518   48.726   -69.237
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
         THIRDSTAGE= 1
@@ -60,7 +60,7 @@ GPDAnnular
         X128_Y128=       49.215    29.045  -146.501
         X1_Y128=         28.986    49.274  -146.501
         X128_Y1=        132.395    63.500   -69.236
-        X1_Y1=		 63.492   132.401   -69.237
+        X1_Y1=		       63.492   132.401   -69.237
         FIRSTSTAGE= 1
         SECONDSTAGE= 1
         THIRDSTAGE= 1
@@ -126,7 +126,7 @@ GPDAnnular
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Barrel
-%GPDSquare
+GPDSquare
 	THETA= 90 
 	PHI= 0
 	R= 143
@@ -136,7 +136,7 @@ GPDAnnular
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
-%GPDSquare
+GPDSquare
 	THETA= 90 
 	PHI= 45
 	R= 143
@@ -146,7 +146,7 @@ GPDAnnular
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%3
-%GPDSquare
+GPDSquare
 	THETA= 90 
 	PHI= 90
 	R= 143
@@ -156,7 +156,7 @@ GPDAnnular
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%4
-%GPDSquare
+GPDSquare
 	THETA= 90 
 	PHI= 135
 	R= 143
@@ -166,7 +166,7 @@ GPDAnnular
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
-%GPDSquare
+GPDSquare
 	THETA= 90 
 	PHI= 180
 	R= 143
@@ -176,7 +176,7 @@ GPDAnnular
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%6
-%GPDSquare
+GPDSquare
 	THETA= 90 
 	PHI= 225
 	R= 143
@@ -186,7 +186,7 @@ GPDAnnular
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%7
-%GPDSquare
+GPDSquare
 	THETA= 90 
 	PHI= 270
 	R= 143
@@ -196,7 +196,7 @@ GPDAnnular
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%8
-%GPDSquare
+GPDSquare
 	THETA= 90 
 	PHI= 315
 	R= 143
