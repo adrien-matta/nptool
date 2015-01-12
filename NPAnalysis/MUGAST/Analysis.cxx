@@ -102,7 +102,7 @@ int main(int argc, char** argv){
     double YTarget = 0;
     TVector3 BeamDirection = TVector3(0,0,1);
     double BeamEnergy = BeamCD2.Slow(OriginalBeamEnergy,Rand.Uniform(0,TargetThickness),0);
-    myReaction->SetBeamEnergy(BeamEnergy);
+    myReaction->SetBeamEnergy(273.4);
 
 
       //////////////////////////// LOOP on MUST2 //////////////////
@@ -197,13 +197,15 @@ int main(int argc, char** argv){
       /************************************************/
       // Part 3 : Excitation Energy Calculation
       Ex = myReaction -> ReconstructRelativistic( ELab , ThetaLab );
-      ThetaLab=ThetaLab/deg;
-      /************************************************/
+            /************************************************/
 
       /************************************************/
       // Part 4 : Theta CM Calculation
       ThetaCM  = myReaction -> EnergyLabToThetaCM( ELab , ThetaLab)/deg;
-cout << ThetaCM << " " << Init->GetThetaCM(0) << endl;
+
+      cout << ThetaCM << " " << Init->GetThetaCM(0) << endl;
+      ThetaLab=ThetaLab/deg;
+
       /************************************************/
     }//end loop GASPARD
 

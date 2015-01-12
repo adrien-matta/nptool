@@ -26,10 +26,7 @@
  *                                                                           *
  *****************************************************************************/
 
-#include <iostream>
-#include <fstream>
-#include <cmath>
-
+// ROOT headers
 #include "TROOT.h"
 #include "TSystem.h"
 #include "TFile.h"
@@ -40,10 +37,16 @@
 #include "TH1F.h"
 #include "TCanvas.h"
 
+// NPTOOL headers
 #include "TInitialConditions.h"
 #include "TInteractionCoordinates.h"
 
-using namespace std ;
+// C++ headers
+#include <iostream>
+#include <fstream>
+#include <cmath>
+using namespace std;
+
 
 void GeometricalEfficiency(const char * fname = "myResult"){
   // Open output ROOT file from NPTool simulation run
@@ -65,10 +68,10 @@ void GeometricalEfficiency(const char * fname = "myResult"){
   tree->SetBranchStatus("InteractionCoordinates", true);
   
   // Prepare histograms
-  TH1F *hDetecTheta = new TH1F("hDetecTheta", "DetecTheta", 180,0,180);
-  TH1F *hDetecThetaCM = new TH1F("hDetecThetaCM", "hDetecThetaCM", 180,0,180);
-  TH1F *hEmittTheta = new TH1F("hEmittTheta", "EmittTheta", 180,0,180);
-  TH1F *hEmittThetaCM = new TH1F("hEmittThetaCM", "hEmittThetaCM", 180,0,180);
+  TH1F *hDetecTheta   = new TH1F("hDetecTheta",   "DetecTheta",    180, 0, 180);
+  TH1F *hDetecThetaCM = new TH1F("hDetecThetaCM", "hDetecThetaCM", 180, 0, 180);
+  TH1F *hEmittTheta   = new TH1F("hEmittTheta",   "EmittTheta",    180, 0, 180);
+  TH1F *hEmittThetaCM = new TH1F("hEmittThetaCM", "hEmittThetaCM", 180, 0, 180);
   
   // Read the TTree
   int nentries = tree->GetEntries();
@@ -84,18 +87,26 @@ void GeometricalEfficiency(const char * fname = "myResult"){
     }
   }
   
-  TCanvas* c4 = new TCanvas("c4", "CM Frame");
+  // efficiency in lab frame in %
+  TCanvas *c = new TCanvas("c", "efficiency");
+  TH1F *hEfficiency = new TH1F("hEfficiency", "Efficiency MUGAST", 180, 0, 180);
+  hEfficiency->Divide(hDetecTheta, hEmittTheta, 100, 1);
+  hEfficiency->GetXaxis()->SetTitle("#Theta (deg)");
+  hEfficiency->GetYaxis()->SetTitle("#epsilon (%)");
+  hEfficiency->Draw();
 
+
+  TCanvas* c4 = new TCanvas("c4", "CM Frame");
   TH1F* SolidACM = new TH1F(*hDetecThetaCM);
   SolidACM->Sumw2();
   TF1* C = new TF1("C",Form("%i /(4*%f)",nentries,M_PI),0,180);
   SolidACM->Divide(C,1);
   SolidACM->Divide(hEmittThetaCM);
   SolidACM->Draw();
+  SolidACM->GetXaxis()->SetTitle("#theta_{CM} (deg)");
+  SolidACM->GetYaxis()->SetTitle("d#Omega (sr) ");
   TF1* f = new TF1("f",Form("2 * %f * sin(x*%f/180.) *1*%f/180.",M_PI,M_PI,M_PI),0,180);
   f->Draw("SAME");
   f->Draw("SAME");
-  SolidACM->GetXaxis()->SetTitle("#theta_{CM} (deg)");
-  SolidACM->GetYaxis()->SetTitle("d#Omega (sr) ");
   c4->Update();
 }
