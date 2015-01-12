@@ -138,7 +138,7 @@ G4bool PSEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
     int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName) ; 
 
    G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < TriggerThreshold) return FALSE;
+  // if (edep < TriggerThreshold) return FALSE;
    
    G4int  index = aStep->GetTrack()->GetTrackID();
    

@@ -3,7 +3,7 @@
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
 Target
-	THICKNESS= 9
+	THICKNESS= 18
 	RADIUS=	7.5
 	MATERIAL= CD2
 	X= 0
@@ -54,7 +54,7 @@ GPDTrapezoid
    THIRDSTAGE= 0
    VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Barrel
-GPDSquare
+%GPDSquare
    X1_Y1= -61.823 128.742 53.5
    X128_Y1= -61.823 128.742 -58.5
    X1_Y128= -132.251 58.314 -58.5
@@ -64,7 +64,7 @@ GPDSquare
    THIRDSTAGE= 1
    VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
-GPDSquare
+%GPDSquare
    X1_Y1=      -134.75   47.281 53.5
    X128_Y1=    -134.75   47.281 -58.5
    X1_Y128=    -134.75  -52.319 -58.5
@@ -85,7 +85,7 @@ M2Telescope
    X128_Y128=  -10.856  79.959   160.524
    SI=	1		
    SILI=	1		
-   CSI=	1		
+   CSI=	0		
    VIS=	all		
 			
 %%%%%%% Telescope 2 %%%%%%%			
@@ -96,7 +96,7 @@ M2Telescope
    X128_Y128=  -79.959   -10.856 160.524
    SI=	1		
    SILI=	1		
-   CSI=	1		
+   CSI=	0		
    VIS=	all		
 			
 %%%%%%% Telescope 3 %%%%%%%			
@@ -107,7 +107,7 @@ M2Telescope
    X128_Y128=  57.486   -124.629  83.567
    SI=	1		
    SILI=	1		
-   CSI=	1		
+   CSI=	0		
    VIS=	all		
 			
 %%%%%%% Telescope 4 %%%%%%%			
@@ -118,7 +118,7 @@ M2Telescope
    X128_Y128=  124.629   57.486  83.567
    SI=	1		
    SILI=	1		
-   CSI=	1		
+   CSI=	0		
    VIS=	all		
 
 

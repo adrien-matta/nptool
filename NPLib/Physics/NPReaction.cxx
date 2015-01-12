@@ -281,10 +281,10 @@ double Reaction::ReconstructRelativistic(double EnergyLab, double ThetaLab){
   // ThetaLab in rad
 	double E3 = m3 + EnergyLab;
 	double p_Lab_3 = sqrt(E3*E3 - m3*m3);
-	
 	fEnergyImpulsionLab_3 = TLorentzVector(p_Lab_3*sin(ThetaLab),0,p_Lab_3*cos(ThetaLab),E3);
-	fEnergyImpulsionLab_4 = fTotalEnergyImpulsionLab - fEnergyImpulsionLab_3;
-	
+  fEnergyImpulsionLab_4 = fTotalEnergyImpulsionLab - fEnergyImpulsionLab_3;
+
+
 	double Eex = fEnergyImpulsionLab_4.Mag() - fNuclei4->Mass();
   
 	return Eex;
@@ -525,7 +525,7 @@ void Reaction::initializePrecomputeVariable(){
   m3 = fNuclei3->Mass() + fExcitation3;
   m4 = fNuclei4->Mass() + fExcitation4;
   fQValue =m1+m2-m3-m4;
-  
+
   s = m1*m1 + m2*m2 + 2*m2*(fBeamEnergy + m1);
   fTotalEnergyImpulsionCM = TLorentzVector(0,0,0,sqrt(s));
   

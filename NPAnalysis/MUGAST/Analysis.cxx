@@ -43,26 +43,19 @@ int main(int argc, char** argv){
   TMust2Physics* M2  = (TMust2Physics*) myDetector -> GetDetector("MUST2");
   GaspardTracker* GD = (GaspardTracker*)  myDetector -> GetDetector("GASPARD");
 
+  double TargetThickness = 18*micrometer;
   // Beam Energy
-  double BeamEnergy = 4.0* 74; // AMEV
-
-  // intermediate variable
+  double OriginalBeamEnergy = 4.0* 74; // AMEV
+    // intermediate variable
   TRandom3 Rand = TRandom3();
   int DetectorNumber = 0 ;
   double ThetaNormalTarget = 0 ;
   double ThetaM2Surface = 0; 
-  double X_M2 = 0 ;
-  double Y_M2 = 0 ;
-  double Z_M2 = 0 ;
   double Si_E_M2 = 0 ;
-  double CsI_E_M2 = 0 ; 
+  double SiLi_E_M2 = 0 ; 
   double Energy = 0;
   double E_M2 = 0;
-  double Si_X_M2 = 0;
-  double Si_Y_M2 = 0;
-  double ZTarget = 0;
-  double TargetThickness = 9*micrometer;
-
+  
   double ThetaGDSurface = 0; 
   double X_GD = 0 ;
   double Y_GD = 0 ;
@@ -72,7 +65,8 @@ int main(int argc, char** argv){
   double Si_X_GD = 0;
   double Si_Y_GD = 0;
  
-  
+  TVector3 BeamImpact(0,0,0);
+
   // Get number of events to treat
   cout << endl << "///////// Starting Analysis ///////// "<< endl;
   int nentries = Chain->GetEntries();
@@ -104,50 +98,29 @@ int main(int argc, char** argv){
     // Reinitiate calculated variable
     ReInitValue();
     
-    // Get the Init information on beam position and energy
-    // and apply by hand the experimental resolution
-    // This is because the beam diagnosis are not simulated
-    // PPAC position resolution on target is assumed to be 1mm
     double XTarget = 0;
     double YTarget = 0;
     TVector3 BeamDirection = TVector3(0,0,1);
-
-    // Beam energy is measured using F3 and F2 plastic TOF
-    BeamEnergy = BeamCD2.Slow(BeamEnergy,TargetThickness/2.,0);
+    double BeamEnergy = BeamCD2.Slow(OriginalBeamEnergy,Rand.Uniform(0,TargetThickness),0);
     myReaction->SetBeamEnergy(BeamEnergy);
 
-    //////////////////////////// LOOP on MUST2 //////////////////
+
+      //////////////////////////// LOOP on MUST2 //////////////////
     for(unsigned int countMust2 = 0 ; countMust2 < M2->Si_E.size() ; countMust2++){
       /************************************************/
       //Part 0 : Get the usefull Data
       // MUST2
-      int X = M2->Si_X[countMust2];
-      int Y = M2->Si_Y[countMust2];
       int TelescopeNumber = M2->TelescopeNumber[countMust2];
-      Si_X_M2 = X ;
-      Si_Y_M2 = Y ;
 
       /************************************************/
       // Part 1 : Impact Angle
       ThetaM2Surface = 0;
       ThetaNormalTarget = 0;
-      if(XTarget>-1000 && YTarget>-1000){
-        TVector3 BeamImpact(XTarget,YTarget,0);
-        TVector3 HitDirection = M2 -> GetPositionOfInteraction(countMust2) - BeamImpact ;
-        ThetaLab = HitDirection.Angle( BeamDirection );
+      TVector3 HitDirection = M2 -> GetPositionOfInteraction(countMust2) - BeamImpact ;
+      ThetaLab = HitDirection.Angle( BeamDirection );
 
-        ThetaM2Surface = HitDirection.Angle(- M2 -> GetTelescopeNormal(countMust2) );
-        ThetaNormalTarget = HitDirection.Angle( TVector3(0,0,1) ) ;
-        X_M2 = M2 -> GetPositionOfInteraction(countMust2).X() ;
-        Y_M2 = M2 -> GetPositionOfInteraction(countMust2).Y() ;
-        Z_M2 = M2 -> GetPositionOfInteraction(countMust2).Z() ;
-      }
-
-      else{
-        BeamDirection = TVector3(-1000,-1000,-1000);
-        ThetaM2Surface    = -1000  ;
-        ThetaNormalTarget = -1000  ;
-      }
+      ThetaM2Surface = HitDirection.Angle(- M2 -> GetTelescopeNormal(countMust2) );
+      ThetaNormalTarget = HitDirection.Angle( TVector3(0,0,1) ) ;
 
       /************************************************/
 
@@ -155,23 +128,18 @@ int main(int argc, char** argv){
       // Part 2 : Impact Energy
       Energy = ELab = 0;
       Si_E_M2 = M2->Si_E[countMust2];
-      CsI_E_M2= M2->CsI_E[countMust2];
+      SiLi_E_M2= M2->SiLi_E[countMust2];
 
-      // if CsI
-      if(CsI_E_M2>0 ){
+      // if SiLi
+      if(SiLi_E_M2>0 ){
         // The energy in CsI is calculate form dE/dx Table because 
-        // 20um resolution is poor
-        Energy = 
-          LightSi.EvaluateEnergyFromDeltaE(Si_E_M2,300*micrometer,
-              ThetaM2Surface, 0.01*MeV, 
-              450.*MeV,0.001*MeV ,1000);
-        E_M2=CsI_E_M2;
+        Energy = SiLi_E_M2;
+        Energy = LightAl.EvaluateInitialEnergy( Energy ,0.4*micrometer , ThetaM2Surface); 
+        Energy+=Si_E_M2;
       }
 
       else
         Energy = Si_E_M2;
-
-      E_M2 += Si_E_M2;
 
       // Evaluate energy using the thickness 
       ELab = LightAl.EvaluateInitialEnergy( Energy ,0.4*micrometer , ThetaM2Surface); 
@@ -183,6 +151,7 @@ int main(int argc, char** argv){
       // Part 3 : Excitation Energy Calculation
       Ex = myReaction -> ReconstructRelativistic( ELab , ThetaLab );
       ThetaLab=ThetaLab/deg;
+      
       /************************************************/
 
       /************************************************/
@@ -200,15 +169,11 @@ int main(int argc, char** argv){
       ThetaGDSurface = 0;
       ThetaNormalTarget = 0;
       if(XTarget>-1000 && YTarget>-1000){
-        TVector3 BeamImpact(XTarget,YTarget,0);
         TVector3 HitDirection = GD -> GetPositionOfInteraction() - BeamImpact ;
         ThetaLab = HitDirection.Angle( BeamDirection );
 
         ThetaGDSurface = HitDirection.Angle( TVector3(0,0,1) ) ;
         ThetaNormalTarget = HitDirection.Angle( TVector3(0,0,1) ) ;
-        X_GD = GD -> GetPositionOfInteraction().X() ;
-        Y_GD = GD -> GetPositionOfInteraction().Y() ;
-        Z_GD = GD -> GetPositionOfInteraction().Z() ;
       }
 
       else{
@@ -232,15 +197,13 @@ int main(int argc, char** argv){
       /************************************************/
       // Part 3 : Excitation Energy Calculation
       Ex = myReaction -> ReconstructRelativistic( ELab , ThetaLab );
-      if(Ex!=Ex){
-        cout << ELab << " " << ThetaLab << " " << Ex<< endl;
-      }
       ThetaLab=ThetaLab/deg;
       /************************************************/
 
       /************************************************/
       // Part 4 : Theta CM Calculation
-      ThetaCM  = myReaction -> EnergyLabToThetaCM( ELab , 0)/deg;
+      ThetaCM  = myReaction -> EnergyLabToThetaCM( ELab , ThetaLab)/deg;
+cout << ThetaCM << " " << Init->GetThetaCM(0) << endl;
       /************************************************/
     }//end loop GASPARD
 
