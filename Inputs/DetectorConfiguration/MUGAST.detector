@@ -3,11 +3,7 @@
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
 Target
-<<<<<<< HEAD
 	THICKNESS= 0.0001
-=======
-	THICKNESS= 9
->>>>>>> 4d7d5462e96feecbc6bc037a569b03fa7fd8ee25
 	RADIUS=	7.5
 	MATERIAL= CD2
 	X= 0
