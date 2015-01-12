@@ -2,6 +2,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Beam
   Particle= 24Na
+  ExcitationEnergy= 0
   Energy= 192
   SigmaEnergy= 1
   SigmaThetaX= 0.01 

@@ -57,6 +57,7 @@ namespace NPL{
   private:
     //Nucleus* fBeamNucleus;
     double fEnergy;
+    double fExcitationEnergy;
     double fSigmaEnergy;
     double fMeanX;
     double fMeanY;
@@ -94,6 +95,7 @@ namespace NPL{
     // Get
     // Nucleus*  GetNucleus     () const {return fBeamNucleus;}
     double    GetEnergy      () const {return fEnergy;}
+    double    GetExcitationEnergy() const {return fExcitationEnergy;}
     double    GetSigmaEnergy () const {return fSigmaEnergy;}
     double    GetMeanX       () const {return fMeanX;}
     double    GetMeanY       () const {return fMeanY;}

@@ -82,6 +82,7 @@ Beam::Beam(){
 Beam::Beam(string isotope){
   SetUp(isotope);
   fEnergy = 0;
+  fExcitationEnergy = 0; 
   fSigmaEnergy = -1 ;
   fMeanX = 0 ;
   fMeanY = 0 ;
@@ -181,6 +182,12 @@ void Beam::ReadConfigurationFile(string Path){
         ReactionFile >> DataBuffer;
         SetUp(DataBuffer);
         if(fVerboseLevel==1) cout << "Beam Particle: " << GetName() << endl;
+      }
+      
+      else if (DataBuffer == "ExcitationEnergy=") {
+        ReactionFile >> DataBuffer;
+        fExcitationEnergy = atof(DataBuffer.c_str()) * MeV;
+        if(fVerboseLevel==1) cout << "Excitation Energy: " << fExcitationEnergy << " MeV" << endl;
       }
       
       else if (DataBuffer == "Energy=") {
