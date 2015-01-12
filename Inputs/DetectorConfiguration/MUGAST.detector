@@ -3,7 +3,7 @@
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
 Target
-	THICKNESS= 1
+	THICKNESS= 0.0001
 	RADIUS=	7.5
 	MATERIAL= CD2
 	X= 0
@@ -13,15 +13,24 @@ Target
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 GaspardTracker
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Annular Back
+GPDAnnular
+        Z=      -148.6
+        RMIN=     16
+        RMAX=     45
+        FIRSTSTAGE=  1
+        SECONDSTAGE= 1
+        THIRDSTAGE=  1
+        VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 End-Cap Back
 GPDTrapezoid
    X128_Y128=      41.963   21.364  -138.589
    X1_Y128=        23.737   39.592  -138.591
    X128_Y1=	     122.368   54.712   -71.098
    X1_Y1=		      57.084  119.996   -71.098
-   FIRSTSTAGE= 1
-   SECONDSTAGE= 0
-   THIRDSTAGE= 0
+   FIRSTSTAGE=    1
+   SECONDSTAGE=   1
+   THIRDSTAGE=    1
    VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
 GPDTrapezoid
@@ -55,10 +64,10 @@ GPDTrapezoid
    VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Barrel
 GPDSquare
-   X1_Y1= -61.823 128.742 53.5
-   X128_Y1= -61.823 128.742 -58.5
-   X1_Y128= -132.251 58.314 -58.5
-   X128_Y128= -132.251 58.314 53.5
+   X128_Y1= -61.823 128.742 53.5
+   X1_Y128= -61.823 128.742 -58.5
+   X128_Y128= -132.251 58.314 -58.5
+   X1_Y1= -132.251 58.314 53.5
    FIRSTSTAGE= 1
    SECONDSTAGE= 1
    THIRDSTAGE= 1
@@ -123,15 +132,15 @@ M2Telescope
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Paris
+%Paris
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ParisCluster
+%ParisCluster
    A= 291.358    -7.734 -38.5
    B= 291        -7.118 129
    C= 246.046  -168.989 129
    D= 246.661  -168.641 -38.5
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ParisCluster
+%ParisCluster
    A= 243.139  158.516  -38.5
    B= 242.517  158.852  129
    C= 290.527   -2.142  129
