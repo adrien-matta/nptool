@@ -1,0 +1,28 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%  Reaction file for 3He(25Al,d)26Al reaction  %%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Beam
+   Particle= 30P
+   Energy= 180
+   SigmaEnergy= 0
+   SigmaX= 0
+	SigmaY= 0
+	SigmaThetaX= 0 
+	SigmaPhiY= 0
+   MeanThetaX= 0
+   MeanPhiY= 0
+   MeanX= 0
+   MeanY= 0
+
+TwoBodyReaction
+	Beam= 30P
+	Target= 2H
+	Light= 1H
+	Heavy= 31P
+	ExcitationEnergyHeavy= 6.3
+	ExcitationEnergyLight= 0.0
+   CrossSectionPath= al25he3d_5.9_2s1.txt CS
+	ShootLight= 1
+	ShootHeavy= 0
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+

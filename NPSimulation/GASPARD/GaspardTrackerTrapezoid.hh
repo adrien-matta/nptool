@@ -154,17 +154,17 @@ namespace GPDTRAP
 //   const G4double BaseSmall = 35*mm;
 //   const G4double Length    = 20*mm;
    // gaspHyde
-//   const G4double Height    = 115*mm;
-//   const G4double BaseLarge =  98*mm;
-//   const G4double BaseSmall =  30*mm;
-//   const G4double Length    =  20*mm;
-//   const G4double InterStageDistance = 7*mm;
-   // mugast 
-   const G4double Height    = 106*mm;
-   const G4double BaseLarge =  93*mm;
-   const G4double BaseSmall =  26*mm;
+   const G4double Height    = 115*mm;
+   const G4double BaseLarge =  98*mm;
+   const G4double BaseSmall =  30*mm;
    const G4double Length    =  20*mm;
    const G4double InterStageDistance = 7*mm;
+   // mugast 
+//   const G4double Height    = 106*mm;
+//   const G4double BaseLarge =  93*mm;
+//   const G4double BaseSmall =  26*mm;
+//   const G4double Length    =  20*mm;
+//   const G4double InterStageDistance = 7*mm;
 
    // First stage
 //   const G4double FirstStageThickness = 300*micrometer;
@@ -177,13 +177,13 @@ namespace GPDTRAP
 //   const G4double FirstStageBaseLarge = 78*mm;
 //   const G4double FirstStageBaseSmall = 29*mm;
    // gaspHyde
-//   const G4double FirstStageHeight    = 113.5*mm;
-//   const G4double FirstStageBaseLarge =  97.5*mm;
-//   const G4double FirstStageBaseSmall =  28.5*mm;
+   const G4double FirstStageHeight    = 113.5*mm;
+   const G4double FirstStageBaseLarge =  97.5*mm;
+   const G4double FirstStageBaseSmall =  28.5*mm;
    // mugast
-   const G4double FirstStageHeight    = 105*mm;
-   const G4double FirstStageBaseLarge =  92.326*mm;
-   const G4double FirstStageBaseSmall =  25.77*mm;
+//   const G4double FirstStageHeight    = 105*mm;
+//   const G4double FirstStageBaseLarge =  92.326*mm;
+//   const G4double FirstStageBaseSmall =  25.77*mm;
 
    // Second stage
    const G4double SecondStageHeight    = FirstStageHeight;

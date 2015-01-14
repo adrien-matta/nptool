@@ -19,7 +19,7 @@
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
 Target
-	THICKNESS= 0.00001
+	THICKNESS= 5 
 	RADIUS=	7.5
 	MATERIAL= CD2
 	X= 0
@@ -33,11 +33,11 @@ GPDAnnular
         RMIN=   16
         RMAX=	52
         FIRSTSTAGE= 1
-        SECONDSTAGE= 1
-        THIRDSTAGE= 1
+        SECONDSTAGE= 0
+        THIRDSTAGE= 0
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Annular Front
-GPDAnnular
+%GPDAnnular
         Z=      156.5
         RMIN=	16
         RMAX=	52
@@ -52,8 +52,8 @@ GPDTrapezoid
         X128_Y1=	     138.519  -48.717   -69.236
         X1_Y1=		     138.518   48.726   -69.237
         FIRSTSTAGE= 1
-        SECONDSTAGE= 1
-        THIRDSTAGE= 1
+        SECONDSTAGE= 0
+        THIRDSTAGE= 0
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
 GPDTrapezoid
@@ -62,8 +62,8 @@ GPDTrapezoid
         X128_Y1=        132.395    63.500   -69.236
         X1_Y1=		       63.492   132.401   -69.237
         FIRSTSTAGE= 1
-        SECONDSTAGE= 1
-        THIRDSTAGE= 1
+        SECONDSTAGE= 0
+        THIRDSTAGE= 0
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%3
 GPDTrapezoid
@@ -72,8 +72,8 @@ GPDTrapezoid
         X128_Y1=         48.717  138.519   -69.236
         X1_Y1=          -48.726  138.518   -69.237
         FIRSTSTAGE= 1
-        SECONDSTAGE= 1
-        THIRDSTAGE= 1
+        SECONDSTAGE= 0
+        THIRDSTAGE= 0
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%4
 GPDTrapezoid
@@ -82,11 +82,11 @@ GPDTrapezoid
         X128_Y1=        -63.500  132.395   -69.236
         X1_Y1=         -132.401   63.492   -69.237
         FIRSTSTAGE= 1
-        SECONDSTAGE= 1
-        THIRDSTAGE= 1
+        SECONDSTAGE= 0
+        THIRDSTAGE= 0
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
-GPDTrapezoid
+%GPDTrapezoid
         X128_Y128=      -55.338   14.346   -146.501
         X1_Y128=        -55.338  -14.346   -146.501
         X128_Y1=       -138.519   48.717    -69.236
@@ -96,7 +96,7 @@ GPDTrapezoid
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%6
-GPDTrapezoid
+%GPDTrapezoid
         X128_Y128=      -49.215    -29.045   -146.501
         X1_Y128=        -28.986    -49.274   -146.501
         X128_Y1=       -132.395    -63.500    -69.236
@@ -106,7 +106,7 @@ GPDTrapezoid
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%7
-GPDTrapezoid
+%GPDTrapezoid
         X128_Y128=     -14.263   -55.338   -146.501
         X1_Y128=        14.346   -55.338   -146.501
         X128_Y1=       -48.717  -138.519    -69.236
@@ -116,7 +116,7 @@ GPDTrapezoid
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%8
-GPDTrapezoid
+%GPDTrapezoid
         X128_Y128=      29.045   -49.215   -146.501
         X1_Y128=        49.274   -28.986   -146.501
         X128_Y1=        63.500  -132.395    -69.236
@@ -132,8 +132,8 @@ GPDSquare
 	R= 143
 	BETA= 0 0 0
         FIRSTSTAGE= 1
-        SECONDSTAGE= 1
-        THIRDSTAGE= 1
+        SECONDSTAGE= 0
+        THIRDSTAGE= 0
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
 GPDSquare
@@ -142,11 +142,11 @@ GPDSquare
 	R= 143
 	BETA= 0 0 0
         FIRSTSTAGE= 1
-        SECONDSTAGE= 1
-        THIRDSTAGE= 1
+        SECONDSTAGE= 0
+        THIRDSTAGE= 0
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%3
-GPDSquare
+%GPDSquare
 	THETA= 90 
 	PHI= 90
 	R= 143
@@ -156,7 +156,7 @@ GPDSquare
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%4
-GPDSquare
+%GPDSquare
 	THETA= 90 
 	PHI= 135
 	R= 143
@@ -166,7 +166,7 @@ GPDSquare
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
-GPDSquare
+%GPDSquare
 	THETA= 90 
 	PHI= 180
 	R= 143
@@ -176,7 +176,7 @@ GPDSquare
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%6
-GPDSquare
+%GPDSquare
 	THETA= 90 
 	PHI= 225
 	R= 143
@@ -186,7 +186,7 @@ GPDSquare
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%7
-GPDSquare
+%GPDSquare
 	THETA= 90 
 	PHI= 270
 	R= 143
@@ -196,7 +196,7 @@ GPDSquare
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%8
-GPDSquare
+%GPDSquare
 	THETA= 90 
 	PHI= 315
 	R= 143
@@ -286,7 +286,7 @@ GPDSquare
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Front-Cap Back
-GPDTrapezoid
+%GPDTrapezoid
         X128_Y128=      55.338   14.346  146.501
         X1_Y128=        55.338  -14.346  146.501
         X128_Y1=       138.518   48.726   69.237
@@ -296,7 +296,7 @@ GPDTrapezoid
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
-GPDTrapezoid
+%GPDTrapezoid
         X128_Y128=      28.986    49.274  146.501
         X1_Y128=        49.215    29.045  146.501
         X128_Y1=        63.492   132.401   69.237
@@ -306,7 +306,7 @@ GPDTrapezoid
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%3
-GPDTrapezoid
+%GPDTrapezoid
         X128_Y128=     -14.346   55.338  146.501
         X1_Y128=        14.263   55.338  146.501
         X128_Y1=       -48.726  138.518   69.237
@@ -316,7 +316,7 @@ GPDTrapezoid
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%4
-GPDTrapezoid
+%GPDTrapezoid
         X128_Y128=     -49.274   28.986  146.501
         X1_Y128=       -29.045   49.215  146.501
         X128_Y1=      -132.401   63.492   69.237
@@ -326,7 +326,7 @@ GPDTrapezoid
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
-GPDTrapezoid
+%GPDTrapezoid
         X128_Y128=      -55.338  -14.346   146.501
         X1_Y128=        -55.338   14.346   146.501
         X128_Y1=       -138.518  -48.726    69.237
@@ -336,7 +336,7 @@ GPDTrapezoid
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%6
-GPDTrapezoid
+%GPDTrapezoid
         X128_Y128=      -28.986    -49.274   146.501
         X1_Y128=        -49.215    -29.045   146.501
         X128_Y1=        -63.492   -132.401    69.237
@@ -346,7 +346,7 @@ GPDTrapezoid
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%7
-GPDTrapezoid
+%GPDTrapezoid
         X128_Y128=      14.346   -55.338   146.501
         X1_Y128=       -14.263   -55.338   146.501
         X128_Y1=        48.726  -138.518    69.237
@@ -356,7 +356,7 @@ GPDTrapezoid
         THIRDSTAGE= 1
         VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%8
-GPDTrapezoid
+%GPDTrapezoid
         X128_Y128=      49.274   -28.986   146.501
         X1_Y128=        29.045   -49.215   146.501
         X128_Y1=       132.401   -63.492    69.237

@@ -156,7 +156,7 @@ namespace GPDSQUARE
 
    // First stage
    const G4double FirstStageFace      = 98*mm;
-   const G4double FirstStageThickness = 300*micrometer;
+   const G4double FirstStageThickness = 500*micrometer;
    const G4int    NumberOfStrips      = 128;
    const G4double AluStripThickness   = 0.4*micrometer;
 

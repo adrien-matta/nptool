@@ -101,24 +101,24 @@ void ControlSimu(const char * fname = "myResult")
 
       // Fill histos
       // incident beam
-      hEmittanceXY     -> Fill(initCond->GetICPositionX(0), initCond->GetICPositionY(0));
-      hIncidentZ       -> Fill(initCond->GetICPositionZ(0));
-      hEmittanceXTheta -> Fill(initCond->GetICPositionX(0), initCond->GetICIncidentEmittanceTheta(0));
-      hEmittanceYPhi   -> Fill(initCond->GetICPositionY(0), initCond->GetICIncidentEmittancePhi(0));
-      hIncidentTheta   -> Fill(initCond->GetICIncidentAngleTheta(0));
-      hIncidentPhi     -> Fill(initCond->GetICIncidentAnglePhi(0));
+      hEmittanceXY     -> Fill(initCond->GetIncidentPositionX(), initCond->GetIncidentPositionY());
+      hIncidentZ       -> Fill(initCond->GetIncidentPositionZ());
+      hEmittanceXTheta -> Fill(initCond->GetIncidentPositionX(), initCond->GetIncidentEmittanceTheta());
+      hEmittanceYPhi   -> Fill(initCond->GetIncidentPositionY(), initCond->GetIncidentEmittancePhi());
+//      hIncidentTheta   -> Fill(initCond->GetIncidentAngleTheta(0));
+//      hIncidentPhi     -> Fill(initCond->GetIncidentAnglePhi(0));
       // ejected particle
-      hEmittedThetaCM  -> Fill(initCond->GetICEmittedAngleThetaCM(0));
-      hEmittedThetaIF  -> Fill(initCond->GetICEmittedAngleThetaLabIncidentFrame(0));
-      hEmittedPhiIF    -> Fill(initCond->GetICEmittedAnglePhiIncidentFrame(0));
-      hEmittedThetaWF  -> Fill(initCond->GetICEmittedAngleThetaLabWorldFrame(0));
-      hEmittedPhiWF    -> Fill(initCond->GetICEmittedAnglePhiWorldFrame(0));
-      hEmittedETheta   -> Fill(initCond->GetICEmittedAngleThetaLabIncidentFrame(0), initCond->GetICEmittedEnergy(0));
+      hEmittedThetaCM  -> Fill(initCond->GetThetaCM(0));
+      hEmittedThetaIF  -> Fill(initCond->GetThetaLab_IncidentFrame(0));
+//      hEmittedPhiIF    -> Fill(initCond->GetICEmittedAnglePhiIncidentFrame(0));
+      hEmittedThetaWF  -> Fill(initCond->GetThetaLab_WorldFrame(0));
+//      hEmittedPhiWF    -> Fill(initCond->GetICEmittedAnglePhiWorldFrame(0));
+      hEmittedETheta   -> Fill(initCond->GetThetaLab_IncidentFrame(0), initCond->GetIncidentFinalKineticEnergy());
 
       // Control histo
-      Double_t phi_control = initCond->GetICIncidentAnglePhi(0) + initCond->GetICEmittedAnglePhiIncidentFrame(0);
-      if (phi_control > 360) phi_control -= 360;
-      hControlPhi->Fill(phi_control);
+//      Double_t phi_control = initCond->GetIncidentAnglePhi(0) + initCond->GetICEmittedAnglePhiIncidentFrame(0);
+//      if (phi_control > 360) phi_control -= 360;
+//      hControlPhi->Fill(phi_control);
    }
 
    // Display histograms

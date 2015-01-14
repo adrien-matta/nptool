@@ -42,11 +42,11 @@ GaspardTrackerTrapezoid::GaspardTrackerTrapezoid(map<int, GaspardTrackerModule*>
           m_PreTreatData(new TGaspardTrackerData),
           m_NumberOfModule(0),
           // gaspHyde
-//          m_FirstStageBaseLarge(97.5),   // mm
-//          m_FirstStageHeight(113.5),   // mm
+          m_FirstStageBaseLarge(97.5),   // mm
+          m_FirstStageHeight(113.5),   // mm
           // mugast
-          m_FirstStageBaseLarge(92.326),   // mm
-          m_FirstStageHeight(105),   // mm
+//          m_FirstStageBaseLarge(92.326),   // mm
+//          m_FirstStageHeight(105),   // mm
           m_NumberOfStripsX(128),
           m_NumberOfStripsY(128)
 {
