@@ -20,7 +20,7 @@
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
-#include "GaspardTrackerTrapezoid.h"
+#include "GaspardTrackerRectangle.h"
 
 // C++ headers
 #include <limits>
@@ -34,36 +34,31 @@
 #include "TGaspardTrackerPhysics.h"
 
 
-GaspardTrackerTrapezoid::GaspardTrackerTrapezoid(map<int, GaspardTrackerModule*> &Module,
+GaspardTrackerRectangle::GaspardTrackerRectangle(map<int, GaspardTrackerModule*> &Module,
                                                  TGaspardTrackerPhysics* &EventPhysics) 
    : m_ModuleTest(Module),
           m_EventPhysics(EventPhysics),
           m_EventData(0),
           m_PreTreatData(new TGaspardTrackerData),
           m_NumberOfModule(0),
-          // gaspHyde
-//          m_FirstStageBaseLarge(97.5),   // mm
-//          m_FirstStageHeight(113.5),   // mm
-          // mugast
-          m_FirstStageBaseLarge(92.326),   // mm
-          m_FirstStageHeight(105),   // mm
-          m_NumberOfStripsX(128),
-          m_NumberOfStripsY(128)
+          m_FirstStageLength(112),   // mm
+          m_FirstStageWidth(99.6),   // mm
+          m_NumberOfStrips(128)
 {
-   m_StripPitchX = m_FirstStageBaseLarge / (double)m_NumberOfStripsX;
-   m_StripPitchY = m_FirstStageHeight    / (double)m_NumberOfStripsY;
+   m_StripPitchX = m_FirstStageWidth  / (double)m_NumberOfStrips;
+   m_StripPitchY = m_FirstStageLength / (double)m_NumberOfStrips;
 }
 
 
 
-GaspardTrackerTrapezoid::~GaspardTrackerTrapezoid()
+GaspardTrackerRectangle::~GaspardTrackerRectangle()
 {
    delete m_PreTreatData;
 }
 
 
 
-void GaspardTrackerTrapezoid::ReadConfiguration(string Path)
+void GaspardTrackerRectangle::ReadConfiguration(string Path)
 {
    ifstream ConfigFile;
    ConfigFile.open(Path.c_str());
@@ -96,9 +91,9 @@ void GaspardTrackerTrapezoid::ReadConfiguration(string Path)
 
       // If line is a GaspardXXX bloc, reading toggle to true
       // and toggle to true flags indicating which shape is treated.
-      if (LineBuffer.compare(0, 12, "GPDTrapezoid") == 0) {
+      if (LineBuffer.compare(0, 12, "GPDRectangle") == 0) {
          cout << "///////////////////////" << endl;
-         cout << "Trapezoid module found:" << endl;
+         cout << "Rectangle module found:" << endl;
          ReadingStatus = true;
       }
 
@@ -110,7 +105,7 @@ void GaspardTrackerTrapezoid::ReadConfiguration(string Path)
             ConfigFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n' );
          }
          // Finding another telescope (safety), toggle out
-         else if (DataBuffer.compare(0, 12, "GPDTrapezoid") == 0) {
+         else if (DataBuffer.compare(0, 12, "GPDRectangle") == 0) {
             cout << "WARNING: Another Module is find before standard sequence of Token, Error may occured in Telecope definition" << endl;
             ReadingStatus = false;
          }
@@ -222,13 +217,13 @@ void GaspardTrackerTrapezoid::ReadConfiguration(string Path)
             // With position method
             if ( check_A && check_B && check_C && check_D ) {
                AddModule(A, B, C, D);
-               m_ModuleTest[m_index["Trapezoid"] + m_NumberOfModule] = this;
+               m_ModuleTest[m_index["Rectangle"] + m_NumberOfModule] = this;
             }
 
             // with angle method
             else if ( check_Theta && check_Phi && check_R && check_beta ) {
                AddModule(Theta, Phi, R, beta_u, beta_v, beta_w);
-               m_ModuleTest[m_index["Trapezoid"] + m_NumberOfModule] = this;
+               m_ModuleTest[m_index["Rectangle"] + m_NumberOfModule] = this;
             }
 
             // reset boolean flag for point positioning
@@ -251,13 +246,13 @@ void GaspardTrackerTrapezoid::ReadConfiguration(string Path)
 
 
 
-void GaspardTrackerTrapezoid::PreTreat()
+void GaspardTrackerRectangle::PreTreat()
 {
 }
 
 
 
-void GaspardTrackerTrapezoid::BuildPhysicalEvent()
+void GaspardTrackerRectangle::BuildPhysicalEvent()
 {
    // Check flags
 //   bool Check_FirstStage  = false;
@@ -372,18 +367,21 @@ void GaspardTrackerTrapezoid::BuildPhysicalEvent()
 
 
 
-void GaspardTrackerTrapezoid::BuildSimplePhysicalEvent()
+void GaspardTrackerRectangle::BuildSimplePhysicalEvent()
 {
 }
 
 
 
-void GaspardTrackerTrapezoid::AddModule(TVector3 C_X1_Y1,
+void GaspardTrackerRectangle::AddModule(TVector3 C_X1_Y1,
                                         TVector3 C_X128_Y1,
                                         TVector3 C_X1_Y128,
                                         TVector3 C_X128_Y128)
 {
    m_NumberOfModule++;
+
+   // remove warning using C_X128_Y128
+   C_X128_Y128.Unit();
 
    // Definition of vectors U and V are *identical* with definition
    // in NPS.
@@ -392,7 +390,7 @@ void GaspardTrackerTrapezoid::AddModule(TVector3 C_X1_Y1,
    U = U.Unit();
 
    // Vector V parallel to height
-   TVector3 V = 0.5 * (C_X1_Y128 + C_X128_Y128 - C_X1_Y1 - C_X128_Y1);
+   TVector3 V = C_X1_Y128 - C_X1_Y1;
    V = V.Unit();
 
    // Position Vector of Strip Center
@@ -412,12 +410,12 @@ void GaspardTrackerTrapezoid::AddModule(TVector3 C_X1_Y1,
    // Moving StripCenter to 1.1 corner:
    Strip_1_1 = C_X1_Y1 + m_StripPitchX/2*U + m_StripPitchY/2*V;
 
-   for (int i = 0; i < m_NumberOfStripsX; i++) {
+   for (int i = 0; i < m_NumberOfStrips; i++) {
       lineX.clear();
       lineY.clear();
       lineZ.clear();
 
-      for (int j = 0; j < m_NumberOfStripsY; j++) {
+      for (int j = 0; j < m_NumberOfStrips; j++) {
          StripCenter = Strip_1_1 + i*m_StripPitchX*U + j*m_StripPitchY*V;
 
          lineX.push_back( StripCenter.X() );
@@ -437,7 +435,7 @@ void GaspardTrackerTrapezoid::AddModule(TVector3 C_X1_Y1,
 
 
 
-void GaspardTrackerTrapezoid::AddModule(double theta,
+void GaspardTrackerRectangle::AddModule(double theta,
                                         double phi,
                                         double distance,
                                         double beta_u,

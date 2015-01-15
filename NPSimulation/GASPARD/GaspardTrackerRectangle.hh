@@ -1,5 +1,5 @@
-#ifndef GaspardTrackerTrapezoid_h
-#define GaspardTrackerTrapezoid_h 1
+#ifndef GaspardTrackerRectangle_h
+#define GaspardTrackerRectangle_h 1
 /*****************************************************************************
  * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
  *                                                                           *
@@ -35,14 +35,14 @@ using namespace std;
 
 
 
-class GaspardTrackerTrapezoid : public GaspardTrackerModule
+class GaspardTrackerRectangle : public GaspardTrackerModule
 {
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
    ////////////////////////////////////////////////////
 public:
-   GaspardTrackerTrapezoid();
-   virtual ~GaspardTrackerTrapezoid();
+   GaspardTrackerRectangle();
+   virtual ~GaspardTrackerRectangle();
 
    ////////////////////////////////////////////////////
    //////// Specific Function of this Class ///////////
@@ -138,7 +138,7 @@ private:
 
 
 
-namespace GPDTRAP
+namespace GPDRECT
 {
    // Energy/Time resolutions for the different layers
    const G4double ResoFirstStage  = 0.021          ;// = 52keV of Resolution   //   Unit is MeV/2.35
@@ -147,60 +147,36 @@ namespace GPDTRAP
    const G4double ResoTimeGpd     = 0.212765957    ;// = 500ps                 //   Unit is  ns/2.35
    const G4double ResoTimePPAC    = 0.106382979    ;// = 250ps                 //   Unit is  ns/2.35
 
+
+   // Threshold
+   const G4double EnergyThreshold = 0.2*MeV;
+
    // Geometry
-   // gaspard Trapezoid
-//   const G4double Height    = 90*mm;
-//   const G4double BaseLarge = 85*mm;
-//   const G4double BaseSmall = 35*mm;
-//   const G4double Length    = 20*mm;
-   // gaspHyde
-//   const G4double Height    = 115*mm;
-//   const G4double BaseLarge =  98*mm;
-//   const G4double BaseSmall =  30*mm;
-//   const G4double Length    =  20*mm;
-//   const G4double InterStageDistance = 7*mm;
-   // mugast 
-   const G4double Height    = 106*mm;
-   const G4double BaseLarge =  93*mm;
-   const G4double BaseSmall =  26*mm;
-   const G4double Length    =  20*mm;
+   const G4double Length    = 115*mm;
+   const G4double Width     = 101*mm;
+   const G4double Depth     =  20*mm;
    const G4double InterStageDistance = 7*mm;
 
    // First stage
-//   const G4double FirstStageThickness = 300*micrometer;
-   // mugast
+   const G4double FirstStageLength    = 112.0*mm;
+   const G4double FirstStageWidth     =  99.6*mm;
    const G4double FirstStageThickness = 500*micrometer;
-   const G4int    NumberOfStripsX     = 128;
-   const G4int    NumberOfStripsY     = 128;
-   // gaspard Trapezoid
-//   const G4double FirstStageHeight    = 81*mm;
-//   const G4double FirstStageBaseLarge = 78*mm;
-//   const G4double FirstStageBaseSmall = 29*mm;
-   // gaspHyde
-//   const G4double FirstStageHeight    = 113.5*mm;
-//   const G4double FirstStageBaseLarge =  97.5*mm;
-//   const G4double FirstStageBaseSmall =  28.5*mm;
-   // mugast
-   const G4double FirstStageHeight    = 105*mm;
-   const G4double FirstStageBaseLarge =  92.326*mm;
-   const G4double FirstStageBaseSmall =  25.77*mm;
+   const G4int    NumberOfStrips      = 128;
 
    // Second stage
-   const G4double SecondStageHeight    = FirstStageHeight;
-   const G4double SecondStageBaseLarge = FirstStageBaseLarge;
-   const G4double SecondStageBaseSmall = FirstStageBaseSmall;
+   const G4double SecondStageLength    = FirstStageLength;
+   const G4double SecondStageWidth     = FirstStageWidth;
    const G4double SecondStageThickness = 1.5*mm;
 
    // Third stage
-   const G4double ThirdStageHeight    = FirstStageHeight;
-   const G4double ThirdStageBaseLarge = FirstStageBaseLarge;
-   const G4double ThirdStageBaseSmall = FirstStageBaseSmall;
+   const G4double ThirdStageLength    = FirstStageLength;
+   const G4double ThirdStageWidth     = FirstStageWidth;
    const G4double ThirdStageThickness = 1.5*mm;
 
    // Starting at the front of the first stage and pointing to the third stage 
-   const G4double FirstStage_PosZ  = Length* -0.5 + 0.5*FirstStageThickness;
-   const G4double SecondStage_PosZ = Length* -0.5 + 0.5*SecondStageThickness + 1*InterStageDistance;
-   const G4double ThirdStage_PosZ  = Length* -0.5 + 0.5*ThirdStageThickness  + 2*InterStageDistance;
+   const G4double FirstStage_PosZ  = Depth* -0.5 + 0.5*FirstStageThickness;
+   const G4double SecondStage_PosZ = Depth* -0.5 + 0.5*SecondStageThickness + 1*InterStageDistance;
+   const G4double ThirdStage_PosZ  = Depth* -0.5 + 0.5*ThirdStageThickness  + 2*InterStageDistance;
 }
 
 #endif

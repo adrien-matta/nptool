@@ -29,6 +29,7 @@
 // NPTool headers
 #include "GaspardTracker.hh"
 #include "GaspardTrackerSquare.hh"
+#include "GaspardTrackerRectangle.hh"
 #include "GaspardTrackerTrapezoid.hh"
 #include "GaspardTrackerAnnular.hh"
 #include "GaspardTrackerDummyShape.hh"
@@ -57,6 +58,7 @@ void GaspardTracker::ReadConfiguration(string Path)
    ConfigFile.open(Path.c_str());
 
    bool GPDTrkSquare     = false;
+   bool GPDTrkRectangle  = false;
    bool GPDTrkTrapezoid  = false;
    bool GPDTrkAnnular    = false;
    bool GPDTrkDummyShape = false;
@@ -69,6 +71,23 @@ void GaspardTracker::ReadConfiguration(string Path)
 
          // instantiate a new "detector" corresponding to the Square elements
          GaspardTrackerModule* myDetector = new GaspardTrackerSquare();
+
+         // read part of the configuration file corresponding to square elements
+         ConfigFile.close();
+         myDetector->ReadConfiguration(Path);
+         ConfigFile.open(Path.c_str());
+
+         // ms_InterCoord comes from VDetector
+         myDetector->SetInterCoordPointer(ms_InterCoord);
+
+         // store GaspardTrackerSquare "detector"
+         m_Modules.push_back(myDetector);
+      }
+      else if (LineBuffer.compare(0, 12, "GPDRectangle") == 0  &&  GPDTrkRectangle == false) {
+         GPDTrkRectangle = true;
+
+         // instantiate a new "detector" corresponding to the Square elements
+         GaspardTrackerModule* myDetector = new GaspardTrackerRectangle();
 
          // read part of the configuration file corresponding to square elements
          ConfigFile.close();

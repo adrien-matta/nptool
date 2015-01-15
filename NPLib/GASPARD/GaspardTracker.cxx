@@ -44,6 +44,7 @@
 #include "GaspardTrackerTrapezoid.h"
 #include "GaspardTrackerAnnular.h"
 #include "GaspardTrackerSquare.h"
+#include "GaspardTrackerRectangle.h"
 
 using namespace std ;   
 
@@ -80,6 +81,7 @@ void GaspardTracker::ReadConfiguration(string Path)
    ConfigFile.open(Path.c_str());
 
    bool GPDTrkSquare     = false;
+   bool GPDTrkRectangle  = false;
    bool GPDTrkTrapezoid  = false;
    bool GPDTrkAnnular    = false;
    bool GPDTrkDummyShape = false;
@@ -97,6 +99,20 @@ void GaspardTracker::ReadConfiguration(string Path)
          myDetector->SetGaspardDataPointer(m_EventData);
 
          // read part of the configuration file corresponding to square elements
+         ConfigFile.close();
+         myDetector->ReadConfiguration(Path);
+         ConfigFile.open(Path.c_str());
+      }
+      else if (LineBuffer.compare(0, 12, "GPDRectangle") == 0  &&  GPDTrkRectangle == false) {
+         GPDTrkRectangle = true;
+
+         // instantiate a new "detector" corresponding to the Rectangle elements
+         GaspardTrackerModule* myDetector = new GaspardTrackerRectangle(m_ModulesMap, m_EventPhysics);
+
+         // Pass the data object to the GaspardTracker*** object
+         myDetector->SetGaspardDataPointer(m_EventData);
+
+         // read part of the configuration file corresponding to trapezoid elements
          ConfigFile.close();
          myDetector->ReadConfiguration(Path);
          ConfigFile.open(Path.c_str());
