@@ -197,13 +197,12 @@ int main(int argc, char** argv){
       /************************************************/
       // Part 3 : Excitation Energy Calculation
       Ex = myReaction -> ReconstructRelativistic( ELab , ThetaLab );
-            /************************************************/
+      
+      /************************************************/
 
       /************************************************/
       // Part 4 : Theta CM Calculation
       ThetaCM  = myReaction -> EnergyLabToThetaCM( ELab , ThetaLab)/deg;
-
-      cout << ThetaCM << " " << Init->GetThetaCM(0) << endl;
       ThetaLab=ThetaLab/deg;
 
       /************************************************/
