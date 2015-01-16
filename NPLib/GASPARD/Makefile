@@ -7,8 +7,7 @@ all:            $(SHARELIB)
 ############### Detector ##############
 
 ## Gaspard ##
-libGaspard.so:	TGaspardTrackerData.o TGaspardTrackerDataDict.o GaspardTracker.o TGaspardTrackerPhysics.o TGaspardTrackerPhysicsDict.o GaspardTrackerModule.o GaspardTrackerDummyShape.o GaspardTrackerTrapezoid.o	GaspardTrackerAnnular.o GaspardTrackerSquare.o
-
+libGaspard.so:	TGaspardTrackerData.o TGaspardTrackerDataDict.o GaspardTracker.o TGaspardTrackerPhysics.o TGaspardTrackerPhysicsDict.o GaspardTrackerModule.o GaspardTrackerDummyShape.o GaspardTrackerTrapezoid.o	GaspardTrackerAnnular.o GaspardTrackerSquare.o GaspardTrackerRectangle.o
 			$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TGaspardTrackerDataDict.cxx:	TGaspardTrackerData.h
@@ -28,6 +27,7 @@ GaspardTrackerDummyShape.o: GaspardTrackerDummyShape.cxx GaspardTrackerDummyShap
 GaspardTrackerTrapezoid.o: GaspardTrackerTrapezoid.cxx GaspardTrackerTrapezoid.h
 GaspardTrackerAnnular.o: GaspardTrackerAnnular.cxx GaspardTrackerAnnular.h
 GaspardTrackerSquare.o: GaspardTrackerSquare.cxx GaspardTrackerSquare.h
+GaspardTrackerRectangle.o: GaspardTrackerRectangle.cxx GaspardTrackerRectangle.h
 #######################################
 
 ############# Clean and More ##########

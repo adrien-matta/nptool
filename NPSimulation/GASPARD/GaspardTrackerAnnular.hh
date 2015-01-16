@@ -141,7 +141,10 @@ namespace GPDANNULAR
    const G4double AluStripThickness   = 0.4*micrometer;
    const G4double FirstStageThickness = 300*micrometer;
    const G4double FirstStageRmin = 16*mm;
+   // MUGAST
    const G4double FirstStageRmax = 45*mm;
+   // gaspHyde
+//   const G4double FirstStageRmax = 52*mm;
 //   const G4double VacBoxThickness   = 3*cm           ;
    const G4double VacBoxThickness     = 0.4*cm;
 

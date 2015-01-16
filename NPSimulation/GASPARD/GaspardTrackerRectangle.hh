@@ -1,5 +1,5 @@
-#ifndef GaspardTrackerSquare_h
-#define GaspardTrackerSquare_h 1
+#ifndef GaspardTrackerRectangle_h
+#define GaspardTrackerRectangle_h 1
 /*****************************************************************************
  * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
  *                                                                           *
@@ -10,16 +10,18 @@
 /*****************************************************************************
  * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
  *                                                                           *
- * Creation Date  : 10/06/09                                                 *
+ * Creation Date  : 15/07/09                                                 *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
- * Decription: Define a module of square shape for the Gaspard tracker       *
+ * Decription: Define a module of trapezoidal shape for the Gaspard tracker  *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
+
+
 
 // C++ headers
 #include <vector>
@@ -33,14 +35,14 @@ using namespace std;
 
 
 
-class GaspardTrackerSquare : public GaspardTrackerModule
+class GaspardTrackerRectangle : public GaspardTrackerModule
 {
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
    ////////////////////////////////////////////////////
 public:
-   GaspardTrackerSquare();
-   virtual ~GaspardTrackerSquare();
+   GaspardTrackerRectangle();
+   virtual ~GaspardTrackerRectangle();
 
    ////////////////////////////////////////////////////
    //////// Specific Function of this Class ///////////
@@ -104,7 +106,7 @@ public:
    // deriving from GaspardTrackerModule
    // This is mandatory since the GaspardTracker*** does not derive from VDetector
    void SetInterCoordPointer(TInteractionCoordinates* interCoord);
-   TInteractionCoordinates* GetInterCoordPointer()   {return ms_InterCoord;};
+   TInteractionCoordinates* GetInterCoordPointer()      {return ms_InterCoord;};
 
 
    ////////////////////////////////////////////////////
@@ -136,48 +138,45 @@ private:
 
 
 
-namespace GPDSQUARE
+namespace GPDRECT
 {
-   // Resolution
+   // Energy/Time resolutions for the different layers
    const G4double ResoFirstStage  = 0.021          ;// = 52keV of Resolution   //   Unit is MeV/2.35
    const G4double ResoSecondStage = 0.043          ;// = 130 keV of resolution //   Unit is MeV/2.35
    const G4double ResoThirdStage  = 0.043          ;// = 100 kev of resolution //   Unit is MeV/2.35
    const G4double ResoTimeGpd     = 0.212765957    ;// = 500ps                 //   Unit is  ns/2.35
    const G4double ResoTimePPAC    = 0.106382979    ;// = 250ps                 //   Unit is  ns/2.35
 
+
    // Threshold
    const G4double EnergyThreshold = 0.2*MeV;
 
    // Geometry
-   const G4double FaceFront          = 11*cm;
-   const G4double FaceBack           = 11*cm;
-   const G4double Length             = 1.6*cm;
+   const G4double Length    = 115*mm;
+   const G4double Width     = 101*mm;
+   const G4double Depth     =  20*mm;
    const G4double InterStageDistance = 7*mm;
 
    // First stage
-   const G4double FirstStageFace      = 98*mm;
+   const G4double FirstStageLength    = 112.0*mm;
+   const G4double FirstStageWidth     =  99.6*mm;
    const G4double FirstStageThickness = 500*micrometer;
    const G4int    NumberOfStrips      = 128;
-   const G4double AluStripThickness   = 0.4*micrometer;
 
    // Second stage
-   const G4double SecondStageFace      = FirstStageFace;
+   const G4double SecondStageLength    = FirstStageLength;
+   const G4double SecondStageWidth     = FirstStageWidth;
    const G4double SecondStageThickness = 1.5*mm;
 
    // Third stage
-   const G4double ThirdStageFace      = FirstStageFace;
+   const G4double ThirdStageLength    = FirstStageLength;
+   const G4double ThirdStageWidth     = FirstStageWidth;
    const G4double ThirdStageThickness = 1.5*mm;
 
-   // Starting at the front of the first stage and pointing to the third stage
-   const G4double FirstStage_PosZ  = Length* -0.5 + 0.5*FirstStageThickness;
-   const G4double SecondStage_PosZ = Length* -0.5 + 0.5*SecondStageThickness + 1*InterStageDistance;
-   const G4double ThirdStage_PosZ  = Length* -0.5 + 0.5*ThirdStageThickness  + 2*InterStageDistance;
-
-//   const G4double AluStripFront_PosZ = Length* -0.5 + 0.5*AluStripThickness                              ;
-//   const G4double Silicon_PosZ       = AluStripFront_PosZ + 0.5*AluStripThickness + 0.5*SiliconThickness ;
-//   const G4double AluStripBack_PosZ  = Silicon_PosZ + 0.5*SiliconThickness + 0.5*AluStripThickness       ;
-//   const G4double VacBox_PosZ        = AluStripBack_PosZ + 0.5*AluStripThickness + 0.5* VacBoxThickness  ;
-//   const G4double ThirdStage_PosZ    = VacBox_PosZ + 0.5*VacBoxThickness + 0.5*ThirdStageThickness       ;
+   // Starting at the front of the first stage and pointing to the third stage 
+   const G4double FirstStage_PosZ  = Depth* -0.5 + 0.5*FirstStageThickness;
+   const G4double SecondStage_PosZ = Depth* -0.5 + 0.5*SecondStageThickness + 1*InterStageDistance;
+   const G4double ThirdStage_PosZ  = Depth* -0.5 + 0.5*ThirdStageThickness  + 2*InterStageDistance;
 }
 
 #endif
