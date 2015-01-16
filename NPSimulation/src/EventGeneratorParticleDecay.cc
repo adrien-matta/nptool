@@ -44,7 +44,7 @@ using namespace NPL;
 // ROOT
 #include "TLorentzVector.h"
 #include "TVector3.h"
-
+#include "TF1.h"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorParticleDecay::EventGeneratorParticleDecay(){
   m_ParticleStack = ParticleStack::getInstance();
@@ -383,15 +383,24 @@ void EventGeneratorParticleDecay::SetDecay(vector<string> DaughterName, vector<b
   
   m_DifferentialCrossSection = CSPath;
   if(CSPath!="TGenPhaseSpace") {
-    if(m_CrossSectionPath!="_void_")
+    if(m_CrossSectionPath!="_void_"){
       m_CrossSectionHist = Read1DProfile(m_CrossSectionPath,m_CrossSectionName);
-      
+      TF1* sinus = new TF1("sinus","1/sin(x*3.141592653589793/180.)",0,180);
+      m_CrossSectionHist->Divide(sinus,1);
+      delete sinus;
+    }
       else{
         int offset = 0;
         while(gDirectory->FindObjectAny(Form("_particlevoid_%i",offset))!=0)
           ++offset;
         
-        m_CrossSectionHist = new TH1F(Form("_particlevoid_%i",offset),Form("_particlevoid_%i",offset),1,0,1);
+        m_CrossSectionHist = new TH1F(Form("_particlevoid_%i",offset),Form("_particlevoid_%i",offset),180,0,180);
+        for(unsigned int i = 0 ; i < 180 ; i++)
+          m_CrossSectionHist->Fill(i);
+        
+        TF1* sinus = new TF1("sinus","1/sin(x*3.141592653589793/180.)",0,180);
+         m_CrossSectionHist->Divide(sinus,1);
+        delete sinus;
       }
       
     }

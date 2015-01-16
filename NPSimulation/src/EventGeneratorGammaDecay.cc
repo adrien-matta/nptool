@@ -45,7 +45,7 @@ using namespace NPL;
 // ROOT
 #include "TLorentzVector.h"
 #include "TVector3.h"
-
+#include "TF1.h"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorGammaDecay::EventGeneratorGammaDecay(){
   m_ParticleStack = ParticleStack::getInstance();
@@ -260,7 +260,7 @@ void EventGeneratorGammaDecay::GenerateEvent(G4Event*){
     if(m_Energies[ChoosenCascade].size()>1){
       
       // Shoot flat in cos(theta) and Phi to have isotropic emission
-      double cos_theta = RandFlat::shoot();
+      double cos_theta = -1+2*RandFlat::shoot();
       theta = acos(cos_theta);
       phi = RandFlat::shoot()*2.*pi;
       
@@ -366,16 +366,20 @@ void EventGeneratorGammaDecay::PrepareCascade(){
   for (unsigned int i = 0; i < m_BranchingRatio.size(); i++) {
     TH1F* h ;
     
-    if(m_CrossSectionPath[i]!="_void_")
+    if(m_CrossSectionPath[i]!="_void_"){
       h = Read1DProfile(m_CrossSectionPath[i],m_CrossSectionName[i]);
-    
+      TF1* sinus = new TF1("sinus","1/sin(x*3.141592653589793/180.)",0,180);
+      h->Divide(sinus,1);
+      delete sinus;
+    }
+
     else{
       int offset = 0;
       while(gDirectory->FindObjectAny(Form("_gammavoid_%i",offset))!=0)
         ++offset;
       
       h = new TH1F(Form("_gammavoid_%i",offset),Form("_gammavoid_%i",offset),1,0,1);
-    }
+      }
     
     m_CrossSectionHist.push_back(h);
   }
