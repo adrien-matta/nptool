@@ -60,7 +60,6 @@ TComptonTelescopePhysics::TComptonTelescopePhysics()
    m_StripBack_E_RAW_Threshold   = 0;
    m_StripBack_E_Threshold       = 0;
    m_Take_E_Front                = true;     // p-side
-   m_Take_T_Back                 = false;    // n-side
 }
 
 
@@ -159,186 +158,177 @@ int TComptonTelescopePhysics::CheckEvent()
 
 
 ///////////////////////////////////////////////////////////////////////////
-vector < TVector2 > TComptonTelescopePhysics :: Match_Front_Back(){
-  vector < TVector2 > ArrayOfGoodCouple ;
-  
-  // Prevent code from treating very high multiplicity Event
-  // Those event are not physical anyway and that improve speed.
-  if( m_PreTreatedData->GetCTTrackerFrontEMult() > m_MaximumStripMultiplicityAllowed || m_PreTreatedData->GetCTTrackerBackEMult() > m_MaximumStripMultiplicityAllowed )
-    return ArrayOfGoodCouple;
-  
-  for(unsigned int i = 0 ; i < m_PreTreatedData->GetCTTrackerFrontEMult(); i++) {
-    for(unsigned int j = 0 ; j < m_PreTreatedData->GetCTTrackerBackEMult(); j++){
-      //   if same detector check energy
-      if ( m_PreTreatedData->GetCTTrackerFrontEDetectorNbr(i) == m_PreTreatedData->GetCTTrackerBackEDetectorNbr(j) ){
-        //   Look if energy match
-        if( abs( (m_PreTreatedData->GetCTTrackerFrontEEnergy(i)-m_PreTreatedData->GetCTTrackerBackEEnergy(j))/2. ) < m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma )
-          ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;
+vector < TVector2 > TComptonTelescopePhysics::Match_Front_Back()
+{
+   vector < TVector2 > ArrayOfGoodCouple ;
+
+   // Prevent code from treating very high multiplicity Event
+   // Those event are not physical anyway and that improve speed.
+   if (m_PreTreatedData->GetCTTrackerFrontEMult() > m_MaximumStripMultiplicityAllowed || m_PreTreatedData->GetCTTrackerBackEMult() > m_MaximumStripMultiplicityAllowed)
+      return ArrayOfGoodCouple;
+
+   for (unsigned int i = 0; i < m_PreTreatedData->GetCTTrackerFrontEMult(); i++) {
+      for (unsigned int j = 0; j < m_PreTreatedData->GetCTTrackerBackEMult(); j++) {
+         //   if same detector check energy
+         if (m_PreTreatedData->GetCTTrackerFrontEDetectorNbr(i) == m_PreTreatedData->GetCTTrackerBackEDetectorNbr(j)) {
+            //   Look if energy match
+            if (abs((m_PreTreatedData->GetCTTrackerFrontEEnergy(i) - m_PreTreatedData->GetCTTrackerBackEEnergy(j))/2.) < m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma)
+               ArrayOfGoodCouple.push_back(TVector2(i,j));
+         }
       }
-    }
-  }
-  
-  //   Prevent to treat event with ambiguous matchin beetween X and Y
-  if( ArrayOfGoodCouple.size() > m_PreTreatedData->GetCTTrackerFrontEMult() ) ArrayOfGoodCouple.clear() ;
-  return ArrayOfGoodCouple;
+   }
+
+   //   Prevent to treat event with ambiguous matchin beetween X and Y
+   if (ArrayOfGoodCouple.size() > m_PreTreatedData->GetCTTrackerFrontEMult()) ArrayOfGoodCouple.clear();
+   return ArrayOfGoodCouple;
 }
 
 
 ////////////////////////////////////////////////////////////////////////////
-bool TComptonTelescopePhysics :: IsValidChannel(const string DetectorType, const int telescope , const int channel){
-  
-  if(DetectorType == "Front")
-    return *(m_FrontChannelStatus[telescope-1].begin()+channel-1);
-  
-  else if(DetectorType == "Back")
-    return *(m_BackChannelStatus[telescope-1].begin()+channel-1);
-  
-  else return false;
+bool TComptonTelescopePhysics::IsValidChannel(const string DetectorType, const int telescope, const int channel)
+{
+   if (DetectorType == "Front")
+      return *(m_FrontChannelStatus[telescope-1].begin()+channel-1);
+
+   else if (DetectorType == "Back")
+      return *(m_BackChannelStatus[telescope-1].begin()+channel-1);
+
+   else return false;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////
-void TComptonTelescopePhysics::ReadAnalysisConfig(){
-  bool ReadingStatus = false;
-  
-  // path to file
-  string FileName = "./configs/ConfigComptonTelescope.dat";
-  
-  // open analysis config file
-  ifstream AnalysisConfigFile;
-  AnalysisConfigFile.open(FileName.c_str());
-  
-  if (!AnalysisConfigFile.is_open()) {
-    cout << " No ConfigComptonTelescope.dat found: Default parameter loaded for Analayis " << FileName << endl;
-    return;
-  }
-  cout << " Loading user parameter for Analysis from ConfigComptonTelescope.dat " << endl;
-  
-  // Save it in a TAsciiFile
-  TAsciiFile* asciiConfig = RootOutput::getInstance()->GetAsciiFileAnalysisConfig();
-  asciiConfig->AppendLine("%%% ConfigComptonTelescope.dat %%%");
-  asciiConfig->Append(FileName.c_str());
-  asciiConfig->AppendLine("");
-  // read analysis config file
-  string LineBuffer,DataBuffer,whatToDo;
-  while (!AnalysisConfigFile.eof()) {
-    // Pick-up next line
-    getline(AnalysisConfigFile, LineBuffer);
-    
-    // search for "header"
-    if (LineBuffer.compare(0, 22, "ConfigComptonTelescope") == 0) ReadingStatus = true;
-    
-    // loop on tokens and data
-    while (ReadingStatus ) {
-      
-      whatToDo="";
-      AnalysisConfigFile >> whatToDo;
-      
-      // Search for comment symbol (%)
-      if (whatToDo.compare(0, 1, "%") == 0) {
-        AnalysisConfigFile.ignore(numeric_limits<streamsize>::max(), '\n' );
+void TComptonTelescopePhysics::ReadAnalysisConfig()
+{
+   bool ReadingStatus = false;
+
+   // path to file
+   string FileName = "./configs/ConfigComptonTelescope.dat";
+
+   // open analysis config file
+   ifstream AnalysisConfigFile;
+   AnalysisConfigFile.open(FileName.c_str());
+
+   if (!AnalysisConfigFile.is_open()) {
+      cout << " No ConfigComptonTelescope.dat found: Default parameter loaded for Analayis " << FileName << endl;
+      return;
+   }
+   cout << " Loading user parameter for Analysis from ConfigComptonTelescope.dat " << endl;
+
+   // Save it in a TAsciiFile
+   TAsciiFile* asciiConfig = RootOutput::getInstance()->GetAsciiFileAnalysisConfig();
+   asciiConfig->AppendLine("%%% ConfigComptonTelescope.dat %%%");
+   asciiConfig->Append(FileName.c_str());
+   asciiConfig->AppendLine("");
+   // read analysis config file
+   string LineBuffer,DataBuffer,whatToDo;
+   while (!AnalysisConfigFile.eof()) {
+      // Pick-up next line
+      getline(AnalysisConfigFile, LineBuffer);
+
+      // search for "header"
+      if (LineBuffer.compare(0, 22, "ConfigComptonTelescope") == 0) ReadingStatus = true;
+
+      // loop on tokens and data
+      while (ReadingStatus ) {
+
+         whatToDo="";
+         AnalysisConfigFile >> whatToDo;
+
+         // Search for comment symbol (%)
+         if (whatToDo.compare(0, 1, "%") == 0) {
+            AnalysisConfigFile.ignore(numeric_limits<streamsize>::max(), '\n' );
+         }
+
+         else if (whatToDo=="MAX_STRIP_MULTIPLICITY") {
+            AnalysisConfigFile >> DataBuffer;
+            m_MaximumStripMultiplicityAllowed = atoi(DataBuffer.c_str() );
+            cout << "MAXIMUN STRIP MULTIPLICITY " << m_MaximumStripMultiplicityAllowed << endl;
+         }
+
+         else if (whatToDo=="STRIP_ENERGY_MATCHING_SIGMA") {
+            AnalysisConfigFile >> DataBuffer;
+            m_StripEnergyMatchingSigma = atof(DataBuffer.c_str() );
+            cout << "STRIP ENERGY MATCHING SIGMA " << m_StripEnergyMatchingSigma <<endl;
+         }
+
+         else if (whatToDo=="STRIP_ENERGY_MATCHING_NUMBER_OF_SIGMA") {
+            AnalysisConfigFile >> DataBuffer;
+            m_StripEnergyMatchingNumberOfSigma = atoi(DataBuffer.c_str() );
+            cout << "STRIP ENERGY MATCHING NUMBER OF SIGMA " << m_StripEnergyMatchingNumberOfSigma << endl;
+         }
+
+         else if (whatToDo== "DISABLE_ALL") {
+            AnalysisConfigFile >> DataBuffer;
+            cout << whatToDo << "  " << DataBuffer << endl;
+            int Detector = atoi(DataBuffer.substr(2,1).c_str());
+            vector< bool > ChannelStatus;
+            ChannelStatus.resize(24,false);
+            m_FrontChannelStatus[Detector-1] = ChannelStatus;
+            ChannelStatus.resize(48,false);
+            m_BackChannelStatus[Detector-1] = ChannelStatus;
+            ChannelStatus.resize(1,false);
+            m_PADChannelStatus[Detector-1] = ChannelStatus;
+         }
+
+         else if (whatToDo == "DISABLE_CHANNEL") {
+            AnalysisConfigFile >> DataBuffer;
+            cout << whatToDo << "  " << DataBuffer << endl;
+            int Detector = atoi(DataBuffer.substr(2,1).c_str());
+            int channel = -1;
+            if (DataBuffer.compare(3,4,"STRF") == 0) {
+               channel = atoi(DataBuffer.substr(7).c_str());
+               *(m_FrontChannelStatus[Detector-1].begin()+channel-1) = false;
+            }
+
+            else if (DataBuffer.compare(3,4,"STRB") == 0) {
+               channel = atoi(DataBuffer.substr(7).c_str());
+               *(m_BackChannelStatus[Detector-1].begin()+channel-1) = false;
+            }
+
+            else cout << "Warning: detector type for ComptonTelescope unknown!" << endl;
+
+         }
+
+         else if (whatToDo=="TAKE_E_FRONT") {
+            m_Take_E_Front = true;
+            cout << whatToDo << endl;
+         }
+
+         else if (whatToDo=="TAKE_E_BACK") {
+            m_Take_E_Front = false;
+            cout << whatToDo << endl;
+         }
+
+         else if (whatToDo=="STRIP_FRONT_E_RAW_THRESHOLD") {
+            AnalysisConfigFile >> DataBuffer;
+            m_StripFront_E_RAW_Threshold = atoi(DataBuffer.c_str());
+            cout << whatToDo << " " << m_StripFront_E_RAW_Threshold << endl;
+         }
+
+         else if (whatToDo=="STRIP_BACK_E_RAW_THRESHOLD") {
+            AnalysisConfigFile >> DataBuffer;
+            m_StripBack_E_RAW_Threshold = atoi(DataBuffer.c_str());
+            cout << whatToDo << " " << m_StripBack_E_RAW_Threshold << endl;
+         }
+
+         else if (whatToDo=="STRIP_FRONT_E_THRESHOLD") {
+            AnalysisConfigFile >> DataBuffer;
+            m_StripFront_E_Threshold = atoi(DataBuffer.c_str());
+            cout << whatToDo << " " << m_StripFront_E_Threshold << endl;
+         }
+
+         else if (whatToDo=="STRIP_BACK_THRESHOLD") {
+            AnalysisConfigFile >> DataBuffer;
+            m_StripBack_E_Threshold = atoi(DataBuffer.c_str());
+            cout << whatToDo << " " << m_StripBack_E_Threshold << endl;
+         }
+
+         else {
+            ReadingStatus = false;
+         }
       }
-      
-      else if (whatToDo=="MAX_STRIP_MULTIPLICITY") {
-        AnalysisConfigFile >> DataBuffer;
-        m_MaximumStripMultiplicityAllowed = atoi(DataBuffer.c_str() );
-        cout << "MAXIMUN STRIP MULTIPLICITY " << m_MaximumStripMultiplicityAllowed << endl;
-      }
-      
-      else if (whatToDo=="STRIP_ENERGY_MATCHING_SIGMA") {
-        AnalysisConfigFile >> DataBuffer;
-        m_StripEnergyMatchingSigma = atof(DataBuffer.c_str() );
-        cout << "STRIP ENERGY MATCHING SIGMA " << m_StripEnergyMatchingSigma <<endl;
-      }
-      
-      else if (whatToDo=="STRIP_ENERGY_MATCHING_NUMBER_OF_SIGMA") {
-        AnalysisConfigFile >> DataBuffer;
-        m_StripEnergyMatchingNumberOfSigma = atoi(DataBuffer.c_str() );
-        cout << "STRIP ENERGY MATCHING NUMBER OF SIGMA " << m_StripEnergyMatchingNumberOfSigma << endl;
-      }
-      
-      else if (whatToDo== "DISABLE_ALL") {
-        AnalysisConfigFile >> DataBuffer;
-        cout << whatToDo << "  " << DataBuffer << endl;
-        int Detector = atoi(DataBuffer.substr(2,1).c_str());
-        vector< bool > ChannelStatus;
-        ChannelStatus.resize(24,false);
-        m_FrontChannelStatus[Detector-1] = ChannelStatus;
-        ChannelStatus.resize(48,false);
-        m_BackChannelStatus[Detector-1] = ChannelStatus;
-        ChannelStatus.resize(1,false);
-        m_PADChannelStatus[Detector-1] = ChannelStatus;
-      }
-      
-      else if (whatToDo == "DISABLE_CHANNEL") {
-        AnalysisConfigFile >> DataBuffer;
-        cout << whatToDo << "  " << DataBuffer << endl;
-        int Detector = atoi(DataBuffer.substr(2,1).c_str());
-        int channel = -1;
-        if (DataBuffer.compare(3,4,"STRF") == 0) {
-          channel = atoi(DataBuffer.substr(7).c_str());
-          *(m_FrontChannelStatus[Detector-1].begin()+channel-1) = false;
-        }
-        
-        else if (DataBuffer.compare(3,4,"STRB") == 0) {
-          channel = atoi(DataBuffer.substr(7).c_str());
-          *(m_BackChannelStatus[Detector-1].begin()+channel-1) = false;
-        }
-        
-        else cout << "Warning: detector type for ComptonTelescope unknown!" << endl;
-        
-      }
-      
-      else if (whatToDo=="TAKE_E_FRONT") {
-        m_Take_E_Front = true;
-        cout << whatToDo << endl;
-      }
-      
-      else if (whatToDo=="TAKE_E_BACK") {
-        m_Take_E_Front = false;
-        cout << whatToDo << endl;
-      }
-      
-      else if (whatToDo=="TAKE_T_FRONT") {
-        m_Take_T_Back = false;
-        cout << whatToDo << endl;
-      }
-      
-      else if (whatToDo=="TAKE_T_BACK") {
-        m_Take_T_Back = true;
-        cout << whatToDo << endl;
-      }
-      
-      else if (whatToDo=="STRIP_FRONT_E_RAW_THRESHOLD") {
-        AnalysisConfigFile >> DataBuffer;
-        m_StripFront_E_RAW_Threshold = atoi(DataBuffer.c_str());
-        cout << whatToDo << " " << m_StripFront_E_RAW_Threshold << endl;
-      }
-      
-      else if (whatToDo=="STRIP_BACK_E_RAW_THRESHOLD") {
-        AnalysisConfigFile >> DataBuffer;
-        m_StripBack_E_RAW_Threshold = atoi(DataBuffer.c_str());
-        cout << whatToDo << " " << m_StripBack_E_RAW_Threshold << endl;
-      }
-      
-      else if (whatToDo=="STRIP_FRONT_E_THRESHOLD") {
-        AnalysisConfigFile >> DataBuffer;
-        m_StripFront_E_Threshold = atoi(DataBuffer.c_str());
-        cout << whatToDo << " " << m_StripFront_E_Threshold << endl;
-      }
-      
-      else if (whatToDo=="STRIP_BACK_THRESHOLD") {
-        AnalysisConfigFile >> DataBuffer;
-        m_StripBack_E_Threshold = atoi(DataBuffer.c_str());
-        cout << whatToDo << " " << m_StripBack_E_Threshold << endl;
-      }
-      
-      else {
-        ReadingStatus = false;
-      }
-      
-    }
-  }
-  
+   }
 }
 
 
