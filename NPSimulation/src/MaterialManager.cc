@@ -105,7 +105,7 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
     }
 
     else  if(Name == "Mylar"){
-      G4Material* material = new G4Material(Name, 1.397*g,3);
+      G4Material* material = new G4Material(Name, 1.397*g/cm3,3);
       material->AddElement(GetElementFromLibrary("H"),8);
       material->AddElement(GetElementFromLibrary("C"),10);
       material->AddElement(GetElementFromLibrary("O"),4);
@@ -114,7 +114,7 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
     }
 
     else  if(Name == "Kapton"){
-      G4Material* material = new G4Material(Name, 1.39*g,3);
+      G4Material* material = new G4Material(Name, 1.39*g/cm3,3);
       material->AddElement(GetElementFromLibrary("H"),4);
       material->AddElement(GetElementFromLibrary("C"),5);
       material->AddElement(GetElementFromLibrary("O"),2);

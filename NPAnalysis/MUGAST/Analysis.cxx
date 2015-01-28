@@ -52,7 +52,7 @@ int main(int argc, char** argv){
   double ThetaNormalTarget = 0 ;
   double ThetaM2Surface = 0; 
   double Si_E_M2 = 0 ;
-  double SiLi_E_M2 = 0 ; 
+  double CsI_E_M2 = 0 ; 
   double Energy = 0;
   double E_M2 = 0;
   
@@ -97,12 +97,11 @@ int main(int argc, char** argv){
     myDetector->BuildPhysicalEvent();
     // Reinitiate calculated variable
     ReInitValue();
-    
     double XTarget = 0;
     double YTarget = 0;
     TVector3 BeamDirection = TVector3(0,0,1);
     double BeamEnergy = BeamCD2.Slow(OriginalBeamEnergy,Rand.Uniform(0,TargetThickness),0);
-    myReaction->SetBeamEnergy(273.4);
+    myReaction->SetBeamEnergy(BeamEnergy);
 
 
       //////////////////////////// LOOP on MUST2 //////////////////
@@ -128,12 +127,12 @@ int main(int argc, char** argv){
       // Part 2 : Impact Energy
       Energy = ELab = 0;
       Si_E_M2 = M2->Si_E[countMust2];
-      SiLi_E_M2= M2->SiLi_E[countMust2];
+      CsI_E_M2= M2->CsI_E[countMust2];
 
       // if SiLi
-      if(SiLi_E_M2>0 ){
+      if(CsI_E_M2>0 ){
         // The energy in CsI is calculate form dE/dx Table because 
-        Energy = SiLi_E_M2;
+        Energy = CsI_E_M2;
         Energy = LightAl.EvaluateInitialEnergy( Energy ,0.4*micrometer , ThetaM2Surface); 
         Energy+=Si_E_M2;
       }
@@ -189,9 +188,8 @@ int main(int argc, char** argv){
       Energy = ELab = 0;
       Energy = GD->GetEnergyDeposit();
       
-      ELab = LightAl.EvaluateInitialEnergy( Energy ,0.4*micrometer , ThetaGDSurface); 
       // Target Correction
-      ELab   = LightCD2.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
+      ELab   = LightCD2.EvaluateInitialEnergy( Energy ,TargetThickness/2., ThetaNormalTarget);
       /************************************************/
 
       /************************************************/
