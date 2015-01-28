@@ -152,7 +152,6 @@ class TComptonTelescopePhysics : public TObject, public NPA::VDetector
       
          // By default take EX and TY.
          bool m_Take_E_Front;//!
-         bool m_Take_T_Back;//!
       
       
          //   Event over this value after pre-treatment are not treated / avoid long treatment time on spurious event   
