@@ -116,7 +116,7 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
     else  if(Name == "Kapton"){
       G4Material* material = new G4Material(Name, 1.39*g/cm3,3);
       material->AddElement(GetElementFromLibrary("H"),4);
-      material->AddElement(GetElementFromLibrary("C"),5);
+      material->AddElement(GetElementFromLibrary("C"),10);
       material->AddElement(GetElementFromLibrary("O"),2);
       m_Material[Name]=material;
       return material; 

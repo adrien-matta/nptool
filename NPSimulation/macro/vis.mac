@@ -5,12 +5,14 @@
 #
 /control/verbose 0
 /run/verbose 0
+/material/verbose 0
+/tracking/verbose 0
 /cuts/verbose 0
 /process/em/verbose 0
 /process/eLoss/verbose 0
 #
 # Use this open statement to create an OpenGL view:
-/vis/open OGLI 1200x600-0+0
+#/vis/open OGLI 1200x600-0+0
 #/vis/open VRML2FILE
 #
 # Draw geometry:
@@ -45,6 +47,7 @@
 /vis/viewer/set/autoRefresh true
 /vis/verbose 0
 
+/run/beamOn 50000
 # print Option
-/vis/ogl/set/printMode vectored
-/vis/ogl/set/transparency true
+#/vis/ogl/set/printMode vectored
+#/vis/ogl/set/transparency true
