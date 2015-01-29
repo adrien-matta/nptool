@@ -7,10 +7,11 @@ all:            $(SHARELIB)
 #------------------------------------------------------------------------------
 ############### Detector ##############
 
-## MUST2 ##
+## ComptonTelescope ##
 libComptonTelescope.so:	TComptonTelescopeData.o	         TComptonTelescopeDataDict.o \
                         TComptonTelescopePhysics.o       TComptonTelescopePhysicsDict.o \
-                        TComptonTelescopeProcessData.o   TComptonTelescopeProcessDataDict.o
+                        TComptonTelescopeProcessData.o   TComptonTelescopeProcessDataDict.o \
+                        TComptonTelescopeSpectra.o 
 		$(LD) $(SOFLAGS) $^ $(OutPutOpt) $@
 
 TComptonTelescopeDataDict.cxx:	TComptonTelescopeData.h
@@ -25,6 +26,7 @@ TComptonTelescopeProcessDataDict.cxx:	TComptonTelescopeProcessData.h
 # dependances
 TComptonTelescopeData.o:		   TComptonTelescopeData.cxx	      TComptonTelescopeData.h
 TComptonTelescopePhysics.o:      TComptonTelescopePhysics.cxx	   TComptonTelescopePhysics.h
+TComptonTelescopeSpectra.o:      TComptonTelescopeSpectra.cxx	   TComptonTelescopeSpectra.h
 TComptonTelescopeProcessData.o:  TComptonTelescopeProcessData.cxx TComptonTelescopeProcessData.h
 #######################################
 

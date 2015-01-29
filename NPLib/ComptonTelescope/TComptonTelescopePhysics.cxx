@@ -113,12 +113,20 @@ void TComptonTelescopePhysics::PreTreat()
 {
    ClearPreTreatedData();
 
+//   cout << "TComptonTelescopePhysics::PreTreat() Front" << endl;
+//   m_EventData->Dump();
    //   Front
    unsigned int sizeFront = m_EventData->GetCTTrackerFrontEMult();
+//   cout << "sizeFront = " << sizeFront << endl;
    for (unsigned int i = 0; i < sizeFront; ++i) {
+//      cout << "loop on sizeFront " << i << endl;
+//      cout << "energy / raw threshold " << m_EventData->GetCTTrackerFrontEEnergy(i) << "\t" << m_StripFront_E_RAW_Threshold << endl;
       if (m_EventData->GetCTTrackerFrontEEnergy(i) > m_StripFront_E_RAW_Threshold && IsValidChannel("Front", m_EventData->GetCTTrackerFrontEDetectorNbr(i), m_EventData->GetCTTrackerFrontEStripNbr(i))) {
+//         cout << "valid channel & raw threshold applied" << endl;
          double Front_E = fStrip_Front_E(m_EventData, i);
+//         cout << "calib E = " << Front_E << endl;
          if (Front_E > m_StripFront_E_Threshold) {
+//            cout << "physical threshold applied" << endl;
             if (m_EventData->GetCTTrackerFrontEStripNbr(i) == 0) cout << m_EventData->GetCTTrackerFrontEStripNbr(i) << endl;
             m_PreTreatedData->SetCTTrackerFrontEDetectorNbr(m_EventData->GetCTTrackerFrontEDetectorNbr(i));
             m_PreTreatedData->SetCTTrackerFrontEStripNbr(m_EventData->GetCTTrackerFrontEStripNbr(i));
@@ -453,7 +461,7 @@ void TComptonTelescopePhysics::ReadConfiguration(string Path){
         if (check_R && check_Phi && check_Z){
           
           ReadingStatusQQQ = false;
-          AddQQQDetector(R,Phi,Z);
+//          AddQQQDetector(R,Phi,Z);
           //   Reinitialisation of Check Boolean
           check_R   = false ;
           check_Phi = false ;
@@ -521,7 +529,7 @@ void TComptonTelescopePhysics::ReadConfiguration(string Path){
         
         if (check_Z){
           ReadingStatusBOX = false;
-          AddBoxDetector(Z);
+//          AddBoxDetector(Z);
           //   Reinitialisation of Check Boolean
           check_R = false ;
           check_Phi = false ;
@@ -531,6 +539,8 @@ void TComptonTelescopePhysics::ReadConfiguration(string Path){
       }
     }
   }
+
+  AddComptonTelescope(15);
   
   InitializeStandardParameter();
   ReadAnalysisConfig();
@@ -543,15 +553,13 @@ void TComptonTelescopePhysics::AddParameterToCalibrationManager()
    CalibrationManager* Cal = CalibrationManager::getInstance();
 
    for (int i = 0; i < m_NumberOfDetector; ++i) {
-
-      for (int j = 0; j < 24; ++j) {
-         Cal->AddParameter("SHARC", "D"+itoa(i+1)+"_STRIP_FRONT"+itoa(j+1)+"_E","SHARC_D"+itoa(i+1)+"_STRIP_FRONT"+itoa(j+1)+"_E")   ;
-         Cal->AddParameter("SHARC", "D"+itoa(i+1)+"_STRIP_FRONT"+itoa(j+1)+"_T","SHARC_D"+itoa(i+1)+"_STRIP_FRONT"+itoa(j+1)+"_T")   ;
+      for (int j = 0; j < 32; ++j) {
+         Cal->AddParameter("COMPTONTELESCOPE", "D"+itoa(i+1)+"_STRIP_FRONT"+itoa(j+1)+"_E", "COMPTONTELESCOPE_D"+itoa(i+1)+"_STRIP_FRONT"+itoa(j+1)+"_E");
+         Cal->AddParameter("COMPTONTELESCOPE", "D"+itoa(i+1)+"_STRIP_FRONT"+itoa(j+1)+"_T", "COMPTONTELESCOPE_D"+itoa(i+1)+"_STRIP_FRONT"+itoa(j+1)+"_T");
       }
-
-      for (int j = 0; j < 48; ++j) {
-         Cal->AddParameter("SHARC", "D"+itoa(i+1)+"_STRIP_BACK"+itoa(j+1)+"_E","SHARC_D"+itoa(i+1)+"_STRIP_BACK"+itoa(j+1)+"_E")   ;
-         Cal->AddParameter("SHARC", "D"+itoa(i+1)+"_STRIP_BACK"+itoa(j+1)+"_T","SHARC_D"+itoa(i+1)+"_STRIP_BACK"+itoa(j+1)+"_T")   ;
+      for (int j = 0; j < 32; ++j) {
+         Cal->AddParameter("COMPTONTELESCOPE", "D"+itoa(i+1)+"_STRIP_BACK"+itoa(j+1)+"_E",  "COMPTONTELESCOPE_D"+itoa(i+1)+"_STRIP_BACK"+itoa(j+1)+"_E");
+         Cal->AddParameter("COMPTONTELESCOPE", "D"+itoa(i+1)+"_STRIP_BACK"+itoa(j+1)+"_T",  "COMPTONTELESCOPE_D"+itoa(i+1)+"_STRIP_BACK"+itoa(j+1)+"_T");
       }
    }
 
@@ -566,7 +574,6 @@ void TComptonTelescopePhysics::InitializeRootInputRaw()
    inputChain->SetBranchStatus("ComptonTelescope",    true);
    inputChain->SetBranchStatus("fComptonTelescope_*", true);
    inputChain->SetBranchAddress("ComptonTelescope",   &m_EventData);
-
 }
 
 
@@ -598,122 +605,14 @@ void TComptonTelescopePhysics::InitializeRootOutput()
 
 /////   Specific to ComptonTelescopeArray   ////
 
-void TComptonTelescopePhysics::AddBoxDetector(double Z){
-  double BOX_Wafer_Width  = 52.20;
-  // double BOX_Wafer_Length = 76.20;
-  
-  double BOX_ActiveArea_Length = 72;
-  double BOX_ActiveArea_Width = 42;
-  
-  int    BOX_Wafer_Back_NumberOfStrip = 48 ;
-  int    BOX_Wafer_Front_NumberOfStrip = 24 ;
-  
-  double StripPitchFront = BOX_ActiveArea_Length/BOX_Wafer_Front_NumberOfStrip ; //mm
-  double StripPitchBack  = BOX_ActiveArea_Width/BOX_Wafer_Back_NumberOfStrip ; //mm
-  
-  TVector3 U; TVector3 V;TVector3 Strip_1_1;
-  for(int i = 0 ; i < 4 ; i++){
-    m_NumberOfDetector++;
-    if(Z<0){// Up Stream
-      if(i==0)      {U=TVector3(1,0,0);V=TVector3(0,0,1);  Strip_1_1=TVector3(-36,40.5,Z-BOX_Wafer_Width/2.)   ;}
-      else if(i==1) {U=TVector3(0,1,0);V=TVector3(0,0,1);  Strip_1_1=TVector3(-40.5,-36,Z-BOX_Wafer_Width/2.)  ;}
-      else if(i==2) {U=TVector3(-1,0,0);V=TVector3(0,0,1); Strip_1_1=TVector3(36,-40.5,Z-BOX_Wafer_Width/2.)   ;}
-      else if(i==3) {U=TVector3(0,-1,0);V=TVector3(0,0,1); Strip_1_1=TVector3(40.5,36,Z-BOX_Wafer_Width/2.)    ;}
-    }
-    
-    if(Z>0){//Down Stream
-      if(i==0)      {U=TVector3(-1,0,0);V=TVector3(0,0,-1); Strip_1_1=TVector3(36,40.5,Z+BOX_Wafer_Width/2.)   ;}
-      else if(i==1) {U=TVector3(0,-1,0);V=TVector3(0,0,-1); Strip_1_1=TVector3(-40.5,36,Z+BOX_Wafer_Width/2.)  ;}
-      else if(i==2) {U=TVector3(1,0,0);V=TVector3(0,0,-1);  Strip_1_1=TVector3(-36,-40.5,Z+BOX_Wafer_Width/2.) ;}
-      else if(i==3) {U=TVector3(0,1,0);V=TVector3(0,0,-1);  Strip_1_1=TVector3(40.5,-36,Z+BOX_Wafer_Width/2.)   ;}
-    }
-   
-cout << Z-BOX_Wafer_Width/2. << endl;
- 
-    //   Buffer object to fill Position Array
-    vector<double> lineX ; vector<double> lineY ; vector<double> lineZ ;
-    
-    vector< vector< double > >   OneBoxStripPositionX   ;
-    vector< vector< double > >   OneBoxStripPositionY   ;
-    vector< vector< double > >   OneBoxStripPositionZ   ;
-    
-    TVector3 StripCenter = Strip_1_1;
-    for(int f = 0 ; f < BOX_Wafer_Front_NumberOfStrip ; f++){
-      lineX.clear()   ;
-      lineY.clear()   ;
-      lineZ.clear()   ;
-      
-      for(int b = 0 ; b < BOX_Wafer_Back_NumberOfStrip ; b++){
-        StripCenter = Strip_1_1 + ( StripPitchFront*f*U + StripPitchBack*b*V  );
-        
-        lineX.push_back( StripCenter.X() );
-        lineY.push_back( StripCenter.Y() );
-        lineZ.push_back( StripCenter.Z() );
-      }
-      
-      OneBoxStripPositionX.push_back(lineX);
-      OneBoxStripPositionY.push_back(lineY);
-      OneBoxStripPositionZ.push_back(lineZ);
-    }
-    m_StripPositionX.push_back( OneBoxStripPositionX ) ;
-    m_StripPositionY.push_back( OneBoxStripPositionY ) ;
-    m_StripPositionZ.push_back( OneBoxStripPositionZ ) ;
-  }
+void TComptonTelescopePhysics::AddComptonTelescope(double Z)
+{
+   m_NumberOfDetector++;
+   // empty at the moment
+   // needed if solid angle analysis are needed
 }
 
-void TComptonTelescopePhysics::AddQQQDetector( double R,double Phi,double Z){
-  
-  double QQQ_R_Min = 9.+R;
-  double QQQ_R_Max = 41.0+R;
-  
-  double QQQ_Phi_Min = 2.0*M_PI/180.  ;
-  double QQQ_Phi_Max = 83.6*M_PI/180. ;
-  Phi= Phi*M_PI/180.;
-  
-  int    QQQ_Radial_NumberOfStrip = 16 ;
-  int    QQQ_Sector_NumberOfStrip = 24 ;
-  
-  double StripPitchSector = (QQQ_Phi_Max-QQQ_Phi_Min)/QQQ_Sector_NumberOfStrip ; //radial strip spacing in rad
-  double StripPitchRadial = (QQQ_R_Max-QQQ_R_Min)/QQQ_Radial_NumberOfStrip  ; // ring strip spacing in mm
-  
-  TVector3 Strip_1_1;
-  
-  m_NumberOfDetector++;
-  Strip_1_1=TVector3(0,0,Z);
-  
-  //   Buffer object to fill Position Array
-  vector<double> lineX ; vector<double> lineY ; vector<double> lineZ ;
-  
-  vector< vector< double > >   OneQQQStripPositionX   ;
-  vector< vector< double > >   OneQQQStripPositionY   ;
-  vector< vector< double > >   OneQQQStripPositionZ   ;
-  
-  TVector3 StripCenter = Strip_1_1;
-  for(int f = 0 ; f < QQQ_Radial_NumberOfStrip ; f++){
-    lineX.clear()   ;
-    lineY.clear()   ;
-    lineZ.clear()   ;
-    
-    for(int b = 0 ; b < QQQ_Sector_NumberOfStrip ; b++){
-      StripCenter = Strip_1_1;
-      StripCenter.SetY(QQQ_R_Max-f*StripPitchRadial);
-      StripCenter.SetZ(Z);
-      StripCenter.RotateZ(Phi+QQQ_Phi_Min+b*StripPitchSector);
-      lineX.push_back( StripCenter.X() );
-      lineY.push_back( StripCenter.Y() );
-      lineZ.push_back( StripCenter.Z() );
-    }
-    
-    OneQQQStripPositionX.push_back(lineX);
-    OneQQQStripPositionY.push_back(lineY);
-    OneQQQStripPositionZ.push_back(lineZ);
-  }
-  m_StripPositionX.push_back( OneQQQStripPositionX ) ;
-  m_StripPositionY.push_back( OneQQQStripPositionY ) ;
-  m_StripPositionZ.push_back( OneQQQStripPositionZ ) ;
-  
-  return;
-}
+
 
 TVector3 TComptonTelescopePhysics::GetDetectorNormal( const int i) const{
   /*  TVector3 U =    TVector3 ( GetStripPositionX( DetectorNumber[i] , 24 , 1 ) ,
@@ -750,61 +649,86 @@ TVector3 TComptonTelescopePhysics::GetPositionOfInteraction(const int i) const{
 
 void TComptonTelescopePhysics::InitializeStandardParameter()
 {
-  //   Enable all channel
-  vector< bool > ChannelStatus;
-  m_FrontChannelStatus.clear()    ;
-  m_BackChannelStatus.clear()    ;
-  m_PADChannelStatus.clear() ;
-  
-  ChannelStatus.resize(24,true);
-  for(int i = 0 ; i < m_NumberOfDetector ; ++i)
-    {
-    m_FrontChannelStatus[i] = ChannelStatus;
-    }
-  
-  ChannelStatus.resize(48,true);
-  for(int i = 0 ; i < m_NumberOfDetector ; ++i)
-    {
-    m_BackChannelStatus[i] = ChannelStatus;
-    }
-  
-  ChannelStatus.resize(1,true);
-  for(int i = 0 ; i < m_NumberOfDetector ; ++i)
-    {
-    m_PADChannelStatus[i] = ChannelStatus;
-    
-    }
-  
-  m_MaximumStripMultiplicityAllowed = m_NumberOfDetector   ;
+   //   Enable all channel
+   vector< bool > ChannelStatus;
+   m_FrontChannelStatus.clear()    ;
+   m_BackChannelStatus.clear()    ;
+   m_PADChannelStatus.clear() ;
+
+   ChannelStatus.resize(32,true);
+   for(int i = 0; i < m_NumberOfDetector; ++i) {
+      m_FrontChannelStatus[i] = ChannelStatus;
+   }
+
+   ChannelStatus.resize(32,true);
+   for(int i = 0; i < m_NumberOfDetector; ++i) {
+      m_BackChannelStatus[i] = ChannelStatus;
+   }
+
+   m_MaximumStripMultiplicityAllowed = m_NumberOfDetector;
   
   return;
 }
 
 
+void TComptonTelescopePhysics::InitSpectra()
+{
+   m_Spectra = new TComptonTelescopeSpectra(m_NumberOfDetector);
+}
+
+
+void TComptonTelescopePhysics::FillSpectra()
+{
+   m_Spectra->FillRawSpectra(m_EventData);
+   m_Spectra->FillPreTreatedSpectra(m_PreTreatedData);
+   m_Spectra->FillPhysicsSpectra(m_EventPhysics);
+}
+
+
+void TComptonTelescopePhysics::CheckSpectra()
+{
+   m_Spectra->CheckSpectra();
+}
+
+
+void TComptonTelescopePhysics::ClearSpectra()
+{
+   // To be done
+}
+
+
+map< vector<string> , TH1*> TComptonTelescopePhysics::GetSpectra() 
+{
+   if(m_Spectra)
+      return m_Spectra->GetMapHisto();
+   else{
+      map< vector<string> , TH1*> empty;
+      return empty;
+   }
+}
+
 ///////////////////////////////////////////////////////////////////////////
 namespace ComptonTelescope_LOCAL
 {
-   //   tranform an integer to a string
-   string itoa(unsigned int value)
+   // tranform an integer to a string
+   string itoa(unsigned int value) 
    {
       char buffer [33];
       sprintf(buffer,"%d",value);
       return buffer;
    }
 
-   //   DSSD
-   //   Front
+   // DSSD
+   // Front
    double fStrip_Front_E(const TComptonTelescopeData* m_EventData , const int i)
    {
-      return CalibrationManager::getInstance()->ApplyCalibration(   "SHARC/D" + itoa( m_EventData->GetCTTrackerFrontEDetectorNbr(i) ) + "_STRIP_FRONT" + itoa( m_EventData->GetCTTrackerFrontEStripNbr(i) ) + "_E",
-            m_EventData->GetCTTrackerFrontEEnergy(i) );
+      return CalibrationManager::getInstance()->ApplyCalibration("COMPTONTELESCOPE/D" + itoa(m_EventData->GetCTTrackerFrontEDetectorNbr(i)) + "_STRIP_FRONT" + itoa(m_EventData->GetCTTrackerFrontEStripNbr(i)) + "_E", m_EventData->GetCTTrackerFrontEEnergy(i));
    }
 
-   //   Back
+   // Back
    double fStrip_Back_E(const TComptonTelescopeData* m_EventData , const int i)
    {
-      return CalibrationManager::getInstance()->ApplyCalibration(   "SHARC/D" + itoa( m_EventData->GetCTTrackerBackEDetectorNbr(i) ) + "_STRIP_BACK" + itoa( m_EventData->GetCTTrackerBackEStripNbr(i) ) +"_E",
-            m_EventData->GetCTTrackerBackEEnergy(i) );
+      return CalibrationManager::getInstance()->ApplyCalibration("COMPTONTELESCOPE/D" + itoa(m_EventData->GetCTTrackerBackEDetectorNbr(i)) + "_STRIP_BACK" + itoa(m_EventData->GetCTTrackerBackEStripNbr(i)) + "_E", m_EventData->GetCTTrackerBackEEnergy(i));
    }
 }
 

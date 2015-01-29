@@ -1,0 +1,4 @@
+TTreeName 
+   cocoteData	
+RootFileName
+   /users/gypaos/Astro/AstroGamma/TestsCOCOTE/PACI/data/class_2014_11_13_241Am437kBq_voiesN17-32_gain5+150_seuilDiscri30Toutes_pulser_sh1_Tenc-15C.root

@@ -1,0 +1,3 @@
+CalibrationFilePath
+  ./calibrations/COCOTE_PACI_Front.txt
+  ./calibrations/COCOTE_PACI_Back.txt
