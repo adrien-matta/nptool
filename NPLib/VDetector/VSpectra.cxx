@@ -24,9 +24,11 @@
 // NPL
 #include "VSpectra.h"
 #include "NPOptionManager.h"
+#include "RootOutput.h"
 
 // ROOT
 #include "TFile.h"
+#include "TDirectory.h"
 #include "TH2.h"
 
 //STL
@@ -100,20 +102,34 @@ TH1* VSpectra::GetHisto(string& family, string& name){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void VSpectra::WriteHisto(string filename){
-  TFile* f = NULL; 
+void VSpectra::WriteSpectra(string filename)
+{
+   TFile* f = NULL; 
+   if (filename != "VOID") {
+      f = new TFile(filename.c_str(), "RECREATE");
+   }
+   else { // default case is output root file
+      f = RootOutput::getInstance()->GetFile();
+      f->cd();
+   }
 
-  if (filename != "VOID") {
-    f = new TFile(filename.c_str(),"RECREATE");
-  }
+   // created dedicated directory for spectra
+   TDirectory *dir = (TDirectory*) f->Get("ControlSpectra");
+   if (!dir) {
+      f->mkdir("ControlSpectra");
+      f->cd("ControlSpectra");
+   }
 
-  map< vector<string>, TH1* >::iterator it;
-  for (it=fMapHisto.begin(); it!=fMapHisto.end(); ++it) {
-    it->second->Write();
-  }
+   // write all histos
+   map< vector<string>, TH1* >::iterator it;
+   for (it=fMapHisto.begin(); it!=fMapHisto.end(); ++it) {
+      it->second->Write();
+   }
 
-  if (filename != "VOID") {
-    f->Close();
-    delete f;
-  }
+   // close file and delete associate pointer only in case
+   // of filename.
+   if (filename != "VOID") {
+      f->Close();
+      delete f;
+   }
 }

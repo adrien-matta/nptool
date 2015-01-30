@@ -944,6 +944,14 @@ void DetectorManager::InitSpectra(){
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////   
+void DetectorManager::WriteSpectra(){
+  map<string,VDetector*>::iterator it;
+
+  for (it = m_Detector.begin(); it != m_Detector.end(); ++it) 
+    it->second->WriteSpectra();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////   
 vector< map< vector<string>, TH1* > > DetectorManager::GetSpectra()
 {
    vector< map< vector<string>, TH1* > > myVector;

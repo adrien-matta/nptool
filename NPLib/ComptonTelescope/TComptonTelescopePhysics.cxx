@@ -697,6 +697,12 @@ void TComptonTelescopePhysics::ClearSpectra()
 }
 
 
+void TComptonTelescopePhysics::WriteSpectra()
+{
+   m_Spectra->WriteSpectra();
+}
+
+
 map< vector<string> , TH1*> TComptonTelescopePhysics::GetSpectra() 
 {
    if(m_Spectra)

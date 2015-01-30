@@ -66,7 +66,10 @@ int main(int argc, char** argv)
       RootOutput::getInstance()->GetTree()->Fill();
    }
 
-   cout << "A total of " << nentries << " event has been annalysed " << endl ;
+   cout << "A total of " << nentries << " event has been analyzed " << endl ;
+
+   // write spectra if needed
+   if(NPOptionManager::getInstance()->GetGenerateHistoOption()) myDetector->WriteSpectra();
 
    RootOutput::getInstance()->Destroy();
    RootInput::getInstance()->Destroy();

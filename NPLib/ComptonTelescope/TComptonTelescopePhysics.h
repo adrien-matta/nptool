@@ -114,6 +114,8 @@ class TComptonTelescopePhysics : public TObject, public NPA::VDetector
       void InitSpectra();
       // Fill the spectra hold by the spectra class
       void FillSpectra();
+      // Write the spectra to file
+      void WriteSpectra();
       // Used for Online mainly, perform check on the histo and for example change their color if issues are found
       void CheckSpectra();
       // Used for Online only, clear all the spectra hold by the Spectra class
