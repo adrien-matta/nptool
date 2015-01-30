@@ -52,11 +52,9 @@ void TTigressPhysics::BuildPhysicalEvent(){
   //if(m_PreTreatedData->GetMultiplicityGe()<11){
 
     vector < vector < unsigned int > > HitIndex;
-    vector < vector < vector < unsigned int > > > Seg_HitIndex;
-    vector < vector <unsigned int> > Crystal_Number;
-    Crystal_Number.resize(4);
+    vector < vector < unsigned int > > Seg_HitIndex;
     HitIndex.resize(16);
-    Seg_HitIndex.resize(16, Crystal_Number);
+    Seg_HitIndex.resize(16);
     
     for(unsigned int i = 0 ; i < m_PreTreatedData->GetMultiplicityGe() ; i++){
       int Segment = m_PreTreatedData->GetGeSegmentNbr(i);
@@ -64,7 +62,7 @@ void TTigressPhysics::BuildPhysicalEvent(){
         HitIndex[m_PreTreatedData->GetGeCloverNbr(i)-1].push_back(i);
       }
       else if( (Segment!=9 || Segment!=0) &&  m_PreTreatedData->GetGeEnergy(i)>20){
-        Seg_HitIndex[m_PreTreatedData->GetGeCloverNbr(i)-1][m_PreTreatedData->GetGeCrystalNbr(i)-1].push_back(i);
+        Seg_HitIndex[m_PreTreatedData->GetGeCloverNbr(i)-1].push_back(i);
       }
     }
 
@@ -80,13 +78,12 @@ void TTigressPhysics::BuildPhysicalEvent(){
         Clover_Number.push_back(m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]) );
         Crystal_Number.push_back(m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]) );
 
-        for(unsigned int cry = 0; cry<Seg_HitIndex[clover].size(); cry++ ){
-          for(unsigned int seg = 0; seg < Seg_HitIndex[clover][cry].size(); seg++)
-            Seg_Energy = m_PreTreatedData->GetGeEnergy(Seg_HitIndex[clover][cry][seg]);
-            if(Seg_Energy > Max_Seg_Energy){
-              Max_Seg_Energy = Seg_Energy;
-              seg_index = Seg_HitIndex[clover][cry][seg];
-            }
+
+        for(unsigned int seg = 0; seg < Seg_HitIndex[clover].size(); seg++){
+          Seg_Energy = m_PreTreatedData->GetGeEnergy(Seg_HitIndex[clover][seg]);
+          if(Seg_Energy > Max_Seg_Energy && Core_Crystal == m_PreTreatedData->GetGeCrystalNbr(Seg_HitIndex[clover][seg])){
+            Max_Seg_Energy = Seg_Energy;
+            seg_index = Seg_HitIndex[clover][seg];
           }
         }
         //Segment_Number.push_back(m_PreTreatedData->GetGeSegmentNbr(seg_index));
@@ -98,10 +95,6 @@ void TTigressPhysics::BuildPhysicalEvent(){
           int Ge_Crystal = m_PreTreatedData->GetGeCrystalNbr(HitIndex[clover][0]);
           if( m_PreTreatedData->GetBGOCloverNbr(j) == clover+1 && BGO_Crystal == Ge_Crystal && m_PreTreatedData->GetBGOEnergy(j)>20 ){
 
-            /*if(m_PreTreatedData->GetGeEnergy(HitIndex[clover][0]) > 119 && m_PreTreatedData->GetGeEnergy(HitIndex[clover][0]) < 125){
-              cout << "\t\t" << m_PreTreatedData->GetBGOCloverNbr(j) << "\t" << m_PreTreatedData->GetGeCloverNbr(HitIndex[clover][0]) 
-              << "\t" << BGO_Crystal << "\t" << Ge_Crystal << endl;
-            }*/
             BGOcheck = true ;
           }        
         }
@@ -119,7 +112,7 @@ void TTigressPhysics::BuildPhysicalEvent(){
 
           for(unsigned int seg = 0; seg<Seg_HitIndex[clover].size(); seg++ ){
             Seg_Energy = m_PreTreatedData->GetGeEnergy(Seg_HitIndex[clover][seg]);
-              if(Seg_Energy > Max_Seg_Energy){
+              if(Seg_Energy > Max_Seg_Energy && Core_Crystal == m_PreTreatedData->GetGeCrystalNbr(Seg_HitIndex[clover][seg])){
                 Max_Seg_Energy = Seg_Energy;
                 seg_index = Seg_HitIndex[clover][seg];
               }
@@ -196,7 +189,7 @@ void TTigressPhysics::BuildPhysicalEvent(){
       else  continue;
     }
     if(Gamma_Energy.size()!=BGO.size()){
-      cout << "Herer" << BGO.size() << "\t" << Gamma_Energy.size() << endl;
+      cout << "Here" << BGO.size() << "\t" << Gamma_Energy.size() << endl;
     }
     HitIndex.clear();
   //}
@@ -206,6 +199,16 @@ void TTigressPhysics::BuildPhysicalEvent(){
 }
 /////////////////////////////////////////////////
 TVector3 TTigressPhysics::GetPositionOfInteraction(int i){
+	
+	//in mm
+	/*double FrontFace_dist = 14.5
+	double x;
+	double y;
+	double z;
+	TVector3 Segment_POS() = GetPositionOfSegment();
+	
+	TVector3 POS(x,y,z);*/
+	
 }
 /////////////////////////////////////////////////
 void TTigressPhysics::PreTreat(){
@@ -214,9 +217,9 @@ void TTigressPhysics::PreTreat(){
   //Calibration vector not standard in NPTool. Standardise later
   ifstream CalFile;
   //CalFile.open("/home/ak00128/Desktop/PhD/S1107/GammaCal/Calibration_Parameters_152Eu.dat");
-  CalFile.open("/home/ak00128/Desktop/PhD/S1107/GammaCal/Calibration_Parameters_133Ba.dat");
+  CalFile.open("/home/ak00128/Desktop/PhD/S1107/GammaCal/Temporary/Calibration_Parameters.dat");
 
-  int Clover, Crystal, Segment, Count, u = 480;
+  int Clover, Crystal, Segment, Count;
   double par_a, par_b;
   vector< double > vClover;
   vector< double > vCrystal;
@@ -225,23 +228,21 @@ void TTigressPhysics::PreTreat(){
   vector< double > vPar_A;
   vector< double > vPar_B;
 
-  if(CalFile.is_open()){
-    for(unsigned int loop = 0; loop<u; loop++){
-      
-      CalFile >> Clover >> Crystal >> Segment >> Count >> par_a >> par_b;
+  while(CalFile >> Clover >> Crystal >> Segment >> par_a >> par_b){
       vClover.push_back(Clover);
       vCrystal.push_back(Crystal);
       vSegment.push_back(Segment);
-      vCount.push_back(Count);
       vPar_A.push_back(par_a);
       vPar_B.push_back(par_b);
-    }
   }
+  
+  int u = vClover.size();
   
   CalFile.close();
   //Ge Crystals
   for(unsigned int i = 0 ; i < m_EventData->GetMultiplicityGe(); ++i){
-    double grad, intercept;
+    double grad=-1;
+    double intercept=0;
     for(unsigned int vec = 0; vec < u; vec++){
       if( (vClover[vec] == m_EventData->GetGeCloverNbr(i) ) && (vCrystal[vec] == m_EventData->GetGeCrystalNbr(i) )
       && (vSegment[vec] == m_EventData->GetGeSegmentNbr(i) ) ){
@@ -250,6 +251,7 @@ void TTigressPhysics::PreTreat(){
         break;
       }
     }
+    if(grad>0){
     double Energy = (m_EventData->GetGeEnergy(i))*grad + intercept;
     m_PreTreatedData->SetGeCloverNbr( m_EventData->GetGeCloverNbr(i) );
     m_PreTreatedData->SetGeCrystalNbr( m_EventData->GetGeCrystalNbr(i) );
@@ -257,6 +259,7 @@ void TTigressPhysics::PreTreat(){
     m_PreTreatedData->SetGeEnergy( Energy );
     m_PreTreatedData->SetGeTimeCFD( m_EventData->GetGeTimeCFD(i) );
     m_PreTreatedData->SetGeTimeLED( m_EventData->GetGeTimeLED(i) );
+    }
     //cout << grad << "\t" << intercept << "\t" << endl;
   }
 
