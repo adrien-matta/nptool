@@ -32,11 +32,11 @@ class TNanaData : public TObject {
   protected:
     // LaBr3
     // Energy
-    vector<UShort_t>  fNANA_LaBr3_E_DetectorNbr;
-    vector<Double_t>  fNANA_LaBr3_E_Energy;
-    // Time
-    vector<UShort_t>  fNANA_LaBr3_T_DetectorNbr;
-    vector<Double_t>  fNANA_LaBr3_T_Time;
+    vector<UShort_t>  fNANA_LaBr3_DetectorNbr;
+    vector<Double_t>  fNANA_LaBr3_EnergyShort;
+    vector<Double_t>  fNANA_LaBr3_EnergyLong;
+    vector<ULong64_t>  fNANA_LaBr3_Time;
+    vector<Double_t>  fNANA_LaBr3_PSD;
 
   public:
     TNanaData();
@@ -48,55 +48,34 @@ class TNanaData : public TObject {
 
     /////////////////////           GETTERS           ////////////////////////
     // (E)
-    UShort_t GetNanaLaBr3EMult()               {
-      return fNANA_LaBr3_E_DetectorNbr.size();
+    UShort_t GetNanaLaBr3Mult()               {
+      return fNANA_LaBr3_DetectorNbr.size();
     }
     
-    UShort_t GetNanaLaBr3EDetectorNbr(Int_t i)    {
-      return fNANA_LaBr3_E_DetectorNbr.at(i);
+    UShort_t GetNanaLaBr3DetectorNbr(Int_t i)    {
+      return fNANA_LaBr3_DetectorNbr[i];
     }
-    Double_t GetNanaLaBr3EEnergy(Int_t i)      {
-      return fNANA_LaBr3_E_Energy.at(i);
-    }
-
-
-    // (T)
-    UShort_t GetNanaLaBr3TMult()               {
-      return fNANA_LaBr3_E_DetectorNbr.size();
+    Double_t GetNanaLaBr3EnergyLong(Int_t i)      {
+      return fNANA_LaBr3_EnergyLong[i];
     }
     
-    UShort_t GetNanaLaBr3TDetectorNbr(Int_t i)    {
-      return fNANA_LaBr3_T_DetectorNbr.at(i);
+    Double_t GetNanaLaBr3EnergyShort(Int_t i)      {
+      return fNANA_LaBr3_EnergyShort[i];
     }
-    Double_t GetNanaLaBr3TTime(Int_t i)      {
-      return fNANA_LaBr3_T_Time.at(i);
+    ULong64_t GetNanaLaBr3Time(ULong64_t i)      {
+      return fNANA_LaBr3_Time[i];
     }
-
+    Double_t GetNanaLaBr3PSD(Double_t i)      {
+      return fNANA_LaBr3_PSD[i];
+    }
     /////////////////////           SETTERS           ////////////////////////
     // (E)
-    void SetNanaLaBr3E(UShort_t DetectorNbr, Double_t E){
-      fNANA_LaBr3_E_DetectorNbr.push_back(DetectorNbr); 
-      fNANA_LaBr3_E_Energy.push_back(E); 
-    }
-
-    void SetNanaLaBr3EDetectorNbr(UShort_t DetectorNbr)    {
-      fNANA_LaBr3_E_DetectorNbr.push_back(DetectorNbr);
-    }
-    void SetNanaLaBr3EEnergy(Double_t Energy)      {
-      fNANA_LaBr3_E_Energy.push_back(Energy);
-    }
-
-    // (T)
-    void SetNanaLaBr3T(UShort_t DetectorNbr, Double_t T){
-      fNANA_LaBr3_T_DetectorNbr.push_back(DetectorNbr); 
-      fNANA_LaBr3_T_Time.push_back(T); 
-    }
-
-    void SetNanaLaBr3TDetectorNbr(UShort_t DetectorNbr)    {
-      fNANA_LaBr3_T_DetectorNbr.push_back(DetectorNbr);
-    }
-    void SetNanaLaBr3TTime(Double_t Time)      {
-      fNANA_LaBr3_T_Time.push_back(Time);
+    void SetNanaLaBr3(UShort_t DetectorNbr, Double_t EL, Double_t ES, ULong64_t T,Double_t PSD){
+      fNANA_LaBr3_DetectorNbr.push_back(DetectorNbr); 
+      fNANA_LaBr3_EnergyShort.push_back(ES); 
+      fNANA_LaBr3_EnergyLong.push_back(EL); 
+      fNANA_LaBr3_Time.push_back(T); 
+      fNANA_LaBr3_PSD.push_back(PSD);
     }
 
     ClassDef(TNanaData,1)  // NanaData structure

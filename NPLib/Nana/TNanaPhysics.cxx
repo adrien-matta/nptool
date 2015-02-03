@@ -62,7 +62,7 @@ void TNanaPhysics::BuildSimplePhysicalEvent(){
 ////////////////////////////////////////////////////////////////////////////////
 void TNanaPhysics::BuildPhysicalEvent(){
 
-  int multLaBrE = m_EventData->GetNanaLaBr3EMult();
+  int multLaBrE = m_EventData->GetNanaLaBr3Mult();
 
   NanaEventMult=multLaBrE;
   // get energy from strips and store it
@@ -72,7 +72,7 @@ void TNanaPhysics::BuildPhysicalEvent(){
     double EnergyStrip;
 
     for(int j=0;j<multLaBrE;j++){
-      EnergyStripFront= m_EventData->GetNanaLaBr3EEnergy(j);
+      EnergyStripFront= m_EventData->GetNanaLaBr3EnergyLong(j);
 
       EnergyStrip  = EnergyStripFront;
       NanaLaBr_E.push_back(EnergyStrip);

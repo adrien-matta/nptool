@@ -32,21 +32,21 @@ TNanaData::~TNanaData(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TNanaData::Clear(){
-   fNANA_LaBr3_E_DetectorNbr.clear();
-   fNANA_LaBr3_E_Energy.clear();
-   // Time
-   fNANA_LaBr3_T_DetectorNbr.clear();
-   fNANA_LaBr3_T_Time.clear();
+   fNANA_LaBr3_DetectorNbr.clear();
+   fNANA_LaBr3_EnergyShort.clear();
+fNANA_LaBr3_EnergyLong.clear();
+ fNANA_LaBr3_Time.clear();
+ fNANA_LaBr3_PSD.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TNanaData::Dump() const{
    cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event XXXXXXXXXXXXXXXXX" << endl;
-   // E
-   for (UShort_t i = 0; i < fNANA_LaBr3_E_DetectorNbr.size(); i++)
-      cout << "DetNbr: " << fNANA_LaBr3_E_DetectorNbr[i] << " Energy: " << fNANA_LaBr3_E_Energy[i] << endl;
-   
-   // T
-   for (UShort_t i = 0; i < fNANA_LaBr3_T_DetectorNbr.size(); i++)
-      cout << "DetNbr: " << fNANA_LaBr3_T_DetectorNbr[i] << " Time: " << fNANA_LaBr3_T_Time[i] << endl;
+   for (UShort_t i = 0; i < fNANA_LaBr3_DetectorNbr.size(); i++){
+      cout << "DetNbr: " << fNANA_LaBr3_DetectorNbr[i] 
+	    << " Energy Short: " << fNANA_LaBr3_EnergyShort[i] 
+	    << " Energy Long: " << fNANA_LaBr3_EnergyLong[i] 
+	    << " Time: " << fNANA_LaBr3_Time[i] 
+      << " PSD: " << fNANA_LaBr3_PSD[i] << endl;
+  }
 }

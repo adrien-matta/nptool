@@ -56,10 +56,10 @@ Nana::Nana(){
   m_Event = new TNanaData();
 
   // Blue
-  m_LaBr3VisAtt = new G4VisAttributes(G4Colour(0, 0.5, 1));
+  m_LaBr3VisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, .0));
 
   // Dark Grey
-  m_PMTVisAtt = new G4VisAttributes(G4Colour(0.1, 0.1, 0.1));
+  m_PMTVisAtt = new G4VisAttributes(G4Colour(0.1, 0.3, 0.5));
 
   // Grey wireframe
   m_DetectorCasingVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5,0.2));
@@ -413,7 +413,7 @@ G4LogicalVolume* Nana::ConstructDetector(){
         0);
 
     // Visualisation of PMT Strip
-    G4VisAttributes* LeadVisAtt = new G4VisAttributes(G4Colour(1., 1., 0.));
+    G4VisAttributes* LeadVisAtt = new G4VisAttributes(G4Colour(1., 1., 1.));
     logicLeadAShield->SetVisAttributes(LeadVisAtt);
     logicLeadBShield->SetVisAttributes(LeadVisAtt);
   }
@@ -457,8 +457,7 @@ void Nana::ReadSensitive(const G4Event* event){
       double Time = Info[1];
       int DetectorNbr = (int) Info[2];
 
-      m_Event->SetNanaLaBr3E(DetectorNbr,Energy);
-      m_Event->SetNanaLaBr3T(DetectorNbr,Time);
+      m_Event->SetNanaLaBr3(DetectorNbr,Energy,Energy,(unsigned short) Time,0);
     }
   }
   // clear map for next event

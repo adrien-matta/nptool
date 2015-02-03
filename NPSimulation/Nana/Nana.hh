@@ -121,7 +121,7 @@ private:/// Visualisation Attribute:
 namespace NANA{
    // Resolution
   const G4double EnergyResolution = 0.0099;	// = 3.5% at .662MeV of Resolution   //   Unit is MeV/2.35
-  const G4double EnergyThreshold = 100*keV;   
+  const G4double EnergyThreshold = 25*keV;   
   // Geometry for the mother volume 
   const G4double FaceFront = 7.5*cm;
   const G4double Length = 26.33*cm; 
