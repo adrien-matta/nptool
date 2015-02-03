@@ -37,6 +37,7 @@
 #include "TChateauCristalPhysics.h"
 #include "TChio_anPhysics.h"
 #include "TChio_digPhysics.h"
+#include "TComptonTelescopePhysics.h"
 #include "TExlPhysics.h"
 #include "TExogamPhysics.h"
 #include "TFatimaPhysics.h"
@@ -88,14 +89,15 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
    bool CATS                = false;
    bool Charissa 	          = false;
    bool ChateauCristal      = false;
+   bool ComptonTelescope    = false;
    bool EXL                 = false;
    bool Exogam              = false;
    bool GPDTracker          = false;
    bool HYD2Tracker         = false;
    bool IonisationChamber   = false;
-   bool LaBr3		            = false;
+   bool LaBr3		          = false;
    bool MUST2               = false;
-   bool NanaDet           = false;
+   bool NanaDet             = false;
    bool FatimaDet           = false;
    bool ParisDet            = false;
    bool S2                  = false;
@@ -103,8 +105,8 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
    bool SSSD                = false;
    bool ScintillatorPlastic = false;
    bool Sharc               = false;
-   bool SiLi		            = false;
-   bool SiRes		            = false;
+   bool SiLi		          = false;
+   bool SiRes		          = false;
    bool TAC                 = false;
    bool TiaraBarrel         = false;
    bool TiaraHyball         = false;
@@ -211,6 +213,27 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
 
       // Add array to the VDetector Vector
       AddDetector("ChateauCristal", myDetector);
+#endif
+      }
+ 
+    ////////////////////////////////////////////////////
+    ////////   Search for Compton Telescope     ////////
+    ////////////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 16, "ComptonTelescope") == 0 && ComptonTelescope == false) {
+#ifdef INC_COMPTONTELESCOPE
+      ComptonTelescope = true;
+      cout << "//////// Compton Telescope Array ////////" << endl << endl;
+
+      // Instantiate the new array as a VDetector Object
+      VDetector* myDetector = new TComptonTelescopePhysics();
+
+      // Read Position of Telescope
+      ConfigFile.close();
+      myDetector->ReadConfiguration(Path);
+      ConfigFile.open(Path.c_str());
+
+      // Add array to the VDetector Vector
+      AddDetector("ComptonTelescope", myDetector);
 #endif
       }
  
@@ -918,6 +941,14 @@ void DetectorManager::InitSpectra(){
 
   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) 
     it->second->InitSpectra();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////   
+void DetectorManager::WriteSpectra(){
+  map<string,VDetector*>::iterator it;
+
+  for (it = m_Detector.begin(); it != m_Detector.end(); ++it) 
+    it->second->WriteSpectra();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////   

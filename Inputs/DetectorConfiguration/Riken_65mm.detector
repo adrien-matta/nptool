@@ -10,7 +10,7 @@ GeneralTarget
 Target
 THICKNESS= 20
 RADIUS=	45
-MATERIAL= D2
+MATERIAL= CD2
 ANGLE= 0
 X= 0
 Y= 0

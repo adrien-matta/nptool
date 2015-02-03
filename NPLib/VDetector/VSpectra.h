@@ -62,7 +62,7 @@ class VSpectra {
     // get map histo which will be used for GSpectra in GUser
     map< vector<string>, TH1* > GetMapHisto() const {return fMapHisto;}
     TH1* GetHisto(string& family, string& name);    
-    void WriteHisto(string filename = "VOID");      
+    void WriteSpectra(string filename = "VOID");      
 
   private:
     // map holding histo pointers and their family names

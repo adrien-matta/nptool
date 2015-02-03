@@ -41,7 +41,7 @@ args="$@"
 ############################################################
 # First of all, define .core_libs and .detector_libs files #
 ############################################################
-corelibs="initialconditions interactioncoordinates ioroot physics tools vdetector"
+corelibs="initialconditions interactioncoordinates physics vdetector core"
 
 # core libraries list
 core_file=".core_libs"

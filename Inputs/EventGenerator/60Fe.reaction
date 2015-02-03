@@ -3,7 +3,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Beam
   Particle= 60Fe
-  Energy= 1628.41
+  Energy= 540
   SigmaEnergy= 0
 	SigmaX= 0
 	SigmaY= 0
@@ -19,9 +19,9 @@ TwoBodyReaction
 	Target= 2H
 	Light= 1H
 	Heavy= 61Fe
-	ExcitationEnergyHeavy= 0.0
+	ExcitationEnergyHeavy= 4.0
 	ExcitationEnergyLight= 0.0
-  CrossSectionPath= fe61_p3_2gs.txt CS
+  CrossSectionPath= CS_61dp_f.txt CS
 	ShootLight= 1
 	ShootHeavy= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

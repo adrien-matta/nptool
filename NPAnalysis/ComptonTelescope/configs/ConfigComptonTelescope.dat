@@ -1,0 +1,8 @@
+ConfigComptonTelescope
+   MAX_STRIP_MULTIPLICITY                 1
+   STRIP_ENERGY_MATCHING_SIGMA            3
+   STRIP_ENERGY_MATCHING_NUMBER_OF_SIGMA  3
+   STRIP_FRONT_E_RAW_THRESHOLD            150
+   STRIP_BACK_E_RAW_THRESHOLD             150
+   STRIP_FRONT_E_THRESHOLD                10
+   STRIP_BACK_E_THRESHOLD                 10

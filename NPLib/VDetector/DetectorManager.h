@@ -52,6 +52,7 @@ namespace NPA{
       void        ClearEventPhysics();
       void        ClearEventData();
       void        InitSpectra();
+      void        WriteSpectra();
       vector< map< vector<string>, TH1* > > GetSpectra();  
       vector<string>                        GetDetectorList();
     private:   

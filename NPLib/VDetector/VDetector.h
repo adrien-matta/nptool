@@ -78,6 +78,8 @@ namespace NPA {
       virtual void InitSpectra() {};
       // Fill the spectra hold by the spectra class
       virtual void FillSpectra()  {};
+      // Write the spectra to a file
+      virtual void WriteSpectra()  {};
       // Used for Online mainly, perform check on the histo and for example change their color if issues are found
       virtual void CheckSpectra() {};
       // Used for Online only, clear all the spectra hold by the Spectra class
