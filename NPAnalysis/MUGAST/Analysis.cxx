@@ -45,7 +45,7 @@ int main(int argc, char** argv){
 
   double TargetThickness = 18*micrometer;
   // Beam Energy
-  double OriginalBeamEnergy = 4.0* 74; // AMEV
+  double OriginalBeamEnergy = myReaction->GetBeamEnergy(); // AMEV
     // intermediate variable
   TRandom3 Rand = TRandom3();
   int DetectorNumber = 0 ;

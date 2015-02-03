@@ -19,7 +19,7 @@
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
 Target
-	THICKNESS= 9.5
+	THICKNESS= 0.94
 	RADIUS= 5
 	MATERIAL= CD2
 	ANGLE= 0
@@ -86,6 +86,9 @@ M2Telescope
 	SILI= 1
 	CSI= 0
 	VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Tiara
+  TiaraChamber= 1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 EXOGAMArray
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
