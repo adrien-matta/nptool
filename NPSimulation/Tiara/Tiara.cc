@@ -115,13 +115,13 @@ void Tiara::ReadConfiguration(string Path){
       }
 
       // Inner Barrel case
-      else if (DataBuffer=="TiaraOuterBarrel="){
+      else if (DataBuffer=="TiaraInnerBarrel="){
         if(VerboseLevel==1) G4cout << "Inner Barrel found " << G4endl   ;
         ConfigFile >> m_boolInner;
       }
 
       // Outter Barrel case
-      else if (DataBuffer=="TiaraInnerBarrel="){
+      else if (DataBuffer=="TiaraOuterBarrel="){
         if(VerboseLevel==1) G4cout << "Outer Barrel found " << G4endl   ;
         ConfigFile >> m_boolOuter;
       }
@@ -269,6 +269,9 @@ void Tiara::ReadSensitive(const G4Event* event){
     // Front Energy
     double EF = RandGauss::shoot(Info[0],ResoEnergy);
     if(EF>EnergyThreshold){
+      int RingNumber=Info[8];
+      RingNumber=abs(RingNumber-17);                                                                                 //
+      Info[8]=RingNumber; 
       m_EventHyball->SetRingE(Info[7],Info[8],EF);
       m_EventHyball->SetRingT(Info[7],Info[8],Info[1]); 
     }

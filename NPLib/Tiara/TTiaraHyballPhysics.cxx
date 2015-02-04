@@ -589,8 +589,8 @@ void TTiaraHyballPhysics::AddWedgeDetector( double R,double Phi,double Z){
 
   double Wedge_R_Min = 32.6+R;
   double Wedge_R_Max = 135.1+R;
-  double Wedge_Phi_Min = -27.2*deg/rad  ;
-  double Wedge_Phi_Max = 27.2*deg/rad ;
+  double Wedge_Phi_Min = -27.2*deg/rad;
+  double Wedge_Phi_Max = 27.2*deg/rad;
   Phi= Phi*deg/rad;
 
   int Wedge_Ring_NumberOfStrip = 16 ;
@@ -643,10 +643,17 @@ TVector3 TTiaraHyballPhysics::GetDetectorNormal( const int i) const{
 
 }
 
+//double TTiaraHyballPhysics::GetNumberOfDetector(const int i) const{
+//  double DetectorNumber = double ( GetDetectorNumber() );
+
+//  return(DetectorNumber) ;
+
+//}
+
 TVector3 TTiaraHyballPhysics::GetPositionOfInteraction(const int i) const{
   TVector3 Position = TVector3 ( GetStripPositionX(DetectorNumber[i],Strip_Ring[i],Strip_Sector[i] )    ,
       GetStripPositionY( DetectorNumber[i],Strip_Ring[i],Strip_Sector[i] )    ,
-      GetStripPositionZ( DetectorNumber[i],Strip_Ring[i],Strip_Sector[i] )    ) ;
+      GetStripPositionZ( DetectorNumber[i],Strip_Ring[i],Strip_Sector[i] ) ) ;
 
   return(Position) ;
 

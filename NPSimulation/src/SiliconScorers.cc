@@ -278,12 +278,12 @@ G4bool PS_Silicon_Resistive::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   
   m_Position = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(m_Position);
   
-  m_StripWidthNumber = (int)((m_Position.y() + m_StripPlaneWidth / 2.) / m_StripPitchWidth ) + 1  ;
-  m_StripWidthNumber = m_NumberOfStripWidth - m_StripWidthNumber + 1 ;
+  m_StripWidthNumber = (int)((m_Position.x() + m_StripPlaneWidth / 2.) / m_StripPitchWidth ) + 1  ;
+ // m_StripWidthNumber = m_NumberOfStripWidth - m_StripWidthNumber + 1 ;
   
   // The energy is divided in two depending on the position
   // position along the resistive strip
-  double P = (m_Position.x())/(0.5*m_StripPlaneLength);
+  double P = (m_Position.z())/(0.5*m_StripPlaneLength);
   
   // Upstream Energy
   EnergyAndTime[0] = aStep->GetTotalEnergyDeposit()*(1+P)*0.5;
