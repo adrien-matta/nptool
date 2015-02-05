@@ -168,7 +168,7 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int DetectorNumber,
    /////////////////////////////////////////////////////////////////
    ////////////// Starting Volume Definition //////////////////////
    ////////////////////////////////////////////////////////////////
-   G4String Name = "GPDDummyShape" + DetectorNumber ;
+   G4String Name = "GPDDummyShape" + DetNumber ;
 
    G4Box*           solidGPDDummyShape = new G4Box(Name, 0.5*FaceFront, 0.5*FaceFront, 0.5*Length);
    G4LogicalVolume* logicGPDDummyShape = new G4LogicalVolume(solidGPDDummyShape, m_MaterialVacuum, Name, 0, 0, 0);

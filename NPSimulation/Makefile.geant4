@@ -23,12 +23,17 @@ endif
 G4WORKDIR = ./
 G4BIN = ./bin
 
-CPPFLAGS += $(shell root-config --cflags) -Wno-deprecated-register
+CPPFLAGS += $(shell root-config --cflags) 
 CPPFLAGS += -I$(NPTOOL)/NPLib/include
 
 ifeq ($(ARCH),linuxx8664gcc)
 CPPFLAGS += -Xlinker --no-as-needed
 endif
+
+ifeq ($(ARCH),macosx64)
+CPPFLAGS += -Wno-deprecated-register
+endif
+
 
 EXTRALIBS = $(shell root-config --glibs) -lMathMore
 EXTRALIBS += `$(NPTOOL)/NPLib/liblist`
