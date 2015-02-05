@@ -204,11 +204,6 @@ void PhysicsList::ConstructEM(){
       pmanager->AddProcess(new G4eIonisation         , -1,  2, 2 );
       pmanager->AddProcess(new G4eBremsstrahlung     , -1, -1, 3 );
       pmanager->AddProcess(new G4eplusAnnihilation   ,  0, -1, 4 );
-      //Penelope:
-      //pmanager->AddProcess(new G4PenelopeIonisation         , -1,  2, 2 );
-      //pmanager->AddProcess(new G4PenelopeBremsstrahlung     , -1, -1, 3 );
-      //pmanager->AddProcess(new G4PenelopeAnnihilation       ,  0, -1, 4 );
-      
     }
     
     else if (particleName == "mu+" ||
@@ -241,9 +236,9 @@ void PhysicsList::ConstructEM(){
   G4EmProcessOptions opt        ;
   opt.SetSubCutoff(true)        ;
   opt.SetMinEnergy(0.001*eV)    ;
-  opt.SetMaxEnergy(10.*MeV)    ;
-  opt.SetDEDXBinning(1000)       ;
-  opt.SetLambdaBinning(1000)     ;
+  opt.SetMaxEnergy(1000.*TeV)    ;
+  opt.SetDEDXBinning(10000)       ;
+  opt.SetLambdaBinning(10000)     ;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
