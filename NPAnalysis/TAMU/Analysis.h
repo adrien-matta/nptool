@@ -5,10 +5,17 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 // -------------------------------------- VARIOUS INCLUDE ---------------------------------------
 
-// NPA
+// NPL
 #include "DetectorManager.h"
 #include "NPOptionManager.h"
-
+#include "NPReaction.h"
+#include "RootInput.h"
+#include "RootOutput.h"
+#include "TTiaraHyballPhysics.h"
+#include "TTiaraBarrelPhysics.h"
+#include "TInitialConditions.h"
+#include "NPEnergyLoss.h"
+using namespace NPL ;
 // STL C++
 #include <iostream>
 #include <fstream>
@@ -16,107 +23,124 @@
 #include <string>
 #include <cmath>
 #include <cstdlib>
-
+using namespace std;
 // ROOT
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
-#include <TLeaf.h>
 #include <TVector3.h>
-#include <TRandom.h>
-
-// NPL
-#include "RootInput.h"
-#include "RootOutput.h"
-#include "NPReaction.h"
-#include "TInitialConditions.h"
-#include "TPlasticData.h"
-#include "TMust2Data.h"
-#include "TMust2Physics.h"
-#include "TExogamPhysics.h"
-#include "TSSSDPhysics.h"
-#include "TPlasticPhysics.h"
-#include "GaspardTracker.h"
-
-// Use CLHEP System of unit and Physical Constant
-#include "NPGlobalSystemOfUnits.h"
-#include "NPPhysicalConstants.h"
-
+#include <TRandom3.h>
+#include <TMath.h>
+#include <TObject.h>
 
 // ----------------------------------------------------------------------------------------------
-double ThetaCalculation (TVector3 A , TVector3 B) ;
+void InitOutputBranch() ;
+void InitInputBranch() ;
+void ReInitValue() ;
 /////////////////////////////////////////////////////////////////////////////////////////////////
 // ----------------------------------- DOUBLE, INT, BOOL AND MORE -------------------------------
-namespace VARIABLE
-	{
-		//	Declare your Variable here:
-		
-			double X1,Y1,Z1				;
-			int N1,N2 = 0				;
-			bool check= false			;
-	
-		//	A Usefull Simple Random Generator
-			TRandom Rand;
-	}
-	 
+namespace VARIABLE{
+  double Ex;
+  double Ring1Ex;
+  double Ring2Ex;
+  double Ring3Ex;
+  double Ring4Ex;
+  double Ring5Ex;
+  double Ring6Ex;
+  double Ring7Ex;
+  double Ring8Ex;
+  double Ring9Ex;
+  double Ring10Ex;
+  double Ring11Ex;
+  double Ring12Ex;
+  double Ring13Ex;
+  double Ring14Ex;
+  double Ring15Ex;
+  double Ring16Ex;
+  double ELab;
+  double ThetaLab;
+  double ThetaCM;
+  double ImpactMatrixCoordX;
+  double ImpactMatrixCoordY;
+  double Detector1CoordX;
+  double Detector1CoordY;
+  double Detector2CoordX;
+  double Detector2CoordY;
+  double Detector3CoordX;
+  double Detector3CoordY;
+  double Detector4CoordX;
+  double Detector4CoordY;
+  double Detector5CoordX;
+  double Detector5CoordY;
+  double Detector6CoordX;
+  double Detector6CoordY;
+  TVector3 DetectorOnePOI;
+  TVector3 DetectorTwoPOI;
+  TVector3 DetectorThreePOI;
+  TVector3 DetectorFourPOI;
+  TVector3 DetectorFivePOI;
+  TVector3 DetectorSixPOI;
+  double BarrelStrip1CoordX;
+  double BarrelStrip1CoordZ;
+  double BarrelStrip2CoordX;
+  double BarrelStrip2CoordZ;
+  double BarrelStrip3CoordX;
+  double BarrelStrip3CoordZ;
+  double BarrelStrip4CoordX;
+  double BarrelStrip4CoordZ;
+  double BarrelStrip5CoordX;
+  double BarrelStrip5CoordZ;
+  double BarrelStrip6CoordX;
+  double BarrelStrip6CoordZ;
+  double BarrelStrip7CoordX;
+  double BarrelStrip7CoordZ;
+  double BarrelStrip8CoordX;
+  double BarrelStrip8CoordZ;
+  TVector3 BarrelStripOnePOI;
+  TVector3 BarrelStripTwoPOI;
+  TVector3 BarrelStripThreePOI;
+  TVector3 BarrelStripFourPOI;
+  TVector3 BarrelStripFivePOI;
+  TVector3 BarrelStripSixPOI;
+  TVector3 BarrelStripSevenPOI;
+  TVector3 BarrelStripEightPOI;
+  double ImpactMatrixCoordRandomX;
+  double ImpactMatrixCoordRandomY;
+  double Detector1RandomCoordX;
+  double Detector1RandomCoordY;
+  double Detector2RandomCoordX;
+  double Detector2RandomCoordY;
+  double Detector3RandomCoordX;
+  double Detector3RandomCoordY;
+  double Detector4RandomCoordX;
+  double Detector4RandomCoordY;
+  double Detector5RandomCoordX;
+  double Detector5RandomCoordY;
+  double Detector6RandomCoordX;
+  double Detector6RandomCoordY;
+  TVector3 DetectorOnePOIR;
+  TVector3 DetectorTwoPOIR;
+  TVector3 DetectorThreePOIR;
+  TVector3 DetectorFourPOIR;
+  TVector3 DetectorFivePOIR;
+  TVector3 DetectorSixPOIR;
+  double ImpactMatrixBCoordX;
+  double ImpactMatrixBCoordZ;  
+  TInitialConditions* Init = new TInitialConditions();
+}
+
 using namespace VARIABLE ;
 // ----------------------------------------------------------------------------------------------
-
-
-
 /////////////////////////////////////////////////////////////////////////////////////////////////
-// -----------------------------------GRAPH------------------------------------------------------
-#include <TObject.h>
-#include <TH1.h>
-#include <TH1F.h>
-#include <TH2.h>
-#include <TH2F.h>
-#include <TGraph2D.h>
-
-namespace GRAPH
-	{
-		//	Declare your Spectra here:
-	
-			TH1F *myHist1D = new TH1F("Hist1D","Histogramm 1D ; x ; count", 1000 , -5 , 5 )					;
-	
-			TH2F *myHist2D = new TH2F("Hist2D","Histogramm 2D ; x ; y ", 128 , 1 , 128 , 128 , 1 , 128 )	;
-
-	}
-
-using namespace GRAPH ;
-// --------------------------------------------------------------------------------------------
-
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////
-// -----------------------------------CUT------------------------------------------------------
-#include <TCutG.h>
-namespace CUT
-	{
-		//	Declare your Cut here:
-
-	}
-
-using namespace CUT ;
-// --------------------------------------------------------------------------------------------
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////
 // -----------------------------------ENERGY LOSS----------------------------------------------
-#include "NPEnergyLoss.h"
-using namespace NPL ;
-namespace ENERGYLOSS
-	{
-	
-		//	Declare your Energy loss here	:
-	/*		EnergyLoss ProtonTarget = EnergyLoss 	(	"CD2.txt" 	,
-														100 		,
-														1,
-														1			);
-	*/
-	}
-	
+namespace ENERGYLOSS{
+  //	Energy loss table: the G4Table are generated by the simulation
+  EnergyLoss proton_CD2 = EnergyLoss("proton_CD2.G4table","G4Table",100 );
+  EnergyLoss proton_Al = EnergyLoss("proton_Al.G4table","G4Table",10);
+  EnergyLoss proton_Si = EnergyLoss("proton_Si.G4table","G4Table",10);
+  EnergyLoss P30_CD2 = EnergyLoss("P30[0.0]_CD2.G4table","G4Table",100);
+}
+
 using namespace ENERGYLOSS ;
 // ----------------------------------------------------------------------------------------------
 /////////////////////////////////////////////////////////////////////////////////////////////////

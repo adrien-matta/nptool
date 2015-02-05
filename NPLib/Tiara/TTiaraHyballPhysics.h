@@ -151,7 +151,7 @@ class TTiaraHyballPhysics : public TObject, public NPA::VDetector{
     double GetStripPositionY( const int N , const int Ring , const int Sector )   const{ return m_StripPositionY[N-1][Ring-1][Sector-1] ; }  ;
     double GetStripPositionZ( const int N , const int Ring , const int Sector )   const{ return m_StripPositionZ[N-1][Ring-1][Sector-1] ; }  ;
 
-    double GetNumberOfDetector() const { return m_NumberOfDetector; };
+//    double GetNumberOfDetector() const { return m_NumberOfDetector; };
 
     // To be called after a build Physical Event 
     int GetEventMultiplicity() const { return EventMultiplicity; };
