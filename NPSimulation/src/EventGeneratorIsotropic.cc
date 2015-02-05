@@ -95,6 +95,7 @@ void EventGeneratorIsotropic::ReadConfiguration(string Path,int){
       G4cout << "///////////////////////////////////////////////////" << G4endl ;
       G4cout << "Isotropic Source Found" << G4endl ;
       ReadingStatus = true;}
+      
     
     
     while (ReadingStatus)
@@ -163,6 +164,8 @@ void EventGeneratorIsotropic::ReadConfiguration(string Path,int){
         else if(m_particleName=="triton"){ m_particleName="3H"  ; check_ExcitationEnergy = true ;}
         else if(m_particleName=="alpha") { m_particleName="4He" ; check_ExcitationEnergy = true ;}
         else if(m_particleName=="gamma") { check_ExcitationEnergy = true ;}
+        else if(m_particleName=="neutron") { check_ExcitationEnergy = true ;}
+
       }
       
       else if (DataBuffer=="ExcitationEnergy=") {
@@ -198,13 +201,13 @@ void EventGeneratorIsotropic::ReadConfiguration(string Path,int){
 void EventGeneratorIsotropic::GenerateEvent(G4Event*){
   
   if(m_particle==NULL){
-    if(m_particleName!="gamma"){
+    if(m_particleName=="gamma" || m_particleName=="neutron"){
+      m_particle =  G4ParticleTable::GetParticleTable()->FindParticle(m_particleName.c_str());
+    }
+    else{
       NPL::Nucleus* N = new NPL::Nucleus(m_particleName);
       m_particle = G4ParticleTable::GetParticleTable()->GetIon(N->GetZ(), N->GetA(),m_ExcitationEnergy);
       delete N;
-    }
-    else{
-      m_particle =  G4ParticleTable::GetParticleTable()->FindParticle("gamma");
     }
     
   }
