@@ -56,8 +56,6 @@ G4bool PSStripNumberX::ProcessHits(G4Step* aStep, G4TouchableHistory*)
    G4int X = int(temp) + 1 ;
    //Rare case where particle is close to edge of silicon plan
    if (X == m_NumberOfStrip+1) X = m_NumberOfStrip;
-   G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < TriggerThreshold) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
    EvtMap->set(index+DetNbr, X);
    return TRUE;
@@ -124,8 +122,6 @@ G4bool PSStripNumberY::ProcessHits(G4Step* aStep, G4TouchableHistory*)
    //Rare case where particle is close to edge of silicon plan
    if (Y == m_NumberOfStrip+1) Y = m_NumberOfStrip;
 
-   G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < TriggerThreshold) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();
    EvtMap->set(index+DetNbr, Y);
    return TRUE;
@@ -200,8 +196,6 @@ G4bool PSPadOrCristalNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
        G4int DetNbr = OBSOLETEGENERALSCORERS::PickUpDetectorNumber(aStep, "MUST2Telescope");
 
-      G4double edep = aStep->GetTotalEnergyDeposit();
-      if (edep < TriggerThreshold) return FALSE;
       G4int  index =  aStep->GetTrack()->GetTrackID();
       EvtMap->set(index+DetNbr, VolumeNumber);
       return TRUE;
@@ -237,18 +231,4 @@ void PSPadOrCristalNumber::PrintAll()
    G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
    G4cout << " Number of entries " << EvtMap->entries() << G4endl     ;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

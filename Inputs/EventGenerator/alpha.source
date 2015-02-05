@@ -11,7 +11,7 @@ Isotropic
   x0= 0
   y0= 0
   z0= 0
-  Particle= alpha
+  Particle= alpha 
   ExcitationEnergy= 0
 
 % Supported particle type: proton, neutron, deuton, triton, He3 , alpha 

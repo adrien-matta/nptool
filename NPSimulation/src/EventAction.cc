@@ -57,9 +57,9 @@ void EventAction::BeginOfEventAction(const G4Event* event){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void EventAction::EndOfEventAction(const G4Event* event){
-   m_detector->ReadAllSensitive(event) ;
-   RootOutput *pAnalysis = RootOutput::getInstance();
-   pAnalysis->GetTree()->Fill();
+  m_detector->ReadAllSensitive(event) ;
+  RootOutput *pAnalysis = RootOutput::getInstance();
+  pAnalysis->GetTree()->Fill();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

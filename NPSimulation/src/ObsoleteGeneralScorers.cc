@@ -70,9 +70,6 @@ G4bool PSDetectorNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
    {
    int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName) ; 
 
-   G4double edep = aStep->GetTotalEnergyDeposit();
-   
-   if (edep < TriggerThreshold) return FALSE;
    
    G4int  index = aStep->GetTrack()->GetTrackID();
    EvtMap->set(index+DetNumber, DetNumber);
@@ -138,7 +135,6 @@ G4bool PSEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
     int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName) ; 
 
    G4double edep = aStep->GetTotalEnergyDeposit();
-  // if (edep < TriggerThreshold) return FALSE;
    
    G4int  index = aStep->GetTrack()->GetTrackID();
    
@@ -200,8 +196,6 @@ G4bool PSTOF::ProcessHits(G4Step* aStep, G4TouchableHistory*)
    int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName); 
 
    G4double TOF  = aStep->GetPreStepPoint()->GetGlobalTime();
-   G4double edep = aStep->GetTotalEnergyDeposit();
-   if (edep < TriggerThreshold) return FALSE;
    G4int  index = aStep->GetTrack()->GetTrackID();
    EvtMap->set(index+DetNumber, TOF);
    return TRUE;

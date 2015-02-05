@@ -198,7 +198,6 @@ void EventGeneratorParticleDecay::ReadConfiguration(string Path,int Occurence){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorParticleDecay::GenerateEvent(G4Event*){
-  
   // Look for the decaying nucleus
   Particle decayingParticle = m_ParticleStack->SearchAndRemoveParticle(m_MotherNucleiName);
   if(decayingParticle.GetParticleDefinition()==NULL){
@@ -312,6 +311,7 @@ void EventGeneratorParticleDecay::GenerateEvent(G4Event*){
       }
     }
   }
+
 }
 
 
@@ -322,7 +322,6 @@ void EventGeneratorParticleDecay::SetTarget(Target* Target){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorParticleDecay::SetDecay(vector<string> DaughterName, vector<bool> shoot, vector<double> ExcitationEnergy, string CSPath, string CSName){
-  
   m_CrossSectionPath=CSPath;
   m_CrossSectionName=CSName;
   
@@ -352,12 +351,12 @@ void EventGeneratorParticleDecay::SetDecay(vector<string> DaughterName, vector<b
   int InitialMass   = myNucleus->GetA() ; int FinalMass   = 0 ;
   delete myNucleus;
   for (unsigned int i = 0 ; i< DaughterName.size(); i++) {
-    if(DaughterName[i] == "p"){
+    if(DaughterName[i] == "p" || DaughterName[i] == "proton" ){
       m_DaughterNuclei.push_back(G4ParticleTable::GetParticleTable()->FindParticle("proton"));
       FinalMass++;FinalCharge++;
     }
     
-    else if (DaughterName[i] == "n"){
+    else if (DaughterName[i] == "n" || DaughterName[i] == "neutron"){
       m_DaughterNuclei.push_back(G4ParticleTable::GetParticleTable()->FindParticle("neutron"));
       FinalMass++;
     }
@@ -419,5 +418,4 @@ void EventGeneratorParticleDecay::SetDecay(vector<string> DaughterName, vector<b
     
     // Change the name of the decaying nucleus to G4 standard
     m_MotherNucleiName = m_ParticleStack->ChangeNameToG4Standard(m_MotherNucleiName);
-    
   }

@@ -1264,7 +1264,6 @@ void MUST2Array::ReadSensitive(const G4Event* event){
   PosZHitMap					->clear() ;
   AngThetaHitMap			->clear() ;
   AngPhiHitMap				->clear() ;
-
 }
 
 
