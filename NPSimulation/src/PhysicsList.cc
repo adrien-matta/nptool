@@ -236,7 +236,7 @@ void PhysicsList::ConstructEM(){
   G4EmProcessOptions opt        ;
   opt.SetSubCutoff(true)        ;
   opt.SetMinEnergy(0.001*eV)    ;
-  opt.SetMaxEnergy(1000.*TeV)    ;
+  opt.SetMaxEnergy(1.*TeV)    ;
   opt.SetDEDXBinning(10000)       ;
   opt.SetLambdaBinning(10000)     ;
 }
