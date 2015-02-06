@@ -205,6 +205,7 @@ int main(int argc, char** argv){
       int DetectorNumber = TH -> DetectorNumber[countTiaraHyball];
       ImpactMatrixCoordX = ImpactPosition.X();
       ImpactMatrixCoordY = ImpactPosition.Y();
+      ImpactMatrixCoordZ = ImpactPosition.Z();
 
       // Part 5b : Implementing impact matrix for each wedge in the Hyball individually
       if(DetectorNumber==1){
@@ -349,47 +350,71 @@ int main(int argc, char** argv){
 //      cout << "Barrel detector number is " << DetectorNumberB << endl;
 //      cout << "" << endl;
       ImpactMatrixBCoordX = ImpactPositionB.X();
+      ImpactMatrixBCoordY = ImpactPositionB.Y();
       ImpactMatrixBCoordZ = ImpactPositionB.Z();
 
-      // Part 5b : Implementing impact matrix for each wedge in the Hyball individually
+      // series of if statements to cross check whether all parts of the barrel are being activated
+
+//      if(StripNumberB==1){
+//        BStripNumber1X = ImpactPositionB.X();
+//       BStripNumber1Y = ImpactPositionB.Y();
+//        BStripNumber1Z = ImpactPositionB.Z();
+//        }
+//      if(StripNumberB==2){
+//        BStripNumber2X = ImpactPositionB.X();
+//        BStripNumber2Y = ImpactPositionB.Y();
+//        BStripNumber2Z = ImpactPositionB.Z();
+//        }
+//      if(StripNumberB==3){
+//        BStripNumber3X = ImpactPositionB.X();
+//        BStripNumber3Y = ImpactPositionB.Y();
+//        BStripNumber3Z = ImpactPositionB.Z();
+//        }
+//      if(StripNumberB==4){
+//        BStripNumber4X = ImpactPositionB.X();
+//        BStripNumber4Y = ImpactPositionB.Y();
+//        BStripNumber4Z = ImpactPositionB.Z();
+//        }
+
+      // Part 5b : Implementing impact matrix for each strip making up the octagonal Barrel individually
       if(DetectorNumberB==1){
-//        TVector3 BarrelStripOnePOI = TH -> GetPositionOfInteraction(countTiaraBarrel);
         BarrelStrip1CoordX = ImpactPositionB.X();
+        BarrelStrip1CoordY = ImpactPositionB.Y();
         BarrelStrip1CoordZ = ImpactPositionB.Z();
         }
       if(DetectorNumberB==2){
-//       TVector3 BarrelStripTwoPOI = TH -> GetPositionOfInteraction(countTiaraBarrel);
         BarrelStrip2CoordX = ImpactPositionB.X();
+        BarrelStrip2CoordY = ImpactPositionB.Y();
         BarrelStrip2CoordZ = ImpactPositionB.Z();
         }
       if(DetectorNumberB==3){
-//        TVector3 BarrelStripThreePOI = TH -> GetPositionOfInteraction(countTiaraBarrel);
         BarrelStrip3CoordX = ImpactPositionB.X();
+        BarrelStrip3CoordY = ImpactPositionB.Y();
         BarrelStrip3CoordZ = ImpactPositionB.Z();
         }
       if(DetectorNumberB==4){
-//        TVector3 BarrelStripFourPOI = TH -> GetPositionOfInteraction(countTiaraBarrel);
         BarrelStrip4CoordX = ImpactPositionB.X();
+        BarrelStrip4CoordY = ImpactPositionB.Y();
         BarrelStrip4CoordZ = ImpactPositionB.Z();
         }
       if(DetectorNumberB==5){
-//        TVector3 BarrelStripFivePOI = TH -> GetPositionOfInteraction(countTiaraBarrel);
         BarrelStrip5CoordX = ImpactPositionB.X();
+        BarrelStrip5CoordY = ImpactPositionB.Y();
         BarrelStrip5CoordZ = ImpactPositionB.Z();
         }
       if(DetectorNumberB==6){
-//        TVector3 BarrelStripSixPOI = TH -> GetPositionOfInteraction(countTiaraBarrel);
         BarrelStrip6CoordX = ImpactPositionB.X();
+        BarrelStrip6CoordY = ImpactPositionB.Y();
         BarrelStrip6CoordZ = ImpactPositionB.Z();
         }
       if(DetectorNumberB==7){
-//        TVector3 BarrelStripSevenPOI = TH -> GetPositionOfInteraction(countTiaraBarrel);
         BarrelStrip7CoordX = ImpactPositionB.X();
+        BarrelStrip7CoordY = ImpactPositionB.Y();
         BarrelStrip7CoordZ = ImpactPositionB.Z();
         }
       if(DetectorNumberB==8){
-//        TVector3 BarrelStripEightPOI = TH -> GetPositionOfInteraction(countTiaraBarrel);
         BarrelStrip8CoordX = ImpactPositionB.X();
+        BarrelStrip8CoordY = ImpactPositionB.Y();
         BarrelStrip8CoordZ = ImpactPositionB.Z();
         }
       
@@ -481,6 +506,7 @@ void InitOutputBranch() {
 	RootOutput::getInstance()->GetTree()->Branch("ThetaCM",&ThetaCM,"ThetaCM/D");
   RootOutput::getInstance()->GetTree()->Branch("ImpactMatrixCoordX",&ImpactMatrixCoordX,"ImpactMatrixCoordX/D");
   RootOutput::getInstance()->GetTree()->Branch("ImpactMatrixCoordY",&ImpactMatrixCoordY,"ImpactMatrixCoordY/D");
+  RootOutput::getInstance()->GetTree()->Branch("ImpactMatrixCoordZ",&ImpactMatrixCoordZ,"ImpactMatrixCoordZ/D");
   RootOutput::getInstance()->GetTree()->Branch("Detector1CoordX",&Detector1CoordX,"Detector1CoordX/D");
   RootOutput::getInstance()->GetTree()->Branch("Detector1CoordY",&Detector1CoordY,"Detector1CoordY/D");
   RootOutput::getInstance()->GetTree()->Branch("Detector2CoordX",&Detector2CoordX,"Detector2CoordX/D");
@@ -508,23 +534,44 @@ void InitOutputBranch() {
   RootOutput::getInstance()->GetTree()->Branch("Detector6RandomCoordX",&Detector6RandomCoordX,"Detector6RandomCoordX/D");
   RootOutput::getInstance()->GetTree()->Branch("Detector6RandomCoordY",&Detector6RandomCoordY,"Detector6RandomCoordY/D");
   RootOutput::getInstance()->GetTree()->Branch("ImpactMatrixBCoordX",&ImpactMatrixBCoordX,"ImpactMatrixBCoordX/D");
+  RootOutput::getInstance()->GetTree()->Branch("ImpactMatrixBCoordY",&ImpactMatrixBCoordY,"ImpactMatrixBCoordY/D");
   RootOutput::getInstance()->GetTree()->Branch("ImpactMatrixBCoordZ",&ImpactMatrixBCoordZ,"ImpactMatrixBCoordZ/D");
   RootOutput::getInstance()->GetTree()->Branch("BarrelStrip1CoordX",&BarrelStrip1CoordX,"BarrelStrip1CoordX/D");
+  RootOutput::getInstance()->GetTree()->Branch("BarrelStrip1CoordY",&BarrelStrip1CoordY,"BarrelStrip1CoordY/D");
   RootOutput::getInstance()->GetTree()->Branch("BarrelStrip1CoordZ",&BarrelStrip1CoordZ,"BarrelStrip1CoordZ/D");
   RootOutput::getInstance()->GetTree()->Branch("BarrelStrip2CoordX",&BarrelStrip2CoordX,"BarrelStrip2CoordX/D");
+  RootOutput::getInstance()->GetTree()->Branch("BarrelStrip2CoordY",&BarrelStrip2CoordY,"BarrelStrip2CoordY/D");
   RootOutput::getInstance()->GetTree()->Branch("BarrelStrip2CoordZ",&BarrelStrip2CoordZ,"BarrelStrip2CoordZ/D");
   RootOutput::getInstance()->GetTree()->Branch("BarrelStrip3CoordX",&BarrelStrip3CoordX,"BarrelStrip3CoordX/D");
+  RootOutput::getInstance()->GetTree()->Branch("BarrelStrip3CoordY",&BarrelStrip3CoordY,"BarrelStrip3CoordY/D");
   RootOutput::getInstance()->GetTree()->Branch("BarrelStrip3CoordZ",&BarrelStrip3CoordZ,"BarrelStrip3CoordZ/D");
   RootOutput::getInstance()->GetTree()->Branch("BarrelStrip4CoordX",&BarrelStrip4CoordX,"BarrelStrip4CoordX/D");
+  RootOutput::getInstance()->GetTree()->Branch("BarrelStrip4CoordY",&BarrelStrip4CoordY,"BarrelStrip4CoordY/D");
   RootOutput::getInstance()->GetTree()->Branch("BarrelStrip4CoordZ",&BarrelStrip4CoordZ,"BarrelStrip4CoordZ/D");
   RootOutput::getInstance()->GetTree()->Branch("BarrelStrip5CoordX",&BarrelStrip5CoordX,"BarrelStrip5CoordX/D");
+  RootOutput::getInstance()->GetTree()->Branch("BarrelStrip5CoordY",&BarrelStrip5CoordY,"BarrelStrip5CoordY/D");
   RootOutput::getInstance()->GetTree()->Branch("BarrelStrip5CoordZ",&BarrelStrip5CoordZ,"BarrelStrip5CoordZ/D");
   RootOutput::getInstance()->GetTree()->Branch("BarrelStrip6CoordX",&BarrelStrip6CoordX,"BarrelStrip6CoordX/D");
+  RootOutput::getInstance()->GetTree()->Branch("BarrelStrip6CoordY",&BarrelStrip6CoordY,"BarrelStrip6CoordY/D");
   RootOutput::getInstance()->GetTree()->Branch("BarrelStrip6CoordZ",&BarrelStrip6CoordZ,"BarrelStrip6CoordZ/D");
   RootOutput::getInstance()->GetTree()->Branch("BarrelStrip7CoordX",&BarrelStrip7CoordX,"BarrelStrip7CoordX/D");
+  RootOutput::getInstance()->GetTree()->Branch("BarrelStrip7CoordY",&BarrelStrip7CoordY,"BarrelStrip7CoordY/D");
   RootOutput::getInstance()->GetTree()->Branch("BarrelStrip7CoordZ",&BarrelStrip7CoordZ,"BarrelStrip7CoordZ/D");
   RootOutput::getInstance()->GetTree()->Branch("BarrelStrip8CoordX",&BarrelStrip8CoordX,"BarrelStrip8CoordX/D");
+  RootOutput::getInstance()->GetTree()->Branch("BarrelStrip8CoordY",&BarrelStrip8CoordY,"BarrelStrip8CoordY/D");
   RootOutput::getInstance()->GetTree()->Branch("BarrelStrip8CoordZ",&BarrelStrip8CoordZ,"BarrelStrip8CoordZ/D");
+  RootOutput::getInstance()->GetTree()->Branch("BStripNumber1X",&BStripNumber1X,"BStripNumber1X/D");
+  RootOutput::getInstance()->GetTree()->Branch("BStripNumber1Y",&BStripNumber1Y,"BStripNumber1Y/D");
+  RootOutput::getInstance()->GetTree()->Branch("BStripNumber1Z",&BStripNumber1Z,"BStripNumber1Z/D");
+  RootOutput::getInstance()->GetTree()->Branch("BStripNumber2X",&BStripNumber2X,"BStripNumber2X/D");
+  RootOutput::getInstance()->GetTree()->Branch("BStripNumber2Y",&BStripNumber2Y,"BStripNumber2Y/D");
+  RootOutput::getInstance()->GetTree()->Branch("BStripNumber2Z",&BStripNumber2Z,"BStripNumber2Z/D");
+  RootOutput::getInstance()->GetTree()->Branch("BStripNumber3X",&BStripNumber3X,"BStripNumber3X/D");
+  RootOutput::getInstance()->GetTree()->Branch("BStripNumber3Y",&BStripNumber3Y,"BStripNumber3Y/D");
+  RootOutput::getInstance()->GetTree()->Branch("BStripNumber3Z",&BStripNumber3Z,"BStripNumber3Z/D");
+  RootOutput::getInstance()->GetTree()->Branch("BStripNumber4X",&BStripNumber4X,"BStripNumber4X/D");
+  RootOutput::getInstance()->GetTree()->Branch("BStripNumber4Y",&BStripNumber4Y,"BStripNumber4Y/D");
+  RootOutput::getInstance()->GetTree()->Branch("BStripNumber4Z",&BStripNumber4Z,"BStripNumber4Z/D");
 }
 
 /////////////////////////////////////////////////////////////////////////////

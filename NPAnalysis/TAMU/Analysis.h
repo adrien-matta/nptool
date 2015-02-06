@@ -62,6 +62,7 @@ namespace VARIABLE{
   double ThetaCM;
   double ImpactMatrixCoordX;
   double ImpactMatrixCoordY;
+  double ImpactMatrixCoordZ;
   double Detector1CoordX;
   double Detector1CoordY;
   double Detector2CoordX;
@@ -81,20 +82,28 @@ namespace VARIABLE{
   TVector3 DetectorFivePOI;
   TVector3 DetectorSixPOI;
   double BarrelStrip1CoordX;
+  double BarrelStrip1CoordY;
   double BarrelStrip1CoordZ;
   double BarrelStrip2CoordX;
+  double BarrelStrip2CoordY;
   double BarrelStrip2CoordZ;
   double BarrelStrip3CoordX;
+  double BarrelStrip3CoordY;
   double BarrelStrip3CoordZ;
   double BarrelStrip4CoordX;
+  double BarrelStrip4CoordY;
   double BarrelStrip4CoordZ;
   double BarrelStrip5CoordX;
+  double BarrelStrip5CoordY;
   double BarrelStrip5CoordZ;
   double BarrelStrip6CoordX;
+  double BarrelStrip6CoordY;
   double BarrelStrip6CoordZ;
   double BarrelStrip7CoordX;
+  double BarrelStrip7CoordY;
   double BarrelStrip7CoordZ;
   double BarrelStrip8CoordX;
+  double BarrelStrip8CoordY;
   double BarrelStrip8CoordZ;
   TVector3 BarrelStripOnePOI;
   TVector3 BarrelStripTwoPOI;
@@ -125,7 +134,20 @@ namespace VARIABLE{
   TVector3 DetectorFivePOIR;
   TVector3 DetectorSixPOIR;
   double ImpactMatrixBCoordX;
-  double ImpactMatrixBCoordZ;  
+  double ImpactMatrixBCoordY;
+  double ImpactMatrixBCoordZ;
+  double BStripNumber1X;
+  double BStripNumber1Y;
+  double BStripNumber1Z;
+  double BStripNumber2X;
+  double BStripNumber2Y;
+  double BStripNumber2Z;
+  double BStripNumber3X;
+  double BStripNumber3Y;
+  double BStripNumber3Z;
+  double BStripNumber4X;
+  double BStripNumber4Y;
+  double BStripNumber4Z;
   TInitialConditions* Init = new TInitialConditions();
 }
 
