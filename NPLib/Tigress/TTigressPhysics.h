@@ -75,6 +75,8 @@ class TTigressPhysics :  public TObject, public NPA::VDetector{
      void ClearEventPhysics() ;
      void ClearEventData() ;
      void ClearPreTreatedData();
+     void AddCloverStandard(vector<int> CloverId);
+     void AddCloverFreePosition(int CloverId,double R,double Theta,double Phi,double BetaX,double BetaY,double BetaZ);
 
   public:
     void PreTreat();
@@ -84,16 +86,26 @@ class TTigressPhysics :  public TObject, public NPA::VDetector{
          TTigressData*         m_EventData;//!
          TTigressData*         m_PreTreatedData;//!
          TTigressPhysics*      m_EventPhysics;//!
+
+  vector<int> m_CloverId;//!
+  vector<double> m_R;//!
+  vector<double> m_Theta;//!
+  vector<double> m_Phi;//!
+  vector<double> m_BetaX;//!
+  vector<double> m_BetaY;//!
+  vector<double> m_BetaZ;//!
  
   public: // Data Member
     vector<double> Gamma_Energy;
     vector<int> Crystal_Number;
     vector<int> Clover_Number;
-    //vector<int> Segment_Number;
+    vector<int> Segment_Number;
     vector<bool>   BGO;
+
     
    public:
-    TVector3 GetPositionOfInteraction(int i) ;
+    TVector3 GetPositionOfInteraction(unsigned int i) ;
+    TVector3 GetPositionOfSegment(unsigned int i);
     
          
    ClassDef(TTigressPhysics,1)  // TigressPhysics structure

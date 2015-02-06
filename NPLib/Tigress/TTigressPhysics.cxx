@@ -23,6 +23,8 @@
 #include <cmath>
 #include <stdlib.h>
 #include <limits>
+#include <fstream>
+#include <sstream>
 using namespace std;
 
 #include "TTigressPhysics.h"
@@ -31,6 +33,10 @@ using namespace std;
 #include "RootInput.h"
 #include "RootOutput.h"
 #include "TAsciiFile.h"
+#include "NPOptionManager.h"
+#include "NPGlobalSystemOfUnits.h"
+#include "NPPhysicalConstants.h"
+using namespace NPUNITS;
 //   ROOT
 #include "TChain.h"
 ///////////////////////////////////////////////////////////////////////////
@@ -86,7 +92,7 @@ void TTigressPhysics::BuildPhysicalEvent(){
             seg_index = Seg_HitIndex[clover][seg];
           }
         }
-        //Segment_Number.push_back(m_PreTreatedData->GetGeSegmentNbr(seg_index));
+        Segment_Number.push_back(m_PreTreatedData->GetGeSegmentNbr(seg_index));
 
         BGOcheck = false ;
         //if( m_PreTreatedData->GetMultiplicityBGO()== 0){cout << "This is zero\n";}
@@ -117,7 +123,7 @@ void TTigressPhysics::BuildPhysicalEvent(){
                 seg_index = Seg_HitIndex[clover][seg];
               }
           }
-          //Segment_Number.push_back(m_PreTreatedData->GetGeSegmentNbr(seg_index));
+          Segment_Number.push_back(m_PreTreatedData->GetGeSegmentNbr(seg_index));
 
           BGOcheck = false;
           for(unsigned int j = 0 ;  j <  m_PreTreatedData->GetMultiplicityBGO() ; j++){
@@ -145,7 +151,7 @@ void TTigressPhysics::BuildPhysicalEvent(){
               seg_index = Seg_HitIndex[clover][seg];
             }
           }
-          //Segment_Number.push_back(m_PreTreatedData->GetGeSegmentNbr(seg_index));
+          Segment_Number.push_back(m_PreTreatedData->GetGeSegmentNbr(seg_index));
           Max_Seg_Energy = -10000;
 
           BGOcheck = false ;
@@ -172,7 +178,7 @@ void TTigressPhysics::BuildPhysicalEvent(){
               seg_index = Seg_HitIndex[clover][seg];
             }
           }
-          //Segment_Number.push_back(m_PreTreatedData->GetGeSegmentNbr(seg_index));
+          Segment_Number.push_back(m_PreTreatedData->GetGeSegmentNbr(seg_index));
 
           BGOcheck = false ;
           for(unsigned int j = 0 ;  j <  m_PreTreatedData->GetMultiplicityBGO() ; j++){
@@ -198,17 +204,252 @@ void TTigressPhysics::BuildPhysicalEvent(){
 
 }
 /////////////////////////////////////////////////
-TVector3 TTigressPhysics::GetPositionOfInteraction(int i){
+TVector3 TTigressPhysics::GetPositionOfInteraction(unsigned int i){
 	
 	//in mm
-	/*double FrontFace_dist = 14.5
-	double x;
-	double y;
-	double z;
-	TVector3 Segment_POS() = GetPositionOfSegment();
+	//double FrontFace_dist = 145.0;
+	double x ;
+	double y ;
+	double z ;
+	//double clover;
+	//double r, theta, phi;
+
+	TVector3 Segment_POS = GetPositionOfSegment(i);
+	TVector3 Clover_POS(0,0,1);
+	TVector3 POS;
 	
-	TVector3 POS(x,y,z);*/
+	Clover_POS.SetMag(m_R[i]);
+	Clover_POS.SetTheta(m_Theta[i]);
+	Clover_POS.SetPhi(m_Phi[i]);
 	
+	POS = Segment_POS + Clover_POS;
+	return(Segment_POS + Clover_POS);
+	
+}
+/////////////////////////////////////////////////
+TVector3 TTigressPhysics::GetPositionOfSegment(unsigned int i ){
+	
+	//in mm
+	
+	double rseg_x;
+	double rseg_y;
+	double rseg_z;
+	
+	double crystal = m_PreTreatedData->GetGeCrystalNbr(i);
+	double segment = m_PreTreatedData->GetGeSegmentNbr(i);
+	
+	if(segment == 1){
+		rseg_x = 31.5;
+		rseg_y = 31.5;
+		rseg_z = 10;
+	}
+	else if(segment == 2) {
+		rseg_x = 10.5;
+		rseg_y = 31.5;
+		rseg_z = 10;
+	}
+	else if(segment == 3) {
+		rseg_x = 10.5;
+		rseg_y = 10.5;
+		rseg_z = 10;
+	}
+	else if(segment == 4) {
+		rseg_x = 31.5;
+		rseg_y = 10.5;
+		rseg_z = 10;
+	}
+	else if(segment == 5) {
+		rseg_x = 31.5;
+		rseg_y = 31.5;
+		rseg_z = 55;
+	}
+	else if(segment == 6) {
+		rseg_x = 10.5;
+		rseg_y = 31.5;
+		rseg_z = 55;
+	}
+	else if(segment == 7) {
+		rseg_x = 10.5;
+		rseg_y = 10.5;
+		rseg_z = 55;
+	}
+	else if(segment == 8) {
+		rseg_x = 31.5;
+		rseg_y = 10.5;
+		rseg_z = 55;
+	}
+	TVector3 Segment_POS(rseg_x, rseg_y, rseg_z);
+	Segment_POS.RotateZ(crystal*90*M_PI/180);
+	return (Segment_POS);
+	
+	
+}
+/////////////////////////////////////////////////
+void TTigressPhysics::AddCloverStandard(vector<int> CloverId){
+  
+  for (unsigned int i = 0 ;  i < CloverId.size(); i++) {
+		//cout << CloverId.size() << endl;
+    if(CloverId[i] == 1 ){
+      m_CloverId.push_back(CloverId[i]);
+      m_R.push_back(145*mm);
+      m_Theta.push_back(45*deg);
+      m_Phi.push_back(22.5*deg);
+      m_BetaX.push_back(0);
+      m_BetaY.push_back(0);
+      m_BetaZ.push_back(0);
+    }
+    
+    else if(CloverId[i] == 2 ){
+      m_CloverId.push_back(CloverId[i]);
+      m_R.push_back(145);
+      m_Theta.push_back(45*deg);
+      m_Phi.push_back(112.5*deg);
+      m_BetaX.push_back(0);
+      m_BetaY.push_back(0);
+      m_BetaZ.push_back(0);
+    }
+    
+    else if(CloverId[i] == 3 ){
+      m_CloverId.push_back(CloverId[i]);
+      m_R.push_back(145*mm);
+      m_Theta.push_back(45*deg);
+      m_Phi.push_back(202.5*deg);
+      m_BetaX.push_back(0);
+      m_BetaY.push_back(0);
+      m_BetaZ.push_back(0);
+    }
+    
+    else if(CloverId[i] == 4 ){
+      m_CloverId.push_back(CloverId[i]);
+      m_R.push_back(145*mm);
+      m_Theta.push_back(45*deg);
+      m_Phi.push_back(292.5*deg);
+      m_BetaX.push_back(0);
+      m_BetaY.push_back(0);
+      m_BetaZ.push_back(0);
+    }
+    
+    else if(CloverId[i] == 5 ){
+      m_CloverId.push_back(CloverId[i]);
+      m_R.push_back(145*mm);
+      m_Theta.push_back(90*deg);
+      m_Phi.push_back(22.5*deg);
+      m_BetaX.push_back(0);
+      m_BetaY.push_back(0);
+      m_BetaZ.push_back(180*deg);
+    }
+    
+    else if(CloverId[i] == 6 ){
+      m_CloverId.push_back(CloverId[i]);
+      m_R.push_back(145*mm);
+      m_Theta.push_back(90*deg);
+      m_Phi.push_back(67.5*deg);
+      m_BetaX.push_back(0);
+      m_BetaY.push_back(0);
+      m_BetaZ.push_back(180*deg);
+    }
+    
+    else if(CloverId[i] == 7 ){
+      m_CloverId.push_back(CloverId[i]);
+      m_R.push_back(145*mm);
+      m_Theta.push_back(90*deg);
+      m_Phi.push_back(112.5*deg);
+      m_BetaX.push_back(0);
+      m_BetaY.push_back(0);
+      m_BetaZ.push_back(180*deg);
+    }
+    
+    else if(CloverId[i] == 8 ){
+      m_CloverId.push_back(CloverId[i]);
+      m_R.push_back(145*mm);
+      m_Theta.push_back(90*deg);
+      m_Phi.push_back(157.5*deg);
+      m_BetaX.push_back(0);
+      m_BetaY.push_back(0);
+      m_BetaZ.push_back(180*deg);
+    }
+    
+    else if(CloverId[i] == 9 ){
+      m_CloverId.push_back(CloverId[i]);
+      m_R.push_back(145*mm);
+      m_Theta.push_back(90*deg);
+      m_Phi.push_back(202.5*deg);
+      m_BetaX.push_back(0);
+      m_BetaY.push_back(0);
+      m_BetaZ.push_back(180*deg);
+    }
+    
+    else if(CloverId[i] == 10 ){
+      m_CloverId.push_back(CloverId[i]);
+      m_R.push_back(145*mm);
+      m_Theta.push_back(90*deg);
+      m_Phi.push_back(247.5*deg);
+      m_BetaX.push_back(0);
+      m_BetaY.push_back(0);
+      m_BetaZ.push_back(180*deg);
+    }
+    
+    else if(CloverId[i] == 11 ){
+      m_CloverId.push_back(CloverId[i]);
+      m_R.push_back(145*mm);
+      m_Theta.push_back(90*deg);
+      m_Phi.push_back(292.5*deg);
+      m_BetaX.push_back(0);
+      m_BetaY.push_back(0);
+      m_BetaZ.push_back(180*deg);
+    }
+    
+    else if(CloverId[i] == 12 ){
+      m_CloverId.push_back(CloverId[i]);
+      m_R.push_back(145*mm);
+      m_Theta.push_back(90*deg);
+      m_Phi.push_back(337.5*deg);
+      m_BetaX.push_back(0);
+      m_BetaY.push_back(0);
+      m_BetaZ.push_back(180*deg);
+    }
+    
+    else if(CloverId[i] == 13 ){
+      m_CloverId.push_back(CloverId[i]);
+      m_R.push_back(145*mm);
+      m_Theta.push_back(135*deg);
+      m_Phi.push_back(22.5*deg);
+      m_BetaX.push_back(0);
+      m_BetaY.push_back(0);
+      m_BetaZ.push_back(180*deg);
+    }
+    
+    else if(CloverId[i] == 14 ){
+      m_CloverId.push_back(CloverId[i]);
+      m_R.push_back(145*mm);
+      m_Theta.push_back(135*deg);
+      m_Phi.push_back(112.5*deg);
+      m_BetaX.push_back(0);
+      m_BetaY.push_back(0);
+      m_BetaZ.push_back(180*deg);
+    }
+    
+    else if(CloverId[i] == 15 ){
+      m_CloverId.push_back(CloverId[i]);
+      m_R.push_back(145*mm);
+      m_Theta.push_back(135*deg);
+      m_Phi.push_back(202.5*deg);
+      m_BetaX.push_back(0);
+      m_BetaY.push_back(0);
+      m_BetaZ.push_back(180*deg);
+    }
+    
+    else if(CloverId[i] == 16 ){
+      m_CloverId.push_back(CloverId[i]);
+      m_R.push_back(145*mm);
+      m_Theta.push_back(135*deg);
+      m_Phi.push_back(292.5*deg);
+      m_BetaX.push_back(0);
+      m_BetaY.push_back(0);
+      m_BetaZ.push_back(180*deg);
+    }
+  }
+
 }
 /////////////////////////////////////////////////
 void TTigressPhysics::PreTreat(){
@@ -283,97 +524,266 @@ void TTigressPhysics::Clear() {
 
 /////////////////////////////////////////////////
 void TTigressPhysics::ReadConfiguration(string Path)  {
-  ifstream ConfigFile           ;
+ ifstream ConfigFile           ;
   ConfigFile.open(Path.c_str()) ;
-  
-  if(!ConfigFile.is_open()) cout << "Config File not Found" << endl ;
-  
   string LineBuffer             ;
   string DataBuffer             ;
-     
-  bool check_CloverId= false          ;
-  bool check_R= false          ; 
-  bool check_Theta= false          ;
-  bool check_Phi= false          ;
-  bool ReadingStatus = true;
-
-  int CloverId=0;
-  double R=0;
-  double Theta=0;
-  double Phi=0;
-
-  while (!ConfigFile.eof()) {
+  istringstream LineStream      ;
+  // Standard Case:
+  bool check_CloverId = false;
+  
+  vector<int> CloverId;
+  int    CloverId_Free = 0;
+  double R     = 0;
+  double Theta = 0;
+  double Phi   = 0;
+  double BetaX;
+  double BetaY;
+  double BetaZ;
+  
+  // Free postion case:
+  bool check_R   = false ;
+  bool check_Theta = false ;
+  bool check_Phi = false ;
+  bool check_Beta = false ;
+  
+  // Frame Case
+  bool check_RightFrame = false ;
+  bool check_LeftFrame = false ;
+  
+  bool ReadingStatusStandard = false ;
+  bool ReadingStatusFree = false ;
+  bool ReadingStatusFrame = false ;
+  bool ReadingStatus = false ;
+  
+  while (!ConfigFile.eof()){
+    int VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
     
     getline(ConfigFile, LineBuffer);
-    //   If line is a Start Up Tigress bloc, Reading toggle to true      
-    if (LineBuffer.compare(0, 13, "TigressClover") == 0) {
-      cout << "///" << endl ;
-      cout << "Tigress Clover found: " << endl ;        
-      ReadingStatus = true ;
-     }
-    //   Else don't toggle to Reading Block Status
-    else ReadingStatus = false ;
-
-    //   Reading Block
-    while(ReadingStatus)  {
-      // Pickup Next Word 
- 
-      ConfigFile >> DataBuffer ;
-      //   Comment Line 
-             
-      if (DataBuffer.compare(0, 1, "%") == 0) {ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
     
-      //   Finding another Clover toggle out (safety)
-      else if (DataBuffer.compare(0, 13, "TigressClover") == 0) {
-        cout << "WARNING: Another Detector is find before standard sequence of Token, Error may occured in Clover definition" << endl ;
-        ReadingStatus = false ;
-       }
+    if (LineBuffer.compare(0, 7, "Tigress") == 0)
+      ReadingStatus = true;
+    
+    while (ReadingStatus && !ConfigFile.eof()) {
+      getline(ConfigFile, LineBuffer);
+      
+      //   Comment Line
+      while (LineBuffer.compare(0, 1, "%") == 0) {
+        // Take the next line
+        getline(ConfigFile, LineBuffer);
+      }
+      
+      //   Standard case
+      if (LineBuffer.compare(0, 15, "TigressStandard") == 0){
+        if(VerboseLevel==1)
+          cout << "/// Clovers in Standard Configuration : ///" << endl   ;
+        ReadingStatusStandard = true ;
+      }
+      
+      //  Free placing case
+      else if (LineBuffer.compare(0, 13, "TigressClover") == 0){
+        if(VerboseLevel==1)
+          cout << "/// Free placed clover : ///" << endl   ;
+        ReadingStatusFree = true ;
+      }
+      
+      //  Frame case
+      else if (LineBuffer.compare(0, 12, "TigressFrame") == 0){
+        if(VerboseLevel==1)
+          cout << "/// Support Frame : ///" << endl   ;
+        ReadingStatusFrame = true ;
+      }
+      
+      //   Reading Block
+      while(ReadingStatusStandard){
+        // Pickup Next Line
+        getline(ConfigFile, LineBuffer);
+        //   Comment Line
+        while (LineBuffer.compare(0, 1, "%") == 0) {
+          // Take the next line
+          getline(ConfigFile, LineBuffer);
+        }
+        
+        LineStream.clear();
+        LineStream.str(LineBuffer);
+        LineStream >> DataBuffer;
 
-      else if (DataBuffer=="CloverId=") {
-        check_CloverId = true;
-        ConfigFile >> DataBuffer ;
-        CloverId=atoi(DataBuffer.c_str());
-        cout << "CloverId:  " << CloverId << endl;
-       }
-               
-      else if (DataBuffer=="R=") {
-        check_R = true;
-        ConfigFile >> DataBuffer ;
-        R = atof(DataBuffer.c_str());
-        cout << "R:  " << R << "mm" << endl;
-       }
-               
-       else if (DataBuffer=="Theta=") {
-        check_Theta = true;
-        ConfigFile >> DataBuffer ;
-        Theta = atof(DataBuffer.c_str());
-        cout << "Theta:  " << Theta << "deg" << endl;
-       }
-
-       else if (DataBuffer=="Phi=") {
-        check_Phi = true;
-        ConfigFile >> DataBuffer ;
-        Phi = atof(DataBuffer.c_str());
-        cout << "Phi:  " << Phi << "deg" << endl;
-       }
-                                                
-       ///////////////////////////////////////////////////
-       //   If no Detector Token and no comment, toggle out
-      else {
-        ReadingStatus = false; cout << "Wrong Token Sequence: Getting out " << DataBuffer << endl ;}
+        if ( DataBuffer == "CloverId=" ) {
+          check_CloverId = true;
+                    
+          if(VerboseLevel==1) cout << "CloverId: " ;
+          while(LineStream >> DataBuffer){
+            CloverId.push_back(atoi(DataBuffer.c_str()));
+            if(VerboseLevel==1) cout << atoi(DataBuffer.c_str()) << " ";
+          }
+          if(VerboseLevel==1) cout << endl << endl;
+        }
+      
+        ///////////////////////////////////////////////////
+        //   If no Detector Token and no comment, toggle out
+        else{
+          ReadingStatusStandard = false;
+          cout << "Error: Wrong Token Sequence: Getting out " << DataBuffer << endl ;
+          exit(1);
+        }
+        
         /////////////////////////////////////////////////
         //   If All necessary information there, toggle out
-        if ( check_Theta && check_Phi && check_R && check_CloverId) { 
-          ReadingStatus = false;
-           check_CloverId= false;
-           check_R= false; 
-           check_Theta= false;
-           check_Phi= false;
+        
+        if (check_CloverId){
+          ReadingStatusStandard = false;
+          AddCloverStandard(CloverId);
+          CloverId.clear();
+          check_CloverId   = false ;
         }
       }
+      
+      //   Reading Block
+      while(ReadingStatusFree){
+        // Pickup Next Line
+        getline(ConfigFile, LineBuffer);
+        //   Comment Line
+        while (LineBuffer.compare(0, 1, "%") == 0) {
+          // Take the next line
+          getline(ConfigFile, LineBuffer);
+        }
+        
+        LineStream.clear();
+        LineStream.str(LineBuffer);
+        LineStream >> DataBuffer;
+        
+        if ( DataBuffer == "CloverId=" ) {
+          check_CloverId = true;
+          LineStream >> DataBuffer;
+          CloverId_Free = atoi(DataBuffer.c_str());
+          if(VerboseLevel==1)
+            cout << "CloverId: " << atoi(DataBuffer.c_str()) << " " << endl ;
+        }
+        
+        else if ( DataBuffer == "R=" ) {
+          check_R = true;
+          LineStream >> DataBuffer;
+          R = atof(DataBuffer.c_str())*mm;
+          if(VerboseLevel==1)
+            cout << "R: " << R/mm << " " << endl ;
+        }
+        
+        else if ( DataBuffer == "Theta=" ) {
+          check_Theta = true;
+          LineStream >> DataBuffer;
+          Theta = atof(DataBuffer.c_str())*deg;
+          if(VerboseLevel==1)
+            cout << "Theta: " << Theta/deg << " " << endl ;
+        }
+        
+        else if ( DataBuffer == "Phi=" ) {
+          check_Phi = true;
+          LineStream >> DataBuffer;
+          Phi = atof(DataBuffer.c_str())*deg;
+          if(VerboseLevel==1)
+            cout << "Phi: " << Phi/deg << " " << endl ;
+        }
+        
+        else if ( DataBuffer == "Beta=" ) {
+          check_Beta = true;
+          LineStream >> DataBuffer;
+          BetaX = atof(DataBuffer.c_str())*deg;
+          if(VerboseLevel==1)
+            cout << "BetaX: " << BetaX/deg << " " << endl ;
+          LineStream >> DataBuffer;
+          BetaY = atof(DataBuffer.c_str())*deg;
+          if(VerboseLevel==1)
+            cout << "BetaY: " << BetaY/deg << " " << endl ;
+          LineStream >> DataBuffer;
+          BetaZ = atof(DataBuffer.c_str())*deg;
+          if(VerboseLevel==1)
+            cout << "BetaZ: " << BetaZ/deg << " " << endl ;
+        }
+        
+        
+        ///////////////////////////////////////////////////
+        //   If no Detector Token and no comment, toggle out
+        else{
+          ReadingStatusStandard = false;
+          cout << "Error: Wrong Token Sequence: Getting out " << DataBuffer << endl ;
+          exit(1);
+        }
+        
+        /////////////////////////////////////////////////
+        //   If All necessary information there, toggle out
+        
+        if (check_CloverId && check_R && check_Theta && check_Phi && check_Beta){
+          ReadingStatusFree = false;
+          AddCloverFreePosition(CloverId_Free,R,Theta,Phi,BetaX,BetaY,BetaZ);
+          check_CloverId = false ;
+          check_R = false ;
+          check_Theta = false ;
+          check_Phi = false ;
+          check_Beta = false ;
+        }
+      }
+      
+      //   Reading Block
+      while(ReadingStatusFrame){
+        // Pickup Next Line
+        getline(ConfigFile, LineBuffer);
+        //   Comment Line
+        while (LineBuffer.compare(0, 1, "%") == 0) {
+          // Take the next line
+          getline(ConfigFile, LineBuffer);
+        }
+        
+        LineStream.clear();
+        LineStream.str(LineBuffer);
+        LineStream >> DataBuffer;
+        
+        if ( DataBuffer == "RightFrame=" ) {
+        // ignore token for simulation only
+        }
+        
+        else if ( DataBuffer == "LeftFrame=" ) {
+          // ignore token for simulation only
+        }
+        
+        ///////////////////////////////////////////////////
+        //   If no Detector Token and no comment, toggle out
+        else{
+          ReadingStatusStandard = false;
+          cout << "Error: Wrong Token Sequence: Getting out " << DataBuffer << endl ;
+          cout << "Error: Wrong Token Sequence: Getting out " << DataBuffer << endl ;
+          exit(1);
+        }
+        
+        /////////////////////////////////////////////////
+        //   If All necessary information there, toggle out
+        
+        if (check_RightFrame && check_LeftFrame){
+          ReadingStatusFrame = false;
+          AddCloverStandard(CloverId);
+          CloverId.clear();
+          check_RightFrame = false;
+          check_LeftFrame = false;
+        }
+      }
+      
     }
- }
- 
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+void TTigressPhysics::AddCloverFreePosition(int CloverId,double R,double Theta,double Phi,double BetaX,double BetaY,double BetaZ){
+  
+  m_CloverId.push_back(CloverId);
+  m_R.push_back(R);
+  m_Theta.push_back(Theta);
+  m_Phi.push_back(Phi);
+  m_BetaX.push_back(BetaX);
+  m_BetaY.push_back(BetaY);
+  m_BetaZ.push_back(BetaZ);
+  
+}
+
 ///////////////////////////////////////////////////////////////////////////
 bool TTigressPhysics::AdjacentCrystal(unsigned int CrNbr1, unsigned int CrNbr2)
   {
@@ -407,7 +817,7 @@ void TTigressPhysics::ClearEventPhysics() {
   Gamma_Energy.clear();
   Crystal_Number.clear();
   Clover_Number.clear();
-  //Segment_Number.clear();
+  Segment_Number.clear();
   BGO.clear();
 }
  ///////////////////////////////////////////////////////////////////////////  
