@@ -96,7 +96,7 @@ void TTiaraBarrelPhysics::BuildPhysicalEvent(){
                     +itoa(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i))
                     +"_STRIP"+itoa(m_PreTreatedData->GetFrontUpstreamEStripNbr(i))
                     +"_POS",(ED-EU)/(EU+ED));
-                
+                //push back ED, EU - and check the ED vs EU graph!
                 Strip_Pos.push_back(POS); 
                 Strip_N.push_back(m_PreTreatedData->GetFrontUpstreamEStripNbr(i));
                 DetectorNumber.push_back(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i));
@@ -313,7 +313,7 @@ else {
 ///////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelPhysics::Clear(){
   EventMultiplicity=0;
-  DetectorNumber .clear();
+  DetectorNumber.clear();
   Strip_E.clear();
   Strip_T.clear();
   Strip_N.clear();
@@ -349,16 +349,18 @@ void TTiaraBarrelPhysics::ReadConfiguration(string Path){
   bool check_Y   = false ;
   bool check_Z   = false ;
 
-  //  bool ReadingStatusWedge = false ;
+  bool ReadingStatusStrip = false ;
   bool ReadingStatus    = false ;
 
   bool VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel(); ;
 
+
+  //while (getline(ConfigFile, LineBuffer)){
   while (!ConfigFile.eof()){
 
     getline(ConfigFile, LineBuffer);
-    // cout << LineBuffer << endl;
-    if (LineBuffer.compare(0, 11, "TiaraBarrel") == 0)
+    //  cout << LineBuffer << endl;
+    if (LineBuffer.compare(0, 11, "TiaraInnerBarrel") == 0)
       ReadingStatus = true;
 
     while (ReadingStatus && !ConfigFile.eof()) {
@@ -366,53 +368,73 @@ void TTiaraBarrelPhysics::ReadConfiguration(string Path){
       //   Comment Line
       if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
 
-      else if (DataBuffer == "X=") {
-        check_X = true;
-        ConfigFile >> DataBuffer ;
-        X= atof(DataBuffer.c_str());
-        if(VerboseLevel) cout << "  X= " << X << "mm" << endl;
-      }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////something here?
 
-      else if (DataBuffer == "Y=") {
-        check_Y = true;
-        ConfigFile >> DataBuffer ;
-        Y= atof(DataBuffer.c_str());
-        if(VerboseLevel) cout << "  Y= " << Y << "mm" << endl;
-      }
+//      //   Barrel case
+//      if (DataBuffer=="TiaraBarrelStrip"){
+//        if(VerboseLevel) cout << "///" << endl           ;
+//        if(VerboseLevel) cout << "Detector found: " << endl   ;
+//        ReadingStatusStrip = true ;
+//      }
 
-      else if (DataBuffer == "Z=") {
-        check_Z = true;
-        ConfigFile >> DataBuffer ;
-        Z= atof(DataBuffer.c_str());
-        if(VerboseLevel) cout << "  Z= " << Z << "deg" << endl;
-      }
+//      //   Reading Block
+//      while(ReadingStatusStrip){
+//        // Pickup Next Word
+//        ConfigFile >> DataBuffer ;
 
-      else if (DataBuffer == "ThicknessDector=") {
-        /*ignore that*/
-      }
+//        //   Comment Line
+//        if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
 
-      ///////////////////////////////////////////////////
-      //   If no Detector Token and no comment, toggle out
-      else{
-        ReadingStatus= false;
-        cout << "Error: Wrong Token Sequence: Getting out " << DataBuffer << endl ;
-        exit(1);
-      }
+//        //Position method
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////end of something here?
+      
+//        else if (DataBuffer == "X=") {
+//          check_X = true;
+//          ConfigFile >> DataBuffer ;
+//          X= atof(DataBuffer.c_str());
+//          if(VerboseLevel) cout << "  X= " << X << "mm" << endl;
+//        }
 
-      /////////////////////////////////////////////////
-      //   If All necessary information there, toggle out
+//        else if (DataBuffer == "Y=") {
+//          check_Y = true;
+//          ConfigFile >> DataBuffer ;
+//          Y= atof(DataBuffer.c_str());
+//          if(VerboseLevel) cout << "  Y= " << Y << "mm" << endl;
+//        }
 
-      if (check_X && check_Y && check_Z){
+//        else if (DataBuffer == "Z=") {
+//          check_Z = true;
+//          ConfigFile >> DataBuffer ;
+//          Z= atof(DataBuffer.c_str());
+//          if(VerboseLevel) cout << "  Z= " << Z << "deg" << endl;
+//        }
 
-        ReadingStatus= false;
-        AddDetector(X,Y,Z);
-        //   Reinitialisation of Check Boolean
-        check_X = false ;
-        check_Y = false ;
-        check_Z = false ;
+//        else if (DataBuffer == "ThicknessDector=") {
+//          /*ignore that*/
+//        }
+
+        ///////////////////////////////////////////////////
+        //   If no Detector Token and no comment, toggle out
+        else {
+          ReadingStatusStrip= false;
+          cout << "Error: Wrong Token Sequence: Getting out " << DataBuffer << endl ;
+          exit(1);
+        }
+
+        /////////////////////////////////////////////////
+        //   If All necessary information there, toggle out
+
+        if (check_X && check_Y && check_Z){
+
+          ReadingStatusStrip= false;
+          AddDetector(X,Y,Z);
+          //   Reinitialisation of Check Boolean
+          check_X = false ;
+          check_Y = false ;
+          check_Z = false ;
+        }
       }
     }
-  }
   InitializeStandardParameter();
   ReadAnalysisConfig();
 }
@@ -569,13 +591,12 @@ TVector3 TTiaraBarrelPhysics::GetPositionOfInteraction(const int i) const{
   double INNERBARREL_ActiveWafer_Width = 24.0;
 
   double StripPitch = INNERBARREL_ActiveWafer_Width/4. ;
-  double X = Strip_N[i]*StripPitch-0.5*INNERBARREL_ActiveWafer_Width;
-  double Y = INNERBARREL_PCB_Width*(0.5+sin(45*deg))  ; 
-  double Z = (Strip_Pos[i]-0.5)*INNERBARREL_ActiveWafer_Length ;
+  double X = (Strip_N[i]*StripPitch-0.5*INNERBARREL_ActiveWafer_Width)-(0.5*StripPitch);
+  double Y = INNERBARREL_PCB_Width*(0.5+sin(45*deg))  ; // this constant number is 33.50928425
+  double Z = Strip_Pos[i]*(0.5*INNERBARREL_ActiveWafer_Length);  //original = double Z = (Strip_Pos[i]-0.5)*INNERBARREL_ActiveWafer_Length ;
   TVector3 POS(X,Y,-Z);
   POS.RotateZ((DetectorNumber[i]-1)*45*deg);
   return( POS ) ;
-
 }
 ///////////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelPhysics::InitializeStandardParameter(){

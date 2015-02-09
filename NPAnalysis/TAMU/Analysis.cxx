@@ -342,7 +342,8 @@ int main(int argc, char** argv){
       /************************************************/
       // Part 5a : Implementing impact matrix for the Tiara Barrel (all 8 detecting strips)
       TVector3 ImpactPositionB = TB -> GetPositionOfInteraction(countTiaraBarrel);
-//      int xcheck = ImpactPositionB.X();
+//      double xcheck = ImpactPositionB.X();
+//      double ycheck = ImpactPositionB.Y();
 //      cout << "event x value is " << xcheck << endl;
 //      int StripNumberB = TB -> Strip_N[countTiaraBarrel];
 //      cout << "Barrel resistive strip number is " << StripNumberB << endl;
@@ -376,45 +377,83 @@ int main(int argc, char** argv){
 //        BStripNumber4Z = ImpactPositionB.Z();
 //        }
 
+      // The next lines randomise the above impact matrix stuff. Next week I need to move this to Part 6a) (starting on line 433) whilst I tidy EVERYTHING up.
+
+//      double RandomNumber3 = Rand->Rndm();
+//      double DeltaX = (RandomNumber3 * 6.0);
+//      ImpactMatrixBCoordX = ImpactMatrixBCoordX - DeltaX; // randomises X within a given barrel resistive strip
+
       // Part 5b : Implementing impact matrix for each strip making up the octagonal Barrel individually
       if(DetectorNumberB==1){
         BarrelStrip1CoordX = ImpactPositionB.X();
+        double RandomNumber3 = Rand->Rndm();
+        double DeltaX = (RandomNumber3 * 6.0)-3.0;
+        BarrelStrip1CoordX = BarrelStrip1CoordX - DeltaX; // randomises X within a given barrel resistive strip
         BarrelStrip1CoordY = ImpactPositionB.Y();
         BarrelStrip1CoordZ = ImpactPositionB.Z();
         }
       if(DetectorNumberB==2){
         BarrelStrip2CoordX = ImpactPositionB.X();
         BarrelStrip2CoordY = ImpactPositionB.Y();
+        double RandomNumber3 = Rand->Rndm();
+        double DeltaX = (RandomNumber3 * 4.242640687)-2.121320344;
+        double DeltaY = DeltaX;
+        BarrelStrip2CoordX = BarrelStrip2CoordX - DeltaX;
+        BarrelStrip2CoordY = BarrelStrip2CoordY - DeltaY;
         BarrelStrip2CoordZ = ImpactPositionB.Z();
         }
       if(DetectorNumberB==3){
         BarrelStrip3CoordX = ImpactPositionB.X();
         BarrelStrip3CoordY = ImpactPositionB.Y();
+        double RandomNumber3 = Rand->Rndm();
+        double DeltaY = (RandomNumber3 * 6.0)-3.0;
+        BarrelStrip3CoordY = BarrelStrip3CoordY - DeltaY;
         BarrelStrip3CoordZ = ImpactPositionB.Z();
         }
       if(DetectorNumberB==4){
         BarrelStrip4CoordX = ImpactPositionB.X();
         BarrelStrip4CoordY = ImpactPositionB.Y();
+        double RandomNumber3 = Rand->Rndm();
+        double DeltaX = (RandomNumber3 * 4.242640687)-2.121320344;
+        double DeltaY = DeltaX;
+        BarrelStrip4CoordX = BarrelStrip4CoordX + DeltaX;
+        BarrelStrip4CoordY = BarrelStrip4CoordY - DeltaY;
         BarrelStrip4CoordZ = ImpactPositionB.Z();
         }
       if(DetectorNumberB==5){
         BarrelStrip5CoordX = ImpactPositionB.X();
+        double RandomNumber3 = Rand->Rndm();
+        double DeltaX = (RandomNumber3 * 6.0)-3.0;
+        BarrelStrip5CoordX = BarrelStrip5CoordX + DeltaX;
         BarrelStrip5CoordY = ImpactPositionB.Y();
         BarrelStrip5CoordZ = ImpactPositionB.Z();
         }
       if(DetectorNumberB==6){
         BarrelStrip6CoordX = ImpactPositionB.X();
         BarrelStrip6CoordY = ImpactPositionB.Y();
+        double RandomNumber3 = Rand->Rndm();
+        double DeltaX = (RandomNumber3 * 4.242640687)-2.121320344;
+        double DeltaY = DeltaX;
+        BarrelStrip6CoordX = BarrelStrip6CoordX + DeltaX;
+        BarrelStrip6CoordY = BarrelStrip6CoordY + DeltaY;
         BarrelStrip6CoordZ = ImpactPositionB.Z();
         }
       if(DetectorNumberB==7){
         BarrelStrip7CoordX = ImpactPositionB.X();
         BarrelStrip7CoordY = ImpactPositionB.Y();
+        double RandomNumber3 = Rand->Rndm();
+        double DeltaY = (RandomNumber3 * 6.0)-3.0;
+        BarrelStrip7CoordY = BarrelStrip7CoordY + DeltaY;
         BarrelStrip7CoordZ = ImpactPositionB.Z();
         }
       if(DetectorNumberB==8){
         BarrelStrip8CoordX = ImpactPositionB.X();
         BarrelStrip8CoordY = ImpactPositionB.Y();
+        double RandomNumber3 = Rand->Rndm();
+        double DeltaX = (RandomNumber3 * 4.242640687)-2.121320344;
+        double DeltaY = DeltaX;
+        BarrelStrip8CoordX = BarrelStrip8CoordX - DeltaX;
+        BarrelStrip8CoordY = BarrelStrip8CoordY + DeltaY;
         BarrelStrip8CoordZ = ImpactPositionB.Z();
         }
       
