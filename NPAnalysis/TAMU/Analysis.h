@@ -50,6 +50,9 @@ namespace VARIABLE{
   double RandomBarrelIMX;
   double RandomBarrelIMY;
   double RandomBarrelIMZ;
+  double TiaraIMX;
+  double TiaraIMY;
+  double TiaraIMZ;
   TInitialConditions* Init = new TInitialConditions();
 }
 

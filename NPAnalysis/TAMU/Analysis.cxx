@@ -236,6 +236,9 @@ int main(int argc, char** argv){
         RandomWedge6IMZ = RandomHyballIMZ;
         }
       */
+      TiaraIMX = RandomHyballIMX;
+      TiaraIMY = RandomHyballIMY;
+      TiaraIMZ = RandomHyballIMZ;
       /************************************************/
 		} // end loop TiaraHyball
 		//////////////////////////// LOOP on TiaraBarrel //////////////////
@@ -422,6 +425,9 @@ int main(int argc, char** argv){
         RandomBarrelIMY = RandomBarrelIMY + DeltaY;
         RandomBarrelIMZ = BarrelRandomImpactPosition.Z();
         }
+      TiaraIMX = RandomBarrelIMX;
+      TiaraIMY = RandomBarrelIMY;
+      TiaraIMZ = RandomBarrelIMZ;
       /************************************************/
 		} // end loop TiaraBarrel
 ////////////////////////////////////////////////////////////////
@@ -460,12 +466,15 @@ void InitOutputBranch() {
 	RootOutput::getInstance()->GetTree()->Branch("ELab",&ELab,"ELab/D");
 	RootOutput::getInstance()->GetTree()->Branch("ThetaLab",&ThetaLab,"ThetaLab/D");
 	RootOutput::getInstance()->GetTree()->Branch("ThetaCM",&ThetaCM,"ThetaCM/D");
-	RootOutput::getInstance()->GetTree()->Branch("RandomHyballIMX",&RandomHyballIMX,"RandomHyballIMX/D");
+/*	RootOutput::getInstance()->GetTree()->Branch("RandomHyballIMX",&RandomHyballIMX,"RandomHyballIMX/D");
 	RootOutput::getInstance()->GetTree()->Branch("RandomHyballIMY",&RandomHyballIMY,"RandomHyballIMY/D");
 	RootOutput::getInstance()->GetTree()->Branch("RandomHyballIMZ",&RandomHyballIMZ,"RandomHyballIMZ/D");
 	RootOutput::getInstance()->GetTree()->Branch("RandomBarrelIMX",&RandomBarrelIMX,"RandomBarrelIMX/D");
 	RootOutput::getInstance()->GetTree()->Branch("RandomBarrelIMY",&RandomBarrelIMY,"RandomBarrelIMY/D");
-	RootOutput::getInstance()->GetTree()->Branch("RandomBarrelIMZ",&RandomBarrelIMZ,"RandomBarrelIMZ/D");
+	RootOutput::getInstance()->GetTree()->Branch("RandomBarrelIMZ",&RandomBarrelIMZ,"RandomBarrelIMZ/D"); */
+	RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixX",&TiaraIMX,"TiaraImpactMatrixX/D");
+	RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixY",&TiaraIMY,"TiaraImpactMatrixY/D");
+	RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixZ",&TiaraIMZ,"TiaraImpactMatrixZ/D");
 }
 /////////////////////////////////////////////////////////////////////////////
 void InitInputBranch(){
