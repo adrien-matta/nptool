@@ -96,16 +96,18 @@ void TTiaraBarrelPhysics::BuildPhysicalEvent(){
                     +itoa(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i))
                     +"_STRIP"+itoa(m_PreTreatedData->GetFrontUpstreamEStripNbr(i))
                     +"_POS",(ED-EU)/(EU+ED));
-                //push back ED, EU - and check the ED vs EU graph!
+
+                UpStream_E.push_back(EU);
+                DownStream_E.push_back(ED);
                 Strip_Pos.push_back(POS); 
                 Strip_N.push_back(m_PreTreatedData->GetFrontUpstreamEStripNbr(i));
                 DetectorNumber.push_back(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i));
-                double E = (EU+ED) / CalibrationManager::getInstance()
+                double E = (EU+ED); /* / CalibrationManager::getInstance()
                   ->ApplyCalibration("TIARABARREL/BALLISTIC_B" 
                   + itoa(m_PreTreatedData->GetFrontDownstreamEDetectorNbr(i)) 
                   + "_STRIP" 
                   + itoa(m_PreTreatedData->GetFrontDownstreamEStripNbr(i)),
-                  POS);
+                  POS); */
                   Strip_E.push_back(E);
           }
         }

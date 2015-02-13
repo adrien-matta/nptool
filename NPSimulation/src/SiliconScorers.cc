@@ -305,6 +305,7 @@ G4bool PS_Silicon_Resistive::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   if(it!=EvtMap->GetMap()->end()){
     G4double* dummy = *(it->second);
     EnergyAndTime[0]+=dummy[0];
+    EnergyAndTime[1]+=dummy[1];
   }
   
   EvtMap->set(m_Index, EnergyAndTime);
