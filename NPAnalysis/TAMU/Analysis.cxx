@@ -64,7 +64,8 @@ int main(int argc, char** argv){
 	clock_t begin = clock();
 	clock_t end = begin;
 	cout.precision(5);
-	////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// main loop on entries
 	for (int i = 0; i < nentries; i++) {
 		if (i%10000 == 0 && i!=0)  {
@@ -95,13 +96,14 @@ int main(int argc, char** argv){
 		BeamEnergy = P30_CD2.Slow(BeamEnergy,TargetThickness/2.,0);
 		P30dpReaction->SetBeamEnergy(BeamEnergy);
 
-		//////////////////////////// LOOP on TiaraHyball + SSSD Hit //////////////////
+////////////////////////////////////////// LOOP on TiaraHyball + SSSD Hit //////////////////////////////////////////
 		for(unsigned int countTiaraHyball = 0 ; countTiaraHyball < TH->Strip_E.size() ; countTiaraHyball++){
 			/************************************************/
-			//Part 0 : Get the useful Data
+
 			// TiaraHyball
 
 			/************************************************/
+
 			// Part 1 : Impact Angle
 			ThetaTHSurface = 0;
 			ThetaNormalTarget = 0;
@@ -109,7 +111,6 @@ int main(int argc, char** argv){
 				TVector3 BeamImpact(XTarget,YTarget,0);
 				TVector3 HitDirection = TH -> GetPositionOfInteraction(countTiaraHyball) - BeamImpact ;
 				ThetaLab = HitDirection.Angle( BeamDirection );
-
 				ThetaTHSurface = HitDirection.Angle(TVector3(0,0,-1) );
 				ThetaNormalTarget = HitDirection.Angle( TVector3(0,0,1) ) ;
 			}
@@ -118,9 +119,9 @@ int main(int argc, char** argv){
 				ThetaTHSurface    = -1000  ;
 				ThetaNormalTarget = -1000  ;
 			}
-			/************************************************/
 
 			/************************************************/
+
 			// Part 2 : Impact Energy
 			Energy = ELab = 0;
 			Si_E_TH = TH->Strip_E[countTiaraHyball];
@@ -130,124 +131,46 @@ int main(int argc, char** argv){
 			ELab = proton_Al.EvaluateInitialEnergy( Energy ,0.4*micrometer , ThetaTHSurface); 
 			// Target Correction
 			ELab = proton_CD2.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget); 
-			/************************************************/
 
 			/************************************************/
+
 			// Part 3 : Excitation Energy Calculation
 			Ex = P30dpReaction -> ReconstructRelativistic( ELab , ThetaLab );
-		  /************************************************/
 
 			/************************************************/
+
 			// Part 4 : Theta CM Calculation
 			ThetaCM  = P30dpReaction -> EnergyLabToThetaCM( ELab , ThetaLab)/deg;
 		  ThetaLab=ThetaLab/deg;
 	
       /************************************************/
 
-      /************************************************/
-      // Part 5a : Implementing impact matrix for the entire Hyball (all 6 wedges)
+      // Part 5 : Implementing impact matrix for the entire Hyball (all 6 wedges)
       /*TVector3 HyballImpactPosition = TH -> GetPositionOfInteraction(countTiaraHyball);
-      int DetectorNumber = TH -> DetectorNumber[countTiaraHyball];
       HyballIMX = HyballImpactPosition.X();
       HyballIMY = HyballImpactPosition.Y();
-      HyballIMZ = HyballImpactPosition.Z();
-
-      // Part 5b : Implementing impact matrix for each wedge in the Hyball individually
-      if(DetectorNumber==1){
-        Wedge1IMX = HyballIMX;
-        Wedge1IMY = HyballIMY;
-        Wedge1IMZ = HyballIMZ;
-        }
-      if(DetectorNumber==2){
-        Wedge2IMX = HyballIMX;
-        Wedge2IMY = HyballIMY;
-        Wedge2IMZ = HyballIMZ;
-        }
-      if(DetectorNumber==3){
-        Wedge3IMX = HyballIMX;
-        Wedge3IMY = HyballIMY;
-        Wedge3IMZ = HyballIMZ;
-        }
-      if(DetectorNumber==4){
-        Wedge4IMX = HyballIMX;
-        Wedge4IMY = HyballIMY;
-        Wedge4IMZ = HyballIMZ;
-        }
-      if(DetectorNumber==5){
-        Wedge5IMX = HyballIMX;
-        Wedge5IMY = HyballIMY;
-        Wedge5IMZ = HyballIMZ;
-        }
-      if(DetectorNumber==6){
-        Wedge6IMX = HyballIMX;
-        Wedge6IMY = HyballIMY;
-        Wedge6IMZ = HyballIMZ;
-        } */
-      /************************************************/
+      HyballIMZ = HyballImpactPosition.Z();*/
 
       /************************************************/
-      // Part 6a : Implementing randomised position impact matrix for the entire Hyball (all 6 wedges)
-      TVector3 HyballRandomImpactPosition = TH -> GetPositionOfInteraction(countTiaraHyball);
-      double Zholder = HyballRandomImpactPosition.Z();
-      HyballRandomImpactPosition.SetZ(0.0);
-      //DetectorNumber = TH -> DetectorNumber[countTiaraHyball];
-      double R = HyballRandomImpactPosition.Mag();
-      double Theta = HyballRandomImpactPosition.Theta(); // defines Theta, the inclination coordinate in a spherical coordinate system
-      double Phi = HyballRandomImpactPosition.Phi(); // defines Phi, the azimuthal coordinate in a spherical coordinate system
-      double RandomNumber1 = Rand->Rndm();
-      double DeltaR = ((RandomNumber1 * 6.4)-3.2);
-      R = R + DeltaR; // randomises R within a given detector ring
-      double RandomNumber2 = Rand->Rndm();
-      double DeltaAngle = ((RandomNumber2 * 0.118682389)-0.0593411946);
-      Phi = Phi + DeltaAngle; // randomises Phi within a given detector sector
-      RandomHyballIMX = R*(sin(Theta))*(cos(Phi)); // defines the final randomised X coordinate by transforming the randomised spherical coordinates
-      RandomHyballIMY = R*(sin(Phi))*(sin(Theta)); // defines the final randomised Y coordinate by transforming the randomised spherical coordinates
-      RandomHyballIMZ = Zholder;
-      /*
-      // Part 6b : Implementing randomised position impact matrix for each wedge in the Hyball individually
-      if(DetectorNumber==1){
-        RandomWedge1IMX = RandomHyballIMX;
-        RandomWedge1IMY = RandomHyballIMY;
-        RandomWedge1IMZ = RandomHyballIMZ;
-        }
-      if(DetectorNumber==2){
-        RandomWedge2IMX = RandomHyballIMX;
-        RandomWedge2IMY = RandomHyballIMY;
-        RandomWedge2IMZ = RandomHyballIMZ;
-        }
-      if(DetectorNumber==3){
-        RandomWedge3IMX = RandomHyballIMX;
-        RandomWedge3IMY = RandomHyballIMY;
-        RandomWedge3IMZ = RandomHyballIMZ;
-        } 
-      if(DetectorNumber==4){
-        RandomWedge4IMX = RandomHyballIMX;
-        RandomWedge4IMY = RandomHyballIMY;
-        RandomWedge4IMZ = RandomHyballIMZ;
-        }
-      if(DetectorNumber==5){
-        RandomWedge5IMX = RandomHyballIMX;
-        RandomWedge5IMY = RandomHyballIMY;
-        RandomWedge5IMZ = RandomHyballIMZ;
-        }
-      if(DetectorNumber==6){
-        RandomWedge6IMX = RandomHyballIMX;
-        RandomWedge6IMY = RandomHyballIMY;
-        RandomWedge6IMZ = RandomHyballIMZ;
-        }
-      */
-      TiaraIMX = RandomHyballIMX;
-      TiaraIMY = RandomHyballIMY;
-      TiaraIMZ = RandomHyballIMZ;
+
+      // Part 6 : Implementing randomised position impact matrix for the Hyball
+      TVector3 HyballRandomImpactPosition = TH -> GetRandomisedPositionOfInteraction(countTiaraHyball);
+      TiaraIMX = HyballRandomImpactPosition.X();
+      TiaraIMY = HyballRandomImpactPosition.Y();
+      TiaraIMZ = HyballRandomImpactPosition.Z();
+
       /************************************************/
+
 		} // end loop TiaraHyball
-		//////////////////////////// LOOP on TiaraBarrel //////////////////
+
+////////////////////////////////////////// LOOP on TiaraBarrel /////////////////////////////////////////////////////
 		for(unsigned int countTiaraBarrel = 0 ; countTiaraBarrel < TB->Strip_E.size() ; countTiaraBarrel++){
 			/************************************************/
-			//Part 0 : Get the useful Data
+
       //TiaraBarrel
 
 			/************************************************/
+
 			// Part 1 : Impact Angle
 			ThetaTBSurface = 0;
 			ThetaNormalTarget = 0;
@@ -255,7 +178,6 @@ int main(int argc, char** argv){
 				TVector3 BeamImpact(XTarget,YTarget,0);
 				TVector3 HitDirection = TB -> GetPositionOfInteraction(countTiaraBarrel) - BeamImpact ;
 				ThetaLab = HitDirection.Angle( BeamDirection );
-
 				ThetaTBSurface = HitDirection.Angle(TVector3(0,0,-1) );
 				ThetaNormalTarget = HitDirection.Angle( TVector3(0,0,1) ) ;
 			}
@@ -266,7 +188,6 @@ int main(int argc, char** argv){
 			}
 			/************************************************/
 
-			/************************************************/
 			// Part 2 : Impact Energy
 			Energy = ELab = 0;
 			Si_E_TB = TB->Strip_E[countTiaraBarrel];
@@ -276,161 +197,38 @@ int main(int argc, char** argv){
 			ELab = proton_Al.EvaluateInitialEnergy( Energy ,0.4*micrometer , ThetaTBSurface); 
 			// Target Correction
 			ELab = proton_CD2.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
-			/************************************************/
 
 			/************************************************/
+
 			// Part 3 : Excitation Energy Calculation
 			Ex = P30dpReaction -> ReconstructRelativistic( ELab , ThetaLab );
+
 		  /************************************************/
 
-			/************************************************/
 			// Part 4 : Theta CM Calculation
 			ThetaCM  = P30dpReaction -> EnergyLabToThetaCM( ELab , ThetaLab)/deg;
 		  ThetaLab=ThetaLab/deg;
 	
       /************************************************/      
 
-      /************************************************/
-      // Part 5a : Implementing impact matrix for the Tiara Barrel (all 8 detecting strips)
+      // Part 5 : Implementing impact matrix for the Tiara Barrel (all 8 detecting strips)
       /*TVector3 BarrelImpactPosition = TB -> GetPositionOfInteraction(countTiaraBarrel);
-      int DetectorNumberB = TB -> DetectorNumber[countTiaraBarrel];
       BarrelIMX = BarrelImpactPosition.X();
       BarrelIMY = BarrelImpactPosition.Y();
-      BarrelIMZ = BarrelImpactPosition.Z();
-
-      // Part 5b : Implementing impact matrix for each strip of the octagonal Barrel individually
-      if(DetectorNumberB==1){
-        //TVector3 Wedge1IM = TH -> GetPositionOfInteraction(countTiaraHyball);
-        Strip1IMX = BarrelIMX;
-        Strip1IMY = BarrelIMY;
-        Strip1IMZ = BarrelIMZ;
-        }
-      if(DetectorNumberB==2){
-        //TVector3 Wedge2IM = TH -> GetPositionOfInteraction(countTiaraHyball);
-        Strip2IMX = BarrelIMX;
-        Strip2IMY = BarrelIMY;
-        Strip2IMZ = BarrelIMZ;
-        }
-      if(DetectorNumberB==3){
-        //TVector3 Wedge3IM = TH -> GetPositionOfInteraction(countTiaraHyball);
-        Strip3IMX = BarrelIMX;
-        Strip3IMY = BarrelIMY;
-        Strip3IMZ = BarrelIMZ;
-        }
-      if(DetectorNumberB==4){
-        //TVector3 Wedge4IM = TH -> GetPositionOfInteraction(countTiaraHyball);
-        Strip4IMX = BarrelIMX;
-        Strip4IMY = BarrelIMY;
-        Strip4IMZ = BarrelIMZ;
-        }
-      if(DetectorNumberB==5){
-        //TVector3 Wedge5IM = TH -> GetPositionOfInteraction(countTiaraHyball);
-        Strip5IMX = BarrelIMX;
-        Strip5IMY = BarrelIMY;
-        Strip5IMZ = BarrelIMZ;
-        }
-      if(DetectorNumberB==6){
-        //TVector3 Wedge6IM = TH -> GetPositionOfInteraction(countTiaraHyball);
-        Strip6IMX = BarrelIMX;
-        Strip6IMY = BarrelIMY;
-        Strip6IMZ = BarrelIMZ;
-        }
-      if(DetectorNumberB==7){
-        //TVector3 Wedge5IM = TH -> GetPositionOfInteraction(countTiaraHyball);
-        Strip7IMX = BarrelIMX;
-        Strip7IMY = BarrelIMY;
-        Strip7IMZ = BarrelIMZ;
-        }
-      if(DetectorNumberB==8){
-        //TVector3 Wedge6IM = TH -> GetPositionOfInteraction(countTiaraHyball);
-        Strip8IMX = BarrelIMX;
-        Strip8IMY = BarrelIMY;
-        Strip8IMZ = BarrelIMZ;
-        }*/
-      /************************************************/
+      BarrelIMZ = BarrelImpactPosition.Z();*/
 
       /************************************************/
-      // Part 6a&b : Implementing randomised position impact matrix for both the entire Barrel (all 8 strips) and each strip making up the octagonal Barrel individually
-      TVector3 BarrelRandomImpactPosition = TB -> GetPositionOfInteraction(countTiaraBarrel);
-      int DetectorNumberB = TB -> DetectorNumber[countTiaraBarrel];
-      if(DetectorNumberB==1){
-        RandomBarrelIMX = BarrelRandomImpactPosition.X();
-        double RandomNumber3 = Rand->Rndm();
-        double DeltaX = (RandomNumber3 * 6.0)-3.0;
-        RandomBarrelIMX = RandomBarrelIMX - DeltaX;
-        RandomBarrelIMY = BarrelRandomImpactPosition.Y();
-        RandomBarrelIMZ = BarrelRandomImpactPosition.Z();
-        }
-      if(DetectorNumberB==2){
-        RandomBarrelIMX = BarrelRandomImpactPosition.X();
-        RandomBarrelIMY = BarrelRandomImpactPosition.Y();
-        double RandomNumber3 = Rand->Rndm();
-        double DeltaX = (RandomNumber3 * 4.242640687)-2.121320344;
-        double DeltaY = DeltaX;
-        RandomBarrelIMX = RandomBarrelIMX - DeltaX;
-        RandomBarrelIMY = RandomBarrelIMY - DeltaY;
-        RandomBarrelIMZ = BarrelRandomImpactPosition.Z();
-        }
-      if(DetectorNumberB==3){
-        RandomBarrelIMX = BarrelRandomImpactPosition.X();
-        RandomBarrelIMY = BarrelRandomImpactPosition.Y();
-        double RandomNumber3 = Rand->Rndm();
-        double DeltaY = (RandomNumber3 * 6.0)-3.0;
-        RandomBarrelIMY = RandomBarrelIMY - DeltaY;
-        RandomBarrelIMZ = BarrelRandomImpactPosition.Z();
-        }
-      if(DetectorNumberB==4){
-        RandomBarrelIMX = BarrelRandomImpactPosition.X();
-        RandomBarrelIMY = BarrelRandomImpactPosition.Y();
-        double RandomNumber3 = Rand->Rndm();
-        double DeltaX = (RandomNumber3 * 4.242640687)-2.121320344;
-        double DeltaY = DeltaX;
-        RandomBarrelIMX = RandomBarrelIMX + DeltaX;
-        RandomBarrelIMY = RandomBarrelIMY - DeltaY;
-        RandomBarrelIMZ = BarrelRandomImpactPosition.Z();
-        }
-      if(DetectorNumberB==5){
-        RandomBarrelIMX = BarrelRandomImpactPosition.X();
-        double RandomNumber3 = Rand->Rndm();
-        double DeltaX = (RandomNumber3 * 6.0)-3.0;
-        RandomBarrelIMX = RandomBarrelIMX + DeltaX;
-        RandomBarrelIMY = BarrelRandomImpactPosition.Y();
-        RandomBarrelIMZ = BarrelRandomImpactPosition.Z();
-        }
-      if(DetectorNumberB==6){
-        RandomBarrelIMX = BarrelRandomImpactPosition.X();
-        RandomBarrelIMY = BarrelRandomImpactPosition.Y();
-        double RandomNumber3 = Rand->Rndm();
-        double DeltaX = (RandomNumber3 * 4.242640687)-2.121320344;
-        double DeltaY = DeltaX;
-        RandomBarrelIMX = RandomBarrelIMX + DeltaX;
-        RandomBarrelIMY = RandomBarrelIMY + DeltaY;
-        RandomBarrelIMZ = BarrelRandomImpactPosition.Z();
-        }
-      if(DetectorNumberB==7){
-        RandomBarrelIMX = BarrelRandomImpactPosition.X();
-        RandomBarrelIMY = BarrelRandomImpactPosition.Y();
-        double RandomNumber3 = Rand->Rndm();
-        double DeltaY = (RandomNumber3 * 6.0)-3.0;
-        RandomBarrelIMY = RandomBarrelIMY + DeltaY;
-        RandomBarrelIMZ = BarrelRandomImpactPosition.Z();
-        }
-      if(DetectorNumberB==8){
-        RandomBarrelIMX = BarrelRandomImpactPosition.X();
-        RandomBarrelIMY = BarrelRandomImpactPosition.Y();
-        double RandomNumber3 = Rand->Rndm();
-        double DeltaX = (RandomNumber3 * 4.242640687)-2.121320344;
-        double DeltaY = DeltaX;
-        RandomBarrelIMX = RandomBarrelIMX - DeltaX;
-        RandomBarrelIMY = RandomBarrelIMY + DeltaY;
-        RandomBarrelIMZ = BarrelRandomImpactPosition.Z();
-        }
-      TiaraIMX = RandomBarrelIMX;
-      TiaraIMY = RandomBarrelIMY;
-      TiaraIMZ = RandomBarrelIMZ;
+
+      // Part 6 : Implementing randomised position impact matrix for both the entire Barrel (all 8 strips) and each strip making up the octagonal Barrel individually
+      TVector3 BarrelRandomImpactPosition = TB -> GetRandomisedPositionOfInteraction(countTiaraBarrel);
+      TiaraIMX = BarrelRandomImpactPosition.X();
+      TiaraIMY = BarrelRandomImpactPosition.Y();
+      TiaraIMZ = BarrelRandomImpactPosition.Z();
+
       /************************************************/
+
 		} // end loop TiaraBarrel
-////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		if(ELab>0)
 			RootOutput::getInstance()->GetTree()->Fill();
@@ -466,12 +264,6 @@ void InitOutputBranch() {
 	RootOutput::getInstance()->GetTree()->Branch("ELab",&ELab,"ELab/D");
 	RootOutput::getInstance()->GetTree()->Branch("ThetaLab",&ThetaLab,"ThetaLab/D");
 	RootOutput::getInstance()->GetTree()->Branch("ThetaCM",&ThetaCM,"ThetaCM/D");
-/*	RootOutput::getInstance()->GetTree()->Branch("RandomHyballIMX",&RandomHyballIMX,"RandomHyballIMX/D");
-	RootOutput::getInstance()->GetTree()->Branch("RandomHyballIMY",&RandomHyballIMY,"RandomHyballIMY/D");
-	RootOutput::getInstance()->GetTree()->Branch("RandomHyballIMZ",&RandomHyballIMZ,"RandomHyballIMZ/D");
-	RootOutput::getInstance()->GetTree()->Branch("RandomBarrelIMX",&RandomBarrelIMX,"RandomBarrelIMX/D");
-	RootOutput::getInstance()->GetTree()->Branch("RandomBarrelIMY",&RandomBarrelIMY,"RandomBarrelIMY/D");
-	RootOutput::getInstance()->GetTree()->Branch("RandomBarrelIMZ",&RandomBarrelIMZ,"RandomBarrelIMZ/D"); */
 	RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixX",&TiaraIMX,"TiaraImpactMatrixX/D");
 	RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixY",&TiaraIMY,"TiaraImpactMatrixY/D");
 	RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixZ",&TiaraIMZ,"TiaraImpactMatrixZ/D");

@@ -40,6 +40,9 @@ using namespace NPUNITS;
 
 //   ROOT
 #include "TChain.h"
+#include "TRandom3.h"
+
+  TRandom *Random = new TRandom3();
 ///////////////////////////////////////////////////////////////////////////
 
 ClassImp(TTiaraBarrelPhysics)
@@ -591,14 +594,29 @@ TVector3 TTiaraBarrelPhysics::GetPositionOfInteraction(const int i) const{
   double INNERBARREL_PCB_Width  = 27.76;
   double INNERBARREL_ActiveWafer_Length = 94.80; 
   double INNERBARREL_ActiveWafer_Width = 24.0;
+  double StripPitch = INNERBARREL_ActiveWafer_Width/4.0;
 
-  double StripPitch = INNERBARREL_ActiveWafer_Width/4. ;
   double X = (Strip_N[i]*StripPitch-0.5*INNERBARREL_ActiveWafer_Width)-(0.5*StripPitch);
-  double Y = INNERBARREL_PCB_Width*(0.5+sin(45*deg))  ; // this constant number is 33.50928425
-  double Z = Strip_Pos[i]*(0.5*INNERBARREL_ActiveWafer_Length);  //original = double Z = (Strip_Pos[i]-0.5)*INNERBARREL_ActiveWafer_Length ;
+  double Y = INNERBARREL_PCB_Width*(0.5+sin(45*deg));
+  double Z = Strip_Pos[i]*(0.5*INNERBARREL_ActiveWafer_Length); 
+  //original version of the line above = double Z = (Strip_Pos[i]-0.5)*INNERBARREL_ActiveWafer_Length;
   TVector3 POS(X,Y,-Z);
   POS.RotateZ((DetectorNumber[i]-1)*45*deg);
   return( POS ) ;
+}
+///////////////////////////////////////////////////////////////////////////////
+TVector3 TTiaraBarrelPhysics::GetRandomisedPositionOfInteraction(const int i) const{
+  TVector3 RandomPOS = GetPositionOfInteraction(i);
+  TVector3 v1(-12.0, 27.76*(0.5+sin(45*deg)), 0.0); // the numbers used in this line and the one below are related to those in lines 594-597
+  TVector3 v2(12.0, 27.76*(0.5+sin(45*deg)), 0.0);
+  v1.RotateZ((DetectorNumber[i]-1)*45*deg);
+  v2.RotateZ((DetectorNumber[i]-1)*45*deg);
+  TVector3 u = (v2-v1).Unit();
+  double RandomNumber = Random->Rndm();
+  TVector3 DeltaHolder((RandomNumber*6.0)-3.0,(RandomNumber*6.0)-3.0,0.0);
+  TVector3 DeltaVector(u.X()*DeltaHolder.X(),u.Y()*DeltaHolder.Y(),u.Z()*DeltaHolder.Z());
+  RandomPOS.SetXYZ(RandomPOS.X()+DeltaVector.X(),RandomPOS.Y()+DeltaVector.Y(),RandomPOS.Z()+DeltaVector.Z());
+  return( RandomPOS );
 }
 ///////////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelPhysics::InitializeStandardParameter(){

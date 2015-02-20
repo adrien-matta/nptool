@@ -156,6 +156,7 @@ class TTiaraBarrelPhysics : public TObject, public NPA::VDetector{
     int GetEventMultiplicity() const { return EventMultiplicity; };
 
     TVector3 GetPositionOfInteraction(const int i) const;   
+    TVector3 GetRandomisedPositionOfInteraction(const int i) const;  
     TVector3 GetDetectorNormal(const int i) const;
 
   private:   //   Parameter used in the analysis

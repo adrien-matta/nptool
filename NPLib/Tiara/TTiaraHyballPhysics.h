@@ -36,6 +36,7 @@
 #include "TVector3.h" 
 #include "TObject.h"
 #include "TH1.h"
+#include "TRandom3.h"
 
 class TTiaraHyballSpectra;
 
@@ -156,7 +157,8 @@ class TTiaraHyballPhysics : public TObject, public NPA::VDetector{
     // To be called after a build Physical Event 
     int GetEventMultiplicity() const { return EventMultiplicity; };
 
-    TVector3 GetPositionOfInteraction(const int i) const;   
+    TVector3 GetPositionOfInteraction(const int i) const;
+    TVector3 GetRandomisedPositionOfInteraction(const int i) const;   
     TVector3 GetDetectorNormal(const int i) const;
 
   private:   //   Parameter used in the analysis

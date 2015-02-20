@@ -42,12 +42,18 @@ using namespace NPUNITS;
 
 //   ROOT
 #include "TChain.h"
+#include "TVector3.h" 
+//#include "TRandom3.h"
+//#include "random"
+
+  TRandom *Rand = new TRandom3();
 ///////////////////////////////////////////////////////////////////////////
 
 ClassImp(TTiaraHyballPhysics)
   ///////////////////////////////////////////////////////////////////////////
   TTiaraHyballPhysics::TTiaraHyballPhysics(){
     EventMultiplicity   = 0 ;
+    //TRandom *Rand = new TRandom3();
     m_EventData         = new TTiaraHyballData ;
     m_PreTreatedData    = new TTiaraHyballData ;
     m_EventPhysics      = this ;
@@ -650,14 +656,31 @@ TVector3 TTiaraHyballPhysics::GetDetectorNormal( const int i) const{
 
 //}
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
 TVector3 TTiaraHyballPhysics::GetPositionOfInteraction(const int i) const{
   TVector3 Position = TVector3 ( GetStripPositionX(DetectorNumber[i],Strip_Ring[i],Strip_Sector[i] )    ,
       GetStripPositionY( DetectorNumber[i],Strip_Ring[i],Strip_Sector[i] )    ,
       GetStripPositionZ( DetectorNumber[i],Strip_Ring[i],Strip_Sector[i] ) ) ;
-
   return(Position) ;
-
 }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+TVector3 TTiaraHyballPhysics::GetRandomisedPositionOfInteraction(const int i) const{
+  TVector3 RandomPosition = GetPositionOfInteraction(i);
+  double Zholder = RandomPosition.Z();
+  RandomPosition.SetZ(0.0);
+  double R = RandomPosition.Mag();
+  double Theta = RandomPosition.Theta(); // defines the inclination coordinate in a spherical coordinate system
+  double Phi = RandomPosition.Phi(); // defines the azimuthal coordinate in a spherical coordinate system
+  double RandomNumber1 = Rand->Rndm();
+  double DeltaR = ((RandomNumber1 * 6.4)-3.2);
+  R = R + DeltaR; // randomises R within a given detector ring
+  double RandomNumber2 = Rand->Rndm();
+  double DeltaAngle = ((RandomNumber2 * 0.118682389)-0.0593411946);
+  Phi = Phi + DeltaAngle; // randomises Phi within a given detector sector
+  RandomPosition.SetXYZ(R*(sin(Theta))*(cos(Phi)),R*(sin(Phi))*(sin(Theta)),Zholder);
+  return(RandomPosition) ;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void TTiaraHyballPhysics::InitializeStandardParameter(){
   //   Enable all channel

@@ -44,12 +44,6 @@ namespace VARIABLE{
   double ELab;
   double ThetaLab;
   double ThetaCM;
-  double RandomHyballIMX;
-  double RandomHyballIMY;
-  double RandomHyballIMZ;
-  double RandomBarrelIMX;
-  double RandomBarrelIMY;
-  double RandomBarrelIMZ;
   double TiaraIMX;
   double TiaraIMY;
   double TiaraIMZ;
