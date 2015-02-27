@@ -250,6 +250,9 @@ double EnergyLoss::Slow(   double Energy          , // Energy of the detected pa
                            double Angle           ) // Particle Angle
                            const
    {
+    
+    if(TargetThickness==0) return Energy;
+    
     //   Lise file are given in MeV/u
       //   For SRIM and geant4 file fNumberOfMass = 1 whatever is the nucleus, file are given in MeV
       Energy = Energy / (double) fNumberOfMass ;
