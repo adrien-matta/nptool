@@ -184,7 +184,7 @@ void CalibrationManager::LoadParameterFromFile()
 
           //   Check this parameter is not already define
           if( fCalibrationCoeff.find(it->second) != fCalibrationCoeff.end() ) 
-            cout << "WARNING: Parameter " << it->second << " Already found. It will be rewritted " << endl;
+            cout << "WARNING: Parameter " << it->second << " Already found. It will be overwritten. " << endl;
 
           //   Add the list of Coeff to the Coeff map using Parameter Path as index
           fCalibrationCoeff[ it->second ] = Coeff ;
