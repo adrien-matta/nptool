@@ -6,6 +6,8 @@
 #
 # Author: Fons Rademakers, 29/2/2000
 
+SHELL := /bin/bash
+
 ROOTCONFIG   := root-config
 
 ARCH         := $(shell $(ROOTCONFIG) --arch)
@@ -30,7 +32,7 @@ ifneq ($(findstring debug, $(strip $(shell $(ROOTCONFIG) --config))),)
 OPT           = -g
 OPT2          = -g
 else
-OPT           = -O
+OPT           = -O3
 OPT2          = -O3
 endif
 endif
