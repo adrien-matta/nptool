@@ -3,3 +3,4 @@ liblist
 .core_libs
 .detector_libs
 DetectorList.inc
+*.mac
