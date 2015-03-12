@@ -82,31 +82,33 @@ void GeometricalEfficiency(const char * fname = "myResult"){
     hEmittThetaCM->Fill(initCond->GetThetaCM(0));
 
     if (interCoord->GetDetectedMultiplicity() > 0){
-      hDetecTheta->Fill(interCoord->GetDetectedAngleTheta(0));
+      hDetecTheta->Fill(initCond->GetThetaLab_WorldFrame(0));
       hDetecThetaCM->Fill(initCond->GetThetaCM(0));
     }
   }
   
   // efficiency in lab frame in %
-  TCanvas *c = new TCanvas("c", "efficiency");
-  TH1F *hEfficiency = new TH1F("hEfficiency", "Efficiency MUGAST", 180, 0, 180);
+  TCanvas *c = new TCanvas("c", "efficiency",800,800);
+  c->SetTopMargin(0.01);
+  c->SetRightMargin(0.03);
+  TH1F *hEfficiency = new TH1F("hEfficiency", "Efficiency", 180, 0, 180);
   hEfficiency->Divide(hDetecTheta, hEmittTheta, 100, 1);
   hEfficiency->GetXaxis()->SetTitle("#Theta (deg)");
   hEfficiency->GetYaxis()->SetTitle("#epsilon (%)");
   hEfficiency->Draw();
 
-
-  TCanvas* c4 = new TCanvas("c4", "CM Frame");
+  TCanvas* c4 = new TCanvas("c4", "CM Frame",800,800);
+  c4->SetTopMargin(0.01);
+  c4->SetRightMargin(0.03);
   TH1F* SolidACM = new TH1F(*hDetecThetaCM);
-  SolidACM->Sumw2();
-  TF1* C = new TF1("C",Form("%i /(4*%f)",nentries,M_PI),0,180);
-  SolidACM->Divide(C,1);
+ //// SolidACM->Sumw2();
+  TF1* C = new TF1("C",Form("1. /(2*%f*sin(x*%f/180.)*1*%f/180)",M_PI,M_PI,M_PI),0,180);
   SolidACM->Divide(hEmittThetaCM);
+  SolidACM->Divide(C,1);
   SolidACM->Draw();
   SolidACM->GetXaxis()->SetTitle("#theta_{CM} (deg)");
   SolidACM->GetYaxis()->SetTitle("d#Omega (sr) ");
   TF1* f = new TF1("f",Form("2 * %f * sin(x*%f/180.) *1*%f/180.",M_PI,M_PI,M_PI),0,180);
-  f->Draw("SAME");
   f->Draw("SAME");
   c4->Update();
 }
