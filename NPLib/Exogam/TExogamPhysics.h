@@ -27,8 +27,8 @@
 #include <map>
 
 // NPL
-#include "../include/CalibrationManager.h"
-#include "../include/VDetector.h"
+#include "NPCalibrationManager.h"
+#include "NPVDetector.h"
 #include "TExogamData.h"
 #include "TExogamSpectra.h"
 // ROOT 

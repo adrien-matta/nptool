@@ -31,8 +31,8 @@ using namespace std ;
 #include "TObject.h"
 //   NPL
 #include "TChateauCristalData.h"
-#include "../include/VDetector.h"
-#include "../include/CalibrationManager.h"
+#include "NPVDetector.h"
+#include "NPCalibrationManager.h"
 
 class TChateauCristalPhysics : public TObject, public NPA::VDetector
 {

@@ -27,8 +27,8 @@
 
 // NPL
 #include "TTrifoilData.h"
-#include "../include/CalibrationManager.h"
-#include "../include/VDetector.h"
+#include "NPCalibrationManager.h"
+#include "NPVDetector.h"
 // ROOT 
 #include "TVector2.h" 
 #include "TVector3.h" 

@@ -27,8 +27,8 @@ using namespace std;
 
 // NPL
 #include "TTigressData.h"
-#include "../include/CalibrationManager.h"
-#include "../include/VDetector.h"
+#include "NPCalibrationManager.h"
+#include "NPVDetector.h"
 
 // ROOT
 #include "TObject.h"

@@ -33,8 +33,8 @@ class TLaBr3Spectra;
 //   NPL
 #include "TLaBr3Data.h"
 #include "TLaBr3Spectra.h"
-#include "../include/VDetector.h"
-#include "../include/CalibrationManager.h"
+#include "NPVDetector.h"
+#include "NPCalibrationManager.h"
 
 class TLaBr3Physics : public TObject, public NPA::VDetector
 {

@@ -24,7 +24,7 @@
  *****************************************************************************/
 
 // NPL
-#include "../include/VDetector.h"
+#include "NPVDetector.h"
 #include "THeliosData.h"
 #include "THeliosPhysics.h"
 

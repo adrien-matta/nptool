@@ -3,4 +3,8 @@ liblist
 .core_libs
 .detector_libs
 DetectorList.inc
-*.mac
+bin
+DetectorClassList.txt
+Utility/Makefile
+Utility/npanalysis
+Utility/nptool-libmap

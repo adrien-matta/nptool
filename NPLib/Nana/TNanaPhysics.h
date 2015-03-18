@@ -29,7 +29,7 @@
 using namespace std ;
 
 // NPL
-#include "../include/VDetector.h"
+#include "NPVDetector.h"
 #include "TNanaData.h"
 
 // Root

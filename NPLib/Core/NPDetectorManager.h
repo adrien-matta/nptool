@@ -1,5 +1,5 @@
-#ifndef DetectorManager_h
-#define DetectorManager_h
+#ifndef NPDetectorManager_h
+#define NPDetectorManager_h
 /*****************************************************************************
  * Copyright (C) 2009-2014    this file is part of the NPTool Project        *
  *                                                                           *
@@ -21,7 +21,7 @@
  *                                                                           *
  *****************************************************************************/
 //   NPL
-#include "VDetector.h"
+#include "NPVDetector.h"
 
 // ROOT
 #include "TH1.h"

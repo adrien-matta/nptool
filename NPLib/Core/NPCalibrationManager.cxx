@@ -19,7 +19,7 @@
  *   This class is a singleton                                               *
  *                                                                           *
  *****************************************************************************/
-#include "CalibrationManager.h"
+#include "NPCalibrationManager.h"
 #include "TAsciiFile.h"
 #include "RootOutput.h"
 

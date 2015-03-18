@@ -24,7 +24,7 @@
  *****************************************************************************/
 
 // NPLib headers
-#include "../include/VSpectra.h"
+#include "NPVSpectra.h"
 #include "TLaBr3Data.h"
 #include "TLaBr3Physics.h"
 

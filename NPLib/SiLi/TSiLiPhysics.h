@@ -33,8 +33,8 @@ class TSiLiSpectra;
 //   NPL
 #include "TSiLiData.h"
 #include "TSiLiSpectra.h"
-#include "../include/VDetector.h"
-#include "../include/CalibrationManager.h"
+#include "NPVDetector.h"
+#include "NPCalibrationManager.h"
 
 class TSiLiPhysics : public TObject, public NPA::VDetector
 {

@@ -1,0 +1,5 @@
+ROOT_GENERATE_DICTIONARY( TRIPSData.h "" TRIPSDataDict.cxx "")
+add_library(NPRIPS SHARED TRIPSData.cxx TRIPSDataDict.cxx )
+target_link_libraries(NPRIPS ${ROOT_LIBRARIES} NPCore) 
+install(FILES TRIPSData.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
+

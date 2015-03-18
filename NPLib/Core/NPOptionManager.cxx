@@ -29,15 +29,14 @@
 
 
 NPOptionManager* NPOptionManager::instance = 0 ;
-
-NPOptionManager* NPOptionManager::getInstance(int argc, char** argv)
-{
+////////////////////////////////////////////////////////////////////////////////
+NPOptionManager* NPOptionManager::getInstance(int argc, char** argv){
   if (instance == 0) instance = new NPOptionManager(argc, argv);
   
   return instance ;
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 NPOptionManager* NPOptionManager::getInstance(string arg){
   
   if (instance == 0) instance = new NPOptionManager(arg);
@@ -59,6 +58,7 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
   fRunToReadFileName          = fDefaultRunToReadFileName;
   fCalibrationFileName        = fDefaultCalibrationFileName;
   fVerboseLevel               = 1;
+  fNumberOfEntryToAnalyse     = -1;
   fDisableAllBranchOption = false;
   fInputPhysicalTreeOption = false;
   fGenerateHistoOption = false ;
@@ -108,6 +108,7 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
 
     else if (argument == "--proof")                               fPROOFMode = true ;
     
+    else if (argument == "-L")                                    fNumberOfEntryToAnalyse= atoi(argv[++i]) ;
     //else ;
   }
   CheckArguments();
@@ -138,17 +139,14 @@ NPOptionManager::NPOptionManager(string arg)
     delete[] args[i];
   
 }
-
-void NPOptionManager::CheckArguments()
-{
+////////////////////////////////////////////////////////////////////////////////
+void NPOptionManager::CheckArguments(){
   CheckEventGenerator();
   CheckDetectorConfiguration();
 }
 
-
-
-void NPOptionManager::CheckEventGenerator()
-{
+////////////////////////////////////////////////////////////////////////////////
+void NPOptionManager::CheckEventGenerator(){
   bool checkFile = true;
   
   // NPTool path
@@ -177,10 +175,8 @@ void NPOptionManager::CheckEventGenerator()
   ConfigFile.close();
 }
 
-
-
-void NPOptionManager::CheckDetectorConfiguration()
-{
+////////////////////////////////////////////////////////////////////////////////
+void NPOptionManager::CheckDetectorConfiguration(){
   bool checkFile = true;
   
   // NPTool path
@@ -210,10 +206,9 @@ void NPOptionManager::CheckDetectorConfiguration()
 }
 
 
-
+////////////////////////////////////////////////////////////////////////////////
 // This method tests if the input files are the default ones
-bool NPOptionManager::IsDefault(const char* type) const
-{
+bool NPOptionManager::IsDefault(const char* type) const{
   bool result = false;
   
   string stype = type;
@@ -237,10 +232,9 @@ bool NPOptionManager::IsDefault(const char* type) const
 }
 
 
-
+////////////////////////////////////////////////////////////////////////////////
 // This method tests if the input files are the default ones
-void NPOptionManager::SendErrorAndExit(const char* type) const
-{
+void NPOptionManager::SendErrorAndExit(const char* type) const{
   string stype = type;
   if (stype == "EventGenerator") {
     cout << endl;
@@ -268,9 +262,8 @@ void NPOptionManager::SendErrorAndExit(const char* type) const
 }
 
 
-
-void NPOptionManager::DisplayHelp()
-{
+////////////////////////////////////////////////////////////////////////////////
+void NPOptionManager::DisplayHelp(){
   cout << endl << "----NPOptionManager Help----" << endl << endl ;
   cout << "List of Option " << endl ;
   cout << "\t --help　-H -h\t \t \t \t \t \t \t　Display this help message" << endl ;
@@ -285,6 +278,7 @@ void NPOptionManager::DisplayHelp()
   cout << "\t --generate-histo -GH\t \t \t \t \t \t  Instantiate the T*Spectra class of each detector" << endl ;
   cout << "\t --check-histo -CH\t \t \t \t \t \t  Check if the Histogram looks ok and change there color if not" << endl ;
   cout << "\t --input-physical -IP\t \t \t \t \t \t　Consider the Input file is containing Physics Class instead of Data Class. Output branches associate to the detector are not activated" << endl  ;
+  cout << "\t -L <arg>\t \t \t \t \t \t　Limite the number of envent to be analysed to arg" << endl ;
   cout << endl << endl ;
   
   // exit current program
@@ -292,13 +286,11 @@ void NPOptionManager::DisplayHelp()
 }
 
 
-
-void NPOptionManager::Destroy()
-{
+////////////////////////////////////////////////////////////////////////////////
+void NPOptionManager::Destroy(){
   if (instance != 0) {
     delete instance;
     instance = 0;
   }
 }
-
 

@@ -31,8 +31,8 @@ using namespace std ;
 
 //   NPL
 #include "TPlasticData.h"
-#include "../include/VDetector.h"
-#include "../include/CalibrationManager.h"
+#include "NPVDetector.h"
+#include "NPCalibrationManager.h"
 
 class TPlasticPhysics : public TObject, public NPA::VDetector
 {

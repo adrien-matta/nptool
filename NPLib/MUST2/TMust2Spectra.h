@@ -23,7 +23,7 @@
  *****************************************************************************/
 
 // NPLib headers
-#include "../include/VSpectra.h"
+#include "NPVSpectra.h"
 #include "TMust2Data.h"
 #include "TMust2Physics.h"
 

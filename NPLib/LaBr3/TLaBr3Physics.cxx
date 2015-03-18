@@ -22,8 +22,8 @@
 
 //   NPL
 #include "TLaBr3Physics.h"
-#include "../include/RootOutput.h"
-#include "../include/RootInput.h"
+#include "RootOutput.h"
+#include "RootInput.h"
 
 //   STL
 #include <iostream>

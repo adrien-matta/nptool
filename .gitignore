@@ -17,3 +17,9 @@ NPSimulation/tmp
 *LinkDef*
 *.png
 *.pdf
+#CMake
+*CMakeFiles*
+*cmake_install*
+*ninja*
+*install_manifest.txt*
+*CMakeCache*

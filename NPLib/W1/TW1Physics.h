@@ -32,8 +32,8 @@ using namespace std ;
 
 //   NPL
 #include "TW1Data.h"
-#include "../include/VDetector.h"
-#include "../include/CalibrationManager.h"
+#include "NPVDetector.h"
+#include "NPCalibrationManager.h"
 
 
 class TW1Physics : public TObject, public NPA::VDetector

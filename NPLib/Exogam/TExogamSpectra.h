@@ -24,7 +24,7 @@
  *****************************************************************************/
 
 // NPLib headers
-#include "../include/VSpectra.h"
+#include "NPVSpectra.h"
 #include "TExogamData.h"
 #include "TExogamPhysics.h"
 

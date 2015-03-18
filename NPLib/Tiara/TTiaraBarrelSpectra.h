@@ -24,7 +24,7 @@
  *****************************************************************************/
 
 // NPLib headers
-#include "../include/VSpectra.h"
+#include "NPVSpectra.h"
 #include "TTiaraBarrelData.h"
 #include "TTiaraBarrelPhysics.h"
 

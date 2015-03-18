@@ -23,7 +23,7 @@
  *****************************************************************************/
 
 // NPLib headers
-#include "../include/VSpectra.h"
+#include "NPVSpectra.h"
 #include "TComptonTelescopeData.h"
 #include "TComptonTelescopePhysics.h"
 

@@ -27,8 +27,8 @@
 
 // NPL
 #include "TS1Data.h"
-#include "../include/CalibrationManager.h"
-#include "../include/VDetector.h"
+#include "NPCalibrationManager.h"
+#include "NPVDetector.h"
 // ROOT 
 #include "TVector2.h" 
 #include "TVector3.h" 
@@ -185,6 +185,10 @@ class TAnnularS1Physics : public TObject, public NPA::VDetector{
     vector< vector < vector < double > > >   m_StripPositionY;//!
     vector< vector < vector < double > > >   m_StripPositionZ;//!
 
+
+
+  public: // Static constructor to be passed to the Detector Factory
+    static NPA::VDetector* Construct();
     ClassDef(TAnnularS1Physics,1)  // AnnularS1Physics structure
 };
 

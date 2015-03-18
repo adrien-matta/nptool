@@ -33,9 +33,9 @@
 #include "TCATSData.h"
 #include "TCATSSpectra.h"
 
-#include "../include/VDetector.h"
-#include "../include/CalibrationManager.h"
-#include "../include/DetectorManager.h"
+#include "NPVDetector.h"
+#include "NPCalibrationManager.h"
+#include "NPDetectorManager.h"
 
 #define NBDETECTOR	2
 #define	NBSTRIPS	28

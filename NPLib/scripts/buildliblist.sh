@@ -52,3 +52,13 @@ do
       printf " $name " >> $outfile
    fi ;
 done
+for file in lib/*.dylib
+do
+   if [ -f $file ] ; then 
+      # remove .so extension
+      name=${file%\.*}
+      # replace "lib/lib" pattern by "-l"
+      name=$(printf $name | sed -e "s/lib\/lib/-l/g")
+      printf " $name " >> $outfile
+   fi ;
+done

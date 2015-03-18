@@ -33,8 +33,8 @@ using namespace std ;
 
 //   NPL
 #include "TExlData.h"
-#include "../include/VDetector.h"
-#include "../include/CalibrationManager.h"
+#include "NPVDetector.h"
+#include "NPCalibrationManager.h"
 
 class TExlPhysics : public TObject, public NPA::VDetector
 {

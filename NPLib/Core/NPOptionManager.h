@@ -96,7 +96,8 @@ class NPOptionManager
       bool   GetCheckHistoOption()         {return fCheckHistoOption;}
       bool   GetPROOF()                    {return fPROOFMode;}
       int    GetVerboseLevel()             {return fVerboseLevel;}
-      
+      int    GetNumberOfEntryToAnalyse()   {return fNumberOfEntryToAnalyse;} 
+
       // Setters
       void SetReactionFile(string name)       {fReactionFileName = name;CheckEventGenerator();}
       void SetDetectorFile(string name)       {fDetectorFileName = name;CheckDetectorConfiguration();}
@@ -122,6 +123,7 @@ class NPOptionManager
       bool   fCheckHistoOption;
       bool   fPROOFMode; // if true, the system run in a pROOF environment
       int    fVerboseLevel; // 0 for not talk, 1 for talking
+      int    fNumberOfEntryToAnalyse; // use to limit the number of analysed in NPA
 };
 
 #endif

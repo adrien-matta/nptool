@@ -31,8 +31,8 @@ using namespace std ;
 
 //   NPL
 #include "TTacData.h"
-#include "../include/VDetector.h"
-#include "../include/CalibrationManager.h"
+#include "NPVDetector.h"
+#include "NPCalibrationManager.h"
 
 class TTacPhysics : public TObject, public NPA::VDetector
 {

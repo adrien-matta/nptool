@@ -33,8 +33,8 @@
 
 //   NPLib
 #include "TChio_digData.h"
-#include "../include/VDetector.h"
-#include "../include/CalibrationManager.h"
+#include "NPVDetector.h"
+#include "NPCalibrationManager.h"
 
 using namespace std ;
 

@@ -54,11 +54,11 @@ void NPToolLogon(bool verbosemode = false)
    TList* listfile = libdir.GetListOfFiles();
    
    // Since the list is ordered alphabetically and that the 
-   // libVDetector.so library should be loaded before the 
-   // lib*Physics.so libraries, it is then loaded manually 
+   // libVDetector.dylib library should be loaded before the 
+   // lib*Physics.dylib libraries, it is then loaded manually 
    // first.
    // Test if the lib directory is empty or not
-   if (listfile->GetEntries() > 2) gSystem->Load(libpath+"/libVDetector.so");
+   if (listfile->GetEntries() > 2) gSystem->Load(libpath+"/libNPCore.dylib");
 
    gSystem->Load("libPhysics.so"); // Needed by Must2 and Sharc
    gSystem->Load("libHist.so"); // Needed by TSpectra Class
@@ -67,7 +67,7 @@ void NPToolLogon(bool verbosemode = false)
    Int_t i = 0;
    while (listfile->At(i)) {
       TString libname = listfile->At(i++)->GetName();
-      if (libname.Contains("so") && libname.Contains("Data") && !libname.Contains("libVDetector.so")) {
+      if (libname.Contains(".dylib") && libname.Contains("Data") && !libname.Contains("libVDetector.dylib")) {
          TString lib = libpath + "/" + libname;
          gSystem->Load(lib);
       }
@@ -77,7 +77,7 @@ void NPToolLogon(bool verbosemode = false)
    i = 0;
    while (listfile->At(i)) {
       TString libname = listfile->At(i++)->GetName();
-      if (libname.Contains("so") && libname.Contains("Physics") &&!libname.Contains("libVDetector.so")) {
+      if (libname.Contains(".dylib") && libname.Contains("Physics") &&!libname.Contains("libVDetector.dylib")) {
          TString lib = libpath + "/" + libname;
          gSystem->Load(lib);
       }
@@ -87,7 +87,7 @@ void NPToolLogon(bool verbosemode = false)
    i = 0;
    while (listfile->At(i)) {
       TString libname = listfile->At(i++)->GetName();
-      if (libname.Contains("so") && !libname.Contains("Physics") && !libname.Contains("Data")  &&!libname.Contains("libVDetector.so")) {
+      if (libname.Contains(".dylib") && !libname.Contains("Physics") && !libname.Contains("Data")  &&!libname.Contains("libVDetector.dylib")) {
          TString lib = libpath + "/" + libname;
          gSystem->Load(lib);
       }

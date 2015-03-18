@@ -27,7 +27,7 @@
 #define Hyde2Tracker_H
 
 // NPL
-#include "../include/VDetector.h"
+#include "NPVDetector.h"
 #include "THyde2TrackerData.h"
 #include "THyde2TrackerPhysics.h"
 #include "Hyde2TrackerModule.h"

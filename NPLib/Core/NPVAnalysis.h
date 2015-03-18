@@ -1,40 +1,43 @@
+#ifndef NPAnalysis_h 
+#define NPAnalysis_h
 /*****************************************************************************
- * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
+ * Copyright (C) 2009-2014    this file is part of the NPTool Project        *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
+ * Original Author: Adrien MATTA  contact address: a.matta@surrey.ac.uk      *
  *                                                                           *
- * Original Author :  Adrien MATTA    contact address: matta@ipno.in2p3.fr   *
- *                                                                           *
- * Creation Date   :   June 2009                                             *
- * Last update     :                                                         *
+ * Creation Date  : march 2025                                               *
+ * Last update    :                                                          *
  *---------------------------------------------------------------------------*
- * Decription:  Class VDetector (virtual) for NPAnalysis                     *
- * All detector class used in NPAnalysis should derived from this virtual    *
- *  class. Those VDetector daughter will deal with geometry, calibration and *
- *  basic data treatment.                                                    *
+ * Decription:                                                               *
+ * Class describing the property of an Analysis object                       *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *   See MUST2 array for exemple of VDetector derived class                  *
+ *                                                                           *
  *                                                                           *
  *****************************************************************************/
- #include "VDetector.h"
 
-using namespace NPA ;
+#include"NPDetectorManager.h"
+namespace NPA{
+  class VAnalysis{
+    public:
+     VAnalysis();
+     ~VAnalysis();
 
-ClassImp(VDetector);
+    public: 
+      virtual void TreatEvent(){};
+      virtual void Init(){};
+      virtual void End(){};
+      
+      void SetDetectorManager(NPA::DetectorManager*);
 
-// Constructor
-VDetector::VDetector()
-{
+    protected:
+      NPA::DetectorManager* m_DetectorManager;
+  };
 }
-
-
-// Destructor
-VDetector::~VDetector()
-{
-}
+#endif

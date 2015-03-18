@@ -1,0 +1,6 @@
+ROOT_GENERATE_DICTIONARY( TS1Data.h "" TS1DataDict.cxx "")
+ROOT_GENERATE_DICTIONARY( TAnnularS1Physics.h "" TAnnularS1PhysicsDict.cxx "../Core")
+add_library(NPAnnularS1 SHARED TS1Data.cxx TAnnularS1Physics.cxx TS1DataDict.cxx TAnnularS1PhysicsDict.cxx)
+target_link_libraries(NPAnnularS1 ${ROOT_LIBRARIES} NPCore) 
+install(FILES TS1Data.h TAnnularS1Physics.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
+install(FILES TS1DataDict_rdict.pcm TAnnularS1PhysicsDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})

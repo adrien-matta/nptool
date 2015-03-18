@@ -12,7 +12,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold AnnularS1 treated data                                       *
+ *  This class hold AnnularS1 treated data                                   *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -33,6 +33,7 @@ using namespace ANNULARS1_LOCAL;
 #include "RootOutput.h"
 #include "TAsciiFile.h"
 #include "NPOptionManager.h"
+#include "NPDetectorFactory.h"
 //   ROOT
 #include "TChain.h"
 ///////////////////////////////////////////////////////////////////////////
@@ -472,7 +473,6 @@ void TAnnularS1Physics::InitializeRootInputRaw(){
   inputChain->SetBranchStatus( "AnnularS1" , true );
   inputChain->SetBranchStatus( "fS1_*" , true );
   inputChain->SetBranchAddress( "AnnularS1" , &m_EventData );
-
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -609,5 +609,26 @@ namespace ANNULARS1_LOCAL{
     return CalibrationManager::getInstance()->ApplyCalibration(   "ANNULARS1/D" + itoa( m_EventData->GetS1PhiTDetectorNbr(i) ) + "_STRIP_BACK" + itoa( m_EventData->GetS1PhiTStripNbr(i) ) +"_T",
         m_EventData->GetS1PhiTTime(i) );
   }
+}
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* TAnnularS1Physics::Construct(){
+  return (NPA::VDetector*) new TAnnularS1Physics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("AnnularS1","AnnularS1");
+      NPA::DetectorFactory::getInstance()->AddDetector("AnnularS1",TAnnularS1Physics::Construct);
+    }
+};
+
+proxy p;
 }
 

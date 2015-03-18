@@ -30,8 +30,8 @@ using namespace std ;
 
 //   NPL
 #include "TSSSDData.h"
-#include "../include/VDetector.h"
-#include "../include/CalibrationManager.h"
+#include "NPVDetector.h"
+#include "NPCalibrationManager.h"
 
 
 class TSSSDPhysics : public TObject, public NPA::VDetector

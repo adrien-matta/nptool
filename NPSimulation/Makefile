@@ -3,7 +3,6 @@ DELFILES	= DelIncSrcFiles
 NPSIM		= NPSimulation
 
 all:	$(DELFILES) $(COPYFILES) $(NPSIM)
-
 DelIncSrcFiles: $(NPTOOL)/NPLib/liblist
 	./scripts/deletefiles.sh
 

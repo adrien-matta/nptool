@@ -28,8 +28,8 @@
 // NPL
 #include "TTiaraHyballData.h"
 #include "TTiaraHyballSpectra.h"
-#include "../include/CalibrationManager.h"
-#include "../include/VDetector.h"
+#include "NPCalibrationManager.h"
+#include "NPVDetector.h"
 
 // ROOT 
 #include "TVector2.h" 

@@ -23,6 +23,8 @@ else
   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$NPTOOL/NPLib/lib
 fi
 
+export PATH=$PATH:$NPLIB/bin
+
 alias NPSimulation='$NPTOOL/NPSimulation/bin/$G4SYSTEM/Simulation'
 alias NPAnalysis='$NPANA/Analysis'
 

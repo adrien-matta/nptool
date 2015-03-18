@@ -40,8 +40,8 @@ using namespace std ;
 #include "TSpegDCData.h"
 #include "TSpegCHIOData.h"
 #include "TSpegPlasticData.h"
-#include "../include/VDetector.h"
-#include "../include/CalibrationManager.h"
+#include "NPVDetector.h"
+#include "NPCalibrationManager.h"
 
 class TSpegPhysics : public TObject, public NPA::VDetector
 {

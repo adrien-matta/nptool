@@ -28,7 +28,7 @@
 
 
 // NPL
-#include "../include/VDetector.h"
+#include "NPVDetector.h"
 #include "TGaspardTrackerData.h"
 #include "TGaspardTrackerPhysics.h"
 #include "GaspardTrackerModule.h"

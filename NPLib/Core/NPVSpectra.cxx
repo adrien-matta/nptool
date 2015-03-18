@@ -22,7 +22,7 @@
  *****************************************************************************/
 
 // NPL
-#include "VSpectra.h"
+#include "NPVSpectra.h"
 #include "NPOptionManager.h"
 #include "RootOutput.h"
 
