@@ -425,8 +425,8 @@ extern "C"{
 class anproxy{
   public:
     anproxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("Chio_an","Chio");
-      NPA::DetectorFactory::getInstance()->AddDetector("Chio_an",TChio_anPhysics::Construct);
+      NPA::DetectorFactory::getInstance()->AddToken("IonisationChamber","Chio");
+      NPA::DetectorFactory::getInstance()->AddDetector("IonisationChamber",TChio_anPhysics::Construct);
     }
 };
 

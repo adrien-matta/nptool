@@ -1410,8 +1410,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("Must2","Must2");
-      NPA::DetectorFactory::getInstance()->AddDetector("Must2",TMust2Physics::Construct);
+      NPA::DetectorFactory::getInstance()->AddToken("MUST2Array","Must2");
+      NPA::DetectorFactory::getInstance()->AddDetector("MUST2Array",TMust2Physics::Construct);
     }
 };
 

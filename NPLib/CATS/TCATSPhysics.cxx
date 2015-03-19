@@ -994,8 +994,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("CATS","CATS");
-      NPA::DetectorFactory::getInstance()->AddDetector("CATS",TCATSPhysics::Construct);
+      NPA::DetectorFactory::getInstance()->AddToken("CATSDetector","CATS");
+      NPA::DetectorFactory::getInstance()->AddDetector("CATSDetector",TCATSPhysics::Construct);
     }
 };
 

@@ -441,8 +441,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("Chio_dig","Chio");
-      NPA::DetectorFactory::getInstance()->AddDetector("Chio_dig",TChio_digPhysics::Construct);
+      NPA::DetectorFactory::getInstance()->AddToken("Chio","Chio");
+      NPA::DetectorFactory::getInstance()->AddDetector("Chio",TChio_digPhysics::Construct);
     }
 };
 

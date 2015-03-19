@@ -1385,8 +1385,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("Charissa","Charissa");
-      NPA::DetectorFactory::getInstance()->AddDetector("Charissa",TCharissaPhysics::Construct);
+      NPA::DetectorFactory::getInstance()->AddToken("CharissaTelescope","Charissa");
+      NPA::DetectorFactory::getInstance()->AddDetector("CharissaTelescope",TCharissaPhysics::Construct);
     }
 };
 

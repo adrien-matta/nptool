@@ -742,8 +742,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("Exogam","Exogam");
-      NPA::DetectorFactory::getInstance()->AddDetector("Exogam",TExogamPhysics::Construct);
+      NPA::DetectorFactory::getInstance()->AddToken("EXOGAMArray","Exogam");
+      NPA::DetectorFactory::getInstance()->AddDetector("EXOGAMArray",TExogamPhysics::Construct);
     }
 };
 

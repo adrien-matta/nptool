@@ -318,8 +318,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("Exl","Exl");
-      NPA::DetectorFactory::getInstance()->AddDetector("Exl",TExlPhysics::Construct);
+      NPA::DetectorFactory::getInstance()->AddToken("EXL","Exl");
+      NPA::DetectorFactory::getInstance()->AddDetector("EXL",TExlPhysics::Construct);
     }
 };
 
