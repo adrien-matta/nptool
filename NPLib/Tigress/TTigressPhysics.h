@@ -92,7 +92,9 @@ class TTigressPhysics :  public TObject, public NPA::VDetector{
     TVector3 GetPositionOfInteraction(int i) ;
     
          
-   ClassDef(TTigressPhysics,1)  // TigressPhysics structure
+   public: // Static constructor to be passed to the Detector Factory
+     static NPA::VDetector* Construct();
+     ClassDef(TTigressPhysics,1)  // TigressPhysics structure
 };
 
 

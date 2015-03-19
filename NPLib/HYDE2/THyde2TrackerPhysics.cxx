@@ -22,7 +22,7 @@
  *****************************************************************************/
 
 #include "THyde2TrackerPhysics.h"
-
+#include "NPDetectorFactory.h"
 
 ClassImp(THyde2TrackerPhysics)
 
@@ -68,3 +68,25 @@ void THyde2TrackerPhysics::Clear()
    fFourthStage_Time.clear();
    fFourthStage_Position.clear();
 }
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* THyde2TrackerPhysics::Construct(){
+  return (NPA::VDetector*) new THyde2TrackerPhysics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("Hyde2Tracker","Hyde2Tracker");
+      NPA::DetectorFactory::getInstance()->AddDetector("Hyde2Tracker",THyde2TrackerPhysics::Construct);
+    }
+};
+
+proxy p;
+}
+

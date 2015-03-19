@@ -96,7 +96,9 @@ class TTrifoilPhysics : public TObject, public NPA::VDetector
          TTrifoilPhysics*      m_EventPhysics;//!
 
         
-   ClassDef(TTrifoilPhysics,1)  // TrifoilPhysics structure
+   public: // Static constructor to be passed to the Detector Factory
+     static NPA::VDetector* Construct();
+     ClassDef(TTrifoilPhysics,1)  // TrifoilPhysics structure
 };
 
 #endif

@@ -92,7 +92,9 @@ class TTacPhysics : public TObject, public NPA::VDetector
       TTacData*         EventData ;//!
       TTacPhysics*      EventPhysics ;//!
 
-      ClassDef(TTacPhysics,1)  // TacPhysics structure
+      public: // Static constructor to be passed to the Detector Factory
+     static NPA::VDetector* Construct();
+     ClassDef(TTacPhysics,1)  // TacPhysics structure
 };
 
 #endif

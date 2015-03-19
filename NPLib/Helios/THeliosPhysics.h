@@ -23,16 +23,14 @@
  *                                                                           *
  *****************************************************************************/
 
-
-
+#include <cstdlib>
 #include <vector>
 #include "TObject.h"
 #include "THeliosData.h"
-#include <cstdlib>
-
+#include "NPVDetector.h"
 using namespace std ;
 
-class THeliosPhysics : public TObject
+class THeliosPhysics : public TObject , public NPA::VDetector
 {
 public:
    THeliosPhysics();
@@ -65,7 +63,9 @@ public:
    vector<double>	TotalEnergy;
    vector<double>	TotalTime;
 
-   ClassDef(THeliosPhysics,1)  // HeliosPHysics structure
+   public: // Static constructor to be passed to the Detector Factory
+     static NPA::VDetector* Construct();
+     ClassDef(THeliosPhysics,1)  // HeliosPHysics structure
 };
 
 #endif

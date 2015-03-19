@@ -205,7 +205,9 @@ class TComptonTelescopePhysics : public TObject, public NPA::VDetector
       map< vector<string> , TH1*> GetSpectra();
 
 
-   ClassDef(TComptonTelescopePhysics,1)  // ComptonTelescopePhysics structure
+   public: // Static constructor to be passed to the Detector Factory
+     static NPA::VDetector* Construct();
+     ClassDef(TComptonTelescopePhysics,1)  // ComptonTelescopePhysics structure
 };
 
 

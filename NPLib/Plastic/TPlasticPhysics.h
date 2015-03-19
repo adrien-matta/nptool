@@ -91,7 +91,9 @@ class TPlasticPhysics : public TObject, public NPA::VDetector
       TPlasticData*         EventData ;//!
       TPlasticPhysics*      EventPhysics ;//!
 
-      ClassDef(TPlasticPhysics,1)  // PlasticPhysics structure
+      public: // Static constructor to be passed to the Detector Factory
+     static NPA::VDetector* Construct();
+     ClassDef(TPlasticPhysics,1)  // PlasticPhysics structure
 };
 
 #endif

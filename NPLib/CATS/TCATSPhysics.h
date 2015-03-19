@@ -36,6 +36,7 @@
 #include "NPVDetector.h"
 #include "NPCalibrationManager.h"
 #include "NPDetectorManager.h"
+#include "NPDetectorFactory.h"
 
 #define NBDETECTOR	2
 #define	NBSTRIPS	28
@@ -195,7 +196,9 @@ class TCATSPhysics : public TObject, public NPA::VDetector
   public: // Spectra Getter
     map< vector<string> , TH1*> GetSpectra();
 
-    ClassDef(TCATSPhysics,1)  // CATSPhysics structure
+    public: // Static constructor to be passed to the Detector Factory
+     static NPA::VDetector* Construct();
+     ClassDef(TCATSPhysics,1)  // CATSPhysics structure
 };
 
 

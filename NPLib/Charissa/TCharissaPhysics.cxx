@@ -33,6 +33,7 @@ using namespace CHARISSA_LOCAL;
 #include "RootOutput.h"
 #include "TAsciiFile.h"
 #include "NPOptionManager.h"
+#include "NPDetectorFactory.h"
 
 //   ROOT
 #include "TChain.h"
@@ -1369,4 +1370,26 @@ namespace CHARISSA_LOCAL
 
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* TCharissaPhysics::Construct(){
+  return (NPA::VDetector*) new TCharissaPhysics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("Charissa","Charissa");
+      NPA::DetectorFactory::getInstance()->AddDetector("Charissa",TCharissaPhysics::Construct);
+    }
+};
+
+proxy p;
+}
 

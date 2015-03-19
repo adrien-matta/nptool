@@ -161,7 +161,9 @@ class TParisPhysics : public TObject, public NPA::VDetector{
     vector<double>   ParisInTotalEnergy;
     vector<double>   ParisOutTotalEnergy;
 
-    ClassDef(TParisPhysics,1)
+    public: // Static constructor to be passed to the Detector Factory
+     static NPA::VDetector* Construct();
+     ClassDef(TParisPhysics,1)
 };
 
 #endif

@@ -118,7 +118,9 @@ class TSSSDPhysics : public TObject, public NPA::VDetector
    void Clear();
    void Clear(const Option_t*) {};
    
-   ClassDef(TSSSDPhysics,1)  // SSSDPhysics structure
+   public: // Static constructor to be passed to the Detector Factory
+     static NPA::VDetector* Construct();
+     ClassDef(TSSSDPhysics,1)  // SSSDPhysics structure
 };
 
 

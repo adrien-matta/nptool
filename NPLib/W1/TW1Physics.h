@@ -189,7 +189,9 @@ class TW1Physics : public TObject, public NPA::VDetector
    double m_StripPitch;       //!
 
 
-   ClassDef(TW1Physics,1)  // TW1Physics
+   public: // Static constructor to be passed to the Detector Factory
+     static NPA::VDetector* Construct();
+     ClassDef(TW1Physics,1)  // TW1Physics
 };
 
 

@@ -9,6 +9,8 @@ set(CMAKE_BUILD_TYPE Release)
 
 set(DETLIST ${ETLIST})
 
+message("Building the following detector ${DETLIST}")
+
 # Add root to the link and include directories
 include_directories( ${ROOT_INCLUDE_DIR})
 link_directories( ${ROOT_LIBRARY_DIR})

@@ -143,7 +143,9 @@ class TFatimaPhysics : public TObject, public NPA::VDetector{
     vector<double>   FatimaInTotalEnergy;
     vector<double>   FatimaOutTotalEnergy;
 
-    ClassDef(TFatimaPhysics,1)
+    public: // Static constructor to be passed to the Detector Factory
+     static NPA::VDetector* Construct();
+     ClassDef(TFatimaPhysics,1)
 };
 
 #endif

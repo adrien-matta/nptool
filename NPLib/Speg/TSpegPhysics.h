@@ -315,7 +315,9 @@ class TSpegPhysics : public TObject, public NPA::VDetector
       TSpegPlasticData*         EventPlasticData ;//!
       TSpegPhysics*      EventPhysics ;//!
 
-      ClassDef(TSpegPhysics,1)  // SpegPhysics structure
+      public: // Static constructor to be passed to the Detector Factory
+     static NPA::VDetector* Construct();
+     ClassDef(TSpegPhysics,1)  // SpegPhysics structure
 };
 
 #endif

@@ -29,6 +29,7 @@ using namespace std;
 
 //   NPL
 #include "RootInput.h"
+#include "NPDetectorFactory.h"
 #include "RootOutput.h"
 #include "TAsciiFile.h"
 //   ROOT
@@ -209,5 +210,27 @@ void TTigressPhysics::ClearEventData() {
 
 m_EventData->Clear();
 m_PreTreatedData->Clear();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* TTigressPhysics::Construct(){
+  return (NPA::VDetector*) new TTigressPhysics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("Tigress","Tigress");
+      NPA::DetectorFactory::getInstance()->AddDetector("Tigress",TTigressPhysics::Construct);
+    }
+};
+
+proxy p;
 }
 

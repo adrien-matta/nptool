@@ -176,7 +176,9 @@ class TExogamPhysics : public TObject, public NPA::VDetector
   public: // Spectra Getter
     map< vector<string> , TH1*> GetSpectra(); 		
 
-  ClassDef(TExogamPhysics,1)  // ExogamPhysics structure
+  public: // Static constructor to be passed to the Detector Factory
+     static NPA::VDetector* Construct();
+     ClassDef(TExogamPhysics,1)  // ExogamPhysics structure
     };
 
 namespace EXOGAM_LOCAL

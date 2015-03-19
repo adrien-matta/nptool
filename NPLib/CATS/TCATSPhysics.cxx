@@ -34,6 +34,7 @@ using namespace CATS_LOCAL;
 using namespace std;
 //	NPL
 #include "RootInput.h"
+#include "NPDetectorFactory.h"
 #include "RootOutput.h"
 //	ROOT
 #include "TChain.h"
@@ -977,5 +978,27 @@ namespace CATS_LOCAL{
   double fCATS_Ped_Y(const TCATSData* m_EventData, const int i){
     return CalibrationManager::getInstance()->GetPedestal( "CATS/D" + itoa( m_EventData->GetCATSDetY(i) ) + "_Y" + itoa( m_EventData->GetCATSStripY(i) ) );
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* TCATSPhysics::Construct(){
+  return (NPA::VDetector*) new TCATSPhysics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("CATS","CATS");
+      NPA::DetectorFactory::getInstance()->AddDetector("CATS",TCATSPhysics::Construct);
+    }
+};
+
+proxy p;
 }
 

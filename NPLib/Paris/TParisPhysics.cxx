@@ -24,6 +24,7 @@
 // NPL
 #include "TParisPhysics.h"
 #include "RootInput.h"
+#include "NPDetectorFactory.h"
 #include "RootOutput.h"
 
 //  STL
@@ -931,5 +932,27 @@ void TParisPhysics::Print(){
       }
     }
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* TParisPhysics::Construct(){
+  return (NPA::VDetector*) new TParisPhysics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("Paris","Paris");
+      NPA::DetectorFactory::getInstance()->AddDetector("Paris",TParisPhysics::Construct);
+    }
+};
+
+proxy p;
 }
 

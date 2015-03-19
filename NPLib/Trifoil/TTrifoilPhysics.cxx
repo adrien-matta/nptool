@@ -29,6 +29,7 @@
 
 //   NPL
 #include "RootInput.h"
+#include "NPDetectorFactory.h"
 #include "RootOutput.h"
 #include "TAsciiFile.h"
 //   ROOT
@@ -103,3 +104,25 @@ void TTrifoilPhysics::InitializeRootOutput()
       TTree* outputTree = RootOutput::getInstance()->GetTree();
       outputTree->Branch( "Trifoil" , "TTrifoilPhysics" , &m_EventPhysics );
    }
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* TTrifoilPhysics::Construct(){
+  return (NPA::VDetector*) new TTrifoilPhysics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("Trifoil","Trifoil");
+      NPA::DetectorFactory::getInstance()->AddDetector("Trifoil",TTrifoilPhysics::Construct);
+    }
+};
+
+proxy p;
+}
+

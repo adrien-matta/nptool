@@ -24,6 +24,7 @@
 #include "TLaBr3Physics.h"
 #include "RootOutput.h"
 #include "RootInput.h"
+#include "NPDetectorFactory.h"
 
 //   STL
 #include <iostream>
@@ -335,4 +336,26 @@ void TLaBr3Physics::BuildSimplePhysicalEvent()
 
    }
 
+
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* TLaBr3Physics::Construct(){
+  return (NPA::VDetector*) new TLaBr3Physics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("LaBr3","LaBr3");
+      NPA::DetectorFactory::getInstance()->AddDetector("LaBr3",TLaBr3Physics::Construct);
+    }
+};
+
+proxy p;
+}
 

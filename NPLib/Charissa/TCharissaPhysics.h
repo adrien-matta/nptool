@@ -270,7 +270,9 @@ class TCharissaPhysics : public TObject, public NPA::VDetector{
   public: // Spectra Getter
     map< vector<string> , TH1*> GetSpectra(); 
 
-    ClassDef(TCharissaPhysics,1)  // CharissaPhysics structure
+    public: // Static constructor to be passed to the Detector Factory
+     static NPA::VDetector* Construct();
+     ClassDef(TCharissaPhysics,1)  // CharissaPhysics structure
 };
 
 namespace CHARISSA_LOCAL

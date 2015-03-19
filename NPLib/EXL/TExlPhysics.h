@@ -107,7 +107,9 @@ class TExlPhysics : public TObject, public NPA::VDetector
 	//CsI crystal position
          vector <TVector3> CsIPosition;//!
 
-      ClassDef(TExlPhysics,1)  // ExlPhysics structure
+      public: // Static constructor to be passed to the Detector Factory
+     static NPA::VDetector* Construct();
+     ClassDef(TExlPhysics,1)  // ExlPhysics structure
 };
 
 #endif

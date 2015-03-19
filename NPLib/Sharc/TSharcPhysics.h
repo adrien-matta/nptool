@@ -193,7 +193,9 @@ class TSharcPhysics : public TObject, public NPA::VDetector
          vector< vector < vector < double > > >   m_StripPositionY;//!
          vector< vector < vector < double > > >   m_StripPositionZ;//!
          
-   ClassDef(TSharcPhysics,1)  // SharcPhysics structure
+   public: // Static constructor to be passed to the Detector Factory
+     static NPA::VDetector* Construct();
+     ClassDef(TSharcPhysics,1)  // SharcPhysics structure
 };
 
 namespace Sharc_LOCAL

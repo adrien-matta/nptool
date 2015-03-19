@@ -125,7 +125,9 @@ class TChio_anPhysics : public TObject, public NPA::VDetector
   
   //  double  GetChioEnergy() {return ...}
   
-  ClassDef(TChio_anPhysics,1);  // CATSPhysics structure
+  public: // Static constructor to be passed to the Detector Factory
+     static NPA::VDetector* Construct();
+     ClassDef(TChio_anPhysics,1);  // CATSPhysics structure
   
 };
 

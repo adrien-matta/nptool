@@ -143,7 +143,9 @@ class TNanaPhysics : public TObject, public NPA::VDetector{
     vector<double>   NanaInTotalEnergy;
     vector<double>   NanaOutTotalEnergy;
 
-    ClassDef(TNanaPhysics,1)
+    public: // Static constructor to be passed to the Detector Factory
+     static NPA::VDetector* Construct();
+     ClassDef(TNanaPhysics,1)
 };
 
 #endif

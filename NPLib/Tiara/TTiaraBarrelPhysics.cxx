@@ -32,6 +32,7 @@ using namespace TiaraBarrel_LOCAL;
 #include "RootOutput.h"
 #include "TAsciiFile.h"
 #include "NPOptionManager.h"
+#include "NPDetectorFactory.h"
 #include "NPGlobalSystemOfUnits.h"
 #include "NPPhysicalConstants.h"
 #ifdef NP_SYSTEM_OF_UNITS_H
@@ -672,5 +673,27 @@ double TTiaraBarrelPhysics::Match_Strip_Downstream_E(const int i){
 ///////////////////////////////////////////////////////////////////////////////
 double TTiaraBarrelPhysics::Cal_Back_E(const int i){
   return CalibrationManager::getInstance()->ApplyCalibration("TIARABARREL/B" + itoa( m_EventData->GetBackEDetectorNbr(i) ) + "_BACK_E", m_EventData->GetBackEEnergy(i));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* TTiaraBarrelPhysics::Construct(){
+  return (NPA::VDetector*) new TTiaraBarrelPhysics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class brlproxy{
+  public:
+    brlproxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("TiaraBarrel","Tiara");
+      NPA::DetectorFactory::getInstance()->AddDetector("TiaraBarrel",TTiaraBarrelPhysics::Construct);
+    }
+};
+
+brlproxy brlp;
 }
 

@@ -33,7 +33,7 @@
 // NPL
 #include "RootInput.h"
 #include "RootOutput.h"
-
+#include "NPDetectorFactory.h"
 // ROOT
 #include "TChain.h"
 #include "TRandom.h"
@@ -281,7 +281,7 @@ void TChio_anPhysics::Clear()
 
 void TChio_anPhysics::Dump() const
 {
-  cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event XXXXXXXXXXXXXXXXX" << endl;
+  cout << "Chio_anChio_anChio_anChio_anChio_anChio_an New Event Chio_anChio_anChio_anChio_anX" << endl;
 
   // cout << "Number of pileup : " << PileupNbr << endl;
 
@@ -411,3 +411,26 @@ namespace LOCAL_CHIO_AN
     return CalibrationManager::getInstance()->ApplyCalibration("CHIO/CHIO_AN_AMPLITUDE", rawAmplitude);
   }
 }
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* TChio_anPhysics::Construct(){
+  return (NPA::VDetector*) new TChio_anPhysics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class anproxy{
+  public:
+    anproxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("Chio_an","Chio");
+      NPA::DetectorFactory::getInstance()->AddDetector("Chio_an",TChio_anPhysics::Construct);
+    }
+};
+
+anproxy anp ;
+
+}
+

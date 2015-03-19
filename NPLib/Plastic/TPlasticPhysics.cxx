@@ -22,8 +22,9 @@
 
 //   NPL
 #include "TPlasticPhysics.h"
-#include "../include/RootOutput.h"
-#include "../include/RootInput.h"
+#include "RootOutput.h"
+#include "RootInput.h"
+#include "NPDetectorFactory.h"
 
 //   STL
 #include <iostream>
@@ -295,4 +296,26 @@ void TPlasticPhysics::BuildSimplePhysicalEvent()
          }
 
    }
+
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* TPlasticPhysics::Construct(){
+  return (NPA::VDetector*) new TPlasticPhysics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("Plastic","Plastic");
+      NPA::DetectorFactory::getInstance()->AddDetector("Plastic",TPlasticPhysics::Construct);
+    }
+};
+
+proxy p;
+}
 

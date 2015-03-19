@@ -28,7 +28,7 @@
 #define THYDE2TRACKERPHYSICS_H
 
 #include "THyde2TrackerData.h"
-
+#include "NPVDetector.h"
 // ROOT
 #include "TObject.h"
 
@@ -38,7 +38,7 @@
 using namespace std ;
 
 
-class THyde2TrackerPhysics : public TObject
+class THyde2TrackerPhysics : public TObject, public NPA::VDetector
 {
 public:
    THyde2TrackerPhysics();
@@ -167,7 +167,9 @@ public:
    Double_t   GetSixthStageTime(Int_t i)      {return fSixthStage_Time.at(i);}
    Int_t   GetSixthStagePosition(Int_t i)      {return fSixthStage_Position.at(i);}
 
-   ClassDef(THyde2TrackerPhysics,1)  // THyde2TrackerPhysics structure
+   public: // Static constructor to be passed to the Detector Factory
+     static NPA::VDetector* Construct();
+     ClassDef(THyde2TrackerPhysics,1)  // THyde2TrackerPhysics structure
 };
 
 #endif

@@ -24,7 +24,7 @@
 #include "TChateauCristalPhysics.h"
 #include "RootOutput.h"
 #include "RootInput.h"
-
+#include "NPDetectorFactory.h"
 // C++
 #include <iostream>
 #include <sstream>
@@ -503,4 +503,26 @@ double ChateauCristal_LOCAL::fChateauCristal_T( const TChateauCristalData* m_Eve
 }  
 
 
+
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* TChateauCristalPhysics::Construct(){
+  return (NPA::VDetector*) new TChateauCristalPhysics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("ChateauCristal","ChateauCristal");
+      NPA::DetectorFactory::getInstance()->AddDetector("ChateauCristal",TChateauCristalPhysics::Construct);
+    }
+};
+
+proxy p;
+}
 

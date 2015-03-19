@@ -29,8 +29,9 @@ using namespace EXOGAM_LOCAL;
 
 //	NPL
 #include "RootInput.h"
+#include "NPDetectorFactory.h"
 #include "RootOutput.h"
-
+#include "NPVDetector.h"
 //	ROOT
 #include "TChain.h"
 
@@ -727,3 +728,25 @@ namespace EXOGAM_LOCAL
 }
 			
   /////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* TExogamPhysics::Construct(){
+  return (NPA::VDetector*) new TExogamPhysics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("Exogam","Exogam");
+      NPA::DetectorFactory::getInstance()->AddDetector("Exogam",TExogamPhysics::Construct);
+    }
+};
+
+proxy p;
+}
+

@@ -23,6 +23,7 @@
 #include "TSSSDPhysics.h"
 #include "RootOutput.h"
 #include "RootInput.h"
+#include "NPDetectorFactory.h"
 
 //  STL
 #include <iostream>
@@ -456,3 +457,25 @@ double SSSD_LOCAL::fSi_T( const TSSSDData* EventData , const int i )
      
      
      
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* TSSSDPhysics::Construct(){
+  return (NPA::VDetector*) new TSSSDPhysics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("SSSD","SSSD");
+      NPA::DetectorFactory::getInstance()->AddDetector("SSSD",TSSSDPhysics::Construct);
+    }
+};
+
+proxy p;
+}
+

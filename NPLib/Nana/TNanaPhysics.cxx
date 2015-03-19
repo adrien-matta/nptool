@@ -24,6 +24,7 @@
 // NPL
 #include "TNanaPhysics.h"
 #include "RootInput.h"
+#include "NPDetectorFactory.h"
 #include "RootOutput.h"
 
 //  STL
@@ -564,5 +565,27 @@ void TNanaPhysics::Print(){
       }
     }
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* TNanaPhysics::Construct(){
+  return (NPA::VDetector*) new TNanaPhysics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("Nana","Nana");
+      NPA::DetectorFactory::getInstance()->AddDetector("Nana",TNanaPhysics::Construct);
+    }
+};
+
+proxy p;
 }
 

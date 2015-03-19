@@ -135,7 +135,9 @@ private:   // Data not written in the tree
    void Clear();
    void Clear(const Option_t*) {};
 
-   ClassDef(TChateauCristalPhysics,1)  // ChateauCristalPhysics structure
+   public: // Static constructor to be passed to the Detector Factory
+     static NPA::VDetector* Construct();
+     ClassDef(TChateauCristalPhysics,1)  // ChateauCristalPhysics structure
 };
 
 

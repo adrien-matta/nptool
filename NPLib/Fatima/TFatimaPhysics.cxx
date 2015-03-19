@@ -25,7 +25,7 @@
 #include "TFatimaPhysics.h"
 #include "RootInput.h"
 #include "RootOutput.h"
-
+#include "NPDetectorFactory.h"
 //  STL
 #include <vector>
 #include <iostream>
@@ -564,5 +564,27 @@ void TFatimaPhysics::Print(){
       }
     }
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* TFatimaPhysics::Construct(){
+  return (NPA::VDetector*) new TFatimaPhysics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("Fatima","Fatima");
+      NPA::DetectorFactory::getInstance()->AddDetector("Fatima",TFatimaPhysics::Construct);
+    }
+};
+
+proxy p;
 }
 

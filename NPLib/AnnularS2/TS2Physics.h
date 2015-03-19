@@ -224,7 +224,11 @@ class TS2Physics : public TObject, public NPA::VDetector
 	vector < vector < vector < double > > >	m_StripPositionX			;//!
 	vector < vector < vector < double > > >	m_StripPositionY			;//!
 	vector < vector < vector < double > > >	m_StripPositionZ			;//!
-	
+
+
+  public: // Static constructor to be passed to the Detector Factory
+    static NPA::VDetector* Construct();
+ 
 	ClassDef(TS2Physics,1)  // S2Physics structure
 	  };
 

@@ -22,8 +22,9 @@
 
 //   NPL
 #include "TSiResPhysics.h"
-#include "../include/RootOutput.h"
-#include "../include/RootInput.h"
+#include "RootOutput.h"
+#include "RootInput.h"
+#include "NPDetectorFactory.h"
 
 //   STL
 #include <iostream>
@@ -346,3 +347,25 @@ void TSiResPhysics::Treat()
       	x.push_back( 1+(E1+E2-E3-E4) / (E1+E2+E3+E4) ) ;
       	y.push_back( 1+(E1+E4-E2-E3) / (E1+E2+E3+E4) ) ;
    }
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* TSiResPhysics::Construct(){
+  return (NPA::VDetector*) new TSiResPhysics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("SiRes","SiRes");
+      NPA::DetectorFactory::getInstance()->AddDetector("SiRes",TSiResPhysics::Construct);
+    }
+};
+
+proxy p;
+}
+

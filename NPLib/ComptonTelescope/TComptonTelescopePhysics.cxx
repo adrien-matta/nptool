@@ -26,6 +26,7 @@ using namespace ComptonTelescope_LOCAL;
 #include "RootOutput.h"
 #include "TAsciiFile.h"
 #include "NPOptionManager.h"
+#include "NPDetectorFactory.h"
 
 //   ROOT
 #include "TChain.h"
@@ -736,5 +737,27 @@ namespace ComptonTelescope_LOCAL
    {
       return CalibrationManager::getInstance()->ApplyCalibration("COMPTONTELESCOPE/D" + itoa(m_EventData->GetCTTrackerBackEDetectorNbr(i)) + "_STRIP_BACK" + itoa(m_EventData->GetCTTrackerBackEStripNbr(i)) + "_E", m_EventData->GetCTTrackerBackEEnergy(i));
    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* TComptonTelescopePhysics::Construct(){
+  return (NPA::VDetector*) new TComptonTelescopePhysics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("ComptonTelescope","ComptonTelescope");
+      NPA::DetectorFactory::getInstance()->AddDetector("ComptonTelescope",TComptonTelescopePhysics::Construct);
+    }
+};
+
+proxy p;
 }
 

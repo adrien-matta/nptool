@@ -33,6 +33,7 @@ using namespace MUST2_LOCAL;
 #include "RootOutput.h"
 #include "TAsciiFile.h"
 #include "NPOptionManager.h"
+#include "NPDetectorFactory.h"
 
 //   ROOT
 #include "TChain.h"
@@ -1393,5 +1394,27 @@ namespace MUST2_LOCAL{
         m_EventData->GetMMCsITTime(i) );
   }
 
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* TMust2Physics::Construct(){
+  return (NPA::VDetector*) new TMust2Physics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("Must2","Must2");
+      NPA::DetectorFactory::getInstance()->AddDetector("Must2",TMust2Physics::Construct);
+    }
+};
+
+proxy p;
 }
 

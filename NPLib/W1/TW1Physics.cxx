@@ -23,6 +23,7 @@
 #include "TW1Physics.h"
 #include "RootOutput.h"
 #include "RootInput.h"
+#include "NPDetectorFactory.h"
 
 //  STL
 #include <iostream>
@@ -859,3 +860,25 @@ double LOCAL::fW1_Back_T(TW1Data* m_EventData , int i)
 {
    return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + itoa(m_EventData->GetW1BackTDetectorNbr(i)) + "_Back_" + itoa(m_EventData->GetW1BackTStripNbr(i)) +"_T",  m_EventData->GetW1BackTTime(i));
 }
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* TW1Physics::Construct(){
+  return (NPA::VDetector*) new TW1Physics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("W1","W1");
+      NPA::DetectorFactory::getInstance()->AddDetector("W1",TW1Physics::Construct);
+    }
+};
+
+proxy p;
+}
+

@@ -33,7 +33,7 @@
 // NPL
 #include "RootInput.h"
 #include "RootOutput.h"
-
+#include "NPDetectorFactory.h"
 // ROOT
 #include "TChain.h"
 #include "TRandom.h"
@@ -281,7 +281,7 @@ void TChio_digPhysics::Clear()
 
 void TChio_digPhysics::Dump() const
 {
-  cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event XXXXXXXXXXXXXXXXX" << endl;
+  cout << "Chio_digChio_digChio_digChio_digChio_digChio_dig New Event Chio_digChio_digChio_digChio_digX" << endl;
 
   // cout << "Number of pileup : " << PileupNbr << endl;
 
@@ -427,3 +427,25 @@ namespace LOCAL_CHIO_DIG
     return CalibrationManager::getInstance()->ApplyCalibration("CHIO/CHIO_DIG_AMPLITUDE", rawAmplitude);
   }
 }
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* TChio_digPhysics::Construct(){
+  return (NPA::VDetector*) new TChio_digPhysics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("Chio_dig","Chio");
+      NPA::DetectorFactory::getInstance()->AddDetector("Chio_dig",TChio_digPhysics::Construct);
+    }
+};
+
+proxy p;
+}
+

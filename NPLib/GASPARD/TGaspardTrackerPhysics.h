@@ -29,7 +29,7 @@
 
 
 #include "TGaspardTrackerData.h"
-
+#include "NPVDetector.h"
 // ROOT
 #include "TObject.h"
 
@@ -39,7 +39,7 @@
 using namespace std ;
 
 
-class TGaspardTrackerPhysics : public TObject
+class TGaspardTrackerPhysics : public TObject, public NPA::VDetector
 {
 public:
    TGaspardTrackerPhysics();
@@ -123,7 +123,9 @@ public:
    Double_t   GetThirdStageTime(Int_t i)      {return fThirdStage_Time.at(i);}
    Int_t   GetThirdStagePosition(Int_t i)      {return fThirdStage_Position.at(i);}
 
-   ClassDef(TGaspardTrackerPhysics,1)  // TGaspardTrackerPhysics structure
+   public: // Static constructor to be passed to the Detector Factory
+     static NPA::VDetector* Construct();
+     ClassDef(TGaspardTrackerPhysics,1)  // TGaspardTrackerPhysics structure
 };
 
 #endif

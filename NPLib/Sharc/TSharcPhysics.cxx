@@ -33,6 +33,7 @@ using namespace Sharc_LOCAL;
 #include "RootOutput.h"
 #include "TAsciiFile.h"
 #include "NPOptionManager.h"
+#include "NPDetectorFactory.h"
 //   ROOT
 #include "TChain.h"
 ///////////////////////////////////////////////////////////////////////////
@@ -906,5 +907,27 @@ namespace Sharc_LOCAL
                                                              m_EventData->GetPAD_TimeCFD(i) );
   }
   
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* TSharcPhysics::Construct(){
+  return (NPA::VDetector*) new TSharcPhysics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("Sharc","Sharc");
+      NPA::DetectorFactory::getInstance()->AddDetector("Sharc",TSharcPhysics::Construct);
+    }
+};
+
+proxy p;
 }
 

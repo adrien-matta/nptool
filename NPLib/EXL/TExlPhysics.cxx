@@ -24,6 +24,7 @@
 #include "TExlPhysics.h"
 #include "RootOutput.h"
 #include "RootInput.h"
+#include "NPDetectorFactory.h"
 
 //   STL
 #include <sstream>
@@ -301,5 +302,27 @@ double TExlPhysics::DopplerCorrection(double E, double Theta, double beta)
   
   return(E_corr);
 
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* TExlPhysics::Construct(){
+  return (NPA::VDetector*) new TExlPhysics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("Exl","Exl");
+      NPA::DetectorFactory::getInstance()->AddDetector("Exl",TExlPhysics::Construct);
+    }
+};
+
+proxy p;
 }
 

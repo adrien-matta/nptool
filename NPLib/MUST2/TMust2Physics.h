@@ -278,7 +278,9 @@ class TMust2Physics : public TObject, public NPA::VDetector{
   public: // Spectra Getter
     map< vector<string> , TH1*> GetSpectra(); 
 
-    ClassDef(TMust2Physics,1)  // Must2Physics structure
+    public: // Static constructor to be passed to the Detector Factory
+     static NPA::VDetector* Construct();
+     ClassDef(TMust2Physics,1)  // Must2Physics structure
 };
 
 namespace MUST2_LOCAL

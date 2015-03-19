@@ -33,6 +33,7 @@ using namespace TiaraHyball_LOCAL;
 #include "RootOutput.h"
 #include "TAsciiFile.h"
 #include "NPOptionManager.h"
+#include "NPDetectorFactory.h"
 #include "NPGlobalSystemOfUnits.h"
 #include "NPPhysicalConstants.h"
 #ifdef NP_SYSTEM_OF_UNITS_H
@@ -746,5 +747,27 @@ namespace TiaraHyball_LOCAL{
         m_EventData->GetRingTTime(i) );
   }
 
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* TTiaraHyballPhysics::Construct(){
+  return (NPA::VDetector*) new TTiaraHyballPhysics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("TiaraHyball","Tiara");
+      NPA::DetectorFactory::getInstance()->AddDetector("TiaraHyball",TTiaraHyballPhysics::Construct);
+    }
+};
+
+proxy p;
 }
 

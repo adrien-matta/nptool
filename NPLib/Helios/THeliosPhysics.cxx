@@ -22,6 +22,7 @@
  *****************************************************************************/
 
 #include "THeliosPhysics.h"
+#include "NPDetectorFactory.h"
 #include <iostream>
 #include <cstdlib>
 
@@ -119,7 +120,7 @@ void THeliosPhysics::BuildPhysicalEvent(THeliosData* Data)
             double EnergyStrip = Data->GetHeliosFirstStageEEnergy(0);
             FirstStage_E.push_back(EnergyStrip);
             double EnergyTot = EnergyStrip;
-	    //	    cout << "XXXXXXXXXXXXXXXXXXXXXXX" << endl;
+	    //	    cout << "HeliosHeliosHeliosHeliosHeliosXXX" << endl;
 	    //	    cout << "EnergyTot=" << EnergyTot << endl;
 
 
@@ -168,3 +169,25 @@ void THeliosPhysics::Clear()
    FirstStage_Y.clear();
 
 }
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* THeliosPhysics::Construct(){
+  return (NPA::VDetector*) new THeliosPhysics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("Helios","Helios");
+      NPA::DetectorFactory::getInstance()->AddDetector("Helios",THeliosPhysics::Construct);
+    }
+};
+
+proxy p;
+}
+

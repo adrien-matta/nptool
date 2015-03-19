@@ -22,8 +22,9 @@
 
 //   NPL
 #include "TTacPhysics.h"
-#include "../include/RootOutput.h"
-#include "../include/RootInput.h"
+#include "RootOutput.h"
+#include "RootInput.h"
+#include "NPDetectorFactory.h"
 
 //   STL
 #include <iostream>
@@ -131,4 +132,26 @@ void TTacPhysics::BuildSimplePhysicalEvent()
 		Time_TAC_4=CalibrationManager::getInstance()->ApplyCalibration("TAC/_T" + itoa( EventData->GetTAC_MM_HF_DetectorNbr(3) ),EventData->GetTAC_MM_HF() );
 		
    }
+
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* TTacPhysics::Construct(){
+  return (NPA::VDetector*) new TTacPhysics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("Tac","Tac");
+      NPA::DetectorFactory::getInstance()->AddDetector("Tac",TTacPhysics::Construct);
+    }
+};
+
+proxy p;
+}
 

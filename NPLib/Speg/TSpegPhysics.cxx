@@ -22,8 +22,9 @@
 
 //   NPL
 #include "TSpegPhysics.h"
-#include "../include/RootOutput.h"
-#include "../include/RootInput.h"
+#include "RootOutput.h"
+#include "RootInput.h"
+#include "NPDetectorFactory.h"
 
 //   STL
 #include <iostream>
@@ -1693,3 +1694,25 @@ else
 		}
 	}
 }
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* TSpegPhysics::Construct(){
+  return (NPA::VDetector*) new TSpegPhysics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("Speg","Speg");
+      NPA::DetectorFactory::getInstance()->AddDetector("Speg",TSpegPhysics::Construct);
+    }
+};
+
+proxy p;
+}
+

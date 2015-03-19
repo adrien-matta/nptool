@@ -121,7 +121,9 @@ class TSiResPhysics : public TObject, public NPA::VDetector
   public: // Spectra Getter
     map< vector<string> , TH1*> GetSpectra(); 
 
-      ClassDef(TSiResPhysics,1)  // SiResPhysics structure
+      public: // Static constructor to be passed to the Detector Factory
+     static NPA::VDetector* Construct();
+     ClassDef(TSiResPhysics,1)  // SiResPhysics structure
 };
 
 #endif

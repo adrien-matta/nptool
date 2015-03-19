@@ -199,7 +199,9 @@ class TTiaraHyballPhysics : public TObject, public NPA::VDetector{
   public:
     map< vector<string>,TH1* > GetSpectra(); 
 
-    ClassDef(TTiaraHyballPhysics,1)  // SharcPhysics structure
+    public: // Static constructor to be passed to the Detector Factory
+     static NPA::VDetector* Construct();
+     ClassDef(TTiaraHyballPhysics,1)  // SharcPhysics structure
 };
 
 namespace TiaraHyball_LOCAL{

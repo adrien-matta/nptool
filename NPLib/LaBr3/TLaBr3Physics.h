@@ -114,7 +114,9 @@ class TLaBr3Physics : public TObject, public NPA::VDetector
   public: // Spectra Getter
     map< vector<string> , TH1*> GetSpectra(); 
 
-      ClassDef(TLaBr3Physics,1)  // LaBr3Physics structure
+      public: // Static constructor to be passed to the Detector Factory
+     static NPA::VDetector* Construct();
+     ClassDef(TLaBr3Physics,1)  // LaBr3Physics structure
 };
 
 #endif

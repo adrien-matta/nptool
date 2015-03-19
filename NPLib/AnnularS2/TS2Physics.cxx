@@ -29,8 +29,9 @@ using namespace S2_LOCAL;
 #include <limits>
 
 //	NPL
-#include "../include/RootInput.h"
-#include "../include/RootOutput.h"
+#include "RootInput.h"
+#include "RootOutput.h"
+#include "NPDetectorFactory.h"
 
 //	ROOT
 #include "TChain.h"
@@ -1167,5 +1168,27 @@ namespace S2_LOCAL
   }
 			
 			
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* TS2Physics::Construct(){
+  return (NPA::VDetector*) new TS2Physics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("AnnularS2","AnnularS2");
+      NPA::DetectorFactory::getInstance()->AddDetector("AnnularS2",TS2Physics::Construct);
+    }
+};
+
+proxy p;
 }
 
