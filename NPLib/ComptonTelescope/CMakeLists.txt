@@ -7,3 +7,6 @@ install(FILES TComptonTelescopeProcessData.h TComptonTelescopeData.h TComptonTel
 install(FILES TComptonTelescopeData.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 install(FILES TComptonTelescopeProcessData.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 install(FILES TComptonTelescopePhysics.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+install(FILES TComptonTelescopeDataDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+install(FILES TComptonTelescopeProcessDataDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+install(FILES TComptonTelescopePhysicsDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})

@@ -6,3 +6,5 @@ install(FILES TCharissaData.h TCharissaPhysics.h TCharissaSpectra.h DESTINATION 
 
 install(FILES TCharissaData.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 install(FILES TCharissaPhysics.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+install(FILES TCharissaDataDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+install(FILES TCharissaPhysicsDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})

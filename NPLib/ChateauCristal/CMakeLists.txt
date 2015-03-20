@@ -6,3 +6,5 @@ install(FILES TChateauCristalData.h TChateauCristalPhysics.h DESTINATION ${CMAKE
 
 install(FILES TChateauCristalData.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 install(FILES TChateauCristalPhysics.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+install(FILES TChateauCristalDataDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+install(FILES TChateauCristalPhysicsDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})

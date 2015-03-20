@@ -6,3 +6,5 @@ install(FILES THyde2TrackerData.h THyde2TrackerPhysics.h Hyde2Tracker.h Hyde2Tra
 
 install(FILES THyde2TrackerData.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 install(FILES THyde2TrackerPhysics.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+install(FILES THyde2TrackerDataDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+install(FILES THyde2TrackerPhysicsDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
