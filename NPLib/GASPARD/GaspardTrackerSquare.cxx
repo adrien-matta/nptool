@@ -445,7 +445,7 @@ void GaspardTrackerSquare::AddModule(double theta,
                                      double beta_v,
                                      double beta_w)
 {
-   m_NumberOfModule++;
+  m_NumberOfModule++;
 
    // convert from degree to radian:
    theta *= M_PI/180;

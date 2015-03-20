@@ -103,7 +103,6 @@ int main(int argc, char** argv){
     double BeamEnergy = BeamCD2.Slow(OriginalBeamEnergy,Rand.Uniform(0,TargetThickness),0);
     myReaction->SetBeamEnergy(BeamEnergy);
 
-
       //////////////////////////// LOOP on MUST2 //////////////////
     for(unsigned int countMust2 = 0 ; countMust2 < M2->Si_E.size() ; countMust2++){
       /************************************************/

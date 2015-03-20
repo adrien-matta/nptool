@@ -468,8 +468,8 @@ void GaspardTrackerTrapezoid::AddModule(double theta,
                              -sin(theta));
 
    W = C.Unit();
-   U = W.Cross(YperpW);
-   V = W.Cross(U);
+   V = W.Cross(YperpW);
+   U = W.Cross(U);
 
    U = U.Unit();
    V = V.Unit();
@@ -483,9 +483,6 @@ void GaspardTrackerTrapezoid::AddModule(double theta,
    U.Rotate( beta_w * M_PI/180. , W ) ;
    V.Rotate( beta_w * M_PI/180. , W ) ;
 
-   double Face = 50; // mm
-   double NumberOfStrip = 100;
-   double StripPitch = Face/NumberOfStrip; // mm
 
    vector<double> lineX;
    vector<double> lineY;
@@ -498,19 +495,19 @@ void GaspardTrackerTrapezoid::AddModule(double theta,
    double X, Y, Z;
 
    // Moving C to the 1.1 corner:
-   C.SetX( C.X() - ( Face/2 - StripPitch/2 ) * ( V.X() + U.X() ) )  ;
-   C.SetY( C.Y() - ( Face/2 - StripPitch/2 ) * ( V.Y() + U.Y() ) )  ;
-   C.SetZ( C.Z() - ( Face/2 - StripPitch/2 ) * ( V.Z() + U.Z() ) )  ;
+   C.SetX( C.X() - ( m_FirstStageBaseLarge/2 - m_StripPitchX/2 ) * U.X() - (m_FirstStageHeight/2 - m_StripPitchY/2 ) *V.X() )   ;
+   C.SetY( C.Y() - ( m_FirstStageBaseLarge/2 - m_StripPitchX/2 ) * U.Y() - (m_FirstStageHeight/2 - m_StripPitchY/2 ) *V.Y() )   ;
+   C.SetZ( C.Z() - ( m_FirstStageBaseLarge/2 - m_StripPitchX/2 ) * U.Z() - (m_FirstStageHeight/2 - m_StripPitchY/2 ) *V.Z() )   ;
 
-   for (int i = 0; i < NumberOfStrip; i++) {
+   for (int i = 0; i < m_NumberOfStripsX; i++) {
       lineX.clear();
       lineY.clear();
       lineZ.clear();
 
-      for (int j = 0; j < NumberOfStrip; j++) {
-         X = C.X() + StripPitch * ( U.X()*i + V.X()*j );
-         Y = C.Y() + StripPitch * ( U.Y()*i + V.Y()*j );
-         Z = C.Z() + StripPitch * ( U.Z()*i + V.Z()*j );
+      for (int j = 0; j < m_NumberOfStripsY; j++) {
+         X = C.X() + m_StripPitchX*U.X()*i + m_StripPitchY*V.X()*j ;
+         Y = C.Y() + m_StripPitchX*U.Y()*i + m_StripPitchY*V.Y()*j ;
+         Z = C.Z() + m_StripPitchX*U.Z()*i + m_StripPitchY*V.Z()*j ;
 
          lineX.push_back(X);
          lineY.push_back(Y);
@@ -526,3 +523,4 @@ void GaspardTrackerTrapezoid::AddModule(double theta,
    m_StripPositionY.push_back( OneModuleStripPositionY );
    m_StripPositionZ.push_back( OneModuleStripPositionZ );
 }
+
