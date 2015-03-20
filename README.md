@@ -29,35 +29,39 @@ Restart your terminal. You should now have all aliases and environment variable 
 $ NPL
 ````
 and you should be in the NPLib directory. 
-Before the compilation of the libraries you need to specify the detector you plan to use by calling the configure script. If you give no argument to configure, all detector will be compile. If you wish to limit the number of detector to be compiled, simply specify the detector name in lowercase (e.g. MUST2 -> must2). You can specify more than one detector:
+Before the compilation of the libraries you need to specify the detector you plan to use by calling the configure script. If you give no argument to configure, all detector will be compile. If you wish to limit the number of detector to be compiled, simply specify the detector folder name (respecting the case). You can specify more than one detector:
 
 ````
-$ ./configure
+$ cmake ./ 
 ````
 OR:
 ````
-$ ./configure detectorname1 detectorname2 ... detectornameN
+$ cmake ./ -DETLIST="DetFolder1 DetFolder2 ..."
 ````
 
-You have to performe the configure operation only once, then you compile the whole NPLib with n threads using :
+Then you compile the whole NPLib with n threads using :
 
 ````
-$ make -jn
+$ make -jn install
+````
+
+If you wish to recompile with more detector:
+
+````
+$ rm CMakeCache.txt
+$ cmake ./ -DETLIST="DetFolder1 DetFolder2 ..."
+$ make -jn install
 ````
 
 NB: Optimal compilation time is usually achieved for n = twice the number of available core.
 
-If you wish to compile only one subdirectory, simply add the name of the directory in lower case, e.g. for compiling the Physics directory:
+If you have google ninja build install then you can alternatively ask cmake to compile using it:
+````
+$ cmake -GNinja ./
+$ ninja install
+````
 
-````
-$ make physics
-````
-
-In order to load the nptool libraries when you launch root, you need to add a few line to your ~/.rootlogon.C file. NPTool can do that safely for you using a script. To launch the script simply type:
-````
-$ make rootlogon
-````
-Depending on the existence of the .rootlogon.C file in your home directory, the output of the script might be different. If you already have a .rootlogon.C file that make reference to nptool then the script will leave it unchanged.
+Compilation using Ninja is usually twice faster than using make
 
 ###Building NPSimulation
 This part of the package rely on Geant4 to perform Monte Carlo simulation. You need to first compile and configure correctly NPLib in order for NPSimulation to compile and run. The compilation is done as follow:
@@ -88,7 +92,7 @@ You can now try to analyse this simulated tree using the associated NPAnalysis p
 $ NPA
 $ cd Example1/
 $ make
-$ ./NPAnalysis -D Example1.detector -R RunToTreat.txt -O Example1
+$ npanalysis -D Example1.detector -R RunToTreat.txt -O Example1
 ````
 
 This will produce the analysed tree located in $NPTOOL/Outputs/Analysis/Example1.root. You can then display the result of the simulation using root:
