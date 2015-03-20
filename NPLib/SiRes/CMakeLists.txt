@@ -1,6 +1,8 @@
-ROOT_GENERATE_DICTIONARY( TSiResData.h "" TSiResDataDict.cxx "")
-ROOT_GENERATE_DICTIONARY( TSiResPhysics.h "" TSiResPhysicsDict.cxx "../Core")
+add_custom_command(OUTPUT TSiResPhysicsDict.cxx TSiResPhysicsDict_rdict.pcm TSiResPhysics.rootmap COMMAND genreflex TSiResPhysics.h -o TSiResPhysicsDict.cxx -I../Core --rootmap=TSiResPhysics.rootmap --rootmap-lib=libNPSiRes --quiet DEPENDS TSiResPhysics.h)
+add_custom_command(OUTPUT TSiResDataDict.cxx TSiResDataDict_rdict.pcm TSiResData.rootmap COMMAND genreflex TSiResData.h -o TSiResDataDict.cxx -I../Core --rootmap=TSiResData.rootmap --rootmap-lib=libNPSiRes --quiet DEPENDS TSiResData.h)
 add_library(NPSiRes SHARED TSiResData.cxx TSiResPhysics.cxx TSiResDataDict.cxx TSiResPhysicsDict.cxx TSiResSpectra.cxx)
 target_link_libraries(NPSiRes ${ROOT_LIBRARIES} NPCore) 
 install(FILES TSiResData.h TSiResPhysics.h TSiResSpectra.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
 
+install(FILES TSiResData.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+install(FILES TSiResPhysics.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})

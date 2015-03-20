@@ -1,6 +1,8 @@
-ROOT_GENERATE_DICTIONARY( TSSSDData.h "" TSSSDDataDict.cxx "")
-ROOT_GENERATE_DICTIONARY( TSSSDPhysics.h "" TSSSDPhysicsDict.cxx "../Core")
+add_custom_command(OUTPUT TSSSDPhysicsDict.cxx TSSSDPhysicsDict_rdict.pcm TSSSDPhysics.rootmap COMMAND genreflex TSSSDPhysics.h -o TSSSDPhysicsDict.cxx -I../Core --rootmap=TSSSDPhysics.rootmap --rootmap-lib=libNPSSSD --quiet DEPENDS TSSSDPhysics.h)
+add_custom_command(OUTPUT TSSSDDataDict.cxx TSSSDDataDict_rdict.pcm TSSSDData.rootmap COMMAND genreflex TSSSDData.h -o TSSSDDataDict.cxx -I../Core --rootmap=TSSSDData.rootmap --rootmap-lib=libNPSSSD --quiet DEPENDS TSSSDData.h)
 add_library(NPSSSD SHARED TSSSDData.cxx TSSSDPhysics.cxx TSSSDDataDict.cxx TSSSDPhysicsDict.cxx )
 target_link_libraries(NPSSSD ${ROOT_LIBRARIES} NPCore) 
 install(FILES TSSSDData.h TSSSDPhysics.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
 
+install(FILES TSSSDData.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+install(FILES TSSSDPhysics.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})

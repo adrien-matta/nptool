@@ -1,9 +1,13 @@
-ROOT_GENERATE_DICTIONARY( TChio_anData.h "" TChio_anDataDict.cxx "")
-ROOT_GENERATE_DICTIONARY( TChio_anPhysics.h "" TChio_anPhysicsDict.cxx "../Core")
-ROOT_GENERATE_DICTIONARY( TChio_digData.h "" TChio_digDataDict.cxx "")
-ROOT_GENERATE_DICTIONARY( TChio_digPhysics.h "" TChio_digPhysicsDict.cxx "../Core")
+add_custom_command(OUTPUT TChio_digPhysicsDict.cxx TChio_digPhysicsDict_rdict.pcm TChio_digPhysics.rootmap COMMAND genreflex TChio_digPhysics.h -o TChio_digPhysicsDict.cxx -I../Core --rootmap=TChio_digPhysics.rootmap --rootmap-lib=libNPChio --quiet DEPENDS TChio_digPhysics.h)
+add_custom_command(OUTPUT TChio_anPhysicsDict.cxx TChio_anPhysicsDict_rdict.pcm TChio_anPhysics.rootmap COMMAND genreflex TChio_anPhysics.h -o TChio_anPhysicsDict.cxx -I../Core --rootmap=TChio_anPhysics.rootmap --rootmap-lib=libNPChio --quiet DEPENDS TChio_anPhysics.h)
+add_custom_command(OUTPUT TChio_digDataDict.cxx TChio_digDataDict_rdict.pcm TChio_digData.rootmap COMMAND genreflex TChio_digData.h -o TChio_digDataDict.cxx -I../Core --rootmap=TChio_digData.rootmap --rootmap-lib=libNPChio --quiet DEPENDS TChio_digData.h)
+add_custom_command(OUTPUT TChio_anDataDict.cxx TChio_anDataDict_rdict.pcm TChio_anData.rootmap COMMAND genreflex TChio_anData.h -o TChio_anDataDict.cxx -I../Core --rootmap=TChio_anData.rootmap --rootmap-lib=libNPChio --quiet DEPENDS TChio_anData.h)
 
 add_library(NPChio SHARED TChio_anData.cxx TChio_anPhysics.cxx TChio_anDataDict.cxx TChio_anPhysicsDict.cxx TChio_digData.cxx TChio_digPhysics.cxx TChio_digDataDict.cxx TChio_digPhysicsDict.cxx )
 target_link_libraries(NPChio ${ROOT_LIBRARIES} NPCore) 
 install(FILES TChio_anData.h TChio_anPhysics.h TChio_digData.h TChio_digPhysics.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
 
+install(FILES TChio_anData.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+install(FILES TChio_digData.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+install(FILES TChio_anPhysics.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+install(FILES TChio_digPhysics.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})

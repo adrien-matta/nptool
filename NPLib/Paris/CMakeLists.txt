@@ -1,6 +1,8 @@
-ROOT_GENERATE_DICTIONARY( TParisData.h "" TParisDataDict.cxx "")
-ROOT_GENERATE_DICTIONARY( TParisPhysics.h "" TParisPhysicsDict.cxx "../Core")
+add_custom_command(OUTPUT TParisPhysicsDict.cxx TParisPhysicsDict_rdict.pcm TParisPhysics.rootmap COMMAND genreflex TParisPhysics.h -o TParisPhysicsDict.cxx -I../Core --rootmap=TParisPhysics.rootmap --rootmap-lib=libNPParis --quiet DEPENDS TParisPhysics.h)
+add_custom_command(OUTPUT TParisDataDict.cxx TParisDataDict_rdict.pcm TParisData.rootmap COMMAND genreflex TParisData.h -o TParisDataDict.cxx -I../Core --rootmap=TParisData.rootmap --rootmap-lib=libNPParis --quiet DEPENDS TParisData.h)
 add_library(NPParis SHARED TParisData.cxx TParisPhysics.cxx TParisDataDict.cxx TParisPhysicsDict.cxx )
 target_link_libraries(NPParis ${ROOT_LIBRARIES} NPCore) 
 install(FILES TParisData.h TParisPhysics.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
 
+install(FILES TParisData.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+install(FILES TParisPhysics.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})

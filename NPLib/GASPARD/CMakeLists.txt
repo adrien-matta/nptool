@@ -1,6 +1,8 @@
-ROOT_GENERATE_DICTIONARY( TGaspardTrackerData.h "" TGaspardTrackerDataDict.cxx "")
-ROOT_GENERATE_DICTIONARY( TGaspardTrackerPhysics.h "" TGaspardTrackerPhysicsDict.cxx "../Core")
+add_custom_command(OUTPUT TGaspardTrackerPhysicsDict.cxx TGaspardTrackerPhysicsDict_rdict.pcm TGaspardTrackerPhysics.rootmap COMMAND genreflex TGaspardTrackerPhysics.h -o TGaspardTrackerPhysicsDict.cxx -I../Core --rootmap=TGaspardTrackerPhysics.rootmap --rootmap-lib=libNPGASPARD --quiet DEPENDS TGaspardTrackerPhysics.h)
+add_custom_command(OUTPUT TGaspardTrackerDataDict.cxx TGaspardTrackerDataDict_rdict.pcm TGaspardTrackerData.rootmap COMMAND genreflex TGaspardTrackerData.h -o TGaspardTrackerDataDict.cxx -I../Core --rootmap=TGaspardTrackerData.rootmap --rootmap-lib=libNPGASPARD --quiet DEPENDS TGaspardTrackerData.h)
 add_library(NPGaspardTracker SHARED GaspardTracker.cxx GaspardTrackerAnnular.cxx GaspardTrackerDummyShape.cxx GaspardTrackerModule.cxx GaspardTrackerTrapezoid.cxx GaspardTrackerSquare.cxx GaspardTrackerRectangle.cxx TGaspardTrackerData.cxx TGaspardTrackerPhysics.cxx TGaspardTrackerDataDict.cxx TGaspardTrackerPhysicsDict.cxx )
 target_link_libraries(NPGaspardTracker ${ROOT_LIBRARIES} NPCore) 
 install(FILES TGaspardTrackerData.h TGaspardTrackerPhysics.h GaspardTracker.h GaspardTrackerAnnular.h GaspardTrackerDummyShape.h GaspardTrackerModule.h GaspardTrackerRectangle.h GaspardTrackerSquare.h GaspardTrackerTrapezoid.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
 
+install(FILES TGaspardTrackerData.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+install(FILES TGaspardTrackerPhysics.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})

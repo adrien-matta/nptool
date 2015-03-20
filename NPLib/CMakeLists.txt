@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.1)
 include("FindROOT.cmake")
- 
+
 project (NPLib)
 set (NPLIB_VERSION_MAJOR 2)
 set (NPLIB_VERSION_MINOR 0)
@@ -77,9 +77,11 @@ foreach(subdir ${SUB_DIRECTORY})
   add_subdirectory(${subdir}) 
 endforeach()
 
+install(SCRIPT scripts/post_install.cmake ${DETLIST})
 
-add_custom_target(LIBLIST ALL nptool-libmap ${DETLIST})
-add_dependencies(LIBLIST nptool-libmap)
+#add_custom_target(LIBLIST ALL nptool-libmap ${DETLIST})
+#add_custom_command(TARGET nptool-libmap POST_BUILD COMMAND  nptool-libmap ${DETLIST})
+#add_dependencies(LIBLIST nptool-libmap)
 
 # Link executable against the local lib
 #link_directories( ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})

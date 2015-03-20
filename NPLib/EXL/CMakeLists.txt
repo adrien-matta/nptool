@@ -1,6 +1,8 @@
-ROOT_GENERATE_DICTIONARY( TExlData.h "" TExlDataDict.cxx "")
-ROOT_GENERATE_DICTIONARY( TExlPhysics.h "" TExlPhysicsDict.cxx "../Core")
+add_custom_command(OUTPUT TExlPhysicsDict.cxx TExlPhysicsDict_rdict.pcm TExlPhysics.rootmap COMMAND genreflex TExlPhysics.h -o TExlPhysicsDict.cxx -I../Core --rootmap=TExlPhysics.rootmap --rootmap-lib=libNPEXL --quiet DEPENDS TExlPhysics.h)
+add_custom_command(OUTPUT TExlDataDict.cxx TExlDataDict_rdict.pcm TExlData.rootmap COMMAND genreflex TExlData.h -o TExlDataDict.cxx -I../Core --rootmap=TExlData.rootmap --rootmap-lib=libNPEXL --quiet DEPENDS TExlData.h)
 add_library(NPExl SHARED TExlData.cxx TExlPhysics.cxx TExlDataDict.cxx TExlPhysicsDict.cxx )
 target_link_libraries(NPExl ${ROOT_LIBRARIES} NPCore) 
 install(FILES TExlData.h TExlPhysics.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
 
+install(FILES TExlData.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+install(FILES TExlPhysics.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})

@@ -1,6 +1,10 @@
-ROOT_GENERATE_DICTIONARY( TTacData.h "" TTacDataDict.cxx "")
-ROOT_GENERATE_DICTIONARY( TTriggerData.h "" TTriggerDataDict.cxx "")
-add_library(NPMisc SHARED TTacData.cxx TTriggerData.cxx TTacDataDict.cxx TTriggerDataDict.cxx)
+add_custom_command(OUTPUT TTacPhysicsDict.cxx TTacPhysicsDict_rdict.pcm TTacPhysics.rootmap COMMAND genreflex TTacPhysics.h -o TTacPhysicsDict.cxx -I../Core --rootmap=TTacPhysics.rootmap --rootmap-lib=libNPMisc --quiet DEPENDS TTacPhysics.h)
+add_custom_command(OUTPUT TTriggerDataDict.cxx TTriggerDataDict_rdict.pcm TTriggerData.rootmap COMMAND genreflex TTriggerData.h -o TTriggerDataDict.cxx -I../Core --rootmap=TTriggerData.rootmap --rootmap-lib=libNPMisc --quiet DEPENDS TTriggerData.h)
+add_custom_command(OUTPUT TTacDataDict.cxx TTacDataDict_rdict.pcm TTacData.rootmap COMMAND genreflex TTacData.h -o TTacDataDict.cxx -I../Core --rootmap=TTacData.rootmap --rootmap-lib=libNPMisc --quiet DEPENDS TTacData.h)
+add_library(NPMisc SHARED TTacPhysics.cxx TTacData.cxx TTriggerData.cxx TTacDataDict.cxx TTriggerDataDict.cxx TTacPhysicsDict.cxx)
 target_link_libraries(NPMisc ${ROOT_LIBRARIES} NPCore) 
 install(FILES TTacData.h TTriggerData.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
 
+install(FILES TTacData.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+install(FILES TTriggerData.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+install(FILES TTacPhysics.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})

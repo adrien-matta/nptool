@@ -1,6 +1,8 @@
-ROOT_GENERATE_DICTIONARY( TCATSData.h "" TCATSDataDict.cxx "")
-ROOT_GENERATE_DICTIONARY( TCATSPhysics.h "" TCATSPhysicsDict.cxx "../Core")
+add_custom_command(OUTPUT TCATSPhysicsDict.cxx TCATSPhysicsDict_rdict.pcm TCATSPhysics.rootmap COMMAND genreflex TCATSPhysics.h -o TCATSPhysicsDict.cxx -I../Core --rootmap=TCATSPhysics.rootmap --rootmap-lib=libNPCATS --quiet DEPENDS TCATSPhysics.h)
+add_custom_command(OUTPUT TCATSDataDict.cxx TCATSDataDict_rdict.pcm TCATSData.rootmap COMMAND genreflex TCATSData.h -o TCATSDataDict.cxx -I../Core --rootmap=TCATSData.rootmap --rootmap-lib=libNPCATS --quiet DEPENDS TCATSData.h)
 add_library(NPCATS SHARED TCATSData.cxx TCATSPhysics.cxx TCATSDataDict.cxx TCATSPhysicsDict.cxx TCATSSpectra.cxx)
 target_link_libraries(NPCATS ${ROOT_LIBRARIES} NPCore) 
 install(FILES TCATSData.h TCATSPhysics.h TCATSSpectra.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
 
+install(FILES TCATSData.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+install(FILES TCATSPhysics.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})

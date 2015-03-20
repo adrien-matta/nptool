@@ -8,3 +8,5 @@ DetectorClassList.txt
 Utility/Makefile
 Utility/npanalysis
 Utility/nptool-libmap
+*rootmap*
+*_rflx.cpp

@@ -1,6 +1,8 @@
-ROOT_GENERATE_DICTIONARY( TW1Data.h "" TW1DataDict.cxx "")
-ROOT_GENERATE_DICTIONARY( TW1Physics.h "" TW1PhysicsDict.cxx "../Core")
+add_custom_command(OUTPUT TW1PhysicsDict.cxx TW1PhysicsDict_rdict.pcm TW1Physics.rootmap COMMAND genreflex TW1Physics.h -o TW1PhysicsDict.cxx -I../Core --rootmap=TW1Physics.rootmap --rootmap-lib=libNPW1 --quiet DEPENDS TW1Physics.h)
+add_custom_command(OUTPUT TW1DataDict.cxx TW1DataDict_rdict.pcm TW1Data.rootmap COMMAND genreflex TW1Data.h -o TW1DataDict.cxx -I../Core --rootmap=TW1Data.rootmap --rootmap-lib=libNPW1 --quiet DEPENDS TW1Data.h)
 add_library(NPW1 SHARED TW1Data.cxx TW1Physics.cxx TW1DataDict.cxx TW1PhysicsDict.cxx )
 target_link_libraries(NPW1 ${ROOT_LIBRARIES} NPCore) 
 install(FILES TW1Data.h TW1Physics.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
 
+install(FILES TW1Data.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+install(FILES TW1Physics.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
