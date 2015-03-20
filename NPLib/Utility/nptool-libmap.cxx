@@ -126,7 +126,5 @@ int main(int argc , char** argv){
   path += "/NPLib/*/*.rootmap";
   std::string command = "sed -i '' -e 's/.so/.dylib/g' "+path;  
   system(command.c_str());   
- 
-
-    return 0;
+  return 0;
 }
