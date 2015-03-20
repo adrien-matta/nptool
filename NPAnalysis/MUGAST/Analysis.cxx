@@ -127,7 +127,6 @@ int main(int argc, char** argv){
       Energy = ELab = 0;
       Si_E_M2 = M2->Si_E[countMust2];
       CsI_E_M2= M2->CsI_E[countMust2];
-
       // if SiLi
       if(CsI_E_M2>0 ){
         // The energy in CsI is calculate form dE/dx Table because 

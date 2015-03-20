@@ -680,7 +680,7 @@ void TMust2Physics::ReadAnalysisConfig(){
 
       else if (whatToDo== "CSI_E_RAW_THRESHOLD") {
         AnalysisConfigFile >> DataBuffer;
-        m_CsI_E_Threshold = atoi(DataBuffer.c_str());
+        m_CsI_E_RAW_Threshold = atoi(DataBuffer.c_str());
         cout << whatToDo << " " << m_CsI_E_Threshold << endl;
       }
 
