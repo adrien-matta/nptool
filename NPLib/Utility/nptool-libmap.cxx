@@ -121,13 +121,11 @@ int main(int argc , char** argv){
       } 
     }
 
-    
-    
-    
-    
-    
-    
-    
+  //  Change all the .so to .dylib for Mac Os X in the installed rootmap    
+  path = getenv("NPTOOL");
+  path += "/NPLib/*/*.rootmap";
+  std::string command = "sed -i '' -e 's/.so/.dylib/g' "+path;  
+  system(command.c_str());   
     
     return 0;
 }
