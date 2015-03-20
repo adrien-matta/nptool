@@ -1,5 +1,3 @@
-add_custom_command(OUTPUT TAsciiFileDict.cxx TAsciiFile.rootmap TAsciiFileDict_rdict.pcm COMMAND genreflex TAsciiFile.h -o TAsciiFileDict.cxx --rootmap=TAsciiFile.rootmap --rootmap-lib=libNPCore --quiet DEPENDS TAsciiFile.h)
-add_custom_command(OUTPUT NPVDetectorDict.cxx NPVDetectorDict_rdict.pcm NPVDetector.rootmap COMMAND genreflex NPVDetector.h -o NPVDetectorDict.cxx -s ClassSelection.xml --rootmap=NPVDetector.rootmap --rootmap-lib=libNPCore --quiet DEPENDS NPVDetector.h)
 add_library(NPCore SHARED NPVAnalysis.cxx NPAnalysisFactory.cxx NPCalibrationManager.cxx NPOptionManager.cxx RootOutput.cxx RootInput.cxx TAsciiFile.cxx TAsciiFileDict.cxx NPDetectorManager.cxx NPVDetector.cxx NPVDetectorDict.cxx NPVSpectra.cxx NPDetectorFactory.cxx)
 target_link_libraries(NPCore ${ROOT_LIBRARIES}) 
 install(FILES NPVAnalysis.h NPAnalysisFactory.h  NPCalibrationManager.h NPOptionManager.h RootInput.h RootOutput.h TAsciiFile.h NPDetectorManager.h NPVDetector.h NPGlobalSystemOfUnits.h NPPhysicalConstants.h NPSystemOfUnits.h NPVSpectra.h NPDetectorFactory.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
