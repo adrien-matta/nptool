@@ -4,7 +4,7 @@ add_custom_command(OUTPUT TVamosDCDataDict.cxx TVamosDCDataDict_rdict.pcm TVamos
 add_custom_command(OUTPUT TVamosCHIODataDict.cxx TVamosCHIODataDict_rdict.pcm TVamosCHIOData.rootmap COMMAND genreflex TVamosCHIOData.h -o TVamosCHIODataDict.cxx -I../Core --rootmap=TVamosCHIOData.rootmap --rootmap-lib=libNPVamos --quiet DEPENDS TVamosCHIOData.h)
 add_library(NPVamos SHARED TVamosCHIOData.cxx TVamosDCData.cxx TVamosPlasticData.cxx TVamosFingerData.cxx TVamosCHIODataDict.cxx TVamosDCDataDict.cxx TVamosPlasticDataDict.cxx TVamosFingerDataDict.cxx )
 target_link_libraries(NPVamos ${ROOT_LIBRARIES} NPCore) 
-install(FILES TVamosCHIOData.h TVamosDCData.h TVamosPlasticData.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
+install(FILES TVamosCHIOData.h TVamosDCData.h TVamosPlasticData.h TVamosFingerData.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
 
 install(FILES TVamosCHIOData.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 install(FILES TVamosDCData.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
