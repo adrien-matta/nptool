@@ -4,6 +4,23 @@
 #include<dirent.h>
 #include"NPDetectorFactory.h"
 
+#ifdef __APPLE__
+std::string CORRECT_LIB_EXTENSION = ".dylib";
+std::string INCORRECT_LIB_EXTENSION = ".so";
+#endif
+#ifdef __linux__
+std::string INCORRECT_LIB_EXTENSION = ".dylib";
+std::string CORRECT_LIB_EXTENSION = ".so";
+#endif
+#ifdef __FreeBSD__
+std::string INCORRECT_LIB_EXTENSION = ".dylib";
+std::string CORRECT_LIB_EXTENSION = ".so";
+#endif
+
+
+
+
+
 int main(int argc , char** argv){
   // Generate the Class list with Token for autoloading of the Detector classes
   DIR *dir;
@@ -124,7 +141,8 @@ int main(int argc , char** argv){
   //  Change all the .so to .dylib for Mac Os X in the installed rootmap    
   path = getenv("NPTOOL");
   path += "/NPLib/*/*.rootmap";
-  std::string command = "sed -i '' -e 's/.so/.dylib/g' "+path;  
+   
+  std::string command = "sed -i '' -e 's/"+INCORRECT_LIB_EXTENSION+"/"+CORRECT_LIB_EXTENSION+"/g' "+path;  
   system(command.c_str());   
   return 0;
 }
