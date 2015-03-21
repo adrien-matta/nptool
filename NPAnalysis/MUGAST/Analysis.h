@@ -57,7 +57,7 @@ namespace ENERGYLOSS{
   EnergyLoss LightCD2 = EnergyLoss("proton_CD2.G4table","G4Table",100 );
   EnergyLoss LightAl = EnergyLoss("proton_Al.G4table","G4Table",100);
   EnergyLoss LightSi = EnergyLoss("proton_Si.G4table","G4Table",100);
-  EnergyLoss BeamCD2 = EnergyLoss("Fe60[0.0]_CD2.G4table","G4Table",100);
+  EnergyLoss BeamCD2 = EnergyLoss("Kr74[0.0]_CD2.G4table","G4Table",100);
 }
 
 using namespace ENERGYLOSS ;

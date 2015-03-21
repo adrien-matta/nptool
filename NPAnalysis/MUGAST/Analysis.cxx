@@ -6,7 +6,7 @@ int main(int argc, char** argv){
 
   // Instantiate RootInput
   string runToReadfileName = myOptionManager->GetRunToReadFile();
-  RootInput:: getInstance("RunToTreat.txt");
+  RootInput:: getInstance(runToReadfileName);
   TChain* Chain = RootInput:: getInstance()->GetChain();
   // if input files are not given, use those from TAsciiFile
   if (myOptionManager->IsDefault("DetectorConfiguration")) {
@@ -53,6 +53,8 @@ int main(int argc, char** argv){
   double ThetaM2Surface = 0; 
   double Si_E_M2 = 0 ;
   double CsI_E_M2 = 0 ; 
+  double SiLi_E_M2 = 0 ; 
+
   double Energy = 0;
   double E_M2 = 0;
   
@@ -127,6 +129,7 @@ int main(int argc, char** argv){
       Energy = ELab = 0;
       Si_E_M2 = M2->Si_E[countMust2];
       CsI_E_M2= M2->CsI_E[countMust2];
+      SiLi_E_M2= M2->SiLi_E[countMust2];
       // if SiLi
       if(CsI_E_M2>0 ){
         // The energy in CsI is calculate form dE/dx Table because 
@@ -134,6 +137,14 @@ int main(int argc, char** argv){
         Energy = LightAl.EvaluateInitialEnergy( Energy ,0.4*micrometer , ThetaM2Surface); 
         Energy+=Si_E_M2;
       }
+
+      else if(SiLi_E_M2>0 ){
+        // The energy in CsI is calculate form dE/dx Table because 
+        Energy = SiLi_E_M2;
+        Energy = LightAl.EvaluateInitialEnergy( Energy ,0.4*micrometer , ThetaM2Surface); 
+        Energy+=Si_E_M2;
+      }
+
 
       else
         Energy = Si_E_M2;
@@ -147,13 +158,14 @@ int main(int argc, char** argv){
       /************************************************/
       // Part 3 : Excitation Energy Calculation
       Ex = myReaction -> ReconstructRelativistic( ELab , ThetaLab );
-      ThetaLab=ThetaLab/deg;
-      
+            
       /************************************************/
 
       /************************************************/
       // Part 4 : Theta CM Calculation
-      ThetaCM  = myReaction -> EnergyLabToThetaCM( ELab , 0)/deg;
+      ThetaCM  = myReaction -> EnergyLabToThetaCM( ELab , ThetaLab)/deg;
+      ThetaLab=ThetaLab/deg;
+
       /************************************************/
     }//end loop MUST2
     
@@ -204,7 +216,6 @@ int main(int argc, char** argv){
       /************************************************/
     }//end loop GASPARD
 
-    if(ELab>0)
       RootOutput::getInstance()->GetTree()->Fill();
    }// loop over events
 

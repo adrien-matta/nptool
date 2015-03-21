@@ -86,7 +86,7 @@ void GeometricalEfficiency(const char * fname = "myResult"){
       hDetecThetaCM->Fill(initCond->GetThetaCM(0));
     }
   }
-  
+hEmittTheta->Sumw2();hEmittThetaCM->Sumw2();hDetecTheta->Sumw2();hDetecThetaCM->Sumw2();  
   // efficiency in lab frame in %
   TCanvas *c = new TCanvas("c", "efficiency",800,800);
   c->SetTopMargin(0.01);
