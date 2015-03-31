@@ -75,6 +75,8 @@ int main(int argc , char** argv){
     closedir (dir);
   }
 
+  system("chmod 755 liblist");
+
   // Generate the inc dir file for backward compatiblity
   // Create the list of custom detector from argument
   std::string detlist="";
