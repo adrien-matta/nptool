@@ -86,7 +86,9 @@ void GeometricalEfficiency(const char * fname = "myResult"){
       hDetecThetaCM->Fill(initCond->GetThetaCM(0));
     }
   }
-  
+   TCanvas *c0 = new TCanvas("c0", "Distrib",800,800);
+  hEmittTheta->Draw("");
+  hDetecTheta->Draw("same");
   // efficiency in lab frame in %
   TCanvas *c = new TCanvas("c", "efficiency",800,800);
   c->SetTopMargin(0.01);
@@ -111,4 +113,5 @@ void GeometricalEfficiency(const char * fname = "myResult"){
   TF1* f = new TF1("f",Form("2 * %f * sin(x*%f/180.) *1*%f/180.",M_PI,M_PI,M_PI),0,180);
   f->Draw("SAME");
   c4->Update();
+
 }
