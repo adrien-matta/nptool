@@ -1,5 +1,5 @@
-add_custom_command(OUTPUT TSSSDPhysicsDict.cxx TSSSDPhysicsDict_rdict.pcm TSSSDPhysics.rootmap COMMAND rootcint -f TSSSDPhysicsDict.cxx -rmf TSSSDPhysics.rootmap -rml libNPSSSD.dylib -I../Core -c TSSSDPhysics.h DEPENDS TSSSDPhysics.h)
-add_custom_command(OUTPUT TSSSDDataDict.cxx TSSSDDataDict_rdict.pcm TSSSDData.rootmap COMMAND rootcint -f TSSSDDataDict.cxx -rmf TSSSDData.rootmap -rml libNPSSSD.dylib -I../Core -c TSSSDData.h DEPENDS TSSSDData.h)
+add_custom_command(OUTPUT TSSSDPhysicsDict.cxx TSSSDPhysicsDict_rdict.pcm TSSSDPhysics.rootmap COMMAND ../scripts/build_dict.sh TSSSDPhysics.h TSSSDPhysicsDict.cxx TSSSDPhysics.rootmap libNPSSSD.dylib DEPENDS TSSSDPhysics.h)
+add_custom_command(OUTPUT TSSSDDataDict.cxx TSSSDDataDict_rdict.pcm TSSSDData.rootmap COMMAND ../scripts/build_dict.sh TSSSDData.h TSSSDDataDict.cxx TSSSDData.rootmap libNPSSSD.dylib DEPENDS TSSSDData.h)
 add_library(NPSSSD SHARED TSSSDData.cxx TSSSDPhysics.cxx TSSSDDataDict.cxx TSSSDPhysicsDict.cxx )
 target_link_libraries(NPSSSD ${ROOT_LIBRARIES} NPCore) 
 install(FILES TSSSDData.h TSSSDPhysics.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})

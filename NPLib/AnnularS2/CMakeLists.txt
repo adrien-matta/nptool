@@ -1,5 +1,5 @@
-add_custom_command(OUTPUT TS2PhysicsDict.cxx TS2PhysicsDict_rdict.pcm TS2Physics.rootmap COMMAND rootcint -f TS2PhysicsDict.cxx -rmf TS2Physics.rootmap -rml libNPAnnularS2.dylib -I../Core -c TS2Physics.h DEPENDS TS2Physics.h)
-add_custom_command(OUTPUT TS2DataDict.cxx TS2DataDict_rdict.pcm TS2Data.rootmap COMMAND rootcint -f TS2DataDict.cxx -rmf TS2Data.rootmap -rml libNPAnnularS2.dylib -I../Core -c TS2Data.h DEPENDS TS2Data.h)
+add_custom_command(OUTPUT TS2PhysicsDict.cxx TS2PhysicsDict_rdict.pcm TS2Physics.rootmap COMMAND ../scripts/build_dict.sh TS2Physics.h TS2PhysicsDict.cxx TS2Physics.rootmap libNPAnnularS2.dylib DEPENDS TS2Physics.h)
+add_custom_command(OUTPUT TS2DataDict.cxx TS2DataDict_rdict.pcm TS2Data.rootmap COMMAND ../scripts/build_dict.sh TS2Data.h TS2DataDict.cxx TS2Data.rootmap libNPAnnularS2.dylib DEPENDS TS2Data.h)
 add_library(NPS2 SHARED TS2Data.cxx TS2Physics.cxx TS2DataDict.cxx TS2PhysicsDict.cxx )
 target_link_libraries(NPS2 ${ROOT_LIBRARIES} NPCore) 
 install(FILES TS2Data.h TS2Physics.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})

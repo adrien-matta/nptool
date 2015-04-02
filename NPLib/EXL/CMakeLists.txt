@@ -1,5 +1,5 @@
-add_custom_command(OUTPUT TExlPhysicsDict.cxx TExlPhysicsDict_rdict.pcm TExlPhysics.rootmap COMMAND rootcint -f TExlPhysicsDict.cxx -rmf TExlPhysics.rootmap -rml libNPEXL.dylib -I../Core -c TExlPhysics.h DEPENDS TExlPhysics.h)
-add_custom_command(OUTPUT TExlDataDict.cxx TExlDataDict_rdict.pcm TExlData.rootmap COMMAND rootcint -f TExlDataDict.cxx -rmf TExlData.rootmap -rml libNPEXL.dylib -I../Core -c TExlData.h DEPENDS TExlData.h)
+add_custom_command(OUTPUT TExlPhysicsDict.cxx TExlPhysicsDict_rdict.pcm TExlPhysics.rootmap COMMAND ../scripts/build_dict.sh TExlPhysics.h TExlPhysicsDict.cxx TExlPhysics.rootmap libNPEXL.dylib DEPENDS TExlPhysics.h)
+add_custom_command(OUTPUT TExlDataDict.cxx TExlDataDict_rdict.pcm TExlData.rootmap COMMAND ../scripts/build_dict.sh TExlData.h TExlDataDict.cxx TExlData.rootmap libNPEXL.dylib DEPENDS TExlData.h)
 add_library(NPEXL SHARED TExlData.cxx TExlPhysics.cxx TExlDataDict.cxx TExlPhysicsDict.cxx )
 target_link_libraries(NPEXL ${ROOT_LIBRARIES} NPCore) 
 install(FILES TExlData.h TExlPhysics.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})

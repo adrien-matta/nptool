@@ -1,5 +1,5 @@
-add_custom_command(OUTPUT TExogamPhysicsDict.cxx TExogamPhysicsDict_rdict.pcm TExogamPhysics.rootmap COMMAND rootcint -f TExogamPhysicsDict.cxx -rmf TExogamPhysics.rootmap -rml libNPExogam.dylib -I../Core -c TExogamPhysics.h DEPENDS TExogamPhysics.h)
-add_custom_command(OUTPUT TExogamDataDict.cxx TExogamDataDict_rdict.pcm TExogamData.rootmap COMMAND rootcint -f TExogamDataDict.cxx -rmf TExogamData.rootmap -rml libNPExogam.dylib -I../Core -c TExogamData.h DEPENDS TExogamData.h)
+add_custom_command(OUTPUT TExogamPhysicsDict.cxx TExogamPhysicsDict_rdict.pcm TExogamPhysics.rootmap COMMAND ../scripts/build_dict.sh TExogamPhysics.h TExogamPhysicsDict.cxx TExogamPhysics.rootmap libNPExogam.dylib DEPENDS TExogamPhysics.h)
+add_custom_command(OUTPUT TExogamDataDict.cxx TExogamDataDict_rdict.pcm TExogamData.rootmap COMMAND ../scripts/build_dict.sh TExogamData.h TExogamDataDict.cxx TExogamData.rootmap libNPExogam.dylib DEPENDS TExogamData.h)
 add_library(NPExogam SHARED TExogamData.cxx TExogamPhysics.cxx TExogamDataDict.cxx TExogamPhysicsDict.cxx TExogamSpectra.cxx)
 target_link_libraries(NPExogam ${ROOT_LIBRARIES} NPCore) 
 install(FILES TExogamData.h TExogamPhysics.h TExogamSpectra.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})

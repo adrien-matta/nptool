@@ -1,5 +1,5 @@
-add_custom_command(OUTPUT TW1PhysicsDict.cxx TW1PhysicsDict_rdict.pcm TW1Physics.rootmap COMMAND rootcint -f TW1PhysicsDict.cxx -rmf TW1Physics.rootmap -rml libNPW1.dylib -I../Core -c TW1Physics.h DEPENDS TW1Physics.h)
-add_custom_command(OUTPUT TW1DataDict.cxx TW1DataDict_rdict.pcm TW1Data.rootmap COMMAND rootcint -f TW1DataDict.cxx -rmf TW1Data.rootmap -rml libNPW1.dylib -I../Core -c TW1Data.h DEPENDS TW1Data.h)
+add_custom_command(OUTPUT TW1PhysicsDict.cxx TW1PhysicsDict_rdict.pcm TW1Physics.rootmap COMMAND ../scripts/build_dict.sh TW1Physics.h TW1PhysicsDict.cxx TW1Physics.rootmap libNPW1.dylib DEPENDS TW1Physics.h)
+add_custom_command(OUTPUT TW1DataDict.cxx TW1DataDict_rdict.pcm TW1Data.rootmap COMMAND ../scripts/build_dict.sh TW1Data.h TW1DataDict.cxx TW1Data.rootmap libNPW1.dylib DEPENDS TW1Data.h)
 add_library(NPW1 SHARED TW1Data.cxx TW1Physics.cxx TW1DataDict.cxx TW1PhysicsDict.cxx )
 target_link_libraries(NPW1 ${ROOT_LIBRARIES} NPCore) 
 install(FILES TW1Data.h TW1Physics.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})

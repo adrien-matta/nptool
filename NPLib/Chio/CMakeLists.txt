@@ -1,7 +1,7 @@
-add_custom_command(OUTPUT TChio_digPhysicsDict.cxx TChio_digPhysicsDict_rdict.pcm TChio_digPhysics.rootmap COMMAND rootcint -f TChio_digPhysicsDict.cxx -rmf TChio_digPhysics.rootmap -rml libNPChio.dylib -I../Core -c TChio_digPhysics.h DEPENDS TChio_digPhysics.h)
-add_custom_command(OUTPUT TChio_anPhysicsDict.cxx TChio_anPhysicsDict_rdict.pcm TChio_anPhysics.rootmap COMMAND rootcint -f TChio_anPhysicsDict.cxx -rmf TChio_anPhysics.rootmap -rml libNPChio.dylib -I../Core -c TChio_anPhysics.h DEPENDS TChio_anPhysics.h)
-add_custom_command(OUTPUT TChio_digDataDict.cxx TChio_digDataDict_rdict.pcm TChio_digData.rootmap COMMAND rootcint -f TChio_digDataDict.cxx -rmf TChio_digData.rootmap -rml libNPChio.dylib -I../Core -c TChio_digData.h DEPENDS TChio_digData.h)
-add_custom_command(OUTPUT TChio_anDataDict.cxx TChio_anDataDict_rdict.pcm TChio_anData.rootmap COMMAND rootcint -f TChio_anDataDict.cxx -rmf TChio_anData.rootmap -rml libNPChio.dylib -I../Core -c TChio_anData.h DEPENDS TChio_anData.h)
+add_custom_command(OUTPUT TChio_digPhysicsDict.cxx TChio_digPhysicsDict_rdict.pcm TChio_digPhysics.rootmap COMMAND ../scripts/build_dict.sh TChio_digPhysics.h TChio_digPhysicsDict.cxx TChio_digPhysics.rootmap libNPChio.dylib DEPENDS TChio_digPhysics.h)
+add_custom_command(OUTPUT TChio_anPhysicsDict.cxx TChio_anPhysicsDict_rdict.pcm TChio_anPhysics.rootmap COMMAND ../scripts/build_dict.sh TChio_anPhysics.h TChio_anPhysicsDict.cxx TChio_anPhysics.rootmap libNPChio.dylib DEPENDS TChio_anPhysics.h)
+add_custom_command(OUTPUT TChio_digDataDict.cxx TChio_digDataDict_rdict.pcm TChio_digData.rootmap COMMAND ../scripts/build_dict.sh TChio_digData.h TChio_digDataDict.cxx TChio_digData.rootmap libNPChio.dylib DEPENDS TChio_digData.h)
+add_custom_command(OUTPUT TChio_anDataDict.cxx TChio_anDataDict_rdict.pcm TChio_anData.rootmap COMMAND ../scripts/build_dict.sh TChio_anData.h TChio_anDataDict.cxx TChio_anData.rootmap libNPChio.dylib DEPENDS TChio_anData.h)
 
 add_library(NPChio SHARED TChio_anData.cxx TChio_anPhysics.cxx TChio_anDataDict.cxx TChio_anPhysicsDict.cxx TChio_digData.cxx TChio_digPhysics.cxx TChio_digDataDict.cxx TChio_digPhysicsDict.cxx )
 target_link_libraries(NPChio ${ROOT_LIBRARIES} NPCore) 

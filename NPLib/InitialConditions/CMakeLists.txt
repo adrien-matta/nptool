@@ -1,4 +1,3 @@
-add_custom_command(OUTPUT TInitialConditionsDict.cxx TInitialConditionsDict_rdict.pcm TInitialConditions.rootmap COMMAND rootcint -f TInitialConditionsDict.cxx -rmf TInitialConditions.rootmap -rml libNPInitialConditions.dylib -I../Core -c TInitialConditions.h)
 add_library(NPInitialConditions SHARED TInitialConditions.cxx TInitialConditionsDict.cxx )
 target_link_libraries(NPInitialConditions ${ROOT_LIBRARIES} NPCore)
 install(FILES TInitialConditions.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})

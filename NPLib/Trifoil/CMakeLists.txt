@@ -1,5 +1,5 @@
-add_custom_command(OUTPUT TTrifoilPhysicsDict.cxx TTrifoilPhysicsDict_rdict.pcm TTrifoilPhysics.rootmap COMMAND rootcint -f TTrifoilPhysicsDict.cxx -rmf TTrifoilPhysics.rootmap -rml libNPTrifoil.dylib -I../Core -c TTrifoilPhysics.h DEPENDS TTrifoilPhysics.h)
-add_custom_command(OUTPUT TTrifoilDataDict.cxx TTrifoilDataDict_rdict.pcm TTrifoilData.rootmap COMMAND rootcint -f TTrifoilDataDict.cxx -rmf TTrifoilData.rootmap -rml libNPTrifoil.dylib -I../Core -c TTrifoilData.h DEPENDS TTrifoilData.h)
+add_custom_command(OUTPUT TTrifoilPhysicsDict.cxx TTrifoilPhysicsDict_rdict.pcm TTrifoilPhysics.rootmap COMMAND ../scripts/build_dict.sh TTrifoilPhysics.h TTrifoilPhysicsDict.cxx TTrifoilPhysics.rootmap libNPTrifoil.dylib DEPENDS TTrifoilPhysics.h)
+add_custom_command(OUTPUT TTrifoilDataDict.cxx TTrifoilDataDict_rdict.pcm TTrifoilData.rootmap COMMAND ../scripts/build_dict.sh TTrifoilData.h TTrifoilDataDict.cxx TTrifoilData.rootmap libNPTrifoil.dylib DEPENDS TTrifoilData.h)
 add_library(NPTrifoil SHARED TTrifoilData.cxx TTrifoilPhysics.cxx TTrifoilDataDict.cxx TTrifoilPhysicsDict.cxx )
 target_link_libraries(NPTrifoil ${ROOT_LIBRARIES} NPCore) 
 install(FILES TTrifoilData.h TTrifoilPhysics.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
