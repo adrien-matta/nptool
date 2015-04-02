@@ -50,7 +50,7 @@ fi
 # Version 5 : generate the dictionnary then the libmap
 if [ $version_major -eq 5 ]
   then
-    rootcint -f $2 -I../Core -c $1
+    rootcint -f $2 -c $1 -I../Core 
     if [ "$#" -eq 4 ]
       then
         rlibmap -c $1 -o $3 -l $lib_name
