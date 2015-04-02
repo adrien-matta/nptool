@@ -1,4 +1,6 @@
 add_custom_command(OUTPUT TMayaDataDict.cxx TMayaDataDict_rdict.pcm TMayaData.rootmap COMMAND ../scripts/build_dict.sh TMayaData.h TMayaDataDict.cxx TMayaData.rootmap libNPMaya.dylib DEPENDS TMayaData.h)
+add_custom_command(OUTPUT TMayaHistoDict.cxx TMayaHistoDict_rdict.pcm TMayaHisto.rootmap COMMAND ../scripts/build_dict.sh TMayaHisto.h TMayaHistoDict.cxx TMayaHisto.rootmap libNPMaya.dylib DEPENDS TMayaHisto.h)
+
 
 add_library(NPMaya SHARED TMayaData.cxx TMayaHisto.cxx TMayaDataDict.cxx TMayaHistoDict.cxx ConfigReader.cxx)
 target_link_libraries(NPMaya ${ROOT_LIBRARIES} NPCore) 

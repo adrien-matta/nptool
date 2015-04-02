@@ -1,4 +1,5 @@
-add_library(NPInteractionCoordinates SHARED TInteractionCoordinates.cxx TInteractionCoordinatesDict.cxx )
+add_custom_command(OUTPUT TInteractionCoordinatesDict.cxx TInteractionCoordinatesDict_rdict.pcm TInteractionCoordinates.rootmap COMMAND ../scripts/build_dict.sh TInteractionCoordinates.h TInteractionCoordinatesDict.cxx TInteractionCoordinates.rootmap libNPInteractionCoordinates.so)
+ add_library(NPInteractionCoordinates SHARED TInteractionCoordinates.cxx TInteractionCoordinatesDict.cxx )
 target_link_libraries(NPInteractionCoordinates ${ROOT_LIBRARIES} NPCore)
 install(FILES TInteractionCoordinates.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
 install(FILES TInteractionCoordinatesDict_rdict.pcm TInteractionCoordinates.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
