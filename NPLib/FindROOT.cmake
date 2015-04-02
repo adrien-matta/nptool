@@ -13,6 +13,7 @@
 MESSAGE(STATUS "Looking for Root...")
 
 SET(ROOT_CONFIG_SEARCHPATH
+  /usr/bin
   ${SIMPATH}/tools/root/bin
   $ENV{ROOTSYS}/bin
 )
