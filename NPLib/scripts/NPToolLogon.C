@@ -49,8 +49,7 @@ std::string LOGON_LIB_EXTENSION = ".so";
 #endif
 
 
-void NPToolLogon(bool verbosemode = false){
-  verbosemode = false;
+void NPToolLogon(){
   // Change the standard random generator to TRandom2
   gRandom = new TRandom2();
 
