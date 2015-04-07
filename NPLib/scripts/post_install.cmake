@@ -1,1 +1,1 @@
-execute_process(COMMAND nptool-libmap ${DETLIST})
+execute_process(COMMAND nptool-installer ${DETLIST})

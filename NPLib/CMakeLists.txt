@@ -78,10 +78,3 @@ foreach(subdir ${SUB_DIRECTORY})
 endforeach()
 
 install(SCRIPT scripts/post_install.cmake ${DETLIST})
-
-#add_custom_target(LIBLIST ALL nptool-libmap ${DETLIST})
-#add_custom_command(TARGET nptool-libmap POST_BUILD COMMAND  nptool-libmap ${DETLIST})
-#add_dependencies(LIBLIST nptool-libmap)
-
-# Link executable against the local lib
-#link_directories( ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
