@@ -99,7 +99,7 @@ int main(int argc , char** argv){
       while ((ent = readdir (dir)) != NULL) {
         if(ent->d_type == DT_DIR){
           folderName = ent->d_name ;
-          if(std::strncmp(folderName.c_str(),".",1)!=0 && folderName!="Core"  
+          if(strncmp(folderName.c_str(),".",1)!=0 && folderName!="Core"  
               && folderName!="Physics"  && folderName!="InitialConditions"
               && folderName!="InteractionCoordinates" && folderName!="scripts"
               && folderName!="lib" && folderName!="include"  
@@ -123,7 +123,7 @@ int main(int argc , char** argv){
       while ((ent = readdir (dir)) != NULL) {
         if(ent->d_type == DT_DIR){
           folderName = ent->d_name ;
-          if(std::strncmp(folderName.c_str(),".",1)!=0 && folderName!="Core"  
+          if(strncmp(folderName.c_str(),".",1)!=0 && folderName!="Core"  
               && folderName!="Physics"  && folderName!="InitialConditions"
               && folderName!="InteractionCoordinates" && folderName!="scripts"
               && folderName!="lib" && folderName!="include"  
