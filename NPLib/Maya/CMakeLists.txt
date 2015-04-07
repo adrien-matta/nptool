@@ -1,3 +1,4 @@
+if(DEFINED ENV{ROOTSYS})
 add_custom_command(OUTPUT TMayaDataDict.cxx TMayaDataDict_rdict.pcm TMayaData.rootmap COMMAND ../scripts/build_dict.sh TMayaData.h TMayaDataDict.cxx TMayaData.rootmap libNPMaya.dylib DEPENDS TMayaData.h)
 add_custom_command(OUTPUT TMayaHistoDict.cxx TMayaHistoDict_rdict.pcm TMayaHisto.rootmap COMMAND ../scripts/build_dict.sh TMayaHisto.h TMayaHistoDict.cxx TMayaHisto.rootmap libNPMaya.dylib DEPENDS TMayaHisto.h)
 
@@ -9,3 +10,4 @@ install(FILES TMayaData.h TMayaHisto.h ConfigReader.h DESTINATION ${CMAKE_INCLUD
 install(FILES TMayaData.rootmap TMayaHisto.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 install(FILES TMayaDataDict_rdict.pcm TMayaHistoDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 install(FILES TMayaDataDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+endif()
