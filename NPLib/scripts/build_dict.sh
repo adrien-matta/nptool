@@ -50,7 +50,7 @@ fi
 # Version 5 : generate the dictionnary then the libmap
 if [ $version_major -eq 5 ]
   then
-    rootcint -f $2 -c -I../Core $1
+    rootcint -f $2 -c -I../Core $1 $5
 fi
 
 # Version 6 or more : generate both at once
