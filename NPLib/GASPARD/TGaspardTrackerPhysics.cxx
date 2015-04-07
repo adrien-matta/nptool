@@ -22,7 +22,6 @@
  *****************************************************************************/
 
 #include "TGaspardTrackerPhysics.h"
-#include "NPDetectorFactory.h"
 
 ClassImp(TGaspardTrackerPhysics)
 
@@ -62,26 +61,5 @@ void TGaspardTrackerPhysics::Clear()
    fThirdStage_Energy.clear();
    fThirdStage_Time.clear();
    fThirdStage_Position.clear();
-}
-////////////////////////////////////////////////////////////////////////////////
-//            Construct Method to be pass to the DetectorFactory              //
-////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* TGaspardTrackerPhysics::Construct(){
-  return (NPA::VDetector*) new TGaspardTrackerPhysics();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//            Registering the construct method to the factory                 //
-////////////////////////////////////////////////////////////////////////////////
-extern "C"{
-class proxy{
-  public:
-    proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("GaspardTracker","GaspardTracker");
-      NPA::DetectorFactory::getInstance()->AddDetector("GaspardTracker",TGaspardTrackerPhysics::Construct);
-    }
-};
-
-proxy p;
 }
 

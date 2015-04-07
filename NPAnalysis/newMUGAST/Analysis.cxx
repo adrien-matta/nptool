@@ -27,7 +27,6 @@ using namespace std;
 #include"NPOptionManager.h"
 ////////////////////////////////////////////////////////////////////////////////
 Analysis::Analysis(){
-
 }
 ////////////////////////////////////////////////////////////////////////////////
 Analysis::~Analysis(){
@@ -38,12 +37,12 @@ void Analysis::Init(){
   InitOutputBranch();
   InitInputBranch();
   
-  M2  = (TMust2Physics*) m_DetectorManager -> GetDetector("MUST2");
-  GD = (GaspardTracker*)  m_DetectorManager -> GetDetector("GASPARD");
-  EnergyLoss LightCD2 = EnergyLoss("proton_CD2.G4table","G4Table",100 );
-  EnergyLoss LightAl = EnergyLoss("proton_Al.G4table","G4Table",100);
-  EnergyLoss LightSi = EnergyLoss("proton_Si.G4table","G4Table",100);
-  EnergyLoss BeamCD2 = EnergyLoss("Mg28[0.0]_CD2.G4table","G4Table",100);
+  M2  = (TMust2Physics*) m_DetectorManager -> GetDetector("MUST2Array");
+  GD = (GaspardTracker*)  m_DetectorManager -> GetDetector("GaspardTracker");
+  LightCD2 = EnergyLoss("proton_CD2.G4table","G4Table",100 );
+  LightAl = EnergyLoss("proton_Al.G4table","G4Table",100);
+  LightSi = EnergyLoss("proton_Si.G4table","G4Table",100);
+  BeamCD2 = EnergyLoss("Na24[0.0]_CD2.G4table","G4Table",100);
   myReaction = new NPL::Reaction();
   myReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
   
@@ -82,9 +81,9 @@ void Analysis::TreatEvent(){
   TVector3 BeamDirection = TVector3(0,0,1);
   double BeamEnergy = BeamCD2.Slow(OriginalBeamEnergy,Rand.Uniform(0,TargetThickness),0);
   myReaction->SetBeamEnergy(BeamEnergy);
-  
   //////////////////////////// LOOP on MUST2 //////////////////
   for(unsigned int countMust2 = 0 ; countMust2 < M2->Si_E.size() ; countMust2++){
+    cout << "MUST2 " << endl;
     /************************************************/
     //Part 0 : Get the usefull Data
     // MUST2
@@ -108,7 +107,7 @@ void Analysis::TreatEvent(){
     Si_E_M2 = M2->Si_E[countMust2];
     CsI_E_M2= M2->CsI_E[countMust2];
     
-    // if SiLi
+    // if CsI
     if(CsI_E_M2>0 ){
       // The energy in CsI is calculate form dE/dx Table because
       Energy = CsI_E_M2;
@@ -134,7 +133,7 @@ void Analysis::TreatEvent(){
     
     /************************************************/
     // Part 4 : Theta CM Calculation
-    ThetaCM  = myReaction -> EnergyLabToThetaCM( ELab , 0)/deg;
+    ThetaCM  = myReaction -> EnergyLabToThetaCM( ELab , ThetaLab)/deg;
     /************************************************/
   }//end loop MUST2
   
@@ -166,10 +165,10 @@ void Analysis::TreatEvent(){
     // Part 2 : Impact Energy
     Energy = ELab = 0;
     Energy = GD->GetEnergyDeposit();
-    
     // Target Correction
-    ELab   = LightCD2.EvaluateInitialEnergy( Energy ,TargetThickness/2., ThetaNormalTarget);
-    /************************************************/
+    
+   ELab   = LightCD2.EvaluateInitialEnergy( Energy ,TargetThickness/2., ThetaNormalTarget);
+   /************************************************/
     
     /************************************************/
     // Part 3 : Excitation Energy Calculation
@@ -201,10 +200,10 @@ void Analysis::InitOutputBranch() {
 
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::InitInputBranch(){
-  RootInput:: getInstance()->GetChain()->SetBranchAddress("InitialConditions",&myInit );
+/*  RootInput:: getInstance()->GetChain()->SetBranchAddress("InitialConditions",&myInit );
   RootInput:: getInstance()->GetChain()->SetBranchStatus("InitialConditions",true );
   RootInput:: getInstance()->GetChain()->SetBranchStatus("fIC_*",true );
-}
+*/}
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::ReInitValue(){
   Ex = -1000 ;
@@ -215,7 +214,7 @@ void Analysis::ReInitValue(){
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//            Construct Method to be pass to the DetectorFactory              //
+//            Construct Method to be pass to the AnalysisFactory              //
 ////////////////////////////////////////////////////////////////////////////////
 NPA::VAnalysis* Analysis::Construct(){
   return (NPA::VAnalysis*) new Analysis();

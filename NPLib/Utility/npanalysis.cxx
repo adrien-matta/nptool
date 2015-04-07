@@ -41,7 +41,8 @@ int main(int argc , char** argv){
 
   // Instantiate RootOutput
   RootOutput::getInstance("Analysis/"+OutputfileName, "ResultTree");
-  // RootOutput::getInstance()->GetFile()->SetCompressionLevel(0);
+  TTree* tree= RootOutput::getInstance()->GetTree();
+  
   // Instantiate the detector using a file
   NPA::DetectorManager* myDetector = new DetectorManager();
   myDetector->ReadConfigurationFile(detectorfileName);
@@ -50,7 +51,8 @@ int main(int argc , char** argv){
   NPA::VAnalysis* UserAnalysis = NULL;
   string libName = "libNPAnalysis" + SHARED_LIB_EXTENSION;
   dlopen(libName.c_str(),RTLD_NOW);
-  if(dlerror()==NULL){
+  char* error = dlerror();
+  if(error==NULL){
     UserAnalysis = NPA::AnalysisFactory::getInstance()->Construct(); 
     UserAnalysis->SetDetectorManager(myDetector);
     UserAnalysis->Init();
@@ -64,10 +66,7 @@ int main(int argc , char** argv){
     nentries = myOptionManager->GetNumberOfEntryToAnalyse() ;
   std::cout << " Number of Event to be treated : " << nentries << std::endl;
 
-  
-  
-  
-  
+
   if(UserAnalysis==NULL){ 
     for (int i = 0 ; i < nentries; i++) { 
       // Get the raw Data
@@ -76,6 +75,8 @@ int main(int argc , char** argv){
       myDetector->ClearEventPhysics();
       // Build the current event
       myDetector->BuildPhysicalEvent();
+      // Fill the tree
+      tree->Fill();
     }
   }
 
@@ -89,9 +90,12 @@ int main(int argc , char** argv){
       myDetector->BuildPhysicalEvent();
       // User Analysis
       UserAnalysis->TreatEvent();
+      // Fill the tree
+      tree->Fill();
     }
     UserAnalysis->End();
   }
-  
+ 
+  RootOutput::getInstance()->Destroy();
   return 0;
 }

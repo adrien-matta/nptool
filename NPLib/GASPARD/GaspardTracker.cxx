@@ -35,6 +35,7 @@
 // NPL headers
 #include "RootInput.h"
 #include "RootOutput.h"
+#include "NPDetectorFactory.h"
 
 // ROOT headers
 #include "TChain.h"
@@ -322,3 +323,27 @@ TVector3 GaspardTracker::GetPositionOfInteraction()
 
    return Position;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VDetector* GaspardTracker::Construct(){
+  return (NPA::VDetector*) new GaspardTracker();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::DetectorFactory::getInstance()->AddToken("GaspardTracker","GASPARD");
+      NPA::DetectorFactory::getInstance()->AddDetector("GaspardTracker",GaspardTracker::Construct);
+    }
+};
+
+proxy p;
+}
+
+

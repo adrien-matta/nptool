@@ -481,10 +481,6 @@ void GaspardTrackerRectangle::AddModule(double theta,
    U.Rotate( beta_w * M_PI/180. , W ) ;
    V.Rotate( beta_w * M_PI/180. , W ) ;
 
-   double Face = 50; // mm
-   double NumberOfStrip = 100;
-   double StripPitch = Face/NumberOfStrip; // mm
-
    vector<double> lineX;
    vector<double> lineY;
    vector<double> lineZ;
@@ -496,19 +492,19 @@ void GaspardTrackerRectangle::AddModule(double theta,
    double X, Y, Z;
 
    // Moving C to the 1.1 corner:
-   C.SetX( C.X() - ( Face/2 - StripPitch/2 ) * ( V.X() + U.X() ) )  ;
-   C.SetY( C.Y() - ( Face/2 - StripPitch/2 ) * ( V.Y() + U.Y() ) )  ;
-   C.SetZ( C.Z() - ( Face/2 - StripPitch/2 ) * ( V.Z() + U.Z() ) )  ;
+   C.SetX( C.X() - ( m_FirstStageWidth/2 - m_StripPitchX/2 ) *  V.X() - (m_FirstStageLength/2 - m_StripPitchY/2)*U.X()  )  ;
+   C.SetY( C.Y() - ( m_FirstStageWidth/2 - m_StripPitchX/2 ) *  V.Y() - (m_FirstStageLength/2 - m_StripPitchY/2)*U.Y()  )  ;
+   C.SetZ( C.Z() - ( m_FirstStageWidth/2 - m_StripPitchX/2 ) *  V.Z() - (m_FirstStageLength/2 - m_StripPitchY/2)*U.Z()  )  ;
 
-   for (int i = 0; i < NumberOfStrip; i++) {
+   for (int i = 0; i < m_NumberOfStrips; i++) {
       lineX.clear();
       lineY.clear();
       lineZ.clear();
 
-      for (int j = 0; j < NumberOfStrip; j++) {
-         X = C.X() + StripPitch * ( U.X()*i + V.X()*j );
-         Y = C.Y() + StripPitch * ( U.Y()*i + V.Y()*j );
-         Z = C.Z() + StripPitch * ( U.Z()*i + V.Z()*j );
+      for (int j = 0; j < m_NumberOfStrips; j++) {
+         X = C.X() + m_StripPitchY *  U.X()*i + m_StripPitchX*V.X()*j ;
+         Y = C.Y() + m_StripPitchY *  U.Y()*i + m_StripPitchX*V.Y()*j ;
+         Z = C.Z() + m_StripPitchY *  U.Z()*i + m_StripPitchX*V.Z()*j ;
 
          lineX.push_back(X);
          lineY.push_back(Y);

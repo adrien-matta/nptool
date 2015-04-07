@@ -49,16 +49,16 @@ using namespace NPL;
 //ClassImp(EnergyLoss)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-EnergyLoss::EnergyLoss() 
-   {fInter = NULL   ;}
+EnergyLoss::EnergyLoss() {
+  fInter = NULL   ;
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-EnergyLoss::~EnergyLoss() 
-   {}
+EnergyLoss::~EnergyLoss() {
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-EnergyLoss::EnergyLoss(string Path , string Source, int NumberOfSlice=100 ,  int LiseColumn , int NumberOfMass) 
-   { 
+EnergyLoss::EnergyLoss(string Path , string Source, int NumberOfSlice=100 ,  int LiseColumn , int NumberOfMass) { 
    
    fNumberOfSlice = NumberOfSlice ; 
    fNumberOfMass  = NumberOfMass  ;
@@ -81,7 +81,7 @@ EnergyLoss::EnergyLoss(string Path , string Source, int NumberOfSlice=100 ,  int
        TableFile.open( Path.c_str() );
        if(TableFile.is_open()) { cout << "Reading Energy Loss File: " << Path << endl ;}
        
-       else { cout << "ERROR: TABLE FILE NOT FOUND" << endl; return; }
+       else { cout << "ERROR: TABLE FILE NOT FOUND" << endl; exit(1); }
       }
    
      
@@ -279,19 +279,14 @@ double EnergyLoss::EvaluateInitialEnergy( double Energy           , // Energy of
    
       //   Lise file are given in MeV/u
       //   For SRIM and geant4 file fNumberOfMass = 1 whatever is the nucleus, file are given in MeV
-      Energy = Energy / (double) fNumberOfMass ;
-   
+     Energy = Energy / (double) fNumberOfMass ;
       if (Angle > halfpi) Angle = pi-Angle;
       TargetThickness = TargetThickness / ( cos(Angle) );
-      
       double SliceThickness = TargetThickness / (double)fNumberOfSlice;
-
-      for (int i = 0; i < fNumberOfSlice ; i++) 
-         {
+      for (int i = 0; i < fNumberOfSlice ; i++){
              double de = fInter->Eval(Energy) * SliceThickness ;
              Energy   += de/fNumberOfMass ;
          }
-         
       return (Energy*fNumberOfMass) ;
    }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
