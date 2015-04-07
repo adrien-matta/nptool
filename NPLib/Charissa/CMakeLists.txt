@@ -4,9 +4,3 @@ add_library(NPCharissa SHARED TCharissaData.cxx TCharissaPhysics.cxx TCharissaDa
 target_link_libraries(NPCharissa ${ROOT_LIBRARIES} NPCore) 
 install(FILES TCharissaData.h TCharissaPhysics.h TCharissaSpectra.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
 
-install(FILES TCharissaData.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TCharissaPhysics.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TCharissaDataDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TCharissaPhysicsDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TCharissaDataDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TCharissaPhysicsDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})

@@ -4,9 +4,3 @@ add_library(NPTrifoil SHARED TTrifoilData.cxx TTrifoilPhysics.cxx TTrifoilDataDi
 target_link_libraries(NPTrifoil ${ROOT_LIBRARIES} NPCore) 
 install(FILES TTrifoilData.h TTrifoilPhysics.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
 
-install(FILES TTrifoilData.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TTrifoilPhysics.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TTrifoilDataDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TTrifoilPhysicsDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TTrifoilDataDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TTrifoilPhysicsDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})

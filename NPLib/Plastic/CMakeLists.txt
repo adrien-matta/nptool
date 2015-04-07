@@ -4,9 +4,3 @@ add_library(NPPlastic SHARED TPlasticData.cxx TPlasticPhysics.cxx TPlasticDataDi
 target_link_libraries(NPPlastic ${ROOT_LIBRARIES} NPCore) 
 install(FILES TPlasticData.h TPlasticPhysics.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
 
-install(FILES TPlasticData.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TPlasticPhysics.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TPlasticDataDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TPlasticPhysicsDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TPlasticDataDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TPlasticPhysicsDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})

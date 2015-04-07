@@ -4,9 +4,3 @@ add_library(NPFatima SHARED TFatimaData.cxx TFatimaPhysics.cxx TFatimaDataDict.c
 target_link_libraries(NPFatima ${ROOT_LIBRARIES} NPCore) 
 install(FILES TFatimaData.h TFatimaPhysics.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
 
-install(FILES TFatimaData.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TFatimaPhysics.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TFatimaDataDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TFatimaPhysicsDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TFatimaDataDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TFatimaPhysicsDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})

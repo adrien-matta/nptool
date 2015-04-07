@@ -4,9 +4,3 @@ add_library(NPSharc SHARED TSharcData.cxx TSharcPhysics.cxx TSharcDataDict.cxx T
 target_link_libraries(NPSharc ${ROOT_LIBRARIES} NPCore) 
 install(FILES TSharcData.h TSharcPhysics.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
 
-install(FILES TSharcData.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TSharcPhysics.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TSharcDataDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TSharcPhysicsDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TSharcDataDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TSharcPhysicsDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})

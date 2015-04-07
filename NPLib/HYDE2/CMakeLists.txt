@@ -4,9 +4,3 @@ add_library(NPHyde2Tracker SHARED Hyde2Tracker.cxx Hyde2TrackerModule.cxx Hyde2T
 target_link_libraries(NPHyde2Tracker ${ROOT_LIBRARIES} NPCore) 
 install(FILES THyde2TrackerData.h THyde2TrackerPhysics.h Hyde2Tracker.h Hyde2TrackerModule.h Hyde2TrackerSquare1.h Hyde2TrackerTrapezoid1.h Hyde2TrackerTrapezoid2.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
 
-install(FILES THyde2TrackerData.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES THyde2TrackerPhysics.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES THyde2TrackerDataDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES THyde2TrackerPhysicsDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES THyde2TrackerDataDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES THyde2TrackerPhysicsDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})

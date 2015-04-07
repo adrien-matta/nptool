@@ -4,9 +4,3 @@ add_library(NPGASPARD SHARED GaspardTracker.cxx GaspardTrackerAnnular.cxx Gaspar
 target_link_libraries(NPGASPARD ${ROOT_LIBRARIES} NPCore) 
 install(FILES TGaspardTrackerData.h TGaspardTrackerPhysics.h GaspardTracker.h GaspardTrackerAnnular.h GaspardTrackerDummyShape.h GaspardTrackerModule.h GaspardTrackerRectangle.h GaspardTrackerSquare.h GaspardTrackerTrapezoid.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
 
-install(FILES TGaspardTrackerData.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TGaspardTrackerPhysics.rootmap DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TGaspardTrackerDataDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TGaspardTrackerPhysicsDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TGaspardTrackerDataDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-install(FILES TGaspardTrackerPhysicsDict_rdict.pcm DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
