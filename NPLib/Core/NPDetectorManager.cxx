@@ -26,7 +26,7 @@
 #include <sstream>
 #include <fstream>
 #include <cstdlib>
-
+#include <set>
 // NPL
 #include "NPDetectorFactory.h"
 #include "RootInput.h"
