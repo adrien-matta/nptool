@@ -23,7 +23,7 @@
 
 // C++ headers
 #include<iostream>
-#include<vector>
+#include<string>
 #include<stdlib.h>
 #include<dlfcn.h>
 #include<dirent.h>
@@ -37,6 +37,17 @@ using namespace std;
 #include"TString.h"
 #include"TRandom.h"
 #include"TRandom2.h"
+
+#ifdef __APPLE__
+std::string LOGON_LIB_EXTENSION = ".dylib";
+#endif
+#ifdef __linux__
+std::string LOGON_LIB_EXTENSION = ".so";
+#endif
+#ifdef __FreeBSD__
+std::string LOGON_LIB_EXTENSION = ".so";
+#endif
+
 
 void NPToolLogon(bool verbosemode = false){
   verbosemode = false;
@@ -78,7 +89,7 @@ void NPToolLogon(bool verbosemode = false){
     // lib*Physics.dylib libraries, it is then loaded manually 
     // first.
     // Test if the lib directory is empty or not
-    if (listfile->GetEntries() > 2) gSystem->Load(libpath+"/libNPCore.dylib");
+    if (listfile->GetEntries() > 2) gSystem->Load(libpath+"/libNPCore"+LOGON_LIB_EXTENSION);
 
     gSystem->Load("libPhysics.so"); // Needed by Must2 and Sharc
     gSystem->Load("libHist.so"); // Needed by TSpectra Class
@@ -87,7 +98,7 @@ void NPToolLogon(bool verbosemode = false){
     Int_t i = 0;
     while (listfile->At(i)) {
       TString libname = listfile->At(i++)->GetName();
-      if (libname.Contains(".dylib") && libname.Contains("Data") && !libname.Contains("libVDetector.dylib")) {
+      if (libname.Contains(LOGON_LIB_EXTENSION) && libname.Contains("Data") && !libname.Contains("libVDetector"+LOGON_LIB_EXTENSION)) {
         TString lib = libpath + "/" + libname;
         gSystem->Load(lib);
       }
@@ -97,7 +108,7 @@ void NPToolLogon(bool verbosemode = false){
     i = 0;
     while (listfile->At(i)) {
       TString libname = listfile->At(i++)->GetName();
-      if (libname.Contains(".dylib") && libname.Contains("Physics") &&!libname.Contains("libVDetector.dylib")) {
+      if (libname.Contains(LOGON_LIB_EXTENSION) && libname.Contains("Physics") &&!libname.Contains("libVDetector"+LOGON_LIB_EXTENSION)) {
         TString lib = libpath + "/" + libname;
         gSystem->Load(lib);
       }
@@ -107,7 +118,7 @@ void NPToolLogon(bool verbosemode = false){
     i = 0;
     while (listfile->At(i)) {
       TString libname = listfile->At(i++)->GetName();
-      if (libname.Contains(".dylib") && !libname.Contains("Physics") && !libname.Contains("Data")  &&!libname.Contains("libVDetector.dylib")) {
+      if (libname.Contains(LOGON_LIB_EXTENSION) && !libname.Contains("Physics") && !libname.Contains("Data")  &&!libname.Contains("libVDetector"+LOGON_LIB_EXTENSION)) {
         TString lib = libpath + "/" + libname;
         gSystem->Load(lib);
       }
