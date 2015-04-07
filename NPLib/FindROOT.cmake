@@ -1,7 +1,7 @@
 # - Find ROOT instalation
 # This module tries to find the ROOT installation on your system.
 # It tries to find the root-config script which gives you all the needed information.
-# If the system variable ROOTSYS is set this is straight forward.
+# If the system variable LOCAL_ROOTSYS is set this is straight forward.
 # If not the module uses the pathes given in ROOT_CONFIG_SEARCHPATH.
 # If you need an other path you should add this path to this varaible.  
 # The root-config script is then used to detect basically everything else.
@@ -13,9 +13,8 @@
 MESSAGE(STATUS "Looking for Root...")
 
 SET(ROOT_CONFIG_SEARCHPATH
-  /usr/bin
-  ${SIMPATH}/tools/root/bin
   $ENV{ROOTSYS}/bin
+   /usr/bin
 )
 
 SET(ROOT_DEFINITIONS "")
@@ -29,13 +28,13 @@ FIND_PROGRAM(ROOT_CONFIG_EXECUTABLE NAMES root-config PATHS
    NO_DEFAULT_PATH)
     
 IF (${ROOT_CONFIG_EXECUTABLE} MATCHES "ROOT_CONFIG_EXECUTABLE-NOTFOUND")
-  MESSAGE( FATAL_ERROR "ROOT not installed in the searchpath and ROOTSYS is not set. Please
- set ROOTSYS or add the path to your ROOT installation in the Macro FindROOT.cmake in the
+  MESSAGE( FATAL_ERROR "ROOT not installed in the searchpath and LOCAL_ROOTSYS is not set. Please
+ set LOCAL_ROOTSYS or add the path to your ROOT installation in the Macro FindROOT.cmake in the
  subdirectory cmake/modules.")
 ELSE (${ROOT_CONFIG_EXECUTABLE} MATCHES "ROOT_CONFIG_EXECUTABLE-NOTFOUND")
   STRING(REGEX REPLACE "(^.*)/bin/root-config" "\\1" test ${ROOT_CONFIG_EXECUTABLE}) 
-  SET( ENV{ROOTSYS} ${test})
-  set( ROOTSYS ${test})
+  SET( ENV{LOCAL_ROOTSYS} ${test})
+  set( LOCAL_ROOTSYS ${test})
 ENDIF (${ROOT_CONFIG_EXECUTABLE} MATCHES "ROOT_CONFIG_EXECUTABLE-NOTFOUND")  
 
  
@@ -45,7 +44,7 @@ IF (ROOT_CONFIG_EXECUTABLE)
 
   EXEC_PROGRAM(${ROOT_CONFIG_EXECUTABLE} ARGS "--version" OUTPUT_VARIABLE ROOTVERSION)
 
-  MESSAGE(STATUS "Looking for Root... - found $ENV{ROOTSYS}/bin/root")
+  MESSAGE(STATUS "Looking for Root... - found $ENV{LOCAL_ROOTSYS}/bin/root")
   MESSAGE(STATUS "Looking for Root... - version ${ROOTVERSION} ")   
 
   # we need at least version 5.00/00
@@ -219,12 +218,12 @@ MACRO (ROOT_GENERATE_DICTIONARY INFILES LINKDEF_FILE OUTFILE INCLUDE_DIRS_IN)
 
   if (CMAKE_SYSTEM_NAME MATCHES Linux)
     ADD_CUSTOM_COMMAND(OUTPUT ${OUTFILES}
-       COMMAND LD_LIBRARY_PATH=${ROOT_LIBRARY_DIR} ROOTSYS=${ROOTSYS} ${ROOT_CINT_EXECUTABLE}
+       COMMAND LD_LIBRARY_PATH=${ROOT_LIBRARY_DIR} LOCAL_ROOTSYS=${LOCAL_ROOTSYS} ${ROOT_CINT_EXECUTABLE}
        ARGS -f ${OUTFILE} -c ${INCLUDE_DIRS} ${INFILES} ${LINKDEF_FILE} DEPENDS ${INFILES} ${LINKDEF_FILE})
   else (CMAKE_SYSTEM_NAME MATCHES Linux)
     if (CMAKE_SYSTEM_NAME MATCHES Darwin)
       ADD_CUSTOM_COMMAND(OUTPUT ${OUTFILES}
-      COMMAND DYLD_LIBRARY_PATH=${ROOT_LIBRARY_DIR} ROOTSYS=${ROOTSYS} ${ROOT_CINT_EXECUTABLE}
+      COMMAND DYLD_LIBRARY_PATH=${ROOT_LIBRARY_DIR} LOCAL_ROOTSYS=${LOCAL_ROOTSYS} ${ROOT_CINT_EXECUTABLE}
        ARGS -f ${OUTFILE} -c ${INCLUDE_DIRS} ${INFILES} ${LINKDEF_FILE} DEPENDS ${INFILES} ${LINKDEF_FILE})
   endif (CMAKE_SYSTEM_NAME MATCHES Darwin)
   endif (CMAKE_SYSTEM_NAME MATCHES Linux)
