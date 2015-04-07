@@ -1,6 +1,6 @@
 #include<iostream>
 #include<fstream>
-#include<cstdlib.h>
+#include<stdlib.h>
 #include<dlfcn.h>
 #include<dirent.h>
 #include"NPDetectorFactory.h"
