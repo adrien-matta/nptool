@@ -185,7 +185,6 @@ void Analysis::End(){
 }
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::InitOutputBranch() {
-  cout << "Branch " << endl;
   RootOutput::getInstance()->GetTree()->Branch("Ex",&Ex,"Ex/D");
   RootOutput::getInstance()->GetTree()->Branch("ELab",&ELab,"ELab/D");
   RootOutput::getInstance()->GetTree()->Branch("ThetaLab",&ThetaLab,"ThetaLab/D");
@@ -194,10 +193,7 @@ void Analysis::InitOutputBranch() {
 
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::InitInputBranch(){
-/*  RootInput:: getInstance()->GetChain()->SetBranchAddress("InitialConditions",&myInit );
-  RootInput:: getInstance()->GetChain()->SetBranchStatus("InitialConditions",true );
-  RootInput:: getInstance()->GetChain()->SetBranchStatus("fIC_*",true );
-*/}
+}
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::ReInitValue(){
   Ex = -1000 ;

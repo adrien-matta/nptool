@@ -347,7 +347,7 @@ void Reaction::ReadConfigurationFile(string Path){
   string StandardPath = GlobalPath + "/Inputs/EventGenerator/" + Path;
   ReactionFile.open(StandardPath.c_str());
   if (ReactionFile.is_open()) {
-    if(fVerboseLevel==1) cout << "\033[1;35m/////////// Two Body Reaction ///////////" << Path << endl;
+    if(fVerboseLevel==1) cout << "\033[1;35m/////////// Two Body Reaction ///////////" << endl;
     if(fVerboseLevel==1) cout << "Reading Reaction File " << Path << endl ;
   }
   
@@ -355,7 +355,7 @@ void Reaction::ReadConfigurationFile(string Path){
   else{
     ReactionFile.open( Path.c_str() );
     if(ReactionFile.is_open()) {
-      if(fVerboseLevel==1) cout << "\033[1;35m/////////// Two Body Reaction ///////////" << Path << endl;
+      if(fVerboseLevel==1) cout << "\033[1;35m/////////// Two Body Reaction ///////////" << endl;
       if(fVerboseLevel==1) cout << "Reading Reaction File " << Path << endl;
     }
     
