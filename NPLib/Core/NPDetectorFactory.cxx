@@ -3,6 +3,8 @@ using namespace NPA;
 #include<dlfcn.h>
 #include<fstream>
 #include<iostream>
+#include<stdlib.h>
+
 DetectorFactory* DetectorFactory::m_Instance = 0;
 #ifdef __linux__
 std::string SHARED_LIB_EXTENSION = ".so";
