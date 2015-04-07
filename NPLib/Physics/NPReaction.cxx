@@ -346,12 +346,18 @@ void Reaction::ReadConfigurationFile(string Path){
   string GlobalPath = getenv("NPTOOL");
   string StandardPath = GlobalPath + "/Inputs/EventGenerator/" + Path;
   ReactionFile.open(StandardPath.c_str());
-  if (ReactionFile.is_open()) {cout << "Reading Reaction File " << Path << endl ;}
+  if (ReactionFile.is_open()) {
+    if(fVerboseLevel==1) cout << "\033[1;35m/////////// Two Body Reaction ///////////" << Path << endl;
+    if(fVerboseLevel==1) cout << "Reading Reaction File " << Path << endl ;
+  }
   
   // In case the file is not found in the standard path, the programm try to interpret the file name as an absolute or relative file path.
   else{
     ReactionFile.open( Path.c_str() );
-    if(ReactionFile.is_open()) { if(fVerboseLevel==1) cout << "Reading Reaction File " << Path << endl;}
+    if(ReactionFile.is_open()) {
+      if(fVerboseLevel==1) cout << "\033[1;35m/////////// Two Body Reaction ///////////" << Path << endl;
+      if(fVerboseLevel==1) cout << "Reading Reaction File " << Path << endl;
+    }
     
     else {cout << "Reaction File " << Path << " not found" << endl;exit(1);}
   }
@@ -507,7 +513,7 @@ void Reaction::ReadConfigurationFile(string Path){
         ReadingStatus = false;
     }
   }
-
+cout << "\033[0m" ;
   // Modifiy the CS to shoot only within ]HalfOpenAngleMin,HalfOpenAngleMax[
   SetCSAngle(CSHalfOpenAngleMin,CSHalfOpenAngleMax);
   ReactionFile.close();

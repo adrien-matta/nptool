@@ -45,12 +45,8 @@ void Analysis::Init(){
   BeamCD2 = EnergyLoss("Na24[0.0]_CD2.G4table","G4Table",100);
   myReaction = new NPL::Reaction();
   myReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
-  
-  
    TargetThickness = 18*micrometer;
-  // Beam Energy
-   OriginalBeamEnergy = myReaction->GetBeamEnergy(); // AMEV
-                                                           // intermediate variable
+  OriginalBeamEnergy = myReaction->GetBeamEnergy();
    Rand = TRandom3();
    DetectorNumber = 0 ;
    ThetaNormalTarget = 0 ;
@@ -68,8 +64,6 @@ void Analysis::Init(){
    E_GD = 0;
    Si_X_GD = 0;
    Si_Y_GD = 0;
-
-  
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -102,7 +102,7 @@ class NPOptionManager
       void SetReactionFile(string name)       {fReactionFileName = name;CheckEventGenerator();}
       void SetDetectorFile(string name)       {fDetectorFileName = name;CheckDetectorConfiguration();}
       void SetRunToReadFile(string name)      {fRunToReadFileName = name;}
-      void GetVerboseLevel(int VerboseLevel)  {fVerboseLevel = VerboseLevel;}
+      void SetVerboseLevel(int VerboseLevel)  {fVerboseLevel = VerboseLevel;}
   
    private:
       // default values

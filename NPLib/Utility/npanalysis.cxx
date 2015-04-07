@@ -32,12 +32,20 @@ void ProgressDisplay(clock_t&,clock_t&,unsigned int&, unsigned int&, int&);
 int main(int argc , char** argv){
   // command line parsing
   NPOptionManager* myOptionManager = NPOptionManager::getInstance(argc,argv);
-
+  string inputfilename = myOptionManager->GetRunToReadFile();
   // if input files are not given, use those from TAsciiFile
   if (myOptionManager->IsDefault("DetectorConfiguration")) {
-    string name = RootInput::getInstance()->DumpAsciiFile("DetectorConfiguration");
+    string name = RootInput::getInstance(inputfilename)->DumpAsciiFile("DetectorConfiguration");
     myOptionManager->SetDetectorFile(name);
+    cout << "\033[1;33mWarning: No Detector file given, using Input tree one\033[0m"<<endl;;
+
   }
+
+   if (myOptionManager->IsDefault("EventGenerator")) {
+    string name = RootInput::getInstance(inputfilename)->DumpAsciiFile("EventGenerator");
+    myOptionManager->SetReactionFile(name);
+    cout << "\033[1;33mWarning: No Event file given, using Input tree one\033[0m"<<endl;;
+   }
 
   // get input files from NPOptionManager
   string detectorfileName    = myOptionManager->GetDetectorFile();
@@ -121,6 +129,7 @@ void ProgressDisplay(clock_t& begin, clock_t& end, unsigned int& treated,unsigne
     double remain = (total-treated)/event_rate;
     if(treated!=total)
       printf("\r \033[1;31m ******* Progress: %.1f | Rate: %.1fk evt/s | Remain: %.1fs *******\033[0m", percent,event_rate/1000.,remain);
+
     else
       printf("\r \033[1;32m ******* Progress: %.1f | Rate: %.1fk evt/s | Remain: %.1fs *******\033[0m", percent,event_rate/1000.,remain);
     
