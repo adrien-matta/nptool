@@ -131,12 +131,18 @@ RootInput::RootInput(string configFileName)
         }
       }
     }
-
-    cout << "ROOTInput:  " << pRootChain->GetEntries() << " entries loaded in the input chain " << endl ;
-  }
+    if( pRootChain->GetEntries() ==0){
+      cout << "\033[1;31m ERROR: No entries to analyse\033[0m" << endl; 
+      exit(1);
+    }
+    else{
+    cout << "\033[1;32mROOTInput:  " << pRootChain->GetEntries() << " entries loaded in the input chain\033[0m" << endl ;
+    }
+      
+   }
 
   if (!CheckRootFileName || !CheckTreeName) 
-    cout << "WARNING: Token not found for InputTree Declaration : Input Tree may not be instantiate properly" << endl;
+    cout << "\033[1;33mWARNING: Token not found for InputTree Declaration : Input Tree may not be instantiate properly\033[0m" << endl;
 }
 
 

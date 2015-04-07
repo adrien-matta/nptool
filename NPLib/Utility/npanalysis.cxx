@@ -122,8 +122,8 @@ int main(int argc , char** argv){
 ////////////////////////////////////////////////////////////////////////////////
 void ProgressDisplay(clock_t& begin, clock_t& end, unsigned int& treated,unsigned int& inter,int& total){
   end = clock();
-  if((end-begin)/CLOCKS_PER_SEC>CLOCKS_PER_SEC||treated>=total ){
-  long double elapsed =(long double) (end-begin)/CLOCKS_PER_SEC;
+  if((end-begin)>CLOCKS_PER_SEC||treated>=total ){
+    long double elapsed =(long double) (end-begin)/CLOCKS_PER_SEC;
     double event_rate = inter/elapsed;
     double percent = 100*treated/total;
     double remain = (total-treated)/event_rate;
