@@ -80,16 +80,13 @@ int main(int argc , char** argv){
 
   clock_t begin = clock();
   clock_t end = begin;
-  unsigned int treated = 0;
   unsigned int inter = 0;
-
+  unsigned int treated = 0;
   if(UserAnalysis==NULL){ 
     for (unsigned int i = 0 ; i < nentries; i++) { 
       ProgressDisplay(begin,end,treated,inter,nentries);
       // Get the raw Data
       Chain -> GetEntry(i);
-      // Clear previous Event
-      myDetector->ClearEventPhysics();
       // Build the current event
       myDetector->BuildPhysicalEvent();
       // Fill the tree
@@ -102,18 +99,17 @@ int main(int argc , char** argv){
       ProgressDisplay(begin,end,treated,inter,nentries);
       // Get the raw Data
       Chain -> GetEntry(i);
-      // Clear previous Event
-      myDetector->ClearEventPhysics();
       // Build the current event
       myDetector->BuildPhysicalEvent();
       // User Analysis
       UserAnalysis->TreatEvent();
-      // Fill the tree
+      // Fill the tree      
       tree->Fill();
     }
     UserAnalysis->End();
   }
 
+  myDetector->StopThread();
   ProgressDisplay(begin,end,treated,inter,nentries);
   RootOutput::getInstance()->Destroy();
   return 0;
@@ -123,20 +119,21 @@ int main(int argc , char** argv){
 void ProgressDisplay(clock_t& begin, clock_t& end, unsigned int& treated,unsigned int& inter,int& total){
   end = clock();
   if((end-begin)>CLOCKS_PER_SEC||treated>=total ){
-    long double elapsed =(long double) (end-begin)/CLOCKS_PER_SEC;
+  long double elapsed =(long double) (end-begin)/CLOCKS_PER_SEC;
     double event_rate = inter/elapsed;
     double percent = 100*treated/total;
     double remain = (total-treated)/event_rate;
 
     char* timer;
     if(remain>60)
-      asprintf(&timer,"%.dmin",(int)(remain/60));
+      asprintf(&timer,"%.dmin",(int)(remain/60.));
     else
       asprintf(&timer,"%.ds",(int)(remain));
 
-    if(treated!=total)
+    if(treated!=total){
+      printf("\r                                                                                                                    ");
       printf("\r \033[1;31m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s *******\033[0m", percent,event_rate/1000.,timer);
-
+    }
     else
       printf("\r \033[1;32m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s *******\033[0m", percent,event_rate/1000.,timer);
     
@@ -144,6 +141,6 @@ void ProgressDisplay(clock_t& begin, clock_t& end, unsigned int& treated,unsigne
     begin = clock() ;
     inter=0;
   }
- treated++; 
+  treated++;
  inter++;
 }

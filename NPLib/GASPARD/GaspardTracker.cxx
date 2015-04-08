@@ -228,8 +228,7 @@ void GaspardTracker::InitializeRootInputRaw()
 
 
 
-void GaspardTracker::InitializeRootInputPhysics()
-{
+void GaspardTracker::InitializeRootInputPhysics(){
    TChain* inputChain = RootInput::getInstance()->GetChain();
    inputChain->SetBranchAddress("GASPARD" , &m_EventPhysics);
 }
@@ -237,8 +236,7 @@ void GaspardTracker::InitializeRootInputPhysics()
 
 
 // Create associated branches and associated private member DetectorPhysics address
-void GaspardTracker::InitializeRootOutput()    
-{
+void GaspardTracker::InitializeRootOutput()    {
    TTree* outputTree = RootOutput::getInstance()->GetTree();
    outputTree->Branch("GASPARD", "TGaspardTrackerPhysics", &m_EventPhysics);
 }
@@ -246,23 +244,19 @@ void GaspardTracker::InitializeRootOutput()
 
 
 // This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
-void GaspardTracker::BuildPhysicalEvent()      
-{
-   if (m_EventData->GetGPDTrkFirstStageFrontEMult() > 0) {
-      for (UInt_t i = 0; i < m_EventData->GetGPDTrkFirstStageFrontEMult(); i++) {
-         UShort_t detecNbr = m_EventData->GetGPDTrkFirstStageFrontEDetectorNbr(i);
-         m_ModulesMap[detecNbr]->BuildPhysicalEvent();
-      }
-   }
+void GaspardTracker::BuildPhysicalEvent()      {
+  unsigned int mysize = m_EventData->GetGPDTrkFirstStageFrontEMult() ;
+      
+  for (unsigned int i = 0; i < mysize; i++) {
+        UShort_t detecNbr = m_EventData->GetGPDTrkFirstStageFrontEDetectorNbr(i);
+        m_ModulesMap[detecNbr]->BuildPhysicalEvent();
+  }
 }
-
-
 
 // Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
 // This method aimed to be used for analysis performed during experiment, when speed is requiered.
 // NB: This method can eventually be the same as BuildPhysicalEvent.
-void GaspardTracker::BuildSimplePhysicalEvent()   
-{
+void GaspardTracker::BuildSimplePhysicalEvent(){
    BuildPhysicalEvent();
 }
 

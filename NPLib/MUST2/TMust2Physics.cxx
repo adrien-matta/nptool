@@ -311,7 +311,6 @@ void TMust2Physics::BuildPhysicalEvent(){
 
     }
   }
-
   return;
 
 }

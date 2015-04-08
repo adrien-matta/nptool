@@ -22,19 +22,19 @@
  *   See MUST2 array for exemple of VDetector derived class                  *
  *                                                                           *
  *****************************************************************************/
- #include "NPVDetector.h"
-
+#include "NPVDetector.h"
+#include "NPOptionManager.h"
 using namespace NPA ;
 
 ClassImp(VDetector);
 
 // Constructor
-VDetector::VDetector()
-{
+VDetector::VDetector(){
 }
 
 
 // Destructor
-VDetector::~VDetector()
-{
+VDetector::~VDetector(){
 }
+
+

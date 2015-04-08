@@ -534,6 +534,7 @@ G4bool GPDScorerFirstStageFrontStripTrapezoid::ProcessHits(G4Step* aStep, G4Touc
    G4int X = int(temp) + 1;
    //Rare case where particle is close to edge of silicon plan
    if (X == 129) X = 128;
+   
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < TriggerThreshold) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();

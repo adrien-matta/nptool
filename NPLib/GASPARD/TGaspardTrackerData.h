@@ -30,7 +30,6 @@
 
 #include <vector>
 #include "TObject.h"
-
 using namespace std ;
 
 class TGaspardTrackerData : public TObject
@@ -179,10 +178,13 @@ public:
    // DSSD
    // (Front, E)
    UShort_t GetGPDTrkFirstStageFrontEMult()               {
-      return fGPDTrk_FirstStage_FrontE_DetectorNbr.size();
+     if(fGPDTrk_FirstStage_FrontE_DetectorNbr.size()!= fGPDTrk_FirstStage_FrontE_StripNbr.size() || fGPDTrk_FirstStage_FrontE_DetectorNbr.size()!= fGPDTrk_FirstStage_FrontE_Energy.size())
+       return 0;
+     
+     return fGPDTrk_FirstStage_FrontE_DetectorNbr.size();
    }
    UShort_t GetGPDTrkFirstStageFrontEDetectorNbr(Int_t i) {
-      return fGPDTrk_FirstStage_FrontE_DetectorNbr.at(i);
+     return fGPDTrk_FirstStage_FrontE_DetectorNbr.at(i);
    }
    UShort_t GetGPDTrkFirstStageFrontEStripNbr(Int_t i)    {
       return fGPDTrk_FirstStage_FrontE_StripNbr.at(i);
@@ -192,7 +194,10 @@ public:
    }
    // (Front, T)
    UShort_t GetGPDTrkFirstStageFrontTMult()               {
-      return fGPDTrk_FirstStage_FrontT_DetectorNbr.size();
+     if(fGPDTrk_FirstStage_FrontT_DetectorNbr.size()!= fGPDTrk_FirstStage_FrontT_StripNbr.size() || fGPDTrk_FirstStage_FrontT_DetectorNbr.size()!= fGPDTrk_FirstStage_FrontT_Time.size())
+       return 0;
+ 
+     return fGPDTrk_FirstStage_FrontT_DetectorNbr.size();
    }
    UShort_t GetGPDTrkFirstStageFrontTDetectorNbr(Int_t i) {
       return fGPDTrk_FirstStage_FrontT_DetectorNbr.at(i);
@@ -205,7 +210,10 @@ public:
    }
    // (Back, E)
    UShort_t GetGPDTrkFirstStageBackEMult()               {
-      return fGPDTrk_FirstStage_BackE_DetectorNbr.size();
+    if(fGPDTrk_FirstStage_BackE_DetectorNbr.size()!= fGPDTrk_FirstStage_BackE_StripNbr.size() || fGPDTrk_FirstStage_BackE_DetectorNbr.size()!= fGPDTrk_FirstStage_BackE_Energy.size())
+       return 0;
+     
+     return fGPDTrk_FirstStage_BackE_DetectorNbr.size();
    }
    UShort_t GetGPDTrkFirstStageBackEDetectorNbr(Int_t i) {
       return fGPDTrk_FirstStage_BackE_DetectorNbr.at(i);
@@ -218,7 +226,10 @@ public:
    }
    // (Back, T)
    UShort_t GetGPDTrkFirstStageBackTMult()               {
-      return fGPDTrk_FirstStage_BackT_DetectorNbr.size();
+    if(fGPDTrk_FirstStage_BackT_DetectorNbr.size()!= fGPDTrk_FirstStage_BackT_StripNbr.size() || fGPDTrk_FirstStage_BackT_DetectorNbr.size()!= fGPDTrk_FirstStage_BackT_Time.size())
+       return 0;
+ 
+     return fGPDTrk_FirstStage_BackT_DetectorNbr.size();
    }
    UShort_t GetGPDTrkFirstStageBackTDetectorNbr(Int_t i) {
       return fGPDTrk_FirstStage_BackT_DetectorNbr.at(i);

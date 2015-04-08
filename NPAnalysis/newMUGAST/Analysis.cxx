@@ -77,7 +77,6 @@ void Analysis::TreatEvent(){
   myReaction->SetBeamEnergy(BeamEnergy);
   //////////////////////////// LOOP on MUST2 //////////////////
   for(unsigned int countMust2 = 0 ; countMust2 < M2->Si_E.size() ; countMust2++){
-    cout << "MUST2 " << endl;
     /************************************************/
     //Part 0 : Get the usefull Data
     // MUST2

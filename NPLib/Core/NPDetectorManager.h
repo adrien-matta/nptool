@@ -29,9 +29,20 @@
 //   STL
 #include <string>
 #include <map>
+#include <queue>
+#if __cplusplus > 199711L 
+#include<thread>
+#include<mutex>
+#endif
+
 using namespace std ;
 
 using namespace NPA ;
+
+// Anonymous namespace
+namespace{
+  typedef void(VDetector::*FuncPtr)(void);
+}
 
 // This class manage a map of virtual detector
 namespace NPA{
@@ -41,7 +52,6 @@ namespace NPA{
       ~DetectorManager();
 
     public:
-      // Read stream at Path and pick-up Token declaration of Detector
       void        ReadConfigurationFile(string Path);
       void        BuildPhysicalEvent();
       void        BuildSimplePhysicalEvent();
@@ -55,14 +65,32 @@ namespace NPA{
       void        WriteSpectra();
       vector< map< vector<string>, TH1* > > GetSpectra();  
       vector<string>                        GetDetectorList();
+
     private:   
       // The map containning all detectors
       // Using a Map one can access to any detector using its name
       map<string,VDetector*> m_Detector;
 
-      // Special treatment for the target for the moment
-      // If necessary we should change it to treat it as 
-      // a full "detector"
+    private: // Function pointer to accelerate the code execution
+      FuncPtr m_BuildPhysicalPtr;
+      FuncPtr m_ClearEventPhysicsPtr;
+      FuncPtr m_ClearEventDataPtr;
+      FuncPtr m_FillSpectra;
+      FuncPtr m_CheckSpectra;
+
+    #if __cplusplus > 199711L 
+    private: // Thread Pool defined if C++11 is available
+      vector<thread> m_ThreadPool;
+      vector<bool> m_Ready;
+      bool m_stop;
+    
+    public: // Init the Thread Pool
+      void StopThread();
+      void StartThread(NPA::VDetector*,unsigned int);
+      void InitThreadPool(); 
+      bool IsDone();
+    #endif
+
     private:
       double m_TargetThickness;
       double m_TargetAngle;
@@ -71,6 +99,10 @@ namespace NPA{
       double m_TargetX;
       double m_TargetY;
       double m_TargetZ;
+
+      // Special treatment for the target for the moment
+      // If necessary we should change it to treat it as 
+      // a full "detector"
 
     public:
       double GetTargetThickness()     {return m_TargetThickness;}
