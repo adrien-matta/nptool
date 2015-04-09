@@ -35,11 +35,7 @@
 
 #include "NPVDetector.h"
 #include "NPCalibrationManager.h"
-#include "NPDetectorManager.h"
 #include "NPDetectorFactory.h"
-
-#define NBDETECTOR	2
-#define	NBSTRIPS	28
 
 // forward declaration
 class TCATSSpectra;

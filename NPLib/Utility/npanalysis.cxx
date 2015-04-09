@@ -109,7 +109,9 @@ int main(int argc , char** argv){
     UserAnalysis->End();
   }
 
+  #if __cplusplus > 199711L
   myDetector->StopThread();
+  #endif
   ProgressDisplay(begin,end,treated,inter,nentries);
   RootOutput::getInstance()->Destroy();
   return 0;

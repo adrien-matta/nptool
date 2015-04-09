@@ -289,6 +289,9 @@ void NPA::DetectorManager::InitThreadPool(){
   for(auto& th: m_ThreadPool){
     th.detach();
   }
+
+  cout << "\033[1;33m Detector Manager : Started " << i << " Threads \033[0m" << endl ;
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
