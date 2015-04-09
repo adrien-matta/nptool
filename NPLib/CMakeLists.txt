@@ -15,7 +15,8 @@ if("${DETLIST}" MATCHES "")
     message("Building the following detectors ${DETLIST}") 
 endif()
 
-cmake_policy(SET CMP0042 NEW)
+# Setting the policy to match Cmake version
+cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
 
 # Add root to the link and include directories
 include_directories( ${ROOT_INCLUDE_DIR})
