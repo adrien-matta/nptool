@@ -95,11 +95,6 @@ namespace NPA {
 
       DetectorData* EventData   ;
 
-      //   Aime of analysis is to treat those raw data and output some physical data, during this process, Raw data will be calibrated, threshold applied,
-      //   and whatever you need to do. Those Physical data are output in a DetectorPhysics object, attached in the output Tree
-
-      DetectorPhysics* EventPhysics ;
-
       //   Position of detector: An array which held geometric information of detector, such as Strip position,...
       //   Dimension must be suited for your need
 
@@ -110,7 +105,7 @@ namespace NPA {
       nothing   noCalibration   ;
 
 */
-  ClassDef(VDetector,1)  // Must2Data structure
+  ClassDef(VDetector,1) 
   };
 
 }

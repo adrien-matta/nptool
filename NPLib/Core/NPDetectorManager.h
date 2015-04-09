@@ -30,14 +30,12 @@
 #include <string>
 #include <map>
 #include <queue>
+ 
 #if __cplusplus > 199711L 
 #include<thread>
-#include<mutex>
 #endif
 
 using namespace std ;
-
-using namespace NPA ;
 
 typedef void(NPA::VDetector::*VDetector_FuncPtr)(void);
 

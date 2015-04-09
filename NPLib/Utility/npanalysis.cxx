@@ -56,7 +56,7 @@ int main(int argc , char** argv){
   TTree* tree= RootOutput::getInstance()->GetTree();
 
   // Instantiate the detector using a file
-  NPA::DetectorManager* myDetector = new DetectorManager();
+  NPA::DetectorManager* myDetector = new NPA::DetectorManager();
   myDetector->ReadConfigurationFile(detectorfileName);
 
   // Attempt to load an analysis
