@@ -42,7 +42,7 @@ using namespace NPA ;
 // Anonymous namespace
 namespace{
   typedef void(VDetector::*FuncPtr)(void);
-}
+};
 
 // This class manage a map of virtual detector
 namespace NPA{
