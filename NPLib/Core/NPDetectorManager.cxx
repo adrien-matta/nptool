@@ -68,19 +68,16 @@ void NPA::DetectorManager::ReadConfigurationFile(string Path)   {
   // All The detector will then add to it their parameter (see AddDetector)
   CalibrationManager::getInstance(NPOptionManager::getInstance()->GetCalibrationFile());
 
-
   // Access the DetectorFactory and ask it to load the Class List
   string classlist = getenv("NPTOOL");
   classlist += "/NPLib/DetectorClassList.txt";
   NPA::DetectorFactory* theFactory = NPA::DetectorFactory::getInstance();
   theFactory->ReadClassList(classlist);
 
-
   ifstream ConfigFile;
   ConfigFile.open(Path.c_str());
   string LineBuffer;
   set<string> check;
-
 
   if (ConfigFile.is_open()) {
     cout << endl << "/////////// Detector geometry ///////////" << endl;
@@ -290,8 +287,9 @@ void NPA::DetectorManager::InitThreadPool(){
     th.detach();
   }
 
-  cout << "\033[1;33m Detector Manager : Started " << i << " Threads \033[0m" << endl ;
-
+  cout << "\033[1;33m**** Detector Manager : Started " << i << " Threads ****\033[0m" << endl ;
+  // Sleep to let the time to the thread to start
+  this_thread::sleep_for (std::chrono::milliseconds(1));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

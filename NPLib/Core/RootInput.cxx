@@ -31,9 +31,8 @@
 #include "TAsciiFile.h"
 
 RootInput* RootInput::instance = 0;
-
-RootInput* RootInput::getInstance(string configFileName)
-{
+////////////////////////////////////////////////////////////////////////////////
+RootInput* RootInput::getInstance(string configFileName){
   // A new instance of RootInput is created if it does not exist:
   if (instance == 0) {
     instance = new RootInput(configFileName);
@@ -43,21 +42,16 @@ RootInput* RootInput::getInstance(string configFileName)
   return instance;
 }
 
-
-
-void RootInput::Destroy()
-{
+////////////////////////////////////////////////////////////////////////////////
+void RootInput::Destroy(){
   if (instance != 0) {
     delete instance;
     instance = 0;
   }
 }
 
-
-
-// fileNameBase doit etre le nom du TChain.
-RootInput::RootInput(string configFileName)
-{
+////////////////////////////////////////////////////////////////////////////////
+RootInput::RootInput(string configFileName){
   NumberOfFriend = 0;
   bool CheckTreeName     = false;
   bool CheckRootFileName = false;
@@ -77,8 +71,8 @@ RootInput::RootInput(string configFileName)
   cout << "Initializing input TChain" << endl;
 
   if (!inputConfigFile) {
-    cout << "Run to Read file :" << configFileName << " not found " << endl; 
-    return;
+    cout << "\033[1;31mError : Run to Read file :" << configFileName << " not found\033[0m" << endl; 
+    exit(1);
   }
   else {
     while (!inputConfigFile.eof()) {
@@ -143,12 +137,11 @@ RootInput::RootInput(string configFileName)
 
   if (!CheckRootFileName || !CheckTreeName) 
     cout << "\033[1;33mWARNING: Token not found for InputTree Declaration : Input Tree may not be instantiate properly\033[0m" << endl;
+
 }
 
-
-
-void RootInput::AddFriendChain(string RunToAdd)
-{
+////////////////////////////////////////////////////////////////////////////////
+void RootInput::AddFriendChain(string RunToAdd){
   NumberOfFriend++;
   ostringstream suffix_buffer;
   suffix_buffer << "_" << NumberOfFriend ; 
@@ -217,10 +210,8 @@ void RootInput::AddFriendChain(string RunToAdd)
   cout << "/////////////////////////////////" << endl;
 }
 
-
-
-string RootInput::DumpAsciiFile(const char* type, const char* folder)
-{
+////////////////////////////////////////////////////////////////////////////////
+string RootInput::DumpAsciiFile(const char* type, const char* folder){
   string name;
 
   string sfolder = folder;
@@ -283,10 +274,8 @@ string RootInput::DumpAsciiFile(const char* type, const char* folder)
   return name;
 }
 
-
-
-RootInput::~RootInput()
-{
+////////////////////////////////////////////////////////////////////////////////
+RootInput::~RootInput(){
   // delete default directory ./.tmp
   struct stat dirInfo;
   int res = stat("./.tmp", &dirInfo);
@@ -298,9 +287,8 @@ RootInput::~RootInput()
   //delete pRootChain;
 }
 
-/////////////////////////////////////////////////////////////////////
-TChain* MakeFriendTrees(string RunToRead1,string RunToRead2)
-{
+////////////////////////////////////////////////////////////////////////////////
+TChain* MakeFriendTrees(string RunToRead1,string RunToRead2){
   RootInput:: getInstance(RunToRead1)	;
   RootInput:: getInstance()->AddFriendChain(RunToRead2);
   return RootInput:: getInstance()->GetChain();
