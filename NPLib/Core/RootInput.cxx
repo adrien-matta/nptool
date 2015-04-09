@@ -131,15 +131,18 @@ RootInput::RootInput(string configFileName){
       exit(1);
     }
     else{
-    cout << "\033[1;32mROOTInput:  " << pRootChain->GetEntries() << " entries loaded in the input chain\033[0m" << endl ;
+      cout << "\033[1;32mROOTInput:  " << pRootChain->GetEntries() << " entries loaded in the input chain\033[0m" << endl ;
     }
-      
-   }
+
+  }
 
   if (!CheckRootFileName || !CheckTreeName) 
     cout << "\033[1;33mWARNING: Token not found for InputTree Declaration : Input Tree may not be instantiate properly\033[0m" << endl;
 
+  int  cachesize = 10000000;   //100 MBytes
+  pRootChain->SetCacheSize(cachesize);
   pRootChain->SetCacheLearnEntries(100);
+
   gEnv->SetValue("TFile.AsyncPrefetching", 1);
 }
 
@@ -285,6 +288,9 @@ RootInput::~RootInput(){
   if (res == 0) {   // if does exist, delete it
     if (system("rm -rf ./.tmp") != 0) cout << "RootInput::~RootInput() problem deleting ./.tmp directory" << endl; 
   }
+  cout << endl << "Root Input summary" << endl;
+  cout << "  - Number of bites read: " << pRootFile->GetBytesRead() << endl;
+  cout << "  - Number of transactions: " << pRootFile->GetReadCalls() << endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

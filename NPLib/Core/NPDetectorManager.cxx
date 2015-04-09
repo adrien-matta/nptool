@@ -289,7 +289,7 @@ void NPA::DetectorManager::InitThreadPool(){
 
   cout << "\033[1;33m**** Detector Manager : Started " << i << " Threads ****\033[0m" << endl ;
   // Sleep to let the time to the thread to start
-  this_thread::sleep_for (std::chrono::milliseconds(1));
+  this_thread::sleep_for (std::chrono::milliseconds(100));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -114,6 +114,7 @@ int main(int argc , char** argv){
   #endif
   ProgressDisplay(begin,end,treated,inter,nentries);
   RootOutput::getInstance()->Destroy();
+  RootInput::getInstance()->Destroy();
   return 0;
 }
 
@@ -135,9 +136,10 @@ void ProgressDisplay(clock_t& begin, clock_t& end, unsigned int& treated,unsigne
     if(treated!=total)
       printf("\r \033[1;31m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s *******\033[0m", percent,event_rate/1000.,timer);
     
-    else
+    else{
+      printf("\r                                                                                                                    ");  
       printf("\r \033[1;32m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s *******\033[0m", percent,event_rate/1000.,timer);
-   
+    }
     fflush(stdout);
     inter=0;
     begin = clock() ;

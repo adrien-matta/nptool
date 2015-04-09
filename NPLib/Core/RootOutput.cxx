@@ -132,7 +132,7 @@ RootOutput::~RootOutput()
       TDirectory* currentPath= gDirectory;
       gDirectory->cd(pRootFile->GetPath());
       cout << endl;
-      cout << "Got histograms and Tree !" << endl;
+      cout << endl << "Root Output summary" << endl;
       cout << "  - Number of entries in the Tree: " << pRootTree->GetEntries() << endl;
       cout << "  - Number of bites written to file: " << pRootTree->Write("", TObject::kOverwrite) << endl;
 
