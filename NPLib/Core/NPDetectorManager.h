@@ -39,10 +39,7 @@ using namespace std ;
 
 using namespace NPA ;
 
-// Anonymous namespace
-namespace{
-  typedef void(VDetector::*FuncPtr)(void);
-};
+typedef void(NPA::VDetector::*VDetector_FuncPtr)(void);
 
 // This class manage a map of virtual detector
 namespace NPA{
@@ -72,11 +69,11 @@ namespace NPA{
       map<string,VDetector*> m_Detector;
 
     private: // Function pointer to accelerate the code execution
-      FuncPtr m_BuildPhysicalPtr;
-      FuncPtr m_ClearEventPhysicsPtr;
-      FuncPtr m_ClearEventDataPtr;
-      FuncPtr m_FillSpectra;
-      FuncPtr m_CheckSpectra;
+      VDetector_FuncPtr m_BuildPhysicalPtr;
+      VDetector_FuncPtr m_ClearEventPhysicsPtr;
+      VDetector_FuncPtr m_ClearEventDataPtr;
+      VDetector_FuncPtr m_FillSpectra;
+      VDetector_FuncPtr m_CheckSpectra;
 
     #if __cplusplus > 199711L 
     private: // Thread Pool defined if C++11 is available

@@ -128,10 +128,11 @@ void DetectorManager::ReadConfigurationFile(string Path)   {
 
   // The calibration Manager got all the parameter added, so it can load them from the calibration file
   CalibrationManager::getInstance()->LoadParameterFromFile();
-#if __cplusplus > 199711L
-//  thread(&DetectorManager::InitThreadPool,this).detach();
-InitThreadPool();
-#endif
+  
+  // Start the thread if multithreading supported
+  #if __cplusplus > 199711L
+  InitThreadPool();
+  #endif
   
   return;
 }
