@@ -71,12 +71,14 @@ RootOutput::RootOutput(TString fileNameBase, TString treeNameBase)
     pRootFile = 0 ;
   }
   
-  pRootTree = new TTree(treeNameBase, "Data created / analyzed with the NPTool package");
+  pRootTree = new TTree(treeNameBase, "Data created / analysed with the NPTool package");
   pRootList = new TList();
   
   // Init TAsciiFile objects
   InitAsciiFiles();
   gDirectory->cd(currentPath->GetPath()); 
+  
+  pRootTree->SetAutoSave(1000000000);
 }
 
 
@@ -167,7 +169,7 @@ RootOutput::~RootOutput()
     }
   
     else {
-      cout << "No histograms and Tree !" << endl;
+      cout << "\033[1;31mNo histograms and Tree !\033[0m" << endl;
     }
 }
 

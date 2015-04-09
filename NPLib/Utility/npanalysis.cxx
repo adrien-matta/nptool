@@ -139,8 +139,8 @@ void ProgressDisplay(clock_t& begin, clock_t& end, unsigned int& treated,unsigne
       printf("\r \033[1;32m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s *******\033[0m", percent,event_rate/1000.,timer);
    
     fflush(stdout);
-    begin = clock() ;
     inter=0;
+    begin = clock() ;
   }
  
  treated++;

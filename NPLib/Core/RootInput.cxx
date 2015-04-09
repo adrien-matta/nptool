@@ -30,6 +30,7 @@
 #include "RootInput.h"
 #include "TAsciiFile.h"
 
+#include "TEnv.h"
 RootInput* RootInput::instance = 0;
 ////////////////////////////////////////////////////////////////////////////////
 RootInput* RootInput::getInstance(string configFileName){
@@ -138,6 +139,8 @@ RootInput::RootInput(string configFileName){
   if (!CheckRootFileName || !CheckTreeName) 
     cout << "\033[1;33mWARNING: Token not found for InputTree Declaration : Input Tree may not be instantiate properly\033[0m" << endl;
 
+  pRootChain->SetCacheLearnEntries(100);
+  gEnv->SetValue("TFile.AsyncPrefetching", 1);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -282,9 +285,6 @@ RootInput::~RootInput(){
   if (res == 0) {   // if does exist, delete it
     if (system("rm -rf ./.tmp") != 0) cout << "RootInput::~RootInput() problem deleting ./.tmp directory" << endl; 
   }
-
-  //delete pRootFile;
-  //delete pRootChain;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
