@@ -9,7 +9,13 @@ set(CMAKE_BUILD_TYPE Release)
 
 set(DETLIST ${ETLIST})
 
-message("Building the following detector ${DETLIST}")
+if("${DETLIST}" MATCHES "")
+    message("Building all detectors")
+  else()
+    message("Building the following detectors ${DETLIST}") 
+endif()
+
+cmake_policy(SET CMP0042 NEW)
 
 # Add root to the link and include directories
 include_directories( ${ROOT_INCLUDE_DIR})
