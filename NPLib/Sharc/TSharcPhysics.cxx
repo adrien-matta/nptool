@@ -660,6 +660,8 @@ void TSharcPhysics::InitializeRootInputPhysics(){
   inputChain->SetBranchStatus( "Strip_Back" , true );
   inputChain->SetBranchStatus( "PAD_E" , true );
   inputChain->SetBranchStatus( "PAD_T" , true );
+  inputChain->SetBranchAddress( "Sharc" , &m_EventPhysics )      ;
+
 }
 
 ///////////////////////////////////////////////////////////////////////////

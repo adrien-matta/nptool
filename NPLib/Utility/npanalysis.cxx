@@ -27,7 +27,7 @@ std::string SHARED_LIB_EXTENSION = ".dylib";
 #endif
 #endif
 
-void ProgressDisplay(clock_t&,clock_t&,unsigned int&, unsigned int&, int&);
+void ProgressDisplay(clock_t&,clock_t&,unsigned int&, unsigned int&, int&, double&, int&);
 
 int main(int argc , char** argv){
   // command line parsing
@@ -78,10 +78,12 @@ int main(int argc , char** argv){
     nentries = myOptionManager->GetNumberOfEntryToAnalyse() ;
   std::cout << " Number of Event to be treated : " << nentries << std::endl;
 
-  clock_t begin = clock();
-  clock_t end = begin;
-  unsigned int inter = 0;
+ unsigned int inter = 0;
   unsigned int treated = 0;
+  double mean_rate =0;
+  int displayed=0;
+  clock_t end;
+  clock_t begin = clock();
   if(UserAnalysis==NULL){ 
     for (unsigned int i = 0 ; i < nentries; i++) { 
       // Get the raw Data
@@ -90,7 +92,7 @@ int main(int argc , char** argv){
       myDetector->BuildPhysicalEvent();
       // Fill the tree
       tree->Fill();
-      ProgressDisplay(begin,end,treated,inter,nentries);
+      ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed);
     }
   }
 
@@ -104,7 +106,7 @@ int main(int argc , char** argv){
       UserAnalysis->TreatEvent();
       // Fill the tree      
       tree->Fill();
-      ProgressDisplay(begin,end,treated,inter,nentries);
+      ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed);
     }
     UserAnalysis->End();
   }
@@ -112,20 +114,22 @@ int main(int argc , char** argv){
   #if __cplusplus > 199711L
   myDetector->StopThread();
   #endif
-  ProgressDisplay(begin,end,treated,inter,nentries);
+  ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed);
   RootOutput::getInstance()->Destroy();
   RootInput::getInstance()->Destroy();
   return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ProgressDisplay(clock_t& begin, clock_t& end, unsigned int& treated,unsigned int& inter,int& total){
+void ProgressDisplay(clock_t& begin, clock_t& end, unsigned int& treated,unsigned int& inter,int& total,double& mean_rate,int& displayed){
   end = clock();
   if((end-begin)>CLOCKS_PER_SEC||treated>=total ){
+  displayed++;
   long double elapsed =(long double) (end-begin)/CLOCKS_PER_SEC;
-    double event_rate = inter/elapsed;
-    double percent = 100*treated/total;
-    double remain = (total-treated)/event_rate;
+  double event_rate = inter/elapsed;
+  mean_rate += (event_rate-mean_rate)/(displayed);
+  double percent = 100*treated/total;
+  double remain = (total-treated)/mean_rate;
 
     char* timer;
     if(remain>60)
@@ -134,11 +138,11 @@ void ProgressDisplay(clock_t& begin, clock_t& end, unsigned int& treated,unsigne
       asprintf(&timer,"%ds",(int)(remain));
 
     if(treated!=total)
-      printf("\r \033[1;31m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s *******\033[0m", percent,event_rate/1000.,timer);
+      printf("\r \033[1;31m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s *******\033[0m", percent,mean_rate/1000.,timer);
     
     else{
       printf("\r                                                                                                                    ");  
-      printf("\r \033[1;32m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s *******\033[0m", percent,event_rate/1000.,timer);
+      printf("\r \033[1;32m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s *******\033[0m", percent,mean_rate/1000.,timer);
     }
     fflush(stdout);
     inter=0;

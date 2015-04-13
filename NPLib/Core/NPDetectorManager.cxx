@@ -151,6 +151,11 @@ void NPA::DetectorManager::BuildPhysicalEvent(){
    for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {
       (it->second->*m_ClearEventPhysicsPtr)();
       (it->second->*m_BuildPhysicalPtr)();
+      if(m_FillSpectra){
+        (it->second->*m_FillSpectra)();
+        if(m_CheckSpectra)
+          (it->second->*m_CheckSpectra)();
+      }
   }
 #endif
 }
@@ -295,9 +300,14 @@ this_thread::sleep_for(chrono::milliseconds(100));
     if(m_Ready[id]){
       (det->*m_ClearEventPhysicsPtr)();
       (det->*m_BuildPhysicalPtr)();
+      if(m_FillSpectra){
+        (det->*m_FillSpectra)();
+        if(m_CheckSpectra)
+          (det->*m_CheckSpectra)();
+      }
       m_Ready[id]=false;
     }
-   }
+  }
 }
 ////////////////////////////////////////////////////////////////////////////////
 void NPA::DetectorManager::StopThread(){
