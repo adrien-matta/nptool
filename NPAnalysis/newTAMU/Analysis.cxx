@@ -36,8 +36,8 @@ Analysis::~Analysis(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::Init(){
-	TH  = (TTiaraHyballPhysics*) m_DetectorManager -> GetDetector("TiaraHyball");
-  TB  = (TTiaraBarrelPhysics*) m_DetectorManager -> GetDetector("TiaraBarrel");
+	TH  = (TTiaraHyballPhysics*) m_DetectorManager -> GetDetector("TiaraHyballWedge");
+  TB  = (TTiaraBarrelPhysics*) m_DetectorManager -> GetDetector("TiaraInnerBarrel=");
   proton_CD2 = EnergyLoss("proton_CD2.G4table","G4Table",100 );
   proton_Al = EnergyLoss("proton_Al.G4table","G4Table",10);
   proton_Si = EnergyLoss("proton_Si.G4table","G4Table",10);

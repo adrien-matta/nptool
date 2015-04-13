@@ -786,8 +786,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("TiaraHyball","Tiara");
-      NPA::DetectorFactory::getInstance()->AddDetector("TiaraHyball",TTiaraHyballPhysics::Construct);
+      NPA::DetectorFactory::getInstance()->AddToken("TiaraHyballWedge","Tiara");
+      NPA::DetectorFactory::getInstance()->AddDetector("TiaraHyballWedge",TTiaraHyballPhysics::Construct);
     }
 };
 
