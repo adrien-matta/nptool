@@ -69,6 +69,9 @@ int main(int argc , char** argv){
     UserAnalysis->SetDetectorManager(myDetector);
     UserAnalysis->Init();
   }
+  else{
+    std::cout <<"Info: Not loading libNPAnalysis because : " << error << std::endl;
+  }
 
   std::cout << std::endl << "///////// Starting Analysis ///////// "<< std::endl;
   TChain* Chain = RootInput:: getInstance()->GetChain();
