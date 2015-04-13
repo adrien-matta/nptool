@@ -167,8 +167,8 @@ void TChateauCristalPhysics::AddParameterToCalibrationManager()
    CalibrationManager* Cal = CalibrationManager::getInstance();
 
    for(int i = 0 ; i < m_NumberOfDetectors ; ++i){
-      Cal->AddParameter("ChateauCristal", "Detector"+itoa(i)+"_E","ChateauCristal_DETECTOR_"+itoa(i)+"_E")  ;
-      Cal->AddParameter("ChateauCristal", "Detector"+itoa(i)+"_T","ChateauCristal_DETECTOR_"+itoa(i)+"_T")  ;  
+      Cal->AddParameter("ChateauCristal", "Detector"+ NPA::itoa(i)+"_E","ChateauCristal_DETECTOR_"+ NPA::itoa(i)+"_E")  ;
+      Cal->AddParameter("ChateauCristal", "Detector"+ NPA::itoa(i)+"_T","ChateauCristal_DETECTOR_"+ NPA::itoa(i)+"_T")  ;  
    }
 }
 
@@ -492,13 +492,13 @@ double TChateauCristalPhysics::DopplerCorrection(double E, double Theta)
 ///////////////////////////////////////////////////////////////////////////
 double ChateauCristal_LOCAL::fChateauCristal_E( const TChateauCristalData* m_EventData , const int i )
 {
-   return CalibrationManager::getInstance()->ApplyCalibration("ChateauCristal/Detector" + itoa( m_EventData->GetChateauCristalEDetectorNbr(i) ) +"_E",  
+   return CalibrationManager::getInstance()->ApplyCalibration("ChateauCristal/Detector" + NPA::itoa( m_EventData->GetChateauCristalEDetectorNbr(i) ) +"_E",  
 							      m_EventData->GetChateauCristalEnergy(i)+gRandom->Uniform()-0.5 );
 }
 
 double ChateauCristal_LOCAL::fChateauCristal_T( const TChateauCristalData* m_EventData , const int i )
 {
-   return CalibrationManager::getInstance()->ApplyCalibration("ChateauCristal/Detector" + itoa( m_EventData->GetChateauCristalTDetectorNbr(i) ) +"_T",  
+   return CalibrationManager::getInstance()->ApplyCalibration("ChateauCristal/Detector" + NPA::itoa( m_EventData->GetChateauCristalTDetectorNbr(i) ) +"_T",  
          m_EventData->GetChateauCristalTime(i) +gRandom->Uniform()-0.5);
 }  
 

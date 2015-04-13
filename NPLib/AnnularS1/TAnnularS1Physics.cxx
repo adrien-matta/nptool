@@ -449,17 +449,17 @@ void TAnnularS1Physics::AddParameterToCalibrationManager(){
   for(int i = 0 ; i < m_NumberOfDetector ; ++i){
 
     for( int j = 0 ; j < 24 ; ++j){
-      Cal->AddParameter("ANNULARS1", "D"+itoa(i+1)+"_STRIP_FRONT"+itoa(j+1)+"_E",
-          "ANNULARS1_D"+itoa(i+1)+"_STRIP_FRONT"+itoa(j+1)+"_E");
-      Cal->AddParameter("ANNULARS1", "D"+itoa(i+1)+"_STRIP_FRONT"+itoa(j+1)+"_T",
-          "ANNULARS1_D"+itoa(i+1)+"_STRIP_FRONT"+itoa(j+1)+"_T");
+      Cal->AddParameter("ANNULARS1", "D"+ NPA::itoa(i+1)+"_STRIP_FRONT"+ NPA::itoa(j+1)+"_E",
+          "ANNULARS1_D"+ NPA::itoa(i+1)+"_STRIP_FRONT"+ NPA::itoa(j+1)+"_E");
+      Cal->AddParameter("ANNULARS1", "D"+ NPA::itoa(i+1)+"_STRIP_FRONT"+ NPA::itoa(j+1)+"_T",
+          "ANNULARS1_D"+ NPA::itoa(i+1)+"_STRIP_FRONT"+ NPA::itoa(j+1)+"_T");
     }
 
     for( int j = 0 ; j < 48 ; ++j){
-      Cal->AddParameter("ANNULARS1", "D"+itoa(i+1)+"_STRIP_BACK"+itoa(j+1)+"_E",
-          "ANNULARS1_D"+itoa(i+1)+"_STRIP_BACK"+itoa(j+1)+"_E");
-      Cal->AddParameter("ANNULARS1", "D"+itoa(i+1)+"_STRIP_BACK"+itoa(j+1)+"_T",
-          "ANNULARS1_D"+itoa(i+1)+"_STRIP_BACK"+itoa(j+1)+"_T");
+      Cal->AddParameter("ANNULARS1", "D"+ NPA::itoa(i+1)+"_STRIP_BACK"+ NPA::itoa(j+1)+"_E",
+          "ANNULARS1_D"+ NPA::itoa(i+1)+"_STRIP_BACK"+ NPA::itoa(j+1)+"_E");
+      Cal->AddParameter("ANNULARS1", "D"+ NPA::itoa(i+1)+"_STRIP_BACK"+ NPA::itoa(j+1)+"_T",
+          "ANNULARS1_D"+ NPA::itoa(i+1)+"_STRIP_BACK"+ NPA::itoa(j+1)+"_T");
     }
   }
 
@@ -580,13 +580,6 @@ void TAnnularS1Physics::InitializeStandardParameter(){
 
 ///////////////////////////////////////////////////////////////////////////
 namespace ANNULARS1_LOCAL{
-  //   tranform an integer to a string
-  stringNPA::itoa(unsigned int value){
-    char buffer [33];
-    sprintf(buffer,"%d",value);
-    return buffer;
-  }
-
   //   DSSD
   //   Ring
   double fStrip_Ring_E(const TS1Data* m_EventData , const int& i){

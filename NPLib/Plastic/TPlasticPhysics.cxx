@@ -247,8 +247,8 @@ void TPlasticPhysics::AddParameterToCalibrationManager()
          {
             for( int j = 0 ; j < 16 ; j++)
                {
-                  Cal->AddParameter("Plastic", "Detector"+itoa(i+1)+"_E","Plastic_Detector"+itoa(i+1)+"_E")   ;
-                  Cal->AddParameter("Plastic", "Detector"+itoa(i+1)+"_T","Plastic_Detector"+itoa(i+1)+"_T")   ;   
+                  Cal->AddParameter("Plastic", "Detector"+ NPA::itoa(i+1)+"_E","Plastic_Detector"+ NPA::itoa(i+1)+"_E")   ;
+                  Cal->AddParameter("Plastic", "Detector"+ NPA::itoa(i+1)+"_T","Plastic_Detector"+ NPA::itoa(i+1)+"_T")   ;   
                }
       
          }
@@ -291,8 +291,8 @@ void TPlasticPhysics::BuildSimplePhysicalEvent()
       for(unsigned int i = 0 ; i < EventData->GetEnergyMult() ; i++)
          {
             DetectorNumber.push_back( EventData->GetPlasticNumber(i) )   ;
-            Energy.push_back( CalibrationManager::getInstance()->ApplyCalibration("Plastic/Detector" + itoa( EventData->GetPlasticNumber(i) ) +"_E",EventData->GetEnergy(i) ) );
-            Time.push_back( CalibrationManager::getInstance()->ApplyCalibration(   "Plastic/Detector" + itoa( EventData->GetPlasticNumber(i) ) +"_T",EventData->GetTime(i) ) );
+            Energy.push_back( CalibrationManager::getInstance()->ApplyCalibration("Plastic/Detector" + NPA::itoa( EventData->GetPlasticNumber(i) ) +"_E",EventData->GetEnergy(i) ) );
+            Time.push_back( CalibrationManager::getInstance()->ApplyCalibration(   "Plastic/Detector" + NPA::itoa( EventData->GetPlasticNumber(i) ) +"_T",EventData->GetTime(i) ) );
          }
 
    }

@@ -255,8 +255,8 @@ void TSSSDPhysics::AddParameterToCalibrationManager()
       
         for( int j = 0 ; j < 16 ; ++j)
           {
-            Cal->AddParameter("SSSD", "Detector"+itoa(i+1)+"_Strip"+itoa(j+1)+"_E","SSSD_DETECTOR_"+itoa(i+1)+"_STRIP_"+itoa(j+1)+"_E")  ;
-            Cal->AddParameter("SSSD", "Detector"+itoa(i+1)+"_Strip"+itoa(j+1)+"_T","SSSD_DETECTOR_"+itoa(i+1)+"_STRIP_"+itoa(j+1)+"_T")  ;  
+            Cal->AddParameter("SSSD", "Detector"+ NPA::itoa(i+1)+"_Strip"+ NPA::itoa(j+1)+"_E","SSSD_DETECTOR_"+ NPA::itoa(i+1)+"_STRIP_"+ NPA::itoa(j+1)+"_E")  ;
+            Cal->AddParameter("SSSD", "Detector"+ NPA::itoa(i+1)+"_Strip"+ NPA::itoa(j+1)+"_T","SSSD_DETECTOR_"+ NPA::itoa(i+1)+"_STRIP_"+ NPA::itoa(j+1)+"_T")  ;  
           }
     
       }
@@ -444,14 +444,14 @@ void TSSSDPhysics::ReadAnalysisConfig()
 ///////////////////////////////////////////////////////////////////////////
 double SSSD_LOCAL::fSi_E( const TSSSDData* EventData , const int i )
   {
-    return CalibrationManager::getInstance()->ApplyCalibration(  "SSSD/Detector" + itoa( EventData->GetEnergyDetectorNbr(i) ) + "_Strip" + itoa( EventData->GetEnergyStripNbr(i) ) +"_E",  
+    return CalibrationManager::getInstance()->ApplyCalibration(  "SSSD/Detector" + NPA::itoa( EventData->GetEnergyDetectorNbr(i) ) + "_Strip" + NPA::itoa( EventData->GetEnergyStripNbr(i) ) +"_E",  
                             EventData->GetEnergy(i) );
   }
   
   
 double SSSD_LOCAL::fSi_T( const TSSSDData* EventData , const int i )
   {
-    return CalibrationManager::getInstance()->ApplyCalibration(  "SSSD/Detector" + itoa( EventData->GetEnergyDetectorNbr(i) ) + "_Strip" + itoa( EventData->GetEnergyStripNbr(i) ) +"_T",  
+    return CalibrationManager::getInstance()->ApplyCalibration(  "SSSD/Detector" + NPA::itoa( EventData->GetEnergyDetectorNbr(i) ) + "_Strip" + NPA::itoa( EventData->GetEnergyStripNbr(i) ) +"_T",  
                             EventData->GetTime(i) );
   }  
      

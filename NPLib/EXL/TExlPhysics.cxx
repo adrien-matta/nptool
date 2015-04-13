@@ -220,8 +220,8 @@ void TExlPhysics::AddParameterToCalibrationManager()
       
       for(unsigned int i = 0 ; i < NumberOfCrystal ; i++)
          {
-            Cal->AddParameter("EXL", "_E_"+itoa(i+1),"EXL_E_"+itoa(i+1))   ;
-            Cal->AddParameter("EXL", "_T_"+itoa(i+1),"EXL_T_"+itoa(i+1))   ;
+            Cal->AddParameter("EXL", "_E_"+ NPA::itoa(i+1),"EXL_E_"+ NPA::itoa(i+1))   ;
+            Cal->AddParameter("EXL", "_T_"+ NPA::itoa(i+1),"EXL_T_"+ NPA::itoa(i+1))   ;
          }
    }
    
@@ -266,7 +266,7 @@ void TExlPhysics::BuildSimplePhysicalEvent()
 			if(EventData->GetEnergy(i)>m_E_RAW_Threshold)
 			{
 				CrystalNumber.push_back( EventData->GetExlNumber(i))   ;
-				EXL_Energy.push_back( CalibrationManager::getInstance()->ApplyCalibration("EXL/_E_" + itoa( EventData->GetExlNumber(i) ),EventData->GetEnergy(i) ) );
+				EXL_Energy.push_back( CalibrationManager::getInstance()->ApplyCalibration("EXL/_E_" + NPA::itoa( EventData->GetExlNumber(i) ),EventData->GetEnergy(i) ) );
 			}
 		}
 	}
@@ -280,7 +280,7 @@ void TExlPhysics::BuildSimplePhysicalEvent()
 	{
 		for(unsigned int i = 0 ; i < EventData->GetTimeMult() ; i++)
 		{
-			//EXL_Time.push_back( CalibrationManager::getInstance()->ApplyCalibration("EXL/_T_" + itoa( EventData->GetExlNumber(i) ),EventData->GetTime(i) ) );
+			//EXL_Time.push_back( CalibrationManager::getInstance()->ApplyCalibration("EXL/_T_" + NPA::itoa( EventData->GetExlNumber(i) ),EventData->GetTime(i) ) );
 			EXL_Time=EventData->GetTime(i);
 		}
 	}

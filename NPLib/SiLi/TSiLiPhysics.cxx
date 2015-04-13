@@ -193,8 +193,8 @@ void TSiLiPhysics::AddParameterToCalibrationManager()
       
       for(int i = 0 ; i < NumberOfDetector ; i++)
          {
-                  Cal->AddParameter("SiLi", "Detector"+itoa(i+1)+"_E","SiLi_Detector"+itoa(i+1)+"_E")   ;
-                  Cal->AddParameter("SiLi", "Detector"+itoa(i+1)+"_T","SiLi_Detector"+itoa(i+1)+"_T")   ;         
+                  Cal->AddParameter("SiLi", "Detector"+ NPA::itoa(i+1)+"_E","SiLi_Detector"+ NPA::itoa(i+1)+"_E")   ;
+                  Cal->AddParameter("SiLi", "Detector"+ NPA::itoa(i+1)+"_T","SiLi_Detector"+ NPA::itoa(i+1)+"_T")   ;         
          }
    }
    
@@ -262,7 +262,7 @@ void TSiLiPhysics::PreTreat(){
     {
     	if( EventData->GetEEnergy(i)>m_SiLi_RAW_Threshold )
     	{
-		E=CalibrationManager::getInstance()->ApplyCalibration("SiLi/Detector" + itoa( EventData->GetENumber(i) ) +"_E",EventData->GetEEnergy(i));
+		E=CalibrationManager::getInstance()->ApplyCalibration("SiLi/Detector" + NPA::itoa( EventData->GetENumber(i) ) +"_E",EventData->GetEEnergy(i));
     		if(E>m_SiLi_E_Threshold)
     		{
         		PreTreatedData->SetENumber( EventData->GetENumber(i) );
@@ -272,7 +272,7 @@ void TSiLiPhysics::PreTreat(){
     }
   for(unsigned int i = 0 ; i < EventData->GetTimeMult() ; ++i)
     {
-	T=CalibrationManager::getInstance()->ApplyCalibration("SiLi/Detector"+itoa(EventData->GetTNumber(i))+"_T",EventData->GetTTime(i) ) ;      
+	T=CalibrationManager::getInstance()->ApplyCalibration("SiLi/Detector"+ NPA::itoa(EventData->GetTNumber(i))+"_T",EventData->GetTTime(i) ) ;      
 	PreTreatedData->SetTNumber( EventData->GetTNumber(i) );
         PreTreatedData->SetTTime( T );
             

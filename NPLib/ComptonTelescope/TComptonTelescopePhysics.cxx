@@ -555,12 +555,12 @@ void TComptonTelescopePhysics::AddParameterToCalibrationManager()
 
    for (int i = 0; i < m_NumberOfDetector; ++i) {
       for (int j = 0; j < 32; ++j) {
-         Cal->AddParameter("COMPTONTELESCOPE", "D"+itoa(i+1)+"_STRIP_FRONT"+itoa(j+1)+"_E", "COMPTONTELESCOPE_D"+itoa(i+1)+"_STRIP_FRONT"+itoa(j+1)+"_E");
-         Cal->AddParameter("COMPTONTELESCOPE", "D"+itoa(i+1)+"_STRIP_FRONT"+itoa(j+1)+"_T", "COMPTONTELESCOPE_D"+itoa(i+1)+"_STRIP_FRONT"+itoa(j+1)+"_T");
+         Cal->AddParameter("COMPTONTELESCOPE", "D"+ NPA::itoa(i+1)+"_STRIP_FRONT"+ NPA::itoa(j+1)+"_E", "COMPTONTELESCOPE_D"+ NPA::itoa(i+1)+"_STRIP_FRONT"+ NPA::itoa(j+1)+"_E");
+         Cal->AddParameter("COMPTONTELESCOPE", "D"+ NPA::itoa(i+1)+"_STRIP_FRONT"+ NPA::itoa(j+1)+"_T", "COMPTONTELESCOPE_D"+ NPA::itoa(i+1)+"_STRIP_FRONT"+ NPA::itoa(j+1)+"_T");
       }
       for (int j = 0; j < 32; ++j) {
-         Cal->AddParameter("COMPTONTELESCOPE", "D"+itoa(i+1)+"_STRIP_BACK"+itoa(j+1)+"_E",  "COMPTONTELESCOPE_D"+itoa(i+1)+"_STRIP_BACK"+itoa(j+1)+"_E");
-         Cal->AddParameter("COMPTONTELESCOPE", "D"+itoa(i+1)+"_STRIP_BACK"+itoa(j+1)+"_T",  "COMPTONTELESCOPE_D"+itoa(i+1)+"_STRIP_BACK"+itoa(j+1)+"_T");
+         Cal->AddParameter("COMPTONTELESCOPE", "D"+ NPA::itoa(i+1)+"_STRIP_BACK"+ NPA::itoa(j+1)+"_E",  "COMPTONTELESCOPE_D"+ NPA::itoa(i+1)+"_STRIP_BACK"+ NPA::itoa(j+1)+"_E");
+         Cal->AddParameter("COMPTONTELESCOPE", "D"+ NPA::itoa(i+1)+"_STRIP_BACK"+ NPA::itoa(j+1)+"_T",  "COMPTONTELESCOPE_D"+ NPA::itoa(i+1)+"_STRIP_BACK"+ NPA::itoa(j+1)+"_T");
       }
    }
 
@@ -729,13 +729,13 @@ namespace ComptonTelescope_LOCAL
    // Front
    double fStrip_Front_E(const TComptonTelescopeData* m_EventData , const int i)
    {
-      return CalibrationManager::getInstance()->ApplyCalibration("COMPTONTELESCOPE/D" + itoa(m_EventData->GetCTTrackerFrontEDetectorNbr(i)) + "_STRIP_FRONT" + itoa(m_EventData->GetCTTrackerFrontEStripNbr(i)) + "_E", m_EventData->GetCTTrackerFrontEEnergy(i));
+      return CalibrationManager::getInstance()->ApplyCalibration("COMPTONTELESCOPE/D" + NPA::itoa(m_EventData->GetCTTrackerFrontEDetectorNbr(i)) + "_STRIP_FRONT" + NPA::itoa(m_EventData->GetCTTrackerFrontEStripNbr(i)) + "_E", m_EventData->GetCTTrackerFrontEEnergy(i));
    }
 
    // Back
    double fStrip_Back_E(const TComptonTelescopeData* m_EventData , const int i)
    {
-      return CalibrationManager::getInstance()->ApplyCalibration("COMPTONTELESCOPE/D" + itoa(m_EventData->GetCTTrackerBackEDetectorNbr(i)) + "_STRIP_BACK" + itoa(m_EventData->GetCTTrackerBackEStripNbr(i)) + "_E", m_EventData->GetCTTrackerBackEEnergy(i));
+      return CalibrationManager::getInstance()->ApplyCalibration("COMPTONTELESCOPE/D" + NPA::itoa(m_EventData->GetCTTrackerBackEDetectorNbr(i)) + "_STRIP_BACK" + NPA::itoa(m_EventData->GetCTTrackerBackEStripNbr(i)) + "_E", m_EventData->GetCTTrackerBackEEnergy(i));
    }
 }
 
