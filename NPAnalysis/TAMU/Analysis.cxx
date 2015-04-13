@@ -1,98 +1,77 @@
-#include "Analysis.h"
+/*****************************************************************************
+ * Copyright (C) 2009-2014    this file is part of the NPTool Project        *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
 
-int main(int argc, char** argv){
-	// command line parsing
-	NPOptionManager* myOptionManager = NPOptionManager::getInstance(argc,argv);
+/*****************************************************************************
+ * Original Author: Adrien MATTA  contact address: a.matta@surrey.ac.uk      *
+ *                                                                           *
+ * Creation Date  : march 2025                                               *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ * Class describing the property of an Analysis object                       *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
+#include<iostream>
+using namespace std;
+#include"Analysis.h"
+#include"NPAnalysisFactory.h"
+#include"NPDetectorManager.h"
+#include"NPOptionManager.h"
+#include"RootOutput.h"
+#include"RootInput.h"
+////////////////////////////////////////////////////////////////////////////////
+Analysis::Analysis(){
+}
+////////////////////////////////////////////////////////////////////////////////
+Analysis::~Analysis(){
+}
 
-	// Instantiate RootInput
-	string runToReadfileName = myOptionManager->GetRunToReadFile();
-	RootInput:: getInstance("RunToTreat.txt");
-	// Get the formed Chained Tree and Treat it
-	TChain* Chain = RootInput:: getInstance()->GetChain();
-	// if input files are not given, use those from TAsciiFile
-	if (myOptionManager->IsDefault("DetectorConfiguration")) {
-		string name = RootInput::getInstance()->DumpAsciiFile("DetectorConfiguration");
-		myOptionManager->SetDetectorFile(name);
-	}
+////////////////////////////////////////////////////////////////////////////////
+void Analysis::Init(){
+	TH  = (TTiaraHyballPhysics*) m_DetectorManager -> GetDetector("TiaraHyballWedge");
+  TB  = (TTiaraBarrelPhysics*) m_DetectorManager -> GetDetector("TiaraInnerBarrel=");
+  proton_CD2 = EnergyLoss("proton_CD2.G4table","G4Table",100 );
+  proton_Al = EnergyLoss("proton_Al.G4table","G4Table",10);
+  proton_Si = EnergyLoss("proton_Si.G4table","G4Table",10);
+  P30_CD2 = EnergyLoss("P30[0.0]_CD2.G4table","G4Table",100);
+  Initial = new TInitialConditions();
 
-	// get input files from NPOptionManager
-	string detectorfileName    = myOptionManager->GetDetectorFile();
-	string reactionfileName    =  myOptionManager->GetReactionFile();
-	// string calibrationfileName = myOptionManager->GetCalibrationFile();
-	string OutputfileName      = myOptionManager->GetOutputFile();
 
-	// Instantiate RootOutput
-	RootOutput::getInstance("Analysis/"+OutputfileName, "AnalysedTree");
-	RootOutput::getInstance()->GetFile()->SetCompressionLevel(0);
-	// Instantiate the detector using a file
-	NPA::DetectorManager* myDetector = new DetectorManager();
-	myDetector->ReadConfigurationFile(detectorfileName);
-	// Attach new branch
-	InitOutputBranch();
-	InitInputBranch();
-
-	// Instantiate the Reaction
-	NPL::Reaction* P30dpReaction = new Reaction ;
-	P30dpReaction -> ReadConfigurationFile(reactionfileName) ;
-
-	//////////////////////////////////////////////////////
-
-	// Get pointer to the different detector
-
-	TTiaraHyballPhysics* TH  = (TTiaraHyballPhysics*) myDetector -> GetDetector("TiaraHyball");
-  TTiaraBarrelPhysics* TB  = (TTiaraBarrelPhysics*) myDetector -> GetDetector("TiaraBarrel");
-
-	// intermediate variable
-	//TRandom3 Rand = TRandom3();
-  TRandom *Rand = new TRandom3();
-	double ThetaNormalTarget = 0 ;
-	double ThetaTHSurface = 0;
-  double ThetaTBSurface = 0;
-	double Si_E_TH = 0 ;
-  double Si_E_TB = 0 ;
-	double Energy = 0;
-	double TargetThickness = myDetector->GetTargetThickness()*micrometer;
+  Rand = new TRandom3();
+	ThetaNormalTarget = 0 ;
+	ThetaTHSurface = 0;
+  ThetaTBSurface = 0;
+	Si_E_TH = 0 ;
+  Si_E_TB = 0 ;
+	Energy = 0;
+	TargetThickness = m_DetectorManager->GetTargetThickness()*micrometer;
 	
-  double XTarget = 0;
-	double YTarget =0;
-	TVector3 BeamDirection = TVector3(0,0,1);
+  XTarget = 0;
+	YTarget =0;
+	BeamDirection = TVector3(0,0,1);
+	P30dpReaction = new Reaction ;
+	P30dpReaction -> ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile()) ;
 
-	// Get number of events to treat
-	cout << endl << "///////// Starting Analysis ///////// "<< endl;
-	int nentries = Chain->GetEntries();
-	cout << " Number of Event to be treated : " << nentries << endl;
-	clock_t begin = clock();
-	clock_t end = begin;
-	cout.precision(5);
+ InitOutputBranch();
+ InitInputBranch();
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// main loop on entries
-	for (int i = 0; i < nentries; i++) {
-		if (i%10000 == 0 && i!=0)  {
-			cout.precision(5);
-			end = clock();
-			double TimeElapsed = (end-begin) / CLOCKS_PER_SEC;
-			double percent = (double)i/nentries;
-			double TimeToWait = (TimeElapsed/percent) - TimeElapsed;
-			cout  << "                                                      "<< flush;
-			cout  << "\r Progression:"
-				<< percent*100 << " % \t | \t Remaining time : ~"
-				<<  TimeToWait <<"s | Analysis Rate :"
-				<< (double) i/TimeElapsed << flush;
-		}
-		else if (i == nentries-1)  cout << "\r Progression:" << " 100% " <<endl;
+}
 
-		// Get the raw data
-		Chain -> GetEntry(i);
-		// Clear previous event
-		myDetector->ClearEventPhysics();
-		// Build the current event
-		myDetector->BuildPhysicalEvent();
+////////////////////////////////////////////////////////////////////////////////
+void Analysis::TreatEvent(){
 		// Reinitiate calculated variable
 		ReInitValue();
 
 		// Beam energy is measured using F3 and F2 plastic TOF (time of flight)
-		double BeamEnergy = Rand->Gaus(Init->GetIncidentInitialKineticEnergy(),4.5);
+		double BeamEnergy = Rand->Gaus(Initial->GetIncidentInitialKineticEnergy(),4.5);
 		BeamEnergy = P30_CD2.Slow(BeamEnergy,TargetThickness/2.,0);
 		P30dpReaction->SetBeamEnergy(BeamEnergy);
 
@@ -229,38 +208,23 @@ int main(int argc, char** argv){
 
 		} // end loop TiaraBarrel
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-		if(ELab>0)
-			RootOutput::getInstance()->GetTree()->Fill();
-	} // loop over events
-
-	cout << "A total of " << nentries << " event has been analysed " <<endl ;
-
-	RootOutput::getInstance()->Destroy();
-	RootInput::getInstance()->Destroy();
-	NPOptionManager::getInstance()->Destroy();
-	////////////////////////////////////////////////////////////////////////////
-	return 0 ;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+void Analysis::End(){
+}
+
+
+void Analysis::ReInitValue(){
+	Ex = -1000 ;
+	ELab = -1000;
+	ThetaLab = -1000;
+	ThetaCM = -1000;
+}
+/////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
-void InitOutputBranch() {
+void Analysis::InitOutputBranch() {
 	RootOutput::getInstance()->GetTree()->Branch("Ex",&Ex,"Ex/D");
-/*	RootOutput::getInstance()->GetTree()->Branch("Ring1Ex",&Ring1Ex,"Ring1Ex/D");
-	RootOutput::getInstance()->GetTree()->Branch("Ring2Ex",&Ring2Ex,"Ring2Ex/D");
-	RootOutput::getInstance()->GetTree()->Branch("Ring3Ex",&Ring3Ex,"Ring3Ex/D");
-	RootOutput::getInstance()->GetTree()->Branch("Ring4Ex",&Ring4Ex,"Ring4Ex/D");
-	RootOutput::getInstance()->GetTree()->Branch("Ring5Ex",&Ring5Ex,"Ring5Ex/D");
-	RootOutput::getInstance()->GetTree()->Branch("Ring6Ex",&Ring6Ex,"Ring6Ex/D");
-	RootOutput::getInstance()->GetTree()->Branch("Ring7Ex",&Ring7Ex,"Ring7Ex/D");
-	RootOutput::getInstance()->GetTree()->Branch("Ring8Ex",&Ring8Ex,"Ring8Ex/D");
-	RootOutput::getInstance()->GetTree()->Branch("Ring9Ex",&Ring9Ex,"Ring9Ex/D");
-	RootOutput::getInstance()->GetTree()->Branch("Ring10Ex",&Ring10Ex,"Ring10Ex/D");
-	RootOutput::getInstance()->GetTree()->Branch("Ring11Ex",&Ring11Ex,"Ring11Ex/D");
-	RootOutput::getInstance()->GetTree()->Branch("Ring12Ex",&Ring12Ex,"Ring12Ex/D");
-	RootOutput::getInstance()->GetTree()->Branch("Ring13Ex",&Ring13Ex,"Ring13Ex/D");
-	RootOutput::getInstance()->GetTree()->Branch("Ring14Ex",&Ring14Ex,"Ring14Ex/D");
-	RootOutput::getInstance()->GetTree()->Branch("Ring15Ex",&Ring15Ex,"Ring15Ex/D");
-	RootOutput::getInstance()->GetTree()->Branch("Ring16Ex",&Ring16Ex,"Ring16Ex/D"); */
 	RootOutput::getInstance()->GetTree()->Branch("ELab",&ELab,"ELab/D");
 	RootOutput::getInstance()->GetTree()->Branch("ThetaLab",&ThetaLab,"ThetaLab/D");
 	RootOutput::getInstance()->GetTree()->Branch("ThetaCM",&ThetaCM,"ThetaCM/D");
@@ -269,16 +233,30 @@ void InitOutputBranch() {
 	RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixZ",&TiaraIMZ,"TiaraImpactMatrixZ/D");
 }
 /////////////////////////////////////////////////////////////////////////////
-void InitInputBranch(){
-	RootInput:: getInstance()->GetChain()->SetBranchAddress("InitialConditions",&Init );
+void Analysis::InitInputBranch(){
+	RootInput:: getInstance()->GetChain()->SetBranchAddress("InitialConditions",&Initial );
 	RootInput:: getInstance()->GetChain()->SetBranchStatus("InitialConditions",true );
 	RootInput:: getInstance()->GetChain()->SetBranchStatus("fIC_*",true );
 }
-/////////////////////////////////////////////////////////////////////////////     
-void ReInitValue(){
-	Ex = -1000 ;
-	ELab = -1000;
-	ThetaLab = -1000;
-	ThetaCM = -1000;
+
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPA::VAnalysis* Analysis::Construct(){
+  return (NPA::VAnalysis*) new Analysis();
 }
-/////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPA::AnalysisFactory::getInstance()->SetConstructor(Analysis::Construct);
+    }
+};
+
+proxy p;
+}
+
