@@ -710,10 +710,10 @@ void TCATSPhysics::AddParameterToCalibrationManager()	{
   CalibrationManager* Cal = CalibrationManager::getInstance();
   for(int i = 0 ; i < m_NumberOfCATS ; i++){
     for( int j = 0 ; j < 28 ; j++){
-      Cal->AddParameter("CATS", "D"+itoa(i+1)+"_X"+itoa(j+1)+"_Q","CATS_D"+itoa(i+1)+"_X"+itoa(j+1)+"_Q")	;
-      Cal->AddParameter("CATS", "D"+itoa(i+1)+"_Y"+itoa(j+1)+"_Q","CATS_D"+itoa(i+1)+"_Y"+itoa(j+1)+"_Q")	;
-      Cal->AddParameter("CATS", "D"+itoa(i+1)+"_X"+itoa(j+1),"CATS_D"+itoa(i+1)+"_X"+itoa(j+1))	;
-      Cal->AddParameter("CATS", "D"+itoa(i+1)+"_Y"+itoa(j+1),"CATS_D"+itoa(i+1)+"_Y"+itoa(j+1))	;
+      Cal->AddParameter("CATS", "D"+NPA::itoa(i+1)+"_X"+NPA::itoa(j+1)+"_Q","CATS_D"+NPA::itoa(i+1)+"_X"+NPA::itoa(j+1)+"_Q")	;
+      Cal->AddParameter("CATS", "D"+NPA::itoa(i+1)+"_Y"+NPA::itoa(j+1)+"_Q","CATS_D"+NPA::itoa(i+1)+"_Y"+NPA::itoa(j+1)+"_Q")	;
+      Cal->AddParameter("CATS", "D"+NPA::itoa(i+1)+"_X"+NPA::itoa(j+1),"CATS_D"+NPA::itoa(i+1)+"_X"+NPA::itoa(j+1))	;
+      Cal->AddParameter("CATS", "D"+NPA::itoa(i+1)+"_Y"+NPA::itoa(j+1),"CATS_D"+NPA::itoa(i+1)+"_Y"+NPA::itoa(j+1))	;
     } 
   }
 
@@ -941,42 +941,32 @@ namespace CATS_LOCAL{
 
 
   ////////////////////////////////////////////////////////////////////////
-  //	transform an integer to a string
-  string itoa(int value){
-    std::ostringstream o;
-
-    if (!(o << value))
-      return ""	;
-
-    return o.str();
-  }
-  ////////////////////////////////////////////////////////////////////////
   double fCATS_X_Q(const TCATSData* m_EventData , const int i){
-    return CalibrationManager::getInstance()->ApplyCalibration( "CATS/D" + itoa( m_EventData->GetCATSDetX(i) ) + "_X" + itoa( m_EventData->GetCATSStripX(i) ) + "_Q",   
+    return CalibrationManager::getInstance()->ApplyCalibration( "CATS/D" + NPA::itoa( m_EventData->GetCATSDetX(i) ) + "_X" + NPA::itoa( m_EventData->GetCATSStripX(i) ) + "_Q",   
         m_EventData->GetCATSChargeX(i) + gRandom->Rndm() - fCATS_Ped_X(m_EventData, i) );
   }
   ////////////////////////////////////////////////////////////////////////
   double fCATS_Y_Q(const TCATSData* m_EventData , const int i){
-    return CalibrationManager::getInstance()->ApplyCalibration( "CATS/D" + itoa( m_EventData->GetCATSDetY(i) ) + "_Y" + itoa( m_EventData->GetCATSStripY(i) ) + "_Q",   
+    return CalibrationManager::getInstance()->ApplyCalibration( "CATS/D" + NPA::itoa( m_EventData->GetCATSDetY(i) ) + "_Y" + NPA::itoa( m_EventData->GetCATSStripY(i) ) + "_Q",   
         m_EventData->GetCATSChargeY(i) + gRandom->Rndm() - fCATS_Ped_Y(m_EventData, i) );
   }
   ////////////////////////////////////////////////////////////////////////
   bool fCATS_Threshold_X(const TCATSData* m_EventData , const int i){
-    return CalibrationManager::getInstance()->ApplyThreshold( "CATS/D" + itoa( m_EventData->GetCATSDetX(i) ) + "_X" + itoa( m_EventData->GetCATSStripX(i) ),
+    return CalibrationManager::getInstance()->ApplyThreshold( "CATS/D" + NPA::itoa( m_EventData->GetCATSDetX(i) ) + "_X" + NPA::itoa( m_EventData->GetCATSStripX(i) ),
         m_EventData->GetCATSChargeX(i));
   }
   ////////////////////////////////////////////////////////////////////////
   bool fCATS_Threshold_Y(const TCATSData* m_EventData , const int i){
-    return CalibrationManager::getInstance()->ApplyThreshold( "CATS/D" + itoa( m_EventData->GetCATSDetY(i) ) + "_Y" + itoa( m_EventData->GetCATSStripY(i) ),
+    return CalibrationManager::getInstance()->ApplyThreshold( "CATS/D" + NPA::itoa( m_EventData->GetCATSDetY(i) ) + "_Y" + NPA::itoa( m_EventData->GetCATSStripY(i) ),
         m_EventData->GetCATSChargeY(i));
   }
   ////////////////////////////////////////////////////////////////////////
   double fCATS_Ped_X(const TCATSData* m_EventData, const int i){
-    return CalibrationManager::getInstance()->GetPedestal( "CATS/D" + itoa( m_EventData->GetCATSDetX(i) ) + "_X" + itoa( m_EventData->GetCATSStripX(i) ) );
+    return CalibrationManager::getInstance()->GetPedestal( "CATS/D" + NPA::itoa( m_EventData->GetCATSDetX(i) ) + "_X" + NPA::itoa( m_EventData->GetCATSStripX(i) ) );
   }
   ////////////////////////////////////////////////////////////////////////
   double fCATS_Ped_Y(const TCATSData* m_EventData, const int i){
-    return CalibrationManager::getInstance()->GetPedestal( "CATS/D" + itoa( m_EventData->GetCATSDetY(i) ) + "_Y" + itoa( m_EventData->GetCATSStripY(i) ) );
+    return CalibrationManager::getInstance()->GetPedestal( "CATS/D" + NPA::itoa( m_EventData->GetCATSDetY(i) ) + "_Y" + NPA::itoa( m_EventData->GetCATSStripY(i) ) );
   }
 }
 

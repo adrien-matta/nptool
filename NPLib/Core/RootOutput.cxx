@@ -77,8 +77,10 @@ RootOutput::RootOutput(TString fileNameBase, TString treeNameBase)
   // Init TAsciiFile objects
   InitAsciiFiles();
   gDirectory->cd(currentPath->GetPath()); 
-  
-  pRootTree->SetAutoSave(1000000000);
+  Long64_t inter= -3000000000; 
+  pRootTree->SetAutoFlush(inter);
+  pRootTree->SetAutoSave(-inter);
+
 }
 
 

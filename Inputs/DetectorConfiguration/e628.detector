@@ -102,6 +102,7 @@ TiaraHyballWedge
    R= 0
    Phi= 300
 %%%%%%%%%%%%%%%%%%%%%%%%%%%         
+TiaraBarrel
 TiaraInnerBarrel= 1
 TiaraOuterBarrel= 1
 TiaraChamber= 1

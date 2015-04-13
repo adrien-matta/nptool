@@ -38,7 +38,6 @@
 using namespace std ;
 
 typedef void(NPA::VDetector::*VDetector_FuncPtr)(void);
-
 // This class manage a map of virtual detector
 namespace NPA{
   class DetectorManager{

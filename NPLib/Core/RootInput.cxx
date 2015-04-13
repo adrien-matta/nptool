@@ -53,6 +53,11 @@ void RootInput::Destroy(){
 
 ////////////////////////////////////////////////////////////////////////////////
 RootInput::RootInput(string configFileName){
+  // Setting Root Parameter
+  gEnv->SetValue("TFile.AsyncPrefetching", 1);
+  gEnv->SetValue("TTreeCache.Size",300000000);
+  gEnv->SetValue("TTreeCache.Prefill",1);
+  
   NumberOfFriend = 0;
   bool CheckTreeName     = false;
   bool CheckRootFileName = false;
@@ -138,12 +143,7 @@ RootInput::RootInput(string configFileName){
 
   if (!CheckRootFileName || !CheckTreeName) 
     cout << "\033[1;33mWARNING: Token not found for InputTree Declaration : Input Tree may not be instantiate properly\033[0m" << endl;
-
-  int  cachesize = 10000000;   //100 MBytes
-  pRootChain->SetCacheSize(cachesize);
-  pRootChain->SetCacheLearnEntries(100);
-
-  gEnv->SetValue("TFile.AsyncPrefetching", 1);
+  
 }
 
 ////////////////////////////////////////////////////////////////////////////////

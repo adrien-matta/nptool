@@ -36,6 +36,7 @@
 using namespace std;
 
 namespace NPA {
+  std::string itoa(int); 
 
   class VDetector{
     public:

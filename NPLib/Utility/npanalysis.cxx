@@ -96,7 +96,7 @@ int main(int argc , char** argv){
 
   else{
     for (unsigned int i = 0 ; i < nentries; i++) { 
-            // Get the raw Data
+      // Get the raw Data
       Chain -> GetEntry(i);
       // Build the current event
       myDetector->BuildPhysicalEvent();

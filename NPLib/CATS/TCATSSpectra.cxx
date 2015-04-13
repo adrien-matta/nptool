@@ -83,19 +83,19 @@ void TCATSSpectra::InitRawSpectra(){
 
   for (unsigned int i = 0; i < fNumberOfCats; ++i) {   // loop on number of cats
     // CATS_STRX_Q_RAW
-    name = "CATS"+CATS_LOCAL::itoa(i+1)+"_STRX_Q_RAW";
+    name = "CATS"+NPA::itoa(i+1)+"_STRX_Q_RAW";
     AddHisto2D(name, name, fStripsNumber, 1, fStripsNumber+1, 512, 0, 16384, "CATS/RAW/STRQ");
 
     // CATS_STRY_Q_RAW
-    name = "CATS"+CATS_LOCAL::itoa(i+1)+"_STRY_Q_RAW";
+    name = "CATS"+NPA::itoa(i+1)+"_STRY_Q_RAW";
     AddHisto2D(name, name, fStripsNumber, 1, fStripsNumber+1, 512, 0, 16384, "CATS/RAW/STRQ");
 
     // STRX_MULT
-    name = "CATS"+CATS_LOCAL::itoa(i+1)+"_STRX_MULT";
+    name = "CATS"+NPA::itoa(i+1)+"_STRX_MULT";
     AddHisto1D(name, name, fStripsNumber, 1, fStripsNumber+1, "CATS/RAW/MULT");
 
     // STRY_MULT
-    name = "CATS"+CATS_LOCAL::itoa(i+1)+"_STRY_MULT";
+    name = "CATS"+NPA::itoa(i+1)+"_STRY_MULT";
     AddHisto1D(name, name, fStripsNumber, 1, fStripsNumber+1, "CATS/RAW/MULT");
   } // end loop on number of cats
 }
@@ -107,20 +107,20 @@ void TCATSSpectra::InitPreTreatedSpectra(){
 
   for (unsigned int i = 0; i < fNumberOfCats; ++i) {   // loop on number of cats
     // CATS_STRX_Q_CAL
-    name = "CATS"+CATS_LOCAL::itoa(i+1)+"_STRX_Q_CAL";
+    name = "CATS"+NPA::itoa(i+1)+"_STRX_Q_CAL";
     AddHisto2D(name, name, fStripsNumber, 1, fStripsNumber+1, 512, 0, 16384, family);
 
     // CATS_STRY_Q_CAL
-    name = "CATS"+CATS_LOCAL::itoa(i+1)+"_STRY_Q_CAL";
+    name = "CATS"+NPA::itoa(i+1)+"_STRY_Q_CAL";
     AddHisto2D(name, name, fStripsNumber, 1, fStripsNumber+1, 512, 0, 16384, family);
     // end loop on number of cats
 
     // STRX_MULT
-    name = "CATS"+CATS_LOCAL::itoa(i+1)+"_STRX_CAL_MULT";
+    name = "CATS"+NPA::itoa(i+1)+"_STRX_CAL_MULT";
     AddHisto1D(name, name, fStripsNumber, 1, fStripsNumber+1, "CATS/CAL/MULT");
 
     // STRY_MULT
-    name = "CATS"+CATS_LOCAL::itoa(i+1)+"_STRY_CAL_MULT";
+    name = "CATS"+NPA::itoa(i+1)+"_STRY_CAL_MULT";
     AddHisto1D(name, name, fStripsNumber, 1, fStripsNumber+1, "CATS/CAL/MULT");
   } // end loop on number of cats
 }
@@ -131,25 +131,25 @@ void TCATSSpectra::InitPhysicsSpectra(){
   string name;
 
   for (unsigned int i = 0; i < fNumberOfCats; ++i) {   // loop on number of cats
-    name = "CATS"+CATS_LOCAL::itoa(i+1)+"_QSUM_STRMAX_X_CAL";
+    name = "CATS"+NPA::itoa(i+1)+"_QSUM_STRMAX_X_CAL";
     AddHisto2D(name, name, fStripsNumber, 1, fStripsNumber+1, 512, 0, 16384, family);
 
-    name = "CATS"+CATS_LOCAL::itoa(i+1)+"_QSUM_STRMAX_Y_CAL";
+    name = "CATS"+NPA::itoa(i+1)+"_QSUM_STRMAX_Y_CAL";
     AddHisto2D(name, name, fStripsNumber, 1, fStripsNumber+1, 512, 0, 16384, family);
   }
 
   family = "CATS/PHY/CTRL";
   for (unsigned int i = 0; i < fNumberOfCats; ++i) {   // loop on number of cats
-    name = "CATS"+CATS_LOCAL::itoa(i+1)+"_QMEAN_TIME";
+    name = "CATS"+NPA::itoa(i+1)+"_QMEAN_TIME";
     AddHisto1D(name, name, fEventLoopSize,0,fEventLoopSize,family); 
     fEventLoopQSum.push_back(0);
   }
 
   family = "CATS/PHY/POS";
   for (unsigned int i = 0; i < fNumberOfCats; ++i) {   // loop on number of cats
-    name = "CATS"+CATS_LOCAL::itoa(i+1)+"_POS";
+    name = "CATS"+NPA::itoa(i+1)+"_POS";
     AddHisto2D(name, name,120,-40,40,120,-40,40,family);
-    name = "CATS_STRIP_"+CATS_LOCAL::itoa(i+1)+"_POS";
+    name = "CATS_STRIP_"+NPA::itoa(i+1)+"_POS";
     AddHisto2D(name, name,120,1,28,120,1,28,family);
 
   } 
@@ -172,14 +172,14 @@ void TCATSSpectra::FillRawSpectra(TCATSData* RawData){
   // CATS_STRX_Q_RAW
   for (unsigned int i = 0; i < RawData->GetCATSMultX(); ++i) {   // loop on vector
     family = "CATS/RAW/STRQ";
-    name   = "CATS"+CATS_LOCAL::itoa(RawData->GetCATSDetX(i))+"_STRX_Q_RAW";
+    name   = "CATS"+NPA::itoa(RawData->GetCATSDetX(i))+"_STRX_Q_RAW";
     GetHisto(family, name) -> Fill(RawData->GetCATSStripX(i), RawData->GetCATSChargeX(i)); 
   } // end loop on vector
 
   // CATS_STRY_Q_RAW
   for (unsigned int i = 0; i < RawData->GetCATSMultY(); ++i) {   // loop on vector
     family = "CATS/RAW/STRQ";
-    name   = "CATS"+CATS_LOCAL::itoa(RawData->GetCATSDetY(i))+"_STRY_Q_RAW";
+    name   = "CATS"+NPA::itoa(RawData->GetCATSDetY(i))+"_STRY_Q_RAW";
     GetHisto(family, name) -> Fill(RawData->GetCATSStripY(i), RawData->GetCATSChargeY(i)); 
   } // end loop on vector
 
@@ -189,7 +189,7 @@ void TCATSSpectra::FillRawSpectra(TCATSData* RawData){
   for (unsigned int i = 0; i < RawData->GetCATSMultX(); i++) myMULT[RawData->GetCATSDetX(i)-1] += 1;
 
   for (unsigned int i = 0; i < fNumberOfCats; i++) {
-    name   = "CATS"+CATS_LOCAL::itoa(i+1)+"_STRX_MULT";
+    name   = "CATS"+NPA::itoa(i+1)+"_STRX_MULT";
     family = "CATS/RAW/MULT";
     GetHisto(family,name) -> Fill(myMULT[i]);
   }
@@ -199,7 +199,7 @@ void TCATSSpectra::FillRawSpectra(TCATSData* RawData){
   for (unsigned int i = 0; i < RawData->GetCATSMultY(); i++) myMULT[RawData->GetCATSDetY(i)-1] += 1;
 
   for (unsigned int i = 0; i < fNumberOfCats; i++) {
-    name   = "CATS"+CATS_LOCAL::itoa(i+1)+"_STRY_MULT";
+    name   = "CATS"+NPA::itoa(i+1)+"_STRY_MULT";
     family = "CATS/RAW/MULT";
     GetHisto(family,name) -> Fill(myMULT[i]);
   }
@@ -213,14 +213,14 @@ void TCATSSpectra::FillPreTreatedSpectra(TCATSData* PreTreatedData){
   // CATS_STRX_Q_CAL
   for (unsigned int i = 0; i < PreTreatedData->GetCATSMultX(); ++i) {   // loop on vector
     family = "CATS/CAL/STRQ";
-    name   = "CATS"+CATS_LOCAL::itoa(PreTreatedData->GetCATSDetX(i))+"_STRX_Q_CAL";
+    name   = "CATS"+NPA::itoa(PreTreatedData->GetCATSDetX(i))+"_STRX_Q_CAL";
     GetHisto(family,name) -> Fill(PreTreatedData->GetCATSStripX(i), PreTreatedData->GetCATSChargeX(i)); 
   } // end loop on vector
 
   // CATS_STRY_Q_CAL
   for (unsigned int i = 0; i < PreTreatedData->GetCATSMultY(); ++i) {   // loop on vector
     family = "CATS/CAL/STRQ";
-    name   = "CATS"+CATS_LOCAL::itoa(PreTreatedData->GetCATSDetY(i))+"_STRY_Q_CAL";
+    name   = "CATS"+NPA::itoa(PreTreatedData->GetCATSDetY(i))+"_STRY_Q_CAL";
     GetHisto(family,name) -> Fill(PreTreatedData->GetCATSStripY(i), PreTreatedData->GetCATSChargeY(i)); 
   } // end loop on vector
 
@@ -230,7 +230,7 @@ void TCATSSpectra::FillPreTreatedSpectra(TCATSData* PreTreatedData){
   for (unsigned int i = 0; i < PreTreatedData->GetCATSMultX(); i++) myMULT[PreTreatedData->GetCATSDetX(i)-1] += 1;
 
   for (unsigned int i = 0; i < fNumberOfCats; i++) {
-    name   = "CATS"+CATS_LOCAL::itoa(i+1)+"_STRX_CAL_MULT";
+    name   = "CATS"+NPA::itoa(i+1)+"_STRX_CAL_MULT";
     family = "CATS/CAL/MULT";
     GetHisto(family,name) -> Fill(myMULT[i]);
   }
@@ -240,7 +240,7 @@ void TCATSSpectra::FillPreTreatedSpectra(TCATSData* PreTreatedData){
   for (unsigned int i = 0; i < PreTreatedData->GetCATSMultY(); i++) myMULT[PreTreatedData->GetCATSDetY(i)-1] += 1;
 
   for (unsigned int i = 0; i < fNumberOfCats; i++) {
-    name   = "CATS"+CATS_LOCAL::itoa(i+1)+"_STRY_CAL_MULT";
+    name   = "CATS"+NPA::itoa(i+1)+"_STRY_CAL_MULT";
     family = "CATS/CAL/MULT";
     GetHisto(family,name) -> Fill(myMULT[i]);
   }
@@ -253,9 +253,9 @@ void TCATSSpectra::FillPhysicsSpectra(TCATSPhysics* Physics){
   // CATS_STRX_Q_CAL
   for (unsigned int i = 0; i < Physics->DetNumberX.size() ; ++i) {   // loop on vector
     family="CATS/PHY/QSUM";
-    name   = "CATS"+CATS_LOCAL::itoa(Physics->DetNumberX[i])+"_QSUM_STRMAX_X_CAL";
+    name   = "CATS"+NPA::itoa(Physics->DetNumberX[i])+"_QSUM_STRMAX_X_CAL";
     GetHisto(family,name) -> Fill(Physics->StripMaxX[i],Physics->QsumX[i]); 
-    name   = "CATS"+CATS_LOCAL::itoa(Physics->DetNumberX[i])+"_QSUM_STRMAX_Y_CAL";
+    name   = "CATS"+NPA::itoa(Physics->DetNumberX[i])+"_QSUM_STRMAX_Y_CAL";
     GetHisto(family,name) -> Fill(Physics->StripMaxY[i],Physics->QsumY[i]); 
   }
   // An histo of size fEventLoopSize is reset every fEventLoopSize to monitor the
@@ -266,7 +266,7 @@ void TCATSSpectra::FillPhysicsSpectra(TCATSPhysics* Physics){
 
     for (unsigned int i = 0; i < Physics->StripMaxX.size(); ++i) {
       fEventLoopQSum[i]+=Physics->QsumX[i]/1000000.;
-      name = "CATS"+CATS_LOCAL::itoa(i+1)+"_QMEAN_TIME";
+      name = "CATS"+NPA::itoa(i+1)+"_QMEAN_TIME";
 
       GetHisto(family,name) ->SetBinContent(fEventLoopIndex/fEventLoopIndex,fEventLoopQSum[i]/fEventLoopIndex);
     }
@@ -283,10 +283,10 @@ void TCATSSpectra::FillPhysicsSpectra(TCATSPhysics* Physics){
 
   for (unsigned int i = 0; i < Physics->PositionX.size(); ++i) {
     family = "CATS/PHY/POS";
-    name = "CATS"+CATS_LOCAL::itoa(Physics->DetMaxX[i])+"_POS";
+    name = "CATS"+NPA::itoa(Physics->DetMaxX[i])+"_POS";
     GetHisto(family,name) -> Fill(Physics->PositionX[i],Physics->PositionY[i]);
 
-    name = "CATS_STRIP_"+CATS_LOCAL::itoa(Physics->DetMaxX[i])+"_POS";
+    name = "CATS_STRIP_"+NPA::itoa(Physics->DetMaxX[i])+"_POS";
     GetHisto(family,name) -> Fill(Physics->StripNumberX[i],Physics->StripNumberY[i]);
   }
 

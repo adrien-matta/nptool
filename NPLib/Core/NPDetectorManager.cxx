@@ -33,6 +33,7 @@
 #include "NPOptionManager.h"
 #include "NPCalibrationManager.h"
 
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //   Default Constructor
 NPA::DetectorManager::DetectorManager(){
@@ -137,16 +138,14 @@ void NPA::DetectorManager::ReadConfigurationFile(string Path)   {
 /////////////////////////////////////////////////////////////////////////////////////////////////   
 void NPA::DetectorManager::BuildPhysicalEvent(){
 #if __cplusplus > 199711L
- // add new jobs
+ // add new job
   map<string,VDetector*>::iterator it;
   unsigned int i = 0;
   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {
     m_Ready[i++]=true;
   }
-
   // Wait for all job to be done
-  while(!IsDone()){} 
-
+  while(!IsDone()){};
 #else 
   map<string,VDetector*>::iterator it;
    for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {
@@ -281,26 +280,24 @@ void NPA::DetectorManager::InitThreadPool(){
     m_ThreadPool.push_back( thread( &NPA::DetectorManager::StartThread,this,it->second,i++) );
     m_Ready.push_back(false);
   }
-
   m_stop = false;
   for(auto& th: m_ThreadPool){
     th.detach();
   }
 
   cout << "\033[1;33m**** Detector Manager : Started " << i << " Threads ****\033[0m" << endl ;
-  // Sleep to let the time to the thread to start
-  this_thread::sleep_for (std::chrono::milliseconds(100));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void NPA::DetectorManager::StartThread(NPA::VDetector* det,unsigned int id){ 
+this_thread::sleep_for(chrono::milliseconds(100));
   while(!m_stop){
     if(m_Ready[id]){
       (det->*m_ClearEventPhysicsPtr)();
       (det->*m_BuildPhysicalPtr)();
       m_Ready[id]=false;
     }
-  }
+   }
 }
 ////////////////////////////////////////////////////////////////////////////////
 void NPA::DetectorManager::StopThread(){

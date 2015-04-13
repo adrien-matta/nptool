@@ -581,7 +581,7 @@ void TAnnularS1Physics::InitializeStandardParameter(){
 ///////////////////////////////////////////////////////////////////////////
 namespace ANNULARS1_LOCAL{
   //   tranform an integer to a string
-  string itoa(unsigned int value){
+  stringNPA::itoa(unsigned int value){
     char buffer [33];
     sprintf(buffer,"%d",value);
     return buffer;
@@ -590,23 +590,23 @@ namespace ANNULARS1_LOCAL{
   //   DSSD
   //   Ring
   double fStrip_Ring_E(const TS1Data* m_EventData , const int& i){
-    return CalibrationManager::getInstance()->ApplyCalibration(   "ANNULARS1/D" + itoa( m_EventData->GetS1ThetaEDetectorNbr(i) ) + "_STRIP_FRONT" + itoa( m_EventData->GetS1ThetaEStripNbr(i) ) + "_E",
+    return CalibrationManager::getInstance()->ApplyCalibration(   "ANNULARS1/D" +NPA::itoa( m_EventData->GetS1ThetaEDetectorNbr(i) ) + "_STRIP_FRONT" +NPA::itoa( m_EventData->GetS1ThetaEStripNbr(i) ) + "_E",
         m_EventData->GetS1ThetaEEnergy(i) );
   }
 
   double fStrip_Ring_T(const TS1Data* m_EventData , const int& i){
-    return CalibrationManager::getInstance()->ApplyCalibration(   "ANNULARS1/D" + itoa( m_EventData->GetS1ThetaTDetectorNbr(i) ) + "_STRIP_FRONT" + itoa( m_EventData->GetS1ThetaTStripNbr(i) ) +"_T",
+    return CalibrationManager::getInstance()->ApplyCalibration(   "ANNULARS1/D" +NPA::itoa( m_EventData->GetS1ThetaTDetectorNbr(i) ) + "_STRIP_FRONT" +NPA::itoa( m_EventData->GetS1ThetaTStripNbr(i) ) +"_T",
         m_EventData->GetS1ThetaTTime(i) );
   }
 
   //   Sector
   double fStrip_Sector_E(const TS1Data* m_EventData , const int& i){
-    return CalibrationManager::getInstance()->ApplyCalibration(   "ANNULARS1/D" + itoa( m_EventData->GetS1PhiEDetectorNbr(i) ) + "_STRIP_BACK" + itoa( m_EventData->GetS1PhiEStripNbr(i) ) +"_E",
+    return CalibrationManager::getInstance()->ApplyCalibration(   "ANNULARS1/D" +NPA::itoa( m_EventData->GetS1PhiEDetectorNbr(i) ) + "_STRIP_BACK" +NPA::itoa( m_EventData->GetS1PhiEStripNbr(i) ) +"_E",
         m_EventData->GetS1PhiEEnergy(i) );
   }
 
   double fStrip_Sector_T(const TS1Data* m_EventData , const int& i){
-    return CalibrationManager::getInstance()->ApplyCalibration(   "ANNULARS1/D" + itoa( m_EventData->GetS1PhiTDetectorNbr(i) ) + "_STRIP_BACK" + itoa( m_EventData->GetS1PhiTStripNbr(i) ) +"_T",
+    return CalibrationManager::getInstance()->ApplyCalibration(   "ANNULARS1/D" +NPA::itoa( m_EventData->GetS1PhiTDetectorNbr(i) ) + "_STRIP_BACK" +NPA::itoa( m_EventData->GetS1PhiTStripNbr(i) ) +"_T",
         m_EventData->GetS1PhiTTime(i) );
   }
 }

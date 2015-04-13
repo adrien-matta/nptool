@@ -37,4 +37,26 @@ VDetector::VDetector(){
 VDetector::~VDetector(){
 }
 
+////////////////////////////////////////////////////////////////////////////////
+namespace NPA{
+  static string itoa_array[10000];
+
+  class itoa_proxy{
+    public:
+      itoa_proxy(){
+      char buffer[5];
+        for(int i = 0 ; i < 10000 ; i++){
+          sprintf(buffer,"%d",i);
+          itoa_array[i] = buffer;
+        }
+      }
+  };
+  static itoa_proxy itoa_p ;
+}
+
+std::string NPA::itoa(int i){
+  return NPA::itoa_array[i];
+}
+
+
 
