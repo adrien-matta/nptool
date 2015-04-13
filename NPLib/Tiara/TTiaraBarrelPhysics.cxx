@@ -704,8 +704,8 @@ void TTiaraBarrelPhysics::BuildPhysicalEvent(){
       class brlproxy{
         public:
           brlproxy(){
-            NPA::DetectorFactory::getInstance()->AddToken("TiaraBarrel","Tiara");
-            NPA::DetectorFactory::getInstance()->AddDetector("TiaraBarrel",TTiaraBarrelPhysics::Construct);
+            NPA::DetectorFactory::getInstance()->AddToken("TiaraInnerBarrel","Tiara");
+            NPA::DetectorFactory::getInstance()->AddDetector("TiaraInnerBarrel",TTiaraBarrelPhysics::Construct);
           }
       };
 

@@ -38,8 +38,8 @@ using namespace std ;
 #include "TVector3.h"
 
 // NPTOOL headers
-#include "NPGlobalSystemOfUnits.h"
-#include "NPPhysicalConstants.h"
+#include "../include/NPGlobalSystemOfUnits.h"
+#include "../include/NPPhysicalConstants.h"
 #ifdef NP_SYSTEM_OF_UNITS_H
 using namespace NPUNITS;
 #endif
