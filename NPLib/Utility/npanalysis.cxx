@@ -41,11 +41,11 @@ int main(int argc , char** argv){
 
   }
 
-   if (myOptionManager->IsDefault("EventGenerator")) {
+  if (myOptionManager->IsDefault("EventGenerator")) {
     string name = RootInput::getInstance(inputfilename)->DumpAsciiFile("EventGenerator");
     myOptionManager->SetReactionFile(name);
     cout << "\033[1;33mWarning: No Event file given, using Input tree one\033[0m"<<endl;;
-   }
+  }
 
   // get input files from NPOptionManager
   string detectorfileName    = myOptionManager->GetDetectorFile();
@@ -70,7 +70,13 @@ int main(int argc , char** argv){
     UserAnalysis->Init();
   }
   else{
-    std::cout <<"Info: Not loading libNPAnalysis because : " << error << std::endl;
+    std::string str_error=error;
+    if(str_error.find("image not found")!=std::string::npos)
+      std::cout << "\033[1;33m**** INFO: No User analysis found, building Physical tree ****\033[0m" << std::endl;
+    else{
+      std::cout << "\033[1;31m**** ERROR: Failure to load libNPAnalysis ****" << std::endl << error << "\033[0m" <<std::endl;
+      exit(1);
+    }
   }
 
   std::cout << std::endl << "///////// Starting Analysis ///////// "<< std::endl;
@@ -78,45 +84,69 @@ int main(int argc , char** argv){
   myOptionManager->GetNumberOfEntryToAnalyse();
   int nentries = Chain->GetEntries();
   if(nentries> myOptionManager->GetNumberOfEntryToAnalyse() && myOptionManager->GetNumberOfEntryToAnalyse()>0)
-    nentries = myOptionManager->GetNumberOfEntryToAnalyse() ;
+    nentries = myOptionManager->GetNumberOfEntryToAnalyse() ;  
   std::cout << " Number of Event to be treated : " << nentries << std::endl;
 
- unsigned int inter = 0;
+  unsigned int inter = 0;
   unsigned int treated = 0;
   double mean_rate =0;
   int displayed=0;
   clock_t end;
   clock_t begin = clock();
+
+  bool IsPhysics = myOptionManager->GetInputPhysicalTreeOption();
+
   if(UserAnalysis==NULL){ 
-    for (unsigned int i = 0 ; i < nentries; i++) { 
-      // Get the raw Data
-      Chain -> GetEntry(i);
-      // Build the current event
-      myDetector->BuildPhysicalEvent();
-      // Fill the tree
-      tree->Fill();
-      ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed);
+    if(!IsPhysics){
+      for (unsigned int i = 0 ; i < nentries; i++) { 
+        // Get the raw Data
+        Chain -> GetEntry(i);
+        // Build the current event
+        myDetector->BuildPhysicalEvent();
+        // Fill the tree
+        tree->Fill();
+        ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed);
+      }
+    }
+    
+    else{
+     cout << "\033[1;31m ERROR: You are requesting to rebuild a Physics Tree without any User Analysis, nothing to be done\033[0m" <<endl;
+     exit(1);
     }
   }
 
   else{
-    for (unsigned int i = 0 ; i < nentries; i++) { 
-      // Get the raw Data
-      Chain -> GetEntry(i);
-      // Build the current event
-      myDetector->BuildPhysicalEvent();
-      // User Analysis
-      UserAnalysis->TreatEvent();
-      // Fill the tree      
-      tree->Fill();
-      ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed);
+    if(!IsPhysics){ 
+      for (unsigned int i = 0 ; i < nentries; i++) { 
+        // Get the raw Data
+        Chain -> GetEntry(i);
+        // Build the current event
+        myDetector->BuildPhysicalEvent();
+        // User Analysis
+        UserAnalysis->TreatEvent();
+        // Fill the tree      
+        tree->Fill();
+        ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed);
+      }
+    }
+
+    else{
+      for (unsigned int i = 0 ; i < nentries; i++) { 
+        // Get the Physics Data
+        Chain -> GetEntry(i);
+        // User Analysis
+        UserAnalysis->TreatEvent();
+        // Fill the tree      
+        tree->Fill();
+        ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed);
+      }
     }
     UserAnalysis->End();
   }
 
-  #if __cplusplus > 199711L
+#if __cplusplus > 199711L
   myDetector->StopThread();
-  #endif
+#endif
   ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed);
   RootOutput::getInstance()->Destroy();
   RootInput::getInstance()->Destroy();
@@ -127,12 +157,12 @@ int main(int argc , char** argv){
 void ProgressDisplay(clock_t& begin, clock_t& end, unsigned int& treated,unsigned int& inter,int& total,double& mean_rate,int& displayed){
   end = clock();
   if((end-begin)>CLOCKS_PER_SEC||treated>=total ){
-  displayed++;
-  long double elapsed =(long double) (end-begin)/CLOCKS_PER_SEC;
-  double event_rate = inter/elapsed;
-  mean_rate += (event_rate-mean_rate)/(displayed);
-  double percent = 100*treated/total;
-  double remain = (total-treated)/mean_rate;
+    displayed++;
+    long double elapsed =(long double) (end-begin)/CLOCKS_PER_SEC;
+    double event_rate = inter/elapsed;
+    mean_rate += (event_rate-mean_rate)/(displayed);
+    double percent = 100*treated/total;
+    double remain = (total-treated)/mean_rate;
 
     char* timer;
     if(remain>60)
@@ -142,7 +172,7 @@ void ProgressDisplay(clock_t& begin, clock_t& end, unsigned int& treated,unsigne
 
     if(treated!=total)
       printf("\r \033[1;31m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s *******\033[0m", percent,mean_rate/1000.,timer);
-    
+
     else{
       printf("\r                                                                                                                    ");  
       printf("\r \033[1;32m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s *******\033[0m", percent,mean_rate/1000.,timer);
@@ -151,7 +181,7 @@ void ProgressDisplay(clock_t& begin, clock_t& end, unsigned int& treated,unsigne
     inter=0;
     begin = clock() ;
   }
- 
- treated++;
- inter++;
+
+  treated++;
+  inter++;
 }

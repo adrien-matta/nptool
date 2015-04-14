@@ -145,7 +145,9 @@ void NPA::DetectorManager::BuildPhysicalEvent(){
     m_Ready[i++]=true;
   }
   // Wait for all job to be done
-  while(!IsDone()){};
+  while(!IsDone()){
+  //   this_thread::yield();
+  }
 #else 
   map<string,VDetector*>::iterator it;
    for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {
@@ -295,9 +297,11 @@ void NPA::DetectorManager::InitThreadPool(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void NPA::DetectorManager::StartThread(NPA::VDetector* det,unsigned int id){ 
-this_thread::sleep_for(chrono::milliseconds(100));
-  while(!m_stop){
-    if(m_Ready[id]){
+this_thread::sleep_for(chrono::milliseconds(1));
+vector<bool>::iterator it = m_Ready.begin()+id;
+
+while(!m_stop){
+    if(*it){
       (det->*m_ClearEventPhysicsPtr)();
       (det->*m_BuildPhysicalPtr)();
       if(m_FillSpectra){
