@@ -23,6 +23,8 @@ std::string CORRECT_LIB_EXTENSION = ".so";
 
 
 int main(int argc , char** argv){
+  int return_value;
+  
   // Build the lib list from the argument
   std::string detlist="";
   for(unsigned int i = 1 ; i < argc ; i++){
@@ -91,7 +93,7 @@ int main(int argc , char** argv){
     closedir (dir);
   }
 
-  system("chmod 755 liblist");
+  return_value=system("chmod 755 liblist");
 
   // Copy pcm and rootmap file
   // Generate the target file for backward compatiblity
@@ -110,8 +112,8 @@ int main(int argc , char** argv){
             string cmd1 = "cp " + folderName+"/*.pcm lib/"; 
             string cmd2 = "cp " + folderName+"/*.rootmap lib/" ;
 
-            system(cmd1.c_str());
-            system(cmd2.c_str());
+            return_value=system(cmd1.c_str());
+            return_value=system(cmd2.c_str());
          }
         }
       } 
@@ -180,6 +182,6 @@ int main(int argc , char** argv){
   path += "/NPLib/*/*.rootmap";
 
   std::string command = "sed -i '' -e 's/"+INCORRECT_LIB_EXTENSION+"/"+CORRECT_LIB_EXTENSION+"/g' "+path;  
-  system(command.c_str());   
+  return_value=system(command.c_str());   
   return 0;
 }
