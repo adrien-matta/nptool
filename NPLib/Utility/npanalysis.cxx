@@ -148,6 +148,9 @@ int main(int argc , char** argv){
   myDetector->StopThread();
 #endif
   ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed);
+  if(myOptionManager->GetGenerateHistoOption())
+    myDetector->WriteSpectra();
+  
   RootOutput::getInstance()->Destroy();
   RootInput::getInstance()->Destroy();
   return 0;

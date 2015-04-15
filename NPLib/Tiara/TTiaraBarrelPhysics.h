@@ -122,7 +122,8 @@ class TTiaraBarrelPhysics : public TObject, public NPA::VDetector{
     void CheckSpectra();
     // Used for Online only, clear all the spectra hold by the Spectra class
     void ClearSpectra();
-
+    // Write Spectra to file
+    void WriteSpectra();
   public://   Specific to TiaraBarrel Array
     //   Clear The PreTeated object
     void ClearPreTreatedData()   {m_PreTreatedData->Clear();}
