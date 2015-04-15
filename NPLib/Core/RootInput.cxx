@@ -132,7 +132,7 @@ RootInput::RootInput(string configFileName){
       }
     }
     if( pRootChain->GetEntries() ==0){
-      cout << "\033[1;31m ERROR: No entries to analyse\033[0m" << endl; 
+      cout << "\033[1;31m**** ERROR: No entries to analyse ****\033[0m" << endl; 
       exit(1);
     }
     else{

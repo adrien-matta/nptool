@@ -1,0 +1,14 @@
+# - Config file for the NPLib package
+# It defines the following variables
+#  NPLib_INCLUDE_DIRS - include directories for NPLib
+#  NPLib_LIBRARIES    - libraries to link against
+#  NPLib_EXECUTABLE   - the bar executable
+ 
+# Compute paths
+get_filename_component(NPLib_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+set(NPLib_INCLUDE_DIRS "@CMAKE_INCLUDE_OUTPUT_DIRECTORY@")
+include_directories("${NPLib_INCLUDE_DIRS}")
+set(NPLib_USE_FILE "@CMAKE_BINARY_DIR@/NPLibConfig.cmake")
+# These are IMPORTED targets created by NPLibTargets.cmake
+set(NPLib_LIBRARIES "@TARGET_LIST@")
+set(NPLib_EXECUTABLE npanalysis nptool-installer)

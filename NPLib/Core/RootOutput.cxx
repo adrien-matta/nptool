@@ -49,8 +49,7 @@ void RootOutput::Destroy(){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-RootOutput::RootOutput(TString fileNameBase, TString treeNameBase)
-{
+RootOutput::RootOutput(TString fileNameBase, TString treeNameBase){
    TDirectory* currentPath= gDirectory;
 
    // The file extension is added to the file name:
@@ -85,8 +84,7 @@ RootOutput::RootOutput(TString fileNameBase, TString treeNameBase)
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void RootOutput::InitAsciiFiles()
-{
+void RootOutput::InitAsciiFiles(){
    // get NPOptionManager pointer
    NPOptionManager* OptionManager  = NPOptionManager::getInstance();
 
@@ -126,9 +124,8 @@ void RootOutput::InitAsciiFiles()
 }
 
 
-
-RootOutput::~RootOutput()
-{ 
+////////////////////////////////////////////////////////////////////////////////
+RootOutput::~RootOutput(){ 
     // The data is written to the file and the tree is closed:
     if (pRootFile && !NPOptionManager::getInstance()->GetPROOF()) {
       TDirectory* currentPath= gDirectory;
