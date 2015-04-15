@@ -383,7 +383,7 @@ void Reaction::ReadConfigurationFile(string Path){
         fNuclei1->SetVerboseLevel(0);
         fNuclei1->ReadConfigurationFile(Path);
         fBeamEnergy= fNuclei1->GetEnergy();
-        if(fVerboseLevel==1) cout << "Beam " << fNuclei1->GetName() << " @ " << fBeamEnergy << " MeV" << endl;
+        if(fVerboseLevel==1) cout << "\033[1;35mBeam " << fNuclei1->GetName() << " @ " << fBeamEnergy << " MeV" << endl;
       }
       
       else if (DataBuffer=="Target=") {

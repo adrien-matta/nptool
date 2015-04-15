@@ -57,7 +57,7 @@
 #include "ObsoleteGeneralScorers.hh"
 #include "GaspardScorers.hh"
 #include "RootOutput.h"
-#include "VDetector.hh"
+#include "NPSVDetector.hh"
 // CLHEP
 #include "CLHEP/Random/RandGauss.h"
 
@@ -325,7 +325,7 @@ void GaspardTrackerDummyShape::VolumeMaker(G4int DetectorNumber,
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// Virtual Method of VDetector class
+// Virtual Method of NPS::VDetector class
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
@@ -637,7 +637,7 @@ void GaspardTrackerDummyShape::InitializeRootOutput()
 
 
 
-// Set the TinteractionCoordinates object from VDetector to the present class
+// Set the TinteractionCoordinates object from NPS::VDetector to the present class
 void GaspardTrackerDummyShape::SetInterCoordPointer(TInteractionCoordinates* interCoord)
 {
    ms_InterCoord = interCoord;
@@ -940,9 +940,9 @@ void GaspardTrackerDummyShape::ReadSensitive(const G4Event* event)
 void GaspardTrackerDummyShape::InitializeScorers()
 {
    bool already_exist = false;
-   m_FirstStageScorer = VDetector::CheckScorer("FirstStageScorerGPDDummyShape", already_exist);
-   m_SecondStageScorer = VDetector::CheckScorer("SecondStageScorerGPDDummyShape",already_exist);
-   m_ThirdStageScorer = VDetector::CheckScorer("ThirdStageScorerGPDDummyShape",already_exist);
+   m_FirstStageScorer = NPS::VDetector::CheckScorer("FirstStageScorerGPDDummyShape", already_exist);
+   m_SecondStageScorer = NPS::VDetector::CheckScorer("SecondStageScorerGPDDummyShape",already_exist);
+   m_ThirdStageScorer = NPS::VDetector::CheckScorer("ThirdStageScorerGPDDummyShape",already_exist);
    if(already_exist) return;
 
    // First stage Associate Scorer

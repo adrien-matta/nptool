@@ -33,7 +33,7 @@
 #include "G4LogicalVolume.hh"
 
 // NPSimulation header
-#include "VDetector.hh"
+#include "NPSVDetector.hh"
 
 // NPLib 
 #include "TSSSDData.h"
@@ -63,7 +63,7 @@ namespace THINSI
 
 using namespace THINSI ;
 
-class ThinSi : public VDetector
+class ThinSi : public NPS::VDetector
 {
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
@@ -98,7 +98,7 @@ public:
 
 
    ////////////////////////////////////////////////////
-   /////////  Inherite from VDetector class ///////////
+   /////////  Inherite from NPS::VDetector class ///////////
    ////////////////////////////////////////////////////
 public:
    // Read stream at Configfile to pick-up parameters of detector (Position,...)

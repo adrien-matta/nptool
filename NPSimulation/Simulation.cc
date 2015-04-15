@@ -24,7 +24,6 @@
 
 // NPS headers
 #include "EventAction.hh"
-#include "VDetector.hh"
 
 //NPL headers
 #include "NPOptionManager.h"
@@ -101,13 +100,16 @@ int main(int argc, char** argv){
 
 #ifdef G4UI_USE
 #ifdef G4VIS_USE
-  UImanager->ApplyCommand("/control/execute macro/aliases.mac");
+  string Path_Macro = getenv("NPTOOL");
+  Path_Macro+="/NPSimulation/macro/";
+
+  UImanager->ApplyCommand("/control/execute " +Path_Macro+"aliases.mac");
   G4VisManager* visManager = new G4VisExecutive("Quiet");
   visManager->Initialize();
-  UImanager->ApplyCommand("/control/execute macro/vis.mac");
+  UImanager->ApplyCommand("/control/execute " +Path_Macro+"vis.mac");
 #endif
    if (ui->IsGUI()){
-            UImanager->ApplyCommand("/control/execute macro/gui.mac");
+            UImanager->ApplyCommand("/control/execute " +Path_Macro+"gui.mac");
     }
 
     ui->SessionStart();

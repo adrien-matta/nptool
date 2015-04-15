@@ -43,6 +43,7 @@
 
 // NPS
 #include "Tiara.hh"
+#include "NPSDetectorFactory.hh"
 #include "MaterialManager.hh"
 #include "SiliconScorers.hh"
 
@@ -87,7 +88,7 @@ Tiara::~Tiara(){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// Virtual Method of VDetector class
+// Virtual Method of NPS::VDetector class
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
 void Tiara::ReadConfiguration(string Path){
@@ -251,12 +252,12 @@ void Tiara::ReadSensitive(const G4Event* event){
       m_EventBarrel->SetOuterE(Info[7],Info[9],E);
       m_EventBarrel->SetOuterT(Info[7],Info[9],Info[1]); 
     }
-          // Interraction Coordinates
-//      ms_InterCoord->SetDetectedPositionX(Info[2]) ;
-//      ms_InterCoord->SetDetectedPositionY(Info[3]) ;
-//      ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
-//      ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
-//      ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
+    // Interraction Coordinates
+    //      ms_InterCoord->SetDetectedPositionX(Info[2]) ;
+    //      ms_InterCoord->SetDetectedPositionY(Info[3]) ;
+    //      ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
+    //      ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
+    //      ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
   }
   // Clear Map for next event
   OuterBarrelHitMap->clear();
@@ -289,11 +290,11 @@ void Tiara::ReadSensitive(const G4Event* event){
       m_EventHyball->SetSectorT(Info[7],Info[9],Info[1]); 
     }
     // Interraction Coordinates
-//    ms_InterCoord->SetDetectedPositionX(Info[2]) ;
-//    ms_InterCoord->SetDetectedPositionY(Info[3]) ;
-//    ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
-//    ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
-//    ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
+    //    ms_InterCoord->SetDetectedPositionX(Info[2]) ;
+    //    ms_InterCoord->SetDetectedPositionY(Info[3]) ;
+    //    ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
+    //    ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
+    //    ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
   }
   // Clear Map for next event
   HyballHitMap->clear();
@@ -851,6 +852,28 @@ void Tiara::InitializeMaterial(){
   m_MaterialAl = MaterialManager::getInstance()->GetMaterialFromLibrary("Al"); 
   m_MaterialPCB = MaterialManager::getInstance()->GetMaterialFromLibrary("PCB");
   m_MaterialVacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPS::VDetector* Tiara::Construct(){
+  return (NPS::VDetector*) new Tiara();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class brlproxy{
+  public:
+    brlproxy(){
+      NPS::DetectorFactory::getInstance()->AddToken("TiaraInnerBarrel=","Tiara");
+      NPS::DetectorFactory::getInstance()->AddDetector("TiaraInnerBarrel=",Tiara::Construct);
+    }
+};
+
+brlproxy brlp;
 }
 
 

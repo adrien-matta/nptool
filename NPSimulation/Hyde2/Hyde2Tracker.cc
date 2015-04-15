@@ -73,7 +73,7 @@ void Hyde2Tracker::ReadConfiguration(string Path)
          myDetector->ReadConfiguration(Path);
          ConfigFile.open(Path.c_str());
 
-         // ms_InterCoord comes from VDetector
+         // ms_InterCoord comes from NPS::VDetector
          myDetector->SetInterCoordPointer(ms_InterCoord);
 
          // store Hyde2TrackerSquare1 "detector"
@@ -90,7 +90,7 @@ void Hyde2Tracker::ReadConfiguration(string Path)
          myDetector->ReadConfiguration(Path);
          ConfigFile.open(Path.c_str());
 
-         // ms_InterCoord comes from VDetector
+         // ms_InterCoord comes from NPS::VDetector
          myDetector->SetInterCoordPointer(ms_InterCoord);
 
          // store Hyde2TrackerTrapezoid1 "detector"
@@ -107,7 +107,7 @@ void Hyde2Tracker::ReadConfiguration(string Path)
          myDetector->ReadConfiguration(Path);
          ConfigFile.open(Path.c_str());
 
-         // ms_InterCoord comes from VDetector
+         // ms_InterCoord comes from NPS::VDetector
          myDetector->SetInterCoordPointer(ms_InterCoord);
 
          // store Hyde2TrackerTrapezoid2 "detector"

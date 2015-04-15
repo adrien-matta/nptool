@@ -39,13 +39,13 @@
 #include "G4MultiFunctionalDetector.hh"
 
 // NPTool header
-#include "VDetector.hh"
+#include "NPSVDetector.hh"
 #include "TDUMMYDetectorData.h"
 
 using namespace std;
 using namespace CLHEP;
 
-class DUMMYDetector : public VDetector
+class DUMMYDetector : public NPS::VDetector
 {
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
@@ -68,7 +68,7 @@ public:
       
    void VolumeMaker(G4ThreeVector Det_pos, int DetNumber,G4LogicalVolume* world) ;
    ////////////////////////////////////////////////////
-   /////////  Inherite from VDetector class ///////////
+   /////////  Inherite from NPS::VDetector class ///////////
    ////////////////////////////////////////////////////
 public:
    // Read stream at Configfile to pick-up parameters of detector (Position,...)

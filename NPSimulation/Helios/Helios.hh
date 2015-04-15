@@ -27,7 +27,7 @@
 #include <vector>
 
 // NPTool header
-#include "VDetector.hh"
+#include "NPSVDetector.hh"
 #include "HeliosModule.hh"
 
 using namespace std;
@@ -35,7 +35,7 @@ using namespace std;
 
 
 
-class Helios : public VDetector
+class Helios : public NPS::VDetector
 {
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
@@ -45,7 +45,7 @@ public:
    virtual ~Helios();
 
    ////////////////////////////////////////////////////
-   /////////  Inherite from VDetector class ///////////
+   /////////  Inherite from NPS::VDetector class ///////////
    ////////////////////////////////////////////////////
 public:
    // Read stream at Configfile to pick-up parameters of detector (Position,...)

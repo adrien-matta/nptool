@@ -76,7 +76,7 @@ void Helios::ReadConfiguration(string Path)
          myDetector->ReadConfiguration(Path);
          ConfigFile.open(Path.c_str());
 
-         // ms_InterCoord comes from VDetector
+         // ms_InterCoord comes from NPS::VDetector
          myDetector->SetInterCoordPointer(ms_InterCoord);
 
          // store HeliosSquare "detector"
@@ -93,7 +93,7 @@ void Helios::ReadConfiguration(string Path)
          myDetector->ReadConfiguration(Path);
          ConfigFile.open(Path.c_str());
 
-         // ms_InterCoord comes from VDetector
+         // ms_InterCoord comes from NPS::VDetector
          myDetector->SetInterCoordPointer(ms_InterCoord);
 
          // store HeliosTrapezoid "detector"
@@ -110,7 +110,7 @@ void Helios::ReadConfiguration(string Path)
          myDetector->ReadConfiguration(Path);
          ConfigFile.open(Path.c_str());
 
-         // ms_InterCoord comes from VDetector
+         // ms_InterCoord comes from NPS::VDetector
          myDetector->SetInterCoordPointer(ms_InterCoord);
 
          // store HeliosTrapezoid "detector"
@@ -131,7 +131,7 @@ void Helios::ReadConfiguration(string Path)
          myDetector->ReadConfiguration(Path);
          ConfigFile.open(Path.c_str());
 
-         // ms_InterCoord comes from VDetector
+         // ms_InterCoord comes from NPS::VDetector
          myDetector->SetInterCoordPointer(ms_InterCoord);
 
          // store HeliosShape "detector"

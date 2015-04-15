@@ -52,7 +52,7 @@
 #include "SiliconScorers.hh"
 #include "MaterialManager.hh"
 #include "RootOutput.h"
-#include "VDetector.hh"
+#include "NPSVDetector.hh"
 // CLHEP
 #include "CLHEP/Random/RandGauss.h"
 
@@ -277,7 +277,7 @@ void GaspardTrackerRectangle::VolumeMaker(G4int DetectorNumber,
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// Virtual Method of VDetector class
+// Virtual Method of NPS::VDetector class
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
@@ -631,7 +631,7 @@ void GaspardTrackerRectangle::InitializeRootOutput()
 
 
 
-// Set the TinteractionCoordinates object from VDetector to the present class
+// Set the TinteractionCoordinates object from NPS::VDetector to the present class
 void GaspardTrackerRectangle::SetInterCoordPointer(TInteractionCoordinates* interCoord)
 {
    ms_InterCoord = interCoord;
@@ -777,9 +777,9 @@ void GaspardTrackerRectangle::InitializeScorers()
 {
    // check whether scorers are already defined
    bool already_exist  = false;
-   m_FirstStageScorer  = VDetector::CheckScorer("FirstStageScorerGPDRectangle",  already_exist);
-   m_SecondStageScorer = VDetector::CheckScorer("SecondStageScorerGPDRectangle", already_exist);
-   m_ThirdStageScorer  = VDetector::CheckScorer("ThirdStageScorerGPDRectangle",  already_exist);
+   m_FirstStageScorer  = NPS::VDetector::CheckScorer("FirstStageScorerGPDRectangle",  already_exist);
+   m_SecondStageScorer = NPS::VDetector::CheckScorer("SecondStageScorerGPDRectangle", already_exist);
+   m_ThirdStageScorer  = NPS::VDetector::CheckScorer("ThirdStageScorerGPDRectangle",  already_exist);
    if (already_exist) return;
 
    // First stage scorer

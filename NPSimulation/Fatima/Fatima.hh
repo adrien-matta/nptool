@@ -35,14 +35,14 @@
 #include "G4MultiFunctionalDetector.hh"
 
 // NPSimulation header
-#include "VDetector.hh"
+#include "NPSVDetector.hh"
 
 // NPLib
 #include "TFatimaData.h"
 using namespace std;
 using namespace CLHEP;
 
-class Fatima : public VDetector{
+class Fatima : public NPS::VDetector{
   ////////////////////////////////////////////////////
   /////// Default Constructor and Destructor /////////
   ////////////////////////////////////////////////////
@@ -67,7 +67,7 @@ private: // Guarranty that each volume is created only once
  G4LogicalVolume* m_LogicalDetector;
 
   ////////////////////////////////////////////////////
-  /////////  Inherite from VDetector class ///////////
+  /////////  Inherite from NPS::VDetector class ///////////
   ////////////////////////////////////////////////////
 public:
   // Read stream at Configfile to pick-up parameters of detector (Position,...)

@@ -46,7 +46,7 @@
 // G4 sensitive
 #include "G4SDManager.hh"
 #include "G4MultiFunctionalDetector.hh"
-#include "VDetector.hh"
+#include "NPSVDetector.hh"
 // NPTool headers
 #include "HeliosDetDummyShape.hh"
 #include "ObsoleteGeneralScorers.hh"
@@ -294,7 +294,7 @@ void HeliosDetDummyShape::VolumeMaker(G4int TelescopeNumber,
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// Virtual Method of VDetector class
+// Virtual Method of NPS::VDetector class
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
@@ -609,7 +609,7 @@ void HeliosDetDummyShape::InitializeRootOutput()
 
 
 
-// Set the TinteractionCoordinates object from VDetector to the present class
+// Set the TinteractionCoordinates object from NPS::VDetector to the present class
 void HeliosDetDummyShape::SetInterCoordPointer(TInteractionCoordinates* interCoord)
 {
    ms_InterCoord = interCoord;
@@ -853,7 +853,7 @@ void HeliosDetDummyShape::InitializeScorers()
 {
    bool already_exist = false; 
    // First stage Associate Scorer
-   m_FirstStageScorer = VDetector::CheckScorer("FirstStageScorerHeliosDummyShape",already_exist);
+   m_FirstStageScorer = NPS::VDetector::CheckScorer("FirstStageScorerHeliosDummyShape",already_exist);
    if(already_exist) return;
 
 

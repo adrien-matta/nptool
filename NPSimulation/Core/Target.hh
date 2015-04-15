@@ -14,7 +14,7 @@
  * Last update    : 06/11/2009                                               *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe Cryogenic and standard Target. Derived from VDetector*
+ *  This class describe Cryogenic and standard Target. Derived fromNPS::VDetector*
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -39,12 +39,12 @@
 #include "G4LogicalVolume.hh"
 
 // NPTool headers
-#include "VDetector.hh"
+#include "NPSVDetector.hh"
 
 using namespace std;
 using namespace CLHEP;
 
-class Target : public VDetector{
+class Target : public NPS::VDetector{
 public:
   Target();
   ~Target(){};

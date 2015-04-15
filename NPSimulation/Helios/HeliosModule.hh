@@ -62,9 +62,9 @@ public:
    // Initialize all scorers necessary for each detector
    virtual void InitializeScorers() = 0;
 
-   // Give the static TInteractionCoordinates from VDetector to the classes
+   // Give the static TInteractionCoordinates from NPS::VDetector to the classes
    // deriving from HeliosModule
-   // This is mandatory since the Helios*** does not derive from VDetector
+   // This is mandatory since the Helios*** does not derive from NPS::VDetector
    virtual void SetInterCoordPointer(TInteractionCoordinates* interCoord) = 0;
    virtual TInteractionCoordinates* GetInterCoordPointer() = 0;
 

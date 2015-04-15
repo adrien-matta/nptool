@@ -27,7 +27,7 @@
 #include <vector>
 
 // NPTool header
-#include "VDetector.hh"
+#include "NPSVDetector.hh"
 #include "Hyde2TrackerModule.hh"
 
 using namespace std;
@@ -35,7 +35,7 @@ using namespace std;
 
 
 
-class Hyde2Tracker : public VDetector
+class Hyde2Tracker : public NPS::VDetector
 {
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
@@ -45,7 +45,7 @@ public:
    virtual ~Hyde2Tracker();
 
    ////////////////////////////////////////////////////
-   /////////  Inherite from VDetector class ///////////
+   /////////  Inherite from NPS::VDetector class ///////////
    ////////////////////////////////////////////////////
 public:
    // Read stream at Configfile to pick-up parameters of detector (Position,...)

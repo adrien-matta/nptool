@@ -27,7 +27,7 @@
 #include <vector>
 
 // NPTool header
-#include "VDetector.hh"
+#include "NPSVDetector.hh"
 
 // Geant4 headers
 #include "G4MultiFunctionalDetector.hh"
@@ -40,7 +40,7 @@ using namespace std;
 
 
 
-class W1 : public VDetector
+class W1 : public NPS::VDetector
 {
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
@@ -70,7 +70,7 @@ public:
 
 
    /////////////////////////////////////////
-   ////  Inherite from VDetector class /////
+   ////  Inherite from NPS::VDetector class /////
    /////////////////////////////////////////
 public:
    // Read stream at Configfile to pick-up parameters of detector (Position,...)

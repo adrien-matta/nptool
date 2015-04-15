@@ -51,7 +51,7 @@
 #include "ObsoleteGeneralScorers.hh"
 #include "Hyde2Scorers.hh"
 #include "RootOutput.h"
-#include "VDetector.hh"
+#include "NPSVDetector.hh"
 // CLHEP
 #include "CLHEP/Random/RandGauss.h"
 
@@ -387,7 +387,7 @@ void Hyde2TrackerTrapezoid1::VolumeMaker(G4int TelescopeNumber   ,
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// Virtual Method of VDetector class
+// Virtual Method of NPS::VDetector class
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
@@ -783,7 +783,7 @@ void Hyde2TrackerTrapezoid1::InitializeRootOutput()
 
 
 
-// Set the TinteractionCoordinates object from VDetector to the present class
+// Set the TinteractionCoordinates object from NPS::VDetector to the present class
 void Hyde2TrackerTrapezoid1::SetInterCoordPointer(TInteractionCoordinates* interCoord)
 {
    ms_InterCoord = interCoord;
@@ -1162,12 +1162,12 @@ void Hyde2TrackerTrapezoid1::ReadSensitive(const G4Event* event)
 void Hyde2TrackerTrapezoid1::InitializeScorers()
 {
   bool already_exist = false; 
-  m_FirstStageScorer = VDetector::CheckScorer("FirstStageScorerHYD2Trapezoid1",already_exist);
-  m_SecondStageScorer = VDetector::CheckScorer("SecondStageScorerHYD2Trapezoid1",already_exist);
-  m_ThirdStageScorer = VDetector::CheckScorer("ThirdStageScorerHYD2Trapezoid1",already_exist);
-  m_FourthStageScorer = VDetector::CheckScorer("FourthStageScorerHYD2Trapezoid1",already_exist);
-  m_FifthStageScorer = VDetector::CheckScorer("FifthStageScorerHYD2Trapezoid1",already_exist);
-  m_SixthStageScorer = VDetector::CheckScorer("SixthStageScorerHYD2Trapezoid1",already_exist);
+  m_FirstStageScorer = NPS::VDetector::CheckScorer("FirstStageScorerHYD2Trapezoid1",already_exist);
+  m_SecondStageScorer = NPS::VDetector::CheckScorer("SecondStageScorerHYD2Trapezoid1",already_exist);
+  m_ThirdStageScorer = NPS::VDetector::CheckScorer("ThirdStageScorerHYD2Trapezoid1",already_exist);
+  m_FourthStageScorer = NPS::VDetector::CheckScorer("FourthStageScorerHYD2Trapezoid1",already_exist);
+  m_FifthStageScorer = NPS::VDetector::CheckScorer("FifthStageScorerHYD2Trapezoid1",already_exist);
+  m_SixthStageScorer = NPS::VDetector::CheckScorer("SixthStageScorerHYD2Trapezoid1",already_exist);
   if(already_exist) return;
 
 

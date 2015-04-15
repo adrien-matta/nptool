@@ -110,7 +110,7 @@ void Sharc::AddQQQDetector(G4ThreeVector Pos,G4double Thickness){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// Virtual Method of VDetector class
+// Virtual Method of NPS::VDetector class
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
 void Sharc::ReadConfiguration(string Path){

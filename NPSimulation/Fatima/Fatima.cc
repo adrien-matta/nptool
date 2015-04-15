@@ -112,7 +112,7 @@ void Fatima::AddDetector(G4ThreeVector Pos, double beta_u, double beta_v, double
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// Virtual Method of VDetector class
+// Virtual Method of NPS::VDetector class
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
 void Fatima::ReadConfiguration(string Path){

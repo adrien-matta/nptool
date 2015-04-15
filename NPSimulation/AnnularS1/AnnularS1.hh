@@ -28,7 +28,7 @@ using namespace std;
 using namespace CLHEP;
 
 // NPTool header
-#include "VDetector.hh"
+#include "NPSVDetector.hh"
 
 // NPTool - ROOT headers
 #include "TS1Data.h"
@@ -37,7 +37,7 @@ using namespace CLHEP;
 #include "G4MultiFunctionalDetector.hh"
 #include "G4LogicalVolume.hh"
 
-class AnnularS1 : public VDetector{
+class AnnularS1 : public NPS::VDetector{
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
    ////////////////////////////////////////////////////

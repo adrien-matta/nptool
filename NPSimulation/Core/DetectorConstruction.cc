@@ -53,79 +53,6 @@
 #include "G4RunManager.hh"
 #include "G4SDManager.hh"
 // Detector class
-#include "../../NPLib/DetectorList.inc"
-#include "Chamber.hh"
-
-#ifdef INC_ANNULARS1
-#include "AnnularS1.hh"
-#endif
-
-#ifdef INC_COMPTONTELESCOPE
-#include "ComptonTelescope.hh"
-#endif
-
-#ifdef INC_DUMMYDETECTOR
-#include "DummyDetector.hh"
-#endif
-
-#ifdef INC_EUROGAM
-#include "Eurogam.hh"
-#endif
-
-#ifdef INC_FATIMA
-#include "Fatima.hh"
-#endif
-
-#ifdef INC_GASPARD
-#include "GaspardTracker.hh"
-#endif
-
-#ifdef INC_HELIOS
-#include "Helios.hh"
-#endif
-
-#ifdef INC_HYDE2
-#include "Hyde2Tracker.hh"
-#endif
-
-#ifdef INC_MUST2
-#include "MUST2Array.hh"
-#endif
-
-#ifdef INC_NANA
-#include "Nana.hh"
-#endif
-
-#ifdef INC_PARIS
-#include "Paris.hh"
-#endif
-
-#ifdef INC_PLASTIC
-#include "Plastic.hh"
-#endif
-
-#include "Target.hh"
-
-#ifdef INC_SSSD
-#include "ThinSi.hh"
-#endif
-
-#ifdef INC_SHARC
-#include "Sharc.hh"
-#endif
-
-#ifdef INC_TIGRESS
-#include "Tigress.hh"
-#endif
-
-#ifdef INC_TIARA
-#include "Tiara.hh"
-#endif
-
-#ifdef INC_W1
-#include "W1.hh"
-#endif
-
 
 // STL
 #include<cstdlib>
@@ -134,8 +61,12 @@
 // NPL
 #include "RootOutput.h"
 #include "NPOptionManager.h"
+
+// NPS
+#include "NPSDetectorFactory.hh"
 #include "MaterialManager.hh"
 #include "DetectorMessenger.hh"
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 DetectorConstruction::DetectorConstruction():  world_log(0), world_phys(0){
   m_Target   = 0;
@@ -155,7 +86,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void DetectorConstruction::AddDetector(VDetector* NewDetector){
+void DetectorConstruction::AddDetector(NPS::VDetector* NewDetector){
   // Add new detector to vector
   m_Detectors.push_back(NewDetector);
 
@@ -199,29 +130,21 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
   ////////General Reading needs////////
   string LineBuffer;
   string DataBuffer;
+  bool cGeneralTarget=false;
+  bool cGeneralChamber=false;
+  set<string> check;
+  
 
 
-  bool cAddThinSi        = false;
-  bool cComptonTelescope = false;
-  bool cDummy            = false;
-  bool cEurogam          = false;
-  bool cFatima           = false;
-  bool cGeneralTarget    = false;
-  bool cGeneralChamber   = false;
-  bool cGPDTracker       = false;   
-  bool cHYD2Tracker      = false;
-  bool cHelios           = false;
-  bool cMUST2            = false;
-  bool cNana             = false;
-  bool cPlastic          = false;
-  bool cParis            = false;   
-  bool cS1               = false;
-  bool cSharc            = false;
-  bool cTigress          = false;
-  bool cTiara            = false;
-  bool cW1               = false;
-
+  
   int VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
+  cout << "\033[1;36m" ;
+  
+  // Access the DetectorFactory and ask it to load the Class List
+  string classlist = getenv("NPTOOL");
+  classlist += "/NPLib/DetectorClassList.txt";
+  NPS::DetectorFactory* theFactory = NPS::DetectorFactory::getInstance();
+  theFactory->ReadClassList(classlist);
 
   ifstream ConfigFile;
   ConfigFile.open(Path.c_str());
@@ -241,465 +164,6 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
     if (LineBuffer.compare(0, 1, "%") == 0) {   /*Do  Nothing*/;}
 
     ////////////////////////////////////////////
-    /////// Search for a Dummy Detector ////////
-    ////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 16, "TheDUMMYDetector") == 0 && cDummy == false) {
-      cDummy = true ;
-#ifdef INC_DUMMYDETECTOR
-      if(VerboseLevel==1)  G4cout << G4endl << "//////// DUMMY DETECTOR ////////" << G4endl << G4endl   ;
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new DUMMYDetector()                  ;
-
-      // Read Position of detector
-      ConfigFile.close()                                 ;
-      myDetector->ReadConfiguration(Path)                   ;
-      ConfigFile.open(Path.c_str())                      ;
-
-      // Add array to the VDetector Vector
-      AddDetector(myDetector)                            ;
-#endif
-    }
-
-
-    /////////////////////////////////////////////////////
-    //////////// Search for ComptonTelescope ////////////
-    /////////////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 16, "ComptonTelescope") == 0 && cComptonTelescope == false) {
-#ifdef INC_COMPTONTELESCOPE
-      cComptonTelescope = true;
-      if(VerboseLevel==1) G4cout << "//////// ComptonTelescope  ////////" << G4endl;
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new ComptonTelescope();
-
-      // Read Position of detector
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-
-      // Add array to the VDetector Vector
-      AddDetector(myDetector);
-#endif
-    }
-
-
-    ////////////////////////////////////////////
-    //////////// Search for Eurogam ////////////
-    ////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 7, "Eurogam") == 0 && cEurogam == false) {
-#ifdef INC_EUROGAM
-      cEurogam = true;
-      if(VerboseLevel==1) G4cout << "//////// Eurogam  ////////" << G4endl;
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new Eurogam();
-
-      // Read Position of detector
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-
-      // Add array to the VDetector Vector
-      AddDetector(myDetector);
-#endif
-    }
-
-    ////////////////////////////////////////////
-    //////////// Search for FATIMA   ///////////
-    ////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 6, "Fatima") == 0 && cFatima == false) {
-#ifdef INC_FATIMA
-      cFatima = true ;
-      G4cout << "//////// Fatima  ////////" << G4endl   ;
-      
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new Fatima()                  ;
-      
-      // Read Position of Telescope
-      ConfigFile.close()                                 ;
-      myDetector->ReadConfiguration(Path)                   ;
-      ConfigFile.open(Path.c_str())                      ;
-      
-      // Add array to the VDetector Vector
-      AddDetector(myDetector)                            ;
-#endif
-    }
-
-    ////////////////////////////////////////////
-    //////////// Search for Gaspard ////////////
-    ////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 14, "GaspardTracker") == 0 && cGPDTracker == false) {
-#ifdef INC_GASPARD
-      cGPDTracker = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "//////// Gaspard Tracker ////////" << G4endl   ;
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new GaspardTracker()                  ;
-
-      // Read Position of Telescope
-      ConfigFile.close()                                 ;
-      myDetector->ReadConfiguration(Path)                   ;
-      ConfigFile.open(Path.c_str())                      ;
-
-      // Add array to the VDetector Vector
-      AddDetector(myDetector)                            ;
-#endif
-    }
-
-
-    ////////////////////////////////////////////
-    //////////// Search for Hyde2   ////////////
-    ////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 12, "Hyde2Tracker") == 0 && cHYD2Tracker == false) {
-#ifdef INC_HYDE2
-      cHYD2Tracker = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "//////// Hyde2 Tracker ////////" << G4endl   ;
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new Hyde2Tracker()                  ;
-
-      // Read Position of Telescope
-      ConfigFile.close()                                 ;
-      myDetector->ReadConfiguration(Path)                   ;
-      ConfigFile.open(Path.c_str())                      ;
-
-      // Add array to the VDetector Vector
-      AddDetector(myDetector)                            ;
-#endif
-    }
-
-
-    ////////////////////////////////////////////
-    //////////// Search for paris   ////////////
-    ////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 5, "Paris") == 0 && cParis == false) {
-#ifdef INC_PARIS
-      cParis = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "//////// Paris  ////////" << G4endl   ;
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new Paris()                  ;
-
-      // Read Position of Telescope
-      ConfigFile.close()                                 ;
-      myDetector->ReadConfiguration(Path)                   ;
-      ConfigFile.open(Path.c_str())                      ;
-
-      // Add array to the VDetector Vector
-      AddDetector(myDetector)                            ;
-#endif
-    }
-
-    ////////////////////////////////////////////
-    ///// Search for S1 Annular detector  //////
-    ////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 9, "AnnularS1") == 0 && cS1 == false) {
-#ifdef INC_ANNULARS1
-      cS1 = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "//////// S1 Annular detector ////////" << G4endl   << G4endl   ;
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new AnnularS1()                 ;
-
-      // Read Position of Telescope
-      ConfigFile.close()                                    ;
-      myDetector->ReadConfiguration(Path)                      ;
-      ConfigFile.open(Path.c_str())                         ;
-
-      // Add array to the VDetector Vector
-      AddDetector(myDetector)                               ;
-#endif
-    }
-
-    ////////////////////////////////////////////
-    ///// Search for S1 Annular detector  //////
-    ////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 2, "W1") == 0 && cW1 == false) {
-#ifdef INC_W1
-      cW1 = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "//////// W1 Square detector ////////" << G4endl   << G4endl;
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new W1();
-
-      // Read Position of Telescope
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-
-      // Add array to the VDetector Vector
-      AddDetector(myDetector);
-#endif
-    }
-
-    ////////////////////////////////////////////
-    //////// Search for MUST2 Array  ////////
-    ////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 10, "MUST2Array") == 0 && cMUST2 == false) {
-#ifdef INC_MUST2
-      cMUST2 = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "//////// MUST2 Array ////////" << G4endl   << G4endl   ;
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new MUST2Array()                 ;
-
-      // Read Position of Telescope
-      ConfigFile.close()                                    ;
-      myDetector->ReadConfiguration(Path)                      ;
-      ConfigFile.open(Path.c_str())                         ;
-
-      // Add array to the VDetector Vector
-      AddDetector(myDetector)                               ;
-#endif
-    }
-
-
-    ////////////////////////////////////////////
-    ///////////// Search for Nana //////////////
-    ////////////////////////////////////////////
-    else if (LineBuffer.compare(0,4, "Nana") == 0 && cNana == false) {
-#ifdef INC_NANA
-      cNana = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "//////// Nana ////////" << G4endl   << G4endl   ;
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new Nana()                 ;
-
-      // Read Position of Telescope
-      ConfigFile.close()                                    ;
-      myDetector->ReadConfiguration(Path)                      ;
-      ConfigFile.open(Path.c_str())                         ;
-
-      // Add array to the VDetector Vector
-      AddDetector(myDetector)                               ;
-#endif
-    }
-
-
-    ////////////////////////////////////////////
-    ////////// Search for     ThinSi ///////////
-    ////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 9, "SSSDArray") == 0 && cAddThinSi == false) {
-#ifdef INC_SSSD
-      cAddThinSi = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "//////// SSSD ////////" << G4endl << G4endl   ;
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new ThinSi()                  ;
-
-      // Read Position of Telescope
-      ConfigFile.close()                                 ;
-      myDetector->ReadConfiguration(Path)                   ;
-      ConfigFile.open(Path.c_str())                      ;
-      // Add array to the VDetector Vector
-      AddDetector(myDetector)                            ;
-#endif
-    }
-
-    ////////////////////////////////////////////
-    ////////// Search for Sharc      ///////////
-    ////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 5, "Sharc") == 0 && cSharc == false) {
-#ifdef INC_SHARC
-      cSharc = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "//////// Sharc ////////" << G4endl << G4endl   ;
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new Sharc();
-
-      // Read Position of detector
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-
-      // Add array to the VDetector Vector
-      AddDetector(myDetector);
-#endif
-    }
-
-    ////////////////////////////////////////////
-    ////////// Search for Tigress    ///////////
-    ////////////////////////////////////////////
-    else if (LineBuffer.compare(0,7, "Tigress") == 0 && cTigress == false) {
-#ifdef INC_TIGRESS
-      cTigress = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "//////// Tigress ////////" << G4endl << G4endl   ;
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new Tigress();
-
-      // Read Position of detector
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-
-      // Add array to the VDetector Vector
-      AddDetector(myDetector);
-#endif
-    }
-
-    ////////////////////////////////////////////
-    ////////// Search for Tiara      ///////////
-    ////////////////////////////////////////////
-    else if (LineBuffer.compare(0,5, "Tiara") == 0 && cTiara == false) {
-#ifdef INC_TIARA
-      cTiara = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "//////// Tiara ////////" << G4endl << G4endl   ;
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new Tiara();
-
-      // Read Position of detector
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-
-      // Add array to the VDetector Vector
-      AddDetector(myDetector);
-#endif
-    }
-
-
-    ////////////////////////////////////////////
-    ////////// Search for Plastic    ///////////
-    ////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 19, "ScintillatorPlastic") == 0 && cPlastic == false) {
-#ifdef INC_PLASTIC
-      cPlastic = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "//////// Plastic ////////" << G4endl << G4endl   ;
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new Plastic()                  ;
-
-      // Read Position of detector
-      ConfigFile.close()                                 ;
-      myDetector->ReadConfiguration(Path)                   ;
-      ConfigFile.open(Path.c_str())                      ;
-
-      // Add array to the VDetector Vector
-      AddDetector(myDetector)                            ;
-#endif
-    }
-    ////////////////////////////////////////////
-    //////////// Search for Helios ////////////
-    ////////////////////////////////////////////
-    else if (LineBuffer.compare(0, 6, "Helios") == 0 && cHelios == false) {
-#ifdef INC_HELIOS
-      cHelios = true ;
-      G4cout << "//////// Helios detector ////////" << G4endl   ;
-
-      //      bool check_MField      = false;
-      double Bz=0.;
-
-      ConfigFile >> DataBuffer ;
-      if (DataBuffer.compare(0, 7, "MField=") == 0){
-        //        check_MField = true;
-        ConfigFile >> DataBuffer ;
-        Bz = atof(DataBuffer.c_str()) ;
-        G4cout << "//////// Magentic Field set at Bz= " << Bz << " ////////" << G4endl   ;
-      }
-
-      // Instantiate the new array as a VDetector Object
-      VDetector* myDetector = new Helios()                  ;
-
-      // Read Position of Telescope
-      ConfigFile.close()                                 ;
-      myDetector->ReadConfiguration(Path)                   ;
-      ConfigFile.open(Path.c_str())                      ;
-
-      // Add array to the VDetector Vector
-      AddDetector(myDetector)                            ;
-
-      //------------------------------world volume
-      //
-
-      //  Aluminium material
-      G4double a= 26.98 * g / mole;
-      G4double density = 2.7 * g / cm3;
-      G4double z = 13.;
-      G4Material* Aluminium = new G4Material("Aluminium", z, a, density);
-
-
-
-      // Add the Aluminium rod
-      G4double Al_rod_x = 1. * cm;
-      G4double Al_rod_y = 1. * cm;
-      //G4double Al_rod_z = 20.0 * cm;
-      G4double Al_rod_z = 40.0 * cm;
-      G4Box* Al_rod_box
-        = new G4Box("Al_rod_box", Al_rod_x, Al_rod_y, Al_rod_z);
-
-      G4Tubs* Al_rod_tub
-        = new G4Tubs("Al_rod_tub", 0, 0.5*cm, Al_rod_z+1.*mm, 0.*deg, 360*deg);
-
-      G4SubtractionSolid* Al_rod=new G4SubtractionSolid("Rod",Al_rod_box, Al_rod_tub, 0, G4ThreeVector(0.,0.,0.));
-
-      G4LogicalVolume* Al_rod_log = new G4LogicalVolume(Al_rod, Aluminium, "Al_rod", 0, 0, 0);
-
-
-      new G4PVPlacement(0, G4ThreeVector(0.,0., Al_rod_z + 12.5*cm), Al_rod_log, "Al_rod", world_log, false, 0);
-      new G4PVPlacement(0, G4ThreeVector(0.,0., -(Al_rod_z + 12.5*cm)), Al_rod_log, "Al_rod", world_log, false, 1);
-
-
-
-      // Add the Aluminium chamber
-      G4double Al_chamber_rmin = 50. * cm;
-      G4double Al_chamber_rmax = 55. * cm;
-      G4double Al_chamber_z = 100.0 * cm;
-
-      //G4Tubs* Al_chamber_tub
-      //  = new G4Tubs("Al_chamber_tub", Al_chamber_rmin, Al_chamber_rmax, Al_chamber_z, 0.*deg, 180*deg);
-      G4Tubs* Al_chamber_tub
-        = new G4Tubs("Al_chamber_tub", Al_chamber_rmin, Al_chamber_rmax, Al_chamber_z, 0.*deg, 360*deg);
-
-      G4LogicalVolume* Al_chamber_log = new G4LogicalVolume(Al_chamber_tub, Aluminium, "Al_chamber", 0, 0, 0);
-
-      G4RotationMatrix* RotZ = new G4RotationMatrix();
-      RotZ->rotateZ(-90*deg);
-
-      new G4PVPlacement(RotZ, G4ThreeVector(0.,0.,0.), Al_chamber_log, "Al_chamber", world_log, false, 0);
-
-
-      G4VisAttributes* VisAtt1 = new G4VisAttributes(G4Colour(0.2, 0.5, 0.8));
-      Al_rod_log->SetVisAttributes(VisAtt1);
-      G4VisAttributes* VisAtt2 = new G4VisAttributes(G4Colour(0., 0.5, 0.3));
-      Al_chamber_log->SetVisAttributes(VisAtt2);
-
-
-      //-------------------------------------------------------------------------
-      // add also My Magnetic field
-      //-------------------------------------------------------------------------
-
-
-      static G4bool fieldIsInitialized = false;
-
-      if(!fieldIsInitialized)
-      {
-        MyMagneticField* myField = new MyMagneticField(G4ThreeVector(0.,0.,Bz));
-
-        G4FieldManager* fieldMgr
-          = G4TransportationManager::GetTransportationManager()
-          ->GetFieldManager();
-        fieldMgr->SetDetectorField(myField);
-
-
-        /*
-           G4MagIntegratorStepper *pItsStepper;
-           G4ChordFinder* pChordFinder= new G4ChordFinder(myField,
-           1.0e-2*mm,  // stepper size
-           pItsStepper=0);
-           fieldMgr->SetChordFinder(pChordFinder);
-           */
-
-        fieldMgr->CreateChordFinder(myField);
-
-        fieldIsInitialized = true;
-      }
-
-#endif      
-    }
-    ////////////////////////////////////////////
     //////////// Search for Target /////////////
     ////////////////////////////////////////////
 
@@ -707,8 +171,8 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
       cGeneralTarget = true ;
       if(VerboseLevel==1) G4cout << G4endl << "////////// Target ///////////" << G4endl   << G4endl   ;
 
-      // Instantiate the new array as a VDetector Objects
-      VDetector* myDetector = new Target();
+      // Instantiate the new array as aNPS::VDetector Objects
+     NPS::VDetector* myDetector = new Target();
 
       // Read Position and target specification
       ConfigFile.close();
@@ -718,7 +182,7 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
       // Add Target to DetectorConstruction
       m_Target = (Target*) myDetector;
 
-      // Add target to the VDetector Vector
+      // Add target to theNPS::VDetector Vector
       AddDetector(myDetector);
     }
 
@@ -730,8 +194,8 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
       cGeneralChamber = true ;
       if(VerboseLevel==1) G4cout << G4endl << "////////// Chamber ///////////" << G4endl   << G4endl   ;
 
-      // Instantiate the new array as a VDetector Objects
-      VDetector* myDetector = new Chamber();
+      // Instantiate the new array as aNPS::VDetector Objects
+     NPS::VDetector* myDetector = new Chamber();
 
       // Read Position and target specification
       ConfigFile.close();
@@ -741,18 +205,32 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
       // Add Target to DetectorConstruction
       m_Chamber = (Chamber*) myDetector;
 
-      // Add target to the VDetector Vector
+      // Add target to theNPS::VDetector Vector
       AddDetector(myDetector);
     }
 
-    //Nothing understandable
-    //else ;
+    else{
+      istringstream oss(LineBuffer);
+      string token;
+      oss >> token ;
+      NPS::VDetector* detector = theFactory->Construct(token);
+      if(detector!=NULL && check.find(token)==check.end()){
+        cout << "/////////////////////////////////////////" << endl;
+        cout << "//// Adding Detector " << token << endl; 
+        detector->ReadConfiguration(Path);
+        cout << "/////////////////////////////////////////" << endl;
+        // Add array to the VDetector Vector
+        AddDetector(detector);
+        check.insert(token);
+      }
+    }
   }
 
   ConfigFile.close();
+  cout << "\033[0m" ;
 
   if(m_Target==NULL){
-    G4cout << "ERROR: No target define in detector file. Cannot perform simulation without target" << G4endl ;
+    G4cout << "\033[1;31mERROR: No target define in detector file. Cannot perform simulation without target\033[0m" << G4endl ;
     exit(1);
   }
 
