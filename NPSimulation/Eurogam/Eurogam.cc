@@ -47,6 +47,7 @@
 #include "Eurogam.hh"
 #include "ObsoleteGeneralScorers.hh"
 #include "MaterialManager.hh"
+#include "NPSDetectorFactory.hh"
 #include "RootOutput.h"
 using namespace OBSOLETEGENERALSCORERS;
 
@@ -665,3 +666,24 @@ void Eurogam::InitializeScorers()
    // Add All Scorer to the Global Scorer Manager
    G4SDManager::GetSDMpointer()->AddNewDetector(m_EurogamScorer);
 }
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Construct Method to be pass to the DetectorFactory              //
+ ////////////////////////////////////////////////////////////////////////////////
+ NPS::VDetector* Eurogam::Construct(){
+  return  (NPS::VDetector*) new Eurogam();
+ }
+
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Registering the construct method to the factory                 //
+ ////////////////////////////////////////////////////////////////////////////////
+ extern"C" {
+ class proxy{
+   public:
+    proxy(){
+      NPS::DetectorFactory::getInstance()->AddToken("Eurogam","Eurogam");
+      NPS::DetectorFactory::getInstance()->AddDetector("Eurogam",Eurogam::Construct);
+    }
+};
+
+ proxy p;
+ }

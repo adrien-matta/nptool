@@ -130,6 +130,8 @@ private:/// Visualisation Attribute:
    G4VisAttributes* m_PhoswichCasingVisAtt  ;
    G4VisAttributes* m_ClusterCasingVisAtt ;
    G4VisAttributes* m_PMTVisAtt; 
+public:
+    static NPS::VDetector* Construct();
 };
 
 namespace PARIS{

@@ -178,6 +178,8 @@ private:
    G4double m_ThicknessOfCalorimeter;
    G4double m_DistanceTrackerCalorimeter;
    G4double m_TowerHeight;
+public:
+    static NPS::VDetector* Construct();
 };
 
 

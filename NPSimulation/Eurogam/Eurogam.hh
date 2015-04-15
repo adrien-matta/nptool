@@ -127,6 +127,8 @@ private:
    vector<G4double>  m_beta_u; //  |
    vector<G4double>  m_beta_v; //  > Tilt angle of the detector
    vector<G4double>  m_beta_w; //  |
+public:
+    static NPS::VDetector* Construct();
 };
 
 

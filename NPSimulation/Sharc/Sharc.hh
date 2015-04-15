@@ -237,5 +237,7 @@ private:/// Visualisation Attribute:
   // Light Grey
    G4VisAttributes* FrameVisAtt ;
   
+public:
+    static NPS::VDetector* Construct();
 };
 #endif

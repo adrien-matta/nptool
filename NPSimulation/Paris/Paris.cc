@@ -42,6 +42,7 @@ using namespace PARIS;
 
 #include "CalorimeterScorers.hh"
 #include "MaterialManager.hh"
+#include "NPSDetectorFactory.hh"
 // NPL
 #include "NPOptionManager.h"
 #include "RootOutput.h"
@@ -609,3 +610,24 @@ void Paris::InitializeScorers(){
   G4SDManager::GetSDMpointer()->AddNewDetector(m_NaIScorer) ;
 
 }
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Construct Method to be pass to the DetectorFactory              //
+ ////////////////////////////////////////////////////////////////////////////////
+ NPS::VDetector* Paris::Construct(){
+  return  (NPS::VDetector*) new Paris();
+ }
+
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Registering the construct method to the factory                 //
+ ////////////////////////////////////////////////////////////////////////////////
+ extern"C" {
+ class proxy{
+   public:
+    proxy(){
+      NPS::DetectorFactory::getInstance()->AddToken("Paris","Paris");
+      NPS::DetectorFactory::getInstance()->AddDetector("Paris",Paris::Construct);
+    }
+};
+
+ proxy p;
+ }

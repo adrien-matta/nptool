@@ -167,5 +167,7 @@ private:
    vector<G4double>  m_beta_u ; //  |
    vector<G4double>  m_beta_v ; //  >Tilt angle of the Telescope
    vector<G4double>  m_beta_w ; //  |
+public:
+    static NPS::VDetector* Construct();
 };
 #endif

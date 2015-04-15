@@ -70,5 +70,7 @@ public:
 
 private:
    vector<HeliosModule*> m_Modules;
+public:
+    static NPS::VDetector* Construct();
 };
 #endif

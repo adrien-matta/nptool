@@ -44,6 +44,7 @@
 #include "Sharc.hh"
 #include "SiliconScorers.hh"
 #include "MaterialManager.hh"
+#include "NPSDetectorFactory.hh"
 // NPL
 #include "NPOptionManager.h"
 
@@ -813,3 +814,24 @@ void Sharc::InitializeMaterial(){
 }
 
 
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Construct Method to be pass to the DetectorFactory              //
+ ////////////////////////////////////////////////////////////////////////////////
+ NPS::VDetector* Sharc::Construct(){
+  return  (NPS::VDetector*) new Sharc();
+ }
+
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Registering the construct method to the factory                 //
+ ////////////////////////////////////////////////////////////////////////////////
+ extern"C" {
+ class proxy{
+   public:
+    proxy(){
+      NPS::DetectorFactory::getInstance()->AddToken("Sharc","Sharc");
+      NPS::DetectorFactory::getInstance()->AddDetector("Sharc",Sharc::Construct);
+    }
+};
+
+ proxy p;
+ }

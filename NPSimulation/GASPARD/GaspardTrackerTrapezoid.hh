@@ -108,7 +108,6 @@ public:
    void SetInterCoordPointer(TInteractionCoordinates* interCoord);
    TInteractionCoordinates* GetInterCoordPointer()      {return ms_InterCoord;};
 
-
    ////////////////////////////////////////////////////
    ///////////////Private intern Data//////////////////
    ////////////////////////////////////////////////////

@@ -44,6 +44,7 @@
 // NPTool headers
 #include "ObsoleteGeneralScorers.hh"
 #include "MaterialManager.hh"
+#include "NPSDetectorFactory.hh"
 #include "W1.hh"
 #include "W1Scorers.hh"
 #include "TW1Data.h"
@@ -740,3 +741,24 @@ void W1::InitializeScorers(){
    //  Add All Scorer to the Global Scorer Manager
    G4SDManager::GetSDMpointer()->AddNewDetector(m_Scorer);
 }
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Construct Method to be pass to the DetectorFactory              //
+ ////////////////////////////////////////////////////////////////////////////////
+ NPS::VDetector* W1::Construct(){
+  return  (NPS::VDetector*) new W1();
+ }
+
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Registering the construct method to the factory                 //
+ ////////////////////////////////////////////////////////////////////////////////
+ extern"C" {
+ class proxy{
+   public:
+    proxy(){
+      NPS::DetectorFactory::getInstance()->AddToken("W1","W1");
+      NPS::DetectorFactory::getInstance()->AddDetector("W1",W1::Construct);
+    }
+};
+
+ proxy p;
+ }

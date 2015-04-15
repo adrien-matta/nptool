@@ -55,6 +55,7 @@
 #include "GaspardScorers.hh"
 #include "SiliconScorers.hh"
 #include "MaterialManager.hh"
+#include "NPSDetectorFactory.hh"
 #include "RootOutput.h"
 #include "NPSVDetector.hh"
 

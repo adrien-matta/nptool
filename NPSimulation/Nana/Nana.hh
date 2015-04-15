@@ -116,6 +116,8 @@ private:/// Visualisation Attribute:
    G4VisAttributes* m_LaBr3VisAtt;
    G4VisAttributes* m_DetectorCasingVisAtt  ;
    G4VisAttributes* m_PMTVisAtt; 
+public:
+    static NPS::VDetector* Construct();
 };
 
 namespace NANA{

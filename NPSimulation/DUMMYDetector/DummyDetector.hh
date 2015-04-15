@@ -125,5 +125,7 @@ private:
    vector<G4String> m_Scintillator ;
 
 
+public:
+    static NPS::VDetector* Construct();
 };
 #endif

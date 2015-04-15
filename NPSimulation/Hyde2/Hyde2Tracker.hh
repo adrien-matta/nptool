@@ -70,5 +70,7 @@ public:
 
 private:
    vector<Hyde2TrackerModule*> m_Modules;
+public:
+    static NPS::VDetector* Construct();
 };
 #endif

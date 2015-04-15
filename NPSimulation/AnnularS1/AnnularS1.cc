@@ -42,6 +42,7 @@
 
 // NPTool headers
 #include "MaterialManager.hh"
+#include "NPSDetectorFactory.hh"
 #include "AnnularS1.hh"
 #include "SiliconScorers.hh"
 #include "TS1Data.h"
@@ -412,3 +413,26 @@ void AnnularS1::InitializeScorers(){
   //  Add All Scorer to the Global Scorer Manager
   G4SDManager::GetSDMpointer()->AddNewDetector(m_Scorer);
 }
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPS::VDetector* AnnularS1::Construct(){
+  return (NPS::VDetector*) new AnnularS1();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class proxy{
+  public:
+    proxy(){
+      NPS::DetectorFactory::getInstance()->AddToken("AnnularS1","AnnularS1");
+      NPS::DetectorFactory::getInstance()->AddDetector("AnnularS1",AnnularS1::Construct);
+    }
+};
+
+proxy p;
+}
+
+

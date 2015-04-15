@@ -56,6 +56,7 @@
 #include "Tigress.hh"
 //#include "TigressScorers.hh"
 #include "MaterialManager.hh"
+#include "NPSDetectorFactory.hh"
 
 // NPL
 #include "NPOptionManager.h"
@@ -947,3 +948,24 @@ void Tigress::InitializeMaterial(){
 }
 
 
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Construct Method to be pass to the DetectorFactory              //
+ ////////////////////////////////////////////////////////////////////////////////
+ NPS::VDetector* Tigress::Construct(){
+  return  (NPS::VDetector*) new Tigress();
+ }
+
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Registering the construct method to the factory                 //
+ ////////////////////////////////////////////////////////////////////////////////
+ extern"C" {
+ class proxy{
+   public:
+    proxy(){
+      NPS::DetectorFactory::getInstance()->AddToken("Tigress","Tigress");
+      NPS::DetectorFactory::getInstance()->AddDetector("Tigress",Tigress::Construct);
+    }
+};
+
+ proxy p;
+ }

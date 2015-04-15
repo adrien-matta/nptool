@@ -94,7 +94,3 @@ void PSStripNumber::PrintAll()
    G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
    G4cout << " Number of entries " << EvtMap->entries() << G4endl     ;
 }
-
-
-
-

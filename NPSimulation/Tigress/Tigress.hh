@@ -165,5 +165,7 @@ private:/// Visualisation Attribute:
   G4VisAttributes* RedVisAtt;
   G4VisAttributes* WhiteVisAtt;
   G4VisAttributes* TrGreyVisAtt;
+public:
+    static NPS::VDetector* Construct();
 };
 #endif

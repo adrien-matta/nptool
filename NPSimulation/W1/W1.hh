@@ -148,6 +148,8 @@ private:
 
    // Set to true if you want to see Telescope Frame in your visualisation
    bool  m_non_sensitive_part_visiualisation;
+public:
+    static NPS::VDetector* Construct();
 };
 
 

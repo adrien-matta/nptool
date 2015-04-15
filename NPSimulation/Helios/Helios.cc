@@ -32,7 +32,7 @@
 //#include "HeliosDetTrapezoid.hh"
 //#include "HeliosDetAnnular.hh"
 #include "HeliosDetDummyShape.hh"
-
+#include "NPSDetectorFactory.hh"
 using namespace std;
 
 
@@ -192,3 +192,24 @@ void Helios::ReadSensitive(const G4Event* event)
    int nbDetectors = m_Modules.size();
    for (int i = 0; i < nbDetectors; i++) m_Modules[i]->ReadSensitive(event);
 }
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Construct Method to be pass to the DetectorFactory              //
+ ////////////////////////////////////////////////////////////////////////////////
+ NPS::VDetector* Helios::Construct(){
+  return  (NPS::VDetector*) new Helios();
+ }
+
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Registering the construct method to the factory                 //
+ ////////////////////////////////////////////////////////////////////////////////
+ extern"C" {
+ class proxy{
+   public:
+    proxy(){
+      NPS::DetectorFactory::getInstance()->AddToken("Helios","Helios");
+      NPS::DetectorFactory::getInstance()->AddDetector("Helios",Helios::Construct);
+    }
+};
+
+ proxy p;
+ }

@@ -42,8 +42,9 @@
 #include "G4Colour.hh"
 
 // NPTool header
-#include "DummyDetector.hh"
+#include "DUMMYDetector.hh"
 #include "MaterialManager.hh"
+#include "NPSDetectorFactory.hh"
 #include "ObsoleteGeneralScorers.hh"
 #include "RootOutput.h"
 using namespace OBSOLETEGENERALSCORERS ;
@@ -442,3 +443,24 @@ void DUMMYDetector::InitializeScorers()
       G4SDManager::GetSDMpointer()->AddNewDetector(m_DUMMYDetectorScorer);
    }
 ////////////////////////////////////////////////////////////////
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Construct Method to be pass to the DetectorFactory              //
+ ////////////////////////////////////////////////////////////////////////////////
+ NPS::VDetector* DUMMYDetector::Construct(){
+  return  (NPS::VDetector*) new DUMMYDetector();
+ }
+
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Registering the construct method to the factory                 //
+ ////////////////////////////////////////////////////////////////////////////////
+ extern"C" {
+ class proxy{
+   public:
+    proxy(){
+      NPS::DetectorFactory::getInstance()->AddToken("DUMMYDetector","DUMMYDetector");
+      NPS::DetectorFactory::getInstance()->AddDetector("DUMMYDetector",DUMMYDetector::Construct);
+    }
+};
+
+ proxy p;
+ }

@@ -145,7 +145,6 @@ private:
 };
 
 
-
 namespace HYD2TRAP2
 {
    // Resolution

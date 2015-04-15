@@ -42,6 +42,7 @@ using namespace FATIMA;
 
 #include "CalorimeterScorers.hh"
 #include "MaterialManager.hh"
+#include "NPSDetectorFactory.hh"
 // NPL
 #include "NPOptionManager.h"
 #include "RootOutput.h"
@@ -486,3 +487,24 @@ void Fatima::InitializeScorers(){
   G4SDManager::GetSDMpointer()->AddNewDetector(m_LaBr3Scorer) ;
 }
 
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Construct Method to be pass to the DetectorFactory              //
+ ////////////////////////////////////////////////////////////////////////////////
+ NPS::VDetector* Fatima::Construct(){
+  return  (NPS::VDetector*) new Fatima();
+ }
+
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Registering the construct method to the factory                 //
+ ////////////////////////////////////////////////////////////////////////////////
+ extern"C" {
+ class proxy{
+   public:
+    proxy(){
+      NPS::DetectorFactory::getInstance()->AddToken("Fatima","Fatima");
+      NPS::DetectorFactory::getInstance()->AddDetector("Fatima",Fatima::Construct);
+    }
+};
+
+ proxy p;
+ }

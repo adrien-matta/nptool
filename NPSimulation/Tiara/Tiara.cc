@@ -45,6 +45,7 @@
 #include "Tiara.hh"
 #include "NPSDetectorFactory.hh"
 #include "MaterialManager.hh"
+#include "NPSDetectorFactory.hh"
 #include "SiliconScorers.hh"
 
 // NPL
