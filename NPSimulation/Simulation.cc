@@ -1,4 +1,7 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+// STL
+#include<cstdlib>
+
 #include "G4RunManager.hh"
 #include "G4PhysListFactory.hh"
 // UI
@@ -117,8 +120,16 @@ int main(int argc, char** argv){
    if (ui->IsGUI()){
             UImanager->ApplyCommand("/control/execute " +Path_Macro+"gui.mac");
     }
-
+#ifdef __APPLE__
+  string command= "osascript ";
+  command+= getenv("NPTOOL");
+  command+="/NPSimulation/scripts/bringtofront.osa & ";
+  int res =system(command.c_str());
+  res =0;
+#endif
+ 
     ui->SessionStart();
+   
     delete ui;
 #endif
   
