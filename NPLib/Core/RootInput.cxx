@@ -29,7 +29,7 @@
 
 #include "RootInput.h"
 #include "TAsciiFile.h"
-
+#include "NPOptionManager.h"
 #include "TEnv.h"
 RootInput* RootInput::instance = 0;
 ////////////////////////////////////////////////////////////////////////////////
@@ -53,11 +53,16 @@ void RootInput::Destroy(){
 
 ////////////////////////////////////////////////////////////////////////////////
 RootInput::RootInput(string configFileName){
+  string lastfile= NPOptionManager::getInstance()->GetLastFile();
+  if(lastfile!="VOID"){
+    configFileName = lastfile;
+  }
+
   // Setting Root Parameter
   gEnv->SetValue("TFile.AsyncPrefetching", 1);
   gEnv->SetValue("TTreeCache.Size",300000000);
   gEnv->SetValue("TTreeCache.Prefill",1);
-  
+
   NumberOfFriend = 0;
   bool CheckTreeName     = false;
   bool CheckRootFileName = false;
@@ -66,20 +71,21 @@ RootInput::RootInput(string configFileName){
   string lineBuffer, dataBuffer;
 
   // Open file
+  cout << endl;
+  cout << "/////////// ROOT Input files ///////////" << endl;
+  cout << "Initializing input TChain" << endl;
+
   ifstream inputConfigFile;
   inputConfigFile.open(configFileName.c_str());
 
   pRootFile  = NULL;
   pRootChain = new TChain();
 
-  cout << endl;
-  cout << "/////////// ROOT Input files ///////////" << endl;
-  cout << "Initializing input TChain" << endl;
-
-  if (!inputConfigFile) {
+  if (!inputConfigFile.is_open()) {
     cout << "\033[1;31mError : Run to Read file :" << configFileName << " not found\033[0m" << endl; 
     exit(1);
   }
+
   else {
     while (!inputConfigFile.eof()) {
       getline(inputConfigFile, lineBuffer);
@@ -92,23 +98,24 @@ RootInput::RootInput(string configFileName){
         CheckTreeName = true ;
         // If the tree come from a simulation, the InteractionCoordinates
         // and InitialConditions lib are loaded
-
+        if(dataBuffer=="SimulatedTree"){
 #ifdef __linux__
-        std::string SHARED_LIB_EXTENSION = ".so";
+          std::string SHARED_LIB_EXTENSION = ".so";
 #endif
 
 #ifdef __FreeBSD__
-        std::string SHARED_LIB_EXTENSION = ".so";
+          std::string SHARED_LIB_EXTENSION = ".so";
 #endif
 
 #ifdef __APPLE__
-        std::string SHARED_LIB_EXTENSION = ".dylib";
+          std::string SHARED_LIB_EXTENSION = ".dylib";
 #endif
 
-        string libName="libNPInteractionCoordinates"+SHARED_LIB_EXTENSION;
-        dlopen(libName.c_str(),RTLD_NOW);
-        libName="libNPInitialConditions"+SHARED_LIB_EXTENSION;
-        dlopen(libName.c_str(),RTLD_NOW);
+          string libName="libNPInteractionCoordinates"+SHARED_LIB_EXTENSION;
+          dlopen(libName.c_str(),RTLD_NOW);
+          libName="libNPInitialConditions"+SHARED_LIB_EXTENSION;
+          dlopen(libName.c_str(),RTLD_NOW);
+        }
       }
 
       // search for token giving the list of Root files to treat
@@ -117,7 +124,7 @@ RootInput::RootInput(string configFileName){
 
         while (!inputConfigFile.eof()) {
           inputConfigFile >> dataBuffer;
-
+          
           // ignore comment Line 
           if (dataBuffer.compare(0, 1, "%") == 0) {
             inputConfigFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -143,7 +150,7 @@ RootInput::RootInput(string configFileName){
 
   if (!CheckRootFileName || !CheckTreeName) 
     cout << "\033[1;33mWARNING: Token not found for InputTree Declaration : Input Tree may not be instantiate properly\033[0m" << endl;
-  
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////

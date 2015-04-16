@@ -38,7 +38,6 @@ int main(int argc , char** argv){
     string name = RootInput::getInstance(inputfilename)->DumpAsciiFile("DetectorConfiguration");
     myOptionManager->SetDetectorFile(name);
     cout << "\033[1;33mWarning: No Detector file given, using Input tree one\033[0m"<<endl;;
-
   }
 
   if (myOptionManager->IsDefault("EventGenerator")) {
@@ -52,7 +51,28 @@ int main(int argc , char** argv){
   string OutputfileName      = myOptionManager->GetOutputFile();
 
   // Instantiate RootOutput
-  RootOutput::getInstance("Analysis/"+OutputfileName, "ResultTree");
+  string TreeName="NPTool_Tree";
+
+  // User decided of the name
+  if(!myOptionManager->IsDefault("TreeName")){
+    TreeName=myOptionManager->GetOutputTreeName();
+  }
+
+  // Case of a Physics tree produced
+  else if(!myOptionManager->GetInputPhysicalTreeOption()){ //
+    TreeName="PhysicsTree";
+    if(myOptionManager->IsDefault("OutputFileName"))
+      OutputfileName="PhysicsTree";
+  }
+  
+  // Case of Result tree produced
+  else{
+    TreeName="ResultTree";
+    if(myOptionManager->IsDefault("OutputFileName"))
+      OutputfileName="ResultTree";
+  }
+
+  RootOutput::getInstance("Analysis/"+OutputfileName,TreeName);
   TTree* tree= RootOutput::getInstance()->GetTree();
 
   // Instantiate the detector using a file

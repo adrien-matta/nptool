@@ -28,8 +28,7 @@
 #include <string>
 using namespace std;
 
-class NPOptionManager
-{
+class NPOptionManager{
    public:
       // The analysis class is designed to be a singleton (i.e. only one instance
       // can exist). A member function called Instance is defined, which allows
@@ -90,6 +89,7 @@ class NPOptionManager
       string GetRunToReadFile()            {return fRunToReadFileName;}
       string GetCalibrationFile()          {return fCalibrationFileName;}
       string GetOutputFile()               {return fOutputFileName;}
+      string GetOutputTreeName()           {return fOutputTreeName;}
       bool   GetDisableAllBranchOption()   {return fDisableAllBranchOption;}
       bool   GetInputPhysicalTreeOption()  {return fInputPhysicalTreeOption;}
       bool   GetGenerateHistoOption()      {return fGenerateHistoOption;}
@@ -97,7 +97,8 @@ class NPOptionManager
       bool   GetPROOF()                    {return fPROOFMode;}
       int    GetVerboseLevel()             {return fVerboseLevel;}
       int    GetNumberOfEntryToAnalyse()   {return fNumberOfEntryToAnalyse;} 
-
+      string GetLastFile();                 
+     
       // Setters
       void SetReactionFile(string name)       {fReactionFileName = name;CheckEventGenerator();}
       void SetDetectorFile(string name)       {fDetectorFileName = name;CheckDetectorConfiguration();}
@@ -111,17 +112,23 @@ class NPOptionManager
       string fDefaultRunToReadFileName;
       string fDefaultCalibrationFileName;
       string fDefaultOutputFileName;
+      string fDefaultOutputTreeName;
       // assigned values
       string fReactionFileName;
       string fDetectorFileName;
       string fRunToReadFileName;
       string fCalibrationFileName;
       string fOutputFileName;
+      string fOutputTreeName;
       bool   fDisableAllBranchOption;
       bool   fInputPhysicalTreeOption;
       bool   fGenerateHistoOption;
       bool   fCheckHistoOption;
       bool   fPROOFMode; // if true, the system run in a pROOF environment
+      bool   fLastSimFile;
+      bool   fLastPhyFile;
+      bool   fLastResFile;
+      bool   fLastAnyFile;
       int    fVerboseLevel; // 0 for not talk, 1 for talking
       int    fNumberOfEntryToAnalyse; // use to limit the number of analysed in NPA
 };
