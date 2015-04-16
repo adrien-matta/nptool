@@ -42,7 +42,7 @@
 #include "G4Colour.hh"
 
 // NPTool header
-#include "DUMMYDetector.hh"
+#include "DummyDetector.hh"
 #include "MaterialManager.hh"
 #include "NPSDetectorFactory.hh"
 #include "ObsoleteGeneralScorers.hh"

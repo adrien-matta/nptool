@@ -80,7 +80,7 @@ NPS::VDetector* DetectorFactory::Construct(std::string Token){
   else if( m_TokenLib.find(Token)!=m_TokenLib.end()){
     // Add absolute path to library name
     std::string path = getenv("NPTOOL"); 
-    std::string libName = path+"NPLib/lib/"+m_TokenLib[Token];
+    std::string libName = path+"/NPSimulation/lib/"+m_TokenLib[Token];
     dlopen(libName.c_str(),RTLD_NOW);
     
     if(m_Construct.find(Token)!=m_Construct.end())

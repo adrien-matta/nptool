@@ -91,7 +91,7 @@ int main(int argc , char** argv){
   }
   else{
     std::string str_error=error;
-    if(str_error.find("image not found")!=std::string::npos)
+    if(str_error.find("image not found")!=std::string::npos ||str_error.find("No such file or directory")!=std::string::npos )
       std::cout << "\033[1;33m**** INFO: No User analysis found, building Physical tree ****\033[0m" << std::endl;
     else{
       std::cout << "\033[1;31m**** ERROR: Failure to load libNPAnalysis ****" << std::endl << error << "\033[0m" <<std::endl;

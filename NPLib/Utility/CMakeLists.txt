@@ -1,5 +1,5 @@
 add_executable(nptool-installer nptool-installer.cxx)
 target_link_libraries(nptool-installer ${ROOT_LIBRARIES} NPCore) 
 add_executable(npanalysis npanalysis.cxx)
-target_link_libraries(npanalysis ${ROOT_LIBRARIES} NPCore) 
+target_link_libraries(npanalysis ${ROOT_LIBRARIES} NPCore NPInitialConditions NPInteractionCoordinates) 
 install(PROGRAMS nptool-installer npanalysis DESTINATION ${CMAKE_BINARY_OUTPUT_DIRECTORY})

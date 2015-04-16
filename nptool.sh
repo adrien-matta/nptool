@@ -32,3 +32,6 @@ alias NPT='cd $NPTOOL'
 alias NPL='cd $NPTOOL/NPLib'  
 alias NPS='cd $NPTOOL/NPSimulation'
 alias NPA='cd $NPTOOL/NPAnalysis'
+
+export Geant4_DIR=$G4LIB
+export NPLib_DIR=$NPTOOL/NPLib
