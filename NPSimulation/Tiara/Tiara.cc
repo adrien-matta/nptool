@@ -231,7 +231,12 @@ void Tiara::ReadSensitive(const G4Event* event){
       m_EventBarrel->SetBackE(Info[3],EB);
       m_EventBarrel->SetBackT(Info[3],Info[2]); 
     }
-
+        // Interaction Coordinates
+    ms_InterCoord->SetDetectedPositionX(Info[5]) ;
+    ms_InterCoord->SetDetectedPositionY(Info[6]) ;
+    ms_InterCoord->SetDetectedPositionZ(Info[7]) ;
+    ms_InterCoord->SetDetectedAngleTheta(Info[8]/deg) ;
+    ms_InterCoord->SetDetectedAnglePhi(Info[9]/deg) ;
   }
   // Clear Map for next event
   InnerBarrelHitMap->clear();
@@ -251,12 +256,12 @@ void Tiara::ReadSensitive(const G4Event* event){
       m_EventBarrel->SetOuterE(Info[7],Info[9],E);
       m_EventBarrel->SetOuterT(Info[7],Info[9],Info[1]); 
     }
-          // Interraction Coordinates
-//      ms_InterCoord->SetDetectedPositionX(Info[2]) ;
-//      ms_InterCoord->SetDetectedPositionY(Info[3]) ;
-//      ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
-//      ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
-//      ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
+        // Interaction Coordinates
+    ms_InterCoord->SetDetectedPositionX(Info[5]) ;
+    ms_InterCoord->SetDetectedPositionY(Info[6]) ;
+    ms_InterCoord->SetDetectedPositionZ(Info[7]) ;
+    ms_InterCoord->SetDetectedAngleTheta(Info[8]/deg) ;
+    ms_InterCoord->SetDetectedAnglePhi(Info[9]/deg) ;
   }
   // Clear Map for next event
   OuterBarrelHitMap->clear();
@@ -288,12 +293,12 @@ void Tiara::ReadSensitive(const G4Event* event){
       m_EventHyball->SetSectorE(Info[7],Info[9],EF);
       m_EventHyball->SetSectorT(Info[7],Info[9],Info[1]); 
     }
-    // Interraction Coordinates
-//    ms_InterCoord->SetDetectedPositionX(Info[2]) ;
-//    ms_InterCoord->SetDetectedPositionY(Info[3]) ;
-//    ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
-//    ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
-//    ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
+    // Interaction Coordinates
+    ms_InterCoord->SetDetectedPositionX(Info[5]) ;
+    ms_InterCoord->SetDetectedPositionY(Info[6]) ;
+    ms_InterCoord->SetDetectedPositionZ(Info[7]) ;
+    ms_InterCoord->SetDetectedAngleTheta(Info[8]/deg) ;
+    ms_InterCoord->SetDetectedAnglePhi(Info[9]/deg) ;
   }
   // Clear Map for next event
   HyballHitMap->clear();
