@@ -46,8 +46,8 @@ class Analysis: public NPA::VAnalysis{
   void InitOutputBranch();
   void InitInputBranch();
   void ReInitValue();
-  
-   static NPA::VAnalysis* Construct();
+  static NPA::VAnalysis* Construct();
+ 
   private:
   double Ex;
   double ELab;
