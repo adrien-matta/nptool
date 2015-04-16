@@ -24,6 +24,7 @@
 
 // NPS headers
 #include "EventAction.hh"
+#include "RunAction.hh"
 
 //NPL headers
 #include "NPOptionManager.h"
@@ -97,6 +98,11 @@ int main(int argc, char** argv){
   event_action->SetDetector(detector)           ;
   runManager->SetUserAction(event_action)       ;
 
+  ///////////////////////////////////////////////////////////////
+  /////////////////// Starting the Run Action ///////////////////
+  ///////////////////////////////////////////////////////////////
+  RunAction* run_action = new RunAction() ;
+  runManager->SetUserAction(run_action);
 
 #ifdef G4UI_USE
 #ifdef G4VIS_USE

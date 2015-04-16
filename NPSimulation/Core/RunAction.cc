@@ -1,67 +1,53 @@
-#ifndef EventAction_h
-#define EventAction_h 1
 /*****************************************************************************
- * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
+ * Copyright (C) 2009-2015   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
+ * Original Author: Adrien MATTA  contact address: a.matta@surrey.ac.uk      *
  *                                                                           *
- * Creation Date  : January 2009                                             *
+ * Creation Date  : April 2015                                               *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  A quite Standard Geant4 EventAction class.                               *
- *  Call the Fill method of the output tree.                                 *
+ *  A quite Standard Geant4 RunAction class.                                 *
+ *  Use to register the run number in the tree                               *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
-// G4 header defining G4 types
-#include "globals.hh"
-
-// G4 header
-#include "G4UserEventAction.hh"
-
-// NPTool header
-#include "DetectorConstruction.hh"
-
-// STL
-#include<time.h>
+// NPS
+#include "RunAction.hh"
+#include "PrimaryGeneratorAction.hh"
+#include "EventAction.hh"
+// G4
+#include "G4Run.hh"
+#include "G4RunManager.hh"
+// NPL
+#include "RootOutput.h"
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+RunAction::RunAction(): G4UserRunAction(){
+  RootOutput::getInstance()->GetTree()->Branch("Run",&m_RunNumber,"Run/I");
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-class EventAction : public G4UserEventAction{
-  public:
-    EventAction();
-    virtual ~EventAction();
-
-  public:
-    void BeginOfEventAction(const G4Event*);
-    void EndOfEventAction(const G4Event*);
-    void SetDetector(DetectorConstruction* detector);
-    void ProgressDisplay();
-    void SetRunLength(int);
-  private: // Progress Display
-    clock_t begin;
-    clock_t end;
-    unsigned int treated;
-    unsigned int inter;
-    unsigned int total;
-    double mean_rate;
-    int displayed;
-
-  private:
-    DetectorConstruction*  m_detector;
-    static EventAction* m_EventAction;
-
-  public:
-    static EventAction* GetInstance();
-};
+RunAction::~RunAction(){
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void RunAction::BeginOfRunAction(const G4Run* aRun){ 
+  m_RunNumber = aRun->GetRunID()+1;
+  
+  //initialize event cumulative quantities
+  EventAction::GetInstance()->SetRunLength(aRun->GetNumberOfEventToBeProcessed());
+}
 
-#endif
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void RunAction::EndOfRunAction(const G4Run* aRun){
+  const G4Run* x = aRun;
+  x=0;
+}
+

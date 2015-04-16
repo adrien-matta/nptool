@@ -35,27 +35,29 @@
 #include<iostream>
 using namespace std;
 
-
-#include "G4THitsMap.hh"
-
+EventAction* EventAction::m_EventAction=0;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-EventAction::EventAction(): m_printModulo(10000){
+EventAction::EventAction(){
+  m_EventAction=this;
+  begin=clock();
+  treated=0;
+  inter=0;
+  total=0;
+  mean_rate=0;
+  displayed=0;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 EventAction::~EventAction(){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventAction::BeginOfEventAction(const G4Event* event){
-   if ((event->GetEventID() + 1) % m_printModulo == 0)
-      cout << "\rEvent: " << event->GetEventID() + 1 << flush;
+  treated= event->GetEventID()+1;
+  ProgressDisplay();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 void EventAction::EndOfEventAction(const G4Event* event){
   m_detector->ReadAllSensitive(event) ;
   RootOutput *pAnalysis = RootOutput::getInstance();
@@ -64,6 +66,46 @@ void EventAction::EndOfEventAction(const G4Event* event){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventAction::SetDetector(DetectorConstruction* detector){
-   m_detector = detector   ;
+  m_detector = detector   ;
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void EventAction::ProgressDisplay(){
+  end = clock();
+  if((end-begin)>CLOCKS_PER_SEC||treated>=total ){
+    displayed++;
+    long double elapsed =(long double) (end-begin)/CLOCKS_PER_SEC;
+    double event_rate = inter/elapsed;
+    mean_rate += (event_rate-mean_rate)/(displayed);
+    double percent = 100*treated/total;
+    double remain = (total-treated)/mean_rate;
+
+    char* timer;
+    double check;
+    if(remain>60)
+      check=asprintf(&timer,"%dmin",(int)(remain/60.));
+    else
+      check=asprintf(&timer,"%ds",(int)(remain));
+
+    if(treated!=total)
+      printf("\r \033[1;31m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s *******\033[0m", percent,mean_rate/1000.,timer);
+
+    else{
+      printf("\r                                                                                                                    ");  
+      printf("\r \033[1;32m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s *******\033[0m", percent,mean_rate/1000.,timer);
+    }
+    fflush(stdout);
+    inter=0;
+    begin = clock() ;
+  }
+  //  treated++;
+  inter++;
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void EventAction::SetRunLength(int length){
+  total = length;
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+EventAction* EventAction::GetInstance(){
+  return m_EventAction;
+}
