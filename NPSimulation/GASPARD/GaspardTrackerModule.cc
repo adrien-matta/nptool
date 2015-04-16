@@ -21,6 +21,7 @@
 
 #include "GaspardTrackerModule.hh"
 #include "MaterialManager.hh"
+#include "NPSDetectorFactory.hh"
 #include "RootOutput.h"
 
 

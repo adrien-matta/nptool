@@ -110,9 +110,9 @@ public:
    // Called at in the EventAction::EndOfEventAvtion
    void ReadSensitive(const G4Event* event);
 
-   // Give the static TInteractionCoordinates from VDetector to the classes
+   // Give the static TInteractionCoordinates from NPS::VDetector to the classes
    // deriving from Hyde2TrackerModule
-   // This is mandatory since the Hyde2Tracker*** does not derive from VDetector
+   // This is mandatory since the Hyde2Tracker*** does not derive from NPS::VDetector
    void SetInterCoordPointer(TInteractionCoordinates* interCoord);
    TInteractionCoordinates* GetInterCoordPointer()   {return ms_InterCoord;};
 
@@ -121,7 +121,7 @@ public:
    ///////////////Private intern Data//////////////////
    ////////////////////////////////////////////////////
 private:
-   // Interaction Coordinates coming from VDetector through the 
+   // Interaction Coordinates coming from NPS::VDetector through the 
    // SetInteractionCoordinatesPointer method
    TInteractionCoordinates* ms_InterCoord;
 

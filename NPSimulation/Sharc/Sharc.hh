@@ -35,7 +35,7 @@
 #include "G4MultiFunctionalDetector.hh"
 
 // NPSimulation header
-#include "VDetector.hh"
+#include "NPSVDetector.hh"
 
 // NPLib
 #include "TSharcData.h"
@@ -141,7 +141,7 @@ namespace SHARC{
 }
 
 using namespace SHARC ;
-class Sharc : public VDetector
+class Sharc : public NPS::VDetector
 {
   ////////////////////////////////////////////////////
   /////// Default Constructor and Destructor /////////
@@ -164,7 +164,7 @@ public:
   void ConstructQQQDetector(G4LogicalVolume* world);
   
   ////////////////////////////////////////////////////
-  /////////  Inherite from VDetector class ///////////
+  /////////  Inherite from NPS::VDetector class ///////////
   ////////////////////////////////////////////////////
 public:
   // Read stream at Configfile to pick-up parameters of detector (Position,...)
@@ -237,5 +237,7 @@ private:/// Visualisation Attribute:
   // Light Grey
    G4VisAttributes* FrameVisAtt ;
   
+public:
+    static NPS::VDetector* Construct();
 };
 #endif

@@ -35,7 +35,7 @@
 #include "G4MultiFunctionalDetector.hh"
 
 // NPSimulation header
-#include "VDetector.hh"
+#include "NPSVDetector.hh"
 
 // NPLib
 #include "TTiaraBarrelData.h"
@@ -118,7 +118,7 @@ namespace TIARA{
 
 
 using namespace TIARA;
-class Tiara : public VDetector
+class Tiara : public NPS::VDetector
 {
   ////////////////////////////////////////////////////
   /////// Default Constructor and Destructor /////////
@@ -139,7 +139,7 @@ public:
   void ConstructChamber(G4LogicalVolume* world);
 
   ////////////////////////////////////////////////////
-  /////////  Inherite from VDetector class ///////////
+  /////////  Inherite from NPS::VDetector class ///////////
   ////////////////////////////////////////////////////
 public:
   // Read stream at Configfile to pick-up parameters of detector (Position,...)
@@ -216,5 +216,10 @@ private:/// Visualisation Attribute:
    G4VisAttributes* FrameVisAtt ;
    // Light Blue
    G4VisAttributes* GuardRingVisAtt ; 
+
+  public:
+    static NPS::VDetector* Construct();
+
 };
+
 #endif

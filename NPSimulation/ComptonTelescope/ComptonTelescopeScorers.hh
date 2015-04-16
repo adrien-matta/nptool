@@ -50,7 +50,7 @@ namespace COMPTONTELESCOPESCORERS
          G4String m_ProcessName;
          G4int HCID;
          G4THitsMap<G4double>* EvtMap;
-   };
+};
 
 
 
@@ -74,7 +74,7 @@ namespace COMPTONTELESCOPESCORERS
          G4String m_VolumeName;
          G4int HCID;
          G4THitsMap<G4int>* EvtMap;
-   };
+};
 
 
 
@@ -98,7 +98,7 @@ namespace COMPTONTELESCOPESCORERS
          G4String m_VolumeName;
          G4int HCID;
          G4THitsMap<G4int>* EvtMap;
-   };
+};
 
 
 
@@ -122,7 +122,7 @@ namespace COMPTONTELESCOPESCORERS
          G4String m_VolumeName;
          G4int HCID;
          G4THitsMap<G4double>* EvtMap;
-   };
+};
 
 
 
@@ -147,7 +147,7 @@ namespace COMPTONTELESCOPESCORERS
          G4String m_VolumeName;
          G4int HCID;
          G4THitsMap<G4double>* EvtMap;
-   };
+};
 
 
 
@@ -171,7 +171,7 @@ namespace COMPTONTELESCOPESCORERS
          G4String m_VolumeName;
          G4int HCID;
          G4THitsMap<G4int>* EvtMap;
-   };
+};
 
 
 
@@ -195,7 +195,7 @@ namespace COMPTONTELESCOPESCORERS
          G4String m_VolumeName;
          G4int HCID;
          G4THitsMap<G4int>* EvtMap;
-   };
+};
 
 
    class ComptonTelescopeScorerCalorimeterEnergy : public G4VPrimitiveScorer
@@ -218,7 +218,7 @@ namespace COMPTONTELESCOPESCORERS
          G4String m_VolumeName;
          G4int HCID;
          G4THitsMap<G4double>* EvtMap;
-   };
+};
 
 }
 

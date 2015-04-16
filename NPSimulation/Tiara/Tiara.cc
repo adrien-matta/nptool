@@ -43,7 +43,9 @@
 
 // NPS
 #include "Tiara.hh"
+#include "NPSDetectorFactory.hh"
 #include "MaterialManager.hh"
+#include "NPSDetectorFactory.hh"
 #include "SiliconScorers.hh"
 
 // NPL
@@ -87,7 +89,7 @@ Tiara::~Tiara(){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// Virtual Method of VDetector class
+// Virtual Method of NPS::VDetector class
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
 void Tiara::ReadConfiguration(string Path){
@@ -856,6 +858,28 @@ void Tiara::InitializeMaterial(){
   m_MaterialAl = MaterialManager::getInstance()->GetMaterialFromLibrary("Al"); 
   m_MaterialPCB = MaterialManager::getInstance()->GetMaterialFromLibrary("PCB");
   m_MaterialVacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPS::VDetector* Tiara::Construct(){
+  return (NPS::VDetector*) new Tiara();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+class brlproxy{
+  public:
+    brlproxy(){
+      NPS::DetectorFactory::getInstance()->AddToken("TiaraInnerBarrel=","Tiara");
+      NPS::DetectorFactory::getInstance()->AddDetector("TiaraInnerBarrel=",Tiara::Construct);
+    }
+};
+
+brlproxy brlp;
 }
 
 

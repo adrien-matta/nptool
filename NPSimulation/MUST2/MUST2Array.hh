@@ -24,7 +24,7 @@
  *  - 16 Si(Li) pad                                                          *
  *  - 16 CsI scintillator Crystal                                            *
  *****************************************************************************/
-#include "VDetector.hh"
+#include "NPSVDetector.hh"
 #include "TMust2Data.h"
 #include "G4SDManager.hh"
 #include "G4MultiFunctionalDetector.hh"
@@ -66,7 +66,7 @@ namespace MUST2
    const G4double CsI_PosZ       = VacBox_PosZ + 0.5*VacBoxThickness + 0.5*CsIThickness;
 }
 
-class MUST2Array : public VDetector
+class MUST2Array : public NPS::VDetector
 {
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
@@ -110,7 +110,7 @@ public:
 
 
    ////////////////////////////////////////////////////
-   /////////  Inherite from VDetector class ///////////
+   /////////  Inherite from NPS::VDetector class ///////////
    ////////////////////////////////////////////////////
 public:
    // Read stream at Configfile to pick-up parameters of detector (Position,...)
@@ -204,6 +204,8 @@ private:
    G4Material* m_MaterialVacuum ;
    //  Mylar
    G4Material* m_MaterialMyl;
+public:
+    static NPS::VDetector* Construct();
 };
 
 extern G4RotationMatrix* Rotation(double tetaX, double tetaY, double tetaZ);

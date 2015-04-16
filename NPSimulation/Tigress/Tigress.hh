@@ -35,7 +35,7 @@
 #include "G4VSolid.hh"
 
 // NPSimulation header
-#include "VDetector.hh"
+#include "NPSVDetector.hh"
 
 // NPLib
 #include "TTigressData.h"
@@ -53,7 +53,7 @@ namespace TIGRESS
 }
 
 using namespace TIGRESS ;
-class Tigress : public VDetector
+class Tigress : public NPS::VDetector
 {
   ////////////////////////////////////////////////////
   /////// Default Constructor and Destructor /////////
@@ -94,7 +94,7 @@ public:
   G4VSolid* ConstructBGO();
   
   ////////////////////////////////////////////////////
-  /////////  Inherite from VDetector class ///////////
+  /////////  Inherite from NPS::VDetector class ///////////
   ////////////////////////////////////////////////////
 public:
   // Read stream at Configfile to pick-up parameters of detector (Position,...)
@@ -165,5 +165,7 @@ private:/// Visualisation Attribute:
   G4VisAttributes* RedVisAtt;
   G4VisAttributes* WhiteVisAtt;
   G4VisAttributes* TrGreyVisAtt;
+public:
+    static NPS::VDetector* Construct();
 };
 #endif

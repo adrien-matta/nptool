@@ -15,14 +15,14 @@
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  All detector added in the project should derive from this virtual class  *
- *  A vector of VDetector object is manage in the DetectorConstruction class *
+ *  A vector ofNPS::VDetector object is manage in the DetectorConstruction class *
  *  and call the virtual method of this class implemented in the daughter    *
  *  class object.                                                            *
  *  This inheritance insure homogeneity and modularity of the code           *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- * Detector inheriting from VDetector should follow this Naming convention   *
+ * Detector inheriting fromNPS::VDetector should follow this Naming convention   *
  *    for logical volume:                                                    *
  *    DetectorNameX_SubPart                                                  *
  *                                                                           *
@@ -52,7 +52,7 @@
 using namespace std;
 using namespace CLHEP;
 
-
+namespace NPS{
 class VDetector{
   public:
     //  Default Constructor and destructor
@@ -91,5 +91,5 @@ class VDetector{
     // Class to store the interaction data (i.e. X,Y,Z,theta,phi)
     static TInteractionCoordinates*      ms_InterCoord;
 };
-
+}
 #endif

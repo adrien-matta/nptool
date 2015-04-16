@@ -56,7 +56,7 @@ namespace THINSI {
       G4double  m_StripPitch    ;
       G4int HCID;
       G4THitsMap<G4int>* EvtMap;
-   };
+};
 
 }
 

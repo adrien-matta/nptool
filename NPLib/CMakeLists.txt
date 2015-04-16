@@ -71,17 +71,23 @@ ENDMACRO()
 # Call the Macro
 subdirlist(SUB_DIRECTORY ${CMAKE_BINARY_DIR})
 set(SUB_DIRECTORY ${SUB_DIRECTORY} Core Physics InitialConditions InteractionCoordinates Utility)
-# Add each folder in the include path
-#foreach(subdir ${SUB_DIRECTORY})
-#  # Allow inclusion of project headers
-#  include_directories(${subdir})
-#endforeach() 
 include_directories("Core/")
 
 # Add each sub folder to the project
+set(TARGET_LIST "")
 foreach(subdir ${SUB_DIRECTORY})
 # add the subdirectory
-  add_subdirectory(${subdir}) 
+  add_subdirectory(${subdir})
+  string(COMPARE EQUAL "${subdir}" "Utility" r0)
+  if(NOT r0)
+    LIST(APPEND TARGET_LIST NP${subdir})
+  endif()
 endforeach()
+
+export(TARGETS ${TARGET_LIST} FILE NPLibTargets.cmake)
+export(PACKAGE NPLib)
+file(RELATIVE_PATH REL_INCLUDE_DIR "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}" "${CMAKE_INCLUDE_OUTPUT_DIRECTORY}")
+set(CONF_INCLUDE_DIRS "./" "./")
+configure_file(NPLibConfig.cmake.in "${PROJECT_BINARY_DIR}/NPLibConfig.cmake" @ONLY)
 
 install(SCRIPT scripts/post_install.cmake ${DETLIST})

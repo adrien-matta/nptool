@@ -21,6 +21,7 @@
 
 #include "Hyde2TrackerModule.hh"
 #include "MaterialManager.hh"
+#include "NPSDetectorFactory.hh"
 #include "RootOutput.h"
 
 

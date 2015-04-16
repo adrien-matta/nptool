@@ -15,7 +15,7 @@
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This class describe Cryogenic and standard Chamber.                      *
- *  Derived from VDetector                                                   *
+ *  Derived fromNPS::VDetector                                                   *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *
@@ -34,12 +34,12 @@
 #include "G4LogicalVolume.hh"
 
 // NPTool headers
-#include "VDetector.hh"
+#include "NPSVDetector.hh"
 
 using namespace std;
 using namespace CLHEP;
 
-class Chamber : public VDetector
+class Chamber : public NPS::VDetector
 {
    public:
       Chamber();

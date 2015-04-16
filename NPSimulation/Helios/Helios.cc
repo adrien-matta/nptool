@@ -32,7 +32,7 @@
 //#include "HeliosDetTrapezoid.hh"
 //#include "HeliosDetAnnular.hh"
 #include "HeliosDetDummyShape.hh"
-
+#include "NPSDetectorFactory.hh"
 using namespace std;
 
 
@@ -76,7 +76,7 @@ void Helios::ReadConfiguration(string Path)
          myDetector->ReadConfiguration(Path);
          ConfigFile.open(Path.c_str());
 
-         // ms_InterCoord comes from VDetector
+         // ms_InterCoord comes from NPS::VDetector
          myDetector->SetInterCoordPointer(ms_InterCoord);
 
          // store HeliosSquare "detector"
@@ -93,7 +93,7 @@ void Helios::ReadConfiguration(string Path)
          myDetector->ReadConfiguration(Path);
          ConfigFile.open(Path.c_str());
 
-         // ms_InterCoord comes from VDetector
+         // ms_InterCoord comes from NPS::VDetector
          myDetector->SetInterCoordPointer(ms_InterCoord);
 
          // store HeliosTrapezoid "detector"
@@ -110,7 +110,7 @@ void Helios::ReadConfiguration(string Path)
          myDetector->ReadConfiguration(Path);
          ConfigFile.open(Path.c_str());
 
-         // ms_InterCoord comes from VDetector
+         // ms_InterCoord comes from NPS::VDetector
          myDetector->SetInterCoordPointer(ms_InterCoord);
 
          // store HeliosTrapezoid "detector"
@@ -131,7 +131,7 @@ void Helios::ReadConfiguration(string Path)
          myDetector->ReadConfiguration(Path);
          ConfigFile.open(Path.c_str());
 
-         // ms_InterCoord comes from VDetector
+         // ms_InterCoord comes from NPS::VDetector
          myDetector->SetInterCoordPointer(ms_InterCoord);
 
          // store HeliosShape "detector"
@@ -192,3 +192,24 @@ void Helios::ReadSensitive(const G4Event* event)
    int nbDetectors = m_Modules.size();
    for (int i = 0; i < nbDetectors; i++) m_Modules[i]->ReadSensitive(event);
 }
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Construct Method to be pass to the DetectorFactory              //
+ ////////////////////////////////////////////////////////////////////////////////
+ NPS::VDetector* Helios::Construct(){
+  return  (NPS::VDetector*) new Helios();
+ }
+
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Registering the construct method to the factory                 //
+ ////////////////////////////////////////////////////////////////////////////////
+ extern"C" {
+ class proxy{
+   public:
+    proxy(){
+      NPS::DetectorFactory::getInstance()->AddToken("Helios","Helios");
+      NPS::DetectorFactory::getInstance()->AddDetector("Helios",Helios::Construct);
+    }
+};
+
+ proxy p;
+ }

@@ -24,7 +24,7 @@
 
 
 // NPTool headers
-#include "VDetector.hh"
+#include "NPSVDetector.hh"
 #include "TComptonTelescopeData.h"
 #include "TComptonTelescopeProcessData.h"
 
@@ -40,7 +40,7 @@ using namespace std;
 
 
 
-class ComptonTelescope : public VDetector
+class ComptonTelescope : public NPS::VDetector
 //class ComptonTelescope
 {
    ////////////////////////////////////////////////////
@@ -83,7 +83,7 @@ public:
 
 
    /////////////////////////////////////////
-   ////  Inherite from VDetector class /////
+   ////  Inherite from NPS::VDetector class /////
    /////////////////////////////////////////
 public:
    // Read stream at Configfile to pick-up parameters of detector (Position,...)
@@ -178,6 +178,8 @@ private:
    G4double m_ThicknessOfCalorimeter;
    G4double m_DistanceTrackerCalorimeter;
    G4double m_TowerHeight;
+public:
+    static NPS::VDetector* Construct();
 };
 
 

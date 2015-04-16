@@ -33,7 +33,7 @@
 #include "GaspardTrackerTrapezoid.hh"
 #include "GaspardTrackerAnnular.hh"
 #include "GaspardTrackerDummyShape.hh"
-
+#include "NPSDetectorFactory.hh"
 using namespace std;
 
 
@@ -77,7 +77,7 @@ void GaspardTracker::ReadConfiguration(string Path)
          myDetector->ReadConfiguration(Path);
          ConfigFile.open(Path.c_str());
 
-         // ms_InterCoord comes from VDetector
+         // ms_InterCoord comes from NPS::VDetector
          myDetector->SetInterCoordPointer(ms_InterCoord);
 
          // store GaspardTrackerSquare "detector"
@@ -94,7 +94,7 @@ void GaspardTracker::ReadConfiguration(string Path)
          myDetector->ReadConfiguration(Path);
          ConfigFile.open(Path.c_str());
 
-         // ms_InterCoord comes from VDetector
+         // ms_InterCoord comes from NPS::VDetector
          myDetector->SetInterCoordPointer(ms_InterCoord);
 
          // store GaspardTrackerSquare "detector"
@@ -111,7 +111,7 @@ void GaspardTracker::ReadConfiguration(string Path)
          myDetector->ReadConfiguration(Path);
          ConfigFile.open(Path.c_str());
 
-         // ms_InterCoord comes from VDetector
+         // ms_InterCoord comes from NPS::VDetector
          myDetector->SetInterCoordPointer(ms_InterCoord);
 
          // store GaspardTrackerTrapezoid "detector"
@@ -128,7 +128,7 @@ void GaspardTracker::ReadConfiguration(string Path)
          myDetector->ReadConfiguration(Path);
          ConfigFile.open(Path.c_str());
 
-         // ms_InterCoord comes from VDetector
+         // ms_InterCoord comes from NPS::VDetector
          myDetector->SetInterCoordPointer(ms_InterCoord);
 
          // store GaspardTrackerTrapezoid "detector"
@@ -147,7 +147,7 @@ void GaspardTracker::ReadConfiguration(string Path)
          myDetector->ReadConfiguration(Path);
          ConfigFile.open(Path.c_str());
 
-         // ms_InterCoord comes from VDetector
+         // ms_InterCoord comes from NPS::VDetector
          myDetector->SetInterCoordPointer(ms_InterCoord);
 
          // store GaspardTrackerShape "detector"
@@ -208,3 +208,24 @@ void GaspardTracker::ReadSensitive(const G4Event* event)
    int nbDetectors = m_Modules.size();
    for (int i = 0; i < nbDetectors; i++) m_Modules[i]->ReadSensitive(event);
 }
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Construct Method to be pass to the DetectorFactory              //
+ ////////////////////////////////////////////////////////////////////////////////
+ NPS::VDetector* GaspardTracker::Construct(){
+  return  (NPS::VDetector*) new GaspardTracker();
+ }
+
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Registering the construct method to the factory                 //
+ ////////////////////////////////////////////////////////////////////////////////
+ extern"C" {
+ class proxy{
+   public:
+    proxy(){
+      NPS::DetectorFactory::getInstance()->AddToken("GaspardTracker","GaspardTracker");
+      NPS::DetectorFactory::getInstance()->AddDetector("GaspardTracker",GaspardTracker::Construct);
+    }
+};
+
+ proxy p;
+ }

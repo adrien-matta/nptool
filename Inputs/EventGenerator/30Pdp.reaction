@@ -21,7 +21,7 @@ TwoBodyReaction
 	Heavy= 31P
 	ExcitationEnergyHeavy= 6.3
 	ExcitationEnergyLight= 0.0
-   CrossSectionPath= al25he3d_5.9_2s1.txt CS
+   CrossSectionPath= flat.txt CS
 	ShootLight= 1
 	ShootHeavy= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

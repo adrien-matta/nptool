@@ -7,6 +7,11 @@ bin
 DetectorClassList.txt
 Utility/Makefile
 Utility/npanalysis
-Utility/nptool-libmap
+Utility/nptool-installer
+*.pcm
+*Dict*
 *rootmap*
 *_rflx.cpp
+*.dylib
+*.so
+*.cmake

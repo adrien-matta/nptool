@@ -51,6 +51,7 @@
 #include "ComptonTelescopeScorers.hh"
 #include "ObsoleteGeneralScorers.hh"
 #include "MaterialManager.hh"
+#include "NPSDetectorFactory.hh"
 #include "RootOutput.h"
 
 // CLHEP
@@ -248,7 +249,7 @@ void ComptonTelescope::VolumeMaker(G4int TelescopeNumber,
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// Virtual Method of VDetector class
+// Virtual Method of NPS::VDetector class
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
@@ -1023,3 +1024,24 @@ void ComptonTelescope::InitializeScorers()
    G4SDManager::GetSDMpointer()->AddNewDetector(m_TrackerScorer);
    G4SDManager::GetSDMpointer()->AddNewDetector(m_CalorimeterScorer);
 }
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Construct Method to be pass to the DetectorFactory              //
+ ////////////////////////////////////////////////////////////////////////////////
+ NPS::VDetector* ComptonTelescope::Construct(){
+  return  (NPS::VDetector*) new ComptonTelescope();
+ }
+
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Registering the construct method to the factory                 //
+ ////////////////////////////////////////////////////////////////////////////////
+extern"C" {
+ class proxy{
+   public:
+    proxy(){
+      NPS::DetectorFactory::getInstance()->AddToken("ComptonTelescope","ComptonTelescope");
+      NPS::DetectorFactory::getInstance()->AddDetector("ComptonTelescope",ComptonTelescope::Construct);
+    }
+};
+
+ proxy p;
+ }

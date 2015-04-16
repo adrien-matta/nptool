@@ -35,7 +35,7 @@ class G4VPhysicalVolume;
 #include "G4Event.hh"
 #include "DetectorMessenger.hh"
 // NPTool headers
-#include "VDetector.hh"
+#include "NPSVDetector.hh"
 #include "Target.hh"
 #include "Chamber.hh"
 
@@ -57,7 +57,7 @@ public:
  
 public:
    G4VPhysicalVolume* ReadConfigurationFile();
-   void AddDetector(VDetector*);
+   void AddDetector(NPS::VDetector*);
    void ReadAllSensitive(const G4Event*);
 
 
@@ -71,7 +71,7 @@ private:
   //G4VPhysicalVolume* Chamber_phys;
 
    // Virtual Detector Vector
-   vector<VDetector*> m_Detectors;
+   vector<NPS::VDetector*> m_Detectors;
 
 
 private: // Data about the target

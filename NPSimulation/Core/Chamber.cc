@@ -12,7 +12,7 @@
  * Last update    : 11/03/2010                                               *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe standard Chamber. Derived from VDetector*
+ *  This class describe standard Chamber. Derived fromNPS::VDetector*
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *

@@ -393,13 +393,15 @@ for(unsigned int k = 0 ; k < sizeB ; k++){
 
       getline(ConfigFile, LineBuffer);
       //  cout << LineBuffer << endl;
-      if (LineBuffer.compare(0, 11, "TiaraInnerBarrel") == 0)
+      if (LineBuffer.find("TiaraInnerBarrel") != std::string::npos)
         ReadingStatus = true;
 
       while (ReadingStatus && !ConfigFile.eof()) {
-        ConfigFile >> DataBuffer ;
+        check_X=true; check_Y=true ; check_Z=true;
         //   Comment Line
-        if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
+        if (DataBuffer.compare(0, 1, "%") == 0) {   
+           ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
+        }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////something here?
 
@@ -449,17 +451,13 @@ for(unsigned int k = 0 ; k < sizeB ; k++){
         ///////////////////////////////////////////////////
         //   If no Detector Token and no comment, toggle out
         else {
-          ReadingStatusStrip= false;
-          cout << "Error: Wrong Token Sequence: Getting out " << DataBuffer << endl ;
-          exit(1);
         }
 
         /////////////////////////////////////////////////
         //   If All necessary information there, toggle out
 
         if (check_X && check_Y && check_Z){
-
-          ReadingStatusStrip= false;
+          ReadingStatus= false;
           AddDetector(X,Y,Z);
           //   Reinitialisation of Check Boolean
           check_X = false ;
@@ -714,6 +712,12 @@ for(unsigned int k = 0 ; k < sizeB ; k++){
       name+= "_BACK_E";
       return CalibrationManager::getInstance()->ApplyCalibration(name, m_EventData->GetBackEEnergy(i));
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    void TTiaraBarrelPhysics::WriteSpectra(){
+       m_Spectra->WriteSpectra();
+    }
+
 
     ////////////////////////////////////////////////////////////////////////////////
     //            Construct Method to be pass to the DetectorFactory              //

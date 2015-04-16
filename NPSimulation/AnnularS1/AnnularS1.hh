@@ -28,7 +28,7 @@ using namespace std;
 using namespace CLHEP;
 
 // NPTool header
-#include "VDetector.hh"
+#include "NPSVDetector.hh"
 
 // NPTool - ROOT headers
 #include "TS1Data.h"
@@ -37,7 +37,7 @@ using namespace CLHEP;
 #include "G4MultiFunctionalDetector.hh"
 #include "G4LogicalVolume.hh"
 
-class AnnularS1 : public VDetector{
+class AnnularS1 : public NPS::VDetector{
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
    ////////////////////////////////////////////////////
@@ -103,6 +103,12 @@ private:
 
    // Set to true if you want to see Telescope Frame in your visualisation
    bool         m_non_sensitive_part_visiualisation;
+
+  public:
+    static NPS::VDetector* Construct();
+
+
+
 };
 
 
@@ -140,6 +146,7 @@ namespace ANNULARS1{
    const G4double AluStripFront_PosZ = Length* -0.5       + 0.5*AluStripThickness;
    const G4double Silicon_PosZ       = AluStripFront_PosZ + 0.5*AluStripThickness   + 0.5*WaferThickness;
    const G4double AluStripBack_PosZ  = Silicon_PosZ       + 0.5*WaferThickness + 0.5*AluStripThickness;
+  
 }
 
 #endif

@@ -13,7 +13,7 @@
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  All detector added in the project should derive from this virtual class  *
- *  A vector of VDetector object is manage in the DetectorConstruction class *
+ *  A vector ofNPS::VDetector object is manage in the DetectorConstruction class *
  *  and call the virtual method of this class implemented in the daughter    *
  *  class object.                                                            *
  *  This inheritance insure homogeneity and modularity of the code           *
@@ -22,26 +22,26 @@
  * Comment:                                                                  *
  *                                                                           *
  *****************************************************************************/
-#include "VDetector.hh"
+#include "NPSVDetector.hh"
 #include "RootOutput.h"
 #include "G4SDManager.hh"
 
-TInteractionCoordinates* VDetector::ms_InterCoord = 0;
+TInteractionCoordinates* NPS::VDetector::ms_InterCoord = 0;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Constructor
-VDetector::VDetector(){
+NPS::VDetector::VDetector(){
    if (ms_InterCoord == 0) ms_InterCoord = new TInteractionCoordinates();
    InitializeRootOutput();
 }
 
 
 // Destructor
-VDetector::~VDetector(){
+NPS::VDetector::~VDetector(){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void VDetector::InitializeRootOutput(){
+void NPS::VDetector::InitializeRootOutput(){
    RootOutput *pAnalysis = RootOutput::getInstance();
    TTree *pTree = pAnalysis->GetTree();
       pTree->Branch("InteractionCoordinates", "TInteractionCoordinates", &ms_InterCoord);
@@ -50,7 +50,7 @@ void VDetector::InitializeRootOutput(){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-G4MultiFunctionalDetector* VDetector::CheckScorer(string name,bool &exist){
+G4MultiFunctionalDetector* NPS::VDetector::CheckScorer(string name,bool &exist){
   exist = true;
   G4MultiFunctionalDetector* ptr =
     (G4MultiFunctionalDetector*) G4SDManager::GetSDMpointer()->FindSensitiveDetector(name.c_str(),false);

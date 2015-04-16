@@ -56,7 +56,7 @@ namespace MUST2 {
       G4double  m_StripPitch;
       G4int HCID;
       G4THitsMap<G4int>* EvtMap;
-   };
+};
 
 
 
@@ -83,7 +83,7 @@ namespace MUST2 {
       G4double  m_StripPitch;
       G4int HCID;
       G4THitsMap<G4int>* EvtMap;
-   };
+};
    
    
       class PSPadOrCristalNumber : public G4VPrimitiveScorer
@@ -106,7 +106,7 @@ namespace MUST2 {
    private:
       G4int HCID;
       G4THitsMap<G4int>* EvtMap;
-   };
+};
    
 }
 

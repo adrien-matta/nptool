@@ -19,14 +19,14 @@ NPARCH=$(uname)
 if [ "${NPARCH}" = "Darwin" ] ; 
 then
   export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$NPTOOL/NPLib/lib
+  export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$NPTOOL/NPSimulation/lib
 else 
   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$NPTOOL/NPLib/lib
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$NPTOOL/NPSimulation/lib
 fi
 
 export PATH=$PATH:$NPLIB/bin
-
-alias NPSimulation='$NPTOOL/NPSimulation/bin/$G4SYSTEM/Simulation'
-alias NPAnalysis='$NPANA/Analysis'
+export PATH=$PATH:$NPTOOL/NPSimulation/bin
 
 alias NPT='cd $NPTOOL'  
 alias NPL='cd $NPTOOL/NPLib'  

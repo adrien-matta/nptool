@@ -155,7 +155,13 @@ void Beam::ReadConfigurationFile(string Path){
   // In case the file is not found in the standard path, the programm try to interpret the file name as an absolute or relative file path.
   else{
     ReactionFile.open( Path.c_str() );
-    if(ReactionFile.is_open()) { if(fVerboseLevel==1) cout << "Reading Reaction File " << Path << endl;}
+    if(ReactionFile.is_open()) { 
+        
+      if(fVerboseLevel==1) 
+        cout << "\033[1;35m/////////// Beam ///////////" << endl;
+      
+      if(fVerboseLevel==1) 
+          cout << "Reading Reaction File " << Path << endl;}
     
     else {cout << "Reaction File " << Path << " not found" << endl;exit(1);}
   }
@@ -288,7 +294,7 @@ void Beam::ReadConfigurationFile(string Path){
       ///////////////////////////////////////////////////
       //   If no Beam Token and no comment, toggle out
       else{
-        cout << "ERROR : Wrong Token Sequence: Getting out " << endl ;
+        cout << "\033[1;31mERROR : Wrong Token Sequence: Getting out\033[0m" << endl ;
         exit(1);
       }
       
@@ -308,11 +314,12 @@ void Beam::ReadConfigurationFile(string Path){
   }
   
   if( !check_BeamName || !check_AllEnergy || !check_AllEnergy ){
-    cout << "ERROR : Token Sequence Incomplete, Beam definition could not be Fonctionnal" << endl ;
+    cout << "\033[1;31mERROR : Token Sequence Incomplete, Beam definition could not be Fonctionnal\033[0m" << endl ;
     exit(1);
   }
-  
-  if(fVerboseLevel==1) cout << "///////////////////////////////////////////////////" << endl << endl ;
+
+  cout << "\033[0m" ;
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

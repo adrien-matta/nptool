@@ -75,6 +75,8 @@ class Analysis: public NPA::VAnalysis{
 	double ThetaTHSurface ;
   double ThetaTBSurface ;
 	double Si_E_TH  ;
+  double Si_E_InnerTB;
+  double Si_E_OuterTB;
   double Si_E_TB  ;
 	double Energy ;
 	double TargetThickness ;

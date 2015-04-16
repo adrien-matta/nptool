@@ -45,6 +45,7 @@
 #include "ObsoleteGeneralScorers.hh"
 #include "RootOutput.h"
 #include "MaterialManager.hh"
+#include "NPSDetectorFactory.hh"
 using namespace OBSOLETEGENERALSCORERS ;
 // CLHEP header
 #include "CLHEP/Random/RandGauss.h"
@@ -120,7 +121,7 @@ void Plastic::AddPlastic(   G4double R                      ,
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// Virtual Method of VDetector class
+// Virtual Method of NPS::VDetector class
 
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
@@ -614,3 +615,24 @@ void Plastic::InitializeScorers() {
 
 }
 ////////////////////////////////////////////////////////////////
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Construct Method to be pass to the DetectorFactory              //
+ ////////////////////////////////////////////////////////////////////////////////
+ NPS::VDetector* Plastic::Construct(){
+  return  (NPS::VDetector*) new Plastic();
+ }
+
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Registering the construct method to the factory                 //
+ ////////////////////////////////////////////////////////////////////////////////
+ extern"C" {
+ class proxy{
+   public:
+    proxy(){
+      NPS::DetectorFactory::getInstance()->AddToken("Plastic","Plastic");
+      NPS::DetectorFactory::getInstance()->AddDetector("Plastic",Plastic::Construct);
+    }
+};
+
+ proxy p;
+ }

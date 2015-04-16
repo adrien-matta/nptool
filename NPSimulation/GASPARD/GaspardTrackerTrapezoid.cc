@@ -51,7 +51,7 @@
 #include "ObsoleteGeneralScorers.hh"
 #include "GaspardScorers.hh"
 #include "RootOutput.h"
-#include "VDetector.hh"
+#include "NPSVDetector.hh"
 // CLHEP
 #include "CLHEP/Random/RandGauss.h"
 
@@ -288,7 +288,7 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int DetectorNumber,
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// Virtual Method of VDetector class
+// Virtual Method of NPS::VDetector class
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
@@ -642,7 +642,7 @@ void GaspardTrackerTrapezoid::InitializeRootOutput()
 
 
 
-// Set the TinteractionCoordinates object from VDetector to the present class
+// Set the TinteractionCoordinates object from NPS::VDetector to the present class
 void GaspardTrackerTrapezoid::SetInterCoordPointer(TInteractionCoordinates* interCoord)
 {
    ms_InterCoord = interCoord;
@@ -937,9 +937,9 @@ void GaspardTrackerTrapezoid::ReadSensitive(const G4Event* event)
 void GaspardTrackerTrapezoid::InitializeScorers()
 {
    bool already_exist = false;
-   m_FirstStageScorer = VDetector::CheckScorer("FirstStageScorerGPDTrapezoid", already_exist);
-   m_SecondStageScorer = VDetector::CheckScorer("SecondStageScorerGPDTrapezoid",already_exist);
-   m_ThirdStageScorer = VDetector::CheckScorer("ThirdStageScorerGPDTrapezoid",already_exist);
+   m_FirstStageScorer = NPS::VDetector::CheckScorer("FirstStageScorerGPDTrapezoid", already_exist);
+   m_SecondStageScorer = NPS::VDetector::CheckScorer("SecondStageScorerGPDTrapezoid",already_exist);
+   m_ThirdStageScorer = NPS::VDetector::CheckScorer("ThirdStageScorerGPDTrapezoid",already_exist);
    if(already_exist) return;
 
 

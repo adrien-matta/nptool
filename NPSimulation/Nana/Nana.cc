@@ -42,6 +42,7 @@ using namespace NANA;
 
 #include "CalorimeterScorers.hh"
 #include "MaterialManager.hh"
+#include "NPSDetectorFactory.hh"
 // NPL
 #include "NPOptionManager.h"
 #include "RootOutput.h"
@@ -112,7 +113,7 @@ void Nana::AddDetector(G4ThreeVector Pos, double beta_u, double beta_v, double b
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// Virtual Method of VDetector class
+// Virtual Method of NPS::VDetector class
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
 void Nana::ReadConfiguration(string Path){
@@ -485,3 +486,24 @@ void Nana::InitializeScorers(){
   G4SDManager::GetSDMpointer()->AddNewDetector(m_LaBr3Scorer) ;
 }
 
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Construct Method to be pass to the DetectorFactory              //
+ ////////////////////////////////////////////////////////////////////////////////
+ NPS::VDetector* Nana::Construct(){
+  return  (NPS::VDetector*) new Nana();
+ }
+
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Registering the construct method to the factory                 //
+ ////////////////////////////////////////////////////////////////////////////////
+ extern"C" {
+ class proxy{
+   public:
+    proxy(){
+      NPS::DetectorFactory::getInstance()->AddToken("Nana","Nana");
+      NPS::DetectorFactory::getInstance()->AddDetector("Nana",Nana::Construct);
+    }
+};
+
+ proxy p;
+ }

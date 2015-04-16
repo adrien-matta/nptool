@@ -31,7 +31,7 @@
 #include "Hyde2TrackerSquare1.hh"
 #include "Hyde2TrackerTrapezoid1.hh"
 #include "Hyde2TrackerTrapezoid2.hh"
-
+#include "NPSDetectorFactory.hh"
 using namespace std;
 
 
@@ -73,7 +73,7 @@ void Hyde2Tracker::ReadConfiguration(string Path)
          myDetector->ReadConfiguration(Path);
          ConfigFile.open(Path.c_str());
 
-         // ms_InterCoord comes from VDetector
+         // ms_InterCoord comes from NPS::VDetector
          myDetector->SetInterCoordPointer(ms_InterCoord);
 
          // store Hyde2TrackerSquare1 "detector"
@@ -90,7 +90,7 @@ void Hyde2Tracker::ReadConfiguration(string Path)
          myDetector->ReadConfiguration(Path);
          ConfigFile.open(Path.c_str());
 
-         // ms_InterCoord comes from VDetector
+         // ms_InterCoord comes from NPS::VDetector
          myDetector->SetInterCoordPointer(ms_InterCoord);
 
          // store Hyde2TrackerTrapezoid1 "detector"
@@ -107,7 +107,7 @@ void Hyde2Tracker::ReadConfiguration(string Path)
          myDetector->ReadConfiguration(Path);
          ConfigFile.open(Path.c_str());
 
-         // ms_InterCoord comes from VDetector
+         // ms_InterCoord comes from NPS::VDetector
          myDetector->SetInterCoordPointer(ms_InterCoord);
 
          // store Hyde2TrackerTrapezoid2 "detector"
@@ -168,3 +168,24 @@ void Hyde2Tracker::ReadSensitive(const G4Event* event)
    int nbDetectors = m_Modules.size();
    for (int i = 0; i < nbDetectors; i++) m_Modules[i]->ReadSensitive(event);
 }
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Construct Method to be pass to the DetectorFactory              //
+ ////////////////////////////////////////////////////////////////////////////////
+ NPS::VDetector* Hyde2Tracker::Construct(){
+  return  (NPS::VDetector*) new Hyde2Tracker();
+ }
+
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Registering the construct method to the factory                 //
+ ////////////////////////////////////////////////////////////////////////////////
+ extern"C" {
+ class proxy{
+   public:
+    proxy(){
+      NPS::DetectorFactory::getInstance()->AddToken("Hyde2Tracker","Hyde2Tracker");
+      NPS::DetectorFactory::getInstance()->AddDetector("Hyde2Tracker",Hyde2Tracker::Construct);
+    }
+};
+
+ proxy p;
+ }

@@ -44,6 +44,7 @@
 // NPTool header
 #include "ThinSi.hh"
 #include "MaterialManager.hh"
+#include "NPSDetectorFactory.hh"
 #include "ObsoleteGeneralScorers.hh"
 #include "ThinSiScorers.hh"
 #include "RootOutput.h"
@@ -227,7 +228,7 @@ void ThinSi::VolumeMaker(  G4int             DetNumber ,
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// Virtual Method of VDetector class
+// Virtual Method of NPS::VDetector class
 
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
@@ -677,3 +678,24 @@ void ThinSi::InitializeMaterial(){
 }
 
 
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Construct Method to be pass to the DetectorFactory              //
+ ////////////////////////////////////////////////////////////////////////////////
+ NPS::VDetector* ThinSi::Construct(){
+  return  (NPS::VDetector*) new ThinSi();
+ }
+
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Registering the construct method to the factory                 //
+ ////////////////////////////////////////////////////////////////////////////////
+ extern"C" {
+ class proxy{
+   public:
+    proxy(){
+      NPS::DetectorFactory::getInstance()->AddToken("ThinSi","ThinSi");
+      NPS::DetectorFactory::getInstance()->AddDetector("ThinSi",ThinSi::Construct);
+    }
+};
+
+ proxy p;
+ }

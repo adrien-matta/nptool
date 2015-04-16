@@ -50,6 +50,8 @@ void Analysis::Init(){
 	ThetaTHSurface = 0;
   ThetaTBSurface = 0;
 	Si_E_TH = 0 ;
+  Si_E_InnerTB = 0;
+  Si_E_OuterTB = 0;
   Si_E_TB = 0 ;
 	Energy = 0;
 	TargetThickness = m_DetectorManager->GetTargetThickness()*micrometer;
@@ -88,7 +90,7 @@ void Analysis::TreatEvent(){
 			ThetaNormalTarget = 0;
 			if(XTarget>-1000 && YTarget>-1000){
 				TVector3 BeamImpact(XTarget,YTarget,0);
-				TVector3 HitDirection = TH -> GetPositionOfInteraction(countTiaraHyball) - BeamImpact ;
+				TVector3 HitDirection = TH -> GetRandomisedPositionOfInteraction(countTiaraHyball) - BeamImpact ;
 				ThetaLab = HitDirection.Angle( BeamDirection );
 				ThetaTHSurface = HitDirection.Angle(TVector3(0,0,-1) );
 				ThetaNormalTarget = HitDirection.Angle( TVector3(0,0,1) ) ;
@@ -155,7 +157,7 @@ void Analysis::TreatEvent(){
 			ThetaNormalTarget = 0;
 			if(XTarget>-1000 && YTarget>-1000){
 				TVector3 BeamImpact(XTarget,YTarget,0);
-				TVector3 HitDirection = TB -> GetPositionOfInteraction(countTiaraBarrel) - BeamImpact ;
+				TVector3 HitDirection = TB -> GetRandomisedPositionOfInteraction(countTiaraBarrel) - BeamImpact ;
 				ThetaLab = HitDirection.Angle( BeamDirection );
 				ThetaTBSurface = HitDirection.Angle(TVector3(0,0,-1) );
 				ThetaNormalTarget = HitDirection.Angle( TVector3(0,0,1) ) ;
@@ -167,10 +169,16 @@ void Analysis::TreatEvent(){
 			}
 			/************************************************/
 
-			// Part 2 : Impact Energy
+      // Part 2 : Impact Energy
 			Energy = ELab = 0;
-			Si_E_TB = TB->Strip_E[countTiaraBarrel];
-			Energy = Si_E_TB;
+			Si_E_InnerTB = TB->Strip_E[countTiaraBarrel];
+      if(TB->Outer_Strip_E[countTiaraBarrel] != -1000){
+        Si_E_OuterTB = TB->Outer_Strip_E[countTiaraBarrel];
+        Energy = Si_E_InnerTB + Si_E_OuterTB;
+      }
+			else {
+        Energy = Si_E_InnerTB;
+      }
 
 			// Evaluate energy using the thickness 
 			ELab = proton_Al.EvaluateInitialEnergy( Energy ,0.4*micrometer , ThetaTBSurface); 

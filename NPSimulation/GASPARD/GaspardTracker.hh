@@ -26,7 +26,7 @@
 #include <vector>
 
 // NPTool header
-#include "VDetector.hh"
+#include "NPSVDetector.hh"
 #include "GaspardTrackerModule.hh"
 
 using namespace std;
@@ -35,7 +35,7 @@ using namespace std;
 
 
 
-class GaspardTracker : public VDetector
+class GaspardTracker : public NPS::VDetector
 {
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
@@ -45,7 +45,7 @@ public:
    virtual ~GaspardTracker();
 
    ////////////////////////////////////////////////////
-   /////////  Inherite from VDetector class ///////////
+   /////////  Inherite from NPS::VDetector class ///////////
    ////////////////////////////////////////////////////
 public:
    // Read stream at Configfile to pick-up parameters of detector (Position,...)
@@ -70,5 +70,7 @@ public:
 
 private:
    vector<GaspardTrackerModule*> m_Modules;
+public:
+    static NPS::VDetector* Construct();
 };
 #endif

@@ -32,13 +32,13 @@ NPOptionManager* NPOptionManager::instance = 0 ;
 ////////////////////////////////////////////////////////////////////////////////
 NPOptionManager* NPOptionManager::getInstance(int argc, char** argv){
   if (instance == 0) instance = new NPOptionManager(argc, argv);
-  
+
   return instance ;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 NPOptionManager* NPOptionManager::getInstance(string arg){
-  
+
   if (instance == 0) instance = new NPOptionManager(arg);
 
   return instance ;
@@ -49,12 +49,14 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
   fDefaultReactionFileName    = "defaultReaction.reaction";
   fDefaultDetectorFileName    = "defaultDetector.detector";
   fDefaultOutputFileName      = "myResult.root";
+  fDefaultOutputTreeName      = "NPTool_Tree";
   fDefaultRunToReadFileName   = "defaultRunToTreat.txt";
   fDefaultCalibrationFileName = "defaultCalibration.txt";
   // Assigned values
   fReactionFileName           = fDefaultReactionFileName;
   fDetectorFileName           = fDefaultDetectorFileName;
   fOutputFileName             = fDefaultOutputFileName;
+  fOutputTreeName             = fDefaultOutputTreeName;
   fRunToReadFileName          = fDefaultRunToReadFileName;
   fCalibrationFileName        = fDefaultCalibrationFileName;
   fVerboseLevel               = 1;
@@ -63,43 +65,45 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
   fInputPhysicalTreeOption = false;
   fGenerateHistoOption = false ;
   fPROOFMode = false;
-  
+
   for (int i = 0; i < argc; i++) {
     string argument = argv[i];
     if (argument == "-H" || argument == "-h" || argument == "--help") DisplayHelp();
-    
+
     else if (argument == "--event-generator" && argc >= i + 1)    fReactionFileName    = argv[++i] ;
-    
+
     else if (argument == "-E" && argc >= i + 1)                   fReactionFileName    = argv[++i] ;
-    
+
     else if (argument == "--detector" && argc >= i + 1)           fDetectorFileName    = argv[++i] ;
-    
+
     else if (argument == "-D" && argc >= i + 1)                   fDetectorFileName    = argv[++i] ;
-    
+
     else if (argument == "--output" && argc >= i + 1)             fOutputFileName      = argv[++i] ;
-    
+
     else if (argument == "-O" && argc >= i + 1)                   fOutputFileName      = argv[++i] ;
-    
+
+    else if (argument == "--tree-name" && argc >= i + 1)          fOutputTreeName      = argv[++i] ;
+
     else if (argument == "--run" && argc >= i + 1)                fRunToReadFileName   = argv[++i] ;
-    
+
     else if (argument == "-R" && argc >= i + 1)                   fRunToReadFileName   = argv[++i] ;
-    
+
     else if (argument == "--cal" && argc >= i + 1)                fCalibrationFileName = argv[++i] ;
-    
+
     else if (argument == "-C" && argc >= i + 1)                   fCalibrationFileName = argv[++i] ;
-    
+
     else if (argument == "-V"  && argc >= i + 1)                  fVerboseLevel = atoi(argv[++i]) ;
-    
+
     else if (argument == "--verbose" && argc >= i + 1)            fVerboseLevel = atoi(argv[++i]) ;
-    
+
     else if (argument == "--disable-branch")                      fDisableAllBranchOption = true ;
-    
+
     else if (argument == "--input-physical")                      fInputPhysicalTreeOption = true ;
-    
+
     else if (argument == "-IP")                                   fInputPhysicalTreeOption = true ;
-   
+
     else if (argument == "-GH")                                   fGenerateHistoOption = true ;
- 
+
     else if (argument == "-CH")                                   fCheckHistoOption = true ;
 
     else if (argument == "-check-histo")                          fCheckHistoOption = true ;
@@ -107,8 +111,17 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
     else if (argument == "--generate-histo")                      fGenerateHistoOption = true ;
 
     else if (argument == "--proof")                               fPROOFMode = true ;
-    
-    else if (argument == "-L")                                    fNumberOfEntryToAnalyse= atoi(argv[++i]) ;
+
+    else if (argument == "-L")                                    fNumberOfEntryToAnalyse = atoi(argv[++i]) ;
+
+    else if (argument == "--last-sim")                            fLastSimFile = true ;
+
+    else if (argument == "--last-phy")                            fLastPhyFile = true ;
+
+    else if (argument == "--last-res")                            fLastResFile = true ;
+
+    else if (argument == "--last-any")                            fLastAnyFile = true ;
+
     //else ;
   }
   CheckArguments();
@@ -132,12 +145,12 @@ NPOptionManager::NPOptionManager(string arg)
     args.push_back(arg);
   }
   args.push_back(0);
-  
+
   ReadTheInputArgument(args.size()-1, &args[0]);
 
   for(size_t i = 0; i < args.size(); i++)
     delete[] args[i];
-  
+
 }
 ////////////////////////////////////////////////////////////////////////////////
 void NPOptionManager::CheckArguments(){
@@ -148,14 +161,14 @@ void NPOptionManager::CheckArguments(){
 ////////////////////////////////////////////////////////////////////////////////
 void NPOptionManager::CheckEventGenerator(){
   bool checkFile = true;
-  
+
   // NPTool path
   string GlobalPath = getenv("NPTOOL");
   string StandardPath = GlobalPath + "/Inputs/EventGenerator/" + fReactionFileName;
-  
+
   // ifstream to configfile
   ifstream ConfigFile;
-  
+
   // test if config file is in local path
   ConfigFile.open(fReactionFileName.c_str());
   if (!ConfigFile.is_open()) {
@@ -170,7 +183,7 @@ void NPOptionManager::CheckEventGenerator(){
   if (!checkFile && fReactionFileName != fDefaultReactionFileName) {   // if file does not exist
     SendErrorAndExit("EventGenerator");
   }
-  
+
   // close ConfigFile
   ConfigFile.close();
 }
@@ -178,14 +191,14 @@ void NPOptionManager::CheckEventGenerator(){
 ////////////////////////////////////////////////////////////////////////////////
 void NPOptionManager::CheckDetectorConfiguration(){
   bool checkFile = true;
-  
+
   // NPTool path
   string GlobalPath = getenv("NPTOOL");
   string StandardPath = GlobalPath + "/Inputs/DetectorConfiguration/" + fDetectorFileName;
-  
+
   // ifstream to configfile
   ifstream ConfigFile;
-  
+
   // test if config file is in local path
   ConfigFile.open(fDetectorFileName.c_str());
   if (!ConfigFile.is_open()) {
@@ -200,7 +213,7 @@ void NPOptionManager::CheckDetectorConfiguration(){
   if (!checkFile && fDetectorFileName != fDefaultDetectorFileName) {   // if file does not exist
     SendErrorAndExit("DetectorConfiguration");
   }
-  
+
   // close ConfigFile
   ConfigFile.close();
 }
@@ -210,7 +223,7 @@ void NPOptionManager::CheckDetectorConfiguration(){
 // This method tests if the input files are the default ones
 bool NPOptionManager::IsDefault(const char* type) const{
   bool result = false;
-  
+
   string stype = type;
   if (stype == "EventGenerator") {
     if (fReactionFileName == fDefaultReactionFileName) result = true;
@@ -224,10 +237,16 @@ bool NPOptionManager::IsDefault(const char* type) const{
   else if (stype == "RunToTreat") {
     if (fRunToReadFileName == fDefaultRunToReadFileName) result = true;
   }
+  else if (stype == "OutputFileName") {
+    if (fOutputFileName == fDefaultOutputFileName) result = true;
+  }
+  else if (stype == "TreeName") {
+    if (fOutputTreeName == fDefaultOutputTreeName) result = true;
+  }
   else {
     cout << "NPOptionManager::IsDefault() unkwown keyword" << endl;
   }
-  
+
   return result;
 }
 
@@ -266,21 +285,26 @@ void NPOptionManager::SendErrorAndExit(const char* type) const{
 void NPOptionManager::DisplayHelp(){
   cout << endl << "----NPOptionManager Help----" << endl << endl ;
   cout << "List of Option " << endl ;
-  cout << "\t --help　-H -h\t \t \t \t \t \t \t　Display this help message" << endl ;
-  cout << "\t --detector　-D <arg>\t \t \t \t \t \t　Set arg as the detector configuration file" << endl ;
-  cout << "\t --event-generator　-E <arg>\t \t \t \t \t　Set arg as the event generator file" << endl ;
-  cout << "\t --output　-O <arg>\t \t \t \t \t \t　Set arg as the Output File Name (output tree)" << endl ;
-  cout << "\t --verbose -V <arg>\t \t \t \t \t \t　Set the verbose level of some of the object, 0 for nothing, 1 for normal printout. Error and warning are not affected" << endl ;
+  cout << "\t --help　-H -h\t \t \t \tDisplay this help message" << endl ;
+  cout << "\t --detector　-D <arg>\t \t \tSet arg as the detector configuration file" << endl ;
+  cout << "\t --event-generator　-E <arg>\t \tSet arg as the event generator file" << endl ;
+  cout << "\t --output　-O <arg>\t \t \tSet arg as the Output File Name (output tree)" << endl ;
+  cout << "\t --tree-name <arg>\t \t \tSet arg as the Output Tree Name " << endl ;
+  cout << "\t --verbose -V <arg>\t \t \tSet the verbose level of some of the object, 0 for nothing, 1 for normal printout. Error and warning are not affected" << endl ;
   cout << endl << "NPAnalysis only:"<<endl;
-  cout << "\t --run -R <arg>\t \t \t \t \t \t \t　Set arg as the run to read file list" << endl  ;
-  cout << "\t --cal -C <arg>\t \t \t \t \t \t \t　Set arg as the calibration file list" << endl ;
-  cout << "\t --disable-branch\t \t \t \t \t \t　Disable of branch of Input tree except the one of the detector (faster)" << endl  ;
-  cout << "\t --generate-histo -GH\t \t \t \t \t \t  Instantiate the T*Spectra class of each detector" << endl ;
-  cout << "\t --check-histo -CH\t \t \t \t \t \t  Check if the Histogram looks ok and change there color if not" << endl ;
-  cout << "\t --input-physical -IP\t \t \t \t \t \t　Consider the Input file is containing Physics Class instead of Data Class. Output branches associate to the detector are not activated" << endl  ;
-  cout << "\t -L <arg>\t \t \t \t \t \t　Limite the number of envent to be analysed to arg" << endl ;
+  cout << "\t --run -R <arg>\t \t \t \tSet arg as the run to read file list" << endl  ;
+  cout << "\t --cal -C <arg>\t \t \t \tSet arg as the calibration file list" << endl ;
+  cout << "\t --disable-branch\t \t \tDisable of branch of Input tree except the one of the detector (faster)" << endl  ;
+  cout << "\t --generate-histo -GH\t \t \tInstantiate the T*Spectra class of each detector" << endl ;
+  cout << "\t --check-histo -CH\t \t \tCheck if the Histogram looks ok and change there color if not" << endl ;
+  cout << "\t --input-physical -IP\t \t \tConsider the Input file is containing Physics Class instead of Data Class. Output branches associate to the detector are not activated" << endl  ;
+  cout << "\t -L <arg>\t \t \t \tLimite the number of envent to be analysed to arg" << endl ;
+  cout << "\t --last-sim\t \t \t \tIgnore the list of Run to treat if any and analysed the last simulated file" << endl ;
+  cout << "\t --last-phy\t \t \t \tIgnore the list of Run to treat if any and analysed the last Physics file" << endl ;
+  cout << "\t --last-res\t \t \t \tIgnore the list of Run to treat if any and analysed the last Result file" << endl ;
+  cout << "\t --last-any\t \t \t \tIgnore the list of Run to treat if any and analysed the last root file with a non standard Tree name" << endl ;
   cout << endl << endl ;
-  
+
   // exit current program
   exit(1);
 }
@@ -293,4 +317,22 @@ void NPOptionManager::Destroy(){
     instance = 0;
   }
 }
+////////////////////////////////////////////////////////////////////////////////
+string NPOptionManager::GetLastFile(){
+  string path = getenv("NPTOOL");
+  if(fLastSimFile)
+    return (path+"/.last_sim_file");
 
+  else if(fLastPhyFile)
+    return (path+"/.last_phy_file");
+
+  else if(fLastResFile)
+    return (path+"/.last_res_file");
+
+  else if(fLastAnyFile)
+    return (path+"/.last_any_file");
+
+  else
+    return "VOID";
+
+}

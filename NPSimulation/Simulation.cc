@@ -1,4 +1,7 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+// STL
+#include<cstdlib>
+
 #include "G4RunManager.hh"
 #include "G4PhysListFactory.hh"
 // UI
@@ -24,7 +27,7 @@
 
 // NPS headers
 #include "EventAction.hh"
-#include "VDetector.hh"
+#include "RunAction.hh"
 
 //NPL headers
 #include "NPOptionManager.h"
@@ -98,19 +101,35 @@ int main(int argc, char** argv){
   event_action->SetDetector(detector)           ;
   runManager->SetUserAction(event_action)       ;
 
+  ///////////////////////////////////////////////////////////////
+  /////////////////// Starting the Run Action ///////////////////
+  ///////////////////////////////////////////////////////////////
+  RunAction* run_action = new RunAction() ;
+  runManager->SetUserAction(run_action);
 
 #ifdef G4UI_USE
 #ifdef G4VIS_USE
-  UImanager->ApplyCommand("/control/execute macro/aliases.mac");
+  string Path_Macro = getenv("NPTOOL");
+  Path_Macro+="/NPSimulation/macro/";
+
+  UImanager->ApplyCommand("/control/execute " +Path_Macro+"aliases.mac");
   G4VisManager* visManager = new G4VisExecutive("Quiet");
   visManager->Initialize();
-  UImanager->ApplyCommand("/control/execute macro/vis.mac");
+  UImanager->ApplyCommand("/control/execute " +Path_Macro+"vis.mac");
 #endif
    if (ui->IsGUI()){
-            UImanager->ApplyCommand("/control/execute macro/gui.mac");
+            UImanager->ApplyCommand("/control/execute " +Path_Macro+"gui.mac");
     }
-
+#ifdef __APPLE__
+  string command= "osascript ";
+  command+= getenv("NPTOOL");
+  command+="/NPSimulation/scripts/bringtofront.osa & ";
+  int res =system(command.c_str());
+  res =0;
+#endif
+ 
     ui->SessionStart();
+   
     delete ui;
 #endif
   

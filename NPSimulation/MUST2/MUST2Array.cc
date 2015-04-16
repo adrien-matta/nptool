@@ -40,6 +40,7 @@
 
 // NPS
 #include "MaterialManager.hh"
+#include "NPSDetectorFactory.hh"
 #include "ObsoleteGeneralScorers.hh"
 #include "MUST2Scorers.hh"
 
@@ -550,7 +551,7 @@ void MUST2Array::VolumeMaker( G4int TelescopeNumber,
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// Virtual Method of VDetector class
+// Virtual Method of NPS::VDetector class
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
@@ -1353,3 +1354,24 @@ G4RotationMatrix* Rotation(double tetaX, double tetaY, double tetaZ){
 }
 
 
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Construct Method to be pass to the DetectorFactory              //
+ ////////////////////////////////////////////////////////////////////////////////
+ NPS::VDetector* MUST2Array::Construct(){
+  return  (NPS::VDetector*) new MUST2Array();
+ }
+
+ ////////////////////////////////////////////////////////////////////////////////
+ //            Registering the construct method to the factory                 //
+ ////////////////////////////////////////////////////////////////////////////////
+ extern"C" {
+ class proxy{
+   public:
+    proxy(){
+      NPS::DetectorFactory::getInstance()->AddToken("MUST2Array","MUST2Array");
+      NPS::DetectorFactory::getInstance()->AddDetector("MUST2Array",MUST2Array::Construct);
+    }
+};
+
+ proxy p;
+ }

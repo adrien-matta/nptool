@@ -36,13 +36,13 @@
 #include "G4MultiFunctionalDetector.hh"
 
 // NPTool header
-#include "VDetector.hh"
+#include "NPSVDetector.hh"
 #include "TEurogamData.h"
 
 using namespace std;
 using namespace CLHEP;
 
-class Eurogam : public VDetector
+class Eurogam : public NPS::VDetector
 {
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
@@ -66,7 +66,7 @@ public:
 
 
    ////////////////////////////////////////////////////
-   /////////  Inherite from VDetector class ///////////
+   /////////  Inherite from NPS::VDetector class ///////////
    ////////////////////////////////////////////////////
 public:
    // Read stream at Configfile to pick-up parameters of detector (Position,...)
@@ -127,6 +127,8 @@ private:
    vector<G4double>  m_beta_u; //  |
    vector<G4double>  m_beta_v; //  > Tilt angle of the detector
    vector<G4double>  m_beta_w; //  |
+public:
+    static NPS::VDetector* Construct();
 };
 
 
