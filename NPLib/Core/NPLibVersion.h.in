@@ -1,0 +1,5 @@
+namespace NPL{
+  std::string version_major="@NPLIB_VERSION_MAJOR@";
+  std::string version_minor="@NPLIB_VERSION_MINOR@";
+  std::string version_deta="@NPLIB_VERSION_DETA@";
+}

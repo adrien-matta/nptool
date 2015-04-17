@@ -1,0 +1,5 @@
+namespace NPS{
+  std::string version_major="@NPSIM_VERSION_MAJOR@";
+  std::string version_minor="@NPSIM_VERSION_MINOR@";
+  std::string version_dets="@NPSIM_VERSION_DETS@";
+}

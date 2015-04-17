@@ -2,8 +2,9 @@ cmake_minimum_required (VERSION 2.8)
 include("../NPLib/FindROOT.cmake")
 
 project (NPSimulation)
-set (NPSimulation_VERSION_MAJOR 2)
-set (NPSimulation_VERSION_MINOR 0)
+set (NPSIM_VERSION_MAJOR 2)
+set (NPSIM_VERSION_MINOR 0)
+set (NPSIM_VERSION_DETS 17)
 
 set(CMAKE_BUILD_TYPE Release)
 
@@ -15,6 +16,8 @@ include(${Geant4_USE_FILE})
 # Finding NPLib
 find_package(NPLib)
 include(${NPLib_USE_FILE})
+
+configure_file(Core/NPSimulationVersion.hh.in Core/NPSimulationVersion.hh @ONLY) 
 
 set(DETLIST ${NPLib_DETECTOR_LIST})
 

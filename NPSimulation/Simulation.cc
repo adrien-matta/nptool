@@ -28,7 +28,7 @@
 // NPS headers
 #include "EventAction.hh"
 #include "RunAction.hh"
-
+#include "NPSimulationVersion.hh"
 //NPL headers
 #include "NPOptionManager.h"
 #include "RootOutput.h"
@@ -36,6 +36,18 @@
 int main(int argc, char** argv){
   // Initialize NPOptionManager object
   NPOptionManager* OptionManager  = NPOptionManager::getInstance(argc, argv);
+   if(OptionManager->GetVerboseLevel() > 0){
+    string line;
+    line.resize(80,'*');
+    cout << endl << line << endl;
+    cout << "********************************  NPSimulation  ********************************"<< endl;
+    cout << line << endl;
+    cout << "NPSimulation version: npsimulation-"<< NPS::version_major <<"-" << NPS::version_minor << "-" << NPS::version_dets <<endl;
+    cout << " Copyright: NPTool Collaboration "<<endl;
+    cout << " GitHub: http://github.com/adrien-matta/nptool"<<endl; ;
+    cout << line << endl;
+  } 
+  
   // Test if input files are found. If not, exit
   if (OptionManager->IsDefault("EventGenerator"))
     OptionManager->SendErrorAndExit("EventGenerator");
@@ -68,8 +80,6 @@ int main(int argc, char** argv){
   //physListFactory->GetReferencePhysList("QGSP_BERT");
   
   runManager->SetUserInitialization(physicsList);
-  
-  
   PrimaryGeneratorAction* primary = new PrimaryGeneratorAction(detector);
   
   // Initialize Geant4 kernel

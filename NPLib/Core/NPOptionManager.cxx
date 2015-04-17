@@ -21,7 +21,7 @@
  *****************************************************************************/
 
 #include "NPOptionManager.h"
-
+#include "NPLibVersion.h"
 #include <fstream>
 #include <sstream>
 #include <cstdlib>
@@ -125,13 +125,28 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
     //else ;
   }
   CheckArguments();
+  DisplayVersion();
 }
+////////////////////////////////////////////////////////////////////////////////
+void NPOptionManager::DisplayVersion(){
+  if(fVerboseLevel>0){
+    string line;
+    line.resize(80,'*');
+    cout << line << endl;
+    cout << "***********************************  NPTool  ***********************************"<< endl;
+    cout << line << endl;
+    cout << "NPLib version: nplib-"<< NPL::version_major <<"-" << NPL::version_minor << "-" << NPL::version_deta <<endl;
+    cout << " Copyright: NPTool Collaboration "<<endl;
+    cout << " GitHub: http://github.com/adrien-matta/nptool"<<endl; ;
+    cout << line << endl;
 
-
+  }
+}
+////////////////////////////////////////////////////////////////////////////////
 NPOptionManager::NPOptionManager(int argc, char** argv){
   ReadTheInputArgument(argc,argv);
 }
-
+////////////////////////////////////////////////////////////////////////////////
 NPOptionManager::NPOptionManager(string arg)
 {  
   vector<char *> args;
@@ -283,6 +298,7 @@ void NPOptionManager::SendErrorAndExit(const char* type) const{
 
 ////////////////////////////////////////////////////////////////////////////////
 void NPOptionManager::DisplayHelp(){
+  DisplayVersion();
   cout << endl << "----NPOptionManager Help----" << endl << endl ;
   cout << "List of Option " << endl ;
   cout << "\t --help　-H -h\t \t \t \tDisplay this help message" << endl ;
