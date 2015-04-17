@@ -874,8 +874,8 @@ extern "C"{
 class brlproxy{
   public:
     brlproxy(){
-      NPS::DetectorFactory::getInstance()->AddToken("TiaraInnerBarrel=","Tiara");
-      NPS::DetectorFactory::getInstance()->AddDetector("TiaraInnerBarrel=",Tiara::Construct);
+      NPS::DetectorFactory::getInstance()->AddToken("Tiara","Tiara");
+      NPS::DetectorFactory::getInstance()->AddDetector("Tiara",Tiara::Construct);
     }
 };
 

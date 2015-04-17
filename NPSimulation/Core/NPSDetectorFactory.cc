@@ -85,7 +85,12 @@ NPS::VDetector* DetectorFactory::Construct(std::string Token){
     
     if(m_Construct.find(Token)!=m_Construct.end())
       return  m_Construct[Token]();
-  
+ 
+    // Test for an alternative token
+    else if(m_TokenAlternative.find(Token)!=m_TokenAlternative.end()){
+      return m_Construct[m_TokenAlternative[Token]]();
+    } 
+
     else{
       std::cout << "Warning: Detector with Token " << Token << " has no Constructor or no Library" << std::endl;
       return NULL;
@@ -130,3 +135,16 @@ void DetectorFactory::AddToken(std::string Token, std::string LibName){
   
   m_TokenLib[Token] = LibName;
 }
+////////////////////////////////////////////////////////////////////////////////
+ void DetectorFactory::AddTokenAlternative(std::string MainToken, std::string TokenAlternative){ 
+  // Make sure the main token exit:
+   if(m_TokenLib.find(MainToken)==m_TokenLib.end()){
+  cout << "\033[1;33m **** ERROR: Cannot add Alternative token " << TokenAlternative << " to main token "
+       << MainToken << " because main token does not exist\033[0m" << endl ;
+  exit(1);
+  }
+
+   else{
+    m_TokenAlternative[TokenAlternative] = MainToken;
+   }
+ }
