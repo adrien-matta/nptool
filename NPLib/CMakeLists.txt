@@ -1,9 +1,15 @@
 cmake_minimum_required (VERSION 2.8)
 include("FindROOT.cmake")
 
-project (NPLib)
-set (NPLIB_VERSION_MAJOR 2)
-set (NPLIB_VERSION_MINOR 0)
+project(NPLib)
+# Major change in the Core/Physics (affecting the detector/analysis/simulation)
+set(NPLIB_VERSION_MAJOR 2)
+# Minor change in the Core/Physics (not affecting any other part)
+set(NPLIB_VERSION_MINOR 0)
+# Change any of the detector in NPA
+set(NPLIB_VERSION_DETA 35)
+
+configure_file(Core/NPLibVersion.h.in Core/NPLibVersion.h @ONLY)
 
 set(CMAKE_BUILD_TYPE Release)
 

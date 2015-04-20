@@ -67,6 +67,7 @@ class NPOptionManager{
 
    private:
       void DisplayHelp();
+      void DisplayVersion();
       void CheckArguments();
       void CheckEventGenerator();
       void CheckDetectorConfiguration();

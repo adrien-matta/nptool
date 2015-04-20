@@ -733,8 +733,8 @@ for(unsigned int k = 0 ; k < sizeB ; k++){
       class brlproxy{
         public:
           brlproxy(){
-            NPA::DetectorFactory::getInstance()->AddToken("TiaraInnerBarrel=","Tiara");
-            NPA::DetectorFactory::getInstance()->AddDetector("TiaraInnerBarrel=",TTiaraBarrelPhysics::Construct);
+            NPA::DetectorFactory::getInstance()->AddToken("Tiara","Tiara");
+            NPA::DetectorFactory::getInstance()->AddDetector("Tiara",TTiaraBarrelPhysics::Construct);
           }
       };
 
