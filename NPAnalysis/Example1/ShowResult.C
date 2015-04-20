@@ -16,7 +16,7 @@ EDE= (TCutG*) File_EDE->FindObjectAny("EDE");
 
 ////////////////////////////////////////////////////////////////////////////////
 void LoadChain(){
-chain = new TChain("ResultTree");
+chain = new TChain("PhysicsTree");
 chain->Add("../../Outputs/Analysis/Example1.root");
 }
 
@@ -41,7 +41,8 @@ ETOF->Draw("same");
 
 // Kinematical Line //
 c1->cd(3);
-chain->Draw("ELab:ThetaLab>>hKine(500,0,45,400,0,40)","MUST2.CsI_E<0 && MUST2.TelescopeNumber<5 && EDE && ETOF","colz");
+//chain->Draw("ELab:ThetaLab>>hKine(500,0,45,400,0,40)","MUST2.CsI_E<0 && MUST2.TelescopeNumber<5 && EDE && ETOF","colz");
+chain->Draw("ELab:ThetaLab","MUST2.CsI_E<0 && MUST2.TelescopeNumber<5 && EDE && ETOF","colz");
 
 NPL::Reaction r("11Li(d,3He)10He@553");
 r.SetExcitationHeavy(1.4);
