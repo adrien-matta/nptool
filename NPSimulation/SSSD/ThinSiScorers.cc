@@ -56,6 +56,7 @@ G4bool PSStripNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
    G4double X = int(temp) + 1 ;
    //Rare case where particle is close to edge of silicon plan
    if (X == m_NumberOfStrip+1) X = m_NumberOfStrip;
+   if (X ==0 ) X =1 ;
    G4double edep = aStep->GetTotalEnergyDeposit();
    if (edep < TriggerThreshold) return FALSE;
    G4int  index =  aStep->GetTrack()->GetTrackID();

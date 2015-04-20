@@ -48,7 +48,6 @@
 // NPL
 #include "NPOptionManager.h"
 
-//#include "SharcScorers.hh"
 #include "RootOutput.h"
 using namespace SHARC;
 

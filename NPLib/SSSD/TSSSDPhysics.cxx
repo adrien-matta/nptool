@@ -46,8 +46,7 @@ string itoa(int value)
 
 ClassImp(TSSSDPhysics)
 ///////////////////////////////////////////////////////////////////////////
-TSSSDPhysics::TSSSDPhysics()
-  {    
+TSSSDPhysics::TSSSDPhysics(){    
     NumberOfDetector = 0;
     EventData = new TSSSDData;
     PreTreatedData = new TSSSDData;
@@ -59,16 +58,14 @@ TSSSDPhysics::TSSSDPhysics()
 TSSSDPhysics::~TSSSDPhysics()
   {}
 ///////////////////////////////////////////////////////////////////////////
-void TSSSDPhysics::Clear()
-  {
+void TSSSDPhysics::Clear(){
     DetectorNumber  .clear() ;
     StripNumber     .clear() ;
     Energy          .clear() ;
     Time            .clear() ;
   }
 ///////////////////////////////////////////////////////////////////////////
-void TSSSDPhysics::ReadConfiguration(string Path) 
-  {
+void TSSSDPhysics::ReadConfiguration(string Path) {
    ifstream ConfigFile           ;
    ConfigFile.open(Path.c_str()) ;
    string LineBuffer             ;
@@ -87,14 +84,10 @@ void TSSSDPhysics::ReadConfiguration(string Path)
    bool check_beta = false    ;
    bool ReadingStatus = false ;
 
- while (!ConfigFile.eof()) 
-   {
-      
+ while (!ConfigFile.eof()) {
     getline(ConfigFile, LineBuffer);
-
     //  If line is a Start Up SSSD bloc, Reading toggle to true      
-        if (LineBuffer.compare(0, 4, "SSSD") == 0 &&LineBuffer.compare(0, 5, "SSSDA") != 0) 
-          {
+        if (LineBuffer.compare(0, 4, "SSSD") == 0 &&LineBuffer.compare(0, 5, "SSSDA") != 0) {
             cout << "SSSD found: " << endl   ;        
             ReadingStatus = true ;
           }
@@ -103,8 +96,7 @@ void TSSSDPhysics::ReadConfiguration(string Path)
     else ReadingStatus = false ;
 
     //  Reading Block
-    while(ReadingStatus)
-      {
+    while(ReadingStatus){
           // Pickup Next Word 
         ConfigFile >> DataBuffer ;
 
@@ -207,8 +199,7 @@ void TSSSDPhysics::ReadConfiguration(string Path)
                /////////////////////////////////////////////////
                //  If All necessary information there, toggle out
              
-             if ( (check_A && check_B && check_C && check_D) || (check_Theta && check_Phi && check_R && check_beta) ) 
-               { 
+             if ( (check_A && check_B && check_C && check_D) || (check_Theta && check_Phi && check_R && check_beta) ) { 
                    ReadingStatus = false; 
                    
                    ///Add The previously define telescope
@@ -236,7 +227,6 @@ void TSSSDPhysics::ReadConfiguration(string Path)
                 ReadingStatus = false ;
                        
                }
-               
             }
           }
           
@@ -246,33 +236,27 @@ void TSSSDPhysics::ReadConfiguration(string Path)
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TSSSDPhysics::AddParameterToCalibrationManager()
-  {
+void TSSSDPhysics::AddParameterToCalibrationManager(){
     CalibrationManager* Cal = CalibrationManager::getInstance();
     
-    for(int i = 0 ; i < NumberOfDetector ; ++i)
-      {
+    for(int i = 0 ; i < NumberOfDetector ; ++i){
       
-        for( int j = 0 ; j < 16 ; ++j)
-          {
+        for( int j = 0 ; j < 16 ; ++j){
             Cal->AddParameter("SSSD", "Detector"+ NPA::itoa(i+1)+"_Strip"+ NPA::itoa(j+1)+"_E","SSSD_DETECTOR_"+ NPA::itoa(i+1)+"_STRIP_"+ NPA::itoa(j+1)+"_E")  ;
             Cal->AddParameter("SSSD", "Detector"+ NPA::itoa(i+1)+"_Strip"+ NPA::itoa(j+1)+"_T","SSSD_DETECTOR_"+ NPA::itoa(i+1)+"_STRIP_"+ NPA::itoa(j+1)+"_T")  ;  
           }
-    
       }
   }
-  
+ 
 ///////////////////////////////////////////////////////////////////////////
-void TSSSDPhysics::InitializeRootInputRaw()
-  {
+void TSSSDPhysics::InitializeRootInputRaw(){
     TChain* inputChain = RootInput::getInstance()->GetChain();
     inputChain->SetBranchStatus ( "SSSD"     , true );
     inputChain->SetBranchStatus ( "fSSSD_*"  , true );
     inputChain->SetBranchAddress( "SSSD"     , &EventData );
   }     
 ///////////////////////////////////////////////////////////////////////////
-void TSSSDPhysics::InitializeRootInputPhysics()
-   {
+void TSSSDPhysics::InitializeRootInputPhysics(){
    TChain* inputChain = RootInput::getInstance()->GetChain();
    inputChain->SetBranchStatus ( "SSSD"          , true );
    inputChain->SetBranchStatus ( "DetectorNumber", true );
@@ -283,32 +267,25 @@ void TSSSDPhysics::InitializeRootInputPhysics()
 
    }
 ///////////////////////////////////////////////////////////////////////////
-void TSSSDPhysics::InitializeRootOutput()
-  {
+void TSSSDPhysics::InitializeRootOutput(){
     TTree* outputTree = RootOutput::getInstance()->GetTree()      ;
     outputTree->Branch( "SSSD" , "TSSSDPhysics" , &EventPhysics )  ;
   }
 
 ///////////////////////////////////////////////////////////////////////////
-void TSSSDPhysics::BuildPhysicalEvent()
-  {
+void TSSSDPhysics::BuildPhysicalEvent(){
     BuildSimplePhysicalEvent()  ;
   }
 
 ///////////////////////////////////////////////////////////////////////////
-void TSSSDPhysics::BuildSimplePhysicalEvent()
-  {
+void TSSSDPhysics::BuildSimplePhysicalEvent(){
         PreTreat();
-
-        for(unsigned int i = 0 ; i <   PreTreatedData->GetEnergyMult() ; ++i)
-          {
-          
+        for(unsigned int i = 0 ; i <   PreTreatedData->GetEnergyMult() ; ++i){
             DetectorNumber  .push_back(   PreTreatedData->GetEnergyDetectorNbr(i) )  ;
             StripNumber     .push_back(   PreTreatedData->GetEnergyStripNbr(i)    )  ;
             Energy          .push_back(   PreTreatedData->GetEnergy(i)            )  ; 
             // Look For associate Time
-            for(unsigned int j = 0 ; j <   PreTreatedData->GetTimeMult() ; ++j )
-              {
+            for(unsigned int j = 0 ; j <   PreTreatedData->GetTimeMult() ; ++j ){
                 if(PreTreatedData->GetEnergyDetectorNbr(i) == PreTreatedData->GetTimeDetectorNbr(j) && PreTreatedData->GetEnergyStripNbr(i)==PreTreatedData->GetTimeStripNbr(j))
                   Time.push_back(PreTreatedData->GetTime(j));
               }                        
@@ -317,30 +294,23 @@ void TSSSDPhysics::BuildSimplePhysicalEvent()
   }
   
 ///////////////////////////////////////////////////////////////////////////
-void TSSSDPhysics::PreTreat()
-  {
-    ClearPreTreatedData();
-      
-      //  E
-      for(int i = 0 ; i < EventData->GetEnergyMult() ; ++i)
-        {
-          if(EventData->GetEnergy(i) > m_Pedestal_Threshold && ChannelStatus[EventData->GetEnergyDetectorNbr(i)-1][EventData->GetEnergyStripNbr(i)-1])
-            {
+void TSSSDPhysics::PreTreat(){
+  ClearPreTreatedData();
+  
+  //  E
+      for(int i = 0 ; i < EventData->GetEnergyMult() ; ++i){
+        if(EventData->GetEnergy(i) > m_Pedestal_Threshold && ChannelStatus[EventData->GetEnergyDetectorNbr(i)-1][EventData->GetEnergyStripNbr(i)-1]){
                double E = fSi_E(EventData , i); 
-               if( E > m_E_Threshold )
-                   {
+               if( E > m_E_Threshold ){
                      PreTreatedData->SetEnergyDetectorNbr( EventData->GetEnergyDetectorNbr(i) )  ;
                      PreTreatedData->SetEnergyStripNbr( EventData->GetEnergyStripNbr(i) )        ;
                      PreTreatedData->SetEnergy( E )                                              ;
                    }
               } 
           }
-      
          //  T
-         for(int i = 0 ; i < EventData->GetTimeMult() ; ++i)
-            {
-              if(ChannelStatus[EventData->GetEnergyDetectorNbr(i)-1][EventData->GetEnergyStripNbr(i)-1])
-                {
+         for(int i = 0 ; i < EventData->GetTimeMult() ; ++i){
+            if(ChannelStatus[EventData->GetTimeDetectorNbr(i)-1][EventData->GetTimeStripNbr(i)-1]){
                  PreTreatedData->SetTimeDetectorNbr( EventData->GetTimeDetectorNbr(i) )  ;
                  PreTreatedData->SetTimeStripNbr( EventData->GetTimeStripNbr(i) )        ;
                  PreTreatedData->SetTime( fSi_T(EventData , i) )                         ;
@@ -349,8 +319,7 @@ void TSSSDPhysics::PreTreat()
   }
 
 ///////////////////////////////////////////////////////////////////////////
-void TSSSDPhysics::InitializeStandardParameter()
-  {
+void TSSSDPhysics::InitializeStandardParameter(){
       //  Enable all channel
       vector<bool> TempChannelStatus;
       ChannelStatus.clear();
@@ -359,8 +328,7 @@ void TSSSDPhysics::InitializeStandardParameter()
           ChannelStatus[i] = TempChannelStatus;
   }
 ///////////////////////////////////////////////////////////////////////////
-void TSSSDPhysics::ReadAnalysisConfig()
-{
+void TSSSDPhysics::ReadAnalysisConfig(){
    bool ReadingStatus = false;
 
    // path to file

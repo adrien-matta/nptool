@@ -42,13 +42,12 @@
 #include "G4SubtractionSolid.hh"
 
 // NPTool header
-#include "ThinSi.hh"
+#include "SSSD.hh"
 #include "MaterialManager.hh"
 #include "NPSDetectorFactory.hh"
-#include "ObsoleteGeneralScorers.hh"
-#include "ThinSiScorers.hh"
+#include "SiliconScorers.hh"
 #include "RootOutput.h"
-using namespace THINSI;
+using namespace SSSD_LOCAL;
 
 // CLHEP header
 #include "CLHEP/Random/RandGauss.h"
@@ -59,17 +58,18 @@ using namespace CLHEP;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// ThinSi Specific Method
-ThinSi::ThinSi(){
+// SSSD Specific Method
+SSSD::SSSD(){
   InitializeMaterial();
   m_Event = new TSSSDData();
   m_StripScorer=0;
 }
 
-ThinSi::~ThinSi(){
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+SSSD::~SSSD(){
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void ThinSi::AddTelescope( G4ThreeVector TL,
+void SSSD::AddTelescope( G4ThreeVector TL,
     G4ThreeVector BL,
     G4ThreeVector BR,
     G4ThreeVector TR)
@@ -88,8 +88,8 @@ void ThinSi::AddTelescope( G4ThreeVector TL,
   m_beta_v.push_back(0);
   m_beta_w.push_back(0);
 }
-
-void ThinSi::AddTelescope( G4double R,
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void SSSD::AddTelescope( G4double R,
     G4double Theta,
     G4double Phi,
     G4double beta_u,
@@ -115,7 +115,7 @@ void ThinSi::AddTelescope( G4double R,
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void ThinSi::VolumeMaker(  G4int             DetNumber ,
+void SSSD::VolumeMaker(  G4int             DetNumber ,
     G4ThreeVector     Det_pos ,
     G4RotationMatrix* Det_rot ,
     G4LogicalVolume*  world   )
@@ -130,21 +130,21 @@ void ThinSi::VolumeMaker(  G4int             DetNumber ,
   /////////General Geometry Parameter Definition /////////////////
   ////////////////////////////////////////////////////////////////
   /////// Starting Volume Definition ///////
-  G4String Name = "ThinSi" + DetectorNumber;
+  G4String Name = "SSSD" + DetectorNumber;
 
-  G4Box* solidThinSi = new G4Box(Name+"Solid", 0.5*DetectorSize, 0.5*DetectorSize, 0.5*FrameThickness);
+  G4Box* solidSSSD = new G4Box(Name+"Solid", 0.5*DetectorSize, 0.5*DetectorSize, 0.5*FrameThickness);
 
-  G4LogicalVolume* logicThinSi =
-    new G4LogicalVolume(solidThinSi, m_MaterialVacuum, Name+"_logic", 0, 0);
+  G4LogicalVolume* logicSSSD =
+    new G4LogicalVolume(solidSSSD, m_MaterialVacuum, Name+"_logic", 0, 0);
 
   new G4PVPlacement(   G4Transform3D(*Det_rot, Det_pos) ,
-      logicThinSi         ,
+      logicSSSD         ,
       Name                ,
       world               ,
       false               ,
-      0);
+      DetNumber);
 
-  logicThinSi->SetVisAttributes(G4VisAttributes::Invisible);
+  logicSSSD->SetVisAttributes(G4VisAttributes::Invisible);
   // Frame is made of 4 thick box (2 Horizontal and 2 Vertical)
   G4Box* solidFrameHorizontal = new G4Box(Name + "_Frame", 0.5*SiliconSize, 0.5*(DetectorSize - SiliconSize) / 2, 0.5*FrameThickness*mm)   ;
   G4Box* solidFrameVertical  = new G4Box(Name + "_Frame", 0.5*(DetectorSize - SiliconSize) / 2, 0.5*DetectorSize, 0.5*FrameThickness*mm)   ;
@@ -156,7 +156,7 @@ void ThinSi::VolumeMaker(  G4int             DetNumber ,
 
   G4LogicalVolume* logicFrameVertical = new G4LogicalVolume(solidFrameVertical, m_MaterialAl, Name, 0, 0);
   logicFrameVertical->SetVisAttributes(VisAtt1); 
-  
+
   G4ThreeVector FrameTopPosition    = G4ThreeVector(0 ,  0.5 * SiliconSize + 0.5 * (DetectorSize - SiliconSize) / 2 , 0) ; 
   G4ThreeVector FrameBottomPosition = G4ThreeVector(0 , -0.5 * SiliconSize - 0.5 * (DetectorSize - SiliconSize) / 2 , 0) ;
   G4ThreeVector FrameLeftPosition   = G4ThreeVector(0.5 * SiliconSize + 0.5 * (DetectorSize - SiliconSize) / 2 , 0 , 0) ;
@@ -167,33 +167,33 @@ void ThinSi::VolumeMaker(  G4int             DetNumber ,
       FrameTopPosition,
       logicFrameHorizontal,
       Name + "_Frame",
-      logicThinSi,
+      logicSSSD,
       false,
-      0);
+      DetNumber);
 
   new G4PVPlacement(   0,
       FrameBottomPosition,
       logicFrameHorizontal,
       Name + "_Frame",
-      logicThinSi,
+      logicSSSD,
       false,
-      0);
+      DetNumber);
 
   new G4PVPlacement(   0,
       FrameLeftPosition,
       logicFrameVertical,
       Name + "_Frame",
-      logicThinSi,
+      logicSSSD,
       false,
-      0);
+      DetNumber);
 
   new G4PVPlacement(   0,
       FrameRightPosition,
       logicFrameVertical,
       Name + "_Frame",
-      logicThinSi,
+      logicSSSD,
       false,
-      0);
+      DetNumber);
 
 
   G4ThreeVector posAluFront  = G4ThreeVector(0 ,  0  ,  AluStripFront_PosZ)  ;
@@ -201,25 +201,25 @@ void ThinSi::VolumeMaker(  G4int             DetNumber ,
   G4ThreeVector posAluBack   = G4ThreeVector(0 ,  0  ,  AluStripBack_PosZ )  ;
 
   G4Box*   solidAlu  =
-    new G4Box("ThinSiAlu", 0.5*SiliconSize, 0.5*SiliconSize, 0.5*AluThickness) ;
+    new G4Box("SSSDAlu", 0.5*SiliconSize, 0.5*SiliconSize, 0.5*AluThickness) ;
 
   G4LogicalVolume* logicAlu  =
     new G4LogicalVolume(solidAlu, m_MaterialAl, "logicAlu", 0, 0, 0)    ;
 
-  
-  new G4PVPlacement(0  ,  posAluFront ,  logicAlu ,  Name + "_AluFront"   ,  logicThinSi ,  true, 0)  ;
 
-  new G4PVPlacement(0  ,  posAluBack  ,  logicAlu ,  Name + "_AluBack"    ,  logicThinSi ,  true, 0)  ;
+  new G4PVPlacement(0  ,  posAluFront ,  logicAlu ,  Name + "_AluFront"   ,  logicSSSD ,  true, DetNumber)  ;
+
+  new G4PVPlacement(0  ,  posAluBack  ,  logicAlu ,  Name + "_AluBack"    ,  logicSSSD ,  true, DetNumber)  ;
 
   G4Box*   solidSi  =
-    new G4Box("ThinSi", 0.5*SiliconSize, 0.5*SiliconSize, 0.5*SiliconThickness);
+    new G4Box("SSSD", 0.5*SiliconSize, 0.5*SiliconSize, 0.5*SiliconThickness);
 
   G4LogicalVolume* logicSi  =
     new G4LogicalVolume(solidSi, m_MaterialSilicon, "logicSi", 0, 0, 0);
 
   logicAlu->SetVisAttributes(G4VisAttributes::Invisible);  
 
-  new G4PVPlacement(0, posSi, logicSi, Name + "_Si", logicThinSi, true, 0);
+  new G4PVPlacement(0, posSi, logicSi, Name + "_Si", logicSSSD, true, DetNumber);
 
   //attach it to the Silicon plate
   logicSi ->SetSensitiveDetector(m_StripScorer);
@@ -230,10 +230,10 @@ void ThinSi::VolumeMaker(  G4int             DetNumber ,
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Virtual Method of NPS::VDetector class
 
-
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void ThinSi::ReadConfiguration(string Path){
+void SSSD::ReadConfiguration(string Path){
   ifstream ConfigFile           ;
   ConfigFile.open(Path.c_str()) ;
   string LineBuffer             ;
@@ -258,7 +258,7 @@ void ThinSi::ReadConfiguration(string Path){
 
     getline(ConfigFile, LineBuffer);
 
-    //   If line is a Start Up ThinSi bloc, Reading toggle to true      
+    //   If line is a Start Up SSSD bloc, Reading toggle to true      
     if (LineBuffer.compare(0, 4, "SSSD") == 0 && LineBuffer.compare(0, 5, "SSSDA") != 0) 
     {
       G4cout << "///" << G4endl           ;
@@ -441,10 +441,10 @@ void ThinSi::ReadConfiguration(string Path){
   }
 
 }
-
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Construct detector and inialise sensitive part.
 // Called After DetecorConstruction::AddDetector Method
-void ThinSi::ConstructDetector(G4LogicalVolume* world){
+void SSSD::ConstructDetector(G4LogicalVolume* world){
 
   G4RotationMatrix* Det_rot  = NULL;
   G4ThreeVector     Det_pos  = G4ThreeVector(0, 0, 0);
@@ -519,183 +519,111 @@ void ThinSi::ConstructDetector(G4LogicalVolume* world){
       Det_pos = Det_w + CT ;
     }
 
-
-
     VolumeMaker(i + 1 , Det_pos , Det_rot , world);
   }
 
   delete Det_rot ;
 }
-
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Add Detector branch to the EventTree.
 // Called After DetecorConstruction::AddDetector Method
-void ThinSi::InitializeRootOutput(){
+void SSSD::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
   pTree->Branch("SSSD", "TSSSDData", &m_Event) ;
   pTree->SetBranchAddress("SSSD", &m_Event) ;
 }
-
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
-void ThinSi::ReadSensitive(const G4Event* event){
+void SSSD::ReadSensitive(const G4Event* event){
   m_Event->Clear();
-  //////////////////////////////////////////////////////////////////////////////////////
-  //////////////////////// Used to Read Event Map of detector //////////////////////////
-  //////////////////////////////////////////////////////////////////////////////////////
 
-  // Si
-  G4THitsMap<G4int>*     DetNbrHitMap;  
-  G4THitsMap<G4int>*     StripNbrHitMap;    
-  G4THitsMap<G4double>*  EnergyHitMap;
-  G4THitsMap<G4double>*  TimeHitMap;
+  ///////////
+  G4THitsMap<G4double*>* StripHitMap;
+  std::map<G4int, G4double**>::iterator Strip_itr;
+  
+  G4int StripCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("SSSD_Scorer/StripScorer");
+  StripHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(StripCollectionID));
+  
+  // Loop on the Strip map
+  for (Strip_itr = StripHitMap->GetMap()->begin() ; Strip_itr != StripHitMap->GetMap()->end() ; Strip_itr++){
+    
+    G4double* Info = *(Strip_itr->second);
+    
+    double Energy = Info[0];
+    
+    if(Energy>EnergyThreshold){
+      double Time       = Info[1];
+      int DetNbr        = (int) Info[7];
+      int StripFront    = (int) Info[8];
 
-  std::map<G4int, G4int*>::iterator DetNbr_itr     ;
-  std::map<G4int, G4int*>::iterator StripNbr_itr  ;
-  std::map<G4int, G4double*>::iterator Energy_itr ;
-  std::map<G4int, G4double*>::iterator Time_itr   ;
-  //////////////////////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////////////
-  // Read the Scorer associate to the Silicon Strip
-
-  //DetectorNumber   
-  G4int DetNbrCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThinSi_StripScorer/DetectorNumber");
-  DetNbrHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(DetNbrCollectionID));
-  DetNbr_itr = DetNbrHitMap->GetMap()->begin();
-
-  //StripNumber   
-  G4int StripNbrCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThinSi_StripScorer/StripNumber");
-  StripNbrHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripNbrCollectionID));
-
-  //Energy
-  G4int StripEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThinSi_StripScorer/StripEnergy");
-  EnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripEnergyCollectionID));
-
-  //Time
-  G4int StripTimeCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThinSi_StripScorer/StripTime");
-  TimeHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripTimeCollectionID));
-
-  G4int sizeN = DetNbrHitMap      ->entries();
-  G4int sizeS = StripNbrHitMap    ->entries();
-  G4int sizeE = EnergyHitMap       ->entries();
-  G4int sizeT = TimeHitMap         ->entries();
-
-  // Loop on Det Number
-  for (G4int l = 0 ; l < sizeN ; l++) 
-  {
-    G4int N     =      *(DetNbr_itr->second);
-    G4int NTrackID  =   DetNbr_itr->first - N;
-
-    if (N > 0) 
-    {
-      m_Event->SetEnergyDetectorNbr(N);
-      m_Event->SetTimeDetectorNbr(N);
-
-      //  Strip Number
-      StripNbr_itr = StripNbrHitMap->GetMap()->begin();
-      for (G4int h = 0 ; h < sizeS ; h++) {
-        G4int STrackID  =   StripNbr_itr->first  - N ;
-        G4int S         = *(StripNbr_itr->second);
-
-        if (STrackID == NTrackID) {
-          m_Event->SetEnergyStripNbr(S);
-          m_Event->SetTimeStripNbr(S);
-        }
-
-        StripNbr_itr++;
-      }
-
-      //  Energy
-      Energy_itr = EnergyHitMap->GetMap()->begin();
-      for (G4int h = 0 ; h < sizeE ; h++) {
-        G4int ETrackID  =   Energy_itr->first  - N;
-        G4double E      = *(Energy_itr->second);
-
-        if (ETrackID == NTrackID) {
-          m_Event->SetEnergy( RandGauss::shoot(E, ResoEnergy ) );
-        }
-
-        Energy_itr++;
-      }
-
-
-      //  Time
-      Time_itr = TimeHitMap->GetMap()->begin();
-      for (G4int h = 0 ; h < sizeT ; h++) {
-        G4int TTrackID  =   Time_itr->first   - N ;
-        G4double T     = *(Time_itr->second);
-
-        if (TTrackID == NTrackID) {
-          m_Event->SetTime( RandGauss::shoot(T, ResoTime ) );
-        }
-
-        Time_itr++;
-      }
-
+      m_Event->SetEnergyDetectorNbr(DetNbr);
+      m_Event->SetEnergyStripNbr(StripFront);
+      m_Event->SetEnergy(RandGauss::shoot(Energy, ResoEnergy));
+    
+      m_Event->SetTimeDetectorNbr(DetNbr);
+      m_Event->SetTimeStripNbr(StripFront);
+      m_Event->SetTime(RandGauss::shoot(Time, ResoTime));
+      
     }
-
-    DetNbr_itr++;
   }
-
   // clear map for next event
+  StripHitMap->clear();
+ 
 
-  DetNbrHitMap   ->clear();
-  StripNbrHitMap ->clear();
-  EnergyHitMap   ->clear(); 
-  TimeHitMap     ->clear();    
 }
 
-
-void ThinSi::InitializeScorers(){
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void SSSD::InitializeScorers(){
   bool already_exist = false;
   //   Silicon Associate Scorer
-  m_StripScorer = CheckScorer("ThinSi_StripScorer",already_exist);
+  m_StripScorer = CheckScorer("SSSD_Scorer",already_exist);
   if(already_exist) return;
 
-  G4VPrimitiveScorer* DetNbr   = new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber","ThinSi_", 0);
-  G4VPrimitiveScorer* StripNbr = new PSStripNumber("StripNumber",0,SiliconSize, NumberOfStrip); 
-  G4VPrimitiveScorer* Energy   = new OBSOLETEGENERALSCORERS::PSEnergy("StripEnergy","ThinSi_", 0);         
-  G4VPrimitiveScorer* TOF      = new OBSOLETEGENERALSCORERS::PSTOF("StripTime","ThinSi_", 0);                                 
+  G4VPrimitiveScorer* StripScorer =
+    new  SILICONSCORERS::PS_Silicon_Rectangle("StripScorer",0,
+        DetectorSize,
+        DetectorSize,
+        NumberOfStrip,
+        1);
 
-
-  //and register it to the multifunctionnal detector
-  m_StripScorer->RegisterPrimitive(DetNbr);
-  m_StripScorer->RegisterPrimitive(StripNbr);
-  m_StripScorer->RegisterPrimitive(Energy);
-  m_StripScorer->RegisterPrimitive(TOF);
-
-  //   Add All Scorer to the Global Scorer Manager
-  G4SDManager::GetSDMpointer()->AddNewDetector(m_StripScorer) ;
+  m_StripScorer->RegisterPrimitive(StripScorer);
+  G4SDManager::GetSDMpointer()->AddNewDetector(m_StripScorer);
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 ////////////////////////////////////////////////////////////////
 /////////////////Material Definition ///////////////////////////
 ////////////////////////////////////////////////////////////////
-void ThinSi::InitializeMaterial(){
+void SSSD::InitializeMaterial(){
   m_MaterialSilicon = MaterialManager::getInstance()->GetMaterialFromLibrary("Si");
   m_MaterialAl = MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
   m_MaterialVacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
 }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 
- ////////////////////////////////////////////////////////////////////////////////
- //            Construct Method to be pass to the DetectorFactory              //
- ////////////////////////////////////////////////////////////////////////////////
- NPS::VDetector* ThinSi::Construct(){
-  return  (NPS::VDetector*) new ThinSi();
- }
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPS::VDetector* SSSD::Construct(){
+  return  (NPS::VDetector*) new SSSD();
+}
 
- ////////////////////////////////////////////////////////////////////////////////
- //            Registering the construct method to the factory                 //
- ////////////////////////////////////////////////////////////////////////////////
- extern"C" {
- class proxy{
-   public:
-    proxy(){
-      NPS::DetectorFactory::getInstance()->AddToken("ThinSi","ThinSi");
-      NPS::DetectorFactory::getInstance()->AddDetector("ThinSi",ThinSi::Construct);
-    }
-};
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern"C" {
+  class proxy{
+    public:
+      proxy(){
+        NPS::DetectorFactory::getInstance()->AddToken("SSSD","SSSD");
+        NPS::DetectorFactory::getInstance()->AddDetector("SSSD",SSSD::Construct);
+      }
+  };
 
- proxy p;
- }
+  proxy p;
+}

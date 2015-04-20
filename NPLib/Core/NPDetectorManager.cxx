@@ -77,8 +77,9 @@ void NPA::DetectorManager::ReadConfigurationFile(string Path)   {
 
   ifstream ConfigFile;
   ConfigFile.open(Path.c_str());
-  string LineBuffer;
+  string LineBuffer,DataBuffer;
   set<string> check;
+  bool cGeneralTarget=false;
 
   if (ConfigFile.is_open()) {
     cout << endl << "/////////// Detector geometry ///////////" << endl;
@@ -90,6 +91,104 @@ void NPA::DetectorManager::ReadConfigurationFile(string Path)   {
     getline(ConfigFile, LineBuffer);
     //Search for comment Symbol: %
     if (LineBuffer.compare(0, 1, "%") == 0) { ;}
+    ////////////////////////////////////////////
+    //////////// Search for Target /////////////
+    ////////////////////////////////////////////
+
+  else if (LineBuffer.compare(0, 13, "GeneralTarget") == 0 && cGeneralTarget == false) {
+      cGeneralTarget = true ;
+      cout << "////////// Target ///////////" << endl;
+
+      // jump one line
+      getline(ConfigFile, LineBuffer);
+      getline(ConfigFile, LineBuffer);
+
+      bool check_Thickness = false;
+      //         bool check_Angle     = false;
+      bool check_Radius    = false;
+      bool check_Material  = false;
+      bool check_X         = false;
+      bool check_Y         = false;
+      bool check_Z         = false;
+
+      bool ReadingStatusTarget = true;
+      while (ReadingStatusTarget) {
+        ConfigFile >> DataBuffer;
+
+        // Search for comment Symbol %
+        if (DataBuffer.compare(0, 1, "%") == 0) {ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );getline(ConfigFile, LineBuffer);}
+
+        else if (DataBuffer.compare(0, 10, "THICKNESS=") == 0) {
+          check_Thickness = true ;
+          ConfigFile >> DataBuffer;
+          //               m_TargetThickness = atof(DataBuffer.c_str()) * micrometer;
+          m_TargetThickness = atof(DataBuffer.c_str());
+          cout << "Target Thickness: " << m_TargetThickness << endl;
+        }
+
+        else if (DataBuffer.compare(0, 6, "ANGLE=") == 0) {
+          //               check_Angle = true ;
+          ConfigFile >> DataBuffer;
+          //               m_TargetAngle = atof(DataBuffer.c_str()) * deg;
+          m_TargetAngle = atof(DataBuffer.c_str());
+          cout << "Target Angle: " << m_TargetAngle << endl;
+        }
+
+        else if (DataBuffer.compare(0, 7, "RADIUS=") == 0) {
+          check_Radius = true ;
+          ConfigFile >> DataBuffer;
+          //               m_TargetRadius = atof(DataBuffer.c_str()) * mm;
+          m_TargetRadius = atof(DataBuffer.c_str());
+          cout << "Target Radius: " <<  m_TargetRadius << endl;
+        }
+
+        else if (DataBuffer.compare(0, 9, "MATERIAL=") == 0) {
+          check_Material = true ;
+          ConfigFile >> DataBuffer;
+          m_TargetMaterial = DataBuffer;
+          cout << "Target Material: " << m_TargetMaterial << endl;
+        }
+
+        else if (DataBuffer.compare(0, 2, "X=") == 0) {
+          check_X = true ;
+          ConfigFile >> DataBuffer;
+          //               m_TargetX = atoi(DataBuffer.c_str()) * mm;
+          m_TargetX = atoi(DataBuffer.c_str());
+          cout << "Target Coordinates (mm): ( " << m_TargetX << " ; ";
+        }
+
+        else if (DataBuffer.compare(0, 2, "Y=") == 0) {
+          check_Y = true ;
+          ConfigFile >> DataBuffer;
+          //               m_TargetY = atoi(DataBuffer.c_str()) * mm;
+          m_TargetY = atoi(DataBuffer.c_str());
+          cout << m_TargetY << " ; ";
+        }
+
+        else if (DataBuffer.compare(0, 2, "Z=") == 0) {
+          check_Z = true ;
+          ConfigFile >> DataBuffer;
+          //               m_TargetZ = atoi(DataBuffer.c_str()) * mm;
+          m_TargetZ = atoi(DataBuffer.c_str());
+          cout  << m_TargetZ << " )" << endl;
+        }
+
+        ///////////////////////////////////////////////////
+        // If no Target Token and no comments, toggle out
+        else {
+          ReadingStatusTarget = false; 
+          cout << "WARNING : Wrong Token Sequence: Getting out " << endl;
+        }
+
+        ///////////////////////////////////////////////////
+        // If all Token found toggle out
+        if (check_Thickness && check_Radius && check_Material && check_X && check_Y && check_Z)
+          ReadingStatusTarget = false;
+
+      }
+    }///////////////////////////////////////////
+    /////////// Search for Detectors ///////////
+    ////////////////////////////////////////////
     else{
       istringstream oss(LineBuffer);
       string token;

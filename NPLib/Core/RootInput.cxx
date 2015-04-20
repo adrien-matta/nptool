@@ -30,7 +30,6 @@
 #include "RootInput.h"
 #include "TAsciiFile.h"
 #include "NPOptionManager.h"
-#include "TEnv.h"
 RootInput* RootInput::instance = 0;
 ////////////////////////////////////////////////////////////////////////////////
 RootInput* RootInput::getInstance(string configFileName){
@@ -57,11 +56,6 @@ RootInput::RootInput(string configFileName){
   if(lastfile!="VOID"){
     configFileName = lastfile;
   }
-
-  // Setting Root Parameter
-  gEnv->SetValue("TFile.AsyncPrefetching", 1);
-  gEnv->SetValue("TTreeCache.Size",300000000);
-  gEnv->SetValue("TTreeCache.Prefill",1);
 
   NumberOfFriend = 0;
   bool CheckTreeName     = false;
@@ -111,9 +105,13 @@ RootInput::RootInput(string configFileName){
           std::string SHARED_LIB_EXTENSION = ".dylib";
 #endif
 
+          string path = getenv("NPTOOL");
+          path+="/NPLib/lib/";
           string libName="libNPInteractionCoordinates"+SHARED_LIB_EXTENSION;
+          libName=path+libName;
           dlopen(libName.c_str(),RTLD_NOW);
           libName="libNPInitialConditions"+SHARED_LIB_EXTENSION;
+          libName=path+libName;
           dlopen(libName.c_str(),RTLD_NOW);
         }
       }

@@ -1,5 +1,5 @@
-#ifndef ThinSi_h
-#define ThinSi_h 1
+#ifndef SSSD_h
+#define SSSD_h 1
 /*****************************************************************************
  * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
  *                                                                           *
@@ -38,15 +38,14 @@
 // NPLib 
 #include "TSSSDData.h"
 using namespace std;
-using namespace CLHEP;
+using namespace CLHEP;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-namespace THINSI
-{
+namespace SSSD_LOCAL{
    // Energy and time Resolution
    const G4double ResoTime    = 0      ;
    const G4double ResoEnergy  = 0.064  ;// = 150keV of Resolution   //   Unit is MeV/2.35
-
+   const G4double EnergyThreshold = 100*keV;
    // Geometry
    const G4double DetectorSize      = 68*mm           ;
    const G4double SiliconThickness  = 20*micrometer   ;
@@ -58,19 +57,15 @@ namespace THINSI
    const G4double AluStripFront_PosZ   = -0.5*SiliconThickness - 0.5*AluThickness   ;
    const G4double Si_PosZ              = 0                                          ;
    const G4double AluStripBack_PosZ    = 0.5*SiliconThickness + 0.5*AluThickness    ;
-
 }
 
-using namespace THINSI ;
-
-class ThinSi : public NPS::VDetector
-{
+class SSSD : public NPS::VDetector{
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
    ////////////////////////////////////////////////////
 public:
-   ThinSi() ;
-   virtual ~ThinSi() ;
+   SSSD() ;
+   ~SSSD() ;
 
    ////////////////////////////////////////////////////
    //////// Specific Function of this Class ///////////

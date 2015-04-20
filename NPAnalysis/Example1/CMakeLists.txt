@@ -9,6 +9,8 @@ include("${NPLIB}/FindROOT.cmake")
 
 project (NPAnalysis)
 set(CMAKE_BUILD_TYPE Release)  
+
+
 # Add root to the link and include directories
 include_directories( ${ROOT_INCLUDE_DIR})
 link_directories( ${ROOT_LIBRARY_DIR})

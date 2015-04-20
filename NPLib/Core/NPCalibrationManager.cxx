@@ -20,6 +20,7 @@
  *                                                                           *
  *****************************************************************************/
 #include "NPCalibrationManager.h"
+#include "NPOptionManager.h"
 #include "TAsciiFile.h"
 #include "RootOutput.h"
 
@@ -32,8 +33,7 @@
 //////////////////////////////////////////////////////////////////
 CalibrationManager* CalibrationManager::instance = 0;
 
-CalibrationManager* CalibrationManager::getInstance(string configFileName)
-{
+CalibrationManager* CalibrationManager::getInstance(string configFileName){
   // A new instance of CalibrationManager is created if it does not exist:
   if (instance == 0) {
     instance = new CalibrationManager(configFileName);
@@ -44,8 +44,7 @@ CalibrationManager* CalibrationManager::getInstance(string configFileName)
 }
 
 //////////////////////////////////////////////////////////////////
-CalibrationManager::CalibrationManager(string configFileName)
-{
+CalibrationManager::CalibrationManager(string configFileName){
   // Read configuration file Buffer
   string lineBuffer, dataBuffer;
 
@@ -53,12 +52,15 @@ CalibrationManager::CalibrationManager(string configFileName)
   ifstream inputConfigFile;
   inputConfigFile.open(configFileName.c_str());
 
-  cout << endl;
-  cout << "/////////// Calibration Information ///////////" << endl;
-  cout << "Getting list of Calibration File" << endl;
-
+  if(!NPOptionManager::getInstance()->IsDefault("Calibration")){
+    cout << endl;
+    cout << "/////////// Calibration Information ///////////" << endl;
+    cout << "Getting list of Calibration File" << endl;
+  }
+ 
   if (!inputConfigFile) {
-    cout << "Calibration Path file :" << configFileName << " not found " << endl; 
+      if(!NPOptionManager::getInstance()->IsDefault("Calibration"))
+        cout << "Calibration Path file :" << configFileName << " not found " << endl; 
     return;
   }
 
