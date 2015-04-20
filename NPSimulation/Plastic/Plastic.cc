@@ -57,7 +57,8 @@ using namespace CLHEP;
 namespace PLASTIC{
   // Energy and time Resolution
   const G4double ResoTime    = 4.2         ;// = 10ns of Resolution   //   Unit is MeV/2.35
-  const G4double ResoEnergy  = 5.0         ;// Resolution in %
+  //const G4double ResoEnergy  = 5.0         ;// Resolution in %
+  const G4double ResoEnergy  = 0.055/2.35        ;// Resolution in MeV
 }
 
 using namespace PLASTIC ;
@@ -553,7 +554,8 @@ void Plastic::ReadSensitive(const G4Event* event){
         G4int ETrackID  =   Energy_itr->first  - N      ;
         G4double E     = *(Energy_itr->second)         ;
         if (ETrackID == NTrackID) {
-          m_Event->SetEnergy(RandGauss::shoot(E, E*ResoEnergy/100./2.35))    ;
+          //m_Event->SetEnergy(RandGauss::shoot(E, E*ResoEnergy/100./2.35))    ;
+	  m_Event->SetEnergy(RandGauss::shoot(E, ResoEnergy))    ;
         }
         Energy_itr++;
       }

@@ -126,6 +126,14 @@
 #include "W1.hh"
 #endif
 
+//#ifdef INC_SILI
+//#include "SiLi.hh"
+//#endif
+
+#ifdef INC_CSI
+#include "CsI.hh"
+#endif
+
 
 // STL
 #include<cstdlib>
@@ -220,6 +228,7 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
   bool cTigress          = false;
   bool cTiara            = false;
   bool cW1               = false;
+  bool cCsI               = false;
 
   int VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
 
@@ -581,6 +590,49 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
       AddDetector(myDetector)                            ;
 #endif
     }
+      
+      ////////////////////////////////////////////
+      ////////// Search for SiLi    ///////////
+      ////////////////////////////////////////////
+   /* else if (LineBuffer.compare(0, 4, "SiLi") == 0 && cSiLi == false) {
+#ifdef INC_SILI
+        cSiLi = true ;
+        if(VerboseLevel==1) G4cout << G4endl << "//////// SiLi ////////" << G4endl << G4endl   ;
+        
+        // Instantiate the new array as a VDetector Object
+        VDetector* myDetector = new SiLi()                  ;
+        
+        // Read Position of detector
+        ConfigFile.close()                                 ;
+        myDetector->ReadConfiguration(Path)                   ;
+        ConfigFile.open(Path.c_str())                      ;
+        
+        // Add array to the VDetector Vector
+        AddDetector(myDetector)                            ;
+#endif
+    }*/
+      
+      ////////////////////////////////////////////
+      ////////// Search for CsI    ///////////
+      ////////////////////////////////////////////
+    else if (LineBuffer.compare(0, 15, "ScintillatorCsI") == 0 && cCsI == false) {
+#ifdef INC_CSI
+        cCsI = true ;
+        if(VerboseLevel==1) G4cout << G4endl << "//////// CsI ////////" << G4endl << G4endl   ;
+        
+        // Instantiate the new array as a VDetector Object
+        VDetector* myDetector = new CsI()                  ;
+        
+        // Read Position of detector
+        ConfigFile.close()                                 ;
+        myDetector->ReadConfiguration(Path)                   ;
+        ConfigFile.open(Path.c_str())                      ;
+        
+        // Add array to the VDetector Vector
+        AddDetector(myDetector)                            ;
+#endif
+    }
+      
     ////////////////////////////////////////////
     //////////// Search for Helios ////////////
     ////////////////////////////////////////////

@@ -26,7 +26,9 @@ fi
 alias NPSimulation='$NPTOOL/NPSimulation/bin/$G4SYSTEM/Simulation'
 alias NPAnalysis='$NPANA/Analysis'
 
-alias NPT='cd $NPTOOL'  
-alias NPL='cd $NPTOOL/NPLib'  
-alias NPS='cd $NPTOOL/NPSimulation'
-alias NPA='cd $NPTOOL/NPAnalysis'
+alias npt='cd $NPTOOL'  
+alias npl='cd $NPTOOL/NPLib'  
+alias nps='cd $NPTOOL/NPSimulation'
+alias npa='cd $NPTOOL/NPAnalysis'
+alias npoa='cd $NPTOOL/Outputs/Analysis'
+alias npos='cd $NPTOOL/Outputs/Simulation'

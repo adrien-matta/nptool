@@ -47,6 +47,7 @@
 /vis/viewer/set/autoRefresh true
 /vis/verbose 0
 
+/run/beamOn 1
 # print Option
 #/vis/ogl/set/printMode vectored
 #/vis/ogl/set/transparency true
