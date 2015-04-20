@@ -153,7 +153,6 @@ int main(int argc, char** argv){
   // delete primary; delete detector;
   
   delete runManager;
-  NPOptionManager::getInstance()->Destroy();
   RootOutput::getInstance()->Destroy();
   return 0;
 }
