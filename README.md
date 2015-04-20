@@ -36,7 +36,7 @@ $ cmake ./
 ````
 OR:
 ````
-$ cmake ./ -DETLIST="DetFolder1 DetFolder2 ..."
+$ cmake ./ -DETLIST="DetFolder1 DetFolder2"
 ````
 
 Then you compile the whole NPLib with n threads using :
@@ -53,9 +53,7 @@ $ cmake ./ -DETLIST="DetFolder1 DetFolder2 ..."
 $ make -jn install
 ````
 
-NB: Optimal compilation time is usually achieved for n = twice the number of available core.
-
-If you have google ninja build install then you can alternatively ask cmake to compile using it:
+If you have google ninja build install then you can alternatively ask cmake to generate the ninja.build file:
 ````
 $ cmake -GNinja ./
 $ ninja install
@@ -67,17 +65,18 @@ Compilation using Ninja is usually twice faster than using make
 This part of the package rely on Geant4 to perform Monte Carlo simulation. You need to first compile and configure correctly NPLib in order for NPSimulation to compile and run. The compilation is done as follow:
 ````
 $ NPS
+$ cmake ./
 $ make -jn
 `````
 
-This will produce the NPSimulation executable. For a detail list of the available input flag and their meaning, you can run:
+This will produce the npsimulation executable. For a detail list of the available input flag and their meaning, you can run:
 ````
-$ NPSimulation -h
+$ npsimulation -h
 ````
 
-To run a standardise test case, you can run the following command:
+To run a standardised test case, you can run the following command:
 ````
-$ NPSimulation -D Example1.detector -E Example1.reaction -O Example1
+$ npsimulation -D Example1.detector -E Example1.reaction -O Example1
 ````
 This will open the NPSimulation GUI (if you are using Qt) or the prompt terminal. In either case you can generate event using:
 ````
@@ -91,17 +90,17 @@ You can now try to analyse this simulated tree using the associated NPAnalysis p
 ````
 $ NPA
 $ cd Example1/
-$ make
-$ npanalysis -D Example1.detector -R RunToTreat.txt -O Example1
+$ cmake ./
+$ make -jn
+$ npanalysis -R RunToTreat.txt -O Example1
 ````
 
-This will produce the analysed tree located in $NPTOOL/Outputs/Analysis/Example1.root. You can then display the result of the simulation using root:
+Because the input file are written in the simulation file along the SimulatedTree, npanalysis will automatically use those file as inputs. This will produce the analysed tree located in $NPTOOL/Outputs/Analysis/Example1.root. You can then display the result of the simulation using root:
 ````
 $ root ShowResult.C
 ````
 
-You should be able to see the light particle identification, the light particle kinematical line and the associated excitation nergy spectrum.
+You should be able to see the light particle identification, the light particle kinematical line and the associated excitation energy spectrum fitted by a gaussian.
  
 The Example1 input files and NPAnalysis project are simple basis that can be used to start doing your own simulations.
 
-THIS FILE IS UNDER DEVELOPMENT
