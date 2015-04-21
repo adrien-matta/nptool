@@ -46,7 +46,7 @@ ClassImp(TFatimaPhysics)
   TFatimaPhysics::TFatimaPhysics(){
     m_NumberOfModule = 0;
     m_EventData    = new TFatimaData();
-    m_EventPhysics = new TFatimaPhysics();
+    m_EventPhysics =this; 
   }
 
 ////////////////////////////////////////////////////////////////////////////////

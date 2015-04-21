@@ -47,7 +47,7 @@ ClassImp(TNanaPhysics)
   TNanaPhysics::TNanaPhysics(){
     m_NumberOfModule = 0;
     m_EventData    = new TNanaData();
-    m_EventPhysics = new TNanaPhysics();
+    m_EventPhysics =this; 
   }
 
 ////////////////////////////////////////////////////////////////////////////////

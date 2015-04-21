@@ -47,7 +47,7 @@ ClassImp(TParisPhysics)
   TParisPhysics::TParisPhysics(){
     m_NumberOfModule = 0;
     m_EventData    = new TParisData();
-    m_EventPhysics = new TParisPhysics();
+    m_EventPhysics = this; 
   }
 
 ////////////////////////////////////////////////////////////////////////////////
