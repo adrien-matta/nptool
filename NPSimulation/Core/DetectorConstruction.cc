@@ -208,7 +208,7 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
     }
 
     else{
-      istd::stringstream oss(LineBuffer);
+      std::stringstream oss(LineBuffer);
       std::string token;
       oss >> token ;
       NPS::VDetector* detector = theFactory->Construct(token);
