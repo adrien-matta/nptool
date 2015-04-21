@@ -250,8 +250,8 @@ void Analysis::InitInputBranch(){
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VAnalysis* Analysis::Construct(){
-  return (NPA::VAnalysis*) new Analysis();
+NPL::VAnalysis* Analysis::Construct(){
+  return (NPL::VAnalysis*) new Analysis();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -261,7 +261,7 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::AnalysisFactory::getInstance()->SetConstructor(Analysis::Construct);
+      NPL::AnalysisFactory::getInstance()->SetConstructor(Analysis::Construct);
     }
 };
 

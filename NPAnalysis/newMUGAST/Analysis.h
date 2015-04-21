@@ -33,7 +33,7 @@
 #include <TVector3.h>
 #include <TMath.h>
 
-class Analysis: public NPA::VAnalysis{
+class Analysis: public NPL::VAnalysis{
   public:
     Analysis();
     ~Analysis();
@@ -46,7 +46,7 @@ class Analysis: public NPA::VAnalysis{
   void InitOutputBranch();
   void InitInputBranch();
   void ReInitValue();
-  static NPA::VAnalysis* Construct();
+  static NPL::VAnalysis* Construct();
  
   private:
   double Ex;

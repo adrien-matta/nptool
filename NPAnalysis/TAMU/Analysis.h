@@ -35,7 +35,7 @@
 
 
 
-class Analysis: public NPA::VAnalysis{
+class Analysis: public NPL::VAnalysis{
   public:
     Analysis();
     ~Analysis();
@@ -47,7 +47,7 @@ class Analysis: public NPA::VAnalysis{
     void ReInitValue();
     void InitOutputBranch();
     void InitInputBranch();
-    static NPA::VAnalysis* Construct();
+    static NPL::VAnalysis* Construct();
 
   private:
 

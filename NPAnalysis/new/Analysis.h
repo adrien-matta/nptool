@@ -23,7 +23,7 @@
  *****************************************************************************/
 #include"NPVAnalysis.h"
 #include"TAnnularS1Physics.h"
-class Analysis: public NPA::VAnalysis{
+class Analysis: public NPL::VAnalysis{
   public:
     Analysis();
     ~Analysis();
@@ -33,7 +33,7 @@ class Analysis: public NPA::VAnalysis{
     void TreatEvent();
     void End();
 
-   static NPA::VAnalysis* Construct();
+   static NPL::VAnalysis* Construct();
 
   private:
    TAnnularS1Physics* S1;
