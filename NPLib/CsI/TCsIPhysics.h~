@@ -35,7 +35,7 @@ using namespace std ;
 
 //#include "../include/CalibrationManager.h"
 
-class TCsIPhysics : public TObject, public NPL::VDetector
+class TCsIPhysics : public TObject, public NPA::VDetector
 {
    public:   //   Constructor and Destructor
       TCsIPhysics();

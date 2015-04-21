@@ -25,7 +25,6 @@
 #include "RootInput.h"
 #include "RootOutput.h"
 #include "NPDetectorFactory.h"
-#include "NPCalibrationManager.h"
 
 //   STL
 #include <iostream>
