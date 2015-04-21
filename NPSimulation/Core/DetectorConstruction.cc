@@ -57,7 +57,8 @@
 // STL
 #include<cstdlib>
 #include<fstream>
-
+#include<string>
+#include<set>
 // NPL
 #include "RootOutput.h"
 #include "NPOptionManager.h"
@@ -125,20 +126,20 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
 
   //------------------------------------------------------------------
 
-  string Path = NPOptionManager::getInstance()->GetDetectorFile();
+  std::string Path = NPOptionManager::getInstance()->GetDetectorFile();
 
   ////////General Reading needs////////
-  string LineBuffer;
-  string DataBuffer;
+  std::string LineBuffer;
+  std::string DataBuffer;
   bool cGeneralTarget=false;
   bool cGeneralChamber=false;
-  std::set<string> check;
+  std::set<std::string> check;
   
   int VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
   cout << "\033[1;36m" ;
   
   // Access the DetectorFactory and ask it to load the Class List
-  string classlist = getenv("NPTOOL");
+  std::string classlist = getenv("NPTOOL");
   classlist += "/NPLib/DetectorClassList.txt";
   NPS::DetectorFactory* theFactory = NPS::DetectorFactory::getInstance();
   theFactory->ReadClassList(classlist);
@@ -207,8 +208,8 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
     }
 
     else{
-      istringstream oss(LineBuffer);
-      string token;
+      istd::stringstream oss(LineBuffer);
+      std::string token;
       oss >> token ;
       NPS::VDetector* detector = theFactory->Construct(token);
       if(detector!=NULL && check.find(token)==check.end()){
@@ -279,7 +280,7 @@ void DetectorConstruction::ClearGeometry(){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void DetectorConstruction::RedefineGeometry(string file){
+void DetectorConstruction::RedefineGeometry(std::string file){
   ClearGeometry() ;
 
   RootOutput::getInstance()->GetTree()->ResetBranchAddresses(); 
