@@ -15,7 +15,8 @@ set(CMAKE_BUILD_TYPE Release)
 
 set(DETLIST ${ETLIST})
 
-if("${DETLIST}" MATCHES "")
+string(COMPARE EQUAL "${DETLIST}" "" rdet)
+if(rdet)
     message("Building all detectors")
   else()
     message("Building the following detectors ${DETLIST}") 

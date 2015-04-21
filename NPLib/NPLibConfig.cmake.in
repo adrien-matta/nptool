@@ -6,9 +6,10 @@
  
 # Compute paths
 get_filename_component(NPLib_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
-set(NPLib_INCLUDE_DIRS "@CMAKE_INCLUDE_OUTPUT_DIRECTORY@")
-include_directories("${NPLib_INCLUDE_DIRS}")
 set(NPLib_USE_FILE "@CMAKE_BINARY_DIR@/NPLibConfig.cmake")
+set(NPLib_INCLUDE_DIRS "@CMAKE_INCLUDE_OUTPUT_DIRECTORY@")
+set(NPLib_DETECTOR_LIST "@DETLIST@")
+include_directories("${NPLib_INCLUDE_DIRS}")
 
 set(NPLib_LIBRARIES "-L@CMAKE_BINARY_DIR@/lib -lNPCore -lNPPhysics -lNPInteractionCoordinates -lNPInitialConditions")
 

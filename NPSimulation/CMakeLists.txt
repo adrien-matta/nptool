@@ -21,7 +21,8 @@ configure_file(Core/NPSimulationVersion.hh.in Core/NPSimulationVersion.hh @ONLY)
 
 set(DETLIST ${NPLib_DETECTOR_LIST})
 
-if("${DETLIST}" MATCHES "")
+string(COMPARE EQUAL "${DETLIST}" "" rdet)
+if(rdet)
     message("Building all detectors")
   else()
     message("Building the following detectors ${DETLIST}") 
