@@ -34,7 +34,7 @@ using namespace std ;
 #include "NPVDetector.h"
 #include "NPCalibrationManager.h"
 
-class TChateauCristalPhysics : public TObject, public NPA::VDetector
+class TChateauCristalPhysics : public TObject, public NPL::VDetector
 {
  public:   //   Constructor and Destructor
    TChateauCristalPhysics();
@@ -136,7 +136,7 @@ private:   // Data not written in the tree
    void Clear(const Option_t*) {};
 
    public: // Static constructor to be passed to the Detector Factory
-     static NPA::VDetector* Construct();
+     static NPL::VDetector* Construct();
      ClassDef(TChateauCristalPhysics,1)  // ChateauCristalPhysics structure
 };
 

@@ -43,7 +43,7 @@ using namespace std ;
 #include "NPVDetector.h"
 #include "NPCalibrationManager.h"
 
-class TSpegPhysics : public TObject, public NPA::VDetector
+class TSpegPhysics : public TObject, public NPL::VDetector
 {
    public:   //   Constructor and Destructor
       TSpegPhysics();
@@ -316,7 +316,7 @@ class TSpegPhysics : public TObject, public NPA::VDetector
       TSpegPhysics*      EventPhysics ;//!
 
       public: // Static constructor to be passed to the Detector Factory
-     static NPA::VDetector* Construct();
+     static NPL::VDetector* Construct();
      ClassDef(TSpegPhysics,1)  // SpegPhysics structure
 };
 

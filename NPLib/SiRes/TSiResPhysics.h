@@ -36,7 +36,7 @@ class TSiResSpectra;
 #include "NPVDetector.h"
 #include "NPCalibrationManager.h"
 
-class TSiResPhysics : public TObject, public NPA::VDetector
+class TSiResPhysics : public TObject, public NPL::VDetector
 {
    public:   //   Constructor and Destructor
       TSiResPhysics();
@@ -122,7 +122,7 @@ class TSiResPhysics : public TObject, public NPA::VDetector
     map< vector<string> , TH1*> GetSpectra(); 
 
       public: // Static constructor to be passed to the Detector Factory
-     static NPA::VDetector* Construct();
+     static NPL::VDetector* Construct();
      ClassDef(TSiResPhysics,1)  // SiResPhysics structure
 };
 

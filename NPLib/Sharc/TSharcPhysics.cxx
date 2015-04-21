@@ -614,20 +614,20 @@ void TSharcPhysics::AddParameterToCalibrationManager(){
     
     for( int j = 0 ; j < 24 ; ++j)
       {
-      Cal->AddParameter("SHARC", "D"+ NPA::itoa(i+1)+"_STRIP_FRONT"+ NPA::itoa(j+1)+"_E","SHARC_D"+ NPA::itoa(i+1)+"_STRIP_FRONT"+ NPA::itoa(j+1)+"_E")   ;
-      Cal->AddParameter("SHARC", "D"+ NPA::itoa(i+1)+"_STRIP_FRONT"+ NPA::itoa(j+1)+"_T","SHARC_D"+ NPA::itoa(i+1)+"_STRIP_FRONT"+ NPA::itoa(j+1)+"_T")   ;
+      Cal->AddParameter("SHARC", "D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_E","SHARC_D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_E")   ;
+      Cal->AddParameter("SHARC", "D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_T","SHARC_D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_T")   ;
       }
     
     for( int j = 0 ; j < 48 ; ++j)
       {
-      Cal->AddParameter("SHARC", "D"+ NPA::itoa(i+1)+"_STRIP_BACK"+ NPA::itoa(j+1)+"_E","SHARC_D"+ NPA::itoa(i+1)+"_STRIP_BACK"+ NPA::itoa(j+1)+"_E")   ;
-      Cal->AddParameter("SHARC", "D"+ NPA::itoa(i+1)+"_STRIP_BACK"+ NPA::itoa(j+1)+"_T","SHARC_D"+ NPA::itoa(i+1)+"_STRIP_BACK"+ NPA::itoa(j+1)+"_T")   ;
+      Cal->AddParameter("SHARC", "D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j+1)+"_E","SHARC_D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j+1)+"_E")   ;
+      Cal->AddParameter("SHARC", "D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j+1)+"_T","SHARC_D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j+1)+"_T")   ;
       }
     
     for( int j = 0 ; j < 1 ; ++j)
       {
-      Cal->AddParameter("SHARC", "D"+ NPA::itoa(i+1)+"_PAD"+ NPA::itoa(j+1)+"_E","SHARC_D"+ NPA::itoa(i+1)+"_PAD_E")   ;
-      Cal->AddParameter("SHARC", "D"+ NPA::itoa(i+1)+"_PAD"+ NPA::itoa(j+1)+"_T","SHARC_D"+ NPA::itoa(i+1)+"_PAD_T")   ;
+      Cal->AddParameter("SHARC", "D"+ NPL::itoa(i+1)+"_PAD"+ NPL::itoa(j+1)+"_E","SHARC_D"+ NPL::itoa(i+1)+"_PAD_E")   ;
+      Cal->AddParameter("SHARC", "D"+ NPL::itoa(i+1)+"_PAD"+ NPL::itoa(j+1)+"_T","SHARC_D"+ NPL::itoa(i+1)+"_PAD_T")   ;
       }
     }
   
@@ -872,26 +872,26 @@ namespace Sharc_LOCAL
   //   Front
   double fStrip_Front_E(const TSharcData* m_EventData , const int i)
   {
-  return CalibrationManager::getInstance()->ApplyCalibration(   "SHARC/D" + NPA::itoa( m_EventData->GetFront_DetectorNbr(i) ) + "_STRIP_FRONT" + NPA::itoa( m_EventData->GetFront_StripNbr(i) ) + "_E",
+  return CalibrationManager::getInstance()->ApplyCalibration(   "SHARC/D" + NPL::itoa( m_EventData->GetFront_DetectorNbr(i) ) + "_STRIP_FRONT" + NPL::itoa( m_EventData->GetFront_StripNbr(i) ) + "_E",
                                                              m_EventData->GetFront_Energy(i) );
   }
   
   double fStrip_Front_T(const TSharcData* m_EventData , const int i)
   {
-  return CalibrationManager::getInstance()->ApplyCalibration(   "SHARC/D" + NPA::itoa( m_EventData->GetFront_DetectorNbr(i) ) + "_STRIP_FRONT" + NPA::itoa( m_EventData->GetFront_StripNbr(i) ) +"_T",
+  return CalibrationManager::getInstance()->ApplyCalibration(   "SHARC/D" + NPL::itoa( m_EventData->GetFront_DetectorNbr(i) ) + "_STRIP_FRONT" + NPL::itoa( m_EventData->GetFront_StripNbr(i) ) +"_T",
                                                              m_EventData->GetFront_TimeCFD(i) );
   }
   
   //   Back
   double fStrip_Back_E(const TSharcData* m_EventData , const int i)
   {
-  return CalibrationManager::getInstance()->ApplyCalibration(   "SHARC/D" + NPA::itoa( m_EventData->GetBack_DetectorNbr(i) ) + "_STRIP_BACK" + NPA::itoa( m_EventData->GetBack_StripNbr(i) ) +"_E",
+  return CalibrationManager::getInstance()->ApplyCalibration(   "SHARC/D" + NPL::itoa( m_EventData->GetBack_DetectorNbr(i) ) + "_STRIP_BACK" + NPL::itoa( m_EventData->GetBack_StripNbr(i) ) +"_E",
                                                              m_EventData->GetBack_Energy(i) );
   }
   
   double fStrip_Back_T(const TSharcData* m_EventData , const int i)
   {
-  return CalibrationManager::getInstance()->ApplyCalibration(   "SHARC/D" + NPA::itoa( m_EventData->GetBack_DetectorNbr(i) ) + "_STRIP_BACK" + NPA::itoa( m_EventData->GetBack_StripNbr(i) ) +"_T",
+  return CalibrationManager::getInstance()->ApplyCalibration(   "SHARC/D" + NPL::itoa( m_EventData->GetBack_DetectorNbr(i) ) + "_STRIP_BACK" + NPL::itoa( m_EventData->GetBack_StripNbr(i) ) +"_T",
                                                              m_EventData->GetFront_TimeCFD(i) );
   }
   
@@ -899,13 +899,13 @@ namespace Sharc_LOCAL
   //   PAD
   double fPAD_E(const TSharcData* m_EventData , const int i)
   {
-  return CalibrationManager::getInstance()->ApplyCalibration(   "SHARC/D" + NPA::itoa( m_EventData->GetPAD_DetectorNbr(i) ) + "_PAD" +"_E",
+  return CalibrationManager::getInstance()->ApplyCalibration(   "SHARC/D" + NPL::itoa( m_EventData->GetPAD_DetectorNbr(i) ) + "_PAD" +"_E",
                                                              m_EventData->GetPAD_Energy(i) );
   }
   
   double fPAD_T(const TSharcData* m_EventData , const int i)
   {
-  return CalibrationManager::getInstance()->ApplyCalibration(   "SHARC/D" + NPA::itoa( m_EventData->GetPAD_DetectorNbr(i) ) + "_PAD" +"_T",
+  return CalibrationManager::getInstance()->ApplyCalibration(   "SHARC/D" + NPL::itoa( m_EventData->GetPAD_DetectorNbr(i) ) + "_PAD" +"_T",
                                                              m_EventData->GetPAD_TimeCFD(i) );
   }
   
@@ -914,8 +914,8 @@ namespace Sharc_LOCAL
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* TSharcPhysics::Construct(){
-  return (NPA::VDetector*) new TSharcPhysics();
+NPL::VDetector* TSharcPhysics::Construct(){
+  return (NPL::VDetector*) new TSharcPhysics();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -925,8 +925,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("Sharc","Sharc");
-      NPA::DetectorFactory::getInstance()->AddDetector("Sharc",TSharcPhysics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("Sharc","Sharc");
+      NPL::DetectorFactory::getInstance()->AddDetector("Sharc",TSharcPhysics::Construct);
     }
 };
 

@@ -414,8 +414,8 @@ namespace LOCAL_CHIO_AN
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* TChio_anPhysics::Construct(){
-  return (NPA::VDetector*) new TChio_anPhysics();
+NPL::VDetector* TChio_anPhysics::Construct(){
+  return (NPL::VDetector*) new TChio_anPhysics();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -425,8 +425,8 @@ extern "C"{
 class anproxy{
   public:
     anproxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("IonisationChamber","Chio");
-      NPA::DetectorFactory::getInstance()->AddDetector("IonisationChamber",TChio_anPhysics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("IonisationChamber","Chio");
+      NPL::DetectorFactory::getInstance()->AddDetector("IonisationChamber",TChio_anPhysics::Construct);
     }
 };
 

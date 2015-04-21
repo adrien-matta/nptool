@@ -321,8 +321,8 @@ TVector3 GaspardTracker::GetPositionOfInteraction()
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* GaspardTracker::Construct(){
-  return (NPA::VDetector*) new GaspardTracker();
+NPL::VDetector* GaspardTracker::Construct(){
+  return (NPL::VDetector*) new GaspardTracker();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -332,8 +332,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("GaspardTracker","GASPARD");
-      NPA::DetectorFactory::getInstance()->AddDetector("GaspardTracker",GaspardTracker::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("GaspardTracker","GASPARD");
+      NPL::DetectorFactory::getInstance()->AddDetector("GaspardTracker",GaspardTracker::Construct);
     }
 };
 

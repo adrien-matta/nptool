@@ -34,7 +34,7 @@ using namespace std ;
 #include "NPVDetector.h"
 #include "NPCalibrationManager.h"
 
-class TPlasticPhysics : public TObject, public NPA::VDetector
+class TPlasticPhysics : public TObject, public NPL::VDetector
 {
    public:   //   Constructor and Destructor
       TPlasticPhysics();
@@ -92,7 +92,7 @@ class TPlasticPhysics : public TObject, public NPA::VDetector
       TPlasticPhysics*      EventPhysics ;//!
 
       public: // Static constructor to be passed to the Detector Factory
-     static NPA::VDetector* Construct();
+     static NPL::VDetector* Construct();
      ClassDef(TPlasticPhysics,1)  // PlasticPhysics structure
 };
 

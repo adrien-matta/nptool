@@ -23,7 +23,7 @@
  *****************************************************************************/
 
 #include"NPDetectorManager.h"
-namespace NPA{
+namespace NPL{
   class VAnalysis{
     public:
      VAnalysis();
@@ -34,10 +34,10 @@ namespace NPA{
       virtual void Init(){};
       virtual void End(){};
       
-      void SetDetectorManager(NPA::DetectorManager*);
+      void SetDetectorManager(NPL::DetectorManager*);
 
     protected:
-      NPA::DetectorManager* m_DetectorManager;
+      NPL::DetectorManager* m_DetectorManager;
   };
 }
 #endif

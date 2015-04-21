@@ -545,16 +545,16 @@ void TTiaraHyballPhysics::AddParameterToCalibrationManager(){
 
   for(int i = 0 ; i < m_NumberOfDetector ; ++i){
     for( int j = 0 ; j < 24 ; ++j){
-      Cal->AddParameter("TIARAHYBALL", "D"+NPA::itoa(i+1)+"_STRIP_RING"+NPA::itoa(j+1)+"_E","TIARAHYBALL_D"+NPA::itoa(i+1)+"_STRIP_RING"+NPA::itoa(j+1)+"_E")   ;
-       Cal->AddParameter("TIARAHYBALL", "D"+NPA::itoa(i+1)+"_STRIP_RING"+NPA::itoa(j+1)+"_MATCHSTICK","TIARAHYBALL_D"+NPA::itoa(i+1)+"_STRIP_RING"+NPA::itoa(j+1)+"_MATCHSTICK")   ;
+      Cal->AddParameter("TIARAHYBALL", "D"+NPL::itoa(i+1)+"_STRIP_RING"+NPL::itoa(j+1)+"_E","TIARAHYBALL_D"+NPL::itoa(i+1)+"_STRIP_RING"+NPL::itoa(j+1)+"_E")   ;
+       Cal->AddParameter("TIARAHYBALL", "D"+NPL::itoa(i+1)+"_STRIP_RING"+NPL::itoa(j+1)+"_MATCHSTICK","TIARAHYBALL_D"+NPL::itoa(i+1)+"_STRIP_RING"+NPL::itoa(j+1)+"_MATCHSTICK")   ;
  
-      Cal->AddParameter("TIARAHYBALL", "D"+NPA::itoa(i+1)+"_STRIP_RING"+NPA::itoa(j+1)+"_T","TIARAHYBALL_D"+NPA::itoa(i+1)+"_STRIP_RING"+NPA::itoa(j+1)+"_T")   ;
+      Cal->AddParameter("TIARAHYBALL", "D"+NPL::itoa(i+1)+"_STRIP_RING"+NPL::itoa(j+1)+"_T","TIARAHYBALL_D"+NPL::itoa(i+1)+"_STRIP_RING"+NPL::itoa(j+1)+"_T")   ;
     }
 
     for( int j = 0 ; j < 48 ; ++j){
-      Cal->AddParameter("TIARAHYBALL", "D"+NPA::itoa(i+1)+"_STRIP_SECTOR"+NPA::itoa(j+1)+"_E","TIARAHYBALL_D"+NPA::itoa(i+1)+"_STRIP_SECTOR"+NPA::itoa(j+1)+"_E")   ;
-      Cal->AddParameter("TIARAHYBALL", "D"+NPA::itoa(i+1)+"_STRIP_SECTOR"+NPA::itoa(j+1)+"_MATCHSTICK","TIARAHYBALL_D"+NPA::itoa(i+1)+"_STRIP_SECTOR"+NPA::itoa(j+1)+"_MATCHSTICK")   ;
-      Cal->AddParameter("TIARAHYBALL", "D"+NPA::itoa(i+1)+"_STRIP_SECTOR"+NPA::itoa(j+1)+"_T","TIARAHYBALL_D"+NPA::itoa(i+1)+"_STRIP_SECTOR"+NPA::itoa(j+1)+"_T")   ;
+      Cal->AddParameter("TIARAHYBALL", "D"+NPL::itoa(i+1)+"_STRIP_SECTOR"+NPL::itoa(j+1)+"_E","TIARAHYBALL_D"+NPL::itoa(i+1)+"_STRIP_SECTOR"+NPL::itoa(j+1)+"_E")   ;
+      Cal->AddParameter("TIARAHYBALL", "D"+NPL::itoa(i+1)+"_STRIP_SECTOR"+NPL::itoa(j+1)+"_MATCHSTICK","TIARAHYBALL_D"+NPL::itoa(i+1)+"_STRIP_SECTOR"+NPL::itoa(j+1)+"_MATCHSTICK")   ;
+      Cal->AddParameter("TIARAHYBALL", "D"+NPL::itoa(i+1)+"_STRIP_SECTOR"+NPL::itoa(j+1)+"_T","TIARAHYBALL_D"+NPL::itoa(i+1)+"_STRIP_SECTOR"+NPL::itoa(j+1)+"_T")   ;
     }
   }
   return;
@@ -712,18 +712,18 @@ namespace TiaraHyball_LOCAL{
   //   Ring
   double fStrip_Ring_E(const TTiaraHyballData* m_EventData , const int i){
     static string name = "TIARAHYBALL/D" ;
-name+= NPA::itoa( m_EventData->GetRingEDetectorNbr(i) ) ;
+name+= NPL::itoa( m_EventData->GetRingEDetectorNbr(i) ) ;
 name+= "_STRIP_RING" ;
-name+= NPA::itoa( m_EventData->GetRingEStripNbr(i) ) ;
+name+= NPL::itoa( m_EventData->GetRingEStripNbr(i) ) ;
 name+= "_E";
     return Cal->ApplyCalibration(name ,
         fStrip_Ring_Matchstick(m_EventData,i) );
   }
   double fStrip_Ring_Matchstick(const TTiaraHyballData* m_EventData , const int i){
     static string name = "TIARAHYBALL/D" ;
-name+= NPA::itoa( m_EventData->GetRingEDetectorNbr(i) ) ;
+name+= NPL::itoa( m_EventData->GetRingEDetectorNbr(i) ) ;
 name+= "_STRIP_RING" ;
-name+= NPA::itoa( m_EventData->GetRingEStripNbr(i) ) ;
+name+= NPL::itoa( m_EventData->GetRingEStripNbr(i) ) ;
 name+= "_MATCHSTICK";
     return Cal->ApplyCalibration(name ,
         m_EventData->GetRingEEnergy(i) );
@@ -731,9 +731,9 @@ name+= "_MATCHSTICK";
 
   double fStrip_Ring_T(const TTiaraHyballData* m_EventData , const int i){
     static string name = "TIARAHYBALL/D" ;
-name+= NPA::itoa( m_EventData->GetRingTDetectorNbr(i) ) ;
+name+= NPL::itoa( m_EventData->GetRingTDetectorNbr(i) ) ;
 name+= "_STRIP_RING" ;
-name+= NPA::itoa( m_EventData->GetRingTStripNbr(i) ) ;
+name+= NPL::itoa( m_EventData->GetRingTStripNbr(i) ) ;
 name+="_T";
     return Cal->ApplyCalibration(name ,
         m_EventData->GetRingTTime(i) );
@@ -742,9 +742,9 @@ name+="_T";
   //   Sector
   double fStrip_Sector_E(const TTiaraHyballData* m_EventData , const int i){
     static string name = "TIARAHYBALL/D" ;
-name+= NPA::itoa( m_EventData->GetSectorEDetectorNbr(i) ) ;
+name+= NPL::itoa( m_EventData->GetSectorEDetectorNbr(i) ) ;
 name+= "_STRIP_SECTOR" ;
-name+= NPA::itoa( m_EventData->GetSectorEStripNbr(i) ) ;
+name+= NPL::itoa( m_EventData->GetSectorEStripNbr(i) ) ;
 name+="_E";
     return Cal->ApplyCalibration(name,
         fStrip_Sector_Matchstick(m_EventData,i) );
@@ -752,9 +752,9 @@ name+="_E";
 
   double fStrip_Sector_Matchstick(const TTiaraHyballData* m_EventData , const int i){
     static string name = "TIARAHYBALL/D" ;
-name+= NPA::itoa( m_EventData->GetSectorEDetectorNbr(i) ) ;
+name+= NPL::itoa( m_EventData->GetSectorEDetectorNbr(i) ) ;
 name+= "_STRIP_SECTOR" ;
-name+= NPA::itoa( m_EventData->GetSectorEStripNbr(i) ) ;
+name+= NPL::itoa( m_EventData->GetSectorEStripNbr(i) ) ;
 name+="_MATCHSTICK";
     return Cal->ApplyCalibration(name,
         m_EventData->GetSectorEEnergy(i) );
@@ -762,9 +762,9 @@ name+="_MATCHSTICK";
 
   double fStrip_Sector_T(const TTiaraHyballData* m_EventData , const int i){
     static string name = "TIARAHYBALL/D" ;
-name+= NPA::itoa( m_EventData->GetSectorTDetectorNbr(i) ); 
+name+= NPL::itoa( m_EventData->GetSectorTDetectorNbr(i) ); 
 name+= "_STRIP_SECTOR" ;
-name+= NPA::itoa( m_EventData->GetSectorTStripNbr(i) ); 
+name+= NPL::itoa( m_EventData->GetSectorTStripNbr(i) ); 
 name+="_T";
     return Cal->ApplyCalibration(name,
         m_EventData->GetRingTTime(i) );
@@ -775,8 +775,8 @@ name+="_T";
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* TTiaraHyballPhysics::Construct(){
-  return (NPA::VDetector*) new TTiaraHyballPhysics();
+NPL::VDetector* TTiaraHyballPhysics::Construct(){
+  return (NPL::VDetector*) new TTiaraHyballPhysics();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -786,8 +786,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("Tiara","Tiara");
-      NPA::DetectorFactory::getInstance()->AddDetector("Tiara",TTiaraHyballPhysics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("Tiara","Tiara");
+      NPL::DetectorFactory::getInstance()->AddDetector("Tiara",TTiaraHyballPhysics::Construct);
     }
 };
 

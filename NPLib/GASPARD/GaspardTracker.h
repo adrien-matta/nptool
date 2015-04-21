@@ -41,7 +41,7 @@
 #include "TObject.h"
 #include "TVector3.h"
 
-class GaspardTracker : public NPA::VDetector{
+class GaspardTracker : public NPL::VDetector{
   public:
     GaspardTracker();
     virtual ~GaspardTracker();
@@ -110,7 +110,7 @@ class GaspardTracker : public NPA::VDetector{
     TGaspardTrackerPhysics*   m_EventPhysics;
 
   public: // Static constructor to be passed to the Detector Factory
-    static NPA::VDetector* Construct();
+    static NPL::VDetector* Construct();
 };
 
 #endif

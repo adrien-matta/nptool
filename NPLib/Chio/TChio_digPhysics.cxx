@@ -430,8 +430,8 @@ namespace LOCAL_CHIO_DIG
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* TChio_digPhysics::Construct(){
-  return (NPA::VDetector*) new TChio_digPhysics();
+NPL::VDetector* TChio_digPhysics::Construct(){
+  return (NPL::VDetector*) new TChio_digPhysics();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -441,8 +441,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("Chio","Chio");
-      NPA::DetectorFactory::getInstance()->AddDetector("Chio",TChio_digPhysics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("Chio","Chio");
+      NPL::DetectorFactory::getInstance()->AddDetector("Chio",TChio_digPhysics::Construct);
     }
 };
 

@@ -709,10 +709,10 @@ void TCATSPhysics::AddParameterToCalibrationManager()	{
   CalibrationManager* Cal = CalibrationManager::getInstance();
   for(int i = 0 ; i < m_NumberOfCATS ; i++){
     for( int j = 0 ; j < 28 ; j++){
-      Cal->AddParameter("CATS", "D"+NPA::itoa(i+1)+"_X"+NPA::itoa(j+1)+"_Q","CATS_D"+NPA::itoa(i+1)+"_X"+NPA::itoa(j+1)+"_Q")	;
-      Cal->AddParameter("CATS", "D"+NPA::itoa(i+1)+"_Y"+NPA::itoa(j+1)+"_Q","CATS_D"+NPA::itoa(i+1)+"_Y"+NPA::itoa(j+1)+"_Q")	;
-      Cal->AddParameter("CATS", "D"+NPA::itoa(i+1)+"_X"+NPA::itoa(j+1),"CATS_D"+NPA::itoa(i+1)+"_X"+NPA::itoa(j+1))	;
-      Cal->AddParameter("CATS", "D"+NPA::itoa(i+1)+"_Y"+NPA::itoa(j+1),"CATS_D"+NPA::itoa(i+1)+"_Y"+NPA::itoa(j+1))	;
+      Cal->AddParameter("CATS", "D"+NPL::itoa(i+1)+"_X"+NPL::itoa(j+1)+"_Q","CATS_D"+NPL::itoa(i+1)+"_X"+NPL::itoa(j+1)+"_Q")	;
+      Cal->AddParameter("CATS", "D"+NPL::itoa(i+1)+"_Y"+NPL::itoa(j+1)+"_Q","CATS_D"+NPL::itoa(i+1)+"_Y"+NPL::itoa(j+1)+"_Q")	;
+      Cal->AddParameter("CATS", "D"+NPL::itoa(i+1)+"_X"+NPL::itoa(j+1),"CATS_D"+NPL::itoa(i+1)+"_X"+NPL::itoa(j+1))	;
+      Cal->AddParameter("CATS", "D"+NPL::itoa(i+1)+"_Y"+NPL::itoa(j+1),"CATS_D"+NPL::itoa(i+1)+"_Y"+NPL::itoa(j+1))	;
     } 
   }
 
@@ -942,9 +942,9 @@ namespace CATS_LOCAL{
   ////////////////////////////////////////////////////////////////////////
   double fCATS_X_Q(const TCATSData* m_EventData , const int i){
     static string name = "CATS/D" ;
-    name+= NPA::itoa( m_EventData->GetCATSDetX(i) ) ;
+    name+= NPL::itoa( m_EventData->GetCATSDetX(i) ) ;
     name+= "_X" ;
-    name+= NPA::itoa( m_EventData->GetCATSStripX(i) ) ;
+    name+= NPL::itoa( m_EventData->GetCATSStripX(i) ) ;
     name+= "_Q";
     return CalibrationManager::getInstance()->ApplyCalibration( name,   
         m_EventData->GetCATSChargeX(i) + gRandom->Rndm() - fCATS_Ped_X(m_EventData, i) );
@@ -952,9 +952,9 @@ namespace CATS_LOCAL{
   ////////////////////////////////////////////////////////////////////////
   double fCATS_Y_Q(const TCATSData* m_EventData , const int i){
     static string name = "CATS/D" ;
-    name+= NPA::itoa( m_EventData->GetCATSDetY(i) ) ;
+    name+= NPL::itoa( m_EventData->GetCATSDetY(i) ) ;
     name+= "_Y" ;
-    name+= NPA::itoa( m_EventData->GetCATSStripY(i) ) ;
+    name+= NPL::itoa( m_EventData->GetCATSStripY(i) ) ;
     name+= "_Q";
     return CalibrationManager::getInstance()->ApplyCalibration( name ,   
         m_EventData->GetCATSChargeY(i) + gRandom->Rndm() - fCATS_Ped_Y(m_EventData, i) );
@@ -962,35 +962,35 @@ namespace CATS_LOCAL{
   ////////////////////////////////////////////////////////////////////////
   bool fCATS_Threshold_X(const TCATSData* m_EventData , const int i){
     static string name= "CATS/D" ;
-    name+= NPA::itoa( m_EventData->GetCATSDetX(i) ) ;
+    name+= NPL::itoa( m_EventData->GetCATSDetX(i) ) ;
     name+= "_X" ;
-    name+= NPA::itoa( m_EventData->GetCATSStripX(i) );
+    name+= NPL::itoa( m_EventData->GetCATSStripX(i) );
     return CalibrationManager::getInstance()->ApplyThreshold(name,
         m_EventData->GetCATSChargeX(i));
   }
   ////////////////////////////////////////////////////////////////////////
   bool fCATS_Threshold_Y(const TCATSData* m_EventData , const int i){
     static string name ="CATS/D" ;
-    name+= NPA::itoa( m_EventData->GetCATSDetY(i) ) ;
+    name+= NPL::itoa( m_EventData->GetCATSDetY(i) ) ;
     name+= "_Y" ;
-    name+= NPA::itoa( m_EventData->GetCATSStripY(i) );
+    name+= NPL::itoa( m_EventData->GetCATSStripY(i) );
     return CalibrationManager::getInstance()->ApplyThreshold( name,
         m_EventData->GetCATSChargeY(i));
   }
   ////////////////////////////////////////////////////////////////////////
   double fCATS_Ped_X(const TCATSData* m_EventData, const int i){
     static string name =  "CATS/D" ;
-    name+= NPA::itoa( m_EventData->GetCATSDetX(i) ) ;
+    name+= NPL::itoa( m_EventData->GetCATSDetX(i) ) ;
     name+= "_X" ;
-    name+= NPA::itoa( m_EventData->GetCATSStripX(i) ) ;
+    name+= NPL::itoa( m_EventData->GetCATSStripX(i) ) ;
     return CalibrationManager::getInstance()->GetPedestal(name);
   }
   ////////////////////////////////////////////////////////////////////////
   double fCATS_Ped_Y(const TCATSData* m_EventData, const int i){
     static string name = "CATS/D" ;
-    name+= NPA::itoa( m_EventData->GetCATSDetY(i) ) ;
+    name+= NPL::itoa( m_EventData->GetCATSDetY(i) ) ;
     name+= "_Y" ;
-    name+= NPA::itoa( m_EventData->GetCATSStripY(i) );
+    name+= NPL::itoa( m_EventData->GetCATSStripY(i) );
     return CalibrationManager::getInstance()->GetPedestal( name );
   }
 }
@@ -998,8 +998,8 @@ namespace CATS_LOCAL{
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* TCATSPhysics::Construct(){
-  return (NPA::VDetector*) new TCATSPhysics();
+NPL::VDetector* TCATSPhysics::Construct(){
+  return (NPL::VDetector*) new TCATSPhysics();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1009,8 +1009,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("CATSDetector","CATS");
-      NPA::DetectorFactory::getInstance()->AddDetector("CATSDetector",TCATSPhysics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("CATSDetector","CATS");
+      NPL::DetectorFactory::getInstance()->AddDetector("CATSDetector",TCATSPhysics::Construct);
     }
 };
 

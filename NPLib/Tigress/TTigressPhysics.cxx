@@ -215,8 +215,8 @@ m_PreTreatedData->Clear();
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* TTigressPhysics::Construct(){
-  return (NPA::VDetector*) new TTigressPhysics();
+NPL::VDetector* TTigressPhysics::Construct(){
+  return (NPL::VDetector*) new TTigressPhysics();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -226,8 +226,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("Tigress","Tigress");
-      NPA::DetectorFactory::getInstance()->AddDetector("Tigress",TTigressPhysics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("Tigress","Tigress");
+      NPL::DetectorFactory::getInstance()->AddDetector("Tigress",TTigressPhysics::Construct);
     }
 };
 

@@ -107,8 +107,8 @@ void TTrifoilPhysics::InitializeRootOutput()
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* TTrifoilPhysics::Construct(){
-  return (NPA::VDetector*) new TTrifoilPhysics();
+NPL::VDetector* TTrifoilPhysics::Construct(){
+  return (NPL::VDetector*) new TTrifoilPhysics();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -118,8 +118,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("Trifoil","Trifoil");
-      NPA::DetectorFactory::getInstance()->AddDetector("Trifoil",TTrifoilPhysics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("Trifoil","Trifoil");
+      NPL::DetectorFactory::getInstance()->AddDetector("Trifoil",TTrifoilPhysics::Construct);
     }
 };
 

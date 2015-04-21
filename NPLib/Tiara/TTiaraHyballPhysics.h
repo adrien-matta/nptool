@@ -42,7 +42,7 @@ class TTiaraHyballSpectra;
 
 using namespace std ;
 
-class TTiaraHyballPhysics : public TObject, public NPA::VDetector{
+class TTiaraHyballPhysics : public TObject, public NPL::VDetector{
   public:
     TTiaraHyballPhysics();
     ~TTiaraHyballPhysics() {};
@@ -200,7 +200,7 @@ class TTiaraHyballPhysics : public TObject, public NPA::VDetector{
     map< vector<string>,TH1* > GetSpectra(); 
 
     public: // Static constructor to be passed to the Detector Factory
-     static NPA::VDetector* Construct();
+     static NPL::VDetector* Construct();
      ClassDef(TTiaraHyballPhysics,1)  // SharcPhysics structure
 };
 

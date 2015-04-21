@@ -275,11 +275,11 @@ void TW1Physics::AddParameterToCalibrationManager()
    for (int i = 0; i < m_NumberOfDetector; i++) {
       for (int j = 0; j < m_NumberOfStrips; j++) {
          // Energy
-         Cal->AddParameter("W1", "Detector"+ NPA::itoa(i+1)+"_Front_"+ NPA::itoa(j+1)+"_E", "W1_DETECTOR"+ NPA::itoa(i+1)+"_FRONT_"+ NPA::itoa(j+1)+"_E");
-         Cal->AddParameter("W1", "Detector"+ NPA::itoa(i+1)+"_Back_"+ NPA::itoa(j+1)+"_E",  "W1_DETECTOR"+ NPA::itoa(i+1)+"_BACK_"+ NPA::itoa(j+1)+"_E");  
+         Cal->AddParameter("W1", "Detector"+ NPL::itoa(i+1)+"_Front_"+ NPL::itoa(j+1)+"_E", "W1_DETECTOR"+ NPL::itoa(i+1)+"_FRONT_"+ NPL::itoa(j+1)+"_E");
+         Cal->AddParameter("W1", "Detector"+ NPL::itoa(i+1)+"_Back_"+ NPL::itoa(j+1)+"_E",  "W1_DETECTOR"+ NPL::itoa(i+1)+"_BACK_"+ NPL::itoa(j+1)+"_E");  
          // Time
-         Cal->AddParameter("W1", "Detector"+ NPA::itoa(i+1)+"_Front_"+ NPA::itoa(j+1)+"_T", "W1_DETECTOR"+ NPA::itoa(i+1)+"_FRONT_"+ NPA::itoa(j+1)+"_T");
-         Cal->AddParameter("W1", "Detector"+ NPA::itoa(i+1)+"_Back_"+ NPA::itoa(j+1)+"_T",  "W1_DETECTOR"+ NPA::itoa(i+1)+"_BACK_"+ NPA::itoa(j+1)+"_T");  
+         Cal->AddParameter("W1", "Detector"+ NPL::itoa(i+1)+"_Front_"+ NPL::itoa(j+1)+"_T", "W1_DETECTOR"+ NPL::itoa(i+1)+"_FRONT_"+ NPL::itoa(j+1)+"_T");
+         Cal->AddParameter("W1", "Detector"+ NPL::itoa(i+1)+"_Back_"+ NPL::itoa(j+1)+"_T",  "W1_DETECTOR"+ NPL::itoa(i+1)+"_BACK_"+ NPL::itoa(j+1)+"_T");  
       }
    }
 }
@@ -837,34 +837,34 @@ void TW1Physics::ReadAnalysisConfig()
 ///////////////////////////////////////////////////////////////////////////
 double LOCAL::fW1_Front_E(TW1Data* m_EventData , int i)
 {
-   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + NPA::itoa(m_EventData->GetW1FrontEDetectorNbr(i)) + "_Front_" + NPA::itoa(m_EventData->GetW1FrontEStripNbr(i)) +"_E",  m_EventData->GetW1FrontEEnergy(i));
+   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + NPL::itoa(m_EventData->GetW1FrontEDetectorNbr(i)) + "_Front_" + NPL::itoa(m_EventData->GetW1FrontEStripNbr(i)) +"_E",  m_EventData->GetW1FrontEEnergy(i));
 }
  
  
 
 double LOCAL::fW1_Back_E(TW1Data* m_EventData , int i)
 {
-   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + NPA::itoa(m_EventData->GetW1BackEDetectorNbr(i)) + "_Back_" + NPA::itoa(m_EventData->GetW1BackEStripNbr(i)) +"_E",  m_EventData->GetW1BackEEnergy(i));
+   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + NPL::itoa(m_EventData->GetW1BackEDetectorNbr(i)) + "_Back_" + NPL::itoa(m_EventData->GetW1BackEStripNbr(i)) +"_E",  m_EventData->GetW1BackEEnergy(i));
 }
   
  
 
 double LOCAL::fW1_Front_T(TW1Data* m_EventData , int i)
 {
-   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + NPA::itoa(m_EventData->GetW1FrontTDetectorNbr(i)) + "_Front_" + NPA::itoa(m_EventData->GetW1FrontTStripNbr(i)) +"_T",  m_EventData->GetW1FrontTTime(i));
+   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + NPL::itoa(m_EventData->GetW1FrontTDetectorNbr(i)) + "_Front_" + NPL::itoa(m_EventData->GetW1FrontTStripNbr(i)) +"_T",  m_EventData->GetW1FrontTTime(i));
 }
  
  
 
 double LOCAL::fW1_Back_T(TW1Data* m_EventData , int i)
 {
-   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + NPA::itoa(m_EventData->GetW1BackTDetectorNbr(i)) + "_Back_" + NPA::itoa(m_EventData->GetW1BackTStripNbr(i)) +"_T",  m_EventData->GetW1BackTTime(i));
+   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + NPL::itoa(m_EventData->GetW1BackTDetectorNbr(i)) + "_Back_" + NPL::itoa(m_EventData->GetW1BackTStripNbr(i)) +"_T",  m_EventData->GetW1BackTTime(i));
 }
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* TW1Physics::Construct(){
-  return (NPA::VDetector*) new TW1Physics();
+NPL::VDetector* TW1Physics::Construct(){
+  return (NPL::VDetector*) new TW1Physics();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -874,8 +874,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("W1","W1");
-      NPA::DetectorFactory::getInstance()->AddDetector("W1",TW1Physics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("W1","W1");
+      NPL::DetectorFactory::getInstance()->AddDetector("W1",TW1Physics::Construct);
     }
 };
 

@@ -449,17 +449,17 @@ void TAnnularS1Physics::AddParameterToCalibrationManager(){
   for(int i = 0 ; i < m_NumberOfDetector ; ++i){
 
     for( int j = 0 ; j < 24 ; ++j){
-      Cal->AddParameter("ANNULARS1", "D"+ NPA::itoa(i+1)+"_STRIP_FRONT"+ NPA::itoa(j+1)+"_E",
-          "ANNULARS1_D"+ NPA::itoa(i+1)+"_STRIP_FRONT"+ NPA::itoa(j+1)+"_E");
-      Cal->AddParameter("ANNULARS1", "D"+ NPA::itoa(i+1)+"_STRIP_FRONT"+ NPA::itoa(j+1)+"_T",
-          "ANNULARS1_D"+ NPA::itoa(i+1)+"_STRIP_FRONT"+ NPA::itoa(j+1)+"_T");
+      Cal->AddParameter("ANNULARS1", "D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_E",
+          "ANNULARS1_D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_E");
+      Cal->AddParameter("ANNULARS1", "D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_T",
+          "ANNULARS1_D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_T");
     }
 
     for( int j = 0 ; j < 48 ; ++j){
-      Cal->AddParameter("ANNULARS1", "D"+ NPA::itoa(i+1)+"_STRIP_BACK"+ NPA::itoa(j+1)+"_E",
-          "ANNULARS1_D"+ NPA::itoa(i+1)+"_STRIP_BACK"+ NPA::itoa(j+1)+"_E");
-      Cal->AddParameter("ANNULARS1", "D"+ NPA::itoa(i+1)+"_STRIP_BACK"+ NPA::itoa(j+1)+"_T",
-          "ANNULARS1_D"+ NPA::itoa(i+1)+"_STRIP_BACK"+ NPA::itoa(j+1)+"_T");
+      Cal->AddParameter("ANNULARS1", "D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j+1)+"_E",
+          "ANNULARS1_D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j+1)+"_E");
+      Cal->AddParameter("ANNULARS1", "D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j+1)+"_T",
+          "ANNULARS1_D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j+1)+"_T");
     }
   }
 
@@ -583,31 +583,31 @@ namespace ANNULARS1_LOCAL{
   //   DSSD
   //   Ring
   double fStrip_Ring_E(const TS1Data* m_EventData , const int& i){
-    return CalibrationManager::getInstance()->ApplyCalibration(   "ANNULARS1/D" +NPA::itoa( m_EventData->GetS1ThetaEDetectorNbr(i) ) + "_STRIP_FRONT" +NPA::itoa( m_EventData->GetS1ThetaEStripNbr(i) ) + "_E",
+    return CalibrationManager::getInstance()->ApplyCalibration(   "ANNULARS1/D" +NPL::itoa( m_EventData->GetS1ThetaEDetectorNbr(i) ) + "_STRIP_FRONT" +NPL::itoa( m_EventData->GetS1ThetaEStripNbr(i) ) + "_E",
         m_EventData->GetS1ThetaEEnergy(i) );
   }
 
   double fStrip_Ring_T(const TS1Data* m_EventData , const int& i){
-    return CalibrationManager::getInstance()->ApplyCalibration(   "ANNULARS1/D" +NPA::itoa( m_EventData->GetS1ThetaTDetectorNbr(i) ) + "_STRIP_FRONT" +NPA::itoa( m_EventData->GetS1ThetaTStripNbr(i) ) +"_T",
+    return CalibrationManager::getInstance()->ApplyCalibration(   "ANNULARS1/D" +NPL::itoa( m_EventData->GetS1ThetaTDetectorNbr(i) ) + "_STRIP_FRONT" +NPL::itoa( m_EventData->GetS1ThetaTStripNbr(i) ) +"_T",
         m_EventData->GetS1ThetaTTime(i) );
   }
 
   //   Sector
   double fStrip_Sector_E(const TS1Data* m_EventData , const int& i){
-    return CalibrationManager::getInstance()->ApplyCalibration(   "ANNULARS1/D" +NPA::itoa( m_EventData->GetS1PhiEDetectorNbr(i) ) + "_STRIP_BACK" +NPA::itoa( m_EventData->GetS1PhiEStripNbr(i) ) +"_E",
+    return CalibrationManager::getInstance()->ApplyCalibration(   "ANNULARS1/D" +NPL::itoa( m_EventData->GetS1PhiEDetectorNbr(i) ) + "_STRIP_BACK" +NPL::itoa( m_EventData->GetS1PhiEStripNbr(i) ) +"_E",
         m_EventData->GetS1PhiEEnergy(i) );
   }
 
   double fStrip_Sector_T(const TS1Data* m_EventData , const int& i){
-    return CalibrationManager::getInstance()->ApplyCalibration(   "ANNULARS1/D" +NPA::itoa( m_EventData->GetS1PhiTDetectorNbr(i) ) + "_STRIP_BACK" +NPA::itoa( m_EventData->GetS1PhiTStripNbr(i) ) +"_T",
+    return CalibrationManager::getInstance()->ApplyCalibration(   "ANNULARS1/D" +NPL::itoa( m_EventData->GetS1PhiTDetectorNbr(i) ) + "_STRIP_BACK" +NPL::itoa( m_EventData->GetS1PhiTStripNbr(i) ) +"_T",
         m_EventData->GetS1PhiTTime(i) );
   }
 }
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* TAnnularS1Physics::Construct(){
-  return (NPA::VDetector*) new TAnnularS1Physics();
+NPL::VDetector* TAnnularS1Physics::Construct(){
+  return (NPL::VDetector*) new TAnnularS1Physics();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -617,8 +617,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("AnnularS1","AnnularS1");
-      NPA::DetectorFactory::getInstance()->AddDetector("AnnularS1",TAnnularS1Physics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("AnnularS1","AnnularS1");
+      NPL::DetectorFactory::getInstance()->AddDetector("AnnularS1",TAnnularS1Physics::Construct);
     }
 };
 

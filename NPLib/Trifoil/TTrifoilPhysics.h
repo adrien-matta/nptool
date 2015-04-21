@@ -36,7 +36,7 @@
 
 using namespace std ;
 
-class TTrifoilPhysics : public TObject, public NPA::VDetector
+class TTrifoilPhysics : public TObject, public NPL::VDetector
 {
    public:
       TTrifoilPhysics();
@@ -97,7 +97,7 @@ class TTrifoilPhysics : public TObject, public NPA::VDetector
 
         
    public: // Static constructor to be passed to the Detector Factory
-     static NPA::VDetector* Construct();
+     static NPL::VDetector* Construct();
      ClassDef(TTrifoilPhysics,1)  // TrifoilPhysics structure
 };
 

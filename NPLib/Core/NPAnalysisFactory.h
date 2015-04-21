@@ -5,9 +5,9 @@
 #include<map>
 #include<string>
 
-typedef NPA::VAnalysis* (*ClassAnalysisFactoryFn)();
+typedef NPL::VAnalysis* (*ClassAnalysisFactoryFn)();
 
-namespace NPA{
+namespace NPL{
   class AnalysisFactory{
     private:
       AnalysisFactory();
@@ -15,7 +15,7 @@ namespace NPA{
 
     public:
       static AnalysisFactory* getInstance();
-      NPA::VAnalysis* Construct();
+      NPL::VAnalysis* Construct();
       void SetConstructor(ClassAnalysisFactoryFn fn);
 
     private:

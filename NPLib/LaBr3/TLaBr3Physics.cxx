@@ -210,8 +210,8 @@ void TLaBr3Physics::AddParameterToCalibrationManager()
       
       for(int i = 0 ; i < NumberOfDetector ; i++)
          {
-                  Cal->AddParameter("LaBr3", "Detector"+ NPA::itoa(i+1)+"_E","LaBr3_Detector"+ NPA::itoa(i+1)+"_E")   ;
-                  Cal->AddParameter("LaBr3", "Detector"+ NPA::itoa(i+1)+"_T","LaBr3_Detector"+ NPA::itoa(i+1)+"_T")   ;         
+                  Cal->AddParameter("LaBr3", "Detector"+ NPL::itoa(i+1)+"_E","LaBr3_Detector"+ NPL::itoa(i+1)+"_E")   ;
+                  Cal->AddParameter("LaBr3", "Detector"+ NPL::itoa(i+1)+"_T","LaBr3_Detector"+ NPL::itoa(i+1)+"_T")   ;         
          }
    }
    
@@ -279,7 +279,7 @@ void TLaBr3Physics::PreTreat(){
     {
     	if( EventData->GetEEnergy(i)>m_LaBr3_RAW_Threshold )
     	{
-		E=CalibrationManager::getInstance()->ApplyCalibration("LaBr3/Detector" + NPA::itoa( EventData->GetENumber(i) ) +"_E",EventData->GetEEnergy(i));
+		E=CalibrationManager::getInstance()->ApplyCalibration("LaBr3/Detector" + NPL::itoa( EventData->GetENumber(i) ) +"_E",EventData->GetEEnergy(i));
     		if(E>m_LaBr3_E_Threshold)
     		{
         		PreTreatedData->SetENumber( EventData->GetENumber(i) );
@@ -289,7 +289,7 @@ void TLaBr3Physics::PreTreat(){
     }
   for(unsigned int i = 0 ; i < EventData->GetTimeMult() ; ++i)
     {
-	T=CalibrationManager::getInstance()->ApplyCalibration("LaBr3/Detector"+ NPA::itoa(EventData->GetTNumber(i))+"_T",EventData->GetTTime(i) ) ;      
+	T=CalibrationManager::getInstance()->ApplyCalibration("LaBr3/Detector"+ NPL::itoa(EventData->GetTNumber(i))+"_T",EventData->GetTTime(i) ) ;      
 	PreTreatedData->SetTNumber( EventData->GetTNumber(i) );
         PreTreatedData->SetTTime( T );
             
@@ -340,8 +340,8 @@ void TLaBr3Physics::BuildSimplePhysicalEvent()
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* TLaBr3Physics::Construct(){
-  return (NPA::VDetector*) new TLaBr3Physics();
+NPL::VDetector* TLaBr3Physics::Construct(){
+  return (NPL::VDetector*) new TLaBr3Physics();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -351,8 +351,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("LaBr3","LaBr3");
-      NPA::DetectorFactory::getInstance()->AddDetector("LaBr3",TLaBr3Physics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("LaBr3","LaBr3");
+      NPL::DetectorFactory::getInstance()->AddDetector("LaBr3",TLaBr3Physics::Construct);
     }
 };
 

@@ -38,7 +38,7 @@
 using namespace std ;
 
 
-class THyde2TrackerPhysics : public TObject, public NPA::VDetector
+class THyde2TrackerPhysics : public TObject, public NPL::VDetector
 {
 public:
    THyde2TrackerPhysics();
@@ -168,7 +168,7 @@ public:
    Int_t   GetSixthStagePosition(Int_t i)      {return fSixthStage_Position.at(i);}
 
    public: // Static constructor to be passed to the Detector Factory
-     static NPA::VDetector* Construct();
+     static NPL::VDetector* Construct();
      ClassDef(THyde2TrackerPhysics,1)  // THyde2TrackerPhysics structure
 };
 

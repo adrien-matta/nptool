@@ -30,7 +30,7 @@
 #include "NPVDetector.h"
 using namespace std ;
 
-class THeliosPhysics : public TObject , public NPA::VDetector
+class THeliosPhysics : public TObject , public NPL::VDetector
 {
 public:
    THeliosPhysics();
@@ -64,7 +64,7 @@ public:
    vector<double>	TotalTime;
 
    public: // Static constructor to be passed to the Detector Factory
-     static NPA::VDetector* Construct();
+     static NPL::VDetector* Construct();
      ClassDef(THeliosPhysics,1)  // HeliosPHysics structure
 };
 

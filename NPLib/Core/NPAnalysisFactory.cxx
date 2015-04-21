@@ -1,5 +1,5 @@
 #include"NPAnalysisFactory.h"
-using namespace NPA;
+using namespace NPL;
 #include<fstream>
 #include<iostream>
 AnalysisFactory* AnalysisFactory::m_Instance = 0;
@@ -27,7 +27,7 @@ AnalysisFactory* AnalysisFactory::getInstance(){
 
 }
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VAnalysis* AnalysisFactory::Construct(){
+NPL::VAnalysis* AnalysisFactory::Construct(){
   if(m_Construct!=NULL)
     return  m_Construct();
 

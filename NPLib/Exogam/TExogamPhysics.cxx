@@ -79,8 +79,8 @@ void TExogamPhysics::PreTreat()
       int clover  = EventData -> GetECCEClover(i);
       int cristal = EventData -> GetECCECristal(i);
      
-      if(EventData -> GetECCEEnergy(i) < 3000)  cristal_E = CalibrationManager::getInstance()-> ApplyCalibration("EXOGAM/Cl"+ NPA::itoa(clover)+"_Cr"+ NPA::itoa(cristal)+"_Elow", EventData -> GetECCEEnergy(i));
-      else                                      cristal_E = CalibrationManager::getInstance()-> ApplyCalibration("EXOGAM/Cl"+ NPA::itoa(clover)+"_Cr"+ NPA::itoa(cristal)+"_Ehigh", EventData -> GetECCEEnergy(i));
+      if(EventData -> GetECCEEnergy(i) < 3000)  cristal_E = CalibrationManager::getInstance()-> ApplyCalibration("EXOGAM/Cl"+ NPL::itoa(clover)+"_Cr"+ NPL::itoa(cristal)+"_Elow", EventData -> GetECCEEnergy(i));
+      else                                      cristal_E = CalibrationManager::getInstance()-> ApplyCalibration("EXOGAM/Cl"+ NPL::itoa(clover)+"_Cr"+ NPL::itoa(cristal)+"_Ehigh", EventData -> GetECCEEnergy(i));
 
     
       if(cristal_E > Threshold_ECC)
@@ -95,7 +95,7 @@ void TExogamPhysics::PreTreat()
 		  if(clover == EventData -> GetECCTClover(k) && cristal == EventData -> GetECCTCristal(k)){
 		      // cout << EventData -> GetECCTTime(k) << endl;
 
-		      if(EventData -> GetECCTTime(k) < 16383)  cristal_T = CalibrationManager::getInstance()-> ApplyCalibration("EXOGAM/Cl"+ NPA::itoa(clover)+"_Cr"+ NPA::itoa(cristal)+"_T", EventData -> GetECCTTime(k));
+		      if(EventData -> GetECCTTime(k) < 16383)  cristal_T = CalibrationManager::getInstance()-> ApplyCalibration("EXOGAM/Cl"+ NPL::itoa(clover)+"_Cr"+ NPL::itoa(cristal)+"_T", EventData -> GetECCTTime(k));
 		      else                                     cristal_T = 2500;  
 		  
 		      //if(cristal_T >5000 && cristal_T !=25000 ) cout << "PreTreat " << cristal_T << " " << EventData -> GetECCTTime(k) << " " << clover << " " << cristal << " " << EventData->GetECCTMult() << endl;
@@ -140,7 +140,7 @@ void TExogamPhysics::PreTreat()
       
       if(EventData -> GetGOCCEEEnergy(i) > RawThreshold_GOCCE)
 	{
-	  segment_E = CalibrationManager::getInstance()->ApplyCalibration("EXOGAM/Cl"+ NPA::itoa(clover)+"_Cr"+ NPA::itoa(cristal)+"_Seg"+ NPA::itoa(segment)+"_E", EventData -> GetGOCCEEEnergy(i));
+	  segment_E = CalibrationManager::getInstance()->ApplyCalibration("EXOGAM/Cl"+ NPL::itoa(clover)+"_Cr"+ NPL::itoa(cristal)+"_Seg"+ NPL::itoa(segment)+"_E", EventData -> GetGOCCEEEnergy(i));
 	  	  
 	  if(segment_E > Threshold_GOCCE)
 	    {
@@ -633,13 +633,13 @@ void TExogamPhysics::AddParameterToCalibrationManager()
     {
       for( int j = 0 ; j < 4 ; j++)
 	{
-	  Cal->AddParameter("EXOGAM", "Cl"+ NPA::itoa(i)+"_Cr"+ NPA::itoa(j)+"_Elow" ,"EXOGAM_Cl"+ NPA::itoa(i)+"_Cr"+ NPA::itoa(j)+"_Elow");
-	  Cal->AddParameter("EXOGAM", "Cl"+ NPA::itoa(i)+"_Cr"+ NPA::itoa(j)+"_Ehigh","EXOGAM_Cl"+ NPA::itoa(i)+"_Cr"+ NPA::itoa(j)+"_Ehigh");
-	  Cal->AddParameter("EXOGAM", "Cl"+ NPA::itoa(i)+"_Cr"+ NPA::itoa(j)+"_T","EXOGAM_Cl"+ NPA::itoa(i)+"_Cr"+ NPA::itoa(j)+"_T")	;
+	  Cal->AddParameter("EXOGAM", "Cl"+ NPL::itoa(i)+"_Cr"+ NPL::itoa(j)+"_Elow" ,"EXOGAM_Cl"+ NPL::itoa(i)+"_Cr"+ NPL::itoa(j)+"_Elow");
+	  Cal->AddParameter("EXOGAM", "Cl"+ NPL::itoa(i)+"_Cr"+ NPL::itoa(j)+"_Ehigh","EXOGAM_Cl"+ NPL::itoa(i)+"_Cr"+ NPL::itoa(j)+"_Ehigh");
+	  Cal->AddParameter("EXOGAM", "Cl"+ NPL::itoa(i)+"_Cr"+ NPL::itoa(j)+"_T","EXOGAM_Cl"+ NPL::itoa(i)+"_Cr"+ NPL::itoa(j)+"_T")	;
 	  
 	  for( int k = 0 ; k < 4 ; k++)
 	    {
-	      Cal->AddParameter("EXOGAM", "Cl"+ NPA::itoa(i)+"_Cr"+ NPA::itoa(j)+"_Seg"+ NPA::itoa(k)+"_E","EXOGAM_Cl"+ NPA::itoa(i)+"_Cr"+ NPA::itoa(j)+"_Seg"+ NPA::itoa(k)+"_E")	;
+	      Cal->AddParameter("EXOGAM", "Cl"+ NPL::itoa(i)+"_Cr"+ NPL::itoa(j)+"_Seg"+ NPL::itoa(k)+"_E","EXOGAM_Cl"+ NPL::itoa(i)+"_Cr"+ NPL::itoa(j)+"_Seg"+ NPL::itoa(k)+"_E")	;
 	    }
 	}
     }
@@ -731,8 +731,8 @@ namespace EXOGAM_LOCAL
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* TExogamPhysics::Construct(){
-  return (NPA::VDetector*) new TExogamPhysics();
+NPL::VDetector* TExogamPhysics::Construct(){
+  return (NPL::VDetector*) new TExogamPhysics();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -742,8 +742,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("EXOGAMArray","Exogam");
-      NPA::DetectorFactory::getInstance()->AddDetector("EXOGAMArray",TExogamPhysics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("EXOGAMArray","Exogam");
+      NPL::DetectorFactory::getInstance()->AddDetector("EXOGAMArray",TExogamPhysics::Construct);
     }
 };
 

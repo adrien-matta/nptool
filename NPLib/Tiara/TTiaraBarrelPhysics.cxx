@@ -94,9 +94,9 @@ for(unsigned int k = 0 ; k < sizeB ; k++){
           // I have no calibration of the back so replace by nothing ;)
           if(true){ 
             static string name =  "TIARABARREL/B";
-            name+=NPA::itoa(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i));
+            name+=NPL::itoa(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i));
             name+="_STRIP";
-            name+=NPA::itoa(m_PreTreatedData->GetFrontUpstreamEStripNbr(i));
+            name+=NPL::itoa(m_PreTreatedData->GetFrontUpstreamEStripNbr(i));
             name+="_POS";
             double POS =
               CalibrationManager::getInstance()
@@ -123,9 +123,9 @@ for(unsigned int k = 0 ; k < sizeB ; k++){
               DetectorNumber.push_back(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i));
               double E = (EU+ED); /* / CalibrationManager::getInstance()
                                    ->ApplyCalibration("TIARABARREL/BALLISTIC_B" 
-                                   + NPA::itoa(m_PreTreatedData->GetFrontDownstreamEDetectorNbr(i)) 
+                                   + NPL::itoa(m_PreTreatedData->GetFrontDownstreamEDetectorNbr(i)) 
                                    + "_STRIP" 
-                                   + NPA::itoa(m_PreTreatedData->GetFrontDownstreamEStripNbr(i)),
+                                   + NPL::itoa(m_PreTreatedData->GetFrontDownstreamEStripNbr(i)),
                                    POS); */
               Strip_E.push_back(E);
              if(sizeO == 1){
@@ -504,18 +504,18 @@ for(unsigned int k = 0 ; k < sizeB ; k++){
       // E and T
       for(int i = 0 ; i < m_NumberOfDetector ; ++i){
         for( int j = 0 ; j < 4 ; ++j){
-          Cal->AddParameter("TIARABARREL","B"+NPA::itoa(i+1)+"_UPSTREAM"+NPA::itoa(j+1)+"_E","TIARABARREL_B"+NPA::itoa(i+1)+"_UPSTREAM"+NPA::itoa(j+1)+"_E")   ;
-          Cal->AddParameter("TIARABARREL","B"+NPA::itoa(i+1)+"_DOWNSTREAM"+NPA::itoa(j+1)+"_E","TIARABARREL_B"+NPA::itoa(i+1)+"_DOWNSTREAM"+NPA::itoa(j+1)+"_E")   ;
+          Cal->AddParameter("TIARABARREL","B"+NPL::itoa(i+1)+"_UPSTREAM"+NPL::itoa(j+1)+"_E","TIARABARREL_B"+NPL::itoa(i+1)+"_UPSTREAM"+NPL::itoa(j+1)+"_E")   ;
+          Cal->AddParameter("TIARABARREL","B"+NPL::itoa(i+1)+"_DOWNSTREAM"+NPL::itoa(j+1)+"_E","TIARABARREL_B"+NPL::itoa(i+1)+"_DOWNSTREAM"+NPL::itoa(j+1)+"_E")   ;
 
-          Cal->AddParameter("TIARABARREL","MATCHSTICK_B"+NPA::itoa(i+1)+"_UPSTREAM"+NPA::itoa(j+1)+"_E","TIARABARREL_MATCHSTICK_B"+NPA::itoa(i+1)+"_UPSTREAM"+NPA::itoa(j+1)+"_E")   ;
-          Cal->AddParameter("TIARABARREL","MATCHSTICK_B"+NPA::itoa(i+1)+"_DOWNSTREAM"+NPA::itoa(j+1)+"_E","TIARABARREL_MATCHSTICK_B"+NPA::itoa(i+1)+"_DOWNSTREAM"+NPA::itoa(j+1)+"_E")   ;
+          Cal->AddParameter("TIARABARREL","MATCHSTICK_B"+NPL::itoa(i+1)+"_UPSTREAM"+NPL::itoa(j+1)+"_E","TIARABARREL_MATCHSTICK_B"+NPL::itoa(i+1)+"_UPSTREAM"+NPL::itoa(j+1)+"_E")   ;
+          Cal->AddParameter("TIARABARREL","MATCHSTICK_B"+NPL::itoa(i+1)+"_DOWNSTREAM"+NPL::itoa(j+1)+"_E","TIARABARREL_MATCHSTICK_B"+NPL::itoa(i+1)+"_DOWNSTREAM"+NPL::itoa(j+1)+"_E")   ;
 
-          Cal->AddParameter("TIARABARREL","BALLISTIC_B"+NPA::itoa(i+1)+"_STRIP"+NPA::itoa(j+1),"TIARABARREL_BALLISTIC_B"+NPA::itoa(i+1)+"_STRIP"+NPA::itoa(j+1))   ;
-          Cal->AddParameter("TIARABARREL","B"+NPA::itoa(i+1)+"_STRIP"+NPA::itoa(j+1)+"_POS","TIARABARREL_B"+NPA::itoa(i+1)+"_STRIP"+NPA::itoa(j+1)+"_POS")   ;
+          Cal->AddParameter("TIARABARREL","BALLISTIC_B"+NPL::itoa(i+1)+"_STRIP"+NPL::itoa(j+1),"TIARABARREL_BALLISTIC_B"+NPL::itoa(i+1)+"_STRIP"+NPL::itoa(j+1))   ;
+          Cal->AddParameter("TIARABARREL","B"+NPL::itoa(i+1)+"_STRIP"+NPL::itoa(j+1)+"_POS","TIARABARREL_B"+NPL::itoa(i+1)+"_STRIP"+NPL::itoa(j+1)+"_POS")   ;
 
         }
 
-        Cal->AddParameter("TIARABARREL","TIARABARREL/B" + NPA::itoa( i+1 ) + "_BACK_E","TIARABARREL_B" + NPA::itoa( i+1 ) + "_BACK_E");
+        Cal->AddParameter("TIARABARREL","TIARABARREL/B" + NPL::itoa( i+1 ) + "_BACK_E","TIARABARREL_B" + NPL::itoa( i+1 ) + "_BACK_E");
 
       }
       return;
@@ -668,9 +668,9 @@ for(unsigned int k = 0 ; k < sizeB ; k++){
     ///////////////////////////////////////////////////////////////////////////////
     double TTiaraBarrelPhysics::Cal_Strip_Upstream_E(const int i){
       static string name ="TIARABARREL/B" ;
-      name+= NPA::itoa( m_EventData->GetFrontUpstreamEDetectorNbr(i) ) ;
+      name+= NPL::itoa( m_EventData->GetFrontUpstreamEDetectorNbr(i) ) ;
       name+= "_UPSTREAM" ;
-      name+= NPA::itoa( m_EventData->GetFrontUpstreamEStripNbr(i) ) ;
+      name+= NPL::itoa( m_EventData->GetFrontUpstreamEStripNbr(i) ) ;
       name+= "_E";
       return CalibrationManager::getInstance()->ApplyCalibration(name,
           Match_Strip_Upstream_E(i) );
@@ -678,9 +678,9 @@ for(unsigned int k = 0 ; k < sizeB ; k++){
     ///////////////////////////////////////////////////////////////////////////////
     double TTiaraBarrelPhysics::Cal_Strip_Downstream_E(const int i){
       static string name = "TIARABARREL/B" ;
-      name+= NPA::itoa( m_EventData->GetFrontDownstreamEDetectorNbr(i) ) ;
+      name+= NPL::itoa( m_EventData->GetFrontDownstreamEDetectorNbr(i) ) ;
       name+= "_DOWNSTREAM" ;
-      name+= NPA::itoa( m_EventData->GetFrontDownstreamEStripNbr(i) ) ;
+      name+= NPL::itoa( m_EventData->GetFrontDownstreamEStripNbr(i) ) ;
       name+= "_E";
       return CalibrationManager::getInstance()->ApplyCalibration(name,
           Match_Strip_Downstream_E(i) );
@@ -688,9 +688,9 @@ for(unsigned int k = 0 ; k < sizeB ; k++){
     ///////////////////////////////////////////////////////////////////////////////
     double TTiaraBarrelPhysics::Match_Strip_Upstream_E(const int i){
       static string name = "TIARABARREL/MATCHSTICK_B" ;
-      name+= NPA::itoa( m_EventData->GetFrontUpstreamEDetectorNbr(i) ) ;
+      name+= NPL::itoa( m_EventData->GetFrontUpstreamEDetectorNbr(i) ) ;
       name+= "_UPSTREAM" ;
-      name+= NPA::itoa( m_EventData->GetFrontUpstreamEStripNbr(i) ) ;
+      name+= NPL::itoa( m_EventData->GetFrontUpstreamEStripNbr(i) ) ;
       name+= "_E";
       return CalibrationManager::getInstance()->ApplyCalibration(name,
           m_EventData->GetFrontUpstreamEEnergy(i) );
@@ -698,9 +698,9 @@ for(unsigned int k = 0 ; k < sizeB ; k++){
     ///////////////////////////////////////////////////////////////////////////////
     double TTiaraBarrelPhysics::Match_Strip_Downstream_E(const int i){
       static string name ="TIARABARREL/MATCHSTICK_B" ;
-      name+= NPA::itoa( m_EventData->GetFrontDownstreamEDetectorNbr(i) ) ;
+      name+= NPL::itoa( m_EventData->GetFrontDownstreamEDetectorNbr(i) ) ;
       name+= "_DOWNSTREAM" ;
-      name+= NPA::itoa( m_EventData->GetFrontDownstreamEStripNbr(i) ) ;
+      name+= NPL::itoa( m_EventData->GetFrontDownstreamEStripNbr(i) ) ;
       name+= "_E"; 
       return CalibrationManager::getInstance()->ApplyCalibration(name,
           m_EventData->GetFrontDownstreamEEnergy(i) );
@@ -708,7 +708,7 @@ for(unsigned int k = 0 ; k < sizeB ; k++){
     ///////////////////////////////////////////////////////////////////////////////
     double TTiaraBarrelPhysics::Cal_Back_E(const int i){
       static string name = "TIARABARREL/B" ;
-      name+= NPA::itoa( m_EventData->GetBackEDetectorNbr(i) ) ;
+      name+= NPL::itoa( m_EventData->GetBackEDetectorNbr(i) ) ;
       name+= "_BACK_E";
       return CalibrationManager::getInstance()->ApplyCalibration(name, m_EventData->GetBackEEnergy(i));
     }
@@ -722,8 +722,8 @@ for(unsigned int k = 0 ; k < sizeB ; k++){
     ////////////////////////////////////////////////////////////////////////////////
     //            Construct Method to be pass to the DetectorFactory              //
     ////////////////////////////////////////////////////////////////////////////////
-    NPA::VDetector* TTiaraBarrelPhysics::Construct(){
-      return (NPA::VDetector*) new TTiaraBarrelPhysics();
+    NPL::VDetector* TTiaraBarrelPhysics::Construct(){
+      return (NPL::VDetector*) new TTiaraBarrelPhysics();
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -733,8 +733,8 @@ for(unsigned int k = 0 ; k < sizeB ; k++){
       class brlproxy{
         public:
           brlproxy(){
-            NPA::DetectorFactory::getInstance()->AddToken("Tiara","Tiara");
-            NPA::DetectorFactory::getInstance()->AddDetector("Tiara",TTiaraBarrelPhysics::Construct);
+            NPL::DetectorFactory::getInstance()->AddToken("Tiara","Tiara");
+            NPL::DetectorFactory::getInstance()->AddDetector("Tiara",TTiaraBarrelPhysics::Construct);
           }
       };
 

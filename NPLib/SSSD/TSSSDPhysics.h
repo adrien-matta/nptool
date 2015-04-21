@@ -34,7 +34,7 @@ using namespace std ;
 #include "NPCalibrationManager.h"
 
 
-class TSSSDPhysics : public TObject, public NPA::VDetector
+class TSSSDPhysics : public TObject, public NPL::VDetector
 {
  public:   //   Constructor and Destructor
    TSSSDPhysics();
@@ -119,7 +119,7 @@ class TSSSDPhysics : public TObject, public NPA::VDetector
    void Clear(const Option_t*) {};
    
    public: // Static constructor to be passed to the Detector Factory
-     static NPA::VDetector* Construct();
+     static NPL::VDetector* Construct();
      ClassDef(TSSSDPhysics,1)  // SSSDPhysics structure
 };
 

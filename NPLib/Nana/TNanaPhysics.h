@@ -37,7 +37,7 @@ using namespace std ;
 #include "TVector3.h"
 
 
-class TNanaPhysics : public TObject, public NPA::VDetector{
+class TNanaPhysics : public TObject, public NPL::VDetector{
   public:
     TNanaPhysics();
     ~TNanaPhysics();
@@ -144,7 +144,7 @@ class TNanaPhysics : public TObject, public NPA::VDetector{
     vector<double>   NanaOutTotalEnergy;
 
     public: // Static constructor to be passed to the Detector Factory
-     static NPA::VDetector* Construct();
+     static NPL::VDetector* Construct();
      ClassDef(TNanaPhysics,1)
 };
 

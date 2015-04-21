@@ -570,8 +570,8 @@ void TNanaPhysics::Print(){
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* TNanaPhysics::Construct(){
-  return (NPA::VDetector*) new TNanaPhysics();
+NPL::VDetector* TNanaPhysics::Construct(){
+  return (NPL::VDetector*) new TNanaPhysics();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -581,8 +581,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("Nana","Nana");
-      NPA::DetectorFactory::getInstance()->AddDetector("Nana",TNanaPhysics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("Nana","Nana");
+      NPL::DetectorFactory::getInstance()->AddDetector("Nana",TNanaPhysics::Construct);
     }
 };
 

@@ -41,7 +41,7 @@ using namespace std ;
 // Forward Declaration
 class TMust2Spectra;
 
-class TMust2Physics : public TObject, public NPA::VDetector{
+class TMust2Physics : public TObject, public NPL::VDetector{
   public:
     TMust2Physics();
     ~TMust2Physics(); 
@@ -279,7 +279,7 @@ class TMust2Physics : public TObject, public NPA::VDetector{
     map< vector<string> , TH1*> GetSpectra(); 
 
     public: // Static constructor to be passed to the Detector Factory
-     static NPA::VDetector* Construct();
+     static NPL::VDetector* Construct();
      ClassDef(TMust2Physics,1)  // Must2Physics structure
 };
 

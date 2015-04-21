@@ -109,7 +109,7 @@ void TTiaraBarrelSpectra::InitRawSpectra(){
   // Inner Barrel
   for(unsigned int i  = 0 ; i < fNumberOfDetector ; i++){
     for(unsigned int j = 0 ; j < fInnerBarrelStrip;j++){
-      name = "IB"+NPA::itoa(i+1)+"_VS"+NPA::itoa(j+1)+"_RAW";
+      name = "IB"+NPL::itoa(i+1)+"_VS"+NPL::itoa(j+1)+"_RAW";
       AddHisto2D(name, name,1024,0,0,1024,0,0,BaseFamily+"VS");
     }
   }
@@ -123,10 +123,10 @@ void TTiaraBarrelSpectra::InitPreTreatedSpectra(){
   // Inner Barrel
   for(unsigned int i  = 0 ; i < fNumberOfDetector ; i++){
     for(unsigned int j = 0 ; j < fInnerBarrelStrip;j++){
-      name = "IB"+NPA::itoa(i+1)+"_VS"+NPA::itoa(j+1)+"_CAL";
+      name = "IB"+NPL::itoa(i+1)+"_VS"+NPL::itoa(j+1)+"_CAL";
       AddHisto2D(name,name,2048,0,0,2048,0,0,BaseFamily+"VS");
     }
-    name = "IB"+NPA::itoa(i+1)+"_VS_BACK_CAL"; 
+    name = "IB"+NPL::itoa(i+1)+"_VS_BACK_CAL"; 
     AddHisto2D(name,name,2048,0,0,2048,0,0,BaseFamily+"VS");
   }
 }
@@ -139,7 +139,7 @@ string name ;
   // Inner Barrel
   for(unsigned int i  = 0 ; i < fNumberOfDetector ; i++){
     for(unsigned int j = 0 ; j < fInnerBarrelStrip;j++){
-      name = "IB"+NPA::itoa(i+1)+"_EPOS"+NPA::itoa(j+1)+"_CAL";
+      name = "IB"+NPL::itoa(i+1)+"_EPOS"+NPL::itoa(j+1)+"_CAL";
       AddHisto2D(name, name,1000,-0.5,1.5,1000,0,30,BaseFamily);
     }
   }
@@ -147,7 +147,7 @@ string name ;
   // Inner Barrel
   for(unsigned int i  = 0 ; i < fNumberOfDetector ; i++){
     for(unsigned int j = 0 ; j < fInnerBarrelStrip;j++){
-      name = "IB"+NPA::itoa(i+1)+"_ETHETA"+NPA::itoa(j+1)+"_CAL";
+      name = "IB"+NPL::itoa(i+1)+"_ETHETA"+NPL::itoa(j+1)+"_CAL";
       AddHisto2D(name, name,360,0,180,1000,0,30,BaseFamily);
     }
   }
@@ -235,7 +235,7 @@ void TTiaraBarrelSpectra::FillRawSpectra(TTiaraBarrelData* RawData){
       int DoStreamDetNbr = RawData->GetFrontDownstreamEDetectorNbr(j);
       int DoStreamStrNbr = RawData->GetFrontDownstreamEStripNbr(j);
      if(UpStreamDetNbr==DoStreamDetNbr && UpStreamStrNbr==DoStreamStrNbr){
-       name = "IB"+NPA::itoa(UpStreamDetNbr)+"_VS"+NPA::itoa(UpStreamStrNbr)+"_RAW"; 
+       name = "IB"+NPL::itoa(UpStreamDetNbr)+"_VS"+NPL::itoa(UpStreamStrNbr)+"_RAW"; 
        GetHisto(family,name)
         ->Fill(RawData->GetFrontUpstreamEEnergy(i),RawData->GetFrontDownstreamEEnergy(j));
       } 
@@ -262,13 +262,13 @@ string BaseFamily = "TIARA/BARREL/CAL/";
       int DoStreamDetNbr = PreTreatedData->GetFrontDownstreamEDetectorNbr(j);
       int DoStreamStrNbr = PreTreatedData->GetFrontDownstreamEStripNbr(j);
      if(UpStreamDetNbr==DoStreamDetNbr && UpStreamStrNbr==DoStreamStrNbr){
-      name = "IB"+NPA::itoa(UpStreamDetNbr)+"_VS"+NPA::itoa(UpStreamStrNbr)+"_CAL"; 
+      name = "IB"+NPL::itoa(UpStreamDetNbr)+"_VS"+NPL::itoa(UpStreamStrNbr)+"_CAL"; 
        GetHisto(family,name)
          ->Fill(PreTreatedData->GetFrontUpstreamEEnergy(i),PreTreatedData->GetFrontDownstreamEEnergy(j));
      
         for (unsigned int k = 0; k < sizeB; k++) {
           if(UpStreamDetNbr == PreTreatedData->GetBackEDetectorNbr(k)){     
-            name = "IB"+NPA::itoa(UpStreamDetNbr)+"_VS_BACK_CAL"; 
+            name = "IB"+NPL::itoa(UpStreamDetNbr)+"_VS_BACK_CAL"; 
             GetHisto(family,name)
               ->Fill(PreTreatedData->GetFrontUpstreamEEnergy(i)
                       +PreTreatedData->GetFrontDownstreamEEnergy(j),
@@ -288,11 +288,11 @@ void TTiaraBarrelSpectra::FillPhysicsSpectra(TTiaraBarrelPhysics* Physics){
   // Inner Barrel
   //unsigned int size = Physics->Strip_E.size();
   for(unsigned int i  = 0 ; i < Physics->Strip_E.size() ; i++){
-    name ="IB"+NPA::itoa(Physics->DetectorNumber[i])+"_EPOS"+NPA::itoa(Physics->Strip_N[i])+"_CAL";
+    name ="IB"+NPL::itoa(Physics->DetectorNumber[i])+"_EPOS"+NPL::itoa(Physics->Strip_N[i])+"_CAL";
     GetHisto(family,name)
       ->Fill(Physics->Strip_Pos[i],Physics->Strip_E[i]);
 
-    name = "IB"+NPA::itoa(Physics->DetectorNumber[i])+"_ETHETA"+NPA::itoa(Physics->Strip_N[i])+"_CAL";
+    name = "IB"+NPL::itoa(Physics->DetectorNumber[i])+"_ETHETA"+NPL::itoa(Physics->Strip_N[i])+"_CAL";
     double Theta = Physics->GetPositionOfInteraction(i).Angle(TVector3(0,0,1));
 
     GetHisto(family,name)

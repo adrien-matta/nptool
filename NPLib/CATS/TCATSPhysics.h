@@ -41,7 +41,7 @@
 class TCATSSpectra;
 using namespace std ;
 
-class TCATSPhysics : public TObject, public NPA::VDetector
+class TCATSPhysics : public TObject, public NPL::VDetector
 {
 
   public:   //   Constructor and Destructor
@@ -193,7 +193,7 @@ class TCATSPhysics : public TObject, public NPA::VDetector
     map< vector<string> , TH1*> GetSpectra();
 
     public: // Static constructor to be passed to the Detector Factory
-     static NPA::VDetector* Construct();
+     static NPL::VDetector* Construct();
      ClassDef(TCATSPhysics,1)  // CATSPhysics structure
 };
 

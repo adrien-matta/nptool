@@ -1,5 +1,5 @@
 #include"NPDetectorFactory.h"
-using namespace NPA;
+using namespace NPL;
 #include<dlfcn.h>
 #include<fstream>
 #include<iostream>
@@ -68,7 +68,7 @@ void DetectorFactory::CreateClassList(std::string FileList){
 
 }
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* DetectorFactory::Construct(std::string Token){
+NPL::VDetector* DetectorFactory::Construct(std::string Token){
   std::map<std::string,ClassDetectorFactoryFn>::iterator it;
   
   if(m_Construct.find(Token)!=m_Construct.end())

@@ -41,7 +41,7 @@ using namespace std ;
 // Forward Declaration
 class TExogamSpectra;
 
-class TExogamPhysics : public TObject, public NPA::VDetector
+class TExogamPhysics : public TObject, public NPL::VDetector
 {
  public:
   TExogamPhysics()	;
@@ -177,7 +177,7 @@ class TExogamPhysics : public TObject, public NPA::VDetector
     map< vector<string> , TH1*> GetSpectra(); 		
 
   public: // Static constructor to be passed to the Detector Factory
-     static NPA::VDetector* Construct();
+     static NPL::VDetector* Construct();
      ClassDef(TExogamPhysics,1)  // ExogamPhysics structure
     };
 

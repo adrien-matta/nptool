@@ -81,7 +81,7 @@ void TTacPhysics::AddParameterToCalibrationManager()
       
       for(int i = 0 ; i < 8 ; i++)
          {
-            Cal->AddParameter("TAC", "_T"+ NPA::itoa(i+1),"TAC_T"+ NPA::itoa(i+1))   ;
+            Cal->AddParameter("TAC", "_T"+ NPL::itoa(i+1),"TAC_T"+ NPL::itoa(i+1))   ;
          }
    }
    
@@ -126,18 +126,18 @@ void TTacPhysics::BuildSimplePhysicalEvent()
 	{
 	   	TacNumber.push_back(EventData->GetTAC_MM_HF_DetectorNbr(i));
 	}
-		Time_TAC_1=CalibrationManager::getInstance()->ApplyCalibration("TAC/_T" + NPA::itoa( EventData->GetTAC_MM_HF_DetectorNbr(0) ),EventData->GetTAC_MM_HF() );
-		Time_TAC_2=CalibrationManager::getInstance()->ApplyCalibration("TAC/_T" + NPA::itoa( EventData->GetTAC_MM_HF_DetectorNbr(1) ),EventData->GetTAC_MM_HF() );
-		Time_TAC_3=CalibrationManager::getInstance()->ApplyCalibration("TAC/_T" + NPA::itoa( EventData->GetTAC_MM_HF_DetectorNbr(2) ),EventData->GetTAC_MM_HF() );
-		Time_TAC_4=CalibrationManager::getInstance()->ApplyCalibration("TAC/_T" + NPA::itoa( EventData->GetTAC_MM_HF_DetectorNbr(3) ),EventData->GetTAC_MM_HF() );
+		Time_TAC_1=CalibrationManager::getInstance()->ApplyCalibration("TAC/_T" + NPL::itoa( EventData->GetTAC_MM_HF_DetectorNbr(0) ),EventData->GetTAC_MM_HF() );
+		Time_TAC_2=CalibrationManager::getInstance()->ApplyCalibration("TAC/_T" + NPL::itoa( EventData->GetTAC_MM_HF_DetectorNbr(1) ),EventData->GetTAC_MM_HF() );
+		Time_TAC_3=CalibrationManager::getInstance()->ApplyCalibration("TAC/_T" + NPL::itoa( EventData->GetTAC_MM_HF_DetectorNbr(2) ),EventData->GetTAC_MM_HF() );
+		Time_TAC_4=CalibrationManager::getInstance()->ApplyCalibration("TAC/_T" + NPL::itoa( EventData->GetTAC_MM_HF_DetectorNbr(3) ),EventData->GetTAC_MM_HF() );
 		
    }
 
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* TTacPhysics::Construct(){
-  return (NPA::VDetector*) new TTacPhysics();
+NPL::VDetector* TTacPhysics::Construct(){
+  return (NPL::VDetector*) new TTacPhysics();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -147,8 +147,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("Tac","Tac");
-      NPA::DetectorFactory::getInstance()->AddDetector("Tac",TTacPhysics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("Tac","Tac");
+      NPL::DetectorFactory::getInstance()->AddDetector("Tac",TTacPhysics::Construct);
     }
 };
 

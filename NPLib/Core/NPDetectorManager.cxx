@@ -37,24 +37,24 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //   Default Constructor
-NPA::DetectorManager::DetectorManager(){
-  m_BuildPhysicalPtr = &NPA::VDetector::BuildPhysicalEvent;
-  m_ClearEventPhysicsPtr =  &NPA::VDetector::ClearEventPhysics;
-  m_ClearEventDataPtr = &NPA::VDetector::ClearEventData ;
+NPL::DetectorManager::DetectorManager(){
+  m_BuildPhysicalPtr = &NPL::VDetector::BuildPhysicalEvent;
+  m_ClearEventPhysicsPtr =  &NPL::VDetector::ClearEventPhysics;
+  m_ClearEventDataPtr = &NPL::VDetector::ClearEventData ;
   m_FillSpectra = NULL; 
   m_CheckSpectra = NULL;   
   
   if(NPOptionManager::getInstance()->GetGenerateHistoOption()){
-    m_FillSpectra =  &NPA::VDetector::FillSpectra ;
+    m_FillSpectra =  &NPL::VDetector::FillSpectra ;
     if(NPOptionManager::getInstance()->GetCheckHistoOption())
-      m_CheckSpectra = &NPA::VDetector::CheckSpectra ;
+      m_CheckSpectra = &NPL::VDetector::CheckSpectra ;
   }
 }
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////   
 //   Default Desstructor
-NPA::DetectorManager::~DetectorManager(){
+NPL::DetectorManager::~DetectorManager(){
 #if __cplusplus > 199711L
   StopThread();
 #endif
@@ -63,7 +63,7 @@ NPA::DetectorManager::~DetectorManager(){
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //   Read stream at ConfigFile and pick-up Token declaration of Detector
-void NPA::DetectorManager::ReadConfigurationFile(string Path)   {
+void NPL::DetectorManager::ReadConfigurationFile(string Path)   {
   cout << "\033[1;36m" ;
 
    // Instantiate the Calibration Manager
@@ -73,7 +73,7 @@ void NPA::DetectorManager::ReadConfigurationFile(string Path)   {
   // Access the DetectorFactory and ask it to load the Class List
   string classlist = getenv("NPTOOL");
   classlist += "/NPLib/DetectorClassList.txt";
-  NPA::DetectorFactory* theFactory = NPA::DetectorFactory::getInstance();
+  NPL::DetectorFactory* theFactory = NPL::DetectorFactory::getInstance();
   theFactory->ReadClassList(classlist);
 
   ifstream ConfigFile;
@@ -236,7 +236,7 @@ void NPA::DetectorManager::ReadConfigurationFile(string Path)   {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////   
-void NPA::DetectorManager::BuildPhysicalEvent(){
+void NPL::DetectorManager::BuildPhysicalEvent(){
 #if __cplusplus > 199711L
  // add new job
   map<string,VDetector*>::iterator it;
@@ -263,7 +263,7 @@ void NPA::DetectorManager::BuildPhysicalEvent(){
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-void NPA::DetectorManager::BuildSimplePhysicalEvent(){
+void NPL::DetectorManager::BuildSimplePhysicalEvent(){
   ClearEventPhysics();
   map<string,VDetector*>::iterator it;
   
@@ -278,7 +278,7 @@ void NPA::DetectorManager::BuildSimplePhysicalEvent(){
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-void NPA::DetectorManager::InitializeRootInput(){
+void NPL::DetectorManager::InitializeRootInput(){
 
   if( NPOptionManager::getInstance()->GetDisableAllBranchOption() )
     RootInput::getInstance()->GetChain()->SetBranchStatus ( "*" , false ) ;
@@ -295,7 +295,7 @@ void NPA::DetectorManager::InitializeRootInput(){
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////   
-void NPA::DetectorManager::InitializeRootOutput(){
+void NPL::DetectorManager::InitializeRootOutput(){
   map<string,VDetector*>::iterator it;
 
   if(!NPOptionManager::getInstance()->GetInputPhysicalTreeOption())
@@ -304,13 +304,13 @@ void NPA::DetectorManager::InitializeRootOutput(){
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-void NPA::DetectorManager::AddDetector(string DetectorName , VDetector* newDetector){
+void NPL::DetectorManager::AddDetector(string DetectorName , VDetector* newDetector){
   m_Detector[DetectorName] = newDetector;
   newDetector->AddParameterToCalibrationManager();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* NPA::DetectorManager::GetDetector(string name){
+NPL::VDetector* NPL::DetectorManager::GetDetector(string name){
   map<string,VDetector*>::iterator it;
   it = m_Detector.find(name);
   if ( it!=m_Detector.end() ) return it->second;
@@ -326,35 +326,35 @@ NPA::VDetector* NPA::DetectorManager::GetDetector(string name){
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-void NPA::DetectorManager::ClearEventPhysics(){
+void NPL::DetectorManager::ClearEventPhysics(){
   map<string,VDetector*>::iterator it;
   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) 
     (it->second->*m_ClearEventPhysicsPtr)();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-void NPA::DetectorManager::ClearEventData(){
+void NPL::DetectorManager::ClearEventData(){
   map<string,VDetector*>::iterator it;
   for (it = m_Detector.begin(); it != m_Detector.end(); ++it)
     (it->second->*m_ClearEventDataPtr)();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////   
-void NPA::DetectorManager::InitSpectra(){
+void NPL::DetectorManager::InitSpectra(){
   map<string,VDetector*>::iterator it;
   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) 
     it->second->InitSpectra();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////   
-void NPA::DetectorManager::WriteSpectra(){
+void NPL::DetectorManager::WriteSpectra(){
   map<string,VDetector*>::iterator it;
   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) 
     it->second->WriteSpectra();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////   
-vector< map< vector<string>, TH1* > > NPA::DetectorManager::GetSpectra(){
+vector< map< vector<string>, TH1* > > NPL::DetectorManager::GetSpectra(){
    vector< map< vector<string>, TH1* > > myVector;
    map<string,VDetector*>::iterator it;
    // loop on detectors
@@ -366,7 +366,7 @@ vector< map< vector<string>, TH1* > > NPA::DetectorManager::GetSpectra(){
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////   
-vector<string> NPA::DetectorManager::GetDetectorList(){
+vector<string> NPL::DetectorManager::GetDetectorList(){
   map<string,VDetector*>::iterator it;
   vector<string> DetectorList;
   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) { 
@@ -377,14 +377,14 @@ vector<string> NPA::DetectorManager::GetDetectorList(){
 }
 #if __cplusplus > 199711L 
 ////////////////////////////////////////////////////////////////////////////////
-void NPA::DetectorManager::InitThreadPool(){
+void NPL::DetectorManager::InitThreadPool(){
   StopThread();
   m_ThreadPool.clear();
   m_Ready.clear();
   map<string,VDetector*>::iterator it;
   unsigned int i = 0;
   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) { 
-    m_ThreadPool.push_back( thread( &NPA::DetectorManager::StartThread,this,it->second,i++) );
+    m_ThreadPool.push_back( thread( &NPL::DetectorManager::StartThread,this,it->second,i++) );
     m_Ready.push_back(false);
   }
   m_stop = false;
@@ -396,7 +396,7 @@ void NPA::DetectorManager::InitThreadPool(){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void NPA::DetectorManager::StartThread(NPA::VDetector* det,unsigned int id){ 
+void NPL::DetectorManager::StartThread(NPL::VDetector* det,unsigned int id){ 
 this_thread::sleep_for(chrono::milliseconds(1));
 vector<bool>::iterator it = m_Ready.begin()+id;
 
@@ -416,11 +416,11 @@ while(!m_stop){
   }
 }
 ////////////////////////////////////////////////////////////////////////////////
-void NPA::DetectorManager::StopThread(){
+void NPL::DetectorManager::StopThread(){
   m_stop=true;
 }
 ////////////////////////////////////////////////////////////////////////////////
-bool NPA::DetectorManager::IsDone(){
+bool NPL::DetectorManager::IsDone(){
   for(vector<bool>::iterator i =  m_Ready.begin() ; i!=m_Ready.end() ; i++){
     if((*i))
       return false;

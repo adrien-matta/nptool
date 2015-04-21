@@ -71,8 +71,8 @@ void THyde2TrackerPhysics::Clear()
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* THyde2TrackerPhysics::Construct(){
-  return (NPA::VDetector*) new THyde2TrackerPhysics();
+NPL::VDetector* THyde2TrackerPhysics::Construct(){
+  return (NPL::VDetector*) new THyde2TrackerPhysics();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -82,8 +82,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("Hyde2Tracker","Hyde2Tracker");
-      NPA::DetectorFactory::getInstance()->AddDetector("Hyde2Tracker",THyde2TrackerPhysics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("Hyde2Tracker","Hyde2Tracker");
+      NPL::DetectorFactory::getInstance()->AddDetector("Hyde2Tracker",THyde2TrackerPhysics::Construct);
     }
 };
 

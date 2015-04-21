@@ -937,8 +937,8 @@ void TParisPhysics::Print(){
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* TParisPhysics::Construct(){
-  return (NPA::VDetector*) new TParisPhysics();
+NPL::VDetector* TParisPhysics::Construct(){
+  return (NPL::VDetector*) new TParisPhysics();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -948,8 +948,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("Paris","Paris");
-      NPA::DetectorFactory::getInstance()->AddDetector("Paris",TParisPhysics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("Paris","Paris");
+      NPL::DetectorFactory::getInstance()->AddDetector("Paris",TParisPhysics::Construct);
     }
 };
 

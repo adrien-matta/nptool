@@ -31,7 +31,7 @@
 // Root
 #include "TVector3.h"
 
-class Helios : public NPA::VDetector
+class Helios : public NPL::VDetector
 {
 public:
    Helios();

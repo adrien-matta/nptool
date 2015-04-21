@@ -1173,8 +1173,8 @@ namespace S2_LOCAL
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* TS2Physics::Construct(){
-  return (NPA::VDetector*) new TS2Physics();
+NPL::VDetector* TS2Physics::Construct(){
+  return (NPL::VDetector*) new TS2Physics();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1184,8 +1184,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("AnnularS2","AnnularS2");
-      NPA::DetectorFactory::getInstance()->AddDetector("AnnularS2",TS2Physics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("AnnularS2","AnnularS2");
+      NPL::DetectorFactory::getInstance()->AddDetector("AnnularS2",TS2Physics::Construct);
     }
 };
 

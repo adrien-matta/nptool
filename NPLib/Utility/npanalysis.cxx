@@ -76,16 +76,16 @@ int main(int argc , char** argv){
   TTree* tree= RootOutput::getInstance()->GetTree();
 
   // Instantiate the detector using a file
-  NPA::DetectorManager* myDetector = new NPA::DetectorManager();
+  NPL::DetectorManager* myDetector = new NPL::DetectorManager();
   myDetector->ReadConfigurationFile(detectorfileName);
 
   // Attempt to load an analysis
-  NPA::VAnalysis* UserAnalysis = NULL;
+  NPL::VAnalysis* UserAnalysis = NULL;
   string libName = "./libNPAnalysis" + SHARED_LIB_EXTENSION;
   dlopen(libName.c_str(),RTLD_NOW);
   char* error = dlerror();
   if(error==NULL){
-    UserAnalysis = NPA::AnalysisFactory::getInstance()->Construct(); 
+    UserAnalysis = NPL::AnalysisFactory::getInstance()->Construct(); 
     UserAnalysis->SetDetectorManager(myDetector);
     UserAnalysis->Init();
   }

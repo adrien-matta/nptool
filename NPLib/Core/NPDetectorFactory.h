@@ -4,9 +4,9 @@
 #include<map>
 #include<string>
 
-typedef NPA::VDetector* (*ClassDetectorFactoryFn)();
+typedef NPL::VDetector* (*ClassDetectorFactoryFn)();
 
-namespace NPA{
+namespace NPL{
 class DetectorFactory{
   private:
       DetectorFactory();
@@ -14,7 +14,7 @@ class DetectorFactory{
 
   public:
       static DetectorFactory* getInstance();
-      NPA::VDetector* Construct(std::string Token);
+      NPL::VDetector* Construct(std::string Token);
       void ReadClassList(std::string FileList);
       void AddToken(std::string Token, std::string LibName);
       void AddDetector(std::string Token, ClassDetectorFactoryFn fn);

@@ -1061,20 +1061,20 @@ void TMust2Physics::AddParameterToCalibrationManager()
   for(int i = 0 ; i < m_NumberOfTelescope ; ++i){
 
     for( int j = 0 ; j < 128 ; ++j){
-      Cal->AddParameter("MUST2", "T"+NPA::itoa(i+1)+"_Si_X"+NPA::itoa(j+1)+"_E","MUST2_T"+NPA::itoa(i+1)+"_Si_X"+NPA::itoa(j+1)+"_E")   ;
-      Cal->AddParameter("MUST2", "T"+NPA::itoa(i+1)+"_Si_Y"+NPA::itoa(j+1)+"_E","MUST2_T"+NPA::itoa(i+1)+"_Si_Y"+NPA::itoa(j+1)+"_E")   ;
-      Cal->AddParameter("MUST2", "T"+NPA::itoa(i+1)+"_Si_X"+NPA::itoa(j+1)+"_T","MUST2_T"+NPA::itoa(i+1)+"_Si_X"+NPA::itoa(j+1)+"_T")   ;
-      Cal->AddParameter("MUST2", "T"+NPA::itoa(i+1)+"_Si_Y"+NPA::itoa(j+1)+"_T","MUST2_T"+NPA::itoa(i+1)+"_Si_Y"+NPA::itoa(j+1)+"_T")   ;
+      Cal->AddParameter("MUST2", "T"+NPL::itoa(i+1)+"_Si_X"+NPL::itoa(j+1)+"_E","MUST2_T"+NPL::itoa(i+1)+"_Si_X"+NPL::itoa(j+1)+"_E")   ;
+      Cal->AddParameter("MUST2", "T"+NPL::itoa(i+1)+"_Si_Y"+NPL::itoa(j+1)+"_E","MUST2_T"+NPL::itoa(i+1)+"_Si_Y"+NPL::itoa(j+1)+"_E")   ;
+      Cal->AddParameter("MUST2", "T"+NPL::itoa(i+1)+"_Si_X"+NPL::itoa(j+1)+"_T","MUST2_T"+NPL::itoa(i+1)+"_Si_X"+NPL::itoa(j+1)+"_T")   ;
+      Cal->AddParameter("MUST2", "T"+NPL::itoa(i+1)+"_Si_Y"+NPL::itoa(j+1)+"_T","MUST2_T"+NPL::itoa(i+1)+"_Si_Y"+NPL::itoa(j+1)+"_T")   ;
     }
 
     for( int j = 0 ; j < 16 ; ++j){
-      Cal->AddParameter("MUST2", "T"+NPA::itoa(i+1)+"_SiLi"+NPA::itoa(j+1)+"_E","MUST2_T"+NPA::itoa(i+1)+"_SiLi"+NPA::itoa(j+1)+"_E")   ;
-      Cal->AddParameter("MUST2", "T"+NPA::itoa(i+1)+"_SiLi"+NPA::itoa(j+1)+"_T","MUST2_T"+NPA::itoa(i+1)+"_SiLi"+NPA::itoa(j+1)+"_T")   ;
+      Cal->AddParameter("MUST2", "T"+NPL::itoa(i+1)+"_SiLi"+NPL::itoa(j+1)+"_E","MUST2_T"+NPL::itoa(i+1)+"_SiLi"+NPL::itoa(j+1)+"_E")   ;
+      Cal->AddParameter("MUST2", "T"+NPL::itoa(i+1)+"_SiLi"+NPL::itoa(j+1)+"_T","MUST2_T"+NPL::itoa(i+1)+"_SiLi"+NPL::itoa(j+1)+"_T")   ;
     }
 
     for( int j = 0 ; j < 16 ; ++j){
-      Cal->AddParameter("MUST2", "T"+NPA::itoa(i+1)+"_CsI"+NPA::itoa(j+1)+"_E","MUST2_T"+NPA::itoa(i+1)+"_CsI"+NPA::itoa(j+1)+"_E")      ;
-      Cal->AddParameter("MUST2", "T"+NPA::itoa(i+1)+"_CsI"+NPA::itoa(j+1)+"_T","MUST2_T"+NPA::itoa(i+1)+"_CsI"+NPA::itoa(j+1)+"_T")      ;
+      Cal->AddParameter("MUST2", "T"+NPL::itoa(i+1)+"_CsI"+NPL::itoa(j+1)+"_E","MUST2_T"+NPL::itoa(i+1)+"_CsI"+NPL::itoa(j+1)+"_E")      ;
+      Cal->AddParameter("MUST2", "T"+NPL::itoa(i+1)+"_CsI"+NPL::itoa(j+1)+"_T","MUST2_T"+NPL::itoa(i+1)+"_CsI"+NPL::itoa(j+1)+"_T")      ;
     }
   }
 
@@ -1343,9 +1343,9 @@ namespace MUST2_LOCAL{
   //   X
   double fSi_X_E(const TMust2Data* m_EventData , const int i){
     static string name =    "MUST2/T" ;
-name+= NPA::itoa( m_EventData->GetMMStripXEDetectorNbr(i) ) ;
+name+= NPL::itoa( m_EventData->GetMMStripXEDetectorNbr(i) ) ;
 name+= "_Si_X" ;
-name+= NPA::itoa( m_EventData->GetMMStripXEStripNbr(i) ) ;
+name+= NPL::itoa( m_EventData->GetMMStripXEStripNbr(i) ) ;
 name+= "_E";
     return CalibrationManager::getInstance()->ApplyCalibration(name,
         m_EventData->GetMMStripXEEnergy(i) );
@@ -1353,9 +1353,9 @@ name+= "_E";
 
   double fSi_X_T(const TMust2Data* m_EventData , const int i){
     static string name =    "MUST2/T" ;
-name+= NPA::itoa( m_EventData->GetMMStripXTDetectorNbr(i) ) ;
+name+= NPL::itoa( m_EventData->GetMMStripXTDetectorNbr(i) ) ;
 name+= "_Si_X" ;
-name+= NPA::itoa( m_EventData->GetMMStripXTStripNbr(i) ) ;
+name+= NPL::itoa( m_EventData->GetMMStripXTStripNbr(i) ) ;
 name+="_T";
     return CalibrationManager::getInstance()->ApplyCalibration(name,
         m_EventData->GetMMStripXTTime(i) );
@@ -1364,18 +1364,18 @@ name+="_T";
   //   Y
   double fSi_Y_E(const TMust2Data* m_EventData , const int i){
     static string name =    "MUST2/T" ;
-name+= NPA::itoa( m_EventData->GetMMStripYEDetectorNbr(i) ) ;
+name+= NPL::itoa( m_EventData->GetMMStripYEDetectorNbr(i) ) ;
 name+= "_Si_Y" ;
-name+= NPA::itoa( m_EventData->GetMMStripYEStripNbr(i) ) ;
+name+= NPL::itoa( m_EventData->GetMMStripYEStripNbr(i) ) ;
 name+="_E";
     return CalibrationManager::getInstance()->ApplyCalibration( name, m_EventData->GetMMStripYEEnergy(i) );
   }
 
   double fSi_Y_T(const TMust2Data* m_EventData , const int i){
     static string name = "MUST2/T" ;
-name+= NPA::itoa( m_EventData->GetMMStripYTDetectorNbr(i) ) ;
+name+= NPL::itoa( m_EventData->GetMMStripYTDetectorNbr(i) ) ;
 name+= "_Si_Y" ;
-name+= NPA::itoa( m_EventData->GetMMStripYTStripNbr(i) ) ;
+name+= NPL::itoa( m_EventData->GetMMStripYTStripNbr(i) ) ;
 name+="_T";
     return CalibrationManager::getInstance()->ApplyCalibration(  name ,
         m_EventData->GetMMStripYTTime(i) );
@@ -1385,9 +1385,9 @@ name+="_T";
   //   SiLi
   double fSiLi_E(const TMust2Data* m_EventData , const int i){
     static string name =    "MUST2/T" ;
-name+= NPA::itoa( m_EventData->GetMMSiLiEDetectorNbr(i) ) ;
+name+= NPL::itoa( m_EventData->GetMMSiLiEDetectorNbr(i) ) ;
 name+= "_SiLi" ;
-name+= NPA::itoa( m_EventData->GetMMSiLiEPadNbr(i) ) ;
+name+= NPL::itoa( m_EventData->GetMMSiLiEPadNbr(i) ) ;
 name+="_E";
 
     return CalibrationManager::getInstance()->ApplyCalibration(name, m_EventData->GetMMSiLiEEnergy(i) );
@@ -1395,9 +1395,9 @@ name+="_E";
 
   double fSiLi_T(const TMust2Data* m_EventData , const int i){
     static string name ="MUST2/T" ;
-name+= NPA::itoa( m_EventData->GetMMSiLiTDetectorNbr(i) ) ;
+name+= NPL::itoa( m_EventData->GetMMSiLiTDetectorNbr(i) ) ;
 name+= "_SiLi" ;
-name+= NPA::itoa( m_EventData->GetMMSiLiTPadNbr(i) );
+name+= NPL::itoa( m_EventData->GetMMSiLiTPadNbr(i) );
 name+="_T";
     return CalibrationManager::getInstance()->ApplyCalibration(  name ,
         m_EventData->GetMMSiLiTTime(i) );
@@ -1406,9 +1406,9 @@ name+="_T";
   //   CsI
   double fCsI_E(const TMust2Data* m_EventData , const int i){
     static string name =   "MUST2/T" ;
-name+= NPA::itoa( m_EventData->GetMMCsIEDetectorNbr(i) ) ;
+name+= NPL::itoa( m_EventData->GetMMCsIEDetectorNbr(i) ) ;
 name+= "_CsI" ;
-name+= NPA::itoa( m_EventData->GetMMCsIECristalNbr(i) ) ;
+name+= NPL::itoa( m_EventData->GetMMCsIECristalNbr(i) ) ;
 name+="_E";
     return CalibrationManager::getInstance()->ApplyCalibration(name,
         m_EventData->GetMMCsIEEnergy(i) );
@@ -1416,9 +1416,9 @@ name+="_E";
 
   double fCsI_T(const TMust2Data* m_EventData , const int i){
     static string name ="MUST2/T" ;
-name+= NPA::itoa( m_EventData->GetMMCsITDetectorNbr(i) ) ;
+name+= NPL::itoa( m_EventData->GetMMCsITDetectorNbr(i) ) ;
 name+= "_CsI" ;
-name+= NPA::itoa( m_EventData->GetMMCsITCristalNbr(i) ) ;
+name+= NPL::itoa( m_EventData->GetMMCsITCristalNbr(i) ) ;
 name+="_T";
     return CalibrationManager::getInstance()->ApplyCalibration(  name ,
         m_EventData->GetMMCsITTime(i) );
@@ -1429,8 +1429,8 @@ name+="_T";
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* TMust2Physics::Construct(){
-  return (NPA::VDetector*) new TMust2Physics();
+NPL::VDetector* TMust2Physics::Construct(){
+  return (NPL::VDetector*) new TMust2Physics();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1440,8 +1440,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("MUST2Array","MUST2");
-      NPA::DetectorFactory::getInstance()->AddDetector("MUST2Array",TMust2Physics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("MUST2Array","MUST2");
+      NPL::DetectorFactory::getInstance()->AddDetector("MUST2Array",TMust2Physics::Construct);
     }
 };
 

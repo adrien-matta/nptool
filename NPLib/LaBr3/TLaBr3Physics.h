@@ -36,7 +36,7 @@ class TLaBr3Spectra;
 #include "NPVDetector.h"
 #include "NPCalibrationManager.h"
 
-class TLaBr3Physics : public TObject, public NPA::VDetector
+class TLaBr3Physics : public TObject, public NPL::VDetector
 {
    public:   //   Constructor and Destructor
       TLaBr3Physics();
@@ -115,7 +115,7 @@ class TLaBr3Physics : public TObject, public NPA::VDetector
     map< vector<string> , TH1*> GetSpectra(); 
 
       public: // Static constructor to be passed to the Detector Factory
-     static NPA::VDetector* Construct();
+     static NPL::VDetector* Construct();
      ClassDef(TLaBr3Physics,1)  // LaBr3Physics structure
 };
 

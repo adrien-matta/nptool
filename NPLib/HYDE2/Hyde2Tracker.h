@@ -40,7 +40,7 @@
 #include "TObject.h"
 #include "TVector3.h"
 
-class Hyde2Tracker : public NPA::VDetector
+class Hyde2Tracker : public NPL::VDetector
 {
 public:
    Hyde2Tracker();

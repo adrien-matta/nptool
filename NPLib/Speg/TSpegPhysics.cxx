@@ -878,30 +878,30 @@ void TSpegPhysics::AddParameterToCalibrationManager()
       CalibrationManager* Cal5 = CalibrationManager::getInstance();
       for(int i = 0 ; i < degree_of_calibration_angle_with_Brho+1 ; i++)
       {
-      	Cal5->AddParameter("SPEG", "_tfoc_calibration_with_Brho_"+ NPA::itoa(i),"SPEG_tfoc_calibration_with_Brho_"+ NPA::itoa(i))   ;
-      	Cal5->AddParameter("SPEG", "_phifoc_calibration_with_Brho_"+ NPA::itoa(i),"SPEG_phifoc_calibration_with_Brho_"+ NPA::itoa(i))   ;
+      	Cal5->AddParameter("SPEG", "_tfoc_calibration_with_Brho_"+ NPL::itoa(i),"SPEG_tfoc_calibration_with_Brho_"+ NPL::itoa(i))   ;
+      	Cal5->AddParameter("SPEG", "_phifoc_calibration_with_Brho_"+ NPL::itoa(i),"SPEG_phifoc_calibration_with_Brho_"+ NPL::itoa(i))   ;
       }
       CalibrationManager* Cal6 = CalibrationManager::getInstance();
       for(int i = 0 ; i < degree_of_correction_angle_with_Brho+1 ; i++)
       {
-      	Cal6->AddParameter("SPEG", "_tfoc_correction_with_Brho_"+ NPA::itoa(i),"SPEG_tfoc_correction_with_Brho_"+ NPA::itoa(i))   ;
-      	Cal6->AddParameter("SPEG", "_phifoc_correction_with_Brho_"+ NPA::itoa(i),"SPEG_phifoc_correction_with_Brho_"+ NPA::itoa(i))   ;
+      	Cal6->AddParameter("SPEG", "_tfoc_correction_with_Brho_"+ NPL::itoa(i),"SPEG_tfoc_correction_with_Brho_"+ NPL::itoa(i))   ;
+      	Cal6->AddParameter("SPEG", "_phifoc_correction_with_Brho_"+ NPL::itoa(i),"SPEG_phifoc_correction_with_Brho_"+ NPL::itoa(i))   ;
       }
       CalibrationManager* Cal7 = CalibrationManager::getInstance();
       for(int i = 0 ; i < 128 ; i++)
       {
-      	Cal7->AddParameter("SPEG", "_DC_S11_decal_"+ NPA::itoa(i+1),"SPEG_DC_S11_decal_"+ NPA::itoa(i+1))   ;
-      	Cal7->AddParameter("SPEG", "_DC_S12_decal_"+ NPA::itoa(i+1),"SPEG_DC_S12_decal_"+ NPA::itoa(i+1))   ;
-      	Cal7->AddParameter("SPEG", "_DC_S21_decal_"+ NPA::itoa(i+1),"SPEG_DC_S21_decal_"+ NPA::itoa(i+1))   ;
-      	Cal7->AddParameter("SPEG", "_DC_S22_decal_"+ NPA::itoa(i+1),"SPEG_DC_S22_decal_"+ NPA::itoa(i+1))   ;
+      	Cal7->AddParameter("SPEG", "_DC_S11_decal_"+ NPL::itoa(i+1),"SPEG_DC_S11_decal_"+ NPL::itoa(i+1))   ;
+      	Cal7->AddParameter("SPEG", "_DC_S12_decal_"+ NPL::itoa(i+1),"SPEG_DC_S12_decal_"+ NPL::itoa(i+1))   ;
+      	Cal7->AddParameter("SPEG", "_DC_S21_decal_"+ NPL::itoa(i+1),"SPEG_DC_S21_decal_"+ NPL::itoa(i+1))   ;
+      	Cal7->AddParameter("SPEG", "_DC_S22_decal_"+ NPL::itoa(i+1),"SPEG_DC_S22_decal_"+ NPL::itoa(i+1))   ;
       }
       CalibrationManager* Cal8 = CalibrationManager::getInstance();
       for(int i = 0 ; i < 128 ; i++)
       {
-      	Cal8->AddParameter("SPEG", "_DC_S11_"+ NPA::itoa(i+1),"SPEG_DC_S11_"+ NPA::itoa(i+1))   ;
-      	Cal8->AddParameter("SPEG", "_DC_S12_"+ NPA::itoa(i+1),"SPEG_DC_S12_"+ NPA::itoa(i+1))   ;
-      	Cal8->AddParameter("SPEG", "_DC_S21_"+ NPA::itoa(i+1),"SPEG_DC_S21_"+ NPA::itoa(i+1))   ;
-      	Cal8->AddParameter("SPEG", "_DC_S22_"+ NPA::itoa(i+1),"SPEG_DC_S22_"+ NPA::itoa(i+1))   ;
+      	Cal8->AddParameter("SPEG", "_DC_S11_"+ NPL::itoa(i+1),"SPEG_DC_S11_"+ NPL::itoa(i+1))   ;
+      	Cal8->AddParameter("SPEG", "_DC_S12_"+ NPL::itoa(i+1),"SPEG_DC_S12_"+ NPL::itoa(i+1))   ;
+      	Cal8->AddParameter("SPEG", "_DC_S21_"+ NPL::itoa(i+1),"SPEG_DC_S21_"+ NPL::itoa(i+1))   ;
+      	Cal8->AddParameter("SPEG", "_DC_S22_"+ NPL::itoa(i+1),"SPEG_DC_S22_"+ NPL::itoa(i+1))   ;
       }
    }
 
@@ -1141,7 +1141,7 @@ else
 				}
 				else
 				{
-					Q_S11.push_back((CalibrationManager::getInstance()->ApplyCalibration("SPEG/_DC_S11_"+ NPA::itoa(EventDCData->GetSpegDCStripNbr11(j)),(CalibrationManager::getInstance()->ApplyCalibration("SPEG/_DC_S11_decal_"+ NPA::itoa(EventDCData->GetSpegDCStripNbr11(j)), EventDCData->GetSpegDCEnergy11(j)))))+gRandom->Uniform(0,1)-0.5);
+					Q_S11.push_back((CalibrationManager::getInstance()->ApplyCalibration("SPEG/_DC_S11_"+ NPL::itoa(EventDCData->GetSpegDCStripNbr11(j)),(CalibrationManager::getInstance()->ApplyCalibration("SPEG/_DC_S11_decal_"+ NPL::itoa(EventDCData->GetSpegDCStripNbr11(j)), EventDCData->GetSpegDCEnergy11(j)))))+gRandom->Uniform(0,1)-0.5);
 				}       		
 			}
 		}
@@ -1163,7 +1163,7 @@ else
 				}
 				else
 				{
-					Q_S12.push_back((CalibrationManager::getInstance()->ApplyCalibration("SPEG/_DC_S12_"+ NPA::itoa(EventDCData->GetSpegDCStripNbr12(j)),(CalibrationManager::getInstance()->ApplyCalibration("SPEG/_DC_S12_decal_"+ NPA::itoa(EventDCData->GetSpegDCStripNbr12(j)), EventDCData->GetSpegDCEnergy12(j)))))+gRandom->Uniform(0,1)-0.5);
+					Q_S12.push_back((CalibrationManager::getInstance()->ApplyCalibration("SPEG/_DC_S12_"+ NPL::itoa(EventDCData->GetSpegDCStripNbr12(j)),(CalibrationManager::getInstance()->ApplyCalibration("SPEG/_DC_S12_decal_"+ NPL::itoa(EventDCData->GetSpegDCStripNbr12(j)), EventDCData->GetSpegDCEnergy12(j)))))+gRandom->Uniform(0,1)-0.5);
 				}    
 			}
 		}
@@ -1185,7 +1185,7 @@ else
 				}
 				else
 				{
-					Q_S21.push_back((CalibrationManager::getInstance()->ApplyCalibration("SPEG/_DC_S21_"+ NPA::itoa(129-EventDCData->GetSpegDCStripNbr21(j)),(CalibrationManager::getInstance()->ApplyCalibration("SPEG/_DC_S21_decal_"+ NPA::itoa(EventDCData->GetSpegDCStripNbr21(j)), EventDCData->GetSpegDCEnergy21(j)))))+gRandom->Uniform(0,1)-0.5);
+					Q_S21.push_back((CalibrationManager::getInstance()->ApplyCalibration("SPEG/_DC_S21_"+ NPL::itoa(129-EventDCData->GetSpegDCStripNbr21(j)),(CalibrationManager::getInstance()->ApplyCalibration("SPEG/_DC_S21_decal_"+ NPL::itoa(EventDCData->GetSpegDCStripNbr21(j)), EventDCData->GetSpegDCEnergy21(j)))))+gRandom->Uniform(0,1)-0.5);
 				}    
 			}
 		}
@@ -1207,7 +1207,7 @@ else
 				}
 				else
 				{
-					Q_S22.push_back((CalibrationManager::getInstance()->ApplyCalibration("SPEG/_DC_S22_"+ NPA::itoa(129-EventDCData->GetSpegDCStripNbr22(j)),(CalibrationManager::getInstance()->ApplyCalibration("SPEG/_DC_S22_decal_"+ NPA::itoa(EventDCData->GetSpegDCStripNbr22(j)), EventDCData->GetSpegDCEnergy22(j)))))+gRandom->Uniform(0,1)-0.5);
+					Q_S22.push_back((CalibrationManager::getInstance()->ApplyCalibration("SPEG/_DC_S22_"+ NPL::itoa(129-EventDCData->GetSpegDCStripNbr22(j)),(CalibrationManager::getInstance()->ApplyCalibration("SPEG/_DC_S22_decal_"+ NPL::itoa(EventDCData->GetSpegDCStripNbr22(j)), EventDCData->GetSpegDCEnergy22(j)))))+gRandom->Uniform(0,1)-0.5);
 				}    
 			}
 		}
@@ -1539,7 +1539,7 @@ else
 	     	for(int n = 0 ; n < degree_of_correction_angle_with_Brho+1 ; n++)
 	     	{
 			param_theta = 0;
-			cor_theta = (CalibrationManager::getInstance()->GetCorrection("SPEG/_tfoc_correction_with_Brho_"+ NPA::itoa(n)));
+			cor_theta = (CalibrationManager::getInstance()->GetCorrection("SPEG/_tfoc_correction_with_Brho_"+ NPL::itoa(n)));
 			for(unsigned int l=0; l<cor_theta.size() ; l++)
 			{
 				param_theta += cor_theta[l]*pow(xfoc_cor_phifoc,(int)l);
@@ -1553,7 +1553,7 @@ else
 	     	for(int n = 0 ; n < degree_of_correction_angle_with_Brho+1 ; n++)
 	     	{
 	     		param_phi = 0;
-			cor_phi = (CalibrationManager::getInstance()->GetCorrection("SPEG/_phifoc_correction_with_Brho_"+ NPA::itoa(n)));
+			cor_phi = (CalibrationManager::getInstance()->GetCorrection("SPEG/_phifoc_correction_with_Brho_"+ NPL::itoa(n)));
 			for(unsigned int l=0; l<cor_phi.size() ; l++)
 			{
 				param_phi += cor_phi[l]*pow(xfoc_cor_phifoc,(int)l);
@@ -1567,7 +1567,7 @@ else
 	     	for(int n = 0 ; n < degree_of_calibration_angle_with_Brho+1 ; n++)
 	     	{
 			param_theta = 0;
-			cal_theta = (CalibrationManager::getInstance()->GetCorrection("SPEG/_tfoc_calibration_with_Brho_"+ NPA::itoa(n)));
+			cal_theta = (CalibrationManager::getInstance()->GetCorrection("SPEG/_tfoc_calibration_with_Brho_"+ NPL::itoa(n)));
 			for(unsigned int l=0; l<cal_theta.size() ; l++)
 			{
 				param_theta += cal_theta[l]*pow(xfoc_cor_phifoc,(int)l);
@@ -1589,7 +1589,7 @@ else
 	     	for(int n = 0 ; n < degree_of_calibration_angle_with_Brho+1 ; n++)
 	     	{
 			param_phi = 0;
-			cal_phi = (CalibrationManager::getInstance()->GetCorrection("SPEG/_phifoc_calibration_with_Brho_"+ NPA::itoa(n)));
+			cal_phi = (CalibrationManager::getInstance()->GetCorrection("SPEG/_phifoc_calibration_with_Brho_"+ NPL::itoa(n)));
 			for(unsigned int l=0; l<cal_phi.size() ; l++)
 			{
 				param_phi += cal_phi[l]*pow(xfoc_cor_phifoc,(int)l);
@@ -1697,8 +1697,8 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* TSpegPhysics::Construct(){
-  return (NPA::VDetector*) new TSpegPhysics();
+NPL::VDetector* TSpegPhysics::Construct(){
+  return (NPL::VDetector*) new TSpegPhysics();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1708,8 +1708,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("Speg","Speg");
-      NPA::DetectorFactory::getInstance()->AddDetector("Speg",TSpegPhysics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("Speg","Speg");
+      NPL::DetectorFactory::getInstance()->AddDetector("Speg",TSpegPhysics::Construct);
     }
 };
 

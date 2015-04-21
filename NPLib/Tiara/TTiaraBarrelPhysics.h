@@ -41,7 +41,7 @@ class TTiaraBarrelSpectra;
 
 using namespace std ;
 
-class TTiaraBarrelPhysics : public TObject, public NPA::VDetector{
+class TTiaraBarrelPhysics : public TObject, public NPL::VDetector{
   public:
     TTiaraBarrelPhysics();
     ~TTiaraBarrelPhysics() {};
@@ -203,7 +203,7 @@ class TTiaraBarrelPhysics : public TObject, public NPA::VDetector{
   double Match_Strip_Downstream_E(const int i);
 
   public: // Static constructor to be passed to the Detector Factory
-     static NPA::VDetector* Construct();
+     static NPL::VDetector* Construct();
      ClassDef(TTiaraBarrelPhysics,1)  // SharcPhysics structure
 
 };

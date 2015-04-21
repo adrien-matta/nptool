@@ -36,7 +36,7 @@ using namespace std ;
 #include "NPCalibrationManager.h"
 
 
-class TW1Physics : public TObject, public NPA::VDetector
+class TW1Physics : public TObject, public NPL::VDetector
 {
  public:   //   Constructor and Destructor
    TW1Physics();
@@ -190,7 +190,7 @@ class TW1Physics : public TObject, public NPA::VDetector
 
 
    public: // Static constructor to be passed to the Detector Factory
-     static NPA::VDetector* Construct();
+     static NPL::VDetector* Construct();
      ClassDef(TW1Physics,1)  // TW1Physics
 };
 

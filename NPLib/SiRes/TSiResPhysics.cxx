@@ -199,10 +199,10 @@ void TSiResPhysics::AddParameterToCalibrationManager()
          {
             for( int j = 0 ; j < 4 ; j++)
                {
-                  Cal->AddParameter("SiRes", "Detector"+ NPA::itoa(i+1)+"_E","SiRes_Detector"+ NPA::itoa(i+1)+"_E")   ;
+                  Cal->AddParameter("SiRes", "Detector"+ NPL::itoa(i+1)+"_E","SiRes_Detector"+ NPL::itoa(i+1)+"_E")   ;
                }
-               Cal->AddParameter("SiRes", "Detector"+ NPA::itoa(i+1)+"_EBack","SiRes_Detector"+ NPA::itoa(i+1)+"_EBack")   ;   
-               Cal->AddParameter("SiRes", "Detector"+ NPA::itoa(i+1)+"_T","SiRes_Detector"+ NPA::itoa(i+1)+"_T")   ;   
+               Cal->AddParameter("SiRes", "Detector"+ NPL::itoa(i+1)+"_EBack","SiRes_Detector"+ NPL::itoa(i+1)+"_EBack")   ;   
+               Cal->AddParameter("SiRes", "Detector"+ NPL::itoa(i+1)+"_T","SiRes_Detector"+ NPL::itoa(i+1)+"_T")   ;   
       
          }
    }
@@ -276,7 +276,7 @@ void TSiResPhysics::PreTreat(){
 	if( EventData->GetEEnergy(i)>m_SiRes_RAW_Threshold )
     	{
 		
-		E=CalibrationManager::getInstance()->ApplyCalibration("SiRes/Detector" + NPA::itoa( EventData->GetEDetectorNumber(i) ) +"_Channel"+ NPA::itoa( EventData->GetEChannelNumber(i) )+"_E",EventData->GetEEnergy(i));
+		E=CalibrationManager::getInstance()->ApplyCalibration("SiRes/Detector" + NPL::itoa( EventData->GetEDetectorNumber(i) ) +"_Channel"+ NPL::itoa( EventData->GetEChannelNumber(i) )+"_E",EventData->GetEEnergy(i));
     		//if(E>m_SiRes_E_Threshold)
     		{
         		N=EventData->GetEDetectorNumber(i);
@@ -290,14 +290,14 @@ void TSiResPhysics::PreTreat(){
     {
 	if( EventData->GetEEnergyBack(i)>m_SiRes_RAWBack_Threshold && EventData->GetEEnergyBackDetectorNumber(i)==N )
 	{
-		E=CalibrationManager::getInstance()->ApplyCalibration("SiRes/Detector" + NPA::itoa( EventData->GetEEnergyBackDetectorNumber(i) ) +"_E",EventData->GetEEnergyBack(i));
+		E=CalibrationManager::getInstance()->ApplyCalibration("SiRes/Detector" + NPL::itoa( EventData->GetEEnergyBackDetectorNumber(i) ) +"_E",EventData->GetEEnergyBack(i));
 		if(E>m_SiRes_EBack_Threshold)
 		{    
 			PreTreatedData->SetEEnergyBackDetectorNumber( EventData->GetEEnergyBackDetectorNumber(i) );
 			PreTreatedData->SetEEnergyBack( E );
 			if(EventData->GetTimeMult()>0)
 			{
-				T=CalibrationManager::getInstance()->ApplyCalibration("SiRes/Detector"+ NPA::itoa(EventData->GetTDetectorNumber(i))+"_T",EventData->GetTTime(i) ) ;      
+				T=CalibrationManager::getInstance()->ApplyCalibration("SiRes/Detector"+ NPL::itoa(EventData->GetTDetectorNumber(i))+"_T",EventData->GetTTime(i) ) ;      
 			}            
 			PreTreatedData->SetTTime( T );
 		}
@@ -350,8 +350,8 @@ void TSiResPhysics::Treat()
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* TSiResPhysics::Construct(){
-  return (NPA::VDetector*) new TSiResPhysics();
+NPL::VDetector* TSiResPhysics::Construct(){
+  return (NPL::VDetector*) new TSiResPhysics();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -361,8 +361,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("SiRes","SiRes");
-      NPA::DetectorFactory::getInstance()->AddDetector("SiRes",TSiResPhysics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("SiRes","SiRes");
+      NPL::DetectorFactory::getInstance()->AddDetector("SiRes",TSiResPhysics::Construct);
     }
 };
 

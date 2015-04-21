@@ -247,8 +247,8 @@ void TPlasticPhysics::AddParameterToCalibrationManager()
          {
             for( int j = 0 ; j < 16 ; j++)
                {
-                  Cal->AddParameter("Plastic", "Detector"+ NPA::itoa(i+1)+"_E","Plastic_Detector"+ NPA::itoa(i+1)+"_E")   ;
-                  Cal->AddParameter("Plastic", "Detector"+ NPA::itoa(i+1)+"_T","Plastic_Detector"+ NPA::itoa(i+1)+"_T")   ;   
+                  Cal->AddParameter("Plastic", "Detector"+ NPL::itoa(i+1)+"_E","Plastic_Detector"+ NPL::itoa(i+1)+"_E")   ;
+                  Cal->AddParameter("Plastic", "Detector"+ NPL::itoa(i+1)+"_T","Plastic_Detector"+ NPL::itoa(i+1)+"_T")   ;   
                }
       
          }
@@ -291,8 +291,8 @@ void TPlasticPhysics::BuildSimplePhysicalEvent()
       for(unsigned int i = 0 ; i < EventData->GetEnergyMult() ; i++)
          {
             DetectorNumber.push_back( EventData->GetPlasticNumber(i) )   ;
-            Energy.push_back( CalibrationManager::getInstance()->ApplyCalibration("Plastic/Detector" + NPA::itoa( EventData->GetPlasticNumber(i) ) +"_E",EventData->GetEnergy(i) ) );
-            Time.push_back( CalibrationManager::getInstance()->ApplyCalibration(   "Plastic/Detector" + NPA::itoa( EventData->GetPlasticNumber(i) ) +"_T",EventData->GetTime(i) ) );
+            Energy.push_back( CalibrationManager::getInstance()->ApplyCalibration("Plastic/Detector" + NPL::itoa( EventData->GetPlasticNumber(i) ) +"_E",EventData->GetEnergy(i) ) );
+            Time.push_back( CalibrationManager::getInstance()->ApplyCalibration(   "Plastic/Detector" + NPL::itoa( EventData->GetPlasticNumber(i) ) +"_T",EventData->GetTime(i) ) );
          }
 
    }
@@ -300,8 +300,8 @@ void TPlasticPhysics::BuildSimplePhysicalEvent()
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* TPlasticPhysics::Construct(){
-  return (NPA::VDetector*) new TPlasticPhysics();
+NPL::VDetector* TPlasticPhysics::Construct(){
+  return (NPL::VDetector*) new TPlasticPhysics();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -311,8 +311,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("Plastic","Plastic");
-      NPA::DetectorFactory::getInstance()->AddDetector("Plastic",TPlasticPhysics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("Plastic","Plastic");
+      NPL::DetectorFactory::getInstance()->AddDetector("Plastic",TPlasticPhysics::Construct);
     }
 };
 

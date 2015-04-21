@@ -83,11 +83,11 @@ void TTiaraHyballSpectra::InitRawSpectra(){
   // MULT
   for (unsigned int i = 0; i < fWedgesNumber; ++i) {   // loop on number of wedges
     // RING_RAW_MULT
-    name = "HYB_W"+NPA::itoa(i+1)+"_RING_E_RAW_MULT";
+    name = "HYB_W"+NPL::itoa(i+1)+"_RING_E_RAW_MULT";
     AddHisto1D(name, name, fRingsNumber, 1, fRingsNumber+1, "TIARA/HYBALL/RAW/MULT");
 
     // SECTOR_RAW_MULT
-    name = "HYB_W"+NPA::itoa(i+1)+"_SECT_E_RAW_MULT";
+    name = "HYB_W"+NPL::itoa(i+1)+"_SECT_E_RAW_MULT";
     AddHisto1D(name, name, fSectorsNumber, 1, fSectorsNumber+1, "TIARA/HYBALL/RAW/MULT");
   } // end loop on number of wedges
 }
@@ -117,11 +117,11 @@ void TTiaraHyballSpectra::InitPreTreatedSpectra(){
   // MULT
   for (unsigned int i = 0; i < fWedgesNumber; ++i) {   // loop on number of wedges
     // RING_CAL_MULT
-    name = "HYB_W"+NPA::itoa(i+1)+"_RING_E_CAL_MULT";
+    name = "HYB_W"+NPL::itoa(i+1)+"_RING_E_CAL_MULT";
     AddHisto1D(name, name, fRingsNumber, 1, fRingsNumber+1, "TIARA/HYBALL/CAL/MULT");
 
     // SECTOR_CAL_MULT
-    name = "HYB_W"+NPA::itoa(i+1)+"_SECT_E_CAL_MULT";
+    name = "HYB_W"+NPL::itoa(i+1)+"_SECT_E_CAL_MULT";
     AddHisto1D(name, name, fSectorsNumber, 1, fSectorsNumber+1, "TIARA/HYBALL/CAL/MULT");
   } // end loop on number of wedges
 }
@@ -189,7 +189,7 @@ void TTiaraHyballSpectra::FillRawSpectra(TTiaraHyballData* RawData){
   for (unsigned int i = 0; i < RawData->GetRingEMult(); i++) myMULT[(RawData->GetRingEDetectorNbr(i)-1)] += 1;
 
   for (unsigned int i = 0; i < fWedgesNumber; i++) {
-    name   = "HYB_W"+NPA::itoa(i+1)+"_RING_E_RAW_MULT";
+    name   = "HYB_W"+NPL::itoa(i+1)+"_RING_E_RAW_MULT";
     family = "TIARA/HYBALL/RAW/MULT";
     GetHisto(family,name) -> Fill(myMULT[i]);
   }
@@ -199,7 +199,7 @@ void TTiaraHyballSpectra::FillRawSpectra(TTiaraHyballData* RawData){
   for (unsigned int i = 0; i < RawData->GetSectorEMult(); i++) myMULT[(RawData->GetSectorEDetectorNbr(i)-1)] += 1;
 
   for (unsigned int i = 0; i < fWedgesNumber; i++) {
-    name   = "HYB_W"+NPA::itoa(i+1)+"_SECT_E_RAW_MULT";
+    name   = "HYB_W"+NPL::itoa(i+1)+"_SECT_E_RAW_MULT";
     family = "TIARA/HYBALL/RAW/MULT";
     GetHisto(family,name) -> Fill(myMULT[i]);
   }
@@ -250,7 +250,7 @@ void TTiaraHyballSpectra::FillPreTreatedSpectra(TTiaraHyballData* PreTreatedData
   for (unsigned int i = 0; i < PreTreatedData->GetRingEMult(); i++) myMULT[(PreTreatedData->GetRingEDetectorNbr(i)-1)] += 1;
 
   for (unsigned int i = 0; i < fWedgesNumber; i++) {
-    name   = "HYB_W"+NPA::itoa(i+1)+"_RING_E_CAL_MULT";
+    name   = "HYB_W"+NPL::itoa(i+1)+"_RING_E_CAL_MULT";
     family = "TIARA/HYBALL/CAL/MULT";
     GetHisto(family,name) -> Fill(myMULT[i]);
   }
@@ -260,7 +260,7 @@ void TTiaraHyballSpectra::FillPreTreatedSpectra(TTiaraHyballData* PreTreatedData
   for (unsigned int i = 0; i < PreTreatedData->GetSectorEMult(); i++) myMULT[(PreTreatedData->GetSectorEDetectorNbr(i)-1)] += 1;
 
   for (unsigned int i = 0; i < fWedgesNumber; i++) {
-    name   = "HYB_W"+NPA::itoa(i+1)+"_SECT_E_CAL_MULT";
+    name   = "HYB_W"+NPL::itoa(i+1)+"_SECT_E_CAL_MULT";
     family = "TIARA/HYBALL/CAL/MULT";
     GetHisto(family,name) -> Fill(myMULT[i]);
   }

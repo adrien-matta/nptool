@@ -990,19 +990,19 @@ void TCharissaPhysics::AddParameterToCalibrationManager()
   for(unsigned int i = 0 ; i < m_NumberOfTelescope ; ++i){
 
     for(unsigned int j = 0 ; j <  m_NumberOfStrip ; ++j){
-      Cal->AddParameter("CHARISSA", "T"+ NPA::itoa(i+1)+"_DE_X"+ NPA::itoa(j+1)+"_E","CHARISSA_T"+ NPA::itoa(i+1)+"_DE_X"+ NPA::itoa(j+1)+"_E")   ;
-      Cal->AddParameter("CHARISSA", "T"+ NPA::itoa(i+1)+"_DE_Y"+ NPA::itoa(j+1)+"_E","CHARISSA_T"+ NPA::itoa(i+1)+"_DE_Y"+ NPA::itoa(j+1)+"_E")   ;
-      Cal->AddParameter("CHARISSA", "T"+ NPA::itoa(i+1)+"_DE_X"+ NPA::itoa(j+1)+"_T","CHARISSA_T"+ NPA::itoa(i+1)+"_DE_X"+ NPA::itoa(j+1)+"_T")   ;
-      Cal->AddParameter("CHARISSA", "T"+ NPA::itoa(i+1)+"_DE_Y"+ NPA::itoa(j+1)+"_T","CHARISSA_T"+ NPA::itoa(i+1)+"_DE_Y"+ NPA::itoa(j+1)+"_T")   ;
+      Cal->AddParameter("CHARISSA", "T"+ NPL::itoa(i+1)+"_DE_X"+ NPL::itoa(j+1)+"_E","CHARISSA_T"+ NPL::itoa(i+1)+"_DE_X"+ NPL::itoa(j+1)+"_E")   ;
+      Cal->AddParameter("CHARISSA", "T"+ NPL::itoa(i+1)+"_DE_Y"+ NPL::itoa(j+1)+"_E","CHARISSA_T"+ NPL::itoa(i+1)+"_DE_Y"+ NPL::itoa(j+1)+"_E")   ;
+      Cal->AddParameter("CHARISSA", "T"+ NPL::itoa(i+1)+"_DE_X"+ NPL::itoa(j+1)+"_T","CHARISSA_T"+ NPL::itoa(i+1)+"_DE_X"+ NPL::itoa(j+1)+"_T")   ;
+      Cal->AddParameter("CHARISSA", "T"+ NPL::itoa(i+1)+"_DE_Y"+ NPL::itoa(j+1)+"_T","CHARISSA_T"+ NPL::itoa(i+1)+"_DE_Y"+ NPL::itoa(j+1)+"_T")   ;
 
-      Cal->AddParameter("CHARISSA", "T"+ NPA::itoa(i+1)+"_E_X"+ NPA::itoa(j+1)+"_E","CHARISSA_T"+ NPA::itoa(i+1)+"_E_X"+ NPA::itoa(j+1)+"_E")   ;
-      Cal->AddParameter("CHARISSA", "T"+ NPA::itoa(i+1)+"_E_Y"+ NPA::itoa(j+1)+"_E","CHARISSA_T"+ NPA::itoa(i+1)+"_E_Y"+ NPA::itoa(j+1)+"_E")   ;
-      Cal->AddParameter("CHARISSA", "T"+ NPA::itoa(i+1)+"_E_X"+ NPA::itoa(j+1)+"_T","CHARISSA_T"+ NPA::itoa(i+1)+"_E_X"+ NPA::itoa(j+1)+"_T")   ;
-      Cal->AddParameter("CHARISSA", "T"+ NPA::itoa(i+1)+"_E_Y"+ NPA::itoa(j+1)+"_T","CHARISSA_T"+ NPA::itoa(i+1)+"_E_Y"+ NPA::itoa(j+1)+"_T")   ;
+      Cal->AddParameter("CHARISSA", "T"+ NPL::itoa(i+1)+"_E_X"+ NPL::itoa(j+1)+"_E","CHARISSA_T"+ NPL::itoa(i+1)+"_E_X"+ NPL::itoa(j+1)+"_E")   ;
+      Cal->AddParameter("CHARISSA", "T"+ NPL::itoa(i+1)+"_E_Y"+ NPL::itoa(j+1)+"_E","CHARISSA_T"+ NPL::itoa(i+1)+"_E_Y"+ NPL::itoa(j+1)+"_E")   ;
+      Cal->AddParameter("CHARISSA", "T"+ NPL::itoa(i+1)+"_E_X"+ NPL::itoa(j+1)+"_T","CHARISSA_T"+ NPL::itoa(i+1)+"_E_X"+ NPL::itoa(j+1)+"_T")   ;
+      Cal->AddParameter("CHARISSA", "T"+ NPL::itoa(i+1)+"_E_Y"+ NPL::itoa(j+1)+"_T","CHARISSA_T"+ NPL::itoa(i+1)+"_E_Y"+ NPL::itoa(j+1)+"_T")   ;
     }
 
-    Cal->AddParameter("CHARISSA", "T"+ NPA::itoa(i+1)+"_CsI_E","CHARISSA_T"+ NPA::itoa(i+1)+"_CsI_E")      ;
-    Cal->AddParameter("CHARISSA", "T"+ NPA::itoa(i+1)+"_CsI_T","CHARISSA_T"+ NPA::itoa(i+1)+"_CsI_T")      ;
+    Cal->AddParameter("CHARISSA", "T"+ NPL::itoa(i+1)+"_CsI_E","CHARISSA_T"+ NPL::itoa(i+1)+"_CsI_E")      ;
+    Cal->AddParameter("CHARISSA", "T"+ NPL::itoa(i+1)+"_CsI_T","CHARISSA_T"+ NPL::itoa(i+1)+"_CsI_T")      ;
 
   }
 
@@ -1304,26 +1304,26 @@ namespace CHARISSA_LOCAL
   //   X
   double fDE_X_E(const TCharissaData* m_EventData , const int i)
   {
-    return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + NPA::itoa( m_EventData->GetCharissaLayer1StripXEDetectorNbr(i) ) + "_DE_X" + NPA::itoa( m_EventData->GetCharissaLayer1StripXEStripNbr(i) ) + "_E",
+    return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + NPL::itoa( m_EventData->GetCharissaLayer1StripXEDetectorNbr(i) ) + "_DE_X" + NPL::itoa( m_EventData->GetCharissaLayer1StripXEStripNbr(i) ) + "_E",
         m_EventData->GetCharissaLayer1StripXEEnergy(i) );
   }
 
   double fDE_X_T(const TCharissaData* m_EventData , const int i)
   {
-    return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + NPA::itoa( m_EventData->GetCharissaLayer1StripXTDetectorNbr(i) ) + "_DE_X" + NPA::itoa( m_EventData->GetCharissaLayer1StripXTStripNbr(i) ) +"_T",
+    return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + NPL::itoa( m_EventData->GetCharissaLayer1StripXTDetectorNbr(i) ) + "_DE_X" + NPL::itoa( m_EventData->GetCharissaLayer1StripXTStripNbr(i) ) +"_T",
         m_EventData->GetCharissaLayer1StripXTTime(i) );
   }
 
   //   Y
   double fDE_Y_E(const TCharissaData* m_EventData , const int i)
   {
-    return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + NPA::itoa( m_EventData->GetCharissaLayer1StripYEDetectorNbr(i) ) + "_DE_Y" + NPA::itoa( m_EventData->GetCharissaLayer1StripYEStripNbr(i) ) +"_E",
+    return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + NPL::itoa( m_EventData->GetCharissaLayer1StripYEDetectorNbr(i) ) + "_DE_Y" + NPL::itoa( m_EventData->GetCharissaLayer1StripYEStripNbr(i) ) +"_E",
         m_EventData->GetCharissaLayer1StripYEEnergy(i) );
   }
 
   double fDE_Y_T(const TCharissaData* m_EventData , const int i)
   {
-    return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + NPA::itoa( m_EventData->GetCharissaLayer1StripYTDetectorNbr(i) ) + "_DE_Y" + NPA::itoa( m_EventData->GetCharissaLayer1StripYTStripNbr(i) ) +"_T",
+    return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + NPL::itoa( m_EventData->GetCharissaLayer1StripYTDetectorNbr(i) ) + "_DE_Y" + NPL::itoa( m_EventData->GetCharissaLayer1StripYTStripNbr(i) ) +"_T",
         m_EventData->GetCharissaLayer1StripYTTime(i) );
   }
 
@@ -1331,26 +1331,26 @@ namespace CHARISSA_LOCAL
   //   X
   double fE_X_E(const TCharissaData* m_EventData , const int i)
   {
-    return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + NPA::itoa( m_EventData->GetCharissaLayer2StripXEDetectorNbr(i) ) + "_E_X" + NPA::itoa( m_EventData->GetCharissaLayer2StripXEStripNbr(i) ) + "_E",
+    return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + NPL::itoa( m_EventData->GetCharissaLayer2StripXEDetectorNbr(i) ) + "_E_X" + NPL::itoa( m_EventData->GetCharissaLayer2StripXEStripNbr(i) ) + "_E",
         m_EventData->GetCharissaLayer2StripXEEnergy(i) );
   }
 
   double fE_X_T(const TCharissaData* m_EventData , const int i)
   {
-    return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + NPA::itoa( m_EventData->GetCharissaLayer2StripXTDetectorNbr(i) ) + "_E_X" + NPA::itoa( m_EventData->GetCharissaLayer2StripXTStripNbr(i) ) +"_T",
+    return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + NPL::itoa( m_EventData->GetCharissaLayer2StripXTDetectorNbr(i) ) + "_E_X" + NPL::itoa( m_EventData->GetCharissaLayer2StripXTStripNbr(i) ) +"_T",
         m_EventData->GetCharissaLayer2StripXTTime(i) );
   }
 
   //   Y
   double fE_Y_E(const TCharissaData* m_EventData , const int i)
   {
-    return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + NPA::itoa( m_EventData->GetCharissaLayer2StripYEDetectorNbr(i) ) + "_E_Y" + NPA::itoa( m_EventData->GetCharissaLayer2StripYEStripNbr(i) ) +"_E",
+    return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + NPL::itoa( m_EventData->GetCharissaLayer2StripYEDetectorNbr(i) ) + "_E_Y" + NPL::itoa( m_EventData->GetCharissaLayer2StripYEStripNbr(i) ) +"_E",
         m_EventData->GetCharissaLayer2StripYEEnergy(i) );
   }
 
   double fE_Y_T(const TCharissaData* m_EventData , const int i)
   {
-    return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + NPA::itoa( m_EventData->GetCharissaLayer2StripYTDetectorNbr(i) ) + "_E_Y" + NPA::itoa( m_EventData->GetCharissaLayer2StripYTStripNbr(i) ) +"_T",
+    return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + NPL::itoa( m_EventData->GetCharissaLayer2StripYTDetectorNbr(i) ) + "_E_Y" + NPL::itoa( m_EventData->GetCharissaLayer2StripYTStripNbr(i) ) +"_T",
         m_EventData->GetCharissaLayer2StripYTTime(i) );
   }
 
@@ -1358,13 +1358,13 @@ namespace CHARISSA_LOCAL
   //   CsI
   double fCsI_E(const TCharissaData* m_EventData , const int i)
   {
-    return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + NPA::itoa( m_EventData->GetCharissaCsIEDetectorNbr(i) ) + "_CsI" + NPA::itoa( m_EventData->GetCharissaCsIECristalNbr(i) ) +"_E",
+    return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + NPL::itoa( m_EventData->GetCharissaCsIEDetectorNbr(i) ) + "_CsI" + NPL::itoa( m_EventData->GetCharissaCsIECristalNbr(i) ) +"_E",
         m_EventData->GetCharissaCsIEEnergy(i) );
   }
 
   double fCsI_T(const TCharissaData* m_EventData , const int i)
   {
-    return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + NPA::itoa( m_EventData->GetCharissaCsITDetectorNbr(i) ) + "_CsI" + NPA::itoa( m_EventData->GetCharissaCsITCristalNbr(i) ) +"_T",
+    return CalibrationManager::getInstance()->ApplyCalibration(   "CHARISSA/T" + NPL::itoa( m_EventData->GetCharissaCsITDetectorNbr(i) ) + "_CsI" + NPL::itoa( m_EventData->GetCharissaCsITCristalNbr(i) ) +"_T",
         m_EventData->GetCharissaCsITTime(i) );
   }
 
@@ -1374,8 +1374,8 @@ namespace CHARISSA_LOCAL
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* TCharissaPhysics::Construct(){
-  return (NPA::VDetector*) new TCharissaPhysics();
+NPL::VDetector* TCharissaPhysics::Construct(){
+  return (NPL::VDetector*) new TCharissaPhysics();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1385,8 +1385,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("CharissaTelescope","Charissa");
-      NPA::DetectorFactory::getInstance()->AddDetector("CharissaTelescope",TCharissaPhysics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("CharissaTelescope","Charissa");
+      NPL::DetectorFactory::getInstance()->AddDetector("CharissaTelescope",TCharissaPhysics::Construct);
     }
 };
 

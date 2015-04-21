@@ -36,7 +36,7 @@
 
 using namespace std ;
 
-class TSharcPhysics : public TObject, public NPA::VDetector
+class TSharcPhysics : public TObject, public NPL::VDetector
 {
    public:
       TSharcPhysics();
@@ -194,7 +194,7 @@ class TSharcPhysics : public TObject, public NPA::VDetector
          vector< vector < vector < double > > >   m_StripPositionZ;//!
          
    public: // Static constructor to be passed to the Detector Factory
-     static NPA::VDetector* Construct();
+     static NPL::VDetector* Construct();
      ClassDef(TSharcPhysics,1)  // SharcPhysics structure
 };
 

@@ -37,9 +37,9 @@
 
 using namespace std ;
 
-typedef void(NPA::VDetector::*VDetector_FuncPtr)(void);
+typedef void(NPL::VDetector::*VDetector_FuncPtr)(void);
 // This class manage a map of virtual detector
-namespace NPA{
+namespace NPL{
   class DetectorManager{
     public:
       DetectorManager();
@@ -80,7 +80,7 @@ namespace NPA{
     
     public: // Init the Thread Pool
       void StopThread();
-      void StartThread(NPA::VDetector*,unsigned int);
+      void StartThread(NPL::VDetector*,unsigned int);
       void InitThreadPool(); 
       bool IsDone();
     #endif

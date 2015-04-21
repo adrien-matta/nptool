@@ -37,7 +37,7 @@ using namespace std ;
 #include "TVector3.h"
 
 
-class TParisPhysics : public TObject, public NPA::VDetector{
+class TParisPhysics : public TObject, public NPL::VDetector{
   public:
     TParisPhysics();
     ~TParisPhysics();
@@ -162,7 +162,7 @@ class TParisPhysics : public TObject, public NPA::VDetector{
     vector<double>   ParisOutTotalEnergy;
 
     public: // Static constructor to be passed to the Detector Factory
-     static NPA::VDetector* Construct();
+     static NPL::VDetector* Construct();
      ClassDef(TParisPhysics,1)
 };
 

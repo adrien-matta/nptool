@@ -172,8 +172,8 @@ void THeliosPhysics::Clear()
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* THeliosPhysics::Construct(){
-  return (NPA::VDetector*) new THeliosPhysics();
+NPL::VDetector* THeliosPhysics::Construct(){
+  return (NPL::VDetector*) new THeliosPhysics();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -183,8 +183,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("Helios","Helios");
-      NPA::DetectorFactory::getInstance()->AddDetector("Helios",THeliosPhysics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("Helios","Helios");
+      NPL::DetectorFactory::getInstance()->AddDetector("Helios",THeliosPhysics::Construct);
     }
 };
 

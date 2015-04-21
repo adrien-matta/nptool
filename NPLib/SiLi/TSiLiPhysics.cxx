@@ -193,8 +193,8 @@ void TSiLiPhysics::AddParameterToCalibrationManager()
       
       for(int i = 0 ; i < NumberOfDetector ; i++)
          {
-                  Cal->AddParameter("SiLi", "Detector"+ NPA::itoa(i+1)+"_E","SiLi_Detector"+ NPA::itoa(i+1)+"_E")   ;
-                  Cal->AddParameter("SiLi", "Detector"+ NPA::itoa(i+1)+"_T","SiLi_Detector"+ NPA::itoa(i+1)+"_T")   ;         
+                  Cal->AddParameter("SiLi", "Detector"+ NPL::itoa(i+1)+"_E","SiLi_Detector"+ NPL::itoa(i+1)+"_E")   ;
+                  Cal->AddParameter("SiLi", "Detector"+ NPL::itoa(i+1)+"_T","SiLi_Detector"+ NPL::itoa(i+1)+"_T")   ;         
          }
    }
    
@@ -262,7 +262,7 @@ void TSiLiPhysics::PreTreat(){
     {
     	if( EventData->GetEEnergy(i)>m_SiLi_RAW_Threshold )
     	{
-		E=CalibrationManager::getInstance()->ApplyCalibration("SiLi/Detector" + NPA::itoa( EventData->GetENumber(i) ) +"_E",EventData->GetEEnergy(i));
+		E=CalibrationManager::getInstance()->ApplyCalibration("SiLi/Detector" + NPL::itoa( EventData->GetENumber(i) ) +"_E",EventData->GetEEnergy(i));
     		if(E>m_SiLi_E_Threshold)
     		{
         		PreTreatedData->SetENumber( EventData->GetENumber(i) );
@@ -272,7 +272,7 @@ void TSiLiPhysics::PreTreat(){
     }
   for(unsigned int i = 0 ; i < EventData->GetTimeMult() ; ++i)
     {
-	T=CalibrationManager::getInstance()->ApplyCalibration("SiLi/Detector"+ NPA::itoa(EventData->GetTNumber(i))+"_T",EventData->GetTTime(i) ) ;      
+	T=CalibrationManager::getInstance()->ApplyCalibration("SiLi/Detector"+ NPL::itoa(EventData->GetTNumber(i))+"_T",EventData->GetTTime(i) ) ;      
 	PreTreatedData->SetTNumber( EventData->GetTNumber(i) );
         PreTreatedData->SetTTime( T );
             
@@ -323,8 +323,8 @@ void TSiLiPhysics::BuildSimplePhysicalEvent()
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* TSiLiPhysics::Construct(){
-  return (NPA::VDetector*) new TSiLiPhysics();
+NPL::VDetector* TSiLiPhysics::Construct(){
+  return (NPL::VDetector*) new TSiLiPhysics();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -334,8 +334,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("SiLi","SiLi");
-      NPA::DetectorFactory::getInstance()->AddDetector("SiLi",TSiLiPhysics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("SiLi","SiLi");
+      NPL::DetectorFactory::getInstance()->AddDetector("SiLi",TSiLiPhysics::Construct);
     }
 };
 

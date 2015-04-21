@@ -34,7 +34,7 @@ using namespace std;
 #include "TObject.h"
 #include "TVector3.h"
 
-class TTigressPhysics :  public TObject, public NPA::VDetector{
+class TTigressPhysics :  public TObject, public NPL::VDetector{
 
   public:
     TTigressPhysics();
@@ -93,7 +93,7 @@ class TTigressPhysics :  public TObject, public NPA::VDetector{
     
          
    public: // Static constructor to be passed to the Detector Factory
-     static NPA::VDetector* Construct();
+     static NPL::VDetector* Construct();
      ClassDef(TTigressPhysics,1)  // TigressPhysics structure
 };
 

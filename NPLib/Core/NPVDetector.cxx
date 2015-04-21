@@ -24,7 +24,7 @@
  *****************************************************************************/
 #include "NPVDetector.h"
 #include "NPOptionManager.h"
-using namespace NPA ;
+using namespace NPL ;
 
 ClassImp(VDetector);
 
@@ -38,7 +38,7 @@ VDetector::~VDetector(){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-namespace NPA{
+namespace NPL{
   static string itoa_array[10000];
 
   class itoa_proxy{
@@ -54,8 +54,8 @@ namespace NPA{
   static itoa_proxy itoa_p ;
 }
 
-std::string NPA::itoa(int i){
-  return NPA::itoa_array[i];
+std::string NPL::itoa(int i){
+  return NPL::itoa_array[i];
 }
 
 

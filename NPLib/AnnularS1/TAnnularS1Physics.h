@@ -36,7 +36,7 @@
 
 using namespace std ;
 
-class TAnnularS1Physics : public TObject, public NPA::VDetector{
+class TAnnularS1Physics : public TObject, public NPL::VDetector{
   public:
     TAnnularS1Physics();
     ~TAnnularS1Physics() {};
@@ -188,7 +188,7 @@ class TAnnularS1Physics : public TObject, public NPA::VDetector{
 
 
   public: // Static constructor to be passed to the Detector Factory
-    static NPA::VDetector* Construct();
+    static NPL::VDetector* Construct();
     ClassDef(TAnnularS1Physics,1)  // AnnularS1Physics structure
 };
 

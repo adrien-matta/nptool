@@ -569,8 +569,8 @@ void TFatimaPhysics::Print(){
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPA::VDetector* TFatimaPhysics::Construct(){
-  return (NPA::VDetector*) new TFatimaPhysics();
+NPL::VDetector* TFatimaPhysics::Construct(){
+  return (NPL::VDetector*) new TFatimaPhysics();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -580,8 +580,8 @@ extern "C"{
 class proxy{
   public:
     proxy(){
-      NPA::DetectorFactory::getInstance()->AddToken("Fatima","Fatima");
-      NPA::DetectorFactory::getInstance()->AddDetector("Fatima",TFatimaPhysics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("Fatima","Fatima");
+      NPL::DetectorFactory::getInstance()->AddDetector("Fatima",TFatimaPhysics::Construct);
     }
 };
 

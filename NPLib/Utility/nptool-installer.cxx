@@ -50,7 +50,7 @@ int main(int argc , char** argv){
     closedir (dir);
   }
 
-  NPA::DetectorFactory::getInstance()->CreateClassList("DetectorClassList.txt");
+  NPL::DetectorFactory::getInstance()->CreateClassList("DetectorClassList.txt");
 
  
     // Generate the liblist file for backward compatibility

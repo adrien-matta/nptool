@@ -35,7 +35,7 @@
 #include <map>
 using namespace std;
 
-namespace NPA {
+namespace NPL {
   std::string itoa(int); 
 
   class VDetector{

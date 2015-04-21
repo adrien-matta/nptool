@@ -41,7 +41,7 @@ using namespace std;
 // forward declaration
 class TComptonTelescopeSpectra;
 
-class TComptonTelescopePhysics : public TObject, public NPA::VDetector
+class TComptonTelescopePhysics : public TObject, public NPL::VDetector
 {
    public:
       TComptonTelescopePhysics();
@@ -206,7 +206,7 @@ class TComptonTelescopePhysics : public TObject, public NPA::VDetector
 
 
    public: // Static constructor to be passed to the Detector Factory
-     static NPA::VDetector* Construct();
+     static NPL::VDetector* Construct();
      ClassDef(TComptonTelescopePhysics,1)  // ComptonTelescopePhysics structure
 };
 

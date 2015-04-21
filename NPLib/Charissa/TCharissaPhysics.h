@@ -41,7 +41,7 @@ using namespace std ;
 // Forward Declaration
 class TCharissaSpectra;
 
-class TCharissaPhysics : public TObject, public NPA::VDetector{
+class TCharissaPhysics : public TObject, public NPL::VDetector{
   public:
     TCharissaPhysics();
     ~TCharissaPhysics(); 
@@ -271,7 +271,7 @@ class TCharissaPhysics : public TObject, public NPA::VDetector{
     map< vector<string> , TH1*> GetSpectra(); 
 
     public: // Static constructor to be passed to the Detector Factory
-     static NPA::VDetector* Construct();
+     static NPL::VDetector* Construct();
      ClassDef(TCharissaPhysics,1)  // CharissaPhysics structure
 };
 

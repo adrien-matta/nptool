@@ -36,7 +36,7 @@ using namespace std ;
 #include "NPVDetector.h"
 #include "NPCalibrationManager.h"
 
-class TExlPhysics : public TObject, public NPA::VDetector
+class TExlPhysics : public TObject, public NPL::VDetector
 {
    public:   //   Constructor and Destructor
       TExlPhysics();
@@ -108,7 +108,7 @@ class TExlPhysics : public TObject, public NPA::VDetector
          vector <TVector3> CsIPosition;//!
 
       public: // Static constructor to be passed to the Detector Factory
-     static NPA::VDetector* Construct();
+     static NPL::VDetector* Construct();
      ClassDef(TExlPhysics,1)  // ExlPhysics structure
 };
 

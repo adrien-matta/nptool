@@ -38,7 +38,7 @@
 
 using namespace std ;
 
-class TChio_anPhysics : public TObject, public NPA::VDetector
+class TChio_anPhysics : public TObject, public NPL::VDetector
 {
   
  public:   //   Constructor and Destructor
@@ -126,7 +126,7 @@ class TChio_anPhysics : public TObject, public NPA::VDetector
   //  double  GetChioEnergy() {return ...}
   
   public: // Static constructor to be passed to the Detector Factory
-     static NPA::VDetector* Construct();
+     static NPL::VDetector* Construct();
      ClassDef(TChio_anPhysics,1);  // CATSPhysics structure
   
 };
