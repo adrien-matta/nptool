@@ -132,10 +132,7 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
   string DataBuffer;
   bool cGeneralTarget=false;
   bool cGeneralChamber=false;
-  set<string> check;
-  
-
-
+  std::set<string> check;
   
   int VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
   cout << "\033[1;36m" ;
