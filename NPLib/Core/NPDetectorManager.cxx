@@ -26,6 +26,7 @@
 #include <sstream>
 #include <fstream>
 #include <cstdlib>
+#include <limits>
 #include <set>
 // NPL
 #include "NPDetectorFactory.h"
