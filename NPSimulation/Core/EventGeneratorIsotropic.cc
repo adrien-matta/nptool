@@ -24,7 +24,7 @@
 
 // G4 headers
 #include "G4ParticleTable.hh"
-
+#include "G4IonTable.hh"
 // G4 headers including CLHEP headers
 // for generating random numbers
 #include "Randomize.hh"
@@ -206,7 +206,7 @@ void EventGeneratorIsotropic::GenerateEvent(G4Event*){
     }
     else{
       NPL::Nucleus* N = new NPL::Nucleus(m_particleName);
-      m_particle = G4ParticleTable::GetParticleTable()->GetIon(N->GetZ(), N->GetA(),m_ExcitationEnergy);
+      m_particle = G4ParticleTable::GetParticleTable()->GetIonTable()->GetIon(N->GetZ(), N->GetA(),m_ExcitationEnergy);
       delete N;
     }
     

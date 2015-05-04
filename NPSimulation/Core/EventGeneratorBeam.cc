@@ -25,7 +25,7 @@
 
 // G4 header
 #include "G4ParticleTable.hh"
-
+#include "G4IonTable.hh"
 // G4 headers including CLHEP headers
 // for generating random numbers
 #include "Randomize.hh"
@@ -75,7 +75,7 @@ void EventGeneratorBeam::GenerateEvent(G4Event* anEvent){
 
   if( anEvent->GetEventID()==0){
     // Define the particle to be shoot
-    m_particle = G4ParticleTable::GetParticleTable()->GetIon(m_Beam->GetZ(), m_Beam->GetA() ,m_Beam->GetExcitationEnergy());
+    m_particle = G4ParticleTable::GetParticleTable()->GetIonTable()->GetIon(m_Beam->GetZ(), m_Beam->GetA() ,m_Beam->GetExcitationEnergy());
   }
   
   ///////////////////////////////////////////////////////////////////////

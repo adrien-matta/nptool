@@ -34,6 +34,7 @@
 
 // G4 headers
 #include "G4ParticleTable.hh"
+#include "G4IonTable.hh"
 #include "G4RotationMatrix.hh"
 
 // G4 headers including CLHEP headers
@@ -107,7 +108,7 @@ void EventGeneratorTwoBodyReaction::GenerateEvent(G4Event*){
   G4int LightA = m_Reaction->GetNucleus3()->GetA() ;
   
   G4ParticleDefinition* LightName
-  = G4ParticleTable::GetParticleTable()->GetIon(LightZ, LightA, m_Reaction->GetExcitation3()*MeV);
+  = G4ParticleTable::GetParticleTable()->GetIonTable()->GetIon(LightZ, LightA, m_Reaction->GetExcitation3()*MeV);
   
   // Nucleus 4
   G4int HeavyZ = m_Reaction->GetNucleus4()->GetZ() ;
@@ -117,7 +118,7 @@ void EventGeneratorTwoBodyReaction::GenerateEvent(G4Event*){
   m_Reaction->ShootRandomExcitationEnergy();
 
   G4ParticleDefinition* HeavyName
-  = G4ParticleTable::GetParticleTable()->GetIon(HeavyZ, HeavyA, m_Reaction->GetExcitation4()*MeV);
+  = G4ParticleTable::GetParticleTable()->GetIonTable()->GetIon(HeavyZ, HeavyA, m_Reaction->GetExcitation4()*MeV);
   
   // Get the beam particle form the Particle Stack
   Particle BeamParticle = m_ParticleStack->SearchAndRemoveParticle(m_BeamName);

@@ -31,6 +31,7 @@
 
 // G4
 #include "G4ParticleTable.hh"
+#include "G4IonTable.hh"
 
 // G4 headers including CLHEP headers
 // for generating random numbers
@@ -363,7 +364,7 @@ void EventGeneratorParticleDecay::SetDecay(vector<string> DaughterName, vector<b
     
     else{
       Nucleus*  myNucleus = new Nucleus(DaughterName[i]);
-      m_DaughterNuclei.push_back(G4ParticleTable::GetParticleTable()->GetIon(myNucleus->GetZ(),
+      m_DaughterNuclei.push_back(G4ParticleTable::GetParticleTable()->GetIonTable()->GetIon(myNucleus->GetZ(),
                                                                              myNucleus->GetA(),
                                                                              m_ExcitationEnergy[i]*MeV));
       FinalMass+=myNucleus->GetA();

@@ -41,7 +41,7 @@ using namespace NPL;
 
 // G4
 #include "G4ParticleTable.hh"
-
+#include "G4IonTable.hh"
 // ROOT
 #include "TLorentzVector.h"
 #include "TVector3.h"
@@ -239,7 +239,7 @@ void EventGeneratorGammaDecay::GenerateEvent(G4Event*){
   
   // Put back the decaying nucleus with its new excitation energy
   G4ParticleDefinition* FinalParticleDefition
-  = G4ParticleTable::GetParticleTable()->GetIon(decayingParticle.GetParticleDefinition()->GetAtomicNumber(), decayingParticle.GetParticleDefinition()->GetAtomicMass(), FinalExcitationEnergy*MeV);
+  = G4ParticleTable::GetParticleTable()->GetIonTable()->GetIon(decayingParticle.GetParticleDefinition()->GetAtomicNumber(), decayingParticle.GetParticleDefinition()->GetAtomicMass(), FinalExcitationEnergy*MeV);
   
   Particle FinalParticle = Particle(  FinalParticleDefition,
                                     decayingParticle.GetParticleThetaCM(),

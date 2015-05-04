@@ -35,7 +35,7 @@
 #include <iostream>
 #include <string>
 using namespace std;
-
+using namespace CLHEP;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 MaterialManager* MaterialManager::instance = 0 ;
 
