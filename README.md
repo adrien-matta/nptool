@@ -17,7 +17,7 @@ Alternatively you can browse the following page https://github.com/adrien-matta/
 #Setup
 
 ###Requirements
-In order to compile the core libraries NPLib, you will need ROOT 6.00 (compatibility with ROOT 5 is not insured at the moment) to be installed with the libMathMore.so library. This is sufficient to compile NPLib and any analysis project. In order to compile NPSimulation, you will need a recent installation of Geant4.
+In order to compile the core libraries NPLib, you will need ROOT 6 or 5 (tested with 5.34) to be installed with the libMathMore.so library. This is sufficient to compile NPLib and any analysis project. In order to compile NPSimulation, you will need a recent installation of Geant4 (tesetd with version 9.6 and 10.1).
 
 ###Building NPLib
 NPLib is the core of the NPTool package, holding most of the actual code. It is made of a collection of stand alone C++ classes that can be used in programs and macro. The first step is to define the variable of environment that the system needs. For this open your .profile / .bashrc / .tcshrc file in your home directory and add the following line:
