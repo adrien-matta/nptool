@@ -40,16 +40,14 @@
 // NPLib
 #include "TTigressData.h"
 using namespace std;
-using namespace CLHEP;
+using namespace CLHEP;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-namespace TIGRESS
-{
+namespace TIGRESS{
   // Energy and time Resolution
   const G4double ResoTime    = 0      ;
   const G4double ResoEnergy  = 0.035*MeV ;// = zzkeV of Resolution   //   Unit is MeV/2.35
   const G4double EnergyThreshold = 0.4*MeV;
-
 }
 
 using namespace TIGRESS ;
@@ -82,16 +80,19 @@ public:
                              double BetaZ);
   
   // Return a clover in the configuration given by option (not use a the moment)
-  void ConstructClover(string option);
+  void ConstructClover();
   
-  // Return a G4VSolid modeling the Crystal
-  G4VSolid* ConstructCrystal();
+  // Return a modeling of the Crystal
+  G4LogicalVolume* ConstructCrystal();
   
-  // Return a G4VSolid modeling the Capsule
-  G4VSolid* ConstructCapsule();
-  
+  // Return a modeling of the Capsule
+  G4LogicalVolume* ConstructCapsule();
+ 
+  // Return a modeling of the Dewar
+  G4LogicalVolume* ConstructDewar();
+
   // Return a G4VSolid modeling the BGO
-  G4VSolid* ConstructBGO();
+  G4LogicalVolume* ConstructBGO();
   
   ////////////////////////////////////////////////////
   /////////  Inherite from NPS::VDetector class ///////////
@@ -141,7 +142,9 @@ private:
   
   //   List of material
   G4Material* m_MaterialVacuum  ;
-  
+  G4Material* m_MaterialGe; 
+  G4Material* m_MaterialAl;
+  G4Material* m_MaterialN2;
   ////////////////////////////////////////////////////
   ///////////////Private intern Data//////////////////
   ////////////////////////////////////////////////////
