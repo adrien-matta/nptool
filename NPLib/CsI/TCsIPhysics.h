@@ -92,6 +92,8 @@ class TCsIPhysics : public TObject, public NPL::VDetector
       TCsIData*         EventData ;//!
       TCsIPhysics*      EventPhysics ;//!
 
+    public:// Static constructor to be passed to the Detector Factory
+    static NPL::VDetector* Construct();
       ClassDef(TCsIPhysics,1)  // CsIPhysics structure
 };
 

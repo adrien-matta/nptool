@@ -298,3 +298,25 @@ void TCsIPhysics::BuildSimplePhysicalEvent()
 
    }
 
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPL::VDetector* TCsIPhysics::Construct(){
+    return (NPL::VDetector*) new TCsIPhysics();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern "C"{
+    class proxy{
+    public:
+        proxy(){
+            NPL::DetectorFactory::getInstance()->AddToken("CsI","CsI");
+            NPL::DetectorFactory::getInstance()->AddDetector("CsI",TCsIPhysics::Construct);
+        }
+    };
+    
+    proxy p;
+}
+
