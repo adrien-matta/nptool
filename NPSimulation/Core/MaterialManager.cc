@@ -31,6 +31,7 @@
 #include "G4PVPlacement.hh"
 #include "G4VisAttributes.hh"
 #include "G4NistManager.hh"
+#include "G4MaterialPropertiesTable.hh"
 // STL
 #include <iostream>
 #include <string>
@@ -132,7 +133,15 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       m_Material[Name]=material;
       return material; 
     }
-
+    
+    // Cooling 
+     else  if(Name == "N2_liquid"){
+      G4Material* material = new G4Material(Name,7,14.01*g/mole,0.808*g/cm3,
+                                            kStateLiquid,77*kelvin);
+      m_Material[Name]=material;
+      return material; 
+     }
+    
     // Usual Target
     else if(Name == "CD2"){
       G4Material* material = new G4Material(Name, 1.06*g/cm3,2);
@@ -223,6 +232,49 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       m_Material[Name]=material;
       return material; 
     }
+    
+    else  if(Name == "CsI_Scintillator"){
+      G4Material* material = new G4Material(Name, 4.51*g/cm3,2);
+      material->AddElement(GetElementFromLibrary("Cs"),1);
+      material->AddElement(GetElementFromLibrary("I"),1);
+      // Adding Scintillation property:
+      int NumberOfPoints = 100; 
+      double wlmin = 0.25*um;
+      double wlmax = 67*um;
+      double step = (wlmax-wlmin)/NumberOfPoints;
+      double* energy = new double[NumberOfPoints];
+      double* rindex = new double[NumberOfPoints];
+      double* absorption= new double[NumberOfPoints];
+      double wl;
+      for(int i = 0 ; i < NumberOfPoints ;i++){
+        wl= wlmin+i*step;
+        // Formula from www.refractiveindex.info
+        rindex[i]=sqrt(1+0.27587+0.68689/(1-pow(0.130/wl,2))
+            +0.26090/(1-pow(0.147/wl,2))
+            +0.06256/(1-pow(0.163/wl,2))
+            +0.06527/(1-pow(0.177/wl,2))
+            +0.14991/(1-pow(0.185/wl,2))
+            +0.51818/(1-pow(0.206/wl,2))
+            +0.01918/(1-pow(0.218/wl,2))
+            +3.38229/(1-pow(161.29/wl,2))) ;
+        
+        energy[i] = h_Planck*c_light / wl;
+        // To be defined properly
+        // absorption[i] =  344.8*cm;
+      }
+
+      G4MaterialPropertiesTable* MPT = new G4MaterialPropertiesTable();
+
+      // From St Gobain
+      MPT -> AddConstProperty("SCINTILLATIONYIELD",54/keV);
+      MPT -> AddProperty("RINDEX",energy,rindex,NumberOfPoints)->SetSpline(true);
+     // MPT -> AddProperty("ABSLENGTH",energy,absorption,NumberOfPoints)->SetSpline(true);
+      delete energy; delete rindex ; delete absorption;
+      material -> SetMaterialPropertiesTable(MPT);
+      m_Material[Name]=material;
+      return material; 
+    }
+
 
     else  if(Name == "LaBr3"){
       G4Material* material = new G4Material(Name, 5.29*g/cm3 , 2);
