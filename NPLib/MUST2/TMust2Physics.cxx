@@ -1342,7 +1342,7 @@ namespace MUST2_LOCAL{
   //   DSSD
   //   X
   double fSi_X_E(const TMust2Data* m_EventData , const int i){
-    static string name =    "MUST2/T" ;
+    static string name; name =    "MUST2/T" ;
 name+= NPL::itoa( m_EventData->GetMMStripXEDetectorNbr(i) ) ;
 name+= "_Si_X" ;
 name+= NPL::itoa( m_EventData->GetMMStripXEStripNbr(i) ) ;
@@ -1352,7 +1352,7 @@ name+= "_E";
   }
 
   double fSi_X_T(const TMust2Data* m_EventData , const int i){
-    static string name =    "MUST2/T" ;
+    static string name; name =    "MUST2/T" ;
 name+= NPL::itoa( m_EventData->GetMMStripXTDetectorNbr(i) ) ;
 name+= "_Si_X" ;
 name+= NPL::itoa( m_EventData->GetMMStripXTStripNbr(i) ) ;
@@ -1363,7 +1363,7 @@ name+="_T";
 
   //   Y
   double fSi_Y_E(const TMust2Data* m_EventData , const int i){
-    static string name =    "MUST2/T" ;
+    static string name; name =    "MUST2/T" ;
 name+= NPL::itoa( m_EventData->GetMMStripYEDetectorNbr(i) ) ;
 name+= "_Si_Y" ;
 name+= NPL::itoa( m_EventData->GetMMStripYEStripNbr(i) ) ;
@@ -1372,7 +1372,7 @@ name+="_E";
   }
 
   double fSi_Y_T(const TMust2Data* m_EventData , const int i){
-    static string name = "MUST2/T" ;
+    static string name; name = "MUST2/T" ;
 name+= NPL::itoa( m_EventData->GetMMStripYTDetectorNbr(i) ) ;
 name+= "_Si_Y" ;
 name+= NPL::itoa( m_EventData->GetMMStripYTStripNbr(i) ) ;
@@ -1384,7 +1384,7 @@ name+="_T";
 
   //   SiLi
   double fSiLi_E(const TMust2Data* m_EventData , const int i){
-    static string name =    "MUST2/T" ;
+    static string name; name =    "MUST2/T" ;
 name+= NPL::itoa( m_EventData->GetMMSiLiEDetectorNbr(i) ) ;
 name+= "_SiLi" ;
 name+= NPL::itoa( m_EventData->GetMMSiLiEPadNbr(i) ) ;
@@ -1394,7 +1394,7 @@ name+="_E";
   }
 
   double fSiLi_T(const TMust2Data* m_EventData , const int i){
-    static string name ="MUST2/T" ;
+    static string name; name ="MUST2/T" ;
 name+= NPL::itoa( m_EventData->GetMMSiLiTDetectorNbr(i) ) ;
 name+= "_SiLi" ;
 name+= NPL::itoa( m_EventData->GetMMSiLiTPadNbr(i) );
@@ -1405,7 +1405,7 @@ name+="_T";
 
   //   CsI
   double fCsI_E(const TMust2Data* m_EventData , const int i){
-    static string name =   "MUST2/T" ;
+    static string name; name =   "MUST2/T" ;
 name+= NPL::itoa( m_EventData->GetMMCsIEDetectorNbr(i) ) ;
 name+= "_CsI" ;
 name+= NPL::itoa( m_EventData->GetMMCsIECristalNbr(i) ) ;
@@ -1415,7 +1415,7 @@ name+="_E";
   }
 
   double fCsI_T(const TMust2Data* m_EventData , const int i){
-    static string name ="MUST2/T" ;
+    static string name; name ="MUST2/T" ;
 name+= NPL::itoa( m_EventData->GetMMCsITDetectorNbr(i) ) ;
 name+= "_CsI" ;
 name+= NPL::itoa( m_EventData->GetMMCsITCristalNbr(i) ) ;
