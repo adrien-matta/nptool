@@ -121,8 +121,8 @@ private:
    
    vector<double>      m_CsIThickness ;
    vector<double>      m_CsIRadius    ; // cylindrical shape
-   vector<double>      m_CsIHeight    ; // squared shape
-   vector<double>      m_CsIWidth     ; // squared shape
+   vector<double> 	m_CsIFaceFront; 
+  vector<double> 	m_CsIFaceBack;
          
    // Used for "By Angle Definition"
    vector<G4double>  m_R      ; //  |
@@ -131,6 +131,9 @@ private:
 
    //   Scintillator type
    vector<G4String> m_Scintillator ;
+    
+public:
+    static NPS::VDetector* Construct();
 
 
 };

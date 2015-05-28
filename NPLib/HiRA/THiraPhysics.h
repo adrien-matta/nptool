@@ -1,5 +1,5 @@
-#ifndef __CsIPhysics__
-#define __CsIPhysics__
+#ifndef __HiraPhysics__
+#define __HiraPhysics__
 /*****************************************************************************
  * Copyright (C) 2009-2014    this file is part of the NPTool Project        *
  *                                                                           *
@@ -14,7 +14,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold theCsI Detector  Physics                             *
+ *  This class hold theHira Detector  Physics                             *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -30,16 +30,16 @@ using namespace std ;
 #include "TObject.h"
 
 //   NPL
-#include "TCsIData.h"
+#include "THiraData.h"
 #include "NPVDetector.h"
 
 //#include "../include/CalibrationManager.h"
 
-class TCsIPhysics : public TObject, public NPL::VDetector
+class THiraPhysics : public TObject, public NPL::VDetector
 {
    public:   //   Constructor and Destructor
-      TCsIPhysics();
-      ~TCsIPhysics();
+      THiraPhysics();
+      ~THiraPhysics();
 
    public:
       void  Clear();
@@ -80,8 +80,8 @@ class TCsIPhysics : public TObject, public NPL::VDetector
       // Same as above but for online analysis
       void BuildOnlinePhysicalEvent()  {BuildPhysicalEvent();};
 
-      // Give and external TCsIData object to TCsIPhysics. Needed for online analysis for example.
-      void SetRawDataPointer(TCsIData* rawDataPointer) {EventData = rawDataPointer;}
+      // Give and external THiraData object to THiraPhysics. Needed for online analysis for example.
+      void SetRawDataPointer(THiraData* rawDataPointer) {EventData = rawDataPointer;}
 
       //   Those two method all to clear the Event Physics or Data
       void ClearEventPhysics() {Clear();}      
@@ -89,12 +89,12 @@ class TCsIPhysics : public TObject, public NPL::VDetector
 
    private:   // Data not writted in the tree
       int                   NumberOfDetector ;//!
-      TCsIData*         EventData ;//!
-      TCsIPhysics*      EventPhysics ;//!
+      THiraData*         EventData ;//!
+      THiraPhysics*      EventPhysics ;//!
 
     public:// Static constructor to be passed to the Detector Factory
     static NPL::VDetector* Construct();
-      ClassDef(TCsIPhysics,1)  // CsIPhysics structure
+      ClassDef(THiraPhysics,1)  // HiraPhysics structure
 };
 
 #endif

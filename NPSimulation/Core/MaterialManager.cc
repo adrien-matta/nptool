@@ -104,6 +104,16 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       m_Material[Name]=material;
       return material; 
     }
+      
+    else if(Name == "Epoxy"){
+        // Actually taken value fron Epoxy
+        G4Material* material = new G4Material(Name, 1.2 * g / cm3,3);
+        material->AddElement(GetElementFromLibrary("H"),8);
+        material->AddElement(GetElementFromLibrary("C"),5);
+        material->AddElement(GetElementFromLibrary("O"),2);
+        m_Material[Name]=material;
+        return material;
+    }
 
     else  if(Name == "Mylar"){
       G4Material* material = new G4Material(Name, 1.397*g/cm3,3);
