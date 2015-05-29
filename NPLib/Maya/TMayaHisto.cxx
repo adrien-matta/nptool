@@ -19,7 +19,7 @@
  *                                                                           *
  *****************************************************************************/
 #include "TMayaHisto.h"
-
+#include "TFormula.h"
 //______________________________________________________________________________
 //                     TMayaHisto methods
 //  TMayaHisto a 2-D histogram with four bytes per cell (float)
@@ -1559,17 +1559,12 @@ Double_t TMayaHisto::FindRange(Int_t ID, Option_t *o, Double_t xo, Double_t yo) 
 			if (opt.Contains("Fit")) {
 				if (strcmp(fRangeFunction->GetName(), "_dfltRangeFunction_")
 						== 0) {
-					fRangeFunction->SetParameter(fRangeFunction->GetParNumber(
-							"base"), emax);
-					fRangeFunction->SetParLimits(fRangeFunction->GetParNumber(
-							"base"), emax / 2., emax);
-					fRangeFunction->SetParameter(fRangeFunction->GetParNumber(
-							"slope"), lmax != 0 ? -emax / lmax : 0);
+					fRangeFunction->SetParameter(((TFormula*)fRangeFunction)->GetParNumber("base"), emax);
+					fRangeFunction->SetParLimits(((TFormula*)fRangeFunction)->GetParNumber("base"), emax / 2., emax);
+					fRangeFunction->SetParameter(((TFormula*)fRangeFunction)->GetParNumber("slope"), lmax != 0 ? -emax / lmax : 0);
 				}
-				fRangeFunction->SetParLimits(fRangeFunction->GetParNumber(
-						"range"), 0, lmax);
-				fRangeFunction->SetParameter(fRangeFunction->GetParNumber(
-						"range"), lmax / 2.);
+				fRangeFunction->SetParLimits(((TFormula*)fRangeFunction)->GetParNumber("range"), 0, lmax);
+				fRangeFunction->SetParameter(((TFormula*)fRangeFunction)->GetParNumber("range"), lmax / 2.);
 				h->Fit(fRangeFunction, "b");
 				range = fRangeFunction->GetParameter("range");
 			}
