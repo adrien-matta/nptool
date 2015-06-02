@@ -117,7 +117,8 @@ class TTiaraHyballPhysics : public TObject, public NPL::VDetector{
     void CheckSpectra();
     // Used for Online only, clear all the spectra hold by the Spectra class
     void ClearSpectra();
-
+    //
+    void WriteSpectra();
 
   public:      //   Specific to TiaraHyball Array
 

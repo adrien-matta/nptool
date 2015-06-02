@@ -734,7 +734,7 @@ for(unsigned int k = 0 ; k < sizeB ; k++){
         public:
           brlproxy(){
             NPL::DetectorFactory::getInstance()->AddToken("Tiara","Tiara");
-            NPL::DetectorFactory::getInstance()->AddDetector("Tiara",TTiaraBarrelPhysics::Construct);
+            NPL::DetectorFactory::getInstance()->AddDetector("TiaraBarrel",TTiaraBarrelPhysics::Construct);
           }
       };
 
