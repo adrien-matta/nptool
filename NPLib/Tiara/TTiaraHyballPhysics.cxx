@@ -787,7 +787,7 @@ class proxy{
   public:
     proxy(){
       NPL::DetectorFactory::getInstance()->AddToken("Tiara","Tiara");
-      NPL::DetectorFactory::getInstance()->AddDetector("Tiara",TTiaraHyballPhysics::Construct);
+      NPL::DetectorFactory::getInstance()->AddDetector("TiaraHyballWedge",TTiaraHyballPhysics::Construct);
     }
 };
 
