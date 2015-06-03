@@ -500,8 +500,11 @@ G4double Target::SlowDownBeam(G4ParticleDefinition* Beam,
     G4double IncidentEnergy, 
     G4double ZInteraction, 
     G4double IncidentTheta){
+
   G4double ThicknessBeforeInteraction = 
     abs(ZInteraction - 0.5*m_EffectiveThickness) / cos(m_TargetAngle);
+ 
+  
   G4double dedx,de;
   static G4EmCalculator emCalculator;
 
@@ -511,6 +514,10 @@ G4double Target::SlowDownBeam(G4ParticleDefinition* Beam,
         dedx = emCalculator.ComputeTotalDEDX(IncidentEnergy, Beam, m_TargetMaterial);
         de   = dedx * ThicknessBeforeInteraction / m_TargetNbLayers;
         IncidentEnergy -= de;
+        if(IncidentEnergy<0){
+          IncidentEnergy = 0;
+          break;
+        }
       }
     }
   }
@@ -522,6 +529,11 @@ G4double Target::SlowDownBeam(G4ParticleDefinition* Beam,
         dedx = emCalculator.ComputeTotalDEDX(IncidentEnergy, Beam, m_WindowsMaterial);
         de   = dedx * m_TargetNbLayers * m_WindowsThickness / cos(IncidentTheta);
         IncidentEnergy -= de;
+        if(IncidentEnergy<0){
+          IncidentEnergy = 0;
+          break;
+        }
+
       }
 
     // Target
@@ -530,9 +542,15 @@ G4double Target::SlowDownBeam(G4ParticleDefinition* Beam,
         dedx = emCalculator.ComputeTotalDEDX(IncidentEnergy, Beam, m_TargetMaterial);
         de   = dedx * ThicknessBeforeInteraction / m_TargetNbLayers;
         IncidentEnergy -= de;
+        if(IncidentEnergy<0){
+          IncidentEnergy = 0;
+          break;
+        }
+
       }
   }
-  
+ 
+  if(IncidentEnergy<0) IncidentEnergy = 0 ;
   return IncidentEnergy;
 }
 

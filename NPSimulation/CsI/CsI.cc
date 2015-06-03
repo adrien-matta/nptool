@@ -28,6 +28,7 @@
 //G4 Geometry object
 #include "G4Tubs.hh"
 #include "G4Box.hh"
+#include "G4Trd.hh"
 
 //G4 sensitive
 #include "G4SDManager.hh"
@@ -58,7 +59,8 @@ using namespace CLHEP;
 namespace CSI{
   // Energy and time Resolution
   const G4double ResoTime    = 4.2         ;// = 10ns of Resolution   //   Unit is MeV/2.35
-  const G4double ResoEnergy  = 0.188/2.35         ;// Resolution in keV (sigma)
+  //const G4double ResoEnergy  = 0.180/2.35         ;// Resolution in keV (sigma)
+  const G4double ResoEnergy  = 0.50 ;// Resolution in %
 }
 
 using namespace CSI ;
@@ -91,16 +93,16 @@ void CsI::AddCsI(   G4double  R                       ,
   m_LeadThickness.push_back(LeadThickness)            ;
   m_Scintillator.push_back(Scintillator)               ;
   m_CsIRadius.push_back(CsIRadius)            ; // cylindrical shape
-  m_CsIHeight.push_back(-1)                              ; // squared shape
-  m_CsIWidth.push_back(-1)                              ; // squared shape
+  m_CsIFaceFront.push_back(-1)                              ; // Trapezoidal shape
+  m_CsIFaceBack.push_back(-1)                              ; // Trapezoidal shape
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void CsI::AddCsI(   G4double R                      ,
     G4double Theta                ,
     G4double Phi                     ,
-    G4double Height                  ,
-    G4double Width                  ,
+    G4double FaceFront                  ,
+    G4double FaceBack                  ,
     G4double CsIThickness   ,
     G4String Scintillator         ,
     G4double LeadThickness      )
@@ -112,8 +114,8 @@ void CsI::AddCsI(   G4double R                      ,
   m_LeadThickness.push_back(LeadThickness)            ;
   m_Scintillator.push_back(Scintillator)               ;
   m_CsIRadius.push_back(-1)            ; // cylindrical shape
-  m_CsIHeight.push_back(Height)                        ; // squared shape
-  m_CsIWidth.push_back(Width)                           ; // squared shape
+  m_CsIFaceFront.push_back(FaceFront)                        ; // Trapezoidal shape
+  m_CsIFaceBack.push_back(FaceBack)                           ; // Trapezoidal shape
 
 }
 
@@ -133,7 +135,7 @@ void CsI::ReadConfiguration(string Path){
   string DataBuffer          ;
 
   G4double Theta = 0 , Phi = 0 , R = 0 , Thickness = 0 , Radius = 0 ;
-  G4double  LeadThickness = 0, X = 0 , Y = 0 , Z = 0 , Width = 0 , Height = 0 ;
+  G4double  LeadThickness = 0, X = 0 , Y = 0 , Z = 0 , FaceFront = 0 , FaceBack = 0 ;
   G4String Scintillator, Shape ;
 
   bool check_Theta = false ;
@@ -143,8 +145,8 @@ void CsI::ReadConfiguration(string Path){
   bool check_Radius = false ;
   bool check_LeadThickness = false ;
   bool check_Scintillator = false ;
-  bool check_Height = false ;
-  bool check_Width = false ;
+  bool check_FaceFront = false ;
+  bool check_FaceBack = false ;
   bool check_Shape = false ;
   bool check_X = false ;
   bool check_Y = false ;
@@ -250,21 +252,21 @@ void CsI::ReadConfiguration(string Path){
         G4cout << "CsI Radius:  " << Radius/mm << G4endl;
       }
 
-      // Squared shape
-      else if (DataBuffer.compare(0, 7, "Width=") == 0) {
-        check_Width = true;
+      // Trapezoidal shape
+      else if (DataBuffer.compare(0, 10, "FaceFront=") == 0) {
+        check_FaceFront = true;
         ConfigFile >> DataBuffer ;
-        Width = atof(DataBuffer.c_str()) ;
-        Width = Width * mm;
-        G4cout << "CsI Width:  " << Width/mm << G4endl;
+        FaceFront = atof(DataBuffer.c_str()) ;
+        FaceFront = FaceFront * mm;
+        G4cout << "CsI FaceFront:  " << FaceFront/mm << G4endl;
       }
 
-      else if (DataBuffer.compare(0, 7, "Height=") == 0) {
-        check_Height = true;
+      else if (DataBuffer.compare(0, 9, "FaceBack=") == 0) {
+        check_FaceBack = true;
         ConfigFile >> DataBuffer ;
-        Height = atof(DataBuffer.c_str()) ;
-        Height = Height * mm;
-        G4cout << "CsI Height:  " << Height/mm << G4endl;
+        FaceBack = atof(DataBuffer.c_str()) ;
+        FaceBack = FaceBack * mm;
+        G4cout << "CsI FaceBack:  " << FaceBack/mm << G4endl;
       }
 
       // Common
@@ -309,11 +311,11 @@ void CsI::ReadConfiguration(string Path){
             && check_LeadThickness && check_Scintillator )
           ||   
           ( check_Theta && check_Phi && check_R && check_Thickness 
-            && check_Width && check_Height && check_LeadThickness 
-            && check_Scintillator && check_Shape ) // Squared case
+            && check_FaceBack && check_FaceFront && check_LeadThickness 
+            && check_Scintillator && check_Shape ) // Trapezoidal case
           ||   
-          ( check_X && check_Y && check_Z && check_Thickness && check_Width 
-            && check_Height && check_LeadThickness && check_Scintillator )) { 
+          ( check_X && check_Y && check_Z && check_Thickness && check_FaceBack 
+            && check_FaceFront && check_LeadThickness && check_Scintillator )) { 
 
         if (check_X && check_Y && check_Z){
           R = sqrt (X*X+Y*Y+Z*Z);
@@ -330,12 +332,12 @@ void CsI::ReadConfiguration(string Path){
               Scintillator   ,
               LeadThickness   );
 
-        else if (Shape == "Square")
+        else if (Shape == "Trapezoidal")
           AddCsI(   R                ,
               Theta             ,
               Phi               ,
-              Height            ,
-              Width               ,
+              FaceFront            ,
+              FaceBack               ,
               Thickness         ,
               Scintillator   ,
               LeadThickness   );
@@ -349,8 +351,8 @@ void CsI::ReadConfiguration(string Path){
         check_Radius = false ;
         check_LeadThickness = false ;
         check_Scintillator = false ;
-        check_Height = false ;
-        check_Width = false ;
+        check_FaceFront = false ;
+        check_FaceBack = false ;
         check_Shape = false ;
         check_X = false ;
         check_Y = false ;
@@ -443,10 +445,13 @@ void CsI::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume* wor
     }   
   }
 
-  // Squared case
-  if(m_CsIHeight[i]!=-1){
-    if(m_CsIThickness[i]>0 && m_CsIHeight[i]>0 && m_CsIWidth[i]>0){ 
-      G4Box* solidCsI = new G4Box(Name, 0.5*m_CsIWidth[i], 0.5*m_CsIHeight[i], 0.5*m_CsIThickness[i]);
+  // Trapezoidal case
+  if(m_CsIFaceFront[i]!=-1){
+    if(m_CsIThickness[i]>0 && m_CsIFaceFront[i]>0 && m_CsIFaceBack[i]>0){ 
+    
+	G4Trd* solidCsI = new G4Trd("solidCsICrystal",0.5*m_CsIFaceFront[i],0.5*m_CsIFaceBack[i],0.5*m_CsIFaceFront[i],0.5*m_CsIFaceBack[i],0.5*m_CsIThickness[i]);
+	
+      //G4Box* solidCsI = new G4Box(Name, 0.5*m_CsIFaceBack[i], 0.5*m_CsIFaceFront[i], 0.5*m_CsIThickness[i]);
       G4LogicalVolume* logicCsI = new G4LogicalVolume(solidCsI, CsIMaterial, Name+ "_Scintillator", 0, 0, 0);
       logicCsI->SetSensitiveDetector(m_CsIScorer);
 
@@ -463,8 +468,8 @@ void CsI::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume* wor
           0);   
     }
 
-    if(m_LeadThickness[i]>0&& m_CsIHeight[i]>0 && m_CsIWidth[i]>0){
-      G4Box* solidLead = new G4Box(Name+"_Lead", 0.5*m_CsIWidth[i], 0.5*m_CsIHeight[i], 0.5*m_LeadThickness[i]);
+    if(m_LeadThickness[i]>0&& m_CsIFaceFront[i]>0 && m_CsIFaceBack[i]>0){
+      G4Box* solidLead = new G4Box(Name+"_Lead", 0.5*m_CsIFaceBack[i], 0.5*m_CsIFaceFront[i], 0.5*m_LeadThickness[i]);
 
       G4Material* MaterialLead = MaterialManager::getInstance()->GetMaterialFromLibrary("Pb");
       G4LogicalVolume* logicLead = new G4LogicalVolume(solidLead, MaterialLead, Name+"_Lead", 0, 0, 0);
@@ -554,7 +559,8 @@ void CsI::ReadSensitive(const G4Event* event){
         G4int ETrackID  =   Energy_itr->first  - N      ;
         G4double E     = *(Energy_itr->second)         ;
         if (ETrackID == NTrackID) {
-          m_Event->SetEEnergy(RandGauss::shoot(E, ResoEnergy))    ;
+	  m_Event->SetEEnergy(RandGauss::shoot(E, E*ResoEnergy/100./2.35))    ;
+          //m_Event->SetEEnergy(RandGauss::shoot(E, ResoEnergy))    ;
         }
         Energy_itr++;
       }
@@ -615,3 +621,25 @@ void CsI::InitializeScorers() {
 
 }
 ////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPS::VDetector* CsI::Construct(){
+    return  (NPS::VDetector*) new CsI();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern"C" {
+    class proxy{
+    public:
+        proxy(){
+            NPS::DetectorFactory::getInstance()->AddToken("CsI","CsI");
+            NPS::DetectorFactory::getInstance()->AddDetector("CsI",CsI::Construct);
+        }
+    };
+    
+    proxy p;
+}

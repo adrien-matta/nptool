@@ -530,6 +530,12 @@ void TTiaraHyballPhysics::ClearSpectra(){
   // To be done
 }
 ///////////////////////////////////////////////////////////////////////////
+void TTiaraHyballPhysics::WriteSpectra(){
+  m_Spectra->WriteSpectra();
+}
+
+
+///////////////////////////////////////////////////////////////////////////
 map< vector<string>,TH1* > TTiaraHyballPhysics::GetSpectra() {
   if(m_Spectra)
     return m_Spectra->GetMapHisto();
@@ -711,7 +717,7 @@ namespace TiaraHyball_LOCAL{
   //   DSSD
   //   Ring
   double fStrip_Ring_E(const TTiaraHyballData* m_EventData , const int i){
-    static string name = "TIARAHYBALL/D" ;
+    static string name; name = "TIARAHYBALL/D" ;
 name+= NPL::itoa( m_EventData->GetRingEDetectorNbr(i) ) ;
 name+= "_STRIP_RING" ;
 name+= NPL::itoa( m_EventData->GetRingEStripNbr(i) ) ;
@@ -720,7 +726,7 @@ name+= "_E";
         fStrip_Ring_Matchstick(m_EventData,i) );
   }
   double fStrip_Ring_Matchstick(const TTiaraHyballData* m_EventData , const int i){
-    static string name = "TIARAHYBALL/D" ;
+    static string name; name = "TIARAHYBALL/D" ;
 name+= NPL::itoa( m_EventData->GetRingEDetectorNbr(i) ) ;
 name+= "_STRIP_RING" ;
 name+= NPL::itoa( m_EventData->GetRingEStripNbr(i) ) ;
@@ -730,7 +736,7 @@ name+= "_MATCHSTICK";
   }
 
   double fStrip_Ring_T(const TTiaraHyballData* m_EventData , const int i){
-    static string name = "TIARAHYBALL/D" ;
+    static string name; name = "TIARAHYBALL/D" ;
 name+= NPL::itoa( m_EventData->GetRingTDetectorNbr(i) ) ;
 name+= "_STRIP_RING" ;
 name+= NPL::itoa( m_EventData->GetRingTStripNbr(i) ) ;
@@ -741,7 +747,7 @@ name+="_T";
 
   //   Sector
   double fStrip_Sector_E(const TTiaraHyballData* m_EventData , const int i){
-    static string name = "TIARAHYBALL/D" ;
+    static string name; name = "TIARAHYBALL/D" ;
 name+= NPL::itoa( m_EventData->GetSectorEDetectorNbr(i) ) ;
 name+= "_STRIP_SECTOR" ;
 name+= NPL::itoa( m_EventData->GetSectorEStripNbr(i) ) ;
@@ -751,7 +757,7 @@ name+="_E";
   }
 
   double fStrip_Sector_Matchstick(const TTiaraHyballData* m_EventData , const int i){
-    static string name = "TIARAHYBALL/D" ;
+    static string name; name = "TIARAHYBALL/D" ;
 name+= NPL::itoa( m_EventData->GetSectorEDetectorNbr(i) ) ;
 name+= "_STRIP_SECTOR" ;
 name+= NPL::itoa( m_EventData->GetSectorEStripNbr(i) ) ;
@@ -761,7 +767,7 @@ name+="_MATCHSTICK";
   }
 
   double fStrip_Sector_T(const TTiaraHyballData* m_EventData , const int i){
-    static string name = "TIARAHYBALL/D" ;
+    static string name; name = "TIARAHYBALL/D" ;
 name+= NPL::itoa( m_EventData->GetSectorTDetectorNbr(i) ); 
 name+= "_STRIP_SECTOR" ;
 name+= NPL::itoa( m_EventData->GetSectorTStripNbr(i) ); 

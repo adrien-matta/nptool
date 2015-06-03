@@ -667,7 +667,7 @@ for(unsigned int k = 0 ; k < sizeB ; k++){
     }
     ///////////////////////////////////////////////////////////////////////////////
     double TTiaraBarrelPhysics::Cal_Strip_Upstream_E(const int i){
-      static string name ="TIARABARREL/B" ;
+      static string name; name ="TIARABARREL/B" ;
       name+= NPL::itoa( m_EventData->GetFrontUpstreamEDetectorNbr(i) ) ;
       name+= "_UPSTREAM" ;
       name+= NPL::itoa( m_EventData->GetFrontUpstreamEStripNbr(i) ) ;
@@ -677,7 +677,7 @@ for(unsigned int k = 0 ; k < sizeB ; k++){
     }
     ///////////////////////////////////////////////////////////////////////////////
     double TTiaraBarrelPhysics::Cal_Strip_Downstream_E(const int i){
-      static string name = "TIARABARREL/B" ;
+      static string name; name = "TIARABARREL/B" ;
       name+= NPL::itoa( m_EventData->GetFrontDownstreamEDetectorNbr(i) ) ;
       name+= "_DOWNSTREAM" ;
       name+= NPL::itoa( m_EventData->GetFrontDownstreamEStripNbr(i) ) ;
@@ -687,7 +687,7 @@ for(unsigned int k = 0 ; k < sizeB ; k++){
     }
     ///////////////////////////////////////////////////////////////////////////////
     double TTiaraBarrelPhysics::Match_Strip_Upstream_E(const int i){
-      static string name = "TIARABARREL/MATCHSTICK_B" ;
+      static string name; name = "TIARABARREL/MATCHSTICK_B" ;
       name+= NPL::itoa( m_EventData->GetFrontUpstreamEDetectorNbr(i) ) ;
       name+= "_UPSTREAM" ;
       name+= NPL::itoa( m_EventData->GetFrontUpstreamEStripNbr(i) ) ;
@@ -697,7 +697,7 @@ for(unsigned int k = 0 ; k < sizeB ; k++){
     }
     ///////////////////////////////////////////////////////////////////////////////
     double TTiaraBarrelPhysics::Match_Strip_Downstream_E(const int i){
-      static string name ="TIARABARREL/MATCHSTICK_B" ;
+      static string name; name ="TIARABARREL/MATCHSTICK_B" ;
       name+= NPL::itoa( m_EventData->GetFrontDownstreamEDetectorNbr(i) ) ;
       name+= "_DOWNSTREAM" ;
       name+= NPL::itoa( m_EventData->GetFrontDownstreamEStripNbr(i) ) ;
@@ -707,7 +707,7 @@ for(unsigned int k = 0 ; k < sizeB ; k++){
     }
     ///////////////////////////////////////////////////////////////////////////////
     double TTiaraBarrelPhysics::Cal_Back_E(const int i){
-      static string name = "TIARABARREL/B" ;
+      static string name; name = "TIARABARREL/B" ;
       name+= NPL::itoa( m_EventData->GetBackEDetectorNbr(i) ) ;
       name+= "_BACK_E";
       return CalibrationManager::getInstance()->ApplyCalibration(name, m_EventData->GetBackEEnergy(i));

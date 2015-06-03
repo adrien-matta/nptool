@@ -12,7 +12,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold CsI  Physics                                         *
+ *  This class hold Hira  Physics                                         *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -21,7 +21,7 @@
  *****************************************************************************/
 
 //   NPL
-#include "TCsIPhysics.h"
+#include "THiraPhysics.h"
 #include "RootInput.h"
 #include "RootOutput.h"
 #include "NPDetectorFactory.h"
@@ -46,29 +46,27 @@ string itoa(int value)
    return buffer;
 }
 
-ClassImp(TCsIPhysics)
+ClassImp(THiraPhysics)
 ///////////////////////////////////////////////////////////////////////////
-TCsIPhysics::TCsIPhysics()
+THiraPhysics::THiraPhysics()
    {      
       NumberOfDetector = 0 ;
-      EventData = new TCsIData ;
+      EventData = new THiraData ;
       EventPhysics = this ;
    }
    
 ///////////////////////////////////////////////////////////////////////////
-TCsIPhysics::~TCsIPhysics()
+THiraPhysics::~THiraPhysics()
    {}
    
 ///////////////////////////////////////////////////////////////////////////
-void TCsIPhysics::Clear()
+void THiraPhysics::Clear()
    {
-      DetectorNumber.clear() ;
-      Energy.clear() ;
-      Time.clear() ;
+
    }
    
 ///////////////////////////////////////////////////////////////////////////
-void TCsIPhysics::ReadConfiguration(string Path) 
+void THiraPhysics::ReadConfiguration(string Path) 
    {
       ifstream ConfigFile           ;
       ConfigFile.open(Path.c_str()) ;
@@ -95,8 +93,8 @@ void TCsIPhysics::ReadConfiguration(string Path)
          
          getline(ConfigFile, LineBuffer);
 
-         //   If line is a Start Up CsI bloc, Reading toggle to true      
-         if (LineBuffer.compare(0, 3, "CsI") == 0)
+         //   If line is a Start Up Hira bloc, Reading toggle to true      
+         if (LineBuffer.compare(0, 3, "Hira") == 0)
             {
                cout << "///" << endl ;
                cout << "Platic found: " << endl ;        
@@ -116,7 +114,7 @@ void TCsIPhysics::ReadConfiguration(string Path)
                if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
 
                   //   Finding another telescope (safety), toggle out
-               else if (DataBuffer.compare(0, 6, "CsI") == 0) {
+               else if (DataBuffer.compare(0, 6, "Hira") == 0) {
                   cout << "WARNING: Another Detector is find before standard sequence of Token, Error may occured in Telecope definition" << endl ;
                   ReadingStatus = false ;
                }
@@ -171,33 +169,33 @@ void TCsIPhysics::ReadConfiguration(string Path)
                else if (DataBuffer== "Radius=") {
                   check_Radius = true;
                   ConfigFile >> DataBuffer ;
-                  cout << "CsI Radius:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
+                  cout << "Hira Radius:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
                }
                
                // Squared shape
                else if (DataBuffer=="Width=") {
                   check_Width = true;
                   ConfigFile >> DataBuffer ;
-                  cout << "CsI Width:  " <<atof( DataBuffer.c_str() ) << "mm" << endl;
+                  cout << "Hira Width:  " <<atof( DataBuffer.c_str() ) << "mm" << endl;
                }
                
                else if (DataBuffer== "Height=") {
                   check_Height = true;
                   ConfigFile >> DataBuffer ;
-                  cout << "CsI Height:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
+                  cout << "Hira Height:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
                }
                
                // Common
                else if (DataBuffer=="Thickness=") {
                   check_Thickness = true;
                   ConfigFile >> DataBuffer ;
-                  cout << "CsI Thickness:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
+                  cout << "Hira Thickness:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
                }
                
                else if (DataBuffer== "Scintillator=") {
                   check_Scintillator = true ;
                   ConfigFile >> DataBuffer ;
-                  cout << "CsI Scintillator type:  " << DataBuffer << endl;
+                  cout << "Hira Scintillator type:  " << DataBuffer << endl;
                }
                
                else if (DataBuffer=="LeadThickness=") {
@@ -240,7 +238,7 @@ void TCsIPhysics::ReadConfiguration(string Path)
    }
 
 ///////////////////////////////////////////////////////////////////////////
-void TCsIPhysics::AddParameterToCalibrationManager()
+void THiraPhysics::AddParameterToCalibrationManager()
    {
       CalibrationManager* Cal = CalibrationManager::getInstance();
       
@@ -248,61 +246,55 @@ void TCsIPhysics::AddParameterToCalibrationManager()
          {
             for( int j = 0 ; j < 16 ; j++)
                {
-                  Cal->AddParameter("CsI", "Detector"+itoa(i+1)+"_E","CsI_Detector"+itoa(i+1)+"_E")   ;
-                  Cal->AddParameter("CsI", "Detector"+itoa(i+1)+"_T","CsI_Detector"+itoa(i+1)+"_T")   ;   
+                  Cal->AddParameter("Hira", "Detector"+itoa(i+1)+"_E","Hira_Detector"+itoa(i+1)+"_E")   ;
+                  Cal->AddParameter("Hira", "Detector"+itoa(i+1)+"_T","Hira_Detector"+itoa(i+1)+"_T")   ;   
                }
       
          }
    }
    
 ///////////////////////////////////////////////////////////////////////////
-void TCsIPhysics::InitializeRootInputRaw() 
+void THiraPhysics::InitializeRootInputRaw() 
    {
       TChain* inputChain = RootInput::getInstance()->GetChain()     ;
-      inputChain->SetBranchStatus ( "CsI"       , true )        ;
-      inputChain->SetBranchStatus ( "fCsI_*"    , true )        ;
-      inputChain->SetBranchAddress( "CsI"       , &EventData )  ;
+      inputChain->SetBranchStatus ( "Hira"       , true )        ;
+      inputChain->SetBranchStatus ( "fHira_*"    , true )        ;
+      inputChain->SetBranchAddress( "Hira"       , &EventData )  ;
    }
 ///////////////////////////////////////////////////////////////////////////
-void TCsIPhysics::InitializeRootInputPhysics()
+void THiraPhysics::InitializeRootInputPhysics()
    {
-      TChain* inputChain = RootInput::getInstance()->GetChain();
-      inputChain->SetBranchStatus ( "CsI", true );
+      /*TChain* inputChain = RootInput::getInstance()->GetChain();
+      inputChain->SetBranchStatus ( "Hira", true );
       inputChain->SetBranchStatus ( "DetectorNumber", true );
       inputChain->SetBranchStatus ( "Energy", true );
       inputChain->SetBranchStatus ( "Time", true );
-      inputChain->SetBranchAddress( "CsI", &EventPhysics );
+      inputChain->SetBranchAddress( "Hira", &EventPhysics );*/
    }
 ///////////////////////////////////////////////////////////////////////////
-void TCsIPhysics::InitializeRootOutput()
+void THiraPhysics::InitializeRootOutput()
    {
       TTree* outputTree = RootOutput::getInstance()->GetTree()            ;
-      outputTree->Branch( "CsI" , "TCsIPhysics" , &EventPhysics ) ;
+      outputTree->Branch( "Hira" , "THiraPhysics" , &EventPhysics ) ;
    }
 
 ///////////////////////////////////////////////////////////////////////////
-void TCsIPhysics::BuildPhysicalEvent()
+void THiraPhysics::BuildPhysicalEvent()
    {
       BuildSimplePhysicalEvent()   ;
    }
 
 ///////////////////////////////////////////////////////////////////////////
-void TCsIPhysics::BuildSimplePhysicalEvent()
+void THiraPhysics::BuildSimplePhysicalEvent()
    {
-      for(unsigned int i = 0 ; i < EventData->GetEnergyMult() ; i++)
-         {
-            DetectorNumber.push_back( EventData->GetENumber(i) )   ;
-            Energy.push_back( CalibrationManager::getInstance()->ApplyCalibration("CsI/Detector" + itoa( EventData->GetENumber(i) ) +"_E",EventData->GetEEnergy(i) ) );
-            Time.push_back( CalibrationManager::getInstance()->ApplyCalibration(   "CsI/Detector" + itoa( EventData->GetENumber(i) ) +"_T",EventData->GetTTime(i) ) );
-         }
-
+      
    }
 
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPL::VDetector* TCsIPhysics::Construct(){
-    return (NPL::VDetector*) new TCsIPhysics();
+NPL::VDetector* THiraPhysics::Construct(){
+    return (NPL::VDetector*) new THiraPhysics();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -312,8 +304,8 @@ extern "C"{
     class proxy{
     public:
         proxy(){
-            NPL::DetectorFactory::getInstance()->AddToken("CsI","CsI");
-            NPL::DetectorFactory::getInstance()->AddDetector("CsI",TCsIPhysics::Construct);
+            NPL::DetectorFactory::getInstance()->AddToken("HIRAArray","Hira");
+            NPL::DetectorFactory::getInstance()->AddDetector("HIRAArray",THiraPhysics::Construct);
         }
     };
     

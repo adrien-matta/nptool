@@ -86,6 +86,13 @@ void GeometricalEfficiency(const char * fname = "myResult"){
       hDetecThetaCM->Fill(initCond->GetThetaCM(0));
     }
   }
+
+   hEmittTheta->Sumw2();
+    hEmittThetaCM->Sumw2();
+      hDetecTheta->Sumw2();
+      hDetecThetaCM->Sumw2();
+   
+
    TCanvas *c0 = new TCanvas("c0", "Distrib",800,800);
   hEmittTheta->Draw("");
   hDetecTheta->Draw("same");

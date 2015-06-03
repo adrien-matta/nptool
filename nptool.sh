@@ -28,10 +28,10 @@ fi
 export PATH=$PATH:$NPLIB/bin
 export PATH=$PATH:$NPTOOL/NPSimulation/bin
 
-alias NPT='cd $NPTOOL'  
-alias NPL='cd $NPTOOL/NPLib'  
-alias NPS='cd $NPTOOL/NPSimulation'
-alias NPA='cd $NPTOOL/NPAnalysis'
+alias npt='cd $NPTOOL'  
+alias npl='cd $NPTOOL/NPLib'  
+alias nps='cd $NPTOOL/NPSimulation'
+alias npa='cd $NPTOOL/NPAnalysis'
 
 export Geant4_DIR=$G4LIB
 export NPLib_DIR=$NPTOOL/NPLib

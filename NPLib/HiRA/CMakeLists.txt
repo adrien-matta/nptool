@@ -1,5 +1,0 @@
-add_custom_command(OUTPUT THiraDataDict.cxx THiraDataDict_rdict.pcm THiraData.rootmap COMMAND ../scripts/build_dict.sh THiraData.h THiraDataDict.cxx THiraData.rootmap libNPHiRA.dylib DEPENDS THiraData.h)
-add_library(NPHiRA SHARED THiraData.cxx THiraDataDict.cxx )
-target_link_libraries(NPHiRA ${ROOT_LIBRARIES} NPCore) 
-install(FILES THiraData.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
-
