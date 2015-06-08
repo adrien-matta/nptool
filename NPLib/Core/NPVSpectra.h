@@ -73,6 +73,7 @@ class VSpectra {
 
   public:
    inline void SetName(string name) {m_name=name;}
+   inline string GetName() {return m_name;}
 };
 
 #endif
