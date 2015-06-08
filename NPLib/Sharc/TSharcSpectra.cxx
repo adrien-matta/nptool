@@ -38,6 +38,7 @@ using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
 TSharcSpectra::TSharcSpectra(){
+  SetName("Sharc");
   fNumberOfDetector = 0;
   fStripFront=24;
   fStripBack=48;
@@ -50,7 +51,7 @@ TSharcSpectra::TSharcSpectra(unsigned int NumberOfDetector){
       << "TSharcSpectra : Initalising control spectra for " 
       << NumberOfDetector << " Detectors" << endl
       << "************************************************" << endl ;
-
+  SetName("Sharc");
   fNumberOfDetector = NumberOfDetector;
   fStripFront=24;
   fStripBack=48;

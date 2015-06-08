@@ -67,6 +67,12 @@ class VSpectra {
   private:
     // map holding histo pointers and their family names
     map< vector<string>, TH1* > fMapHisto;
+
+  private: // Name of the Detector
+   string m_name;
+
+  public:
+   inline void SetName(string name) {m_name=name;}
 };
 
 #endif

@@ -40,6 +40,7 @@ using namespace NPUNITS;
 
 ////////////////////////////////////////////////////////////////////////////////
 TExogamSpectra::TExogamSpectra(){
+  SetName("Exogam");
   fnbinsRaw=16384;
   fbinRawMin=0;
   fbinRawMax=16384;
@@ -56,6 +57,7 @@ TExogamSpectra::TExogamSpectra(unsigned int NumberOfClover){
       << "TExogamSpectra : Initalising control spectra for " 
       << NumberOfClover << " Clover" << endl
       << "************************************************" << endl ;
+  SetName("Exogam");
   fNumberOfClover = NumberOfClover;
   fNumberOfSegments=4;
   fNumberOfCores=4;

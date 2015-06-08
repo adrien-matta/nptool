@@ -45,6 +45,7 @@ TTiaraHyballSpectra::TTiaraHyballSpectra(){
     cout << "************************************************" << endl;
   }
 
+  SetName("TiaraHyball");
   fRingsNumber   = 16;
   fSectorsNumber =  8;
   fWedgesNumber  =  6;
