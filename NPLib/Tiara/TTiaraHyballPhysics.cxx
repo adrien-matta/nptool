@@ -530,6 +530,12 @@ void TTiaraHyballPhysics::ClearSpectra(){
   // To be done
 }
 ///////////////////////////////////////////////////////////////////////////
+void TTiaraHyballPhysics::WriteSpectra(){
+  m_Spectra->WriteSpectra();
+}
+
+
+///////////////////////////////////////////////////////////////////////////
 map< vector<string>,TH1* > TTiaraHyballPhysics::GetSpectra() {
   if(m_Spectra)
     return m_Spectra->GetMapHisto();
@@ -787,7 +793,7 @@ class proxy{
   public:
     proxy(){
       NPL::DetectorFactory::getInstance()->AddToken("Tiara","Tiara");
-      NPL::DetectorFactory::getInstance()->AddDetector("Tiara",TTiaraHyballPhysics::Construct);
+      NPL::DetectorFactory::getInstance()->AddDetector("TiaraHyballWedge",TTiaraHyballPhysics::Construct);
     }
 };
 

@@ -40,8 +40,8 @@ using namespace std;
 
 
 ////////////////////////////////////////////////////////////////////////////////
-TCharissaSpectra::TCharissaSpectra()
-{
+TCharissaSpectra::TCharissaSpectra(){
+  SetName("Charissa");
   fNumberOfTelescope =  0;
   fStripX            = 16;
   fStripY            = 16;
@@ -59,6 +59,7 @@ TCharissaSpectra::TCharissaSpectra(unsigned int NumberOfTelescope)
       << NumberOfTelescope << " Telescopes" << endl
       << "************************************************" << endl ;
 
+  SetName("Charissa");
   fNumberOfTelescope = NumberOfTelescope;
   fStripX            = 16;
   fStripY            = 16;
