@@ -67,9 +67,11 @@ namespace HIRA
 	const G4double VacBoxThickness   = 1*cm ;
 	const G4double MylarCsIThickness = 3*micrometer;
 	const G4double CsIThickness      = 4.*cm + 2*MylarCsIThickness ;
-	const G4double CsIFaceFront      = 3.2*cm;
-	const G4double CsIFaceBack       = 3.7*cm;
-	const G4double DistInterCsI      = 0.2*mm;
+    const G4double CsIFaceFront      = 30.*mm;//3.2*cm;
+	const G4double CsIFaceBack       = 30.*mm;//3.7*cm;
+    const G4double DistInterCsI      = 0.2*mm;
+    const G4double DistInterCsIX     = CsIFaceFront+DistInterCsI;
+    const G4double DistInterCsIY     = CsIFaceFront+DistInterCsI;
 	const G4double ClusterFaceFront  = 7*cm;
 	const G4double ClusterFaceBack   = 9*cm;
 	
@@ -128,13 +130,7 @@ private:
 	////////////////////////////////////////////////////
 	//////// Specific Function of this Class ///////////
 	////////////////////////////////////////////////////
-public:
-	// To add a box detector
-	// Effectively construct Volume
-	void ConstructCsICrystal();
-	void ConstructThinSi();
-	void ConstructThickSi();
-	
+
   
   ////////////////////////////////////////////////////
   /////////  Inherite from VDetector class ///////////
