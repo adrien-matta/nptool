@@ -66,27 +66,28 @@ namespace HIRA
 	const G4double DistBetweenSi	 = 1*cm;
 	const G4double VacBoxThickness   = 1*cm ;
 	const G4double MylarCsIThickness = 3*micrometer;
-	const G4double CsIThickness      = 4.*cm + 2*MylarCsIThickness ;
-    const G4double CsIFaceFront      = 30.*mm;//3.2*cm;
-	const G4double CsIFaceBack       = 30.*mm;//3.7*cm;
+    const G4double CsIThickness      = 4.*cm;// + 2*MylarCsIThickness ;
+    
+    const G4double CsIXFront         = 32.*mm;
+    const G4double CsIXBack          = 37.*mm;
+    const G4double CsIYFront         = 32.*mm;
+    const G4double CsIYBack          = 32.*mm;
     const G4double DistInterCsI      = 0.2*mm;
-    const G4double DistInterCsIX     = CsIFaceFront+DistInterCsI;
-    const G4double DistInterCsIY     = CsIFaceFront+DistInterCsI;
+    
 	const G4double ClusterFaceFront  = 7*cm;
 	const G4double ClusterFaceBack   = 9*cm;
 	
-	
 	// Starting at the front and going to CsI
 	const G4double AluStripFrontThinSi_PosZ		= Length* -0.5 + 0.5*AluStripThickness;
-	const G4double ThinSi_PosZ			= AluStripFrontThinSi_PosZ + 0.5*AluStripThickness + 0.5*ThinSiThickness;
+	const G4double ThinSi_PosZ                  = AluStripFrontThinSi_PosZ + 0.5*AluStripThickness + 0.5*ThinSiThickness;
 	const G4double AluStripBackThinSi_PosZ		= ThinSi_PosZ + 0.5*ThinSiThickness + 0.5*AluStripThickness;
 	
 	const G4double AluStripFrontThickSi_PosZ	= AluStripBackThinSi_PosZ + DistBetweenSi + 0.5*AluStripThickness + 0.5*AluStripThickness;
-	const G4double ThickSi_PosZ			= AluStripFrontThickSi_PosZ + 0.5*AluStripThickness + 0.5*ThickSiThickness;
+	const G4double ThickSi_PosZ                 = AluStripFrontThickSi_PosZ + 0.5*AluStripThickness + 0.5*ThickSiThickness;
 	const G4double AluStripBackThickSi_PosZ		= ThickSi_PosZ + 0.5*ThickSiThickness + 0.5*AluStripThickness;
 	
-	const G4double VacBox_PosZ			= AluStripBackThickSi_PosZ + 0.5*AluStripThickness + 0.5* VacBoxThickness;
-	const G4double CsI_PosZ				= VacBox_PosZ + 0.5*VacBoxThickness + 0.5*CsIThickness;
+	const G4double VacBox_PosZ                  = AluStripBackThickSi_PosZ + 0.5*AluStripThickness + 0.5* VacBoxThickness;
+	const G4double CsI_PosZ                     = VacBox_PosZ + 0.5*VacBoxThickness + 0.5*CsIThickness;
 	
 	
    

@@ -26,6 +26,7 @@
 //G4 Geometry object
 #include "G4Box.hh"
 #include "G4Trd.hh"
+#include "G4Trap.hh"
 #include "G4Tubs.hh"
 #include "G4Cons.hh"
 #include "G4UnionSolid.hh" 
@@ -382,8 +383,8 @@ void Hira::ReadSensitive(const G4Event* event){
     double E_CsI = RandGauss::shoot(Info[0],ResoCsI);
     if(E_CsI>EnergyThreshold){
         m_EventHira->SetHiraCsIEEnergy(E_CsI);
-      	m_EventHira->SetHiraCsIEDetectorNbr((int)Info[2]);
-        m_EventHira->SetHiraCsIECristalNbr((int)Info[3]);
+      	m_EventHira->SetHiraCsIEDetectorNbr((int)Info[3]);
+        m_EventHira->SetHiraCsIECristalNbr((int)Info[2]);
     }
   }
   // Clear Map for next event
@@ -396,8 +397,8 @@ void Hira::InitializeScorers(){
   //Look for previous definition of the scorer (geometry reload)
   bool already_exist = false;
   vector<G4int> NestingLevel;
+  NestingLevel.push_back(0);
   NestingLevel.push_back(2);
-  NestingLevel.push_back(3);
 
   m_ThinSiStripScorer = CheckScorer("Hira_ThinSiScorer",already_exist);
   m_ThickSiStripScorer = CheckScorer("Hira_ThickSiScorer",already_exist);
@@ -520,8 +521,23 @@ void Hira::VolumeMaker(G4int DetectorNumber,
 	///////////////////////////////////////////////////
 	/////////////////////// CsI ///////////////////////
 	///////////////////////////////////////////////////
-	G4String NameCsI = "CsI"+DetNumber;
-	G4Trd* solidCsIStage = new G4Trd(NameCsI, 0.5*CsIFaceFront, 0.5*CsIFaceBack, 0.5*CsIFaceFront, 0.5*CsIFaceBack, 0.5*CsIThickness);
+    G4String NameCsI = "CsI"+DetNumber;
+    
+    double pDz = 0.5*CsIThickness;
+    double pTheta = -atan( (CsIXBack-CsIXFront)/(2*CsIThickness) );
+    double pPhi = 0;
+    double pDy1 = 0.5*CsIYFront;
+    double pDx1 = 0.5*CsIXFront;
+    double pDx2 = 0.5*CsIXFront;
+    double pAlp1 = 0;
+    double pDy2 = 0.5*CsIYBack;
+    double pDx3 = 0.5*CsIXBack;
+    double pDx4 = 0.5*CsIXBack;
+    double pAlp2 = 0;
+    
+    G4Trap* solidCsIStage = new G4Trap(NameCsI, pDz, pTheta, pPhi, pDy1, pDx1, pDx2, pAlp1, pDy2, pDx3, pDx4, pAlp2);
+ 
+    
     m_LogicCsICrystal = new G4LogicalVolume(solidCsIStage, m_MaterialCsI, "logicCsICrystal", 0, 0, 0);
     	
 	// Set CsI sensible
@@ -537,34 +553,39 @@ void Hira::VolumeMaker(G4int DetectorNumber,
     	m_LogicCluster = new G4LogicalVolume(solidCluster, m_MaterialVacuum, "LogicSolidCluster", 0, 0, 0);
         m_LogicCluster->SetVisAttributes(G4VisAttributes::Invisible);
 
-	G4ThreeVector FramePos(0,0,CsI_PosZ);
+        G4ThreeVector FramePos(0,0,CsI_PosZ);
 
-	new G4PVPlacement(new G4RotationMatrix(0,0,0),
+        new G4PVPlacement(new G4RotationMatrix(0,0,0),
                       	FramePos,
                       	m_LogicCluster,"Cluster",
                       	m_logicMotherVolume,false,0);
 
-
-	//G4ThreeVector Origin(-CsIFaceFront,-CsIFaceFront,0);
-	G4ThreeVector Origin(-0.5*CsIFaceFront,-0.5*CsIFaceFront,0);
-	
-	// A cluster is a 2 by 2 aggregat of CsI crystal
-    		unsigned int CsINbr = 1;
-    		for(unsigned int i = 0 ; i < 2 ; i++){
-      			for(unsigned int j = 0 ; j <2 ; j++){
+        const G4double CsIXMiddle = CsIXFront + CsIThickness*tan(-pTheta);
+        const G4double DistInterCsIX = CsIXMiddle+DistInterCsI;
+        const G4double DistInterCsIY = CsIYFront+DistInterCsI;
+        
+        G4ThreeVector Origin(-0.5*DistInterCsIX,-0.5*DistInterCsIY,0);
+        G4RotationMatrix* rotM = new G4RotationMatrix;
+        const G4double dangle = 180.*deg;
+        // A cluster is a 2 by 2 aggregat of CsI crystal
+        unsigned int CsINbr = 1;
+            for(unsigned int i = 0 ; i < 2 ; i++){
+                for(unsigned int j = 0 ; j <2 ; j++){
                     unsigned int CrystalNbr = CsINbr++;
-        			G4ThreeVector Pos = Origin + G4ThreeVector(i*DistInterCsIX,j*DistInterCsIY,0);
-        			new G4PVPlacement(0, 
-        			 	Pos,
-           			 	m_LogicCsICrystal,
-                        "CsI_Cristal",
-                        m_LogicCluster,
-                        false,
-                        CrystalNbr);
-      			}
+                    if(i==0)rotM->rotateZ((i)*dangle);
+                    if(i==1)rotM->rotateZ((i+j)*dangle);
+                    G4ThreeVector Pos = Origin + G4ThreeVector(i*DistInterCsIX,j*DistInterCsIY,0);
+                
+                    new G4PVPlacement(G4Transform3D(*rotM,Pos),
+                                      m_LogicCsICrystal,
+                                      "CsI_Cristal",
+                                      m_LogicCluster,
+                                      false,
+                                      CrystalNbr);
+                }
             }
         }
-}
+    }
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
