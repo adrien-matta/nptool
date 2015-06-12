@@ -327,13 +327,13 @@ void Hira::ReadSensitive(const G4Event* event){
     double E_ThinSi = RandGauss::shoot(Info[0],ResoThinSi);
 
     if(E_ThinSi>EnergyThreshold){
-	m_EventHira->SetHiraThinSiStripEEnergy(E_ThinSi); 
+        m_EventHira->SetHiraThinSiStripEEnergy(E_ThinSi);
       	m_EventHira->SetHiraThinSiStripEDetectorNbr(Info[7]);
-	m_EventHira->SetHiraThinSiStripEStripNbr(Info[8]);
+        m_EventHira->SetHiraThinSiStripEStripNbr(Info[8]);
 	
-	m_EventHira->SetHiraThinSiStripTTime(Info[1]);
-	m_EventHira->SetHiraThinSiStripTDetectorNbr(Info[7]);
-	m_EventHira->SetHiraThinSiStripTStripNbr(Info[8]);
+        m_EventHira->SetHiraThinSiStripTTime(Info[1]);
+        m_EventHira->SetHiraThinSiStripTDetectorNbr(Info[7]);
+        m_EventHira->SetHiraThinSiStripTStripNbr(Info[8]);
     }
   }
 
@@ -351,21 +351,28 @@ void Hira::ReadSensitive(const G4Event* event){
     G4double* Info = *(ThickSi_itr->second); 
     double E_ThickSi = RandGauss::shoot(Info[0],ResoThickSi);
     if(E_ThickSi>EnergyThreshold){
-	m_EventHira->SetHiraThickSiStripXEEnergy(E_ThickSi); 
-    m_EventHira->SetHiraThickSiStripXEDetectorNbr(Info[7]);
-	m_EventHira->SetHiraThickSiStripXEStripNbr(Info[8]);
+        m_EventHira->SetHiraThickSiStripXEEnergy(E_ThickSi);
+        m_EventHira->SetHiraThickSiStripXEDetectorNbr(Info[7]);
+        m_EventHira->SetHiraThickSiStripXEStripNbr(Info[8]);
 	
-	m_EventHira->SetHiraThickSiStripXTTime(Info[1]);
-	m_EventHira->SetHiraThickSiStripXTDetectorNbr(Info[7]);
-	m_EventHira->SetHiraThickSiStripXTStripNbr(Info[8]);
+        m_EventHira->SetHiraThickSiStripXTTime(Info[1]);
+        m_EventHira->SetHiraThickSiStripXTDetectorNbr(Info[7]);
+        m_EventHira->SetHiraThickSiStripXTStripNbr(Info[8]);
 
-	m_EventHira->SetHiraThickSiStripYEEnergy(E_ThickSi); 
-    m_EventHira->SetHiraThickSiStripYEDetectorNbr(Info[7]);
-	m_EventHira->SetHiraThickSiStripYEStripNbr(Info[9]);
+        m_EventHira->SetHiraThickSiStripYEEnergy(E_ThickSi);
+        m_EventHira->SetHiraThickSiStripYEDetectorNbr(Info[7]);
+        m_EventHira->SetHiraThickSiStripYEStripNbr(Info[9]);
 	
-	m_EventHira->SetHiraThickSiStripYTTime(Info[1]);
-	m_EventHira->SetHiraThickSiStripYTDetectorNbr(Info[7]);
-	m_EventHira->SetHiraThickSiStripYTStripNbr(Info[9]);
+        m_EventHira->SetHiraThickSiStripYTTime(Info[1]);
+        m_EventHira->SetHiraThickSiStripYTDetectorNbr(Info[7]);
+        m_EventHira->SetHiraThickSiStripYTStripNbr(Info[9]);
+        
+        // Interraction Coordinates
+        ms_InterCoord->SetDetectedPositionX(Info[2]) ;
+        ms_InterCoord->SetDetectedPositionY(Info[3]) ;
+        ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
+        ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
+        ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
     }
   }
   // Clear Map for next event
@@ -389,7 +396,7 @@ void Hira::ReadSensitive(const G4Event* event){
   }
   // Clear Map for next event
   CsIHitMap->clear();
-
+    
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

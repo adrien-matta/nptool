@@ -1,14 +1,8 @@
 TTreeName 
-	AutoTree
-RootFileName
-  /Users/pierremorfouace/Desktop/NPDoc/cats/run_2003.root
-%	/data/e628X/e628/acquisition/run_root/run_1352.1.root
-%	/data/e628X/e628/acquisition/run_root/run_1353.0.root
-% /data/e628X/e628/acquisition/run_root/run_1354.0.root
-%	/data/e628X/e628/acquisition/run_root/run_1354.1.root
-%	/data/e628X/e628/acquisition/run_root/run_1355.0.root
-%	/data/e628X/e628/acquisition/run_root/run_1356.0.root
-%	/data/e628X/e628/acquisition/run_root/run_1357.0.root
-%	/data/e628X/e628/acquisition/run_root/run_1357.1.root
-%	/data/e628X/e628/acquisition/run_root/run_1358.0.root
-%	/data/e628X/e628/acquisition/run_root/run_1358.1.root
+	SimulatedTree
+RootFileName 
+  /Users/pierremorfouace/Physics/NPTool/nptool/Outputs/Simulation/simu.root
+
+
+	
+	

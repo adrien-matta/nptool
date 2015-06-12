@@ -52,7 +52,7 @@ namespace HIRA
 	const G4double ResoThickSi  	= 0.022          ;// = 52keV of Resolution   //   Unit is MeV/2.35
 	const G4double ResoThinSi	= 0.064          ;// = 150keV of Resolution   //   Unit is MeV/2.35
 	
-	const G4double EnergyThreshold = 100*keV;
+    const G4double EnergyThreshold = 0.;//100*keV;
 	
 	const G4double FaceFront	= 7.*cm ;
 	const G4double FaceBack		= 7*cm ;

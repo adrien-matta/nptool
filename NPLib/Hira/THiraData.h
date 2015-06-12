@@ -116,6 +116,17 @@ class THiraData : public TObject {
     void   SetHiraCsITTime(const Double_t Time)             {fHiRA_CsIT_Time.push_back(Time);}
 
     /////////////////////           GETTERS           ////////////////////////
+    // SSSD
+    // (X,E)
+    UShort_t   GetHiraThinSiEMult()                                 const {return fHiRA_ThickSi_StripXE_DetectorNbr.size();}
+    UShort_t   GetHiraThinSiStripEDetectorNbr(const Int_t i)        const {return fHiRA_ThinSi_StripE_DetectorNbr[i];}
+    UShort_t   GetHiraThinSiStripEStripNbr(const Int_t i)           const {return fHiRA_ThinSi_StripE_StripNbr[i];}
+    Double_t   GetHiraThinSiStripEEnergy(const Int_t i)             const {return fHiRA_ThinSi_StripE_Energy[i];}
+    // (X,T)
+    UShort_t   GetHiraThinSiStripTDetectorNbr(const Int_t i)        const {return fHiRA_ThinSi_StripT_DetectorNbr[i];}
+    UShort_t   GetHiraThinSiStripTStripNbr(const Int_t i)           const {return fHiRA_ThinSi_StripT_StripNbr[i];}
+    Double_t   GetHiraThinSiStripTTime(const Int_t i)               const {return fHiRA_ThinSi_StripT_Time[i];}
+    
     // DSSD
     // (X,E)
     UShort_t   GetHiraStripXEMult()                     const {return fHiRA_ThickSi_StripXE_DetectorNbr.size();}

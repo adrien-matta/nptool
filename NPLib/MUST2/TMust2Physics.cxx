@@ -1165,9 +1165,9 @@ void TMust2Physics::AddTelescope( TVector3 C_X1_Y1,
   Strip_1_1+= U*Ushift+V*Vshift ;
 
   for( int i = 0 ; i < 128 ; ++i ){
-    lineX.clear()   ;
-    lineY.clear()   ;
-    lineZ.clear()   ;
+    lineX.clear();
+    lineY.clear();
+    lineZ.clear();
 
     for( int j = 0 ; j < 128 ; ++j ){
       StripCenter  = Strip_1_1 + StripPitch*( i*U + j*V  );

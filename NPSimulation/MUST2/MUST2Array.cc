@@ -1289,7 +1289,8 @@ void MUST2Array::InitializeScorers() {
 
   G4VPrimitiveScorer* InteractionCoordinatesX 				= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","MUST2Telescope", 0);
   G4VPrimitiveScorer* InteractionCoordinatesY				= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","MUST2Telescope", 0);
-  G4VPrimitiveScorer* InteractionCoordinatesZ  			= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","MUST2Telescope", 0);	 		 
+  G4VPrimitiveScorer* InteractionCoordinatesZ  			= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","MUST2Telescope", 0);
+ 		 
   G4VPrimitiveScorer* InteractionCoordinatesAngleTheta	= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","MUST2Telescope", 0);
   G4VPrimitiveScorer* InteractionCoordinatesAnglePhi    = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","MUST2Telescope", 0) ;	    
 

@@ -25,7 +25,7 @@ int main(int argc, char** argv)
    RootOutput::getInstance("Analysis/"+OutputfileName, "AnalysedTree");
    
    // Instantiate the detector using a file
-   NPA::DetectorManager* myDetector = new DetectorManager();
+   NPL::DetectorManager* myDetector = new DetectorManager();
    myDetector->ReadConfigurationFile(detectorfileName);
     
    // Get the formed Chained Tree and Treat it
