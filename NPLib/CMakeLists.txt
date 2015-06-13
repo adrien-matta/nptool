@@ -79,6 +79,7 @@ ENDMACRO()
 subdirlist(SUB_DIRECTORY ${CMAKE_BINARY_DIR})
 set(SUB_DIRECTORY ${SUB_DIRECTORY} Core Physics InitialConditions InteractionCoordinates Utility)
 include_directories("Core/")
+include_directories("Online/")
 
 # Add each sub folder to the project
 set(TARGET_LIST "")
