@@ -1,0 +1,33 @@
+#ifndef NPSPECTRASERVER_H
+#define NPSPECTRASERVER_H
+
+#include "TSocket.h"
+#include "TServerSocket.h"
+#include "TMonitor.h"
+#include "TMessage.h"
+#include "TList.h"
+#include "TCanvas.h"
+namespace NPL{
+  class SpectraServer{
+    public:
+      static SpectraServer* getInstance();
+    
+    private:
+      SpectraServer();
+      ~SpectraServer();
+
+    private:
+      static SpectraServer* instance;
+   
+    public:
+      void HandleSocket(TSocket* s);
+      void AddCanvas(TCanvas* c);
+      void Start();
+   private:
+    TServerSocket* m_Server;     
+    TMonitor* m_Monitor;     
+    TList* m_Sockets;
+    TList* m_Canvas;
+  };
+}
+#endif
