@@ -83,6 +83,9 @@ namespace NPL{
       void StartThread(NPL::VDetector*,unsigned int);
       void InitThreadPool(); 
       bool IsDone();
+   
+     public: // for online spectra server
+      void SetSpectraServer();
     #endif
 
     private:
@@ -106,7 +109,7 @@ namespace NPL{
       double GetTargetX()             {return m_TargetX;}
       double GetTargetY()             {return m_TargetY;}
       double GetTargetZ()             {return m_TargetZ;}
-  };
+     };
 }
 
 #endif 

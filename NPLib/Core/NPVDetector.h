@@ -28,7 +28,7 @@
 
 // ROOT headers
 #include "TH1.h"
-
+#include "TCanvas.h"
 //   STL header
 #include <string>
 #include <vector>
@@ -87,6 +87,8 @@ namespace NPL {
       virtual void ClearSpectra() {};
       // Used for Online only, get all the spectra hold by the Spectra class
       virtual  map< vector<string> , TH1*> GetSpectra() {map< vector<string>, TH1* > x; return x;};
+      // Used for Online only, get all the canvases
+      virtual vector<TCanvas*> GetCanvas(){vector<TCanvas*> x ; return x;};
 
     private:   //   The list below is here to help you building your own detector
       /*

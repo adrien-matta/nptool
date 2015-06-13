@@ -33,7 +33,9 @@
 #include "RootInput.h"
 #include "NPOptionManager.h"
 #include "NPCalibrationManager.h"
-
+#include "NPSpectraServer.h"
+//Root
+#include"TCanvas.h"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //   Default Constructor
@@ -43,7 +45,7 @@ NPL::DetectorManager::DetectorManager(){
   m_ClearEventDataPtr = &NPL::VDetector::ClearEventData ;
   m_FillSpectra = NULL; 
   m_CheckSpectra = NULL;   
-  
+
   if(NPOptionManager::getInstance()->GetGenerateHistoOption()){
     m_FillSpectra =  &NPL::VDetector::FillSpectra ;
     if(NPOptionManager::getInstance()->GetCheckHistoOption())
@@ -66,7 +68,7 @@ NPL::DetectorManager::~DetectorManager(){
 void NPL::DetectorManager::ReadConfigurationFile(string Path)   {
   cout << "\033[1;36m" ;
 
-   // Instantiate the Calibration Manager
+  // Instantiate the Calibration Manager
   // All The detector will then add to it their parameter (see AddDetector)
   CalibrationManager::getInstance(NPOptionManager::getInstance()->GetCalibrationFile());
 
@@ -96,7 +98,7 @@ void NPL::DetectorManager::ReadConfigurationFile(string Path)   {
     //////////// Search for Target /////////////
     ////////////////////////////////////////////
 
-  else if (LineBuffer.compare(0, 13, "GeneralTarget") == 0 && cGeneralTarget == false) {
+    else if (LineBuffer.compare(0, 13, "GeneralTarget") == 0 && cGeneralTarget == false) {
       cGeneralTarget = true ;
       cout << "////////// Target ///////////" << endl;
 
@@ -208,7 +210,7 @@ void NPL::DetectorManager::ReadConfigurationFile(string Path)   {
         delete detector;
     }
   } 
- cout << "\033[0m" ;
+  cout << "\033[0m" ;
 
   ConfigFile.close();
 
@@ -226,19 +228,19 @@ void NPL::DetectorManager::ReadConfigurationFile(string Path)   {
 
   // The calibration Manager got all the parameter added, so it can load them from the calibration file
   CalibrationManager::getInstance()->LoadParameterFromFile();
-  
+
   // Start the thread if multithreading supported
-  #if __cplusplus > 199711L
+#if __cplusplus > 199711L
   InitThreadPool();
-  #endif
-  
+#endif
+
   return;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////   
 void NPL::DetectorManager::BuildPhysicalEvent(){
 #if __cplusplus > 199711L
- // add new job
+  // add new job
   map<string,VDetector*>::iterator it;
   unsigned int i = 0;
   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {
@@ -246,18 +248,18 @@ void NPL::DetectorManager::BuildPhysicalEvent(){
   }
   // Wait for all job to be done
   while(!IsDone()){
-  //   this_thread::yield();
+    //   this_thread::yield();
   }
 #else 
   map<string,VDetector*>::iterator it;
-   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {
-      (it->second->*m_ClearEventPhysicsPtr)();
-      (it->second->*m_BuildPhysicalPtr)();
-      if(m_FillSpectra){
-        (it->second->*m_FillSpectra)();
-        if(m_CheckSpectra)
-          (it->second->*m_CheckSpectra)();
-      }
+  for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {
+    (it->second->*m_ClearEventPhysicsPtr)();
+    (it->second->*m_BuildPhysicalPtr)();
+    if(m_FillSpectra){
+      (it->second->*m_FillSpectra)();
+      if(m_CheckSpectra)
+        (it->second->*m_CheckSpectra)();
+    }
   }
 #endif
 }
@@ -266,11 +268,11 @@ void NPL::DetectorManager::BuildPhysicalEvent(){
 void NPL::DetectorManager::BuildSimplePhysicalEvent(){
   ClearEventPhysics();
   map<string,VDetector*>::iterator it;
-  
+
   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {
     it->second->BuildSimplePhysicalEvent();
     if(NPOptionManager::getInstance()->GetGenerateHistoOption()){
-        it->second->FillSpectra();
+      it->second->FillSpectra();
       if(NPOptionManager::getInstance()->GetCheckHistoOption())
         it->second->CheckSpectra();
     }
@@ -355,14 +357,14 @@ void NPL::DetectorManager::WriteSpectra(){
 
 /////////////////////////////////////////////////////////////////////////////////////////////////   
 vector< map< vector<string>, TH1* > > NPL::DetectorManager::GetSpectra(){
-   vector< map< vector<string>, TH1* > > myVector;
-   map<string,VDetector*>::iterator it;
-   // loop on detectors
-   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {
-      myVector.push_back(it->second->GetSpectra());
-   }
+  vector< map< vector<string>, TH1* > > myVector;
+  map<string,VDetector*>::iterator it;
+  // loop on detectors
+  for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {
+    myVector.push_back(it->second->GetSpectra());
+  }
 
-   return myVector;
+  return myVector;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////   
@@ -397,10 +399,10 @@ void NPL::DetectorManager::InitThreadPool(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::DetectorManager::StartThread(NPL::VDetector* det,unsigned int id){ 
-this_thread::sleep_for(chrono::milliseconds(1));
-vector<bool>::iterator it = m_Ready.begin()+id;
+  this_thread::sleep_for(chrono::milliseconds(1));
+  vector<bool>::iterator it = m_Ready.begin()+id;
 
-while(!m_stop){
+  while(!m_stop){
     if(*it){
       (det->*m_ClearEventPhysicsPtr)();
       (det->*m_BuildPhysicalPtr)();
@@ -411,8 +413,8 @@ while(!m_stop){
       }
       m_Ready[id]=false;
     }
-		else
-			this_thread::yield();
+    else
+      this_thread::yield();
   }
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -426,6 +428,21 @@ bool NPL::DetectorManager::IsDone(){
       return false;
   }
   return true;
+}
+////////////////////////////////////////////////////////////////////////////////
+void NPL::DetectorManager::SetSpectraServer(){
+  NPL::SpectraServer* s = NPL::SpectraServer::getInstance();
+
+  map<string,VDetector*>::iterator it;
+  for (it = m_Detector.begin(); it != m_Detector.end(); ++it){ 
+    vector<TCanvas*> canvas = it->second->GetCanvas();
+    size_t mysize = canvas.size();
+    for (size_t i = 0 ; i < mysize ; i++) 
+      s->AddCanvas(canvas[i]);
+  }
+ 
+  thread t( &NPL::SpectraServer::Start,s);
+  t.detach();
 }
 #endif
 
