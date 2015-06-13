@@ -6,7 +6,7 @@
 // -------------------------------------- VARIOUS INCLUDE ---------------------------------------
 
 // NPA
-#include "DetectorManager.h"
+#include "NPDetectorManager.h"
 #include "NPOptionManager.h"
 
 // STL C++
@@ -30,13 +30,9 @@
 #include "RootOutput.h"
 #include "NPReaction.h"
 #include "TInitialConditions.h"
-#include "TPlasticData.h"
-#include "TMust2Data.h"
-#include "TMust2Physics.h"
-#include "TExogamPhysics.h"
-#include "TSSSDPhysics.h"
-#include "TPlasticPhysics.h"
-#include "GaspardTracker.h"
+#include "THiraData.h"
+#include "THiraPhysics.h"
+
 
 // Use CLHEP System of unit and Physical Constant
 #include "NPGlobalSystemOfUnits.h"

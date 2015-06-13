@@ -105,14 +105,14 @@ RootInput::RootInput(string configFileName){
           std::string SHARED_LIB_EXTENSION = ".dylib";
 #endif
 
-          string path = getenv("NPTOOL");
+            string path = getenv("NPTOOL");
           path+="/NPLib/lib/";
-          string libName="libNPInteractionCoordinates"+SHARED_LIB_EXTENSION;
-          libName=path+libName;
-          dlopen(libName.c_str(),RTLD_NOW);
-          libName="libNPInitialConditions"+SHARED_LIB_EXTENSION;
-          libName=path+libName;
-          dlopen(libName.c_str(),RTLD_NOW);
+            string libName="libNPInteractionCoordinates"+SHARED_LIB_EXTENSION;
+            libName=path+libName;
+            dlopen(libName.c_str(),RTLD_NOW);
+            libName="libNPInitialConditions"+SHARED_LIB_EXTENSION;
+            libName=path+libName;
+            dlopen(libName.c_str(),RTLD_NOW);
         }
       }
 
@@ -170,7 +170,7 @@ void RootInput::AddFriendChain(string RunToAdd){
   TChain* localChain = new TChain();
 
   cout << "/////////////////////////////////" << endl;
-  cout << "Adding frien to current TChain" << endl;
+  cout << "Adding friend to current TChain" << endl;
 
   if (!inputConfigFile) {
     cout << "Run to Add file :" << RunToAdd << " not found " << endl; 
