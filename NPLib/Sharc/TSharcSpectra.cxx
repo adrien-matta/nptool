@@ -67,46 +67,48 @@ TSharcSpectra::~TSharcSpectra(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TSharcSpectra::InitRawSpectra(){
-  TCanvas* c1 = new TCanvas("SharcRaw","Sharc Raw");
-  TCanvas* c2 = new TCanvas("SharcRawPAD","Sharc Raw PAD");
 
-  c1->Divide(fNumberOfDetector,4);
-  c2->Divide(fNumberOfDetector,2);
   string name;
   for (unsigned int i = 0; i < fNumberOfDetector; i++) { // loop on number of detectors
+  name = "SharcRaw"+NPL::itoa(i+1);
+  TCanvas* c1 = new TCanvas(name.c_str(),name.c_str());
+  c1->Divide(3,2);
+  int i1 = 0;  
     // STR_FRONT_E_RAW
-    c1->cd(i+2);
+    c1->cd(++i1);
     name = "SHARC"+NPL::itoa(i+1)+"_STR_FRONT_E_RAW";
     AddHisto2D(name, name, fStripFront, 1, fStripFront+1, 512, 0, 8192, "SHARC/RAW/STR_FRONT_E")->Draw("colz");
 
     // STR_BACK_E_RAW
-    c1->cd(i+3);
+    c1->cd(++i1);
     name = "SHARC"+NPL::itoa(i+1)+"_STR_BACK_E_RAW";
     AddHisto2D(name, name, fStripBack, 1, fStripBack+1, 512, 0, 8192, "SHARC/RAW/STR_BACK_E")->Draw("colz");
 
     // PAD_E_RAW
-    c2->cd(i+5);
+    c1->cd(++i1);
     name = "SHARC"+NPL::itoa(i+1)+"_PAD_E_RAW";
     AddHisto1D(name, name, 512, 0, 16384, "SHARC/RAW/PAD_E")->Draw("");
 
     // STR_FRONT_RAW_MULT
-    c1->cd(i+4);
+    c1->cd(++i1);
     name = "SHARC"+NPL::itoa(i+1)+"_STR_FRONT_RAW_MULT";
     AddHisto1D(name, name, fStripFront, 1, fStripFront+1, "SHARC/RAW/MULT")->Draw("");
-
+    gPad->SetLogy();
+  
     // STR_BACK_RAW_MULT
-    c1->cd(i+5);
+    c1->cd(++i1);
     name = "SHARC"+NPL::itoa(i+1)+"_STR_BACK_RAW_MULT";
     AddHisto1D(name, name, fStripFront, 1, fStripFront+1, "SHARC/RAW/MULT")->Draw("");
+    gPad->SetLogy();
 
     // PAD_RAW_MULT
-    c2->cd(i+2);
+    c1->cd(++i1);
     name = "SHARC"+NPL::itoa(i+1)+"_PAD_RAW_MULT";
     AddHisto1D(name, name, fNumberOfDetector, 1, fNumberOfDetector+1, "SHARC/RAW/MULT")->Draw("");
-
+    gPad->SetLogy();
+    
+    AddCanvas(c1);  
   } // end loop on number of detectors
-  AddCanvas(c1);  
-  AddCanvas(c2);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
