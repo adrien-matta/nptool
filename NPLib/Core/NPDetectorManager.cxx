@@ -443,6 +443,9 @@ void NPL::DetectorManager::SetSpectraServer(){
  
   thread t( &NPL::SpectraServer::Start,s);
   t.detach();
+
+  system("nponline localhost 9090 &");
+
 }
 #endif
 

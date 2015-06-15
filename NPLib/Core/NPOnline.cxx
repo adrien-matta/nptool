@@ -33,24 +33,26 @@ void NPL::ExecuteMacro(string name){
   }
 }
 ////////////////////////////////////////////////////////////////////////////////
-NPL::NPOnline::NPOnline(){
+NPL::NPOnline::NPOnline(string address,int port){
   m_Sock = 0;
   TString NPLPath = gSystem->Getenv("NPTOOL");
   gROOT->ProcessLine(Form(".x %s/NPLib/scripts/NPToolLogon.C+", NPLPath.Data()));
   gROOT->SetStyle("nponline");
 
   // Build the interface
-  MakeGui();
+  MakeGui(address,port);
 
   // Link the button slot to the function
   m_Quit->SetCommand("gApplication->Terminate()");
   m_Connect->Connect("Clicked()", "NPL::NPOnline", this, "Connect()");
   m_Update->Connect("Clicked()", "NPL::NPOnline", this, "Update()");
   m_Clock->Connect("Clicked()","NPL::NPOnline",this,"AutoUpdate()");
+
+  Connect();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void NPL::NPOnline::MakeGui(){
+void NPL::NPOnline::MakeGui(string address,int port){
   m_BgColor = gROOT->GetColor(kGray+3)->GetPixel();
   m_FgColor = gROOT->GetColor(kAzure+7)->GetPixel();
   m_TabBgColor = gROOT->GetColor(kGray+3)->GetPixel();
@@ -124,12 +126,12 @@ void NPL::NPOnline::MakeGui(){
   m_Address = new TGTextEntry(m_ButtonBar, new TGTextBuffer(14),-1,uGC->GetGC(),ufont->GetFontStruct(),kChildFrame | kOwnBackground);
   m_Address->SetMaxLength(4096);
   m_Address->SetAlignment(kTextLeft);
-  m_Address->SetText("localhost");
+  m_Address->SetText(address.c_str());
   m_Address->Resize(200,m_Address->GetDefaultHeight());
   m_ButtonBar->AddFrame(m_Address, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
   m_Address->MoveResize(90,10,200,20);
 
-  m_Port = new TGNumberEntry(m_ButtonBar, (Double_t) 9090,9,-1,(TGNumberFormat::EStyle) 5);
+  m_Port = new TGNumberEntry(m_ButtonBar, (Double_t) port,9,-1,(TGNumberFormat::EStyle) 5);
   m_Port->SetName("m_Port");
   m_Port->GetButtonUp()->SetStyle(1);
   m_Port->GetButtonDown()->SetStyle(1);
@@ -216,7 +218,7 @@ void NPL::NPOnline::MakeGui(){
 
   m_Main->Resize(m_Main->GetDefaultSize());
   m_Main->MapWindow();
-  m_Main->Resize(900,600);
+  m_Main->MoveResize(0,0,2000,1000);
 
   m_Main->SetLayoutBroken(kFALSE);
 }
@@ -321,7 +323,7 @@ NPL::CanvasList::CanvasList(TGMainFrame* main, TGCanvas* parent){
   m_pclose = gClient->GetPicture(path_icon.c_str());
 
   m_BgColor = gROOT->GetColor(kGray+3)->GetPixel();
-  m_FgColor = gROOT->GetColor(kAzure+7)->GetPixel();
+  m_FgColor = gROOT->GetColor(kWhite)->GetPixel();
 
   m_ListTree = new TGListTree(parent,kHorizontalFrame);
   m_ListTree->Connect("DoubleClicked(TGListTreeItem*,Int_t)","NPL::CanvasList",this,"OnDoubleClick(TGListTreeItem*,Int_t)");
@@ -338,7 +340,7 @@ void NPL::CanvasList::OnDoubleClick(TGListTreeItem* item, Int_t btn){
 void NPL::CanvasList::AddItem(TCanvas* c){
   TGListTreeItem*  item  = m_ListTree->AddItem(NULL,c->GetName());
   item->SetPictures(m_popen, m_pclose);
-  m_Canvas[c->GetName()]=c;
+   m_Canvas[c->GetName()]=c;
 }
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::CanvasList::Clear(){

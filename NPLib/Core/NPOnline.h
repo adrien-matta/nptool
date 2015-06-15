@@ -51,10 +51,10 @@ namespace NPL{
     RQ_OBJECT("NPOnline")
 
     public:
-      NPOnline();
+      NPOnline(string address="localhost", int port=9090);
       ~NPOnline();
 
-      void MakeGui();
+      void MakeGui(string address="localhost", int port=9090);
       void Connect();
       void Update();
       void AutoUpdate();
