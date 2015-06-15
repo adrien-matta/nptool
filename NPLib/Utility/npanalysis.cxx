@@ -99,6 +99,12 @@ int main(int argc , char** argv){
     }
   }
 
+  if(myOptionManager->GetOnline()){
+    // Request Detector manager to give the Spectra to the server
+    myDetector->SetSpectraServer(); 
+   
+  }
+
   std::cout << std::endl << "///////// Starting Analysis ///////// "<< std::endl;
   TChain* Chain = RootInput:: getInstance()->GetChain();
   myOptionManager->GetNumberOfEntryToAnalyse();

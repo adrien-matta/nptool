@@ -65,6 +65,7 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
   fInputPhysicalTreeOption = false;
   fGenerateHistoOption = false ;
   fPROOFMode = false;
+  fOnline = false;
 
   for (int i = 0; i < argc; i++) {
     string argument = argv[i];
@@ -121,6 +122,9 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
     else if (argument == "--last-res")                            fLastResFile = true ;
 
     else if (argument == "--last-any")                            fLastAnyFile = true ;
+    
+    else if (argument == "--online")                              {fOnline = true ;fGenerateHistoOption=true;}
+
 
     //else ;
   }
@@ -281,7 +285,7 @@ void NPOptionManager::SendErrorAndExit(const char* type) const{
   else if (stype == "DetectorConfiguration") {
     cout << endl;
     cout << "***********************************       Error       ***********************************" << endl;
-    cout << "* No detector geometry file found in $NPTool/Inputs/EventGenerator or local directories *" << endl;
+    cout << "* No detector geometry file found in $NPTool/Inputs/DetectorConfiguration or local directories *" << endl;
     cout << "*****************************************************************************************" << endl;
     cout << endl;
     exit(1);
@@ -319,6 +323,7 @@ void NPOptionManager::DisplayHelp(){
   cout << "\t --last-phy\t \t \t \tIgnore the list of Run to treat if any and analysed the last Physics file" << endl ;
   cout << "\t --last-res\t \t \t \tIgnore the list of Run to treat if any and analysed the last Result file" << endl ;
   cout << "\t --last-any\t \t \t \tIgnore the list of Run to treat if any and analysed the last root file with a non standard Tree name" << endl ;
+  cout << "\t --online  \t \t \t \tStart the spectra server" << endl ;
   cout << endl << endl ;
 
   // exit current program

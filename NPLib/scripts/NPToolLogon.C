@@ -55,6 +55,8 @@ void NPToolLogon(){
   // Create the NPTool Stype
   TString NPLPath = gSystem->Getenv("NPTOOL");  
   gROOT->ProcessLine(Form(".x %s/NPLib/scripts/Style_nptool.C",NPLPath.Data()));
+  gROOT->ProcessLine(Form(".x %s/NPLib/scripts/Style_nponline.C",NPLPath.Data()));
+
 
 
   // Change the standard random generator to TRandom2

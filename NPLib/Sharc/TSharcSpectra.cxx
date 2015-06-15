@@ -67,31 +67,47 @@ TSharcSpectra::~TSharcSpectra(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TSharcSpectra::InitRawSpectra(){
+
   string name;
   for (unsigned int i = 0; i < fNumberOfDetector; i++) { // loop on number of detectors
+  name = "SharcRaw"+NPL::itoa(i+1);
+  TCanvas* c1 = new TCanvas(name.c_str(),name.c_str());
+  c1->Divide(3,2);
+  int i1 = 0;  
     // STR_FRONT_E_RAW
+    c1->cd(++i1);
     name = "SHARC"+NPL::itoa(i+1)+"_STR_FRONT_E_RAW";
-    AddHisto2D(name, name, fStripFront, 1, fStripFront+1, 512, 0, 8192, "SHARC/RAW/STR_FRONT_E");
+    AddHisto2D(name, name, fStripFront, 1, fStripFront+1, 512, 0, 8192, "SHARC/RAW/STR_FRONT_E")->Draw("colz");
 
     // STR_BACK_E_RAW
+    c1->cd(++i1);
     name = "SHARC"+NPL::itoa(i+1)+"_STR_BACK_E_RAW";
-    AddHisto2D(name, name, fStripBack, 1, fStripBack+1, 512, 0, 8192, "SHARC/RAW/STR_BACK_E");
+    AddHisto2D(name, name, fStripBack, 1, fStripBack+1, 512, 0, 8192, "SHARC/RAW/STR_BACK_E")->Draw("colz");
 
     // PAD_E_RAW
+    c1->cd(++i1);
     name = "SHARC"+NPL::itoa(i+1)+"_PAD_E_RAW";
-    AddHisto1D(name, name, 512, 0, 16384, "SHARC/RAW/PAD_E");
+    AddHisto1D(name, name, 512, 0, 16384, "SHARC/RAW/PAD_E")->Draw("");
 
     // STR_FRONT_RAW_MULT
+    c1->cd(++i1);
     name = "SHARC"+NPL::itoa(i+1)+"_STR_FRONT_RAW_MULT";
-    AddHisto1D(name, name, fStripFront, 1, fStripFront+1, "SHARC/RAW/MULT");
-
+    AddHisto1D(name, name, fStripFront, 1, fStripFront+1, "SHARC/RAW/MULT")->Draw("");
+    gPad->SetLogy();
+  
     // STR_BACK_RAW_MULT
+    c1->cd(++i1);
     name = "SHARC"+NPL::itoa(i+1)+"_STR_BACK_RAW_MULT";
-    AddHisto1D(name, name, fStripFront, 1, fStripFront+1, "SHARC/RAW/MULT");
+    AddHisto1D(name, name, fStripFront, 1, fStripFront+1, "SHARC/RAW/MULT")->Draw("");
+    gPad->SetLogy();
 
     // PAD_RAW_MULT
+    c1->cd(++i1);
     name = "SHARC"+NPL::itoa(i+1)+"_PAD_RAW_MULT";
-    AddHisto1D(name, name, fNumberOfDetector, 1, fNumberOfDetector+1, "SHARC/RAW/MULT");
+    AddHisto1D(name, name, fNumberOfDetector, 1, fNumberOfDetector+1, "SHARC/RAW/MULT")->Draw("");
+    gPad->SetLogy();
+    
+    AddCanvas(c1);  
   } // end loop on number of detectors
 }
 

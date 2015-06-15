@@ -40,6 +40,7 @@ using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
 TComptonTelescopeSpectra::TComptonTelescopeSpectra(){
+  SetName("ComptonTelescope");
   fNumberOfTelescope = 0;
   fStripX=32;
   fStripY=32;
@@ -57,6 +58,7 @@ TComptonTelescopeSpectra::TComptonTelescopeSpectra(unsigned int NumberOfTelescop
          << NumberOfTelescope << " Telescopes" << endl
          << "************************************************" << endl ;
 
+   SetName("ComptonTelescope");
    fNumberOfTelescope = NumberOfTelescope;
    fStripX=32;
    fStripY=32;
