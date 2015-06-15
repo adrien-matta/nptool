@@ -1,5 +1,9 @@
+// NPL
 #include "NPOnline.h"
+
+// STL
 #include <iostream>
+#include <dirent.h>
 
 // Root
 #include "TRoot.h"
@@ -11,54 +15,98 @@
 #include "TFile.h"
 #include "TASImage.h"
 #include "TMessage.h"
+#include "TGSplitter.h"
 ClassImp(NPL::NPOnline);
+////////////////////////////////////////////////////////////////////////////////
+void NPL::ExecuteMacro(string name){
+  static DIR *dir;
+  static struct dirent *ent;
+  static string path; 
+  path = "./online_macros/";
+  name += ".C";
+  if ((dir = opendir (path.c_str())) != NULL) {
+    while ((ent = readdir (dir)) != NULL) {
+      if(ent->d_name==name)
+       gROOT->ProcessLine(Form(".x online_macros/%s",name.c_str()));
+    }
+    closedir (dir);
+  }
+}
 ////////////////////////////////////////////////////////////////////////////////
 NPL::NPOnline::NPOnline(){
   m_Sock = 0;
   TString NPLPath = gSystem->Getenv("NPTOOL");
   gROOT->ProcessLine(Form(".x %s/NPLib/scripts/NPToolLogon.C+", NPLPath.Data()));
-  gROOT->SetStyle("nptool");
+  gROOT->SetStyle("nponline");
 
+  // Build the interface
   MakeGui();
 
-  m_Connect->Connect("Clicked()", "NPL::NPOnline", this, "Connect()");
+  // Link the button slot to the function
   m_Quit->SetCommand("gApplication->Terminate()");
+  m_Connect->Connect("Clicked()", "NPL::NPOnline", this, "Connect()");
   m_Update->Connect("Clicked()", "NPL::NPOnline", this, "Update()");
+  m_Clock->Connect("Clicked()","NPL::NPOnline",this,"AutoUpdate()");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::NPOnline::MakeGui(){
   m_BgColor = gROOT->GetColor(kGray+3)->GetPixel();
   m_FgColor = gROOT->GetColor(kAzure+7)->GetPixel();
+  m_TabBgColor = gROOT->GetColor(kGray+3)->GetPixel();
+  m_TabFgColor = gROOT->GetColor(kAzure+7)->GetPixel();
+  m_Timer = 0;
 
   // main frame
   m_Main = new TGMainFrame(gClient->GetRoot(),10,10,kMainFrame | kVerticalFrame);
   m_Main->SetName("nponline");
   m_Main->SetBackgroundColor(m_BgColor);
   m_Main->SetForegroundColor(m_FgColor);
+  //  m_Main->SetLayoutBroken(kTRUE);
 
-  m_Main->SetLayoutBroken(kTRUE);
+  // Button bar to hold the button
+  m_ButtonBar= new TGVerticalFrame(m_Main,10000,42,kFixedSize);
+  m_ButtonBar->SetBackgroundColor(m_BgColor);
+  m_ButtonBar->SetForegroundColor(m_BgColor);
+  m_ButtonBar->SetLayoutBroken(kTRUE);
+  m_Main->AddFrame(m_ButtonBar,new TGLayoutHints(kLHintsLeft|kLHintsTop));
 
   string NPLPath = gSystem->Getenv("NPTOOL");  
   string path_quit = NPLPath+"/NPLib/Core/icons/power.xpm";
-  m_Quit = new TGPictureButton(m_Main,gClient->GetPicture(path_quit.c_str()),-1,TGPictureButton::GetDefaultGC()(),kChildFrame);
+  m_Quit = new TGPictureButton(m_ButtonBar,gClient->GetPicture(path_quit.c_str()),-1,TGPictureButton::GetDefaultGC()(),kChildFrame);
   m_Quit->SetBackgroundColor(m_BgColor);
+  m_Quit->SetToolTipText("Quit");
 
-  m_Main->AddFrame(m_Quit, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
-  m_Quit->MoveResize(10,10,32,32);
-  
-  string path_update = NPLPath+"/NPLib/Core/icons/download.xpm";
-  m_Update = new TGPictureButton(m_Main,gClient->GetPicture(path_update.c_str()),-1,TGPictureButton::GetDefaultGC()(),kChildFrame);
-  m_Update->SetBackgroundColor(m_BgColor);
-  m_Main->AddFrame(m_Update, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
-  m_Update->MoveResize(45,10,32,32);
- 
+  m_ButtonBar->AddFrame(m_Quit, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
+  m_Quit->MoveResize(10,5,32,32);
+
   string path_connect = NPLPath+"/NPLib/Core/icons/plugin.xpm";
-  m_Connect = new TGPictureButton(m_Main,gClient->GetPicture(path_connect.c_str()),-1,TGPictureButton::GetDefaultGC()(),kChildFrame);
+  m_Connect = new TGPictureButton(m_ButtonBar,gClient->GetPicture(path_connect.c_str()),-1,TGPictureButton::GetDefaultGC()(),kChildFrame);
+  string path_connected = NPLPath+"/NPLib/Core/icons/brightness.xpm"; 
+  m_Connect->SetDisabledPicture(gClient->GetPicture(path_connected.c_str()));
+  m_Connect->SetBackgroundColor(m_BgColor);
   m_Connect->SetBackgroundColor(m_BgColor);
 
-  m_Main->AddFrame(m_Connect, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
-  m_Connect->MoveResize(80,10,32,32);
+  m_Connect->SetToolTipText("Connect to server");
+  m_ButtonBar->AddFrame(m_Connect, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
+  m_Connect->MoveResize(52,5,32,32);
+
+  string path_update = NPLPath+"/NPLib/Core/icons/download.xpm";
+  m_Update = new TGPictureButton(m_ButtonBar,gClient->GetPicture(path_update.c_str()),-1,TGPictureButton::GetDefaultGC()(),kChildFrame);
+  m_Update->SetBackgroundColor(m_BgColor);
+  m_Update->SetForegroundColor(m_BgColor);
+  m_Update->SetToolTipText("Update spectra");
+  m_ButtonBar->AddFrame(m_Update, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
+  m_Update->MoveResize(400,5,32,32);
+
+  string path_clock= NPLPath+"/NPLib/Core/icons/clock.xpm";
+  m_Clock = new TGPictureButton(m_ButtonBar,gClient->GetPicture(path_clock.c_str()),-1,TGPictureButton::GetDefaultGC()(),kChildFrame);
+  m_Clock->SetBackgroundColor(m_BgColor);
+  m_Clock->SetForegroundColor(m_BgColor);
+
+  m_Clock->SetToolTipText("AutoUpdate");
+  m_ButtonBar->AddFrame(m_Clock, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
+  m_Clock->MoveResize(442,5,32,32);
 
   TGFont* ufont;         // will reflect user font changes
   ufont = gClient->GetFont("-*-helvetica-medium-r-*-*-12-*-*-*-*-*-iso8859-1");
@@ -73,22 +121,68 @@ void NPL::NPOnline::MakeGui(){
   valress.fFont = ufont->GetFontHandle();
   valress.fGraphicsExposures = kFALSE;
   uGC = gClient->GetGC(&valress, kTRUE);
-  m_Address = new TGTextEntry(m_Main, new TGTextBuffer(14),-1,uGC->GetGC(),ufont->GetFontStruct(),kSunkenFrame | kDoubleBorder | kOwnBackground);
+  m_Address = new TGTextEntry(m_ButtonBar, new TGTextBuffer(14),-1,uGC->GetGC(),ufont->GetFontStruct(),kChildFrame | kOwnBackground);
   m_Address->SetMaxLength(4096);
   m_Address->SetAlignment(kTextLeft);
   m_Address->SetText("localhost");
   m_Address->Resize(200,m_Address->GetDefaultHeight());
-  m_Main->AddFrame(m_Address, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
-  m_Address->MoveResize(120,10,200,20);
+  m_ButtonBar->AddFrame(m_Address, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
+  m_Address->MoveResize(90,10,200,20);
 
-  m_Port = new TGNumberEntry(m_Main, (Double_t) 9090,9,-1,(TGNumberFormat::EStyle) 5);
+  m_Port = new TGNumberEntry(m_ButtonBar, (Double_t) 9090,9,-1,(TGNumberFormat::EStyle) 5);
   m_Port->SetName("m_Port");
-  m_Main->AddFrame(m_Port, new TGLayoutHints(kLHintsExpandX | kLHintsExpandY));
-  m_Port->MoveResize(330,10,80,30);
+  m_Port->GetButtonUp()->SetStyle(1);
+  m_Port->GetButtonDown()->SetStyle(1);
+  m_ButtonBar->AddFrame(m_Port, new TGLayoutHints(kLHintsLeft));
+  m_Port->MoveResize(300,10,80,20);
+
+  m_TimerEntry = new TGNumberEntry(m_ButtonBar, (Double_t) 1,9,-1,(TGNumberFormat::EStyle) 5);
+  m_TimerEntry->SetName("m_TimerEntry");
+  m_TimerEntry->GetButtonUp()->SetStyle(1);
+  m_TimerEntry->GetButtonDown()->SetStyle(1);
+  m_ButtonBar->AddFrame(m_TimerEntry, new TGLayoutHints(kLHintsLeft));
+  m_TimerEntry->MoveResize(484,10,40,20);
+
+
+  // Create the splitted frame
+  m_Split = new TGHorizontalFrame(m_Main, 50, 50);
+  TGVerticalFrame* fV1 = new TGVerticalFrame(m_Split, 10, 10, kFixedWidth);
+  TGVerticalFrame* fV2 = new TGVerticalFrame(m_Split, 10, 10);
+  m_Left = new TGCompositeFrame(fV1, 10, 10, kChildFrame);
+  m_Right = new TGCompositeFrame(fV2, 10, 10, kChildFrame);
+  fV1->AddFrame(m_Left, new TGLayoutHints(kLHintsExpandX | kLHintsExpandY,0, 0, 5, 10));
+  fV2->AddFrame(m_Right, new TGLayoutHints(kLHintsExpandX | kLHintsExpandY,0, 0, 5, 10));
+
+  fV1->Resize(m_Left->GetDefaultWidth()+200, fV1->GetDefaultHeight());
+  fV2->Resize(m_Right->GetDefaultWidth(), fV1->GetDefaultHeight());
+  m_Split->AddFrame(fV1, new TGLayoutHints(kLHintsLeft | kLHintsExpandY ));
+
+  TGVSplitter* splitter = new TGVSplitter(m_Split,5,5);
+  splitter->SetFrame(fV1, kTRUE);
+  m_Split->AddFrame(splitter, new TGLayoutHints(kLHintsLeft| kLHintsTop |  kLHintsExpandY));
+  m_Split->SetBackgroundColor(m_BgColor); 
+  splitter->SetBackgroundColor(m_BgColor);    
+  m_Split->SetForegroundColor(m_BgColor); 
+  splitter->SetForegroundColor(m_BgColor);    
+  m_Left->SetBackgroundColor(m_BgColor); 
+  m_Right->SetBackgroundColor(m_BgColor);    
+  m_Left->SetForegroundColor(m_BgColor); 
+  m_Right->SetForegroundColor(m_BgColor);    
+  fV1->SetBackgroundColor(m_BgColor); 
+  fV2->SetBackgroundColor(m_BgColor);    
+  fV1 ->SetForegroundColor(m_BgColor); 
+  fV2->SetForegroundColor(m_BgColor);    
+
+  m_Split->AddFrame(fV2, new TGLayoutHints(kLHintsRight | kLHintsExpandX | kLHintsExpandY));
+  m_Main->AddFrame(m_Split, new TGLayoutHints(kLHintsRight | kLHintsExpandX |kLHintsExpandY));
 
   // canvas widget
-  TGCanvas* m_ListCanvas = new TGCanvas(m_Main,120,500);
+  TGCanvas* m_ListCanvas = new TGCanvas(m_Left,120,500);
   m_ListCanvas->SetName("m_ListCanvas");
+
+  m_ListCanvas ->SetForegroundColor(m_BgColor); 
+  m_ListCanvas->SetForegroundColor(m_BgColor);    
+
 
   // canvas viewport
   TGViewPort* fViewPort669 = m_ListCanvas->GetViewPort();
@@ -97,28 +191,34 @@ void NPL::NPOnline::MakeGui(){
   m_CanvasListTree = new CanvasList(m_Main,m_ListCanvas);
   m_ListTree = m_CanvasListTree->GetListTree();
 
-  fViewPort669->AddFrame(m_ListTree);
+  fViewPort669->AddFrame(m_ListTree,new TGLayoutHints(kLHintsRight | kLHintsBottom | kLHintsExpandY | kLHintsExpandX));
   m_ListTree->SetLayoutManager(new TGHorizontalLayout(m_ListTree));
   m_ListTree->MapSubwindows();
 
   m_ListCanvas->SetContainer(m_ListTree);
   m_ListCanvas->MapSubwindows();
-  m_Main->AddFrame(m_ListCanvas, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
+  m_Left->AddFrame(m_ListCanvas, new TGLayoutHints(kLHintsLeft | kLHintsBottom | kLHintsExpandY | kLHintsExpandX));
   m_ListCanvas->MoveResize(10,50,120,500);
 
   // tab widget
-  m_Tab = new TGTab(m_Main,700,500);
+  m_Tab = new TGTab(m_Right,700,500);
+
   m_Tab->Resize(m_Tab->GetDefaultSize());
-  m_Main->AddFrame(m_Tab, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
-  m_Tab->MoveResize(144,50,700,500);
+  m_Tab->SetBackgroundColor(m_TabBgColor);
+  m_Tab->SetForegroundColor(m_TabFgColor);
+  m_Tab->ChangeSubframesBackground(m_BgColor);
+
+  m_Right->AddFrame(m_Tab,new TGLayoutHints(kLHintsRight | kLHintsBottom | kLHintsExpandX | kLHintsExpandY));
   m_CanvasListTree->SetTab(m_Tab);
-  //AddTab();
+
   m_Main->SetMWMHints(kMWMDecorAll,kMWMFuncAll,kMWMInputModeless);
   m_Main->MapSubwindows();
 
   m_Main->Resize(m_Main->GetDefaultSize());
   m_Main->MapWindow();
   m_Main->Resize(900,600);
+
+  m_Main->SetLayoutBroken(kFALSE);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -147,10 +247,12 @@ void NPL::NPOnline::Connect(){
     cout << "Connection to " << m_Address->GetDisplayText() << " " <<(Int_t) m_Port->GetNumber() << " Failed" << endl;
   }
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::NPOnline::Update(){
   if(!m_Sock || !(m_Sock->IsValid())){
     cout << "Spectra server not connected" << endl;
+    m_Connect->SetState(kButtonUp);
     return;
   }
 
@@ -161,7 +263,7 @@ void NPL::NPOnline::Update(){
     cout << "Spectra request failed " << endl;
     return;
   }
-  
+
   m_CanvasListTree->Clear();
   m_CanvasList = (TList*) message->ReadObject(message->GetClass());
 
@@ -174,25 +276,53 @@ void NPL::NPOnline::Update(){
     if(tab){
       tab->RemoveAll();
       TRootEmbeddedCanvas* canvas = new TRootEmbeddedCanvas("Canvas",tab,700,490,!kSunkenFrame); 
+
+      c->UseCurrentStyle();
+      c->SetMargin(0,0,0,0);
       canvas->AdoptCanvas(c);
-      tab->AddFrame(canvas);
+      tab->AddFrame(canvas,new TGLayoutHints(kLHintsLeft | kLHintsBottom | kLHintsExpandX | kLHintsExpandY));
       tab->SetLayoutManager(new TGVerticalLayout(tab));
+      ExecuteMacro(c->GetName());
     }
-  
   }
 
   m_Main->MapSubwindows();
-  m_Main->MapWindow();
   m_Main->Layout();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void NPL::NPOnline::AutoUpdate(){
+
+  if(m_Timer){
+    delete m_Timer;
+    m_Timer = 0 ;
+    return;
+  }
+
+  else if(m_TimerEntry->GetNumber()>0){
+    m_Timer = new TTimer(m_TimerEntry->GetNumber()*1000);
+    m_Timer->Connect("Timeout()", "NPL::NPOnline", this, "Update()");
+    m_Timer->TurnOn();
+  }
+}
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+/* CanvasList Class */
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
+
 NPL::CanvasList::CanvasList(TGMainFrame* main, TGCanvas* parent){
-  m_popen = gClient->GetPicture("ofolder_t.xpm");
-  m_pclose = gClient->GetPicture("folder_t.xpm");
+  string NPLPath = gSystem->Getenv("NPTOOL");  
+  string path_icon = NPLPath+"/NPLib/Core/icons/polaroid.xpm";
+ 
+  m_popen = gClient->GetPicture(path_icon.c_str());
+  m_pclose = gClient->GetPicture(path_icon.c_str());
+
+  m_BgColor = gROOT->GetColor(kGray+3)->GetPixel();
+  m_FgColor = gROOT->GetColor(kAzure+7)->GetPixel();
+
   m_ListTree = new TGListTree(parent,kHorizontalFrame);
   m_ListTree->Connect("DoubleClicked(TGListTreeItem*,Int_t)","NPL::CanvasList",this,"OnDoubleClick(TGListTreeItem*,Int_t)");
   m_Main = main;
@@ -215,8 +345,8 @@ void NPL::CanvasList::Clear(){
   m_Canvas.clear();
   TGListTreeItem* item =  m_ListTree->GetFirstItem() ;
   while(item){
-   m_ListTree->DeleteItem(item);
-  item =  m_ListTree->GetFirstItem() ;
+    m_ListTree->DeleteItem(item);
+    item = m_ListTree->GetFirstItem() ;
   }
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -227,19 +357,24 @@ TGListTree* NPL::CanvasList::GetListTree(){
 void NPL::CanvasList::AddTab(std::string name,TCanvas* c){
   // If the tab exist, activate
   if(m_Tab->GetTabTab(name.c_str())){
-      m_Tab->SetTab(name.c_str());
+    m_Tab->SetTab(name.c_str());
     return;
   }
 
   TGCompositeFrame* tf = m_Tab->AddTab(name.c_str());
   TRootEmbeddedCanvas* canvas = new TRootEmbeddedCanvas("Canvas",tf,700,490,!kSunkenFrame); 
-     
-  if(c)
+
+  if(c){
+    c->UseCurrentStyle();
+    c->SetMargin(0,0,0,0);
     canvas->AdoptCanvas(c);
- 
-  //  tf->SetBackgroundColor(m_BgColor);
-  //  tf->SetForegroundColor(m_FgColor);
-  tf->AddFrame(canvas);
+    ExecuteMacro(c->GetName());
+  }
+
+  tf->SetBackgroundColor(m_BgColor);
+  tf->SetForegroundColor(m_FgColor);
+
+  tf->AddFrame(canvas,new TGLayoutHints(kLHintsTop | kLHintsLeft |kLHintsExpandX | kLHintsExpandY));
   tf->SetLayoutManager(new TGVerticalLayout(tf));
   m_Tab->Resize(m_Tab->GetDefaultSize());
   m_Tab->MoveResize(144,50,700,500);
@@ -252,3 +387,4 @@ void NPL::CanvasList::AddTab(std::string name,TCanvas* c){
 void NPL::CanvasList::SetTab(TGTab* tab){
   m_Tab=tab;
 }
+

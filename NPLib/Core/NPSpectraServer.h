@@ -24,6 +24,7 @@ namespace NPL{
       void AddCanvas(TCanvas* c);
       void Start();
    private:
+    bool m_stop;
     TServerSocket* m_Server;     
     TMonitor* m_Monitor;     
     TList* m_Sockets;

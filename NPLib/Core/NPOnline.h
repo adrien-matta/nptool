@@ -9,12 +9,15 @@
 #include "TGListTree.h"
 #include "TGTextEntry.h"
 #include "TGNumberEntry.h"
+#include "TTimer.h"
 //#include "TGCanvasContainer.h"
 #include "RQ_OBJECT.h"
 #include<map>
 using namespace std;
 
 namespace NPL{
+   void ExecuteMacro(string name);
+  
   class CanvasList {
     RQ_OBJECT("CanvasList")
     protected:
@@ -23,16 +26,18 @@ namespace NPL{
       TGTab* m_Tab;
       map<string,TCanvas*> m_Canvas;
       const TGPicture* m_popen;     
-      const TGPicture* m_pclose;    
-    
+      const TGPicture* m_pclose;   
+      Pixel_t m_BgColor;
+      Pixel_t m_FgColor;
 
+   
     public:
       CanvasList(TGMainFrame* main, TGCanvas* parent);
       virtual ~CanvasList();
 
       // slots
       void OnDoubleClick(TGListTreeItem* item, Int_t btn);
-      
+
       // Interface with NPOnline
       void SetTab(TGTab* tab);
       void AddItem(TCanvas* c);
@@ -52,27 +57,46 @@ namespace NPL{
       void MakeGui();
       void Connect();
       void Update();
-
-        private: // Server client
+      void AutoUpdate();
+    
+    private: // Server client
       TSocket* m_Sock;
       TList* m_CanvasList;
 
     private: // GUI stuff
+      // Main window
       TGMainFrame* m_Main;
+      // Menu bar
+      TGVerticalFrame* m_ButtonBar;
+      // Splitted frame for Tree (l) and Tab (r)
+      TGHorizontalFrame* m_Split; 
+
+      // left view port
+      TGCompositeFrame* m_Left;
+      // right view port
+      TGCompositeFrame* m_Right;
+
       TGTab* m_Tab;
       TGPictureButton* m_Quit;
       TGPictureButton* m_Connect;
       TGPictureButton* m_Update;
+      TGPictureButton* m_Clock;
+      TGNumberEntry* m_TimerEntry;
+      TTimer* m_Timer;
+      
+
       TGTextEntry* m_Address; 
       TGNumberEntry* m_Port; 
       TGListTree* m_ListTree;
       CanvasList* m_CanvasListTree;
 
       TGCanvas* m_ListCanvas;
-      
-          private: // Style
+    
+    private: // Style
       Pixel_t m_BgColor;
       Pixel_t m_FgColor;
+      Pixel_t m_TabBgColor;
+      Pixel_t m_TabFgColor;
 
       TH1* m_hist; 
 
