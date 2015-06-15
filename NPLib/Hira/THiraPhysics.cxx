@@ -6,13 +6,13 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
+ * Original Author: Pierre Morfouace  contact address: morfouac@nscl.msu.edu *
  *                                                                           *
- * Creation Date  : november 2009                                            *
+ * Creation Date  : June 2015                                                *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold Hira  Physics                                         *
+ *  This class hold Hira  Physics                                            *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
