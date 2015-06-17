@@ -13,7 +13,6 @@
 #include "TF1.h"
 #include "TCanvas.h"
 #include "TFile.h"
-#include "TASImage.h"
 #include "TMessage.h"
 #include "TGSplitter.h"
 ClassImp(NPL::NPOnline);
