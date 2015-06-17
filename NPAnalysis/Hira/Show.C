@@ -11,6 +11,7 @@ void Show()
     TCanvas* mainC1  = new TCanvas("PID", "PID" , 800,600);
     TCanvas* mainC2  = new TCanvas("Kinematics", "Kinematics" , 800,600);
     TCanvas* mainC3  = new TCanvas("Phi-Theta", "Phi-Theta" , 800,600);
+    TCanvas* mainC4  = new TCanvas("BeamSpot", "BeamSpot" , 800,600);
 
     mainC0->cd();
     chain->Draw("Y:X>>h0(300,-300,300,200,-200,200)","","colz");
@@ -47,6 +48,13 @@ void Show()
     h3->GetXaxis()->SetTitle("#theta_{lab} (deg)");
     h3->GetYaxis()->SetTitle("#phi_{lab} (MeV)");
     h3->SetTitle("");
+    
+    mainC4->cd();
+    chain->Draw("fIC_Incident_Position_Y:fIC_Incident_Position_X>>h4(1000,-10,10,100,-10,10)","","colz");
+    TH2F* h4 = (TH2F*)gDirectory->FindObjectAny("h4");
+    h4->GetXaxis()->SetTitle("X_{beam} (mm)");
+    h4->GetYaxis()->SetTitle("Y_{beam} (mm)");
+    h4->SetTitle("");
 
     return;
 }
