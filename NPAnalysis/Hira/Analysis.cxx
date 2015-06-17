@@ -107,20 +107,20 @@ int main(int argc, char** argv)
                
                TVector3 PositionOnHira         = TVector3(X,Y,Z);
                TVector3 ZUnit                  = TVector3(0,0,1);
-               //TVector3 TelescopeNormal      = -Must2->GetTelescopeNormal(countHira);
-               //TVector3 TargetNormal         = TVector3(-sin(TargetAngle*deg),0,cos(TargetAngle*deg));
+               //TVector3 TelescopeNormal      = -Hira->GetTelescopeNormal(countHira);
+               TVector3 TargetNormal            = TVector3(0,0,1);//TVector3(-sin(TargetAngle*deg),0,cos(TargetAngle*deg));
                
                double X_target					= InitialConditions->GetIncidentPositionX();
                double Y_target					= InitialConditions->GetIncidentPositionY();
                double Z_target					= InitialConditions->GetIncidentPositionZ();
                
-               //TVector3 PositionOnTarget		= TVector3(X_target,Y_target,Z_target);
-               TVector3 PositionOnTarget		= TVector3(0,0,0);
+               TVector3 PositionOnTarget		= TVector3(X_target,Y_target,Z_target);
+               //TVector3 PositionOnTarget		= TVector3(0,0,0);
                TVector3 HitDirection			= PositionOnHira - PositionOnTarget;
                TVector3 HitDirectionUnit		= HitDirection.Unit();
                
                //double ThetaNormalHira			= HitDirection.Angle(TelescopeNormal);
-               //double ThetaNormalTarget		= HitDirection.Angle(TargetNormal);
+               double ThetaNormalTarget         = HitDirection.Angle(TargetNormal);
                
                //double ThetaBeam				= InitialConditions->GetICIncidentAngleTheta(countHira);
                //double PhiBeam					= InitialConditions->GetICIncidentAnglePhi(countHira);
@@ -145,19 +145,22 @@ int main(int argc, char** argv)
                    for(int countCsI =0; countCsI<Hira->CsI_E.size(); countCsI++){
                        E_CsI = Hira->CsI_E[countCsI];
                        if(E_CsI>EnergyThreshold)ELab += E_CsI;
-                       //if(E_CsI>EnergyThreshold) ELab = E_ThinSi + E_ThickSi + E_CsI;
                    }
                }
-               //else ELab = -1000;
+               else E_CsI = -1000;
+               
+               ELab	= EL_deuteron_CH2.EvaluateInitialEnergy(ELab,
+                                                            (TargetThickness/2)*micrometer,
+                                                            ThetaNormalTarget);
+
             
                // ********************** Angle in the CM frame *****************************
                TransfertReaction -> SetNuclei3(ELab, ThetaLab*deg);
                ThetaCM          = TransfertReaction->GetThetaCM()/deg;
                ExcitationEnergy	= TransfertReaction->GetExcitation4();
-               
-               RootOutput::getInstance()->GetTree()->Fill();
            }
        }
+       RootOutput::getInstance()->GetTree()->Fill();
     }
 
    cout << "A total of " << nentries << " event has been annalysed " << endl ;

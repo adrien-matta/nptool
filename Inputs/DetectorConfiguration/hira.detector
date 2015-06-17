@@ -9,7 +9,7 @@ GeneralTarget
 Target
 	THICKNESS= 45
   ANGLE= 0
-	RADIUS=	15
+	RADIUS=	10
 	MATERIAL= CH2
 	X= 0
 	Y= 0

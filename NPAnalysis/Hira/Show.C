@@ -1,17 +1,36 @@
 void InitChain();
+void LoadCut();
+
 TChain *chain;
 TGraph *kin;
+
+int nentries;
+
+TCutG *cut_kine;
+
 
 void Show()
 {
     gStyle->SetOptStat(0);
     InitChain();
+    LoadCut();
+    
+    nentries = chain->GetEntries();
+    
+    //**************** Condition ****************//
+    TString CondCut = "cut_kine";
+    TString CondTot = CondCut;//+"&&"+
+    //*******************************************//
     
     TCanvas* mainC0  = new TCanvas("Hira XY", "Hira XY" , 800,600);
-    TCanvas* mainC1  = new TCanvas("PID", "PID" , 800,600);
+    TCanvas* mainC1  = new TCanvas("PID", "PID" , 1200,600);
     TCanvas* mainC2  = new TCanvas("Kinematics", "Kinematics" , 800,600);
     TCanvas* mainC3  = new TCanvas("Phi-Theta", "Phi-Theta" , 800,600);
     TCanvas* mainC4  = new TCanvas("BeamSpot", "BeamSpot" , 800,600);
+    TCanvas* mainC5  = new TCanvas("ThetaCM", "ThetaCM" , 800,600);
+    TCanvas* mainC6  = new TCanvas("Efficiency", "Efficiency" , 800,600);
+    TCanvas* mainC7  = new TCanvas("CrossSection","CrossSection",800,600);
+    mainC1->Divide(2,1);
 
     mainC0->cd();
     chain->Draw("Y:X>>h0(300,-300,300,200,-200,200)","","colz");
@@ -20,12 +39,21 @@ void Show()
     h0->GetYaxis()->SetTitle("Y (mm)");
     h0->SetTitle("");
     
-    mainC1->cd();
+    
+    mainC1->cd(1);
     chain->Draw("E_ThickSi:E_CsI>>h1(1000,0,200,1000,0,25)","","colz");
     TH2F* h1 = (TH2F*)gDirectory->FindObjectAny("h1");
     h1->GetXaxis()->SetTitle("E_{CsI} (MeV)");
     h1->GetYaxis()->SetTitle("E_{Si} (MeV)");
     h1->SetTitle("");
+
+    mainC1->cd(2);
+    chain->Draw("E_ThinSi:E_ThickSi>>h12(1000,0,25,1000,0,5)","","colz");
+    TH2F* h12 = (TH2F*)gDirectory->FindObjectAny("h12");
+    h12->GetXaxis()->SetTitle("E_{Si} (MeV)");
+    h12->GetYaxis()->SetTitle("#Delta E (MeV)");
+    h12->SetTitle("");
+
     
     mainC2->cd();
     chain->Draw("ELab:ThetaLab>>h2(1000,0,50,1000,0,200)","","colz");
@@ -55,6 +83,32 @@ void Show()
     h4->GetXaxis()->SetTitle("X_{beam} (mm)");
     h4->GetYaxis()->SetTitle("Y_{beam} (mm)");
     h4->SetTitle("");
+    
+    mainC5->cd();
+    chain->Draw("ThetaCM>>h5(25,0,100)",CondTot,"E1");
+    TH1F* h5 = (TH1F*)gDirectory->FindObjectAny("h5");
+    h5->GetXaxis()->SetTitle("#theta_{CM} (deg)");
+    h5->SetTitle("");
+    
+    
+    //Efficiency calculation
+    mainC6->cd();
+    TH1F *Efficiency = new TH1F("Efficiency", "Efficiency", 25, 0, 100);
+    Efficiency->SetXTitle("#theta_{CM}");
+    Efficiency->SetTitle("Efficiency");
+    Efficiency->Add(h5,4*TMath::Pi()/nentries);
+    Efficiency->Draw();
+    
+    // Cross-Section
+    mainC7->cd();
+    mainC7->SetLogy();
+    TH1F *h7 = new TH1F("h7", "h7", 25, 0, 100);
+    h7->SetXTitle("#theta_{CM}");
+    h7->SetYTitle("d#sigma/d#Omega (mb/sr)");
+    h7->SetTitle("");
+    h7->Divide(h5,Efficiency,1,nentries/(4*TMath::Pi()));//262000
+    h7->Draw();
+
 
     return;
 }
@@ -70,3 +124,25 @@ void InitChain()
     
     return;
 }
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+void LoadCut()
+{
+    TString Cut_Name = "CUT/cut_kine.root";
+    TString Object_Name = "cut_kine";
+    TFile* f_cut_kine = new TFile(Cut_Name,"read");
+    cut_kine = (TCutG*) f_cut_kine->FindObjectAny(Object_Name);
+    
+    return;
+}
+
+
+
+
+
+
+
+
+
