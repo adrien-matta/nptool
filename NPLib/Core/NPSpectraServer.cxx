@@ -1,5 +1,6 @@
 #include "NPSpectraServer.h"
-#include <unistd.h>
+#include<cstdlib>
+#include<unistd.h>
 #include<iostream>
 NPL::SpectraServer* NPL::SpectraServer::instance = 0 ;
 ////////////////////////////////////////////////////////////////////////////////
@@ -9,15 +10,18 @@ NPL::SpectraServer* NPL::SpectraServer::getInstance(){
 
   return instance;
 }
-
+////////////////////////////////////////////////////////////////////////////////
+void NPL::SpectraServer::Destroy(){  
+  delete instance ;
+  instance = 0 ;
+}
 ////////////////////////////////////////////////////////////////////////////////
 NPL::SpectraServer::SpectraServer(){
   m_Server= new TServerSocket(9090,true);
   if(!m_Server->IsValid())
     exit(1);
-
-
-  m_stop = false;
+  
+  m_Server->SetCompressionSettings(1);
   // Add server socket to monitor so we are notified when a client needs to be
   // accepted
   m_Monitor  = new TMonitor;
@@ -35,39 +39,21 @@ void NPL::SpectraServer::AddCanvas(TCanvas* c){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void NPL::SpectraServer::Start(){
+void NPL::SpectraServer::CheckRequest(){
   if(m_Server){
-    while(!m_stop){
-      if(!m_Server)
-        return;
-
       TSocket* s ;
-      if((s=m_Monitor->Select(20))!=(TSocket*)-1)
+      if((s=m_Monitor->Select(1))!=(TSocket*)-1)
         HandleSocket(s);
-    }
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 NPL::SpectraServer::~SpectraServer(){
- std::cout << 1 << std::endl;
   // tell the socket to stop
-  m_stop = true;
-  // wait for it to be stopped
-  sleep(100);
- std::cout << 2 << std::endl;
-
   m_Server->Close("force");
-
-  std::cout << 3 << std::endl;
-
   delete m_Server;
- std::cout << 4 << std::endl;
-
   m_Server=0;
   delete m_Monitor;
- std::cout << 5 << std::endl;
-
   m_Monitor = 0;
   instance = 0 ;
 }

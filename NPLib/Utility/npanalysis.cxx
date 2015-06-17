@@ -102,7 +102,6 @@ int main(int argc , char** argv){
   if(myOptionManager->GetOnline()){
     // Request Detector manager to give the Spectra to the server
     myDetector->SetSpectraServer(); 
-   
   }
 
   std::cout << std::endl << "///////// Starting Analysis ///////// "<< std::endl;
@@ -132,6 +131,10 @@ int main(int argc , char** argv){
         // Fill the tree
         tree->Fill();
         ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed);
+        
+        if(myOptionManager->GetOnline() && i%5000==0){
+          myDetector->CheckSpectraServer(); 
+        }
       }
     }
     
@@ -153,6 +156,9 @@ int main(int argc , char** argv){
         // Fill the tree      
         tree->Fill();
         ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed);
+        if(myOptionManager->GetOnline() && i%5000==0){
+          myDetector->CheckSpectraServer(); 
+        }
       }
     }
 
@@ -165,6 +171,9 @@ int main(int argc , char** argv){
         // Fill the tree      
         tree->Fill();
         ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed);
+        if(myOptionManager->GetOnline() && i%5000==0){
+          myDetector->CheckSpectraServer(); 
+        }
       }
     }
     UserAnalysis->End();
@@ -174,11 +183,18 @@ int main(int argc , char** argv){
   myDetector->StopThread();
 #endif
   ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed);
+ 
+  if(myOptionManager->GetOnline()){
+    myDetector->CheckSpectraServer(); 
+  }
+
+  
   if(myOptionManager->GetGenerateHistoOption())
     myDetector->WriteSpectra();
   
   RootOutput::getInstance()->Destroy();
   RootInput::getInstance()->Destroy();
+  
   return 0;
 }
 
