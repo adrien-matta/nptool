@@ -26,7 +26,7 @@ void NPL::ExecuteMacro(string name){
   if ((dir = opendir (path.c_str())) != NULL) {
     while ((ent = readdir (dir)) != NULL) {
       if(ent->d_name==name)
-       gROOT->ProcessLine(Form(".x online_macros/%s",name.c_str()));
+        gROOT->ProcessLine(Form(".x online_macros/%s",name.c_str()));
     }
     closedir (dir);
   }
@@ -277,7 +277,7 @@ void NPL::NPOnline::Update(){
     m_Connect->SetState(kButtonUp);
     return;
   }
-  
+
   m_CanvasListTree->Clear();
   m_CanvasList = (TList*) message->ReadObject(message->GetClass());
 
@@ -289,13 +289,13 @@ void NPL::NPOnline::Update(){
     TGCompositeFrame*  tab =  m_Tab->GetTabContainer(c->GetName());
     if(tab){
       tab->RemoveAll();
-      TRootEmbeddedCanvas* canvas = new TRootEmbeddedCanvas(c->GetName(),tab,100,100,!kSunkenFrame); 
+      TRootEmbeddedCanvas* canvas = new TRootEmbeddedCanvas(c->GetName(),tab,700,500,!kSunkenFrame); 
 
       c->UseCurrentStyle();
       c->SetMargin(0,0,0,0);
       canvas->AdoptCanvas(c);
-      tab->AddFrame(canvas,new TGLayoutHints(kLHintsLeft | kLHintsBottom | kLHintsExpandX | kLHintsExpandY));
       tab->SetLayoutManager(new TGHorizontalLayout(tab));
+      tab->AddFrame(canvas,new TGLayoutHints(kLHintsLeft | kLHintsBottom | kLHintsExpandX | kLHintsExpandY));
       ExecuteMacro(c->GetName());
     }
   }
@@ -330,7 +330,7 @@ void NPL::NPOnline::AutoUpdate(){
 NPL::CanvasList::CanvasList(TGMainFrame* main, TGCanvas* parent){
   string NPLPath = gSystem->Getenv("NPTOOL");  
   string path_icon = NPLPath+"/NPLib/Core/icons/polaroid.xpm";
- 
+
   m_popen = gClient->GetPicture(path_icon.c_str());
   m_pclose = gClient->GetPicture(path_icon.c_str());
 
@@ -352,7 +352,7 @@ void NPL::CanvasList::OnDoubleClick(TGListTreeItem* item, Int_t btn){
 void NPL::CanvasList::AddItem(TCanvas* c){
   TGListTreeItem*  item  = m_ListTree->AddItem(NULL,c->GetName());
   item->SetPictures(m_popen, m_pclose);
-   m_Canvas[c->GetName()]=c;
+  m_Canvas[c->GetName()]=c;
 }
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::CanvasList::Clear(){
@@ -387,9 +387,8 @@ void NPL::CanvasList::AddTab(std::string name,TCanvas* c){
 
   tf->SetBackgroundColor(m_BgColor);
   tf->SetForegroundColor(m_FgColor);
-
-  tf->AddFrame(canvas,new TGLayoutHints(kLHintsTop | kLHintsLeft |kLHintsExpandX | kLHintsExpandY));
   tf->SetLayoutManager(new TGVerticalLayout(tf));
+  tf->AddFrame(canvas,new TGLayoutHints(kLHintsTop | kLHintsLeft |kLHintsExpandX | kLHintsExpandY));
   m_Tab->Resize(m_Tab->GetDefaultSize());
   m_Tab->MoveResize(144,50,700,500);
   m_Tab->SetTab(name.c_str());
