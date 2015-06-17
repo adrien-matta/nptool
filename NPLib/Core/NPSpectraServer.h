@@ -11,7 +11,7 @@ namespace NPL{
   class SpectraServer{
     public:
       static SpectraServer* getInstance();
-    
+      void Destroy(); 
     private:
       SpectraServer();
       ~SpectraServer();
@@ -22,7 +22,7 @@ namespace NPL{
     public:
       void HandleSocket(TSocket* s);
       void AddCanvas(TCanvas* c);
-      void Start();
+      void CheckRequest();
    private:
     bool m_stop;
     TServerSocket* m_Server;     

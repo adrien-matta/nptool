@@ -33,10 +33,9 @@
 #include "RootInput.h"
 #include "NPOptionManager.h"
 #include "NPCalibrationManager.h"
-#include "NPSpectraServer.h"
+
 //Root
 #include"TCanvas.h"
-
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //   Default Constructor
 NPL::DetectorManager::DetectorManager(){
@@ -45,7 +44,7 @@ NPL::DetectorManager::DetectorManager(){
   m_ClearEventDataPtr = &NPL::VDetector::ClearEventData ;
   m_FillSpectra = NULL; 
   m_CheckSpectra = NULL;   
-
+  m_SpectraServer = NULL;
   if(NPOptionManager::getInstance()->GetGenerateHistoOption()){
     m_FillSpectra =  &NPL::VDetector::FillSpectra ;
     if(NPOptionManager::getInstance()->GetCheckHistoOption())
@@ -60,7 +59,8 @@ NPL::DetectorManager::~DetectorManager(){
 #if __cplusplus > 199711L
   StopThread();
 #endif
-
+  if(m_SpectraServer)
+    m_SpectraServer->Destroy();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -429,23 +429,29 @@ bool NPL::DetectorManager::IsDone(){
   }
   return true;
 }
+#endif
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::DetectorManager::SetSpectraServer(){
-  NPL::SpectraServer* s = NPL::SpectraServer::getInstance();
+  m_SpectraServer = NPL::SpectraServer::getInstance();
 
   map<string,VDetector*>::iterator it;
   for (it = m_Detector.begin(); it != m_Detector.end(); ++it){ 
     vector<TCanvas*> canvas = it->second->GetCanvas();
     size_t mysize = canvas.size();
     for (size_t i = 0 ; i < mysize ; i++) 
-      s->AddCanvas(canvas[i]);
+      m_SpectraServer->AddCanvas(canvas[i]);
   }
- 
-  thread t( &NPL::SpectraServer::Start,s);
-  t.detach();
 
-  system("nponline localhost 9090 &");
-
+  system("nponline localhost 9090 & ");
+  m_SpectraServer->CheckRequest(); 
 }
-#endif
+////////////////////////////////////////////////////////////////////////////////
+void NPL::DetectorManager::StopSpectraServer(){
+  m_SpectraServer->Destroy();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void NPL::DetectorManager::CheckSpectraServer(){
+  m_SpectraServer->CheckRequest();
+}
 
