@@ -27,19 +27,19 @@ void Show()
     h1->SetTitle("");
     
     mainC2->cd();
-    chain->Draw("Etot:ThetaLab>>h2(1000,0,50,1000,0,200)","","colz");
+    chain->Draw("ELab:ThetaLab>>h2(1000,0,50,1000,0,200)","","colz");
     h2->SetMinimum(1);
     TH2F* h2 = (TH2F*)gDirectory->FindObjectAny("h2");
     h2->GetXaxis()->SetTitle("#theta_{lab} (deg)");
     h2->GetYaxis()->SetTitle("E (MeV)");
     h2->SetTitle("");
     
-    NPL::Reaction *r = new NPL::Reaction("34Ar(p,d)33Ar@2380");
-    //NPL::Reaction *r = new NPL::Reaction("11Be(d,3He)10Li@770");
+    //NPL::Reaction *r = new NPL::Reaction("34Ar(p,d)33Ar@2380");
+    NPL::Reaction *r = new NPL::Reaction("46Ar(p,d)45Ar@3220");
     kin = r->GetKinematicLine3();
     
     kin->SetLineColor(2);
-    kin->Draw("plsame");
+    //kin->Draw("plsame");
     
     mainC3->cd();
     chain->Draw("PhiLab:ThetaLab>>h3(100,0,50,720,-180,180)","","colz");
@@ -58,7 +58,7 @@ void InitChain()
     if(chain!=NULL){delete chain;}
     chain = new TChain("AnalysedTree","");
     
-    chain->Add("/Users/pierremorfouace/Physics/NPTool/nptool/Outputs/Analysis/test.root");
+    chain->Add("/Users/pierremorfouace/Physics/NPTool/nptool/Outputs/Analysis/46Ar_pd.root");
     
     return;
 }

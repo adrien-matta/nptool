@@ -43,7 +43,7 @@ Double_t TargetThickness;
 Double_t E_ThinSi = 0;
 Double_t E_ThickSi = 0;
 Double_t E_CsI = 0;
-Double_t Etot = 0;
+Double_t ELab = 0;
 Double_t ThetaLab = 0;
 Double_t PhiLab = 0;
 Double_t ThetaLab_simu = 0;
