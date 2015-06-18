@@ -33,7 +33,7 @@ int main(int argc, char** argv)
     
     //	Instantiate some Reaction
     NPL::Reaction*  TransfertReaction = new Reaction								;
-    TransfertReaction	->	ReadConfigurationFile("34Ar_pd.reaction")	;
+    TransfertReaction	->	ReadConfigurationFile("46Ar_pd.reaction")	;
     
     //Get Detector pointer :
     THiraPhysics* Hira 	  = (THiraPhysics*) 			myDetector -> GetDetector("HIRAArray")		;
@@ -58,7 +58,7 @@ int main(int argc, char** argv)
     RootOutput::getInstance()->GetTree()->Branch( "E_ThinSi" , &E_ThinSi , "E_ThinSi/D" )  ;
     RootOutput::getInstance()->GetTree()->Branch( "E_ThickSi" , &E_ThickSi , "E_ThickSi/D" )  ;
     RootOutput::getInstance()->GetTree()->Branch( "E_CsI" , &E_CsI , "E_CsI/D" )  ;
-    RootOutput::getInstance()->GetTree()->Branch( "Etot" , &Etot , "Etot/D" )  ;
+    RootOutput::getInstance()->GetTree()->Branch( "ELab" , &ELab , "ELab/D" )  ;
     RootOutput::getInstance()->GetTree()->Branch("ExcitationEnergy", &ExcitationEnergy,"ExcitationEnergy/D") ;
     RootOutput::getInstance()->GetTree()->Branch( "X" , &X , "X/D" )  ;
     RootOutput::getInstance()->GetTree()->Branch( "Y" , &Y , "Y/D" )  ;
@@ -72,7 +72,7 @@ int main(int argc, char** argv)
    clock_t begin = clock();
    clock_t end = begin;
     
-    double EnergyThreshold = 1;
+    double EnergyThreshold = 0.;
 
    // main loop on entries
    for (int i = 0; i < nentries; i++) {
@@ -107,19 +107,20 @@ int main(int argc, char** argv)
                
                TVector3 PositionOnHira         = TVector3(X,Y,Z);
                TVector3 ZUnit                  = TVector3(0,0,1);
-               //TVector3 TelescopeNormal      = -Must2->GetTelescopeNormal(countHira);
-               //TVector3 TargetNormal         = TVector3(-sin(TargetAngle*deg),0,cos(TargetAngle*deg));
+               //TVector3 TelescopeNormal      = -Hira->GetTelescopeNormal(countHira);
+               TVector3 TargetNormal            = TVector3(0,0,1);//TVector3(-sin(TargetAngle*deg),0,cos(TargetAngle*deg));
                
                double X_target					= InitialConditions->GetIncidentPositionX();
                double Y_target					= InitialConditions->GetIncidentPositionY();
                double Z_target					= InitialConditions->GetIncidentPositionZ();
                
                TVector3 PositionOnTarget		= TVector3(X_target,Y_target,Z_target);
+               //TVector3 PositionOnTarget		= TVector3(0,0,0);
                TVector3 HitDirection			= PositionOnHira - PositionOnTarget;
                TVector3 HitDirectionUnit		= HitDirection.Unit();
                
                //double ThetaNormalHira			= HitDirection.Angle(TelescopeNormal);
-               //double ThetaNormalTarget		= HitDirection.Angle(TargetNormal);
+               double ThetaNormalTarget         = HitDirection.Angle(TargetNormal);
                
                //double ThetaBeam				= InitialConditions->GetICIncidentAngleTheta(countHira);
                //double PhiBeam					= InitialConditions->GetICIncidentAnglePhi(countHira);
@@ -139,24 +140,27 @@ int main(int argc, char** argv)
                
                E_ThickSi                    = Hira->ThickSi_E[countHira];
                E_ThinSi                     = Hira->ThinSi_E[countHira];
-               //Etot = E_ThinSi + E_ThickSi;
+               ELab = E_ThinSi + E_ThickSi;
                if(Hira->CsI_E.size() == 1){
                    for(int countCsI =0; countCsI<Hira->CsI_E.size(); countCsI++){
                        E_CsI = Hira->CsI_E[countCsI];
-                       //Etot += E_CsI;
-                       if(E_CsI>EnergyThreshold) Etot = E_ThinSi + E_ThickSi + E_CsI;
+                       if(E_CsI>EnergyThreshold)ELab += E_CsI;
                    }
                }
-               else Etot = -1000;
+               else E_CsI = -1000;
+               
+               ELab	= EL_deuteron_CH2.EvaluateInitialEnergy(ELab,
+                                                            (TargetThickness/2)*micrometer,
+                                                            ThetaNormalTarget);
+
             
                // ********************** Angle in the CM frame *****************************
-               TransfertReaction -> SetNuclei3(Etot, ThetaLab*deg);
+               TransfertReaction -> SetNuclei3(ELab, ThetaLab*deg);
                ThetaCM          = TransfertReaction->GetThetaCM()/deg;
                ExcitationEnergy	= TransfertReaction->GetExcitation4();
-               
-               RootOutput::getInstance()->GetTree()->Fill();
            }
        }
+       RootOutput::getInstance()->GetTree()->Fill();
     }
 
    cout << "A total of " << nentries << " event has been annalysed " << endl ;
@@ -176,7 +180,7 @@ void ReInitOuputValue()
     E_ThinSi    = -1000;
     E_ThickSi   = -1000;
     E_CsI       = -1000;
-    Etot        = -1000;
+    ELab        = -1000;
     ThetaLab    = -1000;
     PhiLab      = -1000;
     ThetaCM     = -1000;

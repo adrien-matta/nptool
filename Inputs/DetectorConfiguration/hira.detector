@@ -7,9 +7,9 @@ GeneralTarget
 % Radius in mm
 % Temperature in K, Pressure in bar
 Target
-	THICKNESS= 75
+	THICKNESS= 45
   ANGLE= 0
-	RADIUS=	5
+	RADIUS=	10
 	MATERIAL= CH2
 	X= 0
 	Y= 0

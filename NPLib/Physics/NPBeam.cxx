@@ -333,14 +333,14 @@ void Beam::GenerateRandomEvent(double& E, double& X, double& Y, double& Z, doubl
   
   if(fSigmaX!=-1){
   // Shoot within the target unless target size is null (no limit)
-    while(sqrt(X*X+Y*Y>fEffectiveTargetSize) || fEffectiveTargetSize == 0){
+    while(sqrt(X*X+Y*Y)>fEffectiveTargetSize || fEffectiveTargetSize == 0){
       NPL::RandomGaussian2D(fMeanX, fMeanThetaX, fSigmaX, fSigmaThetaX, X, ThetaX);
       NPL::RandomGaussian2D(fMeanY, fMeanPhiY, fSigmaY, fSigmaPhiY, Y, PhiY);
     }
   }
   
   else{
-    while(sqrt(X*X+Y*Y>fEffectiveTargetSize) || fEffectiveTargetSize == 0){
+    while(sqrt(X*X+Y*Y)>fEffectiveTargetSize || fEffectiveTargetSize == 0){
       fXThetaXHist->GetRandom2(X,ThetaX);
       fYPhiYHist->GetRandom2(Y,PhiY);
     }

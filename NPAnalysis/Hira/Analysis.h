@@ -43,7 +43,7 @@ Double_t TargetThickness;
 Double_t E_ThinSi = 0;
 Double_t E_ThickSi = 0;
 Double_t E_CsI = 0;
-Double_t Etot = 0;
+Double_t ELab = 0;
 Double_t ThetaLab = 0;
 Double_t PhiLab = 0;
 Double_t ThetaLab_simu = 0;
@@ -124,8 +124,9 @@ using namespace NPL ;
 namespace ENERGYLOSS
 	{
 	
+            EnergyLoss EL_deuteron_CH2 =  EnergyLoss("deuteron_CH2.G4table","G4Table",100 );
 		//	Declare your Energy loss here	:
-	/*		EnergyLoss ProtonTarget = EnergyLoss 	(	"CD2.txt" 	,
+	/*		EnergyLoss DeuerontTarget = EnergyLoss 	(	"CD2.txt" 	,
 														100 		,
 														1,
 														1			);

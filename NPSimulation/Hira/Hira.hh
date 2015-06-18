@@ -1,5 +1,5 @@
-#ifndef Sharc_h
-#define Sharc_h 1
+#ifndef Hira_h
+#define Hira_h 1
 /*****************************************************************************
  * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
  *                                                                           *
@@ -14,7 +14,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe the Sharc Silicon detector                           *
+ *  This class describe the Hira Telescops                                   *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -47,10 +47,10 @@ namespace HIRA
 {
 	
 	// Resolution
-	const G4double ResoTime		= 0.212765957    ;// = 500ps                 //   Unit is  ns/2.35
-	const G4double ResoCsI      	= 0.08           ;// = 188 kev of resolution //   Unit is MeV/2.35
-	const G4double ResoThickSi  	= 0.022          ;// = 52keV of Resolution   //   Unit is MeV/2.35
-	const G4double ResoThinSi	= 0.064          ;// = 150keV of Resolution   //   Unit is MeV/2.35
+    const G4double ResoTime         = 0.212765957;      // = 500ps                 //   Unit is  ns/2.35
+    const G4double ResoCsI      	= 0.200/2.35;       // = 250 kev of resolution //   Unit is MeV/2.35
+    const G4double ResoThickSi  	= 0.065/2.35;       // = 120keV of Resolution   //   Unit is MeV/2.35
+    const G4double ResoThinSi       = 0.050/2.35;       // = 80keV of Resolution   //   Unit is MeV/2.35
 	
     const G4double EnergyThreshold = 0.;//100*keV;
 	
@@ -59,7 +59,7 @@ namespace HIRA
 	const G4double Length		= 7.*cm ;
 	const G4int NumberOfStrip	= 32;
 	
-	const G4double SiliconFace       = 64*mm ;
+	const G4double SiliconFace       = 63*mm ;
 	const G4double AluStripThickness = 0.4*micrometer ;
 	const G4double ThinSiThickness	 = 65*micrometer ;
 	const G4double ThickSiThickness	 = 1500*micrometer ;
@@ -68,11 +68,11 @@ namespace HIRA
 	const G4double MylarCsIThickness = 3*micrometer;
     const G4double CsIThickness      = 4.*cm;// + 2*MylarCsIThickness ;
     
-    const G4double CsIXFront         = 32.*mm;
+    const G4double CsIXFront         = 33.*mm;
     const G4double CsIXBack          = 37.*mm;
-    const G4double CsIYFront         = 32.*mm;
-    const G4double CsIYBack          = 32.*mm;
-    const G4double DistInterCsI      = 0.2*mm;
+    const G4double CsIYFront         = 33.*mm;
+    const G4double CsIYBack          = 33.*mm;
+    const G4double DistInterCsI      = 0.01*mm;
     
 	const G4double ClusterFaceFront  = 7*cm;
 	const G4double ClusterFaceBack   = 9*cm;

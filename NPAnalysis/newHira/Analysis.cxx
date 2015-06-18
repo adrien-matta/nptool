@@ -36,11 +36,11 @@ void Analysis::Init(){
   InitOutputBranch();
   InitInputBranch();
 
-  Hira= (THiraPhysics*)  m_DetectorManager -> GetDetector("Sharc");
+  Hira= (THiraPhysics*)  m_DetectorManager -> GetDetector("HIRAArray");
   LightCD2 = EnergyLoss("proton_CD2.G4table","G4Table",100 );
   LightAl = EnergyLoss("proton_Al.G4table","G4Table",100);
   LightSi = EnergyLoss("proton_Si.G4table","G4Table",100);
-  BeamCD2 = EnergyLoss("Rb88_CD2.G4table","G4Table",100);
+  //BeamCD2 = EnergyLoss("Rb88_CD2.G4table","G4Table",100);
   myReaction = new NPL::Reaction();
   myReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
   TargetThickness = m_DetectorManager->GetTargetThickness()*micrometer;
