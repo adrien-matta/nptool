@@ -680,9 +680,13 @@ void TSharcPhysics::AddParameterToCalibrationManager(){
 ///////////////////////////////////////////////////////////////////////////
 void TSharcPhysics::InitializeRootInputRaw(){
   TChain* inputChain = RootInput::getInstance()->GetChain()   ;
-  inputChain->SetBranchStatus( "Sharc" , true )               ;
-  inputChain->SetBranchStatus( "fSharc_*" , true )               ;
-  inputChain->SetBranchAddress( "Sharc" , &m_EventData )      ;
+  static UInt_t* found =  new UInt_t[100] ;
+  inputChain->SetBranchStatus( "Sharc" , true );
+  // The following line is necessary only for system were the tree is splitted
+  // (older root version). The found argument silenced the Branches not found
+  // error for non splitted tree.
+  inputChain->SetBranchStatus( "fSharc_*",true,found);
+  inputChain->SetBranchAddress( "Sharc" , &m_EventData );
 
 }
 

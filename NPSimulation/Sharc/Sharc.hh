@@ -49,10 +49,7 @@ namespace SHARC{
   //const G4double ResoEnergy  = 0.035*MeV ;// = zzkeV of Resolution   //   Unit is MeV/2.35
   const G4double ResoEnergy  = 0.042*MeV ;// = zzkeV of Resolution   //   Unit is MeV/2.35
 
-  //const G4double EnergyThreshold = 0.4*MeV;
-  
-  // Change for TRex simulations
-  const G4double EnergyThreshold = 0.5*MeV;
+  const G4double EnergyThreshold = 0.1*MeV;
   // Geometry
   
   // BOX //
@@ -97,10 +94,10 @@ namespace SHARC{
   const G4double PAD_PCB_Border_ShortSide = 2.5*mm;
   
   // PAD Wafer
-//  const G4double PAD_Wafer_Width  = 51.00*mm;
-//  const G4double PAD_Wafer_Length = 77.00*mm;
-    const G4double PAD_Wafer_Width  = 42.00*mm;
-    const G4double PAD_Wafer_Length = 72.00*mm;
+  const G4double PAD_Wafer_Width  = 51.00*mm;
+  const G4double PAD_Wafer_Length = 77.00*mm;
+//    const G4double PAD_Wafer_Width  = 42.00*mm;
+//    const G4double PAD_Wafer_Length = 72.00*mm;
   
   const G4double PAD_Wafer_DeadLayer_Thickness = 0.1*um;
   

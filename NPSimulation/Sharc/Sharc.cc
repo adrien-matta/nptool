@@ -617,7 +617,6 @@ void Sharc::ConstructQQQDetector(G4LogicalVolume* world){
                       logicQQQDetector,"QQQ",world,false,DetNbr);
   }
 }
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Add Detector branch to the EventTree.
 // Called After DetecorConstruction::AddDetector Method
@@ -731,6 +730,7 @@ void Sharc::ReadSensitive(const G4Event* event){
       
       m_Event->SetFront_DetectorNbr(DetNbr);
       m_Event->SetFront_StripNbr(QQQ_Wafer_NumberOf_AnnularStrip-StripFront+1); // Order is reverse (1 is outtermost strip)
+
       m_Event->SetFront_Energy(RandGauss::shoot(Energy, ResoEnergy));
       m_Event->SetFront_TimeCFD(RandGauss::shoot(Time, ResoTime));
       m_Event->SetFront_TimeLED(RandGauss::shoot(Time, ResoTime));
