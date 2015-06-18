@@ -442,7 +442,9 @@ void NPL::DetectorManager::SetSpectraServer(){
       m_SpectraServer->AddCanvas(canvas[i]);
   }
 
-  system("nponline localhost 9090 & ");
+  // Avoid warning on gcc
+  int r;
+  r=system("nponline localhost 9090 & ");
   m_SpectraServer->CheckRequest(); 
 }
 ////////////////////////////////////////////////////////////////////////////////
