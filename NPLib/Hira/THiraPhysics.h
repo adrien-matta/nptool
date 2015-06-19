@@ -1,5 +1,5 @@
-#ifndef __HiraPhysics__
-#define __HiraPhysics__
+#ifndef __HIRAPHYSICS__
+#define __HIRAPHYSICS__
 /*****************************************************************************
  * Copyright (C) 2009-2014    this file is part of the NPTool Project        *
  *                                                                           *
