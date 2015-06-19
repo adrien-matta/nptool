@@ -63,12 +63,13 @@ void Show()
     h2->GetYaxis()->SetTitle("E (MeV)");
     h2->SetTitle("");
     
+    //NPL::Reaction *r = new NPL::Reaction("11Be(d,3He)10Li@770");
     //NPL::Reaction *r = new NPL::Reaction("34Ar(p,d)33Ar@2380");
     NPL::Reaction *r = new NPL::Reaction("46Ar(p,d)45Ar@3220");
     kin = r->GetKinematicLine3();
     
     kin->SetLineColor(2);
-    //kin->Draw("plsame");
+    kin->Draw("plsame");
     
     mainC3->cd();
     chain->Draw("PhiLab:ThetaLab>>h3(100,0,50,720,-180,180)","","colz");
@@ -120,7 +121,9 @@ void InitChain()
     if(chain!=NULL){delete chain;}
     chain = new TChain("AnalysedTree","");
     
+    //chain->Add("/Users/pierremorfouace/Physics/NPTool/nptool/Outputs/Analysis/34Ar_pd.root");
     chain->Add("/Users/pierremorfouace/Physics/NPTool/nptool/Outputs/Analysis/46Ar_pd.root");
+    //chain->Add("/Users/pierremorfouace/Physics/NPTool/nptool/Outputs/Analysis/11Be_d3He_gs.root");
     
     return;
 }

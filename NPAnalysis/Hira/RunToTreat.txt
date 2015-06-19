@@ -1,9 +1,10 @@
 TTreeName 
 	SimulatedTree
 RootFileName 
-	%/Users/pierremorfouace/Physics/NPTool/nptool/Outputs/Simulation/simu.root
-	/Users/pierremorfouace/Physics/NPTool/nptool/Outputs/Simulation/46Ar_pd.root
+	/Users/pierremorfouace/Physics/NPTool/nptool/Outputs/Simulation/46Ar_pd_gs.root
+ 	/Users/pierremorfouace/Physics/NPTool/nptool/Outputs/Simulation/46Ar_pd_1st.root
 
+	%/Users/pierremorfouace/Physics/NPTool/nptool/Outputs/Simulation/34Ar_pd_gs.root
 
 	
 	
