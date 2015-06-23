@@ -34,8 +34,8 @@ int main(int argc, char** argv)
     //	Instantiate some Reaction
     NPL::Reaction*  TransfertReaction = new Reaction								;
     //TransfertReaction	->	ReadConfigurationFile("34Ar_pd.reaction")	;
-    TransfertReaction	->	ReadConfigurationFile("46Ar_pd.reaction")	;
-    //TransfertReaction	->	ReadConfigurationFile("11Be_d3He.reaction")	;
+    //TransfertReaction	->	ReadConfigurationFile("46Ar_pd.reaction")	;
+    TransfertReaction	->	ReadConfigurationFile("11Be_d3He.reaction")	;
     
     //Get Detector pointer :
     THiraPhysics* Hira 	  = (THiraPhysics*) 			myDetector -> GetDetector("HIRAArray")		;
