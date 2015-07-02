@@ -41,14 +41,14 @@ void Show()
     
     
     mainC1->cd(1);
-    chain->Draw("E_ThickSi:E_CsI>>h1(1000,0,200,1000,0,25)","","colz");
+    chain->Draw("E_ThickSi:E_CsI>>h1(1000,0,600,1000,0,30)","","colz");
     TH2F* h1 = (TH2F*)gDirectory->FindObjectAny("h1");
     h1->GetXaxis()->SetTitle("E_{CsI} (MeV)");
     h1->GetYaxis()->SetTitle("E_{Si} (MeV)");
     h1->SetTitle("");
 
     mainC1->cd(2);
-    chain->Draw("E_ThinSi:E_ThickSi>>h12(1000,0,25,1000,0,5)","","colz");
+    chain->Draw("E_ThinSi:E_ThickSi>>h12(1000,0,30,1000,0,10)","","colz");
     TH2F* h12 = (TH2F*)gDirectory->FindObjectAny("h12");
     h12->GetXaxis()->SetTitle("E_{Si} (MeV)");
     h12->GetYaxis()->SetTitle("#Delta E (MeV)");
@@ -56,16 +56,16 @@ void Show()
 
     
     mainC2->cd();
-    chain->Draw("ELab:ThetaLab>>h2(1000,0,50,1000,0,200)","","colz");
+    chain->Draw("ELab:ThetaLab>>h2(1000,0,50,1000,0,50)","","colz");
     h2->SetMinimum(1);
     TH2F* h2 = (TH2F*)gDirectory->FindObjectAny("h2");
     h2->GetXaxis()->SetTitle("#theta_{lab} (deg)");
     h2->GetYaxis()->SetTitle("E (MeV)");
     h2->SetTitle("");
     
-    //NPL::Reaction *r = new NPL::Reaction("11Be(d,3He)10Li@770");
+    NPL::Reaction *r = new NPL::Reaction("11Be(d,3He)10Li@770");
     //NPL::Reaction *r = new NPL::Reaction("34Ar(p,d)33Ar@2380");
-    NPL::Reaction *r = new NPL::Reaction("46Ar(p,d)45Ar@3220");
+    //NPL::Reaction *r = new NPL::Reaction("46Ar(p,d)45Ar@3220");
     kin = r->GetKinematicLine3();
     
     kin->SetLineColor(2);
@@ -122,8 +122,8 @@ void InitChain()
     chain = new TChain("AnalysedTree","");
     
     //chain->Add("/Users/pierremorfouace/Physics/NPTool/nptool/Outputs/Analysis/34Ar_pd.root");
-    chain->Add("/Users/pierremorfouace/Physics/NPTool/nptool/Outputs/Analysis/46Ar_pd.root");
-    //chain->Add("/Users/pierremorfouace/Physics/NPTool/nptool/Outputs/Analysis/11Be_d3He_gs.root");
+    //chain->Add("/Users/pierremorfouace/Physics/NPTool/nptool/Outputs/Analysis/46Ar_pd.root");
+    chain->Add("/Users/pierremorfouace/Physics/NPTool/nptool/Outputs/Analysis/11Be_d3He_1mg.root");
     
     return;
 }

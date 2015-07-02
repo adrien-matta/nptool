@@ -124,8 +124,8 @@ using namespace NPL ;
 namespace ENERGYLOSS
 	{
 	
-            EnergyLoss EL_deuteron_CH2 =  EnergyLoss("deuteron_CH2.G4table","G4Table",100 );
-         //EnergyLoss EL_deuteron_CH2 =  EnergyLoss("He3_CH2.G4table","G4Table",100 );
+            //EnergyLoss EL_deuteron_CH2 =  EnergyLoss("deuteron_CH2.G4table","G4Table",100 );
+         EnergyLoss EL_deuteron_CH2 =  EnergyLoss("He3_CD2.G4table","G4Table",100 );
 		//	Declare your Energy loss here	:
 	/*		EnergyLoss DeuerontTarget = EnergyLoss 	(	"CD2.txt" 	,
 														100 		,
