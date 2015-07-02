@@ -604,11 +604,11 @@ TGraph* Reaction::GetKinematicLine4(double AngleStep_CM){
     double theta3,E3,theta4,E4;
     
 	for (double angle=0 ; angle < 360 ; angle+=AngleStep_CM){
-		SetThetaCM(angle*deg);
+    SetThetaCM(angle*deg);
 		KineRelativistic(theta3, E3, theta4, E4);
 		fNuclei4->SetKineticEnergy(E4);
 		
-		vx.push_back(theta3/deg);
+		vx.push_back(theta4/deg);
 		vy.push_back(E4);
 	}
     fKineLine4= new TGraph(vx.size(),&vx[0],&vy[0]);
