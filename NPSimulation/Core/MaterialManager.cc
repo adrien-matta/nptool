@@ -316,6 +316,15 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       m_Material[Name]=material;
       return material; 
     }
+      
+    else  if(Name == "P10"){
+        G4Material* material = new G4Material(Name, 1.74*mg/cm3,3); //@ 0K, 1 atm
+        material->AddElement(GetElementFromLibrary("Ar"),0.9222);
+        material->AddElement(GetElementFromLibrary("C"),0.0623);
+        material->AddElement(GetElementFromLibrary("H"),0.0155);
+        m_Material[Name]=material;
+        return material;
+    }
 
     else{
       G4cout << "ERROR: Material requested \""<< Name <<"\" is not available in the Material Librairy" << G4endl;
