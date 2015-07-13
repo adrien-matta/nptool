@@ -103,7 +103,7 @@ void GeometricalEfficiency(const char * fname = "myResult"){
   c4->SetTopMargin(0.01);
   c4->SetRightMargin(0.03);
   TH1F* SolidACM = new TH1F(*hDetecThetaCM);
- //// SolidACM->Sumw2();
+  SolidACM->Sumw2();
   TF1* C = new TF1("C",Form("1. /(2*%f*sin(x*%f/180.)*1*%f/180)",M_PI,M_PI,M_PI),0,180);
   SolidACM->Divide(hEmittThetaCM);
   SolidACM->Divide(C,1);

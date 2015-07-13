@@ -60,7 +60,7 @@ TSharcPhysics::TSharcPhysics(){
   m_StripBack_E_Threshold = 0 ;
   
   m_Take_E_Front=false;
-  m_Take_T_Back=true;
+  m_Take_T_Back=false;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -684,7 +684,7 @@ void TSharcPhysics::InitializeRootInputRaw(){
   inputChain->SetBranchStatus( "Sharc" , true );
   // The following line is necessary only for system were the tree is splitted
   // (older root version). The found argument silenced the Branches not found
-  // error for non splitted tree.
+  // warning for non splitted tree.
   inputChain->SetBranchStatus( "fSharc_*",true,found);
   inputChain->SetBranchAddress( "Sharc" , &m_EventData );
 
@@ -707,7 +707,6 @@ void TSharcPhysics::InitializeRootInputPhysics(){
   inputChain->SetBranchStatus( "PAD_E" , true );
   inputChain->SetBranchStatus( "PAD_T" , true );
   inputChain->SetBranchAddress( "Sharc" , &m_EventPhysics )      ;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -875,22 +874,18 @@ void TSharcPhysics::InitializeStandardParameter()
   m_PADChannelStatus.clear() ;
   
   ChannelStatus.resize(24,true);
-  for(int i = 0 ; i < m_NumberOfDetector ; ++i)
-    {
+  for(int i = 0 ; i < m_NumberOfDetector ; ++i){
     m_FrontChannelStatus[i] = ChannelStatus;
     }
   
   ChannelStatus.resize(48,true);
-  for(int i = 0 ; i < m_NumberOfDetector ; ++i)
-    {
+  for(int i = 0 ; i < m_NumberOfDetector ; ++i){
     m_BackChannelStatus[i] = ChannelStatus;
     }
   
   ChannelStatus.resize(1,true);
-  for(int i = 0 ; i < m_NumberOfDetector ; ++i)
-    {
+  for(int i = 0 ; i < m_NumberOfDetector ; ++i){
     m_PADChannelStatus[i] = ChannelStatus;
-    
     }
   
   m_MaximumStripMultiplicityAllowed = m_NumberOfDetector   ;

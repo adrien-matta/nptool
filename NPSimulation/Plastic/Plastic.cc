@@ -428,15 +428,15 @@ void Plastic::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume*
           0*deg, 
           360*deg);
 
-      G4Material* MaterialLead = MaterialManager::getInstance()->GetMaterialFromLibrary("Pb");
-      G4LogicalVolume* logicLead = new G4LogicalVolume(solidLead, MaterialLead, Name+"_Lead", 0, 0, 0);//AC changed lead to Al
+      G4Material* MaterialLead = MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
+      G4LogicalVolume* logicLead = new G4LogicalVolume(solidLead, MaterialLead, Name+"_Al", 0, 0, 0);//AC changed lead to Al
       G4VisAttributes* LeadVisAtt = new G4VisAttributes(G4Colour(0.1, 0.1, 0.1)) ;
       logicLead->SetVisAttributes(LeadVisAtt) ;
 
       G4PVPlacement( 0,
           Det_pos+(m_PlasticThickness[i]/2+m_LeadThickness[i]/2)*Det_pos.unit(),
           logicLead,
-          Name+"_Lead",   
+          Name+"_Al",   
           world,
           false,
           0);
@@ -450,7 +450,7 @@ void Plastic::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume*
       G4LogicalVolume* logicPlastic = new G4LogicalVolume(solidPlastic, PlasticMaterial, Name+ "_Scintillator", 0, 0, 0);
       logicPlastic->SetSensitiveDetector(m_PlasticScorer);
 
-      G4VisAttributes* PlastVisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 0.9)) ;
+      G4VisAttributes* PlastVisAtt = new G4VisAttributes(G4Colour(0, 0, 1)) ;
       logicPlastic->SetVisAttributes(PlastVisAtt) ;
 
       G4RotationMatrix Rot3D;
@@ -464,17 +464,17 @@ void Plastic::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume*
     }
 
     if(m_LeadThickness[i]>0&& m_PlasticHeight[i]>0 && m_PlasticWidth[i]>0){
-      G4Box* solidLead = new G4Box(Name+"_Lead", 0.5*m_PlasticWidth[i], 0.5*m_PlasticHeight[i], 0.5*m_LeadThickness[i]);
+      G4Box* solidLead = new G4Box(Name+"_Al", 1*m_PlasticWidth[i], 1*m_PlasticHeight[i], 0.5*m_LeadThickness[i]);
 
-      G4Material* MaterialLead = MaterialManager::getInstance()->GetMaterialFromLibrary("Pb");
-      G4LogicalVolume* logicLead = new G4LogicalVolume(solidLead, MaterialLead, Name+"_Lead", 0, 0, 0);
-      G4VisAttributes* LeadVisAtt = new G4VisAttributes(G4Colour(0.1, 0.1, 0.1)) ;
+      G4Material* MaterialLead = MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
+      G4LogicalVolume* logicLead = new G4LogicalVolume(solidLead, MaterialLead, Name+"_Al", 0, 0, 0);
+      G4VisAttributes* LeadVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5)) ;
       logicLead->SetVisAttributes(LeadVisAtt) ;
 
       new G4PVPlacement(0,
-          Det_pos+(m_PlasticThickness[i]/2+m_LeadThickness[i]/2)*Det_pos.unit() +G4ThreeVector(0,0,-10*cm)  ,
+          Det_pos-(m_PlasticThickness[i]/2+m_LeadThickness[i]/2)*Det_pos.unit() -G4ThreeVector(0,0,1*cm)  ,
           logicLead,
-          Name+"_Lead",   
+          Name+"_Al",   
           world,
           false,
           0);
