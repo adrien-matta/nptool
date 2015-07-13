@@ -165,6 +165,7 @@ void EventGeneratorIsotropic::ReadConfiguration(string Path,int){
         else if(m_particleName=="alpha") { m_particleName="4He" ; check_ExcitationEnergy = true ;}
         else if(m_particleName=="gamma") { check_ExcitationEnergy = true ;}
         else if(m_particleName=="neutron") { check_ExcitationEnergy = true ;}
+          else { check_ExcitationEnergy = true ;}
 
       }
       

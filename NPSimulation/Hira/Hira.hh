@@ -71,8 +71,8 @@ namespace HIRA
     const G4double CsIXFront         = 33.*mm;
     const G4double CsIXBack          = 37.*mm;
     const G4double CsIYFront         = 33.*mm;
-    const G4double CsIYBack          = 33.*mm;
-    const G4double DistInterCsI      = 0.01*mm;
+    const G4double CsIYBack          = 37.*mm;
+    const G4double DistInterCsI      = 1.5*mm;
     
 	const G4double ClusterFaceFront  = 7*cm;
 	const G4double ClusterFaceBack   = 9*cm;

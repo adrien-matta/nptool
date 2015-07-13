@@ -123,6 +123,7 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       m_Material[Name]=material;
       return material; 
     }
+    
 
     else  if(Name == "Kapton"){
       G4Material* material = new G4Material(Name, 1.39*g/cm3,3);
@@ -316,7 +317,38 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       m_Material[Name]=material;
       return material; 
     }
+      
+    else  if(Name == "P10_1atm"){
+        G4Material* material = new G4Material(Name, 1.74*mg/cm3,3); //@ 0K, 1 atm
+        material->AddElement(GetElementFromLibrary("Ar"),0.9222);
+        material->AddElement(GetElementFromLibrary("C"),0.0623);
+        material->AddElement(GetElementFromLibrary("H"),0.0155);
+        m_Material[Name]=material;
+        return material;
+    }
+      
+    else  if(Name == "P10"){
+        G4Material* material = new G4Material(Name, 0.57*mg/cm3,3); //@ 0K, 1/3 atm
+        material->AddElement(GetElementFromLibrary("Ar"),0.9222);
+        material->AddElement(GetElementFromLibrary("C"),0.0623);
+        material->AddElement(GetElementFromLibrary("H"),0.0155);
+        m_Material[Name]=material;
+        return material;
+    }
 
+       else  if(Name == "Air_1atm"){ // 1 atm
+           G4Material* material = new G4Material("Air", 1.290*mg/cm3, 2);
+           material->AddElement(GetElementFromLibrary("N"), 0.7);
+           material->AddElement(GetElementFromLibrary("O"), 0.3);
+       }
+      
+       else  if(Name == "Air"){ // 1/3 atm
+           G4Material* material = new G4Material("Air", 1.290/3*mg/cm3, 2);
+           material->AddElement(GetElementFromLibrary("N"), 0.7);
+           material->AddElement(GetElementFromLibrary("O"), 0.3);
+       }
+      
+      
     else{
       G4cout << "ERROR: Material requested \""<< Name <<"\" is not available in the Material Librairy" << G4endl;
       exit(1);

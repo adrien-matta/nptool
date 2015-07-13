@@ -22,7 +22,7 @@
  *                                                                           *
  *****************************************************************************/
 #include"NPVAnalysis.h"
-#include"TAnnularS1Physics.h"
+#include"THiraPhysics.h"
 #include "TMust2Physics.h"
 #include "TSSSDPhysics.h"
 #include "TInitialConditions.h"
@@ -76,6 +76,5 @@ class Analysis: public NPL::VAnalysis{
     TMust2Physics* M2;
     TSSSDPhysics* SSSD;
     TInitialConditions* Initial;
-
 };
 #endif

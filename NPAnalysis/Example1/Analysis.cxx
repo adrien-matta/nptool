@@ -63,7 +63,7 @@ void Analysis::Init(){
   He3CD2 = EnergyLoss("He3_CD2.G4table","G4Table",100 );
   He3Al = EnergyLoss("He3_Al.G4table","G4Table",10);
   He3Si = EnergyLoss("He3_Si.G4table","G4Table",10);
-  Li11CD2 = EnergyLoss("Li11[0.0]_CD2.G4table","G4Table",100);
+  //Li11CD2 = EnergyLoss("Li11[0.0]_CD2.G4table","G4Table",100);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -79,7 +79,7 @@ void Analysis::TreatEvent(){
   TVector3 BeamDirection = Initial->GetBeamDirection();
   // Beam energy is measured using F3 and F2 plastic TOF
   double BeamEnergy = Rand.Gaus(Initial->GetIncidentInitialKineticEnergy(),4.5);
-  BeamEnergy = Li11CD2.Slow(BeamEnergy,TargetThickness/2.,0);
+  //BeamEnergy = Li11CD2.Slow(BeamEnergy,TargetThickness/2.,0);
 
   He10Reaction->SetBeamEnergy(BeamEnergy);
   //////////////////////////// LOOP on MUST2 + SSSD Hit //////////////////

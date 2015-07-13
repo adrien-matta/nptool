@@ -530,9 +530,13 @@ void Hira::VolumeMaker(G4int DetectorNumber,
 	///////////////////////////////////////////////////
     G4String NameCsI = "CsI"+DetNumber;
     
+    double X1 = (CsIXFront-CsIXBack)/2.;
+    double Y1 = (CsIYFront-CsIYBack)/2.;
+    double l = sqrt(pow(X1,2) + pow(Y1,2));
+    
     double pDz = 0.5*CsIThickness;
-    double pTheta = -atan( (CsIXBack-CsIXFront)/(2*CsIThickness) );
-    double pPhi = 0;
+    double pTheta = -atan( (l)/(CsIThickness) );
+    double pPhi = atan( X1/Y1 );
     double pDy1 = 0.5*CsIYFront;
     double pDx1 = 0.5*CsIXFront;
     double pDx2 = 0.5*CsIXFront;
@@ -567,28 +571,33 @@ void Hira::VolumeMaker(G4int DetectorNumber,
                       	m_LogicCluster,"Cluster",
                       	m_logicMotherVolume,false,0);
 
-        const G4double CsIXMiddle = CsIXFront + CsIThickness*tan(-pTheta);
+        const G4double CsIXMiddle = CsIXFront + (CsIThickness/2)*tan(-pTheta)*sin(pPhi);
+        const G4double CsIYMiddle = CsIYFront + (CsIThickness/2)*tan(-pTheta)*cos(pPhi);
         const G4double DistInterCsIX = CsIXMiddle+DistInterCsI;
-        const G4double DistInterCsIY = CsIYFront+DistInterCsI;
+        const G4double DistInterCsIY = CsIYMiddle+DistInterCsI;
         
         G4ThreeVector Origin(-0.5*DistInterCsIX,-0.5*DistInterCsIY,0);
-        G4RotationMatrix* rotM = new G4RotationMatrix;
-        const G4double dangle = 180.*deg;
+        G4ThreeVector Pos;
+        const G4double dangle = 90.*deg;
         // A cluster is a 2 by 2 aggregat of CsI crystal
         unsigned int CsINbr = 1;
             for(unsigned int i = 0 ; i < 2 ; i++){
-                for(unsigned int j = 0 ; j <2 ; j++){
+                for(unsigned int j = 0 ; j < 2 ; j++){
+                    G4RotationMatrix* rotM = new G4RotationMatrix;
                     unsigned int CrystalNbr = CsINbr++;
-                    if(i==0)rotM->rotateZ((i)*dangle);
-                    if(i==1)rotM->rotateZ((i+j)*dangle);
-                    G4ThreeVector Pos = Origin + G4ThreeVector(i*DistInterCsIX,j*DistInterCsIY,0);
-                
+                    if(i==0 && j==0)rotM->rotateZ(0);
+                    if(i==1 && j==0)rotM->rotateZ(dangle);
+                    if(i==0 && j==1)rotM->rotateZ(-dangle);
+                    if(i==1 && j==1)rotM->rotateZ(2*dangle);
+                    Pos = Origin + G4ThreeVector(i*DistInterCsIX,j*DistInterCsIY,0);
+                    
                     new G4PVPlacement(G4Transform3D(*rotM,Pos),
                                       m_LogicCsICrystal,
                                       "CsI_Cristal",
                                       m_LogicCluster,
                                       false,
                                       CrystalNbr);
+                    delete rotM;
                 }
             }
         }
