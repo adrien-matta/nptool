@@ -118,14 +118,14 @@ NPL::VDetector* TTrifoilPhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_trifoil{
   public:
-    proxy(){
-      NPL::DetectorFactory::getInstance()->AddToken("Trifoil","Trifoil");
+    proxy_trifoil(){
+			NPL::DetectorFactory::getInstance()->AddToken("Trifoil","Trifoil");
       NPL::DetectorFactory::getInstance()->AddDetector("Trifoil",TTrifoilPhysics::Construct);
-    }
+	}
 };
 
-proxy p;
+proxy_trifoil p;
 }
 

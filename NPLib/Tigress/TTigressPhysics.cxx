@@ -267,14 +267,14 @@ NPL::VDetector* TTigressPhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_tigress{
   public:
-    proxy(){
+    proxy_tigress(){
       NPL::DetectorFactory::getInstance()->AddToken("Tigress","Tigress");
       NPL::DetectorFactory::getInstance()->AddDetector("Tigress",TTigressPhysics::Construct);
     }
 };
 
-proxy p;
+proxy_tigress p;
 }
 

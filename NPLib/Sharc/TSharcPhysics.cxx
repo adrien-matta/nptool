@@ -960,14 +960,14 @@ NPL::VDetector* TSharcPhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_sharc{
   public:
-    proxy(){
+    proxy_sharc(){
       NPL::DetectorFactory::getInstance()->AddToken("Sharc","Sharc");
       NPL::DetectorFactory::getInstance()->AddDetector("Sharc",TSharcPhysics::Construct);
     }
 };
 
-proxy p;
+proxy_sharc p;
 }
 
