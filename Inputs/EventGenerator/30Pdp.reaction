@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%  Reaction file for 3He(25Al,d)26Al reaction  %%%%%%%%%
+%%%%%%%%%%%  Reaction file for 30P(d,p)31P reaction  %%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Beam
    Particle= 30P
@@ -21,7 +21,7 @@ TwoBodyReaction
 	Heavy= 31P
 	ExcitationEnergyHeavy= 6.3
 	ExcitationEnergyLight= 0.0
-   CrossSectionPath= flat.txt CS
+   CrossSectionPath= 30Pdp_6MeV_l=0 CS %flat.txt CS
 	ShootLight= 1
 	ShootHeavy= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

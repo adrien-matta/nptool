@@ -186,7 +186,7 @@ TGraphErrors* NPL::SiliconCalibrator::FitSpectrum(TH1* histo){
   TSpectrum* sp = new TSpectrum(4,1);
   Int_t nfound = 0;
   nfound = sp->Search(histo,3,"",0.25);
-  double* xpeaks = sp->GetPositionX();
+  float* xpeaks = sp->GetPositionX();
 
   if(nfound>1){
     for(Int_t p=0;p<nfound;p++){
