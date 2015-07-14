@@ -70,7 +70,8 @@ public:
    // Return the private chain and file
    TChain*  GetChain()  {return pRootChain;}
    TFile*   GetFile()   {return pRootFile;}
-   
+   void     SetChain(TChain* c)  {pRootChain = c;} 
+
    // Add a Friend chain to the input chain
    void     AddFriendChain(string RunToAdd);
 

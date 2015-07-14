@@ -45,6 +45,7 @@ TSharcPhysics::TSharcPhysics(){
   m_EventData         = new TSharcData ;
   m_PreTreatedData    = new TSharcData ;
   m_EventPhysics      = this ;
+  m_Spectra           = NULL;
   m_NumberOfDetector = 0 ;
   m_MaximumStripMultiplicityAllowed = 10;
   m_StripEnergyMatchingSigma = 0.060    ;
@@ -59,7 +60,7 @@ TSharcPhysics::TSharcPhysics(){
   m_StripBack_E_Threshold = 0 ;
   
   m_Take_E_Front=false;
-  m_Take_T_Back=true;
+  m_Take_T_Back=false;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -604,7 +605,48 @@ void TSharcPhysics::ReadConfiguration(string Path){
   InitializeStandardParameter();
   ReadAnalysisConfig();
 }
+///////////////////////////////////////////////////////////////////////////
+void TSharcPhysics::InitSpectra(){  
+  m_Spectra = new TSharcSpectra(m_NumberOfDetector);
+}
 
+///////////////////////////////////////////////////////////////////////////
+void TSharcPhysics::FillSpectra(){  
+  m_Spectra -> FillRawSpectra(m_EventData);
+  m_Spectra -> FillPreTreatedSpectra(m_PreTreatedData);
+  m_Spectra -> FillPhysicsSpectra(m_EventPhysics);
+}
+///////////////////////////////////////////////////////////////////////////
+void TSharcPhysics::CheckSpectra(){  
+  m_Spectra->CheckSpectra();  
+}
+///////////////////////////////////////////////////////////////////////////
+void TSharcPhysics::ClearSpectra(){  
+  // To be done
+}
+///////////////////////////////////////////////////////////////////////////
+map< vector<string> , TH1*> TSharcPhysics::GetSpectra() {
+  if(m_Spectra)
+    return m_Spectra->GetMapHisto();
+  else{
+    map< vector<string> , TH1*> empty;
+    return empty;
+  }
+} 
+////////////////////////////////////////////////////////////////////////////////
+vector<TCanvas*> TSharcPhysics::GetCanvas() {
+  if(m_Spectra)
+    return m_Spectra->GetCanvas();
+  else{
+    vector<TCanvas*> empty;
+    return empty;
+  }
+} 
+
+///////////////////////////////////////////////////////////////////////////
+void TSharcPhysics::WriteSpectra(){
+  m_Spectra->WriteSpectra();
+}
 ///////////////////////////////////////////////////////////////////////////
 void TSharcPhysics::AddParameterToCalibrationManager(){
   CalibrationManager* Cal = CalibrationManager::getInstance();
@@ -638,9 +680,13 @@ void TSharcPhysics::AddParameterToCalibrationManager(){
 ///////////////////////////////////////////////////////////////////////////
 void TSharcPhysics::InitializeRootInputRaw(){
   TChain* inputChain = RootInput::getInstance()->GetChain()   ;
-  inputChain->SetBranchStatus( "Sharc" , true )               ;
-  inputChain->SetBranchStatus( "fSharc_*" , true )               ;
-  inputChain->SetBranchAddress( "Sharc" , &m_EventData )      ;
+  static UInt_t* found =  new UInt_t[100] ;
+  inputChain->SetBranchStatus( "Sharc" , true );
+  // The following line is necessary only for system were the tree is splitted
+  // (older root version). The found argument silenced the Branches not found
+  // warning for non splitted tree.
+  inputChain->SetBranchStatus( "fSharc_*",true,found);
+  inputChain->SetBranchAddress( "Sharc" , &m_EventData );
 
 }
 
@@ -661,7 +707,6 @@ void TSharcPhysics::InitializeRootInputPhysics(){
   inputChain->SetBranchStatus( "PAD_E" , true );
   inputChain->SetBranchStatus( "PAD_T" , true );
   inputChain->SetBranchAddress( "Sharc" , &m_EventPhysics )      ;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -670,15 +715,14 @@ void TSharcPhysics::InitializeRootOutput(){
   outputTree->Branch( "Sharc" , "TSharcPhysics" , &m_EventPhysics );
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 /////   Specific to SharcArray   ////
-
 void TSharcPhysics::AddBoxDetector(double Z){
   double BOX_Wafer_Width  = 52.20;
   // double BOX_Wafer_Length = 76.20;
   
-  double BOX_ActiveArea_Length = 72;
-  double BOX_ActiveArea_Width = 42;
+  double BOX_ActiveArea_Length = 76.2;
+  double BOX_ActiveArea_Width = 52.2;
   
   int    BOX_Wafer_Back_NumberOfStrip = 48 ;
   int    BOX_Wafer_Front_NumberOfStrip = 24 ;
@@ -703,8 +747,6 @@ void TSharcPhysics::AddBoxDetector(double Z){
       else if(i==3) {U=TVector3(0,1,0);V=TVector3(0,0,-1);  Strip_1_1=TVector3(40.5,-36,Z+BOX_Wafer_Width/2.)   ;}
     }
    
-cout << Z-BOX_Wafer_Width/2. << endl;
- 
     //   Buffer object to fill Position Array
     vector<double> lineX ; vector<double> lineY ; vector<double> lineZ ;
     
@@ -735,7 +777,7 @@ cout << Z-BOX_Wafer_Width/2. << endl;
     m_StripPositionZ.push_back( OneBoxStripPositionZ ) ;
   }
 }
-
+////////////////////////////////////////////////////////////////////////////////
 void TSharcPhysics::AddQQQDetector( double R,double Phi,double Z){
   
   double QQQ_R_Min = 9.+R;
@@ -832,22 +874,18 @@ void TSharcPhysics::InitializeStandardParameter()
   m_PADChannelStatus.clear() ;
   
   ChannelStatus.resize(24,true);
-  for(int i = 0 ; i < m_NumberOfDetector ; ++i)
-    {
+  for(int i = 0 ; i < m_NumberOfDetector ; ++i){
     m_FrontChannelStatus[i] = ChannelStatus;
     }
   
   ChannelStatus.resize(48,true);
-  for(int i = 0 ; i < m_NumberOfDetector ; ++i)
-    {
+  for(int i = 0 ; i < m_NumberOfDetector ; ++i){
     m_BackChannelStatus[i] = ChannelStatus;
     }
   
   ChannelStatus.resize(1,true);
-  for(int i = 0 ; i < m_NumberOfDetector ; ++i)
-    {
+  for(int i = 0 ; i < m_NumberOfDetector ; ++i){
     m_PADChannelStatus[i] = ChannelStatus;
-    
     }
   
   m_MaximumStripMultiplicityAllowed = m_NumberOfDetector   ;

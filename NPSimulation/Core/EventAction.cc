@@ -60,8 +60,12 @@ void EventAction::BeginOfEventAction(const G4Event* event){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventAction::EndOfEventAction(const G4Event* event){
   m_detector->ReadAllSensitive(event) ;
-  RootOutput *pAnalysis = RootOutput::getInstance();
-  pAnalysis->GetTree()->Fill();
+  static TTree* tree =  RootOutput::getInstance()->GetTree();
+  tree->Fill();
+  if(treated%10000==0){
+    tree->AutoSave();
+     RootOutput::getInstance()->GetFile()->SaveSelf(kTRUE);
+  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

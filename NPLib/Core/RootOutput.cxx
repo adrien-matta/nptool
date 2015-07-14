@@ -124,10 +124,11 @@ RootOutput::RootOutput(TString fileNameBase, TString treeNameBase){
   // Init TAsciiFile objects
   InitAsciiFiles();
   gDirectory->cd(currentPath->GetPath()); 
-  long int inter= -3000000000; 
-  pRootTree->SetAutoFlush(inter);
-  pRootTree->SetAutoSave(-inter);
-
+//  long int inter= -3000000000; 
+//  pRootTree->SetAutoFlush(inter);
+//  pRootTree->SetAutoSave(-inter);
+  pRootTree->SetAutoFlush(0);
+  pRootTree->SetAutoSave(0);
 }
 
 
@@ -142,13 +143,15 @@ void RootOutput::InitAsciiFiles(){
   pEventGenerator = new TAsciiFile();
   pEventGenerator->SetNameTitle("EventGenerator", fileNameEG.Data());
   pEventGenerator->Append(fileNameEG.Data());
-
+  pEventGenerator->Write();
+  
   // Detector configuration 
   // Get file name from NPOptionManager
   TString fileNameDC = OptionManager->GetDetectorFile();
   pDetectorConfiguration = new TAsciiFile();
   pDetectorConfiguration->SetNameTitle("DetectorConfiguration", fileNameDC.Data());
   pDetectorConfiguration->Append(fileNameDC.Data());
+  pDetectorConfiguration->Write();
 
   // Run to treat file
   // Get file name from NPOptionManager
@@ -157,6 +160,7 @@ void RootOutput::InitAsciiFiles(){
     TString fileNameRT = OptionManager->GetRunToReadFile();
     pRunToTreatFile->SetNameTitle("RunToTreat", fileNameRT.Data());
     pRunToTreatFile->Append(fileNameRT.Data());
+    pRunToTreatFile->Write();
   }
 
   // Calibration files
@@ -164,12 +168,15 @@ void RootOutput::InitAsciiFiles(){
   if (!OptionManager->IsDefault("Calibration")) {
     TString fileNameCal = OptionManager->GetCalibrationFile();
     pCalibrationFile->SetNameTitle("Calibration", fileNameCal.Data());
+    pCalibrationFile->Write();
   }
 
   // Analysis configuration files
   pAnalysisConfigFile = new TAsciiFile();
   pAnalysisConfigFile->SetNameTitle("AnalysisConfig", "AnalysisConfig");
+  pAnalysisConfigFile->Write();
 }
+
 
 
 ////////////////////////////////////////////////////////////////////////////////

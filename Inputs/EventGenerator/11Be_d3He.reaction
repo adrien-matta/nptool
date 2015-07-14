@@ -1,0 +1,53 @@
+Beam
+  Particle= 11Be
+  Energy= 770
+	SigmaEnergy= 4
+	SigmaThetaX= 0.
+	SigmaPhiY= 0.
+	SigmaX= 3
+	SigmaY= 3
+  MeanThetaX= 0
+  MeanPhiY= 0
+  MeanX= 0
+  MeanY= 0
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+TwoBodyReaction
+	Beam= 11Be
+	Target= 2H
+	Light= 3He
+	Heavy= 10Li
+	ExcitationEnergyLight= 0.0
+	ExcitationEnergyHeavy= 0.0
+  CrossSectionPath= 11Li(d,3He)10He.txt	CS
+	ShootLight= 1
+	ShootHeavy= 0
+  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+%ParticleDecay 10Li
+  Daughter= 9Li n
+  ExcitationEnergy= 0.1 0
+  DifferentialCrossSection= flat.txt	particle9He
+  shoot= 1 1
+    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%GammaDecay 9Li
+  Cascade
+    BranchingRatio= 30
+    Energies= 0.1
+    DifferentialCrossSection= 11Li(d,3He)10He.txt	Gamma9He
+  Cascade
+    BranchingRatio= 70
+    Energies= 0.05 0.5
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%ParticleDecay 9Li
+  Daughter= 8Li n
+  DifferentialCrossSection= flat.txt
+  shoot= 1 1
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -587,9 +587,11 @@ TGraph* Reaction::GetKinematicLine3(double AngleStep_CM){
 		SetThetaCM(angle*deg);
 		KineRelativistic(theta3, E3, theta4, E4);
 		fNuclei3->SetKineticEnergy(E3);
-		
-		vx.push_back(theta3/deg);
-		vy.push_back(E3);
+	
+    if(E3>0){
+		  vx.push_back(theta3/deg);
+		  vy.push_back(E3);
+    }
 	}
 	fKineLine3 = new TGraph(vx.size(),&vx[0],&vy[0]);
 	
@@ -604,12 +606,13 @@ TGraph* Reaction::GetKinematicLine4(double AngleStep_CM){
     double theta3,E3,theta4,E4;
     
 	for (double angle=0 ; angle < 360 ; angle+=AngleStep_CM){
-		SetThetaCM(angle*deg);
+    SetThetaCM(angle*deg);
 		KineRelativistic(theta3, E3, theta4, E4);
 		fNuclei4->SetKineticEnergy(E4);
-		
-		vx.push_back(theta3/deg);
-		vy.push_back(E4);
+		if(E4>0){
+		  vx.push_back(theta4/deg);
+		  vy.push_back(E4);
+    }
 	}
     fKineLine4= new TGraph(vx.size(),&vx[0],&vy[0]);
   
@@ -666,7 +669,7 @@ TGraph* Reaction::GetThetaLabVersusThetaCM(double AngleStep_CM){
 	for (double angle=0 ; angle < 360 ; angle+=AngleStep_CM){
 		SetThetaCM(angle*deg);
 		KineRelativistic(theta3, E3, theta4, E4);
-		
+
 		vx.push_back(fThetaCM/deg);
 		vy.push_back(theta3/deg);
   }

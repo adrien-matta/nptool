@@ -40,6 +40,7 @@ using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
 TMust2Spectra::TMust2Spectra(){
+  SetName("Must2");
   fNumberOfTelescope = 0;
   fStripX=128;
   fStripY=128;
@@ -55,6 +56,7 @@ TMust2Spectra::TMust2Spectra(unsigned int NumberOfTelescope){
       << NumberOfTelescope << " Telescopes" << endl
       << "************************************************" << endl ;
 
+  SetName("Must2");
   fNumberOfTelescope = NumberOfTelescope;
   fStripX=128;
   fStripY=128;

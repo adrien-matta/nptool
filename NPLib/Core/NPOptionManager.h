@@ -95,6 +95,7 @@ class NPOptionManager{
       bool   GetInputPhysicalTreeOption()  {return fInputPhysicalTreeOption;}
       bool   GetGenerateHistoOption()      {return fGenerateHistoOption;}
       bool   GetCheckHistoOption()         {return fCheckHistoOption;}
+      bool   GetOnline()                   {return fOnline;}
       bool   GetPROOF()                    {return fPROOFMode;}
       int    GetVerboseLevel()             {return fVerboseLevel;}
       int    GetNumberOfEntryToAnalyse()   {return fNumberOfEntryToAnalyse;} 
@@ -125,6 +126,7 @@ class NPOptionManager{
       bool   fInputPhysicalTreeOption;
       bool   fGenerateHistoOption;
       bool   fCheckHistoOption;
+      bool   fOnline; // true if spectra server is started
       bool   fPROOFMode; // if true, the system run in a pROOF environment
       bool   fLastSimFile;
       bool   fLastPhyFile;

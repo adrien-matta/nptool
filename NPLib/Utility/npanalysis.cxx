@@ -11,6 +11,10 @@
 #include<stdio.h>
 #include<dlfcn.h>
 #include<stdlib.h>
+#include<unistd.h>
+
+// Root
+#include"TKey.h"
 
 #ifndef SHARED_LIB_EXTENSION_GLOB
 #define SHARED_LIB_EXTENSION_GLOB
@@ -64,7 +68,7 @@ int main(int argc , char** argv){
     if(myOptionManager->IsDefault("OutputFileName"))
       OutputfileName="PhysicsTree";
   }
-  
+
   // Case of Result tree produced
   else{
     TreeName="ResultTree";
@@ -99,13 +103,20 @@ int main(int argc , char** argv){
     }
   }
 
+  if(myOptionManager->GetOnline()){
+    // Request Detector manager to give the Spectra to the server
+    myDetector->SetSpectraServer(); 
+  }
+
   std::cout << std::endl << "///////// Starting Analysis ///////// "<< std::endl;
   TChain* Chain = RootInput:: getInstance()->GetChain();
   myOptionManager->GetNumberOfEntryToAnalyse();
   int nentries = Chain->GetEntries();
   if(nentries> myOptionManager->GetNumberOfEntryToAnalyse() && myOptionManager->GetNumberOfEntryToAnalyse()>0)
-    nentries = myOptionManager->GetNumberOfEntryToAnalyse() ;  
-  std::cout << " Number of Event to be treated : " << nentries << std::endl;
+    nentries = myOptionManager->GetNumberOfEntryToAnalyse() ; 
+
+  TString ChainName = Chain->GetName();
+  std::cout << " Number of Event to be treated : " << nentries << " on chain " << ChainName << std::endl;
 
   unsigned int inter = 0;
   unsigned int treated = 0;
@@ -113,7 +124,7 @@ int main(int argc , char** argv){
   int displayed=0;
   clock_t end;
   clock_t begin = clock();
-
+  int new_nentries = 0 ;
   bool IsPhysics = myOptionManager->GetInputPhysicalTreeOption();
 
   if(UserAnalysis==NULL){ 
@@ -125,13 +136,33 @@ int main(int argc , char** argv){
         myDetector->BuildPhysicalEvent();
         // Fill the tree
         tree->Fill();
+
         ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed);
+        if(myOptionManager->GetOnline() && i%10000==0){
+          bool first = true;
+          while(!Chain || first){
+            first = false;
+            myDetector->CheckSpectraServer();
+            RootInput::getInstance()->GetFile()->ReadKeys(kTRUE);
+
+            Chain = (TChain*)  RootInput::getInstance()->GetFile()->FindKeyAny(ChainName)->ReadObj();    
+            new_nentries = Chain->GetEntries();
+            if(new_nentries!=nentries){
+              RootInput::getInstance()->SetChain(Chain);
+              myDetector->InitializeRootInput();
+              nentries = Chain->GetEntries();
+            }
+            else{
+              first = true;
+            }
+          }
+        }
       }
     }
-    
+
     else{
-     cout << "\033[1;31m ERROR: You are requesting to rebuild a Physics Tree without any User Analysis, nothing to be done\033[0m" <<endl;
-     exit(1);
+      cout << "\033[1;31m ERROR: You are requesting to rebuild a Physics Tree without any User Analysis, nothing to be done\033[0m" <<endl;
+      exit(1);
     }
   }
 
@@ -147,6 +178,25 @@ int main(int argc , char** argv){
         // Fill the tree      
         tree->Fill();
         ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed);
+        if(myOptionManager->GetOnline() && i%10000==0){
+          bool first = true;
+          while(!Chain || first){
+            first = false;
+            myDetector->CheckSpectraServer();
+            RootInput::getInstance()->GetFile()->ReadKeys(kTRUE);
+
+            Chain = (TChain*)  RootInput::getInstance()->GetFile()->FindKeyAny(ChainName)->ReadObj();    
+            new_nentries = Chain->GetEntries();
+            if(new_nentries!=nentries){
+              RootInput::getInstance()->SetChain(Chain);
+              myDetector->InitializeRootInput();
+              nentries = Chain->GetEntries();
+            }
+            else{
+              first = true;
+            }
+          }
+        }      
       }
     }
 
@@ -159,6 +209,25 @@ int main(int argc , char** argv){
         // Fill the tree      
         tree->Fill();
         ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed);
+        if(myOptionManager->GetOnline() && i%10000==0){
+          bool first = true;
+          while(!Chain || first){
+            first = false;
+            myDetector->CheckSpectraServer();
+            RootInput::getInstance()->GetFile()->ReadKeys(kTRUE);
+
+            Chain = (TChain*)  RootInput::getInstance()->GetFile()->FindKeyAny(ChainName)->ReadObj();    
+            new_nentries = Chain->GetEntries();
+            if(new_nentries!=nentries){
+              RootInput::getInstance()->SetChain(Chain);
+              myDetector->InitializeRootInput();
+              nentries = Chain->GetEntries();
+            }
+            else{
+              first = true;
+            }
+          }
+        }      
       }
     }
     UserAnalysis->End();
@@ -168,11 +237,18 @@ int main(int argc , char** argv){
   myDetector->StopThread();
 #endif
   ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed);
+
+  if(myOptionManager->GetOnline()){
+    myDetector->CheckSpectraServer(); 
+  }
+
+
   if(myOptionManager->GetGenerateHistoOption())
     myDetector->WriteSpectra();
-  
+
   RootOutput::getInstance()->Destroy();
   RootInput::getInstance()->Destroy();
+
   return 0;
 }
 

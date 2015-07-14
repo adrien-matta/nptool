@@ -64,7 +64,7 @@ class CalibrationManager
          double ApplyResistivePositionCalibration(const string& ParameterPath , const double& RawValue);
          bool ApplyThreshold(const string& ParameterPath, const double& RawValue);
          double GetPedestal(const string& ParameterPath);
-      
+
       public:   //   To be called after initialisation
          //   Loop over the file list and catch the file used for calibration
          void LoadParameterFromFile();

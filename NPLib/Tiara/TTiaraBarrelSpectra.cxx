@@ -40,6 +40,7 @@ using namespace NPUNITS;
 
 ////////////////////////////////////////////////////////////////////////////////
 TTiaraBarrelSpectra::TTiaraBarrelSpectra(){
+  SetName("TiaraBarrel");
   fNumberOfDetector= 0;
   fInnerBarrelStrip=4;
   fOuterBarrelStrip=4;
@@ -53,6 +54,7 @@ TTiaraBarrelSpectra::TTiaraBarrelSpectra(unsigned int NumberOfDetector){
       << NumberOfDetector << " Detectors" << endl
       << "************************************************" << endl ;
 
+  SetName("TiaraBarrel");
   fNumberOfDetector= NumberOfDetector;
   fInnerBarrelStrip=4;
   fOuterBarrelStrip=4;

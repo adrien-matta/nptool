@@ -25,7 +25,7 @@
 // ROOT headers
 #include "TObject.h"
 #include "TH1.h"
-
+#include "TCanvas.h"
 // C++ STL headers
 #include <map>
 #include <vector>
@@ -38,12 +38,13 @@ class VSpectra {
     VSpectra();
     virtual ~VSpectra();
 
-//  private:
   public:
     // Instantiate and register histo to maps
     TH1* AddHisto1D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, string family);
     TH1* AddHisto2D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, 
         Int_t nbinsy, Double_t ylow, Double_t yup, string family);
+    // Add a Canvas to the online
+    void AddCanvas(TCanvas* c );
 
   public:
     // Initialization methods
@@ -63,10 +64,20 @@ class VSpectra {
     map< vector<string>, TH1* > GetMapHisto() const {return fMapHisto;}
     TH1* GetHisto(string& family, string& name);    
     void WriteSpectra(string filename = "VOID");      
-
+    // Return the canvases created for online display
+    vector<TCanvas*> GetCanvas();
+     
   private:
     // map holding histo pointers and their family names
     map< vector<string>, TH1* > fMapHisto;
+    vector<TCanvas*> m_Canvas;
+    
+  private: // Name of the Detector
+   string m_name;
+
+  public:
+   inline void SetName(string name) {m_name=name;}
+   inline string GetName() {return m_name;}
 };
 
 #endif

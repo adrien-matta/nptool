@@ -22,7 +22,7 @@
  *****************************************************************************/
 //   NPL
 #include "NPVDetector.h"
-
+#include "NPSpectraServer.h"
 // ROOT
 #include "TH1.h"
 
@@ -60,6 +60,13 @@ namespace NPL{
       vector< map< vector<string>, TH1* > > GetSpectra();  
       vector<string>                        GetDetectorList();
 
+    public: // for online spectra server
+      void SetSpectraServer();
+      void StopSpectraServer();
+      void CheckSpectraServer();
+    private :
+      NPL::SpectraServer* m_SpectraServer;
+
     private:   
       // The map containning all detectors
       // Using a Map one can access to any detector using its name
@@ -71,7 +78,7 @@ namespace NPL{
       VDetector_FuncPtr m_ClearEventDataPtr;
       VDetector_FuncPtr m_FillSpectra;
       VDetector_FuncPtr m_CheckSpectra;
-
+      
     #if __cplusplus > 199711L 
     private: // Thread Pool defined if C++11 is available
       vector<thread> m_ThreadPool;
@@ -83,7 +90,8 @@ namespace NPL{
       void StartThread(NPL::VDetector*,unsigned int);
       void InitThreadPool(); 
       bool IsDone();
-    #endif
+   
+       #endif
 
     private:
       double m_TargetThickness;
@@ -106,7 +114,7 @@ namespace NPL{
       double GetTargetX()             {return m_TargetX;}
       double GetTargetY()             {return m_TargetY;}
       double GetTargetZ()             {return m_TargetZ;}
-  };
+     };
 }
 
 #endif 

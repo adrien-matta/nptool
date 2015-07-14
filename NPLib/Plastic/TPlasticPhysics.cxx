@@ -213,7 +213,7 @@ void TPlasticPhysics::ReadConfiguration(string Path)
                   /////////////////////////////////////////////////
                   //   If All necessary information there, toggle out
                
-               if ( check_Theta && check_Phi && check_R && check_Thickness && check_Radius &&   check_LeadThickness && check_Scintillator &&   check_Height &&   check_Width && check_Shape && check_X && check_Y && check_Z ) 
+               if ( ((check_Theta && check_Phi && check_R) ||( check_X && check_Y && check_Z)  )&& check_Thickness  &&   check_LeadThickness && check_Scintillator && (check_Radius ||  (check_Height && check_Width)) && check_Shape ) 
                   { 
                      NumberOfDetector++;
                      

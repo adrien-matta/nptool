@@ -49,13 +49,22 @@ std::string LOGON_LIB_EXTENSION = ".so";
 #endif
 
 
-void NPToolLogon(){
+//#include "Style_nptool.C"
+
+void NPToolLogon(){ 
+  // Create the NPTool Stype
+  TString NPLPath = gSystem->Getenv("NPTOOL");  
+  gROOT->ProcessLine(Form(".x %s/NPLib/scripts/Style_nptool.C",NPLPath.Data()));
+  gROOT->ProcessLine(Form(".x %s/NPLib/scripts/Style_nponline.C",NPLPath.Data()));
+
+
+
   // Change the standard random generator to TRandom2
   gRandom = new TRandom2();
 
   TString currentpath = gSystem->Getenv("PWD");
   TString path = gSystem->Getenv("NPTOOL");
-
+ 
   // Add include path
   gROOT->ProcessLine(Form(".include %s/NPLib/include", path.Data()));
 

@@ -42,7 +42,6 @@ G4bool PS_Calorimeter::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   G4double* Infos = new G4double[2+mysize];
   Infos[0] = aStep->GetTotalEnergyDeposit();
   Infos[1] = aStep->GetPreStepPoint()->GetGlobalTime();
-
   for(unsigned int i = 0 ; i < mysize ; i++){ 
     Infos[i+2] = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_NestingLevel[i]);
   }

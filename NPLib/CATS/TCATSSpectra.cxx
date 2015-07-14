@@ -44,6 +44,7 @@ using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
 TCATSSpectra::TCATSSpectra(){
+  SetName("CATS");
   fNumberOfCats = 0;
   fStripsNumber = 28;
 
@@ -60,7 +61,7 @@ TCATSSpectra::TCATSSpectra(unsigned int NumberOfCats){
     cout << "TCATSSpectra: Initalising control spectra for " << NumberOfCats << " detectors" << endl; 
     cout << "************************************************" << endl;
   }
-
+  SetName("CATS");
   fNumberOfCats = NumberOfCats;
   fStripsNumber = 28;
   // An histo of size fEventLoopSize is reset every fEventLoopSize to monitor the

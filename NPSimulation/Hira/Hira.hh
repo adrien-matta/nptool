@@ -1,5 +1,5 @@
-#ifndef Sharc_h
-#define Sharc_h 1
+#ifndef Hira_h
+#define Hira_h 1
 /*****************************************************************************
  * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
  *                                                                           *
@@ -14,7 +14,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe the Sharc Silicon detector                           *
+ *  This class describe the Hira Telescops                                   *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -47,44 +47,47 @@ namespace HIRA
 {
 	
 	// Resolution
-	const G4double ResoTime		= 0.212765957    ;// = 500ps                 //   Unit is  ns/2.35
-	const G4double ResoCsI      	= 0.08           ;// = 188 kev of resolution //   Unit is MeV/2.35
-	const G4double ResoThickSi  	= 0.022          ;// = 52keV of Resolution   //   Unit is MeV/2.35
-	const G4double ResoThinSi	= 0.064          ;// = 150keV of Resolution   //   Unit is MeV/2.35
+    const G4double ResoTime         = 0.212765957;      // = 500ps                 //   Unit is  ns/2.35
+    const G4double ResoCsI      	= 0.200/2.35;       // = 250 kev of resolution //   Unit is MeV/2.35
+    const G4double ResoThickSi  	= 0.065/2.35;       // = 120keV of Resolution   //   Unit is MeV/2.35
+    const G4double ResoThinSi       = 0.050/2.35;       // = 80keV of Resolution   //   Unit is MeV/2.35
 	
-	const G4double EnergyThreshold = 100*keV;
+    const G4double EnergyThreshold = 0.;//100*keV;
 	
 	const G4double FaceFront	= 7.*cm ;
 	const G4double FaceBack		= 7*cm ;
 	const G4double Length		= 7.*cm ;
 	const G4int NumberOfStrip	= 32;
 	
-	const G4double SiliconFace       = 64*mm ;
+	const G4double SiliconFace       = 63*mm ;
 	const G4double AluStripThickness = 0.4*micrometer ;
 	const G4double ThinSiThickness	 = 65*micrometer ;
 	const G4double ThickSiThickness	 = 1500*micrometer ;
 	const G4double DistBetweenSi	 = 1*cm;
 	const G4double VacBoxThickness   = 1*cm ;
 	const G4double MylarCsIThickness = 3*micrometer;
-	const G4double CsIThickness      = 4.*cm + 2*MylarCsIThickness ;
-	const G4double CsIFaceFront      = 3.2*cm;
-	const G4double CsIFaceBack       = 3.7*cm;
-	const G4double DistInterCsI      = 0.2*mm;
+    const G4double CsIThickness      = 4.*cm;// + 2*MylarCsIThickness ;
+    
+    const G4double CsIXFront         = 33.*mm;
+    const G4double CsIXBack          = 37.*mm;
+    const G4double CsIYFront         = 33.*mm;
+    const G4double CsIYBack          = 37.*mm;
+    const G4double DistInterCsI      = 1.5*mm;
+    
 	const G4double ClusterFaceFront  = 7*cm;
 	const G4double ClusterFaceBack   = 9*cm;
 	
-	
 	// Starting at the front and going to CsI
 	const G4double AluStripFrontThinSi_PosZ		= Length* -0.5 + 0.5*AluStripThickness;
-	const G4double ThinSi_PosZ			= AluStripFrontThinSi_PosZ + 0.5*AluStripThickness + 0.5*ThinSiThickness;
+	const G4double ThinSi_PosZ                  = AluStripFrontThinSi_PosZ + 0.5*AluStripThickness + 0.5*ThinSiThickness;
 	const G4double AluStripBackThinSi_PosZ		= ThinSi_PosZ + 0.5*ThinSiThickness + 0.5*AluStripThickness;
 	
 	const G4double AluStripFrontThickSi_PosZ	= AluStripBackThinSi_PosZ + DistBetweenSi + 0.5*AluStripThickness + 0.5*AluStripThickness;
-	const G4double ThickSi_PosZ			= AluStripFrontThickSi_PosZ + 0.5*AluStripThickness + 0.5*ThickSiThickness;
+	const G4double ThickSi_PosZ                 = AluStripFrontThickSi_PosZ + 0.5*AluStripThickness + 0.5*ThickSiThickness;
 	const G4double AluStripBackThickSi_PosZ		= ThickSi_PosZ + 0.5*ThickSiThickness + 0.5*AluStripThickness;
 	
-	const G4double VacBox_PosZ			= AluStripBackThickSi_PosZ + 0.5*AluStripThickness + 0.5* VacBoxThickness;
-	const G4double CsI_PosZ				= VacBox_PosZ + 0.5*VacBoxThickness + 0.5*CsIThickness;
+	const G4double VacBox_PosZ                  = AluStripBackThickSi_PosZ + 0.5*AluStripThickness + 0.5* VacBoxThickness;
+	const G4double CsI_PosZ                     = VacBox_PosZ + 0.5*VacBoxThickness + 0.5*CsIThickness;
 	
 	
    
@@ -128,13 +131,7 @@ private:
 	////////////////////////////////////////////////////
 	//////// Specific Function of this Class ///////////
 	////////////////////////////////////////////////////
-public:
-	// To add a box detector
-	// Effectively construct Volume
-	void ConstructCsICrystal();
-	void ConstructThinSi();
-	void ConstructThickSi();
-	
+
   
   ////////////////////////////////////////////////////
   /////////  Inherite from VDetector class ///////////

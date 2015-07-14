@@ -5,7 +5,7 @@
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
-/*****************************************************************************
+/****************************************************************************
  * Original Author: N. de Sereville  contact address: deserevi@ipno.in2p3.fr *
  *                                                                           *
  * Creation Date  : dec 2013                                                 *
@@ -36,18 +36,14 @@
 #include <cstdlib>
 using namespace std;
 
-
-VSpectra::VSpectra()
-{
+////////////////////////////////////////////////////////////////////////////////
+VSpectra::VSpectra(){
+  m_name="no_name";
 }
 
-
-
-VSpectra::~VSpectra()
-{
+////////////////////////////////////////////////////////////////////////////////
+VSpectra::~VSpectra(){
 }
-
-
 
 ////////////////////////////////////////////////////////////////////////////////
 TH1* VSpectra::AddHisto1D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, string family){
@@ -80,6 +76,15 @@ TH1* VSpectra::AddHisto2D(string name, string title, Int_t nbinsx, Double_t xlow
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void VSpectra::AddCanvas(TCanvas* c){
+  m_Canvas.push_back(c);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+vector<TCanvas*> VSpectra::GetCanvas(){
+  return m_Canvas;
+}
+////////////////////////////////////////////////////////////////////////////////
 TH1* VSpectra::GetHisto(string& family, string& name){
   vector<string> index;
   index.reserve(2);
@@ -102,8 +107,7 @@ TH1* VSpectra::GetHisto(string& family, string& name){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void VSpectra::WriteSpectra(string filename)
-{
+void VSpectra::WriteSpectra(string filename){
    TFile* f = NULL; 
    if (filename != "VOID") {
       f = new TFile(filename.c_str(), "RECREATE");
@@ -114,11 +118,12 @@ void VSpectra::WriteSpectra(string filename)
    }
 
    // created dedicated directory for spectra
-   TDirectory *dir = (TDirectory*) f->Get("ControlSpectra");
+    string dirname = "ControlSpectra/"+m_name;
+   TDirectory *dir = (TDirectory*) f->Get(dirname.c_str());
    if (!dir) {
-      f->mkdir("ControlSpectra");
-      f->cd("ControlSpectra");
+      f->mkdir(dirname.c_str());
    }
+   f->cd(dirname.c_str());
 
    // write all histos
    map< vector<string>, TH1* >::iterator it;
@@ -126,9 +131,12 @@ void VSpectra::WriteSpectra(string filename)
       it->second->Write();
    }
 
+   // Go back to root directory
+   f->cd();
+
    // close file and delete associate pointer only in case
    // of filename.
-   if (filename != "VOID") {
+       if (filename != "VOID") {
       f->Close();
       delete f;
    }

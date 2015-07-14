@@ -59,7 +59,7 @@ public:
   inline Double_t GetTimeCFD(const unsigned int &i) {return fTrifoil_TimeCFD[i];}
   inline Double_t GetTimeLED(const unsigned int &i) {return fTrifoil_TimeLED[i];}
 
-  inline unsigned int GetMultiplicity() {return fTrifoil_TimeCFD.size();}
+  inline unsigned int GetMultiplicity() {return fTrifoil_Waveform.size();}
   ClassDef(TTrifoilData,1)  // TrifoilData structure
 };
 
