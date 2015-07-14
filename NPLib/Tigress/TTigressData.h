@@ -61,21 +61,22 @@ public:
   inline void SetGeCloverNbr(const UShort_t &GeCloverNbr){fTIG_Ge_CloverNbr.push_back(GeCloverNbr); }
   inline void SetGeCrystalNbr(const UShort_t &GeCrystalNbr){fTIG_Ge_CrystalNbr.push_back(GeCrystalNbr);}
   inline void SetGeSegmentNbr(const UShort_t &GeSegmentNbr){fTIG_Ge_SegmentNbr.push_back(GeSegmentNbr);}
-  inline void SetGeEnergy(const UShort_t &GeEnergy){fTIG_Ge_Energy.push_back(GeEnergy);}
-  inline void SetGeTimeCFD(const UShort_t &GeTimeCFD){fTIG_Ge_TimeCFD.push_back(GeTimeCFD);}
-  inline void SetGeTimeLED(const UShort_t &GeTimeLED){fTIG_Ge_TimeLED.push_back(GeTimeLED);}
+  inline void SetGeEnergy(const Double_t &GeEnergy){fTIG_Ge_Energy.push_back(GeEnergy);}
+  inline void SetGeTimeCFD(const Double_t &GeTimeCFD){fTIG_Ge_TimeCFD.push_back(GeTimeCFD);}
+  inline void SetGeTimeLED(const Double_t &GeTimeLED){fTIG_Ge_TimeLED.push_back(GeTimeLED);}
 
   inline void SetBGOCloverNbr(const UShort_t &BGOCloverNbr){fTIG_BGO_CloverNbr.push_back(BGOCloverNbr); }
   inline void SetBGOCrystalNbr(const UShort_t &BGOCrystalNbr){fTIG_BGO_CrystalNbr.push_back(BGOCrystalNbr);}
   inline void SetBGOPmNbr(const UShort_t &BGOPmNbr){fTIG_BGO_PmNbr.push_back(BGOPmNbr);}
-  inline void SetBGOEnergy(const UShort_t &BGOEnergy){fTIG_BGO_Energy.push_back(BGOEnergy);}
-  inline void SetBGOTimeCFD(const UShort_t &BGOTimeCFD){fTIG_BGO_TimeCFD.push_back(BGOTimeCFD);}
-  inline void SetBGOTimeLED(const UShort_t &BGOTimeLED){fTIG_BGO_TimeLED.push_back(BGOTimeLED);}
+  inline void SetBGOEnergy(const Double_t &BGOEnergy){fTIG_BGO_Energy.push_back(BGOEnergy);}
+  inline void SetBGOTimeCFD(const Double_t &BGOTimeCFD){fTIG_BGO_TimeCFD.push_back(BGOTimeCFD);}
+  inline void SetBGOTimeLED(const Double_t &BGOTimeLED){fTIG_BGO_TimeLED.push_back(BGOTimeLED);}
 
   /////////////////////           GETTERS           ////////////////////////
   inline UShort_t GetGeCloverNbr(const unsigned int &i)   {return fTIG_Ge_CloverNbr[i]; }
   inline UShort_t GetGeCrystalNbr(const unsigned int &i)  {return fTIG_Ge_CrystalNbr[i]; }
   inline UShort_t GetGeSegmentNbr(const unsigned int &i)  {return fTIG_Ge_SegmentNbr[i]; }
+
   inline Double_t GetGeEnergy(const unsigned int &i)      {return fTIG_Ge_Energy[i];}
   inline Double_t GetGeTimeCFD(const unsigned int &i)     {return fTIG_Ge_TimeCFD[i];}
   inline Double_t GetGeTimeLED(const unsigned int &i)     {return fTIG_Ge_TimeLED[i];}

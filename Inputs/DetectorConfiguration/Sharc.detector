@@ -4,7 +4,7 @@ GeneralTarget
 
 %0.2mg/cm2
 Target
-	THICKNESS= 4.8
+	THICKNESS= 9
 	RADIUS=	5
 	MATERIAL= CD2
 	ANGLE= 0
@@ -82,4 +82,15 @@ Sharc
     R= 0
     Phi= 270
     ThicknessDector= 500
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Plastic
+	X= 0
+	Y= 0
+	Z= 400
+	Thickness= 0.025
+	Shape= Square
+	Height= 40
+	Width= 40
+	Scintillator= BC400
+	LeadThickness= 0.09
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

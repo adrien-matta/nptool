@@ -48,7 +48,7 @@ class TTigressPhysics :  public TObject, public NPL::VDetector{
      void ReadConfiguration(string);
 
     //   Add Parameter to the CalibrationManger
-     void AddParameterToCalibrationManager(){} ;      
+     void AddParameterToCalibrationManager();      
 
     //   Activated associated Branches and link it to the private member DetectorData address
     //   In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
@@ -87,7 +87,10 @@ class TTigressPhysics :  public TObject, public NPL::VDetector{
     vector<int> Crystal_Number;
      vector<int> Clover_Number;
     vector<bool>   BGO;
-    
+   vector<double>   Gamma_Time;
+  vector<double> AddBack_E;   
+  vector<double> AddBack_DC;   
+
    public:
     TVector3 GetPositionOfInteraction(int i) ;
     

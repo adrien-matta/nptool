@@ -36,24 +36,19 @@ using namespace std;
 ClassImp(TTrifoilData)
 
 /////////////////////////
-TTrifoilData::TTrifoilData()
-{
-
+TTrifoilData::TTrifoilData(){
 }
 
 /////////////////////////
-TTrifoilData::~TTrifoilData()
-{
+TTrifoilData::~TTrifoilData(){
 }
 
 /////////////////////////
-void TTrifoilData::Clear()
-{
+void TTrifoilData::Clear(){
   fTrifoil_Waveform.clear();
   fTrifoil_TimeCFD.clear();
   fTrifoil_TimeLED.clear();
 }
 /////////////////////////
-void TTrifoilData::Dump() const
-{
+void TTrifoilData::Dump() const{
 }
