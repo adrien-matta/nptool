@@ -239,6 +239,20 @@ void PhysicsList::ConstructEM(){
   opt.SetMaxEnergy(50.*GeV)    ;
   opt.SetDEDXBinning(5000)       ;
   opt.SetLambdaBinning(5000)     ;
+    
+    //energy loss
+    opt.SetLinearLossLimit(1.e-9);
+    opt.SetStepFunction(0.001, 10.*um);
+    
+    //Multiple scattering
+    opt.SetMscLateralDisplacement(true);
+    opt.SetLossFluctuations(true);
+    //opt.SetMscStepLimitation(fMinimal);
+    //opt.SetMscStepLimitation(fUseDistanceToBoundary);
+    opt.SetMscStepLimitation(fUseSafety);
+    
+    //ionization
+    opt.SetSubCutoff(false);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -251,9 +265,11 @@ void PhysicsList::SetCuts(){
   SetCutsWithDefault();
   
   // for gamma-rays
-  //   SetCutValue(0.01*mm, "gamma");
-  //   SetCutValue(0.01*mm, "e-");
-  //   SetCutValue(0.01*mm, "e+");
+  /*  G4double em_cuts = 0.01*mm; // Use 10cm to avoid generating delta-rays
+    //G4double em_cuts = 10.*cm; // Use 10cm to avoid generating delta-rays
+    SetCutValue(em_cuts, "gamma");
+    SetCutValue(em_cuts, "e-");
+    SetCutValue(em_cuts, "e+");*/
   
   // Retrieve verbose level
   SetVerboseLevel(temp);
