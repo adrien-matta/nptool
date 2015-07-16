@@ -40,7 +40,7 @@ void Analysis::Init(){
   Sharc = (TSharcPhysics*)  m_DetectorManager -> GetDetector("Sharc");
   LightCD2 = EnergyLoss("proton_CD2.G4table","G4Table",100 );
   LightSi = EnergyLoss("proton_Si.G4table","G4Table",100);
-  BeamCD2 = EnergyLoss("Si28[0.0]_CD2.G4table","G4Table",100);
+  BeamCD2 = EnergyLoss("Mg28[0.0]_CD2.G4table","G4Table",100);
   myReaction = new NPL::Reaction();
   myReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
   TargetThickness = m_DetectorManager->GetTargetThickness()*micrometer;
@@ -53,6 +53,9 @@ void Analysis::Init(){
   CsI_E_M2 = 0 ;
   Energy = 0;
   E_M2 = 0;
+
+  RunNumber = 0;
+  RunNumberMinor=0;
 
   ThetaSharcSurface = 0;
   X_Sharc = 0 ;
@@ -119,15 +122,20 @@ void Analysis::TreatEvent(){
 void Analysis::End(){
 }
 ////////////////////////////////////////////////////////////////////////////////
-void Analysis::InitOutputBranch() {
+void Analysis::InitOutputBranch(){
   RootOutput::getInstance()->GetTree()->Branch("Ex",&Ex,"Ex/D");
   RootOutput::getInstance()->GetTree()->Branch("ELab",&ELab,"ELab/D");
   RootOutput::getInstance()->GetTree()->Branch("ThetaLab",&ThetaLab,"ThetaLab/D");
   RootOutput::getInstance()->GetTree()->Branch("ThetaCM",&ThetaCM,"ThetaCM/D");
+  RootOutput::getInstance()->GetTree()->Branch("RunNumber",&RunNumber,"RunNumber/I");
+  RootOutput::getInstance()->GetTree()->Branch("RunNumberMinor",&RunNumberMinor,"RunNumberMinor/I");
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::InitInputBranch(){
+  RootInput::getInstance()->GetChain()->SetBranchAddress("RunNumber",&RunNumber);
+  RootInput::getInstance()->GetChain()->SetBranchAddress("RunNumberMinor",&RunNumberMinor);
 }
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::ReInitValue(){

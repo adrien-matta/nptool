@@ -67,6 +67,8 @@ TInitialConditions* myInit ;
                                                            // intermediate variable
   TRandom3 Rand ;
   int DetectorNumber  ;
+  int RunNumber;
+  int RunNumberMinor;
   double ThetaNormalTarget;
   double ThetaM2Surface ;
   double Si_E_M2 ;

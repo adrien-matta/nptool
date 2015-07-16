@@ -55,13 +55,18 @@ void TTrifoilPhysics::BuildPhysicalEvent(){
   for (unsigned int i = 0 ; i < mysize ; i++){
     TH1F h = m_EventData->GetWaveform(i);
     unsigned int bins = h.GetNbinsX();
-    for(unsigned int b = 1 ; b < bins ; b++){
-      double diff =  h.GetBinContent(b)-h.GetBinContent(b+1);
-        if(diff<-1000){
+//    for(unsigned int b = 1 ; b < bins ; b++){
+   if(h.GetMaximum()>800){
+       Time.push_back(h.GetMaximumBin());    
+       Energy.push_back(h.GetMaximum());  
+   }
+      
+      /*   double diff =  h.GetBinContent(b)-h.GetBinContent(b+1);
+        if(diff<-750){
           Time.push_back(b); 
           Energy.push_back(diff);
-        }
-      }
+        }*/
+  //    }
     }
   }
 

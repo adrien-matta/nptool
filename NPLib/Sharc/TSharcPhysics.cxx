@@ -50,7 +50,7 @@ TSharcPhysics::TSharcPhysics(){
   m_MaximumStripMultiplicityAllowed = 10;
   m_StripEnergyMatchingSigma = 0.060    ;
   //m_StripEnergyMatchingSigma = 10    ;
-  m_StripEnergyMatchingNumberOfSigma = 3;
+  m_StripEnergyMatchingNumberOfSigma = 5;
   
   // Threshold
   m_StripFront_E_RAW_Threshold = 0 ;
