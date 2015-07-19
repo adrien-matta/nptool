@@ -871,14 +871,14 @@ NPL::VDetector* TW1Physics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_w1{
   public:
-    proxy(){
+    proxy_w1(){
       NPL::DetectorFactory::getInstance()->AddToken("W1","W1");
       NPL::DetectorFactory::getInstance()->AddDetector("W1",TW1Physics::Construct);
     }
 };
 
-proxy p;
+proxy_w1 p;
 }
 

@@ -358,14 +358,14 @@ NPL::VDetector* TSiResPhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_sires{
   public:
-    proxy(){
+    proxy_sires(){
       NPL::DetectorFactory::getInstance()->AddToken("SiRes","SiRes");
       NPL::DetectorFactory::getInstance()->AddDetector("SiRes",TSiResPhysics::Construct);
     }
 };
 
-proxy p;
+proxy_sires p;
 }
 

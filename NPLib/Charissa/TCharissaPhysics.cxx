@@ -1382,14 +1382,14 @@ NPL::VDetector* TCharissaPhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_charissa{
   public:
-    proxy(){
+    proxy_charissa(){
       NPL::DetectorFactory::getInstance()->AddToken("CharissaTelescope","Charissa");
       NPL::DetectorFactory::getInstance()->AddDetector("CharissaTelescope",TCharissaPhysics::Construct);
     }
 };
 
-proxy p;
+proxy_charissa p;
 }
 

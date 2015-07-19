@@ -348,14 +348,14 @@ NPL::VDetector* TLaBr3Physics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_labr3{
   public:
-    proxy(){
+    proxy_labr3(){
       NPL::DetectorFactory::getInstance()->AddToken("LaBr3","LaBr3");
       NPL::DetectorFactory::getInstance()->AddDetector("LaBr3",TLaBr3Physics::Construct);
     }
 };
 
-proxy p;
+proxy_labr3 p;
 }
 

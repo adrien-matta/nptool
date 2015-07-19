@@ -739,14 +739,14 @@ NPL::VDetector* TExogamPhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_exogam{
   public:
-    proxy(){
+    proxy_exogam(){
       NPL::DetectorFactory::getInstance()->AddToken("EXOGAMArray","Exogam");
       NPL::DetectorFactory::getInstance()->AddDetector("EXOGAMArray",TExogamPhysics::Construct);
     }
 };
 
-proxy p;
+proxy_exogam p;
 }
 

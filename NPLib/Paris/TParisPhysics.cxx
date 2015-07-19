@@ -945,14 +945,14 @@ NPL::VDetector* TParisPhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_paris{
   public:
-    proxy(){
+    proxy_paris(){
       NPL::DetectorFactory::getInstance()->AddToken("Paris","Paris");
       NPL::DetectorFactory::getInstance()->AddDetector("Paris",TParisPhysics::Construct);
     }
 };
 
-proxy p;
+proxy_paris p;
 }
 

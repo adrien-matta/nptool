@@ -481,14 +481,14 @@ NPL::VDetector* THiraPhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-    class proxy{
+    class proxy_hira{
     public:
-        proxy(){
+        proxy_hira(){
             NPL::DetectorFactory::getInstance()->AddToken("HIRAArray","Hira");
             NPL::DetectorFactory::getInstance()->AddDetector("HIRAArray",THiraPhysics::Construct);
         }
     };
     
-    proxy p;
+    proxy_hira p;
 }
 

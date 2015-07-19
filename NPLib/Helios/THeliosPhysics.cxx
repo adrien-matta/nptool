@@ -180,14 +180,14 @@ NPL::VDetector* THeliosPhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_helios{
   public:
-    proxy(){
+    proxy_helios(){
       NPL::DetectorFactory::getInstance()->AddToken("Helios","Helios");
       NPL::DetectorFactory::getInstance()->AddDetector("Helios",THeliosPhysics::Construct);
     }
 };
 
-proxy p;
+proxy_helios p;
 }
 

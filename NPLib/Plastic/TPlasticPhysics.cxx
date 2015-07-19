@@ -308,14 +308,14 @@ NPL::VDetector* TPlasticPhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_plastic{
   public:
-    proxy(){
+    proxy_plastic(){
       NPL::DetectorFactory::getInstance()->AddToken("Plastic","Plastic");
       NPL::DetectorFactory::getInstance()->AddDetector("Plastic",TPlasticPhysics::Construct);
     }
 };
 
-proxy p;
+proxy_plastic p;
 }
 

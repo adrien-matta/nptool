@@ -577,14 +577,14 @@ NPL::VDetector* TFatimaPhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_fatima{
   public:
-    proxy(){
+    proxy_fatima(){
       NPL::DetectorFactory::getInstance()->AddToken("Fatima","Fatima");
       NPL::DetectorFactory::getInstance()->AddDetector("Fatima",TFatimaPhysics::Construct);
     }
 };
 
-proxy p;
+proxy_fatima p;
 }
 

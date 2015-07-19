@@ -1437,14 +1437,14 @@ NPL::VDetector* TMust2Physics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_must2{
   public:
-    proxy(){
+    proxy_must2(){
       NPL::DetectorFactory::getInstance()->AddToken("MUST2Array","MUST2");
       NPL::DetectorFactory::getInstance()->AddDetector("MUST2Array",TMust2Physics::Construct);
     }
 };
 
-proxy p;
+proxy_must2 p;
 }
 

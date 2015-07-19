@@ -438,14 +438,14 @@ NPL::VDetector* TChio_digPhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_chiodig{
   public:
-    proxy(){
+    proxy_chiodig(){
       NPL::DetectorFactory::getInstance()->AddToken("Chio","Chio");
       NPL::DetectorFactory::getInstance()->AddDetector("Chio",TChio_digPhysics::Construct);
     }
 };
 
-proxy p;
+proxy_chiodig p;
 }
 

@@ -331,14 +331,14 @@ NPL::VDetector* TSiLiPhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_sili{
   public:
-    proxy(){
+    proxy_sili(){
       NPL::DetectorFactory::getInstance()->AddToken("SiLi","SiLi");
       NPL::DetectorFactory::getInstance()->AddDetector("SiLi",TSiLiPhysics::Construct);
     }
 };
 
-proxy p;
+proxy_sili p;
 }
 

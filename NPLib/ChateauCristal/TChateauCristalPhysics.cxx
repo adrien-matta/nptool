@@ -515,14 +515,14 @@ NPL::VDetector* TChateauCristalPhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_chateaucristal{
   public:
-    proxy(){
+    proxy_chateaucristal(){
       NPL::DetectorFactory::getInstance()->AddToken("ChateauCristal","ChateauCristal");
       NPL::DetectorFactory::getInstance()->AddDetector("ChateauCristal",TChateauCristalPhysics::Construct);
     }
 };
 
-proxy p;
+proxy_chateaucristal p;
 }
 

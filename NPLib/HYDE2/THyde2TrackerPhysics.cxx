@@ -79,14 +79,14 @@ NPL::VDetector* THyde2TrackerPhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_hyde2{
   public:
-    proxy(){
+    proxy_hyde2(){
       NPL::DetectorFactory::getInstance()->AddToken("Hyde2Tracker","Hyde2Tracker");
       NPL::DetectorFactory::getInstance()->AddDetector("Hyde2Tracker",THyde2TrackerPhysics::Construct);
     }
 };
 
-proxy p;
+proxy_hyde2 p;
 }
 

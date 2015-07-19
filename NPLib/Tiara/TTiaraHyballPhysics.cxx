@@ -789,14 +789,14 @@ NPL::VDetector* TTiaraHyballPhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_hyball{
   public:
-    proxy(){
+    proxy_hyball(){
       NPL::DetectorFactory::getInstance()->AddToken("Tiara","Tiara");
       NPL::DetectorFactory::getInstance()->AddDetector("TiaraHyballWedge",TTiaraHyballPhysics::Construct);
     }
 };
 
-proxy p;
+proxy_hyball p;
 }
 

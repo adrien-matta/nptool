@@ -422,15 +422,15 @@ NPL::VDetector* TChio_anPhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class anproxy{
+class proxy_chioan{
   public:
-    anproxy(){
+    proxy_chioan(){
       NPL::DetectorFactory::getInstance()->AddToken("IonisationChamber","Chio");
       NPL::DetectorFactory::getInstance()->AddDetector("IonisationChamber",TChio_anPhysics::Construct);
     }
 };
 
-anproxy anp ;
+proxy_chioan anp ;
 
 }
 

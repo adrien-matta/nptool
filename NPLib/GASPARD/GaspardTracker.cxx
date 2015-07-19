@@ -329,15 +329,15 @@ NPL::VDetector* GaspardTracker::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_gaspard{
   public:
-    proxy(){
+    proxy_gaspard(){
       NPL::DetectorFactory::getInstance()->AddToken("GaspardTracker","GASPARD");
       NPL::DetectorFactory::getInstance()->AddDetector("GaspardTracker",GaspardTracker::Construct);
     }
 };
 
-proxy p;
+proxy_gaspard p;
 }
 
 

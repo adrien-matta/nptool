@@ -1006,14 +1006,14 @@ NPL::VDetector* TCATSPhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_cats{
   public:
-    proxy(){
+    proxy_cats(){
       NPL::DetectorFactory::getInstance()->AddToken("CATSDetector","CATS");
       NPL::DetectorFactory::getInstance()->AddDetector("CATSDetector",TCATSPhysics::Construct);
     }
 };
 
-proxy p;
+proxy_cats p;
 }
 

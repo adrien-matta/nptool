@@ -614,14 +614,14 @@ NPL::VDetector* TAnnularS1Physics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_annulars1{
   public:
-    proxy(){
+    proxy_annulars1(){
       NPL::DetectorFactory::getInstance()->AddToken("AnnularS1","AnnularS1");
       NPL::DetectorFactory::getInstance()->AddDetector("AnnularS1",TAnnularS1Physics::Construct);
     }
 };
 
-proxy p;
+proxy_annulars1 p;
 }
 

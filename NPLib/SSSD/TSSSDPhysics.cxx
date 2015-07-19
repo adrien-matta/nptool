@@ -436,14 +436,14 @@ NPL::VDetector* TSSSDPhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_sssd{
   public:
-    proxy(){
+    proxy_sssd(){
       NPL::DetectorFactory::getInstance()->AddToken("SSSD","SSSD");
       NPL::DetectorFactory::getInstance()->AddDetector("SSSD",TSSSDPhysics::Construct);
     }
 };
 
-proxy p;
+proxy_sssd p;
 }
 

@@ -750,14 +750,14 @@ NPL::VDetector* TComptonTelescopePhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_comptontelescope{
   public:
-    proxy(){
+    proxy_comptontelescope(){
       NPL::DetectorFactory::getInstance()->AddToken("ComptonTelescope","ComptonTelescope");
       NPL::DetectorFactory::getInstance()->AddDetector("ComptonTelescope",TComptonTelescopePhysics::Construct);
     }
 };
 
-proxy p;
+proxy_comptontelescope p;
 }
 

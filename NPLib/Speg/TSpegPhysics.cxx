@@ -1705,14 +1705,14 @@ NPL::VDetector* TSpegPhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_speg{
   public:
-    proxy(){
+    proxy_speg(){
       NPL::DetectorFactory::getInstance()->AddToken("Speg","Speg");
       NPL::DetectorFactory::getInstance()->AddDetector("Speg",TSpegPhysics::Construct);
     }
 };
 
-proxy p;
+proxy_speg p;
 }
 

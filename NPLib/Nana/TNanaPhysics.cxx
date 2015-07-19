@@ -578,14 +578,14 @@ NPL::VDetector* TNanaPhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_nana{
   public:
-    proxy(){
+    proxy_nana(){
       NPL::DetectorFactory::getInstance()->AddToken("Nana","Nana");
       NPL::DetectorFactory::getInstance()->AddDetector("Nana",TNanaPhysics::Construct);
     }
 };
 
-proxy p;
+proxy_nana p;
 }
 

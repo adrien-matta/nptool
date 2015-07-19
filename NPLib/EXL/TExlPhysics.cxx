@@ -315,14 +315,14 @@ NPL::VDetector* TExlPhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_exl{
   public:
-    proxy(){
+    proxy_exl(){
       NPL::DetectorFactory::getInstance()->AddToken("EXL","Exl");
       NPL::DetectorFactory::getInstance()->AddDetector("EXL",TExlPhysics::Construct);
     }
 };
 
-proxy p;
+proxy_exl p;
 }
 

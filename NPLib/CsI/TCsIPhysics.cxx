@@ -309,14 +309,14 @@ NPL::VDetector* TCsIPhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-    class proxy{
+    class proxy_csi{
     public:
-        proxy(){
+        proxy_csi(){
             NPL::DetectorFactory::getInstance()->AddToken("CsI","CsI");
             NPL::DetectorFactory::getInstance()->AddDetector("CsI",TCsIPhysics::Construct);
         }
     };
     
-    proxy p;
+    proxy_csi p;
 }
 
