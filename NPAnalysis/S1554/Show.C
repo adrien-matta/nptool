@@ -1,6 +1,6 @@
 void Show(){
   
-  TFile* file = new TFile("../../Outputs/Analysis/BeamTest.root");
+  TFile* file = new TFile("../../Outputs/Analysis/S1554_Si.root");
   TTree* tree = (TTree*) file->FindObjectAny("PhysicsTree");
 
   TCanvas* c = new TCanvas("Result","Result",600,600);
@@ -11,12 +11,9 @@ void Show(){
  
   c->cd(2);
   tree->Draw("Ex>>hE(150,-5,10)","ELab>0 && ThetaLab>90");
-  tree->Draw("Ex>>hE2(150,-5,10)","ELab>0 && ThetaLab>90&&Trifoil.Time>50 && Trifoil.Time<65","same");
-  TH1F* hEx2 =  (TH1F*) gDirectory->FindObjectAny("hE2");    
-  hEx2->SetFillColor(kOrange+7);
-  hEx2->SetLineColor(kOrange+7); 
+  
   c->cd(3);
-  tree->Draw("ThetaCM>>hCM(36,0,180)","ThetaLab>90 && Trifoil.Time>50 && Trifoil.Time<65 && Ex>-0.8 && Ex< 0.2","");
+  tree->Draw("ThetaCM>>hCM(36,0,180)","ThetaLab>90 && Ex>-0.6 && Ex< 0.2","");
   //tree->Draw("ThetaCM>>hCMb(36,0,180)","ThetaLab>90 && Ex>-0.8 && Ex< 0.2","same");
 
   TH1F* hCM = (TH1F*) gDirectory->FindObjectAny("hCM");

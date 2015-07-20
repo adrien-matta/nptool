@@ -113,8 +113,8 @@ namespace NPL{
       double GetTargetAngle()         {return m_TargetAngle;}
       double GetTargetX()             {return m_TargetX;}
       double GetTargetY()             {return m_TargetY;}
-      double GetTargetZ()             {return m_TargetZ;}
-     };
+      double GetTargetZ()             {return m_TargetZ;} 
+    };
 }
 
 #endif 

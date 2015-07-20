@@ -34,6 +34,7 @@
 #include "TAsciiFile.h"
 //   ROOT
 #include "TChain.h"
+#include "TSpectrum.h"
 ///////////////////////////////////////////////////////////////////////////
 
 ClassImp(TTrifoilPhysics)
@@ -54,22 +55,14 @@ void TTrifoilPhysics::BuildPhysicalEvent(){
 
   for (unsigned int i = 0 ; i < mysize ; i++){
     TH1F h = m_EventData->GetWaveform(i);
-    unsigned int bins = h.GetNbinsX();
-//    for(unsigned int b = 1 ; b < bins ; b++){
-   if(h.GetMaximum()>800){
-       Time.push_back(h.GetMaximumBin());    
-       Energy.push_back(h.GetMaximum());  
-   }
-      
-      /*   double diff =  h.GetBinContent(b)-h.GetBinContent(b+1);
-        if(diff<-750){
-          Time.push_back(b); 
-          Energy.push_back(diff);
-        }*/
-  //    }
+    double base =  h.GetBinContent(h.GetMinimumBin());  
+    double maxi = h.GetBinContent(h.GetMaximumBin());
+    if(maxi>2000 && base>-300){
+      Time.push_back(h.GetMaximumBin());
+      Energy.push_back(maxi);
     }
   }
-
+}
 
 ///////////////////////////////////////////////////////////////////////////
 void TTrifoilPhysics::Clear(){
@@ -126,9 +119,9 @@ extern "C"{
 class proxy_trifoil{
   public:
     proxy_trifoil(){
-			NPL::DetectorFactory::getInstance()->AddToken("Trifoil","Trifoil");
+      NPL::DetectorFactory::getInstance()->AddToken("Trifoil","Trifoil");
       NPL::DetectorFactory::getInstance()->AddDetector("Trifoil",TTrifoilPhysics::Construct);
-	}
+    }
 };
 
 proxy_trifoil p;

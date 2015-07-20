@@ -1,11 +1,5 @@
 TTreeName
   DataS1554
 RootFileName
-  ~/Desktop/Unpacker/data3509*
-  ~/Desktop/Unpacker/data35100*  
-  ~/Desktop/Unpacker/data35101*  
-  ~/Desktop/Unpacker/data35102*  
-  ~/Desktop/Unpacker/data35103*  
-  ~/Desktop/Unpacker/data35104*  
-
+  ~/Desktop/S1554/Root/*.root
 

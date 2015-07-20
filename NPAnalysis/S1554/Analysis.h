@@ -59,8 +59,10 @@ TInitialConditions* myInit ;
   EnergyLoss LightAl;
   EnergyLoss LightSi;
   EnergyLoss BeamCD2;
-  TVector3 BeamImpact;
-  
+  TVector3 BeamDirection;
+  TVector3 TargetPosition;
+
+
   double TargetThickness ;
   // Beam Energy
   double OriginalBeamEnergy ; // AMEV
