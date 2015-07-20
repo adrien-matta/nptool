@@ -86,7 +86,7 @@ int main(int argc , char** argv){
   // Attempt to load an analysis
   NPL::VAnalysis* UserAnalysis = NULL;
   string libName = "./libNPAnalysis" + SHARED_LIB_EXTENSION;
-  dlopen(libName.c_str(),RTLD_NOW);
+  dlopen(libName.c_str(),RTLD_NOW | RTLD_GLOBAL);
   char* error = dlerror();
   if(error==NULL){
     UserAnalysis = NPL::AnalysisFactory::getInstance()->Construct(); 

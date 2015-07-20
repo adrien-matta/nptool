@@ -78,7 +78,7 @@ NPL::VDetector* DetectorFactory::Construct(std::string Token){
     // Add absolute path to library name
     std::string path = getenv("NPTOOL"); 
     std::string libName = path+"/NPLib/lib/"+m_TokenLib[Token];
-    dlopen(libName.c_str(),RTLD_NOW);
+    dlopen(libName.c_str(),RTLD_NOW | RTLD_GLOBAL);
     
 		if(m_Construct.find(Token)!=m_Construct.end())
       return  m_Construct[Token]();
