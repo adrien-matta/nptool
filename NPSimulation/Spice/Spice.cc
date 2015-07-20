@@ -28,15 +28,12 @@
 // Geant4 
 #include "G4Box.hh"
 #include "G4Tubs.hh"
-#include "G4Material.hh"
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
 #include "G4RotationMatrix.hh"
 #include "G4Transform3D.hh"
 #include "G4PVPlacement.hh"
 #include "G4PVDivision.hh"
-#include "G4ExtrudedSolid.hh"
-#include "G4SubtractionSolid.hh"
 #include "G4SDManager.hh"
 #include "G4MultiFunctionalDetector.hh"
 
@@ -59,13 +56,81 @@ Spice::Spice(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 Spice::~Spice(){
-
 }
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4LogicalVolume* Spice::ConstructVolume(){
   if(!m_LogicalDetector){
-    //do something
+    m_gdmlparser.Read("Spice/Spice.gdml");
+    m_LogicalDetector= m_gdmlparser.GetVolume("World");
+    // Set a few visual attribute
+    G4VisAttributes* MagnetVisAtt = new G4VisAttributes(G4Colour(0.2,0.2, 1, 0.5)) ;
+    G4VisAttributes* PhotonShieldVisAtt = new G4VisAttributes(G4Colour(0.2,1, 0.2, 0.5)) ;
+
+    G4VisAttributes* SiliconVisAtt = new G4VisAttributes(G4Colour(0.3, 0.3, 0.3)) ;
+    G4VisAttributes* ColdFingerVisAtt = new G4VisAttributes(G4Colour(0.8, 0.3, 0.3)) ;
+    G4VisAttributes* TargetMechanismVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.3)) ;
+
+    G4VisAttributes* ChamberVisAtt
+      = new G4VisAttributes(G4Colour(0.0,0.4,0.5,0.2));
+
+    // World box
+    m_LogicalDetector->SetVisAttributes(G4VisAttributes::Invisible); 
+
+    // chamber
+    m_gdmlparser.GetVolume("electro_box_log")->SetVisAttributes(ChamberVisAtt);
+    m_gdmlparser.GetVolume("target_chamber_front_ring_log")->SetVisAttributes(ChamberVisAtt);
+    m_gdmlparser.GetVolume("target_chamber_front_cone_log")->SetVisAttributes(ChamberVisAtt);
+    m_gdmlparser.GetVolume("target_chamber_sphere_log")->SetVisAttributes(ChamberVisAtt);
+    m_gdmlparser.GetVolume("target_chamber_cylinder_down_log")->SetVisAttributes(ChamberVisAtt);
+
+    // Cold Finger
+    m_gdmlparser.GetVolume("cold_finger_log")->SetVisAttributes(ColdFingerVisAtt);
+
+
+    // Magnet
+    m_gdmlparser.GetVolume("magnet_log")->SetVisAttributes(MagnetVisAtt);  
+    m_gdmlparser.GetVolume("magnet_clamp_chamber_log")->SetVisAttributes(MagnetVisAtt);  
+    m_gdmlparser.GetVolume("magnet_clamp_shield_log")->SetVisAttributes(MagnetVisAtt);  
+
+    // Photon Shield
+    m_gdmlparser.GetVolume("photon_shield_layer_one_log")->SetVisAttributes(PhotonShieldVisAtt);  
+    m_gdmlparser.GetVolume("photon_shield_layer_two_log")->SetVisAttributes(PhotonShieldVisAtt);  
+    m_gdmlparser.GetVolume("photon_shield_layer_three_log")->SetVisAttributes(PhotonShieldVisAtt);  
+    m_gdmlparser.GetVolume("ps_detector_clamp_log")->SetVisAttributes(PhotonShieldVisAtt);  
+    m_gdmlparser.GetVolume("ps_target_clamp_log")->SetVisAttributes(PhotonShieldVisAtt);  
+
+
+    // Target Mechanism
+    m_gdmlparser.GetVolume("target_wheel_log")->SetVisAttributes(TargetMechanismVisAtt);
+    m_gdmlparser.GetVolume("first_gear_log")->SetVisAttributes(TargetMechanismVisAtt);
+    m_gdmlparser.GetVolume("second_gear_log")->SetVisAttributes(TargetMechanismVisAtt);
+    m_gdmlparser.GetVolume("third_gear_log")->SetVisAttributes(TargetMechanismVisAtt);
+    m_gdmlparser.GetVolume("gear_plate_one_log")->SetVisAttributes(TargetMechanismVisAtt);
+    m_gdmlparser.GetVolume("gear_plate_two_log")->SetVisAttributes(TargetMechanismVisAtt);
+    m_gdmlparser.GetVolume("gear_stick_log")->SetVisAttributes(TargetMechanismVisAtt);
+    m_gdmlparser.GetVolume("target_mount_plate_log")->SetVisAttributes(TargetMechanismVisAtt);
+
+
+
+
+    // S3 color
+    for(unsigned int ring = 1 ; ring < 24 ; ring++){  
+      ostringstream os;
+      os << "siDetS3Ring_" << ring << "_Log";
+      m_gdmlparser.GetVolume(os.str())->SetVisAttributes(SiliconVisAtt); 
+    }
+
+    //Spice color
+    for(unsigned int ring = 0 ; ring < 10 ; ring++){  
+      ostringstream os;
+      os << "siDetSpiceRing_" << ring << "_Log";
+      m_gdmlparser.GetVolume(os.str())->SetVisAttributes(SiliconVisAtt); 
+    }
+    m_gdmlparser.GetVolume("innerGuardRing")->SetVisAttributes(SiliconVisAtt);    
+    m_gdmlparser.GetVolume("outerGuardRing")->SetVisAttributes(SiliconVisAtt);   
   }
+
   return m_LogicalDetector;
 
 }
@@ -86,7 +151,10 @@ void Spice::ReadConfiguration(string Path){
 // Construct detector and inialise sensitive part.
 // Called After DetecorConstruction::AddDetector Method
 void Spice::ConstructDetector(G4LogicalVolume* world){
-  world = 0;
+  ConstructVolume();
+  new G4PVPlacement(new G4RotationMatrix(0,0,0),
+      G4ThreeVector(0,0,0),
+      m_LogicalDetector,"Spice",world,false,1);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
