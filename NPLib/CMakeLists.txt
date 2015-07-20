@@ -89,9 +89,15 @@ foreach(subdir ${SUB_DIRECTORY})
 # add the subdirectory
   add_subdirectory(${subdir})
   string(COMPARE EQUAL "${subdir}" "Utility" r0)
-  if(NOT r0)
+  string(COMPARE EQUAL "${subdir}" "Maya" r1)
+
+  if(NOT r0 AND NOT r1)
     LIST(APPEND TARGET_LIST NP${subdir})
   endif()
+  if(r1 AND DEFINED ENV{ROOTSYS})
+	LIST(APPEND TARGET_LIST NP${subdir})
+  endif()
+
 endforeach()
 
 export(TARGETS ${TARGET_LIST} FILE NPLibTargets.cmake)
