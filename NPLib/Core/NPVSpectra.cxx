@@ -134,10 +134,8 @@ void VSpectra::WriteSpectra(string filename){
    // Go back to root directory
    f->cd();
 
-   // close file and delete associate pointer only in case
-   // of filename.
-       if (filename != "VOID") {
+   // close file
+   if (filename != "VOID") {
       f->Close();
-      delete f;
    }
 }

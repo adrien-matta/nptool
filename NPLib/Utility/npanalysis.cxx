@@ -41,13 +41,13 @@ int main(int argc , char** argv){
   if (myOptionManager->IsDefault("DetectorConfiguration")) {
     string name = RootInput::getInstance(inputfilename)->DumpAsciiFile("DetectorConfiguration");
     myOptionManager->SetDetectorFile(name);
-    cout << "\033[1;33mWarning: No Detector file given, using Input tree one\033[0m"<<endl;;
+    cout << "\033[1;33mWarning: No Detector file given, using Input tree one (if any)\033[0m"<<endl;;
   }
 
   if (myOptionManager->IsDefault("EventGenerator")) {
     string name = RootInput::getInstance(inputfilename)->DumpAsciiFile("EventGenerator");
     myOptionManager->SetReactionFile(name);
-    cout << "\033[1;33mWarning: No Event file given, using Input tree one\033[0m"<<endl;;
+    cout << "\033[1;33mWarning: No Event file given, using Input tree one (if any)\033[0m"<<endl;;
   }
 
   // get input files from NPOptionManager

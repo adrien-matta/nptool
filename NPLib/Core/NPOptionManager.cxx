@@ -151,8 +151,7 @@ NPOptionManager::NPOptionManager(int argc, char** argv){
   ReadTheInputArgument(argc,argv);
 }
 ////////////////////////////////////////////////////////////////////////////////
-NPOptionManager::NPOptionManager(string arg)
-{  
+NPOptionManager::NPOptionManager(string arg){  
   vector<char *> args;
   istringstream iss(arg);
 
@@ -167,9 +166,9 @@ NPOptionManager::NPOptionManager(string arg)
 
   ReadTheInputArgument(args.size()-1, &args[0]);
 
-  for(size_t i = 0; i < args.size(); i++)
+/*  for(size_t i = 0; i < args.size(); i++)
     delete[] args[i];
-
+*/
 }
 ////////////////////////////////////////////////////////////////////////////////
 void NPOptionManager::CheckArguments(){
