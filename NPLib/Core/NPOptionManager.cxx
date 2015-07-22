@@ -66,6 +66,20 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
   fGenerateHistoOption = false ;
   fPROOFMode = false;
   fOnline = false;
+#ifdef __linux__
+  fSharedLibExtension = ".so";
+#endif
+
+#ifdef __FreeBSD__
+  fSharedLibExtension = ".so";
+#endif
+
+#ifdef __APPLE__
+  fSharedLibExtension = ".dylib";
+#endif
+
+
+
 
   for (int i = 0; i < argc; i++) {
     string argument = argv[i];
@@ -122,7 +136,7 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
     else if (argument == "--last-res")                            fLastResFile = true ;
 
     else if (argument == "--last-any")                            fLastAnyFile = true ;
-    
+
     else if (argument == "--online")                              {fOnline = true ;fGenerateHistoOption=true;}
 
 
@@ -166,9 +180,9 @@ NPOptionManager::NPOptionManager(string arg){
 
   ReadTheInputArgument(args.size()-1, &args[0]);
 
-/*  for(size_t i = 0; i < args.size(); i++)
-    delete[] args[i];
-*/
+  /*  for(size_t i = 0; i < args.size(); i++)
+      delete[] args[i];
+      */
 }
 ////////////////////////////////////////////////////////////////////////////////
 void NPOptionManager::CheckArguments(){

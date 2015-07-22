@@ -93,24 +93,12 @@ RootInput::RootInput(string configFileName){
         // If the tree come from a simulation, the InteractionCoordinates
         // and InitialConditions lib are loaded
         if(dataBuffer=="SimulatedTree"){
-#ifdef __linux__
-          std::string SHARED_LIB_EXTENSION = ".so";
-#endif
-
-#ifdef __FreeBSD__
-          std::string SHARED_LIB_EXTENSION = ".so";
-#endif
-
-#ifdef __APPLE__
-          std::string SHARED_LIB_EXTENSION = ".dylib";
-#endif
-
             string path = getenv("NPTOOL");
           path+="/NPLib/lib/";
-            string libName="libNPInteractionCoordinates"+SHARED_LIB_EXTENSION;
+            string libName="libNPInteractionCoordinates"+NPOptionManager::getInstance()->GetSharedLibExtension();
             libName=path+libName;
             dlopen(libName.c_str(),RTLD_NOW);
-            libName="libNPInitialConditions"+SHARED_LIB_EXTENSION;
+            libName="libNPInitialConditions"+NPOptionManager::getInstance()->GetSharedLibExtension();
             libName=path+libName;
             dlopen(libName.c_str(),RTLD_NOW);
         }

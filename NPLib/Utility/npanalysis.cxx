@@ -16,21 +16,6 @@
 // Root
 #include"TKey.h"
 
-#ifndef SHARED_LIB_EXTENSION_GLOB
-#define SHARED_LIB_EXTENSION_GLOB
-#ifdef __linux__
-std::string SHARED_LIB_EXTENSION = ".so";
-#endif
-
-#ifdef __FreeBSD__
-std::string SHARED_LIB_EXTENSION = ".so";
-#endif
-
-#ifdef __APPLE__
-std::string SHARED_LIB_EXTENSION = ".dylib";
-#endif
-#endif
-
 void ProgressDisplay(clock_t&,clock_t&,unsigned int&, unsigned int&, int&, double&, int&);
 
 int main(int argc , char** argv){
@@ -85,7 +70,7 @@ int main(int argc , char** argv){
 
   // Attempt to load an analysis
   NPL::VAnalysis* UserAnalysis = NULL;
-  string libName = "./libNPAnalysis" + SHARED_LIB_EXTENSION;
+  string libName = "./libNPAnalysis" + myOptionManager->GetSharedLibExtension();
   dlopen(libName.c_str(),RTLD_NOW | RTLD_GLOBAL);
   char* error = dlerror();
   if(error==NULL){

@@ -5,21 +5,10 @@ using namespace NPL;
 #include<iostream>
 #include<stdlib.h>
 
+// NPTool
+#include "NPOptionManager.h"
+
 DetectorFactory* DetectorFactory::m_Instance = 0;
-#ifdef __linux__
-std::string SHARED_LIB_EXTENSION = ".so";
-#endif
-
-#ifdef __FreeBSD__
-std::string SHARED_LIB_EXTENSION = ".so";
-#endif
-
-#ifdef __APPLE__
-std::string SHARED_LIB_EXTENSION = ".dylib";
-#endif
-
-
-
 ////////////////////////////////////////////////////////////////////////////////
 DetectorFactory::DetectorFactory(){
 
@@ -120,7 +109,7 @@ void DetectorFactory::AddToken(std::string Token, std::string LibName){
 
 
   // Create the full name:
-  LibName = "libNP"+LibName + SHARED_LIB_EXTENSION;
+  LibName = "libNP"+LibName + NPOptionManager::getInstance()->GetSharedLibExtension();
   
   m_TokenLib[Token] = LibName;
 }

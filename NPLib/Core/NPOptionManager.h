@@ -99,9 +99,9 @@ class NPOptionManager{
       bool   GetPROOF()                    {return fPROOFMode;}
       int    GetVerboseLevel()             {return fVerboseLevel;}
       int    GetNumberOfEntryToAnalyse()   {return fNumberOfEntryToAnalyse;} 
+      string GetSharedLibExtension()       {return fSharedLibExtension;}     
       string GetLastFile();                 
-     
-      // Setters
+            // Setters
       void SetReactionFile(string name)       {fReactionFileName = name;CheckEventGenerator();}
       void SetDetectorFile(string name)       {fDetectorFileName = name;CheckDetectorConfiguration();}
       void SetRunToReadFile(string name)      {fRunToReadFileName = name;}
@@ -134,6 +134,7 @@ class NPOptionManager{
       bool   fLastAnyFile;
       int    fVerboseLevel; // 0 for not talk, 1 for talking
       int    fNumberOfEntryToAnalyse; // use to limit the number of analysed in NPA
+      string fSharedLibExtension; // lib extension is platform dependent
 };
 
 #endif
