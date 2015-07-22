@@ -38,6 +38,8 @@ using namespace std;
 #include"TRandom.h"
 #include"TRandom2.h"
 
+void NPToolLogon(){ 
+
 #ifdef __APPLE__
 std::string LOGON_LIB_EXTENSION = ".dylib";
 #endif
@@ -48,10 +50,6 @@ std::string LOGON_LIB_EXTENSION = ".so";
 std::string LOGON_LIB_EXTENSION = ".so";
 #endif
 
-
-//#include "Style_nptool.C"
-
-void NPToolLogon(){ 
   // Create the NPTool Stype
   TString NPLPath = gSystem->Getenv("NPTOOL");  
   gROOT->ProcessLine(Form(".x %s/NPLib/scripts/Style_nptool.C",NPLPath.Data()));
