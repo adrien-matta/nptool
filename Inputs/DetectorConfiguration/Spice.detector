@@ -14,5 +14,16 @@ Target
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Spice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+MUST2Array			
+%%%%%%% Telescope 1 %%%%%%%			
+M2Telescope
+	THETA= 0
+	PHI= 0
+	R= 400
+	BETA= 0 0 0
+	SI= 1
+	SILI= 1
+	CSI= 1
+	VIS= all					
 
 
