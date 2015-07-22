@@ -106,4 +106,3 @@ file(RELATIVE_PATH REL_INCLUDE_DIR "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}" "${CMAKE_
 set(CONF_INCLUDE_DIRS "./" "./")
 configure_file(NPLibConfig.cmake.in "${PROJECT_BINARY_DIR}/NPLibConfig.cmake" @ONLY)
 
-install(SCRIPT scripts/post_install.cmake ${DETLIST})

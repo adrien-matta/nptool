@@ -5,3 +5,4 @@ target_link_libraries(npanalysis ${ROOT_LIBRARIES} NPCore NPInitialConditions NP
 add_executable(nponline nponline.cxx)
 target_link_libraries(nponline ${ROOT_LIBRARIES} NPCore) 
 install(PROGRAMS nptool-installer npanalysis nponline DESTINATION ${CMAKE_BINARY_OUTPUT_DIRECTORY})
+install(SCRIPT ../scripts/post_install.cmake ${DETLIST})
