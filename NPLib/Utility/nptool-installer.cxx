@@ -4,27 +4,23 @@
 #include<dlfcn.h>
 #include<dirent.h>
 #include"NPDetectorFactory.h"
-
-#ifdef __APPLE__
-std::string CORRECT_LIB_EXTENSION = ".dylib";
-std::string INCORRECT_LIB_EXTENSION = ".so";
-#endif
-#ifdef __linux__
-std::string INCORRECT_LIB_EXTENSION = ".dylib";
-std::string CORRECT_LIB_EXTENSION = ".so";
-#endif
-#ifdef __FreeBSD__
-std::string INCORRECT_LIB_EXTENSION = ".dylib";
-std::string CORRECT_LIB_EXTENSION = ".so";
-#endif
-
-
-
-
-
 int main(int argc , char** argv){
   int return_value;
-  
+
+#ifdef __APPLE__
+  std::string CORRECT_LIB_EXTENSION = ".dylib";
+  std::string INCORRECT_LIB_EXTENSION = ".so";
+#endif
+#ifdef __linux__
+  std::string INCORRECT_LIB_EXTENSION = ".dylib";
+  std::string CORRECT_LIB_EXTENSION = ".so";
+#endif
+#ifdef __FreeBSD__
+  std::string INCORRECT_LIB_EXTENSION = ".dylib";
+  std::string CORRECT_LIB_EXTENSION = ".so";
+#endif
+
+
   // Build the lib list from the argument
   std::string detlist="";
   for(unsigned int i = 1 ; i < argc ; i++){
@@ -32,9 +28,6 @@ int main(int argc , char** argv){
     detlist+=" ";
   }
 
-
-  
-  
   // Generate the Class list with Token for autoloading of the Detector classes
   DIR *dir;
   struct dirent *ent;
@@ -52,12 +45,12 @@ int main(int argc , char** argv){
 
   NPL::DetectorFactory::getInstance()->CreateClassList("DetectorClassList.txt");
 
- 
-    // Generate the liblist file for backward compatibility
+
+  // Generate the liblist file for backward compatibility
   string LibName;
   path = getenv("NPTOOL");
   path+="/NPLib/lib";
- 
+
   std::ofstream liblistfile("liblist");
   liblistfile << "#! /bin/bash " << std::endl;
   liblistfile << "#" << std::endl; 
@@ -99,7 +92,7 @@ int main(int argc , char** argv){
   // Generate the target file for backward compatiblity
   path = getenv("NPTOOL");
   path+="/NPLib";
- 
+
   if ((dir = opendir (path.c_str())) != NULL){
     while ((ent = readdir (dir)) != NULL) {
       if(ent->d_type == DT_DIR){
@@ -109,17 +102,25 @@ int main(int argc , char** argv){
             && folderName!="Utility" && folderName!="bin"
             && folderName!="CMakeFiles"){
           if(detlist.length()==0 || detlist.find(folderName)!=std::string::npos){
-            string cmd1 = "cp " + folderName+"/*.pcm lib/"; 
-            string cmd2 = "cp " + folderName+"/*.rootmap lib/" ;
+            string command = "ls "+ folderName+"/*.pcm > /dev/null";
+            return_value=system(command.c_str());             
+            if(!return_value){
+              string cmd1 = "cp " + folderName+"/*.pcm lib/ > /dev/null"; 
+              return_value=system(cmd1.c_str());
+            }
 
-            return_value=system(cmd1.c_str());
-            return_value=system(cmd2.c_str());
-         }
+            command = "ls "+ folderName+"/*.rootmap > /dev/null";
+            return_value=system(command.c_str());             
+            if(!return_value){
+              string cmd2 = "cp " + folderName+"/*.rootmap lib/ > /dev/null" ;
+              return_value=system(cmd2.c_str());
+            }
+          }
         }
       } 
     } 
   }
- 
+
   // Generate the inc dir file for backward compatiblity
   // Create the list of custom detector from argument
   std::ofstream DetectorList("DetectorList.inc"); 
