@@ -24,6 +24,7 @@
 /gui/addIcon "Exit" user_icon "{gui_exit}" @CMAKE_BINARY_DIR@/icons/power.png
 /gui/addIcon "the star gaze" user_icon "{gui_empty}" @CMAKE_BINARY_DIR@/icons/empty.png 
 /gui/addIcon "Update geometry" user_icon "{gui_update}" @CMAKE_BINARY_DIR@/icons/recycle.png
+/gui/addIcon "Save geometry to gdml" user_icon "{gui_gdml}" @CMAKE_BINARY_DIR@/icons/dev.png
 /gui/addIcon "Update generator" user_icon "/gen/update" @CMAKE_BINARY_DIR@/icons/bolt.png
 /gui/addIcon "Open generator" user_icon "/gen/open" @CMAKE_BINARY_DIR@/icons/folder.png
 /gui/addIcon "the moon beyond the clouds" user_icon "{gui_empty}" @CMAKE_BINARY_DIR@/icons/empty.png 
