@@ -48,6 +48,7 @@ class DetectorMessenger: public G4UImessenger{
     
     G4UIdirectory* detDir;
     G4UIcmdWithoutParameter* UpdateCmd;
+    G4UIcmdWithAString* ExportCmd;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

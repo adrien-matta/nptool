@@ -52,7 +52,10 @@
 #include "G4SolidStore.hh"
 #include "G4RunManager.hh"
 #include "G4SDManager.hh"
-// Detector class
+
+#ifdef NPS_GDML
+#include"G4GDMLParser.hh"
+#endif
 
 // STL
 #include<cstdlib>
@@ -293,3 +296,10 @@ void DetectorConstruction::RedefineGeometry(std::string file){
   G4RunManager::GetRunManager()->GeometryHasBeenModified();
   G4RunManager::GetRunManager()->Initialize();
 }
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void DetectorConstruction::ExportGeometry(string file){
+  G4GDMLParser parser ;
+  parser.Write(file.c_str(),world_log);
+}
+

@@ -1,0 +1,17 @@
+*.cmake
+*.G4Table
+*CMakeFiles*
+*.ninja*
+*.swp
+Makefiles
+*.gitignore
+CMakeCache.txt
+*.dylib
+*.so
+*.gdml
+*.root
+*.wrl
+install_manifest.txt
+.DS_store
+*NPAnalysis*
+.last_*
