@@ -102,17 +102,17 @@ int main(int argc , char** argv){
             && folderName!="Utility" && folderName!="bin"
             && folderName!="CMakeFiles"){
           if(detlist.length()==0 || detlist.find(folderName)!=std::string::npos){
-            string command = "ls "+ folderName+"/*.pcm > /dev/null";
+            string command = "ls "+ folderName+"/*.pcm > /dev/null 2>/dev/null";
             return_value=system(command.c_str());             
             if(!return_value){
-              string cmd1 = "cp " + folderName+"/*.pcm lib/ > /dev/null"; 
+              string cmd1 = "cp " + folderName+"/*.pcm lib/ > /dev/null 2>/dev/null"; 
               return_value=system(cmd1.c_str());
             }
 
-            command = "ls "+ folderName+"/*.rootmap > /dev/null";
+            command = "ls "+ folderName+"/*.rootmap > /dev/null 2>/dev/null";
             return_value=system(command.c_str());             
             if(!return_value){
-              string cmd2 = "cp " + folderName+"/*.rootmap lib/ > /dev/null" ;
+              string cmd2 = "cp " + folderName+"/*.rootmap lib/ > /dev/null 2>/dev/null" ;
               return_value=system(cmd2.c_str());
             }
           }
@@ -181,8 +181,11 @@ int main(int argc , char** argv){
   //  Change all the .so to .dylib for Mac Os X in the installed rootmap    
   path = getenv("NPTOOL");
   path += "/NPLib/*/*.rootmap";
-
+  string command = "ls "+ path +" > /dev/null 2>/dev/null";
+  return_value=system(command.c_str());             
+  if(!return_value){
   std::string command = "sed -i '' -e 's/"+INCORRECT_LIB_EXTENSION+"/"+CORRECT_LIB_EXTENSION+"/g' "+path;  
   return_value=system(command.c_str());   
+  }  
   return 0;
 }
