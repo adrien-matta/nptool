@@ -299,7 +299,14 @@ void DetectorConstruction::RedefineGeometry(std::string file){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void DetectorConstruction::ExportGeometry(string file){
+#ifdef NPS_GDML
   G4GDMLParser parser ;
   parser.Write(file.c_str(),world_log);
+#else
+  G4cout << "You need to compile Geant4 with GDML support to use this command" << G4endl;
+#endif
+
+
+
 }
 
