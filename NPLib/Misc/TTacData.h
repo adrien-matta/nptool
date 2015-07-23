@@ -103,7 +103,7 @@ class TTacData : public TObject {
    void	SetTAC_FAG_CATS2(UShort_t T)			{fTAC_FAG_CATS2 = T;}
 
 
-   ClassDef(TTacData,2)  // TacData structure
+   ClassDef(TTacData,3)  // TacData structure
 };
 
 #endif

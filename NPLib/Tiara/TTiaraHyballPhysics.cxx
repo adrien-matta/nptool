@@ -713,7 +713,6 @@ void TTiaraHyballPhysics::InitializeStandardParameter(){
 
 ///////////////////////////////////////////////////////////////////////////
 namespace TiaraHyball_LOCAL{
-  CalibrationManager* Cal = CalibrationManager::getInstance();
   //   DSSD
   //   Ring
   double fStrip_Ring_E(const TTiaraHyballData* m_EventData , const int i){
@@ -722,7 +721,7 @@ name+= NPL::itoa( m_EventData->GetRingEDetectorNbr(i) ) ;
 name+= "_STRIP_RING" ;
 name+= NPL::itoa( m_EventData->GetRingEStripNbr(i) ) ;
 name+= "_E";
-    return Cal->ApplyCalibration(name ,
+    return CalibrationManager::getInstance()->ApplyCalibration(name ,
         fStrip_Ring_Matchstick(m_EventData,i) );
   }
   double fStrip_Ring_Matchstick(const TTiaraHyballData* m_EventData , const int i){
@@ -731,7 +730,7 @@ name+= NPL::itoa( m_EventData->GetRingEDetectorNbr(i) ) ;
 name+= "_STRIP_RING" ;
 name+= NPL::itoa( m_EventData->GetRingEStripNbr(i) ) ;
 name+= "_MATCHSTICK";
-    return Cal->ApplyCalibration(name ,
+    return CalibrationManager::getInstance()->ApplyCalibration(name ,
         m_EventData->GetRingEEnergy(i) );
   }
 
@@ -741,7 +740,7 @@ name+= NPL::itoa( m_EventData->GetRingTDetectorNbr(i) ) ;
 name+= "_STRIP_RING" ;
 name+= NPL::itoa( m_EventData->GetRingTStripNbr(i) ) ;
 name+="_T";
-    return Cal->ApplyCalibration(name ,
+    return CalibrationManager::getInstance()->ApplyCalibration(name ,
         m_EventData->GetRingTTime(i) );
   }
 
@@ -752,7 +751,7 @@ name+= NPL::itoa( m_EventData->GetSectorEDetectorNbr(i) ) ;
 name+= "_STRIP_SECTOR" ;
 name+= NPL::itoa( m_EventData->GetSectorEStripNbr(i) ) ;
 name+="_E";
-    return Cal->ApplyCalibration(name,
+    return CalibrationManager::getInstance()->ApplyCalibration(name,
         fStrip_Sector_Matchstick(m_EventData,i) );
   }
 
@@ -762,7 +761,7 @@ name+= NPL::itoa( m_EventData->GetSectorEDetectorNbr(i) ) ;
 name+= "_STRIP_SECTOR" ;
 name+= NPL::itoa( m_EventData->GetSectorEStripNbr(i) ) ;
 name+="_MATCHSTICK";
-    return Cal->ApplyCalibration(name,
+    return CalibrationManager::getInstance()->ApplyCalibration(name,
         m_EventData->GetSectorEEnergy(i) );
   }
 
@@ -772,7 +771,7 @@ name+= NPL::itoa( m_EventData->GetSectorTDetectorNbr(i) );
 name+= "_STRIP_SECTOR" ;
 name+= NPL::itoa( m_EventData->GetSectorTStripNbr(i) ); 
 name+="_T";
-    return Cal->ApplyCalibration(name,
+    return CalibrationManager::getInstance()->ApplyCalibration(name,
         m_EventData->GetRingTTime(i) );
   }
 

@@ -144,14 +144,14 @@ NPL::VDetector* TTacPhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_tac{
   public:
-    proxy(){
+    proxy_tac(){
       NPL::DetectorFactory::getInstance()->AddToken("Tac","Tac");
       NPL::DetectorFactory::getInstance()->AddDetector("Tac",TTacPhysics::Construct);
     }
 };
 
-proxy p;
+proxy_tac p_tac;
 }
 

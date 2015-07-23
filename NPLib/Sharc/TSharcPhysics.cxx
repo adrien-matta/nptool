@@ -719,7 +719,7 @@ void TSharcPhysics::InitializeRootOutput(){
 /////   Specific to SharcArray   ////
 void TSharcPhysics::AddBoxDetector(double Z){
   double BOX_Wafer_Width  = 52.20;
-  // double BOX_Wafer_Length = 76.20;
+  double BOX_Wafer_Length = 76.20;
   
   double BOX_ActiveArea_Length = 76.2;
   double BOX_ActiveArea_Width = 52.2;
@@ -734,10 +734,10 @@ void TSharcPhysics::AddBoxDetector(double Z){
   for(int i = 0 ; i < 4 ; i++){
     m_NumberOfDetector++;
     if(Z<0){// Up Stream
-      if(i==0)      {U=TVector3(1,0,0);V=TVector3(0,0,1);  Strip_1_1=TVector3(-36,40.5,Z-BOX_Wafer_Width/2.)   ;}
-      else if(i==1) {U=TVector3(0,1,0);V=TVector3(0,0,1);  Strip_1_1=TVector3(-40.5,-36,Z-BOX_Wafer_Width/2.)  ;}
-      else if(i==2) {U=TVector3(-1,0,0);V=TVector3(0,0,1); Strip_1_1=TVector3(36,-40.5,Z-BOX_Wafer_Width/2.)   ;}
-      else if(i==3) {U=TVector3(0,-1,0);V=TVector3(0,0,1); Strip_1_1=TVector3(40.5,36,Z-BOX_Wafer_Width/2.)    ;}
+      if(i==0)      {U=TVector3(1,0,0);V=TVector3(0,0,1);  Strip_1_1=TVector3(-36,42.5,Z-BOX_Wafer_Width/2.)   ;}
+      else if(i==1) {U=TVector3(0,1,0);V=TVector3(0,0,1);  Strip_1_1=TVector3(-42.5,-36,Z-BOX_Wafer_Width/2.)  ;}
+      else if(i==2) {U=TVector3(-1,0,0);V=TVector3(0,0,1); Strip_1_1=TVector3(36,-42.5,Z-BOX_Wafer_Width/2.)   ;}
+      else if(i==3) {U=TVector3(0,-1,0);V=TVector3(0,0,1); Strip_1_1=TVector3(42.5,36,Z-BOX_Wafer_Width/2.)    ;}
     }
     
     if(Z>0){//Down Stream

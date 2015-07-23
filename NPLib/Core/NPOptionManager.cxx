@@ -248,6 +248,7 @@ void NPOptionManager::CheckDetectorConfiguration(){
 
   // close ConfigFile
   ConfigFile.close();
+
 }
 
 
