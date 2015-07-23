@@ -143,7 +143,8 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
     //else ;
   }
   CheckArguments();
-  DisplayVersion();
+  if(argc!=0)
+    DisplayVersion();
 }
 ////////////////////////////////////////////////////////////////////////////////
 void NPOptionManager::DisplayVersion(){
