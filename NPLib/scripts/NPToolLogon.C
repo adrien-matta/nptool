@@ -65,7 +65,7 @@ void NPToolLogon(){
   // Test if the root map exist, 
   // if yes exit
   // if no load the nptool lib
-  string command = "ls "+path+"/NPLib/lib > /dev/null 2> /dev/null";
+  string command = "ls "+path+"/NPLib/lib/*.rootmap > /dev/null 2> /dev/null";
   int return_value = system(command.c_str());
   bool check = false;
 
