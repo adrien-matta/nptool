@@ -703,6 +703,12 @@ map< vector<string> , TH1*> TCATSPhysics::GetSpectra() {
   }
 }
 
+///////////////////////////////////////////////////////////////////////////
+void TCATSPhysics::WriteSpectra(){
+  if(m_Spectra)
+    m_Spectra->WriteSpectra();
+}
+
 /////////////////////////////////////////////////////////////////////
 //	Add Parameter to the CalibrationManger
 void TCATSPhysics::AddParameterToCalibrationManager()	{

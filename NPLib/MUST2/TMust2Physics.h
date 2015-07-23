@@ -275,6 +275,9 @@ class TMust2Physics : public TObject, public NPL::VDetector{
   private: // Spectra Class   
     TMust2Spectra*      m_Spectra;//! 
 
+  public:
+    void WriteSpectra();//!
+
   public: // Spectra Getter
     map< vector<string> , TH1*> GetSpectra(); 
 

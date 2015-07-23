@@ -189,6 +189,9 @@ class TCATSPhysics : public TObject, public NPL::VDetector
   private: // Spectra Class   
     TCATSSpectra*      m_Spectra;//! 
 
+  public: 
+    void WriteSpectra() ;//!
+
   public: // Spectra Getter
     map< vector<string> , TH1*> GetSpectra();
 

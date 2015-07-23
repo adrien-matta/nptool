@@ -1044,6 +1044,13 @@ void TMust2Physics::CheckSpectra(){
 void TMust2Physics::ClearSpectra(){  
   // To be done
 }
+
+///////////////////////////////////////////////////////////////////////////
+void TMust2Physics::WriteSpectra() {
+  if(m_Spectra)
+    m_Spectra->WriteSpectra();
+}
+
 ///////////////////////////////////////////////////////////////////////////
 map< vector<string> , TH1*> TMust2Physics::GetSpectra() {
   if(m_Spectra)
