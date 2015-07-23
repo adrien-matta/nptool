@@ -24,7 +24,7 @@ TwoBodyReaction
 	Light= 1H
 	Heavy= 29Mg
 	ExcitationEnergyLight= 0.0
-	ExcitationEnergyHeavy= 5.0 
+	ExcitationEnergyHeavy= 0.0 
   CrossSectionPath= flat.txt CSR
 	ShootLight= 1
 	ShootHeavy= 1

@@ -4,7 +4,7 @@ GeneralTarget
 
 %0.2mg/cm2
 Target
-	THICKNESS= 9
+	THICKNESS= 0.01
 	RADIUS=	5
 	MATERIAL= CD2
 	ANGLE= 0
@@ -52,10 +52,10 @@ Sharc
 %Down Stream Box
   SharcBOX
     Z= 31.4
-    ThicknessDector1= 100
-    ThicknessDector2= 100
-    ThicknessDector3= 100
-    ThicknessDector4= 100
+    ThicknessDector1= 140
+    ThicknessDector2= 140
+    ThicknessDector3= 140
+    ThicknessDector4= 140
     ThicknessPAD1= 1000
     ThicknessPAD2= 1000
     ThicknessPAD3= 1000

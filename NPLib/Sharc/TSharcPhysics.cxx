@@ -718,33 +718,85 @@ void TSharcPhysics::InitializeRootOutput(){
 ////////////////////////////////////////////////////////////////////////////////
 /////   Specific to SharcArray   ////
 void TSharcPhysics::AddBoxDetector(double Z){
+// BOX //
+  double BOX_PCB_Width  = 61.10;
+  double BOX_PCB_Length = 104.00;
+  double BOX_PCB_Thickness = 3.4;
+  double BOX_PCB_Border_LongSide = 1;
+  double BOX_PCB_Border_ShortSide = 2;
+  
+  // Single stage box case (DSSD only)
+  double BOX_PCB_Slot_Width1 = BOX_PCB_Thickness;
+  double BOX_PCB_Slot_Border1 = 4;
+  double BOX_PCB_Slot_Deepness1 = BOX_PCB_Border_ShortSide;
+  
+  // BOX Wafer
   double BOX_Wafer_Width  = 52.20;
   double BOX_Wafer_Length = 76.20;
   
-  double BOX_ActiveArea_Length = 76.2;
-  double BOX_ActiveArea_Width = 52.2;
-  
-  int    BOX_Wafer_Back_NumberOfStrip = 48 ;
   int    BOX_Wafer_Front_NumberOfStrip = 24 ;
+  int    BOX_Wafer_Back_NumberOfStrip = 48 ;
   
-  double StripPitchFront = BOX_ActiveArea_Length/BOX_Wafer_Front_NumberOfStrip ; //mm
-  double StripPitchBack  = BOX_ActiveArea_Width/BOX_Wafer_Back_NumberOfStrip ; //mm
+  // Compute
+  double BOX_LeftOver1 =  BOX_PCB_Length - BOX_PCB_Border_ShortSide - BOX_Wafer_Length - BOX_PCB_Slot_Border1 - BOX_PCB_Slot_Width1 ;
+  double BOX_Exposed_Length1 = BOX_Wafer_Length + BOX_PCB_Slot_Border1 ;
   
+  double BOX_CenterOffset1 = - 0.5 * BOX_PCB_Length+BOX_PCB_Border_ShortSide+0.5*BOX_Exposed_Length1;
+  double BOX_DetectorSpacing1 = 0.5*BOX_Exposed_Length1+0.5*BOX_PCB_Slot_Width1;
+  
+  double BOX_Wafer_Width_Offset1 = -0.5*BOX_PCB_Width + BOX_PCB_Border_LongSide + 0.5*BOX_Wafer_Width;
+  double BOX_Wafer_Length_Offset1 = -0.5*BOX_PCB_Length + BOX_PCB_Border_ShortSide + 0.5*BOX_Wafer_Length;
+  
+  double BOX_PCB_Slot_Position1 = 0.5*BOX_PCB_Length-BOX_LeftOver1 - 0.5*BOX_PCB_Slot_Width1;
+
+  double StripPitchFront = BOX_Wafer_Length/BOX_Wafer_Front_NumberOfStrip ; //mm
+  double StripPitchBack  = BOX_Wafer_Width/BOX_Wafer_Back_NumberOfStrip ; //mm
+  
+  // Double stage box case (DSSD+PAD) (the wafer is the same but the slot is different to accomodate the additional PAD)
+  double PAD_PCB_Thickness = 3.4;
+
+  double BOX_PCB_Slot_Width2 = BOX_PCB_Thickness + PAD_PCB_Thickness ;
+  double BOX_PCB_Slot_Border2 = 2.7;
+  double BOX_PCB_Slot_Deepness2 = BOX_PCB_Border_ShortSide;
+  
+  double BOX_LeftOver2 =  BOX_PCB_Length - BOX_PCB_Border_ShortSide - BOX_Wafer_Length - BOX_PCB_Slot_Border2 - BOX_PCB_Slot_Width2;
+  double BOX_Exposed_Length2 = BOX_Wafer_Length + BOX_PCB_Slot_Border2 ;
+  
+  double BOX_CenterOffset2 = - 0.5*BOX_PCB_Length+BOX_PCB_Border_ShortSide + 0.5*BOX_Exposed_Length2;
+  double BOX_DetectorSpacing2 = 0.5*BOX_Exposed_Length2 + 0.5*BOX_PCB_Thickness;
+
+  double BOX_Wafer_Width_Offset2 = - 0.5*BOX_PCB_Width + BOX_PCB_Border_LongSide + 0.5*BOX_Wafer_Width;
+  double BOX_Wafer_Length_Offset2 = - 0.5*BOX_PCB_Length + BOX_PCB_Border_ShortSide + 0.5*BOX_Wafer_Length;
+  
+  double BOX_PCB_Slot_Position2 = 0.5*BOX_PCB_Length-BOX_LeftOver2 - 0.5*BOX_PCB_Slot_Width2;
+ 
   TVector3 U; TVector3 V;TVector3 Strip_1_1;
+
+
+ // TVector3 WaferCenter1 = TVector3(BOX_CenterOffset2, BOX_DetectorSpacing1, Z )
+ //          StripPos = WaferCenter1 + TVector3(BOX_Wafer_Length*0.5-  0.5*StripPitchFront ,0,BOX_Wafer_Width*0.5 - StripPitchBack*0.5)                  
+  double A1 = BOX_Exposed_Length1*0.5 -BOX_PCB_Slot_Border1- 0.5*StripPitchFront ; 
+  double B1 = BOX_DetectorSpacing1 - 0.5*BOX_PCB_Thickness;
+  double Z1 = Z - BOX_Wafer_Width*0.5 + StripPitchBack*0.5 ;
+
+  double A2 = BOX_Exposed_Length2*0.5 -BOX_PCB_Slot_Border2- 0.5*StripPitchFront ; 
+  double B2 = BOX_DetectorSpacing2 - 0.5*BOX_PCB_Thickness;
+  double Z2 = Z + BOX_Wafer_Width*0.5 - StripPitchBack*0.5 ;
+  
   for(int i = 0 ; i < 4 ; i++){
     m_NumberOfDetector++;
     if(Z<0){// Up Stream
-      if(i==0)      {U=TVector3(1,0,0);V=TVector3(0,0,1);  Strip_1_1=TVector3(-36,42.5,Z-BOX_Wafer_Width/2.)   ;}
-      else if(i==1) {U=TVector3(0,1,0);V=TVector3(0,0,1);  Strip_1_1=TVector3(-42.5,-36,Z-BOX_Wafer_Width/2.)  ;}
-      else if(i==2) {U=TVector3(-1,0,0);V=TVector3(0,0,1); Strip_1_1=TVector3(36,-42.5,Z-BOX_Wafer_Width/2.)   ;}
-      else if(i==3) {U=TVector3(0,-1,0);V=TVector3(0,0,1); Strip_1_1=TVector3(42.5,36,Z-BOX_Wafer_Width/2.)    ;}
+      if(i==0)      {U=TVector3(1,0,0);V=TVector3(0,0,1);  Strip_1_1=TVector3( -A1 , B1  ,Z1)   ;}
+      else if(i==1) {U=TVector3(0,1,0);V=TVector3(0,0,1);  Strip_1_1=TVector3( -B1 , -A1 ,Z1)   ;}
+      else if(i==2) {U=TVector3(-1,0,0);V=TVector3(0,0,1); Strip_1_1=TVector3( A1  , -B1 ,Z1)   ;}
+      else if(i==3) {U=TVector3(0,-1,0);V=TVector3(0,0,1); Strip_1_1=TVector3( B1  , A1  ,Z1)   ;}
     }
     
     if(Z>0){//Down Stream
-      if(i==0)      {U=TVector3(-1,0,0);V=TVector3(0,0,-1); Strip_1_1=TVector3(36,40.5,Z+BOX_Wafer_Width/2.)   ;}
-      else if(i==1) {U=TVector3(0,-1,0);V=TVector3(0,0,-1); Strip_1_1=TVector3(-40.5,36,Z+BOX_Wafer_Width/2.)  ;}
-      else if(i==2) {U=TVector3(1,0,0);V=TVector3(0,0,-1);  Strip_1_1=TVector3(-36,-40.5,Z+BOX_Wafer_Width/2.) ;}
-      else if(i==3) {U=TVector3(0,1,0);V=TVector3(0,0,-1);  Strip_1_1=TVector3(40.5,-36,Z+BOX_Wafer_Width/2.)   ;}
+      if(i==0)      {U=TVector3(-1,0,0);V=TVector3(0,0,-1); Strip_1_1=TVector3( A2  ,B2  ,Z2)  ;}
+      else if(i==1) {U=TVector3(0,-1,0);V=TVector3(0,0,-1); Strip_1_1=TVector3( -B2 ,A2  ,Z2)  ;}
+      else if(i==2) {U=TVector3(1,0,0);V=TVector3(0,0,-1);  Strip_1_1=TVector3( -A2 ,-B2 ,Z2)  ;}
+      else if(i==3) {U=TVector3(0,1,0);V=TVector3(0,0,-1);  Strip_1_1=TVector3( B2  ,-A2 ,Z2)  ;}
     }
    
     //   Buffer object to fill Position Array
