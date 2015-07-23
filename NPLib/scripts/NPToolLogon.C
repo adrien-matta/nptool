@@ -25,8 +25,6 @@
 #include<iostream>
 #include<string>
 #include<stdlib.h>
-#include<dlfcn.h>
-#include<dirent.h>
 using namespace std;
 
 // ROOT headers
@@ -41,52 +39,42 @@ using namespace std;
 void NPToolLogon(){ 
 
 #ifdef __APPLE__
-std::string LOGON_LIB_EXTENSION = ".dylib";
+  std::string Lib_Extension = ".dylib";
 #endif
 #ifdef __linux__
-std::string LOGON_LIB_EXTENSION = ".so";
+  std::string Lib_Extension = ".so";
 #endif
 #ifdef __FreeBSD__
-std::string LOGON_LIB_EXTENSION = ".so";
+  std::string Lib_Extension = ".so";
 #endif
 
   // Create the NPTool Stype
-  TString NPLPath = gSystem->Getenv("NPTOOL");  
-  gROOT->ProcessLine(Form(".x %s/NPLib/scripts/Style_nptool.C",NPLPath.Data()));
-  gROOT->ProcessLine(Form(".x %s/NPLib/scripts/Style_nponline.C",NPLPath.Data()));
-
-
+  string NPLPath = gSystem->Getenv("NPTOOL");  
+  gROOT->ProcessLine(Form(".x %s/NPLib/scripts/Style_nptool.C",NPLPath.c_str()));
+  gROOT->ProcessLine(Form(".x %s/NPLib/scripts/Style_nponline.C",NPLPath.c_str()));
 
   // Change the standard random generator to TRandom2
   gRandom = new TRandom2();
 
-  TString currentpath = gSystem->Getenv("PWD");
-  TString path = gSystem->Getenv("NPTOOL");
+  string currentpath = gSystem->Getenv("PWD");
+  string path = gSystem->Getenv("NPTOOL");
  
   // Add include path
-  gROOT->ProcessLine(Form(".include %s/NPLib/include", path.Data()));
+  gROOT->ProcessLine(Form(".include %s/NPLib/include", path.c_str()));
 
   // Test if the root map exist, 
   // if yes exit
   // if no load the nptool lib
-  DIR* dir;
-  struct dirent *ent;
-  TString libpath = path+"/NPLib/lib";
-    string file;
+  string command = "ls "+path+"/NPLib/lib > /dev/null 2> /dev/null";
+  int return_value = system(command.c_str());
   bool check = false;
-  if((dir=opendir(libpath))!= NULL){
-    while((ent = readdir(dir))!=NULL){
-      file = ent->d_name;    
-      if(file.find(".rootmap")!=std::string::npos){
-        check=true;
-        break;
-      }
-    }
-  }
+
+  if(return_value==0)
+    check=true;
 
   if(!check){
     // Add shared libraries
-    TString libpath = Form("%s/NPLib/lib", path.Data());
+    TString libpath = Form("%s/NPLib/lib", path.c_str());
     TSystemDirectory libdir("libdir", libpath);
     TList* listfile = libdir.GetListOfFiles();
 
@@ -95,7 +83,7 @@ std::string LOGON_LIB_EXTENSION = ".so";
     // lib*Physics.dylib libraries, it is then loaded manually 
     // first.
     // Test if the lib directory is empty or not
-    if (listfile->GetEntries() > 2) gSystem->Load(libpath+"/libNPCore"+LOGON_LIB_EXTENSION);
+    if (listfile->GetEntries() > 2) gSystem->Load(libpath+"/libNPCore"+Lib_Extension);
 
     gSystem->Load("libPhysics.so"); // Needed by Must2 and Sharc
     gSystem->Load("libHist.so"); // Needed by TSpectra Class
@@ -104,7 +92,7 @@ std::string LOGON_LIB_EXTENSION = ".so";
     Int_t i = 0;
     while (listfile->At(i)) {
       TString libname = listfile->At(i++)->GetName();
-      if (libname.Contains(LOGON_LIB_EXTENSION) && libname.Contains("Data") && !libname.Contains("libVDetector"+LOGON_LIB_EXTENSION)) {
+      if (libname.Contains(Lib_Extension) && libname.Contains("Data") && !libname.Contains("libVDetector"+Lib_Extension)) {
         TString lib = libpath + "/" + libname;
         gSystem->Load(lib);
       }
@@ -114,7 +102,7 @@ std::string LOGON_LIB_EXTENSION = ".so";
     i = 0;
     while (listfile->At(i)) {
       TString libname = listfile->At(i++)->GetName();
-      if (libname.Contains(LOGON_LIB_EXTENSION) && libname.Contains("Physics") &&!libname.Contains("libVDetector"+LOGON_LIB_EXTENSION)) {
+      if (libname.Contains(Lib_Extension) && libname.Contains("Physics") &&!libname.Contains("libVDetector"+Lib_Extension)) {
         TString lib = libpath + "/" + libname;
         gSystem->Load(lib);
       }
@@ -124,7 +112,7 @@ std::string LOGON_LIB_EXTENSION = ".so";
     i = 0;
     while (listfile->At(i)) {
       TString libname = listfile->At(i++)->GetName();
-      if (libname.Contains(LOGON_LIB_EXTENSION) && !libname.Contains("Physics") && !libname.Contains("Data")  &&!libname.Contains("libVDetector"+LOGON_LIB_EXTENSION)) {
+      if (libname.Contains(Lib_Extension) && !libname.Contains("Physics") && !libname.Contains("Data")  &&!libname.Contains("libVDetector"+Lib_Extension)) {
         TString lib = libpath + "/" + libname;
         gSystem->Load(lib);
       }
@@ -136,6 +124,6 @@ std::string LOGON_LIB_EXTENSION = ".so";
     // Since the libdir.GetListOfFiles() commands cds to the
     // libidr directory, one has to return to the initial
     // directory
-    gSystem->cd(currentpath);
+    gSystem->cd(currentpath.c_str());
   }
 }
