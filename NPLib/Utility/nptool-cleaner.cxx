@@ -1,30 +1,40 @@
 #include<iostream>
-#include<fstream>
 #include<stdlib.h>
-#include<dlfcn.h>
-#include<dirent.h>
 #include"NPDetectorFactory.h"
+
 int main(int argc , char** argv){
   // Go to npl
   string path = getenv("NPTOOL");
-  path += "/NPLib/";
-  string cd = "cd " + path;
-  int return_value = system(cd.c_str());
+  string pathNPL =path+ "/NPLib";
+  string pathNPS = path+"/NPSimulation";
+  string pwd = getenv("PWD");
+
+  string current="";
   
-  if(return_value!=0){
-    std::cout << "Fail to access NPLib directory " << return_value << std::endl;
+  if(pwd==pathNPL)
+    current = "NPLib";
+  else if(pwd==pathNPS)
+    current = "NPSimulation";
+
+  else{
+    std::cout << "\r \033[1;31m ERROR: nptool-cleaner utility online clean NPLib and NPSimulation" << endl;
     exit(1);
   }
 
+ 
+  int return_value = -1 ;
   string answer;
   bool check = true;
+  std::cout << "\r\033[1;31m" << std::endl << std::endl;
+  std::cout << "********************************************************************************" << std::endl;
+  std::cout << "********************************************************************************" << std::endl;
+  std::cout << "**** You are about to clean " << current << std::endl;
+  std::cout << "**** -> The folder will be revert to pre cmake stage" << std::endl;
+  std::cout << "**** -> Only generated file will be suppressed" << std::endl;
+  std::cout << "**** -> " << current << " will not be usable without recompilation" << std::endl;
 
-  std::cout << "*********************************" << std::endl;
-  std::cout << "You are about to clean NPLib" << std::endl;
-  std::cout << "the folder will be revert to pre cmake stage" << std::endl;
-  
   while(check){
-    std::cout << "Do you want to proceed ? (y/n)" << std::endl;
+    std::cout << "**** Do you want to proceed ? (y/n)  " ;
     std::cin >> answer;
     if(answer =="n" || answer =="N")
       return 0;

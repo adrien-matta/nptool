@@ -2,4 +2,4 @@ add_custom_command(OUTPUT NPSiliconCalibratorDict.cxx NPSiliconCalibrator.rootma
 add_custom_command(OUTPUT NPCalibrationSourceDict.cxx NPCalibrationSource.rootmap NPCalibrationSourceDict_rdict.pcm COMMAND ../scripts/build_dict.sh NPCalibrationSource.h NPCalibrationSourceDict.cxx NPCalibrationSource.rootmap libNPCalibration.so NPCalibrationLinkDef2.h) 
 add_library(NPCalibration SHARED NPCalibrationSource.cxx NPSiliconCalibrator.cxx NPSiliconCalibratorDict.cxx NPCalibrationSourceDict.cxx)
 target_link_libraries(NPCalibration ${ROOT_LIBRARIES} -lSpectrum  NPCore NPPhysics)  
-install(FILES NPCalibrationSource.h NPCalibrationSource.h DESTINATION  ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
+install(FILES NPCalibrationSource.h NPSiliconCalibrator.h DESTINATION  ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
