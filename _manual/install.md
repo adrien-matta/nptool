@@ -1,7 +1,6 @@
 ---
 layout: manual 
 title: Install 
-permaling: /manual/install/
 ---
 NPTOOL
 ======
