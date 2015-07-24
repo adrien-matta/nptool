@@ -443,7 +443,7 @@ void MaterialManager::WriteDEDXTable(G4ParticleDefinition* Particle ,G4double Em
 void MaterialManager::CreateSampleVolumes(G4LogicalVolume* world_log){
 
   // Crate a micrometer big cube for each material
-  G4double SampleSize = 10 * cm;
+  G4double SampleSize = 1*um;
   G4double WorldSize = 10.0 * m ;
   G4Box* sample_box = new G4Box("sample_box",SampleSize ,SampleSize ,SampleSize);  
   G4int i = 1;
