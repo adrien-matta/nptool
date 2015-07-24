@@ -26,7 +26,7 @@ NPLib is the core of the NPTool package, holding most of the actual code. It is 
 
 Restart your terminal. You should now have all aliases and environment variable properly defined and can now access the NPLib folder by using the command:
 ````
-$ NPL
+$ npl 
 ````
 and you should be in the NPLib directory. 
 Before the compilation of the libraries you need to specify the detector you plan to use by calling the configure script. If you give no argument to configure, all detector will be compile. If you wish to limit the number of detector to be compiled, simply specify the detector folder name (respecting the case). You can specify more than one detector:
@@ -64,7 +64,7 @@ Compilation using Ninja is usually twice faster than using make
 ###Building NPSimulation
 This part of the package rely on Geant4 to perform Monte Carlo simulation. You need to first compile and configure correctly NPLib in order for NPSimulation to compile and run. The compilation is done as follow:
 ````
-$ NPS
+$ nps
 $ cmake ./
 $ make -jn install
 `````
@@ -88,7 +88,7 @@ This will run the 11Li(d,3He)10He->8He+n+n simulation and produce a root file lo
 
 You can now try to analyse this simulated tree using the associated NPAnalysis project:
 ````
-$ NPA
+$ npa
 $ cd Example1/
 $ cmake ./
 $ make -jn
