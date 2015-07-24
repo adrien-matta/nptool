@@ -101,6 +101,7 @@ class NPOptionManager{
       bool   GetCheckHistoOption()         {return fCheckHistoOption;}
       bool   GetOnline()                   {return fOnline;}
       bool   GetPROOF()                    {return fPROOFMode;}
+      bool   GetG4BatchMode()              {return fG4BatchMode;}
       int    GetVerboseLevel()             {return fVerboseLevel;}
       int    GetNumberOfEntryToAnalyse()   {return fNumberOfEntryToAnalyse;} 
       string GetSharedLibExtension()       {return fSharedLibExtension;}     
@@ -143,6 +144,7 @@ class NPOptionManager{
       int    fNumberOfEntryToAnalyse; // use to limit the number of analysed in NPA
       string fSharedLibExtension; // lib extension is platform dependent
       string fG4MacroPath; // Path to a geant4 macro to execute at start of nps
+      bool fG4BatchMode; // Execute geant4 in batch mode, running the given macro
 };
 
 #endif

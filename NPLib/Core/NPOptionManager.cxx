@@ -68,6 +68,7 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
   fGenerateHistoOption = false ;
   fPROOFMode = false;
   fOnline = false;
+  fG4BatchMode = false;
 #ifdef __linux__
   fSharedLibExtension = ".so";
 #endif
@@ -110,6 +111,8 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
     else if (argument == "-C" && argc >= i + 1)                   fCalibrationFileName = argv[++i] ;
 
     else if (argument == "-M" && argc >= i + 1)                   fG4MacroPath = argv[++i] ;
+
+    else if (argument == "-B" && argc >= i + 1)                   {fG4MacroPath = argv[++i] ;fG4BatchMode=true;}
 
     else if (argument == "-V"  && argc >= i + 1)                  fVerboseLevel = atoi(argv[++i]) ;
 
@@ -349,6 +352,7 @@ void NPOptionManager::DisplayHelp(){
   cout << "\t --online  \t \t \t \tStart the spectra server" << endl ;
   cout << endl << "NPSimulation only:"<<endl;
   cout << "\t -M <arg>\t \t \t \tExexute the Geant4 macro at <arg> at startup" << endl ;
+  cout << "\t -B <arg>\t \t \t \tExexute in batch mode (no ui) with Geant4 macro at <arg> at startup" << endl ;
 
   cout << endl << endl ;
 

@@ -36,7 +36,7 @@
 int main(int argc, char** argv){
   // Initialize NPOptionManager object
   NPOptionManager* OptionManager  = NPOptionManager::getInstance(argc, argv);
-   if(OptionManager->GetVerboseLevel() > 0){
+  if(OptionManager->GetVerboseLevel() > 0){
     string line;
     line.resize(80,'*');
     cout << endl << line << endl;
@@ -47,7 +47,7 @@ int main(int argc, char** argv){
     cout << " GitHub: http://github.com/adrien-matta/nptool"<<endl; ;
     cout << line << endl;
   } 
-  
+
   // Test if input files are found. If not, exit
   if (OptionManager->IsDefault("EventGenerator"))
     OptionManager->SendErrorAndExit("EventGenerator");
@@ -58,34 +58,34 @@ int main(int argc, char** argv){
   G4String DetectorFileName       = OptionManager->GetDetectorFile();
   // my Verbose output class
   G4VSteppingVerbose::SetInstance(new SteppingVerbose);
- 
- ///////////////////////////////////////////////////////////////
+
+  ///////////////////////////////////////////////////////////////
   ///////////////// Initializing the Root Output ////////////////
   ///////////////////////////////////////////////////////////////
   RootOutput::getInstance("Simulation/" + OptionManager->GetOutputFile());
-   
+
   // Construct the default run manager
   G4RunManager* runManager = new G4RunManager;
-  
+
   // set mandatory initialization classes
   DetectorConstruction* detector  = new DetectorConstruction();
   runManager->SetUserInitialization(detector);
-  
+
   PhysicsList* physicsList   = new PhysicsList();
   runManager->SetUserInitialization(physicsList);
-  
+
   // Test for Built in physics list
   // G4PhysListFactory *physListFactory = new G4PhysListFactory();
   //G4VUserPhysicsList *physicsList =
   //physListFactory->GetReferencePhysList("QGSP_BERT");
-  
+
   runManager->SetUserInitialization(physicsList);
   PrimaryGeneratorAction* primary = new PrimaryGeneratorAction(detector);
-  
+
   // Initialize Geant4 kernel
   runManager->Initialize();
   physicsList->MyOwnConstruction();
-  
+
   ///////////////////////////////////////////////////////////////
   /////////// Define UI terminal for interactive mode ///////////
   ///////////////////////////////////////////////////////////////
@@ -97,13 +97,13 @@ int main(int argc, char** argv){
   G4UIExecutive* ui = new G4UIExecutive(argc, argv);
 #endif 
 
- 
+
   ///////////////////////////////////////////////////////////////
   ////////////////////// Reading Reaction ///////////////////////
   ///////////////////////////////////////////////////////////////
   primary->ReadEventGeneratorFile(EventGeneratorFileName);
   runManager->SetUserAction(primary);
-  
+
   ///////////////////////////////////////////////////////////////
   ////////////////// Starting the Event Action //////////////////
   ///////////////////////////////////////////////////////////////
@@ -117,48 +117,53 @@ int main(int argc, char** argv){
   RunAction* run_action = new RunAction() ;
   runManager->SetUserAction(run_action);
 
+  G4VisManager* visManager=NULL; 
+  if(!OptionManager->GetG4BatchMode()){
 #ifdef G4UI_USE
 #ifdef G4VIS_USE
-  string Path_Macro = getenv("NPTOOL");
-  Path_Macro+="/NPSimulation/macro/";
+    string Path_Macro = getenv("NPTOOL");
+    Path_Macro+="/NPSimulation/macro/";
 
-  UImanager->ApplyCommand("/control/execute " +Path_Macro+"aliases.mac");
-  G4VisManager* visManager = new G4VisExecutive("Quiet");
-  visManager->Initialize();
-  UImanager->ApplyCommand("/control/execute " +Path_Macro+"vis.mac");
+    UImanager->ApplyCommand("/control/execute " +Path_Macro+"aliases.mac");
+    G4VisManager* visManager = new G4VisExecutive("Quiet");
+    visManager->Initialize();
+    UImanager->ApplyCommand("/control/execute " +Path_Macro+"vis.mac");
 #endif
-   if (ui->IsGUI()){
-            UImanager->ApplyCommand("/control/execute " +Path_Macro+"gui.mac");
+    if (ui->IsGUI()){
+      UImanager->ApplyCommand("/control/execute " +Path_Macro+"gui.mac");
     }
 #ifdef __APPLE__
-  string command= "osascript ";
-  command+= getenv("NPTOOL");
-  command+="/NPSimulation/scripts/bringtofront.osa & ";
-  int res =system(command.c_str());
-  res =0;
+    string command= "osascript ";
+    command+= getenv("NPTOOL");
+    command+="/NPSimulation/scripts/bringtofront.osa & ";
+    int res =system(command.c_str());
+    res =0;
+
 #endif
- 
-    // Execute user macro
-    if(!OptionManager->IsDefault("G4MacroPath")){
-      UImanager->ApplyCommand("/control/execute "+ OptionManager->GetG4MacroPath());
-    }
- 
-    // Start the session
+  }
+  // Execute user macro
+  if(!OptionManager->IsDefault("G4MacroPath")){
+    UImanager->ApplyCommand("/control/execute "+ OptionManager->GetG4MacroPath());
+  }
+
+  // Start the session
+  if(!OptionManager->GetG4BatchMode())
     ui->SessionStart();
 
- 
-    delete ui;
+
+  delete ui;
 #endif
-  
+
 #ifdef G4VIS_USE
+  if(visManager)
   delete visManager;
 #endif
-  
+
   ///////////////////////////////////////////////////////////////
   ////////////////////// Job termination ////////////////////////
   ///////////////////////////////////////////////////////////////
   // delete primary; delete detector;
-  
+
   delete runManager;
   RootOutput::getInstance()->Destroy();
   return 0;
