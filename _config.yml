@@ -19,3 +19,4 @@ collections:
   manual:
     output: true
     permalink: /manual/:path/
+    show_in_nav: false
