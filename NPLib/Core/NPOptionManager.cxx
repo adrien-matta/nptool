@@ -52,6 +52,7 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
   fDefaultOutputTreeName      = "NPTool_Tree";
   fDefaultRunToReadFileName   = "defaultRunToTreat.txt";
   fDefaultCalibrationFileName = "defaultCalibration.txt";
+  fDefaultG4MacroPath         = "defaultG4MacroPath.txt";
   // Assigned values
   fReactionFileName           = fDefaultReactionFileName;
   fDetectorFileName           = fDefaultDetectorFileName;
@@ -59,6 +60,7 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
   fOutputTreeName             = fDefaultOutputTreeName;
   fRunToReadFileName          = fDefaultRunToReadFileName;
   fCalibrationFileName        = fDefaultCalibrationFileName;
+  fG4MacroPath                = fDefaultG4MacroPath;
   fVerboseLevel               = 1;
   fNumberOfEntryToAnalyse     = -1;
   fDisableAllBranchOption = false;
@@ -106,6 +108,8 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
     else if (argument == "--cal" && argc >= i + 1)                fCalibrationFileName = argv[++i] ;
 
     else if (argument == "-C" && argc >= i + 1)                   fCalibrationFileName = argv[++i] ;
+
+    else if (argument == "-M" && argc >= i + 1)                   fG4MacroPath = argv[++i] ;
 
     else if (argument == "-V"  && argc >= i + 1)                  fVerboseLevel = atoi(argv[++i]) ;
 
@@ -277,6 +281,10 @@ bool NPOptionManager::IsDefault(const char* type) const{
   else if (stype == "TreeName") {
     if (fOutputTreeName == fDefaultOutputTreeName) result = true;
   }
+  else if (stype == "G4MacroPath") {
+    if (fG4MacroPath== fDefaultG4MacroPath) result = true;
+  }
+ 
   else {
     cout << "NPOptionManager::IsDefault() unkwown keyword" << endl;
   }
@@ -333,12 +341,15 @@ void NPOptionManager::DisplayHelp(){
   cout << "\t --generate-histo -GH\t \t \tInstantiate the T*Spectra class of each detector" << endl ;
   cout << "\t --check-histo -CH\t \t \tCheck if the Histogram looks ok and change there color if not" << endl ;
   cout << "\t --input-physical -IP\t \t \tConsider the Input file is containing Physics Class instead of Data Class. Output branches associate to the detector are not activated" << endl  ;
-  cout << "\t -L <arg>\t \t \t \tLimite the number of envent to be analysed to arg" << endl ;
+  cout << "\t -L <arg>\t \t \t \tLimit the number of envent to be analysed to arg" << endl ;
   cout << "\t --last-sim\t \t \t \tIgnore the list of Run to treat if any and analysed the last simulated file" << endl ;
   cout << "\t --last-phy\t \t \t \tIgnore the list of Run to treat if any and analysed the last Physics file" << endl ;
   cout << "\t --last-res\t \t \t \tIgnore the list of Run to treat if any and analysed the last Result file" << endl ;
   cout << "\t --last-any\t \t \t \tIgnore the list of Run to treat if any and analysed the last root file with a non standard Tree name" << endl ;
   cout << "\t --online  \t \t \t \tStart the spectra server" << endl ;
+  cout << endl << "NPSimulation only:"<<endl;
+  cout << "\t -M <arg>\t \t \t \tExexute the Geant4 macro at <arg> at startup" << endl ;
+
   cout << endl << endl ;
 
   // exit current program

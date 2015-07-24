@@ -84,6 +84,8 @@ class NPOptionManager{
       string GetDefaultRunToReadFile()    {return fDefaultRunToReadFileName;}
       string GetDefaultCalibrationFile()  {return fDefaultCalibrationFileName;}
       string GetDefaultOutputFile()       {return fDefaultOutputFileName;}
+      string GetDefaultG4MacroPath()      {return fDefaultG4MacroPath;}
+
       // assigned values
       string GetReactionFile()             {return fReactionFileName;}
       string GetDetectorFile()             {return fDetectorFileName;}
@@ -91,6 +93,8 @@ class NPOptionManager{
       string GetCalibrationFile()          {return fCalibrationFileName;}
       string GetOutputFile()               {return fOutputFileName;}
       string GetOutputTreeName()           {return fOutputTreeName;}
+      string GetG4MacroPath()              {return fG4MacroPath;}     
+
       bool   GetDisableAllBranchOption()   {return fDisableAllBranchOption;}
       bool   GetInputPhysicalTreeOption()  {return fInputPhysicalTreeOption;}
       bool   GetGenerateHistoOption()      {return fGenerateHistoOption;}
@@ -101,7 +105,8 @@ class NPOptionManager{
       int    GetNumberOfEntryToAnalyse()   {return fNumberOfEntryToAnalyse;} 
       string GetSharedLibExtension()       {return fSharedLibExtension;}     
       string GetLastFile();                 
-            // Setters
+      
+      // Setters
       void SetReactionFile(string name)       {fReactionFileName = name;CheckEventGenerator();}
       void SetDetectorFile(string name)       {fDetectorFileName = name;CheckDetectorConfiguration();}
       void SetRunToReadFile(string name)      {fRunToReadFileName = name;}
@@ -115,6 +120,8 @@ class NPOptionManager{
       string fDefaultCalibrationFileName;
       string fDefaultOutputFileName;
       string fDefaultOutputTreeName;
+      string fDefaultG4MacroPath;
+
       // assigned values
       string fReactionFileName;
       string fDetectorFileName;
@@ -135,6 +142,7 @@ class NPOptionManager{
       int    fVerboseLevel; // 0 for not talk, 1 for talking
       int    fNumberOfEntryToAnalyse; // use to limit the number of analysed in NPA
       string fSharedLibExtension; // lib extension is platform dependent
+      string fG4MacroPath; // Path to a geant4 macro to execute at start of nps
 };
 
 #endif

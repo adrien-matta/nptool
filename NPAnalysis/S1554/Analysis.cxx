@@ -113,7 +113,7 @@ void Analysis::TreatEvent(){
     ThetaCM  = myReaction -> EnergyLabToThetaCM( ELab , ThetaLab)/deg;
     ThetaLab=ThetaLab/deg;
     if(ThetaLab>140)
-      ThetaLab=Rand.Uniform(ThetaLab-0.5,ThetaLab+0.5);
+      ThetaLab=Rand.Uniform(ThetaLab-0.4,ThetaLab+0.4);
     /************************************************/
   }//end loop Sharc 
 

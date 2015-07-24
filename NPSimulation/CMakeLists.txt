@@ -4,7 +4,7 @@ include("../NPLib/FindROOT.cmake")
 project (NPSimulation)
 set (NPSIM_VERSION_MAJOR 2)
 set (NPSIM_VERSION_MINOR 0)
-set (NPSIM_VERSION_DETS 17)
+set (NPSIM_VERSION_DETS 18)
 
 set(CMAKE_BUILD_TYPE Release)
 

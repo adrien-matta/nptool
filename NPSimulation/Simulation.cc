@@ -138,8 +138,15 @@ int main(int argc, char** argv){
   res =0;
 #endif
  
+    // Execute user macro
+    if(!OptionManager->IsDefault("G4MacroPath")){
+      UImanager->ApplyCommand("/control/execute "+ OptionManager->GetG4MacroPath());
+    }
+ 
+    // Start the session
     ui->SessionStart();
-   
+
+ 
     delete ui;
 #endif
   

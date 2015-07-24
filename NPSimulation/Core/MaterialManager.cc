@@ -356,8 +356,10 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
 
   }
 
-  else return it->second;
+  else 
+    return it->second;
 
+  return NULL;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
