@@ -1,5 +1,5 @@
 ---
-layout: page 
+layout: manual 
 title: Manual 
 permalink: /manual/
 show_in_nav: true
