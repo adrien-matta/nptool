@@ -1,7 +1,7 @@
 ---
 layout: manual 
 title: Install 
-permaling: /manual/install/
+permalink: /manual/install/
 show_in_nav: false
 ---
 NPTOOL
