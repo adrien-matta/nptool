@@ -1,6 +1,6 @@
 ---
 layout: manual 
-title: Manual 
+title: manual 
 permalink: /manual/
 show_in_nav: true
 ---
