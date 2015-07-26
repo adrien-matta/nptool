@@ -1,6 +1,6 @@
 ---
 layout: manual 
-title: about
+title: About
 permalink: /about/
 show_in_nav: true
 ---
