@@ -16,9 +16,9 @@
       <div class="trigger">
         {% for page in site.pages %}
           {% if page.title %}
-            {% unless show_in_nav == 'false' %}
+            {% if page.show_in_nav %}
             <a class="page-link" href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a>
-            {% endunless %}
+            {% endif %}
           {% endif %}
         {% endfor %}
       </div>
