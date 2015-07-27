@@ -30,8 +30,6 @@ namespace NPL{
 
       // Return distance to pedestal. Use energies in Energies to perform fit and fill coeff with the results
       double FitPoints(TGraphErrors* Graph, double* Energies , double* ErrEnergies, vector<double>& coeff , double pedestal = 0 );
-      // return a canvas containning the results
-      void DisplayResults();
       // 
       TGraphErrors* FitSpectrum(TH1* histo);
   };
