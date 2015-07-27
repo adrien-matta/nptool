@@ -1,0 +1,14 @@
+CalibrationFilePath
+  Calib/CATS1_X.txt
+  Calib/CATS2_X.txt
+  Calib/CATS1_Y.txt
+  Calib/CATS2_Y.txt
+  Calib/Cal_Str_X_E_MM1.cal
+  Calib/Cal_Str_X_E_MM2.cal
+  Calib/Cal_Str_X_E_MM3.cal
+  Calib/Cal_Str_X_E_MM4.cal
+  Calib/Cal_Str_Y_E_MM1.cal
+  Calib/Cal_Str_Y_E_MM2.cal
+  Calib/Cal_Str_Y_E_MM3.cal
+  Calib/Cal_Str_Y_E_MM4.cal
+
