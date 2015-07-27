@@ -4,7 +4,8 @@
 @charset "utf-8";
 
 // Our variables
-$base-font-family: Helvetica, Arial, sans-serif;
+//$base-font-family: Helvetica, Arial, sans-serif;
+$base-font-family: STHeiti, Arial, sans-serif;
 $base-font-size:   16px;
 $small-font-size:  $base-font-size * 0.875;
 $base-line-height: 1.5;
@@ -13,11 +14,11 @@ $spacing-unit:     30px;
 
 $text-color: #CCCCCC;
 $background-color: #1A1A1A;
-$brand-color: #b8b8b8;
+$brand-color: #467dcf;
 
-$grey-color: $brand-color;
+$grey-color: #b8b8b8;
 $grey-color-light: $grey-color;
-$grey-color-dark:  $grey-color;
+$grey-color-dark:  darken($grey-color,25%);
 
 $on-palm:          600px;
 $on-laptop:        800px;

@@ -4,8 +4,14 @@
 body, h1, h2, h3, h4, h5, h6,
 p, blockquote, pre, hr,
 dl, dd, ol, ul, figure {
+    background-color: $background-color;
+    overflow: hidden;
     margin: 0;
     padding: 0;
+    outline: $background-color;
+    background-clip: padding-box;
+    -webkit-background-clip: padding-box;
+
 }
 
 
@@ -20,12 +26,14 @@ body {
     font-weight: 300;
     color: $text-color;
     background-color: $background-color;
+    padding: padding-box;
     -webkit-text-size-adjust: 100%;
+    overflow: hidden;
 }
 
 
 
-/**
+/** 
  * Set `margin-bottom` to maintain vertical rhythm
  */
 h1, h2, h3, h4, h5, h6,
@@ -33,6 +41,9 @@ p, blockquote, pre,
 ul, ol, dl, figure,
 %vertical-rhythm {
     margin-bottom: $spacing-unit / 2;
+    background-color: $background-color;
+    border-radius: 10px;
+    border-color: $background-color;
 }
 
 
@@ -43,6 +54,8 @@ ul, ol, dl, figure,
 img {
     max-width: 100%;
     vertical-align: middle;
+    margin: auto;
+    overflow: hidden;
 }
 
 
@@ -52,6 +65,9 @@ img {
  */
 figure > img {
     display: block;
+    background-color: $background-color;
+    padding: padding-box;
+    overflow: hidden;
 }
 
 figcaption {
@@ -89,15 +105,15 @@ h1, h2, h3, h4, h5, h6 {
  * Links
  */
 a {
-    color: $brand-color;
+    color: $grey-color;
     text-decoration: none;
 
     &:visited {
-        color: $brand-color;
+        color: $grey-color;
     }
 
     &:hover {
-        color: $brand-color;
+        color: $grey-color-dark;
         text-decoration: underline;
     }
 }
@@ -128,19 +144,23 @@ blockquote {
 pre,
 code {
     font-size: 15px;
-    border: 1px solid $grey-color-light;
-    border-radius: 3px;
+    border: 5px solid $brand-color;
+    border-radius: 10px;
     background-color: #eef;
     color: invert(#eef);
+    overflow: hidden;
 }
 
 code {
-    padding: 1px 5px;
+    padding: 1px 8px;
+    border: 3px solid $brand-color;
 }
 
 pre {
-    padding: 8px 12px;
+    padding: 3px 12px;
     overflow-x: scroll;
+    border-radius: 10px;
+    overflow: hidden;
 
     > code {
         border: 0;
