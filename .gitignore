@@ -4,6 +4,7 @@
 *.ninja*
 *.swp
 Makefiles
+Makefile
 *.gitignore
 CMakeCache.txt
 *.dylib
@@ -15,3 +16,11 @@ install_manifest.txt
 .DS_store
 *NPAnalysis*
 .last_*
+npanalysis
+nponline
+nptool-cleaner
+nptool-installer
+npsimulation
+*.reaction
+*.detector
+*.source

@@ -15,3 +15,5 @@ Utility/nptool-installer
 *.dylib
 *.so
 *.cmake
+NPLibVersion.h
+scripts/*.d

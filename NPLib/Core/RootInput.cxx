@@ -211,7 +211,7 @@ void RootInput::AddFriendChain(string RunToAdd){
 
 ////////////////////////////////////////////////////////////////////////////////
 string RootInput::DumpAsciiFile(const char* type, const char* folder){
-  string name;
+  string name="fail";
 
   string sfolder = folder;
   // create folder if not existing

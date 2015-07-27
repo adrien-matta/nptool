@@ -25,14 +25,18 @@ int main(int argc , char** argv){
   // if input files are not given, use those from TAsciiFile
   if (myOptionManager->IsDefault("DetectorConfiguration")) {
     string name = RootInput::getInstance(inputfilename)->DumpAsciiFile("DetectorConfiguration");
-    myOptionManager->SetDetectorFile(name);
-    cout << "\033[1;33mWarning: No Detector file given, using Input tree one (if any)\033[0m"<<endl;;
+    if(name!="fail"){
+      myOptionManager->SetDetectorFile(name);
+     cout << "\033[1;33mInfo: No Detector file given, using Input tree one \033[0m"<<endl;;
+    }  
   }
 
   if (myOptionManager->IsDefault("EventGenerator")) {
     string name = RootInput::getInstance(inputfilename)->DumpAsciiFile("EventGenerator");
+    if(name!="fail"){
     myOptionManager->SetReactionFile(name);
-    cout << "\033[1;33mWarning: No Event file given, using Input tree one (if any)\033[0m"<<endl;;
+    cout << "\033[1;33mInfo: No Event file given, using Input tree one \033[0m"<<endl;;
+    }
   }
 
   // get input files from NPOptionManager
