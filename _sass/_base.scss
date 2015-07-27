@@ -5,13 +5,8 @@ body, h1, h2, h3, h4, h5, h6,
 p, blockquote, pre, hr,
 dl, dd, ol, ul, figure {
     background-color: $background-color;
-    overflow: hidden;
     margin: 0;
     padding: 0;
-    outline: $background-color;
-    background-clip: padding-box;
-    -webkit-background-clip: padding-box;
-
 }
 
 
@@ -26,9 +21,7 @@ body {
     font-weight: 300;
     color: $text-color;
     background-color: $background-color;
-    padding: padding-box;
     -webkit-text-size-adjust: 100%;
-    overflow: hidden;
 }
 
 
@@ -55,7 +48,6 @@ img {
     max-width: 100%;
     vertical-align: middle;
     margin: auto;
-    overflow: hidden;
 }
 
 
@@ -66,8 +58,6 @@ img {
 figure > img {
     display: block;
     background-color: $background-color;
-    padding: padding-box;
-    overflow: hidden;
 }
 
 figcaption {
@@ -97,6 +87,23 @@ li {
  */
 h1, h2, h3, h4, h5, h6 {
     font-weight: 300;
+    color: $brand-color;
+}
+
+h1 {
+    font-size: 36px;
+}
+
+h2 {
+    font-size: 30px;
+}
+
+h3 {
+    font-size: 28px;
+}
+
+h4, h5, h6 {
+    font-size: 26px;
 }
 
 
@@ -148,7 +155,6 @@ code {
     border-radius: 10px;
     background-color: #eef;
     color: invert(#eef);
-    overflow: hidden;
 }
 
 code {
@@ -160,7 +166,6 @@ pre {
     padding: 3px 12px;
     overflow-x: scroll;
     border-radius: 10px;
-    overflow: hidden;
 
     > code {
         border: 0;
