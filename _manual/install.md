@@ -84,7 +84,7 @@ This part of the package rely on Geant4 to perform Monte Carlo simulation. You n
 $ nps
 $ cmake ./
 $ make -jn install
-{% endhighlight %}`
+{% endhighlight %}
 
 This will produce the npsimulation executable. For a detail list of the available input flag and their meaning, you can run:
 

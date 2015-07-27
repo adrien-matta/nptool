@@ -2,7 +2,7 @@
 title: nptool
 email: a.matta@surrey.ac.uk
 description: > # this means to ignore newlines until "baseurl:"
-  nptool, a Root and Geant4 framework for analysis and simulation of nuclear physics experiement.
+  nptool, a Root and Geant4 framework for analysis and simulation of nuclear physics experiment.
 
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://nptool.org" # the base hostname & protocol for your site
