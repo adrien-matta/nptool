@@ -1,4 +1,4 @@
-#!bin/bash
+#!/bin/bash
 
 # source this file to setup your NPTOOL installation
 CUR_DIR="$PWD" 

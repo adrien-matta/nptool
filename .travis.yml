@@ -13,6 +13,7 @@ script:
   - root-config --version
   - cd NPLib
   - cmake ./
+  - make -j4
   - make install
 
 after_success:
