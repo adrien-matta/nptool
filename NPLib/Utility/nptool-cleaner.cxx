@@ -17,7 +17,7 @@ int main(int argc , char** argv){
     current = "NPSimulation";
 
   else{
-    std::cout << "\r \033[1;31m ERROR: nptool-cleaner utility online clean NPLib and NPSimulation" << endl;
+    std::cout << "\r \033[1;31m ERROR: nptool-cleaner utility online clean NPLib and NPSimulation \033[0m" << endl;
     exit(1);
   }
 
@@ -36,9 +36,10 @@ int main(int argc , char** argv){
   while(check){
     std::cout << "**** Do you want to proceed ? (y/n)  " ;
     std::cin >> answer;
-    if(answer =="n" || answer =="N")
+    if(answer =="n" || answer =="N"){
+      std::cout << "\033[0m" ;
       return 0;
-
+    }
     else if(answer =="y" || answer =="Y"){
       std::cout << "Proceed" << std::endl;
       check = false;
@@ -47,7 +48,8 @@ int main(int argc , char** argv){
     std::cout << "Reply by y (yes) or n (no)" << std::endl;
     }
   }
-
+  std::cout << "\033[0m" ;
+  
   std::string command,command2;
   // Dict     
   command = "ls ./*/*Dict* > /dev/null 2>/dev/null";
