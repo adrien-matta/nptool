@@ -2,6 +2,8 @@
 layout: manual 
 title: Adding documentation
 permalink: /manual/adding-documentation/
+author: Adrien Matta <mailto:a.matta@surrey.ac.uk>
+manual_order: 1000
 show_in_nav: false
 ---
 ## Getting the gh-pages:
@@ -112,11 +114,13 @@ The file need to start (do not leave blank line at the top) with a specific head
 layout: manual 
 title: Your title
 permalink: /manual/your-title/
+author: your name
+manual_order: 202
 show_in_nav: false
 ---
 {% endhighlight %}   
 
-Those four line allow the website to know that your page goes in the manual category, the title under wich it should be display in the manual, the path that will show in the address bar, and that the page should not be shown in the top navigation bar.
+Those four line allow the website to know that your page goes in the manual category, the title under wich it should be display in the manual, the path that will show in the address bar, and that the page should not be shown in the top navigation bar. The manual order allow to place correctly the manual entry in the menu, the bigger the number, the later it will show in the menu. The ordering number does not need to be continuous, so we setup large jump in number for each of them, allowing easy addition in the future. The annexes, such as this page, start at 1000 with increment of 10. Normal entries, use increment of 100 starting from 0.
 
 
 After that, the format of the text is [Markdown][markdown], that use easy to read marking to specify title and headings. Here is a small example of a file showing off some basic functionnality:
@@ -126,6 +130,7 @@ After that, the format of the text is [Markdown][markdown], that use easy to rea
 layout: manual 
 title: Showing-off
 permalink: /manual/showing-off/
+author: your name
 show_in_nav: false
 ---
 # Showing-off basics
