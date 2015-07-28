@@ -5,7 +5,7 @@ compiler:
 
 before_install:
   - cd
-  - source adrien-matta/nptool/nptool.sh
+  - source build/adrien-matta/nptool/nptool.sh
   - printenv | grep NPTOOL
   - sudo add-apt-repository -y "deb http://archive.ubuntu.com/ubuntu/ trusty main universe"
   - sudo apt-get update -qq
