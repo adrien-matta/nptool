@@ -10,7 +10,7 @@ before_install:
   - sudo apt-get install root-system -y
 
 script:
-  - source nptool/nptool.sh
+  - source nptool.sh
   - npl
   - cmake ./
   - make install
