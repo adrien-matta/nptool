@@ -6,7 +6,7 @@
 // Our variables
 //$base-font-family: Helvetica, Arial, sans-serif;
 @font-face {
-    font-family: 'PfennigA';
+    font-family: 'pfennig';
     src: url('nptool.org/fonts/Pfennig-webfont.eot');
     src: url('nptool.org/fonts/Pfennig-webfont.eot?#iefix') format('embedded-opentype'),
          url('nptool.org/fonts/Pfennig-webfont.woff') format('woff'),
@@ -17,7 +17,7 @@
 
 }
 
-$base-font-family: PfennigA, Arial, sans-serif;
+$base-font-family: 'pfennig', Arial, sans-serif;
 $base-font-size:   18px;
 $small-font-size:  $base-font-size * 0.875;
 $base-line-height: 1.5;
