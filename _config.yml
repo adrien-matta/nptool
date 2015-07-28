@@ -13,10 +13,7 @@ github_username: adrien-matta/nptool
 # Build settings
 markdown: kramdown
 include: [_manual]
-assets:
-  source: 
-    - ./
-    - _fonts
+source: ./ 
 safe: true
 lsi: false
 # Defining collection

@@ -5,7 +5,19 @@
 
 // Our variables
 //$base-font-family: Helvetica, Arial, sans-serif;
-$base-font-family: Pfennig, Arial, sans-serif;
+@font-face {
+    font-family: 'PfennigA';
+    src: url('/fonts/Pfennig-webfont.eot');
+    src: url('/fonts/Pfennig-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/fonts/Pfennig-webfont.woff') format('woff'),
+         url('/fonts/Pfennig-webfont.ttf') format('truetype'),
+         url('/fonts/Pfennig-webfont.svg#Pfennigregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+$base-font-family: PfennigA, Arial, sans-serif;
 $base-font-size:   18px;
 $small-font-size:  $base-font-size * 0.875;
 $base-line-height: 1.5;
