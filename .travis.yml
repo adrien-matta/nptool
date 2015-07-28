@@ -5,7 +5,8 @@ compiler:
   - clang
 
 install:
-  - sudo apt-get install root
+  - sudo apt-get update -qq
+  - sudo apt-get install root-system
 
 script:
   - source nptool/nptool.sh
