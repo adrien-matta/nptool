@@ -60,7 +60,7 @@ PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGenerato
 
   OpenCmd = new G4UIcmdWithAString("/gen/open",this);
   OpenCmd->SetGuidance("Open a new event generator");
-  OpenCmd->SetCandidates(choices.c_str()); 
+//  OpenCmd->SetCandidates(choices.c_str()); 
   OpenCmd->AvailableForStates(G4State_Idle);  
 }
 
@@ -87,5 +87,4 @@ void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command,G4String 
   }
 
 }
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

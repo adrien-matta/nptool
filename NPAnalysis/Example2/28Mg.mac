@@ -1,0 +1,10 @@
+/run/beamOn 10000
+/gen/open Reaction/28Mgdp_2.reaction
+/run/beamOn 10000
+/gen/open Reaction/28Mgdp_3.reaction
+/run/beamOn 5000
+/gen/open Reaction/28Mgdp_4.reaction
+/run/beamOn 3000
+/gen/open Reaction/28Mgdp_5.reaction
+/run/beamOn 4000
+
