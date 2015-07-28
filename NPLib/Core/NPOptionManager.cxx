@@ -357,7 +357,7 @@ void NPOptionManager::DisplayHelp(){
   cout << endl << endl ;
 
   // exit current program
-  exit(1);
+  exit(0);
 }
 
 

@@ -2,6 +2,7 @@ language: cpp
 
 compiler:
   - gcc
+  - clang
 
 before_install:
   - sudo add-apt-repository -y "deb http://archive.ubuntu.com/ubuntu/ trusty main universe"
@@ -10,12 +11,21 @@ before_install:
 
 script:
   - source nptool.sh
-  - ls
-  - printenv | grep LD_
+  - root-config --version
   - cd NPLib
   - cmake ./
   - make install
-  
+
+after_success:
+  - npanalysis -h
+  - npa
+  - cd Example1
+  - cmake ./
+  - make
+  - cd ../Example2
+  - cmake ./
+  - make
+
 branches:
   only:
     - NPTool.2.dev
