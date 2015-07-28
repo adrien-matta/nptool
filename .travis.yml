@@ -4,6 +4,7 @@ compiler:
   - gcc
 
 before_install:
+  - cd
   - source nptool.sh
   - printenv | grep NPTOOL
   - sudo add-apt-repository -y "deb http://archive.ubuntu.com/ubuntu/ trusty main universe"
@@ -12,14 +13,13 @@ before_install:
 
 script:
   - root-config --version
-  - cd NPLib
+  - npl
   - cmake ./
   - make -j4
   - make install
 
 after_success:
-  - bin/nptool-installer
-  - bin/npanalysis -h
+  - npanalysis -h
   - cd ../NPAnalysis/Example1
   - cmake ./
   - make
