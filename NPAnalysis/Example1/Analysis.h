@@ -61,11 +61,11 @@ class Analysis: public NPL::VAnalysis{
     double Si_E_M2;
     double CsI_E_M2; 
     double E_SSSD;
-    double Energy = 0;
-    double E_M2 = 0;
-    double Si_X_M2 = 0;
-    double Si_Y_M2 = 0;
-    double ZTarget = 0;
+    double Energy ;
+    double E_M2 ;
+    double Si_X_M2;
+    double Si_Y_M2;
+    double ZTarget;
     double TargetThickness;
 
     NPL::EnergyLoss He3CD2  ;
