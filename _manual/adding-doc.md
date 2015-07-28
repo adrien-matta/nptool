@@ -4,8 +4,6 @@ title: Adding documentation
 permalink: /manual/adding-documentation/
 show_in_nav: false
 ---
-# Adding documentation
-
 ## Getting the gh-pages:
 
 If you wish to add a new documentation section you first need to get the site source from github. The source are stored directly on the github repository, in a specific branch named gh-pages. Github automatically rebuild the website after each commit onto this branch. The change are visible a few minutes after the commit. It is therefore important to check your change locally first, and then only to push them to avoid breaking the website.
