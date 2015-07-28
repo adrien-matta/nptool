@@ -5,19 +5,21 @@ permalink: /credit/
 show_in_nav: true
 ---
 
-nptool is a collaborative package distributited under [GPL2.0][gpl2].
+nptool is an open source collaborative package distributited under [GPL2.0][gpl2].
 
-Framework contributors:
+###Framework contributors:
 
 * A. Matta (University of Surrey) <mailto:a.matta@surrey.ac.uk>
 * N. de Sereville (IPN Orsay) <mailto:deserevi@ipno.in2p3.fr>
 * P. Morfouace (MSU/NSCL) <mailto:morfouac@nscl.msu.edu>
 
-Detector contributors:
+###Detector contributors:
 
 * S. Giron
 * L. Lefevre
 * R. Wilkinson (University of Surrey) <mailto:r.wilkinson@surrey.ac.uk>
+
+### Various credit and liscence
 
 The nptool logo and this website use the [Pfennig][pfennig] Font  by Daniel Johnson under the [OFT][oft] liscence.
 
