@@ -16,9 +16,9 @@ script:
   - make install
 
 after_success:
-  - npanalysis -h
-  - npa
-  - cd Example1
+  - bin/nptool-installer
+  - bin/npanalysis -h
+  - cd ../NPAnalysis/Example1
   - cmake ./
   - make
   - cd ../Example2
