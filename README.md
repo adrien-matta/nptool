@@ -97,7 +97,7 @@ $ npanalysis -R RunToTreat.txt -O Example1
 ````
 Because the input file are written in the simulation file along the SimulatedTree, npanalysis will automatically use those file as inputs. This will produce the analysed tree located in $NPTOOL/Outputs/Analysis/Example1.root. You can then display the result of the simulation using root:
 ````
-$ root ShowResult.C
+$ root ShowResult.cxx
 ````
 
 You should be able to see the light particle identification, the light particle kinematical line and the associated excitation energy spectrum fitted by a gaussian.

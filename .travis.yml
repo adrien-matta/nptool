@@ -28,15 +28,10 @@ script:
   - cmake ./
   - make -j4
   - make install
+  - ./scripts/RootLogon.sh 
+  - ./scripts/test/basic.sh
 
 after_success:
-  - npanalysis -h
-  - cd ../NPAnalysis/Example1
-  - cmake ./
-  - make
-  - cd ../Example2
-  - cmake ./
-  - make
 
 branches:
   only:
