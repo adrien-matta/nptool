@@ -1,8 +1,8 @@
 language: cpp
 
 os:
-  - osx 
   - linux
+  - osx
 
 compiler:
   - gcc
@@ -20,6 +20,9 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install homebrew/science/geant4; fi    
   # Dumping stuff for check
   - root-config --version
+
+install:
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 
 script:
   - cd NPLib 
@@ -40,4 +43,11 @@ branches:
   only:
     - NPTool.2.dev
 
-
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - gcc-4.8
+    - g++-4.8
+    - clang
