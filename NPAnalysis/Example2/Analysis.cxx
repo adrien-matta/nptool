@@ -38,9 +38,9 @@ void Analysis::Init(){
   InitInputBranch();
   
   Sharc = (TSharcPhysics*)  m_DetectorManager -> GetDetector("Sharc");
-  LightCD2 = EnergyLoss("proton_CD2.G4table","G4Table",10 );
-  LightSi = EnergyLoss("proton_Si.G4table","G4Table",1);
-  BeamCD2 = EnergyLoss("Mg28_CD2.G4table","G4Table",10);
+  LightCD2 = EnergyLoss("Example/proton_CD2.G4table","G4Table",10 );
+  LightSi = EnergyLoss("Example/proton_Si.G4table","G4Table",1);
+  BeamCD2 = EnergyLoss("Example/Mg28_CD2.G4table","G4Table",10);
   myReaction = new NPL::Reaction();
   myReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
    TargetThickness = m_DetectorManager->GetTargetThickness()*micrometer;
