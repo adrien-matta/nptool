@@ -7,13 +7,16 @@ compiler:
 before_install:
   # Linux
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo add-apt-repository -y "deb http://archive.ubuntu.com/ubuntu/ trusty main universe"; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install cern-archive-keyring; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get update -qq; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install root-system -y; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install root-system -qq; fi
+
   # OSX 
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update; fi 
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install homebrew/science/root; fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install homebrew/science/geant4; fi    
   # Dumping stuff for check
-  - root-config --cflags
+  - root-config --version
 
 script:
   - cd NPLib 
@@ -35,6 +38,5 @@ branches:
     - NPTool.2.dev
 
 os:
-  - linux
   - osx
 
