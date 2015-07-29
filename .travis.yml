@@ -18,10 +18,10 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then mkdir geant4_install; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd geant4_build; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cmake -DCMAKE_INSTALL_PREFIX=~/geant4_install -DGEANT4_INSTALL_DATA=ON ../geant4; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; make -j2; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; make -j2 install; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; cd; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; source geant4_install/share/Geant4-10.0.1/geant4make/geant4make.sh; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then make -j2; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then make -j2 install; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then source geant4_install/share/Geant4-10.0.1/geant4make/geant4make.sh; fi
 
   # OSX 
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update; fi 
