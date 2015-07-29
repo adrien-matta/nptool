@@ -1366,13 +1366,13 @@ G4RotationMatrix* Rotation(double tetaX, double tetaY, double tetaZ){
  //            Registering the construct method to the factory                 //
  ////////////////////////////////////////////////////////////////////////////////
  extern"C" {
- class proxy{
+ class proxy_nps_must2{
    public:
-    proxy(){
+    proxy_nps_must2(){
       NPS::DetectorFactory::getInstance()->AddToken("MUST2Array","MUST2Array");
       NPS::DetectorFactory::getInstance()->AddDetector("MUST2Array",MUST2Array::Construct);
     }
 };
 
- proxy p;
+ proxy_nps_must2 p_nps_must2;
  }

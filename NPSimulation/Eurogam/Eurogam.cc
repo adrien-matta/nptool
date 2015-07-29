@@ -677,13 +677,13 @@ void Eurogam::InitializeScorers()
  //            Registering the construct method to the factory                 //
  ////////////////////////////////////////////////////////////////////////////////
  extern"C" {
- class proxy{
+ class proxy_nps_eurogam{
    public:
-    proxy(){
+    proxy_nps_eurogam(){
       NPS::DetectorFactory::getInstance()->AddToken("Eurogam","Eurogam");
       NPS::DetectorFactory::getInstance()->AddDetector("Eurogam",Eurogam::Construct);
     }
 };
 
- proxy p;
+ proxy_nps_eurogam p_nps_eurogam;
  }

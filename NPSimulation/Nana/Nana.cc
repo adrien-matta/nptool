@@ -497,13 +497,13 @@ void Nana::InitializeScorers(){
  //            Registering the construct method to the factory                 //
  ////////////////////////////////////////////////////////////////////////////////
  extern"C" {
- class proxy{
+ class proxy_nps_nana{
    public:
-    proxy(){
+    proxy_nps_nana(){
       NPS::DetectorFactory::getInstance()->AddToken("Nana","Nana");
       NPS::DetectorFactory::getInstance()->AddDetector("Nana",Nana::Construct);
     }
 };
 
- proxy p;
+ proxy_nps_nana p_nps_nana;
  }

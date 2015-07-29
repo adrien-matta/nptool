@@ -871,15 +871,15 @@ NPS::VDetector* Tiara::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class brlproxy{
+class proxy_nps_tiara{
   public:
-    brlproxy(){
+    proxy_nps_tiara(){
       NPS::DetectorFactory::getInstance()->AddToken("Tiara","Tiara");
       NPS::DetectorFactory::getInstance()->AddDetector("Tiara",Tiara::Construct);
     }
 };
 
-brlproxy brlp;
+proxy_nps_tiara p_nps_tiara;
 }
 
 

@@ -617,13 +617,13 @@ NPS::VDetector* SSSD::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern"C" {
-  class proxy{
+  class proxy_nps_sssd{
     public:
-      proxy(){
+      proxy_nps_sssd(){
         NPS::DetectorFactory::getInstance()->AddToken("SSSD","SSSD");
         NPS::DetectorFactory::getInstance()->AddDetector("SSSD",SSSD::Construct);
       }
   };
 
-  proxy p;
+  proxy_nps_sssd p_nps_sssd;
 }

@@ -752,13 +752,13 @@ void W1::InitializeScorers(){
  //            Registering the construct method to the factory                 //
  ////////////////////////////////////////////////////////////////////////////////
  extern"C" {
- class proxy{
+ class proxy_nps_w1{
    public:
-    proxy(){
+    proxy_nps_w1(){
       NPS::DetectorFactory::getInstance()->AddToken("W1","W1");
       NPS::DetectorFactory::getInstance()->AddDetector("W1",W1::Construct);
     }
 };
 
- proxy p;
+ proxy_nps_w1 p_nps_w1;
  }

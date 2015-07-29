@@ -454,13 +454,13 @@ void DUMMYDetector::InitializeScorers()
  //            Registering the construct method to the factory                 //
  ////////////////////////////////////////////////////////////////////////////////
  extern"C" {
- class proxy{
+ class proxy_nps_dummy{
    public:
-    proxy(){
+    proxy_nps_dummy(){
       NPS::DetectorFactory::getInstance()->AddToken("DUMMYDetector","DUMMYDetector");
       NPS::DetectorFactory::getInstance()->AddDetector("DUMMYDetector",DUMMYDetector::Construct);
     }
 };
 
- proxy p;
+ proxy_nps_dummy p_nps_dummy;
  }

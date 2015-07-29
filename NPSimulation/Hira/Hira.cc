@@ -625,15 +625,15 @@ NPS::VDetector* Hira::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern"C" {
-    class proxy{
+    class proxy_nps_hira{
     public:
-        proxy(){
+        proxy_nps_hira(){
             NPS::DetectorFactory::getInstance()->AddToken("HIRAArray","Hira");
             NPS::DetectorFactory::getInstance()->AddDetector("HIRAArray",Hira::Construct);
         }
     };
     
-    proxy p;
+    proxy_nps_hira p_nps_hira;
 }
 
 

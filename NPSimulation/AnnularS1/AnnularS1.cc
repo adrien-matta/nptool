@@ -424,15 +424,15 @@ NPS::VDetector* AnnularS1::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_nps_annulars1{
   public:
-    proxy(){
+    proxy_nps_annulars1(){
       NPS::DetectorFactory::getInstance()->AddToken("AnnularS1","AnnularS1");
       NPS::DetectorFactory::getInstance()->AddDetector("AnnularS1",AnnularS1::Construct);
     }
 };
 
-proxy p;
+proxy_nps_annulars1 p_nps_annulars1;
 }
 
 

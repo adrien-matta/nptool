@@ -633,13 +633,13 @@ NPS::VDetector* CsI::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern"C" {
-    class proxy{
+    class proxy_nps_csi{
     public:
-        proxy(){
+        proxy_nps_csi(){
             NPS::DetectorFactory::getInstance()->AddToken("CsI","CsI");
             NPS::DetectorFactory::getInstance()->AddDetector("CsI",CsI::Construct);
         }
     };
     
-    proxy p;
+    proxy_nps_csi p_nps_csi;
 }

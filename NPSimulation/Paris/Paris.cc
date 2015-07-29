@@ -621,13 +621,13 @@ void Paris::InitializeScorers(){
  //            Registering the construct method to the factory                 //
  ////////////////////////////////////////////////////////////////////////////////
  extern"C" {
- class proxy{
+ class proxy_nps_paris{
    public:
-    proxy(){
+    proxy_nps_paris(){
       NPS::DetectorFactory::getInstance()->AddToken("Paris","Paris");
       NPS::DetectorFactory::getInstance()->AddDetector("Paris",Paris::Construct);
     }
 };
 
- proxy p;
+ proxy_nps_paris p_nps_proxy;
  }

@@ -498,13 +498,13 @@ void Fatima::InitializeScorers(){
  //            Registering the construct method to the factory                 //
  ////////////////////////////////////////////////////////////////////////////////
  extern"C" {
- class proxy{
+ class proxy_nps_fatima{
    public:
-    proxy(){
+    proxy_nps_fatima(){
       NPS::DetectorFactory::getInstance()->AddToken("Fatima","Fatima");
       NPS::DetectorFactory::getInstance()->AddDetector("Fatima",Fatima::Construct);
     }
 };
 
- proxy p;
+ proxy_nps_fatima p_nps_fatima;
  }

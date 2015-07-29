@@ -219,13 +219,13 @@ void GaspardTracker::ReadSensitive(const G4Event* event)
  //            Registering the construct method to the factory                 //
  ////////////////////////////////////////////////////////////////////////////////
  extern"C" {
- class proxy{
+ class proxy_nps_gaspard{
    public:
-    proxy(){
+    proxy_nps_gaspard(){
       NPS::DetectorFactory::getInstance()->AddToken("GaspardTracker","GaspardTracker");
       NPS::DetectorFactory::getInstance()->AddDetector("GaspardTracker",GaspardTracker::Construct);
     }
 };
 
- proxy p;
+ proxy_nps_gaspard p_nps_gaspard;
  }

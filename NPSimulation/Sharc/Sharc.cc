@@ -824,13 +824,13 @@ void Sharc::InitializeMaterial(){
  //            Registering the construct method to the factory                 //
  ////////////////////////////////////////////////////////////////////////////////
  extern"C" {
- class proxy{
+ class proxy_nps_sharc{
    public:
-    proxy(){
+    proxy_nps_sharc(){
       NPS::DetectorFactory::getInstance()->AddToken("Sharc","Sharc");
       NPS::DetectorFactory::getInstance()->AddDetector("Sharc",Sharc::Construct);
     }
 };
 
- proxy p;
+ proxy_nps_sharc p_nps_sharc;
  }

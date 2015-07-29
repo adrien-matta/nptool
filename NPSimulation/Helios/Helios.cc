@@ -203,13 +203,13 @@ void Helios::ReadSensitive(const G4Event* event)
  //            Registering the construct method to the factory                 //
  ////////////////////////////////////////////////////////////////////////////////
  extern"C" {
- class proxy{
+ class proxy_nps_helios{
    public:
-    proxy(){
+    proxy_nps_helios(){
       NPS::DetectorFactory::getInstance()->AddToken("Helios","Helios");
       NPS::DetectorFactory::getInstance()->AddDetector("Helios",Helios::Construct);
     }
 };
 
- proxy p;
+ proxy_nps_helios p_nps_helios;
  }

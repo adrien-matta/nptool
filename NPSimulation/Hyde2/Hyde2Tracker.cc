@@ -179,13 +179,13 @@ void Hyde2Tracker::ReadSensitive(const G4Event* event)
  //            Registering the construct method to the factory                 //
  ////////////////////////////////////////////////////////////////////////////////
  extern"C" {
- class proxy{
+ class proxy_nps_hyde2{
    public:
-    proxy(){
+    proxy_nps_hyde2(){
       NPS::DetectorFactory::getInstance()->AddToken("Hyde2Tracker","Hyde2Tracker");
       NPS::DetectorFactory::getInstance()->AddDetector("Hyde2Tracker",Hyde2Tracker::Construct);
     }
 };
 
- proxy p;
+ proxy_nps_hyde2 p_nps_hyde2;
  }

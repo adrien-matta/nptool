@@ -626,13 +626,13 @@ void Plastic::InitializeScorers() {
  //            Registering the construct method to the factory                 //
  ////////////////////////////////////////////////////////////////////////////////
  extern"C" {
- class proxy{
+ class proxy_nps_plastic{
    public:
-    proxy(){
+    proxy_nps_plastic(){
       NPS::DetectorFactory::getInstance()->AddToken("Plastic","Plastic");
       NPS::DetectorFactory::getInstance()->AddDetector("Plastic",Plastic::Construct);
     }
 };
 
- proxy p;
+ proxy_nps_plastic p_nps_plastic;
  }

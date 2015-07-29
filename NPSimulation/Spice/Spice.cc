@@ -186,15 +186,15 @@ NPS::VDetector* Spice::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_nps_spice{
   public:
-    proxy(){
+    proxy_nps_spice(){
       NPS::DetectorFactory::getInstance()->AddToken("Spice","Spice");
       NPS::DetectorFactory::getInstance()->AddDetector("Spice",Spice::Construct);
     }
 };
 
-proxy p;
+proxy_nps_spice p_nps_spice;
 }
 
 

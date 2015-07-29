@@ -1035,13 +1035,13 @@ void ComptonTelescope::InitializeScorers()
  //            Registering the construct method to the factory                 //
  ////////////////////////////////////////////////////////////////////////////////
 extern"C" {
- class proxy{
+ class proxy_nps_comptontelescope{
    public:
-    proxy(){
+    proxy_nps_comptontelescope(){
       NPS::DetectorFactory::getInstance()->AddToken("ComptonTelescope","ComptonTelescope");
       NPS::DetectorFactory::getInstance()->AddDetector("ComptonTelescope",ComptonTelescope::Construct);
     }
 };
 
- proxy p;
+ proxy_nps_comptontelescope p_nps_comptontelescope;
  }

@@ -79,7 +79,7 @@ namespace {
   const G4double CrystalLength        = 90.0*mm; // crystal length
   const G4double CrystalHoleDepth     = 15.0*mm; // depth at which starts the hole
   //const G4double CrystaHoleRadius 		= 0*cm;
-  const G4double CrystalInterDistance =  0.6*mm; // Distance between two crystal
+  //const G4double CrystalInterDistance =  0.6*mm; // Distance between two crystal
 
   // Squared part
   const G4double CrystalWidth         = 56.5*mm;  	// Width of one crystal
@@ -980,13 +980,13 @@ NPS::VDetector* Tigress::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern"C" {
-  class proxy{
+  class proxy_nps_tigress{
     public:
-      proxy(){
+      proxy_nps_tigress(){
         NPS::DetectorFactory::getInstance()->AddToken("Tigress","Tigress");
         NPS::DetectorFactory::getInstance()->AddDetector("Tigress",Tigress::Construct);
       }
   };
 
-  proxy p;
+  proxy_nps_tigress p_nps_tigress;
 }
