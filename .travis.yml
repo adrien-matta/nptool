@@ -14,7 +14,7 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get update -qq; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install root-system -qq; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get clean; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then wget https://www.dropbox.com/s/l3jbgv4jw4kapwo/geant4_install.tar.gz; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then wget https://www.dropbox.com/s/l3jbgv4jw4kapwo/geant4_install.tar.gz ; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then tar -xf geant4_install.tar.gz; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then source ~/geant4_install/share/Geant4-10.1.2/geant4make/geant4make.sh; fi
 
