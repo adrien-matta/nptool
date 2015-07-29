@@ -19,7 +19,7 @@ fi
 cp $NPTOOL/Examples/Example1_Simu.root $NPTOOL/Outputs/Simulation/Example1.root
 npanalysis -R RunToTreat.txt -O Example1
 
-echo ".q" | root -l ShowResult.cxx
+echo ".q" | root -b -l ShowResult.cxx
 
 # Compile Example2
 cd ../Example2
@@ -32,5 +32,5 @@ else
 fi
 cp $NPTOOL/Examples/Example2_Simu.root $NPTOOL/Outputs/Simulation/Example2.root
 npanalysis -R RunToTreat.txt -O Example2
-echo ".q" | root -l ShowResult.cxx
+echo ".q" | root -b -l ShowResult.cxx
 
