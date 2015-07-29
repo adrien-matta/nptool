@@ -8,9 +8,9 @@ cd $NPTOOL/NPSimulation
 cmake ./
 if [ -e Makefile ] 
 then
-  make
+  make install
 else
-  ninja
+  ninja install
 fi
 # minimal run
 npsimulation -h
