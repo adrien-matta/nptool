@@ -6,7 +6,6 @@ os:
 
 compiler:
   - gcc
-  - clang
 
 before_install:
   # Linux
@@ -50,4 +49,3 @@ addons:
     packages:
     - gcc-4.8
     - g++-4.8
-    - clang
