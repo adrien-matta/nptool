@@ -9,7 +9,6 @@ compiler:
 
 before_install:
   # Linux
-  - locate libexpat.so
   - ls /usr/lib/
   - ls /usr/lib/i386-linux-gnu/
   - fail_on_this_command
