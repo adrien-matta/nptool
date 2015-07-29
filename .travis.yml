@@ -13,14 +13,9 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo add-apt-repository -y "deb http://archive.ubuntu.com/ubuntu/ trusty main universe"; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get update -qq; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install root-system -qq; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd && git clone https://github.com/mortenpi/geant4 ; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then mkdir geant4_build; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then mkdir geant4_install; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd geant4_build; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cmake -DCMAKE_INSTALL_PREFIX=~/geant4_install -DGEANT4_INSTALL_DATA=ON ../geant4; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then make -j2; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then make -j2 install; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get clean; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then wget https://www.dropbox.com/s/l3jbgv4jw4kapwo/geant4_install.tar.gz ; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then tar -xf geant4_install.tar.gz; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then source geant4_install/share/Geant4-10.0.1/geant4make/geant4make.sh; fi
 
   # OSX 
