@@ -1,5 +1,9 @@
 language: cpp
 
+os:
+  - linux
+  - osx
+
 compiler:
   - gcc
   - clang
@@ -37,6 +41,4 @@ branches:
   only:
     - NPTool.2.dev
 
-os:
-  - osx
 
