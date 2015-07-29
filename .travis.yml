@@ -14,10 +14,10 @@ before_install:
   - if ["TRAVIS_OS_NAME" == "linux"]; sudo apt-get update -qq; fi
   - if ["TRAVIS_OS_NAME" == "linux"]; sudo apt-get install root-system -y; fi
   # OSX 
-  -if ["TRAVIS_OS_NAME" = "osx"]; brew install homebrew/science/root; fi
-  -if ["TRAVIS_OS_NAME" = "osx"]; brew install homebrew/science/geant4; fi    
-
-install:
+  - if ["TRAVIS_OS_NAME" = "osx"]; brew install homebrew/science/root; fi
+  - if ["TRAVIS_OS_NAME" = "osx"]; brew install homebrew/science/geant4; fi    
+  # Dumping stuff for check
+  - root-config --cflags
 
 script:
   - cd NPLib 
