@@ -303,6 +303,8 @@ void DetectorConstruction::ExportGeometry(string file){
   G4GDMLParser parser ;
   parser.Write(file.c_str(),world_log);
 #else
+  // To silenced the compiler
+  file = "";
   G4cout << "You need to compile Geant4 with GDML support to use this command" << G4endl;
 #endif
 

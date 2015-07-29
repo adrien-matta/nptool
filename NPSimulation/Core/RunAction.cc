@@ -46,8 +46,6 @@ void RunAction::BeginOfRunAction(const G4Run* aRun){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void RunAction::EndOfRunAction(const G4Run* aRun){
-  const G4Run* x = aRun;
-  x=0;
+void RunAction::EndOfRunAction(const G4Run*){
 }
 

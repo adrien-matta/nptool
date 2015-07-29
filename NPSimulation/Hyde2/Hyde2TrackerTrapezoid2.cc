@@ -940,7 +940,7 @@ void Hyde2TrackerTrapezoid2::ReadSensitive(const G4Event* event)
          ms_Event->SetHYD2TrkFirstStageBackTDetectorNbr(m_index["Trapezoid2"] + N);
 
          // Energy
-         for (G4int l = 0 ; l < sizeE ; l++) {
+         for (G4int ll = 0 ; ll < sizeE ; ll++) {
             G4int ETrackID  =   Energy_itr->first - N;
             G4double E     = *(Energy_itr->second);
             if (ETrackID == NTrackID) {

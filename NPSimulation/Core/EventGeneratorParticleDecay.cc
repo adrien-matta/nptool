@@ -238,9 +238,9 @@ void EventGeneratorParticleDecay::GenerateEvent(G4Event*){
     
     else {
       double Energy = ( 1./(2.*M) )*( M*M + m1*m1 - m2*m2);
-      double Momentum = sqrt(Energy*Energy - m1*m1);
+      double Momentum1 = sqrt(Energy*Energy - m1*m1);
       
-      TVector3 FirstDaughterMomentum = Momentum * TVector3( sin(ThetaCM) * cos(phi),
+      TVector3 FirstDaughterMomentum = Momentum1 * TVector3( sin(ThetaCM) * cos(phi),
                                                            sin(ThetaCM) * sin(phi),
                                                            cos(ThetaCM));
       
@@ -363,13 +363,13 @@ void EventGeneratorParticleDecay::SetDecay(vector<string> DaughterName, vector<b
     }
     
     else{
-      Nucleus*  myNucleus = new Nucleus(DaughterName[i]);
-      m_DaughterNuclei.push_back(G4ParticleTable::GetParticleTable()->GetIonTable()->GetIon(myNucleus->GetZ(),
-                                                                             myNucleus->GetA(),
+      Nucleus*  myNucleus1 = new Nucleus(DaughterName[i]);
+      m_DaughterNuclei.push_back(G4ParticleTable::GetParticleTable()->GetIonTable()->GetIon(myNucleus1->GetZ(),
+                                                                             myNucleus1->GetA(),
                                                                              m_ExcitationEnergy[i]*MeV));
-      FinalMass+=myNucleus->GetA();
-      FinalCharge+=myNucleus->GetZ();
-      delete myNucleus;
+      FinalMass+=myNucleus1->GetA();
+      FinalCharge+=myNucleus1->GetZ();
+      delete myNucleus1;
     }
   }
   

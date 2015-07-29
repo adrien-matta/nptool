@@ -136,9 +136,9 @@ void Tigress::ReadConfiguration(string Path){
   double R     = 0;
   double Theta = 0;
   double Phi   = 0;
-  double BetaX;
-  double BetaY;
-  double BetaZ;
+  double BetaX=0;
+  double BetaY=0;
+  double BetaZ=0;
 
   // Free postion case:
   bool check_R   = false ;

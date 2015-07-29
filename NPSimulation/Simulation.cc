@@ -125,7 +125,7 @@ int main(int argc, char** argv){
     Path_Macro+="/NPSimulation/macro/";
 
     UImanager->ApplyCommand("/control/execute " +Path_Macro+"aliases.mac");
-    G4VisManager* visManager = new G4VisExecutive("Quiet");
+    visManager = new G4VisExecutive("Quiet");
     visManager->Initialize();
     UImanager->ApplyCommand("/control/execute " +Path_Macro+"vis.mac");
 #endif
