@@ -22,3 +22,7 @@ collections:
     output: true
     permalink: /manual/:path/
     show_in_nav: false
+# Making MathJax work
+tex2jax: {
+  skipTags: ["script","noscript","style","textarea","pre"]
+}
