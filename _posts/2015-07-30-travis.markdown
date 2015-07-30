@@ -1,0 +1,13 @@
+---
+layout: post
+title:  "Travis CI"
+date:   2015-07-30 15:00
+author: Adrien Matta
+categories: nptool update
+---
+
+nptool is now using [Travis CI][travis] to automatically build and test each push on the NPTool.2.dev branch. The compilation is done a Ubuntu 12.04 Virtual Machine with gcc4.8. In addition we use the root-system package from Debian (Root 5.34) and a precompiled Geant4 installation (Geant4 10.1.2). A handful of test a run as well to ensure that the package is actually functionnal. More info could be found on the [Status page][status].
+
+
+[travis]: https://travis-ci.org/
+[status]: /status/
