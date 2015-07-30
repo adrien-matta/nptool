@@ -23,7 +23,7 @@ What the status means:
   * Geant4 10.1.2 (minimal so no QT and no GDML)
 * Compile NPLib and run a first minimal test
 * Run Example1 and Example2 with reference data file
-* Compile NPS and run npsimulation and npanalysis for this example
+* Compile NPS and run npsimulation and npanalysis for Example2
 
 If all of this step succeed, the status will appears as passing, if any of those step fail, the status will appear as failling.
 
