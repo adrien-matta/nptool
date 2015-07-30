@@ -1,6 +1,6 @@
 ---
 layout: manual 
-title: Adding documentation
+title: "Annex A: Adding documentation"
 permalink: /manual/adding-documentation/
 author: Adrien Matta <mailto:a.matta@surrey.ac.uk>
 manual_order: 1000
