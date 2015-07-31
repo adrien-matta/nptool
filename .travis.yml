@@ -49,5 +49,4 @@ addons:
     - gcc-4.8
     - g++-4.8
     - libexpat1-dev
-    - libexpat1-udeb
     - libexpat1
