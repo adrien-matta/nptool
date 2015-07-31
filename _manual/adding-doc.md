@@ -1,9 +1,9 @@
 ---
 layout: manual 
-title: "Annex A: Adding documentation"
+title: "Adding documentation"
 permalink: /manual/adding-documentation/
 author: Adrien Matta <mailto:a.matta@surrey.ac.uk>
-manual_order: 1000
+manual_order: 1001
 show_in_nav: false
 ---
 ## Getting the gh-pages:

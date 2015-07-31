@@ -1,10 +1,10 @@
 ---
 layout: manual
-title: "Annex B: Installing Root and Geant4"
+title: "Installing Root and Geant4"
 permalink: /manual/root-geant4/
 author: Adrien Matta
 show_in_nav: false
-manual_order: 1001
+manual_order: 1000
 ---
 
 This page is still underdevellopment, for reference ony
