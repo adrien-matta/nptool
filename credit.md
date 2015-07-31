@@ -14,7 +14,7 @@ nptool is an open source collaborative package distributited under [GPL2.0][gpl2
 * P. Morfouace (MSU/NSCL) <mailto:morfouac@nscl.msu.edu>
 
 ###Detector contributors:
-
+* M. Labiche (STFC Daresbury Laboratory) <mailto:marc.labiche@stfc.ac.uk>
 * S. Giron
 * L. Lefevre
 * R. Wilkinson (University of Surrey) <mailto:r.wilkinson@surrey.ac.uk>
