@@ -7,7 +7,7 @@ manual_order: 100
 show_in_nav: false
 ---
 
-Brief description of Cats detector
+Brief description of CATS detector
 ==================================
 
  Beams produced by fragmentation have a large emittance. In order to know
@@ -35,7 +35,9 @@ event with a precision less than 1 mm.
 The maximum count rate for this detector is about $$10^5$$ particles per
 second if the beam is not too focused on one part of the detector.
 
-![*Characteristics of a CATS detector*](/images/CATS_det.png){: .center-image}
+![fig:CATS](/images/CATS_det.png "Fig1: The CATS detector as presented in [1]"){: .center-image}
+*Fig1: The CATS detector as presented in [1]*
+
 
 Description of geometry file
 ============================
@@ -103,7 +105,7 @@ listed the different token:
     centroids method that correspond to the barycenter of the charge
     distribution.
 
-Physical treatment of Cats detector
+Physical treatment of CATS detector
 ===================================
 
 Each event are treated in the function BuildPhysicalEvent of
@@ -135,7 +137,7 @@ The following command line should be executed:
 
 where yyy.detector is the input file describing the detector geometry
 used in NPSimulation. All these input files are based on keywords and
-can be found in the \$NPTool/Inputs subdirectories. The RunToTreat.txt
+can be found in the $NPTool/Inputs subdirectories. The RunToTreat.txt
 file contains the name of the files (either from NPSimulation or from
 real experiment) which should be analysed. The name of the tree should
 also be specified. An example of such a file is given here:
@@ -151,12 +153,17 @@ Results of the analysis
 -----------------------
 
 The results of the anaysis are stored in a ROOT file in the
-`\$NPTool/Output/Analysis` directory.
+`$NPTool/Output/Analysis` directory.
 
 The results you should obtain are displayed in the following Figures.
 Run the ShowResult.C macro in order to get them.
 
-<span>99</span> S. Ottini <span>*et al.*</span> <span>*Nucl. Instr. and
-Meth. in Phys. Res.*</span> A <span>**431**</span> 476 (1999).
 
-[^1]: Chambre À Trajectoire de Saclay
+###Bibliography:
+
+[1]\: S. Ottini <span>*et al.*</span> <span>*Nucl. Instr. and Meth. in Phys. Res.*</span> A <span>**431**</span> 476 (1999).
+
+###Footnotes:
+
+[^1]: Chambre a Trajectoire de Saclay
+
