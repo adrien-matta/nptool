@@ -3,7 +3,7 @@ layout: manual
 title: PARIS
 author: Marc Labiche
 permalink: /manual/paris/
-manual_order: 100
+manual_order: 102
 show_in_nav: false
 ---
 
