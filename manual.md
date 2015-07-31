@@ -11,14 +11,14 @@ show_in_nav: true
    
    <h3> Framework: </h3>
 
-   In this section you will find detail on how to get, compile, and execute the framework, as well as a complete description of the framework structure.
+  The framework detailed from installation to workflow.
   {% endif %} 
  
   {% if m.manual_order == 100 %}
 
   <h3> Detector: </h3> 
   
-  This section detail the specific of each detector.
+  The specific of each detector (input file, reference, ...).
   {% endif %} 
   
   {% if m.manual_order == 1000 %}
