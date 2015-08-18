@@ -551,11 +551,13 @@ void TCATSPhysics::InitializeStandardParameter(){
     InversionStatus[j] = j+1;
   }
 
-  for(int i = 0 ; i < m_NumberOfCATS ; ++i)      {
+  for(int i = 0 ; i < m_NumberOfCATS ; ++i){
     m_XChannelStatus[i] = ChannelStatus;
     m_YChannelStatus[i] = ChannelStatus;
     m_CATSXInversion[i] = InversionStatus;
     m_CATSYInversion[i] = InversionStatus;
+    SetReconstructionMethod(i+1, "X", "AGAUSS");
+    SetReconstructionMethod(i+1, "Y", "AGAUSS");
   }
 
   return;
@@ -735,6 +737,7 @@ void TCATSPhysics::SetReconstructionMethod(unsigned int CATSNumber, string XorY,
     else if(MethodName=="FSECH") ReconstructionFunctionX[CATSNumber-1] = &(FittedHyperbolicSecant);
     else if(MethodName=="AGAUSS") ReconstructionFunctionX[CATSNumber-1] = &(AnalyticGaussian);
     else if(MethodName=="CENTROIDE")  ReconstructionFunctionX[CATSNumber-1] = &(Centroide); 
+    else cout <<"WARNING: Wrong name for reconsctuction Method, using default AGAUSS" << endl;
   }
 
   if(XorY=="Y"){
@@ -745,6 +748,7 @@ void TCATSPhysics::SetReconstructionMethod(unsigned int CATSNumber, string XorY,
     else if(MethodName=="FSECH") ReconstructionFunctionY[CATSNumber-1] = &(FittedHyperbolicSecant);
     else if(MethodName=="AGAUSS") ReconstructionFunctionY[CATSNumber-1] = &(AnalyticGaussian);
     else if(MethodName=="CENTROIDE")  ReconstructionFunctionY[CATSNumber-1] = &(Centroide); 
+    else cout <<"WARNING: Wrong name for reconsctuction Method, using default AGAUSS" << endl;
   }
 
 }
