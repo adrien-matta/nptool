@@ -352,9 +352,11 @@ void NPL::DetectorManager::InitSpectra(){
 
 /////////////////////////////////////////////////////////////////////////////////////////////////   
 void NPL::DetectorManager::WriteSpectra(){
+  std::cout << endl << "\r \033[1;36m *** Writing Spectra: this may take a while ***\033[0m"<<flush;
   map<string,VDetector*>::iterator it;
   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) 
     it->second->WriteSpectra();
+  std::cout << "\r                                                  " << flush; 
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////   
