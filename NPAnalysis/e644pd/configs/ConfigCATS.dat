@@ -1,0 +1,30 @@
+ConfigCATS
+% INVERSION CATS2 11 and 12 inversed   
+%        INVERSION CATS2 STRX11 STRX12
+
+% RECONSTRUCTION METHOD
+% 5 recosntructions are available :
+% FSECH : for fitted hyperbolic secante method 
+% ASECH : for analytic hyperbolic secante method
+% AGAUSS : for analytic Gaussian method
+% CENTROIDE : for a simple centroide method
+  RECONSTRUCTION_METHOD CATS1X FSECH
+  RECONSTRUCTION_METHOD CATS1Y FSECH
+  RECONSTRUCTION_METHOD CATS2X FSECH
+  RECONSTRUCTION_METHOD CATS2Y FSECH
+
+% CORRECTION (Correction3Points or Correction4Points : depends on the reconstruction method)
+% use Correction3Points for GAUSS, SECH or BAR3
+% use Correction4Points for BAR4
+%        CORRECTION_METHOD CATS1X Correction4Points
+%        CORRECTION_METHOD CATS1Y Correction4Points
+%        CORRECTION_METHOD CATS2X Correction4Points
+%        CORRECTION_METHOD CATS2Y Correction4Points
+
+% CORRECTION COEF
+% See TCATSPhyscis.cxx to see the correction formula where the coefficient of correction is applied. 
+ %       CORRECTION_COEF CATS1X 0.60
+ %       CORRECTION_COEF CATS1Y 0.60
+ %       CORRECTION_COEF CATS2X 0.60
+ %       CORRECTION_COEF CATS2Y 0.60
+
