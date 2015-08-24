@@ -41,8 +41,7 @@ class TSharcSpectra;
 
 using namespace std ;
 
-class TSharcPhysics : public TObject, public NPL::VDetector
-{
+class TSharcPhysics : public TObject, public NPL::VDetector{
   public:
     TSharcPhysics();
     ~TSharcPhysics() {};
@@ -78,6 +77,9 @@ class TSharcPhysics : public TObject, public NPL::VDetector
 
     vector<double> PAD_E ;
     vector<double> PAD_T ;
+
+    // Used for Pixel Cal
+    vector<double> StripFront_OriginalE;//!
 
   public:      //   Innherited from VDetector Class
 
