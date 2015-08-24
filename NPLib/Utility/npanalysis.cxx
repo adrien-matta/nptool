@@ -16,7 +16,7 @@
 // Root
 #include"TKey.h"
 
-void ProgressDisplay(clock_t&,clock_t&,unsigned int&, unsigned int&, int&, double&, int&);
+void ProgressDisplay(clock_t&,clock_t&,unsigned long&, unsigned long&, unsigned long&, double&, unsigned long&);
 
 int main(int argc , char** argv){
   // command line parsing
@@ -100,20 +100,20 @@ int main(int argc , char** argv){
   std::cout << std::endl << "///////// Starting Analysis ///////// "<< std::endl;
   TChain* Chain = RootInput:: getInstance()->GetChain();
   myOptionManager->GetNumberOfEntryToAnalyse();
-  int nentries = Chain->GetEntries();
+  unsigned long nentries = Chain->GetEntries();
   if(nentries> myOptionManager->GetNumberOfEntryToAnalyse() && myOptionManager->GetNumberOfEntryToAnalyse()>0)
     nentries = myOptionManager->GetNumberOfEntryToAnalyse() ; 
 
   TString ChainName = Chain->GetName();
   std::cout << " Number of Event to be treated : " << nentries << " on chain " << ChainName << std::endl;
 
-  unsigned int inter = 0;
-  unsigned int treated = 0;
+  unsigned long inter = 0;
+  unsigned long treated = 0;
   double mean_rate =0;
-  int displayed=0;
+  unsigned long displayed=0;
   clock_t end;
   clock_t begin = clock();
-  int new_nentries = 0 ;
+  unsigned long new_nentries = 0 ;
   bool IsPhysics = myOptionManager->GetInputPhysicalTreeOption();
 
   if(UserAnalysis==NULL){ 
@@ -242,7 +242,7 @@ int main(int argc , char** argv){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ProgressDisplay(clock_t& begin, clock_t& end, unsigned int& treated,unsigned int& inter,int& total,double& mean_rate,int& displayed){
+void ProgressDisplay(clock_t& begin, clock_t& end, unsigned long& treated,unsigned long& inter,unsigned long& total,double& mean_rate,unsigned long& displayed){
   end = clock();
   if((end-begin)>CLOCKS_PER_SEC||treated>=total ){
     displayed++;

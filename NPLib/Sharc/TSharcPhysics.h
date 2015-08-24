@@ -79,7 +79,7 @@ class TSharcPhysics : public TObject, public NPL::VDetector{
     vector<double> PAD_T ;
 
     // Used for Pixel Cal
-    vector<double> StripFront_OriginalE;//!
+    vector<double> StripFront_OriginalE;
 
   public:      //   Innherited from VDetector Class
 
