@@ -74,72 +74,70 @@ void TSharcPhysics::BuildPhysicalEvent(){
   PreTreat();
   bool check_PAD = false ;
 
-  if( CheckEvent() == 1 ){
-    vector< TVector2 > couple = Match_Front_Back() ;
-    EventMultiplicity = couple.size();
+  vector< TVector2 > couple = Match_Front_Back() ;
+  EventMultiplicity = couple.size();
 
-    unsigned int size = couple.size();
-    for(unsigned int i = 0 ; i < size ; ++i){
-      check_PAD = false ;
+  unsigned int size = couple.size();
+  for(unsigned int i = 0 ; i < size ; ++i){
+    check_PAD = false ;
 
-      int N = m_PreTreatedData->GetFront_DetectorNbr(couple[i].X()) ;
+    int N = m_PreTreatedData->GetFront_DetectorNbr(couple[i].X()) ;
 
-      int Front = m_PreTreatedData->GetFront_StripNbr(couple[i].X()) ;
-      int Back  = m_PreTreatedData->GetBack_StripNbr(couple[i].Y()) ;
+    int Front = m_PreTreatedData->GetFront_StripNbr(couple[i].X()) ;
+    int Back  = m_PreTreatedData->GetBack_StripNbr(couple[i].Y()) ;
 
-      double Front_E = m_PreTreatedData->GetFront_Energy( couple[i].X() ) ;
-      double Back_E  = m_PreTreatedData->GetBack_Energy( couple[i].Y() ) ;
+    double Front_E = m_PreTreatedData->GetFront_Energy( couple[i].X() ) ;
+    double Back_E  = m_PreTreatedData->GetBack_Energy( couple[i].Y() ) ;
 
-      double Front_T = m_PreTreatedData->GetFront_TimeCFD( couple[i].X() ) ;
-      double Back_T  = m_PreTreatedData->GetBack_TimeCFD ( couple[i].Y() ) ;
+    double Front_T = m_PreTreatedData->GetFront_TimeCFD( couple[i].X() ) ;
+    double Back_T  = m_PreTreatedData->GetBack_TimeCFD ( couple[i].Y() ) ;
 
-      DetectorNumber.push_back(N);
-      StripFront_E.push_back(Front_E);
-      StripFront_T.push_back(Front_T) ;
-      StripBack_E.push_back(Back_E) ;
-      StripBack_T.push_back(Back_T) ;
+    DetectorNumber.push_back(N);
+    StripFront_E.push_back(Front_E);
+    StripFront_T.push_back(Front_T) ;
+    StripBack_E.push_back(Back_E) ;
+    StripBack_T.push_back(Back_T) ;
 
 
-      // Try to obtain Pixel Calibration
-      static CalibrationManager* Cal = CalibrationManager::getInstance();
-      static string name;
-      name = "SHARC/D"+ NPL::itoa(N)+"_STRIP_FRONT"+ NPL::itoa(Front)+"_BACK"+ NPL::itoa(Back)+"_E";
-      double Pixel_E = Cal->ApplyCalibration(name,StripFront_OriginalE[couple[i].X()] );
+    // Try to obtain Pixel Calibration
+    static CalibrationManager* Cal = CalibrationManager::getInstance();
+    static string name;
+    name = "SHARC/D"+ NPL::itoa(N)+"_STRIP_FRONT"+ NPL::itoa(Front)+"_BACK"+ NPL::itoa(Back)+"_E";
+    double Pixel_E = Cal->ApplyCalibration(name,StripFront_OriginalE[couple[i].X()] );
 
-      Strip_Front_RawE.push_back(StripFront_OriginalE[couple[i].X()]);
+    Strip_Front_RawE.push_back(StripFront_OriginalE[couple[i].X()]);
 
-      if(Pixel_E != StripFront_OriginalE[couple[i].X()])
-          Strip_E.push_back(Pixel_E);
+    if(Pixel_E != StripFront_OriginalE[couple[i].X()])
+      Strip_E.push_back(Pixel_E);
 
-      // Fall Back option, take the Strip Calibration
-      else if(m_Take_E_Front)
-        Strip_E.push_back(Front_E) ;
-      else
-        Strip_E.push_back(Back_E) ;
+    // Fall Back option, take the Strip Calibration
+    else if(m_Take_E_Front)
+      Strip_E.push_back(Front_E) ;
+    else
+      Strip_E.push_back(Back_E) ;
 
-      if(m_Take_T_Back)
-        Strip_T.push_back(Back_T) ;
-      else
-        Strip_T.push_back(Front_T) ;
+    if(m_Take_T_Back)
+      Strip_T.push_back(Back_T) ;
+    else
+      Strip_T.push_back(Front_T) ;
 
-      Strip_Front.push_back(Front) ;
-      Strip_Back.push_back(Back) ;
+    Strip_Front.push_back(Front) ;
+    Strip_Back.push_back(Back) ;
 
-      // Search for associate PAD
-      unsigned int sizePAD = m_PreTreatedData-> GetMultiplicityPAD();
-      for(unsigned int j = 0 ; j < sizePAD ; ++j){
-        if(m_PreTreatedData->GetPAD_DetectorNbr(j)==N){
-          PAD_E.push_back( m_PreTreatedData-> GetPAD_Energy(j)) ;
-          PAD_T.push_back( m_PreTreatedData-> GetPAD_TimeCFD(j)  ) ;
-          check_PAD = true ;
-        }
-
+    // Search for associate PAD
+    unsigned int sizePAD = m_PreTreatedData-> GetMultiplicityPAD();
+    for(unsigned int j = 0 ; j < sizePAD ; ++j){
+      if(m_PreTreatedData->GetPAD_DetectorNbr(j)==N){
+        PAD_E.push_back( m_PreTreatedData-> GetPAD_Energy(j)) ;
+        PAD_T.push_back( m_PreTreatedData-> GetPAD_TimeCFD(j)  ) ;
+        check_PAD = true ;
       }
 
-      if(!check_PAD){
-        PAD_E.push_back(-1000)   ;
-        PAD_T.push_back(-1000)   ;
-      }
+    }
+
+    if(!check_PAD){
+      PAD_E.push_back(-1000)   ;
+      PAD_T.push_back(-1000)   ;
     }
   }
 
@@ -152,16 +150,16 @@ void TSharcPhysics::PreTreat(){
   ClearPreTreatedData();
   //   Front
   unsigned int sizeFront = m_EventData->GetMultiplicityFront();
-  for(unsigned int i = 0 ; i < sizeFront ; ++i){
+  for(unsigned int i = 0 ; i < sizeFront ; i++){
     if( m_EventData->GetFront_Energy(i)>m_StripFront_E_RAW_Threshold && IsValidChannel("Front", m_EventData->GetFront_DetectorNbr(i), m_EventData->GetFront_StripNbr(i)) ){
       double Front_E = fStrip_Front_E(m_EventData , i);
       if( Front_E > m_StripFront_E_Threshold ){
         m_PreTreatedData->SetFront( m_EventData->GetFront_DetectorNbr(i),
-                                    m_EventData->GetFront_StripNbr(i),
-                                    Front_E,
-                                    m_EventData->GetFront_TimeCFD(i),
-                                    m_EventData->GetFront_TimeLED(i));
-        
+            m_EventData->GetFront_StripNbr(i),
+            Front_E,
+            m_EventData->GetFront_TimeCFD(i),
+            m_EventData->GetFront_TimeLED(i));
+
         StripFront_OriginalE.push_back( m_EventData->GetFront_Energy(i));
       }
     }
@@ -169,29 +167,29 @@ void TSharcPhysics::PreTreat(){
 
   //  Back
   unsigned int sizeBack = m_EventData->GetMultiplicityBack() ;
-  for(unsigned int i = 0 ; i < sizeBack ; ++i){
+  for(unsigned int i = 0 ; i < sizeBack ; i++){
     if( m_EventData->GetBack_Energy(i)>m_StripBack_E_RAW_Threshold && IsValidChannel("Back", m_EventData->GetBack_DetectorNbr(i), m_EventData->GetBack_StripNbr(i)) ){
       double Back_E = fStrip_Back_E(m_EventData , i);
       if( Back_E > m_StripBack_E_Threshold ){
         m_PreTreatedData->SetBack( m_EventData->GetBack_DetectorNbr(i),
-                                   m_EventData->GetBack_StripNbr(i),
-                                   Back_E,
-                                   m_EventData->GetBack_TimeCFD(i),
-                                   m_EventData->GetBack_TimeLED(i) );
+            m_EventData->GetBack_StripNbr(i),
+            Back_E,
+            m_EventData->GetBack_TimeCFD(i),
+            m_EventData->GetBack_TimeLED(i) );
       }
     }
   }
 
   //  PAD
   unsigned int sizePAD = m_EventData->GetMultiplicityPAD();
-  for(unsigned int i = 0 ; i < sizePAD ; ++i){
+  for(unsigned int i = 0 ; i < sizePAD ; i++){
     if( m_EventData->GetPAD_Energy(i)>m_PAD_E_RAW_Threshold && IsValidChannel("PAD", m_EventData->GetPAD_DetectorNbr(i),1) ){
       double PAD_E = fPAD_E(m_EventData , i);
       if( PAD_E > m_PAD_E_Threshold ){
         m_PreTreatedData->SetPAD( m_EventData->GetPAD_DetectorNbr(i),
-                                 PAD_E,
-                                 m_EventData->GetPAD_TimeCFD(i),
-                                 m_EventData->GetPAD_TimeLED(i));
+            PAD_E,
+            m_EventData->GetPAD_TimeCFD(i),
+            m_EventData->GetPAD_TimeLED(i));
       }
     }
   }
@@ -202,19 +200,12 @@ void TSharcPhysics::PreTreat(){
 
 ///////////////////////////////////////////////////////////////////////////
 int TSharcPhysics :: CheckEvent(){
-  // Check the size of the different elements
-  if(         m_PreTreatedData->GetMultiplicityBack() == m_PreTreatedData->GetMultiplicityFront() )
-    return 1 ; // Regular Event
-
-  else
-    return -1 ; // Rejected Event
-
+  return 1 ; // Regular Event
 }
 
 ///////////////////////////////////////////////////////////////////////////
 vector < TVector2 > TSharcPhysics :: Match_Front_Back(){
   vector < TVector2 > ArrayOfGoodCouple ;
-
   // Prevent code from treating very high multiplicity Event
   // Those event are not physical anyway and that improve speed.
   if( m_PreTreatedData->GetMultiplicityFront() > m_MaximumStripMultiplicityAllowed || m_PreTreatedData->GetMultiplicityBack() > m_MaximumStripMultiplicityAllowed )
@@ -235,8 +226,10 @@ vector < TVector2 > TSharcPhysics :: Match_Front_Back(){
   }
 
   //  Prevent to treat event with ambiguous matching beetween Front and Back
-  if( ArrayOfGoodCouple.size() > m_PreTreatedData->GetMultiplicityFront() ) ArrayOfGoodCouple.clear() ;
-    return ArrayOfGoodCouple;
+  if( ArrayOfGoodCouple.size() > m_PreTreatedData->GetMultiplicityFront() ) 
+    ArrayOfGoodCouple.clear() ;
+
+  return ArrayOfGoodCouple;
 }
 
 
@@ -948,17 +941,17 @@ void TSharcPhysics::InitializeStandardParameter()
   m_PADChannelStatus.clear() ;
 
   ChannelStatus.resize(24,true);
-  for(int i = 0 ; i < m_NumberOfDetector ; ++i){
+  for(int i = 0 ; i < m_NumberOfDetector ; i++){
     m_FrontChannelStatus[i] = ChannelStatus;
   }
 
   ChannelStatus.resize(48,true);
-  for(int i = 0 ; i < m_NumberOfDetector ; ++i){
+  for(int i = 0 ; i < m_NumberOfDetector ; i++){
     m_BackChannelStatus[i] = ChannelStatus;
   }
 
   ChannelStatus.resize(1,true);
-  for(int i = 0 ; i < m_NumberOfDetector ; ++i){
+  for(int i = 0 ; i < m_NumberOfDetector ; i++){
     m_PADChannelStatus[i] = ChannelStatus;
   }
 
@@ -976,15 +969,15 @@ namespace Sharc_LOCAL{
     static CalibrationManager* Cal = CalibrationManager::getInstance();
     static string name ;
     name = "SHARC/D" + NPL::itoa( m_EventData->GetFront_DetectorNbr(i) ) + "_STRIP_FRONT" + NPL::itoa( m_EventData->GetFront_StripNbr(i) ) + "_E";
-    return CalibrationManager::getInstance()->ApplyCalibration(name,m_EventData->GetFront_Energy(i) );
+    return Cal->ApplyCalibration(name,m_EventData->GetFront_Energy(i) );
   }
-  
+
   double fStrip_Front_T(const TSharcData* m_EventData , const int& i){
     static CalibrationManager* Cal = CalibrationManager::getInstance();
     static string name ;
     name ="SHARC/D" + NPL::itoa( m_EventData->GetFront_DetectorNbr(i) ) + "_STRIP_FRONT" + NPL::itoa( m_EventData->GetFront_StripNbr(i) ) +"_T"; 
 
-    return CalibrationManager::getInstance()->ApplyCalibration(name, m_EventData->GetFront_TimeCFD(i) );
+    return Cal->ApplyCalibration(name, m_EventData->GetFront_TimeCFD(i) );
   }
 
   //   Back
@@ -993,7 +986,7 @@ namespace Sharc_LOCAL{
     static string name ;
     name =  "SHARC/D" + NPL::itoa( m_EventData->GetBack_DetectorNbr(i) ) + "_STRIP_BACK" + NPL::itoa( m_EventData->GetBack_StripNbr(i) ) +"_E";
 
-    return CalibrationManager::getInstance()->ApplyCalibration(name, m_EventData->GetBack_Energy(i) );
+    return Cal->ApplyCalibration(name, m_EventData->GetBack_Energy(i) );
   }
 
   double fStrip_Back_T(const TSharcData* m_EventData , const int& i){
@@ -1001,7 +994,7 @@ namespace Sharc_LOCAL{
     static string name ;
     name = "SHARC/D" + NPL::itoa( m_EventData->GetBack_DetectorNbr(i) ) + "_STRIP_BACK" + NPL::itoa( m_EventData->GetBack_StripNbr(i) ) +"_T"; 
 
-    return CalibrationManager::getInstance()->ApplyCalibration(name, m_EventData->GetFront_TimeCFD(i));
+    return Cal->ApplyCalibration(name, m_EventData->GetFront_TimeCFD(i));
   }
 
   //   PAD
@@ -1010,7 +1003,7 @@ namespace Sharc_LOCAL{
     static string name ;
     name = "SHARC/D" + NPL::itoa( m_EventData->GetPAD_DetectorNbr(i) ) + "_PAD" +"_E";
 
-    return CalibrationManager::getInstance()->ApplyCalibration(name,m_EventData->GetPAD_Energy(i) );
+    return Cal->ApplyCalibration(name,m_EventData->GetPAD_Energy(i) );
   }
 
   double fPAD_T(const TSharcData* m_EventData , const int& i){
@@ -1018,7 +1011,7 @@ namespace Sharc_LOCAL{
     static string name ;
     name = "SHARC/D" + NPL::itoa( m_EventData->GetPAD_DetectorNbr(i) ) + "_PAD" +"_T";
 
-    return CalibrationManager::getInstance()->ApplyCalibration(name,m_EventData->GetPAD_TimeCFD(i) );
+    return Cal->ApplyCalibration(name,m_EventData->GetPAD_TimeCFD(i) );
   }
 
 }
@@ -1042,6 +1035,6 @@ class proxy_sharc{
     }
 };
 
-proxy_sharc p;
+proxy_sharc p_sharc;
 }
 

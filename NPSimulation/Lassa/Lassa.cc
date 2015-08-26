@@ -629,15 +629,15 @@ NPS::VDetector* Lassa::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern"C" {
-    class proxy{
+    class proxy_nps_lassa{
     public:
-        proxy(){
+        proxy_nps_lassa(){
             NPS::DetectorFactory::getInstance()->AddToken("LASSAArray","Lassa");
             NPS::DetectorFactory::getInstance()->AddDetector("LASSAArray",Lassa::Construct);
         }
     };
     
-    proxy p;
+    proxy_nps_lassa p_nps_lassa;
 }
 
 

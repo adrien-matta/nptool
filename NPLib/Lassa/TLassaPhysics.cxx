@@ -672,6 +672,6 @@ extern "C"{
         }
     };
     
-    proxy_lassa p; //proxy p;
+    proxy_lassa p_lassa; //proxy p;
 }
 

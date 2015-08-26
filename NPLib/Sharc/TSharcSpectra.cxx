@@ -84,6 +84,14 @@ void TSharcSpectra::InitRawSpectra(){
     name = "SHARC"+NPL::itoa(i+1)+"_STR_BACK_E_RAW";
     AddHisto2D(name, name, fStripBack, 1, fStripBack+1, 5000, 0, 1.5e6, "SHARC/RAW/STR_BACK_E")->Draw("colz");
 
+    // STR_FRONT_EMAX_RAW
+    name = "SHARC"+NPL::itoa(i+1)+"_STR_FRONT_EMAX_RAW";
+    AddHisto2D(name, name, fStripFront, 1, fStripFront+1, 5000, 0, 1.5e6, "SHARC/RAW/STR_FRONT_EMAX");
+
+    // STR_BACK_EMAX_Raw
+    name = "SHARC"+NPL::itoa(i+1)+"_STR_BACK_EMAX_RAW";
+    AddHisto2D(name, name, fStripBack, 1, fStripBack+1, 5000, 0, 1.5e6, "SHARC/RAW/STR_BACK_EMAX");
+
     // PAD_E_RAW
     c1->cd(++i1);
     name = "SHARC"+NPL::itoa(i+1)+"_PAD_E_RAW";
@@ -177,22 +185,49 @@ void TSharcSpectra::FillRawSpectra(TSharcData* RawData){
 
   // STR_FRONT_E 
   unsigned int mysize = RawData->GetMultiplicityFront();
+  double EFMAX = 0 ;
+  int SFMAX = 0;
+  int DFMAX = 0 ;
   for (unsigned int i = 0; i < mysize; i++) {
     index = "SHARC/RAW/STR_FRONT_E/SHARC"+NPL::itoa(RawData->GetFront_DetectorNbr(i))+"_STR_FRONT_E_RAW";
+    if(RawData->GetFront_Energy(i) > EFMAX){
+      EFMAX = RawData->GetFront_Energy(i);
+      SFMAX = RawData->GetFront_StripNbr(i);
+      DFMAX = RawData->GetFront_DetectorNbr(i);
+    }
     
     GetHisto(index)
       -> Fill(RawData->GetFront_StripNbr(i), 
           RawData->GetFront_Energy(i));
   }
-
+ 
+  if(DFMAX!=0){
+    index = "SHARC/RAW/STR_FRONT_EMAX/SHARC"+NPL::itoa(DFMAX)+"_STR_FRONT_EMAX_RAW";
+    GetHisto(index)-> Fill(SFMAX, EFMAX);
+  }
+ 
   // STR_BACK_E
   mysize = RawData->GetMultiplicityBack();
+  double EBMAX = 0 ;
+  int SBMAX = 0;
+  int DBMAX = 0 ;
+ 
   for (unsigned int i = 0; i < mysize; i++) {
      index = "SHARC/RAW/STR_BACK_E/SHARC"+NPL::itoa( RawData->GetBack_DetectorNbr(i) )+"_STR_BACK_E_RAW";
-
+    if(RawData->GetBack_Energy(i) > EBMAX){
+      EBMAX = RawData->GetBack_Energy(i);
+      SBMAX = RawData->GetBack_StripNbr(i);
+      DBMAX = RawData->GetBack_DetectorNbr(i);
+    }
+   
     GetHisto(index)
       -> Fill(RawData->GetBack_StripNbr(i),
           RawData->GetBack_Energy(i));
+  }
+ 
+  if(DBMAX!=0){
+    index = "SHARC/RAW/STR_BACK_EMAX/SHARC"+NPL::itoa(DBMAX)+"_STR_BACK_EMAX_RAW";
+    GetHisto(index)-> Fill(SBMAX, EBMAX);
   }
 
   // PAD_E
