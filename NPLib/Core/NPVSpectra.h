@@ -61,15 +61,17 @@ class VSpectra {
 
   public:
     // get map histo which will be used for GSpectra in GUser
-    map< vector<string>, TH1* > GetMapHisto() const {return fMapHisto;}
-    TH1* GetHisto(string& family, string& name);    
+    map< string, TH1* > GetMapHisto() const {return fMapHisto;}
+    TH1* GetHisto(const string& family, const string& name);    
+    TH1* GetHisto(const string& FamilyAndName);    
+
     void WriteSpectra(string filename = "VOID");      
     // Return the canvases created for online display
     vector<TCanvas*> GetCanvas();
      
   private:
     // map holding histo pointers and their family names
-    map< vector<string>, TH1* > fMapHisto;
+    map< string, TH1* > fMapHisto;
     vector<TCanvas*> m_Canvas;
     
   private: // Name of the Detector

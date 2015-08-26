@@ -260,11 +260,10 @@ void ProgressDisplay(clock_t& begin, clock_t& end, unsigned long& treated,unsign
       check=asprintf(&timer,"%ds",(int)(remain));
 
     if(treated!=total)
-      printf("\r \033[1;31m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s *******\033[0m", percent,mean_rate/1000.,timer);
+      printf("\r \033[1;31m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s *******\033[0m         ", percent,mean_rate/1000.,timer);
 
     else{
-      printf("\r                                                                                                                    ");  
-      printf("\r \033[1;32m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s *******\033[0m", percent,mean_rate/1000.,timer);
+      printf("\r \033[1;32m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s *******\033[0m         ", percent,mean_rate/1000.,timer);
     }
     fflush(stdout);
     inter=0;

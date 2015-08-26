@@ -695,12 +695,12 @@ void TCATSPhysics::ClearSpectra(){
   // To be done
 }
 ///////////////////////////////////////////////////////////////////////////
-map< vector<string> , TH1*> TCATSPhysics::GetSpectra() {
+map< string , TH1*> TCATSPhysics::GetSpectra() {
   if(m_Spectra)
     return m_Spectra->GetMapHisto();
 
   else{
-    map< vector<string> , TH1*> empty; 
+    map< string , TH1*> empty; 
     return empty;
   }
 }

@@ -704,12 +704,12 @@ void TComptonTelescopePhysics::WriteSpectra()
 }
 
 
-map< vector<string> , TH1*> TComptonTelescopePhysics::GetSpectra() 
+map< string , TH1*> TComptonTelescopePhysics::GetSpectra() 
 {
    if(m_Spectra)
       return m_Spectra->GetMapHisto();
    else{
-      map< vector<string> , TH1*> empty;
+      map< string , TH1*> empty;
       return empty;
    }
 }

@@ -253,11 +253,11 @@ void TSiResPhysics::ClearSpectra(){
   // To be done
 }
 ///////////////////////////////////////////////////////////////////////////
-map< vector<string> , TH1*> TSiResPhysics::GetSpectra() {
+map< string , TH1*> TSiResPhysics::GetSpectra() {
   if(m_Spectra)
     return m_Spectra->GetMapHisto();
   else{
-    map< vector<string> , TH1*> empty;
+    map< string , TH1*> empty;
     return empty;
   }
 } 

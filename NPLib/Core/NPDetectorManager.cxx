@@ -250,7 +250,7 @@ void NPL::DetectorManager::BuildPhysicalEvent(){
   }
   // Wait for all job to be done
   while(!IsDone()){
-    //   this_thread::yield();
+    //this_thread::yield();
   }
 #else 
   map<string,VDetector*>::iterator it;
@@ -320,9 +320,9 @@ NPL::VDetector* NPL::DetectorManager::GetDetector(string name){
   if ( it!=m_Detector.end() ) return it->second;
   else{
     cout << endl;
-    cout << "**********************************       Error       **********************************" << endl;
+    cout << "\r \033[1;31m**********************************       Error       **********************************" << endl;
     cout << " No Detector " << name << " found in the Detector Manager" << endl;
-    cout << "***************************************************************************************" << endl;
+    cout << "***************************************************************************************\033[0m" << endl;
     cout << endl;
     exit(1);
   }
@@ -360,8 +360,8 @@ void NPL::DetectorManager::WriteSpectra(){
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////   
-vector< map< vector<string>, TH1* > > NPL::DetectorManager::GetSpectra(){
-  vector< map< vector<string>, TH1* > > myVector;
+vector< map< string, TH1* > > NPL::DetectorManager::GetSpectra(){
+  vector< map< string, TH1* > > myVector;
   map<string,VDetector*>::iterator it;
   // loop on detectors
   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {
@@ -427,8 +427,8 @@ void NPL::DetectorManager::StopThread(){
 }
 ////////////////////////////////////////////////////////////////////////////////
 bool NPL::DetectorManager::IsDone(){
-  for(vector<bool>::iterator i =  m_Ready.begin() ; i!=m_Ready.end() ; i++){
-    if((*i))
+  for(vector<bool>::iterator it =  m_Ready.begin() ; it!=m_Ready.end() ; it++){
+    if((*it))
       return false;
   }
   return true;

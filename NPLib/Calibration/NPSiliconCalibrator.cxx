@@ -46,10 +46,10 @@ double NPL::SiliconCalibrator::ZeroExtrapolation(TH1* histo, NPL::CalibrationSou
   m_EL_Al= EL;
 
   double DistanceToPedestal = 100000;
-  double Step = 0.1*micrometer;
+  double Step = 0.01*micrometer;
   bool   LastStepIncrease = false;
   bool   LastStepDecrease = false;
-  double my_precision = 0.1;
+  double my_precision = 0.01;
   // Energy of the Source and sigma on the value (MeV)
 
   double Assume_Thickness = 0 ; // micrometer
@@ -66,7 +66,10 @@ double NPL::SiliconCalibrator::ZeroExtrapolation(TH1* histo, NPL::CalibrationSou
     Source_Sig[i] =  CS->GetEnergiesErrors()[i][0]; 
   }
   Assume_E.resize(source_size,0);
-  TGraphErrors* g = FitSpectrum(histo);
+  TGraphErrors* g = FitSpectrum(histo,rmin,rmax);
+  if (g->GetN()!=3)
+    return -1;
+
   while(k++<max_iteration && abs(Assume_Thickness) < 100*micrometer){
 
     // Compute the new assumed energies
@@ -159,7 +162,7 @@ double NPL::SiliconCalibrator::SimpleCalibration(TH1* histo, NPL::CalibrationSou
     Source_E[i] = CS->GetEnergies()[i][0];
     Source_Sig[i] = CS->GetEnergiesErrors()[i][0]; 
   }
-  TGraphErrors* g = FitSpectrum(histo);
+  TGraphErrors* g = FitSpectrum(histo,rmin,rmax);
   // Compute the new assumed energies
    FitPoints(g,Source_E , Source_Sig, coeff, 0 );
   
@@ -180,7 +183,12 @@ double NPL::SiliconCalibrator::FitPoints(TGraphErrors* Graph,double* Energies, d
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TGraphErrors* NPL::SiliconCalibrator::FitSpectrum(TH1* histo){
+TGraphErrors* NPL::SiliconCalibrator::FitSpectrum(TH1* histo,double rmin,double rmax){
+  // apply range
+//  for(unsigned int i = 0 ; i < histo->GetNbinsX() ; i++)
+//    if(histo->GetBinCenter(i)<rmin || histo->GetBinCenter(i)>rmax )
+//      histo->SetBinContent(i,0);
+  
   TF1* fitfunc =  m_CalibrationSource->GetSourceSignal();
   // Perform a peak search to get a hint of where are the peaks
   TSpectrum* sp = new TSpectrum(4,1);
@@ -202,18 +210,39 @@ TGraphErrors* NPL::SiliconCalibrator::FitSpectrum(TH1* histo){
 
 
   if(nfound==3){
+    // Set initial mean 
     fitfunc->SetParameter(1,xpeaks[0]);
     fitfunc->SetParameter(4,xpeaks[1]);
     fitfunc->SetParameter(7,xpeaks[2]);
+  
+    // Set Limit
+    fitfunc->SetParLimits(1,xpeaks[0]*0.8,xpeaks[0]*1.2);
+    fitfunc->SetParLimits(4,xpeaks[1]*0.8,xpeaks[1]*1.2);
+    fitfunc->SetParLimits(7,xpeaks[2]*0.8,xpeaks[2]*1.2);
+
+
+    // Set initial hight
+    double H1 = histo->GetBinContent(histo->FindBin(xpeaks[0])); 
+    double H2 = histo->GetBinContent(histo->FindBin(xpeaks[1])); 
+    double H3 = histo->GetBinContent(histo->FindBin(xpeaks[2])); 
+
+    fitfunc->SetParameter(0,H1);
+    fitfunc->SetParameter(3,H2);
+    fitfunc->SetParameter(6,H3);
     
+    // Set Limit
+    fitfunc->SetParLimits(0,H1*0.8,H1*1.2);
+    fitfunc->SetParLimits(3,H2*0.8,H2*1.2);
+    fitfunc->SetParLimits(6,H3*0.8,H3*1.2);
+
     // ballpark the sigma
     double sigma = (xpeaks[1]-xpeaks[0])/100;
     fitfunc->SetParameter(2,sigma);
     fitfunc->SetParameter(5,sigma);
     fitfunc->SetParameter(8,sigma);
-    
+   
     histo->GetXaxis()->SetRangeUser(xpeaks[0]-xpeaks[0]/20.,xpeaks[2]+xpeaks[2]/20.);
-  }
+  
   
   histo->Fit(fitfunc,"Q");
   TF1* fit = histo->GetFunction(fitfunc->GetName());
@@ -228,8 +257,12 @@ TGraphErrors* NPL::SiliconCalibrator::FitSpectrum(TH1* histo){
   for(unsigned int i = 0 ; i < mysize ; i++){
     Graph->SetPoint(point,fit->GetParameter(3*i+1) ,Energies[i][0]);
     Graph->SetPointError(point++,fit->GetParError(3*i+1),ErrEnergies[i][0]);
-  } 
+  }
   return Graph;
+  }
+  
+  else
+    return (new TGraphErrors());
 }
 
 

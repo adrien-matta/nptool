@@ -57,7 +57,7 @@ namespace NPL{
       void        ClearEventData();
       void        InitSpectra();
       void        WriteSpectra();
-      vector< map< vector<string>, TH1* > > GetSpectra();  
+      vector< map< string, TH1* > > GetSpectra();  
       vector<string>                        GetDetectorList();
 
     public: // for online spectra server

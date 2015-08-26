@@ -30,18 +30,15 @@ using namespace std;
 ClassImp(TSharcData)
 
 /////////////////////////
-TSharcData::TSharcData()
-{
+TSharcData::TSharcData(){
 }
 
 /////////////////////////
-TSharcData::~TSharcData()
-{
+TSharcData::~TSharcData(){
 }
 
 /////////////////////////
-void TSharcData::Clear()
-{
+void TSharcData::Clear(){
   fSharc_StripFront_DetectorNbr.clear();
   fSharc_StripFront_StripNbr.clear();
   fSharc_StripFront_Energy.clear();
@@ -62,8 +59,7 @@ void TSharcData::Clear()
 }
 
 /////////////////////////
-void TSharcData::Dump() const
-{
+void TSharcData::Dump() const{
   // Energy
   cout << "Sharc_StripFront_Mult = " << fSharc_StripFront_DetectorNbr.size() << endl;
   

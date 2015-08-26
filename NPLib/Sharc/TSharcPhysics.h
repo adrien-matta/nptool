@@ -78,8 +78,11 @@ class TSharcPhysics : public TObject, public NPL::VDetector{
     vector<double> PAD_E ;
     vector<double> PAD_T ;
 
-    // Used for Pixel Cal
-    vector<double> StripFront_OriginalE;
+    // Used to apply Pixel Cal
+    vector<double> StripFront_OriginalE; //!
+
+    // Used for Calibration
+    vector<double> Strip_Front_RawE;
 
   public:      //   Innherited from VDetector Class
 
@@ -138,7 +141,7 @@ class TSharcPhysics : public TObject, public NPL::VDetector{
 
     //   Return false if the channel is disabled by user
     //   Frist argument is either "X","Y","SiLi","CsI"
-    bool IsValidChannel(const string DetectorType, const int telescope , const int channel);
+    bool IsValidChannel(const string& DetectorType, const int& telescope , const int& channel);
 
     //   Initialize the standard parameter for analysis
     //   ie: all channel enable, maximum multiplicity for strip = number of telescope
@@ -158,17 +161,17 @@ class TSharcPhysics : public TObject, public NPL::VDetector{
     TSharcData* GetPreTreatedData() const {return m_PreTreatedData;}
 
     // Use to access the strip position
-    double GetStripPositionX( const int N , const int Front , const int Back )   const{ return m_StripPositionX[N-1][Front-1][Back-1] ; }  ;
-    double GetStripPositionY( const int N , const int Front , const int Back )   const{ return m_StripPositionY[N-1][Front-1][Back-1] ; }  ;
-    double GetStripPositionZ( const int N , const int Front , const int Back )   const{ return m_StripPositionZ[N-1][Front-1][Back-1] ; }  ;
+    double GetStripPositionX( const int& N , const int& Front , const int& Back )   const{ return m_StripPositionX[N-1][Front-1][Back-1] ; }  ;
+    double GetStripPositionY( const int& N , const int& Front , const int& Back )   const{ return m_StripPositionY[N-1][Front-1][Back-1] ; }  ;
+    double GetStripPositionZ( const int& N , const int& Front , const int& Back )   const{ return m_StripPositionZ[N-1][Front-1][Back-1] ; }  ;
 
     double GetNumberOfDetector() const { return m_NumberOfDetector; };
 
     // To be called after a build Physical Event 
     int GetEventMultiplicity() const { return EventMultiplicity; };
 
-    TVector3 GetPositionOfInteraction(const int i) const;   
-    TVector3 GetDetectorNormal(const int i) const;
+    TVector3 GetPositionOfInteraction(const int& i) const;   
+    TVector3 GetDetectorNormal(const int& i) const;
 
   private:   //   Parameter used in the analysis
 
@@ -216,7 +219,7 @@ class TSharcPhysics : public TObject, public NPL::VDetector{
     TSharcSpectra* m_Spectra; // !
 
   public: // Spectra Getter
-    map< vector<string> , TH1*> GetSpectra(); 
+    map< string , TH1*> GetSpectra(); 
     vector<TCanvas*> GetCanvas();
 
   public: // Static constructor to be passed to the Detector Factory
@@ -226,20 +229,18 @@ class TSharcPhysics : public TObject, public NPL::VDetector{
 
 namespace Sharc_LOCAL
 {
-  //   tranform an integer to a string
-  string itoa(unsigned int value);
   //   DSSD
   //   Front
-  double fStrip_Front_E(const TSharcData* Data, const int i);
-  double fStrip_Front_T(const TSharcData* Data, const int i);
+  double fStrip_Front_E(const TSharcData* Data, const int& i);
+  double fStrip_Front_T(const TSharcData* Data, const int& i);
 
   //   Back   
-  double fStrip_Back_E(const TSharcData* Data, const int i);
-  double fStrip_Back_T(const TSharcData* Data, const int i);
+  double fStrip_Back_E(const TSharcData* Data, const int& i);
+  double fStrip_Back_T(const TSharcData* Data, const int& i);
 
   //   PAD   
-  double fPAD_E(const TSharcData* Data, const int i);
-  double fPAD_T(const TSharcData* Data, const int i);
+  double fPAD_E(const TSharcData* Data, const int& i);
+  double fPAD_T(const TSharcData* Data, const int& i);
 
 }
 

@@ -198,7 +198,7 @@ class TTiaraHyballPhysics : public TObject, public NPL::VDetector{
     TTiaraHyballSpectra*      m_Spectra;//!
 
   public:
-    map< vector<string>,TH1* > GetSpectra(); 
+    map< string,TH1* > GetSpectra(); 
 
     public: // Static constructor to be passed to the Detector Factory
      static NPL::VDetector* Construct();

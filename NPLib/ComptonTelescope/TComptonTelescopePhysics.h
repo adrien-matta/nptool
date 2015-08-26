@@ -202,7 +202,7 @@ class TComptonTelescopePhysics : public TObject, public NPL::VDetector
       TComptonTelescopeSpectra*      m_Spectra; //! 
 
    public: // Spectra Getter
-      map< vector<string> , TH1*> GetSpectra();
+      map< string , TH1*> GetSpectra();
 
 
    public: // Static constructor to be passed to the Detector Factory

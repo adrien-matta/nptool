@@ -30,8 +30,7 @@
 
 using namespace std ;
 
-class CalibrationManager
-   {
+class CalibrationManager{
    
       protected:   //   Constructor and Destructor are protected because the class is a singleton
          CalibrationManager(string configFileName);
@@ -79,8 +78,9 @@ class CalibrationManager
 
       private:
          //   This map hold a vector of the calibration coefficient. Index is the Parameter path, like "MUST2/Telescope5_Si_X38_E"
-         map< string , vector<double> >   fCalibrationCoeff ;
-         
+     
+
+         map< string , vector<double> >   fCalibrationCoeff ;  
          //   Hold the path of all the registered file of coeff
          vector<string>   fFileList   ;
          

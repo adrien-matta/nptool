@@ -54,9 +54,7 @@ namespace NPL{
   static itoa_proxy itoa_p ;
 }
 
-std::string NPL::itoa(int i){
+std::string NPL::itoa(const int& i){
   return NPL::itoa_array[i];
 }
-
-
 

@@ -34,7 +34,6 @@ using namespace std;
 #include "TAsciiFile.h"
 //   ROOT
 #include "TChain.h"
-#include "TLorentzVector.h"
 ///////////////////////////////////////////////////////////////////////////
 
 ClassImp(TTigressPhysics)
@@ -43,19 +42,21 @@ ClassImp(TTigressPhysics)
     m_EventData         = new TTigressData ;
     m_PreTreatedData    = new TTigressData ;
     m_EventPhysics      = this ;
-    Clear();
   };
 
 
 /////////////////////////////////////////////////
 void TTigressPhysics::BuildPhysicalEvent(){
-  PreTreat();
-
-  for(unsigned int i = 0 ; i < m_EventData->GetMultiplicityGe() ; i++){
+ // PreTreat();
+  static CalibrationManager* cal = CalibrationManager::getInstance();
+  static string name;
+  unsigned int mysize = m_EventData->GetMultiplicityGe();
+  for(unsigned int i = 0 ; i < mysize ; i++){
     if( m_EventData->GetGeSegmentNbr(i)==0 && m_EventData->GetGeEnergy(i)>20){
       int clover = m_EventData->GetGeCloverNbr(i);
       int cry = m_EventData->GetGeCrystalNbr(i);
-      double Energy =  CalibrationManager::getInstance()->ApplyCalibration("TIGRESS/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(cry)+"_SEG"+ NPL::itoa(m_EventData->GetGeSegmentNbr(i))+"_E", m_EventData->GetGeEnergy(i));
+      name = "TIGRESS/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(cry)+"_SEG"+ NPL::itoa(m_EventData->GetGeSegmentNbr(i))+"_E";
+      double Energy =  cal->ApplyCalibration(name, m_EventData->GetGeEnergy(i));
       Gamma_Energy.push_back(Energy);
       Crystal_Number.push_back(m_EventData->GetGeCrystalNbr(i));
       Clover_Number.push_back(m_EventData->GetGeCloverNbr(i));
@@ -71,34 +72,31 @@ void TTigressPhysics::BuildPhysicalEvent(){
     }
   }
 
-  map<int, double> map_E;
+  unsigned int mysize2 = Gamma_Energy.size();
   for(unsigned int i = 0 ; i < 16 ; i ++) {
-    unsigned int mysize = Gamma_Energy.size();
-    for(unsigned int g = 0 ; g < mysize ; g++){
+    for(unsigned int g = 0 ; g < mysize2 ; g++){
       if(Clover_Number[g] == i+1){
-        map_E[i] += Gamma_Energy[g]  ; 
+        m_map_E[i] += Gamma_Energy[g]  ;
       }
     }
   }
 
-
-  for(unsigned int i = 0 ; i < 16 ; i ++) {
-    if(map_E[i]>0){
-      AddBack_E.push_back(map_E[i]);
+  for(unsigned int i = 0 ; i < 16 ; i++) {
+    if(m_map_E.find(i)!=m_map_E.end()){
+      AddBack_E.push_back(m_map_E[i]);
       if(i>12){
-        TLorentzVector GammaLV( map_E[i]*sin(135*3.1459/180.),
-            map_E[i]*sin(135*3.1459/180.),
-            map_E[i]*cos(135*3.1459/180.),
-            map_E[i]);
-        
-        GammaLV.Boost(0,0,-0.12);
-        AddBack_DC.push_back(GammaLV.Energy());
+        m_GammaLV.SetX(m_map_E[i]*sin(135*3.1459/180.));
+        m_GammaLV.SetY(m_map_E[i]*sin(135*3.1459/180.));
+        m_GammaLV.SetZ(m_map_E[i]*cos(135*3.1459/180.));
+        m_GammaLV.SetT(m_map_E[i]);
+                               
+        m_GammaLV.Boost(0,0,-0.12);
+        AddBack_DC.push_back(m_GammaLV.Energy());
       }
       else
-         AddBack_DC.push_back(map_E[i]); 
+         AddBack_DC.push_back(m_map_E[i]); 
     }
   }
-
 }
 /////////////////////////////////////////////////
 TVector3 TTigressPhysics::GetPositionOfInteraction(int i){
@@ -111,11 +109,6 @@ void TTigressPhysics::PreTreat(){
 
 
 } 
-
-/////////////////////////////////////////////////
-void TTigressPhysics::Clear() {
-};
-
 
 /////////////////////////////////////////////////
 void TTigressPhysics::ReadConfiguration(string Path)  {
@@ -226,7 +219,7 @@ void TTigressPhysics::InitializeRootOutput()
   outputTree->Branch( "Tigress" , "TTigressPhysics" , &m_EventPhysics );
 }
 ///////////////////////////////////////////////////////////////////////////  
-void TTigressPhysics::ClearEventPhysics() {
+void TTigressPhysics::Clear() {
   Gamma_Energy.clear();
   Gamma_Time.clear();
   Crystal_Number.clear();
@@ -234,6 +227,7 @@ void TTigressPhysics::ClearEventPhysics() {
   BGO.clear();
   AddBack_E.clear();
   AddBack_DC.clear();
+  m_map_E.clear();
 }
 ///////////////////////////////////////////////////////////////////////////  
 void TTigressPhysics::ClearEventData() {

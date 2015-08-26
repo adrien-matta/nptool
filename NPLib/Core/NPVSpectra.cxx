@@ -50,9 +50,7 @@ TH1* VSpectra::AddHisto1D(string name, string title, Int_t nbinsx, Double_t xlow
   // create histo
   TH1 *hist = new TH1D(name.c_str(), title.c_str(), nbinsx, xlow, xup);
 
-  vector<string> index;
-  index.push_back(family);
-  index.push_back(name);
+  string index= family+"/"+name;
 
   // fill map
   fMapHisto[index] = hist;
@@ -65,9 +63,7 @@ TH1* VSpectra::AddHisto2D(string name, string title, Int_t nbinsx, Double_t xlow
   // create histo
   TH1 *hist = new TH2D(name.c_str(), title.c_str(), nbinsx, xlow, xup, nbinsy, ylow, yup);
 
-  vector<string> index;
-  index.push_back(family);
-  index.push_back(name);
+  string index= family+"/"+name;
 
   // fill map
   fMapHisto[index] = hist;
@@ -85,25 +81,26 @@ vector<TCanvas*> VSpectra::GetCanvas(){
   return m_Canvas;
 }
 ////////////////////////////////////////////////////////////////////////////////
-TH1* VSpectra::GetHisto(string& family, string& name){
-  vector<string> index;
-  index.reserve(2);
-  index.push_back(family);
-  index.push_back(name);
-  TH1* histo ; 
-
-  map< vector<string> , TH1*>::iterator it;
-  it = fMapHisto.find(index);
+TH1* VSpectra::GetHisto(const string& FamilyAndName){
+  map< string , TH1*>::iterator it;
+  it = fMapHisto.find(FamilyAndName);
 
   if(it == fMapHisto.end()){
-    cout << "ERROR : the folowing Histo has been requested and does not exist: family:" << family << " name: "  << name << endl ;
+    cout << "ERROR : the folowing Histo has been requested and does not exist: " << FamilyAndName << endl ;
     exit(1);
   }
 
   else
-    histo = it->second; 
+    return it->second; 
 
-  return histo;
+  return it->second;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+TH1* VSpectra::GetHisto(const string& family,const string& name){
+  string index = family + "/" + name;
+  return GetHisto(index);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -126,7 +123,7 @@ void VSpectra::WriteSpectra(string filename){
    f->cd(dirname.c_str());
 
    // write all histos
-   map< vector<string>, TH1* >::iterator it;
+   map< string, TH1* >::iterator it;
    for (it=fMapHisto.begin(); it!=fMapHisto.end(); ++it) {
       it->second->Write();
    }

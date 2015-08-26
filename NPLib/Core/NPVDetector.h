@@ -36,7 +36,7 @@
 using namespace std;
 
 namespace NPL {
-  std::string itoa(int); 
+  std::string itoa(const int&); 
 
   class VDetector{
     public:
@@ -86,7 +86,7 @@ namespace NPL {
       // Used for Online only, clear all the spectra hold by the Spectra class
       virtual void ClearSpectra() {};
       // Used for Online only, get all the spectra hold by the Spectra class
-      virtual  map< vector<string> , TH1*> GetSpectra() {map< vector<string>, TH1* > x; return x;};
+      virtual  map< string , TH1*> GetSpectra() {map< string, TH1* > x; return x;};
       // Used for Online only, get all the canvases
       virtual vector<TCanvas*> GetCanvas(){vector<TCanvas*> x ; return x;};
 
