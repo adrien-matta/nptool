@@ -80,7 +80,7 @@ class TSharcPhysics : public TObject, public NPL::VDetector{
 
     // Used to apply Pixel Cal
     vector<double> StripFront_OriginalE; //!
-
+    vector<double> DeadLayer; //!    
     // Used for Calibration
     vector<double> Strip_Front_RawE;
 
@@ -172,6 +172,7 @@ class TSharcPhysics : public TObject, public NPL::VDetector{
 
     TVector3 GetPositionOfInteraction(const int& i) const;   
     TVector3 GetDetectorNormal(const int& i) const;
+    double   GetDeadLayer(const int& i) const;
 
   private:   //   Parameter used in the analysis
 

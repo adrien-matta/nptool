@@ -88,7 +88,8 @@ void TTrifoilPhysics::InitializeRootInputRaw(){
   TChain* inputChain = RootInput::getInstance()->GetChain();
   static UInt_t* found =  new UInt_t[100] ;
   inputChain->SetBranchStatus( "Trifoil" , true );
-  inputChain->SetBranchStatus( "fTrifoil_*" , true , found);
+  if(inputChain->FindBranch( "fTrifoil_*")) 
+    inputChain->SetBranchStatus( "fTrifoil_*" , true , found);
   inputChain->SetBranchAddress( "Trifoil" , &m_EventData );
 }
 

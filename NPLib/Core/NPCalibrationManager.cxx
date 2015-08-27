@@ -323,6 +323,11 @@ bool CalibrationManager::ApplyThreshold(const string& ParameterPath, const doubl
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 double CalibrationManager::GetPedestal(const string& ParameterPath){
+  return GetValue(ParameterPath,0);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+double CalibrationManager::GetValue(const string& ParameterPath,const unsigned int& order){
   map< string , vector<double> >::iterator it ;
   static map< string , vector<double> >::iterator ite = fCalibrationCoeff.end();
 
@@ -332,21 +337,21 @@ double CalibrationManager::GetPedestal(const string& ParameterPath){
 
   // If the find methods return the end iterator it's mean the parameter was not found
   if(it == ite ){
-    cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
+   /* cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
     cout << " ERROR: PARAMETER " << ParameterPath << " IS NOT FOUND IN THE CALIBRATION DATA BASE  " << endl ;
     cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
+    */
+    return 0;
   }
 
   // The vector size give the degree of calibration
-  // We just apply the coeff and returned the calibrated value
-
-  double PedestalValue = 0 ;
-
-  if(it->second.size()>0){
-     PedestalValue = it->second[0];
+  double Value = 0 ;
+  if(it->second.size()>order){
+     Value = it->second[order];
   }
 
-  return PedestalValue;
+  return Value;
 }
+
 
 

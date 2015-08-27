@@ -68,9 +68,7 @@ void TSharcPhysics::BuildSimplePhysicalEvent(){
 }
 
 ///////////////////////////////////////////////////////////////////////////
-
 void TSharcPhysics::BuildPhysicalEvent(){
-
   PreTreat();
   bool check_PAD = false ;
 
@@ -98,23 +96,31 @@ void TSharcPhysics::BuildPhysicalEvent(){
     StripBack_E.push_back(Back_E) ;
     StripBack_T.push_back(Back_T) ;
 
-
     // Try to obtain Pixel Calibration
     static CalibrationManager* Cal = CalibrationManager::getInstance();
     static string name;
     name = "SHARC/D"+ NPL::itoa(N)+"_STRIP_FRONT"+ NPL::itoa(Front)+"_BACK"+ NPL::itoa(Back)+"_E";
     double Pixel_E = Cal->ApplyCalibration(name,StripFront_OriginalE[couple[i].X()] );
-
     Strip_Front_RawE.push_back(StripFront_OriginalE[couple[i].X()]);
-
-    if(Pixel_E != StripFront_OriginalE[couple[i].X()])
+    if(Pixel_E != StripFront_OriginalE[couple[i].X()]){
       Strip_E.push_back(Pixel_E);
+      name = "SHARC/D"+ NPL::itoa(N)+"_STRIP_FRONT"+ NPL::itoa(Front)+"_BACK"+ NPL::itoa(Back)+"_DEADLAYER";
+      DeadLayer.push_back(Cal->GetValue(name,0));
+    }
 
     // Fall Back option, take the Strip Calibration
-    else if(m_Take_E_Front)
+    else if(m_Take_E_Front){
       Strip_E.push_back(Front_E) ;
-    else
+      name = "SHARC/D"+ NPL::itoa(N)+"_STRIP_FRONT"+ NPL::itoa(Front)+"_DEADLAYER";
+      DeadLayer.push_back(Cal->GetValue(name,0));
+    }
+
+    
+    else{
       Strip_E.push_back(Back_E) ;
+      name = "SHARC/D"+ NPL::itoa(N)+"_BACK"+ NPL::itoa(Back)+"_DEADLAYER";
+      DeadLayer.push_back(Cal->GetValue(name,0));
+    }
 
     if(m_Take_T_Back)
       Strip_T.push_back(Back_T) ;
@@ -431,6 +437,7 @@ void TSharcPhysics::Clear(){
   Strip_Front.clear() ;
   Strip_Back.clear() ;
   StripFront_OriginalE.clear();
+  DeadLayer.clear();
   Strip_Front_RawE.clear(); 
   // PAD
   PAD_E.clear() ;
@@ -667,17 +674,25 @@ void TSharcPhysics::AddParameterToCalibrationManager(){
     for( int j = 0 ; j < 24 ; ++j){
       // Front Strip Calibration
       Cal->AddParameter("SHARC", "D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_E","SHARC_D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_E")   ;
+      Cal->AddParameter("SHARC", "D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_DEADLAYER",
+                        "SHARC_D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_DEADLAYER")   ;
       Cal->AddParameter("SHARC", "D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_T","SHARC_D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_T")   ;
 
       // Pixel Calibration
       for( int k = 0 ; k < 48 ; ++k){
         Cal->AddParameter("SHARC", "D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_BACK"+ NPL::itoa(k+1)+"_E","SHARC_D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_BACK"+ NPL::itoa(k+1)+"_E")   ;
+        Cal->AddParameter("SHARC", "D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_BACK"+ NPL::itoa(k+1)+"_DEADLAYER",
+                          "SHARC_D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_BACK"+ NPL::itoa(k+1)+"_DEADLAYER")   ;
+
       }
     }
 
     for( int j = 0 ; j < 48 ; ++j){
       // Back strip Calibration
       Cal->AddParameter("SHARC", "D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j+1)+"_E","SHARC_D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j+1)+"_E")   ;
+      Cal->AddParameter("SHARC", "D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j+1)+"_DEADLAYER",
+                        "SHARC_D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j+1)+"_DEADLAYER")   ;
+
       Cal->AddParameter("SHARC", "D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j+1)+"_T","SHARC_D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j+1)+"_T")   ;
     }
 
@@ -695,12 +710,12 @@ void TSharcPhysics::AddParameterToCalibrationManager(){
 ///////////////////////////////////////////////////////////////////////////
 void TSharcPhysics::InitializeRootInputRaw(){
   TChain* inputChain = RootInput::getInstance()->GetChain()   ;
-  static UInt_t* found =  new UInt_t[100] ;
   inputChain->SetBranchStatus( "Sharc" , true );
   // The following line is necessary only for system were the tree is splitted
   // (older root version). The found argument silenced the Branches not found
   // warning for non splitted tree.
-  inputChain->SetBranchStatus( "fSharc_*",true,found);
+  if(inputChain->FindBranch("fSharc_*"))
+    inputChain->SetBranchStatus( "fSharc_*",true);
   inputChain->SetBranchAddress( "Sharc" , &m_EventData );
 
 }
@@ -785,11 +800,7 @@ void TSharcPhysics::AddBoxDetector(double Z){
 
   double BOX_PCB_Slot_Position2 = 0.5*BOX_PCB_Length-BOX_LeftOver2 - 0.5*BOX_PCB_Slot_Width2;
 
-  TVector3 U; TVector3 V;TVector3 Strip_1_1;
-
-
-  // TVector3 WaferCenter1 = TVector3(BOX_CenterOffset2, BOX_DetectorSpacing1, Z )
-  //          StripPos = WaferCenter1 + TVector3(BOX_Wafer_Length*0.5-  0.5*StripPitchFront ,0,BOX_Wafer_Width*0.5 - StripPitchBack*0.5)                  
+  
   double A1 = BOX_Exposed_Length1*0.5 -BOX_PCB_Slot_Border1- 0.5*StripPitchFront ; 
   double B1 = BOX_DetectorSpacing1 - 0.5*BOX_PCB_Thickness;
   double Z1 = Z - BOX_Wafer_Width*0.5 + StripPitchBack*0.5 ;
@@ -798,6 +809,8 @@ void TSharcPhysics::AddBoxDetector(double Z){
   double B2 = BOX_DetectorSpacing2 - 0.5*BOX_PCB_Thickness;
   double Z2 = Z + BOX_Wafer_Width*0.5 - StripPitchBack*0.5 ;
 
+  TVector3 U; TVector3 V;TVector3 Strip_1_1;
+  
   for(int i = 0 ; i < 4 ; i++){
     m_NumberOfDetector++;
     if(Z<0){// Up Stream
@@ -923,7 +936,7 @@ TVector3 TSharcPhysics::GetDetectorNormal( const int& i) const{
   return (TVector3(0,0,i));
 
 }
-
+////////////////////////////////////////////////////////////////////////////////
 TVector3 TSharcPhysics::GetPositionOfInteraction(const int& i) const{
   TVector3    Position = TVector3 (  GetStripPositionX( DetectorNumber[i] , Strip_Front[i] , Strip_Back[i] )    ,
       GetStripPositionY( DetectorNumber[i] , Strip_Front[i] , Strip_Back[i] )    ,
@@ -931,7 +944,11 @@ TVector3 TSharcPhysics::GetPositionOfInteraction(const int& i) const{
   return(Position) ;
 
 }
-
+////////////////////////////////////////////////////////////////////////////////
+double TSharcPhysics::GetDeadLayer(const int& i ) const{
+  return DeadLayer[i];
+}
+////////////////////////////////////////////////////////////////////////////////
 void TSharcPhysics::InitializeStandardParameter()
 {
   //   Enable all channel
@@ -984,7 +1001,7 @@ namespace Sharc_LOCAL{
   double fStrip_Back_E(const TSharcData* m_EventData , const int& i){
     static CalibrationManager* Cal = CalibrationManager::getInstance();
     static string name ;
-    name =  "SHARC/D" + NPL::itoa( m_EventData->GetBack_DetectorNbr(i) ) + "_STRIP_BACK" + NPL::itoa( m_EventData->GetBack_StripNbr(i) ) +"_E";
+    name =  "SHARC/D" + NPL::itoa( m_EventData->GetBack_DetectorNbr(i) ) + "_STRIP_BACK" + NPL::itoa( m_EventData->GetBack_StripNbr(i)) +"_E";
 
     return Cal->ApplyCalibration(name, m_EventData->GetBack_Energy(i) );
   }

@@ -48,9 +48,10 @@ double NPL::SiliconCalibrator::ZeroExtrapolation(TH1* histo, NPL::CalibrationSou
   double Step = 0.01*micrometer;
   bool   LastStepIncrease = false;
   bool   LastStepDecrease = false;
-  double my_precision = 0.01;
-  // Energy of the Source and sigma on the value (MeV)
 
+  // 1% precision on the total scale (typically 6 MeV ) 
+  double my_precision = (rmax-pedestal)*0.01;
+  // Energy of the Source and sigma on the value (MeV)
   double Assume_Thickness = 0 ; // micrometer
   vector<double> Assume_E; // Energie calculated assuming Assume_Thickness deadlayer of Al
 

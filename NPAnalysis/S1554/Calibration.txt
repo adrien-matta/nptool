@@ -1,3 +1,5 @@
 CalibrationFilePath
   SharcCalibration.txt
+  SharcPixelCalibration.txt
+  SharcPixelDeadLayer.txt
   TigressCalibration.txt

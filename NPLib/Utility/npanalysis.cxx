@@ -16,7 +16,7 @@
 // Root
 #include"TKey.h"
 
-void ProgressDisplay(clock_t&,clock_t&,unsigned long&, unsigned long&, unsigned long&, double&, unsigned long&);
+void ProgressDisplay(clock_t&,clock_t&,unsigned long&, unsigned long&, unsigned long&, double&, unsigned long&, int&, int&);
 
 int main(int argc , char** argv){
   // command line parsing
@@ -114,6 +114,9 @@ int main(int argc , char** argv){
   clock_t end;
   clock_t begin = clock();
   unsigned long new_nentries = 0 ;
+  int current_tree = 0 ;
+  int total_tree = Chain->GetNtrees();
+
   bool IsPhysics = myOptionManager->GetInputPhysicalTreeOption();
 
   if(UserAnalysis==NULL){ 
@@ -126,7 +129,8 @@ int main(int argc , char** argv){
         // Fill the tree
         tree->Fill();
 
-        ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed);
+        current_tree = Chain->GetTreeNumber()+1;
+        ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed,current_tree,total_tree);
         if(myOptionManager->GetOnline() && i%10000==0){
           bool first = true;
           while(!Chain || first){
@@ -166,7 +170,9 @@ int main(int argc , char** argv){
         UserAnalysis->TreatEvent();
         // Fill the tree      
         tree->Fill();
-        ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed);
+      
+        current_tree = Chain->GetTreeNumber()+1;
+        ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed,current_tree,total_tree);
         if(myOptionManager->GetOnline() && i%10000==0){
           bool first = true;
           while(!Chain || first){
@@ -197,7 +203,9 @@ int main(int argc , char** argv){
         UserAnalysis->TreatEvent();
         // Fill the tree      
         tree->Fill();
-        ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed);
+
+        current_tree = Chain->GetTreeNumber()+1;
+        ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed,current_tree,total_tree);
         if(myOptionManager->GetOnline() && i%10000==0){
           bool first = true;
           while(!Chain || first){
@@ -225,7 +233,8 @@ int main(int argc , char** argv){
 #if __cplusplus > 199711L
   myDetector->StopThread();
 #endif
-  ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed);
+  current_tree = Chain->GetTreeNumber()+1;
+  ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed,current_tree,total_tree);
 
   if(myOptionManager->GetOnline()){
     myDetector->CheckSpectraServer(); 
@@ -242,7 +251,7 @@ int main(int argc , char** argv){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ProgressDisplay(clock_t& begin, clock_t& end, unsigned long& treated,unsigned long& inter,unsigned long& total,double& mean_rate,unsigned long& displayed){
+void ProgressDisplay(clock_t& begin, clock_t& end, unsigned long& treated,unsigned long& inter,unsigned long& total,double& mean_rate,unsigned long& displayed, int& current_tree, int& total_tree){
   end = clock();
   if((end-begin)>CLOCKS_PER_SEC||treated>=total ){
     displayed++;
@@ -260,10 +269,10 @@ void ProgressDisplay(clock_t& begin, clock_t& end, unsigned long& treated,unsign
       check=asprintf(&timer,"%ds",(int)(remain));
 
     if(treated!=total)
-      printf("\r \033[1;31m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s *******\033[0m         ", percent,mean_rate/1000.,timer);
+      printf("\r \033[1;31m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s | Tree: %d/%d *******   \033[0m         ", percent,mean_rate/1000.,timer, current_tree,total_tree);
 
     else{
-      printf("\r \033[1;32m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s *******\033[0m         ", percent,mean_rate/1000.,timer);
+      printf("\r \033[1;32m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s | Tree: %d/%d *******   \033[0m         ", percent,mean_rate/1000.,timer, current_tree, total_tree);
     }
     fflush(stdout);
     inter=0;

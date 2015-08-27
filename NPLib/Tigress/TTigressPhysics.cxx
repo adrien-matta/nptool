@@ -204,17 +204,16 @@ void TTigressPhysics::ReadConfiguration(string Path)  {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-void TTigressPhysics::InitializeRootInputRaw() 
-{
-  TChain* inputChain = RootInput::getInstance()->GetChain()   ;
-  inputChain->SetBranchStatus( "Tigress" , true )               ;
-  inputChain->SetBranchStatus( "fTIG_*" , true )               ;
-  inputChain->SetBranchAddress( "Tigress" , &m_EventData )      ;
+void TTigressPhysics::InitializeRootInputRaw() {
+  TChain* inputChain = RootInput::getInstance()->GetChain();
+  inputChain->SetBranchStatus( "Tigress" , true );
+  if(inputChain->FindBranch( "fTIG_*" ))
+    inputChain->SetBranchStatus( "fTIG_*" , true );
+  inputChain->SetBranchAddress( "Tigress" , &m_EventData );
 }
 
 ///////////////////////////////////////////////////////////////////////////
-void TTigressPhysics::InitializeRootOutput()    
-{
+void TTigressPhysics::InitializeRootOutput()    {
   TTree* outputTree = RootOutput::getInstance()->GetTree();
   outputTree->Branch( "Tigress" , "TTigressPhysics" , &m_EventPhysics );
 }
