@@ -40,7 +40,6 @@ private:
   vector<Double_t>  fTrifoil_TimeCFD;
   vector<Double_t>  fTrifoil_TimeLED;
   
-  
 public:
   TTrifoilData();
   virtual ~TTrifoilData();
@@ -55,7 +54,7 @@ public:
   inline void SetTimeLED(const Double_t &TimeLED) {fTrifoil_TimeLED.push_back(TimeLED);}
   
   /////////////////////           GETTERS           ////////////////////////
-  inline TH1F GetWaveform(const unsigned int &i)    {return fTrifoil_Waveform[i];}
+  inline TH1F* GetWaveform(const unsigned int &i)    {return &(fTrifoil_Waveform[i]);}
   inline Double_t GetTimeCFD(const unsigned int &i) {return fTrifoil_TimeCFD[i];}
   inline Double_t GetTimeLED(const unsigned int &i) {return fTrifoil_TimeLED[i];}
 

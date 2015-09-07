@@ -52,7 +52,7 @@ void TTigressPhysics::BuildPhysicalEvent(){
   static string name;
   unsigned int mysize = m_EventData->GetMultiplicityGe();
   for(unsigned int i = 0 ; i < mysize ; i++){
-    if( m_EventData->GetGeSegmentNbr(i)==0 && m_EventData->GetGeEnergy(i)>20){
+    if( m_EventData->GetGeSegmentNbr(i)==0 && m_EventData->GetGeEnergy(i)>500000){
       int clover = m_EventData->GetGeCloverNbr(i);
       int cry = m_EventData->GetGeCrystalNbr(i);
       name = "TIGRESS/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(cry)+"_SEG"+ NPL::itoa(m_EventData->GetGeSegmentNbr(i))+"_E";
@@ -83,18 +83,19 @@ void TTigressPhysics::BuildPhysicalEvent(){
 
   for(unsigned int i = 0 ; i < 16 ; i++) {
     if(m_map_E.find(i)!=m_map_E.end()){
+      double theta = 90*3.141592653589793/180.;
       AddBack_E.push_back(m_map_E[i]);
       if(i>12){
-        m_GammaLV.SetX(m_map_E[i]*sin(135*3.1459/180.));
-        m_GammaLV.SetY(m_map_E[i]*sin(135*3.1459/180.));
-        m_GammaLV.SetZ(m_map_E[i]*cos(135*3.1459/180.));
-        m_GammaLV.SetT(m_map_E[i]);
+        theta = 135.*3.141592653589793/180.;
+       }
+
+        m_GammaLV.SetPx(0);
+        m_GammaLV.SetPy(m_map_E[i]*sin(theta));
+        m_GammaLV.SetPz(m_map_E[i]*cos(theta));
+        m_GammaLV.SetE(m_map_E[i]);
                                
-        m_GammaLV.Boost(0,0,-0.12);
+        m_GammaLV.Boost(0,0,-0.127488);
         AddBack_DC.push_back(m_GammaLV.Energy());
-      }
-      else
-         AddBack_DC.push_back(m_map_E[i]); 
     }
   }
 }

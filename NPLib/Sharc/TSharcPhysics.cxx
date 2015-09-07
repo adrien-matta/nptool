@@ -332,17 +332,17 @@ void TSharcPhysics::ReadAnalysisConfig(){
         cout << whatToDo << "  " << DataBuffer << endl;
         int Detector = atoi(DataBuffer.substr(2,1).c_str());
         int channel = -1;
-        if (DataBuffer.compare(3,4,"STRF") == 0) {
+        if (DataBuffer.find("STRF") != string::npos) {
           channel = atoi(DataBuffer.substr(7).c_str());
           *(m_FrontChannelStatus[Detector-1].begin()+channel-1) = false;
         }
 
-        else if (DataBuffer.compare(3,4,"STRB") == 0) {
+        else if (DataBuffer.find("STRB")!=string::npos) {
           channel = atoi(DataBuffer.substr(7).c_str());
           *(m_BackChannelStatus[Detector-1].begin()+channel-1) = false;
         }
 
-        else if (DataBuffer.compare(3,3,"PAD") == 0) {
+        else if (DataBuffer.find("PAD") != string::npos) {
           channel = atoi(DataBuffer.substr(6).c_str());
           *(m_PADChannelStatus[Detector-1].begin()+channel-1) = false;
         }

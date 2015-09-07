@@ -27,11 +27,15 @@
 #include"RootOutput.h"
 #include"RootInput.h"
 #include "TSharcPhysics.h"
+#include "TTigressPhysics.h"
 #include "TInitialConditions.h"
 #include <TRandom3.h>
 #include <TVector3.h>
 #include <TMath.h>
+#include<TCutG.h>
 
+#include<fstream>
+#include<vector>
 class Analysis: public NPL::VAnalysis{
   public:
     Analysis();
@@ -87,5 +91,11 @@ TInitialConditions* myInit ;
   double Si_X_Sharc ;
   double Si_Y_Sharc ;
   TSharcPhysics* Sharc;
+  TTigressPhysics* Tigress;
+
+  std::vector<TCutG*> cut_ex5; 
+  std::ofstream box_pos;
+  std::ofstream qqq_pos;
+
 };
 #endif

@@ -166,7 +166,10 @@ double NPL::SiliconCalibrator::SimpleCalibration(TH1* histo, NPL::CalibrationSou
   double dist = FitPoints(g,Source_E , Source_Sig, coeff, 0 );
 
   delete g;
-  return abs(dist);
+  if(dist!=-3)
+    return abs(dist);
+  else 
+    return dist;
 }
 
 
@@ -179,7 +182,7 @@ double NPL::SiliconCalibrator::FitPoints(TGraphErrors* Graph,double* Energies, d
     coeff.push_back(Graph->GetFunction("pol1")->GetParameter(0));
     coeff.push_back(Graph->GetFunction("pol1")->GetParameter(1));
     // Compute the Distance to pedestal:
-    return (pedestal + coeff[0]/coeff[1] );
+    return (coeff[0]/coeff[1]-pedestal );
   }
   else{
     coeff.clear();

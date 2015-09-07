@@ -38,15 +38,17 @@ void Analysis::Init(){
   InitInputBranch();
 
   Sharc = (TSharcPhysics*)  m_DetectorManager -> GetDetector("Sharc");
-  LightCD2 = EnergyLoss("proton_CD2.G4table","G4Table",10);
-//  LightAl = EnergyLoss("proton_Al.G4table","G4Table",10);
-  LightAl = EnergyLoss("alpha_Al.G4table","G4Table",10);
+  Tigress = (TTigressPhysics*)  m_DetectorManager -> GetDetector("Tigress");
 
-  BeamCD2 = EnergyLoss("Mg28_CD2.G4table","G4Table",10);
+  LightCD2 = EnergyLoss("proton_CD2.G4table","G4Table",10);
+  LightAl = EnergyLoss("proton_Al.G4table","G4Table",10);
+//  LightAl = EnergyLoss("alpha_Al.G4table","G4Table",10);
+
+  BeamCD2 = EnergyLoss("Si28_CD2.G4table","G4Table",10);
   myReaction = new NPL::Reaction();
   myReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
-//  TargetThickness = m_DetectorManager->GetTargetThickness()*micrometer;
-    TargetThickness = 0; 
+  TargetThickness = m_DetectorManager->GetTargetThickness()*micrometer;
+//  TargetThickness = 0; 
   OriginalBeamEnergy = myReaction->GetBeamEnergy();
   Rand = TRandom3();
   DetectorNumber = 0 ;
@@ -74,6 +76,20 @@ void Analysis::Init(){
   BeamDirection = TVector3(0,0,1);
   TargetPosition = TVector3(m_DetectorManager->GetTargetX(),m_DetectorManager->GetTargetY(),m_DetectorManager->GetTargetZ() );
   myReaction->SetBeamEnergy(222);
+
+
+  // Load the cut
+  for(unsigned int i = 0 ; i < 8 ; i++){
+    TFile* file = new TFile(Form("cuts/Ex5_D%i.root",i+1),"READ");
+    cut_ex5.push_back((TCutG*) file->FindObjectAny(Form("Ex5_D%i",i+1))); 
+    if(! file->FindObjectAny(Form("Ex5_D%i",i+1))){
+      cout << "Fail to Load " << Form("Ex5_D%i",i+1) << endl;
+      exit(1);
+    }
+  }
+
+  box_pos.open("BoxPos.txt");
+  qqq_pos.open("QQQPos.txt");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -84,7 +100,7 @@ void Analysis::TreatEvent(){
   ////////////////////////////////////////////////////////////////////////////
   //////////////////////////// LOOP on Sharc//////////////////
 
-if(Sharc->Strip_E.size()==1){
+  if(Sharc->Strip_E.size()==1){
     /************************************************/
     // Part 1 : Impact Angle
     TVector3 HitDirection = Sharc -> GetPositionOfInteraction(0)-TargetPosition;
@@ -99,11 +115,35 @@ if(Sharc->Strip_E.size()==1){
     if(Sharc->PAD_E[0]>0){
       Energy = Sharc->PAD_E[0];
     }
-    Energy += Sharc->Strip_E[0];
+    if(Sharc->Strip_E[0]>0)
+      Energy += Sharc->Strip_E[0];
+
     Energy =  LightAl.EvaluateInitialEnergy(Energy,Sharc->GetDeadLayer(0)*micrometer,0);
+
+
     // Target Correction
     ELab = Energy;
     ELab = LightCD2.EvaluateInitialEnergy( Energy ,TargetThickness*0.5, ThetaNormalTarget);
+
+    /*    int DetectorNumber = Sharc->DetectorNumber[0];
+    bool checkT = false;
+    if(Tigress->AddBack_DC.size()>0){
+      if(Tigress->AddBack_DC[0]/1000.> 4.5 && Tigress->AddBack_DC[0]/1000.< 5.1)
+        checkT=true;
+    }
+
+    if(checkT){
+      if(DetectorNumber<5){
+        if(cut_ex5[DetectorNumber-1]->IsInside(ThetaLab/deg,ELab))
+          qqq_pos << DetectorNumber << " " << Energy << " " << HitDirection.X() << " " << HitDirection.Y() << " " << HitDirection.Z() << endl;
+      }
+
+      else if(DetectorNumber<9){
+        if(cut_ex5[DetectorNumber-1]->IsInside(ThetaLab/deg,ELab))
+          box_pos << DetectorNumber << " " << Energy << " " << HitDirection.X() << " " << HitDirection.Y() << " " << HitDirection.Z() << endl;
+      }
+    }
+*/
     /************************************************/
 
     /************************************************/
