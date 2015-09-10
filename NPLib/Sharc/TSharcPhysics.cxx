@@ -761,9 +761,11 @@ void TSharcPhysics::AddBoxDetector(double Z){
   double BOX_PCB_Slot_Deepness1 = BOX_PCB_Border_ShortSide;
 
   // BOX Wafer
+  double BOX_ActiveWafer_Width  = 48;
+  double BOX_ActiveWafer_Length = 72;
   double BOX_Wafer_Width  = 52.20;
-  double BOX_Wafer_Length = 76.20;
-
+  double BOX_Wafer_Length = 76.20;  
+ 
   int    BOX_Wafer_Front_NumberOfStrip = 24 ;
   int    BOX_Wafer_Back_NumberOfStrip = 48 ;
 
@@ -779,8 +781,8 @@ void TSharcPhysics::AddBoxDetector(double Z){
 
   double BOX_PCB_Slot_Position1 = 0.5*BOX_PCB_Length-BOX_LeftOver1 - 0.5*BOX_PCB_Slot_Width1;
 
-  double StripPitchFront = BOX_Wafer_Length/BOX_Wafer_Front_NumberOfStrip ; //mm
-  double StripPitchBack  = BOX_Wafer_Width/BOX_Wafer_Back_NumberOfStrip ; //mm
+  double StripPitchFront = BOX_ActiveWafer_Length/BOX_Wafer_Front_NumberOfStrip ; //mm
+  double StripPitchBack  = BOX_ActiveWafer_Width/BOX_Wafer_Back_NumberOfStrip ; //mm
 
   // Double stage box case (DSSD+PAD) (the wafer is the same but the slot is different to accomodate the additional PAD)
   double PAD_PCB_Thickness = 3.4;

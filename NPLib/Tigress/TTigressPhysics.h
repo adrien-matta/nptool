@@ -79,24 +79,46 @@ class TTigressPhysics :  public TObject, public NPL::VDetector{
 
   private:   //   Root Input and Output tree classes
 
-    TTigressData*         m_EventData;//!
-    TTigressData*         m_PreTreatedData;//!
-    TTigressPhysics*      m_EventPhysics;//!
+    TTigressData* m_EventData;//!
+    TTigressData* m_PreTreatedData;//!
+    TTigressPhysics* m_EventPhysics;//!
 
   public: // Data Member
     vector<double> Gamma_Energy;
     vector<int> Crystal_Number;
     vector<int> Clover_Number;
-    vector<bool>   BGO;
-    vector<double>   Gamma_Time;
+    vector<int> Segment_Number;
+    vector<bool> BGO;
+    vector<double> Gamma_Time;
+    
+    // add back by clover
     vector<double> AddBack_E;   
     vector<double> AddBack_DC;   
   private: // use for anlysis
+    // Keep track of the core
     map<int,double> m_map_E; //!
+    map<int,int> m_map_Core_Crystal; //!
+    map<int,double> m_map_Core_MaxE; //!
+  
+    // Keep track of the segment
+    map<int,int> m_map_Segment_Crystal; //!
+    map<int,int> m_map_Segment; //!
+    map<int,double> m_map_Segment_MaxE; //!
+
+   
     TLorentzVector m_GammaLV; //!
   public:
-    TVector3 GetPositionOfInteraction(int i) ;
+    TVector3 GetPositionOfInteraction(unsigned int& i);
+    double GetDopplerCorrectedEnergy(double& energy , TVector3 position, TVector3& beta);
+    // Add a detector and computes its coordinate
+    void AddClover(unsigned int ID, double R, double Theta, double Phi);
+    TVector3 GetCloverPosition(int& CloverNbr);
+    TVector3 GetCorePosition(int& CloverNbr, int& CoreNbr);
+    TVector3 GetSegmentPosition(int& CloverNbr, int& CoreNbr, int& SegmentNbr);
+    inline TVector3 GetCrystalPosition(int& CloverNbr, int& CoreNbr){return GetCorePosition(CloverNbr,CoreNbr);};
 
+  private:
+    map<unsigned int,TVector3> m_CloverPosition;//!
 
   public: // Static constructor to be passed to the Detector Factory
     static NPL::VDetector* Construct();

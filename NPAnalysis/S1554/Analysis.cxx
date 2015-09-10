@@ -75,8 +75,9 @@ void Analysis::Init(){
   double YTarget = 0;
   BeamDirection = TVector3(0,0,1);
   TargetPosition = TVector3(m_DetectorManager->GetTargetX(),m_DetectorManager->GetTargetY(),m_DetectorManager->GetTargetZ() );
-  myReaction->SetBeamEnergy(222);
-
+  double finalEnergy = BeamCD2.Slow(224,TargetThickness*0.5,0);
+  myReaction->SetBeamEnergy(finalEnergy);
+  cout << "Set Beam energy to: " <<  finalEnergy << " MeV" << endl;
 
   // Load the cut
   for(unsigned int i = 0 ; i < 8 ; i++){
@@ -124,11 +125,11 @@ void Analysis::TreatEvent(){
     // Target Correction
     ELab = Energy;
     ELab = LightCD2.EvaluateInitialEnergy( Energy ,TargetThickness*0.5, ThetaNormalTarget);
-
-    /*    int DetectorNumber = Sharc->DetectorNumber[0];
+   /************************************************/
+/*    int DetectorNumber = Sharc->DetectorNumber[0];
     bool checkT = false;
     if(Tigress->AddBack_DC.size()>0){
-      if(Tigress->AddBack_DC[0]/1000.> 4.5 && Tigress->AddBack_DC[0]/1000.< 5.1)
+      if(Tigress->AddBack_DC[0]/1000.> 4.6 && Tigress->AddBack_DC[0]/1000.< 5.4)
         checkT=true;
     }
 
