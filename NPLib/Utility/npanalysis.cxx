@@ -102,16 +102,6 @@ int main(int argc , char** argv){
   TChain* Chain = RootInput:: getInstance()->GetChain();
   myOptionManager->GetNumberOfEntryToAnalyse();
  
-  gEnv->SetValue("TFile.AsyncPrefetching", 1);
-  long int cache= 500000*1024; 
-  tree->SetBasketSize("*",cache);
-
-  Chain->SetCacheSize(cache);
-  Chain->AddBranchToCache("*",kTRUE);
-  Chain->SetBasketSize("*",cache);
-  Chain->StopCacheLearningPhase();
-  
-  
   unsigned long nentries = Chain->GetEntries();
   if(nentries> myOptionManager->GetNumberOfEntryToAnalyse() && myOptionManager->GetNumberOfEntryToAnalyse()>0)
     nentries = myOptionManager->GetNumberOfEntryToAnalyse() ; 
