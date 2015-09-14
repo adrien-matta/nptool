@@ -28,6 +28,8 @@
 #include <cstdlib>
 #include <limits>
 #include <set>
+#include <chrono>
+
 // NPL
 #include "NPDetectorFactory.h"
 #include "RootInput.h"
@@ -190,7 +192,7 @@ void NPL::DetectorManager::ReadConfigurationFile(string Path)   {
 
       }
     }
-    
+
     ///////////////////////////////////////////
     /////////// Search for Detectors ///////////
     ////////////////////////////////////////////
@@ -248,10 +250,16 @@ void NPL::DetectorManager::BuildPhysicalEvent(){
   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {
     m_Ready[i++]=true;
   }
-  // Wait for all job to be done
-  while(!IsDone()){
-    //this_thread::yield();
+
+  { // aquire the sub thread lock
+    std::unique_lock<std::mutex> lk(m_ThreadMtx);
   }
+  m_CV.notify_all();
+
+  while(!IsDone()){
+   // this_thread::yield();
+  }
+
 #else 
   map<string,VDetector*>::iterator it;
   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {
@@ -388,11 +396,13 @@ void NPL::DetectorManager::InitThreadPool(){
   m_ThreadPool.clear();
   m_Ready.clear();
   map<string,VDetector*>::iterator it;
+
   unsigned int i = 0;
   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) { 
     m_ThreadPool.push_back( thread( &NPL::DetectorManager::StartThread,this,it->second,i++) );
     m_Ready.push_back(false);
   }
+
   m_stop = false;
   for(auto& th: m_ThreadPool){
     th.detach();
@@ -405,9 +415,15 @@ void NPL::DetectorManager::InitThreadPool(){
 void NPL::DetectorManager::StartThread(NPL::VDetector* det,unsigned int id){ 
   this_thread::sleep_for(chrono::milliseconds(1));
   vector<bool>::iterator it = m_Ready.begin()+id;
-
-  while(!m_stop){
-    if(*it){
+  while(true){
+    { // Aquire the lock
+      std::unique_lock<std::mutex> lk(m_ThreadMtx);    
+      // wait for work to be given
+      while(!m_Ready[id]){
+        m_CV.wait(lk);
+      }
+      
+      // Do the job
       (det->*m_ClearEventPhysicsPtr)();
       (det->*m_BuildPhysicalPtr)();
       if(m_FillSpectra){
@@ -415,15 +431,23 @@ void NPL::DetectorManager::StartThread(NPL::VDetector* det,unsigned int id){
         if(m_CheckSpectra)
           (det->*m_CheckSpectra)();
       }
+      // Reset Ready flag
       m_Ready[id]=false;
-    }
-    else
-      this_thread::yield();
-  }
+
+      // Quite if stopped
+      if(m_stop)
+        return;
+
+    } // Realease the lock
+
+  }   
 }
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::DetectorManager::StopThread(){
+  // make sure the last thread are schedule before stopping;
+  this_thread::yield();
   m_stop=true;
+  m_CV.notify_all();
 }
 ////////////////////////////////////////////////////////////////////////////////
 bool NPL::DetectorManager::IsDone(){

@@ -52,7 +52,7 @@ void TTigressPhysics::BuildPhysicalEvent(){
   unsigned int mysize = Gamma_Energy.size();
   for(unsigned int i = 0 ; i < 16 ; i ++) {
     for(unsigned int g = 0 ; g < mysize ; g++){
-      if(Clover_Number[g] == i+1 || Segment_Number[g]==0){
+      if(Clover_Number[g] == i+1 && Segment_Number[g]==0){
         m_map_E[i] += Gamma_Energy[g];
         if( Gamma_Energy[g]> m_map_Core_MaxE[i] ){
           m_map_Core_MaxE[i] = Gamma_Energy[g];
@@ -79,10 +79,11 @@ void TTigressPhysics::BuildPhysicalEvent(){
       else
         Pos = GetSegmentPosition(clover,m_map_Core_Crystal[i],m_map_Segment_Crystal[i]);
 
-      static TVector3 Beta =  TVector3(0,0,0.10);
+      static TVector3 Beta =  TVector3(0,0,0.15);
       double E = GetDopplerCorrectedEnergy(m_map_E[i],Pos,Beta);
       AddBack_DC.push_back(E);
       AddBack_E.push_back(m_map_E[i]);
+      AddBack_Theta.push_back(Pos.Angle(Beta)*180./3.141592653589793);
     }
   }
 }
@@ -134,7 +135,7 @@ double TTigressPhysics::GetDopplerCorrectedEnergy(double& energy , TVector3 posi
   m_GammaLV.SetPy(energy*position.Y());
   m_GammaLV.SetPz(energy*position.Z());
   m_GammaLV.SetE(energy);
-  m_GammaLV.Boost(beta);
+  m_GammaLV.Boost(-beta);
   return m_GammaLV.Energy();
 }
 
@@ -328,6 +329,7 @@ void TTigressPhysics::Clear() {
   BGO.clear();
   AddBack_E.clear();
   AddBack_DC.clear();
+  AddBack_Theta.clear();
   m_map_E.clear();
 }
 ///////////////////////////////////////////////////////////////////////////  

@@ -94,6 +94,8 @@ class TTigressPhysics :  public TObject, public NPL::VDetector{
     // add back by clover
     vector<double> AddBack_E;   
     vector<double> AddBack_DC;   
+    vector<double> AddBack_Theta;
+
   private: // use for anlysis
     // Keep track of the core
     map<int,double> m_map_E; //!

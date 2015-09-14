@@ -30,6 +30,7 @@
 #include "RootInput.h"
 #include "TAsciiFile.h"
 #include "NPOptionManager.h"
+
 RootInput* RootInput::instance = 0;
 ////////////////////////////////////////////////////////////////////////////////
 RootInput* RootInput::getInstance(string configFileName){
@@ -74,7 +75,7 @@ RootInput::RootInput(string configFileName){
 
   pRootFile  = NULL;
   pRootChain = new TChain();
-
+  
   if (!inputConfigFile.is_open()) {
     cout << "\033[1;31mError : Run to Read file :" << configFileName << " not found\033[0m" << endl; 
     exit(1);

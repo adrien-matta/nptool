@@ -15,6 +15,7 @@
 
 // Root
 #include"TKey.h"
+#include"TEnv.h" 
 
 void ProgressDisplay(clock_t&,clock_t&,unsigned long&, unsigned long&, unsigned long&, double&, unsigned long&, int&, int&);
 
@@ -72,7 +73,7 @@ int main(int argc , char** argv){
   NPL::DetectorManager* myDetector = new NPL::DetectorManager();
   myDetector->ReadConfigurationFile(detectorfileName);
 
-  // Attempt to load an analysis
+    // Attempt to load an analysis
   NPL::VAnalysis* UserAnalysis = NULL;
   string libName = "./libNPAnalysis" + myOptionManager->GetSharedLibExtension();
   dlopen(libName.c_str(),RTLD_NOW | RTLD_GLOBAL);
@@ -100,6 +101,17 @@ int main(int argc , char** argv){
   std::cout << std::endl << "///////// Starting Analysis ///////// "<< std::endl;
   TChain* Chain = RootInput:: getInstance()->GetChain();
   myOptionManager->GetNumberOfEntryToAnalyse();
+ 
+  gEnv->SetValue("TFile.AsyncPrefetching", 1);
+  long int cache= 500000*1024; 
+  tree->SetBasketSize("*",cache);
+
+  Chain->SetCacheSize(cache);
+  Chain->AddBranchToCache("*",kTRUE);
+  Chain->SetBasketSize("*",cache);
+  Chain->StopCacheLearningPhase();
+  
+  
   unsigned long nentries = Chain->GetEntries();
   if(nentries> myOptionManager->GetNumberOfEntryToAnalyse() && myOptionManager->GetNumberOfEntryToAnalyse()>0)
     nentries = myOptionManager->GetNumberOfEntryToAnalyse() ; 
