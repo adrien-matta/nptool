@@ -1,5 +1,6 @@
 cmake_minimum_required (VERSION 2.8)
 include("FindROOT.cmake")
+include(CheckCXXCompilerFlag)
 
 project(NPLib)
 # Major change in the Core/Physics (affecting the detector/analysis/simulation)
@@ -45,6 +46,11 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*Clang.*")
   if( UNIX AND NOT APPLE )
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
   endif()
+endif()
+
+CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+if(COMPILER_SUPPORTS_CXX11)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endif()
 
 set(CMAKE_BINARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin )
