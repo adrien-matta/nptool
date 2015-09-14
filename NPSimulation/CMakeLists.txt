@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 2.8)
-include("../NPLib/FindROOT.cmake")
-
+#include("../NPLib/FindROOT.cmake")
+include("../NPLib/Root.cmake")
 project (NPSimulation)
 set (NPSIM_VERSION_MAJOR 2)
 set (NPSIM_VERSION_MINOR 0)

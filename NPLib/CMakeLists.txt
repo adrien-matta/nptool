@@ -1,12 +1,10 @@
 cmake_minimum_required (VERSION 2.8)
-include("FindROOT.cmake")
 include(CheckCXXCompilerFlag)
-
-project(NPLib)
+project(NPLib CXX)
 # Major change in the Core/Physics (affecting the detector/analysis/simulation)
 set(NPLIB_VERSION_MAJOR 2)
 # Minor change in the Core/Physics (not affecting any other part)
-set(NPLIB_VERSION_MINOR 0)
+set(NPLIB_VERSION_MINOR 1)
 # Change any of the detector in NPA
 set(NPLIB_VERSION_DETA 35)
 
@@ -28,17 +26,10 @@ cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
 
 # This suppress the Up-to-Date message of file installed for cmake 3.1 and above
 set(CMAKE_INSTALL_MESSAGE LAZY) 
+message("${CMAKE_CXX_FLAGS}")
 
-# Add root to the link and include directories
-include_directories( ${ROOT_INCLUDE_DIR})
-link_directories( ${ROOT_LIBRARY_DIR})
-
-# Get the compilator flag from root to assure consistancy
-EXEC_PROGRAM(${ROOT_CONFIG_EXECUTABLE}
-     ARGS "--cflags"
-     OUTPUT_VARIABLE root_cflags )
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${root_cflags}")
+# look for Root
+include("Root.cmake")
 
 # If the compiler is Clang, silence the unrecognised flags
 if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*Clang.*")
@@ -48,13 +39,26 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*Clang.*")
   endif()
 endif()
 
-CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
 
-if(COMPILER_SUPPORTS_CXX11)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-elseif(COMPILER_SUPPORTS_CXX0X)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+# Adjust the compiler language flag
+set(NOCPPFLAGS true)
+if(${CMAKE_CXX_FLAGS} MATCHES ".*std=.*11")
+  set(NOCPPFLAGS false)
+elseif(${CMAKE_CXX_FLAGS} MATCHES ".*std=.*0x")
+  set(NOCPPFLAGS false) 
+endif()
+
+if(NOCPPFLAGS)
+  CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+  if(COMPILER_SUPPORTS_CXX11)
+	    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  else()
+    CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+  endif()
+
+  if(COMPILER_SUPPORTS_CXX0X)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+  endif()
 endif()
 
 set(CMAKE_BINARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin )
@@ -79,7 +83,8 @@ MACRO(subdirlist result curdir)
       string(COMPARE EQUAL "${child}" "Utility" r9)
       string(COMPARE EQUAL "${child}" "bin" r10)
       string(COMPARE EQUAL "${child}" "Calibration" r11)
-      IF(NOT r0 AND NOT r1 AND NOT r2 AND NOT r3 AND NOT r4 AND NOT r5 AND NOT r6 AND NOT r7 AND NOT r8 AND NOT r9 AND NOT r10 AND NOT r11)
+      string(COMPARE EQUAL "${child}" "Online" r111)
+      IF(NOT r0 AND NOT r1 AND NOT r2 AND NOT r3 AND NOT r4 AND NOT r5 AND NOT r6 AND NOT r7 AND NOT r8 AND NOT r9 AND NOT r10 AND NOT r11 AND NOT r111)
         string(COMPARE EQUAL "${DETLIST}" "" r12)
         IF(r12)
           LIST(APPEND dirlist ${child})
@@ -94,7 +99,7 @@ ENDMACRO()
 
 # Call the Macro
 subdirlist(SUB_DIRECTORY ${CMAKE_BINARY_DIR})
-set(SUB_DIRECTORY ${SUB_DIRECTORY} Core Physics Calibration InitialConditions InteractionCoordinates Utility)
+set(SUB_DIRECTORY ${SUB_DIRECTORY} Core Physics Calibration InitialConditions InteractionCoordinates Online Utility)
 include_directories("Core/")
 include_directories("Physics/")
 include_directories("Online/")
@@ -115,7 +120,6 @@ foreach(subdir ${SUB_DIRECTORY})
   endif()
 
 endforeach()
-
 export(TARGETS ${TARGET_LIST} FILE NPLibTargets.cmake)
 export(PACKAGE NPLib)
 file(RELATIVE_PATH REL_INCLUDE_DIR "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}" "${CMAKE_INCLUDE_OUTPUT_DIRECTORY}")

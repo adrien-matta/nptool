@@ -275,16 +275,24 @@ void ProgressDisplay(clock_t& begin, clock_t& end, unsigned long& treated,unsign
 
     char* timer;
     double check;
+    int minutes = remain/60.;
+    int seconds = remain -60*minutes;
     if(remain>60)
-      check=asprintf(&timer,"%dmin",(int)(remain/60.));
+      check=asprintf(&timer,"%dmin%ds",minutes,seconds);
     else
       check=asprintf(&timer,"%ds",(int)(remain));
+    
+    static char star[7];
+    if(displayed%2==0 || treated==total)
+      sprintf(star,"*******");
+    else
+      sprintf(star,"-------");
 
     if(treated!=total)
-      printf("\r \033[1;31m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s | Tree: %d/%d *******   \033[0m         ", percent,mean_rate/1000.,timer, current_tree,total_tree);
+      printf("\r \033[1;31m %s Progress: \033[1;36m%.1f%% \033[1;31m| Rate: %.1fk evt/s | Remain: %s | Tree: %d/%d %s   \033[0m         ", star,percent,mean_rate/1000.,timer, current_tree,total_tree,star);
 
     else{
-      printf("\r \033[1;32m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s | Tree: %d/%d *******   \033[0m         ", percent,mean_rate/1000.,timer, current_tree, total_tree);
+      printf("\r \033[1;32m %s Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s | Tree: %d/%d %s   \033[0m         ", star,percent,mean_rate/1000.,timer, current_tree, total_tree,star);
     }
     fflush(stdout);
     inter=0;

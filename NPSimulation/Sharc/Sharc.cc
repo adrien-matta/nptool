@@ -424,7 +424,7 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
         new G4LogicalVolume(ActiveWafer,m_MaterialSilicon,"logicActiveWafer", 0, 0, 0);
 
       logicWafer->SetVisAttributes(SiliconVisAtt);
-      //logicActiveWafer->SetVisAttributes(SiliconVisAtt);
+      logicActiveWafer->SetVisAttributes(SiliconVisAtt);
 
       // Place the sub volume in the master volume
       new G4PVPlacement(new G4RotationMatrix(0,0,0),

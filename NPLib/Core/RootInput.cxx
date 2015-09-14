@@ -75,7 +75,7 @@ RootInput::RootInput(string configFileName){
 
   pRootFile  = NULL;
   pRootChain = new TChain();
-  
+
   if (!inputConfigFile.is_open()) {
     cout << "\033[1;31mError : Run to Read file :" << configFileName << " not found\033[0m" << endl; 
     exit(1);
@@ -94,14 +94,14 @@ RootInput::RootInput(string configFileName){
         // If the tree come from a simulation, the InteractionCoordinates
         // and InitialConditions lib are loaded
         if(dataBuffer=="SimulatedTree"){
-            string path = getenv("NPTOOL");
+          string path = getenv("NPTOOL");
           path+="/NPLib/lib/";
-            string libName="libNPInteractionCoordinates"+NPOptionManager::getInstance()->GetSharedLibExtension();
-            libName=path+libName;
-            dlopen(libName.c_str(),RTLD_NOW);
-            libName="libNPInitialConditions"+NPOptionManager::getInstance()->GetSharedLibExtension();
-            libName=path+libName;
-            dlopen(libName.c_str(),RTLD_NOW);
+          string libName="libNPInteractionCoordinates"+NPOptionManager::getInstance()->GetSharedLibExtension();
+          libName=path+libName;
+          dlopen(libName.c_str(),RTLD_NOW);
+          libName="libNPInitialConditions"+NPOptionManager::getInstance()->GetSharedLibExtension();
+          libName=path+libName;
+          dlopen(libName.c_str(),RTLD_NOW);
         }
       }
 
@@ -111,7 +111,7 @@ RootInput::RootInput(string configFileName){
 
         while (!inputConfigFile.eof()) {
           inputConfigFile >> dataBuffer;
-          
+
           // ignore comment Line 
           if (dataBuffer.compare(0, 1, "%") == 0) {
             inputConfigFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -120,7 +120,23 @@ RootInput::RootInput(string configFileName){
           else if (!inputConfigFile.eof()) {
             pRootChain->Add(dataBuffer.c_str());
             cout << "Adding file " << dataBuffer << " to TChain" << endl;
-            if (!pRootFile) pRootFile = new TFile(dataBuffer.c_str());
+
+            // Test if the file is a regex or a single file
+            double counts;
+            string command = "ls " + dataBuffer + " > .ls_return";
+            counts= system(command.c_str());
+            ifstream return_ls(".ls_return");
+            
+            string files;
+            string firstfile;
+            while(return_ls >> files){
+              if(counts == 0)
+                firstfile = files;
+              counts++;
+            }
+            
+            if (!pRootFile) 
+              pRootFile = new TFile(firstfile.c_str());
           }
         }
       }
