@@ -15,13 +15,6 @@ link_directories( ${ROOT_LIBRARY_DIR})
 include_directories( ${NPTOOL_INCLUDE_DIR})
 link_directories( ${NPTOOL_LIB_DIR})
 
-# Get the compilator flag from root to assure consistancy
-EXEC_PROGRAM(${ROOT_CONFIG_EXECUTABLE}
-     ARGS "--cflags"
-     OUTPUT_VARIABLE root_cflags )
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${root_cflags}")
-
 # If the compiler is Clang, silence the unrecognised flags
 if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*Clang.*")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments -undefined dynamic_lookup")
