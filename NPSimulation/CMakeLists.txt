@@ -72,13 +72,6 @@ endif()
 #include_directories( ${ROOT_INCLUDE_DIR})
 #link_directories( ${ROOT_LIBRARY_DIR})
 
-# Get the compilator flag from root to assure consistancy
-EXEC_PROGRAM(${NPTOOL_ROOT_CONFIG}
-     ARGS "--cflags"
-     OUTPUT_VARIABLE root_cflags )
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${root_cflags}")
-
 if(Geant4_gdml_FOUND)  
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNPS_GDML")     
 endif()

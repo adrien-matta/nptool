@@ -86,6 +86,7 @@ void EventAction::ProgressDisplay(){
 
     char* timer;
     double check ;
+    check = 0;
     if(remain>60)
       check = asprintf(&timer,"%dmin",(int)(remain/60.));
     else
