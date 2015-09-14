@@ -65,5 +65,8 @@ include_directories( ${ROOT_INCLUDE_DIR})
 
 # Get the compilator flag from root to assure consistancy
 exec_program(${NPTOOL_ROOT_CONFIG} ARGS "--cflags" OUTPUT_VARIABLE NPTOOL_ROOT_CFLAGS )
-set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS_RELEASE} ${NPTOOL_ROOT_CFLAGS}")
-
+if(CMAKE_CXX_FLAGS)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${NPTOOL_ROOT_CFLAGS}")
+else()
+  set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS_RELEASE} ${NPTOOL_ROOT_CFLAGS}")
+endif()

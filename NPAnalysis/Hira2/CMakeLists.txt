@@ -5,7 +5,7 @@ set(NPLIB "${NPTOOL}/NPLib")
 set(NPTOOL_INCLUDE_DIR "${NPLIB}/include")
 set(NPTOOL_LIB_DIR "${NPLIB}/lib")
   
-include("${NPLIB}/FindROOT.cmake")  
+include("${NPLIB}/Root.cmake")  
 
 project (NPAnalysis)
 set(CMAKE_BUILD_TYPE Release)  

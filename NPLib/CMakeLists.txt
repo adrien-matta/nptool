@@ -1,6 +1,8 @@
 cmake_minimum_required (VERSION 2.8)
 include(CheckCXXCompilerFlag)
 project(NPLib CXX)
+set(CMAKE_BUILD_TYPE Release)
+
 # Major change in the Core/Physics (affecting the detector/analysis/simulation)
 set(NPLIB_VERSION_MAJOR 2)
 # Minor change in the Core/Physics (not affecting any other part)
@@ -9,9 +11,6 @@ set(NPLIB_VERSION_MINOR 1)
 set(NPLIB_VERSION_DETA 35)
 
 configure_file(Core/NPLibVersion.h.in Core/NPLibVersion.h @ONLY)
-
-set(CMAKE_BUILD_TYPE Release)
-
 set(DETLIST ${ETLIST})
 
 string(COMPARE EQUAL "${DETLIST}" "" rdet)
@@ -26,7 +25,6 @@ cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
 
 # This suppress the Up-to-Date message of file installed for cmake 3.1 and above
 set(CMAKE_INSTALL_MESSAGE LAZY) 
-message("${CMAKE_CXX_FLAGS}")
 
 # look for Root
 include("Root.cmake")
