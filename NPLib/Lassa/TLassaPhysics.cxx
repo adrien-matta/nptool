@@ -508,7 +508,8 @@ bool TLassaPhysics :: IsValidChannel(const string DetectorType, const int telesc
   else if(DetectorType == "Y")
    return *(m_YChannelStatus[telescope].begin()+channel); //return *(m_YChannelStatus[telescope-1].begin()+channel-1);
 
-  else return false;
+  return false;
+
 }
 
 ////////////////////////////////////////////////////////////////////////////

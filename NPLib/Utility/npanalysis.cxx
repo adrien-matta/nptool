@@ -272,7 +272,7 @@ void ProgressDisplay(clock_t& begin, clock_t& end, unsigned long& treated,unsign
     else
       check=asprintf(&timer,"%ds",(int)(remain));
     
-    static char star[7];
+    static char star[10];
     if(displayed%2==0 || treated==total)
       sprintf(star,"*******");
     else

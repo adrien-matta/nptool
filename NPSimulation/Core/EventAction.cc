@@ -85,11 +85,11 @@ void EventAction::ProgressDisplay(){
     double remain = (total-treated)/mean_rate;
 
     char* timer;
-
+    double check ;
     if(remain>60)
-      asprintf(&timer,"%dmin",(int)(remain/60.));
+      check = asprintf(&timer,"%dmin",(int)(remain/60.));
     else
-      asprintf(&timer,"%ds",(int)(remain));
+      check = asprintf(&timer,"%ds",(int)(remain));
 
     if(treated!=total)
       printf("\r \033[1;31m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s *******\033[0m", percent,mean_rate/1000.,timer);
