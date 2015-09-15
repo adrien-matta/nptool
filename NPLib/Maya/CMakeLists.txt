@@ -4,7 +4,7 @@ add_custom_command(OUTPUT TMayaHistoDict.cxx COMMAND ../scripts/build_dict.sh TM
 
 
 add_library(NPMaya SHARED TMayaData.cxx TMayaHisto.cxx TMayaDataDict.cxx TMayaHistoDict.cxx ConfigReader.cxx)
-target_link_libraries(NPMaya ${ROOT_LIBRARIES} NPCore) 
+target_link_libraries(NPMaya ${ROOT_LIBRARIES} -lGraf NPCore) 
 install(FILES TMayaData.h TMayaHisto.h ConfigReader.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
 
 endif()
