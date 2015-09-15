@@ -54,9 +54,9 @@ namespace HIRA
 	
     const G4double EnergyThreshold = 0.;//100*keV;
 	
-	const G4double FaceFront	= 7.*cm ;
-	const G4double FaceBack		= 7*cm ;
-	const G4double Length		= 7.*cm ;
+	const G4double FaceFront	= 10.*cm ;
+	const G4double FaceBack		= 10*cm ;
+	const G4double Length		= 15.*cm ;
 	const G4int NumberOfStrip	= 32;
 	
 	const G4double SiliconFace       = 63*mm ;
@@ -66,16 +66,16 @@ namespace HIRA
 	const G4double DistBetweenSi	 = 1*cm;
 	const G4double VacBoxThickness   = 1*cm ;
 	const G4double MylarCsIThickness = 3*micrometer;
-    const G4double CsIThickness      = 4.*cm;// + 2*MylarCsIThickness ;
+    const G4double CsIThickness      = 10.*cm;// + 2*MylarCsIThickness ;
     
-    const G4double CsIXFront         = 33.*mm;
-    const G4double CsIXBack          = 37.*mm;
-    const G4double CsIYFront         = 33.*mm;
-    const G4double CsIYBack          = 37.*mm;
-    const G4double DistInterCsI      = 1.5*mm;
+    const G4double CsIXFront         = 34.93*mm;
+    const G4double CsIXBack          = 44.62*mm;
+    const G4double CsIYFront         = 34.93*mm;
+    const G4double CsIYBack          = 44.62*mm;
+    const G4double DistInterCsI      = 0.6*mm;
     
-	const G4double ClusterFaceFront  = 7*cm;
-	const G4double ClusterFaceBack   = 9*cm;
+	const G4double ClusterFaceFront  = 2*CsIXFront+DistInterCsI;
+	const G4double ClusterFaceBack   = 2*CsIXBack+DistInterCsI;
 	
 	// Starting at the front and going to CsI
 	const G4double AluStripFrontThinSi_PosZ		= Length* -0.5 + 0.5*AluStripThickness;
