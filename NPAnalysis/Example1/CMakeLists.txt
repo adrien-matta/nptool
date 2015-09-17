@@ -7,6 +7,7 @@ set(NPTOOL_LIB_DIR "${NPLIB}/lib")
   
 include("${NPLIB}/Root.cmake")  
 
+include(CheckCXXCompilerFlag)
 project (NPAnalysis)
 set(CMAKE_BUILD_TYPE Release)  
 
@@ -21,6 +22,37 @@ link_directories( ${NPTOOL_LIB_DIR})
 if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*Clang.*")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments -undefined dynamic_lookup")
 endif()
+
+# If the compiler is Clang, silence the unrecognised flags
+if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*Clang.*")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments -fcolor-diagnostics")
+  if( UNIX AND NOT APPLE )
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+  endif()
+endif()
+
+
+# Adjust the compiler language flag
+set(NOCPPFLAGS true)
+if(${CMAKE_CXX_FLAGS} MATCHES ".*std=.*11")
+  set(NOCPPFLAGS false)
+elseif(${CMAKE_CXX_FLAGS} MATCHES ".*std=.*0x")
+  set(NOCPPFLAGS false) 
+endif()
+
+if(NOCPPFLAGS)
+  CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+  if(COMPILER_SUPPORTS_CXX11)
+	    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  else()
+    CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+  endif()
+
+  if(COMPILER_SUPPORTS_CXX0X)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+  endif()
+endif()
+
 
 add_library(NPAnalysis SHARED Analysis.cxx)
 target_link_libraries(NPAnalysis ${ROOT_LIBRARIES} -L${NPLIB}/lib -lNPCore -lNPPhysics -lNPInitialConditions -lNPInteractionCoordinates)
