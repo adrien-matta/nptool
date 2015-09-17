@@ -28,6 +28,7 @@
 #include "NPEnergyLoss.h"
 #include "NPReaction.h"
 #include "TRandom3.h"
+#include "TF1.h"
 class Analysis: public NPL::VAnalysis{
 public:
     Analysis();
@@ -41,6 +42,10 @@ public:
     void InitInputBranch();
     void ReInitValue();
     static NPL::VAnalysis* Construct();
+    
+    double event;
+    double good_event;
+    double ProtonEnergy;
     
 private:
     double TargetThickness;
@@ -59,16 +64,16 @@ private:
     
     
     
-    NPL::Reaction* TransferReaction;
+    
+    
+    //NPL::Reaction* TransferReaction;
     
     // intermediate variable
     TRandom3 Rand;
     
     
-    NPL::EnergyLoss He3CD2  ;
-    NPL::EnergyLoss He3Al   ;
-    NPL::EnergyLoss He3Si   ;
-    NPL::EnergyLoss Li11CD2 ;
+    TF1* f_proton;
+    NPL::EnergyLoss Proton_CsI  ;
     
     THiraPhysics* Hira;
     TInitialConditions* InitialConditions;
