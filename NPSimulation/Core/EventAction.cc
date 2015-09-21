@@ -103,10 +103,10 @@ void EventAction::ProgressDisplay(){
     else
       star = "-------";
 
-    if(treated!=total && mean_rate >0 && remain>0)
+    if(treated!=total && mean_rate >=0 && remain>=0)
       printf("\r \033[1;31m %s Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s %s\033[0m        ", star.c_str(),percent,mean_rate/1000.,timer,star.c_str());
 
-    else if(mean_rate >0 && remain>0){
+    else if(mean_rate >=0 && remain>=0){
       printf("\r \033[1;32m %s Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s %s\033[0m        ", star.c_str(), percent,mean_rate/1000.,timer,star.c_str());
     }
     fflush(stdout);
