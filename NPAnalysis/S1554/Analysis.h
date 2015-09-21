@@ -76,26 +76,27 @@ TInitialConditions* myInit ;
   int RunNumber;
   int RunNumberMinor;
   double ThetaNormalTarget;
-  double ThetaM2Surface ;
-  double Si_E_M2 ;
-  double CsI_E_M2  ;
   double Energy ;
-  double E_M2 ;
   
   double ThetaSharcSurface ;
   double X_Sharc ;
   double Y_Sharc ;
-  double Z_Sharc  ;
+  double Z_Sharc ;
+  double ThetaDetector;
   double Si_E_Sharc ;
   double E_Sharc ;
-  double Si_X_Sharc ;
-  double Si_Y_Sharc ;
   TSharcPhysics* Sharc;
   TTigressPhysics* Tigress;
 
   std::vector<TCutG*> cut_ex5; 
   std::ofstream box_pos;
   std::ofstream qqq_pos;
+
+  TCutG* cut_deuton_d10;
+  TCutG* cut_proton_d10;
+  TCutG* cut_deuton_d12;
+  TCutG* cut_proton_d12;
+  std::ofstream PADFile;
 
 };
 #endif

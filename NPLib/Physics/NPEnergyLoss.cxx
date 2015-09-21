@@ -164,7 +164,8 @@ EnergyLoss::EnergyLoss(string Path , string Source, int NumberOfSlice=100 ,  int
   }
 
   else{
-    cout << "ERROR : Wrong Source Type" << endl ;
+    cout << "ERROR : EnergyLoss Wrong Source Type" << endl ;
+    exit(1);
   }
 
   fInter = new Interpolator( fEnergy , fdEdX_Total   )      ;
@@ -324,7 +325,11 @@ double   EnergyLoss::EvaluateEnergyFromDeltaE(  double DeltaE           , // Ene
   bool check_high = false ;
 
   for(int i = 0 ; i < MaxStep ; i++){
-    DE = Energy - Slow(Energy,TargetThickness,Angle) ;
+    if(Energy>0)
+      DE = Energy - Slow(Energy,TargetThickness,Angle) ;
+    else
+      return 0;
+    
     if(abs(DeltaE-DE)<EnergyResolution) return Energy;
     else if (DeltaE-DE > 0){
       if(Energy - step_size > EnergyMin){

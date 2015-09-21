@@ -73,13 +73,12 @@ void TTigressPhysics::BuildPhysicalEvent(){
   for(int i = 0 ; i < 16 ; i++) {
     if(m_map_E.find(i)!=m_map_E.end()){
       int clover = i+1;
-      TVector3 Pos; 
-      if(m_map_Segment_Crystal[i]>0)
+      TVector3 Pos;
+      if(m_map_Segment_Crystal[i]>0 && m_map_Segment_Crystal[i]<9)
         Pos = GetSegmentPosition(clover,m_map_Segment_Crystal[i],m_map_Segment[i]);
       else
-        Pos = GetSegmentPosition(clover,m_map_Core_Crystal[i],m_map_Segment_Crystal[i]);
-
-      static TVector3 Beta =  TVector3(0,0,0.15);
+        Pos = GetSegmentPosition(clover,m_map_Core_Crystal[i],m_map_Segment[i]);
+      static TVector3 Beta =  TVector3(0,0,0.10);
       double E = GetDopplerCorrectedEnergy(m_map_E[i],Pos,Beta);
       AddBack_DC.push_back(E);
       AddBack_E.push_back(m_map_E[i]);
@@ -99,11 +98,6 @@ void TTigressPhysics::PreTreat(){
       int cry = m_EventData->GetGeCrystalNbr(i);
       name = "TIGRESS/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(cry)+"_SEG"+ NPL::itoa(m_EventData->GetGeSegmentNbr(i))+"_E";
       double Energy =  cal->ApplyCalibration(name, m_EventData->GetGeEnergy(i));
-
-      if(Energy == m_EventData->GetGeEnergy(i)){
-        Energy /=1000;
-      }
-      
       Gamma_Energy.push_back(Energy);
       Crystal_Number.push_back(m_EventData->GetGeCrystalNbr(i));
       Clover_Number.push_back(m_EventData->GetGeCloverNbr(i));
@@ -157,56 +151,63 @@ TVector3 TTigressPhysics::GetCorePosition(int& CloverNbr,int& CoreNbr){
   static double offset = 33.4; // mm
   static double depth = 45;
   static TVector3 Pos;
+  TVector3 CloverPos = m_CloverPosition[CloverNbr];
+
   if(CoreNbr==1)
-    Pos.SetXYZ(offset,-offset,depth);
+    Pos.SetXYZ(offset,-offset,depth+CloverPos.Mag());
   else if(CoreNbr==2)
-    Pos.SetXYZ(-offset,-offset,depth);
+    Pos.SetXYZ(-offset,-offset,depth+CloverPos.Mag());
   else if(CoreNbr==3)
-    Pos.SetXYZ(-offset,offset,depth);
+    Pos.SetXYZ(-offset,offset,depth+CloverPos.Mag());
   else if(CoreNbr==4)
-    Pos.SetXYZ(-offset,-offset,depth);
+    Pos.SetXYZ(-offset,-offset,depth+CloverPos.Mag());
   else
     cout << "Warning: Tigress crystal number " << CoreNbr << " is out of range (1 to 4)" << endl;
 
-  TVector3 CloverPos = m_CloverPosition[CloverNbr];
-  Pos.RotateX(CloverPos.Theta());
-  Pos.RotateZ(CloverPos.Phi());
 
-  return (CloverPos+Pos); 
+  TRotation CloverRot;
+  CloverRot.RotateX(CloverPos.Theta());
+  CloverRot.RotateZ(CloverPos.Phi());
+  Pos*=CloverRot;
+
+  return (Pos); 
 }
 /////////////////////////////////////////////////
 TVector3 TTigressPhysics::GetSegmentPosition(int& CloverNbr,int& CoreNbr, int& SegmentNbr){
-  static double offsetXY2 = 10.4; // mm
-  static double offsetXY1 = 16.7; // mm
+  static double offsetXY1 = 10.4; // mm
+  static double offsetXY2 = 16.7; // mm
   static double offsetZ1 = 15.5; // mm
   static double offsetZ2 = 60.5; // mm
-
+  TVector3 CorePos = GetCorePosition(CloverNbr,CoreNbr);
   static TVector3 Pos;
+  
   if(SegmentNbr == 0 || SegmentNbr == 9)
     return GetCorePosition(CloverNbr,CoreNbr);
   else if(SegmentNbr==1)
-    Pos.SetXYZ(offsetXY1,-offsetXY1,offsetZ1);
+    Pos.SetXYZ(offsetXY1,-offsetXY1,offsetZ1+ CorePos.Mag());
   else if(SegmentNbr==2)
-    Pos.SetXYZ(-offsetXY1,-offsetXY1,offsetZ1);
+    Pos.SetXYZ(-offsetXY1,-offsetXY1,offsetZ1+ CorePos.Mag());
   else if(SegmentNbr==3)
-    Pos.SetXYZ(-offsetXY1,offsetXY1,offsetZ1);
+    Pos.SetXYZ(-offsetXY1,offsetXY1,offsetZ1+ CorePos.Mag());
   else if(SegmentNbr==4)
-    Pos.SetXYZ(-offsetXY1,-offsetXY1,offsetZ1);
+    Pos.SetXYZ(-offsetXY1,-offsetXY1,offsetZ1+ CorePos.Mag());
   else if(SegmentNbr==5)
-    Pos.SetXYZ(-offsetXY2,-offsetXY2,offsetZ2);
+    Pos.SetXYZ(-offsetXY2,-offsetXY2,offsetZ2+ CorePos.Mag());
   else if(SegmentNbr==6)
-    Pos.SetXYZ(-offsetXY2,offsetXY2,offsetZ2);
+    Pos.SetXYZ(-offsetXY2,offsetXY2,offsetZ2+ CorePos.Mag());
   else if(SegmentNbr==7)
-    Pos.SetXYZ(-offsetXY2,-offsetXY2,offsetZ2);
+    Pos.SetXYZ(-offsetXY2,-offsetXY2,offsetZ2+ CorePos.Mag());
   else if(SegmentNbr==8)
-    Pos.SetXYZ(-offsetXY2,-offsetXY2,offsetZ2);
+    Pos.SetXYZ(-offsetXY2,-offsetXY2,offsetZ2+ CorePos.Mag());
+  else
+    cout << "Warning: Tigress segment number " << SegmentNbr << " is out of range (0 to 9)" << endl;
 
-  TVector3 CorePos = GetCorePosition(CloverNbr,CoreNbr);
-  CorePos.SetZ(0);
-  Pos.RotateX(CorePos.Theta());
-  Pos.RotateZ(CorePos.Phi());
+  TRotation CoreRot;
+  CoreRot.RotateX(CorePos.Theta());
+  CoreRot.RotateZ(CorePos.Phi());
+  Pos*=CoreRot;
 
-  return (CorePos+Pos); 
+  return (Pos); 
 
 }
 

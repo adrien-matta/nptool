@@ -698,8 +698,8 @@ void TSharcPhysics::AddParameterToCalibrationManager(){
 
     for( int j = 0 ; j < 1 ; ++j){
       // Pad Calibration
-      Cal->AddParameter("SHARC", "D"+ NPL::itoa(i+1)+"_PAD"+ NPL::itoa(j+1)+"_E","SHARC_D"+ NPL::itoa(i+1)+"_PAD_E")   ;
-      Cal->AddParameter("SHARC", "D"+ NPL::itoa(i+1)+"_PAD"+ NPL::itoa(j+1)+"_T","SHARC_D"+ NPL::itoa(i+1)+"_PAD_T")   ;
+      Cal->AddParameter("SHARC", "D"+ NPL::itoa(i+1)+"_PAD_E","SHARC_D"+ NPL::itoa(i+1)+"_PAD_E")   ;
+      Cal->AddParameter("SHARC", "D"+ NPL::itoa(i+1)+"_PAD_T","SHARC_D"+ NPL::itoa(i+1)+"_PAD_T")   ;
     }
   }
 
@@ -816,17 +816,17 @@ void TSharcPhysics::AddBoxDetector(double Z){
   for(int i = 0 ; i < 4 ; i++){
     m_NumberOfDetector++;
     if(Z<0){// Up Stream
-      if(i==0)      {U=TVector3(1,0,0);V=TVector3(0,0,1);  Strip_1_1=TVector3( -A1 , B1  ,Z1)   ;}
-      else if(i==1) {U=TVector3(0,1,0);V=TVector3(0,0,1);  Strip_1_1=TVector3( -B1 , -A1 ,Z1)   ;}
-      else if(i==2) {U=TVector3(-1,0,0);V=TVector3(0,0,1); Strip_1_1=TVector3( A1  , -B1 ,Z1)   ;}
-      else if(i==3) {U=TVector3(0,-1,0);V=TVector3(0,0,1); Strip_1_1=TVector3( B1  , A1  ,Z1)   ;}
+      if(i==0)      {U=TVector3(1,0,0);V=TVector3(0,0,1);  Strip_1_1=TVector3( -A1 , B1  ,Z1); m_DetectorNormal.push_back(TVector3(0,-1,0));}
+      else if(i==1) {U=TVector3(0,1,0);V=TVector3(0,0,1);  Strip_1_1=TVector3( -B1 , -A1 ,Z1); m_DetectorNormal.push_back(TVector3(1,0,0)) ;}
+      else if(i==2) {U=TVector3(-1,0,0);V=TVector3(0,0,1); Strip_1_1=TVector3( A1  , -B1 ,Z1); m_DetectorNormal.push_back(TVector3(0,1,0)) ;}
+      else if(i==3) {U=TVector3(0,-1,0);V=TVector3(0,0,1); Strip_1_1=TVector3( B1  , A1  ,Z1); m_DetectorNormal.push_back(TVector3(-1,0,0));}
     }
 
-    if(Z>0){//Down Stream
-      if(i==0)      {U=TVector3(-1,0,0);V=TVector3(0,0,-1); Strip_1_1=TVector3( A2  ,B2  ,Z2)  ;}
-      else if(i==1) {U=TVector3(0,-1,0);V=TVector3(0,0,-1); Strip_1_1=TVector3( -B2 ,A2  ,Z2)  ;}
-      else if(i==2) {U=TVector3(1,0,0);V=TVector3(0,0,-1);  Strip_1_1=TVector3( -A2 ,-B2 ,Z2)  ;}
-      else if(i==3) {U=TVector3(0,1,0);V=TVector3(0,0,-1);  Strip_1_1=TVector3( B2  ,-A2 ,Z2)  ;}
+    else if(Z>0){//Down Stream
+      if(i==0)      {U=TVector3(-1,0,0);V=TVector3(0,0,-1); Strip_1_1=TVector3( A2  ,B2  ,Z2); m_DetectorNormal.push_back(TVector3(0,-1,0));}
+      else if(i==1) {U=TVector3(0,-1,0);V=TVector3(0,0,-1); Strip_1_1=TVector3( -B2 ,A2  ,Z2); m_DetectorNormal.push_back(TVector3(1,0,0)) ;}
+      else if(i==2) {U=TVector3(1,0,0);V=TVector3(0,0,-1);  Strip_1_1=TVector3( -A2 ,-B2 ,Z2); m_DetectorNormal.push_back(TVector3(0,1,0)) ;}
+      else if(i==3) {U=TVector3(0,1,0);V=TVector3(0,0,-1);  Strip_1_1=TVector3( B2  ,-A2 ,Z2); m_DetectorNormal.push_back(TVector3(-1,0,0));}
     }
 
     //   Buffer object to fill Position Array
@@ -861,6 +861,11 @@ void TSharcPhysics::AddBoxDetector(double Z){
 }
 ////////////////////////////////////////////////////////////////////////////////
 void TSharcPhysics::AddQQQDetector( double R,double Phi,double Z){
+
+  if(Z>0)
+    m_DetectorNormal.push_back(TVector3(0,0,-1));
+  else
+    m_DetectorNormal.push_back(TVector3(0,0,1));
 
   double QQQ_R_Min = 9.+R;
   double QQQ_R_Max = 41.0+R;
@@ -913,29 +918,9 @@ void TSharcPhysics::AddQQQDetector( double R,double Phi,double Z){
 
   return;
 }
-
+////////////////////////////////////////////////////////////////////////////////
 TVector3 TSharcPhysics::GetDetectorNormal( const int& i) const{
-  /*  TVector3 U =    TVector3 ( GetStripPositionX( DetectorNumber[i] , 24 , 1 ) ,
-      GetStripPositionY( DetectorNumber[i] , 24 , 1 ) ,
-      GetStripPositionZ( DetectorNumber[i] , 24 , 1 ) )
-
-      -TVector3 ( GetStripPositionX( DetectorNumber[i] , 1 , 1 ) ,
-      GetStripPositionY( DetectorNumber[i] , 1 , 1 ) ,
-      GetStripPositionZ( DetectorNumber[i] , 1 , 1 ) );
-
-      TVector3 V =    TVector3 ( GetStripPositionX( DetectorNumber[i] , 24 , 48 ) ,
-      GetStripPositionY( DetectorNumber[i] , 24 , 48 ) ,
-      GetStripPositionZ( DetectorNumber[i] , 24 , 48 ) )
-
-      -TVector3 ( GetStripPositionX( DetectorNumber[i] , 24 , 1 ) ,
-      GetStripPositionY( DetectorNumber[i] , 24 , 1 ) ,
-      GetStripPositionZ( DetectorNumber[i] , 24 , 1 ) );
-
-      TVector3 Normal = U.Cross(V);
-
-      return(Normal.Unit()) ;*/
-
-  return (TVector3(0,0,i));
+  return (m_DetectorNormal[DetectorNumber[i]-1]);
 
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -1020,7 +1005,7 @@ namespace Sharc_LOCAL{
   double fPAD_E(const TSharcData* m_EventData , const int& i){
     static CalibrationManager* Cal = CalibrationManager::getInstance();
     static string name ;
-    name = "SHARC/D" + NPL::itoa( m_EventData->GetPAD_DetectorNbr(i) ) + "_PAD" +"_E";
+    name = "SHARC/D" + NPL::itoa( m_EventData->GetPAD_DetectorNbr(i) ) + "_PAD_E";
 
     return Cal->ApplyCalibration(name,m_EventData->GetPAD_Energy(i) );
   }
@@ -1028,7 +1013,7 @@ namespace Sharc_LOCAL{
   double fPAD_T(const TSharcData* m_EventData , const int& i){
     static CalibrationManager* Cal = CalibrationManager::getInstance();
     static string name ;
-    name = "SHARC/D" + NPL::itoa( m_EventData->GetPAD_DetectorNbr(i) ) + "_PAD" +"_T";
+    name = "SHARC/D" + NPL::itoa( m_EventData->GetPAD_DetectorNbr(i) ) + "_PAD_T";
 
     return Cal->ApplyCalibration(name,m_EventData->GetPAD_TimeCFD(i) );
   }

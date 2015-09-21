@@ -54,7 +54,6 @@ string(REPLACE "-lMatrix" "" ROOT_LIBRARIES "${ROOT_LIBRARIES}")
 #string(REPLACE "-lMathCore" "" ROOT_LIBRARIES "${ROOT_LIBRARIES}")
 string(REPLACE "-lThread" "" ROOT_LIBRARIES "${ROOT_LIBRARIES}")
 string(REPLACE "-lpthread" "" ROOT_LIBRARIES "${ROOT_LIBRARIES}")
-message("${ROOT_LIBRARIES}")
 
 # Lib directories
 exec_program(${NPTOOL_ROOT_CONFIG} ARGS "--libdir" OUTPUT_VARIABLE ROOT_LIBRARY_DIR)

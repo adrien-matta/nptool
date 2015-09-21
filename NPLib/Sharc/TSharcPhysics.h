@@ -215,6 +215,7 @@ class TSharcPhysics : public TObject, public NPL::VDetector{
     vector< vector < vector < double > > >   m_StripPositionX;//!
     vector< vector < vector < double > > >   m_StripPositionY;//!
     vector< vector < vector < double > > >   m_StripPositionZ;//!
+    vector< TVector3 > m_DetectorNormal;//!
 
   private: // Spectra Class
     TSharcSpectra* m_Spectra; // !

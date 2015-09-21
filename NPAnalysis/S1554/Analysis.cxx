@@ -40,8 +40,9 @@ void Analysis::Init(){
   Sharc = (TSharcPhysics*)  m_DetectorManager -> GetDetector("Sharc");
   Tigress = (TTigressPhysics*)  m_DetectorManager -> GetDetector("Tigress");
 
-  LightCD2 = EnergyLoss("proton_CD2.G4table","G4Table",10);
-  LightAl = EnergyLoss("proton_Al.G4table","G4Table",10);
+  LightCD2 = EnergyLoss("deuteron_CD2.G4table","G4Table",10);
+  LightAl = EnergyLoss("deuteron_Al.G4table","G4Table",10);
+
 //  LightAl = EnergyLoss("alpha_Al.G4table","G4Table",10);
 
   BeamCD2 = EnergyLoss("Si28_CD2.G4table","G4Table",10);
@@ -53,11 +54,7 @@ void Analysis::Init(){
   Rand = TRandom3();
   DetectorNumber = 0 ;
   ThetaNormalTarget = 0 ;
-  ThetaM2Surface = 0;
-  Si_E_M2 = 0 ;
-  CsI_E_M2 = 0 ;
   Energy = 0;
-  E_M2 = 0;
 
   RunNumber = 0;
   RunNumberMinor=0;
@@ -68,18 +65,26 @@ void Analysis::Init(){
   Z_Sharc = 0 ;
   Si_E_Sharc = 0 ;
   E_Sharc = 0;
-  Si_X_Sharc = 0;
-  Si_Y_Sharc = 0;
-
-  double XTarget = 0;
-  double YTarget = 0;
+  ThetaDetector = 0   ;
   BeamDirection = TVector3(0,0,1);
   TargetPosition = TVector3(m_DetectorManager->GetTargetX(),m_DetectorManager->GetTargetY(),m_DetectorManager->GetTargetZ() );
   double finalEnergy = BeamCD2.Slow(224,TargetThickness*0.5,0);
   myReaction->SetBeamEnergy(finalEnergy);
   cout << "Set Beam energy to: " <<  finalEnergy << " MeV" << endl;
 
-  // Load the cut
+  // Load cut for PAD cal
+  TFile* file ;
+  file = new TFile("cuts/deuton_d10.root","READ");
+  cut_deuton_d10 = (TCutG*) file->FindObjectAny("deuton_d10");
+  file = new TFile("cuts/proton_d10.root","READ");
+  cut_proton_d10 = (TCutG*) file->FindObjectAny("proton_d10");
+  file = new TFile("cuts/deuton_d12.root","READ");
+  cut_deuton_d12 = (TCutG*) file->FindObjectAny("deuton_d12");
+  file = new TFile("cuts/proton_d12.root","READ");
+  cut_proton_d12 = (TCutG*) file->FindObjectAny("proton_d12");
+  PADFile.open("PADEvent.txt");
+
+/*  // Load the cut for alignement
   for(unsigned int i = 0 ; i < 8 ; i++){
     TFile* file = new TFile(Form("cuts/Ex5_D%i.root",i+1),"READ");
     cut_ex5.push_back((TCutG*) file->FindObjectAny(Form("Ex5_D%i",i+1))); 
@@ -91,6 +96,7 @@ void Analysis::Init(){
 
   box_pos.open("BoxPos.txt");
   qqq_pos.open("QQQPos.txt");
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -107,13 +113,13 @@ void Analysis::TreatEvent(){
     TVector3 HitDirection = Sharc -> GetPositionOfInteraction(0)-TargetPosition;
     ThetaLab = HitDirection.Angle( BeamDirection );
     ThetaNormalTarget = HitDirection.Angle( TVector3(0,0,1) ) ;
-
+    ThetaDetector = HitDirection.Angle(Sharc->GetDetectorNormal(0));
     /************************************************/
 
     /************************************************/
     // Part 2 : Impact Energy
     Energy = ELab = 0;
-    if(Sharc->PAD_E[0]>0){
+    if(Sharc->PAD_E[0]>0 && Sharc->PAD_E[0] <100){
       Energy = Sharc->PAD_E[0];
     }
     if(Sharc->Strip_E[0]>0)
@@ -121,11 +127,30 @@ void Analysis::TreatEvent(){
 
     Energy =  LightAl.EvaluateInitialEnergy(Energy,Sharc->GetDeadLayer(0)*micrometer,0);
 
-
     // Target Correction
     ELab = Energy;
     ELab = LightCD2.EvaluateInitialEnergy( Energy ,TargetThickness*0.5, ThetaNormalTarget);
-   /************************************************/
+   
+    /************************************************/
+    int DetectorNumber = Sharc->DetectorNumber[0];     
+    if(DetectorNumber==10 && Sharc->PAD_E[0]>0){
+      if(cut_proton_d10->IsInside(Sharc->PAD_E[0],-Sharc->Strip_E[0]*cos(ThetaDetector)))
+        PADFile << "10 proton " << Sharc->Strip_E[0] << " " << Sharc->PAD_E[0] << " " << ThetaDetector << endl;
+      else if(cut_deuton_d10->IsInside(Sharc->PAD_E[0],-Sharc->Strip_E[0]*cos(ThetaDetector)))
+        PADFile << "10 deuton " << Sharc->Strip_E[0] << " " << Sharc->PAD_E[0] << " " << ThetaDetector << endl;
+    }
+
+    if(DetectorNumber==12 && Sharc->PAD_E[0]>0){
+      if(cut_proton_d12->IsInside(Sharc->PAD_E[0],-Sharc->Strip_E[0]*cos(ThetaDetector)))
+        PADFile << "12 proton " << Sharc->Strip_E[0] << " " << Sharc->PAD_E[0] << " " << ThetaDetector << endl;
+      else if(cut_deuton_d12->IsInside(Sharc->PAD_E[0], -Sharc->Strip_E[0]*cos(ThetaDetector)))
+        PADFile << "12 deuton " << Sharc->Strip_E[0] << " " << Sharc->PAD_E[0] << " " << ThetaDetector << endl;
+    }
+
+
+    /************************************************/
+   
+    /************************************************/
 /*    int DetectorNumber = Sharc->DetectorNumber[0];
     bool checkT = false;
     if(Tigress->AddBack_DC.size()>0){
@@ -171,6 +196,8 @@ void Analysis::InitOutputBranch(){
   RootOutput::getInstance()->GetTree()->Branch("ELab",&ELab,"ELab/D");
   RootOutput::getInstance()->GetTree()->Branch("ThetaLab",&ThetaLab,"ThetaLab/D");
   RootOutput::getInstance()->GetTree()->Branch("ThetaCM",&ThetaCM,"ThetaCM/D");
+  RootOutput::getInstance()->GetTree()->Branch("ThetaDetector",&ThetaDetector,"ThetaDetector/D");
+
   RootOutput::getInstance()->GetTree()->Branch("RunNumber",&RunNumber,"RunNumber/I");
   RootOutput::getInstance()->GetTree()->Branch("RunNumberMinor",&RunNumberMinor,"RunNumberMinor/I");
 }
@@ -187,6 +214,7 @@ void Analysis::ReInitValue(){
   ELab = -1000;
   ThetaLab = -1000;
   ThetaCM = -1000;
+  ThetaDetector=-1000;
 }
 
 
