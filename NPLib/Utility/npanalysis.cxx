@@ -15,8 +15,9 @@
 
 // Root
 #include"TKey.h"
+#include"TEnv.h" 
 
-void ProgressDisplay(clock_t&,clock_t&,unsigned int&, unsigned int&, int&, double&, int&);
+void ProgressDisplay(clock_t&,clock_t&,unsigned long&, unsigned long&, unsigned long&, double&, unsigned long&, int&, int&);
 
 int main(int argc , char** argv){
   // command line parsing
@@ -72,7 +73,7 @@ int main(int argc , char** argv){
   NPL::DetectorManager* myDetector = new NPL::DetectorManager();
   myDetector->ReadConfigurationFile(detectorfileName);
 
-  // Attempt to load an analysis
+    // Attempt to load an analysis
   NPL::VAnalysis* UserAnalysis = NULL;
   string libName = "./libNPAnalysis" + myOptionManager->GetSharedLibExtension();
   dlopen(libName.c_str(),RTLD_NOW | RTLD_GLOBAL);
@@ -100,20 +101,24 @@ int main(int argc , char** argv){
   std::cout << std::endl << "///////// Starting Analysis ///////// "<< std::endl;
   TChain* Chain = RootInput:: getInstance()->GetChain();
   myOptionManager->GetNumberOfEntryToAnalyse();
-  int nentries = Chain->GetEntries();
+ 
+  unsigned long nentries = Chain->GetEntries();
   if(nentries> myOptionManager->GetNumberOfEntryToAnalyse() && myOptionManager->GetNumberOfEntryToAnalyse()>0)
     nentries = myOptionManager->GetNumberOfEntryToAnalyse() ; 
 
   TString ChainName = Chain->GetName();
   std::cout << " Number of Event to be treated : " << nentries << " on chain " << ChainName << std::endl;
 
-  unsigned int inter = 0;
-  unsigned int treated = 0;
+  unsigned long inter = 0;
+  unsigned long treated = 0;
   double mean_rate =0;
-  int displayed=0;
+  unsigned long displayed=0;
   clock_t end;
   clock_t begin = clock();
-  int new_nentries = 0 ;
+  unsigned long new_nentries = 0 ;
+  int current_tree = 0 ;
+  int total_tree = Chain->GetNtrees();
+
   bool IsPhysics = myOptionManager->GetInputPhysicalTreeOption();
 
   if(UserAnalysis==NULL){ 
@@ -126,7 +131,8 @@ int main(int argc , char** argv){
         // Fill the tree
         tree->Fill();
 
-        ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed);
+        current_tree = Chain->GetTreeNumber()+1;
+        ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed,current_tree,total_tree);
         if(myOptionManager->GetOnline() && i%10000==0){
           bool first = true;
           while(!Chain || first){
@@ -166,7 +172,9 @@ int main(int argc , char** argv){
         UserAnalysis->TreatEvent();
         // Fill the tree      
         tree->Fill();
-        ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed);
+      
+        current_tree = Chain->GetTreeNumber()+1;
+        ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed,current_tree,total_tree);
         if(myOptionManager->GetOnline() && i%10000==0){
           bool first = true;
           while(!Chain || first){
@@ -197,7 +205,9 @@ int main(int argc , char** argv){
         UserAnalysis->TreatEvent();
         // Fill the tree      
         tree->Fill();
-        ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed);
+
+        current_tree = Chain->GetTreeNumber()+1;
+        ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed,current_tree,total_tree);
         if(myOptionManager->GetOnline() && i%10000==0){
           bool first = true;
           while(!Chain || first){
@@ -225,7 +235,8 @@ int main(int argc , char** argv){
 #if __cplusplus > 199711L
   myDetector->StopThread();
 #endif
-  ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed);
+  current_tree = Chain->GetTreeNumber()+1;
+  ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed,current_tree,total_tree);
 
   if(myOptionManager->GetOnline()){
     myDetector->CheckSpectraServer(); 
@@ -242,7 +253,7 @@ int main(int argc , char** argv){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ProgressDisplay(clock_t& begin, clock_t& end, unsigned int& treated,unsigned int& inter,int& total,double& mean_rate,int& displayed){
+void ProgressDisplay(clock_t& begin, clock_t& end, unsigned long& treated,unsigned long& inter,unsigned long& total,double& mean_rate,unsigned long& displayed, int& current_tree, int& total_tree){
   end = clock();
   if((end-begin)>CLOCKS_PER_SEC||treated>=total ){
     displayed++;
@@ -254,17 +265,24 @@ void ProgressDisplay(clock_t& begin, clock_t& end, unsigned int& treated,unsigne
 
     char* timer;
     double check;
+    int minutes = remain/60.;
+    int seconds = remain -60*minutes;
     if(remain>60)
-      check=asprintf(&timer,"%dmin",(int)(remain/60.));
+      check=asprintf(&timer,"%dmin%ds",minutes,seconds);
     else
       check=asprintf(&timer,"%ds",(int)(remain));
+    
+    static char star[10];
+    if(displayed%2==0 || treated==total)
+      sprintf(star,"*******");
+    else
+      sprintf(star,"-------");
 
     if(treated!=total)
-      printf("\r \033[1;31m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s *******\033[0m", percent,mean_rate/1000.,timer);
+      printf("\r \033[1;31m %s Progress: \033[1;36m%.1f%% \033[1;31m| Rate: %.1fk evt/s | Remain: %s | Tree: %d/%d %s   \033[0m         ", star,percent,mean_rate/1000.,timer, current_tree,total_tree,star);
 
     else{
-      printf("\r                                                                                                                    ");  
-      printf("\r \033[1;32m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s *******\033[0m", percent,mean_rate/1000.,timer);
+      printf("\r \033[1;32m %s Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s | Tree: %d/%d %s   \033[0m         ", star,percent,mean_rate/1000.,timer, current_tree, total_tree,star);
     }
     fflush(stdout);
     inter=0;

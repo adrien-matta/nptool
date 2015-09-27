@@ -66,8 +66,10 @@ namespace SHARC{
   const G4double BOX_PCB_Slot_Deepness1 = BOX_PCB_Border_ShortSide;
   
   // BOX Wafer
-  const G4double BOX_Wafer_Width  = 52.20*mm;
-  const G4double BOX_Wafer_Length = 76.20*mm;
+  double BOX_ActiveWafer_Width  = 48;
+  double BOX_ActiveWafer_Length = 72;
+  double BOX_Wafer_Width  = 52.20;
+  double BOX_Wafer_Length = 76.20;  
   
   const G4double BOX_Wafer_DeadLayer_Thickness = 0.1*um;
   const G4int    BOX_Wafer_Front_NumberOfStrip = 24 ;

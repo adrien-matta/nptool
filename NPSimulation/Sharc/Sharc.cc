@@ -361,11 +361,15 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
                                      BOX_Wafer_Width/2.,
                                      BOX_PCB_Thickness/2.+0.1*mm);
       
-      G4Box*  Wafer       = new G4Box("Wafer",
-                                      BOX_Wafer_Length/2.,
-                                      BOX_Wafer_Width/2.,
-                                      m_ThicknessBOX[i][j]/2.);
+      G4Box*  Wafer = new G4Box("Wafer",
+                                BOX_Wafer_Length/2.,
+                                BOX_Wafer_Width/2.,
+                                m_ThicknessBOX[i][j]/2.);
       
+      G4Box*  ActiveWafer = new G4Box("ActiveWafer",
+                                      BOX_ActiveWafer_Length/2.,
+                                      BOX_ActiveWafer_Width/2.,
+                                      m_ThicknessBOX[i][j]/2.);
       
       G4double BOX_PCB_Slot_Width;
       G4double BOX_PCB_Slot_Deepness;
@@ -390,41 +394,54 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
                                     BOX_PCB_Slot_Width/2.,
                                     BOX_PCB_Width/2.+0.1*mm,
                                     BOX_PCB_Slot_Deepness);
-      
-      G4ThreeVector Box_Wafer_Offset =
-      G4ThreeVector(BOX_Wafer_Length_Offset1, BOX_Wafer_Width_Offset1,0 );
-      
+     
+
+      G4ThreeVector Box_Wafer_Offset ;
+      if(m_Z[i]<0 ){
+       Box_Wafer_Offset = G4ThreeVector(BOX_Wafer_Length_Offset1, BOX_Wafer_Width_Offset1,0 );
+      }
+
+      else{
+        Box_Wafer_Offset = G4ThreeVector(BOX_Wafer_Length_Offset2, BOX_Wafer_Width_Offset2,0 );   
+      }
+
       G4SubtractionSolid* PCB1 = new G4SubtractionSolid("PCB", PCBFull, SlotShape,new G4RotationMatrix,G4ThreeVector(BOX_PCB_Slot_Position, 0,0.5*BOX_PCB_Thickness));
-      
       G4SubtractionSolid* PCB = new G4SubtractionSolid("PCB", PCB1, WaferShape,new G4RotationMatrix,Box_Wafer_Offset);
       
       // Master Volume
       G4LogicalVolume* logicBoxDetector =
-      new G4LogicalVolume(PCB1,m_MaterialVacuum,"logicBoxDetector", 0, 0, 0);
+        new G4LogicalVolume(PCB1,m_MaterialVacuum,"logicBoxDetector", 0, 0, 0);
       logicBoxDetector->SetVisAttributes(G4VisAttributes::Invisible);
       // Sub Volume PCB
       G4LogicalVolume* logicPCB =
-      new G4LogicalVolume(PCB,m_MaterialPCB,"logicPCB", 0, 0, 0);
+        new G4LogicalVolume(PCB,m_MaterialPCB,"logicPCB", 0, 0, 0);
       logicPCB->SetVisAttributes(PCBVisAtt);
       
       // Sub Volume Wafer
       G4LogicalVolume* logicWafer =
-      new G4LogicalVolume(Wafer,m_MaterialSilicon,"logicWafer", 0, 0, 0);
+        new G4LogicalVolume(Wafer,m_MaterialSilicon,"logicWafer", 0, 0, 0);
+      G4LogicalVolume* logicActiveWafer =
+        new G4LogicalVolume(ActiveWafer,m_MaterialSilicon,"logicActiveWafer", 0, 0, 0);
+
       logicWafer->SetVisAttributes(SiliconVisAtt);
-      
+      logicActiveWafer->SetVisAttributes(SiliconVisAtt);
+
       // Place the sub volume in the master volume
       new G4PVPlacement(new G4RotationMatrix(0,0,0),
                         G4ThreeVector(0,0,0),
                         logicPCB,"Box_PCB",logicBoxDetector,false,DetNbr);
       
-      if(m_ThicknessBOX[i][j]>0)
+      if(m_ThicknessBOX[i][j]>0){
         new G4PVPlacement(new G4RotationMatrix(0,0,0),
                           Box_Wafer_Offset+G4ThreeVector(0,0,0.5*BOX_PCB_Thickness-0.5*m_ThicknessBOX[i][j]),
                           logicWafer,"Box_Wafer",logicBoxDetector,false,DetNbr);
+        new G4PVPlacement(new G4RotationMatrix(0,0,0),
+                          G4ThreeVector(0,0,0),
+                          logicActiveWafer,"Box_ActiveWafer",logicWafer,false,DetNbr);
       
-      
-      logicWafer->SetSensitiveDetector(m_BOXScorer);
-      
+        logicActiveWafer->SetSensitiveDetector(m_BOXScorer);
+      }
+            
       // create the PAD
       // Make a single detector geometry
       G4LogicalVolume* logicPADDetector = NULL;
@@ -485,7 +502,6 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
       // Position of the center of the PCB
       
       G4ThreeVector DetectorPosition;
-      
       if(m_ThicknessPAD[i][j]>0){ //PAD Case
         DetectorPosition = G4ThreeVector(-BOX_CenterOffset2,-Box_Wafer_Offset.y(),0);
       }
@@ -496,17 +512,16 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
       
       // Distance of the PCB to the target
       G4ThreeVector DetectorSpacing =
-      -G4ThreeVector(0, 0,BOX_DetectorSpacing);
-      
+        -G4ThreeVector(0,0,BOX_DetectorSpacing);
       
       DetectorPosition+=DetectorSpacing;
       
       G4ThreeVector PADDetectorPosition = DetectorPosition ;
       G4ThreeVector PADDetectorSpacing =
-      -G4ThreeVector(0, 0,0.5*BOX_PCB_Thickness+0.5*PAD_PCB_Thickness);
+        -G4ThreeVector(0,0,0.5*BOX_PCB_Thickness+0.5*PAD_PCB_Thickness);
       
-      
-      PADDetectorPosition+=PADDetectorSpacing;
+    
+      PADDetectorPosition += PADDetectorSpacing;
       
       G4RotationMatrix* DetectorRotation= new G4RotationMatrix;
       // The Rotation Matrix is different for each detector
@@ -525,14 +540,21 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
         DetectorRotation->rotateX(90*deg);
         DetectorRotation->rotateZ(-90*deg);
       }
-      
-      if(m_Z[i]<0) DetectorRotation->rotateY(180*deg);
-      
+    
+      double Z = 0;
+      if(m_Z[i]<0){
+        DetectorRotation->rotateY(180*deg);
+        Z = m_Z[i] -2*mm;
+      }
+
+      else
+        Z= m_Z[i]+2*mm;
+
       DetectorPosition.transform(*DetectorRotation);
-      DetectorPosition+=G4ThreeVector(0,0,m_Z[i]);
+      DetectorPosition+=G4ThreeVector(0,0,Z);
       
       PADDetectorPosition.transform(*DetectorRotation);
-      PADDetectorPosition+=G4ThreeVector(0,0,m_Z[i]);
+      PADDetectorPosition+=G4ThreeVector(0,0,Z);
       
       new G4PVPlacement(G4Transform3D(*DetectorRotation,DetectorPosition), logicBoxDetector,"Box",world,false,DetNbr);
       
@@ -769,8 +791,8 @@ void Sharc::InitializeScorers(){
  
   G4VPrimitiveScorer* BOXScorer =
   new  SILICONSCORERS::PS_Silicon_Rectangle("SharcBOX",0,
-                                   BOX_Wafer_Length,
-                                   BOX_Wafer_Width,
+                                   BOX_ActiveWafer_Length,
+                                   BOX_ActiveWafer_Width,
                                    BOX_Wafer_Front_NumberOfStrip ,
                                    BOX_Wafer_Back_NumberOfStrip);
   

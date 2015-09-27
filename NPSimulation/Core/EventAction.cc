@@ -75,6 +75,11 @@ void EventAction::SetDetector(DetectorConstruction* detector){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventAction::ProgressDisplay(){
+  if(treated==0){
+    begin = clock() ;
+    return;
+  }
+  
   end = clock();
   if((end-begin)>CLOCKS_PER_SEC||treated>=total ){
     displayed++;
@@ -85,18 +90,24 @@ void EventAction::ProgressDisplay(){
     double remain = (total-treated)/mean_rate;
 
     char* timer;
-
+    double check ;
+    check = 0;
     if(remain>60)
-      asprintf(&timer,"%dmin",(int)(remain/60.));
+      check = asprintf(&timer,"%dmin",(int)(remain/60.));
     else
-      asprintf(&timer,"%ds",(int)(remain));
+      check = asprintf(&timer,"%ds",(int)(remain));
 
-    if(treated!=total)
-      printf("\r \033[1;31m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s *******\033[0m", percent,mean_rate/1000.,timer);
+    static string star;
+    if(treated%2==0)
+      star = "*******";
+    else
+      star = "-------";
 
-    else{
-      printf("\r                                                                                                                    ");  
-      printf("\r \033[1;32m ******* Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s *******\033[0m", percent,mean_rate/1000.,timer);
+    if(treated!=total && mean_rate >=0 && remain>=0)
+      printf("\r \033[1;31m %s Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s %s\033[0m        ", star.c_str(),percent,mean_rate/1000.,timer,star.c_str());
+
+    else if(mean_rate >=0 && remain>=0){
+      printf("\r \033[1;32m %s Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s %s\033[0m        ", star.c_str(), percent,mean_rate/1000.,timer,star.c_str());
     }
     fflush(stdout);
     inter=0;

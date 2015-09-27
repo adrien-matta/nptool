@@ -112,7 +112,7 @@ class TSiLiPhysics : public TObject, public NPL::VDetector
       double 		 m_SiLi_E_Threshold;   
       double 		 m_SiLi_RAW_Threshold;   
   public: // Spectra Getter
-    map< vector<string> , TH1*> GetSpectra(); 
+    map< string , TH1*> GetSpectra(); 
 
       public: // Static constructor to be passed to the Detector Factory
      static NPL::VDetector* Construct();

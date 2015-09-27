@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8)
-include("../NPLib/FindROOT.cmake")
+include(CheckCXXCompilerFlag)
 
 project (NPSimulation)
 set (NPSIM_VERSION_MAJOR 2)
@@ -7,6 +7,12 @@ set (NPSIM_VERSION_MINOR 0)
 set (NPSIM_VERSION_DETS 18)
 
 set(CMAKE_BUILD_TYPE Release)
+
+# Setting the policy to match Cmake version
+cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
+
+# This suppress the Up-to-Date message of file installed for cmake 3.1 and above
+set(CMAKE_INSTALL_MESSAGE LAZY) 
 
 # Finding Geant 4
 find_package(Geant4 REQUIRED ui_all vis_all)
@@ -19,6 +25,40 @@ include(${NPLib_USE_FILE})
 
 configure_file(Core/NPSimulationVersion.hh.in Core/NPSimulationVersion.hh @ONLY) 
 
+# look for Root
+include("../NPLib/Root.cmake")
+
+# If the compiler is Clang, silence the unrecognised flags
+if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*Clang.*")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments -fcolor-diagnostics")
+  if( UNIX AND NOT APPLE )
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+  endif()
+endif()
+
+# Adjust the compiler language flag
+set(NOCPPFLAGS true)
+if(${CMAKE_CXX_FLAGS} MATCHES ".*std=.*11")
+  set(NOCPPFLAGS false)
+elseif(${CMAKE_CXX_FLAGS} MATCHES ".*std=.*0x")
+  set(NOCPPFLAGS false) 
+endif()
+
+if(NOCPPFLAGS)
+  CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+  if(COMPILER_SUPPORTS_CXX11)
+	    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  else()
+    CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+  endif()
+
+  if(COMPILER_SUPPORTS_CXX0X)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+  endif()
+endif()
+
+
+ # Detector List
 set(DETLIST ${NPLib_DETECTOR_LIST})
 
 string(COMPARE EQUAL "${DETLIST}" "" rdet)
@@ -28,19 +68,9 @@ if(rdet)
     message("Building the following detectors ${DETLIST}") 
 endif()
 
-# Setting the policy to match Cmake version
-cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
-
 # Add root to the link and include directories
-include_directories( ${ROOT_INCLUDE_DIR})
-link_directories( ${ROOT_LIBRARY_DIR})
-
-# Get the compilator flag from root to assure consistancy
-EXEC_PROGRAM(${ROOT_CONFIG_EXECUTABLE}
-     ARGS "--cflags"
-     OUTPUT_VARIABLE root_cflags )
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${root_cflags}")
+#include_directories( ${ROOT_INCLUDE_DIR})
+#link_directories( ${ROOT_LIBRARY_DIR})
 
 if(Geant4_gdml_FOUND)  
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNPS_GDML")     

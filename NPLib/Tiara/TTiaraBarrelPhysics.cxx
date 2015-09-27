@@ -489,11 +489,11 @@ for(unsigned int k = 0 ; k < sizeB ; k++){
       // To be done
     }
     ///////////////////////////////////////////////////////////////////////////
-    map< vector<string>,TH1* > TTiaraBarrelPhysics::GetSpectra() {
+    map< string,TH1* > TTiaraBarrelPhysics::GetSpectra() {
       if(m_Spectra)
         return m_Spectra->GetMapHisto();
       else{
-        map< vector<string>,TH1* > empty;
+        map< string,TH1* > empty;
         return empty;
       }
 

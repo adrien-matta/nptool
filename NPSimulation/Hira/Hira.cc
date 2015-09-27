@@ -72,6 +72,7 @@ Hira::Hira(){
   m_SiliconVisAtt = new G4VisAttributes(G4Colour(0.3, 0.3, 0.3)) ;
   // Green
   m_CsIVisAtt = new G4VisAttributes(G4Colour(0.2, 0.5, 0.2)) ;
+    //m_CsIVisAtt->SetForceWireframe(true);
   m_LogicThinSi = 0;
   m_LogicThickSi = 0;
   m_LogicCsICrystal = 0;
@@ -562,7 +563,10 @@ void Hira::VolumeMaker(G4int DetectorNumber,
 	// Sub Mother Volume
     	G4Trd* solidCluster = new G4Trd("SolidCluster", 0.5*ClusterFaceFront,0.5*ClusterFaceBack,0.5*ClusterFaceFront,0.5*ClusterFaceBack, 0.5*CsIThickness);
     	m_LogicCluster = new G4LogicalVolume(solidCluster, m_MaterialVacuum, "LogicSolidCluster", 0, 0, 0);
-        m_LogicCluster->SetVisAttributes(G4VisAttributes::Invisible);
+        //m_LogicCluster->SetVisAttributes(G4VisAttributes::Invisible);
+        G4VisAttributes* TempVisAtt = new G4VisAttributes(G4Colour(0.6, 0.6, 0.3)) ;
+        TempVisAtt->SetForceWireframe(true);
+        m_LogicCluster->SetVisAttributes(TempVisAtt);
 
         G4ThreeVector FramePos(0,0,CsI_PosZ);
 
@@ -573,8 +577,8 @@ void Hira::VolumeMaker(G4int DetectorNumber,
 
         const G4double CsIXMiddle = CsIXFront + (CsIThickness/2)*tan(-pTheta)*sin(pPhi);
         const G4double CsIYMiddle = CsIYFront + (CsIThickness/2)*tan(-pTheta)*cos(pPhi);
-        const G4double DistInterCsIX = CsIXMiddle+DistInterCsI;
-        const G4double DistInterCsIY = CsIYMiddle+DistInterCsI;
+        const G4double DistInterCsIX = CsIXMiddle+DistInterCsI/2;
+        const G4double DistInterCsIY = CsIYMiddle+DistInterCsI/2;
         
         G4ThreeVector Origin(-0.5*DistInterCsIX,-0.5*DistInterCsIY,0);
         G4ThreeVector Pos;
@@ -589,7 +593,7 @@ void Hira::VolumeMaker(G4int DetectorNumber,
                     if(i==1 && j==0)rotM->rotateZ(dangle);
                     if(i==0 && j==1)rotM->rotateZ(-dangle);
                     if(i==1 && j==1)rotM->rotateZ(2*dangle);
-                    Pos = Origin + G4ThreeVector(i*DistInterCsIX,j*DistInterCsIY,0);
+                    Pos = Origin + G4ThreeVector(i*(DistInterCsIX+DistInterCsI/2),j*(DistInterCsIY+DistInterCsI/2),0);
                     
                     new G4PVPlacement(G4Transform3D(*rotM,Pos),
                                       m_LogicCsICrystal,

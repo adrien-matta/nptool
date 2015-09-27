@@ -29,10 +29,11 @@
 //   STL
 #include <string>
 #include <map>
-#include <queue>
  
 #if __cplusplus > 199711L 
-#include<thread>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
 #endif
 
 using namespace std ;
@@ -57,8 +58,8 @@ namespace NPL{
       void        ClearEventData();
       void        InitSpectra();
       void        WriteSpectra();
-      vector< map< vector<string>, TH1* > > GetSpectra();  
-      vector<string>                        GetDetectorList();
+      vector< map< string, TH1* > > GetSpectra();  
+      vector<string> GetDetectorList();
 
     public: // for online spectra server
       void SetSpectraServer();
@@ -81,10 +82,12 @@ namespace NPL{
       
     #if __cplusplus > 199711L 
     private: // Thread Pool defined if C++11 is available
-      vector<thread> m_ThreadPool;
+      vector<std::thread> m_ThreadPool;
       vector<bool> m_Ready;
       bool m_stop;
-    
+      std::mutex m_ThreadMtx;
+      std::condition_variable m_CV;
+
     public: // Init the Thread Pool
       void StopThread();
       void StartThread(NPL::VDetector*,unsigned int);

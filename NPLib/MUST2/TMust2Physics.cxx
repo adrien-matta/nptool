@@ -1052,11 +1052,11 @@ void TMust2Physics::WriteSpectra() {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-map< vector<string> , TH1*> TMust2Physics::GetSpectra() {
+map< string , TH1*> TMust2Physics::GetSpectra() {
   if(m_Spectra)
     return m_Spectra->GetMapHisto();
   else{
-    map< vector<string> , TH1*> empty;
+    map< string , TH1*> empty;
     return empty;
   }
 } 

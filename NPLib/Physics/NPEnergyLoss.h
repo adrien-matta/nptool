@@ -67,12 +67,16 @@ namespace NPL
        private :   //   dE/dX, slice parameter
          int               fNumberOfSlice    ; // Number Of Slice used to evaluate energy loss
          int               fNumberOfMass     ; // Number of mass A of the nucleus (used only for Lise file)   
+         double            fMax; // Max energy value of the table
+         double            fMin; // Min energy value of the tahble
          vector<double>    fEnergy           ; // Energy
          vector<double>    fdEdX_Nuclear     ; // Nuclear Stopping Power
          vector<double>    fdEdX_Electronic  ; // Electronic Stopping Power
          vector<double>    fdEdX_Total       ; // Total Stopping Power
          Interpolator*     fInter            ; // Interpolator Used to evaluate Energy loss at given energy
          
+         double Eval(double ener) const; // return the evaluated energy
+
       public :    //   General Function on dE/dX table      
          double   EvaluateNuclearLoss     (double ener)    const;
          double   EvaluateElectronicLoss  (double ener)    const;

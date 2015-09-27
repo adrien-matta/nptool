@@ -551,11 +551,13 @@ void TCATSPhysics::InitializeStandardParameter(){
     InversionStatus[j] = j+1;
   }
 
-  for(int i = 0 ; i < m_NumberOfCATS ; ++i)      {
+  for(int i = 0 ; i < m_NumberOfCATS ; ++i){
     m_XChannelStatus[i] = ChannelStatus;
     m_YChannelStatus[i] = ChannelStatus;
     m_CATSXInversion[i] = InversionStatus;
     m_CATSYInversion[i] = InversionStatus;
+    SetReconstructionMethod(i+1, "X", "AGAUSS");
+    SetReconstructionMethod(i+1, "Y", "AGAUSS");
   }
 
   return;
@@ -693,12 +695,12 @@ void TCATSPhysics::ClearSpectra(){
   // To be done
 }
 ///////////////////////////////////////////////////////////////////////////
-map< vector<string> , TH1*> TCATSPhysics::GetSpectra() {
+map< string , TH1*> TCATSPhysics::GetSpectra() {
   if(m_Spectra)
     return m_Spectra->GetMapHisto();
 
   else{
-    map< vector<string> , TH1*> empty; 
+    map< string , TH1*> empty; 
     return empty;
   }
 }
@@ -735,6 +737,7 @@ void TCATSPhysics::SetReconstructionMethod(unsigned int CATSNumber, string XorY,
     else if(MethodName=="FSECH") ReconstructionFunctionX[CATSNumber-1] = &(FittedHyperbolicSecant);
     else if(MethodName=="AGAUSS") ReconstructionFunctionX[CATSNumber-1] = &(AnalyticGaussian);
     else if(MethodName=="CENTROIDE")  ReconstructionFunctionX[CATSNumber-1] = &(Centroide); 
+    else cout <<"WARNING: Wrong name for reconsctuction Method, using default AGAUSS" << endl;
   }
 
   if(XorY=="Y"){
@@ -745,6 +748,7 @@ void TCATSPhysics::SetReconstructionMethod(unsigned int CATSNumber, string XorY,
     else if(MethodName=="FSECH") ReconstructionFunctionY[CATSNumber-1] = &(FittedHyperbolicSecant);
     else if(MethodName=="AGAUSS") ReconstructionFunctionY[CATSNumber-1] = &(AnalyticGaussian);
     else if(MethodName=="CENTROIDE")  ReconstructionFunctionY[CATSNumber-1] = &(Centroide); 
+    else cout <<"WARNING: Wrong name for reconsctuction Method, using default AGAUSS" << endl;
   }
 
 }
@@ -947,7 +951,8 @@ namespace CATS_LOCAL{
 
   ////////////////////////////////////////////////////////////////////////
   double fCATS_X_Q(const TCATSData* m_EventData , const int i){
-    static string name; name = "CATS/D" ;
+    static string name; 
+    name = "CATS/D" ;
     name+= NPL::itoa( m_EventData->GetCATSDetX(i) ) ;
     name+= "_X" ;
     name+= NPL::itoa( m_EventData->GetCATSStripX(i) ) ;
@@ -957,7 +962,8 @@ namespace CATS_LOCAL{
   }
   ////////////////////////////////////////////////////////////////////////
   double fCATS_Y_Q(const TCATSData* m_EventData , const int i){
-    static string name; name = "CATS/D" ;
+    static string name; 
+    name = "CATS/D" ;
     name+= NPL::itoa( m_EventData->GetCATSDetY(i) ) ;
     name+= "_Y" ;
     name+= NPL::itoa( m_EventData->GetCATSStripY(i) ) ;

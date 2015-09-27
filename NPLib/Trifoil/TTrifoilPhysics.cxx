@@ -54,11 +54,11 @@ void TTrifoilPhysics::BuildPhysicalEvent(){
   unsigned int mysize = m_EventData->GetMultiplicity();
 
   for (unsigned int i = 0 ; i < mysize ; i++){
-    TH1F h = m_EventData->GetWaveform(i);
-    double base =  h.GetBinContent(h.GetMinimumBin());  
-    double maxi = h.GetBinContent(h.GetMaximumBin());
+    TH1F* h = m_EventData->GetWaveform(i);
+    double base =  h->GetBinContent(h->GetMinimumBin());  
+    double maxi = h->GetBinContent(h->GetMaximumBin());
     if(maxi>2000 && base>-300){
-      Time.push_back(h.GetMaximumBin());
+      Time.push_back(h->GetMaximumBin());
       Energy.push_back(maxi);
     }
   }
@@ -88,7 +88,8 @@ void TTrifoilPhysics::InitializeRootInputRaw(){
   TChain* inputChain = RootInput::getInstance()->GetChain();
   static UInt_t* found =  new UInt_t[100] ;
   inputChain->SetBranchStatus( "Trifoil" , true );
-  inputChain->SetBranchStatus( "fTrifoil_*" , true , found);
+  if(inputChain->FindBranch( "fTrifoil_*")) 
+    inputChain->SetBranchStatus( "fTrifoil_*" , true , found);
   inputChain->SetBranchAddress( "Trifoil" , &m_EventData );
 }
 

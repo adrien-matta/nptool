@@ -39,7 +39,7 @@ Sharc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Upstream Box
   SharcBOX
-    Z= -28.4
+    Z= -30
     ThicknessDector1= 500
     ThicknessDector2= 500
     ThicknessDector3= 500

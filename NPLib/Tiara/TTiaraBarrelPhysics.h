@@ -192,7 +192,7 @@ class TTiaraBarrelPhysics : public TObject, public NPL::VDetector{
     TTiaraBarrelSpectra*      m_Spectra;//!
 
   public:
-    map< vector<string>,TH1* > GetSpectra(); 
+    map< string,TH1* > GetSpectra(); 
 
   private: // Usefull method
    // Calibrate data

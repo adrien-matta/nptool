@@ -7,7 +7,7 @@
 
 /*****************************************************************************
  * Original Author: Adrien MATTA  contact address: a.matta@surrey.ac.uk      *
- *                  Peter Bender  contact address: bender@triumf.ca          *
+ *                                                                           * 
  * Creation Date  : November 2012                                            *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
@@ -34,7 +34,6 @@ using namespace std;
 #include "TAsciiFile.h"
 //   ROOT
 #include "TChain.h"
-#include "TLorentzVector.h"
 ///////////////////////////////////////////////////////////////////////////
 
 ClassImp(TTigressPhysics)
@@ -43,23 +42,68 @@ ClassImp(TTigressPhysics)
     m_EventData         = new TTigressData ;
     m_PreTreatedData    = new TTigressData ;
     m_EventPhysics      = this ;
-    Clear();
   };
 
 
 /////////////////////////////////////////////////
 void TTigressPhysics::BuildPhysicalEvent(){
   PreTreat();
+  // Addback Map
+  unsigned int mysize = Gamma_Energy.size();
+  for(unsigned int i = 0 ; i < 16 ; i ++) {
+    for(unsigned int g = 0 ; g < mysize ; g++){
+      if(Clover_Number[g] == i+1 && Segment_Number[g]==0){
+        m_map_E[i] += Gamma_Energy[g];
+        if( Gamma_Energy[g]> m_map_Core_MaxE[i] ){
+          m_map_Core_MaxE[i] = Gamma_Energy[g];
+          m_map_Core_Crystal[i] = Crystal_Number[g];
+        }
+      }
+      if(Clover_Number[g] == i+1 &&  Segment_Number[g]>0 &&  Segment_Number[g]<9){
+        if( Gamma_Energy[g]>m_map_Segment_MaxE[i]){
+          m_map_Segment_MaxE[i] = Gamma_Energy[g];
+          m_map_Segment_Crystal[i] = Crystal_Number[g];
+          m_map_Segment[i] = Segment_Number[g];
+        }
+      }
+    }
+  }
 
-  for(unsigned int i = 0 ; i < m_EventData->GetMultiplicityGe() ; i++){
-    if( m_EventData->GetGeSegmentNbr(i)==0 && m_EventData->GetGeEnergy(i)>20){
+  // Final Addback and Doppler Correction 
+  for(int i = 0 ; i < 16 ; i++) {
+    if(m_map_E.find(i)!=m_map_E.end()){
+      int clover = i+1;
+      TVector3 Pos;
+      if(m_map_Segment_Crystal[i]>0 && m_map_Segment_Crystal[i]<9)
+        Pos = GetSegmentPosition(clover,m_map_Segment_Crystal[i],m_map_Segment[i]);
+      else
+        Pos = GetSegmentPosition(clover,m_map_Core_Crystal[i],m_map_Segment[i]);
+      static TVector3 Beta =  TVector3(0,0,0.10);
+      double E = GetDopplerCorrectedEnergy(m_map_E[i],Pos,Beta);
+      AddBack_DC.push_back(E);
+      AddBack_E.push_back(m_map_E[i]);
+      AddBack_Theta.push_back(Pos.Angle(Beta)*180./3.141592653589793);
+    }
+  }
+}
+
+/////////////////////////////////////////////////
+void TTigressPhysics::PreTreat(){
+  static CalibrationManager* cal = CalibrationManager::getInstance();
+  static string name;
+  unsigned int mysize = m_EventData->GetMultiplicityGe();
+  for(unsigned int i = 0 ; i < mysize ; i++){
+    if( m_EventData->GetGeEnergy(i)>20000){
       int clover = m_EventData->GetGeCloverNbr(i);
       int cry = m_EventData->GetGeCrystalNbr(i);
-      double Energy =  CalibrationManager::getInstance()->ApplyCalibration("TIGRESS/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(cry)+"_SEG"+ NPL::itoa(m_EventData->GetGeSegmentNbr(i))+"_E", m_EventData->GetGeEnergy(i));
+      name = "TIGRESS/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(cry)+"_SEG"+ NPL::itoa(m_EventData->GetGeSegmentNbr(i))+"_E";
+      double Energy =  cal->ApplyCalibration(name, m_EventData->GetGeEnergy(i));
       Gamma_Energy.push_back(Energy);
       Crystal_Number.push_back(m_EventData->GetGeCrystalNbr(i));
       Clover_Number.push_back(m_EventData->GetGeCloverNbr(i));
+      Segment_Number.push_back(m_EventData->GetGeSegmentNbr(i));
       Gamma_Time.push_back(m_EventData->GetGeTimeCFD(i));
+
       // Look for Associate BGO
       bool BGOcheck = false ;
       for(unsigned j = 0 ;  j <  m_EventData->GetMultiplicityBGO() ; j++){
@@ -70,51 +114,102 @@ void TTigressPhysics::BuildPhysicalEvent(){
       BGO.push_back(BGOcheck);
     }
   }
+}
 
-  map<int, double> map_E;
-  for(unsigned int i = 0 ; i < 16 ; i ++) {
-    unsigned int mysize = Gamma_Energy.size();
-    for(unsigned int g = 0 ; g < mysize ; g++){
-      if(Clover_Number[g] == i+1){
-        map_E[i] += Gamma_Energy[g]  ; 
-      }
-    }
-  }
-
-
-  for(unsigned int i = 0 ; i < 16 ; i ++) {
-    if(map_E[i]>0){
-      AddBack_E.push_back(map_E[i]);
-      if(i>12){
-        TLorentzVector GammaLV( map_E[i]*sin(135*3.1459/180.),
-            map_E[i]*sin(135*3.1459/180.),
-            map_E[i]*cos(135*3.1459/180.),
-            map_E[i]);
-        
-        GammaLV.Boost(0,0,-0.12);
-        AddBack_DC.push_back(GammaLV.Energy());
-      }
-      else
-         AddBack_DC.push_back(map_E[i]); 
-    }
-  }
-
+/////////////////////////////////////////////////
+TVector3 TTigressPhysics::GetPositionOfInteraction(unsigned int& i){
+  return GetSegmentPosition(Clover_Number[i],Crystal_Number[i],Segment_Number[i]);
 }
 /////////////////////////////////////////////////
-TVector3 TTigressPhysics::GetPositionOfInteraction(int i){
-  TVector3 dummy;
+// original energy, position, beta
+double TTigressPhysics::GetDopplerCorrectedEnergy(double& energy , TVector3 position, TVector3& beta){
+  // renorm pos vector
+  position.SetMag(1); 
+  m_GammaLV.SetPx(energy*position.X());
+  m_GammaLV.SetPy(energy*position.Y());
+  m_GammaLV.SetPz(energy*position.Z());
+  m_GammaLV.SetE(energy);
+  m_GammaLV.Boost(-beta);
+  return m_GammaLV.Energy();
+}
 
-  return dummy;
+/////////////////////////////////////////////////
+void TTigressPhysics::AddClover(unsigned int ID ,double R, double Theta, double Phi){
+  TVector3 Pos(0,0,1);
+  Pos.SetTheta(Theta);
+  Pos.SetPhi(Phi);
+  Pos.SetMag(R);
+  m_CloverPosition[ID] = Pos;
+  return;
 }
 /////////////////////////////////////////////////
-void TTigressPhysics::PreTreat(){
-
-
-} 
-
+TVector3 TTigressPhysics::GetCloverPosition(int& CloverNbr){
+  return m_CloverPosition[CloverNbr];
+}
 /////////////////////////////////////////////////
-void TTigressPhysics::Clear() {
-};
+TVector3 TTigressPhysics::GetCorePosition(int& CloverNbr,int& CoreNbr){
+  static double offset = 33.4; // mm
+  static double depth = 45;
+  static TVector3 Pos;
+  TVector3 CloverPos = m_CloverPosition[CloverNbr];
+
+  if(CoreNbr==1)
+    Pos.SetXYZ(offset,-offset,depth+CloverPos.Mag());
+  else if(CoreNbr==2)
+    Pos.SetXYZ(-offset,-offset,depth+CloverPos.Mag());
+  else if(CoreNbr==3)
+    Pos.SetXYZ(-offset,offset,depth+CloverPos.Mag());
+  else if(CoreNbr==4)
+    Pos.SetXYZ(-offset,-offset,depth+CloverPos.Mag());
+  else
+    cout << "Warning: Tigress crystal number " << CoreNbr << " is out of range (1 to 4)" << endl;
+
+
+  TRotation CloverRot;
+  CloverRot.RotateX(CloverPos.Theta());
+  CloverRot.RotateZ(CloverPos.Phi());
+  Pos*=CloverRot;
+
+  return (Pos); 
+}
+/////////////////////////////////////////////////
+TVector3 TTigressPhysics::GetSegmentPosition(int& CloverNbr,int& CoreNbr, int& SegmentNbr){
+  static double offsetXY1 = 10.4; // mm
+  static double offsetXY2 = 16.7; // mm
+  static double offsetZ1 = 15.5; // mm
+  static double offsetZ2 = 60.5; // mm
+  TVector3 CorePos = GetCorePosition(CloverNbr,CoreNbr);
+  static TVector3 Pos;
+  
+  if(SegmentNbr == 0 || SegmentNbr == 9)
+    return GetCorePosition(CloverNbr,CoreNbr);
+  else if(SegmentNbr==1)
+    Pos.SetXYZ(offsetXY1,-offsetXY1,offsetZ1+ CorePos.Mag());
+  else if(SegmentNbr==2)
+    Pos.SetXYZ(-offsetXY1,-offsetXY1,offsetZ1+ CorePos.Mag());
+  else if(SegmentNbr==3)
+    Pos.SetXYZ(-offsetXY1,offsetXY1,offsetZ1+ CorePos.Mag());
+  else if(SegmentNbr==4)
+    Pos.SetXYZ(-offsetXY1,-offsetXY1,offsetZ1+ CorePos.Mag());
+  else if(SegmentNbr==5)
+    Pos.SetXYZ(-offsetXY2,-offsetXY2,offsetZ2+ CorePos.Mag());
+  else if(SegmentNbr==6)
+    Pos.SetXYZ(-offsetXY2,offsetXY2,offsetZ2+ CorePos.Mag());
+  else if(SegmentNbr==7)
+    Pos.SetXYZ(-offsetXY2,-offsetXY2,offsetZ2+ CorePos.Mag());
+  else if(SegmentNbr==8)
+    Pos.SetXYZ(-offsetXY2,-offsetXY2,offsetZ2+ CorePos.Mag());
+  else
+    cout << "Warning: Tigress segment number " << SegmentNbr << " is out of range (0 to 9)" << endl;
+
+  TRotation CoreRot;
+  CoreRot.RotateX(CorePos.Theta());
+  CoreRot.RotateZ(CorePos.Phi());
+  Pos*=CoreRot;
+
+  return (Pos); 
+
+}
 
 
 /////////////////////////////////////////////////
@@ -124,13 +219,13 @@ void TTigressPhysics::ReadConfiguration(string Path)  {
 
   if(!ConfigFile.is_open()) cout << "Config File not Found" << endl ;
 
-  string LineBuffer             ;
-  string DataBuffer             ;
+  string LineBuffer;
+  string DataBuffer;
 
-  bool check_CloverId= false          ;
-  bool check_R= false          ; 
-  bool check_Theta= false          ;
-  bool check_Phi= false          ;
+  bool check_CloverId= false;
+  bool check_R= false; 
+  bool check_Theta= false;
+  bool check_Phi= false;
   bool ReadingStatus = true;
 
   int CloverId=0;
@@ -205,39 +300,41 @@ void TTigressPhysics::ReadConfiguration(string Path)  {
         check_R= false; 
         check_Theta= false;
         check_Phi= false;
+        AddClover(CloverId,R,Theta*3.141592653589793/180.,Phi*3.141592653589793/180.);
       }
     }
   }
 }
 
 ///////////////////////////////////////////////////////////////////////////
-void TTigressPhysics::InitializeRootInputRaw() 
-{
-  TChain* inputChain = RootInput::getInstance()->GetChain()   ;
-  inputChain->SetBranchStatus( "Tigress" , true )               ;
-  inputChain->SetBranchStatus( "fTIG_*" , true )               ;
-  inputChain->SetBranchAddress( "Tigress" , &m_EventData )      ;
+void TTigressPhysics::InitializeRootInputRaw() {
+  TChain* inputChain = RootInput::getInstance()->GetChain();
+  inputChain->SetBranchStatus( "Tigress" , true );
+  if(inputChain->FindBranch( "fTIG_*" ))
+    inputChain->SetBranchStatus( "fTIG_*" , true );
+  inputChain->SetBranchAddress( "Tigress" , &m_EventData );
 }
 
 ///////////////////////////////////////////////////////////////////////////
-void TTigressPhysics::InitializeRootOutput()    
-{
+void TTigressPhysics::InitializeRootOutput()    {
   TTree* outputTree = RootOutput::getInstance()->GetTree();
   outputTree->Branch( "Tigress" , "TTigressPhysics" , &m_EventPhysics );
 }
 ///////////////////////////////////////////////////////////////////////////  
-void TTigressPhysics::ClearEventPhysics() {
+void TTigressPhysics::Clear() {
   Gamma_Energy.clear();
   Gamma_Time.clear();
   Crystal_Number.clear();
   Clover_Number.clear();
+  Segment_Number.clear();
   BGO.clear();
   AddBack_E.clear();
   AddBack_DC.clear();
+  AddBack_Theta.clear();
+  m_map_E.clear();
 }
 ///////////////////////////////////////////////////////////////////////////  
 void TTigressPhysics::ClearEventData() {
-
   m_EventData->Clear();
   m_PreTreatedData->Clear();
 }

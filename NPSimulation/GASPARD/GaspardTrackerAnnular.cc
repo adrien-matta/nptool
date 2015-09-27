@@ -370,8 +370,7 @@ void GaspardTrackerAnnular::ReadConfiguration(string Path)
 void GaspardTrackerAnnular::ConstructDetector(G4LogicalVolume* world)
 {
    G4RotationMatrix* MMrot    = NULL                   ;
-//   G4ThreeVector     MMpos    = G4ThreeVector(0, 0, 0) ;
-   MMpos = G4ThreeVector(0, 0, 0) ;
+   G4ThreeVector MMpos = G4ThreeVector(0, 0, 0) ;
 
    bool FirstStage  = true ;
    bool SecondStage = true ;
