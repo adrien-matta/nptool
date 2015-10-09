@@ -239,8 +239,8 @@ void Reaction::ShootRandomExcitationEnergy(){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void Reaction::KineRelativistic(double &ThetaLab3, double &KineticEnergyLab3,
-                                double &ThetaLab4, double &KineticEnergyLab4){
+void Reaction::KineRelativistic(double& ThetaLab3, double& KineticEnergyLab3,
+                                double& ThetaLab4, double& KineticEnergyLab4){
 	// 2-body relativistic kinematics: direct + inverse
 	// EnergieLab3,4 : lab energy in MeV of the 2 ejectiles
 	// ThetaLab3,4   : angles in rad

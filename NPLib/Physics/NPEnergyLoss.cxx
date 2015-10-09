@@ -365,7 +365,6 @@ double   EnergyLoss::EvaluateEnergyFromDeltaE(  double DeltaE           , // Ene
 
   }
 
-  //      cout << "NPL::NPEnergyLoss::EvaluateEnergyFromDeltaE : Max step was reach before requiered resolution was reach " << endl ;
   return Energy;
 }
 

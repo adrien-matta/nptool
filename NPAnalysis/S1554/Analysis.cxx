@@ -128,7 +128,6 @@ void Analysis::TreatEvent(){
     Energy =  LightAl.EvaluateInitialEnergy(Energy,Sharc->GetDeadLayer(0)*micrometer,0);
 
     // Target Correction
-    ELab = Energy;
     ELab = LightCD2.EvaluateInitialEnergy( Energy ,TargetThickness*0.5, ThetaNormalTarget);
    
     /************************************************/

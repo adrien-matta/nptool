@@ -77,8 +77,7 @@ void TSharcPhysics::BuildPhysicalEvent(){
 
   unsigned int size = couple.size();
   for(unsigned int i = 0 ; i < size ; ++i){
-    check_PAD = false ;
-
+    
     int N = m_PreTreatedData->GetFront_DetectorNbr(couple[i].X()) ;
 
     int Front = m_PreTreatedData->GetFront_StripNbr(couple[i].X()) ;
@@ -131,6 +130,7 @@ void TSharcPhysics::BuildPhysicalEvent(){
     Strip_Back.push_back(Back) ;
 
     // Search for associate PAD
+    check_PAD = false ;
     unsigned int sizePAD = m_PreTreatedData-> GetMultiplicityPAD();
     for(unsigned int j = 0 ; j < sizePAD ; ++j){
       if(m_PreTreatedData->GetPAD_DetectorNbr(j)==N){
