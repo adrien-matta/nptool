@@ -44,11 +44,14 @@
 #include "G4eIonisation.hh"
 #include "G4eBremsstrahlung.hh"
 #include "G4eplusAnnihilation.hh"
-
+#include "G4NeutronHPFission.hh"
 #include "G4MuIonisation.hh"
 #include "G4MuMultipleScattering.hh"
 #include "G4MuBremsstrahlung.hh"
 #include "G4MuPairProduction.hh"
+
+//neutron
+#include "G4HadronFissionProcess.hh"
 
 #include "G4hIonisation.hh"
 #include "G4ionIonisation.hh"
@@ -79,7 +82,9 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 PhysicsList::PhysicsList(){
   // ie: no secondaries
-  defaultCutValue = 1000 * pc;
+  //defaultCutValue = 1000 * pc;
+  defaultCutValue = 1*mm;
+
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 PhysicsList::~PhysicsList(){
@@ -91,22 +96,22 @@ void PhysicsList::ConstructParticle(){
   // for all particles which you want to use.
   // This ensures that objects of these particle types will be
   // created in the program.
-  
+
   //Usefull to test geometry
   G4Geantino::GeantinoDefinition();
-  
+
   //Usefull for Gamma
   ConstructBosons();
-  
+
   //Usefull for betaDecay
   ConstructLeptons();
-  
+
   //Needed by G4 (4.9.2) to run on mac os X ;-)
   ConstructMesons();
-  
+
   //usefull for p and n
   ConstructBaryons();
-  
+
   //Usefull of course :p
   ConstructIons();
 }
@@ -160,28 +165,28 @@ void PhysicsList::ConstructIons(){
   G4Deuteron::DeuteronDefinition()  ;
   G4Triton::TritonDefinition()      ;
   G4Alpha::AlphaDefinition()     ;
-  
+
   G4IonConstructor iConstructor     ;
   iConstructor.ConstructParticle()  ;
-  
+
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PhysicsList::ConstructProcess(){
   AddTransportation()   ;
   ConstructEM()         ;
-  
+
   SetCuts()          ;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PhysicsList::ConstructEM(){
-  
+
   theParticleIterator->reset();
-  
+
   while ((*theParticleIterator)()) {
     G4ParticleDefinition* particle = theParticleIterator->value() ;
     G4ProcessManager* pmanager = particle->GetProcessManager() ;
     G4String particleName = particle->GetParticleName() ;
-    
+
     if (particleName == "gamma") {
       // gamma
       //standard Geant4
@@ -196,7 +201,7 @@ void PhysicsList::ConstructEM(){
       pmanager->AddProcess(new G4eIonisation         , -1,  2, 2)     ;
       pmanager->AddProcess(new G4eBremsstrahlung     , -1, -1, 3)     ;
     }
-    
+
     else if (particleName == "e+") {
       //positron
       pmanager->AddProcess(new G4eMultipleScattering  , -1,  1, 1 );
@@ -205,54 +210,61 @@ void PhysicsList::ConstructEM(){
       pmanager->AddProcess(new G4eBremsstrahlung     , -1, -1, 3 );
       pmanager->AddProcess(new G4eplusAnnihilation   ,  0, -1, 4 );
     }
-    
+
     else if (particleName == "mu+" ||
-               particleName == "mu-") {
+        particleName == "mu-") {
     }
-    
+
     else if ( particleName == "GenericIon" 
-              || particleName == "He3"
-              || particleName == "alpha"
-              || particleName == "deuteron"
-              || particleName == "triton") {
+        || particleName == "He3"
+        || particleName == "alpha"
+        || particleName == "deuteron"
+        || particleName == "triton") {
       pmanager->AddProcess(new G4hMultipleScattering(), -1, 1, 1) ;
       G4ionIonisation* iI = new G4ionIonisation ;
       iI->ActivateStoppingData(true) ;
       pmanager->AddProcess(iI , -1, 2, 2) ;
     }
-    
+
+    else if (particleName == "neutron"){
+      G4NeutronHPFission* fissionModel = new G4NeutronHPFission();
+      G4HadronFissionProcess* fissionProcess = new G4HadronFissionProcess();
+      fissionProcess->RegisterMe(fissionModel);
+      pmanager->AddDiscreteProcess(fissionProcess);
+    }
+
     else if ((!particle->IsShortLived())     &&
-               (particle->GetPDGCharge() != 0.0)   &&
-               (particleName != "chargedgeantino")) {
-      
+        (particle->GetPDGCharge() != 0.0)   &&
+        (particleName != "chargedgeantino")) {
+
       G4hIonisation* hI = new G4hIonisation ;
       pmanager->AddProcess(new G4hMultipleScattering , -1, 1, 1) ;
       pmanager->AddProcess(hI , -1, 2, 2) ;
-      
-      
+
+
     }
   }
-  
+
   G4EmProcessOptions opt        ;
   opt.SetSubCutoff(true)        ;
   opt.SetMinEnergy(0.001*eV)    ;
   opt.SetMaxEnergy(50.*GeV)    ;
   opt.SetDEDXBinning(5000)       ;
   opt.SetLambdaBinning(5000)     ;
-    
-    //energy loss
-    opt.SetLinearLossLimit(1.e-9);
-    opt.SetStepFunction(0.001, 10.*um);
-    
-    //Multiple scattering
-    opt.SetMscLateralDisplacement(true);
-    opt.SetLossFluctuations(true);
-    //opt.SetMscStepLimitation(fMinimal);
-    //opt.SetMscStepLimitation(fUseDistanceToBoundary);
-    opt.SetMscStepLimitation(fUseSafety);
-    
-    //ionization
-    opt.SetSubCutoff(false);
+
+  //energy loss
+  opt.SetLinearLossLimit(1.e-9);
+  opt.SetStepFunction(0.001, 10.*um);
+
+  //Multiple scattering
+  opt.SetMscLateralDisplacement(true);
+  opt.SetLossFluctuations(true);
+  //opt.SetMscStepLimitation(fMinimal);
+  //opt.SetMscStepLimitation(fUseDistanceToBoundary);
+  opt.SetMscStepLimitation(fUseSafety);
+
+  //ionization
+  opt.SetSubCutoff(false);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -263,20 +275,20 @@ void PhysicsList::SetCuts(){
   //  " G4VUserPhysicsList::SetCutsWithDefault" method sets
   //   the default cut value for all particle types
   SetCutsWithDefault();
-  
+
   // for gamma-rays
   /*  G4double em_cuts = 0.01*mm; // Use 10cm to avoid generating delta-rays
-    //G4double em_cuts = 10.*cm; // Use 10cm to avoid generating delta-rays
-    SetCutValue(em_cuts, "gamma");
-    SetCutValue(em_cuts, "e-");
-    SetCutValue(em_cuts, "e+");*/
-  
+  //G4double em_cuts = 10.*cm; // Use 10cm to avoid generating delta-rays
+  SetCutValue(em_cuts, "gamma");
+  SetCutValue(em_cuts, "e-");
+  SetCutValue(em_cuts, "e+");*/
+
   // Retrieve verbose level
   SetVerboseLevel(temp);
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PhysicsList::ConstructDecay(){
-  
+
   // Add Decay Process
   G4Decay* theDecayProcess = new G4Decay()                     ;
   theParticleIterator->reset()                              ;
@@ -291,7 +303,7 @@ void PhysicsList::ConstructDecay(){
     }
   }
   //end Add Decay Process
-  
+
 }
 
 void PhysicsList::MyOwnConstruction(){

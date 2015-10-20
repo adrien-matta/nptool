@@ -48,6 +48,8 @@ void TTrifoilData::Clear(){
   fTrifoil_Waveform.clear();
   fTrifoil_TimeCFD.clear();
   fTrifoil_TimeLED.clear();
+  fTrifoil_TimeStamp.clear();
+
 }
 /////////////////////////
 void TTrifoilData::Dump() const{

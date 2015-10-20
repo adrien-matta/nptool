@@ -85,13 +85,14 @@ TInitialConditions* myInit ;
   double ThetaDetector;
   double Si_E_Sharc ;
   double E_Sharc ;
+  double Distance;
   TSharcPhysics* Sharc;
   TTigressPhysics* Tigress;
 
   std::vector<TCutG*> cut_ex5; 
   std::ofstream box_pos;
   std::ofstream qqq_pos;
-
+  TCutG* cut_dd;
   TCutG* cut_deuton_d10;
   TCutG* cut_proton_d10;
   TCutG* cut_deuton_d12;

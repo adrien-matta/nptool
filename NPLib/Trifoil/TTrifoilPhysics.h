@@ -48,9 +48,10 @@ class TTrifoilPhysics : public TObject, public NPL::VDetector
          
    public:
       // EventType is True if the wave form analysis return a valid Trifoil event
-      vector<double>    Energy;
+      vector<double>  Energy;
       vector<double>  Time ;
-  
+      vector<double>  TimeStamp ;
+
    public:      //   Innherited from VDetector Class
          
       //   Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token

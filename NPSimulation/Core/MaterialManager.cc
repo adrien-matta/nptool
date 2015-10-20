@@ -243,6 +243,13 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       m_Material[Name]=material;
       return material; 
     }
+ 
+    else  if(Name == "NaturalUranium"){
+      G4Material* material = new G4Material(Name, 19.1*g/cm3,1);
+      material->AddElement(GetElementFromLibrary("U"),1);
+      m_Material[Name]=material;
+      return material; 
+    }
     
     else  if(Name == "CsI_Scintillator"){
       G4Material* material = new G4Material(Name, 4.51*g/cm3,2);
