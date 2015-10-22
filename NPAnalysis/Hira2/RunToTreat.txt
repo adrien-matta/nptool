@@ -1,5 +1,5 @@
 TTreeName 
 	SimulatedTree
 RootFileName 
-%	../../Outputs/Simulation/test.root
-  ../../Outputs/Simulation/proton_0_300.root
+	../../Outputs/Simulation/test.root
+%  ../../Outputs/Simulation/proton_0_300.root
