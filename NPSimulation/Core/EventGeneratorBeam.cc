@@ -75,7 +75,13 @@ void EventGeneratorBeam::GenerateEvent(G4Event* anEvent){
 
   if( anEvent->GetEventID()==0){
     // Define the particle to be shoot
-    m_particle = G4ParticleTable::GetParticleTable()->GetIonTable()->GetIon(m_Beam->GetZ(), m_Beam->GetA() ,m_Beam->GetExcitationEnergy());
+    if(m_Beam->GetZ()==0 &&  m_Beam->GetA()==1){
+      m_particle = G4ParticleTable::GetParticleTable()->FindParticle("neutron");
+    }
+   
+    else
+      m_particle = G4ParticleTable::GetParticleTable()->GetIonTable()->GetIon(m_Beam->GetZ(), m_Beam->GetA() ,m_Beam->GetExcitationEnergy());
+
   }
   
   ///////////////////////////////////////////////////////////////////////

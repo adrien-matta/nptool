@@ -501,6 +501,10 @@ G4double Target::SlowDownBeam(G4ParticleDefinition* Beam,
     G4double ZInteraction, 
     G4double IncidentTheta){
 
+  if(Beam->GetParticleName()=="neutron"){
+    return IncidentEnergy;
+  }
+  
   G4double ThicknessBeforeInteraction = 
     abs(ZInteraction - 0.5*m_EffectiveThickness) / cos(m_TargetAngle);
  

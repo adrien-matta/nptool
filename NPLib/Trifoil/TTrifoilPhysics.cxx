@@ -52,13 +52,15 @@ void TTrifoilPhysics::BuildSimplePhysicalEvent(){
 ///////////////////////////////////////////////////////////////////////////
 void TTrifoilPhysics::BuildPhysicalEvent(){ 
   unsigned int mysize = m_EventData->GetMultiplicity();
-
+  double base,maxi,mytime; 
   for (unsigned int i = 0 ; i < mysize ; i++){
     TH1F* h = m_EventData->GetWaveform(i);
-    double base =  h->GetBinContent(h->GetMinimumBin());  
-    double maxi = h->GetBinContent(h->GetMaximumBin());
+    base =  h->GetBinContent(h->GetMinimumBin());  
+    maxi = h->GetBinContent(h->GetMaximumBin());
     if(maxi>2000 && base>-300){
-      Time.push_back(h->GetMaximumBin());
+      mytime = (h->GetMaximumBin());
+      TimeStamp.push_back(m_EventData->GetTimeStamp(i)*10);
+      Time.push_back(mytime);
       Energy.push_back(maxi);
     }
   }
@@ -68,6 +70,7 @@ void TTrifoilPhysics::BuildPhysicalEvent(){
 void TTrifoilPhysics::Clear(){
   Energy.clear() ;
   Time.clear() ;
+  TimeStamp.clear();
 }
 ///////////////////////////////////////////////////////////////////////////
 
