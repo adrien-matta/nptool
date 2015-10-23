@@ -61,9 +61,6 @@ class Analysis: public NPL::VAnalysis{
     double PhiLab;
     double ThetaLab;
     double ThetaLab_Init;
-    double PhiLab_Init;
-    double ThetaLab_Detec;
-    double PhiLab_Detec;
     double X,Y,Z;
     double TelescopeNumber;
     double thresholdEnergy;

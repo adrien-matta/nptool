@@ -191,7 +191,6 @@ void Analysis::TreatEvent(){
   EDelta = .05*totalEnergy;
 
   ThetaLab_Init = Initial->GetThetaLab_WorldFrame(0);
-  PhiLab_Init = Initial->GetPhiLab_WorldFrame(0);
 
   hEmittTheta->Fill(ThetaLab_Init);
 
@@ -202,12 +201,6 @@ void Analysis::TreatEvent(){
       TelescopeNumber = Lassa->TelescopeNumber[0];
       XStrip = Lassa->ThickSi_StripNumberX[0];
       YStrip = Lassa->ThickSi_StripNumberY[0];      
-
-      ThetaLab_Detec = Initial->GetThetaLab_WorldFrame(0);
-      PhiLab_Detec = Initial->GetPhiLab_WorldFrame(0);
-      hDetecTheta->Fill(ThetaLab_Detec);
-
-      hDetecThetaVsPhi->Fill(ThetaLab_Detec,PhiLab_Detec);
 
       X = Lassa->GetPositionOfInteraction(0).X();
       Y = Lassa->GetPositionOfInteraction(0).Y();
@@ -235,6 +228,10 @@ void Analysis::TreatEvent(){
       PhiLab = HitDirection.Phi()/deg;
 
       E_ThickSi = Lassa->ThickSi_E[0];
+
+      hDetecTheta->Fill(ThetaLab);
+
+      hDetecThetaVsPhi->Fill(ThetaLab,PhiLab);
 
       if(Lassa->CsI_E.size()>=1){  
 
@@ -672,7 +669,6 @@ void Analysis::ReInitValue(){
 
 
   ThetaLab_Init = -1000;
-  PhiLab_Init = -1000;
 
   fitFunction = "";
   Mu.str("");
