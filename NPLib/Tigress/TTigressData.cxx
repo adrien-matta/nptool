@@ -29,18 +29,15 @@ using namespace std;
 ClassImp(TTigressData)
 
 /////////////////////////
-TTigressData::TTigressData()
-{
+TTigressData::TTigressData(){
 }
 
 /////////////////////////
-TTigressData::~TTigressData()
-{
+TTigressData::~TTigressData(){
 }
 
 /////////////////////////
-void TTigressData::Clear()
-{
+void TTigressData::Clear(){
   fTIG_Ge_CloverNbr.clear();
   fTIG_Ge_CrystalNbr.clear();
   fTIG_Ge_SegmentNbr.clear();
@@ -57,8 +54,7 @@ void TTigressData::Clear()
 }
 
 /////////////////////////
-void TTigressData::Dump() const
-{
+void TTigressData::Dump() const{
   // Energy
  // cout << "Tigress_Mult = " << fTIG_CloverNbr.size() << endl;
   

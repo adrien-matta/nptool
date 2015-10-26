@@ -95,6 +95,12 @@ class TTigressPhysics :  public TObject, public NPL::VDetector{
     vector<double> AddBack_E;   
     vector<double> AddBack_DC;   
     vector<double> AddBack_Theta;
+    vector<double> AddBack_X;
+    vector<double> AddBack_Y;
+    vector<double> AddBack_Z;
+    vector<int> AddBack_Clover;
+    vector<int> AddBack_Crystal;
+    vector<int> AddBack_Segment;
 
   private: // use for anlysis
     // Keep track of the core

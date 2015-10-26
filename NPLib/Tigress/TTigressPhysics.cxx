@@ -32,6 +32,9 @@ using namespace std;
 #include "NPDetectorFactory.h"
 #include "RootOutput.h"
 #include "TAsciiFile.h"
+#include "NPSystemOfUnits.h"
+using namespace NPUNITS;
+
 //   ROOT
 #include "TChain.h"
 ///////////////////////////////////////////////////////////////////////////
@@ -70,19 +73,35 @@ void TTigressPhysics::BuildPhysicalEvent(){
   }
 
   // Final Addback and Doppler Correction 
+  int zero = 0;
   for(int i = 0 ; i < 16 ; i++) {
     if(m_map_E.find(i)!=m_map_E.end()){
       int clover = i+1;
       TVector3 Pos;
-      if(m_map_Segment_Crystal[i]>0 && m_map_Segment_Crystal[i]<9)
+      if(m_map_Segment_MaxE[i]>0)
         Pos = GetSegmentPosition(clover,m_map_Segment_Crystal[i],m_map_Segment[i]);
-      else
-        Pos = GetSegmentPosition(clover,m_map_Core_Crystal[i],m_map_Segment[i]);
-      static TVector3 Beta =  TVector3(0,0,0.10);
-      double E = GetDopplerCorrectedEnergy(m_map_E[i],Pos,Beta);
-      AddBack_DC.push_back(E);
-      AddBack_E.push_back(m_map_E[i]);
-      AddBack_Theta.push_back(Pos.Angle(Beta)*180./3.141592653589793);
+      else if(m_map_Core_MaxE[i]>0)
+        Pos = GetSegmentPosition(clover,m_map_Core_Crystal[i],zero);
+
+      if(Pos.Mag()!=0){
+        static TVector3 Beta = TVector3(0,0,0.10);
+        double E = GetDopplerCorrectedEnergy(m_map_E[i],Pos,Beta);
+        AddBack_DC.push_back(E);
+        AddBack_E.push_back(m_map_E[i]);
+        AddBack_Theta.push_back(Pos.Angle(Beta)*180./3.141592653589793);
+        AddBack_Clover.push_back(clover); 
+        if(m_map_Segment_MaxE[i]>0){
+          AddBack_Crystal.push_back(m_map_Segment_Crystal[i]);
+          AddBack_Segment.push_back(m_map_Segment[i]);
+        }
+        else{
+          AddBack_Crystal.push_back(m_map_Core_Crystal[i]);
+          AddBack_Segment.push_back(0);
+        }
+        AddBack_X.push_back(Pos.X());
+        AddBack_Y.push_back(Pos.Y());
+        AddBack_Z.push_back(Pos.Z());
+      }    
     }
   }
 }
@@ -92,16 +111,20 @@ void TTigressPhysics::PreTreat(){
   static CalibrationManager* cal = CalibrationManager::getInstance();
   static string name;
   unsigned int mysize = m_EventData->GetMultiplicityGe();
+  double Eraw,Energy;
+  int clover, crystal, segment;
   for(unsigned int i = 0 ; i < mysize ; i++){
-    if( m_EventData->GetGeEnergy(i)>20000){
-      int clover = m_EventData->GetGeCloverNbr(i);
-      int cry = m_EventData->GetGeCrystalNbr(i);
-      name = "TIGRESS/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(cry)+"_SEG"+ NPL::itoa(m_EventData->GetGeSegmentNbr(i))+"_E";
-      double Energy =  cal->ApplyCalibration(name, m_EventData->GetGeEnergy(i));
+    Eraw = m_EventData->GetGeEnergy(i);
+    if( Eraw>20000){
+      clover = m_EventData->GetGeCloverNbr(i);
+      crystal = m_EventData->GetGeCrystalNbr(i);
+      segment = m_EventData->GetGeSegmentNbr(i);
+      name = "TIGRESS/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal)+"_SEG"+ NPL::itoa(segment)+"_E";
+      Energy =  cal->ApplyCalibration(name, Eraw);
       Gamma_Energy.push_back(Energy);
-      Crystal_Number.push_back(m_EventData->GetGeCrystalNbr(i));
-      Clover_Number.push_back(m_EventData->GetGeCloverNbr(i));
-      Segment_Number.push_back(m_EventData->GetGeSegmentNbr(i));
+      Clover_Number.push_back(clover);
+      Crystal_Number.push_back(crystal);
+      Segment_Number.push_back(segment);
       Gamma_Time.push_back(m_EventData->GetGeTimeCFD(i));
 
       // Look for Associate BGO
@@ -154,22 +177,19 @@ TVector3 TTigressPhysics::GetCorePosition(int& CloverNbr,int& CoreNbr){
   TVector3 CloverPos = m_CloverPosition[CloverNbr];
 
   if(CoreNbr==1)
-    Pos.SetXYZ(offset,-offset,depth+CloverPos.Mag());
+    Pos.SetXYZ(-offset,offset,depth);
   else if(CoreNbr==2)
-    Pos.SetXYZ(-offset,-offset,depth+CloverPos.Mag());
+    Pos.SetXYZ(offset,offset,depth);
   else if(CoreNbr==3)
-    Pos.SetXYZ(-offset,offset,depth+CloverPos.Mag());
+    Pos.SetXYZ(offset,-offset,depth);
   else if(CoreNbr==4)
-    Pos.SetXYZ(-offset,-offset,depth+CloverPos.Mag());
+    Pos.SetXYZ(-offset,-offset,depth);
   else
     cout << "Warning: Tigress crystal number " << CoreNbr << " is out of range (1 to 4)" << endl;
 
-
-  TRotation CloverRot;
-  CloverRot.RotateX(CloverPos.Theta());
-  CloverRot.RotateZ(CloverPos.Phi());
-  Pos*=CloverRot;
-
+  // Define reference axis as the clover direction
+  Pos.RotateUz(CloverPos.Unit());
+  Pos+=CloverPos;
   return (Pos); 
 }
 /////////////////////////////////////////////////
@@ -179,34 +199,42 @@ TVector3 TTigressPhysics::GetSegmentPosition(int& CloverNbr,int& CoreNbr, int& S
   static double offsetZ1 = 15.5; // mm
   static double offsetZ2 = 60.5; // mm
   TVector3 CorePos = GetCorePosition(CloverNbr,CoreNbr);
+  TVector3 CloverPos = GetCloverPosition(CloverNbr);
   static TVector3 Pos;
-  
+
   if(SegmentNbr == 0 || SegmentNbr == 9)
     return GetCorePosition(CloverNbr,CoreNbr);
   else if(SegmentNbr==1)
-    Pos.SetXYZ(offsetXY1,-offsetXY1,offsetZ1+ CorePos.Mag());
+    Pos.SetXYZ(-offsetXY1,offsetXY1,offsetZ1);
   else if(SegmentNbr==2)
-    Pos.SetXYZ(-offsetXY1,-offsetXY1,offsetZ1+ CorePos.Mag());
+    Pos.SetXYZ(offsetXY1,offsetXY1,offsetZ1);
   else if(SegmentNbr==3)
-    Pos.SetXYZ(-offsetXY1,offsetXY1,offsetZ1+ CorePos.Mag());
+    Pos.SetXYZ(offsetXY1,-offsetXY1,offsetZ1);
   else if(SegmentNbr==4)
-    Pos.SetXYZ(-offsetXY1,-offsetXY1,offsetZ1+ CorePos.Mag());
+    Pos.SetXYZ(-offsetXY1,-offsetXY1,offsetZ1);
   else if(SegmentNbr==5)
-    Pos.SetXYZ(-offsetXY2,-offsetXY2,offsetZ2+ CorePos.Mag());
+    Pos.SetXYZ(-offsetXY2,offsetXY2,offsetZ2);
   else if(SegmentNbr==6)
-    Pos.SetXYZ(-offsetXY2,offsetXY2,offsetZ2+ CorePos.Mag());
+    Pos.SetXYZ(offsetXY2,offsetXY2,offsetZ2);
   else if(SegmentNbr==7)
-    Pos.SetXYZ(-offsetXY2,-offsetXY2,offsetZ2+ CorePos.Mag());
+    Pos.SetXYZ(offsetXY2,-offsetXY2,offsetZ2);
   else if(SegmentNbr==8)
-    Pos.SetXYZ(-offsetXY2,-offsetXY2,offsetZ2+ CorePos.Mag());
+    Pos.SetXYZ(-offsetXY2,-offsetXY2,offsetZ2);
   else
     cout << "Warning: Tigress segment number " << SegmentNbr << " is out of range (0 to 9)" << endl;
 
-  TRotation CoreRot;
-  CoreRot.RotateX(CorePos.Theta());
-  CoreRot.RotateZ(CorePos.Phi());
-  Pos*=CoreRot;
 
+  // Each crystal is a rotation of the previous one
+  if (CoreNbr == 2 )
+    Pos.RotateZ(90*deg);
+  else if (CoreNbr == 3 )
+    Pos.RotateZ(180*deg);
+  else if (CoreNbr == 4)
+    Pos.RotateZ(270*deg);
+
+  // Define reference axis as the core position
+  Pos.RotateUz(CorePos.Unit());
+  Pos+=CorePos;
   return (Pos); 
 
 }
@@ -331,7 +359,18 @@ void TTigressPhysics::Clear() {
   AddBack_E.clear();
   AddBack_DC.clear();
   AddBack_Theta.clear();
+  AddBack_X.clear();
+  AddBack_Y.clear();
+  AddBack_Z.clear();
   m_map_E.clear();
+  m_map_Core_Crystal.clear();
+  m_map_Core_MaxE.clear(); 
+  m_map_Segment_Crystal.clear(); 
+  m_map_Segment.clear(); 
+  m_map_Segment_MaxE.clear(); 
+  AddBack_Clover.clear();
+  AddBack_Crystal.clear();
+  AddBack_Segment.clear();
 }
 ///////////////////////////////////////////////////////////////////////////  
 void TTigressPhysics::ClearEventData() {

@@ -40,8 +40,8 @@ void Analysis::Init(){
   Sharc = (TSharcPhysics*)  m_DetectorManager -> GetDetector("Sharc");
   Tigress = (TTigressPhysics*)  m_DetectorManager -> GetDetector("Tigress");
 
-  LightCD2 = EnergyLoss("deuteron_CD2.G4table","G4Table",10);
-  LightAl = EnergyLoss("deuteron_Al.G4table","G4Table",10);
+  LightCD2 = EnergyLoss("proton_CD2.G4table","G4Table",10);
+  LightAl = EnergyLoss("proton_Al.G4table","G4Table",10);
 
   //  LightAl = EnergyLoss("alpha_Al.G4table","G4Table",10);
 
@@ -60,12 +60,12 @@ void Analysis::Init(){
   RunNumberMinor=0;
 
   ThetaSharcSurface = 0;
-  X_Sharc = 0 ;
-  Y_Sharc = 0 ;
-  Z_Sharc = 0 ;
-  Si_E_Sharc = 0 ;
+  X_Sharc = 0;
+  Y_Sharc = 0;
+  Z_Sharc = 0;
+  Si_E_Sharc = 0;
   E_Sharc = 0;
-  ThetaDetector = 0   ;
+  ThetaDetector = 0;
   BeamDirection = TVector3(0,0,1);
   TargetPosition = TVector3(m_DetectorManager->GetTargetX(),m_DetectorManager->GetTargetY(),m_DetectorManager->GetTargetZ() );
   double finalEnergy = BeamCD2.Slow(224,TargetThickness*0.5,0);

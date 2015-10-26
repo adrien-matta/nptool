@@ -3,16 +3,18 @@ void GeMaker(){
 
   // Get the Tree
   TChain* tree = new TChain("DataS1554");
-  tree->Add("/Volumes/LaCie/S1554/root/data35325_*.root");
+  tree->Add("Co_root/*.root");
   TTigressData* Tigress = new TTigressData();
+  tree->SetBranchStatus("*",false);
+  tree->SetBranchStatus("Tigress",true);
   tree->SetBranchAddress("Tigress",&Tigress);
   
   // Create the histogram
-  TFile* outfile = new TFile("GeHistos.root","RECREATE");
-  for(unsigned int d = 0 ; d < 16 ; d++){
+  TFile* outfile = new TFile("GeHistos_60Co.root","RECREATE");
+  for(unsigned int d = 4 ; d < 16 ; d++){
     for(unsigned int c = 0 ; c < 4 ; c++){
       for(unsigned int s = 0 ; s < 10 ; s++){
-        new TH1F(Form("h%d_%d_%d",d+1,c+1,s),Form("h%d_%d_%d",d+1,c+1,s),8000,0,8000000);
+        new TH1F(Form("h%d_%d_%d",d+1,c+1,s),Form("h%d_%d_%d",d+1,c+1,s),80000,0,8000000);
       }
     }
   }
