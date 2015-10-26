@@ -79,6 +79,7 @@ void Analysis::TreatEvent(){
     
     //double BeamEnergy = Rand.Gaus(Initial->GetIncidentInitialKineticEnergy(),4.5);
     double BeamEnergy = InitialConditions->GetIncidentInitialKineticEnergy();
+    double Thickness;
     
     
     //cout << Thickness << endl;
@@ -127,7 +128,8 @@ void Analysis::TreatEvent(){
             if(Hira->CsI_E.size() == 1){
                 for(int countCsI =0; countCsI<Hira->CsI_E.size(); countCsI++){
                     //Try to simulate the nuclear reaction loss
-                    double Thickness = Proton_CsI.EvaluateMaterialThickness(0*MeV, Hira->CsI_E[countCsI]*MeV, 200*millimeter, 0.1*millimeter);
+                    Thickness = Proton_CsI.EvaluateMaterialThickness(0*MeV, Hira->CsI_E[countCsI]*MeV, 200*millimeter, 0.1*millimeter);
+                    cout << Thickness << endl;
                     double eval = f_proton->Eval(Thickness/10);
                     double Random_value = Rand.Uniform(0,1);
                     
@@ -175,8 +177,8 @@ void Analysis::InitOutputBranch() {
     RootOutput::getInstance()->GetTree()->Branch( "Y" , &Y , "Y/D" )  ;
     RootOutput::getInstance()->GetTree()->Branch( "Z" , &Z , "Z/D" )  ;
     RootOutput::getInstance()->GetTree()->Branch( "TelescopeNumber" , &TelescopeNumber , "TelescopeNumber/D" )  ;
-    RootOutput::getInstance()->GetTree()->Branch("InteractionCoordinates","TInteractionCoordinates",&InteractionCoordinates);
-    RootOutput::getInstance()->GetTree()->Branch("InitialConditions","TInitialConditions",&InitialConditions);
+    //RootOutput::getInstance()->GetTree()-> Branch("InteractionCoordinates","TInteractionCoordinates",&InteractionCoordinates);
+    //RootOutput::getInstance()->GetTree()->Branch("InitialConditions","TInitialConditions",&InitialConditions);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

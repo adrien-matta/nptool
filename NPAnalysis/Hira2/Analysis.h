@@ -64,8 +64,6 @@ private:
     
     
     
-    
-    
     //NPL::Reaction* TransferReaction;
     
     // intermediate variable

@@ -9,25 +9,25 @@ void Style_nptool(){
   TStyle* style_nptool = new TStyle("nptool", "style_nptool");
 
   //General 
-  style_nptool->SetFrameFillColor(kWhite);	
-  style_nptool->SetFrameBorderMode(0);	
+  style_nptool->SetFrameFillColor(kWhite);
+  style_nptool->SetFrameBorderMode(0);
   style_nptool->SetFrameLineColor(kBlack);
   style_nptool->SetStatColor(kWhite);	
   style_nptool->SetFillColor(kWhite); 
-  style_nptool->SetTitleFillColor(kWhite);  
+  style_nptool->SetTitleFillColor(kWhite);
 
   // Canvas
-  style_nptool->SetCanvasColor(kWhite);	
+  style_nptool->SetCanvasColor(kWhite);
   style_nptool->SetCanvasDefH(800);
   style_nptool->SetCanvasDefW(800);
-  style_nptool->SetCanvasBorderMode(0);	
+  style_nptool->SetCanvasBorderMode(0);
 
   // Pad
   style_nptool->SetPadBottomMargin(0.15);
   style_nptool->SetPadLeftMargin(0.15);
   style_nptool->SetPadTopMargin(0.05);
   style_nptool->SetPadRightMargin(0.10);
-  style_nptool->SetPadBorderMode(0);	
+  style_nptool->SetPadBorderMode(0);
   style_nptool->SetPadBorderSize(1);
   style_nptool->SetPadColor(kWhite);		
   style_nptool->SetPadTickX(1);
@@ -35,19 +35,25 @@ void Style_nptool(){
 
   // Desable stat title and fit  
   style_nptool->SetOptStat(0);
-  style_nptool->SetOptTitle(0);
-  style_nptool->SetOptFit(0);		
+  //style_nptool->SetOptTitle(0);
+  //style_nptool->SetOptFit(0);
 
   // x axis
-  style_nptool->SetTitleXSize(0.06);     
+  style_nptool->SetTitleXSize(0.06);
   style_nptool->SetTitleXOffset(1.0);     
   style_nptool->SetLabelOffset(0.1,"X");   
   style_nptool->SetLabelSize(0.04,"X");
   style_nptool->SetLabelOffset(0.006,"X");
+    
+    /*style_nptool->SetTitleBorderSize(0);
+    style_nptool->SetTitleX(0.1f);
+    style_nptool->SetTitleW(0.8f);
+    style_nptool->SetTitleAlign(3);*/
 
   // y axis
+    //style_nptool->GetYaxis()->CenterTitle();
   style_nptool->SetTitleYSize(0.06);  
-  style_nptool->SetTitleYOffset(1.1);  
+  style_nptool->SetTitleYOffset(1.1);
   style_nptool->SetLabelOffset(0.1,"Y");
   style_nptool->SetLabelSize(0.04,"Y");
   style_nptool->SetLabelOffset(0.006,"Y");
