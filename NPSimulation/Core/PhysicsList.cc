@@ -162,11 +162,6 @@ void PhysicsList::ReadConfiguration(std::string filename){
 }
 /////////////////////////////////////////////////////////////////////////////
 PhysicsList::~PhysicsList(){
-  delete emPhysicsList;
-  m_PhysList.clear();
-  for(size_t i=0; i < m_PhysList.size(); i++){
-    delete m_PhysList[i];
-  }
 }
 
 /////////////////////////////////////////////////////////////////////////////
