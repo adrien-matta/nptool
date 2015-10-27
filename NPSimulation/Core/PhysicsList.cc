@@ -110,9 +110,15 @@ PhysicsList::PhysicsList() : G4VModularPhysicsList(){
   if(m_Decay){
     decay_List =  new G4DecayPhysics();
     radioactiveDecay_List = new G4RadioactiveDecayPhysics()  ;
-    m_PhysList.push_back( decay_List);
-    m_PhysList.push_back( radioactiveDecay_List);
+    m_PhysList.push_back(decay_List);
+    m_PhysList.push_back(radioactiveDecay_List);
   }
+  
+  else{
+    decay_List = 0;
+    radioactiveDecay_List = 0;
+  }
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -152,15 +158,13 @@ void PhysicsList::ReadConfiguration(std::string filename){
       m_Decay = value;
     else 
       std::cout <<"WARNING: Physics List Token '" << name << "' unknown. Token is ignored." << std::endl;
-    
-    std::cout << name << " " << value << std::endl;
   }
 }
 /////////////////////////////////////////////////////////////////////////////
 PhysicsList::~PhysicsList(){
   delete emPhysicsList;
   m_PhysList.clear();
-  for(size_t i=0; i<m_PhysList.size(); i++){
+  for(size_t i=0; i < m_PhysList.size(); i++){
     delete m_PhysList[i];
   }
 }
