@@ -1,67 +1,75 @@
-#ifndef PhysicsList_h
-#define PhysicsList_h 1
 /*****************************************************************************
- * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
+ * Copyright (C) 2009-2015   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
+ * Original Author: Adrien MATTA  contact address: a.matta@surrey.ac.uk      *
  *                                                                           *
  * Creation Date  : January 2009                                             *
- * Last update    :                                                          *
+ * Last update    : October 2015                                             *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  A quite standard, non-modulable Geant4 PPhysicis list.                   *
- *  Well suited for low energy ions physics.                                 *
+ *  Modular Physics list calling Geant4 reference list                       *
+ *                                                                           *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- * A good improvement should be a modular physicis list in order to deal     *
- * accuratly with different physics cases.                                   *
+ *                                                                           *
+ *                                                                           *
  *****************************************************************************/
-#include "G4VUserPhysicsList.hh"
+
+#ifndef PhysicsList_h
+#define PhysicsList_h 1
+
+#include "G4VModularPhysicsList.hh"
+#include "G4EmConfigurator.hh"
 #include "globals.hh"
-#include "CLHEP/Units/SystemOfUnits.h"
-using namespace CLHEP;
-class PhysicsList: public G4VUserPhysicsList
-{
-public:
-   PhysicsList();
-   ~PhysicsList();
-   void MyOwnConstruction();
+#include <string>
+class G4VPhysicsConstructor;
 
+class PhysicsList: public G4VModularPhysicsList{
+  public:
 
-protected:
-   // Construct particle and physics
-   void ConstructParticle();
-   void ConstructProcess();
-   void ConstructDecay();
+    PhysicsList();
+    virtual ~PhysicsList();
 
+    void ReadConfiguration(std::string filename);
+    void ConstructParticle();
+    void SetCuts();
+    void SetCutForGamma(G4double);
+    void SetCutForElectron(G4double);
+    void SetCutForPositron(G4double);
+    void SetDetectorCut(G4double cut);
+    void ConstructProcess();
+    void AddStepMax();
+    void AddPackage(const G4String& name);
 
-   void SetCuts();
+  private:
+    std::vector<G4VPhysicsConstructor*>  m_PhysList;
+    G4EmConfigurator em_config;
 
-protected:
-// these methods Construct particles
-   void ConstructBosons();
-   void ConstructLeptons();
-   void ConstructMesons();
-   void ConstructBaryons();
-   void ConstructIons();
+  private: // Cuts
+    G4double cutForGamma;
+    G4double cutForElectron;
+    G4double cutForPositron;
+    G4String      emName;
+    G4VPhysicsConstructor* emPhysicsList;
+    G4VPhysicsConstructor* decay_List;
+    G4VPhysicsConstructor* radioactiveDecay_List;
 
-protected:
-// these methods Construct physics processes and register them
-   void ConstructGeneral();
-   void ConstructEM();
+  private: // Physics option
+    bool m_IonBinaryCascadePhysics;
+    bool m_EmExtraPhysics;
+    bool m_HadronElasticPhysics;
+    bool m_StoppingPhysics;
+    bool m_OpticalPhysics; 
+    bool m_HadronPhysicsQGSP_BIC_HP; 
+    bool m_Decay; 
+    
+    
 };
 
 #endif
-
-
-
-
-
-
-

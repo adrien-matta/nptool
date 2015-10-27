@@ -84,7 +84,7 @@ int main(int argc, char** argv){
 
   // Initialize Geant4 kernel
   runManager->Initialize();
-  physicsList->MyOwnConstruction();
+  //physicsList->MyOwnConstruction();
 
   ///////////////////////////////////////////////////////////////
   /////////// Define UI terminal for interactive mode ///////////
