@@ -159,6 +159,14 @@ void PhysicsList::ReadConfiguration(std::string filename){
     else 
       std::cout <<"WARNING: Physics List Token '" << name << "' unknown. Token is ignored." << std::endl;
   }
+  
+  // Most special process need decay to be activated
+     if( (m_IonBinaryCascadePhysics || m_EmExtraPhysics || m_HadronElasticPhysics
+        || m_StoppingPhysics || m_OpticalPhysics || m_HadronPhysicsQGSP_BIC_HP) && !m_Decay){
+        m_Decay = true;
+        std::cout << "Information: Selected process require Decay to be activated." << std::endl;
+     }
+      
 }
 /////////////////////////////////////////////////////////////////////////////
 PhysicsList::~PhysicsList(){
