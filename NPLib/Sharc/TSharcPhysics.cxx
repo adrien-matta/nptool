@@ -41,6 +41,7 @@ using namespace Sharc_LOCAL;
 ClassImp(TSharcPhysics)
   ///////////////////////////////////////////////////////////////////////////
   TSharcPhysics::TSharcPhysics(){
+    m_Rand= new TRandom3();
     EventMultiplicity   = 0 ;
     m_EventData         = new TSharcData ;
     m_PreTreatedData    = new TSharcData ;
@@ -783,7 +784,9 @@ void TSharcPhysics::AddBoxDetector(double Z){
 
   double StripPitchFront = BOX_ActiveWafer_Length/BOX_Wafer_Front_NumberOfStrip ; //mm
   double StripPitchBack  = BOX_ActiveWafer_Width/BOX_Wafer_Back_NumberOfStrip ; //mm
-
+  m_BoxPitchBack = StripPitchBack;
+  m_BoxPitchFront = StripPitchFront;
+  
   // Double stage box case (DSSD+PAD) (the wafer is the same but the slot is different to accomodate the additional PAD)
   double PAD_PCB_Thickness = 3.4;
 
@@ -829,6 +832,9 @@ void TSharcPhysics::AddBoxDetector(double Z){
       else if(i==3) {U=TVector3(0,1,0);V=TVector3(0,0,-1);  Strip_1_1=TVector3( B2  ,-A2 ,Z2); m_DetectorNormal.push_back(TVector3(-1,0,0));}
     }
 
+    m_U.push_back(U);
+    m_V.push_back(V);
+
     //   Buffer object to fill Position Array
     vector<double> lineX ; vector<double> lineY ; vector<double> lineZ ;
 
@@ -867,6 +873,9 @@ void TSharcPhysics::AddQQQDetector( double R,double Phi,double Z){
   else
     m_DetectorNormal.push_back(TVector3(0,0,1));
 
+  m_U.push_back(TVector3(0,0,0));
+  m_V.push_back(TVector3(0,0,0));
+
   double QQQ_R_Min = 9.+R;
   double QQQ_R_Max = 41.0+R;
 
@@ -879,7 +888,8 @@ void TSharcPhysics::AddQQQDetector( double R,double Phi,double Z){
 
   double StripPitchSector = (QQQ_Phi_Max-QQQ_Phi_Min)/QQQ_Sector_NumberOfStrip ; //radial strip spacing in rad
   double StripPitchRadial = (QQQ_R_Max-QQQ_R_Min)/QQQ_Radial_NumberOfStrip  ; // ring strip spacing in mm
-
+  m_QQQPitchBack = StripPitchSector;
+  m_QQQPitchFront = StripPitchRadial;
   TVector3 Strip_1_1;
 
   m_NumberOfDetector++;
@@ -924,11 +934,28 @@ TVector3 TSharcPhysics::GetDetectorNormal( const int& i) const{
 
 }
 ////////////////////////////////////////////////////////////////////////////////
-TVector3 TSharcPhysics::GetPositionOfInteraction(const int& i) const{
-  TVector3    Position = TVector3 (  GetStripPositionX( DetectorNumber[i] , Strip_Front[i] , Strip_Back[i] )    ,
-      GetStripPositionY( DetectorNumber[i] , Strip_Front[i] , Strip_Back[i] )    ,
-      GetStripPositionZ( DetectorNumber[i] , Strip_Front[i] , Strip_Back[i] )    ) ;
-  return(Position) ;
+TVector3 TSharcPhysics::GetPositionOfInteraction(const int& i,bool random) const{
+  static TVector3 Position ;
+
+  Position = TVector3 (  GetStripPositionX( DetectorNumber[i], Strip_Front[i], Strip_Back[i] ),
+      GetStripPositionY( DetectorNumber[i] , Strip_Front[i], Strip_Back[i] ),
+      GetStripPositionZ( DetectorNumber[i] , Strip_Front[i], Strip_Back[i] )) ;
+  
+  if(random){
+    // Box Detector
+    if(m_U[ DetectorNumber[i]-1].Mag()!=0){
+      Position += m_V[ DetectorNumber[i]-1]*m_Rand->Uniform(-1,1)*m_BoxPitchBack*0.5;
+      Position += m_U[ DetectorNumber[i]-1]*m_Rand->Uniform(-1,1)*m_BoxPitchFront*0.5;
+    }
+
+    // QQQ Detector
+    else{
+      Position.SetPerp( Position.Perp() + m_Rand->Uniform(-1,1)*m_QQQPitchFront*0.5);
+      Position.RotateZ(m_Rand->Uniform(-1,1)*m_QQQPitchBack*0.5);
+    }
+  }
+  
+  return Position ;
 
 }
 ////////////////////////////////////////////////////////////////////////////////

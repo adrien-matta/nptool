@@ -35,6 +35,7 @@
 #include "TVector3.h" 
 #include "TObject.h"
 #include "TCanvas.h"
+#include "TRandom3.h"
 // Forward declaration
 class TSharcSpectra;
 
@@ -161,16 +162,16 @@ class TSharcPhysics : public TObject, public NPL::VDetector{
     TSharcData* GetPreTreatedData() const {return m_PreTreatedData;}
 
     // Use to access the strip position
-    double GetStripPositionX( const int& N , const int& Front , const int& Back )   const{ return m_StripPositionX[N-1][Front-1][Back-1] ; }  ;
-    double GetStripPositionY( const int& N , const int& Front , const int& Back )   const{ return m_StripPositionY[N-1][Front-1][Back-1] ; }  ;
-    double GetStripPositionZ( const int& N , const int& Front , const int& Back )   const{ return m_StripPositionZ[N-1][Front-1][Back-1] ; }  ;
+    inline double GetStripPositionX( const int& N , const int& Front , const int& Back )   const{ return m_StripPositionX[N-1][Front-1][Back-1] ; }  ;
+    inline double GetStripPositionY( const int& N , const int& Front , const int& Back )   const{ return m_StripPositionY[N-1][Front-1][Back-1] ; }  ;
+    inline double GetStripPositionZ( const int& N , const int& Front , const int& Back )   const{ return m_StripPositionZ[N-1][Front-1][Back-1] ; }  ;
 
-    double GetNumberOfDetector() const { return m_NumberOfDetector; };
+    inline double GetNumberOfDetector() const { return m_NumberOfDetector; };
 
     // To be called after a build Physical Event 
-    int GetEventMultiplicity() const { return EventMultiplicity; };
+    inline int GetEventMultiplicity() const { return EventMultiplicity; };
 
-    TVector3 GetPositionOfInteraction(const int& i) const;   
+    TVector3 GetPositionOfInteraction(const int& i, bool random=false) const;   
     TVector3 GetDetectorNormal(const int& i) const;
     double   GetDeadLayer(const int& i) const;
 
@@ -179,7 +180,6 @@ class TSharcPhysics : public TObject, public NPL::VDetector{
     // By default take EX and TY.
     bool m_Take_E_Front;//!
     bool m_Take_T_Back;//!
-
 
     //   Event over this value after pre-treatment are not treated / avoid long treatment time on spurious event   
     unsigned int m_MaximumStripMultiplicityAllowed  ;//!
@@ -194,8 +194,6 @@ class TSharcPhysics : public TObject, public NPL::VDetector{
     double m_StripBack_E_Threshold ;//!
     double m_PAD_E_RAW_Threshold ;//!
     double m_PAD_E_Threshold ;//!
-
-
 
   private:   //   Root Input and Output tree classes
 
@@ -216,6 +214,13 @@ class TSharcPhysics : public TObject, public NPL::VDetector{
     vector< vector < vector < double > > >   m_StripPositionY;//!
     vector< vector < vector < double > > >   m_StripPositionZ;//!
     vector< TVector3 > m_DetectorNormal;//!
+    vector< TVector3 > m_U;//!
+    vector< TVector3 > m_V;//!
+    TRandom3* m_Rand;//!
+    double m_BoxPitchBack ;//!
+    double m_BoxPitchFront;//!
+    double m_QQQPitchBack ;//!
+    double m_QQQPitchFront;//!
 
   private: // Spectra Class
     TSharcSpectra* m_Spectra; // !
