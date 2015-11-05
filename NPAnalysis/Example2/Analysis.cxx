@@ -84,7 +84,7 @@ void Analysis::TreatEvent(){
     ThetaSharcSurface = 0;
     ThetaNormalTarget = 0;
     if(XTarget>-1000 && YTarget>-1000){
-      TVector3 HitDirection = Sharc -> GetPositionOfInteraction(0);
+      TVector3 HitDirection = Sharc -> GetPositionOfInteraction(0,true);
       ThetaLab = HitDirection.Angle( BeamDirection );
       
       ThetaSharcSurface = HitDirection.Angle( TVector3(0,0,1) ) ;

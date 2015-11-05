@@ -48,8 +48,8 @@ void Analysis::Init(){
   BeamCD2 = EnergyLoss("Si28_CD2.G4table","G4Table",10);
   myReaction = new NPL::Reaction();
   myReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
-  TargetThickness = m_DetectorManager->GetTargetThickness()*micrometer;
-  //  TargetThickness = 0; 
+//  TargetThickness = m_DetectorManager->GetTargetThickness()*micrometer;
+    TargetThickness = 0; 
   OriginalBeamEnergy = myReaction->GetBeamEnergy();
   Rand = TRandom3();
   DetectorNumber = 0 ;
@@ -122,7 +122,11 @@ void Analysis::TreatEvent(){
   if(Sharc->Strip_E.size()==1){
     /************************************************/
     // Part 1 : Impact Angle
-    TVector3 HitDirection = Sharc -> GetPositionOfInteraction(0)-TargetPosition;
+    TVector3 HitDirection = Sharc -> GetPositionOfInteraction(0,true)-TargetPosition;
+    X_Sharc = Sharc -> GetPositionOfInteraction(0,true).X();
+    Y_Sharc = Sharc -> GetPositionOfInteraction(0,true).Y();
+    Z_Sharc = Sharc -> GetPositionOfInteraction(0,true).Z();
+ 
     ThetaLab = HitDirection.Angle( BeamDirection );
     ThetaNormalTarget = HitDirection.Angle( TVector3(0,0,1) ) ;
     ThetaDetector = HitDirection.Angle(-Sharc->GetDetectorNormal(0));
@@ -219,8 +223,8 @@ void Analysis::TreatEvent(){
     // Part 4 : Theta CM Calculation
     ThetaCM  = myReaction -> EnergyLabToThetaCM( ELab , ThetaLab)/deg;
     ThetaLab=ThetaLab/deg;
-    if(ThetaLab>140)
-      ThetaLab=Rand.Uniform(ThetaLab-0.4,ThetaLab+0.4);
+ /*   if(ThetaLab>140)
+      ThetaLab=Rand.Uniform(ThetaLab-0.4,ThetaLab+0.4);*/
     /************************************************/
   }//end loop Sharc 
 }
@@ -236,6 +240,9 @@ void Analysis::InitOutputBranch(){
   RootOutput::getInstance()->GetTree()->Branch("ThetaCM",&ThetaCM,"ThetaCM/D");
   RootOutput::getInstance()->GetTree()->Branch("ThetaDetector",&ThetaDetector,"ThetaDetector/D");
   RootOutput::getInstance()->GetTree()->Branch("Distance",&Distance,"Distance/D");
+  RootOutput::getInstance()->GetTree()->Branch("X_Sharc",&X_Sharc,"X_Sharc/D");
+  RootOutput::getInstance()->GetTree()->Branch("Y_Sharc",&Y_Sharc,"Y_Sharc/D");
+  RootOutput::getInstance()->GetTree()->Branch("Z_Sharc",&Z_Sharc,"Z_Sharc/D");
 
   RootOutput::getInstance()->GetTree()->Branch("RunNumber",&RunNumber,"RunNumber/I");
   RootOutput::getInstance()->GetTree()->Branch("RunNumberMinor",&RunNumberMinor,"RunNumberMinor/I");
