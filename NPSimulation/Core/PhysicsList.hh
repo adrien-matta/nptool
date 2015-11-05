@@ -28,6 +28,24 @@
 #include "G4EmConfigurator.hh"
 #include "globals.hh"
 #include <string>
+#include <map>
+
+#include "G4HadronPhysicsQGSP_BIC_HP.hh"
+#include "G4HadronPhysicsQGSP_BIC.hh"
+#include "G4IonConstructor.hh"
+#include "G4EmStandardPhysics.hh"
+#include "G4EmStandardPhysics_option3.hh"
+#include "G4EmStandardPhysics_option4.hh"
+#include "G4EmExtraPhysics.hh"
+#include "G4StoppingPhysics.hh"
+#include "G4DecayPhysics.hh"
+#include "G4OpticalPhysics.hh"
+#include "G4HadronElasticPhysics.hh"
+#include "G4HadronElasticPhysicsHP.hh"
+#include "G4RadioactiveDecayPhysics.hh"
+#include "G4IonBinaryCascadePhysics.hh"
+#include "G4DecayPhysics.hh"
+
 class G4VPhysicsConstructor;
 
 class PhysicsList: public G4VModularPhysicsList{
@@ -46,30 +64,32 @@ class PhysicsList: public G4VModularPhysicsList{
     void ConstructProcess();
     void AddStepMax();
     void AddPackage(const G4String& name);
+    void BiasCrossSectionByFactor(double factor);
+  
 
   private:
-    std::vector<G4VPhysicsConstructor*>  m_PhysList;
+    std::map<std::string,G4VPhysicsConstructor*>  m_PhysList;
     G4EmConfigurator em_config;
 
   private: // Cuts
     G4double cutForGamma;
     G4double cutForElectron;
     G4double cutForPositron;
-    G4String      emName;
     G4VPhysicsConstructor* emPhysicsList;
     G4VPhysicsConstructor* decay_List;
     G4VPhysicsConstructor* radioactiveDecay_List;
 
   private: // Physics option
-    bool m_IonBinaryCascadePhysics;
-    bool m_EmExtraPhysics;
-    bool m_HadronElasticPhysics;
-    bool m_StoppingPhysics;
-    bool m_OpticalPhysics; 
-    bool m_HadronPhysicsQGSP_BIC_HP; 
-    bool m_Decay; 
+    double m_IonBinaryCascadePhysics;
+    double m_EmExtraPhysics;
+    double m_HadronElasticPhysics;
+    double m_StoppingPhysics;
+    double m_OpticalPhysics; 
+    double m_HadronPhysicsQGSP_BIC_HP; 
+    double m_Decay; 
     
     
 };
+
 
 #endif
