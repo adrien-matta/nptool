@@ -318,7 +318,7 @@ void TSharcPhysics::ReadAnalysisConfig(){
       else if (whatToDo== "DISABLE_ALL") {
         AnalysisConfigFile >> DataBuffer;
         cout << whatToDo << "  " << DataBuffer << endl;
-        int Detector = atoi(DataBuffer.substr(2,1).c_str());
+        int Detector = atoi(DataBuffer.substr(2,2).c_str());
         vector< bool > ChannelStatus;
         ChannelStatus.resize(24,false);
         m_FrontChannelStatus[Detector-1] = ChannelStatus;
@@ -330,21 +330,20 @@ void TSharcPhysics::ReadAnalysisConfig(){
 
       else if (whatToDo == "DISABLE_CHANNEL") {
         AnalysisConfigFile >> DataBuffer;
-        cout << whatToDo << "  " << DataBuffer << endl;
-        int Detector = atoi(DataBuffer.substr(2,1).c_str());
+        int Detector = atoi(DataBuffer.substr(2,2).c_str());
         int channel = -1;
         if (DataBuffer.find("STRF") != string::npos) {
-          channel = atoi(DataBuffer.substr(7).c_str());
+          channel = atoi(DataBuffer.substr(8).c_str());
           *(m_FrontChannelStatus[Detector-1].begin()+channel-1) = false;
         }
 
         else if (DataBuffer.find("STRB")!=string::npos) {
-          channel = atoi(DataBuffer.substr(7).c_str());
+          channel = atoi(DataBuffer.substr(8).c_str());
           *(m_BackChannelStatus[Detector-1].begin()+channel-1) = false;
         }
 
         else if (DataBuffer.find("PAD") != string::npos) {
-          channel = atoi(DataBuffer.substr(6).c_str());
+          channel = atoi(DataBuffer.substr(7).c_str());
           *(m_PADChannelStatus[Detector-1].begin()+channel-1) = false;
         }
 
