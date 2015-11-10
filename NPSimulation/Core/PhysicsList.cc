@@ -158,8 +158,10 @@ PhysicsList::~PhysicsList(){
 
 /////////////////////////////////////////////////////////////////////////////
 void PhysicsList::ConstructParticle(){
-  if(decay_List)
+  if(decay_List){
     decay_List -> ConstructParticle();
+    radioactiveDecay_List->ConstructParticle();
+  }
   else{
     // If decay is not activated we have to declare the particle ourself
     G4He3::He3Definition();

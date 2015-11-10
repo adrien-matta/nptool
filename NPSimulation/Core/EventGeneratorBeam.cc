@@ -102,6 +102,8 @@ void EventGeneratorBeam::GenerateEvent(G4Event* anEvent){
   Beam_theta = BeamDir.theta()    ;
   Beam_phi   = BeamDir.phi()      ; Beam_phi *= 1;
   FinalBeamEnergy = m_Target->SlowDownBeam(m_particle, InitialBeamEnergy,z0-m_Beam->GetTargetZ(),Beam_theta);
+  if(FinalBeamEnergy<0 || FinalBeamEnergy!=FinalBeamEnergy)
+    FinalBeamEnergy=0;
   ///////////////////////////////////////////////////////
   ///// Add the Beam particle to the particle Stack /////
   ///////////////////////////////////////////////////////
