@@ -531,28 +531,28 @@ void TW1Physics::BuildSimplePhysicalEvent()
       vector<TVector2> couple = Match_Front_Back();
 
       for (unsigned int i = 0; i < couple.size(); i++) { // loop on selected events
-         int    DetecNbr    = m_PreTreatedData->GetW1FrontEDetectorNbr(couple[i].X());
-         int    StripFront  = m_PreTreatedData->GetW1FrontEStripNbr(couple[i].X());
-         int    StripBack   = m_PreTreatedData->GetW1BackEStripNbr(couple[i].Y());
-         double EnergyFront = m_PreTreatedData->GetW1FrontEEnergy(couple[i].X());
-         double EnergyBack  = m_PreTreatedData->GetW1BackEEnergy(couple[i].Y());
+         int    DetecNbr    = m_PreTreatedData->GetFrontEDetectorNbr(couple[i].X());
+         int    StripFront  = m_PreTreatedData->GetFrontEStripNbr(couple[i].X());
+         int    StripBack   = m_PreTreatedData->GetBackEStripNbr(couple[i].Y());
+         double EnergyFront = m_PreTreatedData->GetFrontEEnergy(couple[i].X());
+         double EnergyBack  = m_PreTreatedData->GetBackEEnergy(couple[i].Y());
          EnergyBack *= 1;
 
          // Search for associate time
          // Front
          double TimeFront = -1000;
-         for (unsigned int t = 0; t < m_PreTreatedData->GetW1FrontTMult(); t++) {
-            if (m_PreTreatedData->GetW1FrontTStripNbr(couple[i].X()) == m_PreTreatedData->GetW1FrontTStripNbr(t) ||
-                m_PreTreatedData->GetW1FrontTDetectorNbr(couple[i].X()) == m_PreTreatedData->GetW1FrontTDetectorNbr(t))
-               TimeFront = m_PreTreatedData->GetW1FrontTTime(t);
+         for (unsigned int t = 0; t < m_PreTreatedData->GetFrontTMult(); t++) {
+            if (m_PreTreatedData->GetFrontTStripNbr(couple[i].X()) == m_PreTreatedData->GetFrontTStripNbr(t) ||
+                m_PreTreatedData->GetFrontTDetectorNbr(couple[i].X()) == m_PreTreatedData->GetFrontTDetectorNbr(t))
+               TimeFront = m_PreTreatedData->GetFrontTTime(t);
          }
          TimeFront *= 1;
          // Back
          double TimeBack = -1000;
-         for (unsigned int t = 0; t < m_PreTreatedData->GetW1BackTMult(); t++) {
-            if (m_PreTreatedData->GetW1BackTStripNbr(couple[i].X()) == m_PreTreatedData->GetW1BackTStripNbr(t) ||
-                m_PreTreatedData->GetW1BackTDetectorNbr(couple[i].X()) == m_PreTreatedData->GetW1BackTDetectorNbr(t))
-               TimeBack = m_PreTreatedData->GetW1BackTTime(t);
+         for (unsigned int t = 0; t < m_PreTreatedData->GetBackTMult(); t++) {
+            if (m_PreTreatedData->GetBackTStripNbr(couple[i].X()) == m_PreTreatedData->GetBackTStripNbr(t) ||
+                m_PreTreatedData->GetBackTDetectorNbr(couple[i].X()) == m_PreTreatedData->GetBackTDetectorNbr(t))
+               TimeBack = m_PreTreatedData->GetBackTTime(t);
          }
 
          // Fill TW1Physics private members
@@ -575,46 +575,46 @@ void TW1Physics::PreTreat()
    ClearPreTreatedData();
       
    // (Front, E)
-   for (int i = 0; i < m_EventData->GetW1FrontEMult(); i++) {
-      if (IsValidChannel("Front", m_EventData->GetW1FrontEDetectorNbr(i), m_EventData->GetW1FrontEStripNbr(i)) &&
-           m_EventData->GetW1FrontEEnergy(i) > m_FrontE_Raw_Threshold) {
+   for (int i = 0; i < m_EventData->GetFrontEMult(); i++) {
+      if (IsValidChannel("Front", m_EventData->GetFrontEDetectorNbr(i), m_EventData->GetFrontEStripNbr(i)) &&
+           m_EventData->GetFrontEEnergy(i) > m_FrontE_Raw_Threshold) {
          double E = fW1_Front_E(m_EventData , i);
          if (E > m_FrontE_Calib_Threshold)   {
-            m_PreTreatedData->SetW1FrontEDetectorNbr(m_EventData->GetW1FrontEDetectorNbr(i));
-            m_PreTreatedData->SetW1FrontEStripNbr(m_EventData->GetW1FrontEStripNbr(i));
-            m_PreTreatedData->SetW1FrontEEnergy(E);
+            m_PreTreatedData->SetFrontEDetectorNbr(m_EventData->GetFrontEDetectorNbr(i));
+            m_PreTreatedData->SetFrontEStripNbr(m_EventData->GetFrontEStripNbr(i));
+            m_PreTreatedData->SetFrontEEnergy(E);
          }
       } 
    }
    // (Front, T)
-   for (int i = 0; i < m_EventData->GetW1FrontTMult(); i++) {
-      if (IsValidChannel("Front", m_EventData->GetW1FrontTDetectorNbr(i), m_EventData->GetW1FrontTStripNbr(i))) {
+   for (int i = 0; i < m_EventData->GetFrontTMult(); i++) {
+      if (IsValidChannel("Front", m_EventData->GetFrontTDetectorNbr(i), m_EventData->GetFrontTStripNbr(i))) {
          double T = fW1_Front_T(m_EventData , i);
-         m_PreTreatedData->SetW1FrontTDetectorNbr(m_EventData->GetW1FrontTDetectorNbr(i));
-         m_PreTreatedData->SetW1FrontTStripNbr(m_EventData->GetW1FrontTStripNbr(i));
-         m_PreTreatedData->SetW1FrontTTime(T);
+         m_PreTreatedData->SetFrontTDetectorNbr(m_EventData->GetFrontTDetectorNbr(i));
+         m_PreTreatedData->SetFrontTStripNbr(m_EventData->GetFrontTStripNbr(i));
+         m_PreTreatedData->SetFrontTTime(T);
       } 
    }
 
    // (Back, E)
-   for (int i = 0; i < m_EventData->GetW1BackEMult(); i++) {
-      if (IsValidChannel("Back", m_EventData->GetW1FrontEDetectorNbr(i), m_EventData->GetW1FrontEStripNbr(i)) &&
-          m_EventData->GetW1BackEEnergy(i) > m_BackE_Raw_Threshold) {
+   for (int i = 0; i < m_EventData->GetBackEMult(); i++) {
+      if (IsValidChannel("Back", m_EventData->GetFrontEDetectorNbr(i), m_EventData->GetFrontEStripNbr(i)) &&
+          m_EventData->GetBackEEnergy(i) > m_BackE_Raw_Threshold) {
          double E = fW1_Back_E(m_EventData , i);
          if (E > m_BackE_Calib_Threshold) {
-            m_PreTreatedData->SetW1BackEDetectorNbr(m_EventData->GetW1BackEDetectorNbr(i));
-            m_PreTreatedData->SetW1BackEStripNbr(m_EventData->GetW1BackEStripNbr(i));
-            m_PreTreatedData->SetW1BackEEnergy(E);
+            m_PreTreatedData->SetBackEDetectorNbr(m_EventData->GetBackEDetectorNbr(i));
+            m_PreTreatedData->SetBackEStripNbr(m_EventData->GetBackEStripNbr(i));
+            m_PreTreatedData->SetBackEEnergy(E);
          }
       } 
    }
    // (Back, T)
-   for (int i = 0; i < m_EventData->GetW1BackTMult(); i++) {
-      if (IsValidChannel("Back", m_EventData->GetW1FrontTDetectorNbr(i), m_EventData->GetW1FrontTStripNbr(i))) {
+   for (int i = 0; i < m_EventData->GetBackTMult(); i++) {
+      if (IsValidChannel("Back", m_EventData->GetFrontTDetectorNbr(i), m_EventData->GetFrontTStripNbr(i))) {
          double T = fW1_Back_T(m_EventData , i);
-         m_PreTreatedData->SetW1BackTDetectorNbr(m_EventData->GetW1BackTDetectorNbr(i));
-         m_PreTreatedData->SetW1BackTStripNbr(m_EventData->GetW1BackTStripNbr(i));
-         m_PreTreatedData->SetW1BackTTime(T);
+         m_PreTreatedData->SetBackTDetectorNbr(m_EventData->GetBackTDetectorNbr(i));
+         m_PreTreatedData->SetBackTStripNbr(m_EventData->GetBackTStripNbr(i));
+         m_PreTreatedData->SetBackTTime(T);
       } 
    }
 }
@@ -624,12 +624,12 @@ void TW1Physics::PreTreat()
 int TW1Physics::EventType()
 {
    // Same multiplicity on front and back side
-   if (m_PreTreatedData->GetW1FrontEMult() == m_PreTreatedData->GetW1BackEMult()) {
+   if (m_PreTreatedData->GetFrontEMult() == m_PreTreatedData->GetBackEMult()) {
       return 1;
    }
    // Possibly interstrip
-   else if (m_PreTreatedData->GetW1FrontEMult() == m_PreTreatedData->GetW1BackEMult()+1 ||
-            m_PreTreatedData->GetW1FrontEMult() == m_PreTreatedData->GetW1BackEMult()-1) {
+   else if (m_PreTreatedData->GetFrontEMult() == m_PreTreatedData->GetBackEMult()+1 ||
+            m_PreTreatedData->GetFrontEMult() == m_PreTreatedData->GetBackEMult()-1) {
       return 2;
    }
    // Rejected event
@@ -646,19 +646,19 @@ vector<TVector2> TW1Physics::Match_Front_Back()
 
    // Treat only allowd multiplicity events. If multiplicity is too 
    // high, then return "empty" vector
-   if (m_PreTreatedData->GetW1FrontEMult() > m_MaximumStripMultiplicityAllowed || 
-       m_PreTreatedData->GetW1BackEMult()  > m_MaximumStripMultiplicityAllowed)
+   if (m_PreTreatedData->GetFrontEMult() > m_MaximumStripMultiplicityAllowed || 
+       m_PreTreatedData->GetBackEMult()  > m_MaximumStripMultiplicityAllowed)
       return ArrayOfGoodCouple;
 
    // Loop on front multiplicity
-   for (int i = 0; i < m_PreTreatedData->GetW1FrontEMult(); i++) {
+   for (int i = 0; i < m_PreTreatedData->GetFrontEMult(); i++) {
       // Loop on back multiplicity
-      for (int j = 0; j < m_PreTreatedData->GetW1BackEMult(); j++) {
+      for (int j = 0; j < m_PreTreatedData->GetBackEMult(); j++) {
          // if same detector check energy
-         if (m_PreTreatedData->GetW1FrontEDetectorNbr(i) == m_PreTreatedData->GetW1BackEDetectorNbr(j)) {
+         if (m_PreTreatedData->GetFrontEDetectorNbr(i) == m_PreTreatedData->GetBackEDetectorNbr(j)) {
             // Look if energy match (within m_StripEnergyMatchingTolerance %)
-            double de = abs(m_PreTreatedData->GetW1FrontEEnergy(i) - m_PreTreatedData->GetW1BackEEnergy(j));
-            if (de / m_PreTreatedData->GetW1FrontEEnergy(i) < m_StripEnergyMatchingTolerance/100) {
+            double de = abs(m_PreTreatedData->GetFrontEEnergy(i) - m_PreTreatedData->GetBackEEnergy(j));
+            if (de / m_PreTreatedData->GetFrontEEnergy(i) < m_StripEnergyMatchingTolerance/100) {
                ArrayOfGoodCouple.push_back(TVector2(i,j));
             }  // end test energy
          }  // end test same detector
@@ -666,7 +666,7 @@ vector<TVector2> TW1Physics::Match_Front_Back()
    }  // end loop front multiplicity
 
    // Prevent treating event with ambiguous matchin beetween X and Y
-   if (ArrayOfGoodCouple.size() > m_PreTreatedData->GetW1FrontEMult()) ArrayOfGoodCouple.clear();
+   if (ArrayOfGoodCouple.size() > m_PreTreatedData->GetFrontEMult()) ArrayOfGoodCouple.clear();
 
    return ArrayOfGoodCouple;
 }
@@ -837,28 +837,28 @@ void TW1Physics::ReadAnalysisConfig()
 ///////////////////////////////////////////////////////////////////////////
 double LOCAL::fW1_Front_E(TW1Data* m_EventData , int i)
 {
-   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + NPL::itoa(m_EventData->GetW1FrontEDetectorNbr(i)) + "_Front_" + NPL::itoa(m_EventData->GetW1FrontEStripNbr(i)) +"_E",  m_EventData->GetW1FrontEEnergy(i));
+   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + NPL::itoa(m_EventData->GetFrontEDetectorNbr(i)) + "_Front_" + NPL::itoa(m_EventData->GetFrontEStripNbr(i)) +"_E",  m_EventData->GetFrontEEnergy(i));
 }
  
  
 
 double LOCAL::fW1_Back_E(TW1Data* m_EventData , int i)
 {
-   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + NPL::itoa(m_EventData->GetW1BackEDetectorNbr(i)) + "_Back_" + NPL::itoa(m_EventData->GetW1BackEStripNbr(i)) +"_E",  m_EventData->GetW1BackEEnergy(i));
+   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + NPL::itoa(m_EventData->GetBackEDetectorNbr(i)) + "_Back_" + NPL::itoa(m_EventData->GetBackEStripNbr(i)) +"_E",  m_EventData->GetBackEEnergy(i));
 }
   
  
 
 double LOCAL::fW1_Front_T(TW1Data* m_EventData , int i)
 {
-   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + NPL::itoa(m_EventData->GetW1FrontTDetectorNbr(i)) + "_Front_" + NPL::itoa(m_EventData->GetW1FrontTStripNbr(i)) +"_T",  m_EventData->GetW1FrontTTime(i));
+   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + NPL::itoa(m_EventData->GetFrontTDetectorNbr(i)) + "_Front_" + NPL::itoa(m_EventData->GetFrontTStripNbr(i)) +"_T",  m_EventData->GetFrontTTime(i));
 }
  
  
 
 double LOCAL::fW1_Back_T(TW1Data* m_EventData , int i)
 {
-   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + NPL::itoa(m_EventData->GetW1BackTDetectorNbr(i)) + "_Back_" + NPL::itoa(m_EventData->GetW1BackTStripNbr(i)) +"_T",  m_EventData->GetW1BackTTime(i));
+   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + NPL::itoa(m_EventData->GetBackTDetectorNbr(i)) + "_Back_" + NPL::itoa(m_EventData->GetBackTStripNbr(i)) +"_T",  m_EventData->GetBackTTime(i));
 }
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
