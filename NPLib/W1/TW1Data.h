@@ -23,11 +23,12 @@
  *****************************************************************************/
 // C++ headers
 #include <vector>
+using namespace std;
 
 // ROOT headers
 #include "TObject.h"
 
-using namespace std ;
+
 class TW1Data : public TObject
 {
    private:
