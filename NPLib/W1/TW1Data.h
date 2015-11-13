@@ -81,6 +81,33 @@ class TW1Data : public TObject
       void SetBackTStripNbr(UShort_t StripNbr)      {fW1_BackT_StripNbr.push_back(StripNbr);}
       void SetBackTTime(Double_t Time)              {fW1_BackT_Time.push_back(Time);}
 
+      // Front E
+      void SetFrontE(UShort DetNbr, UShort_t StripNbr, Double_t Energy) {
+         SetFrontEDetectorNbr(DetNbr);
+         SetFrontEStripNbr(StripNbr);
+         SetFrontEEnergy(Energy);
+      }
+      // Front T
+      void SetFrontT(UShort DetNbr, UShort_t StripNbr, Double_t Time) {
+         SetFrontTDetectorNbr(DetNbr);
+         SetFrontTStripNbr(StripNbr);
+         SetFrontTTime(Time);
+      }
+
+      // Back E
+      void SetBackE(UShort DetNbr, UShort_t StripNbr, Double_t Energy) {
+         SetBackEDetectorNbr(DetNbr);
+         SetBackEStripNbr(StripNbr);
+         SetBackEEnergy(Energy);
+      }
+      // Back T
+      void SetBackT(UShort DetNbr, UShort_t StripNbr, Double_t Time) {
+         SetBackTDetectorNbr(DetNbr);
+         SetBackTStripNbr(StripNbr);
+         SetBackTTime(Time);
+      }
+
+
       /////////////////////           GETTERS           ////////////////////////
       // DSSD
       // (Front, E)
