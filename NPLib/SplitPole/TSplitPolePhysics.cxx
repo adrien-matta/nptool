@@ -12,7 +12,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *    This class hold W1  Physics                                            *
+ *    This class hold SplitPole  Physics                                            *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -20,7 +20,7 @@
  *                                                                           *
  *****************************************************************************/
 //  NPL
-#include "TW1Physics.h"
+#include "TSplitPolePhysics.h"
 #include "RootOutput.h"
 #include "RootInput.h"
 #include "NPDetectorFactory.h"
@@ -48,11 +48,11 @@ string itoa(int value)
 
 
 
-ClassImp(TW1Physics)
+ClassImp(TSplitPolePhysics)
 ///////////////////////////////////////////////////////////////////////////
-TW1Physics::TW1Physics()
-   : m_EventData(new TW1Data),
-     m_PreTreatedData(new TW1Data),
+TSplitPolePhysics::TSplitPolePhysics()
+   : m_EventData(new TSplitPoleData),
+     m_PreTreatedData(new TSplitPoleData),
      m_EventPhysics(this),
      m_MaximumStripMultiplicityAllowed(1),   // multiplidity 1
      m_StripEnergyMatchingTolerance(10),     // 10%
@@ -70,7 +70,7 @@ TW1Physics::TW1Physics()
 
 
 ///////////////////////////////////////////////////////////////////////////
-TW1Physics::~TW1Physics()
+TSplitPolePhysics::~TSplitPolePhysics()
 {
    delete m_EventData;
    delete m_PreTreatedData;
@@ -79,7 +79,7 @@ TW1Physics::~TW1Physics()
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TW1Physics::Clear()
+void TSplitPolePhysics::Clear()
 {
    fEventType.clear();
    fDetectorNumber.clear();
@@ -92,9 +92,9 @@ void TW1Physics::Clear()
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TW1Physics::ReadConfiguration(string Path) 
+void TSplitPolePhysics::ReadConfiguration(string Path) 
 {
-   ifstream ConfigFile;
+/*   ifstream ConfigFile;
    ConfigFile.open(Path.c_str());
    string LineBuffer, DataBuffer;
 
@@ -114,8 +114,8 @@ void TW1Physics::ReadConfiguration(string Path)
    while (!ConfigFile.eof()) {      
       getline(ConfigFile, LineBuffer);
 
-      // If W1 detector found, toggle Reading Block Status
-      if (LineBuffer.compare(0, 2, "W1") == 0) {
+      // If SplitPole detector found, toggle Reading Block Status
+      if (LineBuffer.compare(0, 2, "SplitPole") == 0) {
          cout << "Detector found: " << endl;
          ReadingStatus = true;
       }
@@ -132,7 +132,7 @@ void TW1Physics::ReadConfiguration(string Path)
          if (DataBuffer.compare(0, 1, "%") == 0) {ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
 
          //  Finding another telescope (safety), toggle out
-         else if (DataBuffer.compare(0, 2, "W1") == 0) {
+         else if (DataBuffer.compare(0, 2, "SplitPole") == 0) {
             cout << "WARNING: Another Telescope is find before standard sequence of Token, Error may occured in Telecope definition" << endl;
             ReadingStatus = false;
          }
@@ -264,61 +264,65 @@ void TW1Physics::ReadConfiguration(string Path)
           
    InitializeStandardParameter();
    ReadAnalysisConfig();
+   */
 }
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TW1Physics::AddParameterToCalibrationManager()
+void TSplitPolePhysics::AddParameterToCalibrationManager()
 {
-   CalibrationManager* Cal = CalibrationManager::getInstance();
+/*   CalibrationManager* Cal = CalibrationManager::getInstance();
     
    for (int i = 0; i < m_NumberOfDetector; i++) {
       for (int j = 0; j < m_NumberOfStrips; j++) {
          // Energy
-         Cal->AddParameter("W1", "Detector"+ NPL::itoa(i+1)+"_Front_"+ NPL::itoa(j+1)+"_E", "W1_DETECTOR"+ NPL::itoa(i+1)+"_FRONT_"+ NPL::itoa(j+1)+"_E");
-         Cal->AddParameter("W1", "Detector"+ NPL::itoa(i+1)+"_Back_"+ NPL::itoa(j+1)+"_E",  "W1_DETECTOR"+ NPL::itoa(i+1)+"_BACK_"+ NPL::itoa(j+1)+"_E");  
+         Cal->AddParameter("SplitPole", "Detector"+ NPL::itoa(i+1)+"_Front_"+ NPL::itoa(j+1)+"_E", "SplitPole_DETECTOR"+ NPL::itoa(i+1)+"_FRONT_"+ NPL::itoa(j+1)+"_E");
+         Cal->AddParameter("SplitPole", "Detector"+ NPL::itoa(i+1)+"_Back_"+ NPL::itoa(j+1)+"_E",  "SplitPole_DETECTOR"+ NPL::itoa(i+1)+"_BACK_"+ NPL::itoa(j+1)+"_E");  
          // Time
-         Cal->AddParameter("W1", "Detector"+ NPL::itoa(i+1)+"_Front_"+ NPL::itoa(j+1)+"_T", "W1_DETECTOR"+ NPL::itoa(i+1)+"_FRONT_"+ NPL::itoa(j+1)+"_T");
-         Cal->AddParameter("W1", "Detector"+ NPL::itoa(i+1)+"_Back_"+ NPL::itoa(j+1)+"_T",  "W1_DETECTOR"+ NPL::itoa(i+1)+"_BACK_"+ NPL::itoa(j+1)+"_T");  
+         Cal->AddParameter("SplitPole", "Detector"+ NPL::itoa(i+1)+"_Front_"+ NPL::itoa(j+1)+"_T", "SplitPole_DETECTOR"+ NPL::itoa(i+1)+"_FRONT_"+ NPL::itoa(j+1)+"_T");
+         Cal->AddParameter("SplitPole", "Detector"+ NPL::itoa(i+1)+"_Back_"+ NPL::itoa(j+1)+"_T",  "SplitPole_DETECTOR"+ NPL::itoa(i+1)+"_BACK_"+ NPL::itoa(j+1)+"_T");  
       }
    }
+   */
 }
 
 
 ///////////////////////////////////////////////////////////////////////////
-void  TW1Physics::InitializeRootInputRaw() 
+void  TSplitPolePhysics::InitializeRootInputRaw() 
 {
-   TChain* inputChain = RootInput::getInstance()->GetChain();
-   inputChain->SetBranchStatus("W1"   , true);
-   inputChain->SetBranchStatus("fW1_*", true);
-   inputChain->SetBranchAddress("W1"  , &m_EventData);
+/*   TChain* inputChain = RootInput::getInstance()->GetChain();
+   inputChain->SetBranchStatus("SplitPole"   , true);
+   inputChain->SetBranchStatus("fSplitPole_*", true);
+   inputChain->SetBranchAddress("SplitPole"  , &m_EventData);
+   */
 }
 ///////////////////////////////////////////////////////////////////////////
-void  TW1Physics::InitializeRootInputPhysics() 
+void  TSplitPolePhysics::InitializeRootInputPhysics() 
 {
-   TChain* inputChain = RootInput::getInstance()->GetChain();
-   inputChain->SetBranchStatus("W1"   , true);
+/*   TChain* inputChain = RootInput::getInstance()->GetChain();
+   inputChain->SetBranchStatus("SplitPole"   , true);
    inputChain->SetBranchStatus("fEventType", true);
    inputChain->SetBranchStatus("fDetectorNumber", true);
    inputChain->SetBranchStatus("fEnergy", true);
    inputChain->SetBranchStatus("fTime", true);
    inputChain->SetBranchStatus("fFrontStrip", true);
    inputChain->SetBranchStatus("fBackStrip", true);
-   inputChain->SetBranchAddress("W1"  , &m_EventPhysics);
+   inputChain->SetBranchAddress("SplitPole"  , &m_EventPhysics);
+   */
 }
 ///////////////////////////////////////////////////////////////////////////
-void TW1Physics::InitializeRootOutput()
+void TSplitPolePhysics::InitializeRootOutput()
 {
-   TTree* outputTree = RootOutput::getInstance()->GetTree();
-   outputTree->Branch("W1", "TW1Physics", &m_EventPhysics);
+//   TTree* outputTree = RootOutput::getInstance()->GetTree();
+//   outputTree->Branch("SplitPole", "TSplitPolePhysics", &m_EventPhysics);
 }
 
 
 
-void TW1Physics::AddDetector(TVector3 C_X1_Y1,  TVector3 C_X16_Y1,
+void TSplitPolePhysics::AddDetector(TVector3 C_X1_Y1,  TVector3 C_X16_Y1,
                              TVector3 C_X1_Y16, TVector3 C_X16_Y16)
 {
-   m_NumberOfDetector++;
+/*   m_NumberOfDetector++;
 
    // remove warning using C_X16_Y16
    C_X16_Y16.Unit();
@@ -369,14 +373,15 @@ void TW1Physics::AddDetector(TVector3 C_X1_Y1,  TVector3 C_X16_Y1,
    m_StripPositionX.push_back( OneModuleStripPositionX );
    m_StripPositionY.push_back( OneModuleStripPositionY );
    m_StripPositionZ.push_back( OneModuleStripPositionZ );
+   */
 }
 
 
 
-void TW1Physics::AddDetector(double theta, double phi, double distance,
+void TSplitPolePhysics::AddDetector(double theta, double phi, double distance,
                              double beta_u, double beta_v, double beta_w)
 {
-   m_NumberOfDetector++;
+/*   m_NumberOfDetector++;
 
    // convert from degree to radian:
    theta *= M_PI/180;
@@ -452,11 +457,12 @@ void TW1Physics::AddDetector(double theta, double phi, double distance,
    m_StripPositionX.push_back( OneModuleStripPositionX );
    m_StripPositionY.push_back( OneModuleStripPositionY );
    m_StripPositionZ.push_back( OneModuleStripPositionZ );
+   */
 }
 
 
-
-TVector3 TW1Physics::GetPositionOfInteraction(int i)
+/*
+TVector3 TSplitPolePhysics::GetPositionOfInteraction(int i)
 {
    TVector3 Position = TVector3(GetStripPositionX(fDetectorNumber[i], fFrontStrip[i], fBackStrip[i]),
                                 GetStripPositionY(fDetectorNumber[i], fFrontStrip[i], fBackStrip[i]),
@@ -467,7 +473,7 @@ TVector3 TW1Physics::GetPositionOfInteraction(int i)
 
 
 
-TVector3 TW1Physics::GetDetectorNormal(int i)
+TVector3 TSplitPolePhysics::GetDetectorNormal(int i)
 {
    TVector3 U = TVector3(GetStripPositionX(fDetectorNumber[i], m_NumberOfStrips, 1),
                          GetStripPositionY(fDetectorNumber[i], m_NumberOfStrips, 1),
@@ -493,9 +499,9 @@ TVector3 TW1Physics::GetDetectorNormal(int i)
 
 
 
-void TW1Physics::DumpStrippingScheme(int detecNumber)
+void TSplitPolePhysics::DumpStrippingScheme(int detecNumber)
 {
-   cout << endl << "TW1Physics::DumpStrippingScheme()" << endl;
+   cout << endl << "TSplitPolePhysics::DumpStrippingScheme()" << endl;
    cout << "Detector number " << detecNumber << endl;
 
    for (int i = 1; i < m_NumberOfStrips+1; i++) {   // front part
@@ -507,11 +513,11 @@ void TW1Physics::DumpStrippingScheme(int detecNumber)
       }
    }
 }
-
+*/
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TW1Physics::BuildPhysicalEvent()
+void TSplitPolePhysics::BuildPhysicalEvent()
 {
    BuildSimplePhysicalEvent();
 }
@@ -519,10 +525,10 @@ void TW1Physics::BuildPhysicalEvent()
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TW1Physics::BuildSimplePhysicalEvent()
+void TSplitPolePhysics::BuildSimplePhysicalEvent()
 {
    // Select active channels and apply thresholds
-   PreTreat();
+/*   PreTreat();
 
    // Begin treatement
    int evtType = EventType();
@@ -555,7 +561,7 @@ void TW1Physics::BuildSimplePhysicalEvent()
                TimeBack = m_PreTreatedData->GetBackTTime(t);
          }
 
-         // Fill TW1Physics private members
+         // Fill TSplitPolePhysics private members
          fEventType.push_back(evtType);
          fDetectorNumber.push_back(DetecNbr);
          fEnergy.push_back(EnergyFront);
@@ -564,21 +570,22 @@ void TW1Physics::BuildSimplePhysicalEvent()
          fBackStrip.push_back(StripBack);
       }
    }
+   */
 }
 
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TW1Physics::PreTreat()
+void TSplitPolePhysics::PreTreat()
 {
    // Clear pre treated object
-   ClearPreTreatedData();
+/*   ClearPreTreatedData();
       
    // (Front, E)
    for (int i = 0; i < m_EventData->GetFrontEMult(); i++) {
       if (IsValidChannel("Front", m_EventData->GetFrontEDetectorNbr(i), m_EventData->GetFrontEStripNbr(i)) &&
            m_EventData->GetFrontEEnergy(i) > m_FrontE_Raw_Threshold) {
-         double E = fW1_Front_E(m_EventData , i);
+         double E = fSplitPole_Front_E(m_EventData , i);
          if (E > m_FrontE_Calib_Threshold)   {
             m_PreTreatedData->SetFrontEDetectorNbr(m_EventData->GetFrontEDetectorNbr(i));
             m_PreTreatedData->SetFrontEStripNbr(m_EventData->GetFrontEStripNbr(i));
@@ -589,7 +596,7 @@ void TW1Physics::PreTreat()
    // (Front, T)
    for (int i = 0; i < m_EventData->GetFrontTMult(); i++) {
       if (IsValidChannel("Front", m_EventData->GetFrontTDetectorNbr(i), m_EventData->GetFrontTStripNbr(i))) {
-         double T = fW1_Front_T(m_EventData , i);
+         double T = fSplitPole_Front_T(m_EventData , i);
          m_PreTreatedData->SetFrontTDetectorNbr(m_EventData->GetFrontTDetectorNbr(i));
          m_PreTreatedData->SetFrontTStripNbr(m_EventData->GetFrontTStripNbr(i));
          m_PreTreatedData->SetFrontTTime(T);
@@ -600,7 +607,7 @@ void TW1Physics::PreTreat()
    for (int i = 0; i < m_EventData->GetBackEMult(); i++) {
       if (IsValidChannel("Back", m_EventData->GetFrontEDetectorNbr(i), m_EventData->GetFrontEStripNbr(i)) &&
           m_EventData->GetBackEEnergy(i) > m_BackE_Raw_Threshold) {
-         double E = fW1_Back_E(m_EventData , i);
+         double E = fSplitPole_Back_E(m_EventData , i);
          if (E > m_BackE_Calib_Threshold) {
             m_PreTreatedData->SetBackEDetectorNbr(m_EventData->GetBackEDetectorNbr(i));
             m_PreTreatedData->SetBackEStripNbr(m_EventData->GetBackEStripNbr(i));
@@ -611,17 +618,18 @@ void TW1Physics::PreTreat()
    // (Back, T)
    for (int i = 0; i < m_EventData->GetBackTMult(); i++) {
       if (IsValidChannel("Back", m_EventData->GetFrontTDetectorNbr(i), m_EventData->GetFrontTStripNbr(i))) {
-         double T = fW1_Back_T(m_EventData , i);
+         double T = fSplitPole_Back_T(m_EventData , i);
          m_PreTreatedData->SetBackTDetectorNbr(m_EventData->GetBackTDetectorNbr(i));
          m_PreTreatedData->SetBackTStripNbr(m_EventData->GetBackTStripNbr(i));
          m_PreTreatedData->SetBackTTime(T);
       } 
    }
+   */
 }
 
 
-
-int TW1Physics::EventType()
+/*
+int TSplitPolePhysics::EventType()
 {
    // Same multiplicity on front and back side
    if (m_PreTreatedData->GetFrontEMult() == m_PreTreatedData->GetBackEMult()) {
@@ -637,10 +645,10 @@ int TW1Physics::EventType()
       return -1;
    }
 }
+*/
 
-
-
-vector<TVector2> TW1Physics::Match_Front_Back()
+/*
+vector<TVector2> TSplitPolePhysics::Match_Front_Back()
 {
    vector<TVector2> ArrayOfGoodCouple;
 
@@ -670,10 +678,10 @@ vector<TVector2> TW1Physics::Match_Front_Back()
 
    return ArrayOfGoodCouple;
 }
+*/
 
-
-
-bool TW1Physics::IsValidChannel(string Type, int detector, int channel)
+/*
+bool TSplitPolePhysics::IsValidChannel(string Type, int detector, int channel)
 {
    vector<bool>::iterator it;
    if (Type == "Front")
@@ -685,14 +693,14 @@ bool TW1Physics::IsValidChannel(string Type, int detector, int channel)
    else 
       return false;
 }
-
+*/
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TW1Physics::InitializeStandardParameter()
+void TSplitPolePhysics::InitializeStandardParameter()
 {
    // Enable all channels
-   vector<bool> ChannelStatus;
+/*   vector<bool> ChannelStatus;
    m_FrontChannelStatus.clear();
    m_BackChannelStatus.clear();
 
@@ -701,35 +709,36 @@ void TW1Physics::InitializeStandardParameter()
       m_FrontChannelStatus[i+1] = ChannelStatus;
       m_BackChannelStatus[i+1]  = ChannelStatus;
    }
+   */
 }
 
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TW1Physics::ReadAnalysisConfig()
+void TSplitPolePhysics::ReadAnalysisConfig()
 {
-   bool ReadingStatus = false;
+ /*  bool ReadingStatus = false;
 //   bool check_mult    = false;
 //   bool check_match   = false;
 
-   cout << "\t/////////// Reading ConfigW1.dat file ///////////" << endl;
+   cout << "\t/////////// Reading ConfigSplitPole.dat file ///////////" << endl;
 
    // path to file
-   string FileName = "./configs/ConfigW1.dat";
+   string FileName = "./configs/ConfigSplitPole.dat";
 
    // open analysis config file
    ifstream AnalysisConfigFile;
    AnalysisConfigFile.open(FileName.c_str());
 
    if (!AnalysisConfigFile.is_open()) {
-      cout << "\tNo ConfigW1.dat found: Default parameter loaded for Analayis " << FileName << endl;
+      cout << "\tNo ConfigSplitPole.dat found: Default parameter loaded for Analayis " << FileName << endl;
       return;
    }
-   cout << "\tLoading user parameters from ConfigW1.dat " << endl;
+   cout << "\tLoading user parameters from ConfigSplitPole.dat " << endl;
 
    // storing config file in the ROOT output file
    TAsciiFile *asciiFile = RootOutput::getInstance()->GetAsciiFileAnalysisConfig();
-   asciiFile->AppendLine("%% ConfigW1.dat %%");
+   asciiFile->AppendLine("%% ConfigSplitPole.dat %%");
    asciiFile->Append(FileName.c_str());
    asciiFile->AppendLine("");
 
@@ -740,7 +749,7 @@ void TW1Physics::ReadAnalysisConfig()
       getline(AnalysisConfigFile, LineBuffer);
 
       // search for "header"
-      if (LineBuffer.compare(0, 8, "ConfigW1") == 0) ReadingStatus = true;
+      if (LineBuffer.compare(0, 8, "ConfigSplitPole") == 0) ReadingStatus = true;
 
       // loop on tokens and data
       while (ReadingStatus) {
@@ -765,7 +774,7 @@ void TW1Physics::ReadAnalysisConfig()
             cout << "\tStrip energy matching tolerance= " << m_StripEnergyMatchingTolerance << endl;
          }
          
-         else if (DataBuffer.compare(0, 2, "W1") == 0) {
+         else if (DataBuffer.compare(0, 2, "SplitPole") == 0) {
             AnalysisConfigFile >> DataBuffer;
             string whatToDo = DataBuffer;
             if (whatToDo.compare(0, 11, "DISABLE_ALL") == 0) {
@@ -793,7 +802,7 @@ void TW1Physics::ReadAnalysisConfig()
                }
                
                else {
-                  cout << "\tWarning: detector type for W1 unknown!" << endl;
+                  cout << "\tWarning: detector type for SplitPole unknown!" << endl;
                }
             }
 
@@ -830,41 +839,42 @@ void TW1Physics::ReadAnalysisConfig()
          }
       }
    }
+*/
 }   
 
-
+/*
 
 ///////////////////////////////////////////////////////////////////////////
-double LOCAL::fW1_Front_E(TW1Data* m_EventData , int i)
+double LOCAL::fSplitPole_Front_E(TSplitPoleData* m_EventData , int i)
 {
-   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + NPL::itoa(m_EventData->GetFrontEDetectorNbr(i)) + "_Front_" + NPL::itoa(m_EventData->GetFrontEStripNbr(i)) +"_E",  m_EventData->GetFrontEEnergy(i));
+   return CalibrationManager::getInstance()->ApplyCalibration("SplitPole/Detector" + NPL::itoa(m_EventData->GetFrontEDetectorNbr(i)) + "_Front_" + NPL::itoa(m_EventData->GetFrontEStripNbr(i)) +"_E",  m_EventData->GetFrontEEnergy(i));
 }
  
  
 
-double LOCAL::fW1_Back_E(TW1Data* m_EventData , int i)
+double LOCAL::fSplitPole_Back_E(TSplitPoleData* m_EventData , int i)
 {
-   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + NPL::itoa(m_EventData->GetBackEDetectorNbr(i)) + "_Back_" + NPL::itoa(m_EventData->GetBackEStripNbr(i)) +"_E",  m_EventData->GetBackEEnergy(i));
+   return CalibrationManager::getInstance()->ApplyCalibration("SplitPole/Detector" + NPL::itoa(m_EventData->GetBackEDetectorNbr(i)) + "_Back_" + NPL::itoa(m_EventData->GetBackEStripNbr(i)) +"_E",  m_EventData->GetBackEEnergy(i));
 }
   
  
 
-double LOCAL::fW1_Front_T(TW1Data* m_EventData , int i)
+double LOCAL::fSplitPole_Front_T(TSplitPoleData* m_EventData , int i)
 {
-   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + NPL::itoa(m_EventData->GetFrontTDetectorNbr(i)) + "_Front_" + NPL::itoa(m_EventData->GetFrontTStripNbr(i)) +"_T",  m_EventData->GetFrontTTime(i));
+   return CalibrationManager::getInstance()->ApplyCalibration("SplitPole/Detector" + NPL::itoa(m_EventData->GetFrontTDetectorNbr(i)) + "_Front_" + NPL::itoa(m_EventData->GetFrontTStripNbr(i)) +"_T",  m_EventData->GetFrontTTime(i));
 }
  
  
 
-double LOCAL::fW1_Back_T(TW1Data* m_EventData , int i)
+double LOCAL::fSplitPole_Back_T(TSplitPoleData* m_EventData , int i)
 {
-   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + NPL::itoa(m_EventData->GetBackTDetectorNbr(i)) + "_Back_" + NPL::itoa(m_EventData->GetBackTStripNbr(i)) +"_T",  m_EventData->GetBackTTime(i));
-}
+   return CalibrationManager::getInstance()->ApplyCalibration("SplitPole/Detector" + NPL::itoa(m_EventData->GetBackTDetectorNbr(i)) + "_Back_" + NPL::itoa(m_EventData->GetBackTStripNbr(i)) +"_T",  m_EventData->GetBackTTime(i));
+}*/
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPL::VDetector* TW1Physics::Construct(){
-  return (NPL::VDetector*) new TW1Physics();
+NPL::VDetector* TSplitPolePhysics::Construct(){
+  return (NPL::VDetector*) new TSplitPolePhysics();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -874,8 +884,8 @@ extern "C"{
 class proxy_w1{
   public:
     proxy_w1(){
-      NPL::DetectorFactory::getInstance()->AddToken("W1","W1");
-      NPL::DetectorFactory::getInstance()->AddDetector("W1",TW1Physics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("SplitPole","SplitPole");
+      NPL::DetectorFactory::getInstance()->AddDetector("SplitPole",TSplitPolePhysics::Construct);
     }
 };
 
