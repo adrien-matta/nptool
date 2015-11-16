@@ -82,6 +82,8 @@ TInitialConditions* myInit ;
   double X_Sharc ;
   double Y_Sharc ;
   double Z_Sharc ;
+  double X_Trifoil;
+  double Y_Trifoil;
   double ThetaDetector;
   double Si_E_Sharc ;
   double E_Sharc ;

@@ -96,8 +96,11 @@ namespace SHARC{
   const G4double PAD_PCB_Border_ShortSide = 2.5*mm;
   
   // PAD Wafer
-  const G4double PAD_Wafer_Width  = 51.00*mm;
-  const G4double PAD_Wafer_Length = 77.00*mm;
+  const G4double PAD_Wafer_Width  = 53.20*mm;
+  const G4double PAD_Wafer_Length = 73.20*mm;
+  const G4double PAD_ActiveWafer_Width  = 50*mm;
+  const G4double PAD_ActiveWafer_Length = 70*mm;
+
 //    const G4double PAD_Wafer_Width  = 42.00*mm;
 //    const G4double PAD_Wafer_Length = 72.00*mm;
   
@@ -161,7 +164,7 @@ public:
   // Effectively construct Volume
   void ConstructBOXDetector(G4LogicalVolume* world);
   void ConstructQQQDetector(G4LogicalVolume* world);
-  
+  void ConstructTargetFan(G4LogicalVolume* world); 
   ////////////////////////////////////////////////////
   /////////  Inherite from NPS::VDetector class ///////////
   ////////////////////////////////////////////////////

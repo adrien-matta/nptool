@@ -208,6 +208,7 @@ namespace NPL{
       TGraph* GetKinematicLine4(double AngleStep_CM=1);
       TGraph* GetBrhoLine3(double AngleStep_CM=1);
       TGraph* GetThetaLabVersusThetaCM(double AngleStep_CM=1);
+      TGraph* GetELabVersusThetaCM(double AngleStep_CM=1);
       TGraph* GetTheta3VsTheta4(double AngleStep_CM=1);
       void PrintKinematic();
       double	GetP_CM_1()	{return pCM_1;}

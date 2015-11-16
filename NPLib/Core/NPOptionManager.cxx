@@ -61,6 +61,10 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
   fRunToReadFileName          = fDefaultRunToReadFileName;
   fCalibrationFileName        = fDefaultCalibrationFileName;
   fG4MacroPath                = fDefaultG4MacroPath;
+  fLastSimFile = false; 
+  fLastPhyFile = false;
+  fLastResFile = false;
+  fLastAnyFile = false;
   fVerboseLevel               = 1;
   fNumberOfEntryToAnalyse     = -1;
   fDisableAllBranchOption = false;
