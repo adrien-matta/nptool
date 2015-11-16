@@ -45,6 +45,7 @@ ClassImp(TSharcPhysics)
     EventMultiplicity   = 0 ;
     m_EventData         = new TSharcData ;
     m_PreTreatedData    = new TSharcData ;
+    
     m_EventPhysics      = this ;
     m_Spectra           = NULL;
     m_NumberOfDetector = 0 ;
@@ -59,6 +60,9 @@ ClassImp(TSharcPhysics)
     m_StripBack_E_RAW_Threshold = 0 ;
     m_StripBack_E_Threshold = 0 ;
 
+    m_PAD_E_RAW_Threshold=0;
+    m_PAD_E_Threshold=0;
+    
     m_Take_E_Front=true;
     m_Take_T_Back=true;
   }
