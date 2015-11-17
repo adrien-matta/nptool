@@ -1,8 +1,14 @@
 // NPL
 #include "NPSiliconCalibrator.h"
 
+#include <algorithm>
+using namespace std;
+
 // Root
 #include "TSpectrum.h"
+#include "TH1.h"
+
+
 NPL::SiliconCalibrator::SiliconCalibrator(){
 }
 
@@ -174,105 +180,98 @@ double NPL::SiliconCalibrator::SimpleCalibration(TH1* histo, NPL::CalibrationSou
 
 
 //////////////////////////////////////////////
-double NPL::SiliconCalibrator::FitPoints(TGraphErrors* Graph,double* Energies, double* ErrEnergies, vector<double>& coeff, double pedestal ){
-  if(Graph->GetN()>0){
-    Graph->Draw("ap");
-    Graph->Fit("pol1","Q");
-    coeff.clear();
-    coeff.push_back(Graph->GetFunction("pol1")->GetParameter(0));
-    coeff.push_back(Graph->GetFunction("pol1")->GetParameter(1));
-    // Compute the Distance to pedestal:
-    return (coeff[0]/coeff[1]-pedestal );
-  }
-  else{
-    coeff.clear();
-    coeff.push_back(0);
-    coeff.push_back(-1);
-    return -3;
+double NPL::SiliconCalibrator::FitPoints(TGraphErrors* gre, double* Energies, double* ErrEnergies, vector<double>& coeff, double pedestal)
+{
+   if (gre->GetN() > 0) {
+      gre->Fit("pol1","Q");
+      coeff.clear();
+      coeff.push_back(gre->GetFunction("pol1")->GetParameter(0));
+      coeff.push_back(gre->GetFunction("pol1")->GetParameter(1));
+      // Compute the Distance to pedestal:
+      return (coeff[0]/coeff[1]-pedestal);
+   }
+   else {
+      coeff.clear();
+      coeff.push_back(0);
+      coeff.push_back(-1);
+      return -3;
   }
 }
 
+
+
 ////////////////////////////////////////////////////////////////////////////////
-TGraphErrors* NPL::SiliconCalibrator::FitSpectrum(TH1* histo,double rmin,double rmax){
-  // apply range
-  for(unsigned int i = 0 ; i < histo->GetNbinsX() ; i++)
-    if(histo->GetBinCenter(i)<rmin || histo->GetBinCenter(i)>rmax )
-      histo->SetBinContent(i,0);
+TGraphErrors* NPL::SiliconCalibrator::FitSpectrum(TH1* histo, double rmin, double rmax)
+{
+//   for(unsigned int i = 0 ; i < histo->GetNbinsX() ; i++)
+//      if(histo->GetBinCenter(i)<rmin || histo->GetBinCenter(i)>rmax )
+//         histo->SetBinContent(i,0);
 
-  TF1* fitfunc =  m_CalibrationSource->GetSourceSignal();
-  // Perform a peak search to get a hint of where are the peaks
-  TSpectrum* sp = new TSpectrum(4,1);
-  Int_t nfound = 0;
-  nfound = sp->Search(histo,3,"",0.25);
-  double* xpeaks =(double*) sp->GetPositionX();
+   // apply range for peak search
+   histo->GetXaxis()->SetRangeUser(rmin, rmax);
+   // Perform a peak search to get a hint of where are the peaks
+   TSpectrum* sp = new TSpectrum(4,1);
+   //  nfound = sp->Search(histo,3,"",0.25);
+   Int_t    nfound = sp->Search(histo,3,"",0.5);
+   Float_t* xpeaks =(Float_t*) sp->GetPositionX();
 
-  if(nfound>1){
-    for(Int_t p=0;p<nfound;p++){
-      for(Int_t i=0;i<nfound-1;i++){
-        if(xpeaks[i]>xpeaks[i+1]){ 
-          Float_t varia=xpeaks[i];
-          xpeaks[i]=xpeaks[i+1];
-          xpeaks[i+1]=varia;
-        }	  
+   // order list of peaks
+   sort(xpeaks, xpeaks+nfound);
+
+   m_FitFunction =  m_CalibrationSource->GetSourceSignal();
+   if (nfound == 3) {
+      // Set initial mean 
+      m_FitFunction->SetParameter(1,xpeaks[0]);
+      m_FitFunction->SetParameter(4,xpeaks[1]);
+      m_FitFunction->SetParameter(7,xpeaks[2]);
+
+      // Set Limit
+      m_FitFunction->SetParLimits(1,xpeaks[0]*0.8,xpeaks[0]*1.2);
+      m_FitFunction->SetParLimits(4,xpeaks[1]*0.8,xpeaks[1]*1.2);
+      m_FitFunction->SetParLimits(7,xpeaks[2]*0.8,xpeaks[2]*1.2);
+
+
+      // Set initial hight
+      double H1 = histo->GetBinContent(histo->FindBin(xpeaks[0])); 
+      double H2 = histo->GetBinContent(histo->FindBin(xpeaks[1])); 
+      double H3 = histo->GetBinContent(histo->FindBin(xpeaks[2])); 
+
+      m_FitFunction->SetParameter(0,H1);
+      m_FitFunction->SetParameter(3,H2);
+      m_FitFunction->SetParameter(6,H3);
+
+      // Set Limit
+      m_FitFunction->SetParLimits(0,H1*0.8,H1*1.2);
+      m_FitFunction->SetParLimits(3,H2*0.8,H2*1.2);
+      m_FitFunction->SetParLimits(6,H3*0.8,H3*1.2);
+
+      // ballpark the sigma
+      double sigma = (xpeaks[1]-xpeaks[0])/100;
+      m_FitFunction->SetParameter(2,sigma);
+      m_FitFunction->SetParameter(5,sigma);
+      m_FitFunction->SetParameter(8,sigma);
+
+      // Set range and fit spectrum
+      histo->GetXaxis()->SetRangeUser(xpeaks[0]-xpeaks[0]/20.,xpeaks[2]+xpeaks[2]/20.);
+      histo->Fit(m_FitFunction,"Q");
+
+      TF1* fit = histo->GetFunction(m_FitFunction->GetName());
+      // energies and associated uncertainties 
+      vector< vector<double> > Energies    = m_CalibrationSource->GetEnergies();
+      vector< vector<double> > ErrEnergies = m_CalibrationSource->GetEnergiesErrors();
+
+      //    unsigned int mysize = Energies.size();
+      TGraphErrors* gre = new TGraphErrors();
+      int point = 0 ;
+      for (unsigned int i = 0; i < Energies.size(); i++) {
+         gre->SetPoint(point, fit->GetParameter(3*i+1), Energies[i][0]);
+         gre->SetPointError(point++, fit->GetParError(3*i+1), ErrEnergies[i][0]);
       }
-    }
-  }
+      return gre;
+   }
 
-
-  if(nfound==3){
-    // Set initial mean 
-    fitfunc->SetParameter(1,xpeaks[0]);
-    fitfunc->SetParameter(4,xpeaks[1]);
-    fitfunc->SetParameter(7,xpeaks[2]);
-
-    // Set Limit
-    fitfunc->SetParLimits(1,xpeaks[0]*0.8,xpeaks[0]*1.2);
-    fitfunc->SetParLimits(4,xpeaks[1]*0.8,xpeaks[1]*1.2);
-    fitfunc->SetParLimits(7,xpeaks[2]*0.8,xpeaks[2]*1.2);
-
-
-    // Set initial hight
-    double H1 = histo->GetBinContent(histo->FindBin(xpeaks[0])); 
-    double H2 = histo->GetBinContent(histo->FindBin(xpeaks[1])); 
-    double H3 = histo->GetBinContent(histo->FindBin(xpeaks[2])); 
-
-    fitfunc->SetParameter(0,H1);
-    fitfunc->SetParameter(3,H2);
-    fitfunc->SetParameter(6,H3);
-
-    // Set Limit
-    fitfunc->SetParLimits(0,H1*0.8,H1*1.2);
-    fitfunc->SetParLimits(3,H2*0.8,H2*1.2);
-    fitfunc->SetParLimits(6,H3*0.8,H3*1.2);
-
-    // ballpark the sigma
-    double sigma = (xpeaks[1]-xpeaks[0])/100;
-    fitfunc->SetParameter(2,sigma);
-    fitfunc->SetParameter(5,sigma);
-    fitfunc->SetParameter(8,sigma);
-
-    histo->GetXaxis()->SetRangeUser(xpeaks[0]-xpeaks[0]/20.,xpeaks[2]+xpeaks[2]/20.);
-
-
-    histo->Fit(fitfunc,"Q");
-    TF1* fit = histo->GetFunction(fitfunc->GetName());
-    TGraphErrors* Graph = new TGraphErrors();
-    // Set the value of the TGraphError
-    vector< vector<double> > Energies = m_CalibrationSource->GetEnergies();
-    vector< vector<double> > ErrEnergies = m_CalibrationSource->GetEnergiesErrors();
-
-    unsigned int mysize = Energies.size();
-    int point = 0 ;
-
-    for(unsigned int i = 0 ; i < mysize ; i++){
-      Graph->SetPoint(point,fit->GetParameter(3*i+1) ,Energies[i][0]);
-      Graph->SetPointError(point++,fit->GetParError(3*i+1),ErrEnergies[i][0]);
-    }
-    return Graph;
-  }
-
-  else
-    return (new TGraphErrors());
+   else
+      return (new TGraphErrors());
 }
 
 

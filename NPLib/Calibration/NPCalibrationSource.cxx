@@ -74,7 +74,7 @@ void NPL::CalibrationSource::Set_239Pu(){
   vector<double> BranchingRatio;
   
   Energies.push_back(5.15659);
-  Energies.push_back(5.11443);
+  Energies.push_back(5.1443);
   Energies.push_back(5.1055);
 
   ErrEnergies.push_back(1.4e-4);
