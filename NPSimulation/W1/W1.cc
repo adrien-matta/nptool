@@ -572,10 +572,10 @@ void W1::ReadSensitive(const G4Event* event)
 
       if (N > 0) {
          // Fill detector number
-         m_Event->SetW1FrontEDetectorNbr(N);
-         m_Event->SetW1FrontTDetectorNbr(N);
-         m_Event->SetW1BackEDetectorNbr(N);
-         m_Event->SetW1BackTDetectorNbr(N);
+         m_Event->SetFrontEDetectorNbr(N);
+         m_Event->SetFrontTDetectorNbr(N);
+         m_Event->SetBackEDetectorNbr(N);
+         m_Event->SetBackTDetectorNbr(N);
 
          //  Energy
          Energy_itr = EnergyHitMap->GetMap()->begin();
@@ -583,8 +583,8 @@ void W1::ReadSensitive(const G4Event* event)
             G4int ETrackID =   Energy_itr->first - N;
             G4double E     = *(Energy_itr->second);
             if (ETrackID == NTrackID) {
-               m_Event->SetW1FrontEEnergy(RandGauss::shoot(E, EnergyResolution));
-               m_Event->SetW1BackEEnergy(RandGauss::shoot(E, EnergyResolution));
+               m_Event->SetFrontEEnergy(RandGauss::shoot(E, EnergyResolution));
+               m_Event->SetBackEEnergy(RandGauss::shoot(E, EnergyResolution));
             }
             Energy_itr++;
          }
@@ -595,8 +595,8 @@ void W1::ReadSensitive(const G4Event* event)
             G4int TTrackID =   Time_itr->first - N;
             G4double T     = *(Time_itr->second);
             if (TTrackID == NTrackID) {
-               m_Event->SetW1FrontTTime(RandGauss::shoot(T, TimeResolution));
-               m_Event->SetW1BackTTime(RandGauss::shoot(T, TimeResolution));
+               m_Event->SetFrontTTime(RandGauss::shoot(T, TimeResolution));
+               m_Event->SetBackTTime(RandGauss::shoot(T, TimeResolution));
             }
             Time_itr++;
          }
@@ -607,8 +607,8 @@ void W1::ReadSensitive(const G4Event* event)
             G4int XTrackID  =   X_itr->first - N;
             G4double X     = *(X_itr->second);
             if (XTrackID == NTrackID) {
-               m_Event->SetW1FrontEStripNbr(X)   ;
-               m_Event->SetW1FrontTStripNbr(X)   ;
+               m_Event->SetFrontEStripNbr(X)   ;
+               m_Event->SetFrontTStripNbr(X)   ;
             }
             X_itr++;
          }
@@ -619,8 +619,8 @@ void W1::ReadSensitive(const G4Event* event)
             G4int YTrackID  =   Y_itr->first - N;
             G4double Y     = *(Y_itr->second);
             if (YTrackID == NTrackID) {
-               m_Event->SetW1BackEStripNbr(Y);
-               m_Event->SetW1BackTStripNbr(Y);
+               m_Event->SetBackEStripNbr(Y);
+               m_Event->SetBackTStripNbr(Y);
             }
             Y_itr++;
          }
