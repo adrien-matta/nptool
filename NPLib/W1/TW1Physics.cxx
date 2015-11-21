@@ -54,13 +54,14 @@ TW1Physics::TW1Physics()
    : m_EventData(new TW1Data),
      m_PreTreatedData(new TW1Data),
      m_EventPhysics(this),
+     m_Spectra(0),
      m_MaximumStripMultiplicityAllowed(1),   // multiplidity 1
      m_StripEnergyMatchingTolerance(10),     // 10%
      m_FrontE_Raw_Threshold(0),
      m_BackE_Raw_Threshold(0),
      m_FrontE_Calib_Threshold(0),
      m_BackE_Calib_Threshold(0),
-     m_NumberOfDetector(0),
+     m_NumberOfDetectors(0),
      m_SiliconFace(49.6),  // mm
      m_NumberOfStrips(16)
 {    
@@ -262,9 +263,10 @@ void TW1Physics::ReadConfiguration(string Path)
       }
    }
           
-   InitializeStandardParameter();
+   InitializeStandardParameters();
    ReadAnalysisConfig();
 }
+
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -272,7 +274,7 @@ void TW1Physics::AddParameterToCalibrationManager()
 {
    CalibrationManager* Cal = CalibrationManager::getInstance();
     
-   for (int i = 0; i < m_NumberOfDetector; i++) {
+   for (int i = 0; i < m_NumberOfDetectors; i++) {
       for (int j = 0; j < m_NumberOfStrips; j++) {
          // Energy
          Cal->AddParameter("W1", "Detector"+ NPL::itoa(i+1)+"_Front_"+ NPL::itoa(j+1)+"_E", "W1_DETECTOR"+ NPL::itoa(i+1)+"_FRONT_"+ NPL::itoa(j+1)+"_E");
@@ -285,6 +287,7 @@ void TW1Physics::AddParameterToCalibrationManager()
 }
 
 
+
 ///////////////////////////////////////////////////////////////////////////
 void  TW1Physics::InitializeRootInputRaw() 
 {
@@ -293,6 +296,9 @@ void  TW1Physics::InitializeRootInputRaw()
    inputChain->SetBranchStatus("fW1_*", true);
    inputChain->SetBranchAddress("W1"  , &m_EventData);
 }
+
+
+
 ///////////////////////////////////////////////////////////////////////////
 void  TW1Physics::InitializeRootInputPhysics() 
 {
@@ -306,6 +312,9 @@ void  TW1Physics::InitializeRootInputPhysics()
    inputChain->SetBranchStatus("fBackStrip", true);
    inputChain->SetBranchAddress("W1"  , &m_EventPhysics);
 }
+
+
+
 ///////////////////////////////////////////////////////////////////////////
 void TW1Physics::InitializeRootOutput()
 {
@@ -318,7 +327,7 @@ void TW1Physics::InitializeRootOutput()
 void TW1Physics::AddDetector(TVector3 C_X1_Y1,  TVector3 C_X16_Y1,
                              TVector3 C_X1_Y16, TVector3 C_X16_Y16)
 {
-   m_NumberOfDetector++;
+   m_NumberOfDetectors++;
 
    // remove warning using C_X16_Y16
    C_X16_Y16.Unit();
@@ -376,7 +385,7 @@ void TW1Physics::AddDetector(TVector3 C_X1_Y1,  TVector3 C_X16_Y1,
 void TW1Physics::AddDetector(double theta, double phi, double distance,
                              double beta_u, double beta_v, double beta_w)
 {
-   m_NumberOfDetector++;
+   m_NumberOfDetectors++;
 
    // convert from degree to radian:
    theta *= M_PI/180;
@@ -493,7 +502,7 @@ TVector3 TW1Physics::GetDetectorNormal(int i)
 
 
 
-void TW1Physics::DumpStrippingScheme(int detecNumber)
+void TW1Physics::DumpStrippingScheme(Int_t detecNumber)
 {
    cout << endl << "TW1Physics::DumpStrippingScheme()" << endl;
    cout << "Detector number " << detecNumber << endl;
@@ -575,11 +584,11 @@ void TW1Physics::PreTreat()
    ClearPreTreatedData();
       
    // (Front, E)
-   for (int i = 0; i < m_EventData->GetFrontEMult(); i++) {
+   for (UShort_t i = 0; i < m_EventData->GetFrontEMult(); i++) {
       if (IsValidChannel("Front", m_EventData->GetFrontEDetectorNbr(i), m_EventData->GetFrontEStripNbr(i)) &&
            m_EventData->GetFrontEEnergy(i) > m_FrontE_Raw_Threshold) {
-         double E = fW1_Front_E(m_EventData , i);
-         if (E > m_FrontE_Calib_Threshold)   {
+         Double_t E = fW1_Front_E(m_EventData, i);
+         if (E > m_FrontE_Calib_Threshold) {
             m_PreTreatedData->SetFrontEDetectorNbr(m_EventData->GetFrontEDetectorNbr(i));
             m_PreTreatedData->SetFrontEStripNbr(m_EventData->GetFrontEStripNbr(i));
             m_PreTreatedData->SetFrontEEnergy(E);
@@ -587,9 +596,9 @@ void TW1Physics::PreTreat()
       } 
    }
    // (Front, T)
-   for (int i = 0; i < m_EventData->GetFrontTMult(); i++) {
+   for (UShort_t i = 0; i < m_EventData->GetFrontTMult(); i++) {
       if (IsValidChannel("Front", m_EventData->GetFrontTDetectorNbr(i), m_EventData->GetFrontTStripNbr(i))) {
-         double T = fW1_Front_T(m_EventData , i);
+         Double_t T = fW1_Front_T(m_EventData, i);
          m_PreTreatedData->SetFrontTDetectorNbr(m_EventData->GetFrontTDetectorNbr(i));
          m_PreTreatedData->SetFrontTStripNbr(m_EventData->GetFrontTStripNbr(i));
          m_PreTreatedData->SetFrontTTime(T);
@@ -597,10 +606,10 @@ void TW1Physics::PreTreat()
    }
 
    // (Back, E)
-   for (int i = 0; i < m_EventData->GetBackEMult(); i++) {
+   for (UShort_t i = 0; i < m_EventData->GetBackEMult(); i++) {
       if (IsValidChannel("Back", m_EventData->GetFrontEDetectorNbr(i), m_EventData->GetFrontEStripNbr(i)) &&
           m_EventData->GetBackEEnergy(i) > m_BackE_Raw_Threshold) {
-         double E = fW1_Back_E(m_EventData , i);
+         Double_t E = fW1_Back_E(m_EventData, i);
          if (E > m_BackE_Calib_Threshold) {
             m_PreTreatedData->SetBackEDetectorNbr(m_EventData->GetBackEDetectorNbr(i));
             m_PreTreatedData->SetBackEStripNbr(m_EventData->GetBackEStripNbr(i));
@@ -609,9 +618,9 @@ void TW1Physics::PreTreat()
       } 
    }
    // (Back, T)
-   for (int i = 0; i < m_EventData->GetBackTMult(); i++) {
+   for (UShort_t i = 0; i < m_EventData->GetBackTMult(); i++) {
       if (IsValidChannel("Back", m_EventData->GetFrontTDetectorNbr(i), m_EventData->GetFrontTStripNbr(i))) {
-         double T = fW1_Back_T(m_EventData , i);
+         Double_t T = fW1_Back_T(m_EventData, i);
          m_PreTreatedData->SetBackTDetectorNbr(m_EventData->GetBackTDetectorNbr(i));
          m_PreTreatedData->SetBackTStripNbr(m_EventData->GetBackTStripNbr(i));
          m_PreTreatedData->SetBackTTime(T);
@@ -644,7 +653,7 @@ vector<TVector2> TW1Physics::Match_Front_Back()
 {
    vector<TVector2> ArrayOfGoodCouple;
 
-   // Treat only allowd multiplicity events. If multiplicity is too 
+   // Select allowed multiplicity events. If multiplicity is too 
    // high, then return "empty" vector
    if (m_PreTreatedData->GetFrontEMult() > m_MaximumStripMultiplicityAllowed || 
        m_PreTreatedData->GetBackEMult()  > m_MaximumStripMultiplicityAllowed)
@@ -689,7 +698,7 @@ bool TW1Physics::IsValidChannel(string Type, int detector, int channel)
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TW1Physics::InitializeStandardParameter()
+void TW1Physics::InitializeStandardParameters()
 {
    // Enable all channels
    vector<bool> ChannelStatus;
@@ -697,7 +706,7 @@ void TW1Physics::InitializeStandardParameter()
    m_BackChannelStatus.clear();
 
    ChannelStatus.resize(m_NumberOfStrips, true);
-   for (int i = 0; i < m_NumberOfDetector; i ++) {
+   for (int i = 0; i < m_NumberOfDetectors; i++) {
       m_FrontChannelStatus[i+1] = ChannelStatus;
       m_BackChannelStatus[i+1]  = ChannelStatus;
    }
@@ -835,12 +844,72 @@ void TW1Physics::ReadAnalysisConfig()
 
 
 ///////////////////////////////////////////////////////////////////////////
+void TW1Physics::InitSpectra()
+{
+   m_Spectra = new TW1Spectra(m_NumberOfDetectors);
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////
+void TW1Physics::FillSpectra()
+{
+   m_Spectra->FillRawSpectra(m_EventData);
+   m_Spectra->FillPreTreatedSpectra(m_PreTreatedData);
+   m_Spectra->FillPhysicsSpectra(m_EventPhysics);
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////
+void TW1Physics::CheckSpectra()
+{
+   m_Spectra->CheckSpectra();
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////
+void TW1Physics::ClearSpectra()
+{
+   // To be done
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////
+map<string, TH1*> TW1Physics::GetSpectra()
+{
+   if (m_Spectra)
+      return m_Spectra->GetMapHisto();
+   else {
+      map< string , TH1*> empty;
+      return empty;
+   }
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+vector<TCanvas*> TW1Physics::GetCanvas()
+{
+   if (m_Spectra)
+      return m_Spectra->GetCanvas();
+   else {
+      vector<TCanvas*> empty;
+      return empty;
+   }
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////
 double LOCAL::fW1_Front_E(TW1Data* m_EventData , int i)
 {
    return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + NPL::itoa(m_EventData->GetFrontEDetectorNbr(i)) + "_Front_" + NPL::itoa(m_EventData->GetFrontEStripNbr(i)) +"_E",  m_EventData->GetFrontEEnergy(i));
 }
- 
- 
+
+
 
 double LOCAL::fW1_Back_E(TW1Data* m_EventData , int i)
 {
@@ -860,12 +929,17 @@ double LOCAL::fW1_Back_T(TW1Data* m_EventData , int i)
 {
    return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + NPL::itoa(m_EventData->GetBackTDetectorNbr(i)) + "_Back_" + NPL::itoa(m_EventData->GetBackTStripNbr(i)) +"_T",  m_EventData->GetBackTTime(i));
 }
+
+
+
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
 NPL::VDetector* TW1Physics::Construct(){
   return (NPL::VDetector*) new TW1Physics();
 }
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //            Registering the construct method to the factory                 //

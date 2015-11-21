@@ -21,19 +21,27 @@
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
-//   STL
+// C++ headers 
 #include <vector>
+#include <map>
 using namespace std ;
 
-//   ROOT
+// ROOT headers
 #include "TObject.h"
 #include "TVector2.h"
 #include "TVector3.h"
+#include "TH1.h"
+#include "TCanvas.h"
 
-//   NPL
+// NPTool headers
 #include "TW1Data.h"
+#include "TW1Spectra.h"
 #include "NPVDetector.h"
 #include "NPCalibrationManager.h"
+
+// forward declaration
+class TW1Spectra;
+
 
 
 class TW1Physics : public TObject, public NPL::VDetector
@@ -76,22 +84,20 @@ class TW1Physics : public TObject, public NPL::VDetector
    Int_t    GetBackStrip(Int_t i)            {return fBackStrip.at(i);}
 
 
- public:   //   inherrited from VDetector
+ public:   // inherited from VDetector
    // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
    void ReadConfiguration(string);
       
-   // Add Parameter to the CalibrationManger
+   // Add parameters to the CalibrationManger
    void AddParameterToCalibrationManager();      
 
-   //   Activated associated Branches and link it to the private member DetectorData address
-   //   In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
-   void InitializeRootInputRaw() ;
+   // Activate associated branches and link them to the private member object m_EventData
+   void InitializeRootInputRaw();
 
-   //   Activated associated Branches and link it to the private member DetectorPhysics address
-   //   In this method mother Branches (Detector) AND daughter leaf (parameter) have to be activated
-   void InitializeRootInputPhysics() ;
+   // Activate associated branches and link them to the private member m_EventPhysics
+   void InitializeRootInputPhysics();
 
-   // Create associated branches and associated private member DetectorPhysics address
+   // Create associated branches and associated private member m_EventPhysics 
    void InitializeRootOutput();
 
    // This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
@@ -102,34 +108,52 @@ class TW1Physics : public TObject, public NPL::VDetector
    // NB: This method can eventually be the same as BuildPhysicalEvent.
    void BuildSimplePhysicalEvent();
 
-   // Those two method all to clear the Event Physics or Data
+   // Same as above but for online analysis
+   void BuildOnlinePhysicalEvent()  {BuildPhysicalEvent();};
+
+   // Clear raw and physics data 
    void ClearEventPhysics()   {Clear();}
    void ClearEventData()      {m_EventData->Clear();}
 
+   // Methods related to the TW1Spectra classes
+   // Instantiate the TW1Spectra class and the histograms
+   void InitSpectra();
+   // Fill the spectra defined in TW1Spectra
+   void FillSpectra();
+   // Used for Online mainly, perform check on the histo and for example change their color if issues are found
+   void CheckSpectra();
+   // Used for Online only, clear all the spectra hold by the Spectra class
+   void ClearSpectra();
+   // Write Spectra to file
+   void WriteSpectra();
+
 
  public: //   Specific to W1
-   // Remove bad channel, calibrate the data and apply threshold
+   // Remove bad channel, calibrate the data and apply thresholds
    void PreTreat();
 
-   // Clear The PreTeated object
+   // Clear the pre treated object
    void ClearPreTreatedData()   {m_PreTreatedData->Clear();}
       
    // Return false if the channel is disabled by user
    // Frist argument is either "Front" or "Back"
    bool IsValidChannel(string Type, int detector, int channel);
 
-   // Initialize the standard parameter for analysis
-   // ie: all channel enable, maximum multiplicity for strip = number of telescope
-   void InitializeStandardParameter();
+   // Initialize the standard parameters for analysis, i.e.: all channel enable, 
+   // maximum multiplicity for strip = number of telescope
+   void InitializeStandardParameters();
    
    //   Read the user configuration file; if no file found, load standard one
    void ReadAnalysisConfig();
 
-   // Add detector using cartesian coordiantes
+   // Add detector using cartesian coordinates
    void AddDetector(TVector3 C_X1_Y1, TVector3 C_X16_Y1, TVector3 C_X1_Y16, TVector3 C_X16_Y16);
 
    // Add detector using spherical coordinates
    void AddDetector(double theta, double phi, double distance, double beta_u, double beta_v, double beta_w);
+
+   // Give an external TW1Data object to TW1Physics. Needed for online analysis for example.
+   void SetRawDataPointer(TW1Data* rawDataPointer) {m_EventData = rawDataPointer;}
 
    // Use for reading Calibration Run, very simple methods; only apply calibration, no condition
    void ReadCalibrationRun() {};
@@ -144,6 +168,9 @@ class TW1Physics : public TObject, public NPL::VDetector
    TW1Data*    m_PreTreatedData;       //!
    TW1Physics* m_EventPhysics;         //!
 
+ public:
+   TW1Data* GetRawData()        const {return m_EventData;}
+   TW1Data* GetPreTreatedData() const {return m_PreTreatedData;}
 
  private: // Map of activated Channel
    map< int, vector<bool> > m_FrontChannelStatus;  //!
@@ -151,14 +178,14 @@ class TW1Physics : public TObject, public NPL::VDetector
    
 
  private: // Parameters used in the analysis
-   // If multiplicity is greated than m_MaximumStripMultiplicityAllowed 
+   // If multiplicity is greater than m_MaximumStripMultiplicityAllowed 
    // after PreTreat(), event is not treated
    int m_MaximumStripMultiplicityAllowed; //!
+
    // Tolerance in percent for the energy difference between Front and Back
    double m_StripEnergyMatchingTolerance; //!
 
-
- private: // Energy thresholds
+   // Energy thresholds
    // Raw Threshold
    int    m_FrontE_Raw_Threshold;   //!
    int    m_BackE_Raw_Threshold;    //!
@@ -168,19 +195,19 @@ class TW1Physics : public TObject, public NPL::VDetector
 
 
  private: // Spatial Position of Strip Calculated on bases of detector position
-   int m_NumberOfDetector;   //!
+   int m_NumberOfDetectors;   //!
    vector< vector < vector < double > > > m_StripPositionX; //!
    vector< vector < vector < double > > > m_StripPositionY; //!
    vector< vector < vector < double > > > m_StripPositionZ; //!
 
  public:
-   double   GetNumberOfDetectors()                   {return m_NumberOfDetector;};
-   double   GetStripPositionX(int N, int X, int Y)   {return m_StripPositionX[N-1][X-1][Y-1];};
-   double   GetStripPositionY(int N, int X, int Y)   {return m_StripPositionY[N-1][X-1][Y-1];};
-   double   GetStripPositionZ(int N, int X, int Y)   {return m_StripPositionZ[N-1][X-1][Y-1];};
+   double   GetNumberOfDetectors()                          {return m_NumberOfDetectors;};
+   double   GetStripPositionX(int N, int Front, int Back)   {return m_StripPositionX[N-1][Front-1][Back-1];};
+   double   GetStripPositionY(int N, int Front, int Back)   {return m_StripPositionY[N-1][Front-1][Back-1];};
+   double   GetStripPositionZ(int N, int Front, int Back)   {return m_StripPositionZ[N-1][Front-1][Back-1];};
    TVector3 GetPositionOfInteraction(int i);
    TVector3 GetDetectorNormal(int i);
-   void     DumpStrippingScheme(int detecNumber);
+   void     DumpStrippingScheme(Int_t detecNumber);
 
 
  private:   // Geometry and strip number
@@ -189,9 +216,19 @@ class TW1Physics : public TObject, public NPL::VDetector
    double m_StripPitch;       //!
 
 
-   public: // Static constructor to be passed to the Detector Factory
-     static NPL::VDetector* Construct();
-     ClassDef(TW1Physics,1)  // TW1Physics
+ private: // Spectra Class
+   TW1Spectra* m_Spectra; // !
+
+ public: // Spectra Getter
+   map<string, TH1*> GetSpectra();
+   vector<TCanvas*>  GetCanvas();
+
+
+ public: // Static constructor to be passed to the Detector Factory
+   static NPL::VDetector* Construct();
+
+
+   ClassDef(TW1Physics,1)  // TW1Physics
 };
 
 
