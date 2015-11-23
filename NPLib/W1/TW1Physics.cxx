@@ -21,9 +21,7 @@
  *****************************************************************************/
 //  NPL
 #include "TW1Physics.h"
-#include "RootOutput.h"
-#include "RootInput.h"
-#include "NPDetectorFactory.h"
+using namespace W1_LOCAL;
 
 //  STL
 #include <iostream>
@@ -33,7 +31,10 @@
 #include <cmath>
 #include <stdlib.h>
 using namespace std;
-using namespace LOCAL;
+
+#include "RootOutput.h"
+#include "RootInput.h"
+#include "NPDetectorFactory.h"
 
 //  ROOT
 #include "TChain.h"
@@ -274,14 +275,14 @@ void TW1Physics::AddParameterToCalibrationManager()
 {
    CalibrationManager* Cal = CalibrationManager::getInstance();
     
-   for (int i = 0; i < m_NumberOfDetectors; i++) {
-      for (int j = 0; j < m_NumberOfStrips; j++) {
+   for (Int_t i = 0; i < m_NumberOfDetectors; i++) {
+      for (Int_t j = 0; j < m_NumberOfStrips; j++) {
          // Energy
-         Cal->AddParameter("W1", "Detector"+ NPL::itoa(i+1)+"_Front_"+ NPL::itoa(j+1)+"_E", "W1_DETECTOR"+ NPL::itoa(i+1)+"_FRONT_"+ NPL::itoa(j+1)+"_E");
-         Cal->AddParameter("W1", "Detector"+ NPL::itoa(i+1)+"_Back_"+ NPL::itoa(j+1)+"_E",  "W1_DETECTOR"+ NPL::itoa(i+1)+"_BACK_"+ NPL::itoa(j+1)+"_E");  
+         Cal->AddParameter("W1", "D"+ NPL::itoa(i+1)+ "_Front_" + NPL::itoa(j) + "_E", "W1_DETECTOR"+ NPL::itoa(i+1) + "_FRONT_" + NPL::itoa(j) + "_E");
+         Cal->AddParameter("W1", "D"+ NPL::itoa(i+1)+ "_Back_"  + NPL::itoa(j) + "_E", "W1_DETECTOR"+ NPL::itoa(i+1) + "_BACK_"  + NPL::itoa(j) + "_E");  
          // Time
-         Cal->AddParameter("W1", "Detector"+ NPL::itoa(i+1)+"_Front_"+ NPL::itoa(j+1)+"_T", "W1_DETECTOR"+ NPL::itoa(i+1)+"_FRONT_"+ NPL::itoa(j+1)+"_T");
-         Cal->AddParameter("W1", "Detector"+ NPL::itoa(i+1)+"_Back_"+ NPL::itoa(j+1)+"_T",  "W1_DETECTOR"+ NPL::itoa(i+1)+"_BACK_"+ NPL::itoa(j+1)+"_T");  
+         Cal->AddParameter("W1", "D"+ NPL::itoa(i+1)+ "_Front_" + NPL::itoa(j) + "_T", "W1_DETECTOR"+ NPL::itoa(i+1) + "_FRONT_" + NPL::itoa(j) + "_T");
+         Cal->AddParameter("W1", "D"+ NPL::itoa(i+1)+ "_Back_"  + NPL::itoa(j) + "_T", "W1_DETECTOR"+ NPL::itoa(i+1) + "_BACK_"  + NPL::itoa(j) + "_T");  
       }
    }
 }
@@ -686,10 +687,10 @@ bool TW1Physics::IsValidChannel(string Type, int detector, int channel)
 {
    vector<bool>::iterator it;
    if (Type == "Front")
-      return *(m_FrontChannelStatus[detector].begin()+channel);
+      return *(m_FrontChannelStatus[detector-1].begin()+channel);
 
    else if (Type == "Back")
-      return *(m_BackChannelStatus[detector].begin()+channel);
+      return *(m_BackChannelStatus[detector-1].begin()+channel);
 
    else 
       return false;
@@ -706,9 +707,9 @@ void TW1Physics::InitializeStandardParameters()
    m_BackChannelStatus.clear();
 
    ChannelStatus.resize(m_NumberOfStrips, true);
-   for (int i = 0; i < m_NumberOfDetectors; i++) {
-      m_FrontChannelStatus[i+1] = ChannelStatus;
-      m_BackChannelStatus[i+1]  = ChannelStatus;
+   for (Int_t i = 0; i < m_NumberOfDetectors; i++) {
+      m_FrontChannelStatus[i] = ChannelStatus;
+      m_BackChannelStatus[i]  = ChannelStatus;
    }
 }
 
@@ -783,8 +784,8 @@ void TW1Physics::ReadAnalysisConfig()
                int Detector = atoi(DataBuffer.substr(3,1).c_str());
                vector< bool > ChannelStatus;
                ChannelStatus.resize(m_NumberOfStrips,false);
-               m_FrontChannelStatus[Detector] = ChannelStatus;
-               m_BackChannelStatus[Detector]  = ChannelStatus;
+               m_FrontChannelStatus[Detector-1] = ChannelStatus;
+               m_BackChannelStatus[Detector-1]  = ChannelStatus;
             }
             
             else if (whatToDo.compare(0, 15, "DISABLE_CHANNEL") == 0) {
@@ -794,11 +795,11 @@ void TW1Physics::ReadAnalysisConfig()
                int channel = -1;
                if (DataBuffer.compare(4,5,"FRONT") == 0) {
                   channel = atoi(DataBuffer.substr(11).c_str());
-                  *(m_FrontChannelStatus[detector].begin()+channel) = false;
+                  *(m_FrontChannelStatus[detector-1].begin()+channel) = false;
                }
                else if (DataBuffer.compare(4,4,"BACK") == 0) {
                   channel = atoi(DataBuffer.substr(10).c_str());
-                  *(m_BackChannelStatus[detector].begin()+channel) = false;
+                  *(m_BackChannelStatus[detector-1].begin()+channel) = false;
                }
                
                else {
@@ -904,30 +905,30 @@ vector<TCanvas*> TW1Physics::GetCanvas()
 
 
 ///////////////////////////////////////////////////////////////////////////
-double LOCAL::fW1_Front_E(TW1Data* m_EventData , int i)
+Double_t W1_LOCAL::fW1_Front_E(TW1Data* m_EventData , Int_t i)
 {
-   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + NPL::itoa(m_EventData->GetFrontEDetectorNbr(i)) + "_Front_" + NPL::itoa(m_EventData->GetFrontEStripNbr(i)) +"_E",  m_EventData->GetFrontEEnergy(i));
+   return CalibrationManager::getInstance()->ApplyCalibration("W1/D" + NPL::itoa(m_EventData->GetFrontEDetectorNbr(i)) + "_Front_" + NPL::itoa(m_EventData->GetFrontEStripNbr(i)) + "_E",  m_EventData->GetFrontEEnergy(i));
 }
 
 
 
-double LOCAL::fW1_Back_E(TW1Data* m_EventData , int i)
+Double_t W1_LOCAL::fW1_Back_E(TW1Data* m_EventData , Int_t i)
 {
-   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + NPL::itoa(m_EventData->GetBackEDetectorNbr(i)) + "_Back_" + NPL::itoa(m_EventData->GetBackEStripNbr(i)) +"_E",  m_EventData->GetBackEEnergy(i));
+   return CalibrationManager::getInstance()->ApplyCalibration("W1/D" + NPL::itoa(m_EventData->GetBackEDetectorNbr(i)) + "_Back_" + NPL::itoa(m_EventData->GetBackEStripNbr(i)) + "_E",  m_EventData->GetBackEEnergy(i));
 }
   
  
 
-double LOCAL::fW1_Front_T(TW1Data* m_EventData , int i)
+Double_t W1_LOCAL::fW1_Front_T(TW1Data* m_EventData , Int_t i)
 {
-   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + NPL::itoa(m_EventData->GetFrontTDetectorNbr(i)) + "_Front_" + NPL::itoa(m_EventData->GetFrontTStripNbr(i)) +"_T",  m_EventData->GetFrontTTime(i));
+   return CalibrationManager::getInstance()->ApplyCalibration("W1/D" + NPL::itoa(m_EventData->GetFrontTDetectorNbr(i)) + "_Front_" + NPL::itoa(m_EventData->GetFrontTStripNbr(i)) + "_T",  m_EventData->GetFrontTTime(i));
 }
  
  
 
-double LOCAL::fW1_Back_T(TW1Data* m_EventData , int i)
+Double_t W1_LOCAL::fW1_Back_T(TW1Data* m_EventData , Int_t i)
 {
-   return CalibrationManager::getInstance()->ApplyCalibration("W1/Detector" + NPL::itoa(m_EventData->GetBackTDetectorNbr(i)) + "_Back_" + NPL::itoa(m_EventData->GetBackTStripNbr(i)) +"_T",  m_EventData->GetBackTTime(i));
+   return CalibrationManager::getInstance()->ApplyCalibration("W1/D" + NPL::itoa(m_EventData->GetBackTDetectorNbr(i)) + "_Back_" + NPL::itoa(m_EventData->GetBackTStripNbr(i)) + "_T",  m_EventData->GetBackTTime(i));
 }
 
 
@@ -948,8 +949,8 @@ extern "C"{
 class proxy_w1{
   public:
     proxy_w1(){
-      NPL::DetectorFactory::getInstance()->AddToken("W1","W1");
-      NPL::DetectorFactory::getInstance()->AddDetector("W1",TW1Physics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("W1", "W1");
+      NPL::DetectorFactory::getInstance()->AddDetector("W1", TW1Physics::Construct);
     }
 };
 

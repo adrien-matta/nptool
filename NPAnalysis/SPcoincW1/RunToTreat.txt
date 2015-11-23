@@ -1,0 +1,6 @@
+TTreeName
+  EGTree
+RootFileName
+%  /scratch/gypaos/data/al27pp/oct2015/midas/root/R25_0_new.root
+  /scratch/gypaos/data/al27pp/oct2015/midas/root/R132_0.root
+

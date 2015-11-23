@@ -232,12 +232,12 @@ class TW1Physics : public TObject, public NPL::VDetector
 };
 
 
-namespace LOCAL
+namespace W1_LOCAL
 {
-   double fW1_Front_E(TW1Data* EventData, int i);
-   double fW1_Front_T(TW1Data* EventData, int i);
-   double fW1_Back_E(TW1Data*  EventData, int i);
-   double fW1_Back_T(TW1Data*  EventData, int i);
+   Double_t fW1_Front_E(TW1Data* EventData, Int_t i);
+   Double_t fW1_Front_T(TW1Data* EventData, Int_t i);
+   Double_t fW1_Back_E(TW1Data*  EventData, Int_t i);
+   Double_t fW1_Back_T(TW1Data*  EventData, Int_t i);
 }
 
 #endif

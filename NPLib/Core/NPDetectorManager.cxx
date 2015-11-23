@@ -328,9 +328,9 @@ NPL::VDetector* NPL::DetectorManager::GetDetector(string name){
   if ( it!=m_Detector.end() ) return it->second;
   else{
     cout << endl;
-    cout << "\r \033[1;31m**********************************       Error       **********************************" << endl;
+    cout << "**********************************       Error       **********************************" << endl;
     cout << " No Detector " << name << " found in the Detector Manager" << endl;
-    cout << "***************************************************************************************\033[0m" << endl;
+    cout << "***************************************************************************************" << endl;
     cout << endl;
     exit(1);
   }
