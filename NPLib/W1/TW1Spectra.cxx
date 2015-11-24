@@ -31,22 +31,18 @@ using namespace std;
 
 // NPTool headers
 #include "NPOptionManager.h"
-//#include "NPGlobalSystemOfUnits.h"
-//#include "NPPhysicalConstants.h"
-//#ifdef NP_SYSTEM_OF_UNITS_H
-//using namespace NPUNITS;
-//#endif
 
 // ROOT headers
 #include "TCanvas.h"
 
+
 ////////////////////////////////////////////////////////////////////////////////
 TW1Spectra::TW1Spectra()
+   : fNumberOfDetectors(0),
+     fNumberOfStripsFront(16),
+     fNumberOfStripsBack(16)
 {
    SetName("W1");
-   fNumberOfDetectors   =  0;
-   fNumberOfStripsFront = 16;
-   fNumberOfStripsBack  = 16;
 }
 
 
@@ -55,10 +51,10 @@ TW1Spectra::TW1Spectra()
 TW1Spectra::TW1Spectra(unsigned int NumberOfDetectors)
 {
    if (NPOptionManager::getInstance()->GetVerboseLevel() > 0)
-      cout << "************************************************" << endl
-           << "TW1Spectra : Initalising control spectra for    " 
+      cout << "******************************************************" << endl
+           << "TW1Spectra : Initalising control spectra for " 
            << NumberOfDetectors << " Detectors" << endl
-           << "************************************************" << endl ;
+           << "******************************************************" << endl ;
    SetName("W1");
    fNumberOfDetectors = NumberOfDetectors;
    fNumberOfStripsFront = 16;
@@ -92,20 +88,20 @@ void TW1Spectra::InitRawSpectra()
       // STR_FRONT_E_RAW
       c1->cd(++i1);
       name = "W1_D"+NPL::itoa(i+1)+"_STR_FRONT_E_RAW";
-      AddHisto2D(name, name, fNumberOfStripsFront, 1, fNumberOfStripsFront+1, 5000, 0, 1.5e6, "W1/RAW/STR_FRONT_E")->Draw("colz");
+      AddHisto2D(name, name, fNumberOfStripsFront, 0, fNumberOfStripsFront, 4096, 0, 4096, "W1/RAW/STR_FRONT_E")->Draw("colz");
 
       // STR_BACK_E_RAW
       c1->cd(++i1);
       name = "W1_D"+NPL::itoa(i+1)+"_STR_BACK_E_RAW";
-      AddHisto2D(name, name, fNumberOfStripsBack, 1, fNumberOfStripsBack+1, 5000, 0, 1.5e6, "W1/RAW/STR_BACK_E")->Draw("colz");
+      AddHisto2D(name, name, fNumberOfStripsBack, 0, fNumberOfStripsBack, 4096, 0, 4096, "W1/RAW/STR_BACK_E")->Draw("colz");
 
       // STR_FRONT_EMAX_RAW
       name = "W1_D"+NPL::itoa(i+1)+"_STR_FRONT_EMAX_RAW";
-      AddHisto2D(name, name, fNumberOfStripsFront, 1, fNumberOfStripsFront+1, 5000, 0, 1.5e6, "W1/RAW/STR_FRONT_EMAX");
+      AddHisto2D(name, name, fNumberOfStripsFront, 0, fNumberOfStripsFront, 4096, 0, 4096, "W1/RAW/STR_FRONT_EMAX");
 
       // STR_BACK_EMAX_Raw
       name = "W1_D"+NPL::itoa(i+1)+"_STR_BACK_EMAX_RAW";
-      AddHisto2D(name, name, fNumberOfStripsBack, 1, fNumberOfStripsBack+1, 5000, 0, 1.5e6, "W1/RAW/STR_BACK_EMAX");
+      AddHisto2D(name, name, fNumberOfStripsBack, 0, fNumberOfStripsBack, 4096, 0, 4096, "W1/RAW/STR_BACK_EMAX");
 
       // STR_FRONT_RAW_MULT
       c1->cd(++i1);
@@ -132,11 +128,11 @@ void TW1Spectra::InitPreTreatedSpectra()
    for (unsigned int i = 0; i < fNumberOfDetectors; i++) { // loop on number of detectors
       // STR_FRONT_E_CAL
       name = "W1_D"+NPL::itoa(i+1)+"_STR_FRONT_E_CAL";
-      AddHisto2D(name, name, fNumberOfStripsFront, 1, fNumberOfStripsFront+1, 500, 0, 25, "W1/CAL/STR_FRONT_E");
+      AddHisto2D(name, name, fNumberOfStripsFront, 0, fNumberOfStripsFront, 4000, 0, 8, "W1/CAL/STR_FRONT_E");
 
       // STR_BACK_E_CAL
       name = "W1_D"+NPL::itoa(i+1)+"_STR_BACK_E_CAL";
-      AddHisto2D(name, name, fNumberOfStripsBack, 1, fNumberOfStripsBack+1, 500, 0, 25, "W1/CAL/STR_BACK_E");
+      AddHisto2D(name, name, fNumberOfStripsBack, 0, fNumberOfStripsBack, 4000, 0, 8, "W1/CAL/STR_BACK_E");
 
       // STR_FRONT_CAL_MULT
       name = "W1_D"+NPL::itoa(i+1)+"_STR_FRONT_CAL_MULT";
@@ -148,7 +144,7 @@ void TW1Spectra::InitPreTreatedSpectra()
 
       // Front-Back Energy Correlation
       name = "W1_D"+NPL::itoa(i+1)+"_FB_COR";
-      AddHisto2D(name, name,500,0,25,500,0,25, "W1/CAL/FB"); 
+      AddHisto2D(name, name, 2000, 0, 8, 2000, 0, 8, "W1/CAL/FB"); 
    }  // end loop on number of detectors
 }
 

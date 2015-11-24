@@ -58,7 +58,7 @@ void Analysis::Init()
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::TreatEvent()
 {
-   cout << "pipo" << endl;
+//   cout << "pipo" << endl;
 }
 
 

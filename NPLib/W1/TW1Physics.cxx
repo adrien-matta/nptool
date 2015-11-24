@@ -32,6 +32,7 @@ using namespace W1_LOCAL;
 #include <stdlib.h>
 using namespace std;
 
+// NPTOOL
 #include "RootOutput.h"
 #include "RootInput.h"
 #include "NPDetectorFactory.h"
@@ -39,17 +40,10 @@ using namespace std;
 //  ROOT
 #include "TChain.h"
 
-//  tranform an integer to a string
-string itoa(int value)
-{
-   char buffer [33];
-   sprintf(buffer,"%d",value);
-   return buffer;
-}
-
-
 
 ClassImp(TW1Physics)
+
+
 ///////////////////////////////////////////////////////////////////////////
 TW1Physics::TW1Physics()
    : m_EventData(new TW1Data),
@@ -278,11 +272,11 @@ void TW1Physics::AddParameterToCalibrationManager()
    for (Int_t i = 0; i < m_NumberOfDetectors; i++) {
       for (Int_t j = 0; j < m_NumberOfStrips; j++) {
          // Energy
-         Cal->AddParameter("W1", "D"+ NPL::itoa(i+1)+ "_Front_" + NPL::itoa(j) + "_E", "W1_DETECTOR"+ NPL::itoa(i+1) + "_FRONT_" + NPL::itoa(j) + "_E");
-         Cal->AddParameter("W1", "D"+ NPL::itoa(i+1)+ "_Back_"  + NPL::itoa(j) + "_E", "W1_DETECTOR"+ NPL::itoa(i+1) + "_BACK_"  + NPL::itoa(j) + "_E");  
+         Cal->AddParameter("W1", "D"+ NPL::itoa(i+1)+ "_Front" + NPL::itoa(j) + "_E", "W1_D"+ NPL::itoa(i+1) + "_FRONT" + NPL::itoa(j) + "_E");
+         Cal->AddParameter("W1", "D"+ NPL::itoa(i+1)+ "_Back"  + NPL::itoa(j) + "_E", "W1_D"+ NPL::itoa(i+1) + "_BACK"  + NPL::itoa(j) + "_E");  
          // Time
-         Cal->AddParameter("W1", "D"+ NPL::itoa(i+1)+ "_Front_" + NPL::itoa(j) + "_T", "W1_DETECTOR"+ NPL::itoa(i+1) + "_FRONT_" + NPL::itoa(j) + "_T");
-         Cal->AddParameter("W1", "D"+ NPL::itoa(i+1)+ "_Back_"  + NPL::itoa(j) + "_T", "W1_DETECTOR"+ NPL::itoa(i+1) + "_BACK_"  + NPL::itoa(j) + "_T");  
+         Cal->AddParameter("W1", "D"+ NPL::itoa(i+1)+ "_Front" + NPL::itoa(j) + "_T", "W1_D"+ NPL::itoa(i+1) + "_FRONT" + NPL::itoa(j) + "_T");
+         Cal->AddParameter("W1", "D"+ NPL::itoa(i+1)+ "_Back"  + NPL::itoa(j) + "_T", "W1_D"+ NPL::itoa(i+1) + "_BACK"  + NPL::itoa(j) + "_T");  
       }
    }
 }
@@ -587,7 +581,7 @@ void TW1Physics::PreTreat()
    // (Front, E)
    for (UShort_t i = 0; i < m_EventData->GetFrontEMult(); i++) {
       if (IsValidChannel("Front", m_EventData->GetFrontEDetectorNbr(i), m_EventData->GetFrontEStripNbr(i)) &&
-           m_EventData->GetFrontEEnergy(i) > m_FrontE_Raw_Threshold) {
+          m_EventData->GetFrontEEnergy(i) > m_FrontE_Raw_Threshold) {
          Double_t E = fW1_Front_E(m_EventData, i);
          if (E > m_FrontE_Calib_Threshold) {
             m_PreTreatedData->SetFrontEDetectorNbr(m_EventData->GetFrontEDetectorNbr(i));
@@ -608,7 +602,7 @@ void TW1Physics::PreTreat()
 
    // (Back, E)
    for (UShort_t i = 0; i < m_EventData->GetBackEMult(); i++) {
-      if (IsValidChannel("Back", m_EventData->GetFrontEDetectorNbr(i), m_EventData->GetFrontEStripNbr(i)) &&
+      if (IsValidChannel("Back", m_EventData->GetBackEDetectorNbr(i), m_EventData->GetBackEStripNbr(i)) &&
           m_EventData->GetBackEEnergy(i) > m_BackE_Raw_Threshold) {
          Double_t E = fW1_Back_E(m_EventData, i);
          if (E > m_BackE_Calib_Threshold) {
@@ -620,7 +614,7 @@ void TW1Physics::PreTreat()
    }
    // (Back, T)
    for (UShort_t i = 0; i < m_EventData->GetBackTMult(); i++) {
-      if (IsValidChannel("Back", m_EventData->GetFrontTDetectorNbr(i), m_EventData->GetFrontTStripNbr(i))) {
+      if (IsValidChannel("Back", m_EventData->GetBackTDetectorNbr(i), m_EventData->GetBackTStripNbr(i))) {
          Double_t T = fW1_Back_T(m_EventData, i);
          m_PreTreatedData->SetBackTDetectorNbr(m_EventData->GetBackTDetectorNbr(i));
          m_PreTreatedData->SetBackTStripNbr(m_EventData->GetBackTStripNbr(i));
@@ -661,13 +655,13 @@ vector<TVector2> TW1Physics::Match_Front_Back()
       return ArrayOfGoodCouple;
 
    // Loop on front multiplicity
-   for (int i = 0; i < m_PreTreatedData->GetFrontEMult(); i++) {
+   for (UShort_t i = 0; i < m_PreTreatedData->GetFrontEMult(); i++) {
       // Loop on back multiplicity
-      for (int j = 0; j < m_PreTreatedData->GetBackEMult(); j++) {
+      for (UShort_t j = 0; j < m_PreTreatedData->GetBackEMult(); j++) {
          // if same detector check energy
          if (m_PreTreatedData->GetFrontEDetectorNbr(i) == m_PreTreatedData->GetBackEDetectorNbr(j)) {
             // Look if energy match (within m_StripEnergyMatchingTolerance %)
-            double de = abs(m_PreTreatedData->GetFrontEEnergy(i) - m_PreTreatedData->GetBackEEnergy(j));
+            Double_t de = abs(m_PreTreatedData->GetFrontEEnergy(i) - m_PreTreatedData->GetBackEEnergy(j));
             if (de / m_PreTreatedData->GetFrontEEnergy(i) < m_StripEnergyMatchingTolerance/100) {
                ArrayOfGoodCouple.push_back(TVector2(i,j));
             }  // end test energy
@@ -686,9 +680,10 @@ vector<TVector2> TW1Physics::Match_Front_Back()
 bool TW1Physics::IsValidChannel(string Type, int detector, int channel)
 {
    vector<bool>::iterator it;
-   if (Type == "Front")
+   if (Type == "Front") {
+//      cout << Type << "\t" << detector << "\t" << channel << endl;
       return *(m_FrontChannelStatus[detector-1].begin()+channel);
-
+   }
    else if (Type == "Back")
       return *(m_BackChannelStatus[detector-1].begin()+channel);
 
@@ -879,6 +874,14 @@ void TW1Physics::ClearSpectra()
 
 
 ///////////////////////////////////////////////////////////////////////////
+void TW1Physics::WriteSpectra()
+{
+     m_Spectra->WriteSpectra();
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////
 map<string, TH1*> TW1Physics::GetSpectra()
 {
    if (m_Spectra)
@@ -907,28 +910,28 @@ vector<TCanvas*> TW1Physics::GetCanvas()
 ///////////////////////////////////////////////////////////////////////////
 Double_t W1_LOCAL::fW1_Front_E(TW1Data* m_EventData , Int_t i)
 {
-   return CalibrationManager::getInstance()->ApplyCalibration("W1/D" + NPL::itoa(m_EventData->GetFrontEDetectorNbr(i)) + "_Front_" + NPL::itoa(m_EventData->GetFrontEStripNbr(i)) + "_E",  m_EventData->GetFrontEEnergy(i));
+   return CalibrationManager::getInstance()->ApplyCalibration("W1/D" + NPL::itoa(m_EventData->GetFrontEDetectorNbr(i)) + "_Front" + NPL::itoa(m_EventData->GetFrontEStripNbr(i)) + "_E",  m_EventData->GetFrontEEnergy(i));
 }
 
 
 
 Double_t W1_LOCAL::fW1_Back_E(TW1Data* m_EventData , Int_t i)
 {
-   return CalibrationManager::getInstance()->ApplyCalibration("W1/D" + NPL::itoa(m_EventData->GetBackEDetectorNbr(i)) + "_Back_" + NPL::itoa(m_EventData->GetBackEStripNbr(i)) + "_E",  m_EventData->GetBackEEnergy(i));
+   return CalibrationManager::getInstance()->ApplyCalibration("W1/D" + NPL::itoa(m_EventData->GetBackEDetectorNbr(i)) + "_Back" + NPL::itoa(m_EventData->GetBackEStripNbr(i)) + "_E",  m_EventData->GetBackEEnergy(i));
 }
   
  
 
 Double_t W1_LOCAL::fW1_Front_T(TW1Data* m_EventData , Int_t i)
 {
-   return CalibrationManager::getInstance()->ApplyCalibration("W1/D" + NPL::itoa(m_EventData->GetFrontTDetectorNbr(i)) + "_Front_" + NPL::itoa(m_EventData->GetFrontTStripNbr(i)) + "_T",  m_EventData->GetFrontTTime(i));
+   return CalibrationManager::getInstance()->ApplyCalibration("W1/D" + NPL::itoa(m_EventData->GetFrontTDetectorNbr(i)) + "_Front" + NPL::itoa(m_EventData->GetFrontTStripNbr(i)) + "_T",  m_EventData->GetFrontTTime(i));
 }
  
  
 
 Double_t W1_LOCAL::fW1_Back_T(TW1Data* m_EventData , Int_t i)
 {
-   return CalibrationManager::getInstance()->ApplyCalibration("W1/D" + NPL::itoa(m_EventData->GetBackTDetectorNbr(i)) + "_Back_" + NPL::itoa(m_EventData->GetBackTStripNbr(i)) + "_T",  m_EventData->GetBackTTime(i));
+   return CalibrationManager::getInstance()->ApplyCalibration("W1/D" + NPL::itoa(m_EventData->GetBackTDetectorNbr(i)) + "_Back" + NPL::itoa(m_EventData->GetBackTStripNbr(i)) + "_T",  m_EventData->GetBackTTime(i));
 }
 
 
