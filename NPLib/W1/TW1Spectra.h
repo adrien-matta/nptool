@@ -49,7 +49,7 @@ class TW1Spectra:public VSpectra {
     void FillPreTreatedSpectra(TW1Data*);
     void FillPhysicsSpectra(TW1Physics*);
 
-  private: // Information on SHARC
+  private: // Information on W1 
     unsigned int fNumberOfDetectors;
     unsigned int fNumberOfStripsFront;
     unsigned int fNumberOfStripsBack;

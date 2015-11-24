@@ -886,19 +886,6 @@ map<string, TH1*> TW1Physics::GetSpectra()
 
 
 
-////////////////////////////////////////////////////////////////////////////////
-vector<TCanvas*> TW1Physics::GetCanvas()
-{
-   if (m_Spectra)
-      return m_Spectra->GetCanvas();
-   else {
-      vector<TCanvas*> empty;
-      return empty;
-   }
-}
-
-
-
 ///////////////////////////////////////////////////////////////////////////
 Double_t W1_LOCAL::fW1_Front_E(TW1Data* m_EventData , Int_t i)
 {

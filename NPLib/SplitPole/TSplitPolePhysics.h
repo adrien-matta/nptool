@@ -157,6 +157,7 @@ class TSplitPolePhysics : public TObject, public NPL::VDetector
 
    public: // Static constructor to be passed to the Detector Factory
      static NPL::VDetector* Construct();
+
      ClassDef(TSplitPolePhysics,1)  // TSplitPolePhysics
 };
 

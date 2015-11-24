@@ -224,7 +224,7 @@ void TSplitPolePhysics::ReadAnalysisConfig()
 {
    bool ReadingStatus = false;
 
-   cout << "\t/////////// Reading ConfigW1.dat file ///////////" << endl;
+   cout << "\t/////////// Reading ConfigSplitPole.dat file ///////////" << endl;
 
    // path to file
    string FileName = "./configs/ConfigSplitPole.dat";
@@ -296,6 +296,48 @@ void TSplitPolePhysics::ReadAnalysisConfig()
    }
    cout << "\t/////////////////////////////////////////////////" << endl;
 }   
+
+
+
+///////////////////////////////////////////////////////////////////////////
+void TSplitPolePhysics::InitSpectra()
+{
+//   m_Spectra = new TSplitPoleSpectra(m_NumberOfDetectors);
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////
+void TSplitPolePhysics::FillSpectra()
+{
+//   m_Spectra->FillRawSpectra(m_EventData);
+//   m_Spectra->FillPreTreatedSpectra(m_PreTreatedData);
+//   m_Spectra->FillPhysicsSpectra(m_EventPhysics);
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////
+void TSplitPolePhysics::CheckSpectra()
+{
+//   m_Spectra->CheckSpectra();
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////
+void TSplitPolePhysics::ClearSpectra()
+{
+   // To be done
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////
+void TSplitPolePhysics::WriteSpectra()
+{
+//   m_Spectra->WriteSpectra();
+}
 
 
 

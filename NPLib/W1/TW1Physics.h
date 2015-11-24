@@ -222,7 +222,6 @@ class TW1Physics : public TObject, public NPL::VDetector
 
  public: // Spectra Getter
    map<string, TH1*> GetSpectra();
-   vector<TCanvas*>  GetCanvas();
 
 
  public: // Static constructor to be passed to the Detector Factory
