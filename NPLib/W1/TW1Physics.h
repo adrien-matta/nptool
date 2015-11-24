@@ -182,8 +182,9 @@ class TW1Physics : public TObject, public NPL::VDetector
    // after PreTreat(), event is not treated
    int m_MaximumStripMultiplicityAllowed; //!
 
-   // Tolerance in percent for the energy difference between Front and Back
-   double m_StripEnergyMatchingTolerance; //!
+   // Tolerance for front / back energy match 
+   double m_StripEnergyMatchingSigma  ; //!
+   double m_StripEnergyMatchingNumberOfSigma  ; //!
 
    // Energy thresholds
    // Raw Threshold

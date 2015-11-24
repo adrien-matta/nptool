@@ -51,11 +51,12 @@ TW1Physics::TW1Physics()
      m_EventPhysics(this),
      m_Spectra(0),
      m_MaximumStripMultiplicityAllowed(1),   // multiplidity 1
-     m_StripEnergyMatchingTolerance(10),     // 10%
-     m_FrontE_Raw_Threshold(0),
-     m_BackE_Raw_Threshold(0),
-     m_FrontE_Calib_Threshold(0),
-     m_BackE_Calib_Threshold(0),
+     m_StripEnergyMatchingSigma(0.060),      // MeV
+     m_StripEnergyMatchingNumberOfSigma(5),  // MeV
+     m_FrontE_Raw_Threshold(0),     // adc channels
+     m_BackE_Raw_Threshold(0),      // adc channels
+     m_FrontE_Calib_Threshold(0),   // MeV
+     m_BackE_Calib_Threshold(0),    // MeV
      m_NumberOfDetectors(0),
      m_SiliconFace(49.6),  // mm
      m_NumberOfStrips(16)
@@ -660,9 +661,8 @@ vector<TVector2> TW1Physics::Match_Front_Back()
       for (UShort_t j = 0; j < m_PreTreatedData->GetBackEMult(); j++) {
          // if same detector check energy
          if (m_PreTreatedData->GetFrontEDetectorNbr(i) == m_PreTreatedData->GetBackEDetectorNbr(j)) {
-            // Look if energy match (within m_StripEnergyMatchingTolerance %)
-            Double_t de = abs(m_PreTreatedData->GetFrontEEnergy(i) - m_PreTreatedData->GetBackEEnergy(j));
-            if (de / m_PreTreatedData->GetFrontEEnergy(i) < m_StripEnergyMatchingTolerance/100) {
+            // Equal energy
+            if (abs((m_PreTreatedData->GetFrontEEnergy(i)-m_PreTreatedData->GetBackEEnergy(j))/2.) < m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma) {
                ArrayOfGoodCouple.push_back(TVector2(i,j));
             }  // end test energy
          }  // end test same detector
@@ -739,7 +739,7 @@ void TW1Physics::ReadAnalysisConfig()
    asciiFile->AppendLine("");
 
    // read analysis config file
-   string LineBuffer,DataBuffer;
+   string LineBuffer, DataBuffer, whatToDo;
    while (!AnalysisConfigFile.eof()) {
       // Pick-up next line
       getline(AnalysisConfigFile, LineBuffer);
@@ -749,85 +749,78 @@ void TW1Physics::ReadAnalysisConfig()
 
       // loop on tokens and data
       while (ReadingStatus) {
-         AnalysisConfigFile >> DataBuffer;
+         whatToDo = "";
+         AnalysisConfigFile >> whatToDo;
 
          // Search for comment symbol (%)
-         if (DataBuffer.compare(0, 1, "%") == 0) {
+         if (whatToDo.compare(0, 1, "%") == 0) {
             AnalysisConfigFile.ignore(numeric_limits<streamsize>::max(), '\n' );
          }
          
-         else if (DataBuffer.compare(0, 22, "MAX_STRIP_MULTIPLICITY") == 0) {
-//            check_mult = true;
+         else if (whatToDo == "MAX_STRIP_MULTIPLICITY") {
             AnalysisConfigFile >> DataBuffer;
             m_MaximumStripMultiplicityAllowed = atoi(DataBuffer.c_str() );
-            cout << "\tMaximun strip multiplicity= " << m_MaximumStripMultiplicityAllowed << endl;
+            cout << "\t" << whatToDo << "\t" << m_MaximumStripMultiplicityAllowed << endl;
          }
 
-         else if (DataBuffer.compare(0, 31, "STRIP_ENERGY_MATCHING_TOLERANCE") == 0) {
-//            check_match = true;
+         else if (whatToDo == "FRONT_BACK_ENERGY_MATCHING_SIGMA") {
             AnalysisConfigFile >> DataBuffer;
-            m_StripEnergyMatchingTolerance = atoi(DataBuffer.c_str() );
-            cout << "\tStrip energy matching tolerance= " << m_StripEnergyMatchingTolerance << endl;
+            m_StripEnergyMatchingSigma = atof(DataBuffer.c_str() );
+            cout << "\t" << whatToDo << "\t" << m_StripEnergyMatchingSigma << endl;
          }
-         
-         else if (DataBuffer.compare(0, 2, "W1") == 0) {
+
+         else if (whatToDo == "FRONT_BACK_ENERGY_MATCHING_NUMBER_OF_SIGMA") {
             AnalysisConfigFile >> DataBuffer;
-            string whatToDo = DataBuffer;
-            if (whatToDo.compare(0, 11, "DISABLE_ALL") == 0) {
-               AnalysisConfigFile >> DataBuffer;
-               cout << whatToDo << "  " << DataBuffer << endl;
-               int Detector = atoi(DataBuffer.substr(3,1).c_str());
-               vector< bool > ChannelStatus;
-               ChannelStatus.resize(m_NumberOfStrips,false);
-               m_FrontChannelStatus[Detector-1] = ChannelStatus;
-               m_BackChannelStatus[Detector-1]  = ChannelStatus;
-            }
-            
-            else if (whatToDo.compare(0, 15, "DISABLE_CHANNEL") == 0) {
-               AnalysisConfigFile >> DataBuffer;
-               cout << whatToDo << "  " << DataBuffer << endl;
-               int detector = atoi(DataBuffer.substr(3,1).c_str());
-               int channel = -1;
-               if (DataBuffer.compare(4,5,"FRONT") == 0) {
-                  channel = atoi(DataBuffer.substr(11).c_str());
-                  *(m_FrontChannelStatus[detector-1].begin()+channel) = false;
-               }
-               else if (DataBuffer.compare(4,4,"BACK") == 0) {
-                  channel = atoi(DataBuffer.substr(10).c_str());
-                  *(m_BackChannelStatus[detector-1].begin()+channel) = false;
-               }
-               
-               else {
-                  cout << "\tWarning: detector type for W1 unknown!" << endl;
-               }
-            }
+            m_StripEnergyMatchingNumberOfSigma = atoi(DataBuffer.c_str() );
+            cout << "\t" << whatToDo << "\t" << m_StripEnergyMatchingNumberOfSigma << endl;
+         }
 
-            else if (whatToDo.compare(0, 21, "FRONT_E_RAW_THRESHOLD") == 0) {
-               AnalysisConfigFile >> DataBuffer;
-               m_FrontE_Raw_Threshold = atoi(DataBuffer.c_str());
-               cout << whatToDo << " " << m_FrontE_Raw_Threshold << endl;
-            }
+         else if (whatToDo=="FRONT_E_RAW_THRESHOLD") {
+            AnalysisConfigFile >> DataBuffer;
+            m_FrontE_Raw_Threshold = atoi(DataBuffer.c_str());
+            cout << "\t" << whatToDo << "\t" << m_FrontE_Raw_Threshold << endl;
+         }
 
-            else if (whatToDo.compare(0, 20, "BACK_E_RAW_THRESHOLD") == 0) {
-               AnalysisConfigFile >> DataBuffer;
-               m_BackE_Raw_Threshold = atoi(DataBuffer.c_str());
-               cout << whatToDo << " " << m_BackE_Raw_Threshold << endl;
-            }
+         else if (whatToDo=="BACK_E_RAW_THRESHOLD") {
+            AnalysisConfigFile >> DataBuffer;
+            m_BackE_Raw_Threshold = atoi(DataBuffer.c_str());
+            cout << "\t" << whatToDo << "\t" << m_BackE_Raw_Threshold << endl;
+         }
 
-            else if (whatToDo.compare(0, 21, "FRONT_E_CAL_THRESHOLD") == 0) {
-               AnalysisConfigFile >> DataBuffer;
-               m_FrontE_Calib_Threshold = atoi(DataBuffer.c_str());
-               cout << whatToDo << " " << m_FrontE_Calib_Threshold << endl;
-            }
+         else if (whatToDo=="FRONT_E_CAL_THRESHOLD") {
+            AnalysisConfigFile >> DataBuffer;
+            m_FrontE_Calib_Threshold = atoi(DataBuffer.c_str());
+            cout << "\t" << whatToDo << "\t" << m_FrontE_Calib_Threshold << endl;
+         }
 
-            else if (whatToDo.compare(0, 20, "BACK_E_CAL_THRESHOLD") == 0) {
-               AnalysisConfigFile >> DataBuffer;
-               m_BackE_Calib_Threshold = atoi(DataBuffer.c_str());
-               cout << whatToDo << " " << m_BackE_Calib_Threshold << endl;
-            }
+         else if (whatToDo=="BACK_E_CAL_THRESHOLD") {
+            AnalysisConfigFile >> DataBuffer;
+            m_BackE_Calib_Threshold = atoi(DataBuffer.c_str());
+            cout << "\t" << whatToDo << "\t" << m_BackE_Calib_Threshold << endl;
+         }
 
-            else {
-               cout << "\tWarning: don't know what to do (lost in translation)" << endl;
+         else if (whatToDo == "DISABLE_ALL") {
+            AnalysisConfigFile >> DataBuffer;
+            cout << "\t" << whatToDo << "\t" << DataBuffer << endl;
+            Int_t Detector = atoi(DataBuffer.substr(4,1).c_str());
+            vector< bool > ChannelStatus;
+            ChannelStatus.resize(m_NumberOfStrips, false);
+            m_FrontChannelStatus[Detector-1] = ChannelStatus;
+            m_BackChannelStatus[Detector-1]  = ChannelStatus;
+         }
+
+         else if (whatToDo == "DISABLE_CHANNEL") {
+            AnalysisConfigFile >> DataBuffer;
+            cout << "\t" << whatToDo << "\t" << DataBuffer << endl;
+            int detector = atoi(DataBuffer.substr(4,1).c_str());
+            int channel = -1;
+            if (DataBuffer.compare(6,5,"FRONT") == 0) {
+               channel = atoi(DataBuffer.substr(12).c_str());
+               *(m_FrontChannelStatus[detector-1].begin()+channel) = false;
+            }
+            else if (DataBuffer.compare(6,4,"BACK") == 0) {
+               channel = atoi(DataBuffer.substr(11).c_str());
+               *(m_BackChannelStatus[detector-1].begin()+channel) = false;
             }
          }
          else {
@@ -835,6 +828,7 @@ void TW1Physics::ReadAnalysisConfig()
          }
       }
    }
+   cout << "\t/////////////////////////////////////////////////" << endl;
 }   
 
 

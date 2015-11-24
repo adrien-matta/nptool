@@ -79,21 +79,13 @@ void TW1Spectra::InitRawSpectra()
 {
    static string name;
    for (unsigned int i = 0; i < fNumberOfDetectors; i++) { // loop on number of detectors
-      // define canvas
-      name = "W1Raw"+NPL::itoa(i+1);
-      TCanvas* c1 = new TCanvas(name.c_str(),name.c_str());
-      c1->Divide(3,2);
-      int i1 = 0;  
-
       // STR_FRONT_E_RAW
-      c1->cd(++i1);
       name = "W1_D"+NPL::itoa(i+1)+"_STR_FRONT_E_RAW";
-      AddHisto2D(name, name, fNumberOfStripsFront, 0, fNumberOfStripsFront, 4096, 0, 4096, "W1/RAW/STR_FRONT_E")->Draw("colz");
+      AddHisto2D(name, name, fNumberOfStripsFront, 0, fNumberOfStripsFront, 4096, 0, 4096, "W1/RAW/STR_FRONT_E");
 
       // STR_BACK_E_RAW
-      c1->cd(++i1);
       name = "W1_D"+NPL::itoa(i+1)+"_STR_BACK_E_RAW";
-      AddHisto2D(name, name, fNumberOfStripsBack, 0, fNumberOfStripsBack, 4096, 0, 4096, "W1/RAW/STR_BACK_E")->Draw("colz");
+      AddHisto2D(name, name, fNumberOfStripsBack, 0, fNumberOfStripsBack, 4096, 0, 4096, "W1/RAW/STR_BACK_E");
 
       // STR_FRONT_EMAX_RAW
       name = "W1_D"+NPL::itoa(i+1)+"_STR_FRONT_EMAX_RAW";
@@ -104,19 +96,18 @@ void TW1Spectra::InitRawSpectra()
       AddHisto2D(name, name, fNumberOfStripsBack, 0, fNumberOfStripsBack, 4096, 0, 4096, "W1/RAW/STR_BACK_EMAX");
 
       // STR_FRONT_RAW_MULT
-      c1->cd(++i1);
       name = "W1_D"+NPL::itoa(i+1)+"_STR_FRONT_RAW_MULT";
-      AddHisto1D(name, name, fNumberOfStripsFront, 1, fNumberOfStripsFront+1, "W1/RAW/MULT")->Draw("");
-      gPad->SetLogy();
+      AddHisto1D(name, name, fNumberOfStripsFront, 1, fNumberOfStripsFront+1, "W1/RAW/MULT");
 
       // STR_BACK_RAW_MULT
-      c1->cd(++i1);
       name = "W1_D"+NPL::itoa(i+1)+"_STR_BACK_RAW_MULT";
-      AddHisto1D(name, name, fNumberOfStripsFront, 1, fNumberOfStripsFront+1, "W1/RAW/MULT")->Draw("");
-      gPad->SetLogy();
-
-      AddCanvas(c1);  
+      AddHisto1D(name, name, fNumberOfStripsFront, 1, fNumberOfStripsFront+1, "W1/RAW/MULT");
    } // end loop on number of detectors
+
+   // One single STR_E_RAW spectrum
+   name = "W1_STR_E_RAW";
+   Int_t ntot = (fNumberOfStripsFront+fNumberOfStripsBack) * fNumberOfDetectors;
+   AddHisto2D(name, name, ntot, 0, ntot, 4096, 0, 4096, "W1/RAW");
 }
 
 
@@ -146,6 +137,11 @@ void TW1Spectra::InitPreTreatedSpectra()
       name = "W1_D"+NPL::itoa(i+1)+"_FB_COR";
       AddHisto2D(name, name, 2000, 0, 8, 2000, 0, 8, "W1/CAL/FB"); 
    }  // end loop on number of detectors
+
+   // One single STR_E_CAL spectrum
+   name = "W1_STR_E_CAL";
+   Int_t ntot = (fNumberOfStripsFront+fNumberOfStripsBack) * fNumberOfDetectors;
+   AddHisto2D(name, name, ntot, 0, ntot, 2000, 0, 8, "W1/CAL");
 }
 
 
@@ -207,6 +203,17 @@ void TW1Spectra::FillRawSpectra(TW1Data* RawData)
       GetHisto(index)-> Fill(SBMAX, EBMAX);
    }
 
+   // STR_E_RAW
+   index = "W1/RAW/W1_STR_E_RAW";
+   UShort_t multFront = RawData->GetFrontEMult();
+   for (UShort_t i = 0; i < multFront; ++i) {   // loop on front strips
+      GetHisto(index)->Fill(RawData->GetFrontEStripNbr(i) + 2*fNumberOfStripsFront*(RawData->GetFrontEDetectorNbr(i)-1), RawData->GetFrontEEnergy(i));
+   } // end loop on front strips
+   UShort_t multBack = RawData->GetBackEMult();
+   for (UShort_t i = 0; i < multBack; ++i) {   // loop on front strips
+      GetHisto(index)->Fill(RawData->GetBackEStripNbr(i) + (2*(RawData->GetBackEDetectorNbr(i)-1)+1)*fNumberOfStripsBack, RawData->GetBackEEnergy(i));
+   } // end loop on front strips
+
    // STR_FRONT MULT
    int myMULT[fNumberOfDetectors];
    for (unsigned int i = 0; i < fNumberOfDetectors; i++) myMULT[i] = 0;
@@ -266,6 +273,18 @@ void TW1Spectra::FillPreTreatedSpectra(TW1Data* PreTreatedData)
       index = "W1/CAL/STR_BACK_E/W1_D"+NPL::itoa( PreTreatedData->GetBackEDetectorNbr(i))+"_STR_BACK_E_CAL";
       GetHisto(index)->Fill(PreTreatedData->GetBackEStripNbr(i), PreTreatedData->GetBackEEnergy(i));
    }
+
+   // STR_E_CAL
+   index = "W1/CAL/W1_STR_E_CAL";
+   UShort_t multFront = PreTreatedData->GetFrontEMult();
+   for (UShort_t i = 0; i < multFront; ++i) {   // loop on front strips
+      GetHisto(index)->Fill(PreTreatedData->GetFrontEStripNbr(i) + 2*fNumberOfStripsFront*(PreTreatedData->GetFrontEDetectorNbr(i)-1), PreTreatedData->GetFrontEEnergy(i));
+   } // end loop on front strips
+   UShort_t multBack = PreTreatedData->GetBackEMult();
+   for (UShort_t i = 0; i < multBack; ++i) {   // loop on front strips
+      GetHisto(index)->Fill(PreTreatedData->GetBackEStripNbr(i) + (2*(PreTreatedData->GetBackEDetectorNbr(i)-1)+1)*fNumberOfStripsBack, PreTreatedData->GetBackEEnergy(i));
+   } // end loop on front strips
+
 
    // STR_FRONT MULT
    int myMULT[fNumberOfDetectors];
