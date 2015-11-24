@@ -23,17 +23,13 @@
 #include "TW1Spectra.h"
 
 // C++ headers
-//#include <stdexcept>
 #include <iostream>  
-//#include <cstdlib>
 #include <string>
 using namespace std;
 
 // NPTool headers
 #include "NPOptionManager.h"
 
-// ROOT headers
-#include "TCanvas.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -714,8 +714,6 @@ void TW1Physics::InitializeStandardParameters()
 void TW1Physics::ReadAnalysisConfig()
 {
    bool ReadingStatus = false;
-//   bool check_mult    = false;
-//   bool check_match   = false;
 
    cout << "\t/////////// Reading ConfigW1.dat file ///////////" << endl;
 
