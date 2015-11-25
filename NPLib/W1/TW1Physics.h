@@ -48,7 +48,7 @@ class TW1Physics : public TObject, public NPL::VDetector
 {
  public:   //   Constructor and Destructor
    TW1Physics();
-   ~TW1Physics();
+   ~TW1Physics() {};
 
  public:
    void Clear();

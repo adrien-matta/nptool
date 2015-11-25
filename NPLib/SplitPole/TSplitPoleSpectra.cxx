@@ -36,9 +36,9 @@ using namespace std;
 TSplitPoleSpectra::TSplitPoleSpectra()
 {
    if (NPOptionManager::getInstance()->GetVerboseLevel() > 0)
-      cout << "******************************************************" << endl
-           << "TSplitPoleSpectra : Initalising control spectra " 
-           << "******************************************************" << endl ;
+      cout << "*********************************************************" << endl
+           << "TSplitPoleSpectra : Initializing control spectra         " << endl 
+           << "*********************************************************" << endl;
    SetName("SplitPole");
 
    InitRawSpectra();

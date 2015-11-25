@@ -108,10 +108,10 @@ class TSplitPolePhysics : public TObject, public NPL::VDetector
       void ClearEventPhysics()   {Clear();}
       void ClearEventData()      {m_EventData->Clear();}
 
-      // Methods related to the TW1Spectra classes
-      // Instantiate the TW1Spectra class and the histograms
+      // Methods related to the TSplitPoleSpectra classes
+      // Instantiate the TSplitPoleSpectra class and the histograms
       void InitSpectra();
-      // Fill the spectra defined in TW1Spectra
+      // Fill the spectra defined in TSplitPoleSpectra
       void FillSpectra();
       // Used for Online mainly, perform check on the histo and for example change their color if issues are found
       void CheckSpectra();
@@ -139,7 +139,7 @@ class TSplitPolePhysics : public TObject, public NPL::VDetector
       // Read the user configuration file; if no file found, load standard one
       void ReadAnalysisConfig();
 
-      // Give an external TW1Data object to TW1Physics. Needed for online analysis for example.
+      // Give an external TSplitPoleData object to TSplitPolePhysics. Needed for online analysis for example.
       void SetRawDataPointer(TSplitPoleData* rawDataPointer) {m_EventData = rawDataPointer;}
 
 

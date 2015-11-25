@@ -67,11 +67,11 @@ TW1Physics::TW1Physics()
 
 
 ///////////////////////////////////////////////////////////////////////////
-TW1Physics::~TW1Physics()
-{
-   delete m_EventData;
-   delete m_PreTreatedData;
-}
+//TW1Physics::~TW1Physics()
+//{
+//   delete m_EventData;
+//   delete m_PreTreatedData;
+//}
 
 
 

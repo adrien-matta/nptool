@@ -47,10 +47,10 @@ TW1Spectra::TW1Spectra()
 TW1Spectra::TW1Spectra(unsigned int NumberOfDetectors)
 {
    if (NPOptionManager::getInstance()->GetVerboseLevel() > 0)
-      cout << "******************************************************" << endl
-           << "TW1Spectra : Initalising control spectra for " 
-           << NumberOfDetectors << " Detectors" << endl
-           << "******************************************************" << endl ;
+      cout << "*********************************************************" << endl
+           << "TW1Spectra : Initializing control spectra for " 
+           << NumberOfDetectors << " detectors" << endl
+           << "*********************************************************" << endl ;
    SetName("W1");
    fNumberOfDetectors = NumberOfDetectors;
    fNumberOfStripsFront = 16;

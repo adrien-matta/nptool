@@ -137,7 +137,6 @@ void  TSplitPolePhysics::InitializeRootInputRaw()
    TChain* inputChain = RootInput::getInstance()->GetChain();
    inputChain->SetBranchStatus("SplitPole",  true);
    inputChain->SetBranchStatus("fPosition",  true);
-   inputChain->SetBranchStatus("fBrho",      true);
    inputChain->SetBranchStatus("fDeltaE",    true);
    inputChain->SetBranchStatus("fWire",      true);
    inputChain->SetBranchStatus("fPlasticP",  true);
