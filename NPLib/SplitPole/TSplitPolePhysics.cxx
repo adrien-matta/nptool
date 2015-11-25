@@ -202,10 +202,11 @@ void TSplitPolePhysics::PreTreat()
 
 
 
-/*
+
 bool TSplitPolePhysics::IsValidChannel(string Type, int detector, int channel)
 {
-   vector<bool>::iterator it;
+return true;
+/*   vector<bool>::iterator it;
    if (Type == "Front")
       return *(m_FrontChannelStatus[detector].begin()+channel);
 
@@ -214,8 +215,9 @@ bool TSplitPolePhysics::IsValidChannel(string Type, int detector, int channel)
 
    else 
       return false;
-}
 */
+}
+
 
 
 ///////////////////////////////////////////////////////////////////////////

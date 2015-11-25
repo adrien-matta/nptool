@@ -48,7 +48,6 @@ void DetectorFactory::CreateClassList(std::string FileList){
 
   for(it = m_TokenLib.begin();it!=m_TokenLib.end();it++){
     outFile << it->first << " " << it->second << std::endl;
-  
   }
 
 
@@ -56,21 +55,26 @@ void DetectorFactory::CreateClassList(std::string FileList){
 ////////////////////////////////////////////////////////////////////////////////
 NPL::VDetector* DetectorFactory::Construct(std::string Token){
   std::map<std::string,ClassDetectorFactoryFn>::iterator it;
-  
   if(m_Construct.find(Token)!=m_Construct.end())
     return  m_Construct[Token]();
 
   else if( m_TokenLib.find(Token)!=m_TokenLib.end()){
-    // Add absolute path to library name
+   // Add absolute path to library name
     std::string path = getenv("NPTOOL"); 
     std::string libName = path+"/NPLib/lib/"+m_TokenLib[Token];
     dlopen(libName.c_str(),RTLD_NOW | RTLD_GLOBAL);
-    
-		if(m_Construct.find(Token)!=m_Construct.end())
-      return  m_Construct[Token]();
+    char* LibError = dlerror();
+	if(m_Construct.find(Token)!=m_Construct.end())
+      		return  m_Construct[Token]();
   
     else{
+      
       std::cout << "Warning: Detector with Token " << Token << " has no Constructor or no Library" << std::endl;
+      if(LibError){
+        std::cout << "Library loading failes with error: " << std::endl;
+        std::cout << LibError << std::endl << std::endl;
+      }
+      
       return NULL;
     }
   }
