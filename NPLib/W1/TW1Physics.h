@@ -24,7 +24,7 @@
 // C++ headers 
 #include <vector>
 #include <map>
-using namespace std ;
+using namespace std;
 
 // ROOT headers
 #include "TObject.h"

@@ -39,8 +39,8 @@ using namespace std;
 //  ROOT
 #include "TChain.h"
 
-ClassImp(TSplitPolePhysics)
 
+ClassImp(TSplitPolePhysics)
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -134,9 +134,14 @@ void TSplitPolePhysics::AddParameterToCalibrationManager()
 void  TSplitPolePhysics::InitializeRootInputRaw() 
 {
    TChain* inputChain = RootInput::getInstance()->GetChain();
-   inputChain->SetBranchStatus("SplitPole"   , true);
-   inputChain->SetBranchStatus("fSplitPole_*", true);
-   inputChain->SetBranchAddress("SplitPole"  , &m_EventData);
+   inputChain->SetBranchStatus("SplitPole",  true);
+   inputChain->SetBranchStatus("fPosition",  true);
+   inputChain->SetBranchStatus("fBrho",      true);
+   inputChain->SetBranchStatus("fDeltaE",    true);
+   inputChain->SetBranchStatus("fWire",      true);
+   inputChain->SetBranchStatus("fPlasticP",  true);
+   inputChain->SetBranchStatus("fPlasticG",  true);
+   inputChain->SetBranchAddress("SplitPole", &m_EventData);
 }
 
 
@@ -302,7 +307,7 @@ void TSplitPolePhysics::ReadAnalysisConfig()
 ///////////////////////////////////////////////////////////////////////////
 void TSplitPolePhysics::InitSpectra()
 {
-//   m_Spectra = new TSplitPoleSpectra(m_NumberOfDetectors);
+   m_Spectra = new TSplitPoleSpectra();
 }
 
 
@@ -310,9 +315,9 @@ void TSplitPolePhysics::InitSpectra()
 ///////////////////////////////////////////////////////////////////////////
 void TSplitPolePhysics::FillSpectra()
 {
-//   m_Spectra->FillRawSpectra(m_EventData);
-//   m_Spectra->FillPreTreatedSpectra(m_PreTreatedData);
-//   m_Spectra->FillPhysicsSpectra(m_EventPhysics);
+   m_Spectra->FillRawSpectra(m_EventData);
+   m_Spectra->FillPreTreatedSpectra(m_PreTreatedData);
+   m_Spectra->FillPhysicsSpectra(m_EventPhysics);
 }
 
 
@@ -320,7 +325,7 @@ void TSplitPolePhysics::FillSpectra()
 ///////////////////////////////////////////////////////////////////////////
 void TSplitPolePhysics::CheckSpectra()
 {
-//   m_Spectra->CheckSpectra();
+   m_Spectra->CheckSpectra();
 }
 
 
@@ -336,7 +341,20 @@ void TSplitPolePhysics::ClearSpectra()
 ///////////////////////////////////////////////////////////////////////////
 void TSplitPolePhysics::WriteSpectra()
 {
-//   m_Spectra->WriteSpectra();
+   m_Spectra->WriteSpectra();
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////
+map<string, TH1*> TSplitPolePhysics::GetSpectra()
+{
+   if (m_Spectra)
+      return m_Spectra->GetMapHisto();
+   else {
+      map< string , TH1*> empty;
+      return empty;
+   }
 }
 
 

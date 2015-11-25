@@ -23,15 +23,21 @@
  *****************************************************************************/
 //   STL
 #include <vector>
+#include <map>
 using namespace std;
 
 //   ROOT
 #include "TObject.h"
+#include "TH1.h"
 
 //   NPL
 #include "TSplitPoleData.h"
+#include "TSplitPoleSpectra.h"
 #include "NPVDetector.h"
 #include "NPCalibrationManager.h"
+
+// forward declaration
+class TSplitPoleSpectra;
 
 
 class TSplitPolePhysics : public TObject, public NPL::VDetector
@@ -154,6 +160,12 @@ class TSplitPolePhysics : public TObject, public NPL::VDetector
       Double_t m_CalibP0;  //!
       Double_t m_CalibP1;  //!
 
+
+   private: // Spectra Class
+      TSplitPoleSpectra* m_Spectra; // !
+
+   public: // Spectra Getter
+      map<string, TH1*> GetSpectra();
 
    public: // Static constructor to be passed to the Detector Factory
      static NPL::VDetector* Construct();

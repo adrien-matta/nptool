@@ -49,7 +49,7 @@ Analysis::~Analysis()
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::Init()
 {
-   m_W1 = (TW1Physics*)        m_DetectorManager->GetDetector("W1");
+//   m_W1 = (TW1Physics*)        m_DetectorManager->GetDetector("W1");
    m_SP = (TSplitPolePhysics*) m_DetectorManager->GetDetector("SplitPole");
 }
 
