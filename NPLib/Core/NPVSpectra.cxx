@@ -114,13 +114,20 @@ void VSpectra::WriteSpectra(string filename){
       f->cd();
    }
 
-   // created dedicated directory for spectra
-    string dirname = "ControlSpectra/"+m_name;
+   // creating top directory for spectra
+   string dirname = "ControlSpectra";
    TDirectory *dir = (TDirectory*) f->Get(dirname.c_str());
    if (!dir) {
-      f->mkdir(dirname.c_str());
+      dir = f->mkdir(dirname.c_str());
    }
-   f->cd(dirname.c_str());
+   dir->cd();
+
+   // creating sub directory for each detector spectra
+   TDirectory *dirdet = (TDirectory*) dir->Get(m_name.c_str());
+   if (!dirdet) {
+      dirdet = dir->mkdir(m_name.c_str());
+   }
+   dirdet->cd();
 
    // write all histos
    map< string, TH1* >::iterator it;
