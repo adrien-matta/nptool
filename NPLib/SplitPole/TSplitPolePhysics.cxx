@@ -92,6 +92,7 @@ void TSplitPolePhysics::ReadConfiguration(string Path)
       if (LineBuffer.compare(0, 9, "SplitPole") == 0) {
          cout << "Detector found: " << endl;
          ReadingStatus = true;
+         return;
       }
       // else don't toggle to Reading Block Status
       else ReadingStatus = false;
