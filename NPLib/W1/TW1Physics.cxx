@@ -80,8 +80,11 @@ void TW1Physics::Clear()
 {
    fEventType.clear();
    fDetectorNumber.clear();
-   fEnergy.clear();
-   fTime.clear();
+   fFrontEnergy.clear();
+   fBackEnergy.clear();
+   fHalfEnergy.clear();
+   fFrontTime.clear();
+   fBackTime.clear();
    fFrontStrip.clear();
    fBackStrip.clear();
 }
@@ -535,26 +538,24 @@ void TW1Physics::BuildSimplePhysicalEvent()
    if (evtType == 1) {  // case where multiplicity front = multiplicity back
       vector<TVector2> couple = Match_Front_Back();
 
-      for (unsigned int i = 0; i < couple.size(); i++) { // loop on selected events
-         int    DetecNbr    = m_PreTreatedData->GetFrontEDetectorNbr(couple[i].X());
-         int    StripFront  = m_PreTreatedData->GetFrontEStripNbr(couple[i].X());
-         int    StripBack   = m_PreTreatedData->GetBackEStripNbr(couple[i].Y());
-         double EnergyFront = m_PreTreatedData->GetFrontEEnergy(couple[i].X());
-         double EnergyBack  = m_PreTreatedData->GetBackEEnergy(couple[i].Y());
-         EnergyBack *= 1;
+      for (UShort_t i = 0; i < couple.size(); i++) { // loop on selected events
+         Int_t    DetecNbr    = m_PreTreatedData->GetFrontEDetectorNbr(couple[i].X());
+         Int_t    StripFront  = m_PreTreatedData->GetFrontEStripNbr(couple[i].X());
+         Int_t    StripBack   = m_PreTreatedData->GetBackEStripNbr(couple[i].Y());
+         Double_t EnergyFront = m_PreTreatedData->GetFrontEEnergy(couple[i].X());
+         Double_t EnergyBack  = m_PreTreatedData->GetBackEEnergy(couple[i].Y());
 
          // Search for associate time
          // Front
-         double TimeFront = -1000;
-         for (unsigned int t = 0; t < m_PreTreatedData->GetFrontTMult(); t++) {
+         Double_t TimeFront = -1000;
+         for (UShort_t t = 0; t < m_PreTreatedData->GetFrontTMult(); t++) {
             if (m_PreTreatedData->GetFrontTStripNbr(couple[i].X()) == m_PreTreatedData->GetFrontTStripNbr(t) ||
                 m_PreTreatedData->GetFrontTDetectorNbr(couple[i].X()) == m_PreTreatedData->GetFrontTDetectorNbr(t))
                TimeFront = m_PreTreatedData->GetFrontTTime(t);
          }
-         TimeFront *= 1;
          // Back
-         double TimeBack = -1000;
-         for (unsigned int t = 0; t < m_PreTreatedData->GetBackTMult(); t++) {
+         Double_t TimeBack = -1000;
+         for (UShort_t t = 0; t < m_PreTreatedData->GetBackTMult(); t++) {
             if (m_PreTreatedData->GetBackTStripNbr(couple[i].X()) == m_PreTreatedData->GetBackTStripNbr(t) ||
                 m_PreTreatedData->GetBackTDetectorNbr(couple[i].X()) == m_PreTreatedData->GetBackTDetectorNbr(t))
                TimeBack = m_PreTreatedData->GetBackTTime(t);
@@ -563,8 +564,11 @@ void TW1Physics::BuildSimplePhysicalEvent()
          // Fill TW1Physics private members
          fEventType.push_back(evtType);
          fDetectorNumber.push_back(DetecNbr);
-         fEnergy.push_back(EnergyFront);
-         fTime.push_back(TimeBack);
+         fFrontEnergy.push_back(EnergyFront);
+         fBackEnergy.push_back(EnergyBack);
+         fHalfEnergy.push_back((EnergyFront+EnergyBack)/2);
+         fFrontTime.push_back(TimeFront);
+         fBackTime.push_back(TimeBack);
          fFrontStrip.push_back(StripFront);
          fBackStrip.push_back(StripBack);
       }

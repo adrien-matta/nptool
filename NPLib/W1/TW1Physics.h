@@ -60,8 +60,11 @@ class TW1Physics : public TObject, public NPL::VDetector
    vector<Int_t>     fDetectorNumber;
 
    // First stage
-   vector<Double_t>  fEnergy;
-   vector<Double_t>  fTime;
+   vector<Double_t>  fFrontEnergy;
+   vector<Double_t>  fBackEnergy;
+   vector<Double_t>  fHalfEnergy;
+   vector<Double_t>  fFrontTime;
+   vector<Double_t>  fBackTime;
    vector<Int_t>     fFrontStrip;
    vector<Int_t>     fBackStrip;
 
@@ -69,19 +72,25 @@ class TW1Physics : public TObject, public NPL::VDetector
    // setters
    void SetEventType(Int_t evtType)          {fEventType.push_back(evtType);}
    void SetDetectorNumber(Int_t moduleNbr)   {fDetectorNumber.push_back(moduleNbr);}
-   void SetEnergy(Double_t ener)             {fEnergy.push_back(ener);}
-   void SetTime(Double_t time)               {fTime.push_back(time);}
+   void SetFrontEnergy(Double_t ener)        {fFrontEnergy.push_back(ener);}
+   void SetBackEnergy(Double_t ener)         {fBackEnergy.push_back(ener);}
+   void SethalfEnergy(Double_t ener)         {fHalfEnergy.push_back(ener);}
+   void SetFrontTime(Double_t time)          {fFrontTime.push_back(time);}
+   void SetBackTime(Double_t time)           {fBackTime.push_back(time);}
    void SetFrontStrip(Int_t x)               {fFrontStrip.push_back(x);}
    void SetBackStrip(Int_t y)                {fBackStrip.push_back(y);}
 
    // getters
-   Int_t    GetEventMultiplicity()           {return fEnergy.size();}
-   Int_t    GetEventType(Int_t i)            {return fEventType.at(i);}
-   Int_t    GetDetectorNumber(Int_t i)       {return fDetectorNumber.at(i);}
-   Double_t GetEnergy(Int_t i)               {return fEnergy.at(i);}
-   Double_t GetTime(Int_t i)                 {return fTime.at(i);}
-   Int_t    GetFrontStrip(Int_t i)           {return fFrontStrip.at(i);}
-   Int_t    GetBackStrip(Int_t i)            {return fBackStrip.at(i);}
+   Int_t    GetEventMultiplicity()           {return fFrontEnergy.size();}
+   Int_t    GetEventType(Int_t i)            {return fEventType[i];}
+   Int_t    GetDetectorNumber(Int_t i)       {return fDetectorNumber[i];}
+   Double_t GetFrontEnergy(Int_t i)          {return fFrontEnergy[i];}
+   Double_t GetBackEnergy(Int_t i)           {return fBackEnergy[i];}
+   Double_t GetHalfEnergy(Int_t i)           {return fHalfEnergy[i];}
+   Double_t GetFrontTime(Int_t i)            {return fFrontTime[i];}
+   Double_t GetBackTime(Int_t i)             {return fBackTime[i];}
+   Int_t    GetFrontStrip(Int_t i)           {return fFrontStrip[i];}
+   Int_t    GetBackStrip(Int_t i)            {return fBackStrip[i];}
 
 
  public:   // inherited from VDetector

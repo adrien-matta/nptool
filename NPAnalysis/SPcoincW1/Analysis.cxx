@@ -85,7 +85,7 @@ void Analysis::TreatEvent()
          // calculate relative time between SP and W1
          Double_t time = 0;
          // apply timing selection
-         if (time > 1200 && time < 1400) {
+         if (time > 1150 && time < 1350) {
          }
       }
    }
