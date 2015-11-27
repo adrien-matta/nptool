@@ -23,9 +23,12 @@
  *****************************************************************************/
 #include "NPVAnalysis.h"
 
+// NPTool headers
 #include "TW1Physics.h"
 #include "TSplitPolePhysics.h"
 
+// ROOT headers
+#include "TCutG.h"
 
 
 class Analysis: public NPL::VAnalysis
@@ -39,10 +42,25 @@ class Analysis: public NPL::VAnalysis
     void TreatEvent();
     void End();
 
+    void Clear();
     static NPL::VAnalysis* Construct();
 
   private:
     TW1Physics        *m_W1;
     TSplitPolePhysics *m_SP;
+
+  private:
+    TCutG *m_cutg_SP_p;
+
+  private:
+    // W1's
+    Double_t fEnergy;
+    Double_t fTime;
+    Int_t    fDetector;
+    Int_t    fStripFront;
+    Int_t    fStripBack;
+    // SP
+    Double_t fBrho;
+
 };
 #endif

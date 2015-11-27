@@ -185,7 +185,15 @@ void TSplitPolePhysics::BuildSimplePhysicalEvent()
    // Select active channels and apply thresholds
    PreTreat();
 
+   // Fill TSplitPolePhysics private members
+   fPosition = m_EventData->GetPosition();
+   fDeltaE   = m_EventData->GetDeltaE();
+   fWire     = m_EventData->GetWire();
+   fPlasticP = m_EventData->GetPlasticP();
+   fPlasticG = m_EventData->GetPlasticG();
+
    // Correct for magnetic field variation
+   fBrho = (m_CalibP0 + m_CalibP1*m_EventData->GetPosition()) * 0.5;
 }
 
 
@@ -204,7 +212,8 @@ void TSplitPolePhysics::PreTreat()
 
 bool TSplitPolePhysics::IsValidChannel(string Type, int detector, int channel)
 {
-return true;
+   return true;
+
 /*   vector<bool>::iterator it;
    if (Type == "Front")
       return *(m_FrontChannelStatus[detector].begin()+channel);

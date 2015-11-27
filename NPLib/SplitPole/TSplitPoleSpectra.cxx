@@ -115,7 +115,7 @@ void TSplitPoleSpectra::InitPhysicsSpectra()
    static string name;
    // Brho 
    name = "SplitPole_BRHO";
-   AddHisto1D(name, name, 4096, 0.35, 0.56, "SplitPole/PHY");
+   AddHisto1D(name, name, 4096, 0.25, 0.56, "SplitPole/PHY");
 }
 
 
