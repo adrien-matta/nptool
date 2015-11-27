@@ -6,5 +6,5 @@ RootFileName
 %  /scratch/gypaos/data/al27pp/oct2015/midas/root/R50_0_SPonly.root
 %  /scratch/gypaos/data/al27pp/oct2015/midas/root/R50_0.root
 %  /scratch/gypaos/data/al27pp/oct2015/midas/root/R131_0.root
-  /scratch/gypaos/data/al27pp/oct2015/midas/root/R108_0.root
+  /scratch/gypaos/data/al27pp/oct2015/midas/root/R108_0_test.root
 

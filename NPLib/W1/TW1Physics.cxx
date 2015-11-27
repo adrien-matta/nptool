@@ -530,7 +530,7 @@ void TW1Physics::BuildSimplePhysicalEvent()
    PreTreat();
 
    // Begin treatement
-   int evtType = EventType();
+   Int_t evtType = EventType();
 
    if (evtType == 1) {  // case where multiplicity front = multiplicity back
       vector<TVector2> couple = Match_Front_Back();
@@ -626,7 +626,7 @@ void TW1Physics::PreTreat()
 
 
 
-int TW1Physics::EventType()
+Int_t TW1Physics::EventType()
 {
    // Same multiplicity on front and back side
    if (m_PreTreatedData->GetFrontEMult() == m_PreTreatedData->GetBackEMult()) {

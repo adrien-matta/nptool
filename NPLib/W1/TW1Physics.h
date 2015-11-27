@@ -160,7 +160,7 @@ class TW1Physics : public TObject, public NPL::VDetector
 
 
  public: // Methods used for event treatement
-   int               EventType();
+   Int_t             EventType();
    vector<TVector2>  Match_Front_Back();
 
  private: // Data not written in the tree
