@@ -53,6 +53,7 @@ TSplitPolePhysics::TSplitPolePhysics()
      m_CalibP0(0.65),
      m_CalibP1(6e-6)
 {    
+   Clear();
 }
 
 
@@ -69,6 +70,14 @@ TSplitPolePhysics::~TSplitPolePhysics()
 ///////////////////////////////////////////////////////////////////////////
 void TSplitPolePhysics::Clear()
 {
+   fPosition = -1;
+   fBrho     = -1;
+   fDeltaE   = -1;
+   fWire     = -1;
+   fPlasticP = -1;
+   fPlasticG = -1;
+   fTime1.clear();
+   fTime2.clear();
 }
 
 
@@ -191,8 +200,14 @@ void TSplitPolePhysics::BuildSimplePhysicalEvent()
    fWire     = m_EventData->GetWire();
    fPlasticP = m_EventData->GetPlasticP();
    fPlasticG = m_EventData->GetPlasticG();
-   fTime1    = m_EventData->GetTime1();
-   fTime2    = m_EventData->GetTime2();
+
+   for (UShort_t i = 0; i < m_EventData->GetTime1Multiplicity(); ++i) {   // loop on multiplicity
+      fTime1.push_back(m_EventData->GetTime1(i));
+   } // end loop on multiplicity
+
+   for (UShort_t i = 0; i < m_EventData->GetTime2Multiplicity(); ++i) {   // loop on multiplicity
+      fTime2.push_back(m_EventData->GetTime2(i));
+   } // end loop on multiplicity
 
    // Correct for magnetic field variation
 //   fBrho = (m_CalibP0 + m_CalibP1*m_EventData->GetPosition()) * 0.5;

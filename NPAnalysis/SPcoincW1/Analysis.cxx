@@ -67,7 +67,6 @@ void Analysis::Init()
    // Load graphical cuts
    TFile *fcutg = new TFile("./cuts/cutg_SelectionProtons.root");
    m_cutg_SP_p = (TCutG*) fcutg->Get("run108_plasppos");
-   if (m_cutg_SP_p) m_cutg_SP_p->Print();
 
    // Get Physical objects
    m_W1 = (TW1Physics*)        m_DetectorManager->GetDetector("W1");
@@ -85,22 +84,25 @@ void Analysis::TreatEvent()
    // select protons in SP (PlasticP vs Position)
    if (m_cutg_SP_p->IsInside(m_SP->GetPlasticG(), m_SP->GetPlasticP())) {
       fBrhoSingle    = m_SP->GetBrho();
-      // select multiplicity 1 for W1's
-      if (m_W1->GetEventMultiplicity() == 1) {
-         // select event in W1's
-         if (m_W1->GetFrontEnergy(0) > 0) {
-            // calculate relative time between SP and W1
-            Double_t time = m_W1->GetFrontTime(0)- m_SP->GetTime2();
-            fTime = time;
-            // W1
-            fEnergy     = m_W1->GetFrontEnergy(0);
-            fDetector   = m_W1->GetDetectorNumber(0);
-            fStripFront = m_W1->GetFrontStrip(0);
-            fStripBack  = m_W1->GetBackStrip(0);
-            // SP
-            fBrhoCoinc  = m_SP->GetBrho();
-            // apply timing selection
-            if (time > 160 && time < 280) {
+      // select multiplicity 1 for SP ref time
+      if (m_SP->GetTime2Multiplicity() == 1) {
+         // select multiplicity 1 for W1's
+         if (m_W1->GetEventMultiplicity() == 1) {
+            // select event in W1's
+            if (m_W1->GetFrontEnergy(0) > 0) {
+               // calculate relative time between SP and W1
+               Double_t time = m_W1->GetFrontTime(0)- m_SP->GetTime2(0);
+               fTime = time;
+               // W1
+               fEnergy     = m_W1->GetFrontEnergy(0);
+               fDetector   = m_W1->GetDetectorNumber(0);
+               fStripFront = m_W1->GetFrontStrip(0);
+               fStripBack  = m_W1->GetBackStrip(0);
+               // SP
+               fBrhoCoinc  = m_SP->GetBrho();
+               // apply timing selection
+               if (time > 160 && time < 280) {
+               }
             }
          }
       }

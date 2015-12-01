@@ -33,9 +33,7 @@ TSplitPoleData::TSplitPoleData()
      fDeltaE(-1),
      fWire(-1),
      fPlasticP(-1),
-     fPlasticG(-1),
-     fTime1(-1000),
-     fTime2(-1000)
+     fPlasticG(-1)
 {
 }
 
@@ -54,8 +52,8 @@ void TSplitPoleData::Clear()
    fWire     = -1;
    fPlasticP = -1;
    fPlasticG = -1;
-   fTime1    = -1000;
-   fTime2    = -1000;
+   fTime1.clear();
+   fTime2.clear();
 }
 
 
@@ -69,6 +67,16 @@ void TSplitPoleData::Dump() const
    cout << "Wire:     " << fWire     << endl;
    cout << "PlasticP: " << fPlasticP << endl;
    cout << "PlasticG: " << fPlasticG << endl;
-   cout << "Time1:    " << fTime1    << endl;
-   cout << "Time2:    " << fTime2    << endl;
+
+   cout << "Time1:";
+   for (UInt_t i = 0; i < fTime1.size(); ++i) {   // loop on fTime1
+      cout << "\t" << fTime1[i];
+   } // end loop on fTime1
+   cout << endl;
+
+   cout << "Time2:";
+   for (UInt_t i = 0; i < fTime2.size(); ++i) {   // loop on fTime2
+      cout << "\t" << fTime2[i];
+   } // end loop on fTime2
+   cout << endl;
 }
