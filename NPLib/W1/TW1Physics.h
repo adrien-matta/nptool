@@ -58,8 +58,6 @@ class TW1Physics : public TObject, public NPL::VDetector
  private: // data obtained after BuildPhysicalEvent() and stored in ROOT output file
    vector<Int_t>     fEventType;
    vector<Int_t>     fDetectorNumber;
-
-   // First stage
    vector<Double_t>  fFrontEnergy;
    vector<Double_t>  fBackEnergy;
    vector<Double_t>  fHalfEnergy;
@@ -92,6 +90,10 @@ class TW1Physics : public TObject, public NPL::VDetector
    Int_t    GetFrontStrip(Int_t i)           {return fFrontStrip[i];}
    Int_t    GetBackStrip(Int_t i)            {return fBackStrip[i];}
 
+
+ public:
+   Int_t    m_nCounter;
+   Bool_t   m_Counter[10];
 
  public:   // inherited from VDetector
    // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token

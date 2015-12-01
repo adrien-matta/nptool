@@ -50,6 +50,7 @@ TW1Physics::TW1Physics()
      m_PreTreatedData(new TW1Data),
      m_EventPhysics(this),
      m_Spectra(0),
+     m_nCounter(10),
      m_MaximumStripMultiplicityAllowed(1),   // multiplidity 1
      m_StripEnergyMatchingSigma(0.060),      // MeV
      m_StripEnergyMatchingNumberOfSigma(5),  // MeV
@@ -62,6 +63,10 @@ TW1Physics::TW1Physics()
      m_NumberOfStrips(16)
 {    
    m_StripPitch = m_SiliconFace / (double)m_NumberOfStrips;
+
+   for (Int_t i = 0; i < m_nCounter; ++i) {   // loop on counters
+      m_Counter[i] = 0;
+   } // end loop on counters
 }
 
 
@@ -87,6 +92,10 @@ void TW1Physics::Clear()
    fBackTime.clear();
    fFrontStrip.clear();
    fBackStrip.clear();
+
+   for (Int_t i = 0; i < m_nCounter; ++i) {   // loop on counters
+      m_Counter[i] = 0;
+   } // end loop on counters
 }
 
 
@@ -531,11 +540,13 @@ void TW1Physics::BuildSimplePhysicalEvent()
 {
    // Select active channels and apply thresholds
    PreTreat();
+   m_Counter[0] = 1;
 
    // Begin treatement
    Int_t evtType = EventType();
 
    if (evtType == 1) {  // case where multiplicity front = multiplicity back
+      m_Counter[1] = 1;
       vector<TVector2> couple = Match_Front_Back();
 
       for (UShort_t i = 0; i < couple.size(); i++) { // loop on selected events
@@ -550,14 +561,16 @@ void TW1Physics::BuildSimplePhysicalEvent()
          Double_t TimeFront = -1000;
          for (UShort_t t = 0; t < m_PreTreatedData->GetFrontTMult(); t++) {
             if (m_PreTreatedData->GetFrontTStripNbr(couple[i].X()) == m_PreTreatedData->GetFrontTStripNbr(t) ||
-                m_PreTreatedData->GetFrontTDetectorNbr(couple[i].X()) == m_PreTreatedData->GetFrontTDetectorNbr(t))
+                m_PreTreatedData->GetFrontTDetectorNbr(couple[i].X()) == m_PreTreatedData->GetFrontTDetectorNbr(t)) {
                TimeFront = m_PreTreatedData->GetFrontTTime(t);
+               m_Counter[4] = 1;
+            }
          }
          // Back
          Double_t TimeBack = -1000;
          for (UShort_t t = 0; t < m_PreTreatedData->GetBackTMult(); t++) {
-            if (m_PreTreatedData->GetBackTStripNbr(couple[i].X()) == m_PreTreatedData->GetBackTStripNbr(t) ||
-                m_PreTreatedData->GetBackTDetectorNbr(couple[i].X()) == m_PreTreatedData->GetBackTDetectorNbr(t))
+            if (m_PreTreatedData->GetBackTStripNbr(couple[i].Y()) == m_PreTreatedData->GetBackTStripNbr(t) ||
+                m_PreTreatedData->GetBackTDetectorNbr(couple[i].Y()) == m_PreTreatedData->GetBackTDetectorNbr(t))
                TimeBack = m_PreTreatedData->GetBackTTime(t);
          }
 
@@ -665,9 +678,11 @@ vector<TVector2> TW1Physics::Match_Front_Back()
       for (UShort_t j = 0; j < m_PreTreatedData->GetBackEMult(); j++) {
          // if same detector check energy
          if (m_PreTreatedData->GetFrontEDetectorNbr(i) == m_PreTreatedData->GetBackEDetectorNbr(j)) {
+            m_Counter[2] = 1;
             // Equal energy
             if (abs((m_PreTreatedData->GetFrontEEnergy(i)-m_PreTreatedData->GetBackEEnergy(j))/2.) < m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma) {
                ArrayOfGoodCouple.push_back(TVector2(i,j));
+               m_Counter[3] = 1;
             }  // end test energy
          }  // end test same detector
       }  // end loop back multiplicity

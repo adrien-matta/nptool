@@ -33,6 +33,8 @@ class TSplitPoleData : public TObject
       Double_t fWire;
       Double_t fPlasticP;
       Double_t fPlasticG;
+      Double_t fTime1;     // ch 117
+      Double_t fTime2;     // ch 126
 
 
    public:
@@ -49,6 +51,8 @@ class TSplitPoleData : public TObject
       void SetWire(Double_t wire)         {fWire    = wire;}
       void SetPlasticP(Double_t plp)      {fPlasticP = plp;}
       void SetPlasticG(Double_t plg)      {fPlasticG = plg;}
+      void SetTime1(Double_t time)        {fTime1 = time;}
+      void SetTime2(Double_t time)        {fTime2 = time;}
       void SetFocalPlane(Double_t position, Double_t deltae, Double_t wire, Double_t plp, Double_t plg) {
          SetPosition(position);
          SetDeltaE(deltae);
@@ -64,6 +68,8 @@ class TSplitPoleData : public TObject
       Double_t GetWire()                  const {return fWire;}
       Double_t GetPlasticP()              const {return fPlasticP;}
       Double_t GetPlasticG()              const {return fPlasticG;}
+      Double_t GetTime1()                 const {return fTime1;};
+      Double_t GetTime2()                 const {return fTime2;};
 
 
       ClassDef(TSplitPoleData, 1) // TSplitPoleData raw data 

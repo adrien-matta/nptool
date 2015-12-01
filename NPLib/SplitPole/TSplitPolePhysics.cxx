@@ -191,9 +191,12 @@ void TSplitPolePhysics::BuildSimplePhysicalEvent()
    fWire     = m_EventData->GetWire();
    fPlasticP = m_EventData->GetPlasticP();
    fPlasticG = m_EventData->GetPlasticG();
+   fTime1    = m_EventData->GetTime1();
+   fTime2    = m_EventData->GetTime2();
 
    // Correct for magnetic field variation
-   fBrho = (m_CalibP0 + m_CalibP1*m_EventData->GetPosition()) * 0.5;
+//   fBrho = (m_CalibP0 + m_CalibP1*m_EventData->GetPosition()) * 0.5;
+   fBrho = (m_CalibP0 + m_CalibP1*m_EventData->GetPlasticG()) * 0.5;
 }
 
 

@@ -40,11 +40,12 @@ using namespace std;
 Analysis::Analysis()
    : m_cutg_SP_p(new TCutG),
      fEnergy(-1),
-     fTime(-1),
      fDetector(-1),
      fStripFront(-1),
      fStripBack(-1),
-     fBrho(-1)
+     fBrhoSingle(-1),
+     fBrhoCoinc(-1),
+     fTime(-10000)
 {
 }
 
@@ -60,9 +61,13 @@ Analysis::~Analysis()
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::Init()
 {
+   // initialize branches with analysis information
+   InitOutputBranch();
+
    // Load graphical cuts
    TFile *fcutg = new TFile("./cuts/cutg_SelectionProtons.root");
-   m_cutg_SP_p = (TCutG*) fcutg->Get("run34_plasppos");
+   m_cutg_SP_p = (TCutG*) fcutg->Get("run108_plasppos");
+   if (m_cutg_SP_p) m_cutg_SP_p->Print();
 
    // Get Physical objects
    m_W1 = (TW1Physics*)        m_DetectorManager->GetDetector("W1");
@@ -78,14 +83,25 @@ void Analysis::TreatEvent()
    Clear();
 
    // select protons in SP (PlasticP vs Position)
-   if (!m_cutg_SP_p->IsInside(m_SP->GetPlasticG(), m_SP->GetPlasticP())) {
+   if (m_cutg_SP_p->IsInside(m_SP->GetPlasticG(), m_SP->GetPlasticP())) {
+      fBrhoSingle    = m_SP->GetBrho();
       // select multiplicity 1 for W1's
       if (m_W1->GetEventMultiplicity() == 1) {
-         // select good timing events
-         // calculate relative time between SP and W1
-         Double_t time = 0;
-         // apply timing selection
-         if (time > 1150 && time < 1350) {
+         // select event in W1's
+         if (m_W1->GetFrontEnergy(0) > 0) {
+            // calculate relative time between SP and W1
+            Double_t time = m_W1->GetFrontTime(0)- m_SP->GetTime2();
+            fTime = time;
+            // W1
+            fEnergy     = m_W1->GetFrontEnergy(0);
+            fDetector   = m_W1->GetDetectorNumber(0);
+            fStripFront = m_W1->GetFrontStrip(0);
+            fStripBack  = m_W1->GetBackStrip(0);
+            // SP
+            fBrhoCoinc  = m_SP->GetBrho();
+            // apply timing selection
+            if (time > 160 && time < 280) {
+            }
          }
       }
    }
@@ -105,12 +121,35 @@ void Analysis::Clear()
 {
    // W1's
    fEnergy     = -1;
-   fTime       = -1;
    fDetector   = -1;
    fStripFront = -1;
    fStripBack  = -1;
    // SP
-   fBrho       = -1;
+   fBrhoSingle = -1;
+   fBrhoCoinc  = -1;
+   // time
+   fTime       = -10000;
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+void Analysis::InitOutputBranch()
+{
+   RootOutput::getInstance()->GetTree()->Branch("fEnergy",     &fEnergy,     "fEnergy/D");
+   RootOutput::getInstance()->GetTree()->Branch("fTime",       &fTime,       "fTime/D");
+   RootOutput::getInstance()->GetTree()->Branch("fDetector",   &fDetector,   "fDetector/I");
+   RootOutput::getInstance()->GetTree()->Branch("fStripFront", &fStripFront, "fStripFront/I");
+   RootOutput::getInstance()->GetTree()->Branch("fStripBack",  &fStripBack,  "fStripBack/I");
+   RootOutput::getInstance()->GetTree()->Branch("fBrhoSingle", &fBrhoSingle, "fBrhoSingle/D");
+   RootOutput::getInstance()->GetTree()->Branch("fBrhoCoinc",  &fBrhoSingle, "fBrhoCoinc/D");
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+void Analysis::InitInputBranch()
+{
 }
 
 
