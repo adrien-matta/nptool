@@ -79,6 +79,22 @@ void TSplitPoleSpectra::InitRawSpectra()
    name = "SplitPole_PLASTICG";
    AddHisto1D(name, name, 4096, 0, 4096, "SplitPole/RAW");
 
+   // Time1
+   name = "SplitPole_Time1";
+   AddHisto1D(name, name, 4096, 0, 4096, "SplitPole/RAW");
+
+   // Time2
+   name = "SplitPole_Time2";
+   AddHisto1D(name, name, 4096, 0, 4096, "SplitPole/RAW");
+
+   // Multiplicity Time!
+   name = "SplitPole_Mult_Time1";
+   AddHisto1D(name, name, 10, 0, 10, "SplitPole/RAW");
+
+   // Multiplicity Time2
+   name = "SplitPole_Mult_Time2";
+   AddHisto1D(name, name, 10, 0, 10, "SplitPole/RAW");
+
    // POSITION vs DELTAE 
    name = "SplitPole_POSITION_DELTAE";
    AddHisto2D(name, name, 512, 0, 4096, 512, 0, 4096, "SplitPole/RAW");
@@ -144,6 +160,26 @@ void TSplitPoleSpectra::FillRawSpectra(TSplitPoleData* RawData)
    // PLASTICG
    index = "SplitPole/RAW/SplitPole_PLASTICG";
    GetHisto(index)->Fill(RawData->GetPlasticG());
+
+   // Time1
+   index = "SplitPole/RAW/SplitPole_Time1";
+   for (UShort_t i = 0; i < RawData->GetTime1Multiplicity(); ++i) {   // loop on multiplicity
+      GetHisto(index)->Fill(RawData->GetTime1(i));
+   } // end loop on multiplicity
+
+   // Time2
+   index = "SplitPole/RAW/SplitPole_Time2";
+   for (UShort_t i = 0; i < RawData->GetTime2Multiplicity(); ++i) {   // loop on multiplicity
+      GetHisto(index)->Fill(RawData->GetTime2(i));
+   } // end loop on multiplicity
+
+   // Multiplicity Time1
+   index = "SplitPole/RAW/SplitPole_Mult_Time1";
+   GetHisto(index)->Fill(RawData->GetTime1Multiplicity());
+
+   // Multiplicity Time2
+   index = "SplitPole/RAW/SplitPole_Mult_Time2";
+   GetHisto(index)->Fill(RawData->GetTime2Multiplicity());
 
    // POSITION vs DELTAE
    index = "SplitPole/RAW/SplitPole_POSITION_DELTAE";
