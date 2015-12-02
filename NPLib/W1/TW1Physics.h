@@ -92,8 +92,8 @@ class TW1Physics : public TObject, public NPL::VDetector
 
 
  public:
-   Int_t    m_nCounter;
-   Bool_t   m_Counter[10];
+   Int_t    m_nCounter; //!
+   Bool_t   m_Counter[10]; //!
 
  public:   // inherited from VDetector
    // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
