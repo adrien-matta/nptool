@@ -37,8 +37,9 @@ class TSplitPoleData : public TObject
       Double_t fWire;
       Double_t fPlasticP;
       Double_t fPlasticG;
-      vector<Double_t> fTime1;     // ch 117
-      vector<Double_t> fTime2;     // ch 126
+      vector<Double_t> fTime1;      // ch 117
+      vector<Double_t> fTime2;      // ch 126
+      Double_t fTick;               // data from scaler
 
 
    public:
@@ -57,6 +58,7 @@ class TSplitPoleData : public TObject
       void SetPlasticG(Double_t plg)      {fPlasticG = plg;}
       void SetTime1(Double_t time)        {fTime1.push_back(time);}
       void SetTime2(Double_t time)        {fTime2.push_back(time);}
+      void SetTick(Double_t tick)         {fTick     = tick;}
       void SetFocalPlane(Double_t position, Double_t deltae, Double_t wire, Double_t plp, Double_t plg) {
          SetPosition(position);
          SetDeltaE(deltae);
@@ -76,6 +78,7 @@ class TSplitPoleData : public TObject
       Double_t GetTime2(Int_t i)          const {return fTime2[i];}
       UShort_t GetTime1Multiplicity()     const {return fTime1.size();}
       UShort_t GetTime2Multiplicity()     const {return fTime2.size();}
+      Double_t GetTick()                  const {return fTick;}
 
 
       ClassDef(TSplitPoleData, 1) // TSplitPoleData raw data 
