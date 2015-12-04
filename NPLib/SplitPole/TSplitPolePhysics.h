@@ -23,12 +23,14 @@
  *****************************************************************************/
 //   STL
 #include <vector>
+#include <utility>
 #include <map>
 using namespace std;
 
 //   ROOT
 #include "TObject.h"
 #include "TH1.h"
+#include "TTimeStamp.h"
 
 //   NPL
 #include "TSplitPoleData.h"
@@ -162,11 +164,29 @@ class TSplitPolePhysics : public TObject, public NPL::VDetector
       //   map< int, vector<bool> > m_BackChannelStatus;   //!
 
 
+   private: // parameters needed for magnetic field correction
+      map<Int_t, pair<TTimeStamp, TTimeStamp> > m_TimeTable; //!
+      TTimeStamp  m_RunStart; //!
+      TTimeStamp  m_RunStop;  //!
+      Double_t    m_RunLength;  //! // in sec
+      Double_t    m_FrequenceClock; //!   // in Hz
+      Double_t    m_TickMin;  //!
+      Double_t    m_TickMax;  //!
+      Int_t       m_RunNumber;   //!   // read event by event from TTree
+      Int_t       m_CurrentRunNumber;  //!
+
    private: // Parameters used in the analysis
       Bool_t   m_MagneticFieldCorrection;  //!
       Double_t m_TimeDelay;   //!
       Double_t m_CalibP0;  //!
       Double_t m_CalibP1;  //!
+
+   // methods for magnetic field correction
+   public: // called once
+      void  ReadTimeTable();
+
+   public: // called event by event
+      Bool_t IsSameRun();
 
 
    private: // Spectra Class

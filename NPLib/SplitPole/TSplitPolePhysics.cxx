@@ -12,7 +12,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *    This class hold SplitPole  Physics                                            *
+ *    This class hold SplitPole  Physics                                     *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -48,12 +48,21 @@ TSplitPolePhysics::TSplitPolePhysics()
    : m_EventData(new TSplitPoleData),
      m_PreTreatedData(new TSplitPoleData),
      m_EventPhysics(this),
+     m_RunStart(2015, 10, 6, 0, 0, 0),
+     m_RunStop(2015, 10, 7, 0, 0, 0),
+     m_RunLength(0),
+     m_FrequenceClock(2.03),
+     m_TickMin(0),
+     m_TickMax(0),
+     m_RunNumber(0),
+     m_CurrentRunNumber(0),
      m_MagneticFieldCorrection(0),
      m_TimeDelay(6500),
      m_CalibP0(0.65),
      m_CalibP1(6e-6)
 {    
    Clear();
+   ReadTimeTable();
 }
 
 
@@ -133,6 +142,44 @@ void TSplitPolePhysics::ReadConfiguration(string Path)
 }
 
 
+
+///////////////////////////////////////////////////////////////////////////
+void TSplitPolePhysics::ReadTimeTable()
+{
+   ifstream file("TimeTable.txt");
+
+   Int_t run, date1, date2, time1, time2;
+   TTimeStamp start, stop;
+   pair<TTimeStamp, TTimeStamp> time;
+   while (!file.eof()) {
+      file >> run >> date1 >> time1 >> date2 >> time2;
+      cout << run << "\t" << date1 << "\t" << time1 << "\t" << date2 << "\t" << time2 << endl;
+      start.Set(date1, time1, 0, 1, 0);
+      stop.Set(date2, time2, 0, 1, 0);
+      cout << "dt = " << stop.GetSec() - start.GetSec() << endl;
+      time.first  = start;
+      time.second = stop;
+      m_TimeTable[run] = time;
+   }
+
+   cout << m_TimeTable[74].first << endl;
+   cout << m_TimeTable.size() << endl;
+
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////
+Bool_t TSplitPolePhysics::IsSameRun()
+{
+   Bool_t isSameRun = true;
+   if (m_CurrentRunNumber != m_RunNumber) isSameRun = false;
+
+   return isSameRun;
+}
+
+
+
 ///////////////////////////////////////////////////////////////////////////
 void TSplitPolePhysics::AddParameterToCalibrationManager()
 {
@@ -151,6 +198,7 @@ void  TSplitPolePhysics::InitializeRootInputRaw()
    inputChain->SetBranchStatus("fPlasticP",  true);
    inputChain->SetBranchStatus("fPlasticG",  true);
    inputChain->SetBranchAddress("SplitPole", &m_EventData);
+   inputChain->SetBranchAddress("RunNumber", &m_RunNumber);
 }
 
 
@@ -209,6 +257,17 @@ void TSplitPolePhysics::BuildSimplePhysicalEvent()
       fTime2.push_back(m_EventData->GetTime2(i));
    } // end loop on multiplicity
 
+
+   // Magnetic field correction
+   // store localy run number, run start and stop times and rmn data
+//   cout << "rrrrrrrrrrun number = " << m_RunNumber << endl;
+   if (!IsSameRun()) {
+      m_CurrentRunNumber = m_RunNumber;
+      m_RunStart  = m_TimeTable[m_CurrentRunNumber].first;
+      m_RunStop   = m_TimeTable[m_CurrentRunNumber].second;
+      m_RunLength = m_RunStop.AsDouble() - m_RunStart.AsDouble();
+//      cout << m_CurrentRunNumber << "\t" << m_RunStart << "\t" << m_RunStop << "\t" << m_RunLength << endl;
+   }
    // Correct for magnetic field variation
 //   fBrho = (m_CalibP0 + m_CalibP1*m_EventData->GetPosition()) * 0.5;
    fBrho = (m_CalibP0 + m_CalibP1*m_EventData->GetPlasticG()) * 0.5;
