@@ -34,9 +34,9 @@ using namespace std;
 
 //   NPL
 #include "TSplitPoleData.h"
+#include "TSplitPoleNMR.h"
 #include "TSplitPoleSpectra.h"
 #include "NPVDetector.h"
-#include "NPCalibrationManager.h"
 
 // forward declaration
 class TSplitPoleSpectra;
@@ -78,13 +78,13 @@ class TSplitPolePhysics : public TObject, public NPL::VDetector
       Double_t GetPosition()              const {return fPosition;}
       Double_t GetBrho()                  const {return fBrho;}
       Double_t GetDeltaE()                const {return fDeltaE;}
-      Double_t GetWire()                  const {return fWire;}
+      Double_t GetWire()                  const {return fWire;} 
       Double_t GetPlasticP()              const {return fPlasticP;}
       Double_t GetPlasticG()              const {return fPlasticG;}
       Double_t GetTime1(Int_t i)          const {return fTime1[i];}
       Double_t GetTime2(Int_t i)          const {return fTime2[i];}
-      UShort_t GetTime1Multiplicity()     const {return fTime1.size();}
-      UShort_t GetTime2Multiplicity()     const {return fTime2.size();}
+      UShort_t GetTime1Multiplicity()     const {return fTime1.size();}    //
+      UShort_t GetTime2Multiplicity()     const {return fTime2.size();}    //
 
 
    public:   //   inherited from VDetector
@@ -166,14 +166,17 @@ class TSplitPolePhysics : public TObject, public NPL::VDetector
 
    private: // parameters needed for magnetic field correction
       map<Int_t, pair<TTimeStamp, TTimeStamp> > m_TimeTable; //!
-      TTimeStamp  m_RunStart; //!
-      TTimeStamp  m_RunStop;  //!
-      Double_t    m_RunLength;  //! // in sec
-      Double_t    m_FrequenceClock; //!   // in Hz
-      Double_t    m_TickMin;  //!
-      Double_t    m_TickMax;  //!
-      Int_t       m_RunNumber;   //!   // read event by event from TTree
-      Int_t       m_CurrentRunNumber;  //!
+      map<Int_t, TSplitPoleNMR*> m_NMRTable; //!
+      map<Int_t, Int_t> m_NarvalMidasTable; //!
+      TTimeStamp     m_RunStart;          //!
+      TTimeStamp     m_RunStop;           //!
+      Double_t       m_RunLength;         //! // in sec
+      Double_t       m_FrequenceClock;    //! // in Hz
+      Double_t       m_TickMin;           //!
+      Double_t       m_TickMax;           //!
+      Int_t          m_RunNumber;         //! // read event by event from TTree
+      Int_t          m_CurrentRunNumber;  //!
+      TSplitPoleNMR* m_CurrentNMR;        //!
 
    private: // Parameters used in the analysis
       Bool_t   m_MagneticFieldCorrection;  //!
@@ -184,6 +187,7 @@ class TSplitPolePhysics : public TObject, public NPL::VDetector
    // methods for magnetic field correction
    public: // called once
       void  ReadTimeTable();
+      void  ReadNMR();
 
    public: // called event by event
       Bool_t IsSameRun();

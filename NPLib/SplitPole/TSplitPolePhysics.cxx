@@ -26,6 +26,7 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <string>
 #include <limits>
 #include <cmath>
 #include <stdlib.h>
@@ -38,6 +39,10 @@ using namespace std;
 
 //  ROOT
 #include "TChain.h"
+#include "TSystemDirectory.h"
+#include "TList.h"
+#include "TSystem.h"
+#include "TGraph.h"
 
 
 ClassImp(TSplitPolePhysics)
@@ -56,6 +61,7 @@ TSplitPolePhysics::TSplitPolePhysics()
      m_TickMax(0),
      m_RunNumber(0),
      m_CurrentRunNumber(0),
+     m_CurrentNMR(new TSplitPoleNMR),
      m_MagneticFieldCorrection(0),
      m_TimeDelay(6500),
      m_CalibP0(0.65),
@@ -63,6 +69,7 @@ TSplitPolePhysics::TSplitPolePhysics()
 {    
    Clear();
    ReadTimeTable();
+   ReadNMR();
 }
 
 
@@ -148,23 +155,61 @@ void TSplitPolePhysics::ReadTimeTable()
 {
    ifstream file("TimeTable.txt");
 
-   Int_t run, date1, date2, time1, time2;
+   // define variables
+   Int_t run_midas, run_narval;
+   Int_t date1, date2, time1, time2;
    TTimeStamp start, stop;
-   pair<TTimeStamp, TTimeStamp> time;
-   while (!file.eof()) {
-      file >> run >> date1 >> time1 >> date2 >> time2;
-      cout << run << "\t" << date1 << "\t" << time1 << "\t" << date2 << "\t" << time2 << endl;
+   pair<TTimeStamp, TTimeStamp> ptime;
+
+   // read file
+   while(file >> run_narval >> run_midas >> date1 >> time1 >> date2 >> time2) {
       start.Set(date1, time1, 0, 1, 0);
       stop.Set(date2, time2, 0, 1, 0);
-      cout << "dt = " << stop.GetSec() - start.GetSec() << endl;
-      time.first  = start;
-      time.second = stop;
-      m_TimeTable[run] = time;
+      ptime.first  = start;
+      ptime.second = stop;
+      // fill maps
+      m_TimeTable[run_midas] = ptime;
+      m_NarvalMidasTable[run_narval] = run_midas;
    }
 
-   cout << m_TimeTable[74].first << endl;
-   cout << m_TimeTable.size() << endl;
+   // close file
+   file.close();
+}
 
+
+
+///////////////////////////////////////////////////////////////////////////
+void TSplitPolePhysics::ReadNMR()
+{
+   // current directory where npanalysis is executed
+   string currentpath = gSystem->Getenv("PWD");
+
+   // go to directory with all nmr files and get a list of them
+   TSystemDirectory libdir("libdir", "/scratch/gypaos/data/al27pp/oct2015/rmn");
+   TList* listfile = libdir.GetListOfFiles();
+   // check whether directory is empty or not
+   if (listfile->GetEntries() > 2) {
+      Int_t i = 0;
+      // loop on nmr files
+      while (listfile->At(i)) {
+         TString libname = listfile->At(i++)->GetName();
+         Int_t pos1 = libname.First("0123456789");
+         Int_t pos2 = libname.First(".");
+         TString sub = libname(pos1, pos2-pos1);
+         Int_t run = 0;
+         // if substring is digit only
+         if (sub.IsDigit()) {
+            run = sub.Atoi();
+            // fill map
+            m_NMRTable[m_NarvalMidasTable[run]] = new TSplitPoleNMR(libname.Data());
+         }
+      }
+   }
+
+   // Since the libdir.GetListOfFiles() command cds to the
+   // libidr directory, one has to return to the initial
+   // directory
+   gSystem->cd(currentpath.c_str());
 }
 
 
@@ -224,6 +269,7 @@ void TSplitPolePhysics::InitializeRootOutput()
 {
    TTree* outputTree = RootOutput::getInstance()->GetTree();
    outputTree->Branch("SplitPole", "TSplitPolePhysics", &m_EventPhysics);
+   outputTree->Branch("RunNumber", &m_RunNumber, "RunNumber/I");
 }
 
 
@@ -260,17 +306,21 @@ void TSplitPolePhysics::BuildSimplePhysicalEvent()
 
    // Magnetic field correction
    // store localy run number, run start and stop times and rmn data
-//   cout << "rrrrrrrrrrun number = " << m_RunNumber << endl;
    if (!IsSameRun()) {
       m_CurrentRunNumber = m_RunNumber;
-      m_RunStart  = m_TimeTable[m_CurrentRunNumber].first;
-      m_RunStop   = m_TimeTable[m_CurrentRunNumber].second;
-      m_RunLength = m_RunStop.AsDouble() - m_RunStart.AsDouble();
-//      cout << m_CurrentRunNumber << "\t" << m_RunStart << "\t" << m_RunStop << "\t" << m_RunLength << endl;
+      m_RunStart   = m_TimeTable[m_CurrentRunNumber].first;
+      m_RunStop    = m_TimeTable[m_CurrentRunNumber].second;
+      m_RunLength  = m_RunStop.AsDouble() - m_RunStart.AsDouble();
+      m_CurrentNMR = m_NMRTable[m_CurrentRunNumber];
+      cout << m_CurrentRunNumber << endl;
+      cout << m_CurrentNMR->GetMean() << endl;
    }
    // Correct for magnetic field variation
-//   fBrho = (m_CalibP0 + m_CalibP1*m_EventData->GetPosition()) * 0.5;
-   fBrho = (m_CalibP0 + m_CalibP1*m_EventData->GetPlasticG()) * 0.5;
+   if (m_MagneticFieldCorrection) {
+   }
+   else {
+      fBrho = (m_CalibP0 + m_CalibP1*m_EventData->GetPlasticG()) * m_CurrentNMR->GetMean();
+   }
 }
 
 
