@@ -84,14 +84,16 @@ PhysicsList::PhysicsList() : G4VModularPhysicsList(){
     m_PhysList["HadronPhysicsQGSP_BIC_HP"] = new G4HadronPhysicsQGSP_BIC_HP();
 
   // Optical Photon for scintillator simulation
-  if(m_OpticalPhysics)
-    m_PhysList["OpticalPhysics"] =  new G4OpticalPhysics();    
+    if(m_OpticalPhysics)
+        m_PhysList["OpticalPhysics"] =  new G4OpticalPhysics();
+    
 
 
   // Decay physics
   // Add Radioactive decay
-  // Gamma decay of know states
+  // Gamma decay of known states
   if(m_Decay){
+      std::cout << "Decay is activated: m_Decay=" << m_Decay << std::endl;
     decay_List =  new G4DecayPhysics();
     radioactiveDecay_List = new G4RadioactiveDecayPhysics()  ;
     m_PhysList["decay_list"]= decay_List;
@@ -198,21 +200,21 @@ void PhysicsList::ConstructParticle(){
 
 /////////////////////////////////////////////////////////////////////////////
 void PhysicsList::ConstructProcess(){
-  // Transportation
-  AddTransportation();
+    // Transportation
+    AddTransportation();
 
-  // Electromagnetic physics
-  emPhysicsList -> ConstructProcess();
-  em_config.AddModels();
+    // Electromagnetic physics
+    emPhysicsList -> ConstructProcess();
+    em_config.AddModels();
 
-  // Hadronic physics
-  std::map<std::string,G4VPhysicsConstructor*>::iterator it;
-  for(it = m_PhysList.begin(); it!= m_PhysList.end(); it++){
-    it->second -> ConstructProcess();
-  }
+    // Hadronic physics
+    std::map<std::string,G4VPhysicsConstructor*>::iterator it;
+    for(it = m_PhysList.begin(); it!= m_PhysList.end(); it++){
+        it->second -> ConstructProcess();
+    }
     BiasCrossSectionByFactor(m_IonBinaryCascadePhysics); 
-
-  return;
+    SetCuts();
+    return;
 }
 /////////////////////////////////////////////////////////////////////////////
 void PhysicsList::AddStepMax(){

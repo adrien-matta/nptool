@@ -57,6 +57,10 @@ public:
    //////// Specific Function of this Class ///////////
    ////////////////////////////////////////////////////
 public:
+    
+    G4double PhotoDiodeFace = 18.;//mm
+    G4double PhotoDiodeThickness = 3.;//mm
+    
    // Cylindric CsI
    void AddCsI(  G4double   R                  ,
                      G4double   Theta              ,
@@ -101,8 +105,9 @@ public:   //   Scorer
    //   Initialize all Scorer used by the MUST2Array
    void InitializeScorers() ;
 
-   //   Silicon Associate Scorer
-   G4MultiFunctionalDetector* m_CsIScorer ;
+    //   Silicon Associate Scorer
+    G4MultiFunctionalDetector* m_CsIScorer ;
+    G4MultiFunctionalDetector* m_PDScorer;
    ////////////////////////////////////////////////////
    ///////////Event class to store Data////////////////
    ////////////////////////////////////////////////////
