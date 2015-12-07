@@ -335,7 +335,7 @@ void TSplitPolePhysics::BuildSimplePhysicalEvent()
    }
    else {
       if (!isSameRun) {
-         cout << "\tSplitPole Warning!!! run " << m_CurrentRunNumber << " will be treated with mean magnetic field value " 
+         cout << "\tSplitPole Warning!!! run " << m_CurrentRunNumber << " will use mean magnetic field value " 
               << m_CurrentNMR->GetMean() << " T.m." << endl;
       }
       fBrho = m_PreTreatedData->GetPlasticG() * m_CurrentNMR->GetMean();
