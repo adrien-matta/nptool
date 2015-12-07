@@ -209,6 +209,31 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
     else  if(Name == "Si"){
       G4Material* material = new G4Material(Name,2.321*g/cm3 ,1);
       material->AddElement(GetElementFromLibrary("Si"),1);
+     
+       // Adding Optical property:
+      int NumberOfPoints = 10; 
+      double* energy_r = new double[2];
+      double* rindex = new double[2];
+      double* absorption= new double[2];
+      
+      energy_r[0] = 1*eV;
+      energy_r[1] = 1*MeV;
+
+      rindex[0] = 1 ; rindex[1]=1;
+      absorption[0] = 1*um ; absorption[1]=1*um;
+      
+      G4MaterialPropertiesTable* MPT = new G4MaterialPropertiesTable();
+
+      // From St Gobain
+      MPT -> AddProperty("RINDEX",energy_r,rindex,2) ; 
+      MPT -> AddProperty("ABSLENGTH",energy_r,absorption,2);
+      material -> SetMaterialPropertiesTable(MPT);
+      
+      
+      
+      
+      
+      
       m_Material[Name]=material;
       return material; 
     }
@@ -299,11 +324,11 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
 
       // From St Gobain
       MPT -> AddConstProperty("SCINTILLATIONYIELD",54/keV);
-      MPT -> AddProperty("SCINTILLATION",energy_e,scint,NumberOfPoints) ;
+      MPT -> AddProperty("SCINTILLATION",energy_e,scint,2) ;
       MPT -> AddProperty("RINDEX",energy_r,rindex,NumberOfPoints) ; 
       MPT -> AddProperty("ABSLENGTH",energy_r,absorption,NumberOfPoints);
-      MPT->AddProperty("FASTCOMPONENT", energy_e, fast, NumberOfPoints);
-      MPT->AddProperty("SLOWCOMPONENT", energy_e, slow, NumberOfPoints);
+      MPT->AddProperty("FASTCOMPONENT", energy_e, fast, 2);
+      MPT->AddProperty("SLOWCOMPONENT", energy_e, slow, 2);
       MPT->AddConstProperty("RESOLUTIONSCALE",1.0);
       MPT->AddConstProperty("FASTTIMECONSTANT",1000*ns);
       MPT->AddConstProperty("SLOWTIMECONSTANT",1000*ns);
