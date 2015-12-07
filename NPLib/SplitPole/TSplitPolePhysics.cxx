@@ -12,7 +12,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *    This class hold SplitPole  Physics                                            *
+ *    This class hold SplitPole  Physics                                     *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -26,6 +26,7 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <string>
 #include <limits>
 #include <cmath>
 #include <stdlib.h>
@@ -38,6 +39,10 @@ using namespace std;
 
 //  ROOT
 #include "TChain.h"
+#include "TSystemDirectory.h"
+#include "TList.h"
+#include "TSystem.h"
+#include "TGraph.h"
 
 
 ClassImp(TSplitPolePhysics)
@@ -48,11 +53,23 @@ TSplitPolePhysics::TSplitPolePhysics()
    : m_EventData(new TSplitPoleData),
      m_PreTreatedData(new TSplitPoleData),
      m_EventPhysics(this),
+     m_RunStart(2015, 10, 6, 0, 0, 0),
+     m_RunStop(2015, 10, 7, 0, 0, 0),
+     m_RunLength(0),
+     m_FrequenceClock(2.03),
+     m_TickMin(0),
+     m_TickMax(0),
+     m_RunNumber(0),
+     m_CurrentRunNumber(0),
+     m_CurrentNMR(new TSplitPoleNMR),
      m_MagneticFieldCorrection(0),
      m_TimeDelay(6500),
      m_CalibP0(0.65),
      m_CalibP1(6e-6)
 {    
+   Clear();
+   ReadTimeTable();
+   ReadNMR();
 }
 
 
@@ -69,6 +86,14 @@ TSplitPolePhysics::~TSplitPolePhysics()
 ///////////////////////////////////////////////////////////////////////////
 void TSplitPolePhysics::Clear()
 {
+   fPosition = -1;
+   fBrho     = -1;
+   fDeltaE   = -1;
+   fWire     = -1;
+   fPlasticP = -1;
+   fPlasticG = -1;
+   fTime1.clear();
+   fTime2.clear();
 }
 
 
@@ -124,6 +149,82 @@ void TSplitPolePhysics::ReadConfiguration(string Path)
 }
 
 
+
+///////////////////////////////////////////////////////////////////////////
+void TSplitPolePhysics::ReadTimeTable()
+{
+   ifstream file("TimeTable.txt");
+
+   // define variables
+   Int_t run_midas, run_narval;
+   Int_t date1, date2, time1, time2;
+   TTimeStamp start, stop;
+   pair<TTimeStamp, TTimeStamp> ptime;
+
+   // read file
+   while(file >> run_narval >> run_midas >> date1 >> time1 >> date2 >> time2) {
+      start.Set(date1, time1, 0, 1, 0);
+      stop.Set(date2, time2, 0, 1, 0);
+      ptime.first  = start;
+      ptime.second = stop;
+      // fill maps
+      m_TimeTable[run_midas] = ptime;
+      m_NarvalMidasTable[run_narval] = run_midas;
+   }
+
+   // close file
+   file.close();
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////
+void TSplitPolePhysics::ReadNMR()
+{
+   // current directory where npanalysis is executed
+   string currentpath = gSystem->Getenv("PWD");
+
+   // go to directory with all nmr files and get a list of them
+   TSystemDirectory libdir("libdir", "/scratch/gypaos/data/al27pp/oct2015/rmn");
+   TList* listfile = libdir.GetListOfFiles();
+   // check whether directory is empty or not
+   if (listfile->GetEntries() > 2) {
+      Int_t i = 0;
+      // loop on nmr files
+      while (listfile->At(i)) {
+         TString libname = listfile->At(i++)->GetName();
+         Int_t pos1 = libname.First("0123456789");
+         Int_t pos2 = libname.First(".");
+         TString sub = libname(pos1, pos2-pos1);
+         Int_t run = 0;
+         // if substring is digit only
+         if (sub.IsDigit()) {
+            run = sub.Atoi();
+            // fill map
+            m_NMRTable[m_NarvalMidasTable[run]] = new TSplitPoleNMR(libname.Data());
+         }
+      }
+   }
+
+   // Since the libdir.GetListOfFiles() command cds to the
+   // libidr directory, one has to return to the initial
+   // directory
+   gSystem->cd(currentpath.c_str());
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////
+Bool_t TSplitPolePhysics::IsSameRun()
+{
+   Bool_t isSameRun = true;
+   if (m_CurrentRunNumber != m_RunNumber) isSameRun = false;
+
+   return isSameRun;
+}
+
+
+
 ///////////////////////////////////////////////////////////////////////////
 void TSplitPolePhysics::AddParameterToCalibrationManager()
 {
@@ -137,12 +238,12 @@ void  TSplitPolePhysics::InitializeRootInputRaw()
    TChain* inputChain = RootInput::getInstance()->GetChain();
    inputChain->SetBranchStatus("SplitPole",  true);
    inputChain->SetBranchStatus("fPosition",  true);
-   inputChain->SetBranchStatus("fBrho",      true);
    inputChain->SetBranchStatus("fDeltaE",    true);
    inputChain->SetBranchStatus("fWire",      true);
    inputChain->SetBranchStatus("fPlasticP",  true);
    inputChain->SetBranchStatus("fPlasticG",  true);
    inputChain->SetBranchAddress("SplitPole", &m_EventData);
+   inputChain->SetBranchAddress("RunNumber", &m_RunNumber);
 }
 
 
@@ -168,6 +269,7 @@ void TSplitPolePhysics::InitializeRootOutput()
 {
    TTree* outputTree = RootOutput::getInstance()->GetTree();
    outputTree->Branch("SplitPole", "TSplitPolePhysics", &m_EventPhysics);
+   outputTree->Branch("RunNumber", &m_RunNumber, "RunNumber/I");
 }
 
 
@@ -186,7 +288,39 @@ void TSplitPolePhysics::BuildSimplePhysicalEvent()
    // Select active channels and apply thresholds
    PreTreat();
 
+   // Fill TSplitPolePhysics private members
+   fPosition = m_EventData->GetPosition();
+   fDeltaE   = m_EventData->GetDeltaE();
+   fWire     = m_EventData->GetWire();
+   fPlasticP = m_EventData->GetPlasticP();
+   fPlasticG = m_EventData->GetPlasticG();
+
+   for (UShort_t i = 0; i < m_EventData->GetTime1Multiplicity(); ++i) {   // loop on multiplicity
+      fTime1.push_back(m_EventData->GetTime1(i));
+   } // end loop on multiplicity
+
+   for (UShort_t i = 0; i < m_EventData->GetTime2Multiplicity(); ++i) {   // loop on multiplicity
+      fTime2.push_back(m_EventData->GetTime2(i));
+   } // end loop on multiplicity
+
+
+   // Magnetic field correction
+   // store localy run number, run start and stop times and rmn data
+   if (!IsSameRun()) {
+      m_CurrentRunNumber = m_RunNumber;
+      m_RunStart   = m_TimeTable[m_CurrentRunNumber].first;
+      m_RunStop    = m_TimeTable[m_CurrentRunNumber].second;
+      m_RunLength  = m_RunStop.AsDouble() - m_RunStart.AsDouble();
+      m_CurrentNMR = m_NMRTable[m_CurrentRunNumber];
+      cout << m_CurrentRunNumber << endl;
+      cout << m_CurrentNMR->GetMean() << endl;
+   }
    // Correct for magnetic field variation
+   if (m_MagneticFieldCorrection) {
+   }
+   else {
+      fBrho = (m_CalibP0 + m_CalibP1*m_EventData->GetPlasticG()) * m_CurrentNMR->GetMean();
+   }
 }
 
 
@@ -205,7 +339,8 @@ void TSplitPolePhysics::PreTreat()
 
 bool TSplitPolePhysics::IsValidChannel(string Type, int detector, int channel)
 {
-return true;
+   return true;
+
 /*   vector<bool>::iterator it;
    if (Type == "Front")
       return *(m_FrontChannelStatus[detector].begin()+channel);

@@ -197,12 +197,18 @@ void TCATSPhysics::BuildPhysicalEvent(){
 
   for(unsigned int i  = 0 ; i < NumberOfCATSHit ; i++ ){       
     // Return the position in strip unit
+     // Convention: the collected charge is atrributed to the center of the strip
+     // (histogram convention) so that a reconstructed position for a single strip
+     // goes from strip index -0.5 to strip index +0.5
     double PosX =  ReconstructionFunctionX[DetMaxX[i]-1](Buffer_X_Q[i],StripMaxX[i]);
     double PosY =  ReconstructionFunctionY[DetMaxY[i]-1](Buffer_Y_Q[i],StripMaxY[i]);
     StripNumberX.push_back(PosX);
     StripNumberY.push_back(PosY);   
 
-    // Convert in mm by doing a linear interpolation
+    // a shift - -1 is made to have PosX in between -0.5 and 27.5
+    // for the following calculation of the position in the lab.
+    PosX = PosX -1;
+    PosY = PosY -1;
 
     // sx and sy are the X and Y strip number between which the PosX and PosY are
     int sx0 = (int) PosX;

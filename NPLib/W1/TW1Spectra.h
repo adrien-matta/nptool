@@ -53,6 +53,7 @@ class TW1Spectra:public VSpectra {
     unsigned int fNumberOfDetectors;
     unsigned int fNumberOfStripsFront;
     unsigned int fNumberOfStripsBack;
+    Int_t         fNumberOfCounters;
 };
 
 #endif

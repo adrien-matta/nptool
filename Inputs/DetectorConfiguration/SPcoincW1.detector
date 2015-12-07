@@ -8,6 +8,10 @@ Target
    X= 0
    Y= 0
    Z= 0
+
+
+
+
 %%%%%%% Detector 1 %%%%%%%			
 W1
 	THETA= 150
@@ -52,6 +56,8 @@ W1
 	VIS= all					
 
 
-
 %%%%%%% Splitpole  %%%%%%%
 SplitPole
+
+
+

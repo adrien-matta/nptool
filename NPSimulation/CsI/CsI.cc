@@ -46,8 +46,10 @@
 #include "ObsoleteGeneralScorers.hh"
 #include "RootOutput.h"
 #include "MaterialManager.hh"
+#include "SiliconScorers.hh"
+#include "CalorimeterScorers.hh"
 #include "NPSDetectorFactory.hh"
-using namespace OBSOLETEGENERALSCORERS ;
+//using namespace OBSOLETEGENERALSCORERS ;
 // CLHEP header
 #include "CLHEP/Random/RandGauss.h"
 
@@ -57,10 +59,9 @@ using namespace CLHEP;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace CSI{
-  // Energy and time Resolution
-  const G4double ResoTime    = 4.2         ;// = 10ns of Resolution   //   Unit is MeV/2.35
-  //const G4double ResoEnergy  = 0.180/2.35         ;// Resolution in keV (sigma)
-  const G4double ResoEnergy  = 0.50 ;// Resolution in %
+    // Energy and time Resolution
+    //const G4double ResoTime    = 4.2         ;// = 10ns of Resolution   //   Unit is MeV/2.35
+    const G4double ResoCsI = 2.4;//%
 }
 
 using namespace CSI ;
@@ -396,31 +397,51 @@ void CsI::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume* wor
 
   // Cylindrical Case
   if(m_CsIRadius[i]!=-1){
-    if(m_CsIThickness[i]>0 && m_CsIRadius[i]>0){ 
-      G4Tubs* solidCsI = new G4Tubs( Name ,    
-          0 ,
-          m_CsIRadius[i] ,
-          m_CsIThickness[i]/2 ,
-          0*deg , 
-          360*deg);
+    if(m_CsIThickness[i]>0 && m_CsIRadius[i]>0){
+        
+        // CsI crystal
+        G4Tubs* solidCsI = new G4Tubs( Name ,
+                                      0 ,
+                                      m_CsIRadius[i] ,
+                                      m_CsIThickness[i]/2 ,
+                                      0*deg ,
+                                      360*deg);
 
-      G4LogicalVolume* logicCsI = new G4LogicalVolume(solidCsI, CsIMaterial, Name+ "_Scintillator", 0, 0, 0);
-      logicCsI->SetSensitiveDetector(m_CsIScorer);
+        G4LogicalVolume* logicCsI = new G4LogicalVolume(solidCsI, CsIMaterial, Name+ "_Scintillator", 0, 0, 0);
+        logicCsI->SetSensitiveDetector(m_CsIScorer);
 
-      G4VisAttributes* CsIVisAtt = new G4VisAttributes(G4Colour(1.0, 0.5, 0.0)) ;
-      logicCsI->SetVisAttributes(CsIVisAtt) ;
+        G4VisAttributes* CsIVisAtt = new G4VisAttributes(G4Colour(1.0, 0.5, 0.0)) ;
+        logicCsI->SetVisAttributes(CsIVisAtt) ;
 
+        new G4PVPlacement(0 ,
+                          Det_pos ,
+                          logicCsI ,
+                          Name  + "_Scintillator" ,
+                          world ,
+                          false ,
+                          0 );
+        
+        // Photodiode
+        G4String NamePD = Name+"PhotoDiode";
+        
+        G4Material* PDMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary("Si");
 
-
-      new G4PVPlacement(0 ,
-          Det_pos ,
-          logicCsI ,
-          Name  + "_Scintillator" ,
-          world ,
-          false ,
-          0 );   
+        G4Box* solidPhotoDiode = new G4Box(NamePD,0.5*PhotoDiodeFace,0.5*PhotoDiodeFace,0.5*PhotoDiodeThickness);
+        
+        G4LogicalVolume* logicPD = new G4LogicalVolume(solidPhotoDiode, PDMaterial, NamePD,0,0,0);
+        logicPD->SetSensitiveDetector(m_PDScorer);
+        
+        G4VisAttributes* PDVisAtt = new G4VisAttributes(G4Colour(0.1, 0.2, 0.3)) ;
+        logicPD->SetVisAttributes(PDVisAtt);
+        
+        new G4PVPlacement(0 ,
+                         Det_pos+(m_CsIThickness[i]/2+PhotoDiodeThickness/2)*Det_pos.unit() ,
+                         logicPD ,
+                         NamePD ,
+                         world ,
+                         false ,
+                         0 );
     }
-
 
     if(m_LeadThickness[i]>0&& m_CsIRadius[i]>0){
       G4Tubs* solidLead = new G4Tubs(Name+"_Lead",    
@@ -499,9 +520,48 @@ void CsI::InitializeRootOutput(){
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
 void CsI::ReadSensitive(const G4Event* event){
-  G4String DetectorNumber;
-  m_Event->Clear();
+    //G4String DetectorNumber;
+    m_Event->Clear();
+    
+    // CsI //
+    G4THitsMap<G4double*>* CsIHitMap;
+    std::map<G4int, G4double**>::iterator CsI_itr;
+    G4int CsICollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("CsIScorer/CsI");
+    CsIHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CsICollectionID));
+    
+    // Loop on the CsI map
+    for (CsI_itr = CsIHitMap->GetMap()->begin() ; CsI_itr != CsIHitMap->GetMap()->end() ; CsI_itr++){
+        G4double* Info = *(CsI_itr->second);
+        double E_CsI = RandGauss::shoot(Info[0],Info[0]*ResoCsI/100);
+        //cout << "Energy CsI " << endl;
+        //cout << E_CsI << endl;
+        m_Event->SetCsIEEnergy(E_CsI);
+        m_Event->SetENumber(Info[2]);
+    }
+    // Clear Map for next event
+    CsIHitMap->clear();
+    
+    // PhotoDiode //
+    G4THitsMap<G4double*>* PhotoDiodeHitMap;
+    std::map<G4int, G4double**>::iterator PhotoDiode_itr;
+    
+    G4int PhotoDiodeCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("PDScorer/PhotoDiode");
+    PhotoDiodeHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(PhotoDiodeCollectionID));
+    
+    // Loop on the PhotoDiode map
+    for (PhotoDiode_itr = PhotoDiodeHitMap->GetMap()->begin() ; PhotoDiode_itr != PhotoDiodeHitMap->GetMap()->end() ; PhotoDiode_itr++){
+        G4double* Info = *(PhotoDiode_itr->second);
+        double E_PhotoDiode = RandGauss::shoot(Info[0],Info[0]*ResoCsI/100);
+        
+        m_Event->SetPhotoDiodeEnergy(E_PhotoDiode);
+        m_Event->SetPhotoDiodeEDetectorNbr(Info[7]);
+            
+        m_Event->SetPhotoDiodeTime(Info[1]);
+        m_Event->SetPhotoDiodeTDetectorNbr(Info[7]);
+    }
+    PhotoDiodeHitMap->clear();
 
+    /*
   //////////////////////////////////////////////////////////////////////////////////////
   //////////////////////// Used to Read Event Map of detector //////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
@@ -559,7 +619,7 @@ void CsI::ReadSensitive(const G4Event* event){
         G4int ETrackID  =   Energy_itr->first  - N      ;
         G4double E     = *(Energy_itr->second)         ;
         if (ETrackID == NTrackID) {
-	  m_Event->SetEEnergy(RandGauss::shoot(E, E*ResoEnergy/100./2.35))    ;
+            m_Event->SetEEnergy(RandGauss::shoot(E, E*ResoEnergy/100./2.35))    ;
           //m_Event->SetEEnergy(RandGauss::shoot(E, ResoEnergy))    ;
         }
         Energy_itr++;
@@ -596,28 +656,48 @@ void CsI::ReadSensitive(const G4Event* event){
   TimeHitMap            ->clear()   ;    
   DetectorNumberHitMap    ->clear()   ;
   EnergyHitMap            ->clear()    ; 
-  PosZHitMap					->clear() ;
+  PosZHitMap			->clear() ;
+     */
 
 }
 
 
 ////////////////////////////////////////////////////////////////   
 void CsI::InitializeScorers() { 
-  bool already_exist = false; 
-  m_CsIScorer = CheckScorer("CsIScorer",already_exist) ;
+    bool already_exist = false;
+    vector<G4int> NestingLevel;
+    NestingLevel.push_back(0);
+    NestingLevel.push_back(1);
+    m_CsIScorer = CheckScorer("CsIScorer",already_exist) ;
+    m_PDScorer = CheckScorer("PDScorer",already_exist) ;
   
-  if(already_exist) return ;
+    if(already_exist) return ;
+    
+    G4VPrimitiveScorer* CsIScorer= new CALORIMETERSCORERS::PS_Calorimeter("CsI",NestingLevel);
+    m_CsIScorer->RegisterPrimitive(CsIScorer);
+    
+    G4VPrimitiveScorer* PDScorer = new SILICONSCORERS::PS_Silicon_Rectangle("PhotoDiode",0,
+                                                                                PhotoDiodeFace,
+                                                                                PhotoDiodeFace,
+                                                                                1,
+                                                                                1);
+    m_PDScorer->RegisterPrimitive(PDScorer);
+    
+    G4SDManager::GetSDMpointer()->AddNewDetector(m_PDScorer) ;
+    G4SDManager::GetSDMpointer()->AddNewDetector(m_CsIScorer) ;
 
-  G4VPrimitiveScorer* DetNbr = new PSDetectorNumber("CsINumber","CsI", 0) ;
-  G4VPrimitiveScorer* Energy = new PSEnergy("Energy","CsI", 0)                   ;
-  G4VPrimitiveScorer* Time   = new PSTOF("Time","CsI", 0)                         ;
-  G4VPrimitiveScorer* InteractionCoordinatesZ  			= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","CsI", 0);       
-  //and register it to the multifunctionnal detector
-  m_CsIScorer->RegisterPrimitive(DetNbr)                         ;
-  m_CsIScorer->RegisterPrimitive(Energy)                         ;
-  m_CsIScorer->RegisterPrimitive(Time)                            ;      
-  m_CsIScorer->RegisterPrimitive(InteractionCoordinatesZ);      
-  G4SDManager::GetSDMpointer()->AddNewDetector(m_CsIScorer) ;
+
+    /*G4VPrimitiveScorer* DetNbr = new PSDetectorNumber("CsINumber","CsI", 0) ;
+    G4VPrimitiveScorer* Energy = new PSEnergy("Energy","CsI", 0)                   ;
+    G4VPrimitiveScorer* Time   = new PSTOF("Time","CsI", 0)                         ;
+    G4VPrimitiveScorer* InteractionCoordinatesZ  			= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","CsI", 0);
+    //and register it to the multifunctionnal detector
+    m_CsIScorer->RegisterPrimitive(DetNbr)                         ;
+    m_CsIScorer->RegisterPrimitive(Energy)                         ;
+    m_CsIScorer->RegisterPrimitive(Time)                            ;
+    m_CsIScorer->RegisterPrimitive(InteractionCoordinatesZ);
+    G4SDManager::GetSDMpointer()->AddNewDetector(m_CsIScorer) ;
+    G4SDManager::GetSDMpointer()->AddNewDetector(m_PDScorer) ;*/
 
 }
 ////////////////////////////////////////////////////////////////

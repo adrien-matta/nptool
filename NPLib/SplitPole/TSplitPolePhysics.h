@@ -23,18 +23,20 @@
  *****************************************************************************/
 //   STL
 #include <vector>
+#include <utility>
 #include <map>
 using namespace std;
 
 //   ROOT
 #include "TObject.h"
 #include "TH1.h"
+#include "TTimeStamp.h"
 
 //   NPL
 #include "TSplitPoleData.h"
+#include "TSplitPoleNMR.h"
 #include "TSplitPoleSpectra.h"
 #include "NPVDetector.h"
-#include "NPCalibrationManager.h"
 
 // forward declaration
 class TSplitPoleSpectra;
@@ -58,6 +60,8 @@ class TSplitPolePhysics : public TObject, public NPL::VDetector
       Double_t fWire;
       Double_t fPlasticP;
       Double_t fPlasticG;
+      vector<Double_t> fTime1;
+      vector<Double_t> fTime2;
 
    public:
       // setters
@@ -67,14 +71,20 @@ class TSplitPolePhysics : public TObject, public NPL::VDetector
       void SetWire(Double_t wire)         {fWire     = wire;}
       void SetPlasticP(Double_t plp)      {fPlasticP = plp;}
       void SetPlasticG(Double_t plg)      {fPlasticG = plg;}
+      void SetTime1(Double_t time)        {fTime1.push_back(time);}
+      void SetTime2(Double_t time)        {fTime2.push_back(time);}
 
       // getters
       Double_t GetPosition()              const {return fPosition;}
       Double_t GetBrho()                  const {return fBrho;}
       Double_t GetDeltaE()                const {return fDeltaE;}
-      Double_t GetWire()                  const {return fWire;}
+      Double_t GetWire()                  const {return fWire;} 
       Double_t GetPlasticP()              const {return fPlasticP;}
       Double_t GetPlasticG()              const {return fPlasticG;}
+      Double_t GetTime1(Int_t i)          const {return fTime1[i];}
+      Double_t GetTime2(Int_t i)          const {return fTime2[i];}
+      UShort_t GetTime1Multiplicity()     const {return fTime1.size();}    //
+      UShort_t GetTime2Multiplicity()     const {return fTime2.size();}    //
 
 
    public:   //   inherited from VDetector
@@ -108,10 +118,10 @@ class TSplitPolePhysics : public TObject, public NPL::VDetector
       void ClearEventPhysics()   {Clear();}
       void ClearEventData()      {m_EventData->Clear();}
 
-      // Methods related to the TW1Spectra classes
-      // Instantiate the TW1Spectra class and the histograms
+      // Methods related to the TSplitPoleSpectra classes
+      // Instantiate the TSplitPoleSpectra class and the histograms
       void InitSpectra();
-      // Fill the spectra defined in TW1Spectra
+      // Fill the spectra defined in TSplitPoleSpectra
       void FillSpectra();
       // Used for Online mainly, perform check on the histo and for example change their color if issues are found
       void CheckSpectra();
@@ -139,7 +149,7 @@ class TSplitPolePhysics : public TObject, public NPL::VDetector
       // Read the user configuration file; if no file found, load standard one
       void ReadAnalysisConfig();
 
-      // Give an external TW1Data object to TW1Physics. Needed for online analysis for example.
+      // Give an external TSplitPoleData object to TSplitPolePhysics. Needed for online analysis for example.
       void SetRawDataPointer(TSplitPoleData* rawDataPointer) {m_EventData = rawDataPointer;}
 
 
@@ -154,11 +164,33 @@ class TSplitPolePhysics : public TObject, public NPL::VDetector
       //   map< int, vector<bool> > m_BackChannelStatus;   //!
 
 
+   private: // parameters needed for magnetic field correction
+      map<Int_t, pair<TTimeStamp, TTimeStamp> > m_TimeTable; //!
+      map<Int_t, TSplitPoleNMR*> m_NMRTable; //!
+      map<Int_t, Int_t> m_NarvalMidasTable; //!
+      TTimeStamp     m_RunStart;          //!
+      TTimeStamp     m_RunStop;           //!
+      Double_t       m_RunLength;         //! // in sec
+      Double_t       m_FrequenceClock;    //! // in Hz
+      Double_t       m_TickMin;           //!
+      Double_t       m_TickMax;           //!
+      Int_t          m_RunNumber;         //! // read event by event from TTree
+      Int_t          m_CurrentRunNumber;  //!
+      TSplitPoleNMR* m_CurrentNMR;        //!
+
    private: // Parameters used in the analysis
       Bool_t   m_MagneticFieldCorrection;  //!
       Double_t m_TimeDelay;   //!
       Double_t m_CalibP0;  //!
       Double_t m_CalibP1;  //!
+
+   // methods for magnetic field correction
+   public: // called once
+      void  ReadTimeTable();
+      void  ReadNMR();
+
+   public: // called event by event
+      Bool_t IsSameRun();
 
 
    private: // Spectra Class
