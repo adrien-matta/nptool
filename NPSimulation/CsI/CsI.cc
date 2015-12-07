@@ -433,7 +433,7 @@ void CsI::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume* wor
         logicPD->SetVisAttributes(PDVisAtt);
         
         new G4PVPlacement(0 ,
-                         Det_pos+(m_CsIThickness[i]/2+PhotoDiodeThickness/2)*Det_pos.unit() ,
+                         Det_pos+(m_CsIThickness[i]*0.5+PhotoDiodeThickness*0.5)*Det_pos.unit() ,
                          logicPD ,
                          NamePD ,
                          world ,

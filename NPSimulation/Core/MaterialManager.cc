@@ -256,14 +256,28 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       material->AddElement(GetElementFromLibrary("Cs"),1);
       material->AddElement(GetElementFromLibrary("I"),1);
       // Adding Scintillation property:
-      int NumberOfPoints = 100; 
+      int NumberOfPoints = 10; 
       double wlmin = 0.25*um;
       double wlmax = 67*um;
       double step = (wlmax-wlmin)/NumberOfPoints;
-      double* energy = new double[NumberOfPoints];
+      double* energy_r = new double[NumberOfPoints];
       double* rindex = new double[NumberOfPoints];
       double* absorption= new double[NumberOfPoints];
+      
+      double* energy_e = new double[2];
+      double* fast = new double[2];
+      double* slow = new double[2];
+      double* scint = new double[2];
+
+      energy_e[0] = h_Planck*c_light / (550*nm);
+      energy_e[1] = h_Planck*c_light / (550*nm);
+
+      fast[0] = 1 ; fast[1]=1;
+      slow[0] = 1 ; slow[1]=1;
+      scint[0] = 1; scint[1] = 1;
+      
       double wl;
+     
       for(int i = 0 ; i < NumberOfPoints ;i++){
         wl= wlmin+i*step;
         // Formula from www.refractiveindex.info
@@ -276,18 +290,24 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
             +0.01918/(1-pow(0.218/wl,2))
             +3.38229/(1-pow(161.29/wl,2))) ;
         
-        energy[i] = h_Planck*c_light / wl;
+        energy_r[i] = h_Planck*c_light / wl;
         // To be defined properly
-        // absorption[i] =  344.8*cm;
+        absorption[i] =  344.8*cm;
       }
 
       G4MaterialPropertiesTable* MPT = new G4MaterialPropertiesTable();
 
       // From St Gobain
       MPT -> AddConstProperty("SCINTILLATIONYIELD",54/keV);
-      MPT -> AddProperty("RINDEX",energy,rindex,NumberOfPoints)->SetSpline(true);
-     // MPT -> AddProperty("ABSLENGTH",energy,absorption,NumberOfPoints)->SetSpline(true);
-      delete energy; delete rindex ; delete absorption;
+      MPT -> AddProperty("SCINTILLATION",energy_e,scint,NumberOfPoints) ;
+      MPT -> AddProperty("RINDEX",energy_r,rindex,NumberOfPoints) ; 
+      MPT -> AddProperty("ABSLENGTH",energy_r,absorption,NumberOfPoints);
+      MPT->AddProperty("FASTCOMPONENT", energy_e, fast, NumberOfPoints);
+      MPT->AddProperty("SLOWCOMPONENT", energy_e, slow, NumberOfPoints);
+      MPT->AddConstProperty("RESOLUTIONSCALE",1.0);
+      MPT->AddConstProperty("FASTTIMECONSTANT",1000*ns);
+      MPT->AddConstProperty("SLOWTIMECONSTANT",1000*ns);
+      MPT->AddConstProperty("YIELDRATIO",1.0);
       material -> SetMaterialPropertiesTable(MPT);
       m_Material[Name]=material;
       return material; 

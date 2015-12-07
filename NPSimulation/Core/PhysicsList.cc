@@ -23,33 +23,20 @@
 
 #include "G4SystemOfUnits.hh"
 #include "G4RunManager.hh"
-#include "G4Region.hh"
-#include "G4RegionStore.hh"
 #include "PhysicsList.hh"
 #include "G4PhysListFactory.hh"
 #include "G4VPhysicsConstructor.hh"
 
 // Physics List
-#include "G4NeutronTrackingCut.hh"
 #include "G4LossTableManager.hh"
 #include "G4UnitsTable.hh"
 #include "G4ProcessManager.hh"
-#include "G4IonFluctuations.hh"
-#include "G4IonParametrisedLossModel.hh"
 #include "G4EmProcessOptions.hh"
-#include "G4ParallelWorldPhysics.hh"
-#include "G4EmLivermorePhysics.hh"
-#include "G4AutoDelete.hh"
-
 /////////////////////////////////////////////////////////////////////////////
 PhysicsList::PhysicsList() : G4VModularPhysicsList(){
   ReadConfiguration("PhysicsListOption.txt");
   G4LossTableManager::Instance();
-  defaultCutValue = 1*pc;
-  cutForGamma     = defaultCutValue;
-  cutForElectron  = defaultCutValue;
-  cutForPositron  = defaultCutValue;
-
+  defaultCutValue = 1*mm;
   SetVerboseLevel(0);
 
   // ******     Definition of defaults for the physics processes *****
@@ -66,6 +53,7 @@ PhysicsList::PhysicsList() : G4VModularPhysicsList(){
   // Elecromagnetic physics
   // Using the more accurate option4
   emPhysicsList = new G4EmStandardPhysics_option4();
+  opticalPhysicsList = NULL;
 
   // Hadronic physics
   if(m_IonBinaryCascadePhysics){
@@ -84,16 +72,20 @@ PhysicsList::PhysicsList() : G4VModularPhysicsList(){
     m_PhysList["HadronPhysicsQGSP_BIC_HP"] = new G4HadronPhysicsQGSP_BIC_HP();
 
   // Optical Photon for scintillator simulation
-    if(m_OpticalPhysics)
-        m_PhysList["OpticalPhysics"] =  new G4OpticalPhysics();
-    
+    if(m_OpticalPhysics){
+      opticalPhysicsList = new G4OpticalPhysics(0);
+      opticalPhysicsList->SetMaxNumPhotonsPerStep(100); 
+      opticalPhysicsList->SetScintillationYieldFactor(0.01); 
+      opticalPhysicsList->SetTrackSecondariesFirst(kScintillation,true);
+      opticalPhysicsList->SetTrackSecondariesFirst(kCerenkov,true);
+      //RegisterPhysics(opticalPhysicsList); 
+    }
 
 
   // Decay physics
   // Add Radioactive decay
   // Gamma decay of known states
   if(m_Decay){
-      std::cout << "Decay is activated: m_Decay=" << m_Decay << std::endl;
     decay_List =  new G4DecayPhysics();
     radioactiveDecay_List = new G4RadioactiveDecayPhysics()  ;
     m_PhysList["decay_list"]= decay_List;
@@ -148,7 +140,7 @@ void PhysicsList::ReadConfiguration(std::string filename){
   
   // Most special process need decay to be activated
      if( (m_IonBinaryCascadePhysics || m_EmExtraPhysics || m_HadronElasticPhysics
-        || m_StoppingPhysics || m_OpticalPhysics || m_HadronPhysicsQGSP_BIC_HP) && !m_Decay){
+        || m_StoppingPhysics || m_HadronPhysicsQGSP_BIC_HP) && !m_Decay){
         m_Decay = true;
         std::cout << "Information: Selected process require Decay to be activated." << std::endl;
      }
@@ -160,11 +152,18 @@ PhysicsList::~PhysicsList(){
 
 /////////////////////////////////////////////////////////////////////////////
 void PhysicsList::ConstructParticle(){
+  if(m_OpticalPhysics){
+    //G4OpticalPhoton::OpticalPhotonDefinition();
+   ((G4VPhysicsConstructor*) opticalPhysicsList)->ConstructParticle();
+
+  }
+
   if(decay_List){
     decay_List -> ConstructParticle();
     radioactiveDecay_List->ConstructParticle();
   }
-  else{
+  
+   else{
     // If decay is not activated we have to declare the particle ourself
     G4He3::He3Definition();
     G4Deuteron::DeuteronDefinition();
@@ -193,6 +192,7 @@ void PhysicsList::ConstructParticle(){
     G4AntiKaonZero ::AntiKaonZeroDefinition();
     G4KaonZeroLong ::KaonZeroLongDefinition();
     G4KaonZeroShort::KaonZeroShortDefinition();
+    // Ion
     G4IonConstructor ionConstructor     ;
     ionConstructor.ConstructParticle()  ;
   }
@@ -205,15 +205,16 @@ void PhysicsList::ConstructProcess(){
 
     // Electromagnetic physics
     emPhysicsList -> ConstructProcess();
-    em_config.AddModels();
-
+ 
+    if(opticalPhysicsList){
+      ((G4VPhysicsConstructor*) opticalPhysicsList)->ConstructProcess();
+    }
     // Hadronic physics
     std::map<std::string,G4VPhysicsConstructor*>::iterator it;
     for(it = m_PhysList.begin(); it!= m_PhysList.end(); it++){
         it->second -> ConstructProcess();
     }
     BiasCrossSectionByFactor(m_IonBinaryCascadePhysics); 
-    SetCuts();
     return;
 }
 /////////////////////////////////////////////////////////////////////////////
@@ -230,7 +231,7 @@ void PhysicsList::SetCuts(){
  
   // Special Cut for optical photon to be emmitted
   SetCutsWithDefault();
-  SetCutValue(1*um,"opticalphoton");
+//  SetCutValue(10*um,"opticalphoton");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
