@@ -48,6 +48,8 @@ class TSplitPoleNMR : public TObject
       Double_t    fMean;            // mean value for field
       Double_t    fMin;             // min value for field
       Double_t    fMax;             // max value for field
+      Double_t    fTMin;            // min value for absolute time
+      Double_t    fTMax;            // max value for absolute time
 
 
    public:
@@ -65,6 +67,8 @@ class TSplitPoleNMR : public TObject
       Double_t GetMean()      {return fMean;}
       Double_t GetMin()       {return fMin;}
       Double_t GetMax()       {return fMax;}
+      Double_t GetTMin()      {return fTMin;}
+      Double_t GetTMax()      {return fTMax;}
       TString  GetFileName()  {return fFileName;}
 
       Int_t    ReadRmnFile();

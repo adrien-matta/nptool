@@ -21,6 +21,7 @@
  *****************************************************************************/
 //  NPL
 #include "TSplitPolePhysics.h"
+using namespace SplitPole_LOCAL;
 
 // C++ headers
 #include <iostream>
@@ -36,6 +37,7 @@ using namespace std;
 #include "RootOutput.h"
 #include "RootInput.h"
 #include "NPDetectorFactory.h"
+#include "NPCalibrationManager.h"
 
 //  ROOT
 #include "TChain.h"
@@ -64,12 +66,10 @@ TSplitPolePhysics::TSplitPolePhysics()
      m_CurrentNMR(new TSplitPoleNMR),
      m_MagneticFieldCorrection(0),
      m_TimeDelay(6500),
-     m_CalibP0(0.65),
-     m_CalibP1(6e-6)
+     m_LargeField(0),
+     m_NmrFilePath("./")
 {    
    Clear();
-   ReadTimeTable();
-   ReadNMR();
 }
 
 
@@ -86,12 +86,14 @@ TSplitPolePhysics::~TSplitPolePhysics()
 ///////////////////////////////////////////////////////////////////////////
 void TSplitPolePhysics::Clear()
 {
-   fPosition = -1;
-   fBrho     = -1;
-   fDeltaE   = -1;
-   fWire     = -1;
-   fPlasticP = -1;
-   fPlasticG = -1;
+   fPosition     = -1;
+   fBrho         = -1;
+   fDeltaE       = -1;
+   fWire         = -1;
+   fPlasticP     = -1;
+   fPlasticG     = -1;
+   fTick         = -1;
+   fAbsoluteTick = -1;
    fTime1.clear();
    fTime2.clear();
 }
@@ -107,17 +109,13 @@ void TSplitPolePhysics::ReadConfiguration(string Path)
 
    bool ReadingStatus = false;
 
-   cout << "SP read configuration" << endl;
-
    while (!ConfigFile.eof()) {      
       getline(ConfigFile, LineBuffer);
-      cout << LineBuffer << endl;
 
       // If SplitPole detector found, toggle Reading Block Status
       if (LineBuffer.compare(0, 9, "SplitPole") == 0) {
          cout << "Detector found: " << endl;
          ReadingStatus = true;
-         return;
       }
       // else don't toggle to Reading Block Status
       else ReadingStatus = false;
@@ -139,13 +137,19 @@ void TSplitPolePhysics::ReadConfiguration(string Path)
          //  If no Detector Token and no comment, toggle out
          else {
             ReadingStatus = false; 
-            cout << "Wrong Token Sequence: Getting out " << DataBuffer << endl;
+//            cout << "Wrong Token Sequence: Getting out " << DataBuffer << endl;
          }
       }
    }
           
-   InitializeStandardParameters();
+   // read specific SplitPole configuration parameters
    ReadAnalysisConfig();
+
+   // read run time table
+   ReadTimeTable();
+
+   // read NMR files
+   ReadNMR();
 }
 
 
@@ -153,6 +157,8 @@ void TSplitPolePhysics::ReadConfiguration(string Path)
 ///////////////////////////////////////////////////////////////////////////
 void TSplitPolePhysics::ReadTimeTable()
 {
+   cout << "\tReading time table file..." << endl;
+
    ifstream file("TimeTable.txt");
 
    // define variables
@@ -162,7 +168,7 @@ void TSplitPolePhysics::ReadTimeTable()
    pair<TTimeStamp, TTimeStamp> ptime;
 
    // read file
-   while(file >> run_narval >> run_midas >> date1 >> time1 >> date2 >> time2) {
+   while (file >> run_narval >> run_midas >> date1 >> time1 >> date2 >> time2) {
       start.Set(date1, time1, 0, 1, 0);
       stop.Set(date2, time2, 0, 1, 0);
       ptime.first  = start;
@@ -181,11 +187,13 @@ void TSplitPolePhysics::ReadTimeTable()
 ///////////////////////////////////////////////////////////////////////////
 void TSplitPolePhysics::ReadNMR()
 {
+   cout << "\tReading NMR files..." << endl;
+
    // current directory where npanalysis is executed
    string currentpath = gSystem->Getenv("PWD");
 
    // go to directory with all nmr files and get a list of them
-   TSystemDirectory libdir("libdir", "/scratch/gypaos/data/al27pp/oct2015/rmn");
+   TSystemDirectory libdir("libdir", m_NmrFilePath);
    TList* listfile = libdir.GetListOfFiles();
    // check whether directory is empty or not
    if (listfile->GetEntries() > 2) {
@@ -199,9 +207,10 @@ void TSplitPolePhysics::ReadNMR()
          Int_t run = 0;
          // if substring is digit only
          if (sub.IsDigit()) {
+            // narval run number
             run = sub.Atoi();
             // fill map
-            m_NMRTable[m_NarvalMidasTable[run]] = new TSplitPoleNMR(libname.Data());
+            m_NMRTable[m_NarvalMidasTable[run]] = new TSplitPoleNMR(libname.Data(), m_TimeDelay);
          }
       }
    }
@@ -228,6 +237,10 @@ Bool_t TSplitPolePhysics::IsSameRun()
 ///////////////////////////////////////////////////////////////////////////
 void TSplitPolePhysics::AddParameterToCalibrationManager()
 {
+   CalibrationManager* Cal = CalibrationManager::getInstance();
+
+   // position
+   Cal->AddParameter("SplitPole", "POSITION", "POSITION");
 }
 
 
@@ -289,37 +302,43 @@ void TSplitPolePhysics::BuildSimplePhysicalEvent()
    PreTreat();
 
    // Fill TSplitPolePhysics private members
-   fPosition = m_EventData->GetPosition();
-   fDeltaE   = m_EventData->GetDeltaE();
-   fWire     = m_EventData->GetWire();
-   fPlasticP = m_EventData->GetPlasticP();
-   fPlasticG = m_EventData->GetPlasticG();
+   fPosition = m_PreTreatedData->GetPosition();
+   fDeltaE   = m_PreTreatedData->GetDeltaE();
+   fWire     = m_PreTreatedData->GetWire();
+   fPlasticP = m_PreTreatedData->GetPlasticP();
+   fPlasticG = m_PreTreatedData->GetPlasticG();
+   fTick     = m_PreTreatedData->GetTick();
 
-   for (UShort_t i = 0; i < m_EventData->GetTime1Multiplicity(); ++i) {   // loop on multiplicity
-      fTime1.push_back(m_EventData->GetTime1(i));
+   for (UShort_t i = 0; i < m_PreTreatedData->GetTime1Multiplicity(); ++i) {   // loop on multiplicity
+      fTime1.push_back(m_PreTreatedData->GetTime1(i));
    } // end loop on multiplicity
 
-   for (UShort_t i = 0; i < m_EventData->GetTime2Multiplicity(); ++i) {   // loop on multiplicity
-      fTime2.push_back(m_EventData->GetTime2(i));
+   for (UShort_t i = 0; i < m_PreTreatedData->GetTime2Multiplicity(); ++i) {   // loop on multiplicity
+      fTime2.push_back(m_PreTreatedData->GetTime2(i));
    } // end loop on multiplicity
 
 
    // Magnetic field correction
    // store localy run number, run start and stop times and rmn data
-   if (!IsSameRun()) {
+   Bool_t isSameRun = IsSameRun();
+   if (!isSameRun) {
       m_CurrentRunNumber = m_RunNumber;
       m_RunStart   = m_TimeTable[m_CurrentRunNumber].first;
       m_RunStop    = m_TimeTable[m_CurrentRunNumber].second;
       m_RunLength  = m_RunStop.AsDouble() - m_RunStart.AsDouble();
       m_CurrentNMR = m_NMRTable[m_CurrentRunNumber];
-      cout << m_CurrentRunNumber << endl;
-      cout << m_CurrentNMR->GetMean() << endl;
    }
    // Correct for magnetic field variation
+   fAbsoluteTick = m_RunStart.AsDouble() + m_PreTreatedData->GetTick()/m_FrequenceClock;
    if (m_MagneticFieldCorrection) {
+      fBrho = m_PreTreatedData->GetPlasticG() * m_CurrentNMR->EvalB(fAbsoluteTick);
    }
    else {
-      fBrho = (m_CalibP0 + m_CalibP1*m_EventData->GetPlasticG()) * m_CurrentNMR->GetMean();
+      if (!isSameRun) {
+         cout << "\tSplitPole Warning!!! run " << m_CurrentRunNumber << " will be treated with mean magnetic field value " 
+              << m_CurrentNMR->GetMean() << " T.m." << endl;
+      }
+      fBrho = m_PreTreatedData->GetPlasticG() * m_CurrentNMR->GetMean();
    }
 }
 
@@ -331,33 +350,21 @@ void TSplitPolePhysics::PreTreat()
    // Clear pre treated object
    ClearPreTreatedData();
 
-   // pre treated object is the same as the raw data object
-}
+   // Fill pre treated object 
+   m_PreTreatedData->SetPosition(m_EventData->GetPosition());
+   m_PreTreatedData->SetDeltaE(m_EventData->GetDeltaE());
+   m_PreTreatedData->SetWire(m_EventData->GetWire());
+   m_PreTreatedData->SetPlasticP(m_EventData->GetPlasticP());
+   m_PreTreatedData->SetPlasticG(fCalibPosition(m_EventData));
+   m_PreTreatedData->SetTick(m_EventData->GetTick());
 
+   for (UShort_t i = 0; i < m_EventData->GetTime1Multiplicity(); ++i) {   // loop on multiplicity
+      m_PreTreatedData->SetTime1(m_EventData->GetTime1(i));
+   } // end loop on multiplicity
 
-
-
-bool TSplitPolePhysics::IsValidChannel(string Type, int detector, int channel)
-{
-   return true;
-
-/*   vector<bool>::iterator it;
-   if (Type == "Front")
-      return *(m_FrontChannelStatus[detector].begin()+channel);
-
-   else if (Type == "Back")
-      return *(m_BackChannelStatus[detector].begin()+channel);
-
-   else 
-      return false;
-*/
-}
-
-
-
-///////////////////////////////////////////////////////////////////////////
-void TSplitPolePhysics::InitializeStandardParameters()
-{
+   for (UShort_t i = 0; i < m_EventData->GetTime2Multiplicity(); ++i) {   // loop on multiplicity
+      m_PreTreatedData->SetTime2(m_EventData->GetTime2(i));
+   } // end loop on multiplicity
 }
 
 
@@ -407,18 +414,6 @@ void TSplitPolePhysics::ReadAnalysisConfig()
             AnalysisConfigFile.ignore(numeric_limits<streamsize>::max(), '\n' );
          }
 
-         else if (whatToDo == "CALIBRATION_P0") {
-            AnalysisConfigFile >> DataBuffer;
-            m_CalibP0 = atoi(DataBuffer.c_str());
-            cout << "\t" << whatToDo << "\t" << m_CalibP0 << endl;
-         }
-
-         else if (whatToDo == "CALIBRATION_P1") {
-            AnalysisConfigFile >> DataBuffer;
-            m_CalibP1 = atof(DataBuffer.c_str());
-            cout << "\t" << whatToDo << "\t" << m_CalibP1 << endl;
-         }
-
          else if (whatToDo == "MAGNETIC_FIELD_CORRECTION") {
             AnalysisConfigFile >> DataBuffer;
             m_MagneticFieldCorrection = false;
@@ -430,6 +425,18 @@ void TSplitPolePhysics::ReadAnalysisConfig()
             AnalysisConfigFile >> DataBuffer;
             m_TimeDelay = atof(DataBuffer.c_str());
             cout << "\t" << whatToDo << "\t" << m_TimeDelay << endl;
+         }
+
+         else if (whatToDo == "NMR_FILE_PATH") {
+            AnalysisConfigFile >> DataBuffer;
+            m_NmrFilePath = DataBuffer;
+            cout << "\t" << whatToDo << "\t" << m_NmrFilePath << endl;
+         }
+
+         else if (whatToDo == "NMR_LARGE_FIELD") {
+            AnalysisConfigFile >> DataBuffer;
+            m_LargeField = atof(DataBuffer.c_str());
+            cout << "\t" << whatToDo << "\t" << m_LargeField << endl;
          }
 
          else {
@@ -492,6 +499,16 @@ map<string, TH1*> TSplitPolePhysics::GetSpectra()
    else {
       map< string , TH1*> empty;
       return empty;
+   }
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////
+namespace SplitPole_LOCAL {
+   Double_t fCalibPosition(const TSplitPoleData* m_EventData) 
+   {
+      return CalibrationManager::getInstance()->ApplyCalibration("SplitPole/POSITION",  m_EventData->GetPlasticG());
    }
 }
 

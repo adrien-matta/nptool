@@ -53,9 +53,9 @@ void TSplitPoleData::Clear()
    fWire     = -1;
    fPlasticP = -1;
    fPlasticG = -1;
+   fTick     = -1;
    fTime1.clear();
    fTime2.clear();
-   fTick     = -1;
 }
 
 

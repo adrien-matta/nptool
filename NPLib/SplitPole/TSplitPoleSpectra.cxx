@@ -121,6 +121,11 @@ void TSplitPoleSpectra::InitRawSpectra()
 ////////////////////////////////////////////////////////////////////////////////
 void TSplitPoleSpectra::InitPreTreatedSpectra()
 {
+   static string name;
+   // POSITION
+   name = "SplitPole_RHO";
+   AddHisto1D(name, name, 4096, 0.62, 0.85, "SplitPole/CAL");
+
 }
 
 
@@ -207,6 +212,10 @@ void TSplitPoleSpectra::FillRawSpectra(TSplitPoleData* RawData)
 ////////////////////////////////////////////////////////////////////////////////
 void TSplitPoleSpectra::FillPreTreatedSpectra(TSplitPoleData* PreTreatedData)
 {
+   // RHO 
+   static string index;
+   index = "SplitPole/CAL/SplitPole_RHO";
+   GetHisto(index)->Fill(PreTreatedData->GetPlasticG());
 }
 
 

@@ -40,7 +40,9 @@ TSplitPoleNMR::TSplitPoleNMR()
      fIsLargeField(0),
      fMean(-1),
      fMin(10),
-     fMax(-1)
+     fMax(-1),
+     fTMin(0),
+     fTMax(0)
 {
 }
 
@@ -56,7 +58,9 @@ TSplitPoleNMR::TSplitPoleNMR(const char* fileName)
      fIsLargeField(0),
      fMean(-1),
      fMin(10),
-     fMax(-1)
+     fMax(-1),
+     fTMin(0),
+     fTMax(0)
 {
    ReadRmnFile();
 }
@@ -73,7 +77,9 @@ TSplitPoleNMR::TSplitPoleNMR(const char* fileName, Double_t delay)
      fIsLargeField(0),
      fMean(-1),
      fMin(10),
-     fMax(-1)
+     fMax(-1),
+     fTMin(0),
+     fTMax(0)
 {
    ReadRmnFile();
 }
@@ -93,9 +99,7 @@ Int_t TSplitPoleNMR::ReadRmnFile()
 {
   ifstream in_rmn;
   Double_t old_x=-10.;
-  std::cout<<"\nReading Rmn data file: "<<fFileName<<"..."<<std::flush;
-//  DeleteRmnGraph();
-//  fRmn= new TGraph();
+//  std::cout<<"\nReading Rmn data file: "<<fFileName<<"..."<<std::flush;
   in_rmn.open(fFileName);
 
   if(!in_rmn.is_open()){
@@ -117,7 +121,7 @@ Int_t TSplitPoleNMR::ReadRmnFile()
   in_rmn>>hour;in_rmn>>ch_tmp;in_rmn>>minutes;in_rmn>>ch_tmp;in_rmn>>seconds;
   
   fOpenFileTime.Set(year,month,day,hour,minutes,seconds, 0, 1, 0);
-  fOpenFileTime.Print();
+//  fOpenFileTime.Print();
   Double_t time=fOpenFileTime.AsDouble(),x=1.,y;
   Int_t i=0;
 
@@ -159,13 +163,16 @@ Int_t TSplitPoleNMR::ReadRmnFile()
     
   }
   in_rmn.close();
-  std::cout<<" Ok!"<<std::flush;
-  std::cout << std::endl;
+//  std::cout<<" Ok!"<<std::flush;
+//  std::cout << std::endl;
 
   // set mean, min and max field values
   fMin = ymin;
   fMax = ymax;
   fMean = ymean / fRmnRelativeTime->GetN();
+  // set min and max absolute time
+  fTMin = fRmn->GetX()[0];
+  fTMax = fRmn->GetX()[fRmn->GetN()-1];
 
   return 0;
 }
@@ -242,12 +249,9 @@ void TSplitPoleNMR::Dump()
 
 Double_t TSplitPoleNMR::EvalB(Double_t Time) const
 {
-  if(!fRmn) return 0.;
-  Double_t *x;
-  x=fRmn->GetX();
-  Int_t n= fRmn->GetN();
+  if (!fRmn) return 0;
 
-  if( Time>=x[0] && Time<=x[n-1])
+  if (Time >= fTMin && Time <= fTMax)
     return fRmn->Eval(Time);
   else
     return fRmn->GetMean(2);
