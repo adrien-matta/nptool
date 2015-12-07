@@ -58,20 +58,18 @@ using namespace CLHEP;
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-namespace CSI{
-    // Energy and time Resolution
-    //const G4double ResoTime    = 4.2         ;// = 10ns of Resolution   //   Unit is MeV/2.35
-    const G4double ResoCsI = 2.4;//%
-}
-
-using namespace CSI ;
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // CsI Specific Method
 CsI::CsI(){
   m_Event = new TCsIData() ;
   m_CsIScorer = 0;
+   ResoCsI = 2.4;//%
+    PhotoDiodeFace = 18.;//mm
+    PhotoDiodeThickness = 3.;//mm
+ 
+
+
 }
 
 CsI::~CsI(){
@@ -410,7 +408,7 @@ void CsI::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume* wor
         G4LogicalVolume* logicCsI = new G4LogicalVolume(solidCsI, CsIMaterial, Name+ "_Scintillator", 0, 0, 0);
         logicCsI->SetSensitiveDetector(m_CsIScorer);
 
-        G4VisAttributes* CsIVisAtt = new G4VisAttributes(G4Colour(1.0, 0.5, 0.0)) ;
+        G4VisAttributes* CsIVisAtt = new G4VisAttributes(G4Colour(1.0, 0.5, 0.0,0.25)) ;
         logicCsI->SetVisAttributes(CsIVisAtt) ;
 
         new G4PVPlacement(0 ,

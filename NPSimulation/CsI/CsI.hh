@@ -58,9 +58,9 @@ public:
    ////////////////////////////////////////////////////
 public:
     
-    G4double PhotoDiodeFace = 18.;//mm
-    G4double PhotoDiodeThickness = 3.;//mm
-    
+    G4double PhotoDiodeFace ;
+    G4double PhotoDiodeThickness  ;
+    G4double ResoCsI; 
    // Cylindric CsI
    void AddCsI(  G4double   R                  ,
                      G4double   Theta              ,
