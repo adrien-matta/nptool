@@ -60,6 +60,8 @@ class TSplitPolePhysics : public TObject, public NPL::VDetector
       Double_t fWire;
       Double_t fPlasticP;
       Double_t fPlasticG;
+      Double_t fTick;
+      Double_t fAbsoluteTick;
       vector<Double_t> fTime1;
       vector<Double_t> fTime2;
 
@@ -138,14 +140,6 @@ class TSplitPolePhysics : public TObject, public NPL::VDetector
       // Clear the pre treated object
       void ClearPreTreatedData()   {m_PreTreatedData->Clear();}
 
-      // Return false if the channel is disabled by user
-      // Frist argument is either "Front" or "Back"
-      bool IsValidChannel(string Type, int detector, int channel);
-
-      // Initialize the standard parameters for analysis, i.e.: all channel enable, 
-      // maximum multiplicity for strip = number of telescope
-      void InitializeStandardParameters();
-
       // Read the user configuration file; if no file found, load standard one
       void ReadAnalysisConfig();
 
@@ -181,8 +175,8 @@ class TSplitPolePhysics : public TObject, public NPL::VDetector
    private: // Parameters used in the analysis
       Bool_t   m_MagneticFieldCorrection;  //!
       Double_t m_TimeDelay;   //!
-      Double_t m_CalibP0;  //!
-      Double_t m_CalibP1;  //!
+      Double_t m_LargeField;  //!
+      TString  m_NmrFilePath; //!
 
    // methods for magnetic field correction
    public: // called once
@@ -204,5 +198,11 @@ class TSplitPolePhysics : public TObject, public NPL::VDetector
 
      ClassDef(TSplitPolePhysics,1)  // TSplitPolePhysics
 };
+
+
+namespace SplitPole_LOCAL
+{
+   Double_t fCalibPosition(const TSplitPoleData* EventData);
+}
 
 #endif

@@ -37,9 +37,9 @@ class TSplitPoleData : public TObject
       Double_t fWire;
       Double_t fPlasticP;
       Double_t fPlasticG;
+      Double_t fTick;               // data from scaler
       vector<Double_t> fTime1;      // ch 117
       vector<Double_t> fTime2;      // ch 126
-      Double_t fTick;               // data from scaler
 
 
    public:

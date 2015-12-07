@@ -55,17 +55,17 @@ CalibrationManager::CalibrationManager(string configFileName){
   if(!NPOptionManager::getInstance()->IsDefault("Calibration")){
     cout << endl;
     cout << "/////////// Calibration Information ///////////" << endl;
-    cout << "Getting list of Calibration File" << endl;
+    cout << "Getting list of calibration files" << endl;
   }
  
   if (!inputConfigFile) {
       if(!NPOptionManager::getInstance()->IsDefault("Calibration"))
-        cout << "Calibration Path file :" << configFileName << " not found " << endl; 
+        cout << "Calibration Path file: " << configFileName << " not found" << endl; 
     return;
   }
 
   else { 
-    cout << "Reading list of file from :" << configFileName << endl; 
+    cout << "Reading list of files from: " << configFileName << endl; 
     while (!inputConfigFile.eof()) {
       getline(inputConfigFile, lineBuffer);
 

@@ -165,7 +165,7 @@ void NPOptionManager::DisplayVersion(){
     cout << line << endl;
     cout << "***********************************  NPTool  ***********************************"<< endl;
     cout << line << endl;
-    cout << "NPLib version: nplib-"<< NPL::version_major <<"-" << NPL::version_minor << "-" << NPL::version_deta <<endl;
+    cout << " NPLib version: nplib-"<< NPL::version_major <<"-" << NPL::version_minor << "-" << NPL::version_deta <<endl;
     cout << " Copyright: NPTool Collaboration "<<endl;
     cout << " GitHub: http://github.com/adrien-matta/nptool"<<endl; ;
     cout << line << endl;
