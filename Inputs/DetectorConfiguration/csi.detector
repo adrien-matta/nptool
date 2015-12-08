@@ -5,10 +5,10 @@ GeneralTarget
 % Radius in mm
 % Temperature in K, Pressure in bar
 Target
-	THICKNESS= 0.1
-  	ANGLE= 0
+	THICKNESS= 0.001
+  ANGLE= 0
 	RADIUS=	2
-	MATERIAL= CH2
+	MATERIAL= CH2 
 	X= 0
 	Y= 0
 	Z= 0
@@ -19,67 +19,68 @@ CsI
 	THETA= 0
 	PHI= 0
 	R= 0
-  	X= 0
-  	Y= 0
-  	Z= 450
+  X= 0
+  Y= 0
+  Z= 58
 	Thickness= 100
-	Shape= Trapezoidal
-  	FaceFront= 22
-  	FaceBack= 27
-  	Radius= 0
-	Scintillator= CsI
+	Shape= Cylinder
+  FaceFront= 0
+  FaceBack= 0
+  Radius= 17
+	Scintillator= CsI_Scintillator
 	LeadThickness= 0
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ScintillatorPlastic
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Plastic
-	THETA= 0
-	PHI= 0
-	R= 0
- 	X= 0
-  	Y= 0
-  	Z= 389.25
-	Thickness= 1.5
-  	Shape= Square
-  	Height= 22
-  	Width= 22
-	Radius= 0
-	Scintillator= Si
-	LeadThickness= 0
+%Plastic
+%	THETA= 0
+%	PHI= 0
+%	R= 0
+% 	X= 0
+%  	Y= 0
+%  	Z= 389.25
+%	Thickness= 1.5
+%  	Shape= Square
+%  	Height= 22
+%  	Width= 22
+%	Radius= 0
+%	Scintillator= Si
+%	LeadThickness= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Plastic
-	THETA= 0
-	PHI= 0
-	R= 0
-	X= 0
-  	Y= 0
-  	Z= 505
-	Thickness= 10
-  	Shape= Square
-  	Height= 27
-  	Width= 27
-	Radius= 0
-	Scintillator= Epoxy
-	LeadThickness= 0
+%Plastic
+%	THETA= 0
+%	PHI= 0
+%	R= 0
+%	X= 0
+%  	Y= 0
+%
+%  	Z= 505
+%	Thickness= 10
+%  	Shape= Square
+%  	Height= 27
+%  	Width= 27
+%	Radius= 0
+%	Scintillator= Epoxy
+%	LeadThickness= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Plastic
-	THETA= 0
-	PHI= 0
-	R= 0
- 	X= 0
-  	Y= 0
-  	Z= 510.15
-	Thickness= 0.3
-  	Shape= Square
-  	Height= 27
-  	Width= 27
-	Radius= 0
-	Scintillator= Si
-	LeadThickness= 0
-
-
+%Plastic
+%	THETA= 0
+%	PHI= 0
+%	R= 0
+% 	X= 0
+%  	Y= 0
+%  	Z= 510.15
+%	Thickness= 0.3
+%  	Shape= Square
+%  	Height= 27
+%  	Width= 27
+%	Radius= 0
+%	Scintillator= Si
+%	LeadThickness= 0
+%
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Avaible material:
 % BC400

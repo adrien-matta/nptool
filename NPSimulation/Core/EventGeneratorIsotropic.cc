@@ -32,7 +32,6 @@
 // NPS headers
 #include "EventGeneratorIsotropic.hh"
 
-
 // NPl headers
 #include "RootOutput.h"
 #include "NPNucleus.h"
@@ -202,7 +201,7 @@ void EventGeneratorIsotropic::ReadConfiguration(string Path,int){
 void EventGeneratorIsotropic::GenerateEvent(G4Event*){
   
   if(m_particle==NULL){
-    if(m_particleName=="gamma" || m_particleName=="neutron"){
+    if(m_particleName=="gamma" || m_particleName=="neutron" ||  m_particleName=="opticalphoton"){
       m_particle =  G4ParticleTable::GetParticleTable()->FindParticle(m_particleName.c_str());
     }
     else{
@@ -212,8 +211,7 @@ void EventGeneratorIsotropic::GenerateEvent(G4Event*){
     }
     
   }
-  
-  // Clear TInitialConditions
+
   G4double cos_theta_min   = cos(m_HalfOpenAngleMin);
   G4double cos_theta_max   = cos(m_HalfOpenAngleMax);
   G4double cos_theta       = cos_theta_min + (cos_theta_max - cos_theta_min) * RandFlat::shoot();

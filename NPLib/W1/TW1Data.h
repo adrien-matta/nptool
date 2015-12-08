@@ -23,11 +23,12 @@
  *****************************************************************************/
 // C++ headers
 #include <vector>
+using namespace std;
 
 // ROOT headers
 #include "TObject.h"
 
-using namespace std ;
+
 class TW1Data : public TObject
 {
    private:
@@ -63,46 +64,73 @@ class TW1Data : public TObject
       /////////////////////           SETTERS           ////////////////////////
       // DSSD
       // (Front, E)
-      void SetW1FrontEDetectorNbr(UShort_t DetNbr)    {fW1_FrontE_DetectorNbr.push_back(DetNbr);}
-      void SetW1FrontEStripNbr(UShort_t StripNbr)     {fW1_FrontE_StripNbr.push_back(StripNbr);}
-      void SetW1FrontEEnergy(Double_t Energy)         {fW1_FrontE_Energy.push_back(Energy);}
+      void SetFrontEDetectorNbr(UShort_t DetNbr)    {fW1_FrontE_DetectorNbr.push_back(DetNbr);}
+      void SetFrontEStripNbr(UShort_t StripNbr)     {fW1_FrontE_StripNbr.push_back(StripNbr);}
+      void SetFrontEEnergy(Double_t Energy)         {fW1_FrontE_Energy.push_back(Energy);}
       // (Front, T)
-      void SetW1FrontTDetectorNbr(UShort_t DetNbr)    {fW1_FrontT_DetectorNbr.push_back(DetNbr);}
-      void SetW1FrontTStripNbr(UShort_t StripNbr)     {fW1_FrontT_StripNbr.push_back(StripNbr);}
-      void SetW1FrontTTime(Double_t Time)             {fW1_FrontT_Time.push_back(Time);}
+      void SetFrontTDetectorNbr(UShort_t DetNbr)    {fW1_FrontT_DetectorNbr.push_back(DetNbr);}
+      void SetFrontTStripNbr(UShort_t StripNbr)     {fW1_FrontT_StripNbr.push_back(StripNbr);}
+      void SetFrontTTime(Double_t Time)             {fW1_FrontT_Time.push_back(Time);}
 
       // (Back, E)
-      void SetW1BackEDetectorNbr(UShort_t DetNbr)     {fW1_BackE_DetectorNbr.push_back(DetNbr);}
-      void SetW1BackEStripNbr(UShort_t StripNbr)      {fW1_BackE_StripNbr.push_back(StripNbr);}
-      void SetW1BackEEnergy(Double_t Energy)          {fW1_BackE_Energy.push_back(Energy);}
+      void SetBackEDetectorNbr(UShort_t DetNbr)     {fW1_BackE_DetectorNbr.push_back(DetNbr);}
+      void SetBackEStripNbr(UShort_t StripNbr)      {fW1_BackE_StripNbr.push_back(StripNbr);}
+      void SetBackEEnergy(Double_t Energy)          {fW1_BackE_Energy.push_back(Energy);}
       // (Back, T)
-      void SetW1BackTDetectorNbr(UShort_t DetNbr)     {fW1_BackT_DetectorNbr.push_back(DetNbr);}
-      void SetW1BackTStripNbr(UShort_t StripNbr)      {fW1_BackT_StripNbr.push_back(StripNbr);}
-      void SetW1BackTTime(Double_t Time)              {fW1_BackT_Time.push_back(Time);}
+      void SetBackTDetectorNbr(UShort_t DetNbr)     {fW1_BackT_DetectorNbr.push_back(DetNbr);}
+      void SetBackTStripNbr(UShort_t StripNbr)      {fW1_BackT_StripNbr.push_back(StripNbr);}
+      void SetBackTTime(Double_t Time)              {fW1_BackT_Time.push_back(Time);}
+
+      // Front E
+      void SetFrontE(UShort_t DetNbr, UShort_t StripNbr, Double_t Energy) {
+         SetFrontEDetectorNbr(DetNbr);
+         SetFrontEStripNbr(StripNbr);
+         SetFrontEEnergy(Energy);
+      }
+      // Front T
+      void SetFrontT(UShort_t DetNbr, UShort_t StripNbr, Double_t Time) {
+         SetFrontTDetectorNbr(DetNbr);
+         SetFrontTStripNbr(StripNbr);
+         SetFrontTTime(Time);
+      }
+
+      // Back E
+      void SetBackE(UShort_t DetNbr, UShort_t StripNbr, Double_t Energy) {
+         SetBackEDetectorNbr(DetNbr);
+         SetBackEStripNbr(StripNbr);
+         SetBackEEnergy(Energy);
+      }
+      // Back T
+      void SetBackT(UShort_t DetNbr, UShort_t StripNbr, Double_t Time) {
+         SetBackTDetectorNbr(DetNbr);
+         SetBackTStripNbr(StripNbr);
+         SetBackTTime(Time);
+      }
+
 
       /////////////////////           GETTERS           ////////////////////////
       // DSSD
       // (Front, E)
-      UShort_t GetW1FrontEMult()                      {return fW1_FrontE_DetectorNbr.size();}
-      UShort_t GetW1FrontEDetectorNbr(Int_t i)        {return fW1_FrontE_DetectorNbr.at(i);}
-      UShort_t GetW1FrontEStripNbr(Int_t i)           {return fW1_FrontE_StripNbr.at(i);}
-      Double_t GetW1FrontEEnergy(Int_t i)             {return fW1_FrontE_Energy.at(i);}
+      UShort_t GetFrontEMult()                      const {return fW1_FrontE_DetectorNbr.size();}
+      UShort_t GetFrontEDetectorNbr(Int_t i)        const {return fW1_FrontE_DetectorNbr[i];}
+      UShort_t GetFrontEStripNbr(Int_t i)           const {return fW1_FrontE_StripNbr[i];}
+      Double_t GetFrontEEnergy(Int_t i)             const {return fW1_FrontE_Energy[i];}
       // (Front, T)
-      UShort_t GetW1FrontTMult()                      {return fW1_FrontT_DetectorNbr.size();}
-      UShort_t GetW1FrontTDetectorNbr(Int_t i)        {return fW1_FrontT_DetectorNbr.at(i);}
-      UShort_t GetW1FrontTStripNbr(Int_t i)           {return fW1_FrontT_StripNbr.at(i);}
-      Double_t GetW1FrontTTime(Int_t i)               {return fW1_FrontT_Time.at(i);}
+      UShort_t GetFrontTMult()                      const {return fW1_FrontT_DetectorNbr.size();}
+      UShort_t GetFrontTDetectorNbr(Int_t i)        const {return fW1_FrontT_DetectorNbr[i];}
+      UShort_t GetFrontTStripNbr(Int_t i)           const {return fW1_FrontT_StripNbr[i];}
+      Double_t GetFrontTTime(Int_t i)               const {return fW1_FrontT_Time[i];}
 
       // (Back, E)
-      UShort_t GetW1BackEMult()                      {return fW1_BackE_DetectorNbr.size();}
-      UShort_t GetW1BackEDetectorNbr(Int_t i)        {return fW1_BackE_DetectorNbr.at(i);}
-      UShort_t GetW1BackEStripNbr(Int_t i)           {return fW1_BackE_StripNbr.at(i);}
-      Double_t GetW1BackEEnergy(Int_t i)             {return fW1_BackE_Energy.at(i);}
+      UShort_t GetBackEMult()                       const {return fW1_BackE_DetectorNbr.size();}
+      UShort_t GetBackEDetectorNbr(Int_t i)         const {return fW1_BackE_DetectorNbr[i];}
+      UShort_t GetBackEStripNbr(Int_t i)            const {return fW1_BackE_StripNbr[i];}
+      Double_t GetBackEEnergy(Int_t i)              const {return fW1_BackE_Energy[i];}
       // (Back, T)
-      UShort_t GetW1BackTMult()                      {return fW1_BackT_DetectorNbr.size();}
-      UShort_t GetW1BackTDetectorNbr(Int_t i)        {return fW1_BackT_DetectorNbr.at(i);}
-      UShort_t GetW1BackTStripNbr(Int_t i)           {return fW1_BackT_StripNbr.at(i);}
-      Double_t GetW1BackTTime(Int_t i)               {return fW1_BackT_Time.at(i);}
+      UShort_t GetBackTMult()                       const {return fW1_BackT_DetectorNbr.size();}
+      UShort_t GetBackTDetectorNbr(Int_t i)         const {return fW1_BackT_DetectorNbr[i];}
+      UShort_t GetBackTStripNbr(Int_t i)            const {return fW1_BackT_StripNbr[i];}
+      Double_t GetBackTTime(Int_t i)                const {return fW1_BackT_Time[i];}
 
       ClassDef(TW1Data, 1) // TW1Data raw data 
 };

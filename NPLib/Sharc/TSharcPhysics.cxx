@@ -45,6 +45,7 @@ ClassImp(TSharcPhysics)
     EventMultiplicity   = 0 ;
     m_EventData         = new TSharcData ;
     m_PreTreatedData    = new TSharcData ;
+    
     m_EventPhysics      = this ;
     m_Spectra           = NULL;
     m_NumberOfDetector = 0 ;
@@ -59,6 +60,9 @@ ClassImp(TSharcPhysics)
     m_StripBack_E_RAW_Threshold = 0 ;
     m_StripBack_E_Threshold = 0 ;
 
+    m_PAD_E_RAW_Threshold=0;
+    m_PAD_E_Threshold=0;
+    
     m_Take_E_Front=true;
     m_Take_T_Back=true;
   }
@@ -335,16 +339,21 @@ void TSharcPhysics::ReadAnalysisConfig(){
         if (DataBuffer.find("STRF") != string::npos) {
           channel = atoi(DataBuffer.substr(8).c_str());
           *(m_FrontChannelStatus[Detector-1].begin()+channel-1) = false;
+          cout << "DISABLE DETECTOR " << Detector << " STRIP FRONT " << channel << endl;
         }
 
         else if (DataBuffer.find("STRB")!=string::npos) {
           channel = atoi(DataBuffer.substr(8).c_str());
           *(m_BackChannelStatus[Detector-1].begin()+channel-1) = false;
+          cout << "DISABLE DETECTOR " << Detector << " STRIP BACK " << channel << endl;
+
         }
 
         else if (DataBuffer.find("PAD") != string::npos) {
           channel = atoi(DataBuffer.substr(7).c_str());
           *(m_PADChannelStatus[Detector-1].begin()+channel-1) = false;
+          cout << "DISABLE PAD ON DETECTOR " << Detector << endl;
+
         }
 
         else cout << "Warning: detector type for Sharc unknown!" << endl;
@@ -373,37 +382,37 @@ void TSharcPhysics::ReadAnalysisConfig(){
 
       else if (whatToDo=="STRIP_FRONT_E_RAW_THRESHOLD") {
         AnalysisConfigFile >> DataBuffer;
-        m_StripFront_E_RAW_Threshold = atoi(DataBuffer.c_str());
+        m_StripFront_E_RAW_Threshold = atof(DataBuffer.c_str());
         cout << whatToDo << " " << m_StripFront_E_RAW_Threshold << endl;
       }
 
       else if (whatToDo=="STRIP_BACK_E_RAW_THRESHOLD") {
         AnalysisConfigFile >> DataBuffer;
-        m_StripBack_E_RAW_Threshold = atoi(DataBuffer.c_str());
+        m_StripBack_E_RAW_Threshold = atof(DataBuffer.c_str());
         cout << whatToDo << " " << m_StripBack_E_RAW_Threshold << endl;
       }
 
       else if (whatToDo=="STRIP_FRONT_E_THRESHOLD") {
         AnalysisConfigFile >> DataBuffer;
-        m_StripFront_E_Threshold = atoi(DataBuffer.c_str());
+        m_StripFront_E_Threshold = atof(DataBuffer.c_str());
         cout << whatToDo << " " << m_StripFront_E_Threshold << endl;
       }
 
-      else if (whatToDo=="STRIP_BACK_THRESHOLD") {
+      else if (whatToDo=="STRIP_BACK_E_THRESHOLD") {
         AnalysisConfigFile >> DataBuffer;
-        m_StripBack_E_Threshold = atoi(DataBuffer.c_str());
+        m_StripBack_E_Threshold = atof(DataBuffer.c_str());
         cout << whatToDo << " " << m_StripBack_E_Threshold << endl;
       }
 
       else if (whatToDo=="PAD_E_RAW_THRESHOLD") {
         AnalysisConfigFile >> DataBuffer;
-        m_PAD_E_RAW_Threshold = atoi(DataBuffer.c_str());
+        m_PAD_E_RAW_Threshold = atof(DataBuffer.c_str());
         cout << whatToDo << " " << m_PAD_E_RAW_Threshold << endl;
       }
 
       else if (whatToDo=="PAD_E_THRESHOLD") {
         AnalysisConfigFile >> DataBuffer;
-        m_PAD_E_Threshold = atoi(DataBuffer.c_str());
+        m_PAD_E_Threshold = atof(DataBuffer.c_str());
         cout << whatToDo << " " << m_PAD_E_Threshold << endl;
       }
 

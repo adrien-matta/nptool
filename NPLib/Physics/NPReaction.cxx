@@ -677,6 +677,25 @@ TGraph* Reaction::GetThetaLabVersusThetaCM(double AngleStep_CM){
 	fAngleLine= new TGraph(vx.size(),&vx[0],&vy[0]);
 	return(fAngleLine);
 }
+////////////////////////////////////////////////////////////////////////////////////////////
+TGraph* Reaction::GetELabVersusThetaCM(double AngleStep_CM){
+
+	vector<double> vx;
+	vector<double> vy;
+	double theta3,E3,theta4,E4;
+	
+	for (double angle=0 ; angle < 360 ; angle+=AngleStep_CM){
+		SetThetaCM(angle*deg);
+		KineRelativistic(theta3, E3, theta4, E4);
+    
+    vx.push_back(E3);
+		vy.push_back(fThetaCM/deg);
+  }
+  
+	fAngleLine= new TGraph(vx.size(),&vx[0],&vy[0]);
+	return(fAngleLine);
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Reaction::PrintKinematic(){

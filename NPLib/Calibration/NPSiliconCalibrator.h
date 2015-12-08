@@ -3,9 +3,9 @@
 using namespace std;
 
 // Root
-#include "TH1.h"
+#include "TF1.h"
 #include "TGraphErrors.h"
-#include "TGraph.h"
+
 // NPL
 #include "NPEnergyLoss.h"
 #include "NPCalibrationSource.h"
@@ -32,5 +32,8 @@ namespace NPL{
       double FitPoints(TGraphErrors* Graph, double* Energies , double* ErrEnergies, vector<double>& coeff , double pedestal = 0 );
       // 
       TGraphErrors* FitSpectrum(TH1* histo,double rmin,double rmax);
+
+      // retrieve the fit function
+      TF1* GetFitFunction()   const {return m_FitFunction;}
   };
 }

@@ -21,26 +21,34 @@
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
-//   STL
+// C++ headers 
 #include <vector>
-using namespace std ;
+#include <map>
+using namespace std;
 
-//   ROOT
+// ROOT headers
 #include "TObject.h"
 #include "TVector2.h"
 #include "TVector3.h"
+#include "TH1.h"
+#include "TCanvas.h"
 
-//   NPL
+// NPTool headers
 #include "TW1Data.h"
+#include "TW1Spectra.h"
 #include "NPVDetector.h"
 #include "NPCalibrationManager.h"
+
+// forward declaration
+class TW1Spectra;
+
 
 
 class TW1Physics : public TObject, public NPL::VDetector
 {
  public:   //   Constructor and Destructor
    TW1Physics();
-   ~TW1Physics();
+   ~TW1Physics() {};
 
  public:
    void Clear();
@@ -50,10 +58,11 @@ class TW1Physics : public TObject, public NPL::VDetector
  private: // data obtained after BuildPhysicalEvent() and stored in ROOT output file
    vector<Int_t>     fEventType;
    vector<Int_t>     fDetectorNumber;
-
-   // First stage
-   vector<Double_t>  fEnergy;
-   vector<Double_t>  fTime;
+   vector<Double_t>  fFrontEnergy;
+   vector<Double_t>  fBackEnergy;
+   vector<Double_t>  fHalfEnergy;
+   vector<Double_t>  fFrontTime;
+   vector<Double_t>  fBackTime;
    vector<Int_t>     fFrontStrip;
    vector<Int_t>     fBackStrip;
 
@@ -61,37 +70,45 @@ class TW1Physics : public TObject, public NPL::VDetector
    // setters
    void SetEventType(Int_t evtType)          {fEventType.push_back(evtType);}
    void SetDetectorNumber(Int_t moduleNbr)   {fDetectorNumber.push_back(moduleNbr);}
-   void SetEnergy(Double_t ener)             {fEnergy.push_back(ener);}
-   void SetTime(Double_t time)               {fTime.push_back(time);}
+   void SetFrontEnergy(Double_t ener)        {fFrontEnergy.push_back(ener);}
+   void SetBackEnergy(Double_t ener)         {fBackEnergy.push_back(ener);}
+   void SethalfEnergy(Double_t ener)         {fHalfEnergy.push_back(ener);}
+   void SetFrontTime(Double_t time)          {fFrontTime.push_back(time);}
+   void SetBackTime(Double_t time)           {fBackTime.push_back(time);}
    void SetFrontStrip(Int_t x)               {fFrontStrip.push_back(x);}
    void SetBackStrip(Int_t y)                {fBackStrip.push_back(y);}
 
    // getters
-   Int_t    GetEventMultiplicity()           {return fEnergy.size();}
-   Int_t    GetEventType(Int_t i)            {return fEventType.at(i);}
-   Int_t    GetDetectorNumber(Int_t i)       {return fDetectorNumber.at(i);}
-   Double_t GetEnergy(Int_t i)               {return fEnergy.at(i);}
-   Double_t GetTime(Int_t i)                 {return fTime.at(i);}
-   Int_t    GetFrontStrip(Int_t i)           {return fFrontStrip.at(i);}
-   Int_t    GetBackStrip(Int_t i)            {return fBackStrip.at(i);}
+   Int_t    GetEventMultiplicity()           {return fFrontEnergy.size();}
+   Int_t    GetEventType(Int_t i)            {return fEventType[i];}
+   Int_t    GetDetectorNumber(Int_t i)       {return fDetectorNumber[i];}
+   Double_t GetFrontEnergy(Int_t i)          {return fFrontEnergy[i];}
+   Double_t GetBackEnergy(Int_t i)           {return fBackEnergy[i];}
+   Double_t GetHalfEnergy(Int_t i)           {return fHalfEnergy[i];}
+   Double_t GetFrontTime(Int_t i)            {return fFrontTime[i];}
+   Double_t GetBackTime(Int_t i)             {return fBackTime[i];}
+   Int_t    GetFrontStrip(Int_t i)           {return fFrontStrip[i];}
+   Int_t    GetBackStrip(Int_t i)            {return fBackStrip[i];}
 
 
- public:   //   inherrited from VDetector
+ public:
+   Int_t    m_nCounter; //!
+   Bool_t   m_Counter[10]; //!
+
+ public:   // inherited from VDetector
    // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
    void ReadConfiguration(string);
       
-   // Add Parameter to the CalibrationManger
+   // Add parameters to the CalibrationManger
    void AddParameterToCalibrationManager();      
 
-   //   Activated associated Branches and link it to the private member DetectorData address
-   //   In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
-   void InitializeRootInputRaw() ;
+   // Activate associated branches and link them to the private member object m_EventData
+   void InitializeRootInputRaw();
 
-   //   Activated associated Branches and link it to the private member DetectorPhysics address
-   //   In this method mother Branches (Detector) AND daughter leaf (parameter) have to be activated
-   void InitializeRootInputPhysics() ;
+   // Activate associated branches and link them to the private member m_EventPhysics
+   void InitializeRootInputPhysics();
 
-   // Create associated branches and associated private member DetectorPhysics address
+   // Create associated branches and associated private member m_EventPhysics 
    void InitializeRootOutput();
 
    // This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
@@ -102,41 +119,59 @@ class TW1Physics : public TObject, public NPL::VDetector
    // NB: This method can eventually be the same as BuildPhysicalEvent.
    void BuildSimplePhysicalEvent();
 
-   // Those two method all to clear the Event Physics or Data
+   // Same as above but for online analysis
+   void BuildOnlinePhysicalEvent()  {BuildPhysicalEvent();};
+
+   // Clear raw and physics data 
    void ClearEventPhysics()   {Clear();}
    void ClearEventData()      {m_EventData->Clear();}
 
+   // Methods related to the TW1Spectra classes
+   // Instantiate the TW1Spectra class and the histograms
+   void InitSpectra();
+   // Fill the spectra defined in TW1Spectra
+   void FillSpectra();
+   // Used for Online mainly, perform check on the histo and for example change their color if issues are found
+   void CheckSpectra();
+   // Used for Online only, clear all the spectra hold by the Spectra class
+   void ClearSpectra();
+   // Write Spectra to file
+   void WriteSpectra();
+
 
  public: //   Specific to W1
-   // Remove bad channel, calibrate the data and apply threshold
+   // Remove bad channel, calibrate the data and apply thresholds
    void PreTreat();
 
-   // Clear The PreTeated object
+   // Clear the pre treated object
    void ClearPreTreatedData()   {m_PreTreatedData->Clear();}
       
    // Return false if the channel is disabled by user
    // Frist argument is either "Front" or "Back"
    bool IsValidChannel(string Type, int detector, int channel);
 
-   // Initialize the standard parameter for analysis
-   // ie: all channel enable, maximum multiplicity for strip = number of telescope
-   void InitializeStandardParameter();
+   // Initialize the standard parameters for analysis, i.e.: all channel enable, 
+   // maximum multiplicity for strip = number of telescope
+   void InitializeStandardParameters();
    
    //   Read the user configuration file; if no file found, load standard one
    void ReadAnalysisConfig();
 
-   // Add detector using cartesian coordiantes
+   // Add detector using cartesian coordinates
    void AddDetector(TVector3 C_X1_Y1, TVector3 C_X16_Y1, TVector3 C_X1_Y16, TVector3 C_X16_Y16);
 
    // Add detector using spherical coordinates
    void AddDetector(double theta, double phi, double distance, double beta_u, double beta_v, double beta_w);
+
+   // Give an external TW1Data object to TW1Physics. Needed for online analysis for example.
+   void SetRawDataPointer(TW1Data* rawDataPointer) {m_EventData = rawDataPointer;}
 
    // Use for reading Calibration Run, very simple methods; only apply calibration, no condition
    void ReadCalibrationRun() {};
 
 
  public: // Methods used for event treatement
-   int               EventType();
+   Int_t             EventType();
    vector<TVector2>  Match_Front_Back();
 
  private: // Data not written in the tree
@@ -144,6 +179,9 @@ class TW1Physics : public TObject, public NPL::VDetector
    TW1Data*    m_PreTreatedData;       //!
    TW1Physics* m_EventPhysics;         //!
 
+ public:
+   TW1Data* GetRawData()        const {return m_EventData;}
+   TW1Data* GetPreTreatedData() const {return m_PreTreatedData;}
 
  private: // Map of activated Channel
    map< int, vector<bool> > m_FrontChannelStatus;  //!
@@ -151,14 +189,15 @@ class TW1Physics : public TObject, public NPL::VDetector
    
 
  private: // Parameters used in the analysis
-   // If multiplicity is greated than m_MaximumStripMultiplicityAllowed 
+   // If multiplicity is greater than m_MaximumStripMultiplicityAllowed 
    // after PreTreat(), event is not treated
    int m_MaximumStripMultiplicityAllowed; //!
-   // Tolerance in percent for the energy difference between Front and Back
-   double m_StripEnergyMatchingTolerance; //!
 
+   // Tolerance for front / back energy match 
+   double m_StripEnergyMatchingSigma  ; //!
+   double m_StripEnergyMatchingNumberOfSigma  ; //!
 
- private: // Energy thresholds
+   // Energy thresholds
    // Raw Threshold
    int    m_FrontE_Raw_Threshold;   //!
    int    m_BackE_Raw_Threshold;    //!
@@ -168,19 +207,19 @@ class TW1Physics : public TObject, public NPL::VDetector
 
 
  private: // Spatial Position of Strip Calculated on bases of detector position
-   int m_NumberOfDetector;   //!
+   int m_NumberOfDetectors;   //!
    vector< vector < vector < double > > > m_StripPositionX; //!
    vector< vector < vector < double > > > m_StripPositionY; //!
    vector< vector < vector < double > > > m_StripPositionZ; //!
 
  public:
-   double   GetNumberOfDetectors()                   {return m_NumberOfDetector;};
-   double   GetStripPositionX(int N, int X, int Y)   {return m_StripPositionX[N-1][X-1][Y-1];};
-   double   GetStripPositionY(int N, int X, int Y)   {return m_StripPositionY[N-1][X-1][Y-1];};
-   double   GetStripPositionZ(int N, int X, int Y)   {return m_StripPositionZ[N-1][X-1][Y-1];};
+   double   GetNumberOfDetectors()                          {return m_NumberOfDetectors;};
+   double   GetStripPositionX(int N, int Front, int Back)   {return m_StripPositionX[N-1][Front-1][Back-1];};
+   double   GetStripPositionY(int N, int Front, int Back)   {return m_StripPositionY[N-1][Front-1][Back-1];};
+   double   GetStripPositionZ(int N, int Front, int Back)   {return m_StripPositionZ[N-1][Front-1][Back-1];};
    TVector3 GetPositionOfInteraction(int i);
    TVector3 GetDetectorNormal(int i);
-   void     DumpStrippingScheme(int detecNumber);
+   void     DumpStrippingScheme(Int_t detecNumber);
 
 
  private:   // Geometry and strip number
@@ -189,18 +228,27 @@ class TW1Physics : public TObject, public NPL::VDetector
    double m_StripPitch;       //!
 
 
-   public: // Static constructor to be passed to the Detector Factory
-     static NPL::VDetector* Construct();
-     ClassDef(TW1Physics,1)  // TW1Physics
+ private: // Spectra Class
+   TW1Spectra* m_Spectra; // !
+
+ public: // Spectra Getter
+   map<string, TH1*> GetSpectra();
+
+
+ public: // Static constructor to be passed to the Detector Factory
+   static NPL::VDetector* Construct();
+
+
+   ClassDef(TW1Physics,1)  // TW1Physics
 };
 
 
-namespace LOCAL
+namespace W1_LOCAL
 {
-   double fW1_Front_E(TW1Data* EventData, int i);
-   double fW1_Front_T(TW1Data* EventData, int i);
-   double fW1_Back_E(TW1Data*  EventData, int i);
-   double fW1_Back_T(TW1Data*  EventData, int i);
+   Double_t fW1_Front_E(TW1Data* EventData, Int_t i);
+   Double_t fW1_Front_T(TW1Data* EventData, Int_t i);
+   Double_t fW1_Back_E(TW1Data*  EventData, Int_t i);
+   Double_t fW1_Back_T(TW1Data*  EventData, Int_t i);
 }
 
 #endif

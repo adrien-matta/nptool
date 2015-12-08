@@ -42,7 +42,7 @@ then
 
 else
   echo 'File .rootlogon.C was created'
-  cp scripts/rootlogon_basic.C ~/.rootlogon.C
+  cp $NPTOOL/NPLib/scripts/rootlogon_basic.C ~/.rootlogon.C
 fi
 
 

@@ -5,12 +5,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Isotropic
 	EnergyLow=  0	
-	EnergyHigh= 300
+	EnergyHigh= 26
 	HalfOpenAngleMin= 0
-	HalfOpenAngleMax= 90
+	HalfOpenAngleMax= 45
 	x0= 0	
 	y0= 0	
 	z0= 0	
-	particle= He3
+	particle= 3He
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Supported particle type: proton, neutron, deuton, triton, He3 , alpha 
