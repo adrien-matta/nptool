@@ -58,14 +58,14 @@ TSplitPolePhysics::TSplitPolePhysics()
      m_RunStart(2015, 10, 6, 0, 0, 0),
      m_RunStop(2015, 10, 7, 0, 0, 0),
      m_RunLength(0),
-     m_FrequenceClock(2.03),
+     m_FrequenceClock(2.0516),
      m_TickMin(0),
      m_TickMax(0),
      m_RunNumber(0),
      m_CurrentRunNumber(0),
      m_CurrentNMR(new TSplitPoleNMR),
      m_MagneticFieldCorrection(0),
-     m_TimeDelay(6500),
+     m_TimeDelay(3657),
      m_LargeField(0),
      m_NmrFilePath("./")
 {    
@@ -330,15 +330,26 @@ void TSplitPolePhysics::BuildSimplePhysicalEvent()
    }
    // Correct for magnetic field variation
    fAbsoluteTick = m_RunStart.AsDouble() + m_PreTreatedData->GetTick()/m_FrequenceClock;
-   if (m_MagneticFieldCorrection) {
-      fBrho = m_PreTreatedData->GetPlasticG() * m_CurrentNMR->EvalB(fAbsoluteTick);
+   // check if NMR pointer exist
+   if (m_CurrentNMR) {
+      // check if magnetic field correction needed
+      if (m_MagneticFieldCorrection) {
+         fBrho = m_PreTreatedData->GetPlasticG() * m_CurrentNMR->EvalB(fAbsoluteTick);
+      }
+      else {
+         if (!isSameRun) {
+            cout << "\t\033[1;31mSplitPole Warning!!! run " << m_CurrentRunNumber << " will use mean magnetic field value " 
+               << m_CurrentNMR->GetMean() << " T.m.\033[0m" << endl;
+         }
+         fBrho = m_PreTreatedData->GetPlasticG() * m_CurrentNMR->GetMean();
+      }
    }
    else {
+      fBrho = -1;
       if (!isSameRun) {
-         cout << "\tSplitPole Warning!!! run " << m_CurrentRunNumber << " will use mean magnetic field value " 
-              << m_CurrentNMR->GetMean() << " T.m." << endl;
+         cout << "\t\033[1;31mSplitPole Warning!!! run " << m_CurrentRunNumber << " no associated magnetic field...\033[0m" << endl;
+
       }
-      fBrho = m_PreTreatedData->GetPlasticG() * m_CurrentNMR->GetMean();
    }
 }
 
@@ -374,7 +385,7 @@ void TSplitPolePhysics::ReadAnalysisConfig()
 {
    bool ReadingStatus = false;
 
-   cout << "\t/////////// Reading ConfigSplitPole.dat file ///////////" << endl;
+   cout << "\t\033[1;35m/////////// Reading ConfigSplitPole.dat file ///////////" << endl;
 
    // path to file
    string FileName = "./configs/ConfigSplitPole.dat";

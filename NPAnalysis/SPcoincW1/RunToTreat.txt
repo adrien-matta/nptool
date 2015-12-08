@@ -7,6 +7,10 @@ RootFileName
 %  /scratch/gypaos/data/al27pp/oct2015/midas/root/R50_0.root
 %  /scratch/gypaos/data/al27pp/oct2015/midas/root/R131_0_test.root
 %  /scratch/gypaos/data/al27pp/oct2015/midas/root/R108_0_test.root
-  /scratch/gypaos/data/al27pp/oct2015/midas/root/R74_0.root
+%  /scratch/gypaos/data/al27pp/oct2015/midas/root/R74_0.root
 %  /scratch/gypaos/data/al27pp/oct2015/midas/root/R72_0.root
+  /scratch/gypaos/data/al27pp/oct2015/midas/root/R113_0.root
+  /scratch/gypaos/data/al27pp/oct2015/midas/root/R114_0.root
+  /scratch/gypaos/data/al27pp/oct2015/midas/root/R115_0.root
+  /scratch/gypaos/data/al27pp/oct2015/midas/root/R116_0.root
 
