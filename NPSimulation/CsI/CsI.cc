@@ -588,9 +588,8 @@ void CsI::ReadSensitive(const G4Event* event){
     NumberOfOpticalPhoton.clear();
     for (PhotoDiode_itr = PhotoDiodeHitMap->GetMap()->begin() ; PhotoDiode_itr != PhotoDiodeHitMap->GetMap()->end() ; PhotoDiode_itr++){
         G4double* Info = *(PhotoDiode_itr->second);
-        double E_PhotoDiode = RandGauss::shoot(Info[0],Info[0]*ResoCsI/100);
         
-        m_Event->SetPhotoDiodeEnergy(E_PhotoDiode);
+        m_Event->SetPhotoDiodeEnergy(Info[0]);
         m_Event->SetPhotoDiodeEDetectorNbr(Info[7]);
             
         m_Event->SetPhotoDiodeTime(Info[1]);

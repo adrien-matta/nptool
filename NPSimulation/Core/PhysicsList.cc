@@ -232,7 +232,6 @@ void PhysicsList::SetCuts(){
  
   // Special Cut for optical photon to be emmitted
   SetCutsWithDefault();
-//  SetCutValue(10*um,"opticalphoton");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
