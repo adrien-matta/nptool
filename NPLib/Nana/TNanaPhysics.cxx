@@ -351,16 +351,16 @@ void TNanaPhysics::ReadCalibrationFile(string Path){
 ////////////////////////////////////////////////////////////////////////////////
 void TNanaPhysics::InitializeRootInputRaw(){
   TChain* inputChain = RootInput::getInstance()->GetChain();
-  inputChain->SetBranchStatus("NANA", true);
+  inputChain->SetBranchStatus("Nana", true);
   inputChain->SetBranchStatus("fNANA*", true);
-  inputChain->SetBranchAddress("NANA", &m_EventData);
+  inputChain->SetBranchAddress("Nana", &m_EventData);
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 void TNanaPhysics::InitializeRootOutput(){
   TTree* outputTree = RootOutput::getInstance()->GetTree();
-  outputTree->Branch("NANA", "TNanaPhysics", &m_EventPhysics);
+  outputTree->Branch("Nana", "TNanaPhysics", &m_EventPhysics);
 }
 void TNanaPhysics::AddDetector(TVector3 A,
     TVector3 B,

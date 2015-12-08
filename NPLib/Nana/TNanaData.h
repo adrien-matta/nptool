@@ -37,6 +37,10 @@ class TNanaData : public TObject {
     vector<Double_t>  fNANA_LaBr3_EnergyLong;
     vector<ULong64_t>  fNANA_LaBr3_Time;
     vector<Double_t>  fNANA_LaBr3_PSD;
+    //ADDED BY R.S
+    vector<ULong64_t> fNANA_LaBr3_Event;
+
+
 
   public:
     TNanaData();
@@ -68,16 +72,33 @@ class TNanaData : public TObject {
     Double_t GetNanaLaBr3PSD(Double_t i)      {
       return fNANA_LaBr3_PSD[i];
     }
+      
+    ULong64_t GetNanaLaBr3Event(Int_t i)     {
+      return fNANA_LaBr3_Event[i];
+    }
+    
+
+
     /////////////////////           SETTERS           ////////////////////////
     // (E)
-    void SetNanaLaBr3(UShort_t DetectorNbr, Double_t EL, Double_t ES, ULong64_t T,Double_t PSD){
+    void SetNanaLaBr3(UShort_t DetectorNbr, Double_t EL, Double_t ES, ULong64_t T,Double_t PSD, ULong64_t Ev){
       fNANA_LaBr3_DetectorNbr.push_back(DetectorNbr); 
       fNANA_LaBr3_EnergyShort.push_back(ES); 
       fNANA_LaBr3_EnergyLong.push_back(EL); 
       fNANA_LaBr3_Time.push_back(T); 
       fNANA_LaBr3_PSD.push_back(PSD);
-    }
-
+      fNANA_LaBr3_Event.push_back(Ev);
+     }
+  /*
+  void SetNanaLaBr3(UShort_t DetectorNbr, Double_t EL, Double_t ES, ULong64_t T,Double_t PSD){
+      fNANA_LaBr3_DetectorNbr.push_back(DetectorNbr); 
+      fNANA_LaBr3_EnergyShort.push_back(ES); 
+      fNANA_LaBr3_EnergyLong.push_back(EL); 
+      fNANA_LaBr3_Time.push_back(T); 
+      fNANA_LaBr3_PSD.push_back(PSD);
+    //  fNANA_LaBr3_Event.push_back(Ev);
+     }
+    */
     ClassDef(TNanaData,1)  // NanaData structure
 };
 
