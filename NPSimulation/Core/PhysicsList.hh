@@ -38,7 +38,6 @@
 #include "G4EmStandardPhysics_option4.hh"
 #include "G4EmExtraPhysics.hh"
 #include "G4StoppingPhysics.hh"
-#include "G4DecayPhysics.hh"
 #include "G4OpticalPhysics.hh"
 #include "G4HadronElasticPhysics.hh"
 #include "G4HadronElasticPhysicsHP.hh"
@@ -57,10 +56,6 @@ class PhysicsList: public G4VModularPhysicsList{
     void ReadConfiguration(std::string filename);
     void ConstructParticle();
     void SetCuts();
-    void SetCutForGamma(G4double);
-    void SetCutForElectron(G4double);
-    void SetCutForPositron(G4double);
-    void SetDetectorCut(G4double cut);
     void ConstructProcess();
     void AddStepMax();
     void AddPackage(const G4String& name);
@@ -72,9 +67,7 @@ class PhysicsList: public G4VModularPhysicsList{
     G4EmConfigurator em_config;
 
   private: // Cuts
-    G4double cutForGamma;
-    G4double cutForElectron;
-    G4double cutForPositron;
+    G4OpticalPhysics* opticalPhysicsList;
     G4VPhysicsConstructor* emPhysicsList;
     G4VPhysicsConstructor* decay_List;
     G4VPhysicsConstructor* radioactiveDecay_List;

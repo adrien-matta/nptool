@@ -44,6 +44,14 @@ void TCsIData::Clear()
    // Time
    fCsI_T_Number.clear();
    fCsI_T_Time.clear();
+
+   // PhotoDiode 
+   fPhotoDiode_E_Energy.clear();
+   fPhotoDiode_E_Number.clear();
+   fPhotoDiode_T_Time.clear();
+   fPhotoDiode_T_Number.clear();
+ 
+
 }
 
 

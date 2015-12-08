@@ -4,14 +4,14 @@
 %			   Energy are given in MeV , Position in mm				  %	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Isotropic
-  EnergyLow= 5.2
-  EnergyHigh= 5.2
+  EnergyLow= 10 
+  EnergyHigh= 10
   HalfOpenAngleMin= 0
   HalfOpenAngleMax= 45
   x0= 0
   y0= 0
   z0= 0
-  Particle= alpha 
+  Particle= alpha
   ExcitationEnergy= 0
 
 % Supported particle type: proton, neutron, deuton, triton, He3 , alpha 

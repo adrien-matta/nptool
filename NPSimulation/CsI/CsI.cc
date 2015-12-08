@@ -433,7 +433,7 @@ void CsI::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume* wor
         logicPD->SetVisAttributes(PDVisAtt);
         
         new G4PVPlacement(0 ,
-                         Det_pos+(m_CsIThickness[i]/2+PhotoDiodeThickness/2)*Det_pos.unit() ,
+                         Det_pos+(m_CsIThickness[i]*0.5+PhotoDiodeThickness*0.5)*Det_pos.unit() ,
                          logicPD ,
                          NamePD ,
                          world ,
@@ -549,9 +549,8 @@ void CsI::ReadSensitive(const G4Event* event){
     // Loop on the PhotoDiode map
     for (PhotoDiode_itr = PhotoDiodeHitMap->GetMap()->begin() ; PhotoDiode_itr != PhotoDiodeHitMap->GetMap()->end() ; PhotoDiode_itr++){
         G4double* Info = *(PhotoDiode_itr->second);
-        double E_PhotoDiode = RandGauss::shoot(Info[0],Info[0]*ResoCsI/100);
         
-        m_Event->SetPhotoDiodeEnergy(E_PhotoDiode);
+        m_Event->SetPhotoDiodeEnergy(Info[0]);
         m_Event->SetPhotoDiodeEDetectorNbr(Info[7]);
             
         m_Event->SetPhotoDiodeTime(Info[1]);

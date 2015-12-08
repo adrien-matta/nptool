@@ -73,18 +73,10 @@ int main(int argc, char** argv){
 
   PhysicsList* physicsList   = new PhysicsList();
   runManager->SetUserInitialization(physicsList);
-
-  // Test for Built in physics list
-  // G4PhysListFactory *physListFactory = new G4PhysListFactory();
-  //G4VUserPhysicsList *physicsList =
-  //physListFactory->GetReferencePhysList("QGSP_BERT");
-
-  runManager->SetUserInitialization(physicsList);
   PrimaryGeneratorAction* primary = new PrimaryGeneratorAction(detector);
 
   // Initialize Geant4 kernel
   runManager->Initialize();
-  //physicsList->MyOwnConstruction();
 
   ///////////////////////////////////////////////////////////////
   /////////// Define UI terminal for interactive mode ///////////
