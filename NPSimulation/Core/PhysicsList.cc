@@ -73,12 +73,13 @@ PhysicsList::PhysicsList() : G4VModularPhysicsList(){
 
   // Optical Photon for scintillator simulation
     if(m_OpticalPhysics){
-      opticalPhysicsList = new G4OpticalPhysics(0);
-      opticalPhysicsList->SetMaxNumPhotonsPerStep(100); 
-      opticalPhysicsList->SetScintillationYieldFactor(0.01); 
-      opticalPhysicsList->SetTrackSecondariesFirst(kScintillation,true);
-      opticalPhysicsList->SetTrackSecondariesFirst(kCerenkov,true);
-      //RegisterPhysics(opticalPhysicsList); 
+        opticalPhysicsList = new G4OpticalPhysics(0);
+        opticalPhysicsList->SetMaxNumPhotonsPerStep(100);
+        //opticalPhysicsList->SetScintillationYieldFactor(0.01);
+        opticalPhysicsList->SetScintillationYieldFactor(0.1);
+        opticalPhysicsList->SetTrackSecondariesFirst(kScintillation,true);
+        opticalPhysicsList->SetTrackSecondariesFirst(kCerenkov,true);
+        //RegisterPhysics(opticalPhysicsList);
     }
 
 

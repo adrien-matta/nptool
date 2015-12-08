@@ -47,6 +47,8 @@
 /vis/viewer/set/autoRefresh true
 /vis/verbose 0
 
+/vis/viewer/set/background white
+
 # print Option
 #/vis/ogl/set/printMode vectored
 #/vis/ogl/set/transparency true

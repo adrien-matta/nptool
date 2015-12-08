@@ -1,4 +1,4 @@
-/*****************************************************************************
+    /*****************************************************************************
  * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
@@ -41,12 +41,14 @@
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
 
+
 // NPTool header
 #include "CsI.hh"
 #include "ObsoleteGeneralScorers.hh"
 #include "RootOutput.h"
 #include "MaterialManager.hh"
 #include "SiliconScorers.hh"
+#include "PhotoDiodeScorers.hh"
 #include "CalorimeterScorers.hh"
 #include "NPSDetectorFactory.hh"
 //using namespace OBSOLETEGENERALSCORERS ;
@@ -62,9 +64,9 @@ using namespace CLHEP;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // CsI Specific Method
 CsI::CsI(){
-  m_Event = new TCsIData() ;
-  m_CsIScorer = 0;
-   ResoCsI = 2.4;//%
+    m_Event = new TCsIData() ;
+    m_CsIScorer = 0;
+    ResoCsI = 2.5/2.35;// 2.5% FWHM
     PhotoDiodeFace = 18.;//mm
     PhotoDiodeThickness = 3.;//mm
  
@@ -389,7 +391,22 @@ void CsI::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume* wor
 
   int i = DetNumber-1;
 
-  G4Material* CsIMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary(m_Scintillator[i]) ;
+    G4Material* CsIMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary(m_Scintillator[i]) ;
+    G4Material* Vacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum") ;
+    
+    //Create experimental hall
+    G4double expHall_x = 1.*m;
+    G4double expHall_y = 1.*m;
+    G4double expHall_z = 1.*m;
+    
+    G4Box* fExperimentalHall_box = new G4Box("expHall_box",expHall_x,expHall_y,expHall_z);
+    G4LogicalVolume* fExperimentalHall_log = new G4LogicalVolume(fExperimentalHall_box,
+                                                Vacuum,"expHall_log",0,0,0);
+    G4VPhysicalVolume* fExperimentalHall_phys = new G4PVPlacement(0,G4ThreeVector(),
+                                               fExperimentalHall_log,"expHall",0,false,0);
+    
+    fExperimentalHall_log->SetVisAttributes(G4VisAttributes::Invisible);
+
 
   // Definition of the volume containing the sensitive detector
 
@@ -411,13 +428,33 @@ void CsI::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume* wor
         G4VisAttributes* CsIVisAtt = new G4VisAttributes(G4Colour(1.0, 0.5, 0.0,0.25)) ;
         logicCsI->SetVisAttributes(CsIVisAtt) ;
 
-        new G4PVPlacement(0 ,
-                          Det_pos ,
-                          logicCsI ,
-                          Name  + "_Scintillator" ,
-                          world ,
-                          false ,
-                          0 );
+        G4VPhysicalVolume* physCsI = new G4PVPlacement(0 ,
+                                                       Det_pos ,
+                                                       logicCsI ,
+                                                       Name  + "_Scintillator" ,
+                                                       world ,
+                                                       false ,
+                                                       0 );
+        
+        G4OpticalSurface* OpticalCrysralSurface = new G4OpticalSurface("CrystalSurface");
+        OpticalCrysralSurface->SetType(dielectric_metal);
+        OpticalCrysralSurface->SetFinish(polished);
+        OpticalCrysralSurface->SetModel(glisur);
+        
+        G4double pp[] = {2.0*eV, 3.5*eV};
+        const G4int num = sizeof(pp)/sizeof(G4double);
+        G4double reflectivity[] = {1., 1.};
+        assert(sizeof(reflectivity) == sizeof(pp));
+        G4double efficiency[] = {0.0, 0.0};
+        assert(sizeof(efficiency) == sizeof(pp));
+        
+        new G4LogicalBorderSurface("CrystalSurface", physCsI, fExperimentalHall_phys, OpticalCrysralSurface);
+        
+        G4MaterialPropertiesTable* OpticalCrysralSurfaceProperty = new G4MaterialPropertiesTable();
+        
+        OpticalCrysralSurfaceProperty->AddProperty("REFLECTIVITY",pp,reflectivity,num);
+        OpticalCrysralSurfaceProperty->AddProperty("EFFICIENCY",pp,efficiency,num);
+        OpticalCrysralSurface->SetMaterialPropertiesTable(OpticalCrysralSurfaceProperty);
         
         // Photodiode
         G4String NamePD = Name+"PhotoDiode";
@@ -547,6 +584,8 @@ void CsI::ReadSensitive(const G4Event* event){
     PhotoDiodeHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(PhotoDiodeCollectionID));
     
     // Loop on the PhotoDiode map
+    vector<double> NumberOfOpticalPhoton;
+    NumberOfOpticalPhoton.clear();
     for (PhotoDiode_itr = PhotoDiodeHitMap->GetMap()->begin() ; PhotoDiode_itr != PhotoDiodeHitMap->GetMap()->end() ; PhotoDiode_itr++){
         G4double* Info = *(PhotoDiode_itr->second);
         double E_PhotoDiode = RandGauss::shoot(Info[0],Info[0]*ResoCsI/100);
@@ -556,106 +595,13 @@ void CsI::ReadSensitive(const G4Event* event){
             
         m_Event->SetPhotoDiodeTime(Info[1]);
         m_Event->SetPhotoDiodeTDetectorNbr(Info[7]);
+        NumberOfOpticalPhoton.push_back(Info[8]);
+        //cout << "CsI class Info[8] = " << Info[8] << endl;;
+        //m_Event->SetNumberOfOpticalPhoton(Info[8]);
     }
+    //cout << "CsI class total optical photon = " << NumberOfOpticalPhoton.size() << endl;
+    m_Event->SetNumberOfOpticalPhoton(NumberOfOpticalPhoton.size());
     PhotoDiodeHitMap->clear();
-
-    /*
-  //////////////////////////////////////////////////////////////////////////////////////
-  //////////////////////// Used to Read Event Map of detector //////////////////////////
-  //////////////////////////////////////////////////////////////////////////////////////
-
-  std::map<G4int, G4int*>::iterator DetectorNumber_itr;
-  std::map<G4int, G4double*>::iterator Energy_itr;
-  std::map<G4int, G4double*>::iterator Time_itr;
-  std::map<G4int, G4double*>::iterator Pos_Z_itr;
-
-  G4THitsMap<G4int>* DetectorNumberHitMap;      
-  G4THitsMap<G4double>* EnergyHitMap;
-  G4THitsMap<G4double>* TimeHitMap;
-  G4THitsMap<G4double>* PosZHitMap;
-
-  //////////////////////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////////////
-
-  // Read the Scorer associate to the Silicon Strip
-
-  //Detector Number
-  G4int StripDetCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("CsIScorer/CsINumber")     ;
-  DetectorNumberHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripDetCollectionID))          ;
-  DetectorNumber_itr =  DetectorNumberHitMap->GetMap()->begin()                                               ;
-
-  //Energy
-  G4int StripEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("CsIScorer/Energy")      ;
-  EnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripEnergyCollectionID))           ;
-  Energy_itr = EnergyHitMap->GetMap()->begin()                                                                ;
-
-  //Time of Flight
-  G4int StripTimeCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("CsIScorer/Time")          ;
-  TimeHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripTimeCollectionID))               ;
-  Time_itr = TimeHitMap->GetMap()->begin()                                                                    ;
-
-  //Interaction Coordinate Z
-  G4int InterCoordZCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("CsIScorer/InterCoordZ");
-  PosZHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordZCollectionID));
-  Pos_Z_itr = PosZHitMap->GetMap()->begin();
-
-  G4int sizeN = DetectorNumberHitMap->entries()    ;
-  G4int sizeE = EnergyHitMap->entries()          ;
-  G4int sizeT = TimeHitMap->entries()          ;
-
-  // Loop on CsI Number
-  for (G4int l = 0 ; l < sizeN ; l++) {
-    G4int N     =      *(DetectorNumber_itr->second)    ;
-    G4int NTrackID  =   DetectorNumber_itr->first - N  ;
-
-
-    if (N > 0) {
-      m_Event->SetENumber(N) ;
-      //  Energy
-      Energy_itr = EnergyHitMap->GetMap()->begin();
-      for (G4int h = 0 ; h < sizeE ; h++) {
-        G4int ETrackID  =   Energy_itr->first  - N      ;
-        G4double E     = *(Energy_itr->second)         ;
-        if (ETrackID == NTrackID) {
-            m_Event->SetEEnergy(RandGauss::shoot(E, E*ResoEnergy/100./2.35))    ;
-          //m_Event->SetEEnergy(RandGauss::shoot(E, ResoEnergy))    ;
-        }
-        Energy_itr++;
-      }
-
-
-      //  Time
-      Time_itr = TimeHitMap->GetMap()->begin();
-      for (G4int h = 0 ; h < sizeT ; h++) {
-        G4int TTrackID  =   Time_itr->first   - N    ;
-        G4double T     = *(Time_itr->second)      ;
-        if (TTrackID == NTrackID) {
-          m_Event->SetTTime(RandGauss::shoot(T, ResoTime)) ;
-        }
-        Time_itr++;
-      }
-
-      // Pos Z
-      Pos_Z_itr = PosZHitMap->GetMap()->begin();
-      for (G4int h = 0 ; h < PosZHitMap->entries() ; h++) {
-        G4int PosZTrackID =   Pos_Z_itr->first   - N  ;
-        G4double PosZ     = *(Pos_Z_itr->second)      ;
-        if (PosZTrackID == NTrackID) {
-          ms_InterCoord->SetDetectedPositionZ(PosZ) ;
-        }
-        Pos_Z_itr++;
-      }
-    }
-
-    DetectorNumber_itr++;
-  }
-
-  // clear map for next event
-  TimeHitMap            ->clear()   ;    
-  DetectorNumberHitMap    ->clear()   ;
-  EnergyHitMap            ->clear()    ; 
-  PosZHitMap			->clear() ;
-     */
 
 }
 
@@ -674,7 +620,7 @@ void CsI::InitializeScorers() {
     G4VPrimitiveScorer* CsIScorer= new CALORIMETERSCORERS::PS_Calorimeter("CsI",NestingLevel);
     m_CsIScorer->RegisterPrimitive(CsIScorer);
     
-    G4VPrimitiveScorer* PDScorer = new SILICONSCORERS::PS_Silicon_Rectangle("PhotoDiode",0,
+    G4VPrimitiveScorer* PDScorer = new PHOTODIODESCORERS::PS_PhotoDiode_Rectangle("PhotoDiode",0,
                                                                                 PhotoDiodeFace,
                                                                                 PhotoDiodeFace,
                                                                                 1,
