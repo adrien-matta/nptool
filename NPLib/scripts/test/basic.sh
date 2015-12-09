@@ -16,7 +16,7 @@ else
   ninja
 fi
 # Moving reference test simulation
-cp $NPTOOL/Examples/Example1_Simu.root $NPTOOL/Outputs/Simulation/Example1.root
+cp $NPTOOL/Benchmarks/Example1_Simu.root $NPTOOL/Outputs/Simulation/Example1.root
 npanalysis -R RunToTreat.txt -O Example1
 
 echo ".q" | root -b -l ShowResult.cxx
@@ -30,7 +30,7 @@ then
 else
   ninja
 fi
-cp $NPTOOL/Examples/Example2_Simu.root $NPTOOL/Outputs/Simulation/Example2.root
+cp $NPTOOL/Benchmarks/Example2_Simu.root $NPTOOL/Outputs/Simulation/Example2.root
 npanalysis -R RunToTreat.txt -O Example2
 echo ".q" | root -b -l ShowResult.cxx
 

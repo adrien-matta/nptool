@@ -64,47 +64,45 @@ TComptonTelescopePhysics::TComptonTelescopePhysics()
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TComptonTelescopePhysics::BuildSimplePhysicalEvent()
+void TComptonTelescopePhysics::BuildPhysicalEvent()
 {
-   BuildPhysicalEvent();
+   BuildSimplePhysicalEvent();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TComptonTelescopePhysics::BuildPhysicalEvent()
+void TComptonTelescopePhysics::BuildSimplePhysicalEvent()
 {
+   // select active channels and apply threhsolds
    PreTreat();
 
-   if (CheckEvent() == 1) {
-      vector< TVector2 > couple = Match_Front_Back() ;
+   if (CheckEvent() == 1) {   // case where multiplicity front = multiplicity back
+      vector<TVector2> couple = Match_Front_Back();
       EventMultiplicity = couple.size();
 
-      unsigned int size = couple.size();
-      for (unsigned int i = 0; i < size; ++i) {
+      for (UShort_t i = 0; i < couple.size(); ++i) { // loop on selected events
+         Int_t    N       = m_PreTreatedData->GetCTTrackerFrontEDetectorNbr(couple[i].X());
+         Int_t    Front   = m_PreTreatedData->GetCTTrackerFrontEStripNbr(couple[i].X());
+         Int_t    Back    = m_PreTreatedData->GetCTTrackerBackEStripNbr(couple[i].Y());
+         Double_t Front_E = m_PreTreatedData->GetCTTrackerFrontEEnergy(couple[i].X());
+         Double_t Back_E  = m_PreTreatedData->GetCTTrackerBackEEnergy(couple[i].Y());
 
-         int N = m_PreTreatedData->GetCTTrackerFrontEDetectorNbr(couple[i].X());
-
-         int Front = m_PreTreatedData->GetCTTrackerFrontEStripNbr(couple[i].X());
-         int Back  = m_PreTreatedData->GetCTTrackerBackEStripNbr(couple[i].Y());
-
-         double Front_E = m_PreTreatedData->GetCTTrackerFrontEEnergy(couple[i].X());
-         double Back_E  = m_PreTreatedData->GetCTTrackerBackEEnergy(couple[i].Y());
-
+         // Fill TComptonTelescopePhysics private members
          DetectorNumber.push_back(N);
          StripFront_E.push_back(Front_E);
-         StripBack_E.push_back(Back_E) ;
+         StripBack_E.push_back(Back_E);
 
-         if(m_Take_E_Front)
-            Strip_E.push_back(Front_E) ;
+         if (m_Take_E_Front)
+            Strip_E.push_back(Front_E);
          else
-            Strip_E.push_back(Back_E) ;
+            Strip_E.push_back(Back_E);
 
-         Strip_Front.push_back(Front) ;
-         Strip_Back.push_back(Back) ;
+         Strip_Front.push_back(Front);
+         Strip_Back.push_back(Back);
       }
    }
 
-   if (DetectorNumber.size() == 1) return;
+//   if (DetectorNumber.size() == 1) return;
 }
 
 
@@ -163,9 +161,9 @@ int TComptonTelescopePhysics::CheckEvent()
 
 
 ///////////////////////////////////////////////////////////////////////////
-vector < TVector2 > TComptonTelescopePhysics::Match_Front_Back()
+vector<TVector2> TComptonTelescopePhysics::Match_Front_Back()
 {
-   vector < TVector2 > ArrayOfGoodCouple;
+   vector<TVector2> ArrayOfGoodCouple;
 
    // Select allowed multiplicity events. If multiplicity is too 
    // high, then return "empty" vector
@@ -174,41 +172,48 @@ vector < TVector2 > TComptonTelescopePhysics::Match_Front_Back()
       return ArrayOfGoodCouple;
 
    // Loop on front multiplicity
-   for (unsigned int i = 0; i < m_PreTreatedData->GetCTTrackerFrontEMult(); i++) {
-      // lOop
-      for (unsigned int j = 0; j < m_PreTreatedData->GetCTTrackerBackEMult(); j++) {
-         //   if same detector check energy
-         if (m_PreTreatedData->GetCTTrackerFrontEDetectorNbr(i) == m_PreTreatedData->GetCTTrackerBackEDetectorNbr(j)) {
-            //   Look if energy match
-            if (abs((m_PreTreatedData->GetCTTrackerFrontEEnergy(i) - m_PreTreatedData->GetCTTrackerBackEEnergy(j))/2.) < m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma)
+   for (UShort_t i = 0; i < m_PreTreatedData->GetCTTrackerFrontEMult(); i++) {
+      // Loop on back multiplicity
+      for (UShort_t j = 0; j < m_PreTreatedData->GetCTTrackerBackEMult(); j++) {
+         // if same tower and same detector check energy
+         if ((m_PreTreatedData->GetCTTrackerFrontETowerNbr(i) == m_PreTreatedData->GetCTTrackerBackETowerNbr(j)) && 
+             (m_PreTreatedData->GetCTTrackerFrontEDetectorNbr(i) == m_PreTreatedData->GetCTTrackerBackEDetectorNbr(j))) {
+            // equal energy
+            if (abs((m_PreTreatedData->GetCTTrackerFrontEEnergy(i) - m_PreTreatedData->GetCTTrackerBackEEnergy(j))/2.) < m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma) {
                ArrayOfGoodCouple.push_back(TVector2(i,j));
-         }
-      }
-   }
+            } // end test energy
+         } // end test same tower and detector
+      } // end loop back multiplicity
+   } // end loop front multiplicity
 
-   //   Prevent to treat event with ambiguous matchin beetween X and Y
+   // prevent treating event with ambiguous matchin beetween X and Y
    if (ArrayOfGoodCouple.size() > m_PreTreatedData->GetCTTrackerFrontEMult()) ArrayOfGoodCouple.clear();
+
    return ArrayOfGoodCouple;
 }
 
 
+
 ////////////////////////////////////////////////////////////////////////////
-bool TComptonTelescopePhysics::IsValidChannel(const string DetectorType, const int telescope, const int channel)
+bool TComptonTelescopePhysics::IsValidChannel(const string DetectorType, const int detector, const int channel)
 {
    if (DetectorType == "Front")
-      return *(m_FrontChannelStatus[telescope-1].begin()+channel-1);
+      return *(m_FrontChannelStatus[detector-1].begin()+channel);
 
    else if (DetectorType == "Back")
-      return *(m_BackChannelStatus[telescope-1].begin()+channel-1);
+      return *(m_BackChannelStatus[detector-1].begin()+channel);
 
    else return false;
 }
+
 
 
 ///////////////////////////////////////////////////////////////////////////
 void TComptonTelescopePhysics::ReadAnalysisConfig()
 {
    bool ReadingStatus = false;
+
+   cout << "\t/////////// Reading ConfigComptonTelescope.dat file ///////////" << endl;
 
    // path to file
    string FileName = "./configs/ConfigComptonTelescope.dat";
@@ -218,18 +223,19 @@ void TComptonTelescopePhysics::ReadAnalysisConfig()
    AnalysisConfigFile.open(FileName.c_str());
 
    if (!AnalysisConfigFile.is_open()) {
-      cout << " No ConfigComptonTelescope.dat found: Default parameter loaded for Analayis " << FileName << endl;
+      cout << "\tNo ConfigComptonTelescope.dat found: default parameters loaded for Analysis " << FileName << endl;
       return;
    }
-   cout << " Loading user parameter for Analysis from ConfigComptonTelescope.dat " << endl;
+   cout << "\tLoading user parameters from ConfigComptonTelescope.dat " << endl;
 
-   // Save it in a TAsciiFile
+   // storing config file in the ROOT output file
    TAsciiFile* asciiConfig = RootOutput::getInstance()->GetAsciiFileAnalysisConfig();
    asciiConfig->AppendLine("%%% ConfigComptonTelescope.dat %%%");
    asciiConfig->Append(FileName.c_str());
    asciiConfig->AppendLine("");
+
    // read analysis config file
-   string LineBuffer,DataBuffer,whatToDo;
+   string LineBuffer, DataBuffer, whatToDo;
    while (!AnalysisConfigFile.eof()) {
       // Pick-up next line
       getline(AnalysisConfigFile, LineBuffer);
@@ -238,9 +244,8 @@ void TComptonTelescopePhysics::ReadAnalysisConfig()
       if (LineBuffer.compare(0, 22, "ConfigComptonTelescope") == 0) ReadingStatus = true;
 
       // loop on tokens and data
-      while (ReadingStatus ) {
-
-         whatToDo="";
+      while (ReadingStatus) {
+         whatToDo = "";
          AnalysisConfigFile >> whatToDo;
 
          // Search for comment symbol (%)
@@ -248,54 +253,47 @@ void TComptonTelescopePhysics::ReadAnalysisConfig()
             AnalysisConfigFile.ignore(numeric_limits<streamsize>::max(), '\n' );
          }
 
-         else if (whatToDo=="MAX_STRIP_MULTIPLICITY") {
+         else if (whatToDo == "MAX_STRIP_MULTIPLICITY") {
             AnalysisConfigFile >> DataBuffer;
-            m_MaximumStripMultiplicityAllowed = atoi(DataBuffer.c_str() );
-            cout << "MAXIMUN STRIP MULTIPLICITY " << m_MaximumStripMultiplicityAllowed << endl;
+            m_MaximumStripMultiplicityAllowed = atoi(DataBuffer.c_str());
+            cout << "\t" << whatToDo << "\t" << m_MaximumStripMultiplicityAllowed << endl;
          }
 
-         else if (whatToDo=="STRIP_ENERGY_MATCHING_SIGMA") {
+         else if (whatToDo == "FRONT_BACK_ENERGY_MATCHING_SIGMA") {
             AnalysisConfigFile >> DataBuffer;
-            m_StripEnergyMatchingSigma = atof(DataBuffer.c_str() );
-            cout << "STRIP ENERGY MATCHING SIGMA " << m_StripEnergyMatchingSigma <<endl;
+            m_StripEnergyMatchingSigma = atof(DataBuffer.c_str());
+            cout << "\t" << whatToDo << "\t" << m_StripEnergyMatchingSigma << endl;
          }
 
-         else if (whatToDo=="STRIP_ENERGY_MATCHING_NUMBER_OF_SIGMA") {
+         else if (whatToDo == "FRONT_BACK_ENERGY_MATCHING_NUMBER_OF_SIGMA") {
             AnalysisConfigFile >> DataBuffer;
-            m_StripEnergyMatchingNumberOfSigma = atoi(DataBuffer.c_str() );
-            cout << "STRIP ENERGY MATCHING NUMBER OF SIGMA " << m_StripEnergyMatchingNumberOfSigma << endl;
+            m_StripEnergyMatchingNumberOfSigma = atoi(DataBuffer.c_str());
+            cout << "\t" << whatToDo << "\t" << m_StripEnergyMatchingNumberOfSigma << endl;
          }
 
-         else if (whatToDo== "DISABLE_ALL") {
+         else if (whatToDo == "DISABLE_ALL") {
             AnalysisConfigFile >> DataBuffer;
-            cout << whatToDo << "  " << DataBuffer << endl;
-            int Detector = atoi(DataBuffer.substr(2,1).c_str());
+            cout << "\t" << whatToDo << "\t" << DataBuffer << endl;
+            Int_t Detector = atoi(DataBuffer.substr(2,1).c_str());
             vector< bool > ChannelStatus;
-            ChannelStatus.resize(24,false);
+            ChannelStatus.resize(m_NumberOfStrips, false);
             m_FrontChannelStatus[Detector-1] = ChannelStatus;
-            ChannelStatus.resize(48,false);
-            m_BackChannelStatus[Detector-1] = ChannelStatus;
-            ChannelStatus.resize(1,false);
-            m_PADChannelStatus[Detector-1] = ChannelStatus;
+            m_BackChannelStatus[Detector-1]  = ChannelStatus;
          }
 
          else if (whatToDo == "DISABLE_CHANNEL") {
             AnalysisConfigFile >> DataBuffer;
-            cout << whatToDo << "  " << DataBuffer << endl;
-            int Detector = atoi(DataBuffer.substr(2,1).c_str());
-            int channel = -1;
-            if (DataBuffer.compare(3,4,"STRF") == 0) {
+            cout << "\t" << whatToDo << "\t" << DataBuffer << endl;
+            Int_t Detector = atoi(DataBuffer.substr(2,1).c_str());
+            Int_t channel = -1;
+            if (DataBuffer.compare(3,4,"FRONT") == 0) {
                channel = atoi(DataBuffer.substr(7).c_str());
-               *(m_FrontChannelStatus[Detector-1].begin()+channel-1) = false;
+               *(m_FrontChannelStatus[Detector-1].begin()+channel) = false;
             }
-
-            else if (DataBuffer.compare(3,4,"STRB") == 0) {
+            else if (DataBuffer.compare(3,4,"BACK") == 0) {
                channel = atoi(DataBuffer.substr(7).c_str());
-               *(m_BackChannelStatus[Detector-1].begin()+channel-1) = false;
+               *(m_BackChannelStatus[Detector-1].begin()+channel) = false;
             }
-
-            else cout << "Warning: detector type for ComptonTelescope unknown!" << endl;
-
          }
 
          else if (whatToDo=="TAKE_E_FRONT") {
@@ -337,7 +335,9 @@ void TComptonTelescopePhysics::ReadAnalysisConfig()
          }
       }
    }
+   cout << "\t/////////////////////////////////////////////////" << endl;
 }
+
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -346,20 +346,20 @@ void TComptonTelescopePhysics::Clear()
    EventMultiplicity = 0;
 
    //   Provide a Classification of Event
-   EventType.clear() ;
+   EventType.clear();
 
    // Detector
-   DetectorNumber.clear() ;
+   DetectorNumber.clear();
 
    //   DSSD
-   Strip_E.clear() ;
-   Strip_T.clear() ;
-   StripFront_E.clear() ;
+   Strip_E.clear();
+   Strip_T.clear();
+   StripFront_E.clear();
    StripFront_T.clear();
-   StripBack_E.clear() ;
-   StripBack_T.clear() ;
-   Strip_Front.clear() ;
-   Strip_Back.clear() ;
+   StripBack_E.clear();
+   StripBack_T.clear();
+   Strip_Front.clear();
+   Strip_Back.clear();
 }
 
 
@@ -500,22 +500,6 @@ void TComptonTelescopePhysics::ReadConfiguration(string Path){
           /*ignore this */
         }
         
-        else if (DataBuffer == "ThicknessPAD1=") {
-          /*ignore this */
-        }
-        
-        else if (DataBuffer == "ThicknessPAD2=") {
-          /*ignore this */
-        }
-        
-        else if (DataBuffer == "ThicknessPAD3=") {
-          /*ignore this */
-        }
-        
-        else if (DataBuffer == "ThicknessPAD4=") {
-          /*ignore this */
-        }
-        
         ///////////////////////////////////////////////////
         //   If no Detector Token and no comment, toggle out
         else{
@@ -647,36 +631,36 @@ TVector3 TComptonTelescopePhysics::GetPositionOfInteraction(const int i) const{
   
 }
 
+
+
+///////////////////////////////////////////////////////////////////////////
 void TComptonTelescopePhysics::InitializeStandardParameter()
 {
-   //   Enable all channel
-   vector< bool > ChannelStatus;
-   m_FrontChannelStatus.clear()    ;
-   m_BackChannelStatus.clear()    ;
-   m_PADChannelStatus.clear() ;
+   // Enable all channels
+   vector<bool> ChannelStatus;
+   m_FrontChannelStatus.clear();
+   m_BackChannelStatus.clear();
 
    ChannelStatus.resize(m_NumberOfStrips, true);
-   for(int i = 0; i < m_NumberOfDetectors; ++i) {
+   for(Int_t i = 0; i < m_NumberOfDetectors; ++i) {
       m_FrontChannelStatus[i] = ChannelStatus;
-   }
-
-   ChannelStatus.resize(m_NumberOfStrips, true);
-   for(int i = 0; i < m_NumberOfDetectors; ++i) {
-      m_BackChannelStatus[i] = ChannelStatus;
+      m_BackChannelStatus[i]  = ChannelStatus;
    }
 
    m_MaximumStripMultiplicityAllowed = m_NumberOfDetectors;
-  
-  return;
 }
 
 
+
+///////////////////////////////////////////////////////////////////////////
 void TComptonTelescopePhysics::InitSpectra()
 {
    m_Spectra = new TComptonTelescopeSpectra(m_NumberOfDetectors);
 }
 
 
+
+///////////////////////////////////////////////////////////////////////////
 void TComptonTelescopePhysics::FillSpectra()
 {
    m_Spectra->FillRawSpectra(m_EventData);
@@ -685,58 +669,62 @@ void TComptonTelescopePhysics::FillSpectra()
 }
 
 
+
+///////////////////////////////////////////////////////////////////////////
 void TComptonTelescopePhysics::CheckSpectra()
 {
    m_Spectra->CheckSpectra();
 }
 
 
+
+///////////////////////////////////////////////////////////////////////////
 void TComptonTelescopePhysics::ClearSpectra()
 {
    // To be done
 }
 
 
+
+///////////////////////////////////////////////////////////////////////////
 void TComptonTelescopePhysics::WriteSpectra()
 {
    m_Spectra->WriteSpectra();
 }
 
 
-map< string , TH1*> TComptonTelescopePhysics::GetSpectra() 
+
+///////////////////////////////////////////////////////////////////////////
+map<string, TH1*> TComptonTelescopePhysics::GetSpectra() 
 {
-   if(m_Spectra)
+   if (m_Spectra)
       return m_Spectra->GetMapHisto();
-   else{
-      map< string , TH1*> empty;
+   else {
+      map<string, TH1*> empty;
       return empty;
    }
 }
 
+
+
 ///////////////////////////////////////////////////////////////////////////
 namespace ComptonTelescope_LOCAL
 {
-   // tranform an integer to a string
-   string itoa(unsigned int value) 
-   {
-      char buffer [33];
-      sprintf(buffer,"%d",value);
-      return buffer;
-   }
-
    // DSSD
    // Front
-   double fStrip_Front_E(const TComptonTelescopeData* m_EventData , const int i)
+   Double_t fStrip_Front_E(const TComptonTelescopeData* m_EventData, const int i)
    {
       return CalibrationManager::getInstance()->ApplyCalibration("COMPTONTELESCOPE/D" + NPL::itoa(m_EventData->GetCTTrackerFrontEDetectorNbr(i)) + "_STRIP_FRONT" + NPL::itoa(m_EventData->GetCTTrackerFrontEStripNbr(i)) + "_E", m_EventData->GetCTTrackerFrontEEnergy(i));
    }
 
    // Back
-   double fStrip_Back_E(const TComptonTelescopeData* m_EventData , const int i)
+   Double_t fStrip_Back_E(const TComptonTelescopeData* m_EventData, const int i)
    {
       return CalibrationManager::getInstance()->ApplyCalibration("COMPTONTELESCOPE/D" + NPL::itoa(m_EventData->GetCTTrackerBackEDetectorNbr(i)) + "_STRIP_BACK" + NPL::itoa(m_EventData->GetCTTrackerBackEStripNbr(i)) + "_E", m_EventData->GetCTTrackerBackEEnergy(i));
    }
 }
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
@@ -744,6 +732,8 @@ namespace ComptonTelescope_LOCAL
 NPL::VDetector* TComptonTelescopePhysics::Construct(){
   return (NPL::VDetector*) new TComptonTelescopePhysics();
 }
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //            Registering the construct method to the factory                 //

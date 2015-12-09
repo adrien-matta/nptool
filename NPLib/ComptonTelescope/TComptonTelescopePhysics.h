@@ -190,7 +190,6 @@ class TComptonTelescopePhysics : public TObject, public NPL::VDetector
    private:   // Map of activated channel
       map< int, vector<bool> > m_FrontChannelStatus;     //!
       map< int, vector<bool> > m_BackChannelStatus;      //! 
-      map< int, vector<bool> > m_PADChannelStatus;//!
 
    private:   // Spatial Position of Strip Calculated on bases of detector position
       int m_NumberOfDetectors;   //!

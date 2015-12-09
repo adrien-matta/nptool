@@ -643,6 +643,7 @@ void TW1Physics::PreTreat()
 
 
 
+///////////////////////////////////////////////////////////////////////////
 Int_t TW1Physics::EventType()
 {
    // Same multiplicity on front and back side
@@ -662,6 +663,7 @@ Int_t TW1Physics::EventType()
 
 
 
+///////////////////////////////////////////////////////////////////////////
 vector<TVector2> TW1Physics::Match_Front_Back()
 {
    vector<TVector2> ArrayOfGoodCouple;
@@ -696,11 +698,10 @@ vector<TVector2> TW1Physics::Match_Front_Back()
 
 
 
+///////////////////////////////////////////////////////////////////////////
 bool TW1Physics::IsValidChannel(string Type, int detector, int channel)
 {
-   vector<bool>::iterator it;
    if (Type == "Front") {
-//      cout << Type << "\t" << detector << "\t" << channel << endl;
       return *(m_FrontChannelStatus[detector-1].begin()+channel);
    }
    else if (Type == "Back")
@@ -744,7 +745,7 @@ void TW1Physics::ReadAnalysisConfig()
    AnalysisConfigFile.open(FileName.c_str());
 
    if (!AnalysisConfigFile.is_open()) {
-      cout << "\tNo ConfigW1.dat found: Default parameter loaded for Analayis " << FileName << endl;
+      cout << "\tNo ConfigW1.dat found: default parameters loaded for Analysis " << FileName << endl;
       return;
    }
    cout << "\tLoading user parameters from ConfigW1.dat " << endl;
@@ -776,7 +777,7 @@ void TW1Physics::ReadAnalysisConfig()
          
          else if (whatToDo == "MAX_STRIP_MULTIPLICITY") {
             AnalysisConfigFile >> DataBuffer;
-            m_MaximumStripMultiplicityAllowed = atoi(DataBuffer.c_str() );
+            m_MaximumStripMultiplicityAllowed = atoi(DataBuffer.c_str());
             cout << "\t" << whatToDo << "\t" << m_MaximumStripMultiplicityAllowed << endl;
          }
 
@@ -788,7 +789,7 @@ void TW1Physics::ReadAnalysisConfig()
 
          else if (whatToDo == "FRONT_BACK_ENERGY_MATCHING_NUMBER_OF_SIGMA") {
             AnalysisConfigFile >> DataBuffer;
-            m_StripEnergyMatchingNumberOfSigma = atoi(DataBuffer.c_str() );
+            m_StripEnergyMatchingNumberOfSigma = atoi(DataBuffer.c_str());
             cout << "\t" << whatToDo << "\t" << m_StripEnergyMatchingNumberOfSigma << endl;
          }
 
@@ -898,7 +899,7 @@ map<string, TH1*> TW1Physics::GetSpectra()
    if (m_Spectra)
       return m_Spectra->GetMapHisto();
    else {
-      map< string , TH1*> empty;
+      map<string, TH1*> empty;
       return empty;
    }
 }
