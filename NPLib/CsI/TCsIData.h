@@ -33,6 +33,7 @@ class TCsIData : public TObject {
     vector<double>  fCsI_E_Energy;
     vector<double>  fPhotoDiode_E_Energy;
     vector<short>   fPhotoDiode_E_Number;
+    vector<short>   fPhotoDiode_E_NumberOfPhoton;
     // Time
     vector<short>   fCsI_T_Number;
     vector<double>  fCsI_T_Time;
@@ -63,6 +64,7 @@ class TCsIData : public TObject {
     void    SetCsIEEnergy(double E) {fCsI_E_Energy.push_back(E);}
     void    SetPhotoDiodeEnergy(double E) {fPhotoDiode_E_Energy.push_back(E);}
     void    SetPhotoDiodeEDetectorNbr(int N) {fPhotoDiode_E_Number.push_back(N);}
+    void    SetNumberOfOpticalPhoton(int N) {fPhotoDiode_E_NumberOfPhoton.push_back(N);}
     // time
     void    SetTNumber(int N)    {fCsI_T_Number.push_back(N);}
     void    SetTTime(double T)   {fCsI_T_Time.push_back(T);}

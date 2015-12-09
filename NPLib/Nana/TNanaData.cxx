@@ -37,6 +37,7 @@ void TNanaData::Clear(){
 fNANA_LaBr3_EnergyLong.clear();
  fNANA_LaBr3_Time.clear();
  fNANA_LaBr3_PSD.clear();
+  fNANA_LaBr3_Event.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -47,6 +48,7 @@ void TNanaData::Dump() const{
 	    << " Energy Short: " << fNANA_LaBr3_EnergyShort[i] 
 	    << " Energy Long: " << fNANA_LaBr3_EnergyLong[i] 
 	    << " Time: " << fNANA_LaBr3_Time[i] 
-      << " PSD: " << fNANA_LaBr3_PSD[i] << endl;
+      << " PSD: " << fNANA_LaBr3_PSD[i]
+      << " Event: " << fNANA_LaBr3_Event[i] << endl;
   }
 }

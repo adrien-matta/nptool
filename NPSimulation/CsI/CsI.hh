@@ -35,6 +35,9 @@
 #include "G4RotationMatrix.hh"
 #include "G4LogicalVolume.hh"
 #include "G4MultiFunctionalDetector.hh"
+#include "G4OpticalSurface.hh"
+#include "G4LogicalBorderSurface.hh"
+#include "G4LogicalSkinSurface.hh"
 
 // NPTool header
 #include "NPSVDetector.hh"

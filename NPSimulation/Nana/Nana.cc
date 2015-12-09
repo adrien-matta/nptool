@@ -63,7 +63,7 @@ Nana::Nana(){
   m_PMTVisAtt = new G4VisAttributes(G4Colour(0.1, 0.3, 0.5));
 
   // Grey wireframe
-  m_DetectorCasingVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5,0.2));
+  m_DetectorCasingVisAtt = new G4VisAttributes(G4Colour(0.125, 0.125, 0.125, 0.4));
 
   m_LogicalDetector = 0;
   m_LaBr3Scorer = 0 ;
@@ -386,12 +386,30 @@ G4LogicalVolume* Nana::ConstructDetector(){
 
     // Visualisation of PMT Strip
     logicPMT->SetVisAttributes(m_PMTVisAtt);
+    
 
-    // Lead shielding
+    /*
+    // Plastic Lead shielding
+    //plastic definition
+    // LaBr3
+    G4int ncomponents, natoms;
+    G4double z, density;
+    G4double percent = .5;
+    G4Element* C  = new G4Element("Carbon","C" , z= 6., 12.0107*g/mole);
+    G4Element* H  = new G4Element("Hydrogen","H" , z= 1.,1.00794*g/mole );
+    G4Element* O  = new G4Element("Oxygen","O" , z= 8., 15.999*g/mole);
+    G4Element* W  = new G4Element("Tungsten","W" , z= 74., 183.84*g/mole);
+
+	density = percent * 4.5*g/cm3;
+    	G4Material* PCA = new G4Material("PCA", density, ncomponents=4);
+    	PCA->AddElement(C, natoms=6);
+    	PCA->AddElement(H, natoms=8);
+	PCA->AddElement(O, natoms=4);
+    	PCA->AddElement(W, natoms=1);
     // A
     G4ThreeVector  positionLeadAShield = G4ThreeVector(0, 0, LeadAShield_PosZ);
     G4Tubs* solidLeadA = new G4Tubs("solidLead", 0.5*LeadAMinR, 0.5*LeadAMaxR, 0.5*LeadALength, 0.*deg, 360.*deg);
-    G4LogicalVolume* logicLeadAShield = new G4LogicalVolume(solidLeadA, Lead, "logicLeadAShield", 0, 0, 0);
+    G4LogicalVolume* logicLeadAShield = new G4LogicalVolume(solidLeadA, PCA, "logicLeadAShield", 0, 0, 0);
 
     new G4PVPlacement(0, 
         positionLeadAShield, 
@@ -403,7 +421,7 @@ G4LogicalVolume* Nana::ConstructDetector(){
     // B
     G4ThreeVector  positionLeadBShield = G4ThreeVector(0, 0, LeadBShield_PosZ);
     G4Tubs*           solidLeadB = new G4Tubs("solidLead", 0.5*LeadBMinR, 0.5*LeadBMaxR, 0.5*LeadBLength, 0.*deg, 360.*deg);
-    G4LogicalVolume* logicLeadBShield = new G4LogicalVolume(solidLeadB, Lead, "logicLeadBShield", 0, 0, 0);
+    G4LogicalVolume* logicLeadBShield = new G4LogicalVolume(solidLeadB, PCA, "logicLeadBShield", 0, 0, 0);
 
     new G4PVPlacement(0, 
         positionLeadBShield, 
@@ -413,11 +431,49 @@ G4LogicalVolume* Nana::ConstructDetector(){
         false, 
         0);
 
+
+
+
     // Visualisation of PMT Strip
     G4VisAttributes* LeadVisAtt = new G4VisAttributes(G4Colour(1., 1., 1.));
     logicLeadAShield->SetVisAttributes(LeadVisAtt);
     logicLeadBShield->SetVisAttributes(LeadVisAtt);
-  }
+    
+
+    */
+    // Lead shielding
+    // A
+    G4ThreeVector  positionLeadAShield = G4ThreeVector(0, 0, LeadAShield_PosZ);
+    G4Tubs* solidLeadA = new G4Tubs("solidLead", 0.5*LeadAMinR, 0.5*LeadAMaxR, 0.5*LeadALength, 0.*deg, 360.*deg);
+    G4LogicalVolume* logicLeadAShield = new G4LogicalVolume(solidLeadA, Lead, "logicLeadAShield", 0, 0, 0);
+
+     new G4PVPlacement(0, 
+        positionLeadAShield, 
+        logicLeadAShield, 
+        "Nana_LeadAShield", 
+        m_LogicalDetector, 
+        false, 
+        0);
+    
+	// B
+    G4ThreeVector  positionLeadBShield = G4ThreeVector(0, 0, LeadBShield_PosZ);
+    G4Tubs*           solidLeadB = new G4Tubs("solidLead", 0.5*LeadBMinR, 0.5*LeadBMaxR, 0.5*LeadBLength, 0.*deg, 360.*deg);
+    G4LogicalVolume* logicLeadBShield = new G4LogicalVolume(solidLeadB, Lead, "logicLeadBShield", 0, 0, 0);
+
+    new G4PVPlacement(0, 
+        positionLeadBShield, 
+        logicLeadBShield, 
+        "Nana_LeadBShield", 
+        m_LogicalDetector, 
+        false, 
+        0);
+    
+    // Visualisation of PMT Strip
+    G4VisAttributes* LeadVisAtt = new G4VisAttributes(G4Colour(.66, .66, .66));
+    logicLeadAShield->SetVisAttributes(LeadVisAtt);
+    logicLeadBShield->SetVisAttributes(LeadVisAtt);
+    
+    }
 
   return m_LogicalDetector;
 }
@@ -451,14 +507,14 @@ void Nana::ReadSensitive(const G4Event* event){
   for (LaBr3_itr = LaBr3HitMap->GetMap()->begin() ; LaBr3_itr != LaBr3HitMap->GetMap()->end() ; LaBr3_itr++){
 
     G4double* Info = *(LaBr3_itr->second);
-
-    double Energy = RandGauss::shoot(Info[0], EnergyResolution);
-
+    //(Info[0]/2.35)*((Info[0]*1.02)*pow((Info[0]*1.8),.5))
+    // double Energy = RandGauss::shoot(Info[0],((Info[0]*1000*1.02/2.35)*pow((Info[0]*1000*1.8),.5)) );
+    double Energy = RandGauss::shoot(Info[0],(Info[0]*0.0325637)/(2.35*pow(Info[0]-0.00975335,0.475759)));
     if(Energy>EnergyThreshold){
       double Time = Info[1];
       int DetectorNbr = (int) Info[2];
 
-      m_Event->SetNanaLaBr3(DetectorNbr,Energy,Energy,(unsigned short) Time,0);
+      m_Event->SetNanaLaBr3(DetectorNbr,Energy,Energy,(unsigned short) Time,0,0);
     }
   }
   // clear map for next event
