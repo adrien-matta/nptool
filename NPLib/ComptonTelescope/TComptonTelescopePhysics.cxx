@@ -21,6 +21,14 @@
 #include "TComptonTelescopePhysics.h"
 using namespace ComptonTelescope_LOCAL;
 
+//   STL
+#include <sstream>
+#include <iostream>
+#include <cmath>
+#include <stdlib.h>
+#include <limits>
+using namespace std;
+
 //   NPL
 #include "RootInput.h"
 #include "RootOutput.h"
@@ -31,36 +39,27 @@ using namespace ComptonTelescope_LOCAL;
 //   ROOT
 #include "TChain.h"
 
-//   STL
-#include <sstream>
-#include <iostream>
-#include <cmath>
-#include <stdlib.h>
-#include <limits>
-using namespace std;
-
-///////////////////////////////////////////////////////////////////////////
 
 ClassImp(TComptonTelescopePhysics)
+
+
 ///////////////////////////////////////////////////////////////////////////
 TComptonTelescopePhysics::TComptonTelescopePhysics()
+   : m_EventData(new TComptonTelescopeData),
+     m_PreTreatedData(new TComptonTelescopeData),
+     m_EventPhysics(this),
+     m_MaximumStripMultiplicityAllowed(10),
+     m_StripEnergyMatchingSigma(0.060),      // MeV
+     m_StripEnergyMatchingNumberOfSigma(3),  // MeV
+     m_StripFront_E_RAW_Threshold(0),
+     m_StripFront_E_Threshold(0),
+     m_StripBack_E_RAW_Threshold(0),
+     m_StripBack_E_Threshold(0),
+     m_Take_E_Front(true), // p-side
+     m_NumberOfDetectors(0),
+     m_NumberOfStrips(32)
 {
    EventMultiplicity   = 0;
-   m_EventData         = new TComptonTelescopeData();
-   m_PreTreatedData    = new TComptonTelescopeData();
-   m_EventPhysics      = this;
-   m_NumberOfDetector  = 0;
-   m_MaximumStripMultiplicityAllowed  = 10;
-   m_StripEnergyMatchingSigma         = 0.060;
-   //m_StripEnergyMatchingSigma = 10    ;
-   m_StripEnergyMatchingNumberOfSigma = 3;
-
-   // Threshold
-   m_StripFront_E_RAW_Threshold  = 0;
-   m_StripFront_E_Threshold      = 0;
-   m_StripBack_E_RAW_Threshold   = 0;
-   m_StripBack_E_Threshold       = 0;
-   m_Take_E_Front                = true;     // p-side
 }
 
 
@@ -109,55 +108,51 @@ void TComptonTelescopePhysics::BuildPhysicalEvent()
 }
 
 
+
 ///////////////////////////////////////////////////////////////////////////
 void TComptonTelescopePhysics::PreTreat()
 {
+   // Clear pre treated object
    ClearPreTreatedData();
 
-//   cout << "TComptonTelescopePhysics::PreTreat() Front" << endl;
-//   m_EventData->Dump();
-   //   Front
-   unsigned int sizeFront = m_EventData->GetCTTrackerFrontEMult();
-//   cout << "sizeFront = " << sizeFront << endl;
-   for (unsigned int i = 0; i < sizeFront; ++i) {
-//      cout << "loop on sizeFront " << i << endl;
-//      cout << "energy / raw threshold " << m_EventData->GetCTTrackerFrontEEnergy(i) << "\t" << m_StripFront_E_RAW_Threshold << endl;
-      if (m_EventData->GetCTTrackerFrontEEnergy(i) > m_StripFront_E_RAW_Threshold && IsValidChannel("Front", m_EventData->GetCTTrackerFrontEDetectorNbr(i), m_EventData->GetCTTrackerFrontEStripNbr(i))) {
-//         cout << "valid channel & raw threshold applied" << endl;
-         double Front_E = fStrip_Front_E(m_EventData, i);
-//         cout << "calib E = " << Front_E << endl;
-         if (Front_E > m_StripFront_E_Threshold) {
-//            cout << "physical threshold applied" << endl;
-            if (m_EventData->GetCTTrackerFrontEStripNbr(i) == 0) cout << m_EventData->GetCTTrackerFrontEStripNbr(i) << endl;
+   // Front, energy
+   for (UShort_t i = 0; i < m_EventData->GetCTTrackerFrontEMult(); ++i) {
+      if (m_EventData->GetCTTrackerFrontEEnergy(i) > m_StripFront_E_RAW_Threshold && 
+          IsValidChannel("Front", m_EventData->GetCTTrackerFrontEDetectorNbr(i), m_EventData->GetCTTrackerFrontEStripNbr(i))) {
+         Double_t E = fStrip_Front_E(m_EventData, i);
+         if (E > m_StripFront_E_Threshold) {
+            m_PreTreatedData->SetCTTrackerFrontETowerNbr(m_EventData->GetCTTrackerFrontETowerNbr(i));
             m_PreTreatedData->SetCTTrackerFrontEDetectorNbr(m_EventData->GetCTTrackerFrontEDetectorNbr(i));
             m_PreTreatedData->SetCTTrackerFrontEStripNbr(m_EventData->GetCTTrackerFrontEStripNbr(i));
-            m_PreTreatedData->SetCTTrackerFrontEEnergy(Front_E);
+            m_PreTreatedData->SetCTTrackerFrontEEnergy(E);
 
          }
       }
    }
 
-   //  Back
-   unsigned int sizeBack = m_EventData->GetCTTrackerBackEMult();
-   for (unsigned int i = 0; i < sizeBack; ++i) {
-      if (m_EventData->GetCTTrackerBackEEnergy(i) > m_StripBack_E_RAW_Threshold && IsValidChannel("Back", m_EventData->GetCTTrackerBackEDetectorNbr(i), m_EventData->GetCTTrackerBackEStripNbr(i))) {
-         double Back_E = fStrip_Back_E(m_EventData, i);
-         if (Back_E > m_StripBack_E_Threshold) {
+   // Back, energy
+   for (UShort_t i = 0; i < m_EventData->GetCTTrackerBackEMult(); ++i) {
+      if (m_EventData->GetCTTrackerBackEEnergy(i) > m_StripBack_E_RAW_Threshold && 
+          IsValidChannel("Back", m_EventData->GetCTTrackerBackEDetectorNbr(i), m_EventData->GetCTTrackerBackEStripNbr(i))) {
+         Double_t E = fStrip_Back_E(m_EventData, i);
+         if (E > m_StripBack_E_Threshold) {
+            m_PreTreatedData->SetCTTrackerBackETowerNbr(m_EventData->GetCTTrackerBackETowerNbr(i));
             m_PreTreatedData->SetCTTrackerBackEDetectorNbr( m_EventData->GetCTTrackerBackEDetectorNbr(i));
             m_PreTreatedData->SetCTTrackerBackEStripNbr( m_EventData->GetCTTrackerBackEStripNbr(i));
-            m_PreTreatedData->SetCTTrackerBackEEnergy( Back_E);
+            m_PreTreatedData->SetCTTrackerBackEEnergy(E);
          }
       }
    }
 
-   return;
+   // DSSSD time information and LaBr3 still have to be done...
 }
+
 
 
 ///////////////////////////////////////////////////////////////////////////
 int TComptonTelescopePhysics::CheckEvent()
 {
-  // Check the size of the different elements
+  // same multiplicity on front and back side 
   if (m_PreTreatedData->GetCTTrackerBackEMult() == m_PreTreatedData->GetCTTrackerFrontEMult())
     return 1 ; // Regular Event
   
@@ -166,17 +161,21 @@ int TComptonTelescopePhysics::CheckEvent()
 }
 
 
+
 ///////////////////////////////////////////////////////////////////////////
 vector < TVector2 > TComptonTelescopePhysics::Match_Front_Back()
 {
-   vector < TVector2 > ArrayOfGoodCouple ;
+   vector < TVector2 > ArrayOfGoodCouple;
 
-   // Prevent code from treating very high multiplicity Event
-   // Those event are not physical anyway and that improve speed.
-   if (m_PreTreatedData->GetCTTrackerFrontEMult() > m_MaximumStripMultiplicityAllowed || m_PreTreatedData->GetCTTrackerBackEMult() > m_MaximumStripMultiplicityAllowed)
+   // Select allowed multiplicity events. If multiplicity is too 
+   // high, then return "empty" vector
+   if (m_PreTreatedData->GetCTTrackerFrontEMult() > m_MaximumStripMultiplicityAllowed || 
+       m_PreTreatedData->GetCTTrackerBackEMult() > m_MaximumStripMultiplicityAllowed)
       return ArrayOfGoodCouple;
 
+   // Loop on front multiplicity
    for (unsigned int i = 0; i < m_PreTreatedData->GetCTTrackerFrontEMult(); i++) {
+      // lOop
       for (unsigned int j = 0; j < m_PreTreatedData->GetCTTrackerBackEMult(); j++) {
          //   if same detector check energy
          if (m_PreTreatedData->GetCTTrackerFrontEDetectorNbr(i) == m_PreTreatedData->GetCTTrackerBackEDetectorNbr(j)) {
@@ -553,12 +552,12 @@ void TComptonTelescopePhysics::AddParameterToCalibrationManager()
 {
    CalibrationManager* Cal = CalibrationManager::getInstance();
 
-   for (int i = 0; i < m_NumberOfDetector; ++i) {
-      for (int j = 0; j < 32; ++j) {
+   for (int i = 0; i < m_NumberOfDetectors; ++i) {
+      for (int j = 0; j < m_NumberOfStrips; ++j) {
          Cal->AddParameter("COMPTONTELESCOPE", "D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_E", "COMPTONTELESCOPE_D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_E");
          Cal->AddParameter("COMPTONTELESCOPE", "D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_T", "COMPTONTELESCOPE_D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_T");
       }
-      for (int j = 0; j < 32; ++j) {
+      for (int j = 0; j < m_NumberOfStrips; ++j) {
          Cal->AddParameter("COMPTONTELESCOPE", "D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j+1)+"_E",  "COMPTONTELESCOPE_D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j+1)+"_E");
          Cal->AddParameter("COMPTONTELESCOPE", "D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j+1)+"_T",  "COMPTONTELESCOPE_D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j+1)+"_T");
       }
@@ -608,7 +607,7 @@ void TComptonTelescopePhysics::InitializeRootOutput()
 
 void TComptonTelescopePhysics::AddComptonTelescope(double Z)
 {
-   m_NumberOfDetector++;
+   m_NumberOfDetectors++;
    // empty at the moment
    // needed if solid angle analysis are needed
 }
@@ -656,17 +655,17 @@ void TComptonTelescopePhysics::InitializeStandardParameter()
    m_BackChannelStatus.clear()    ;
    m_PADChannelStatus.clear() ;
 
-   ChannelStatus.resize(32,true);
-   for(int i = 0; i < m_NumberOfDetector; ++i) {
+   ChannelStatus.resize(m_NumberOfStrips, true);
+   for(int i = 0; i < m_NumberOfDetectors; ++i) {
       m_FrontChannelStatus[i] = ChannelStatus;
    }
 
-   ChannelStatus.resize(32,true);
-   for(int i = 0; i < m_NumberOfDetector; ++i) {
+   ChannelStatus.resize(m_NumberOfStrips, true);
+   for(int i = 0; i < m_NumberOfDetectors; ++i) {
       m_BackChannelStatus[i] = ChannelStatus;
    }
 
-   m_MaximumStripMultiplicityAllowed = m_NumberOfDetector;
+   m_MaximumStripMultiplicityAllowed = m_NumberOfDetectors;
   
   return;
 }
@@ -674,7 +673,7 @@ void TComptonTelescopePhysics::InitializeStandardParameter()
 
 void TComptonTelescopePhysics::InitSpectra()
 {
-   m_Spectra = new TComptonTelescopeSpectra(m_NumberOfDetector);
+   m_Spectra = new TComptonTelescopeSpectra(m_NumberOfDetectors);
 }
 
 

@@ -155,7 +155,7 @@ class TComptonTelescopePhysics : public TObject, public NPL::VDetector
       double GetStripPositionY(const int N, const int Front, const int Back)  const {return m_StripPositionY[N-1][Front-1][Back-1];};
       double GetStripPositionZ(const int N, const int Front, const int Back)  const {return m_StripPositionZ[N-1][Front-1][Back-1];};
 
-      double GetNumberOfDetector() const {return m_NumberOfDetector;};
+      double GetNumberOfDetectors() const {return m_NumberOfDetectors;};
 
       // To be called after a build Physical Event 
       int GetEventMultiplicity() const {return EventMultiplicity;};
@@ -193,10 +193,11 @@ class TComptonTelescopePhysics : public TObject, public NPL::VDetector
       map< int, vector<bool> > m_PADChannelStatus;//!
 
    private:   // Spatial Position of Strip Calculated on bases of detector position
-      int m_NumberOfDetector;//!
-      vector< vector < vector < double > > >   m_StripPositionX;//!
-      vector< vector < vector < double > > >   m_StripPositionY;//!
-      vector< vector < vector < double > > >   m_StripPositionZ;//!
+      int m_NumberOfDetectors;   //!
+      int m_NumberOfStrips;      //!
+      vector< vector < vector < double > > >   m_StripPositionX;  //!
+      vector< vector < vector < double > > >   m_StripPositionY;  //!
+      vector< vector < vector < double > > >   m_StripPositionZ;  //!
 
    private: // Spectra Class   
       TComptonTelescopeSpectra*      m_Spectra; //! 
