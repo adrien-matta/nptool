@@ -29,6 +29,8 @@ using namespace std;
 #include "G4VSolid.hh"
 #include "G4Box.hh"
 #include "G4Tubs.hh"
+#include "G4ExtrudedSolid.hh"
+#include "G4TwoVector.hh"
 #include "G4UnionSolid.hh"
 #include "G4SubtractionSolid.hh"
 #include "G4SDManager.hh"
@@ -126,7 +128,7 @@ void Nana::ReadConfiguration(string Path){
   G4double Ax , Bx , Cx , Dx , Ay , By , Cy , Dy , Az , Bz , Cz , Dz          ;
   G4ThreeVector A , B , C , D                                                 ;
   G4double Theta = 0 , Phi = 0 , R = 0 , beta_u = 0 , beta_v = 0 , beta_w = 0 ;
-  
+
   bool ReadingStatus = false;
 
   bool check_A = false;
@@ -261,7 +263,7 @@ void Nana::ReadConfiguration(string Path){
         check_C = false;
         check_B = false;
         check_D = false;
-        
+
         AddDetector(A, B, C, D);
       }
 
@@ -285,20 +287,100 @@ void Nana::ReadConfiguration(string Path){
 // Construct detector and inialise sensitive part.
 // Called After DetecorConstruction::AddDetector Method
 void Nana::ConstructDetector(G4LogicalVolume* world){
+
+  // Lead block supporting Detector
+  G4Material* Lead = MaterialManager::getInstance()->GetMaterialFromLibrary("Pb");
+
+ // G4Box* solidLead = new G4Box("solidLead",10*cm,5*cm,12.5*cm);
+
+  std::vector<G4TwoVector> polygon;
+    polygon.push_back(G4TwoVector(0,50));
+    polygon.push_back(G4TwoVector(-25,25));
+    polygon.push_back(G4TwoVector(-25,-75));
+    polygon.push_back(G4TwoVector(0,-50));
+    polygon.push_back(G4TwoVector(25,-75));
+    polygon.push_back(G4TwoVector(25,25));
+ 
+    std::vector<G4ExtrudedSolid::ZSection> zsections;
+    zsections.push_back(G4ExtrudedSolid::ZSection(-6.25*cm,G4TwoVector(0,0),1));
+    zsections.push_back(G4ExtrudedSolid::ZSection(+6.25*cm,G4TwoVector(0,0),1));
+
+ G4ExtrudedSolid* solidLead = new G4ExtrudedSolid("solidLead",
+                 polygon,
+                 zsections); 
+
+ G4LogicalVolume* logicLead = new G4LogicalVolume(solidLead, Lead, "logicLead", 0, 0, 0);
   unsigned int mysize = m_Pos.size();
   for(unsigned int i = 0 ; i < mysize ; i++){
-    new G4PVPlacement(G4Transform3D(*m_Rot[i], m_Pos[i]), ConstructDetector(),  "NanaDetector", world, false, i+1); 
+    new G4PVPlacement(G4Transform3D(*m_Rot[i], m_Pos[i]), ConstructDetector(),  "NanaDetector", world, false, i+2); 
+  
+    G4RotationMatrix* r =  new G4RotationMatrix();
+    r->rotateX(-90*deg);
+     r->rotateY(60*deg);
+
+    G4ThreeVector Pos(PMTFace,0.25*6.25*cm, 90*mm);
+    Pos.setTheta(60*deg); 
+    new G4PVPlacement(G4Transform3D(*r, Pos+G4ThreeVector(0,0, +PMTFace)), 
+        logicLead, 
+        "Nana_Lead_Support", 
+        world, 
+        false, 
+        i+1);
+
+    new G4PVPlacement(G4Transform3D(*r, Pos+G4ThreeVector(1.1*PMTFace,0, -0.5*PMTFace)), 
+        logicLead, 
+        "Nana_Lead_Support", 
+        world, 
+        false, 
+        i+1);
+
+   G4RotationMatrix* r2 =  new G4RotationMatrix();
+    r2->rotateX(-90*deg);
+     r2->rotateY(300*deg);
+
+    G4ThreeVector Pos2(PMTFace,-0.25*6.25*cm, 90*mm);
+    Pos2.setTheta(300*deg); 
+    new G4PVPlacement(G4Transform3D(*r2, Pos2+G4ThreeVector(0,0, +PMTFace)), 
+        logicLead, 
+        "Nana_Lead_Support", 
+        world, 
+        false, 
+        i+1);
+
+    new G4PVPlacement(G4Transform3D(*r2, Pos2+G4ThreeVector(-1.1*PMTFace,0, -0.5*PMTFace)), 
+        logicLead, 
+        "Nana_Lead_Support", 
+        world, 
+        false, 
+        i+1);
+
+
+ /*   new G4PVPlacement(G4Transform3D(*m_Rot[i], m_Pos[i]+G4ThreeVector(0,0, +PMTFace+3*cm)), 
+        logicLead, 
+        "Nana_Lead_Support", 
+        world, 
+        false, 
+        i+1);
+    new G4PVPlacement(G4Transform3D(*m_Rot[i], m_Pos[i]+G4ThreeVector(0,0,-PMTFace-3*cm)), 
+        logicLead, 
+        "Nana_Lead_Support", 
+        world, 
+        false, 
+        i+1);
+
+*/
+
   }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4LogicalVolume* Nana::ConstructDetector(){
   if(!m_LogicalDetector){
-    
+
     G4Material* Vacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
     G4Material* Alu = MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
     G4Material* Lead = MaterialManager::getInstance()->GetMaterialFromLibrary("Pb");
-    G4Material* LaBr3 = MaterialManager::getInstance()->GetMaterialFromLibrary("LaBr3");
+    G4Material* LaBr3 = MaterialManager::getInstance()->GetMaterialFromLibrary("LaBr3_Ce");
 
     // Mother Volume
     G4Tubs* solidNanaDetector = 
@@ -368,12 +450,13 @@ G4LogicalVolume* Nana::ConstructDetector(){
     // PMT
     G4ThreeVector  positionPMT = G4ThreeVector(0, 0, PMT_PosZ);
 
-    G4Tubs* solidPMout = new G4Tubs("solidPMOut", 0.5*LaBr3Face, 0.5*PMTFace, 0.5*PMTThickness, 0.*deg, 360.*deg);
-    G4Tubs* solidPMin = new G4Tubs("solidPMIn", 0.5*LaBr3Face-0.1*cm, 0.5*PMTFace-0.5*cm, 0.5*(PMTThickness-2.*cm)-0.1*cm, 0.*deg, 360.*deg);
-    G4RotationMatrix* RotMat=NULL;
-    const G4ThreeVector &Trans= G4ThreeVector(0.,0.,1.*cm); 
-    G4SubtractionSolid*           solidPMT = new G4SubtractionSolid("solidPMT", solidPMout,solidPMin, RotMat, Trans);
-
+    /*    G4Tubs* solidPMout = new G4Tubs("solidPMOut", 0.5*LaBr3Face, 0.5*PMTFace, 0.5*PMTThickness, 0.*deg, 360.*deg);
+          G4Tubs* solidPMin = new G4Tubs("solidPMIn", 0.5*LaBr3Face-0.1*cm, 0.5*PMTFace-0.5*cm, 0.5*(PMTThickness-2.*cm)-0.1*cm, 0.*deg, 360.*deg);
+          G4RotationMatrix* RotMat=NULL;
+          const G4ThreeVector &Trans= G4ThreeVector(0.,0.,1.*cm); 
+          G4SubtractionSolid*           solidPMT = new G4SubtractionSolid("solidPMT", solidPMout,solidPMin, RotMat, Trans);
+          */
+    G4Tubs* solidPMT= new G4Tubs("solidPMOut", 0.0*LaBr3Face, 0.5*PMTFace, 0.5*PMTThickness, 0.*deg, 360.*deg);
     G4LogicalVolume* logicPMT = new G4LogicalVolume(solidPMT, Alu, "logicPMT", 0, 0, 0);
 
     new G4PVPlacement(0, 
@@ -386,7 +469,7 @@ G4LogicalVolume* Nana::ConstructDetector(){
 
     // Visualisation of PMT Strip
     logicPMT->SetVisAttributes(m_PMTVisAtt);
-    
+
 
     /*
     // Plastic Lead shielding
@@ -400,36 +483,36 @@ G4LogicalVolume* Nana::ConstructDetector(){
     G4Element* O  = new G4Element("Oxygen","O" , z= 8., 15.999*g/mole);
     G4Element* W  = new G4Element("Tungsten","W" , z= 74., 183.84*g/mole);
 
-	density = percent * 4.5*g/cm3;
-    	G4Material* PCA = new G4Material("PCA", density, ncomponents=4);
-    	PCA->AddElement(C, natoms=6);
-    	PCA->AddElement(H, natoms=8);
-	PCA->AddElement(O, natoms=4);
-    	PCA->AddElement(W, natoms=1);
+    density = percent * 4.5*g/cm3;
+    G4Material* PCA = new G4Material("PCA", density, ncomponents=4);
+    PCA->AddElement(C, natoms=6);
+    PCA->AddElement(H, natoms=8);
+    PCA->AddElement(O, natoms=4);
+    PCA->AddElement(W, natoms=1);
     // A
     G4ThreeVector  positionLeadAShield = G4ThreeVector(0, 0, LeadAShield_PosZ);
     G4Tubs* solidLeadA = new G4Tubs("solidLead", 0.5*LeadAMinR, 0.5*LeadAMaxR, 0.5*LeadALength, 0.*deg, 360.*deg);
     G4LogicalVolume* logicLeadAShield = new G4LogicalVolume(solidLeadA, PCA, "logicLeadAShield", 0, 0, 0);
 
     new G4PVPlacement(0, 
-        positionLeadAShield, 
-        logicLeadAShield, 
-        "Nana_LeadAShield", 
-        m_LogicalDetector, 
-        false, 
-        0);
+    positionLeadAShield, 
+    logicLeadAShield, 
+    "Nana_LeadAShield", 
+    m_LogicalDetector, 
+    false, 
+    0);
     // B
     G4ThreeVector  positionLeadBShield = G4ThreeVector(0, 0, LeadBShield_PosZ);
     G4Tubs*           solidLeadB = new G4Tubs("solidLead", 0.5*LeadBMinR, 0.5*LeadBMaxR, 0.5*LeadBLength, 0.*deg, 360.*deg);
     G4LogicalVolume* logicLeadBShield = new G4LogicalVolume(solidLeadB, PCA, "logicLeadBShield", 0, 0, 0);
 
     new G4PVPlacement(0, 
-        positionLeadBShield, 
-        logicLeadBShield, 
-        "Nana_LeadBShield", 
-        m_LogicalDetector, 
-        false, 
-        0);
+    positionLeadBShield, 
+    logicLeadBShield, 
+    "Nana_LeadBShield", 
+    m_LogicalDetector, 
+    false, 
+    0);
 
 
 
@@ -438,24 +521,24 @@ G4LogicalVolume* Nana::ConstructDetector(){
     G4VisAttributes* LeadVisAtt = new G4VisAttributes(G4Colour(1., 1., 1.));
     logicLeadAShield->SetVisAttributes(LeadVisAtt);
     logicLeadBShield->SetVisAttributes(LeadVisAtt);
-    
 
-    */
+
+*/
     // Lead shielding
     // A
     G4ThreeVector  positionLeadAShield = G4ThreeVector(0, 0, LeadAShield_PosZ);
     G4Tubs* solidLeadA = new G4Tubs("solidLead", 0.5*LeadAMinR, 0.5*LeadAMaxR, 0.5*LeadALength, 0.*deg, 360.*deg);
     G4LogicalVolume* logicLeadAShield = new G4LogicalVolume(solidLeadA, Lead, "logicLeadAShield", 0, 0, 0);
 
-     new G4PVPlacement(0, 
+    new G4PVPlacement(0, 
         positionLeadAShield, 
         logicLeadAShield, 
         "Nana_LeadAShield", 
         m_LogicalDetector, 
         false, 
         0);
-    
-	// B
+
+    // B
     G4ThreeVector  positionLeadBShield = G4ThreeVector(0, 0, LeadBShield_PosZ);
     G4Tubs*           solidLeadB = new G4Tubs("solidLead", 0.5*LeadBMinR, 0.5*LeadBMaxR, 0.5*LeadBLength, 0.*deg, 360.*deg);
     G4LogicalVolume* logicLeadBShield = new G4LogicalVolume(solidLeadB, Lead, "logicLeadBShield", 0, 0, 0);
@@ -467,13 +550,13 @@ G4LogicalVolume* Nana::ConstructDetector(){
         m_LogicalDetector, 
         false, 
         0);
-    
+
     // Visualisation of PMT Strip
     G4VisAttributes* LeadVisAtt = new G4VisAttributes(G4Colour(.66, .66, .66));
     logicLeadAShield->SetVisAttributes(LeadVisAtt);
     logicLeadBShield->SetVisAttributes(LeadVisAtt);
-    
-    }
+
+  }
 
   return m_LogicalDetector;
 }
@@ -542,24 +625,24 @@ void Nana::InitializeScorers(){
   G4SDManager::GetSDMpointer()->AddNewDetector(m_LaBr3Scorer) ;
 }
 
- ////////////////////////////////////////////////////////////////////////////////
- //            Construct Method to be pass to the DetectorFactory              //
- ////////////////////////////////////////////////////////////////////////////////
- NPS::VDetector* Nana::Construct(){
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPS::VDetector* Nana::Construct(){
   return  (NPS::VDetector*) new Nana();
- }
+}
 
- ////////////////////////////////////////////////////////////////////////////////
- //            Registering the construct method to the factory                 //
- ////////////////////////////////////////////////////////////////////////////////
- extern"C" {
- class proxy_nps_nana{
-   public:
-    proxy_nps_nana(){
-      NPS::DetectorFactory::getInstance()->AddToken("Nana","Nana");
-      NPS::DetectorFactory::getInstance()->AddDetector("Nana",Nana::Construct);
-    }
-};
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern"C" {
+  class proxy_nps_nana{
+    public:
+      proxy_nps_nana(){
+        NPS::DetectorFactory::getInstance()->AddToken("Nana","Nana");
+        NPS::DetectorFactory::getInstance()->AddDetector("Nana",Nana::Construct);
+      }
+  };
 
- proxy_nps_nana p_nps_nana;
- }
+  proxy_nps_nana p_nps_nana;
+}

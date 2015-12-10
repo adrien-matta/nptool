@@ -55,14 +55,14 @@ int main(int argc , char** argv){
   command = "ls ./*/*Dict* > /dev/null 2>/dev/null";
   return_value=system(command.c_str());             
   if(!return_value){
-    command2 = "rm ./*/*Dict* > /dev/null 2>/dev/null";
+    command2 = "rm -f ./*/*Dict* > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
   }  
    // DetectorClassList
   command = "ls ./DetectorClassList.txt > /dev/null 2>/dev/null";
   return_value=system(command.c_str());             
   if(!return_value){
-    command2 = "rm ./DetectorClassList.txt > /dev/null 2>/dev/null";
+    command2 = "rm -f ./DetectorClassList.txt > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
   }
   
@@ -70,7 +70,7 @@ int main(int argc , char** argv){
   command = "ls ./*/*.pcm > /dev/null 2>/dev/null";
   return_value=system(command.c_str());             
   if(!return_value){
-    command2 = "rm ./*/*.pcm > /dev/null 2>/dev/null";
+    command2 = "rm -f ./*/*.pcm > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
   }
  
@@ -78,7 +78,7 @@ int main(int argc , char** argv){
   command = "ls ./*/*.rootmap > /dev/null 2>/dev/null";
   return_value=system(command.c_str());             
   if(!return_value){
-    command2 = "rm ./*/*.rootmap > /dev/null 2>/dev/null";
+    command2 = "rm -f ./*/*.rootmap > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
   }
   
@@ -86,37 +86,37 @@ int main(int argc , char** argv){
   command = "ls ./*/Makefile > /dev/null 2>/dev/null";
   return_value=system(command.c_str());             
   if(!return_value){
-    command2 = "rm ./*/Makefile > /dev/null 2>/dev/null";
+    command2 = "rm -f ./*/Makefile > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
   }
    // ninja
   command = "ls ./*.ninja > /dev/null 2>/dev/null";
   return_value=system(command.c_str());             
   if(!return_value){
-    command2 = "rm ./*.ninja > /dev/null 2>/dev/null";
+    command2 = "rm -f ./*.ninja > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
   }
    // lib 
   command = "ls ./lib/*> /dev/null 2>/dev/null";
   return_value=system(command.c_str());             
   if(!return_value){
-    command2 = "rm ./lib/* > /dev/null 2>/dev/null";
+    command2 = "rm -f ./lib/* > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
   }
    // include
   command = "ls ./include/* > /dev/null 2>/dev/null";
   return_value=system(command.c_str());             
   if(!return_value){
-    command2 = "rm ./include/* > /dev/null 2>/dev/null";
+    command2 = "rm -f ./include/* > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
   }
    // CMakeFiles
   command = "ls ./*/CMakeFiles > /dev/null 2>/dev/null";
   return_value=system(command.c_str());             
   if(!return_value){
-    command2 = "rm -Rf ./*/CMakeFiles > /dev/null 2>/dev/null";
+    command2 = "rm -f .Rf ./*/CMakeFiles > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
-    command2 = "rm -Rf ./CMakeFiles > /dev/null 2>/dev/null";
+    command2 = "rm -f .Rf ./CMakeFiles > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
 
   }
@@ -125,7 +125,7 @@ int main(int argc , char** argv){
   command = "ls ./CMakeCache.txt > /dev/null 2>/dev/null";
   return_value=system(command.c_str());             
   if(!return_value){
-    command2 = "rm ./CMakeCache.txt > /dev/null 2>/dev/null";
+    command2 = "rm -f ./CMakeCache.txt > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
   }
 
@@ -133,7 +133,7 @@ int main(int argc , char** argv){
   command = "ls ./liblist > /dev/null 2>/dev/null";
   return_value=system(command.c_str());             
   if(!return_value){
-    command2 = "rm ./liblist > /dev/null 2>/dev/null";
+    command2 = "rm -f ./liblist > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
   }
 
@@ -141,35 +141,35 @@ int main(int argc , char** argv){
   command = "ls ./install_manifest > /dev/null 2>/dev/null";
   return_value=system(command.c_str());             
   if(!return_value){
-    command2 = "rm ./install_manifest > /dev/null 2>/dev/null";
+    command2 = "rm -f ./install_manifest > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
   }
    // cmake
   command = "ls ./*/cmake_install.cmake > /dev/null 2>/dev/null";
   return_value=system(command.c_str());             
   if(!return_value){
-    command2 = "rm ./*/cmake_install.cmake > /dev/null 2>/dev/null";
+    command2 = "rm -f ./*/cmake_install.cmake > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
   }
    // so 
   command = "ls ./*/*.so > /dev/null 2>/dev/null";
   return_value=system(command.c_str());             
   if(!return_value){
-    command2 = "rm ./*/*.so > /dev/null 2>/dev/null";
+    command2 = "rm -f ./*/*.so > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
   }
    // dylib
   command = "ls ./*/*.dylib > /dev/null 2>/dev/null";
   return_value=system(command.c_str());             
   if(!return_value){
-    command2 = "rm ./*/*.dylib > /dev/null 2>/dev/null";
+    command2 = "rm -f ./*/*.dylib > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
   }
     //bin 
   command = "ls ./bin/* > /dev/null 2>/dev/null";
   return_value=system(command.c_str());             
   if(!return_value){
-    command2 = "rm ./bin/* > /dev/null 2>/dev/null";
+    command2 = "rm -f ./bin/* > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
   }
   

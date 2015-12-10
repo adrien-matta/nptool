@@ -35,7 +35,7 @@ void Style_nptool(){
 
   // Desable stat title and fit  
   style_nptool->SetOptStat(0);
-  //style_nptool->SetOptTitle(0);
+  style_nptool->SetOptTitle(0);
   //style_nptool->SetOptFit(0);
 
   // x axis

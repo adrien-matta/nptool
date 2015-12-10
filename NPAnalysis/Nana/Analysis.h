@@ -46,8 +46,8 @@ class Analysis: public NPL::VAnalysis{
     double ts_diff_s;
     long multiLa;
     long bin;
-    std::map<int,TH1*> fHistoTime, fHistoGamma,fHistoBTime;
-    std::map<int,TH2*> fHisto2d,fHistoGT;
+    std::map<int,TH1D*> fHistoTime, fHistoGamma,fHistoBTime;
+    std::map<int,TH2D*> fHisto2d,fHistoGT;
     
 
 
