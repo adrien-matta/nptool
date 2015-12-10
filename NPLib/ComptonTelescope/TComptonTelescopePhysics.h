@@ -22,21 +22,22 @@
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
+// STL
+#include <vector>
+using namespace std;
 
 // NPL
 #include "TComptonTelescopeData.h"
 #include "TComptonTelescopeSpectra.h"
+
 #include "NPCalibrationManager.h"
 #include "NPVDetector.h"
+#include "NPDetectorFactory.h"
 
 // ROOT 
 #include "TVector2.h" 
 #include "TVector3.h" 
 #include "TObject.h"
-
-// STL
-#include <vector>
-using namespace std;
 
 // forward declaration
 class TComptonTelescopeSpectra;
