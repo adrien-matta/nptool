@@ -32,7 +32,6 @@ using namespace std;
 
 #include "NPCalibrationManager.h"
 #include "NPVDetector.h"
-#include "NPDetectorFactory.h"
 
 // ROOT 
 #include "TVector2.h" 
@@ -214,8 +213,6 @@ class TComptonTelescopePhysics : public TObject, public NPL::VDetector
 
 namespace ComptonTelescope_LOCAL
 {
-   //   tranform an integer to a string
-   string itoa(unsigned int value);
    //   DSSD
    //   Front
    double fStrip_Front_E(const TComptonTelescopeData* Data, const int i);
