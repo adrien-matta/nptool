@@ -24,7 +24,6 @@
  
 //   STL
 #include <vector>
-#include <sstream>
 #include <iostream>
 #include <cmath>
 #include <stdlib.h>
