@@ -51,83 +51,72 @@ class TComptonTelescopePhysics : public TObject, public NPL::VDetector
       void Clear();   
       void Clear(const Option_t*) {};
 
-   public: 
-      vector < TVector2 > Match_Front_Back() ;
-      int  CheckEvent();
-   
-   public:
-      //   Provide Physical Multiplicity
+
+   public:  // data obtained after BuildPhysicalEvent() and stored in ROOT output file
       Int_t EventMultiplicity;
-               
-      //   Provide a Classification of Event
-      vector<int> EventType ;
-         
-      // Detector
-      vector<int> DetectorNumber ;
-      
+      vector<int> EventType;
+      vector<int> DetectorNumber;
       //   DSSD
-      vector<double> Strip_E ;
-      vector<double> Strip_T ;
-      vector<double> StripFront_E ;
-      vector<double> StripFront_T ;
-      vector<double> StripBack_E ;
-      vector<double> StripBack_T ;
-      vector<int>    Strip_Front ;
-      vector<int>    Strip_Back ;
+      vector<double> Strip_E;
+      vector<double> Strip_T;
+      vector<double> StripFront_E;
+      vector<double> StripFront_T;
+      vector<double> StripBack_E;
+      vector<double> StripBack_T;
+      vector<int>    Strip_Front;
+      vector<int>    Strip_Back;
    
-   public:      // Innherited from VDetector Class
-      // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-      void ReadConfiguration(string) ;
-      
 
-      // Add Parameter to the CalibrationManger
-      void AddParameterToCalibrationManager() ;      
+   public:  // inherited from VDetector
+   // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
+   void ReadConfiguration(string);
 
-      // Activated associated Branches and link it to the private member DetectorData address
-      // In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
-      void InitializeRootInputRaw() ;
-      
-      // Activated associated Branches and link it to the private member DetectorPhysics address
-      // In this method mother Branches (Detector) AND daughter leaf (parameter) have to be activated
-      void InitializeRootInputPhysics() ;
+   // Add parameters to the CalibrationManger
+   void AddParameterToCalibrationManager();
 
-      // Create associated branches and associated private member DetectorPhysics address
-      void InitializeRootOutput() ;
-      
-      // This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
-      void BuildPhysicalEvent() ;
-      
-      // Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
-      // This method aimed to be used for analysis performed during experiment, when speed is requiered.
-      // NB: This method can eventually be the same as BuildPhysicalEvent.
-      void BuildSimplePhysicalEvent() ;
+   // Activate associated branches and link them to the private member object m_EventData
+   void InitializeRootInputRaw();
 
-      // Same as above but for online analysis
-      void BuildOnlinePhysicalEvent()  {BuildPhysicalEvent();};
+   // Activate associated branches and link them to the private member m_EventPhysics
+   void InitializeRootInputPhysics();
 
-      // Those two method all to clear the Event Physics or Data
-      void ClearEventPhysics() {Clear();}      
-      void ClearEventData()    {m_EventData->Clear();}   
+   // Create associated branches and associated private member m_EventPhysics 
+   void InitializeRootOutput();
 
-      // Method related to the TSpectra classes, aimed at providing a framework for online applications
-      // Instantiate the Spectra class and the histogramm throught it
-      void InitSpectra();
-      // Fill the spectra hold by the spectra class
-      void FillSpectra();
-      // Write the spectra to file
-      void WriteSpectra();
-      // Used for Online mainly, perform check on the histo and for example change their color if issues are found
-      void CheckSpectra();
-      // Used for Online only, clear all the spectra hold by the Spectra class
-      void ClearSpectra();
+   // This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
+   void BuildPhysicalEvent();
 
+   // Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
+   // This method aimed to be used for analysis performed during experiment, when speed is requiered.
+   // NB: This method can eventually be the same as BuildPhysicalEvent.
+   void BuildSimplePhysicalEvent();
+
+   // Same as above but for online analysis
+   void BuildOnlinePhysicalEvent()  {BuildPhysicalEvent();};
+
+   // Clear raw and physics data 
+   void ClearEventPhysics()   {Clear();}
+   void ClearEventData()      {m_EventData->Clear();}
+
+   // Methods related to the TW1Spectra classes
+   // Instantiate the TW1Spectra class and the histograms
+   void InitSpectra();
+   // Fill the spectra defined in TW1Spectra
+   void FillSpectra();
+   // Used for Online mainly, perform check on the histo and for example change their color if issues are found
+   void CheckSpectra();
+   // Used for Online only, clear all the spectra hold by the Spectra class
+   void ClearSpectra();
+   // Write Spectra to file
+   void WriteSpectra();
    
+
    public:      //   Specific to ComptonTelescope Array
-      // Clear The PreTeated object
-      void ClearPreTreatedData()   {m_PreTreatedData->Clear();}
-   
       // Remove bad channel, calibrate the data and apply threshold
       void PreTreat();
+   
+      // Clear The PreTeated object
+      void ClearPreTreatedData()   {m_PreTreatedData->Clear();}
    
       // Return false if the channel is disabled by user
       // Frist argument is either "FRONT" or "BACK"
@@ -146,6 +135,7 @@ class TComptonTelescopePhysics : public TObject, public NPL::VDetector
       // Give and external TComptonTelescopeData object to TComptonTelescopePhysics
       // Needed for online analysis for example
       void SetRawDataPointer(TComptonTelescopeData* rawDataPointer) {m_EventData = rawDataPointer;}
+
       // Retrieve raw and pre-treated data
       TComptonTelescopeData* GetRawData()        const {return m_EventData;}
       TComptonTelescopeData* GetPreTreatedData() const {return m_PreTreatedData;}
@@ -167,7 +157,8 @@ class TComptonTelescopePhysics : public TObject, public NPL::VDetector
       // By default take EX and TY.
       bool m_Take_E_Front; //!
 
-      // Event over this value after pre-treatment are not treated / avoid long treatment time on spurious event   
+      // If multiplicity is greater than m_MaximumStripMultiplicityAllowed 
+      // after PreTreat(), event is not treated
       unsigned int m_MaximumStripMultiplicityAllowed; //!
       // Give the allowance in percent of the difference in energy between X and Y
       double m_StripEnergyMatchingSigma;              //!
@@ -179,9 +170,12 @@ class TComptonTelescopePhysics : public TObject, public NPL::VDetector
       double m_StripBack_E_RAW_Threshold;    //!
       double m_StripBack_E_Threshold;        //!
 
+   public:  // methods used in event treatment 
+      vector<TVector2> Match_Front_Back();
+      Int_t CheckEvent();
+   
 
-
-   private:   // Root Input and Output tree classes
+   private: // objects used in event treatment 
       TComptonTelescopeData*         m_EventData;        //!
       TComptonTelescopeData*         m_PreTreatedData;   //!
       TComptonTelescopePhysics*      m_EventPhysics;     //!
@@ -202,7 +196,7 @@ class TComptonTelescopePhysics : public TObject, public NPL::VDetector
       TComptonTelescopeSpectra*      m_Spectra; //! 
 
    public: // Spectra Getter
-      map< string , TH1*> GetSpectra();
+      map<string, TH1*> GetSpectra();
 
 
    public: // Static constructor to be passed to the Detector Factory
