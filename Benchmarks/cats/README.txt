@@ -1,7 +1,5 @@
 1. Type the following command line to execute the benchmark:
-  npanalysis -D benchmark_cats.detector -R RunToTreat.txt -C calibration.txt
+  npanalysis -D benchmark_cats.detector -C calibration.txt -R RunToTreat.txt -O benchmark_cats
 
-2. To see the results of the analysis, launch root and execute the macro ShowResult.C
+2. To see the results of the analysis and a comparison with a reference, do:
   .x ShowResult.C
-
-3. You can compare the results of the benchmark with the reference figure ResultBenchmark.png
