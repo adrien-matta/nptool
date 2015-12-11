@@ -1,5 +1,6 @@
 TChain* chain=NULL;
 TCanvas* c1=NULL;
+void LoadChain();
 
 void ShowResult()
 {
