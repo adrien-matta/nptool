@@ -1,5 +1,0 @@
-TTreeName 
-	SimulatedTree
-RootFileName 
-	./Example1.root
-

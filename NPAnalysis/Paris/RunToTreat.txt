@@ -1,5 +1,0 @@
-TTreeName 
-	SimulatedTree
-RootFileName 
-	../../Outputs/Simulation/mySimul.root
-%	/mnt/hgfs/Echanges/ParisSimROOT/Raw/mySimul0-50pipe1noshield.root
