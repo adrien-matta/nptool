@@ -7,7 +7,7 @@ set -ev
 npanalysis -h
 
 # Compile Example1 
-cd $NPTOOL/NPAnalysis/Example1
+cd $NPTOOL/Examples/Example1
 cmake ./
 if [ -e Makefile ] 
 then
@@ -22,7 +22,7 @@ npanalysis -R RunToTreat.txt -O Example1
 echo ".q" | root -b -l ShowResult.cxx
 
 # Compile Example2
-cd $NPTOOL/NPAnalysis/Example2
+cd $NPTOOL/Examples/Example2
 cmake ./
 if [ -e Makefile ] 
 then

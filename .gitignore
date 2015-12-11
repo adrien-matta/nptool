@@ -14,7 +14,7 @@ CMakeCache.txt
 *.wrl
 install_manifest.txt
 .DS_store
-*NPAnalysis*
+*Projects*
 .last_*
 npanalysis
 nponline
