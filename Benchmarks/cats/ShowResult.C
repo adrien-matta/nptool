@@ -16,5 +16,5 @@ void ShowResult()
 void LoadChain(){
     chain = new TChain("PhysicsTree");
 //    chain->Add("../../Outputs/Analysis/Analysed_test_cats_mask_e644.root");
-    chain->Add("../../Outputs/Analysis/PhysicsTree.root");
+    chain->Add("../../Outputs/Analysis/benchmark_cats.root");
 }
