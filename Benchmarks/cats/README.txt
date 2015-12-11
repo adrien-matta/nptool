@@ -1,9 +1,7 @@
-1- Compile program by doing in command line: make
+1. Type the following command line to execute the benchmark:
+  npanalysis -D benchmark_cats.detector -R RunToTreat.txt -C calibration.txt
 
-2- Type the following command line to execute the code:
-  ./Analysis -D e644.detector -R RunToTreat.txt -C calibration.txt
-
-3- To see the result of tha analysis, launch root and execute the macro ShowResult.C
+2. To see the results of the analysis, launch root and execute the macro ShowResult.C
   .x ShowResult.C
 
-  The plot Y versus X should appear with the different spots that correspond to the holes of the mask
+3. You can compare the results of the benchmark with the reference figure ResultBenchmark.png

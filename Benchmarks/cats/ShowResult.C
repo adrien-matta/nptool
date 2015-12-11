@@ -9,13 +9,12 @@ void ShowResult()
     c1->cd();
     // Y versus X for CATS1 detector
     chain->Draw("PositionY[0]:PositionX[0]>>h(600,-30,30,600,-30,30)","","colz");
-    
-    return 0;
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 void LoadChain(){
-    chain = new TChain("AnalysedTree");
-    chain->Add("../../Outputs/Analysis/Analysed_test_cats_mask_e644.root");
+    chain = new TChain("PhysicsTree");
+//    chain->Add("../../Outputs/Analysis/Analysed_test_cats_mask_e644.root");
+    chain->Add("../../Outputs/Analysis/PhysicsTree.root");
 }
