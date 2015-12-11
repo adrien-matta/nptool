@@ -310,7 +310,9 @@ void Nana::ConstructDetector(G4LogicalVolume* world){
                  zsections); 
 
  G4LogicalVolume* logicLead = new G4LogicalVolume(solidLead, Lead, "logicLead", 0, 0, 0);
-  unsigned int mysize = m_Pos.size();
+  G4VisAttributes* lead_vis= new G4VisAttributes(G4Colour(0.3, 0.3, 0.3));
+logicLead->SetVisAttributes(lead_vis);
+ unsigned int mysize = m_Pos.size();
   for(unsigned int i = 0 ; i < mysize ; i++){
     new G4PVPlacement(G4Transform3D(*m_Rot[i], m_Pos[i]), ConstructDetector(),  "NanaDetector", world, false, i+2); 
   
@@ -379,8 +381,10 @@ G4LogicalVolume* Nana::ConstructDetector(){
 
     G4Material* Vacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
     G4Material* Alu = MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
+    G4Material* Kovar= MaterialManager::getInstance()->GetMaterialFromLibrary("Kovar");
     G4Material* Lead = MaterialManager::getInstance()->GetMaterialFromLibrary("Pb");
     G4Material* LaBr3 = MaterialManager::getInstance()->GetMaterialFromLibrary("LaBr3_Ce");
+    G4Material* Glass= MaterialManager::getInstance()->GetMaterialFromLibrary("Borosillicate_Glass");
 
     // Mother Volume
     G4Tubs* solidNanaDetector = 
@@ -416,7 +420,7 @@ G4LogicalVolume* Nana::ConstructDetector(){
     G4ThreeVector  positionLaBr3Can = G4ThreeVector(0, 0, LaBr3Can_PosZ);
 
     G4Tubs* solidLaBr3Can = new G4Tubs("solidLaBr3Can", 0.5*CanInnerDiameter, 0.5*CanOuterDiameter, 0.5*CanLength, 0.*deg, 360.*deg);
-    G4LogicalVolume* logicLaBr3Can = new G4LogicalVolume(solidLaBr3Can, Alu, "logicLaBr3Can", 0, 0, 0);
+    G4LogicalVolume* logicLaBr3Can = new G4LogicalVolume(solidLaBr3Can, Glass, "logicLaBr3Can", 0, 0, 0);
 
     new G4PVPlacement(0, 
         positionLaBr3Can, 
@@ -456,8 +460,11 @@ G4LogicalVolume* Nana::ConstructDetector(){
           const G4ThreeVector &Trans= G4ThreeVector(0.,0.,1.*cm); 
           G4SubtractionSolid*           solidPMT = new G4SubtractionSolid("solidPMT", solidPMout,solidPMin, RotMat, Trans);
           */
-    G4Tubs* solidPMT= new G4Tubs("solidPMOut", 0.0*LaBr3Face, 0.5*PMTFace, 0.5*PMTThickness, 0.*deg, 360.*deg);
-    G4LogicalVolume* logicPMT = new G4LogicalVolume(solidPMT, Alu, "logicPMT", 0, 0, 0);
+    G4Tubs* solidPMT= new G4Tubs("solidPMOut", 0.5*LaBr3Face, 0.5*PMTFace, 0.5*PMTThickness, 0.*deg, 360.*deg);
+    G4LogicalVolume* logicPMT = new G4LogicalVolume(solidPMT, Kovar, "logicPMT", 0, 0, 0);
+    G4Tubs* solidPMTWin = new G4Tubs("solidPMTWin", 0, 0.5*LaBr3Face, 0.5*WinLength, 0.*deg, 360.*deg);
+    G4LogicalVolume* logicPMTWin = new G4LogicalVolume(solidPMTWin, Glass, "logicPMTWin", 0, 0, 0);
+
 
     new G4PVPlacement(0, 
         positionPMT, 
@@ -466,6 +473,15 @@ G4LogicalVolume* Nana::ConstructDetector(){
         m_LogicalDetector, 
         false, 
         0);
+  
+    new G4PVPlacement(0, 
+        positionPMT+G4ThreeVector(0,0,-0.45*PMTThickness), 
+        logicPMTWin, 
+        "Nana_PMTWind", 
+        m_LogicalDetector, 
+        false, 
+        0);
+
 
     // Visualisation of PMT Strip
     logicPMT->SetVisAttributes(m_PMTVisAtt);

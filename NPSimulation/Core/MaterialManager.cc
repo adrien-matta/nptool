@@ -143,6 +143,18 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       return material; 
     }
 
+    else  if(Name == "Kovar"){
+      G4Material* material = new G4Material(Name, 8*g/cm3,5);
+      material->AddElement(GetElementFromLibrary("Ni"),290);
+      material->AddElement(GetElementFromLibrary("Co"),170);
+      material->AddElement(GetElementFromLibrary("Si"),2);
+      material->AddElement(GetElementFromLibrary("Mg"),3);
+      material->AddElement(GetElementFromLibrary("Fe"),535);
+      m_Material[Name]=material;
+      return material; 
+    }
+
+
     else  if(Name == "Havar"){
       G4Material* material = new G4Material(Name, 8.3*g / cm3,5);
       material->AddElement(GetElementFromLibrary("Co"),42);
@@ -238,11 +250,6 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       MPT -> AddProperty("ABSLENGTH",energy_r,absorption,2);
       material -> SetMaterialPropertiesTable(MPT);
       
-      
-      
-      
-      
-      
       m_Material[Name]=material;
       return material; 
     }
@@ -253,6 +260,37 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       m_Material[Name]=material;
       return material; 
     }
+
+    else  if(Name == "Boric_Oxyde"){
+      G4Material* material = new G4Material(Name,2.55*g/cm3 ,2);
+      material->AddElement(GetElementFromLibrary("B"),2);
+      material->AddElement(GetElementFromLibrary("O"),3);
+      m_Material[Name]=material;
+      return material; 
+    }
+
+    else  if(Name == "Sodium_Oxyde"){
+      G4Material* material = new G4Material(Name,2.27*g/cm3 ,2);
+      material->AddElement(GetElementFromLibrary("Na"),2);
+      material->AddElement(GetElementFromLibrary("O"),1);
+      m_Material[Name]=material;
+      return material; 
+    }
+
+
+
+    else  if(Name == "Borosillicate_Glass"){
+      G4Material* material = new G4Material(Name,2.23*g/cm3 ,4);
+      material->AddElement(GetElementFromLibrary("Si"),80*perCent);
+      G4Material* BO = GetMaterialFromLibrary("Boric_Oxyde");
+      material->AddMaterial(BO,13*perCent);
+      G4Material* NaO = GetMaterialFromLibrary("Sodium_Oxyde");
+      material->AddMaterial(NaO,4*perCent);
+      material->AddElement(GetElementFromLibrary("Al"),3*perCent);
+      m_Material[Name]=material;
+      return material; 
+    }
+
 
     else  if(Name == "BC400"){
       G4Material* material = new G4Material(Name,1.032*g/cm3 ,2);
