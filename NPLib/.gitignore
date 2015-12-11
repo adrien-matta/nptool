@@ -8,6 +8,7 @@ DetectorClassList.txt
 Utility/Makefile
 Utility/npanalysis
 Utility/nptool-installer
+Utility/nptool-wizard
 *.pcm
 *Dict*
 *rootmap*
