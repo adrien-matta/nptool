@@ -81,7 +81,7 @@ void Style_nptool(){
   Double_t Green[Number]  = { 0,0.22,  0.5*0.8,   0.8 };
   Double_t Blue[Number]   = { 0,0.22,  0.5*1.00,  1.00 };
 
-  Double_t Length[Number] = { 0, 0.5,0.5,1.00 };
+  Double_t Length[Number] = { 0, 0.,0.0,1.00 };
   Int_t nb=255;
   TColor::CreateGradientColorTable(Number,Length,Red,Green,Blue,nb);
   style_nptool->SetNumberContours(99);
