@@ -19,6 +19,7 @@
  *                                                                           *
  *****************************************************************************/
 #include <iostream>
+#include <sstream>
 #include "ConfigReader.h"
 
 using std::cout;

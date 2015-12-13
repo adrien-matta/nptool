@@ -387,7 +387,7 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
 
 
     else  if(Name == "LaBr3"){
-      G4Material* material = new G4Material(Name, 5.29*g/cm3 , 2);
+      G4Material* material = new G4Material(Name, 5.06*g/cm3 , 2);
       material->AddElement(GetElementFromLibrary("La"),1);
       material->AddElement(GetElementFromLibrary("Br"),3);
       m_Material[Name]=material;
