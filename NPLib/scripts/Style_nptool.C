@@ -35,7 +35,7 @@ void Style_nptool(){
 
   // Desable stat title and fit  
   style_nptool->SetOptStat(0);
-  //style_nptool->SetOptTitle(0);
+  style_nptool->SetOptTitle(0);
   //style_nptool->SetOptFit(0);
 
   // x axis
@@ -76,12 +76,12 @@ void Style_nptool(){
 
   style_nptool->SetTitlePS("nptool");
 
-  const UInt_t Number = 4;
-  Double_t Red[Number]    = { 0,0.22,  0.5*0,     0   };
-  Double_t Green[Number]  = { 0,0.22,  0.5*0.8,   0.8 };
-  Double_t Blue[Number]   = { 0,0.22,  0.5*1.00,  1.00 };
+  const UInt_t Number = 2;
+  Double_t Red[Number]    = { 0,  0   };
+  Double_t Green[Number]  = { 0,  0.8 };
+  Double_t Blue[Number]   = { 0,  1.00 };
 
-  Double_t Length[Number] = { 0, 0.5,0.5,1.00 };
+  Double_t Length[Number] = { 0,1.00 };
   Int_t nb=255;
   TColor::CreateGradientColorTable(Number,Length,Red,Green,Blue,nb);
   style_nptool->SetNumberContours(99);

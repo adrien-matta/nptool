@@ -31,7 +31,18 @@ export PATH=$PATH:$NPTOOL/NPSimulation/bin
 alias npt='cd $NPTOOL'  
 alias npl='cd $NPTOOL/NPLib'  
 alias nps='cd $NPTOOL/NPSimulation'
-alias npa='cd $NPTOOL/NPAnalysis'
+export npa_not_supported='npa is now longer supported, use npp instead'
+alias npa='echo $npa_not_supported'
+
+function npp {
+  if [[ $1 == *"Example"* ]]
+  then
+    cd $NPTOOL/Examples/$1 
+  else
+    cd $NPTOOL/Projects/$1
+  fi
+}
+
 
 export Geant4_DIR=$G4LIB
 export NPLib_DIR=$NPTOOL/NPLib

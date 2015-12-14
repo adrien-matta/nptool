@@ -44,7 +44,6 @@
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
-#include <sstream>
 #include <limits>
 #include <TRandom1.h>
 #include <TRandom2.h>

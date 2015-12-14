@@ -132,16 +132,19 @@ class TNanaPhysics : public TObject, public NPL::VDetector{
     // Provide Physical Multiplicity
     Int_t      NanaEventMult;
 
+       
+    vector<int>   DetectorNumber;
     //   FirstStage
-    vector<double>   NanaLaBr_E;
+
+    vector<double>   LaBr_E;
 
     //   SecondStage
-    vector<double>   NanaNaI_E;
+    vector<double>   NaI_E;
 
     // Physical Value  
-    vector<double>   NanaTotalEnergy;
-    vector<double>   NanaInTotalEnergy;
-    vector<double>   NanaOutTotalEnergy;
+    vector<double>   TotalEnergy;
+    vector<double>   InTotalEnergy;
+    vector<double>   OutTotalEnergy;
 
     public: // Static constructor to be passed to the Detector Factory
      static NPL::VDetector* Construct();

@@ -372,7 +372,7 @@ void TSSSDPhysics::ReadAnalysisConfig(){
          
          else if (whatToDo=="PEDESTAL_THRESHOLD") {
             AnalysisConfigFile >> DataBuffer;
-            m_Pedestal_Threshold = atoi(DataBuffer.c_str() );
+            m_Pedestal_Threshold = atof(DataBuffer.c_str() );
             cout << "PEDESTAL THRESHOLD  " << m_Pedestal_Threshold << endl;
          }
          

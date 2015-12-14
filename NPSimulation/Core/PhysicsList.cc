@@ -21,22 +21,26 @@
  *                                                                           *
  *****************************************************************************/
 
+//NPS
+#include "PhysicsList.hh"
+
+// G4
 #include "G4SystemOfUnits.hh"
 #include "G4RunManager.hh"
-#include "PhysicsList.hh"
 #include "G4PhysListFactory.hh"
 #include "G4VPhysicsConstructor.hh"
-
-// Physics List
 #include "G4LossTableManager.hh"
 #include "G4UnitsTable.hh"
 #include "G4ProcessManager.hh"
-#include "G4EmProcessOptions.hh"
+
 /////////////////////////////////////////////////////////////////////////////
 PhysicsList::PhysicsList() : G4VModularPhysicsList(){
+  m_EmList = "Option4";
+  defaultCutValue = 1*mm;
+  opticalPhysicsList = NULL;
+
   ReadConfiguration("PhysicsListOption.txt");
   G4LossTableManager::Instance();
-  defaultCutValue = 1*mm;
   SetVerboseLevel(0);
 
   // ******     Definition of defaults for the physics processes *****
@@ -52,8 +56,21 @@ PhysicsList::PhysicsList() : G4VModularPhysicsList(){
 
   // Elecromagnetic physics
   // Using the more accurate option4
+
+ emPhysicsList=NULL;
+ if(m_EmList == "Option4") 
   emPhysicsList = new G4EmStandardPhysics_option4();
-  opticalPhysicsList = NULL;
+
+ else if(m_EmList== "Livermore")
+  emPhysicsList = new G4EmLivermorePhysics();
+ 
+ else if( m_EmList == "Penelope")
+  emPhysicsList = new G4EmPenelopePhysics();
+
+ else{
+  std::cout << "\r\033[1;31mERROR: User given physics list " << m_EmList << " is not supported, option are Option4 Livermore Penelope\033[0m" <<std::endl;
+  exit(1);
+ }
 
   // Hadronic physics
   if(m_IonBinaryCascadePhysics){
@@ -75,11 +92,9 @@ PhysicsList::PhysicsList() : G4VModularPhysicsList(){
     if(m_OpticalPhysics){
         opticalPhysicsList = new G4OpticalPhysics(0);
         opticalPhysicsList->SetMaxNumPhotonsPerStep(100);
-        //opticalPhysicsList->SetScintillationYieldFactor(0.01);
         opticalPhysicsList->SetScintillationYieldFactor(0.1);
         opticalPhysicsList->SetTrackSecondariesFirst(kScintillation,true);
         opticalPhysicsList->SetTrackSecondariesFirst(kCerenkov,true);
-        //RegisterPhysics(opticalPhysicsList);
     }
 
 
@@ -119,9 +134,15 @@ void PhysicsList::ReadConfiguration(std::string filename){
   std::cout << "Reading Physics list option file " << filename << std::endl;
 
   std::string name;
-  int value;
-  while(file >> name >> value){
-    if(name == "IonBinaryCascadePhysics")
+  std::string str_value;
+  double value;
+  while(file >> name >> str_value){
+    value = std::atof(str_value.c_str());
+    if(name == "EmPhysicsList")
+      m_EmList = str_value;
+    else if(name == "DefaultCutOff")
+      defaultCutValue = value;
+    else if(name == "IonBinaryCascadePhysics")
       m_IonBinaryCascadePhysics = value;
     else if (name == "EmExtraPhysics")
       m_EmExtraPhysics= value;
@@ -206,7 +227,6 @@ void PhysicsList::ConstructProcess(){
 
     // Electromagnetic physics
     emPhysicsList -> ConstructProcess();
- 
     if(opticalPhysicsList){
       ((G4VPhysicsConstructor*) opticalPhysicsList)->ConstructProcess();
     }
@@ -216,6 +236,15 @@ void PhysicsList::ConstructProcess(){
         it->second -> ConstructProcess();
     }
     BiasCrossSectionByFactor(m_IonBinaryCascadePhysics); 
+    
+    em_option.SetBuildCSDARange(true);
+    em_option.SetDEDXBinningForCSDARange(10*10);
+    em_option.SetFluo(true);
+    em_option.SetAuger(true);
+    em_option.SetPIXE(true);
+
+
+    
     return;
 }
 /////////////////////////////////////////////////////////////////////////////

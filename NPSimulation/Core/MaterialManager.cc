@@ -95,6 +95,15 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       return material; 
     }
 
+    if(Name == "Air"){
+      G4Material* material = new G4Material(Name,1.290* mg/cm3,2);
+      material->AddElement(GetElementFromLibrary("N"),7);
+      material->AddElement(GetElementFromLibrary("O"),3);
+      m_Material[Name]=material;
+      return material; 
+    }
+
+
     else if(Name == "PCB"){
       // Actually taken value fron Epoxy
       G4Material* material = new G4Material(Name, 1.85 * g / cm3,3);
@@ -133,6 +142,18 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       m_Material[Name]=material;
       return material; 
     }
+
+    else  if(Name == "Kovar"){
+      G4Material* material = new G4Material(Name, 8*g/cm3,5);
+      material->AddElement(GetElementFromLibrary("Ni"),290);
+      material->AddElement(GetElementFromLibrary("Co"),170);
+      material->AddElement(GetElementFromLibrary("Si"),2);
+      material->AddElement(GetElementFromLibrary("Mg"),3);
+      material->AddElement(GetElementFromLibrary("Fe"),535);
+      m_Material[Name]=material;
+      return material; 
+    }
+
 
     else  if(Name == "Havar"){
       G4Material* material = new G4Material(Name, 8.3*g / cm3,5);
@@ -188,6 +209,7 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       G4Material* material = new G4Material(Name, 11.342*g / cm3,1);
       material->AddElement(GetElementFromLibrary("Pb"),1);
       m_Material[Name]=material;
+
       return material; 
     }
 
@@ -211,7 +233,10 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       material->AddElement(GetElementFromLibrary("Si"),1);
      
        // Adding Optical property:
+<<<<<<< HEAD
       //int NumberOfPoints = 10;
+=======
+>>>>>>> a9afff128fb0fb6b1263b1be5e6132770d9801d3
       double* energy_r = new double[2];
       double* rindex = new double[2];
       double* absorption= new double[2];
@@ -229,11 +254,6 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       MPT -> AddProperty("ABSLENGTH",energy_r,absorption,2);
       material -> SetMaterialPropertiesTable(MPT);
       
-      
-      
-      
-      
-      
       m_Material[Name]=material;
       return material; 
     }
@@ -244,6 +264,37 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       m_Material[Name]=material;
       return material; 
     }
+
+    else  if(Name == "Boric_Oxyde"){
+      G4Material* material = new G4Material(Name,2.55*g/cm3 ,2);
+      material->AddElement(GetElementFromLibrary("B"),2);
+      material->AddElement(GetElementFromLibrary("O"),3);
+      m_Material[Name]=material;
+      return material; 
+    }
+
+    else  if(Name == "Sodium_Oxyde"){
+      G4Material* material = new G4Material(Name,2.27*g/cm3 ,2);
+      material->AddElement(GetElementFromLibrary("Na"),2);
+      material->AddElement(GetElementFromLibrary("O"),1);
+      m_Material[Name]=material;
+      return material; 
+    }
+
+
+
+    else  if(Name == "Borosillicate_Glass"){
+      G4Material* material = new G4Material(Name,2.23*g/cm3 ,4);
+      material->AddElement(GetElementFromLibrary("Si"),80*perCent);
+      G4Material* BO = GetMaterialFromLibrary("Boric_Oxyde");
+      material->AddMaterial(BO,13*perCent);
+      G4Material* NaO = GetMaterialFromLibrary("Sodium_Oxyde");
+      material->AddMaterial(NaO,4*perCent);
+      material->AddElement(GetElementFromLibrary("Al"),3*perCent);
+      m_Material[Name]=material;
+      return material; 
+    }
+
 
     else  if(Name == "BC400"){
       G4Material* material = new G4Material(Name,1.032*g/cm3 ,2);
@@ -351,12 +402,23 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
 
 
     else  if(Name == "LaBr3"){
-      G4Material* material = new G4Material(Name, 5.29*g/cm3 , 2);
+      G4Material* material = new G4Material(Name, 5.06*g/cm3 , 2);
       material->AddElement(GetElementFromLibrary("La"),1);
       material->AddElement(GetElementFromLibrary("Br"),3);
       m_Material[Name]=material;
       return material; 
     }
+
+    else  if(Name == "LaBr3_Ce"){
+      G4Material* base = GetMaterialFromLibrary("LaBr3");
+      G4Material* material = new G4Material(Name, 5.29*g/cm3 , 2);
+      material->AddMaterial(base,95*perCent);
+      material->AddElement(GetElementFromLibrary("Ce"),5*perCent);
+
+      m_Material[Name]=material;
+      return material; 
+    }
+
 
     else  if(Name == "BaF2"){
       G4Material* material = new G4Material(Name, 4.89*g/cm3 , 2);

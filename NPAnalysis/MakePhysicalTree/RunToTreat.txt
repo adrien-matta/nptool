@@ -1,8 +1,0 @@
-TTreeName 
-	SimulatedTree
-RootFileName 
-  /Users/pierremorfouace/Physics/NPTool/nptool/Outputs/Simulation/simu.root
-
-
-	
-	

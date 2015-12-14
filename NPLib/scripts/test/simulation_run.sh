@@ -4,7 +4,7 @@
 set -ev
 
 # go to nps
-cd $NPTOOL/NPAnalysis/Example2
+cd $NPTOOL/Examples/Example2
 npsimulation -D Example2.detector -E Example2.reaction -O Example2 -B 28Mg.mac
 npanalysis --last-sim -O Example2
 echo ".q" | root -b -l ShowResult.cxx

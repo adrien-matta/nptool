@@ -21,6 +21,7 @@
  *****************************************************************************/
 
 #include "NPFunction.h"
+#include<sstream>
 using namespace NPL;
 
 // ROOT

@@ -1,4 +1,0 @@
-TTreeName 
-	SimulatedTree
-RootFileName 
- ../../Outputs/Simulation/MUGAST_thin.root

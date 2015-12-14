@@ -73,17 +73,20 @@ void TNanaPhysics::BuildPhysicalEvent(){
     double EnergyStrip;
 
     for(int j=0;j<multLaBrE;j++){
+      DetectorNumber.push_back(m_EventData->GetNanaLaBr3DetectorNbr(j));
       EnergyStripFront= m_EventData->GetNanaLaBr3EnergyLong(j);
 
       EnergyStrip  = EnergyStripFront;
-      NanaLaBr_E.push_back(EnergyStrip);
+      LaBr_E.push_back(EnergyStrip);
+      
+
 
       EnergyTot += EnergyStrip;
       //cout << "Energytot LaBr=" << EnergyTot << endl;
     }
 
     // Fill total energy in inner shell
-    NanaInTotalEnergy.push_back(EnergyTot);
+    InTotalEnergy.push_back(EnergyTot);
   }
 }
 
@@ -91,20 +94,22 @@ void TNanaPhysics::BuildPhysicalEvent(){
 void TNanaPhysics::Clear(){
   //EventMultiplicity= 0;
   NanaEventMult= 0;
+ 
   //ModuleNumber.clear();
   //EventType.clear();
-  NanaInTotalEnergy.clear();   // inner shell
-  NanaOutTotalEnergy.clear();  // outter shell
-  NanaTotalEnergy.clear();
+  InTotalEnergy.clear();   // inner shell
+  OutTotalEnergy.clear();  // outter shell
+  TotalEnergy.clear();
 
   // LaBr
-  NanaLaBr_E.clear();
+  DetectorNumber.clear();
+  LaBr_E.clear();
   //First_T.clear();
   //First_X.clear();
   //First_Y.clear();
 
   // NaI
-  NanaNaI_E.clear();
+  NaI_E.clear();
   //Second_T.clear();
   //Second_N.clear();
 
@@ -520,24 +525,24 @@ void TNanaPhysics::AddDetector(double theta,
 
 ////////////////////////////////////////////////////////////////////////////////
 double TNanaPhysics::GetEnergyDeposit(){
-  if (m_EventPhysics->NanaTotalEnergy.size() > 0)
-    return m_EventPhysics->NanaTotalEnergy[0];
+  if (m_EventPhysics->TotalEnergy.size() > 0)
+    return m_EventPhysics->TotalEnergy[0];
   else
     return -1000;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 double TNanaPhysics::GetEnergyInDeposit(){// inner Layer
-  if (m_EventPhysics->NanaInTotalEnergy.size() > 0)
-    return m_EventPhysics->NanaInTotalEnergy[0];
+  if (m_EventPhysics->InTotalEnergy.size() > 0)
+    return m_EventPhysics->InTotalEnergy[0];
   else
     return -1000;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 double TNanaPhysics::GetEnergyOutDeposit(){// Outer Layer
-  if (m_EventPhysics->NanaOutTotalEnergy.size() > 0)
-    return m_EventPhysics->NanaOutTotalEnergy[0];
+  if (m_EventPhysics->OutTotalEnergy.size() > 0)
+    return m_EventPhysics->OutTotalEnergy[0];
   else
     return -1000;
 }

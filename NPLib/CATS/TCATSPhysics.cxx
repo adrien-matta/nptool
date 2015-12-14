@@ -979,7 +979,8 @@ namespace CATS_LOCAL{
   }
   ////////////////////////////////////////////////////////////////////////
   bool fCATS_Threshold_X(const TCATSData* m_EventData , const int i){
-    static string name= "CATS/D" ;
+    static string name; 
+    name = "CATS/D" ;
     name+= NPL::itoa( m_EventData->GetCATSDetX(i) ) ;
     name+= "_X" ;
     name+= NPL::itoa( m_EventData->GetCATSStripX(i) );
@@ -988,7 +989,8 @@ namespace CATS_LOCAL{
   }
   ////////////////////////////////////////////////////////////////////////
   bool fCATS_Threshold_Y(const TCATSData* m_EventData , const int i){
-    static string name; name ="CATS/D" ;
+    static string name; 
+    name ="CATS/D" ;
     name+= NPL::itoa( m_EventData->GetCATSDetY(i) ) ;
     name+= "_Y" ;
     name+= NPL::itoa( m_EventData->GetCATSStripY(i) );
@@ -997,7 +999,8 @@ namespace CATS_LOCAL{
   }
   ////////////////////////////////////////////////////////////////////////
   double fCATS_Ped_X(const TCATSData* m_EventData, const int i){
-    static string name; name =  "CATS/D" ;
+    static string name; 
+    name =  "CATS/D" ;
     name+= NPL::itoa( m_EventData->GetCATSDetX(i) ) ;
     name+= "_X" ;
     name+= NPL::itoa( m_EventData->GetCATSStripX(i) ) ;
@@ -1005,7 +1008,8 @@ namespace CATS_LOCAL{
   }
   ////////////////////////////////////////////////////////////////////////
   double fCATS_Ped_Y(const TCATSData* m_EventData, const int i){
-    static string name; name = "CATS/D" ;
+    static string name; 
+    name = "CATS/D" ;
     name+= NPL::itoa( m_EventData->GetCATSDetY(i) ) ;
     name+= "_Y" ;
     name+= NPL::itoa( m_EventData->GetCATSStripY(i) );
