@@ -35,7 +35,12 @@ export npa_not_supported='npa is now longer supported, use npp instead'
 alias npa='echo $npa_not_supported'
 
 function npp {
-  cd $NPTOOL/Projects/$1
+  if [[ $1 == *"Example"* ]]
+  then
+    cd $NPTOOL/Examples/$1 
+  else
+    cd $NPTOOL/Projects/$1
+  fi
 }
 
 
