@@ -438,23 +438,28 @@ void CsI::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume* wor
         
         G4OpticalSurface* OpticalCrysralSurface = new G4OpticalSurface("CrystalSurface");
         OpticalCrysralSurface->SetType(dielectric_metal);
+        //polished: smooth perfectly polished surcface
+        //ground: rough surface
         OpticalCrysralSurface->SetFinish(polished);
+        //unified
+        //glisur
         OpticalCrysralSurface->SetModel(glisur);
         
-        G4double pp[] = {2.0*eV, 3.5*eV};
+        G4double pp[] = {0.1*eV, 10*eV};
         const G4int num = sizeof(pp)/sizeof(G4double);
-        G4double reflectivity[] = {1., 1.};
+        G4double reflectivity[] = {0., 0.};
         assert(sizeof(reflectivity) == sizeof(pp));
-        G4double efficiency[] = {0.0, 0.0};
+        G4double efficiency[] = {1., 1.};
         assert(sizeof(efficiency) == sizeof(pp));
-        
-        new G4LogicalBorderSurface("CrystalSurface", physCsI, fExperimentalHall_phys, OpticalCrysralSurface);
         
         G4MaterialPropertiesTable* OpticalCrysralSurfaceProperty = new G4MaterialPropertiesTable();
         
         OpticalCrysralSurfaceProperty->AddProperty("REFLECTIVITY",pp,reflectivity,num);
         OpticalCrysralSurfaceProperty->AddProperty("EFFICIENCY",pp,efficiency,num);
         OpticalCrysralSurface->SetMaterialPropertiesTable(OpticalCrysralSurfaceProperty);
+        
+        new G4LogicalBorderSurface("CrystalSurface", physCsI, fExperimentalHall_phys, OpticalCrysralSurface);
+        //new G4LogicalSkinSurface("OpticalCrysralSurface",logicCsI,OpticalCrysralSurface);
         
         // Photodiode
         G4String NamePD = Name+"PhotoDiode";
@@ -516,12 +521,60 @@ void CsI::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume* wor
 
       G4RotationMatrix Rot3D;
       Rot3D.set(0, 0, 0);
-      new G4PVPlacement(  G4Transform3D(Rot3D,Det_pos),
+        
+      G4VPhysicalVolume* physCsI = new G4PVPlacement(  G4Transform3D(Rot3D,Det_pos),
           logicCsI,
           Name  + "_Scintillator" ,
           world,
           false,
-          0);   
+          0);
+        
+        G4OpticalSurface* OpticalCrysralSurface = new G4OpticalSurface("CrystalSurface");
+        OpticalCrysralSurface->SetType(dielectric_metal);
+        //polished: smooth perfectly polished surcface
+        //ground: rough surface
+        OpticalCrysralSurface->SetFinish(polished);
+        //unified
+        //glisur
+        OpticalCrysralSurface->SetModel(glisur);
+        
+        G4double pp[] = {0.1*eV, 10*eV};
+        const G4int num = sizeof(pp)/sizeof(G4double);
+        G4double reflectivity[] = {0., 0.};
+        assert(sizeof(reflectivity) == sizeof(pp));
+        G4double efficiency[] = {1., 1.};
+        assert(sizeof(efficiency) == sizeof(pp));
+        
+        G4MaterialPropertiesTable* OpticalCrysralSurfaceProperty = new G4MaterialPropertiesTable();
+        
+        OpticalCrysralSurfaceProperty->AddProperty("REFLECTIVITY",pp,reflectivity,num);
+        OpticalCrysralSurfaceProperty->AddProperty("EFFICIENCY",pp,efficiency,num);
+        OpticalCrysralSurface->SetMaterialPropertiesTable(OpticalCrysralSurfaceProperty);
+        
+        new G4LogicalBorderSurface("CrystalSurface", physCsI, fExperimentalHall_phys, OpticalCrysralSurface);
+        //new G4LogicalSkinSurface("OpticalCrysralSurface",logicCsI,OpticalCrysralSurface);
+        
+        // Photodiode
+        G4String NamePD = Name+"PhotoDiode";
+        
+        G4Material* PDMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary("Si");
+        
+        G4Box* solidPhotoDiode = new G4Box(NamePD,0.5*PhotoDiodeFace,0.5*PhotoDiodeFace,0.5*PhotoDiodeThickness);
+        
+        G4LogicalVolume* logicPD = new G4LogicalVolume(solidPhotoDiode, PDMaterial, NamePD,0,0,0);
+        logicPD->SetSensitiveDetector(m_PDScorer);
+        
+        G4VisAttributes* PDVisAtt = new G4VisAttributes(G4Colour(0.1, 0.2, 0.3)) ;
+        logicPD->SetVisAttributes(PDVisAtt);
+        
+        new G4PVPlacement(0 ,
+                          Det_pos+(m_CsIThickness[i]*0.5+PhotoDiodeThickness*0.5)*Det_pos.unit() ,
+                          logicPD ,
+                          NamePD ,
+                          world ,
+                          false ,
+                          0 );
+
     }
 
     if(m_LeadThickness[i]>0&& m_CsIFaceFront[i]>0 && m_CsIFaceBack[i]>0){

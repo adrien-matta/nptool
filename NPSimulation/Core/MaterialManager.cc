@@ -211,7 +211,7 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       material->AddElement(GetElementFromLibrary("Si"),1);
      
        // Adding Optical property:
-      int NumberOfPoints = 10; 
+      //int NumberOfPoints = 10;
       double* energy_r = new double[2];
       double* rindex = new double[2];
       double* absorption= new double[2];
@@ -289,17 +289,28 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       double* rindex = new double[NumberOfPoints];
       double* absorption= new double[NumberOfPoints];
       
-      double* energy_e = new double[2];
-      double* fast = new double[2];
-      double* slow = new double[2];
-      double* scint = new double[2];
+      double* energy_e = new double[5];
+      double* fast = new double[5];
+      double* slow = new double[5];
+      double* scint = new double[5];
 
-      energy_e[0] = h_Planck*c_light / (550*nm);
-      energy_e[1] = h_Planck*c_light / (550*nm);
-
-      fast[0] = 1 ; fast[1]=1;
-      slow[0] = 1 ; slow[1]=1;
-      scint[0] = 1; scint[1] = 1;
+        energy_e[0] = h_Planck*c_light / (450*nm);
+        energy_e[1] = h_Planck*c_light / (500*nm);
+        energy_e[2] = h_Planck*c_light / (550*nm);
+        energy_e[3] = h_Planck*c_light / (600*nm);
+        energy_e[4] = h_Planck*c_light / (650*nm);
+        
+        for(int i=0; i<5; i++){
+            //fast[0] = 1 ; fast[1]=1;
+            //slow[0] = 1 ; slow[1]=1;
+            fast[i] = 0.6;
+            slow[i] = 3.5;
+        }
+        scint[0] = 0.25;
+        scint[1] = 0.75;
+        scint[2] = 1.0;
+        scint[3] = 0.7;
+        scint[4] = 0.4;
       
       double wl;
      
@@ -324,11 +335,11 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
 
       // From St Gobain
       MPT -> AddConstProperty("SCINTILLATIONYIELD",54/keV);
-      MPT -> AddProperty("SCINTILLATION",energy_e,scint,2) ;
+      MPT -> AddProperty("SCINTILLATION",energy_e,scint,5) ;
       MPT -> AddProperty("RINDEX",energy_r,rindex,NumberOfPoints) ; 
       MPT -> AddProperty("ABSLENGTH",energy_r,absorption,NumberOfPoints);
-      MPT->AddProperty("FASTCOMPONENT", energy_e, fast, 2);
-      MPT->AddProperty("SLOWCOMPONENT", energy_e, slow, 2);
+      MPT->AddProperty("FASTCOMPONENT", energy_e, fast, 5);
+      MPT->AddProperty("SLOWCOMPONENT", energy_e, slow, 5);
       MPT->AddConstProperty("RESOLUTIONSCALE",1.0);
       MPT->AddConstProperty("FASTTIMECONSTANT",1000*ns);
       MPT->AddConstProperty("SLOWTIMECONSTANT",1000*ns);

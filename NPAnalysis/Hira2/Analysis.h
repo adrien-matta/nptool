@@ -64,7 +64,7 @@ private:
     
     
     
-    //NPL::Reaction* TransferReaction;
+    NPL::Reaction* TransferReaction;
     
     // intermediate variable
     TRandom3 Rand;

@@ -23,10 +23,10 @@ CsI
   Y= 0
   Z= 58
 	Thickness= 100
-	Shape= Cylinder
-  FaceFront= 0
-  FaceBack= 0
-  Radius= 17
+	Shape= Trapezoidal
+  FaceFront= 34
+  FaceBack= 44
+  Radius= 0
 	Scintillator= CsI_Scintillator
 	LeadThickness= 0
 

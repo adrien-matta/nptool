@@ -41,8 +41,8 @@ void Analysis::Init(){
     InitOutputBranch();
     InitInputBranch();
     Rand = TRandom3();
-    //TransferReaction= new NPL::Reaction();
-    //TransferReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
+    TransferReaction= new NPL::Reaction();
+    TransferReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
     
     E_ThinSi = 0;
     E_ThickSi = 0;
@@ -129,7 +129,7 @@ void Analysis::TreatEvent(){
                 for(int countCsI =0; countCsI<Hira->CsI_E.size(); countCsI++){
                     //Try to simulate the nuclear reaction loss
                     Thickness = Proton_CsI.EvaluateMaterialThickness(0*MeV, Hira->CsI_E[countCsI]*MeV, 200*millimeter, 0.1*millimeter);
-                    cout << Thickness << endl;
+                    //cout << Thickness << endl;
                     double eval = f_proton->Eval(Thickness/10);
                     double Random_value = Rand.Uniform(0,1);
                     
@@ -141,14 +141,14 @@ void Analysis::TreatEvent(){
                     if(E_CsI>EnergyThreshold) ELab = E_ThinSi + E_ThickSi + E_CsI;
                 }
             }
-            //else ELab = -1000;
+            else ELab = E_ThinSi + E_ThickSi;
             
             if(ELab<ProtonEnergy+2 && ELab>ProtonEnergy-2) good_event += 1;
             
             // ********************** Angle in the CM frame *****************************
-            //TransferReaction -> SetNuclei3(ELab, ThetaLab*deg);
-            //ThetaCM          = TransferReaction->GetThetaCM()/deg;
-            //ExcitationEnergy	= TransferReaction->GetExcitation4();
+            TransferReaction -> SetNuclei3(ELab, ThetaLab*deg);
+            ThetaCM          = TransferReaction->GetThetaCM()/deg;
+            ExcitationEnergy	= TransferReaction->GetExcitation4();
         }//end loop Hira
     }//end if Hira
     

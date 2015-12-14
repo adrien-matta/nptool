@@ -9,7 +9,7 @@ Isotropic
   HalfOpenAngleMin= 0
   HalfOpenAngleMax= 20
   x0= 0
-  y0= -12
+  y0= -8
   z0= 0
   Particle= alpha
   ExcitationEnergy= 0
