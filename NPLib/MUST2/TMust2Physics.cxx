@@ -662,49 +662,49 @@ void TMust2Physics::ReadAnalysisConfig(){
 
       else if (whatToDo=="SI_X_E_RAW_THRESHOLD") {
         AnalysisConfigFile >> DataBuffer;
-        m_Si_X_E_RAW_Threshold = atoi(DataBuffer.c_str());
+        m_Si_X_E_RAW_Threshold = atof(DataBuffer.c_str());
         cout << whatToDo << " " << m_Si_X_E_RAW_Threshold << endl;
       }
 
       else if (whatToDo=="SI_Y_E_RAW_THRESHOLD") {
         AnalysisConfigFile >> DataBuffer;
-        m_Si_Y_E_RAW_Threshold = atoi(DataBuffer.c_str());
+        m_Si_Y_E_RAW_Threshold = atof(DataBuffer.c_str());
         cout << whatToDo << " " << m_Si_Y_E_RAW_Threshold << endl;
       }
 
       else if (whatToDo=="SILI_E_RAW_THRESHOLD") {
         AnalysisConfigFile >> DataBuffer;
-        m_SiLi_E_RAW_Threshold = atoi(DataBuffer.c_str());
+        m_SiLi_E_RAW_Threshold = atof(DataBuffer.c_str());
         cout << whatToDo << " " << m_SiLi_E_RAW_Threshold << endl;
       }
 
       else if (whatToDo== "CSI_E_RAW_THRESHOLD") {
         AnalysisConfigFile >> DataBuffer;
-        m_CsI_E_Threshold = atoi(DataBuffer.c_str());
+        m_CsI_E_RAW_Threshold = atof(DataBuffer.c_str());
         cout << whatToDo << " " << m_CsI_E_Threshold << endl;
       }
 
       else if (whatToDo=="SI_X_E_THRESHOLD") {
         AnalysisConfigFile >> DataBuffer;
-        m_Si_X_E_Threshold = atoi(DataBuffer.c_str());
+        m_Si_X_E_Threshold = atof(DataBuffer.c_str());
         cout << whatToDo << " " << m_Si_X_E_Threshold << endl;
       }
 
       else if (whatToDo== "SI_Y_E_THRESHOLD") {
         AnalysisConfigFile >> DataBuffer;
-        m_Si_Y_E_Threshold = atoi(DataBuffer.c_str());
+        m_Si_Y_E_Threshold = atof(DataBuffer.c_str());
         cout << whatToDo << " " << m_Si_Y_E_Threshold << endl;
       }
 
       else if (whatToDo=="SILI_E_THRESHOLD") {
         AnalysisConfigFile >> DataBuffer;
-        m_SiLi_E_Threshold = atoi(DataBuffer.c_str());
+        m_SiLi_E_Threshold = atof(DataBuffer.c_str());
         cout << whatToDo << " " << m_SiLi_E_Threshold << endl;
       }
 
       else if (whatToDo=="CSI_E_THRESHOLD") {
         AnalysisConfigFile >> DataBuffer;
-        m_CsI_E_Threshold = atoi(DataBuffer.c_str());
+        m_CsI_E_Threshold = atof(DataBuffer.c_str());
         cout << whatToDo << " " << m_CsI_E_Threshold << endl;
       }
 
@@ -737,11 +737,10 @@ bool TMust2Physics :: Match_Si_CsI(int X, int Y , int CristalNbr){
 
   if( abs(m_CsI_MatchingX[CristalNbr-1] - X) < m_CsI_Size/2.&&
       abs(m_CsI_MatchingY[CristalNbr-1] - Y) < m_CsI_Size/2.)
-
     return true ;
 
-  else return false;
-
+  else
+    return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////
