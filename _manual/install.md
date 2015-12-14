@@ -112,8 +112,7 @@ This will run the 11Li(d,3He)10He->8He+n+n simulation and produce a root file lo
 You can now try to analyse this simulated tree using the associated NPAnalysis project:
 
 {% highlight bash %}
-$ npa
-$ cd Example1/
+$ npp Example1
 $ cmake ./
 $ make -jn
 $ npanalysis -R RunToTreat.txt -O Example1
