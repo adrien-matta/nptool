@@ -233,10 +233,6 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       material->AddElement(GetElementFromLibrary("Si"),1);
      
        // Adding Optical property:
-<<<<<<< HEAD
-      //int NumberOfPoints = 10;
-=======
->>>>>>> a9afff128fb0fb6b1263b1be5e6132770d9801d3
       double* energy_r = new double[2];
       double* rindex = new double[2];
       double* absorption= new double[2];
