@@ -152,6 +152,18 @@ void EventGeneratorIsotropic::ReadConfiguration(string Path,int){
         G4cout << "z0 " << m_z0 << " mm" << G4endl;
       }
       
+      else if (DataBuffer == "SigmaX=" ) {
+        ReactionFile >> DataBuffer;
+        m_SigmaX = atof(DataBuffer.c_str()) * mm;
+        G4cout << "SigmaX " << m_SigmaX << " mm" << G4endl;
+      }
+  
+      else if (DataBuffer == "SigmaY=" ) {
+        ReactionFile >> DataBuffer;
+        m_SigmaY = atof(DataBuffer.c_str()) * mm;
+        G4cout << "SigmaY " << m_SigmaY << " mm" << G4endl;
+      }
+     
       else if (DataBuffer=="Particle=" || DataBuffer=="particle=") {
         check_particle = true ;
         ReactionFile >> m_particleName;
@@ -224,7 +236,10 @@ void EventGeneratorIsotropic::GenerateEvent(G4Event*){
   G4double momentum_y = sin(theta) * sin(phi)  ;
   G4double momentum_z = cos(theta)             ;
   
-  Particle particle(m_particle, theta,particle_energy,G4ThreeVector(momentum_x, momentum_y, momentum_z),G4ThreeVector(m_x0, m_y0, m_z0));
+  G4double x0 = RandGauss::shoot(m_x0,m_SigmaX);
+  G4double y0 = RandGauss::shoot(m_y0,m_SigmaY);
+
+  Particle particle(m_particle, theta,particle_energy,G4ThreeVector(momentum_x, momentum_y, momentum_z),G4ThreeVector(x0, y0, m_z0));
   
   
   m_ParticleStack->AddParticleToStack(particle);

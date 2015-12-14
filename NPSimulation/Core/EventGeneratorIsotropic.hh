@@ -51,6 +51,8 @@ private:    // Source parameter from input file
   G4double               m_x0               ;  // Vertex Position X
   G4double               m_y0               ;  // Vertex Position Y
   G4double               m_z0               ;  // Vertex Position Z
+  G4double               m_SigmaX           ;
+  G4double               m_SigmaY           ;
   G4ParticleDefinition*  m_particle         ;  // Kind of particle to shoot isotropically
   G4double               m_ExcitationEnergy ;  // Excitation energy of the emitted particle
   string                 m_particleName     ;
