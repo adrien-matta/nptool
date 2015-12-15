@@ -22,7 +22,6 @@
  *                                                                           *
  *****************************************************************************/
 #include"NPVAnalysis.h"
-#include"THiraPhysics.h"
 #include "TMust2Physics.h"
 #include "TSSSDPhysics.h"
 #include "TInitialConditions.h"
