@@ -1,11 +1,17 @@
 TChain* chain=NULL;
 
 
+////////////////////////////////////////////////////////////////////////////////
+void LoadChain()
+{
+    chain = new TChain("PhysicsTree");
+    chain->Add("../../Outputs/Analysis/benchmark_cats.root");
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 void ShowResult()
 {
-   // load chain from resul
+   // load chain from result
    LoadChain();
 
    // draw canvas
@@ -30,9 +36,3 @@ void ShowResult()
 
 
 
-////////////////////////////////////////////////////////////////////////////////
-void LoadChain()
-{
-    chain = new TChain("PhysicsTree");
-    chain->Add("../../Outputs/Analysis/benchmark_cats.root");
-}
