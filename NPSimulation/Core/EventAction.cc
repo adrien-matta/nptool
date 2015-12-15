@@ -96,7 +96,9 @@ void EventAction::ProgressDisplay(){
       check = asprintf(&timer,"%dmin",(int)(remain/60.));
     else
       check = asprintf(&timer,"%ds",(int)(remain));
-
+    
+    check++;
+    
     static string star;
     if(displayed%2==0)
       star = "*******";

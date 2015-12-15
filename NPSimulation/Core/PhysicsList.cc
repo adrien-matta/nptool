@@ -267,7 +267,7 @@ void PhysicsList::SetCuts(){
 /////// Friend Method for CS biasing
 ////////////////////////////////////////////////////////////////////////////////
 void PhysicsList::BiasCrossSectionByFactor(double factor){
-  factor = 0;
+  factor++;
 }
 
 
