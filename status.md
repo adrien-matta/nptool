@@ -10,7 +10,7 @@ The current status of the nptool repository as given by [Travis CI][travis] is t
 * NPTool.2.dev: ![NPTool logo](https://travis-ci.org/adrien-matta/nptool.svg?branch=NPTool.2.dev)
 * NPTool.pro: coming soon
 
-You can check the build history of the project and the log with error for all of them on the [Page][build-log].
+You can check the build history of the project and the log with error for all of them on the [Travis Page][build-log].
 This status is also reported in the footer of each pages of this website.
 
 
