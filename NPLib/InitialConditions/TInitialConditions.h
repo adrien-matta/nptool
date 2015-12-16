@@ -108,6 +108,8 @@ public:
   double GetIncidentFinalKineticEnergy () const {return fIC_Incident_Final_Kinetic_Energy ;}
   double GetIncidentEmittanceTheta () const  {return fIC_Incident_Emittance_Theta ;}
   double GetIncidentEmittancePhi   () const  {return fIC_Incident_Emittance_Phi   ;}
+  double GetIncidentEmittanceThetaX () const  {return fIC_Incident_Emittance_ThetaX ;}
+  double GetIncidentEmittancePhiY   () const  {return fIC_Incident_Emittance_PhiY   ;}
   
   // Beam status at the initial Incident point
   double GetIncidentPositionX     () const {return fIC_Incident_Position_X     ;}
