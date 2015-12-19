@@ -40,9 +40,15 @@
 #include "TInitialConditions.h"
 #include "TInteractionCoordinates.h"
 
-void ControlSimu(const char * fname = "benchmark_gaspard")
-{
-   // Open output ROOT file from NPTool simulation run
+TCanvas* canvas1 ;
+TCanvas* canvas2 ;
+
+void ControlSimu(const char * fname = "benchmark_gaspard"){
+  // for the style 
+  gROOT->SetStyle("nptool");     
+  gROOT->ForceStyle(false);  
+
+  // Open output ROOT file from NPTool simulation run
    TString path = gSystem->Getenv("NPTOOL");
    path += "/Outputs/Simulation/";
    TString inFileName = fname;
@@ -125,26 +131,17 @@ void ControlSimu(const char * fname = "benchmark_gaspard")
             hEmittedThetaIF_detected   -> Fill(initCond->GetThetaLab_IncidentFrame(0));
             hEmittedThetaCM_detected   -> Fill(initCond->GetThetaCM(0));
       }
-      //hEmittedPhiIF    -> Fill(initCond->GetICEmittedAnglePhiIncidentFrame(0));
-      //hEmittedPhiWF    -> Fill(initCond->GetICEmittedAnglePhiWorldFrame(0));
-      //
-      // Control histo
-      // Double_t phi_control = initCond->GetIncidentAnglePhi(0) + initCond->GetICEmittedAnglePhiIncidentFrame(0);
-      // if (phi_control > 360) phi_control -= 360;
-      // hControlPhi->Fill(phi_control);
    }
 
 
-   // Display histograms
-   // 
- 
-   TCanvas *canvas1 = new TCanvas("canvas1", "Incident beam properties from EventGenerator", 700,1000);
+   // Display beam histograms
+   canvas1 = new TCanvas("canvas1", "Incident beam properties from EventGenerator", 700,0,  500,750);
    canvas1->Divide(2,3);
 
    canvas1->cd(1);
    hEmittanceXTheta->Draw("colz");
    hEmittanceXTheta->SetXTitle("X (mm)");
-   hEmittanceXTheta->SetYTitle("#Theta_{X} (deg.)");
+   hEmittanceXTheta->SetYTitle("#theta_{X} (deg.)");
 
    canvas1->cd(2);
    hEmittanceYPhi->Draw("colz");
@@ -170,78 +167,52 @@ void ControlSimu(const char * fname = "benchmark_gaspard")
    hIncidentZ->Draw();
    hIncidentZ->SetXTitle("Z {mm}");
 
-/*
-   canvas1->cd();
-   TPad *pad2 = new TPad("pad2","",0,0,1,1);
-   pad2->SetFillStyle(4000); //will be transparent
-   pad2->Draw();
-   pad2->cd();
-   TLatex *   tex = new TLatex(0.2241379,0.2886654,"Reference");
-   tex->SetTextColor(17);
-   tex->SetTextSize(0.1840081);
-   tex->SetTextAngle(43.20207);
-   tex->SetLineWidth(2);
-   tex->Draw();
-   pad2->Update();
-   pad2->Modified();
-*/ 
-
-   // Display histograms
-   TCanvas *canvas2 = new TCanvas("canvas2", "Emitted particle properties",700,700);
+   // Display detector histograms
+   canvas2 = new TCanvas("canvas2", "Emitted particle properties",500,500);
    canvas2->Divide(2,2);
 
    canvas2->cd(1);
-   hEmittedThetaCM->SetXTitle("#Theta_{c.m.}");
+   hEmittedThetaCM->SetYTitle("counts / 1^{#circ}");
+   hEmittedThetaCM->GetYaxis()->SetTitleOffset(1.18);
+   hEmittedThetaCM->SetXTitle("#theta_{c.m.}");
+
    hEmittedThetaCM->Draw();
    hEmittedThetaCM_detected->Draw("same");
-   hEmittedThetaCM_detected->SetLineColor(kRed);
+   hEmittedThetaCM_detected->SetLineColor(kOrange-3);
+   hEmittedThetaCM_detected->SetFillColor(kOrange-3);
 
    canvas2->cd(2);
-   hEmittedETheta->Draw("colz");
+   hEmittedETheta->Draw("col");
    hEmittedETheta_detected->Draw("same");
-   hEmittedETheta_detected->SetMarkerColor(kRed);
-   hEmittedETheta->SetYTitle("E [MeV]");
-   hEmittedETheta->SetXTitle("#Theta_{lab}");
+    hEmittedETheta_detected->SetMarkerStyle(1);
+
+   hEmittedETheta->SetYTitle("E_{Lab} (MeV)");
+   hEmittedETheta->SetXTitle("#theta_{Lab}");
    NPL::Reaction r("132Sn(d,p)133Sn@1320");
-   r.SetExcitationHeavy(0.0);
    TGraph* Kine = r.GetKinematicLine3(); 
    Kine->SetLineWidth(1);
    Kine->SetLineStyle(2);
    Kine->SetLineColor(kOrange-3);
-   Kine->Draw("csame");
+   Kine->Draw("c");
 
    canvas2->cd(3);
    hEmittedThetaIF->Draw();
-   hEmittedThetaIF->SetXTitle("#Theta_{lab}");
+   hEmittedThetaIF->SetYTitle("counts / 1^{#circ}");
+   hEmittedThetaIF->GetYaxis()->SetTitleOffset(1.18);
+
+   hEmittedThetaIF->SetXTitle("#theta_{Lab}");
    hEmittedThetaIF_detected->Draw("same");
-   hEmittedThetaIF_detected->SetLineColor(kRed);
+   hEmittedThetaIF_detected->SetLineColor(kOrange-3);
+   hEmittedThetaIF_detected->SetFillColor(kOrange-3);
 
    canvas2->cd(4);
    TH1F *hEfficiency = new TH1F("hEfficiency", "Efficiency", 180, 0, 180);
    hEfficiency->Divide(hEmittedThetaIF_detected, hEmittedThetaIF, 100, 1);
-   hEfficiency->GetXaxis()->SetTitle("#Theta (deg)");
+   hEfficiency->GetXaxis()->SetTitle("#theta (deg)");
    hEfficiency->GetYaxis()->SetTitle("#epsilon (%)");
-   hEfficiency->SetLineColor(kBlack);
    hEfficiency->Draw();
 
-
-/*
-   canvas2->cd();
-   TPad *pad3 = new TPad("pad3","",0,0,1,1);
-   pad3->SetFillStyle(4000); //will be transparent
-   pad3->Draw();
-   pad3->cd();
-   TLatex *   tex2 = new TLatex(0.2241379,0.2886654,"Reference");
-   tex2->SetTextColor(17);
-   tex2->SetTextSize(0.1840081);
-   tex2->SetTextAngle(43.20207);
-   tex2->SetLineWidth(2);
-   tex2->Draw();
-   pad3->Update();
-   pad3->Modified();
-*/
-
-   TFile *referenceFile = new TFile("reference.root");
+   TFile* referenceFile = new TFile("reference.root");
    TCanvas* canvas1_ref = (TCanvas*) referenceFile->FindObjectAny("canvas1");
    TCanvas* canvas2_ref = (TCanvas*) referenceFile->FindObjectAny("canvas2");
    canvas1_ref->SetName("canvas1_ref");
@@ -249,10 +220,15 @@ void ControlSimu(const char * fname = "benchmark_gaspard")
    canvas1_ref->Draw();
    canvas2_ref->Draw();
  
-/*
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Use this method to overwrite the reference file only
+// DO NOT USE UNLESS YOU WANT TO MAKE A CHANGE TO THE BENCHMARK
+void WriteGaspardReference(){
    TFile *outFile = new TFile("reference.root","RECREATE");
     canvas1->Write();
     canvas2->Write();
     outFile->Close();
-*/
 }
