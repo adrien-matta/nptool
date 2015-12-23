@@ -84,7 +84,12 @@ MACRO(subdirlist result curdir)
   SET(${result} ${dirlist})
 ENDMACRO()
 
-# Call the Macro
+# Add include directories to all target
+include_directories("Core/")
+include_directories("Physics/")
+include_directories("Online/")
+
+# Call the macro
 subdirlist(SUB_DIRECTORY ${CMAKE_BINARY_DIR})
 set(SUB_DIRECTORY ${SUB_DIRECTORY} Core Physics Calibration InitialConditions InteractionCoordinates Online Utility)
 # Add each sub folder to the project
@@ -105,15 +110,6 @@ foreach(subdir ${SUB_DIRECTORY})
   endif()
 
 endforeach()
-
-# Add include directories to all target
-include_directories("Core/")
-include_directories("Physics/")
-include_directories("Online/")
-include_directories("../Core/")
-include_directories("../Physics/")
-include_directories("../Online/")
-
 
 export(TARGETS ${TARGET_LIST} FILE NPLibTargets.cmake)
 export(PACKAGE NPLib)

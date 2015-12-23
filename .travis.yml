@@ -36,6 +36,10 @@ script:
 
 after_success:
 
+after_failure:
+  - cd $NPTOOL/NPLib 
+  - make VERBOSE=true install
+
 branches:
   only:
     - NPTool.2.dev
