@@ -69,8 +69,6 @@ if(rdet)
 endif()
 
 # Add root to the link and include directories
-#include_directories( ${ROOT_INCLUDE_DIR})
-#link_directories( ${ROOT_LIBRARY_DIR})
 
 if(Geant4_gdml_FOUND)  
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNPS_GDML")     

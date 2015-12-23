@@ -110,6 +110,10 @@ endforeach()
 include_directories("Core/")
 include_directories("Physics/")
 include_directories("Online/")
+include_directories("../Core/")
+include_directories("../Physics/")
+include_directories("../Online/")
+
 
 export(TARGETS ${TARGET_LIST} FILE NPLibTargets.cmake)
 export(PACKAGE NPLib)

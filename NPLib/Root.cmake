@@ -61,7 +61,7 @@ link_directories( ${ROOT_LIBRARY_DIR})
 
 # Include directories
 exec_program(${NPTOOL_ROOT_CONFIG} ARGS "--incdir" OUTPUT_VARIABLE ROOT_INCLUDE_DIR)
-include_directories( ${ROOT_INCLUDE_DIR})  
+include_directories(SYSTEM ${ROOT_INCLUDE_DIR})  
 
 # Get the compilator flag from root to assure consistancy
 exec_program(${NPTOOL_ROOT_CONFIG} ARGS "--cflags" OUTPUT_VARIABLE NPTOOL_ROOT_CFLAGS )
