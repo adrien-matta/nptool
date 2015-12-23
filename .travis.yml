@@ -30,7 +30,7 @@ install:
 script:
   - cd $NPTOOL/NPLib 
   - cmake ./
-  - make install 
+  - make VERBOSE=true install 
   - ./scripts/RootLogon.sh 
   - ./scripts/test/all.sh
 
