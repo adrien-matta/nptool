@@ -12,6 +12,13 @@ CMakeCache.txt
 *.gdml
 *.root
 *.wrl
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.aux
+*.toc
 install_manifest.txt
 .DS_store
 *Projects*
@@ -24,3 +31,4 @@ npsimulation
 *.reaction
 *.detector
 *.source
+NPData/*

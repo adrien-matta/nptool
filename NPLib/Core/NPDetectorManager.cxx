@@ -76,7 +76,7 @@ void NPL::DetectorManager::ReadConfigurationFile(string Path)   {
 
   // Access the DetectorFactory and ask it to load the Class List
   string classlist = getenv("NPTOOL");
-  classlist += "/NPLib/DetectorClassList.txt";
+  classlist += "/NPLib/ClassList.txt";
   NPL::DetectorFactory* theFactory = NPL::DetectorFactory::getInstance();
   theFactory->ReadClassList(classlist);
 

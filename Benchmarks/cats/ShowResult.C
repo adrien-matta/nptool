@@ -22,13 +22,19 @@ void ShowResult()
    // draw results from benchmark
    c1->cd(1);
    chain->Draw("PositionY[0]:PositionX[0]>>h(600,-30,30,600,-30,30)", "", "colz");
+   TH1* ho = (TH1*) gDirectory->FindObjectAny("h"); 
+   ho->GetXaxis()->SetTitle("X (mm)"); 
+   ho->GetYaxis()->SetTitle("Y (mm)"); 
+   gPad->SaveAs("cats_ref.png");
    TLatex *texO = new TLatex(-17.5, 22, "Obtained");
-   texO->Draw();
+   //texO->Draw();
 
    // draw results from reference result
    c1->cd(2);
    TFile* ref = new TFile("reference.root", "READ");
    TH2* href = (TH2*) ref->FindObjectAny("href");
+   href->GetXaxis()->SetTitle("X (mm)"); 
+   href->GetYaxis()->SetTitle("Y (mm)"); 
    href->Draw("colz");
    TLatex *texR = new TLatex(-17.5,22, "Reference");
    texR->Draw();
