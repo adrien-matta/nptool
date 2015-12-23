@@ -143,7 +143,7 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
   
   // Access the DetectorFactory and ask it to load the Class List
   std::string classlist = getenv("NPTOOL");
-  classlist += "/NPLib/DetectorClassList.txt";
+  classlist += "/NPLib/ClassList.txt";
   NPS::DetectorFactory* theFactory = NPS::DetectorFactory::getInstance();
   theFactory->ReadClassList(classlist);
 
