@@ -30,15 +30,11 @@ install:
 script:
   - cd $NPTOOL/NPLib 
   - cmake ./
-  - make VERBOSE=true install 
+  - make install 
   - ./scripts/RootLogon.sh 
   - ./scripts/test/all.sh
 
 after_success:
-
-after_failure:
-  - cd $NPTOOL/NPLib 
-  - make VERBOSE=true install
 
 branches:
   only:
