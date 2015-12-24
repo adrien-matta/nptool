@@ -95,10 +95,10 @@ int main(int argc , char** argv){
   return_value = system(command.c_str());
 
   // Edit npl file
-  command = "sed -i '' -e \"s/DETECTORNAME/"+ answer +"/g\" "
+   command = "sed -i '' -e \"s/DETECTORNAME/"+ answer +"/g\" "
     + pathNPL + answer +"/* > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
-
+ 
   command = "sed -i '' -e \"s/XAUTHORX/"+ author+"/g\" "
     + pathNPL + answer +"/* > /dev/null 2> /dev/null";
   return_value = system(command.c_str());

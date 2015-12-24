@@ -54,13 +54,15 @@ class TDETECTORNAMEData : public TObject {
   public: // Getters and Setters
           // Prefere inline declaration to avoid unnecessary called of 
           // frequently used methods
-          // add //! to avoid root to create dictionnary to the method
+          // add //! to avoid root to create dictionnary for the method
     /////////////////////           SETTERS           ////////////////////////
     inline void SetE_DetectorNbr(const UShort_t& DetNbr)
       {fDETECTORNAME_E_DetectorNbr.push_back(DetNbr);} //!
     inline void Set_Energy(const Double_t& Energy)
       {fDETECTORNAME_Energy.push_back(Energy);}//!
 
+
+    // Prefer global stter that guaranty the vector are al the same size
     inline void SetEnergy(const UShort_t& DetNbr,const Double_t& Energy)	{
       SetE_DetectorNbr(DetNbr);
       Set_Energy(Energy);
@@ -72,6 +74,7 @@ class TDETECTORNAMEData : public TObject {
       {fDETECTORNAME_Time.push_back(Time);}//!
 
 
+    // Prefer global stter that guaranty the vector are al the same size
     inline void SetTime(const UShort_t& DetNbr,const Double_t& Time)	{
       SetT_DetectorNbr(DetNbr);
       Set_Time(Time);
