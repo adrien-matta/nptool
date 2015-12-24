@@ -117,7 +117,7 @@ foreach(subdir ${SUB_DIRECTORY})
 
 add_executable(npsimulation Simulation.cc)
 target_Link_libraries(npsimulation ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} NPSCore)
-configure_file(macro/gui.mac.in macro/gui.mac @ONLY) 
-configure_file(macro/aliases.mac.in macro/aliases.mac @ONLY) 
+configure_file(ressources/macro/gui.mac.in ressources/macro/gui.mac @ONLY) 
+configure_file(ressources/macro/aliases.mac.in ressources/macro/aliases.mac @ONLY) 
 
 install(PROGRAMS npsimulation DESTINATION ${CMAKE_BINARY_OUTPUT_DIRECTORY})

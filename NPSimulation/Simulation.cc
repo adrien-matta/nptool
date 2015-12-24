@@ -114,7 +114,7 @@ int main(int argc, char** argv){
 #ifdef G4UI_USE
 #ifdef G4VIS_USE
     string Path_Macro = getenv("NPTOOL");
-    Path_Macro+="/NPSimulation/macro/";
+    Path_Macro+="/NPSimulation/ressources/macro/";
 
     UImanager->ApplyCommand("/control/execute " +Path_Macro+"aliases.mac");
     visManager = new G4VisExecutive("Quiet");
