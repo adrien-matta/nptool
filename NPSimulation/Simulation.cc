@@ -127,7 +127,7 @@ int main(int argc, char** argv){
 #ifdef __APPLE__
     string command= "osascript ";
     command+= getenv("NPTOOL");
-    command+="/NPSimulation/scripts/bringtofront.osa & ";
+    command+="/NPSimulation/ressources/scripts/bringtofront.osa & ";
     int res =system(command.c_str());
     res =0;
 

@@ -1,7 +1,7 @@
 # Aliases are needed to avoid warning
 /control/alias gui_beamon "/run/beamOn 1"
-/control/alias gui_vis "/control/execute @CMAKE_BINARY_DIR@/macro/vis.mac"
-/control/alias gui_browser "/control/execute @CMAKE_BINARY_DIR@/macro/browser.mac"
+/control/alias gui_vis "/control/execute @CMAKE_BINARY_DIR@/ressources/macro/vis.mac"
+/control/alias gui_browser "/control/execute @CMAKE_BINARY_DIR@/ressources/macro/browser.mac"
 /control/alias gui_tracking "/tracking/verbose 1"
 /control/alias gui_surface "/vis/viewer/set/style surface"
 /control/alias gui_wireframe "/vis/viewer/set/style wireframe"
@@ -16,6 +16,6 @@
 /control/alias gui_empty "/"
 /control/alias gui_exit "exit"
 /control/alias gui_nptool "./scripts/url.sh"
-/control/alias gui_update "/control/execute @CMAKE_BINARY_DIR@/macro/reload.mac"
+/control/alias gui_update "/control/execute @CMAKE_BINARY_DIR@/ressources/macro/reload.mac"
 /control/alias gui_gdml "/det/export_gdml"
 /control/alias gui_open "/det/open"

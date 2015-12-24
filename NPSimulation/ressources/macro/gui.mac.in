@@ -20,25 +20,25 @@
 #/gui/addButton custom "Add Hits" "/vis/scene/add/hits"
 
 # NPS tool bar
-/gui/addIcon "Follow us on GitHub" user_icon "/gui/system {gui_nptool}" @CMAKE_BINARY_DIR@/icons/NPToolLogo.png
-/gui/addIcon "Exit" user_icon "{gui_exit}" @CMAKE_BINARY_DIR@/icons/power.png
-/gui/addIcon "the star gaze" user_icon "{gui_empty}" @CMAKE_BINARY_DIR@/icons/empty.png 
-/gui/addIcon "Update geometry" user_icon "{gui_update}" @CMAKE_BINARY_DIR@/icons/recycle.png
-/gui/addIcon "Save geometry to gdml" user_icon "{gui_gdml}" @CMAKE_BINARY_DIR@/icons/dev.png
-/gui/addIcon "Update generator" user_icon "/gen/update" @CMAKE_BINARY_DIR@/icons/bolt.png
-/gui/addIcon "Open generator" user_icon "/gen/open" @CMAKE_BINARY_DIR@/icons/folder.png
-/gui/addIcon "the moon beyond the clouds" user_icon "{gui_empty}" @CMAKE_BINARY_DIR@/icons/empty.png 
-/gui/addIcon "Run beam on" user_icon "/run/beamOn" @CMAKE_BINARY_DIR@/icons/rocket.png
-/gui/addIcon "One event" user_icon "{gui_beamon}" @CMAKE_BINARY_DIR@/icons/play.png
-/gui/addIcon "Activate tracking verbose" user_icon "{gui_tracking}" @CMAKE_BINARY_DIR@/icons/shoeprints.png
-/gui/addIcon "fill the empty dark" user_icon "{gui_empty}" @CMAKE_BINARY_DIR@/icons/empty.png 
-/gui/addIcon "View Browser" user_icon "{gui_browser}" @CMAKE_BINARY_DIR@/icons/browser.png
-/gui/addIcon "Take a screen shot" user_icon "/vis/ogl/printEPS" @CMAKE_BINARY_DIR@/icons/camera.png
-/gui/addIcon "Home" user_icon     "{gui_home}" @CMAKE_BINARY_DIR@/icons/eye.png
-/gui/addIcon "Front" user_icon    "{gui_front}" @CMAKE_BINARY_DIR@/icons/arrow-up.png
-/gui/addIcon "Back" user_icon     "{gui_back}" @CMAKE_BINARY_DIR@/icons/arrow-down.png
-/gui/addIcon "Left" user_icon     "{gui_left}" @CMAKE_BINARY_DIR@/icons/arrow-left.png
-/gui/addIcon "Right" user_icon    "{gui_right}" @CMAKE_BINARY_DIR@/icons/arrow-right.png
-/gui/addIcon "Zoom in" user_icon  "{gui_zoomin}" @CMAKE_BINARY_DIR@/icons/zoomin.png
-/gui/addIcon "Zoom out" user_icon "{gui_zoomout}" @CMAKE_BINARY_DIR@/icons/zoomout.png
+/gui/addIcon "Follow us on GitHub" user_icon "/gui/system {gui_nptool}" @CMAKE_BINARY_DIR@/ressources/icons/NPToolLogo.png
+/gui/addIcon "Exit" user_icon "{gui_exit}" @CMAKE_BINARY_DIR@/ressources/icons/power.png
+/gui/addIcon "the star gaze" user_icon "{gui_empty}" @CMAKE_BINARY_DIR@/ressources/icons/empty.png 
+/gui/addIcon "Update geometry" user_icon "{gui_update}" @CMAKE_BINARY_DIR@/ressources/icons/recycle.png
+/gui/addIcon "Save geometry to gdml" user_icon "{gui_gdml}" @CMAKE_BINARY_DIR@/ressources/icons/dev.png
+/gui/addIcon "Update generator" user_icon "/gen/update" @CMAKE_BINARY_DIR@/ressources/icons/bolt.png
+/gui/addIcon "Open generator" user_icon "/gen/open" @CMAKE_BINARY_DIR@/ressources/icons/folder.png
+/gui/addIcon "the moon beyond the clouds" user_icon "{gui_empty}" @CMAKE_BINARY_DIR@/ressources/icons/empty.png 
+/gui/addIcon "Run beam on" user_icon "/run/beamOn" @CMAKE_BINARY_DIR@/ressources/icons/rocket.png
+/gui/addIcon "One event" user_icon "{gui_beamon}" @CMAKE_BINARY_DIR@/ressources/icons/play.png
+/gui/addIcon "Activate tracking verbose" user_icon "{gui_tracking}" @CMAKE_BINARY_DIR@/ressources/icons/shoeprints.png
+/gui/addIcon "fill the empty dark" user_icon "{gui_empty}" @CMAKE_BINARY_DIR@/ressources/icons/empty.png 
+/gui/addIcon "View Browser" user_icon "{gui_browser}" @CMAKE_BINARY_DIR@/ressources/icons/browser.png
+/gui/addIcon "Take a screen shot" user_icon "/vis/ogl/printEPS" @CMAKE_BINARY_DIR@/ressources/icons/camera.png
+/gui/addIcon "Home" user_icon     "{gui_home}" @CMAKE_BINARY_DIR@/ressources/icons/eye.png
+/gui/addIcon "Front" user_icon    "{gui_front}" @CMAKE_BINARY_DIR@/ressources/icons/arrow-up.png
+/gui/addIcon "Back" user_icon     "{gui_back}" @CMAKE_BINARY_DIR@/ressources/icons/arrow-down.png
+/gui/addIcon "Left" user_icon     "{gui_left}" @CMAKE_BINARY_DIR@/ressources/icons/arrow-left.png
+/gui/addIcon "Right" user_icon    "{gui_right}" @CMAKE_BINARY_DIR@/ressources/icons/arrow-right.png
+/gui/addIcon "Zoom in" user_icon  "{gui_zoomin}" @CMAKE_BINARY_DIR@/ressources/icons/zoomin.png
+/gui/addIcon "Zoom out" user_icon "{gui_zoomout}" @CMAKE_BINARY_DIR@/ressources/icons/zoomout.png
 
