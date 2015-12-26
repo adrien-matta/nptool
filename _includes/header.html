@@ -17,7 +17,11 @@
         {% for page in site.pages %}
           {% if page.title %}
             {% if page.show_in_nav %}
-            <a class="page-link" href="{{ page.url | prepend: site.baseurl }}">{{ page.title | downcase }}</a>
+              {% if page.url == node.url %}
+              <a class="page-link" href="{{ page.url | prepend: site.baseurl }}">{{ page.title | downcase }}</a>
+              {% else %}
+              <a class="page-link-current" href="{{ page.url | prepend: site.baseurl }}">{{ page.title | downcase }}</a>
+              {% endif %}
             {% endif %}
           {% endif %}
         {% endfor %}
@@ -27,12 +31,4 @@
   
     
     </div>
-
- {% for node in site.pages %}
-     {% if page.url == node.url %}
-           <li class="active"><a href="{{node.url}}" class="active">{{node.title}}</a></li>
-               {% else %}
-           <li><a href="{{node.url}}">{{node.title}}</a></li>
-               {% endif %}
- {% endfor %}
 </header>
