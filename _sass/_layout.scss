@@ -45,8 +45,8 @@
         color: $background-color;
         background-color: $brand-color;
         line-height: $base-line-height;
-        border-radius: 25px;
-        padding: 20px; 
+        border-radius: 5px;
+        padding: 5px; 
         // Gaps between nav items, but not on the first one
         &:not(:first-child) {
             margin-left: 20px;
