@@ -5,7 +5,7 @@ set(NPLIB "${NPTOOL}/NPLib")
 set(NPTOOL_INCLUDE_DIR "${NPLIB}/include")
 set(NPTOOL_LIB_DIR "${NPLIB}/lib")
   
-include("${NPLIB}/Root.cmake")  
+include("${NPLIB}/ressources/CMake/Root.cmake")  
 
 include(CheckCXXCompilerFlag)
 project (NPAnalysis)

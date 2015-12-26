@@ -90,7 +90,7 @@ int main(int argc , char** argv){
   return_value = system(command.c_str());
 
   // Add npl file
-  command = "cp " + pathNPL + " Utility/DetectorSkeleton/NPLib/* " 
+  command = "cp " + pathNPL + " ressources/DetectorSkeleton/NPLib/* " 
     + pathNPL + answer +"/ > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
 

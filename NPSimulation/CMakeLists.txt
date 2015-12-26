@@ -26,7 +26,7 @@ include(${NPLib_USE_FILE})
 configure_file(Core/NPSimulationVersion.hh.in Core/NPSimulationVersion.hh @ONLY) 
 
 # look for Root
-include("../NPLib/Root.cmake")
+include("../NPLib/ressources/CMake/Root.cmake")
 
 # If the compiler is Clang, silence the unrecognised flags
 if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*Clang.*")

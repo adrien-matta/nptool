@@ -27,7 +27,7 @@ cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
 set(CMAKE_INSTALL_MESSAGE LAZY) 
 
 # look for Root
-include("Root.cmake")
+include("ressources/CMake/Root.cmake")
 
 # If the compiler is Clang, silence the unrecognised flags
 if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*Clang.*")
@@ -118,5 +118,5 @@ export(TARGETS ${TARGET_LIST} FILE NPLibTargets.cmake)
 export(PACKAGE NPLib)
 file(RELATIVE_PATH REL_INCLUDE_DIR "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}" "${CMAKE_INCLUDE_OUTPUT_DIRECTORY}")
 set(CONF_INCLUDE_DIRS "./" "./")
-configure_file(NPLibConfig.cmake.in "${PROJECT_BINARY_DIR}/NPLibConfig.cmake" @ONLY)
+configure_file(ressources/CMake/NPLibConfig.cmake.in "${PROJECT_BINARY_DIR}/NPLibConfig.cmake" @ONLY)
 
