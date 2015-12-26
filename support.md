@@ -1,9 +1,16 @@
 ---
 layout: manual 
-title: Status 
-permalink: /status/
+title: Support 
+permalink: /support/
 show_in_nav: true
 ---
+
+<h3> Support: </h3>
+
+If you encounter issues while installing or using the package, please sent an email to our support team <mailto:support@nptool.org>. Feel free to contact us for feedback, request features, or to take part in the collaboration.
+ 
+
+<h3> Status: </h3>
 
 The current status of the nptool repository as given by [Travis CI][travis] is the following:
 
@@ -26,6 +33,7 @@ What the status means:
 * Compile NPS and run npsimulation and npanalysis for Example2
 
 If all of this step succeed, the status will appears as passing, if any of those step fail, the status will appear as failling.
+
 
 [build-log]: https://travis-ci.org/adrien-matta/nptool/builds
 [travis]: https://travis-ci.org/
