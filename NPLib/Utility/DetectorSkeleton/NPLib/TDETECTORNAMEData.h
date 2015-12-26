@@ -83,12 +83,16 @@ class TDETECTORNAMEData : public TObject {
 
     /////////////////////           GETTERS           ////////////////////////
     // Energy
+    inline UShort_t GetMultEnergy() const
+      {return fDETECTORNAME_E_DetectorNbr.size();}
     inline UShort_t GetE_DetectorNbr(const unsigned int &i) const 
       {return fDETECTORNAME_E_DetectorNbr[i];}//!
     inline Double_t Get_Energy(const unsigned int &i) const 
       {return fDETECTORNAME_Energy[i];}//!
 
     // Time
+    inline UShort_t GetMultTime() const
+      {return fDETECTORNAME_T_DetectorNbr.size();}
     inline UShort_t GetT_DetectorNbr(const unsigned int &i) const 
       {return fDETECTORNAME_T_DetectorNbr[i];}//!
     inline Double_t Get_Time(const unsigned int &i) const 

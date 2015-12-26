@@ -112,10 +112,10 @@ class TDETECTORNAMEPhysics : public TObject, public NPL::VDetector{
 
     //   Return false if the channel is disabled by user
     //   Frist argument is either "X","Y","SiLi","CsI"
-    bool IsValidChannel(const string DetectorType, const int telescope , const int channel);
+    bool IsValidChannel(const string DetectorType, const int detector , const int channel);
 
     //   Initialize the standard parameter for analysis
-    //   ie: all channel enable, maximum multiplicity for strip = number of telescope
+    //   ie: all channel enable, maximum multiplicity for strip = number of detector
     void InitializeStandardParameter();
 
     //   Read the user configuration file; if no file found, load standard one
@@ -157,7 +157,7 @@ class TDETECTORNAMEPhysics : public TObject, public NPL::VDetector{
     TDETECTORNAMESpectra* m_Spectra; // !
 
   public: // Spectra Getter
-    map< vector<string> , TH1*> GetSpectra(); 
+    map< string , TH1*> GetSpectra(); 
     vector<TCanvas*> GetCanvas();
 
   public: // Static constructor to be passed to the Detector Factory

@@ -58,42 +58,53 @@ void TDETECTORNAMEPhysics::BuildSimplePhysicalEvent(){
 }
 
 ///////////////////////////////////////////////////////////////////////////
-
 void TDETECTORNAMEPhysics::BuildPhysicalEvent(){
   PreTreat();
+  // Make any further calculation on top the Pre Treat
+  // In this case match Energy and time together
+
+  unsigned int sizeE = m_PreTreatedData->GetMultEnergy();
+  unsigned int sizeT = m_PreTreatedData->GetMultTime();
+
+  for(unigned int e = 0 ; e < sizeE ; e++){
+    for(unigned int t = 0 ; t < sizeT ; t++){
+      if(m_PreTreatedData->GetE_DetectorNbr(e)==m_PreTreatedData->GetT_DetectorNbr(t)){
+        DetectorNumber.push_back(m_PreTreatedData->GetE_DetectorNbr(e));
+        Energy.push_back(m_PreTreatedData->Get_Energy(e));
+        Time.push_back(m_PreTreatedData->Get_Time(t));
+      }
+    }
+  }
+  
   return;
 }
 
 ///////////////////////////////////////////////////////////////////////////
 void TDETECTORNAMEPhysics::PreTreat(){
+  // Typically apply threshold and Calibration
+  // Might test for desabled channel for more complex detector
   ClearPreTreatedData();
-  //   Front
-  unsigned int sizeFront = m_EventData->GetMultiplicityFront();
-  for(unsigned int i = 0 ; i < sizeFront ; ++i){
-    if( m_EventData->GetFront_Energy(i)>m_StripFront_E_RAW_Threshold && IsValidChannel("Front", m_EventData->GetFront_DetectorNbr(i), m_EventData->GetFront_StripNbr(i)) ){
-      double Front_E = fStrip_Front_E(m_EventData , i);
-      if( Front_E > m_StripFront_E_Threshold ){
-        if( m_EventData->GetFront_StripNbr(i)==0)
-          cout << m_EventData->GetFront_StripNbr(i) << endl;
-        m_PreTreatedData->SetFront_DetectorNbr( m_EventData->GetFront_DetectorNbr(i) );
-        m_PreTreatedData->SetFront_StripNbr( m_EventData->GetFront_StripNbr(i) );
-        m_PreTreatedData->SetFront_TimeCFD( m_EventData->GetFront_TimeCFD(i) );
-        m_PreTreatedData->SetFront_Energy( Front_E );
+  static NPL::CalibrationMangager Cal* = NPL::CalibrationMangager::getInstance();
+  //   Energy
+  unsigned int sizeE = m_EventData->GetMultEnergy();
+  for(unsigned int i = 0 ; i < sizeE ; ++i){
+    if( m_EventData->Get_Energy(i)>m_E_RAW_Threshold ){
+      double Energy = Cal->ApplyCalibration("DETECTORNAME","ENERGY"+NPL::itoa(m_EventData->GetE_DetectorNbr(i)),m_EventData->Get_Energy(i));
+      if( Energy > m_E_Threshold ){
+        m_PreTreatedData->SetEnergy(m_EventData->GetE_DetectorNbr(i), Energy);
       }
     }
   }
+ 
+   //  Time 
+  unsigned int sizeT = m_EventData->GetMultTime();
+  for(unsigned int i = 0 ; i < sizeT ; ++i){
+      double Time= Cal->ApplyCalibration("DETECTORNAME","TIME"+NPL::itoa(m_EventData->GetT_DetectorNbr(i)),m_EventData->Get_Time(i));
+        m_PreTreatedData->SetTime(m_EventData->GetT_DetectorNbr(i), Time);
+    }
+  }
+
   return;
-}
-
-
-///////////////////////////////////////////////////////////////////////////
-int TDETECTORNAMEPhysics :: CheckEvent(){
-  // Check the size of the different elements
-  if( m_PreTreatedData->GetMultiplicityBack() == m_PreTreatedData->GetMultiplicityFront() )
-    return 1 ; // Regular Event
-  
-  else
-    return -1 ; // Rejected Event
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -130,7 +141,9 @@ void TDETECTORNAMEPhysics::ReadAnalysisConfig(){
     getline(AnalysisConfigFile, LineBuffer);
     
     // search for "header"
-    if (LineBuffer.compare(0, 11, "ConfigDETECTORNAME") == 0) ReadingStatus = true;
+    string name = "ConfigDETECTORNAME";
+    if (LineBuffer.compare(0, name.length(), name) == 0) 
+      ReadingStatus = true;
     
     // loop on tokens and data
     while (ReadingStatus ) {
@@ -162,13 +175,13 @@ void TDETECTORNAMEPhysics::ReadAnalysisConfig(){
       
       else if (whatToDo=="STRIP_E_RAW_THRESHOLD") {
         AnalysisConfigFile >> DataBuffer;
-        m_E_RAW_Threshold = atoi(DataBuffer.c_str());
+        m_E_RAW_Threshold = atof(DataBuffer.c_str());
         cout << whatToDo << " " << m_E_RAW_Threshold << endl;
       }
       
       else if (whatToDo=="STRIP_E_THRESHOLD") {
         AnalysisConfigFile >> DataBuffer;
-        m_E_Threshold = atoi(DataBuffer.c_str());
+        m_E_Threshold = atof(DataBuffer.c_str());
         cout << whatToDo << " " << m_E_Threshold << endl;
       }
       
@@ -195,180 +208,9 @@ void TDETECTORNAMEPhysics::Clear(){
 
 ///////////////////////////////////////////////////////////////////////////
 void TDETECTORNAMEPhysics::ReadConfiguration(string Path){
-  ifstream ConfigFile           ;
-  ConfigFile.open(Path.c_str()) ;
-  string LineBuffer             ;
-  string DataBuffer             ;
-  
-  double R,Phi,Z;
-  R = 0 ; Phi = 0 ; Z = 0;
-  TVector3 Pos;
-  bool check_R   = false ;
-  bool check_Phi = false ;
-  bool check_Z   = false ;
-  
-  bool ReadingStatusQQQ = false ;
-  bool ReadingStatusBOX = false ;
-  bool ReadingStatus    = false ;
-  
-  bool VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel(); ;
-  
-  while (!ConfigFile.eof()){
-    
-    getline(ConfigFile, LineBuffer);
-    // cout << LineBuffer << endl;
-    if (LineBuffer.compare(0, 5, "DETECTORNAME") == 0)
-      ReadingStatus = true;
-    
-    while (ReadingStatus && !ConfigFile.eof()) {
-      ConfigFile >> DataBuffer ;
-      //   Comment Line
-      if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
-      
-      //   CD case
-      if (DataBuffer=="DETECTORNAMEQQQ"){
-       if(VerboseLevel) cout << "///" << endl           ;
-        if(VerboseLevel) cout << "QQQ Quadrant found: " << endl   ;
-        ReadingStatusQQQ = true ;
-      }
-      
-      //  Box case
-      else if (DataBuffer=="DETECTORNAMEBOX"){
-        if(VerboseLevel) cout << "///" << endl           ;
-        if(VerboseLevel) cout << "Box Detector found: " << endl   ;
-        ReadingStatusBOX = true ;
-      }
-      
-      //   Reading Block
-      while(ReadingStatusQQQ){
-        // Pickup Next Word
-        ConfigFile >> DataBuffer ;
-        
-        //   Comment Line
-        if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
-        
-        //Position method
-        else if (DataBuffer == "Z=") {
-          check_Z = true;
-          ConfigFile >> DataBuffer ;
-          Z= atof(DataBuffer.c_str());
-          if(VerboseLevel) cout << "  Z= " << Z << "mm" << endl;
-        }
-        
-        else if (DataBuffer == "R=") {
-          check_R = true;
-          ConfigFile >> DataBuffer ;
-          R= atof(DataBuffer.c_str());
-          if(VerboseLevel) cout << "  R= " << R << "mm" << endl;
-        }
-        
-        else if (DataBuffer == "Phi=") {
-          check_Phi = true;
-          ConfigFile >> DataBuffer ;
-          Phi= atof(DataBuffer.c_str());
-          if(VerboseLevel) cout << "  Phi= " << Phi << "deg" << endl;
-        }
-        
-        else if (DataBuffer == "ThicknessDector=") {
-          /*ignore that*/
-        }
-        
-        ///////////////////////////////////////////////////
-        //   If no Detector Token and no comment, toggle out
-        else{
-          ReadingStatusQQQ = false;
-          cout << "Error: Wrong Token Sequence: Getting out " << DataBuffer << endl ;
-          exit(1);
-        }
-        
-        /////////////////////////////////////////////////
-        //   If All necessary information there, toggle out
-        
-        if (check_R && check_Phi && check_Z){
-          
-          ReadingStatusQQQ = false;
-          AddQQQDetector(R,Phi,Z);
-          //   Reinitialisation of Check Boolean
-          check_R   = false ;
-          check_Phi = false ;
-        }
-        
-      }
-      
-      while(ReadingStatusBOX){
-        // Pickup Next Word
-        ConfigFile >> DataBuffer ;
-        
-        //   Comment Line
-        if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
-        
-        //Position method
-        else if (DataBuffer == "Z=") {
-          check_Z = true;
-          ConfigFile >> DataBuffer ;
-          Z= atof(DataBuffer.c_str());
-          if(VerboseLevel) cout << "  Z= " << Z << "mm" << endl;
-        }
-        
-        else if (DataBuffer == "ThicknessDector1=") {
-          /*ignore this */
-        }
-        
-        else if (DataBuffer == "ThicknessDector2=") {
-          /*ignore this */
-        }
-        
-        else if (DataBuffer == "ThicknessDector3=") {
-          /*ignore this */
-        }
-        
-        else if (DataBuffer == "ThicknessDector4=") {
-          /*ignore this */
-        }
-        
-        else if (DataBuffer == "ThicknessPAD1=") {
-          /*ignore this */
-        }
-        
-        else if (DataBuffer == "ThicknessPAD2=") {
-          /*ignore this */
-        }
-        
-        else if (DataBuffer == "ThicknessPAD3=") {
-          /*ignore this */
-        }
-        
-        else if (DataBuffer == "ThicknessPAD4=") {
-          /*ignore this */
-        }
-        
-        ///////////////////////////////////////////////////
-        //   If no Detector Token and no comment, toggle out
-        else{
-          ReadingStatusBOX = false;
-          cout << "Error: Wrong Token Sequence: Getting out " << DataBuffer << endl ;
-          exit(1);
-        }
-        
-        /////////////////////////////////////////////////
-        //   If All necessary information there, toggle out
-        
-        if (check_Z){
-          ReadingStatusBOX = false;
-          AddBoxDetector(Z);
-          //   Reinitialisation of Check Boolean
-          check_R = false ;
-          check_Phi = false ;
-          check_Z = false ;
-          
-        }
-      }
-    }
-  }
-  
-  InitializeStandardParameter();
-  ReadAnalysisConfig();
 }
+      
+
 ///////////////////////////////////////////////////////////////////////////
 void TDETECTORNAMEPhysics::InitSpectra(){  
   m_Spectra = new TDETECTORNAMESpectra(m_NumberOfDetector);
@@ -389,7 +231,7 @@ void TDETECTORNAMEPhysics::ClearSpectra(){
   // To be done
 }
 ///////////////////////////////////////////////////////////////////////////
-map< vector<string> , TH1*> TDETECTORNAMEPhysics::GetSpectra() {
+map< string , TH1*> TDETECTORNAMEPhysics::GetSpectra() {
   if(m_Spectra)
     return m_Spectra->GetMapHisto();
   else{
