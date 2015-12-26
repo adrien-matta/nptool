@@ -58,6 +58,7 @@
 
     .page-link-current {
         color: $background-color;
+        text-decoration: none;
         background-color: $brand-color;
         line-height: $base-line-height;
         border-radius: 10px;
