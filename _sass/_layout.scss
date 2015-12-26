@@ -43,6 +43,7 @@
     
     .page-link:hover {
         color: $brand-color;
+        text-decoration: none;
         line-height: $base-line-height;
         border-radius: 10px;
         border: 2px solid $brand-color;
