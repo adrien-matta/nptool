@@ -112,7 +112,7 @@ class TDETECTORNAMEPhysics : public TObject, public NPL::VDetector{
 
     //   Return false if the channel is disabled by user
     //   Frist argument is either "X","Y","SiLi","CsI"
-    bool IsValidChannel(const string DetectorType, const int detector , const int channel);
+    bool IsValidChannel( const int detector);
 
     //   Initialize the standard parameter for analysis
     //   ie: all channel enable, maximum multiplicity for strip = number of detector
@@ -120,9 +120,6 @@ class TDETECTORNAMEPhysics : public TObject, public NPL::VDetector{
 
     //   Read the user configuration file; if no file found, load standard one
     void ReadAnalysisConfig();
-
-    //   Add a Detector
-    void AddDetector( double Z);
 
     // Give and external TMustData object to TDETECTORNAMEPhysics. Needed for online analysis for example.
     void SetRawDataPointer(TDETECTORNAMEData* rawDataPointer) {m_EventData = rawDataPointer;}
@@ -145,7 +142,7 @@ class TDETECTORNAMEPhysics : public TObject, public NPL::VDetector{
 
 
   private:   //   Map of activated channel
-    map< int, vector<bool> > m_ChannelStatus;//!
+    map<int, bool> m_ChannelStatus;//!
 
   private:   //   Spatial Position of Detector
     int m_NumberOfDetector;//!

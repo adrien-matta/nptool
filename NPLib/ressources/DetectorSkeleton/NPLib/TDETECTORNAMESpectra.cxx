@@ -54,8 +54,6 @@ TDETECTORNAMESpectra::TDETECTORNAMESpectra(unsigned int NumberOfDetector){
       << "************************************************" << endl ;
   SetName("DETECTORNAME");
   fNumberOfDetector = NumberOfDetector;
-  fStripFront=24;
-  fStripBack=48;
 
   InitRawSpectra();
   InitPreTreatedSpectra();
@@ -68,13 +66,12 @@ TDETECTORNAMESpectra::~TDETECTORNAMESpectra(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDETECTORNAMESpectra::InitRawSpectra(){
-
   static string name;
   for (unsigned int i = 0; i < fNumberOfDetector; i++) { // loop on number of detectors
     name = "DETECTORNAMERaw"+NPL::itoa(i+1);
     // STR_FRONT_E_RAW
-    name = "DETECTORNAME"+NPL::itoa(i+1)+"_STR_FRONT_E_RAW";
-    AddHisto2D(name, name, fStripFront, 1, fStripFront+1, 5000, 0, 1.5e6, "DETECTORNAME/RAW/STR_FRONT_E")->Draw("colz");
+    name = "DETECTORNAME"+NPL::itoa(i+1)+"_ENERGY_RAW";
+    AddHisto1D(name, name, 4096, 0, 16384, "DETECTORNAME/RAW")->Draw("colz");
   } // end loop on number of detectors
 }
 
@@ -83,8 +80,8 @@ void TDETECTORNAMESpectra::InitPreTreatedSpectra(){
   static string name;
   for (unsigned int i = 0; i < fNumberOfDetector; i++) { // loop on number of detectors
     // STR_FRONT_E_CAL
-    name = "DETECTORNAME"+NPL::itoa(i+1)+"_STR_FRONT_E_CAL";
-    AddHisto2D(name, name, fStripFront, 1, fStripFront+1, 500, 0, 25, "DETECTORNAME/CAL/STR_FRONT_E");
+    name = "DETECTORNAME"+NPL::itoa(i+1)+"_ENERGY_CAL";
+    AddHisto1D(name, name, 500, 0, 25, "DETECTORNAME/CAL");
   }  // end loop on number of detectors
 }
 
@@ -92,8 +89,8 @@ void TDETECTORNAMESpectra::InitPreTreatedSpectra(){
 void TDETECTORNAMESpectra::InitPhysicsSpectra(){
   static string name;
   // Kinematic Plot 
-  name = "DETECTORNAME_THETA_E";
-  AddHisto2D(name, name,360,0,180,500,0,50,"DETECTORNAME/PHY");
+  name = "DETECTORNAME_ENERGY_TIME";
+  AddHisto2D(name, name,500,-500,0,500,0,50,"DETECTORNAME/PHY");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -102,68 +99,54 @@ void TDETECTORNAMESpectra::FillRawSpectra(TDETECTORNAMEData* RawData){
   static string family;
 
   // Energy 
-  unsigned int mysize = RawData->GetMultiplicityFront();
-  for (unsigned int i = 0; i < mysize; i++) {
-    name = "DETECTORNAME"+NPL::itoa(RawData->Get_DetectorNbr(i))+"_ENERGY_RAW";
-    family = "DETECTORNAME/RAW/ENERGY";
+  unsigned int sizeE = RawData->GetMultEnergy();
+  for (unsigned int i = 0; i < sizeE; i++) {
+    name = "DETECTORNAME"+NPL::itoa(RawData->GetE_DetectorNbr(i))+"_ENERGY_RAW";
+    family = "DETECTORNAME/RAW";
 
     GetHisto(family,name)
-      -> Fill(RawData->Get_DetectorNbr(i), 
+      -> Fill(RawData->GetE_DetectorNbr(i), 
           RawData->Get_Energy(i));
   }
 
-  // Energy Multiplicity
-  int myMULT[fNumberOfDetector];
-  for( unsigned int i = 0; i < fNumberOfDetector; i++)
-    myMULT[i] = 0 ; 
+  // Time
+  unsigned int sizeT = RawData->GetMultTime();
+  for (unsigned int i = 0; i < sizeT; i++) {
+    name = "DETECTORNAME"+NPL::itoa(RawData->GetT_DetectorNbr(i))+"_TIME_RAW";
+    family = "DETECTORNAME/RAW";
 
-  for(unsigned int i = 0 ; i < RawData->GetMultiplicityFront();i++){
-    myMULT[RawData->Get_DetectorNbr(i)-1] += 1;  
-  }
-
-  for( unsigned int i = 0; i < fNumberOfDetector; i++){
-    name = "DETECTORNAME"+NPL::itoa(i+1)+"_RAW_MULT";
-    family= "DETECTORNAME/RAW/MULT";
     GetHisto(family,name)
-      -> Fill(myMULT[i]);
+      -> Fill(RawData->GetT_DetectorNbr(i), 
+          RawData->Get_Time(i));
   }
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDETECTORNAMESpectra::FillPreTreatedSpectra(TDETECTORNAMEData* PreTreatedData){
-  static string name ;
+  static string name;
   static string family;
-
-  // STR_FRONT_E
-  unsigned int mysize = PreTreatedData->GetMultiplicityFront();
-  for (unsigned int i = 0; i < mysize; i++) {
-    name = "DETECTORNAME"+NPL::itoa(PreTreatedData->Get_DetectorNbr(i))+"_STR_FRONT_E_CAL";
-    family = "DETECTORNAME/CAL/STR_FRONT_E";
+  
+  // Energy 
+  unsigned int sizeE = PreTreatedData->GetMultEnergy();
+  for (unsigned int i = 0; i < sizeE; i++) {
+    name = "DETECTORNAME"+NPL::itoa(PreTreatedData->GetE_DetectorNbr(i))+"_ENERGY_RAW";
+    family = "DETECTORNAME/CAL";
 
     GetHisto(family,name)
-      -> Fill(PreTreatedData->Get_StripNbr(i), 
+      -> Fill(PreTreatedData->GetE_DetectorNbr(i), 
           PreTreatedData->Get_Energy(i));
   }
 
-  // STR_FRONT MULT
-  int myMULT[fNumberOfDetector];
-  for( unsigned int i = 0; i < fNumberOfDetector; i++)
-    myMULT[i] = 0 ; 
+  // Time
+  unsigned int sizeT = PreTreatedData->GetMultTime();
+  for (unsigned int i = 0; i < sizeT; i++) {
+    name = "DETECTORNAME"+NPL::itoa(PreTreatedData->GetT_DetectorNbr(i))+"_TIME_RAW";
+    family = "DETECTORNAME/CAL";
 
-  mysize = PreTreatedData->GetMultiplicityFront(); 
-  for(unsigned int i = 0 ; i < mysize ;i++){
-    myMULT[PreTreatedData->Get_DetectorNbr(i)-1] += 1;  
-  }
-
-  for( unsigned int i = 0; i < fNumberOfDetector; i++){
-
-    name = "DETECTORNAME"+NPL::itoa(i+1)+"_STR_FRONT_CAL_MULT";
-    family= "DETECTORNAME/CAL/MULT";
     GetHisto(family,name)
-      -> Fill(myMULT[i]);
+      -> Fill(PreTreatedData->GetT_DetectorNbr(i), 
+          PreTreatedData->Get_Time(i));
   }
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -172,23 +155,11 @@ void TDETECTORNAMESpectra::FillPhysicsSpectra(TDETECTORNAMEPhysics* Physics){
   static string family;
   family= "DETECTORNAME/PHY";
 
-  // Kine plot
-  unsigned int mysize = Physics->Strip_E.size();
-  for(unsigned int i = 0 ; i < mysize ; i++){
-    double Theta = Physics->GetPositionOfInteraction(i).Angle(TVector3(0,0,1));
-    Theta = Theta/deg;
-    double Etot=Physics->Strip_E[i];
-
-    if(Physics->PAD_E[i]>0){
-      name = "DETECTORNAME_PAD_E_E";
-      Etot += Physics->PAD_E[i];
-      GetHisto(family,name)->Fill(Physics->PAD_E[i],Physics->Strip_E[i]);
-      name = "DETECTORNAME"+NPL::itoa(Physics->DetectorNumber[i])+"_PAD_E_E";
-      GetHisto(family,name)->Fill(Physics->PAD_E[i],Physics->Strip_E[i]);
-
-    }
-    name = "DETECTORNAME_THETA_E";
-    GetHisto(family,name)-> Fill(Theta,Etot);
+  // Energy vs time
+  unsigned int sizeE = Physics->Energy.size();
+  for(unsigned int i = 0 ; i < sizeE ; i++){
+    name = "DETECTORNAME_ENERGY_TIME";
+    GetHisto(family,name)-> Fill(Physics->Energy[i],Physics->Time[i]);
   }
 }
 

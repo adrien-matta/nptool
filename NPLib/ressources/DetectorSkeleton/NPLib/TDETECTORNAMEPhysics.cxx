@@ -40,17 +40,17 @@
 ///////////////////////////////////////////////////////////////////////////
 
 ClassImp(TDETECTORNAMEPhysics)
-///////////////////////////////////////////////////////////////////////////
-TDETECTORNAMEPhysics::TDETECTORNAMEPhysics(){
-  m_EventData         = new TDETECTORNAMEData ;
-  m_PreTreatedData    = new TDETECTORNAMEData ;
-  m_EventPhysics      = this ;
-  m_Spectra           = NULL;
-  m_NumberOfDetector = 0 ;
-  // Threshold
-  m_E_RAW_Threshold = 0 ;
-  m_E_Threshold = 0 ;
-}
+  ///////////////////////////////////////////////////////////////////////////
+  TDETECTORNAMEPhysics::TDETECTORNAMEPhysics(){
+    m_EventData         = new TDETECTORNAMEData ;
+    m_PreTreatedData    = new TDETECTORNAMEData ;
+    m_EventPhysics      = this ;
+    m_Spectra           = NULL;
+    m_NumberOfDetector = 0 ;
+    // Threshold
+    m_E_RAW_Threshold = 0 ;
+    m_E_Threshold = 0 ;
+  }
 
 ///////////////////////////////////////////////////////////////////////////
 void TDETECTORNAMEPhysics::BuildSimplePhysicalEvent(){
@@ -66,8 +66,8 @@ void TDETECTORNAMEPhysics::BuildPhysicalEvent(){
   unsigned int sizeE = m_PreTreatedData->GetMultEnergy();
   unsigned int sizeT = m_PreTreatedData->GetMultTime();
 
-  for(unigned int e = 0 ; e < sizeE ; e++){
-    for(unigned int t = 0 ; t < sizeT ; t++){
+  for(unsigned int e = 0 ; e < sizeE ; e++){
+    for(unsigned int t = 0 ; t < sizeT ; t++){
       if(m_PreTreatedData->GetE_DetectorNbr(e)==m_PreTreatedData->GetT_DetectorNbr(t)){
         DetectorNumber.push_back(m_PreTreatedData->GetE_DetectorNbr(e));
         Energy.push_back(m_PreTreatedData->Get_Energy(e));
@@ -75,7 +75,7 @@ void TDETECTORNAMEPhysics::BuildPhysicalEvent(){
       }
     }
   }
-  
+
   return;
 }
 
@@ -84,51 +84,51 @@ void TDETECTORNAMEPhysics::PreTreat(){
   // Typically apply threshold and Calibration
   // Might test for desabled channel for more complex detector
   ClearPreTreatedData();
-  static NPL::CalibrationMangager Cal* = NPL::CalibrationMangager::getInstance();
+  static CalibrationManager* Cal = CalibrationManager::getInstance();
+
   //   Energy
   unsigned int sizeE = m_EventData->GetMultEnergy();
   for(unsigned int i = 0 ; i < sizeE ; ++i){
     if( m_EventData->Get_Energy(i)>m_E_RAW_Threshold ){
-      double Energy = Cal->ApplyCalibration("DETECTORNAME","ENERGY"+NPL::itoa(m_EventData->GetE_DetectorNbr(i)),m_EventData->Get_Energy(i));
+      double Energy = Cal->ApplyCalibration("DETECTORNAME/ENERGY"+NPL::itoa(m_EventData->GetE_DetectorNbr(i)),m_EventData->Get_Energy(i));
       if( Energy > m_E_Threshold ){
         m_PreTreatedData->SetEnergy(m_EventData->GetE_DetectorNbr(i), Energy);
       }
     }
   }
- 
-   //  Time 
+
+  //  Time 
   unsigned int sizeT = m_EventData->GetMultTime();
   for(unsigned int i = 0 ; i < sizeT ; ++i){
-      double Time= Cal->ApplyCalibration("DETECTORNAME","TIME"+NPL::itoa(m_EventData->GetT_DetectorNbr(i)),m_EventData->Get_Time(i));
-        m_PreTreatedData->SetTime(m_EventData->GetT_DetectorNbr(i), Time);
-    }
+    double Time= Cal->ApplyCalibration("DETECTORNAME/TIME"+NPL::itoa(m_EventData->GetT_DetectorNbr(i)),m_EventData->Get_Time(i));
+    m_PreTreatedData->SetTime(m_EventData->GetT_DetectorNbr(i), Time);
   }
 
   return;
 }
 
 ////////////////////////////////////////////////////////////////////////////
-bool TDETECTORNAMEPhysics::IsValidChannel( const int detector , const int channel){
-    return *(m_FrontChannelStatus[detector-1].begin()+channel-1);
+bool TDETECTORNAMEPhysics::IsValidChannel( const int detector) {
+  return m_ChannelStatus[detector];
 }
 
 ///////////////////////////////////////////////////////////////////////////
 void TDETECTORNAMEPhysics::ReadAnalysisConfig(){
   bool ReadingStatus = false;
-  
+
   // path to file
   string FileName = "./configs/ConfigDETECTORNAME.dat";
-  
+
   // open analysis config file
   ifstream AnalysisConfigFile;
   AnalysisConfigFile.open(FileName.c_str());
-  
+
   if (!AnalysisConfigFile.is_open()) {
     cout << " No ConfigDETECTORNAME.dat found: Default parameter loaded for Analayis " << FileName << endl;
     return;
   }
   cout << " Loading user parameter for Analysis from ConfigDETECTORNAME.dat " << endl;
-  
+
   // Save it in a TAsciiFile
   TAsciiFile* asciiConfig = RootOutput::getInstance()->GetAsciiFileAnalysisConfig();
   asciiConfig->AppendLine("%%% ConfigDETECTORNAME.dat %%%");
@@ -139,65 +139,52 @@ void TDETECTORNAMEPhysics::ReadAnalysisConfig(){
   while (!AnalysisConfigFile.eof()) {
     // Pick-up next line
     getline(AnalysisConfigFile, LineBuffer);
-    
+
     // search for "header"
     string name = "ConfigDETECTORNAME";
     if (LineBuffer.compare(0, name.length(), name) == 0) 
       ReadingStatus = true;
-    
+
     // loop on tokens and data
     while (ReadingStatus ) {
-      
       whatToDo="";
       AnalysisConfigFile >> whatToDo;
-      
+
       // Search for comment symbol (%)
       if (whatToDo.compare(0, 1, "%") == 0) {
         AnalysisConfigFile.ignore(numeric_limits<streamsize>::max(), '\n' );
       }
-      
+
       if (whatToDo== "DISABLE_DETECTOR") {
         AnalysisConfigFile >> DataBuffer;
         cout << whatToDo << "  " << DataBuffer << endl;
         int Detector = atoi(DataBuffer.substr(2,1).c_str());
         vector< bool > ChannelStatus;
-        ChannelStatus.resize(24,false);
-        m_FrontChannelStatus[Detector-1] = ChannelStatus;
-        ChannelStatus.resize(48,false);
-        m_BackChannelStatus[Detector-1] = ChannelStatus;
-        ChannelStatus.resize(1,false);
-        m_PADChannelStatus[Detector-1] = ChannelStatus;
+        ChannelStatus[Detector]=false;
       }
-      
-        else cout << "Warning: detector type for DETECTORNAME unknown!" << endl;
-        
-      }
-      
-      else if (whatToDo=="STRIP_E_RAW_THRESHOLD") {
+
+      else if (whatToDo=="E_RAW_THRESHOLD") {
         AnalysisConfigFile >> DataBuffer;
         m_E_RAW_Threshold = atof(DataBuffer.c_str());
         cout << whatToDo << " " << m_E_RAW_Threshold << endl;
       }
-      
-      else if (whatToDo=="STRIP_E_THRESHOLD") {
+
+      else if (whatToDo=="E_THRESHOLD") {
         AnalysisConfigFile >> DataBuffer;
         m_E_Threshold = atof(DataBuffer.c_str());
         cout << whatToDo << " " << m_E_Threshold << endl;
       }
-      
+
       else {
         ReadingStatus = false;
       }
-      
     }
   }
-  
 }
 
 
 ///////////////////////////////////////////////////////////////////////////
 void TDETECTORNAMEPhysics::Clear(){
-  EventMultiplicity = 0;
   DetectorNumber.clear() ;
   Energy.clear();
   Time.clear();
@@ -208,26 +195,182 @@ void TDETECTORNAMEPhysics::Clear(){
 
 ///////////////////////////////////////////////////////////////////////////
 void TDETECTORNAMEPhysics::ReadConfiguration(string Path){
+  ifstream ConfigFile           ;
+  ConfigFile.open(Path.c_str()) ;
+  string LineBuffer             ;
+  string DataBuffer             ;
+
+  bool check_Theta = false          ;
+  bool check_Phi  = false           ;
+  bool check_R     = false          ;
+  bool check_Thickness = false      ;
+  bool check_Radius = false         ;
+  bool check_Scintillator = false   ;
+  bool check_Height = false         ;
+  bool check_Width = false          ;
+  bool check_Shape = false          ;
+  bool check_X = false              ;
+  bool check_Y = false              ;
+  bool check_Z = false              ;
+  bool ReadingStatus = false        ;
+
+  while (!ConfigFile.eof()){
+
+    getline(ConfigFile, LineBuffer);
+
+    //   If line is a Start Up DETECTORNAME bloc, Reading toggle to true
+    string name="DETECTORNAME";
+    if (LineBuffer.compare(0, name.length(), name) == 0){
+      cout << "///" << endl ;
+      cout << "DETECTORNAME found: " << endl ;
+      ReadingStatus = true ; 
+    }
+
+    //   Reading Block
+    while(ReadingStatus)
+    {
+      // Pickup Next Word
+      ConfigFile >> DataBuffer ;
+
+      //   Comment Line
+      if (DataBuffer.compare(0, 1, "%") == 0) {   
+        ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
+      }
+
+      //   Finding another telescope (safety), toggle out
+      else if (DataBuffer.compare(0, name.length(), name) == 0) {
+        cout << "WARNING: Another Detector is find before standard sequence of Token, Error may occured in Telecope definition" << endl ;
+        ReadingStatus = false ;
+      }
+
+      //Angle method
+      else if (DataBuffer=="THETA=") {
+        check_Theta = true;
+        ConfigFile >> DataBuffer ;
+        cout << "Theta:  " << atof(DataBuffer.c_str()) << "deg" << endl;
+      }
+
+      else if (DataBuffer=="PHI=") {
+        check_Phi = true;
+        ConfigFile >> DataBuffer ;
+        cout << "Phi:  " << atof( DataBuffer.c_str() ) << "deg" << endl;
+      }
+
+      else if (DataBuffer=="R=") {
+        check_R = true;
+        ConfigFile >> DataBuffer ;
+        cout << "R:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
+      }
+
+      //Position method
+      else if (DataBuffer=="X=") {
+        check_X = true;
+        ConfigFile >> DataBuffer ;
+        cout << "X:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
+      }
+
+      else if (DataBuffer=="Y=") {
+        check_Y = true;
+        ConfigFile >> DataBuffer ;
+        cout << "Y:  " << atof( DataBuffer.c_str() ) << "mm"<< endl;
+      }
+
+      else if (DataBuffer=="Z=") {
+        check_Z = true;
+        ConfigFile >> DataBuffer ;
+        cout << "Z:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
+      }
+
+
+      //General
+      else if (DataBuffer=="Shape=") {
+        check_Shape = true;
+        ConfigFile >> DataBuffer ;
+        cout << "Shape:  " << DataBuffer << endl;
+      }
+
+      // Cylindrical shape
+      else if (DataBuffer== "Radius=") {
+        check_Radius = true;
+        ConfigFile >> DataBuffer ;
+        cout << "DETECTORNAME Radius:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
+      }
+
+      // Squared shape
+      else if (DataBuffer=="Width=") {
+        check_Width = true;
+        ConfigFile >> DataBuffer ;
+        cout << "DETECTORNAME Width:  " <<atof( DataBuffer.c_str() ) << "mm" << endl;
+      }
+
+      else if (DataBuffer== "Height=") {
+        check_Height = true;
+        ConfigFile >> DataBuffer ;
+        cout << "DETECTORNAME Height:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
+      }
+
+      // Common
+      else if (DataBuffer=="Thickness=") {
+        check_Thickness = true;
+        ConfigFile >> DataBuffer ;
+        cout << "DETECTORNAME Thickness:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
+      }
+
+      else if (DataBuffer== "Scintillator=") {
+        check_Scintillator = true ;
+        ConfigFile >> DataBuffer ;
+        cout << "DETECTORNAME Scintillator type:  " << DataBuffer << endl;
+      }
+
+      ///////////////////////////////////////////////////
+      //   If no Detector Token and no comment, toggle out
+      else
+      {ReadingStatus = false; cout << "Wrong Token Sequence: Getting out " << DataBuffer << endl ;}
+
+      /////////////////////////////////////////////////
+      //   If All necessary information there, toggle out
+
+      if ( ((check_Theta && check_Phi && check_R) ||( check_X && check_Y && check_Z)  )&& check_Thickness && check_Scintillator && (check_Radius ||  (check_Height && check_Width)) && check_Shape )
+      {
+        m_NumberOfDetector++;
+
+        //   Reinitialisation of Check Boolean
+        check_Theta = false          ;
+        check_Phi  = false           ;
+        check_R     = false          ;
+        check_Thickness = false      ;
+        check_Radius = false         ;
+        check_Scintillator = false   ;
+        check_Height = false         ;
+        check_Width = false          ;
+        check_Shape = false          ;
+        check_X = false              ;
+        check_Y = false              ;
+        check_Z = false              ;
+        ReadingStatus = false        ;
+        cout << "///"<< endl         ;
+      }
+    }
+  }
 }
-      
 
 ///////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMEPhysics::InitSpectra(){  
+void TDETECTORNAMEPhysics::InitSpectra(){
   m_Spectra = new TDETECTORNAMESpectra(m_NumberOfDetector);
 }
 
 ///////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMEPhysics::FillSpectra(){  
+void TDETECTORNAMEPhysics::FillSpectra(){
   m_Spectra -> FillRawSpectra(m_EventData);
   m_Spectra -> FillPreTreatedSpectra(m_PreTreatedData);
   m_Spectra -> FillPhysicsSpectra(m_EventPhysics);
 }
 ///////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMEPhysics::CheckSpectra(){  
-  m_Spectra->CheckSpectra();  
+void TDETECTORNAMEPhysics::CheckSpectra(){
+  m_Spectra->CheckSpectra();
 }
 ///////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMEPhysics::ClearSpectra(){  
+void TDETECTORNAMEPhysics::ClearSpectra(){
   // To be done
 }
 ///////////////////////////////////////////////////////////////////////////
@@ -235,10 +378,10 @@ map< string , TH1*> TDETECTORNAMEPhysics::GetSpectra() {
   if(m_Spectra)
     return m_Spectra->GetMapHisto();
   else{
-    map< vector<string> , TH1*> empty;
+    map< string , TH1*> empty;
     return empty;
   }
-} 
+}
 ////////////////////////////////////////////////////////////////////////////////
 vector<TCanvas*> TDETECTORNAMEPhysics::GetCanvas() {
   if(m_Spectra)
@@ -247,7 +390,7 @@ vector<TCanvas*> TDETECTORNAMEPhysics::GetCanvas() {
     vector<TCanvas*> empty;
     return empty;
   }
-} 
+}
 
 ///////////////////////////////////////////////////////////////////////////
 void TDETECTORNAMEPhysics::WriteSpectra(){
@@ -256,31 +399,11 @@ void TDETECTORNAMEPhysics::WriteSpectra(){
 ///////////////////////////////////////////////////////////////////////////
 void TDETECTORNAMEPhysics::AddParameterToCalibrationManager(){
   CalibrationManager* Cal = CalibrationManager::getInstance();
-  
-  for(int i = 0 ; i < m_NumberOfDetector ; ++i)
-    {
-    
-    for( int j = 0 ; j < 24 ; ++j)
-      {
-      Cal->AddParameter("SHARC", "D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_E","SHARC_D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_E")   ;
-      Cal->AddParameter("SHARC", "D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_T","SHARC_D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_T")   ;
-      }
-    
-    for( int j = 0 ; j < 48 ; ++j)
-      {
-      Cal->AddParameter("SHARC", "D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j+1)+"_E","SHARC_D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j+1)+"_E")   ;
-      Cal->AddParameter("SHARC", "D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j+1)+"_T","SHARC_D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j+1)+"_T")   ;
-      }
-    
-    for( int j = 0 ; j < 1 ; ++j)
-      {
-      Cal->AddParameter("SHARC", "D"+ NPL::itoa(i+1)+"_PAD"+ NPL::itoa(j+1)+"_E","SHARC_D"+ NPL::itoa(i+1)+"_PAD_E")   ;
-      Cal->AddParameter("SHARC", "D"+ NPL::itoa(i+1)+"_PAD"+ NPL::itoa(j+1)+"_T","SHARC_D"+ NPL::itoa(i+1)+"_PAD_T")   ;
-      }
-    }
-  
+  for(int i = 0 ; i < m_NumberOfDetector ; ++i){
+    Cal->AddParameter("DETECTORNAME", "D"+ NPL::itoa(i+1)+"_ENERGY","DETECTORNAME_D"+ NPL::itoa(i+1)+"_ENERGY");
+    Cal->AddParameter("DETECTORNAME", "D"+ NPL::itoa(i+1)+"_TIME","DETECTORNAME_D"+ NPL::itoa(i+1)+"_TIME");
+  }
   return;
-  
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -304,43 +427,13 @@ void TDETECTORNAMEPhysics::InitializeRootOutput(){
 
 ////////////////////////////////////////////////////////////////////////////////
 /////   Specific to DETECTORNAMEArray   ////
-void TDETECTORNAMEPhysics::AddDetector(double Z){
-}
-////////////////////////////////////////////////////////////////////////////////
-TVector3 TDETECTORNAMEPhysics::GetDetectorNormal( const int i) const{
-  return (TVector3(0,0,i));
-}
-////////////////////////////////////////////////////////////////////////////////
-TVector3 TDETECTORNAMEPhysics::GetPositionOfInteraction(const int i) const{
-  TVector3 Position = TVector3(0,0,1);
-  return(Position) ;
-  
-}
 ////////////////////////////////////////////////////////////////////////////////
 void TDETECTORNAMEPhysics::InitializeStandardParameter(){
   //   Enable all channel
   vector< bool > ChannelStatus;
-  m_FrontChannelStatus.clear()    ;
-  m_BackChannelStatus.clear()    ;
-  m_PADChannelStatus.clear() ;
-  
-  ChannelStatus.resize(24,true);
-  for(int i = 0 ; i < m_NumberOfDetector ; ++i){
-    m_FrontChannelStatus[i] = ChannelStatus;
-    }
-  
-  ChannelStatus.resize(48,true);
-  for(int i = 0 ; i < m_NumberOfDetector ; ++i){
-    m_BackChannelStatus[i] = ChannelStatus;
-    }
-  
-  ChannelStatus.resize(1,true);
-  for(int i = 0 ; i < m_NumberOfDetector ; ++i){
-    m_PADChannelStatus[i] = ChannelStatus;
-    }
-  
-  m_MaximumStripMultiplicityAllowed = m_NumberOfDetector   ;
-  
+  for(unsigned int i = 0 ; i  < m_NumberOfDetector ; i++){
+    m_ChannelStatus[i+1]=true;
+  }
   return;
 }
 
@@ -355,14 +448,14 @@ NPL::VDetector* TDETECTORNAMEPhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy_sharc{
+class proxy_DETECTORNAME{
   public:
-    proxy_sharc(){
+    proxy_DETECTORNAME(){
       NPL::DetectorFactory::getInstance()->AddToken("DETECTORNAME","DETECTORNAME");
       NPL::DetectorFactory::getInstance()->AddDetector("DETECTORNAME",TDETECTORNAMEPhysics::Construct);
     }
 };
 
-proxy_sharc p;
+proxy_DETECTORNAME p_DETECTORNAME;
 }
 
