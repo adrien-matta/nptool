@@ -112,8 +112,7 @@ This will run the 11Li(d,3He)10He->8He+n+n simulation and produce a root file lo
 You can now try to analyse this simulated tree using the associated NPAnalysis project:
 
 {% highlight bash %}
-$ npa
-$ cd Example1/
+$ npp Example1
 $ cmake ./
 $ make -jn
 $ npanalysis -R RunToTreat.txt -O Example1
@@ -131,7 +130,7 @@ The Example1 input files and NPAnalysis project are simple basis that can be use
 
 ## A few Basics: 
 
-npsimulation and npanalysis can be run from any directory. npanalysis look in the current directory for an analysis library to load and use, if none available, it limit hte analysis to building the PhysicsTree.
+npsimulation and npanalysis can be run from any directory. npanalysis look in the current directory for an analysis library to load and use, if none available, it limits the analysis to building the PhysicsTree.
 
 One can perform quick analysis of the last simulated tree using:
 
@@ -145,4 +144,11 @@ One can run npsimulation in batch mode (with no UI) and provide instead a geant4
 {% highlight bash %}
 npsimulation -D Example1.detector -E Example1.reaction -B path/to/marcro.mac -O FileName
 {% endhighlight %}
+
+You chain simulation, analysis and display of the result in a single command using the AND operator '&&' :
+{% highlight bash %}
+npsimulation -D Example1.detector -E Example1.reaction -B path/to/marcro.mac -O FileName && npanalysis --last-sim -O FileName && root MyMacro.cxx
+{% endhighlight %}
+
+
 

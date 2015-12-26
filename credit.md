@@ -13,10 +13,13 @@ nptool is an open source collaborative package distributited under [GPL2.0][gpl2
 * N. de Sereville (IPN Orsay) <mailto:deserevi@ipno.in2p3.fr>
 * P. Morfouace (MSU/NSCL) <mailto:morfouac@nscl.msu.edu>
 
-###Detector contributors:
-* M. Labiche (STFC Daresbury Laboratory) <mailto:marc.labiche@stfc.ac.uk>
+###Detector contributors (alphabetical order):
+
+* F. Flavigny (IPN Orsay) <mailto:flavigny@ipno.in2p3.fr>
 * S. Giron
+* M. Labiche (STFC Daresbury Laboratory) <mailto:marc.labiche@stfc.ac.uk>
 * L. Lefevre
+* R. Shearman (NPL / University of Surrey) <mailto:r.shearman@surrey.ac.uk>
 * R. Wilkinson (University of Surrey) <mailto:r.wilkinson@surrey.ac.uk>
 
 ### Various credit and liscence
