@@ -14,16 +14,14 @@
       </a>
        
       <div class="trigger">
-        {% for page in site.pages %}
-          {% if page.title %}
-            {% if page.show_in_nav %}
-              {% for node in site.pages %}
-                {% if page.url == node.url %}
-                  <a class="page-link-current" href="{{ page.url | prepend: site.baseurl }}">{{ page.title | downcase }}</a>
-                {% else %}
-                  <a class="page-link" href="{{ page.url | prepend: site.baseurl }}">{{ page.title | downcase }}</a>
-                {% endif %}
-              {% endfor %}
+        {% for node in site.pages %}
+          {% if node.title %}
+            {% if node.show_in_nav %}
+               {% if node.url == page.url %}
+                 <a class="page-link-current" href="{{ node.url | prepend: site.baseurl }}">{{ node.title | downcase }}</a>
+               {% else %}
+                 <a class="page-link" href="{{ node.url | prepend: site.baseurl }}">{{ node.title | downcase }}</a>
+               {% endif %}
             {% endif %}
           {% endif %}
         {% endfor %}
