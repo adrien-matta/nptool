@@ -1,96 +1,23 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%0.2mg/cm2
 Target
-	THICKNESS= 0.01
-	RADIUS=	5
+	THICKNESS= 10
+	RADIUS=	20
 	MATERIAL= CD2
 	ANGLE= 0
 	X= 0
 	Y= 0
 	Z= 0
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Sharc
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  %Upstream CD
-  SharcQQQ
-    Z= -71
-    R= 0
-    Phi= 0
-    ThicknessDector= 500
-  SharcQQQ
-    Z= -71
-    R= 0
-    Phi= 90
-    ThicknessDector= 500
-  SharcQQQ
-    Z= -71
-    R= 0
-    Phi= 180
-    ThicknessDector= 500
-  SharcQQQ
-    Z= -71
-    R= 0
-    Phi= 270
-    ThicknessDector= 500
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Upstream Box
-  SharcBOX
-    Z= -28.4
-    ThicknessDector1= 500
-    ThicknessDector2= 500
-    ThicknessDector3= 500
-    ThicknessDector4= 500
-    ThicknessPAD1= 0
-    ThicknessPAD2= 0
-    ThicknessPAD3= 0
-    ThicknessPAD4= 0
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Down Stream Box
-  SharcBOX
-    Z= 31.4
-    ThicknessDector1= 140
-    ThicknessDector2= 140
-    ThicknessDector3= 140
-    ThicknessDector4= 140
-    ThicknessPAD1= 1000
-    ThicknessPAD2= 1000
-    ThicknessPAD3= 1000
-    ThicknessPAD4= 1000
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Downstream CD
-  SharcQQQ
-    Z= 67
-    R= 0
-    Phi= 0
-    ThicknessDector= 500
-  SharcQQQ
-    Z= 67
-    R= 0
-    Phi= 90
-    ThicknessDector= 500
-  SharcQQQ
-    Z= 67
-    R= 0
-    Phi= 180
-    ThicknessDector= 500
-  SharcQQQ
-    Z= 67
-    R= 0
-    Phi= 270
-    ThicknessDector= 500
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Plastic
+DETECTORNAME
 	X= 0
 	Y= 0
-	Z= 400
-	Thickness= 0.025
+	Z= 350
+	Thickness= 30
 	Shape= Square
-	Height= 40
+	Height= 70
 	Width= 40
 	Scintillator= BC400
-	LeadThickness= 0.09
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
