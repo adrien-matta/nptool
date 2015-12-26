@@ -6,14 +6,15 @@ show_in_nav: true
 ---
 
 nptool is an open source collaborative package distributited under [GPL2.0][gpl2].
+The package was started in 2009 by Adrien Matta for the MUST2 collaboration.
 
-###Framework contributors:
+### Framework contributors:
 
 * A. Matta (University of Surrey) <mailto:a.matta@surrey.ac.uk>
 * N. de Sereville (IPN Orsay) <mailto:deserevi@ipno.in2p3.fr>
 * P. Morfouace (MSU/NSCL) <mailto:morfouac@nscl.msu.edu>
 
-###Detector contributors (alphabetical order):
+### Detector contributors (alphabetical order):
 
 * F. Flavigny (IPN Orsay) <mailto:flavigny@ipno.in2p3.fr>
 * S. Giron
@@ -21,6 +22,9 @@ nptool is an open source collaborative package distributited under [GPL2.0][gpl2
 * L. Lefevre
 * R. Shearman (NPL / University of Surrey) <mailto:r.shearman@surrey.ac.uk>
 * R. Wilkinson (University of Surrey) <mailto:r.wilkinson@surrey.ac.uk>
+
+### Acknowledgement
+We thanks IPN Orsay and the University of Surrey for their continuous support of the package.
 
 ### Various credit and liscence
 
