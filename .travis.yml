@@ -30,8 +30,7 @@ install:
 script:
   - cd $NPTOOL/NPLib 
   - cmake ./
-  - make -j2
-  - make install
+  - make install 
   - ./scripts/RootLogon.sh 
   - ./scripts/test/all.sh
 

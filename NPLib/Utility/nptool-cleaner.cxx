@@ -52,48 +52,49 @@ int main(int argc , char** argv){
   
   std::string command,command2;
   // Dict     
-  command = "ls ./*/*Dict* > /dev/null 2>/dev/null";
+  command = "ls ./*/*/*Dict* > /dev/null 2>/dev/null";
   return_value=system(command.c_str());             
   if(!return_value){
-    command2 = "rm -f ./*/*Dict* > /dev/null 2>/dev/null";
+    command2 = "rm -f ./*/*/*Dict* > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
   }  
    // DetectorClassList
-  command = "ls ./DetectorClassList.txt > /dev/null 2>/dev/null";
+  command = "ls ./ClassList.txt > /dev/null 2>/dev/null";
   return_value=system(command.c_str());             
   if(!return_value){
-    command2 = "rm -f ./DetectorClassList.txt > /dev/null 2>/dev/null";
+    command2 = "rm -f ./ClassList.txt > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
   }
   
   // pcm 
-  command = "ls ./*/*.pcm > /dev/null 2>/dev/null";
+  command = "ls ./*/*/*.pcm > /dev/null 2>/dev/null";
   return_value=system(command.c_str());             
   if(!return_value){
-    command2 = "rm -f ./*/*.pcm > /dev/null 2>/dev/null";
+    command2 = "rm -f ./*/*/*.pcm > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
   }
  
   // rootmap 
-  command = "ls ./*/*.rootmap > /dev/null 2>/dev/null";
+  command = "ls ./*/*/*.rootmap > /dev/null 2>/dev/null";
   return_value=system(command.c_str());             
   if(!return_value){
-    command2 = "rm -f ./*/*.rootmap > /dev/null 2>/dev/null";
+    command2 = "rm -f ./*/*/*.rootmap > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
   }
   
    // Makefile 
-  command = "ls ./*/Makefile > /dev/null 2>/dev/null";
+  command = "ls ./*/*/Makefile > /dev/null 2>/dev/null";
   return_value=system(command.c_str());             
   if(!return_value){
-    command2 = "rm -f ./*/Makefile > /dev/null 2>/dev/null";
+    command2 = "rm -f ./*/*/Makefile > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
   }
    // ninja
-  command = "ls ./*.ninja > /dev/null 2>/dev/null";
+  command = "ls ./*/*/.ninja > /dev/null 2>/dev/null";
   return_value=system(command.c_str());             
   if(!return_value){
-    command2 = "rm -f ./*.ninja > /dev/null 2>/dev/null";
+// Prefer global stter that guaranty the vector are al the same size
+    command2 = "rm -f ./*/*/.ninja > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
   }
    // lib 
@@ -111,10 +112,10 @@ int main(int argc , char** argv){
     return_value=system(command2.c_str());   
   }
    // CMakeFiles
-  command = "ls ./*/CMakeFiles > /dev/null 2>/dev/null";
+  command = "ls ./*/*/CMakeFiles > /dev/null 2>/dev/null";
   return_value=system(command.c_str());             
   if(!return_value){
-    command2 = "rm -f .Rf ./*/CMakeFiles > /dev/null 2>/dev/null";
+    command2 = "rm -f .Rf ./*/*/CMakeFiles > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
     command2 = "rm -f .Rf ./CMakeFiles > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
@@ -152,17 +153,17 @@ int main(int argc , char** argv){
     return_value=system(command2.c_str());   
   }
    // so 
-  command = "ls ./*/*.so > /dev/null 2>/dev/null";
+  command = "ls ./*/*/*.so > /dev/null 2>/dev/null";
   return_value=system(command.c_str());             
   if(!return_value){
-    command2 = "rm -f ./*/*.so > /dev/null 2>/dev/null";
+    command2 = "rm -f ./*/*/*.so > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
   }
    // dylib
-  command = "ls ./*/*.dylib > /dev/null 2>/dev/null";
+  command = "ls ./*/*/*.dylib > /dev/null 2>/dev/null";
   return_value=system(command.c_str());             
   if(!return_value){
-    command2 = "rm -f ./*/*.dylib > /dev/null 2>/dev/null";
+    command2 = "rm -f ./*/*/*.dylib > /dev/null 2>/dev/null";
     return_value=system(command2.c_str());   
   }
     //bin 

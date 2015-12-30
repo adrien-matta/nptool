@@ -114,7 +114,7 @@ int main(int argc, char** argv){
 #ifdef G4UI_USE
 #ifdef G4VIS_USE
     string Path_Macro = getenv("NPTOOL");
-    Path_Macro+="/NPSimulation/macro/";
+    Path_Macro+="/NPSimulation/ressources/macro/";
 
     UImanager->ApplyCommand("/control/execute " +Path_Macro+"aliases.mac");
     visManager = new G4VisExecutive("Quiet");
@@ -127,7 +127,7 @@ int main(int argc, char** argv){
 #ifdef __APPLE__
     string command= "osascript ";
     command+= getenv("NPTOOL");
-    command+="/NPSimulation/scripts/bringtofront.osa & ";
+    command+="/NPSimulation/ressources/scripts/bringtofront.osa & ";
     int res =system(command.c_str());
     res =0;
 

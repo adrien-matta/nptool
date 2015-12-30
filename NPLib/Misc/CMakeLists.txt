@@ -1,7 +1,0 @@
-add_custom_command(OUTPUT TTacPhysicsDict.cxx COMMAND ../scripts/build_dict.sh TTacPhysics.h TTacPhysicsDict.cxx TTacPhysics.rootmap libNPMisc.dylib DEPENDS TTacPhysics.h)
-add_custom_command(OUTPUT TTriggerDataDict.cxx COMMAND ../scripts/build_dict.sh TTriggerData.h TTriggerDataDict.cxx TTriggerData.rootmap libNPMisc.dylib DEPENDS TTriggerData.h)
-add_custom_command(OUTPUT TTacDataDict.cxx COMMAND ../scripts/build_dict.sh TTacData.h TTacDataDict.cxx TTacData.rootmap libNPMisc.dylib DEPENDS TTacData.h)
-add_library(NPMisc SHARED TTacPhysics.cxx TTacData.cxx TTriggerData.cxx TTacDataDict.cxx TTriggerDataDict.cxx TTacPhysicsDict.cxx)
-target_link_libraries(NPMisc ${ROOT_LIBRARIES} NPCore) 
-install(FILES TTacData.h TTriggerData.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
-

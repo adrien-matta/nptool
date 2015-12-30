@@ -26,7 +26,7 @@ include(${NPLib_USE_FILE})
 configure_file(Core/NPSimulationVersion.hh.in Core/NPSimulationVersion.hh @ONLY) 
 
 # look for Root
-include("../NPLib/Root.cmake")
+include("../NPLib/ressources/CMake/Root.cmake")
 
 # If the compiler is Clang, silence the unrecognised flags
 if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*Clang.*")
@@ -69,8 +69,6 @@ if(rdet)
 endif()
 
 # Add root to the link and include directories
-#include_directories( ${ROOT_INCLUDE_DIR})
-#link_directories( ${ROOT_LIBRARY_DIR})
 
 if(Geant4_gdml_FOUND)  
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNPS_GDML")     
@@ -88,21 +86,14 @@ set(CMAKE_INCLUDE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/include )
 
 # A macro that return the list of directory to compile
 MACRO(subdirlist result curdir)
-  FILE(GLOB children RELATIVE ${curdir} ${curdir}/*)
+  FILE(GLOB children RELATIVE ${curdir} ${curdir}/Detectors/*)
   SET(dirlist "")
   FOREACH(child ${children})
     IF(IS_DIRECTORY ${curdir}/${child})
       string(COMPARE EQUAL "${child}" ".tmp" r0)
-      string(COMPARE EQUAL "${child}" "lib" r1)
-      string(COMPARE EQUAL "${child}" "scripts" r2)
-      string(COMPARE EQUAL "${child}" "CMakeFiles" r3)
-      string(COMPARE EQUAL "${child}" "Core" r4)
-      string(COMPARE EQUAL "${child}" "bin" r5)
-      string(COMPARE EQUAL "${child}" "macro" r6)
-      string(COMPARE EQUAL "${child}" "icons" r7)
-      IF(NOT r0 AND NOT r1 AND NOT r2 AND NOT r3 AND NOT r4 AND NOT r5 AND NOT r6 AND NOT r7)
-        string(COMPARE EQUAL "${DETLIST}" "" r100)
-        IF(r100)
+      IF(NOT r0 )
+        string(COMPARE EQUAL "${DETLIST}" "" r1)
+        IF(r1)
           LIST(APPEND dirlist ${child})
         ELSEIF(${DETLIST} MATCHES ".*${child}.*" )
           LIST(APPEND dirlist ${child}) 
@@ -126,7 +117,7 @@ foreach(subdir ${SUB_DIRECTORY})
 
 add_executable(npsimulation Simulation.cc)
 target_Link_libraries(npsimulation ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} NPSCore)
-configure_file(macro/gui.mac.in macro/gui.mac @ONLY) 
-configure_file(macro/aliases.mac.in macro/aliases.mac @ONLY) 
+configure_file(ressources/macro/gui.mac.in ressources/macro/gui.mac @ONLY) 
+configure_file(ressources/macro/aliases.mac.in ressources/macro/aliases.mac @ONLY) 
 
 install(PROGRAMS npsimulation DESTINATION ${CMAKE_BINARY_OUTPUT_DIRECTORY})

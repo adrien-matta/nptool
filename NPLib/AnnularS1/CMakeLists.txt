@@ -1,5 +1,0 @@
-add_custom_command(OUTPUT TAnnularS1PhysicsDict.cxx COMMAND ../scripts/build_dict.sh TAnnularS1Physics.h TAnnularS1PhysicsDict.cxx TAnnularS1Physics.rootmap libNPAnnularS1.dylib DEPENDS TAnnularS1Physics.h)
-add_custom_command(OUTPUT TS1DataDict.cxx COMMAND ../scripts/build_dict.sh TS1Data.h TS1DataDict.cxx TS1Data.rootmap libNPAnnularS1.dylib DEPENDS TS1Data.h)
-add_library(NPAnnularS1 SHARED TS1Data.cxx TAnnularS1Physics.cxx TS1DataDict.cxx TAnnularS1PhysicsDict.cxx)
-target_link_libraries(NPAnnularS1 ${ROOT_LIBRARIES} NPCore) 
-install(FILES TS1Data.h TAnnularS1Physics.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})

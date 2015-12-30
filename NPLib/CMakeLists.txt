@@ -27,7 +27,7 @@ cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
 set(CMAKE_INSTALL_MESSAGE LAZY) 
 
 # look for Root
-include("Root.cmake")
+include("ressources/CMake/Root.cmake")
 
 # If the compiler is Clang, silence the unrecognised flags
 if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*Clang.*")
@@ -65,28 +65,20 @@ set(CMAKE_INCLUDE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/include )
 
 # A macro that return the list of directory to compile
 MACRO(subdirlist result curdir)
-  FILE(GLOB children RELATIVE ${curdir} ${curdir}/*)
+  FILE(GLOB children RELATIVE ${curdir} ${curdir}/Detectors/*)
   SET(dirlist "")
   FOREACH(child ${children})
     IF(IS_DIRECTORY ${curdir}/${child})
-      string(COMPARE EQUAL "${child}" ".tmp" r0)
-      string(COMPARE EQUAL "${child}" "scripts" r1)
-      string(COMPARE EQUAL "${child}" "include" r2)
-      string(COMPARE EQUAL "${child}" "lib" r3)
-      string(COMPARE EQUAL "${child}" "CMakeFiles" r4)
-      string(COMPARE EQUAL "${child}" "Core" r5)
-      string(COMPARE EQUAL "${child}" "Physics" r6)
-      string(COMPARE EQUAL "${child}" "InitialConditions" r7)
-      string(COMPARE EQUAL "${child}" "InteractionCoordinates" r8)
-      string(COMPARE EQUAL "${child}" "Utility" r9)
-      string(COMPARE EQUAL "${child}" "bin" r10)
-      string(COMPARE EQUAL "${child}" "Calibration" r11)
-      string(COMPARE EQUAL "${child}" "Online" r111)
-      IF(NOT r0 AND NOT r1 AND NOT r2 AND NOT r3 AND NOT r4 AND NOT r5 AND NOT r6 AND NOT r7 AND NOT r8 AND NOT r9 AND NOT r10 AND NOT r11 AND NOT r111)
-        string(COMPARE EQUAL "${DETLIST}" "" r12)
-        IF(r12)
+      string(COMPARE EQUAL "${child}" "CMakeFiles" r0)
+      string(COMPARE EQUAL "${child}" ".DS_Store" r1) 
+      set(det "")
+      string(REPLACE "Detectors/" "" det ${child})
+
+      IF(NOT r0 AND NOT r1)
+        string(COMPARE EQUAL "${DETLIST}" "" r2)
+        IF(r2)
           LIST(APPEND dirlist ${child})
-        ELSEIF(${DETLIST} MATCHES ".*${child}.*" )
+        ELSEIF(${DETLIST} MATCHES ".*${det}.*" )
           LIST(APPEND dirlist ${child}) 
         ENDIF()
       ENDIF()
@@ -95,32 +87,36 @@ MACRO(subdirlist result curdir)
   SET(${result} ${dirlist})
 ENDMACRO()
 
-# Call the Macro
-subdirlist(SUB_DIRECTORY ${CMAKE_BINARY_DIR})
-set(SUB_DIRECTORY ${SUB_DIRECTORY} Core Physics Calibration InitialConditions InteractionCoordinates Online Utility)
+# Add include directories to all target
 include_directories("Core/")
 include_directories("Physics/")
 include_directories("Online/")
 
+# Call the macro
+subdirlist(SUB_DIRECTORY ${CMAKE_BINARY_DIR})
+set(SUB_DIRECTORY ${SUB_DIRECTORY} Core Physics Calibration InitialConditions InteractionCoordinates Online Utility)
 # Add each sub folder to the project
 set(TARGET_LIST "")
 foreach(subdir ${SUB_DIRECTORY})
 # add the subdirectory
   add_subdirectory(${subdir})
-  string(COMPARE EQUAL "${subdir}" "Utility" r0)
-  string(COMPARE EQUAL "${subdir}" "Maya" r1)
-
+  set(target "")
+  string(REPLACE "Detectors/" "" target ${subdir})
+  string(COMPARE EQUAL "${target}" "Utility" r0)
+  string(COMPARE EQUAL "${target}" "Maya" r1)
+   
   if(NOT r0 AND NOT r1)
-    LIST(APPEND TARGET_LIST NP${subdir})
+    LIST(APPEND TARGET_LIST NP${target})
   endif()
   if(r1 AND DEFINED ENV{ROOTSYS})
-	LIST(APPEND TARGET_LIST NP${subdir})
+	LIST(APPEND TARGET_LIST NP${target})
   endif()
 
 endforeach()
+
 export(TARGETS ${TARGET_LIST} FILE NPLibTargets.cmake)
 export(PACKAGE NPLib)
 file(RELATIVE_PATH REL_INCLUDE_DIR "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}" "${CMAKE_INCLUDE_OUTPUT_DIRECTORY}")
 set(CONF_INCLUDE_DIRS "./" "./")
-configure_file(NPLibConfig.cmake.in "${PROJECT_BINARY_DIR}/NPLibConfig.cmake" @ONLY)
+configure_file(ressources/CMake/NPLibConfig.cmake.in "${PROJECT_BINARY_DIR}/NPLibConfig.cmake" @ONLY)
 

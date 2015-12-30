@@ -4,7 +4,7 @@ liblist
 .detector_libs
 DetectorList.inc
 bin
-DetectorClassList.txt
+ClassList.txt
 Utility/Makefile
 Utility/npanalysis
 Utility/nptool-installer
