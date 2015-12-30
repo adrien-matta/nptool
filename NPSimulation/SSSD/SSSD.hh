@@ -48,7 +48,7 @@ namespace SSSD_LOCAL{
    const G4double EnergyThreshold = 100*keV;
    // Geometry
    const G4double DetectorSize      = 68*mm           ;
-   const G4double SiliconThickness  = 15*micrometer   ;
+   const G4double SiliconThickness  = 20*micrometer   ;
    const G4double FrameThickness    = 3*mm            ;
    const G4double SiliconSize       = 50*mm           ;
    const G4double AluThickness      = 0.4*micrometer  ;
