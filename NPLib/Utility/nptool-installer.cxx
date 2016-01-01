@@ -77,6 +77,34 @@ int main(int argc , char** argv){
     } 
   }
   
+  path = getenv("NPTOOL");
+  path+="/NPLib/Detectors";
+  if ((dir = opendir (path.c_str())) != NULL){
+    while ((ent = readdir (dir)) != NULL) {
+      if(ent->d_type == DT_DIR){
+        string folderName = ent->d_name ;
+        if(strncmp(folderName.c_str(),".",1)!=0){
+          if(detlist.length()==0 || detlist.find(folderName)!=std::string::npos){
+            string command = "ls "+ folderName+"/*.pcm > /dev/null 2>/dev/null";
+            return_value=system(command.c_str());             
+            if(!return_value){
+              string cmd1 = "cp " + folderName+"/*.pcm lib/ > /dev/null 2>/dev/null"; 
+              return_value=system(cmd1.c_str());
+            }
+
+           // command = "ls "+ folderName+"/*.rootmap > /dev/null 2>/dev/null";
+            command = "ls Detectors/"+ folderName+"/*.rootmap ";
+
+            return_value=system(command.c_str());             
+            if(!return_value){
+              string cmd2 = "cp Detectors/" + folderName+"/*.rootmap lib/ > /dev/null 2>/dev/null" ;
+              return_value=system(cmd2.c_str());
+            }
+          }
+        }
+      } 
+    } 
+  }
   // same for detector level
   // Copy pcm and rootmap file
   path = getenv("NPTOOL");
