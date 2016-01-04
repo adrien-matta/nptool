@@ -1,5 +1,5 @@
-#ifndef TSHARCSPECTRA_H
-#define TSHARCSPECTRA_H
+#ifndef TDETECTORNAMESPECTRA_H
+#define TDETECTORNAMESPECTRA_H
 /*****************************************************************************
  * Copyright (C) 2009-XYEARX   this file is part of the NPTool Project       *
  *                                                                           *
@@ -27,30 +27,37 @@
 #include "TDETECTORNAMEData.h"
 #include "TDETECTORNAMEPhysics.h"
 
-// ForwardDeclaration
-class TDETECTORNAMEPhysics ;
+// Forward Declaration
+class TDETECTORNAMEPhysics;
 
-class TDETECTORNAMESpectra:public VSpectra {
+
+class TDETECTORNAMESpectra : public VSpectra 
+{
+  //////////////////////////////////////////////////////////////
+  // constructor and destructor
   public:
-    // constructor and destructor
     TDETECTORNAMESpectra();
-    TDETECTORNAMESpectra(unsigned int NumberOfDetector);
+    TDETECTORNAMESpectra(unsigned int NumberOfDetectors);
     ~TDETECTORNAMESpectra();
 
+  //////////////////////////////////////////////////////////////
+  // Initialization methods
   private:
-    // Initialization methods
     void InitRawSpectra();
     void InitPreTreatedSpectra();
     void InitPhysicsSpectra();
 
+  //////////////////////////////////////////////////////////////
+  // Filling methods
   public:
-    // Filling methods
     void FillRawSpectra(TDETECTORNAMEData*);
     void FillPreTreatedSpectra(TDETECTORNAMEData*);
     void FillPhysicsSpectra(TDETECTORNAMEPhysics*);
 
-  private: // Information on SHARC
-    unsigned int fNumberOfDetector;
+  //////////////////////////////////////////////////////////////
+  // Detector parameters 
+  private:
+    unsigned int fNumberOfDetectors;
     unsigned int fStripFront;
     unsigned int fStripBack;
     unsigned int fPad;

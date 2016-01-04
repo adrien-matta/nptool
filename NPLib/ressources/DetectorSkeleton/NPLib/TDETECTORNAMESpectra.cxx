@@ -20,81 +20,91 @@
  *                                                                           *
  *****************************************************************************/
 
-// NPL
+// class header 
 #include "TDETECTORNAMESpectra.h"
-#include "NPOptionManager.h"
-#include "NPGlobalSystemOfUnits.h"
-#include "NPPhysicalConstants.h"
-#ifdef NP_SYSTEM_OF_UNITS_H
-using namespace NPUNITS;
-#endif
 
 // STL
-#include <stdexcept>
 #include <iostream>  
-#include <cstdlib>
 #include <string>
 using namespace std;
 
+// NPTool header
+#include "NPOptionManager.h"
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
-TDETECTORNAMESpectra::TDETECTORNAMESpectra(){
+TDETECTORNAMESpectra::TDETECTORNAMESpectra() 
+   : fNumberOfDetectors(0),
+     fStripFront(24),
+     fStripBack(48) {
   SetName("DETECTORNAME");
-  fNumberOfDetector = 0;
-  fStripFront=24;
-  fStripBack=48;
 }
 
+
+
 ////////////////////////////////////////////////////////////////////////////////
-TDETECTORNAMESpectra::TDETECTORNAMESpectra(unsigned int NumberOfDetector){
+TDETECTORNAMESpectra::TDETECTORNAMESpectra(unsigned int NumberOfDetectors) {
   if(NPOptionManager::getInstance()->GetVerboseLevel()>0)
     cout << "************************************************" << endl
-      << "TDETECTORNAMESpectra : Initalising control spectra for " 
-      << NumberOfDetector << " Detectors" << endl
+      << "TDETECTORNAMESpectra : Initalizing control spectra for " 
+      << NumberOfDetectors << " Detectors" << endl
       << "************************************************" << endl ;
   SetName("DETECTORNAME");
-  fNumberOfDetector = NumberOfDetector;
+  fNumberOfDetectors = NumberOfDetectors;
+  fStripFront        = 24;
+  fStripBack         = 48;
 
   InitRawSpectra();
   InitPreTreatedSpectra();
   InitPhysicsSpectra();
 }
 
-////////////////////////////////////////////////////////////////////////////////
-TDETECTORNAMESpectra::~TDETECTORNAMESpectra(){
-}
+
 
 ////////////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMESpectra::InitRawSpectra(){
+TDETECTORNAMESpectra::~TDETECTORNAMESpectra() {
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+void TDETECTORNAMESpectra::InitRawSpectra() {
   static string name;
-  for (unsigned int i = 0; i < fNumberOfDetector; i++) { // loop on number of detectors
+  for (unsigned int i = 0; i < fNumberOfDetectors; i++) { // loop on number of detectors
     name = "DETECTORNAMERaw"+NPL::itoa(i+1);
     // STR_FRONT_E_RAW
     name = "DETECTORNAME"+NPL::itoa(i+1)+"_ENERGY_RAW";
-    AddHisto1D(name, name, 4096, 0, 16384, "DETECTORNAME/RAW")->Draw("colz");
+    AddHisto1D(name, name, 4096, 0, 16384, "DETECTORNAME/RAW");
   } // end loop on number of detectors
 }
 
+
+
 ////////////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMESpectra::InitPreTreatedSpectra(){
+void TDETECTORNAMESpectra::InitPreTreatedSpectra() {
   static string name;
-  for (unsigned int i = 0; i < fNumberOfDetector; i++) { // loop on number of detectors
+  for (unsigned int i = 0; i < fNumberOfDetectors; i++) { // loop on number of detectors
     // STR_FRONT_E_CAL
     name = "DETECTORNAME"+NPL::itoa(i+1)+"_ENERGY_CAL";
     AddHisto1D(name, name, 500, 0, 25, "DETECTORNAME/CAL");
   }  // end loop on number of detectors
 }
 
+
+
 ////////////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMESpectra::InitPhysicsSpectra(){
+void TDETECTORNAMESpectra::InitPhysicsSpectra() {
   static string name;
   // Kinematic Plot 
   name = "DETECTORNAME_ENERGY_TIME";
-  AddHisto2D(name, name,500,-500,0,500,0,50,"DETECTORNAME/PHY");
+  AddHisto2D(name, name, 500, -500, 0, 500, 0, 50, "DETECTORNAME/PHY");
 }
 
+
+
 ////////////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMESpectra::FillRawSpectra(TDETECTORNAMEData* RawData){
+void TDETECTORNAMESpectra::FillRawSpectra(TDETECTORNAMEData* RawData) {
   static string name;
   static string family;
 
@@ -104,9 +114,8 @@ void TDETECTORNAMESpectra::FillRawSpectra(TDETECTORNAMEData* RawData){
     name = "DETECTORNAME"+NPL::itoa(RawData->GetE_DetectorNbr(i))+"_ENERGY_RAW";
     family = "DETECTORNAME/RAW";
 
-    GetHisto(family,name)
-      -> Fill(RawData->GetE_DetectorNbr(i), 
-          RawData->Get_Energy(i));
+    GetHisto(family,name) -> Fill(RawData->GetE_DetectorNbr(i), 
+                                  RawData->Get_Energy(i));
   }
 
   // Time
@@ -115,14 +124,15 @@ void TDETECTORNAMESpectra::FillRawSpectra(TDETECTORNAMEData* RawData){
     name = "DETECTORNAME"+NPL::itoa(RawData->GetT_DetectorNbr(i))+"_TIME_RAW";
     family = "DETECTORNAME/RAW";
 
-    GetHisto(family,name)
-      -> Fill(RawData->GetT_DetectorNbr(i), 
-          RawData->Get_Time(i));
+    GetHisto(family,name) -> Fill(RawData->GetT_DetectorNbr(i), 
+                                  RawData->Get_Time(i));
   }
 }
 
+
+
 ////////////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMESpectra::FillPreTreatedSpectra(TDETECTORNAMEData* PreTreatedData){
+void TDETECTORNAMESpectra::FillPreTreatedSpectra(TDETECTORNAMEData* PreTreatedData) {
   static string name;
   static string family;
   
@@ -132,9 +142,8 @@ void TDETECTORNAMESpectra::FillPreTreatedSpectra(TDETECTORNAMEData* PreTreatedDa
     name = "DETECTORNAME"+NPL::itoa(PreTreatedData->GetE_DetectorNbr(i))+"_ENERGY_RAW";
     family = "DETECTORNAME/CAL";
 
-    GetHisto(family,name)
-      -> Fill(PreTreatedData->GetE_DetectorNbr(i), 
-          PreTreatedData->Get_Energy(i));
+    GetHisto(family,name) -> Fill(PreTreatedData->GetE_DetectorNbr(i), 
+                                  PreTreatedData->Get_Energy(i));
   }
 
   // Time
@@ -143,14 +152,15 @@ void TDETECTORNAMESpectra::FillPreTreatedSpectra(TDETECTORNAMEData* PreTreatedDa
     name = "DETECTORNAME"+NPL::itoa(PreTreatedData->GetT_DetectorNbr(i))+"_TIME_RAW";
     family = "DETECTORNAME/CAL";
 
-    GetHisto(family,name)
-      -> Fill(PreTreatedData->GetT_DetectorNbr(i), 
-          PreTreatedData->Get_Time(i));
+    GetHisto(family,name) -> Fill(PreTreatedData->GetT_DetectorNbr(i), 
+                                  PreTreatedData->Get_Time(i));
   }
 }
 
+
+
 ////////////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMESpectra::FillPhysicsSpectra(TDETECTORNAMEPhysics* Physics){
+void TDETECTORNAMESpectra::FillPhysicsSpectra(TDETECTORNAMEPhysics* Physics) {
   static string name;
   static string family;
   family= "DETECTORNAME/PHY";
@@ -159,7 +169,7 @@ void TDETECTORNAMESpectra::FillPhysicsSpectra(TDETECTORNAMEPhysics* Physics){
   unsigned int sizeE = Physics->Energy.size();
   for(unsigned int i = 0 ; i < sizeE ; i++){
     name = "DETECTORNAME_ENERGY_TIME";
-    GetHisto(family,name)-> Fill(Physics->Energy[i],Physics->Time[i]);
+    GetHisto(family,name) -> Fill(Physics->Energy[i],Physics->Time[i]);
   }
 }
 

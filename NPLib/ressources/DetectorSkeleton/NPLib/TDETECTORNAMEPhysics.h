@@ -1,5 +1,5 @@
-#ifndef TSHARCPHYSICS_H
-#define TSHARCPHYSICS_H
+#ifndef TDETECTORNAMEPHYSICS_H
+#define TDETECTORNAMEPHYSICS_H
 /*****************************************************************************
  * Copyright (C) 2009-XYEARX   this file is part of the NPTool Project       *
  *                                                                           *
