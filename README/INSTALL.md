@@ -33,10 +33,10 @@ the archive in the directory where you want to install the NPTool package.
 
 ## 2. Getting ready to build
 The NPTool package depends on 4 third-party softwares:
-	+ Geant4 (http://geant4.web.cern.ch/geant4)
-	+ ROOT (http://root.cern.ch) with libMathMore support
-	+ CLHEP (http://www.cern.ch/clhep)
-	+ GSL (http://www.gnu.org/software/gsl)
+	- Geant4 (http://geant4.web.cern.ch/geant4)
+	- ROOT (http://root.cern.ch) with libMathMore support
+	- CLHEP (http://www.cern.ch/clhep)
+	- GSL (http://www.gnu.org/software/gsl)
 
 Be sure to source the `<pathname>/nptool/nptool.sh` script in order to define
 environment variables and aliases. Then, go to the $NPTOOL/NPLib directory:
