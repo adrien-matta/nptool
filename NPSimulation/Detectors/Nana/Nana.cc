@@ -311,12 +311,30 @@ void Nana::ConstructDetector(G4LogicalVolume* world){
 
  G4LogicalVolume* logicLead = new G4LogicalVolume(solidLead, Lead, "logicLead", 0, 0, 0);
   G4VisAttributes* lead_vis= new G4VisAttributes(G4Colour(0.3, 0.3, 0.3));
-logicLead->SetVisAttributes(lead_vis);
+  logicLead->SetVisAttributes(lead_vis);
  unsigned int mysize = m_Pos.size();
   for(unsigned int i = 0 ; i < mysize ; i++){
     new G4PVPlacement(G4Transform3D(*m_Rot[i], m_Pos[i]), ConstructDetector(),  "NanaDetector", world, false, i+2); 
-  
-    G4RotationMatrix* r =  new G4RotationMatrix();
+ 
+
+  G4Material* Wood = MaterialManager::getInstance()->GetMaterialFromLibrary("Wood");
+
+  G4Box* table = new G4Box("Table",1*m,1*m,1*cm);
+    G4LogicalVolume* logicTable= new G4LogicalVolume(table, Wood, "logicTable", 0, 0, 0);
+
+   G4RotationMatrix* r = new G4RotationMatrix();
+   r->rotateX(90*deg);
+  new G4PVPlacement(r,G4ThreeVector(0,-5*cm,0), 
+        logicTable, 
+        "Nana_Table", 
+        world, 
+        false, 
+        0);
+
+
+
+
+/*    G4RotationMatrix* r =  new G4RotationMatrix();
     r->rotateX(-90*deg);
      r->rotateY(60*deg);
 
@@ -355,23 +373,7 @@ logicLead->SetVisAttributes(lead_vis);
         world, 
         false, 
         i+1);
-
-
- /*   new G4PVPlacement(G4Transform3D(*m_Rot[i], m_Pos[i]+G4ThreeVector(0,0, +PMTFace+3*cm)), 
-        logicLead, 
-        "Nana_Lead_Support", 
-        world, 
-        false, 
-        i+1);
-    new G4PVPlacement(G4Transform3D(*m_Rot[i], m_Pos[i]+G4ThreeVector(0,0,-PMTFace-3*cm)), 
-        logicLead, 
-        "Nana_Lead_Support", 
-        world, 
-        false, 
-        i+1);
-
 */
-
   }
 }
 

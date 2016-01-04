@@ -29,15 +29,13 @@ PS_Calorimeter::PS_Calorimeter(G4String name, vector<G4int> NestingLevel,G4int d
   m_NestingLevel = NestingLevel;
 }
 
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 PS_Calorimeter::~PS_Calorimeter(){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4bool PS_Calorimeter::ProcessHits(G4Step* aStep, G4TouchableHistory*){
-
-  // contain Energy, Time + as many copy number as nested volume
+  // Contain Energy, Time + as many copy number as nested volume
   unsigned int mysize = m_NestingLevel.size(); 
   G4double* Infos = new G4double[2+mysize];
   Infos[0] = aStep->GetTotalEnergyDeposit();

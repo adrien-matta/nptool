@@ -40,11 +40,10 @@
 
 // NPTool header
 #include "DETECTORNAME.hh"
-#include "ObsoleteGeneralScorers.hh"
+#include "CalorimeterScorers.hh"
 #include "RootOutput.h"
 #include "MaterialManager.hh"
 #include "NPSDetectorFactory.hh"
-using namespace OBSOLETEGENERALSCORERS ;
 // CLHEP header
 #include "CLHEP/Random/RandGauss.h"
 
@@ -55,11 +54,13 @@ using namespace CLHEP;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace DETECTORNAME{
   // Energy and time Resolution
-  const G4double ResoTime    = 4.2         ;// = 10ns of Resolution   //   Unit is MeV/2.35
-  const G4double ResoEnergy  = 5.0         ;// Resolution in %
+  const double ResoTime = 4.5*ns ;
+  const double ResoEnergy = 5.0*MeV ;
+  const double Radius = 5*mm ; 
+  const double Width = 10*mm ;
+  const double Thickness = 30*mm ;
+  const string Scintillator = "BC400";
 }
-
-using namespace DETECTORNAME ;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -67,60 +68,41 @@ using namespace DETECTORNAME ;
 DETECTORNAME::DETECTORNAME(){
   m_Event = new TDETECTORNAMEData() ;
   m_DETECTORNAMEScorer = 0;
+  m_SquareDetector = 0;
+  m_CylindricalDetector = 0;
+
+
+ // RGB Color + Transparency
+ m_VisSquare = new G4VisAttributes(G4Colour(0, 1, 0, 0.5));   
+ m_VisCylinder = new G4VisAttributes(G4Colour(0, 0, 1, 0.5));   
+
 }
 
 DETECTORNAME::~DETECTORNAME(){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void DETECTORNAME::AddDETECTORNAME(   G4double  R                       ,
-    G4double  Theta                   ,
-    G4double  Phi                  ,
-    G4double   DETECTORNAMEThickness   ,
-    G4double   DETECTORNAMERadius         ,
-    G4String    Scintillator         ,
-    G4double    LeadThickness         )
-{
-
-  m_R.push_back(R)                                         ;
-  m_Theta.push_back(Theta)                                ;
-  m_Phi.push_back(Phi)                                     ;
-  m_DETECTORNAMEThickness.push_back(DETECTORNAMEThickness)   ;
-  m_LeadThickness.push_back(LeadThickness)            ;
-  m_Scintillator.push_back(Scintillator)               ;
-  m_DETECTORNAMERadius.push_back(DETECTORNAMERadius)            ; // cylindrical shape
-  m_DETECTORNAMEHeight.push_back(-1)                              ; // squared shape
-  m_DETECTORNAMEWidth.push_back(-1)                              ; // squared shape
+void DETECTORNAME::AddDETECTORNAME(double  R, double  Theta, double  Phi, string  Shape){
+  m_R.push_back(R);
+  m_Theta.push_back(Theta);
+  m_Phi.push_back(Phi);
+  m_Shape.push_back(Shape);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void DETECTORNAME::AddDETECTORNAME(   G4double R                      ,
-    G4double Theta                ,
-    G4double Phi                     ,
-    G4double Height                  ,
-    G4double Width                  ,
-    G4double DETECTORNAMEThickness   ,
-    G4String Scintillator         ,
-    G4double LeadThickness      )
-{
-  m_R.push_back(R)                                         ;
-  m_Theta.push_back(Theta)                                ;
-  m_Phi.push_back(Phi)                                     ;
-  m_DETECTORNAMEThickness.push_back(DETECTORNAMEThickness)   ;
-  m_LeadThickness.push_back(LeadThickness)            ;
-  m_Scintillator.push_back(Scintillator)               ;
-  m_DETECTORNAMERadius.push_back(-1)            ; // cylindrical shape
-  m_DETECTORNAMEHeight.push_back(Height)                        ; // squared shape
-  m_DETECTORNAMEWidth.push_back(Width)                           ; // squared shape
-
+G4LogicalVolume* DETECTORNAME::BuildSquareDetector(){
+  if(!m_SquareDetector){
+    G4Box* box = new G4Box("DETECTORNAME_Box",DETECTORNAME::Width*0.5,
+      DETECTORNAME::Width*0.5,DETECTORNAME::Thickness*0.5)
+  
+    m_SquareDetector = new G4LogicalVolume(box,m_Scintillator,"logic_DETECTORNAME_Box",0,0,0);
+    logicPADDetector->SetVisAttributes(m_VisSquare);
+  }
 }
-
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Virtual Method of NPS::VDetector class
-
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
@@ -130,19 +112,13 @@ void DETECTORNAME::ReadConfiguration(string Path){
   string LineBuffer          ;
   string DataBuffer          ;
 
-  G4double Theta = 0 , Phi = 0 , R = 0 , Thickness = 0 , Radius = 0 ;
-  G4double  LeadThickness = 0, X = 0 , Y = 0 , Z = 0 , Width = 0 , Height = 0 ;
-  G4String Scintillator, Shape ;
+  double Theta = 0 , Phi = 0 , R = 0 ;
+  double X = 0 , Y = 0 , Z = 0 ;
+  string , Shape ;
 
   bool check_Theta = false ;
   bool check_Phi = false ;
   bool check_R = false ;
-  bool check_Thickness = false ;
-  bool check_Radius = false ;
-  bool check_LeadThickness = false ;
-  bool check_Scintillator = false ;
-  bool check_Height = false ;
-  bool check_Width = false ;
   bool check_Shape = false ;
   bool check_X = false ;
   bool check_Y = false ;
@@ -154,11 +130,12 @@ void DETECTORNAME::ReadConfiguration(string Path){
     getline(ConfigFile, LineBuffer);
 
     //   If line is a Start Up DETECTORNAME bloc, Reading toggle to true      
-    if (LineBuffer.compare(0, 7, "DETECTORNAME") == 0) {
-      G4cout << "///" << G4endl           ;
-      G4cout << "Platic found: " << G4endl   ;        
-      ReadingStatus = true ;
+    string name = "DETECTORNAME";
 
+    if (LineBuffer.compare(0, name.length(), name) == 0) {
+      G4cout << "///" << G4endl           ;
+      G4cout << "DETECTORNAME found: " << G4endl   ;        
+      ReadingStatus = true ;
     }
 
     //   Else don't toggle to Reading Block Status
@@ -175,8 +152,8 @@ void DETECTORNAME::ReadConfiguration(string Path){
       }
 
       //   Finding another telescope (safety), toggle out
-      else if (DataBuffer.compare(0, 6, "DETECTORNAME") == 0) {
-        G4cout << "WARNING: Another Telescope is find before standard sequence of Token, Error may occured in Telecope definition" << G4endl ;
+      else if (DataBuffer.compare(0, name.length(),name) == 0) {
+        G4cout << "WARNING: Another Detector is find before standard sequence of Token, Error may occured in Telecope definition" << G4endl ;
         ReadingStatus = false ;
       }
 
@@ -239,56 +216,6 @@ void DETECTORNAME::ReadConfiguration(string Path){
         G4cout << "Shape:  " << Shape << G4endl;
       }
 
-      // Cylindrical shape
-      else if (DataBuffer.compare(0, 7, "Radius=") == 0) {
-        check_Radius = true;
-        ConfigFile >> DataBuffer ;
-        Radius = atof(DataBuffer.c_str()) ;
-        Radius = Radius * mm;
-        G4cout << "DETECTORNAME Radius:  " << Radius/mm << G4endl;
-      }
-
-      // Squared shape
-      else if (DataBuffer.compare(0, 7, "Width=") == 0) {
-        check_Width = true;
-        ConfigFile >> DataBuffer ;
-        Width = atof(DataBuffer.c_str()) ;
-        Width = Width * mm;
-        G4cout << "DETECTORNAME Width:  " << Width/mm << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 7, "Height=") == 0) {
-        check_Height = true;
-        ConfigFile >> DataBuffer ;
-        Height = atof(DataBuffer.c_str()) ;
-        Height = Height * mm;
-        G4cout << "DETECTORNAME Height:  " << Height/mm << G4endl;
-      }
-
-      // Common
-      else if (DataBuffer.compare(0, 10, "Thickness=") == 0) {
-        check_Thickness = true;
-        ConfigFile >> DataBuffer ;
-        Thickness = atof(DataBuffer.c_str()) ;
-        Thickness = Thickness * mm;
-        G4cout << "DETECTORNAME Thickness:  " << Thickness/mm << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 13, "Scintillator=") == 0) {
-        check_Scintillator = true ;
-        ConfigFile >> DataBuffer ;
-        Scintillator = DataBuffer ;
-        G4cout << "DETECTORNAME Scintillator type:  " << Scintillator << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 14, "LeadThickness=") == 0) {
-        check_LeadThickness = true;
-        ConfigFile >> DataBuffer ;
-        LeadThickness = atof(DataBuffer.c_str()) ;
-        LeadThickness = LeadThickness * mm;
-        G4cout << "Lead Thickness :  " << LeadThickness/mm << G4endl;
-      }
-
       ///////////////////////////////////////////////////
       //   If no Detector Token and no comment, toggle out
       else{
@@ -299,56 +226,24 @@ void DETECTORNAME::ReadConfiguration(string Path){
       /////////////////////////////////////////////////
       //   If All necessary information there, toggle out
 
-      if (( check_Theta && check_Phi && check_R && check_Thickness 
-            && check_Radius && check_LeadThickness && check_Scintillator 
-            && check_Shape) // Cylindrical case
+      if (( check_Theta && check_Phi && check_R && check_Shape)
           ||    
-          ( check_X && check_Y && check_Z && check_Thickness && check_Radius 
-            && check_LeadThickness && check_Scintillator )
-          ||   
-          ( check_Theta && check_Phi && check_R && check_Thickness 
-            && check_Width && check_Height && check_LeadThickness 
-            && check_Scintillator && check_Shape ) // Squared case
-          ||   
-          ( check_X && check_Y && check_Z && check_Thickness && check_Width 
-            && check_Height && check_LeadThickness && check_Scintillator )) { 
+          ( check_X && check_Y && check_Z && check_Shape)){
 
-        if (check_X && check_Y && check_Z){
+
+        // Convert Cartesian to Spherical (detector always face the target)
+        if (check_X){
           R = sqrt (X*X+Y*Y+Z*Z);
           Theta = acos(Z / (R) );
           Phi = atan2(Y,X);
         }
 
-        if (Shape == "Cylinder")
-          AddDETECTORNAME(   R                ,
-              Theta             ,
-              Phi               ,
-              Thickness         ,
-              Radius            ,
-              Scintillator   ,
-              LeadThickness   );
-
-        else if (Shape == "Square")
-          AddDETECTORNAME(   R                ,
-              Theta             ,
-              Phi               ,
-              Height            ,
-              Width               ,
-              Thickness         ,
-              Scintillator   ,
-              LeadThickness   );
+         AddDETECTORNAME(R,Theta,Phi,Shape);
 
         //   Reinitialisation of Check Boolean 
-
         check_Theta = false ;
         check_Phi = false ;
         check_R = false ;
-        check_Thickness = false ;
-        check_Radius = false ;
-        check_LeadThickness = false ;
-        check_Scintillator = false ;
-        check_Height = false ;
-        check_Width = false ;
         check_Shape = false ;
         check_X = false ;
         check_Y = false ;
@@ -359,127 +254,30 @@ void DETECTORNAME::ReadConfiguration(string Path){
     }
   }
 }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 // Construct detector and inialise sensitive part.
 // Called After DetecorConstruction::AddDetector Method
 void DETECTORNAME::ConstructDetector(G4LogicalVolume* world){
   G4ThreeVector Det_pos = G4ThreeVector(0, 0, 0)  ;
-
   for (unsigned short i = 0 ; i < m_R.size() ; i++) {
     G4double wX = m_R[i] * sin(m_Theta[i] ) * cos(m_Phi[i] ) ;
     G4double wY = m_R[i] * sin(m_Theta[i] ) * sin(m_Phi[i] ) ;
     G4double wZ = m_R[i] * cos(m_Theta[i] ) ;
     Det_pos = G4ThreeVector(wX, wY, wZ) ;
-    VolumeMaker(Det_pos , i+1, world) ;
-  }
-
-}
-
-void DETECTORNAME::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume* world){
-  ////////////////////////////////////////////////////////////////
-  ////////////// Starting Volume Definition //////////////////////
-  ////////////////////////////////////////////////////////////////      
-  // Name of the module
-  std::ostringstream DetectorNumber ;
-  DetectorNumber << DetNumber ;
-  G4String Name = "DETECTORNAME" + DetectorNumber.str() ;
-
-  int i = DetNumber-1;
-
-  G4Material* DETECTORNAMEMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary(m_Scintillator[i]) ;
-
-  // Definition of the volume containing the sensitive detector
-
-  // Cylindrical Case
-  if(m_DETECTORNAMERadius[i]!=-1){
-    if(m_DETECTORNAMEThickness[i]>0 && m_DETECTORNAMERadius[i]>0){ 
-      G4Tubs* solidDETECTORNAME = new G4Tubs( Name ,    
-          0 ,
-          m_DETECTORNAMERadius[i] ,
-          m_DETECTORNAMEThickness[i]/2 ,
-          0*deg , 
-          360*deg);
-
-      G4LogicalVolume* logicDETECTORNAME = new G4LogicalVolume(solidDETECTORNAME, DETECTORNAMEMaterial, Name+ "_Scintillator", 0, 0, 0);
-      logicDETECTORNAME->SetSensitiveDetector(m_DETECTORNAMEScorer);
-
-      G4VisAttributes* PlastVisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 0.9)) ;
-      logicDETECTORNAME->SetVisAttributes(PlastVisAtt) ;
-
-
-
-      new G4PVPlacement(0 ,
-          Det_pos ,
-          logicDETECTORNAME ,
-          Name  + "_Scintillator" ,
-          world ,
-          false ,
-          0 );   
+    
+    if(m_Shape == "Cylndrical"){
+      new G4PVPlacement(new G4RotationMatrix(),Det_pos,BuildCylindricalDetector(),
+          "DETECTORNAME_"+NPL::itoa(i+1),world,false,i+1);
     }
-
-
-    if(m_LeadThickness[i]>0&& m_DETECTORNAMERadius[i]>0){
-      G4Tubs* solidLead = new G4Tubs(Name+"_Lead",    
-          0,
-          m_DETECTORNAMERadius[i],
-          m_LeadThickness[i]/2,
-          0*deg, 
-          360*deg);
-
-      G4Material* MaterialLead = MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
-      G4LogicalVolume* logicLead = new G4LogicalVolume(solidLead, MaterialLead, Name+"_Al", 0, 0, 0);//AC changed lead to Al
-      G4VisAttributes* LeadVisAtt = new G4VisAttributes(G4Colour(0.1, 0.1, 0.1)) ;
-      logicLead->SetVisAttributes(LeadVisAtt) ;
-
-      G4PVPlacement( 0,
-          Det_pos+(m_DETECTORNAMEThickness[i]/2+m_LeadThickness[i]/2)*Det_pos.unit(),
-          logicLead,
-          Name+"_Al",   
-          world,
-          false,
-          0);
-    }   
-  }
-
-  // Squared case
-  if(m_DETECTORNAMEHeight[i]!=-1){
-    if(m_DETECTORNAMEThickness[i]>0 && m_DETECTORNAMEHeight[i]>0 && m_DETECTORNAMEWidth[i]>0){ 
-      G4Box* solidDETECTORNAME = new G4Box(Name, 0.5*m_DETECTORNAMEWidth[i], 0.5*m_DETECTORNAMEHeight[i], 0.5*m_DETECTORNAMEThickness[i]);
-      G4LogicalVolume* logicDETECTORNAME = new G4LogicalVolume(solidDETECTORNAME, DETECTORNAMEMaterial, Name+ "_Scintillator", 0, 0, 0);
-      logicDETECTORNAME->SetSensitiveDetector(m_DETECTORNAMEScorer);
-
-      G4VisAttributes* PlastVisAtt = new G4VisAttributes(G4Colour(0, 0, 1)) ;
-      logicDETECTORNAME->SetVisAttributes(PlastVisAtt) ;
-
-      G4RotationMatrix Rot3D;
-      Rot3D.set(0, 0, 0);
-      new G4PVPlacement(  G4Transform3D(Rot3D,Det_pos),
-          logicDETECTORNAME,
-          Name  + "_Scintillator" ,
-          world,
-          false,
-          0);   
+    
+    else if(m_Shape == "Square"){
+      new G4PVPlacement(new G4RotationMatrix(),Det_pos,BuildSquareDetector(),
+          "DETECTORNAME_"+NPL::itoa(i+1),world,false,i+1);
     }
-
-    if(m_LeadThickness[i]>0&& m_DETECTORNAMEHeight[i]>0 && m_DETECTORNAMEWidth[i]>0){
-      G4Box* solidLead = new G4Box(Name+"_Al", 1*m_DETECTORNAMEWidth[i], 1*m_DETECTORNAMEHeight[i], 0.5*m_LeadThickness[i]);
-
-      G4Material* MaterialLead = MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
-      G4LogicalVolume* logicLead = new G4LogicalVolume(solidLead, MaterialLead, Name+"_Al", 0, 0, 0);
-      G4VisAttributes* LeadVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5)) ;
-      logicLead->SetVisAttributes(LeadVisAtt) ;
-
-      new G4PVPlacement(0,
-          Det_pos-(m_DETECTORNAMEThickness[i]/2+m_LeadThickness[i]/2)*Det_pos.unit() -G4ThreeVector(0,0,1*cm)  ,
-          logicLead,
-          Name+"_Al",   
-          world,
-          false,
-          0);
-    }   
   }
 }
-
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Add Detector branch to the EventTree.
 // Called After DetecorConstruction::AddDetector Method
 void DETECTORNAME::InitializeRootOutput(){
@@ -489,148 +287,53 @@ void DETECTORNAME::InitializeRootOutput(){
   pTree->SetBranchAddress("DETECTORNAME", &m_Event) ;
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
 void DETECTORNAME::ReadSensitive(const G4Event* event){
-  G4String DetectorNumber;
   m_Event->Clear();
-
-  //////////////////////////////////////////////////////////////////////////////////////
-  //////////////////////// Used to Read Event Map of detector //////////////////////////
-  //////////////////////////////////////////////////////////////////////////////////////
-
-  std::map<G4int, G4int*>::iterator DetectorNumber_itr;
-  std::map<G4int, G4double*>::iterator Energy_itr;
-  std::map<G4int, G4double*>::iterator Time_itr;
-  std::map<G4int, G4double*>::iterator Pos_Z_itr;
-
-  G4THitsMap<G4int>* DetectorNumberHitMap;      
-  G4THitsMap<G4double>* EnergyHitMap;
-  G4THitsMap<G4double>* TimeHitMap;
-  G4THitsMap<G4double>* PosZHitMap;
-
-  //////////////////////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////////////
-
-  // Read the Scorer associate to the Silicon Strip
-
-  //Detector Number
-  G4int StripDetCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("DETECTORNAMEScorer/DETECTORNAMENumber")     ;
-  DetectorNumberHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripDetCollectionID))          ;
-  DetectorNumber_itr =  DetectorNumberHitMap->GetMap()->begin()                                               ;
-
-  //Energy
-  G4int StripEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("DETECTORNAMEScorer/Energy")      ;
-  EnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripEnergyCollectionID))           ;
-  Energy_itr = EnergyHitMap->GetMap()->begin()                                                                ;
-
-  //Time of Flight
-  G4int StripTimeCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("DETECTORNAMEScorer/Time")          ;
-  TimeHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripTimeCollectionID))               ;
-  Time_itr = TimeHitMap->GetMap()->begin()                                                                    ;
-
-  //Interaction Coordinate Z
-  G4int InterCoordZCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("DETECTORNAMEScorer/InterCoordZ");
-  PosZHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordZCollectionID));
-  Pos_Z_itr = PosZHitMap->GetMap()->begin();
-
-  G4int sizeN = DetectorNumberHitMap->entries()    ;
-  G4int sizeE = EnergyHitMap->entries()          ;
-  G4int sizeT = TimeHitMap->entries()          ;
-
-  // Loop on DETECTORNAME Number
-  for (G4int l = 0 ; l < sizeN ; l++) {
-    G4int N     =      *(DetectorNumber_itr->second)    ;
-    G4int NTrackID  =   DetectorNumber_itr->first - N  ;
-
-
-    if (N > 0) {
-      m_Event->SetDETECTORNAMENumber(N) ;
-      //  Energy
-      Energy_itr = EnergyHitMap->GetMap()->begin();
-      for (G4int h = 0 ; h < sizeE ; h++) {
-        G4int ETrackID  =   Energy_itr->first  - N      ;
-        G4double E     = *(Energy_itr->second)         ;
-        if (ETrackID == NTrackID) {
-          m_Event->SetEnergy(RandGauss::shoot(E, E*ResoEnergy/100./2.35))    ;
-        }
-        Energy_itr++;
-      }
-
-
-      //  Time
-      Time_itr = TimeHitMap->GetMap()->begin();
-      for (G4int h = 0 ; h < sizeT ; h++) {
-        G4int TTrackID  =   Time_itr->first   - N    ;
-        G4double T     = *(Time_itr->second)      ;
-        if (TTrackID == NTrackID) {
-          m_Event->SetTime(RandGauss::shoot(T, ResoTime)) ;
-        }
-        Time_itr++;
-      }
-
-      // Pos Z
-      Pos_Z_itr = PosZHitMap->GetMap()->begin();
-      for (G4int h = 0 ; h < PosZHitMap->entries() ; h++) {
-        G4int PosZTrackID =   Pos_Z_itr->first   - N  ;
-        G4double PosZ     = *(Pos_Z_itr->second)      ;
-        if (PosZTrackID == NTrackID) {
-          ms_InterCoord->SetDetectedPositionZ(PosZ) ;
-        }
-        Pos_Z_itr++;
-      }
-    }
-
-    DetectorNumber_itr++;
-  }
-
-  // clear map for next event
-  TimeHitMap            ->clear()   ;    
-  DetectorNumberHitMap    ->clear()   ;
-  EnergyHitMap            ->clear()    ; 
-  PosZHitMap					->clear() ;
-
 }
 
-
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 ////////////////////////////////////////////////////////////////   
 void DETECTORNAME::InitializeScorers() { 
+  // This check is necessary in case the geometry is reloaded
   bool already_exist = false; 
   m_DETECTORNAMEScorer = CheckScorer("DETECTORNAMEScorer",already_exist) ;
-  
-  if(already_exist) return ;
 
-  G4VPrimitiveScorer* DetNbr = new PSDetectorNumber("DETECTORNAMENumber","DETECTORNAME", 0) ;
-  G4VPrimitiveScorer* Energy = new PSEnergy("Energy","DETECTORNAME", 0)                   ;
-  G4VPrimitiveScorer* Time   = new PSTOF("Time","DETECTORNAME", 0)                         ;
-  G4VPrimitiveScorer* InteractionCoordinatesZ  			= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","DETECTORNAME", 0);       
+  if(already_exist) 
+    return ;
+
+  // Otherwise the scorer is initialised
+  vector<int> level; level.push_back(0);
+  G4VPrimitiveScorer* Calorimeter= new PSCalorimeter("Calorimeter",level, 0) ;
   //and register it to the multifunctionnal detector
-  m_DETECTORNAMEScorer->RegisterPrimitive(DetNbr)                         ;
-  m_DETECTORNAMEScorer->RegisterPrimitive(Energy)                         ;
-  m_DETECTORNAMEScorer->RegisterPrimitive(Time)                            ;      
-  m_DETECTORNAMEScorer->RegisterPrimitive(InteractionCoordinatesZ);      
+  m_DETECTORNAMEScorer->RegisterPrimitive(Calorimeter);
   G4SDManager::GetSDMpointer()->AddNewDetector(m_DETECTORNAMEScorer) ;
-
 }
-////////////////////////////////////////////////////////////////
- ////////////////////////////////////////////////////////////////////////////////
- //            Construct Method to be pass to the DetectorFactory              //
- ////////////////////////////////////////////////////////////////////////////////
- NPS::VDetector* DETECTORNAME::Construct(){
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPS::VDetector* DETECTORNAME::Construct(){
   return  (NPS::VDetector*) new DETECTORNAME();
- }
+}
 
- ////////////////////////////////////////////////////////////////////////////////
- //            Registering the construct method to the factory                 //
- ////////////////////////////////////////////////////////////////////////////////
- extern"C" {
- class proxy_nps_plastic{
-   public:
-    proxy_nps_plastic(){
-      NPS::DetectorFactory::getInstance()->AddToken("DETECTORNAME","DETECTORNAME");
-      NPS::DetectorFactory::getInstance()->AddDetector("DETECTORNAME",DETECTORNAME::Construct);
-    }
-};
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern"C" {
+  class proxy_nps_plastic{
+    public:
+      proxy_nps_plastic(){
+        NPS::DetectorFactory::getInstance()->AddToken("DETECTORNAME","DETECTORNAME");
+        NPS::DetectorFactory::getInstance()->AddDetector("DETECTORNAME",DETECTORNAME::Construct);
+      }
+  };
 
- proxy_nps_plastic p_nps_plastic;
- }
+  proxy_nps_plastic p_nps_plastic;
+}

@@ -24,9 +24,7 @@
 // C++ header
 #include <string>
 #include <vector>
-
-// G4 header defining G4 types
-#include "globals.hh"
+using namespace std;
 
 // G4 headers
 #include "G4ThreeVector.hh"
@@ -37,9 +35,6 @@
 // NPTool header
 #include "NPSVDetector.hh"
 #include "TDETECTORNAMEData.h"
-
-using namespace std;
-using namespace CLHEP;
 
 class DETECTORNAME : public NPS::VDetector
 {
@@ -55,23 +50,17 @@ class DETECTORNAME : public NPS::VDetector
     ////////////////////////////////////////////////////
   public:
     // Cylindric plastic
-    void AddDETECTORNAME(  G4double   R,
-        G4double   Theta,
-        G4double   Phi,
-        G4double   Thickness,
-        G4double   Radius,
-        G4String   Scintillator);  
+    void AddDETECTORNAME(double R,
+        double Theta,
+        double Phi,
+        string Shape);  
 
-    // Squared DETECTORNAME
-    void AddDETECTORNAME(  G4double   R,
-        G4double   Theta,
-        G4double   Phi,
-        G4double   Height,
-        G4double   Width,
-        G4double   Thickness,
-        G4String   Scintillator);
-
-    void VolumeMaker(G4ThreeVector Det_pos, int DetNumber,G4LogicalVolume* world) ;
+    G4LogicalVolume* BuildSquareDetector();
+    G4LogicalVolume* BuildCylindricalDetector();
+  private:
+    G4LogicalVolume* m_SquareDetector();
+    G4LogicalVolume* m_CylindricalDetector();
+    
     ////////////////////////////////////////////////////
     //////  Inherite from NPS::VDetector class /////////
     ////////////////////////////////////////////////////
@@ -108,23 +97,17 @@ class DETECTORNAME : public NPS::VDetector
     ///////////////Private intern Data//////////////////
     ////////////////////////////////////////////////////
   private: // Geometry
-    vector<double>      m_DETECTORNAME_Thickness ;
-    vector<double>      m_DETECTORNAME_Radius    ; // cylindrical shape
-    vector<double>      m_DETECTORNAME_Height    ; // squared shape
-    vector<double>      m_DETECTORNAME_Width     ; // squared shape
-
-    // Used for By Angle Definition
-    vector<G4double>  m_R; 
-    vector<G4double>  m_Theta;
-    vector<G4double>  m_Phi; 
-
-    // Used for By Position Definition
-    vector<G4double>  m_X; 
-    vector<G4double>  m_Y; 
-    vector<G4double>  m_Z; 
-
-    //   Scintillator type
-    vector<G4String> m_Scintillator ;
+    // Detector Coordinate 
+    vector<double>  m_R; 
+    vector<double>  m_Theta;
+    vector<double>  m_Phi; 
+    
+    //   Shape type
+    vector<string> m_Shape ;
+   
+    // Visualisation Attribute
+    G4VisAttributes* m_VisSquare;
+    G4VisAttributes* m_VisCylinder;
 
   // Needed for dynamic loading of the library
   public:

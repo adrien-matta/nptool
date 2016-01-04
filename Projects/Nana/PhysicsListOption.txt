@@ -1,5 +1,5 @@
 EmPhysicsList Option4 
-DefaultCutOff 0.1 
+DefaultCutOff 0.01 
 IonBinaryCascadePhysics 0
 EmExtraPhysics 0 
 HadronElasticPhysics 0

@@ -113,15 +113,15 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       m_Material[Name]=material;
       return material; 
     }
-      
+
     else if(Name == "Epoxy"){
-        // Actually taken value fron Epoxy
-        G4Material* material = new G4Material(Name, 1.2 * g / cm3,3);
-        material->AddElement(GetElementFromLibrary("H"),8);
-        material->AddElement(GetElementFromLibrary("C"),5);
-        material->AddElement(GetElementFromLibrary("O"),2);
-        m_Material[Name]=material;
-        return material;
+      // Actually taken value fron Epoxy
+      G4Material* material = new G4Material(Name, 1.2 * g / cm3,3);
+      material->AddElement(GetElementFromLibrary("H"),8);
+      material->AddElement(GetElementFromLibrary("C"),5);
+      material->AddElement(GetElementFromLibrary("O"),2);
+      m_Material[Name]=material;
+      return material;
     }
 
     else  if(Name == "Mylar"){
@@ -132,7 +132,7 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       m_Material[Name]=material;
       return material; 
     }
-    
+
 
     else  if(Name == "Kapton"){
       G4Material* material = new G4Material(Name, 1.39*g/cm3,3);
@@ -165,15 +165,15 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       m_Material[Name]=material;
       return material; 
     }
-    
+
     // Cooling 
-     else  if(Name == "N2_liquid"){
+    else  if(Name == "N2_liquid"){
       G4Material* material = new G4Material(Name,7,14.01*g/mole,0.808*g/cm3,
-                                            kStateLiquid,77*kelvin);
+          kStateLiquid,77*kelvin);
       m_Material[Name]=material;
       return material; 
-     }
-    
+    }
+
     // Usual Target
     else if(Name == "CD2"){
       G4Material* material = new G4Material(Name, 1.06*g/cm3,2);
@@ -231,25 +231,25 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
     else  if(Name == "Si"){
       G4Material* material = new G4Material(Name,2.321*g/cm3 ,1);
       material->AddElement(GetElementFromLibrary("Si"),1);
-     
-       // Adding Optical property:
+
+      // Adding Optical property:
       double* energy_r = new double[2];
       double* rindex = new double[2];
       double* absorption= new double[2];
-      
+
       energy_r[0] = 1*eV;
       energy_r[1] = 1*MeV;
 
       rindex[0] = 1 ; rindex[1]=1;
       absorption[0] = 1*um ; absorption[1]=1*um;
-      
+
       G4MaterialPropertiesTable* MPT = new G4MaterialPropertiesTable();
 
       // From St Gobain
       MPT -> AddProperty("RINDEX",energy_r,rindex,2) ; 
       MPT -> AddProperty("ABSLENGTH",energy_r,absorption,2);
       material -> SetMaterialPropertiesTable(MPT);
-      
+
       m_Material[Name]=material;
       return material; 
     }
@@ -315,14 +315,14 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       m_Material[Name]=material;
       return material; 
     }
- 
+
     else  if(Name == "NaturalUranium"){
       G4Material* material = new G4Material(Name, 19.1*g/cm3,1);
       material->AddElement(GetElementFromLibrary("U"),1);
       m_Material[Name]=material;
       return material; 
     }
-    
+
     else  if(Name == "CsI_Scintillator"){
       G4Material* material = new G4Material(Name, 4.51*g/cm3,2);
       material->AddElement(GetElementFromLibrary("Cs"),1);
@@ -335,32 +335,32 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       double* energy_r = new double[NumberOfPoints];
       double* rindex = new double[NumberOfPoints];
       double* absorption= new double[NumberOfPoints];
-      
+
       double* energy_e = new double[5];
       double* fast = new double[5];
       double* slow = new double[5];
       double* scint = new double[5];
 
-        energy_e[0] = h_Planck*c_light / (450*nm);
-        energy_e[1] = h_Planck*c_light / (500*nm);
-        energy_e[2] = h_Planck*c_light / (550*nm);
-        energy_e[3] = h_Planck*c_light / (600*nm);
-        energy_e[4] = h_Planck*c_light / (650*nm);
-        
-        for(int i=0; i<5; i++){
-            //fast[0] = 1 ; fast[1]=1;
-            //slow[0] = 1 ; slow[1]=1;
-            fast[i] = 0.6;
-            slow[i] = 3.5;
-        }
-        scint[0] = 0.25;
-        scint[1] = 0.75;
-        scint[2] = 1.0;
-        scint[3] = 0.7;
-        scint[4] = 0.4;
-      
+      energy_e[0] = h_Planck*c_light / (450*nm);
+      energy_e[1] = h_Planck*c_light / (500*nm);
+      energy_e[2] = h_Planck*c_light / (550*nm);
+      energy_e[3] = h_Planck*c_light / (600*nm);
+      energy_e[4] = h_Planck*c_light / (650*nm);
+
+      for(int i=0; i<5; i++){
+        //fast[0] = 1 ; fast[1]=1;
+        //slow[0] = 1 ; slow[1]=1;
+        fast[i] = 0.6;
+        slow[i] = 3.5;
+      }
+      scint[0] = 0.25;
+      scint[1] = 0.75;
+      scint[2] = 1.0;
+      scint[3] = 0.7;
+      scint[4] = 0.4;
+
       double wl;
-     
+
       for(int i = 0 ; i < NumberOfPoints ;i++){
         wl= wlmin+i*step;
         // Formula from www.refractiveindex.info
@@ -372,7 +372,7 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
             +0.51818/(1-pow(0.206/wl,2))
             +0.01918/(1-pow(0.218/wl,2))
             +3.38229/(1-pow(161.29/wl,2))) ;
-        
+
         energy_r[i] = h_Planck*c_light / wl;
         // To be defined properly
         absorption[i] =  344.8*cm;
@@ -438,38 +438,42 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       m_Material[Name]=material;
       return material; 
     }
-      
+
     else  if(Name == "P10_1atm"){
-        G4Material* material = new G4Material(Name, 1.74*mg/cm3,3); //@ 0K, 1 atm
-        material->AddElement(GetElementFromLibrary("Ar"),0.9222);
-        material->AddElement(GetElementFromLibrary("C"),0.0623);
-        material->AddElement(GetElementFromLibrary("H"),0.0155);
-        m_Material[Name]=material;
-        return material;
-    }
-      
-    else  if(Name == "P10"){
-        G4Material* material = new G4Material(Name, 0.57*mg/cm3,3); //@ 0K, 1/3 atm
-        material->AddElement(GetElementFromLibrary("Ar"),0.9222);
-        material->AddElement(GetElementFromLibrary("C"),0.0623);
-        material->AddElement(GetElementFromLibrary("H"),0.0155);
-        m_Material[Name]=material;
-        return material;
+      G4Material* material = new G4Material(Name, 1.74*mg/cm3,3); //@ 0K, 1 atm
+      material->AddElement(GetElementFromLibrary("Ar"),0.9222);
+      material->AddElement(GetElementFromLibrary("C"),0.0623);
+      material->AddElement(GetElementFromLibrary("H"),0.0155);
+      m_Material[Name]=material;
+      return material;
     }
 
-       else  if(Name == "Air_1atm"){ // 1 atm
-           G4Material* material = new G4Material("Air", 1.290*mg/cm3, 2);
-           material->AddElement(GetElementFromLibrary("N"), 0.7);
-           material->AddElement(GetElementFromLibrary("O"), 0.3);
-       }
-      
-       else  if(Name == "Air"){ // 1/3 atm
-           G4Material* material = new G4Material("Air", 1.290/3*mg/cm3, 2);
-           material->AddElement(GetElementFromLibrary("N"), 0.7);
-           material->AddElement(GetElementFromLibrary("O"), 0.3);
-       }
-      
-      
+    else  if(Name == "P10"){
+      G4Material* material = new G4Material(Name, 0.57*mg/cm3,3); //@ 0K, 1/3 atm
+      material->AddElement(GetElementFromLibrary("Ar"),0.9222);
+      material->AddElement(GetElementFromLibrary("C"),0.0623);
+      material->AddElement(GetElementFromLibrary("H"),0.0155);
+      m_Material[Name]=material;
+      return material;
+    }
+
+    else  if(Name == "Air"){ // 1 atm
+      G4Material* material = new G4Material(Name, 1.290*mg/cm3, 2);
+      material->AddElement(GetElementFromLibrary("N"), 0.7);
+      material->AddElement(GetElementFromLibrary("O"), 0.3);
+      m_Material[Name]=material;
+      return material;
+    }
+
+    else  if(Name == "Wood"){
+      G4Material* material = new G4Material(Name, 0.9*mg/cm3, 3);
+      material->AddElement(GetElementFromLibrary("H") , 4);
+      material->AddElement(GetElementFromLibrary("O") , 1);
+      material->AddElement(GetElementFromLibrary("C") , 2);
+      m_Material[Name]=material;
+      return material;
+    }
+
     else{
       G4cout << "ERROR: Material requested \""<< Name <<"\" is not available in the Material Librairy" << G4endl;
       exit(1);
