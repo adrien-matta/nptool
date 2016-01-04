@@ -23,17 +23,19 @@
  *****************************************************************************/
 
 // STL
-#include<stdlib.h>
 #include <vector>
-#include <map>
-using namespace std ;
+using namespace std;
 
 // ROOT
 #include "TObject.h"
 
-class TDETECTORNAMEData : public TObject {
 
-  private: // Data Member are hold into vector to allow multiplicity
+class TDETECTORNAMEData : public TObject 
+{
+  //////////////////////////////////////////////////////////////
+  // data members are hold into vectors in order 
+  // to allow multiplicity treatment
+  private: 
     // Energy
     vector<UShort_t>   fDETECTORNAME_E_DetectorNbr;
     vector<Double_t>   fDETECTORNAME_Energy;
@@ -42,46 +44,53 @@ class TDETECTORNAMEData : public TObject {
     vector<UShort_t>   fDETECTORNAME_T_DetectorNbr;
     vector<Double_t>   fDETECTORNAME_Time;
 
-  public: // Constructor
+
+  //////////////////////////////////////////////////////////////
+  // Constructor and destructor
+  public: 
     TDETECTORNAMEData();
     virtual ~TDETECTORNAMEData();
     
-  public: // Inherrited from TObject and overriden to avoid warning
+
+  //////////////////////////////////////////////////////////////
+  // Inherited from TObject and overriden to avoid warnings
+  public:
     void Clear();
     void Clear(const Option_t*) {};
     void Dump() const;
 
-  public: // Getters and Setters
-          // Prefere inline declaration to avoid unnecessary called of 
-          // frequently used methods
-          // add //! to avoid root to create dictionnary for the method
-    /////////////////////           SETTERS           ////////////////////////
+
+  //////////////////////////////////////////////////////////////
+  // Getters and Setters
+  // Prefer inline declaration to avoid unnecessary called of 
+  // frequently used methods
+  // add //! to avoid ROOT creating dictionnary for the methods
+  public:
+    //////////////////////    SETTERS    ////////////////////////
+    // Energy
     inline void SetE_DetectorNbr(const UShort_t& DetNbr)
       {fDETECTORNAME_E_DetectorNbr.push_back(DetNbr);} //!
     inline void Set_Energy(const Double_t& Energy)
       {fDETECTORNAME_Energy.push_back(Energy);}//!
-
-
-    // Prefer global stter that guaranty the vector are al the same size
-    inline void SetEnergy(const UShort_t& DetNbr,const Double_t& Energy)	{
+    // Prefer global setter so that all vectors have the same size
+    inline void SetEnergy(const UShort_t& DetNbr,const Double_t& Energy) {
       SetE_DetectorNbr(DetNbr);
       Set_Energy(Energy);
     };//!
 
+    // Time
     inline void SetT_DetectorNbr(const UShort_t& DetNbr)
       {fDETECTORNAME_T_DetectorNbr.push_back(DetNbr);} //!
     inline void Set_Time(const Double_t& Time)
       {fDETECTORNAME_Time.push_back(Time);}//!
-
-
-    // Prefer global stter that guaranty the vector are al the same size
+    // Prefer global setter so that all vectors have the same size
     inline void SetTime(const UShort_t& DetNbr,const Double_t& Time)	{
       SetT_DetectorNbr(DetNbr);
       Set_Time(Time);
     };//!
 
 
-    /////////////////////           GETTERS           ////////////////////////
+    //////////////////////    GETTERS    ////////////////////////
     // Energy
     inline UShort_t GetMultEnergy() const
       {return fDETECTORNAME_E_DetectorNbr.size();}
@@ -99,7 +108,7 @@ class TDETECTORNAMEData : public TObject {
       {return fDETECTORNAME_Time[i];}//!
 
 
-    // Requiered for Root dictionnary
+    // Required for ROOT dictionnary
     ClassDef(TDETECTORNAMEData,1)  // DETECTORNAMEData structure
 };
 

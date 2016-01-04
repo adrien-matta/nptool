@@ -19,26 +19,31 @@
  *                                                                           *   
  *                                                                           *
  *****************************************************************************/
+#include "TDETECTORNAMEData.h"
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
 using namespace std; 
 
-#include "TDETECTORNAMEData.h"
-
 ClassImp(TDETECTORNAMEData)
 
-/////////////////////////
-TDETECTORNAMEData::TDETECTORNAMEData(){
+
+//////////////////////////////////////////////////////////////////////
+TDETECTORNAMEData::TDETECTORNAMEData() {
 }
 
-/////////////////////////
-TDETECTORNAMEData::~TDETECTORNAMEData(){
+
+
+//////////////////////////////////////////////////////////////////////
+TDETECTORNAMEData::~TDETECTORNAMEData() {
 }
 
-/////////////////////////
-void TDETECTORNAMEData::Clear(){
+
+
+//////////////////////////////////////////////////////////////////////
+void TDETECTORNAMEData::Clear() {
   // Energy
   fDETECTORNAME_E_DetectorNbr.clear();
   fDETECTORNAME_Energy.clear();
@@ -47,9 +52,13 @@ void TDETECTORNAMEData::Clear(){
   fDETECTORNAME_Time.clear();
 }
 
-/////////////////////////
-void TDETECTORNAMEData::Dump() const{
-  // This method is very usefull for debugg and worth the dev.
+
+
+//////////////////////////////////////////////////////////////////////
+void TDETECTORNAMEData::Dump() const {
+  // This method is very useful for debuging and worth the dev.
+  cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event [TDETECTORNAMEData::Dump()] XXXXXXXXXXXXXXXXX" << endl;
+
   // Energy
   size_t mysize = fDETECTORNAME_E_DetectorNbr.size();
   cout << "DETECTORNAME_E_Mult: " << mysize << endl;
@@ -67,5 +76,4 @@ void TDETECTORNAMEData::Dump() const{
     cout << "DetNbr: " << fDETECTORNAME_T_DetectorNbr[i]
          << " Time: " << fDETECTORNAME_Time[i];
   }
-  
 }
