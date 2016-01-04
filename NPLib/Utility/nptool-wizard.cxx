@@ -1,15 +1,20 @@
-#include<iostream>
-#include<sstream>
+// C++ headers
+#include <iostream>
+#include <sstream>
+#include <stdlib.h>
+#include <ctime>
 
-#include<stdlib.h>
-#include<ctime>
-#include"NPVDetector.h" 
-int main(int argc , char** argv){
-  // Find the different path
-  std::string path = getenv("NPTOOL");
-  std::string pathNPL = path+ "/NPLib/Detectors/";
-  std::string pathNPS = path+"/NPSimulation/";
-  std::string pwd = getenv("PWD");
+// NPTool header
+#include "NPVDetector.h" 
+
+
+int main(int argc , char** argv)
+{
+  // Find the different paths
+  std::string path    = getenv("NPTOOL");
+  std::string pathNPL = path + "/NPLib/Detectors/";
+  std::string pathNPS = path + "/NPSimulation/";
+  std::string pwd     = getenv("PWD");
 
   int return_value = -1 ;
   std::string command;
@@ -47,9 +52,9 @@ int main(int argc , char** argv){
     case 12:
       month = "December";
   }
-
   std::string year = NPL::itoa(now->tm_year+1900);
-  //////////
+
+  // start nptool-wizard
   bool check = true;
   std::cout << "\r\033[1;32m" << std::endl << std::endl;
   std::cout << "********************************************************************************"<< std::endl;
@@ -57,16 +62,15 @@ int main(int argc , char** argv){
   std::cout << "********************************************************************************"<< std::endl;
 
   std::cout << "           This utility will create a new detector skeleton"<< std::endl;
-  std::cout << "\033[1;36m-> What is the detector name ? \033[0m" ;
-  std::cin >> answer ;
-  std::cout << "\033[1;36m-> What is your name (firstname and surname)? \033[0m" ;
+  std::cout << "\033[1;36m-> What is the detector name ? \033[0m";
+  std::cin >> answer;
+  std::cout << "\033[1;36m-> What is your name (firstname and surname)? \033[0m";
   std::cin >> author; 
   getline(cin, buffer);
   istringstream oss(buffer);
-  while(oss>> buffer)
-    author +=" " + buffer ;
-  std::cout << "\033[1;36m-> What is your email? \033[0m" ;
-  std::cin >> email ;
+  while (oss>> buffer) author += " " + buffer;
+  std::cout << "\033[1;36m-> What is your email? \033[0m";
+  std::cin >> email;
 
   std::cout << std::endl << std::endl;
 
@@ -74,23 +78,23 @@ int main(int argc , char** argv){
   // TODO //
   ////////// 
 
-  // Creating the detector file name
-  std::string DataFile_h = "T"+answer+"Data.h";
-  std::string DataFile_cxx = "T"+answer+"Data.cxx";
-  std::string PhysicsFile_h = "T"+answer+"Physics.h";
+  // Creating the detector files name
+  std::string DataFile_h      = "T"+answer+"Data.h";
+  std::string DataFile_cxx    = "T"+answer+"Data.cxx";
+  std::string PhysicsFile_h   = "T"+answer+"Physics.h";
   std::string PhysicsFile_cxx = "T"+answer+"Physics.cxx";
-  std::string SpectraFile_h = "T"+answer+"Spectra.h";
+  std::string SpectraFile_h   = "T"+answer+"Spectra.h";
   std::string SpectraFile_cxx = "T"+answer+"Spectra.cxx";
-  std::string SimFile_h = answer+".hh";
-  std::string SimFile_cxx = answer+".cc";
-  std::string InputFile = answer+".detector";
+  std::string SimFile_h       = answer+".hh";
+  std::string SimFile_cxx     = answer+".cc";
+  std::string InputFile       = answer+".detector";
 
-  // Create npl folder
+  // Create npl folder for new detector
   command = "mkdir " + pathNPL + answer + " > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
 
-  // Add npl file
-  command = "cp " + pathNPL + " ressources/DetectorSkeleton/NPLib/* " 
+  // Copy template files to new detector directory
+  command = "cp " + pathNPL + "../ressources/DetectorSkeleton/NPLib/* " 
     + pathNPL + answer +"/ > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
 
@@ -115,7 +119,7 @@ int main(int argc , char** argv){
     + pathNPL + answer +"/* > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
 
-
+  // change files name
   command = "mv " + pathNPL + answer +"/TDETECTORNAMEData.h " 
     + pathNPL + answer + "/" + DataFile_h ;
   return_value = system(command.c_str());
@@ -137,7 +141,10 @@ int main(int argc , char** argv){
     + pathNPL + answer + "/" + SpectraFile_cxx ;
   return_value = system(command.c_str());
 
+
   // Create nps folder
+  command = "mkdir " + pathNPS + "/Detectors/" + answer + " > /dev/null 2> /dev/null";
+  return_value = system(command.c_str());
 
   // Add nps file
 
