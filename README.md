@@ -1,30 +1,54 @@
-NPTOOL
+NPTool
 ======
 
-The NPTool package is based on Root and Geant4. It is aimed to assist experimental nuclear physicist is performing complex data analysis and simulations. NPTool philosophy is to provide an open framework for the community, hence license under GPL2. If you wish to contribute, contact Adrien MATTA at a.matta@surrey.ac.uk
+NPTool, which stands for Nuclear Physics Tool, is an open source and freely
+distributed data analysis and Monte Carlo simulation package for low-energy
+nuclear physics experiments. The NPTool package aims to offer an unified
+framework for preparing and analysing complex experiments, making an efficient
+use of Geant4 and ROOT toolkits. If you wish to contribute, contact Adrien 
+MATTA at a.matta@surrey.ac.uk
 
-#Getting the code
+## Getting the code
 ### Using git
-The recommended method to obtain the code is to use git. This insure an easy way to access the update version of the code. First make sure you got git installed, if not, just use your package manager to get it. Then go to the directory where you want to install the nptool folder and type:
+The recommended method to obtain the code is to use git. This ensures an easy 
+way to access the updated version of the code. First make sure you have git 
+installed. If not, use your package manager to get it. Then go to the directory 
+where you want to install the NPTool package and do:
 ````
 $ git clone https://github.com/adrien-matta/nptool
 ````
-This will create the nptool folder with the latest version of nptool.
+This will create the nptool folder with the latest version of NPTool.
 
 ### Downloading from Git Hub
-Alternatively you can browse the following page https://github.com/adrien-matta/nptool, and click the Download ZIP button on the right side of the page. Simply unzip the archive at the desire location
+Alternatively, you can browse the following page https://github.com/adrien-matta/nptool, 
+and click the Download ZIP button on the right side of the page. Then, unzip 
+the archive at the desire location
 
-#Setup
 
-###Requirements
-In order to compile the core libraries NPLib, you will need cmake, ROOT 6 or 5 (tested with 5.34) to be installed with the libMathMore.so library. This is sufficient to compile NPLib and any analysis project. In order to compile NPSimulation, you will need a recent installation of Geant4 (tested with version 9.6 and 10.1). If you want GDML support you need to install Geant4 with GDML support.
+## Setup
+### Requirements
+NPTool components are compiled and installed using the CMake build system, 
+so be sure to have a working CMake installation before starting.
 
-###Building NPLib
-NPLib is the core of the NPTool package, holding most of the actual code. It is made of a collection of stand alone C++ classes that can be used in programs and macro. The first step is to define the variable of environment that the system needs. For this open your .profile / .bashrc / .tcshrc file in your home directory and add the following line:
+In order to compile NPLib, the NPTool core libraries, ROOT 5 (tested with 5.34) 
+or 6 with the libMathMore.so library should be installed. 
+This is sufficient to compile NPLib and any analysis project. 
+
+In order to compile NPSimulation, a recent installation of Geant4 (tested 
+with version 9.6 and 10.1) is needed. If you want to use GDML format in 
+NPTool, Geant4 should be installed with GDML support.
+
+### Building NPLib
+NPLib is the core of the NPTool package, holding most of the actual code. It is 
+made of a collection of stand alone C++ classes that can be used in programs 
+and macros. 
+
+The first step is to define some environment variables. Open your .profile / 
+.bashrc / .tcshrc file in your home directory and add the following line:
 
 > source /path/to/nptool/nptool.sh
 
-Restart your terminal. You should now have all aliases and environment variable properly defined and can now access the NPLib folder by using the command:
+Then, restart your terminal. You should now have all aliases and environment variable properly defined and can now access the NPLib folder by using the command:
 ````
 $ npl 
 ````
