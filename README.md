@@ -60,11 +60,11 @@ If no arguments are given to CMake, all detectors will be compiled. If you wish
 to limit the number of detectors to be compiled, specify the detector folder 
 name (respecting the case). Note that more than one detector can be specified.
 
-All detector compiled:
+All detectors compiled:
 ````
 $ cmake ./ 
 ````
-__OR__ Some detector compiled:
+__OR__ some detectors compiled:
 ````
 $ cmake ./ -DETLIST="DetFolder1 DetFolder2"
 ````
@@ -91,30 +91,39 @@ $ ninja install
 ````
 Compilation using Ninja is faster than using make.
 
-###Building NPSimulation
-This part of the package rely on Geant4 to perform Monte Carlo simulation. You need to first compile and configure correctly NPLib in order for NPSimulation to compile and run. The compilation is done as follow:
+### Building NPSimulation
+This part of the package relies on Geant4 to perform Monte Carlo simulation. 
+NPLib needs first to be compiled and configured correctly before NPSimulation 
+can be compiled. The compilation is done as follow:
 ````
 $ nps
 $ cmake ./
 $ make -jn install
 `````
 
-This will produce the npsimulation executable. For a detail list of the available input flag and their meaning, you can run:
+This will produce the _npsimulation_ executable. For a detailed list of the 
+available input flags and their meaning, run the following command:
 ````
 $ npsimulation -h
 ````
 
+
+## Benchmarks
+
+## Examples
 To run a standardised test case, you can run the following command:
 ````
 $ npsimulation -D Example1.detector -E Example1.reaction -O Example1
 ````
-This will open the NPSimulation GUI (if you are using Qt) or the prompt terminal. In either case you can generate event using:
+This will open the _npsimulation_ GUI (if you are using Qt) or the prompt 
+terminal. In either case events can be generated using the following
+command:
 ````
 > run/beamOn/ 10000
 > exit
 ````
 
-This will run the 11Li(d,3He)10He->8He+n+n simulation and produce a root file located in $NPTOOL/Outputs/Simulation/Example1.root. One can have a look at the Example1.detector, located in $NPTOOL/Inputs/DetectorConfiguration, and Example1.reaction, located in $NPTOOL/Inputs/EventGenerator, to see how the input file are formated. They usually are self explenatory using easy to understand token.
+This will run the <sup>11</sup>Li(d,<sup>3</sup>He)<sup>10</sup>He-><sup>8H</sup>e+n+n simulation and produce a root file located in $NPTOOL/Outputs/Simulation/Example1.root. One can have a look at the Example1.detector, located in $NPTOOL/Inputs/DetectorConfiguration, and Example1.reaction, located in $NPTOOL/Inputs/EventGenerator, to see how the input file are formated. They usually are self explenatory using easy to understand token.
 
 You can now try to analyse this simulated tree using the associated NPAnalysis project:
 ````
