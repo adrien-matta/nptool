@@ -91,10 +91,7 @@ int main(int argc , char** argv){
               string cmd1 = "cp " + folderName+"/*.pcm lib/ > /dev/null 2>/dev/null"; 
               return_value=system(cmd1.c_str());
             }
-
-           // command = "ls "+ folderName+"/*.rootmap > /dev/null 2>/dev/null";
-            command = "ls Detectors/"+ folderName+"/*.rootmap ";
-
+            command = "ls Detectors/"+ folderName+"/*.rootmap > /dev/null 2>/dev/null";
             return_value=system(command.c_str());             
             if(!return_value){
               string cmd2 = "cp Detectors/" + folderName+"/*.rootmap lib/ > /dev/null 2>/dev/null" ;
