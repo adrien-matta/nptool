@@ -11,7 +11,7 @@ set(NPLib_INCLUDE_DIRS "@CMAKE_INCLUDE_OUTPUT_DIRECTORY@")
 set(NPLib_DETECTOR_LIST "@DETLIST@")
 include_directories("${NPLib_INCLUDE_DIRS}")
 
-set(NPLib_LIBRARIES "-L@CMAKE_BINARY_DIR@/lib -lNPCore -lNPPhysics -lNPInteractionCoordinates -lNPInitialConditions")
+set(NPLib_LIBRARIES "-L@CMAKE_BINARY_DIR@/lib -lNPCore -lNPPhysics")
 
 # These are IMPORTED targets created by NPLibTargets.cmake
 set(NPLib_EXECUTABLE npanalysis nptool-installer)

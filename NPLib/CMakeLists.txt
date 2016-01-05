@@ -94,7 +94,7 @@ include_directories("Online/")
 
 # Call the macro
 subdirlist(SUB_DIRECTORY ${CMAKE_BINARY_DIR})
-set(SUB_DIRECTORY ${SUB_DIRECTORY} Core Physics Calibration InitialConditions InteractionCoordinates Online Utility)
+set(SUB_DIRECTORY ${SUB_DIRECTORY} Core Physics Calibration Online Utility)
 # Add each sub folder to the project
 set(TARGET_LIST "")
 foreach(subdir ${SUB_DIRECTORY})
