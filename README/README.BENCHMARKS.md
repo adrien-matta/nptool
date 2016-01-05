@@ -55,6 +55,7 @@ $ root -l ShowResult.C
 Alternatively, you can run the `benchmark_cats.sh` script which runs the 
 analysis and display the results.
 
+![essai](../Benchmarks/cats/cats_ref.png)
 
 Experimental data for the present benchmark comes from the interaction of a
 <sup>58</sup>Ni ion beam at 75 MeV/u in the CATS detector. A mask with a known
