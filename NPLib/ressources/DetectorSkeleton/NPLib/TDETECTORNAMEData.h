@@ -108,8 +108,9 @@ class TDETECTORNAMEData : public TObject
       {return fDETECTORNAME_Time[i];}//!
 
 
-    // Required for ROOT dictionnary
-    ClassDef(TDETECTORNAMEData,1)  // DETECTORNAMEData structure
+  //////////////////////////////////////////////////////////////
+  // Required for ROOT dictionnary
+  ClassDef(TDETECTORNAMEData,1)  // DETECTORNAMEData structure
 };
 
 #endif

@@ -58,9 +58,6 @@ class TDETECTORNAMESpectra : public VSpectra
   // Detector parameters 
   private:
     unsigned int fNumberOfDetectors;
-    unsigned int fStripFront;
-    unsigned int fStripBack;
-    unsigned int fPad;
 };
 
 #endif

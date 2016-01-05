@@ -35,9 +35,7 @@ using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
 TDETECTORNAMESpectra::TDETECTORNAMESpectra() 
-   : fNumberOfDetectors(0),
-     fStripFront(24),
-     fStripBack(48) {
+   : fNumberOfDetectors(0) {
   SetName("DETECTORNAME");
 }
 
@@ -52,8 +50,6 @@ TDETECTORNAMESpectra::TDETECTORNAMESpectra(unsigned int NumberOfDetectors) {
       << "************************************************" << endl ;
   SetName("DETECTORNAME");
   fNumberOfDetectors = NumberOfDetectors;
-  fStripFront        = 24;
-  fStripBack         = 48;
 
   InitRawSpectra();
   InitPreTreatedSpectra();
