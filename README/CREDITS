@@ -6,6 +6,12 @@ if something in your entry is incorrect.
 Adrien Matta & Nicolas de Séréville.
 
 
+N: Freddy FLAVIGNY
+D: CATS, MUST2 detectors
+
+N: Julien GIBELIN
+D: MAYA detector
+
 N: Sandra GIRON
 D: CATS, AnnularS1, Chio detectors
 
@@ -22,15 +28,19 @@ D: MUST2, SHARC, ... detectors
 
 N: Pierre MORFOUACE
 D: CATS, HIRA, LASSA detectors 
+D: TwoBody kinematics event generator
 
 N: Nicolas de SEREVILLE
 D: Main contributor to NPTool
-D: W1, SplitPole, ComptonTelescope detectors
+D: Gaspard, W1, SplitPole, ComptonTelescope detectors
 
-N: Rob SHEARMAN
+N: Robert SHEARMAN
 D: NANA detector
 
 N: Marine Vandebrouck
 D: MAYA detector
+
+N: Ryan Wilkinson
+D: TIARA detector
 
 Inspired by previous work by Alexis RAMUS and Marc LABICHE.
