@@ -2,7 +2,7 @@
 \usepackage[margin=2cm]{geometry}
 
 \usepackage[T1]{fontenc}
-\usepackage [isolatin]{inputenc}
+%\usepackage [isolatin]{inputenc}
 \usepackage{graphicx}
 \usepackage{listings}
 
@@ -20,12 +20,11 @@
 \section{Introduction}
 The Gaspard project is developed within the NPTool framework which is a 
 modular package allowing to perform Geant4 simulations and to analyse the 
-results of the simulations. It is strongly encouraged to read the general 
-NPTool documentation that you can find in this directory.
+results of the simulations. 
 
 Concerning the status for Gaspard simulations, the charged particles tracker
 is now finished and the coupling with the PARIS gamma-ray calorimeter is
-done. Both the tracker and the calorimeter have different available geomtries.
+done. Both the tracker and the calorimeter have different available geometries.
 
 
 \section{NPSimulation}
@@ -48,12 +47,12 @@ GaspardTrackerTrapezoid and GaspardTrackerDummyShape classes).
 To run NPSimulation the following command line should be executed: 
 
 \begin{verbatim}
-   Simulation -E xxx.reaction -D yyy.detector
+   npsimulation -E xxx.reaction -D yyy.detector
 \end{verbatim}
 
 where xxx.reaction is an input file describing the event generator and
 yyy.detector is an input file describing the detector geometry. All these
-input files are based on keywords and can be found in the \$NPTool/Inputs 
+input files are based on keywords and can be found in the \$NPTOOL/Inputs 
 subdirectories.
 
 \subsubsection{Event Generators}
@@ -148,7 +147,7 @@ activated independently using the keywords {\it FIRSTSTAGE},
 
 \subsection{Results of the simulation}
 The results of the simulation are in the ROOT format and the output file 
-is stored in the \$NPTool/Output/Simulation directory. The output ROOT file 
+is stored in the \$NPTOOL/Output/Simulation directory. The output ROOT file 
 contains three classes:
 \begin{itemize}
    \item {TInitialConditions:}
@@ -226,32 +225,32 @@ ReadConfiguration()} method.
 
 \section{NPAnalysis}
 \subsection{General}
-A set of general ROOT macros are available in the \$NPTool/NPAnalysis/macros 
+A set of general ROOT macros are available in the \$NPTOOL/Projects/macros 
 directory. You can for example obtain some control plots about the shooting
 conditions of the random variables. You can also calculate the geometrical 
 efficiency of your setup.
 
 The macros in this directory should be independant of the setup which is simulated.
 Specific macros to Gaspard tracker should be placed in the 
-\$NPTool/NPAnalysis/Gaspard/macros directory.
+\$NPTOOL/Projects/Gaspard/macros directory.
 
 
 \subsection{Gaspard}
-The main analysis tool for the Gaspard tracker is in the \$NPTool/NPAnalysis/Gaspard
+The main analysis tool for the Gaspard tracker is in the \$NPTOOL/Projects/Gaspard
 directory. For the moment the main feature is the reconstruction of the excitation 
 energy.
 
 \subsubsection{Running the analysis}
-To run NPAnalysis the following command line should be executed:
+The following command line should be executed:
 
 \begin{verbatim}
-   ./Analysis -E xxx.reaction -D yyy.detector -R RunToTreat.txt
+   npnalysis -E xxx.reaction -D yyy.detector -R RunToTreat.txt
 \end{verbatim}
 
 where xxx.reaction is the input file describing the event generator used in 
 NPSimulation and yyy.detector is the input file describing the detector geometry
 used in NPSimulation. All these input files are based on keywords and can be found 
-in the \$NPTool/Inputs subdirectories. The RunToTreat.txt file contains the
+in the \$NPTOOL/Inputs subdirectories. The RunToTreat.txt file contains the
 name of the files (either from NPSimulation or from real experiment) which should
 be analysed. The name of the tree should also be specified. An example 
 of such a file is given here:
@@ -267,24 +266,24 @@ of such a file is given here:
 
 
 \subsubsection{Results of the analysis}
-The results of the anaysis are stored in a ROOT file in the \$NPTool/Output/Analysis
+The results of the anaysis are stored in a ROOT file in the \$NPTOOL/Output/Analysis
 directory. For the moment the main feature available is the reconstruction of the 
 excitation energy.
 
 
 \subsubsection{Structure of the analysis}
 The analysis package now deals with Gaspard trackers including different shapes.
-The main analysis program is the \$NPTool/NPAnalysis/Gaspard/src/Analysis.cc
+The main analysis program is the \$NPTOOL/NPAnalysis/Gaspard/src/Analysis.cc
 file where the user is in charge to code the specific functionalities he is
 interested in. This includes to treat cases with multiplicity greater than one,
 calculate the excitation energy, check the effect of beam tracker detector
 positioning resolution, ...
 
-However, all the basic treatments of the analysis are done in \$NPTool/NPLib/GASPARD.
+However, all the basic treatments of the analysis are done in \$NPTOOL/NPLib/Detectors/GASPARD.
 These basic treatments calculate the total energy deposited in the telescope and
 associate for each pixel number the cartesian coordinates of the pixel middle.
 
-The structure in \$NPLib/GASPARD is very similar to the NPSimulation structure
+The structure in \$NPLib/Detectors/GASPARD is very similar to the NPSimulation structure
 for Gaspard. The GaspardTracker.\{h,cxx\} class derives from the VDetector class
 and holds ($i$) the GaspardTrackerData object to be analysed, ($ii$) the
 GaspardTrackerPhysics object with the results of the basic treatement and ($iii$)

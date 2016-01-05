@@ -1,6 +1,6 @@
 \documentclass[a4paper,12pt]{article}
 \usepackage[T1]{fontenc}
-\usepackage [isolatin]{inputenc}
+%\usepackage [isolatin]{inputenc}
 \usepackage{epsfig}
 \usepackage{graphicx}
 \usepackage{listings}
@@ -11,8 +11,8 @@
 \author{Marc Labiche\\ \\
  STFC Daresbury Laboratory,\\
  marc.labiche@stfc.ac.uk\\ \\} 
-
 \maketitle 
+
 \pagebreak
 \tableofcontents
 \pagebreak
@@ -38,7 +38,7 @@ GASPARD program, thus many details described here are similar to the GASPARD doc
 
 \begin{figure*}[ht]
 \begin{center}
-\psfig{figure=Parismodule1.eps,width=10cm,height=5cm,angle=0}
+\psfig{figure=paris_fig1.eps,width=10cm,height=5cm,angle=0}
 \end{center}
 \caption{Two drawings of a single phoswich module. The LaBr$_{3}$ scintillator is in blue 
 and the NaI scintillator is in red } 
@@ -71,7 +71,7 @@ files ShieldPhParis.\{hh,cc\}.
 
 \begin{figure*}[ht]
 \begin{center}
-\psfig{figure=Paris3by3.eps,width=12cm,height=5cm,angle=0}
+\psfig{figure=paris_fig2.eps,width=12cm,height=5cm,angle=0}
 \end{center}
 \caption{Two drawings of a 3$\times$3 cluster. The LaBr$_{3}$ scintillator is in blue and 
 the NaI scintillator is in red } 
@@ -89,7 +89,7 @@ ShieldPhParis classes).
 
 \begin{figure*}[ht]
 \begin{center}
-\psfig{figure=FullParisNoShield.eps,width=8cm,height=8cm,angle=0}
+\psfig{figure=paris_fig3.eps,width=8cm,height=8cm,angle=0}
 \end{center}
 \caption{Spherical configuration of Paris, without shielding.} 
 \label{fig:Paris1}
@@ -97,7 +97,7 @@ ShieldPhParis classes).
 
 \begin{figure*}[ht]
 \begin{center}
-\psfig{figure=FullParis.eps,width=8cm,height=8cm,angle=0}
+\psfig{figure=paris_fig4.eps,width=8cm,height=8cm,angle=0}
 \end{center}
 \caption{Spherical configuration of Paris, with shielding.} 
 \label{fig:Paris2}
@@ -108,13 +108,13 @@ As for other NPTool simulations, to run Paris simulations the following command 
 be executed: 
 
 \begin{verbatim}
-   Simulation -D yyy.detector -E  xxx.reaction
+   npsimulation -D yyy.detector -E  xxx.reaction
 \end{verbatim}
 
 where xxx.reaction is an input file describing the event generator and
 yyy.detector is an input file describing the detector geometry. All these
 input files are based on keywords and can be found in the 
-\$NPTool/Inputs subdirectories.
+\$NPTOOL/Inputs subdirectories.
 
 \subsubsection{Event Generators}
 In the distributed version, a source of $\gamma$-ray either at rest or in motion along the 
@@ -201,7 +201,7 @@ an example.
 
 The electromagnetic physics process used by default in NPTool is the standard GEANT4 physics 
 list. The user can  however choose a different physics list amongst the Standard, Low Energy 
-and Penelope physics list by modifying the file: \$NPTool/NPSimulation/src/PhysicList.cc.
+and Penelope physics list by modifying the file: \$NPTOOL/NPSimulation/src/PhysicList.cc.
 As an example,in order to choose the low energy physics list (recommended), open the 
 PhysicList.cc file and comment and uncomment the relevant lines as follow:
 
@@ -273,7 +273,7 @@ PhysicList.cc file and comment and uncomment the relevant lines as follow:
 
 \subsection{Simulation output}
 Again, as in other NPTool simulations, the results of the simulations are in the ROOT format 
-and the output file is stored in the \$NPTool/Output/Simulation directory. If the PARIS 
+and the output file is stored in the \$NPTOOL/Output/Simulation directory. If the PARIS 
 geometry input file includes the NaI Shield, the output ROOT file contains four classes:
 
 \begin{itemize}
@@ -312,24 +312,24 @@ geometry input file includes the NaI Shield, the output ROOT file contains four 
 Only a very preliminary analysis code is provided with this release. 
 
 \subsection{Paris}
-The analysis code for the Paris array is in the \$NPTool/NPAnalysis/Paris
+The analysis code for the Paris array is in the \$NPTOOL/Projects/Paris
 directory. For the moment the main feature is the photopeak efficiency as function of the 
 $\gamma$-ray incoming energy. The photopeak efficiency in each layer of the array is 
 calculated as well as for the NaI sheild. The full photopeak efficiencies, with and without 
 add-back correction between the different layers, are also determined. 
 
 \subsubsection{Running the analysis}
-To run NPAnalysis the following command line should be executed in the 
-\$NPTool/NPAnalysis/Paris directory:
+The following command line should be executed in the 
+\$NPTOOL/Projects/Paris directory:
 
 \begin{verbatim}
-   ./Analysis -D yyy.detector -E xxx.reaction -R RunToTreat.txt
+   npanalysis -D yyy.detector -E xxx.reaction -R RunToTreat.txt
 \end{verbatim}
 
 where xxx.reaction is the input file describing the event generator used in 
 NPSimulation and yyy.detector is the input file describing the detector geometry
 used in NPSimulation. All these input files are based on keywords and can be found 
-in the \$NPTool/Inputs subdirectories. The RunToTreat.txt file contains the
+in the \$NPTOOL/Inputs subdirectories. The RunToTreat.txt file contains the
 name of the files (either from NPSimulation or from real experiment) which should
 be analysed. The name of the tree should also be specified. An example 
 of such a file is given here:
@@ -344,7 +344,7 @@ of such a file is given here:
 
 
 \subsubsection{Results of the analysis}
-The results of the analysis are stored in a ROOT file in the \$NPTool/Output/Analysis
+The results of the analysis are stored in a ROOT file in the \$NPTOOL/Output/Analysis
 directory.
 
 
