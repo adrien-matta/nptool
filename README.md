@@ -31,7 +31,7 @@ NPTool components are compiled and installed using the CMake build system,
 so be sure to have a working CMake installation before starting.
 
 In order to compile NPLib, the NPTool core libraries, ROOT 5 (tested with 5.34) 
-or 6 with the libMathMore.so library should be installed. 
+or 6 should be installed with the libMathMore.so library. 
 This is sufficient to compile NPLib and any analysis project. 
 
 In order to compile NPSimulation, a recent installation of Geant4 (tested 
@@ -42,35 +42,40 @@ NPTool, Geant4 should be installed with GDML support.
 NPLib is the core of the NPTool package, holding most of the actual code. It is 
 made of a collection of stand alone C++ classes that can be used in programs 
 and macros. 
-
 The first step is to define some environment variables. Open your .profile / 
 .bashrc / .tcshrc file in your home directory and add the following line:
 
 > source /path/to/nptool/nptool.sh
 
-Then, restart your terminal. You should now have all aliases and environment variable properly defined and can now access the NPLib folder by using the command:
+Then, restart your terminal. You should now have all aliases and environment 
+variable properly defined and can now access the NPLib folder by using the 
+command:
 ````
 $ npl 
 ````
-and you should be in the NPLib directory. 
-Before the compilation of the libraries you need to run cmake to generate the Makefile. If you give no argument to cmake, all detector will be compile. If you wish to limit the number of detector to be compiled, simply specify the detector folder name (respecting the case). You can specify more than one detector:
+and you should be in the NPLib directory.
+
+In order to prepare the compilation CMake must be run to generate the Makefile.
+If no arguments are given to CMake, all detectors will be compiled. If you wish 
+to limit the number of detectors to be compiled, specify the detector folder 
+name (respecting the case). Note that more than one detector can be specified.
 
 All detector compiled:
 ````
 $ cmake ./ 
 ````
-OR Some detector compiled:
+__OR__ Some detector compiled:
 ````
 $ cmake ./ -DETLIST="DetFolder1 DetFolder2"
 ````
 
-Then you compile the whole NPLib with n threads using :
+Then, the whole NPLib can be compiled with _n_ threads using:
 
 ````
 $ make -jn install
 ````
 
-If you wish to recompile with more detector:
+If you wish to recompile to get support for more detectors, do:
 
 ````
 $ nptool-cleaner
@@ -78,12 +83,12 @@ $ cmake ./ -DETLIST="DetFolder1 DetFolder2 ..."
 $ make -jn install
 ````
 
-If you have google ninja build install then you can alternatively ask cmake to generate the ninja.build file:
+If you have google ninja build installed you can alternatively ask CMake to 
+generate the ninja.build file:
 ````
 $ cmake -GNinja ./
 $ ninja install
 ````
-
 Compilation using Ninja is faster than using make.
 
 ###Building NPSimulation
