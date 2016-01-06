@@ -30,7 +30,7 @@ then
    # Run npanalysis
    npanalysis -R RunToTreat.txt -O Example1
    # Run the ShowResult ROOT macro
-   echo ".q" | root -b -l ShowResult.cxx
+   echo ".q" | root -b -l ShowResult.C
 else
    # Case where reference simulation file does not exist
    echo "Warning!!! file $NPTOOL/NPData/Example1_Simu.root does not exist"
@@ -61,7 +61,7 @@ then
    # Run npanalysis
    npanalysis -R RunToTreat.txt -O Example2
    # Run the ShowResult ROOT macro
-   echo ".q" | root -b -l ShowResult.cxx
+   echo ".q" | root -b -l ShowResult.C
 else
    # Case where reference simulation file does not exist
    echo "Warning!!! file $NPTOOL/NPData/Example1_Simu.root does not exist"
