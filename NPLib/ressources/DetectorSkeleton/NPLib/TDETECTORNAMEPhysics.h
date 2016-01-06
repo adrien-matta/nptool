@@ -25,6 +25,7 @@
 // C++ headers 
 #include <vector>
 #include <map>
+#include <string>
 using namespace std;
 
 // ROOT headers
@@ -50,11 +51,13 @@ class TDETECTORNAMEPhysics : public TObject, public NPL::VDetector {
     TDETECTORNAMEPhysics();
     ~TDETECTORNAMEPhysics() {};
 
+
   //////////////////////////////////////////////////////////////
   // Inherited from TObject and overriden to avoid warnings
   public: 
     void Clear();   
     void Clear(const Option_t*) {};
+
 
   //////////////////////////////////////////////////////////////
   // data obtained after BuildPhysicalEvent() and stored in
@@ -64,109 +67,113 @@ class TDETECTORNAMEPhysics : public TObject, public NPL::VDetector {
     vector<double>   Energy;
     vector<double>   Time;
 
+
   //////////////////////////////////////////////////////////////
   // methods inherited from the VDetector ABC class
   public:
-    //   Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-    void ReadConfiguration(string) ;
+    // read stream from ConfigFile to pick-up detector parameters
+    void ReadConfiguration(string);
 
-    //   Add Parameter to the CalibrationManger
-    void AddParameterToCalibrationManager() ;      
+    // add parameters to the CalibrationManger
+    void AddParameterToCalibrationManager();
 
-    //   Activated associated Branches and link it to the private member DetectorData address
-    //   In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
-    void InitializeRootInputRaw() ;
+    // method called event by event, aiming at extracting the 
+    // physical information from detector
+    void BuildPhysicalEvent();
 
-    //   Activated associated Branches and link it to the private member DetectorPhysics address
-    //   In this method mother Branches (Detector) AND daughter leaf (parameter) have to be activated
-    void InitializeRootInputPhysics() ;
+    // same as BuildPhysicalEvent() method but with a simpler
+    // treatment
+    void BuildSimplePhysicalEvent();
 
-    //   Create associated branches and associated private member DetectorPhysics address
-    void InitializeRootOutput() ;
-
-    //   This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
-    void BuildPhysicalEvent() ;
-
-    //   Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
-    //   This method aimed to be used for analysis performed during experiment, when speed is requiered.
-    //   NB: This method can eventually be the same as BuildPhysicalEvent.
-    void BuildSimplePhysicalEvent() ;
-
-    // Same as above but for online analysis
+    // same as above but for online analysis
     void BuildOnlinePhysicalEvent()  {BuildPhysicalEvent();};
 
-    //   Those two method all to clear the Event Physics or Data
+    // activate raw data object and branches from input TChain
+    // in this method mother branches (Detector) AND daughter leaves 
+    // (fDetector_parameter) have to be activated
+    void InitializeRootInputRaw();
+
+    // activate physics data object and branches from input TChain
+    // in this method mother branches (Detector) AND daughter leaves 
+    // (fDetector_parameter) have to be activated
+    void InitializeRootInputPhysics();
+
+    // create branches of output ROOT file
+    void InitializeRootOutput();
+
+    // clear the raw and physical data objects event by event
     void ClearEventPhysics() {Clear();}      
     void ClearEventData()    {m_EventData->Clear();}   
 
-    // Method related to the TSpectra classes, aimed at providing a framework for online applications
-    // Instantiate the Spectra class and the histogramm throught it
+    // methods related to the TDETECTORNAMESpectra class
+    // instantiate the TDETECTORNAMESpectra class and 
+    // declare list of histograms
     void InitSpectra();
-    // Fill the spectra hold by the spectra class
+
+    // fill the spectra
     void FillSpectra();
-    // Used for Online mainly, perform check on the histo and for example change their color if issues are found
+
+    // used for Online mainly, sanity check for histograms and 
+    // change their color if issues are found, for example
     void CheckSpectra();
-    // Used for Online only, clear all the spectra hold by the Spectra class
+
+    // used for Online only, clear all the spectra
     void ClearSpectra();
-    // Write Spectra to file
+
+    // write spectra to ROOT output file
     void WriteSpectra();
 
-  public:      //   Specific to DETECTORNAME Array
-    //   Clear The PreTeated object
-    void ClearPreTreatedData()   {m_PreTreatedData->Clear();}
 
-    //   Remove bad channel, calibrate the data and apply threshold
+  //////////////////////////////////////////////////////////////
+  // specific methods to DETECTORNAME array
+  public:
+    // remove bad channels, calibrate the data and apply thresholds
     void PreTreat();
 
-    //   Return false if the channel is disabled by user
-    //   Frist argument is either "X","Y","SiLi","CsI"
-    bool IsValidChannel( const int detector);
+    // clear the pre-treated object
+    void ClearPreTreatedData()   {m_PreTreatedData->Clear();}
 
-    //   Initialize the standard parameter for analysis
-    //   ie: all channel enable, maximum multiplicity for strip = number of detector
-    void InitializeStandardParameter();
-
-    //   Read the user configuration file; if no file found, load standard one
+    // read the user configuration file. If no file is found, load standard one
     void ReadAnalysisConfig();
 
-    // Give and external TMustData object to TDETECTORNAMEPhysics. Needed for online analysis for example.
+    // give and external TDETECTORNAMEData object to TDETECTORNAMEPhysics. 
+    // needed for online analysis for example
     void SetRawDataPointer(TDETECTORNAMEData* rawDataPointer) {m_EventData = rawDataPointer;}
     
-    // Retrieve raw and pre-treated data
+  // objects are not written in the TTree
+  private:
+    TDETECTORNAMEData*         m_EventData;        //!
+    TDETECTORNAMEData*         m_PreTreatedData;   //!
+    TDETECTORNAMEPhysics*      m_EventPhysics;     //!
+
+  // getters for raw and pre-treated data object
+  public:
     TDETECTORNAMEData* GetRawData()        const {return m_EventData;}
     TDETECTORNAMEData* GetPreTreatedData() const {return m_PreTreatedData;}
 
-    TVector3 GetPositionOfInteraction(const int i) const;   
+  // parameters used in the analysis
+  private:
+    // thresholds
+    double m_E_RAW_Threshold; //!
+    double m_E_Threshold;     //!
 
-  private:   //   Parameter used in the analysis
-    //  Threshold
-    double m_E_RAW_Threshold ;//!
-    double m_E_Threshold ;//!
+  // number of detectors
+  private:
+    int m_NumberOfDetectors;  //!
 
-  private:   //   Root Input and Output tree classes
-    TDETECTORNAMEData*         m_EventData;//!
-    TDETECTORNAMEData*         m_PreTreatedData;//!
-    TDETECTORNAMEPhysics*      m_EventPhysics;//!
-
-
-  private:   //   Map of activated channel
-    map<int, bool> m_ChannelStatus;//!
-
-  private:   //   Spatial Position of Detector
-    int m_NumberOfDetector;//!
-    vector< vector < vector < double > > >   m_PositionX;//!
-    vector< vector < vector < double > > >   m_PositionY;//!
-    vector< vector < vector < double > > >   m_PositionZ;//!
-
-  private: // Spectra Class
+  // spectra class
+  private:
     TDETECTORNAMESpectra* m_Spectra; // !
 
-  public: // Spectra Getter
-    map< string , TH1*> GetSpectra(); 
-    vector<TCanvas*> GetCanvas();
+  // spectra getter
+  public:
+    map<string, TH1*>   GetSpectra(); 
+    vector<TCanvas*>    GetCanvas();
 
-  public: // Static constructor to be passed to the Detector Factory
+  // Static constructor to be passed to the Detector Factory
+  public:
     static NPL::VDetector* Construct();
+
     ClassDef(TDETECTORNAMEPhysics,1)  // DETECTORNAMEPhysics structure
 };
 #endif

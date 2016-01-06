@@ -28,92 +28,90 @@
 #include <cmath>
 #include <stdlib.h>
 #include <limits>
+using namespace std;
 
 //   NPL
 #include "RootInput.h"
 #include "RootOutput.h"
-#include "TAsciiFile.h"
-#include "NPOptionManager.h"
 #include "NPDetectorFactory.h"
+
 //   ROOT
 #include "TChain.h"
-///////////////////////////////////////////////////////////////////////////
 
 ClassImp(TDETECTORNAMEPhysics)
-  ///////////////////////////////////////////////////////////////////////////
-  TDETECTORNAMEPhysics::TDETECTORNAMEPhysics(){
-    m_EventData         = new TDETECTORNAMEData ;
-    m_PreTreatedData    = new TDETECTORNAMEData ;
-    m_EventPhysics      = this ;
-    m_Spectra           = NULL;
-    m_NumberOfDetector = 0 ;
-    // Threshold
-    m_E_RAW_Threshold = 0 ;
-    m_E_Threshold = 0 ;
-  }
+
 
 ///////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMEPhysics::BuildSimplePhysicalEvent(){
+TDETECTORNAMEPhysics::TDETECTORNAMEPhysics()
+   : m_EventData(new TDETECTORNAMEData),
+     m_PreTreatedData(new TDETECTORNAMEData),
+     m_EventPhysics(this),
+     m_Spectra(0),
+     m_E_RAW_Threshold(0), // adc channels
+     m_E_Threshold(0),     // MeV
+     m_NumberOfDetectors(0) {
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////
+void TDETECTORNAMEPhysics::BuildSimplePhysicalEvent() {
   BuildPhysicalEvent();
 }
 
+
+
 ///////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMEPhysics::BuildPhysicalEvent(){
+void TDETECTORNAMEPhysics::BuildPhysicalEvent() {
+  // apply thresholds and calibration
   PreTreat();
-  // Make any further calculation on top the Pre Treat
-  // In this case match Energy and time together
 
-  unsigned int sizeE = m_PreTreatedData->GetMultEnergy();
-  unsigned int sizeT = m_PreTreatedData->GetMultTime();
-
-  for(unsigned int e = 0 ; e < sizeE ; e++){
-    for(unsigned int t = 0 ; t < sizeT ; t++){
-      if(m_PreTreatedData->GetE_DetectorNbr(e)==m_PreTreatedData->GetT_DetectorNbr(t)){
+  // match energy and time together
+  for (UShort_t e = 0; e < m_PreTreatedData->GetMultEnergy(); e++) {
+    for (UShort_t t = 0; t < m_PreTreatedData->GetMultTime(); t++) {
+      if (m_PreTreatedData->GetE_DetectorNbr(e) == m_PreTreatedData->GetT_DetectorNbr(t)) {
         DetectorNumber.push_back(m_PreTreatedData->GetE_DetectorNbr(e));
         Energy.push_back(m_PreTreatedData->Get_Energy(e));
         Time.push_back(m_PreTreatedData->Get_Time(t));
       }
     }
   }
-
-  return;
 }
 
+
+
 ///////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMEPhysics::PreTreat(){
-  // Typically apply threshold and Calibration
+void TDETECTORNAMEPhysics::PreTreat() {
+  // This method ypically applies thresholds and calibrations
   // Might test for desabled channel for more complex detector
+
+  // clear pre-treated object
   ClearPreTreatedData();
+
+  // instantiate CalibrationManager
   static CalibrationManager* Cal = CalibrationManager::getInstance();
 
-  //   Energy
-  unsigned int sizeE = m_EventData->GetMultEnergy();
-  for(unsigned int i = 0 ; i < sizeE ; ++i){
-    if( m_EventData->Get_Energy(i)>m_E_RAW_Threshold ){
-      double Energy = Cal->ApplyCalibration("DETECTORNAME/ENERGY"+NPL::itoa(m_EventData->GetE_DetectorNbr(i)),m_EventData->Get_Energy(i));
-      if( Energy > m_E_Threshold ){
+  // Energy
+  for (UShort_t i = 0; i < m_EventData->GetMultEnergy(); ++i) {
+    if (m_EventData->Get_Energy(i) > m_E_RAW_Threshold) {
+      Double_t Energy = Cal->ApplyCalibration("DETECTORNAME/ENERGY"+NPL::itoa(m_EventData->GetE_DetectorNbr(i)),m_EventData->Get_Energy(i));
+      if (Energy > m_E_Threshold) {
         m_PreTreatedData->SetEnergy(m_EventData->GetE_DetectorNbr(i), Energy);
       }
     }
   }
 
-  //  Time 
-  unsigned int sizeT = m_EventData->GetMultTime();
-  for(unsigned int i = 0 ; i < sizeT ; ++i){
-    double Time= Cal->ApplyCalibration("DETECTORNAME/TIME"+NPL::itoa(m_EventData->GetT_DetectorNbr(i)),m_EventData->Get_Time(i));
+  // Time 
+  for (UShort_t i = 0; i < m_EventData->GetMultTime(); ++i) {
+    Double_t Time= Cal->ApplyCalibration("DETECTORNAME/TIME"+NPL::itoa(m_EventData->GetT_DetectorNbr(i)),m_EventData->Get_Time(i));
     m_PreTreatedData->SetTime(m_EventData->GetT_DetectorNbr(i), Time);
   }
-
-  return;
 }
 
-////////////////////////////////////////////////////////////////////////////
-bool TDETECTORNAMEPhysics::IsValidChannel( const int detector) {
-  return m_ChannelStatus[detector];
-}
+
 
 ///////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMEPhysics::ReadAnalysisConfig(){
+void TDETECTORNAMEPhysics::ReadAnalysisConfig() {
   bool ReadingStatus = false;
 
   // path to file
@@ -183,18 +181,18 @@ void TDETECTORNAMEPhysics::ReadAnalysisConfig(){
 }
 
 
+
 ///////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMEPhysics::Clear(){
-  DetectorNumber.clear() ;
+void TDETECTORNAMEPhysics::Clear() {
+  DetectorNumber.clear();
   Energy.clear();
   Time.clear();
 }
-///////////////////////////////////////////////////////////////////////////
 
-////   Innherited from VDetector Class   ////
+
 
 ///////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMEPhysics::ReadConfiguration(string Path){
+void TDETECTORNAMEPhysics::ReadConfiguration(string Path) {
   ifstream ConfigFile           ;
   ConfigFile.open(Path.c_str()) ;
   string LineBuffer             ;
@@ -332,7 +330,7 @@ void TDETECTORNAMEPhysics::ReadConfiguration(string Path){
 
       if ( ((check_Theta && check_Phi && check_R) ||( check_X && check_Y && check_Z)  )&& check_Thickness && check_Scintillator && (check_Radius ||  (check_Height && check_Width)) && check_Shape )
       {
-        m_NumberOfDetector++;
+        m_NumberOfDetectors++;
 
         //   Reinitialisation of Check Boolean
         check_Theta = false          ;
@@ -354,25 +352,38 @@ void TDETECTORNAMEPhysics::ReadConfiguration(string Path){
   }
 }
 
-///////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMEPhysics::InitSpectra(){
-  m_Spectra = new TDETECTORNAMESpectra(m_NumberOfDetector);
-}
+
 
 ///////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMEPhysics::FillSpectra(){
+void TDETECTORNAMEPhysics::InitSpectra() {
+  m_Spectra = new TDETECTORNAMESpectra(m_NumberOfDetectors);
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////
+void TDETECTORNAMEPhysics::FillSpectra() {
   m_Spectra -> FillRawSpectra(m_EventData);
   m_Spectra -> FillPreTreatedSpectra(m_PreTreatedData);
   m_Spectra -> FillPhysicsSpectra(m_EventPhysics);
 }
+
+
+
 ///////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMEPhysics::CheckSpectra(){
+void TDETECTORNAMEPhysics::CheckSpectra() {
   m_Spectra->CheckSpectra();
 }
+
+
+
 ///////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMEPhysics::ClearSpectra(){
+void TDETECTORNAMEPhysics::ClearSpectra() {
   // To be done
 }
+
+
+
 ///////////////////////////////////////////////////////////////////////////
 map< string , TH1*> TDETECTORNAMEPhysics::GetSpectra() {
   if(m_Spectra)
@@ -382,6 +393,9 @@ map< string , TH1*> TDETECTORNAMEPhysics::GetSpectra() {
     return empty;
   }
 }
+
+
+
 ////////////////////////////////////////////////////////////////////////////////
 vector<TCanvas*> TDETECTORNAMEPhysics::GetCanvas() {
   if(m_Spectra)
@@ -392,57 +406,59 @@ vector<TCanvas*> TDETECTORNAMEPhysics::GetCanvas() {
   }
 }
 
+
+
 ///////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMEPhysics::WriteSpectra(){
+void TDETECTORNAMEPhysics::WriteSpectra() {
   m_Spectra->WriteSpectra();
 }
+
+
+
 ///////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMEPhysics::AddParameterToCalibrationManager(){
+void TDETECTORNAMEPhysics::AddParameterToCalibrationManager() {
   CalibrationManager* Cal = CalibrationManager::getInstance();
-  for(int i = 0 ; i < m_NumberOfDetector ; ++i){
+  for (int i = 0; i < m_NumberOfDetectors; ++i) {
     Cal->AddParameter("DETECTORNAME", "D"+ NPL::itoa(i+1)+"_ENERGY","DETECTORNAME_D"+ NPL::itoa(i+1)+"_ENERGY");
     Cal->AddParameter("DETECTORNAME", "D"+ NPL::itoa(i+1)+"_TIME","DETECTORNAME_D"+ NPL::itoa(i+1)+"_TIME");
   }
-  return;
 }
 
-///////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMEPhysics::InitializeRootInputRaw(){
-  TChain* inputChain = RootInput::getInstance()->GetChain()   ;
-  inputChain->SetBranchStatus( "DETECTORNAME" , true );
-  inputChain->SetBranchAddress( "DETECTORNAME" , &m_EventData );
-}
+
 
 ///////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMEPhysics::InitializeRootInputPhysics(){
+void TDETECTORNAMEPhysics::InitializeRootInputRaw() {
   TChain* inputChain = RootInput::getInstance()->GetChain();
-  inputChain->SetBranchAddress( "DETECTORNAME" , &m_EventPhysics );
+  inputChain->SetBranchStatus("DETECTORNAME",  true );
+  inputChain->SetBranchAddress("DETECTORNAME", &m_EventData );
 }
+
+
 
 ///////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMEPhysics::InitializeRootOutput(){
-  TTree* outputTree = RootOutput::getInstance()->GetTree();
-  outputTree->Branch( "DETECTORNAME" , "TDETECTORNAMEPhysics" , &m_EventPhysics );
+void TDETECTORNAMEPhysics::InitializeRootInputPhysics() {
+  TChain* inputChain = RootInput::getInstance()->GetChain();
+  inputChain->SetBranchAddress("DETECTORNAME", &m_EventPhysics);
 }
 
-////////////////////////////////////////////////////////////////////////////////
-/////   Specific to DETECTORNAMEArray   ////
-////////////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMEPhysics::InitializeStandardParameter(){
-  //   Enable all channel
-  vector< bool > ChannelStatus;
-  for(unsigned int i = 0 ; i  < m_NumberOfDetector ; i++){
-    m_ChannelStatus[i+1]=true;
-  }
-  return;
+
+
+///////////////////////////////////////////////////////////////////////////
+void TDETECTORNAMEPhysics::InitializeRootOutput() {
+  TTree* outputTree = RootOutput::getInstance()->GetTree();
+  outputTree->Branch("DETECTORNAME", "TDETECTORNAMEPhysics", &m_EventPhysics);
 }
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPL::VDetector* TDETECTORNAMEPhysics::Construct(){
+NPL::VDetector* TDETECTORNAMEPhysics::Construct() {
   return (NPL::VDetector*) new TDETECTORNAMEPhysics();
 }
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //            Registering the construct method to the factory                 //
