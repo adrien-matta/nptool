@@ -56,6 +56,49 @@ if [ -f ./liblist ] ; then
    rm ./liblist
 fi
 
+# include directory
+for file in ./include/*
+do
+   if [ -f $file ] ; then
+      rm $file
+   fi ;
+done
+
+# NPLibTargets.cmake file
+if [ -f ./NPLibTargets.cmake ] ; then
+   rm ./NPLibTargets.cmake
+fi
+
+# NPLibConfig.cmake file
+if [ -f ./NPLibConfig.cmake ] ; then
+   rm ./NPLibConfig.cmake
+fi
+
+# remove Utility executables
+if [ -f ./Utility/npanalysis ] ; then
+   rm ./Utility/npanalysis
+fi
+if [ -f ./Utility/nponline ] ; then
+   rm ./Utility/nponline
+fi
+if [ -f ./Utility/nptool-installer ] ; then
+   rm ./Utility/nptool-installer
+fi
+if [ -f ./Utility/nptool-cleaner ] ; then
+   rm ./Utility/nptool-cleaner
+fi
+if [ -f ./Utility/nptool-wizard ] ; then
+   rm ./Utility/nptool-wizard
+fi
+
+############################################################
+# specific to NPLib
+############################################################
+# remove npsimulation executable 
+if [ -f ./npsimulation ] ; then
+   rm ./npsimulation
+fi
+
 ############################################################
 # common to NPLib and NPSimulation
 ############################################################
@@ -74,135 +117,40 @@ if [ -f ./install_manifest.txt ] ; then
    rm ./install_manifest.txt
 fi
 
-# NPLibTargets.cmake file
-if [ -f ./NPLibTargets.cmake ] ; then
-   rm ./NPLibTargets.cmake
-fi
-
-# NPLibConfig.cmake file
-if [ -f ./NPLibConfig.cmake ] ; then
-   rm ./NPLibConfig.cmake
-fi
-
 # bin directory
-for file in ./bin/*
-do
-   if [ -f $file ] ; then
-      rm $file
-   fi ;
-done
 if [ -d ./bin ] ; then
-   rmdir ./bin
+   rm -rf ./bin
 fi ;
 
-# include directory
-for file in ./include/*
-do
-   if [ -f $file ] ; then
-      rm $file
-   fi ;
-done
-
 # lib directory
-for file in ./lib/*
-do
-   if [ -f $file ] ; then
-      rm $file
-   fi ;
-done
 if [ -d ./lib ] ; then
-   rmdir ./lib
+   rm -rf ./lib
 fi ;
 
 # .so extention
-for file in ./*/*.so
-do
-   if [ -f $file ] ; then
-      rm $file
-   fi ;
-done
-for file in ./*/*/*.so
-do
-   if [ -f $file ] ; then
-      rm $file
-   fi ;
-done
+rm -f `find . -maxdepth 3 -type f -name "*.so"`
 
 # .dylib extention
-for file in ./*/*.dylib
-do
-   if [ -f $file ] ; then
-      rm $file
-   fi ;
-done
-for file in ./*/*/*.dylib
-do
-   if [ -f $file ] ; then
-      rm $file
-   fi ;
-done
+rm -f `find . -maxdepth 3 -type f -name "*.dylib"`
+
+# .rootmap extention
+rm -f `find . -maxdepth 3 -type f -name "*.rootmap"`
+
+# .pcm extention
+rm -f `find . -maxdepth 3 -type f -name "*.pcm"`
 
 # dictionnary files
-for file in ./*/*Dict*
-do
-   if [ -f $file ] ; then
-      rm $file
-   fi ;
-done
-for file in ./*/*/*Dict*
-do
-   if [ -f $file ] ; then
-      rm $file
-   fi ;
-done
+rm -f `find . -maxdepth 3 -type f -name "*Dict*"`
 
 # Makefile files
-if [ -f ./Makefile ] ; then
-   rm ./Makefile
-fi
-for file in ./*/Makefile
-do
-   if [ -f $file ] ; then
-      rm $file
-   fi ;
-done
-for file in ./*/*/Makefile
-do
-   if [ -f $file ] ; then
-      rm $file
-   fi ;
-done
+rm -f `find . -maxdepth 3 -type f -name Makefile`
 
 # cmake_install.cmake files
-if [ -f ./cmake_install.cmake ] ; then
-   rm ./cmake_install.cmake
-fi
-for file in ./*/cmake_install.cmake
-do
-   if [ -f $file ] ; then
-      rm $file
-   fi ;
-done
-for file in ./*/*/cmake_install.cmake
-do
-   if [ -f $file ] ; then
-      rm $file
-fi ;
-done
+rm -f `find . -maxdepth 3 -type f -name cmake_install.cmake`
 
 # .ninja files
-for file in ./*/.ninja
-do
-   if [ -f $file ] ; then
-      rm $file
-   fi ;
-done
-for file in ./*/*/.ninja
-do
-   if [ -f $file ] ; then
-      rm $file
-   fi ;
-done
+rm -f `find . -maxdepth 3 -type f -name "*.ninja"`
 
 # CMakeFiles directories
 rm -rf `find . -maxdepth 3 -type d -name CMakeFiles`
+
