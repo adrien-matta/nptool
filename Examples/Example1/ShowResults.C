@@ -21,7 +21,7 @@ chain->Add("../../Outputs/Analysis/Example1.root");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ShowResult(){
+void ShowResults(){
 LoadChain();
 LoadCuts();
 

@@ -9,7 +9,7 @@ void LoadChain()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ShowResult()
+void ShowResults()
 {
    // load chain from result
    LoadChain();
