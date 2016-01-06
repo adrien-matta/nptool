@@ -22,45 +22,53 @@
  *                                                                           *
  *****************************************************************************/
 
-// STL
+// C++ headers 
 #include <vector>
+#include <map>
+using namespace std;
 
-// NPL
+// ROOT headers
+#include "TObject.h"
+#include "TH1.h"
+#include "TCanvas.h"
+
+// NPTool headers
 #include "TDETECTORNAMEData.h"
 #include "TDETECTORNAMESpectra.h"
 #include "NPCalibrationManager.h"
 #include "NPVDetector.h"
-// ROOT 
-#include "TVector2.h" 
-#include "TVector3.h" 
-#include "TObject.h"
-#include "TCanvas.h"
-// Forward declaration
+
+// forward declaration
 class TDETECTORNAMESpectra;
 
 
-using namespace std ;
 
-class TDETECTORNAMEPhysics : public TObject, public NPL::VDetector{
+class TDETECTORNAMEPhysics : public TObject, public NPL::VDetector {
+  //////////////////////////////////////////////////////////////
+  // constructor and destructor
   public:
     TDETECTORNAMEPhysics();
     ~TDETECTORNAMEPhysics() {};
 
+  //////////////////////////////////////////////////////////////
+  // Inherited from TObject and overriden to avoid warnings
   public: 
     void Clear();   
     void Clear(const Option_t*) {};
 
+  //////////////////////////////////////////////////////////////
+  // data obtained after BuildPhysicalEvent() and stored in
+  // output ROOT file
   public:
-    //   DSSD
-    vector<int> DetectorNumber ;
-    vector<double> Energy ;
-    vector<double> Time ;
+    vector<int>      DetectorNumber;
+    vector<double>   Energy;
+    vector<double>   Time;
 
-  public: //   Innherited from VDetector Class
-
+  //////////////////////////////////////////////////////////////
+  // methods inherited from the VDetector ABC class
+  public:
     //   Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
     void ReadConfiguration(string) ;
-
 
     //   Add Parameter to the CalibrationManger
     void AddParameterToCalibrationManager() ;      
