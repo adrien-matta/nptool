@@ -198,7 +198,7 @@ ROOT file, _npanalysis_ use these automatically as inputs.
 
 The results can be displayed using the command:
 ````
-$ root -l ShowResult.cxx
+$ root -l ShowResult.C
 ````
 
 You should be able to see the light particle identification, the light particle kinematical line and the associated excitation energy spectrum fitted by a gaussian.
