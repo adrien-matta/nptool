@@ -14,8 +14,9 @@ MATTA at a.matta@surrey.ac.uk
   2. [Downloading from Git Hub](#downloading-from-git-hub)
 2. [Setup](#setup)
   1. [Requirements](#requirements)
-  2. [Building NPLib](#building-nplib)
-  3. [Building NPSimulation](#building-npsimulation)
+  2. [Preparing the build](#preparing-the-build)
+  3. [Building NPLib](#building-nplib)
+  4. [Building NPSimulation](#building-npsimulation)
 3. [Benchmarks and Examples](#benchmarks-and-examples)
   1. [Benchmarks](#benchmarks)
   2. [Examples](#examples)
@@ -51,6 +52,15 @@ This is sufficient to compile NPLib and any analysis project.
 In order to compile NPSimulation, a recent installation of Geant4 (tested 
 with version 9.6 and 10.1) is needed. If you want to use GDML format in 
 NPTool, Geant4 should be installed with GDML support.
+
+### Preparing the build
+To set the needed environment variables, PATH and LD\_LIBRARY\_PATH, use
+the following convenience script and do:
+
+`source <pathname>/nptool/nptool.sh`
+
+where `<pathname>` is the location where you unpacked the NPTool package.
+Typically add these lines to your .profile or .bashrc or .tcshrc file.
 
 ### Building NPLib
 NPLib is the core of the NPTool package, holding most of the actual code. It is 

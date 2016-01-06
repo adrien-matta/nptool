@@ -29,4 +29,4 @@ the following convenience script and do:
 
 where `<pathname>` is the location where you unpacked the NPTool package.
 
-Typically add these lines to your .profile or .bashrc or .tcshrc files.
+Typically add these lines to your .profile or .bashrc or .tcshrc file.
