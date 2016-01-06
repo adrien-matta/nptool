@@ -8,10 +8,23 @@ framework for preparing and analysing complex experiments, making an efficient
 use of Geant4 and ROOT toolkits. If you wish to contribute, contact Adrien 
 MATTA at a.matta@surrey.ac.uk
 
+# Contents
+1. [Getting the code](getting-the-code)
+  1. Using git
+  2. Downloading from Git Hub
+2. Setup
+  1. Requirements
+  2. Building NPLib
+  3. Building NPSimulation
+3. Benchmarks and Examples
+  1. Benchmarks
+  2. Examples
+
+
 ## Getting the code
 ### Using git
-The recommended method to obtain the code is to use git. This ensures an easy 
-way to access the updated version of the code. First make sure you have git 
+The recommended method to obtain the source code is to use git. This is an 
+easy way to access the last version of the code. First make sure you have git 
 installed. If not, use your package manager to get it. Then go to the directory 
 where you want to install the NPTool package and do:
 ````
@@ -44,8 +57,9 @@ made of a collection of stand alone C++ classes that can be used in programs
 and macros. 
 The first step is to define some environment variables. Open your .profile / 
 .bashrc / .tcshrc file in your home directory and add the following line:
-
-> source /path/to/nptool/nptool.sh
+```
+$ source /path/to/nptool/nptool.sh
+```
 
 Then, restart your terminal. You should now have all aliases and environment 
 variable properly defined and can now access the NPLib folder by using the 
@@ -75,7 +89,7 @@ Then, the whole NPLib can be compiled with _n_ threads using:
 $ make -jn install
 ````
 
-If you wish to recompile to get support for more detectors, do:
+If you wish to recompile in order to get support for more detectors, do:
 
 ````
 $ nptool-cleaner
@@ -95,11 +109,11 @@ Compilation using Ninja is faster than using make.
 This part of the package relies on Geant4 to perform Monte Carlo simulation. 
 NPLib needs first to be compiled and configured correctly before NPSimulation 
 can be compiled. The compilation is done as follow:
-````
+```
 $ nps
 $ cmake ./
 $ make -jn install
-`````
+```
 
 This will produce the _npsimulation_ executable. For a detailed list of the 
 available input flags and their meaning, run the following command:
