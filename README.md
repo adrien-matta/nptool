@@ -59,7 +59,7 @@ aliases, source the following script doing:
 ```
 source <pathname>/nptool/nptool.sh
 ```
-where <pathname> is the location where you unpacked the NPTool package.
+where `<pathname>` is the location where you unpacked the NPTool package.
 Then, restart your terminal.
 
 You should typically add the previous command line to your .profile, 
@@ -71,9 +71,9 @@ made of a collection of stand alone C++ classes that can be used in programs
 and macros. 
 
 First, go to the NPLib folder by using the command:
-````
+```
 $ npl 
-````
+```
 
 In order to prepare the compilation CMake must be run to generate the Makefile.
 If no arguments are given to CMake, all detectors will be compiled. If you wish 
