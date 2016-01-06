@@ -22,8 +22,13 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update; fi 
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install homebrew/science/root; fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install homebrew/science/geant4; fi    
+
   # Dumping stuff for check
   - root-config --version
+
+  # Install NPData needed to run examples suite
+  - cd $NPTOOL
+  - git clone https://github.com/adrien-matta/NPData
 
 install:
 
