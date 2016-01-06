@@ -54,31 +54,26 @@ with version 9.6 and 10.1) is needed. If you want to use GDML format in
 NPTool, Geant4 should be installed with GDML support.
 
 ### Preparing the build
-To set the needed environment variables, PATH and LD\_LIBRARY\_PATH, use
-the following convenience script and do:
+To set the needed environment variables, PATH and LD\_LIBRARY\_PATH, and
+aliases, source the following script doing:
+```
+source <pathname>/nptool/nptool.sh
+```
+where <pathname> is the location where you unpacked the NPTool package.
+Then, restart your terminal.
 
-`source <pathname>/nptool/nptool.sh`
-
-where `<pathname>` is the location where you unpacked the NPTool package.
-Typically add these lines to your .profile or .bashrc or .tcshrc file.
+You should typically add the previous command line to your .profile, 
+.bashrc or .tcshrc file.
 
 ### Building NPLib
 NPLib is the core of the NPTool package, holding most of the actual code. It is 
 made of a collection of stand alone C++ classes that can be used in programs 
 and macros. 
-The first step is to define some environment variables. Open your .profile / 
-.bashrc / .tcshrc file in your home directory and add the following line:
-```
-$ source /path/to/nptool/nptool.sh
-```
 
-Then, restart your terminal. You should now have all aliases and environment 
-variable properly defined and can now access the NPLib folder by using the 
-command:
+First, go to the NPLib folder by using the command:
 ````
 $ npl 
 ````
-and you should be in the NPLib directory.
 
 In order to prepare the compilation CMake must be run to generate the Makefile.
 If no arguments are given to CMake, all detectors will be compiled. If you wish 
