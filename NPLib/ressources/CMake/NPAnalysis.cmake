@@ -62,4 +62,4 @@ endif()
 
 
 add_library(NPAnalysis SHARED Analysis.cxx)
-target_link_libraries(NPAnalysis ${ROOT_LIBRARIES} -L${NPLIB}/lib -lNPCore -lNPPhysics)
+target_link_libraries(NPAnalysis ${ROOT_LIBRARIES} -L${NPLIB}/lib -lNPCore -lNPPhysics -lNPInteractionCoordinates -lNPInitialConditions)
