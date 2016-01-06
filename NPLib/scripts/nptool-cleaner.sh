@@ -74,73 +74,86 @@ if [ -f ./install_manifest.txt ] ; then
    rm ./install_manifest.txt
 fi
 
+# NPLibTargets.cmake file
+if [ -f ./NPLibTargets.cmake ] ; then
+   rm ./NPLibTargets.cmake
+fi
+
+# NPLibConfig.cmake file
+if [ -f ./NPLibConfig.cmake ] ; then
+   rm ./NPLibConfig.cmake
+fi
+
 # bin directory
 for file in ./bin/*
 do
    if [ -f $file ] ; then
-   rm $file
-fi ;
-#rmdir ./bin
+      rm $file
+   fi ;
 done
+if [ -d ./bin ] ; then
+   rmdir ./bin
+fi ;
 
 # include directory
 for file in ./include/*
 do
    if [ -f $file ] ; then
-   rm $file
-fi ;
-#rmdir ./include
+      rm $file
+   fi ;
 done
 
 # lib directory
 for file in ./lib/*
 do
    if [ -f $file ] ; then
-   rm $file
-fi ;
-#rmdir ./lib
+      rm $file
+   fi ;
 done
+if [ -d ./lib ] ; then
+   rmdir ./lib
+fi ;
 
 # .so extention
 for file in ./*/*.so
 do
    if [ -f $file ] ; then
-   rm $file
-fi ;
+      rm $file
+   fi ;
 done
 for file in ./*/*/*.so
 do
    if [ -f $file ] ; then
-   rm $file
-fi ;
+      rm $file
+   fi ;
 done
 
 # .dylib extention
 for file in ./*/*.dylib
 do
    if [ -f $file ] ; then
-   rm $file
-fi ;
+      rm $file
+   fi ;
 done
 for file in ./*/*/*.dylib
 do
    if [ -f $file ] ; then
-   rm $file
-fi ;
+      rm $file
+   fi ;
 done
 
 # dictionnary files
 for file in ./*/*Dict*
 do
    if [ -f $file ] ; then
-   rm $file
-fi ;
+      rm $file
+   fi ;
 done
 for file in ./*/*/*Dict*
 do
    if [ -f $file ] ; then
-   rm $file
-fi ;
+      rm $file
+   fi ;
 done
 
 # Makefile files
@@ -150,14 +163,14 @@ fi
 for file in ./*/Makefile
 do
    if [ -f $file ] ; then
-   rm $file
-fi ;
+      rm $file
+   fi ;
 done
 for file in ./*/*/Makefile
 do
    if [ -f $file ] ; then
-   rm $file
-fi ;
+      rm $file
+   fi ;
 done
 
 # cmake_install.cmake files
@@ -167,13 +180,13 @@ fi
 for file in ./*/cmake_install.cmake
 do
    if [ -f $file ] ; then
-   rm $file
-fi ;
+      rm $file
+   fi ;
 done
 for file in ./*/*/cmake_install.cmake
 do
    if [ -f $file ] ; then
-   rm $file
+      rm $file
 fi ;
 done
 
@@ -181,14 +194,14 @@ done
 for file in ./*/.ninja
 do
    if [ -f $file ] ; then
-   rm $file
-fi ;
+      rm $file
+   fi ;
 done
 for file in ./*/*/.ninja
 do
    if [ -f $file ] ; then
-   rm $file
-fi ;
+      rm $file
+   fi ;
 done
 
 # CMakeFiles directories
