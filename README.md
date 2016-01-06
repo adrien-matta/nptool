@@ -9,16 +9,17 @@ use of Geant4 and ROOT toolkits. If you wish to contribute, contact Adrien
 MATTA at a.matta@surrey.ac.uk
 
 # Contents
-1. [Getting the code](getting-the-code)
-  1. Using git
-  2. Downloading from Git Hub
-2. Setup
-  1. Requirements
-  2. Building NPLib
-  3. Building NPSimulation
-3. Benchmarks and Examples
-  1. Benchmarks
-  2. Examples
+1. [Getting the code](#getting-the-code)
+  1. [Using git](#using-git)
+  2. [Downloading from Git Hub](#downloading-from-git-hub)
+2. [Setup](#setup)
+  1. [Requirements](#requirements)
+  2. [Building NPLib](#building-nplib)
+  3. [Building NPSimulation](#building-npsimulation)
+3. [Benchmarks and Examples](#benchmarks-and-examples)
+  1. [Benchmarks](#benchmarks)
+  2. [Examples](#examples)
+4. [Tricks](#tricks)
 
 
 ## Getting the code
@@ -121,11 +122,51 @@ available input flags and their meaning, run the following command:
 $ npsimulation -h
 ````
 
+## Benchmarks and Examples
+You need to download additional files to be able to run the benchmarks and
+the examples. In the $NPTOOL directory, do the following:
 
-## Benchmarks
+```
+$ git clone https://github.com/adrien-matta/NPData
 
-## Examples
-To run a standardised test case, you can run the following command:
+```
+
+### Benchmarks
+Benchmarks play an important role to check the installation or upgrade integrity
+of the NPTool package. They are also useful for comparing CPU performances on
+different computer platforms. So far two benchmarks are included in the NPTool
+package. The first one (_cats_) analyses experimental data from a beam tracker 
+detector using the _npanalysis_ facility, while the second one (_gaspard_) runs 
+a silicon array simulation using the _npsimulation_ facility and display some 
+basics control spectra. Each benchmark produces figures that can be compared to 
+the reference figures provided in NPTool. These two benchmarks cover all the core
+functionalities of NPTool's framework.
+
+The first benchmark can be run with the following commands:
+```
+$ cd $NPTOOL/Benchmarks/cats
+$ npanalysis -D benchmark_cats.detector -C calibration.txt -R RunToTreat.txt -O benchmark_cats
+```
+
+For the second benchmark do:
+```
+$ cd $NPTOOL/Benchmarks/gaspard
+$ npsimulation -D benchmark_gaspard.detector -E 132Sndp_benchmark.reaction -O benchmark_gaspard -B batch.mac
+```
+
+In both cases, the results can be displayed and compared to reference results 
+using the following command:
+```
+$ root -l ShowResult.C
+```
+
+### Examples
+With respect to benchmarks, examples deal with more complex analysis cases
+where several detectors are present. In this context, physical information 
+resulting from the combination of information from several detectors can be 
+calculated.
+
+As a standardized test case, you can run Example1 by the following command:
 ````
 $ npsimulation -D Example1.detector -E Example1.reaction -O Example1
 ````
@@ -137,34 +178,47 @@ command:
 > exit
 ````
 
-This will run the <sup>11</sup>Li(d,<sup>3</sup>He)<sup>10</sup>He-><sup>8H</sup>e+n+n simulation and produce a root file located in $NPTOOL/Outputs/Simulation/Example1.root. One can have a look at the Example1.detector, located in $NPTOOL/Inputs/DetectorConfiguration, and Example1.reaction, located in $NPTOOL/Inputs/EventGenerator, to see how the input file are formated. They usually are self explenatory using easy to understand token.
+This will simulate the <sup>11</sup>Li(d,<sup>3</sup>He)<sup>10</sup>He-><sup>8H</sup>e+n+n 
+reaction and produce an output ROOT file located in $NPTOOL/Outputs/Simulation/Example1.root. 
 
-You can now try to analyse this simulated tree using the associated NPAnalysis project:
+The `Example1.detector` file located in $NPTOOL/Inputs/DetectorConfiguration 
+and the `Example1.reaction` file located in $NPTOOL/Inputs/EventGenerator are
+self explanatory thanks to the use of understandable tokens.
+
+The simulated file can be analysed using the following commands:
 ````
 $ npp Example1
 $ cmake ./
 $ make -jn
 $ npanalysis -R RunToTreat.txt -O Example1
 ````
-Because the input file are written in the simulation file along the SimulatedTree, npanalysis will automatically use those file as inputs. This will produce the analysed tree located in $NPTOOL/Outputs/Analysis/Example1.root. You can then display the result of the simulation using root:
+This will produce an analysed tree located in the $NPTOOL/Outputs/Analysis/Example1.root file.
+Note that since the input files needed by _npsimulation_ are stored in the 
+ROOT file, _npanalysis_ use these automatically as inputs.
+
+The results can be displayed using the command:
 ````
-$ root ShowResult.cxx
+$ root -l ShowResult.cxx
 ````
 
 You should be able to see the light particle identification, the light particle kinematical line and the associated excitation energy spectrum fitted by a gaussian.
  
 The Example1 input files and NPAnalysis project are simple basis that can be used to start doing your own simulations.
 
-A few Basics: 
-npsimulation and npanalysis can be run from any directory. npanalysis look in the current directory for an analysis library to load and use, if none available, it limit hte analysis to building the PhysicsTree.
 
-One can perform quick analysis of the last simulated tree using:
+## Tricks
+- _npsimulation_ and _npanalysis_ facilities can be run from any directory. 
+- _npanalysis_ looks in the current directory for an analysis library 
+  (_libNPAnalysis_) to load and use. If not present, the analysis is limited
+  to build the PhysicsTree.
+- To perform a quick analysis of the last MOnte Carlo simulation, do:
 ````
 npanalysis --last-sim 
 ````
 Any additional flag can be used
 
-One can run npsimulation in batch mode (with no UI) and provide instead a geant4 macro file to run
+- _npsimulation_ can be used in batch mode (with no UI) if the user provides 
+a Geant4 macro file specified with the -B flag
 ````
-npsimulation -D Example1.detector -E Example1.reaction -B path/to/marcro.mac -O FileName
+npsimulation -D Example1.detector -E Example1.reaction -B path/to/macro.mac -O FileName
 ````

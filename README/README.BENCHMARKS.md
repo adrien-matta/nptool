@@ -25,7 +25,7 @@ functionalities of NPTool's framework.
 
 
 ## Prerequisities
-You need to dowmnoad additional files to be able to run the benchmarks. In the
+You need to download additional files to be able to run the benchmarks. In the
 $NPTOOL directory, do the following:
 
 ```
