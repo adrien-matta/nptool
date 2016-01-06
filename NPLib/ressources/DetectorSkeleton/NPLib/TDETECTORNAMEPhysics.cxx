@@ -153,14 +153,6 @@ void TDETECTORNAMEPhysics::ReadAnalysisConfig() {
         AnalysisConfigFile.ignore(numeric_limits<streamsize>::max(), '\n' );
       }
 
-      if (whatToDo== "DISABLE_DETECTOR") {
-        AnalysisConfigFile >> DataBuffer;
-        cout << whatToDo << "  " << DataBuffer << endl;
-        int Detector = atoi(DataBuffer.substr(2,1).c_str());
-        vector< bool > ChannelStatus;
-        ChannelStatus[Detector]=false;
-      }
-
       else if (whatToDo=="E_RAW_THRESHOLD") {
         AnalysisConfigFile >> DataBuffer;
         m_E_RAW_Threshold = atof(DataBuffer.c_str());
