@@ -14,10 +14,18 @@ DETECTORNAME
 	X= 0
 	Y= 0
 	Z= 350
-	Thickness= 30
 	Shape= Square
-	Height= 70
-	Width= 40
-	Scintillator= BC400
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+DETECTORNAME
+	X= 350
+	Y= 350
+	Z= 350
+	Shape= Square
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+DETECTORNAME
+	R= 350
+	THETA= 90
+	PHI= 63
+	Shape= Cylindrical
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

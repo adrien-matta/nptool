@@ -36,8 +36,7 @@ using namespace std;
 #include "NPSVDetector.hh"
 #include "TDETECTORNAMEData.h"
 
-class DETECTORNAME : public NPS::VDetector
-{
+class DETECTORNAME : public NPS::VDetector{
   ////////////////////////////////////////////////////
   /////// Default Constructor and Destructor /////////
   ////////////////////////////////////////////////////
@@ -57,9 +56,10 @@ class DETECTORNAME : public NPS::VDetector
 
     G4LogicalVolume* BuildSquareDetector();
     G4LogicalVolume* BuildCylindricalDetector();
+  
   private:
-    G4LogicalVolume* m_SquareDetector();
-    G4LogicalVolume* m_CylindricalDetector();
+    G4LogicalVolume* m_SquareDetector;
+    G4LogicalVolume* m_CylindricalDetector;
     
     ////////////////////////////////////////////////////
     //////  Inherite from NPS::VDetector class /////////

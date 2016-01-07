@@ -7,13 +7,13 @@
 // NPTool header
 #include "NPVDetector.h" 
 
-
-int main(int argc , char** argv)
-{
+int main(int argc , char** argv){
   // Find the different paths
   std::string path    = getenv("NPTOOL");
   std::string pathNPL = path + "/NPLib/Detectors/";
-  std::string pathNPS = path + "/NPSimulation/";
+  std::string pathNPS = path + "/NPSimulation/Detectors/";
+  std::string pathInputs = path + "/Inputs/DetectorConfiguration/";
+
   std::string pwd     = getenv("PWD");
 
   int return_value = -1 ;
@@ -29,28 +29,52 @@ int main(int argc , char** argv)
   switch(now->tm_mon + 1){
     case 1:
       month = "January";
+      break;
+
     case 2:
       month = "February";
+      break;
+
     case 3:
       month = "March";
+      break;
+
     case 4:
       month = "April";
+      break;
+
     case 5:
       month = "May";
+      break;
+
     case 6:
       month = "June";
+      break;
+
     case 7:
       month = "July";
+      break;
+
     case 8:
       month = "August";
+      break;
+
     case 9:
       month = "September";
+      break;
+
     case 10:
       month = "October";
+      break;
+
     case 11:
       month = "November";
+      break;
+
     case 12:
       month = "December";
+      break;
+
   }
   std::string year = NPL::itoa(now->tm_year+1900);
 
@@ -99,24 +123,24 @@ int main(int argc , char** argv)
   return_value = system(command.c_str());
 
   // Edit npl file
-   command = "sed -i '' -e \"s/DETECTORNAME/"+ answer +"/g\" "
-    + pathNPL + answer +"/* > /dev/null 2> /dev/null";
+  command = "sed -i '' -e \"s/DETECTORNAME/"+ answer +"/g\" "
+    + pathNPL + answer +"/*.* > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
- 
+
   command = "sed -i '' -e \"s/XAUTHORX/"+ author+"/g\" "
-    + pathNPL + answer +"/* > /dev/null 2> /dev/null";
+    + pathNPL + answer +"/*.* > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
-  
+
   command = "sed -i '' -e \"s/XMAILX/"+ email+"/g\" "
-    + pathNPL + answer +"/* > /dev/null 2> /dev/null";
+    + pathNPL + answer +"/*.* > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
-  
+
   command = "sed -i '' -e \"s/XYEARX/"+ year +"  /g\" "
-    + pathNPL + answer +"/* > /dev/null 2> /dev/null";
+    + pathNPL + answer +"/*.* > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
 
   command = "sed -i '' -e \"s/XMONTHX/"+ month +"/g\" "
-    + pathNPL + answer +"/* > /dev/null 2> /dev/null";
+    + pathNPL + answer +"/*.* > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
 
   // change files name
@@ -143,12 +167,55 @@ int main(int argc , char** argv)
 
 
   // Create nps folder
-  command = "mkdir " + pathNPS + "/Detectors/" + answer + " > /dev/null 2> /dev/null";
+  command = "mkdir " + pathNPS + answer + " > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
 
   // Add nps file
+  command = "cp " + pathNPL + "../ressources/DetectorSkeleton/NPSimulation/*.* " 
+    + pathNPS + answer +"/ > /dev/null 2> /dev/null";
+  return_value = system(command.c_str());
+
+  command = "sed -i '' -e \"s/DETECTORNAME/"+ answer +"/g\" "
+    + pathNPS + answer +"/*.* > /dev/null 2> /dev/null";
+  return_value = system(command.c_str());
+
+  command = "sed -i '' -e \"s/XAUTHORX/"+ author+"/g\" "
+    + pathNPS + answer +"/*.* > /dev/null 2> /dev/null";
+  return_value = system(command.c_str());
+
+  command = "sed -i '' -e \"s/XMAILX/"+ email+"/g\" "
+    + pathNPS + answer +"/*.* > /dev/null 2> /dev/null";
+  return_value = system(command.c_str());
+
+  command = "sed -i '' -e \"s/XYEARX/"+ year +"  /g\" "
+    + pathNPS + answer +"/*.* > /dev/null 2> /dev/null";
+  return_value = system(command.c_str());
+
+  command = "sed -i '' -e \"s/XMONTHX/"+ month +"/g\" "
+    + pathNPS + answer +"/*.* > /dev/null 2> /dev/null";
+  return_value = system(command.c_str());
+
+  // change files name
+  command = "mv " + pathNPS + answer +"/DETECTORNAME.hh " 
+    + pathNPS + answer + "/" + SimFile_h ;
+  return_value = system(command.c_str());
+  command = "mv " + pathNPS + answer +"/DETECTORNAME.cc " 
+    + pathNPS + answer + "/" + SimFile_cxx ;
+  return_value = system(command.c_str());
 
   // Add input file
+  command = "cp " + pathNPL + "../ressources/DetectorSkeleton/Inputs/*.* " 
+    + pathInputs +" > /dev/null 2> /dev/null";
+  return_value = system(command.c_str());
+
+  command = "sed -i '' -e \"s/DETECTORNAME/"+ answer +"/g\" "
+    + pathInputs + "DETECTORNAME.detector > /dev/null 2> /dev/null";
+  return_value = system(command.c_str());
+
+  // change files name
+  command = "mv " + pathInputs +"DETECTORNAME.detector " 
+    + pathInputs + answer + ".detector" ;
+  return_value = system(command.c_str());
 
   // Provide a list of created file 
   std::cout << "\t List of created files to\033[1;35m edit \033[0m:" << std::endl;
