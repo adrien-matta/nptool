@@ -1,9 +1,9 @@
-#include<iostream>
-#include<fstream>
-#include<stdlib.h>
-#include<dlfcn.h>
-#include<dirent.h>
-#include"NPDetectorFactory.h"
+#include <iostream>
+#include <fstream>
+#include <stdlib.h>
+#include <dlfcn.h>
+#include <dirent.h>
+#include "NPDetectorFactory.h"
 int main(int argc , char** argv){
   int return_value;
 

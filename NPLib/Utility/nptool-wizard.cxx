@@ -1,13 +1,49 @@
 // C++ headers
 #include <iostream>
 #include <sstream>
-#include <stdlib.h>
+#include <set>
+#include <string>
 #include <ctime>
-
+#include <stdlib.h>
+#include <dlfcn.h>
+#include <dirent.h>
 // NPTool header
 #include "NPVDetector.h" 
 
+
+// A function to get the list of existing detector
+void GetListOfDetector(std::set<string>& LowerName){
+  DIR *dir;
+  struct dirent *ent;
+  string path = getenv("NPTOOL");
+  path += "/NPLib/Detectors";
+  string name;
+  if ((dir = opendir (path.c_str())) != NULL) {
+    while ((ent = readdir (dir)) != NULL) {
+      name= ent->d_name ;
+      std::transform(name.begin(), name.end(),name.begin(), ::tolower);
+      LowerName.insert(name);
+    }
+    closedir (dir);
+  }
+}
+
+
+//// The main program
 int main(int argc , char** argv){
+
+  // check for the force flag
+  bool force = false;
+  for(unsigned int i = 0 ; i < argc ; i++ ){  
+    string flag = argv[i];
+    if(flag=="-f")
+      force = true;
+  }
+
+  // List of existing detector name and close name
+  std::set<string> LowerName;
+  GetListOfDetector(LowerName);
+
   // Find the different paths
   std::string path    = getenv("NPTOOL");
   std::string pathNPL = path + "/NPLib/Detectors/";
@@ -88,6 +124,17 @@ int main(int argc , char** argv){
   std::cout << "           This utility will create a new detector skeleton"<< std::endl;
   std::cout << "\033[1;36m-> What is the detector name ? \033[0m";
   std::cin >> answer;
+
+  // Cheking if the name does not already exist or is close to something else:
+  if(!force){
+    string lname = answer;
+    std::transform(lname.begin(), lname.end(),lname.begin(), ::tolower);
+    if(LowerName.find(lname)!=LowerName.end()){
+      cout << "\033[1;31m**** ERROR : A detector with name close to \033[1;36m" << answer << " \033[1;31malready exist. use \033[1;36m-f\033[1;31m flag to force recreation.\033[0m" << endl;
+      exit(1);
+    }
+  }
+
   std::cout << "\033[1;36m-> What is your name (firstname and surname)? \033[0m";
   std::cin >> author; 
   getline(cin, buffer);
@@ -97,10 +144,6 @@ int main(int argc , char** argv){
   std::cin >> email;
 
   std::cout << std::endl << std::endl;
-
-  // Cheking if the name does not already exist or is close to something else:
-  // TODO //
-  ////////// 
 
   // Creating the detector files name
   std::string DataFile_h      = "T"+answer+"Data.h";
