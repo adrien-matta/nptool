@@ -43,7 +43,7 @@
 TCanvas* canvas1 ;
 TCanvas* canvas2 ;
 
-void ControlSimu(const char * fname = "benchmark_gaspard"){
+void ShowResults(const char * fname = "benchmark_gaspard"){
   // for the style 
   gROOT->SetStyle("nptool");     
   gROOT->ForceStyle(false);  

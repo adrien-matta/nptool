@@ -1,5 +1,5 @@
 void NIM(){
-  TCanvas* c = new TCanvas("c","c",900,900);
+  TCanvas* c = new TCanvas("c","c",2*900,900);
 
 
 //  TFile* fexp = new TFile("Nana_exp.root","READ");
@@ -40,10 +40,11 @@ void NIM(){
   hexp->Draw();
   hexp->GetXaxis()->SetTitle("LaBr3 Energy (keV)");
   hexp->GetYaxis()->SetTitle("Counts per 4 keV");
+  hexp->GetXaxis()->SetRangeUser(0,1600);
   hsim->Draw("same");
   hbgd->SetFillColor(kRed);
   hbgd->SetLineColor(kRed);
-  hbgd->Draw("same");
+//  hbgd->Draw("same");
  // hexp_o->SetFillColor(kGreen);
  // hexp_o->SetLineColor(kGreen);
   //hexp_o->Draw("same"); 
