@@ -193,11 +193,6 @@ void TDETECTORNAMEPhysics::ReadConfiguration(string Path) {
   bool check_Theta = false          ;
   bool check_Phi  = false           ;
   bool check_R     = false          ;
-  bool check_Thickness = false      ;
-  bool check_Radius = false         ;
-  bool check_Scintillator = false   ;
-  bool check_Height = false         ;
-  bool check_Width = false          ;
   bool check_Shape = false          ;
   bool check_X = false              ;
   bool check_Y = false              ;
@@ -229,7 +224,7 @@ void TDETECTORNAMEPhysics::ReadConfiguration(string Path) {
 
       //   Finding another telescope (safety), toggle out
       else if (DataBuffer.compare(0, name.length(), name) == 0) {
-        cout << "WARNING: Another Detector is find before standard sequence of Token, Error may occured in Telecope definition" << endl ;
+        cout << "\033[1;311mWARNING: Another detector is find before standard sequence of Token, Error may occured in detector definition\033[0m" << endl ;
         ReadingStatus = false ;
       }
 
@@ -279,60 +274,22 @@ void TDETECTORNAMEPhysics::ReadConfiguration(string Path) {
         cout << "Shape:  " << DataBuffer << endl;
       }
 
-      // Cylindrical shape
-      else if (DataBuffer== "Radius=") {
-        check_Radius = true;
-        ConfigFile >> DataBuffer ;
-        cout << "DETECTORNAME Radius:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
-      }
-
-      // Squared shape
-      else if (DataBuffer=="Width=") {
-        check_Width = true;
-        ConfigFile >> DataBuffer ;
-        cout << "DETECTORNAME Width:  " <<atof( DataBuffer.c_str() ) << "mm" << endl;
-      }
-
-      else if (DataBuffer== "Height=") {
-        check_Height = true;
-        ConfigFile >> DataBuffer ;
-        cout << "DETECTORNAME Height:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
-      }
-
-      // Common
-      else if (DataBuffer=="Thickness=") {
-        check_Thickness = true;
-        ConfigFile >> DataBuffer ;
-        cout << "DETECTORNAME Thickness:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
-      }
-
-      else if (DataBuffer== "Scintillator=") {
-        check_Scintillator = true ;
-        ConfigFile >> DataBuffer ;
-        cout << "DETECTORNAME Scintillator type:  " << DataBuffer << endl;
-      }
-
       ///////////////////////////////////////////////////
       //   If no Detector Token and no comment, toggle out
-      else
-      {ReadingStatus = false; cout << "Wrong Token Sequence: Getting out " << DataBuffer << endl ;}
+      else{
+        ReadingStatus = false; cout << "Wrong Token Sequence: Getting out " << DataBuffer << endl ;
+      }
 
       /////////////////////////////////////////////////
       //   If All necessary information there, toggle out
 
-      if ( ((check_Theta && check_Phi && check_R) ||( check_X && check_Y && check_Z)  )&& check_Thickness && check_Scintillator && (check_Radius ||  (check_Height && check_Width)) && check_Shape )
-      {
+      if ( ((check_Theta && check_Phi && check_R) ||( check_X && check_Y && check_Z)  ) && check_Shape ){
         m_NumberOfDetectors++;
 
         //   Reinitialisation of Check Boolean
         check_Theta = false          ;
         check_Phi  = false           ;
         check_R     = false          ;
-        check_Thickness = false      ;
-        check_Radius = false         ;
-        check_Scintillator = false   ;
-        check_Height = false         ;
-        check_Width = false          ;
         check_Shape = false          ;
         check_X = false              ;
         check_Y = false              ;
