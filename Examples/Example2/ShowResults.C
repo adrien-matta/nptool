@@ -8,7 +8,7 @@ return chain;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ShowResult(){
+void ShowResults(){
 gROOT->SetStyle("nptool"); 
 gROOT->ForceStyle();
 TChain* chain = LoadChain();

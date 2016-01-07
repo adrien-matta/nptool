@@ -14,8 +14,9 @@ MATTA at a.matta@surrey.ac.uk
   2. [Downloading from Git Hub](#downloading-from-git-hub)
 2. [Setup](#setup)
   1. [Requirements](#requirements)
-  2. [Building NPLib](#building-nplib)
-  3. [Building NPSimulation](#building-npsimulation)
+  2. [Preparing the build](#preparing-the-build)
+  3. [Building NPLib](#building-nplib)
+  4. [Building NPSimulation](#building-npsimulation)
 3. [Benchmarks and Examples](#benchmarks-and-examples)
   1. [Benchmarks](#benchmarks)
   2. [Examples](#examples)
@@ -52,23 +53,27 @@ In order to compile NPSimulation, a recent installation of Geant4 (tested
 with version 9.6 and 10.1) is needed. If you want to use GDML format in 
 NPTool, Geant4 should be installed with GDML support.
 
+### Preparing the build
+To set the needed environment variables, PATH and LD\_LIBRARY\_PATH, and
+aliases, source the following script doing:
+```
+source <pathname>/nptool/nptool.sh
+```
+where `<pathname>` is the location where you unpacked the NPTool package.
+Then, restart your terminal.
+
+You should typically add the previous command line to your .profile, 
+.bashrc or .tcshrc file.
+
 ### Building NPLib
 NPLib is the core of the NPTool package, holding most of the actual code. It is 
 made of a collection of stand alone C++ classes that can be used in programs 
 and macros. 
-The first step is to define some environment variables. Open your .profile / 
-.bashrc / .tcshrc file in your home directory and add the following line:
-```
-$ source /path/to/nptool/nptool.sh
-```
 
-Then, restart your terminal. You should now have all aliases and environment 
-variable properly defined and can now access the NPLib folder by using the 
-command:
-````
+First, go to the NPLib folder by using the command:
+```
 $ npl 
-````
-and you should be in the NPLib directory.
+```
 
 In order to prepare the compilation CMake must be run to generate the Makefile.
 If no arguments are given to CMake, all detectors will be compiled. If you wish 
