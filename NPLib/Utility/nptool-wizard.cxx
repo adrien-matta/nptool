@@ -4,7 +4,8 @@
 #include <set>
 #include <string>
 #include <ctime>
-#include <stdlib.h>
+#include <cctype>
+#include <cstdlib>
 #include <dlfcn.h>
 #include <dirent.h>
 // NPTool header
