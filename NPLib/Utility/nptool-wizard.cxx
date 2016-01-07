@@ -54,7 +54,7 @@ int main(int argc , char** argv){
 
   int return_value = -1 ;
   std::string command;
-  std::string answer;
+  std::string DetectorName;
   std::string author,buffer;
   std::string email;
 
@@ -123,14 +123,14 @@ int main(int argc , char** argv){
 
   std::cout << "           This utility will create a new detector skeleton"<< std::endl;
   std::cout << "\033[1;36m-> What is the detector name ? \033[0m";
-  std::cin >> answer;
+  std::cin >> DetectorName;
 
   // Cheking if the name does not already exist or is close to something else:
   if(!force){
-    string lname = answer;
+    string lname = DetectorName;
     std::transform(lname.begin(), lname.end(),lname.begin(), ::tolower);
     if(LowerName.find(lname)!=LowerName.end()){
-      cout << "\033[1;31m**** ERROR : A detector with name close to \033[1;36m" << answer << " \033[1;31malready exist. use \033[1;36m-f\033[1;31m flag to force recreation.\033[0m" << endl;
+      cout << "\033[1;31m**** ERROR : A detector with name close to \033[1;36m" << DetectorName << " \033[1;31malready exist. use \033[1;36m-f\033[1;31m flag to force recreation.\033[0m" << endl;
       exit(1);
     }
   }
@@ -146,104 +146,104 @@ int main(int argc , char** argv){
   std::cout << std::endl << std::endl;
 
   // Creating the detector files name
-  std::string DataFile_h      = "T"+answer+"Data.h";
-  std::string DataFile_cxx    = "T"+answer+"Data.cxx";
-  std::string PhysicsFile_h   = "T"+answer+"Physics.h";
-  std::string PhysicsFile_cxx = "T"+answer+"Physics.cxx";
-  std::string SpectraFile_h   = "T"+answer+"Spectra.h";
-  std::string SpectraFile_cxx = "T"+answer+"Spectra.cxx";
-  std::string SimFile_h       = answer+".hh";
-  std::string SimFile_cxx     = answer+".cc";
-  std::string InputFile       = answer+".detector";
+  std::string DataFile_h      = "T"+DetectorName+"Data.h";
+  std::string DataFile_cxx    = "T"+DetectorName+"Data.cxx";
+  std::string PhysicsFile_h   = "T"+DetectorName+"Physics.h";
+  std::string PhysicsFile_cxx = "T"+DetectorName+"Physics.cxx";
+  std::string SpectraFile_h   = "T"+DetectorName+"Spectra.h";
+  std::string SpectraFile_cxx = "T"+DetectorName+"Spectra.cxx";
+  std::string SimFile_h       = DetectorName+".hh";
+  std::string SimFile_cxx     = DetectorName+".cc";
+  std::string InputFile       = DetectorName+".detector";
 
   // Create npl folder for new detector
-  command = "mkdir " + pathNPL + answer + " > /dev/null 2> /dev/null";
+  command = "mkdir " + pathNPL + DetectorName + " > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
 
   // Copy template files to new detector directory
   command = "cp " + pathNPL + "../ressources/DetectorSkeleton/NPLib/* " 
-    + pathNPL + answer +"/ > /dev/null 2> /dev/null";
+    + pathNPL + DetectorName +"/ > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
 
   // Edit npl file
-  command = "sed -i '' -e \"s/DETECTORNAME/"+ answer +"/g\" "
-    + pathNPL + answer +"/*.* > /dev/null 2> /dev/null";
+  command = "sed -i '' -e \"s/DETECTORNAME/"+ DetectorName +"/g\" "
+    + pathNPL + DetectorName +"/*.* > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
 
   command = "sed -i '' -e \"s/XAUTHORX/"+ author+"/g\" "
-    + pathNPL + answer +"/*.* > /dev/null 2> /dev/null";
+    + pathNPL + DetectorName +"/*.* > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
 
   command = "sed -i '' -e \"s/XMAILX/"+ email+"/g\" "
-    + pathNPL + answer +"/*.* > /dev/null 2> /dev/null";
+    + pathNPL + DetectorName +"/*.* > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
 
   command = "sed -i '' -e \"s/XYEARX/"+ year +"  /g\" "
-    + pathNPL + answer +"/*.* > /dev/null 2> /dev/null";
+    + pathNPL + DetectorName +"/*.* > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
 
   command = "sed -i '' -e \"s/XMONTHX/"+ month +"/g\" "
-    + pathNPL + answer +"/*.* > /dev/null 2> /dev/null";
+    + pathNPL + DetectorName +"/*.* > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
 
   // change files name
-  command = "mv " + pathNPL + answer +"/TDETECTORNAMEData.h " 
-    + pathNPL + answer + "/" + DataFile_h ;
+  command = "mv " + pathNPL + DetectorName +"/TDETECTORNAMEData.h " 
+    + pathNPL + DetectorName + "/" + DataFile_h ;
   return_value = system(command.c_str());
-  command = "mv " + pathNPL + answer +"/TDETECTORNAMEData.cxx " 
-    + pathNPL + answer + "/" + DataFile_cxx ;
-  return_value = system(command.c_str());
-
-  command = "mv " + pathNPL + answer +"/TDETECTORNAMEPhysics.h " 
-    + pathNPL + answer + "/" + PhysicsFile_h ;
-  return_value = system(command.c_str());
-  command = "mv " + pathNPL + answer +"/TDETECTORNAMEPhysics.cxx " 
-    + pathNPL + answer + "/" + PhysicsFile_cxx ;
+  command = "mv " + pathNPL + DetectorName +"/TDETECTORNAMEData.cxx " 
+    + pathNPL + DetectorName + "/" + DataFile_cxx ;
   return_value = system(command.c_str());
 
-  command = "mv " + pathNPL + answer +"/TDETECTORNAMESpectra.h " 
-    + pathNPL + answer + "/" + SpectraFile_h ;
+  command = "mv " + pathNPL + DetectorName +"/TDETECTORNAMEPhysics.h " 
+    + pathNPL + DetectorName + "/" + PhysicsFile_h ;
   return_value = system(command.c_str());
-  command = "mv " + pathNPL + answer +"/TDETECTORNAMESpectra.cxx " 
-    + pathNPL + answer + "/" + SpectraFile_cxx ;
+  command = "mv " + pathNPL + DetectorName +"/TDETECTORNAMEPhysics.cxx " 
+    + pathNPL + DetectorName + "/" + PhysicsFile_cxx ;
+  return_value = system(command.c_str());
+
+  command = "mv " + pathNPL + DetectorName +"/TDETECTORNAMESpectra.h " 
+    + pathNPL + DetectorName + "/" + SpectraFile_h ;
+  return_value = system(command.c_str());
+  command = "mv " + pathNPL + DetectorName +"/TDETECTORNAMESpectra.cxx " 
+    + pathNPL + DetectorName + "/" + SpectraFile_cxx ;
   return_value = system(command.c_str());
 
 
   // Create nps folder
-  command = "mkdir " + pathNPS + answer + " > /dev/null 2> /dev/null";
+  command = "mkdir " + pathNPS + DetectorName + " > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
 
   // Add nps file
   command = "cp " + pathNPL + "../ressources/DetectorSkeleton/NPSimulation/*.* " 
-    + pathNPS + answer +"/ > /dev/null 2> /dev/null";
+    + pathNPS + DetectorName +"/ > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
 
-  command = "sed -i '' -e \"s/DETECTORNAME/"+ answer +"/g\" "
-    + pathNPS + answer +"/*.* > /dev/null 2> /dev/null";
+  command = "sed -i '' -e \"s/DETECTORNAME/"+ DetectorName +"/g\" "
+    + pathNPS + DetectorName +"/*.* > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
 
   command = "sed -i '' -e \"s/XAUTHORX/"+ author+"/g\" "
-    + pathNPS + answer +"/*.* > /dev/null 2> /dev/null";
+    + pathNPS + DetectorName +"/*.* > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
 
   command = "sed -i '' -e \"s/XMAILX/"+ email+"/g\" "
-    + pathNPS + answer +"/*.* > /dev/null 2> /dev/null";
+    + pathNPS + DetectorName +"/*.* > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
 
   command = "sed -i '' -e \"s/XYEARX/"+ year +"  /g\" "
-    + pathNPS + answer +"/*.* > /dev/null 2> /dev/null";
+    + pathNPS + DetectorName +"/*.* > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
 
   command = "sed -i '' -e \"s/XMONTHX/"+ month +"/g\" "
-    + pathNPS + answer +"/*.* > /dev/null 2> /dev/null";
+    + pathNPS + DetectorName +"/*.* > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
 
   // change files name
-  command = "mv " + pathNPS + answer +"/DETECTORNAME.hh " 
-    + pathNPS + answer + "/" + SimFile_h ;
+  command = "mv " + pathNPS + DetectorName +"/DETECTORNAME.hh " 
+    + pathNPS + DetectorName + "/" + SimFile_h ;
   return_value = system(command.c_str());
-  command = "mv " + pathNPS + answer +"/DETECTORNAME.cc " 
-    + pathNPS + answer + "/" + SimFile_cxx ;
+  command = "mv " + pathNPS + DetectorName +"/DETECTORNAME.cc " 
+    + pathNPS + DetectorName + "/" + SimFile_cxx ;
   return_value = system(command.c_str());
 
   // Add input file
@@ -251,19 +251,19 @@ int main(int argc , char** argv){
     + pathInputs +" > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
 
-  command = "sed -i '' -e \"s/DETECTORNAME/"+ answer +"/g\" "
+  command = "sed -i '' -e \"s/DETECTORNAME/"+ DetectorName +"/g\" "
     + pathInputs + "DETECTORNAME.detector > /dev/null 2> /dev/null";
   return_value = system(command.c_str());
 
   // change files name
   command = "mv " + pathInputs +"DETECTORNAME.detector " 
-    + pathInputs + answer + ".detector" ;
+    + pathInputs + DetectorName + ".detector" ;
   return_value = system(command.c_str());
 
   // Provide a list of created file 
   std::cout << "\t List of created files to\033[1;35m edit \033[0m:" << std::endl;
   std::cout << "\t NPLib :" << std::endl;
-  std::cout << "\t\t -> Folder: Detectors/" << answer << std::endl;
+  std::cout << "\t\t -> Folder: Detectors/" << DetectorName << std::endl;
   std::cout << "\t\t -> Data Class: \033[1;35m" << DataFile_h 
     << "\033[0m and \033[1;35m" << DataFile_cxx << "\033[0m" << std::endl;
   std::cout << "\t\t -> Physics Class: \033[1;35m" << PhysicsFile_h 
@@ -272,7 +272,7 @@ int main(int argc , char** argv){
     << "\033[0m and \033[1;35m" << SpectraFile_cxx << "\033[0m" << std::endl;
   std::cout << std::endl;
   std::cout << "\tNPSimulation :" << std::endl;
-  std::cout << "\t\t -> Folder: Detectors/" << answer << std::endl;
+  std::cout << "\t\t -> Folder: Detectors/" << DetectorName << std::endl;
   std::cout << "\t\t -> Detector Class: \033[1;35m" << SimFile_h 
     << "\033[0m and \033[1;35m" << SimFile_cxx << "\033[0m" << std::endl;
   std::cout << std::endl;
@@ -281,12 +281,32 @@ int main(int argc , char** argv){
     << InputFile << "\033[0m" << std::endl;
   std::cout << std::endl;
 
-  // Display help message
-  std::cout << "\033[1;31mFor help editing those files visit http://nptool.org/manual/adding-detectors \033[0m" << std::endl;
-
   // Adding file to git
-  // TODO //
-  //////////
+  string git;
+  std::cout << "\033[1;36m-> Do you want to add those files to the nptool repository ? (y/n) \033[0m";
+  std::cin >> git;
+  if(git == "y" || git == "Y"){
+        command = "git add -f "   
+      + pathNPL+DetectorName+"/CMakeLists.txt "       
+      + pathNPL+DetectorName+"/"+DataFile_h + " "     
+      + pathNPL+DetectorName+"/"+DataFile_cxx + " "  
+      + pathNPL+DetectorName+"/"+PhysicsFile_h + " "  
+      + pathNPL+DetectorName+"/"+PhysicsFile_cxx+ " " 
+      + pathNPL+DetectorName+"/"+SpectraFile_h + " "  
+      + pathNPL+DetectorName+"/"+SpectraFile_cxx+ " " 
+      + pathNPS+DetectorName+"/CMakeLists.txt "       
+      + pathNPS+DetectorName+"/"+SimFile_h + " "       
+      + pathNPS+DetectorName+"/"+SimFile_cxx + " "     
+      + pathInputs+InputFile;
+    return_value = system(command.c_str());
+    if(return_value==0)
+      std::cout << "\033[1;32m**** Files added, use \033[1;36mgit commit -a \033[1;32m to commit them when ready ****\033[0m" << endl;
+
+  }
+
+  // Display help message
+  std::cout << std::endl << "\033[1;31m**** For help editing those files visit \033[1;36mhttp://nptool.org/manual/adding-detectors \033[1;31m****\033[0m" << std::endl << std::endl;
+
 
   return 0;
 }
