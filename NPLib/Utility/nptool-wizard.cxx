@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <set>
+#include <algorithm>
 #include <string>
 #include <ctime>
 #include <cctype>

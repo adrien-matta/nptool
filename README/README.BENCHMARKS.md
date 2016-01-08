@@ -4,10 +4,10 @@ README file for running NPTool benchmarks
 Contents
 --------
 
-1. Why benchmarks?
-2. Prerequisities
-3. CATS: a multi-wire low-pressure tracking system
-4. GASPARD: a silicon array for particle spectroscopy
+1. [Why benchmarks?](#why-benchmarks?)
+2. [Prerequisities](#prerequisities)
+3. [CATS: a multi-wire low-pressure tracking system](#cats:-a-multi-wire-low-pressure-tracking-system)
+4. [GASPARD: a silicon array for particle spectroscopy](#gaspard:-a-silicon-array-for-particle-spectroscopy)
 
 
 
@@ -52,14 +52,14 @@ To display the results run the command:
 $ root -l ShowResult.C
 ```
 
-Alternatively, you can run the `benchmark_cats.sh` script which runs the 
-analysis and display the results.
+Alternatively to the two previous commands, you can run the `benchmark_cats.sh` 
+script which runs the analysis and display the results.
 
 ![essai](../Benchmarks/cats/cats_ref.png)
 
 Experimental data for the present benchmark comes from the interaction of a
-<sup>58</sup>Ni ion beam at 75 MeV/u in the CATS detector. A mask with a known
-pattern was inserted in front of CATS in order to calibrate the position
+<sup>58</sup>Ni ion beam at 75 MeV/u in a CATS detector. A mask with a known
+pattern was inserted in front of it in order to calibrate the position
 reconstruction. Results that should be obtained when running the benchmark
 are shown in Fig.~\ref{f:cats}. The mask pattern including circular holes of
 different diameters is clearly observed.
@@ -68,3 +68,4 @@ detector, this benchmark validates the calibration manager facility and the
 _npanalysis_ utility.
 
 
+### GASPARD: a silicon array for particle spectroscopy
