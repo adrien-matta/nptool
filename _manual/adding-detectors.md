@@ -24,7 +24,17 @@ You will be prompted by the script to enter your new detector name (for the sake
 ## Detector classes
 Four classes are created in the process, three in NPLib will describe the data storage and analysis and one in the simulation will describe the detector geometry and readout.
 
-### TDetectorData class
+### The Data class
+
+name
+: TMSX25Data
+location
+: NPLib/Detectors/MSX25
+files
+: TMSX25Data.h 
+: TMSX25Data.cxx
+inherittance
+: TObject (ROOT)
 
 This class is a very basic container used to store raw data in the output tree of either the simulation or the experiment. The nptool approach is to store the data in std::vector, which offer an easy mechanism to store data of variable size, keeping the size of the output file to a minimum. The vector are declared as private member of the class and accessed/modified using Setter/Getter methods.
 
@@ -115,6 +125,6 @@ public:
 A few comments:
 
 1. You will notice that we use inline declaration for the setter and getter. This allow a better optimisation of the code by the compilator, bypassing the call of the function and replacing it by its code. Similarly we pass the argument of the functions by reference to avoid making a local copy at each call. This important because these methods are called for each event analysed or simulated, so typically millions of time.
-2. You will notice the use `\\!`, this is to avoid root making dictionnaries entries for those method and polute the TBrowser view. You can also use this to ask Root not to store a private member in the tree (more about that when talking about the Physics class).
+2. You will notice the use of `\\!` after the functionn declaration. This prevent root from making dictionnaries entries for these methods and pollute the TBrowser view. You can also use this to ask Root not to store a private member in the tree (more about that when talking about the Physics class).
 
 
