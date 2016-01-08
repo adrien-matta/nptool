@@ -25,9 +25,9 @@ void ShowResults()
    TH1* ho = (TH1*) gDirectory->FindObjectAny("h"); 
    ho->GetXaxis()->SetTitle("X (mm)"); 
    ho->GetYaxis()->SetTitle("Y (mm)"); 
-   gPad->SaveAs("cats_ref.png");
+//   gPad->SaveAs("cats_ref.png");
    TLatex *texO = new TLatex(-17.5, 22, "Obtained");
-   //texO->Draw();
+   texO->Draw();
 
    // draw results from reference result
    c1->cd(2);
