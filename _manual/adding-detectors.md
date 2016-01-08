@@ -27,24 +27,24 @@ Four classes are created in the process, three in NPLib will describe the data s
 ### The Data class
 
 * * *
-name
+name:
 : TMSX25Data
 
 * * *
 
-location
+location:
 : NPLib/Detectors/MSX25
 
 * * *
 
-files
-: *TMSX25Data.h 
-: *TMSX25Data.cxx
+files:
+: TMSX25Data.h 
+: TMSX25Data.cxx
 
 * * *
 
-inherittance
-: *TObject (ROOT)
+inherittance:
+: TObject (ROOT)
 
 * * *
 
