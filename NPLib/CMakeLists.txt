@@ -120,3 +120,4 @@ file(RELATIVE_PATH REL_INCLUDE_DIR "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}" "${CMAKE_
 set(CONF_INCLUDE_DIRS "./" "./")
 configure_file(ressources/CMake/NPLibConfig.cmake.in "${PROJECT_BINARY_DIR}/NPLibConfig.cmake" @ONLY)
 configure_file(scripts/nptool-cleaner.sh "${CMAKE_BINARY_OUTPUT_DIRECTORY}/nptool-cleaner" @ONLY)
+configure_file(scripts/nptool-wizard.sh "${CMAKE_BINARY_OUTPUT_DIRECTORY}/nptool-wizard" @ONLY)
