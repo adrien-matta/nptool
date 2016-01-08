@@ -26,18 +26,27 @@ Four classes are created in the process, three in NPLib will describe the data s
 
 ### The Data class
 
+* * *
 name
 : TMSX25Data
+
+* * *
 
 location
 : NPLib/Detectors/MSX25
 
+* * *
+
 files
-: TMSX25Data.h 
-: TMSX25Data.cxx
+: *TMSX25Data.h 
+: *TMSX25Data.cxx
+
+* * *
 
 inherittance
-: TObject (ROOT)
+: *TObject (ROOT)
+
+* * *
 
 This class is a very basic container used to store raw data in the output tree of either the simulation or the experiment. The nptool approach is to store the data in std::vector, which offer an easy mechanism to store data of variable size, keeping the size of the output file to a minimum. The vector are declared as private member of the class and accessed/modified using Setter/Getter methods.
 
