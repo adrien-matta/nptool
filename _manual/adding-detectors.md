@@ -33,12 +33,12 @@ The private data member, located in NPLib/Detectors/MSX25/TMSX25Data.h of the de
 {% highlight C++ %}
   private: 
     // Energy
-    vector<UShort_t>   fDETECTORNAME_E_DetectorNbr;
-    vector<Double_t>   fDETECTORNAME_Energy;
+    vector<UShort_t>   fMSX25_E_DetectorNbr;
+    vector<Double_t>   fMSX25_Energy;
 
     // Time
-    vector<UShort_t>   fDETECTORNAME_T_DetectorNbr;
-    vector<Double_t>   fDETECTORNAME_Time;
+    vector<UShort_t>   fMSX25_T_DetectorNbr;
+    vector<Double_t>   fMSX25_Time;
 {% endhighlight %}
 
 This layout allow to store a list of energies and a list of time, with their associated detector number, for each event. Let change this for our MSX25 detector, for which we will need to store the energy, time, detector number and strip number for each event.
@@ -46,14 +46,74 @@ This layout allow to store a list of energies and a list of time, with their ass
 {% highlight C++ %}
   private: 
     // Energy
-    vector<UShort_t>   fDETECTORNAME_E_DetectorNbr;
-    vector<UShort_t>   fDETECTORNAME_E_StripNbr;
-    vector<Double_t>   fDETECTORNAME_Energy;
+    vector<UShort_t>   fMSX25_E_DetectorNbr;
+    vector<UShort_t>   fMSX25_E_StripNbr;
+    vector<Double_t>   fMSX25_Energy;
 
     // Time
-    vector<UShort_t>   fDETECTORNAME_T_DetectorNbr;
-    vector<UShort_t>   fDETECTORNAME_T_StripNbr;
-    vector<Double_t>   fDETECTORNAME_Time;
+    vector<UShort_t>   fMSX25_T_DetectorNbr;
+    vector<UShort_t>   fMSX25_T_StripNbr;
+    vector<Double_t>   fMSX25_Time;
 {% endhighlight %}
+
+We now need to change the Setter and Getter accordingly, you will note that the class is design so all the three vector related to energy : Energy, detector number and strip number are the same size. Same applies to the three time related vector. For this reason it is better practice to use "global" setter that fill the three vector at the same time:
+{% highlight C++ %}
+public:
+    //////////////////////    SETTERS    ////////////////////////
+    // Energy
+    inline void SetE_DetectorNbr(const UShort_t& DetNbr)
+      {fMSX25_E_DetectorNbr.push_back(DetNbr);} //!
+    inline void SetE_StripNbr(const UShort_t& StripNbr)
+      {fMSX25_E_DetectorNbr.push_back(DetNbr);} //!
+
+    inline void Set_Energy(const Double_t& Energy)
+      {fMSX25_Energy.push_back(Energy);}//!
+    // Prefer global setter so that all vectors have the same size
+    inline void SetEnergy(const UShort_t& DetNbr,const USHort_t& StripNbr, const Double_t& Energy) {
+      SetE_DetectorNbr(DetNbr);
+      SetE_StripNbr(StripNbr);
+      Set_Energy(Energy);
+    };//!
+
+    // Time
+    inline void SetT_DetectorNbr(const UShort_t& DetNbr)
+      {fMSX25_T_DetectorNbr.push_back(DetNbr);} //!
+    inline void SetT_StripNbr(const UShort_t& DetNbr)
+      {fMSX25_T_StripNbr.push_back(DetNbr);} //!
+    inline void Set_Time(const Double_t& Time)
+      {fMSX25_Time.push_back(Time);}//!
+    // Prefer global setter so that all vectors have the same size
+    inline void SetTime(const UShort_t& DetNbr, const UShort_t& StripNbr, const Double_t& Time)	{
+      SetT_DetectorNbr(DetNbr);
+      SetT_StripNbr(StripNbr);
+      Set_Time(Time);
+    };//!
+
+
+    //////////////////////    GETTERS    ////////////////////////
+    // Energy
+    inline UShort_t GetMultEnergy() const
+      {return fMSX25_E_DetectorNbr.size();}
+    inline UShort_t GetE_DetectorNbr(const unsigned int &i) const 
+      {return fMSX25_E_DetectorNbr[i];}//!
+    inline UShort_t GetE_StripNbr(const unsigned int &i) const 
+      {return fMSX25_E_StripNbr[i];}//!
+    inline Double_t Get_Energy(const unsigned int &i) const 
+      {return fMSX25_Energy[i];}//!
+
+    // Time
+    inline UShort_t GetMultTime() const
+      {return fMSX25_T_DetectorNbr.size();}
+    inline UShort_t GetT_DetectorNbr(const unsigned int &i) const 
+      {return fMSX25_T_DetectorNbr[i];}//!
+    inline UShort_t GetT_StripNbr(const unsigned int &i) const 
+      {return fMSX25_T_StripNbr[i];}//!
+    inline Double_t Get_Time(const unsigned int &i) const 
+      {return fMSX25_Time[i];}//!
+{% endhighlight %}
+
+A few comments:
+  1. You will notice that we use inline declaration for the setter and getter. This allow a better optimisation of the code by the compilator, bypassing the call of the function and replacing it by its code. Similarly we pass the argument of the functions by reference to avoid making a local copy at each call. This important because these methods are called for each event analysed or simulated, so typically millions of time.
+  2. You will notice the use `\\!`, this is to avoid root making dictionnaries entries for those method and polute the TBrowser view. You can also use this to ask Root not to store a private member in the tree (more about that when talking about the Physics class).
 
 
