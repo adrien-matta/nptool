@@ -197,6 +197,13 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name){
       m_Material[Name]=material;
       return material; 
     }
+      
+    else  if(Name == "Au"){
+        G4Material* material = new G4Material(Name, 19.3*g/cm3,1);
+        material->AddElement(GetElementFromLibrary("Au"),1);
+        m_Material[Name]=material;
+        return material;
+    }
 
     else  if(Name == "C"){ // Graphite
       G4Material* material = new G4Material(Name, 2.267*g/cm3,1);
