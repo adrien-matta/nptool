@@ -132,12 +132,11 @@ mv ${pathNPL}${DetectorName}/TDETECTORNAMESpectra.cxx ${pathNPL}${DetectorName}/
 
 #Adding file to git
   printf "\033[1;36m-> Do you want to add those files to the nptool repository ? (y/n) \033[0m"
-  read git;
-  if [[ git == "y" ]];then 
-    git add -f ${pathNPL}${DetectorName}/CMakeLists.txt ${pathNPL}${DetectorName}/${DataFile_h} ${pathNPL}${DetectorName}/${DataFile_cxx} ${pathNPL}${DetectorName}/${PhysicsFile_h} ${pathNPL}${DetectorName}/${PhysicsFile_cxx} ${pathNPL}${DetectorName}/${SpectraFile_h} ${pathNPL}${DetectorName}/${SpectraFile_cxx } ${pathNPS}${DetectorName}/CMakeLists.txt ${pathNPS}${DetectorName}/${SimFile_h} ${pathNPS}${DetectorName}/${SimFile_cxx } ${pathInput}${InputFile}
+  read gitanswer
+  if [[ $gitanswer =~ ^[Yy]$ ]];then 
+    git add -f ${pathNPL}${DetectorName}/CMakeLists.txt ${pathNPL}${DetectorName}/${DataFile_h} ${pathNPL}${DetectorName}/${DataFile_cxx} ${pathNPL}${DetectorName}/${PhysicsFile_h} ${pathNPL}${DetectorName}/${PhysicsFile_cxx} ${pathNPL}${DetectorName}/${SpectraFile_h} ${pathNPL}${DetectorName}/${SpectraFile_cxx} ${pathNPS}${DetectorName}/CMakeLists.txt ${pathNPS}${DetectorName}/${SimFile_h} ${pathNPS}${DetectorName}/${SimFile_cxx} ${pathInputs}${InputFile}
       printf "\033[1;32m**** Files added, use \033[1;36mgit commit -a \033[1;32m to commit them when ready ****\033[0m\n";
   fi
-
 #Display help message
   printf "\n\033[1;31m**** For help editing those files visit \033[1;36mhttp://nptool.org/manual/adding-detectors \033[1;31m****\033[0m\n\n"
 
