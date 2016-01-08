@@ -8,15 +8,52 @@ show_in_nav: false
 ---
 THIS PAGE IS UNDER CONSTRUCTION
 
-In this tutorial we will discussed how to add a new detector to the nptool. This is done through an utility, *nptool-wizard*, that wil lcreate for you all the file needed by a detector. You will then have to edit all of those files consistently to create a new working detector, in this tutorial we will modify the class to describe a Single Sided Stripped Silicon detector from Micron Semiconductor, the MSX25.  *nptool-wizard* is a simple bash script that will ask you a few information about the detector you want to create and then will copy and edit the skeleton files to form a new working detector. Straight after this process you will be able to compile and run both simulation and analysis with your new detector. The detector skeleton describe a minimalist detector showing off the main features of the framework. The detector is a simple scintillator, that can be placed anywhere in space and which shape could be rectangular or cylindrical. The physical information recorded by the detector Energy and Time.
+In this tutorial we will discussed how to add a new detector to the nptool. This is done through an utility, `nptool-wizard`, that wil lcreate for you all the file needed by a detector. You will then have to edit all of those files consistently to create a new working detector, in this tutorial we will modify the class to describe a Single Sided Stripped Silicon detector from Micron Semiconductor, the MSX25.  `nptool-wizard` is a simple bash script that will ask you a few information about the detector you want to create and then will copy and edit the skeleton files to form a new working detector. Straight after this process you will be able to compile and run both simulation and analysis with your new detector. The detector skeleton describe a minimalist detector showing off the main features of the framework. The detector is a simple scintillator, that can be placed anywhere in space and which shape could be rectangular or cylindrical. The physical information recorded by the detector Energy and Time.
 
-## Running *nptool-wizard*
-*nptool-wizard* is added to your path at compilation of the NPLib, so make sure you compiled and install NPLib before following this tutorial. To call the script simply do:
+## Running nptool-wizard
+`nptool-wizard` is added to your path at compilation of the NPLib, so make sure you compiled and install NPLib before following this tutorial. To call the script simply do:
 {% highlight bash %}
 > nptool-wizard
 {% endhighlight %}
 
 You will be prompted by the script to enter your new detector name (for the sake of this tutorial, we will assume you enterred MSX25), your own name and email. Those information are added to the header of each created file, in order to facilitate communication between people maintening the package. If the detector name you choose is already in use by another detector, you will be prompted with an error. You can override this safety features using the -f flag, in that case the detector is created regardless and the preexisting detector folders are overwritten.  
 
-*nptool-wizard* will prompt you with the list of file created and ask you if you want to add all this file to the git repository. For the purpose of this tutorial, say *no*. If you say *yes* a *git add* command will be run on every newly created file, allowing for a fast and easy commit of your new detector. 
+`nptool-wizard` will prompt you with the list of file created and ask you if you want to add all this file to the git repository. For the purpose of this tutorial, say `no`. If you say `yes` a `git add` command will be run on every newly created file, allowing for a fast and easy commit of your new detector. 
+
+
+## Detector classes
+Four classes are created in the process, three in NPLib will describe the data storage and analysis and one in the simulation will describe the detector geometry and readout.
+
+### TDetectorData class
+
+This class is a very basic container used to store raw data in the output tree of either the simulation or the experiment. The nptool approach is to store the data in std::vector, which offer an easy mechanism to store data of variable size, keeping the size of the output file to a minimum. The vector are declared as private member of the class and accessed/modified using Setter/Getter methods.
+
+
+The private data member, located in NPLib/Detectors/MSX25/TMSX25Data.h of the default class are the following:
+{% highlight C++ %}
+  private: 
+    // Energy
+    vector<UShort_t>   fDETECTORNAME_E_DetectorNbr;
+    vector<Double_t>   fDETECTORNAME_Energy;
+
+    // Time
+    vector<UShort_t>   fDETECTORNAME_T_DetectorNbr;
+    vector<Double_t>   fDETECTORNAME_Time;
+{% endhighlight %}
+
+This layout allow to store a list of energies and a list of time, with their associated detector number, for each event. Let change this for our MSX25 detector, for which we will need to store the energy, time, detector number and strip number for each event.
+
+{% highlight C++ %}
+  private: 
+    // Energy
+    vector<UShort_t>   fDETECTORNAME_E_DetectorNbr;
+    vector<UShort_t>   fDETECTORNAME_E_StripNbr;
+    vector<Double_t>   fDETECTORNAME_Energy;
+
+    // Time
+    vector<UShort_t>   fDETECTORNAME_T_DetectorNbr;
+    vector<UShort_t>   fDETECTORNAME_T_StripNbr;
+    vector<Double_t>   fDETECTORNAME_Time;
+{% endhighlight %}
+
 
