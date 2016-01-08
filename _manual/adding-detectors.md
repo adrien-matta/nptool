@@ -113,7 +113,8 @@ public:
 {% endhighlight %}
 
 A few comments:
-  1. You will notice that we use inline declaration for the setter and getter. This allow a better optimisation of the code by the compilator, bypassing the call of the function and replacing it by its code. Similarly we pass the argument of the functions by reference to avoid making a local copy at each call. This important because these methods are called for each event analysed or simulated, so typically millions of time.
-  2. You will notice the use `\\!`, this is to avoid root making dictionnaries entries for those method and polute the TBrowser view. You can also use this to ask Root not to store a private member in the tree (more about that when talking about the Physics class).
+
+1. You will notice that we use inline declaration for the setter and getter. This allow a better optimisation of the code by the compilator, bypassing the call of the function and replacing it by its code. Similarly we pass the argument of the functions by reference to avoid making a local copy at each call. This important because these methods are called for each event analysed or simulated, so typically millions of time.
+2. You will notice the use `\\!`, this is to avoid root making dictionnaries entries for those method and polute the TBrowser view. You can also use this to ask Root not to store a private member in the tree (more about that when talking about the Physics class).
 
 
