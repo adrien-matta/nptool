@@ -183,7 +183,7 @@ command:
 > exit
 ````
 
-This will simulate the <sup>11</sup>Li(d,<sup>3</sup>He)<sup>10</sup>He-><sup>8H</sup>e+n+n 
+This will simulate the <sup>11</sup>Li(d,<sup>3</sup>He)<sup>10</sup>He-><sup>8</sup>He+n+n 
 reaction and produce an output ROOT file located in $NPTOOL/Outputs/Simulation/Example1.root. 
 
 The `Example1.detector` file located in $NPTOOL/Inputs/DetectorConfiguration 
