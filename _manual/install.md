@@ -6,7 +6,7 @@ author: Adrien Matta
 manual_order: 0
 show_in_nav: false
 ---
-## Gettng the code
+## Getting the code
 
 ### Using git
 The recommended method to obtain the source code is to use git. This is an
