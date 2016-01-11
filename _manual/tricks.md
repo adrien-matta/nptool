@@ -3,7 +3,7 @@ layout: manual
 title: Tricks
 permalink: /manual/tricks/
 author: Adrien MATTA
-manual_order: 10
+manual_order: 3 
 show_in_nav: false
 ---
 ## A few basics
