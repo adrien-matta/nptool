@@ -12,6 +12,5 @@ framework for preparing and analysing complex experiments, making an efficient
 use of [Geant4](https://geant4.web.cern.ch/geant4/) and 
 [ROOT](https://root.cern.ch/) toolkits.
 
-[//]: # (nptool is a Root and Geant4 based framework offering an easy too use, yet very rich, environment to run and developp data analysis and simulation of nuclear physics experiement.)
 
 ![NPTool logo](/images/nptoolLogo.png){: .center-image}

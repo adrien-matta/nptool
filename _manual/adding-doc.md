@@ -6,12 +6,16 @@ author: Adrien Matta <mailto:a.matta@surrey.ac.uk>
 manual_order: 1001
 show_in_nav: false
 ---
-## Getting the gh-pages:
+## Getting the gh-pages
 
-If you wish to add a new documentation section you first need to get the site source from github. The source are stored directly on the github repository, in a specific branch named gh-pages. Github automatically rebuild the website after each commit onto this branch. The change are visible a few minutes after the commit. It is therefore important to check your change locally first, and then only to push them to avoid breaking the website.
+If you want to add a new documentation section you first need to get the website 
+source from GitHub. The source is stored directly on the GitHub nptool repository, 
+in a specific branch named gh-pages. GitHub automatically rebuilds the website 
+after each commit onto this branch and the changes are visible only a few minutes 
+after the commit. It is therefore important to check your changes locally first, 
+and then to push them to avoid breaking the website.
 
 To get the pages you will need to clone the gh-pages branch in a new directory:
-
 {% highlight console %}
 $ mkdir gh-pages
 $ cd gh-pages
@@ -20,14 +24,15 @@ $ cd nptool
 {% endhighlight %}  
 
 ## Getting Jekyll
-You now have a local copy of the source. To preview your work you will need the version of [Jekyll][jekyll-gh] use by gh-pages (and therefore the gem utility):
-
+You now have a local copy of the source. To preview your work you will need the 
+version of [Jekyll][jekyll-gh] use by gh-pages (and therefore the gem utility):
 {% highlight console %}  
 $ gem install github-pages
 {% endhighlight %}  
 
 ## Setting up locally
-In order for your preview to be done locally, edit the file _config.yml by commenting line 8 and uncommenting line 9:
+In order for your preview to be done locally, edit the file _config.yml by 
+commenting line 8 and uncommenting line 9:
 
 BEFORE:
 {% highlight css linenos %}  
@@ -90,25 +95,27 @@ collections:
 IMPORTANT: This change will need to be reversed at the end.
 
 ## Generating a preview
-
-In a terminal, start the Jekyll server. The server will provide a local image of the website, as well as keep looking at changes to update the page:
-
+Start the Jekyll server in a terminal. The server will provide a local image of 
+the website and will keep looking at changes to update the page:
 {% highlight console %}
 $ jekyll serve
 {% endhighlight %}   
 
-If the build successed it will be available for preview in your web browser, usually at address 0.0.0.0:4000 (some time differ but Jekyll should tell your). If the build fail, Jekyll will show message in red telling you what the error is.
+If the build is successful it will be available for preview in your web browser, 
+usually at the address 0.0.0.0:4000 (it may sometimes differ but Jekyll should 
+warn you). If the build fails Jekyll will show messages in red telling you what 
+the error is.
+
 
 # Adding a new page to the manual
-
-To create a new manual entry simply create a new file in the folder _manual. For example:
-
+To create a new manual entry simply create a new file in the folder _manual. For 
+example:
 {% highlight console %}
 $ vim _manual/NewSection.md 
 {% endhighlight %}   
 
-The file need to start (do not leave blank line at the top) with a specific header:
-
+The file needs to start (do not leave blank line at the top) with a specific 
+header:
 {% highlight text %}
 ---
 layout: manual 
@@ -120,11 +127,20 @@ show_in_nav: false
 ---
 {% endhighlight %}   
 
-Those four line allow the website to know that your page goes in the manual category, the title under wich it should be display in the manual, the path that will show in the address bar, and that the page should not be shown in the top navigation bar. The manual order allow to place correctly the manual entry in the menu, the bigger the number, the later it will show in the menu. The ordering number does not need to be continuous, so we setup large jump in number for each of them, allowing easy addition in the future. The annexes, such as this page, start at 1000 with increment of 10. Normal entries, use increment of 100 starting from 0.
+Those four lines allow the website to know that your page goes in the manual 
+category, the title under wich it should be displayed in the manual, the path 
+that will be shown in the address bar, and that the page should not be shown 
+in the top navigation bar. The manual order allow to place correctly the manual 
+entry in the menu, i.e. the bigger the number, the later it will show up in 
+the menu. The ordering number does not need to be continuous, so we setup large 
+jumps in number for each of them, allowing easy addition in the future. The 
+annexes, such as this page, start at 1000 with increment of 10. Normal entries, 
+use increment of 100 starting from 0.
 
 
-After that, the format of the text is [Markdown][markdown], that use easy to read marking to specify title and headings. Here is a small example of a file showing off some basic functionnality:
-
+After that, the format of the text is [Markdown][markdown], that uses easy to 
+read marking to specify title and headings. Here is a small example of a file 
+showing off some basic functionnalities:
 {% highlight text %}
 ---
 layout: manual 
@@ -170,21 +186,20 @@ And the same with line number:
 
 {% endhighlight %}   
 
-## Commiting your change:
+## Commiting your changes
 
-First revert the change in _config.yml:
+You first need to revert the changes in _config.yml:
 
 {% highlight console %}
 $ git checkout _config.yml
 {% endhighlight %}
 
-Then add your new file to the repository:
-
+Then, add your new file to the repository:
 {% highlight console %}
 $ git add _manual/NewSection.md
 {% endhighlight %}
 
-Finnally commit the change:
+And eventually commit the change:
 {% highlight console %}
 $ git commit -a
 $ git push
