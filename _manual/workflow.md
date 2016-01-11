@@ -1,6 +1,6 @@
 ---
 layout: manual 
-title: Tricks
+title: Workflow 
 permalink: /manual/tricks/
 author: Adrien MATTA
 manual_order: 3 
