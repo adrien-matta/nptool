@@ -25,28 +25,41 @@
  *                                                                           *
  *****************************************************************************/
 
+// C++ headers
 #include <iostream>
+#include <ctime>
+#include <cstdlib>
+using namespace std;
 
+// ROOT headers
 #include "TROOT.h"
 #include "TCanvas.h"
 #include "TSystem.h"
 #include "TFile.h"
 #include "TString.h"
+#include "TEllipse.h"
+#include "TLegend.h"
 #include "TTree.h"
 #include "TBranch.h"
 #include "TH1F.h"
 #include "TH2F.h"
+#include "TGraph.h"
 
+// nptool headers
 #include "TInitialConditions.h"
 #include "TInteractionCoordinates.h"
+#include "Reaction.h"
+using namespace NPL;
 
-TCanvas* canvas1 ;
-TCanvas* canvas2 ;
+TCanvas* canvas1;
+TCanvas* canvas2;
 
-void ShowResults(const char * fname = "benchmark_gaspard"){
+void ShowResults(const char * fname = "benchmark_gaspard")
+{
   // for the style 
-  gROOT->SetStyle("nptool");     
-  gROOT->ForceStyle(false);  
+   gStyle->SetOptStat(0);
+//  gROOT->SetStyle("nptool");     
+//  gROOT->ForceStyle(false);  
 
   // Open output ROOT file from NPTool simulation run
   TString path = gSystem->Getenv("NPTOOL");
@@ -88,25 +101,20 @@ void ShowResults(const char * fname = "benchmark_gaspard"){
 
   // for emitted particle but gated on interaction in detector
   TH2F *hEmittedETheta_detected  = new TH2F("hEmittedETheta_detected",  "Kinematic line (interaction in det.)",1800, 0, 180, 1800, 0, 60);
-  TH1F *hEmittedThetaIF_detected  = new TH1F("hEmittedThetaIF_detected",  "Light Ejectile Theta in reaction frame (interaction in det.)",180, 0, 180);
-  TH1F *hEmittedThetaCM_detected  = new TH1F("hEmittedThetaCM_detected",  "Light Ejectile ThetaCM (interaction in det.)",180, 0, 180);
+  TH1F *hEmittedThetaIF_detected = new TH1F("hEmittedThetaIF_detected", "Light Ejectile Theta in reaction frame (interaction in det.)",180, 0, 180);
+  TH1F *hEmittedThetaCM_detected = new TH1F("hEmittedThetaCM_detected", "Light Ejectile ThetaCM (interaction in det.)",180, 0, 180);
 
   // Read the TTree
   Int_t nentries = tree->GetEntries();
-  cout <<endl << " TTree contains " << nentries << " events" << endl;
-  clock_t begin=clock();
-  clock_t end=begin;
+  cout << endl << " TTree contains " << nentries << " events" << endl;
 
   for (Int_t i = 0; i < nentries; i++) {
     if (i%10000 == 0 && i!=0)  {
       cout.precision(5);
-      end = clock();
-      double TimeElapsed = (end-begin) / CLOCKS_PER_SEC;
-      double percent = (double)i/nentries ;
-      double TimeToWait = (TimeElapsed/percent) - TimeElapsed;
-      cout  << "\r Progression:" << percent*100 << " % \t | \t Remaining time : ~" <<  TimeToWait <<"s"<< flush;
+      Double_t percent = (Double_t)i/nentries ;
+      cout  << "\r Progression:  " << percent*100 << " %" << flush;
     }
-    else if (i==nentries-1)  cout << "\r Progression:" << " 100% " <<endl;
+    else if (i==nentries-1)  cout << "\r Progression:" << " 100%" << endl;
 
     // Get entry
     tree->GetEntry(i);
@@ -126,10 +134,11 @@ void ShowResults(const char * fname = "benchmark_gaspard"){
     hEmittedThetaWF  -> Fill(initCond->GetThetaLab_WorldFrame(0));
     hEmittedETheta   -> Fill(initCond->GetThetaLab_IncidentFrame(0), initCond->GetKineticEnergy(0));
 
-    if( interCoord->GetDetectedMultiplicity()>0 ) {
-      hEmittedETheta_detected   -> Fill(initCond->GetThetaLab_IncidentFrame(0), initCond->GetKineticEnergy(0));
-      hEmittedThetaIF_detected   -> Fill(initCond->GetThetaLab_IncidentFrame(0));
-      hEmittedThetaCM_detected   -> Fill(initCond->GetThetaCM(0));
+    if (interCoord->GetDetectedMultiplicity() > 0) {
+//       cout << initCond->GetThetaLab_IncidentFrame(0) << "\t" << initCond->GetKineticEnergy(0) << endl;
+      hEmittedETheta_detected  -> Fill(initCond->GetThetaLab_IncidentFrame(0), initCond->GetKineticEnergy(0));
+      hEmittedThetaIF_detected -> Fill(initCond->GetThetaLab_IncidentFrame(0));
+      hEmittedThetaCM_detected -> Fill(initCond->GetThetaCM(0));
     }
   }
 
@@ -139,14 +148,16 @@ void ShowResults(const char * fname = "benchmark_gaspard"){
   canvas1->Divide(2,3);
 
   canvas1->cd(1);
+//  hEmittanceXTheta->Draw();
   hEmittanceXTheta->Draw("colz");
   hEmittanceXTheta->SetXTitle("X (mm)");
-  hEmittanceXTheta->SetYTitle("#theta_{X} (deg.)");
+  hEmittanceXTheta->SetYTitle("#theta_{X} (deg)");
 
   canvas1->cd(2);
+//  hEmittanceYPhi->Draw();
   hEmittanceYPhi->Draw("colz");
   hEmittanceYPhi->SetXTitle("Y (mm)");
-  hEmittanceYPhi->SetYTitle("#Phi_{Y} (deg.)"); 
+  hEmittanceYPhi->SetYTitle("#Phi_{Y} (deg)"); 
 
   canvas1->cd(3);
   hIncidentTheta->Draw();
@@ -155,6 +166,7 @@ void ShowResults(const char * fname = "benchmark_gaspard"){
   hIncidentPhi->Draw();
 
   canvas1->cd(5);
+//  hEmittanceXY->Draw();
   hEmittanceXY->Draw("colz");
   TEllipse *target = new TEllipse(0,0,7.5,7.5);
   target->SetFillStyle(0000);
@@ -172,44 +184,44 @@ void ShowResults(const char * fname = "benchmark_gaspard"){
   canvas2->Divide(2,2);
 
   canvas2->cd(1);
-  new TCanvas("d","d",500,500);
-
-  hEmittedThetaCM->SetYTitle("counts / 1^{#circ}");
-  hEmittedThetaCM->GetYaxis()->SetTitleOffset(1.18);
   hEmittedThetaCM->SetXTitle("#theta_{c.m.}");
+  hEmittedThetaCM->SetYTitle("counts / 1^{#circ}");
+  hEmittedThetaCM->SetLineColor(kBlue-3);
+  hEmittedThetaCM->SetFillColor(kBlue-3);
+  hEmittedThetaCM->GetYaxis()->SetTitleOffset(1.18);
   hEmittedThetaCM->Draw();
   
-  hEmittedThetaCM_detected->Draw("same");
   hEmittedThetaCM_detected->SetLineColor(kOrange-3);
   hEmittedThetaCM_detected->SetFillColor(kOrange-3);
+  hEmittedThetaCM_detected->Draw("same");
   
-  TLegend* leg = new TLegend(0.1,0.7,0.48,0.9);
-  leg->SetHeader("");
+  TLegend* leg = new TLegend(0.53, 0.68, 0.81, 0.9);
   leg->AddEntry(hEmittedThetaCM,"Emitted","f");
   leg->AddEntry(hEmittedThetaCM_detected,"Detected","f");
   leg->Draw();
 
   canvas2->cd(2);
-  hEmittedETheta_detected->Draw("colz");
-
-  hEmittedETheta->SetYTitle("E_{Lab} (MeV)");
-  hEmittedETheta->SetXTitle("#theta_{Lab}");
+  hEmittedETheta_detected->SetXTitle("#theta_{Lab}");
+  hEmittedETheta_detected->SetYTitle("E_{Lab} (MeV)");
+  hEmittedETheta_detected->Draw();
   NPL::Reaction r("132Sn(d,p)133Sn@1320");
   TGraph* Kine = r.GetKinematicLine3(); 
   Kine->SetLineWidth(1);
   Kine->SetLineStyle(2);
   Kine->SetLineColor(kOrange-3);
-  Kine->Draw("c");
+  Kine->Draw("c same");
 
   canvas2->cd(3);
-  hEmittedThetaIF->Draw();
-  hEmittedThetaIF->SetYTitle("counts / 1^{#circ}");
-  hEmittedThetaIF->GetYaxis()->SetTitleOffset(1.18);
-
   hEmittedThetaIF->SetXTitle("#theta_{Lab}");
-  hEmittedThetaIF_detected->Draw("same");
+  hEmittedThetaIF->SetYTitle("counts / 1^{#circ}");
+  hEmittedThetaIF->SetLineColor(kBlue-3);
+  hEmittedThetaIF->SetFillColor(kBlue-3);
+  hEmittedThetaIF->GetYaxis()->SetTitleOffset(1.18);
+  hEmittedThetaIF->Draw();
+
   hEmittedThetaIF_detected->SetLineColor(kOrange-3);
   hEmittedThetaIF_detected->SetFillColor(kOrange-3);
+  hEmittedThetaIF_detected->Draw("same");
 
   canvas2->cd(4);
   TH1F *hEfficiency = new TH1F("hEfficiency", "Efficiency", 180, 0, 180);
@@ -232,7 +244,8 @@ void ShowResults(const char * fname = "benchmark_gaspard"){
 ////////////////////////////////////////////////////////////////////////////////
 // Use this method to overwrite the reference file only
 // DO NOT USE UNLESS YOU WANT TO MAKE A CHANGE TO THE BENCHMARK
-void WriteGaspardReference(){
+void WriteGaspardReference()
+{
   TFile *outFile = new TFile("reference.root","RECREATE");
   canvas1->Write();
   canvas2->Write();
