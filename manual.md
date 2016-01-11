@@ -9,13 +9,13 @@ show_in_nav: true
 {% for m in manual %}
   {% if m.manual_order == 0 %}
    
-   <h3> Framework </h3>
+   <h3> Getting started </h3>
   Important information on how to install and use nptool is given here.
   {% endif %} 
  
   {% if m.manual_order == 100 %}
 
-  <h3> Detector </h3> 
+  <h3> Detectors documentation </h3> 
   The documentation for specific detectors is given here.
   {% endif %} 
   

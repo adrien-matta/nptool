@@ -3,8 +3,8 @@ layout: manual
 title: Adding a new detector 
 permalink: /manual/adding-detectors/
 author: Adrien Matta
-manual_order: 1
-show_in_nav: false
+manual_order: 2
+show_in_nav: true
 ---
 THIS PAGE IS UNDER CONSTRUCTION
 
