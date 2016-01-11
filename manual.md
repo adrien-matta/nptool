@@ -9,22 +9,19 @@ show_in_nav: true
 {% for m in manual %}
   {% if m.manual_order == 0 %}
    
-   <h3> Framework: </h3>
-
-  The framework detailed from installation to workflow.
+   <h3> Framework </h3>
+  Important information on how to install and use nptool is given here.
   {% endif %} 
  
   {% if m.manual_order == 100 %}
 
-  <h3> Detector: </h3> 
-  
-  The specific of each detector (input file, reference, ...).
+  <h3> Detector </h3> 
+  The documentation for specific detectors is given here.
   {% endif %} 
   
   {% if m.manual_order == 1000 %}
    
-  <h3> Annex: </h3> 
-  
+  <h3> Annex </h3> 
   Everything not directly related to nptool.
   {% endif %} 
 
