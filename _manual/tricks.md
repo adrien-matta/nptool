@@ -12,17 +12,20 @@ show_in_nav: false
 - _npanalysis_ looks in the current directory for an analysis library
   (_libNPAnalysis_) to load and use. If not present, the analysis is limited
   to build the PhysicsTree.
-- To perform a quick analysis of the last MOnte Carlo simulation, do:
-````
+- To perform a quick analysis of the last Monte Carlo simulation, do:
+
+```
 npanalysis --last-sim
-````
+```
+
 Any additional flag can be used
 
 - _npsimulation_ can be used in batch mode (with no UI) if the user provides
 a Geant4 macro file specified with the -B flag
-````
+
+```
 npsimulation -D Example1.detector -E Example1.reaction -B path/to/macro.mac -O FileName
-````
+```
 
 npsimulation and npanalysis can be run from any directory. npanalysis look in the current directory for an analysis library to load and use, if none available, it limits the analysis to building the PhysicsTree.
 
