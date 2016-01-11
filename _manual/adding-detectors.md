@@ -139,4 +139,59 @@ A few comments:
 1. You will notice that we use inline declaration for the setter and getter. This allow a better optimisation of the code by the compilator, bypassing the call of the function and replacing it by its code. Similarly we pass the argument of the functions by reference to avoid making a local copy at each call. This important because these methods are called for each event analysed or simulated, so typically millions of time.
 2. You will notice the use of `\\!` after the functionn declaration. This prevent root from making dictionnaries entries for these methods and pollute the TBrowser view. You can also use this to ask Root not to store a private member in the tree (more about that when talking about the Physics class).
 
+### The Physics class
+
+* * *
+name:
+: TMSX25Physics
+
+* * *
+
+location:
+: NPLib/Detectors/MSX25
+
+* * *
+
+files:
+: TMSX25Physics.h 
+: TMSX25Physics.cxx
+
+* * *
+
+inherittance:
+: NPL::VDetector (NPTool) and TObject (ROOT)
+
+* * *
+
+This class hold the heart of the data analysis. It takes the raw information from the data class and transform it into a meaningfull physical information. This typically involve applying calibration and threshold in a first stage, the option PreTreat, and matching all the data together (Front and back coincidences, Energy and Time coincidences,...) in the mandatory BuildPhysicalEvent method. The class derived from the abstract base classe NPL::VDetector, which source could be found in NPLib/Core/NPVDetector.h . This class define the property of all the Physics class in the framework. An associated manager, the DetectorManager take care of calling the method of each detector at the right time.
+
+First we have to define the physical informations that the class will keep in the output tree. In our case we want to have an energy, a time, a detector number and a strip number. These information are very close to the one in the previous class, however a fundamental difference apply, all our vector will be the same size, corresponding to the multiplicity of the event. In the previous class you could have a size 2 in energy and 1 in time for example (if a TAC was not properly readout for example).
+
+
+Lets change the data obtained after the BuildPhysicalEvent by:
+{% highlight C++ %}
+public:
+  vector<int>     DetectorNumber; 
+  vector<int>     StripNumber; 
+  vector<double>  Energy;
+  vector<double>  Time; 
+{% endhighlight %}
+
+
+We now have to implement each of the methods inherrited from NPL::VDetector 
+
+#### void ReadConfiguration(string)
+This method read the detector configuration file and look for the appropriate token. It is by implementing this method that you tell what an input file looks like for your detector. We use a token based approach, allowing for very flexible design. Some detector for instance have variable geometry (thickness or size) and material (scintillator type, target material,...).
+
+
+
+
+
+
+
+
+
+
+
+
 
