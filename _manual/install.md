@@ -7,6 +7,7 @@ manual_order: 0
 show_in_nav: false
 ---
 ## Gettng the code
+
 ### Using git
 The recommended method to obtain the source code is to use git. This is an
 easy way to access the last version of the code. First make sure you have git
@@ -24,6 +25,7 @@ the archive at the desire location
 
 
 ## Setup
+
 ### Requirements
 NPTool components are compiled and installed using the CMake build system,
 so be sure to have a working CMake installation before starting.
