@@ -6,6 +6,7 @@ author: Adrien Matta
 manual_order: 1 
 show_in_nav: false
 ---
+### Prerequisities
 You need to download additional files to be able to run the benchmarks and
 the examples. In the $NPTOOL directory, do the following:
 {% highlight bash %}
@@ -38,9 +39,8 @@ $ npsimulation -D benchmark_gaspard.detector -E 132Sndp_benchmark.reaction -O be
 In both cases, the results can be displayed and compared to reference results
 using the following command:
 {% highlight bash %}
-$ root -l ShowResult.C
+$ root -l ShowResults.C
 {% endhighlight %}
-```
 
 ### Examples
 With respect to benchmarks, examples deal with more complex analysis cases
@@ -60,7 +60,7 @@ command:
 > exit
 {% endhighlight %}
 
-This will simulate the <sup>11</sup>Li(d,<sup>3</sup>He)<sup>10</sup>He-><sup>8H</sup>e+n+n
+This will simulate the <sup>11</sup>Li(d,<sup>3</sup>He)<sup>10</sup>He-><sup>8</sup>He+n+n
 reaction and produce an output ROOT file located in $NPTOOL/Outputs/Simulation/Example1.root.
 
 The `Example1.detector` file located in $NPTOOL/Inputs/DetectorConfiguration
