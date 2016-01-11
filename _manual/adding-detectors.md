@@ -4,7 +4,7 @@ title: Adding a new detector
 permalink: /manual/adding-detectors/
 author: Adrien Matta
 manual_order: 2
-show_in_nav: true
+show_in_nav: false 
 ---
 THIS PAGE IS UNDER CONSTRUCTION
 
