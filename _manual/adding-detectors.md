@@ -20,6 +20,24 @@ You will be prompted by the script to enter your new detector name (for the sake
 
 `nptool-wizard` will prompt you with the list of file created and ask you if you want to add all this file to the git repository. For the purpose of this tutorial, say `no`. If you say `yes` a `git add` command will be run on every newly created file, allowing for a fast and easy commit of your new detector. 
 
+## Compilation of the newly created classes
+In order to compile de the newly created classes you have to run cmake agoin in NPLib and NPSimulation folders. Doing cmake will add the new directory to the list of file to compile.
+
+{% highlight bash %}
+> npl
+> cmake ./
+> make -jn
+> nps
+> cmake ./
+> make -jn
+{% endhighlight %}
+
+And we can now run the simulation:
+{% highlight bash %}
+> npsimulation -D MSX25.detector -E alpha.source 
+{% endhighlight %}
+
+You should be able to see a target surrounded by three green detector: One cylindrical and two rectangular one.
 
 ## Detector classes
 Four classes are created in the process, three in NPLib will describe the data storage and analysis and one in the simulation will describe the detector geometry and readout.
@@ -180,10 +198,22 @@ public:
 
 We now have to implement each of the methods inherrited from NPL::VDetector 
 
-#### void ReadConfiguration(string)
+#### ReadConfiguration(string)
 This method read the detector configuration file and look for the appropriate token. It is by implementing this method that you tell what an input file looks like for your detector. We use a token based approach, allowing for very flexible design. Some detector for instance have variable geometry (thickness or size) and material (scintillator type, target material,...).
 
-
+#### AddParameterToCalibrationManager 
+#### BuildPhysicalEvent  
+#### BuildSimplePhysicalEvent
+#### InitializeRootInputRaw 
+#### InitializeRootInputPhysics   
+#### InitializeRootOutput      
+#### ClearEventPhysics()
+#### ClearEventData()    
+#### InitSpectra
+#### FillSpectra   
+#### CheckSpectra    
+#### ClearSpectra
+#### WriteSpectra 
 
 
 

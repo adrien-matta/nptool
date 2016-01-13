@@ -24,7 +24,8 @@ The package was started in 2009 by Adrien Matta for the MUST2 collaboration.
 * R. Wilkinson (University of Surrey) <mailto:r.wilkinson@surrey.ac.uk>
 
 ### Acknowledgements
-We thank IPN Orsay and the University of Surrey for their continuous support of the package.
+
+We thank IPN Orsay and the University of Surrey for their continuous support.
 
 ### Various credits and licences
 
