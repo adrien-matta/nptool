@@ -196,23 +196,51 @@ public:
 {% endhighlight %}
 
 
-We now have to implement each of the methods inherrited from NPL::VDetector 
+We now have to implement each of the methods inherrited from NPL::VDetector.  
 
-#### ReadConfiguration(string)
+#### ReadConfiguration
 This method read the detector configuration file and look for the appropriate token. It is by implementing this method that you tell what an input file looks like for your detector. We use a token based approach, allowing for very flexible design. Some detector for instance have variable geometry (thickness or size) and material (scintillator type, target material,...).
 
 #### AddParameterToCalibrationManager 
+This function is adding the list of token used in the calibration to the calibration manager. The later will then parse all the calibration files provided and look for the token. In our case we want to add new token including the strip number as well as the detector number, we therefore need to modify the for loop to have two counters. The NPL::DetectorManager::AddParameter function take three argument. The first one is the detector name, the second one in the name of the parameter as stored in memory and the third name is the token as written in the file.
+{% highlight C++ %}
+CalibrationManager* Cal = CalibrationManager::getInstance();  
+ for (int i = 0; i < m_NumberOfDetectors; ++i) {  
+   for(int j = 0 ; j < 25 ; j++){
+    Cal->AddParameter("MSX25", "D"+ NPL::itoa(i+1)+"_ENERGY","MSX25_D"+ NPL::itoa(i+1)+STRIP+ NPL::itoa(j+1)+"_ENERGY");   
+    Cal->AddParameter("MSX25", "D"+ NPL::itoa(i+1)+"_TIME","MSX25_D"+ NPL::itoa(i+1)+STRIP+ NPL::itoa(j+1)+"_TIME");   
+  }  
+ }
+{% endhighlight %}
+
 #### BuildPhysicalEvent  
+This method is the actual core of the class were the data analysis take place. The stategy to use here all depend on the complexity of your detector but often this method is composed of for loops that call other methods so the code is reasonably readable. The default class come with a PreTreat function, although not mandatory this method is usually present and apply calibration and threshold before doing the actual treatment.
+
+Four our example we will modify the PreTreat first to accomodate the strip detector. 
+{% highlight C++ %}
+
+{% endhighlight %}
+
 #### BuildSimplePhysicalEvent
+
 #### InitializeRootInputRaw 
+
 #### InitializeRootInputPhysics   
+
 #### InitializeRootOutput      
+
 #### ClearEventPhysics()
+
 #### ClearEventData()    
+
 #### InitSpectra
+
 #### FillSpectra   
+
 #### CheckSpectra    
+
 #### ClearSpectra
+
 #### WriteSpectra 
 
 
