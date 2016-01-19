@@ -6,8 +6,8 @@ author: Adrien Matta
 manual_order: 10 
 show_in_nav: false 
 ---
-This tutorial will present how to add a new detector using the _nptool-wizard_
-utility available in the _nptool_ package. `nptool-wizard` is a simple bash 
+This tutorial presents how to add a new detector using the _nptool-wizard_
+utility available in the nptool package. _nptool-wizard_ is a simple bash 
 script that will first ask you a few information about the detector you want 
 to create and the author. It will then create the needed files in the NPLib
 and NPSimulation directories. These files correspond to the basic case of a
@@ -17,43 +17,48 @@ the present tutorial and then to go to the next one.
 
 
 ## Running nptool-wizard
-`nptool-wizard` is available as soon as you prepare the compilation of NPLib, 
-i.e., after the `cmake ./` command is issued. However, as a good practice, it
-is recommended to compile __and__ install NPLib as a prerequirity.
+_nptool-wizard_ is available as soon as you prepare the compilation of NPLib, 
+i.e., after the _cmake ./_ command is issued. However, as a good practice, it
+is recommended to compile __and__ install NPLib as a prerequisity.
 
 Once this is done, you can call the _nptool-wizard_ utility doing:
 {% highlight bash %}
 $ nptool-wizard
 {% endhighlight %}
-The script will prompt you to give a name to your new detector. Then it will
-ask your name and email which will be added in the header of each created file
-so that comunication between people maintaining the package is easier. If the
-detector name you have chosen already exist an error will be issued. This 
-behaviour can be override using the -f flag, which will create the detector
-regardless to the preexisting detector files and folders.
+The script will prompt you to give a name to your new detector (say `newdet`
+as an example. Then it will ask your name and email which will be added in 
+the header of each created file so that comunication between people maintaining
+the package is easier. If the detector name you have chosen already exist an 
+error will be issued. This behaviour can be override using the -f flag, which
+will create the detector regardless to the preexisting detector files and folders.
 
-`nptool-wizard` will also give a list of the files created and ask whether you
+_nptool-wizard_ will also give a list of the files created and ask whether you
 want to add all these files to the Git repository. For the purpose of this 
-tutorial, say `no`. If you say `yes` a `git add` command will be run on every 
+tutorial, say _no_. If you say _yes_ a _git add_ command will be run on every 
 newly created file, allowing for a fast and easy commit of your new detector. 
 
 
 ## Compilation of the newly created classes
-In order to compile de the newly created classes you have to run cmake agoin in NPLib and NPSimulation folders. Doing cmake will add the new directory to the list of file to compile.
-
+In order to make your new detector fully supported and integrated in the 
+_nptool_ framework you need to compile again NPLib and NPSimulation. This
+can be achieved using the following list of commands:
 {% highlight bash %}
-> npl
-> cmake ./
-> make -jn
-> nps
-> cmake ./
-> make -jn
+$ npl
+$ cmake ./
+$ make -jn
+$ nps
+$ cmake ./
+$ make -jn
 {% endhighlight %}
 
-And we can now run the simulation:
+
+## Running a simulation with the new detector
+Performing a basic Monte Carlo simulation of the recently added detector is
+as easy as running the following command line:
 {% highlight bash %}
-> npsimulation -D MSX25.detector -E alpha.source 
+$ npsimulation -D newdet.detector -E alpha.source 
 {% endhighlight %}
+where newdet.detector is created by the _nptool-wizard_ utility.
 
 You should be able to see a target surrounded by three green detector: One cylindrical and two rectangular one.
 
