@@ -1,9 +1,9 @@
 ---
 layout: manual 
-title: Adding a new detector 
+title: Adding a new detector: Editing your class 
 permalink: /manual/adding-detectors-part2/
 author: Adrien Matta
-manual_order: 10 
+manual_order: 11 
 show_in_nav: false 
 ---
 THIS PAGE IS UNDER CONSTRUCTION
