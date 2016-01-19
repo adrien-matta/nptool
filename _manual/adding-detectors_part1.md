@@ -1,23 +1,42 @@
 ---
 layout: manual 
 title: Adding a new detector with nptool-wizard 
-permalink: /manual/adding-detectors_part1/
+permalink: /manual/adding-detectors/
 author: Adrien Matta
 manual_order: 10 
 show_in_nav: false 
 ---
+This tutorial will present how to add a new detector using the _nptool-wizard_
+utility available in the _nptool_ package. `nptool-wizard` is a simple bash 
+script that will first ask you a few information about the detector you want 
+to create and the author. It will then create the needed files in the NPLib
+and NPSimulation directories. These files correspond to the basic case of a
+scintillator detector (rectangular or cylindrical) where energy and time
+are recorded. For a more elaborated detector, it is recommended to first follow
+the present tutorial and then to go to the next one. 
 
-In this tutorial we will discussed how to add a new detector to the nptool. This is done through an utility, `nptool-wizard`, that wil lcreate for you all the file needed by a detector. You will then have to edit all of those files consistently to create a new working detector, in this tutorial we will modify the class to describe a Single Sided Stripped Silicon detector from Micron Semiconductor, the MSX25.  `nptool-wizard` is a simple bash script that will ask you a few information about the detector you want to create and then will copy and edit the skeleton files to form a new working detector. Straight after this process you will be able to compile and run both simulation and analysis with your new detector. The detector skeleton describe a minimalist detector showing off the main features of the framework. The detector is a simple scintillator, that can be placed anywhere in space and which shape could be rectangular or cylindrical. The physical information recorded by the detector Energy and Time.
 
 ## Running nptool-wizard
-`nptool-wizard` is added to your path at compilation of the NPLib, so make sure you compiled and install NPLib before following this tutorial. To call the script simply do:
+`nptool-wizard` is available as soon as you prepare the compilation of NPLib, 
+i.e., after the `cmake ./` command is issued. However, as a good practice, it
+is recommended to compile __and__ install NPLib as a prerequirity.
+
+Once this is done, you can call the _nptool-wizard_ utility doing:
 {% highlight bash %}
-> nptool-wizard
+$ nptool-wizard
 {% endhighlight %}
+The script will prompt you to give a name to your new detector. Then it will
+ask your name and email which will be added in the header of each created file
+so that comunication between people maintaining the package is easier. If the
+detector name you have chosen already exist an error will be issued. This 
+behaviour can be override using the -f flag, which will create the detector
+regardless to the preexisting detector files and folders.
 
-You will be prompted by the script to enter your new detector name (for the sake of this tutorial, we will assume you enterred MSX25), your own name and email. Those information are added to the header of each created file, in order to facilitate communication between people maintening the package. If the detector name you choose is already in use by another detector, you will be prompted with an error. You can override this safety features using the -f flag, in that case the detector is created regardless and the preexisting detector folders are overwritten.  
+`nptool-wizard` will also give a list of the files created and ask whether you
+want to add all these files to the Git repository. For the purpose of this 
+tutorial, say `no`. If you say `yes` a `git add` command will be run on every 
+newly created file, allowing for a fast and easy commit of your new detector. 
 
-`nptool-wizard` will prompt you with the list of file created and ask you if you want to add all this file to the git repository. For the purpose of this tutorial, say `no`. If you say `yes` a `git add` command will be run on every newly created file, allowing for a fast and easy commit of your new detector. 
 
 ## Compilation of the newly created classes
 In order to compile de the newly created classes you have to run cmake agoin in NPLib and NPSimulation folders. Doing cmake will add the new directory to the list of file to compile.
