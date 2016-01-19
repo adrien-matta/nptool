@@ -9,58 +9,80 @@ show_in_nav: false
 
 Targets in nptool
 ==================================
-nptool offer a full facility to simulated various type of target. Having a target is mandatory for a simulation to run. The facility allow for solid target (foil or bulk volume) as well as cryogenic target with variable density of the traget volume and entrance/exit windows. 
+nptool offers a full facility to simulate various types of targets. Having a 
+target is mandatory for a simulation to run. The facility allows for solid 
+targets (foil or bulk volume) as well as cryogenic targets with variable 
+density values and entrance/exit windows. 
 
-There is no limitation of target thickness, althought it is the user responsability to check that the target volume do not interfer with any other volume in the detector set-up.
+There is no limitation of target thickness, although it is the user 
+responsability to check that the target volume do not overlap with any other 
+volume in the detector set-up.
 
-The target position can be recover from within the analysis and be used as the reference point for every position measurement (e.g. with DSSD detector).
+When _npanalysis_ is used the target position can be recovered and used as the
+reference point for every position measurement (e.g. with DSDSD detector).
 
 Description of geometry file for solid target
-============================
-
-An input files for a standard solid target foil is the following:
+==================================
+The geometry file includes a _GeneralTarget_ token indicating that a 
+target is defined. The relevant part of the geometry input file corresponding 
+to a standard solid target is given below:
 {% highlight text %}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Target
-	THICKNESS= 10
-	RADIUS=	20
-	MATERIAL= CD2
-	ANGLE= 0
-	X= 0
-	Y= 0
-	Z= 0
-  NBLAYERS= 10
+   THICKNESS= 10
+   RADIUS= 20
+   MATERIAL= CD2
+   ANGLE= 0
+   X= 0
+   Y= 0
+   Z= 0
+   NBLAYERS= 10
 {% endhighlight %}
 
-The thickness of the foil is given in micro-meter. The (X,Y,Z) coordinates of the target are given in millimeter and the Angle of the target is given in degree and describe the rotation around the Y axis. The material of the foil is taken from the NPS::MaterialManager, if the material is not found in the library, the programme will issue a warning and use vacuum as the material.
+The thickness of the foil is given in micro-meter. The (X,Y,Z) coordinates of 
+the target are given in millimeter and the angle of the target is given in 
+degree and describes the rotation around the Y axis. The material of the foil 
+is taken from the NPS::MaterialManager. If the material is not found in the 
+library, _npsimulation_ will issue a warning and use vacuum as the material.
 
-The NBLAYERS token is optional and indicate the number of layer to be used to calculate the beam energy loss in the target to obtain the final inteaction energy. The default value is 5.
+The NBLAYERS token is optional and indicates the number of layers to be used 
+to calculate the beam energy loss in the target in order to obtain the final 
+inteaction energy. The default value is 5.
+
 
 Description of geometry file for cryogenic target
 ============================
+In case of cryogenic targets the relevant part of the geometry input file
+is given below:
 {% highlight text %}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 CryoTarget
-	THICKNESS= 3
-	RADIUS=	45
-	DENSITY= 1
-  MATERIAL= D2	
-	WINDOWSTHICKNESS= 0
-	WINDOWSMATERIAL= Mylar
-	X= 0
-	Y= 0
-	Z= 0			
-  NBLAYERS= 10
+   THICKNESS= 3
+   RADIUS= 45
+   DENSITY= 1
+   MATERIAL= D2	
+   WINDOWSTHICKNESS= 0
+   WINDOWSMATERIAL= Mylar
+   X= 0
+   Y= 0
+   Z= 0			
+   NBLAYERS= 10
 {% endhighlight %}
 
-The thickness of the target indicate the thickness of cryogenic material and is given in micrometer. The windows thickness is given in millimeter as well. Both cryogenic and windows material are look for in NPS::MaterialManager and if not found the default material vacuum is used after a warning is issued.
+The thickness of the target indicates the thickness of cryogenic material 
+and is given in micrometer. The windows thickness is also given in micrometer.
+Both cryogenic and windows materials are searched in the NPS::MaterialManager.
+If not found, vacuum is used as default material after a warning is issued.
+Other tokens have same meaning as in the solid target case.
 
-NB: if the density given is 0 then the default density for this material is used.
-NNB: the density token should be place before the Material token.
+Note that if the density given is 0 then the default density for the considered
+material will be used.
 
-The NBLAYERS token is optional and indicate the number of layer to be used to calculate the beam energy loss in the target to obtain the final inteaction energy. The default value is 5.
+__Important note__ the DENSITY token should be placed before the MATERIAL 
+token.
+
 
