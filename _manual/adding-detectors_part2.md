@@ -1,11 +1,12 @@
 ---
 layout: manual 
-title: Adding a new detector: Editing your class 
+title: Adding a new detector: Editing your classes 
 permalink: /manual/adding-detectors-part2/
 author: Adrien Matta
 manual_order: 11 
 show_in_nav: false 
 ---
+
 ## Detector classes
 Four classes are created in the process, three in NPLib will describe the data storage and analysis and one in the simulation will describe the detector geometry and readout.
 
