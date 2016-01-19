@@ -3,7 +3,7 @@ layout: manual
 author: Nicolas de Séréville
 title: GASPARD
 permalink: /manual/gaspard/
-manual_order: 101
+manual_order: 102
 show_in_nav: false
 ---
 
