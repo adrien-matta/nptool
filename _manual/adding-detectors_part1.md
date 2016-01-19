@@ -1,7 +1,7 @@
 ---
 layout: manual 
 title: Adding a new detector: Running nptool-wizard 
-permalink: /manual/adding-detectors/
+permalink: /manual/adding-detectors_part1/
 author: Adrien Matta
 manual_order: 10 
 show_in_nav: false 

@@ -1,7 +1,7 @@
 ---
 layout: manual 
 title: Adding a new detector: Editing your classes 
-permalink: /manual/adding-detectors-part2/
+permalink: /manual/adding-detectors_part2/
 author: Adrien Matta
 manual_order: 11 
 show_in_nav: false 
