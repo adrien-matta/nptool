@@ -80,7 +80,7 @@ public:
   
 public:
   //   Return Material from the Target Material Library
-  G4Material* GetMaterialFromLibrary(G4String MaterialName, G4double Temperature = 0, G4double Pressure = 0);
+  G4Material* GetMaterialFromLibrary(G4String MaterialName);
   
 public:
   G4double    GetTargetThickness()   {return m_TargetThickness;}
@@ -106,8 +106,7 @@ private:
   G4int       m_TargetNbLayers;
   
   // For Cryo Target
-  G4double    m_TargetTemperature;
-  G4double    m_TargetPressure;
+  G4double    m_TargetDensity;
   G4double    m_WindowsThickness;
   G4Material* m_WindowsMaterial;
   

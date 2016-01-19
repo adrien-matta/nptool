@@ -65,104 +65,14 @@ Target::Target(){
   m_TargetAngle        = 0   ;
   m_TargetRadius       = 0   ;
   m_WindowsThickness   = 0   ;
-  m_TargetTemperature  = 0   ;
-  m_TargetPressure     = 0   ;
+  m_TargetDensity      = 0   ;
   m_EffectiveThickness = 0   ; // effective thickness at 0 deg, compute using angle and thickness
   m_TargetNbLayers     = 5;   // Number of steps by default
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-G4Material* Target::GetMaterialFromLibrary(G4String MaterialName, G4double Temperature, G4double Pressure){
-  G4Material* myMaterial;
-
-  if (MaterialName == "cryoD2") {
-    G4double density = 0;
-
-    if(Pressure == 0 ){
-      if (Temperature == 0) {
-        density = 0.000083771* g / cm3;
-        G4cout << "CryoTarget temp set to 300K with P = 1bar" << G4endl;
-      }
-
-      else if (Pressure == 1) {
-        G4cout << "CryoTarget pressure set to 1 bar" << G4endl;
-
-        if (Temperature == 24) {
-          density = 0.0020182 * g / cm3;
-          G4cout << "CryoTarget temp set to 24K" << G4endl;
-        }
-
-        else if (Temperature == 25) {
-          density = 0.0019377 * g / cm3;
-          G4cout << "CryoTarget temp set to 25K" << G4endl;
-        }
-
-        else if (Temperature == 26) {
-          density = 0.001863 * g / cm3;
-          G4cout << "CryoTarget temp set to 26K" << G4endl;
-        }
-
-        else if (Temperature == 30) {
-          density = 0.00020475 * g / cm3;
-          G4cout << "CryoTarget temp set to 30K" << G4endl;
-        }
-
-        else if (Temperature == 300) {
-          density = 8.3771e-5* g / cm3;
-          G4cout << "CryoTarget temp set to 30K" << G4endl;
-        }
-
-
-        else {
-          G4cout << ">>>  !!!!WARNING INVALID TEMP FOR CRYOGENIC TARGET!!!!  <<<" << G4endl;
-        }
-      }
-
-      else if (Pressure == 0.5) {
-        G4cout << "CryoTarget pressure set to 0.5 bar" << G4endl;
-
-        if (Temperature == 24) {
-          density = 0.0010091 * g / cm3;
-          G4cout << "CryoTarget temp set to 24K" << G4endl;
-        }
-
-        else if (Temperature == 25) {
-          density = 0.00096875 * g / cm3;
-          G4cout << "CryoTarget temp set to 25K" << G4endl;
-        }
-
-        else if (Temperature == 26) {
-          density = 0.00093149 * g / cm3;
-          G4cout << "CryoTarget temp set to 26K" << G4endl;
-        }
-
-
-        else if (Pressure == 0.7) {
-          G4cout << "CryoTarget pressure set to 0.7 bar" << G4endl;
-
-          if (Temperature == 26) {
-            density = 0.0013125 * g / cm3;
-            G4cout << "CryoTarget temp set to 26K" << G4endl;
-          }
-        }
-
-
-        else {
-          G4cout << ">>>  !!!!WARNING INVALID TEMP FOR CRYOGENIC TARGET!!!!  <<<" << G4endl;
-        }
-      }
-    }
-    G4Element* D  = new G4Element("Deuteron"  , "D" , 1., 2.0141*g / mole);
-    myMaterial    = new G4Material("cryoD2", density, 1, kStateGas, Temperature, Pressure);
-    myMaterial->AddElement(D, 2);
-    MaterialManager::getInstance()->AddMaterialToLibrary(myMaterial);
-    return(myMaterial);
-
-  }
-  else{
-    return MaterialManager::getInstance()->GetMaterialFromLibrary(MaterialName);
-  }
-
+G4Material* Target::GetMaterialFromLibrary(G4String MaterialName){
+  return MaterialManager::getInstance()->GetMaterialFromLibrary(MaterialName,m_TargetDensity);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -183,15 +93,11 @@ void Target::ReadConfiguration(string Path){
 
   bool check_Thickness = false ;
   bool check_Radius = false ;
-  //  bool check_Angle = false ;
   bool check_Material = false ;
   bool check_X = false ;
   bool check_Y = false ;
   bool check_Z = false ;
-  //  bool check_m_TargetNbLayers = false;
-
-  bool check_Temperature = false ;
-  bool check_Pressure = false ;
+  bool check_Density = false ;
   bool check_WinThickness = false ;
   bool check_WinMaterial = false ;
 
@@ -212,7 +118,6 @@ void Target::ReadConfiguration(string Path){
 
     while (ReadingStatusTarget) {
       ConfigFile >> DataBuffer;
-
       //Search for comment Symbol %
       if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
 
@@ -289,9 +194,7 @@ void Target::ReadConfiguration(string Path){
     }
 
     while(ReadingStatusCryoTarget){
-
       ConfigFile >> DataBuffer;
-
       //Search for comment Symbol %
       if (DataBuffer.compare(0, 1, "%") == 0) {/*Do Nothing*/;}
 
@@ -312,23 +215,17 @@ void Target::ReadConfiguration(string Path){
           G4cout << "Target Radius: " <<  m_TargetRadius / mm  << "mm" << G4endl ;
       }
 
-      else if (DataBuffer.compare(0, 12, "TEMPERATURE=") == 0) {
-        check_Temperature = true ;
+      else if (DataBuffer.compare(0, 8, "DENSITY=") == 0) {
+        check_Density= true ;
         ConfigFile >> DataBuffer;
-        if(VerboseLevel==1) m_TargetTemperature = atof(DataBuffer.c_str());
-      }
-
-      else if (DataBuffer.compare(0, 9, "PRESSURE=") == 0) {
-        check_Pressure = true ;
-        ConfigFile >> DataBuffer;
-        m_TargetPressure = atof(DataBuffer.c_str());
+        if(VerboseLevel==1) m_TargetDensity = atof(DataBuffer.c_str())*g/cm3;
       }
 
       else if (DataBuffer.compare(0, 9, "MATERIAL=") == 0) {
         check_Material = true ;
         ConfigFile >> DataBuffer;
         m_TargetMaterial = 
-          GetMaterialFromLibrary(DataBuffer, m_TargetTemperature, m_TargetPressure);
+          GetMaterialFromLibrary(DataBuffer);
         if(VerboseLevel==1) 
           G4cout << "Target Material: " << m_TargetMaterial << G4endl;
       }
@@ -373,7 +270,6 @@ void Target::ReadConfiguration(string Path){
       }
 
       else if (DataBuffer.compare(0, 9, "NBLAYERS=") == 0) {
-        //        check_m_TargetNbLayers = true ;
         ConfigFile >> DataBuffer;
         m_TargetNbLayers = atoi(DataBuffer.c_str());
         if(VerboseLevel==1) 
@@ -392,12 +288,12 @@ void Target::ReadConfiguration(string Path){
       //   If all Token found toggle out
       if( check_Thickness && check_Radius && check_Material && check_X 
           && check_Y && check_Z && check_WinThickness && check_WinMaterial 
-          && check_Pressure && check_Temperature)
+          && check_Density){
         m_EffectiveThickness = m_TargetThickness / cos(m_TargetAngle);
-      ReadingStatusCryoTarget = false ;
+        ReadingStatusCryoTarget = false ;
+      }
 
     }
-
   }
   // if the target as a null radius then no target exist
   if(m_TargetRadius==0) {
@@ -504,11 +400,11 @@ G4double Target::SlowDownBeam(G4ParticleDefinition* Beam,
   if(Beam->GetParticleName()=="neutron"){
     return IncidentEnergy;
   }
-  
+
   G4double ThicknessBeforeInteraction = 
     abs(ZInteraction - 0.5*m_EffectiveThickness) / cos(m_TargetAngle);
- 
-  
+
+
   G4double dedx,de;
   static G4EmCalculator emCalculator;
 
@@ -553,7 +449,7 @@ G4double Target::SlowDownBeam(G4ParticleDefinition* Beam,
 
       }
   }
- 
+
   if(IncidentEnergy<0) IncidentEnergy = 0 ;
   return IncidentEnergy;
 }
