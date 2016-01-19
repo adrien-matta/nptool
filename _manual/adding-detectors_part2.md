@@ -1,7 +1,7 @@
 ---
 layout: manual 
 title: Adding a new detector 
-permalink: /manual/adding-detectors/
+permalink: /manual/adding-detectors-part2/
 author: Adrien Matta
 manual_order: 10 
 show_in_nav: false 
@@ -203,6 +203,7 @@ This method read the detector configuration file and look for the appropriate to
 
 #### AddParameterToCalibrationManager 
 This function is adding the list of token used in the calibration to the calibration manager. The later will then parse all the calibration files provided and look for the token. In our case we want to add new token including the strip number as well as the detector number, we therefore need to modify the for loop to have two counters. The NPL::DetectorManager::AddParameter function take three argument. The first one is the detector name, the second one in the name of the parameter as stored in memory and the third name is the token as written in the file.
+
 {% highlight C++ %}
 CalibrationManager* Cal = CalibrationManager::getInstance();  
  for (int i = 0; i < m_NumberOfDetectors; ++i) {  
@@ -218,7 +219,7 @@ This method is the actual core of the class were the data analysis take place. T
 
 Four our example we will modify the PreTreat first to accomodate the strip detector. 
 {% highlight C++ %}
-
+ddd
 {% endhighlight %}
 
 #### BuildSimplePhysicalEvent
