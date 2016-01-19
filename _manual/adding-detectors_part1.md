@@ -80,7 +80,11 @@ utility as follow:
 $ npanalysis --last-sim -GH
 {% endhighlight %}
 A default output ROOT file (PhysicsTree.root) is created in the 
-$NPTOOL/Output/Analysis directory. The --last-sim flag analyses the 
+$NPTOOL/Outputs/Analysis directory. The --last-sim flag analyses the 
 previous simulation while the -GH flag generates histograms defined 
 in the TnewDetSpectra class.
+
+The spectra are stored in the ControlSpectra/newDet/ directory of the 
+PhysicsTree.root file. The newDet_ENERGY_TIME and newDet_ENERGY_CAL 
+spectra show the energy v.s. time and energy information, respectively.
 
