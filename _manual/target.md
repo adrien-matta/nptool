@@ -32,7 +32,7 @@ GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Target
    THICKNESS= 10
-   RADIUS=	20
+   RADIUS= 20
    MATERIAL= CD2
    ANGLE= 0
    X= 0
@@ -62,7 +62,7 @@ GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 CryoTarget
    THICKNESS= 3
-   RADIUS=	45
+   RADIUS= 45
    DENSITY= 1
    MATERIAL= D2	
    WINDOWSTHICKNESS= 0
