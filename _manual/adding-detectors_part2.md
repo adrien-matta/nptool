@@ -1,6 +1,6 @@
 ---
 layout: manual 
-title: Editing classes created by nptool-wizard in NPLib 
+title: Editing your new NPLib classes
 permalink: /manual/adding-detectors_part2/
 author: Adrien Matta
 manual_order: 11 
@@ -241,7 +241,7 @@ This methods is used to connect the m_EventData pointer hold by the Physics Clas
 The methods does not need any change.
 
 #### InitializeRootInputPhysics   
-This method is similar to the first one but for the case where the input tree hold already treated data, i.e. npanalysis has been run with the `--IP` flag. In that case the BuildPhysical method is not called.
+This method is similar to the first one but for the case where the input tree hold already treated data, i.e. npanalysis has been run with the `-IP` flag. In that case the BuildPhysical method is not called.
 
 The methods does not need any change.
 
