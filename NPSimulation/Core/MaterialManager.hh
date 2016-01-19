@@ -70,7 +70,7 @@ public:
   // Look for a known material named Name.
   // If the Material is known but not instantiate it is created and return
   // If the Material is instantiate it return it
-  G4Material* GetMaterialFromLibrary(string Name);
+  G4Material* GetMaterialFromLibrary(string Name, double density = 0);
 
   // Same as above but for Element.
   G4Element*  GetElementFromLibrary(string Name);
