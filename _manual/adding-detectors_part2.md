@@ -1,6 +1,6 @@
 ---
 layout: manual 
-title: Editing classes created by nptool-wizard 
+title: Editing classes created by nptool-wizard in NPLib 
 permalink: /manual/adding-detectors_part2/
 author: Adrien Matta
 manual_order: 11 
