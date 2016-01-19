@@ -31,13 +31,13 @@ to a standard solid target is given below:
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Target
-	THICKNESS= 10
-	RADIUS=	20
-	MATERIAL= CD2
-	ANGLE= 0
-	X= 0
-	Y= 0
-	Z= 0
+   THICKNESS= 10
+   RADIUS=	20
+   MATERIAL= CD2
+   ANGLE= 0
+   X= 0
+   Y= 0
+   Z= 0
    NBLAYERS= 10
 {% endhighlight %}
 
@@ -61,15 +61,15 @@ is given below:
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 CryoTarget
-	THICKNESS= 3
-	RADIUS=	45
-	DENSITY= 1
+   THICKNESS= 3
+   RADIUS=	45
+   DENSITY= 1
    MATERIAL= D2	
-	WINDOWSTHICKNESS= 0
-	WINDOWSMATERIAL= Mylar
-	X= 0
-	Y= 0
-	Z= 0			
+   WINDOWSTHICKNESS= 0
+   WINDOWSMATERIAL= Mylar
+   X= 0
+   Y= 0
+   Z= 0			
    NBLAYERS= 10
 {% endhighlight %}
 
