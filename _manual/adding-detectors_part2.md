@@ -1,6 +1,6 @@
 ---
 layout: manual 
-title: Adding a new detector Editing your classes 
+title: Editing classes created by nptool-wizard 
 permalink: /manual/adding-detectors_part2/
 author: Adrien Matta
 manual_order: 11 
