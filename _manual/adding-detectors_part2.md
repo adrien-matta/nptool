@@ -1,6 +1,6 @@
 ---
 layout: manual 
-title: Editing classes created by nptool-wizard 
+title: Editing your new NPLib classes
 permalink: /manual/adding-detectors_part2/
 author: Adrien Matta
 manual_order: 11 
@@ -176,8 +176,8 @@ This function is adding the list of token used in the calibration to the calibra
 CalibrationManager* Cal = CalibrationManager::getInstance();  
  for (int i = 0; i < m_NumberOfDetectors; ++i) {  
    for(int j = 0 ; j < 25 ; j++){
-    Cal->AddParameter("MSX25", "D"+ NPL::itoa(i+1)+"_ENERGY","MSX25_D"+ NPL::itoa(i+1)+STRIP+ NPL::itoa(j+1)+"_ENERGY");   
-    Cal->AddParameter("MSX25", "D"+ NPL::itoa(i+1)+"_TIME","MSX25_D"+ NPL::itoa(i+1)+STRIP+ NPL::itoa(j+1)+"_TIME");   
+    Cal->AddParameter("MSX25", "D"+ NPL::itoa(i+1)+"_ENERGY","MSX25_D"+ NPL::itoa(i+1)+"_STRIP"+ NPL::itoa(j+1)+"_ENERGY");   
+    Cal->AddParameter("MSX25", "D"+ NPL::itoa(i+1)+"_TIME","MSX25_D"+ NPL::itoa(i+1)+"_STRIP"+ NPL::itoa(j+1)+"_TIME");   
   }  
  }
 {% endhighlight %}
@@ -187,38 +187,100 @@ This method is the actual core of the class were the data analysis take place. T
 
 Four our example we will modify the PreTreat first to accomodate the strip detector. 
 {% highlight C++ %}
-ddd
+  // This method typically applies thresholds and calibrations
+  // Might test for disabled channels for more complex detector
+
+  // clear pre-treated object
+  ClearPreTreatedData();
+
+  // instantiate CalibrationManager
+  static CalibrationManager* Cal = CalibrationManager::getInstance();
+
+  // Energy
+  for (UShort_t i = 0; i < m_EventData->GetMultEnergy(); ++i) {
+    if (m_EventData->Get_Energy(i) > m_E_RAW_Threshold) {
+      Double_t Energy = Cal->ApplyCalibration("MSX25/ENERGY_D"+NPL::itoa(m_EventData->GetE_DetectorNbr(i))+"_STRIP"+NPL::itoa(m_EventData->GetE_StripNbr(i)),m_EventData->Get_Energy(i));
+      if (Energy > m_E_Threshold) {
+        m_PreTreatedData->SetEnergy(m_EventData->GetE_DetectorNbr(i), Energy);
+      }
+    }
+  }
+
+  // Time 
+  for (UShort_t i = 0; i < m_EventData->GetMultTime(); ++i) {
+    Double_t Time= Cal->ApplyCalibration("MSX25/TIME_D"+NPL::itoa(m_EventData->GetT_DetectorNbr(i)+"_STRIP"+NPL::itoa(m_EventData->GetT_StripNbr(i))),m_EventData->Get_Time(i));
+    m_PreTreatedData->SetTime(m_EventData->GetT_DetectorNbr(i), Time);
+  }
+{% endhighlight %}
+
+We can now modify the BuildPhysicalEvent method to test for the matching strip number between Energy and Time information.
+{% highlight C++ %}
+  // apply thresholds and calibration
+  PreTreat();
+
+  // match energy and time together
+  for (UShort_t e = 0; e < m_PreTreatedData->GetMultEnergy(); e++) {
+    for (UShort_t t = 0; t < m_PreTreatedData->GetMultTime(); t++) {
+      if (m_PreTreatedData->GetE_DetectorNbr(e) == m_PreTreatedData->GetT_DetectorNbr(t)
+          && m_PreTreatedData->GetE_StripNbr(e) == m_PreTreatedData->GetT_StripNbr(t) ) {
+        DetectorNumber.push_back(m_PreTreatedData->GetE_DetectorNbr(e));
+        StripNumber.push_back(m_PreTreatedData->GetE_StripNbr(e)); 
+        Energy.push_back(m_PreTreatedData->Get_Energy(e));
+        Time.push_back(m_PreTreatedData->Get_Time(t));
+      }
+    }
+  }
 {% endhighlight %}
 
 #### BuildSimplePhysicalEvent
+This method is there to allow for simpler analysis, e.g. when used for online analysis. Some detectors require CPU intensive analysis, for example based on fitting histograms (e.g CATS, Trifoil). For these kind of analysis, having a less precise but faster version of the BuildPhysicalEvent is desirable. For most detectors the BuildSimplePhysicalEvent simply call the BuildPhysicalEvent methods.   
 
 #### InitializeRootInputRaw 
+This methods is used to connect the m_EventData pointer hold by the Physics Class to the corresponding root branch comming from either real or simulated data. The method is two fold, first it enable the branch in case it has been previously disable, for instance by using the `--disable-branch` flag (for faster analysis). Then the m_EventData pointer is connected to the tree using the SetBranchAddress methods.
+
+The methods does not need any change.
 
 #### InitializeRootInputPhysics   
+This method is similar to the first one but for the case where the input tree hold already treated data, i.e. npanalysis has been run with the `-IP` flag. In that case the BuildPhysical method is not called.
+
+The methods does not need any change.
 
 #### InitializeRootOutput      
+This method access the output tree via the RootOutput singleton and connect the Physics class to a new branch named after the detector.
+
+The methods does not need any change. 
 
 #### ClearEventPhysics()
+This method is a wrapper to the Clear method require by TObject. If you add new private member to the class, like we did by adding the StripNumber vector, you need to clear the new vector in the Clear methods
+
+In our case we need to change the Clear method, called via the ClearEventPhysics methods like so:
+{% highlight C++ %}
+void TMSX25Physics::Clear() {
+  DetectorNumber.clear();
+  StripNumber.clear();
+  Energy.clear();
+  Time.clear();
+}
+{% endhighlight %}
 
 #### ClearEventData()    
+This method is a wrapper for the calling the Clear method of the Raw Data class. It does not require any change.
 
 #### InitSpectra
+This methods create the Spectra class and initialise it. It does not require any change. 
 
-#### FillSpectra   
+#### FillSpectra  
+This method is a wrapper for calling the Spectra class method at the right time, i.e. after analysis of the event.
+It does not require any change. 
 
 #### CheckSpectra    
+This method is a wrapper for calling the Spectra class method at the right time, i.e. after filling of the Spectra.
+It does not require any change. 
 
 #### ClearSpectra
+This method is a wrapper for calling the Spectra class method at the right time, i.e. after the online programm requested the spectrum to be cleared.
+It does not require any change. 
 
 #### WriteSpectra 
-
-
-
-
-
-
-
-
-
-
-
+This method is a wrapper for calling the Spectra class method at the right time, i.e. at the end of the analysis, to write the spectrum along with the root tree, in the output root file.
+It does not require any change. 
