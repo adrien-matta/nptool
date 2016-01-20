@@ -3,7 +3,7 @@ layout: manual
 title: CATS
 author: Pierre Morfouace
 permalink: /manual/cats/
-manual_order: 100
+manual_order: 101
 show_in_nav: false
 ---
 

@@ -1,34 +1,35 @@
 ---
 layout: manual 
-title: Credit
-permalink: /credit/
+title: Credits
+permalink: /credits/
 show_in_nav: true
 ---
 
-nptool is an open source collaborative package distributited under [GPL2.0][gpl2].
+nptool is an open source collaborative package distributed under [GPL2.0][gpl2].
 The package was started in 2009 by Adrien Matta for the MUST2 collaboration.
 
-### Framework contributors:
+### Framework contributors
 
 * A. Matta (University of Surrey) <mailto:a.matta@surrey.ac.uk>
-* N. de Sereville (IPN Orsay) <mailto:deserevi@ipno.in2p3.fr>
+* N. de Séréville (IPN Orsay) <mailto:deserevi@ipno.in2p3.fr>
 * P. Morfouace (MSU/NSCL) <mailto:morfouac@nscl.msu.edu>
 
-### Detector contributors (alphabetical order):
+### Detector contributors (alphabetical order)
 
 * F. Flavigny (IPN Orsay) <mailto:flavigny@ipno.in2p3.fr>
 * S. Giron
 * M. Labiche (STFC Daresbury Laboratory) <mailto:marc.labiche@stfc.ac.uk>
-* L. Lefevre
+* L. Lefebvre
 * R. Shearman (NPL / University of Surrey) <mailto:r.shearman@surrey.ac.uk>
 * R. Wilkinson (University of Surrey) <mailto:r.wilkinson@surrey.ac.uk>
 
-### Acknowledgement
-We thanks IPN Orsay and the University of Surrey for their continuous support of the package.
+### Acknowledgements
 
-### Various credit and liscence
+We thank IPN Orsay and the University of Surrey for their continuous support.
 
-The nptool logo and this website use the [Pfennig][pfennig] Font  by Daniel Johnson under the [OFT][oft] liscence.
+### Various credits and licences
+
+The nptool logo and this website use the [Pfennig][pfennig] font by Daniel Johnson under the [OFT][oft] licence.
 
 [oft]: http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL
 [pfennig]: http://openfontlibrary.org/en/font/pfennig
