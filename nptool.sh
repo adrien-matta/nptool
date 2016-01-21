@@ -1,18 +1,17 @@
 #!/bin/bash
 
-# source this file to setup your NPTOOL installation
-CUR_DIR="$PWD" 
-SCRIPTFILE=$0 
-if [ "${SCRIPTFILE}" = "-bash" ] ; then  
-  SCRIPTFILE=${BASH_ARGV[0]} 
-elif [ "${SCRIPTFILE}" = "bash" ] ; then  
-  SCRIPTFILE=${BASH_ARGV[0]} 
-fi 
+# find script path
+if [ -n "$ZSH_VERSION" ]; then
+   SCRIPTPATH="$( cd "$( dirname "${(%):-%x}" )" && pwd )"
+elif [ -n "$BASH_VERSION" ]; then
+   SCRIPTPATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+else
+   echo "neither bash or zsh is used, abort"
+   exit 1
+fi
 
-SCRIPTPATH="${SCRIPTFILE}" 
-
-export NPTOOL=$(dirname $SCRIPTPATH)
-export NPLIB=$NPTOOL/NPLib
+# export NPTOOL environment variable
+export NPTOOL=$SCRIPTPATH
 
 NPARCH=$(uname)
 # mac os x case
@@ -25,7 +24,7 @@ else
   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$NPTOOL/NPSimulation/lib
 fi
 
-export PATH=$PATH:$NPLIB/bin
+export PATH=$PATH:$NPTOOL/NPLib/bin
 export PATH=$PATH:$NPTOOL/NPSimulation/bin
 
 alias npt='cd $NPTOOL'  
