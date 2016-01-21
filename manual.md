@@ -14,17 +14,17 @@ show_in_nav: true
  
   {% if m.manual_order == 10 %}
    <h3> Tutorials </h3>
-  Tutorials are listed here.
+  These tutorials will take you through the step of adding a new detector to the package. Good knowledge of C++ programming is needed, and experience with Root and Geant4 may help. 
   {% endif %} 
  
   {% if m.manual_order == 100 %}
   <h3> Detectors documentation </h3> 
-  The documentation for specific detectors is given here.
+  The documentation for specific detectors is given here. Note that all detectors are not documented.
   {% endif %} 
   
   {% if m.manual_order == 1000 %}
   <h3> Annex </h3> 
-  Everything not directly related to nptool.
+  Everything not directly related to using nptool.
   {% endif %} 
 
   

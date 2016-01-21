@@ -284,3 +284,152 @@ It does not require any change.
 #### WriteSpectra 
 This method is a wrapper for calling the Spectra class method at the right time, i.e. at the end of the analysis, to write the spectrum along with the root tree, in the output root file.
 It does not require any change. 
+
+
+### The Spectra class
+
+* * *
+name:
+: TMSX25Spectra
+
+* * *
+
+location:
+: NPLib/Detectors/MSX25
+
+* * *
+
+files:
+: TMSX25Spectra.h 
+: TMSX25Physics.cxx
+
+* * *
+
+inherittance:
+: NPL::VSpectra
+
+* * *
+
+The Spectra class is there to generate, fill, clear and save control spectra associate with your detector. It is intended as a facility to provide control spectra post analysis and for online analysis. There is three type of spectra, the raw data spectra, the pre-treated spectra and the Physics spectra. Raw data and Pre Treated spectra are usually the same type of spectrum, but done before and after applying the calibration and thresholds. The physics spectra are produce using the data obtained after the BuildPhyisicalEvent.
+
+First we will add a private member specifying the number of strip on our detector to the Spectra class by editing the TMSX25Spectra.h file
+{% highlight C++ %}
+ //////////////////////////////////////////////////////////////
+  // Detector parameters 
+  private:
+    unsigned int fNumberOfDetectors;
+    const unsigned int fNumberOfStrips=25;
+{% endhighlight %}
+
+
+There is six method to implement, three to declare the raw, pre-treated and physics spectra and three to fill them.
+
+
+
+#### InitRawSpectra
+ This method will declare all the needed spectra for your raw data. In our case we want an Energy vs StripNumber 2D spectrum for each detectors. For this we will change the AddHisto1D method to AddHisto2D. You will note the last argument, it is called the familly and is used to order the histogramms in onlines programms (either nptool's nponline or Ganil's GRU)
+{% highlight C++ %}
+  static string name;
+  for (unsigned int i = 0; i < fNumberOfDetectors; i++) { // loop on number of detectors
+    for (unsigned int j = 0; j < fNumberOfStrips; j++) { // loop on number of detectors
+    // Energy 
+    name = "DETECTORNAME"+NPL::itoa(i+1)+"_ENERGY_RAW";
+    AddHisto2D(name, name, fNumberOfStrips, 1, fNumberOfStrips, 4096, 0, 16384,"MSX25/RAW");
+    // Time  
+    name = "DETECTORNAME"+NPL::itoa(i+1)+"_TIME_RAW";
+    AddHisto2D(name, name, fNumberOfStrips, 1, fNumberOfStrips, 4096, 0, 16384, "MSX25/RAW");
+  } // end loop on number of detectors
+{% endhighlight %}
+
+#### InitPreTreatedSpectra
+Similarly this method instantiate the calibrated histogramm. In most cases they are simply calibrated version of the raw hisogramms.
+{% highlight C++ %}
+  static string name;
+  for (unsigned int i = 0; i < fNumberOfDetectors; i++) { // loop on number of detectors
+    for (unsigned int j = 0; j < fNumberOfStrips; j++) { // loop on number of detectors
+    // Energy 
+    name = "DETECTORNAME"+NPL::itoa(i+1)+"_ENERGY_CAL";
+    AddHisto2D(name, name, fNumberOfStrips, 1, fNumberOfStrips, 4096, 0, 25,"MSX25/CAL");
+    // Time  
+    name = "DETECTORNAME"+NPL::itoa(i+1)+"_TIME_CAL";
+    AddHisto2D(name, name, fNumberOfStrips, 1, fNumberOfStrips, 4096, 0, 50, "MSX25/CAL");
+  } // end loop on number of detectors
+{% endhighlight %}
+
+#### InitPhysicsSpectra
+Last we instantiate the Physics spectrum. in our case we do not need to make any change has all we want is the Energy vs Time spectra to identify particles. This the typical case to instiate histogramm on particle identification, doppler corrected spectra, position spectra,...
+
+#### FillRawSpectra
+This method loop over the raw data at the end of each event and fill the previously declared spectrum. Spectra a retrieved via the GetHisto method. If the histogram requested does not exist the programm issue an error and exit. Let's modify the code to fill our Energy vs Strip number spectra. 
+
+{% highlight C++ %}
+  static string name;
+  static string family;
+
+  // Energy 
+  unsigned int sizeE = RawData->GetMultEnergy();
+  for (unsigned int i = 0; i < sizeE; i++) {
+    name = "MSX25"+NPL::itoa(RawData->GetE_DetectorNbr(i))+"_ENERGY_RAW";
+    family = "MSX25/RAW";
+
+    GetHisto(family,name) -> Fill(RawData->GetE_StripNbr(), RawData->Get_Energy(i));
+  }
+
+  // Time
+  unsigned int sizeT = RawData->GetMultTime();
+  for (unsigned int i = 0; i < sizeT; i++) {
+    name = "MSX25"+NPL::itoa(RawData->GetT_DetectorNbr(i))+"_TIME_RAW";
+    family = "MSX25/RAW";
+
+    GetHisto(family,name) -> Fill(RawData->GetT_StripNbr(), RawData->Get_Time(i));
+  }
+
+{% endhighlight %}
+
+NB: you will note the use static string in these method. This is to enhance performances as the string is instiate once and therefore the associate buffer allocated only once as well. Remember this methods is called for each event, so millions of times.
+
+#### FillPreTreatedSpectra
+This method is modified in a similar fashion to the previous one.
+
+{% highlight C++ %}
+  static string name;
+  static string family;
+
+  // Energy 
+  unsigned int sizeE = RawData->GetMultEnergy();
+  for (unsigned int i = 0; i < sizeE; i++) {
+    name = "MSX25"+NPL::itoa(RawData->GetE_DetectorNbr(i))+"_ENERGY_CAL";
+    family = "MSX25/CAL";
+
+    GetHisto(family,name) -> Fill(RawData->GetE_StripNbr(), RawData->Get_Energy(i));
+  }
+
+  // Time
+  unsigned int sizeT = RawData->GetMultTime();
+  for (unsigned int i = 0; i < sizeT; i++) {
+    name = "MSX25"+NPL::itoa(RawData->GetT_DetectorNbr(i))+"_TIME_CAL";
+    family = "MSX25/CAL";
+
+    GetHisto(family,name) -> Fill(RawData->GetT_StripNbr(), RawData->Get_Time(i));
+  }
+
+{% endhighlight %}
+
+
+#### FillPhysicsSpectra
+This last method does not need any modification for this tutorial. It would need to be changed if you instiate any new histogramms in the InitPhysicsSpectra.
+
+### Compilation
+
+Once all the change are made in these three classes you can compile your work
+
+{% highlight bash %}
+> make -jn install
+{% endhighlight %}
+
+or if you are using ninja-build
+{% highlight bash %}
+> ninja install 
+{% endhighlight %}
+
+In order to debug test these classes you will either need real data file, or a more conviniently a simulation. For the later you will now need to modify the NPSimulation classes of your newly created detector. All is explain in the third part of these tutorial.

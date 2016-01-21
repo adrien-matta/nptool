@@ -80,12 +80,12 @@ $ tar -xf /path/to/root.xxx.tar.gz
 $ mkdir root.xxx_build
 $ mkdir root.xxx_install
 $ cd root.xxx_build
-$ rm -Rf root.xxx_build
-$ rm -Rf root.xxx
 $ cmake -DCMAKE_INSTALL_PREFIX=/path/to/folder/root.xxx_install -Dmathmore=ON -Dminuit2=ON ../root.xxx
 $ make -j2 
 $ make install
-$ cd
+$ cd ../
+$ rm -Rf root.xxx_build
+$ rm -Rf root.xxx
 $ source /path/to/folder/root.xxx_install/bin/thisroot.sh
 {% endhighlight %}
 
