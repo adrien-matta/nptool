@@ -81,8 +81,6 @@ class Spice : public NPS::VDetector{
     ///////////Event class to store Data////////////////
     ////////////////////////////////////////////////////
   private:
-
-  private:
     // Scorer
     G4MultiFunctionalDetector* m_Scorer;
 

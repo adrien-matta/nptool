@@ -74,8 +74,6 @@ void TDETECTORNAMESpectra::InitRawSpectra() {
     // Time 
     name = "DETECTORNAME"+NPL::itoa(i+1)+"_TIME_RAW";
     AddHisto1D(name, name, 4096, 0, 16384, "DETECTORNAME/RAW");
-
-  
   } // end loop on number of detectors
 }
 
@@ -103,7 +101,7 @@ void TDETECTORNAMESpectra::InitPhysicsSpectra() {
   static string name;
   // Kinematic Plot 
   name = "DETECTORNAME_ENERGY_TIME";
-  AddHisto2D(name, name, 500, -500, 0, 500, 0, 50, "DETECTORNAME/PHY");
+  AddHisto2D(name, name, 500, 0, 500, 500, 0, 50, "DETECTORNAME/PHY");
 }
 
 
@@ -119,8 +117,7 @@ void TDETECTORNAMESpectra::FillRawSpectra(TDETECTORNAMEData* RawData) {
     name = "DETECTORNAME"+NPL::itoa(RawData->GetE_DetectorNbr(i))+"_ENERGY_RAW";
     family = "DETECTORNAME/RAW";
 
-    GetHisto(family,name) -> Fill(RawData->GetE_DetectorNbr(i), 
-                                  RawData->Get_Energy(i));
+    GetHisto(family,name) -> Fill(RawData->Get_Energy(i));
   }
 
   // Time
@@ -129,8 +126,7 @@ void TDETECTORNAMESpectra::FillRawSpectra(TDETECTORNAMEData* RawData) {
     name = "DETECTORNAME"+NPL::itoa(RawData->GetT_DetectorNbr(i))+"_TIME_RAW";
     family = "DETECTORNAME/RAW";
 
-    GetHisto(family,name) -> Fill(RawData->GetT_DetectorNbr(i), 
-                                  RawData->Get_Time(i));
+    GetHisto(family,name) -> Fill(RawData->Get_Time(i));
   }
 }
 
@@ -147,8 +143,7 @@ void TDETECTORNAMESpectra::FillPreTreatedSpectra(TDETECTORNAMEData* PreTreatedDa
     name = "DETECTORNAME"+NPL::itoa(PreTreatedData->GetE_DetectorNbr(i))+"_ENERGY_CAL";
     family = "DETECTORNAME/CAL";
 
-    GetHisto(family,name) -> Fill(PreTreatedData->GetE_DetectorNbr(i), 
-                                  PreTreatedData->Get_Energy(i));
+    GetHisto(family,name) -> Fill(PreTreatedData->Get_Energy(i));
   }
 
   // Time
@@ -157,8 +152,7 @@ void TDETECTORNAMESpectra::FillPreTreatedSpectra(TDETECTORNAMEData* PreTreatedDa
     name = "DETECTORNAME"+NPL::itoa(PreTreatedData->GetT_DetectorNbr(i))+"_TIME_CAL";
     family = "DETECTORNAME/CAL";
 
-    GetHisto(family,name) -> Fill(PreTreatedData->GetT_DetectorNbr(i), 
-                                  PreTreatedData->Get_Time(i));
+    GetHisto(family,name) -> Fill(PreTreatedData->Get_Time(i));
   }
 }
 

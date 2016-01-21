@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--   GDML materials definition from the Fastrad file : "AGATAS.ray"
+	Processed the 27/02/2009 at 16h39 by the GDML module of Fastrad 3.0 -->
+
+<materials>
+	
+	<element name="videRef" formula="VACUUM" Z="1">
+		<atom value="1"/>
+	</element>
+	<element name="aluminum" formula="Al" Z="13">
+		<atom value="26.9815"/>
+	</element>
+	<element name="silicon" formula="Si" Z="14">
+		<atom value="28.0855"/>		
+	</element>	
+
+
+	<isotope name="Ge70" Z="32" N="38">
+		<atom type="A" value="69.9242"/>
+		</isotope>
+	<isotope name="Ge72" Z="32" N="40">
+		<atom type="A" value="71.9221"/>
+	</isotope>	
+	<isotope name="Ge73" Z="32" N="41">
+		<atom type="A" value="72.9235"/>
+	</isotope>		
+	<isotope name="Ge74" Z="32" N="42">
+		<atom type="A" value="73.9212"/>
+		</isotope>		
+	<isotope name="Ge76" Z="32" N="44">
+		<atom type="A" value="75.9214"/>
+	</isotope>			
+		<element name="germanium">
+			<fraction ref="Ge70" n="0.2123"/>
+			<fraction ref="Ge72" n="0.2766"/>
+			<fraction ref="Ge73" n="0.0773"/>
+			<fraction ref="Ge74" n="0.3594"/>
+			<fraction ref="Ge76" n="0.0744"/>
+		</element>
+	
+
+	<material name="Vacuum" formula="Vacuum">
+		<D value ="1E-25" unit="g/cm3"/>
+		<fraction n="1.0" ref="videRef"/>
+	</material>
+	<material name="ALUMINUM_Al" formula="ALUMINUM_Al">
+		<D value ="2.7000" unit="g/cm3"/>
+		<fraction n="1.0000" ref="aluminum"/>
+	</material>
+	<material name="SILICON_Si" formula="SILICON_Si">
+		<D value ="2.3300" unit="g/cm3"/>
+		<fraction n="1.0000" ref="silicon"/>
+	</material>	
+	<material name="GERMANIUM_Ge" formula="GERMANIUM_Ge">
+		<D value ="5.4600" unit="g/cm3"/>
+		<fraction n="1.0000" ref="germanium"/>
+	</material>
+
+
+	
+</materials>
+
