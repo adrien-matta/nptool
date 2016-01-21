@@ -78,12 +78,10 @@ void TDETECTORNAMEPhysics::BuildPhysicalEvent() {
   }
 }
 
-
-
 ///////////////////////////////////////////////////////////////////////////
 void TDETECTORNAMEPhysics::PreTreat() {
-  // This method ypically applies thresholds and calibrations
-  // Might test for desabled channel for more complex detector
+  // This method typically applies thresholds and calibrations
+  // Might test for disabled channels for more complex detector
 
   // clear pre-treated object
   ClearPreTreatedData();

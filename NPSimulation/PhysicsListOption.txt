@@ -6,4 +6,4 @@ HadronElasticPhysics 0
 StoppingPhysics 0
 OpticalPhysics 0
 HadronPhysicsQGSP_BIC_HP 0
-Decay 0
+Decay 1

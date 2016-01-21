@@ -31,8 +31,7 @@
 class TDETECTORNAMEPhysics;
 
 
-class TDETECTORNAMESpectra : public VSpectra 
-{
+class TDETECTORNAMESpectra : public VSpectra {
   //////////////////////////////////////////////////////////////
   // constructor and destructor
   public:
