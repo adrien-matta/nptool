@@ -41,4 +41,5 @@
 /gui/addIcon "Right" user_icon    "{gui_right}" @CMAKE_BINARY_DIR@/ressources/icons/arrow-right.png
 /gui/addIcon "Zoom in" user_icon  "{gui_zoomin}" @CMAKE_BINARY_DIR@/ressources/icons/zoomin.png
 /gui/addIcon "Zoom out" user_icon "{gui_zoomout}" @CMAKE_BINARY_DIR@/ressources/icons/zoomout.png
-
+/gui/addIcon "the great void" user_icon "{gui_empty}" @CMAKE_BINARY_DIR@/ressources/icons/empty.png
+/gui/addIcon "Check geometry" user_icon "/geometry/test/run" @CMAKE_BINARY_DIR@/ressources/icons/check.png
