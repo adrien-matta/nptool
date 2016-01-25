@@ -6,23 +6,23 @@ Beam
    Energy= 180
    SigmaEnergy= 0
    SigmaX= 0
-	SigmaY= 0
-	SigmaThetaX= 0 
-	SigmaPhiY= 0
+   SigmaY= 0
+   SigmaThetaX= 0 
+   SigmaPhiY= 0
    MeanThetaX= 0
    MeanPhiY= 0
    MeanX= 0
    MeanY= 0
 
 TwoBodyReaction
-	Beam= 30P
-	Target= 2H
-	Light= 1H
-	Heavy= 31P
-	ExcitationEnergyHeavy= 6.3
-	ExcitationEnergyLight= 0.0
-   CrossSectionPath= 30Pdp_6MeV_l=0 CS %flat.txt CS
-	ShootLight= 1
-	ShootHeavy= 0
+   Beam= 30P
+   Target= 2H
+   Light= 1H
+   Heavy= 31P
+   ExcitationEnergyHeavy= 6.5
+   ExcitationEnergyLight= 0.0
+   CrossSectionPath= p30dp_ZR_6.5_2p3.dat CS 
+   ShootLight= 1
+   ShootHeavy= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
