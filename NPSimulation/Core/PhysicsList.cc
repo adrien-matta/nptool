@@ -241,7 +241,6 @@ void PhysicsList::ConstructProcess(){
     em_option.SetDEDXBinningForCSDARange(10*10);
     em_option.SetFluo(true);
     em_option.SetAuger(true);
-    em_option.SetPIXE(true);
 
 
     

@@ -29,48 +29,53 @@
 #include "NPSVDetector.hh"
 #include "GaspardTrackerModule.hh"
 
+// Geant4 Header
+#include "G4AssemblyVolume.hh"
+
 using namespace std;
-using namespace CLHEP;
-using namespace CLHEP;
+using namespace CLHEP;
+
+class GaspardTracker : public NPS::VDetector{
+  ////////////////////////////////////////////////////
+  /////// Default Constructor and Destructor /////////
+  ////////////////////////////////////////////////////
+  public:
+    GaspardTracker();
+    virtual ~GaspardTracker();
+
+    ////////////////////////////////////////////////////
+    /////////  Inherite from NPS::VDetector class ///////////
+    ////////////////////////////////////////////////////
+  public:
+    // Read stream at Configfile to pick-up parameters of detector (Position,...)
+    // Called in DetecorConstruction::ReadDetextorConfiguration Method
+    void ReadConfiguration(string Path);
+
+    // Construct detector and inialise sensitive part.
+    // Called After DetecorConstruction::AddDetector Method
+    void ConstructDetector(G4LogicalVolume* world);
+
+    // Add Detector branch to the EventTree.
+    // Called After DetecorConstruction::AddDetector Method
+    void InitializeRootOutput();
+
+    // Read sensitive part and fill the Root tree.
+    // Called at in the EventAction::EndOfEventAvtion
+    void ReadSensitive(const G4Event* event);
+
+  public:
+    // Initialize all scorers necessary for each detector
+    void InitializeScorers();
 
 
+  public:
+    G4AssemblyVolume* BuildMugastChamber();
 
-class GaspardTracker : public NPS::VDetector
-{
-   ////////////////////////////////////////////////////
-   /////// Default Constructor and Destructor /////////
-   ////////////////////////////////////////////////////
-public:
-   GaspardTracker();
-   virtual ~GaspardTracker();
+  private:
+    vector<GaspardTrackerModule*> m_Modules;
+    string m_Chamber;
 
-   ////////////////////////////////////////////////////
-   /////////  Inherite from NPS::VDetector class ///////////
-   ////////////////////////////////////////////////////
-public:
-   // Read stream at Configfile to pick-up parameters of detector (Position,...)
-   // Called in DetecorConstruction::ReadDetextorConfiguration Method
-   void ReadConfiguration(string Path);
-
-   // Construct detector and inialise sensitive part.
-   // Called After DetecorConstruction::AddDetector Method
-   void ConstructDetector(G4LogicalVolume* world);
-
-   // Add Detector branch to the EventTree.
-   // Called After DetecorConstruction::AddDetector Method
-   void InitializeRootOutput();
-
-   // Read sensitive part and fill the Root tree.
-   // Called at in the EventAction::EndOfEventAvtion
-   void ReadSensitive(const G4Event* event);
-
-public:
-   // Initialize all scorers necessary for each detector
-   void InitializeScorers();
-
-private:
-   vector<GaspardTrackerModule*> m_Modules;
-public:
+  public:
     static NPS::VDetector* Construct();
 };
 #endif

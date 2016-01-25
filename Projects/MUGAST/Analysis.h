@@ -67,6 +67,7 @@ class Analysis: public NPL::VAnalysis{
   double OriginalBeamEnergy ; // AMEV
                                                            // intermediate variable
   TRandom3 Rand ;
+  int Run;
   int DetectorNumber  ;
   double ThetaNormalTarget;
   double ThetaM2Surface ;

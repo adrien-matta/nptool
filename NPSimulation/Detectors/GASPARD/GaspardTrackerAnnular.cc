@@ -128,12 +128,15 @@ void GaspardTrackerAnnular::VolumeMaker(G4int DetectorNumber,
 
 //   G4LogicalVolume* logicMM = new G4LogicalVolume(solidMM, Iron, Name, 0, 0, 0);
    G4LogicalVolume* logicMM = new G4LogicalVolume(solidMM, m_MaterialVacuum, Name, 0, 0, 0);
-
+   
    new G4PVPlacement(G4Transform3D(*MMrot, MMpos), logicMM, Name, world, false, DetectorNumber);
 
    logicMM->SetVisAttributes(G4VisAttributes::Invisible);
-   if (m_non_sensitive_part_visiualisation) logicMM->SetVisAttributes(G4VisAttributes(G4Colour(0.90, 0.90, 0.90)));
-
+   if (m_non_sensitive_part_visiualisation){
+     G4VisAttributes VisAtt(G4Colour(0.90, 0.90, 0.90));
+     VisAtt.SetForceWireframe(true);
+     logicMM->SetVisAttributes(VisAtt);
+   }
    // Definition of a vaccuum volume
    G4ThreeVector positionVacBox = G4ThreeVector(0, 0, VacBox_PosZ);
 

@@ -30,6 +30,7 @@ using namespace std;
 #include "G4ThreeVector.hh"
 #include "G4RotationMatrix.hh"
 #include "G4LogicalVolume.hh"
+#include "G4AssemblyVolume.hh"
 #include "G4MultiFunctionalDetector.hh"
 #include "G4GDMLParser.hh"
 
@@ -55,13 +56,11 @@ class AGATA : public NPS::VDetector{
         double Phi,
         string Shape);  
 
-    G4LogicalVolume* BuildSquareDetector();
-    G4LogicalVolume* BuildCylindricalDetector();
+    G4AssemblyVolume* BuildTripleCluster();
   
   private:
     G4GDMLParser m_gdmlparser;
-    G4LogicalVolume* m_SquareDetector;
-    G4LogicalVolume* m_CylindricalDetector;
+    G4AssemblyVolume* m_TripleCluster;
     
     ////////////////////////////////////////////////////
     //////  Inherite from NPS::VDetector class /////////
@@ -107,10 +106,6 @@ class AGATA : public NPS::VDetector{
     //   Shape type
     vector<string> m_Shape ;
    
-    // Visualisation Attribute
-    G4VisAttributes* m_VisSquare;
-    G4VisAttributes* m_VisCylinder;
-
   // Needed for dynamic loading of the library
   public:
     static NPS::VDetector* Construct();
