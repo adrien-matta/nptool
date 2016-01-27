@@ -99,7 +99,6 @@ G4AssemblyVolume* Miniball::BuildClusterDetector(){
     for(int i = 0 ; i < World->GetNoDaughters () ;i++){
       G4VPhysicalVolume* VPV = World->GetDaughter(i);
       name = VPV->GetLogicalVolume()->GetName();
-        cout << i << " " << World->GetName() << " " << name << endl ;
       if(name == "cluster0_0_HPGe_A_0_det_env_log"){
         G4LogicalVolume* HPGE = VPV->GetLogicalVolume(); 
         HPGE->GetDaughter(0)->GetLogicalVolume()->SetSensitiveDetector(m_MiniballScorer);
