@@ -40,6 +40,7 @@ G4bool PS_Calorimeter::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   G4double* Infos = new G4double[2+mysize];
   Infos[0] = aStep->GetTotalEnergyDeposit();
   Infos[1] = aStep->GetPreStepPoint()->GetGlobalTime();
+
   for(unsigned int i = 0 ; i < mysize ; i++){ 
     Infos[i+2] = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_NestingLevel[i]);
   }
@@ -93,6 +94,91 @@ void PS_Calorimeter::DrawAll(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PS_Calorimeter::PrintAll(){
+  G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl ;
+  G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
+  G4cout << " Number of entries " << EvtMap->entries() << G4endl     ;
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+PS_CalorimeterWithInteraction::PS_CalorimeterWithInteraction(G4String name, vector<G4int> NestingLevel,G4int depth)
+:G4VPrimitiveScorer(name, depth),HCID(-1){
+  m_NestingLevel = NestingLevel;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+PS_CalorimeterWithInteraction::~PS_CalorimeterWithInteraction(){
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+G4bool PS_CalorimeterWithInteraction::ProcessHits(G4Step* aStep, G4TouchableHistory*){
+  // Contain Energy, Time + as many copy number as nested volume
+  unsigned int mysize = m_NestingLevel.size(); 
+  G4double* Infos = new G4double[6+mysize];
+  Infos[0] = aStep->GetTotalEnergyDeposit();
+  Infos[1] = aStep->GetPreStepPoint()->GetGlobalTime();
+  // Interaction coordinates (used to fill the InteractionCoordinates branch)
+  G4ThreeVector  m_Position  = aStep->GetPreStepPoint()->GetPosition();
+
+  Infos[2] = m_Position.x();
+  Infos[3] = m_Position.y();
+  Infos[4] = m_Position.z();
+  Infos[5] = m_Position.theta();
+  Infos[6] = m_Position.phi();
+  
+
+  for(unsigned int i = 0 ; i < mysize ; i++){ 
+    Infos[i+7] = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_NestingLevel[i]);
+  }
+
+  m_Index = 0 ;
+  G4int multiplier = 1;
+   for(unsigned int i = 0 ; i < mysize ; i++){ 
+    m_Index+= aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_NestingLevel[i])*multiplier;
+    multiplier*=10; 
+  }
+  
+  // Check if the particle has interact before, if yes, add up the energies.
+    map<G4int, G4double**>::iterator it;
+    it= EvtMap->GetMap()->find(m_Index);
+    if(it!=EvtMap->GetMap()->end()){
+      G4double* dummy = *(it->second);
+      Infos[0]+=dummy[0];
+    }
+  
+  EvtMap->set(m_Index, Infos);
+  return TRUE;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void PS_CalorimeterWithInteraction::Initialize(G4HCofThisEvent* HCE){
+  EvtMap = new G4THitsMap<G4double*>(GetMultiFunctionalDetector()->GetName(), GetName());
+  if (HCID < 0) {
+    HCID = GetCollectionID(0);
+  }
+  HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void PS_CalorimeterWithInteraction::EndOfEvent(G4HCofThisEvent*){
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void PS_CalorimeterWithInteraction::clear(){
+  std::map<G4int, G4double**>::iterator    MapIterator;
+  for (MapIterator = EvtMap->GetMap()->begin() ; MapIterator != EvtMap->GetMap()->end() ; MapIterator++){
+    delete *(MapIterator->second);
+  }
+  
+  EvtMap->clear();
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void PS_CalorimeterWithInteraction::DrawAll(){
+  
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void PS_CalorimeterWithInteraction::PrintAll(){
   G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl ;
   G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
   G4cout << " Number of entries " << EvtMap->entries() << G4endl     ;

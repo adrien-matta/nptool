@@ -59,6 +59,35 @@ namespace CALORIMETERSCORERS {
     G4int HCID;
     G4THitsMap<G4double*>* EvtMap;
   };
+
+  //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......  
+  class PS_CalorimeterWithInteraction : public G4VPrimitiveScorer{
+    
+  public: // with description
+    PS_CalorimeterWithInteraction(G4String name, vector<G4int> NestingLevel,G4int depth=0);
+     ~PS_CalorimeterWithInteraction();
+    
+  protected: // with description
+     G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+     G4ThreeVector m_Position; 
+  public:
+    void Initialize(G4HCofThisEvent*);
+    void EndOfEvent(G4HCofThisEvent*);
+    void clear();
+    void DrawAll();
+    void PrintAll();
+  
+  private: // How much level of volume nesting should be considered
+   // Give the list of the nesting level at which the copy number should be return.
+   // 0 is the lowest level possible (the actual volume copy number in which the interaction happen)
+   vector<G4int> m_NestingLevel;
+   G4int m_Index; 
+
+  private: // inherited from G4VPrimitiveScorer
+    G4int HCID;
+    G4THitsMap<G4double*>* EvtMap;
+  };
 }
+
 
 #endif
