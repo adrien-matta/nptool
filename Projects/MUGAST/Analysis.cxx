@@ -21,10 +21,11 @@
  *****************************************************************************/
 #include<iostream>
 using namespace std;
-#include"Analysis.h"
-#include"NPAnalysisFactory.h"
-#include"NPDetectorManager.h"
-#include"NPOptionManager.h"
+
+#include "Analysis.h"
+#include "NPAnalysisFactory.h"
+#include "NPDetectorManager.h"
+#include "NPOptionManager.h"
 ////////////////////////////////////////////////////////////////////////////////
 Analysis::Analysis(){
 }
@@ -33,48 +34,65 @@ Analysis::~Analysis(){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Analysis::Init(){
+void Analysis::Init() {
+  // initialize input and output branches
   InitOutputBranch();
   InitInputBranch();
   
-  M2  = (TMust2Physics*) m_DetectorManager -> GetDetector("MUST2Array");
-  GD = (GaspardTracker*)  m_DetectorManager -> GetDetector("GaspardTracker");
+  // get MUST2 and Gaspard objects
+  M2 = (TMust2Physics*)  m_DetectorManager -> GetDetector("MUST2Array");
+  GD = (GaspardTracker*) m_DetectorManager -> GetDetector("GaspardTracker");
+
+  // energy losses
   LightCD2 = EnergyLoss("proton_CD2.G4table","G4Table",100 );
   LightAl = EnergyLoss("proton_Al.G4table","G4Table",100);
   LightSi = EnergyLoss("proton_Si.G4table","G4Table",100);
-  BeamCD2 = EnergyLoss("Na24[0.0]_CD2.G4table","G4Table",100);
+//  BeamCD2 = EnergyLoss("Na24[0.0]_CD2.G4table","G4Table",100);
+  BeamCD2 = EnergyLoss("P30_CD2.G4table","G4Table",100);
+
+  // get reaction information
   myReaction = new NPL::Reaction();
   myReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
-   TargetThickness = 18*micrometer;
   OriginalBeamEnergy = myReaction->GetBeamEnergy();
-   Rand = TRandom3();
-   DetectorNumber = 0 ;
-   ThetaNormalTarget = 0 ;
-   ThetaM2Surface = 0;
-   Si_E_M2 = 0 ;
-   CsI_E_M2 = 0 ;
-   Energy = 0;
-   E_M2 = 0;
-  
-   ThetaGDSurface = 0;
-   X_GD = 0 ;
-   Y_GD = 0 ;
-   Z_GD = 0 ;
-   Si_E_GD = 0 ;
-   E_GD = 0;
-   Si_X_GD = 0;
-   Si_Y_GD = 0;
+
+  // target thickness
+  TargetThickness = m_DetectorManager->GetTargetThickness()*micrometer;
+
+  // initialize various parameters
+  Rand = TRandom3();
+  DetectorNumber = 0;
+  ThetaNormalTarget = 0;
+  ThetaM2Surface = 0;
+  Si_E_M2 = 0;
+  CsI_E_M2 = 0;
+  Energy = 0;
+  E_M2 = 0;
+
+  ThetaGDSurface = 0;
+  X_GD = 0;
+  Y_GD = 0;
+  Z_GD = 0;
+  Si_E_GD = 0;
+  E_GD = 0;
+  Si_X_GD = 0;
+  Si_Y_GD = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Analysis::TreatEvent(){
+void Analysis::TreatEvent() {
   // Reinitiate calculated variable
   ReInitValue();
+
+  // assume beam is centered and parallel to z axis
   double XTarget = 0;
   double YTarget = 0;
   TVector3 BeamDirection = TVector3(0,0,1);
-  double BeamEnergy = BeamCD2.Slow(OriginalBeamEnergy,Rand.Uniform(0,TargetThickness),0);
+
+  // determine beam energy for a randomized interaction point in target
+//  double BeamEnergy = BeamCD2.Slow(OriginalBeamEnergy, Rand.Uniform(0,TargetThickness), 0);
+  double BeamEnergy = BeamCD2.Slow(OriginalBeamEnergy, TargetThickness/2., 0);
   myReaction->SetBeamEnergy(BeamEnergy);
+
   //////////////////////////// LOOP on MUST2 //////////////////
   for(unsigned int countMust2 = 0 ; countMust2 < M2->Si_E.size() ; countMust2++){
     /************************************************/
