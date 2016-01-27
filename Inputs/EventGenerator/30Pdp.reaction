@@ -3,7 +3,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Beam
    Particle= 30P
-   Energy= 180
+   Energy= 360
    SigmaEnergy= 0
    SigmaX= 0
    SigmaY= 0
