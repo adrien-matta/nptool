@@ -220,13 +220,10 @@ bool OpenASCIIorROOTFile(string filename, ifstream &ASCII , TFile &ROOT){
   
     else{
       
-      cout << 1 << endl;
       if(ROOT.Open(StandardPath.c_str(),"READ")){
-        cout << 2 << endl;
         return false;
       }
       else{
-        cout << 3 << endl;
         cout << "Error, file " << StandardPath << " not found " << endl ;
         exit(1);
       }

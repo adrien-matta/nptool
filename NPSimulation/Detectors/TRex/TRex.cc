@@ -55,7 +55,7 @@ namespace TRex_NS{
   // Energy and time Resolution
   const double EnergyThreshold = 0.1*MeV;
   const double ResoTime = 4.5*ns ;
-  const double ResoEnergy = 5.0*MeV ;
+  const double ResoEnergy = 0.1*MeV ;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -63,7 +63,9 @@ namespace TRex_NS{
 // TRex Specific Method
 TRex::TRex(){
   m_Event = new TTRexData() ;
-  m_TRexScorer = 0;
+  m_StripScorer = 0;
+  m_PADScorer = 0;
+
   m_BarrelDetector = 0;
   m_Chamber=0;
 
@@ -104,10 +106,10 @@ G4AssemblyVolume* TRex::BuildBarrelDetector(){
 
     PCB->SetVisAttributes(m_PCBVisAtt);
     Det->SetVisAttributes(m_SiliconVisAtt);
-    Det->SetSensitiveDetector(m_TRexScorer);
+    Det->SetSensitiveDetector(m_StripScorer);
     PCBE->SetVisAttributes(m_PADVisAtt);
     DetE->SetVisAttributes(m_SiliconVisAtt); 
-//    DetE->SetSensitiveDetector(m_TRexScorer);
+    DetE->SetSensitiveDetector(m_PADScorer);
 
     G4ThreeVector PosPCB(16.5*mm,0,0);
     G4ThreeVector PosDet(0,0,0);
@@ -322,8 +324,15 @@ void TRex::ReadSensitive(const G4Event* event){
   G4THitsMap<G4double*>* StripHitMap;
   std::map<G4int, G4double**>::iterator Strip_itr;
 
-  G4int StripCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("TRexScorer/Barrel");
+  G4int StripCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("TRexStripScorer/Strip");
   StripHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(StripCollectionID));
+  
+  G4THitsMap<G4double*>* PADHitMap;
+  std::map<G4int, G4double**>::iterator PAD_itr;
+
+  G4int PADCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("TRexPADScorer/PAD");
+  PADHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(PADCollectionID));
+
 
   // Loop on the Strip map
   for (Strip_itr = StripHitMap->GetMap()->begin() ; Strip_itr != StripHitMap->GetMap()->end() ; Strip_itr++){
@@ -354,6 +363,32 @@ void TRex::ReadSensitive(const G4Event* event){
   }
   // clear map for next event
   StripHitMap->clear();
+ 
+  // Loop on the PAD map
+  for (PAD_itr = PADHitMap->GetMap()->begin() ; PAD_itr != PADHitMap->GetMap()->end() ; PAD_itr++){
+    G4double* Info = *(PAD_itr->second);
+
+    double Energy = Info[0];
+
+    if(Energy>TRex_NS::EnergyThreshold){
+      double Time       = Info[1];
+      int DetNbr        = (int) Info[7];
+
+      m_Event->SetPADEnergy(DetNbr,RandGauss::shoot(Energy,TRex_NS::ResoEnergy));
+      m_Event->SetPADTime(DetNbr,RandGauss::shoot(Time, TRex_NS::ResoTime));
+
+      // Interraction Coordinates
+     /* ms_InterCoord->SetDetectedPositionX(Info[2]) ;
+      ms_InterCoord->SetDetectedPositionY(Info[3]) ;
+      ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
+      ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
+      ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
+*/
+    }
+  }
+  // clear map for next event
+  PADHitMap->clear();
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -361,16 +396,24 @@ void TRex::ReadSensitive(const G4Event* event){
 void TRex::InitializeScorers() { 
   // This check is necessary in case the geometry is reloaded
   bool already_exist = false; 
-  m_TRexScorer = CheckScorer("TRexScorer",already_exist) ;
+  m_StripScorer = CheckScorer("TRexStripScorer",already_exist) ;
+   m_PADScorer = CheckScorer("TRexPADScorer",already_exist) ;
 
   if(already_exist) 
     return ;
 
   // Otherwise the scorer is initialised
-  G4VPrimitiveScorer* Strip= new SILICONSCORERS::PS_Silicon_Rectangle("Barrel",0,50*mm,50*mm,16,16,0,"yz") ;
+  G4VPrimitiveScorer* Strip= new SILICONSCORERS::PS_Silicon_Rectangle("Strip",0,50*mm,50*mm,16,16,0,"yz") ;
+  G4VPrimitiveScorer* PAD= new SILICONSCORERS::PS_Silicon_Rectangle("PAD",0,50*mm,50*mm,1,1,0) ;
+
   //and register it to the multifunctionnal detector
-  m_TRexScorer->RegisterPrimitive(Strip);
-  G4SDManager::GetSDMpointer()->AddNewDetector(m_TRexScorer) ;
+  m_StripScorer->RegisterPrimitive(Strip);
+  m_PADScorer->RegisterPrimitive(PAD);
+
+  G4SDManager::GetSDMpointer()->AddNewDetector(m_StripScorer) ;
+  G4SDManager::GetSDMpointer()->AddNewDetector(m_PADScorer) ;
+
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
