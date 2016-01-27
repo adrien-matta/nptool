@@ -94,12 +94,12 @@ G4AssemblyVolume* Miniball::BuildClusterDetector(){
     G4VisAttributes* Blue = new G4VisAttributes(G4Color(0.5,0.5,1));
     G4VisAttributes* Caps = new G4VisAttributes(G4Color(0.5,0.5,0.5,0.5));
 
-    G4LogicalVolume* World = m_gdmlparser.GetVolume("expHall_log");  
+    G4LogicalVolume* World = m_gdmlparser.GetVolume("MexpHall_log");  
     string name;
     for(int i = 0 ; i < World->GetNoDaughters () ;i++){
       G4VPhysicalVolume* VPV = World->GetDaughter(i);
       name = VPV->GetLogicalVolume()->GetName();
-
+        cout << i << " " << World->GetName() << " " << name << endl ;
       if(name == "cluster0_0_HPGe_A_0_det_env_log"){
         G4LogicalVolume* HPGE = VPV->GetLogicalVolume(); 
         HPGE->GetDaughter(0)->GetLogicalVolume()->SetSensitiveDetector(m_MiniballScorer);
@@ -140,7 +140,6 @@ G4AssemblyVolume* Miniball::BuildClusterDetector(){
         m_NumberOfPlacedVolume++;
       }
     }
-    delete World;
   }
   return m_ClusterDetector;
 }
@@ -279,11 +278,11 @@ void Miniball::ConstructDetector(G4LogicalVolume* world){
     std::vector< G4VPhysicalVolume * >::iterator it = m_ClusterDetector->GetVolumesIterator();
     it+=m_ClusterDetector->GetImprintsCount()*m_NumberOfPlacedVolume-1;
    for(unsigned int l = 0 ; l < m_NumberOfPlacedVolume-3 ; l++){
-      it--;
       (*it)->SetName("Capsule");
       (*it)->SetCopyNo(i+1);
+      it--;
+
     }
-    
     (*it)->SetName("HPGe_A");
     (*it)->SetCopyNo(i+1);
     it--;
@@ -328,7 +327,7 @@ void Miniball::ReadSensitive(const G4Event* event){
     if(Energy>Miniball_NS::EnergyThreshold){
       double Time = RandGauss::shoot(Info[1],Miniball_NS::ResoTime);
       int DetectorNbr = (int) Info[7];
-      double Angle = Info[5]/deg;
+      double Angle = RandGauss::shoot(Info[5]/deg,Miniball_NS::ResoAngle);
       m_Event->SetEnergy(DetectorNbr,Energy);
       m_Event->SetAngle(DetectorNbr,Angle);
       m_Event->SetTime(DetectorNbr,Time); 
