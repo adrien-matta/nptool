@@ -57,6 +57,16 @@ class TTRexData : public TObject {
     vector<UShort_t>   fTRexBack_T_StripNbr;
     vector<Double_t>   fTRexBack_Time;
 
+    // PAD
+    // Energy
+    vector<UShort_t>   fTRexPAD_E_DetectorNbr;
+    vector<Double_t>   fTRexPAD_Energy;
+
+    // Time
+    vector<UShort_t>   fTRexPAD_T_DetectorNbr;
+    vector<Double_t>   fTRexPAD_Time;
+
+
 
   //////////////////////////////////////////////////////////////
   // Constructor and destructor
@@ -138,6 +148,29 @@ class TTRexData : public TObject {
       SetBack_Time(Time);
     };//!
 
+    // PAD
+    // Energy
+    inline void SetPADE_DetectorNbr(const UShort_t& DetNbr)
+      {fTRexPAD_E_DetectorNbr.push_back(DetNbr);} //!
+    inline void SetPAD_Energy(const Double_t& Energy)
+      {fTRexPAD_Energy.push_back(Energy);}//!
+    // Prefer global setter so that all vectors have the same size
+    inline void SetPADEnergy(const UShort_t& DetNbr, const Double_t& Energy) {
+      SetPADE_DetectorNbr(DetNbr);
+      SetPAD_Energy(Energy);
+    };//!
+
+    // Time
+    inline void SetPADT_DetectorNbr(const UShort_t& DetNbr)
+      {fTRexPAD_T_DetectorNbr.push_back(DetNbr);} //!
+    inline void SetPAD_Time(const Double_t& Time)
+      {fTRexPAD_Time.push_back(Time);}//!
+    // Prefer global setter so that all vectors have the same size
+    inline void SetPADTime(const UShort_t& DetNbr,const Double_t& Time)	{
+      SetPADT_DetectorNbr(DetNbr);
+      SetPAD_Time(Time);
+    };//!
+
 
     //////////////////////    GETTERS    ////////////////////////
     // Front
@@ -181,6 +214,23 @@ class TTRexData : public TObject {
       {return fTRexBack_T_StripNbr[i];}//!
     inline Double_t GetBack_Time(const unsigned int &i) const 
       {return fTRexBack_Time[i];}//!
+
+    // PAD
+    // Energy
+    inline UShort_t GetPADMultEnergy() const
+      {return fTRexPAD_E_DetectorNbr.size();}
+    inline UShort_t GetPADE_DetectorNbr(const unsigned int &i) const 
+      {return fTRexPAD_E_DetectorNbr[i];}//!
+    inline Double_t GetPAD_Energy(const unsigned int &i) const 
+      {return fTRexPAD_Energy[i];}//!
+
+    // Time
+    inline UShort_t GetPADMultTime() const
+      {return fTRexPAD_T_DetectorNbr.size();}
+    inline UShort_t GetPADT_DetectorNbr(const unsigned int &i) const 
+      {return fTRexPAD_T_DetectorNbr[i];}//!
+    inline Double_t GetPAD_Time(const unsigned int &i) const 
+      {return fTRexPAD_Time[i];}//!
 
 
   //////////////////////////////////////////////////////////////

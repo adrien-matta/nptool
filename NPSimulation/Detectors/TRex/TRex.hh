@@ -88,7 +88,9 @@ class TRex : public NPS::VDetector{
     void InitializeScorers() ;
 
     //   Associated Scorer
-    G4MultiFunctionalDetector* m_TRexScorer ;
+    G4MultiFunctionalDetector* m_StripScorer ;
+    G4MultiFunctionalDetector* m_PADScorer ;
+
     ////////////////////////////////////////////////////
     ///////////Event class to store Data////////////////
     ////////////////////////////////////////////////////

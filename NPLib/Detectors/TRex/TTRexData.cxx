@@ -64,6 +64,15 @@ void TTRexData::Clear() {
   fTRexBack_T_StripNbr.clear();
   fTRexBack_Time.clear();
 
+  // PAD 
+  // Energy
+  fTRexPAD_E_DetectorNbr.clear();
+  fTRexPAD_Energy.clear();
+  // Time
+  fTRexPAD_T_DetectorNbr.clear();
+  fTRexPAD_Time.clear();
+
+
 }
 
 
@@ -108,4 +117,23 @@ void TTRexData::Dump() const {
     cout << "DetNbr: " << fTRexBack_T_DetectorNbr[i]
          << " Time: " << fTRexBack_Time[i];
   }
+  // PAD
+  // Energy
+  mysize = fTRexPAD_E_DetectorNbr.size();
+  cout << "TRex_E_Mult: " << mysize << endl;
+ 
+  for (size_t i = 0 ; i < mysize ; i++){
+    cout << "DetNbr: " << fTRexPAD_E_DetectorNbr[i]
+         << " Energy: " << fTRexPAD_Energy[i];
+  }
+  
+  // Time
+  mysize = fTRexPAD_T_DetectorNbr.size();
+  cout << "TRex_T_Mult: " << mysize << endl;
+ 
+  for (size_t i = 0 ; i < mysize ; i++){
+    cout << "DetNbr: " << fTRexPAD_T_DetectorNbr[i]
+         << " Time: " << fTRexPAD_Time[i];
+  }
+
 }

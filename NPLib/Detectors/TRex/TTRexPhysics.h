@@ -32,6 +32,7 @@ using namespace std;
 #include "TObject.h"
 #include "TH1.h"
 #include "TCanvas.h"
+#include "TVector3.h"
 
 // NPTool headers
 #include "TTRexData.h"
@@ -63,9 +64,12 @@ class TTRexPhysics : public TObject, public NPL::VDetector {
   // data obtained after BuildPhysicalEvent() and stored in
   // output ROOT file
   public:
-    vector<int>      DetectorNumber;
-    vector<double>   Energy;
-    vector<double>   Time;
+    vector<int> DetectorNumber;
+    vector<int> Strip_Front;
+    vector<int> Strip_Back;
+    vector<double> Energy;
+    vector<double> PAD_E;
+    vector<double> Time;
 
 
   //////////////////////////////////////////////////////////////
@@ -139,7 +143,10 @@ class TTRexPhysics : public TObject, public NPL::VDetector {
     // give and external TTRexData object to TTRexPhysics. 
     // needed for online analysis for example
     void SetRawDataPointer(TTRexData* rawDataPointer) {m_EventData = rawDataPointer;}
-    
+
+    // Add a detector
+    void AddBarrelDetector(double X, double Y, double Z);
+
   // objects are not written in the TTree
   private:
     TTRexData*         m_EventData;        //!
@@ -148,8 +155,8 @@ class TTRexPhysics : public TObject, public NPL::VDetector {
 
   // getters for raw and pre-treated data object
   public:
-    TTRexData* GetRawData()        const {return m_EventData;}
-    TTRexData* GetPreTreatedData() const {return m_PreTreatedData;}
+    TTRexData* GetRawData()        const {return m_EventData;} //!
+    TTRexData* GetPreTreatedData() const {return m_PreTreatedData;}//!
 
   // parameters used in the analysis
   private:
@@ -157,11 +164,19 @@ class TTRexPhysics : public TObject, public NPL::VDetector {
     double m_E_RAW_Threshold; //!
     double m_E_Threshold;     //!
 
-  // number of detectors
-  private:
-    int m_NumberOfDetectors;  //!
-
-  // spectra class
+  public: // Get the spatial position of interaction
+     // Use to access the strip position
+    inline double GetStripPositionX( const int& N , const int& Front , const int& Back )   const{ return m_StripPositionX[N-1][Front-1][Back-1] ; }  ;
+    inline double GetStripPositionY( const int& N , const int& Front , const int& Back )   const{ return m_StripPositionY[N-1][Front-1][Back-1] ; }  ;
+    inline double GetStripPositionZ( const int& N , const int& Front , const int& Back )   const{ return m_StripPositionZ[N-1][Front-1][Back-1] ; }  ;
+    TVector3 GetPositionOfInteraction(const int& i,bool random) const; 
+  
+  private:   //   Spatial Position of Strip Calculated on bases of detector position
+    int m_NumberOfDetectors;//!
+    vector< vector < vector < double > > >   m_StripPositionX;//!
+    vector< vector < vector < double > > >   m_StripPositionY;//!
+    vector< vector < vector < double > > >   m_StripPositionZ;//!
+   // spectra class
   private:
     TTRexSpectra* m_Spectra; // !
 
