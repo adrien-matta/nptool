@@ -27,58 +27,65 @@ using namespace NPL;
 // ROOT
 #include "TDirectory.h"
 namespace NPL{
+
 // Check the type of Filename (root or ASCII) and extract build/extract a 1D histogramm
-TH1F* Read1DProfile(string filename,string HistName){
-  
+TH1F* Read1DProfile(string filename,string HistName) 
+{  
   ifstream ASCII;
   TFile ROOT;
   TH1F* h;
   
+  // test whether file format is ASCII or ROOT
   bool type = OpenASCIIorROOTFile(filename, ASCII , ROOT);
   
   // ASCII File case
-  if(type){
+  if (type) {
     string LineBuffer;
     
     // storing vector
-    vector <double> x,w;
+    vector <double> x, w;
     
     // variable buffer
-    double xb,wb;
+    double xb, wb;
     
     // Read the file
-    while(!ASCII.eof()){
+/*    while(!ASCII.eof()){
       getline(ASCII,LineBuffer);
       stringstream LineStream(LineBuffer);
-      // ignore comment line
-      if (LineBuffer.compare(0,1,"%")!=0){
+      // ignore comment lines
+      if (LineBuffer.compare(0,1,"%")!=0 && 
+          LineBuffer.compare(0,1,"#")!=0 &&
+          LineBuffer.compare(0,1,"@")!=0) {
         LineStream >> xb >> wb ;
+        cout << xb << "\t" << wb << endl;
         x.push_back(xb);
         w.push_back(wb);
       }
     }
-
-    // Look for the step size, min and max of the distribution
-    double min = 0;
-    double max = 0;
-    unsigned int thesize = x.size();
-    
-    if(thesize > 0){
-      min = x[0] ;
-      max = x[0] ;
+*/
+    // read the file
+    Double_t xmin =  200;
+    Double_t xmax = -200;
+    Double_t size = 0;
+    while (getline(ASCII, LineBuffer)) {
+       stringstream iss(LineBuffer);
+       if (!(iss >> xb >> wb)) {continue;}   // skip comment lines 
+       cout << xb << "\t" << wb << endl;
+       // fill vectors
+       x.push_back(xb);
+       w.push_back(wb);
+       // compute xmin / xmax / size of x array
+       if (xb > xmax) xmax = xb;
+       if (xb < xmin) xmin = xb;
+       size++;
     }
 
-    for(unsigned int i = 0 ; i < thesize ; i++){
-      if(x[i] > max) max = x[i] ;
-      if(x[i] < min) min = x[i] ;
-    }
-    
-    h = new TH1F(HistName.c_str(),HistName.c_str(),thesize,min,max);
-    for(unsigned int i = 0 ; i < thesize ; i++){
+    // fill histo
+    h = new TH1F(HistName.c_str(), HistName.c_str(), size, xmin, xmax);
+    for (unsigned int i = 0; i < size; i++) {
       int bin = h->FindBin(x[i]);
       h->SetBinContent(bin,w[i]);
     }
-
   }
   
   // ROOT File case
