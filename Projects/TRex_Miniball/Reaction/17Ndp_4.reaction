@@ -1,0 +1,38 @@
+%%%%%%%%%%%%%%%%%%%%%% IS591 at ISOLDE %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Beam
+  Particle= 17N 
+  ExcitationEnergy= 0
+  Energy= 93
+  SigmaEnergy= 0.448
+  SigmaThetaX= 0.01 
+  SigmaPhiY= 0.01
+  SigmaX= 0.5
+  SigmaY= 0.5
+  MeanThetaX= 0
+  MeanPhiY= 0
+  MeanX= 0
+  MeanY= 0
+  %EnergyProfilePath=
+  %XThetaXProfilePath=
+  %YPhiYProfilePath=
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+TwoBodyReaction
+	Beam= 17N
+	Target= 2H
+	Light= 1H
+	Heavy= 18N
+	ExcitationEnergyLight= 0.0
+	ExcitationEnergyHeavy= 0.742
+  CrossSectionPath= flat.txt CSR
+	ShootLight= 1
+	ShootHeavy= 1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GammaDecay 18N
+  Cascade
+    BranchingRatio= 20
+    Energies= 0.155 0.466 0.121
+  Cascade
+    BranchingRatio= 80    
+    Energies= 0.621 0.121
+

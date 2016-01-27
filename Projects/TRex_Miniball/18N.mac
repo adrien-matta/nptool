@@ -1,0 +1,13 @@
+/run/beamOn 10000
+/gen/open Reaction/17Ndp_1.reaction
+/run/beamOn 10000
+/gen/open Reaction/17Ndp_2.reaction
+/run/beamOn 10000
+/gen/open Reaction/17Ndp_3.reaction
+/run/beamOn 10000
+/gen/open Reaction/17Ndp_4.reaction
+/run/beamOn 10000
+/gen/open Reaction/17Ndp_5.reaction
+/run/beamOn 10000
+/gen/open Reaction/17Ndp_6.reaction
+/run/beamOn 10000   

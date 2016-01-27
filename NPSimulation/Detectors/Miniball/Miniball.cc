@@ -57,7 +57,7 @@ namespace Miniball_NS{
   const double EnergyThreshold = 0.01*MeV;
   const double ResoTime = 4.5*ns ;
   const double ResoEnergy =  0.003*MeV ;
-  const double ResoAngle = 4.2*deg;
+  const double ResoAngle = 5*deg;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
