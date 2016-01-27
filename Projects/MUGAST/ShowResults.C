@@ -78,13 +78,14 @@ void ShowResults()
 }
 
 
-
 void CountingRates(Double_t ibeam, Double_t ubt)
 {
    // load event generator file
    NPL::Reaction *reaction = new NPL::Reaction();
-   myReaction->ReadConfigurationFile("30Pdp.reaction");
+   reaction->ReadConfigurationFile("30Pdp.reaction");
+//   reaction->ReadConfigurationFile("11Be_d3He.reaction");
    // get angular distribution
-   TH1F *dsig = myReaction->GetCrossSectionHist();
+   TH1F *dsig = reaction->GetCrossSectionHist();
    dsig->Draw();
+   cout << "total cross section = " << reaction->GetTotalCrossSection() << " mb" << endl;
 }

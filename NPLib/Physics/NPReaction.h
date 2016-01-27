@@ -220,6 +220,9 @@ namespace NPL{
       double	GetE_CM_3()	{return ECM_3;}
       double	GetE_CM_4()	{return ECM_4;}
 
+      // calculate total cross section
+      Double_t GetTotalCrossSection() const;
+
       // Print private paremeter
       void Print() const;
 

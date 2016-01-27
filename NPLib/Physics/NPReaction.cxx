@@ -698,6 +698,17 @@ TGraph* Reaction::GetELabVersusThetaCM(double AngleStep_CM){
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////
+Double_t Reaction::GetTotalCrossSection() const {
+   Double_t stot = fCrossSectionHist->Integral("width"); // take bin width into account (in deg!)
+   stot *= M_PI/180; // correct so that bin width is in rad
+   stot *= 2*M_PI;   // integration over phi
+
+   return stot;
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
 void Reaction::PrintKinematic(){
 	int size = 360;
 	double theta3,E3,theta4,E4,Brho3,Brho4;
