@@ -137,10 +137,10 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
   bool cGeneralTarget=false;
   bool cGeneralChamber=false;
   std::set<std::string> check;
-  
+
   int VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
   cout << "\033[1;36m" ;
-  
+
   // Access the DetectorFactory and ask it to load the Class List
   std::string classlist = getenv("NPTOOL");
   classlist += "/NPLib/ClassList.txt";
@@ -173,7 +173,7 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
       if(VerboseLevel==1) G4cout << G4endl << "////////// Target ///////////" << G4endl   << G4endl   ;
 
       // Instantiate the new array as aNPS::VDetector Objects
-     NPS::VDetector* myDetector = new Target();
+      NPS::VDetector* myDetector = new Target();
 
       // Read Position and target specification
       ConfigFile.close();
@@ -196,7 +196,7 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
       if(VerboseLevel==1) G4cout << G4endl << "////////// Chamber ///////////" << G4endl   << G4endl   ;
 
       // Instantiate the new array as aNPS::VDetector Objects
-     NPS::VDetector* myDetector = new Chamber();
+      NPS::VDetector* myDetector = new Chamber();
 
       // Read Position and target specification
       ConfigFile.close();
@@ -223,6 +223,10 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
         // Add array to the VDetector Vector
         AddDetector(detector);
         check.insert(token);
+      }
+      else{
+        if(detector!=NULL)
+          delete detector;
       }
     }
   }

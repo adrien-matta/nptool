@@ -47,12 +47,19 @@ void Analysis::Init() {
   LightCD2 = EnergyLoss("proton_CD2.G4table","G4Table",100 );
   LightAl = EnergyLoss("proton_Al.G4table","G4Table",100);
   LightSi = EnergyLoss("proton_Si.G4table","G4Table",100);
+<<<<<<< HEAD
 //  BeamCD2 = EnergyLoss("Na24[0.0]_CD2.G4table","G4Table",100);
   BeamCD2 = EnergyLoss("P30_CD2.G4table","G4Table",100);
 
   // get reaction information
   myReaction = new NPL::Reaction();
   myReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
+=======
+  BeamCD2 = EnergyLoss("Mg28_CD2.G4table","G4Table",100);
+  myReaction = new NPL::Reaction();
+  myReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
+   TargetThickness = m_DetectorManager->GetTargetThickness()*micrometer;
+>>>>>>> d7cc1e232101968810d6c7bfa12f3573c12a9a6f
   OriginalBeamEnergy = myReaction->GetBeamEnergy();
 
   // target thickness
@@ -206,10 +213,13 @@ void Analysis::InitOutputBranch() {
   RootOutput::getInstance()->GetTree()->Branch("ELab",&ELab,"ELab/D");
   RootOutput::getInstance()->GetTree()->Branch("ThetaLab",&ThetaLab,"ThetaLab/D");
   RootOutput::getInstance()->GetTree()->Branch("ThetaCM",&ThetaCM,"ThetaCM/D");
+  RootOutput::getInstance()->GetTree()->Branch("Run",&Run,"Run/I");
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::InitInputBranch(){
+  RootInput::getInstance()->GetChain()->SetBranchAddress("Run",&Run);
 }
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::ReInitValue(){

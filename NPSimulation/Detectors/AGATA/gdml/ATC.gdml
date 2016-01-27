@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+  <define/>
+
+  <materials>
+    <isotope N="70" Z="32" name="SToGS_Ge70">
+      <atom unit="g/mole" value="69.9242"/>
+    </isotope>
+    <isotope N="72" Z="32" name="SToGS_Ge72">
+      <atom unit="g/mole" value="71.9221"/>
+    </isotope>
+    <isotope N="73" Z="32" name="SToGS_Ge73">
+      <atom unit="g/mole" value="72.9235"/>
+    </isotope>
+    <isotope N="74" Z="32" name="SToGS_Ge74">
+      <atom unit="g/mole" value="73.9212"/>
+    </isotope>
+    <isotope N="76" Z="32" name="SToGS_Ge76">
+      <atom unit="g/mole" value="75.9214"/>
+    </isotope>
+    <element name="SToGS_Ge_El">
+      <fraction n="0.2123" ref="SToGS_Ge70"/>
+      <fraction n="0.2766" ref="SToGS_Ge72"/>
+      <fraction n="0.0773" ref="SToGS_Ge73"/>
+      <fraction n="0.3594" ref="SToGS_Ge74"/>
+      <fraction n="0.0744" ref="SToGS_Ge76"/>
+    </element>
+    <material name="SToGS_Ge" state="solid">
+      <T unit="K" value="293.15"/>
+      <MEE unit="eV" value="350"/>
+      <D unit="g/cm3" value="5.323"/>
+      <fraction n="1" ref="SToGS_Ge_El"/>
+    </material>
+    <isotope N="14" Z="7" name="N14">
+      <atom unit="g/mole" value="14.0031"/>
+    </isotope>
+    <isotope N="15" Z="7" name="N15">
+      <atom unit="g/mole" value="15.0001"/>
+    </isotope>
+    <element name="SToGS_N_El">
+      <fraction n="0.99632" ref="N14"/>
+      <fraction n="0.00368" ref="N15"/>
+    </element>
+    <isotope N="16" Z="8" name="O16">
+      <atom unit="g/mole" value="15.9949"/>
+    </isotope>
+    <isotope N="17" Z="8" name="O17">
+      <atom unit="g/mole" value="16.9991"/>
+    </isotope>
+    <isotope N="18" Z="8" name="O18">
+      <atom unit="g/mole" value="17.9992"/>
+    </isotope>
+    <element name="SToGS_O_El">
+      <fraction n="0.99757" ref="O16"/>
+      <fraction n="0.00038" ref="O17"/>
+      <fraction n="0.00205" ref="O18"/>
+    </element>
+    <material name="SToGS_AIR" state="gas">
+      <T unit="K" value="293.15"/>
+      <MEE unit="eV" value="86.0647433493041"/>
+      <D unit="g/cm3" value="0.00129"/>
+      <fraction n="0.671347357923955" ref="SToGS_N_El"/>
+      <fraction n="0.328652642076045" ref="SToGS_O_El"/>
+    </material>
+    <material Z="13" name="Al" state="solid">
+      <T unit="K" value="293.15"/>
+      <MEE unit="eV" value="166"/>
+      <D unit="g/cm3" value="2.6989"/>
+      <atom unit="g/mole" value="26.98154"/>
+    </material>
+  </materials>
+
+  <solids>
+    <polycone aunit="deg" deltaphi="360" lunit="mm" name="ARedShapeCoax" startphi="0">
+      <zplane rmax="40" rmin="0" z="0"/>
+      <zplane rmax="40" rmin="0" z="13"/>
+      <zplane rmax="40" rmin="5" z="13.1"/>
+      <zplane rmax="40" rmin="5" z="90"/>
+    </polycone>
+    <box lunit="mm" name="ARedShapeCoax_edge_0" x="80" y="20" z="108"/>
+    <subtraction name="ARedShapeCoax_step_0">
+      <first ref="ARedShapeCoax"/>
+      <second ref="ARedShapeCoax_edge_0"/>
+      <position name="ARedShapeCoax_step_0_pos" unit="mm" x="36.535230130248" y="27.1416591458343" z="45"/>
+      <rotation name="ARedShapeCoax_step_0_rot" unit="deg" x="8.04603165558258" y="0" z="121.336619578283"/>
+    </subtraction>
+    <box lunit="mm" name="ARedShapeCoax_edge_1" x="80" y="20" z="108"/>
+    <subtraction name="ARedShapeCoax_step_1">
+      <first ref="ARedShapeCoax_step_0"/>
+      <second ref="ARedShapeCoax_edge_1"/>
+      <position name="ARedShapeCoax_step_1_pos" unit="mm" x="-7.5360177598914" y="44.8656448766927" z="45"/>
+      <rotation name="ARedShapeCoax_step_1_rot" unit="deg" x="8.01946026203027" y="0" z="-175.032702323626"/>
+    </subtraction>
+    <box lunit="mm" name="ARedShapeCoax_edge_2" x="80" y="20" z="108"/>
+    <subtraction name="ARedShapeCoax_step_2">
+      <first ref="ARedShapeCoax_step_1"/>
+      <second ref="ARedShapeCoax_edge_2"/>
+      <position name="ARedShapeCoax_step_2_pos" unit="mm" x="-43.237057600896" y="15.4202783773897" z="45"/>
+      <rotation name="ARedShapeCoax_step_2_rot" unit="deg" x="7.54230864648229" y="0" z="-113.21438429166"/>
+    </subtraction>
+    <box lunit="mm" name="ARedShapeCoax_edge_3" x="80" y="20" z="108"/>
+    <subtraction name="ARedShapeCoax_step_3">
+      <first ref="ARedShapeCoax_step_2"/>
+      <second ref="ARedShapeCoax_edge_3"/>
+      <position name="ARedShapeCoax_step_3_pos" unit="mm" x="-39.9316413361485" y="-26.4514981250415" z="45"/>
+      <rotation name="ARedShapeCoax_step_3_rot" unit="deg" x="7.99048604330323" y="0" z="-61.9562931041735"/>
+    </subtraction>
+    <box lunit="mm" name="ARedShapeCoax_edge_4" x="80" y="20" z="108"/>
+    <subtraction name="ARedShapeCoax_step_4">
+      <first ref="ARedShapeCoax_step_3"/>
+      <second ref="ARedShapeCoax_edge_4"/>
+      <position name="ARedShapeCoax_step_4_pos" unit="mm" x="-0.112382732460193" y="-45.3735570647638" z="45"/>
+      <rotation name="ARedShapeCoax_step_4_rot" unit="deg" x="8.09125031991154" y="0" z="-3.72391711865863"/>
+    </subtraction>
+    <box lunit="mm" name="ARedShapeCoax_edge_5" x="80" y="20" z="108"/>
+    <subtraction name="ARedShapeCrystal">
+      <first ref="ARedShapeCoax_step_4"/>
+      <second ref="ARedShapeCoax_edge_5"/>
+      <position name="ARedShapeCrystal_pos" unit="mm" x="40.7695354974932" y="-20.2001841543487" z="45"/>
+      <rotation name="ARedShapeCrystal_rot" unit="deg" x="8.08360229747002" y="0" z="58.5643217844293"/>
+    </subtraction>
+    <polycone aunit="deg" deltaphi="360" lunit="mm" name="ARedShapeCoaxSpacing" startphi="0">
+      <zplane rmax="40.4" rmin="0" z="0"/>
+      <zplane rmax="40.4" rmin="0" z="90.8"/>
+    </polycone>
+    <box lunit="mm" name="ARedShapeCoaxSpacing_edge_0" x="80" y="20" z="108"/>
+    <subtraction name="ARedShapeCoaxSpacing_step_0">
+      <first ref="ARedShapeCoaxSpacing"/>
+      <second ref="ARedShapeCoaxSpacing_edge_0"/>
+      <position name="ARedShapeCoaxSpacing_step_0_pos" unit="mm" x="36.8256704915133" y="27.3199143204605" z="45"/>
+      <rotation name="ARedShapeCoaxSpacing_step_0_rot" unit="deg" x="8.04604207388015" y="0" z="121.339930103571"/>
+    </subtraction>
+    <box lunit="mm" name="ARedShapeCoaxSpacing_edge_1" x="80" y="20" z="108"/>
+    <subtraction name="ARedShapeCoaxSpacing_step_1">
+      <first ref="ARedShapeCoaxSpacing_step_0"/>
+      <second ref="ARedShapeCoaxSpacing_edge_1"/>
+      <position name="ARedShapeCoaxSpacing_step_1_pos" unit="mm" x="-7.56322281956812" y="45.2061174799861" z="45"/>
+      <rotation name="ARedShapeCoaxSpacing_step_1_rot" unit="deg" x="8.02095066360535" y="0" z="-175.029432202182"/>
+    </subtraction>
+    <box lunit="mm" name="ARedShapeCoaxSpacing_edge_2" x="80" y="20" z="108"/>
+    <subtraction name="ARedShapeCoaxSpacing_step_2">
+      <first ref="ARedShapeCoaxSpacing_step_1"/>
+      <second ref="ARedShapeCoaxSpacing_edge_2"/>
+      <position name="ARedShapeCoaxSpacing_step_2_pos" unit="mm" x="-43.5573372047015" y="15.5600419906357" z="45"/>
+      <rotation name="ARedShapeCoaxSpacing_step_2_rot" unit="deg" x="7.5409000276217" y="0" z="-113.219813923025"/>
+    </subtraction>
+    <box lunit="mm" name="ARedShapeCoaxSpacing_edge_3" x="80" y="20" z="108"/>
+    <subtraction name="ARedShapeCoaxSpacing_step_3">
+      <first ref="ARedShapeCoaxSpacing_step_2"/>
+      <second ref="ARedShapeCoaxSpacing_edge_3"/>
+      <position name="ARedShapeCoaxSpacing_step_3_pos" unit="mm" x="-40.2473780901772" y="-26.6324917434524" z="45"/>
+      <rotation name="ARedShapeCoaxSpacing_step_3_rot" unit="deg" x="7.98944915080778" y="0" z="-61.943608344264"/>
+    </subtraction>
+    <box lunit="mm" name="ARedShapeCoaxSpacing_edge_4" x="80" y="20" z="108"/>
+    <subtraction name="ARedShapeCoaxSpacing_step_4">
+      <first ref="ARedShapeCoaxSpacing_step_3"/>
+      <second ref="ARedShapeCoaxSpacing_edge_4"/>
+      <position name="ARedShapeCoaxSpacing_step_4_pos" unit="mm" x="-0.139911228514177" y="-45.7106595033753" z="45"/>
+      <rotation name="ARedShapeCoaxSpacing_step_4_rot" unit="deg" x="8.09311659076018" y="0" z="-3.73640452315753"/>
+    </subtraction>
+    <box lunit="mm" name="ARedShapeCoaxSpacing_edge_5" x="80" y="20" z="108"/>
+    <subtraction name="ARedShapeSpacing">
+      <first ref="ARedShapeCoaxSpacing_step_4"/>
+      <second ref="ARedShapeCoaxSpacing_edge_5"/>
+      <position name="ARedShapeSpacing_pos" unit="mm" x="41.0617484842942" y="-20.3780237516817" z="45"/>
+      <rotation name="ARedShapeSpacing_rot" unit="deg" x="8.08366950732687" y="0" z="58.5663613513531"/>
+    </subtraction>
+    <polycone aunit="deg" deltaphi="360" lunit="mm" name="ARedShapeCoaxEncapsulation" startphi="0">
+      <zplane rmax="41.2" rmin="0" z="0"/>
+      <zplane rmax="41.2" rmin="0" z="92.4"/>
+    </polycone>
+    <box lunit="mm" name="ARedShapeCoaxEncapsulation_edge_0" x="80" y="20" z="108"/>
+    <subtraction name="ARedShapeCoaxEncapsulation_step_0">
+      <first ref="ARedShapeCoaxEncapsulation"/>
+      <second ref="ARedShapeCoaxEncapsulation_edge_0"/>
+      <position name="ARedShapeCoaxEncapsulation_step_0_pos" unit="mm" x="37.4065433502822" y="27.6764373621072" z="45"/>
+      <rotation name="ARedShapeCoaxEncapsulation_step_0_rot" unit="deg" x="8.04606294975046" y="0" z="121.34632550763"/>
+    </subtraction>
+    <box lunit="mm" name="ARedShapeCoaxEncapsulation_edge_1" x="80" y="20" z="108"/>
+    <subtraction name="ARedShapeCoaxEncapsulation_step_1">
+      <first ref="ARedShapeCoaxEncapsulation_step_0"/>
+      <second ref="ARedShapeCoaxEncapsulation_edge_1"/>
+      <position name="ARedShapeCoaxEncapsulation_step_1_pos" unit="mm" x="-7.61764798077196" y="45.8870612610736" z="45"/>
+      <rotation name="ARedShapeCoaxEncapsulation_step_1_rot" unit="deg" x="8.02393378390657" y="0" z="-175.023113532009"/>
+    </subtraction>
+    <box lunit="mm" name="ARedShapeCoaxEncapsulation_edge_2" x="80" y="20" z="108"/>
+    <subtraction name="ARedShapeCoaxEncapsulation_step_2">
+      <first ref="ARedShapeCoaxEncapsulation_step_1"/>
+      <second ref="ARedShapeCoaxEncapsulation_edge_2"/>
+      <position name="ARedShapeCoaxEncapsulation_step_2_pos" unit="mm" x="-44.1978883695121" y="15.8395873687056" z="45"/>
+      <rotation name="ARedShapeCoaxEncapsulation_step_2_rot" unit="deg" x="7.53808487320303" y="0" z="-113.230304788176"/>
+    </subtraction>
+    <box lunit="mm" name="ARedShapeCoaxEncapsulation_edge_3" x="80" y="20" z="108"/>
+    <subtraction name="ARedShapeCoaxEncapsulation_step_3">
+      <first ref="ARedShapeCoaxEncapsulation_step_2"/>
+      <second ref="ARedShapeCoaxEncapsulation_edge_3"/>
+      <position name="ARedShapeCoaxEncapsulation_step_3_pos" unit="mm" x="-40.8788373169338" y="-26.9945042635314" z="45"/>
+      <rotation name="ARedShapeCoaxEncapsulation_step_3_rot" unit="deg" x="7.98737942505109" y="0" z="-61.9190959643874"/>
+    </subtraction>
+    <box lunit="mm" name="ARedShapeCoaxEncapsulation_edge_4" x="80" y="20" z="108"/>
+    <subtraction name="ARedShapeCoaxEncapsulation_step_4">
+      <first ref="ARedShapeCoaxEncapsulation_step_3"/>
+      <second ref="ARedShapeCoaxEncapsulation_edge_4"/>
+      <position name="ARedShapeCoaxEncapsulation_step_4_pos" unit="mm" x="-0.195026957727024" y="-46.3848587861429" z="45"/>
+      <rotation name="ARedShapeCoaxEncapsulation_step_4_rot" unit="deg" x="8.09685168572117" y="0" z="-3.76053273058902"/>
+    </subtraction>
+    <box lunit="mm" name="ARedShapeCoaxEncapsulation_edge_5" x="80" y="20" z="108"/>
+    <subtraction name="ARedShapeCapsule">
+      <first ref="ARedShapeCoaxEncapsulation_step_4"/>
+      <second ref="ARedShapeCoaxEncapsulation_edge_5"/>
+      <position name="ARedShapeCapsule_pos" unit="mm" x="41.6461791077473" y="-20.7336952582458" z="45"/>
+      <rotation name="ARedShapeCapsule_rot" unit="deg" x="8.08380394184259" y="0" z="58.5703008042798"/>
+    </subtraction>
+    <polycone aunit="deg" deltaphi="360" lunit="mm" name="BGreenShapeCoax" startphi="0">
+      <zplane rmax="40" rmin="0" z="0"/>
+      <zplane rmax="40" rmin="0" z="13"/>
+      <zplane rmax="40" rmin="5" z="13.1"/>
+      <zplane rmax="40" rmin="5" z="90"/>
+    </polycone>
+    <box lunit="mm" name="BGreenShapeCoax_edge_0" x="80" y="20" z="108"/>
+    <subtraction name="BGreenShapeCoax_step_0">
+      <first ref="BGreenShapeCoax"/>
+      <second ref="BGreenShapeCoax_edge_0"/>
+      <position name="BGreenShapeCoax_step_0_pos" unit="mm" x="36.7654874920204" y="26.3580772889477" z="45"/>
+      <rotation name="BGreenShapeCoax_step_0_rot" unit="deg" x="8.08360253624911" y="0" z="123.932939528565"/>
+    </subtraction>
+    <box lunit="mm" name="BGreenShapeCoax_edge_1" x="80" y="20" z="108"/>
+    <subtraction name="BGreenShapeCoax_step_1">
+      <first ref="BGreenShapeCoax_step_0"/>
+      <second ref="BGreenShapeCoax_edge_1"/>
+      <position name="BGreenShapeCoax_step_1_pos" unit="mm" x="-8.50298339476746" y="45.0059153102118" z="45"/>
+      <rotation name="BGreenShapeCoax_step_1_rot" unit="deg" x="8.44346690841947" y="0" z="-178.204455592133"/>
+    </subtraction>
+    <box lunit="mm" name="BGreenShapeCoax_edge_2" x="80" y="20" z="108"/>
+    <subtraction name="BGreenShapeCoax_step_2">
+      <first ref="BGreenShapeCoax_step_1"/>
+      <second ref="BGreenShapeCoax_edge_2"/>
+      <position name="BGreenShapeCoax_step_2_pos" unit="mm" x="-43.9763017132271" y="20.1598467726973" z="45"/>
+      <rotation name="BGreenShapeCoax_step_2_rot" unit="deg" x="8.44036275897808" y="0" z="-116.197632940486"/>
+    </subtraction>
+    <box lunit="mm" name="BGreenShapeCoax_edge_3" x="80" y="20" z="108"/>
+    <subtraction name="BGreenShapeCoax_step_3">
+      <first ref="BGreenShapeCoax_step_2"/>
+      <second ref="BGreenShapeCoax_edge_3"/>
+      <position name="BGreenShapeCoax_step_3_pos" unit="mm" x="-38.4042811624703" y="-25.1040992397393" z="45"/>
+      <rotation name="BGreenShapeCoax_step_3_rot" unit="deg" x="7.53153834787729" y="0" z="-62.196626630323"/>
+    </subtraction>
+    <box lunit="mm" name="BGreenShapeCoax_edge_4" x="80" y="20" z="108"/>
+    <subtraction name="BGreenShapeCoax_step_4">
+      <first ref="BGreenShapeCoax_step_3"/>
+      <second ref="BGreenShapeCoax_edge_4"/>
+      <position name="BGreenShapeCoax_step_4_pos" unit="mm" x="6.6173495539125" y="-45.2784371637711" z="45"/>
+      <rotation name="BGreenShapeCoax_step_4_rot" unit="deg" x="7.80350699881413" y="0" z="1.8401129465674"/>
+    </subtraction>
+    <box lunit="mm" name="BGreenShapeCoax_edge_5" x="80" y="20" z="108"/>
+    <subtraction name="BGreenShapeCrystal">
+      <first ref="BGreenShapeCoax_step_4"/>
+      <second ref="BGreenShapeCoax_edge_5"/>
+      <position name="BGreenShapeCrystal_pos" unit="mm" x="44.3047048227498" y="-18.5242991997192" z="45"/>
+      <rotation name="BGreenShapeCrystal_rot" unit="deg" x="8.31911024875542" y="0" z="64.5273005253819"/>
+    </subtraction>
+    <polycone aunit="deg" deltaphi="360" lunit="mm" name="BGreenShapeCoaxSpacing" startphi="0">
+      <zplane rmax="40.4" rmin="0" z="0"/>
+      <zplane rmax="40.4" rmin="0" z="90.8"/>
+    </polycone>
+    <box lunit="mm" name="BGreenShapeCoaxSpacing_edge_0" x="80" y="20" z="108"/>
+    <subtraction name="BGreenShapeCoaxSpacing_step_0">
+      <first ref="BGreenShapeCoaxSpacing"/>
+      <second ref="BGreenShapeCoaxSpacing_edge_0"/>
+      <position name="BGreenShapeCoaxSpacing_step_0_pos" unit="mm" x="37.0544251602896" y="26.5384614565171" z="45"/>
+      <rotation name="BGreenShapeCoaxSpacing_step_0_rot" unit="deg" x="8.08372703527545" y="0" z="123.901229429034"/>
+    </subtraction>
+    <box lunit="mm" name="BGreenShapeCoaxSpacing_edge_1" x="80" y="20" z="108"/>
+    <subtraction name="BGreenShapeCoaxSpacing_step_1">
+      <first ref="BGreenShapeCoaxSpacing_step_0"/>
+      <second ref="BGreenShapeCoaxSpacing_edge_1"/>
+      <position name="BGreenShapeCoaxSpacing_step_1_pos" unit="mm" x="-8.52565472254409" y="45.345051777334" z="45"/>
+      <rotation name="BGreenShapeCoaxSpacing_step_1_rot" unit="deg" x="8.44626275033361" y="0" z="-178.166492393996"/>
+    </subtraction>
+    <box lunit="mm" name="BGreenShapeCoaxSpacing_edge_2" x="80" y="20" z="108"/>
+    <subtraction name="BGreenShapeCoaxSpacing_step_2">
+      <first ref="BGreenShapeCoaxSpacing_step_1"/>
+      <second ref="BGreenShapeCoaxSpacing_edge_2"/>
+      <position name="BGreenShapeCoaxSpacing_step_2_pos" unit="mm" x="-44.2985259160138" y="20.3299783132924" z="45"/>
+      <rotation name="BGreenShapeCoaxSpacing_step_2_rot" unit="deg" x="8.43992714025675" y="0" z="-116.213112634262"/>
+    </subtraction>
+    <box lunit="mm" name="BGreenShapeCoaxSpacing_edge_3" x="80" y="20" z="108"/>
+    <subtraction name="BGreenShapeCoaxSpacing_step_3">
+      <first ref="BGreenShapeCoaxSpacing_step_2"/>
+      <second ref="BGreenShapeCoaxSpacing_edge_3"/>
+      <position name="BGreenShapeCoaxSpacing_step_3_pos" unit="mm" x="-38.7046952188607" y="-25.2668375509816" z="45"/>
+      <rotation name="BGreenShapeCoaxSpacing_step_3_rot" unit="deg" x="7.52998404126748" y="0" z="-62.1925366692467"/>
+    </subtraction>
+    <box lunit="mm" name="BGreenShapeCoaxSpacing_edge_4" x="80" y="20" z="108"/>
+    <subtraction name="BGreenShapeCoaxSpacing_step_4">
+      <first ref="BGreenShapeCoaxSpacing_step_3"/>
+      <second ref="BGreenShapeCoaxSpacing_edge_4"/>
+      <position name="BGreenShapeCoaxSpacing_step_4_pos" unit="mm" x="6.63262312539145" y="-45.6112675446267" z="45"/>
+      <rotation name="BGreenShapeCoaxSpacing_step_4_rot" unit="deg" x="7.80436527464247" y="0" z="1.85072914572322"/>
+    </subtraction>
+    <box lunit="mm" name="BGreenShapeCoaxSpacing_edge_5" x="80" y="20" z="108"/>
+    <subtraction name="BGreenShapeSpacing">
+      <first ref="BGreenShapeCoaxSpacing_step_4"/>
+      <second ref="BGreenShapeCoaxSpacing_edge_5"/>
+      <position name="BGreenShapeSpacing_pos" unit="mm" x="44.6236732538019" y="-18.6817809064718" z="45"/>
+      <rotation name="BGreenShapeSpacing_rot" unit="deg" x="8.31828527630389" y="0" z="64.5123894873293"/>
+    </subtraction>
+    <polycone aunit="deg" deltaphi="360" lunit="mm" name="BGreenShapeCoaxEncapsulation" startphi="0">
+      <zplane rmax="41.2" rmin="0" z="0"/>
+      <zplane rmax="41.2" rmin="0" z="92.4"/>
+    </polycone>
+    <box lunit="mm" name="BGreenShapeCoaxEncapsulation_edge_0" x="80" y="20" z="108"/>
+    <subtraction name="BGreenShapeCoaxEncapsulation_step_0">
+      <first ref="BGreenShapeCoaxEncapsulation"/>
+      <second ref="BGreenShapeCoaxEncapsulation_edge_0"/>
+      <position name="BGreenShapeCoaxEncapsulation_step_0_pos" unit="mm" x="37.6323697728693" y="26.8991085545297" z="45"/>
+      <rotation name="BGreenShapeCoaxEncapsulation_step_0_rot" unit="deg" x="8.08397964187291" y="0" z="123.83997915527"/>
+    </subtraction>
+    <box lunit="mm" name="BGreenShapeCoaxEncapsulation_edge_1" x="80" y="20" z="108"/>
+    <subtraction name="BGreenShapeCoaxEncapsulation_step_1">
+      <first ref="BGreenShapeCoaxEncapsulation_step_0"/>
+      <second ref="BGreenShapeCoaxEncapsulation_edge_1"/>
+      <position name="BGreenShapeCoaxEncapsulation_step_1_pos" unit="mm" x="-8.57118130267138" y="46.0233019210887" z="45"/>
+      <rotation name="BGreenShapeCoaxEncapsulation_step_1_rot" unit="deg" x="8.45185497758009" y="0" z="-178.09314073727"/>
+    </subtraction>
+    <box lunit="mm" name="BGreenShapeCoaxEncapsulation_edge_2" x="80" y="20" z="108"/>
+    <subtraction name="BGreenShapeCoaxEncapsulation_step_2">
+      <first ref="BGreenShapeCoaxEncapsulation_step_1"/>
+      <second ref="BGreenShapeCoaxEncapsulation_edge_2"/>
+      <position name="BGreenShapeCoaxEncapsulation_step_2_pos" unit="mm" x="-44.9429564638375" y="20.6702749877786" z="45"/>
+      <rotation name="BGreenShapeCoaxEncapsulation_step_2_rot" unit="deg" x="8.43906346164744" y="0" z="-116.243044678496"/>
+    </subtraction>
+    <box lunit="mm" name="BGreenShapeCoaxEncapsulation_edge_3" x="80" y="20" z="108"/>
+    <subtraction name="BGreenShapeCoaxEncapsulation_step_3">
+      <first ref="BGreenShapeCoaxEncapsulation_step_2"/>
+      <second ref="BGreenShapeCoaxEncapsulation_edge_3"/>
+      <position name="BGreenShapeCoaxEncapsulation_step_3_pos" unit="mm" x="-39.3055151418319" y="-25.5923293495132" z="45"/>
+      <rotation name="BGreenShapeCoaxEncapsulation_step_3_rot" unit="deg" x="7.52687540023576" y="0" z="-62.1846302431583"/>
+    </subtraction>
+    <box lunit="mm" name="BGreenShapeCoaxEncapsulation_edge_4" x="80" y="20" z="108"/>
+    <subtraction name="BGreenShapeCoaxEncapsulation_step_4">
+      <first ref="BGreenShapeCoaxEncapsulation_step_3"/>
+      <second ref="BGreenShapeCoaxEncapsulation_edge_4"/>
+      <position name="BGreenShapeCoaxEncapsulation_step_4_pos" unit="mm" x="6.66322416581806" y="-46.2769251017187" z="45"/>
+      <rotation name="BGreenShapeCoaxEncapsulation_step_4_rot" unit="deg" x="7.80608228641354" y="0" z="1.87126186843304"/>
+    </subtraction>
+    <box lunit="mm" name="BGreenShapeCoaxEncapsulation_edge_5" x="80" y="20" z="108"/>
+    <subtraction name="BGreenShapeCapsule">
+      <first ref="BGreenShapeCoaxEncapsulation_step_4"/>
+      <second ref="BGreenShapeCoaxEncapsulation_edge_5"/>
+      <position name="BGreenShapeCapsule_pos" unit="mm" x="45.2615900152127" y="-18.9967832644822" z="45"/>
+      <rotation name="BGreenShapeCapsule_rot" unit="deg" x="8.31663621506561" y="0" z="64.4835505847264"/>
+    </subtraction>
+    <polycone aunit="deg" deltaphi="360" lunit="mm" name="CBlueShapeCoax" startphi="0">
+      <zplane rmax="40" rmin="0" z="0"/>
+      <zplane rmax="40" rmin="0" z="13"/>
+      <zplane rmax="40" rmin="5" z="13.1"/>
+      <zplane rmax="40" rmin="5" z="90"/>
+    </polycone>
+    <box lunit="mm" name="CBlueShapeCoax_edge_0" x="80" y="20" z="108"/>
+    <subtraction name="CBlueShapeCoax_step_0">
+      <first ref="CBlueShapeCoax"/>
+      <second ref="CBlueShapeCoax_edge_0"/>
+      <position name="CBlueShapeCoax_step_0_pos" unit="mm" x="40.3268589274172" y="24.866653281175" z="45"/>
+      <rotation name="CBlueShapeCoax_step_0_rot" unit="deg" x="8.31911078720342" y="0" z="116.946412681603"/>
+    </subtraction>
+    <box lunit="mm" name="CBlueShapeCoax_edge_1" x="80" y="20" z="108"/>
+    <subtraction name="CBlueShapeCoax_step_1">
+      <first ref="CBlueShapeCoax_step_0"/>
+      <second ref="CBlueShapeCoax_edge_1"/>
+      <position name="CBlueShapeCoax_step_1_pos" unit="mm" x="-0.749099338034864" y="45.3467452460468" z="45"/>
+      <rotation name="CBlueShapeCoax_step_1_rot" unit="deg" x="7.97216016078935" y="0" z="177.801523119062"/>
+    </subtraction>
+    <box lunit="mm" name="CBlueShapeCoax_edge_2" x="80" y="20" z="108"/>
+    <subtraction name="CBlueShapeCoax_step_2">
+      <first ref="CBlueShapeCoax_step_1"/>
+      <second ref="CBlueShapeCoax_edge_2"/>
+      <position name="CBlueShapeCoax_step_2_pos" unit="mm" x="-40.616805455695" y="21.0371817971469" z="45"/>
+      <rotation name="CBlueShapeCoax_step_2_rot" unit="deg" x="7.54902557465737" y="0" z="-121.588679545019"/>
+    </subtraction>
+    <box lunit="mm" name="CBlueShapeCoax_edge_3" x="80" y="20" z="108"/>
+    <subtraction name="CBlueShapeCoax_step_3">
+      <first ref="CBlueShapeCoax_step_2"/>
+      <second ref="CBlueShapeCoax_edge_3"/>
+      <position name="CBlueShapeCoax_step_3_pos" unit="mm" x="-37.9470998846796" y="-26.0065967037033" z="45"/>
+      <rotation name="CBlueShapeCoax_step_3_rot" unit="deg" x="7.71785462917642" y="0" z="-63.2067467696093"/>
+    </subtraction>
+    <box lunit="mm" name="CBlueShapeCoax_edge_4" x="80" y="20" z="108"/>
+    <subtraction name="CBlueShapeCoax_step_4">
+      <first ref="CBlueShapeCoax_step_3"/>
+      <second ref="CBlueShapeCoax_edge_4"/>
+      <position name="CBlueShapeCoax_step_4_pos" unit="mm" x="1.36803124885319" y="-46.7592466087879" z="45"/>
+      <rotation name="CBlueShapeCoax_step_4_rot" unit="deg" x="8.56842878950392" y="0" z="0.658323659648534"/>
+    </subtraction>
+    <box lunit="mm" name="CBlueShapeCoax_edge_5" x="80" y="20" z="108"/>
+    <subtraction name="CBlueShapeCrystal">
+      <first ref="CBlueShapeCoax_step_4"/>
+      <second ref="CBlueShapeCoax_edge_5"/>
+      <position name="CBlueShapeCrystal_pos" unit="mm" x="40.7445685132023" y="-20.2558936414004" z="45"/>
+      <rotation name="CBlueShapeCrystal_rot" unit="deg" x="8.0460316852568" y="0" z="57.0974231474202"/>
+    </subtraction>
+    <polycone aunit="deg" deltaphi="360" lunit="mm" name="CBlueShapeCoaxSpacing" startphi="0">
+      <zplane rmax="40.4" rmin="0" z="0"/>
+      <zplane rmax="40.4" rmin="0" z="90.8"/>
+    </polycone>
+    <box lunit="mm" name="CBlueShapeCoaxSpacing_edge_0" x="80" y="20" z="108"/>
+    <subtraction name="CBlueShapeCoaxSpacing_step_0">
+      <first ref="CBlueShapeCoaxSpacing"/>
+      <second ref="CBlueShapeCoaxSpacing_edge_0"/>
+      <position name="CBlueShapeCoaxSpacing_step_0_pos" unit="mm" x="40.6421301163085" y="25.0299731142433" z="45"/>
+      <rotation name="CBlueShapeCoaxSpacing_step_0_rot" unit="deg" x="8.31856907803482" y="0" z="116.950980223671"/>
+    </subtraction>
+    <box lunit="mm" name="CBlueShapeCoaxSpacing_edge_1" x="80" y="20" z="108"/>
+    <subtraction name="CBlueShapeCoaxSpacing_step_1">
+      <first ref="CBlueShapeCoaxSpacing_step_0"/>
+      <second ref="CBlueShapeCoaxSpacing_edge_1"/>
+      <position name="CBlueShapeCoaxSpacing_step_1_pos" unit="mm" x="-0.728400597398523" y="45.686407052886" z="45"/>
+      <rotation name="CBlueShapeCoaxSpacing_step_1_rot" unit="deg" x="7.97367903015862" y="0" z="177.791731735444"/>
+    </subtraction>
+    <box lunit="mm" name="CBlueShapeCoaxSpacing_edge_2" x="80" y="20" z="108"/>
+    <subtraction name="CBlueShapeCoaxSpacing_step_2">
+      <first ref="CBlueShapeCoaxSpacing_step_1"/>
+      <second ref="CBlueShapeCoaxSpacing_edge_2"/>
+      <position name="CBlueShapeCoaxSpacing_step_2_pos" unit="mm" x="-40.9142967706331" y="21.2196716485155" z="45"/>
+      <rotation name="CBlueShapeCoaxSpacing_step_2_rot" unit="deg" x="7.54754441537971" y="0" z="-121.589904116778"/>
+    </subtraction>
+    <box lunit="mm" name="CBlueShapeCoaxSpacing_edge_3" x="80" y="20" z="108"/>
+    <subtraction name="CBlueShapeCoaxSpacing_step_3">
+      <first ref="CBlueShapeCoaxSpacing_step_2"/>
+      <second ref="CBlueShapeCoaxSpacing_edge_3"/>
+      <position name="CBlueShapeCoaxSpacing_step_3_pos" unit="mm" x="-38.2451157812486" y="-26.1710253350977" z="45"/>
+      <rotation name="CBlueShapeCoaxSpacing_step_3_rot" unit="deg" x="7.71693295671482" y="0" z="-63.1880623978674"/>
+    </subtraction>
+    <box lunit="mm" name="CBlueShapeCoaxSpacing_edge_4" x="80" y="20" z="108"/>
+    <subtraction name="CBlueShapeCoaxSpacing_step_4">
+      <first ref="CBlueShapeCoaxSpacing_step_3"/>
+      <second ref="CBlueShapeCoaxSpacing_edge_4"/>
+      <position name="CBlueShapeCoaxSpacing_step_4_pos" unit="mm" x="1.35678492689046" y="-47.1107198336349" z="45"/>
+      <rotation name="CBlueShapeCoaxSpacing_step_4_rot" unit="deg" x="8.57023472869644" y="0" z="0.629042719563595"/>
+    </subtraction>
+    <box lunit="mm" name="CBlueShapeCoaxSpacing_edge_5" x="80" y="20" z="108"/>
+    <subtraction name="CBlueShapeSpacing">
+      <first ref="CBlueShapeCoaxSpacing_step_4"/>
+      <second ref="CBlueShapeCoaxSpacing_edge_5"/>
+      <position name="CBlueShapeSpacing_pos" unit="mm" x="41.0341791086754" y="-20.436657279943" z="45"/>
+      <rotation name="CBlueShapeSpacing_rot" unit="deg" x="8.0460507193164" y="0" z="57.1125273291359"/>
+    </subtraction>
+    <polycone aunit="deg" deltaphi="360" lunit="mm" name="CBlueShapeCoaxEncapsulation" startphi="0">
+      <zplane rmax="41.2" rmin="0" z="0"/>
+      <zplane rmax="41.2" rmin="0" z="92.4"/>
+    </polycone>
+    <box lunit="mm" name="CBlueShapeCoaxEncapsulation_edge_0" x="80" y="20" z="108"/>
+    <subtraction name="CBlueShapeCoaxEncapsulation_step_0">
+      <first ref="CBlueShapeCoaxEncapsulation"/>
+      <second ref="CBlueShapeCoaxEncapsulation_edge_0"/>
+      <position name="CBlueShapeCoaxEncapsulation_step_0_pos" unit="mm" x="41.2726658742472" y="25.3566254957386" z="45"/>
+      <rotation name="CBlueShapeCoaxEncapsulation_step_0_rot" unit="deg" x="8.31748573624428" y="0" z="116.959808198393"/>
+    </subtraction>
+    <box lunit="mm" name="CBlueShapeCoaxEncapsulation_edge_1" x="80" y="20" z="108"/>
+    <subtraction name="CBlueShapeCoaxEncapsulation_step_1">
+      <first ref="CBlueShapeCoaxEncapsulation_step_0"/>
+      <second ref="CBlueShapeCoaxEncapsulation_edge_1"/>
+      <position name="CBlueShapeCoaxEncapsulation_step_1_pos" unit="mm" x="-0.686957154201952" y="46.3657278167762" z="45"/>
+      <rotation name="CBlueShapeCoaxEncapsulation_step_1_rot" unit="deg" x="7.97671785392973" y="0" z="177.772810859477"/>
+    </subtraction>
+    <box lunit="mm" name="CBlueShapeCoaxEncapsulation_edge_2" x="80" y="20" z="108"/>
+    <subtraction name="CBlueShapeCoaxEncapsulation_step_2">
+      <first ref="CBlueShapeCoaxEncapsulation_step_1"/>
+      <second ref="CBlueShapeCoaxEncapsulation_edge_2"/>
+      <position name="CBlueShapeCoaxEncapsulation_step_2_pos" unit="mm" x="-41.5092770230566" y="21.5846551943898" z="45"/>
+      <rotation name="CBlueShapeCoaxEncapsulation_step_2_rot" unit="deg" x="7.54458303930345" y="0" z="-121.592269625037"/>
+    </subtraction>
+    <box lunit="mm" name="CBlueShapeCoaxEncapsulation_edge_3" x="80" y="20" z="108"/>
+    <subtraction name="CBlueShapeCoaxEncapsulation_step_3">
+      <first ref="CBlueShapeCoaxEncapsulation_step_2"/>
+      <second ref="CBlueShapeCoaxEncapsulation_edge_3"/>
+      <position name="CBlueShapeCoaxEncapsulation_step_3_pos" unit="mm" x="-38.8411087368013" y="-26.4999518166113" z="45"/>
+      <rotation name="CBlueShapeCoaxEncapsulation_step_3_rot" unit="deg" x="7.71509345272552" y="0" z="-63.1519489060293"/>
+    </subtraction>
+    <box lunit="mm" name="CBlueShapeCoaxEncapsulation_edge_4" x="80" y="20" z="108"/>
+    <subtraction name="CBlueShapeCoaxEncapsulation_step_4">
+      <first ref="CBlueShapeCoaxEncapsulation_step_3"/>
+      <second ref="CBlueShapeCoaxEncapsulation_edge_4"/>
+      <position name="CBlueShapeCoaxEncapsulation_step_4_pos" unit="mm" x="1.33418884742809" y="-47.8136608546189" z="45"/>
+      <rotation name="CBlueShapeCoaxEncapsulation_step_4_rot" unit="deg" x="8.57384762395401" y="0" z="0.572459135381032"/>
+    </subtraction>
+    <box lunit="mm" name="CBlueShapeCoaxEncapsulation_edge_5" x="80" y="20" z="108"/>
+    <subtraction name="CBlueShapeCapsule">
+      <first ref="CBlueShapeCoaxEncapsulation_step_4"/>
+      <second ref="CBlueShapeCoaxEncapsulation_edge_5"/>
+      <position name="CBlueShapeCapsule_pos" unit="mm" x="41.6134353511573" y="-20.7981259491579" z="45"/>
+      <rotation name="CBlueShapeCapsule_rot" unit="deg" x="8.04608960449077" y="0" z="57.1417033427372"/>
+    </subtraction>
+    <box lunit="mm" name="ATC_sol" x="600" y="600" z="1000"/>
+  </solids>
+
+  <structure>
+    <volume name="ARedLV">
+      <materialref ref="SToGS_Ge"/>
+      <solidref ref="ARedShapeCrystal"/>
+    </volume>
+    <volume name="ARedSpacingLV">
+      <materialref ref="SToGS_AIR"/>
+      <solidref ref="ARedShapeSpacing"/>
+      <physvol name="ARed">
+        <volumeref ref="ARedLV"/>
+        <position name="ARed_pos" unit="mm" x="0" y="0" z="1.2"/>
+      </physvol>
+    </volume>
+    <volume name="ARedCapsuleLV">
+      <materialref ref="Al"/>
+      <solidref ref="ARedShapeCapsule"/>
+      <physvol copynumber="-1" name="ARedSpacing">
+        <volumeref ref="ARedSpacingLV"/>
+        <position name="ARedSpacing_pos" unit="mm" x="0" y="0" z="0.8"/>
+      </physvol>
+    </volume>
+    <volume name="BGreenLV">
+      <materialref ref="SToGS_Ge"/>
+      <solidref ref="BGreenShapeCrystal"/>
+    </volume>
+    <volume name="BGreenSpacingLV">
+      <materialref ref="SToGS_AIR"/>
+      <solidref ref="BGreenShapeSpacing"/>
+      <physvol copynumber="1" name="BGreen">
+        <volumeref ref="BGreenLV"/>
+        <position name="BGreen_pos" unit="mm" x="0" y="0" z="1.2"/>
+      </physvol>
+    </volume>
+    <volume name="BGreenCapsuleLV">
+      <materialref ref="Al"/>
+      <solidref ref="BGreenShapeCapsule"/>
+      <physvol copynumber="-1" name="BGreenSpacing">
+        <volumeref ref="BGreenSpacingLV"/>
+        <position name="BGreenSpacing_pos" unit="mm" x="0" y="0" z="0.8"/>
+      </physvol>
+    </volume>
+    <volume name="CBlueLV">
+      <materialref ref="SToGS_Ge"/>
+      <solidref ref="CBlueShapeCrystal"/>
+    </volume>
+    <volume name="CBlueSpacingLV">
+      <materialref ref="SToGS_AIR"/>
+      <solidref ref="CBlueShapeSpacing"/>
+      <physvol copynumber="2" name="CBlue">
+        <volumeref ref="CBlueLV"/>
+        <position name="CBlue_pos" unit="mm" x="0" y="0" z="1.2"/>
+      </physvol>
+    </volume>
+    <volume name="CBlueCapsuleLV">
+      <materialref ref="Al"/>
+      <solidref ref="CBlueShapeCapsule"/>
+      <physvol copynumber="-1" name="CBlueSpacing">
+        <volumeref ref="CBlueSpacingLV"/>
+        <position name="CBlueSpacing_pos" unit="mm" x="0" y="0" z="0.8"/>
+      </physvol>
+    </volume>
+    <volume name="ATC">
+      <materialref ref="SToGS_AIR"/>
+      <solidref ref="ATC_sol"/>
+      <physvol name="AGATA-ARed-ARedCaps">
+        <volumeref ref="ARedCapsuleLV"/>
+        <position name="AGATA-ARed-ARedCaps_pos" unit="mm" x="34.9279" y="-1.628323" z="-44.096715"/>
+        <rotation name="AGATA-ARed-ARedCaps_rot" unit="deg" x="-0.488047991340229" y="-9.41166634189231" z="-177.289313886355"/>
+      </physvol>
+      <physvol name="AGATA-BGreen-BGreenCaps">
+        <volumeref ref="BGreenCapsuleLV"/>
+        <position name="AGATA-BGreen-BGreenCaps_pos" unit="mm" x="-13.861478" y="32.994962" z="-44.227057"/>
+        <rotation name="AGATA-BGreen-BGreenCaps_rot" unit="deg" x="8.52613941500973" y="4.02995648033497" z="67.6523060781613"/>
+      </physvol>
+      <physvol name="AGATA-CBlue-CBlueCaps">
+        <volumeref ref="CBlueCapsuleLV"/>
+        <position name="AGATA-CBlue-CBlueCaps_pos" unit="mm" x="-17.286848" y="-30.890029" z="-44.167278"/>
+        <rotation name="AGATA-CBlue-CBlueCaps_rot" unit="deg" x="-8.14568467602696" y="4.75562573826915" z="-61.2145944144523"/>
+      </physvol>
+    </volume>
+  </structure>
+
+  <setup name="Default" version="1.0">
+    <world ref="ATC"/>
+  </setup>
+
+</gdml>

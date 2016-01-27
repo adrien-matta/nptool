@@ -11,21 +11,33 @@ Target
 	Z= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 AGATA
-	X= 0
-	Y= 0
-	Z= 350
-	Shape= Square
+	  THETA= 22.5 
+    PHI= 45 
+    R= 256.432
+    Shape= Square 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 AGATA
-	X= 350
-	Y= 350
-	Z= 350
-	Shape= Square
+	  THETA= 22.5 
+    PHI= 117 
+    R= 256.432
+    Shape= Square 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 AGATA
-	R= 350
-	THETA= 90
-	PHI= 63
-	Shape= Cylindrical
+	  THETA= 22.5 
+    PHI= 189 
+    R= 256.432
+    Shape= Square 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+AGATA
+	  THETA= 22.5 
+    PHI= 261
+    R= 256.432
+    Shape= Square 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+AGATA
+	  THETA= 22.5 
+    PHI= 333 
+    R= 256.432
+    Shape= Square 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

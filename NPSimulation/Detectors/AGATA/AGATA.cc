@@ -3,7 +3,7 @@
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
- *****************************************************************************.
+ *****************************************************************************/
 
 /*****************************************************************************
  * Original Author: Adrien Matta  contact address: a.matta@surrey.ac.uk      *
@@ -16,6 +16,8 @@
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
+ *   AGATA geometry is based on SToGS GDML file by Olivier Stezowski         *
+ *   More info on this package at https://github.com/stezow/stogs            *
  *                                                                           *
  *****************************************************************************/
 
@@ -57,10 +59,6 @@ namespace AGATA_NS{
   const double EnergyThreshold = 0.1*MeV;
   const double ResoTime = 4.5*ns ;
   const double ResoEnergy = 5.0*MeV ;
-  const double Radius = 50*mm ; 
-  const double Width = 500*mm ;
-  const double Thickness = 300*mm ;
-  const string Scintillator = "BC400";
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -69,14 +67,7 @@ namespace AGATA_NS{
 AGATA::AGATA(){
   m_Event = new TAGATAData() ;
   m_AGATAScorer = 0;
-  m_SquareDetector = 0;
-  m_CylindricalDetector = 0;
-
-
-  // RGB Color + Transparency
-  m_VisSquare = new G4VisAttributes(G4Colour(0, 1, 0, 0.5));   
-  m_VisCylinder = new G4VisAttributes(G4Colour(0, 0, 1, 0.5));   
-
+  m_TripleCluster= 0;
 }
 
 AGATA::~AGATA(){
@@ -91,105 +82,45 @@ void AGATA::AddAGATA(double  R, double  Theta, double  Phi, string  Shape){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-G4LogicalVolume* AGATA::BuildSquareDetector(){
-  if(!m_SquareDetector){
-    G4Box* box = new G4Box("AGATA_Box",AGATA_NS::Width*0.5,
-        AGATA_NS::Width*0.5,AGATA_NS::Thickness*0.5);
-    G4Material* Vac= MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
-    m_SquareDetector = new G4LogicalVolume(box,Vac,"logic_AGATA_Box",0,0,0);
+G4AssemblyVolume* AGATA::BuildTripleCluster(){
+  if(!m_TripleCluster){
 
-    string path = getenv("NPTOOL");
-    path+="/NPSimulation/Detectors/AGATA/gdml/AGATA1clust.gdml";
+    cout << "AGATA geometry is based on SToGS GDML file by Olivier Stezowski"<< endl
+         << "More info on this package at https://github.com/stezow/stogs"<<endl;
+    
+    m_TripleCluster = new G4AssemblyVolume;
+    string basepath = getenv("NPTOOL");
+    string path=basepath+"/NPSimulation/Detectors/AGATA/gdml/ATC.gdml";
     m_gdmlparser.Read(path);
-    G4RotationMatrix* Rot = new G4RotationMatrix;
-    G4ThreeVector Det_pos(0,0,0);
-    new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
-        m_gdmlparser.GetVolume("Element_Step_0_200195712_Volume"),
-        "AGATA0",m_SquareDetector,false,0);
 
-    new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
-        m_gdmlparser.GetVolume("Element_Step_1_200195936_Volume"),
-        "AGATA1",m_SquareDetector,false,0);
+    G4VisAttributes* RedVisAtt = new G4VisAttributes(G4Colour(1, 0, 0,0.5)) ;
+    G4VisAttributes* GreenVisAtt = new G4VisAttributes(G4Colour(0, 1, 0,0.5)) ;
+    G4VisAttributes* BlueVisAtt = new G4VisAttributes(G4Colour(0, 0, 1,0.5)) ;
 
-    new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
-        m_gdmlparser.GetVolume("Element_Step_2_200196160_Volume"),
-        "AGATA2",m_SquareDetector,false,0);
+    G4LogicalVolume* RedCrystal= m_gdmlparser.GetVolume("ARedCapsuleLV");
+    G4LogicalVolume* GreenCrystal= m_gdmlparser.GetVolume("BGreenCapsuleLV");
+    G4LogicalVolume* BlueCrystal= m_gdmlparser.GetVolume("CBlueCapsuleLV");
 
-    new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
-        m_gdmlparser.GetVolume("Element_Step_3_200196384_Volume"),
-        "AGATA3",m_SquareDetector,false,0);
+    RedCrystal->SetVisAttributes(RedVisAtt);
+    GreenCrystal->SetVisAttributes(GreenVisAtt);
+    BlueCrystal->SetVisAttributes(BlueVisAtt);
 
-    new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
-        m_gdmlparser.GetVolume("Element_Step_4_200196608_Volume"),
-        "AGATA4",m_SquareDetector,false,0);
 
-    new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
-        m_gdmlparser.GetVolume("Element_Step_5_200196832_Volume"),
-        "AGATA5",m_SquareDetector,false,0);
+    G4LogicalVolume* ATC =  m_gdmlparser.GetVolume("ATC");
 
-    new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
-        m_gdmlparser.GetVolume("Element_Step_6_200197056_Volume"),
-        "AGATA6",m_SquareDetector,false,0);
+    G4ThreeVector Pos_Red= ATC->GetDaughter(0)->GetTranslation();
+    G4RotationMatrix* Rot_Red =new G4RotationMatrix( (ATC->GetDaughter(0)->GetObjectRotationValue()));
+    m_TripleCluster->AddPlacedVolume(RedCrystal,Pos_Red, Rot_Red);
 
-    new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
-        m_gdmlparser.GetVolume("Element_Step_7_200197280_Volume"),
-        "AGATA7",m_SquareDetector,false,0);
-
-    new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
-        m_gdmlparser.GetVolume("Element_Step_8_200197504_Volume"),
-        "AGATA8",m_SquareDetector,false,0);
-
-    new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
-        m_gdmlparser.GetVolume("Element_Step_9_200197728_Volume"),
-        "AGATA9",m_SquareDetector,false,0);
-
-    new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
-        m_gdmlparser.GetVolume("Element_Step_10_200197952_Volume"),
-        "AGATA10",m_SquareDetector,false,0);
-
-    new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
-        m_gdmlparser.GetVolume("Element_Step_11_200198176_Volume"),
-        "AGATA11",m_SquareDetector,false,0);
-
-    new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
-        m_gdmlparser.GetVolume("Element_Step_12_200198400_Volume"),
-        "AGATA12",m_SquareDetector,false,0);
-
-    new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
-        m_gdmlparser.GetVolume("Element_Step_13_200198624_Volume"),
-        "AGATA13",m_SquareDetector,false,0);
-
-    new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
-        m_gdmlparser.GetVolume("Element_Step_14_200198848_Volume"),
-        "AGATA14",m_SquareDetector,false,0);
-
-    new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
-        m_gdmlparser.GetVolume("Element_Step_15_200199072_Volume"),
-        "AGATA15",m_SquareDetector,false,0);
-
-    new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
-        m_gdmlparser.GetVolume("Element_Step_16_200199296_Volume"),
-        "AGATA16",m_SquareDetector,false,0);
-
-    new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
-        m_gdmlparser.GetVolume("Element_Step_17_200199520_Volume"),
-        "AGATA17",m_SquareDetector,false,0);
+    G4ThreeVector Pos_Green= ATC->GetDaughter(1)->GetTranslation();
+    G4RotationMatrix* Rot_Green =new G4RotationMatrix( (ATC->GetDaughter(1)->GetObjectRotationValue()));
+    m_TripleCluster->AddPlacedVolume(GreenCrystal,Pos_Green, Rot_Green);
+    
+    G4ThreeVector Pos_Blue= ATC->GetDaughter(2)->GetTranslation();
+    G4RotationMatrix* Rot_Blue =new G4RotationMatrix( (ATC->GetDaughter(2)->GetObjectRotationValue()));
+    m_TripleCluster->AddPlacedVolume(BlueCrystal,Pos_Blue, Rot_Blue);
   }
-  return m_SquareDetector;
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-G4LogicalVolume* AGATA::BuildCylindricalDetector(){
-  if(!m_CylindricalDetector){
-    G4Tubs* tub = new G4Tubs("AGATA_Cyl",0,AGATA_NS::Radius,AGATA_NS::Thickness*0.5,0,360*deg);
-
-    G4Material* ScintMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary(AGATA_NS::Scintillator);
-    m_CylindricalDetector = new G4LogicalVolume(tub,ScintMaterial,"logic_AGATA_tub",0,0,0);
-    m_CylindricalDetector->SetVisAttributes(m_VisSquare);
-    m_CylindricalDetector->SetSensitiveDetector(m_AGATAScorer);
-
-  }
-  return m_CylindricalDetector;
+  return m_TripleCluster;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -272,6 +203,8 @@ void AGATA::ReadConfiguration(string Path){
         ConfigFile >> DataBuffer ;
         R = atof(DataBuffer.c_str()) ;
         R = R * mm;
+        if(R==0)
+          R=1e-12*um;
         G4cout << "R:  " << R/mm << G4endl;
       }
 
@@ -359,7 +292,7 @@ void AGATA::ConstructDetector(G4LogicalVolume* world){
     G4double wZ = m_R[i] * cos(m_Theta[i] ) ;
     G4ThreeVector Det_pos = G4ThreeVector(wX, wY, wZ) ;
     // So the face of the detector is at R instead of the middle
-    Det_pos+=Det_pos.unit()*AGATA_NS::Thickness*0.5;
+    Det_pos+=Det_pos.unit();
     // Building Detector reference frame
     G4double ii = cos(m_Theta[i]) * cos(m_Phi[i]);
     G4double jj = cos(m_Theta[i]) * sin(m_Phi[i]);
@@ -372,17 +305,15 @@ void AGATA::ConstructDetector(G4LogicalVolume* world){
     u = u.unit();
 
     G4RotationMatrix* Rot = new G4RotationMatrix(u,v,w);
+    if(m_Theta[i]>90*deg)
+      Rot->rotate(-72*deg,w);
+    else
+      Rot->rotate(72*deg,w);
 
-    if(m_Shape[i] == "Cylindrical"){
-      new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
-          BuildCylindricalDetector(),
-          "AGATA",world,false,i+1);
-    }
-
-    else if(m_Shape[i] == "Square"){
-      new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
-          BuildSquareDetector(),
-          "AGATA",world,false,i+1);
+    BuildTripleCluster();
+    if(m_Shape[i] == "Square"){
+      G4Transform3D Trans(*Rot,Det_pos);
+      m_TripleCluster->MakeImprint(world,Trans,i+1);
     }
   }
 }

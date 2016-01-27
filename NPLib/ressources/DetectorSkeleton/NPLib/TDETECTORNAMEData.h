@@ -29,9 +29,7 @@ using namespace std;
 // ROOT
 #include "TObject.h"
 
-
-class TDETECTORNAMEData : public TObject 
-{
+class TDETECTORNAMEData : public TObject {
   //////////////////////////////////////////////////////////////
   // data members are hold into vectors in order 
   // to allow multiplicity treatment

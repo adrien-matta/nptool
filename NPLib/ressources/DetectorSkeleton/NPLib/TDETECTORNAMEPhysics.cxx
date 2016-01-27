@@ -12,7 +12,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold DETECTORNAME Raw data                                    *
+ *  This class hold DETECTORNAME Treated  data                               *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *

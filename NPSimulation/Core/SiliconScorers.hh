@@ -36,7 +36,7 @@ namespace SILICONSCORERS {
   class PS_Silicon_Rectangle : public G4VPrimitiveScorer{
     
   public: // with description
-    PS_Silicon_Rectangle(G4String name, G4int Level, G4double StripPlaneLength, G4double StripPlaneWidth, G4int NumberOfStripLength,G4int NumberOfStripWidth,G4int depth=0);
+    PS_Silicon_Rectangle(G4String name, G4int Level, G4double StripPlaneLength, G4double StripPlaneWidth, G4int NumberOfStripLength,G4int NumberOfStripWidth,G4int depth=0,G4String axis="xy");
      ~PS_Silicon_Rectangle();
     
   protected: // with description
@@ -56,6 +56,7 @@ namespace SILICONSCORERS {
     G4int    m_NumberOfStripWidth;
     G4double m_StripPitchLength;
     G4double m_StripPitchWidth;
+    G4String m_Axis;
     // Level at which to find the copy number linked to the detector number
     G4int    m_Level;
 
@@ -100,6 +101,7 @@ namespace SILICONSCORERS {
     G4double m_StripPitchRing;
     G4double m_StripPitchSector;
     G4double m_StripPitchQuadrant; 
+    G4String m_Axis;
     // Level at which to find the copy number linked to the detector number
     G4int    m_Level;
 
@@ -158,5 +160,6 @@ namespace SILICONSCORERS {
   };
 
 }
+
 
 #endif
