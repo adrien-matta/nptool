@@ -1,0 +1,86 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GeneralTarget
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Target
+	THICKNESS= 5
+	RADIUS=	5
+	MATERIAL= CD2
+	ANGLE= 0
+	X= 0
+	Y= 0
+	Z= 0
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+TRex
+	Chamber= 1
+  X= 0
+	Y= 29
+	Z= 33
+	Shape= Square
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+TRex
+	X= 0
+	Y= -29
+	Z= 33
+	Shape= Square
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+TRex
+	X= 29
+	Y= 0
+	Z= 33
+	Shape= Square
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+TRex
+	X= -29
+	Y= 0
+	Z= 33
+	Shape= Square
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+TRex
+	X= 0
+	Y= 29
+	Z= -33
+	Shape= Square
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+TRex
+	X= 0
+	Y= -29
+	Z= -33
+	Shape= Square
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+TRex
+	X= 29
+	Y= 0
+	Z= -33
+	Shape= Square
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+TRex
+	X= -29
+	Y= 0
+	Z= -33
+	Shape= Square
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Sharc
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %Upstream CD
+  SharcQQQ
+    Z= -70
+    R= 0
+    Phi= 2
+    ThicknessDector= 500
+  SharcQQQ
+    Z= -70
+    R= 0
+    Phi= 92
+    ThicknessDector= 500
+  SharcQQQ
+    Z= -70
+    R= 0
+    Phi= 182
+    ThicknessDector= 500
+  SharcQQQ
+    Z= -70
+    R= 0
+    Phi= 272
+    ThicknessDector= 500
+%

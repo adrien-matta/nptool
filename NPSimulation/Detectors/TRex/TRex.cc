@@ -12,12 +12,10 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe  AGATA simulation                                    *
+ *  This class describe  TRex simulation                                     *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *   AGATA geometry is based on SToGS GDML file by Olivier Stezowski         *
- *   More info on this package at https://github.com/stezow/stogs            *
  *                                                                           *
  *****************************************************************************/
 
@@ -37,12 +35,11 @@
 #include "G4Material.hh"
 #include "G4Transform3D.hh"
 #include "G4PVPlacement.hh"
-#include "G4VisAttributes.hh"
 #include "G4Colour.hh"
 
 // NPTool header
-#include "AGATA.hh"
-#include "CalorimeterScorers.hh"
+#include "TRex.hh"
+#include "SiliconScorers.hh"
 #include "RootOutput.h"
 #include "MaterialManager.hh"
 #include "NPSDetectorFactory.hh"
@@ -54,7 +51,7 @@ using namespace CLHEP;
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-namespace AGATA_NS{
+namespace TRex_NS{
   // Energy and time Resolution
   const double EnergyThreshold = 0.1*MeV;
   const double ResoTime = 4.5*ns ;
@@ -63,65 +60,84 @@ namespace AGATA_NS{
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// AGATA Specific Method
-AGATA::AGATA(){
-  m_Event = new TAGATAData() ;
-  m_AGATAScorer = 0;
-  m_TripleCluster= 0;
+// TRex Specific Method
+TRex::TRex(){
+  m_Event = new TTRexData() ;
+  m_TRexScorer = 0;
+  m_BarrelDetector = 0;
+  m_Chamber=0;
+
+  // Dark Grey
+  m_SiliconVisAtt = new G4VisAttributes(G4Colour(0.3, 0.3, 0.3)) ;
+  // Green
+  m_PCBVisAtt = new G4VisAttributes(G4Colour(0.2, 0.5, 0.2)) ;
+  // Gold Yellow
+  m_PADVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.2)) ;
+
 }
 
-AGATA::~AGATA(){
+TRex::~TRex(){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void AGATA::AddAGATA(double  R, double  Theta, double  Phi, string  Shape){
-  m_R.push_back(R);
-  m_Theta.push_back(Theta);
-  m_Phi.push_back(Phi);
-  m_Shape.push_back(Shape);
+void TRex::AddTRex(double  X, double  Y, double  Z){
+  m_X.push_back(X);
+  m_Y.push_back(Y);
+  m_Z.push_back(Z);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-G4AssemblyVolume* AGATA::BuildTripleCluster(){
-  if(!m_TripleCluster){
+G4AssemblyVolume* TRex::BuildBarrelDetector(){
+  if(!m_BarrelDetector){
+    // Load the reference file
+    if(!m_Chamber){
+      cout << "TRex geometry is based on Munich Group Simulation exported in GDML"<< endl;
+      string basepath = getenv("NPTOOL");
+      string path=basepath+"/NPSimulation/Detectors/TRex/TRex_Miniball.gdml";
+      m_gdmlparser.Read(path);
+    }   
+    m_BarrelDetector = new G4AssemblyVolume();
+    G4LogicalVolume* PCB =  m_gdmlparser.GetVolume("PCBForwardBarrel_log");
+    G4LogicalVolume* Det =  m_gdmlparser.GetVolume("FBarrelDeltaESingle0_log");
+    G4LogicalVolume* PCBE =  m_gdmlparser.GetVolume("PCBForwardBarrel_log2");
+    G4LogicalVolume* DetE =  m_gdmlparser.GetVolume("FBarrelErestSingle0_log");
 
-    cout << "AGATA geometry is based on SToGS GDML file by Olivier Stezowski"<< endl
-         << "More info on this package at https://github.com/stezow/stogs"<<endl;
-    
-    m_TripleCluster = new G4AssemblyVolume;
-    string basepath = getenv("NPTOOL");
-    string path=basepath+"/NPSimulation/Detectors/AGATA/gdml/ATC.gdml";
-    m_gdmlparser.Read(path);
+    PCB->SetVisAttributes(m_PCBVisAtt);
+    Det->SetVisAttributes(m_SiliconVisAtt);
+    Det->SetSensitiveDetector(m_TRexScorer);
+    PCBE->SetVisAttributes(m_PADVisAtt);
+    DetE->SetVisAttributes(m_SiliconVisAtt); 
+//    DetE->SetSensitiveDetector(m_TRexScorer);
 
-    G4VisAttributes* RedVisAtt = new G4VisAttributes(G4Colour(1, 0, 0,0.5)) ;
-    G4VisAttributes* GreenVisAtt = new G4VisAttributes(G4Colour(0, 1, 0,0.5)) ;
-    G4VisAttributes* BlueVisAtt = new G4VisAttributes(G4Colour(0, 0, 1,0.5)) ;
+    G4ThreeVector PosPCB(16.5*mm,0,0);
+    G4ThreeVector PosDet(0,0,0);
+    G4ThreeVector PosPCBE(16.5*mm,1.5*mm,0);
+    G4ThreeVector PosDetE(0,1.5*mm,0);
 
-    G4LogicalVolume* RedCrystal= m_gdmlparser.GetVolume("ARedCapsuleLV");
-    G4LogicalVolume* GreenCrystal= m_gdmlparser.GetVolume("BGreenCapsuleLV");
-    G4LogicalVolume* BlueCrystal= m_gdmlparser.GetVolume("CBlueCapsuleLV");
-
-    RedCrystal->SetVisAttributes(RedVisAtt);
-    GreenCrystal->SetVisAttributes(GreenVisAtt);
-    BlueCrystal->SetVisAttributes(BlueVisAtt);
-
-
-    G4LogicalVolume* ATC =  m_gdmlparser.GetVolume("ATC");
-
-    G4ThreeVector Pos_Red= ATC->GetDaughter(0)->GetTranslation();
-    G4RotationMatrix* Rot_Red =new G4RotationMatrix( (ATC->GetDaughter(0)->GetObjectRotationValue()));
-    m_TripleCluster->AddPlacedVolume(RedCrystal,Pos_Red, Rot_Red);
-
-    G4ThreeVector Pos_Green= ATC->GetDaughter(1)->GetTranslation();
-    G4RotationMatrix* Rot_Green =new G4RotationMatrix( (ATC->GetDaughter(1)->GetObjectRotationValue()));
-    m_TripleCluster->AddPlacedVolume(GreenCrystal,Pos_Green, Rot_Green);
-    
-    G4ThreeVector Pos_Blue= ATC->GetDaughter(2)->GetTranslation();
-    G4RotationMatrix* Rot_Blue =new G4RotationMatrix( (ATC->GetDaughter(2)->GetObjectRotationValue()));
-    m_TripleCluster->AddPlacedVolume(BlueCrystal,Pos_Blue, Rot_Blue);
+    G4RotationMatrix* Rot = new G4RotationMatrix();
+    Rot->rotateZ(90*deg);
+    m_BarrelDetector->AddPlacedVolume(PCB, PosPCB, Rot);
+    m_BarrelDetector->AddPlacedVolume(Det, PosDet, Rot);
+    m_BarrelDetector->AddPlacedVolume(PCBE, PosPCBE, Rot);
+    m_BarrelDetector->AddPlacedVolume(DetE, PosDetE, Rot);
   }
-  return m_TripleCluster;
+  return m_BarrelDetector;
 }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+G4LogicalVolume* TRex::BuildChamber(){
+  if(!m_Chamber){
+    if(!m_BarrelDetector){
+      // Load the reference file
+      cout << "TRex geometry is based on Munich Group Simulation exported in GDML"<< endl;
+      string basepath = getenv("NPTOOL");
+      string path=basepath+"/NPSimulation/Detectors/TRex/TRex_Miniball.gdml";
+      m_gdmlparser.Read(path);
+    }
+    m_Chamber= m_gdmlparser.GetVolume("chamber_log");
+  }
+  return m_Chamber;
+}
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -130,20 +146,13 @@ G4AssemblyVolume* AGATA::BuildTripleCluster(){
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void AGATA::ReadConfiguration(string Path){
-  ifstream ConfigFile           ;
-  ConfigFile.open(Path.c_str()) ;
-  string LineBuffer          ;
-  string DataBuffer          ;
+void TRex::ReadConfiguration(string Path){
+  ifstream ConfigFile;
+  ConfigFile.open(Path.c_str());
+  string LineBuffer;
+  string DataBuffer;
 
-  double Theta = 0 , Phi = 0 , R = 0 ;
-  double X = 0 , Y = 0 , Z = 0 ;
-  string Shape ;
-
-  bool check_Theta = false ;
-  bool check_Phi = false ;
-  bool check_R = false ;
-  bool check_Shape = false ;
+  double X,Y,Z;
   bool check_X = false ;
   bool check_Y = false ;
   bool check_Z = false ;      
@@ -153,12 +162,12 @@ void AGATA::ReadConfiguration(string Path){
   while (!ConfigFile.eof()) {
     getline(ConfigFile, LineBuffer);
 
-    //   If line is a Start Up AGATA bloc, Reading toggle to true      
-    string name = "AGATA";
+    //   If line is a Start Up TRex bloc, Reading toggle to true      
+    string name = "TRex";
 
     if (LineBuffer.compare(0, name.length(), name) == 0) {
       G4cout << "///" << G4endl           ;
-      G4cout << "AGATA found: " << G4endl   ;        
+      G4cout << "TRex found: " << G4endl   ;        
       ReadingStatus = true ;
     }
 
@@ -179,33 +188,6 @@ void AGATA::ReadConfiguration(string Path){
       else if (DataBuffer.compare(0, name.length(),name) == 0) {
         G4cout << "WARNING: Another Detector is find before standard sequence of Token, Error may occured in Telecope definition" << G4endl ;
         ReadingStatus = false ;
-      }
-
-      //Angle method
-      else if (DataBuffer.compare(0, 6, "THETA=") == 0) {
-        check_Theta = true;
-        ConfigFile >> DataBuffer ;
-        Theta = atof(DataBuffer.c_str()) ;
-        Theta = Theta * deg;
-        G4cout << "Theta:  " << Theta / deg << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
-        check_Phi = true;
-        ConfigFile >> DataBuffer ;
-        Phi = atof(DataBuffer.c_str()) ;
-        Phi = Phi * deg;
-        G4cout << "Phi:  " << Phi / deg << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 2, "R=") == 0) {
-        check_R = true;
-        ConfigFile >> DataBuffer ;
-        R = atof(DataBuffer.c_str()) ;
-        R = R * mm;
-        if(R==0)
-          R=1e-12*um;
-        G4cout << "R:  " << R/mm << G4endl;
       }
 
       //Position method
@@ -233,15 +215,12 @@ void AGATA::ReadConfiguration(string Path){
         G4cout << "Z:  " << Z / mm << G4endl;
       }
 
-
-      //General
-      else if (DataBuffer.compare(0, 6, "Shape=") == 0) {
-        check_Shape = true;
+      else if (DataBuffer.compare(0, 8, "Chamber=") == 0) {
         ConfigFile >> DataBuffer ;
-        Shape = DataBuffer ;
-        G4cout << "Shape:  " << Shape << G4endl;
+        if(DataBuffer=="1")
+          BuildChamber();
+        G4cout << "Adding TRex Chamber"<< G4endl;
       }
-
       ///////////////////////////////////////////////////
       //   If no Detector Token and no comment, toggle out
       else{
@@ -252,25 +231,11 @@ void AGATA::ReadConfiguration(string Path){
       /////////////////////////////////////////////////
       //   If All necessary information there, toggle out
 
-      if (( check_Theta && check_Phi && check_R && check_Shape)
-          ||    
-          ( check_X && check_Y && check_Z && check_Shape)){
-
-
+      if (check_X && check_Y && check_Z){
         // Convert Cartesian to Spherical (detector always face the target)
-        if (check_X){
-          R = sqrt (X*X+Y*Y+Z*Z);
-          Theta = acos(Z / (R) );
-          Phi = atan2(Y,X);
-        }
-
-        AddAGATA(R,Theta,Phi,Shape);
+        AddTRex(X,Y,Z);
 
         //   Reinitialisation of Check Boolean 
-        check_Theta = false ;
-        check_Phi = false ;
-        check_R = false ;
-        check_Shape = false ;
         check_X = false ;
         check_Y = false ;
         check_Z = false ;
@@ -284,97 +249,128 @@ void AGATA::ReadConfiguration(string Path){
 
 // Construct detector and inialise sensitive part.
 // Called After DetecorConstruction::AddDetector Method
-void AGATA::ConstructDetector(G4LogicalVolume* world){
-  for (unsigned short i = 0 ; i < m_R.size() ; i++) {
+void TRex::ConstructDetector(G4LogicalVolume* world){
+  BuildBarrelDetector();
+  for (unsigned short i = 0 ; i < m_X.size() ; i++) {
 
-    G4double wX = m_R[i] * sin(m_Theta[i] ) * cos(m_Phi[i] ) ;
-    G4double wY = m_R[i] * sin(m_Theta[i] ) * sin(m_Phi[i] ) ;
-    G4double wZ = m_R[i] * cos(m_Theta[i] ) ;
+    G4double wX = m_X[i];
+    G4double wY = m_Y[i];
+    G4double wZ = m_Z[i];
+
     G4ThreeVector Det_pos = G4ThreeVector(wX, wY, wZ) ;
-    // So the face of the detector is at R instead of the middle
-    Det_pos+=Det_pos.unit();
-    // Building Detector reference frame
-    G4double ii = cos(m_Theta[i]) * cos(m_Phi[i]);
-    G4double jj = cos(m_Theta[i]) * sin(m_Phi[i]);
-    G4double kk = -sin(m_Theta[i]);
-    G4ThreeVector Y(ii,jj,kk);
-    G4ThreeVector w = Det_pos.unit();
-    G4ThreeVector u = w.cross(Y);
-    G4ThreeVector v = w.cross(u);
-    v = v.unit();
-    u = u.unit();
 
-    G4RotationMatrix* Rot = new G4RotationMatrix(u,v,w);
-    if(m_Theta[i]>90*deg)
-      Rot->rotate(-72*deg,w);
-    else
-      Rot->rotate(72*deg,w);
+    G4RotationMatrix* Rot= new G4RotationMatrix();
 
-    BuildTripleCluster();
-    if(m_Shape[i] == "Square"){
-      G4Transform3D Trans(*Rot,Det_pos);
-      m_TripleCluster->MakeImprint(world,Trans,i+1);
+    if(wZ<0)
+      Rot->rotateY(180*deg);
+
+    if(wX>0){
+      Rot->rotateZ(-90*deg);
     }
+    else if(wX<0){
+      Rot->rotateZ(90*deg); 
+    }
+
+    else if(wY<0)
+      Rot->rotateZ(180*deg);
+
+    G4Transform3D Trans(*Rot,Det_pos);
+    m_BarrelDetector->MakeImprint(world,Trans,i+1);
+    // set a nicer name
+    std::vector< G4VPhysicalVolume * >::iterator it = m_BarrelDetector->GetVolumesIterator();
+    it+=m_BarrelDetector->GetImprintsCount()*4-1;
+    (*it)->SetName("TRex_E_Detector");
+    (*it)->SetCopyNo(i+1);
+    it--;
+    (*it)->SetName("TRex_E_PCB");
+    (*it)->SetCopyNo(i+1);
+    it--;
+    (*it)->SetName("TRex_DE_Detector");
+    (*it)->SetCopyNo(i+1);
+    it--;
+    (*it)->SetName("TRex_DE_PCB");
+    (*it)->SetCopyNo(i+1);
+
+  }
+
+  if(m_Chamber){
+    // Visual Attribute
+    G4VisAttributes* ChamberVisAtt
+      = new G4VisAttributes(G4Colour(0.0,0.4,0.5,0.2));
+    m_Chamber->SetVisAttributes(ChamberVisAtt);
+    new G4PVPlacement(new G4RotationMatrix(),G4ThreeVector(0,0,0),m_Chamber,"TRex_Chamber",world,false,0);
   }
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Add Detector branch to the EventTree.
 // Called After DetecorConstruction::AddDetector Method
-void AGATA::InitializeRootOutput(){
+void TRex::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
-  pTree->Branch("AGATA", "TAGATAData", &m_Event) ;
-  pTree->SetBranchAddress("AGATA", &m_Event) ;
+  pTree->Branch("TRex", "TTRexData", &m_Event) ;
+  pTree->SetBranchAddress("TRex", &m_Event) ;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
-void AGATA::ReadSensitive(const G4Event* event){
+void TRex::ReadSensitive(const G4Event* event){
   m_Event->Clear();
 
   ///////////
-  // Calorimeter scorer
-  G4THitsMap<G4double*>* CaloHitMap;
-  std::map<G4int, G4double**>::iterator Calo_itr;
+  // Striprimeter scorer
+  G4THitsMap<G4double*>* StripHitMap;
+  std::map<G4int, G4double**>::iterator Strip_itr;
 
-  G4int CaloCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("AGATAScorer/Calorimeter");
-  CaloHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CaloCollectionID));
+  G4int StripCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("TRexScorer/Barrel");
+  StripHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(StripCollectionID));
 
-  // Loop on the Calo map
-  for (Calo_itr = CaloHitMap->GetMap()->begin() ; Calo_itr != CaloHitMap->GetMap()->end() ; Calo_itr++){
+  // Loop on the Strip map
+  for (Strip_itr = StripHitMap->GetMap()->begin() ; Strip_itr != StripHitMap->GetMap()->end() ; Strip_itr++){
+    G4double* Info = *(Strip_itr->second);
 
-    G4double* Info = *(Calo_itr->second);
-    //(Info[0]/2.35)*((Info[0]*1.02)*pow((Info[0]*1.8),.5))
-    // double Energy = RandGauss::shoot(Info[0],((Info[0]*1000*1.02/2.35)*pow((Info[0]*1000*1.8),.5)) );
-    double Energy = RandGauss::shoot(Info[0],AGATA_NS::ResoEnergy);
-    if(Energy>AGATA_NS::EnergyThreshold){
-      double Time = RandGauss::shoot(Info[1],AGATA_NS::ResoTime);
-      int DetectorNbr = (int) Info[2];
-      m_Event->SetEnergy(DetectorNbr,Energy);
-      m_Event->SetTime(DetectorNbr,Time); 
+    double Energy = Info[0];
+
+    if(Energy>TRex_NS::EnergyThreshold){
+      double Time       = Info[1];
+      int DetNbr        = (int) Info[7];
+      int StripFront    = (int) Info[8];
+      int StripBack     = (int) Info[9];
+
+      m_Event->SetFrontEnergy(DetNbr,StripFront,RandGauss::shoot(Energy,TRex_NS::ResoEnergy));
+      m_Event->SetFrontTime(DetNbr,StripFront,RandGauss::shoot(Time, TRex_NS::ResoTime));
+
+      m_Event->SetBackEnergy(DetNbr,StripBack,RandGauss::shoot(Energy, TRex_NS::ResoEnergy));
+      m_Event->SetBackTime(DetNbr,StripBack,RandGauss::shoot(Time, TRex_NS::ResoTime));
+
+      // Interraction Coordinates
+      ms_InterCoord->SetDetectedPositionX(Info[2]) ;
+      ms_InterCoord->SetDetectedPositionY(Info[3]) ;
+      ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
+      ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
+      ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
+
     }
   }
   // clear map for next event
-  CaloHitMap->clear();
+  StripHitMap->clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 ////////////////////////////////////////////////////////////////   
-void AGATA::InitializeScorers() { 
+void TRex::InitializeScorers() { 
   // This check is necessary in case the geometry is reloaded
   bool already_exist = false; 
-  m_AGATAScorer = CheckScorer("AGATAScorer",already_exist) ;
+  m_TRexScorer = CheckScorer("TRexScorer",already_exist) ;
 
   if(already_exist) 
     return ;
 
   // Otherwise the scorer is initialised
-  vector<int> level; level.push_back(0);
-  G4VPrimitiveScorer* Calorimeter= new CALORIMETERSCORERS::PS_Calorimeter("Calorimeter",level, 0) ;
+  G4VPrimitiveScorer* Strip= new SILICONSCORERS::PS_Silicon_Rectangle("Barrel",0,50*mm,50*mm,16,16,0,"yz") ;
   //and register it to the multifunctionnal detector
-  m_AGATAScorer->RegisterPrimitive(Calorimeter);
-  G4SDManager::GetSDMpointer()->AddNewDetector(m_AGATAScorer) ;
+  m_TRexScorer->RegisterPrimitive(Strip);
+  G4SDManager::GetSDMpointer()->AddNewDetector(m_TRexScorer) ;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -383,8 +379,8 @@ void AGATA::InitializeScorers() {
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPS::VDetector* AGATA::Construct(){
-  return  (NPS::VDetector*) new AGATA();
+NPS::VDetector* TRex::Construct(){
+  return  (NPS::VDetector*) new TRex();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -395,8 +391,8 @@ extern"C" {
   class proxy_nps_plastic{
     public:
       proxy_nps_plastic(){
-        NPS::DetectorFactory::getInstance()->AddToken("AGATA","AGATA");
-        NPS::DetectorFactory::getInstance()->AddDetector("AGATA",AGATA::Construct);
+        NPS::DetectorFactory::getInstance()->AddToken("TRex","TRex");
+        NPS::DetectorFactory::getInstance()->AddDetector("TRex",TRex::Construct);
       }
   };
 
