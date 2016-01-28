@@ -52,7 +52,6 @@ void Analysis::Init() {
   // get reaction information
   myReaction = new NPL::Reaction();
   myReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
-  TargetThickness = m_DetectorManager->GetTargetThickness()*micrometer;
   OriginalBeamEnergy = myReaction->GetBeamEnergy();
 
   // target thickness
