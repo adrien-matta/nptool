@@ -271,7 +271,6 @@ void Miniball::ConstructDetector(G4LogicalVolume* world){
 
     G4RotationMatrix* Rot = new G4RotationMatrix(u,v,w);
     G4Transform3D Trans(*Rot,Det_pos);
-    Det_pos=G4ThreeVector(0,0,0);
     m_ClusterDetector->MakeImprint(world,Det_pos, Rot,i+1);
      // set a nicer name
     std::vector< G4VPhysicalVolume * >::iterator it = m_ClusterDetector->GetVolumesIterator();

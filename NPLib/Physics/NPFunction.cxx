@@ -48,21 +48,6 @@ TH1F* Read1DProfile(string filename,string HistName)
     // variable buffer
     double xb, wb;
     
-    // Read the file
-/*    while(!ASCII.eof()){
-      getline(ASCII,LineBuffer);
-      stringstream LineStream(LineBuffer);
-      // ignore comment lines
-      if (LineBuffer.compare(0,1,"%")!=0 && 
-          LineBuffer.compare(0,1,"#")!=0 &&
-          LineBuffer.compare(0,1,"@")!=0) {
-        LineStream >> xb >> wb ;
-        cout << xb << "\t" << wb << endl;
-        x.push_back(xb);
-        w.push_back(wb);
-      }
-    }
-*/
     // read the file
     Double_t xmin =  200;
     Double_t xmax = -200;
@@ -80,12 +65,10 @@ TH1F* Read1DProfile(string filename,string HistName)
        mysize++;
     }
     Double_t dx = (xmax - xmin) / (mysize);
-//    cout << xmin << "\t" << xmax << "\t" << size << "\t" << dx << endl;
+//    cout << xmin << "\t" << xmax << "\t" << mysize << "\t" << dx << endl;
 
     // fill histo
-//    h = new TH1F(HistName.c_str(), HistName.c_str(), size, xmin-dx/2, xmax+dx/2);
     h = new TH1F(HistName.c_str(), HistName.c_str(), mysize, xmin, xmax+dx);
-//    h = new TH1F(HistName.c_str(), HistName.c_str(), size, xmin, xmax);
     for (unsigned int i = 0; i < mysize; i++) {
       int bin = h->FindBin(x[i]);
       h->SetBinContent(bin,w[i]);

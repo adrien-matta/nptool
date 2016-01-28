@@ -48,6 +48,7 @@ using namespace std;
 // nptool headers
 #include "TInitialConditions.h"
 #include "TInteractionCoordinates.h"
+//#include "NPDetectorManager.h"
 #include "Reaction.h"
 using namespace NPL;
 
@@ -78,14 +79,22 @@ void ShowResults()
 }
 
 
-void CountingRates(Double_t ibeam, Double_t ubt)
+void CountingRates(Double_t ibeam = 1e5, Double_t ubt = 30)
 {
    // load event generator file
    NPL::Reaction *reaction = new NPL::Reaction();
+   Reaction *reaction = new Reaction();
    reaction->ReadConfigurationFile("30Pdp.reaction");
 //   reaction->ReadConfigurationFile("11Be_d3He.reaction");
    // get angular distribution
    TH1F *dsig = reaction->GetCrossSectionHist();
    dsig->Draw();
+   // calculate total cross section
+   Double_t stot = reaction->GetTotalCrossSection();
    cout << "total cross section = " << reaction->GetTotalCrossSection() << " mb" << endl;
+
+   // get target thickness
+//   NPL::DetectorManager* myDetector = new NPL::DetectorManager();
+//   myDetector->ReadConfigurationFile("MUGAST_Manu.detector");
+
 }
