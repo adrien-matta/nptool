@@ -300,7 +300,7 @@ void TRex::ConstructDetector(G4LogicalVolume* world){
     G4VisAttributes* ChamberVisAtt
       = new G4VisAttributes(G4Colour(0.0,0.4,0.5,0.2));
     m_Chamber->SetVisAttributes(ChamberVisAtt);
-    new G4PVPlacement(new G4RotationMatrix(),G4ThreeVector(0,0,0),m_Chamber,"TRex_Chamber",world,false,0);
+    new G4PVPlacement(new G4RotationMatrix(),G4ThreeVector(0,0,50),m_Chamber,"TRex_Chamber",world,false,0);
   }
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
