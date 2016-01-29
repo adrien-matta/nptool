@@ -555,9 +555,9 @@ void TComptonTelescopePhysics::AddParameterToCalibrationManager()
 void TComptonTelescopePhysics::InitializeRootInputRaw()
 {
    TChain* inputChain = RootInput::getInstance()->GetChain();
-   inputChain->SetBranchStatus("ComptonTelescope",    true);
-   inputChain->SetBranchStatus("fComptonTelescope_*", true);
-   inputChain->SetBranchAddress("ComptonTelescope",   &m_EventData);
+   inputChain->SetBranchStatus("ComptonTelescope", true);
+   inputChain->SetBranchStatus("fCT_*", true);
+   inputChain->SetBranchAddress("ComptonTelescope", &m_EventData);
 }
 
 
