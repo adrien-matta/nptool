@@ -538,12 +538,12 @@ void TComptonTelescopePhysics::AddParameterToCalibrationManager()
 
    for (int i = 0; i < m_NumberOfDetectors; ++i) {
       for (int j = 0; j < m_NumberOfStrips; ++j) {
-         Cal->AddParameter("COMPTONTELESCOPE", "D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_E", "COMPTONTELESCOPE_D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_E");
-         Cal->AddParameter("COMPTONTELESCOPE", "D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_T", "COMPTONTELESCOPE_D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j+1)+"_T");
+         Cal->AddParameter("COMPTONTELESCOPE", "D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j)+"_E", "COMPTONTELESCOPE_D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j)+"_E");
+         Cal->AddParameter("COMPTONTELESCOPE", "D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j)+"_T", "COMPTONTELESCOPE_D"+ NPL::itoa(i+1)+"_STRIP_FRONT"+ NPL::itoa(j)+"_T");
       }
       for (int j = 0; j < m_NumberOfStrips; ++j) {
-         Cal->AddParameter("COMPTONTELESCOPE", "D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j+1)+"_E",  "COMPTONTELESCOPE_D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j+1)+"_E");
-         Cal->AddParameter("COMPTONTELESCOPE", "D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j+1)+"_T",  "COMPTONTELESCOPE_D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j+1)+"_T");
+         Cal->AddParameter("COMPTONTELESCOPE", "D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j)+"_E",  "COMPTONTELESCOPE_D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j)+"_E");
+         Cal->AddParameter("COMPTONTELESCOPE", "D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j)+"_T",  "COMPTONTELESCOPE_D"+ NPL::itoa(i+1)+"_STRIP_BACK"+ NPL::itoa(j)+"_T");
       }
    }
 
