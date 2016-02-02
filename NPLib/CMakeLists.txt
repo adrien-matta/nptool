@@ -35,6 +35,9 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*Clang.*")
   if( UNIX AND NOT APPLE )
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
   endif()
+  if( APPLE AND CLANG_VERSION_MAJOR VERSION_LESS 5)
+     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+  endif()
 endif()
 
 
