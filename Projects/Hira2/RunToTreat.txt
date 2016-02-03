@@ -1,5 +1,6 @@
 TTreeName 
 	SimulatedTree
 RootFileName 
-	../../Outputs/Simulation/42S_dp_gs.root
-  ../../Outputs/Simulation/42S_dp_1st.root
+	../../Outputs/Simulation/test.root
+  %../../Outputs/Simulation/12Be_pt_iso.root
+  %../../Outputs/Simulation/12Be_pt_1st.root

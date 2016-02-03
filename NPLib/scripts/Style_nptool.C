@@ -39,7 +39,7 @@ void Style_nptool(){
   //style_nptool->SetOptFit(0);
 
   // x axis
-  style_nptool->SetTitleXSize(0.06);
+  style_nptool->SetTitleXSize(0.07);
   style_nptool->SetTitleXOffset(1.0);     
   style_nptool->SetLabelOffset(0.1,"X");   
   style_nptool->SetLabelSize(0.04,"X");
@@ -52,7 +52,7 @@ void Style_nptool(){
 
   // y axis
     //style_nptool->GetYaxis()->CenterTitle();
-  style_nptool->SetTitleYSize(0.06);  
+  style_nptool->SetTitleYSize(0.07);
   style_nptool->SetTitleYOffset(1.1);
   style_nptool->SetLabelOffset(0.1,"Y");
   style_nptool->SetLabelSize(0.04,"Y");

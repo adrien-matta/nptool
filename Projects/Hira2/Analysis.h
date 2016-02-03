@@ -61,6 +61,8 @@ private:
     double X,Y,Z;
     double TelescopeNumber;
     double EnergyThreshold;
+    double X_target;
+    double Y_target;
     
     
     
@@ -72,6 +74,10 @@ private:
     
     TF1* f_proton;
     NPL::EnergyLoss Proton_CsI  ;
+    NPL::EnergyLoss Triton_CD2  ;
+    NPL::EnergyLoss Triton_CH2  ;
+    NPL::EnergyLoss Deuteron_CH2  ;
+    NPL::EnergyLoss He3_CD2;
     
     THiraPhysics* Hira;
     TInitialConditions* InitialConditions;
