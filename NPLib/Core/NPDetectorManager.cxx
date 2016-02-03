@@ -28,7 +28,10 @@
 #include <cstdlib>
 #include <limits>
 #include <set>
+
+#if __cplusplus > 199711L 
 #include <chrono>
+#endif
 
 // NPL
 #include "NPDetectorFactory.h"
