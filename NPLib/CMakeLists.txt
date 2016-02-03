@@ -29,17 +29,23 @@ set(CMAKE_INSTALL_MESSAGE LAZY)
 # look for Root
 include("ressources/CMake/Root.cmake")
 
+# Check for user disabling of c++11 support
+string(COMPARE EQUAL "${CPP11}" "no" nocpp11)
+if(nocpp11)
+ message(" -> C++11 support disable")
+endif()
+
+
 # If the compiler is Clang, silence the unrecognised flags
 if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*Clang.*")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments -fcolor-diagnostics")
   if( UNIX AND NOT APPLE )
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
   endif()
-  if( APPLE AND CLANG_VERSION_MAJOR VERSION_LESS 5)
+  if( APPLE AND CLANG_VERSION_MAJOR VERSION_LESS 5 AND NOT nocpp11)
      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
   endif()
 endif()
-
 
 # Adjust the compiler language flag
 set(NOCPPFLAGS true)
@@ -47,11 +53,6 @@ if(${CMAKE_CXX_FLAGS} MATCHES ".*std=.*11")
   set(NOCPPFLAGS false)
 elseif(${CMAKE_CXX_FLAGS} MATCHES ".*std=.*0x")
   set(NOCPPFLAGS false) 
-endif()
-
-string(COMPARE EQUAL "${CPP11}" "no" nocpp11)
-if(nocpp11)
- message(" -> C++11 support disable")
 endif()
 
 if(NOCPPFLAGS)
