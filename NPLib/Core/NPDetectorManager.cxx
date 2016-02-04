@@ -126,22 +126,18 @@ void NPL::DetectorManager::ReadConfigurationFile(string Path)   {
       bool ReadingStatusTarget = true;
       while (ReadingStatusTarget) {
         ConfigFile >> DataBuffer;
-
         // Search for comment Symbol %
         if (DataBuffer.compare(0, 1, "%") == 0) {ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );getline(ConfigFile, LineBuffer);}
 
         else if (DataBuffer.compare(0, 10, "THICKNESS=") == 0) {
           check_Thickness = true ;
           ConfigFile >> DataBuffer;
-          //               m_TargetThickness = atof(DataBuffer.c_str()) * micrometer;
           m_TargetThickness = atof(DataBuffer.c_str());
           cout << "Target Thickness: " << m_TargetThickness << endl;
         }
 
         else if (DataBuffer.compare(0, 6, "ANGLE=") == 0) {
-          //               check_Angle = true ;
           ConfigFile >> DataBuffer;
-          //               m_TargetAngle = atof(DataBuffer.c_str()) * deg;
           m_TargetAngle = atof(DataBuffer.c_str());
           cout << "Target Angle: " << m_TargetAngle << endl;
         }
@@ -149,7 +145,6 @@ void NPL::DetectorManager::ReadConfigurationFile(string Path)   {
         else if (DataBuffer.compare(0, 7, "RADIUS=") == 0) {
           check_Radius = true ;
           ConfigFile >> DataBuffer;
-          //               m_TargetRadius = atof(DataBuffer.c_str()) * mm;
           m_TargetRadius = atof(DataBuffer.c_str());
           cout << "Target Radius: " <<  m_TargetRadius << endl;
         }
@@ -160,6 +155,12 @@ void NPL::DetectorManager::ReadConfigurationFile(string Path)   {
           m_TargetMaterial = DataBuffer;
           cout << "Target Material: " << m_TargetMaterial << endl;
         }
+
+        else if (DataBuffer.compare(0, 17, "DENSITY=") == 0) {
+          ConfigFile >> DataBuffer;
+          /* Do Nothing */
+        }
+
 
         else if (DataBuffer.compare(0, 17, "WINDOWSTHICKNESS=") == 0) {
         check_WinThickness = true ;
@@ -179,7 +180,6 @@ void NPL::DetectorManager::ReadConfigurationFile(string Path)   {
         else if (DataBuffer.compare(0, 2, "X=") == 0) {
           check_X = true ;
           ConfigFile >> DataBuffer;
-          //               m_TargetX = atoi(DataBuffer.c_str()) * mm;
           m_TargetX = atoi(DataBuffer.c_str());
           cout << "Target Coordinates (mm): ( " << m_TargetX << " ; ";
         }
@@ -187,7 +187,6 @@ void NPL::DetectorManager::ReadConfigurationFile(string Path)   {
         else if (DataBuffer.compare(0, 2, "Y=") == 0) {
           check_Y = true ;
           ConfigFile >> DataBuffer;
-          //               m_TargetY = atoi(DataBuffer.c_str()) * mm;
           m_TargetY = atoi(DataBuffer.c_str());
           cout << m_TargetY << " ; ";
         }
@@ -195,7 +194,6 @@ void NPL::DetectorManager::ReadConfigurationFile(string Path)   {
         else if (DataBuffer.compare(0, 2, "Z=") == 0) {
           check_Z = true ;
           ConfigFile >> DataBuffer;
-          //               m_TargetZ = atoi(DataBuffer.c_str()) * mm;
           m_TargetZ = atoi(DataBuffer.c_str());
           cout  << m_TargetZ << " )" << endl;
         }
