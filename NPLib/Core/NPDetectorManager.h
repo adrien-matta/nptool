@@ -96,7 +96,7 @@ namespace NPL{
    
        #endif
 
-    private:
+    private: // Target property
       double m_TargetThickness;
       double m_TargetAngle;
       double m_TargetRadius;
@@ -104,19 +104,26 @@ namespace NPL{
       double m_TargetX;
       double m_TargetY;
       double m_TargetZ;
+  
+      // Additional info for cryogenic target
+      double m_WindowsThickness;
+      string m_WindowsMaterial;
+  
 
       // Special treatment for the target for the moment
       // If necessary we should change it to treat it as 
       // a full "detector"
 
     public:
-      double GetTargetThickness()     {return m_TargetThickness;}
-      string GetTargetMaterial()      {return m_TargetMaterial;}
-      double GetTargetRadius()        {return m_TargetRadius;}
-      double GetTargetAngle()         {return m_TargetAngle;}
-      double GetTargetX()             {return m_TargetX;}
-      double GetTargetY()             {return m_TargetY;}
-      double GetTargetZ()             {return m_TargetZ;} 
+      double GetTargetThickness()       {return m_TargetThickness;}
+      string GetTargetMaterial()        {return m_TargetMaterial;}
+      double GetWindowsThickness(){return m_WindowsThickness;}
+      string GetWindowsMaterial() {return m_WindowsMaterial;}
+      double GetTargetRadius()          {return m_TargetRadius;}
+      double GetTargetAngle()           {return m_TargetAngle;}
+      double GetTargetX()               {return m_TargetX;}
+      double GetTargetY()               {return m_TargetY;}
+      double GetTargetZ()               {return m_TargetZ;} 
     };
 }
 

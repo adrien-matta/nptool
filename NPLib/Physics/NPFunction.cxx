@@ -247,4 +247,190 @@ void RandomGaussian2D(double MeanX, double MeanY, double SigmaX, double SigmaY, 
   }
 }
 
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+string ChangeNameToG4Standard(string OriginalName){
+  string NumberOfMass ;
+  string Nucleid;
+  
+  for (unsigned int i = 0; i < OriginalName.length(); i++) {
+    ostringstream character;
+    character << OriginalName[i];
+    if      (character.str()=="0") NumberOfMass+="0";
+    else if (character.str()=="1") NumberOfMass+="1";
+    else if (character.str()=="2") NumberOfMass+="2";
+    else if (character.str()=="3") NumberOfMass+="3";
+    else if (character.str()=="4") NumberOfMass+="4";
+    else if (character.str()=="5") NumberOfMass+="5";
+    else if (character.str()=="6") NumberOfMass+="6";
+    else if (character.str()=="7") NumberOfMass+="7";
+    else if (character.str()=="8") NumberOfMass+="8";
+    else if (character.str()=="9") NumberOfMass+="9";
+    
+    else if (character.str()=="A") Nucleid+="A";
+    else if (character.str()=="B") Nucleid+="B";
+    else if (character.str()=="C") Nucleid+="C";
+    else if (character.str()=="D") Nucleid+="D";
+    else if (character.str()=="E") Nucleid+="E";
+    else if (character.str()=="F") Nucleid+="F";
+    else if (character.str()=="G") Nucleid+="G";
+    else if (character.str()=="H") Nucleid+="H";
+    else if (character.str()=="I") Nucleid+="I";
+    else if (character.str()=="J") Nucleid+="J";
+    else if (character.str()=="K") Nucleid+="K";
+    else if (character.str()=="L") Nucleid+="L";
+    else if (character.str()=="M") Nucleid+="M";
+    else if (character.str()=="N") Nucleid+="N";
+    else if (character.str()=="O") Nucleid+="O";
+    else if (character.str()=="P") Nucleid+="P";
+    else if (character.str()=="Q") Nucleid+="Q";
+    else if (character.str()=="R") Nucleid+="R";
+    else if (character.str()=="S") Nucleid+="S";
+    else if (character.str()=="T") Nucleid+="T";
+    else if (character.str()=="U") Nucleid+="U";
+    else if (character.str()=="V") Nucleid+="V";
+    else if (character.str()=="W") Nucleid+="W";
+    else if (character.str()=="X") Nucleid+="X";
+    else if (character.str()=="Y") Nucleid+="Y";
+    else if (character.str()=="Z") Nucleid+="Z";
+    
+    else if (character.str()=="a") Nucleid+="a";
+    else if (character.str()=="b") Nucleid+="b";
+    else if (character.str()=="c") Nucleid+="c";
+    else if (character.str()=="d") Nucleid+="d";
+    else if (character.str()=="e") Nucleid+="e";
+    else if (character.str()=="f") Nucleid+="f";
+    else if (character.str()=="g") Nucleid+="g";
+    else if (character.str()=="h") Nucleid+="h";
+    else if (character.str()=="i") Nucleid+="i";
+    else if (character.str()=="j") Nucleid+="j";
+    else if (character.str()=="k") Nucleid+="k";
+    else if (character.str()=="l") Nucleid+="l";
+    else if (character.str()=="m") Nucleid+="m";
+    else if (character.str()=="n") Nucleid+="n";
+    else if (character.str()=="o") Nucleid+="o";
+    else if (character.str()=="p") Nucleid+="p";
+    else if (character.str()=="q") Nucleid+="q";
+    else if (character.str()=="r") Nucleid+="r";
+    else if (character.str()=="s") Nucleid+="s";
+    else if (character.str()=="t") Nucleid+="t";
+    else if (character.str()=="u") Nucleid+="u";
+    else if (character.str()=="v") Nucleid+="v";
+    else if (character.str()=="w") Nucleid+="w";
+    else if (character.str()=="x") Nucleid+="x";
+    else if (character.str()=="y") Nucleid+="y";
+    else if (character.str()=="z") Nucleid+="z";
+  }
+  
+  // Special case for light particles
+  string FinalName=Nucleid+NumberOfMass;
+  if      (FinalName=="H1")       FinalName="proton";
+  else if (FinalName=="H2")       FinalName="deuteron";
+  else if (FinalName=="H3")       FinalName="triton";
+  else if (FinalName=="He4")      FinalName="alpha";
+  else if (FinalName=="p")        FinalName="proton";
+  else if (FinalName=="d")        FinalName="deuteron";
+  else if (FinalName=="t")        FinalName="triton";
+  else if (FinalName=="a")        FinalName="alpha";
+  else if (FinalName=="proton")   FinalName="proton";
+  else if (FinalName=="deuteron") FinalName="deuteron";
+  else if (FinalName=="triton")   FinalName="triton";
+  else if (FinalName=="alpha")    FinalName="alpha";
+  else if (FinalName=="n")        FinalName="neutron";
+  else if (FinalName=="neutron")  FinalName="neutron";
+  return(FinalName);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+string ChangeNameFromG4Standard(string OriginalName){
+  string NumberOfMass ;
+  string Nucleid;
+  
+  for (unsigned int i = 0; i < OriginalName.length(); i++) {
+    ostringstream character;
+    character << OriginalName[i];
+    if      (character.str()=="0") NumberOfMass+="0";
+    else if (character.str()=="1") NumberOfMass+="1";
+    else if (character.str()=="2") NumberOfMass+="2";
+    else if (character.str()=="3") NumberOfMass+="3";
+    else if (character.str()=="4") NumberOfMass+="4";
+    else if (character.str()=="5") NumberOfMass+="5";
+    else if (character.str()=="6") NumberOfMass+="6";
+    else if (character.str()=="7") NumberOfMass+="7";
+    else if (character.str()=="8") NumberOfMass+="8";
+    else if (character.str()=="9") NumberOfMass+="9";
+    
+    else if (character.str()=="A") Nucleid+="A";
+    else if (character.str()=="B") Nucleid+="B";
+    else if (character.str()=="C") Nucleid+="C";
+    else if (character.str()=="D") Nucleid+="D";
+    else if (character.str()=="E") Nucleid+="E";
+    else if (character.str()=="F") Nucleid+="F";
+    else if (character.str()=="G") Nucleid+="G";
+    else if (character.str()=="H") Nucleid+="H";
+    else if (character.str()=="I") Nucleid+="I";
+    else if (character.str()=="J") Nucleid+="J";
+    else if (character.str()=="K") Nucleid+="K";
+    else if (character.str()=="L") Nucleid+="L";
+    else if (character.str()=="M") Nucleid+="M";
+    else if (character.str()=="N") Nucleid+="N";
+    else if (character.str()=="O") Nucleid+="O";
+    else if (character.str()=="P") Nucleid+="P";
+    else if (character.str()=="Q") Nucleid+="Q";
+    else if (character.str()=="R") Nucleid+="R";
+    else if (character.str()=="S") Nucleid+="S";
+    else if (character.str()=="T") Nucleid+="T";
+    else if (character.str()=="U") Nucleid+="U";
+    else if (character.str()=="V") Nucleid+="V";
+    else if (character.str()=="W") Nucleid+="W";
+    else if (character.str()=="X") Nucleid+="X";
+    else if (character.str()=="Y") Nucleid+="Y";
+    else if (character.str()=="Z") Nucleid+="Z";
+    
+    else if (character.str()=="a") Nucleid+="a";
+    else if (character.str()=="b") Nucleid+="b";
+    else if (character.str()=="c") Nucleid+="c";
+    else if (character.str()=="d") Nucleid+="d";
+    else if (character.str()=="e") Nucleid+="e";
+    else if (character.str()=="f") Nucleid+="f";
+    else if (character.str()=="g") Nucleid+="g";
+    else if (character.str()=="h") Nucleid+="h";
+    else if (character.str()=="i") Nucleid+="i";
+    else if (character.str()=="j") Nucleid+="j";
+    else if (character.str()=="k") Nucleid+="k";
+    else if (character.str()=="l") Nucleid+="l";
+    else if (character.str()=="m") Nucleid+="m";
+    else if (character.str()=="n") Nucleid+="n";
+    else if (character.str()=="o") Nucleid+="o";
+    else if (character.str()=="p") Nucleid+="p";
+    else if (character.str()=="q") Nucleid+="q";
+    else if (character.str()=="r") Nucleid+="r";
+    else if (character.str()=="s") Nucleid+="s";
+    else if (character.str()=="t") Nucleid+="t";
+    else if (character.str()=="u") Nucleid+="u";
+    else if (character.str()=="v") Nucleid+="v";
+    else if (character.str()=="w") Nucleid+="w";
+    else if (character.str()=="x") Nucleid+="x";
+    else if (character.str()=="y") Nucleid+="y";
+    else if (character.str()=="z") Nucleid+="z";
+  }
+  
+  // Special case for light particles
+  string FinalName=NumberOfMass+Nucleid;
+  if      (FinalName=="H1")       FinalName="proton";
+  else if (FinalName=="H2")       FinalName="deuteron";
+  else if (FinalName=="H3")       FinalName="triton";
+  else if (FinalName=="He4")      FinalName="alpha";
+  else if (FinalName=="p")        FinalName="proton";
+  else if (FinalName=="d")        FinalName="deuteron";
+  else if (FinalName=="t")        FinalName="triton";
+  else if (FinalName=="a")        FinalName="alpha";
+  else if (FinalName=="proton")   FinalName="proton";
+  else if (FinalName=="deuteron") FinalName="deuteron";
+  else if (FinalName=="triton")   FinalName="triton";
+  else if (FinalName=="alpha")    FinalName="alpha";
+  else if (FinalName=="n")        FinalName="neutron";
+  else if (FinalName=="neutron")  FinalName="neutron";
+  return(FinalName);
+}
 }

@@ -41,7 +41,8 @@ using namespace std;
 #include "TRandom2.h"
 
 namespace NPL{
-  
+
+
   // Check the type of Filename (root or ASCII) and extract build/extract a 1D histogramm
   TH1F* Read1DProfile(string filename,string HistName);
   
@@ -54,6 +55,10 @@ namespace NPL{
   bool OpenASCIIorROOTFile(string filename, ifstream &ASCII , TFile &ROOT);
   
   void RandomGaussian2D(double MeanX, double MeanY, double SigmaX, double SigmaY, double &X, double &Y, double NumberOfSigma= 10000);
+  
+  // Change nucleus name from G4 standard to Physics standard (11Li vs Li11)
+  string ChangeNameToG4Standard(string name);
+  string ChangeNameFromG4Standard(string name);
 }
 
 #endif

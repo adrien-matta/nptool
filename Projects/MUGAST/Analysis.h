@@ -60,9 +60,13 @@ class Analysis: public NPL::VAnalysis{
   EnergyLoss LightAl;
   EnergyLoss LightSi;
   EnergyLoss BeamCD2;
+  EnergyLoss* BeamWindow;
+  EnergyLoss* LightWindow;
+
   TVector3 BeamImpact;
   
   double TargetThickness ;
+  double WindowsThickness;
   // Beam Energy
   double OriginalBeamEnergy ; // AMEV
                                                            // intermediate variable

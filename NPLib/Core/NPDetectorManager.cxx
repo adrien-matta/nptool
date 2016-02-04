@@ -55,6 +55,8 @@ NPL::DetectorManager::DetectorManager(){
     if(NPOptionManager::getInstance()->GetCheckHistoOption())
       m_CheckSpectra = &NPL::VDetector::CheckSpectra ;
   }
+  m_WindowsThickness=0;
+  m_WindowsMaterial="";
 }
 
 
@@ -118,6 +120,8 @@ void NPL::DetectorManager::ReadConfigurationFile(string Path)   {
       bool check_X         = false;
       bool check_Y         = false;
       bool check_Z         = false;
+      bool check_WinMaterial = false;
+      bool check_WinThickness = false ;
 
       bool ReadingStatusTarget = true;
       while (ReadingStatusTarget) {
@@ -155,6 +159,21 @@ void NPL::DetectorManager::ReadConfigurationFile(string Path)   {
           ConfigFile >> DataBuffer;
           m_TargetMaterial = DataBuffer;
           cout << "Target Material: " << m_TargetMaterial << endl;
+        }
+
+        else if (DataBuffer.compare(0, 17, "WINDOWSTHICKNESS=") == 0) {
+        check_WinThickness = true ;
+        ConfigFile >> DataBuffer;
+        m_WindowsThickness = atof(DataBuffer.c_str());
+        cout << "Windows Thickness: " 
+            << m_WindowsThickness << " um" << endl   ;
+        }
+
+        else if (DataBuffer.compare(0, 16, "WINDOWSMATERIAL=") == 0) {
+        check_WinMaterial = true ;
+        ConfigFile >> DataBuffer;
+        m_WindowsMaterial = DataBuffer;
+        cout << "Windows Material: " << m_WindowsMaterial << endl;
         }
 
         else if (DataBuffer.compare(0, 2, "X=") == 0) {
