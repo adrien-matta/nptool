@@ -47,7 +47,7 @@ void Analysis::Init() {
   LightCD2 = EnergyLoss("proton_CD2.G4table","G4Table",100 );
   LightAl = EnergyLoss("proton_Al.G4table","G4Table",100);
   LightSi = EnergyLoss("proton_Si.G4table","G4Table",100);
-  BeamCD2 = EnergyLoss("P30_CD2.G4table","G4Table",100);
+  BeamCD2 = EnergyLoss("Li11_CD2.G4table","G4Table",100);
 
   // get reaction information
   myReaction = new NPL::Reaction();
