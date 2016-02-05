@@ -85,9 +85,15 @@ PhysicsList::PhysicsList() : G4VModularPhysicsList(){
   if(m_StoppingPhysics)
     m_PhysList["StoppingPhysics"]=new G4StoppingPhysics();
 
-  if(m_HadronPhysicsQGSP_BIC_HP)
-    m_PhysList["HadronPhysicsQGSP_BIC_HP"] = new G4HadronPhysicsQGSP_BIC_HP();
+  if(m_HadronPhysicsQGSP_BIC_HP){
+    #if NPS_GEANT4_VERSION_MAJOR > 9
+      m_PhysList["HadronPhysicsQGSP_BIC_HP"] = new G4HadronPhysicsQGSP_BIC_HP();
+    #else
+      std::cout << "\r\032[1;31m Warning: physics list HadronPhysicsQGSP_BIC_HP require Geant4 10, process not activated \033[0m" <<std::endl;  
+    #endif
 
+    m_PhysList["HadronPhysicsQGSP_BIC_HP"] = new G4HadronPhysicsQGSP_BIC_HP();
+  }
   // Optical Photon for scintillator simulation
     if(m_OpticalPhysics){
         opticalPhysicsList = new G4OpticalPhysics(0);

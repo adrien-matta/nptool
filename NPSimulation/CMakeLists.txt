@@ -16,8 +16,22 @@ set(CMAKE_INSTALL_MESSAGE LAZY)
 
 # Finding Geant 4
 find_package(Geant4 REQUIRED ui_all vis_all)
-message(${Geant4_USE_FILE})
+
+# Rely on name of the file to set the version  
+string(REGEX MATCH "Geant4-*.*.*/" G4Version "${Geant4_USE_FILE}")
+string(REPLACE "Geant4-" "" G4Version "${G4Version}")
+string(REPLACE "/" "" G4Version "${G4Version}")
+string(FIND "${G4Version}" "." pos)
+string(SUBSTRING "${G4Version}" "0" "${pos}" NPS_GEANT4_VERSION_MAJOR)
+string(REPLACE "${NPS_GEANT4_VERSION_MAJOR}." "" G4Version "${G4Version}")
+string(FIND "${G4Version}" "." pos)
+string(SUBSTRING "${G4Version}" "0" "${pos}" NPS_GEANT4_VERSION_MINOR)
+string(REPLACE "${NPS_GEANT4_VERSION_MINOR}." "" G4Version "${G4Version}")
+set(NPS_GEANT4_VERSION_PATCH "${G4Version}")
+message ("Geant4 found, Version : ${NPS_GEANT4_VERSION_MAJOR}.${NPS_GEANT4_VERSION_MINOR}.${NPS_GEANT4_VERSION_PATCH}")
+
 include(${Geant4_USE_FILE}) 
+add_definitions(${Geant4_DEFINITIONS})    
 
 # Finding NPLib
 find_package(NPLib)
@@ -74,6 +88,9 @@ if(Geant4_gdml_FOUND)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNPS_GDML")     
 endif()
 
+
+# set the Geant4 version info
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNPS_GEANT4_VERSION_MAJOR=${NPS_GEANT4_VERSION_MAJOR}") 
 
 # If the compiler is Clang, silence the unrecognised flags
 if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*Clang.*")

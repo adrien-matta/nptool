@@ -56,7 +56,9 @@
 #include "G4HadronElasticPhysics.hh"
 #include "G4HadronElasticPhysicsHP.hh"
 #include "G4IonBinaryCascadePhysics.hh"
+#if NPS_GEANT4_VERSION_MAJOR > 9
 #include "G4HadronPhysicsQGSP_BIC_HP.hh"
+#endif
 #include "G4HadronPhysicsQGSP_BIC.hh"
 class G4VPhysicsConstructor;
 
