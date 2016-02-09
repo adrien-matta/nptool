@@ -58,7 +58,9 @@ namespace NPL {
     const char* fSpinParity;   // Nucleus spin and parity
     double      fSpin;         // Nucleus spin
     const char* fParity;      // Nucleus parity
-                              //kinematic properties
+    double      fLifeTime; // life time
+
+    //kinematic properties
     double fKineticEnergy;
     double fBeta;
     double fGamma;
@@ -93,6 +95,7 @@ namespace NPL {
     const char*		GetSpinParity()		const				{return fSpinParity;}
     double			GetSpin()			const				{return fSpin;}
     const char*		GetParity()			const				{return fParity;}
+    double      GetLifeTime() const {return fLifeTime;}
     double			GetEnergy()			const				{return fKineticEnergy;}
     double			GetBrho()			const				{return fBrho;}
     double			GetTimeOfFlight()	const				{return fTimeOfFlight;}
@@ -107,6 +110,7 @@ namespace NPL {
     void				SetSpinParity(const char* spinparity)	{fSpinParity = spinparity;}
     void				SetSpin(double spin)					{fSpin = spin;}
     void				SetParity(const char* parity)			{fParity = parity;}
+    void        SetLifeTime(double LifeTime) {fLifeTime=LifeTime;}
     void				SetKineticEnergy(double energy)			{fKineticEnergy = energy; EnergyToBrho(); EnergyToTof(); EnergyToBeta(); BetaToGamma();BetaToVelocity();}
     void				SetBrho(double brho)					{fBrho = brho; BrhoToEnergy(); BrhoToTof(); EnergyToBeta(); BetaToGamma();BetaToVelocity();}
     void				SetTimeOfFlight(double tof)				{fTimeOfFlight = tof; TofToEnergy(); TofToBrho(); EnergyToBeta(); BetaToGamma();BetaToVelocity();}

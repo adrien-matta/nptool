@@ -58,6 +58,7 @@ Nucleus::Nucleus()
   fSpinParity= "";
   fSpin= 0;
   fParity= "";
+  fLifeTime = -1;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
@@ -166,6 +167,51 @@ void Nucleus::Extract(const char* line)
   string s_excess = ligne.substr(18,10);
   fMassExcess = atof(s_excess.data());
 
+  // life time
+  string s_lt_units = ligne.substr(69,3); 
+  string s_LifeTime = ligne.substr(57,12);
+  // Remove space
+  s_LifeTime.erase( std::remove_if( s_LifeTime.begin(), s_LifeTime.end(), ::isspace ), s_LifeTime.end() );
+  s_lt_units.erase( std::remove_if( s_lt_units.begin(), s_lt_units.end(), ::isspace ), s_lt_units.end() );
+
+  if(s_LifeTime=="stbl")
+    fLifeTime=-1;
+  else
+    fLifeTime=atof(s_LifeTime.data());
+
+  if(s_lt_units=="ms")
+    fLifeTime*=1e-3;
+  else if(s_lt_units=="us")
+    fLifeTime*=1e-6;
+  else if(s_lt_units=="ns")
+    fLifeTime*=1e-9;
+  else if(s_lt_units=="ps")
+    fLifeTime*=1e-12;
+  else if(s_lt_units=="fs")
+    fLifeTime*=1e-15;
+  else if(s_lt_units=="as")
+    fLifeTime*=1e-18;
+  else if(s_lt_units=="zs")
+    fLifeTime*=1e-21;
+  else if(s_lt_units=="zs")
+    fLifeTime*=1e-23;
+  else if(s_lt_units=="m")
+    fLifeTime*=60;
+  else if(s_lt_units=="h")
+    fLifeTime*=3600;
+  else if(s_lt_units=="d")
+    fLifeTime*=3600*24;
+  else if(s_lt_units=="y")
+    fLifeTime*=3600*24*365.25;
+  else if(s_lt_units=="ky")
+    fLifeTime*=3600*24*365.25*1e3;
+  else if(s_lt_units=="My")
+    fLifeTime*=3600*24*365.25*1e6;
+  else if(s_lt_units=="Gy")
+    fLifeTime*=3600*24*365.25*1e9;
+  else if(s_lt_units=="Py")
+    fLifeTime*=3600*24*365.25*1e12;
+  
   // spin and parity
   string s_spinparity = ligne.substr(79,14);
   fSpinParity = s_spinparity.data();
