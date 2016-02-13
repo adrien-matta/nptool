@@ -218,7 +218,7 @@ string ParticleStack::ChangeNameToG4Standard(string OriginalName){
   // Special case for light particles
   string FinalName=Nucleid+NumberOfMass;
   if      (FinalName=="H1")       FinalName="proton";
-  else if (FinalName=="H2")       FinalName="deuteron";
+//  else if (FinalName=="H2")       FinalName="deuteron";
   else if (FinalName=="H3")       FinalName="triton";
   else if (FinalName=="He4")      FinalName="alpha";
   else if (FinalName=="p")        FinalName="proton";

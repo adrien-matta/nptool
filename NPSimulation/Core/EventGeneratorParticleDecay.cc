@@ -312,7 +312,6 @@ void EventGeneratorParticleDecay::GenerateEvent(G4Event*){
       }
     }
   }
-
 }
 
 
@@ -352,7 +351,7 @@ void EventGeneratorParticleDecay::SetDecay(vector<string> DaughterName, vector<b
   int InitialMass   = myNucleus->GetA() ; int FinalMass   = 0 ;
   delete myNucleus;
   for (unsigned int i = 0 ; i< DaughterName.size(); i++) {
-    if(DaughterName[i] == "p" || DaughterName[i] == "proton" ){
+    if(DaughterName[i] == "p" || DaughterName[i] == "proton" || DaughterName[i] == "1H"){
       m_DaughterNuclei.push_back(G4ParticleTable::GetParticleTable()->FindParticle("proton"));
       FinalMass++;FinalCharge++;
     }
