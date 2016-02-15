@@ -25,22 +25,17 @@
 
 ClassImp(TGaspardTrackerPhysics)
 
-
-TGaspardTrackerPhysics::TGaspardTrackerPhysics() 
-{
+////////////////////////////////////////////////////////////////////////////////
+TGaspardTrackerPhysics::TGaspardTrackerPhysics() {
 }
 
-
-
-TGaspardTrackerPhysics::~TGaspardTrackerPhysics()
-{
+////////////////////////////////////////////////////////////////////////////////
+TGaspardTrackerPhysics::~TGaspardTrackerPhysics(){
    Clear();
 }
 
-
-
-void TGaspardTrackerPhysics::Clear()
-{
+////////////////////////////////////////////////////////////////////////////////
+void TGaspardTrackerPhysics::Clear(){
    // General members
    fEventType.clear();
    fModuleNumber.clear();

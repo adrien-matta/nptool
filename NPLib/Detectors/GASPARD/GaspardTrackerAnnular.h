@@ -41,7 +41,7 @@ public:
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
    ////////////////////////////////////////////////////
-   GaspardTrackerAnnular(map<int, GaspardTrackerModule*> &Module, TGaspardTrackerPhysics* &EventPhysics);
+   GaspardTrackerAnnular(map<int, GaspardTrackerModule*> &Module, TGaspardTrackerPhysics* EventPhysics);
    virtual ~GaspardTrackerAnnular();
 
 public:
@@ -60,7 +60,7 @@ public:
 
 private:
    map<int, GaspardTrackerModule*>  &m_ModuleTest;
-   TGaspardTrackerPhysics*          &m_EventPhysics;
+   TGaspardTrackerPhysics*          m_EventPhysics;
 
 public:
    void SetGaspardDataPointer(TGaspardTrackerData* gaspardData) {m_EventData = gaspardData;};
@@ -98,7 +98,6 @@ private:
    //////////////////////////////
    int m_NumberOfStripsTheta;
    int m_NumberOfStripsPhi;
-   int m_NumberOfQuadrants;
 };
 
 #endif

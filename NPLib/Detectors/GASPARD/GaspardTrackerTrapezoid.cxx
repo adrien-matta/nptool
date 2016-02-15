@@ -35,7 +35,7 @@
 
 
 GaspardTrackerTrapezoid::GaspardTrackerTrapezoid(map<int, GaspardTrackerModule*> &Module,
-                                                 TGaspardTrackerPhysics* &EventPhysics) 
+                                                 TGaspardTrackerPhysics* EventPhysics) 
    : m_ModuleTest(Module),
           m_EventPhysics(EventPhysics),
           m_EventData(0),
@@ -447,8 +447,8 @@ void GaspardTrackerTrapezoid::AddModule(double theta,
    m_NumberOfModule++;
 
    // convert from degree to radian:
-   theta *= M_PI/180;
-   phi   *= M_PI/180;
+   theta *= M_PI/180.;
+   phi   *= M_PI/180.;
 
    // Vector U on Module Face (paralelle to Y Strip) (NB: remember that Y strip are allong X axis)
    TVector3 U ;

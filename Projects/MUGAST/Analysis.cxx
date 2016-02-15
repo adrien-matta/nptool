@@ -55,7 +55,7 @@ void Analysis::Init() {
   // Cryo target case
   WindowsThickness = m_DetectorManager->GetWindowsThickness()*micrometer; 
   string WindowsMaterial = m_DetectorManager->GetWindowsMaterial();
-  cout << WindowsThickness << " c " <<  WindowsMaterial << " d " << endl; 
+  
   // energy losses
   string light=NPL::ChangeNameToG4Standard(myReaction->GetNucleus3()->GetName());
   string beam=NPL::ChangeNameToG4Standard(myReaction->GetNucleus1()->GetName());
@@ -93,6 +93,20 @@ void Analysis::Init() {
   E_GD = 0;
   Si_X_GD = 0;
   Si_Y_GD = 0;
+
+  // determine beam energy for a randomized interaction point in target
+  //  double BeamEnergy = BeamCD2.Slow(OriginalBeamEnergy, Rand.Uniform(0,TargetThickness), 0);
+  FinalBeamEnergy = BeamCD2.Slow(OriginalBeamEnergy, TargetThickness*0.5, 0);
+  
+  if(BeamWindow)
+    FinalBeamEnergy = BeamWindow->Slow(FinalBeamEnergy,WindowsThickness,0);
+  
+  myReaction->SetBeamEnergy(FinalBeamEnergy);
+
+  cout << "//// Slow down Beam in the target ////" << endl;
+  cout << "Initial beam energy : " << OriginalBeamEnergy << endl;
+  cout << "Final beam energy   : " << FinalBeamEnergy << endl;
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -104,15 +118,6 @@ void Analysis::TreatEvent() {
   double XTarget = 0;
   double YTarget = 0;
   TVector3 BeamDirection = TVector3(0,0,1);
-
-  // determine beam energy for a randomized interaction point in target
-  //  double BeamEnergy = BeamCD2.Slow(OriginalBeamEnergy, Rand.Uniform(0,TargetThickness), 0);
-  double BeamEnergy = BeamCD2.Slow(OriginalBeamEnergy, TargetThickness/2., 0);
-  
-  if(BeamWindow)
-    BeamEnergy = BeamWindow->Slow(BeamEnergy,WindowsThickness,0);
-  
-  myReaction->SetBeamEnergy(BeamEnergy);
 
   //////////////////////////// LOOP on MUST2 //////////////////
   for(unsigned int countMust2 = 0 ; countMust2 < M2->Si_E.size() ; countMust2++){
@@ -201,8 +206,14 @@ void Analysis::TreatEvent() {
     Energy = ELab = 0;
     Energy = GD->GetEnergyDeposit();
     // Target Correction
+    ELab   = LightCD2.EvaluateInitialEnergy( Energy ,TargetThickness*0.5, ThetaNormalTarget);
 
-    ELab   = LightCD2.EvaluateInitialEnergy( Energy ,TargetThickness/2., ThetaNormalTarget);
+    if(LightWindow)
+      ELab = LightWindow->EvaluateInitialEnergy( ELab ,WindowsThickness, ThetaNormalTarget);
+ 
+    if(ThetaLab>3.14159*0.5){ 
+      cout << myInit->GetKineticEnergy(0)- ELab << " " << (myInit->GetParticleDirection(0).Theta()-ThetaLab)*deg << endl;
+    }
     /************************************************/
 
     /************************************************/
@@ -236,7 +247,10 @@ void Analysis::InitOutputBranch() {
 
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::InitInputBranch(){
+  RootInput::getInstance()->GetChain()->SetBranchStatus("Run",true);
   RootInput::getInstance()->GetChain()->SetBranchAddress("Run",&Run);
+  RootInput::getInstance()->GetChain()->SetBranchStatus("InitialConditions",true);
+  RootInput::getInstance()->GetChain()->SetBranchAddress("InitialConditions",&myInit);
 }
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::ReInitValue(){

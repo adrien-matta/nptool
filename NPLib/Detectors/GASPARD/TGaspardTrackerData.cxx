@@ -31,23 +31,18 @@ using namespace std;
 
 ClassImp(TGaspardTrackerData)
 
-TGaspardTrackerData::TGaspardTrackerData()
-{
-   // Default constructor
-
-   Clear();
+////////////////////////////////////////////////////////////////////////////////
+TGaspardTrackerData::TGaspardTrackerData(){
 }
 
 
-
-TGaspardTrackerData::~TGaspardTrackerData()
-{
+////////////////////////////////////////////////////////////////////////////////
+TGaspardTrackerData::~TGaspardTrackerData(){
 }
 
 
-
-void TGaspardTrackerData::Clear()
-{
+////////////////////////////////////////////////////////////////////////////////
+void TGaspardTrackerData::Clear(){
    // DSSD
    // (X,E)
    fGPDTrk_FirstStage_FrontE_DetectorNbr.clear();
@@ -88,9 +83,8 @@ void TGaspardTrackerData::Clear()
 }
 
 
-
-void TGaspardTrackerData::Dump() const
-{
+////////////////////////////////////////////////////////////////////////////////
+void TGaspardTrackerData::Dump() const{
    cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event XXXXXXXXXXXXXXXXX" << endl;
 
    // DSSD

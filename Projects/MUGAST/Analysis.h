@@ -69,7 +69,9 @@ class Analysis: public NPL::VAnalysis{
   double WindowsThickness;
   // Beam Energy
   double OriginalBeamEnergy ; // AMEV
-                                                           // intermediate variable
+  double FinalBeamEnergy; 
+  
+  // intermediate variable
   TRandom3 Rand ;
   int Run;
   int DetectorNumber  ;

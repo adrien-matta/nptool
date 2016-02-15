@@ -165,7 +165,9 @@ int main(int argc , char** argv){
     if(!IsPhysics){ 
       for (unsigned int i = 0 ; i < nentries; i++) { 
         // Get the raw Data
+        std::cout << i << " " << 1111<< std::endl;
         Chain -> GetEntry(i);
+        std::cout << 2222 << std::endl;
         // Build the current event
         myDetector->BuildPhysicalEvent();
         // User Analysis

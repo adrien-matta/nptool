@@ -35,7 +35,7 @@
 
 
 GaspardTrackerSquare::GaspardTrackerSquare(map<int, GaspardTrackerModule*> &Module,
-                                           TGaspardTrackerPhysics* &EventPhysics) 
+                                           TGaspardTrackerPhysics* EventPhysics) 
    : m_ModuleTest(Module),
      m_EventPhysics(EventPhysics),
      m_EventData(0),
@@ -49,15 +49,13 @@ GaspardTrackerSquare::GaspardTrackerSquare(map<int, GaspardTrackerModule*> &Modu
 
 
 
-GaspardTrackerSquare::~GaspardTrackerSquare()
-{
+GaspardTrackerSquare::~GaspardTrackerSquare(){
    delete m_PreTreatData;
 }
 
 
 
-void GaspardTrackerSquare::ReadConfiguration(string Path)
-{
+void GaspardTrackerSquare::ReadConfiguration(string Path){
    ifstream ConfigFile;
    ConfigFile.open(Path.c_str());
    string LineBuffer;
@@ -244,14 +242,12 @@ void GaspardTrackerSquare::ReadConfiguration(string Path)
 
 
 
-void GaspardTrackerSquare::PreTreat()
-{
+void GaspardTrackerSquare::PreTreat(){
 }
 
 
 
-void GaspardTrackerSquare::BuildPhysicalEvent()
-{
+void GaspardTrackerSquare::BuildPhysicalEvent(){
    // Check flags
 //   bool Check_FirstStage  = false;
    bool Check_SecondStage = false; 
@@ -372,8 +368,7 @@ void GaspardTrackerSquare::BuildPhysicalEvent()
 
 
 
-void GaspardTrackerSquare::BuildSimplePhysicalEvent()
-{
+void GaspardTrackerSquare::BuildSimplePhysicalEvent(){
 }
 
 
@@ -411,7 +406,7 @@ void GaspardTrackerSquare::AddModule(TVector3 C_X1_Y1,
    vector< vector< double > >   OneModuleStripPositionZ;
 
    // Moving StripCenter to 1.1 corner:
-   Strip_1_1 = C_X1_Y1 + (U+V) * (m_StripPitch/2.);
+   Strip_1_1 = C_X1_Y1 + (U+V) * m_StripPitch*0.5;
 
    for (int i = 0; i < m_NumberOfStrips; i++) {
       lineX.clear();

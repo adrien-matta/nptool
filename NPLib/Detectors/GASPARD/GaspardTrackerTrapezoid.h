@@ -43,7 +43,7 @@ public:
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
    ////////////////////////////////////////////////////
-   GaspardTrackerTrapezoid(map<int, GaspardTrackerModule*> &Module, TGaspardTrackerPhysics* &EventPhysics);
+   GaspardTrackerTrapezoid(map<int, GaspardTrackerModule*> &Module, TGaspardTrackerPhysics* EventPhysics);
    virtual ~GaspardTrackerTrapezoid();
 
 public:
@@ -62,7 +62,7 @@ public:
 
 private:
    map<int, GaspardTrackerModule*> &m_ModuleTest;
-   TGaspardTrackerPhysics*         &m_EventPhysics;
+   TGaspardTrackerPhysics*         m_EventPhysics;
 
 public:
    void SetGaspardDataPointer(TGaspardTrackerData* gaspardData) {m_EventData = gaspardData;};

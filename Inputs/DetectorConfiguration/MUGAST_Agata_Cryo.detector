@@ -136,31 +136,31 @@ CSI=	1.00
 VIS=	all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-AGATA
+%AGATA
     THETA= 157.5 
     PHI= 45 
     R= 270
     Shape= Square 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-AGATA
+%AGATA
     THETA= 157.5 
     PHI= 117 
     R= 270
     Shape= Square 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-AGATA
+%AGATA
     THETA= 157.5 
     PHI= 189 
     R= 270
     Shape= Square 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-AGATA
+%AGATA
     THETA= 157.5 
     PHI= 261
     R= 270
     Shape= Square 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-AGATA
+%AGATA
     THETA= 157.5 
     PHI= 333 
     R= 270
