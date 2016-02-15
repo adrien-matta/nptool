@@ -60,14 +60,14 @@ void Analysis::Init() {
   string light=NPL::ChangeNameToG4Standard(myReaction->GetNucleus3()->GetName());
   string beam=NPL::ChangeNameToG4Standard(myReaction->GetNucleus1()->GetName());
 
-  LightCD2 = EnergyLoss(light+"_"+TargetMaterial+".G4table","G4Table",100 );
-  LightAl = EnergyLoss(light+"_Al.G4table","G4Table",100);
-  LightSi = EnergyLoss(light+"_Si.G4table","G4Table",100);
-  BeamCD2 = EnergyLoss(beam+"_"+TargetMaterial+".G4table","G4Table",100);
+  LightCD2 = NPL::EnergyLoss(light+"_"+TargetMaterial+".G4table","G4Table",100 );
+  LightAl = NPL::EnergyLoss(light+"_Al.G4table","G4Table",100);
+  LightSi = NPL::EnergyLoss(light+"_Si.G4table","G4Table",100);
+  BeamCD2 = NPL::EnergyLoss(beam+"_"+TargetMaterial+".G4table","G4Table",100);
 
   if(WindowsThickness){
-    BeamWindow= new EnergyLoss(beam+"_"+WindowsMaterial+".G4table","G4Table",100); 
-    LightWindow=  new EnergyLoss(light+"_"+WindowsMaterial+".G4table","G4Table",100);  
+    BeamWindow= new NPL::EnergyLoss(beam+"_"+WindowsMaterial+".G4table","G4Table",100); 
+    LightWindow=  new NPL::EnergyLoss(light+"_"+WindowsMaterial+".G4table","G4Table",100);  
   }
 
   else{
@@ -83,23 +83,19 @@ void Analysis::Init() {
   Si_E_M2 = 0;
   CsI_E_M2 = 0;
   Energy = 0;
-  E_M2 = 0;
-
   ThetaGDSurface = 0;
   X = 0;
   Y = 0;
   Z = 0;
-  Si_E_GD = 0;
-  E_GD = 0;
 
   // determine beam energy for a randomized interaction point in target
-  //  double BeamEnergy = BeamCD2.Slow(OriginalBeamEnergy, Rand.Uniform(0,TargetThickness), 0);
-  FinalBeamEnergy = BeamCD2.Slow(OriginalBeamEnergy, TargetThickness*0.5, 0);
-
+  FinalBeamEnergy = OriginalBeamEnergy;
   if(BeamWindow)
-    FinalBeamEnergy = BeamWindow->Slow(FinalBeamEnergy,WindowsThickness,0);
+    FinalBeamEnergy = BeamWindow->Slow(OriginalBeamEnergy,WindowsThickness,0);
 
-  myReaction->SetBeamEnergy(FinalBeamEnergy);
+  FinalBeamEnergy = BeamCD2.Slow(FinalBeamEnergy, TargetThickness*0.5, 0);
+
+    myReaction->SetBeamEnergy(FinalBeamEnergy);
 
   cout << "//// Slow down Beam in the target ////" << endl;
   cout << "Initial beam energy : " << OriginalBeamEnergy << endl;
@@ -208,10 +204,6 @@ void Analysis::TreatEvent() {
 
     if(LightWindow)
       ELab = LightWindow->EvaluateInitialEnergy( ELab ,WindowsThickness, ThetaNormalTarget);
-
-    if(ThetaLab>3.14159*0.5){ 
-      cout << myInit->GetKineticEnergy(0)- ELab << " " << (myInit->GetParticleDirection(0).Theta()-ThetaLab)*deg << endl;
-    }
     /************************************************/
 
     /************************************************/
@@ -260,6 +252,9 @@ void Analysis::ReInitValue(){
   ELab = -1000;
   ThetaLab = -1000;
   ThetaCM = -1000;
+  X = -1000;
+  Y = -1000;
+  Z = -1000;
 }
 
 
@@ -274,13 +269,13 @@ NPL::VAnalysis* Analysis::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy{
+class proxy_analysis{
   public:
-    proxy(){
+    proxy_analysis(){
       NPL::AnalysisFactory::getInstance()->SetConstructor(Analysis::Construct);
     }
 };
 
-proxy p;
+proxy_analysis p_analysis;
 }
 

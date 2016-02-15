@@ -32,8 +32,7 @@
 #include "TObject.h"
 using namespace std ;
 
-class TGaspardTrackerData : public TObject
-{
+class TGaspardTrackerData : public TObject{
 protected:
    // First Stage
    // Double Sided Silicon Detector
@@ -113,7 +112,7 @@ public:
       fGPDTrk_FirstStage_BackE_DetectorNbr.push_back(DetNbr);
    }
    void  SetGPDTrkFirstStageBackEStripNbr(UShort_t StripNbr)  {
-      fGPDTrk_FirstStage_BackE_StripNbr.push_back(StripNbr);
+     fGPDTrk_FirstStage_BackE_StripNbr.push_back(StripNbr);
    }
    void  SetGPDTrkFirstStageBackEEnergy(Double_t Energy)      {
       fGPDTrk_FirstStage_BackE_Energy.push_back(Energy);

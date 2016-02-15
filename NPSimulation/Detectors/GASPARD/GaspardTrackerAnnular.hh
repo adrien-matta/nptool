@@ -30,7 +30,7 @@
 #include "TInteractionCoordinates.h"
 
 using namespace std;
-using namespace CLHEP;
+using namespace CLHEP;
 
 
 
@@ -157,7 +157,6 @@ namespace GPDANNULAR
    // Characteristics
    const G4int NbPhiStrips     = 16;
    const G4int NbThetaStrips   = 16;
-   const G4int NbThetaQuadrant = 4;
 
    // Starting at the front and going in direction of third stage
    const G4double AluStripFront_PosZ = Length* -0.5 + 0.5*AluStripThickness;

@@ -188,9 +188,11 @@ G4bool PS_Silicon_Annular::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   m_StripRingNumber = (int) ((m_Position.rho() - m_StripPlaneInnerRadius) / m_StripPitchRing ) + 1 ;
 
   double phi = m_Position.phi();
+  if(phi<0)
+    phi+=2*M_PI;
   m_StripSectorNumber   = (int) ((phi - m_PhiStart)  / m_StripPitchSector ) + 1 ;
   m_StripQuadrantNumber = (int) ((phi - m_PhiStart)  /m_StripPitchQuadrant) + 1 ; 
-
+  
   //Rare case where particle is close to edge of silicon plan
   if (m_StripRingNumber > m_NumberOfStripRing) m_StripRingNumber = m_NumberOfStripRing;
   if (m_StripSectorNumber > m_NumberOfStripSector) m_StripSectorNumber = m_NumberOfStripSector;
@@ -200,7 +202,6 @@ G4bool PS_Silicon_Annular::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   Infos[8] = m_StripRingNumber;
   Infos[9] = m_StripSectorNumber;
   Infos[10] = m_StripQuadrantNumber;
-
 
   m_Index =  aStep->GetTrack()->GetTrackID() + m_DetectorNumber * 1e3 + m_StripRingNumber * 1e6 + m_NumberOfStripSector * 1e9;
 

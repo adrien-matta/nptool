@@ -48,7 +48,7 @@
 // NPTool headers
 #include "GaspardTrackerRectangle.hh"
 #include "ObsoleteGeneralScorers.hh"
-#include "GaspardScorers.hh"
+//#include "GaspardScorers.hh"
 #include "SiliconScorers.hh"
 #include "MaterialManager.hh"
 #include "NPSDetectorFactory.hh"
@@ -61,7 +61,7 @@ using namespace std;
 using namespace CLHEP;
 
 using namespace GPDRECT;
-using namespace GPDSCORERS;
+//using namespace GPDSCORERS;
 
 
 
