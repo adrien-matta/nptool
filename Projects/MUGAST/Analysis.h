@@ -83,13 +83,11 @@ class Analysis: public NPL::VAnalysis{
   double E_M2 ;
   
   double ThetaGDSurface ;
-  double X_GD ;
-  double Y_GD ;
-  double Z_GD  ;
+  double X ;
+  double Y ;
+  double Z  ;
   double Si_E_GD ;
   double E_GD ;
-  double Si_X_GD ;
-  double Si_Y_GD ;
   TMust2Physics* M2;
   GaspardTracker* GD;
 };

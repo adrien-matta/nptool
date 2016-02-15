@@ -55,7 +55,7 @@ void Analysis::Init() {
   // Cryo target case
   WindowsThickness = m_DetectorManager->GetWindowsThickness()*micrometer; 
   string WindowsMaterial = m_DetectorManager->GetWindowsMaterial();
-  
+
   // energy losses
   string light=NPL::ChangeNameToG4Standard(myReaction->GetNucleus3()->GetName());
   string beam=NPL::ChangeNameToG4Standard(myReaction->GetNucleus1()->GetName());
@@ -86,21 +86,19 @@ void Analysis::Init() {
   E_M2 = 0;
 
   ThetaGDSurface = 0;
-  X_GD = 0;
-  Y_GD = 0;
-  Z_GD = 0;
+  X = 0;
+  Y = 0;
+  Z = 0;
   Si_E_GD = 0;
   E_GD = 0;
-  Si_X_GD = 0;
-  Si_Y_GD = 0;
 
   // determine beam energy for a randomized interaction point in target
   //  double BeamEnergy = BeamCD2.Slow(OriginalBeamEnergy, Rand.Uniform(0,TargetThickness), 0);
   FinalBeamEnergy = BeamCD2.Slow(OriginalBeamEnergy, TargetThickness*0.5, 0);
-  
+
   if(BeamWindow)
     FinalBeamEnergy = BeamWindow->Slow(FinalBeamEnergy,WindowsThickness,0);
-  
+
   myReaction->SetBeamEnergy(FinalBeamEnergy);
 
   cout << "//// Slow down Beam in the target ////" << endl;
@@ -132,6 +130,10 @@ void Analysis::TreatEvent() {
     ThetaNormalTarget = 0;
     TVector3 HitDirection = M2 -> GetPositionOfInteraction(countMust2) - BeamImpact ;
     ThetaLab = HitDirection.Angle( BeamDirection );
+
+    X = M2 -> GetPositionOfInteraction(countMust2).X();
+    Y = M2 -> GetPositionOfInteraction(countMust2).Y();
+    Z = M2 -> GetPositionOfInteraction(countMust2).Z();
 
     ThetaM2Surface = HitDirection.Angle(- M2 -> GetTelescopeNormal(countMust2) );
     ThetaNormalTarget = HitDirection.Angle( TVector3(0,0,1) ) ;
@@ -185,19 +187,15 @@ void Analysis::TreatEvent() {
     // Part 1 : Impact Angle
     ThetaGDSurface = 0;
     ThetaNormalTarget = 0;
-    if(XTarget>-1000 && YTarget>-1000){
-      TVector3 HitDirection = GD -> GetPositionOfInteraction() - BeamImpact ;
-      ThetaLab = HitDirection.Angle( BeamDirection );
+    TVector3 HitDirection = GD -> GetPositionOfInteraction() - BeamImpact ;
+    ThetaLab = HitDirection.Angle( BeamDirection );
 
-      ThetaGDSurface = HitDirection.Angle( TVector3(0,0,1) ) ;
-      ThetaNormalTarget = HitDirection.Angle( TVector3(0,0,1) ) ;
-    }
+    X =  GD -> GetPositionOfInteraction().X();
+    Y =  GD -> GetPositionOfInteraction().Y();
+    Z =  GD -> GetPositionOfInteraction().Z();
 
-    else{
-      BeamDirection = TVector3(-1000,-1000,-1000);
-      ThetaGDSurface    = -1000  ;
-      ThetaNormalTarget = -1000  ;
-    }
+    ThetaGDSurface = HitDirection.Angle( TVector3(0,0,1) ) ;
+    ThetaNormalTarget = HitDirection.Angle( TVector3(0,0,1) ) ;
 
     /************************************************/
 
@@ -210,7 +208,7 @@ void Analysis::TreatEvent() {
 
     if(LightWindow)
       ELab = LightWindow->EvaluateInitialEnergy( ELab ,WindowsThickness, ThetaNormalTarget);
- 
+
     if(ThetaLab>3.14159*0.5){ 
       cout << myInit->GetKineticEnergy(0)- ELab << " " << (myInit->GetParticleDirection(0).Theta()-ThetaLab)*deg << endl;
     }
@@ -242,6 +240,10 @@ void Analysis::InitOutputBranch() {
   RootOutput::getInstance()->GetTree()->Branch("ThetaLab",&ThetaLab,"ThetaLab/D");
   RootOutput::getInstance()->GetTree()->Branch("ThetaCM",&ThetaCM,"ThetaCM/D");
   RootOutput::getInstance()->GetTree()->Branch("Run",&Run,"Run/I");
+  RootOutput::getInstance()->GetTree()->Branch("X",&X,"X/D");
+  RootOutput::getInstance()->GetTree()->Branch("Y",&Y,"Y/D");
+  RootOutput::getInstance()->GetTree()->Branch("Z",&Z,"Z/D");
+
 }
 
 
