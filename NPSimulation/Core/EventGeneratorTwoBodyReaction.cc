@@ -104,15 +104,15 @@ void EventGeneratorTwoBodyReaction::GenerateEvent(G4Event*){
   //////Define the kind of particle to shoot////////
   //////////////////////////////////////////////////
   // Nucleus 3
-  G4int LightZ = m_Reaction->GetNucleus3()->GetZ() ;
-  G4int LightA = m_Reaction->GetNucleus3()->GetA() ;
+  G4int LightZ = m_Reaction->GetNucleus3().GetZ() ;
+  G4int LightA = m_Reaction->GetNucleus3().GetA() ;
   
   G4ParticleDefinition* LightName
   = G4ParticleTable::GetParticleTable()->GetIonTable()->GetIon(LightZ, LightA, m_Reaction->GetExcitation3()*MeV);
   
   // Nucleus 4
-  G4int HeavyZ = m_Reaction->GetNucleus4()->GetZ() ;
-  G4int HeavyA = m_Reaction->GetNucleus4()->GetA() ;
+  G4int HeavyZ = m_Reaction->GetNucleus4().GetZ() ;
+  G4int HeavyA = m_Reaction->GetNucleus4().GetA() ;
   
   // Generate the excitation energy if a distribution is given
   m_Reaction->ShootRandomExcitationEnergy();

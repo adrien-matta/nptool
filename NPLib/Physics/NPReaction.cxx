@@ -70,10 +70,6 @@ Reaction::Reaction(){
 	fAngleLine = 0;
   
   //
-  fNuclei1              = new Beam();
-  fNuclei2              = new Nucleus();
-  fNuclei3              = new Nucleus();
-  fNuclei4              = new Nucleus();
   fBeamEnergy           = 0;
   fThetaCM              = 0;
   fExcitation3          = 0;
@@ -82,12 +78,7 @@ Reaction::Reaction(){
   fVerboseLevel         = NPOptionManager::getInstance()->GetVerboseLevel();
   initializePrecomputeVariable();
   
-  // do that to avoid warning from multiple Hist with same name...  int offset = 0;
-  int offset = 0;
-  while(gDirectory->FindObjectAny(Form("EnergyHist_%i",offset))!=0)
-    ++offset;
-  
-  fCrossSectionHist = new TH1F(Form("EnergyHist_%i",offset),"Reaction_CS",1,0,180);
+  fCrossSectionHist = NULL;
   fExcitationEnergyHist = NULL;
   fDoubleDifferentialCrossSectionHist = NULL ; 
  
@@ -136,10 +127,10 @@ Reaction::Reaction(string reaction){
 	fLineBrho3 = 0;
 	fTheta3VsTheta4 = 0;
 	fAngleLine = 0;
-  fNuclei1 = new Beam(A);
-  fNuclei2 = new Nucleus(b);
-  fNuclei3 = new Nucleus(c);
-  fNuclei4 = new Nucleus(D);
+  fNuclei1 = Beam(A);
+  fNuclei2 = Nucleus(b);
+  fNuclei3 = Nucleus(c);
+  fNuclei4 = Nucleus(D);
   fBeamEnergy = atof(E.c_str());
   fThetaCM              = 0;
   fExcitation3          = 0;
@@ -154,7 +145,6 @@ Reaction::Reaction(string reaction){
     ++offset;
   
   fCrossSectionHist = new TH1F(Form("EnergyHist_%i",offset),"Reaction_CS",1,0,180);
-  fCrossSectionHist = NULL;
   fDoubleDifferentialCrossSectionHist = NULL ;
   
 fshoot3=true;
@@ -164,20 +154,6 @@ fshoot3=true;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 Reaction::~Reaction(){
-  //------------- Default Destructor ------------
-
-  if(fNuclei1)
-    delete fNuclei1;
-  
-  if(fNuclei2)
-    delete fNuclei2;
-  
-  if(fNuclei3)
-    delete fNuclei3;
-  
-  if(fNuclei4)
-    delete fNuclei4;
-  
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -285,7 +261,7 @@ double Reaction::ReconstructRelativistic(double EnergyLab, double ThetaLab){
   fEnergyImpulsionLab_4 = fTotalEnergyImpulsionLab - fEnergyImpulsionLab_3;
 
 
-	double Eex = fEnergyImpulsionLab_4.Mag() - fNuclei4->Mass();
+	double Eex = fEnergyImpulsionLab_4.Mag() - fNuclei4.Mass();
   
 	return Eex;
 }
@@ -309,8 +285,8 @@ double  Reaction::EnergyLabToThetaCM(double EnergyLab, double ThetaLab){
 void Reaction::Print() const{
   // Print informations concerning the reaction
   
-  cout << "Reaction : " << fNuclei2->GetName() << "(" << fNuclei1->GetName()
-  << "," << fNuclei3->GetName() << ")" << fNuclei4->GetName() << "  @  "
+  cout << "Reaction : " << fNuclei2.GetName() << "(" << fNuclei1.GetName()
+  << "," << fNuclei3.GetName() << ")" << fNuclei4.GetName() << "  @  "
   << fBeamEnergy << " MeV"
   << endl   ;
   
@@ -380,31 +356,31 @@ void Reaction::ReadConfigurationFile(string Path){
         check_Beam = true ;
         ReactionFile >> DataBuffer;
         // Pick up the beam energy from the Beam event generator
-        fNuclei1->SetVerboseLevel(0);
-        fNuclei1->ReadConfigurationFile(Path);
-        fBeamEnergy= fNuclei1->GetEnergy();
-        if(fVerboseLevel==1) cout << "\033[1;35mBeam " << fNuclei1->GetName() << " @ " << fBeamEnergy << " MeV" << endl;
+        fNuclei1.SetVerboseLevel(0);
+        fNuclei1.ReadConfigurationFile(Path);
+        fBeamEnergy= fNuclei1.GetEnergy();
+        if(fVerboseLevel==1) cout << "\033[1;35mBeam " << fNuclei1.GetName() << " @ " << fBeamEnergy << " MeV" << endl;
       }
       
       else if (DataBuffer=="Target=") {
         check_Target = true ;
         ReactionFile >> DataBuffer;
-        fNuclei2         = new Nucleus(DataBuffer);
-        if(fVerboseLevel==1) cout << "Target " << fNuclei2->GetName() << endl;
+        fNuclei2 = Nucleus(DataBuffer);
+        if(fVerboseLevel==1) cout << "Target " << fNuclei2.GetName() << endl;
       }
       
       else if (DataBuffer=="Light=" || DataBuffer=="Nuclei3=") {
         check_Light = true ;
         ReactionFile >> DataBuffer;
-        fNuclei3 = new Nucleus(DataBuffer);
-        if(fVerboseLevel==1) cout << "Light " << fNuclei3->GetName() << endl;
+        fNuclei3 = Nucleus(DataBuffer);
+        if(fVerboseLevel==1) cout << "Light " << fNuclei3.GetName() << endl;
       }
       
       else if  (DataBuffer== "Heavy="|| DataBuffer=="Nuclei4=") {
         check_Heavy = true ;
         ReactionFile >> DataBuffer;
-        fNuclei4 = new Nucleus(DataBuffer);
-        if(fVerboseLevel==1) cout << "Heavy " << fNuclei4->GetName() << endl;
+        fNuclei4 = Nucleus(DataBuffer);
+        if(fVerboseLevel==1) cout << "Heavy " << fNuclei4.GetName() << endl;
       }
       
       else if  (DataBuffer=="ExcitationEnergy3=" || DataBuffer=="ExcitationEnergyLight=") {
@@ -526,10 +502,10 @@ void Reaction::initializePrecomputeVariable(){
   if(fBeamEnergy < 0)
     fBeamEnergy = 0 ;
 
-  m1 = fNuclei1->Mass();
-  m2 = fNuclei2->Mass();
-  m3 = fNuclei3->Mass() + fExcitation3;
-  m4 = fNuclei4->Mass() + fExcitation4;
+  m1 = fNuclei1.Mass();
+  m2 = fNuclei2.Mass();
+  m3 = fNuclei3.Mass() + fExcitation3;
+  m4 = fNuclei4.Mass() + fExcitation4;
   fQValue =m1+m2-m3-m4;
 
   s = m1*m1 + m2*m2 + 2*m2*(fBeamEnergy + m1);
@@ -569,8 +545,8 @@ void Reaction::SetNuclei3(double EnergyLab, double ThetaLab){
 	fEnergyImpulsionLab_3 = TLorentzVector(p3*sin(ThetaLab),0,p3*cos(ThetaLab),EnergyLab+m3);
 	fEnergyImpulsionLab_4 = fTotalEnergyImpulsionLab - fEnergyImpulsionLab_3;
 	
-	fNuclei3->SetEnergyImpulsion(fEnergyImpulsionLab_3);
-	fNuclei4->SetEnergyImpulsion(fEnergyImpulsionLab_4);
+	fNuclei3.SetEnergyImpulsion(fEnergyImpulsionLab_3);
+	fNuclei4.SetEnergyImpulsion(fEnergyImpulsionLab_4);
 	
 	fThetaCM = EnergyLabToThetaCM(EnergyLab, ThetaLab);
 	fExcitation4 = ReconstructRelativistic(EnergyLab, ThetaLab);
@@ -586,7 +562,7 @@ TGraph* Reaction::GetKinematicLine3(double AngleStep_CM){
 	for (double angle=0 ; angle < 360 ; angle+=AngleStep_CM){
 		SetThetaCM(angle*deg);
 		KineRelativistic(theta3, E3, theta4, E4);
-		fNuclei3->SetKineticEnergy(E3);
+		fNuclei3.SetKineticEnergy(E3);
 	
     if(E3>0){
 		  vx.push_back(theta3/deg);
@@ -608,7 +584,7 @@ TGraph* Reaction::GetKinematicLine4(double AngleStep_CM){
 	for (double angle=0 ; angle < 360 ; angle+=AngleStep_CM){
     SetThetaCM(angle*deg);
 		KineRelativistic(theta3, E3, theta4, E4);
-		fNuclei4->SetKineticEnergy(E4);
+		fNuclei4.SetKineticEnergy(E4);
 		if(E4>0){
 		  vx.push_back(theta4/deg);
 		  vy.push_back(E4);
@@ -649,8 +625,8 @@ TGraph* Reaction::GetBrhoLine3(double AngleStep_CM){
 	for (double angle=0 ; angle < 360 ; angle+=AngleStep_CM){
 		SetThetaCM(angle*deg);
 		KineRelativistic(theta3, E3, theta4, E4);
-		fNuclei3->SetKineticEnergy(E3);
-		Brho = fNuclei3->GetBrho();
+		fNuclei3.SetKineticEnergy(E3);
+		Brho = fNuclei3.GetBrho();
 		
 		vx.push_back(theta3/deg);
 		vy.push_back(Brho);
@@ -720,11 +696,11 @@ void Reaction::PrintKinematic(){
 		SetThetaCM(((double)i)/2*deg);
 		KineRelativistic(theta3, E3, theta4, E4);
 		
-		fNuclei3->SetKineticEnergy(E3);
-		Brho3 = fNuclei3->GetBrho();
+		fNuclei3.SetKineticEnergy(E3);
+		Brho3 = fNuclei3.GetBrho();
 		
-		fNuclei4->SetKineticEnergy(E4);
-		Brho4 = fNuclei4->GetBrho();
+		fNuclei4.SetKineticEnergy(E4);
+		Brho4 = fNuclei4.GetBrho();
 		
 		cout << (double)i/2 << "	" << theta3/deg << "	" << E3 << "	" << Brho3 << "		" << E4 << "	" << Brho4 << endl;
   }

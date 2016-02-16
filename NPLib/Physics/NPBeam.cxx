@@ -114,9 +114,6 @@ Beam::Beam(string isotope){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 Beam::~Beam(){
-  delete fEnergyHist  ;
-  delete fXThetaXHist ;
-  delete fYPhiYHist   ;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

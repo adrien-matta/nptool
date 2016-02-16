@@ -50,14 +50,14 @@ namespace NPL {
     
   private :
     //intrinsic properties
-    const char* fName;         // Nucleus name
+    string      fName;         // Nucleus name
     string	    fNucleusName;
     int         fCharge;      // Nucleus charge
     int         fAtomicWeight;   // Nucleus atomic weight
     double      fMassExcess;   // Nucleus mass excess in keV
-    const char* fSpinParity;   // Nucleus spin and parity
+    string      fSpinParity;   // Nucleus spin and parity
     double      fSpin;         // Nucleus spin
-    const char* fParity;      // Nucleus parity
+    string      fParity;      // Nucleus parity
     double      fLifeTime; // life time
 
     //kinematic properties
@@ -84,17 +84,17 @@ namespace NPL {
     
     
   protected :
-    void Extract(const char* line);
+    void Extract(string line);
     
     public :
     void				GetNucleusName();
     string			GetName()			const				{return fNucleusName;}
-    int				GetZ()				const				{return fCharge;}
-    int				GetA()				const				{return fAtomicWeight;}
+    int			  	GetZ()				const				{return fCharge;}
+    int			  	GetA()				const				{return fAtomicWeight;}
     double			GetMassExcess()		const				{return fMassExcess;}
-    const char*		GetSpinParity()		const				{return fSpinParity;}
+    string   		GetSpinParity()		const				{return fSpinParity;}
     double			GetSpin()			const				{return fSpin;}
-    const char*		GetParity()			const				{return fParity;}
+    string   		GetParity()			const				{return fParity;}
     double      GetLifeTime() const {return fLifeTime;}
     double			GetEnergy()			const				{return fKineticEnergy;}
     double			GetBrho()			const				{return fBrho;}

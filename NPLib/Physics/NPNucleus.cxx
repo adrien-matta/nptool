@@ -48,8 +48,7 @@ using namespace std;
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-Nucleus::Nucleus()
-{
+Nucleus::Nucleus(){
   //----------- Default Constructor ----------
   fName= "XX DEFAULT XX";
   fCharge= 0;
@@ -149,27 +148,24 @@ Nucleus::~Nucleus()
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-void Nucleus::Extract(const char* line)
-{
-  string ligne = line;
-
+void Nucleus::Extract(string line){
   // name of the isotope
-  string s_name = ligne.substr(11,7);
+  string s_name = line.substr(11,7);
   fName = s_name.data();
 
   // charge and mass
-  string s_mass   = ligne.substr(0,3);
-  string s_charge = ligne.substr(4,4);
+  string s_mass   = line.substr(0,3);
+  string s_charge = line.substr(4,4);
   fAtomicWeight = atoi(s_mass.data());
   fCharge       = atoi(s_charge.data()); fCharge /= 10;
 
   // mass excess
-  string s_excess = ligne.substr(18,10);
+  string s_excess = line.substr(18,10);
   fMassExcess = atof(s_excess.data());
 
   // life time
-  string s_lt_units = ligne.substr(69,3); 
-  string s_LifeTime = ligne.substr(57,12);
+  string s_lt_units = line.substr(69,3); 
+  string s_LifeTime = line.substr(57,12);
   // Remove space
   s_LifeTime.erase( std::remove_if( s_LifeTime.begin(), s_LifeTime.end(), ::isspace ), s_LifeTime.end() );
   s_lt_units.erase( std::remove_if( s_lt_units.begin(), s_lt_units.end(), ::isspace ), s_lt_units.end() );
@@ -213,7 +209,7 @@ void Nucleus::Extract(const char* line)
     fLifeTime*=3600*24*365.25*1e12;
   
   // spin and parity
-  string s_spinparity = ligne.substr(79,14);
+  string s_spinparity = line.substr(79,14);
   fSpinParity = s_spinparity.data();
   size_t found_p = s_spinparity.find("+");
   size_t found_m = s_spinparity.find("-");

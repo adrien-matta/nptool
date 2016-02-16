@@ -80,10 +80,10 @@ namespace NPL{
       TGraph* fLineBrho3;
       TGraph* fAngleLine;
     private:
-      Beam*    fNuclei1;                 // Beam
-      Nucleus* fNuclei2;                 // Target
-      Nucleus* fNuclei3;                 // Light ejectile
-      Nucleus* fNuclei4;                 // Heavy ejectile
+      Beam     fNuclei1;                 // Beam
+      Nucleus  fNuclei2;                 // Target
+      Nucleus  fNuclei3;                 // Light ejectile
+      Nucleus  fNuclei4;                 // Heavy ejectile
       double   fQValue;                  // Q-value in MeV
       double   fBeamEnergy;              // Beam energy in MeV
       double   fThetaCM;                 // Center-of-mass angle in radian
@@ -112,10 +112,10 @@ namespace NPL{
       double   GetExcitation3() const           {return fExcitation3;}
       double   GetExcitation4() const           {return fExcitation4;}
       double   GetQValue() const                {return fQValue;}
-      Nucleus* GetNucleus1() const              {return fNuclei1;}
-      Nucleus* GetNucleus2() const              {return fNuclei2;}
-      Nucleus* GetNucleus3() const              {return fNuclei3;}
-      Nucleus* GetNucleus4() const              {return fNuclei4;}
+      Nucleus  GetNucleus1() const              {return fNuclei1;}
+      Nucleus  GetNucleus2() const              {return fNuclei2;}
+      Nucleus  GetNucleus3() const              {return fNuclei3;}
+      Nucleus  GetNucleus4() const              {return fNuclei4;}
       TH1F*    GetCrossSectionHist() const      {return fCrossSectionHist;}
       int      GetVerboseLevel()         const  {return fVerboseLevel;}
       bool     GetShoot3()         const        {return fshoot3;}
