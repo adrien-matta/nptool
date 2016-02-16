@@ -84,7 +84,7 @@ EnergyLoss::EnergyLoss(string Path , string Source, int NumberOfSlice=100 ,  int
     TableFile.open( Path.c_str() );
     if(TableFile.is_open()) { cout << "Reading Energy Loss File: " << Path << endl ;}
 
-    else { cout << "ERROR: TABLE FILE NOT FOUND" << endl; exit(1); }
+    else { cout << "ERROR: TABLE FILE "<< Path << " NOT FOUND" << endl; exit(1); }
   }
 
 

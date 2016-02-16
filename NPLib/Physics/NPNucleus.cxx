@@ -75,8 +75,6 @@ void Nucleus::SetUp(string isotope){
   else if(isotope=="t") isotope="3H";
   else if(isotope=="a") isotope="4He";
 
-  const char* Isotope = isotope.c_str();
-
   ifstream inFile;
   string Path = getenv("NPTOOL") ;
   string FileName = Path + "/NPLib/Physics/nubtab03.asc";
@@ -93,7 +91,7 @@ void Nucleus::SetUp(string isotope){
       space = s_name.find_first_of(" ");
       s_name.resize(space);
 
-      if (s_name.find(Isotope) != string::npos && s_name.length() == isotope.length()) break;
+      if (s_name.find(isotope) != string::npos && s_name.length() == isotope.length()) break;
     }
     Extract(line.data());
   }
@@ -150,9 +148,7 @@ Nucleus::~Nucleus()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 void Nucleus::Extract(string line){
   // name of the isotope
-  string s_name = line.substr(11,7);
-  fName = s_name.data();
-
+  fName = line.substr(11,7);
   // charge and mass
   string s_mass   = line.substr(0,3);
   string s_charge = line.substr(4,4);
@@ -242,7 +238,6 @@ void Nucleus::Extract(string line){
   if (s_spinparity.find("17/2") != string::npos) fSpin = 8.5   ;
   if (s_spinparity.find("19/2") != string::npos) fSpin = 9.5   ;
   if (s_spinparity.find("21/2") != string::npos) fSpin = 10.5 ;
-  //cout << fName << endl;
   GetNucleusName();
 
 } 
@@ -259,9 +254,8 @@ void Nucleus::Print() const
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-void Nucleus::GetNucleusName() 
-{
-  fNucleusName=string(fName,6);
+void Nucleus::GetNucleusName() {
+    fNucleusName.assign(fName);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 

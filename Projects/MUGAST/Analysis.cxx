@@ -57,8 +57,8 @@ void Analysis::Init() {
   string WindowsMaterial = m_DetectorManager->GetWindowsMaterial();
 
   // energy losses
-  string light=NPL::ChangeNameToG4Standard(myReaction->GetNucleus3()->GetName());
-  string beam=NPL::ChangeNameToG4Standard(myReaction->GetNucleus1()->GetName());
+  string light=NPL::ChangeNameToG4Standard(myReaction->GetNucleus3().GetName());
+  string beam=NPL::ChangeNameToG4Standard(myReaction->GetNucleus1().GetName());
 
   LightCD2 = NPL::EnergyLoss(light+"_"+TargetMaterial+".G4table","G4Table",100 );
   LightAl = NPL::EnergyLoss(light+"_Al.G4table","G4Table",100);
