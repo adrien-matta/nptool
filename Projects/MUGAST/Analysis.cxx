@@ -45,9 +45,8 @@ void Analysis::Init() {
   GD = (GaspardTracker*) m_DetectorManager -> GetDetector("GaspardTracker");
 
   // get reaction information
-  myReaction = new NPL::Reaction();
-  myReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
-  OriginalBeamEnergy = myReaction->GetBeamEnergy();
+  myReaction.ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
+  OriginalBeamEnergy = myReaction.GetBeamEnergy();
 
   // target thickness
   TargetThickness = m_DetectorManager->GetTargetThickness()*micrometer;
@@ -57,8 +56,8 @@ void Analysis::Init() {
   string WindowsMaterial = m_DetectorManager->GetWindowsMaterial();
 
   // energy losses
-  string light=NPL::ChangeNameToG4Standard(myReaction->GetNucleus3().GetName());
-  string beam=NPL::ChangeNameToG4Standard(myReaction->GetNucleus1().GetName());
+  string light=NPL::ChangeNameToG4Standard(myReaction.GetNucleus3().GetName());
+  string beam=NPL::ChangeNameToG4Standard(myReaction.GetNucleus1().GetName());
 
   LightCD2 = NPL::EnergyLoss(light+"_"+TargetMaterial+".G4table","G4Table",100 );
   LightAl = NPL::EnergyLoss(light+"_Al.G4table","G4Table",100);
@@ -95,7 +94,7 @@ void Analysis::Init() {
 
   FinalBeamEnergy = BeamCD2.Slow(FinalBeamEnergy, TargetThickness*0.5, 0);
 
-    myReaction->SetBeamEnergy(FinalBeamEnergy);
+    myReaction.SetBeamEnergy(FinalBeamEnergy);
 
   cout << "//// Slow down Beam in the target ////" << endl;
   cout << "Initial beam energy : " << OriginalBeamEnergy << endl;
@@ -164,14 +163,14 @@ void Analysis::TreatEvent() {
 
     /************************************************/
     // Part 3 : Excitation Energy Calculation
-    Ex = myReaction -> ReconstructRelativistic( ELab , ThetaLab );
+    Ex = myReaction.ReconstructRelativistic( ELab , ThetaLab );
     ThetaLab=ThetaLab/deg;
 
     /************************************************/
 
     /************************************************/
     // Part 4 : Theta CM Calculation
-    ThetaCM  = myReaction -> EnergyLabToThetaCM( ELab , ThetaLab)/deg;
+    ThetaCM  = myReaction.EnergyLabToThetaCM( ELab , ThetaLab)/deg;
     /************************************************/
   }//end loop MUST2
 
@@ -208,13 +207,13 @@ void Analysis::TreatEvent() {
 
     /************************************************/
     // Part 3 : Excitation Energy Calculation
-    Ex = myReaction -> ReconstructRelativistic( ELab , ThetaLab );
+    Ex = myReaction.ReconstructRelativistic( ELab , ThetaLab );
 
     /************************************************/
 
     /************************************************/
     // Part 4 : Theta CM Calculation
-    ThetaCM  = myReaction -> EnergyLabToThetaCM( ELab , ThetaLab)/deg;
+    ThetaCM  = myReaction.EnergyLabToThetaCM( ELab , ThetaLab)/deg;
     ThetaLab=ThetaLab/deg;
 
     /************************************************/

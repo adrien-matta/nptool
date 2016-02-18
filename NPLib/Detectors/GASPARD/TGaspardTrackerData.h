@@ -87,88 +87,88 @@ public:
    /////////////////////           SETTERS           ////////////////////////
    // DSSD
    // (Front, E)
-   void  SetGPDTrkFirstStageFrontEDetectorNbr(UShort_t DetNbr) {
+   void  SetGPDTrkFirstStageFrontEDetectorNbr(UShort_t DetNbr){
       fGPDTrk_FirstStage_FrontE_DetectorNbr.push_back(DetNbr);
    }
-   void  SetGPDTrkFirstStageFrontEStripNbr(UShort_t StripNbr)  {
+   void  SetGPDTrkFirstStageFrontEStripNbr(UShort_t StripNbr){
       fGPDTrk_FirstStage_FrontE_StripNbr.push_back(StripNbr);
    }
-   void  SetGPDTrkFirstStageFrontEEnergy(Double_t Energy)      {
+   void  SetGPDTrkFirstStageFrontEEnergy(Double_t Energy){
       fGPDTrk_FirstStage_FrontE_Energy.push_back(Energy);
    }
    // (Front, T)
-   void  SetGPDTrkFirstStageFrontTDetectorNbr(UShort_t DetNbr) {
+   void  SetGPDTrkFirstStageFrontTDetectorNbr(UShort_t DetNbr){
       fGPDTrk_FirstStage_FrontT_DetectorNbr.push_back(DetNbr);
    }
-   void  SetGPDTrkFirstStageFrontTStripNbr(UShort_t StripNbr)  {
+   void  SetGPDTrkFirstStageFrontTStripNbr(UShort_t StripNbr){
       fGPDTrk_FirstStage_FrontT_StripNbr.push_back(StripNbr);
    }
-   void  SetGPDTrkFirstStageFrontTTime(Double_t Time)          {
+   void  SetGPDTrkFirstStageFrontTTime(Double_t Time){
       fGPDTrk_FirstStage_FrontT_Time.push_back(Time);
    }
 
    // (Back, E)
-   void  SetGPDTrkFirstStageBackEDetectorNbr(UShort_t DetNbr) {
+   void  SetGPDTrkFirstStageBackEDetectorNbr(UShort_t DetNbr){
       fGPDTrk_FirstStage_BackE_DetectorNbr.push_back(DetNbr);
    }
-   void  SetGPDTrkFirstStageBackEStripNbr(UShort_t StripNbr)  {
+   void  SetGPDTrkFirstStageBackEStripNbr(UShort_t StripNbr){
      fGPDTrk_FirstStage_BackE_StripNbr.push_back(StripNbr);
    }
-   void  SetGPDTrkFirstStageBackEEnergy(Double_t Energy)      {
+   void  SetGPDTrkFirstStageBackEEnergy(Double_t Energy){
       fGPDTrk_FirstStage_BackE_Energy.push_back(Energy);
    }
    // (Back, T)
-   void  SetGPDTrkFirstStageBackTDetectorNbr(UShort_t DetNbr) {
+   void  SetGPDTrkFirstStageBackTDetectorNbr(UShort_t DetNbr){
       fGPDTrk_FirstStage_BackT_DetectorNbr.push_back(DetNbr);
    }
-   void  SetGPDTrkFirstStageBackTStripNbr(UShort_t StripNbr)  {
+   void  SetGPDTrkFirstStageBackTStripNbr(UShort_t StripNbr){
       fGPDTrk_FirstStage_BackT_StripNbr.push_back(StripNbr);
    }
-   void  SetGPDTrkFirstStageBackTTime(Double_t Time)          {
+   void  SetGPDTrkFirstStageBackTTime(Double_t Time){
       fGPDTrk_FirstStage_BackT_Time.push_back(Time);
    }
 
    // Second Stage
    // (E)
-   void  SetGPDTrkSecondStageEDetectorNbr(UShort_t DetNbr)   {
+   void  SetGPDTrkSecondStageEDetectorNbr(UShort_t DetNbr){
       fGPDTrk_SecondStage_E_DetectorNbr.push_back(DetNbr);
    }
-   void  SetGPDTrkSecondStageEPadNbr(UShort_t PadNbr)        {
+   void  SetGPDTrkSecondStageEPadNbr(UShort_t PadNbr){
       fGPDTrk_SecondStage_E_PadNbr.push_back(PadNbr);
    }
-   void  SetGPDTrkSecondStageEEnergy(Double_t Energy)        {
+   void  SetGPDTrkSecondStageEEnergy(Double_t Energy){
       fGPDTrk_SecondStage_E_Energy.push_back(Energy);
    }
    // (T)
-   void  SetGPDTrkSecondStageTDetectorNbr(UShort_t DetNbr)   {
+   void  SetGPDTrkSecondStageTDetectorNbr(UShort_t DetNbr){
       fGPDTrk_SecondStage_T_DetectorNbr.push_back(DetNbr);
    }
-   void  SetGPDTrkSecondStageTPadNbr(UShort_t PadNbr)        {
+   void  SetGPDTrkSecondStageTPadNbr(UShort_t PadNbr){
       fGPDTrk_SecondStage_T_PadNbr.push_back(PadNbr);
    }
-   void  SetGPDTrkSecondStageTTime(Double_t Time)            {
+   void  SetGPDTrkSecondStageTTime(Double_t Time){
       fGPDTrk_SecondStage_T_Time.push_back(Time);
    }
 
    // Third Stage
    // (E)
-   void  SetGPDTrkThirdStageEDetectorNbr(UShort_t DetNbr)   {
+   void  SetGPDTrkThirdStageEDetectorNbr(UShort_t DetNbr){
       fGPDTrk_ThirdStage_E_DetectorNbr.push_back(DetNbr);
    }
-   void  SetGPDTrkThirdStageEPadNbr(UShort_t PadNbr)        {
+   void  SetGPDTrkThirdStageEPadNbr(UShort_t PadNbr){
       fGPDTrk_ThirdStage_E_PadNbr.push_back(PadNbr);
    }
-   void  SetGPDTrkThirdStageEEnergy(Double_t Energy)        {
+   void  SetGPDTrkThirdStageEEnergy(Double_t Energy){
       fGPDTrk_ThirdStage_E_Energy.push_back(Energy);
    }
    // (T)
-   void  SetGPDTrkThirdStageTDetectorNbr(UShort_t DetNbr)   {
+   void  SetGPDTrkThirdStageTDetectorNbr(UShort_t DetNbr){
       fGPDTrk_ThirdStage_T_DetectorNbr.push_back(DetNbr);
    }
-   void  SetGPDTrkThirdStageTPadNbr(UShort_t PadNbr)        {
+   void  SetGPDTrkThirdStageTPadNbr(UShort_t PadNbr){
       fGPDTrk_ThirdStage_T_PadNbr.push_back(PadNbr);
    }
-   void  SetGPDTrkThirdStageTTime(Double_t Time)            {
+   void  SetGPDTrkThirdStageTTime(Double_t Time){
       fGPDTrk_ThirdStage_T_Time.push_back(Time);
    }
 
@@ -182,118 +182,118 @@ public:
      
      return fGPDTrk_FirstStage_FrontE_DetectorNbr.size();
    }
-   UShort_t GetGPDTrkFirstStageFrontEDetectorNbr(Int_t i) {
-     return fGPDTrk_FirstStage_FrontE_DetectorNbr.at(i);
+   UShort_t GetGPDTrkFirstStageFrontEDetectorNbr(const int& i){
+     return fGPDTrk_FirstStage_FrontE_DetectorNbr[i];
    }
-   UShort_t GetGPDTrkFirstStageFrontEStripNbr(Int_t i)    {
-      return fGPDTrk_FirstStage_FrontE_StripNbr.at(i);
+   UShort_t GetGPDTrkFirstStageFrontEStripNbr(const int& i){
+      return fGPDTrk_FirstStage_FrontE_StripNbr[i];
    }
-   Double_t GetGPDTrkFirstStageFrontEEnergy(Int_t i)      {
-      return fGPDTrk_FirstStage_FrontE_Energy.at(i);
+   Double_t GetGPDTrkFirstStageFrontEEnergy(const int& i){
+      return fGPDTrk_FirstStage_FrontE_Energy[i];
    }
    // (Front, T)
-   UShort_t GetGPDTrkFirstStageFrontTMult()               {
+   UShort_t GetGPDTrkFirstStageFrontTMult(){
      if(fGPDTrk_FirstStage_FrontT_DetectorNbr.size()!= fGPDTrk_FirstStage_FrontT_StripNbr.size() || fGPDTrk_FirstStage_FrontT_DetectorNbr.size()!= fGPDTrk_FirstStage_FrontT_Time.size())
        return 0;
  
      return fGPDTrk_FirstStage_FrontT_DetectorNbr.size();
    }
-   UShort_t GetGPDTrkFirstStageFrontTDetectorNbr(Int_t i) {
-      return fGPDTrk_FirstStage_FrontT_DetectorNbr.at(i);
+   UShort_t GetGPDTrkFirstStageFrontTDetectorNbr(const int& i){
+      return fGPDTrk_FirstStage_FrontT_DetectorNbr[i];
    }
-   UShort_t GetGPDTrkFirstStageFrontTStripNbr(Int_t i)    {
-      return fGPDTrk_FirstStage_FrontT_StripNbr.at(i);
+   UShort_t GetGPDTrkFirstStageFrontTStripNbr(const int& i){
+      return fGPDTrk_FirstStage_FrontT_StripNbr[i];
    }
-   Double_t GetGPDTrkFirstStageFrontTTime(Int_t i)      {
-      return fGPDTrk_FirstStage_FrontT_Time.at(i);
+   Double_t GetGPDTrkFirstStageFrontTTime(const int& i){
+      return fGPDTrk_FirstStage_FrontT_Time[i];
    }
    // (Back, E)
-   UShort_t GetGPDTrkFirstStageBackEMult()               {
+   UShort_t GetGPDTrkFirstStageBackEMult(){
     if(fGPDTrk_FirstStage_BackE_DetectorNbr.size()!= fGPDTrk_FirstStage_BackE_StripNbr.size() || fGPDTrk_FirstStage_BackE_DetectorNbr.size()!= fGPDTrk_FirstStage_BackE_Energy.size())
        return 0;
      
      return fGPDTrk_FirstStage_BackE_DetectorNbr.size();
    }
-   UShort_t GetGPDTrkFirstStageBackEDetectorNbr(Int_t i) {
-      return fGPDTrk_FirstStage_BackE_DetectorNbr.at(i);
+   UShort_t GetGPDTrkFirstStageBackEDetectorNbr(const int& i){
+      return fGPDTrk_FirstStage_BackE_DetectorNbr[i];
    }
-   UShort_t GetGPDTrkFirstStageBackEStripNbr(Int_t i)    {
-      return fGPDTrk_FirstStage_BackE_StripNbr.at(i);
+   UShort_t GetGPDTrkFirstStageBackEStripNbr(const int& i){
+      return fGPDTrk_FirstStage_BackE_StripNbr[i];
    }
-   Double_t GetGPDTrkFirstStageBackEEnergy(Int_t i)      {
-      return fGPDTrk_FirstStage_BackE_Energy.at(i);
+   Double_t GetGPDTrkFirstStageBackEEnergy(const int& i){
+      return fGPDTrk_FirstStage_BackE_Energy[i];
    }
    // (Back, T)
-   UShort_t GetGPDTrkFirstStageBackTMult()               {
+   UShort_t GetGPDTrkFirstStageBackTMult(){
     if(fGPDTrk_FirstStage_BackT_DetectorNbr.size()!= fGPDTrk_FirstStage_BackT_StripNbr.size() || fGPDTrk_FirstStage_BackT_DetectorNbr.size()!= fGPDTrk_FirstStage_BackT_Time.size())
        return 0;
  
      return fGPDTrk_FirstStage_BackT_DetectorNbr.size();
    }
-   UShort_t GetGPDTrkFirstStageBackTDetectorNbr(Int_t i) {
-      return fGPDTrk_FirstStage_BackT_DetectorNbr.at(i);
+   UShort_t GetGPDTrkFirstStageBackTDetectorNbr(const int& i){
+      return fGPDTrk_FirstStage_BackT_DetectorNbr[i];
    }
-   UShort_t GetGPDTrkFirstStageBackTStripNbr(Int_t i)    {
-      return fGPDTrk_FirstStage_BackT_StripNbr.at(i);
+   UShort_t GetGPDTrkFirstStageBackTStripNbr(const int& i){
+      return fGPDTrk_FirstStage_BackT_StripNbr[i];
    }
-   Double_t GetGPDTrkFirstStageBackTTime(Int_t i)      {
-      return fGPDTrk_FirstStage_BackT_Time.at(i);
+   Double_t GetGPDTrkFirstStageBackTTime(const int& i){
+      return fGPDTrk_FirstStage_BackT_Time[i];
    }
 
    // Second Stage
    // (E)
-   UShort_t GetGPDTrkSecondStageEMult()           {
+   UShort_t GetGPDTrkSecondStageEMult(){
       return fGPDTrk_SecondStage_E_DetectorNbr.size();
    }
-   UShort_t GetGPDTrkSecondStageEDetectorNbr(Int_t i)  {
-      return fGPDTrk_SecondStage_E_DetectorNbr.at(i);
+   UShort_t GetGPDTrkSecondStageEDetectorNbr(const int& i){
+      return fGPDTrk_SecondStage_E_DetectorNbr[i];
    }
-   UShort_t GetGPDTrkSecondStageEPadNbr(Int_t i)       {
-      return fGPDTrk_SecondStage_E_PadNbr.at(i);
+   UShort_t GetGPDTrkSecondStageEPadNbr(const int& i){
+      return fGPDTrk_SecondStage_E_PadNbr[i];
    }
-   Double_t GetGPDTrkSecondStageEEnergy(Int_t i)       {
-      return fGPDTrk_SecondStage_E_Energy.at(i);
+   Double_t GetGPDTrkSecondStageEEnergy(const int& i){
+      return fGPDTrk_SecondStage_E_Energy[i];
    }
    // (T)
-   UShort_t GetGPDTrkSecondStageTMult()           {
+   UShort_t GetGPDTrkSecondStageTMult(){
       return fGPDTrk_SecondStage_T_DetectorNbr.size();
    }
-   UShort_t GetGPDTrkSecondStageTDetectorNbr(Int_t i)  {
-      return fGPDTrk_SecondStage_T_DetectorNbr.at(i);
+   UShort_t GetGPDTrkSecondStageTDetectorNbr(const int& i){
+      return fGPDTrk_SecondStage_T_DetectorNbr[i];
    }
-   UShort_t GetGPDTrkSecondStageTPadNbr(Int_t i)       {
-      return fGPDTrk_SecondStage_T_PadNbr.at(i);
+   UShort_t GetGPDTrkSecondStageTPadNbr(const int& i){
+      return fGPDTrk_SecondStage_T_PadNbr[i];
    }
-   Double_t GetGPDTrkSecondStageTTime(Int_t i)         {
-      return fGPDTrk_SecondStage_T_Time.at(i);
+   Double_t GetGPDTrkSecondStageTTime(const int& i){
+      return fGPDTrk_SecondStage_T_Time[i];
    }
 
    // Third Stage
    // (E)
-   UShort_t GetGPDTrkThirdStageEMult()           {
+   UShort_t GetGPDTrkThirdStageEMult(){
       return fGPDTrk_ThirdStage_E_DetectorNbr.size();
    }
-   UShort_t GetGPDTrkThirdStageEDetectorNbr(Int_t i)  {
-      return fGPDTrk_ThirdStage_E_DetectorNbr.at(i);
+   UShort_t GetGPDTrkThirdStageEDetectorNbr(const int& i){
+      return fGPDTrk_ThirdStage_E_DetectorNbr[i];
    }
-   UShort_t GetGPDTrkThirdStageEPadNbr(Int_t i)       {
-      return fGPDTrk_ThirdStage_E_PadNbr.at(i);
+   UShort_t GetGPDTrkThirdStageEPadNbr(const int& i){
+      return fGPDTrk_ThirdStage_E_PadNbr[i];
    }
-   Double_t GetGPDTrkThirdStageEEnergy(Int_t i)       {
-      return fGPDTrk_ThirdStage_E_Energy.at(i);
+   Double_t GetGPDTrkThirdStageEEnergy(const int& i){
+      return fGPDTrk_ThirdStage_E_Energy[i];
    }
    // (T)
-   UShort_t GetGPDTrkThirdStageTMult()           {
+   UShort_t GetGPDTrkThirdStageTMult(){
       return fGPDTrk_ThirdStage_T_DetectorNbr.size();
    }
-   UShort_t GetGPDTrkThirdStageTDetectorNbr(Int_t i)  {
-      return fGPDTrk_ThirdStage_T_DetectorNbr.at(i);
+   UShort_t GetGPDTrkThirdStageTDetectorNbr(const int& i)  {
+      return fGPDTrk_ThirdStage_T_DetectorNbr[i];
    }
-   UShort_t GetGPDTrkThirdStageTPadNbr(Int_t i)       {
-      return fGPDTrk_ThirdStage_T_PadNbr.at(i);
+   UShort_t GetGPDTrkThirdStageTPadNbr(const int& i){
+      return fGPDTrk_ThirdStage_T_PadNbr[i];
    }
-   Double_t GetGPDTrkThirdStageTTime(Int_t i)         {
-      return fGPDTrk_ThirdStage_T_Time.at(i);
+   Double_t GetGPDTrkThirdStageTTime(const int& i){
+      return fGPDTrk_ThirdStage_T_Time[i];
    }
 
    ClassDef(TGaspardTrackerData, 1) // GaspardTrackerData structure

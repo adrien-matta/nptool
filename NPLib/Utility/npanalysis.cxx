@@ -18,7 +18,7 @@
 #include"TEnv.h" 
 
 void ProgressDisplay(clock_t&,clock_t&,unsigned long&, unsigned long&, unsigned long&, double&, unsigned long&, int&, int&);
-
+////////////////////////////////////////////////////////////////////////////////
 int main(int argc , char** argv){
   // command line parsing
   NPOptionManager* myOptionManager = NPOptionManager::getInstance(argc,argv);

@@ -1451,6 +1451,6 @@ class proxy_must2{
     }
 };
 
-proxy_must2 p;
+proxy_must2 p_must2;
 }
 
