@@ -7,7 +7,7 @@ CryoTarget
 	RADIUS=	7.5
 	MATERIAL= D2
   DENSITY= 0.16383
-  WINDOWSTHICKNESS= 3
+  WINDOWSTHICKNESS= 1
   WINDOWSMATERIAL= Mylar
 	X= 0
 	Y= 0
@@ -69,8 +69,8 @@ GPDTrapezoid
    VIS= all
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Barrel
-GPDSquare
-   X1_Y1=     -132.251  58.314   88.72
+GPDRectangle
+   X1_Y1=     -132.251 58.314   88.72
    X128_Y1=    -61.823 128.742   88.72
    X1_Y128=   -132.251 58.314   -3.13
    X128_Y128=  -61.823 128.742  -3.13
@@ -79,7 +79,7 @@ GPDSquare
    THIRDSTAGE= 0
    VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
-GPDSquare
+GPDRectangle
    X1_Y1=     -135.00  -51.01  88.72
    X128_Y1=   -135.00   43.99  88.72
    X1_Y128=   -135.00  -51.01 -3.13

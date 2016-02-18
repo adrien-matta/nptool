@@ -29,18 +29,16 @@ using namespace std;
 #include "TInitialConditions.h"
 
 ClassImp(TInitialConditions)
-
+////////////////////////////////////////////////////////////////////////////////
 TInitialConditions::TInitialConditions(){
-  // Default constructor
-  Clear();
 }
-
+////////////////////////////////////////////////////////////////////////////////
 TInitialConditions::~TInitialConditions(){
 }
-
+////////////////////////////////////////////////////////////////////////////////
 void TInitialConditions::Clear(){
   // Incident beam parameter
-  fIC_Incident_Particle_Name = "";
+  fIC_Incident_Particle_Name.clear();
   fIC_Incident_Emittance_ThetaX = -1;
   fIC_Incident_Emittance_PhiY = -1;
   fIC_Incident_Emittance_Theta = -1;
@@ -59,7 +57,7 @@ void TInitialConditions::Clear(){
   fIC_Momentum_Direction_Y.clear();
   fIC_Momentum_Direction_Z.clear();
 }
-
+////////////////////////////////////////////////////////////////////////////////
 void TInitialConditions::Dump() const{
   cout << "--------- Initial Condition Dump ---------" << endl ;
   
@@ -93,26 +91,18 @@ void TInitialConditions::Dump() const{
     << fIC_Momentum_Direction_X[i] << " ; "
     << fIC_Momentum_Direction_Y[i] << " ; "
     << fIC_Momentum_Direction_Z[i] << ")" << endl;
-    
   }
-  
-  
 }
-
-
+////////////////////////////////////////////////////////////////////////////////
 TVector3 TInitialConditions::GetBeamDirection() const{
   return TVector3( sin(fIC_Incident_Emittance_Theta*deg)*cos(fIC_Incident_Emittance_Phi*deg),
                    sin(fIC_Incident_Emittance_Theta*deg)*sin(fIC_Incident_Emittance_Phi*deg),
                    cos(fIC_Incident_Emittance_Theta*deg));
 }
-
+////////////////////////////////////////////////////////////////////////////////
 TVector3 TInitialConditions::GetParticleDirection (const int &i) const {
   return TVector3(  fIC_Momentum_Direction_X[i],
                     fIC_Momentum_Direction_Y[i],
                     fIC_Momentum_Direction_Z[i]);
 }
-
-
-
-
 

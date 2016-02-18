@@ -31,12 +31,11 @@
 #include "TInteractionCoordinates.h"
 
 using namespace std;
-using namespace CLHEP;
+using namespace CLHEP;
 
 
 
-class GaspardTrackerRectangle : public GaspardTrackerModule
-{
+class GaspardTrackerRectangle : public GaspardTrackerModule{
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
    ////////////////////////////////////////////////////
@@ -153,14 +152,14 @@ namespace GPDRECT
    const G4double EnergyThreshold = 0.2*MeV;
 
    // Geometry
-   const G4double Length    = 115*mm;
-   const G4double Width     = 101*mm;
+   const G4double Length    = 95*mm;
+   const G4double Width     = 91.85*mm;
    const G4double Depth     =  20*mm;
    const G4double InterStageDistance = 7*mm;
 
    // First stage
-   const G4double FirstStageLength    = 112.0*mm;
-   const G4double FirstStageWidth     =  99.6*mm;
+   const G4double FirstStageLength    = 95*mm;
+   const G4double FirstStageWidth     = 91.85*mm;
    const G4double FirstStageThickness = 500*micrometer;
    const G4int    NumberOfStrips      = 128;
 

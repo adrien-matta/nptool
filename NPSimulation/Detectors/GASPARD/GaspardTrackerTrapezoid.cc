@@ -548,18 +548,14 @@ void GaspardTrackerTrapezoid::ConstructDetector(G4LogicalVolume* world)
          //  ---------------     <------
          //                         u
          // w perpendicular to (u,v) plan and pointing ThirdStage
-         G4cout << "XXXXXXXXXXXX Trapezoid " << i << " XXXXXXXXXXXXX" << G4endl;
          MMu = m_X128_Y1[i] - m_X1_Y1[i];
          MMu = MMu.unit();
-         G4cout << "MMu: " << MMu << G4endl;
 
          MMv = 0.5 * (m_X1_Y128[i] + m_X128_Y128[i] - m_X1_Y1[i] - m_X128_Y1[i]);
          MMv = MMv.unit();
-         G4cout << "MMv: " << MMv << G4endl;
 
          MMw = MMu.cross(MMv);
          MMw = MMw.unit();
-         G4cout << "MMw: " << MMw << G4endl;
 
          // Center of the module
          MMCenter = (m_X1_Y1[i] + m_X1_Y128[i] + m_X128_Y1[i] + m_X128_Y128[i]) / 4;
@@ -606,11 +602,6 @@ void GaspardTrackerTrapezoid::ConstructDetector(G4LogicalVolume* world)
          MMu = MMv.cross(MMw);
          MMv = MMv.unit();
          MMu = MMu.unit();
-
-         G4cout << "XXXXXXXXXXXX Trapezoid " << i << " XXXXXXXXXXXXX" << G4endl;
-         G4cout << "MMu: " << MMu << G4endl;
-         G4cout << "MMv: " << MMv << G4endl;
-         G4cout << "MMw: " << MMw << G4endl;
 
          // Passage Matrix from Lab Referential to Telescope Referential
          MMrot = new G4RotationMatrix(MMu, MMv, MMw);

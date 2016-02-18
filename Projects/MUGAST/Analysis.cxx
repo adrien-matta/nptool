@@ -39,7 +39,7 @@ void Analysis::Init() {
   // initialize input and output branches
   InitOutputBranch();
   InitInputBranch();
-
+  myInit = new TInitialConditions();
   // get MUST2 and Gaspard objects
   M2 = (TMust2Physics*)  m_DetectorManager -> GetDetector("MUST2Array");
   GD = (GaspardTracker*) m_DetectorManager -> GetDetector("GaspardTracker");
@@ -59,7 +59,7 @@ void Analysis::Init() {
   string light=NPL::ChangeNameToG4Standard(myReaction.GetNucleus3().GetName());
   string beam=NPL::ChangeNameToG4Standard(myReaction.GetNucleus1().GetName());
 
-  LightCD2 = NPL::EnergyLoss(light+"_"+TargetMaterial+".G4table","G4Table",100 );
+  LightTarget = NPL::EnergyLoss(light+"_"+TargetMaterial+".G4table","G4Table",100 );
   LightAl = NPL::EnergyLoss(light+"_Al.G4table","G4Table",100);
   LightSi = NPL::EnergyLoss(light+"_Si.G4table","G4Table",100);
   BeamCD2 = NPL::EnergyLoss(beam+"_"+TargetMaterial+".G4table","G4Table",100);
@@ -86,7 +86,8 @@ void Analysis::Init() {
   X = 0;
   Y = 0;
   Z = 0;
-
+  dE = 0;
+  dTheta=0;
   // determine beam energy for a randomized interaction point in target
   FinalBeamEnergy = OriginalBeamEnergy;
   if(BeamWindow)
@@ -100,18 +101,17 @@ void Analysis::Init() {
   cout << "Initial beam energy : " << OriginalBeamEnergy << endl;
   cout << "Final beam energy   : " << FinalBeamEnergy << endl;
 
+  BeamDirection = TVector3(0,0,1);
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::TreatEvent() {
   // Reinitiate calculated variable
   ReInitValue();
-
-  // assume beam is centered and parallel to z axis
-  double XTarget = 0;
-  double YTarget = 0;
-  TVector3 BeamDirection = TVector3(0,0,1);
-
+  //double zImpact = Rand.Uniform(-TargetThickness*0.5,TargetThickness*0.5);
+  double zImpact = 0 ;
+  BeamImpact = TVector3(0,0,zImpact); 
   //////////////////////////// LOOP on MUST2 //////////////////
   for(unsigned int countMust2 = 0 ; countMust2 < M2->Si_E.size() ; countMust2++){
     /************************************************/
@@ -155,7 +155,7 @@ void Analysis::TreatEvent() {
     // Evaluate energy using the thickness
     ELab = LightAl.EvaluateInitialEnergy( Energy ,0.4*micrometer , ThetaM2Surface);
     // Target Correction
-    ELab   = LightCD2.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
+    ELab   = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2.-zImpact, ThetaNormalTarget);
 
     if(LightWindow)
       ELab = LightWindow->EvaluateInitialEnergy( ELab ,WindowsThickness, ThetaNormalTarget);
@@ -199,10 +199,13 @@ void Analysis::TreatEvent() {
     Energy = ELab = 0;
     Energy = GD->GetEnergyDeposit();
     // Target Correction
-    ELab   = LightCD2.EvaluateInitialEnergy( Energy ,TargetThickness*0.5, ThetaNormalTarget);
+    ELab   = LightTarget.EvaluateInitialEnergy( Energy ,TargetThickness*0.5-zImpact, ThetaNormalTarget);
 
     if(LightWindow)
       ELab = LightWindow->EvaluateInitialEnergy( ELab ,WindowsThickness, ThetaNormalTarget);
+    
+      dE= myInit->GetKineticEnergy(0) - ELab ;
+      dTheta = (myInit->GetThetaLab_WorldFrame(0)*deg-ThetaLab)/deg ;
     /************************************************/
 
     /************************************************/
@@ -234,7 +237,8 @@ void Analysis::InitOutputBranch() {
   RootOutput::getInstance()->GetTree()->Branch("X",&X,"X/D");
   RootOutput::getInstance()->GetTree()->Branch("Y",&Y,"Y/D");
   RootOutput::getInstance()->GetTree()->Branch("Z",&Z,"Z/D");
-
+  RootOutput::getInstance()->GetTree()->Branch("dE",&dE,"dE/D");
+  RootOutput::getInstance()->GetTree()->Branch("dTheta",&dTheta,"dTheta/D");
 }
 
 
@@ -254,6 +258,8 @@ void Analysis::ReInitValue(){
   X = -1000;
   Y = -1000;
   Z = -1000;
+  dE= -1000;
+  dTheta= -1000;
 }
 
 

@@ -41,8 +41,8 @@ GaspardTrackerRectangle::GaspardTrackerRectangle(map<int, GaspardTrackerModule*>
           m_EventData(0),
           m_PreTreatData(new TGaspardTrackerData),
           m_NumberOfModule(0),
-          m_FirstStageLength(112),   // mm
-          m_FirstStageWidth(99.6),   // mm
+          m_FirstStageLength(95),   // mm
+          m_FirstStageWidth(91.85),   // mm
           m_NumberOfStrips(128)
 {
    m_StripPitchX = m_FirstStageWidth  / (double)m_NumberOfStrips;
@@ -387,10 +387,12 @@ void GaspardTrackerRectangle::AddModule(TVector3 C_X1_Y1,
    // in NPS.
    // Vector U parallel to BaseLarge
    TVector3 U = C_X128_Y1 - C_X1_Y1;
+   cout << "Detector size: " << U.Mag() << " by " ;
    U = U.Unit();
 
    // Vector V parallel to height
    TVector3 V = C_X1_Y128 - C_X1_Y1;
+   cout << V.Mag() << endl;
    V = V.Unit();
 
    // Position Vector of Strip Center
@@ -408,7 +410,7 @@ void GaspardTrackerRectangle::AddModule(TVector3 C_X1_Y1,
    vector< vector< double > >   OneModuleStripPositionZ;
 
    // Moving StripCenter to 1.1 corner:
-   Strip_1_1 = C_X1_Y1 + m_StripPitchX/2*U + m_StripPitchY/2*V;
+   Strip_1_1 = C_X1_Y1 + m_StripPitchX*0.5*U + m_StripPitchY*0.5*V ;
 
    for (int i = 0; i < m_NumberOfStrips; i++) {
       lineX.clear();

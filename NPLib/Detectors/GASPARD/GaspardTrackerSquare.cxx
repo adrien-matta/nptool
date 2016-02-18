@@ -386,11 +386,11 @@ void GaspardTrackerSquare::AddModule(TVector3 C_X1_Y1,
    // Vector U on Module Face (paralelle to Y Strip) (NB: remember that Y strip are allong X axis)
    TVector3 U = C_X128_Y1 - C_X1_Y1;
    U = U.Unit();
-
    // Vector V on Module Face (parallele to X Strip)
    TVector3 V = C_X1_Y128 - C_X1_Y1;
    V = V.Unit();
-
+  
+   
    // Position Vector of Strip Center
    TVector3 StripCenter = TVector3(0,0,0);
    // Position Vector of X=1 Y=1 Strip 
@@ -407,7 +407,6 @@ void GaspardTrackerSquare::AddModule(TVector3 C_X1_Y1,
 
    // Moving StripCenter to 1.1 corner:
    Strip_1_1 = C_X1_Y1 + (U+V) * m_StripPitch*0.5;
-
    for (int i = 0; i < m_NumberOfStrips; i++) {
       lineX.clear();
       lineY.clear();

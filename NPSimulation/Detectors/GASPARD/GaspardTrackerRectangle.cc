@@ -344,6 +344,7 @@ void GaspardTrackerRectangle::ReadConfiguration(string Path)
 
             A = G4ThreeVector(Ax, Ay, Az);
             G4cout << "X1 Y1 corner position : " << A << G4endl;
+            G4cout << mm << G4endl;
          }
         
          else if (DataBuffer.compare(0, 8, "X128_Y1=") == 0) {
@@ -529,7 +530,7 @@ void GaspardTrackerRectangle::ConstructDetector(G4LogicalVolume* world)
    for (G4int i = 0; i < NumberOfModule; i++) {
       // By Point
       if (m_DefinitionType[i]) {
-         // (u,v,w) unitary vector associated to trapezoidal referencial
+         // (u,v,w) unitary vector associated to reactangle referencial
          // (u,v) // to silicon plan
          //     ------
          //     |    |           ^
@@ -538,18 +539,14 @@ void GaspardTrackerRectangle::ConstructDetector(G4LogicalVolume* world)
          //     ------     <------
          //                         u
          // w perpendicular to (u,v) plan and pointing ThirdStage
-         G4cout << "XXXXXXXXXXXX Rectangle " << i << " XXXXXXXXXXXXX" << G4endl;
          MMu = m_X128_Y1[i] - m_X1_Y1[i];
          MMu = MMu.unit();
-         G4cout << "MMu: " << MMu << G4endl;
 
          MMv = 0.5 * (m_X1_Y128[i] + m_X128_Y128[i] - m_X1_Y1[i] - m_X128_Y1[i]);
          MMv = MMv.unit();
-         G4cout << "MMv: " << MMv << G4endl;
 
          MMw = MMu.cross(MMv);
          MMw = MMw.unit();
-         G4cout << "MMw: " << MMw << G4endl;
 
          // Center of the module
          MMCenter = (m_X1_Y1[i] + m_X1_Y128[i] + m_X128_Y1[i] + m_X128_Y128[i]) / 4;
@@ -564,14 +561,13 @@ void GaspardTrackerRectangle::ConstructDetector(G4LogicalVolume* world)
       else {
          G4double Theta = m_Theta[i];
          G4double Phi   = m_Phi[i];
-
-         // (u,v,w) unitary vector associated to telescope referencial
+         // (u,v,w) unitary vector associated to reactangle referencial
          // (u,v) // to silicon plan
-         //      -------
-         //     /       \              ^
-         //    /         \             |  v
-         //   /           \            |
-         //  ---------------     <------
+         //     ------
+         //     |    |           ^
+         //     |    |           |  v
+         //     |    |           |
+         //     ------     <------
          //                         u
          // w perpendicular to (u,v) plan and pointing ThirdStage
          // Phi is angle between X axis and projection in (X,Y) plan
@@ -596,11 +592,6 @@ void GaspardTrackerRectangle::ConstructDetector(G4LogicalVolume* world)
          MMu = MMv.cross(MMw);
          MMv = MMv.unit();
          MMu = MMu.unit();
-
-         G4cout << "XXXXXXXXXXXX Rectangle " << i << " XXXXXXXXXXXXX" << G4endl;
-         G4cout << "MMu: " << MMu << G4endl;
-         G4cout << "MMv: " << MMv << G4endl;
-         G4cout << "MMw: " << MMw << G4endl;
 
          // Passage Matrix from Lab Referential to Telescope Referential
          MMrot = new G4RotationMatrix(MMu, MMv, MMw);

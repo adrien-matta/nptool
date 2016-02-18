@@ -29,12 +29,11 @@
 #include "TInteractionCoordinates.h"
 
 using namespace std;
-using namespace CLHEP;
+using namespace CLHEP;
 
 
 
-class GaspardTrackerSquare : public GaspardTrackerModule
-{
+class GaspardTrackerSquare : public GaspardTrackerModule{
    ////////////////////////////////////////////////////
    /////// Default Constructor and Destructor /////////
    ////////////////////////////////////////////////////
