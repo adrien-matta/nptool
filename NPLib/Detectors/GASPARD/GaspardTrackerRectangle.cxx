@@ -45,8 +45,8 @@ GaspardTrackerRectangle::GaspardTrackerRectangle(map<int, GaspardTrackerModule*>
           m_FirstStageWidth(91.85),   // mm
           m_NumberOfStrips(128)
 {
-   m_StripPitchX = m_FirstStageWidth  / (double)m_NumberOfStrips;
-   m_StripPitchY = m_FirstStageLength / (double)m_NumberOfStrips;
+   m_StripPitchY = m_FirstStageWidth  / (double)m_NumberOfStrips;
+   m_StripPitchX = m_FirstStageLength / (double)m_NumberOfStrips;
 }
 
 

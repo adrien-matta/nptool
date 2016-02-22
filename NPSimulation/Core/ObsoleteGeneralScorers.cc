@@ -196,7 +196,10 @@ G4bool PSTOF::ProcessHits(G4Step* aStep, G4TouchableHistory*)
    int DetNumber = PickUpDetectorNumber(aStep, m_VolumeName); 
 
    G4double TOF  = aStep->GetPreStepPoint()->GetGlobalTime();
+   G4double de = aStep->GetTotalEnergyDeposit();
    G4int  index = aStep->GetTrack()->GetTrackID();
+   if(de < TriggerThreshold)
+     return FALSE;
    EvtMap->set(index+DetNumber, TOF);
    return TRUE;
 }
