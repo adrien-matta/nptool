@@ -91,8 +91,6 @@ PhysicsList::PhysicsList() : G4VModularPhysicsList(){
     #else
       std::cout << "\r\032[1;31m Warning: physics list HadronPhysicsQGSP_BIC_HP require Geant4 10, process not activated \033[0m" <<std::endl;  
     #endif
-
-    m_PhysList["HadronPhysicsQGSP_BIC_HP"] = new G4HadronPhysicsQGSP_BIC_HP();
   }
   // Optical Photon for scintillator simulation
     if(m_OpticalPhysics){
