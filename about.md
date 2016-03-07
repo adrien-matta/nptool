@@ -13,7 +13,10 @@ use of [Geant4](https://geant4.web.cern.ch/geant4/) and
 [ROOT](https://root.cern.ch/) toolkits.
 
 
-A comprehensive overview of the package is given in the NPTool [publication][publication] in the Journal of Physics G. Please cite this article for publication of results obtained using the NPTool framework.
 
 ![NPTool logo](/images/nptoolLogo.png){: .center-image}
+
+A comprehensive overview of the package is given in the NPTool [publication][publication] in the Journal of Physics G. Please cite this article for publication of results obtained using the NPTool framework.
+
+
 [publication]: http://iopscience.iop.org/article/10.1088/0954-3899/43/4/045113
