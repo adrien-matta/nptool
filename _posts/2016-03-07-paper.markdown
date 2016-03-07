@@ -1,0 +1,17 @@
+---
+layout: post
+title:  "NPTool publication is out"
+date:   2016-03-07 15:00
+author: Adrien Matta
+categories: nptool update
+---
+
+Dear users and collaborators,
+
+The NPTool team is please to announce the [publication][publication] of NPTool in the Journal of Physics G. This article give a comprehensive overview of the NPTool framework and provide validation of the simulation for various physics cases and experiemental devices. 
+
+
+We thank you in advance for citing this article in future publication of results obtained using NPTool.
+
+
+[publication]: http://iopscience.iop.org/article/10.1088/0954-3899/43/4/045113
