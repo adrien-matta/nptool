@@ -1,0 +1,40 @@
+%%%%%%%%%%%%%%%%%%%%%% S1107 at Triumf %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Beam
+  Particle= 28Mg
+  ExcitationEnergy= 0
+  Energy= 224
+  SigmaEnergy= 0.448
+  SigmaThetaX= 0.01 
+  SigmaPhiY= 0.01
+  SigmaX= 0.5
+  SigmaY= 0.5
+  MeanThetaX= 0
+  MeanPhiY= 0
+  MeanX= 0
+  MeanY= 0
+  %EnergyProfilePath=
+  %XThetaXProfilePath=
+  %YPhiYProfilePath=
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+TwoBodyReaction
+	Beam= 28Mg
+	Target= 2H
+	Light= 1H
+	Heavy= 29Mg
+	ExcitationEnergyLight= 0.0
+	ExcitationEnergyHeavy= 1.0 
+  CrossSectionPath= flat.txt CSR0
+	ShootLight= 1
+	ShootHeavy= 1
+  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GammaDecay 29Mg
+  Cascade
+    BranchingRatio= 70
+    Energies= 1
+    DifferentialCrossSection= flat.txt	Gamma29Mg
+  Cascade
+    BranchingRatio= 30
+    Energies= 0.5 0.5
