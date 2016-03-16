@@ -162,7 +162,7 @@ class TLassaData : public TObject {
     UShort_t   GetLassaCsITCristalNbr(const Int_t i)    const {return fLassa_CsIT_CristalNbr[i];}
     Double_t   GetLassaCsITTime(const Int_t i)          const {return fLassa_CsIT_Time[i];}
 
-    ClassDef(TLassaData,2)  // HiraData structure
+    ClassDef(TLassaData,2)  // LassaData structure
 };
 
 #endif

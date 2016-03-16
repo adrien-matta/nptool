@@ -116,6 +116,8 @@ class TLassaPhysics : public TObject, public NPL::VDetector
     
     //   Read the user configuration file; if no file found, load standard one
     void ReadAnalysisConfig();
+    
+    void InitializeStandardParameter();
 
     // Use to access the strip position
 //    double GetStripPositionX( const int N , const int X , const int Y )   const{ return m_StripPositionX[N-1][X-1][Y-1] ; }  ;
