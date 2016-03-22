@@ -69,9 +69,9 @@ namespace HIRA
     const G4double CsIThickness      = 10.*cm;// + 2*MylarCsIThickness ;
     
     const G4double CsIXFront         = 34.93*mm;
-    const G4double CsIXBack          = 44.62*mm;
+    const G4double CsIXBack          = 44.62*mm;//39.*mm
     const G4double CsIYFront         = 34.93*mm;
-    const G4double CsIYBack          = 44.62*mm;
+    const G4double CsIYBack          = 44.62*mm;//39.*mm
     const G4double DistInterCsI      = 0.6*mm;
     
 	const G4double ClusterFaceFront  = 2*CsIXFront+DistInterCsI;

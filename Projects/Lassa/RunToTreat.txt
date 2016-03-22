@@ -1,5 +1,5 @@
 TTreeName 
 	SimulatedTree
 RootFileName 
-	../../Outputs/Simulation/Example1.root
+	../../Outputs/Simulation/dumb.root
 
