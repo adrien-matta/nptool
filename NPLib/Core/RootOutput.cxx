@@ -187,30 +187,30 @@ RootOutput::~RootOutput(){
 
     // write TAsciiFile if used
     // EventGenerator
-    if (!pEventGenerator->IsEmpty()) pEventGenerator->Write();
+    if (!pEventGenerator->IsEmpty()) pEventGenerator->Write(0,TAsciiFile::kOverwrite);
     // DetectorConfiguration
-    if (!pDetectorConfiguration->IsEmpty()) pDetectorConfiguration->Write();
+    if (!pDetectorConfiguration->IsEmpty()) pDetectorConfiguration->Write(0,TAsciiFile::kOverwrite);
     // CalibrationFile
-    if (!pCalibrationFile->IsEmpty()) pCalibrationFile->Write();
+    if (!pCalibrationFile->IsEmpty()) pCalibrationFile->Write(0,TAsciiFile::kOverwrite);
     // RunToTreatFile
-    if (!pRunToTreatFile->IsEmpty()) pRunToTreatFile->Write();
+    if (!pRunToTreatFile->IsEmpty()) pRunToTreatFile->Write(0,TAsciiFile::kOverwrite);
     // Analysis ConfigFile
-    if (!pAnalysisConfigFile->IsEmpty()) pAnalysisConfigFile->Write();
+    if (!pAnalysisConfigFile->IsEmpty()) pAnalysisConfigFile->Write(0,TAsciiFile::kOverwrite);
     pRootFile->Flush();
     gDirectory->cd(currentPath->GetPath());
     pRootFile->Close();
   }
 
   else if (pRootFile && NPOptionManager::getInstance()->GetPROOF()){
-    if (!pEventGenerator->IsEmpty()) pEventGenerator->Write();
+    if (!pEventGenerator->IsEmpty()) pEventGenerator->Write(0,TAsciiFile::kOverwrite);
     // DetectorConfiguration
-    if (!pDetectorConfiguration->IsEmpty()) pDetectorConfiguration->Write();
+    if (!pDetectorConfiguration->IsEmpty()) pDetectorConfiguration->Write(0,TAsciiFile::kOverwrite);
     // CalibrationFile
-    if (!pCalibrationFile->IsEmpty()) pCalibrationFile->Write();
+    if (!pCalibrationFile->IsEmpty()) pCalibrationFile->Write(0,TAsciiFile::kOverwrite);
     // RunToTreatFile
-    if (!pRunToTreatFile->IsEmpty()) pRunToTreatFile->Write();
+    if (!pRunToTreatFile->IsEmpty()) pRunToTreatFile->Write(0,TAsciiFile::kOverwrite);
     // Analysis ConfigFile
-    if (!pAnalysisConfigFile->IsEmpty()) pAnalysisConfigFile->Write();
+    if (!pAnalysisConfigFile->IsEmpty()) pAnalysisConfigFile->Write(0,TAsciiFile::kOverwrite);
   }
 
   else if(!pRootFile && NPOptionManager::getInstance()->GetPROOF()){
