@@ -76,6 +76,7 @@ DetectorConstruction::DetectorConstruction():  world_log(0), world_phys(0){
   m_Target   = 0;
   m_Chamber  = 0 ;
   m_Messenger =  new DetectorMessenger(this);
+  m_ReadSensitivePtr = &NPS::VDetector::ReadSensitive;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -257,7 +258,8 @@ void DetectorConstruction::ReadAllSensitive(const G4Event* event){
 
   unsigned int mysize =  m_Detectors.size();
   for (unsigned short i = 0 ; i < mysize ; i++) {
-    m_Detectors[i]->ReadSensitive(event);
+    //m_Detectors[i]->ReadSensitive(event);
+    (m_Detectors[i]->*m_ReadSensitivePtr)(event);    
   }
 }
 

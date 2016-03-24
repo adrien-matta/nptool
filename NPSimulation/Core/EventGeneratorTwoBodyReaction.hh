@@ -44,7 +44,7 @@ using namespace CLHEP;
 using namespace NPL ;
 
 
-class EventGeneratorTwoBodyReaction : public VEventGenerator
+class EventGeneratorTwoBodyReaction : public NPS::VEventGenerator
 {
    public:     // Constructors and Destructors
       // Default constructor used to allocate memory

@@ -37,13 +37,13 @@
 #include "Randomize.hh"
 
 
-VEventGenerator::VEventGenerator()
+NPS::VEventGenerator::VEventGenerator()
 {
 }
 
 
 
-VEventGenerator::~VEventGenerator()
+NPS::VEventGenerator::~VEventGenerator()
 {
 }
 

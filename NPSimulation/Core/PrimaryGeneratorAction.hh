@@ -36,6 +36,7 @@
 using namespace std;
 using namespace CLHEP;
 
+typedef void(NPS::VEventGenerator::*VEventGenerator_FuncPtr)(G4Event*);
 
 
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction{
@@ -50,12 +51,16 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction{
     void ReadEventGeneratorFile(string Path);
     void ClearEventGenerator();
 
+
+  private:// VEventGenerator Function Pointer
+    VEventGenerator_FuncPtr m_GenerateEvent;
+
   public:
     void SetTarget();
 
   private:
     DetectorConstruction* m_detector;
-    vector<VEventGenerator*> m_EventGenerator;
+    vector<NPS::VEventGenerator*> m_EventGenerator;
     PrimaryGeneratorActionMessenger* m_Messenger;
 };
 

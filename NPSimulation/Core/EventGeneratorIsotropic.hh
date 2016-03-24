@@ -33,7 +33,7 @@ using namespace std;
 #include "VEventGenerator.hh"
 #include "ParticleStack.hh"
 
-class EventGeneratorIsotropic : public VEventGenerator{
+class EventGeneratorIsotropic : public NPS::VEventGenerator{
 public:     // Constructor and destructor
   EventGeneratorIsotropic() ;
   virtual ~EventGeneratorIsotropic();
