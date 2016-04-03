@@ -41,6 +41,7 @@ class G4VPhysicalVolume;
 
 // ROOT headers
 #include "TTree.h"
+typedef void(NPS::VDetector::*VDetector_FuncPtr)(const G4Event*);
 
 class DetectorConstruction : public G4VUserDetectorConstruction{
   public:
@@ -74,6 +75,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction{
     // Virtual Detector Vector
     vector<NPS::VDetector*> m_Detectors;
 
+  private: // VDetector function pointer
+    VDetector_FuncPtr m_ReadSensitivePtr;
 
   private: // Data about the target
     Target*  m_Target;

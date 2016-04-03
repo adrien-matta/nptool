@@ -43,7 +43,7 @@ using namespace std;
 
 
 
-class EventGeneratorGammaDecay : public VEventGenerator{
+class EventGeneratorGammaDecay : public NPS::VEventGenerator{
 public: // Constructor and destructor
   EventGeneratorGammaDecay();
   ~EventGeneratorGammaDecay();

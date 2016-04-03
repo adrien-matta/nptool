@@ -48,6 +48,12 @@
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+PrimaryGeneratorAction::PrimaryGeneratorAction(DetectorConstruction* det): m_detector(det){
+  m_Messenger = new PrimaryGeneratorActionMessenger(this);
+  m_GenerateEvent = &NPS::VEventGenerator::GenerateEvent; 
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 PrimaryGeneratorAction::~PrimaryGeneratorAction(){
   unsigned int mysize = m_EventGenerator.size();
   for (unsigned int i = 0 ; i < mysize; i++) {
@@ -56,10 +62,6 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction(){
   m_EventGenerator.clear();
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-PrimaryGeneratorAction::PrimaryGeneratorAction(DetectorConstruction* det): m_detector(det){
-  m_Messenger = new PrimaryGeneratorActionMessenger(this);
-}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent){
@@ -67,7 +69,8 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent){
   SetTarget();
   unsigned int mysize = m_EventGenerator.size();
   for (unsigned int i = 0 ; i < mysize; i++) {
-    m_EventGenerator[i]->GenerateEvent(anEvent);
+    //m_EventGenerator[i]->GenerateEvent(anEvent);
+    (m_EventGenerator[i]->*m_GenerateEvent)(anEvent);
   }
 
   ParticleStack::getInstance()->ShootAllParticle(anEvent);
@@ -111,7 +114,7 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path){
     //Search for Isotropic source
     else if (LineBuffer.compare(0, 9, "Isotropic") == 0  && !check_Isotropic) {
       check_Isotropic = true;
-      VEventGenerator* myEventGenerator = new EventGeneratorIsotropic();
+      NPS::VEventGenerator* myEventGenerator = new EventGeneratorIsotropic();
       EventGeneratorFile.close();
       myEventGenerator->ReadConfiguration(Path);
       EventGeneratorFile.open(Path.c_str());
@@ -122,7 +125,7 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path){
     //Search for Beam
     else if (LineBuffer.compare(0, 4, "Beam") == 0  && !check_Beam) {
       check_Beam = true;
-      VEventGenerator* myEventGenerator = new EventGeneratorBeam();
+      NPS::VEventGenerator* myEventGenerator = new EventGeneratorBeam();
       EventGeneratorFile.close();
       myEventGenerator->ReadConfiguration(Path);
       EventGeneratorFile.open(Path.c_str());
@@ -134,7 +137,7 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path){
     //Search for Two body reaction
     else if (LineBuffer.compare(0, 15, "TwoBodyReaction") == 0 && !check_TwoBodyReaction) {
       check_TwoBodyReaction = true;
-      VEventGenerator* myEventGenerator = new EventGeneratorTwoBodyReaction();
+      NPS::VEventGenerator* myEventGenerator = new EventGeneratorTwoBodyReaction();
       EventGeneratorFile.close();
       myEventGenerator->ReadConfiguration(Path);
       EventGeneratorFile.open(Path.c_str());
@@ -148,7 +151,7 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path){
       seenToken_GammaDecay++;
       if (seenToken_GammaDecay>alreadyiInstantiate_GammaDecay) {
         alreadyiInstantiate_GammaDecay++;
-        VEventGenerator* myEventGenerator = new EventGeneratorGammaDecay();
+        NPS::VEventGenerator* myEventGenerator = new EventGeneratorGammaDecay();
         EventGeneratorFile.close();
         myEventGenerator->ReadConfiguration(Path,alreadyiInstantiate_GammaDecay);
         EventGeneratorFile.open(Path.c_str());
@@ -165,7 +168,7 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path){
       seenToken_ParticleDecay++;
       if(seenToken_ParticleDecay>alreadyiInstantiate_ParticleDecay){
         alreadyiInstantiate_ParticleDecay++;
-        VEventGenerator* myEventGenerator = new EventGeneratorParticleDecay();
+        NPS::VEventGenerator* myEventGenerator = new EventGeneratorParticleDecay();
         EventGeneratorFile.close();
         myEventGenerator->ReadConfiguration(Path,alreadyiInstantiate_ParticleDecay);
         EventGeneratorFile.open(Path.c_str());

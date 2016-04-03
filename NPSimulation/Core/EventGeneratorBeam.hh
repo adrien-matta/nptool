@@ -39,7 +39,7 @@
 
 using namespace std  ;
 
-class EventGeneratorBeam : public VEventGenerator{
+class EventGeneratorBeam : public NPS::VEventGenerator{
 public:     // Constructor and destructor
   EventGeneratorBeam();
   virtual ~EventGeneratorBeam();

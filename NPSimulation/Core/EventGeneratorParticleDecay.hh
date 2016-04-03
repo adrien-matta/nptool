@@ -47,7 +47,7 @@ using namespace NPL;
 // Geant4
 #include "G4ParticleDefinition.hh"
 
-class EventGeneratorParticleDecay : public VEventGenerator{
+class EventGeneratorParticleDecay : public NPS::VEventGenerator{
 public: // Constructor and destructor
   EventGeneratorParticleDecay();
   ~EventGeneratorParticleDecay();

@@ -78,6 +78,7 @@ private:
     NPL::EnergyLoss Triton_CH2  ;
     NPL::EnergyLoss Deuteron_CH2  ;
     NPL::EnergyLoss He3_CD2;
+    NPL::EnergyLoss He4_CH2;
     
     THiraPhysics* Hira;
     TInitialConditions* InitialConditions;

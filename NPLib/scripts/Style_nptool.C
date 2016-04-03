@@ -53,7 +53,7 @@ void Style_nptool(){
   // y axis
     //style_nptool->GetYaxis()->CenterTitle();
   style_nptool->SetTitleYSize(0.07);
-  style_nptool->SetTitleYOffset(1.1);
+  style_nptool->SetTitleYOffset(1.02);
   style_nptool->SetLabelOffset(0.1,"Y");
   style_nptool->SetLabelSize(0.04,"Y");
   style_nptool->SetLabelOffset(0.006,"Y");

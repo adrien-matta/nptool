@@ -43,9 +43,9 @@
 
 using namespace CLHEP;
 using namespace std;
-using namespace CLHEP;
+using namespace CLHEP;
 
-
+namespace NPS{
 
 class VEventGenerator
 {
@@ -65,5 +65,5 @@ public:
    void RandomGaussian2D(double MeanX, double MeanY, double SigmaX, double SigmaY, double &X, double &Y, double NumberOfSigma = 10000);
 };
 
-
+}
 #endif

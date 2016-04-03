@@ -41,7 +41,7 @@ void Analysis::Init(){
     InitOutputBranch();
     InitInputBranch();
     Rand = TRandom3();
-    TransferReaction= new NPL::Reaction("8B(p,t)6B@400");
+    TransferReaction= new NPL::Reaction("8B(p,4He)5Be@400");
     //TransferReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
     
     E_ThinSi = 0;
@@ -70,6 +70,7 @@ void Analysis::Init(){
     Triton_CH2 = EnergyLoss("triton_CD2.G4table","G4Table",100 );
     Deuteron_CH2 = EnergyLoss("deuteron_CH2.G4table","G4Table",100 );
     He3_CD2 = EnergyLoss("He3_CD2.G4table","G4Table",100 );
+    He4_CH2 = EnergyLoss("alpha_CH2.G4table","G4Table",100 );
     
     f_proton = new TF1("f_proton","1 - TMath::Exp(-(x-0.0538203)/28.3125)",0,10);
     
@@ -149,8 +150,9 @@ void Analysis::TreatEvent(){
             else ELab = E_ThinSi + E_ThickSi;
             
             if(ELab>0){
-                //ELab = Triton_CD2.EvaluateInitialEnergy(ELab,(double)TargetThickness/2*micrometer,0);
-                ELab = Triton_CH2.EvaluateInitialEnergy(ELab,(double)TargetThickness/2*micrometer,0);
+                //ELab = Deuteron_CH2.EvaluateInitialEnergy(ELab,(double)TargetThickness/2*micrometer,0);
+                //ELab = Triton_CH2.EvaluateInitialEnergy(ELab,(double)TargetThickness/2*micrometer,0);
+                ELab = He4_CH2.EvaluateInitialEnergy(ELab,(double)TargetThickness/2*micrometer,0);
                 //cout << TargetThickness << endl;
                 // ********************** Angle in the CM frame *****************************
                 TransferReaction -> SetNuclei3(ELab, ThetaLab*deg);
