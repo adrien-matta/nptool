@@ -1,18 +1,18 @@
 /*****************************************************************************
- * Copyright (C) 2009-2016   this file is part of the NPTool Project       *
+ * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Adrien Matta  contact address: a.matta@surrey.ac.uk                        *
+ * Original Author: Adrien Matta  contact address: a.matta@surrey.ac.uk      *
  *                                                                           *
- * Creation Date  : January 2016                                           *
+ * Creation Date  : January 2016                                             *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold AGATA Raw data                                    *
+ *  This class hold AGATA Treated  data                                      *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -41,16 +41,16 @@ using namespace std;
 ClassImp(TAGATAPhysics)
 
 
-///////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////
 TAGATAPhysics::TAGATAPhysics()
-   : m_EventData(new TAGATAData),
-     m_PreTreatedData(new TAGATAData),
-     m_EventPhysics(this),
-     m_Spectra(0),
-     m_E_RAW_Threshold(0), // adc channels
-     m_E_Threshold(0),     // MeV
-     m_NumberOfDetectors(0) {
-}
+  : m_EventData(new TAGATAData),
+  m_PreTreatedData(new TAGATAData),
+  m_EventPhysics(this),
+  m_Spectra(0),
+  m_E_RAW_Threshold(0), // adc channels
+  m_E_Threshold(0),     // MeV
+  m_NumberOfDetectors(0) {
+  }
 
 
 
@@ -65,33 +65,33 @@ void TAGATAPhysics::BuildSimplePhysicalEvent() {
 void TAGATAPhysics::BuildPhysicalEvent() {
   // apply thresholds and calibration
   PreTreat();
-
   // match energy and time together
   for (UShort_t e = 0; e < m_PreTreatedData->GetMultEnergy(); e++) {
     for (UShort_t t = 0; t < m_PreTreatedData->GetMultTime(); t++) {
-      if (m_PreTreatedData->GetE_DetectorNbr(e) == m_PreTreatedData->GetT_DetectorNbr(t)) {
-        DetectorNumber.push_back(m_PreTreatedData->GetE_DetectorNbr(e));
-        Energy.push_back(m_PreTreatedData->Get_Energy(e));
-        Time.push_back(m_PreTreatedData->Get_Time(t));
+      for (UShort_t a = 0; a < m_PreTreatedData->GetMultAngle(); a++) {
+        if (m_PreTreatedData->GetE_DetectorNbr(e) == m_PreTreatedData->GetT_DetectorNbr(t) 
+         && m_PreTreatedData->GetE_DetectorNbr(e) == m_PreTreatedData->GetA_DetectorNbr(a)) {
+          DetectorNumber.push_back(m_PreTreatedData->GetE_DetectorNbr(e));
+          Energy.push_back(m_PreTreatedData->Get_Energy(e));
+          Angle.push_back(m_PreTreatedData->Get_Angle(a));
+          Time.push_back(m_PreTreatedData->Get_Time(t));
+        }
       }
     }
   }
 }
 
-
-
 ///////////////////////////////////////////////////////////////////////////
 void TAGATAPhysics::PreTreat() {
-  // This method ypically applies thresholds and calibrations
-  // Might test for desabled channel for more complex detector
+  // This method typically applies thresholds and calibrations
+  // Might test for disabled channels for more complex detector
 
   // clear pre-treated object
   ClearPreTreatedData();
-
   // instantiate CalibrationManager
   static CalibrationManager* Cal = CalibrationManager::getInstance();
-
   // Energy
+
   for (UShort_t i = 0; i < m_EventData->GetMultEnergy(); ++i) {
     if (m_EventData->Get_Energy(i) > m_E_RAW_Threshold) {
       Double_t Energy = Cal->ApplyCalibration("AGATA/ENERGY"+NPL::itoa(m_EventData->GetE_DetectorNbr(i)),m_EventData->Get_Energy(i));
@@ -100,7 +100,13 @@ void TAGATAPhysics::PreTreat() {
       }
     }
   }
-
+  
+  // Angle
+  for (UShort_t i = 0; i < m_EventData->GetMultAngle(); ++i) {
+    Double_t Angle = m_EventData->Get_Angle(i);
+    m_PreTreatedData->SetAngle(m_EventData->GetA_DetectorNbr(i), Angle);
+  }
+  
   // Time 
   for (UShort_t i = 0; i < m_EventData->GetMultTime(); ++i) {
     Double_t Time= Cal->ApplyCalibration("AGATA/TIME"+NPL::itoa(m_EventData->GetT_DetectorNbr(i)),m_EventData->Get_Time(i));
@@ -178,6 +184,7 @@ void TAGATAPhysics::ReadAnalysisConfig() {
 void TAGATAPhysics::Clear() {
   DetectorNumber.clear();
   Energy.clear();
+  Angle.clear();
   Time.clear();
 }
 
@@ -193,10 +200,6 @@ void TAGATAPhysics::ReadConfiguration(string Path) {
   bool check_Theta = false          ;
   bool check_Phi  = false           ;
   bool check_R     = false          ;
-  bool check_Shape = false          ;
-  bool check_X = false              ;
-  bool check_Y = false              ;
-  bool check_Z = false              ;
   bool ReadingStatus = false        ;
 
   while (!ConfigFile.eof()){
@@ -247,33 +250,6 @@ void TAGATAPhysics::ReadConfiguration(string Path) {
         cout << "R:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
       }
 
-      //Position method
-      else if (DataBuffer=="X=") {
-        check_X = true;
-        ConfigFile >> DataBuffer ;
-        cout << "X:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
-      }
-
-      else if (DataBuffer=="Y=") {
-        check_Y = true;
-        ConfigFile >> DataBuffer ;
-        cout << "Y:  " << atof( DataBuffer.c_str() ) << "mm"<< endl;
-      }
-
-      else if (DataBuffer=="Z=") {
-        check_Z = true;
-        ConfigFile >> DataBuffer ;
-        cout << "Z:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
-      }
-
-
-      //General
-      else if (DataBuffer=="Shape=") {
-        check_Shape = true;
-        ConfigFile >> DataBuffer ;
-        cout << "Shape:  " << DataBuffer << endl;
-      }
-
       ///////////////////////////////////////////////////
       //   If no Detector Token and no comment, toggle out
       else{
@@ -283,17 +259,13 @@ void TAGATAPhysics::ReadConfiguration(string Path) {
       /////////////////////////////////////////////////
       //   If All necessary information there, toggle out
 
-      if ( ((check_Theta && check_Phi && check_R) ||( check_X && check_Y && check_Z)  ) && check_Shape ){
+      if (check_Theta && check_Phi && check_R){
         m_NumberOfDetectors++;
 
         //   Reinitialisation of Check Boolean
         check_Theta = false          ;
         check_Phi  = false           ;
         check_R     = false          ;
-        check_Shape = false          ;
-        check_X = false              ;
-        check_Y = false              ;
-        check_Z = false              ;
         ReadingStatus = false        ;
         cout << "///"<< endl         ;
       }

@@ -3,9 +3,6 @@ void Mg(){
   TFile* file = new TFile("../../Outputs/Analysis/S1554_28Mgdp_Phy.root");
   TTree* tree = (TTree*) file->FindObjectAny("PhysicsTree");
 
-  file = new TFile("cuts/Cut_pp.root");
-  TCutG* Cut_pp = (TCutG*) file->FindObjectAny("Cut_pp");
-
   tree->SetAlias("GoodTrifoil","(Trifoil.Time>150 && Trifoil.Time<160 && RunNumber>35110) && ELab > 0 ") ;
   tree->SetAlias("GoodProton","ThetaLab>90 && Sharc.Strip_E>0.8");
   TCanvas* c = new TCanvas("Mg","Mg");
@@ -37,11 +34,13 @@ void Mg(){
   line -> Draw("c"); 
 
   c->cd(2);
-  tree->Draw("Ex>>h(200,-1,8)","GoodTrifoil && GoodProton  ","colz");
+
+  new TCanvas();
+  tree->Draw("Ex>>h(200,-8,8)","GoodTrifoil && GoodProton  ","colz");
   TH1* h = (TH1*) gDirectory->FindObjectAny("h");
   h->GetXaxis()->SetTitle("E_{29Mg} (MeV)");
   h->GetYaxis()->SetTitle("counts/40 keV");
-
+  return ;
   int maximum = h->GetMaximum();
   TLine* state1= new TLine(0,0,0,maximum);
   state1->Draw("l");

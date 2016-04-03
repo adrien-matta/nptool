@@ -23,13 +23,13 @@ TwoBodyReaction
 	Light= 1H
 	Heavy= 18N
 	ExcitationEnergyLight= 0.0
-	ExcitationEnergyHeavy= 2.221
-  CrossSectionPath= flat.txt CSR
+	ExcitationEnergyHeavy= 1.735 
+  CrossSectionPath= 18N_6.txt CSR6
 	ShootLight= 1
 	ShootHeavy= 1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 GammaDecay 18N
   Cascade
     BranchingRatio= 100
-    Energies= 2.221
-    DifferentialCrossSection= flat.txt	Gamma18N
+    Energies= 1.735 
+    DifferentialCrossSection= flat.txt	Gamma18N6

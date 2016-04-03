@@ -14,7 +14,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold AGATA Raw data                                    *
+ *  This class hold AGATA Treated data                                *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -65,6 +65,7 @@ class TAGATAPhysics : public TObject, public NPL::VDetector {
   public:
     vector<int>      DetectorNumber;
     vector<double>   Energy;
+    vector<double>   Angle;
     vector<double>   Time;
 
 

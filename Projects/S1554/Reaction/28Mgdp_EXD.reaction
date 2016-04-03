@@ -25,6 +25,6 @@ TwoBodyReaction
 	Heavy= 29Mg
 	ExcitationEnergyLight= 0.0
 	ExcitationEnergyDistribution= EXD.txt EX
-  CrossSectionPath= CS_28Mgdp_g.txt CSR0
+  CrossSectionPath= super.txt CSR0
 	ShootLight= 1
 	ShootHeavy= 1

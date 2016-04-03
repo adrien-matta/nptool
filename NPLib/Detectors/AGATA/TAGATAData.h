@@ -1,20 +1,20 @@
 #ifndef __AGATADATA__
 #define __AGATADATA__
 /*****************************************************************************
- * Copyright (C) 2009-2016   this file is part of the NPTool Project       *
+ * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Adrien Matta  contact address: a.matta@surrey.ac.uk                        *
+ * Original Author: Adrien Matta  contact address: a.matta@surrey.ac.uk      *
  *                                                                           *
- * Creation Date  : January 2016                                           *
+ * Creation Date  : January 2016                                             *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold AGATA Raw data                                    *
+ *  This class hold AGATA Raw data                                        *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -29,9 +29,7 @@ using namespace std;
 // ROOT
 #include "TObject.h"
 
-
-class TAGATAData : public TObject 
-{
+class TAGATAData : public TObject {
   //////////////////////////////////////////////////////////////
   // data members are hold into vectors in order 
   // to allow multiplicity treatment
@@ -39,6 +37,10 @@ class TAGATAData : public TObject
     // Energy
     vector<UShort_t>   fAGATA_E_DetectorNbr;
     vector<Double_t>   fAGATA_Energy;
+
+    // Angle
+    vector<UShort_t>   fAGATA_A_DetectorNbr;
+    vector<Double_t>   fAGATA_Angle;
 
     // Time
     vector<UShort_t>   fAGATA_T_DetectorNbr;
@@ -78,6 +80,18 @@ class TAGATAData : public TObject
       Set_Energy(Energy);
     };//!
 
+    // Angle
+    inline void SetA_DetectorNbr(const UShort_t& DetNbr)
+      {fAGATA_A_DetectorNbr.push_back(DetNbr);} //!
+    inline void Set_Angle(const Double_t& Angle)
+      {fAGATA_Angle.push_back(Angle);}//!
+    // Prefer global setter so that all vectors have the same size
+    inline void SetAngle(const UShort_t& DetNbr,const Double_t& Angle) {
+      SetA_DetectorNbr(DetNbr);
+      Set_Angle(Angle);
+    };//!
+
+
     // Time
     inline void SetT_DetectorNbr(const UShort_t& DetNbr)
       {fAGATA_T_DetectorNbr.push_back(DetNbr);} //!
@@ -98,6 +112,15 @@ class TAGATAData : public TObject
       {return fAGATA_E_DetectorNbr[i];}//!
     inline Double_t Get_Energy(const unsigned int &i) const 
       {return fAGATA_Energy[i];}//!
+
+    // Angle
+    inline UShort_t GetMultAngle() const
+      {return fAGATA_A_DetectorNbr.size();}
+    inline UShort_t GetA_DetectorNbr(const unsigned int &i) const 
+      {return fAGATA_A_DetectorNbr[i];}//!
+    inline Double_t Get_Angle(const unsigned int &i) const 
+      {return fAGATA_Angle[i];}//!
+
 
     // Time
     inline UShort_t GetMultTime() const

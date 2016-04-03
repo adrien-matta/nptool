@@ -243,16 +243,13 @@ void Analysis::InitOutputBranch(){
   RootOutput::getInstance()->GetTree()->Branch("Z_Sharc",&Z_Sharc,"Z_Sharc/D");
   RootOutput::getInstance()->GetTree()->Branch("X_Trifoil",&X_Trifoil,"X_Trifoil/D");
   RootOutput::getInstance()->GetTree()->Branch("Y_Trifoil",&Y_Trifoil,"Y_Trifoil/D");
-
-  RootOutput::getInstance()->GetTree()->Branch("RunNumber",&RunNumber,"RunNumber/I");
-  RootOutput::getInstance()->GetTree()->Branch("RunNumberMinor",&RunNumberMinor,"RunNumberMinor/I");
+  RootOutput::getInstance()->GetTree()->Branch("Run",&RunNumber,"Run/I");
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::InitInputBranch(){
-  RootInput::getInstance()->GetChain()->SetBranchAddress("RunNumber",&RunNumber);
-  RootInput::getInstance()->GetChain()->SetBranchAddress("RunNumberMinor",&RunNumberMinor);
+  RootInput::getInstance()->GetChain()->SetBranchAddress("Run",&RunNumber);
 }
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::ReInitValue(){

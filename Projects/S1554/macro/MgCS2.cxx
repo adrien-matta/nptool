@@ -41,17 +41,25 @@ void MgCS2(){
   new TCanvas();
   h->Draw("colz");
   // CS
-  TCanvas* c = new TCanvas("CS","CS",1000,1000);
-  c->Divide(2,2);
-
+  TCanvas* c = new TCanvas("CS","CS",800,800);
+//  c->Divide(2,2);
+  TGraph* CSth;
   // Region 
   current = Region(-0.1,0.4,h,c,nn++,Eff);
   g1 = TWOFNR(0.000, 0, 0.5, 1, 0, 0.5);
   g2 = TWOFNR(0.054, 0, 1.5, 0, 2, 1.5);
   g1->SetLineStyle(2);g1->Draw("c");
   g2->SetLineStyle(3);g2->Draw("c");
-  FindNormalisation(g1,g2,current)->Draw("c"); 
-  
+  CSth = FindNormalisation(g1,g2,current); 
+  CSth->Draw("c");
+  TLegend* leg = new TLegend(0.7,0.6,1,0.9);
+  leg->SetBorderSize(0);
+  leg->SetFillStyle(0);
+  leg->AddEntry(g1,"L=0 S=0.41(4)","l");
+  leg->AddEntry(g2,"L=2 S=0.13(4) ","l");
+  leg->AddEntry(CSth,"L=0 + L=2 ","l");
+  leg->Draw();
+/* 
   current = Region(0.6,1.8,h,c,nn++,Eff);
   g1 = TWOFNR(1.095, 0, 1.5, 1, 1, 1.5);
   g2 = TWOFNR(1.431, 0, 3.5, 0, 3, 3.5);
@@ -72,7 +80,7 @@ void MgCS2(){
   g1->SetLineStyle(2);g1->Draw("c");
   g2->SetLineStyle(3);g2->Draw("c");
   FindNormalisation(g1,g2,current)->Draw("c"); 
-
+*/
 
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -80,8 +88,9 @@ TH1* Region(double Emin, double Emax,TH2* h, TCanvas* c, int pad , TH2* Eff){
   c->cd(pad);
   TH1D* p =  h->ProjectionX(Form("p%i",pad),h->GetYaxis()->FindBin(Emin),h->GetYaxis()->FindBin(Emax));
   p->Draw();
+  p->GetYaxis()->SetTitle("d#sigma/d#Omega (mb/sr)");
   gPad->SetLogy();
-//  p->GetYaxis()->SetRangeUser(1e1,1e5);
+  p->GetYaxis()->SetRangeUser(1e-1,1e3);
   return p;
 }
 

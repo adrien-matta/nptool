@@ -96,7 +96,7 @@ G4AssemblyVolume* TRex::BuildBarrelDetector(){
       cout << "TRex geometry is based on Munich Group Simulation exported in GDML"<< endl;
       string basepath = getenv("NPTOOL");
       string path=basepath+"/NPSimulation/Detectors/TRex/TRex_Miniball.gdml";
-      m_gdmlparser.Read(path);
+      m_gdmlparser.Read(path,false);
     }   
     m_BarrelDetector = new G4AssemblyVolume();
     G4LogicalVolume* PCB =  m_gdmlparser.GetVolume("PCBForwardBarrel_log");

@@ -243,7 +243,7 @@ G4AssemblyVolume* GaspardTracker::BuildMugastChamber(){
   G4AssemblyVolume* Chamber = new G4AssemblyVolume();
   G4Material* Alu = MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
 
-  G4Sphere* Sphere = new G4Sphere("Mugast_sphere",228*mm,230*mm,0,360*deg,115*deg,60*deg);
+  G4Sphere* Sphere = new G4Sphere("Mugast_sphere",153*mm,155*mm,0,360*deg,100*deg,60*deg);
   G4Sphere* Sphere2 = new G4Sphere("Mugast_sphere2",250*mm,252*mm,0,360*deg,55*deg,20*deg);
 
   G4UnionSolid* Rear= new G4UnionSolid("MugastChamber_RearSol" , Sphere, Sphere2,0,G4ThreeVector(0,0,-228));
