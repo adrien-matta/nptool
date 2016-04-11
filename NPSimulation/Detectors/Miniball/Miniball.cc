@@ -87,7 +87,7 @@ G4AssemblyVolume* Miniball::BuildClusterDetector(){
     cout << "Miniball geometry is based on Munich Group Simulation exported in GDML"<< endl;
     string basepath = getenv("NPTOOL");
     string path=basepath+"/NPSimulation/Detectors/Miniball/Miniball.gdml";
-    m_gdmlparser.Read(path);
+    m_gdmlparser.Read(path,false);
 
     G4VisAttributes* Red = new G4VisAttributes(G4Color(1,0.5,0.5));
     G4VisAttributes* Green= new G4VisAttributes(G4Color(0.5,1,0.5));

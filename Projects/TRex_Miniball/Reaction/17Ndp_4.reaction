@@ -24,7 +24,7 @@ TwoBodyReaction
 	Heavy= 18N
 	ExcitationEnergyLight= 0.0
 	ExcitationEnergyHeavy= 0.742
-  CrossSectionPath= flat.txt CSR
+  CrossSectionPath= 18N_4.txt CSR4
 	ShootLight= 1
 	ShootHeavy= 1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

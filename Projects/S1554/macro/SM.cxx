@@ -4,10 +4,10 @@
 void PlotLevel(string name,int offset,bool LR, RS::ShellModelCollection Collection, vector<int> matched);
 vector<TPad*> thePad;
 double Emin = -0.2;
-double Emax = 5.2;
+double Emax = 2.70;
 double ScaleMin = 0;
 double ScaleMax = 7;
-double LabelSize = 0.025;
+double LabelSize = 0.04;
 int nbr = 2;
 unsigned int pad =0 ;
 
@@ -28,13 +28,12 @@ vector<string> ExpFileName;
 
 
 void SM(){
-  ifstream infile("mg29olapc.lsf");
   RS::ShellModelCollection WBP("WBP");
   WBP.LoadCollectionFromNushell("mg29olapc.lsf");
   RS::ShellModelCollection Exp("Exp");
   Exp.LoadCollectionFromSimpleFile("Level.txt");
-
-  vector<int> matched;
+  
+vector<int> matched;
   matched.resize(100,1);
   PlotLevel("WBP",1,1,WBP,matched);
   PlotLevel("Exp",0,0,Exp,matched);

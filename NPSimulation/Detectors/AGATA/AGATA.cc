@@ -56,9 +56,10 @@ using namespace CLHEP;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace AGATA_NS{
   // Energy and time Resolution
-  const double EnergyThreshold = 0.1*MeV;
+  const double EnergyThreshold = 1*keV;
   const double ResoTime = 4.5*ns ;
-  const double ResoEnergy = 5.0*MeV ;
+  const double ResoEnergy = 2*keV ;
+  const double ResoAngle = 5*deg;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -110,14 +111,17 @@ G4AssemblyVolume* AGATA::BuildTripleCluster(){
 
     G4ThreeVector Pos_Red= ATC->GetDaughter(0)->GetTranslation();
     G4RotationMatrix* Rot_Red =new G4RotationMatrix( (ATC->GetDaughter(0)->GetObjectRotationValue()));
+    ATC->GetDaughter(0)->GetLogicalVolume()->GetDaughter(0)->GetLogicalVolume()->GetDaughter(0)->GetLogicalVolume()->SetSensitiveDetector(m_AGATAScorer);
     m_TripleCluster->AddPlacedVolume(RedCrystal,Pos_Red, Rot_Red);
 
     G4ThreeVector Pos_Green= ATC->GetDaughter(1)->GetTranslation();
     G4RotationMatrix* Rot_Green =new G4RotationMatrix( (ATC->GetDaughter(1)->GetObjectRotationValue()));
+    ATC->GetDaughter(1)->GetLogicalVolume()->GetDaughter(0)->GetLogicalVolume()->GetDaughter(0)->GetLogicalVolume()->SetSensitiveDetector(m_AGATAScorer);
     m_TripleCluster->AddPlacedVolume(GreenCrystal,Pos_Green, Rot_Green);
     
     G4ThreeVector Pos_Blue= ATC->GetDaughter(2)->GetTranslation();
     G4RotationMatrix* Rot_Blue =new G4RotationMatrix( (ATC->GetDaughter(2)->GetObjectRotationValue()));
+    ATC->GetDaughter(2)->GetLogicalVolume()->GetDaughter(0)->GetLogicalVolume()->GetDaughter(0)->GetLogicalVolume()->SetSensitiveDetector(m_AGATAScorer);
     m_TripleCluster->AddPlacedVolume(BlueCrystal,Pos_Blue, Rot_Blue);
   }
   return m_TripleCluster;
@@ -290,7 +294,7 @@ void AGATA::ConstructDetector(G4LogicalVolume* world){
     G4double wX = m_R[i] * sin(m_Theta[i] ) * cos(m_Phi[i] ) ;
     G4double wY = m_R[i] * sin(m_Theta[i] ) * sin(m_Phi[i] ) ;
     G4double wZ = m_R[i] * cos(m_Theta[i] ) ;
-    G4ThreeVector Det_pos = G4ThreeVector(wX, wY, wZ) ;
+    G4ThreeVector Det_pos = G4ThreeVector(wX, wY, wZ+85) ;
     // So the face of the detector is at R instead of the middle
     Det_pos+=Det_pos.unit();
     // Building Detector reference frame
@@ -311,10 +315,8 @@ void AGATA::ConstructDetector(G4LogicalVolume* world){
       Rot->rotate(72*deg,w);
 
     BuildTripleCluster();
-    if(m_Shape[i] == "Square"){
-      G4Transform3D Trans(*Rot,Det_pos);
-      m_TripleCluster->MakeImprint(world,Trans,i+1);
-    }
+    G4Transform3D Trans(*Rot,Det_pos);
+    m_TripleCluster->MakeImprint(world,Trans,i+1);
   }
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -338,7 +340,7 @@ void AGATA::ReadSensitive(const G4Event* event){
   G4THitsMap<G4double*>* CaloHitMap;
   std::map<G4int, G4double**>::iterator Calo_itr;
 
-  G4int CaloCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("AGATAScorer/Calorimeter");
+  G4int CaloCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("AGATAScorer/Crystal");
   CaloHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CaloCollectionID));
 
   // Loop on the Calo map
@@ -350,8 +352,10 @@ void AGATA::ReadSensitive(const G4Event* event){
     double Energy = RandGauss::shoot(Info[0],AGATA_NS::ResoEnergy);
     if(Energy>AGATA_NS::EnergyThreshold){
       double Time = RandGauss::shoot(Info[1],AGATA_NS::ResoTime);
-      int DetectorNbr = (int) Info[2];
+      int DetectorNbr = (int) Info[7];
+      double Angle = RandGauss::shoot(Info[5]/deg,AGATA_NS::ResoAngle);
       m_Event->SetEnergy(DetectorNbr,Energy);
+      m_Event->SetAngle(DetectorNbr,Angle);
       m_Event->SetTime(DetectorNbr,Time); 
     }
   }
@@ -370,8 +374,8 @@ void AGATA::InitializeScorers() {
     return ;
 
   // Otherwise the scorer is initialised
-  vector<int> level; level.push_back(0);
-  G4VPrimitiveScorer* Calorimeter= new CALORIMETERSCORERS::PS_Calorimeter("Calorimeter",level, 0) ;
+  vector<int> level; level.push_back(1);
+  G4VPrimitiveScorer* Calorimeter= new CALORIMETERSCORERS::PS_CalorimeterWithInteraction("Crystal",level, 0) ;
   //and register it to the multifunctionnal detector
   m_AGATAScorer->RegisterPrimitive(Calorimeter);
   G4SDManager::GetSDMpointer()->AddNewDetector(m_AGATAScorer) ;
