@@ -116,7 +116,7 @@ private:
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace ANNULARS1{
    // Energy/Time resolutions for the different layers
-   const G4double ResoEnergy      = 0              ;// = 52keV of Resolution   //   Unit is MeV/2.35
+   const G4double ResoEnergy      = 0.017              ;// = 52keV of Resolution   //   Unit is MeV/2.35
    const G4double ResoTime        = 0.106382979    ;// = 250 ps                //   Unit is  ns/2.35
    const G4double EnergyThreshold = 0.300          ;// = 300 keV
    // PCB

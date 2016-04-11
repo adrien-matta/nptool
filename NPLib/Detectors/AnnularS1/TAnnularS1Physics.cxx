@@ -122,7 +122,6 @@ void TAnnularS1Physics::PreTreat(){
         m_PreTreatedData->SetS1ThetaEDetectorNbr( m_EventData->GetS1ThetaEDetectorNbr(i) );
         m_PreTreatedData->SetS1ThetaEStripNbr( m_EventData->GetS1ThetaEStripNbr(i) );
         m_PreTreatedData->SetS1ThetaEEnergy( Ring_E );
-
       }
     }
   }
@@ -144,7 +143,6 @@ void TAnnularS1Physics::PreTreat(){
         m_PreTreatedData->SetS1PhiEDetectorNbr( m_EventData->GetS1PhiEDetectorNbr(i) );
         m_PreTreatedData->SetS1PhiEStripNbr( m_EventData->GetS1PhiEStripNbr(i) );
         m_PreTreatedData->SetS1PhiEEnergy( Sector_E );
-
       }
     }
   }
@@ -496,12 +494,12 @@ void TAnnularS1Physics::AddDetector(double Z){
   double Phi_Min = 0  ;
   double Phi_Max = 360;
 
-  int    Ring_NumberOfStrip = 16 ;
-  int    Sector_NumberOfStrip = 16 ;
-  int    Ring_NumberOfQuadrant = 4 ;
+  int Ring_NumberOfStrip = 16 ;
+  int Sector_NumberOfStrip = 16 ;
+  int Ring_NumberOfQuadrant = 4 ;
   
   double StripPitchSector = (Phi_Max-Phi_Min)/Sector_NumberOfStrip ; //radial strip spacing in rad
-  double StripPitchRing   = (R_Max-R_Min)/Ring_NumberOfStrip  ; // ring strip spacing in mm
+  double StripPitchRing = (R_Max-R_Min)/Ring_NumberOfStrip  ; // ring strip spacing in mm
 
   TVector3 Strip_1_1;
 
@@ -518,14 +516,14 @@ void TAnnularS1Physics::AddDetector(double Z){
   TVector3 StripCenter = Strip_1_1;
   for(int q = 0 ; q < Ring_NumberOfQuadrant ; q++){
     for(int f = 0 ; f < Ring_NumberOfStrip ; f++){
-    lineX.clear()   ;
-    lineY.clear()   ;
-    lineZ.clear()   ;
+    lineX.clear() ;
+    lineY.clear() ;
+    lineZ.clear() ;
 
     for(int b = 0 ; b < Sector_NumberOfStrip ; b++){
       StripCenter = Strip_1_1;
-      StripCenter = TVector3(0, R_Min+f*StripPitchRing+StripPitchRing*0.5, Z);
-      StripCenter.RotateZ((Phi_Min+b*StripPitchSector+StripPitchSector*0.5));
+      StripCenter = TVector3(R_Min+(f+0.5)*StripPitchRing,0, Z);
+      StripCenter.RotateZ((Phi_Max-(b+0.5)*StripPitchSector)*M_PI/180.);
       lineX.push_back( StripCenter.X() );
       lineY.push_back( StripCenter.Y() );
       lineZ.push_back( StripCenter.Z() );
@@ -559,8 +557,8 @@ TVector3 TAnnularS1Physics::GetPositionOfInteraction(const int i) const{
 void TAnnularS1Physics::InitializeStandardParameter(){
   //   Enable all channel
   vector< bool > ChannelStatus;
-  m_RingChannelStatus.clear()    ;
-  m_SectorChannelStatus.clear()    ;
+  m_RingChannelStatus.clear();
+  m_SectorChannelStatus.clear();
 
   ChannelStatus.resize(64,true);
   for(int i = 0 ; i < m_NumberOfDetector ; ++i){
