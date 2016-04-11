@@ -490,16 +490,16 @@ void TAnnularS1Physics::InitializeRootOutput(){
 /////   Specific to AnnularS1Array   ////
 void TAnnularS1Physics::AddDetector(double Z){
 
-  double R_Min = 23;
-  double R_Max = 50;
+  double R_Min = 24;
+  double R_Max = 48;
 
   double Phi_Min = 0  ;
   double Phi_Max = 360;
 
   int    Ring_NumberOfStrip = 16 ;
-  int    Ring_NumberOfQuadrant = 4 ;
   int    Sector_NumberOfStrip = 16 ;
-
+  int    Ring_NumberOfQuadrant = 4 ;
+  
   double StripPitchSector = (Phi_Max-Phi_Min)/Sector_NumberOfStrip ; //radial strip spacing in rad
   double StripPitchRing   = (R_Max-R_Min)/Ring_NumberOfStrip  ; // ring strip spacing in mm
 
@@ -516,17 +516,16 @@ void TAnnularS1Physics::AddDetector(double Z){
   vector< vector< double > >   OneStripPositionZ   ;
 
   TVector3 StripCenter = Strip_1_1;
-  for(int f = 0 ; f < Ring_NumberOfStrip ; f++){
-    for(int q = 0 ; q < Ring_NumberOfQuadrant ; q++){
+  for(int q = 0 ; q < Ring_NumberOfQuadrant ; q++){
+    for(int f = 0 ; f < Ring_NumberOfStrip ; f++){
     lineX.clear()   ;
     lineY.clear()   ;
     lineZ.clear()   ;
 
     for(int b = 0 ; b < Sector_NumberOfStrip ; b++){
       StripCenter = Strip_1_1;
-      StripCenter.SetY(R_Min+f*StripPitchRing);
-      StripCenter.SetZ(Z);
-      StripCenter.RotateZ(Phi_Min+b*StripPitchSector);
+      StripCenter = TVector3(0, R_Min+f*StripPitchRing+StripPitchRing*0.5, Z);
+      StripCenter.RotateZ((Phi_Min+b*StripPitchSector+StripPitchSector*0.5));
       lineX.push_back( StripCenter.X() );
       lineY.push_back( StripCenter.Y() );
       lineZ.push_back( StripCenter.Z() );

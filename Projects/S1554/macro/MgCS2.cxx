@@ -2,7 +2,7 @@ void Scale(TGraph* g , TGraphErrors* ex);
 TGraph* TWOFNR(double E, double J0, double J, double n, double l, double j);
 TH1* Region(double Emin, double Emax,TH2* h, TCanvas* c, int pad, TH2* Eff);
 double ToMininize(const double* parameter);
-TGraph* FindNormalisation(TGraph* cs1, TGraph* cs2, TH1* hexp);
+TGraph* FindNormalisation(TGraph* cs1, TGraph* cs2, TH1* hexp, double& s1, double& s2);
 
 TGraph* g1;
 TGraph* g2;
@@ -45,34 +45,37 @@ void MgCS2(){
   c->Divide(2,2);
 
   // Region 
+  double s1,s2;
   current = Region(-0.1,0.4,h,c,nn++,Eff);
   g1 = TWOFNR(0.000, 0, 0.5, 1, 0, 0.5);
   g2 = TWOFNR(0.054, 0, 1.5, 0, 2, 1.5);
   g1->SetLineStyle(2);g1->Draw("c");
   g2->SetLineStyle(3);g2->Draw("c");
-  FindNormalisation(g1,g2,current)->Draw("c"); 
-  
+  FindNormalisation(g1,g2,current,s1,s2)->Draw("c"); 
+   
+  double s3,s4;
   current = Region(0.6,1.8,h,c,nn++,Eff);
   g1 = TWOFNR(1.095, 0, 1.5, 1, 1, 1.5);
   g2 = TWOFNR(1.431, 0, 3.5, 0, 3, 3.5);
   g1->SetLineStyle(2);g1->Draw("c");
   g2->SetLineStyle(3);g2->Draw("c");
-  FindNormalisation(g1,g2,current)->Draw("c"); 
+  FindNormalisation(g1,g2,current,s3,s4)->Draw("c"); 
   
+  double s5,s6;
   current = Region(2,3,h,c,nn++,Eff);
   g1 = TWOFNR(2.266, 0, 0.5, 1, 1, 0.5);
   g2 = TWOFNR(2.500, 0, 1.5, 0, 2, 1.5);
   g1->SetLineStyle(2);g1->Draw("c");
   g2->SetLineStyle(3);g2->Draw("c");
-  FindNormalisation(g1,g2,current)->Draw("c"); 
- 
+  FindNormalisation(g1,g2,current,s5,s6)->Draw("c"); 
+  
+  double s7,s8;
   current = Region(3,4.8,h,c,nn++,Eff);
   g1 = TWOFNR(3.2, 0, 2.5, 0, 2, 2.5);
   g2 = TWOFNR(3.2, 0, 3.5, 0, 3, 3.5);
   g1->SetLineStyle(2);g1->Draw("c");
   g2->SetLineStyle(3);g2->Draw("c");
-  FindNormalisation(g1,g2,current)->Draw("c"); 
-
+  FindNormalisation(g1,g2,current,s7,s8)->Draw("c"); 
 
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -190,7 +193,7 @@ TGraph* TWOFNR(double E, double J0, double J, double n, double l, double j){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TGraph* FindNormalisation(TGraph* cs1, TGraph* cs2, TH1* hexp){
+TGraph* FindNormalisation(TGraph* cs1, TGraph* cs2, TH1* hexp, double& s1, double& s2){
   // Set global variable
   g1 = cs1;
   g2 = cs2;
@@ -233,6 +236,9 @@ TGraph* FindNormalisation(TGraph* cs1, TGraph* cs2, TH1* hexp){
   for(int i = 0 ; i < cs1->GetN() ; i++){
     g->SetPoint(g->GetN(),X[i],xs[0]*Y[i] + xs[1]*cs2->Eval(X[i]) );
   }
+  s1 = xs[0];
+  s2 = xs[1];
+
   return g;
 }
 
