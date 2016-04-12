@@ -42,6 +42,7 @@
 // Event Generator Class
 #include "EventGeneratorTwoBodyReaction.hh"
 #include "EventGeneratorIsotropic.hh"
+#include "EventGeneratorpBUU.hh"
 #include "EventGeneratorBeam.hh"
 #include "EventGeneratorGammaDecay.hh"
 #include "EventGeneratorParticleDecay.hh"
@@ -79,9 +80,10 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path){
-  bool check_Isotropic            = false;
-  bool check_TwoBodyReaction      = false;
-  bool check_Beam                 = false;
+    bool check_Isotropic            = false;
+    bool check_pBUU                 = false;
+    bool check_TwoBodyReaction      = false;
+    bool check_Beam                 = false;
 
   // You can have more than one of those
   int   alreadyiInstantiate_GammaDecay = 0;
@@ -120,6 +122,17 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path){
       EventGeneratorFile.open(Path.c_str());
       myEventGenerator->InitializeRootOutput();
       m_EventGenerator.push_back(myEventGenerator);
+    }
+
+      //Search for pBUU source
+    else if (LineBuffer.compare(0, 4, "pBUU") == 0  && !check_pBUU) {
+        check_pBUU = true;
+        NPS::VEventGenerator* myEventGenerator = new EventGeneratorpBUU();
+        EventGeneratorFile.close();
+        myEventGenerator->ReadConfiguration(Path);
+        EventGeneratorFile.open(Path.c_str());
+        myEventGenerator->InitializeRootOutput();
+        m_EventGenerator.push_back(myEventGenerator);
     }
 
     //Search for Beam

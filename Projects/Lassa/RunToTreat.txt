@@ -1,5 +1,7 @@
 TTreeName 
 	SimulatedTree
 RootFileName 
-	../../Outputs/Simulation/dumb.root
+  ../../Outputs/Simulation/lassa_pid_p.root
+  ../../Outputs/Simulation/lassa_pid_d.root
+	../../Outputs/Simulation/lassa_pid_t.root
 

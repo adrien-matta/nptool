@@ -27,6 +27,7 @@
 #include "NPEnergyLoss.h"
 #include "NPReaction.h"
 #include "TRandom3.h"
+#include "TF1.h"
 class Analysis: public NPL::VAnalysis{
   public:
     Analysis();
@@ -43,14 +44,17 @@ class Analysis: public NPL::VAnalysis{
 
   private:
     double ELab;
+    double ELab_nucl;
     double E_ThickSi;
     double E_CsI;
-    double EDelta;
     double PhiLab;
     double ThetaLab;
     double X,Y,Z;
     double TelescopeNumber;
     double thresholdEnergy;
+    double InitialEnergy;
+    double ThicknessCsI;
+    double R_alpha;
 
     int totalEvents;
     int detectedEvents;
@@ -61,6 +65,15 @@ class Analysis: public NPL::VAnalysis{
 
     // intermediate variable
     TRandom3 Rand;
+    
+    TF1* f_proton;
+    TF1* f_deuton;
+    TF1* f_triton;
+    
+    //Energy loss table
+    NPL::EnergyLoss Proton_CsI;
+    NPL::EnergyLoss Deuton_CsI;
+    NPL::EnergyLoss Triton_CsI;
     
     TLassaPhysics* Lassa;
 	TInitialConditions* InitialConditions;

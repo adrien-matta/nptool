@@ -48,7 +48,7 @@
 using namespace std;
 
 
-void GeometricalEfficiency(const char * fname = "myResult"){
+void GeometricalEfficiency(const char * fname = "lassa_proton"){
   // Open output ROOT file from NPTool simulation run
   TString path = gSystem->Getenv("NPTOOL");
   path += "/Outputs/Simulation/";

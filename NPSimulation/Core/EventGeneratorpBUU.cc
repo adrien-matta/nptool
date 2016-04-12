@@ -6,13 +6,13 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
+ * Original Author: Pierre MORFOUACE  contact address: morfouac@nscl.msu.edu       *
  *                                                                           *
- * Creation Date  : January 2009                                             *
+ * Creation Date  : April 2016                                             *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This event Generator is used to simulated Isotropic ion Source           *
+ *  This event Generator is used to simulated pBUU ion Source           *
  *  Very usefull to figure out Geometric Efficacity of experimental Set-Up   *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -30,7 +30,7 @@
 #include "Randomize.hh"
 
 // NPS headers
-#include "EventGeneratorIsotropic.hh"
+#include "EventGeneratorpBUU.hh"
 
 // NPl headers
 #include "RootOutput.h"
@@ -39,15 +39,13 @@
 using namespace CLHEP;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-EventGeneratorIsotropic::EventGeneratorIsotropic(){
-    m_EnergyLow    =  0  ;
-    m_EnergyHigh   =  0  ;
-    m_x0           =  0  ;
-    m_y0           =  0  ;
-    m_z0           =  0  ;
+EventGeneratorpBUU::EventGeneratorpBUU(){
+    m_x0            =  0  ;
+    m_y0            =  0  ;
+    m_z0            =  0  ;
     m_SigmaX        = 0;
     m_SigmaY        = 0;
-    m_particle     =  NULL;
+    m_particle      =  NULL;
     m_ParticleStack = ParticleStack::getInstance();
     m_ExcitationEnergy = 0 ;
 }
@@ -55,27 +53,25 @@ EventGeneratorIsotropic::EventGeneratorIsotropic(){
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-EventGeneratorIsotropic::~EventGeneratorIsotropic(){
+EventGeneratorpBUU::~EventGeneratorpBUU(){
 }
 
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventGeneratorIsotropic::ReadConfiguration(string Path,int){
+void EventGeneratorpBUU::ReadConfiguration(string Path,int){
   ////////General Reading needs////////
   string LineBuffer;
   string DataBuffer;
   
   bool ReadingStatus = false ;
-  bool check_EnergyLow = false ;
-  bool check_EnergyHigh = false ;
-  bool check_HalfOpenAngleMin = false ;
-  bool check_HalfOpenAngleMax = false ;
-  bool check_x0 = false ;
-  bool check_y0 = false ;
-  bool check_z0 = false ;
-  bool check_particle = false ;
-  bool check_ExcitationEnergy = false ;
+    bool check_AngleHistPath = false;
+    bool check_EnergyHistPath = false;
+    bool check_x0 = false ;
+    bool check_y0 = false ;
+    bool check_z0 = false ;
+    bool check_particle = false ;
+    bool check_ExcitationEnergy = false ;
   
   ////////Reaction Setting needs///////
   string particle   ;
@@ -92,10 +88,11 @@ void EventGeneratorIsotropic::ReadConfiguration(string Path,int){
     //Pick-up next line
     getline(ReactionFile, LineBuffer);
     
-    if (LineBuffer.compare(0, 9, "Isotropic") == 0) {
-      G4cout << "///////////////////////////////////////////////////" << G4endl ;
-      G4cout << "Isotropic Source Found" << G4endl ;
-      ReadingStatus = true;}
+      if (LineBuffer.compare(0, 4, "pBUU") == 0) {
+          G4cout << "///////////////////////////////////////////////////" << G4endl ;
+          G4cout << "pBUU Source Found" << G4endl ;
+          ReadingStatus = true;
+      }
       
     
     
@@ -105,33 +102,41 @@ void EventGeneratorIsotropic::ReadConfiguration(string Path,int){
       //Search for comment Symbol %
       if (DataBuffer.compare(0, 1, "%") == 0) {   ReactionFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
       
-      else if (DataBuffer == "EnergyLow=") {
-        check_EnergyLow = true ;
-        ReactionFile >> DataBuffer;
-        m_EnergyLow = atof(DataBuffer.c_str()) * MeV;
-        G4cout << "Minimum energy " << m_EnergyLow / MeV << " MeV" << G4endl;
+ 
+      else if  (DataBuffer== "AngleHistPath=") {
+          check_AngleHistPath = true ;
+          TString FileName,HistName;
+          ReactionFile >> FileName >> HistName;
+          G4cout << "Reading Angle Distribution file: " << FileName << G4endl;
+
+          string GlobalPath = getenv("NPTOOL");
+          TString StandardPath = GlobalPath + "/Inputs/EventGenerator/" + FileName;
+          
+          TFile *f1 = new TFile(StandardPath);
+          fAngleHist = (TH1F*) f1->FindObjectAny(HistName);
+          if(!fAngleHist){
+              G4cout << "Error: Histogramm " << HistName << " not found in file " << FileName << G4endl;
+              exit(1);
+          }
       }
-      
-      else if (DataBuffer == "EnergyHigh=") {
-        check_EnergyHigh = true ;
-        ReactionFile >> DataBuffer;
-        m_EnergyHigh = atof(DataBuffer.c_str()) * MeV;
-        G4cout << "Maximum energy " << m_EnergyHigh / MeV << " MeV" << G4endl;
+          
+      else if  (DataBuffer== "EnergyHistPath=") {
+          check_EnergyHistPath = true ;
+          TString FileName,HistName;
+          ReactionFile >> FileName >> HistName;
+          G4cout << "Reading Energy Distribution file: " << FileName << G4endl;
+          
+          string GlobalPath = getenv("NPTOOL");
+          TString StandardPath = GlobalPath + "/Inputs/EventGenerator/" + FileName;
+
+          TFile *f2 = new TFile(StandardPath);
+          fEnergyHist = (TH1F*) f2->FindObjectAny(HistName);
+          if(!fEnergyHist){
+              G4cout << "Error: Histogramm " << HistName << " not found in file " << FileName << G4endl;
+              exit(1);
+          }
       }
-      
-      else if (DataBuffer == "HalfOpenAngleMin=") {
-        check_HalfOpenAngleMin = true ;
-        ReactionFile >> DataBuffer;
-        m_HalfOpenAngleMin = atof(DataBuffer.c_str()) * deg;
-        G4cout << "HalfOpenAngleMin " << m_HalfOpenAngleMin / deg << " degree" << G4endl;
-      }
-      
-      else if (DataBuffer == "HalfOpenAngleMax=") {
-        check_HalfOpenAngleMax = true ;
-        ReactionFile >> DataBuffer;
-        m_HalfOpenAngleMax = atof(DataBuffer.c_str()) * deg;
-        G4cout << "HalfOpenAngleMax " << m_HalfOpenAngleMax / deg << " degree" << G4endl;
-      }
+
       
       else if (DataBuffer == "x0=") {
         check_x0 = true ;
@@ -189,21 +194,21 @@ void EventGeneratorIsotropic::ReadConfiguration(string Path,int){
         G4cout << "ExcitationEnergy : " << m_ExcitationEnergy << G4endl ;
       }
       
-      //   If no isotropic Token and no comment, toggle out
+      //   If no pBUU Token and no comment, toggle out
       else
         {ReadingStatus = false; G4cout << "WARNING : Wrong Token Sequence: Getting out " << G4endl ;}
       
       ///////////////////////////////////////////////////
       //   If all Token found toggle out
-      if(    check_EnergyLow && check_EnergyHigh && check_HalfOpenAngleMin && check_HalfOpenAngleMax && check_x0 && check_y0 && check_z0 && check_particle && check_ExcitationEnergy)
+      if(    check_EnergyHistPath && check_AngleHistPath && check_x0 && check_y0 && check_z0 && check_particle && check_ExcitationEnergy)
         ReadingStatus = false ;
       
       }
     
   }
   
-  if(    !check_EnergyLow || !check_EnergyHigh || !check_HalfOpenAngleMin || !check_HalfOpenAngleMax || !check_x0 || !check_y0 || !check_z0 || !check_particle )
-    {cout << "ERROR : Token Sequence Incomplete, Isotropic definition can not be Fonctionnal" << G4endl ; exit(1);}
+  if(    !check_AngleHistPath || !check_EnergyHistPath || !check_x0 || !check_y0 || !check_z0 || !check_particle )
+    {G4cout << "ERROR : Token Sequence Incomplete, pBUU definition can not be Fonctionnal" << G4endl ; exit(1);}
   
 
   
@@ -212,44 +217,40 @@ void EventGeneratorIsotropic::ReadConfiguration(string Path,int){
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventGeneratorIsotropic::GenerateEvent(G4Event*){
+void EventGeneratorpBUU::GenerateEvent(G4Event*){
   
-  if(m_particle==NULL){
-    if(m_particleName=="gamma" || m_particleName=="neutron" ||  m_particleName=="opticalphoton"){
-      m_particle =  G4ParticleTable::GetParticleTable()->FindParticle(m_particleName.c_str());
-    }
-    else{
-      NPL::Nucleus* N = new NPL::Nucleus(m_particleName);
-      m_particle = G4ParticleTable::GetParticleTable()->GetIonTable()->GetIon(N->GetZ(), N->GetA(),m_ExcitationEnergy);
-      delete N;
+    if(m_particle==NULL){
+        if(m_particleName=="gamma" || m_particleName=="neutron" ||  m_particleName=="opticalphoton"){
+            m_particle =  G4ParticleTable::GetParticleTable()->FindParticle(m_particleName.c_str());
+        }
+        else{
+            NPL::Nucleus* N = new NPL::Nucleus(m_particleName);
+            m_particle = G4ParticleTable::GetParticleTable()->GetIonTable()->GetIon(N->GetZ(), N->GetA(),m_ExcitationEnergy);
+            delete N;
+        }
     }
     
-  }
+    G4double theta = fAngleHist->GetRandom()*deg;
+    G4double particle_energy = fEnergyHist->GetRandom() / MeV;
+    G4double phi             = RandFlat::shoot() * 2 * pi;
+    
+    // Direction of particle, energy and laboratory angle
+    G4double momentum_x = sin(theta) * cos(phi)  ;
+    G4double momentum_y = sin(theta) * sin(phi)  ;
+    G4double momentum_z = cos(theta)             ;
+  
+    G4double x0 = RandGauss::shoot(m_x0,m_SigmaX);
+    G4double y0 = RandGauss::shoot(m_y0,m_SigmaY);
 
-  G4double cos_theta_min   = cos(m_HalfOpenAngleMin);
-  G4double cos_theta_max   = cos(m_HalfOpenAngleMax);
-  G4double cos_theta       = cos_theta_min + (cos_theta_max - cos_theta_min) * RandFlat::shoot();
-  G4double theta           = acos(cos_theta)                                                   ;
-  G4double phi             = RandFlat::shoot() * 2 * pi                                        ;
-  G4double particle_energy = m_EnergyLow + RandFlat::shoot() * (m_EnergyHigh - m_EnergyLow)    ;
-  
-  // Direction of particle, energy and laboratory angle
-  G4double momentum_x = sin(theta) * cos(phi)  ;
-  G4double momentum_y = sin(theta) * sin(phi)  ;
-  G4double momentum_z = cos(theta)             ;
-  
-  G4double x0 = RandGauss::shoot(m_x0,m_SigmaX);
-  G4double y0 = RandGauss::shoot(m_y0,m_SigmaY);
-
-  Particle particle(m_particle, theta,particle_energy,G4ThreeVector(momentum_x, momentum_y, momentum_z),G4ThreeVector(x0, y0, m_z0));
+    Particle particle(m_particle, theta,particle_energy,G4ThreeVector(momentum_x, momentum_y, momentum_z),G4ThreeVector(x0, y0, m_z0));
   
   
-  m_ParticleStack->AddParticleToStack(particle);
+    m_ParticleStack->AddParticleToStack(particle);
 }
 
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventGeneratorIsotropic::InitializeRootOutput(){
+void EventGeneratorpBUU::InitializeRootOutput(){
   
 }

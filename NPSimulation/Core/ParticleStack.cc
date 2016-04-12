@@ -96,7 +96,8 @@ void ParticleStack::AddBeamParticleToStack(Particle& particle){
   m_ParticleStack.push_back(particle);
   // Incident beam parameter
   m_InitialConditions-> SetIncidentParticleName   (particle.GetParticleDefinition()->GetParticleName());
-  m_InitialConditions-> SetIncidentInitialKineticEnergy  (particle. GetParticleThetaCM());
+  //m_InitialConditions-> SetIncidentInitialKineticEnergy  (particle. GetParticleThetaCM());
+    m_InitialConditions-> SetIncidentInitialKineticEnergy  (particle. GetParticleKineticEnergy());
   
   G4ThreeVector U(1,0,0);
   G4ThreeVector V(0,1,0);

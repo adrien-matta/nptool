@@ -9,23 +9,17 @@
 
 /*****************************************************************************
  *                                                                           *
- * Original Author :  Adrien MATTA    contact address: a.matta@surrey.ac.uk  *
+ * Original Author : Pierre MORFOUACE contact: morfouac@nscl.msu.edu         *
  *                                                                           *
- * Creation Date   : March 2009                                              *
- * Last update     : January 2011                                            *
+ * Creation Date   : April 2016                                              *
+ * Last update     : April 2016                                              *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class deal with Two Body transfert Reaction                         *
+ *  This class simulate particule with a give energy                         *
+ *  and angular distirubtion in the lab.                                     *
  *  Physical parameter (Nuclei mass) are loaded from the nubtab03.asc file   *
  *  (2003 nuclear table of isotopes mass).                                   *
  *                                                                           *
- *  KineRelativistic: Used in NPSimulation                                   *
- *  A relativistic calculation is made to compute Light and Heavy nuclei     *
- *  angle given the Theta CM angle.                                          *
- *                                                                           *
- *  ReconstructRelativistic: Used in NPAnalysis                              *
- *  A relativistic calculation is made to compute Excitation energy given the*
- *  light angle and energy in Lab frame.                                     *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
