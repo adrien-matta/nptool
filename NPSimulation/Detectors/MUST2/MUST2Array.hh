@@ -35,7 +35,7 @@ namespace MUST2
 {
    // Resolution
    const G4double ResoTimeMust = 0.212765957    ;// = 500ps                 //   Unit is  ns/2.35
-   const G4double ResoSiLi     = 0.055          ;// = 130 keV of resolution //   Unit is MeV/2.35
+   const G4double ResoSiLi     = 0.066          ;// = 130 keV of resolution //   Unit is MeV/2.35
    const G4double ResoCsI      = 0.08           ;// = 188 kev of resolution //   Unit is MeV/2.35
    const G4double ResoStrip    = 0.017          ;// = 52keV of Resolution   //   Unit is MeV/2.35
 
