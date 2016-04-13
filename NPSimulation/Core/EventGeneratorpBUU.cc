@@ -60,159 +60,137 @@ EventGeneratorpBUU::~EventGeneratorpBUU(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorpBUU::ReadConfiguration(string Path,int){
-  ////////General Reading needs////////
-  string LineBuffer;
-  string DataBuffer;
+    ////////General Reading needs////////
+    string LineBuffer;
+    string DataBuffer;
   
-  bool ReadingStatus = false ;
-    bool check_AngleHistPath = false;
-    bool check_EnergyHistPath = false;
+    bool ReadingStatus = false ;
+    bool check_AngleEnergyHistPath = false;
     bool check_x0 = false ;
     bool check_y0 = false ;
     bool check_z0 = false ;
     bool check_particle = false ;
     bool check_ExcitationEnergy = false ;
   
-  ////////Reaction Setting needs///////
-  string particle   ;
-  //////////////////////////////////////////////////////////////////////////////////////////
-  ifstream ReactionFile;
-  ReactionFile.open(Path.c_str());
+    ////////Reaction Setting needs///////
+    string particle   ;
+    //////////////////////////////////////////////////////////////////////////////////////////
+    ifstream ReactionFile;
+    ReactionFile.open(Path.c_str());
   
-  if (ReactionFile.is_open()) {}
-  else {
-    return;
-  }
+    if (ReactionFile.is_open()) {}
+    else {
+        return;
+    }
   
-  while (!ReactionFile.eof()) {
-    //Pick-up next line
-    getline(ReactionFile, LineBuffer);
+    while (!ReactionFile.eof()) {
+        //Pick-up next line
+        getline(ReactionFile, LineBuffer);
     
-      if (LineBuffer.compare(0, 4, "pBUU") == 0) {
-          G4cout << "///////////////////////////////////////////////////" << G4endl ;
-          G4cout << "pBUU Source Found" << G4endl ;
-          ReadingStatus = true;
-      }
+        if (LineBuffer.compare(0, 4, "pBUU") == 0) {
+            G4cout << "///////////////////////////////////////////////////" << G4endl ;
+            G4cout << "pBUU Source Found" << G4endl ;
+            ReadingStatus = true;
+        }
       
     
     
-    while (ReadingStatus)
-      {
-      ReactionFile >> DataBuffer;
-      //Search for comment Symbol %
-      if (DataBuffer.compare(0, 1, "%") == 0) {   ReactionFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
+        while (ReadingStatus){
+            ReactionFile >> DataBuffer;
+            //Search for comment Symbol %
+            if (DataBuffer.compare(0, 1, "%") == 0) {   ReactionFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
       
  
-      else if  (DataBuffer== "AngleHistPath=") {
-          check_AngleHistPath = true ;
-          TString FileName,HistName;
-          ReactionFile >> FileName >> HistName;
-          G4cout << "Reading Angle Distribution file: " << FileName << G4endl;
-
-          string GlobalPath = getenv("NPTOOL");
-          TString StandardPath = GlobalPath + "/Inputs/EventGenerator/" + FileName;
+            //Angle is X-axis and Energy is Y-axis
+            else if  (DataBuffer== "AngleEnergyHistPath=") {
+                check_AngleEnergyHistPath = true ;
+                TString FileName,HistName;
+                ReactionFile >> FileName >> HistName;
+                G4cout << "Reading Energy-Angle Distribution file: " << FileName << G4endl;
+              
+                string GlobalPath = getenv("NPTOOL");
+                TString StandardPath = GlobalPath + "/Inputs/EventGenerator/" + FileName;
           
-          TFile *f1 = new TFile(StandardPath);
-          fAngleHist = (TH1F*) f1->FindObjectAny(HistName);
-          if(!fAngleHist){
-              G4cout << "Error: Histogramm " << HistName << " not found in file " << FileName << G4endl;
-              exit(1);
-          }
-      }
+                TFile *f1 = new TFile(StandardPath);
+                fAngleEnergyHist = (TH2F*) f1->FindObjectAny(HistName);
+                if(!fAngleEnergyHist){
+                    G4cout << "Error: Histogramm " << HistName << " not found in file " << FileName << G4endl;
+                    cout << "Error: Histogramm " << HistName << " not found in file " << FileName << endl;
+                    exit(1);
+                }
+            }
           
-      else if  (DataBuffer== "EnergyHistPath=") {
-          check_EnergyHistPath = true ;
-          TString FileName,HistName;
-          ReactionFile >> FileName >> HistName;
-          G4cout << "Reading Energy Distribution file: " << FileName << G4endl;
-          
-          string GlobalPath = getenv("NPTOOL");
-          TString StandardPath = GlobalPath + "/Inputs/EventGenerator/" + FileName;
 
-          TFile *f2 = new TFile(StandardPath);
-          fEnergyHist = (TH1F*) f2->FindObjectAny(HistName);
-          if(!fEnergyHist){
-              G4cout << "Error: Histogramm " << HistName << " not found in file " << FileName << G4endl;
-              exit(1);
-          }
-      }
-
+            
+            else if (DataBuffer == "x0=") {
+                check_x0 = true ;
+                ReactionFile >> DataBuffer;
+                m_x0 = atof(DataBuffer.c_str()) * mm;
+                G4cout << "x0 " << m_x0 << " mm" << G4endl;
+            }
       
-      else if (DataBuffer == "x0=") {
-        check_x0 = true ;
-        ReactionFile >> DataBuffer;
-        m_x0 = atof(DataBuffer.c_str()) * mm;
-        G4cout << "x0 " << m_x0 << " mm" << G4endl;
-      }
+            else if (DataBuffer == "y0=") {
+                check_y0 = true ;
+                ReactionFile >> DataBuffer;
+                m_y0 = atof(DataBuffer.c_str()) * mm;
+                G4cout << "y0 " << m_y0 << " mm" << G4endl;
+            }
       
-      else if (DataBuffer == "y0=") {
-        check_y0 = true ;
-        ReactionFile >> DataBuffer;
-        m_y0 = atof(DataBuffer.c_str()) * mm;
-        G4cout << "y0 " << m_y0 << " mm" << G4endl;
-      }
+            else if (DataBuffer == "z0=" ) {
+                check_z0 = true ;
+                ReactionFile >> DataBuffer;
+                m_z0 = atof(DataBuffer.c_str()) * mm;
+                G4cout << "z0 " << m_z0 << " mm" << G4endl;
+            }
       
-      else if (DataBuffer == "z0=" ) {
-        check_z0 = true ;
-        ReactionFile >> DataBuffer;
-        m_z0 = atof(DataBuffer.c_str()) * mm;
-        G4cout << "z0 " << m_z0 << " mm" << G4endl;
-      }
-      
-      else if (DataBuffer == "SigmaX=" ) {
-        ReactionFile >> DataBuffer;
-        m_SigmaX = atof(DataBuffer.c_str()) * mm;
-        G4cout << "SigmaX " << m_SigmaX << " mm" << G4endl;
-      }
+            else if (DataBuffer == "SigmaX=" ) {
+                ReactionFile >> DataBuffer;
+                m_SigmaX = atof(DataBuffer.c_str()) * mm;
+                G4cout << "SigmaX " << m_SigmaX << " mm" << G4endl;
+            }
   
-      else if (DataBuffer == "SigmaY=" ) {
-        ReactionFile >> DataBuffer;
-        m_SigmaY = atof(DataBuffer.c_str()) * mm;
-        G4cout << "SigmaY " << m_SigmaY << " mm" << G4endl;
-      }
+            else if (DataBuffer == "SigmaY=" ) {
+                ReactionFile >> DataBuffer;
+                m_SigmaY = atof(DataBuffer.c_str()) * mm;
+                G4cout << "SigmaY " << m_SigmaY << " mm" << G4endl;
+            }
      
-      else if (DataBuffer=="Particle=" || DataBuffer=="particle=") {
-        check_particle = true ;
-        ReactionFile >> m_particleName;
-        G4cout << "Particle : " << m_particleName << G4endl ;
+            else if (DataBuffer=="Particle=" || DataBuffer=="particle=") {
+                check_particle = true ;
+                ReactionFile >> m_particleName;
+                G4cout << "Particle : " << m_particleName << G4endl ;
         
-        // Case of light particle
-             if(m_particleName=="proton"){ m_particleName="1H"  ; check_ExcitationEnergy = true ;}
-        else if(m_particleName=="deuton"){ m_particleName="2H"  ; check_ExcitationEnergy = true ;}
-        else if(m_particleName=="triton"){ m_particleName="3H"  ; check_ExcitationEnergy = true ;}
-        else if(m_particleName=="alpha") { m_particleName="4He" ; check_ExcitationEnergy = true ;}
-        else if(m_particleName=="gamma") { check_ExcitationEnergy = true ;}
-        else if(m_particleName=="neutron") { check_ExcitationEnergy = true ;}
-          else { check_ExcitationEnergy = true ;}
-
-      }
+                // Case of light particle
+                if(m_particleName=="proton"){ m_particleName="1H"  ; check_ExcitationEnergy = true ;}
+                else if(m_particleName=="deuton"){ m_particleName="2H"  ; check_ExcitationEnergy = true ;}
+                else if(m_particleName=="triton"){ m_particleName="3H"  ; check_ExcitationEnergy = true ;}
+                else if(m_particleName=="alpha") { m_particleName="4He" ; check_ExcitationEnergy = true ;}
+                else if(m_particleName=="gamma") { check_ExcitationEnergy = true ;}
+                else if(m_particleName=="neutron") { check_ExcitationEnergy = true ;}
+                else { check_ExcitationEnergy = true ;}
+            }
       
-      else if (DataBuffer=="ExcitationEnergy=") {
-        check_ExcitationEnergy = true ;
-        ReactionFile >> DataBuffer;
-        m_ExcitationEnergy = atof(DataBuffer.c_str()) * MeV;
-        G4cout << "ExcitationEnergy : " << m_ExcitationEnergy << G4endl ;
-      }
+            else if (DataBuffer=="ExcitationEnergy=") {
+                check_ExcitationEnergy = true ;
+                ReactionFile >> DataBuffer;
+                m_ExcitationEnergy = atof(DataBuffer.c_str()) * MeV;
+                G4cout << "ExcitationEnergy : " << m_ExcitationEnergy << G4endl ;
+            }
       
-      //   If no pBUU Token and no comment, toggle out
-      else
-        {ReadingStatus = false; G4cout << "WARNING : Wrong Token Sequence: Getting out " << G4endl ;}
+            //   If no pBUU Token and no comment, toggle out
+            else
+            {ReadingStatus = false; G4cout << "WARNING : Wrong Token Sequence: Getting out " << G4endl ;}
       
-      ///////////////////////////////////////////////////
-      //   If all Token found toggle out
-      if(    check_EnergyHistPath && check_AngleHistPath && check_x0 && check_y0 && check_z0 && check_particle && check_ExcitationEnergy)
-        ReadingStatus = false ;
-      
-      }
-    
-  }
+            ///////////////////////////////////////////////////
+            //   If all Token found toggle out
+            if(    check_AngleEnergyHistPath && check_x0 && check_y0 && check_z0 && check_particle && check_ExcitationEnergy)
+                ReadingStatus = false ;
+            }
+        }
   
-  if(    !check_AngleHistPath || !check_EnergyHistPath || !check_x0 || !check_y0 || !check_z0 || !check_particle )
-    {G4cout << "ERROR : Token Sequence Incomplete, pBUU definition can not be Fonctionnal" << G4endl ; exit(1);}
-  
-
-  
-}
+        if(    !check_AngleEnergyHistPath || !check_x0 || !check_y0 || !check_z0 || !check_particle )
+            {G4cout << "ERROR : Token Sequence Incomplete, pBUU definition can not be Fonctionnal" << G4endl ; exit(1);}
+    }
 
 
 
@@ -230,8 +208,13 @@ void EventGeneratorpBUU::GenerateEvent(G4Event*){
         }
     }
     
-    G4double theta = fAngleHist->GetRandom()*deg;
-    G4double particle_energy = fEnergyHist->GetRandom() / MeV;
+    Double_t theta;
+    Double_t particle_energy;
+    fAngleEnergyHist->GetRandom2(theta,particle_energy);
+    theta = theta*deg;
+    particle_energy = particle_energy / MeV;
+    //G4double theta = fAngleHist->GetRandom()*deg;
+    //G4double particle_energy = fEnergyHist->GetRandom() / MeV;
     G4double phi             = RandFlat::shoot() * 2 * pi;
     
     // Direction of particle, energy and laboratory angle

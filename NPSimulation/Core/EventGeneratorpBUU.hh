@@ -36,6 +36,7 @@ using namespace CLHEP;
 
 // ROOT Headers
 #include "TH1F.h"
+#include "TH2F.h"
 #include "TFile.h"
 
 class EventGeneratorpBUU : public NPS::VEventGenerator{
@@ -59,8 +60,9 @@ private:    // Source parameter from input file
     string                 m_particleName     ;
     ParticleStack*         m_ParticleStack    ;
     
-    TH1F* fAngleHist;
-    TH1F* fEnergyHist;
+    //TH1F* fAngleHist;
+    //TH1F* fEnergyHist;
+    TH2F* fAngleEnergyHist;
   
 };
 #endif

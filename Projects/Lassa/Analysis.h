@@ -44,6 +44,7 @@ class Analysis: public NPL::VAnalysis{
 
   private:
     double ELab;
+    double ECM;
     double ELab_nucl;
     double E_ThickSi;
     double E_CsI;
@@ -53,6 +54,7 @@ class Analysis: public NPL::VAnalysis{
     double TelescopeNumber;
     double thresholdEnergy;
     double InitialEnergy;
+    double ECM_initial;
     double ThicknessCsI;
     double R_alpha;
 
@@ -74,6 +76,10 @@ class Analysis: public NPL::VAnalysis{
     NPL::EnergyLoss Proton_CsI;
     NPL::EnergyLoss Deuton_CsI;
     NPL::EnergyLoss Triton_CsI;
+    
+    NPL::Nucleus *proton;
+    NPL::Nucleus *beam;
+    NPL::Nucleus *target;
     
     TLassaPhysics* Lassa;
 	TInitialConditions* InitialConditions;

@@ -52,6 +52,10 @@ void Analysis::Init(){
     Proton_CsI = EnergyLoss("proton_CsI.G4table","G4Table",100 );
     Deuton_CsI = EnergyLoss("deuteron_CsI.G4table","G4Table",100 );
     Triton_CsI = EnergyLoss("triton_CsI.G4table","G4Table",100 );
+    
+    proton = new NPL::Nucleus("1H");
+    beam = new NPL::Nucleus("112Sn");
+    target = new NPL::Nucleus("112Sn");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -61,10 +65,21 @@ void Analysis::TreatEvent(){
     
     totalEvents++;
 
+    double BeamEnergy = 120*beam->GetA();
     
-    double ParticleEnergy = InitialConditions->GetKineticEnergy(0);
+    TVector3 fImpulsionLab_beam             = TVector3(0,0,sqrt(BeamEnergy*BeamEnergy + 2*BeamEnergy*beam->Mass()));
+    TLorentzVector fEnergyImpulsionLab_beam = TLorentzVector(fImpulsionLab_beam,beam->Mass()+BeamEnergy);
+    
+    TVector3 fImpulsionLab_target             = TVector3(0,0,0);
+    TLorentzVector fEnergyImpulsionLab_target = TLorentzVector(fImpulsionLab_target,target->Mass());
+    
+    TLorentzVector fEnergyImpulsionLab_total;
+    fEnergyImpulsionLab_total = fEnergyImpulsionLab_beam + fEnergyImpulsionLab_target;
+    
+    double BetaCM = fEnergyImpulsionLab_total.Beta();
 
     
+    double ParticleEnergy = InitialConditions->GetKineticEnergy(0);
     double EDelta = 2.0;
 
     if(Lassa->ThickSi_E.size()>0) InitialEnergy = ParticleEnergy;
@@ -137,6 +152,16 @@ void Analysis::TreatEvent(){
         
         if(fabs(ParticleEnergy-ELab_nucl)>EDelta) ELab_nucl = -100;
         
+        if(ELab>0){
+            ECM = proton->GetEnergyCM(ELab, ThetaLab, PhiLab, BetaCM);
+        }
+        else ECM = -100;
+        
+        if(InitialEnergy>0){
+            ECM_initial = proton->GetEnergyCM(InitialEnergy, ThetaLab, PhiLab, BetaCM);
+        }
+        else ECM = -100;
+        
         ThetaLab = ThetaLab/deg;
         PhiLab = PhiLab/deg;
     }
@@ -162,10 +187,12 @@ void Analysis::End(){
 void Analysis::InitOutputBranch() {
     RootOutput::getInstance()->GetTree()->Branch("ThicknessCsI",&ThicknessCsI,"ThicknessCsI/D");
     RootOutput::getInstance()->GetTree()->Branch("ELab",&ELab,"ELab/D");
+    RootOutput::getInstance()->GetTree()->Branch("ECM",&ECM,"ECM/D");
     RootOutput::getInstance()->GetTree()->Branch("ELab_nucl",&ELab_nucl,"ELab_nucl/D");
     RootOutput::getInstance()->GetTree()->Branch("ThetaLab",&ThetaLab,"ThetaLab/D");
     RootOutput::getInstance()->GetTree()->Branch("PhiLab",&PhiLab,"PhiLab/D");
     RootOutput::getInstance()->GetTree()->Branch("InitialEnergy",&InitialEnergy,"InitialEnergy/D");
+    RootOutput::getInstance()->GetTree()->Branch("ECM_initial",&ECM_initial,"ECM_initial/D");
     RootOutput::getInstance()->GetTree()->Branch("E_ThickSi",&E_ThickSi,"E_ThickSi/D");
     RootOutput::getInstance()->GetTree()->Branch("E_CsI",&E_CsI,"E_CsI/D");
     RootOutput::getInstance()->GetTree()->Branch("R_alpha",&R_alpha,"R_alpha/D");
@@ -184,6 +211,7 @@ void Analysis::ReInitValue(){
     E_ThickSi = -100;
     E_CsI =-100;
     ELab = -100;
+    ECM = -100;
     ELab_nucl = -100;
     ThetaLab = -100;
     PhiLab = -100;
@@ -192,6 +220,7 @@ void Analysis::ReInitValue(){
     Z = -100;
     TelescopeNumber = -1;
     InitialEnergy = -100;
+    ECM_initial = -100;
     ThicknessCsI = -1;
     R_alpha = -100;
 }

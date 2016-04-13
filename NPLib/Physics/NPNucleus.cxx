@@ -319,6 +319,35 @@ double Nucleus::DopplerCorrection(double EnergyLabGamma, double ThetaLabGamma)
 }
 
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetEnergyCM(double EnergyLab, double ThetaLab, double PhiLab, double relativisticboost)
+{
+    SetKineticEnergy(EnergyLab);
+    double EnergyCM;
+    double ImpulsionLab;
+    double ImpulsionLabX;
+    double ImpulsionLabY;
+    double ImpulsionLabZ;
+    TVector3 VImpulsionLAB;
+    TLorentzVector LVEnergyImpulsionLAB;
+    TLorentzVector LVEnergyImpulsionCM;
+    
+    ImpulsionLab    = sqrt(EnergyLab*EnergyLab + 2*EnergyLab*Mass());
+    ImpulsionLabX   = ImpulsionLab*sin(ThetaLab)*cos(PhiLab);
+    ImpulsionLabY   = ImpulsionLab*sin(ThetaLab)*sin(PhiLab);
+    ImpulsionLabZ   = ImpulsionLab*cos(ThetaLab);
+    
+    VImpulsionLAB           = TVector3(ImpulsionLabX, ImpulsionLabY, ImpulsionLabZ);
+    LVEnergyImpulsionLAB    = TLorentzVector(VImpulsionLAB,Mass()+EnergyLab);
+    
+    LVEnergyImpulsionCM     = LVEnergyImpulsionLAB;
+    LVEnergyImpulsionCM.Boost(0,0,-relativisticboost);
+    
+    EnergyCM = LVEnergyImpulsionCM.Energy() - Mass();
+    
+    return EnergyCM;
+}
+
 
 
 

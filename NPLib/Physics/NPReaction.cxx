@@ -228,7 +228,7 @@ void Reaction::KineRelativistic(double& ThetaLab3, double& KineticEnergyLab3,
 	fEnergyImpulsionCM_3	= TLorentzVector(pCM_3*sin(theta),0,pCM_3*cos(theta),ECM_3);
 	fEnergyImpulsionCM_4	= fTotalEnergyImpulsionCM - fEnergyImpulsionCM_3;
 	
-  fEnergyImpulsionLab_3 = fEnergyImpulsionCM_3;
+    fEnergyImpulsionLab_3 = fEnergyImpulsionCM_3;
 	fEnergyImpulsionLab_3.Boost(0,0,BetaCM);
 	fEnergyImpulsionLab_4 = fEnergyImpulsionCM_4;
 	fEnergyImpulsionLab_4.Boost(0,0,BetaCM);
