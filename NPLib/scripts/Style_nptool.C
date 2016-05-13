@@ -15,7 +15,7 @@ void Style_nptool(){
   style_nptool->SetStatColor(kWhite);	
   style_nptool->SetFillColor(kWhite); 
   style_nptool->SetTitleFillColor(kWhite);
-
+  style_nptool->SetPaperSize(20,24);
   // Canvas
   style_nptool->SetCanvasColor(kWhite);
   style_nptool->SetCanvasDefH(800);

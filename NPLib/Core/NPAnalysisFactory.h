@@ -1,5 +1,5 @@
-#ifndef _DETECTORFACTORY_
-#define _DETECTORFACTORY_
+#ifndef _ANALYSISFACTORY_
+#define _ANALYSISFACTORY_
 #include"NPVAnalysis.h"
 #include"NPAnalysisFactory.h"
 #include<map>

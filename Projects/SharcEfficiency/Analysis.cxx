@@ -90,20 +90,20 @@ void Analysis::Init(){
   RootInput::getInstance()->GetChain()->SetBranchAddress("InitialConditions",&myInit);
 
   HistoFile = new TFile("SharcEfficiency.root","RECREATE");
-  ThetaCM_emmitted = new TH1F("ThetaCM_emmitted","ThetaCM_emmitted",72,0,180);
-  ThetaCM_detected = new TH1F("ThetaCM_detected","ThetaCM_detected",72,0,180);
-  ThetaLab_emmitted = new TH1F("ThetaLab_emmitted","ThetaLab_emmitted",72,0,180);
-  ThetaLab_detected = new TH1F("ThetaLab_detected","ThetaLab_detected",72,0,180);
+  ThetaCM_emmitted = new TH1F("ThetaCM_emmitted","ThetaCM_emmitted",180,0,180);
+  ThetaCM_detected = new TH1F("ThetaCM_detected","ThetaCM_detected",180,0,180);
+  ThetaLab_emmitted = new TH1F("ThetaLab_emmitted","ThetaLab_emmitted",180,0,180);
+  ThetaLab_detected = new TH1F("ThetaLab_detected","ThetaLab_detected",180,0,180);
 /*
   ThetaCM_emmitted_2D = new TH2F("ThetaCM_emmitted_2D","ThetaCM_emmitted_2D",72,0,180,400,-8,8);
   ThetaCM_detected_2D = new TH2F("ThetaCM_detected_2D","ThetaCM_detected_2D",72,0,180,400,-8,8);
   ThetaLab_emmitted_2D = new TH2F("ThetaLab_emmitted_2D","ThetaLab_emmitted_2D",72,0,180,400,-8,8);
   ThetaLab_detected_2D = new TH2F("ThetaLab_detected_2D","ThetaLab_detected_2D",72,0,180,400,-8,8);
 */
-  ThetaCM_emmitted_2D = new TH2F("ThetaCM_emmitted_2D","ThetaCM_emmitted_2D",180,0,180,1100,-1,10);
-  ThetaCM_detected_2D = new TH2F("ThetaCM_detected_2D","ThetaCM_detected_2D",180,0,180,1100,-1,10);
-  ThetaLab_emmitted_2D = new TH2F("ThetaLab_emmitted_2D","ThetaLab_emmitted_2D",180,0,180,1100,-1,10);
-  ThetaLab_detected_2D = new TH2F("ThetaLab_detected_2D","ThetaLab_detected_2D",180,0,180,1100,-1,10);
+  ThetaCM_emmitted_2D = new TH2F("ThetaCM_emmitted_2D","ThetaCM_emmitted_2D",180,0,180,250,-1,10);
+  ThetaCM_detected_2D = new TH2F("ThetaCM_detected_2D","ThetaCM_detected_2D",180,0,180,250,-1,10);
+  ThetaLab_emmitted_2D = new TH2F("ThetaLab_emmitted_2D","ThetaLab_emmitted_2D",180,0,180,250,-1,10);
+  ThetaLab_detected_2D = new TH2F("ThetaLab_detected_2D","ThetaLab_detected_2D",180,0,180,250,-1,10);
 
 }
 
@@ -118,7 +118,8 @@ void Analysis::TreatEvent(){
   ThetaCM_emmitted->Fill(myInit->GetThetaCM(0));
   ThetaLab_emmitted->Fill(myInit->GetThetaLab_WorldFrame(0));
 
-  double EXD =myReaction->ReconstructRelativistic(myInit->GetKineticEnergy(0),myInit->GetThetaLab_WorldFrame(0)*deg);
+  myReaction->SetBeamEnergy(myInit->GetIncidentFinalKineticEnergy());
+  double EXD = myReaction->ReconstructRelativistic(myInit->GetKineticEnergy(0),myInit->GetThetaLab_IncidentFrame(0)*deg);
   ThetaCM_emmitted_2D->Fill(myInit->GetThetaCM(0),EXD);
   ThetaLab_emmitted_2D->Fill(myInit->GetThetaLab_WorldFrame(0),EXD);
 
@@ -224,12 +225,13 @@ void Analysis::TreatEvent(){
     else if(Sharc->DetectorNumber[0] == 12 && Sharc->Strip_E[0]>1.99)
       check = true;
 
+
     if(Trifoil->Energy.size()>0){
       if( check && abs(Ex-EXD)<0.5 &&  Trifoil->Energy.size()>0 && Trifoil->Energy[0]>0) { // for S1107
         ThetaCM_detected->Fill(myInit->GetThetaCM(0));
         ThetaLab_detected->Fill(myInit->GetThetaLab_WorldFrame(0));
-        ThetaCM_detected_2D->Fill(myInit->GetThetaCM(0),Ex);
-        ThetaLab_detected_2D->Fill(myInit->GetThetaLab_WorldFrame(0),Ex);
+        ThetaCM_detected_2D->Fill(myInit->GetThetaCM(0),EXD);
+        ThetaLab_detected_2D->Fill(myInit->GetThetaLab_WorldFrame(0),EXD);
       }
     }
     /************************************************/
