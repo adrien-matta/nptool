@@ -82,7 +82,13 @@ void Analysis::TreatEvent(){
     double ParticleEnergy = InitialConditions->GetKineticEnergy(0);
     double EDelta = 2.0;
 
-    if(Lassa->ThickSi_E.size()>0) InitialEnergy = ParticleEnergy;
+    InitialEnergy = ParticleEnergy;
+    //if(Lassa->ThickSi_E.size()>0) InitialEnergy = ParticleEnergy;
+    double phi_in = acos(InitialConditions->GetMomentumDirectionX(0)/sin(InitialConditions->GetThetaCM(0)*deg));
+    if(InitialEnergy>0){
+        ECM_initial = proton->GetEnergyCM(InitialEnergy, InitialConditions->GetThetaCM(0)*deg, phi_in, BetaCM);
+    }
+    else ECM_initial = -100;
     ///////////////////////////LOOP on Lassa Hit//////////////////////////////////
     if(Lassa->ThickSi_E.size() == 1){
         detectedEvents++;
@@ -142,23 +148,14 @@ void Analysis::TreatEvent(){
             
         }
     
-        if(fabs(ParticleEnergy-ELab)<EDelta){
-            peakEvents++;
-        }
-        else{
+        if(fabs(ParticleEnergy-ELab)>EDelta){
             ELab = -100;
-            //E_CsI = -100;
         }
-        
+
         if(fabs(ParticleEnergy-ELab_nucl)>EDelta) ELab_nucl = -100;
         
         if(ELab>0){
             ECM = proton->GetEnergyCM(ELab, ThetaLab, PhiLab, BetaCM);
-        }
-        else ECM = -100;
-        
-        if(InitialEnergy>0){
-            ECM_initial = proton->GetEnergyCM(InitialEnergy, ThetaLab, PhiLab, BetaCM);
         }
         else ECM = -100;
         
@@ -169,7 +166,7 @@ void Analysis::TreatEvent(){
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::End(){
 
-  geomEff = 100*((double)detectedEvents)/((double)totalEvents);
+  /*geomEff = 100*((double)detectedEvents)/((double)totalEvents);
 
   peakEff = 100*((double)peakEvents)/((double)detectedEvents);
 
@@ -179,7 +176,7 @@ void Analysis::End(){
   cout << "PeakEvents: " << peakEvents << endl;
 
   cout << "Geometric Efficiency: " << geomEff << endl;
-  cout << "Peak Efficiency: " << peakEff << endl;
+  cout << "Peak Efficiency: " << peakEff << endl;*/
 
 }
 

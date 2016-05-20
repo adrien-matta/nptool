@@ -222,8 +222,9 @@ private:
 	
   
 private:/// Visualisation Attribute:
-   G4VisAttributes* m_SiliconVisAtt  ;
-   G4VisAttributes* m_CsIVisAtt;
+    G4VisAttributes* m_SiliconVisAtt  ;
+    G4VisAttributes* m_SiliconVisAtt2  ;
+    G4VisAttributes* m_CsIVisAtt;
     
 public:
     static NPS::VDetector* Construct();

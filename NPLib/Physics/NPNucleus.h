@@ -123,6 +123,7 @@ namespace NPL {
       BetaToVelocity();}
     void				SetBeta(double beta)					{fBeta = beta; BetaToGamma(); BetaToEnergy(); EnergyToTof(); EnergyToBrho();BetaToVelocity();}
       double GetEnergyCM(double EnergyLab, double ThetaLab, double PhiLab, double relativisticboost);
+      double GetThetaCM(double EnergyLab, double ThetaLab, double PhiLab, double relativisticboost);
     
     // Nuclear mass in MeV
     double      Mass() const {return (fAtomicWeight*amu_c2 + fMassExcess/1000. - fCharge*electron_mass_c2);}

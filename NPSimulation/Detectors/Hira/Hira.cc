@@ -68,15 +68,16 @@ Hira::Hira(){
   InitializeMaterial();
   m_EventHira = new THiraData();
   
-  // Dark Grey
-  m_SiliconVisAtt = new G4VisAttributes(G4Colour(0.3, 0.3, 0.3)) ;
-  // Green
-  m_CsIVisAtt = new G4VisAttributes(G4Colour(0.2, 0.5, 0.2)) ;
+    // Silicon
+    m_SiliconVisAtt = new G4VisAttributes(G4Colour(0.839216, 0.839216, 0.839216)) ;
+    m_SiliconVisAtt2 = new G4VisAttributes(G4Colour(0.839216, 0.839216, 0.839216)) ;
+    // CsI Color
+    m_CsIVisAtt = new G4VisAttributes(G4Colour(0.529412, 0.807843, 0.980392, 0.9)) ;
     //m_CsIVisAtt->SetForceWireframe(true);
-  m_LogicThinSi = 0;
-  m_LogicThickSi = 0;
-  m_LogicCsICrystal = 0;
-  m_LogicCluster = 0;
+    m_LogicThinSi = 0;
+    m_LogicThickSi = 0;
+    m_LogicCsICrystal = 0;
+    m_LogicCluster = 0;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 Hira::~Hira(){
@@ -523,7 +524,7 @@ void Hira::VolumeMaker(G4int DetectorNumber,
         	m_LogicThickSi->SetSensitiveDetector(m_ThickSiStripScorer);
 	
 		// Visualisation of ThickSi
-        	m_LogicThickSi->SetVisAttributes(m_SiliconVisAtt) ; 
+        	m_LogicThickSi->SetVisAttributes(m_SiliconVisAtt2) ;
 	}
 
 	///////////////////////////////////////////////////
@@ -563,8 +564,8 @@ void Hira::VolumeMaker(G4int DetectorNumber,
 	// Sub Mother Volume
     	G4Trd* solidCluster = new G4Trd("SolidCluster", 0.5*ClusterFaceFront,0.5*ClusterFaceBack,0.5*ClusterFaceFront,0.5*ClusterFaceBack, 0.5*CsIThickness);
     	m_LogicCluster = new G4LogicalVolume(solidCluster, m_MaterialVacuum, "LogicSolidCluster", 0, 0, 0);
-        //m_LogicCluster->SetVisAttributes(G4VisAttributes::Invisible);
-        G4VisAttributes* TempVisAtt = new G4VisAttributes(G4Colour(0.6, 0.6, 0.3)) ;
+        m_LogicCluster->SetVisAttributes(G4VisAttributes::Invisible);
+        G4VisAttributes* TempVisAtt = new G4VisAttributes(G4Colour(0.415686, 0.352941, 0.803922, 0.1)) ;
         TempVisAtt->SetForceWireframe(true);
         m_LogicCluster->SetVisAttributes(TempVisAtt);
 

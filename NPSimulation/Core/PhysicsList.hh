@@ -85,7 +85,7 @@ class PhysicsList: public G4VModularPhysicsList{
     G4VPhysicsConstructor* emPhysicsList;
     G4VPhysicsConstructor* decay_List;
     G4VPhysicsConstructor* radioactiveDecay_List;
-
+    
   private: // Physics option
     std::string m_EmList;
     double m_IonBinaryCascadePhysics;
