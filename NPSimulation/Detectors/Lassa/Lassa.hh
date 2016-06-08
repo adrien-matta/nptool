@@ -54,11 +54,7 @@ namespace LASSA
 	
     const G4double EnergyThreshold = 0.;//100*keV;
 	
-	/* HiRA values
-	const G4double FaceFront	= 7.*cm ;
-	const G4double FaceBack		= 7*cm ;
-	const G4double Length		= 7.*cm ;
-	const G4int NumberOfStrip	= 32;*/
+
 
 	//LASSA values
 	const G4double FaceFront        = 7.*cm ;
@@ -66,15 +62,7 @@ namespace LASSA
         const G4double Length           = 10.*cm ;
         const G4int NumberOfStrip       = 16;
 	
-	/* HiRA values
-	const G4double SiliconFace       = 63*mm ;
-	const G4double AluStripThickness = 0.4*micrometer ;
-	const G4double ThinSiThickness	 = 65*micrometer ;
-	const G4double ThickSiThickness	 = 1500*micrometer ;
-	const G4double DistBetweenSi	 = 1*cm;
-	const G4double VacBoxThickness   = 1*cm ;
-	const G4double MylarCsIThickness = 3*micrometer;
-    const G4double CsIThickness      = 4.*cm;// + 2*MylarCsIThickness ;*/
+
 
  	// LASSA values
         const G4double SiliconFace       = 50*mm ;
@@ -86,39 +74,13 @@ namespace LASSA
         const G4double MylarCsIThickness = 3*micrometer;
     const G4double CsIThickness      = 6.*cm;// + 2*MylarCsIThickness ;*
     
-    /* HiRA values
-    const G4double CsIXFront         = 33.*mm;
-    const G4double CsIXBack          = 37.*mm;
-    const G4double CsIYFront         = 33.*mm;
-    const G4double CsIYBack          = 33.*mm;
-    const G4double DistInterCsI      = 0.01*mm;
-    
-	const G4double ClusterFaceFront  = 7*cm;
-	const G4double ClusterFaceBack   = 9*cm;
-
-	*/
-
-	const G4double CsIXFront         = 26.5*mm;
+  	const G4double CsIXFront         = 26.5*mm;
     	const G4double CsIXBack          = 33.8*mm;
     	const G4double CsIYFront         = 26.5*mm;
     	const G4double CsIYBack          = 33.8*mm;
     	const G4double DistInterCsI      = 0.01*mm;
 
-	
-      /* const G4double CsIXFront         = 26.5*mm;
-        const G4double CsIXBack          = 26.5*mm;
-        const G4double CsIYFront         = 26.5*mm;
-        const G4double CsIYBack          = 34.*mm;
-        const G4double DistInterCsI      = 0.01*mm;*/
-
-/*	 const G4double CsIXFront         = 26.5*mm;
-        const G4double CsIXBack          = 34.*mm;
-        const G4double CsIYFront         = 26.5*mm;
-        const G4double CsIYBack          = 34.*mm;
-        const G4double DistInterCsI      = 0.01*mm;
-*/
-
-        const G4double ClusterFaceFront  = 5.5*cm;
+	        const G4double ClusterFaceFront  = 5.5*cm;
         const G4double ClusterFaceBack   = 7.*cm;
 	
 	// Starting at the front and going to CsI
