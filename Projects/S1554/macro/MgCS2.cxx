@@ -42,7 +42,7 @@ void MgCS2(){
   h->Draw("colz");
   // CS
   TCanvas* c = new TCanvas("CS","CS",800,800);
-//  c->Divide(2,2);
+  c->Divide(2,2);
   TGraph* CSth;
   // Region 
   double s1,s2;
