@@ -437,9 +437,6 @@ void TLassaPhysics::PreTreat(){
     m_ThickSi_EYMult    = m_EventData->GetLassaStripYEMult();
     m_CsI_EMult         = m_EventData->GetLassaCsIEMult();
 
-//    cout << "Si XMult: " << m_ThickSi_EXMult << endl;
-//    cout << "Si YMult: " << m_ThickSi_EYMult << endl;
-//    cout << "CsI Mult: " << m_CsI_EMult << endl;
     
     // Thin Si
     /*for(unsigned int i = 0 ; i < m_ThinSi_EMult ; ++i){
@@ -449,43 +446,52 @@ void TLassaPhysics::PreTreat(){
         m_PreTreatedData->SetLassaThinSiStripTTime( m_EventData->GetLassaThinSiStripTTime(i));
     }*/
 
-    bool IsValid_XStrip, IsValid_YStrip;
-
-    IsValid_XStrip = true;
-    IsValid_YStrip = true;
-
 
     // Thick Si
-    // X
-    for(unsigned int i = 0 ; i < m_ThickSi_EXMult ; ++i){
-      if(IsValidChannel("X",m_EventData->GetLassaStripXEDetectorNbr(i),m_EventData->GetLassaStripXEStripNbr(i))){
-        m_PreTreatedData->SetLassaThickSiStripXEDetectorNbr( m_EventData->GetLassaStripXEDetectorNbr(i) );
-        m_PreTreatedData->SetLassaThickSiStripXEStripNbr( m_EventData->GetLassaStripXEStripNbr(i) );
-        m_PreTreatedData->SetLassaThickSiStripXEEnergy( m_EventData->GetLassaStripXEEnergy(i) );
-        m_PreTreatedData->SetLassaThickSiStripXTTime( m_EventData->GetLassaStripXTTime(i) );
+    // X->EF
+    /*for(unsigned int i = 0 ; i < m_ThickSi_EXMult ; ++i){
+        if(IsValidChannel("X",m_EventData->GetLassaStripXEDetectorNbr(i),m_EventData->GetLassaStripXEStripNbr(i))){
+            m_PreTreatedData->SetLassaThickSiStripXEDetectorNbr( m_EventData->GetLassaStripXEDetectorNbr(i) );
+            m_PreTreatedData->SetLassaThickSiStripXEStripNbr( m_EventData->GetLassaStripXEStripNbr(i) );
+            m_PreTreatedData->SetLassaThickSiStripXEEnergy( m_EventData->GetLassaStripXEEnergy(i) );
+            m_PreTreatedData->SetLassaThickSiStripXTTime( m_EventData->GetLassaStripXTTime(i) );
         }
-        else if (i == 0) IsValid_XStrip = false;
-  }
-    // Y
-    for(unsigned int i = 0 ; i < m_ThickSi_EYMult ; ++i){
-      if(IsValidChannel("Y",m_EventData->GetLassaStripYEDetectorNbr(i),m_EventData->GetLassaStripYEStripNbr(i))){ 
-        m_PreTreatedData->SetLassaThickSiStripYEDetectorNbr( m_EventData->GetLassaStripYEDetectorNbr(i) );
-        m_PreTreatedData->SetLassaThickSiStripYEStripNbr( m_EventData->GetLassaStripYEStripNbr(i) );
-        m_PreTreatedData->SetLassaThickSiStripYEEnergy( m_EventData->GetLassaStripYEEnergy(i) );
-        m_PreTreatedData->SetLassaThickSiStripYTTime( m_EventData->GetLassaStripYTTime(i) );
-      }
-      else if(i == 0) IsValid_YStrip = false;
     }
-
-//  cout << "IsValid_XStrip: " << IsValid_XStrip << endl;
-//  cout << "IsValid_YStrip: " << IsValid_YStrip << endl;
+    // Y->EB
+    for(unsigned int i = 0 ; i < m_ThickSi_EYMult ; ++i){
+        if(IsValidChannel("Y",m_EventData->GetLassaStripYEDetectorNbr(i),m_EventData->GetLassaStripYEStripNbr(i))){
+            m_PreTreatedData->SetLassaThickSiStripYEDetectorNbr( m_EventData->GetLassaStripYEDetectorNbr(i) );
+            m_PreTreatedData->SetLassaThickSiStripYEStripNbr( m_EventData->GetLassaStripYEStripNbr(i) );
+            m_PreTreatedData->SetLassaThickSiStripYEEnergy( m_EventData->GetLassaStripYEEnergy(i) );
+            m_PreTreatedData->SetLassaThickSiStripYTTime( m_EventData->GetLassaStripYTTime(i) );
+        }
+    }*/
     
     // CsI
     for(unsigned int i = 0 ; i < m_CsI_EMult ; ++i){
-      if(IsValid_XStrip&&IsValid_YStrip){
-        m_PreTreatedData->SetLassaCsIEDetectorNbr( m_EventData->GetLassaCsIEDetectorNbr(i) );
-        m_PreTreatedData->SetLassaCsIECristalNbr( m_EventData->GetLassaCsIECristalNbr(i) );
-        m_PreTreatedData->SetLassaCsIEEnergy( m_EventData->GetLassaCsIEEnergy(i) );
+      if(IsValidChannel("CsI",m_EventData->GetLassaCsIEDetectorNbr(i),m_EventData->GetLassaCsIECristalNbr(i))){
+          m_PreTreatedData->SetLassaCsIEDetectorNbr( m_EventData->GetLassaCsIEDetectorNbr(i) );
+          m_PreTreatedData->SetLassaCsIECristalNbr( m_EventData->GetLassaCsIECristalNbr(i) );
+          m_PreTreatedData->SetLassaCsIEEnergy( m_EventData->GetLassaCsIEEnergy(i) );
+          // X->EF
+          for(unsigned int i = 0 ; i < m_ThickSi_EXMult ; ++i){
+              if(IsValidChannel("X",m_EventData->GetLassaStripXEDetectorNbr(i),m_EventData->GetLassaStripXEStripNbr(i))){
+                  m_PreTreatedData->SetLassaThickSiStripXEDetectorNbr( m_EventData->GetLassaStripXEDetectorNbr(i) );
+                  m_PreTreatedData->SetLassaThickSiStripXEStripNbr( m_EventData->GetLassaStripXEStripNbr(i) );
+                  m_PreTreatedData->SetLassaThickSiStripXEEnergy( m_EventData->GetLassaStripXEEnergy(i) );
+                  m_PreTreatedData->SetLassaThickSiStripXTTime( m_EventData->GetLassaStripXTTime(i) );
+              }
+          }
+          // Y->EB
+          for(unsigned int i = 0 ; i < m_ThickSi_EYMult ; ++i){
+              if(IsValidChannel("Y",m_EventData->GetLassaStripYEDetectorNbr(i),m_EventData->GetLassaStripYEStripNbr(i))){
+                  m_PreTreatedData->SetLassaThickSiStripYEDetectorNbr( m_EventData->GetLassaStripYEDetectorNbr(i) );
+                  m_PreTreatedData->SetLassaThickSiStripYEStripNbr( m_EventData->GetLassaStripYEStripNbr(i) );
+                  m_PreTreatedData->SetLassaThickSiStripYEEnergy( m_EventData->GetLassaStripYEEnergy(i) );
+                  m_PreTreatedData->SetLassaThickSiStripYTTime( m_EventData->GetLassaStripYTTime(i) );
+              }
+          }
+          
       }
     }
     
@@ -622,15 +628,7 @@ void TLassaPhysics::ReadAnalysisConfig(){
         }
     }
   
-        /*for(int i = 0; i < m_NumberOfTelescope; i++){
-          for(int j = 0; j < 16; j++){
-//          cout << "Hello!" << endl;
-            cout << "Telescope: " << i << "  " << "XStrip: " << j << "  " <<  m_XChannelStatus[i][j] << "  " << "YStrip: " << j << "  " <<  m_YChannelStatus[i][j] << endl;
-          }
-          for(int k = 0; k < 4; k++){
-            cout << "Telescope: " << i << "  " << "Crystal: " << k << "  " << m_CsIChannelStatus[i][k] << endl;
-          }
-        }*/
+
       
 
 }
