@@ -192,7 +192,7 @@ void Analysis::TreatEvent(){
 
     // S1107
     bool check = false;
-    if(Sharc->DetectorNumber[0] == 1 && Sharc->Strip_E[0]>1.83)
+/*    if(Sharc->DetectorNumber[0] == 1 && Sharc->Strip_E[0]>1.83)
       check = true;
     
     else if(Sharc->DetectorNumber[0] == 2 && Sharc->Strip_E[0]>1.88)
@@ -223,6 +223,9 @@ void Analysis::TreatEvent(){
       check = true;
 
     else if(Sharc->DetectorNumber[0] == 12 && Sharc->Strip_E[0]>1.99)
+      check = true;
+*/
+   if(Sharc->DetectorNumber[0] == 4 && Sharc->Strip_E[0]>1.)
       check = true;
 
 
