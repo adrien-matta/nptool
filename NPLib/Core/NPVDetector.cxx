@@ -44,7 +44,7 @@ namespace NPL{
   class itoa_proxy{
     public:
       itoa_proxy(){
-      char buffer[5];
+      char buffer[]="10000";
         for(int i = 0 ; i < 10000 ; i++){
           sprintf(buffer,"%d",i);
           itoa_array[i] = buffer;

@@ -41,7 +41,7 @@ void Analysis::Init(){
   proton_CD2 = EnergyLoss("proton_CD2.G4table","G4Table",100 );
   proton_Al = EnergyLoss("proton_Al.G4table","G4Table",10);
   proton_Si = EnergyLoss("proton_Si.G4table","G4Table",10);
-  P30_CD2 = EnergyLoss("P30[0.0]_CD2.G4table","G4Table",100);
+  P30_CD2 = EnergyLoss("Na22_CD2.G4table","G4Table",100);
   Initial = new TInitialConditions();
 
 
