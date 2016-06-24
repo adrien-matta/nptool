@@ -71,6 +71,7 @@ void TNeutronWallPhysics::BuildPhysicalEvent() {
     for (UShort_t t = 0; t < m_PreTreatedData->GetMultTime(); t++) {
       if (m_PreTreatedData->GetE_DetectorNbr(e) == m_PreTreatedData->GetT_DetectorNbr(t)) {
         DetectorNumber.push_back(m_PreTreatedData->GetE_DetectorNbr(e));
+        PadNumber.push_back(m_PreTreatedData->GetE_PadNbr(e));
         Energy.push_back(m_PreTreatedData->Get_Energy(e));
         Time.push_back(m_PreTreatedData->Get_Time(t));
       }
@@ -94,7 +95,7 @@ void TNeutronWallPhysics::PreTreat() {
     if (m_EventData->Get_Energy(i) > m_E_RAW_Threshold) {
       Double_t Energy = Cal->ApplyCalibration("NeutronWall/ENERGY"+NPL::itoa(m_EventData->GetE_DetectorNbr(i)),m_EventData->Get_Energy(i));
       if (Energy > m_E_Threshold) {
-        m_PreTreatedData->SetEnergy(m_EventData->GetE_DetectorNbr(i), Energy);
+        m_PreTreatedData->SetEnergy(m_EventData->GetE_DetectorNbr(i),m_EventData->GetE_PadNbr(i), Energy);
       }
     }
   }
@@ -102,7 +103,7 @@ void TNeutronWallPhysics::PreTreat() {
   // Time 
   for (UShort_t i = 0; i < m_EventData->GetMultTime(); ++i) {
     Double_t Time= Cal->ApplyCalibration("NeutronWall/TIME"+NPL::itoa(m_EventData->GetT_DetectorNbr(i)),m_EventData->Get_Time(i));
-    m_PreTreatedData->SetTime(m_EventData->GetT_DetectorNbr(i), Time);
+    m_PreTreatedData->SetTime(m_EventData->GetT_DetectorNbr(i),m_EventData->GetT_PadNbr(i), Time);
   }
 }
 
@@ -175,6 +176,7 @@ void TNeutronWallPhysics::ReadAnalysisConfig() {
 ///////////////////////////////////////////////////////////////////////////
 void TNeutronWallPhysics::Clear() {
   DetectorNumber.clear();
+  PadNumber.clear();
   Energy.clear();
   Time.clear();
 }

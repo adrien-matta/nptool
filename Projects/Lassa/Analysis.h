@@ -54,10 +54,13 @@ class Analysis: public NPL::VAnalysis{
     double TelescopeNumber;
     double thresholdEnergy;
     double InitialEnergy;
+    double InitialEnergy_Lassa;
     double ECM_initial;
+    double ECM_initial_Lassa;
     double ThicknessCsI;
     double R_alpha;
-
+    double PID;
+    
     int totalEvents;
     int detectedEvents;
     int peakEvents;
@@ -76,8 +79,13 @@ class Analysis: public NPL::VAnalysis{
     NPL::EnergyLoss Proton_CsI;
     NPL::EnergyLoss Deuton_CsI;
     NPL::EnergyLoss Triton_CsI;
+    NPL::EnergyLoss He3_CsI;
     
     NPL::Nucleus *proton;
+    NPL::Nucleus *deuton;
+    NPL::Nucleus *triton;
+    NPL::Nucleus *helium3;
+    NPL::Nucleus *alpha;
     NPL::Nucleus *beam;
     NPL::Nucleus *target;
     

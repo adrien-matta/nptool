@@ -55,7 +55,13 @@ public:
                         double X,
                         double Y,
                         double Z,
-                        double Rotation);
+                        double Rotation,
+			int Bars,
+			string NWMaterial,
+			double VWDistance,
+			int VetoWall,
+			string VWMaterial,
+			double Overlap);
     
     void BuildDetector();
     
@@ -65,13 +71,15 @@ private:
     G4LogicalVolume* m_Quartz_log;
     G4LogicalVolume* m_QuartzCap_log;
     G4LogicalVolume* m_PMTube_log;
-    G4LogicalVolume* m_NE213_log;
+    G4LogicalVolume* m_Scintillator_log;
     G4LogicalVolume* m_ShadowBar_log;
+    G4LogicalVolume* m_PlasticBar_log;
     
-    G4VPhysicalVolume* m_NE213Tube_phys;
+    G4VPhysicalVolume* m_ScintillatorTube_phys;
     G4VPhysicalVolume* m_Quartz_phys;
     G4VPhysicalVolume* m_AlCase_phys;
     G4VPhysicalVolume* m_NeutronWall_phys;
+    G4VPhysicalVolume* m_PlasticBar_phys;
     
     ////////////////////////////////////////////////////
     //////  Inherite from NPS::VDetector class /////////
@@ -99,6 +107,7 @@ public:   // Scorer
     
     //   Associated Scorer
     G4MultiFunctionalDetector* m_NeutronWallScorer ;
+    G4MultiFunctionalDetector* m_VetoWallScorer ;
     ////////////////////////////////////////////////////
     ///////////Event class to store Data////////////////
     ////////////////////////////////////////////////////
@@ -117,13 +126,20 @@ private: // Geometry
     vector<double>  m_Y;
     vector<double>  m_Z;
     vector<double>  m_Rot;
+    vector<int>     m_Bars;
+    vector<string>  m_NWMaterial;
+    vector<double>  m_VWDistance;
+    vector<int>     m_VetoWall;
+    vector<string>  m_VWMaterial;
+    vector<double>  m_Overlap;
     
     
     // Visualisation Attribute
-    G4VisAttributes* m_VisNE213;
+    G4VisAttributes* m_VisScintillator;
     G4VisAttributes* m_VisQuartz;
     G4VisAttributes* m_VisAl;
     G4VisAttributes* m_VisNW;
+    G4VisAttributes* m_VisPlasticBar;
     
     // Needed for dynamic loading of the library
 public:

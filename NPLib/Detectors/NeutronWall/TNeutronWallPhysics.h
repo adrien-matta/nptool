@@ -64,6 +64,7 @@ class TNeutronWallPhysics : public TObject, public NPL::VDetector {
   // output ROOT file
   public:
     vector<int>      DetectorNumber;
+    vector<int>      PadNumber;
     vector<double>   Energy;
     vector<double>   Time;
 
