@@ -46,7 +46,7 @@ include("../NPLib/ressources/CMake/Root.cmake")
 if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*Clang.*")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments -fcolor-diagnostics")
   if( UNIX AND NOT APPLE )
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libstdc++")
   endif()
 endif()
 
