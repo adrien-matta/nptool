@@ -99,17 +99,17 @@ void EventAction::ProgressDisplay(){
     
     check++;
     
-    static string star;
+    static char star[]="*******";
     if(displayed%2==0)
-      star = "*******";
+      sprintf(star,"*******");
     else
-      star = "-------";
+      sprintf(star,"-------"); 
 
     if(treated!=total && mean_rate >=0 && remain>=0 && displayed>1)
-      printf("\r \033[1;31m %s Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s %s\033[0m        ", star.c_str(),percent,mean_rate/1000.,timer,star.c_str());
+      printf("\r \033[1;31m %s Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s %s\033[0m        ", star,percent,mean_rate/1000.,timer,star);
 
     else if(mean_rate >=0 && remain>=0 && displayed>1){
-      printf("\r \033[1;32m %s Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s %s\033[0m        ", star.c_str(), percent,mean_rate/1000.,timer,star.c_str());
+      printf("\r \033[1;32m %s Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s %s\033[0m        ", star,percent,mean_rate/1000.,timer,star);
     }
     fflush(stdout);
     inter=0;

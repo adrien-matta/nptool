@@ -1,0 +1,40 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GeneralTarget
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Target
+        THICKNESS= 10
+	RADIUS=	20
+	MATERIAL= CD2
+	ANGLE= 0
+	X= 0
+	Y= 0
+	Z= 0
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%NeutronWall
+%	X= 179.08
+%	Y= -3.75
+%	Z= 566.54
+%	Rot= 16.61
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+NeutronWall
+  THETA= 0
+  PHI= 0
+  R= 4000
+  BARS= 25
+  VETOWALL= 1
+  VWDISTANCE= 400
+  OVERLAP= 3
+  VWMATERIAL= BC400
+  NWMATERIAL= NE213
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+NeutronWall
+  THETA= 0
+  PHI= 0
+  R= 6000
+  BARS= 25
+  VETOWALL= 0
+  VWDISTANCE= 1000
+  OVERLAP= 3
+  VWMATERIAL= BC400
+  NWMATERIAL= NE213
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
