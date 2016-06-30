@@ -45,11 +45,13 @@ class Analysis: public NPL::VAnalysis{
   private:
     double ELab;
     double ECM;
+    double ThetaCM;
     double ELab_nucl;
     double E_ThickSi;
     double E_CsI;
     double PhiLab;
     double ThetaLab;
+    double ThetaLabInitial;
     double X,Y,Z;
     double TelescopeNumber;
     double thresholdEnergy;

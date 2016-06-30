@@ -88,10 +88,12 @@ void Analysis::TreatEvent(){
     if(Lassa->ThickSi_E.size()>0) InitialEnergy_Lassa = InitialEnergy;
     double phi_in = acos(InitialConditions->GetMomentumDirectionX(0)/sin(InitialConditions->GetThetaCM(0)*deg));
     
-    ECM_initial = alpha->GetEnergyCM(InitialEnergy, InitialConditions->GetThetaCM(0)*deg, phi_in, BetaCM);
+    ECM_initial = helium3->GetEnergyCM(InitialEnergy, InitialConditions->GetThetaCM(0)*deg, phi_in, BetaCM);
+    ThetaCM = helium3->GetThetaCM(InitialEnergy, InitialConditions->GetThetaCM(0)*deg, phi_in, BetaCM)/deg;
+    ThetaLabInitial = InitialConditions->GetThetaLab_WorldFrame(0);
     
     if(Lassa->ThickSi_E.size()>0){
-        ECM_initial_Lassa = alpha->GetEnergyCM(InitialEnergy_Lassa, InitialConditions->GetThetaCM(0)*deg, phi_in, BetaCM);
+        ECM_initial_Lassa = helium3->GetEnergyCM(InitialEnergy_Lassa, InitialConditions->GetThetaCM(0)*deg, phi_in, BetaCM);
     }
     else ECM_initial_Lassa = -100;
     ///////////////////////////LOOP on Lassa Hit//////////////////////////////////
@@ -162,9 +164,11 @@ void Analysis::TreatEvent(){
         if(fabs(InitialEnergy-ELab_nucl)>EDelta) ELab_nucl = -100;
         
         if(ELab>0){
-            ECM = alpha->GetEnergyCM(ELab, ThetaLab, PhiLab, BetaCM);
+            ECM = helium3->GetEnergyCM(ELab, ThetaLab, PhiLab, BetaCM);
         }
-        else ECM = -100;
+        else{
+            ECM = -100;
+        }
         
         ThetaLab = ThetaLab/deg;
         PhiLab = PhiLab/deg;
@@ -192,8 +196,10 @@ void Analysis::InitOutputBranch() {
     RootOutput::getInstance()->GetTree()->Branch("ThicknessCsI",&ThicknessCsI,"ThicknessCsI/D");
     RootOutput::getInstance()->GetTree()->Branch("ELab",&ELab,"ELab/D");
     RootOutput::getInstance()->GetTree()->Branch("ECM",&ECM,"ECM/D");
+    RootOutput::getInstance()->GetTree()->Branch("ThetaCM",&ThetaCM,"ThetaCM/D");
     RootOutput::getInstance()->GetTree()->Branch("ELab_nucl",&ELab_nucl,"ELab_nucl/D");
     RootOutput::getInstance()->GetTree()->Branch("ThetaLab",&ThetaLab,"ThetaLab/D");
+    RootOutput::getInstance()->GetTree()->Branch("ThetaLabInitial",&ThetaLabInitial,"ThetaLabInitial/D");
     RootOutput::getInstance()->GetTree()->Branch("PhiLab",&PhiLab,"PhiLab/D");
     RootOutput::getInstance()->GetTree()->Branch("InitialEnergy",&InitialEnergy,"InitialEnergy/D");
     RootOutput::getInstance()->GetTree()->Branch("InitialEnergy_Lassa",&InitialEnergy_Lassa,"InitialEnergy_Lassa/D");
@@ -219,8 +225,10 @@ void Analysis::ReInitValue(){
     E_CsI =-100;
     ELab = -100;
     ECM = -100;
+    ThetaCM = -100;
     ELab_nucl = -100;
     ThetaLab = -100;
+    ThetaLabInitial = -100;
     PhiLab = -100;
     X = -100;
     Y = -100;
