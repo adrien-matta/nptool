@@ -1,5 +1,5 @@
-#ifndef TNeutronWallPHYSICS_H
-#define TNeutronWallPHYSICS_H
+#ifndef TMicroballPHYSICS_H
+#define TMicroballPHYSICS_H
 /*****************************************************************************
  * Copyright (C) 2009-2016   this file is part of the NPTool Project       *
  *                                                                           *
@@ -14,7 +14,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold NeutronWall Treated data                                *
+ *  This class hold Microball Treated data                                *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -34,22 +34,22 @@ using namespace std;
 #include "TCanvas.h"
 
 // NPTool headers
-#include "TNeutronWallData.h"
-#include "TNeutronWallSpectra.h"
+#include "TMicroballData.h"
+#include "TMicroballSpectra.h"
 #include "NPCalibrationManager.h"
 #include "NPVDetector.h"
 
 // forward declaration
-class TNeutronWallSpectra;
+class TMicroballSpectra;
 
 
 
-class TNeutronWallPhysics : public TObject, public NPL::VDetector {
+class TMicroballPhysics : public TObject, public NPL::VDetector {
   //////////////////////////////////////////////////////////////
   // constructor and destructor
   public:
-    TNeutronWallPhysics();
-    ~TNeutronWallPhysics() {};
+    TMicroballPhysics();
+    ~TMicroballPhysics() {};
 
 
   //////////////////////////////////////////////////////////////
@@ -64,7 +64,6 @@ class TNeutronWallPhysics : public TObject, public NPL::VDetector {
   // output ROOT file
   public:
     vector<int>      DetectorNumber;
-    vector<int>      PadNumber;
     vector<double>   Energy;
     vector<double>   Time;
 
@@ -106,8 +105,8 @@ class TNeutronWallPhysics : public TObject, public NPL::VDetector {
     void ClearEventPhysics() {Clear();}      
     void ClearEventData()    {m_EventData->Clear();}   
 
-    // methods related to the TNeutronWallSpectra class
-    // instantiate the TNeutronWallSpectra class and 
+    // methods related to the TMicroballSpectra class
+    // instantiate the TMicroballSpectra class and 
     // declare list of histograms
     void InitSpectra();
 
@@ -126,7 +125,7 @@ class TNeutronWallPhysics : public TObject, public NPL::VDetector {
 
 
   //////////////////////////////////////////////////////////////
-  // specific methods to NeutronWall array
+  // specific methods to Microball array
   public:
     // remove bad channels, calibrate the data and apply thresholds
     void PreTreat();
@@ -137,20 +136,20 @@ class TNeutronWallPhysics : public TObject, public NPL::VDetector {
     // read the user configuration file. If no file is found, load standard one
     void ReadAnalysisConfig();
 
-    // give and external TNeutronWallData object to TNeutronWallPhysics. 
+    // give and external TMicroballData object to TMicroballPhysics. 
     // needed for online analysis for example
-    void SetRawDataPointer(TNeutronWallData* rawDataPointer) {m_EventData = rawDataPointer;}
+    void SetRawDataPointer(TMicroballData* rawDataPointer) {m_EventData = rawDataPointer;}
     
   // objects are not written in the TTree
   private:
-    TNeutronWallData*         m_EventData;        //!
-    TNeutronWallData*         m_PreTreatedData;   //!
-    TNeutronWallPhysics*      m_EventPhysics;     //!
+    TMicroballData*         m_EventData;        //!
+    TMicroballData*         m_PreTreatedData;   //!
+    TMicroballPhysics*      m_EventPhysics;     //!
 
   // getters for raw and pre-treated data object
   public:
-    TNeutronWallData* GetRawData()        const {return m_EventData;}
-    TNeutronWallData* GetPreTreatedData() const {return m_PreTreatedData;}
+    TMicroballData* GetRawData()        const {return m_EventData;}
+    TMicroballData* GetPreTreatedData() const {return m_PreTreatedData;}
 
   // parameters used in the analysis
   private:
@@ -164,7 +163,7 @@ class TNeutronWallPhysics : public TObject, public NPL::VDetector {
 
   // spectra class
   private:
-    TNeutronWallSpectra* m_Spectra; // !
+    TMicroballSpectra* m_Spectra; // !
 
   // spectra getter
   public:
@@ -175,6 +174,6 @@ class TNeutronWallPhysics : public TObject, public NPL::VDetector {
   public:
     static NPL::VDetector* Construct();
 
-    ClassDef(TNeutronWallPhysics,1)  // NeutronWallPhysics structure
+    ClassDef(TMicroballPhysics,1)  // MicroballPhysics structure
 };
 #endif

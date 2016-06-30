@@ -36,11 +36,23 @@ class TNeutronWallData : public TObject {
   private: 
     // Energy
     vector<UShort_t>   fNeutronWall_E_DetectorNbr;
+    vector<UShort_t>   fNeutronWall_E_PadNbr;
     vector<Double_t>   fNeutronWall_Energy;
 
     // Time
     vector<UShort_t>   fNeutronWall_T_DetectorNbr;
+    vector<UShort_t>   fNeutronWall_T_PadNbr;
     vector<Double_t>   fNeutronWall_Time;
+
+    // Energy
+    vector<UShort_t>   fVetoWall_E_DetectorNbr;
+    vector<UShort_t>   fVetoWall_E_PadNbr;
+    vector<Double_t>   fVetoWall_Energy;
+
+    // Time
+    vector<UShort_t>   fVetoWall_T_DetectorNbr;
+    vector<UShort_t>   fVetoWall_T_PadNbr;
+    vector<Double_t>   fVetoWall_Time;
 
 
   //////////////////////////////////////////////////////////////
@@ -64,36 +76,73 @@ class TNeutronWallData : public TObject {
   // frequently used methods
   // add //! to avoid ROOT creating dictionnary for the methods
   public:
-    //////////////////////    SETTERS    ////////////////////////
+    //////////////////////    SETTERS NEUTRON WALL   ////////////////////////
     // Energy
     inline void SetE_DetectorNbr(const UShort_t& DetNbr)
       {fNeutronWall_E_DetectorNbr.push_back(DetNbr);} //!
+    inline void SetE_PadNbr(const UShort_t& PadNbr)
+      {fNeutronWall_E_PadNbr.push_back(PadNbr);} //!
     inline void Set_Energy(const Double_t& Energy)
       {fNeutronWall_Energy.push_back(Energy);}//!
     // Prefer global setter so that all vectors have the same size
-    inline void SetEnergy(const UShort_t& DetNbr,const Double_t& Energy) {
+    inline void SetEnergy(const UShort_t& DetNbr, const UShort_t& PadNbr, const Double_t& Energy) {
       SetE_DetectorNbr(DetNbr);
+      SetE_PadNbr(PadNbr);
       Set_Energy(Energy);
     };//!
 
     // Time
     inline void SetT_DetectorNbr(const UShort_t& DetNbr)
       {fNeutronWall_T_DetectorNbr.push_back(DetNbr);} //!
+    inline void SetT_PadNbr(const UShort_t& PadNbr)
+      {fNeutronWall_T_PadNbr.push_back(PadNbr);} //!
     inline void Set_Time(const Double_t& Time)
       {fNeutronWall_Time.push_back(Time);}//!
     // Prefer global setter so that all vectors have the same size
-    inline void SetTime(const UShort_t& DetNbr,const Double_t& Time)	{
+    inline void SetTime(const UShort_t& DetNbr,const UShort_t& PadNbr,const Double_t& Time)	{
       SetT_DetectorNbr(DetNbr);
+      SetT_PadNbr(PadNbr);
       Set_Time(Time);
     };//!
 
+    //////////////////////    SETTERS VETO WALL   ////////////////////////
+    // Energy
+    inline void SetE_VetoDetectorNbr(const UShort_t& DetNbr)
+      {fVetoWall_E_DetectorNbr.push_back(DetNbr);} //!
+    inline void SetE_VetoPadNbr(const UShort_t& PadNbr)
+      {fVetoWall_E_PadNbr.push_back(PadNbr);} //!
+    inline void Set_VetoEnergy(const Double_t& Energy)
+      {fVetoWall_Energy.push_back(Energy);}//!
+    // Prefer global setter so that all vectors have the same size
+    inline void SetVetoEnergy(const UShort_t& DetNbr,const UShort_t& PadNbr,const Double_t& Energy) {
+      SetE_VetoDetectorNbr(DetNbr);
+      SetE_VetoPadNbr(PadNbr);
+      Set_VetoEnergy(Energy);
+    };//!
 
-    //////////////////////    GETTERS    ////////////////////////
+    // Time
+    inline void SetT_VetoDetectorNbr(const UShort_t& DetNbr)
+      {fVetoWall_T_DetectorNbr.push_back(DetNbr);} //!
+    inline void SetT_VetoPadNbr(const UShort_t& PadNbr)
+      {fVetoWall_T_PadNbr.push_back(PadNbr);} //!
+    inline void Set_VetoTime(const Double_t& Time)
+      {fVetoWall_Time.push_back(Time);}//!
+    // Prefer global setter so that all vectors have the same size
+    inline void SetVetoTime(const UShort_t& DetNbr,const UShort_t& PadNbr,const Double_t& Time)	{
+      SetT_VetoDetectorNbr(DetNbr);
+      SetT_VetoPadNbr(PadNbr);
+      Set_VetoTime(Time);
+    };//!
+
+
+    //////////////////////    GETTERS NEUTRON WALL    ////////////////////////
     // Energy
     inline UShort_t GetMultEnergy() const
       {return fNeutronWall_E_DetectorNbr.size();}
     inline UShort_t GetE_DetectorNbr(const unsigned int &i) const 
       {return fNeutronWall_E_DetectorNbr[i];}//!
+    inline UShort_t GetE_PadNbr(const unsigned int &i) const 
+      {return fNeutronWall_E_PadNbr[i];}//!
     inline Double_t Get_Energy(const unsigned int &i) const 
       {return fNeutronWall_Energy[i];}//!
 
@@ -102,8 +151,29 @@ class TNeutronWallData : public TObject {
       {return fNeutronWall_T_DetectorNbr.size();}
     inline UShort_t GetT_DetectorNbr(const unsigned int &i) const 
       {return fNeutronWall_T_DetectorNbr[i];}//!
+    inline UShort_t GetT_PadNbr(const unsigned int &i) const 
+      {return fNeutronWall_T_PadNbr[i];}//!
     inline Double_t Get_Time(const unsigned int &i) const 
       {return fNeutronWall_Time[i];}//!
+
+    //////////////////////    GETTERS VETO WALL    ////////////////////////
+    // Energy
+    inline UShort_t GetVetoMultEnergy() const
+      {return fVetoWall_E_DetectorNbr.size();}
+    inline UShort_t GetE_VetoDetectorNbr(const unsigned int &i) const 
+      {return fVetoWall_E_DetectorNbr[i];}//!
+    inline UShort_t GetE_VetoPadNbr(const unsigned int &i) const 
+      {return fVetoWall_E_PadNbr[i];}//!
+    inline Double_t Get_VetoEnergy(const unsigned int &i) const 
+      {return fVetoWall_Energy[i];}//!
+
+    // Time
+    inline UShort_t GetVetoMultTime() const
+      {return fVetoWall_T_DetectorNbr.size();}
+    inline UShort_t GetT_VetoDetectorNbr(const unsigned int &i) const 
+      {return fVetoWall_T_DetectorNbr[i];}//!
+    inline Double_t Get_VetoTime(const unsigned int &i) const 
+      {return fVetoWall_Time[i];}//!
 
 
   //////////////////////////////////////////////////////////////

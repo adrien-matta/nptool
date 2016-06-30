@@ -12,81 +12,68 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold NeutronWall Raw data                                    *
+ *  This class hold Microball Raw data                                    *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *                                                                           *
+ *                                                                           *   
  *                                                                           *
  *****************************************************************************/
-#include "TNeutronWallData.h"
+#include "TMicroballData.h"
 
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
-using namespace std;
+using namespace std; 
 
-ClassImp(TNeutronWallData)
+ClassImp(TMicroballData)
 
 
 //////////////////////////////////////////////////////////////////////
-TNeutronWallData::TNeutronWallData() {
+TMicroballData::TMicroballData() {
 }
 
 
 
 //////////////////////////////////////////////////////////////////////
-TNeutronWallData::~TNeutronWallData() {
+TMicroballData::~TMicroballData() {
 }
 
 
 
 //////////////////////////////////////////////////////////////////////
-void TNeutronWallData::Clear() {
-    // NeutronWall Energy
-    fNeutronWall_E_DetectorNbr.clear();
-    fNeutronWall_E_PadNbr.clear();
-    fNeutronWall_Energy.clear();
-    // NeutronWall Time
-    fNeutronWall_T_DetectorNbr.clear();
-    fNeutronWall_T_PadNbr.clear();
-    fNeutronWall_Time.clear();
-    
-    // VetoWall Energy
-    fVetoWall_E_DetectorNbr.clear();
-    fVetoWall_E_PadNbr.clear();
-    fVetoWall_Energy.clear();
+void TMicroballData::Clear() {
+  // Energy
+  fMicroball_E_DetectorNbr.clear();
+  fMicroball_Energy.clear();
+  // Time
+  fMicroball_T_DetectorNbr.clear();
+  fMicroball_Time.clear();
+}
+
+
+
+//////////////////////////////////////////////////////////////////////
+void TMicroballData::Dump() const {
+  // This method is very useful for debuging and worth the dev.
+  cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event [TMicroballData::Dump()] XXXXXXXXXXXXXXXXX" << endl;
+
+  // Energy
+  size_t mysize = fMicroball_E_DetectorNbr.size();
+  cout << "Microball_E_Mult: " << mysize << endl;
  
-    // VetoWall Time
-    fVetoWall_T_DetectorNbr.clear();
-    fVetoWall_T_PadNbr.clear();
-    fVetoWall_Time.clear();
-    
-}
-
-
-
-//////////////////////////////////////////////////////////////////////
-void TNeutronWallData::Dump() const {
-    // This method is very useful for debuging and worth the dev.
-    cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event [TNeutronWallData::Dump()] XXXXXXXXXXXXXXXXX" << endl;
-    
-    // Energy
-    size_t mysize = fNeutronWall_E_DetectorNbr.size();
-    cout << "NeutronWall_E_Mult: " << mysize << endl;
-    
-    for (size_t i = 0 ; i < mysize ; i++){
-        cout << "DetNbr: " << fNeutronWall_E_DetectorNbr[i]
-        << " Energy: " << fNeutronWall_Energy[i];
-    }
-    
-    // Time
-    mysize = fNeutronWall_T_DetectorNbr.size();
-    cout << "NeutronWall_T_Mult: " << mysize << endl;
-    
-    for (size_t i = 0 ; i < mysize ; i++){
-        cout << "DetNbr: " << fNeutronWall_T_DetectorNbr[i]
-        << " Time: " << fNeutronWall_Time[i];
-    }
+  for (size_t i = 0 ; i < mysize ; i++){
+    cout << "DetNbr: " << fMicroball_E_DetectorNbr[i]
+         << " Energy: " << fMicroball_Energy[i];
+  }
+  
+  // Time
+  mysize = fMicroball_T_DetectorNbr.size();
+  cout << "Microball_T_Mult: " << mysize << endl;
+ 
+  for (size_t i = 0 ; i < mysize ; i++){
+    cout << "DetNbr: " << fMicroball_T_DetectorNbr[i]
+         << " Time: " << fMicroball_Time[i];
+  }
 }

@@ -12,7 +12,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold NeutronWall Treated  data                               *
+ *  This class hold Microball Treated  data                               *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -20,7 +20,7 @@
  *                                                                           *
  *****************************************************************************/
 
-#include "TNeutronWallPhysics.h"
+#include "TMicroballPhysics.h"
 
 //   STL
 #include <sstream>
@@ -38,13 +38,13 @@ using namespace std;
 //   ROOT
 #include "TChain.h"
 
-ClassImp(TNeutronWallPhysics)
+ClassImp(TMicroballPhysics)
 
 
 ///////////////////////////////////////////////////////////////////////////
-TNeutronWallPhysics::TNeutronWallPhysics()
-   : m_EventData(new TNeutronWallData),
-     m_PreTreatedData(new TNeutronWallData),
+TMicroballPhysics::TMicroballPhysics()
+   : m_EventData(new TMicroballData),
+     m_PreTreatedData(new TMicroballData),
      m_EventPhysics(this),
      m_Spectra(0),
      m_E_RAW_Threshold(0), // adc channels
@@ -55,14 +55,14 @@ TNeutronWallPhysics::TNeutronWallPhysics()
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TNeutronWallPhysics::BuildSimplePhysicalEvent() {
+void TMicroballPhysics::BuildSimplePhysicalEvent() {
   BuildPhysicalEvent();
 }
 
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TNeutronWallPhysics::BuildPhysicalEvent() {
+void TMicroballPhysics::BuildPhysicalEvent() {
   // apply thresholds and calibration
   PreTreat();
 
@@ -71,7 +71,6 @@ void TNeutronWallPhysics::BuildPhysicalEvent() {
     for (UShort_t t = 0; t < m_PreTreatedData->GetMultTime(); t++) {
       if (m_PreTreatedData->GetE_DetectorNbr(e) == m_PreTreatedData->GetT_DetectorNbr(t)) {
         DetectorNumber.push_back(m_PreTreatedData->GetE_DetectorNbr(e));
-        PadNumber.push_back(m_PreTreatedData->GetE_PadNbr(e));
         Energy.push_back(m_PreTreatedData->Get_Energy(e));
         Time.push_back(m_PreTreatedData->Get_Time(t));
       }
@@ -80,7 +79,7 @@ void TNeutronWallPhysics::BuildPhysicalEvent() {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-void TNeutronWallPhysics::PreTreat() {
+void TMicroballPhysics::PreTreat() {
   // This method typically applies thresholds and calibrations
   // Might test for disabled channels for more complex detector
 
@@ -93,42 +92,42 @@ void TNeutronWallPhysics::PreTreat() {
   // Energy
   for (UShort_t i = 0; i < m_EventData->GetMultEnergy(); ++i) {
     if (m_EventData->Get_Energy(i) > m_E_RAW_Threshold) {
-      Double_t Energy = Cal->ApplyCalibration("NeutronWall/ENERGY"+NPL::itoa(m_EventData->GetE_DetectorNbr(i)),m_EventData->Get_Energy(i));
+      Double_t Energy = Cal->ApplyCalibration("Microball/ENERGY"+NPL::itoa(m_EventData->GetE_DetectorNbr(i)),m_EventData->Get_Energy(i));
       if (Energy > m_E_Threshold) {
-        m_PreTreatedData->SetEnergy(m_EventData->GetE_DetectorNbr(i),m_EventData->GetE_PadNbr(i), Energy);
+        m_PreTreatedData->SetEnergy(m_EventData->GetE_DetectorNbr(i), Energy);
       }
     }
   }
 
   // Time 
   for (UShort_t i = 0; i < m_EventData->GetMultTime(); ++i) {
-    Double_t Time= Cal->ApplyCalibration("NeutronWall/TIME"+NPL::itoa(m_EventData->GetT_DetectorNbr(i)),m_EventData->Get_Time(i));
-    m_PreTreatedData->SetTime(m_EventData->GetT_DetectorNbr(i),m_EventData->GetT_PadNbr(i), Time);
+    Double_t Time= Cal->ApplyCalibration("Microball/TIME"+NPL::itoa(m_EventData->GetT_DetectorNbr(i)),m_EventData->Get_Time(i));
+    m_PreTreatedData->SetTime(m_EventData->GetT_DetectorNbr(i), Time);
   }
 }
 
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TNeutronWallPhysics::ReadAnalysisConfig() {
+void TMicroballPhysics::ReadAnalysisConfig() {
   bool ReadingStatus = false;
 
   // path to file
-  string FileName = "./configs/ConfigNeutronWall.dat";
+  string FileName = "./configs/ConfigMicroball.dat";
 
   // open analysis config file
   ifstream AnalysisConfigFile;
   AnalysisConfigFile.open(FileName.c_str());
 
   if (!AnalysisConfigFile.is_open()) {
-    cout << " No ConfigNeutronWall.dat found: Default parameter loaded for Analayis " << FileName << endl;
+    cout << " No ConfigMicroball.dat found: Default parameter loaded for Analayis " << FileName << endl;
     return;
   }
-  cout << " Loading user parameter for Analysis from ConfigNeutronWall.dat " << endl;
+  cout << " Loading user parameter for Analysis from ConfigMicroball.dat " << endl;
 
   // Save it in a TAsciiFile
   TAsciiFile* asciiConfig = RootOutput::getInstance()->GetAsciiFileAnalysisConfig();
-  asciiConfig->AppendLine("%%% ConfigNeutronWall.dat %%%");
+  asciiConfig->AppendLine("%%% ConfigMicroball.dat %%%");
   asciiConfig->Append(FileName.c_str());
   asciiConfig->AppendLine("");
   // read analysis config file
@@ -138,7 +137,7 @@ void TNeutronWallPhysics::ReadAnalysisConfig() {
     getline(AnalysisConfigFile, LineBuffer);
 
     // search for "header"
-    string name = "ConfigNeutronWall";
+    string name = "ConfigMicroball";
     if (LineBuffer.compare(0, name.length(), name) == 0) 
       ReadingStatus = true;
 
@@ -174,9 +173,8 @@ void TNeutronWallPhysics::ReadAnalysisConfig() {
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TNeutronWallPhysics::Clear() {
+void TMicroballPhysics::Clear() {
   DetectorNumber.clear();
-  PadNumber.clear();
   Energy.clear();
   Time.clear();
 }
@@ -184,7 +182,7 @@ void TNeutronWallPhysics::Clear() {
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TNeutronWallPhysics::ReadConfiguration(string Path) {
+void TMicroballPhysics::ReadConfiguration(string Path) {
   ifstream ConfigFile           ;
   ConfigFile.open(Path.c_str()) ;
   string LineBuffer             ;
@@ -203,11 +201,11 @@ void TNeutronWallPhysics::ReadConfiguration(string Path) {
 
     getline(ConfigFile, LineBuffer);
 
-    //   If line is a Start Up NeutronWall bloc, Reading toggle to true
-    string name="NeutronWall";
+    //   If line is a Start Up Microball bloc, Reading toggle to true
+    string name="Microball";
     if (LineBuffer.compare(0, name.length(), name) == 0){
       cout << "///" << endl ;
-      cout << "NeutronWall found: " << endl ;
+      cout << "Microball found: " << endl ;
       ReadingStatus = true ; 
     }
 
@@ -304,14 +302,14 @@ void TNeutronWallPhysics::ReadConfiguration(string Path) {
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TNeutronWallPhysics::InitSpectra() {
-  m_Spectra = new TNeutronWallSpectra(m_NumberOfDetectors);
+void TMicroballPhysics::InitSpectra() {
+  m_Spectra = new TMicroballSpectra(m_NumberOfDetectors);
 }
 
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TNeutronWallPhysics::FillSpectra() {
+void TMicroballPhysics::FillSpectra() {
   m_Spectra -> FillRawSpectra(m_EventData);
   m_Spectra -> FillPreTreatedSpectra(m_PreTreatedData);
   m_Spectra -> FillPhysicsSpectra(m_EventPhysics);
@@ -320,21 +318,21 @@ void TNeutronWallPhysics::FillSpectra() {
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TNeutronWallPhysics::CheckSpectra() {
+void TMicroballPhysics::CheckSpectra() {
   m_Spectra->CheckSpectra();
 }
 
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TNeutronWallPhysics::ClearSpectra() {
+void TMicroballPhysics::ClearSpectra() {
   // To be done
 }
 
 
 
 ///////////////////////////////////////////////////////////////////////////
-map< string , TH1*> TNeutronWallPhysics::GetSpectra() {
+map< string , TH1*> TMicroballPhysics::GetSpectra() {
   if(m_Spectra)
     return m_Spectra->GetMapHisto();
   else{
@@ -346,7 +344,7 @@ map< string , TH1*> TNeutronWallPhysics::GetSpectra() {
 
 
 ////////////////////////////////////////////////////////////////////////////////
-vector<TCanvas*> TNeutronWallPhysics::GetCanvas() {
+vector<TCanvas*> TMicroballPhysics::GetCanvas() {
   if(m_Spectra)
     return m_Spectra->GetCanvas();
   else{
@@ -358,44 +356,44 @@ vector<TCanvas*> TNeutronWallPhysics::GetCanvas() {
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TNeutronWallPhysics::WriteSpectra() {
+void TMicroballPhysics::WriteSpectra() {
   m_Spectra->WriteSpectra();
 }
 
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TNeutronWallPhysics::AddParameterToCalibrationManager() {
+void TMicroballPhysics::AddParameterToCalibrationManager() {
   CalibrationManager* Cal = CalibrationManager::getInstance();
   for (int i = 0; i < m_NumberOfDetectors; ++i) {
-    Cal->AddParameter("NeutronWall", "D"+ NPL::itoa(i+1)+"_ENERGY","NeutronWall_D"+ NPL::itoa(i+1)+"_ENERGY");
-    Cal->AddParameter("NeutronWall", "D"+ NPL::itoa(i+1)+"_TIME","NeutronWall_D"+ NPL::itoa(i+1)+"_TIME");
+    Cal->AddParameter("Microball", "D"+ NPL::itoa(i+1)+"_ENERGY","Microball_D"+ NPL::itoa(i+1)+"_ENERGY");
+    Cal->AddParameter("Microball", "D"+ NPL::itoa(i+1)+"_TIME","Microball_D"+ NPL::itoa(i+1)+"_TIME");
   }
 }
 
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TNeutronWallPhysics::InitializeRootInputRaw() {
+void TMicroballPhysics::InitializeRootInputRaw() {
   TChain* inputChain = RootInput::getInstance()->GetChain();
-  inputChain->SetBranchStatus("NeutronWall",  true );
-  inputChain->SetBranchAddress("NeutronWall", &m_EventData );
+  inputChain->SetBranchStatus("Microball",  true );
+  inputChain->SetBranchAddress("Microball", &m_EventData );
 }
 
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TNeutronWallPhysics::InitializeRootInputPhysics() {
+void TMicroballPhysics::InitializeRootInputPhysics() {
   TChain* inputChain = RootInput::getInstance()->GetChain();
-  inputChain->SetBranchAddress("NeutronWall", &m_EventPhysics);
+  inputChain->SetBranchAddress("Microball", &m_EventPhysics);
 }
 
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TNeutronWallPhysics::InitializeRootOutput() {
+void TMicroballPhysics::InitializeRootOutput() {
   TTree* outputTree = RootOutput::getInstance()->GetTree();
-  outputTree->Branch("NeutronWall", "TNeutronWallPhysics", &m_EventPhysics);
+  outputTree->Branch("Microball", "TMicroballPhysics", &m_EventPhysics);
 }
 
 
@@ -403,8 +401,8 @@ void TNeutronWallPhysics::InitializeRootOutput() {
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
-NPL::VDetector* TNeutronWallPhysics::Construct() {
-  return (NPL::VDetector*) new TNeutronWallPhysics();
+NPL::VDetector* TMicroballPhysics::Construct() {
+  return (NPL::VDetector*) new TMicroballPhysics();
 }
 
 
@@ -413,14 +411,14 @@ NPL::VDetector* TNeutronWallPhysics::Construct() {
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy_NeutronWall{
+class proxy_Microball{
   public:
-    proxy_NeutronWall(){
-      NPL::DetectorFactory::getInstance()->AddToken("NeutronWall","NeutronWall");
-      NPL::DetectorFactory::getInstance()->AddDetector("NeutronWall",TNeutronWallPhysics::Construct);
+    proxy_Microball(){
+      NPL::DetectorFactory::getInstance()->AddToken("Microball","Microball");
+      NPL::DetectorFactory::getInstance()->AddDetector("Microball",TMicroballPhysics::Construct);
     }
 };
 
-proxy_NeutronWall p_NeutronWall;
+proxy_Microball p_Microball;
 }
 
