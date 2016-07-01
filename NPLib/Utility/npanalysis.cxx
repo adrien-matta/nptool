@@ -246,8 +246,8 @@ int main(int argc , char** argv){
   if(myOptionManager->GetGenerateHistoOption())
     myDetector->WriteSpectra();
 
-  RootOutput::getInstance()->Destroy();
-  RootInput::getInstance()->Destroy();
+  RootOutput::Destroy();
+  RootInput::Destroy();
 
   return 0;
 }
