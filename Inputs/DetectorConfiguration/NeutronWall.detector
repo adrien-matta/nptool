@@ -27,7 +27,7 @@ NeutronWall
   VWMATERIAL= BC400
   NWMATERIAL= NE213
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-NeutronWall
+%NeutronWall
   THETA= 0
   PHI= 0
   R= 6000
