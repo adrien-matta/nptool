@@ -107,6 +107,8 @@ class Analysis: public NPL::VAnalysis{
   TH2F* ThetaLab_emmitted_2D;
   TH2F* ThetaLab_detected_2D;
 
+  TH2F* Kine_2D;
+
   TH2F* Efficiency_CM_2D;
   TH2F* Efficiency_Lab_2D;
 

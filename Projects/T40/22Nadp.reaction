@@ -2,9 +2,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Beam
-  Particle= 22Ne
+  Particle= 22Na
   ExcitationEnergy= 0
-  Energy= 110
+  Energy= 220
   SigmaEnergy= 1
   SigmaThetaX= 0.01 
   SigmaPhiY= 0.01
@@ -19,10 +19,10 @@ Beam
   %YPhiYProfilePath=
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 TwoBodyReaction
-	Beam= 22Ne
-	Target= 6Li
-	Light= 2H
-	Heavy= 26Mg
+	Beam= 22Na
+	Target= 2H
+	Light= 1H
+	Heavy= 23Na
 	ExcitationEnergyLight= 0.0
 	ExcitationEnergyHeavy= 0.0
   CrossSectionPath= flat.txt	CSR

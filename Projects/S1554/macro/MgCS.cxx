@@ -37,8 +37,8 @@ void MgCS(){
 //  E.push_back(1.638);
 
   E.push_back(2.266);
-  E.push_back(2.500);
-//  E.push_back(2.8);
+//  E.push_back(2.500);
+  E.push_back(2.8);
   E.push_back(3.223);
   E.push_back(3.674);
   E.push_back(3.985);
