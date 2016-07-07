@@ -580,11 +580,18 @@ void NeutronWall::ReadSensitive(const G4Event* event){
         double Energy = RandGauss::shoot(Info[0],NeutronWall_NS::ResoEnergy);
         if(Energy>NeutronWall_NS::EnergyThreshold){
             double Time = RandGauss::shoot(Info[1],NeutronWall_NS::ResoTime);
-            int DetectorNbr = (int) Info[3];
-            int PadNbr = (int) Info[2];
+            int DetectorNbr = (int) Info[8];
+            int PadNbr = (int) Info[7];
             
             m_Event->SetVetoEnergy(DetectorNbr,PadNbr,Energy);
             m_Event->SetVetoTime(DetectorNbr,PadNbr,Time);
+            
+            // Interraction Coordinates
+            ms_InterCoord->SetDetectedPositionX(Info[2]) ;
+            ms_InterCoord->SetDetectedPositionY(Info[3]) ;
+            ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
+            ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
+            ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
         }
     }
     // clear map for next event
@@ -620,7 +627,7 @@ void NeutronWall::InitializeScorers() {
     if(already_exist)
         return;
     
-    G4VPrimitiveScorer* VetoCalorimeter= new CALORIMETERSCORERS::PS_Calorimeter("VetoCalorimeter",level,1) ;
+    G4VPrimitiveScorer* VetoCalorimeter= new CALORIMETERSCORERS::PS_CalorimeterWithInteraction("VetoCalorimeter",level,1) ;
     //and register it to the multifunctional detector
     m_VetoWallScorer->RegisterPrimitive(VetoCalorimeter);
     G4SDManager::GetSDMpointer()->AddNewDetector(m_VetoWallScorer) ;
