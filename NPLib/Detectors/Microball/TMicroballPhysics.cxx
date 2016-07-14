@@ -185,118 +185,180 @@ void TMicroballPhysics::Clear() {
 void TMicroballPhysics::ReadConfiguration(string Path) {
   ifstream ConfigFile           ;
   ConfigFile.open(Path.c_str()) ;
-  string LineBuffer             ;
-  string DataBuffer             ;
+  string LineBuffer          ;
+  string DataBuffer          ;
 
-  bool check_Theta = false          ;
-  bool check_Phi  = false           ;
-  bool check_R     = false          ;
-  bool check_Shape = false          ;
-  bool check_X = false              ;
-  bool check_Y = false              ;
-  bool check_Z = false              ;
-  bool ReadingStatus = false        ;
 
-  while (!ConfigFile.eof()){
+bool bR1 = false;
+bool bR2 = false;
+bool bR3 = false;
+bool bR4 = false;
+bool bR5 = false;
+bool bR6 = false;
+bool bR7 = false;
+bool bR8 = false;
+bool bR9 = false;
+vector<int> copyNumArray;
+bool bFlip = false;
+     
+  bool ReadingStatus = false ;
 
+bool check_Ring1 = false;
+bool check_Ring2 = false;
+bool check_Ring3 = false;
+bool check_Ring4 = false;
+bool check_Ring5 = false;
+bool check_Ring6 = false;
+bool check_Ring7 = false;
+bool check_Ring8 = false;
+bool check_Ring9 = false;
+bool check_Flip = false;
+
+
+  while (!ConfigFile.eof()) {
     getline(ConfigFile, LineBuffer);
 
-    //   If line is a Start Up Microball bloc, Reading toggle to true
-    string name="Microball";
-    if (LineBuffer.compare(0, name.length(), name) == 0){
-      cout << "///" << endl ;
-      cout << "Microball found: " << endl ;
-      ReadingStatus = true ; 
+    //   If line is a Start Up Microball bloc, Reading toggle to true      
+    string name = "Microball";
+
+    if (LineBuffer.compare(0, name.length(), name) == 0) {
+      cout << "///" << endl           ;
+      cout << "Microball found: " << endl   ;        
+      ReadingStatus = true ;
     }
 
+    //   Else don't toggle to Reading Block Status
+    else ReadingStatus = false ;
+
     //   Reading Block
-    while(ReadingStatus)
-    {
-      // Pickup Next Word
+    while(ReadingStatus){
+      // Pickup Next Word 
       ConfigFile >> DataBuffer ;
 
-      //   Comment Line
+      //   Comment Line 
       if (DataBuffer.compare(0, 1, "%") == 0) {   
         ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
       }
 
       //   Finding another telescope (safety), toggle out
-      else if (DataBuffer.compare(0, name.length(), name) == 0) {
-        cout << "\033[1;311mWARNING: Another detector is find before standard sequence of Token, Error may occured in detector definition\033[0m" << endl ;
+      else if (DataBuffer.compare(0, name.length(),name) == 0) {
+        cout << "WARNING: Another Detector is find before standard sequence of Token, Error may occured in Telecope definition" << endl ;
         ReadingStatus = false ;
       }
 
       //Angle method
-      else if (DataBuffer=="THETA=") {
-        check_Theta = true;
+      else if (DataBuffer.compare(0, 6, "RING1=") == 0) {
+        check_Ring1 = true;
         ConfigFile >> DataBuffer ;
-        cout << "Theta:  " << atof(DataBuffer.c_str()) << "deg" << endl;
+        bR1 = atoi(DataBuffer.c_str()) ;
+        cout << "Ring1:  " << bR1 << endl;
       }
 
-      else if (DataBuffer=="PHI=") {
-        check_Phi = true;
+      else if (DataBuffer.compare(0, 6, "RING2=") == 0) {
+        check_Ring2 = true;
         ConfigFile >> DataBuffer ;
-        cout << "Phi:  " << atof( DataBuffer.c_str() ) << "deg" << endl;
+        bR2 = atoi(DataBuffer.c_str()) ;
+        cout << "Ring2:  " << bR2 << endl;
       }
 
-      else if (DataBuffer=="R=") {
-        check_R = true;
+      else if (DataBuffer.compare(0, 6, "RING3=") == 0) {
+        check_Ring3 = true;
         ConfigFile >> DataBuffer ;
-        cout << "R:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
+        bR3 = atoi(DataBuffer.c_str()) ;
+        cout << "Ring3:  " << bR3 << endl;
       }
 
-      //Position method
-      else if (DataBuffer=="X=") {
-        check_X = true;
+      else if (DataBuffer.compare(0, 6, "RING4=") == 0) {
+        check_Ring4 = true;
         ConfigFile >> DataBuffer ;
-        cout << "X:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
+        bR4 = atoi(DataBuffer.c_str()) ;
+        cout << "Ring4:  " << bR4 << endl;
       }
 
-      else if (DataBuffer=="Y=") {
-        check_Y = true;
+      else if (DataBuffer.compare(0, 6, "RING5=") == 0) {
+        check_Ring5 = true;
         ConfigFile >> DataBuffer ;
-        cout << "Y:  " << atof( DataBuffer.c_str() ) << "mm"<< endl;
+        bR5 = atoi(DataBuffer.c_str()) ;
+        cout << "Ring5:  " << bR5 << endl;
       }
 
-      else if (DataBuffer=="Z=") {
-        check_Z = true;
+      else if (DataBuffer.compare(0, 6, "RING6=") == 0) {
+        check_Ring6 = true;
         ConfigFile >> DataBuffer ;
-        cout << "Z:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
+        bR6 = atoi(DataBuffer.c_str()) ;
+        cout << "Ring6:  " << bR6 << endl;
+      }
+
+      else if (DataBuffer.compare(0, 6, "RING7=") == 0) {
+        check_Ring7 = true;
+        ConfigFile >> DataBuffer ;
+        bR7 = atoi(DataBuffer.c_str()) ;
+        cout << "Ring7:  " << bR7 << endl;
+      }
+
+      else if (DataBuffer.compare(0, 6, "RING8=") == 0) {
+        check_Ring8 = true;
+        ConfigFile >> DataBuffer ;
+        bR8 = atoi(DataBuffer.c_str()) ;
+        cout << "Ring8:  " << bR8 << endl;
+      }
+
+
+      else if (DataBuffer.compare(0, 6, "RING9=") == 0) {
+        check_Ring9 = true;
+        ConfigFile >> DataBuffer ;
+        bR9 = atoi(DataBuffer.c_str()) ;
+        cout << "Ring9:  " << bR9 << endl;
+      }
+
+      else if (DataBuffer.compare(0, 15, "DISABLE_CRYSTAL") == 0) {        
+	ConfigFile >> DataBuffer ;
+	int item = atoi(DataBuffer.c_str());
+        copyNumArray.push_back(item) ;
+        cout << "Disabled crystal:  " << item << endl;
+      }
+
+      else if (DataBuffer.compare(0, 14, "DETECTOR_FLIP=") == 0) {
+        check_Flip = true;
+        ConfigFile >> DataBuffer ;
+        bFlip = atoi(DataBuffer.c_str()) ;
+        cout << "Flip Detector:  " << bFlip << endl;
       }
 
 
       //General
-      else if (DataBuffer=="Shape=") {
-        check_Shape = true;
-        ConfigFile >> DataBuffer ;
-        cout << "Shape:  " << DataBuffer << endl;
-      }
+
 
       ///////////////////////////////////////////////////
       //   If no Detector Token and no comment, toggle out
       else{
-        ReadingStatus = false; cout << "Wrong Token Sequence: Getting out " << DataBuffer << endl ;
+	ReadingStatus = false; 
+        cout << "Wrong Token Sequence: Getting out " << DataBuffer << endl ;
       }
+	if(check_Ring1 && check_Ring2 && check_Ring3 &&
+		check_Ring4 && check_Ring5 && check_Ring6 &&
+		check_Ring7 && check_Ring8 && check_Ring9 &&
+		check_Flip){
+      
 
-      /////////////////////////////////////////////////
-      //   If All necessary information there, toggle out
+	//   Reinitialisation of Check Boolean 
+        check_Ring1 = false ;
+        check_Ring2 = false ;
+        check_Ring3 = false ;
+        check_Ring4 = false ;
+        check_Ring5 = false ;
+        check_Ring6 = false ;
+        check_Ring7 = false ;
+        check_Ring8 = false ;
+        check_Ring9 = false ;
+	check_Flip = false ;
 
-      if ( ((check_Theta && check_Phi && check_R) ||( check_X && check_Y && check_Z)  ) && check_Shape ){
-        m_NumberOfDetectors++;
-
-        //   Reinitialisation of Check Boolean
-        check_Theta = false          ;
-        check_Phi  = false           ;
-        check_R     = false          ;
-        check_Shape = false          ;
-        check_X = false              ;
-        check_Y = false              ;
-        check_Z = false              ;
-        ReadingStatus = false        ;
-        cout << "///"<< endl         ;
-      }
+        ReadingStatus = false ;   
+        cout << "///"<< endl ; 
+	}          
     }
-  }
+  } 
+
 }
 
 
