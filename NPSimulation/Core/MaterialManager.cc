@@ -382,6 +382,15 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name,double density){
             return material;
         }
         
+        else  if(Name == "NaturalTin"){
+            if(!density)
+                density =  7.31*g/cm3;
+            G4Material* material = new G4Material("NPS_"+Name,density,1);
+            material->AddElement(GetElementFromLibrary("Sn"),1);
+            m_Material[Name]=material;
+            return material;
+        }
+        
         else  if(Name == "CsI_Scintillator"){
             if(!density)
                 density =  4.51*g/cm3;

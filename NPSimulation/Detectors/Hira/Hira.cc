@@ -69,8 +69,8 @@ Hira::Hira(){
   m_EventHira = new THiraData();
   
     // Silicon
-    m_SiliconVisAtt = new G4VisAttributes(G4Colour(0.839216, 0.839216, 0.839216)) ;
-    m_SiliconVisAtt2 = new G4VisAttributes(G4Colour(0.839216, 0.839216, 0.839216)) ;
+    m_SiliconVisAtt = new G4VisAttributes(G4Colour(0.839216, 0.839216, 0.839216, 0.8)) ;
+    m_SiliconVisAtt2 = new G4VisAttributes(G4Colour(0.2, 0.0, 0.6)) ;
     // CsI Color
     m_CsIVisAtt = new G4VisAttributes(G4Colour(0.529412, 0.807843, 0.980392, 0.9)) ;
     //m_CsIVisAtt->SetForceWireframe(true);
