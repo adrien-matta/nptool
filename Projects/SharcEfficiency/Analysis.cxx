@@ -105,6 +105,8 @@ void Analysis::Init(){
   ThetaLab_emmitted_2D = new TH2F("ThetaLab_emmitted_2D","ThetaLab_emmitted_2D",180,0,180,250,-1,10);
   ThetaLab_detected_2D = new TH2F("ThetaLab_detected_2D","ThetaLab_detected_2D",180,0,180,250,-1,10);
 
+  Kine_2D = new TH2F("Kine_2D","Kine_2D",1800,0,180,600,0,60);
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -224,17 +226,19 @@ void Analysis::TreatEvent(){
 
     else if(Sharc->DetectorNumber[0] == 12 && Sharc->Strip_E[0]>1.99)
       check = true;
-*/
+
    if(Sharc->DetectorNumber[0] == 4 && Sharc->Strip_E[0]>1.)
       check = true;
-
-
+*/
+check =true;
     if(Trifoil->Energy.size()>0){
       if( check && abs(Ex-EXD)<0.5 &&  Trifoil->Energy.size()>0 && Trifoil->Energy[0]>0) { // for S1107
         ThetaCM_detected->Fill(myInit->GetThetaCM(0));
         ThetaLab_detected->Fill(myInit->GetThetaLab_WorldFrame(0));
         ThetaCM_detected_2D->Fill(myInit->GetThetaCM(0),EXD);
         ThetaLab_detected_2D->Fill(myInit->GetThetaLab_WorldFrame(0),EXD);
+        Kine_2D->Fill(ThetaLab,ELab);
+
       }
     }
     /************************************************/

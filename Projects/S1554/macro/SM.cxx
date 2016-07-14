@@ -4,7 +4,7 @@
 void PlotLevel(string name,int offset,bool LR, RS::ShellModelCollection Collection, vector<int> matched);
 vector<TPad*> thePad;
 double Emin = -0.2;
-double Emax = 2.70;
+double Emax = 10;
 double ScaleMin = 0;
 double ScaleMax = 7;
 double LabelSize = 0.04;
@@ -48,7 +48,9 @@ void PlotLevel(string name,int offset,bool LR, RS::ShellModelCollection Collecti
     t->Draw();
   }
 
+
   unsigned int mysize = Collection.GetNumberOfState();
+  cout << name << " " << mysize << endl;
   for(unsigned int i = 0 ; i < mysize ; i++){
     RS::ShellModelState state = Collection.GetState(i);
     if(Collection.GetStatus(i)==1 && state.GetNumberOfOrbital()>0){

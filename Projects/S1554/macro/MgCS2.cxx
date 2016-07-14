@@ -29,7 +29,9 @@ void MgCS2(){
   h->GetXaxis()->SetTitle("#theta_{CM} (deg)");
   h->Add(badEx,-1);
   Eff->Sumw2();
-  h->Scale(0.010048*10/7.37);
+//  //h->Scale(0.010048*10/7.37);
+  h->Scale(0.015791*10/7.37);
+
   h->Divide(Eff);
 
   TH1D* p;
@@ -44,8 +46,10 @@ void MgCS2(){
   TCanvas* c = new TCanvas("CS","CS",800,800);
   c->Divide(2,2);
   TGraph* CSth;
-  // Region 
+  TLegend* leg; 
   double s1,s2;
+
+  // Region 1 
   current = Region(-0.1,0.4,h,c,nn++,Eff);
   g1 = TWOFNR(0.000, 0, 0.5, 1, 0, 0.5);
   g2 = TWOFNR(0.054, 0, 1.5, 0, 2, 1.5);
@@ -53,16 +57,54 @@ void MgCS2(){
   g2->SetLineStyle(3);g2->Draw("c");
   FindNormalisation(g1,g2,current,s1,s2)->Draw("c"); 
    
-  double s3,s4;
+  
   CSth = FindNormalisation(g1,g2,current,s1,s2); 
   CSth->Draw("c");
-  TLegend* leg = new TLegend(0.7,0.6,1,0.9);
+  leg = new TLegend(0.6,0.5,0.9,0.9);
   leg->SetBorderSize(0);
   leg->SetFillStyle(0);
-  leg->AddEntry(g1,"L=0 S=0.41(4)","l");
-  leg->AddEntry(g2,"L=2 S=0.13(4) ","l");
+  leg->AddEntry(g1,Form("L=0 S=%.2f",s1),"l");
+  leg->AddEntry(g2,Form("L=2 S=%.2f",s2),"l");
   leg->AddEntry(CSth,"L=0 + L=2 ","l");
   leg->Draw();
+
+  // Region 2
+  current = Region(0.6,1.8,h,c,nn++,Eff);
+  g1 = TWOFNR(1.09, 0, 1.5, 1, 1, 1.5);
+  g2 = TWOFNR(1.43, 0, 3.5, 0, 3, 3.5);
+  g1->SetLineStyle(2);g1->Draw("c");
+  g2->SetLineStyle(3);g2->Draw("c");
+  FindNormalisation(g1,g2,current,s1,s2)->Draw("c"); 
+   
+  CSth = FindNormalisation(g1,g2,current,s1,s2); 
+  CSth->Draw("c");
+  leg = new TLegend(0.6,0.5,0.9,0.9);
+  leg->SetBorderSize(0);
+  leg->SetFillStyle(0);
+  leg->AddEntry(g1,Form("L=1 S=%.2f",s1),"l");
+  leg->AddEntry(g2,Form("L=3 S=%.2f",s2),"l");
+  leg->AddEntry(CSth,"L=1 + L=3 ","l");
+  leg->Draw();
+
+  // Region 3
+  current = Region(1.8,3.4,h,c,nn++,Eff);
+  g1 = TWOFNR(2.27, 0, 1.5, 0, 2, 1.5);
+  g2 = TWOFNR(2.50, 0, 0.5, 1, 1, 0.5);
+  g1->SetLineStyle(2);g1->Draw("c");
+  g2->SetLineStyle(3);g2->Draw("c");
+  FindNormalisation(g1,g2,current,s1,s2)->Draw("c"); 
+   
+  CSth = FindNormalisation(g1,g2,current,s1,s2); 
+  CSth->Draw("c");
+  leg = new TLegend(0.6,0.5,0.9,0.9);
+  leg->SetBorderSize(0);
+  leg->SetFillStyle(0);
+  leg->AddEntry(g1,Form("L=2 S=%.2f",s1),"l");
+  leg->AddEntry(g2,Form("L=1 S=%.2f",s2),"l");
+  leg->AddEntry(CSth,"L=2 + L=1 ","l");
+  leg->Draw();
+
+
 }
 ////////////////////////////////////////////////////////////////////////////////
 TH1* Region(double Emin, double Emax,TH2* h, TCanvas* c, int pad , TH2* Eff){
