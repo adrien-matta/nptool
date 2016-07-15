@@ -4,7 +4,7 @@
 void PlotLevel(string name,int offset,bool LR, RS::ShellModelCollection Collection, vector<int> matched);
 vector<TPad*> thePad;
 double Emin = -0.2;
-double Emax = 10;
+double Emax = 3;
 double ScaleMin = 0;
 double ScaleMax = 7;
 double LabelSize = 0.04;
@@ -75,15 +75,15 @@ void PlotLevel(string name,int offset,bool LR, RS::ShellModelCollection Collecti
       string final_label;
       if(state.GetOrder()!=0){
         if(state.GetParity()>0)
-          final_label = Form("%d^{+}_{%d} %s %.2f" ,(int)state.GetJ() ,state.GetOrder(),state.GetOrbitalString(state.GetMainOrbital(),"SM").c_str(),state.GetEnergy());
+          final_label = Form("%d/2^{+}_{%d} %s %.2f" ,(int)(2*state.GetJ()) ,state.GetOrder(),state.GetOrbitalString(state.GetMainOrbital(),"SM").c_str(),state.GetEnergy());
         else
-          final_label = Form("%d^{-}_{%d} %s %.2f" ,(int)state.GetJ() ,state.GetOrder(),state.GetOrbitalString(state.GetMainOrbital(),"SM").c_str(),state.GetEnergy());
+          final_label = Form("%d/2^{-}_{%d} %s %.2f" ,(int)(2*state.GetJ()) ,state.GetOrder(),state.GetOrbitalString(state.GetMainOrbital(),"SM").c_str(),state.GetEnergy());
       }
       else{
         if(state.GetParity()>0)
-          final_label = Form("%d^{+} %s %.2f" ,(int)state.GetJ() ,state.GetOrbitalString(state.GetMainOrbital(),"SM").c_str(),state.GetEnergy());
+          final_label = Form("%d/2^{+} %s %.2f" ,(int)(2*state.GetJ()) ,state.GetOrbitalString(state.GetMainOrbital(),"SM").c_str(),state.GetEnergy());
         else
-          final_label = Form("%d^{-} %s %.2f" ,(int)state.GetJ() ,state.GetOrbitalString(state.GetMainOrbital(),"SM").c_str(),state.GetEnergy());
+          final_label = Form("%d/2^{-} %s %.2f" ,(int)(2*state.GetJ()) ,state.GetOrbitalString(state.GetMainOrbital(),"SM").c_str(),state.GetEnergy());
       }
 
 
@@ -99,7 +99,7 @@ void PlotLevel(string name,int offset,bool LR, RS::ShellModelCollection Collecti
 
       unsigned int orbsize = state.GetNumberOfOrbital();
       // Where the last one stopped
-      int thickness = 4;
+      int thickness = 5;
       for(unsigned int orb = 0 ; orb < orbsize ; orb++){
         TLine* Level;
         double SF = state.GetOrbitalS(orb);
@@ -111,11 +111,14 @@ void PlotLevel(string name,int offset,bool LR, RS::ShellModelCollection Collecti
         }
         else if(orbital.find("p")!=string::npos){
           color = kBlue;
-        }if(orbital.find("d")!=string::npos){
+        }
+        else if(orbital.find("d")!=string::npos){
           color = kGreen+2;
-        }if(orbital.find("f")!=string::npos){
-          color = kOrange+7;
-        }if(orbital.find("g")!=string::npos){
+        }
+        else if(orbital.find("f")!=string::npos){
+          color = kBlack;
+        }
+        else if(orbital.find("g")!=string::npos){
           color = kMagenta+2;
         }
 
