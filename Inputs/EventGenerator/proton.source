@@ -4,10 +4,10 @@
 %			   Energy are given in MeV , Position in mm				  %	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Isotropic
-	EnergyLow=  60	
-	EnergyHigh= 60
+	EnergyLow=  100	
+	EnergyHigh= 100
   HalfOpenAngleMin= 0
-	HalfOpenAngleMax= 0
+	HalfOpenAngleMax= 180
 	x0= 0	
 	y0= 0	
 	z0= 0	

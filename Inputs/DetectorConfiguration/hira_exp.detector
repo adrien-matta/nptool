@@ -120,4 +120,27 @@ Microball
 	DISABLE_CRYSTAL 52
 	DETECTOR_FLIP= 0
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+NeutronWall
+  THETA= 40
+  PHI= 0
+  R= 4000
+  BARS= 25
+  VETOWALL= 1
+  VWDISTANCE= 100
+  OVERLAP= -0.1
+  VWMATERIAL= BC400
+  NWMATERIAL= NE213
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%NeutronWall
+  THETA= 30
+  PHI= 0
+  R= 6000
+  BARS= 25
+  VETOWALL= 0
+  VWDISTANCE= 0
+  OVERLAP= -0.1
+  VWMATERIAL= BC400
+  NWMATERIAL= NE213
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

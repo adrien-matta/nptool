@@ -1,20 +1,20 @@
 #ifndef __NeutronWallDATA__
 #define __NeutronWallDATA__
 /*****************************************************************************
- * Copyright (C) 2009-2016   this file is part of the NPTool Project       *
+ * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Pierre Morfouace  contact address: morfouac@nscl.msu.edu                        *
+ * Original Author: Pierre Morfouace  contact address: morfouac@nscl.msu.edu *
  *                                                                           *
- * Creation Date  : June 2016                                           *
+ * Creation Date  : June 2016                                                *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold NeutronWall Raw data                                    *
+ *  This class hold NeutronWall Raw data                                     *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -159,7 +159,7 @@ class TNeutronWallData : public TObject {
     //////////////////////    GETTERS VETO WALL    ////////////////////////
     // Energy
     inline UShort_t GetVetoMultEnergy() const
-      {return fVetoWall_E_DetectorNbr.size();}
+      {return fVetoWall_E_PadNbr.size();}
     inline UShort_t GetE_VetoDetectorNbr(const unsigned int &i) const 
       {return fVetoWall_E_DetectorNbr[i];}//!
     inline UShort_t GetE_VetoPadNbr(const unsigned int &i) const 
@@ -169,9 +169,11 @@ class TNeutronWallData : public TObject {
 
     // Time
     inline UShort_t GetVetoMultTime() const
-      {return fVetoWall_T_DetectorNbr.size();}
+      {return fVetoWall_T_PadNbr.size();}
     inline UShort_t GetT_VetoDetectorNbr(const unsigned int &i) const 
       {return fVetoWall_T_DetectorNbr[i];}//!
+    inline UShort_t GetT_VetoPadNbr(const unsigned int &i) const 
+      {return fVetoWall_T_PadNbr[i];}//!
     inline Double_t Get_VetoTime(const unsigned int &i) const 
       {return fVetoWall_Time[i];}//!
 

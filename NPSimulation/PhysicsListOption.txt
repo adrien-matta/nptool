@@ -3,9 +3,9 @@ DefaultCutOff 1
 IonBinaryCascadePhysics 0
 LocalIonInelasticPhysics 0
 EmExtraPhysics 0
-HadronElasticPhysics 1
+HadronElasticPhysics 0
 StoppingPhysics 0
 OpticalPhysics 0
 HadronPhysicsINCLXX 0
 HadronPhysicsQGSP_BIC_HP 0
-Decay 1
+Decay 0
