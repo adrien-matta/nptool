@@ -54,3 +54,10 @@ addons:
     - g++-4.8
     - libexpat1-dev
     - libexpat1
+
+notifications:
+  email:
+    recipients:
+      - support@nptool.org
+    on_success: change
+    on_failure: always
