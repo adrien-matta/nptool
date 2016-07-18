@@ -24,7 +24,8 @@
 // C++ header
 #include <string>
 using namespace std;
-using namespace CLHEP;
+
+using namespace CLHEP;
 
 // G4 headers
 #include "G4Event.hh"
@@ -35,28 +36,29 @@ using namespace std;
 
 class EventGeneratorIsotropic : public NPS::VEventGenerator{
 public:     // Constructor and destructor
-  EventGeneratorIsotropic() ;
-  virtual ~EventGeneratorIsotropic();
-  
+    EventGeneratorIsotropic() ;
+    virtual ~EventGeneratorIsotropic();
+    
 public:     // Inherit from VEventGenerator Class
-  void ReadConfiguration(string,int)               ;
-  void GenerateEvent(G4Event*) ;
-  void InitializeRootOutput()                  ;
-  
+    void ReadConfiguration(string,int)               ;
+    void GenerateEvent(G4Event*) ;
+    void InitializeRootOutput()                  ;
+    
 private:    // Source parameter from input file
-  G4double               m_EnergyLow        ;  // Lower limit of energy range
-  G4double               m_EnergyHigh       ;  // Upper limit of energy range
-  G4double               m_HalfOpenAngleMin ;  // Min Half open angle of the source
-  G4double               m_HalfOpenAngleMax ;  // Max Half open angle of the source
-  G4double               m_x0               ;  // Vertex Position X
-  G4double               m_y0               ;  // Vertex Position Y
-  G4double               m_z0               ;  // Vertex Position Z
-  G4double               m_SigmaX           ;
-  G4double               m_SigmaY           ;
-  G4ParticleDefinition*  m_particle         ;  // Kind of particle to shoot isotropically
-  G4double               m_ExcitationEnergy ;  // Excitation energy of the emitted particle
-  string                 m_particleName     ;
-  ParticleStack*         m_ParticleStack    ;
-  
+    G4double               m_EnergyLow        ;  // Lower limit of energy range
+    G4double               m_EnergyHigh       ;  // Upper limit of energy range
+    G4double               m_HalfOpenAngleMin ;  // Min Half open angle of the source
+    G4double               m_HalfOpenAngleMax ;  // Max Half open angle of the source
+    G4double               m_x0               ;  // Vertex Position X
+    G4double               m_y0               ;  // Vertex Position Y
+    G4double               m_z0               ;  // Vertex Position Z
+    G4double               m_SigmaX           ;
+    G4double               m_SigmaY           ;
+    G4ParticleDefinition*  m_particle         ;  // Kind of particle to shoot isotropically
+    G4double               m_ExcitationEnergy ;  // Excitation energy of the emitted particle
+    string                 m_particleName     ;
+    ParticleStack*         m_ParticleStack    ;
+    G4int                  m_Multiplicty;//Adding by Pierre
+    
 };
 #endif
