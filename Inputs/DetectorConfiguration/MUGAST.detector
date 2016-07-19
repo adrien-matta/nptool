@@ -13,6 +13,8 @@ Target
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 GaspardTracker
+GPDChamber= MUGAST
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Annular Back
 GPDAnnular
         Z=      -148.6

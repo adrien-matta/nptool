@@ -417,15 +417,16 @@ if(m_Ring1){
   // CsI Detector
   //
   G4double coneheight1 = 2*distanceFromTarget1;
+  G4double flatheight1 = coneheight1-0.01*mm;
   G4double coneangle1 = theta1;
-  G4double crystal_rmina1 = 0.*mm;
-  G4double crystal_rmaxa1 = 0.001*mm;
+  G4double crystal_rmina1 = (coneheight1-flatheight1)*tan(coneangle1-halfTheta1);
+  G4double crystal_rmaxa1 = (coneheight1-flatheight1)*tan(coneangle1+halfTheta1);
   G4double crystal_rminb1 = coneheight1*tan(coneangle1-halfTheta1);
   G4double crystal_rmaxb1 = coneheight1*tan(coneangle1+halfTheta1);
-  G4double crystal_hz1 = 0.5*(crystal_rmaxb1-crystal_rmaxa1)/crystal_rmaxb1*coneheight1;
+  G4double crystal_hz1 = 0.5*flatheight1;//(crystal_rmaxb1-crystal_rmaxa1)/crystal_rmaxb1*coneheight1;
   G4double crystal_phimin1 = 0.*deg, crystal_phimax1 = 360.*deg/detNum1;
   G4RotationMatrix tip_rotm1 = G4RotationMatrix();
-  G4ThreeVector tip_pos1 = G4ThreeVector(0,0,0.5*coneheight1/*+.0001*mm*/);
+  G4ThreeVector tip_pos1 = G4ThreeVector(0,0,0.5*flatheight1+(coneheight1-flatheight1));
   G4Transform3D tip_trans1 = G4Transform3D(tip_rotm1, tip_pos1);
   G4ThreeVector z1 = G4ThreeVector(0,0,1);
   G4ThreeVector d01 = G4ThreeVector(distanceFromTarget1*sin(coneangle1)*cos(0.5*360*deg/detNum1), 
@@ -688,15 +689,16 @@ if(m_Ring1){
   // CsI Detector
   //
   G4double coneheight2 = 2*distanceFromTarget2;
+  G4double flatheight2 = coneheight2-0.01*mm;
   G4double coneangle2 = theta2;
-  G4double crystal_rmina2 = 0.*mm;
-  G4double crystal_rmaxa2 = 0.001*mm;
+  G4double crystal_rmina2 = (coneheight2-flatheight2)*tan(coneangle2-halfTheta2);
+  G4double crystal_rmaxa2 = (coneheight2-flatheight2)*tan(coneangle2+halfTheta2);
   G4double crystal_rminb2 = coneheight2*tan(coneangle2-halfTheta2);
   G4double crystal_rmaxb2 = coneheight2*tan(coneangle2+halfTheta2);
-  G4double crystal_hz2 = 0.5*(crystal_rmaxb2-crystal_rmaxa2)/crystal_rmaxb2*coneheight2;
+  G4double crystal_hz2 = 0.5*flatheight2;//(crystal_rmaxb2-crystal_rmaxa2)/crystal_rmaxb2*coneheight2;
   G4double crystal_phimin2 = 0.*deg, crystal_phimax2 = 360.*deg/detNum2;
   G4RotationMatrix tip_rotm2 = G4RotationMatrix();
-  G4ThreeVector tip_pos2 = G4ThreeVector(0,0,0.5*coneheight2/*+.0001*mm*/);
+  G4ThreeVector tip_pos2 = G4ThreeVector(0,0,0.5*flatheight2+(coneheight2-flatheight2));
   G4Transform3D tip_trans2 = G4Transform3D(tip_rotm2, tip_pos2);
   G4ThreeVector z2 = G4ThreeVector(0,0,1);
   G4ThreeVector d02 = G4ThreeVector(distanceFromTarget2*sin(coneangle2)*cos(0.5*360*deg/detNum2), 
@@ -957,15 +959,16 @@ if(m_Ring1){
   // CsI Detector
   //
   G4double coneheight3 = distanceFromTarget3;
+  G4double flatheight3 = coneheight3-0.01*mm;
   G4double coneangle3 = theta3;
-  G4double crystal_rmina3 = 0.*mm;
-  G4double crystal_rmaxa3 = 0.001*mm;
+  G4double crystal_rmina3 = (coneheight3-flatheight3)*tan(coneangle3-halfTheta3);
+  G4double crystal_rmaxa3 = (coneheight3-flatheight3)*tan(coneangle3+halfTheta3);
   G4double crystal_rminb3 = coneheight3*tan(coneangle3-halfTheta3);
   G4double crystal_rmaxb3 = coneheight3*tan(coneangle3+halfTheta3);
-  G4double crystal_hz3 = 0.5*(crystal_rmaxb3-crystal_rmaxa3)/crystal_rmaxb3*coneheight3;
+  G4double crystal_hz3 = 0.5*flatheight3;//(crystal_rmaxb3-crystal_rmaxa3)/crystal_rmaxb3*coneheight3;
   G4double crystal_phimin3 = 0.*deg, crystal_phimax3 = 360.*deg/detNum3;
   G4RotationMatrix tip_rotm3 = G4RotationMatrix();
-  G4ThreeVector tip_pos3 = G4ThreeVector(0,0,0.5*coneheight3/*+.0001*mm*/);
+  G4ThreeVector tip_pos3 = G4ThreeVector(0,0,0.5*flatheight3+(coneheight3-flatheight3));
   G4Transform3D tip_trans3 = G4Transform3D(tip_rotm3, tip_pos3);
   G4ThreeVector z3 = G4ThreeVector(0,0,1);
   G4ThreeVector d03 = G4ThreeVector(distanceFromTarget3*sin(coneangle3)*cos(0.5*360*deg/detNum3), 
@@ -1230,15 +1233,16 @@ if(m_Ring1){
   // CsI Detector
   //
   G4double coneheight4 = distanceFromTarget4;
+  G4double flatheight4 = coneheight4 - 0.01*mm;
   G4double coneangle4 = theta4;
-  G4double crystal_rmina4 = 0.*mm;
-  G4double crystal_rmaxa4 = 0.001*mm;
+  G4double crystal_rmina4 = (coneheight4-flatheight4)*tan(coneangle4-halfTheta4);
+  G4double crystal_rmaxa4 = (coneheight4-flatheight4)*tan(coneangle4+halfTheta4);
   G4double crystal_rminb4 = coneheight4*tan(coneangle4-halfTheta4);
   G4double crystal_rmaxb4 = coneheight4*tan(coneangle4+halfTheta4);
-  G4double crystal_hz4 = 0.5*(crystal_rmaxb4-crystal_rmaxa4)/crystal_rmaxb4*coneheight4;
+  G4double crystal_hz4 = 0.5*flatheight4;//(crystal_rmaxb4-crystal_rmaxa4)/crystal_rmaxb4*coneheight4;
   G4double crystal_phimin4 = 0.*deg, crystal_phimax4 = 360.*deg/detNum4;
   G4RotationMatrix tip_rotm4 = G4RotationMatrix();
-  G4ThreeVector tip_pos4 = G4ThreeVector(0,0,0.5*coneheight4/*+.0001*mm*/);
+  G4ThreeVector tip_pos4 = G4ThreeVector(0,0,0.5*flatheight4+(coneheight4-flatheight4));
   G4Transform3D tip_trans4 = G4Transform3D(tip_rotm4, tip_pos4);
   G4ThreeVector z4 = G4ThreeVector(0,0,1);
   G4ThreeVector d04 = G4ThreeVector(distanceFromTarget4*sin(coneangle4)*cos(0.5*360*deg/detNum4), 
@@ -1446,7 +1450,7 @@ if(m_Ring1){
   G4int detNum5 = 14;
   G4double distanceFromTargetBack5 = 50.*mm;
   G4double theta5 = 70.0*deg;
-  G4double halfTheta5 = 10.0*deg; //fudge factor
+  G4double halfTheta5 = 10.0*deg;// -0.1*deg; //fudge factor
   G4double lgThickness5 = 6.0*mm;
   G4double detThickness5 = 5.6*mm;
   G4double distanceFromTarget5 = distanceFromTargetBack5 - detThickness5;
@@ -1502,15 +1506,16 @@ if(m_Ring1){
   // CsI Detector
   //
   G4double coneheight5 = 0.6*distanceFromTarget5;
+  G4double flatheight5 = coneheight5 -0.01*mm;
   G4double coneangle5 = theta5;
-  G4double crystal_rmina5 = 0.*mm;
-  G4double crystal_rmaxa5 = 0.0015*mm;
+  G4double crystal_rmina5 = (coneheight5-flatheight5)*tan(coneangle5-halfTheta5);
+  G4double crystal_rmaxa5 = (coneheight5-flatheight5)*tan(coneangle5+halfTheta5);
   G4double crystal_rminb5 = coneheight5*tan(coneangle5-halfTheta5);
   G4double crystal_rmaxb5 = coneheight5*tan(coneangle5+halfTheta5);
-  G4double crystal_hz5 = 0.5*(crystal_rmaxb5-crystal_rmaxa5)/crystal_rmaxb5*coneheight5;
+  G4double crystal_hz5 = 0.5*flatheight5;//(crystal_rmaxb5-crystal_rmaxa5)/crystal_rmaxb5*coneheight5;
   G4double crystal_phimin5 = 0.*deg, crystal_phimax5 = 360.*deg/detNum5;
   G4RotationMatrix tip_rotm5 = G4RotationMatrix();
-  G4ThreeVector tip_pos5 = G4ThreeVector(0,0,0.5*coneheight5/*+.0001*mm*//*-.00005*mm*/); //last z term is a fudge
+  G4ThreeVector tip_pos5 = G4ThreeVector(0,0,0.5*flatheight5+(coneheight5-flatheight5)); //last z term is a fudge
   G4Transform3D tip_trans5 = G4Transform3D(tip_rotm5, tip_pos5);
   G4ThreeVector z5 = G4ThreeVector(0,0,1);
   G4ThreeVector d05 = G4ThreeVector(distanceFromTarget5*sin(coneangle5)*cos(0.5*360*deg/detNum5), 
@@ -1724,7 +1729,7 @@ if(m_Ring1){
   G4int detNum6 = 14;
   G4double distanceFromTargetBack6 = 50.*mm;
   G4double theta6 = 90.0*deg;
-  G4double halfTheta6 = 10.0*deg;
+  G4double halfTheta6 = 10.0*deg;// -0.1*deg;
   G4double lgThickness6 = 7.0*mm;
   G4double detThickness6 = 5.2*mm;
   G4double distanceFromTarget6 = distanceFromTargetBack6 - detThickness6;
@@ -1989,7 +1994,7 @@ if(m_Ring1){
   G4int detNum7 = 12;
   G4double distanceFromTargetBack7 = 45.*mm;
   G4double theta7 = 111.5*deg;
-  G4double halfTheta7 = 11.5*deg; //fudge factor
+  G4double halfTheta7 = 11.5*deg;//-0.1*deg; //fudge factor
   G4double lgThickness7 = 7.0*mm;
   G4double detThickness7 = 4.1*mm;
   G4double distanceFromTarget7 = distanceFromTargetBack7 - detThickness7;
@@ -2074,15 +2079,16 @@ if(m_Ring1){
   // CsI Detector
   //
   G4double coneheight7 = 0.6*distanceFromTarget7;
+  G4double flatheight7 = coneheight7 -0.01*mm;
   G4double coneangle7 = theta7;
-  G4double crystal_rmina7 = 0.*mm;
-  G4double crystal_rmaxa7 = 0.0015*mm;
+  G4double crystal_rmina7 = -(coneheight7-flatheight7)*tan(coneangle7+halfTheta7);
+  G4double crystal_rmaxa7 = -(coneheight7-flatheight7)*tan(coneangle7-halfTheta7);
   G4double crystal_rminb7 = -coneheight7*tan(coneangle7+halfTheta7);
   G4double crystal_rmaxb7 = -coneheight7*tan(coneangle7-halfTheta7);
-  G4double crystal_hz7 = 0.5*(crystal_rmaxb7-crystal_rmaxa7)/crystal_rmaxb7*coneheight7;
+  G4double crystal_hz7 = 0.5*flatheight7;//(crystal_rmaxb7-crystal_rmaxa7)/crystal_rmaxb7*coneheight7;
   G4double crystal_phimin7 = 0.*deg, crystal_phimax7 = 360.*deg/detNum7;
   G4RotationMatrix tip_rotm7 = G4RotationMatrix();
-  G4ThreeVector tip_pos7 = G4ThreeVector(0,0,0.5*coneheight7/*+.0001*mm*//*-.00005*mm*/); //last term is a fudge
+  G4ThreeVector tip_pos7 = G4ThreeVector(0,0,0.5*flatheight7+(coneheight7-flatheight7)); //last term is a fudge
   G4Transform3D tip_trans7 = G4Transform3D(tip_rotm7, tip_pos7);
   G4ThreeVector z7 = G4ThreeVector(0,0,1);
   G4ThreeVector d07 = G4ThreeVector(distanceFromTarget7*sin(coneangle7)*cos(0.5*360*deg/detNum7), 
@@ -2308,7 +2314,7 @@ if(m_Ring1){
   G4int detNum8 = 10;
   G4double distanceFromTargetBack8 = 47*mm; //Its really 47 mm from the target, but at 45.9 we avoid intersection the detectors in ring 9
   G4double theta8 = 135.0*deg;
-  G4double halfTheta8 = 12.0*deg; //+0.1*deg;  //fudge factor
+  G4double halfTheta8 = 12.0*deg;// -0.1*deg;  //fudge factor
   G4double lgThickness8 = 7.5*mm;
   G4double detThickness8 = 3.6*mm;
   G4double distanceFromTarget8 = distanceFromTargetBack8 - detThickness8;
@@ -2391,16 +2397,17 @@ if(m_Ring1){
   //
   // CsI Detector
   //
-  G4double coneheight8 = distanceFromTarget8;
+  G4double coneheight8 = 1.7*distanceFromTarget8;
+  G4double flatheight8 = coneheight8 -0.01*mm;
   G4double coneangle8 = theta8;
-  G4double crystal_rmina8 = 0.*mm;
-  G4double crystal_rmaxa8 = 0.001*mm;
+  G4double crystal_rmina8 = -(coneheight8-flatheight8)*tan(coneangle8+halfTheta8);
+  G4double crystal_rmaxa8 = -(coneheight8-flatheight8)*tan(coneangle8-halfTheta8);
   G4double crystal_rminb8 = -coneheight8*tan(coneangle8+halfTheta8);
   G4double crystal_rmaxb8 = -coneheight8*tan(coneangle8-halfTheta8);
-  G4double crystal_hz8 = 0.5*(crystal_rmaxb8-crystal_rmaxa8)/crystal_rmaxb8*coneheight8;
+  G4double crystal_hz8 = 0.5*flatheight8;//(crystal_rmaxb8-crystal_rmaxa8)/crystal_rmaxb8*coneheight8;
   G4double crystal_phimin8 = 0.*deg, crystal_phimax8 = 360.*deg/detNum8;
   G4RotationMatrix tip_rotm8 = G4RotationMatrix();
-  G4ThreeVector tip_pos8 = G4ThreeVector(0,0,0.5*coneheight8/*+.0001*mm*//*-.00002*mm*/); //last term is a fudge
+  G4ThreeVector tip_pos8 = G4ThreeVector(0,0,0.5*flatheight8+(coneheight8-flatheight8)); //last term is a fudge
   G4Transform3D tip_trans8 = G4Transform3D(tip_rotm8, tip_pos8);
   G4ThreeVector z8 = G4ThreeVector(0,0,1);
   G4ThreeVector d08 = G4ThreeVector(distanceFromTarget8*sin(coneangle8)*cos(0.5*360*deg/detNum8), 
@@ -2611,7 +2618,7 @@ if(m_Ring1){
   G4int detNum9 = 6;
   G4double distanceFromTargetBack9 = 50.*mm;
   G4double theta9 = 159.0*deg;
-  G4double halfTheta9 = 12.0*deg; //+0.1*deg;  //0.1 is a fudge factor to make it cover a solid angle of 4 pi
+  G4double halfTheta9 = 12.0*deg;//-0.1*deg;  //fudge factor
   G4double lgThickness9 = 8.0*mm;
   G4double detThickness9 = 3.5*mm;
   G4double distanceFromTarget9 = distanceFromTargetBack9 - detThickness9;
@@ -2696,16 +2703,17 @@ if(m_Ring1){
   //
   // CsI Detector
   //
-  G4double coneheight9 = distanceFromTarget9;
+  G4double coneheight9 = 2*distanceFromTarget9;
+  G4double flatheight9 = coneheight9 -0.01*mm;
   G4double coneangle9 = theta9;
-  G4double crystal_rmina9 = 0.*mm;
-  G4double crystal_rmaxa9 = 0.001*mm;
+  G4double crystal_rmina9 = -(coneheight9-flatheight9)*tan(coneangle9+halfTheta9);
+  G4double crystal_rmaxa9 = -(coneheight9-flatheight9)*tan(coneangle9-halfTheta9);
   G4double crystal_rminb9 = -coneheight9*tan(coneangle9+halfTheta9);
   G4double crystal_rmaxb9 = -coneheight9*tan(coneangle9-halfTheta9);
-  G4double crystal_hz9 = 0.5*(crystal_rmaxb9-crystal_rmaxa9)/crystal_rmaxb9*coneheight9;
+  G4double crystal_hz9 = 0.5*flatheight9;//(crystal_rmaxb9-crystal_rmaxa9)/crystal_rmaxb9*coneheight9;
   G4double crystal_phimin9 = 0.*deg, crystal_phimax9 = 360.*deg/detNum9;
   G4RotationMatrix tip_rotm9 = G4RotationMatrix();
-  G4ThreeVector tip_pos9 = G4ThreeVector(0,0,0.5*coneheight9/*+.0001*mm*//*+.00001*mm*/); //last term is a fudge
+  G4ThreeVector tip_pos9 = G4ThreeVector(0,0,0.5*flatheight9+(coneheight9-flatheight9)); //last term is a fudge
   G4Transform3D tip_trans9 = G4Transform3D(tip_rotm9, tip_pos9);
   G4ThreeVector z9 = G4ThreeVector(0,0,1);
   G4ThreeVector d09 = G4ThreeVector(distanceFromTarget9*sin(coneangle9)*cos(0.5*360*deg/detNum9), 
@@ -2735,7 +2743,7 @@ if(m_Ring1){
     new G4Box("SubtractionBox9",                  //its name
 	      distanceFromTarget9,
 	      distanceFromTarget9,
-	      distanceFromTarget9);               //its size
+	      distanceFromTarget9);               //its size  
   G4Cons* solidCone9 =    
     new G4Cons("Cone9",                           //its name
 	       crystal_rmina9, crystal_rmaxa9, 

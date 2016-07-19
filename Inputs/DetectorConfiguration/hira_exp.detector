@@ -123,7 +123,7 @@ Microball
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 NeutronWall
   THETA= 40
-  PHI= 0
+  PHI= 20
   R= 4000
   BARS= 25
   VETOWALL= 1
