@@ -9,7 +9,7 @@
  * Original Author: Marc Labiche    contact address: marc.labiche@stfc.ac.uk *
  *                                                                           *
  * Creation Date  : 30/01/12                                                 *
- * Last update    :                                                          *
+ * Last update    : 31/08/15                                                 *
  *---------------------------------------------------------------------------*
  * Decription: This class stores the physical results after NPAnalysis is run*
  *             for the tracker part of the Gaspard detector.                 *
@@ -22,7 +22,7 @@
  *****************************************************************************/
 
 #include "THeliosPhysics.h"
-#include "NPDetectorFactory.h"
+//#include "NPDetectorFactory.h"
 #include <iostream>
 #include <cstdlib>
 
@@ -32,7 +32,7 @@ ClassImp(THeliosPhysics)
 
 THeliosPhysics::THeliosPhysics() 
 {
-   EventMultiplicity = 0;
+   //fEventMultiplicity = 0;
 }
 
 
@@ -59,8 +59,8 @@ void THeliosPhysics::BuildPhysicalEvent(THeliosData* Data)
    //  100: Trapezoid
    //  200: Annular
    // 1000: DummyShape
-   const int dim = 4;
-   int index[dim] = {0, 100, 200, 1000};
+   //const int dim = 4;
+   //int index[dim] = {0, 100, 200, 1000};
 
    // Check
    bool Check_FirstStage = false; if (Check_FirstStage) {};
@@ -78,7 +78,8 @@ void THeliosPhysics::BuildPhysicalEvent(THeliosData* Data)
    int multXT = Data->GetHeliosFirstStageTMult();
 
 
-   //cout << multXE << " " <<multYE << " " <<multXT << " " <<multYT << endl;
+   //cout << "############"<< endl;
+   //cout << "multXE=" << Data->GetHeliosFirstStageEMult() << " multXT="  <<multXT << endl;
  
    // Deal with multiplicity 1 for the first layer
    if (multXE==1 && multXT==1) {
@@ -90,6 +91,7 @@ void THeliosPhysics::BuildPhysicalEvent(THeliosData* Data)
       // this is needed to access the strip position information
       // WARNING: this method may not work for an heteregneous detector 
       //          configuration, e.g. Trapezoid + Annular
+/*
       int good_index = -100;
       int diff_ref = 10000;
       for (int i = 0; i < dim; i++) {
@@ -100,40 +102,49 @@ void THeliosPhysics::BuildPhysicalEvent(THeliosData* Data)
          }
       }
       det_ref -= index[good_index];
+*/
 
       // case of same detector
       if (detecXE*detecXT == 1) {
          // store module number
-         ModuleNumber.push_back(det_ref);
+         fModuleNumber.push_back(det_ref);
          // calculate strip number
+/* for helios */
          int stripXE = Data->GetHeliosFirstStageEStripNbr(0);
          int stripXT = Data->GetHeliosFirstStageTStripNbr(0);
-
+/* for helisol
+         int stripXE = Data->GetHeliosFirstStageEStripLNbr(0);  // X <=> longitudinal (ie: // to z)
+         int stripXT = Data->GetHeliosFirstStageTStripLNbr(0);  // X <=> longitudinal (ie: // to z)
+         int stripYE = Data->GetHeliosFirstStageEStripTNbr(0);  // Y <=> transversal (ie: _|_ to z)
+         int stripYT = Data->GetHeliosFirstStageTStripTNbr(0);  // Y <=> transversal (ie: _|_ to z) 
+*/
          // case of same strips on X and Y
-         if (stripXE == stripXT ) {        // here we have a good strip event
-            // various
+         if (stripXE == stripXT ) {        // here we have a good strip event for helios
+         //if (stripXE == stripXT && stripYE == stripYT) {        // here we have a good strip event for helisol
+             // various
             Check_FirstStage = true;
             EventMultiplicity = 1;
             // store strip ID
-            FirstStage_X.push_back(stripXE);
+            fFirstStage_X.push_back(stripXE);
+            //fFirstStage_Y.push_back(stripYE);  // for helisol added for back side of DSSSD
             // get energy from strips and store it
             double EnergyStrip = Data->GetHeliosFirstStageEEnergy(0);
-            FirstStage_E.push_back(EnergyStrip);
+            fFirstStage_Energy.push_back(EnergyStrip);
             double EnergyTot = EnergyStrip;
-	    //	    cout << "HeliosHeliosHeliosHeliosHeliosXXX" << endl;
-	    //	    cout << "EnergyTot=" << EnergyTot << endl;
+	    	    //cout << "XXXXXXXXXXXXXXXXXXXXXXX" << endl;
+	            // cout << "EnergyTot=" << EnergyTot << endl;
 
 
             // get time from strips and store it
             double TimeStrip = Data->GetHeliosFirstStageTTime(0);
-             FirstStage_T.push_back(TimeStrip);
-	    double TimeTot = TimeStrip;
+             fFirstStage_Time.push_back(TimeStrip);
+	        double TimeTot = TimeStrip;
 	    //      cout << "TimeTot=" << TimeTot << endl;
 
             // Fill total energy
-            TotalEnergy.push_back(EnergyTot);
+            fTotalEnergy.push_back(EnergyTot);
             // Fill time detection
-            TotalTime.push_back(TimeTot);
+            fTotalTime.push_back(TimeTot);
          }
          else {
             cout << "Not same strips" << endl;
@@ -156,38 +167,18 @@ void THeliosPhysics::BuildPhysicalEvent(THeliosData* Data)
 
 void THeliosPhysics::Clear()
 {
-   EventMultiplicity= 0;
-   ModuleNumber.clear();
-   EventType.clear();
-   TotalEnergy.clear();
-   TotalTime.clear();
+   //fEventMultiplicity= 0;
+   fModuleNumber.clear();
+   fEventType.clear();
+   fTotalEnergy.clear();
+   fTotalTime.clear();
 
    // Si X
-   FirstStage_E.clear();
-   FirstStage_T.clear();
-   FirstStage_X.clear();
-   FirstStage_Y.clear();
+   fFirstStage_Energy.clear();
+   fFirstStage_Time.clear();
+   fFirstStage_X.clear();
+   fFirstStage_Y.clear();
 
 }
-////////////////////////////////////////////////////////////////////////////////
-//            Construct Method to be pass to the DetectorFactory              //
-////////////////////////////////////////////////////////////////////////////////
-NPL::VDetector* THeliosPhysics::Construct(){
-  return (NPL::VDetector*) new THeliosPhysics();
-}
 
-////////////////////////////////////////////////////////////////////////////////
-//            Registering the construct method to the factory                 //
-////////////////////////////////////////////////////////////////////////////////
-extern "C"{
-class proxy_helios{
-  public:
-    proxy_helios(){
-      NPL::DetectorFactory::getInstance()->AddToken("Helios","Helios");
-      NPL::DetectorFactory::getInstance()->AddDetector("Helios",THeliosPhysics::Construct);
-    }
-};
-
-proxy_helios p;
-}
 

@@ -9,7 +9,7 @@
  * Original Author: Marc Labiche    contact address: marc.labiche@stfc.ac.uk *
  *                                                                           *
  * Creation Date  : 31/01/12                                                 *
- * Last update    :                                                          *
+ * Last update    : 31/08/15                                                 *
  *---------------------------------------------------------------------------*
  * Decription: This class holds all the scorers needed by the                *
  *             Helios*** objects.                                            *
@@ -54,7 +54,11 @@ private:
 class HeliosScorerFirstStageFrontStripDummyShape : public G4VPrimitiveScorer
 {
 public: // with description
-   HeliosScorerFirstStageFrontStripDummyShape(G4String name, G4int depth = 0, G4int NumberOfStrip = 128);
+  //HeliosScorerFirstStageFrontStripDummyShape(G4String name, G4int depth = 0, G4int NumberOfStrip = 128);
+   //HeliosScorerFirstStageFrontStripDummyShape(G4String name, G4int depth = 0, G4int NumberOfStrip = 250); // 0.5mm
+   HeliosScorerFirstStageFrontStripDummyShape(G4String name, G4int depth = 0, G4int NumberOfStrip = 128); // 1mm
+   //HeliosScorerFirstStageFrontStripDummyShape(G4String name, G4int depth = 0, G4int NumberOfStrip = 62);  // 2mm
+   //HeliosScorerFirstStageFrontStripDummyShape(G4String name, G4int depth = 0, G4int NumberOfStrip = 25); // 5mm
    virtual ~HeliosScorerFirstStageFrontStripDummyShape();
 
 protected: // with description
@@ -78,7 +82,11 @@ private:
 class HeliosScorerFirstStageBackStripDummyShape : public G4VPrimitiveScorer
 {
 public: // with description
-   HeliosScorerFirstStageBackStripDummyShape(G4String name, G4int depth = 0, G4int NumberOfStrip = 128);
+   //HeliosScorerFirstStageBackStripDummyShape(G4String name, G4int depth = 0, G4int NumberOfStrip = 128);
+   //HeliosScorerFirstStageBackStripDummyShape(G4String name, G4int depth = 0, G4int NumberOfStrip = 22); // 22x1mm
+   //HeliosScorerFirstStageBackStripDummyShape(G4String name, G4int depth = 0, G4int NumberOfStrip = 10); // 11x2mm for helisol50.6
+   HeliosScorerFirstStageBackStripDummyShape(G4String name, G4int depth = 0, G4int NumberOfStrip = 11); // 11x2mm for helisol54
+   //HeliosScorerFirstStageBackStripDummyShape(G4String name, G4int depth = 0, G4int NumberOfStrip = 12); // 12x2mm for helisol57.5
    virtual ~HeliosScorerFirstStageBackStripDummyShape();
 
 protected: // with description
@@ -97,151 +105,6 @@ private:
    G4THitsMap<G4double>* EvtMap;
 };
 
-
-
-class HeliosScorerFirstStageFrontStripSquare : public G4VPrimitiveScorer
-{
-public: // with description
-   HeliosScorerFirstStageFrontStripSquare(G4String name, G4int depth = 0, G4int NumberOfStrip = 128);
-   virtual ~HeliosScorerFirstStageFrontStripSquare();
-
-protected: // with description
-   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-
-public:
-   virtual void Initialize(G4HCofThisEvent*);
-   virtual void EndOfEvent(G4HCofThisEvent*);
-   virtual void Clear();
-   virtual void DrawAll();
-   virtual void PrintAll();
-
-private:
-   G4int     m_NumberOfStrip ;
-   G4int HCID;
-   G4THitsMap<G4double>* EvtMap;
-};
-
-
-
-class HeliosScorerFirstStageBackStripSquare : public G4VPrimitiveScorer
-{
-public: // with description
-   HeliosScorerFirstStageBackStripSquare(G4String name, G4int depth = 0, G4int NumberOfStrip = 128);
-   virtual ~HeliosScorerFirstStageBackStripSquare();
-
-protected: // with description
-   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-
-public:
-   virtual void Initialize(G4HCofThisEvent*);
-   virtual void EndOfEvent(G4HCofThisEvent*);
-   virtual void Clear();
-   virtual void DrawAll();
-   virtual void PrintAll();
-
-private:
-   G4int     m_NumberOfStrip ;
-   G4int HCID;
-   G4THitsMap<G4double>* EvtMap;
-};
-
-
-
-class HeliosScorerFirstStageFrontStripTrapezoid : public G4VPrimitiveScorer
-{
-public: // with description
-   HeliosScorerFirstStageFrontStripTrapezoid(G4String name, G4int depth = 0, G4int NumberOfStrip = 128);
-   virtual ~HeliosScorerFirstStageFrontStripTrapezoid();
-
-protected: // with description
-   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-
-public:
-   virtual void Initialize(G4HCofThisEvent*);
-   virtual void EndOfEvent(G4HCofThisEvent*);
-   virtual void Clear();
-   virtual void DrawAll();
-   virtual void PrintAll();
-
-private:
-   G4int     m_NumberOfStrip ;
-   G4int HCID;
-   G4THitsMap<G4double>* EvtMap;
-};
-
-
-
-class HeliosScorerFirstStageBackStripTrapezoid : public G4VPrimitiveScorer
-{
-public: // with description
-   HeliosScorerFirstStageBackStripTrapezoid(G4String name, G4int depth = 0, G4int NumberOfStrip = 128);
-   virtual ~HeliosScorerFirstStageBackStripTrapezoid();
-
-protected: // with description
-   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-
-public:
-   virtual void Initialize(G4HCofThisEvent*);
-   virtual void EndOfEvent(G4HCofThisEvent*);
-   virtual void Clear();
-   virtual void DrawAll();
-   virtual void PrintAll();
-
-private:
-   G4int     m_NumberOfStrip ;
-   G4int HCID;
-   G4THitsMap<G4double>* EvtMap;
-};
-
-
-
-class HeliosScorerFirstStageFrontStripAnnular : public G4VPrimitiveScorer
-{
-public: // with description
-   HeliosScorerFirstStageFrontStripAnnular(G4String name, G4int depth = 0, G4double StripPlaneSize = 98, G4int NumberOfStrip = 128);
-   virtual ~HeliosScorerFirstStageFrontStripAnnular();
-
-protected: // with description
-   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-
-public:
-   virtual void Initialize(G4HCofThisEvent*);
-   virtual void EndOfEvent(G4HCofThisEvent*);
-   virtual void Clear();
-   virtual void DrawAll();
-   virtual void PrintAll();
-
-private:
-   G4double  m_StripPlaneSize;
-   G4int     m_NumberOfStrip ;
-   G4int HCID;
-   G4THitsMap<G4double>* EvtMap;
-};
-
-
-
-class HeliosScorerFirstStageBackStripAnnular : public G4VPrimitiveScorer
-{
-public: // with description
-   HeliosScorerFirstStageBackStripAnnular(G4String name, G4int depth = 0, G4double StripPlaneSize = 98, G4int NumberOfStrip = 128);
-   virtual ~HeliosScorerFirstStageBackStripAnnular();
-
-protected: // with description
-   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-
-public:
-   virtual void Initialize(G4HCofThisEvent*);
-   virtual void EndOfEvent(G4HCofThisEvent*);
-   virtual void Clear();
-   virtual void DrawAll();
-   virtual void PrintAll();
-
-private:
-   G4double  m_StripPlaneSize;
-   G4int     m_NumberOfStrip ;
-   G4int HCID;
-   G4THitsMap<G4double>* EvtMap;
-};
 
 }
 

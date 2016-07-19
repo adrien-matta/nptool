@@ -9,7 +9,7 @@
  * Original Author: Marc Labiche    contact address: marc.labiche@stfc.ac.uk *
  *                                                                           *
  * Creation Date  : 31/01/12                                                 *
- * Last update    :                                                          *
+ * Last update    : 31/08/15                                                 *
  *---------------------------------------------------------------------------*
  * Decription: This class is an Abstract Base Class (ABC) from which should  *
  *             derive all different modules from the Helios detector.        *

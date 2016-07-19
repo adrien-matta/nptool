@@ -11,7 +11,7 @@
  * Original Author: M. Labiche  contact address: marc.labiche@stfc.ac.uk     *
  *                                                                           *
  * Creation Date  : 30/01/12                                                 *
- * Last update    : 30/01/12                                                 *
+ * Last update    : 15/08/15                                                 *
  *---------------------------------------------------------------------------*
  * Decription: This class is mainly an interface to the                      *
  *             THeliosPhysics class and it deals with the geometrical        *
@@ -50,7 +50,7 @@ public:
 
    // Activated associated Branches and link it to the private member DetectorData address
    // In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
-   void InitializeRootInput();
+   void InitializeRootInputRaw();
 
    // Create associated branches and associated private member DetectorPhysics address
    void InitializeRootOutput();
@@ -73,20 +73,6 @@ public:
    ////////////////////////////////
    // Specific to Helios //
    ////////////////////////////////
-   // Case of a Square module
-   // Add a Module using Corner Coordinate information
-   void AddModuleSquare(TVector3 C_X1_Y1,
-                        TVector3 C_X128_Y1,
-                        TVector3 C_X1_Y128,
-                        TVector3 C_X128_Y128);
-
-   // Add a Module using R Theta Phi of Si center information
-   void AddModuleSquare(double theta,
-                        double phi,
-                        double distance, 
-                        double beta_u,
-                        double beta_v,
-                        double beta_w);
 
    // Case of a DummyShape module
    // Add a Module using Corner Coordinate information
@@ -109,6 +95,9 @@ public:
    double GetStripPositionZ(int N ,int X ,int Y)	{ return m_StripPositionZ[N-1][X-1][Y-1]; }
    double GetNumberOfModule()	 			{ return m_NumberOfModule; }
 
+   double GetTargetThickness()                            { return m_TargThick; }
+   double GetNominalMField()                            { return m_NominalField; }
+
    // Get Root input and output objects
    THeliosData* 	GetEventData()		{return m_EventData;}
    THeliosPhysics*	GetEventPhysics()	{return m_EventPhysics;}
@@ -119,6 +108,7 @@ public:
    TVector3	GetPositionOfInteraction();
 
    void		Print();
+
 
 
 private:
@@ -132,9 +122,17 @@ private:
 private:
    // Spatial Position of Strip Calculated on basis of detector position
    int m_NumberOfModule;
+   double m_NominalField;
+   double m_TargThick;
    vector< vector < vector < double > > >	m_StripPositionX;
    vector< vector < vector < double > > >	m_StripPositionY;
    vector< vector < vector < double > > >	m_StripPositionZ;
+
+
+
+  public: // Static constructor to be passed to the Detector Factory
+    static NPL::VDetector* Construct();
+
 };
 
 #endif

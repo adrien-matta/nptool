@@ -9,14 +9,16 @@
  * Original Author: Marc Labiche    contact address: marc.labiche@stfc.ac.uk *
  *                                                                           *
  * Creation Date  : 31/01/12                                                 *
- * Last update    :                                                          *
+ * Last update    : 31/08/15                                                 *
  *---------------------------------------------------------------------------*
  * Decription: Define a dummy module for the Helios detector                 *
  *             The goal of this class is to be a starting point to create a  *
  *             new shape to be added to the Helios detector.                 *
  *                                                                           *
  *---------------------------------------------------------------------------*
- * Comment: Here tyhe shape is a rectangular box (w~1cm, l~5cm, d~700um)     *
+ * Comment:                                                                  *
+ * For Helios, the shape is a rectangular box (w~1cm, l~5cm, d~700um)        *
+ * For Helisol, the shape is a rectangular box (w~2.2cm, l~12.5cm, d~1000um) *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
@@ -29,7 +31,9 @@
 // G4 Geometry headers
 #include "G4Trd.hh"
 #include "G4Box.hh"
+#include "G4Tubs.hh"
 #include "G4Trap.hh"
+#include "G4Polyhedra.hh"
 #include "G4SubtractionSolid.hh"
 
 // G4 various headers
@@ -43,10 +47,18 @@
 #include "G4PVPlacement.hh"
 #include "G4PVDivision.hh"
 
+// For the magnetic field
+#include "MyMagneticField.hh"
+#include "G4FieldManager.hh"
+#include "G4TransportationManager.hh"
+#include "G4ChordFinder.hh"
+#include "G4MagIntegratorStepper.hh"
+
 // G4 sensitive
 #include "G4SDManager.hh"
 #include "G4MultiFunctionalDetector.hh"
 #include "NPSVDetector.hh"
+
 // NPTool headers
 #include "HeliosDetDummyShape.hh"
 #include "ObsoleteGeneralScorers.hh"
@@ -164,6 +176,11 @@ void HeliosDetDummyShape::VolumeMaker(G4int TelescopeNumber,
    density = 2.321 * g / cm3;
    G4Material* Silicon = new G4Material("Si", z = 14., a, density);
 
+   // Al
+   a = 26.98 * g / mole;
+   density = 2.7 * g / cm3;
+   G4Material* Aluminium = new G4Material("Al", z = 13., a, density);
+
    // Copper
    a = 63.546 * g / mole;
    density = 8.96 * g / cm3;
@@ -197,6 +214,79 @@ void HeliosDetDummyShape::VolumeMaker(G4int TelescopeNumber,
    ////////////////////////////////////////////////////////////////
    ////////////// Starting Volume Definition //////////////////////
    ////////////////////////////////////////////////////////////////
+
+   //
+   //  Detector support structure (rods)
+   //
+     // Add the Aluminium rod
+
+      /* For helios: */ 
+      G4double Al_rod_x = 1. * cm; // half width
+      G4double Al_rod_y = 1. * cm; // half height
+      G4double Al_rod_z = 20.0 * cm; // half length
+      G4Box* Al_rod_box
+      = new G4Box("Al_rod_box", Al_rod_x, Al_rod_y, Al_rod_z);
+      G4Tubs* Al_rod_tub
+      = new G4Tubs("Al_rod_tub", 0, 0.5*cm, Al_rod_z+1.*mm, 0.*deg, 360*deg);
+      G4SubtractionSolid* Al_rod=new G4SubtractionSolid("Rod",Al_rod_box, Al_rod_tub, 0, G4ThreeVector(0.,0.,0.));
+
+      G4LogicalVolume* Al_rod_log = new G4LogicalVolume(Al_rod, Aluminium, "Al_rod", 0, 0, 0);
+         
+      //new G4PVPlacement(0, G4ThreeVector(0.,0., Al_rod_z+1.*mm + 12.5*cm), Al_rod_log, "Al_rod", world, false, 0);  // 150
+      //new G4PVPlacement(0, G4ThreeVector(0.,0., -(Al_rod_z+1.*mm + 12.5*cm)), Al_rod_log, "Al_rod", world, false, 1); // -150
+      //new G4PVPlacement(0, G4ThreeVector(0.,0., Al_rod_z+1.*mm + 8.5*cm), Al_rod_log, "Al_rod", world, false, 0);  // 100
+      new G4PVPlacement(0, G4ThreeVector(0.,0., -(Al_rod_z+1.*mm + 8.5*cm)), Al_rod_log, "Al_rod", world, false, 1); // -100
+      
+      
+
+	  /* For helisol: */ /*
+       const G4double Zplan[2]={140*mm, 670*mm}; // if first silicons are at 150mm to target (helisol.detector)
+      //const G4double Zplan[2]={90*mm, 620*mm}; // if first silicon at 100mm to target (helisol_2.detector)
+      //const G4double Zplan[2]={40*mm, 570*mm}; // if first silicon at 50mm to target (helisol_3.detector)
+       const G4double Rinner[2]={15*mm, 15*mm};
+       const G4double Router[2]={24*mm, 24*mm};
+       G4Polyhedra* Al_rod= new G4Polyhedra("Al_rod", 0., 360*deg, 6, 2, Zplan, Rinner, Router);      
+      
+       G4LogicalVolume* Al_rod_log = new G4LogicalVolume(Al_rod, Aluminium, "Al_rod", 0, 0, 0);
+         
+       G4RotationMatrix* RotZ30Y180 = new G4RotationMatrix();
+       RotZ30Y180->rotateY(180*deg);
+       RotZ30Y180->rotateZ(30*deg);
+       G4RotationMatrix* RotZ30 = new G4RotationMatrix();
+       RotZ30->rotateZ(30*deg);
+
+       new G4PVPlacement(RotZ30, G4ThreeVector(0.,0., 0.), Al_rod_log, "Al_rod", world, false, 0);
+       new G4PVPlacement(RotZ30Y180, G4ThreeVector(0.,0., 0.), Al_rod_log, "Al_rod", world, false, 1);
+	   */      
+
+      //
+      // Add the Aluminium chamber
+      //
+      G4double Al_chamber_rmin = 50. * cm;
+      G4double Al_chamber_rmax = 50.5 * cm;
+      G4double Al_chamber_z = 100.0 * cm;
+      
+      //G4Tubs* Al_chamber_tub
+      //  = new G4Tubs("Al_chamber_tub", Al_chamber_rmin, Al_chamber_rmax, Al_chamber_z, 0.*deg, 180*deg);
+      G4Tubs* Al_chamber_tub
+      = new G4Tubs("Al_chamber_tub", Al_chamber_rmin, Al_chamber_rmax, Al_chamber_z, 0.*deg, 360*deg);
+      
+      G4LogicalVolume* Al_chamber_log = new G4LogicalVolume(Al_chamber_tub, Aluminium, "Al_chamber", 0, 0, 0);
+      
+      G4RotationMatrix* RotZ = new G4RotationMatrix();
+      RotZ->rotateZ(-90*deg);
+      
+      new G4PVPlacement(RotZ, G4ThreeVector(0.,0.,0.), Al_chamber_log, "Al_chamber", world, false, 0);
+      
+      
+      //G4VisAttributes* VisAtt1 = new G4VisAttributes(G4Colour(0.2, 0.5, 0.8));
+      //Al_rod_log->SetVisAttributes(VisAtt1);
+      //G4VisAttributes* VisAtt2 = new G4VisAttributes(G4Colour(0., 0.5, 0.3));
+      //Al_chamber_log->SetVisAttributes(VisAtt2);
+
+   //
+   // Silicon mother volume (vacuum)
+   //
    G4String Name = "HeliosDummyShape" + DetectorNumber ;
 
    G4Box*           solidHeliosDummyShape = new G4Box(Name, 0.5*FaceFrontWidth, 0.5*FaceFrontLength, 0.5*Thickness);
@@ -209,9 +299,26 @@ void HeliosDetDummyShape::VolumeMaker(G4int TelescopeNumber,
                                      false                        ,
                                      0);
 
-   //logicHeliosDummyShape->SetVisAttributes(G4VisAttributes::Invisible);
-   logicHeliosDummyShape->SetVisAttributes(G4VisAttributes(G4Colour(1, 0., 0.0)));  // red
+   logicHeliosDummyShape->SetVisAttributes(G4VisAttributes::Invisible);
+   //logicHeliosDummyShape->SetVisAttributes(G4VisAttributes(G4Colour(1, 0., 0.0)));  // red
    //if (m_non_sensitive_part_visiualisation) logicHeliosDummyShape->SetVisAttributes(G4VisAttributes(G4Colour(0.90, 0.90, 0.90)));
+
+
+   // Adding front Al layer for helisol
+   /*
+      G4Box*           solidAlLayer = new G4Box("AlLayer", 0.5*FaceFrontWidth, 0.5*FaceFrontLength, 0.5*AlThickness);
+   G4LogicalVolume* logicAlLayer = new G4LogicalVolume(solidAlLayer, Aluminium, "AlLayer", 0, 0, 0);
+
+   new G4PVPlacement(0,
+		     G4ThreeVector(0.,0., +0.5*FirstStageThickness+0.5*AlThickness),
+		     logicAlLayer,
+		     "AlLayer",
+		     logicHeliosDummyShape,
+		     false,
+		     0);
+
+   logicAlLayer->SetVisAttributes(G4VisAttributes(G4Colour(0, 200, 200)));  // green
+   */
 
    //Place two marker to identify the u and v axis on silicon face:
    //marker are placed a bit before the silicon itself so they don't perturbate simulation
@@ -334,7 +441,58 @@ void HeliosDetDummyShape::ReadConfiguration(string Path)
 //   bool check_NStrip = false;
    bool checkVis = false;
 
+     static G4bool fieldIsInitialized = false;
+
+
    while (!ConfigFile.eof()) {
+
+//
+// First Read Magneticfield nominal value
+//
+     if(!fieldIsInitialized)
+       {
+	 //getline(ConfigFile, LineBuffer);
+
+	 ConfigFile >> DataBuffer;
+
+	 cout << DataBuffer << endl;
+         if (DataBuffer.compare(0, 1, "%") == 0) {/*do nothing */;}
+	
+         // Position method
+         else if (DataBuffer.compare(0, 7, "MField=") == 0) {
+	   ConfigFile >> DataBuffer ;
+           
+	   Bz = atof(DataBuffer.c_str()) ;
+          
+	   G4cout << "/// Magnetic field nominal value " << Bz << G4endl   ;
+	   
+	   
+	   //if(!fieldIsInitialized)
+	   //  {
+	       MyMagneticField* myField = new MyMagneticField(G4ThreeVector(0.,0.,Bz));
+	       
+	       G4FieldManager* fieldMgr
+		 = G4TransportationManager::GetTransportationManager()
+		 ->GetFieldManager();
+	       fieldMgr->SetDetectorField(myField);
+	       
+	       
+	       
+		// G4MagIntegratorStepper *pItsStepper;
+		// G4ChordFinder* pChordFinder= new G4ChordFinder(myField,
+		// 1.0e-2*mm,  // stepper size
+		// pItsStepper=0);
+		// fieldMgr->SetChordFinder(pChordFinder);
+	       
+	       
+	       fieldMgr->CreateChordFinder(myField);
+	       
+	       fieldIsInitialized = true;
+	   //}
+	   
+	 }
+	 }
+
       getline(ConfigFile, LineBuffer);
       if (LineBuffer.compare(0, 16, "HeliosDummyShape") == 0) {
          G4cout << "///" << G4endl           ;
@@ -548,6 +706,13 @@ void HeliosDetDummyShape::ConstructDetector(G4LogicalVolume* world)
          MMrot = new G4RotationMatrix(MMu, MMv, MMw);
          // translation to place Telescope
          MMpos = MMw * Thickness * 0.5 + MMCenter;
+
+
+	 //cout << "MMposX= " << MMpos.getX() << " MMposY= " << MMpos.getY()  << " MMposZ= " << MMpos.getZ()  << endl; 
+	 //cout << "MMposX= " << MMpos.getX() << " MMposY= " << MMpos.getY()  << " MMposZ= " << MMpos.getZ()  << endl; 
+
+
+
       }
 
       // By Angle
@@ -639,14 +804,13 @@ void HeliosDetDummyShape::ReadSensitive(const G4Event* event)
    G4THitsMap<G4int>*    DetectorNumberHitMap;
    G4THitsMap<G4double>* EnergyHitMap;
    G4THitsMap<G4double>* TimeHitMap;
-   G4THitsMap<G4double>* XHitMap;
-   G4THitsMap<G4double>* YHitMap;
+   G4THitsMap<G4double>* XHitMap;  // X strip id
+   G4THitsMap<G4double>* YHitMap;  // Y strip id
    G4THitsMap<G4double>* PosXHitMap;
    G4THitsMap<G4double>* PosYHitMap;
    G4THitsMap<G4double>* PosZHitMap;
    G4THitsMap<G4double>* AngThetaHitMap;
    G4THitsMap<G4double>* AngPhiHitMap;
-
 
 
    // Read the Scorer associate to the Silicon Strip
@@ -740,9 +904,11 @@ void HeliosDetDummyShape::ReadSensitive(const G4Event* event)
          ms_Event->SetHeliosFirstStageTDetectorNbr(m_index["DummyShape"] + N);
 
          // Energy
+        Energy_itr = EnergyHitMap->GetMap()->begin();
          for (G4int ll = 0 ; ll < sizeE ; ll++) {
             G4int ETrackID  =   Energy_itr->first - N;
             G4double E     = *(Energy_itr->second);
+
             if (ETrackID == NTrackID) {
                ms_Event->SetHeliosFirstStageEEnergy(RandGauss::shoot(E, ResoFirstStage));
               }
@@ -767,13 +933,30 @@ void HeliosDetDummyShape::ReadSensitive(const G4Event* event)
             G4int XTrackID  =   X_itr->first - N;
             G4double X     = *(X_itr->second);
             if (XTrackID == NTrackID) {
-	      ms_Event->SetHeliosFirstStageEStripNbr(int(X));
-	      ms_Event->SetHeliosFirstStageTStripNbr(int(X));
+	        ms_Event->SetHeliosFirstStageEStripNbr(int(X));
+	        ms_Event->SetHeliosFirstStageTStripNbr(int(X));
+	         //ms_Event->SetHeliosFirstStageEStripTNbr(X);
+	         //ms_Event->SetHeliosFirstStageTStripTNbr(X);
             }
             X_itr++;
          }
 
- 
+          // Strip Y
+          /*
+           Y_itr = YHitMap->GetMap()->begin();
+           for (G4int h = 0 ; h < sizeY ; h++) {
+             G4int YTrackID  =   Y_itr->first - N;
+             G4double Y     = *(Y_itr->second);
+             if (YTrackID == NTrackID) {
+	         //ms_Event->SetHeliosFirstStageEStripNbr(int(X));
+	         //ms_Event->SetHeliosFirstStageTStripNbr(int(X));
+	          ms_Event->SetHeliosFirstStageEStripLNbr(Y);
+	          ms_Event->SetHeliosFirstStageTStripLNbr(Y);
+             }
+             Y_itr++;
+          }
+          */
+
          // Pos X
          Pos_X_itr = PosXHitMap->GetMap()->begin();
          for (G4int h = 0 ; h < sizeX ; h++) {
@@ -802,7 +985,7 @@ void HeliosDetDummyShape::ReadSensitive(const G4Event* event)
             G4int PosZTrackID =   Pos_Z_itr->first - N    ;
             G4double PosZ     = *(Pos_Z_itr->second)      ;
             if (PosZTrackID == NTrackID) {
-	      ms_InterCoord->SetDetectedPositionZ(RandGauss::shoot(PosZ, ResoFirstStage)) ; // for helios !!!!
+	         ms_InterCoord->SetDetectedPositionZ(RandGauss::shoot(PosZ, ResoFirstStage)) ; // for helios !!!!
             }
             Pos_Z_itr++;
          }
@@ -829,9 +1012,9 @@ void HeliosDetDummyShape::ReadSensitive(const G4Event* event)
             Ang_Phi_itr++;
          }
 
-
-         DetectorNumber_itr++;
       }
+      DetectorNumber_itr++;
+   }
 
       // clear map for next event
       DetectorNumberHitMap    -> clear();
@@ -844,7 +1027,7 @@ void HeliosDetDummyShape::ReadSensitive(const G4Event* event)
       PosZHitMap              -> clear();
       AngThetaHitMap          -> clear();
       AngPhiHitMap            -> clear();
-   }
+
 }
 
 
@@ -865,6 +1048,8 @@ void HeliosDetDummyShape::InitializeScorers()
    G4VPrimitiveScorer* InteractionCoordinatesAngleTheta = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","HeliosDummyShape", 0);
    G4VPrimitiveScorer* InteractionCoordinatesAnglePhi   = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","HeliosDummyShape", 0);
    G4VPrimitiveScorer* Energy                           = new HeliosScorerFirstStageEnergy("StripEnergy", "HeliosDummyShape", 0);
+//   G4VPrimitiveScorer* StripPositionX                   = new HeliosScorerFirstStageFrontStripDummyShape("StripIDFront", 0, NumberOfTStrips);  // X <=> transversal (ie: _|_ to z)
+//   G4VPrimitiveScorer* StripPositionY                   = new HeliosScorerFirstStageBackStripDummyShape("StripIDBack", 0, NumberOfLStrips);    // Y <=> longitudinal (ie: // to z)
    G4VPrimitiveScorer* StripPositionX                   = new HeliosScorerFirstStageFrontStripDummyShape("StripIDFront", 0, NumberOfStrips);
    G4VPrimitiveScorer* StripPositionY                   = new HeliosScorerFirstStageBackStripDummyShape("StripIDBack", 0, NumberOfStrips);
 

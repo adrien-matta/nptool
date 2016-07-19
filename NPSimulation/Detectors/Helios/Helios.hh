@@ -9,7 +9,7 @@
  * Original Author: Marc Labiche    contact address: marc.labiche@stfc.ac.uk *
  *                                                                           *
  * Creation Date  : 31/01/12                                                 *
- * Last update    :                                                          *
+ * Last update    : 31/08/15                                                 *
  *---------------------------------------------------------------------------*
  * Decription: This class manages different shapes of module for the Helios  *
  *             detector. It allows to have Helios geometries with an         *
