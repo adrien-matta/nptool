@@ -43,9 +43,9 @@ class MyMagneticField : public G4MagneticField
 
   private:
     G4double fFieldComponents[3];
-    G4double rmax;
-    G4double zmax;
-    G4double zmin;
-};
+    G4double rbore;
+    G4double zbore;
+    G4double deltaB_Bz0;
+    G4double Bz0;};
 
 #endif
