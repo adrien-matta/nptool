@@ -42,34 +42,34 @@ using namespace std;
 //   tranform an integer to a string
 string itoa(int value)
 {
-   char buffer [33];
-   sprintf(buffer,"%d",value);
-   return buffer;
+    char buffer [33];
+    sprintf(buffer,"%d",value);
+    return buffer;
 }
 
 ClassImp(TLassaPhysics)
 ///////////////////////////////////////////////////////////////////////////
 TLassaPhysics::TLassaPhysics()
-   {
-       //EventMultiplicity    = 0 ;
-       m_NumberOfTelescope  = 0 ;
-       m_EventData          = new TLassaData ;
-       m_PreTreatedData     = new TLassaData;
-       m_EventPhysics       = this ;
-   }
-   
+{
+    //EventMultiplicity    = 0 ;
+    m_NumberOfTelescope  = 0 ;
+    m_EventData          = new TLassaData ;
+    m_PreTreatedData     = new TLassaData;
+    m_EventPhysics       = this ;
+}
+
 ///////////////////////////////////////////////////////////////////////////
 TLassaPhysics::~TLassaPhysics()
-   {}
-   
+{}
+
 ///////////////////////////////////////////////////////////////////////////
 void TLassaPhysics::Clear(){
     TelescopeNumber.clear();
     
-/*    // Thin Si
-    ThinSi_E.clear();
-    ThinSi_T.clear();
-    ThinSi_StripNumber.clear();*/
+    /*    // Thin Si
+     ThinSi_E.clear();
+     ThinSi_T.clear();
+     ThinSi_StripNumber.clear();*/
     
     //Thick Si
     ThickSi_E.clear();
@@ -100,7 +100,7 @@ void TLassaPhysics::ReadConfiguration(string Path){
     
     double Ax , Bx , Cx , Dx , Ay , By , Cy , Dy , Az , Bz , Cz , Dz          ;
     TVector3 A , B , C , D                                                 ;
-
+    
     
     bool ReadingStatus = false ;
     
@@ -301,7 +301,7 @@ void TLassaPhysics::AddTelescope(TVector3 Pos1, TVector3 Pos2, TVector3 Pos3, TV
     vector< vector< double > >   OneTelescopeStripPositionX;
     vector< vector< double > >   OneTelescopeStripPositionY;
     vector< vector< double > >   OneTelescopeStripPositionZ;
-
+    
     //   Position Vector of Strip Center
     TVector3 StripCenter = TVector3(0,0,0);
     //   Position Vector of X=1 Y=1 Strip
@@ -331,7 +331,7 @@ void TLassaPhysics::AddTelescope(TVector3 Pos1, TVector3 Pos2, TVector3 Pos3, TV
     m_StripPositionX.push_back( OneTelescopeStripPositionX ) ;
     m_StripPositionY.push_back( OneTelescopeStripPositionY ) ;
     m_StripPositionZ.push_back( OneTelescopeStripPositionZ ) ;
-
+    
 }
 
 
@@ -347,44 +347,44 @@ TVector3 TLassaPhysics::GetPositionOfInteraction(const int i) const{
 
 ///////////////////////////////////////////////////////////////////////////
 void TLassaPhysics::AddParameterToCalibrationManager()
-   {
-      CalibrationManager* Cal = CalibrationManager::getInstance();
-      
-      for(int i = 0 ; i < m_NumberOfTelescope ; i++)
-         {
-            for( int j = 0 ; j < 16 ; j++)
-               {
-                  Cal->AddParameter("Lassa", "Detector"+itoa(i+1)+"_E","Lassa_Detector"+itoa(i+1)+"_E")   ;
-                  Cal->AddParameter("Lassa", "Detector"+itoa(i+1)+"_T","Lassa_Detector"+itoa(i+1)+"_T")   ;   
-               }
-      
-         }
-   }
-   
+{
+    CalibrationManager* Cal = CalibrationManager::getInstance();
+    
+    for(int i = 0 ; i < m_NumberOfTelescope ; i++)
+    {
+        for( int j = 0 ; j < 16 ; j++)
+        {
+            Cal->AddParameter("Lassa", "Detector"+itoa(i+1)+"_E","Lassa_Detector"+itoa(i+1)+"_E")   ;
+            Cal->AddParameter("Lassa", "Detector"+itoa(i+1)+"_T","Lassa_Detector"+itoa(i+1)+"_T")   ;
+        }
+        
+    }
+}
+
 ///////////////////////////////////////////////////////////////////////////
-void TLassaPhysics::InitializeRootInputRaw() 
-   {
-      TChain* inputChain = RootInput::getInstance()->GetChain()     ;
-      inputChain->SetBranchStatus ( "Lassa"       , true )        ;
-      inputChain->SetBranchStatus ( "fLassa_*"    , true )        ;
-      inputChain->SetBranchAddress( "Lassa"       , &m_EventData )  ;
-   }
+void TLassaPhysics::InitializeRootInputRaw()
+{
+    TChain* inputChain = RootInput::getInstance()->GetChain()     ;
+    inputChain->SetBranchStatus ( "Lassa"       , true )        ;
+    inputChain->SetBranchStatus ( "fLassa_*"    , true )        ;
+    inputChain->SetBranchAddress( "Lassa"       , &m_EventData )  ;
+}
 ///////////////////////////////////////////////////////////////////////////
 void TLassaPhysics::InitializeRootInputPhysics()
-   {
-      TChain* inputChain = RootInput::getInstance()->GetChain();
-      inputChain->SetBranchStatus ( "Lassa", true );
-      inputChain->SetBranchStatus ( "DetectorNumber", true );
-      inputChain->SetBranchStatus ( "Energy", true );
-      inputChain->SetBranchStatus ( "Time", true );
-      inputChain->SetBranchAddress( "Lassa", &m_EventPhysics );
-   }
+{
+    TChain* inputChain = RootInput::getInstance()->GetChain();
+    inputChain->SetBranchStatus ( "Lassa", true );
+    inputChain->SetBranchStatus ( "DetectorNumber", true );
+    inputChain->SetBranchStatus ( "Energy", true );
+    inputChain->SetBranchStatus ( "Time", true );
+    inputChain->SetBranchAddress( "Lassa", &m_EventPhysics );
+}
 ///////////////////////////////////////////////////////////////////////////
 void TLassaPhysics::InitializeRootOutput()
-   {
-      TTree* outputTree = RootOutput::getInstance()->GetTree()            ;
-      outputTree->Branch( "Lassa" , "TLassaPhysics" , &m_EventPhysics ) ;
-   }
+{
+    TTree* outputTree = RootOutput::getInstance()->GetTree()            ;
+    outputTree->Branch( "Lassa" , "TLassaPhysics" , &m_EventPhysics ) ;
+}
 
 ///////////////////////////////////////////////////////////////////////////
 void TLassaPhysics::BuildPhysicalEvent(){
@@ -398,34 +398,34 @@ void TLassaPhysics::BuildSimplePhysicalEvent(){
     m_ThickSi_EXMult    = m_PreTreatedData->GetLassaStripXEMult();
     m_ThickSi_EYMult    = m_PreTreatedData->GetLassaStripYEMult();
     m_CsI_EMult         = m_PreTreatedData->GetLassaCsIEMult();
-   
- 
+    
+    
     /*for(unsigned int i = 0 ; i < m_ThinSi_EMult ; ++i){
-        TelescopeNumber.push_back(m_PreTreatedData->GetLassaThinSiStripEDetectorNbr(i));
-        ThinSi_StripNumber.push_back(m_PreTreatedData->GetLassaThinSiStripEStripNbr(i));
-        ThinSi_E.push_back(m_PreTreatedData->GetLassaThinSiStripEEnergy(i));
-        ThinSi_T.push_back(m_PreTreatedData->GetLassaThinSiStripTTime(i));
-    }*/
-
+     TelescopeNumber.push_back(m_PreTreatedData->GetLassaThinSiStripEDetectorNbr(i));
+     ThinSi_StripNumber.push_back(m_PreTreatedData->GetLassaThinSiStripEStripNbr(i));
+     ThinSi_E.push_back(m_PreTreatedData->GetLassaThinSiStripEEnergy(i));
+     ThinSi_T.push_back(m_PreTreatedData->GetLassaThinSiStripTTime(i));
+     }*/
+    
     if(CheckEvent(m_ThickSi_EXMult,m_ThickSi_EYMult) == 1){
-    
-      for(unsigned int i = 0 ; i < m_ThickSi_EXMult ; ++i){
-	  TelescopeNumber.push_back(m_PreTreatedData->GetLassaStripXEDetectorNbr(i));
-          ThickSi_StripNumberX.push_back(m_PreTreatedData->GetLassaStripXEStripNbr(i));
-          ThickSi_EX.push_back(m_PreTreatedData->GetLassaStripXEEnergy(i));
-          ThickSi_T.push_back(m_EventData->GetLassaStripXTTime(i));
-          ThickSi_E.push_back(m_PreTreatedData->GetLassaStripXEEnergy(i));
-      } 
-
-      for(unsigned int i = 0 ; i < m_ThickSi_EXMult ; ++i){
-          ThickSi_StripNumberY.push_back(m_PreTreatedData->GetLassaStripYEStripNbr(i));
-          ThickSi_EY.push_back(m_PreTreatedData->GetLassaStripYEEnergy(i));
-      }
-    
-      for(unsigned int i = 0 ; i < m_CsI_EMult ; ++i){
-          CsI_CrystalNumber.push_back(m_PreTreatedData->GetLassaCsIECristalNbr(i));
-          CsI_E.push_back(m_PreTreatedData->GetLassaCsIEEnergy(i));
-      }
+        
+        for(unsigned int i = 0 ; i < m_ThickSi_EXMult ; ++i){
+            TelescopeNumber.push_back(m_PreTreatedData->GetLassaStripXEDetectorNbr(i));
+            ThickSi_StripNumberX.push_back(m_PreTreatedData->GetLassaStripXEStripNbr(i));
+            ThickSi_EX.push_back(m_PreTreatedData->GetLassaStripXEEnergy(i));
+            ThickSi_T.push_back(m_EventData->GetLassaStripXTTime(i));
+            ThickSi_E.push_back(m_PreTreatedData->GetLassaStripXEEnergy(i));
+        }
+        
+        for(unsigned int i = 0 ; i < m_ThickSi_EXMult ; ++i){
+            ThickSi_StripNumberY.push_back(m_PreTreatedData->GetLassaStripYEStripNbr(i));
+            ThickSi_EY.push_back(m_PreTreatedData->GetLassaStripYEEnergy(i));
+        }
+        
+        for(unsigned int i = 0 ; i < m_CsI_EMult ; ++i){
+            CsI_CrystalNumber.push_back(m_PreTreatedData->GetLassaCsIECristalNbr(i));
+            CsI_E.push_back(m_PreTreatedData->GetLassaCsIEEnergy(i));
+        }
     }
     return;
 }
@@ -436,66 +436,65 @@ void TLassaPhysics::PreTreat(){
     m_ThickSi_EXMult    = m_EventData->GetLassaStripXEMult();
     m_ThickSi_EYMult    = m_EventData->GetLassaStripYEMult();
     m_CsI_EMult         = m_EventData->GetLassaCsIEMult();
-
+    
     
     // Thin Si
     /*for(unsigned int i = 0 ; i < m_ThinSi_EMult ; ++i){
-        m_PreTreatedData->SetLassaThinSiStripEDetectorNbr( m_EventData->GetLassaThinSiStripEDetectorNbr(i) );
-        m_PreTreatedData->SetLassaThinSiStripEStripNbr( m_EventData->GetLassaThinSiStripEStripNbr(i) );
-        m_PreTreatedData->SetLassaThinSiStripEEnergy( m_EventData->GetLassaThinSiStripEEnergy(i) );
-        m_PreTreatedData->SetLassaThinSiStripTTime( m_EventData->GetLassaThinSiStripTTime(i));
-    }*/
-
-
+     m_PreTreatedData->SetLassaThinSiStripEDetectorNbr( m_EventData->GetLassaThinSiStripEDetectorNbr(i) );
+     m_PreTreatedData->SetLassaThinSiStripEStripNbr( m_EventData->GetLassaThinSiStripEStripNbr(i) );
+     m_PreTreatedData->SetLassaThinSiStripEEnergy( m_EventData->GetLassaThinSiStripEEnergy(i) );
+     m_PreTreatedData->SetLassaThinSiStripTTime( m_EventData->GetLassaThinSiStripTTime(i));
+     }*/
+    
+    
     // Thick Si
     // X->EF
     /*for(unsigned int i = 0 ; i < m_ThickSi_EXMult ; ++i){
-        if(IsValidChannel("X",m_EventData->GetLassaStripXEDetectorNbr(i),m_EventData->GetLassaStripXEStripNbr(i))){
-            m_PreTreatedData->SetLassaThickSiStripXEDetectorNbr( m_EventData->GetLassaStripXEDetectorNbr(i) );
-            m_PreTreatedData->SetLassaThickSiStripXEStripNbr( m_EventData->GetLassaStripXEStripNbr(i) );
-            m_PreTreatedData->SetLassaThickSiStripXEEnergy( m_EventData->GetLassaStripXEEnergy(i) );
-            m_PreTreatedData->SetLassaThickSiStripXTTime( m_EventData->GetLassaStripXTTime(i) );
-        }
-    }
-    // Y->EB
-    for(unsigned int i = 0 ; i < m_ThickSi_EYMult ; ++i){
-        if(IsValidChannel("Y",m_EventData->GetLassaStripYEDetectorNbr(i),m_EventData->GetLassaStripYEStripNbr(i))){
-            m_PreTreatedData->SetLassaThickSiStripYEDetectorNbr( m_EventData->GetLassaStripYEDetectorNbr(i) );
-            m_PreTreatedData->SetLassaThickSiStripYEStripNbr( m_EventData->GetLassaStripYEStripNbr(i) );
-            m_PreTreatedData->SetLassaThickSiStripYEEnergy( m_EventData->GetLassaStripYEEnergy(i) );
-            m_PreTreatedData->SetLassaThickSiStripYTTime( m_EventData->GetLassaStripYTTime(i) );
-        }
-    }*/
+     if(IsValidChannel("X",m_EventData->GetLassaStripXEDetectorNbr(i),m_EventData->GetLassaStripXEStripNbr(i))){
+     m_PreTreatedData->SetLassaThickSiStripXEDetectorNbr( m_EventData->GetLassaStripXEDetectorNbr(i) );
+     m_PreTreatedData->SetLassaThickSiStripXEStripNbr( m_EventData->GetLassaStripXEStripNbr(i) );
+     m_PreTreatedData->SetLassaThickSiStripXEEnergy( m_EventData->GetLassaStripXEEnergy(i) );
+     m_PreTreatedData->SetLassaThickSiStripXTTime( m_EventData->GetLassaStripXTTime(i) );
+     }
+     }
+     // Y->EB
+     for(unsigned int i = 0 ; i < m_ThickSi_EYMult ; ++i){
+     if(IsValidChannel("Y",m_EventData->GetLassaStripYEDetectorNbr(i),m_EventData->GetLassaStripYEStripNbr(i))){
+     m_PreTreatedData->SetLassaThickSiStripYEDetectorNbr( m_EventData->GetLassaStripYEDetectorNbr(i) );
+     m_PreTreatedData->SetLassaThickSiStripYEStripNbr( m_EventData->GetLassaStripYEStripNbr(i) );
+     m_PreTreatedData->SetLassaThickSiStripYEEnergy( m_EventData->GetLassaStripYEEnergy(i) );
+     m_PreTreatedData->SetLassaThickSiStripYTTime( m_EventData->GetLassaStripYTTime(i) );
+     }
+     }*/
     
     // CsI
     for(unsigned int i = 0 ; i < m_CsI_EMult ; ++i){
-      if(IsValidChannel("CsI",m_EventData->GetLassaCsIEDetectorNbr(i),m_EventData->GetLassaCsIECristalNbr(i))){
-          m_PreTreatedData->SetLassaCsIEDetectorNbr( m_EventData->GetLassaCsIEDetectorNbr(i) );
-          m_PreTreatedData->SetLassaCsIECristalNbr( m_EventData->GetLassaCsIECristalNbr(i) );
-          m_PreTreatedData->SetLassaCsIEEnergy( m_EventData->GetLassaCsIEEnergy(i) );
-          // X->EF
-          for(unsigned int i = 0 ; i < m_ThickSi_EXMult ; ++i){
-              if(IsValidChannel("X",m_EventData->GetLassaStripXEDetectorNbr(i),m_EventData->GetLassaStripXEStripNbr(i))){
-                  m_PreTreatedData->SetLassaThickSiStripXEDetectorNbr( m_EventData->GetLassaStripXEDetectorNbr(i) );
-                  m_PreTreatedData->SetLassaThickSiStripXEStripNbr( m_EventData->GetLassaStripXEStripNbr(i) );
-                  m_PreTreatedData->SetLassaThickSiStripXEEnergy( m_EventData->GetLassaStripXEEnergy(i) );
-                  m_PreTreatedData->SetLassaThickSiStripXTTime( m_EventData->GetLassaStripXTTime(i) );
-              }
-          }
-          // Y->EB
-          for(unsigned int i = 0 ; i < m_ThickSi_EYMult ; ++i){
-              if(IsValidChannel("Y",m_EventData->GetLassaStripYEDetectorNbr(i),m_EventData->GetLassaStripYEStripNbr(i))){
-                  m_PreTreatedData->SetLassaThickSiStripYEDetectorNbr( m_EventData->GetLassaStripYEDetectorNbr(i) );
-                  m_PreTreatedData->SetLassaThickSiStripYEStripNbr( m_EventData->GetLassaStripYEStripNbr(i) );
-                  m_PreTreatedData->SetLassaThickSiStripYEEnergy( m_EventData->GetLassaStripYEEnergy(i) );
-                  m_PreTreatedData->SetLassaThickSiStripYTTime( m_EventData->GetLassaStripYTTime(i) );
-              }
-          }
-          
-      }
+        if(IsValidChannel("CsI",m_EventData->GetLassaCsIEDetectorNbr(i),m_EventData->GetLassaCsIECristalNbr(i))){
+            m_PreTreatedData->SetLassaCsIEDetectorNbr( m_EventData->GetLassaCsIEDetectorNbr(i) );
+            m_PreTreatedData->SetLassaCsIECristalNbr( m_EventData->GetLassaCsIECristalNbr(i) );
+            m_PreTreatedData->SetLassaCsIEEnergy( m_EventData->GetLassaCsIEEnergy(i) );
+            // X->EF
+            for(unsigned int i = 0 ; i < m_ThickSi_EXMult ; ++i){
+                if(IsValidChannel("X",m_EventData->GetLassaStripXEDetectorNbr(i),m_EventData->GetLassaStripXEStripNbr(i))){
+                    m_PreTreatedData->SetLassaThickSiStripXEDetectorNbr( m_EventData->GetLassaStripXEDetectorNbr(i) );
+                    m_PreTreatedData->SetLassaThickSiStripXEStripNbr( m_EventData->GetLassaStripXEStripNbr(i) );
+                    m_PreTreatedData->SetLassaThickSiStripXEEnergy( m_EventData->GetLassaStripXEEnergy(i) );
+                    m_PreTreatedData->SetLassaThickSiStripXTTime( m_EventData->GetLassaStripXTTime(i) );
+                }
+            }
+            // Y->EB
+            for(unsigned int i = 0 ; i < m_ThickSi_EYMult ; ++i){
+                if(IsValidChannel("Y",m_EventData->GetLassaStripYEDetectorNbr(i),m_EventData->GetLassaStripYEStripNbr(i))){
+                    m_PreTreatedData->SetLassaThickSiStripYEDetectorNbr( m_EventData->GetLassaStripYEDetectorNbr(i) );
+                    m_PreTreatedData->SetLassaThickSiStripYEStripNbr( m_EventData->GetLassaStripYEStripNbr(i) );
+                    m_PreTreatedData->SetLassaThickSiStripYEEnergy( m_EventData->GetLassaStripYEEnergy(i) );
+                    m_PreTreatedData->SetLassaThickSiStripYTTime( m_EventData->GetLassaStripYTTime(i) );
+                }
+            }
+        }
     }
     
-
+    
     return;
 }
 
@@ -504,45 +503,45 @@ void TLassaPhysics::PreTreat(){
 bool TLassaPhysics :: IsValidChannel(const string DetectorType, const int telescope , const int channel){
     if(DetectorType == "CsI")
         return *(m_CsIChannelStatus[telescope].begin()+channel);
-
+    
     else if(DetectorType == "X")
         return *(m_XChannelStatus[telescope].begin()+channel);
-
+    
     else if(DetectorType == "Y")
         return *(m_YChannelStatus[telescope].begin()+channel);
-
+    
     else return false;
-
+    
 }
 
 ////////////////////////////////////////////////////////////////////////////
 int TLassaPhysics :: CheckEvent(const double XEMult, const double YEMult){
-  
-  if( XEMult == YEMult ){
-    return 1; //Regular Event
-  }
-
-  else 
-    return -1; //Rejected Event
+    
+    if( XEMult == YEMult ){
+        return 1; //Regular Event
+    }
+    
+    else
+        return -1; //Rejected Event
 }
 
 ///////////////////////////////////////////////////////////////////////////
 void TLassaPhysics::ReadAnalysisConfig(){
     bool ReadingStatus = false;
-
+    
     // path to file
     string FileName = "./configs/ConfigLassa.dat";
-
+    
     // open analysis config file
     ifstream AnalysisConfigFile;
     AnalysisConfigFile.open(FileName.c_str());
-
+    
     if (!AnalysisConfigFile.is_open()) {
         cout << " No ConfigLassa.dat found: Default parameters loaded for Analysis " << FileName << endl;
         return;
     }
     cout << " Loading user parameters for Analysis from ConfigLassa.dat " << endl;
-
+    
     // Save it in a TAsciiFile
     TAsciiFile* asciiConfig = RootOutput::getInstance()->GetAsciiFileAnalysisConfig();
     asciiConfig->AppendLine("%%% ConfigLassa.dat %%%");
@@ -553,39 +552,39 @@ void TLassaPhysics::ReadAnalysisConfig(){
     while (!AnalysisConfigFile.eof()) {
         // Pick-up next line
         getline(AnalysisConfigFile, LineBuffer);
-
+        
         // search for "header"
         if (LineBuffer.compare(0, 11, "ConfigLassa") == 0) ReadingStatus = true;
-
+        
         // loop on tokens and data
         while (ReadingStatus ) {
-      
+            
             whatToDo="";
             AnalysisConfigFile >> whatToDo;
-
+            
             // Search for comment symbol (%)
             if (whatToDo.compare(0, 1, "%") == 0) {
                 AnalysisConfigFile.ignore(numeric_limits<streamsize>::max(), '\n' );
             }
-
+            
             else if (whatToDo=="MAX_STRIP_MULTIPLICITY") {
                 AnalysisConfigFile >> DataBuffer;
                 m_MaximumStripMultiplicityAllowed = atoi(DataBuffer.c_str() );
                 cout << "MAXIMUN STRIP MULTIPLICITY " << m_MaximumStripMultiplicityAllowed << endl;
             }
-
+            
             else if (whatToDo=="STRIP_ENERGY_MATCHING_SIGMA") {
                 AnalysisConfigFile >> DataBuffer;
                 m_StripEnergyMatchingSigma = atof(DataBuffer.c_str() );
                 cout << "STRIP ENERGY MATCHING SIGMA " << m_StripEnergyMatchingSigma <<endl;
             }
-
+            
             else if (whatToDo=="STRIP_ENERGY_MATCHING_NUMBER_OF_SIGMA") {
                 AnalysisConfigFile >> DataBuffer;
                 m_StripEnergyMatchingNumberOfSigma = atoi(DataBuffer.c_str() );
                 cout << "STRIP ENERGY MATCHING NUMBER OF SIGMA " << m_StripEnergyMatchingNumberOfSigma << endl;
             }
-
+            
             else if (whatToDo== "DISABLE_ALL") {
                 AnalysisConfigFile >> DataBuffer;
                 cout << whatToDo << "  " << DataBuffer << endl;
@@ -597,7 +596,7 @@ void TLassaPhysics::ReadAnalysisConfig(){
                 ChannelStatus.resize(4,false);
                 m_CsIChannelStatus[telescope]  = ChannelStatus;
             }
-
+            
             else if (whatToDo == "DISABLE_CHANNEL") {
                 AnalysisConfigFile >> DataBuffer;
                 cout << whatToDo << "  " << DataBuffer << endl;
@@ -607,19 +606,19 @@ void TLassaPhysics::ReadAnalysisConfig(){
                     channel = atoi(DataBuffer.substr(7).c_str());
                     *(m_XChannelStatus[telescope].begin()+channel) = false;
                 }
-
+                
                 else if (DataBuffer.compare(3,4,"STRY") == 0) {
                     channel = atoi(DataBuffer.substr(7).c_str());
                     *(m_YChannelStatus[telescope].begin()+channel) = false;
                 }
-
+                
                 else if (DataBuffer.compare(3,3,"CSI") == 0) {
                     channel = atoi(DataBuffer.substr(6).c_str());
                     *(m_CsIChannelStatus[telescope].begin()+channel) = false;
                 }
-
+                
                 else cout << "Warning: detector type for Lassa unknown!" << endl;
-
+                
             }
             
             else {
@@ -627,10 +626,10 @@ void TLassaPhysics::ReadAnalysisConfig(){
             }
         }
     }
-  
-
-      
-
+    
+    
+    
+    
 }
 
 ///////////////////////////////////////////////////////////////////////////

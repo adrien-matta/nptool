@@ -72,7 +72,7 @@ Hira::Hira(){
     m_SiliconVisAtt = new G4VisAttributes(G4Colour(0.839216, 0.839216, 0.839216, 0.8)) ;
     m_SiliconVisAtt2 = new G4VisAttributes(G4Colour(0.2, 0.0, 0.6)) ;
     // CsI Color
-    m_CsIVisAtt = new G4VisAttributes(G4Colour(0.529412, 0.807843, 0.980392, 0.9)) ;
+    m_CsIVisAtt = new G4VisAttributes(G4Colour(0.529412, 0.807843, 0.980392, 0.95)) ;
     //m_CsIVisAtt->SetForceWireframe(true);
     m_LogicThinSi = 0;
     m_LogicThickSi = 0;
@@ -330,12 +330,12 @@ void Hira::ReadSensitive(const G4Event* event){
 
     if(E_ThinSi>EnergyThreshold){
         m_EventHira->SetHiraThinSiStripEEnergy(E_ThinSi);
-      	m_EventHira->SetHiraThinSiStripEDetectorNbr(Info[7]);
-        m_EventHira->SetHiraThinSiStripEStripNbr(Info[8]);
+      	m_EventHira->SetHiraThinSiStripEDetectorNbr(Info[7]-1);
+        m_EventHira->SetHiraThinSiStripEStripNbr(Info[8]-1);
 	
         m_EventHira->SetHiraThinSiStripTTime(Info[1]);
-        m_EventHira->SetHiraThinSiStripTDetectorNbr(Info[7]);
-        m_EventHira->SetHiraThinSiStripTStripNbr(Info[8]);
+        m_EventHira->SetHiraThinSiStripTDetectorNbr(Info[7]-1);
+        m_EventHira->SetHiraThinSiStripTStripNbr(Info[8]-1);
     }
   }
 
@@ -354,19 +354,19 @@ void Hira::ReadSensitive(const G4Event* event){
     double E_ThickSi = RandGauss::shoot(Info[0],ResoThickSi);
     if(E_ThickSi>EnergyThreshold){
         m_EventHira->SetHiraThickSiStripXEEnergy(E_ThickSi);
-        m_EventHira->SetHiraThickSiStripXEDetectorNbr(Info[7]);
-        m_EventHira->SetHiraThickSiStripXEStripNbr(Info[8]);
+        m_EventHira->SetHiraThickSiStripXEDetectorNbr(Info[7]-1);
+        m_EventHira->SetHiraThickSiStripXEStripNbr(Info[8]-1);
 	
         m_EventHira->SetHiraThickSiStripXTTime(Info[1]);
-        m_EventHira->SetHiraThickSiStripXTDetectorNbr(Info[7]);
-        m_EventHira->SetHiraThickSiStripXTStripNbr(Info[8]);
+        m_EventHira->SetHiraThickSiStripXTDetectorNbr(Info[7]-1);
+        m_EventHira->SetHiraThickSiStripXTStripNbr(Info[8]-1);
 
         m_EventHira->SetHiraThickSiStripYEEnergy(E_ThickSi);
-        m_EventHira->SetHiraThickSiStripYEDetectorNbr(Info[7]);
+        m_EventHira->SetHiraThickSiStripYEDetectorNbr(Info[7]-1);
         m_EventHira->SetHiraThickSiStripYEStripNbr(Info[9]);
 	
         m_EventHira->SetHiraThickSiStripYTTime(Info[1]);
-        m_EventHira->SetHiraThickSiStripYTDetectorNbr(Info[7]);
+        m_EventHira->SetHiraThickSiStripYTDetectorNbr(Info[7]-1);
         m_EventHira->SetHiraThickSiStripYTStripNbr(Info[9]);
         
         // Interraction Coordinates
@@ -392,8 +392,8 @@ void Hira::ReadSensitive(const G4Event* event){
     double E_CsI = RandGauss::shoot(Info[0],ResoCsI);
     if(E_CsI>EnergyThreshold){
         m_EventHira->SetHiraCsIEEnergy(E_CsI);
-      	m_EventHira->SetHiraCsIEDetectorNbr((int)Info[3]);
-        m_EventHira->SetHiraCsIECristalNbr((int)Info[2]);
+      	m_EventHira->SetHiraCsIEDetectorNbr((int)Info[3]-1);
+        m_EventHira->SetHiraCsIECristalNbr((int)Info[2]-1);
     }
   }
   // Clear Map for next event
@@ -578,8 +578,8 @@ void Hira::VolumeMaker(G4int DetectorNumber,
 
         const G4double CsIXMiddle = CsIXFront + (CsIThickness/2)*tan(-pTheta)*sin(pPhi);
         const G4double CsIYMiddle = CsIYFront + (CsIThickness/2)*tan(-pTheta)*cos(pPhi);
-        const G4double DistInterCsIX = CsIXMiddle+DistInterCsI/2;
-        const G4double DistInterCsIY = CsIYMiddle+DistInterCsI/2;
+        const G4double DistInterCsIX = CsIXMiddle+DistInterCsI;///2;
+        const G4double DistInterCsIY = CsIYMiddle+DistInterCsI;///2;
         
         G4ThreeVector Origin(-0.5*DistInterCsIX,-0.5*DistInterCsIY,0);
         G4ThreeVector Pos;
@@ -594,7 +594,7 @@ void Hira::VolumeMaker(G4int DetectorNumber,
                     if(i==1 && j==0)rotM->rotateZ(dangle);
                     if(i==0 && j==1)rotM->rotateZ(-dangle);
                     if(i==1 && j==1)rotM->rotateZ(2*dangle);
-                    Pos = Origin + G4ThreeVector(i*(DistInterCsIX+DistInterCsI/2),j*(DistInterCsIY+DistInterCsI/2),0);
+                    Pos = Origin + G4ThreeVector(i*(DistInterCsIX+DistInterCsI),j*(DistInterCsIY+DistInterCsI),0);
                     
                     new G4PVPlacement(G4Transform3D(*rotM,Pos),
                                       m_LogicCsICrystal,

@@ -118,7 +118,7 @@ class THiraData : public TObject {
     /////////////////////           GETTERS           ////////////////////////
     // SSSD
     // (X,E)
-    UShort_t   GetHiraThinSiEMult()                                 const {return fHiRA_ThickSi_StripXE_DetectorNbr.size();}
+    UShort_t   GetHiraThinSiEMult()                                 const {return fHiRA_ThinSi_StripE_DetectorNbr.size();}
     UShort_t   GetHiraThinSiStripEDetectorNbr(const Int_t i)        const {return fHiRA_ThinSi_StripE_DetectorNbr[i];}
     UShort_t   GetHiraThinSiStripEStripNbr(const Int_t i)           const {return fHiRA_ThinSi_StripE_StripNbr[i];}
     Double_t   GetHiraThinSiStripEEnergy(const Int_t i)             const {return fHiRA_ThinSi_StripE_Energy[i];}
