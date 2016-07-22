@@ -202,7 +202,17 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name,double density){
             m_Material[Name]=material;
             return material;
         }
-        
+
+        else if(Name == "WO3"){ // Tungsten trioxide
+            if(!density)
+                density = 5.907*g/cm3;
+            G4Material* material = new G4Material("NPS_"+Name, density,2);
+            material->AddElement(GetElementFromLibrary("W"),1);
+            material->AddElement(GetElementFromLibrary("O"),3);
+            m_Material[Name]=material;
+            return material;
+        }
+				
         else  if(Name == "CH2"){
             if(!density)
                 density = 0.93*g/cm3;
