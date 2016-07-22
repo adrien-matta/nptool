@@ -11,21 +11,24 @@ Target
 	Z= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Microball
-	X= 0
-	Y= 0
-	Z= 350
-	Shape= Square
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Microball
-	X= 350
-	Y= 350
-	Z= 350
-	Shape= Square
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Microball
-	R= 350
-	THETA= 90
-	PHI= 63
-	Shape= Cylindrical
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	RING1= 1
+	RING2= 1
+	RING3= 1
+	RING4= 1
+	RING5= 1
+	RING6= 1
+	RING7= 1
+	RING8= 1
+	RING9= 1
+	DISABLE_CRYSTAL 20
+	DISABLE_CRYSTAL 21
+	DISABLE_CRYSTAL 22
+	DISABLE_CRYSTAL 32
+	DISABLE_CRYSTAL 33
+	DISABLE_CRYSTAL 34
+	DISABLE_CRYSTAL 44
+	DISABLE_CRYSTAL 45
+	DISABLE_CRYSTAL 46
+	DISABLE_CRYSTAL 47
+	DETECTOR_FLIP= 0
 

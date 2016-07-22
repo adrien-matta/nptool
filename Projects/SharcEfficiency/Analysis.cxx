@@ -73,15 +73,14 @@ void Analysis::Init(){
   X_Trifoil = 0;
   Y_Trifoil = 0 ;
 
-
   Si_E_Sharc = 0 ;
   E_Sharc = 0;
   ThetaDetector = 0   ;
   BeamDirection = TVector3(0,0,1);
   // S1554
-  //  TargetPosition = TVector3(0.1635909,0.910980,m_DetectorManager->GetTargetZ() );
+    TargetPosition = TVector3(0.1635909,0.910980,m_DetectorManager->GetTargetZ() );
   // S1107
-  TargetPosition = TVector3(0.0808323,0.177073,m_DetectorManager->GetTargetZ() );
+  //TargetPosition = TVector3(0.0808323,0.177073,m_DetectorManager->GetTargetZ() );
   double finalEnergy = BeamCD2.Slow(myReaction->GetBeamEnergy(),TargetThickness*0.5,0);
   myReaction->SetBeamEnergy(finalEnergy);
   cout << "Set Beam energy to: " <<  finalEnergy << " MeV" << endl;
@@ -100,10 +99,12 @@ void Analysis::Init(){
   ThetaLab_emmitted_2D = new TH2F("ThetaLab_emmitted_2D","ThetaLab_emmitted_2D",72,0,180,400,-8,8);
   ThetaLab_detected_2D = new TH2F("ThetaLab_detected_2D","ThetaLab_detected_2D",72,0,180,400,-8,8);
 */
-  ThetaCM_emmitted_2D = new TH2F("ThetaCM_emmitted_2D","ThetaCM_emmitted_2D",180,0,180,250,-1,10);
-  ThetaCM_detected_2D = new TH2F("ThetaCM_detected_2D","ThetaCM_detected_2D",180,0,180,250,-1,10);
-  ThetaLab_emmitted_2D = new TH2F("ThetaLab_emmitted_2D","ThetaLab_emmitted_2D",180,0,180,250,-1,10);
-  ThetaLab_detected_2D = new TH2F("ThetaLab_detected_2D","ThetaLab_detected_2D",180,0,180,250,-1,10);
+  ThetaCM_emmitted_2D = new TH2F("ThetaCM_emmitted_2D","ThetaCM_emmitted_2D",180,0,180,1100,-1,10);
+  ThetaCM_detected_2D = new TH2F("ThetaCM_detected_2D","ThetaCM_detected_2D",180,0,180,1100,-1,10);
+  ThetaLab_emmitted_2D = new TH2F("ThetaLab_emmitted_2D","ThetaLab_emmitted_2D",180,0,180,1100,-1,10);
+  ThetaLab_detected_2D = new TH2F("ThetaLab_detected_2D","ThetaLab_detected_2D",180,0,180,1100,-1,10);
+
+  Kine_2D = new TH2F("Kine_2D","Kine_2D",1800,0,180,600,0,60);
 
 }
 
@@ -118,7 +119,7 @@ void Analysis::TreatEvent(){
   ThetaCM_emmitted->Fill(myInit->GetThetaCM(0));
   ThetaLab_emmitted->Fill(myInit->GetThetaLab_WorldFrame(0));
 
-  myReaction->SetBeamEnergy(myInit->GetIncidentFinalKineticEnergy());
+  myReaction->SetBeamEnergy(myInit->GetIncidentInitialKineticEnergy());
   double EXD = myReaction->ReconstructRelativistic(myInit->GetKineticEnergy(0),myInit->GetThetaLab_IncidentFrame(0)*deg);
   ThetaCM_emmitted_2D->Fill(myInit->GetThetaCM(0),EXD);
   ThetaLab_emmitted_2D->Fill(myInit->GetThetaLab_WorldFrame(0),EXD);
@@ -224,17 +225,19 @@ void Analysis::TreatEvent(){
 
     else if(Sharc->DetectorNumber[0] == 12 && Sharc->Strip_E[0]>1.99)
       check = true;
-*/
+
    if(Sharc->DetectorNumber[0] == 4 && Sharc->Strip_E[0]>1.)
       check = true;
-
-
+*/
+check =true;
     if(Trifoil->Energy.size()>0){
-      if( check && abs(Ex-EXD)<0.5 &&  Trifoil->Energy.size()>0 && Trifoil->Energy[0]>0) { // for S1107
+      if( abs(Ex-EXD)<0.5 &&  Trifoil->Energy.size()>0 && Trifoil->Energy[0]>0) { 
         ThetaCM_detected->Fill(myInit->GetThetaCM(0));
         ThetaLab_detected->Fill(myInit->GetThetaLab_WorldFrame(0));
         ThetaCM_detected_2D->Fill(myInit->GetThetaCM(0),EXD);
         ThetaLab_detected_2D->Fill(myInit->GetThetaLab_WorldFrame(0),EXD);
+        Kine_2D->Fill(ThetaLab,ELab);
+
       }
     }
     /************************************************/

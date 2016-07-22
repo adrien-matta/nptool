@@ -47,6 +47,7 @@ EventGeneratorIsotropic::EventGeneratorIsotropic(){
     m_z0           =  0  ;
     m_SigmaX        = 0;
     m_SigmaY        = 0;
+    m_Multiplicty = 1;
     m_particle     =  NULL;
     m_ParticleStack = ParticleStack::getInstance();
     m_ExcitationEnergy = 0 ;
@@ -62,194 +63,204 @@ EventGeneratorIsotropic::~EventGeneratorIsotropic(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorIsotropic::ReadConfiguration(string Path,int){
-  ////////General Reading needs////////
-  string LineBuffer;
-  string DataBuffer;
-  
-  bool ReadingStatus = false ;
-  bool check_EnergyLow = false ;
-  bool check_EnergyHigh = false ;
-  bool check_HalfOpenAngleMin = false ;
-  bool check_HalfOpenAngleMax = false ;
-  bool check_x0 = false ;
-  bool check_y0 = false ;
-  bool check_z0 = false ;
-  bool check_particle = false ;
-  bool check_ExcitationEnergy = false ;
-  
-  ////////Reaction Setting needs///////
-  string particle   ;
-  //////////////////////////////////////////////////////////////////////////////////////////
-  ifstream ReactionFile;
-  ReactionFile.open(Path.c_str());
-  
-  if (ReactionFile.is_open()) {}
-  else {
-    return;
-  }
-  
-  while (!ReactionFile.eof()) {
-    //Pick-up next line
-    getline(ReactionFile, LineBuffer);
+    ////////General Reading needs////////
+    string LineBuffer;
+    string DataBuffer;
     
-    if (LineBuffer.compare(0, 9, "Isotropic") == 0) {
-      G4cout << "///////////////////////////////////////////////////" << G4endl ;
-      G4cout << "Isotropic Source Found" << G4endl ;
-      ReadingStatus = true;}
-      
+    bool ReadingStatus = false ;
+    bool check_EnergyLow = false ;
+    bool check_EnergyHigh = false ;
+    bool check_HalfOpenAngleMin = false ;
+    bool check_HalfOpenAngleMax = false ;
+    bool check_x0 = false ;
+    bool check_y0 = false ;
+    bool check_z0 = false ;
+    bool check_particle = false ;
+    bool check_ExcitationEnergy = false ;
+    bool check_Multiplicity = false;
     
+    ////////Reaction Setting needs///////
+    string particle   ;
+    //////////////////////////////////////////////////////////////////////////////////////////
+    ifstream ReactionFile;
+    ReactionFile.open(Path.c_str());
     
-    while (ReadingStatus)
-      {
-      ReactionFile >> DataBuffer;
-      //Search for comment Symbol %
-      if (DataBuffer.compare(0, 1, "%") == 0) {   ReactionFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
-      
-      else if (DataBuffer == "EnergyLow=") {
-        check_EnergyLow = true ;
-        ReactionFile >> DataBuffer;
-        m_EnergyLow = atof(DataBuffer.c_str()) * MeV;
-        G4cout << "Minimum energy " << m_EnergyLow / MeV << " MeV" << G4endl;
-      }
-      
-      else if (DataBuffer == "EnergyHigh=") {
-        check_EnergyHigh = true ;
-        ReactionFile >> DataBuffer;
-        m_EnergyHigh = atof(DataBuffer.c_str()) * MeV;
-        G4cout << "Maximum energy " << m_EnergyHigh / MeV << " MeV" << G4endl;
-      }
-      
-      else if (DataBuffer == "HalfOpenAngleMin=") {
-        check_HalfOpenAngleMin = true ;
-        ReactionFile >> DataBuffer;
-        m_HalfOpenAngleMin = atof(DataBuffer.c_str()) * deg;
-        G4cout << "HalfOpenAngleMin " << m_HalfOpenAngleMin / deg << " degree" << G4endl;
-      }
-      
-      else if (DataBuffer == "HalfOpenAngleMax=") {
-        check_HalfOpenAngleMax = true ;
-        ReactionFile >> DataBuffer;
-        m_HalfOpenAngleMax = atof(DataBuffer.c_str()) * deg;
-        G4cout << "HalfOpenAngleMax " << m_HalfOpenAngleMax / deg << " degree" << G4endl;
-      }
-      
-      else if (DataBuffer == "x0=") {
-        check_x0 = true ;
-        ReactionFile >> DataBuffer;
-        m_x0 = atof(DataBuffer.c_str()) * mm;
-        G4cout << "x0 " << m_x0 << " mm" << G4endl;
-      }
-      
-      else if (DataBuffer == "y0=") {
-        check_y0 = true ;
-        ReactionFile >> DataBuffer;
-        m_y0 = atof(DataBuffer.c_str()) * mm;
-        G4cout << "y0 " << m_y0 << " mm" << G4endl;
-      }
-      
-      else if (DataBuffer == "z0=" ) {
-        check_z0 = true ;
-        ReactionFile >> DataBuffer;
-        m_z0 = atof(DataBuffer.c_str()) * mm;
-        G4cout << "z0 " << m_z0 << " mm" << G4endl;
-      }
-      
-      else if (DataBuffer == "SigmaX=" ) {
-        ReactionFile >> DataBuffer;
-        m_SigmaX = atof(DataBuffer.c_str()) * mm;
-        G4cout << "SigmaX " << m_SigmaX << " mm" << G4endl;
-      }
-  
-      else if (DataBuffer == "SigmaY=" ) {
-        ReactionFile >> DataBuffer;
-        m_SigmaY = atof(DataBuffer.c_str()) * mm;
-        G4cout << "SigmaY " << m_SigmaY << " mm" << G4endl;
-      }
-     
-      else if (DataBuffer=="Particle=" || DataBuffer=="particle=") {
-        check_particle = true ;
-        ReactionFile >> m_particleName;
-        G4cout << "Particle : " << m_particleName << G4endl ;
+    if (ReactionFile.is_open()) {}
+    else {
+        return;
+    }
+    
+    while (!ReactionFile.eof()) {
+        //Pick-up next line
+        getline(ReactionFile, LineBuffer);
         
-        // Case of light particle
-             if(m_particleName=="proton"){ m_particleName="1H"  ; check_ExcitationEnergy = true ;}
-        else if(m_particleName=="deuton"){ m_particleName="2H"  ; check_ExcitationEnergy = true ;}
-        else if(m_particleName=="triton"){ m_particleName="3H"  ; check_ExcitationEnergy = true ;}
-        else if(m_particleName=="alpha") { m_particleName="4He" ; check_ExcitationEnergy = true ;}
-        else if(m_particleName=="gamma") { check_ExcitationEnergy = true ;}
-        else if(m_particleName=="neutron") { check_ExcitationEnergy = true ;}
-          else { check_ExcitationEnergy = true ;}
-
-      }
-      
-      else if (DataBuffer=="ExcitationEnergy=") {
-        check_ExcitationEnergy = true ;
-        ReactionFile >> DataBuffer;
-        m_ExcitationEnergy = atof(DataBuffer.c_str()) * MeV;
-        G4cout << "ExcitationEnergy : " << m_ExcitationEnergy << G4endl ;
-      }
-      
-      //   If no isotropic Token and no comment, toggle out
-      else
-        {ReadingStatus = false; G4cout << "WARNING : Wrong Token Sequence: Getting out " << G4endl ;}
-      
-      ///////////////////////////////////////////////////
-      //   If all Token found toggle out
-      if(    check_EnergyLow && check_EnergyHigh && check_HalfOpenAngleMin && check_HalfOpenAngleMax && check_x0 && check_y0 && check_z0 && check_particle && check_ExcitationEnergy)
-        ReadingStatus = false ;
-      
-      }
+        if (LineBuffer.compare(0, 9, "Isotropic") == 0) {
+            G4cout << "///////////////////////////////////////////////////" << G4endl ;
+            G4cout << "Isotropic Source Found" << G4endl ;
+            ReadingStatus = true;}
+        
+        
+        
+        while (ReadingStatus)
+        {
+            ReactionFile >> DataBuffer;
+            //Search for comment Symbol %
+            if (DataBuffer.compare(0, 1, "%") == 0) {   ReactionFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
+            
+            else if (DataBuffer == "EnergyLow=") {
+                check_EnergyLow = true ;
+                ReactionFile >> DataBuffer;
+                m_EnergyLow = atof(DataBuffer.c_str()) * MeV;
+                G4cout << "Minimum energy " << m_EnergyLow / MeV << " MeV" << G4endl;
+            }
+            
+            else if (DataBuffer == "EnergyHigh=") {
+                check_EnergyHigh = true ;
+                ReactionFile >> DataBuffer;
+                m_EnergyHigh = atof(DataBuffer.c_str()) * MeV;
+                G4cout << "Maximum energy " << m_EnergyHigh / MeV << " MeV" << G4endl;
+            }
+            
+            else if (DataBuffer == "HalfOpenAngleMin=") {
+                check_HalfOpenAngleMin = true ;
+                ReactionFile >> DataBuffer;
+                m_HalfOpenAngleMin = atof(DataBuffer.c_str()) * deg;
+                G4cout << "HalfOpenAngleMin " << m_HalfOpenAngleMin / deg << " degree" << G4endl;
+            }
+            
+            else if (DataBuffer == "HalfOpenAngleMax=") {
+                check_HalfOpenAngleMax = true ;
+                ReactionFile >> DataBuffer;
+                m_HalfOpenAngleMax = atof(DataBuffer.c_str()) * deg;
+                G4cout << "HalfOpenAngleMax " << m_HalfOpenAngleMax / deg << " degree" << G4endl;
+            }
+            
+            else if (DataBuffer == "x0=") {
+                check_x0 = true ;
+                ReactionFile >> DataBuffer;
+                m_x0 = atof(DataBuffer.c_str()) * mm;
+                G4cout << "x0 " << m_x0 << " mm" << G4endl;
+            }
+            
+            else if (DataBuffer == "y0=") {
+                check_y0 = true ;
+                ReactionFile >> DataBuffer;
+                m_y0 = atof(DataBuffer.c_str()) * mm;
+                G4cout << "y0 " << m_y0 << " mm" << G4endl;
+            }
+            
+            else if (DataBuffer == "z0=" ) {
+                check_z0 = true ;
+                ReactionFile >> DataBuffer;
+                m_z0 = atof(DataBuffer.c_str()) * mm;
+                G4cout << "z0 " << m_z0 << " mm" << G4endl;
+            }
+            
+            else if (DataBuffer == "SigmaX=" ) {
+                ReactionFile >> DataBuffer;
+                m_SigmaX = atof(DataBuffer.c_str()) * mm;
+                G4cout << "SigmaX " << m_SigmaX << " mm" << G4endl;
+            }
+            
+            else if (DataBuffer == "SigmaY=" ) {
+                ReactionFile >> DataBuffer;
+                m_SigmaY = atof(DataBuffer.c_str()) * mm;
+                G4cout << "SigmaY " << m_SigmaY << " mm" << G4endl;
+            }
+            
+            else if (DataBuffer == "Multiplicity=" ) {
+                check_Multiplicity = true;
+                ReactionFile >> DataBuffer;
+                m_Multiplicty = atof(DataBuffer.c_str()) * mm;
+                G4cout << "Multiplicity= " << m_Multiplicty << " " << G4endl;
+            }
+            
+            else if (DataBuffer=="Particle=" || DataBuffer=="particle=") {
+                check_particle = true ;
+                ReactionFile >> m_particleName;
+                G4cout << "Particle : " << m_particleName << G4endl ;
+                
+                // Case of light particle
+                if(m_particleName=="proton"){ m_particleName="1H"  ; check_ExcitationEnergy = true ;}
+                else if(m_particleName=="deuton"){ m_particleName="2H"  ; check_ExcitationEnergy = true ;}
+                else if(m_particleName=="triton"){ m_particleName="3H"  ; check_ExcitationEnergy = true ;}
+                else if(m_particleName=="alpha") { m_particleName="4He" ; check_ExcitationEnergy = true ;}
+                else if(m_particleName=="gamma") { check_ExcitationEnergy = true ;}
+                else if(m_particleName=="neutron") { check_ExcitationEnergy = true ;}
+                else { check_ExcitationEnergy = true ;}
+                
+            }
+            
+            else if (DataBuffer=="ExcitationEnergy=") {
+                check_ExcitationEnergy = true ;
+                ReactionFile >> DataBuffer;
+                m_ExcitationEnergy = atof(DataBuffer.c_str()) * MeV;
+                G4cout << "ExcitationEnergy : " << m_ExcitationEnergy << G4endl ;
+            }
+            
+            //   If no isotropic Token and no comment, toggle out
+            else
+            {ReadingStatus = false; G4cout << "WARNING : Wrong Token Sequence: Getting out " << G4endl ;}
+            
+            ///////////////////////////////////////////////////
+            //   If all Token found toggle out
+            if(    check_EnergyLow && check_EnergyHigh && check_HalfOpenAngleMin && check_HalfOpenAngleMax && check_x0 && check_y0 && check_z0 && check_particle && check_ExcitationEnergy)
+                ReadingStatus = false ;
+            
+        }
+        
+    }
     
-  }
-  
-  if(    !check_EnergyLow || !check_EnergyHigh || !check_HalfOpenAngleMin || !check_HalfOpenAngleMax || !check_x0 || !check_y0 || !check_z0 || !check_particle )
+    if(    !check_EnergyLow || !check_EnergyHigh || !check_HalfOpenAngleMin || !check_HalfOpenAngleMax || !check_x0 || !check_y0 || !check_z0 || !check_particle)
     {cout << "ERROR : Token Sequence Incomplete, Isotropic definition can not be Fonctionnal" << G4endl ; exit(1);}
-  
-
-  
+    
+    
+    
 }
 
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorIsotropic::GenerateEvent(G4Event*){
-  
-  if(m_particle==NULL){
-    if(m_particleName=="gamma" || m_particleName=="neutron" ||  m_particleName=="opticalphoton"){
-      m_particle =  G4ParticleTable::GetParticleTable()->FindParticle(m_particleName.c_str());
-    }
-    else{
-      NPL::Nucleus* N = new NPL::Nucleus(m_particleName);
-      m_particle = G4ParticleTable::GetParticleTable()->GetIonTable()->GetIon(N->GetZ(), N->GetA(),m_ExcitationEnergy);
-      delete N;
-    }
     
-  }
-
-  G4double cos_theta_min   = cos(m_HalfOpenAngleMin);
-  G4double cos_theta_max   = cos(m_HalfOpenAngleMax);
-  G4double cos_theta       = cos_theta_min + (cos_theta_max - cos_theta_min) * RandFlat::shoot();
-  G4double theta           = acos(cos_theta)                                                   ;
-  G4double phi             = RandFlat::shoot() * 2 * pi                                        ;
-  G4double particle_energy = m_EnergyLow + RandFlat::shoot() * (m_EnergyHigh - m_EnergyLow)    ;
-  
-  // Direction of particle, energy and laboratory angle
-  G4double momentum_x = sin(theta) * cos(phi)  ;
-  G4double momentum_y = sin(theta) * sin(phi)  ;
-  G4double momentum_z = cos(theta)             ;
-  
-  G4double x0 = RandGauss::shoot(m_x0,m_SigmaX);
-  G4double y0 = RandGauss::shoot(m_y0,m_SigmaY);
-
-  Particle particle(m_particle, theta,particle_energy,G4ThreeVector(momentum_x, momentum_y, momentum_z),G4ThreeVector(x0, y0, m_z0));
-  
-  
-  m_ParticleStack->AddParticleToStack(particle);
+    for(int i=0; i<m_Multiplicty; i++){
+        if(m_particle==NULL){
+            if(m_particleName=="gamma" || m_particleName=="neutron" ||  m_particleName=="opticalphoton"){
+                m_particle =  G4ParticleTable::GetParticleTable()->FindParticle(m_particleName.c_str());
+            }
+            else{
+                NPL::Nucleus* N = new NPL::Nucleus(m_particleName);
+                m_particle = G4ParticleTable::GetParticleTable()->GetIonTable()->GetIon(N->GetZ(), N->GetA(),m_ExcitationEnergy);
+                delete N;
+            }
+            
+        }
+        
+        G4double cos_theta_min   = cos(m_HalfOpenAngleMin);
+        G4double cos_theta_max   = cos(m_HalfOpenAngleMax);
+        G4double cos_theta       = cos_theta_min + (cos_theta_max - cos_theta_min) * RandFlat::shoot();
+        G4double theta           = acos(cos_theta)                                                   ;
+        G4double phi             = RandFlat::shoot() * 2 * pi                                        ;
+        G4double particle_energy = m_EnergyLow + RandFlat::shoot() * (m_EnergyHigh - m_EnergyLow)    ;
+        
+        // Direction of particle, energy and laboratory angle
+        G4double momentum_x = sin(theta) * cos(phi)  ;
+        G4double momentum_y = sin(theta) * sin(phi)  ;
+        G4double momentum_z = cos(theta)             ;
+        
+        G4double x0 = RandGauss::shoot(m_x0,m_SigmaX);
+        G4double y0 = RandGauss::shoot(m_y0,m_SigmaY);
+        
+        Particle particle(m_particle, theta,particle_energy,G4ThreeVector(momentum_x, momentum_y, momentum_z),G4ThreeVector(x0, y0, m_z0));
+        
+        
+        m_ParticleStack->AddParticleToStack(particle);
+    }
 }
 
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorIsotropic::InitializeRootOutput(){
-  
+    
 }

@@ -73,7 +73,7 @@ THiraData::~THiraData()
 
 void THiraData::Clear()
 {
-    // SSSD
+    // DE
     // Energy
     fHiRA_ThinSi_StripE_DetectorNbr.clear();
     fHiRA_ThinSi_StripE_StripNbr.clear();

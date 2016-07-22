@@ -9,7 +9,7 @@
  * Original Author: Marc Labiche  contact   address: marc.labiche@stfc.ac.uk *
  *                                                                           *
  * Creation Date  : 31/01/12                                                 *
- * Last update    :                                                          *
+ * Last update    : 31/08/15                                                 *
  *---------------------------------------------------------------------------*
  * Decription: Define a dummy module for the Helios detector                 *
  *             The goal of this class is to be a starting point to create a  *
@@ -137,30 +137,78 @@ namespace HELIOSDUMMYSHAPE
 {
    // Resolution
 
-  const G4double ResoFirstStage  = 0.0085;	// = 20 keV of Resolution   //   Unit is MeV/2.35
+  const G4double ResoFirstStage  = 0.0170;	// = 40 keV of Resolution <=> Helios range is 25 to 55 keV resolution  //   Unit is MeV/2.35
+//  const G4double ResoFirstStage  = 0.0085;	// = 20 keV of Resolution   //   Unit is MeV/2.35
   const G4double ResoTimeGpd     = 0.4255; // = 1ns        // 0.212765957;// = 500ps                 //   Unit is  ns/2.35
+  //const G4double ResoFirstStage  = 0.;	// =  detector energy resolution is taken care in the analysis code !!!!
+  //const G4double ResoTimeGpd     = 0.; // = 1ns        // 0.212765957;// = 500ps                 //   Unit is  ns/2.35
+  //const G4double ResoPosZ     = 0.; // =  detector energy resolution is taken care in the analysis code !!!!
   const G4double ResoPosZ     = 0.4255;// = 1mm  for Helios               //   Unit is  mm/2.35
 
    // Geometry for the mother volume containing the different layers of your dummy shape module
-   const G4double FaceFrontWidth          = 1.2*cm;
-   const G4double FaceFrontLength         = 5.6*cm;
-   const G4double FaceBackWidth           = 1.2*cm;
-   const G4double FaceBackLength          = 5.6*cm;
-   const G4double Thickness             = 0.1*cm;  // ie: thickness 1 mm
-   const G4double InterStageDistance = 5*mm;
-   // for testing the excitation energy reconstruction
+   // Note : dimension has to be the same as the sensitive volume otherwise there are issues with the NPAnalysis/Helios
+
+   /* For Helisol :
+   //const G4double FaceFrontWidth          = 22.*mm;  // for helisol
+   const G4double FaceFrontWidth          = 24.*mm;  // for helisol
+   const G4double FaceFrontLength         = 125*mm;  // for helisol
+  //const G4double FaceBackWidth           = 22.*mm;  // for helisol
+   const G4double FaceBackWidth           = 24.*mm;  // for helisol
+   const G4double FaceBackLength          = 125*mm;  // for helisol
+   const G4double Thickness             = 1.002*mm;  // ie: thickness 1 mm + 2um
+   const G4double InterStageDistance = 2.5*mm; // for helisol
+
+  //const G4double AlThickness             = 0.001*mm;  // ie: thickness 1um
+  const G4double AlThickness             = 0.00055*mm;  // ie: thickness 0.55um
+  //const G4double AlThickness             = 0.00015*mm;  // ie: thickness 0.15um
+    */
+
+	/* For helios: */
+   const G4double FaceFrontWidth          = 1.2*cm; // for helios
+   const G4double FaceFrontLength         = 5.6*cm; // for helios
+   const G4double FaceBackWidth           = 1.2*cm; // for helios
+   const G4double FaceBackLength          = 5.6*cm; // for helios
+   const G4double Thickness             = 1.*mm;  // for helios
+   const G4double InterStageDistance = 5*mm;  // for helios
+	
+
+    // for testing the excitation energy reconstruction
 //   const G4double Length             = 4*cm;
 //   const G4double InterStageDistance = 15*mm;
 
    // First stage
-   const G4double FirstStageFaceWidth       = 0.9*cm;
-   const G4double FirstStageFaceLength      = 5.05*cm;
+
+   /* For Helisol :
+   //const G4double FirstStageFaceWidth       = 20*mm;   // for helisol50.6
+   //const G4int NumberOfLStrips	            = 10; // 2 mm strip pitch for strips parallel to beam axis 
+     const G4double FirstStageFaceWidth       = 22*mm;   // for helisol54
+     const G4int NumberOfLStrips	      = 11; // if 2 mm strip pitch for strips parallel to beam axis 
+   //const G4int NumberOfLStrips	       = 22; // if 1 mm strip pitch for strips parallel to beam axis 
+    //const G4double FirstStageFaceWidth       = 24*mm;   // for helisol57.5
+   //const G4int NumberOfLStrips	            = 12; // 2 mm strip pitch for strips parallel to beam axis 
+
+   const G4double FirstStageFaceLength      = 125*mm;  // for helisol
+   const G4double FirstStageThickness  = 1000*micrometer;  // for helisol
+    */
+	/* For helios: */
+   const G4double FirstStageFaceWidth       = 0.9*cm; // for helios
+   const G4double FirstStageFaceLength      = 5.05*cm; // for helios
+   //const G4double FirstStageThickness  = 1000*micrometer;  // for helios 
    const G4double FirstStageThickness  = 700*micrometer;
 //   const G4double FirstStageThickness  = 2*mm;
 //   for testing the excitation energy reconstruction
 //   const G4double FirstStageThickness  = 1.3*cm;
-  const G4int NumberOfStrips	       = 1; // PSD resistive strip
-  //const G4int NumberOfStrips	       = 500; // 100 um strip pitch
+
+   const G4int NumberOfStrips	       = 1; // PSD resistive strip
+
+//  const G4int NumberOfStrips	       = 250; // PSD resistive strip
+//   const G4int NumberOfLStrips	       = 22; // 1 mm strip pitch for strips parallel to beam axis 
+//   const G4int NumberOfTStrips	       = 250; // .5 mm strip pitch for strips perpendicular to beam axis
+//   const G4int NumberOfLStrips	       = 22; // 1 mm strip pitch for strips parallel to beam axis 
+//   const G4int NumberOfLStrips	       = 11; // 2 mm strip pitch for strips parallel to beam axis 
+//   const G4int NumberOfTStrips	       = 128; // ~1. mm strip pitch for strips perpendicular to beam axis
+//   const G4int NumberOfTStrips	       = 25; // 1. mm strip pitch for strips perpendicular to beam axis
+//   const G4int NumberOfTStrips	       = 62; // 2. mm strip pitch for strips perpendicular to beam axis
 
 
    // Starting at the front of the first stage and going to the third stage 

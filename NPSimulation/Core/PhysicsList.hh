@@ -55,7 +55,11 @@
 //Hadronique
 #include "G4HadronElasticPhysics.hh"
 #include "G4HadronElasticPhysicsHP.hh"
+#include "G4HadronDElasticPhysics.hh"
+#include "G4HadronInelasticQBBC.hh"
 #include "G4IonBinaryCascadePhysics.hh"
+#include "G4HadronPhysicsINCLXX.hh"
+#include "G4IonINCLXXPhysics.hh"
 #if NPS_GEANT4_VERSION_MAJOR > 9
 #include "G4HadronPhysicsQGSP_BIC_HP.hh"
 #endif
@@ -89,11 +93,14 @@ class PhysicsList: public G4VModularPhysicsList{
   private: // Physics option
     std::string m_EmList;
     double m_IonBinaryCascadePhysics;
+    double m_LocalIonInelasticPhysics;
     double m_EmExtraPhysics;
     double m_HadronElasticPhysics;
+    double m_HadronInelasticPhysics;
     double m_StoppingPhysics;
     double m_OpticalPhysics; 
-    double m_HadronPhysicsQGSP_BIC_HP; 
+    double m_HadronPhysicsQGSP_BIC_HP;
+    double m_HadronPhysicsINCLXX;
     double m_Decay; 
 };
 

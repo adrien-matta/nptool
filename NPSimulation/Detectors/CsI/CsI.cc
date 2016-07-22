@@ -555,7 +555,7 @@ void CsI::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume* wor
         //new G4LogicalSkinSurface("OpticalCrysralSurface",logicCsI,OpticalCrysralSurface);
         
         // Photodiode
-        G4String NamePD = Name+"PhotoDiode";
+        /*G4String NamePD = Name+"PhotoDiode";
         
         G4Material* PDMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary("Si");
         
@@ -573,7 +573,7 @@ void CsI::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume* wor
                           NamePD ,
                           world ,
                           false ,
-                          0 );
+                          0 );*/
 
     }
 
@@ -624,7 +624,13 @@ void CsI::ReadSensitive(const G4Event* event){
         //cout << "Energy CsI " << endl;
         //cout << E_CsI << endl;
         m_Event->SetCsIEEnergy(E_CsI);
-        m_Event->SetENumber(Info[2]);
+        m_Event->SetENumber(Info[7]);
+        
+        ms_InterCoord->SetDetectedPositionX(Info[2]) ;
+        ms_InterCoord->SetDetectedPositionY(Info[3]) ;
+        ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
+        ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
+        ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
     }
     // Clear Map for next event
     CsIHitMap->clear();
@@ -669,7 +675,7 @@ void CsI::InitializeScorers() {
   
     if(already_exist) return ;
     
-    G4VPrimitiveScorer* CsIScorer= new CALORIMETERSCORERS::PS_Calorimeter("CsI",NestingLevel);
+    G4VPrimitiveScorer* CsIScorer= new CALORIMETERSCORERS::PS_CalorimeterWithInteraction("CsI",NestingLevel);
     m_CsIScorer->RegisterPrimitive(CsIScorer);
     
     G4VPrimitiveScorer* PDScorer = new PHOTODIODESCORERS::PS_PhotoDiode_Rectangle("PhotoDiode",0,

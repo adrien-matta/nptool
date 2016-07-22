@@ -214,21 +214,21 @@ void Tiara::ReadSensitive(const G4Event* event){
     G4double* Info = *(InnerBarrel_itr->second); 
 
     // Upstream Energy
-    double EU = RandGauss::shoot(Info[0],ResoEnergy);
+    double EU = RandGauss::shoot(Info[0],ResoEnergyInnerBarrel);
     if(EU>EnergyThreshold){
       m_EventBarrel->SetFrontUpstreamE(Info[3],Info[4],EU);
       m_EventBarrel->SetFrontUpstreamT(Info[3],Info[4],Info[2]); 
     }
 
     // Downstream Energy
-    double ED = RandGauss::shoot(Info[1],ResoEnergy); 
+    double ED = RandGauss::shoot(Info[1],ResoEnergyInnerBarrel); 
     if(ED>EnergyThreshold){
       m_EventBarrel->SetFrontDownstreamE(Info[3],Info[4],ED);
       m_EventBarrel->SetFrontDownstreamT(Info[3],Info[4],Info[2]); 
     }
 
     // Back Energy
-    double EB = RandGauss::shoot(Info[1]+Info[0],ResoEnergy);
+    double EB = RandGauss::shoot(Info[1]+Info[0],ResoEnergyInnerBarrel);
     if(EB>EnergyThreshold){
       m_EventBarrel->SetBackE(Info[3],EB);
       m_EventBarrel->SetBackT(Info[3],Info[2]); 
@@ -253,7 +253,7 @@ void Tiara::ReadSensitive(const G4Event* event){
   for (OuterBarrel_itr = OuterBarrelHitMap->GetMap()->begin() ; OuterBarrel_itr != OuterBarrelHitMap->GetMap()->end() ; OuterBarrel_itr++){
     G4double* Info = *(OuterBarrel_itr->second); 
 
-    double E = RandGauss::shoot(Info[0],ResoEnergy);
+    double E = RandGauss::shoot(Info[0],ResoEnergyOuterBarrel);
     if(E>EnergyThreshold){
       m_EventBarrel->SetOuterE(Info[7],Info[9],E);
       m_EventBarrel->SetOuterT(Info[7],Info[9],Info[1]); 
@@ -280,7 +280,7 @@ void Tiara::ReadSensitive(const G4Event* event){
     G4double* Info = *(Hyball_itr->second); 
 
     // Front Energy
-    double EF = RandGauss::shoot(Info[0],ResoEnergy);
+    double EF = RandGauss::shoot(Info[0],ResoEnergyHyball);
     if(EF>EnergyThreshold){
       int RingNumber=Info[8];
       RingNumber=abs(RingNumber-17);                                                                                 //
@@ -290,7 +290,7 @@ void Tiara::ReadSensitive(const G4Event* event){
     }
 
     // Back Energy
-    double EB = RandGauss::shoot(Info[1]+Info[0],ResoEnergy);
+    double EB = RandGauss::shoot(Info[1]+Info[0],ResoEnergyHyball);
     if(EB>EnergyThreshold){
       m_EventHyball->SetSectorE(Info[7],Info[9],EF);
       m_EventHyball->SetSectorT(Info[7],Info[9],Info[1]); 

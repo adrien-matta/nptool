@@ -9,7 +9,7 @@
  * Original Author: Marc Labiche    contact address: marc.labiche@stfc.ac.uk *
  *                                                                           *
  * Creation Date  : 31/01/12                                                 *
- * Last update    :                                                          *
+ * Last update    : 31/08/15                                                 *
  *---------------------------------------------------------------------------*
  * Decription: This class manages different shapes of module for the Helios  *
  *             It allows to have Helios geometries with an                   *
@@ -28,9 +28,6 @@
 
 // NPTool headers
 #include "Helios.hh"
-//#include "HeliosDetSquare.hh"
-//#include "HeliosDetTrapezoid.hh"
-//#include "HeliosDetAnnular.hh"
 #include "HeliosDetDummyShape.hh"
 #include "NPSDetectorFactory.hh"
 using namespace std;
@@ -56,68 +53,12 @@ void Helios::ReadConfiguration(string Path)
    ifstream ConfigFile;
    ConfigFile.open(Path.c_str());
 
-   //   bool HeliosSquare     = false;
-   //   bool HeliosTrapezoid  = false;
-   //   bool HeliosAnnular    = false;
    bool HeliosDummyShape = false;
 
    string LineBuffer;
    while (!ConfigFile.eof()) {
       getline(ConfigFile, LineBuffer);
-      /*
-      if (LineBuffer.compare(0, 12, "HeliosSquare") == 0  &&  HeliosSquare == false) {
-         HeliosSquare = true;
-
-         // instantiate a new "detector" corresponding to the Square elements
-         HeliosModule* myDetector = new HeliosSquare();
-
-         // read part of the configuration file corresponding to square elements
-         ConfigFile.close();
-         myDetector->ReadConfiguration(Path);
-         ConfigFile.open(Path.c_str());
-
-         // ms_InterCoord comes from NPS::VDetector
-         myDetector->SetInterCoordPointer(ms_InterCoord);
-
-         // store HeliosSquare "detector"
-         m_Modules.push_back(myDetector);
-      }
-      else if (LineBuffer.compare(0, 15, "HeliosTrapezoid") == 0  &&  HeliosTrapezoid == false) {
-         HeliosTrapezoid = true;
-
-         // instantiate a new "detector" corresponding to the Trapezoid elements
-         HeliosModule* myDetector = new HeliosTrapezoid();
-
-         // read part of the configuration file corresponding to trapezoid elements
-         ConfigFile.close();
-         myDetector->ReadConfiguration(Path);
-         ConfigFile.open(Path.c_str());
-
-         // ms_InterCoord comes from NPS::VDetector
-         myDetector->SetInterCoordPointer(ms_InterCoord);
-
-         // store HeliosTrapezoid "detector"
-         m_Modules.push_back(myDetector);
-      }
-      else if (LineBuffer.compare(0, 13, "HeliosAnnular") == 0  &&  HeliosAnnular == false) {
-         HeliosAnnular = true;
-
-         // instantiate a new "detector" corresponding to the Trapezoid elements
-         HeliosModule* myDetector = new HeliosAnnular();
-
-         // read part of the configuration file corresponding to trapezoid elements
-         ConfigFile.close();
-         myDetector->ReadConfiguration(Path);
-         ConfigFile.open(Path.c_str());
-
-         // ms_InterCoord comes from NPS::VDetector
-         myDetector->SetInterCoordPointer(ms_InterCoord);
-
-         // store HeliosTrapezoid "detector"
-         m_Modules.push_back(myDetector);
-      }
-      else 
-      */
+ 
       if (LineBuffer.compare(0, 16, "HeliosDummyShape") == 0  &&  HeliosDummyShape == false) {
          HeliosDummyShape = true;
 
@@ -203,13 +144,13 @@ void Helios::ReadSensitive(const G4Event* event)
  //            Registering the construct method to the factory                 //
  ////////////////////////////////////////////////////////////////////////////////
  extern"C" {
- class proxy_nps_helios{
+ class proxy{
    public:
-    proxy_nps_helios(){
+    proxy(){
       NPS::DetectorFactory::getInstance()->AddToken("Helios","Helios");
       NPS::DetectorFactory::getInstance()->AddDetector("Helios",Helios::Construct);
     }
 };
 
- proxy_nps_helios p_nps_helios;
+ proxy p;
  }

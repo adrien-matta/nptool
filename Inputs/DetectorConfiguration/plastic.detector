@@ -15,24 +15,24 @@ Target
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ScintillatorPlastic
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Plastic
-	THETA= 0
-	PHI= 0
-	R= 150
-	Thickness= 20
-	Radius= 50
-	Scintillator= Kapton
-	LeadThickness= 0
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ScintillatorPlastic
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Plastic
 	THETA= 0
 	PHI= 0
-	R= 175
-	Thickness= 20
-	Radius= 50
-	Scintillator= BC452_5
+	R= 0
+ 	X= 0
+  	Y= 0
+  	Z= 10
+	Thickness= 1.0
+  	Shape= Square
+  	Height= 22
+  	Width= 22
+	Radius= 0
+	Scintillator= BC400
 	LeadThickness= 0
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Avaible material:

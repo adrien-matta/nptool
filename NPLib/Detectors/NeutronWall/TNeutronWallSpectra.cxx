@@ -165,10 +165,10 @@ void TNeutronWallSpectra::FillPhysicsSpectra(TNeutronWallPhysics* Physics) {
   family= "NeutronWall/PHY";
 
   // Energy vs time
-  unsigned int sizeE = Physics->Energy.size();
+  unsigned int sizeE = Physics->NW_Energy.size();
   for(unsigned int i = 0 ; i < sizeE ; i++){
     name = "NeutronWall_ENERGY_TIME";
-    GetHisto(family,name) -> Fill(Physics->Energy[i],Physics->Time[i]);
+    GetHisto(family,name) -> Fill(Physics->NW_Energy[i],Physics->NW_Time[i]);
   }
 }
 

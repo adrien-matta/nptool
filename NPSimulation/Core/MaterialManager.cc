@@ -277,7 +277,15 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name,double density){
             m_Material[Name]=material;
             return material;
         }
-        
+        else  if(Name == "H2_gas"){
+            if(!density)
+                density = 3.34e-11*g/cm3;
+            G4Material* material = new G4Material("NPS_"+Name, density,1);
+            material->AddElement(GetElementFromLibrary("H"),2);
+            m_Material[Name]=material;
+            return material;
+        }
+         
         // Usual detector material
         else  if(Name == "Si"){
             if(!density)
@@ -388,6 +396,15 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name,double density){
                 density =  19.1*g/cm3;
             G4Material* material = new G4Material("NPS_"+Name,density,1);
             material->AddElement(GetElementFromLibrary("U"),1);
+            m_Material[Name]=material;
+            return material;
+        }
+        
+        else  if(Name == "NaturalTin"){
+            if(!density)
+                density =  7.31*g/cm3;
+            G4Material* material = new G4Material("NPS_"+Name,density,1);
+            material->AddElement(GetElementFromLibrary("Sn"),1);
             m_Material[Name]=material;
             return material;
         }

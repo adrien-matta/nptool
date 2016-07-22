@@ -1,0 +1,41 @@
+%%%%%%%%%%%%%%%%%%%%%% S1107 at Triumf %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Beam
+  Particle= 22Na
+  ExcitationEnergy= 0
+  Energy= 220
+  SigmaEnergy= 1
+  SigmaThetaX= 0.01 
+  SigmaPhiY= 0.01
+  SigmaX= 0.5
+  SigmaY= 0.5
+  MeanThetaX= 0
+  MeanPhiY= 0
+  MeanX= 0
+  MeanY= 0
+  %EnergyProfilePath=
+  %XThetaXProfilePath=
+  %YPhiYProfilePath=
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+TwoBodyReaction
+	Beam= 22Na
+	Target= 2H
+	Light= 1H
+	Heavy= 23Na
+	ExcitationEnergyLight= 0.0
+	ExcitationEnergyHeavy= 0.0
+  CrossSectionPath= flat.txt	CSR
+	ShootLight= 1
+	ShootHeavy= 1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%GammaDecay 26Mg
+Cascade
+  BranchingRatio= 70
+  Energies= 2.2
+  DifferentialCrossSection= 11Li(d,3He)10He.txt	Gamma25Na
+Cascade
+  BranchingRatio= 30
+  Energies= 1.0 1.2
+
+

@@ -17,17 +17,17 @@ Target
 %	Rot= 16.61
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 NeutronWall
-  THETA= 0
+  THETA= 30
   PHI= 0
   R= 4000
   BARS= 25
   VETOWALL= 1
-  VWDISTANCE= 400
-  OVERLAP= 3
+  VWDISTANCE= 100
+  OVERLAP= -0.1
   VWMATERIAL= BC400
   NWMATERIAL= NE213
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-NeutronWall
+%NeutronWall
   THETA= 0
   PHI= 0
   R= 6000

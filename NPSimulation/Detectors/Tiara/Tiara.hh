@@ -48,7 +48,10 @@ using namespace CLHEP;
 namespace TIARA{
   // Energy and time Resolution
   const G4double ResoTime    = 0      ;
-  const G4double ResoEnergy  = 0.042*MeV ;// = zzkeV of Resolution   //   Unit is MeV/2.35
+  const G4double ResoEnergyInnerBarrel  = 0.058*MeV ;// = 136keV of Resolution   //   Unit is MeV/2.35
+  const G4double ResoEnergyOuterBarrel  = 0.058*MeV ;// = 136keV of Resolution   //   Unit is MeV/2.35
+  const G4double ResoEnergyHyball       = 0.001*MeV ;// =  87keV of Resolution   //   Unit is MeV/2.35
+
   const G4double EnergyThreshold = 200*keV;
 
   // Geometric Information //

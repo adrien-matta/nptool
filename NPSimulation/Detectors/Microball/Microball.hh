@@ -49,10 +49,10 @@ class Microball : public NPS::VDetector{
     ////////////////////////////////////////////////////
   public:
     // Cylindric plastic
-    void AddMicroball(double R,
-        double Theta,
-        double Phi,
-        string Shape);  
+    void AddMicroball(bool bR1, bool bR2, bool bR3, 
+			bool bR4, bool bR5, bool bR6, 
+			bool bR7, bool bR8, bool bR9,
+			vector<int>, bool bFlip);  
 
     G4LogicalVolume* BuildSquareDetector();
     G4LogicalVolume* BuildCylindricalDetector();
@@ -104,6 +104,17 @@ class Microball : public NPS::VDetector{
     
     //   Shape type
     vector<string> m_Shape ;
+	bool m_Ring1;
+	bool m_Ring2;
+	bool m_Ring3;
+	bool m_Ring4;
+	bool m_Ring5;
+	bool m_Ring6;
+	bool m_Ring7;
+	bool m_Ring8;
+	bool m_Ring9;
+	vector<int> m_Array;
+	bool m_Flip;
    
     // Visualisation Attribute
     G4VisAttributes* m_VisSquare;
