@@ -33,7 +33,7 @@
 #include <fstream>
 #include <limits>
 #include <stdlib.h>
-#include <tgmath.h>
+#include <cgmath>
 using namespace std;
 
 //   ROOT
