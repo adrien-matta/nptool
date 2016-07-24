@@ -164,7 +164,7 @@ void Analysis::TreatEvent(){
       TVector3 BeamImpact(XTarget,YTarget,0);
       TVector3 HitDirection = TB -> GetRandomisedPositionOfInteraction(countTiaraBarrel) - BeamImpact ;
       ThetaLab = HitDirection.Angle( BeamDirection );
-      ThetaTBSurface = HitDirection.Angle(TVector3(0,0,-1) );
+      ThetaTBSurface = HitDirection.Angle(TVector3(0,0,-1) ) - TMath::PiOver2();
       ThetaNormalTarget = HitDirection.Angle( TVector3(0,0,1) ) ;
     }
     else{
