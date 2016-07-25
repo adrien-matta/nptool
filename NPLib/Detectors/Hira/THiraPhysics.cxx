@@ -33,6 +33,7 @@
 #include <fstream>
 #include <limits>
 #include <stdlib.h>
+#include <cmath>
 using namespace std;
 
 //   ROOT
@@ -826,7 +827,7 @@ vector <TVector2> THiraPhysics::Match_EF_EB(){
             // if same detector check energy
             if(m_PreTreatedData->GetHiraStripXEDetectorNbr(i) == m_PreTreatedData->GetHiraStripYEDetectorNbr(j)){
                 // Look if energy match
-                if( abs( (m_PreTreatedData->GetHiraStripXEEnergy(i) - m_PreTreatedData->GetHiraStripYEEnergy(j))/2. ) < m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma){
+                if( fabs( (m_PreTreatedData->GetHiraStripXEEnergy(i) - m_PreTreatedData->GetHiraStripYEEnergy(j))/2. ) < m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma){
                     //Special Option, if the event is between two CsI crystal, it is rejected
                     if(m_Ignore_not_matching_CsI){
                         bool check_validity=false;
