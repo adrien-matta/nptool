@@ -412,9 +412,9 @@ void THiraPhysics::InitializeRootInputPhysics()
    {
       TChain* inputChain = RootInput::getInstance()->GetChain();
       inputChain->SetBranchStatus ( "Hira", true );
-      inputChain->SetBranchStatus ( "DetectorNumber", true );
-      inputChain->SetBranchStatus ( "Energy", true );
-      inputChain->SetBranchStatus ( "Time", true );
+      //inputChain->SetBranchStatus ( "DetectorNumber", true );
+      //inputChain->SetBranchStatus ( "Energy", true );
+      //inputChain->SetBranchStatus ( "Time", true );
       inputChain->SetBranchAddress( "Hira", &m_EventPhysics );
    }
 ///////////////////////////////////////////////////////////////////////////
