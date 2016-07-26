@@ -77,17 +77,17 @@ THiraPhysics::THiraPhysics()
        m_CsI_MatchingX.resize(4,0);
        m_CsI_MatchingY.resize(4,0);
        for(int i=0; i<4; i++){
-           m_CsI_MatchingX[0]=3;//7;
-           m_CsI_MatchingY[0]=3;//7;
+           m_CsI_MatchingX[0]=7;
+           m_CsI_MatchingY[0]=7;
            
-           m_CsI_MatchingX[1]=3;//7;
-           m_CsI_MatchingY[1]=11;//23;
+           m_CsI_MatchingX[1]=7;
+           m_CsI_MatchingY[1]=23;
 
-           m_CsI_MatchingX[2]=11;//23;
-           m_CsI_MatchingY[2]=3;//7;
+           m_CsI_MatchingX[2]=23;
+           m_CsI_MatchingY[2]=7;
 
-           m_CsI_MatchingX[3]=11;//23;
-           m_CsI_MatchingY[3]=11;//23;
+           m_CsI_MatchingX[3]=23;
+           m_CsI_MatchingY[3]=23;
        }
    }
    

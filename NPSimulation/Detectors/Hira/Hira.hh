@@ -59,10 +59,10 @@ namespace HIRA
     const G4double Length		= 15.*cm ;
     const G4int NumberOfStrip	= 32;
 	
-    const G4double SiliconFace       = 62.5*mm ;
+    const G4double SiliconFace       = 63*mm ;
 	const G4double AluStripThickness = 0.4*micrometer ;
     const G4double ThinSiThickness	 = 65*micrometer ;
-	const G4double ThickSiThickness	 = 500*micrometer ;
+	const G4double ThickSiThickness	 = 1500*micrometer ;
     const G4double DistBetweenSi	 = 17.04*mm;
     const G4double VacBoxThickness   = 17.04*mm ;
 	const G4double MylarCsIThickness = 3*micrometer;

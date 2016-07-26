@@ -29,6 +29,7 @@ using namespace std ;
 
 //   ROOT
 #include "TObject.h"
+#include "TVector2.h"
 #include "TVector3.h"
 
 

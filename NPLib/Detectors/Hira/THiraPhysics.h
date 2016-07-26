@@ -24,12 +24,14 @@
 
 //   STL
 #include <vector>
+#include <map>
 using namespace std ;
 
-//   ROOT
-#include "TObject.h"
+// ROOT
+#include "TVector2.h"
 #include "TVector3.h"
-
+#include "TObject.h"
+#include "TH1.h"
 
 //   NPL
 #include "THiraData.h"
