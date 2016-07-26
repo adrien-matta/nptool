@@ -56,15 +56,15 @@ namespace HIRA
 	
 	const G4double FaceFront	= 10.*cm ;
 	const G4double FaceBack		= 10*cm ;
-	const G4double Length		= 15.*cm ;
-	const G4int NumberOfStrip	= 32;
+    const G4double Length		= 15.*cm ;
+    const G4int NumberOfStrip	= 32;
 	
-	const G4double SiliconFace       = 63*mm ;
+    const G4double SiliconFace       = 62.5*mm ;
 	const G4double AluStripThickness = 0.4*micrometer ;
-	const G4double ThinSiThickness	 = 65*micrometer ;
-	const G4double ThickSiThickness	 = 1500*micrometer ;
-	const G4double DistBetweenSi	 = 1*cm;
-	const G4double VacBoxThickness   = 1*cm ;
+    const G4double ThinSiThickness	 = 65*micrometer ;
+	const G4double ThickSiThickness	 = 500*micrometer ;
+    const G4double DistBetweenSi	 = 17.04*mm;
+    const G4double VacBoxThickness   = 17.04*mm ;
 	const G4double MylarCsIThickness = 3*micrometer;
     const G4double CsIThickness      = 10.*cm;// + 2*MylarCsIThickness ;
     
@@ -72,7 +72,7 @@ namespace HIRA
     const G4double CsIXBack          = 44.62*mm;//39.*mm
     const G4double CsIYFront         = 34.93*mm;
     const G4double CsIYBack          = 44.62*mm;//39.*mm
-    const G4double DistInterCsI      = 1.25*mm;
+    const G4double DistInterCsI      = 0.05*mm;
     
 	const G4double ClusterFaceFront  = 2*CsIXFront+2*DistInterCsI;
 	const G4double ClusterFaceBack   = 2*CsIXBack+2*DistInterCsI;
@@ -123,6 +123,9 @@ public:
 
 
 private:
+    bool m_build_ThinSi;
+    bool m_build_ThickSi;
+    bool m_build_CsI;
 	G4LogicalVolume* m_LogicThinSi;
 	G4LogicalVolume* m_LogicThickSi;
 	G4LogicalVolume* m_LogicCsICrystal;

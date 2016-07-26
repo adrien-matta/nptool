@@ -1,7 +1,5 @@
 TTreeName 
 	SimulatedTree
 RootFileName 
-  %../../Outputs/Simulation/e09042_3Hesource_nucl.root
-  ../../Outputs/Simulation/e09042_protonsource_HadElas.root
-	%../../Outputs/Simulation/test.root
+  ../../Outputs/Simulation/one_lassa_proton_nucl.root
 

@@ -4,14 +4,14 @@
 %			   Energy are given in MeV , Position in mm				  %	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Isotropic
-	EnergyLow=  100	
-	EnergyHigh= 100
+	EnergyLow=  10	
+	EnergyHigh= 250
   HalfOpenAngleMin= 0
-	HalfOpenAngleMax= 180
+	HalfOpenAngleMax= 10
 	x0= 0	
 	y0= 0	
 	z0= 0	
-  Multiplicity= 4
+  Multiplicity= 1
 	Particle= proton
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Supported particle type: proton, neutron, deuton, triton, He3 , alpha 

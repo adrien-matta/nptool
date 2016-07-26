@@ -50,7 +50,7 @@ void Analysis::Init(){
     Deuton_CsI = EnergyLoss("deuteron_CsI.G4table","G4Table",100 );
     Triton_CsI = EnergyLoss("triton_CsI.G4table","G4Table",100 );
     He3_CsI = EnergyLoss("He3_CsI.G4table","G4Table",100 );
-
+    
     
     proton = new NPL::Nucleus("1H");
     deuton = new NPL::Nucleus("2H");
@@ -67,7 +67,7 @@ void Analysis::TreatEvent(){
     ReInitValue();
     
     totalEvents++;
-
+    
     double BeamEnergy = 120*beam->GetA();
     
     TVector3 fImpulsionLab_beam             = TVector3(0,0,sqrt(BeamEnergy*BeamEnergy + 2*BeamEnergy*beam->Mass()));
@@ -80,115 +80,115 @@ void Analysis::TreatEvent(){
     fEnergyImpulsionLab_total = fEnergyImpulsionLab_beam + fEnergyImpulsionLab_target;
     
     double BetaCM = fEnergyImpulsionLab_total.Beta();
-
+    
     
     InitialEnergy = InitialConditions->GetKineticEnergy(0);
     double EDelta = 2.0;
-
-    if(Lassa->ThickSi_E.size()>0) InitialEnergy_Lassa = InitialEnergy;
+    
+    if(Lassa->EventMultiplicity==1) InitialEnergy_Lassa = InitialEnergy;
+    else InitialEnergy_Lassa = -100;
     double phi_in = acos(InitialConditions->GetMomentumDirectionX(0)/sin(InitialConditions->GetThetaCM(0)*deg));
     
     ECM_initial = proton->GetEnergyCM(InitialEnergy, InitialConditions->GetThetaCM(0)*deg, phi_in, BetaCM);
     ThetaCM = proton->GetThetaCM(InitialEnergy, InitialConditions->GetThetaCM(0)*deg, phi_in, BetaCM)/deg;
     ThetaLabInitial = InitialConditions->GetThetaLab_WorldFrame(0);
     
-    if(Lassa->ThickSi_E.size()>0){
+    if(Lassa->EventMultiplicity==1){
         ECM_initial_Lassa = proton->GetEnergyCM(InitialEnergy_Lassa, InitialConditions->GetThetaCM(0)*deg, phi_in, BetaCM);
     }
     else ECM_initial_Lassa = -100;
     ///////////////////////////LOOP on Lassa Hit//////////////////////////////////
-    if(Lassa->ThickSi_E.size() == 1){
-        detectedEvents++;
-        
-        //for(unsigned int countLassa = 0 ; countLassa < Lassa->ThickSi_E.size(); countLassa++){
-        TelescopeNumber = Lassa->TelescopeNumber[0];
-
-        X = Lassa->GetPositionOfInteraction(0).X();
-        Y = Lassa->GetPositionOfInteraction(0).Y();
-        Z = Lassa->GetPositionOfInteraction(0).Z();
-  
-        TVector3 PositionOnLassa = TVector3(X,Y,Z);
-        TVector3 ZUnit = TVector3(0,0,1);
-
-        double X_target = InitialConditions->GetIncidentPositionX();
-        double Y_target = InitialConditions->GetIncidentPositionY();
-        double Z_target = InitialConditions->GetIncidentPositionZ();
-
-        TVector3 PositionOnTarget = TVector3(0,0,0);
-        //TVector3 PositionOnTarget = TVector3(X_target,Y_target,Z_target);
-        TVector3 HitDirection = PositionOnLassa-PositionOnTarget;
-        TVector3 HitDirectionUnit = HitDirection.Unit();
-
-        TVector3 BeamDirection = TVector3(0,0,1);
-        //TVector3 BeamDirection = InitialConditions->GetBeamDirection();
-        //double XBeam = BeamDirection.X();
-        //double YBeam = BeamDirection.Y();
-        //double ZBeam = BeamDirection.Z();
-
-        ThetaLab = BeamDirection.Angle(HitDirection);
-        PhiLab = HitDirection.Phi();
-
-        E_ThickSi = Lassa->ThickSi_E[0];
-      
-        ELab = E_ThickSi;
-        ELab_nucl = E_ThickSi;
-        
-        //R_alpha = (4.59+1.192*pow(E_ThickSi,1.724));//*cos(ThetaLab);//Lise
-        R_alpha = (4.90+1.17883*pow(E_ThickSi,1.73497));//*cos(ThetaLab);//Geant4
-        
-        if(Lassa->CsI_E.size()==1){
-            E_CsI = Lassa->CsI_E[0];
-            ELab += E_CsI;
+    if(Lassa->EventMultiplicity == 1){
+        for(unsigned int countLassa = 0 ; countLassa < Lassa->EventMultiplicity; countLassa++){
+            TelescopeNumber = Lassa->TelescopeNumber[countLassa];
             
-            PID = pow(E_ThickSi+E_CsI,1.78)-pow(E_CsI,1.78);
-
-            //Try to simulate the nuclear reaction loss
-            //ThicknessCsI = Proton_CsI.EvaluateMaterialThickness(0*MeV, Lassa->CsI_E[0]*MeV, 200*millimeter, 0.1*millimeter);
-            //ThicknessCsI = Deuton_CsI.EvaluateMaterialThickness(0*MeV, Lassa->CsI_E[0]*MeV, 200*millimeter, 0.1*millimeter);
-            //ThicknessCsI = Triton_CsI.EvaluateMaterialThickness(0*MeV, Lassa->CsI_E[0]*MeV, 200*millimeter, 0.1*millimeter);
+            X = Lassa->GetPositionOfInteraction(countLassa).X();
+            Y = Lassa->GetPositionOfInteraction(countLassa).Y();
+            Z = Lassa->GetPositionOfInteraction(countLassa).Z();
             
-            //double eval = f_proton->Eval(ThicknessCsI/10);
-            //double eval = f_deuton->Eval(ThicknessCsI/10);
-            /*double eval = f_triton->Eval(ThicknessCsI/10);
-            double Random_value = Rand.Uniform(0,1);
+            TVector3 PositionOnLassa = TVector3(X,Y,Z);
+            TVector3 ZUnit = TVector3(0,0,1);
             
-            if(Random_value>eval) ELab_nucl += E_CsI;
-            else ELab_nucl += Rand.Uniform(0,E_CsI);*/
+            double X_target = InitialConditions->GetIncidentPositionX();
+            double Y_target = InitialConditions->GetIncidentPositionY();
+            double Z_target = InitialConditions->GetIncidentPositionZ();
             
+            TVector3 PositionOnTarget = TVector3(0,0,0);
+            //TVector3 PositionOnTarget = TVector3(X_target,Y_target,Z_target);
+            TVector3 HitDirection = PositionOnLassa-PositionOnTarget;
+            TVector3 HitDirectionUnit = HitDirection.Unit();
+            
+            TVector3 BeamDirection = TVector3(0,0,1);
+            //TVector3 BeamDirection = InitialConditions->GetBeamDirection();
+            //double XBeam = BeamDirection.X();
+            //double YBeam = BeamDirection.Y();
+            //double ZBeam = BeamDirection.Z();
+            
+            ThetaLab = BeamDirection.Angle(HitDirection);
+            PhiLab = HitDirection.Phi();
+            
+            E_ThickSi = Lassa->ThickSi_E[countLassa];
+            
+            ELab = E_ThickSi;
+            ELab_nucl = E_ThickSi;
+            
+            //R_alpha = (4.59+1.192*pow(E_ThickSi,1.724));//*cos(ThetaLab);//Lise
+            R_alpha = (4.90+1.17883*pow(E_ThickSi,1.73497));//*cos(ThetaLab);//Geant4
+            
+            if(Lassa->CsI_E[countLassa]>0){
+                E_CsI = Lassa->CsI_E[countLassa];
+                ELab += E_CsI;
+                
+                PID = pow(E_ThickSi+E_CsI,1.78)-pow(E_CsI,1.78);
+                
+                //Try to simulate the nuclear reaction loss
+                //ThicknessCsI = Proton_CsI.EvaluateMaterialThickness(0*MeV, Lassa->CsI_E[0]*MeV, 200*millimeter, 0.1*millimeter);
+                //ThicknessCsI = Deuton_CsI.EvaluateMaterialThickness(0*MeV, Lassa->CsI_E[0]*MeV, 200*millimeter, 0.1*millimeter);
+                //ThicknessCsI = Triton_CsI.EvaluateMaterialThickness(0*MeV, Lassa->CsI_E[0]*MeV, 200*millimeter, 0.1*millimeter);
+                
+                //double eval = f_proton->Eval(ThicknessCsI/10);
+                //double eval = f_deuton->Eval(ThicknessCsI/10);
+                /*double eval = f_triton->Eval(ThicknessCsI/10);
+                 double Random_value = Rand.Uniform(0,1);
+                 
+                 if(Random_value>eval) ELab_nucl += E_CsI;
+                 else ELab_nucl += Rand.Uniform(0,E_CsI);*/
+                
+            }
+            
+            if(fabs(InitialEnergy-ELab)>EDelta){
+                ELab = -100;
+            }
+            
+            if(fabs(InitialEnergy-ELab_nucl)>EDelta) ELab_nucl = -100;
+            
+            if(ELab>0){
+                ECM = proton->GetEnergyCM(ELab, ThetaLab, PhiLab, BetaCM);
+            }
+            else{
+                ECM = -100;
+            }
+            
+            ThetaLab = ThetaLab/deg;
+            PhiLab = PhiLab/deg;
         }
-    
-        if(fabs(InitialEnergy-ELab)>EDelta){
-            ELab = -100;
-        }
-
-        if(fabs(InitialEnergy-ELab_nucl)>EDelta) ELab_nucl = -100;
-        
-        if(ELab>0){
-            ECM = proton->GetEnergyCM(ELab, ThetaLab, PhiLab, BetaCM);
-        }
-        else{
-            ECM = -100;
-        }
-        
-        ThetaLab = ThetaLab/deg;
-        PhiLab = PhiLab/deg;
     }
 }
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::End(){
-
-  /*geomEff = 100*((double)detectedEvents)/((double)totalEvents);
-
-  peakEff = 100*((double)peakEvents)/((double)detectedEvents);
-
-  cout << endl;
-  cout << "Total Events: " << totalEvents << endl;
-  cout << "Detected Events: " << detectedEvents << endl;
-  cout << "PeakEvents: " << peakEvents << endl;
-
-  cout << "Geometric Efficiency: " << geomEff << endl;
-  cout << "Peak Efficiency: " << peakEff << endl;*/
-
+    
+    /*geomEff = 100*((double)detectedEvents)/((double)totalEvents);
+     
+     peakEff = 100*((double)peakEvents)/((double)detectedEvents);
+     
+     cout << endl;
+     cout << "Total Events: " << totalEvents << endl;
+     cout << "Detected Events: " << detectedEvents << endl;
+     cout << "PeakEvents: " << peakEvents << endl;
+     
+     cout << "Geometric Efficiency: " << geomEff << endl;
+     cout << "Peak Efficiency: " << peakEff << endl;*/
+    
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -209,17 +209,20 @@ void Analysis::InitOutputBranch() {
     RootOutput::getInstance()->GetTree()->Branch("E_CsI",&E_CsI,"E_CsI/D");
     RootOutput::getInstance()->GetTree()->Branch("R_alpha",&R_alpha,"R_alpha/D");
     RootOutput::getInstance()->GetTree()->Branch("PID",&PID,"PID/D");
+    RootOutput::getInstance()->GetTree()->Branch( "X" , &X , "X/D" )  ;
+    RootOutput::getInstance()->GetTree()->Branch( "Y" , &Y , "Y/D" )  ;
+    RootOutput::getInstance()->GetTree()->Branch( "Z" , &Z , "Z/D" )  ;
     //  RootOutput::getInstance()->GetTree()->Branch("peakEvents",&peakEvents,"peakEvents/I");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::InitInputBranch(){
-  RootInput:: getInstance()->GetChain()->SetBranchStatus("InitialConditions",true );
-  RootInput:: getInstance()->GetChain()->SetBranchStatus("fIC_*",true );
-  RootInput:: getInstance()->GetChain()->SetBranchAddress("InitialConditions",&InitialConditions);
+    RootInput:: getInstance()->GetChain()->SetBranchStatus("InitialConditions",true );
+    RootInput:: getInstance()->GetChain()->SetBranchStatus("fIC_*",true );
+    RootInput:: getInstance()->GetChain()->SetBranchAddress("InitialConditions",&InitialConditions);
 }
 
-////////////////////////////////////////////////////////////////////////////////     
+////////////////////////////////////////////////////////////////////////////////
 void Analysis::ReInitValue(){
     E_ThickSi = -100;
     E_CsI =-100;
@@ -247,7 +250,7 @@ void Analysis::ReInitValue(){
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
 NPL::VAnalysis* Analysis::Construct(){
-  return (NPL::VAnalysis*) new Analysis();
+    return (NPL::VAnalysis*) new Analysis();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -26,6 +26,7 @@
 #include "RootOutput.h"
 #include "NPDetectorFactory.h"
 #include "NPCalibrationManager.h"
+#include "NPCalibrationManager.h"
 
 //   STL
 #include <iostream>
@@ -60,7 +61,7 @@ THiraPhysics::THiraPhysics()
        m_NumberOfStrip = 32;
        m_NumberOfCrystal = 4;
        m_StripEnergyMatchingSigma = 0.020;
-       m_StripEnergyMatchingNumberOfSigma = 3;
+       m_StripEnergyMatchingNumberOfSigma = 5;
        m_Si_DE_E_RAW_Threshold = 0;
        m_Si_EF_E_RAW_Threshold = 0;
        m_Si_EB_E_RAW_Threshold = 0;
@@ -72,21 +73,21 @@ THiraPhysics::THiraPhysics()
 
        m_Ignore_not_matching_CsI = true;
        
-       m_CsI_Size = 16.;
+       m_CsI_Size = m_NumberOfStrip;
        m_CsI_MatchingX.resize(4,0);
        m_CsI_MatchingY.resize(4,0);
        for(int i=0; i<4; i++){
-           m_CsI_MatchingX[0]=7;
-           m_CsI_MatchingY[0]=7;
+           m_CsI_MatchingX[0]=3;//7;
+           m_CsI_MatchingY[0]=3;//7;
            
-           m_CsI_MatchingX[1]=7;
-           m_CsI_MatchingY[1]=23;
+           m_CsI_MatchingX[1]=3;//7;
+           m_CsI_MatchingY[1]=11;//23;
 
-           m_CsI_MatchingX[2]=23;
-           m_CsI_MatchingY[2]=7;
+           m_CsI_MatchingX[2]=11;//23;
+           m_CsI_MatchingY[2]=3;//7;
 
-           m_CsI_MatchingX[3]=23;
-           m_CsI_MatchingY[3]=23;
+           m_CsI_MatchingX[3]=11;//23;
+           m_CsI_MatchingY[3]=11;//23;
        }
    }
    
@@ -144,7 +145,9 @@ void THiraPhysics::ReadConfiguration(string Path){
     bool check_C = false ;
     bool check_B = false ;
     bool check_D = false ;
-    
+    bool check_ThinSi = false;
+    bool check_ThickSi = false;
+    bool check_CsI = false;
     /*bool check_Theta = false ;
      bool check_Phi   = false ;
      bool check_R     = false ;*/
@@ -230,6 +233,28 @@ void THiraPhysics::ReadConfiguration(string Path){
                 cout << "D corner position : " << D.X() << ";" << D.Y() << ";" << D.Z() << endl;
             }
             
+            else if (DataBuffer.compare(0, 10, "ThinSi_DE=") == 0) {
+                check_ThinSi= true;
+                ConfigFile >> DataBuffer ;
+                m_build_ThinSi = atoi(DataBuffer.c_str()) ;
+                cout << "Build ThinSi : " << m_build_ThinSi << endl;
+            }
+            
+            else if (DataBuffer.compare(0, 10, "ThickSi_E=") == 0) {
+                check_ThickSi= true;
+                ConfigFile >> DataBuffer ;
+                m_build_ThickSi = atoi(DataBuffer.c_str()) ;
+                cout << "Build ThickSi : " << m_build_ThickSi << endl;
+            }
+            
+            else if (DataBuffer.compare(0, 4, "CsI=") == 0) {
+                check_CsI= true;
+                ConfigFile >> DataBuffer ;
+                m_build_CsI = atoi(DataBuffer.c_str()) ;
+                cout << "Build CsI : " << m_build_CsI << endl;
+            }
+
+            
             
             // Angle method
             /*   else if (DataBuffer.compare(0, 6, "THETA=") == 0) {
@@ -274,7 +299,7 @@ void THiraPhysics::ReadConfiguration(string Path){
             
             //Add The previously define telescope
             //With position method
-            if (check_A && check_B && check_C && check_D) {
+            if (check_A && check_B && check_C && check_D && check_ThinSi && check_ThickSi && check_CsI) {
                 
                 ReadingStatus = false ;
                 check_A = false ;
@@ -330,8 +355,8 @@ void THiraPhysics::AddTelescope(TVector3 Pos1, TVector3 Pos2, TVector3 Pos3, TVe
     u = u.Unit(); v = v.Unit(); w = w.Unit();
     
     //   Geometry Parameter
-    double Face = 64.; //mm
-    double NumberOfStrip = 32;
+    double Face = 62.5; //mm
+    double NumberOfStrip = m_NumberOfStrip;
     double StripPitch = Face/NumberOfStrip ; //mm
     double offset = 0.5874*25.4; //mm
     //   Buffer object to fill Position Array
@@ -349,12 +374,12 @@ void THiraPhysics::AddTelescope(TVector3 Pos1, TVector3 Pos2, TVector3 Pos3, TVe
     //   Moving StripCenter to 1.1 corner:
     Strip_1_1 = Pos + offset*w - (NumberOfStrip/2-0.5)*StripPitch*(u+v);
     
-    for( int i = 0 ; i < 32 ; ++i ){
+    for( int i = 0 ; i < m_NumberOfStrip ; ++i ){
         lineX.clear();
         lineY.clear();
         lineZ.clear();
         
-        for( int j = 0 ; j < 32 ; ++j ){
+        for( int j = 0 ; j < m_NumberOfStrip ; ++j ){
             StripCenter  = Strip_1_1 + StripPitch*( i*u + j*v  );
             lineX.push_back( StripCenter.X() );
             lineY.push_back( StripCenter.Y() );
@@ -436,7 +461,9 @@ void THiraPhysics::BuildSimplePhysicalEvent(){
     PreTreat();
     bool check_CSI = false;
     
-    m_ThinSi_EMult      = m_PreTreatedData->GetHiraThinSiEMult();
+    if(m_build_ThinSi){
+        m_ThinSi_EMult      = m_PreTreatedData->GetHiraThinSiEMult();
+    }
     
     m_ThickSi_EXMult    = m_PreTreatedData->GetHiraStripXEMult();
     m_ThickSi_EYMult    = m_PreTreatedData->GetHiraStripYEMult();
@@ -446,11 +473,7 @@ void THiraPhysics::BuildSimplePhysicalEvent(){
     m_CsI_EMult         = m_PreTreatedData->GetHiraCsIEMult();
     m_CsI_TMult         = m_PreTreatedData->GetHiraCsITMult();
 
-    for(unsigned int i = 0 ; i < m_ThinSi_EMult ; ++i){
-        ThinSi_StripNumber.push_back(m_PreTreatedData->GetHiraThinSiStripEStripNbr(i));
-        ThinSi_E.push_back(m_PreTreatedData->GetHiraThinSiStripEEnergy(i));
-        ThinSi_T.push_back(m_PreTreatedData->GetHiraThinSiStripTTime(i));
-    }
+    
 
     if(CheckEvent() == 1){
         
@@ -469,7 +492,7 @@ void THiraPhysics::BuildSimplePhysicalEvent(){
             double Si_EB_E = m_PreTreatedData->GetHiraStripYEEnergy(couple[i].Y());
             
             //Search for associate Time
-            double Si_EF_T = -1000;
+            /*double Si_EF_T = -100;
             for(unsigned int t = 0 ; t < m_ThickSi_TXMult ; ++t){
                 if(   m_PreTreatedData->GetHiraStripXTStripNbr( couple[i].X() ) == m_PreTreatedData->GetHiraStripXTStripNbr(t)
                    && m_PreTreatedData->GetHiraStripXTDetectorNbr( couple[i].X() ) == m_PreTreatedData->GetHiraStripXTDetectorNbr(t)){
@@ -478,14 +501,17 @@ void THiraPhysics::BuildSimplePhysicalEvent(){
                 }
             }
             
-            double Si_EB_T = -1000;
+            double Si_EB_T = -100;
             for(unsigned int t = 0 ; t < m_ThickSi_TYMult ; ++t){
                 if(   m_PreTreatedData->GetHiraStripYTStripNbr( couple[i].Y() ) == m_PreTreatedData->GetHiraStripYTStripNbr(t)
                 && m_PreTreatedData->GetHiraStripYTDetectorNbr( couple[i].Y() ) == m_PreTreatedData->GetHiraStripYTDetectorNbr(t)){
                     Si_EB_T = m_PreTreatedData->GetHiraStripYTTime(t);
                     break;
                 }
-            }
+            }*/
+            
+            double Si_EF_T = m_PreTreatedData->GetHiraStripXTTime(couple[i].X());
+            double Si_EB_T = m_PreTreatedData->GetHiraStripYTTime(couple[i].Y());
             
             TelescopeNumber.push_back(N);
             ThickSi_StripNumberX.push_back(X);
@@ -498,19 +524,33 @@ void THiraPhysics::BuildSimplePhysicalEvent(){
             ThickSi_E.push_back(Si_EF_E);
             ThickSi_T.push_back(Si_EF_T);
             
+            // DE
+            if(m_build_ThinSi){
+                for(unsigned int d = 0 ; d < m_ThinSi_EMult ; ++d){
+                    if(m_PreTreatedData->GetHiraThinSiStripEDetectorNbr(d)==N){
+                        if(Match_Si_DE_E(X,m_PreTreatedData->GetHiraThinSiStripEStripNbr(d))){
+                            ThinSi_StripNumber.push_back(m_PreTreatedData->GetHiraThinSiStripEStripNbr(d));
+                            ThinSi_E.push_back(m_PreTreatedData->GetHiraThinSiStripEEnergy(d));
+                            ThinSi_T.push_back(m_PreTreatedData->GetHiraThinSiStripTTime(d));
+                        }
+                    }
+                }
+            }
+ 
+            // CsI
             for(unsigned int j=0; j<m_CsI_EMult; ++j){
                 if(m_PreTreatedData->GetHiraCsIEDetectorNbr(j)==N){
                     if(Match_Si_CsI(X,Y,m_PreTreatedData->GetHiraCsIECristalNbr(j))){
-                        CsI_CrystalNumber.push_back(m_PreTreatedData->GetHiraCsIECristalNbr(i));
-                        CsI_E.push_back(m_PreTreatedData->GetHiraCsIEEnergy(i));
+                        CsI_CrystalNumber.push_back(m_PreTreatedData->GetHiraCsIECristalNbr(j));
+                        CsI_E.push_back(m_PreTreatedData->GetHiraCsIEEnergy(j));
 
                         check_CSI = true;
                     }
                 }
             }
             if(!check_CSI){
-                CsI_CrystalNumber.push_back(-1000);
-                CsI_E.push_back(-1000);
+                CsI_CrystalNumber.push_back(-1);
+                CsI_E.push_back(-100);
             }
         
         }
@@ -523,7 +563,9 @@ void THiraPhysics::BuildSimplePhysicalEvent(){
 void THiraPhysics::PreTreat(){
     ClearPreTreatedData();
     
-    m_ThinSi_EMult      = m_EventData->GetHiraThinSiEMult();
+    if(m_build_ThinSi){
+        m_ThinSi_EMult      = m_EventData->GetHiraThinSiEMult();
+    }
     
     m_ThickSi_EXMult    = m_EventData->GetHiraStripXEMult();
     m_ThickSi_EYMult    = m_EventData->GetHiraStripYEMult();
@@ -535,17 +577,18 @@ void THiraPhysics::PreTreat(){
     
     // Thin Si
     // DE
-    for(unsigned int i = 0 ; i < m_ThinSi_EMult ; ++i){
-        if(m_EventData->GetHiraThinSiStripEDetectorNbr(i)<m_NumberOfTelescope && m_EventData->GetHiraThinSiStripEStripNbr(i)<m_NumberOfStrip){
-            if(m_EventData->GetHiraThinSiStripEEnergy(i)>m_Si_DE_E_RAW_Threshold && IsValidChannel("DE",m_EventData->GetHiraThinSiStripEDetectorNbr(i),m_EventData->GetHiraThinSiStripEStripNbr(i))){
-                m_PreTreatedData->SetHiraThinSiStripEDetectorNbr( m_EventData->GetHiraThinSiStripEDetectorNbr(i) );
-                m_PreTreatedData->SetHiraThinSiStripEStripNbr( m_EventData->GetHiraThinSiStripEStripNbr(i) );
-                m_PreTreatedData->SetHiraThinSiStripEEnergy( m_EventData->GetHiraThinSiStripEEnergy(i) );
-                m_PreTreatedData->SetHiraThinSiStripTTime( m_EventData->GetHiraThinSiStripTTime(i));
+    if(m_build_ThinSi){
+        for(unsigned int i = 0 ; i < m_ThinSi_EMult ; ++i){
+            if(m_EventData->GetHiraThinSiStripEDetectorNbr(i)<m_NumberOfTelescope && m_EventData->GetHiraThinSiStripEStripNbr(i)<m_NumberOfStrip){
+                if(m_EventData->GetHiraThinSiStripEEnergy(i)>m_Si_DE_E_RAW_Threshold && IsValidChannel("DE",m_EventData->GetHiraThinSiStripEDetectorNbr(i),m_EventData->GetHiraThinSiStripEStripNbr(i))){
+                    m_PreTreatedData->SetHiraThinSiStripEDetectorNbr( m_EventData->GetHiraThinSiStripEDetectorNbr(i) );
+                    m_PreTreatedData->SetHiraThinSiStripEStripNbr( m_EventData->GetHiraThinSiStripEStripNbr(i) );
+                    m_PreTreatedData->SetHiraThinSiStripEEnergy( m_EventData->GetHiraThinSiStripEEnergy(i) );
+                    m_PreTreatedData->SetHiraThinSiStripTTime( m_EventData->GetHiraThinSiStripTTime(i));
+                }
             }
         }
     }
-    
     // Thick Si
     // EF
     for(unsigned int i = 0 ; i < m_ThickSi_EXMult ; ++i){
@@ -588,8 +631,6 @@ void THiraPhysics::PreTreat(){
 
 ///////////////////////////////////////////////////////////////////////////
 bool THiraPhysics::IsValidChannel(const string DetectorType, const int telescope , const int channel){
-    //cout << DetectorType << " " << telescope << " " << channel << endl;
-    
     if(DetectorType=="CsI")
         return *(m_CsIChannelStatus[telescope].begin()+channel);
     
@@ -615,7 +656,7 @@ void THiraPhysics::InitializeStandardParameter(){
     m_EBChannelStatus.clear() ;
     m_CsIChannelStatus.clear()  ;
     
-    ChannelStatus.resize(32,true);
+    ChannelStatus.resize(m_NumberOfStrip,true);
     for(int i = 0 ; i < m_NumberOfTelescope ; ++i){
         m_DEChannelStatus[i] = ChannelStatus;
         m_EFChannelStatus[i] = ChannelStatus;
@@ -626,8 +667,6 @@ void THiraPhysics::InitializeStandardParameter(){
     for(int i = 0 ; i < m_NumberOfTelescope ; ++i){
         m_CsIChannelStatus[i]  = ChannelStatus;
     }
-    
-    //m_MaximumStripMultiplicityAllowed = m_NumberOfTelescope   ;
     
     return;
 }
@@ -700,7 +739,7 @@ void THiraPhysics::ReadAnalysisConfig(){
                 cout << whatToDo << "  " << DataBuffer << endl;
                 int telescope = atoi(DataBuffer.substr(4,1).c_str());
                 vector< bool > ChannelStatus;
-                ChannelStatus.resize(32,false);
+                ChannelStatus.resize(m_NumberOfStrip,false);
                 m_EFChannelStatus[telescope] = ChannelStatus;
                 m_EBChannelStatus[telescope] = ChannelStatus;
                 m_DEChannelStatus[telescope] = ChannelStatus;
@@ -830,15 +869,17 @@ vector <TVector2> THiraPhysics::Match_EF_EB(){
                 if( fabs( (m_PreTreatedData->GetHiraStripXEEnergy(i) - m_PreTreatedData->GetHiraStripYEEnergy(j))/2. ) < m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma){
                     //Special Option, if the event is between two CsI crystal, it is rejected
                     if(m_Ignore_not_matching_CsI){
-                        bool check_validity=false;
+                        bool check_validity_csi=false;
                         for (unsigned int hh = 0 ; hh<4 ; ++hh ){
                             if( Match_Si_CsI(m_PreTreatedData->GetHiraStripXEStripNbr(i), m_PreTreatedData->GetHiraStripYEStripNbr(j) , hh) ){
-                                check_validity=true;
+                                check_validity_csi=true;
                             }
                         }
-                        if(check_validity)
+                        if(check_validity_csi)
                             ArrayOfGoodCouple.push_back ( TVector2(i,j) ) ;
                     }
+                    // Regular case, keep the event
+                    else ArrayOfGoodCouple.push_back (TVector2(i,j));
                 }
             }
         }
@@ -859,9 +900,19 @@ bool THiraPhysics::Match_Si_CsI(int EF, int EB, int CristalNbr){
 }
 
 ///////////////////////////////////////////////////////////////////////////
+bool THiraPhysics::Match_Si_DE_E(int EF, int DEStipNumber){
+    
+    if( abs(EF - DEStipNumber) < 2)
+        return true ;
+    
+    else
+        return false;
+}
+
+///////////////////////////////////////////////////////////////////////////
 int THiraPhysics::CheckEvent(){
     // Check the size of the different elements
-    if( m_PreTreatedData->GetHiraStripXEMult() == m_PreTreatedData->GetHiraStripYEMult() )
+    if( (m_PreTreatedData->GetHiraStripXEMult() == m_PreTreatedData->GetHiraStripYEMult()) )
         return 1 ; // Regular Event
     
     // INterstrip management is not coded, so waste of time to make this test

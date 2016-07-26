@@ -27,16 +27,6 @@
 using namespace std ;
 class TLassaData : public TObject {
    private:
-    // SSSD
-    // Energy
-    /*vector<UShort_t>   fLassa_ThinSi_StripE_DetectorNbr;
-    vector<UShort_t>   fLassa_ThinSi_StripE_StripNbr;
-    vector<Double_t>   fLassa_ThinSi_StripE_Energy;
-    // Time
-    vector<UShort_t>   fLassa_ThinSi_StripT_DetectorNbr;
-    vector<UShort_t>   fLassa_ThinSi_StripT_StripNbr;
-    vector<Double_t>   fLassa_ThinSi_StripT_Time;*/
-    
     // DSSD
     // X strips
     // Energy
@@ -76,17 +66,6 @@ class TLassaData : public TObject {
     void  Clear(const Option_t*) {};
     void   Dump() const;
 
-    /////////////////////           SETTERS           ////////////////////////
-    // SSSD
-    // (X,E)
-   /* void   SetLassaThinSiStripEDetectorNbr(const UShort_t DetNbr) {fLassa_ThinSi_StripE_DetectorNbr.push_back(DetNbr);}
-    void   SetLassaThinSiStripEStripNbr(const UShort_t StripNbr)  {fLassa_ThinSi_StripE_StripNbr.push_back(StripNbr);}
-    void   SetLassaThinSiStripEEnergy(const Double_t Energy)      {fLassa_ThinSi_StripE_Energy.push_back(Energy);}
-    // (X,T)
-    void   SetLassaThinSiStripTDetectorNbr(const UShort_t DetNbr) {fLassa_ThinSi_StripT_DetectorNbr.push_back(DetNbr);}
-    void   SetLassaThinSiStripTStripNbr(const UShort_t StripNbr)  {fLassa_ThinSi_StripT_StripNbr.push_back(StripNbr);}
-    void   SetLassaThinSiStripTTime(const Double_t Time)          {fLassa_ThinSi_StripT_Time.push_back(Time);}
-*/    
     // DSSD
     // (X,E)
     void   SetLassaThickSiStripXEDetectorNbr(const UShort_t DetNbr) {fLassa_ThickSi_StripXE_DetectorNbr.push_back(DetNbr);}
@@ -116,17 +95,6 @@ class TLassaData : public TObject {
     void   SetLassaCsITTime(const Double_t Time)             {fLassa_CsIT_Time.push_back(Time);}
 
     /////////////////////           GETTERS           ////////////////////////
-    // SSSD
-    // (X,E)
-  /*  UShort_t   GetLassaThinSiEMult()                                 const {return fLassa_ThickSi_StripXE_DetectorNbr.size();}
-    UShort_t   GetLassaThinSiStripEDetectorNbr(const Int_t i)        const {return fLassa_ThinSi_StripE_DetectorNbr[i];}
-    UShort_t   GetLassaThinSiStripEStripNbr(const Int_t i)           const {return fLassa_ThinSi_StripE_StripNbr[i];}
-    Double_t   GetLassaThinSiStripEEnergy(const Int_t i)             const {return fLassa_ThinSi_StripE_Energy[i];}
-    // (X,T)
-    UShort_t   GetLassaThinSiStripTDetectorNbr(const Int_t i)        const {return fLassa_ThinSi_StripT_DetectorNbr[i];}
-    UShort_t   GetLassaThinSiStripTStripNbr(const Int_t i)           const {return fLassa_ThinSi_StripT_StripNbr[i];}
-    Double_t   GetLassaThinSiStripTTime(const Int_t i)               const {return fLassa_ThinSi_StripT_Time[i];}
-*/    
     // DSSD
     // (X,E)
     UShort_t   GetLassaStripXEMult()                     const {return fLassa_ThickSi_StripXE_DetectorNbr.size();}

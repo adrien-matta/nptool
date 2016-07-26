@@ -50,6 +50,7 @@ public:
 public:
     vector < TVector2 > Match_EF_EB() ;
     bool Match_Si_CsI(int EF, int EB, int CristalNbr);
+    bool Match_Si_DE_E(int EF, int DEStipNumber);
     int CheckEvent();
     
 public:   //   Calibrated Data
@@ -169,19 +170,23 @@ private:   // Data not writted in the tree
     vector< vector < vector < double > > >   m_StripPositionZ;//!
     
     //   Give the allowance in percent of the difference in energy between X and Y
-    double m_StripEnergyMatchingNumberOfSigma;
-    double m_StripEnergyMatchingSigma;
-    double m_MaximumStripMultiplicityAllowed;
-    double m_Si_DE_E_RAW_Threshold;
-    double m_Si_EF_E_RAW_Threshold;
-    double m_Si_EB_E_RAW_Threshold;
-    double m_CsI_E_RAW_Threshold;
-    double m_Si_DE_E_Threshold;
-    double m_Si_EF_E_Threshold;
-    double m_Si_EB_E_Threshold;
-    double m_CsI_E_Threshold;
-    bool m_Take_E_EF;
-    bool m_Take_E_EB;
+    double m_StripEnergyMatchingNumberOfSigma;//!
+    double m_StripEnergyMatchingSigma;//!
+    double m_MaximumStripMultiplicityAllowed;//!
+    double m_Si_DE_E_RAW_Threshold;//!
+    double m_Si_EF_E_RAW_Threshold;//!
+    double m_Si_EB_E_RAW_Threshold;//!
+    double m_CsI_E_RAW_Threshold;//!
+    double m_Si_DE_E_Threshold;//!
+    double m_Si_EF_E_Threshold;//!
+    double m_Si_EB_E_Threshold;//!
+    double m_CsI_E_Threshold;//!
+    bool m_Take_E_EF;//!
+    bool m_Take_E_EB;//!
+    bool m_build_ThinSi;//!
+    bool m_build_ThickSi;//!
+    bool m_build_CsI;//!
+    
     
     // size in strip of a crystal
     int m_CsI_Size;//!
