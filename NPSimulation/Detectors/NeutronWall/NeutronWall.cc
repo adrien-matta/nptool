@@ -60,8 +60,9 @@ using namespace CLHEP;
 namespace NeutronWall_NS{
     // Energy and time Resolution
     const double EnergyThreshold = 0.1*MeV;
-    const double ResoTime = 4.5*ns ;
-    const double ResoEnergy = 5.0*MeV ;
+    const double ResoTime = 0*ns ;
+    const double ResoEnergy = 0*MeV ;
+    const double ResoPosition = 0*cm;
     //The size of NS should depend on the distance between NeutronWall and plastic Bar right now
     double NS_X = 2020.0*mm;
     double NS_Y = 2020.0*mm;
@@ -93,16 +94,14 @@ namespace NeutronWall_NS{
     const double upper_gap = 10.0*mm;
     
     //Add elements about the plastic bars
-    double PlasticBar_X = 0.0*mm;
-    double PlasticBar_Y = 0.0*mm;
+    double PlasticBar_X = 83.40*mm;
+    double PlasticBar_Y = 2000.0*mm;
     double PlasticBar_Z = 10.0*mm;
     
     //Add total height of neutronwall and vetowall for comparision
     double TotalHeightOfNeutronWall = 0.0*mm;
     double TotalHeightOfVetoWall = 0.0*mm;
     
-    //Scale down factor
-    double ScaleDownFactor = 0;
     
     
 }
@@ -181,7 +180,7 @@ void NeutronWall::ReadConfiguration(string Path){
     double VWDistance = 0.0;
     int VetoWall = 0;
     string VWMaterial = "BC400";
-    double Overlap = 3;
+    double Overlap = 6;
     
     bool check_Theta = false ;
     bool check_Phi = false ;
@@ -401,31 +400,8 @@ void NeutronWall::ConstructDetector(G4LogicalVolume* world){
         u = u.unit();
         
         
-        
-        //Initialize scale down factor , measured from face to face but VWDistance is from center to center
-        NeutronWall_NS::ScaleDownFactor = (m_R[i]-(m_VWDistance[i]-NeutronWall_NS::Scintillator_Z*0.5+0.5*NeutronWall_NS::PlasticBar_Z))/(m_R[i]);
-	
-	G4cout << "//////" << "ScaleDownFactor: " << NeutronWall_NS::ScaleDownFactor << "//////" << endl;
-						//one layer case 
-//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@       
-        //if (m_VetoWall[i] == 1){
-            //Initialize property about the plastic bar, if exists
-           // NeutronWall_NS::PlasticBar_X = NeutronWall_NS::Py_Xinner*NeutronWall_NS::ScaleDownFactor;
-            //NeutronWall_NS::PlasticBar_Y = NeutronWall_NS::Py_Yinner*NeutronWall_NS::ScaleDownFactor+4*mm;
-	    //m_Overlap[i] = -(NeutronWall_NS::seperation_between_pyrex+6*mm)*NeutronWall_NS::ScaleDownFactor;
-/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
-						//Overlap case
-	double ExtrudeY = 36*mm;
-	double ExtrudeX = 8*mm;
 	if (m_VetoWall[i] == 1){
-            //Initialize property about the plastic bar, if exists
-            NeutronWall_NS::PlasticBar_X = NeutronWall_NS::Py_Xinner+ExtrudeX;
-            NeutronWall_NS::PlasticBar_Y = NeutronWall_NS::Py_Yinner*NeutronWall_NS::ScaleDownFactor+ExtrudeY;
-	    m_Overlap[i] = -(NeutronWall_NS::seperation_between_pyrex+6*mm)*NeutronWall_NS::ScaleDownFactor;
-	
-					
-            
-            // If VetoWall exists, then extend the space of NeutronWall_NS add 3mm to Z in order to house the 1mm seperation between front and back layer of the veto wall
+         // If VetoWall exists, then extend the space of NeutronWall_NS add 3mm to Z in order to house the 1mm seperation between front and back layer of the veto wall
             NeutronWall_NS::NS_Z = 2.0*(m_VWDistance[i]+1.5*NeutronWall_NS::PlasticBar_Z+3.0*mm);
         }
         
@@ -479,22 +455,9 @@ void NeutronWall::ConstructDetector(G4LogicalVolume* world){
         
         
         if (m_VetoWall[i] == 1){
-/*
-            //Initialize total height
-            NeutronWall_NS::TotalHeightOfNeutronWall = m_Bars[i]*NeutronWall_NS::Py_Youter + (m_Bars[i]-1)*NeutronWall_NS::seperation_between_pyrex;
-            NeutronWall_NS::TotalHeightOfVetoWall = (m_Bars[i]+1)/2*NeutronWall_NS::PlasticBar_Y+(m_Bars[i]-1)/2*(NeutronWall_NS::PlasticBar_Y-2*m_Overlap[i]);
-            if (NeutronWall_NS::TotalHeightOfNeutronWall*NeutronWall_NS::ScaleDownFactor > NeutronWall_NS::TotalHeightOfVetoWall){
-                G4cout << "\t*************************************************************" <<endl;
-                G4cout << "\t* The shadow of VetoWall is not enough to cover NeutronWall *" <<endl;
-                G4cout << "\t*            Re-input VWDistance or Overlap                 *" <<endl;
-                G4cout << "\t*************************************************************" <<endl;
-                exit(1);
-            }*/
-
-
             //PlasticBar
             G4Material* Plastic = MaterialManager::getInstance()->GetMaterialFromLibrary(m_VWMaterial[i]);
-            G4Box* PlasticBar_box = new G4Box("PlasticBar_Box", NeutronWall_NS::PlasticBar_X*0.5, NeutronWall_NS::PlasticBar_Y*0.5, NeutronWall_NS::PlasticBar_Z*0.5);
+	    G4Box* PlasticBar_box = new G4Box("PlasticBar_Box", (NeutronWall_NS::PlasticBar_X+2*m_Overlap[i])*0.5, NeutronWall_NS::PlasticBar_Y*0.5, NeutronWall_NS::PlasticBar_Z*0.5);
             m_PlasticBar_log = new G4LogicalVolume(PlasticBar_box, Plastic, "PlasticBar_Log");
             m_PlasticBar_log->SetSensitiveDetector(m_VetoWallScorer);
             m_PlasticBar_log->SetVisAttributes(m_VisPlasticBar);
@@ -514,192 +477,27 @@ void NeutronWall::ConstructDetector(G4LogicalVolume* world){
             m_ScintillatorTube_phys = new G4PVPlacement(0,ScintillatorDisplacement,m_Scintillator_log,"ScintillatorTube_phys",m_NeutronWall_log,false,j);
 	    //Quartz center coincide with Scintillator's, therefore, they have the same displacement.
             m_Quartz_phys = new G4PVPlacement(0,ScintillatorDisplacement,m_Quartz_log, "Quartz_phys",m_NeutronWall_log,false,j);
-	    if (m_VetoWall[i] == 1){
-		
-		//Even number is associated with 0th 2nd 4th ... plasticbar in vetowall which comprise of the backlayer.
-		//Odd number is associated with 1st 3rd 5th ... plasticbar in vetowall which comprise of the frontlayer.
-		double CenterOfVetoWall_Even_X = 0*mm;
-		//double CenterOfVetoWall_Even_Y = 0.5*NeutronWall_NS::TotalHeightOfVetoWall-0.5*NeutronWall_NS::PlasticBar_Y-(j/2)*(NeutronWall_NS::PlasticBar_Y+NeutronWall_NS::PlasticBar_Y-2*m_Overlap[i]);
-		double CenterOfVetoWall_Even_Y = (NeutronWall_NS::NS_Y*0.5-NeutronWall_NS::frame_thickness-NeutronWall_NS::upper_gap-NeutronWall_NS::Py_Youter*0.5)*NeutronWall_NS::ScaleDownFactor - j*(NeutronWall_NS::PlasticBar_Y-ExtrudeY-m_Overlap[i]);
-		//double CenterOfVetoWall_Even_Y = (NeutronWall_NS::NS_Y*0.5-NeutronWall_NS::frame_thickness-NeutronWall_NS::upper_gap)*NeutronWall_NS::ScaleDownFactor-0.5*NeutronWall_NS::PlasticBar_Y-(j/2)*(NeutronWall_NS::PlasticBar_Y+NeutronWall_NS::PlasticBar_Y-2*m_Overlap[i]);
-
+	}
+	for (int j = 0; j < 24; j++){
+	    if (m_VetoWall[i] == 1){	
+		//Even number is associated with 0th 2nd 4th ... plasticbar in vetowall which comprise of the backlayer (close to NeutronWall)
+		//Odd number is associated with 1st 3rd 5th ... plasticbar in vetowall which comprise of the frontlayer (close to Source)
+		double CenterOfVetoWall_Even_X = NeutronWall_NS::NS_X*0.5-10*mm-NeutronWall_NS::PlasticBar_X*0.5 - j*NeutronWall_NS::PlasticBar_X;
+		double CenterOfVetoWall_Even_Y = 0*mm;
 		double CenterOfVetoWall_Even_Z = -m_VWDistance[i];
 
-		double CenterOfVetoWall_Odd_X = 0*mm;
-		//double CenterOfVetoWall_Odd_Y = 0.5*NeutronWall_NS::TotalHeightOfVetoWall-1.5*NeutronWall_NS::PlasticBar_Y+m_Overlap[i]-(j/2)*(NeutronWall_NS::PlasticBar_Y+NeutronWall_NS::PlasticBar_Y-2*m_Overlap[i]);
-		double CenterOfVetoWall_Odd_Y = (NeutronWall_NS::NS_Y*0.5-NeutronWall_NS::frame_thickness-NeutronWall_NS::upper_gap-NeutronWall_NS::Py_Youter*0.5)*NeutronWall_NS::ScaleDownFactor - j*(NeutronWall_NS::PlasticBar_Y-ExtrudeY-m_Overlap[i]);
-		//double CenterOfVetoWall_Odd_Y = (NeutronWall_NS::NS_Y*0.5-NeutronWall_NS::frame_thickness-NeutronWall_NS::upper_gap)*NeutronWall_NS::ScaleDownFactor-1.5*NeutronWall_NS::PlasticBar_Y+m_Overlap[i]-(j/2)*(NeutronWall_NS::PlasticBar_Y+NeutronWall_NS::PlasticBar_Y-2*m_Overlap[i]);
-		//double CenterOfVetoWall_Odd_Z = -m_VWDistance[i]-1*mm-NeutronWall_NS::PlasticBar_Z;
+		double CenterOfVetoWall_Odd_X = NeutronWall_NS::NS_Y*0.5-10*mm-NeutronWall_NS::PlasticBar_X*0.5 - j*NeutronWall_NS::PlasticBar_X;
+		double CenterOfVetoWall_Odd_Y = 0*mm;
 		double CenterOfVetoWall_Odd_Z = -m_VWDistance[i]-NeutronWall_NS::PlasticBar_Z-1*mm;
 
-
-		G4ThreeVector VetoTransOfBackLayer(CenterOfVetoWall_Even_X,CenterOfVetoWall_Even_Y,CenterOfVetoWall_Even_Z);
-		G4ThreeVector VetoTransOfFrontLayer(CenterOfVetoWall_Odd_X,CenterOfVetoWall_Odd_Y,CenterOfVetoWall_Odd_Z);
                 if (j%2 == 0){
                     m_PlasticBar_phys = new G4PVPlacement(0,G4ThreeVector(CenterOfVetoWall_Even_X,CenterOfVetoWall_Even_Y,CenterOfVetoWall_Even_Z),m_PlasticBar_log,"PlasticBar_phys",m_NeutronWall_log,false,j,true);
                 }
                 else {
-                    m_PlasticBar_phys = new G4PVPlacement(0, G4ThreeVector(CenterOfVetoWall_Even_X,CenterOfVetoWall_Even_Y,CenterOfVetoWall_Even_Z-NeutronWall_NS::PlasticBar_Z-1*mm),m_PlasticBar_log,"PlasticBar_phys",m_NeutronWall_log,false,j,true);
+                    m_PlasticBar_phys = new G4PVPlacement(0, G4ThreeVector(CenterOfVetoWall_Odd_X,CenterOfVetoWall_Odd_Y,CenterOfVetoWall_Odd_Z),m_PlasticBar_log,"PlasticBar_phys",m_NeutronWall_log,false,j,true);
 		}
-                    
             }
-	    
-
-
-
-
-
-
-
-
-
-
-
-
-		/*if (j <= 2){
-		double MoveX = 0*mm;
-		double MoveY = (NeutronWall_NS::NS_Y*0.5-NeutronWall_NS::frame_thickness-NeutronWall_NS::upper_gap-NeutronWall_NS::Py_Youter*0.5)*NeutronWall_NS::ScaleDownFactor-13*mm - j*(NeutronWall_NS::PlasticBar_Y-4*mm-m_Overlap[i]);
-		double MoveZ = -m_VWDistance[i];
-		m_PlasticBar_phys = new G4PVPlacement(0, G4ThreeVector(MoveX,MoveY,MoveZ), m_PlasticBar_log, "PlasticBar_phys", m_NeutronWall_log, false, j);		
-		}
-
-		if ((j <= 5) && (j > 2)){
-		double MoveX = 0*mm;
-		double MoveY = (NeutronWall_NS::NS_Y*0.5-NeutronWall_NS::frame_thickness-NeutronWall_NS::upper_gap-NeutronWall_NS::Py_Youter*0.5)*NeutronWall_NS::ScaleDownFactor-8*mm - j*(NeutronWall_NS::PlasticBar_Y-4*mm-m_Overlap[i]);
-		double MoveZ = -m_VWDistance[i];
-		m_PlasticBar_phys = new G4PVPlacement(0, G4ThreeVector(MoveX,MoveY,MoveZ), m_PlasticBar_log, "PlasticBar_phys", m_NeutronWall_log, false, j);		
-		}		
-		
-		if ((j <= 7)&&(j > 5)){
-		double MoveX = 0*mm;
-		double MoveY = (NeutronWall_NS::NS_Y*0.5-NeutronWall_NS::frame_thickness-NeutronWall_NS::upper_gap-NeutronWall_NS::Py_Youter*0.5)*NeutronWall_NS::ScaleDownFactor-3*mm - j*(NeutronWall_NS::PlasticBar_Y-4*mm-m_Overlap[i]);
-		double MoveZ = -m_VWDistance[i];
-		m_PlasticBar_phys = new G4PVPlacement(0, G4ThreeVector(MoveX,MoveY,MoveZ), m_PlasticBar_log, "PlasticBar_phys", m_NeutronWall_log, false, j);		
-		}*/
-
-		/*if ((j <= 9)&&(j > 7)){
-		double MoveX = 0*mm;
-		double MoveY = (NeutronWall_NS::NS_Y*0.5-NeutronWall_NS::frame_thickness-NeutronWall_NS::upper_gap-NeutronWall_NS::Py_Youter*0.5)*NeutronWall_NS::ScaleDownFactor-3*mm - j*(NeutronWall_NS::PlasticBar_Y-m_Overlap[i]);
-		double MoveZ = -m_VWDistance[i];
-		m_PlasticBar_phys = new G4PVPlacement(0, G4ThreeVector(MoveX,MoveY,MoveZ), m_PlasticBar_log, "PlasticBar_phys", m_NeutronWall_log, false, j);		
-		}*/
-
-		/*if ((j < 17)&&(j >7)){
-		double MoveX = 0*mm;
-		double MoveY = (NeutronWall_NS::NS_Y*0.5-NeutronWall_NS::frame_thickness-NeutronWall_NS::upper_gap-NeutronWall_NS::Py_Youter*0.5)*NeutronWall_NS::ScaleDownFactor - j*(NeutronWall_NS::PlasticBar_Y-4*mm-m_Overlap[i]);
-		double MoveZ = -m_VWDistance[i];
-		m_PlasticBar_phys = new G4PVPlacement(0, G4ThreeVector(MoveX,MoveY,MoveZ), m_PlasticBar_log, "PlasticBar_phys", m_NeutronWall_log, false, j);		
-		}*/
-
-		/*if ((j <19) && (j >= 15)){
-		double MoveX = 0*mm;
-		double MoveY = (NeutronWall_NS::NS_Y*0.5-NeutronWall_NS::frame_thickness-NeutronWall_NS::upper_gap-NeutronWall_NS::Py_Youter*0.5)*NeutronWall_NS::ScaleDownFactor+3*mm - j*(NeutronWall_NS::PlasticBar_Y-m_Overlap[i]);
-		double MoveZ = -m_VWDistance[i];
-		m_PlasticBar_phys = new G4PVPlacement(0, G4ThreeVector(MoveX,MoveY,MoveZ), m_PlasticBar_log, "PlasticBar_phys", m_NeutronWall_log, false, j);		
-		}*/
-
-
-		/*if ((j < 19) && (j >=17 )){
-		double MoveX = 0*mm;
-		double MoveY = (NeutronWall_NS::NS_Y*0.5-NeutronWall_NS::frame_thickness-NeutronWall_NS::upper_gap-NeutronWall_NS::Py_Youter*0.5)*NeutronWall_NS::ScaleDownFactor+3*mm - j*(NeutronWall_NS::PlasticBar_Y-4*mm-m_Overlap[i]);
-		double MoveZ = -m_VWDistance[i];
-		m_PlasticBar_phys = new G4PVPlacement(0, G4ThreeVector(MoveX,MoveY,MoveZ), m_PlasticBar_log, "PlasticBar_phys", m_NeutronWall_log, false, j);		
-		}
-
-
-		if ((j < 22) && (j >= 19)){
-		double MoveX = 0*mm;
-		double MoveY = (NeutronWall_NS::NS_Y*0.5-NeutronWall_NS::frame_thickness-NeutronWall_NS::upper_gap-NeutronWall_NS::Py_Youter*0.5)*NeutronWall_NS::ScaleDownFactor+8*mm - j*(NeutronWall_NS::PlasticBar_Y-4*mm-m_Overlap[i]);
-		double MoveZ = -m_VWDistance[i];
-		m_PlasticBar_phys = new G4PVPlacement(0, G4ThreeVector(MoveX,MoveY,MoveZ), m_PlasticBar_log, "PlasticBar_phys", m_NeutronWall_log, false, j);		
-		}
-		
-		if ((j <=24) && (j >= 22)){
-		double MoveX = 0*mm;
-		double MoveY = (NeutronWall_NS::NS_Y*0.5-NeutronWall_NS::frame_thickness-NeutronWall_NS::upper_gap-NeutronWall_NS::Py_Youter*0.5)*NeutronWall_NS::ScaleDownFactor+13*mm - j*(NeutronWall_NS::PlasticBar_Y-4*mm-m_Overlap[i]);
-		double MoveZ = -m_VWDistance[i];
-		m_PlasticBar_phys = new G4PVPlacement(0, G4ThreeVector(MoveX,MoveY,MoveZ), m_PlasticBar_log, "PlasticBar_phys", m_NeutronWall_log, false, j);		
-		}
-
-		
-
-
-
-
-
-
-
-	    }
-        }*/
-
-	/*for (int j = 0; j < 25; j++){
-	    double CenterOfVetoWall_X = 0*mm;
-	    double CenterOfVetoWall_Y = (NeutronWall_NS::NS_Y*0.5-NeutronWall_NS::frame_thickness-NeutronWall_NS::upper_gap-NeutronWall_NS::Py_Youter*0.5)*NeutronWall_NS::ScaleDownFactor - j*(NeutronWall_NS::PlasticBar_Y-m_Overlap[i]);
-	    double CenterOfVetoWall_Z = -m_VWDistance[i];
-	    m_PlasticBar_phys = new G4PVPlacement(0, G4ThreeVector(CenterOfVetoWall_X,CenterOfVetoWall_Y,CenterOfVetoWall_Z), m_PlasticBar_log, "PlasticBar_phys", m_NeutronWall_log, false, j);
-	}*/
-        
-        /*for(int j = 0; j<25; j++){
-            if (m_VetoWall[i] == 1){
-		//Even number is associated with 0th 2nd 4th ... plasticbar in vetowall which comprise of the backlayer.
-		//Odd number is associated with 1st 3rd 5th ... plasticbar in vetowall which comprise of the frontlayer.
-		double CenterOfVetoWall_Even_X = 0*mm;
-		//double CenterOfVetoWall_Even_Y = 0.5*NeutronWall_NS::TotalHeightOfVetoWall-0.5*NeutronWall_NS::PlasticBar_Y-(j/2)*(NeutronWall_NS::PlasticBar_Y+NeutronWall_NS::PlasticBar_Y-2*m_Overlap[i]);
-		//double CenterOfVetoWall_Even_Y = (NeutronWall_NS::NS_Y*0.5-NeutronWall_NS::frame_thickness-NeutronWall_NS::upper_gap)*(1.0/NeutronWall_NS::ScaleDownFactor)*0.9-0.5*NeutronWall_NS::PlasticBar_Y-(j/2)*(NeutronWall_NS::PlasticBar_Y+NeutronWall_NS::PlasticBar_Y-2*m_Overlap[i]);
-		double CenterOfVetoWall_Even_Y = (NeutronWall_NS::NS_Y*0.5-NeutronWall_NS::frame_thickness-NeutronWall_NS::upper_gap)*NeutronWall_NS::ScaleDownFactor-0.5*NeutronWall_NS::PlasticBar_Y-(j/2)*(NeutronWall_NS::PlasticBar_Y+NeutronWall_NS::PlasticBar_Y-2*m_Overlap[i]);
-
-		double CenterOfVetoWall_Even_Z = -m_VWDistance[i];
-
-		double CenterOfVetoWall_Odd_X = 0*mm;
-		//double CenterOfVetoWall_Odd_Y = 0.5*NeutronWall_NS::TotalHeightOfVetoWall-1.5*NeutronWall_NS::PlasticBar_Y+m_Overlap[i]-(j/2)*(NeutronWall_NS::PlasticBar_Y+NeutronWall_NS::PlasticBar_Y-2*m_Overlap[i]);
-		double CenterOfVetoWall_Odd_Y = (NeutronWall_NS::NS_Y*0.5-NeutronWall_NS::frame_thickness-NeutronWall_NS::upper_gap)*(1.0/NeutronWall_NS::ScaleDownFactor)*0.9-1.5*NeutronWall_NS::PlasticBar_Y+m_Overlap[i]-(j/2)*(NeutronWall_NS::PlasticBar_Y+NeutronWall_NS::PlasticBar_Y-2*m_Overlap[i]);
-		//double CenterOfVetoWall_Odd_Y = (NeutronWall_NS::NS_Y*0.5-NeutronWall_NS::frame_thickness-NeutronWall_NS::upper_gap)*NeutronWall_NS::ScaleDownFactor-1.5*NeutronWall_NS::PlasticBar_Y+m_Overlap[i]-(j/2)*(NeutronWall_NS::PlasticBar_Y+NeutronWall_NS::PlasticBar_Y-2*m_Overlap[i]);
-		//double CenterOfVetoWall_Odd_Z = -m_VWDistance[i]-1*mm-NeutronWall_NS::PlasticBar_Z;
-		double CenterOfVetoWall_Odd_Z = -m_VWDistance[i];
-
-
-		G4ThreeVector VetoTransOfBackLayer(CenterOfVetoWall_Even_X,CenterOfVetoWall_Even_Y,CenterOfVetoWall_Even_Z);
-		G4ThreeVector VetoTransOfFrontLayer(CenterOfVetoWall_Odd_X,CenterOfVetoWall_Odd_Y,CenterOfVetoWall_Odd_Z);
-                if (j%2 == 0){
-                    m_PlasticBar_phys = new G4PVPlacement(0,VetoTransOfBackLayer,m_PlasticBar_log,"PlasticBar_phys",m_NeutronWall_log,false,j);
-                }
-                else {
-                    m_PlasticBar_phys = new G4PVPlacement(0, VetoTransOfFrontLayer,m_PlasticBar_log,"PlasticBar_phys",m_NeutronWall_log,false,j);
-                    
-                }
-            }*/
-	
         }
-	/*double CenterOfVetoWall_Even_X = 0*mm;
-	double CenterOfVetoWall_Even_Y = 0.5*NeutronWall_NS::TotalHeightOfVetoWall-0.5*NeutronWall_NS::PlasticBar_Y-(0/2)*(NeutronWall_NS::PlasticBar_Y+NeutronWall_NS::PlasticBar_Y-2*m_Overlap[i]);
-	double CenterOfVetoWall_Even_Z = -m_VWDistance[i];
-	G4ThreeVector VetoTransOfBackLayer1(CenterOfVetoWall_Even_X,CenterOfVetoWall_Even_Y,CenterOfVetoWall_Even_Z);
-	m_PlasticBar_phys = new G4PVPlacement(0,VetoTransOfBackLayer1,m_PlasticBar_log,"PlasticBar_phys",m_NeutronWall_log,false,0);
-
-	CenterOfVetoWall_Even_X = 0*mm;
-	CenterOfVetoWall_Even_Y = 0.5*NeutronWall_NS::TotalHeightOfVetoWall-0.5*NeutronWall_NS::PlasticBar_Y-(6/2)*(NeutronWall_NS::PlasticBar_Y+NeutronWall_NS::PlasticBar_Y-2*m_Overlap[i]);
-	CenterOfVetoWall_Even_Z = -m_VWDistance[i];
-	G4ThreeVector VetoTransOfBackLayer4(CenterOfVetoWall_Even_X,CenterOfVetoWall_Even_Y,CenterOfVetoWall_Even_Z);
-	m_PlasticBar_phys = new G4PVPlacement(0,VetoTransOfBackLayer4,m_PlasticBar_log,"PlasticBar_phys",m_NeutronWall_log,false,6);
-
-	CenterOfVetoWall_Even_X = 0*mm;
-	CenterOfVetoWall_Even_Y = 0.5*NeutronWall_NS::TotalHeightOfVetoWall-0.5*NeutronWall_NS::PlasticBar_Y-(12/2)*(NeutronWall_NS::PlasticBar_Y+NeutronWall_NS::PlasticBar_Y-2*m_Overlap[i]);
-	CenterOfVetoWall_Even_Z = -m_VWDistance[i];
-	G4ThreeVector VetoTransOfBackLayer3(CenterOfVetoWall_Even_X,CenterOfVetoWall_Even_Y,CenterOfVetoWall_Even_Z);
-	m_PlasticBar_phys = new G4PVPlacement(0,VetoTransOfBackLayer3,m_PlasticBar_log,"PlasticBar_phys",m_NeutronWall_log,false,12);
-
-	CenterOfVetoWall_Even_X = 0*mm;
-	CenterOfVetoWall_Even_Y = 0.5*NeutronWall_NS::TotalHeightOfVetoWall-0.5*NeutronWall_NS::PlasticBar_Y-(18/2)*(NeutronWall_NS::PlasticBar_Y+NeutronWall_NS::PlasticBar_Y-2*m_Overlap[i]);
-	CenterOfVetoWall_Even_Z = -m_VWDistance[i];
-	G4ThreeVector VetoTransOfBackLayer5(CenterOfVetoWall_Even_X,CenterOfVetoWall_Even_Y,CenterOfVetoWall_Even_Z);
-	m_PlasticBar_phys = new G4PVPlacement(0,VetoTransOfBackLayer5,m_PlasticBar_log,"PlasticBar_phys",m_NeutronWall_log,false,18);
-	
-	CenterOfVetoWall_Even_X = 0*mm;
-	CenterOfVetoWall_Even_Y = 0.5*NeutronWall_NS::TotalHeightOfVetoWall-0.5*NeutronWall_NS::PlasticBar_Y-(24/2)*(NeutronWall_NS::PlasticBar_Y+NeutronWall_NS::PlasticBar_Y-2*m_Overlap[i]);
-	CenterOfVetoWall_Even_Z = -m_VWDistance[i];
-	G4ThreeVector VetoTransOfBackLayer2(CenterOfVetoWall_Even_X,CenterOfVetoWall_Even_Y,CenterOfVetoWall_Even_Z);
-	m_PlasticBar_phys = new G4PVPlacement(0,VetoTransOfBackLayer2,m_PlasticBar_log,"PlasticBar_phys",m_NeutronWall_log,false,24);*/
-        /****************** Place the walls*************************/
         m_NeutronWall_phys = new G4PVPlacement(G4Transform3D(*Rot, Det_pos),
                                                m_NeutronWall_log,
                                                "NeutronWall_phys",world,false,i);
@@ -717,7 +515,7 @@ void NeutronWall::InitializeRootOutput(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
-// Called at in the EventAction::EndOfEventAvtion
+// Called at in the EventAction::EndOfEventAction
 void NeutronWall::ReadSensitive(const G4Event* event){
     m_Event->Clear();
     
@@ -733,16 +531,25 @@ void NeutronWall::ReadSensitive(const G4Event* event){
     for (Calo_itr = CaloHitMap->GetMap()->begin() ; Calo_itr != CaloHitMap->GetMap()->end() ; Calo_itr++){
         
         G4double* Info = *(Calo_itr->second);
-        //(Info[0]/2.35)*((Info[0]*1.02)*pow((Info[0]*1.8),.5))
-        // double Energy = RandGauss::shoot(Info[0],((Info[0]*1000*1.02/2.35)*pow((Info[0]*1000*1.8),.5)) );
-        double Energy = RandGauss::shoot(Info[0],NeutronWall_NS::ResoEnergy);
-        if(Energy>NeutronWall_NS::EnergyThreshold){
-            double Time = RandGauss::shoot(Info[1],NeutronWall_NS::ResoTime);
-            int DetectorNbr = (int) Info[3];
-            int PadNbr = (int) Info[2];
+        //double Energy = RandGauss::shoot(Info[0],NeutronWall_NS::ResoEnergy);
+        double Energy = Info[0];
+	if(Energy>NeutronWall_NS::EnergyThreshold){
+            //double Time = RandGauss::shoot(Info[1],NeutronWall_NS::ResoTime);
+	    double Time = Info[1];
+            int DetectorNbr = (int) Info[8];
+            int PadNbr = (int) Info[7];
             //cout << Info[2] << " " << Info[3] << endl;
             m_Event->SetEnergy(DetectorNbr,PadNbr,Energy);
             m_Event->SetTime(DetectorNbr,PadNbr,Time);
+	    
+		// Interraction Coordinates
+	//Info[2]=RandGauss::shoot(Info[2],NeutronWall_NS::ResoPosition) ;
+	//Info[3]=RandGauss::shoot(Info[3],NeutronWall_NS::Py_Youter/10.0) ;
+        ms_InterCoord->SetDetectedPositionX(Info[2]) ;
+        ms_InterCoord->SetDetectedPositionY(Info[3]) ;
+        ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
+        ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
+        ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
         }
     }
     // clear map for next event
@@ -761,11 +568,11 @@ void NeutronWall::ReadSensitive(const G4Event* event){
     for (Veto_itr = VetoHitMap->GetMap()->begin() ; Veto_itr != VetoHitMap->GetMap()->end() ; Veto_itr++){
         
         G4double* Info = *(Veto_itr->second);
-        //(Info[0]/2.35)*((Info[0]*1.02)*pow((Info[0]*1.8),.5))
-        // double Energy = RandGauss::shoot(Info[0],((Info[0]*1000*1.02/2.35)*pow((Info[0]*1000*1.8),.5)) );
-        double Energy = RandGauss::shoot(Info[0],NeutronWall_NS::ResoEnergy);
+        //double Energy = RandGauss::shoot(Info[0],NeutronWall_NS::ResoEnergy);
+	double Energy = Info[0];
         if(Energy>NeutronWall_NS::EnergyThreshold){
-            double Time = RandGauss::shoot(Info[1],NeutronWall_NS::ResoTime);
+            //double Time = RandGauss::shoot(Info[1],NeutronWall_NS::ResoTime);
+	    double Time = Info[1];
             int DetectorNbr = (int) Info[8];
             int PadNbr = (int) Info[7];
             
@@ -773,6 +580,8 @@ void NeutronWall::ReadSensitive(const G4Event* event){
             m_Event->SetVetoTime(DetectorNbr,PadNbr,Time);
 
 	     // Interraction Coordinates
+	//Info[2]=RandGauss::shoot(Info[2],NeutronWall_NS::PlasticBar_X/10.0) ;
+	//Info[3]=RandGauss::shoot(Info[3],NeutronWall_NS::ResoPosition) ;
         ms_InterCoord->SetDetectedPositionX(Info[2]) ;
         ms_InterCoord->SetDetectedPositionY(Info[3]) ;
         ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
@@ -801,7 +610,7 @@ void NeutronWall::InitializeScorers() {
         return ;
     
     // Neutron Wall Scorer
-    G4VPrimitiveScorer* Calorimeter= new CALORIMETERSCORERS::PS_Calorimeter("Calorimeter",level,1) ;
+    G4VPrimitiveScorer* Calorimeter= new CALORIMETERSCORERS::PS_CalorimeterWithInteraction("Calorimeter",level,1) ;
     //and register it to the multifunctional detector
     m_NeutronWallScorer->RegisterPrimitive(Calorimeter);
     G4SDManager::GetSDMpointer()->AddNewDetector(m_NeutronWallScorer) ;
