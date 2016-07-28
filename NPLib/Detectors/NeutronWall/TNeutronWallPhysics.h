@@ -67,9 +67,15 @@ class TNeutronWallPhysics : public TObject, public NPL::VDetector {
     vector<int>      NW_PadNumber;
     vector<double>   NW_Energy;
     vector<double>   NW_Time;
+    vector<double>   NW_PosX;
+    vector<double>   NW_PosY;
+    vector<double>   NW_PosZ;
     vector<int>      VW_PadNumber;
     vector<double>   VW_Energy;
     vector<double>   VW_Time;
+    vector<double>   VW_PosX;
+    vector<double>   VW_PosY;
+    vector<double>   VW_PosZ;
 
 
   //////////////////////////////////////////////////////////////

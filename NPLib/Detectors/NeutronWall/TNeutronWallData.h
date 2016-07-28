@@ -43,7 +43,12 @@ class TNeutronWallData : public TObject {
     vector<UShort_t>   fNeutronWall_T_DetectorNbr;
     vector<UShort_t>   fNeutronWall_T_PadNbr;
     vector<Double_t>   fNeutronWall_Time;
-
+    
+    // Postion
+    vector<UShort_t> fNeutronWall_Position_X;
+    vector<UShort_t> fNeutronWall_Position_Y;
+    vector<UShort_t> fNeutronWall_Position_Z;
+    
     // Energy
     vector<UShort_t>   fVetoWall_E_DetectorNbr;
     vector<UShort_t>   fVetoWall_E_PadNbr;
@@ -53,6 +58,11 @@ class TNeutronWallData : public TObject {
     vector<UShort_t>   fVetoWall_T_DetectorNbr;
     vector<UShort_t>   fVetoWall_T_PadNbr;
     vector<Double_t>   fVetoWall_Time;
+    
+    // Postion
+    vector<UShort_t> fVetoWall_Position_X;
+    vector<UShort_t> fVetoWall_Position_Y;
+    vector<UShort_t> fVetoWall_Position_Z;
 
 
   //////////////////////////////////////////////////////////////
@@ -104,6 +114,14 @@ class TNeutronWallData : public TObject {
       SetT_PadNbr(PadNbr);
       Set_Time(Time);
     };//!
+    
+    // Position
+    inline void Set_NeutronWall_PosX(const UShort_t& PosX)
+    {fNeutronWall_Position_X.push_back(PosX);} //!
+    inline void Set_NeutronWall_PosY(const UShort_t& PosY)
+    {fNeutronWall_Position_Y.push_back(PosY);} //!
+    inline void Set_NeutronWall_PosZ(const UShort_t& PosZ)
+    {fNeutronWall_Position_Z.push_back(PosZ);} //!
 
     //////////////////////    SETTERS VETO WALL   ////////////////////////
     // Energy
@@ -133,6 +151,14 @@ class TNeutronWallData : public TObject {
       SetT_VetoPadNbr(PadNbr);
       Set_VetoTime(Time);
     };//!
+    
+    // Position
+    inline void Set_VetoWall_PosX(const UShort_t& PosX)
+    {fVetoWall_Position_X.push_back(PosX);} //!
+    inline void Set_VetoWall_PosY(const UShort_t& PosY)
+    {fVetoWall_Position_Y.push_back(PosY);} //!
+    inline void Set_VetoWall_PosZ(const UShort_t& PosZ)
+    {fVetoWall_Position_Z.push_back(PosZ);} //!
 
 
     //////////////////////    GETTERS NEUTRON WALL    ////////////////////////
@@ -155,6 +181,16 @@ class TNeutronWallData : public TObject {
       {return fNeutronWall_T_PadNbr[i];}//!
     inline Double_t Get_Time(const unsigned int &i) const 
       {return fNeutronWall_Time[i];}//!
+    
+    // Position
+    inline UShort_t GetMult_NeutronWall_Position() const
+    {return fNeutronWall_Position_X.size();}
+    inline UShort_t Get_NeutronWall_PosX(const unsigned int &i) const
+    {return fNeutronWall_Position_X[i];}//!
+    inline UShort_t Get_NeutronWall_PosY(const unsigned int &i) const
+    {return fNeutronWall_Position_Y[i];}//!
+    inline UShort_t Get_NeutronWall_PosZ(const unsigned int &i) const
+    {return fNeutronWall_Position_Z[i];}//!
 
     //////////////////////    GETTERS VETO WALL    ////////////////////////
     // Energy
@@ -176,6 +212,16 @@ class TNeutronWallData : public TObject {
       {return fVetoWall_T_PadNbr[i];}//!
     inline Double_t Get_VetoTime(const unsigned int &i) const 
       {return fVetoWall_Time[i];}//!
+    
+    // Position
+    inline UShort_t GetMult_VetoWall_Position() const
+    {return fVetoWall_Position_X.size();}
+    inline UShort_t Get_VetoWall_PosX(const unsigned int &i) const
+    {return fVetoWall_Position_X[i];}//!
+    inline UShort_t Get_VetoWall_PosY(const unsigned int &i) const
+    {return fVetoWall_Position_Y[i];}//!
+    inline UShort_t Get_VetoWall_PosZ(const unsigned int &i) const
+    {return fVetoWall_Position_Z[i];}//!
 
 
   //////////////////////////////////////////////////////////////

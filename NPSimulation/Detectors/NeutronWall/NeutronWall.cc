@@ -400,8 +400,8 @@ void NeutronWall::ConstructDetector(G4LogicalVolume* world){
         u = u.unit();
         
         
-	if (m_VetoWall[i] == 1){
-         // If VetoWall exists, then extend the space of NeutronWall_NS add 3mm to Z in order to house the 1mm seperation between front and back layer of the veto wall
+        if (m_VetoWall[i] == 1){
+            // If VetoWall exists, then extend the space of NeutronWall_NS add 3mm to Z in order to house the 1mm seperation between front and back layer of the veto wall
             NeutronWall_NS::NS_Z = 2.0*(m_VWDistance[i]+1.5*NeutronWall_NS::PlasticBar_Z+3.0*mm);
         }
         
@@ -457,7 +457,7 @@ void NeutronWall::ConstructDetector(G4LogicalVolume* world){
         if (m_VetoWall[i] == 1){
             //PlasticBar
             G4Material* Plastic = MaterialManager::getInstance()->GetMaterialFromLibrary(m_VWMaterial[i]);
-	    G4Box* PlasticBar_box = new G4Box("PlasticBar_Box", (NeutronWall_NS::PlasticBar_X+2*m_Overlap[i])*0.5, NeutronWall_NS::PlasticBar_Y*0.5, NeutronWall_NS::PlasticBar_Z*0.5);
+            G4Box* PlasticBar_box = new G4Box("PlasticBar_Box", (NeutronWall_NS::PlasticBar_X+2*m_Overlap[i])*0.5, NeutronWall_NS::PlasticBar_Y*0.5, NeutronWall_NS::PlasticBar_Z*0.5);
             m_PlasticBar_log = new G4LogicalVolume(PlasticBar_box, Plastic, "PlasticBar_Log");
             m_PlasticBar_log->SetSensitiveDetector(m_VetoWallScorer);
             m_PlasticBar_log->SetVisAttributes(m_VisPlasticBar);
@@ -470,32 +470,32 @@ void NeutronWall::ConstructDetector(G4LogicalVolume* world){
                                           "AlCase_phys",m_NeutronWall_log,false,0);
         //----Scintillator and Quartz tube----
         for (int j = 0; j < 25; j++ ) {
-	    double CenterOfScintillator_X = 0*mm;
-	    double CenterOfScintillator_Y = (NeutronWall_NS::NS_Y*0.5-NeutronWall_NS::frame_thickness-NeutronWall_NS::upper_gap-NeutronWall_NS::Py_Youter*0.5-j*(NeutronWall_NS::Py_Youter+NeutronWall_NS::seperation_between_pyrex));
-   	    double CenterOfScintillator_Z = 0*mm;
-	    G4ThreeVector ScintillatorDisplacement(CenterOfScintillator_X,CenterOfScintillator_Y,CenterOfScintillator_Z);
+            double CenterOfScintillator_X = 0*mm;
+            double CenterOfScintillator_Y = (NeutronWall_NS::NS_Y*0.5-NeutronWall_NS::frame_thickness-NeutronWall_NS::upper_gap-NeutronWall_NS::Py_Youter*0.5-j*(NeutronWall_NS::Py_Youter+NeutronWall_NS::seperation_between_pyrex));
+            double CenterOfScintillator_Z = 0*mm;
+            G4ThreeVector ScintillatorDisplacement(CenterOfScintillator_X,CenterOfScintillator_Y,CenterOfScintillator_Z);
             m_ScintillatorTube_phys = new G4PVPlacement(0,ScintillatorDisplacement,m_Scintillator_log,"ScintillatorTube_phys",m_NeutronWall_log,false,j);
-	    //Quartz center coincide with Scintillator's, therefore, they have the same displacement.
+            //Quartz center coincide with Scintillator's, therefore, they have the same displacement.
             m_Quartz_phys = new G4PVPlacement(0,ScintillatorDisplacement,m_Quartz_log, "Quartz_phys",m_NeutronWall_log,false,j);
-	}
-	for (int j = 0; j < 24; j++){
-	    if (m_VetoWall[i] == 1){	
-		//Even number is associated with 0th 2nd 4th ... plasticbar in vetowall which comprise of the backlayer (close to NeutronWall)
-		//Odd number is associated with 1st 3rd 5th ... plasticbar in vetowall which comprise of the frontlayer (close to Source)
-		double CenterOfVetoWall_Even_X = NeutronWall_NS::NS_X*0.5-10*mm-NeutronWall_NS::PlasticBar_X*0.5 - j*NeutronWall_NS::PlasticBar_X;
-		double CenterOfVetoWall_Even_Y = 0*mm;
-		double CenterOfVetoWall_Even_Z = -m_VWDistance[i];
-
-		double CenterOfVetoWall_Odd_X = NeutronWall_NS::NS_Y*0.5-10*mm-NeutronWall_NS::PlasticBar_X*0.5 - j*NeutronWall_NS::PlasticBar_X;
-		double CenterOfVetoWall_Odd_Y = 0*mm;
-		double CenterOfVetoWall_Odd_Z = -m_VWDistance[i]-NeutronWall_NS::PlasticBar_Z-1*mm;
-
+        }
+        for (int j = 0; j < 24; j++){
+            if (m_VetoWall[i] == 1){
+                //Even number is associated with 0th 2nd 4th ... plasticbar in vetowall which comprise of the backlayer (close to NeutronWall)
+                //Odd number is associated with 1st 3rd 5th ... plasticbar in vetowall which comprise of the frontlayer (close to Source)
+                double CenterOfVetoWall_Even_X = NeutronWall_NS::NS_X*0.5-10*mm-NeutronWall_NS::PlasticBar_X*0.5 - j*NeutronWall_NS::PlasticBar_X;
+                double CenterOfVetoWall_Even_Y = 0*mm;
+                double CenterOfVetoWall_Even_Z = -m_VWDistance[i];
+                
+                double CenterOfVetoWall_Odd_X = NeutronWall_NS::NS_Y*0.5-10*mm-NeutronWall_NS::PlasticBar_X*0.5 - j*NeutronWall_NS::PlasticBar_X;
+                double CenterOfVetoWall_Odd_Y = 0*mm;
+                double CenterOfVetoWall_Odd_Z = -m_VWDistance[i]-NeutronWall_NS::PlasticBar_Z-1*mm;
+                
                 if (j%2 == 0){
                     m_PlasticBar_phys = new G4PVPlacement(0,G4ThreeVector(CenterOfVetoWall_Even_X,CenterOfVetoWall_Even_Y,CenterOfVetoWall_Even_Z),m_PlasticBar_log,"PlasticBar_phys",m_NeutronWall_log,false,j,true);
                 }
                 else {
                     m_PlasticBar_phys = new G4PVPlacement(0, G4ThreeVector(CenterOfVetoWall_Odd_X,CenterOfVetoWall_Odd_Y,CenterOfVetoWall_Odd_Z),m_PlasticBar_log,"PlasticBar_phys",m_NeutronWall_log,false,j,true);
-		}
+                }
             }
         }
         m_NeutronWall_phys = new G4PVPlacement(G4Transform3D(*Rot, Det_pos),
@@ -533,23 +533,28 @@ void NeutronWall::ReadSensitive(const G4Event* event){
         G4double* Info = *(Calo_itr->second);
         //double Energy = RandGauss::shoot(Info[0],NeutronWall_NS::ResoEnergy);
         double Energy = Info[0];
-	if(Energy>NeutronWall_NS::EnergyThreshold){
+        if(Energy>NeutronWall_NS::EnergyThreshold){
             //double Time = RandGauss::shoot(Info[1],NeutronWall_NS::ResoTime);
-	    double Time = Info[1];
+            double Time = Info[1];
             int DetectorNbr = (int) Info[8];
             int PadNbr = (int) Info[7];
             //cout << Info[2] << " " << Info[3] << endl;
             m_Event->SetEnergy(DetectorNbr,PadNbr,Energy);
             m_Event->SetTime(DetectorNbr,PadNbr,Time);
-	    
-		// Interraction Coordinates
-	//Info[2]=RandGauss::shoot(Info[2],NeutronWall_NS::ResoPosition) ;
-	//Info[3]=RandGauss::shoot(Info[3],NeutronWall_NS::Py_Youter/10.0) ;
-        ms_InterCoord->SetDetectedPositionX(Info[2]) ;
-        ms_InterCoord->SetDetectedPositionY(Info[3]) ;
-        ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
-        ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
-        ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
+            
+            // Interraction Coordinates
+            //Info[2]=RandGauss::shoot(Info[2],NeutronWall_NS::ResoPosition) ;
+            //Info[3]=RandGauss::shoot(Info[3],NeutronWall_NS::Py_Youter/10.0) ;
+            /*ms_InterCoord->SetDetectedPositionX(Info[2]) ;
+            ms_InterCoord->SetDetectedPositionY(Info[3]) ;
+            ms_InterCoord->SetDetectedPositionZ(Info[4]) ;*/
+            ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
+            ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
+            
+            m_Event->Set_NeutronWall_PosX(Info[2]);
+            m_Event->Set_NeutronWall_PosY(Info[3]);
+            m_Event->Set_NeutronWall_PosZ(Info[4]);
+            
         }
     }
     // clear map for next event
@@ -569,24 +574,28 @@ void NeutronWall::ReadSensitive(const G4Event* event){
         
         G4double* Info = *(Veto_itr->second);
         //double Energy = RandGauss::shoot(Info[0],NeutronWall_NS::ResoEnergy);
-	double Energy = Info[0];
+        double Energy = Info[0];
         if(Energy>NeutronWall_NS::EnergyThreshold){
             //double Time = RandGauss::shoot(Info[1],NeutronWall_NS::ResoTime);
-	    double Time = Info[1];
+            double Time = Info[1];
             int DetectorNbr = (int) Info[8];
             int PadNbr = (int) Info[7];
             
             m_Event->SetVetoEnergy(DetectorNbr,PadNbr,Energy);
             m_Event->SetVetoTime(DetectorNbr,PadNbr,Time);
-
-	     // Interraction Coordinates
-	//Info[2]=RandGauss::shoot(Info[2],NeutronWall_NS::PlasticBar_X/10.0) ;
-	//Info[3]=RandGauss::shoot(Info[3],NeutronWall_NS::ResoPosition) ;
-        ms_InterCoord->SetDetectedPositionX(Info[2]) ;
-        ms_InterCoord->SetDetectedPositionY(Info[3]) ;
-        ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
-        ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
-        ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
+            
+            // Interraction Coordinates
+            //Info[2]=RandGauss::shoot(Info[2],NeutronWall_NS::PlasticBar_X/10.0) ;
+            //Info[3]=RandGauss::shoot(Info[3],NeutronWall_NS::ResoPosition) ;
+            /*ms_InterCoord->SetDetectedPositionX(Info[2]) ;
+            ms_InterCoord->SetDetectedPositionY(Info[3]) ;
+            ms_InterCoord->SetDetectedPositionZ(Info[4]) ;*/
+            ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
+            ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
+            
+            m_Event->Set_VetoWall_PosX(Info[2]);
+            m_Event->Set_VetoWall_PosY(Info[3]);
+            m_Event->Set_VetoWall_PosZ(Info[4]);
         }
     }
     // clear map for next event

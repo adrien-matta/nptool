@@ -52,16 +52,23 @@ void TNeutronWallData::Clear() {
     fNeutronWall_T_DetectorNbr.clear();
     fNeutronWall_T_PadNbr.clear();
     fNeutronWall_Time.clear();
+    // NeutronWall Position
+    fNeutronWall_Position_X.clear();
+    fNeutronWall_Position_Y.clear();
+    fNeutronWall_Position_Z.clear();
     
     // VetoWall Energy
     fVetoWall_E_DetectorNbr.clear();
     fVetoWall_E_PadNbr.clear();
     fVetoWall_Energy.clear();
- 
     // VetoWall Time
     fVetoWall_T_DetectorNbr.clear();
     fVetoWall_T_PadNbr.clear();
     fVetoWall_Time.clear();
+    // VetoWall Position
+    fVetoWall_Position_X.clear();
+    fVetoWall_Position_Y.clear();
+    fVetoWall_Position_Z.clear();
     
 }
 
