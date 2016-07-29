@@ -23,6 +23,7 @@
  *****************************************************************************/
 // C++ header
 #include <string>
+#include <cmath>
 using namespace std;
 
 using namespace CLHEP;
@@ -56,9 +57,9 @@ private:    // Source parameter from input file
     G4double               m_SigmaY           ;
     G4ParticleDefinition*  m_particle         ;  // Kind of particle to shoot isotropically
     G4double               m_ExcitationEnergy ;  // Excitation energy of the emitted particle
-    string                 m_particleName     ;
+    vector<string>         m_particleName     ;
     ParticleStack*         m_ParticleStack    ;
-    G4int                  m_Multiplicty;//Adding by Pierre
+    vector<G4int>          m_Multiplicty;
     
 };
 #endif
