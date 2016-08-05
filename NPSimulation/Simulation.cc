@@ -109,6 +109,7 @@ int main(int argc, char** argv){
     RunAction* run_action = new RunAction() ;
     runManager->SetUserAction(run_action);
     
+    
     G4VisManager* visManager=NULL;
     if(!OptionManager->GetG4BatchMode()){
 #ifdef G4UI_USE

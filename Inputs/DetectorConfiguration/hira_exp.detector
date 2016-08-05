@@ -155,11 +155,12 @@ Microball
 	DISABLE_CRYSTAL 51
 	DISABLE_CRYSTAL 52
 	DETECTOR_FLIP= 0
+  INCLUDE_CHAMBER= 1
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-NeutronWall
-  THETA= 40
-  PHI= 20
+%NeutronWall
+  THETA= 50
+  PHI= 0
   R= 4000
   BARS= 25
   VETOWALL= 1

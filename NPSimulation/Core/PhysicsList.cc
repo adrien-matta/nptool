@@ -26,7 +26,7 @@
 
 // Local physic directly implemented from the Hadronthrapy example
 // Physic dedicated to the ion-ion inelastic processes
-#include "LocalIonIonInelasticPhysic.hh"
+#include "NPIonIonInelasticPhysic.hh"
 
 // G4
 #include "G4SystemOfUnits.hh"
@@ -40,7 +40,7 @@
 /////////////////////////////////////////////////////////////////////////////
 PhysicsList::PhysicsList() : G4VModularPhysicsList(){
     m_EmList = "Option4";
-    defaultCutValue = 0.2*mm;
+    defaultCutValue = 0.01*mm;//0.2*mm;
     opticalPhysicsList = NULL;
     
     ReadConfiguration("PhysicsListOption.txt");
@@ -87,10 +87,12 @@ PhysicsList::PhysicsList() : G4VModularPhysicsList(){
     if(m_HadronElasticPhysics){
         //m_PhysList["G4HadronElasticPhysicsHP"]=new G4HadronElasticPhysicsHP();
         m_PhysList["G4HadronElasticPhysics"]=new G4HadronElasticPhysics();
+        //m_PhysList["HadronPhysicsFTFP_BERT"]=new G4HadronPhysicsQGSP_BERT();
+        m_PhysList["G4IonElasticPhysics"]=new G4IonElasticPhysics();
     }
     
-    if(m_LocalIonInelasticPhysics)
-        m_PhysList["LocalIonInelasticPhysics"]=new LocalIonIonInelasticPhysic();
+    if(m_NPIonInelasticPhysics)
+        m_PhysList["NPIonInelasticPhysics"]=new NPIonIonInelasticPhysic();
     
     if(m_StoppingPhysics)
         m_PhysList["StoppingPhysics"]=new G4StoppingPhysics();
@@ -140,7 +142,7 @@ void PhysicsList::ReadConfiguration(std::string filename){
     m_IonBinaryCascadePhysics = 0;
     m_EmExtraPhysics = 0;
     m_HadronElasticPhysics = 0;
-    m_LocalIonInelasticPhysics = 0;
+    m_NPIonInelasticPhysics = 0;
     m_StoppingPhysics = 0;
     m_OpticalPhysics = 0;
     m_HadronPhysicsQGSP_BIC_HP = 0;
@@ -166,8 +168,8 @@ void PhysicsList::ReadConfiguration(std::string filename){
             defaultCutValue = value;
         else if(name == "IonBinaryCascadePhysics")
             m_IonBinaryCascadePhysics = value;
-        else if(name == "LocalIonInelasticPhysics")
-            m_LocalIonInelasticPhysics = value;
+        else if(name == "NPIonInelasticPhysics")
+            m_NPIonInelasticPhysics = value;
         else if (name == "EmExtraPhysics")
             m_EmExtraPhysics= value;
         else if (name == "HadronElasticPhysics")
@@ -187,7 +189,7 @@ void PhysicsList::ReadConfiguration(std::string filename){
     }
     
     // Most special process need decay to be activated
-    if( (m_IonBinaryCascadePhysics || m_EmExtraPhysics || m_HadronElasticPhysics || m_LocalIonInelasticPhysics
+    if( (m_IonBinaryCascadePhysics || m_EmExtraPhysics || m_HadronElasticPhysics || m_NPIonInelasticPhysics
          || m_StoppingPhysics || m_HadronPhysicsQGSP_BIC_HP || m_HadronPhysicsINCLXX) && !m_Decay){
         m_Decay = true;
         std::cout << "Information: Selected process require Decay to be activated." << std::endl;

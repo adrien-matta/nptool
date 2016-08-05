@@ -47,35 +47,34 @@
 #include "EventGeneratorGammaDecay.hh"
 #include "EventGeneratorParticleDecay.hh"
 
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 PrimaryGeneratorAction::PrimaryGeneratorAction(DetectorConstruction* det): m_detector(det){
-  m_Messenger = new PrimaryGeneratorActionMessenger(this);
-  m_GenerateEvent = &NPS::VEventGenerator::GenerateEvent; 
+    m_Messenger = new PrimaryGeneratorActionMessenger(this);
+    m_GenerateEvent = &NPS::VEventGenerator::GenerateEvent;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 PrimaryGeneratorAction::~PrimaryGeneratorAction(){
-  unsigned int mysize = m_EventGenerator.size();
-  for (unsigned int i = 0 ; i < mysize; i++) {
-    delete m_EventGenerator[i];
-  }
-  m_EventGenerator.clear();
+    unsigned int mysize = m_EventGenerator.size();
+    for (unsigned int i = 0 ; i < mysize; i++) {
+        delete m_EventGenerator[i];
+    }
+    m_EventGenerator.clear();
 }
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent){
-  // In case the target has changed
-  SetTarget();
-  unsigned int mysize = m_EventGenerator.size();
-  for (unsigned int i = 0 ; i < mysize; i++) {
-    //m_EventGenerator[i]->GenerateEvent(anEvent);
-    (m_EventGenerator[i]->*m_GenerateEvent)(anEvent);
-  }
-
-  ParticleStack::getInstance()->ShootAllParticle(anEvent);
-
+    // In case the target has changed
+    SetTarget();
+    unsigned int mysize = m_EventGenerator.size();
+    for (unsigned int i = 0 ; i < mysize; i++) {
+        //m_EventGenerator[i]->GenerateEvent(anEvent);
+        (m_EventGenerator[i]->*m_GenerateEvent)(anEvent);
+    }
+    
+    ParticleStack::getInstance()->ShootAllParticle(anEvent);
+    
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -84,130 +83,131 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path){
     bool check_pBUU                 = false;
     bool check_TwoBodyReaction      = false;
     bool check_Beam                 = false;
-
-  // You can have more than one of those
-  int   alreadyiInstantiate_GammaDecay = 0;
-  int   seenToken_GammaDecay = 0;
-  int   alreadyiInstantiate_ParticleDecay = 0;
-  int   seenToken_ParticleDecay = 0;
-
-  if(NPOptionManager::getInstance()->GetVerboseLevel()==1) G4cout << "/////////////////////////////////////////////////// " << G4endl ;
-
-  string LineBuffer;
-  ifstream EventGeneratorFile;
-  EventGeneratorFile.open(Path.c_str());
-
-  if (EventGeneratorFile.is_open()) { // should always be true
-    G4cout << "Event Generator file " << Path << " loading " << G4endl  ;
-  }
-  else {
-    G4cout << "Error, Event Generator file " << Path << " found" << G4endl;
-  }
-
-  while (!EventGeneratorFile.eof()) {
-    //Pick-up next line
-    getline(EventGeneratorFile, LineBuffer);
-
-    //Search for comment Symbol %
-    if (LineBuffer.compare(0, 1, "%") == 0) {   /*do nothing*/
-      ;
+    
+    // You can have more than one of those
+    int   alreadyiInstantiate_GammaDecay = 0;
+    int   seenToken_GammaDecay = 0;
+    int   alreadyiInstantiate_ParticleDecay = 0;
+    int   seenToken_ParticleDecay = 0;
+    
+    if(NPOptionManager::getInstance()->GetVerboseLevel()==1) G4cout << "/////////////////////////////////////////////////// " << G4endl ;
+    
+    string LineBuffer;
+    ifstream EventGeneratorFile;
+    EventGeneratorFile.open(Path.c_str());
+    
+    if (EventGeneratorFile.is_open()) { // should always be true
+        G4cout << "Event Generator file " << Path << " loading " << G4endl  ;
     }
-
-    //Search for Isotropic source
-    else if (LineBuffer.compare(0, 9, "Isotropic") == 0  && !check_Isotropic) {
-      check_Isotropic = true;
-      NPS::VEventGenerator* myEventGenerator = new EventGeneratorIsotropic();
-      EventGeneratorFile.close();
-      myEventGenerator->ReadConfiguration(Path);
-      EventGeneratorFile.open(Path.c_str());
-      myEventGenerator->InitializeRootOutput();
-      m_EventGenerator.push_back(myEventGenerator);
+    else {
+        G4cout << "Error, Event Generator file " << Path << " found" << G4endl;
     }
-
-      //Search for pBUU source
-    else if (LineBuffer.compare(0, 4, "pBUU") == 0  && !check_pBUU) {
-        check_pBUU = true;
-        NPS::VEventGenerator* myEventGenerator = new EventGeneratorpBUU();
-        EventGeneratorFile.close();
-        myEventGenerator->ReadConfiguration(Path);
-        EventGeneratorFile.open(Path.c_str());
-        myEventGenerator->InitializeRootOutput();
-        m_EventGenerator.push_back(myEventGenerator);
+    
+    while (!EventGeneratorFile.eof()) {
+        //Pick-up next line
+        getline(EventGeneratorFile, LineBuffer);
+        
+        //Search for comment Symbol %
+        if (LineBuffer.compare(0, 1, "%") == 0) {   /*do nothing*/
+            ;
+        }
+        
+        //Search for Isotropic source
+        else if (LineBuffer.compare(0, 9, "Isotropic") == 0  && !check_Isotropic) {
+            check_Isotropic = true;
+            NPS::VEventGenerator* myEventGenerator = new EventGeneratorIsotropic();
+            EventGeneratorFile.close();
+            myEventGenerator->ReadConfiguration(Path);
+            EventGeneratorFile.open(Path.c_str());
+            myEventGenerator->InitializeRootOutput();
+            m_EventGenerator.push_back(myEventGenerator);
+        }
+        
+        //Search for pBUU source
+        else if (LineBuffer.compare(0, 4, "pBUU") == 0  && !check_pBUU) {
+            check_pBUU = true;
+            NPS::VEventGenerator* myEventGenerator = new EventGeneratorpBUU();
+            EventGeneratorFile.close();
+            myEventGenerator->ReadConfiguration(Path);
+            EventGeneratorFile.open(Path.c_str());
+            myEventGenerator->InitializeRootOutput();
+            m_EventGenerator.push_back(myEventGenerator);
+        }
+        
+        //Search for Beam
+        else if (LineBuffer.compare(0, 4, "Beam") == 0  && !check_Beam) {
+            check_Beam = true;
+            NPS::VEventGenerator* myEventGenerator = new EventGeneratorBeam();
+            EventGeneratorFile.close();
+            myEventGenerator->ReadConfiguration(Path);
+            EventGeneratorFile.open(Path.c_str());
+            myEventGenerator->InitializeRootOutput();
+            myEventGenerator->SetTarget(m_detector->GetTarget());
+            m_EventGenerator.push_back(myEventGenerator);
+        }
+        
+        //Search for Two body reaction
+        else if (LineBuffer.compare(0, 15, "TwoBodyReaction") == 0 && !check_TwoBodyReaction) {
+            check_TwoBodyReaction = true;
+            NPS::VEventGenerator* myEventGenerator = new EventGeneratorTwoBodyReaction();
+            EventGeneratorFile.close();
+            myEventGenerator->ReadConfiguration(Path);
+            EventGeneratorFile.open(Path.c_str());
+            myEventGenerator->InitializeRootOutput();
+            myEventGenerator->SetTarget(m_detector->GetTarget());
+            m_EventGenerator.push_back(myEventGenerator);
+        }
+        
+        //Search for GammaDecay
+        else if ( LineBuffer.compare(0, 10, "GammaDecay") == 0 ) {
+            seenToken_GammaDecay++;
+            if (seenToken_GammaDecay>alreadyiInstantiate_GammaDecay) {
+                alreadyiInstantiate_GammaDecay++;
+                NPS::VEventGenerator* myEventGenerator = new EventGeneratorGammaDecay();
+                EventGeneratorFile.close();
+                myEventGenerator->ReadConfiguration(Path,alreadyiInstantiate_GammaDecay);
+                EventGeneratorFile.open(Path.c_str());
+                myEventGenerator->InitializeRootOutput();
+                myEventGenerator->SetTarget(m_detector->GetTarget());
+                m_EventGenerator.push_back(myEventGenerator);
+                seenToken_GammaDecay=0;
+            }
+            
+        }
+        
+        //Search for ParticleDecay
+        else if ( LineBuffer.compare(0, 13, "ParticleDecay") == 0 ) {
+            seenToken_ParticleDecay++;
+            if(seenToken_ParticleDecay>alreadyiInstantiate_ParticleDecay){
+                alreadyiInstantiate_ParticleDecay++;
+                NPS::VEventGenerator* myEventGenerator = new EventGeneratorParticleDecay();
+                EventGeneratorFile.close();
+                myEventGenerator->ReadConfiguration(Path,alreadyiInstantiate_ParticleDecay);
+                EventGeneratorFile.open(Path.c_str());
+                myEventGenerator->InitializeRootOutput();
+                myEventGenerator->SetTarget(m_detector->GetTarget());
+                m_EventGenerator.push_back(myEventGenerator);
+                seenToken_ParticleDecay=0;
+            }
+        }
     }
-
-    //Search for Beam
-    else if (LineBuffer.compare(0, 4, "Beam") == 0  && !check_Beam) {
-      check_Beam = true;
-      NPS::VEventGenerator* myEventGenerator = new EventGeneratorBeam();
-      EventGeneratorFile.close();
-      myEventGenerator->ReadConfiguration(Path);
-      EventGeneratorFile.open(Path.c_str());
-      myEventGenerator->InitializeRootOutput();
-      myEventGenerator->SetTarget(m_detector->GetTarget());
-      m_EventGenerator.push_back(myEventGenerator);
-    }
-
-    //Search for Two body reaction
-    else if (LineBuffer.compare(0, 15, "TwoBodyReaction") == 0 && !check_TwoBodyReaction) {
-      check_TwoBodyReaction = true;
-      NPS::VEventGenerator* myEventGenerator = new EventGeneratorTwoBodyReaction();
-      EventGeneratorFile.close();
-      myEventGenerator->ReadConfiguration(Path);
-      EventGeneratorFile.open(Path.c_str());
-      myEventGenerator->InitializeRootOutput();
-      myEventGenerator->SetTarget(m_detector->GetTarget());
-      m_EventGenerator.push_back(myEventGenerator);
-    }
-
-    //Search for GammaDecay
-    else if ( LineBuffer.compare(0, 10, "GammaDecay") == 0 ) {
-      seenToken_GammaDecay++;
-      if (seenToken_GammaDecay>alreadyiInstantiate_GammaDecay) {
-        alreadyiInstantiate_GammaDecay++;
-        NPS::VEventGenerator* myEventGenerator = new EventGeneratorGammaDecay();
-        EventGeneratorFile.close();
-        myEventGenerator->ReadConfiguration(Path,alreadyiInstantiate_GammaDecay);
-        EventGeneratorFile.open(Path.c_str());
-        myEventGenerator->InitializeRootOutput();
-        myEventGenerator->SetTarget(m_detector->GetTarget());
-        m_EventGenerator.push_back(myEventGenerator);
-        seenToken_GammaDecay=0;
-      }
-
-    }
-
-    //Search for ParticleDecay
-    else if ( LineBuffer.compare(0, 13, "ParticleDecay") == 0 ) {
-      seenToken_ParticleDecay++;
-      if(seenToken_ParticleDecay>alreadyiInstantiate_ParticleDecay){
-        alreadyiInstantiate_ParticleDecay++;
-        NPS::VEventGenerator* myEventGenerator = new EventGeneratorParticleDecay();
-        EventGeneratorFile.close();
-        myEventGenerator->ReadConfiguration(Path,alreadyiInstantiate_ParticleDecay);
-        EventGeneratorFile.open(Path.c_str());
-        myEventGenerator->InitializeRootOutput();
-        myEventGenerator->SetTarget(m_detector->GetTarget());
-        m_EventGenerator.push_back(myEventGenerator);
-        seenToken_ParticleDecay=0;
-      }
-    }
-  }
-
-  EventGeneratorFile.close();
+    
+    EventGeneratorFile.close();
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PrimaryGeneratorAction::ClearEventGenerator(){
-  unsigned int mysize = m_EventGenerator.size();
-  for (unsigned int i = 0 ; i < mysize; i++) {
-    delete m_EventGenerator[i];
-  }
-  
-  m_EventGenerator.clear();
-
+    unsigned int mysize = m_EventGenerator.size();
+    for (unsigned int i = 0 ; i < mysize; i++) {
+        delete m_EventGenerator[i];
+    }
+    
+    m_EventGenerator.clear();
+    
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PrimaryGeneratorAction::SetTarget(){
-  for (unsigned int i = 0 ; i < m_EventGenerator.size(); i++) {
-    m_EventGenerator[i]->SetTarget(m_detector->GetTarget());
-  }
+    for (unsigned int i = 0 ; i < m_EventGenerator.size(); i++) {
+        m_EventGenerator[i]->SetTarget(m_detector->GetTarget());
+    }
 }
+

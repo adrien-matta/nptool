@@ -84,7 +84,7 @@ class ParticleStack{
   public: // Getter and Setter
     vector<Particle> GetParticleStack();
     void             SetParticleStack(vector<Particle>);
-    G4ParticleGun    GetParticleGun();
+    G4ParticleGun*    GetParticleGun() {return m_particleGun;};
 
   public: // Particle management and shooting method
     // EventGenerator use this method to add particle in the stack

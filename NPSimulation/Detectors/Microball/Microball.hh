@@ -52,7 +52,7 @@ class Microball : public NPS::VDetector{
     void AddMicroball(bool bR1, bool bR2, bool bR3, 
 			bool bR4, bool bR5, bool bR6, 
 			bool bR7, bool bR8, bool bR9,
-			vector<int>, bool bFlip);  
+			vector<int>, bool bFlip, bool bChamber);  
 
     G4LogicalVolume* BuildSquareDetector();
     G4LogicalVolume* BuildCylindricalDetector();
@@ -115,6 +115,7 @@ class Microball : public NPS::VDetector{
 	bool m_Ring9;
 	vector<int> m_Array;
 	bool m_Flip;
+	bool m_Chamber;
    
     // Visualisation Attribute
     G4VisAttributes* m_VisSquare;

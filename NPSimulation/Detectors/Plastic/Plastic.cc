@@ -57,8 +57,8 @@ using namespace CLHEP;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace PLASTIC{
     // Energy and time Resolution
-    const G4double ResoTime    = 4.2         ;// = 10ns of Resolution   //   Unit is MeV/2.35
-    const G4double ResoEnergy  = 5.0         ;// Resolution in %
+    const G4double ResoTime    = 1.         ;// Resolution in ns  //
+    const G4double ResoEnergy  = 0.1         ;// Resolution in %
 }
 
 using namespace PLASTIC ;

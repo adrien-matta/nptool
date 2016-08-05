@@ -23,6 +23,7 @@
 #include "RunAction.hh"
 #include "PrimaryGeneratorAction.hh"
 #include "EventAction.hh"
+#include "ParticleStack.hh"
 // G4
 #include "G4Run.hh"
 #include "G4RunManager.hh"
@@ -30,7 +31,7 @@
 #include "RootOutput.h"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 RunAction::RunAction(): G4UserRunAction(){
-  RootOutput::getInstance()->GetTree()->Branch("Run",&m_RunNumber,"Run/I");
+    RootOutput::getInstance()->GetTree()->Branch("Run",&m_RunNumber,"Run/I");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -38,16 +39,16 @@ RunAction::~RunAction(){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void RunAction::BeginOfRunAction(const G4Run* aRun){ 
-  m_RunNumber = aRun->GetRunID()+1;
-  
-  //initialize event cumulative quantities
-  EventAction::GetInstance()->SetRunLength(aRun->GetNumberOfEventToBeProcessed());
+void RunAction::BeginOfRunAction(const G4Run* aRun){
+    m_RunNumber = aRun->GetRunID()+1;
+    
+    //initialize event cumulative quantities
+    EventAction::GetInstance()->SetRunLength(aRun->GetNumberOfEventToBeProcessed());
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void RunAction::EndOfRunAction(const G4Run*){
-  // Pass a line for nicer presentation when chainning event generator
-  cout << endl;
+    // Pass a line for nicer presentation when chainning event generator
+    cout << endl;
 }
 

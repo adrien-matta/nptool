@@ -1,32 +1,25 @@
-//
-// ********************************************************************
-// * License and Disclaimer                                           *
-// *                                                                  *
-// * The  Geant4 software  is  copyright of the Copyright Holders  of *
-// * the Geant4 Collaboration.  It is provided  under  the terms  and *
-// * conditions of the Geant4 Software License,  included in the file *
-// * LICENSE and available at  http://cern.ch/geant4/license .  These *
-// * include a list of copyright holders.                             *
-// *                                                                  *
-// * Neither the authors of this software system, nor their employing *
-// * institutes,nor the agencies providing financial support for this *
-// * work  make  any representation or  warranty, express or implied, *
-// * regarding  this  software system or assume any liability for its *
-// * use.  Please see the license in the file  LICENSE  and URL above *
-// * for the full disclaimer and the limitation of liability.         *
-// *                                                                  *
-// * This  code  implementation is the result of  the  scientific and *
-// * technical work of the GEANT4 collaboration.                      *
-// * By using,  copying,  modifying or  distributing the software (or *
-// * any work based  on the software)  you  agree  to acknowledge its *
-// * use  in  resulting  scientific  publications,  and indicate your *
-// * acceptance of all terms of the Geant4 Software license.          *
-// ********************************************************************
-//
-// Visit the Hadrontherapy web site (http://www.lns.infn.it/link/Hadrontherapy) to request
-// the *COMPLETE* version of this program, together with its documentation;
-// Hadrontherapy (both basic and full version) are supported by the Italian INFN
-// Institute in the framework of the MC-INFN Group
+/*****************************************************************************
+ * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Original Author: Pierre MORFOUACE  contact address: morfouac@nscl.msu.edu *
+ *                                                                           *
+ * Creation Date  : August 2016                                              *
+ * Last update    : August 2016                                              *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *  Modular Physics list calling Geant4 reference list                       *
+ *                                                                           *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
 //
 //
 // In this class the models for ion-ion interactions at intermediate energies (0 - 1 GeV per nucleon)
@@ -41,7 +34,7 @@
 // suggest to use Binary or QMD. The Binary model is the default and at moment, you can swith beetween models decommenting
 // the line of code and recompiling
 
-#include "LocalIonIonInelasticPhysic.hh"
+#include "NPIonIonInelasticPhysic.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4ProcessManager.hh"
@@ -50,19 +43,27 @@
 #include "G4TripathiCrossSection.hh"
 #include "G4TripathiLightCrossSection.hh"
 #include "G4IonsShenCrossSection.hh"
+#include "G4GlauberGribovCrossSection.hh"
+#include "G4BGGNucleonElasticXS.hh"
 
+// Elastic
+#include "G4HadronElasticProcess.hh"
+#include "G4ElasticHadrNucleusHE.hh"
+#include "G4DiffuseElastic.hh"
+#include "G4HadronElastic.hh"
+
+// Inelastic
 #include "G4ProtonInelasticProcess.hh"
 #include "G4DeuteronInelasticProcess.hh"
 #include "G4TritonInelasticProcess.hh"
 #include "G4AlphaInelasticProcess.hh"
 #include "G4BinaryLightIonReaction.hh"
 #include "G4QMDReaction.hh"
-//#include "G4WilsonAbrasionModel.hh"
 #include "G4IonInelasticProcess.hh"
 #include "G4GeneralSpaceNNCrossSection.hh"
 
 /////////////////////////////////////////////////////////////////////////////
-LocalIonIonInelasticPhysic::LocalIonIonInelasticPhysic(const G4String& name):
+NPIonIonInelasticPhysic::NPIonIonInelasticPhysic(const G4String& name):
 G4VPhysicsConstructor(name)
 {
     G4cout << G4endl
@@ -71,11 +72,11 @@ G4VPhysicsConstructor(name)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-LocalIonIonInelasticPhysic::~LocalIonIonInelasticPhysic()
+NPIonIonInelasticPhysic::~NPIonIonInelasticPhysic()
 {}
 
 /////////////////////////////////////////////////////////////////////////////
-void LocalIonIonInelasticPhysic::ConstructProcess()
+void NPIonIonInelasticPhysic::ConstructProcess()
 {
     G4ParticleDefinition* particle = 0;
     G4ProcessManager* processManager = 0;
@@ -91,23 +92,45 @@ void LocalIonIonInelasticPhysic::ConstructProcess()
     ligthBinary -> SetMinEnergy(0*MeV);
     ligthBinary -> SetMaxEnergy(10*GeV);
     
-    /*G4WilsonAbrasionModel* WilsonModel = new G4WilsonAbrasionModel();
-     WilsonModel -> SetUseAblation(true);
-     WilsonModel -> SetMinEnergy(0*MeV);
-     WilsonModel -> SetMaxEnergy(10 *GeV);*/
-    
     G4TripathiCrossSection* TripatiCrossSections = new G4TripathiCrossSection;
     G4TripathiLightCrossSection* TripatiLightCrossSections = new G4TripathiLightCrossSection;
     G4IonsShenCrossSection* ShenCrossSections = new G4IonsShenCrossSection;
+    G4GlauberGribovCrossSection* GlauberGribovCrossSection = new G4GlauberGribovCrossSection;
     
+    // ******************
+    // **** Elastic ****
+    // ******************
+    particle = G4Proton::Proton();
+    //G4ElasticHadrNucleusHE* hadronElasticModel = new G4ElasticHadrNucleusHE();
+    //G4HadronElastic* hadronElasticModel1 = new G4HadronElastic();
+    G4DiffuseElastic* hadronElasticModel2 = new G4DiffuseElastic();
+    hadronElasticModel2->SetPlabLowLimit(0.1*MeV);//Default is 20 MeV
+    hadronElasticModel2->SetRecoilKinEnergyLimit(10*keV);//Default is 100 keV
+    hadronElasticModel2->SetLowestEnergyLimit(0.0*keV);//Default value is 0 keV
+    hadronElasticModel2->SetHEModelLowLimit(0.0*keV);//Default value is 0 keV
+    hadronElasticModel2->SetQModelLowLimit(0.0*keV);//Default value is 0 keV
+    
+    G4HadronElasticProcess* hadronElasticProcess = new G4HadronElasticProcess();
+    
+    hadronElasticProcess->AddDataSet(GlauberGribovCrossSection);
+    hadronElasticProcess->AddDataSet( new G4BGGNucleonElasticXS(particle));
+    
+    //hadronElasticProcess->RegisterMe(hadronElasticModel1);
+    hadronElasticProcess->RegisterMe(hadronElasticModel2);
+
+   
+    processManager = particle -> GetProcessManager();
+    processManager -> AddDiscreteProcess(hadronElasticProcess);
+
     // ****************
     // **** Proton ****
     // ****************
     G4ProtonInelasticProcess* protonInelasticProcess = new G4ProtonInelasticProcess;
     
-    protonInelasticProcess -> AddDataSet(ShenCrossSections);
-    protonInelasticProcess -> AddDataSet(TripatiCrossSections);
-    protonInelasticProcess -> AddDataSet(TripatiLightCrossSections);
+    //protonInelasticProcess -> AddDataSet(ShenCrossSections);
+    //protonInelasticProcess -> AddDataSet(TripatiCrossSections);
+    //protonInelasticProcess -> AddDataSet(TripatiLightCrossSections);
+    protonInelasticProcess -> AddDataSet(GlauberGribovCrossSection);
     
     protonInelasticProcess -> RegisterMe(ligthBinary);
     //protonInelasticProcess -> RegisterMe(JQMDmodel);

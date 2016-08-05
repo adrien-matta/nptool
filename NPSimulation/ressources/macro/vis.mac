@@ -10,6 +10,8 @@
 /cuts/verbose 0
 /process/em/verbose 0
 /process/eLoss/verbose 0
+
+#/process/list
 #
 # Use this open statement to create an OpenGL view:
 /vis/open OGLI 1200x600-0+0
@@ -47,8 +49,8 @@
 /vis/viewer/set/autoRefresh true
 /vis/verbose 0
 
-/vis/viewer/set/background black 
-#/vis/viewer/set/background white
+#/vis/viewer/set/background black 
+/vis/viewer/set/background white
 
 # print Option
 #/vis/ogl/set/printMode vectored

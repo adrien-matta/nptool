@@ -1,45 +1,50 @@
-#ifndef RunAction_h
-#define RunAction_h 1
 /*****************************************************************************
- * Copyright (C) 2009-2015   this file is part of the NPTool Project         *
+ * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Adrien MATTA  contact address: a.matta@surrey.ac.uk      *
+ * Original Author: Pierre MORFOUACE  contact address: morfouac@nscl.msu.edu *
  *                                                                           *
- * Creation Date  : April 2015                                               *
- * Last update    :                                                          *
+ * Creation Date  : August 2016                                              *
+ * Last update    : August 2016                                              *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  A quite Standard Geant4 RunAction class.                                 *
- *  Use to register the run number in the tree                               *
+ *  Modular Physics list calling Geant4 reference list                       *
+ *                                                                           *
+ *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
+//
+//
 
-// G4 headers
-#include "G4UserRunAction.hh"
-#include "globals.hh"
+#ifndef NPIONINELASTICPHYSIC_H
+#define NPIONIONINELASTICPHYSIC_H 1
 
-class G4Run;
+#include "G4VPhysicsConstructor.hh"
+#include "globals.hh" 
 
-class RunAction : public G4UserRunAction{
-  public:
-    RunAction();
-    virtual ~RunAction();
+class NPIonIonInelasticPhysic: public G4VPhysicsConstructor 
+{
+ public:
+  NPIonIonInelasticPhysic (const G4String& name = "npt_ion_ion_inelastic");
+   virtual ~NPIonIonInelasticPhysic();
 
-    virtual void BeginOfRunAction(const G4Run*);
-    virtual void EndOfRunAction(const G4Run*);
-  private:
-    int m_RunNumber;
-    
+ protected:
+   void ConstructParticle(){};
+   void ConstructProcess();
 };
+#endif 
 
 
-#endif
+
+
+
+
+
 

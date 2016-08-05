@@ -62,6 +62,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction{
     DetectorConstruction* m_detector;
     vector<NPS::VEventGenerator*> m_EventGenerator;
     PrimaryGeneratorActionMessenger* m_Messenger;
+    
 };
 
 #endif

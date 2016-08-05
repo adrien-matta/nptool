@@ -17,7 +17,7 @@ Target
 %	Rot= 16.61
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 NeutronWall
-  THETA= 30
+  THETA= 0
   PHI= 0
   R= 4000
   BARS= 25
