@@ -2,19 +2,13 @@
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Target
-        THICKNESS= 10
+        THICKNESS= 0.00001
 	RADIUS=	20
 	MATERIAL= CD2
 	ANGLE= 0
 	X= 0
 	Y= 0
 	Z= 0
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%NeutronWall
-%	X= 179.08
-%	Y= -3.75
-%	Z= 566.54
-%	Rot= 16.61
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 NeutronWall
   THETA= 0
@@ -23,7 +17,7 @@ NeutronWall
   BARS= 25
   VETOWALL= 1
   VWDISTANCE= 100
-  OVERLAP= -0.1
+  OVERLAP= 3
   VWMATERIAL= BC400
   NWMATERIAL= NE213
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

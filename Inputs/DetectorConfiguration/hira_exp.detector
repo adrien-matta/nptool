@@ -158,10 +158,10 @@ Microball
   INCLUDE_CHAMBER= 1
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%NeutronWall
+NeutronWall
   THETA= 50
   PHI= 0
-  R= 4000
+  R= 3000
   BARS= 25
   VETOWALL= 1
   VWDISTANCE= 100

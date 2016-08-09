@@ -100,7 +100,7 @@ void NPIonIonInelasticPhysic::ConstructProcess()
     // ******************
     // **** Elastic ****
     // ******************
-    particle = G4Proton::Proton();
+    /*particle = G4Proton::Proton();
     //G4ElasticHadrNucleusHE* hadronElasticModel = new G4ElasticHadrNucleusHE();
     //G4HadronElastic* hadronElasticModel1 = new G4HadronElastic();
     G4DiffuseElastic* hadronElasticModel2 = new G4DiffuseElastic();
@@ -120,17 +120,17 @@ void NPIonIonInelasticPhysic::ConstructProcess()
 
    
     processManager = particle -> GetProcessManager();
-    processManager -> AddDiscreteProcess(hadronElasticProcess);
+    processManager -> AddDiscreteProcess(hadronElasticProcess);*/
 
     // ****************
     // **** Proton ****
     // ****************
     G4ProtonInelasticProcess* protonInelasticProcess = new G4ProtonInelasticProcess;
     
-    //protonInelasticProcess -> AddDataSet(ShenCrossSections);
-    //protonInelasticProcess -> AddDataSet(TripatiCrossSections);
-    //protonInelasticProcess -> AddDataSet(TripatiLightCrossSections);
-    protonInelasticProcess -> AddDataSet(GlauberGribovCrossSection);
+    protonInelasticProcess -> AddDataSet(ShenCrossSections);
+    protonInelasticProcess -> AddDataSet(TripatiCrossSections);
+    protonInelasticProcess -> AddDataSet(TripatiLightCrossSections);
+    //protonInelasticProcess -> AddDataSet(GlauberGribovCrossSection);
     
     protonInelasticProcess -> RegisterMe(ligthBinary);
     //protonInelasticProcess -> RegisterMe(JQMDmodel);
@@ -139,6 +139,19 @@ void NPIonIonInelasticPhysic::ConstructProcess()
     particle = G4Proton::Proton();
     processManager = particle -> GetProcessManager();
     processManager -> AddDiscreteProcess(protonInelasticProcess);
+    
+    double energy;
+    for(int i=0; i<10;i++){
+        energy = 10*i;
+        G4DynamicParticle* dp = new G4DynamicParticle(particle,G4ThreeVector(0,0,1),energy*MeV);
+        G4Element* element = new G4Element("Tin","Sn",50,120*g/mole);
+        //G4Element* element = new G4Element("Cupper","Cu",29,59*g/mole);
+        cout << "Glauber | Energy = " << energy << " | Cross Section = " << GlauberGribovCrossSection->GetCrossSection(dp,element)/barn << " barn" << endl;
+        cout << GlauberGribovCrossSection->GetInelasticGlauberGribovXsc()/barn << endl;
+        cout << "Tripathi | Energy = " << energy << " | Cross Section = " << TripatiLightCrossSections->GetCrossSection(dp,element,0)/barn << " barn" << endl;
+        //cout << "Shen | Energy = " << energy << " | Cross Section = " << ShenCrossSections->GetCrossSection(dp,element,0)/barn << " barn" << endl;
+        
+    }
     
     // ****************
     // *** Deuteron ***
