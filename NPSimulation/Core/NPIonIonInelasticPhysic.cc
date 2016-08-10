@@ -45,6 +45,7 @@
 #include "G4IonsShenCrossSection.hh"
 #include "G4BGGNucleonElasticXS.hh"
 #include "G4ComponentGGHadronNucleusXsc.hh"
+#include "G4CrossSectionInelastic.hh"
 
 
 // Elastic
@@ -98,6 +99,8 @@ void NPIonIonInelasticPhysic::ConstructProcess()
     G4IonsShenCrossSection* ShenCrossSections = new G4IonsShenCrossSection;
     G4ComponentGGHadronNucleusXsc* GlauberGribovCrossSection = new G4ComponentGGHadronNucleusXsc;
     
+    G4CrossSectionInelastic* GlauberGribovDataSet = new G4CrossSectionInelastic(GlauberGribovCrossSection);
+    
     // ******************
     // **** Elastic ****
     // ******************
@@ -131,7 +134,7 @@ void NPIonIonInelasticPhysic::ConstructProcess()
     protonInelasticProcess -> AddDataSet(ShenCrossSections);
     protonInelasticProcess -> AddDataSet(TripatiCrossSections);
     protonInelasticProcess -> AddDataSet(TripatiLightCrossSections);
-    //protonInelasticProcess -> AddDataSet(GlauberGribovCrossSection);
+    //protonInelasticProcess -> AddDataSet(GlauberGribovDataSet);
     
     protonInelasticProcess -> RegisterMe(ligthBinary);
     //protonInelasticProcess -> RegisterMe(JQMDmodel);
@@ -141,16 +144,16 @@ void NPIonIonInelasticPhysic::ConstructProcess()
     processManager = particle -> GetProcessManager();
     processManager -> AddDiscreteProcess(protonInelasticProcess);
     
-    double energy;
-    for(int i=0; i<10;i++){
-        energy = 10*i;
+    double energy = 0;
+    for(int i=0; i<50;i++){
+        energy += 5;
         G4DynamicParticle* dp = new G4DynamicParticle(particle,G4ThreeVector(0,0,1),energy*MeV);
         G4Element* element = new G4Element("Tin","Sn",50,120*g/mole);
         //G4Element* element = new G4Element("Cupper","Cu",29,59*g/mole);
         cout << "Glauber | Energy = " << energy << " | Cross Section = " << GlauberGribovCrossSection->GetInelasticGlauberGribov(dp,50,70)/barn << " barn" << endl;
-        //cout << GlauberGribovCrossSection->GetInelasticGlauberGribovXsc()/barn << endl;
+        cout << GlauberGribovCrossSection->GetHNinelasticXsc(dp,element) << endl;
         cout << "Tripathi | Energy = " << energy << " | Cross Section = " << TripatiLightCrossSections->GetCrossSection(dp,element,0)/barn << " barn" << endl;
-        //cout << "Shen | Energy = " << energy << " | Cross Section = " << ShenCrossSections->GetCrossSection(dp,element,0)/barn << " barn" << endl;
+        cout << "Shen | Energy = " << energy << " | Cross Section = " << ShenCrossSections->GetCrossSection(dp,element,0)/barn << " barn" << endl;
         
     }
     
