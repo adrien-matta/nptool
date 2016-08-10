@@ -44,12 +44,8 @@
 #include "G4TripathiLightCrossSection.hh"
 #include "G4IonsShenCrossSection.hh"
 #include "G4BGGNucleonElasticXS.hh"
-
-#if NPS_GEANT4_VERSION_MAJOR > 10
 #include "G4ComponentGGHadronNucleusXsc.hh"
-#else
-#include "G4GlauberGribovCrossSection.hh"
-#endif
+
 
 // Elastic
 #include "G4HadronElasticProcess.hh"
@@ -100,11 +96,7 @@ void NPIonIonInelasticPhysic::ConstructProcess()
     G4TripathiCrossSection* TripatiCrossSections = new G4TripathiCrossSection;
     G4TripathiLightCrossSection* TripatiLightCrossSections = new G4TripathiLightCrossSection;
     G4IonsShenCrossSection* ShenCrossSections = new G4IonsShenCrossSection;
-#if NPS_GEANT4_VERSION_MAJOR > 10
-    G4ComponentGGHadronNucleusXsc* GlauberGribovCrossSection = new GlauberGribovCrossSection;
-#else
-    G4GlauberGribovCrossSection* GlauberGribovCrossSection = new G4GlauberGribovCrossSection;
-#endif
+    G4ComponentGGHadronNucleusXsc* GlauberGribovCrossSection = new G4ComponentGGHadronNucleusXsc;
     
     // ******************
     // **** Elastic ****
@@ -155,8 +147,8 @@ void NPIonIonInelasticPhysic::ConstructProcess()
         G4DynamicParticle* dp = new G4DynamicParticle(particle,G4ThreeVector(0,0,1),energy*MeV);
         G4Element* element = new G4Element("Tin","Sn",50,120*g/mole);
         //G4Element* element = new G4Element("Cupper","Cu",29,59*g/mole);
-        cout << "Glauber | Energy = " << energy << " | Cross Section = " << GlauberGribovCrossSection->GetCrossSection(dp,element)/barn << " barn" << endl;
-        cout << GlauberGribovCrossSection->GetInelasticGlauberGribovXsc()/barn << endl;
+        cout << "Glauber | Energy = " << energy << " | Cross Section = " << GlauberGribovCrossSection->GetInelasticGlauberGribov(dp,50,70)/barn << " barn" << endl;
+        //cout << GlauberGribovCrossSection->GetInelasticGlauberGribovXsc()/barn << endl;
         cout << "Tripathi | Energy = " << energy << " | Cross Section = " << TripatiLightCrossSections->GetCrossSection(dp,element,0)/barn << " barn" << endl;
         //cout << "Shen | Energy = " << energy << " | Cross Section = " << ShenCrossSections->GetCrossSection(dp,element,0)/barn << " barn" << endl;
         
