@@ -5,7 +5,7 @@ Beam
   Particle= 22Na
   ExcitationEnergy= 0
   Energy= 220
-  SigmaEnergy= 1
+  SigmaEnergy= 0
   SigmaThetaX= 0.01 
   SigmaPhiY= 0.01
   SigmaX= 0.5

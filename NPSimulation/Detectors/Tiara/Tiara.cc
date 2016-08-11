@@ -283,7 +283,7 @@ void Tiara::ReadSensitive(const G4Event* event){
     double EF = RandGauss::shoot(Info[0],ResoEnergyHyball);
     if(EF>EnergyThreshold){
       int RingNumber=Info[8];
-      RingNumber=abs(RingNumber-17);                                                                                 //
+      RingNumber=abs(RingNumber-17);    
       Info[8]=RingNumber; 
       m_EventHyball->SetRingE(Info[7],Info[8],EF);
       m_EventHyball->SetRingT(Info[7],Info[8],Info[1]); 

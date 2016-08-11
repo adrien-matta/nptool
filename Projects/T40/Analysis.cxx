@@ -119,7 +119,8 @@ void Analysis::TreatEvent(){
     Energy = Si_E_TH;
 
     // Evaluate energy using the thickness 
-    ELab = LightAl.EvaluateInitialEnergy( Energy ,0.4*micrometer , ThetaTHSurface); 
+//    ELab = LightAl.EvaluateInitialEnergy( Energy ,0.4*micrometer , ThetaTHSurface); 
+    ELab = Energy;
     // Target Correction
     ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget); 
 

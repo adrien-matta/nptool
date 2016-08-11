@@ -64,6 +64,7 @@
 #include "G4IonInelasticProcess.hh"
 #include "G4GeneralSpaceNNCrossSection.hh"
 
+using namespace std;
 /////////////////////////////////////////////////////////////////////////////
 NPIonIonInelasticPhysic::NPIonIonInelasticPhysic(const G4String& name):
 G4VPhysicsConstructor(name)
@@ -99,7 +100,7 @@ void NPIonIonInelasticPhysic::ConstructProcess()
     G4IonsShenCrossSection* ShenCrossSections = new G4IonsShenCrossSection;
     G4ComponentGGHadronNucleusXsc* GlauberGribovCrossSection = new G4ComponentGGHadronNucleusXsc;
     
-    G4CrossSectionInelastic* GlauberGribovDataSet = new G4CrossSectionInelastic(GlauberGribovCrossSection);
+    //G4CrossSectionInelastic* GlauberGribovDataSet = new G4CrossSectionInelastic(GlauberGribovCrossSection);
     
     // ******************
     // **** Elastic ****
