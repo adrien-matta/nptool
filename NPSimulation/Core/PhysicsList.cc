@@ -79,7 +79,6 @@ PhysicsList::PhysicsList() : G4VModularPhysicsList(){
     // Hadronic physics
     if(m_IonBinaryCascadePhysics){
         m_PhysList["IonBinaryCascadePhysics"] = new G4IonBinaryCascadePhysics();
-        //m_PhysList["G4HadronInelasticQBBC"] = new G4HadronInelasticQBBC();
     }
     if(m_EmExtraPhysics)
         m_PhysList["EmExtraPhysics"]=new G4EmExtraPhysics();

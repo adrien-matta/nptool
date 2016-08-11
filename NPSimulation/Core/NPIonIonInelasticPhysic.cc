@@ -40,6 +40,7 @@
 #include "G4ProcessManager.hh"
 
 // Total cross section for inelastic processes
+#include "G4GeneralSpaceNNCrossSection.hh"
 #include "G4TripathiCrossSection.hh"
 #include "G4TripathiLightCrossSection.hh"
 #include "G4IonsShenCrossSection.hh"
@@ -94,11 +95,12 @@ void NPIonIonInelasticPhysic::ConstructProcess()
     ligthBinary -> SetMinEnergy(0*MeV);
     ligthBinary -> SetMaxEnergy(10*GeV);
     
-    G4TripathiCrossSection* TripatiCrossSections = new G4TripathiCrossSection;
-    G4TripathiLightCrossSection* TripatiLightCrossSections = new G4TripathiLightCrossSection;
+    G4GeneralSpaceNNCrossSection* GeneralSpaceNNCrossSection = new G4GeneralSpaceNNCrossSection;
+    G4TripathiCrossSection* TripathiCrossSections = new G4TripathiCrossSection;
+    G4TripathiLightCrossSection* TripathiLightCrossSections = new G4TripathiLightCrossSection;
     G4IonsShenCrossSection* ShenCrossSections = new G4IonsShenCrossSection;
-    G4ComponentGGHadronNucleusXsc* GlauberGribovCrossSection = new G4ComponentGGHadronNucleusXsc;
     
+    G4ComponentGGHadronNucleusXsc* GlauberGribovCrossSection = new G4ComponentGGHadronNucleusXsc;
     G4CrossSectionInelastic* GlauberGribovDataSet = new G4CrossSectionInelastic(GlauberGribovCrossSection);
     
     // ******************
@@ -116,8 +118,8 @@ void NPIonIonInelasticPhysic::ConstructProcess()
     
     G4HadronElasticProcess* hadronElasticProcess = new G4HadronElasticProcess();
     
-    hadronElasticProcess->AddDataSet(GlauberGribovCrossSection);
-    hadronElasticProcess->AddDataSet( new G4BGGNucleonElasticXS(particle));
+    hadronElasticProcess->AddDataSet(GlauberGribovDataSet);
+    //hadronElasticProcess->AddDataSet( new G4BGGNucleonElasticXS(particle));
     
     //hadronElasticProcess->RegisterMe(hadronElasticModel1);
     hadronElasticProcess->RegisterMe(hadronElasticModel2);
@@ -131,29 +133,39 @@ void NPIonIonInelasticPhysic::ConstructProcess()
     // ****************
     G4ProtonInelasticProcess* protonInelasticProcess = new G4ProtonInelasticProcess;
     
-    protonInelasticProcess -> AddDataSet(ShenCrossSections);
-    protonInelasticProcess -> AddDataSet(TripatiCrossSections);
-    protonInelasticProcess -> AddDataSet(TripatiLightCrossSections);
-    //protonInelasticProcess -> AddDataSet(GlauberGribovDataSet);
+    //protonInelasticProcess -> AddDataSet(ShenCrossSections);
+    //protonInelasticProcess -> AddDataSet(TripathiCrossSections);
+    //protonInelasticProcess -> AddDataSet(TripathiLightCrossSections);
+    protonInelasticProcess -> AddDataSet(GlauberGribovDataSet);
     
     protonInelasticProcess -> RegisterMe(ligthBinary);
     //protonInelasticProcess -> RegisterMe(JQMDmodel);
-    //dprotonInelasticProcess -> RegisterMe(WilsonModel);
     
     particle = G4Proton::Proton();
     processManager = particle -> GetProcessManager();
     processManager -> AddDiscreteProcess(protonInelasticProcess);
     
     double energy = 0;
-    for(int i=0; i<50;i++){
-        energy += 5;
+    int Z = 50;
+    int A = 120;
+
+    for(int i=0; i<500;i++){
+        energy += 1;
         G4DynamicParticle* dp = new G4DynamicParticle(particle,G4ThreeVector(0,0,1),energy*MeV);
-        G4Element* element = new G4Element("Tin","Sn",50,120*g/mole);
-        //G4Element* element = new G4Element("Cupper","Cu",29,59*g/mole);
-        cout << "Glauber | Energy = " << energy << " | Cross Section = " << GlauberGribovCrossSection->GetInelasticGlauberGribov(dp,50,70)/barn << " barn" << endl;
-        cout << GlauberGribovCrossSection->GetHNinelasticXsc(dp,element) << endl;
-        cout << "Tripathi | Energy = " << energy << " | Cross Section = " << TripatiLightCrossSections->GetCrossSection(dp,element,0)/barn << " barn" << endl;
-        cout << "Shen | Energy = " << energy << " | Cross Section = " << ShenCrossSections->GetCrossSection(dp,element,0)/barn << " barn" << endl;
+        //G4Element* element = new G4Element("Sn","Sn",1);
+        //G4Isotope *isotope = new G4Isotope("Sn",50,70,120*g/mole);
+        //element->AddIsotope(isotope,1);
+        // Glauber-Gribov
+        //cout << energy << " " << GlauberGribovCrossSection->GetInelasticIsotopeCrossSection(particle,energy*MeV,Z,A)/barn << endl;
+        
+        // Tripathi
+        //cout << energy << " " <<  TripathiLightCrossSections->GetElementCrossSection(dp,Z,0)/barn << endl;
+        
+        // General
+        //cout << energy << " " << GeneralSpaceNNCrossSection->GetElementCrossSection(dp,Z,0)/barn << endl;
+        
+        // Shen
+        //cout << energy << " " << ShenCrossSections->GetElementCrossSection(dp,Z,0)/barn << endl;
         
     }
     
@@ -163,8 +175,8 @@ void NPIonIonInelasticPhysic::ConstructProcess()
     G4DeuteronInelasticProcess* deuteronInelasticProcess = new G4DeuteronInelasticProcess;
     
     deuteronInelasticProcess -> AddDataSet(ShenCrossSections);
-    deuteronInelasticProcess -> AddDataSet(TripatiCrossSections);
-    deuteronInelasticProcess -> AddDataSet(TripatiLightCrossSections);
+    deuteronInelasticProcess -> AddDataSet(TripathiCrossSections);
+    deuteronInelasticProcess -> AddDataSet(TripathiLightCrossSections);
     
     deuteronInelasticProcess -> RegisterMe(ligthBinary);
     //deuteronInelasticProcess -> RegisterMe(JQMDmodel);
@@ -180,8 +192,8 @@ void NPIonIonInelasticPhysic::ConstructProcess()
     G4TritonInelasticProcess* tritonInelasticProcess = new G4TritonInelasticProcess;
     
     tritonInelasticProcess -> AddDataSet(ShenCrossSections);
-    tritonInelasticProcess -> AddDataSet(TripatiCrossSections);
-    tritonInelasticProcess -> AddDataSet(TripatiLightCrossSections);
+    tritonInelasticProcess -> AddDataSet(TripathiCrossSections);
+    tritonInelasticProcess -> AddDataSet(TripathiLightCrossSections);
     
     tritonInelasticProcess -> RegisterMe(ligthBinary);
     //tritonInelasticProcess -> RegisterMe(JQMDmodel);
@@ -197,8 +209,8 @@ void NPIonIonInelasticPhysic::ConstructProcess()
     G4AlphaInelasticProcess* alphaInelasticProcess = new G4AlphaInelasticProcess;
     
     alphaInelasticProcess -> AddDataSet(ShenCrossSections);
-    alphaInelasticProcess -> AddDataSet(TripatiCrossSections);
-    alphaInelasticProcess -> AddDataSet(TripatiLightCrossSections);
+    alphaInelasticProcess -> AddDataSet(TripathiCrossSections);
+    alphaInelasticProcess -> AddDataSet(TripathiLightCrossSections);
     
     alphaInelasticProcess -> RegisterMe(ligthBinary);
     //alphaInelasticProcess -> RegisterMe(JQMDmodel);
@@ -214,8 +226,8 @@ void NPIonIonInelasticPhysic::ConstructProcess()
     G4IonInelasticProcess* genericIonInelasticProcess = new G4IonInelasticProcess();
     
     genericIonInelasticProcess -> AddDataSet(ShenCrossSections);
-    genericIonInelasticProcess -> AddDataSet(TripatiCrossSections);
-    genericIonInelasticProcess -> AddDataSet(TripatiLightCrossSections);
+    genericIonInelasticProcess -> AddDataSet(TripathiCrossSections);
+    genericIonInelasticProcess -> AddDataSet(TripathiLightCrossSections);
     
     genericIonInelasticProcess -> RegisterMe(ligthBinary);
     //genericIonInelasticProcess -> RegisterMe(JQMDmodel);
