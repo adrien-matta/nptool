@@ -60,9 +60,9 @@ using namespace CLHEP;
 namespace NeutronWall_NS{
     // Energy and time Resolution
     const double EnergyThreshold = 0.1*MeV;
-    const double ResoTime = 0*ns ;
-    const double ResoEnergy = 0*MeV ;
-    const double ResoPosition = 0*cm;
+    //const double ResoTime = 0*ns ;
+    //const double ResoEnergy = 0*MeV ;
+    //const double ResoPosition = 0*cm;
     //The size of NS should depend on the distance between NeutronWall and plastic Bar right now
     double NS_X = 2020.0*mm;
     double NS_Y = 2020.0*mm;
