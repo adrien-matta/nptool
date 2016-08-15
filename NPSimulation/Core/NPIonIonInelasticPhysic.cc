@@ -96,17 +96,11 @@ void NPIonIonInelasticPhysic::ConstructProcess()
     ligthBinary -> SetMinEnergy(0*MeV);
     ligthBinary -> SetMaxEnergy(10*GeV);
     
-    G4GeneralSpaceNNCrossSection* GeneralSpaceNNCrossSection = new G4GeneralSpaceNNCrossSection;
+    /*G4GeneralSpaceNNCrossSection* GeneralSpaceNNCrossSection =*/ new G4GeneralSpaceNNCrossSection;
     G4TripathiCrossSection* TripathiCrossSections = new G4TripathiCrossSection;
     G4TripathiLightCrossSection* TripathiLightCrossSections = new G4TripathiLightCrossSection;
     G4IonsShenCrossSection* ShenCrossSections = new G4IonsShenCrossSection;
     
-<<<<<<< HEAD
-    G4ComponentGGHadronNucleusXsc* GlauberGribovCrossSection = new G4ComponentGGHadronNucleusXsc;
-    G4CrossSectionInelastic* GlauberGribovDataSet = new G4CrossSectionInelastic(GlauberGribovCrossSection);
-=======
-    //G4CrossSectionInelastic* GlauberGribovDataSet = new G4CrossSectionInelastic(GlauberGribovCrossSection);
->>>>>>> 022122b8890389e03443cc495d6b580ce752d060
     
     // ******************
     // **** Elastic ****
@@ -141,7 +135,7 @@ void NPIonIonInelasticPhysic::ConstructProcess()
     //protonInelasticProcess -> AddDataSet(ShenCrossSections);
     //protonInelasticProcess -> AddDataSet(TripathiCrossSections);
     //protonInelasticProcess -> AddDataSet(TripathiLightCrossSections);
-    protonInelasticProcess -> AddDataSet(GlauberGribovDataSet);
+   // protonInelasticProcess -> AddDataSet(GlauberGribovDataSet);
     
     protonInelasticProcess -> RegisterMe(ligthBinary);
     //protonInelasticProcess -> RegisterMe(JQMDmodel);
@@ -151,12 +145,13 @@ void NPIonIonInelasticPhysic::ConstructProcess()
     processManager -> AddDiscreteProcess(protonInelasticProcess);
     
     double energy = 0;
-    int Z = 50;
-    int A = 120;
+   // int Z = 50;
+   // int A = 120;
 
     for(int i=0; i<500;i++){
         energy += 1;
-        G4DynamicParticle* dp = new G4DynamicParticle(particle,G4ThreeVector(0,0,1),energy*MeV);
+        
+        new G4DynamicParticle(particle,G4ThreeVector(0,0,1),energy*MeV);
         //G4Element* element = new G4Element("Sn","Sn",1);
         //G4Isotope *isotope = new G4Isotope("Sn",50,70,120*g/mole);
         //element->AddIsotope(isotope,1);
