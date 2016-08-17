@@ -84,9 +84,7 @@ PhysicsList::PhysicsList() : G4VModularPhysicsList(){
         m_PhysList["EmExtraPhysics"]=new G4EmExtraPhysics();
     
     if(m_HadronElasticPhysics){
-        //m_PhysList["G4HadronElasticPhysicsHP"]=new G4HadronElasticPhysicsHP();
         m_PhysList["G4HadronElasticPhysics"]=new G4HadronElasticPhysics();
-        //m_PhysList["HadronPhysicsFTFP_BERT"]=new G4HadronPhysicsQGSP_BERT();
         m_PhysList["G4IonElasticPhysics"]=new G4IonElasticPhysics();
     }
     

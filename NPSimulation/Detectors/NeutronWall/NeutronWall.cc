@@ -60,9 +60,9 @@ using namespace CLHEP;
 namespace NeutronWall_NS{
     // Energy and time Resolution
     const double EnergyThreshold = 0.1*MeV;
-    //const double ResoTime = 0*ns ;
-    //const double ResoEnergy = 0*MeV ;
-    //const double ResoPosition = 0*cm;
+    const double ResoTime = 0*ns ;
+    const double ResoEnergy = 0*MeV ;
+    const double ResoPosition = 0*cm;
     //The size of NS should depend on the distance between NeutronWall and plastic Bar right now
     double NS_X = 2020.0*mm;
     double NS_Y = 2020.0*mm;
@@ -124,11 +124,11 @@ NeutronWall::NeutronWall(){
     
     
     // RGB Color + Transparency
-    m_VisScintillator = new G4VisAttributes(G4Colour(1, 0.843137, 0, 0.3)); //gold
+    m_VisScintillator = new G4VisAttributes(G4Colour(1, 0.843137, 0, 1)); //gold
     m_VisQuartz = new G4VisAttributes(G4Colour(0,1, 0, 0.1)); //green
-    m_VisAl = new G4VisAttributes(G4Colour(173.0/255.0,178.0/255.0,189.0/255.0,0.3)); //Al
-    m_VisNW = new G4VisAttributes(G4Colour(0.972549,0.972549,1,0.1)); //ghostwhite
-    m_VisPlasticBar = new G4VisAttributes(G4Colour(0.9,0,0.9,1.0)); //pink
+    m_VisAl = new G4VisAttributes(G4Colour(173.0/255.0,178.0/255.0,189.0/255.0,0)); //Al
+    m_VisNW = new G4VisAttributes(G4Colour(0.972549,0.972549,1,0)); //ghostwhite
+    m_VisPlasticBar = new G4VisAttributes(G4Colour(0.9,0,0.9,0.25)); //pink
 }
 
 NeutronWall::~NeutronWall(){
@@ -458,6 +458,7 @@ void NeutronWall::ConstructDetector(G4LogicalVolume* world){
             //PlasticBar
             G4Material* Plastic = MaterialManager::getInstance()->GetMaterialFromLibrary(m_VWMaterial[i]);
             G4Box* PlasticBar_box = new G4Box("PlasticBar_Box", (NeutronWall_NS::PlasticBar_X+2*m_Overlap[i])*0.5, NeutronWall_NS::PlasticBar_Y*0.5, NeutronWall_NS::PlasticBar_Z*0.5);
+	    //G4Box* PlasticBar_box = new G4Box("PlasticBar_Box", (NeutronWall_NS::PlasticBar_X-0.0005)*0.5, NeutronWall_NS::PlasticBar_Y*0.5, NeutronWall_NS::PlasticBar_Z*0.5);
             m_PlasticBar_log = new G4LogicalVolume(PlasticBar_box, Plastic, "PlasticBar_Log");
             m_PlasticBar_log->SetSensitiveDetector(m_VetoWallScorer);
             m_PlasticBar_log->SetVisAttributes(m_VisPlasticBar);
@@ -495,6 +496,7 @@ void NeutronWall::ConstructDetector(G4LogicalVolume* world){
                 }
                 else {
                     m_PlasticBar_phys = new G4PVPlacement(0, G4ThreeVector(CenterOfVetoWall_Odd_X,CenterOfVetoWall_Odd_Y,CenterOfVetoWall_Odd_Z),m_PlasticBar_log,"PlasticBar_phys",m_NeutronWall_log,false,j,true);
+		    //m_PlasticBar_phys = new G4PVPlacement(0, G4ThreeVector(CenterOfVetoWall_Odd_X,CenterOfVetoWall_Odd_Y,CenterOfVetoWall_Even_Z),m_PlasticBar_log,"PlasticBar_phys",m_NeutronWall_log,false,j,true);
                 }
             }
         }
