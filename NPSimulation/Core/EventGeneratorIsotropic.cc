@@ -204,6 +204,7 @@ void EventGeneratorIsotropic::ReadConfiguration(string Path,int){
                     if(DataBuffer=="proton"){ m_particleName.push_back("1H")  ; check_ExcitationEnergy = true ;}
                     else if(DataBuffer=="deuton"){ m_particleName.push_back("2H")  ; check_ExcitationEnergy = true ;}
                     else if(DataBuffer=="triton"){ m_particleName.push_back("3H")  ; check_ExcitationEnergy = true ;}
+                    else if(DataBuffer=="3He" || DataBuffer=="He3") { m_particleName.push_back("3He") ; check_ExcitationEnergy = true ;}
                     else if(DataBuffer=="alpha") { m_particleName.push_back("4He") ; check_ExcitationEnergy = true ;}
                     else if(DataBuffer=="gamma") { m_particleName.push_back("gamma") ; check_ExcitationEnergy = true ;}
                     else if(DataBuffer=="neutron") {m_particleName.push_back("neutron") ; check_ExcitationEnergy = true ;}
