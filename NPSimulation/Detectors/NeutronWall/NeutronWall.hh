@@ -66,6 +66,7 @@ public:
     void BuildDetector();
     
 private:
+    G4LogicalVolume* m_NeutronWall_out_log;
     G4LogicalVolume* m_NeutronWall_log;
     G4LogicalVolume* m_AlCase_log;
     G4LogicalVolume* m_Quartz_log;
@@ -74,6 +75,7 @@ private:
     G4LogicalVolume* m_Scintillator_log;
     G4LogicalVolume* m_ShadowBar_log;
     G4LogicalVolume* m_PlasticBar_log;
+    
     
     G4VPhysicalVolume* m_ScintillatorTube_phys;
     G4VPhysicalVolume* m_Quartz_phys;

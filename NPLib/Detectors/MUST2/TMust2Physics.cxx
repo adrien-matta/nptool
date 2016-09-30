@@ -126,52 +126,52 @@ TMust2Physics::TMust2Physics(){
     m_CsI_MatchingX.resize(16,0);
     m_CsI_MatchingY.resize(16,0);
     for(int i = 0 ; i < 16 ; ++i){
-        m_CsI_MatchingX[0]=112;
-        m_CsI_MatchingY[0]=112;
+        m_CsI_MatchingX[0]=80;
+        m_CsI_MatchingY[0]=48;
         
         m_CsI_MatchingX[1]=112;
-        m_CsI_MatchingY[1]=80;
+        m_CsI_MatchingY[1]=48;
         
-        m_CsI_MatchingX[2]=112;
-        m_CsI_MatchingY[2]=48;
+        m_CsI_MatchingX[2]=80;
+        m_CsI_MatchingY[2]=16;
         
         m_CsI_MatchingX[3]=112;
         m_CsI_MatchingY[3]=16;
         //
-        m_CsI_MatchingX[4]=80;
-        m_CsI_MatchingY[4]=16;
+        m_CsI_MatchingX[4]=48;
+        m_CsI_MatchingY[4]=80;
         
-        m_CsI_MatchingX[5]=80;
-        m_CsI_MatchingY[5]=48;
+        m_CsI_MatchingX[5]=16;
+        m_CsI_MatchingY[5]=80;
         
-        m_CsI_MatchingX[6]=80;
-        m_CsI_MatchingY[6]=80;
+        m_CsI_MatchingX[6]=48;
+        m_CsI_MatchingY[6]=112;
         
-        m_CsI_MatchingX[7]=80;
+        m_CsI_MatchingX[7]=16;
         m_CsI_MatchingY[7]=112;
         //
         m_CsI_MatchingX[8]=48;
-        m_CsI_MatchingY[8]=16;
+        m_CsI_MatchingY[8]=48;
         
-        m_CsI_MatchingX[9]=48;
+        m_CsI_MatchingX[9]=16;
         m_CsI_MatchingY[9]=48;
         
         m_CsI_MatchingX[10]=48;
-        m_CsI_MatchingY[10]=80;
+        m_CsI_MatchingY[10]=16;
         
-        m_CsI_MatchingX[11]=48;
-        m_CsI_MatchingY[11]=112;
+        m_CsI_MatchingX[11]=16;
+        m_CsI_MatchingY[11]=16;
         //
-        m_CsI_MatchingX[12]=16;
-        m_CsI_MatchingY[12]=16;
+        m_CsI_MatchingX[12]=80;
+        m_CsI_MatchingY[12]=80;
         
-        m_CsI_MatchingX[13]=16;
-        m_CsI_MatchingY[13]=48;
+        m_CsI_MatchingX[13]=112;
+        m_CsI_MatchingY[13]=80;
         
-        m_CsI_MatchingX[14]=16;
-        m_CsI_MatchingY[14]=80;
+        m_CsI_MatchingX[14]=80;
+        m_CsI_MatchingY[14]=112;
         
-        m_CsI_MatchingX[15]=16;
+        m_CsI_MatchingX[15]=112;
         m_CsI_MatchingY[15]=112;
     }
     
@@ -465,12 +465,14 @@ vector < TVector2 > TMust2Physics :: Match_X_Y(){
                     if(m_Ignore_not_matching_CsI){
                         bool check_validity=false;
                         for (unsigned int hh = 0 ; hh<16 ; ++hh ){
-                            if( Match_Si_CsI(m_PreTreatedData->GetMMStripXEStripNbr(i), m_PreTreatedData->GetMMStripYEStripNbr(j) , hh+1) )
+                            if( Match_Si_CsI(m_PreTreatedData->GetMMStripXEStripNbr(i), m_PreTreatedData->GetMMStripYEStripNbr(j) , hh+1) ){
                                 check_validity=true;
+                            }
                         }
                         
-                        if(check_validity)
+                        if(check_validity){
                             ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;
+                        }
                     }
                     
                     // Special Option, if the event is between two SiLi pad , it is rejected.
@@ -735,8 +737,8 @@ bool TMust2Physics :: Match_Si_SiLi(int X, int Y , int PadNbr){
 ///////////////////////////////////////////////////////////////////////////
 bool TMust2Physics :: Match_Si_CsI(int X, int Y , int CristalNbr){
     
-    if( abs(m_CsI_MatchingX[CristalNbr-1] - X) < m_CsI_Size/2.&&
-       abs(m_CsI_MatchingY[CristalNbr-1] - Y) < m_CsI_Size/2.)
+    if( abs(m_CsI_MatchingX[CristalNbr-1] - X) < (double)m_CsI_Size/2.&&
+       abs(m_CsI_MatchingY[CristalNbr-1] - Y) < (double)m_CsI_Size/2.)
         return true ;
     
     else

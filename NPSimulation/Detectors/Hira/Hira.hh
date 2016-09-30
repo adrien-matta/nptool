@@ -74,8 +74,8 @@ namespace HIRA
     const G4double CsIYBack          = 44.62*mm;//39.*mm
     const G4double DistInterCsI      = 0.05*mm;
     
-    const G4double ClusterFaceFront  = 2*CsIXFront+2*DistInterCsI;
-    const G4double ClusterFaceBack   = 2*CsIXBack+2*DistInterCsI;
+    const G4double ClusterFaceFront  = 2*CsIXFront+2*DistInterCsI+5;
+    const G4double ClusterFaceBack   = 2*CsIXBack+2*DistInterCsI+5;
     
     // Starting at the front and going to CsI
     const G4double AluStripFrontThinSi_PosZ		= Length* -0.5 + 0.5*AluStripThickness;

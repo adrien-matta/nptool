@@ -31,6 +31,7 @@
 #include "G4Box.hh"
 #include "G4Trd.hh"
 #include "G4SubtractionSolid.hh"
+#include "G4UnionSolid.hh"
 
 //G4 sensitive
 #include "G4SDManager.hh"
@@ -56,19 +57,16 @@ using namespace std;
 using namespace CLHEP;
 
 
+
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace NeutronWall_NS{
     // Energy and time Resolution
     const double EnergyThreshold = 0.1*MeV;
-    const double ResoTime = 0*ns ;
-    const double ResoEnergy = 0*MeV ;
-    const double ResoPosition = 0*cm;
-    //The size of NS should depend on the distance between NeutronWall and plastic Bar right now
-    double NS_X = 2020.0*mm;
-    double NS_Y = 2020.0*mm;
-    //the front and back aluminum sheet are both 0.8 thick whereas 143.5 is user assumed heigh in z
-    double NS_Z = (143.5+0.8+0.8)*mm;
-    //using Alouter minus Alinner, one get an Al frame (including front and back sheets)
+    //const double ResoTime = 0*ns ;
+    //const double ResoEnergy = 0*MeV ;
+    //const double ResoPosition = 0*cm;
+        //using Alouter minus Alinner, one get an Al frame (including front and back sheets)
     const double Alinner_X = 2000.0*mm;
     const double Alinner_Y = 2000.0*mm;
     const double Alinner_Z = 143.5*mm;
@@ -94,9 +92,25 @@ namespace NeutronWall_NS{
     const double upper_gap = 10.0*mm;
     
     //Add elements about the plastic bars
-    double PlasticBar_X = 83.40*mm;
-    double PlasticBar_Y = 2000.0*mm;
+    double PlasticBar_X = 94.0*mm;
+    double PlasticBar_Y = 2500.0*mm;  //2000->2500 by Kuan
     double PlasticBar_Z = 10.0*mm;
+    
+    double PlasticBarTip_X = 56.54*mm;
+    double PlasticBarTip_Z = 113.868*mm;
+    
+    //The size of the most outside box(OB) which contains everything
+    double OB_X = 2500*mm;
+    double OB_Y = 2500*mm;
+    double OB_Z = (143.5+0.8+0.8)*mm;
+    
+    
+    //The size of NS should depend on the distance between NeutronWall and plastic Bar right now
+    double NS_X = 24*PlasticBar_X ;//2020.0*mm;
+    double NS_Y = 2020.0*mm;
+    //the front and back aluminum sheet are both 0.8 thick whereas 143.5 is user assumed heigh in z
+    double NS_Z = (143.5+0.8+0.8)*mm;
+
     
     //Add total height of neutronwall and vetowall for comparision
     double TotalHeightOfNeutronWall = 0.0*mm;
@@ -113,6 +127,7 @@ NeutronWall::NeutronWall(){
     m_Event = new TNeutronWallData() ;
     m_NeutronWallScorer = 0;
     m_VetoWallScorer = 0;
+    m_NeutronWall_out_log = 0;
     m_NeutronWall_log = 0;
     m_AlCase_log = 0;
     m_Quartz_log = 0;
@@ -412,6 +427,12 @@ void NeutronWall::ConstructDetector(G4LogicalVolume* world){
         G4Material* Aluminum = MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
         G4Material* Pyrex = MaterialManager::getInstance()->GetMaterialFromLibrary("Pyrex");
         
+        //Most outside Box
+        G4Box* NeutronWall_out_box = new G4Box("NeutronWall_Out_Box",NeutronWall_NS::OB_X*0.5,
+                                           NeutronWall_NS::OB_Y*0.5,NeutronWall_NS::OB_Z*0.5);
+        m_NeutronWall_out_log = new G4LogicalVolume(NeutronWall_out_box,vacuum,"NeutronWall_Out_Log",0,0,0);
+        m_NeutronWall_out_log->SetVisAttributes(m_VisNW);
+        
         //Neutron Wall Box
         G4Box* NeutronWall_box = new G4Box("NeutronWall_Box",NeutronWall_NS::NS_X*0.5,
                                            NeutronWall_NS::NS_Y*0.5,NeutronWall_NS::NS_Z*0.5);
@@ -444,6 +465,8 @@ void NeutronWall::ConstructDetector(G4LogicalVolume* world){
         
         //Scintillator
         G4Box* Scintillator_box = new G4Box("Scintillator_Box",NeutronWall_NS::Scintillator_X*0.5,NeutronWall_NS::Scintillator_Y*0.5,NeutronWall_NS::Scintillator_Z*0.5);
+
+        
         m_Scintillator_log = new G4LogicalVolume(Scintillator_box,ScintMaterial,"Scintillator_Log",0,0,0);
         
         m_Scintillator_log->SetVisAttributes(m_VisScintillator);
@@ -457,15 +480,35 @@ void NeutronWall::ConstructDetector(G4LogicalVolume* world){
         if (m_VetoWall[i] == 1){
             //PlasticBar
             G4Material* Plastic = MaterialManager::getInstance()->GetMaterialFromLibrary(m_VWMaterial[i]);
-            G4Box* PlasticBar_box = new G4Box("PlasticBar_Box", (NeutronWall_NS::PlasticBar_X+2*m_Overlap[i])*0.5, NeutronWall_NS::PlasticBar_Y*0.5, NeutronWall_NS::PlasticBar_Z*0.5);
-	    //G4Box* PlasticBar_box = new G4Box("PlasticBar_Box", (NeutronWall_NS::PlasticBar_X-0.0005)*0.5, NeutronWall_NS::PlasticBar_Y*0.5, NeutronWall_NS::PlasticBar_Z*0.5);
-            m_PlasticBar_log = new G4LogicalVolume(PlasticBar_box, Plastic, "PlasticBar_Log");
+            
+            
+            //Plastic Bar (subtractee)
+            G4Box* PlasticBar_main_box = new G4Box("PlasticBar_main_Box", NeutronWall_NS::PlasticBar_X*0.5, NeutronWall_NS::PlasticBar_Y*0.5-NeutronWall_NS::PlasticBarTip_Z*0.5, NeutronWall_NS::PlasticBar_Z*0.5);
+            //Plastic tip (subtracter)
+            G4Trd* PlatsticBar_up_tip = new G4Trd("Scintillator_Up_Tip",NeutronWall_NS::PlasticBarTip_X*0.5, NeutronWall_NS::PlasticBar_X*0.5, NeutronWall_NS::PlasticBar_Z*0.5, NeutronWall_NS::PlasticBar_Z*0.5, NeutronWall_NS::PlasticBarTip_Z*0.5);
+            
+            G4RotationMatrix* xRot = new G4RotationMatrix;  // Rotates y axes only
+            xRot->rotateX(-M_PI/2.*rad);
+            G4ThreeVector yTrans(0, NeutronWall_NS::PlasticBar_Y*0.5, 0);
+            G4UnionSolid* PlasticBar_box_first = new G4UnionSolid("PlasticBar_Box_first", PlasticBar_main_box, PlatsticBar_up_tip, xRot, yTrans);
+            
+            G4RotationMatrix* xRot_1 = new G4RotationMatrix;  // Rotates y axes only
+            xRot_1->rotateX(M_PI/2.*rad);
+            G4ThreeVector yTrans_1(0, -NeutronWall_NS::PlasticBar_Y*0.5, 0);
+            G4UnionSolid* PlasticBar_box = new G4UnionSolid("PlasticBar_Box", PlasticBar_box_first, PlatsticBar_up_tip, xRot_1, yTrans_1);
+            
+            
+	        m_PlasticBar_log = new G4LogicalVolume(PlasticBar_box, Plastic, "PlasticBar_Log");
             m_PlasticBar_log->SetSensitiveDetector(m_VetoWallScorer);
             m_PlasticBar_log->SetVisAttributes(m_VisPlasticBar);
         }
         
         
         //******************* Placement *******************//
+        //----Neutron Wall Box---
+        m_NeutronWall_phys = new G4PVPlacement(0,G4ThreeVector(0,0,0),m_NeutronWall_log,
+                                          "NeutronWall_phys",m_NeutronWall_out_log,false,0);
+        
         //----Aluminum Case----
         m_AlCase_phys = new G4PVPlacement(0,G4ThreeVector(0,0,0),m_AlCase_log,
                                           "AlCase_phys",m_NeutronWall_log,false,0);
@@ -479,15 +522,17 @@ void NeutronWall::ConstructDetector(G4LogicalVolume* world){
             //Quartz center coincide with Scintillator's, therefore, they have the same displacement.
             m_Quartz_phys = new G4PVPlacement(0,ScintillatorDisplacement,m_Quartz_log, "Quartz_phys",m_NeutronWall_log,false,j);
         }
+        
         for (int j = 0; j < 24; j++){
             if (m_VetoWall[i] == 1){
                 //Even number is associated with 0th 2nd 4th ... plasticbar in vetowall which comprise of the backlayer (close to NeutronWall)
                 //Odd number is associated with 1st 3rd 5th ... plasticbar in vetowall which comprise of the frontlayer (close to Source)
-                double CenterOfVetoWall_Even_X = NeutronWall_NS::NS_X*0.5-10*mm-NeutronWall_NS::PlasticBar_X*0.5 - j*NeutronWall_NS::PlasticBar_X;
+                //double CenterOfVetoWall_Even_X = NeutronWall_NS::NS_X*0.5-10*mm-NeutronWall_NS::PlasticBar_X*0.5 - j*NeutronWall_NS::PlasticBar_X;
+                double CenterOfVetoWall_Even_X = -(24*NeutronWall_NS::PlasticBar_X-23*m_Overlap[i])*0.5 + NeutronWall_NS::PlasticBar_X*0.5 +j*(NeutronWall_NS::PlasticBar_X-m_Overlap[i]);
                 double CenterOfVetoWall_Even_Y = 0*mm;
                 double CenterOfVetoWall_Even_Z = -m_VWDistance[i];
                 
-                double CenterOfVetoWall_Odd_X = NeutronWall_NS::NS_Y*0.5-10*mm-NeutronWall_NS::PlasticBar_X*0.5 - j*NeutronWall_NS::PlasticBar_X;
+                double CenterOfVetoWall_Odd_X = -(24*NeutronWall_NS::PlasticBar_X-23*m_Overlap[i])*0.5 + NeutronWall_NS::PlasticBar_X*0.5 +j*(NeutronWall_NS::PlasticBar_X-m_Overlap[i]);
                 double CenterOfVetoWall_Odd_Y = 0*mm;
                 double CenterOfVetoWall_Odd_Z = -m_VWDistance[i]-NeutronWall_NS::PlasticBar_Z-1*mm;
                 

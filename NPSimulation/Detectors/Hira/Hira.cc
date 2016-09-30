@@ -73,7 +73,7 @@ Hira::Hira(){
     m_SiliconVisAtt2 = new G4VisAttributes(G4Colour(0.3, 0.3, 0.3)) ;
     // CsI Color
     m_CsIVisAtt = new G4VisAttributes(G4Colour(0.529412, 0.807843, 0.980392, 0.95)) ;
-    //m_CsIVisAtt->SetForceWireframe(true);
+    m_CsIVisAtt->SetForceWireframe(true);
     m_LogicThinSi = 0;
     m_LogicThickSi = 0;
     m_LogicCsICrystal = 0;
@@ -585,7 +585,6 @@ void Hira::VolumeMaker(G4int DetectorNumber,
     
     G4Trap* solidCsIStage = new G4Trap(NameCsI, pDz, pTheta, pPhi, pDy1, pDx1, pDx2, pAlp1, pDy2, pDx3, pDx4, pAlp2);
     
-    
     m_LogicCsICrystal = new G4LogicalVolume(solidCsIStage, m_MaterialCsI, "logicCsICrystal", 0, 0, 0);
     
     // Set CsI sensible
@@ -648,6 +647,73 @@ void Hira::VolumeMaker(G4int DetectorNumber,
                 delete rotM;
             }
         }
+        
+        /////////////////////
+        // 3x3 CsI crystal //
+        /////////////////////
+        /*double pTheta_1    = -5.6*deg;
+        double pPhi_1      = 46.5*deg;
+        G4Trap* solidCsI1 = new G4Trap(NameCsI, 0.5*CsIThickness, pTheta_1, pPhi_1, 0.5*23.73, 0.5*23.73, 0.5*23.73, 0, 0.5*32.53, 0.5*32.53, 0.5*32.53, 0);
+        
+        cout << "Theta1= " << pTheta_1*180/3.1415 << endl;
+        cout << "Phi1= " << pPhi_1*180/3.1415 << endl;
+        
+        double pTheta_2    = -4.0*deg;
+        double pPhi_2      = 0*deg;
+        G4Trap* solidCsI2 = new G4Trap(NameCsI, 0.5*CsIThickness, pTheta_2, pPhi_2, 0.5*22.55, 0.5*23.73, 0.5*23.73, 0, 0.5*28.05, 0.5*32.53, 0.5*32.53, 0);
+        
+        G4Trd* solidCsI3 = new G4Trd("SolidCluster", 0.5*22.55,0.5*28.05,0.5*22.55,0.5*28.05, 0.5*CsIThickness);
+        
+        G4RotationMatrix* rotM1 = new G4RotationMatrix;
+        m_LogicCsICrystal = new G4LogicalVolume(solidCsI1, m_MaterialCsI, "logicCsICrystal", 0, 0, 0);
+        m_LogicCsICrystal->SetSensitiveDetector(m_CsIScorer);
+        m_LogicCsICrystal->SetVisAttributes(m_CsIVisAtt);
+        double Xpos = 27;
+        double Ypos = 27;
+        Pos = G4ThreeVector(-Xpos,-Ypos,0);
+        rotM1->rotateZ(0*deg);
+        new G4PVPlacement(G4Transform3D(*rotM1,Pos),m_LogicCsICrystal,"CsI_Cristal1",m_LogicCluster,false,1,true);
+        
+        rotM1->rotateZ(-90*deg);
+        Pos = G4ThreeVector(-Xpos,Ypos,0);
+        new G4PVPlacement(G4Transform3D(*rotM1,Pos),m_LogicCsICrystal,"CsI_Cristal2",m_LogicCluster,false,3,true);
+        
+        rotM1->rotateZ(-90*deg);
+        Pos = G4ThreeVector(Xpos,Ypos,0);
+        new G4PVPlacement(G4Transform3D(*rotM1,Pos),m_LogicCsICrystal,"CsI_Cristal7",m_LogicCluster,false,7,true);
+        
+        rotM1->rotateZ(-90*deg);
+        Pos = G4ThreeVector(Xpos,-Ypos,0);
+        new G4PVPlacement(G4Transform3D(*rotM1,Pos),m_LogicCsICrystal,"CsI_Cristal9",m_LogicCluster,false,9,true);
+        
+        G4RotationMatrix* rotM3 = new G4RotationMatrix;
+        m_LogicCsICrystal = new G4LogicalVolume(solidCsI3, m_MaterialCsI, "logicCsICrystal", 0, 0, 0);
+        m_LogicCsICrystal->SetSensitiveDetector(m_CsIScorer);
+        m_LogicCsICrystal->SetVisAttributes(m_CsIVisAtt);
+        Pos = G4ThreeVector(0.,0.,0);
+        rotM3->rotateZ(0);
+        new G4PVPlacement(G4Transform3D(*rotM3,Pos),m_LogicCsICrystal,"CsI_Cristal5",m_LogicCluster,false,5,true);
+        
+        G4RotationMatrix* rotM2 = new G4RotationMatrix;
+        m_LogicCsICrystal = new G4LogicalVolume(solidCsI2, m_MaterialCsI, "logicCsICrystal", 0, 0, 0);
+        m_LogicCsICrystal->SetSensitiveDetector(m_CsIScorer);
+        m_LogicCsICrystal->SetVisAttributes(m_CsIVisAtt);
+        Pos = G4ThreeVector(-Xpos,0.,0);
+        rotM2->rotateZ(0*deg);
+        new G4PVPlacement(G4Transform3D(*rotM2,Pos),m_LogicCsICrystal,"CsI_Cristal2",m_LogicCluster,false,2,true);
+        
+        Pos = G4ThreeVector(Xpos,0.,0);
+        rotM2->rotateZ(180*deg);
+        new G4PVPlacement(G4Transform3D(*rotM2,Pos),m_LogicCsICrystal,"CsI_Cristal8",m_LogicCluster,false,8,true);
+
+        Pos = G4ThreeVector(0,-Ypos,0);
+        rotM2->rotateZ(-90*deg);
+        new G4PVPlacement(G4Transform3D(*rotM2,Pos),m_LogicCsICrystal,"CsI_Cristal4",m_LogicCluster,false,4,true);
+        
+        Pos = G4ThreeVector(0,Ypos,0);
+        rotM2->rotateZ(180*deg);
+        new G4PVPlacement(G4Transform3D(*rotM2,Pos),m_LogicCsICrystal,"CsI_Cristal6",m_LogicCluster,false,6,true);*/
+        
     }
 }
 

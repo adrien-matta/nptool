@@ -74,9 +74,12 @@ THiraPhysics::THiraPhysics()
        m_Ignore_not_matching_CsI = true;
        
        m_CsI_Size = m_NumberOfStrip;
-       m_CsI_MatchingX.resize(4,0);
-       m_CsI_MatchingY.resize(4,0);
-       for(int i=0; i<4; i++){
+       m_CsI_MatchingX.resize(m_NumberOfCrystal,0);
+       m_CsI_MatchingY.resize(m_NumberOfCrystal,0);
+       for(int i=0; i<m_NumberOfCrystal; i++){
+           /////////
+           // 2x2 //
+           /////////
            m_CsI_MatchingX[0]=7;
            m_CsI_MatchingY[0]=7;
            
@@ -88,6 +91,36 @@ THiraPhysics::THiraPhysics()
 
            m_CsI_MatchingX[3]=23;
            m_CsI_MatchingY[3]=23;
+           
+           /////////
+           // 3x3 //
+           /////////
+           /*m_CsI_MatchingX[0]=6;
+           m_CsI_MatchingY[0]=6;
+        
+           m_CsI_MatchingX[1]=6;
+           m_CsI_MatchingY[1]=16;
+            
+           m_CsI_MatchingX[2]=6;
+           m_CsI_MatchingY[2]=27;
+            
+           m_CsI_MatchingX[3]=16;
+           m_CsI_MatchingY[3]=6;
+           
+           m_CsI_MatchingX[4]=16;
+           m_CsI_MatchingY[4]=16;
+           
+           m_CsI_MatchingX[5]=16;
+           m_CsI_MatchingY[5]=27;
+           
+           m_CsI_MatchingX[6]=27;
+           m_CsI_MatchingY[6]=27;
+           
+           m_CsI_MatchingX[7]=27;
+           m_CsI_MatchingY[7]=16;
+           
+           m_CsI_MatchingX[8]=27;
+           m_CsI_MatchingY[8]=6;*/
        }
    }
    
@@ -663,7 +696,7 @@ void THiraPhysics::InitializeStandardParameter(){
         m_EBChannelStatus[i] = ChannelStatus;
     }
     
-    ChannelStatus.resize(4,true);
+    ChannelStatus.resize(m_NumberOfCrystal,true);
     for(int i = 0 ; i < m_NumberOfTelescope ; ++i){
         m_CsIChannelStatus[i]  = ChannelStatus;
     }
@@ -870,7 +903,7 @@ vector <TVector2> THiraPhysics::Match_EF_EB(){
                     //Special Option, if the event is between two CsI crystal, it is rejected
                     if(m_Ignore_not_matching_CsI){
                         bool check_validity_csi=false;
-                        for (unsigned int hh = 0 ; hh<4 ; ++hh ){
+                        for (unsigned int hh = 0 ; hh<m_NumberOfCrystal ; ++hh ){
                             if( Match_Si_CsI(m_PreTreatedData->GetHiraStripXEStripNbr(i), m_PreTreatedData->GetHiraStripYEStripNbr(j) , hh) ){
                                 check_validity_csi=true;
                             }
