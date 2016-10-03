@@ -5,6 +5,7 @@ date:   2016-10-03 12:00
 author: Adrien Matta
 categories: nptool update
 ---
+
 ICC Workshop on Detector Simulations (2016)
 
 Over the last decade, with the development of new detection systems that will take full advantage of the new facilities currently under construction in Europe, the demand for realistic simulations to prepare experiments and facilitate the data analysis is constantly on the rise. This led to the development of several simulation toolkits, more or less experiment/detector specific.
