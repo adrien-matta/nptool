@@ -67,11 +67,11 @@ namespace NeutronWall_NS{
     //const double ResoEnergy = 0*MeV ;
     //const double ResoPosition = 0*cm;
         //using Alouter minus Alinner, one get an Al frame (including front and back sheets)
-    const double Alinner_X = 2000.0*mm;
-    const double Alinner_Y = 2000.0*mm;
+    const double Alinner_X = 2811.0*mm;
+    const double Alinner_Y = 2500.0*mm;
     const double Alinner_Z = 143.5*mm;
-    const double Alouter_X = 2020.0*mm;
-    const double Alouter_Y = 2020.0*mm;
+    const double Alouter_X = 2831.0*mm;
+    const double Alouter_Y = 2520.0*mm;
     const double Alouter_Z = (143.5+0.8+0.8)*mm;
     
     const double frame_thickness = 10*mm;
@@ -100,16 +100,16 @@ namespace NeutronWall_NS{
     double PlasticBarTip_Z = 113.868*mm;
     
     //The size of the most outside box(OB) which contains everything
-    double OB_X = 2500*mm;
-    double OB_Y = 2500*mm;
-    double OB_Z = (143.5+0.8+0.8)*mm;
+    double OB_X = 3000*mm;
+    double OB_Y = 3000*mm;
+    double OB_Z = 3000*mm;
     
     
     //The size of NS should depend on the distance between NeutronWall and plastic Bar right now
     double NS_X = 24*PlasticBar_X ;//2020.0*mm;
     double NS_Y = 2020.0*mm;
     //the front and back aluminum sheet are both 0.8 thick whereas 143.5 is user assumed heigh in z
-    double NS_Z = (143.5+0.8+0.8)*mm;
+    double NS_Z = (143.5+0.8+0.8)*mm;  //(143.5+0.8+0.8)*mm
 
     
     //Add total height of neutronwall and vetowall for comparision
@@ -141,7 +141,7 @@ NeutronWall::NeutronWall(){
     // RGB Color + Transparency
     m_VisScintillator = new G4VisAttributes(G4Colour(1, 0.843137, 0, 1)); //gold
     m_VisQuartz = new G4VisAttributes(G4Colour(0,1, 0, 0.1)); //green
-    m_VisAl = new G4VisAttributes(G4Colour(173.0/255.0,178.0/255.0,189.0/255.0,0)); //Al
+    m_VisAl = new G4VisAttributes(G4Colour(173.0/255.0,178.0/255.0,189.0/255.0,0.2)); //Al
     m_VisNW = new G4VisAttributes(G4Colour(0.972549,0.972549,1,0)); //ghostwhite
     m_VisPlasticBar = new G4VisAttributes(G4Colour(0.9,0,0.9,0.25)); //pink
 }
@@ -420,7 +420,7 @@ void NeutronWall::ConstructDetector(G4LogicalVolume* world){
             NeutronWall_NS::NS_Z = 2.0*(m_VWDistance[i]+1.5*NeutronWall_NS::PlasticBar_Z+3.0*mm);
         }
         
-        G4RotationMatrix* Rot = new G4RotationMatrix(v,u,w);
+        //G4RotationMatrix* Rot = new G4RotationMatrix(v,u,w);
         
         G4Material* ScintMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary(m_NWMaterial[i]);
         G4Material* vacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
@@ -482,19 +482,19 @@ void NeutronWall::ConstructDetector(G4LogicalVolume* world){
             G4Material* Plastic = MaterialManager::getInstance()->GetMaterialFromLibrary(m_VWMaterial[i]);
             
             
-            //Plastic Bar (subtractee)
+            //Plastic Bar
             G4Box* PlasticBar_main_box = new G4Box("PlasticBar_main_Box", NeutronWall_NS::PlasticBar_X*0.5, NeutronWall_NS::PlasticBar_Y*0.5-NeutronWall_NS::PlasticBarTip_Z*0.5, NeutronWall_NS::PlasticBar_Z*0.5);
-            //Plastic tip (subtracter)
+            //Plastic tip
             G4Trd* PlatsticBar_up_tip = new G4Trd("Scintillator_Up_Tip",NeutronWall_NS::PlasticBarTip_X*0.5, NeutronWall_NS::PlasticBar_X*0.5, NeutronWall_NS::PlasticBar_Z*0.5, NeutronWall_NS::PlasticBar_Z*0.5, NeutronWall_NS::PlasticBarTip_Z*0.5);
             
             G4RotationMatrix* xRot = new G4RotationMatrix;  // Rotates y axes only
             xRot->rotateX(-M_PI/2.*rad);
-            G4ThreeVector yTrans(0, NeutronWall_NS::PlasticBar_Y*0.5, 0);
+            G4ThreeVector yTrans(0, NeutronWall_NS::PlasticBar_Y*0.5, 0);  //move it to the top of plastic bar
             G4UnionSolid* PlasticBar_box_first = new G4UnionSolid("PlasticBar_Box_first", PlasticBar_main_box, PlatsticBar_up_tip, xRot, yTrans);
             
             G4RotationMatrix* xRot_1 = new G4RotationMatrix;  // Rotates y axes only
             xRot_1->rotateX(M_PI/2.*rad);
-            G4ThreeVector yTrans_1(0, -NeutronWall_NS::PlasticBar_Y*0.5, 0);
+            G4ThreeVector yTrans_1(0, -NeutronWall_NS::PlasticBar_Y*0.5, 0); //move it to the bottom of plastic bar
             G4UnionSolid* PlasticBar_box = new G4UnionSolid("PlasticBar_Box", PlasticBar_box_first, PlatsticBar_up_tip, xRot_1, yTrans_1);
             
             
@@ -505,6 +505,9 @@ void NeutronWall::ConstructDetector(G4LogicalVolume* world){
         
         
         //******************* Placement *******************//
+        //----World---
+        new G4PVPlacement(0, G4ThreeVector(0,0,0), m_NeutronWall_out_log, "NeutronWall_out_phys",world,false,i);
+        
         //----Neutron Wall Box---
         m_NeutronWall_phys = new G4PVPlacement(0,G4ThreeVector(0,0,0),m_NeutronWall_log,
                                           "NeutronWall_phys",m_NeutronWall_out_log,false,0);
@@ -530,24 +533,21 @@ void NeutronWall::ConstructDetector(G4LogicalVolume* world){
                 //double CenterOfVetoWall_Even_X = NeutronWall_NS::NS_X*0.5-10*mm-NeutronWall_NS::PlasticBar_X*0.5 - j*NeutronWall_NS::PlasticBar_X;
                 double CenterOfVetoWall_Even_X = -(24*NeutronWall_NS::PlasticBar_X-23*m_Overlap[i])*0.5 + NeutronWall_NS::PlasticBar_X*0.5 +j*(NeutronWall_NS::PlasticBar_X-m_Overlap[i]);
                 double CenterOfVetoWall_Even_Y = 0*mm;
-                double CenterOfVetoWall_Even_Z = -m_VWDistance[i];
+                double CenterOfVetoWall_Even_Z = -m_VWDistance[i] + NeutronWall_NS::NS_Z;
                 
                 double CenterOfVetoWall_Odd_X = -(24*NeutronWall_NS::PlasticBar_X-23*m_Overlap[i])*0.5 + NeutronWall_NS::PlasticBar_X*0.5 +j*(NeutronWall_NS::PlasticBar_X-m_Overlap[i]);
                 double CenterOfVetoWall_Odd_Y = 0*mm;
-                double CenterOfVetoWall_Odd_Z = -m_VWDistance[i]-NeutronWall_NS::PlasticBar_Z-1*mm;
+                double CenterOfVetoWall_Odd_Z = -m_VWDistance[i]-NeutronWall_NS::PlasticBar_Z-1*mm + NeutronWall_NS::NS_Z;
                 
                 if (j%2 == 0){
-                    m_PlasticBar_phys = new G4PVPlacement(0,G4ThreeVector(CenterOfVetoWall_Even_X,CenterOfVetoWall_Even_Y,CenterOfVetoWall_Even_Z),m_PlasticBar_log,"PlasticBar_phys",m_NeutronWall_log,false,j,true);
+                    m_PlasticBar_phys = new G4PVPlacement(0,G4ThreeVector(CenterOfVetoWall_Even_X,CenterOfVetoWall_Even_Y,CenterOfVetoWall_Even_Z),m_PlasticBar_log,"PlasticBar_phys",m_NeutronWall_out_log,false,j,true);
                 }
                 else {
-                    m_PlasticBar_phys = new G4PVPlacement(0, G4ThreeVector(CenterOfVetoWall_Odd_X,CenterOfVetoWall_Odd_Y,CenterOfVetoWall_Odd_Z),m_PlasticBar_log,"PlasticBar_phys",m_NeutronWall_log,false,j,true);
+                    m_PlasticBar_phys = new G4PVPlacement(0, G4ThreeVector(CenterOfVetoWall_Odd_X,CenterOfVetoWall_Odd_Y,CenterOfVetoWall_Odd_Z),m_PlasticBar_log,"PlasticBar_phys",m_NeutronWall_out_log,false,j,true);
 		    //m_PlasticBar_phys = new G4PVPlacement(0, G4ThreeVector(CenterOfVetoWall_Odd_X,CenterOfVetoWall_Odd_Y,CenterOfVetoWall_Even_Z),m_PlasticBar_log,"PlasticBar_phys",m_NeutronWall_log,false,j,true);
                 }
             }
         }
-        m_NeutronWall_phys = new G4PVPlacement(G4Transform3D(*Rot, Det_pos),
-                                               m_NeutronWall_log,
-                                               "NeutronWall_phys",world,false,i);
     }
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
