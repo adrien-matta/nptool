@@ -64,7 +64,7 @@ The keywords associated to the detector geometry file are different for
 each detector. In case of the Gaspard tracker detector an example with
 all the detector shapes available at the moment is given in the
 following:
-
+{% highlight text %} 
        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
        GaspardTracker
        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -106,7 +106,7 @@ following:
                SECONDSTAGE= 1
                THIRDSTAGE= 1
                VIS= all
-
+{% endhighlight %} 
 In order to declare a Gaspard tracker detector in NPSimulation, the key
 word <span>*GaspardTracker*</span> should be specified in the geometry
 file. It should then be followed by other keywords concerning the
