@@ -43,11 +43,14 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*Clang.*")
   endif()
 endif()
 
- # If the compiler is GCC, activate colors
-if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*GNU*")   
- set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color=always")
-endif()
-
+# If compiler is GCC active the color diagnostic  
+if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*GNU.*")  
+execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion 
+                OUTPUT_VARIABLE GCC_VERSION)
+  if (GCC_VERSION VERSION_GREATER 4.9 OR GCC_VERSION VERSION_EQUAL 4.9) 
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color=always")   
+  endif() 
+endif()   
 
 
 # Adjust the compiler language flag
