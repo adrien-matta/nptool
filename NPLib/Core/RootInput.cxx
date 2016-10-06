@@ -301,6 +301,8 @@ RootInput::~RootInput(){
   cout << endl << "Root Input summary" << endl;
   cout << "  - Number of bites read: " << pRootFile->GetBytesRead() << endl;
   cout << "  - Number of transactions: " << pRootFile->GetReadCalls() << endl;
+  // Close the Root file
+  pRootFile->Close();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

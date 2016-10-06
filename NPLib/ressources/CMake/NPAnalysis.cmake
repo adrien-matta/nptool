@@ -43,6 +43,13 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*Clang.*")
   endif()
 endif()
 
+ # If the compiler is GCC, activate colors
+if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*GNU*")   
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color=always")
+endif()
+
+
+
 # Adjust the compiler language flag
 set(NOCPPFLAGS true)
 if(${CMAKE_CXX_FLAGS} MATCHES ".*std=.*11")
