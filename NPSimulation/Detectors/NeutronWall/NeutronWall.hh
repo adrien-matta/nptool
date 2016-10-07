@@ -67,7 +67,6 @@ public:
     
 private:
     G4LogicalVolume* m_NeutronWall_out_log;
-    G4LogicalVolume* m_NeutronWall_log;
     G4LogicalVolume* m_AlCase_log;
     G4LogicalVolume* m_Quartz_log;
     G4LogicalVolume* m_QuartzCap_log;
@@ -80,7 +79,6 @@ private:
     G4VPhysicalVolume* m_ScintillatorTube_phys;
     G4VPhysicalVolume* m_Quartz_phys;
     G4VPhysicalVolume* m_AlCase_phys;
-    G4VPhysicalVolume* m_NeutronWall_phys;
     G4VPhysicalVolume* m_PlasticBar_phys;
     
     ////////////////////////////////////////////////////

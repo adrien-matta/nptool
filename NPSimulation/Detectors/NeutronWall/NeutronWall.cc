@@ -63,9 +63,9 @@ using namespace CLHEP;
 namespace NeutronWall_NS{
     // Energy and time Resolution
     const double EnergyThreshold = 0.1*MeV;
-    //const double ResoTime = 0*ns ;
-    //const double ResoEnergy = 0*MeV ;
-    //const double ResoPosition = 0*cm;
+    /*const double ResoTime = 0*ns ;
+    const double ResoEnergy = 0*MeV ;
+    const double ResoPosition = 0*cm;*/
         //using Alouter minus Alinner, one get an Al frame (including front and back sheets)
     const double Alinner_X = 2811.0*mm;
     const double Alinner_Y = 2500.0*mm;
@@ -128,7 +128,6 @@ NeutronWall::NeutronWall(){
     m_NeutronWallScorer = 0;
     m_VetoWallScorer = 0;
     m_NeutronWall_out_log = 0;
-    m_NeutronWall_log = 0;
     m_AlCase_log = 0;
     m_Quartz_log = 0;
     m_QuartzCap_log = 0;
@@ -420,7 +419,7 @@ void NeutronWall::ConstructDetector(G4LogicalVolume* world){
             NeutronWall_NS::NS_Z = 2.0*(m_VWDistance[i]+1.5*NeutronWall_NS::PlasticBar_Z+3.0*mm);
         }
         
-        //G4RotationMatrix* Rot = new G4RotationMatrix(v,u,w);
+        G4RotationMatrix* Rot = new G4RotationMatrix(v,u,w);
         
         G4Material* ScintMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary(m_NWMaterial[i]);
         G4Material* vacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
@@ -432,12 +431,6 @@ void NeutronWall::ConstructDetector(G4LogicalVolume* world){
                                            NeutronWall_NS::OB_Y*0.5,NeutronWall_NS::OB_Z*0.5);
         m_NeutronWall_out_log = new G4LogicalVolume(NeutronWall_out_box,vacuum,"NeutronWall_Out_Log",0,0,0);
         m_NeutronWall_out_log->SetVisAttributes(m_VisNW);
-        
-        //Neutron Wall Box
-        G4Box* NeutronWall_box = new G4Box("NeutronWall_Box",NeutronWall_NS::NS_X*0.5,
-                                           NeutronWall_NS::NS_Y*0.5,NeutronWall_NS::NS_Z*0.5);
-        m_NeutronWall_log = new G4LogicalVolume(NeutronWall_box,vacuum,"NeutronWall_Log",0,0,0);
-        m_NeutronWall_log->SetVisAttributes(m_VisNW);
         
         //Aluminum inner box (subtractee)
         G4Box* Alinner_box = new G4Box("Alinner_box",NeutronWall_NS::Alinner_X*0.5,NeutronWall_NS::Alinner_Y*0.5,NeutronWall_NS::Alinner_Z*0.5);
@@ -505,25 +498,21 @@ void NeutronWall::ConstructDetector(G4LogicalVolume* world){
         
         
         //******************* Placement *******************//
-        //----World---
-        new G4PVPlacement(0, G4ThreeVector(0,0,0), m_NeutronWall_out_log, "NeutronWall_out_phys",world,false,i);
-        
-        //----Neutron Wall Box---
-        m_NeutronWall_phys = new G4PVPlacement(0,G4ThreeVector(0,0,0),m_NeutronWall_log,
-                                          "NeutronWall_phys",m_NeutronWall_out_log,false,0);
+        //----NW+VW World---
+        new G4PVPlacement(G4Transform3D(*Rot, Det_pos), m_NeutronWall_out_log, "NeutronWall_out_phys",world,false,i);
         
         //----Aluminum Case----
         m_AlCase_phys = new G4PVPlacement(0,G4ThreeVector(0,0,0),m_AlCase_log,
-                                          "AlCase_phys",m_NeutronWall_log,false,0);
+                                          "AlCase_phys",m_NeutronWall_out_log,false,0);
         //----Scintillator and Quartz tube----
         for (int j = 0; j < 25; j++ ) {
             double CenterOfScintillator_X = 0*mm;
             double CenterOfScintillator_Y = (NeutronWall_NS::NS_Y*0.5-NeutronWall_NS::frame_thickness-NeutronWall_NS::upper_gap-NeutronWall_NS::Py_Youter*0.5-j*(NeutronWall_NS::Py_Youter+NeutronWall_NS::seperation_between_pyrex));
             double CenterOfScintillator_Z = 0*mm;
             G4ThreeVector ScintillatorDisplacement(CenterOfScintillator_X,CenterOfScintillator_Y,CenterOfScintillator_Z);
-            m_ScintillatorTube_phys = new G4PVPlacement(0,ScintillatorDisplacement,m_Scintillator_log,"ScintillatorTube_phys",m_NeutronWall_log,false,j);
+            m_ScintillatorTube_phys = new G4PVPlacement(0,ScintillatorDisplacement,m_Scintillator_log,"ScintillatorTube_phys",m_NeutronWall_out_log,false,j);
             //Quartz center coincide with Scintillator's, therefore, they have the same displacement.
-            m_Quartz_phys = new G4PVPlacement(0,ScintillatorDisplacement,m_Quartz_log, "Quartz_phys",m_NeutronWall_log,false,j);
+            m_Quartz_phys = new G4PVPlacement(0,ScintillatorDisplacement,m_Quartz_log, "Quartz_phys",m_NeutronWall_out_log,false,j);
         }
         
         for (int j = 0; j < 24; j++){
@@ -533,18 +522,18 @@ void NeutronWall::ConstructDetector(G4LogicalVolume* world){
                 //double CenterOfVetoWall_Even_X = NeutronWall_NS::NS_X*0.5-10*mm-NeutronWall_NS::PlasticBar_X*0.5 - j*NeutronWall_NS::PlasticBar_X;
                 double CenterOfVetoWall_Even_X = -(24*NeutronWall_NS::PlasticBar_X-23*m_Overlap[i])*0.5 + NeutronWall_NS::PlasticBar_X*0.5 +j*(NeutronWall_NS::PlasticBar_X-m_Overlap[i]);
                 double CenterOfVetoWall_Even_Y = 0*mm;
-                double CenterOfVetoWall_Even_Z = -m_VWDistance[i] + NeutronWall_NS::NS_Z;
+                double CenterOfVetoWall_Even_Z = -(NeutronWall_NS::Alouter_Z/2 + m_VWDistance[i] + NeutronWall_NS::PlasticBar_Z);
                 
                 double CenterOfVetoWall_Odd_X = -(24*NeutronWall_NS::PlasticBar_X-23*m_Overlap[i])*0.5 + NeutronWall_NS::PlasticBar_X*0.5 +j*(NeutronWall_NS::PlasticBar_X-m_Overlap[i]);
                 double CenterOfVetoWall_Odd_Y = 0*mm;
-                double CenterOfVetoWall_Odd_Z = -m_VWDistance[i]-NeutronWall_NS::PlasticBar_Z-1*mm + NeutronWall_NS::NS_Z;
+                double CenterOfVetoWall_Odd_Z = -(NeutronWall_NS::Alouter_Z/2 + m_VWDistance[i] + NeutronWall_NS::PlasticBar_Z) - NeutronWall_NS::PlasticBar_Z - 1*mm;
                 
                 if (j%2 == 0){
                     m_PlasticBar_phys = new G4PVPlacement(0,G4ThreeVector(CenterOfVetoWall_Even_X,CenterOfVetoWall_Even_Y,CenterOfVetoWall_Even_Z),m_PlasticBar_log,"PlasticBar_phys",m_NeutronWall_out_log,false,j,true);
                 }
                 else {
                     m_PlasticBar_phys = new G4PVPlacement(0, G4ThreeVector(CenterOfVetoWall_Odd_X,CenterOfVetoWall_Odd_Y,CenterOfVetoWall_Odd_Z),m_PlasticBar_log,"PlasticBar_phys",m_NeutronWall_out_log,false,j,true);
-		    //m_PlasticBar_phys = new G4PVPlacement(0, G4ThreeVector(CenterOfVetoWall_Odd_X,CenterOfVetoWall_Odd_Y,CenterOfVetoWall_Even_Z),m_PlasticBar_log,"PlasticBar_phys",m_NeutronWall_log,false,j,true);
+
                 }
             }
         }
