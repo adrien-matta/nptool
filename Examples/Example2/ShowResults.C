@@ -15,7 +15,6 @@ TChain* chain = LoadChain();
 
 TCanvas* c1 = new TCanvas("Example2","Example2",0,0,800,800);
 c1->Divide(2,2);
-
 // Kinematic Line
 c1->cd(1);
 chain->Draw("ELab:ThetaLab>>hKine(180,0,180,400,0,20)","ELab>0","colz");

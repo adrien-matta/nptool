@@ -147,7 +147,7 @@ Reaction::Reaction(string reaction){
   fCrossSectionHist = new TH1F(Form("EnergyHist_%i",offset),"Reaction_CS",1,0,180);
   fDoubleDifferentialCrossSectionHist = NULL ;
   
-fshoot3=true;
+  fshoot3=true;
   fshoot4=true;
   
   initializePrecomputeVariable();

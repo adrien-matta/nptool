@@ -136,13 +136,17 @@ int main(int argc , char** argv){
   }
 
   //  Change all the .so to .dylib for Mac Os X in the installed rootmap    
+#ifdef __APPLE__
   path = getenv("NPTOOL");
   path += "/NPLib/*/*.rootmap";
   string command = "ls "+ path +" > /dev/null 2>/dev/null";
-  return_value=system(command.c_str());             
+  return_value=system(command.c_str());
+
   if(!return_value){
   std::string command = "sed -i '' -e 's/"+INCORRECT_LIB_EXTENSION+"/"+CORRECT_LIB_EXTENSION+"/g' "+path;  
-  return_value=system(command.c_str());   
-  }  
+  return_value=system(command.c_str());  
+  }
+#endif  
+
   return 0;
 }
