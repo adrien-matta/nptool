@@ -1,7 +1,7 @@
 ---
 layout: manual
-title: "Installing Root and Geant4"
-permalink: /manual/root-geant4/
+title: "Join the collaboration"
+permalink: /manual/collaboration/
 author: Adrien Matta
 show_in_nav: false
 manual_order: 1002
