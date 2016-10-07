@@ -6,83 +6,87 @@ void Style_nptool(){
   // produce minimalist publication ready
   // outlook with nptool color scheme
   //-----------------------------------
-  TStyle* style_nptool = new TStyle("nptool", "style_nptool");
+  TStyle* style = new TStyle("nptool", "style");
+  style->SetTitlePS("nptool");
 
   //General 
-  style_nptool->SetFrameFillColor(kWhite);
-  style_nptool->SetFrameBorderMode(0);
-  style_nptool->SetFrameLineColor(kBlack);
-  style_nptool->SetStatColor(kWhite);	
-  style_nptool->SetFillColor(kWhite); 
-  style_nptool->SetTitleFillColor(kWhite);
-  style_nptool->SetPaperSize(20,24);
+  style->SetFrameFillColor(kWhite);	
+  style->SetFrameBorderMode(0);	
+  style->SetFrameLineColor(kWhite);
+  style->SetStatColor(kBlack);	
+  style->SetTitleFillColor(kWhite);  
+  style->SetTitleColor(kBlack,"pad");
+  style->SetTitleBorderSize(0);
+  style->SetTextColor(kBlack);
+
   // Canvas
-  style_nptool->SetCanvasColor(kWhite);
-  style_nptool->SetCanvasDefH(800);
-  style_nptool->SetCanvasDefW(800);
-  style_nptool->SetCanvasBorderMode(0);
-
+  style->SetCanvasPreferGL(true);
+  style->SetCanvasColor(kWhite);	
+  style->SetCanvasDefH(800);
+  style->SetCanvasDefW(800);
+  style->SetCanvasBorderMode(0);	
+  
   // Pad
-  style_nptool->SetPadBottomMargin(0.15);
-  style_nptool->SetPadLeftMargin(0.15);
-  style_nptool->SetPadTopMargin(0.05);
-  style_nptool->SetPadRightMargin(0.10);
-  style_nptool->SetPadBorderMode(0);
-  style_nptool->SetPadBorderSize(1);
-  style_nptool->SetPadColor(kWhite);		
-  style_nptool->SetPadTickX(1);
-  style_nptool->SetPadTickY(1);
+  style->SetPadBottomMargin(0.10);
+  style->SetPadLeftMargin(0.10);
+  style->SetPadTopMargin(0.15);
+  style->SetPadRightMargin(0.15);
+  style->SetPadBorderMode(0);	
+  style->SetPadBorderSize(1);
+  // style->SetPadColor(kWhite);		
+  style->SetPadTickX(1);
+  style->SetPadTickY(1);
 
-  // Desable stat title and fit  
-  style_nptool->SetOptStat(0);
-  style_nptool->SetOptTitle(0);
-  //style_nptool->SetOptFit(0);
+  // Disable stat, title and fit  
+  style->SetOptStat(0);
+  style->SetOptTitle(0);
+  style->SetOptFit(0);		
 
   // x axis
-  style_nptool->SetTitleXSize(0.07);
-  style_nptool->SetTitleXOffset(1.0);     
-  style_nptool->SetLabelOffset(0.1,"X");   
-  style_nptool->SetLabelSize(0.04,"X");
-  style_nptool->SetLabelOffset(0.006,"X");
-    
-    /*style_nptool->SetTitleBorderSize(0);
-    style_nptool->SetTitleX(0.1f);
-    style_nptool->SetTitleW(0.8f);
-    style_nptool->SetTitleAlign(3);*/
+  style->SetAxisColor(kBlack,"X");
+  style->SetLabelColor(kBlack,"X");
+  style->SetTitleXSize(0.04);     
+  style->SetTitleXOffset(1.0);     
+  style->SetLabelOffset(0.1,"X");   
+  style->SetLabelSize(0.04,"X");
+  style->SetLabelOffset(0.004,"X");
 
   // y axis
-    //style_nptool->GetYaxis()->CenterTitle();
-  style_nptool->SetTitleYSize(0.07);
-  style_nptool->SetTitleYOffset(1.02);
-  style_nptool->SetLabelOffset(0.1,"Y");
-  style_nptool->SetLabelSize(0.04,"Y");
-  style_nptool->SetLabelOffset(0.006,"Y");
+  style->SetTitleYSize(0.04);  
+  style->SetTitleYOffset(1.1);  
+  style->SetLabelOffset(0.1,"Y");
+  style->SetLabelSize(0.04,"Y");
+  style->SetLabelOffset(0.004,"Y");
+  style->SetAxisColor(kBlack,"Y");
+  style->SetLabelColor(kBlack,"Y");
 
   // z axis
-  style_nptool->SetLabelSize(0.04,"Z");
-  style_nptool->SetLabelOffset(0.006,"Z");
-
+  style->SetAxisColor(kBlack,"Z");
+  style->SetLabelSize(0.04,"Z");
+  style->SetLabelOffset(0.004,"Z");
+  style->SetLabelColor(kBlack,"Z");
 
   // Histogramm
-  style_nptool->SetHistLineColor(kAzure+7);
-  style_nptool->SetHistFillStyle(1001);
-  style_nptool->SetHistFillColor(kAzure+7);
-  style_nptool->SetMarkerColor(kOrange+7);
-  style_nptool->SetMarkerStyle(20);
-  style_nptool->SetLineColor(kOrange+7);
-  style_nptool->SetLineWidth(2);
-  style_nptool->SetFuncColor(kOrange+7);
-  style_nptool->SetFuncWidth(2);
+  style->SetHistLineColor(kAzure+7);
+ // style->SetHistFillStyle(1001);
+  style->SetHistFillColor(kAzure+7);
+    
+  // Graph, Line and Marker
+  style->SetMarkerStyle(20);
+  style->SetMarkerColor(kOrange+7);
+  style->SetLineColor(kOrange+7);
+  style->SetLineWidth(1);
+  style->SetFuncColor(kOrange+7);
+  style->SetFuncWidth(2);
 
-  style_nptool->SetTitlePS("nptool");
-
+  // Create the color gradiant 
   const UInt_t Number = 2;
-  Double_t Red[Number]    = { 0,  0   };
-  Double_t Green[Number]  = { 0,  0.8 };
-  Double_t Blue[Number]   = { 0,  1.00 };
+  Double_t Red[Number]    = { 0,0   };
+  Double_t Green[Number]  = { 0,0.8 };
+  Double_t Blue[Number]   = { 0,1.00 };
 
   Double_t Length[Number] = { 0,1.00 };
   Int_t nb=255;
   TColor::CreateGradientColorTable(Number,Length,Red,Green,Blue,nb);
-  style_nptool->SetNumberContours(99);
+  style->SetNumberContours(99);
 }
