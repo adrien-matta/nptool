@@ -210,7 +210,10 @@ void TSplitPolePhysics::ReadNMR()
             // narval run number
             run = sub.Atoi();
             // fill map
-            m_NMRTable[m_NarvalMidasTable[run]] = new TSplitPoleNMR(libname.Data(), m_TimeDelay);
+            TString FileToRead = libname;
+            FileToRead.Prepend("/");
+            FileToRead.Prepend(m_NmrFilePath);
+            m_NMRTable[m_NarvalMidasTable[run]] = new TSplitPoleNMR(FileToRead.Data(), m_TimeDelay);
          }
       }
    }
