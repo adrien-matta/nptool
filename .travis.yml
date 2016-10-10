@@ -34,8 +34,8 @@ install:
 
 script:
   - cd $NPTOOL/NPLib 
-  - cmake ./
-  - ninja install 
+  - cmake -GNinja ./
+  - ninja-build install 
   - ./scripts/RootLogon.sh 
   - ./scripts/test/all.sh
 
@@ -54,7 +54,7 @@ addons:
     - g++-4.8
     - libexpat1-dev
     - libexpat1
-    - ninja
+    - ninja-build
 
 notifications:
   email:
