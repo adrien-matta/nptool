@@ -70,10 +70,6 @@ W1::W1()
 W1::~W1()
 {
    delete m_Event;
-   delete m_MaterialAluminium;
-   delete m_MaterialSilicon;
-   delete m_MaterialIron;
-   delete m_MaterialVacuum ;
 }
 
 
