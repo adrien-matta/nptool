@@ -33,6 +33,7 @@ before_install:
 install:
 
 script:
+  - cmake --version
   - cd $NPTOOL/NPLib 
   - cmake -GNinja ./
   - ninja-build install 
