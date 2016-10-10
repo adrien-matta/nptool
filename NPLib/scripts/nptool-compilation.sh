@@ -72,7 +72,6 @@ elif [ "$1" = "a" ]; then
 
   # current folder 
   cd $FOLDER
-  echo "Folder is $PWD"
   if [ -f "build.ninja"  ]; then
     ninja 
   elif [ -f "Makefile" ]; then
