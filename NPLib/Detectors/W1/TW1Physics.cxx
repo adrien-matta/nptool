@@ -560,7 +560,7 @@ void TW1Physics::BuildSimplePhysicalEvent()
          // Front
          Double_t TimeFront = -1000;
          for (UShort_t t = 0; t < m_PreTreatedData->GetFrontTMult(); t++) {
-            if (m_PreTreatedData->GetFrontTStripNbr(couple[i].X()) == m_PreTreatedData->GetFrontTStripNbr(t) ||
+            if (m_PreTreatedData->GetFrontTStripNbr(couple[i].X()) == m_PreTreatedData->GetFrontTStripNbr(t) &&
                 m_PreTreatedData->GetFrontTDetectorNbr(couple[i].X()) == m_PreTreatedData->GetFrontTDetectorNbr(t)) {
                TimeFront = m_PreTreatedData->GetFrontTTime(t);
                m_Counter[4] = 1;
@@ -569,7 +569,7 @@ void TW1Physics::BuildSimplePhysicalEvent()
          // Back
          Double_t TimeBack = -1000;
          for (UShort_t t = 0; t < m_PreTreatedData->GetBackTMult(); t++) {
-            if (m_PreTreatedData->GetBackTStripNbr(couple[i].Y()) == m_PreTreatedData->GetBackTStripNbr(t) ||
+            if (m_PreTreatedData->GetBackTStripNbr(couple[i].Y()) == m_PreTreatedData->GetBackTStripNbr(t) &&
                 m_PreTreatedData->GetBackTDetectorNbr(couple[i].Y()) == m_PreTreatedData->GetBackTDetectorNbr(t))
                TimeBack = m_PreTreatedData->GetBackTTime(t);
          }
