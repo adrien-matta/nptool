@@ -113,10 +113,12 @@ int main(int argc, char** argv){
     G4VisManager* visManager=NULL;
     if(!OptionManager->GetG4BatchMode()){
 #ifdef G4UI_USE
-#ifdef G4VIS_USE
         string Path_Macro = getenv("NPTOOL");
         Path_Macro+="/NPSimulation/ressources/macro/";
-        
+        UImanager->ApplyCommand("/control/execute " +Path_Macro+"verbose.mac");
+
+#ifdef G4VIS_USE
+         
         UImanager->ApplyCommand("/control/execute " +Path_Macro+"aliases.mac");
         visManager = new G4VisExecutive("Quiet");
         visManager->Initialize();

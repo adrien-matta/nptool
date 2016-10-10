@@ -150,4 +150,23 @@ target_Link_libraries(npsimulation ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} NPSCore
 configure_file(ressources/macro/gui.mac.in ressources/macro/gui.mac @ONLY) 
 configure_file(ressources/macro/aliases.mac.in ressources/macro/aliases.mac @ONLY) 
 
+# Generate vis.mac file if does not exist
+if(EXISTS ressources/macro/vis.mac)
+else()
+  configure_file(ressources/macro/vis.mac.in ressources/macro/vis.mac @ONLY)
+endif()
+
+# Generate verbose.mac file if does not exist
+if(EXISTS ressources/macro/verbose.mac)
+else()
+  configure_file(ressources/macro/verbose.mac.in ressources/macro/verbose.mac @ONLY)
+endif()
+
+# Generate PhysicsListOption file if does not exist
+if(EXISTS PhysicsListOption.txt)
+else()
+  configure_file(ressources/input/PhysicsListOption.txt.in PhysicsListOption.txt @ONLY)
+endif()
+
+
 install(PROGRAMS npsimulation DESTINATION ${CMAKE_BINARY_OUTPUT_DIRECTORY})
