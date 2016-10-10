@@ -38,7 +38,7 @@ script:
   - cmake --version
   - cd $NPTOOL/NPLib 
   - cmake -GNinja ./
-  - ninja-build install 
+  - ninja install 
   - ./scripts/RootLogon.sh 
   - ./scripts/test/all.sh
 
