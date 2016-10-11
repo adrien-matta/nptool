@@ -154,7 +154,9 @@ void TRex::ReadConfiguration(string Path){
   string LineBuffer;
   string DataBuffer;
 
-  double X,Y,Z;
+  double X=0;
+  double Y=0;
+  double Z=0;
   bool check_X = false ;
   bool check_Y = false ;
   bool check_Z = false ;      

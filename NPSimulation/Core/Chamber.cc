@@ -288,16 +288,14 @@ void Chamber::DefineMaterials()
   G4Material* Ge=new G4Material(name="Germanium", z=32., a, density);
   
   a=26.98*g/mole;  density=2.7*g/cm3;
-  G4Material* Al;
-  Al=new G4Material(name="Aluminium", z=13., a, density);
+  
+  new G4Material(name="Aluminium", z=13., a, density);
   
   a=63.54*g/mole;  density=8.96*g/cm3;
-  G4Material* Cu;
-  Cu=new G4Material(name="Copper", z=29., a, density);
+  new G4Material(name="Copper", z=29., a, density);
 
   a=183.84*g/mole;  density=19.3*g/cm3;
-  G4Material* W;
-  W=new G4Material(name="Tungsten", z=74., a, density);
+  new G4Material(name="Tungsten", z=74., a, density);
  
   //---------------------------------
   // AIR
@@ -1478,8 +1476,7 @@ void Chamber::ConstructDetector(G4LogicalVolume* world)
   G4double PinGap        =  1.0 * mm; //between PINS
   G4double PinToEdge     =  3.0 * mm; //gap from the end
   G4double PinEpoxyT     =  1.6 * mm; //thickness of pcb board
-  G4double PinSupportLip;
-  PinSupportLip =  PinT+PinEpoxyT; //thickness of pcb board
+  //G4double PinSupportLip =  PinT+PinEpoxyT; //thickness of pcb board
   
   //horizontal-side dimensions [approxiamted as a single board]
   G4double PinBoard_H_W = PinL*5.;
@@ -1699,22 +1696,17 @@ void Chamber::ConstructDetector(G4LogicalVolume* world)
   //visAttPIN->SetVisibility(false);
   visAttPIN->SetForceWireframe(true);
 
-  G4double Pin_z1, Pin_z2;
-  Pin_z1 = PinBoard_z + PinBoard_V_L/2. - PinToEdge - PinL/2;
-  Pin_z2 = Pin_z1 - PinGap - PinL;
+  G4double Pin_z1 = PinBoard_z + PinBoard_V_L/2. - PinToEdge - PinL/2;
+  //G4double Pin_z2 = Pin_z1 - PinGap - PinL;
 
   //total Si area
-  G4Box* solidPINS_H;
-  solidPINS_H = new G4Box("pins-passive", PinL/2., PinT/2., PinL/2);  //horizontal
-  G4Box* solidPINS_V;
-  solidPINS_V = new G4Box("pins-passive", PinT/2., PinL/2., PinL/2);  //vertical
+  G4Box* solidPINS_H = new G4Box("pins-passive", PinL/2., PinT/2., PinL/2);  //horizontal
+  new G4Box("pins-passive", PinT/2., PinL/2., PinL/2);  //vertical
   
   //active Si
   G4Box* solidPINS_Active_H;
   solidPINS_Active_H = new G4Box("pins", PinL/2.-PinGuard, PinT/2., PinL/2-PinGuard);  //horizontal
-  G4Box* solidPINS_Active_V;
-  solidPINS_Active_V = new G4Box("pins", PinT/2., PinL/2.-PinGuard, PinL/2-PinGuard);  //vertical
-
+  new G4Box("pins", PinT/2., PinL/2.-PinGuard, PinL/2-PinGuard);  //vertical
 
   //horizontal rows  could put an index[i] = copyNo to match position in real array !!
   for(G4int nH = 0; nH < 2; nH++) {  //up/down
@@ -2139,7 +2131,7 @@ void Chamber::Place_PhaseIIs_Left_and_Right(G4LogicalVolume* world)
   G4RotationMatrix* rmC;
   G4double leafX;
   G4double leafY;
-  G4double leafZ;
+  //G4double leafZ;
   
   //Keep track of which detectors are used
   //G4String  detName[2] = {"CloverR","CloverL"}; //Looking upstream
@@ -2163,7 +2155,7 @@ void Chamber::Place_PhaseIIs_Left_and_Right(G4LogicalVolume* world)
       leafY = -22.15*mm;
     }
     //the z-translation
-    leafZ = geLeaf_PosZ;
+    //leafZ = geLeaf_PosZ;
     
     
     //for(G4int det = prevNumber; det < numberOfClovers; det++) {
@@ -2317,7 +2309,7 @@ void Chamber::Place_PhaseII_On_the_Top(G4LogicalVolume* world)
   G4RotationMatrix* rmC;
   G4double leafX;
   G4double leafY;
-  G4double leafZ;
+  //G4double leafZ;
   
   for(G4int l = 0; l < 4; l++) {
     //the rotation
@@ -2338,7 +2330,7 @@ void Chamber::Place_PhaseII_On_the_Top(G4LogicalVolume* world)
       leafY = -22.15*mm;
     }
     //the z-translation
-    leafZ = geLeaf_PosZ;
+    //leafZ = geLeaf_PosZ;
     
     
     //physiGeLeaf_CloverT[l] = new G4PVPlacement(rmC,                       //rotation
@@ -2653,7 +2645,7 @@ void Chamber::Place_GREAT_Left_and_Right(G4LogicalVolume* world)
   G4double dPos = fGeLeaf_dX_GREAT + fGapBetweenLeaves_GREAT/2.;
   G4double leafX;
   G4double leafY;
-  G4double leafZ;
+  //G4double leafZ;
   
   //Keep track of which detectors are used
   //G4String  detName[2] = {"CloverR","CloverL"}; //Looking upstream
@@ -2677,7 +2669,7 @@ void Chamber::Place_GREAT_Left_and_Right(G4LogicalVolume* world)
       leafY = -dPos;
     }
     //the z-translation
-    leafZ = geLeaf_PosZ;
+    //leafZ = geLeaf_PosZ;
     
     
     //for(G4int det = prevNumber; det < numberOfClovers; det++) {
@@ -3209,8 +3201,7 @@ void  Chamber::CreateCloverIISolids()
   G4double GeDepth      = 15.00 * mm;  //Hole dirilled to this far from face
   G4double passiveThick = 0.5 * mm;    //fPassiveThick_PhaseII;  //passivated Ge
   G4double contactThick = fContactThick_PhaseII;  //Li contact
-  G4double innerRHole;
-   innerRHole =  0.00 * mm;
+  //G4double innerRHole =  0.00 * mm;
   G4double holeR      = fHoleR_PhaseII;
   G4double contactR   = holeR + contactThick;
   G4double passiveR   = contactR + passiveThick;
@@ -3427,8 +3418,7 @@ void  Chamber::CreateGREATCloverSolids()
   G4double passiveThick =  0.30 * mm;  //passivated Ge
   G4double contactThick =  0.50 * mm;  //Li contact
 
-  G4double innerRHole;
-  innerRHole=  0.00 * mm;
+  //G4double innerRHole =  0.00 * mm;
   G4double holeR      =  5.00 * mm; //fHoleR_PhaseII;
   G4double contactR   = holeR + contactThick;
   G4double passiveR   = contactR + passiveThick;

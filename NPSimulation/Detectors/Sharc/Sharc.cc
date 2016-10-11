@@ -354,9 +354,8 @@ void Sharc::ConstructTargetFan(G4LogicalVolume* world){
   G4double FanPlateHole_InnerRadius = 18*mm;
   G4double FanPlate_Thickness = 3*mm;
 
-  G4double TargetFrame_Thickness;
-  TargetFrame_Thickness= 0.5*mm;
-  TargetFrame_Thickness=0;
+  //G4double TargetFrame_Thickness;
+  //TargetFrame_Thickness= 0.5*mm;
   G4double Fan_Shift = 70*mm+16*mm;
 
   G4Tubs*  FanBaseSolid= new G4Tubs("TargetFanBase"  ,

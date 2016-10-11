@@ -118,7 +118,7 @@ G4bool PS_CalorimeterWithInteraction::ProcessHits(G4Step* aStep, G4TouchableHist
     Infos[1] = aStep->GetPreStepPoint()->GetGlobalTime();
     
     // Interaction coordinates (used to fill the InteractionCoordinates branch)
-    G4ThreeVector  m_Position  = aStep->GetPreStepPoint()->GetPosition();
+    m_Position  = aStep->GetPreStepPoint()->GetPosition();
     
     Infos[2] = m_Position.x();
     Infos[3] = m_Position.y();

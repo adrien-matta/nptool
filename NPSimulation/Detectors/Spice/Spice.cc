@@ -167,7 +167,8 @@ void Spice::InitializeRootOutput(){
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
 void Spice::ReadSensitive(const G4Event* event){
-  event = 0;
+  if(event)
+    event = 0;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

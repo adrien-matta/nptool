@@ -100,11 +100,11 @@ void NPIonIonInelasticPhysic::ConstructProcess()
     //G4GeneralSpaceNNCrossSection* GeneralSpaceNNCrossSection = new G4GeneralSpaceNNCrossSection;
     
     // Tripathi
-    G4TripathiCrossSection* TripathiCrossSections = new G4TripathiCrossSection;
+    //G4TripathiCrossSection* TripathiCrossSections = new G4TripathiCrossSection;
     G4TripathiLightCrossSection* TripathiLightCrossSections = new G4TripathiLightCrossSection;
     
     //Shen
-    G4IonsShenCrossSection* ShenCrossSections = new G4IonsShenCrossSection;
+    //G4IonsShenCrossSection* ShenCrossSections = new G4IonsShenCrossSection;
     
     // Glauber
     G4ComponentGGHadronNucleusXsc* GlauberGribovCrossSection = new G4ComponentGGHadronNucleusXsc();
