@@ -9,7 +9,7 @@
 
 /*****************************************************************************
  *                                                                           *
- * Original Author :  Adrien MATTA    contact address: a.matta@surrey.ac.uk  *
+ * Original Author :  Adrien MATTA  contact address: matta@lpccaen.in2p3.fr  *
  *                                                                           *
  * Creation Date   : April 2009                                              *
  * Last update     :                                                         *

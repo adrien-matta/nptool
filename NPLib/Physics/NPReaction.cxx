@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2009-2013   this file is part of the NPTool Project         *
+ * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -7,7 +7,7 @@
 
 /*****************************************************************************
  *                                                                           *
- * Original Author :  Adrien MATTA    contact address: matta@ipno.in2p3.fr   *
+ * Original Author :  Adrien MATTA contact address: matta@lpccaen.in2p3.fr   *
  *                                                                           *
  * Creation Date   : March 2009                                              *
  * Last update     : January 2011                                            *

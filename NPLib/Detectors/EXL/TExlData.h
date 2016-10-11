@@ -1,7 +1,7 @@
 #ifndef __EXLDATA__
 #define __EXLDATA__
 /*****************************************************************************
- * Copyright (C) 2009-2014    this file is part of the NPTool Project        *
+ * Copyright (C) 2009-2016    this file is part of the NPTool Project        *
  *                                                                           *
  * For the licensing terms see $GANIL2ROOT/Licence                           *
  * For the list of contributors see $GANIL2ROOT/README/CREDITS               *

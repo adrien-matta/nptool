@@ -1,7 +1,7 @@
 #ifndef __Beam__
 #define __Beam__
 /*****************************************************************************
- * Copyright (C) 2009-2014    this file is part of the NPTool Project        *
+ * Copyright (C) 2009-2016    this file is part of the NPTool Project        *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -9,7 +9,7 @@
 
 /*****************************************************************************
  *                                                                           *
- * Original Author :  Adrien MATTA    contact address: a.matta@surrey.ac.uk  *
+ * Original Author :  Adrien MATTA  contact address: matta@lpccaen.in2p3.fr  *
  *                                                                           *
  * Creation Date   : January 2013                                            *
  *---------------------------------------------------------------------------*
