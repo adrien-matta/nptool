@@ -49,6 +49,8 @@ elseif(${CMAKE_CXX_FLAGS} MATCHES ".*std=.*0x")
   set(NOCPPFLAGS false) 
 endif()
 
+include(CheckCXXCompilerFlag)
+
 if(NOCPPFLAGS)
   CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
   if(COMPILER_SUPPORTS_CXX11 AND NOT nocpp11)
