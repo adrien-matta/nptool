@@ -59,9 +59,9 @@ addons:
     - libexpat1
     - ninja-build
 
-notifications:
-  email:
-    recipients:
-      - support@nptool.org
-    on_success: change
-    on_failure: always
+#notifications:
+#  email:
+#    recipients:
+#      - support@nptool.org
+#    on_success: change
+#    on_failure: always
