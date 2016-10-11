@@ -8,11 +8,12 @@ set (NPSIM_VERSION_DETS 18)
 
 set(CMAKE_BUILD_TYPE Release)
 
-# Setting the policy to match Cmake version
-cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
+# Finding NPLib
+find_package(NPLib)
+include(${NPLib_USE_FILE})
 
-# This suppress the Up-to-Date message of file installed for cmake 3.1 and above
-set(CMAKE_INSTALL_MESSAGE LAZY) 
+#include the nptool standard CMake preamble 
+include("../NPLib/ressources/CMake/NPTool_CMake_Preamble.cmake")
 
 # Finding Geant 4
 find_package(Geant4 REQUIRED ui_all vis_all)
@@ -33,53 +34,7 @@ message ("Geant4 found, Version : ${NPS_GEANT4_VERSION_MAJOR}.${NPS_GEANT4_VERSI
 include(${Geant4_USE_FILE}) 
 add_definitions(${Geant4_DEFINITIONS})    
 
-# Finding NPLib
-find_package(NPLib)
-include(${NPLib_USE_FILE})
-
 configure_file(Core/NPSimulationVersion.hh.in Core/NPSimulationVersion.hh @ONLY) 
-
-# look for Root
-include("../NPLib/ressources/CMake/Root.cmake")
-
-# If the compiler is Clang, silence the unrecognised flags
-if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*Clang.*")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments -fcolor-diagnostics")
-  if( UNIX AND NOT APPLE )
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libstdc++")
-  endif()
-endif()
-
-# If compiler is GCC active the color diagnostic
-if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*GNU.*")
-execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion
-                OUTPUT_VARIABLE GCC_VERSION) 
-   if (GCC_VERSION VERSION_GREATER 4.9 OR GCC_VERSION VERSION_EQUAL 4.9)
-     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color=always")
-  endif() 
-endif()
-
-# Adjust the compiler language flag
-set(NOCPPFLAGS true)
-if(${CMAKE_CXX_FLAGS} MATCHES ".*std=.*11")
-  set(NOCPPFLAGS false)
-elseif(${CMAKE_CXX_FLAGS} MATCHES ".*std=.*0x")
-  set(NOCPPFLAGS false) 
-endif()
-
-if(NOCPPFLAGS)
-  CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-  if(COMPILER_SUPPORTS_CXX11)
-	    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-  else()
-    CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-  endif()
-
-  if(COMPILER_SUPPORTS_CXX0X)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-  endif()
-endif()
-
 
  # Detector List
 set(DETLIST ${NPLib_DETECTOR_LIST})

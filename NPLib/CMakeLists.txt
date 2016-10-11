@@ -20,21 +20,8 @@ if(rdet)
     message("Building the following detectors ${DETLIST}") 
 endif()
 
-# Setting the policy to match Cmake version
-cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
-
-# This suppress the Up-to-Date message of file installed for cmake 3.1 and above
-set(CMAKE_INSTALL_MESSAGE LAZY) 
-
-# look for Root
-include("ressources/CMake/Root.cmake")
-
-# Check for user disabling of c++11 support
-string(COMPARE EQUAL "${CPP11}" "no" nocpp11)
-if(nocpp11)
- message(" -> C++11 support disable")
-endif()
-
+# include the nptool standard CMake preamble 
+include("ressources/CMake/NPTool_CMake_Preamble.cmake")
 
 # If the compiler is Clang, silence the unrecognised flags
 if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*Clang.*")
@@ -49,6 +36,7 @@ endif()
 
 # If compiler is GCC active the color diagnostic
 if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*GNU.*")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
 execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion
                 OUTPUT_VARIABLE GCC_VERSION)
   if (GCC_VERSION VERSION_GREATER 4.9 OR GCC_VERSION VERSION_EQUAL 4.9)
