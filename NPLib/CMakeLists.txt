@@ -23,48 +23,6 @@ endif()
 # include the nptool standard CMake preamble 
 include("ressources/CMake/NPTool_CMake_Preamble.cmake")
 
-# If the compiler is Clang, silence the unrecognised flags
-if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*Clang.*")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments -fcolor-diagnostics")
-  if( UNIX AND NOT APPLE )
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libstdc++")
-  endif()
-  if( APPLE AND CLANG_VERSION_MAJOR VERSION_LESS 5 AND NOT nocpp11)
-     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-  endif()
-endif()
-
-# If compiler is GCC active the color diagnostic
-if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*GNU.*")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
-execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion
-                OUTPUT_VARIABLE GCC_VERSION)
-  if (GCC_VERSION VERSION_GREATER 4.9 OR GCC_VERSION VERSION_EQUAL 4.9)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color=always")
-  endif()
-endif()
-
-# Adjust the compiler language flag
-set(NOCPPFLAGS true)
-if(${CMAKE_CXX_FLAGS} MATCHES ".*std=.*11")
-  set(NOCPPFLAGS false)
-elseif(${CMAKE_CXX_FLAGS} MATCHES ".*std=.*0x")
-  set(NOCPPFLAGS false) 
-endif()
-
-if(NOCPPFLAGS)
-  CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-  if(COMPILER_SUPPORTS_CXX11 AND NOT nocpp11)
-	    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-  else()
-    CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-  endif()
-
-  if(COMPILER_SUPPORTS_CXX0X AND NOT nocpp11)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-  endif()
-endif()
-
 set(CMAKE_BINARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin )
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
 set(CMAKE_INCLUDE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/include )
