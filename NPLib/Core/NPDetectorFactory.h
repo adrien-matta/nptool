@@ -1,5 +1,28 @@
 #ifndef _DETECTORFACTORY_
 #define _DETECTORFACTORY_
+/*****************************************************************************
+ * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Original Author: Adrien Matta   contact address: matta@lpccaen.in2p3.fr   *
+ *                                                                           *
+ * Creation Date  :                                                          *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *                                                                           *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
+
+
 #include"NPVDetector.h"
 #include<map>
 #include<string>

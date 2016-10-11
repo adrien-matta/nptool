@@ -1,46 +1,28 @@
-// -*- C++ -*-
-// $Id:$
-// ----------------------------------------------------------------------
-// HEP coherent Physical Constants
-//
-// This file has been provided by Geant4 (simulation toolkit for HEP).
-//
-// The basic units are :
-//  		millimeter  
-// 		nanosecond  
-// 		Mega electron Volt  
-// 		positon charge 
-// 		degree Kelvin
-//              amount of substance (mole)
-//              luminous intensity (candela)
-// 		radian  
-//              steradian 
-//
-// Below is a non exhaustive list of Physical CONSTANTS,
-// computed in the Internal HEP System Of Units.
-//
-// Most of them are extracted from the Particle Data Book :
-//        Phys. Rev. D  volume 50 3-1 (1994) page 1233
-// 
-//        ...with a meaningful (?) name ...
-//
-// You can add your own constants.
-//
-// Author: M.Maire
-//
-// History:
-//
-// 23.02.96 Created
-// 26.03.96 Added constants for standard conditions of temperature
-//          and pressure; also added Gas threshold.
-// 29.04.08   use PDG 2006 values
-// 03.11.08   use PDG 2008 values
-
-// Prevent to use NPSystem of unit while HEP system of unit is in use (in G4 for example)
 #ifndef HEP_PHYSICAL_CONSTANTS_H
 
 #ifndef NP_PHYSICAL_CONSTANTS_H
 #define NP_PHYSICAL_CONSTANTS_H
+/*****************************************************************************
+ * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Original Author: Adrien Matta   contact address: matta@lpccaen.in2p3.fr   *
+ *                                                                           *
+ * Creation Date  :                                                          *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *                                                                           *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
 
 #include "NPSystemOfUnits.h"
 

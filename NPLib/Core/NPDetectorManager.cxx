@@ -6,7 +6,7 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author:              contact address:                            *
+ * Original Author: Adrien Matta   contact address: matta@lpccaen.in2p3.fr   *
  *                                                                           *
  * Creation Date  :                                                          *
  * Last update    :                                                          *

@@ -1,47 +1,25 @@
-// -*- C++ -*-
-// $Id:$
-// ----------------------------------------------------------------------
-// HEP coherent system of Units
-//
-// This file has been provided to CLHEP by Geant4 (simulation toolkit for HEP).
-//
-// The basic units are :
-// millimeter              (millimeter)
-// nanosecond              (nanosecond)
-// Mega electron Volt      (MeV)
-// positron charge         (eplus)
-// degree Kelvin           (kelvin)
-// the amount of substance (mole)
-// luminous intensity      (candela)
-// radian                  (radian)
-// steradian               (steradian)
-//
-// Below is a non exhaustive list of derived and pratical units
-// (i.e. mostly the SI units).
-// You can add your own units.
-//
-// The SI numerical value of the positron charge is defined here,
-// as it is needed for conversion factor : positron charge = e_SI (coulomb)
-//
-// The others physical constants are defined in the header file :
-//PhysicalConstants.h
-//
-// Authors: M.Maire, S.Giani
-//
-// History:
-//
-// 06.02.96   Created.
-// 28.03.96   Added miscellaneous constants.
-// 05.12.97   E.Tcherniaev: Redefined pascal (to avoid warnings on WinNT)
-// 20.05.98   names: meter, second, gram, radian, degree
-//            (from Brian.Lasiuk@yale.edu (STAR)). Added luminous units.
-// 05.08.98   angstrom, picobarn, microsecond, picosecond, petaelectronvolt
-// 01.03.01   parsec    
-// 31.01.06   kilogray, milligray, microgray    
-// 29.04.08   use PDG 2006 value of e_SI
-// 03.11.08   use PDG 2008 value of e_SI
-
 #ifndef HEP_SYSTEM_OF_UNITS_H
+/*****************************************************************************
+ * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Original Author: Adrien Matta   contact address: matta@lpccaen.in2p3.fr   *
+ *                                                                           *
+ * Creation Date  :                                                          *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *                                                                           *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
 
 #ifndef NP_SYSTEM_OF_UNITS_H
 #define NP_SYSTEM_OF_UNITS_H

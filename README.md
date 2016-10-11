@@ -6,7 +6,7 @@ distributed data analysis and Monte Carlo simulation package for low-energy
 nuclear physics experiments. The NPTool package aims to offer an unified
 framework for preparing and analysing complex experiments, making an efficient
 use of Geant4 and ROOT toolkits. If you wish to contribute, contact Adrien 
-MATTA at a.matta@surrey.ac.uk
+MATTA at matta@lpccaen.in2p3.fr 
 
 # Contents
 1. [Getting the code](#getting-the-code)
