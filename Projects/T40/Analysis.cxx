@@ -58,6 +58,7 @@ void Analysis::Init(){
   LightSi = NPL::EnergyLoss(light+"_Si.G4table","G4Table",10);
   BeamTarget = NPL::EnergyLoss(beam+"_"+TargetMaterial+".G4table","G4Table",10);
   FinalBeamEnergy = BeamTarget.Slow(OriginalBeamEnergy, TargetThickness*0.5, 0);
+  cout << "Final Beam energy (middle of target): " << FinalBeamEnergy << endl;
   myReaction->SetBeamEnergy(FinalBeamEnergy);
 
   Initial = new TInitialConditions();
