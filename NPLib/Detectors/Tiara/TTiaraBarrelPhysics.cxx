@@ -736,7 +736,7 @@ void TTiaraBarrelPhysics::ReadConfiguration(string Path){
     class brlproxy{
       public:
         brlproxy(){
-          NPL::DetectorFactory::getInstance()->AddToken("Tiara","Tiara");
+          NPL::DetectorFactory::getInstance()->AddToken("TiaraInnerBarrel=","Tiara");
           NPL::DetectorFactory::getInstance()->AddDetector("TiaraInnerBarrel=",TTiaraBarrelPhysics::Construct);
         }
     };
