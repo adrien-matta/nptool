@@ -8,6 +8,10 @@ framework for preparing and analysing complex experiments, making an efficient
 use of Geant4 and ROOT toolkits. If you wish to contribute, contact Adrien 
 MATTA at matta@lpccaen.in2p3.fr 
 
+# Usefull links:
+  * [nptool website](http://nptool.org) : Find the latest informations on the framework
+  * [nptool manual](http://nptool.org/manual) : Find a more detail manual on how to install and run the framework
+
 # Contents
 1. [Getting the code](#getting-the-code)
   1. [Using git](#using-git)
