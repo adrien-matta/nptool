@@ -6,7 +6,7 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Adrien MATTA  contact address: matta@ipno.in2p3.fr       *
+ * Original Author: Adrien MATTA  contact address: matta@lpccaen.in2p3.fr    *
  *                                                                           *
  * Creation Date  : January 2009                                             *
  * Last update    : 26/08/2010  (M. Labiche)                                 *

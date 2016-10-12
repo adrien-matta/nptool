@@ -36,32 +36,32 @@ if [ "$1" = "-e" ]; then
       if [[ $size_diff == "-"* ]]; then
         let size=-$size_diff
         printf -v spaces "%${size}s"
-        echo "Updating email"
-        $sed_cmd -e "s/ ${spaces}contact address: $2/ contact address: $3/g" $NPTOOL/NPLib/*/*/*.cxx 
-        $sed_cmd -e "s/ ${spaces}contact address: $2/ contact address: $3/g" $NPTOOL/NPLib/*/*/*.h 
-        $sed_cmd -e "s/ ${spaces}contact address: $2/ contact address: $3/g" $NPTOOL/NPLib/*/*.cxx 
-        $sed_cmd -e "s/ ${spaces}contact address: $2/ contact address: $3/g" $NPTOOL/NPLib/*/*.h
+        echo "Updating email 1 "
 
-        $sed_cmd -e "s/ ${spaces}contact address: $2/ contact address: $3/g" $NPTOOL/NPSimulation/*/*/*.cc 
-        $sed_cmd -e "s/ ${spaces}contact address: $2/ contact address: $3/g" $NPTOOL/NPSimulation/*/*/*.hh 
-        $sed_cmd -e "s/ ${spaces}contact address: $2/ contact address: $3/g" $NPTOOL/NPSimulation/*/*.cc
-        $sed_cmd -e "s/ ${spaces}contact address: $2/ contact address: $3/g" $NPTOOL/NPSimulation/*/*.hh 
-        $sed_cmd -e "s/ ${spaces}contact address: $2/ contact address: $3/g" $NPTOOL/NPSimulation/*.cc 
+        $sed_cmd -e "s/contact address: ${2}${spaces}/contact address: ${3}/g" $NPTOOL/NPLib/*/*/*.cxx 
+        $sed_cmd -e "s/contact address: ${2}${spaces}/contact address: ${3}/g" $NPTOOL/NPLib/*/*/*.h 
+        $sed_cmd -e "s/contact address: ${2}${spaces}/contact address: ${3}/g" $NPTOOL/NPLib/*/*.cxx 
+        $sed_cmd -e "s/contact address: ${2}${spaces}/contact address: ${3}/g" $NPTOOL/NPLib/*/*.h
+
+        $sed_cmd -e "s/contact address: ${2}${spaces}/contact address: ${3}/g" $NPTOOL/NPSimulation/*/*/*.cc 
+        $sed_cmd -e "s/contact address: ${2}${spaces}/contact address: ${3}/g" $NPTOOL/NPSimulation/*/*/*.hh 
+        $sed_cmd -e "s/contact address: ${2}${spaces}/contact address: ${3}/g" $NPTOOL/NPSimulation/*/*.cc
+        $sed_cmd -e "s/contact address: ${2}${spaces}/contact address: ${3}/g" $NPTOOL/NPSimulation/*/*.hh 
+        $sed_cmd -e "s/contact address: ${2}${spaces}/contact address: ${3}/g" $NPTOOL/NPSimulation/*.cc 
       else
         let size=$size_diff
         printf -v spaces "%${size}s"
-        echo "Updating email"
-        $sed_cmd -e "s/ contact address: $2/ contact address: $3${spaces}/g" test.file 
-        $sed_cmd -e "s/ contact address: $2/ contact address: $3${spaces}/g" $NPTOOL/NPLib/*/*/*.cxx 
-        $sed_cmd -e "s/ contact address: $2/ contact address: $3${spaces}/g" $NPTOOL/NPLib/*/*/*.h 
-        $sed_cmd -e "s/ contact address: $2/ contact address: $3${spaces}/g" $NPTOOL/NPLib/*/*.cxx 
-        $sed_cmd -e "s/ contact address: $2/ contact address: $3${spaces}/g" $NPTOOL/NPLib/*/*.h
+        echo "Updating email 2 "
+        $sed_cmd -e "s/ contact address: ${2}/ contact address: ${3}${spaces}/g" $NPTOOL/NPLib/*/*/*.cxx 
+        $sed_cmd -e "s/ contact address: ${2}/ contact address: ${3}${spaces}/g" $NPTOOL/NPLib/*/*/*.h 
+        $sed_cmd -e "s/ contact address: ${2}/ contact address: ${3}${spaces}/g" $NPTOOL/NPLib/*/*.cxx 
+        $sed_cmd -e "s/ contact address: ${2}/ contact address: ${3}${spaces}/g" $NPTOOL/NPLib/*/*.h
                                                                          
-        $sed_cmd -e "s/ contact address: $2/ contact address: $3${spaces}/g" $NPTOOL/NPSimulation/*/*/*.cc 
-        $sed_cmd -e "s/ contact address: $2/ contact address: $3${spaces}/g" $NPTOOL/NPSimulation/*/*/*.hh 
-        $sed_cmd -e "s/ contact address: $2/ contact address: $3${spaces}/g" $NPTOOL/NPSimulation/*/*.cc
-        $sed_cmd -e "s/ contact address: $2/ contact address: $3${spaces}/g" $NPTOOL/NPSimulation/*/*.hh 
-        $sed_cmd -e "s/ contact address: $2/ contact address: $3${spaces}/g" $NPTOOL/NPSimulation/*.cc 
+        $sed_cmd -e "s/ contact address: ${2}/ contact address: ${3}${spaces}/g" $NPTOOL/NPSimulation/*/*/*.cc 
+        $sed_cmd -e "s/ contact address: ${2}/ contact address: ${3}${spaces}/g" $NPTOOL/NPSimulation/*/*/*.hh 
+        $sed_cmd -e "s/ contact address: ${2}/ contact address: ${3}${spaces}/g" $NPTOOL/NPSimulation/*/*.cc
+        $sed_cmd -e "s/ contact address: ${2}/ contact address: ${3}${spaces}/g" $NPTOOL/NPSimulation/*/*.hh 
+        $sed_cmd -e "s/ contact address: ${2}/ contact address: ${3}${spaces}/g" $NPTOOL/NPSimulation/*.cc 
 
       fi
     else
