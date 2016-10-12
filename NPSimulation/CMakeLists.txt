@@ -1,6 +1,10 @@
 cmake_minimum_required (VERSION 2.8)
 include(CheckCXXCompilerFlag)
 
+# Setting the policy to match Cmake version
+cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
+
+
 project (NPSimulation)
 set (NPSIM_VERSION_MAJOR 2)
 set (NPSIM_VERSION_MINOR 0)

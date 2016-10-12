@@ -3,6 +3,13 @@ include(CheckCXXCompilerFlag)
 project(NPLib CXX)
 set(CMAKE_BUILD_TYPE Release)
 
+# Setting the policy to match Cmake version
+cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
+
+# include the nptool standard CMake preamble 
+include("ressources/CMake/NPTool_CMake_Preamble.cmake")
+
+
 # Major change in the Core/Physics (affecting the detector/analysis/simulation)
 set(NPLIB_VERSION_MAJOR 2)
 # Minor change in the Core/Physics (not affecting any other part)
@@ -19,9 +26,6 @@ if(rdet)
   else()
     message("Building the following detectors ${DETLIST}") 
 endif()
-
-# include the nptool standard CMake preamble 
-include("ressources/CMake/NPTool_CMake_Preamble.cmake")
 
 set(CMAKE_BINARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin )
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
