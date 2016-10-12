@@ -387,13 +387,13 @@ NPS::VDetector* DETECTORNAME::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern"C" {
-  class proxy_nps_plastic{
+  class proxy_nps_DETECTORNAME{
     public:
-      proxy_nps_plastic(){
+      proxy_nps_DETECTORNAME(){
         NPS::DetectorFactory::getInstance()->AddToken("DETECTORNAME","DETECTORNAME");
         NPS::DetectorFactory::getInstance()->AddDetector("DETECTORNAME",DETECTORNAME::Construct);
       }
   };
 
-  proxy_nps_plastic p_nps_plastic;
+  proxy_nps_DETECTORNAME p_nps_DETECTORNAME;
 }

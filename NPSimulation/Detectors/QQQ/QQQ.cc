@@ -645,7 +645,7 @@ NPS::VDetector* QQQ::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern"C" {
-  class proxy{
+  class proxy_nps_qqq{
     public:
       proxy(){
         NPS::DetectorFactory::getInstance()->AddToken("QQQ","QQQ");
@@ -653,5 +653,5 @@ extern"C" {
       }
   };
 
-  proxy p;
+  proxy_nps_qqq p_nps_qqq;
 }
