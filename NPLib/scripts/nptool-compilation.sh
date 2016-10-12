@@ -22,10 +22,17 @@
 
 #! /bin/bash
 # save the current folder information
+set -e
 FOLDER=${PWD}
 
+if [ "$#" -ne 1 ]; then
+  arg="-a"
+else 
+  arg="$1"
+fi
+
 # simulation
-if [ "$1" = "s" ]; then
+if [ "$arg" = "-s" ]; then
   cd $NPTOOL/NPSimulation
   if [ -f "build.ninja" ]; then
     ninja install
@@ -37,7 +44,7 @@ if [ "$1" = "s" ]; then
   fi
 
 # lib
-elif [ "$1" = "l" ]; then
+elif [ "$arg" = "-l" ]; then
   cd $NPTOOL/NPLib
   if [ -f "build.ninja" ]; then
     ninja install
@@ -49,7 +56,7 @@ elif [ "$1" = "l" ]; then
   fi
 
 # all
-elif [ "$1" = "a" ]; then
+elif [ "$arg" = "-a" ]; then
   cd $NPTOOL/NPSimulation
   if [ -f "build.ninja"  ]; then
     ninja install
@@ -81,8 +88,9 @@ elif [ "$1" = "a" ]; then
   fi
 
 else
-  echo "Unexpected argument: $1"
-  echo "Expecting : s (simulation) , l (library) or a (all)"
+  echo "Unexpected argument: $arg"
+  echo "Expecting : -s (simulation) , -l (library) or -a (all) or no argument (=-a)"
+
 fi
 
 # return to original folder
