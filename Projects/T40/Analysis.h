@@ -83,6 +83,9 @@ class Analysis: public NPL::VAnalysis{
   double Si_E_TB  ;
 	double Energy ;
 	double TargetThickness ;
+
+  double Original_ThetaLab;
+  double Original_ELab;
 	
   double XTarget ;
 	double YTarget ;

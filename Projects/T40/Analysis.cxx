@@ -74,6 +74,9 @@ void Analysis::Init(){
   Si_E_TB = 0 ;
   Energy = 0;
 
+  Original_ELab=0;
+  Original_ThetaLab=0;
+
   XTarget = 0;
   YTarget =0;
   BeamDirection = TVector3(0,0,1);
@@ -86,7 +89,9 @@ void Analysis::Init(){
 void Analysis::TreatEvent(){
   // Reinitiate calculated variable
   ReInitValue();
-
+  
+  Original_ELab = Initial->GetKineticEnergy(0);
+  Original_ThetaLab = Initial->GetParticleDirection(0).Angle(Initial->GetBeamDirection())/deg;
 
   ////////////////////////////////////////// LOOP on TiaraHyball + SSSD Hit //////////////////////////////////////////
   for(unsigned int countTiaraHyball = 0 ; countTiaraHyball < TH->Strip_E.size() ; countTiaraHyball++){
@@ -102,6 +107,8 @@ void Analysis::TreatEvent(){
     if(XTarget>-1000 && YTarget>-1000){
       TVector3 BeamImpact(XTarget,YTarget,0);
       TVector3 HitDirection = TH -> GetRandomisedPositionOfInteraction(countTiaraHyball) - BeamImpact ;
+     // TVector3 HitDirection = TH -> GetPositionOfInteraction(countTiaraHyball) - BeamImpact ;
+
       ThetaLab = HitDirection.Angle( BeamDirection );
       ThetaTHSurface = HitDirection.Angle(TVector3(0,0,-1) );
       ThetaNormalTarget = HitDirection.Angle( TVector3(0,0,1) ) ;
@@ -235,6 +242,8 @@ void Analysis::ReInitValue(){
   ELab = -1000;
   ThetaLab = -1000;
   ThetaCM = -1000;
+  Original_ELab = -1000;
+  Original_ThetaLab = -1000;
 }
 /////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
@@ -246,6 +255,8 @@ void Analysis::InitOutputBranch() {
   RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixX",&TiaraIMX,"TiaraImpactMatrixX/D");
   RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixY",&TiaraIMY,"TiaraImpactMatrixY/D");
   RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixZ",&TiaraIMZ,"TiaraImpactMatrixZ/D");
+  RootOutput::getInstance()->GetTree()->Branch("Original_ELab",&Original_ELab,"Original_ELab/D");
+  RootOutput::getInstance()->GetTree()->Branch("Original_ThetaLab",&Original_ThetaLab,"Original_ThetaLab/D");
 }
 /////////////////////////////////////////////////////////////////////////////
 void Analysis::InitInputBranch(){

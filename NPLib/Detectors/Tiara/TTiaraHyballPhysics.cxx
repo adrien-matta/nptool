@@ -632,7 +632,7 @@ void TTiaraHyballPhysics::AddWedgeDetector( double R,double Phi,double Z){
 
     for(int b = 0 ; b < Wedge_Sector_NumberOfStrip ; b++){
       StripCenter = Strip_1_1;
-      StripCenter.SetY(Wedge_R_Max-f*StripPitchRing);
+      StripCenter.SetY(Wedge_R_Max-f*StripPitchRing-0.5*StripPitchRing);
       StripCenter.SetZ(Z);
       StripCenter.RotateZ(Phi+Wedge_Phi_Min+b*StripPitchSector);
       lineX.push_back( StripCenter.X() );
