@@ -6,8 +6,7 @@ author: Adrien Matta
 categories: nptool update
 ---
 
- The website for the registrations is now ready:
- https://pro.ganil-spiral2.eu/events/workshops/simulation-icc
+ The [registration website][registration] is now ready.
  You will also find a list of hotels close to GANIL with reduced prices for the
  workshop.
  
