@@ -73,7 +73,7 @@ int main(int argc , char** argv){
   NPL::DetectorManager* myDetector = new NPL::DetectorManager();
   myDetector->ReadConfigurationFile(detectorfileName);
 
-    // Attempt to load an analysis
+  // Attempt to load an analysis
   NPL::VAnalysis* UserAnalysis = NULL;
   string libName = "./libNPAnalysis" + myOptionManager->GetSharedLibExtension();
   dlopen(libName.c_str(),RTLD_NOW | RTLD_GLOBAL);
@@ -157,7 +157,8 @@ int main(int argc , char** argv){
 
     else{
       cout << "\033[1;31m ERROR: You are requesting to rebuild a Physics Tree without any User Analysis, nothing to be done\033[0m" <<endl;
-      exit(1);
+      // Quit without error
+      exit(0);
     }
   }
 

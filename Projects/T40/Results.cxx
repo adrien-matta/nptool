@@ -4,7 +4,7 @@ void Results(){
 
   Tree->Draw("ELab:ThetaLab>>h2(1000,0,180,1000,0,20)","ELab>0","colz");
   new TCanvas();
-  Tree->Draw("Ex>>h4(1000)","ELab>0 && Ex>-1000");
+  Tree->Draw("Ex>>h4(1000,-2,5)","ELab>0 && Ex>-1000 && ThetaLab>164");
   TCanvas* c = new TCanvas("CAS","Control Analyse-Simu");
   c->Divide(2,2);
   c->cd(1);

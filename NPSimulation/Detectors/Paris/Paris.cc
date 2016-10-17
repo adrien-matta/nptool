@@ -86,7 +86,7 @@ void Paris::AddCluster(G4ThreeVector Pos1, G4ThreeVector Pos2, G4ThreeVector Pos
   G4ThreeVector u = Pos1-Pos2;
   G4ThreeVector v = Pos1-Pos4;
   u = u.unit(); v = v.unit();
-  G4ThreeVector w = Pos.unit();
+  G4ThreeVector w = u.cross(v);
   Pos = Pos + w*Length*0.5;
 
   m_Type.push_back(1); 

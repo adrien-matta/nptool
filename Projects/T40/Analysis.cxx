@@ -107,7 +107,6 @@ void Analysis::TreatEvent(){
     if(XTarget>-1000 && YTarget>-1000){
       TVector3 BeamImpact(XTarget,YTarget,0);
       TVector3 HitDirection = TH -> GetRandomisedPositionOfInteraction(countTiaraHyball) - BeamImpact ;
-     // TVector3 HitDirection = TH -> GetPositionOfInteraction(countTiaraHyball) - BeamImpact ;
 
       ThetaLab = HitDirection.Angle( BeamDirection );
       ThetaTHSurface = HitDirection.Angle(TVector3(0,0,-1) );
