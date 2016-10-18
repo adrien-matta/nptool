@@ -34,8 +34,8 @@ nptool requiere the libmathmore from ROOT, which is build only when the GNU Scie
 
 On Ubuntu and Debian :
 {% highlight console %}
-$ sudo apt-get gsl-bin
-$ sudo apt-get libgsl0-dev
+$ sudo apt-get install gsl-bin
+$ sudo apt-get inatall libgsl0-dev
 {% endhighlight %}
 
 On Fedora (> 21) :
