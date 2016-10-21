@@ -97,6 +97,7 @@ void Target::ReadConfiguration(string Path){
   bool check_X = false ;
   bool check_Y = false ;
   bool check_Z = false ;
+  bool check_Angle = false;
   bool check_Density = false ;
   bool check_WinThickness = false ;
   bool check_WinMaterial = false ;
@@ -129,7 +130,7 @@ void Target::ReadConfiguration(string Path){
       }
 
       else if (DataBuffer.compare(0, 6, "ANGLE=") == 0) {
-        //        check_Angle = true ;
+        check_Angle = true ;
         ConfigFile >> DataBuffer;
         m_TargetAngle = atof(DataBuffer.c_str()) * deg;
         if(VerboseLevel==1) G4cout << "Target Angle: "  << m_TargetAngle / deg << G4endl     ;
@@ -188,7 +189,8 @@ void Target::ReadConfiguration(string Path){
       ///////////////////////////////////////////////////
       //   If all Token found toggle out
       if( check_Thickness && check_Radius && check_Material 
-          && check_X && check_Y && check_Z ){
+          && check_X && check_Y && check_Z && check_Angle){
+        m_EffectiveThickness = m_TargetThickness / cos(m_TargetAngle);
         ReadingStatusTarget = false ;
       }
     }
@@ -403,7 +405,6 @@ G4double Target::SlowDownBeam(G4ParticleDefinition* Beam,
 
   G4double ThicknessBeforeInteraction = 
     abs(ZInteraction - 0.5*m_EffectiveThickness) / cos(m_TargetAngle);
-
 
   G4double dedx,de;
   static G4EmCalculator emCalculator;
