@@ -23,9 +23,7 @@ include("../NPLib/ressources/CMake/NPTool_CMake_Preamble.cmake")
 find_package(Geant4 REQUIRED ui_all vis_all)
 
 # Rely on name of the file to set the version  
-string(REGEX MATCH "Geant4-*.*.*/" G4Version "${Geant4_USE_FILE}")
-string(REPLACE "Geant4-" "" G4Version "${G4Version}")
-string(REPLACE "/" "" G4Version "${G4Version}")
+set(G4Version "${Geant4_VERSION}")
 string(FIND "${G4Version}" "." pos)
 string(SUBSTRING "${G4Version}" "0" "${pos}" NPS_GEANT4_VERSION_MAJOR)
 string(REPLACE "${NPS_GEANT4_VERSION_MAJOR}." "" G4Version "${G4Version}")
@@ -33,6 +31,7 @@ string(FIND "${G4Version}" "." pos)
 string(SUBSTRING "${G4Version}" "0" "${pos}" NPS_GEANT4_VERSION_MINOR)
 string(REPLACE "${NPS_GEANT4_VERSION_MINOR}." "" G4Version "${G4Version}")
 set(NPS_GEANT4_VERSION_PATCH "${G4Version}")
+
 message ("Geant4 found, Version : ${NPS_GEANT4_VERSION_MAJOR}.${NPS_GEANT4_VERSION_MINOR}.${NPS_GEANT4_VERSION_PATCH}")
 
 include(${Geant4_USE_FILE}) 
