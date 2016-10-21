@@ -36,13 +36,14 @@
 // G4 headers
 #include "G4Event.hh"
 #include "G4Material.hh"
+#include "G4Tubs.hh"
 #include "G4LogicalVolume.hh"
 
 // NPTool headers
 #include "NPSVDetector.hh"
 
 using namespace std;
-using namespace CLHEP;
+using namespace CLHEP;
 
 class Target : public NPS::VDetector{
 public:
@@ -83,19 +84,25 @@ public:
   G4Material* GetMaterialFromLibrary(G4String MaterialName);
   
 public:
-  G4double    GetTargetThickness()   {return m_TargetThickness;}
-  G4Material* GetTargetMaterial()    {return m_TargetMaterial;}
-  G4double    GetTargetRadius()      {return m_TargetRadius;}
-  G4double    GetTargetAngle()       {return m_TargetAngle;}
-  G4double    GetTargetX()           {return m_TargetX;}
-  G4double    GetTargetY()           {return m_TargetY;}
-  G4double    GetTargetZ()           {return m_TargetZ;}
-  G4int       GetTargetNbLayers()    {return m_TargetNbLayers;}
-  
+  G4double            GetTargetThickness()   {return m_TargetThickness;}
+  G4Material*         GetTargetMaterial()    {return m_TargetMaterial;}
+  G4double            GetTargetRadius()      {return m_TargetRadius;}
+  G4double            GetTargetAngle()       {return m_TargetAngle;}
+  G4double            GetTargetX()           {return m_TargetX;}
+  G4double            GetTargetY()           {return m_TargetY;}
+  G4double            GetTargetZ()           {return m_TargetZ;}
+  G4ThreeVector       GetTargetPosition()    {return G4ThreeVector(m_TargetX,m_TargetY,m_TargetZ);}
+  G4int               GetTargetNbLayers()    {return m_TargetNbLayers;}
+  G4Tubs*             GetTargetSolid()       {return m_TargetSolid;}
+  G4LogicalVolume*    GetTargetLogic()       {return m_TargetLogic;}  
   
 private:
   // Target type : true = normal ; false = cryo
   bool     m_TargetType;
+  
+  // Solid and Logic Volume
+  G4Tubs* m_TargetSolid;
+  G4LogicalVolume* m_TargetLogic;
   
   // Standard parameter
   G4double    m_TargetThickness;
@@ -114,6 +121,13 @@ private:
   G4double    m_TargetX;
   G4double    m_TargetY;
   G4double    m_TargetZ;
+
+  // Pointer to the last target generated (0 if none)
+  private:
+    static Target*  TargetInstance ;
+
+  public:
+    static Target* GetTarget(){return TargetInstance;}
 };
 
 #endif

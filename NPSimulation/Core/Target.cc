@@ -56,6 +56,7 @@ using namespace CLHEP ;
 
 using namespace std;
 
+Target* Target::TargetInstance=0;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Specific Method of this class
@@ -68,6 +69,8 @@ Target::Target(){
   m_TargetDensity      = 0   ;
   m_EffectiveThickness = 0   ; // effective thickness at 0 deg, compute using angle and thickness
   m_TargetNbLayers     = 5;   // Number of steps by default
+  // Set the global pointer
+  TargetInstance = this;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -312,34 +315,48 @@ void Target::ConstructDetector(G4LogicalVolume* world){
   if (m_TargetType) {   // case of standard target
 
     if (m_TargetThickness > 0) {
-      G4Tubs* solidTarget = 
+      m_TargetSolid = 
         new G4Tubs("solidTarget", 0, m_TargetRadius, 
             0.5*m_TargetThickness, 0*deg, 360*deg);
-      G4LogicalVolume* logicTarget = 
-        new G4LogicalVolume(solidTarget, m_TargetMaterial, "logicTarget");
+      m_TargetLogic = 
+        new G4LogicalVolume(m_TargetSolid, m_TargetMaterial, "logicTarget");
 
       // rotation of target
       G4RotationMatrix *rotation = new G4RotationMatrix();
       rotation->rotateY(m_TargetAngle);
 
       new G4PVPlacement(rotation, G4ThreeVector(m_TargetX, m_TargetY, m_TargetZ), 
-          logicTarget, "Target", world, false, 0);
+          m_TargetLogic, "Target", world, false, 0);
 
       G4VisAttributes* TargetVisAtt = new G4VisAttributes(G4Colour(0., 0., 1.));
-      logicTarget->SetVisAttributes(TargetVisAtt);
+      m_TargetLogic->SetVisAttributes(TargetVisAtt);
     }
   }
 
   else {   // case of cryogenic target
     if (m_TargetThickness > 0) {
-      G4Tubs* solidTarget = 
+      m_TargetSolid = 
         new G4Tubs("solidTarget", 0, m_TargetRadius, 
+            0.5*m_TargetThickness+m_WindowsThickness, 0*deg, 360*deg);
+
+     m_TargetLogic = 
+        new G4LogicalVolume(m_TargetSolid, 
+                            GetMaterialFromLibrary("Vacuum")
+                            , "logicTarget");
+
+      m_TargetLogic->SetVisAttributes(G4VisAttributes::Invisible);
+      G4Tubs* solidTarget = 
+            new G4Tubs("solidTarget", 0, m_TargetRadius, 
             0.5*m_TargetThickness, 0*deg, 360*deg);
+
       G4LogicalVolume* logicTarget = 
         new G4LogicalVolume(solidTarget, m_TargetMaterial, "logicTarget");
 
-      new G4PVPlacement(0, G4ThreeVector(m_TargetX, m_TargetY, m_TargetZ), 
-          logicTarget, "Target", world, false, 0);
+      new G4PVPlacement(0, G4ThreeVector(0, 0, 0), 
+          logicTarget, "Target", m_TargetLogic, false, 0);
+
+       new G4PVPlacement(0, G4ThreeVector(m_TargetX, m_TargetY, m_TargetZ), 
+          m_TargetLogic, "Target", world, false, 0);
 
       G4VisAttributes* TargetVisAtt = new G4VisAttributes(G4Colour(0., 0., 1.));
       logicTarget->SetVisAttributes(TargetVisAtt);
@@ -366,11 +383,11 @@ void Target::ConstructDetector(G4LogicalVolume* world){
       new G4PVPlacement(0,
           TargetPos 
           +G4ThreeVector(0., 0., 0.5*(m_TargetThickness + m_WindowsThickness)) ,
-          logicWindowsF,"Target Window Front",world,false, 0);
+          logicWindowsF,"Target Window Front",m_TargetLogic,false, 0);
 
       new G4PVPlacement(   0,
           TargetPos + G4ThreeVector(0., 0., -0.5*(m_TargetThickness + m_WindowsThickness)),
-          logicWindowsB,"Target Window Back",world,false, 0);
+          logicWindowsB,"Target Window Back",m_TargetLogic,false, 0);
 
       G4VisAttributes* WindowsVisAtt = new G4VisAttributes(G4Colour(0.5, 1., 0.5));
       logicWindowsF->SetVisAttributes(WindowsVisAtt);

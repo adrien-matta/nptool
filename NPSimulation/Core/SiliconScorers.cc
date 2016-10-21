@@ -296,7 +296,6 @@ G4bool PS_Silicon_Resistive::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   // The energy is divided in two depending on the position
   // position along the resistive strip
   double P = (m_Position.z())/(0.5*m_StripPlaneLength);
-
   // Upstream Energy
   EnergyAndTime[0] = aStep->GetTotalEnergyDeposit()*(1+P)*0.5;
 
@@ -319,7 +318,6 @@ G4bool PS_Silicon_Resistive::ProcessHits(G4Step* aStep, G4TouchableHistory*){
     EnergyAndTime[0]+=dummy[0];
     EnergyAndTime[1]+=dummy[1];
   }
-
   EvtMap->set(m_Index, EnergyAndTime);
   return TRUE;
 }
