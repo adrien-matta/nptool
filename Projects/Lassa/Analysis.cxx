@@ -52,13 +52,14 @@ void Analysis::Init(){
     He3_CsI = EnergyLoss("He3_CsI.G4table","G4Table",100 );
     
     
-    proton = new NPL::Nucleus("1H");
-    deuton = new NPL::Nucleus("2H");
-    triton = new NPL::Nucleus("3H");
-    helium3 = new NPL::Nucleus("3He");
-    alpha = new NPL::Nucleus("4He");
-    beam = new NPL::Nucleus("112Sn");
-    target = new NPL::Nucleus("112Sn");
+    proton          = new NPL::Nucleus("1H");
+    deuton          = new NPL::Nucleus("2H");
+    triton          = new NPL::Nucleus("3H");
+    helium3         = new NPL::Nucleus("3He");
+    alpha           = new NPL::Nucleus("4He");
+    beam            = new NPL::Nucleus("112Sn");
+    target          = new NPL::Nucleus("112Sn");
+    lightparticle   = alpha;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -68,10 +69,11 @@ void Analysis::TreatEvent(){
     
     totalEvents++;
     
-    double BeamEnergy = 120*beam->GetA();
+    double BeamEnergy = 50*beam->GetA();
     
     TVector3 fImpulsionLab_beam             = TVector3(0,0,sqrt(BeamEnergy*BeamEnergy + 2*BeamEnergy*beam->Mass()));
     TLorentzVector fEnergyImpulsionLab_beam = TLorentzVector(fImpulsionLab_beam,beam->Mass()+BeamEnergy);
+    y_beam_lab = fEnergyImpulsionLab_beam.Rapidity();
     
     TVector3 fImpulsionLab_target             = TVector3(0,0,0);
     TLorentzVector fEnergyImpulsionLab_target = TLorentzVector(fImpulsionLab_target,target->Mass());
@@ -81,6 +83,10 @@ void Analysis::TreatEvent(){
     
     double BetaCM = fEnergyImpulsionLab_total.Beta();
     
+    TLorentzVector fEnergyImpulsionLab_CM = fEnergyImpulsionLab_beam;
+    fEnergyImpulsionLab_CM.Boost(0,0,-BetaCM);
+    y_beam_CM = fEnergyImpulsionLab_CM.Rapidity();
+    
     
     InitialEnergy = InitialConditions->GetKineticEnergy(0);
     double EDelta = 2.0;
@@ -89,12 +95,12 @@ void Analysis::TreatEvent(){
     else InitialEnergy_Lassa = -100;
     double phi_in = acos(InitialConditions->GetMomentumDirectionX(0)/sin(InitialConditions->GetThetaCM(0)*deg));
     
-    ECM_initial = proton->GetEnergyCM(InitialEnergy, InitialConditions->GetThetaCM(0)*deg, phi_in, BetaCM);
-    ThetaCM = proton->GetThetaCM(InitialEnergy, InitialConditions->GetThetaCM(0)*deg, phi_in, BetaCM)/deg;
+    ECM_initial = lightparticle->GetEnergyCM(InitialEnergy, InitialConditions->GetThetaCM(0)*deg, phi_in, BetaCM);
+    ThetaCM = lightparticle->GetThetaCM(InitialEnergy, InitialConditions->GetThetaCM(0)*deg, phi_in, BetaCM)/deg;
     ThetaLabInitial = InitialConditions->GetThetaLab_WorldFrame(0);
     
     if(Lassa->EventMultiplicity==1){
-        ECM_initial_Lassa = proton->GetEnergyCM(InitialEnergy_Lassa, InitialConditions->GetThetaCM(0)*deg, phi_in, BetaCM);
+        ECM_initial_Lassa = lightparticle->GetEnergyCM(InitialEnergy_Lassa, InitialConditions->GetThetaCM(0)*deg, phi_in, BetaCM);
     }
     else ECM_initial_Lassa = -100;
     ///////////////////////////LOOP on Lassa Hit//////////////////////////////////
@@ -163,11 +169,36 @@ void Analysis::TreatEvent(){
             if(fabs(InitialEnergy-ELab_nucl)>EDelta) ELab_nucl = -100;
             
             if(ELab>0){
-                ECM = proton->GetEnergyCM(ELab, ThetaLab, PhiLab, BetaCM);
+                ECM = lightparticle->GetEnergyCM(ELab, ThetaLab, PhiLab, BetaCM);
             }
             else{
                 ECM = -100;
             }
+            
+            ///////////////////////////
+            // Momentum and Rapidity //
+            ///////////////////////////
+            if(ELab>0){
+                TLorentzVector LVEnergyImpulsionLAB;
+                TLorentzVector LVEnergyImpulsionCM;
+                
+                Ptot                   = sqrt(ELab*ELab + 2*ELab*lightparticle->Mass());
+                double ImpulsionLabX   = Ptot*sin(ThetaLab)*cos(PhiLab);
+                double ImpulsionLabY   = Ptot*sin(ThetaLab)*sin(PhiLab);
+                double ImpulsionLabZ   = Ptot*cos(ThetaLab);
+                
+                TVector3 VImpulsionLAB  = TVector3(ImpulsionLabX, ImpulsionLabY, ImpulsionLabZ);
+                LVEnergyImpulsionLAB    = TLorentzVector(VImpulsionLAB,lightparticle->Mass()+ELab);
+                LVEnergyImpulsionCM     = LVEnergyImpulsionLAB;
+                LVEnergyImpulsionCM.Boost(0,0,-BetaCM);
+                
+                y_lab   = LVEnergyImpulsionLAB.Rapidity();
+                y_CM    = LVEnergyImpulsionCM.Rapidity();
+                y0_lab  = y_lab/y_beam_lab;
+                y0_CM   = y_CM/y_beam_CM;
+                Pper    = LVEnergyImpulsionCM.Pt();
+            }
+            
             
             ThetaLab = ThetaLab/deg;
             PhiLab = PhiLab/deg;
@@ -212,6 +243,15 @@ void Analysis::InitOutputBranch() {
     RootOutput::getInstance()->GetTree()->Branch( "X" , &X , "X/D" )  ;
     RootOutput::getInstance()->GetTree()->Branch( "Y" , &Y , "Y/D" )  ;
     RootOutput::getInstance()->GetTree()->Branch( "Z" , &Z , "Z/D" )  ;
+    
+    RootOutput::getInstance()->GetTree()->Branch( "Ptot" , &Ptot , "Ptot/D" )  ;
+    RootOutput::getInstance()->GetTree()->Branch( "Pper" , &Pper , "Pper/D" )  ;
+    RootOutput::getInstance()->GetTree()->Branch( "y_lab" , &y_lab , "y_lab/D" )  ;
+    RootOutput::getInstance()->GetTree()->Branch( "y0_lab" , &y0_lab , "y0_lab/D" )  ;
+    RootOutput::getInstance()->GetTree()->Branch( "y_CM" , &y_CM , "y_CM/D" )  ;
+    RootOutput::getInstance()->GetTree()->Branch( "y0_CM" , &y0_CM , "y0_CM/D" )  ;
+    RootOutput::getInstance()->GetTree()->Branch( "y_beam_lab" , &y_beam_lab , "y_beam_lab/D" )  ;
+    RootOutput::getInstance()->GetTree()->Branch( "y_beam_CM" , &y_beam_CM , "y_beam_CM/D" )  ;
     //  RootOutput::getInstance()->GetTree()->Branch("peakEvents",&peakEvents,"peakEvents/I");
 }
 
@@ -243,6 +283,14 @@ void Analysis::ReInitValue(){
     ECM_initial = -100;
     ThicknessCsI = -1;
     R_alpha = -100;
+    Ptot = -100;
+    Pper = -100;
+    y_lab = -100;
+    y0_lab = -100;
+    y_CM = -100;
+    y0_CM = -100;
+    y_beam_lab = -100;
+    y_beam_CM = -100;
     PID = -1;
 }
 

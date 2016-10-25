@@ -173,7 +173,7 @@ ScintillatorPlastic
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% warning all parameters need to be there for routine to exit
-Plastic
+%Plastic
       THETA= 0
       PHI= 0
       R= 0

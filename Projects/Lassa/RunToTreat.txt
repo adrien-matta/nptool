@@ -1,5 +1,5 @@
 TTreeName 
 	SimulatedTree
 RootFileName 
-  ../../Outputs/Simulation/one_lassa_proton_tripathi.root
-
+  ../../Outputs/Simulation/e09042_alpha_sn124e50.root
+  %../../Outputs/Simulation/e07038_3He.root

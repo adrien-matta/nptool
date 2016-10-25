@@ -73,7 +73,7 @@ Hira::Hira(){
     m_SiliconVisAtt2 = new G4VisAttributes(G4Colour(0.3, 0.3, 0.3)) ;
     // CsI Color
     m_CsIVisAtt = new G4VisAttributes(G4Colour(0.529412, 0.807843, 0.980392, 0.95)) ;
-    m_CsIVisAtt->SetForceWireframe(true);
+    m_CsIVisAtt->SetForceWireframe(false);
     m_LogicThinSi = 0;
     m_LogicThickSi = 0;
     m_LogicCsICrystal = 0;

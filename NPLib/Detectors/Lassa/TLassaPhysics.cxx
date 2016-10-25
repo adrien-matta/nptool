@@ -73,7 +73,7 @@ TLassaPhysics::TLassaPhysics()
     
     m_Ignore_not_matching_CsI = true;
     
-    m_CsI_Size = m_NumberOfStrip;
+    m_CsI_Size = 8;
     m_CsI_MatchingX.resize(4,0);
     m_CsI_MatchingY.resize(4,0);
     for(int i=0; i<4; i++){
@@ -501,7 +501,7 @@ void TLassaPhysics::PreTreat(){
             }
         }
     }
-    
+                
     // X->EF
     for(unsigned int i = 0 ; i < m_ThickSi_EXMult ; ++i){
         if(m_EventData->GetLassaStripXEDetectorNbr(i)<m_NumberOfTelescope && m_EventData->GetLassaStripXEStripNbr(i)<m_NumberOfStrip){
@@ -525,7 +525,7 @@ void TLassaPhysics::PreTreat(){
         }
     }
     
-    
+
     
     return;
 }
@@ -750,7 +750,7 @@ vector <TVector2> TLassaPhysics::Match_EF_EB(){
                     if(m_Ignore_not_matching_CsI){
                         bool check_validity=false;
                         for (unsigned int hh = 0 ; hh<4 ; ++hh ){
-                            if( Match_Si_CsI(m_PreTreatedData->GetLassaStripXEStripNbr(i), m_PreTreatedData->GetLassaStripYEStripNbr(j) , hh) ){
+                            if(IsValidChannel("CsI",m_PreTreatedData->GetLassaStripXEDetectorNbr(i),hh) && Match_Si_CsI(m_PreTreatedData->GetLassaStripXEStripNbr(i), m_PreTreatedData->GetLassaStripYEStripNbr(j) , hh) ){
                                 check_validity=true;
                             }
                         }

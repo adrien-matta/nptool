@@ -515,16 +515,16 @@ void NeutronWall::ConstructDetector(G4LogicalVolume* world){
             m_Quartz_phys = new G4PVPlacement(0,ScintillatorDisplacement,m_Quartz_log, "Quartz_phys",m_NeutronWall_out_log,false,j);
         }
         
-        for (int j = 0; j < 24; j++){
+        for (int j = 0; j < 23; j++){
             if (m_VetoWall[i] == 1){
                 //Even number is associated with 0th 2nd 4th ... plasticbar in vetowall which comprise of the backlayer (close to NeutronWall)
                 //Odd number is associated with 1st 3rd 5th ... plasticbar in vetowall which comprise of the frontlayer (close to Source)
                 //double CenterOfVetoWall_Even_X = NeutronWall_NS::NS_X*0.5-10*mm-NeutronWall_NS::PlasticBar_X*0.5 - j*NeutronWall_NS::PlasticBar_X;
-                double CenterOfVetoWall_Even_X = -(24*NeutronWall_NS::PlasticBar_X-23*m_Overlap[i])*0.5 + NeutronWall_NS::PlasticBar_X*0.5 +j*(NeutronWall_NS::PlasticBar_X-m_Overlap[i]);
+                double CenterOfVetoWall_Even_X = -(23*NeutronWall_NS::PlasticBar_X-22*m_Overlap[i])*0.5 + NeutronWall_NS::PlasticBar_X*0.5 +j*(NeutronWall_NS::PlasticBar_X-m_Overlap[i]);
                 double CenterOfVetoWall_Even_Y = 0*mm;
                 double CenterOfVetoWall_Even_Z = -(NeutronWall_NS::Alouter_Z/2 + m_VWDistance[i] + NeutronWall_NS::PlasticBar_Z);
                 
-                double CenterOfVetoWall_Odd_X = -(24*NeutronWall_NS::PlasticBar_X-23*m_Overlap[i])*0.5 + NeutronWall_NS::PlasticBar_X*0.5 +j*(NeutronWall_NS::PlasticBar_X-m_Overlap[i]);
+                double CenterOfVetoWall_Odd_X = -(23*NeutronWall_NS::PlasticBar_X-22*m_Overlap[i])*0.5 + NeutronWall_NS::PlasticBar_X*0.5 +j*(NeutronWall_NS::PlasticBar_X-m_Overlap[i]);
                 double CenterOfVetoWall_Odd_Y = 0*mm;
                 double CenterOfVetoWall_Odd_Z = -(NeutronWall_NS::Alouter_Z/2 + m_VWDistance[i] + NeutronWall_NS::PlasticBar_Z) - NeutronWall_NS::PlasticBar_Z - 1*mm;
                 
@@ -533,7 +533,6 @@ void NeutronWall::ConstructDetector(G4LogicalVolume* world){
                 }
                 else {
                     m_PlasticBar_phys = new G4PVPlacement(0, G4ThreeVector(CenterOfVetoWall_Odd_X,CenterOfVetoWall_Odd_Y,CenterOfVetoWall_Odd_Z),m_PlasticBar_log,"PlasticBar_phys",m_NeutronWall_out_log,false,j,true);
-
                 }
             }
         }

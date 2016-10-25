@@ -62,6 +62,14 @@ class Analysis: public NPL::VAnalysis{
     double ThicknessCsI;
     double R_alpha;
     double PID;
+    double y_lab;
+    double y0_lab;
+    double y_CM;
+    double y0_CM;
+    double y_beam_lab;
+    double y_beam_CM;
+    double Ptot;
+    double Pper;
     
     int totalEvents;
     int detectedEvents;
@@ -90,6 +98,7 @@ class Analysis: public NPL::VAnalysis{
     NPL::Nucleus *alpha;
     NPL::Nucleus *beam;
     NPL::Nucleus *target;
+    NPL::Nucleus *lightparticle;
     
     TLassaPhysics* Lassa;
 	TInitialConditions* InitialConditions;

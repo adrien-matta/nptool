@@ -165,18 +165,18 @@ NeutronWall
   BARS= 25
   VETOWALL= 1
   VWDISTANCE= 100
-  OVERLAP= -0.1
+  OVERLAP= 3
   VWMATERIAL= BC400
   NWMATERIAL= NE213
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %NeutronWall
-  THETA= 30
+  THETA= 20
   PHI= 0
   R= 6000
   BARS= 25
   VETOWALL= 0
   VWDISTANCE= 0
-  OVERLAP= -0.1
+  OVERLAP= 0
   VWMATERIAL= BC400
   NWMATERIAL= NE213
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
