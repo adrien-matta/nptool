@@ -21,7 +21,7 @@ fi
 # find script path
 if [ -n "$ZSH_VERSION" ]; then
    SCRIPTPATH="$( cd "$( dirname "${(%):-%x}" )" && pwd )"
-elif [ -n "$TCSH_VERSION" ]; then
+elif [ -n "$tcsh" ]; then
    SCRIPTPATH="$( cd "$( dirname "$0" )" && pwd )"
 elif [ -n "$BASH_VERSION" ]; then
    SCRIPTPATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
