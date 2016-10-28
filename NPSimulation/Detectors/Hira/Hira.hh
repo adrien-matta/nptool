@@ -56,17 +56,18 @@ namespace HIRA
     
     const G4double FaceFront	= 10.*cm ;
     const G4double FaceBack		= 10*cm ;
-    const G4double Length		= 15.*cm ;
+    const G4double Length		= 180.08*mm ;
     const G4int NumberOfStrip	= 32;
     
-    const G4double SiliconFace       = 63*mm ;
-    const G4double AluStripThickness = 0.4*micrometer ;
-    const G4double ThinSiThickness	 = 65*micrometer ;
-    const G4double ThickSiThickness	 = 1500*micrometer ;
-    const G4double DistBetweenSi	 = 17.04*mm;
-    const G4double VacBoxThickness   = 17.04*mm ;
-    const G4double MylarCsIThickness = 3*micrometer;
-    const G4double CsIThickness      = 10.*cm;// + 2*MylarCsIThickness ;
+    const G4double SiliconFace          = 64*mm ;
+    const G4double AluStripThickness    = 0.4*micrometer ;
+    const G4double ThinSiThickness      = 65*micrometer ;
+    const G4double ThickSiThickness     = 1500*micrometer ;
+    const G4double DistBetweenSi        = 6.0*mm;
+    const G4double DistBetweenMylarToDE = 7.0*mm;
+    const G4double VacBoxThickness      = 17.04*mm ;
+    const G4double MylarCsIThickness    = 3*micrometer;
+    const G4double CsIThickness         = 10.*cm;// + 2*MylarCsIThickness ;
     
     const G4double CsIXFront         = 34.93*mm;
     const G4double CsIXBack          = 44.62*mm;//39.*mm
@@ -78,7 +79,7 @@ namespace HIRA
     const G4double ClusterFaceBack   = 2*CsIXBack+2*DistInterCsI+5;
     
     // Starting at the front and going to CsI
-    const G4double AluStripFrontThinSi_PosZ		= Length* -0.5 + 0.5*AluStripThickness;
+    const G4double AluStripFrontThinSi_PosZ		= -0.5*Length + DistBetweenMylarToDE + 0.5*AluStripThickness;
     const G4double ThinSi_PosZ                  = AluStripFrontThinSi_PosZ + 0.5*AluStripThickness + 0.5*ThinSiThickness;
     const G4double AluStripBackThinSi_PosZ		= ThinSi_PosZ + 0.5*ThinSiThickness + 0.5*AluStripThickness;
     
@@ -88,8 +89,6 @@ namespace HIRA
     
     const G4double VacBox_PosZ                  = AluStripBackThickSi_PosZ + 0.5*AluStripThickness + 0.5* VacBoxThickness;
     const G4double CsI_PosZ                     = VacBox_PosZ + 0.5*VacBoxThickness + 0.5*CsIThickness;
-    
-    
     
     
 }
