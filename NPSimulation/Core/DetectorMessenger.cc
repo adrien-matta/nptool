@@ -43,8 +43,14 @@ DetectorMessenger::DetectorMessenger(DetectorConstruction* Det):Detector(Det){
   UpdateCmd->SetGuidance("Apply this command after editing your geometry file ");
   UpdateCmd->AvailableForStates(G4State_Idle);
 
+  OpenCmd = new G4UIcmdWithAString("/det/open",this);
+  OpenCmd->SetGuidance("Open detector geometry.");
+  OpenCmd->SetGuidance("Apply this command to open a new geometry file");
+  OpenCmd->SetGuidance("NB: The new detector file should contain the same detectors as the original one");
+  OpenCmd->AvailableForStates(G4State_Idle);
+
   ExportCmd = new G4UIcmdWithAString("/det/export_gdml",this);
-  ExportCmd->SetGuidance("export current geomtry to gdml");
+  ExportCmd->SetGuidance("export current geometry to gdml");
   ExportCmd->AvailableForStates(G4State_Idle);  
 }
 
@@ -60,6 +66,9 @@ DetectorMessenger::~DetectorMessenger(){
 void DetectorMessenger::SetNewValue(G4UIcommand* command, G4String value){ 
   if( command == UpdateCmd ){ 
     Detector->RedefineGeometry(""); 
+  }
+  else if( command == OpenCmd ){ 
+    Detector->RedefineGeometry(value); 
   }
   else if(command ==ExportCmd ){
     Detector->ExportGeometry(value);
