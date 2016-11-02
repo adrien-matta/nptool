@@ -101,5 +101,9 @@ class ParticleStack{
 
     // Shoot everything in the stack at the end of the event
     void ShootAllParticle(G4Event* anEvent);
+   
+    // Attach the InitialConditions object to the tree
+    void AttachInitialConditions();
+
 };
 #endif

@@ -31,7 +31,7 @@
 #include "RootOutput.h"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 RunAction::RunAction(): G4UserRunAction(){
-    RootOutput::getInstance()->GetTree()->Branch("Run",&m_RunNumber,"Run/I");
+    RootOutput::getInstance()->GetTree()->Branch("Run",&m_RunNumber);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -40,6 +40,12 @@ RunAction::~RunAction(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void RunAction::BeginOfRunAction(const G4Run* aRun){
+
+    cout << "Starting run " << aRun->GetRunID()+1;
+    // Replug the branch in case it no longer exist (e.g. reloading geometry) 
+    RootOutput::getInstance()->GetTree()->Branch("Run",&m_RunNumber);
+
+    // Increment the run number to be stored in the tree
     m_RunNumber = aRun->GetRunID()+1;
     
     //initialize event cumulative quantities
@@ -50,5 +56,7 @@ void RunAction::BeginOfRunAction(const G4Run* aRun){
 void RunAction::EndOfRunAction(const G4Run*){
     // Pass a line for nicer presentation when chainning event generator
     cout << endl;
+    
+    // Force the tree to be saved at the end of the run
+    RootOutput::getInstance()->GetTree()->AutoSave("Overwrite SaveSelf");
 }
-

@@ -55,6 +55,7 @@
 #include "NPSDetectorFactory.hh"
 #include "MaterialManager.hh"
 #include "DetectorMessenger.hh"
+#include "ParticleStack.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 DetectorConstruction::DetectorConstruction():  world_log(0), world_phys(0){
@@ -156,7 +157,7 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
 
     else if (LineBuffer.compare(0, 13, "GeneralTarget") == 0 && cGeneralTarget == false) {
       cGeneralTarget = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "////////// Target ///////////" << G4endl   << G4endl   ;
+      if(VerboseLevel) G4cout << G4endl << "////////// Target ///////////" << G4endl   << G4endl   ;
 
       // Instantiate the new array as aNPS::VDetector Objects
       NPS::VDetector* myDetector = new Target();
@@ -179,7 +180,7 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
 
     else if (LineBuffer.compare(0, 14, "GeneralChamber") == 0 && cGeneralChamber == false) {
       cGeneralChamber = true ;
-      if(VerboseLevel==1) G4cout << G4endl << "////////// Chamber ///////////" << G4endl   << G4endl   ;
+      if(VerboseLevel) G4cout << G4endl << "////////// Chamber ///////////" << G4endl   << G4endl   ;
 
       // Instantiate the new array as aNPS::VDetector Objects
       NPS::VDetector* myDetector = new Chamber();
@@ -202,10 +203,12 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
       oss >> token ;
       NPS::VDetector* detector = theFactory->Construct(token);
       if(detector!=NULL && check.find(token)==check.end()){
+        if(VerboseLevel){
         cout << "/////////////////////////////////////////" << endl;
         cout << "//// Adding Detector " << token << endl; 
         detector->ReadConfiguration(Path);
         cout << "/////////////////////////////////////////" << endl;
+        }
         // Add array to the VDetector Vector
         AddDetector(detector);
         check.insert(token);
@@ -276,9 +279,13 @@ void DetectorConstruction::ClearGeometry(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void DetectorConstruction::RedefineGeometry(std::string file){
   ClearGeometry() ;
+ 
+//  RootOutput::getInstance()->GetTree()->FlushBaskets();
+//  RootOutput::getInstance()->GetTree()->AutoSave();
+//  RootOutput::getInstance()->GetTree()->GetCurrentFile()->Write();
 
-  RootOutput::getInstance()->GetTree()->ResetBranchAddresses(); 
-  RootOutput::getInstance()->GetTree()->GetListOfBranches()->Clear(); 
+//  RootOutput::getInstance()->GetTree()->ResetBranchAddresses(); 
+//RootOutput::getInstance()->GetTree()->GetListOfBranches()->Clear(); 
 
   if(file!="")
     NPOptionManager::getInstance()->SetDetectorFile(file);
@@ -286,6 +293,8 @@ void DetectorConstruction::RedefineGeometry(std::string file){
   G4RunManager::GetRunManager()->DefineWorldVolume(Construct());
   G4RunManager::GetRunManager()->GeometryHasBeenModified();
   G4RunManager::GetRunManager()->Initialize();
+
+  ParticleStack::getInstance()->AttachInitialConditions();  
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -298,8 +307,5 @@ void DetectorConstruction::ExportGeometry(string file){
   file = "";
   G4cout << "You need to compile Geant4 with GDML support to use this command" << G4endl;
 #endif
-
-
-
 }
 

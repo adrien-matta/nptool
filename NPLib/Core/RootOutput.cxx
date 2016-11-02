@@ -138,7 +138,7 @@ void RootOutput::InitAsciiFiles(){
   pEventGenerator = new TAsciiFile();
   pEventGenerator->SetNameTitle("EventGenerator", fileNameEG.Data());
   pEventGenerator->Append(fileNameEG.Data());
-  pEventGenerator->Write();
+  pEventGenerator->Write(0,TAsciiFile::kOverwrite);
   
   // Detector configuration 
   // Get file name from NPOptionManager
@@ -146,7 +146,7 @@ void RootOutput::InitAsciiFiles(){
   pDetectorConfiguration = new TAsciiFile();
   pDetectorConfiguration->SetNameTitle("DetectorConfiguration", fileNameDC.Data());
   pDetectorConfiguration->Append(fileNameDC.Data());
-  pDetectorConfiguration->Write();
+  pDetectorConfiguration->Write(0,TAsciiFile::kOverwrite);
 
   // Run to treat file
   // Get file name from NPOptionManager
@@ -155,7 +155,7 @@ void RootOutput::InitAsciiFiles(){
     TString fileNameRT = OptionManager->GetRunToReadFile();
     pRunToTreatFile->SetNameTitle("RunToTreat", fileNameRT.Data());
     pRunToTreatFile->Append(fileNameRT.Data());
-    pRunToTreatFile->Write();
+    pRunToTreatFile->Write(0,TAsciiFile::kOverwrite);
   }
 
   // Calibration files
@@ -163,13 +163,13 @@ void RootOutput::InitAsciiFiles(){
   if (!OptionManager->IsDefault("Calibration")) {
     TString fileNameCal = OptionManager->GetCalibrationFile();
     pCalibrationFile->SetNameTitle("Calibration", fileNameCal.Data());
-    pCalibrationFile->Write();
+    pCalibrationFile->Write(0,TAsciiFile::kOverwrite);
   }
 
   // Analysis configuration files
   pAnalysisConfigFile = new TAsciiFile();
   pAnalysisConfigFile->SetNameTitle("AnalysisConfig", "AnalysisConfig");
-  pAnalysisConfigFile->Write();
+  pAnalysisConfigFile->Write(0,TAsciiFile::kOverwrite);
 }
 
 
@@ -180,11 +180,7 @@ RootOutput::~RootOutput(){
   if (pRootFile && !NPOptionManager::getInstance()->GetPROOF()) {
     TDirectory* currentPath= gDirectory;
     gDirectory->cd(pRootFile->GetPath());
-    cout << endl;
-    cout << endl << "Root Output summary" << endl;
-    cout << "  - Number of entries in the Tree: " << pRootTree->GetEntries() << endl;
-    cout << "  - Number of bites written to file: " << pRootTree->Write("", TObject::kOverwrite) << endl;
-
+   
     // write TAsciiFile if used
     // EventGenerator
     if (!pEventGenerator->IsEmpty()) pEventGenerator->Write(0,TAsciiFile::kOverwrite);
@@ -196,7 +192,15 @@ RootOutput::~RootOutput(){
     if (!pRunToTreatFile->IsEmpty()) pRunToTreatFile->Write(0,TAsciiFile::kOverwrite);
     // Analysis ConfigFile
     if (!pAnalysisConfigFile->IsEmpty()) pAnalysisConfigFile->Write(0,TAsciiFile::kOverwrite);
+   
+    cout << endl;
+    cout << endl << "Root Output summary" << endl;
+    cout << "  - Number of entries in the Tree: " << pRootTree->GetEntries() << endl;
+    cout << "  - Number of bites written to file: " << pRootTree->Write(0, TObject::kOverwrite) << endl;
+     
     pRootFile->Flush();
+    pRootFile->Purge(1);
+
     gDirectory->cd(currentPath->GetPath());
     pRootFile->Close();
   }
