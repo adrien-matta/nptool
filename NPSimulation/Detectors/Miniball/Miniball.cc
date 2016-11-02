@@ -297,7 +297,9 @@ void Miniball::ConstructDetector(G4LogicalVolume* world){
 void Miniball::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
-  pTree->Branch("Miniball", "TMiniballData", &m_Event) ;
+  if(!pTree->FindBranch("Miniball")){
+    pTree->Branch("Miniball", "TMiniballData", &m_Event) ;
+  }
   pTree->SetBranchAddress("Miniball", &m_Event) ;
 }
 

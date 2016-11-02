@@ -784,7 +784,9 @@ void GeTAMU::AddCloverFreePosition(int CloverId,double R,double Theta,double Phi
 void GeTAMU::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
-  pTree->Branch("GeTAMU", "TGeTAMUData", &m_Event) ;
+  if(!pTree->FindBranch("GeTAMU")){
+   pTree->Branch("GeTAMU", "TGeTAMUData", &m_Event) ;
+  }  
   pTree->SetBranchAddress("GeTAMU", &m_Event) ;    
 }
 

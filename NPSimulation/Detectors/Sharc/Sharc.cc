@@ -733,7 +733,9 @@ void Sharc::ConstructQQQDetector(G4LogicalVolume* world){
 void Sharc::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
-  pTree->Branch("Sharc", "TSharcData", &m_Event) ;
+  if(!pTree->FindBranch("Sharc")){
+    pTree->Branch("Sharc", "TSharcData", &m_Event) ;
+  }
   pTree->SetBranchAddress("Sharc", &m_Event) ;
 
 }

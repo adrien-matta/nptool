@@ -407,8 +407,9 @@ void Lassa::InitializeScorers(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Lassa::InitializeRootOutput(){
     TTree *pTree = RootOutput::getInstance()->GetTree();
-    pTree->Branch("Lassa", "TLassaData", &m_EventLassa) ;
-    
+    if(!pTree->FindBranch("Lassa")){
+      pTree->Branch("Lassa", "TLassaData", &m_EventLassa) ;
+    } 
     // This insure that the object are correctly bind in case of
     // a redifinition of the geometry in the simulation
     pTree->SetBranchAddress("Lassa", &m_EventLassa) ;

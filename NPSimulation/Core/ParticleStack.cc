@@ -54,7 +54,8 @@ ParticleStack::ParticleStack(){
     // Instantiate the TInitialConditions object and link it to the RootOutput tree
     m_InitialConditions = new TInitialConditions();
     AttachInitialConditions();
-    RootOutput::getInstance()->GetTree()->Branch("InitialConditions","TInitialConditions",&m_InitialConditions);
+    if(!RootOutput::getInstance()->GetTree()->FindBranch("InitialConditions"))
+      RootOutput::getInstance()->GetTree()->Branch("InitialConditions","TInitialConditions",&m_InitialConditions);
     
     m_EventZero = true;
     m_First=true;
@@ -68,7 +69,8 @@ ParticleStack::~ParticleStack(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void ParticleStack::AttachInitialConditions(){
-  RootOutput::getInstance()->GetTree()->Branch("InitialConditions","TInitialConditions",&m_InitialConditions);
+  // Reasssigned the branch address
+  RootOutput::getInstance()->GetTree()->SetBranchAddress("InitialConditions",&m_InitialConditions);
 }
 
 

@@ -487,7 +487,9 @@ void Plastic::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume*
 void Plastic::InitializeRootOutput(){
     RootOutput *pAnalysis = RootOutput::getInstance();
     TTree *pTree = pAnalysis->GetTree();
-    pTree->Branch("Plastic", "TPlasticData", &m_Event) ;
+    if(!pTree->FindBranch("Plastic")){
+      pTree->Branch("Plastic", "TPlasticData", &m_Event) ;
+    }
     pTree->SetBranchAddress("Plastic", &m_Event) ;
 }
 

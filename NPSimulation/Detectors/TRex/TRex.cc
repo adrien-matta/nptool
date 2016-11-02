@@ -311,7 +311,9 @@ void TRex::ConstructDetector(G4LogicalVolume* world){
 void TRex::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
-  pTree->Branch("TRex", "TTRexData", &m_Event) ;
+  if(!pTree->FindBranch("TRex")){
+    pTree->Branch("TRex", "TTRexData", &m_Event) ;
+  }
   pTree->SetBranchAddress("TRex", &m_Event) ;
 }
 

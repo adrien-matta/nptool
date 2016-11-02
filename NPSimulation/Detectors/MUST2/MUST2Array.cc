@@ -944,8 +944,10 @@ void MUST2Array::ConstructDetector(G4LogicalVolume* world){
 void MUST2Array::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
-  pTree->Branch("MUST2", "TMust2Data", &m_Event) ;
-  pTree->SetBranchAddress("MUST2", &m_Event) ;
+  if(!pTree->FindBranch("MUST2")){
+    pTree->Branch("MUST2", "TMust2Data", &m_Event) ;
+  } 
+ pTree->SetBranchAddress("MUST2", &m_Event) ;
 }
 
 // Read sensitive part and fill the Root tree.

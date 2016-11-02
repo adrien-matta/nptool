@@ -784,7 +784,9 @@ void Tigress::AddCloverFreePosition(int CloverId,double R,double Theta,double Ph
 void Tigress::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
-  pTree->Branch("Tigress", "TTigressData", &m_Event) ;
+  if(!pTree->FindBranch("Tigress")){
+    pTree->Branch("Tigress", "TTigressData", &m_Event) ;
+  }
   pTree->SetBranchAddress("Tigress", &m_Event) ;    
 }
 

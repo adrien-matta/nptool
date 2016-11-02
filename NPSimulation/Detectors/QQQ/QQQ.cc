@@ -558,7 +558,9 @@ void QQQ::ConstructDetector(G4LogicalVolume* world){
 void QQQ::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
-  pTree->Branch("QQQ", "TQQQData", &m_Event) ;
+  if(!pTree->FindBranch("QQQ")){
+    pTree->Branch("QQQ", "TQQQData", &m_Event) ;
+  }
   pTree->SetBranchAddress("QQQ", &m_Event) ;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

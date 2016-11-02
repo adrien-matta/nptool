@@ -424,7 +424,9 @@ void Eurogam::InitializeRootOutput()
 {
    RootOutput *pAnalysis = RootOutput::getInstance();
    TTree *pTree = pAnalysis->GetTree();
-   pTree->Branch("Eurogam", "TEurogamData", &m_Event) ;
+   if(!pTree->FindBranch("Eurogam")){
+    pTree->Branch("Eurogam", "TEurogamData", &m_Event) ;
+   }
    pTree->SetBranchAddress("Eurogam", &m_Event) ;
 
 }

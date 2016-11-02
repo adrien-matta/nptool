@@ -480,8 +480,9 @@ void Hira::InitializeScorers(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Hira::InitializeRootOutput(){
     TTree *pTree = RootOutput::getInstance()->GetTree();
-    pTree->Branch("Hira", "THiraData", &m_EventHira) ;
-    
+    if(!pTree->FindBranch("Hira")){
+      pTree->Branch("Hira", "THiraData", &m_EventHira) ;
+    }
     // This insure that the object are correctly bind in case of
     // a redifinition of the geometry in the simulation
     pTree->SetBranchAddress("Hira", &m_EventHira) ;

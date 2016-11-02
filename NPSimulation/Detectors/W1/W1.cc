@@ -455,7 +455,9 @@ void W1::InitializeRootOutput()
 {
    RootOutput *pAnalysis = RootOutput::getInstance();
    TTree *pTree = pAnalysis->GetTree();
-   pTree->Branch("W1", "TW1Data", &m_Event);
+    if(!pTree->FindBranch("W1")){
+    pTree->Branch("W1", "TW1Data", &m_Event);
+   }
    pTree->SetBranchAddress("W1", &m_Event);
 }
 

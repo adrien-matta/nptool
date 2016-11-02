@@ -50,7 +50,7 @@ void Hyde2TrackerModule::InitializeRootOutput()
    RootOutput *pAnalysis = RootOutput::getInstance();
    TTree *pTree = pAnalysis->GetTree();
    // if the branch does not exist yet, create it
-   if (!pTree->GetBranch("HYDE2"))
+   if (!pTree->FindBranch("HYDE2"))
       pTree->Branch("HYDE2", "THyde2TrackerData", &ms_Event);
 
     pTree->SetBranchAddress("HYDE2", &ms_Event);

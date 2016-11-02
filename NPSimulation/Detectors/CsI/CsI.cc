@@ -601,7 +601,9 @@ void CsI::VolumeMaker(G4ThreeVector Det_pos, int DetNumber, G4LogicalVolume* wor
 void CsI::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
-  pTree->Branch("CsI", "TCsIData", &m_Event) ;
+  if(!pTree->FindBranch("CsI")){
+    pTree->Branch("CsI", "TCsIData", &m_Event) ;
+  }
   pTree->SetBranchAddress("CsI", &m_Event) ;
 }
 

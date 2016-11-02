@@ -325,7 +325,9 @@ void AGATA::ConstructDetector(G4LogicalVolume* world){
 void AGATA::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
-  pTree->Branch("AGATA", "TAGATAData", &m_Event) ;
+  if(!pTree->FindBranch("AGATA")){
+    pTree->Branch("AGATA", "TAGATAData", &m_Event) ;
+  }
   pTree->SetBranchAddress("AGATA", &m_Event) ;
 }
 

@@ -331,7 +331,9 @@ void AnnularS1::ConstructDetector(G4LogicalVolume* world){
 void AnnularS1::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
-  pTree->Branch("AnnularS1", "TS1Data", &m_Event);
+  if(!pTree->FindBranch("AnnularS1")){
+    pTree->Branch("AnnularS1", "TS1Data", &m_Event);
+  }
   pTree->SetBranchAddress("AnnularS1",&m_Event);
 }
 

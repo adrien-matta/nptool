@@ -3153,7 +3153,9 @@ if(m_Ring1){
 void Microball::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
-  pTree->Branch("Microball", "TMicroballData", &m_Event) ;
+  if(!pTree->FindBranch("Microball")){
+    pTree->Branch("Microball", "TMicroballData", &m_Event) ;
+  }
   pTree->SetBranchAddress("Microball", &m_Event) ;
 }
 

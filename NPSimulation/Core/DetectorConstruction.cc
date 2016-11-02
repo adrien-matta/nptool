@@ -123,9 +123,15 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
   std::string DataBuffer;
   bool cGeneralTarget=false;
   bool cGeneralChamber=false;
+  static bool already=false;
   std::set<std::string> check;
-
-  int VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
+  int VerboseLevel = 0 ;
+  if(!already){
+    VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
+    already = 1;
+  }
+  else
+    VerboseLevel = 0;
   cout << "\033[1;36m" ;
 
   // Access the DetectorFactory and ask it to load the Class List
@@ -279,14 +285,7 @@ void DetectorConstruction::ClearGeometry(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void DetectorConstruction::RedefineGeometry(std::string file){
   ClearGeometry() ;
- 
-//  RootOutput::getInstance()->GetTree()->FlushBaskets();
-//  RootOutput::getInstance()->GetTree()->AutoSave();
-//  RootOutput::getInstance()->GetTree()->GetCurrentFile()->Write();
-
-//  RootOutput::getInstance()->GetTree()->ResetBranchAddresses(); 
-//RootOutput::getInstance()->GetTree()->GetListOfBranches()->Clear(); 
-
+  
   if(file!="")
     NPOptionManager::getInstance()->SetDetectorFile(file);
 

@@ -585,7 +585,9 @@ G4LogicalVolume* Nana::ConstructDetector(){
 void Nana::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
-  pTree->Branch("Nana", "TNanaData", &m_Event) ;
+  if(!pTree->FindBranch("Nana")){
+    pTree->Branch("Nana", "TNanaData", &m_Event) ;
+  }
   pTree->SetBranchAddress("Nana", &m_Event) ;
 }
 

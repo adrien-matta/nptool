@@ -505,7 +505,9 @@ G4LogicalVolume* Paris::ConstructCluster(){
 void Paris::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
-  pTree->Branch("Paris", "TParisData", &m_Event) ;
+  if(!pTree->FindBranch("Paris")){
+    pTree->Branch("Paris", "TParisData", &m_Event) ;
+  }
   pTree->SetBranchAddress("Paris", &m_Event) ;
 }
 

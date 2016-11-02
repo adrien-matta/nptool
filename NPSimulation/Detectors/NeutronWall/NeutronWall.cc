@@ -544,7 +544,9 @@ void NeutronWall::ConstructDetector(G4LogicalVolume* world){
 void NeutronWall::InitializeRootOutput(){
     RootOutput *pAnalysis = RootOutput::getInstance();
     TTree *pTree = pAnalysis->GetTree();
-    pTree->Branch("NeutronWall", "TNeutronWallData", &m_Event) ;
+    if(!pTree->FindBranch("NeutronWall")){
+      pTree->Branch("NeutronWall", "TNeutronWallData", &m_Event) ;
+    }
     pTree->SetBranchAddress("NeutronWall", &m_Event) ;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

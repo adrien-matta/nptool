@@ -350,9 +350,13 @@ void Tiara::InitializeScorers(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Tiara::InitializeRootOutput(){
   TTree *pTree = RootOutput::getInstance()->GetTree();   
-  pTree->Branch("TiaraBarrel", "TTiaraBarrelData", &m_EventBarrel) ;
-  pTree->Branch("TiaraHyball", "TTiaraHyballData", &m_EventHyball) ;
+  if(!pTree->FindBranch("TiaraBarrel")){
+    pTree->Branch("TiaraBarrel", "TTiaraBarrelData", &m_EventBarrel) ;
+  }
 
+  if(!pTree->FindBranch("TiaraHyball")){
+    pTree->Branch("TiaraHyball", "TTiaraHyballData", &m_EventHyball) ;
+  }
   // This insure that the object are correctly bind in case of 
   // a redifinition of the geometry in the simulation
   pTree->SetBranchAddress("TiaraBarrel", &m_EventBarrel) ;

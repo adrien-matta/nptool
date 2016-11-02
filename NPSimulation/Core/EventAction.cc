@@ -66,7 +66,6 @@ void EventAction::EndOfEventAction(const G4Event* event){
     if(treated%10000==0){
         tree->AutoSave();
         RootOutput::getInstance()->GetFile()->SaveSelf(kTRUE);
-        RootOutput::getInstance()->GetFile()->Purge();
     }
 }
 

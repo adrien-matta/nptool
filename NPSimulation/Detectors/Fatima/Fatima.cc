@@ -428,8 +428,10 @@ G4LogicalVolume* Fatima::ConstructDetector(){
 void Fatima::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
-  pTree->Branch("Fatima", "TFatimaData", &m_Event) ;
-  pTree->SetBranchAddress("Fatima", &m_Event) ;
+  if(!pTree->FindBranch("Fatima")){
+    pTree->Branch("Fatima", "TFatimaData", &m_Event) ;
+  } 
+ pTree->SetBranchAddress("Fatima", &m_Event) ;
 }
 
 

@@ -530,7 +530,9 @@ void SSSD::ConstructDetector(G4LogicalVolume* world){
 void SSSD::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
-  pTree->Branch("SSSD", "TSSSDData", &m_Event) ;
+  if(!pTree->FindBranch("SSSD")){
+    pTree->Branch("SSSD", "TSSSDData", &m_Event) ;
+  }
   pTree->SetBranchAddress("SSSD", &m_Event) ;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

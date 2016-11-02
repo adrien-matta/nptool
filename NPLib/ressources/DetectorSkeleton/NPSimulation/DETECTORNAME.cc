@@ -177,7 +177,7 @@ void DETECTORNAME::ReadConfiguration(string Path){
       }
 
       //Angle method
-      else if (DataBuffer.compare(0, 6, "THETA=") == 0) {
+      else if (DataBuffer == "THETA=") {
         check_Theta = true;
         ConfigFile >> DataBuffer ;
         Theta = atof(DataBuffer.c_str()) ;
@@ -185,7 +185,7 @@ void DETECTORNAME::ReadConfiguration(string Path){
         G4cout << "Theta:  " << Theta / deg << G4endl;
       }
 
-      else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
+      else if (DataBuffer ==  "PHI=" ) {
         check_Phi = true;
         ConfigFile >> DataBuffer ;
         Phi = atof(DataBuffer.c_str()) ;
@@ -193,7 +193,7 @@ void DETECTORNAME::ReadConfiguration(string Path){
         G4cout << "Phi:  " << Phi / deg << G4endl;
       }
 
-      else if (DataBuffer.compare(0, 2, "R=") == 0) {
+      else if (DataBuffer ==  "R=") {
         check_R = true;
         ConfigFile >> DataBuffer ;
         R = atof(DataBuffer.c_str()) ;
@@ -202,7 +202,7 @@ void DETECTORNAME::ReadConfiguration(string Path){
       }
 
       //Position method
-      else if (DataBuffer.compare(0, 2, "X=") == 0) {
+      else if (DataBuffer == "X=") {
         check_X = true;
         ConfigFile >> DataBuffer ;
         X = atof(DataBuffer.c_str()) ;
@@ -210,7 +210,7 @@ void DETECTORNAME::ReadConfiguration(string Path){
         G4cout << "X:  " << X / mm << G4endl;
       }
 
-      else if (DataBuffer.compare(0, 2, "Y=") == 0) {
+      else if (DataBuffer == "Y=") {
         check_Y = true;
         ConfigFile >> DataBuffer ;
         Y = atof(DataBuffer.c_str()) ;
@@ -218,7 +218,7 @@ void DETECTORNAME::ReadConfiguration(string Path){
         G4cout << "Y:  " << Y / mm << G4endl;
       }
 
-      else if (DataBuffer.compare(0, 2, "Z=") == 0) {
+      else if (DataBuffer == "Z=") {
         check_Z = true;
         ConfigFile >> DataBuffer ;
         Z = atof(DataBuffer.c_str()) ;
@@ -228,7 +228,7 @@ void DETECTORNAME::ReadConfiguration(string Path){
 
 
       //General
-      else if (DataBuffer.compare(0, 6, "Shape=") == 0) {
+      else if (DataBuffer == "Shape=") {
         check_Shape = true;
         ConfigFile >> DataBuffer ;
         Shape = DataBuffer ;
@@ -318,7 +318,9 @@ void DETECTORNAME::ConstructDetector(G4LogicalVolume* world){
 void DETECTORNAME::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
-  pTree->Branch("DETECTORNAME", "TDETECTORNAMEData", &m_Event) ;
+  if(pTree->FindBranch("DETECTORNAME")){
+    pTree->Branch("DETECTORNAME", "TDETECTORNAMEData", &m_Event) ;
+  }
   pTree->SetBranchAddress("DETECTORNAME", &m_Event) ;
 }
 

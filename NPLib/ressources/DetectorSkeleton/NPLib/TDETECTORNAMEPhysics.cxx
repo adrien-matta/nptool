@@ -67,8 +67,10 @@ void TDETECTORNAMEPhysics::BuildPhysicalEvent() {
   PreTreat();
 
   // match energy and time together
-  for (UShort_t e = 0; e < m_PreTreatedData->GetMultEnergy(); e++) {
-    for (UShort_t t = 0; t < m_PreTreatedData->GetMultTime(); t++) {
+  unsigned int mysizeE = m_PreTreatedData->GetMultEnergy();
+  unsigned int mysizeT = m_PreTreatedData->GetMultTime();
+  for (UShort_t e = 0; e < mysizeE ; e++) {
+    for (UShort_t t = 0; t < mysizeT ; t++) {
       if (m_PreTreatedData->GetE_DetectorNbr(e) == m_PreTreatedData->GetT_DetectorNbr(t)) {
         DetectorNumber.push_back(m_PreTreatedData->GetE_DetectorNbr(e));
         Energy.push_back(m_PreTreatedData->Get_Energy(e));
@@ -90,7 +92,8 @@ void TDETECTORNAMEPhysics::PreTreat() {
   static CalibrationManager* Cal = CalibrationManager::getInstance();
 
   // Energy
-  for (UShort_t i = 0; i < m_EventData->GetMultEnergy(); ++i) {
+  unsigned int mysize = m_EventData->GetMultEnergy();
+  for (UShort_t i = 0; i < mysize ; ++i) {
     if (m_EventData->Get_Energy(i) > m_E_RAW_Threshold) {
       Double_t Energy = Cal->ApplyCalibration("DETECTORNAME/ENERGY"+NPL::itoa(m_EventData->GetE_DetectorNbr(i)),m_EventData->Get_Energy(i));
       if (Energy > m_E_Threshold) {
@@ -100,7 +103,8 @@ void TDETECTORNAMEPhysics::PreTreat() {
   }
 
   // Time 
-  for (UShort_t i = 0; i < m_EventData->GetMultTime(); ++i) {
+  mysize = m_EventData->GetMultTime();
+  for (UShort_t i = 0; i < mysize; ++i) {
     Double_t Time= Cal->ApplyCalibration("DETECTORNAME/TIME"+NPL::itoa(m_EventData->GetT_DetectorNbr(i)),m_EventData->Get_Time(i));
     m_PreTreatedData->SetTime(m_EventData->GetT_DetectorNbr(i), Time);
   }

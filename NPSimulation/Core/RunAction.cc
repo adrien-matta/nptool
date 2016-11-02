@@ -31,7 +31,7 @@
 #include "RootOutput.h"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 RunAction::RunAction(): G4UserRunAction(){
-    RootOutput::getInstance()->GetTree()->Branch("Run",&m_RunNumber);
+  RootOutput::getInstance()->GetTree()->Branch("Run",&m_RunNumber);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -43,7 +43,7 @@ void RunAction::BeginOfRunAction(const G4Run* aRun){
 
     cout << "Starting run " << aRun->GetRunID()+1;
     // Replug the branch in case it no longer exist (e.g. reloading geometry) 
-    RootOutput::getInstance()->GetTree()->Branch("Run",&m_RunNumber);
+    RootOutput::getInstance()->GetTree()->SetBranchAddress("Run",&m_RunNumber);
 
     // Increment the run number to be stored in the tree
     m_RunNumber = aRun->GetRunID()+1;

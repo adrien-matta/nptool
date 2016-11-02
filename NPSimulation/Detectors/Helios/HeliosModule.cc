@@ -48,7 +48,7 @@ void HeliosModule::InitializeRootOutput()
    RootOutput *pAnalysis = RootOutput::getInstance();
    TTree *pTree = pAnalysis->GetTree();
    // if the branch does not exist yet, create it
-   if (!pTree->GetBranch("HELIOS"))
+   if (!pTree->FindBranch("HELIOS"))
       pTree->Branch("HELIOS", "THeliosData", &ms_Event);
 
   pTree->SetBranchAddress("HELIOS", &ms_Event);

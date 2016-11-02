@@ -13,9 +13,9 @@
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  All detector added in the project should derive from this virtual class  *
- *  A vector ofNPS::VDetector object is manage in the DetectorConstruction class *
- *  and call the virtual method of this class implemented in the daughter    *
- *  class object.                                                            *
+ *  A vector ofNPS::VDetector object is manage in the DetectorConstruction   *
+ *  class and call the virtual method of this class implemented in the       *
+ *  daughter class object.                                                   *
  *  This inheritance insure homogeneity and modularity of the code           *
  *                                                                           *
  *---------------------------------------------------------------------------*
@@ -42,12 +42,11 @@ NPS::VDetector::~VDetector(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void NPS::VDetector::InitializeRootOutput(){
-  RootOutput *pAnalysis = RootOutput::getInstance();
-  TTree *pTree = pAnalysis->GetTree();
-  if(!pTree->FindBranch("InteractionCoordinates")){
-    pTree->Branch("InteractionCoordinates", "TInteractionCoordinates", &ms_InterCoord);
-    pTree->SetBranchAddress("InteractionCoordinates", &ms_InterCoord);
+  TTree* Tree = RootOutput::getInstance()->GetTree();
+  if(!Tree->FindBranch("InteractionCoordinates")){
+    Tree->Branch("InteractionCoordinates", "TInteractionCoordinates", &ms_InterCoord);
   }
+  Tree->SetBranchAddress("InteractionCoordinates", &ms_InterCoord);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

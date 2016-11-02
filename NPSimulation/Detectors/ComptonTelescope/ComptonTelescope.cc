@@ -613,8 +613,12 @@ void ComptonTelescope::InitializeRootOutput()
 {
    RootOutput *pAnalysis = RootOutput::getInstance();
    TTree *pTree = pAnalysis->GetTree();
-   pTree->Branch("ComptonTelescope",        "TComptonTelescopeData",        &m_Event);
-   pTree->Branch("ComptonTelescopeProcess", "TComptonTelescopeProcessData", &m_ProcessEvent);
+   if(!pTree->FindBranch("ComptonTelescope")){
+     pTree->Branch("ComptonTelescope",        "TComptonTelescopeData",        &m_Event);
+   }
+   if(!pTree->FindBranch("ComptonTelescopeProcess")){
+    pTree->Branch("ComptonTelescopeProcess", "TComptonTelescopeProcessData", &m_ProcessEvent);
+   }
    pTree->SetBranchAddress("ComptonTelescope", &m_Event);
    pTree->SetBranchAddress("ComptonTelescopeProcess", &m_ProcessEvent);
   
