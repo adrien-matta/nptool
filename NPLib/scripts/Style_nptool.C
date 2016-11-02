@@ -10,23 +10,14 @@ void Style_nptool(){
   style->SetTitlePS("nptool");
 
   //General 
-  /*style->SetFrameFillColor(kWhite);
+  style->SetFrameFillColor(kWhite);
   style->SetFrameBorderMode(0);	
   style->SetFrameLineColor(kBlack);
   style->SetStatColor(kWhite);
   style->SetTitleFillColor(kWhite);  
   style->SetTitleColor(kBlack,"pad");
   style->SetTitleBorderSize(0);
-  style->SetTextColor(kBlack);*/
-    
-    style->SetFrameFillColor(kWhite);
-    style->SetFrameBorderMode(0);
-    style->SetFrameLineColor(kBlack);
-    style->SetStatColor(kWhite);
-    style->SetFillColor(kWhite);
-    style->SetTitleFillColor(kWhite);
-    style->SetPaperSize(20,24);
-
+  style->SetTextColor(kBlack);
   // Canvas
   //style->SetCanvasPreferGL(true);
   style->SetCanvasColor(kWhite);	
@@ -51,18 +42,13 @@ void Style_nptool(){
   style->SetOptFit(0);		
 
   // x axis
-  /*style->SetAxisColor(kBlack,"X");
+  style->SetAxisColor(kBlack,"X");
   style->SetLabelColor(kBlack,"X");
   style->SetTitleXSize(0.07);
   style->SetTitleXOffset(1.0);     
-  style->SetLabelOffset(0.1,"X");   */
+  style->SetLabelOffset(0.1,"X");
   //style->SetLabelSize(0.04,"X");
   //style->SetLabelOffset(0.006,"X");
-    style->SetTitleXSize(0.07);
-    style->SetTitleXOffset(1.0);
-    style->SetLabelOffset(0.1,"X");
-    style->SetLabelSize(0.04,"X");
-    style->SetLabelOffset(0.006,"X");
     
   // y axis
   style->SetTitleYSize(0.07);
