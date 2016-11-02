@@ -112,15 +112,15 @@ h4, h5, h6 {
  * Links
  */
 a {
-    color: $grey-color;
+    color: $grey-color-dark;
     text-decoration: none;
 
     &:visited {
-        color: $grey-color;
+        color: $grey-color-dark;
     }
 
     &:hover {
-        color: $grey-color-dark;
+        color: $brand-color;
         text-decoration: underline;
     }
 }
