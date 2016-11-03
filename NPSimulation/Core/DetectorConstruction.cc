@@ -55,7 +55,6 @@
 #include "NPSDetectorFactory.hh"
 #include "MaterialManager.hh"
 #include "DetectorMessenger.hh"
-#include "ParticleStack.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 DetectorConstruction::DetectorConstruction():  world_log(0), world_phys(0){
@@ -295,7 +294,6 @@ void DetectorConstruction::RedefineGeometry(std::string file){
   G4RunManager::GetRunManager()->PhysicsHasBeenModified() ;
   G4RunManager::GetRunManager()->Initialize();
   
-  ParticleStack::getInstance()->AttachInitialConditions();  
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
