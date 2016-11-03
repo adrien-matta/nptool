@@ -59,6 +59,7 @@ class Helios2 : public NPS::VDetector{
   private:
     G4LogicalVolume* m_SquareTube;
     G4LogicalVolume* m_SiliconWafer;
+    G4LogicalVolume* m_ActiveWafer;
     G4LogicalVolume* m_Magnet; 
     
     ////////////////////////////////////////////////////

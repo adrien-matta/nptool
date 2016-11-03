@@ -212,7 +212,9 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
         if(VerboseLevel){
         cout << "/////////////////////////////////////////" << endl;
         cout << "//// Adding Detector " << token << endl; 
+        }
         detector->ReadConfiguration(Path);
+        if(VerboseLevel){
         cout << "/////////////////////////////////////////" << endl;
         }
         // Add array to the VDetector Vector
@@ -252,7 +254,6 @@ void DetectorConstruction::ReadAllSensitive(const G4Event* event){
 
   unsigned int mysize =  m_Detectors.size();
   for (unsigned short i = 0 ; i < mysize ; i++) {
-    //m_Detectors[i]->ReadSensitive(event);
     (m_Detectors[i]->*m_ReadSensitivePtr)(event);    
   }
 }
@@ -291,8 +292,9 @@ void DetectorConstruction::RedefineGeometry(std::string file){
 
   G4RunManager::GetRunManager()->DefineWorldVolume(Construct());
   G4RunManager::GetRunManager()->GeometryHasBeenModified();
+  G4RunManager::GetRunManager()->PhysicsHasBeenModified() ;
   G4RunManager::GetRunManager()->Initialize();
-
+  
   ParticleStack::getInstance()->AttachInitialConditions();  
 }
 

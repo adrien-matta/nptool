@@ -88,6 +88,7 @@ Helios2::Helios2(){
   m_Helios2Scorer = 0;
   m_SquareTube = 0;
   m_SiliconWafer = 0;
+  m_ActiveWafer = 0;
   m_Magnet = 0;
   m_B=0;
 
@@ -139,19 +140,19 @@ G4LogicalVolume* Helios2::BuildSiliconWafer(){
 
     G4Material* Si= MaterialManager::getInstance()->GetMaterialFromLibrary("Si");
     m_SiliconWafer= new G4LogicalVolume(box1,Si,"logic_Helios2_Wafer",0,0,0);
-    G4LogicalVolume* ActiveWafer= new G4LogicalVolume(box2,Si,"logic_Helios2_ActiveWafer",0,0,0);
+    m_ActiveWafer= new G4LogicalVolume(box2,Si,"logic_Helios2_ActiveWafer",0,0,0);
 
     G4ThreeVector AWPos(0,0,0);
     G4RotationMatrix* AWRot = new G4RotationMatrix();
-    new G4PVPlacement(G4Transform3D(*AWRot,AWPos),ActiveWafer,
+    new G4PVPlacement(G4Transform3D(*AWRot,AWPos),m_ActiveWafer,
                       "Helios2_ActiveWafer",m_SiliconWafer, true, 0);
+    m_ActiveWafer->SetSensitiveDetector(m_Helios2Scorer);
 
     m_SiliconWafer->SetVisAttributes(m_VisPassiveSilicon);
-    ActiveWafer->SetVisAttributes(m_VisSilicon);
+    m_ActiveWafer->SetVisAttributes(m_VisSilicon);
  
+    }
 
-    ActiveWafer->SetSensitiveDetector(m_Helios2Scorer);
-  }
   
   return m_SiliconWafer;
 }
@@ -299,10 +300,11 @@ void Helios2::ConstructDetector(G4LogicalVolume* world){
       "Helios2",world,false,0);
 
   // Add the Magnetic field
-  G4MagneticField* magField
-      = new G4UniformMagField(G4ThreeVector(0.,0.,m_B));
-  G4FieldManager* fieldMgr = new G4FieldManager(magField);
-  fieldMgr->CreateChordFinder(magField); 
+  static G4FieldManager* fieldMgr = new G4FieldManager();
+  G4MagneticField* magField = new G4UniformMagField(G4ThreeVector(0.,0.,m_B));
+  fieldMgr->SetDetectorField(magField);
+  if(!fieldMgr->GetChordFinder())
+    fieldMgr->CreateChordFinder(magField); 
   BuildMagnet()->SetFieldManager(fieldMgr,true);
 
   // Place detectors and support inside it
@@ -338,7 +340,6 @@ void Helios2::ConstructDetector(G4LogicalVolume* world){
     new G4PVPlacement(G4Transform3D(*DetRot,DetPos),
         BuildSiliconWafer(),
         "Helios2_SiliconWafer",BuildMagnet(),false,i+1);
-
 
     // Place the Square Tub
     if(m_UsedZ.find(m_Z[i])==m_UsedZ.end()){
