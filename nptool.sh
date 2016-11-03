@@ -53,6 +53,8 @@ alias nps='cd $NPTOOL/NPSimulation'
 ${CMD} npa_not_supported='npa is now longer supported, use npp instead'
 alias npa='echo $npa_not_supported'
 
+
+# open a project
 function npp {
   if [[ $1 == *"Example"* ]]
   then
@@ -61,7 +63,24 @@ function npp {
     cd $NPTOOL/Projects/$1
   fi
 }
+# tab completion for npp
+_npp() {
+  # Pointer to current completion word.
+  local cur
+  # Array variable storing the possible completions.
+  COMPREPLY=()     
+  cur=${COMP_WORDS[COMP_CWORD]}
+  
+  # LIST of available choices
+  LIST=`ls $NPTOOL/Projects $NPTOOL/Examples`
+  case "$cur" in
+    *)
+    COMPREPLY=( $( compgen -W '$LIST' -- $cur ) );;
+  esac
 
+  return 0
+}
+complete -F _npp -o filenames npp
 
 ${CMD} Geant4_DIR${SEP}$G4LIB
 ${CMD} NPLib_DIR${SEP}$NPTOOL/NPLib
