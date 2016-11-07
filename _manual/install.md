@@ -96,6 +96,23 @@ $ ninja install
 {% endhighlight %}
 Compilation using Ninja is faster than using make.
 
+### Root configuration
+In order for Root to correctly load the nptool headers and library, and so be able to use nptool objects within interactive root macro, you need to add a couple of line to the ~/.rootlogon.C file. You may or may note already have such a file, in any case, a bash scripts is there to either create or modify ~/.rootlogon.C. To run it, simply use the following commands:
+
+{% highlight bash %}
+$ npl
+$ ./scripts/RootLogon.sh
+{% endhighlight %}
+
+You can then test that everything is working correctly by doing:
+{% highlight bash %}
+$ root 
+> NPL::Reaction r("28Si(d,p)29Si@280")
+> r.GetKinematicLine3()->Draw("ac")
+{% endhighlight %}
+
+This should display a _(d,p)_ kinematic line and no error message display.
+
 ### Building NPSimulation
 This part of the package relies on Geant4 to perform Monte Carlo simulation.
 NPLib needs first to be compiled and configured correctly before NPSimulation
