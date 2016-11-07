@@ -45,10 +45,10 @@ can be achieved using the following list of commands:
 {% highlight bash %}
 $ npl
 $ cmake ./
-$ make -jn
+$ make -jn install
 $ nps
 $ cmake ./
-$ make -jn
+$ make -jn install
 {% endhighlight %}
 
 
