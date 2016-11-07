@@ -48,7 +48,7 @@ using namespace std;
 // nptool headers
 #include "TInitialConditions.h"
 #include "TInteractionCoordinates.h"
-#include "Reaction.h"
+#include "NPReaction.h"
 using namespace NPL;
 
 TCanvas* canvas1;
