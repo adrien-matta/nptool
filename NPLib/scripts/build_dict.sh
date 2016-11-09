@@ -4,7 +4,7 @@
 # a Dictionnary, rootmap and pcm file accordingly
 
 # check rootcint exist
-command -v pipo >/dev/null 2>&1 || { printf >&2 "ERROR : rootcint binary not found.\n * For ROOT install from source check that \$ROOTSYS/bin is in your PATH\n * For Macports ROOT install consider adding /opt/local/bin to your PATH\n * For debian ROOT install consider adding /usr/bin to your PATH\n"; exit 1; }
+command -v rootcint >/dev/null 2>&1 || { printf >&2 "ERROR : rootcint binary not found.\n * For ROOT install from source check that \$ROOTSYS/bin is in your PATH\n * For Macports ROOT install consider adding /opt/local/bin to your PATH\n * For debian ROOT install consider adding /usr/bin to your PATH\n"; exit 1; }
 
 # Checking that enought argument are given
 if [ "$#" -lt 4 ]
