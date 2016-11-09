@@ -29,8 +29,8 @@ void Style_nptool(){
   // Pad
   style->SetPadBottomMargin(0.10);
   style->SetPadLeftMargin(0.10);
-  style->SetPadTopMargin(0.15);
-  style->SetPadRightMargin(0.15);
+  style->SetPadTopMargin(0.05);
+  style->SetPadRightMargin(0.05);
   style->SetPadBorderMode(0);	
   style->SetPadBorderSize(1);
   // style->SetPadColor(kWhite);		

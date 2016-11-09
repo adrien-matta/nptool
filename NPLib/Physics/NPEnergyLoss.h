@@ -37,7 +37,8 @@
 using namespace std ;
 
 //   ROOT
-//#include "TObject.h"
+#include "TGraph.h"
+#include "TSpline.h"
 
 // Use CLHEP System of unit and Physical Constant
 #include "NPGlobalSystemOfUnits.h"
@@ -46,17 +47,12 @@ using namespace std ;
 using namespace NPUNITS;
 #endif
 
-// ROOT
-#include "Math/InterpolationTypes.h"
-#include "Math/Interpolator.h"
-using namespace ROOT::Math;
-
 namespace NPL{
   class EnergyLoss{
 
     public :   //   Constructor
       EnergyLoss();
-      EnergyLoss( string Path          , //   Path of dE/dX table file
+      EnergyLoss( string Path  , //   Path of dE/dX table file
           string Source        , // Type of file : Geant4,Lise,SRIM
           int NumberOfSlice    , //   Low number = Faster, High Number = more accurate / typical: 100 to 1000
           int LiseColumns=0    , //   Indicate which model to read in a lise File, set to 0 (Default value) for a SRIM / Geant4 file
@@ -72,11 +68,13 @@ namespace NPL{
       vector<double>    fdEdX_Nuclear     ; // Nuclear Stopping Power
       vector<double>    fdEdX_Electronic  ; // Electronic Stopping Power
       vector<double>    fdEdX_Total       ; // Total Stopping Power
-      Interpolator*     fInter            ; // Interpolator Used to evaluate Energy loss at given energy
+      //Interpolator*     fInter            ; // Interpolator Used to evaluate Energy loss at given energy
+      TGraph*           fInter            ; // Graph use to perform interpolation
+      TSpline3*         fSpline           ; // Spline 3rd order used to perfom the interpolation
 
-      double Eval(double ener) const; // return the evaluated energy
-
+      
     public :    //   General Function on dE/dX table      
+      double Eval(double ener) const; // return the evaluated energy
       double   EvaluateNuclearLoss     (double ener)    const;
       double   EvaluateElectronicLoss  (double ener)    const;
       double   EvaluateTotalLoss       (double ener)    const;
@@ -124,7 +122,7 @@ namespace NPL{
       //   Display parameter   
       void Print() const;
       //   Draw (CERN ROOT)
-      void Draw() const;
+      void Draw(string option="") const;
 
   };
 }

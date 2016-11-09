@@ -70,7 +70,8 @@ ParticleStack::~ParticleStack(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void ParticleStack::AttachInitialConditions(){
   // Reasssigned the branch address
-  RootOutput::getInstance()->GetTree()->SetBranchAddress("InitialConditions",&m_InitialConditions);
+  if(RootOutput::getInstance()->GetTree()->FindBranch("InitialConditions"))
+    RootOutput::getInstance()->GetTree()->SetBranchAddress("InitialConditions",&m_InitialConditions);
 }
 
 

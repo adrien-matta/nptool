@@ -39,8 +39,6 @@
 using namespace std;
 
 #include "NPEnergyLoss.h"
-#include "TGraph.h"
-#include "TSpline.h"
 #include "TAxis.h"
 
 //   NPL
@@ -51,6 +49,7 @@ using namespace NPL;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 EnergyLoss::EnergyLoss() {
   fInter = NULL   ;
+  fSpline = NULL;
   fMax = -10000; 
   fMin = 1e12;
 }
@@ -168,21 +167,14 @@ EnergyLoss::EnergyLoss(string Path , string Source, int NumberOfSlice=100 ,  int
     exit(1);
   }
 
-  fInter = new Interpolator( fEnergy , fdEdX_Total   )      ;
+  fInter = new TGraph(fEnergy.size(), &fEnergy[0], &fdEdX_Total[0]);
+  fInter->Sort();
+  fSpline = new TSpline3 ("Energy Loss Spline", fInter->GetX(), fInter->GetY(), fInter->GetN());
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-void EnergyLoss::Draw() const{
-  /*TGraph *gr = new TGraph(fDim, fEnergy, fDedx_Tot);
-    gr->Draw("A*");
-    gr->GetXaxis()->SetTitle("E (MeV)");
-    gr->GetYaxis()->SetTitle("dE/dx   (MeV / (mg/cm^{2})");
-    gr->Draw("A");
-
-  // use a cubic spline to smooth the graph
-  TSpline3 *s = new TSpline3("grs",gr)   ;
-  s->SetLineColor(kRed)            ;
-  s->Draw("same")                  ;*/
+void EnergyLoss::Draw(string option) const{
+    fInter->Draw(option.c_str());
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
@@ -371,19 +363,17 @@ double   EnergyLoss::EvaluateEnergyFromDeltaE(  double DeltaE           , // Ene
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 double EnergyLoss::Eval(double energy) const {
-  if(energy > fMax){ // out of the table, make a first order extrapolation
-    return (fInter->Eval(fMax)+(energy-fMax)*fInter->Deriv(fMax));
+  if(energy < 0){
+    cout << "WARNING: negative energy given to NPL::EnergyLoss" << endl;
+    return 0;
   }
-  else if(energy < 0){
-    cout << "WARNING: negative energy given to energy loss" << endl;
-    return energy;
+  else if (energy!=energy){
+    cout << "WARNING: nan energy given to NPL::EnergyLoss" << endl;
+    return 0;
   }
-  else if(energy < fMin){ // out of the table, make a first order extrapolation
-    return (fInter->Eval(fMin)+(fMin-energy)*fInter->Deriv(fMin));
-  }
-  else
-    return fInter->Eval(energy);
-
+    
+  
+  return fInter->Eval(energy,fSpline);
 }
 
 

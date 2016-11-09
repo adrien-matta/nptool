@@ -201,7 +201,14 @@ double THelios2Physics::ThetaLab(unsigned int i, double m, double B, double q){
   double v_par = Z[i]/T;
   double v = sqrt(2*(Energy[i]*NPUNITS::MeV)
             /(m*NPUNITS::MeV/(NPUNITS::c_squared)));
-  return acos(v_par/v);
+  double result = acos(v_par/v);
+  
+  // in case ThetaLab is not a number (nan)
+  // return -1000;
+  if(result!=result){
+    result= -1000;
+  }
+  return result;
 }
 
 ///////////////////////////////////////////////////////////////////////////
