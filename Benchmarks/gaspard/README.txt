@@ -8,7 +8,7 @@ To perform the gaspard benchmark:
 
 2) Execute the ControlSimul.C macro in ROOT:
 
-* root ControlSimul.C
+* root ShowResults.C
 
 3) Check that the generated plots are similar to the benchmark file reference.root
 
