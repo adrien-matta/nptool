@@ -51,97 +51,47 @@ ClassImp(TGeTAMUPhysics)
 /////////////////////////////////////////////////
 void TGeTAMUPhysics::BuildPhysicalEvent(){
   PreTreat();
-  // Addback Map
-  unsigned int mysize = Gamma_Energy.size();
-  for(unsigned int i = 0 ; i < 16 ; i ++) {
-    for(unsigned int g = 0 ; g < mysize ; g++){
-      if(Clover_Number[g] == i+1 && Segment_Number[g]==0){
-        m_map_E[i] += Gamma_Energy[g];
-        if( Gamma_Energy[g]> m_map_Core_MaxE[i] ){
-          m_map_Core_MaxE[i] = Gamma_Energy[g];
-          m_map_Core_Crystal[i] = Crystal_Number[g];
-        }
-      }
-      if(Clover_Number[g] == i+1 &&  Segment_Number[g]>0 &&  Segment_Number[g]<9){
-        if( Gamma_Energy[g]>m_map_Segment_MaxE[i]){
-          m_map_Segment_MaxE[i] = Gamma_Energy[g];
-          m_map_Segment_Crystal[i] = Crystal_Number[g];
-          m_map_Segment[i] = Segment_Number[g];
-        }
-      }
-    }
-  }
 
-  // Final Addback and Doppler Correction 
-  int zero = 0;
-  for(int i = 0 ; i < 16 ; i++) {
-    if(m_map_E.find(i)!=m_map_E.end()){
-      int clover = i+1;
-      TVector3 Pos;
-      if(m_map_Segment_MaxE[i]>0)
-        Pos = GetSegmentPosition(clover,m_map_Segment_Crystal[i],m_map_Segment[i]);
-      else if(m_map_Core_MaxE[i]>0)
-        Pos = GetSegmentPosition(clover,m_map_Core_Crystal[i],zero);
-
-      if(Pos.Mag()!=0){
-        static TVector3 Beta = TVector3(0,0,0.10);
-        double E = GetDopplerCorrectedEnergy(m_map_E[i],Pos,Beta);
-        AddBack_DC.push_back(E);
-        AddBack_E.push_back(m_map_E[i]);
-        AddBack_Theta.push_back(Pos.Angle(Beta)*180./3.141592653589793);
-        AddBack_Clover.push_back(clover); 
-        if(m_map_Segment_MaxE[i]>0){
-          AddBack_Crystal.push_back(m_map_Segment_Crystal[i]);
-          AddBack_Segment.push_back(m_map_Segment[i]);
-        }
-        else{
-          AddBack_Crystal.push_back(m_map_Core_Crystal[i]);
-          AddBack_Segment.push_back(0);
-        }
-        AddBack_X.push_back(Pos.X());
-        AddBack_Y.push_back(Pos.Y());
-        AddBack_Z.push_back(Pos.Z());
-      }    
-    }
-  }
+  // TO DO: match core and segment and compute add back via a map for 
+  // multiplicity bigger than 1
 }
 
 /////////////////////////////////////////////////
 void TGeTAMUPhysics::PreTreat(){
+  m_PreTreatedData->Clear();
   static CalibrationManager* cal = CalibrationManager::getInstance();
   static string name;
-  unsigned int mysize = m_EventData->GetMultiplicityGe();
+  unsigned int mysize = m_EventData->GetMultiplicityCore();
   double Eraw,Energy;
-  int clover, crystal, segment;
+  int clover, cristal, segment;
   for(unsigned int i = 0 ; i < mysize ; i++){
-    Eraw = m_EventData->GetGeEnergy(i);
-    if( Eraw>20000){
-      clover = m_EventData->GetGeCloverNbr(i);
-      crystal = m_EventData->GetGeCrystalNbr(i);
-      segment = m_EventData->GetGeSegmentNbr(i);
-      name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal)+"_SEG"+ NPL::itoa(segment)+"_E";
+    Eraw = m_EventData->GetCoreEnergy(i);
+    if(Eraw>0){
+      clover = m_EventData->GetCoreCloverNbr(i);
+      cristal = m_EventData->GetCoreCristalNbr(i);
+      name = "GETAMU/D"+ NPL::itoa(clover)+"_CRI"+ NPL::itoa(cristal)+"_E";
       Energy =  cal->ApplyCalibration(name, Eraw);
-      Gamma_Energy.push_back(Energy);
-      Clover_Number.push_back(clover);
-      Crystal_Number.push_back(crystal);
-      Segment_Number.push_back(segment);
-      Gamma_Time.push_back(m_EventData->GetGeTimeCFD(i));
-
-      // Look for Associate BGO
-      bool BGOcheck = false ;
-      for(unsigned j = 0 ;  j <  m_EventData->GetMultiplicityBGO() ; j++){
-
-        if( m_EventData->GetBGOCloverNbr(j)== m_EventData->GetGeCloverNbr(i) && m_EventData->GetBGOEnergy(j)>20 )
-          BGOcheck = true ;
-      }
-      BGO.push_back(BGOcheck);
+      m_PreTreatedData->SetCore(clover,cristal,Energy,-1000);
     }
+  } 
+  mysize = m_EventData->GetMultiplicitySegment();
+  for(unsigned int i = 0 ; i < mysize ; i++){
+    Eraw = m_EventData->GetSegmentEnergy(i);
+    if(Eraw>0){
+      clover = m_EventData->GetSegmentCloverNbr(i);
+      segment = m_EventData->GetSegmentSegmentNbr(i);
+      name = "GETAMU/D"+ NPL::itoa(clover)+"_SEG"+ NPL::itoa(segment)+"_E";
+      Energy =  cal->ApplyCalibration(name, Eraw);
+      m_PreTreatedData->SetSegment(clover,cristal,Energy,-1000);
+    }
+
   }
 }
 
 /////////////////////////////////////////////////
 TVector3 TGeTAMUPhysics::GetPositionOfInteraction(unsigned int& i){
-  return GetSegmentPosition(Clover_Number[i],Crystal_Number[i],Segment_Number[i]);
+  return TVector3();
+  //return GetSegmentPosition(Clover_Number[i],Cristal_Number[i],Segment_Number[i]);
 }
 /////////////////////////////////////////////////
 // original energy, position, beta
@@ -185,7 +135,7 @@ TVector3 TGeTAMUPhysics::GetCorePosition(int& CloverNbr,int& CoreNbr){
   else if(CoreNbr==4)
     Pos.SetXYZ(-offset,-offset,depth);
   else
-    cout << "Warning: GeTAMU crystal number " << CoreNbr << " is out of range (1 to 4)" << endl;
+    cout << "Warning: GeTAMU cristal number " << CoreNbr << " is out of range (1 to 4)" << endl;
 
   // Define reference axis as the clover direction
   Pos.RotateUz(CloverPos.Unit());
@@ -224,7 +174,7 @@ TVector3 TGeTAMUPhysics::GetSegmentPosition(int& CloverNbr,int& CoreNbr, int& Se
     cout << "Warning: GeTAMU segment number " << SegmentNbr << " is out of range (0 to 9)" << endl;
 
 
-  // Each crystal is a rotation of the previous one
+  // Each cristal is a rotation of the previous one
   if (CoreNbr == 2 )
     Pos.RotateZ(90*deg);
   else if (CoreNbr == 3 )
@@ -350,26 +300,14 @@ void TGeTAMUPhysics::InitializeRootOutput()    {
 }
 ///////////////////////////////////////////////////////////////////////////  
 void TGeTAMUPhysics::Clear() {
-  Gamma_Energy.clear();
-  Gamma_Time.clear();
-  Crystal_Number.clear();
-  Clover_Number.clear();
-  Segment_Number.clear();
-  BGO.clear();
   AddBack_E.clear();
   AddBack_DC.clear();
   AddBack_Theta.clear();
   AddBack_X.clear();
   AddBack_Y.clear();
   AddBack_Z.clear();
-  m_map_E.clear();
-  m_map_Core_Crystal.clear();
-  m_map_Core_MaxE.clear(); 
-  m_map_Segment_Crystal.clear(); 
-  m_map_Segment.clear(); 
-  m_map_Segment_MaxE.clear(); 
   AddBack_Clover.clear();
-  AddBack_Crystal.clear();
+  AddBack_Cristal.clear();
   AddBack_Segment.clear();
 }
 ///////////////////////////////////////////////////////////////////////////  
@@ -384,7 +322,7 @@ void TGeTAMUPhysics::AddParameterToCalibrationManager(){
     for(int cry = 0 ; cry < 4 ; cry++){
       // core are 0 and 9 , segment 1 to 8
       for( int j = 0 ; j < 10 ; ++j){
-        Cal->AddParameter("GETAMU", "D"+ NPL::itoa(i+1)+"_CRY"+NPL::itoa(cry+1)+"_SEG"+ NPL::itoa(j)+"_E","GETAMU_D"+ NPL::itoa(i+1)+"_CRY"+NPL::itoa(cry+1)+"_SEG"+NPL::itoa(j)+"_E");
+        Cal->AddParameter("GETAMU", "D"+ NPL::itoa(i+1)+"_CRI"+NPL::itoa(cry+1)+"_SEG"+ NPL::itoa(j)+"_E","GETAMU_D"+ NPL::itoa(i+1)+"_CRI"+NPL::itoa(cry+1)+"_SEG"+NPL::itoa(j)+"_E");
       }
     }
   } 

@@ -12,7 +12,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold the GeTAMU  raw data (Made for TIG10 card)              *
+ *  This class hold the GeTAMU  raw data (Made for GeTAMU10 card)              *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -28,9 +28,9 @@ using namespace std;
 
 ClassImp(TGeTAMUData)
 
-/////////////////////////
-TGeTAMUData::TGeTAMUData(){
-}
+  /////////////////////////
+  TGeTAMUData::TGeTAMUData(){
+  }
 
 /////////////////////////
 TGeTAMUData::~TGeTAMUData(){
@@ -38,31 +38,17 @@ TGeTAMUData::~TGeTAMUData(){
 
 /////////////////////////
 void TGeTAMUData::Clear(){
-  fTIG_Ge_CloverNbr.clear();
-  fTIG_Ge_CrystalNbr.clear();
-  fTIG_Ge_SegmentNbr.clear();
-  fTIG_Ge_Energy.clear();
-  fTIG_Ge_TimeCFD.clear();
-  fTIG_Ge_TimeLED.clear();
+  fGeTAMU_Core_CloverNbr.clear();
+  fGeTAMU_Core_CristalNbr.clear();
+  fGeTAMU_Core_Energy.clear();
+  fGeTAMU_Core_Time.clear();
 
-  fTIG_BGO_CloverNbr.clear();
-  fTIG_BGO_CrystalNbr.clear();
-  fTIG_BGO_PmNbr.clear();
-  fTIG_BGO_Energy.clear();
-  fTIG_BGO_TimeCFD.clear();
-  fTIG_BGO_TimeLED.clear();
+  fGeTAMU_Segment_CloverNbr.clear();
+  fGeTAMU_Segment_SegmentNbr.clear();
+  fGeTAMU_Segment_Energy.clear();
+  fGeTAMU_Segment_Time.clear();
 }
 
 /////////////////////////
 void TGeTAMUData::Dump() const{
-  // Energy
- // cout << "GeTAMU_Mult = " << fTIG_CloverNbr.size() << endl;
-  
-  // Front
- // for (UShort_t i = 0; i < fTIG_CloverNbr.size(); i++){
- //   cout << "Clover: " << fTIG_CloverNbr[i]
- //        << " Crystal: " << fTIG_CrystalNbr[i]
- //        << " Energy: " << fTIG_Energy[i]
- //        << " Time: " << fTIG_Time[i] << endl;
- // }
 }
