@@ -84,35 +84,19 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     TGeTAMUPhysics* m_EventPhysics;//!
 
   public: // Data Member
-    vector<double> Gamma_Energy;
-    vector<int> Crystal_Number;
-    vector<int> Clover_Number;
-    vector<int> Segment_Number;
-    vector<bool> BGO;
-    vector<double> Gamma_Time;
-    
     // add back by clover
     vector<double> AddBack_E;   
+    vector<double> AddBack_T;   
     vector<double> AddBack_DC;   
     vector<double> AddBack_Theta;
     vector<double> AddBack_X;
     vector<double> AddBack_Y;
     vector<double> AddBack_Z;
     vector<int> AddBack_Clover;
-    vector<int> AddBack_Crystal;
+    vector<int> AddBack_Cristal;
     vector<int> AddBack_Segment;
 
   private: // use for anlysis
-    // Keep track of the core
-    map<int,double> m_map_E; //!
-    map<int,int> m_map_Core_Crystal; //!
-    map<int,double> m_map_Core_MaxE; //!
-  
-    // Keep track of the segment
-    map<int,int> m_map_Segment_Crystal; //!
-    map<int,int> m_map_Segment; //!
-    map<int,double> m_map_Segment_MaxE; //!
-
    
     TLorentzVector m_GammaLV; //!
   public:

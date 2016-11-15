@@ -63,8 +63,8 @@ namespace Helios2_NS{
   // Energy and time Resolution
   const double EnergyThreshold = 100*keV;
   const double ResoTime = 1*ns ;
-  const double ResoEnergy = 21.27*keV ;
-
+  const double ResoEnergyFront = 50*keV ;
+  const double ResoEnergyBack = 24*keV;
   const double MagnetInnerRadius = 46*cm;
   const double MagnetOutterRadius = 1*m; 
   const double MagnetLength = 2.35*m; 
@@ -76,6 +76,7 @@ namespace Helios2_NS{
   const double WaferLength = 56 *mm ;
   const double ActiveWaferWidth = 9*mm ;
   const double ActiveWaferLength = 50.5 *mm ;
+  const double AluThicness = 0.3*micrometer;
   const double WaferThickness = 700* micrometer; 
 }
 
@@ -132,14 +133,16 @@ G4LogicalVolume* Helios2::BuildSquareTube(){
 G4LogicalVolume* Helios2::BuildSiliconWafer(){
   if(!m_SiliconWafer){
     G4Box* box1 = new G4Box("Helios2_Box1",Helios2_NS::WaferWidth*0.5,
-        Helios2_NS::WaferThickness*0.5,Helios2_NS::WaferLength*0.5);
+        Helios2_NS::WaferThickness*0.5+Helios2_NS::AluThicness,Helios2_NS::WaferLength*0.5);
 
     G4Box* box2 = new G4Box("Helios2_Box2",Helios2_NS::ActiveWaferWidth*0.5,
         Helios2_NS::WaferThickness*0.5,Helios2_NS::ActiveWaferLength*0.5);
 
 
     G4Material* Si= MaterialManager::getInstance()->GetMaterialFromLibrary("Si");
-    m_SiliconWafer= new G4LogicalVolume(box1,Si,"logic_Helios2_Wafer",0,0,0);
+    G4Material* Al= MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
+
+    m_SiliconWafer= new G4LogicalVolume(box1,Al,"logic_Helios2_Wafer",0,0,0);
     m_ActiveWafer= new G4LogicalVolume(box2,Si,"logic_Helios2_ActiveWafer",0,0,0);
 
     G4ThreeVector AWPos(0,0,0);
@@ -307,6 +310,10 @@ void Helios2::ConstructDetector(G4LogicalVolume* world){
     fieldMgr->CreateChordFinder(magField); 
   BuildMagnet()->SetFieldManager(fieldMgr,true);
 
+  fieldMgr->SetMinimumEpsilonStep( 1*mm);
+  fieldMgr->SetMaximumEpsilonStep( 10*m );
+  fieldMgr->SetDeltaOneStep( 1 * mm ); 
+  
   // Place detectors and support inside it
   for (unsigned short i = 0 ; i < m_Z.size() ; i++) {
     G4ThreeVector DetPos;
@@ -384,11 +391,11 @@ void Helios2::ReadSensitive(const G4Event* event){
   // Loop on the Resistive map
   for (Resistive_itr = ResistiveHitMap->GetMap()->begin() ; Resistive_itr != ResistiveHitMap->GetMap()->end() ; Resistive_itr++){
   G4double* Info = *(Resistive_itr->second);
-  double EBack = RandGauss::shoot(Info[0]+Info[1],Helios2_NS::ResoEnergy);
-  double TBack = RandGauss::shoot(Info[2],Helios2_NS::ResoEnergy);
-  double EUp = RandGauss::shoot(Info[1],Helios2_NS::ResoEnergy);
+  double EBack = RandGauss::shoot(Info[0]+Info[1],Helios2_NS::ResoEnergyBack);
+  double TBack = RandGauss::shoot(Info[2],Helios2_NS::ResoTime);
+  double EUp = RandGauss::shoot(Info[1],Helios2_NS::ResoEnergyFront);
   double TUp = RandGauss::shoot(Info[2],Helios2_NS::ResoTime);
-  double EDw = RandGauss::shoot(Info[0],Helios2_NS::ResoEnergy);
+  double EDw = RandGauss::shoot(Info[0],Helios2_NS::ResoEnergyFront);
   double TDw = RandGauss::shoot(Info[2],Helios2_NS::ResoTime);
 
   if(EBack>Helios2_NS::EnergyThreshold){

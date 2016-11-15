@@ -318,7 +318,7 @@ void DETECTORNAME::ConstructDetector(G4LogicalVolume* world){
 void DETECTORNAME::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
-  if(pTree->FindBranch("DETECTORNAME")){
+  if(!pTree->FindBranch("DETECTORNAME")){
     pTree->Branch("DETECTORNAME", "TDETECTORNAMEData", &m_Event) ;
   }
   pTree->SetBranchAddress("DETECTORNAME", &m_Event) ;
