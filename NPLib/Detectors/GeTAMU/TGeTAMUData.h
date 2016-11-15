@@ -33,12 +33,12 @@ using namespace std ;
 class TGeTAMUData : public TObject {
 private:
   // GeTAMU
-  // Energy
+  // Core 
   vector<unsigned short> fGeTAMU_Core_CloverNbr;
   vector<unsigned short> fGeTAMU_Core_CristalNbr;
   vector<double> fGeTAMU_Core_Energy;
   vector<double> fGeTAMU_Core_Time;
-
+  // Segment
   vector<unsigned short> fGeTAMU_Segment_CloverNbr;
   vector<unsigned short> fGeTAMU_Segment_SegmentNbr;
   vector<double> fGeTAMU_Segment_Energy;
@@ -101,20 +101,4 @@ public:
 };
 
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
