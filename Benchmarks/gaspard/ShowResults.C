@@ -46,9 +46,9 @@ using namespace std;
 #include "TGraph.h"
 
 // nptool headers
-#include "TInitialConditions.h"
 #include "TInteractionCoordinates.h"
-#include "Reaction.h"
+#include "TInitialConditions.h"
+#include "NPReaction.h"
 using namespace NPL;
 
 TCanvas* canvas1;
