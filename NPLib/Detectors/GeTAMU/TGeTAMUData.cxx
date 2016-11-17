@@ -52,19 +52,19 @@ void TGeTAMUData::Clear(){
 /////////////////////////
 void TGeTAMUData::Dump() const{
 
- cout << "Core Multiplicity = " << GetMultiplicityCore() << endl;  
-  for (UShort_t i = 0; i < GetMultiplicityCore(); i++){
-    cout << " Clover: " <<  fGeTAMU_Core_CloverNbr[i] << endl; 
-         << " Crystal: " << fGeTAMU_Core_CrystalNbr[i] << endl; 
-         << " Energy: " <<  fGeTAMU_Core_Energy[i] << endl; 
+ cout << "Core Multiplicity = " << fGeTAMU_Core_CloverNbr.size() << endl;  
+  for (unsigned int i = 0; i <  fGeTAMU_Core_CloverNbr.size(); i++){
+    cout << " Clover: " <<  fGeTAMU_Core_CloverNbr[i] 
+         << " Crystal: " << fGeTAMU_Core_CrystalNbr[i]  
+         << " Energy: " <<  fGeTAMU_Core_Energy[i]  
          << " Time: " <<    fGeTAMU_Core_Time[i] << endl;
   }
 
-  cout << "Segment Multiplicity = " << GetMultiplicityCore() << endl;  
-  for (UShort_t i = 0; i < GetMultiplicityCore(); i++){
-    cout << " Clover: " <<  fGeTAMU_Segment_CloverNbr[i] << endl; 
-         << " Segment: " << fGeTAMU_Segment_SegmentNbr[i] << endl; 
-         << " Energy: " <<  fGeTAMU_Segment_Energy[i] << endl; 
+  cout << "Segment Multiplicity = " <<  fGeTAMU_Segment_CloverNbr.size() << endl;  
+  for (unsigned int i = 0; i < fGeTAMU_Segment_CloverNbr.size(); i++){
+    cout << " Clover: " <<  fGeTAMU_Segment_CloverNbr[i]  
+         << " Segment: " << fGeTAMU_Segment_SegmentNbr[i]  
+         << " Energy: " <<  fGeTAMU_Segment_Energy[i]  
          << " Time: " <<    fGeTAMU_Segment_Time[i] << endl;
   }
 
