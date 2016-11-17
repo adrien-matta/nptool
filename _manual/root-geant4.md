@@ -103,10 +103,9 @@ $ sudo apt-get install root-system -y
 
 ## Geant4
 
-
-
-
 ### From source (preferred method)
+The following command install Geant4 from source. QT and GDML are optional and requiered QT4 or QT5 and libXeres to be installed.
+We however strongly recommand to use the QT interface of npsimulation, as it provide the best user experience. GDML is requiered fro some detector that load there geometry from GDML file (e.g. Agata, T-Rex, Miniball) as well as exporting geometry to GDML file.
 
 {% highlight console %}
 $ cd /path/to/folder
@@ -114,7 +113,7 @@ $ tar -xf /path/to/geant4.xxx.tar.gz
 $ mkdir geant4.xxx_build
 $ mkdir geant4.xxx_install
 $ cd geant4.xxx_build
-$ cmake -DCMAKE_INSTALL_PREFIX=/path/to/folder/geant4.xxx_install -DGEANT4_USE_QT=ON -DGEANT4_USE_GDML=ON ../geant4.xxx
+$ cmake -DCMAKE_INSTALL_PREFIX=/path/to/folder/geant4.xxx_install -DGEANT4_INSTALL_DATA=ON -DGEANT4_USE_QT=ON -DGEANT4_USE_GDML=ON ../geant4.xxx
 $ make -j2 
 $ make install
 $ cd ../
