@@ -106,8 +106,11 @@ $ sudo apt-get install root-system -y
 ## Geant4
 
 ### From source (preferred method)
-The following commands install Geant4 from source. QT and GDML are optional and requiered QT4 or QT5 and libXeres to be installed.
+The following commands install Geant4 from source. QT and GDML are optional and requiered QT4 or QT5 (package libqt4-dev or qtdeclarative5-dev) and  libxerces-c (package libxerces-c-dev , libxerces-cX.X) to be installed.
+
 We however strongly recommand to use the QT interface of npsimulation, as it provide the best user experience. GDML is required for some detectors which load there geometry from GDML file (e.g. Agata, T-Rex, Miniball) as well as exporting geometry to GDML file.
+
+You also need to compile Geant4 with the OpenGL driver in order to benefit from the visualization. This is usually done automatically as the OpenGL headers are installed on most standard distribution, if not you can try to install the mesa-common-dev package to get the GL/gl.h header file.
 
 {% highlight console %}
 $ cd /path/to/folder
