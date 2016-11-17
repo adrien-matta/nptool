@@ -9,10 +9,10 @@
  * Original Author: Adrien MATTA  contact address: a.matta@surrey.ac.uk      *
  *                                                                           *
  * Creation Date  : November 2012                                            *
- * Last update    :                                                          *
+ * Last update    : November 2016                                            *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold the GeTAMU  raw data (Made for GeTAMU10 card)              *
+ *  This class hold the GeTAMU  raw data                                     *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -51,4 +51,21 @@ void TGeTAMUData::Clear(){
 
 /////////////////////////
 void TGeTAMUData::Dump() const{
+
+ cout << "Core Multiplicity = " << GetMultiplicityCore() << endl;  
+  for (UShort_t i = 0; i < GetMultiplicityCore(); i++){
+    cout << " Clover: " <<  fGeTAMU_Core_CloverNbr[i] << endl; 
+         << " Crystal: " << fGeTAMU_Core_CristalNbr[i] << endl; 
+         << " Energy: " <<  fGeTAMU_Core_Energy[i] << endl; 
+         << " Time: " <<    fGeTAMU_Core_Time[i] << endl;
+  }
+
+  cout << "Segment Multiplicity = " << GetMultiplicityCore() << endl;  
+  for (UShort_t i = 0; i < GetMultiplicityCore(); i++){
+    cout << " Clover: " <<  fGeTAMU_Segment_CloverNbr[i] << endl; 
+         << " Segment: " << fGeTAMU_Segment_SegmentNbr[i] << endl; 
+         << " Energy: " <<  fGeTAMU_Segment_Energy[i] << endl; 
+         << " Time: " <<    fGeTAMU_Segment_Time[i] << endl;
+  }
+
 }
