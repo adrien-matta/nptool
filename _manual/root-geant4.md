@@ -28,9 +28,9 @@ $ sudo port install cmake
 {% endhighlight %}
 
 
-## GSL
+## GSL (no longer needed)
 
-nptool requiere the libmathmore from ROOT, which is build only when the GNU Scientific Library (GSL) is present. This package can be installed easely via package manager:
+nptool required the libmathmore from ROOT, which is build only when the GNU Scientific Library (GSL) is present. This package can be installed easely via package manager:
 
 On Ubuntu and Debian :
 {% highlight console %}
@@ -74,6 +74,8 @@ Once the source downloaded, one need to decide where to install Root. Some prefe
 
 The cmake installation requier an out-of-source compilation, we will therefore create a temporary folder to hold the build, and remove it at the end.
 
+For newer version of nptool mathmore is no longer required. 
+
 {% highlight console %}
 $ cd /path/to/folder
 $ tar -xf /path/to/root.xxx.tar.gz
@@ -104,8 +106,8 @@ $ sudo apt-get install root-system -y
 ## Geant4
 
 ### From source (preferred method)
-The following command install Geant4 from source. QT and GDML are optional and requiered QT4 or QT5 and libXeres to be installed.
-We however strongly recommand to use the QT interface of npsimulation, as it provide the best user experience. GDML is requiered fro some detector that load there geometry from GDML file (e.g. Agata, T-Rex, Miniball) as well as exporting geometry to GDML file.
+The following commands install Geant4 from source. QT and GDML are optional and requiered QT4 or QT5 and libXeres to be installed.
+We however strongly recommand to use the QT interface of npsimulation, as it provide the best user experience. GDML is required for some detectors which load there geometry from GDML file (e.g. Agata, T-Rex, Miniball) as well as exporting geometry to GDML file.
 
 {% highlight console %}
 $ cd /path/to/folder
