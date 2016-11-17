@@ -93,7 +93,7 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     vector<double> AddBack_Y;
     vector<double> AddBack_Z;
     vector<int> AddBack_Clover;
-    vector<int> AddBack_Cristal;
+    vector<int> AddBack_Crystal;
     vector<int> AddBack_Segment;
 
   private: // use for anlysis

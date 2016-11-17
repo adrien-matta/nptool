@@ -39,7 +39,7 @@ TGeTAMUData::~TGeTAMUData(){
 /////////////////////////
 void TGeTAMUData::Clear(){
   fGeTAMU_Core_CloverNbr.clear();
-  fGeTAMU_Core_CristalNbr.clear();
+  fGeTAMU_Core_CrystalNbr.clear();
   fGeTAMU_Core_Energy.clear();
   fGeTAMU_Core_Time.clear();
 
@@ -55,7 +55,7 @@ void TGeTAMUData::Dump() const{
  cout << "Core Multiplicity = " << GetMultiplicityCore() << endl;  
   for (UShort_t i = 0; i < GetMultiplicityCore(); i++){
     cout << " Clover: " <<  fGeTAMU_Core_CloverNbr[i] << endl; 
-         << " Crystal: " << fGeTAMU_Core_CristalNbr[i] << endl; 
+         << " Crystal: " << fGeTAMU_Core_CrystalNbr[i] << endl; 
          << " Energy: " <<  fGeTAMU_Core_Energy[i] << endl; 
          << " Time: " <<    fGeTAMU_Core_Time[i] << endl;
   }

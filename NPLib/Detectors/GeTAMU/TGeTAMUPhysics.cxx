@@ -56,19 +56,19 @@ void TGeTAMUPhysics::BuildPhysicalEvent(){
   // map for add back
   map<int,double> clv_energy;   
   map<int,int> clv_segment;
-  map<int,int> clv_cristal;
+  map<int,int> clv_crystal;
   map<int,double> max_core;
   map<int,double> max_segment; 
   for(unsigned int i = 0 ; i < c_size ; i++){
     int clv = m_PreTreatedData->GetCoreCloverNbr(i);
-    int cri = m_PreTreatedData->GetCoreCristalNbr(i);
+    int cry = m_PreTreatedData->GetCoreCrystalNbr(i);
     double energy = m_PreTreatedData->GetCoreEnergy(i);
     // Add back energy
     clv_energy[clv] += energy;
-    // Pick up the cristal
+    // Pick up the crystal
     if(energy > max_core[clv]){
       max_core[clv] = energy;
-      clv_cristal[clv] = cri;
+      clv_crystal[clv] = cry;
     }
     // Pick up the segment
     for(unsigned int j = 0 ; j < s_size ; j++){
@@ -92,7 +92,7 @@ void TGeTAMUPhysics::BuildPhysicalEvent(){
     AddBack_Y.push_back(-1000);
     AddBack_Z.push_back(-1000);
     AddBack_Clover.push_back(clv);
-    AddBack_Cristal.push_back(clv_cristal[clv]);
+    AddBack_Crystal.push_back(clv_crystal[clv]);
     AddBack_Segment.push_back(clv_segment[clv]);
   }
 }
@@ -103,15 +103,15 @@ void TGeTAMUPhysics::PreTreat(){
   static string name;
   unsigned int mysize = m_EventData->GetMultiplicityCore();
   double Eraw,Energy;
-  int clover, cristal, segment;
+  int clover, crystal, segment;
   for(unsigned int i = 0 ; i < mysize ; i++){
     Eraw = m_EventData->GetCoreEnergy(i);
     if(Eraw>0){
       clover = m_EventData->GetCoreCloverNbr(i);
-      cristal = m_EventData->GetCoreCristalNbr(i);
-      name = "GETAMU/D"+ NPL::itoa(clover)+"_CRI"+ NPL::itoa(cristal)+"_E";
+      crystal = m_EventData->GetCoreCrystalNbr(i);
+      name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal)+"_E";
       Energy =  cal->ApplyCalibration(name, Eraw);
-      m_PreTreatedData->SetCore(clover,cristal,Energy,-1000);
+      m_PreTreatedData->SetCore(clover,crystal,Energy,-1000);
     }
   } 
   mysize = m_EventData->GetMultiplicitySegment();
@@ -122,7 +122,7 @@ void TGeTAMUPhysics::PreTreat(){
       segment = m_EventData->GetSegmentSegmentNbr(i);
       name = "GETAMU/D"+ NPL::itoa(clover)+"_SEG"+ NPL::itoa(segment)+"_E";
       Energy =  cal->ApplyCalibration(name, Eraw);
-      m_PreTreatedData->SetSegment(clover,cristal,Energy,-1000);
+      m_PreTreatedData->SetSegment(clover,crystal,Energy,-1000);
     }
 
   }
@@ -131,7 +131,7 @@ void TGeTAMUPhysics::PreTreat(){
 /////////////////////////////////////////////////
 TVector3 TGeTAMUPhysics::GetPositionOfInteraction(unsigned int& i){
   return TVector3();
-  //return GetSegmentPosition(Clover_Number[i],Cristal_Number[i],Segment_Number[i]);
+  //return GetSegmentPosition(Clover_Number[i],Crystal_Number[i],Segment_Number[i]);
 }
 /////////////////////////////////////////////////
 // original energy, position, beta
@@ -175,7 +175,7 @@ TVector3 TGeTAMUPhysics::GetCorePosition(int& CloverNbr,int& CoreNbr){
   else if(CoreNbr==4)
     Pos.SetXYZ(-offset,-offset,depth);
   else
-    cout << "Warning: GeTAMU cristal number " << CoreNbr << " is out of range (1 to 4)" << endl;
+    cout << "Warning: GeTAMU crystal number " << CoreNbr << " is out of range (1 to 4)" << endl;
 
   // Define reference axis as the clover direction
   Pos.RotateUz(CloverPos.Unit());
@@ -214,7 +214,7 @@ TVector3 TGeTAMUPhysics::GetSegmentPosition(int& CloverNbr,int& CoreNbr, int& Se
     cout << "Warning: GeTAMU segment number " << SegmentNbr << " is out of range (0 to 9)" << endl;
 
 
-  // Each cristal is a rotation of the previous one
+  // Each crystal is a rotation of the previous one
   if (CoreNbr == 2 )
     Pos.RotateZ(90*deg);
   else if (CoreNbr == 3 )
@@ -347,7 +347,7 @@ void TGeTAMUPhysics::Clear() {
   AddBack_Y.clear();
   AddBack_Z.clear();
   AddBack_Clover.clear();
-  AddBack_Cristal.clear();
+  AddBack_Crystal.clear();
   AddBack_Segment.clear();
 }
 ///////////////////////////////////////////////////////////////////////////  
@@ -362,7 +362,7 @@ void TGeTAMUPhysics::AddParameterToCalibrationManager(){
     for(int cry = 0 ; cry < 4 ; cry++){
       // core are 0 and 9 , segment 1 to 8
       for( int j = 0 ; j < 10 ; ++j){
-        Cal->AddParameter("GETAMU", "D"+ NPL::itoa(i+1)+"_CRI"+NPL::itoa(cry+1)+"_SEG"+ NPL::itoa(j)+"_E","GETAMU_D"+ NPL::itoa(i+1)+"_CRI"+NPL::itoa(cry+1)+"_SEG"+NPL::itoa(j)+"_E");
+        Cal->AddParameter("GETAMU", "D"+ NPL::itoa(i+1)+"_CRY"+NPL::itoa(cry+1)+"_SEG"+ NPL::itoa(j)+"_E","GETAMU_D"+ NPL::itoa(i+1)+"_CRY"+NPL::itoa(cry+1)+"_SEG"+NPL::itoa(j)+"_E");
       }
     }
   } 

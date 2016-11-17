@@ -35,7 +35,7 @@ private:
   // GeTAMU
   // Core 
   vector<unsigned short> fGeTAMU_Core_CloverNbr;
-  vector<unsigned short> fGeTAMU_Core_CristalNbr;
+  vector<unsigned short> fGeTAMU_Core_CrystalNbr;
   vector<double> fGeTAMU_Core_Energy;
   vector<double> fGeTAMU_Core_Time;
   // Segment
@@ -55,15 +55,15 @@ public:
   
   /////////////////////           SETTERS           ////////////////////////
   inline void SetCoreCloverNbr(const unsigned short &CoreCloverNbr){fGeTAMU_Core_CloverNbr.push_back(CoreCloverNbr); }
-  inline void SetCoreCristalNbr(const unsigned short &CoreCristalNbr){fGeTAMU_Core_CristalNbr.push_back(CoreCristalNbr);}
+  inline void SetCoreCrystalNbr(const unsigned short &CoreCrystalNbr){fGeTAMU_Core_CrystalNbr.push_back(CoreCrystalNbr);}
   inline void SetCoreEnergy(const double &CoreEnergy){fGeTAMU_Core_Energy.push_back(CoreEnergy);}
   inline void SetCoreTime(const double &CoreTime){fGeTAMU_Core_Time.push_back(CoreTime);}
   inline void SetCore(const unsigned short &CoreCloverNbr,
-                      const unsigned short &CoreCristalNbr,
+                      const unsigned short &CoreCrystalNbr,
                       const double &CoreEnergy,
                       const double &CoreTime){
     fGeTAMU_Core_CloverNbr.push_back(CoreCloverNbr);
-    fGeTAMU_Core_CristalNbr.push_back(CoreCristalNbr);
+    fGeTAMU_Core_CrystalNbr.push_back(CoreCrystalNbr);
     fGeTAMU_Core_Energy.push_back(CoreEnergy);
     fGeTAMU_Core_Time.push_back(CoreTime);
   };
@@ -85,7 +85,7 @@ public:
 
   /////////////////////           GETTERS           ////////////////////////
   inline unsigned short GetCoreCloverNbr(const unsigned int &i)   {return fGeTAMU_Core_CloverNbr[i]; }
-  inline unsigned short GetCoreCristalNbr(const unsigned int &i)  {return fGeTAMU_Core_CristalNbr[i]; }
+  inline unsigned short GetCoreCrystalNbr(const unsigned int &i)  {return fGeTAMU_Core_CrystalNbr[i]; }
   inline double GetCoreEnergy(const unsigned int &i)      {return fGeTAMU_Core_Energy[i];}
   inline double GetCoreTime(const unsigned int &i)     {return fGeTAMU_Core_Time[i];}
   inline unsigned int GetMultiplicityCore()  {return fGeTAMU_Core_CloverNbr.size();}
