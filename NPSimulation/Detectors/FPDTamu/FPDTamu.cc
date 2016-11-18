@@ -348,8 +348,8 @@ void FPDTamu::ReadSensitive(const G4Event* event){
     if(Energy>FPDTamu_NS::EnergyThreshold){
       double Time = RandGauss::shoot(Info[1],FPDTamu_NS::ResoTime);
       int DetectorNbr = (int) Info[2];
-      m_Event->SetEnergy(DetectorNbr,Energy);
-      m_Event->SetTime(DetectorNbr,Time); 
+      m_Event->Set_Delta_E(DetectorNbr,Energy);
+      m_Event->Set_Delta_T(DetectorNbr,Time); 
     }
   }
   // clear map for next event
