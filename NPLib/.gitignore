@@ -16,5 +16,7 @@ Utility/nptool-wizard
 *.dylib
 *.so
 *.cmake
+*.bbl
+*.blg
 NPLibVersion.h
 scripts/*.d
