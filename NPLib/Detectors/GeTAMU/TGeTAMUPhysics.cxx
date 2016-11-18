@@ -103,15 +103,17 @@ void TGeTAMUPhysics::PreTreat(){
   static string name;
   unsigned int mysize = m_EventData->GetMultiplicityCore();
   double Eraw,Energy;
+  double Traw,Time;
   int clover, crystal, segment;
   for(unsigned int i = 0 ; i < mysize ; i++){
     Eraw = m_EventData->GetCoreEnergy(i);
     if(Eraw>0){
       clover = m_EventData->GetCoreCloverNbr(i);
       crystal = m_EventData->GetCoreCrystalNbr(i);
-      name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal)+"_E";
-      Energy =  cal->ApplyCalibration(name, Eraw);
-      m_PreTreatedData->SetCore(clover,crystal,Energy,-1000);
+      name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
+      Energy =  cal->ApplyCalibration(name+"_E", Eraw);
+      Time =  cal->ApplyCalibration(name+"_T", Traw);
+      m_PreTreatedData->SetCore(clover,crystal,Energy,Time);
     }
   } 
   mysize = m_EventData->GetMultiplicitySegment();
@@ -120,9 +122,10 @@ void TGeTAMUPhysics::PreTreat(){
     if(Eraw>0){
       clover = m_EventData->GetSegmentCloverNbr(i);
       segment = m_EventData->GetSegmentSegmentNbr(i);
-      name = "GETAMU/D"+ NPL::itoa(clover)+"_SEG"+ NPL::itoa(segment)+"_E";
-      Energy =  cal->ApplyCalibration(name, Eraw);
-      m_PreTreatedData->SetSegment(clover,crystal,Energy,-1000);
+      name = "GETAMU/D"+ NPL::itoa(clover)+"_SEG"+ NPL::itoa(segment);
+      Energy =  cal->ApplyCalibration(name+"_E", Eraw);
+      Time =  cal->ApplyCalibration(name+"_T", Traw);
+      m_PreTreatedData->SetSegment(clover,crystal,Energy,Time);
     }
 
   }
