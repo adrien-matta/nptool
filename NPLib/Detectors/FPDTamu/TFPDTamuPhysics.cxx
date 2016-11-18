@@ -6,13 +6,14 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Mohamad Moukaddam  contact address: m.moukaddam@surrey.ac.uk                        *
+ * Original Author: Mohamad Moukaddam                                        *
+ * contact address: m.moukaddam@surrey.ac.uk                                 *
  *                                                                           *
- * Creation Date  : November 2016                                           *
+ * Creation Date  : November 2016                                            *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold FPDTamu Treated  data                               *
+ *  This class hold FPDTamu Treated  data                                    *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -67,14 +68,14 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
   PreTreat();
 
   // match energy and time together
-  unsigned int mysizeE = m_PreTreatedData->GetMultEnergy();
-  unsigned int mysizeT = m_PreTreatedData->GetMultTime();
+  unsigned int mysizeE = m_PreTreatedData->Get_Delta_Energy_Mult();
+  unsigned int mysizeT = m_PreTreatedData->Get_Delta_Time_Mult();
   for (UShort_t e = 0; e < mysizeE ; e++) {
     for (UShort_t t = 0; t < mysizeT ; t++) {
-      if (m_PreTreatedData->GetE_DetectorNbr(e) == m_PreTreatedData->GetT_DetectorNbr(t)) {
-        DetectorNumber.push_back(m_PreTreatedData->GetE_DetectorNbr(e));
-        Energy.push_back(m_PreTreatedData->Get_Energy(e));
-        Time.push_back(m_PreTreatedData->Get_Time(t));
+      if (m_PreTreatedData->Get_Delta_E_DetectorNbr(e) == m_PreTreatedData->Get_Delta_T_DetectorNbr(t)) {
+        DetectorNumber.push_back(m_PreTreatedData->Get_Delta_E_DetectorNbr(e));
+        Energy.push_back(m_PreTreatedData->Get_Delta_Energy(e));
+        Time.push_back(m_PreTreatedData->Get_Delta_Time(t));
       }
     }
   }
@@ -92,21 +93,21 @@ void TFPDTamuPhysics::PreTreat() {
   static CalibrationManager* Cal = CalibrationManager::getInstance();
 
   // Energy
-  unsigned int mysize = m_EventData->GetMultEnergy();
+  unsigned int mysize = m_EventData->Get_Delta_Energy_Mult();
   for (UShort_t i = 0; i < mysize ; ++i) {
-    if (m_EventData->Get_Energy(i) > m_E_RAW_Threshold) {
-      Double_t Energy = Cal->ApplyCalibration("FPDTamu/ENERGY"+NPL::itoa(m_EventData->GetE_DetectorNbr(i)),m_EventData->Get_Energy(i));
+    if (m_EventData->Get_Delta_Energy(i) > m_E_RAW_Threshold) {
+      Double_t Energy = Cal->ApplyCalibration("FPDTamu/ENERGY"+NPL::itoa(m_EventData->Get_Delta_E_DetectorNbr(i)),m_EventData->Get_Delta_Energy(i));
       if (Energy > m_E_Threshold) {
-        m_PreTreatedData->SetEnergy(m_EventData->GetE_DetectorNbr(i), Energy);
+        m_PreTreatedData->Set_Delta_E(m_EventData->Get_Delta_E_DetectorNbr(i), Energy);
       }
     }
   }
 
   // Time 
-  mysize = m_EventData->GetMultTime();
+  mysize = m_EventData->Get_Delta_Time_Mult();
   for (UShort_t i = 0; i < mysize; ++i) {
-    Double_t Time= Cal->ApplyCalibration("FPDTamu/TIME"+NPL::itoa(m_EventData->GetT_DetectorNbr(i)),m_EventData->Get_Time(i));
-    m_PreTreatedData->SetTime(m_EventData->GetT_DetectorNbr(i), Time);
+    Double_t Time= Cal->ApplyCalibration("FPDTamu/TIME"+NPL::itoa(m_EventData->Get_Delta_T_DetectorNbr(i)),m_EventData->Get_Delta_Time(i));
+    m_PreTreatedData->Set_Delta_T(m_EventData->Get_Delta_T_DetectorNbr(i), Time);
   }
 }
 

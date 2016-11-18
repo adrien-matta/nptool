@@ -8,13 +8,14 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Mohamad Moukaddam  contact address: m.moukaddam@surrey.ac.uk                        *
+ * Original Author: Mohamad Moukaddam                                        *
+ * contact address: m.moukaddam@surrey.ac.uk                                 *
  *                                                                           *
- * Creation Date  : November 2016                                           *
+ * Creation Date  : November 2016                                            *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold FPDTamu Spectra                                     *
+ *  This class hold FPDTamu Spectra                                          *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *

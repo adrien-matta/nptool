@@ -6,13 +6,14 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Mohamad Moukaddam  contact address: m.moukaddam@surrey.ac.uk                        *
+ * Original Author: Mohamad Moukaddam                                        *
+ * contact address: m.moukaddam@surrey.ac.uk                                 *
  *                                                                           *
- * Creation Date  : November 2016                                           *
+ * Creation Date  : November 2016                                            *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold FPDTamu Spectra                                     *
+ *  This class hold FPDTamu Spectra                                          *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -111,23 +112,85 @@ void TFPDTamuSpectra::FillRawSpectra(TFPDTamuData* RawData) {
   static string name;
   static string family;
 
+  //DeltaE ionisation chamber
   // Energy 
-  unsigned int sizeE = RawData->GetMultEnergy();
+  unsigned int sizeE = RawData->Get_Delta_Energy_Mult();
   for (unsigned int i = 0; i < sizeE; i++) {
-    name = "FPDTamu"+NPL::itoa(RawData->GetE_DetectorNbr(i))+"_ENERGY_RAW";
-    family = "FPDTamu/RAW";
+    name = "FPDTamu"+NPL::itoa(RawData->Get_Delta_E_DetectorNbr(i))+"_ENERGY_RAW";
+    family = "FPDTamu/Delta/RAW";
 
-    GetHisto(family,name) -> Fill(RawData->Get_Energy(i));
+    GetHisto(family,name) -> Fill(RawData->Get_Delta_Energy(i));
   }
-
   // Time
-  unsigned int sizeT = RawData->GetMultTime();
+  unsigned int sizeT = RawData->Get_Delta_Time_Mult();
   for (unsigned int i = 0; i < sizeT; i++) {
-    name = "FPDTamu"+NPL::itoa(RawData->GetT_DetectorNbr(i))+"_TIME_RAW";
-    family = "FPDTamu/RAW";
+    name = "FPDTamu"+NPL::itoa(RawData->Get_Delta_T_DetectorNbr(i))+"_TIME_RAW";
+    family = "FPDTamu/Delta/RAW";
 
-    GetHisto(family,name) -> Fill(RawData->Get_Time(i));
+    GetHisto(family,name) -> Fill(RawData->Get_Delta_Time(i));
   }
+
+  // Avalanche Resistive Wire
+  // Energy 
+  sizeE = RawData->Get_AWire_Energy_Mult();
+  for (unsigned int i = 0; i < sizeE; i++) {
+    name = "FPDTamu"+NPL::itoa(RawData->Get_AWire_E_DetectorNbr(i))+"_ENERGY_RAW";
+    family = "FPDTamu/AWire/RAW";
+
+    GetHisto(family,name+"_Left") -> Fill(RawData->Get_AWire_Energy_Left(i));
+    GetHisto(family,name+"_Right") -> Fill(RawData->Get_AWire_Energy_Right(i));
+  }
+  // Time
+  sizeT = RawData->Get_AWire_Time_Mult();
+  for (unsigned int i = 0; i < sizeT; i++) {
+    name = "FPDTamu"+NPL::itoa(RawData->Get_AWire_T_DetectorNbr(i))+"_TIME_RAW";
+    family = "FPDTamu/AWire/RAW";
+
+    GetHisto(family,name+"_Left") -> Fill(RawData->Get_AWire_Time_Left(i));
+    GetHisto(family,name+"_Right") -> Fill(RawData->Get_AWire_Time_Right(i));
+  }
+    
+  // MicroMega Plate
+  // Energy 
+  sizeE = RawData->Get_Micro_Energy_Mult();
+  for (unsigned int i = 0; i < sizeE; i++) {
+    name = "FPDTamu"+NPL::itoa(RawData->Get_Micro_E_RowNbr(i))+"_"
+    				+NPL::itoa(RawData->Get_Micro_E_ColNbr(i))+"_ENERGY_RAW";
+    family = "FPDTamu/Micro/RAW";
+
+    GetHisto(family,name) -> Fill(RawData->Get_Micro_Energy(i));
+  }
+  // Time
+  sizeT = RawData->Get_Micro_Time_Mult();
+  for (unsigned int i = 0; i < sizeT; i++) {
+    name = "FPDTamu"+NPL::itoa(RawData->Get_Micro_T_RowNbr(i))+"_"
+    				+NPL::itoa(RawData->Get_Micro_T_ColNbr(i))+"_TIME_RAW";
+    family = "FPDTamu/Micro/RAW";
+
+    GetHisto(family,name) -> Fill(RawData->Get_Micro_Time(i));
+  }
+
+  // Plastic Scintillator
+  // Energy 
+  sizeE = RawData->Get_Plast_Energy_Mult();
+  for (unsigned int i = 0; i < sizeE; i++) {
+    name = "FPDTamu_ENERGY_RAW";
+    family = "FPDTamu/Plast/RAW";
+
+    GetHisto(family,name+"_Left") -> Fill(RawData->Get_Plast_Energy_Left(i));
+    GetHisto(family,name+"_Right") -> Fill(RawData->Get_Plast_Energy_Right(i));
+  }
+  // Time
+  sizeT = RawData->Get_Plast_Time_Mult();
+  for (unsigned int i = 0; i < sizeT; i++) {
+    name = "FPDTamu_TIME_RAW";
+    family = "FPDTamu/Plast/RAW";
+
+    GetHisto(family,name+"_Left") -> Fill(RawData->Get_Plast_Time_Left(i));
+    GetHisto(family,name+"_Right") -> Fill(RawData->Get_Plast_Time_Right(i));
+  }
+  
+
 }
 
 
@@ -136,24 +199,85 @@ void TFPDTamuSpectra::FillRawSpectra(TFPDTamuData* RawData) {
 void TFPDTamuSpectra::FillPreTreatedSpectra(TFPDTamuData* PreTreatedData) {
   static string name;
   static string family;
-  
+
+  //DeltaE ionisation chamber
   // Energy 
-  unsigned int sizeE = PreTreatedData->GetMultEnergy();
+  unsigned int sizeE = PreTreatedData->Get_Delta_Energy_Mult();
   for (unsigned int i = 0; i < sizeE; i++) {
-    name = "FPDTamu"+NPL::itoa(PreTreatedData->GetE_DetectorNbr(i))+"_ENERGY_CAL";
-    family = "FPDTamu/CAL";
+    name = "FPDTamu"+NPL::itoa(PreTreatedData->Get_Delta_E_DetectorNbr(i))+"_ENERGY_CAL";
+    family = "FPDTamu/Delta/CAL";
 
-    GetHisto(family,name) -> Fill(PreTreatedData->Get_Energy(i));
+    GetHisto(family,name) -> Fill(PreTreatedData->Get_Delta_Energy(i));
   }
-
   // Time
-  unsigned int sizeT = PreTreatedData->GetMultTime();
+  unsigned int sizeT = PreTreatedData->Get_Delta_Time_Mult();
   for (unsigned int i = 0; i < sizeT; i++) {
-    name = "FPDTamu"+NPL::itoa(PreTreatedData->GetT_DetectorNbr(i))+"_TIME_CAL";
-    family = "FPDTamu/CAL";
+    name = "FPDTamu"+NPL::itoa(PreTreatedData->Get_Delta_T_DetectorNbr(i))+"_TIME_CAL";
+    family = "FPDTamu/Delta/CAL";
 
-    GetHisto(family,name) -> Fill(PreTreatedData->Get_Time(i));
+    GetHisto(family,name) -> Fill(PreTreatedData->Get_Delta_Time(i));
   }
+
+  // Avalanche Resistive Wire
+  // Energy 
+  sizeE = PreTreatedData->Get_AWire_Energy_Mult();
+  for (unsigned int i = 0; i < sizeE; i++) {
+    name = "FPDTamu"+NPL::itoa(PreTreatedData->Get_AWire_E_DetectorNbr(i))+"_ENERGY_CAL";
+    family = "FPDTamu/AWire/CAL";
+
+    GetHisto(family,name+"_Left") -> Fill(PreTreatedData->Get_AWire_Energy_Left(i));
+    GetHisto(family,name+"_Right") -> Fill(PreTreatedData->Get_AWire_Energy_Right(i));
+  }
+  // Time
+  sizeT = PreTreatedData->Get_AWire_Time_Mult();
+  for (unsigned int i = 0; i < sizeT; i++) {
+    name = "FPDTamu"+NPL::itoa(PreTreatedData->Get_AWire_T_DetectorNbr(i))+"_TIME_CAL";
+    family = "FPDTamu/AWire/CAL";
+
+    GetHisto(family,name+"_Left") -> Fill(PreTreatedData->Get_AWire_Time_Left(i));
+    GetHisto(family,name+"_Right") -> Fill(PreTreatedData->Get_AWire_Time_Right(i));
+  }
+    
+  // MicroMega Plate
+  // Energy 
+  sizeE = PreTreatedData->Get_Micro_Energy_Mult();
+  for (unsigned int i = 0; i < sizeE; i++) {
+    name = "FPDTamu"+NPL::itoa(PreTreatedData->Get_Micro_E_RowNbr(i))+"_"
+    				+NPL::itoa(PreTreatedData->Get_Micro_E_ColNbr(i))+"_ENERGY_CAL";
+    family = "FPDTamu/Micro/CAL";
+
+    GetHisto(family,name) -> Fill(PreTreatedData->Get_Micro_Energy(i));
+  }
+  // Time
+  sizeT = PreTreatedData->Get_Micro_Time_Mult();
+  for (unsigned int i = 0; i < sizeT; i++) {
+    name = "FPDTamu"+NPL::itoa(PreTreatedData->Get_Micro_T_RowNbr(i))+"_"
+    				+NPL::itoa(PreTreatedData->Get_Micro_T_ColNbr(i))+"_TIME_CAL";
+    family = "FPDTamu/Micro/CAL";
+
+    GetHisto(family,name) -> Fill(PreTreatedData->Get_Micro_Time(i));
+  }
+
+  // Plastic Scintillator
+  // Energy 
+  sizeE = PreTreatedData->Get_Plast_Energy_Mult();
+  for (unsigned int i = 0; i < sizeE; i++) {
+    name = "FPDTamu_ENERGY_CAL";
+    family = "FPDTamu/Plast/CAL";
+
+    GetHisto(family,name+"_Left") -> Fill(PreTreatedData->Get_Plast_Energy_Left(i));
+    GetHisto(family,name+"_Right") -> Fill(PreTreatedData->Get_Plast_Energy_Right(i));
+  }
+  // Time
+  sizeT = PreTreatedData->Get_Plast_Time_Mult();
+  for (unsigned int i = 0; i < sizeT; i++) {
+    name = "FPDTamu_TIME_CAL";
+    family = "FPDTamu/Plast/CAL";
+
+    GetHisto(family,name+"_Left") -> Fill(PreTreatedData->Get_Plast_Time_Left(i));
+    GetHisto(family,name+"_Right") -> Fill(PreTreatedData->Get_Plast_Time_Right(i));
+  }
+  
 }
 
 

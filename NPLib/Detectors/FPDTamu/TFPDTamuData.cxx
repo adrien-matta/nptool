@@ -6,13 +6,16 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Mohamad Moukaddam  contact address: m.moukaddam@surrey.ac.uk                        *
+ * Original Author: Mohamad Moukaddam                                        *
+ * contact address: m.moukaddam@surrey.ac.uk                                 *
  *                                                                           *
- * Creation Date  : November 2016                                           *
+ * Creation Date  : November 2016                                            *
  * Last update    :                                                          *
- *---------------------------------------------------------------------------*
+ *                                                                           *
+ *---------------------------------------------------------------------------*                                                                         *
  * Decription:                                                               *
- *  This class hold FPDTamu Raw data                                    *
+ *  This class hold FPDTamu Raw data                                         *
+ *                                                                           *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -44,12 +47,31 @@ TFPDTamuData::~TFPDTamuData() {
 
 //////////////////////////////////////////////////////////////////////
 void TFPDTamuData::Clear() {
-  // Energy
-  fFPDTamu_E_DetectorNbr.clear();
-  fFPDTamu_Energy.clear();
-  // Time
-  fFPDTamu_T_DetectorNbr.clear();
-  fFPDTamu_Time.clear();
+
+    fFPDTamu_Delta_E_DetectorNbr.clear();
+    fFPDTamu_Delta_Energy.clear();
+    fFPDTamu_Delta_T_DetectorNbr.clear();
+    fFPDTamu_Delta_Time.clear();
+
+    fFPDTamu_AWire_E_DetectorNbr.clear();
+    fFPDTamu_AWire_Energy_Left.clear();
+    fFPDTamu_AWire_Energy_Right.clear();
+    fFPDTamu_AWire_T_DetectorNbr.clear();
+    fFPDTamu_AWire_Time_Left.clear();
+    fFPDTamu_AWire_Time_Right.clear();
+
+    fFPDTamu_Micro_E_RowNbr.clear();
+    fFPDTamu_Micro_E_ColNbr.clear(); 
+    fFPDTamu_Micro_Energy.clear();
+    fFPDTamu_Micro_T_RowNbr.clear(); 
+    fFPDTamu_Micro_T_ColNbr.clear(); 
+    fFPDTamu_Micro_Time.clear();
+
+    fFPDTamu_Plast_Energy_Left.clear();
+    fFPDTamu_Plast_Energy_Right.clear();
+    fFPDTamu_Plast_Time_Left.clear();
+    fFPDTamu_Plast_Time_Right.clear();
+
 }
 
 
@@ -59,21 +81,86 @@ void TFPDTamuData::Dump() const {
   // This method is very useful for debuging and worth the dev.
   cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event [TFPDTamuData::Dump()] XXXXXXXXXXXXXXXXX" << endl;
 
+  cout << "  ...oooOOOooo...   Delta  ...oooOOOooo...   " << endl;
   // Energy
-  size_t mysize = fFPDTamu_E_DetectorNbr.size();
-  cout << "FPDTamu_E_Mult: " << mysize << endl;
- 
+  size_t mysize = fFPDTamu_Delta_E_DetectorNbr.size();
+  cout << "E Mult: " << mysize << endl;
   for (size_t i = 0 ; i < mysize ; i++){
-    cout << "DetNbr: " << fFPDTamu_E_DetectorNbr[i]
-         << " Energy: " << fFPDTamu_Energy[i];
+    cout << "DetNbr: " << fFPDTamu_Delta_E_DetectorNbr[i]
+         << " Energy: " << fFPDTamu_Delta_Energy[i]
+         <<endl;
   }
-  
   // Time
-  mysize = fFPDTamu_T_DetectorNbr.size();
-  cout << "FPDTamu_T_Mult: " << mysize << endl;
- 
+  mysize = fFPDTamu_Delta_T_DetectorNbr.size();
+  cout << "T Mult: " << mysize << endl;
   for (size_t i = 0 ; i < mysize ; i++){
-    cout << "DetNbr: " << fFPDTamu_T_DetectorNbr[i]
-         << " Time: " << fFPDTamu_Time[i];
+    cout << "DetNbr: " << fFPDTamu_Delta_T_DetectorNbr[i]
+         << " Time: " << fFPDTamu_Delta_Time[i]
+         <<endl;
   }
+
+
+
+ cout << "  ...oooOOOooo...   Avalanche Wire  ...oooOOOooo...   " << endl;
+  // Energy
+  mysize = fFPDTamu_AWire_E_DetectorNbr.size();
+  cout << "Energy Mult: " << mysize << endl;
+  for (size_t i = 0 ; i < mysize ; i++){
+    cout << "DetNbr: " << fFPDTamu_AWire_E_DetectorNbr[i]
+         << " EnergyLeft: " << fFPDTamu_AWire_Energy_Left[i]
+         << " EnergyRight: " << fFPDTamu_AWire_Energy_Right[i]
+         <<endl;
+  }
+  // Time
+  mysize = fFPDTamu_AWire_T_DetectorNbr.size();
+  cout << "Time Mult: " << mysize << endl;
+  for (size_t i = 0 ; i < mysize ; i++){
+    cout << "DetNbr: " << fFPDTamu_AWire_T_DetectorNbr[i]
+         << " TimeLeft: " << fFPDTamu_AWire_Time_Left[i]
+         << " TimeRight: " << fFPDTamu_AWire_Time_Right[i]
+         <<endl;
+  }
+
+
+
+ cout << "  ...oooOOOooo...   Micromega  ...oooOOOooo...   " << endl;
+  // Energy
+  mysize = fFPDTamu_Micro_E_RowNbr.size();
+  cout << "Energy Mult: " << mysize << endl;
+  for (size_t i = 0 ; i < mysize ; i++){
+    cout << "Row: " << fFPDTamu_Micro_E_RowNbr[i]
+         << " Col: " << fFPDTamu_Micro_E_ColNbr[i]
+         << " Energy: " << fFPDTamu_Micro_Energy[i]
+         <<endl;
+  }
+  // Time
+  mysize = fFPDTamu_Micro_T_RowNbr.size();
+  cout << "Time Mult: " << mysize << endl;
+  for (size_t i = 0 ; i < mysize ; i++){
+    cout << "Row: " << fFPDTamu_Micro_T_RowNbr[i]
+         << " Col: " << fFPDTamu_Micro_T_ColNbr[i]
+         << " Time: " << fFPDTamu_Micro_Time[i]
+         <<endl;
+  }
+
+
+
+ cout << "  ...oooOOOooo...   Plastic Scintillator  ...oooOOOooo...   " << endl;
+  // Energy
+  mysize = fFPDTamu_Plast_Energy_Left.size();
+  cout << "Energy Mult: " << mysize << endl;
+  for (size_t i = 0 ; i < mysize ; i++){
+    cout << "EnergyLeft: " << fFPDTamu_Plast_Energy_Left[i]
+         << " EnergyRight: " << fFPDTamu_Plast_Energy_Right[i]
+         << endl;
+  }
+  // Time
+  mysize = fFPDTamu_Plast_Time_Left.size();
+  cout << "Energy Mult: " << mysize << endl;
+  for (size_t i = 0 ; i < mysize ; i++){
+    cout << "TimeLeft: " << fFPDTamu_Plast_Time_Left[i]
+         << " TimeRight: " << fFPDTamu_Plast_Time_Right[i]
+         << endl;
+  }
+
 }
