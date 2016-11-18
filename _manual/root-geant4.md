@@ -112,6 +112,8 @@ We however strongly recommand to use the QT interface of npsimulation, as it pro
 
 You also need to compile Geant4 with the OpenGL driver in order to benefit from the visualization. This is usually done automatically as the OpenGL headers are installed on most standard distribution, if not you can try to install the mesa-common-dev package to get the GL/gl.h header file.
 
+On Mac Os X you may have to define the QTHOME variable in order for CMake to find your QT installation. When installing Qt dev package from MacPorts, use export QTHOME=/opt/local (you can add this to your .profile for a permanent fix, don't forget to source it before running cmake again).
+
 {% highlight console %}
 $ cd /path/to/folder
 $ tar -xf /path/to/geant4.xxx.tar.gz
