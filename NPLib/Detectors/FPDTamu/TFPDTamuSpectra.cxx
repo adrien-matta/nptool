@@ -110,6 +110,7 @@ void TFPDTamuSpectra::InitPhysicsSpectra() {
 ////////////////////////////////////////////////////////////////////////////////
 void TFPDTamuSpectra::FillRawSpectra(TFPDTamuData* RawData) {
   static string name;
+  static int side; // Left 0 or Right 1
   static string family;
 
   //DeltaE ionisation chamber
@@ -136,18 +137,22 @@ void TFPDTamuSpectra::FillRawSpectra(TFPDTamuData* RawData) {
   for (unsigned int i = 0; i < sizeE; i++) {
     name = "FPDTamu"+NPL::itoa(RawData->Get_AWire_E_DetectorNbr(i))+"_ENERGY_RAW";
     family = "FPDTamu/AWire/RAW";
-
-    GetHisto(family,name+"_Left") -> Fill(RawData->Get_AWire_Energy_Left(i));
-    GetHisto(family,name+"_Right") -> Fill(RawData->Get_AWire_Energy_Right(i));
+    side = RawData->Get_AWire_E_DetectorSide(i);
+	if (side==0)
+    	GetHisto(family,name+"_Left") -> Fill(RawData->Get_AWire_Energy(i));
+	else
+    	GetHisto(family,name+"_Right") -> Fill(RawData->Get_AWire_Energy(i));
   }
   // Time
   sizeT = RawData->Get_AWire_Time_Mult();
   for (unsigned int i = 0; i < sizeT; i++) {
     name = "FPDTamu"+NPL::itoa(RawData->Get_AWire_T_DetectorNbr(i))+"_TIME_RAW";
     family = "FPDTamu/AWire/RAW";
-
-    GetHisto(family,name+"_Left") -> Fill(RawData->Get_AWire_Time_Left(i));
-    GetHisto(family,name+"_Right") -> Fill(RawData->Get_AWire_Time_Right(i));
+    side = RawData->Get_AWire_T_DetectorSide(i);
+	if (side==0)
+    	GetHisto(family,name+"_Left") -> Fill(RawData->Get_AWire_Time(i));
+	else
+    	GetHisto(family,name+"_Right") -> Fill(RawData->Get_AWire_Time(i));
   }
     
   // MicroMega Plate
@@ -176,18 +181,22 @@ void TFPDTamuSpectra::FillRawSpectra(TFPDTamuData* RawData) {
   for (unsigned int i = 0; i < sizeE; i++) {
     name = "FPDTamu_ENERGY_RAW";
     family = "FPDTamu/Plast/RAW";
-
-    GetHisto(family,name+"_Left") -> Fill(RawData->Get_Plast_Energy_Left(i));
-    GetHisto(family,name+"_Right") -> Fill(RawData->Get_Plast_Energy_Right(i));
+    side = RawData->Get_Plast_E_DetectorSide(i);
+	if (side==0)
+    	GetHisto(family,name+"_Left") -> Fill(RawData->Get_Plast_Energy(i));
+	else
+    	GetHisto(family,name+"_Right") -> Fill(RawData->Get_Plast_Energy(i));
   }
   // Time
   sizeT = RawData->Get_Plast_Time_Mult();
   for (unsigned int i = 0; i < sizeT; i++) {
     name = "FPDTamu_TIME_RAW";
     family = "FPDTamu/Plast/RAW";
-
-    GetHisto(family,name+"_Left") -> Fill(RawData->Get_Plast_Time_Left(i));
-    GetHisto(family,name+"_Right") -> Fill(RawData->Get_Plast_Time_Right(i));
+    side = RawData->Get_Plast_T_DetectorSide(i);
+	if (side==0)
+    	GetHisto(family,name+"_Left") -> Fill(RawData->Get_Plast_Time(i));
+	else
+    	GetHisto(family,name+"_Right") -> Fill(RawData->Get_Plast_Time(i));
   }
   
 
@@ -199,6 +208,7 @@ void TFPDTamuSpectra::FillRawSpectra(TFPDTamuData* RawData) {
 void TFPDTamuSpectra::FillPreTreatedSpectra(TFPDTamuData* PreTreatedData) {
   static string name;
   static string family;
+  static int side; // Left 0 or Right 1
 
   //DeltaE ionisation chamber
   // Energy 
@@ -223,19 +233,23 @@ void TFPDTamuSpectra::FillPreTreatedSpectra(TFPDTamuData* PreTreatedData) {
   sizeE = PreTreatedData->Get_AWire_Energy_Mult();
   for (unsigned int i = 0; i < sizeE; i++) {
     name = "FPDTamu"+NPL::itoa(PreTreatedData->Get_AWire_E_DetectorNbr(i))+"_ENERGY_CAL";
-    family = "FPDTamu/AWire/CAL";
-
-    GetHisto(family,name+"_Left") -> Fill(PreTreatedData->Get_AWire_Energy_Left(i));
-    GetHisto(family,name+"_Right") -> Fill(PreTreatedData->Get_AWire_Energy_Right(i));
+	family = "FPDTamu/AWire/CAL";
+	side = PreTreatedData->Get_AWire_E_DetectorSide(i);
+	if (side==0)
+    	GetHisto(family,name+"_Left") -> Fill(PreTreatedData->Get_AWire_Energy(i));
+	else    
+		GetHisto(family,name+"_Right") -> Fill(PreTreatedData->Get_AWire_Energy(i));
   }
   // Time
   sizeT = PreTreatedData->Get_AWire_Time_Mult();
   for (unsigned int i = 0; i < sizeT; i++) {
     name = "FPDTamu"+NPL::itoa(PreTreatedData->Get_AWire_T_DetectorNbr(i))+"_TIME_CAL";
     family = "FPDTamu/AWire/CAL";
-
-    GetHisto(family,name+"_Left") -> Fill(PreTreatedData->Get_AWire_Time_Left(i));
-    GetHisto(family,name+"_Right") -> Fill(PreTreatedData->Get_AWire_Time_Right(i));
+	side = PreTreatedData->Get_AWire_T_DetectorSide(i);
+	if (side==0)
+    	GetHisto(family,name+"_Left") -> Fill(PreTreatedData->Get_AWire_Time(i));
+	else    
+		GetHisto(family,name+"_Right") -> Fill(PreTreatedData->Get_AWire_Time(i));
   }
     
   // MicroMega Plate
@@ -264,18 +278,22 @@ void TFPDTamuSpectra::FillPreTreatedSpectra(TFPDTamuData* PreTreatedData) {
   for (unsigned int i = 0; i < sizeE; i++) {
     name = "FPDTamu_ENERGY_CAL";
     family = "FPDTamu/Plast/CAL";
-
-    GetHisto(family,name+"_Left") -> Fill(PreTreatedData->Get_Plast_Energy_Left(i));
-    GetHisto(family,name+"_Right") -> Fill(PreTreatedData->Get_Plast_Energy_Right(i));
+	side = PreTreatedData->Get_Plast_E_DetectorSide(i);
+	if (side==0)
+    	GetHisto(family,name+"_Left") -> Fill(PreTreatedData->Get_Plast_Energy(i));
+	else 
+    	GetHisto(family,name+"_Right") -> Fill(PreTreatedData->Get_Plast_Energy(i));
   }
   // Time
   sizeT = PreTreatedData->Get_Plast_Time_Mult();
   for (unsigned int i = 0; i < sizeT; i++) {
     name = "FPDTamu_TIME_CAL";
     family = "FPDTamu/Plast/CAL";
-
-    GetHisto(family,name+"_Left") -> Fill(PreTreatedData->Get_Plast_Time_Left(i));
-    GetHisto(family,name+"_Right") -> Fill(PreTreatedData->Get_Plast_Time_Right(i));
+	side = PreTreatedData->Get_Plast_T_DetectorSide(i);
+	if (side==0)
+    	GetHisto(family,name+"_Left") -> Fill(PreTreatedData->Get_Plast_Time(i));
+	else
+    	GetHisto(family,name+"_Right") -> Fill(PreTreatedData->Get_Plast_Time(i));
   }
   
 }

@@ -54,11 +54,11 @@ void TFPDTamuData::Clear() {
     fFPDTamu_Delta_Time.clear();
 
     fFPDTamu_AWire_E_DetectorNbr.clear();
-    fFPDTamu_AWire_Energy_Left.clear();
-    fFPDTamu_AWire_Energy_Right.clear();
+    fFPDTamu_AWire_E_DetectorSide.clear();
+    fFPDTamu_AWire_Energy.clear();
     fFPDTamu_AWire_T_DetectorNbr.clear();
-    fFPDTamu_AWire_Time_Left.clear();
-    fFPDTamu_AWire_Time_Right.clear();
+    fFPDTamu_AWire_T_DetectorSide.clear();
+    fFPDTamu_AWire_Time.clear();
 
     fFPDTamu_Micro_E_RowNbr.clear();
     fFPDTamu_Micro_E_ColNbr.clear(); 
@@ -67,10 +67,10 @@ void TFPDTamuData::Clear() {
     fFPDTamu_Micro_T_ColNbr.clear(); 
     fFPDTamu_Micro_Time.clear();
 
-    fFPDTamu_Plast_Energy_Left.clear();
-    fFPDTamu_Plast_Energy_Right.clear();
-    fFPDTamu_Plast_Time_Left.clear();
-    fFPDTamu_Plast_Time_Right.clear();
+    fFPDTamu_Plast_E_DetectorSide.clear();
+    fFPDTamu_Plast_Energy.clear();
+    fFPDTamu_Plast_T_DetectorSide.clear();
+    fFPDTamu_Plast_Time.clear();
 
 }
 
@@ -107,8 +107,8 @@ void TFPDTamuData::Dump() const {
   cout << "Energy Mult: " << mysize << endl;
   for (size_t i = 0 ; i < mysize ; i++){
     cout << "DetNbr: " << fFPDTamu_AWire_E_DetectorNbr[i]
-         << " EnergyLeft: " << fFPDTamu_AWire_Energy_Left[i]
-         << " EnergyRight: " << fFPDTamu_AWire_Energy_Right[i]
+         << " Side(L-0 R-1): " << fFPDTamu_AWire_E_DetectorSide[i]
+         << " Energy: " << fFPDTamu_AWire_Energy[i]
          <<endl;
   }
   // Time
@@ -116,8 +116,8 @@ void TFPDTamuData::Dump() const {
   cout << "Time Mult: " << mysize << endl;
   for (size_t i = 0 ; i < mysize ; i++){
     cout << "DetNbr: " << fFPDTamu_AWire_T_DetectorNbr[i]
-         << " TimeLeft: " << fFPDTamu_AWire_Time_Left[i]
-         << " TimeRight: " << fFPDTamu_AWire_Time_Right[i]
+         << " Side(L-0 R-1): " << fFPDTamu_AWire_T_DetectorNbr[i]
+         << " Time: " << fFPDTamu_AWire_Time[i]
          <<endl;
   }
 
@@ -147,19 +147,19 @@ void TFPDTamuData::Dump() const {
 
  cout << "  ...oooOOOooo...   Plastic Scintillator  ...oooOOOooo...   " << endl;
   // Energy
-  mysize = fFPDTamu_Plast_Energy_Left.size();
+  mysize = fFPDTamu_Plast_E_DetectorSide.size();
   cout << "Energy Mult: " << mysize << endl;
   for (size_t i = 0 ; i < mysize ; i++){
-    cout << "EnergyLeft: " << fFPDTamu_Plast_Energy_Left[i]
-         << " EnergyRight: " << fFPDTamu_Plast_Energy_Right[i]
+    cout << "Side(L-0 R-1): " << fFPDTamu_Plast_E_DetectorSide[i]
+         << " Energy: " << fFPDTamu_Plast_Energy[i]
          << endl;
   }
   // Time
-  mysize = fFPDTamu_Plast_Time_Left.size();
+  mysize = fFPDTamu_Plast_T_DetectorSide.size();
   cout << "Energy Mult: " << mysize << endl;
   for (size_t i = 0 ; i < mysize ; i++){
-    cout << "TimeLeft: " << fFPDTamu_Plast_Time_Left[i]
-         << " TimeRight: " << fFPDTamu_Plast_Time_Right[i]
+    cout << "Side(L-0 R-1): " << fFPDTamu_Plast_T_DetectorSide[i]
+         << " Time: " << fFPDTamu_Plast_Time[i]
          << endl;
   }
 

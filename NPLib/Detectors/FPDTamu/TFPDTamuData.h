@@ -50,12 +50,12 @@ class TFPDTamuData : public TObject {
     // Avalanche Resistive Wire, Resistive: reading on both ends
     // Energy
     vector<UShort_t>   fFPDTamu_AWire_E_DetectorNbr;
-    vector<Double_t>   fFPDTamu_AWire_Energy_Left;
-    vector<Double_t>   fFPDTamu_AWire_Energy_Right;
+    vector<Double_t>   fFPDTamu_AWire_E_DetectorSide; // 0 Left, 1 Right
+    vector<Double_t>   fFPDTamu_AWire_Energy;
     // Time
     vector<UShort_t>   fFPDTamu_AWire_T_DetectorNbr;
-    vector<Double_t>   fFPDTamu_AWire_Time_Left;
-    vector<Double_t>   fFPDTamu_AWire_Time_Right;
+    vector<Double_t>   fFPDTamu_AWire_T_DetectorSide; // 0 Left, 1 Right
+    vector<Double_t>   fFPDTamu_AWire_Time;
     
 	// MicroMega Plate
     // Energy
@@ -69,11 +69,11 @@ class TFPDTamuData : public TObject {
 
     // Plastic Scintillator, Left and Right PMTs
     // Energy
-    vector<Double_t>   fFPDTamu_Plast_Energy_Left;
-    vector<Double_t>   fFPDTamu_Plast_Energy_Right;
+    vector<Double_t>   fFPDTamu_Plast_E_DetectorSide; // 0 Left, 1 Right
+    vector<Double_t>   fFPDTamu_Plast_Energy;
     // Time
-    vector<Double_t>   fFPDTamu_Plast_Time_Left;
-    vector<Double_t>   fFPDTamu_Plast_Time_Right;
+    vector<Double_t>   fFPDTamu_Plast_T_DetectorSide; // 0 Left, 1 Right
+    vector<Double_t>   fFPDTamu_Plast_Time;
 
   //////////////////////////////////////////////////////////////
   // Constructor and destructor
@@ -123,26 +123,26 @@ class TFPDTamuData : public TObject {
     // Energy
     inline void Set_AWire_E_DetectorNbr(const UShort_t& DetNbr)
       {fFPDTamu_AWire_E_DetectorNbr.push_back(DetNbr);} //!
-    inline void Set_AWire_Energy_Left(const Double_t& Energy)
-      {fFPDTamu_AWire_Energy_Left.push_back(Energy);}//!
-    inline void Set_AWire_Energy_Right(const Double_t& Energy)
-      {fFPDTamu_AWire_Energy_Right.push_back(Energy);}//!
-    inline void Set_AWire_E(const UShort_t& DetNbr,const Double_t& EnergyLeft, const Double_t& EnergyRight) {
+    inline void Set_AWire_E_DetectorSide(const UShort_t& DetSide) // 0 Left, 1 Right
+      {fFPDTamu_AWire_E_DetectorSide.push_back(DetSide);} //!
+    inline void Set_AWire_Energy(const Double_t& Energy)
+      {fFPDTamu_AWire_Energy.push_back(Energy);}//!
+    inline void Set_AWire_E(const UShort_t& DetNbr,const UShort_t& DetSide, const Double_t& Energy) {
       Set_AWire_E_DetectorNbr(DetNbr);
-      Set_AWire_Energy_Left(EnergyLeft);
-      Set_AWire_Energy_Right(EnergyRight);
+      Set_AWire_E_DetectorSide(DetSide);
+      Set_AWire_Energy(Energy);
     };//!
     // Time
     inline void Set_AWire_T_DetectorNbr(const UShort_t& DetNbr)
       {fFPDTamu_AWire_T_DetectorNbr.push_back(DetNbr);} //!
-    inline void Set_AWire_Time_Left(const Double_t& Time)
-      {fFPDTamu_AWire_Time_Left.push_back(Time);}//!
-    inline void Set_AWire_Time_Right(const Double_t& Time)
-      {fFPDTamu_AWire_Time_Right.push_back(Time);}//!
-    inline void Set_AWire_T(const UShort_t& DetNbr,const Double_t& TimeLeft, const Double_t& TimeRight) {
+    inline void Set_AWire_T_DetectorSide(const UShort_t& DetSide) // 0 Left, 1 Right
+      {fFPDTamu_AWire_T_DetectorSide.push_back(DetSide);} //!
+    inline void Set_AWire_Time(const Double_t& Time)
+      {fFPDTamu_AWire_Time.push_back(Time);}//!
+    inline void Set_AWire_T(const UShort_t& DetNbr,const UShort_t& DetSide, const Double_t& Time) {
       Set_AWire_T_DetectorNbr(DetNbr);
-      Set_AWire_Time_Left(TimeLeft);
-      Set_AWire_Time_Right(TimeRight);
+      Set_AWire_T_DetectorSide(DetSide);
+      Set_AWire_Time(Time);
     };//!
 
     // MicroMega Plate
@@ -173,24 +173,23 @@ class TFPDTamuData : public TObject {
 
 	// Plastic Scintillator
     // Energy
-    inline void Set_Plast_Energy_Left(const Double_t& Energy)
-      {fFPDTamu_Plast_Energy_Left.push_back(Energy);}//!
-    inline void Set_Plast_Energy_Right(const Double_t& Energy)
-      {fFPDTamu_Plast_Energy_Right.push_back(Energy);}//!
-    inline void Set_Plast_E(const Double_t& EnergyLeft, const Double_t& EnergyRight) {
-      Set_Plast_Energy_Left(EnergyLeft);
-      Set_Plast_Energy_Right(EnergyRight);
+    inline void Set_Plast_E_DetectorSide(const UShort_t& DetSide) // 0 Left, 1 Right
+      {fFPDTamu_Plast_E_DetectorSide.push_back(DetSide);} //!
+    inline void Set_Plast_Energy(const Double_t& Energy)
+      {fFPDTamu_Plast_Energy.push_back(Energy);}//!
+    inline void Set_Plast_E(const UShort_t& DetSide, const Double_t& Energy) {
+      Set_Plast_E_DetectorSide(DetSide);
+      Set_Plast_Energy(Energy);
     };//!
     // Time
-    inline void Set_Plast_Time_Left(const Double_t& Time)
-      {fFPDTamu_Plast_Time_Left.push_back(Time);}//!
-    inline void Set_Plast_Time_Right(const Double_t& Time)
-      {fFPDTamu_Plast_Time_Right.push_back(Time);}//!
-    inline void Set_Plast_T(const Double_t& TimeLeft, const Double_t& TimeRight) {
-      Set_Plast_Time_Left(TimeLeft);
-      Set_Plast_Time_Right(TimeRight);
+    inline void Set_Plast_T_DetectorSide(const UShort_t& DetSide) // 0 Left, 1 Right
+      {fFPDTamu_Plast_T_DetectorSide.push_back(DetSide);} //!
+    inline void Set_Plast_Time(const Double_t& Time)
+      {fFPDTamu_Plast_Time.push_back(Time);}//!
+    inline void Set_Plast_T(const UShort_t& DetSide, const Double_t& Time) {
+      Set_Plast_T_DetectorSide(DetSide);
+      Set_Plast_Time(Time);
     };//!
-
 
     //////////////////////    GETTERS    ////////////////////////
 	//DeltaE ionisation chamber    
@@ -215,19 +214,19 @@ class TFPDTamuData : public TObject {
       {return fFPDTamu_AWire_E_DetectorNbr.size();}
     inline UShort_t Get_AWire_E_DetectorNbr(const unsigned int &i) const
       {return fFPDTamu_AWire_E_DetectorNbr[i];} //!
-    inline Double_t Get_AWire_Energy_Left(const unsigned int &i) const
-      {return fFPDTamu_AWire_Energy_Left[i];}//!
-	inline Double_t Get_AWire_Energy_Right(const unsigned int &i) const
-      {return fFPDTamu_AWire_Energy_Right[i];}//!
+    inline UShort_t Get_AWire_E_DetectorSide(const unsigned int &i) const
+      {return fFPDTamu_AWire_E_DetectorSide[i];}//!
+	inline Double_t Get_AWire_Energy(const unsigned int &i) const
+      {return fFPDTamu_AWire_Energy[i];}//!
 	// Time
     inline UShort_t Get_AWire_Time_Mult() const
       {return fFPDTamu_AWire_T_DetectorNbr.size();}
     inline UShort_t Get_AWire_T_DetectorNbr(const unsigned int &i) const
       {return fFPDTamu_AWire_T_DetectorNbr[i];} //!
-    inline Double_t Get_AWire_Time_Left(const unsigned int &i) const
-      {return fFPDTamu_AWire_Time_Left[i];}//!
-    inline Double_t Get_AWire_Time_Right(const unsigned int &i) const
-      {return fFPDTamu_AWire_Time_Right[i];}//!
+    inline UShort_t Get_AWire_T_DetectorSide(const unsigned int &i) const
+      {return fFPDTamu_AWire_T_DetectorSide[i];}//!
+    inline Double_t Get_AWire_Time(const unsigned int &i) const
+      {return fFPDTamu_AWire_Time[i];}//!
 
 	// MicroMega Plate
 	// Energy
@@ -252,18 +251,18 @@ class TFPDTamuData : public TObject {
     // Plastic Scintillator
 	// Energy
     inline UShort_t Get_Plast_Energy_Mult() const
-      {return fFPDTamu_Plast_Energy_Left.size();}
-    inline Double_t Get_Plast_Energy_Left(const unsigned int &i) const
-      {return fFPDTamu_Plast_Energy_Left[i];} //!
-    inline Double_t Get_Plast_Energy_Right(const unsigned int &i) const
-      {return fFPDTamu_Plast_Energy_Right[i];} //!
+      {return fFPDTamu_Plast_E_DetectorSide.size();}
+    inline UShort_t Get_Plast_E_DetectorSide(const unsigned int &i) const
+      {return fFPDTamu_Plast_E_DetectorSide[i];} //!
+    inline Double_t Get_Plast_Energy(const unsigned int &i) const
+      {return fFPDTamu_Plast_Energy[i];} //!
 	// Time
     inline UShort_t Get_Plast_Time_Mult() const
-      {return fFPDTamu_Plast_Time_Left.size();}
-    inline Double_t Get_Plast_Time_Left(const unsigned int &i) const
-      {return fFPDTamu_Plast_Time_Left[i];} //!
-    inline Double_t Get_Plast_Time_Right(const unsigned int &i) const
-      {return fFPDTamu_Plast_Time_Right[i];} //!
+      {return fFPDTamu_Plast_T_DetectorSide.size();}
+    inline UShort_t Get_Plast_T_DetectorSide(const unsigned int &i) const
+      {return fFPDTamu_Plast_T_DetectorSide[i];} //!
+    inline Double_t Get_Plast_Time(const unsigned int &i) const
+      {return fFPDTamu_Plast_Time[i];} //!
 
   //////////////////////////////////////////////////////////////
   // Required for ROOT dictionnary
