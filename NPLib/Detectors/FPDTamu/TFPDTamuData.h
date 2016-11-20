@@ -155,7 +155,7 @@ class TFPDTamuData : public TObject {
       {fFPDTamu_Micro_Energy.push_back(Energy);}//!
     inline void Set_Micro_E(const UShort_t& RowNbr, const UShort_t& ColNbr, const Double_t& Energy) {
       Set_Micro_E_RowNbr(RowNbr);
-      Set_Micro_E_RowNbr(ColNbr);
+      Set_Micro_E_ColNbr(ColNbr);
       Set_Micro_Energy(Energy);
     };//!
     // Time
@@ -167,7 +167,7 @@ class TFPDTamuData : public TObject {
       {fFPDTamu_Micro_Time.push_back(Time);}//!
     inline void Set_Micro_T(const UShort_t& RowNbr, const UShort_t& ColNbr, const Double_t& Time) {
       Set_Micro_T_RowNbr(RowNbr);
-      Set_Micro_T_RowNbr(ColNbr);
+      Set_Micro_T_ColNbr(ColNbr);
       Set_Micro_Time(Time);
     };//!
 
