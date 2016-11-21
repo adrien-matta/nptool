@@ -12,7 +12,7 @@
  * Creation Date  : November 2016                                            *
  * Last update    :                                                          *
  *                                                                           *
- *---------------------------------------------------------------------------*                                                                         *
+ *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This class hold FPDTamu Raw data                                         *
  *                                                                           *
@@ -116,7 +116,7 @@ void TFPDTamuData::Dump() const {
   cout << "Time Mult: " << mysize << endl;
   for (size_t i = 0 ; i < mysize ; i++){
     cout << "DetNbr: " << fFPDTamu_AWire_T_DetectorNbr[i]
-         << " Side(L-0 R-1): " << fFPDTamu_AWire_T_DetectorNbr[i]
+         << " Side(L-0 R-1): " << fFPDTamu_AWire_T_DetectorSide[i]
          << " Time: " << fFPDTamu_AWire_Time[i]
          <<endl;
   }
