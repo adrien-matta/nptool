@@ -14,10 +14,10 @@ void MgCSLab(){
   TH2* Eff = (TH2*) file->FindObjectAny("SolidAngleLab_2D");
 
   Goodfile = new TFile("GoodExThetaLab.root");
-  TH2D* goodEx = (TH2D*) Goodfile->FindObjectAny("hexcmG");
+  TH2D* goodEx = (TH2D*) Goodfile->FindObjectAny("hEL");
 
   Badfile = new TFile("BadExThetaLab.root");
-  TH2D* badEx = (TH2D*) Badfile->FindObjectAny("hexcmB");
+  TH2D* badEx = (TH2D*) Badfile->FindObjectAny("hbEL");
 
   TH2D* h = goodEx;
   badEx->Scale(7./(145-1+300-160));
@@ -37,12 +37,14 @@ void MgCSLab(){
   // Full Ex
   p =  h->ProjectionY(Form("p%i",nn++),h->GetXaxis()->FindBin(0.),h->GetXaxis()->FindBin(50.));
   p->Draw();
-  
+ cout << 5 << endl;
+ 
   new TCanvas();
   h->Draw("colz");
   // CS
   TCanvas* c = new TCanvas("CS","CS",1000,1000);
   c->Divide(2,2);
+cout << 6 << endl;
 
   // Region 
   current = Region(-0.1,0.4,h,c,nn++,Eff);

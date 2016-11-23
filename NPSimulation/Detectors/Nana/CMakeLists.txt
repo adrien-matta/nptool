@@ -1,2 +1,2 @@
 add_library(NPSNana SHARED  Nana.cc)
-target_link_libraries(NPSNana NPSCore ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} ${NPLib_LIBRARIES} -lNPNana)
+target_link_libraries(NPSNana NPSCore ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} NPNana)

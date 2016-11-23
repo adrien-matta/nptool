@@ -13,6 +13,12 @@ cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
 # This suppress the Up-to-Date message of file installed for cmake 3.1 and above
 set(CMAKE_INSTALL_MESSAGE LAZY) 
 
+# Set the Search path for library
+SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+# set NPLib/lib as one of the link directory
+link_directories(${NPTOOL_LIB_DIR})
+
 # Check for user disabling of c++11 support
 string(COMPARE EQUAL "${CPP11}" "no" nocpp11)
 if(nocpp11)
