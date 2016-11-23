@@ -350,16 +350,16 @@ void TFatimaPhysics::ReadCalibrationFile(string Path){
 ////////////////////////////////////////////////////////////////////////////////
 void TFatimaPhysics::InitializeRootInputRaw(){
   TChain* inputChain = RootInput::getInstance()->GetChain();
-  inputChain->SetBranchStatus("FATIMA", true);
+  inputChain->SetBranchStatus("Fatima", true);
   inputChain->SetBranchStatus("fFATIMA*", true);
-  inputChain->SetBranchAddress("FATIMA", &m_EventData);
+  inputChain->SetBranchAddress("Fatima", &m_EventData);
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 void TFatimaPhysics::InitializeRootOutput(){
   TTree* outputTree = RootOutput::getInstance()->GetTree();
-  outputTree->Branch("FATIMA", "TFatimaPhysics", &m_EventPhysics);
+  outputTree->Branch("Fatima", "TFatimaPhysics", &m_EventPhysics);
 }
 void TFatimaPhysics::AddDetector(TVector3 A,
     TVector3 B,
