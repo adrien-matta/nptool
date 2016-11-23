@@ -57,6 +57,16 @@ elif [ "$arg" = "-l" ]; then
 
 # all
 elif [ "$arg" = "-a" ]; then
+  cd $NPTOOL/NPLib
+  if [ -f "build.ninja"  ]; then
+    ninja install
+  elif [ -f "Makefile" ]; then
+    make install
+  else
+    cmake ./
+    make install
+  fi
+
   cd $NPTOOL/NPSimulation
   if [ -f "build.ninja"  ]; then
     ninja install
@@ -67,15 +77,6 @@ elif [ "$arg" = "-a" ]; then
     make install
   fi
 
-  cd $NPTOOL/NPLib
-  if [ -f "build.ninja"  ]; then
-    ninja install
-  elif [ -f "Makefile" ]; then
-    make install
-  else
-    cmake ./
-    make install
-  fi
 
   # current folder 
   cd $FOLDER

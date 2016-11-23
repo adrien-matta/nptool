@@ -75,11 +75,11 @@ void TTiaraHyballSpectra::InitRawSpectra(){
 
   // RING_E_RAW
   name = "HYB_RING_E_RAW";
-  AddHisto2D(name, name, fWedgesNumber*fRingsNumber, 1, fWedgesNumber*fRingsNumber+1, 512, 0, 16384, "TIARA/HYBALL/RAW/ENERGY");
+  AddHisto2D(name, name, fWedgesNumber*fRingsNumber, 1, fWedgesNumber*fRingsNumber+1, 512, 0, 4096, "TIARA/HYBALL/RAW/ENERGY");
 
   // SECTOR_E_RAW
   name = "HYB_SECT_E_RAW";
-  AddHisto2D(name, name, fWedgesNumber*fSectorsNumber, 1, fWedgesNumber*fSectorsNumber+1, 512, 0, 16384, "TIARA/HYBALL/RAW/ENERGY");
+  AddHisto2D(name, name, fWedgesNumber*fSectorsNumber, 1, fWedgesNumber*fSectorsNumber+1, 512, 0, 4096, "TIARA/HYBALL/RAW/ENERGY");
 
   // MULT
   for (unsigned int i = 0; i < fWedgesNumber; ++i) {   // loop on number of wedges
