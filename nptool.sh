@@ -1,7 +1,6 @@
 #!/bin/bash
-
-CMD="export"
-SEP="="
+  CMD="export"
+  SEP="="
 
 # test if export is supported
 export 1>/dev/null 2>/dev/null
@@ -80,7 +79,15 @@ _npp() {
 
   return 0
 }
-complete -F _npp -o filenames npp
+
+# associate the tab completion to npp
+if [ -n "$ZSH_VERSION" ]; then
+  # ZSH have its own command to make things easy
+ compdef _function foobar
+else
+  # the rest of the world use standard posix complete
+  complete -F _npp -o filenames npp
+fi
 
 ${CMD} Geant4_DIR${SEP}$G4LIB
 ${CMD} NPLib_DIR${SEP}$NPTOOL/NPLib
