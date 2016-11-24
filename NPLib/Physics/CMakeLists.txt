@@ -4,10 +4,10 @@ add_custom_command(OUTPUT TInitialConditionsDict.cxx COMMAND ../scripts/build_di
 add_custom_command(OUTPUT TInteractionCoordinatesDict.cxx COMMAND ../scripts/build_dict.sh TInteractionCoordinates.h TInteractionCoordinatesDict.cxx TInteractionCoordinates.rootmap libNPInteractionCoordinates.so DEPENDS TInteractionCoordinates.h)
 
 add_library(NPPhysics SHARED NPBeam.cxx NPEnergyLoss.cxx NPFunction.cxx NPNucleus.cxx NPReaction.cxx NPReactionDict.cxx NPEnergyLossDict.cxx )
-target_link_libraries(NPPhysics ${ROOT_LIBRARIES} NPCore) 
+target_link_libraries(NPPhysics ${ROOT_LIBRARIES} Physics NPCore) 
 
 add_library(NPInitialConditions  SHARED  TInitialConditions.cxx TInitialConditionsDict.cxx )
-target_link_libraries(NPInitialConditions  ${ROOT_LIBRARIES} NPCore) 
+target_link_libraries(NPInitialConditions  ${ROOT_LIBRARIES} ) 
 
 add_library(NPInteractionCoordinates SHARED TInteractionCoordinates.cxx TInteractionCoordinatesDict.cxx)
 target_link_libraries(NPInteractionCoordinates ${ROOT_LIBRARIES} ) 
