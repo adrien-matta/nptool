@@ -56,7 +56,7 @@ namespace DETECTORNAME_NS{
   // Energy and time Resolution
   const double EnergyThreshold = 0.1*MeV;
   const double ResoTime = 4.5*ns ;
-  const double ResoEnergy = 5.0*MeV ;
+  const double ResoEnergy = 1.0*MeV ;
   const double Radius = 50*mm ; 
   const double Width = 100*mm ;
   const double Thickness = 300*mm ;
@@ -342,8 +342,6 @@ void DETECTORNAME::ReadSensitive(const G4Event* event){
   for (Calo_itr = CaloHitMap->GetMap()->begin() ; Calo_itr != CaloHitMap->GetMap()->end() ; Calo_itr++){
 
     G4double* Info = *(Calo_itr->second);
-    //(Info[0]/2.35)*((Info[0]*1.02)*pow((Info[0]*1.8),.5))
-    // double Energy = RandGauss::shoot(Info[0],((Info[0]*1000*1.02/2.35)*pow((Info[0]*1000*1.8),.5)) );
     double Energy = RandGauss::shoot(Info[0],DETECTORNAME_NS::ResoEnergy);
     if(Energy>DETECTORNAME_NS::EnergyThreshold){
       double Time = RandGauss::shoot(Info[1],DETECTORNAME_NS::ResoTime);
