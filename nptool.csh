@@ -22,16 +22,16 @@ else
 endif
 
 setenv PATH $PATH":$NPTOOL/NPLib/bin"
-setenv PATH $PATH":$NPTOOL/NPSimulation/bin"
+setenv PATH $PATH":$NPTOOL/NPSimulation"
 
-alias npt echo "alias not supported under tcsh, switch to bash" 
-alias npl echo "alias not supported under tcsh, switch to bash" 
-alias nps echo "alias not supported under tcsh, switch to bash" 
+alias npt cd `printenv NPTOOL`
+alias npl cd `printenv NPTOOL`/NPLib
+alias nps cd `printenv NPTOOL`/NPSimulation
 
 alias npa_not_supported npa is now longer supported, use npp instead
 alias npa echo $npa_not_supported
 
-alias npp echo "alias not supported under tcsh, switch to bash" 
+alias npp cd `printenv NPTOOL`/Projects
 
 setenv Geant4_DIR $G4LIB
 setenv NPLib_DIR $NPTOOL/NPLib
