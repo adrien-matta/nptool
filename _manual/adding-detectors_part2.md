@@ -125,6 +125,22 @@ A few comments:
 1. You will notice that we use inline declaration for the setter and getter. This allow a better optimisation of the code by the compilator, bypassing the call of the function and replacing it by its code. Similarly we pass the argument of the functions by reference to avoid making a local copy at each call. This important because these methods are called for each event analysed or simulated, so typically millions of time.
 2. You will notice the use of `\\!` after the functionn declaration. This prevent root from making dictionnaries entries for these methods and pollute the TBrowser view. You can also use this to ask Root not to store a private member in the tree (more about that when talking about the Physics class).
 
+The last step is to update the Clear() and Dump() methods in thee .cxx file:
+{% highlight C++ %}
+void TMSX25Data::Clear() {
+  // Energy
+  fMSX25_E_DetectorNbr.clear();
+  fMSX25_E_StripNbr.clear();
+  fMSX25_Energy.clear();
+  // Time
+  fMSX25_T_DetectorNbr.clear();
+  fMSX25_T_StripNbr.clear();
+  fMSX25_Time.clear();
+}
+{% endhighlight %}
+
+
+
 ### The Physics class
 
 * * *
