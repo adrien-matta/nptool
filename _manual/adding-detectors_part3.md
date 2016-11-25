@@ -71,7 +71,7 @@ At the beginning of the MSX25.cc a namespace is defined to handle the physical d
 namespace MSX25_NS{
   const double EnergyThreshold = 0.1*MeV;
   const double ResoTime = 4.5*ns ;
-  const double ResoEnergy = 5.0*MeV ;
+  const double ResoEnergy = 1.0*MeV ;
   const double Radius = 50*mm ; 
   const double Width = 100*mm ;
   const double Thickness = 300*mm ;
@@ -82,13 +82,13 @@ These properties are the one that are defined once for all (hard-coded) but not 
 {% highlight C++ %}
 namespace MSX25_NS{
   const double EnergyThreshold = 0.1*MeV;
-  const double ResoTime = 4.5*ns ;
-  const double ResoEnergy = 0.043*MeV ; // Unit is MeV/2.35 , FWHM = 150 keV
+  const double ResoTime = 0.213*ns;         // Unit is ns/2.35 ,  FWHM = 500 ps
+  const double ResoEnergy = 0.017*MeV ;     // Unit is MeV/2.35 , FWHM = 40 keV
   const double Radius = 50*mm ;
   const double Width = 68*mm ;
   const double Thickness = 300*micrometer ;
   const string Material = "Si";
-  const G4int  NumberOfStrip = 16 ;
+  const G4int  NumberOfStrips = 25 ;
 }
 {% endhighlight %}
 
@@ -126,20 +126,20 @@ G4LogicalVolume* newDet::BuildSquareDetector(){
     return m_SquareDetector;
 }
 {% endhighlight %}
-A few remarks:
-1. Scorer
-2. m_MSX25Detector
+Remark: The scorer "m_MSX25Scorer" used in the SetSensitiveDetector() method is defined in the two following methods.
 
 #### InitializeScorers 
 This method declares and initialize the scorer that will be used to store the properties of the simulated event  that are of interest for the user (deposited energy, time, detectorID, position, etc.). It also attaches this scorer to the Geant4 sensitive detector manager. For this tutorial,  here is the declaration that has to be used for a silicon stripped detector scorer:
 
 {% highlight C++ %}
+#include "SiliconScorers.hh" // To add at beginning of file
+...
 G4VPrimitiveScorer* StripScorer =
     new  SILICONSCORERS::PS_Silicon_Rectangle("StripScorer",0,
-        MSX25_NS::DetectorSize,
-        MSX25_NS::DetectorSize,
-        MSX25_NS::NumberOfStrip,
-        1);
+        MSX25_NS::Width,     // Width
+        MSX25_NS::Width,     // Length (here same as Width for a square det.)
+        MSX25_NS::NumberOfStrips,    // Width segmentation
+        1);                         // Length segmentation
   m_MSX25Scorer->RegisterPrimitive(StripScorer);
   G4SDManager::GetSDMpointer()->AddNewDetector(m_MSX25Scorer);
 {% endhighlight %}
@@ -195,13 +195,13 @@ StripHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(StripCol
 // Loop on the Strip map
 for (Strip_itr = StripHitMap->GetMap()->begin() ; Strip_itr != StripHitMap->GetMap()->end() ; Strip_itr++){
     G4double* Info = *(Strip_itr->second);
-    double Energy = Info[0];
+    double Energy = RandGauss::shoot(Info[0], MSX25_NS::ResoEnergy);
     if(Energy > MSX25_NS::EnergyThreshold){
-        double Time     = Info[1];
+        double Time     = RandGauss::shoot(Info[1], MSX25_NS::ResoTime);
         int DetNbr      = (int) Info[7];
         int StripNbr    = (int) Info[8];
-        m_Event->SetEnergy(DetNbr, StripNbr, RandGauss::shoot(Energy, MSX25_NS::ResoEnergy))
-        m_Event->SetTime(DetNbr, StripNbr, RandGauss::shoot(Time, MSX25_NS::ResoTime));
+        m_Event->SetEnergy(DetNbr, StripNbr, Energy)
+        m_Event->SetTime(DetNbr, StripNbr, Time);
 
     }
 }
@@ -226,4 +226,18 @@ or if you are using ninja-build
 {% highlight bash %}
 > ninja install 
 {% endhighlight %}
+
+
+### Execution and test
+
+To test all the changes you made are working fine, simulate and analyze again some events with an alpha source:
+
+{% highlight bash %}
+> npsimulation -D MSX25.detector -E alpha.source
+> run/beamOn 1000
+
+> npanalysis --last-sim -GH
+{% endhighlight %}
+
+
 

@@ -201,7 +201,7 @@ For our example we will modify the PreTreat first to accomodate the strip detect
     if (m_EventData->Get_Energy(i) > m_E_RAW_Threshold) {
       Double_t Energy = Cal->ApplyCalibration("MSX25/ENERGY_D"+NPL::itoa(m_EventData->GetE_DetectorNbr(i))+"_STRIP"+NPL::itoa(m_EventData->GetE_StripNbr(i)),m_EventData->Get_Energy(i));
       if (Energy > m_E_Threshold) {
-        m_PreTreatedData->SetEnergy(m_EventData->GetE_DetectorNbr(i), Energy);
+        m_PreTreatedData->SetEnergy(m_EventData->GetE_DetectorNbr(i), m_EventData->GetE_StripNbr(i), Energy);
       }
     }
   }
@@ -209,7 +209,7 @@ For our example we will modify the PreTreat first to accomodate the strip detect
   // Time 
   for (UShort_t i = 0; i < m_EventData->GetMultTime(); ++i) {
     Double_t Time= Cal->ApplyCalibration("MSX25/TIME_D"+NPL::itoa(m_EventData->GetT_DetectorNbr(i)+"_STRIP"+NPL::itoa(m_EventData->GetT_StripNbr(i))),m_EventData->Get_Time(i));
-    m_PreTreatedData->SetTime(m_EventData->GetT_DetectorNbr(i), Time);
+    m_PreTreatedData->SetTime(m_EventData->GetT_DetectorNbr(i), m_EventData->GetT_StripNbr(i), Time);
   }
 {% endhighlight %}
 
@@ -331,14 +331,15 @@ There is six method to implement, three to declare the raw, pre-treated and phys
 {% highlight C++ %}
   static string name;
   for (unsigned int i = 0; i < fNumberOfDetectors; i++) { // loop on number of detectors
-    for (unsigned int j = 0; j < fNumberOfStrips; j++) { // loop on number of detectors
-    // Energy 
-    name = "DETECTORNAME"+NPL::itoa(i+1)+"_ENERGY_RAW";
-    AddHisto2D(name, name, fNumberOfStrips, 1, fNumberOfStrips, 4096, 0, 16384,"MSX25/RAW");
-    // Time  
-    name = "DETECTORNAME"+NPL::itoa(i+1)+"_TIME_RAW";
-    AddHisto2D(name, name, fNumberOfStrips, 1, fNumberOfStrips, 4096, 0, 16384, "MSX25/RAW");
-  } // end loop on number of detectors
+    for (unsigned int j = 0; j < fNumberOfStrips; j++) { // loop on number of stripss
+       // Energy 
+       name = "DETECTORNAME"+NPL::itoa(i+1)+"_ENERGY_RAW";
+       AddHisto2D(name, name, fNumberOfStrips, 1, fNumberOfStrips, 4096, 0, 16384,"MSX25/RAW");
+       // Time  
+       name = "DETECTORNAME"+NPL::itoa(i+1)+"_TIME_RAW";
+       AddHisto2D(name, name, fNumberOfStrips, 1, fNumberOfStrips, 4096, 0, 16384, "MSX25/RAW");
+    } // end loop on number of detectors
+  } // end loop on number of strips
 {% endhighlight %}
 
 #### InitPreTreatedSpectra
@@ -346,14 +347,15 @@ Similarly this method instantiate the calibrated histogramm. In most cases they 
 {% highlight C++ %}
   static string name;
   for (unsigned int i = 0; i < fNumberOfDetectors; i++) { // loop on number of detectors
-    for (unsigned int j = 0; j < fNumberOfStrips; j++) { // loop on number of detectors
+    for (unsigned int j = 0; j < fNumberOfStrips; j++) { // loop on number of stripss
     // Energy 
     name = "DETECTORNAME"+NPL::itoa(i+1)+"_ENERGY_CAL";
     AddHisto2D(name, name, fNumberOfStrips, 1, fNumberOfStrips, 4096, 0, 25,"MSX25/CAL");
     // Time  
     name = "DETECTORNAME"+NPL::itoa(i+1)+"_TIME_CAL";
     AddHisto2D(name, name, fNumberOfStrips, 1, fNumberOfStrips, 4096, 0, 50, "MSX25/CAL");
-  } // end loop on number of detectors
+    } // end loop on number of detectors
+  } // end loop on number of strips
 {% endhighlight %}
 
 #### InitPhysicsSpectra
