@@ -226,10 +226,8 @@ void ShowResults(const char * fname = "benchmark_gaspard"){
   hEfficiency->Draw();
 
   TFile* referenceFile = new TFile("reference.root");
-  TCanvas* canvas1_ref = (TCanvas*) referenceFile->FindObjectAny("canvas1");
-  TCanvas* canvas2_ref = (TCanvas*) referenceFile->FindObjectAny("canvas2");
-  canvas1_ref->SetName("canvas1_ref");
-  canvas2_ref->SetName("canvas2_ref");
+  TCanvas* canvas1_ref = (TCanvas*) referenceFile->FindObjectAny("canvas1_ref");
+  TCanvas* canvas2_ref = (TCanvas*) referenceFile->FindObjectAny("canvas2_ref");
   canvas1_ref->Draw();
   canvas2_ref->Draw();
 
@@ -241,6 +239,8 @@ void ShowResults(const char * fname = "benchmark_gaspard"){
 // DO NOT USE UNLESS YOU WANT TO MAKE A CHANGE TO THE BENCHMARK
 void WriteGaspardReference(){
   TFile *outFile = new TFile("reference.root","RECREATE");
+  canvas1->SetName("canvas1_ref");
+  canvas2->SetName("canvas2_ref");
   canvas1->Write();
   canvas2->Write();
   outFile->Close();
