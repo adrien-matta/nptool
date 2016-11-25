@@ -36,7 +36,7 @@ endif()
 
 # List of Root dependencies
 #set(ROOT_LIBRARIES dl Gui Core RIO Net Hist Gpad Tree Physics MathCore Thread )
-set(ROOT_LIBRARIES dl Gui Core Gpad Hist Physics Tree )
+set(ROOT_LIBRARIES dl Gui Core Net Gpad Hist Physics Tree )
 
 # Lib directories
 exec_program(${NPTOOL_ROOT_CONFIG} ARGS "--libdir" OUTPUT_VARIABLE ROOT_LIBRARY_DIR)
