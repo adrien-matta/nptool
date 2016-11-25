@@ -60,7 +60,7 @@ namespace DETECTORNAME_NS{
   const double Radius = 50*mm ; 
   const double Width = 100*mm ;
   const double Thickness = 300*mm ;
-  const string Scintillator = "BC400";
+  const string Material = "BC400";
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -96,8 +96,8 @@ G4LogicalVolume* DETECTORNAME::BuildSquareDetector(){
     G4Box* box = new G4Box("DETECTORNAME_Box",DETECTORNAME_NS::Width*0.5,
         DETECTORNAME_NS::Width*0.5,DETECTORNAME_NS::Thickness*0.5);
 
-    G4Material* ScintMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary(DETECTORNAME_NS::Scintillator);
-    m_SquareDetector = new G4LogicalVolume(box,ScintMaterial,"logic_DETECTORNAME_Box",0,0,0);
+    G4Material* DetectorMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary(DETECTORNAME_NS::Material);
+    m_SquareDetector = new G4LogicalVolume(box,DetectorMaterial,"logic_DETECTORNAME_Box",0,0,0);
     m_SquareDetector->SetVisAttributes(m_VisSquare);
     m_SquareDetector->SetSensitiveDetector(m_DETECTORNAMEScorer);
   }
@@ -109,8 +109,8 @@ G4LogicalVolume* DETECTORNAME::BuildCylindricalDetector(){
   if(!m_CylindricalDetector){
     G4Tubs* tub = new G4Tubs("DETECTORNAME_Cyl",0,DETECTORNAME_NS::Radius,DETECTORNAME_NS::Thickness*0.5,0,360*deg);
 
-    G4Material* ScintMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary(DETECTORNAME_NS::Scintillator);
-    m_CylindricalDetector = new G4LogicalVolume(tub,ScintMaterial,"logic_DETECTORNAME_tub",0,0,0);
+    G4Material* DetectorMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary(DETECTORNAME_NS::Material);
+    m_CylindricalDetector = new G4LogicalVolume(tub,DetectorMaterial,"logic_DETECTORNAME_tub",0,0,0);
     m_CylindricalDetector->SetVisAttributes(m_VisSquare);
     m_CylindricalDetector->SetSensitiveDetector(m_DETECTORNAMEScorer);
 
