@@ -186,14 +186,14 @@ We now have to implement each of the methods inherrited from NPL::VDetector.
 This method read the detector configuration file and look for the appropriate token. It is by implementing this method that you tell what an input file looks like for your detector. We use a token based approach, allowing for very flexible design. Some detector for instance have variable geometry (thickness or size) and material (scintillator type, target material,...).
 
 #### AddParameterToCalibrationManager 
-This function is adding the list of token used in the calibration to the calibration manager. The later will then parse all the calibration files provided and look for the token. In our case we want to add new token including the strip number as well as the detector number, we therefore need to modify the for loop to have two counters. The NPL::DetectorManager::AddParameter function take three argument. The first one is the detector name, the second one in the name of the parameter as stored in memory and the third name is the token as written in the file.
+This function is adding the list of token used in the calibration to the calibration manager. The later will then parse all the calibration files provided and look for the token. In our case we want to add new token including the strip number as well as the detector number, we therefore need to modify the for loop to have two counters. The NPL::DetectorManager::AddParameter function take three argument. The first one is the detector name, the second one in the name of the parameter as stored in memory and the third name is the token as written in theinput calibration file.
 
 {% highlight C++ %}
 CalibrationManager* Cal = CalibrationManager::getInstance();  
  for (int i = 0; i < m_NumberOfDetectors; ++i) {  
-   for(int j = 0 ; j < 25 ; j++){
-    Cal->AddParameter("MSX25", "D"+ NPL::itoa(i+1)+"_ENERGY","MSX25_D"+ NPL::itoa(i+1)+"_STRIP"+ NPL::itoa(j+1)+"_ENERGY");   
-    Cal->AddParameter("MSX25", "D"+ NPL::itoa(i+1)+"_TIME","MSX25_D"+ NPL::itoa(i+1)+"_STRIP"+ NPL::itoa(j+1)+"_TIME");   
+   for(int j = 0 ; j < 25 ; j++){ //loop on 25 strips for example
+    Cal->AddParameter("MSX25", "D"+ NPL::itoa(i+1)+ "_STRIP"+ NPL::itoa(j+1)+ "_ENERGY","MSX25_D"+ NPL::itoa(i+1)+"_STRIP"+ NPL::itoa(j+1)+"_ENERGY");   
+    Cal->AddParameter("MSX25", "D"+ NPL::itoa(i+1)+ "_STRIP"+ NPL::itoa(j+1)+"_TIME","MSX25_D"+ NPL::itoa(i+1)+"_STRIP"+ NPL::itoa(j+1)+"_TIME");   
   }  
  }
 {% endhighlight %}
