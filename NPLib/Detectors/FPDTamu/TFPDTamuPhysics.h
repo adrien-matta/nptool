@@ -31,6 +31,7 @@ using namespace std;
 
 // ROOT headers
 #include "TObject.h"
+#include "TVector3.h"
 #include "TH1.h"
 #include "TCanvas.h"
 
@@ -64,10 +65,36 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
   // data obtained after BuildPhysicalEvent() and stored in
   // output ROOT file
   public:
-    vector<int>      DetectorNumber;
-    vector<double>   Energy;
-    vector<double>   Time;
+  // Delta
+  vector<int>    DeltaDetNumber;
+  vector<double> DeltaCharge;//!
+  vector<double> DeltaEnergy;
+  vector<double> DeltaTime;//!
+  //Micromega
+  vector<int>    MicroRowNumber;
+  vector<int>    MicroColNumber;
+  vector<double> MicroPositionX;
+  vector<double> MicroPositionZ;
+  vector<double> MicroCharge;
+  vector<double> MicroEnergy;
+  vector<double> MicroTime;
+  //Avalanche wire
+  vector<int>    AWireDetNumber;
+  vector<double> AWireLeftCharge;
+  vector<double> AWireRightCharge;
+  vector<double> AWirePositionX;
+  vector<double> AWirePositionZ;
+  //Plastic scintillator
+  vector<int>    PlastDetNumber;
+  vector<double> PlastLeftCharge;
+  vector<double> PlastRightCharge;
+  vector<double> PlastPositionX;
+  vector<double> PlastPositionZ;
+  vector<double> PlastTime;
 
+  //Calculated AWire and Plastic
+  double   PositionOnPlasticX;
+  TVector3 BeamDirection;//!
 
   //////////////////////////////////////////////////////////////
   // methods inherited from the VDetector ABC class
@@ -157,10 +184,23 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
     // thresholds
     double m_E_RAW_Threshold; //!
     double m_E_Threshold;     //!
+    double m_T_RAW_Threshold; //!
+    double m_T_Threshold;     //!
+
+  // add sub-detectors
+  private:
+    void AddDelta(TVector3 A, TVector3 B);  //!
+    void AddMicro(TVector3 A, TVector3 B);  //!
+    void AddAWire(TVector3 A, TVector3 B);  //!
+    void AddPlast(TVector3 A, TVector3 B);  //!
 
   // number of detectors
   private:
     int m_NumberOfDetectors;  //!
+    int m_NumberOfDelta;  //!
+    int m_NumberOfMicro;  //!
+    int m_NumberOfAWire;  //!
+    int m_NumberOfPlast;  //!
 
   // spectra class
   private:
