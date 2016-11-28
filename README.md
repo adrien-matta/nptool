@@ -50,11 +50,10 @@ NPTool components are compiled and installed using the CMake build system,
 so be sure to have a working CMake installation before starting.
 
 In order to compile NPLib, the NPTool core libraries, ROOT 5 (tested with 5.34) 
-or 6 should be installed with the libMathMore.so library. 
-This is sufficient to compile NPLib and any analysis project. 
+or 6 should be installed. This is sufficient to compile NPLib and any analysis project. 
 
 In order to compile NPSimulation, a recent installation of Geant4 (tested 
-with version 9.6 and 10.1) is needed. If you want to use GDML format in 
+with version 9.6 and 10.1) is needed. If you want to use GDML support in 
 NPTool, Geant4 should be installed with GDML support.
 
 ### Preparing the build
