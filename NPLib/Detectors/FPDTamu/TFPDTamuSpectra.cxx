@@ -307,10 +307,10 @@ void TFPDTamuSpectra::FillPhysicsSpectra(TFPDTamuPhysics* Physics) {
   family= "FPDTamu/PHY";
 
   // Energy vs time
-  unsigned int sizeE = Physics->Energy.size();
+  unsigned int sizeE = Physics->DeltaEnergy.size();
   for(unsigned int i = 0 ; i < sizeE ; i++){
-    name = "FPDTamu_ENERGY_TIME";
-    GetHisto(family,name) -> Fill(Physics->Energy[i],Physics->Time[i]);
+    name = "FPDTamu_DELTA_ENERGY_TIME";
+    GetHisto(family,name) -> Fill(Physics->DeltaEnergy[i],Physics->DeltaTime[i]);
   }
 }
 

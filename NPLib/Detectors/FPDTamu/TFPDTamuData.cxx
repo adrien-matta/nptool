@@ -156,7 +156,7 @@ void TFPDTamuData::Dump() const {
   }
   // Time
   mysize = fFPDTamu_Plast_T_DetectorSide.size();
-  cout << "Energy Mult: " << mysize << endl;
+  cout << "Time Mult: " << mysize << endl;
   for (size_t i = 0 ; i < mysize ; i++){
     cout << "Side(L-0 R-1): " << fFPDTamu_Plast_T_DetectorSide[i]
          << " Time: " << fFPDTamu_Plast_Time[i]
