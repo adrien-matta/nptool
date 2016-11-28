@@ -4,7 +4,7 @@
 printf -v pathNPT $NPTOOL
 printf -v pathNPL $NPTOOL/NPLib/Detectors/
 printf -v pathNPS $NPTOOL/NPSimulation/Detectors/
-printf -v pathInputs $NPTOOL/Inputs/DetectorConfiguration/
+printf -v pathProjects $NPTOOL/Projects/
 printf -v path    $PWD
 
 #check for the force flag
@@ -49,12 +49,7 @@ if [[ $force == 0 ]]; then
     printf "\033[1;31m**** ERROR : A detector with similar name \033[1;36m${upperName}\033[1;31m already exist. use \033[1;36m-f\033[1;31m flag to force recreation.****\033[0m\n"
     exit 1
   fi
-  
 fi
-  
-
-
-
 
 printf  "\033[1;36m-> What is your name (firstname and surname)? \033[0m\n"
 read -e author 
@@ -109,13 +104,16 @@ mv ${pathNPL}${DetectorName}/TDETECTORNAMESpectra.cxx ${pathNPL}${DetectorName}/
   mv ${pathNPS}${DetectorName}/DETECTORNAME.hh ${pathNPS}${DetectorName}/${SimFile_h}
   mv ${pathNPS}${DetectorName}/DETECTORNAME.cc ${pathNPS}${DetectorName}/${SimFile_cxx}
 
-#Add input file
-  cp ${pathNPL}../ressources/DetectorSkeleton/Inputs/*.* ${pathInputs} > /dev/null 2> /dev/null
+# Create project folder
+  mkdir ${pathProjects}${DetectorName} > /dev/null 2> /dev/null
 
-  sed -i '' -e "s/DETECTORNAME/${DetectorName}/g" ${pathInputs}DETECTORNAME.detector > /dev/null 2> /dev/null
+#Add Project file
+  cp ${pathNPL}../ressources/DetectorSkeleton/Projects/*.* ${pathProjects}${DetectorName}/ > /dev/null 2> /dev/null
+
+  sed -i '' -e "s/DETECTORNAME/${DetectorName}/g" ${pathProjects}${DetectorName}/*.* > /dev/null 2> /dev/null
 
 #change files name
-  mv ${pathInputs}DETECTORNAME.detector ${pathInputs}${DetectorName}.detector
+  mv ${pathProjects}${DetectorName}/DETECTORNAME.detector ${pathProjects}${DetectorName}/${DetectorName}.detector
 
 # Provide a list of created file 
   printf "\t List of created files to\033[1;35m edit \033[0m:\n" 
@@ -127,14 +125,16 @@ mv ${pathNPL}${DetectorName}/TDETECTORNAMESpectra.cxx ${pathNPL}${DetectorName}/
   printf "\tNPSimulation :\n" 
   printf "\t\t -> Folder: Detectors/${DetectorName} \n"
   printf "\t\t -> Detector Class: \033[1;35m${SimFile_h}\033[0m and \033[1;35m${SimFile_cxx}\033[0m\n\n" 
-  printf "\tInputs :\n" 
+  printf "\tProjects :\n" 
+  printf "\t\t -> Folder: Detectors/${DetectorName} \n"
+  printf "\t\t -> Detector Analysis: \033[1;35m Analysis.h and Analysis.cxx\033[0m\n" 
   printf "\t\t -> Detector input file: \033[1;35m ${InputFile}\033[0m\n\n" 
 
 #Adding file to git
   printf "\033[1;36m-> Do you want to add those files to the nptool repository ? (y/n) \033[0m"
   read gitanswer
   if [[ $gitanswer =~ ^[Yy]$ ]];then 
-    git add -f ${pathNPL}${DetectorName}/CMakeLists.txt ${pathNPL}${DetectorName}/${DataFile_h} ${pathNPL}${DetectorName}/${DataFile_cxx} ${pathNPL}${DetectorName}/${PhysicsFile_h} ${pathNPL}${DetectorName}/${PhysicsFile_cxx} ${pathNPL}${DetectorName}/${SpectraFile_h} ${pathNPL}${DetectorName}/${SpectraFile_cxx} ${pathNPS}${DetectorName}/CMakeLists.txt ${pathNPS}${DetectorName}/${SimFile_h} ${pathNPS}${DetectorName}/${SimFile_cxx} ${pathInputs}${InputFile}
+    git add -f ${pathNPL}${DetectorName}/CMakeLists.txt ${pathNPL}${DetectorName}/${DataFile_h} ${pathNPL}${DetectorName}/${DataFile_cxx} ${pathNPL}${DetectorName}/${PhysicsFile_h} ${pathNPL}${DetectorName}/${PhysicsFile_cxx} ${pathNPL}${DetectorName}/${SpectraFile_h} ${pathNPL}${DetectorName}/${SpectraFile_cxx} ${pathNPS}${DetectorName}/CMakeLists.txt ${pathNPS}${DetectorName}/${SimFile_h} ${pathNPS}${DetectorName}/${SimFile_cxx} ${pathProjects}/${DetectorName}/${InputFile} ${pathProjects}/${DetectorName}/Analysis.h ${pathProjects}/${DetectorName}/Analysis.cxx ${pathProjects}/${DetectorName}/CMakeLists.txt
       printf "\033[1;32m**** Files added, use \033[1;36mgit commit -a \033[1;32m to commit them when ready ****\033[0m\n";
   fi
 #Display help message
