@@ -40,7 +40,7 @@
 /////////////////////////////////////////////////////////////////////////////
 PhysicsList::PhysicsList() : G4VModularPhysicsList(){
     m_EmList = "Option4";
-    defaultCutValue = 0.01*mm;//0.2*mm;
+    defaultCutValue = 1*mm;//0.2*mm;
     opticalPhysicsList = NULL;
     
     ReadConfiguration("PhysicsListOption.txt");
