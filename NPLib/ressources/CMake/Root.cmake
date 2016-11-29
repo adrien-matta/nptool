@@ -7,9 +7,10 @@ set(NPTOOL_ROOT_SEARCHPATH
     $ENV{PATH}
     /usr/bin  # Debian install
     /opt/local/bin # Macports install
+    /usr/local/bin
     )
 
-find_program(NPTOOL_ROOT_CONFIG NAMES root-config PATHS ${NPTOOL_ROOT_SEARCHPATH} NO_DEFAULT_PATH)
+find_program(NPTOOL_ROOT_CONFIG NAMES root-config PATHS ${NPTOOL_ROOT_SEARCHPATH} )
 if(NPTOOL_ROOT_CONFIG MATCHES "NOTFOUND")
   message(FATAL_ERROR "ROOT is not found, check your installation")
 endif()
