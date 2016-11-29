@@ -10,11 +10,11 @@
 /*****************************************************************************
  * Original Author: Adrien MATTA  contact address: a.matta@surrey.ac.uk      *
  *                                                                           *
- * Creation Date  : November 2012                                            *
+ * Creation Date  : 2016                                                     *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold the GeTAMU  raw data (Made for TIG10 card)              *
+ *  This class hold the GeTAMU  raw data                                     *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -33,20 +33,16 @@ using namespace std ;
 class TGeTAMUData : public TObject {
 private:
   // GeTAMU
-  // Energy
-  vector<UShort_t> fTIG_Ge_CloverNbr;
-  vector<UShort_t> fTIG_Ge_CrystalNbr;
-  vector<UShort_t> fTIG_Ge_SegmentNbr;
-  vector<Double_t> fTIG_Ge_Energy;
-  vector<Double_t> fTIG_Ge_TimeCFD;
-  vector<Double_t> fTIG_Ge_TimeLED;
-
-  vector<UShort_t> fTIG_BGO_CloverNbr;
-  vector<UShort_t> fTIG_BGO_CrystalNbr;
-  vector<UShort_t> fTIG_BGO_PmNbr;
-  vector<Double_t> fTIG_BGO_Energy;
-  vector<Double_t> fTIG_BGO_TimeCFD;
-  vector<Double_t> fTIG_BGO_TimeLED;
+  // Core 
+  vector<unsigned short> fGeTAMU_Core_CloverNbr;
+  vector<unsigned short> fGeTAMU_Core_CrystalNbr;
+  vector<double> fGeTAMU_Core_Energy;
+  vector<double> fGeTAMU_Core_Time;
+  // Segment
+  vector<unsigned short> fGeTAMU_Segment_CloverNbr;
+  vector<unsigned short> fGeTAMU_Segment_SegmentNbr;
+  vector<double> fGeTAMU_Segment_Energy;
+  vector<double> fGeTAMU_Segment_Time;
 
 
 public:
@@ -58,57 +54,51 @@ public:
   void Dump() const;
   
   /////////////////////           SETTERS           ////////////////////////
-  inline void SetGeCloverNbr(const UShort_t &GeCloverNbr){fTIG_Ge_CloverNbr.push_back(GeCloverNbr); }
-  inline void SetGeCrystalNbr(const UShort_t &GeCrystalNbr){fTIG_Ge_CrystalNbr.push_back(GeCrystalNbr);}
-  inline void SetGeSegmentNbr(const UShort_t &GeSegmentNbr){fTIG_Ge_SegmentNbr.push_back(GeSegmentNbr);}
-  inline void SetGeEnergy(const Double_t &GeEnergy){fTIG_Ge_Energy.push_back(GeEnergy);}
-  inline void SetGeTimeCFD(const Double_t &GeTimeCFD){fTIG_Ge_TimeCFD.push_back(GeTimeCFD);}
-  inline void SetGeTimeLED(const Double_t &GeTimeLED){fTIG_Ge_TimeLED.push_back(GeTimeLED);}
+  inline void SetCoreCloverNbr(const unsigned short &CoreCloverNbr){fGeTAMU_Core_CloverNbr.push_back(CoreCloverNbr); }
+  inline void SetCoreCrystalNbr(const unsigned short &CoreCrystalNbr){fGeTAMU_Core_CrystalNbr.push_back(CoreCrystalNbr);}
+  inline void SetCoreEnergy(const double &CoreEnergy){fGeTAMU_Core_Energy.push_back(CoreEnergy);}
+  inline void SetCoreTime(const double &CoreTime){fGeTAMU_Core_Time.push_back(CoreTime);}
+  inline void SetCore(const unsigned short &CoreCloverNbr,
+                      const unsigned short &CoreCrystalNbr,
+                      const double &CoreEnergy,
+                      const double &CoreTime){
+    fGeTAMU_Core_CloverNbr.push_back(CoreCloverNbr);
+    fGeTAMU_Core_CrystalNbr.push_back(CoreCrystalNbr);
+    fGeTAMU_Core_Energy.push_back(CoreEnergy);
+    fGeTAMU_Core_Time.push_back(CoreTime);
+  };
 
-  inline void SetBGOCloverNbr(const UShort_t &BGOCloverNbr){fTIG_BGO_CloverNbr.push_back(BGOCloverNbr); }
-  inline void SetBGOCrystalNbr(const UShort_t &BGOCrystalNbr){fTIG_BGO_CrystalNbr.push_back(BGOCrystalNbr);}
-  inline void SetBGOPmNbr(const UShort_t &BGOPmNbr){fTIG_BGO_PmNbr.push_back(BGOPmNbr);}
-  inline void SetBGOEnergy(const Double_t &BGOEnergy){fTIG_BGO_Energy.push_back(BGOEnergy);}
-  inline void SetBGOTimeCFD(const Double_t &BGOTimeCFD){fTIG_BGO_TimeCFD.push_back(BGOTimeCFD);}
-  inline void SetBGOTimeLED(const Double_t &BGOTimeLED){fTIG_BGO_TimeLED.push_back(BGOTimeLED);}
+  inline void SetSegmentCloverNbr(const unsigned short &SegmentCloverNbr){fGeTAMU_Segment_CloverNbr.push_back(SegmentCloverNbr); }
+  inline void SetSegmentSegmentNbr(const unsigned short &SegmentNbr){fGeTAMU_Segment_SegmentNbr.push_back(SegmentNbr);}
+  inline void SetSegmentEnergy(const double &SegmentEnergy){fGeTAMU_Segment_Energy.push_back(SegmentEnergy);}
+  inline void SetSegmentTime(const double &SegmentTime){fGeTAMU_Segment_Time.push_back(SegmentTime);}
+  inline void SetSegment(const unsigned short &SegmentCloverNbr,
+                      const unsigned short &SegmentNbr,
+                      const double &SegmentEnergy,
+                      const double &SegmentTime){
+    fGeTAMU_Segment_CloverNbr.push_back(SegmentCloverNbr);
+    fGeTAMU_Segment_SegmentNbr.push_back(SegmentNbr);
+    fGeTAMU_Segment_Energy.push_back(SegmentEnergy);
+    fGeTAMU_Segment_Time.push_back(SegmentTime);
+  };
+
 
   /////////////////////           GETTERS           ////////////////////////
-  inline UShort_t GetGeCloverNbr(const unsigned int &i)   {return fTIG_Ge_CloverNbr[i]; }
-  inline UShort_t GetGeCrystalNbr(const unsigned int &i)  {return fTIG_Ge_CrystalNbr[i]; }
-  inline UShort_t GetGeSegmentNbr(const unsigned int &i)  {return fTIG_Ge_SegmentNbr[i]; }
-
-  inline Double_t GetGeEnergy(const unsigned int &i)      {return fTIG_Ge_Energy[i];}
-  inline Double_t GetGeTimeCFD(const unsigned int &i)     {return fTIG_Ge_TimeCFD[i];}
-  inline Double_t GetGeTimeLED(const unsigned int &i)     {return fTIG_Ge_TimeLED[i];}
-
-  inline UShort_t GetBGOCloverNbr(const unsigned int &i)   {return fTIG_BGO_CloverNbr[i]; }
-  inline UShort_t GetBGOCrystalNbr(const unsigned int &i)  {return fTIG_BGO_CrystalNbr[i]; }
-  inline UShort_t GetBGOPmNbr(const unsigned int &i)       {return fTIG_BGO_PmNbr[i]; }
-  inline Double_t GetBGOEnergy(const unsigned int &i)      {return fTIG_BGO_Energy[i];}
-  inline Double_t GetBGOTimeCFD(const unsigned int &i)     {return fTIG_BGO_TimeCFD[i];}
-  inline Double_t GetBGOTimeLED(const unsigned int &i)     {return fTIG_BGO_TimeLED[i];}
-
-  inline unsigned int GetMultiplicityGe()  {return fTIG_Ge_CloverNbr.size();}
-  inline unsigned int GetMultiplicityBGO()  {return fTIG_BGO_CloverNbr.size();}
+  inline unsigned short GetCoreCloverNbr(const unsigned int &i)   {return fGeTAMU_Core_CloverNbr[i]; }
+  inline unsigned short GetCoreCrystalNbr(const unsigned int &i)  {return fGeTAMU_Core_CrystalNbr[i]; }
+  inline double GetCoreEnergy(const unsigned int &i)      {return fGeTAMU_Core_Energy[i];}
+  inline double GetCoreTime(const unsigned int &i)     {return fGeTAMU_Core_Time[i];}
+  inline unsigned int GetMultiplicityCore()  {return fGeTAMU_Core_CloverNbr.size();}
   
+  inline unsigned short GetSegmentCloverNbr(const unsigned int &i)   {return fGeTAMU_Segment_CloverNbr[i]; }
+  inline unsigned short GetSegmentSegmentNbr(const unsigned int &i)   {return fGeTAMU_Segment_SegmentNbr[i]; }
+  inline double GetSegmentEnergy(const unsigned int &i)      {return fGeTAMU_Segment_Energy[i];}
+  inline double GetSegmentTime(const unsigned int &i)     {return fGeTAMU_Segment_Time[i];}
+  inline unsigned int GetMultiplicitySegment()  {return fGeTAMU_Segment_CloverNbr.size();}
+  
+
   ClassDef(TGeTAMUData,1)  // GeTAMUData structure
 };
 
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

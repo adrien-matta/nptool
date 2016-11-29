@@ -51,58 +51,49 @@ ClassImp(TGeTAMUPhysics)
 /////////////////////////////////////////////////
 void TGeTAMUPhysics::BuildPhysicalEvent(){
   PreTreat();
-  // Addback Map
-  unsigned int mysize = Gamma_Energy.size();
-  for(unsigned int i = 0 ; i < 16 ; i ++) {
-    for(unsigned int g = 0 ; g < mysize ; g++){
-      if(Clover_Number[g] == i+1 && Segment_Number[g]==0){
-        m_map_E[i] += Gamma_Energy[g];
-        if( Gamma_Energy[g]> m_map_Core_MaxE[i] ){
-          m_map_Core_MaxE[i] = Gamma_Energy[g];
-          m_map_Core_Crystal[i] = Crystal_Number[g];
-        }
-      }
-      if(Clover_Number[g] == i+1 &&  Segment_Number[g]>0 &&  Segment_Number[g]<9){
-        if( Gamma_Energy[g]>m_map_Segment_MaxE[i]){
-          m_map_Segment_MaxE[i] = Gamma_Energy[g];
-          m_map_Segment_Crystal[i] = Crystal_Number[g];
-          m_map_Segment[i] = Segment_Number[g];
-        }
+  unsigned int c_size = m_PreTreatedData->GetMultiplicityCore();
+  unsigned int s_size = m_PreTreatedData->GetMultiplicitySegment();
+  // map for add back
+  map<int,double> clv_energy;   
+  map<int,int> clv_segment;
+  map<int,int> clv_crystal;
+  map<int,double> max_core;
+  map<int,double> max_segment; 
+  for(unsigned int i = 0 ; i < c_size ; i++){
+    int clv = m_PreTreatedData->GetCoreCloverNbr(i);
+    int cry = m_PreTreatedData->GetCoreCrystalNbr(i);
+    double energy = m_PreTreatedData->GetCoreEnergy(i);
+    // Add back energy
+    clv_energy[clv] += energy;
+    // Pick up the crystal
+    if(energy > max_core[clv]){
+      max_core[clv] = energy;
+      clv_crystal[clv] = cry;
+    }
+    // Pick up the segment
+    for(unsigned int j = 0 ; j < s_size ; j++){
+      double s_energy = m_PreTreatedData->GetSegmentEnergy(j); 
+      if(s_energy > max_segment[clv]){
+        max_segment[clv] = s_energy;
+        clv_segment[clv] = m_PreTreatedData->GetSegmentSegmentNbr(j);
       }
     }
   }
 
-  // Final Addback and Doppler Correction 
-  int zero = 0;
-  for(int i = 0 ; i < 16 ; i++) {
-    if(m_map_E.find(i)!=m_map_E.end()){
-      int clover = i+1;
-      TVector3 Pos;
-      if(m_map_Segment_MaxE[i]>0)
-        Pos = GetSegmentPosition(clover,m_map_Segment_Crystal[i],m_map_Segment[i]);
-      else if(m_map_Core_MaxE[i]>0)
-        Pos = GetSegmentPosition(clover,m_map_Core_Crystal[i],zero);
-
-      if(Pos.Mag()!=0){
-        static TVector3 Beta = TVector3(0,0,0.10);
-        double E = GetDopplerCorrectedEnergy(m_map_E[i],Pos,Beta);
-        AddBack_DC.push_back(E);
-        AddBack_E.push_back(m_map_E[i]);
-        AddBack_Theta.push_back(Pos.Angle(Beta)*180./3.141592653589793);
-        AddBack_Clover.push_back(clover); 
-        if(m_map_Segment_MaxE[i]>0){
-          AddBack_Crystal.push_back(m_map_Segment_Crystal[i]);
-          AddBack_Segment.push_back(m_map_Segment[i]);
-        }
-        else{
-          AddBack_Crystal.push_back(m_map_Core_Crystal[i]);
-          AddBack_Segment.push_back(0);
-        }
-        AddBack_X.push_back(Pos.X());
-        AddBack_Y.push_back(Pos.Y());
-        AddBack_Z.push_back(Pos.Z());
-      }    
-    }
+  // Fill in the info using the map
+  map<int,double>::iterator it;
+  for (it = clv_energy.begin(); it != clv_energy.end(); ++it) {
+    int clv = it->first;
+    AddBack_E.push_back(it->second);
+    AddBack_T.push_back(-1000);
+    AddBack_DC.push_back(-1000);
+    AddBack_Theta.push_back(-1000);
+    AddBack_X.push_back(-1000);
+    AddBack_Y.push_back(-1000);
+    AddBack_Z.push_back(-1000);
+    AddBack_Clover.push_back(clv);
+    AddBack_Crystal.push_back(clv_crystal[clv]);
+    AddBack_Segment.push_back(clv_segment[clv]);
   }
 }
 
@@ -110,38 +101,40 @@ void TGeTAMUPhysics::BuildPhysicalEvent(){
 void TGeTAMUPhysics::PreTreat(){
   static CalibrationManager* cal = CalibrationManager::getInstance();
   static string name;
-  unsigned int mysize = m_EventData->GetMultiplicityGe();
+  unsigned int mysize = m_EventData->GetMultiplicityCore();
   double Eraw,Energy;
+  double Traw,Time;
   int clover, crystal, segment;
   for(unsigned int i = 0 ; i < mysize ; i++){
-    Eraw = m_EventData->GetGeEnergy(i);
-    if( Eraw>20000){
-      clover = m_EventData->GetGeCloverNbr(i);
-      crystal = m_EventData->GetGeCrystalNbr(i);
-      segment = m_EventData->GetGeSegmentNbr(i);
-      name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal)+"_SEG"+ NPL::itoa(segment)+"_E";
-      Energy =  cal->ApplyCalibration(name, Eraw);
-      Gamma_Energy.push_back(Energy);
-      Clover_Number.push_back(clover);
-      Crystal_Number.push_back(crystal);
-      Segment_Number.push_back(segment);
-      Gamma_Time.push_back(m_EventData->GetGeTimeCFD(i));
-
-      // Look for Associate BGO
-      bool BGOcheck = false ;
-      for(unsigned j = 0 ;  j <  m_EventData->GetMultiplicityBGO() ; j++){
-
-        if( m_EventData->GetBGOCloverNbr(j)== m_EventData->GetGeCloverNbr(i) && m_EventData->GetBGOEnergy(j)>20 )
-          BGOcheck = true ;
-      }
-      BGO.push_back(BGOcheck);
+    Eraw = m_EventData->GetCoreEnergy(i);
+    if(Eraw>0){
+      clover = m_EventData->GetCoreCloverNbr(i);
+      crystal = m_EventData->GetCoreCrystalNbr(i);
+      name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
+      Energy =  cal->ApplyCalibration(name+"_E", Eraw);
+      Time =  cal->ApplyCalibration(name+"_T", Traw);
+      m_PreTreatedData->SetCore(clover,crystal,Energy,Time);
     }
+  } 
+  mysize = m_EventData->GetMultiplicitySegment();
+  for(unsigned int i = 0 ; i < mysize ; i++){
+    Eraw = m_EventData->GetSegmentEnergy(i);
+    if(Eraw>0){
+      clover = m_EventData->GetSegmentCloverNbr(i);
+      segment = m_EventData->GetSegmentSegmentNbr(i);
+      name = "GETAMU/D"+ NPL::itoa(clover)+"_SEG"+ NPL::itoa(segment);
+      Energy =  cal->ApplyCalibration(name+"_E", Eraw);
+      Time =  cal->ApplyCalibration(name+"_T", Traw);
+      m_PreTreatedData->SetSegment(clover,crystal,Energy,Time);
+    }
+
   }
 }
 
 /////////////////////////////////////////////////
 TVector3 TGeTAMUPhysics::GetPositionOfInteraction(unsigned int& i){
-  return GetSegmentPosition(Clover_Number[i],Crystal_Number[i],Segment_Number[i]);
+  return TVector3();
+  //return GetSegmentPosition(Clover_Number[i],Crystal_Number[i],Segment_Number[i]);
 }
 /////////////////////////////////////////////////
 // original energy, position, beta
@@ -350,24 +343,12 @@ void TGeTAMUPhysics::InitializeRootOutput()    {
 }
 ///////////////////////////////////////////////////////////////////////////  
 void TGeTAMUPhysics::Clear() {
-  Gamma_Energy.clear();
-  Gamma_Time.clear();
-  Crystal_Number.clear();
-  Clover_Number.clear();
-  Segment_Number.clear();
-  BGO.clear();
   AddBack_E.clear();
   AddBack_DC.clear();
   AddBack_Theta.clear();
   AddBack_X.clear();
   AddBack_Y.clear();
   AddBack_Z.clear();
-  m_map_E.clear();
-  m_map_Core_Crystal.clear();
-  m_map_Core_MaxE.clear(); 
-  m_map_Segment_Crystal.clear(); 
-  m_map_Segment.clear(); 
-  m_map_Segment_MaxE.clear(); 
   AddBack_Clover.clear();
   AddBack_Crystal.clear();
   AddBack_Segment.clear();

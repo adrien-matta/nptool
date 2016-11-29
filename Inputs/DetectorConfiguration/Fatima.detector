@@ -12,12 +12,10 @@ Target
 	THICKNESS= 10.3
 	ANGLE= 0
 	RADIUS=	12
-%	MATERIAL= CD2l
 	MATERIAL= CD2
-	NBLAYERS= 50
 	X= 0
 	Y= 0
-	Z= 0	
+	Z= 0
 %Target
 %	THICKNESS= 0.01
 %	ANGLE= 0
@@ -27,7 +25,6 @@ Target
 %	X= 0
 %	Y= 0
 %	Z= 0	
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %GeneralChamber
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -35,23 +32,18 @@ Target
 %GREATChamber
 %GREAT-Karl
 %        Heightmin= 178.
-%       Heightmax= 181.
+%        Heightmax= 181.
 %        Widthmin= 228.
 %        Widthmax= 231.
-%       Depthmin= 200.
+%        Depthmin= 200.
 %        Depthmax= 205.
 %        MATERIAL= Alu
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
 %
 % #################################################
 % ############ At the back of DSSSDs:  #############
 % #################################################
 %
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%						
 Fatima						
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%						1

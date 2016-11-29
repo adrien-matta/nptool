@@ -1,5 +1,5 @@
 tell application "Finder"
-  tell process "npsimulation"
-    set frontmost to true
-  end tell
+    tell process "npsimulation"
+      set frontmost to true
+    end tell
 end tell

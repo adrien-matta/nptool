@@ -4,11 +4,13 @@
 message("Looking for Root:")
 set(NPTOOL_ROOT_SEARCHPATH 
     $ENV{ROOTSYS}/bin 
-    /usr/bin
     $ENV{PATH}
-   )
+    /usr/bin  # Debian install
+    /opt/local/bin # Macports install
+    /usr/local/bin
+    )
 
-find_program(NPTOOL_ROOT_CONFIG NAMES root-config PATHS ${NPTOOL_ROOT_SEARCHPATH} NO_DEFAULT_PATH)
+find_program(NPTOOL_ROOT_CONFIG NAMES root-config PATHS ${NPTOOL_ROOT_SEARCHPATH} )
 if(NPTOOL_ROOT_CONFIG MATCHES "NOTFOUND")
   message(FATAL_ERROR "ROOT is not found, check your installation")
 endif()
@@ -33,27 +35,8 @@ endif()
  
 ## Collect the different information ##
 
-# Lib
-exec_program(${NPTOOL_ROOT_CONFIG} ARGS "--glibs" OUTPUT_VARIABLE ROOT_LIBRARIES)
-
-# Remove unnecessary dependencies from the list return by root
-# This actually improve slightly performances
-string(REPLACE "-lGui" "" ROOT_LIBRARIES "${ROOT_LIBRARIES}")
-#string(REPLACE "-lCore" "" ROOT_LIBRARIES "${ROOT_LIBRARIES}")
-#string(REPLACE "-lRIO" "" ROOT_LIBRARIES "${ROOT_LIBRARIES}")
-#string(REPLACE "-lNet" "" ROOT_LIBRARIES "${ROOT_LIBRARIES}")
-#string(REPLACE "-lHist" "" ROOT_LIBRARIES "${ROOT_LIBRARIES}")
-string(REPLACE "-lGraf " " " ROOT_LIBRARIES "${ROOT_LIBRARIES}")
-string(REPLACE "-lGraf3d" "" ROOT_LIBRARIES "${ROOT_LIBRARIES}")
-#string(REPLACE "-lGpad" "" ROOT_LIBRARIES "${ROOT_LIBRARIES}")
-#string(REPLACE "-lTree" "" ROOT_LIBRARIES "${ROOT_LIBRARIES}")
-string(REPLACE "-lRint" "" ROOT_LIBRARIES "${ROOT_LIBRARIES}")
-string(REPLACE "-lPostscript" "" ROOT_LIBRARIES "${ROOT_LIBRARIES}")
-string(REPLACE "-lMatrix" "" ROOT_LIBRARIES "${ROOT_LIBRARIES}")
-#string(REPLACE "-lPhysics" "" ROOT_LIBRARIES "${ROOT_LIBRARIES}")
-#string(REPLACE "-lMathCore" "" ROOT_LIBRARIES "${ROOT_LIBRARIES}")
-string(REPLACE "-lThread" "" ROOT_LIBRARIES "${ROOT_LIBRARIES}")
-string(REPLACE "-lpthread" "" ROOT_LIBRARIES "${ROOT_LIBRARIES}")
+# List of Root dependencies
+set(ROOT_LIBRARIES dl Gui Core RIO Net Hist Gpad Tree Physics MathCore Thread )
 
 # Lib directories
 exec_program(${NPTOOL_ROOT_CONFIG} ARGS "--libdir" OUTPUT_VARIABLE ROOT_LIBRARY_DIR)

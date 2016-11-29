@@ -776,6 +776,7 @@ void Sharc::ReadSensitive(const G4Event* event){
 
       m_Event->SetBack_DetectorNbr(DetNbr);
       m_Event->SetBack_StripNbr(BOX_Wafer_Back_NumberOfStrip-StripBack+1);
+
       m_Event->SetBack_Energy(RandGauss::shoot(Energy, ResoEnergy));
       m_Event->SetBack_TimeCFD(RandGauss::shoot(Time, ResoTime));
       m_Event->SetBack_TimeLED(RandGauss::shoot(Time, ResoTime));

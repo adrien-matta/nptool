@@ -54,12 +54,11 @@ using namespace NPL;
 TCanvas* canvas1;
 TCanvas* canvas2;
 
-void ShowResults(const char * fname = "benchmark_gaspard")
-{
+void ShowResults(const char * fname = "benchmark_gaspard"){
   // for the style 
-   gStyle->SetOptStat(0);
-//  gROOT->SetStyle("nptool");     
-//  gROOT->ForceStyle(false);  
+  gStyle->SetOptStat(0);
+  gROOT->SetStyle("nptool");     
+  gROOT->ForceStyle(true);  
 
   // Open output ROOT file from NPTool simulation run
   TString path = gSystem->Getenv("NPTOOL");
@@ -135,7 +134,6 @@ void ShowResults(const char * fname = "benchmark_gaspard")
     hEmittedETheta   -> Fill(initCond->GetThetaLab_IncidentFrame(0), initCond->GetKineticEnergy(0));
 
     if (interCoord->GetDetectedMultiplicity() > 0) {
-//       cout << initCond->GetThetaLab_IncidentFrame(0) << "\t" << initCond->GetKineticEnergy(0) << endl;
       hEmittedETheta_detected  -> Fill(initCond->GetThetaLab_IncidentFrame(0), initCond->GetKineticEnergy(0));
       hEmittedThetaIF_detected -> Fill(initCond->GetThetaLab_IncidentFrame(0));
       hEmittedThetaCM_detected -> Fill(initCond->GetThetaCM(0));
@@ -148,13 +146,11 @@ void ShowResults(const char * fname = "benchmark_gaspard")
   canvas1->Divide(2,3);
 
   canvas1->cd(1);
-//  hEmittanceXTheta->Draw();
   hEmittanceXTheta->Draw("colz");
   hEmittanceXTheta->SetXTitle("X (mm)");
   hEmittanceXTheta->SetYTitle("#theta_{X} (deg)");
 
   canvas1->cd(2);
-//  hEmittanceYPhi->Draw();
   hEmittanceYPhi->Draw("colz");
   hEmittanceYPhi->SetXTitle("Y (mm)");
   hEmittanceYPhi->SetYTitle("#Phi_{Y} (deg)"); 
@@ -166,7 +162,6 @@ void ShowResults(const char * fname = "benchmark_gaspard")
   hIncidentPhi->Draw();
 
   canvas1->cd(5);
-//  hEmittanceXY->Draw();
   hEmittanceXY->Draw("colz");
   TEllipse *target = new TEllipse(0,0,7.5,7.5);
   target->SetFillStyle(0000);
@@ -231,10 +226,8 @@ void ShowResults(const char * fname = "benchmark_gaspard")
   hEfficiency->Draw();
 
   TFile* referenceFile = new TFile("reference.root");
-  TCanvas* canvas1_ref = (TCanvas*) referenceFile->FindObjectAny("canvas1");
-  TCanvas* canvas2_ref = (TCanvas*) referenceFile->FindObjectAny("canvas2");
-  canvas1_ref->SetName("canvas1_ref");
-  canvas2_ref->SetName("canvas2_ref");
+  TCanvas* canvas1_ref = (TCanvas*) referenceFile->FindObjectAny("canvas1_ref");
+  TCanvas* canvas2_ref = (TCanvas*) referenceFile->FindObjectAny("canvas2_ref");
   canvas1_ref->Draw();
   canvas2_ref->Draw();
 
@@ -244,9 +237,10 @@ void ShowResults(const char * fname = "benchmark_gaspard")
 ////////////////////////////////////////////////////////////////////////////////
 // Use this method to overwrite the reference file only
 // DO NOT USE UNLESS YOU WANT TO MAKE A CHANGE TO THE BENCHMARK
-void WriteGaspardReference()
-{
+void WriteGaspardReference(){
   TFile *outFile = new TFile("reference.root","RECREATE");
+  canvas1->SetName("canvas1_ref");
+  canvas2->SetName("canvas2_ref");
   canvas1->Write();
   canvas2->Write();
   outFile->Close();
