@@ -390,7 +390,7 @@ This method loop over the raw data at the end of each event and fill the previou
     name = "MSX25"+NPL::itoa(RawData->GetE_DetectorNbr(i))+"_ENERGY_RAW";
     family = "MSX25/RAW";
 
-    GetHisto(family,name) -> Fill(RawData->GetE_StripNbr(), RawData->Get_Energy(i));
+    GetHisto(family,name) -> Fill(RawData->GetE_StripNbr(i), RawData->Get_Energy(i));
   }
 
   // Time
@@ -399,7 +399,7 @@ This method loop over the raw data at the end of each event and fill the previou
     name = "MSX25"+NPL::itoa(RawData->GetT_DetectorNbr(i))+"_TIME_RAW";
     family = "MSX25/RAW";
 
-    GetHisto(family,name) -> Fill(RawData->GetT_StripNbr(), RawData->Get_Time(i));
+    GetHisto(family,name) -> Fill(RawData->GetT_StripNbr(i), RawData->Get_Time(i));
   }
 
 {% endhighlight %}
