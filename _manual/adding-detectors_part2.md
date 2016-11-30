@@ -215,7 +215,7 @@ For our example we will modify the PreTreat first to accomodate the strip detect
   // Energy
   for (UShort_t i = 0; i < m_EventData->GetMultEnergy(); ++i) {
     if (m_EventData->Get_Energy(i) > m_E_RAW_Threshold) {
-      Double_t Energy = Cal->ApplyCalibration("MSX25/ENERGY_D"+NPL::itoa(m_EventData->GetE_DetectorNbr(i))+"_STRIP"+NPL::itoa(m_EventData->GetE_StripNbr(i)),m_EventData->Get_Energy(i));
+      Double_t Energy = Cal->ApplyCalibration("MSX25/D"+NPL::itoa(m_EventData->GetE_DetectorNbr(i))+"_STRIP"+NPL::itoa(m_EventData->GetE_StripNbr(i))+_ENERGY",m_EventData->Get_Energy(i));
       if (Energy > m_E_Threshold) {
         m_PreTreatedData->SetEnergy(m_EventData->GetE_DetectorNbr(i), m_EventData->GetE_StripNbr(i), Energy);
       }
@@ -224,7 +224,7 @@ For our example we will modify the PreTreat first to accomodate the strip detect
 
   // Time 
   for (UShort_t i = 0; i < m_EventData->GetMultTime(); ++i) {
-    Double_t Time= Cal->ApplyCalibration("MSX25/TIME_D"+NPL::itoa(m_EventData->GetT_DetectorNbr(i)+"_STRIP"+NPL::itoa(m_EventData->GetT_StripNbr(i))),m_EventData->Get_Time(i));
+    Double_t Time= Cal->ApplyCalibration("MSX25/D"+NPL::itoa(m_EventData->GetT_DetectorNbr(i)+"_STRIP"+NPL::itoa(m_EventData->GetT_StripNbr(i)))+"_TIME",m_EventData->Get_Time(i));
     m_PreTreatedData->SetTime(m_EventData->GetT_DetectorNbr(i), m_EventData->GetT_StripNbr(i), Time);
   }
 {% endhighlight %}
