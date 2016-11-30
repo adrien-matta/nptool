@@ -162,7 +162,7 @@ void PhysicsList::ReadConfiguration(std::string filename){
         if(name == "EmPhysicsList")
             m_EmList = str_value;
         else if(name == "DefaultCutOff")
-            defaultCutValue = value;
+            defaultCutValue = value*mm;
         else if(name == "IonBinaryCascadePhysics")
             m_IonBinaryCascadePhysics = value;
         else if(name == "NPIonInelasticPhysics")
