@@ -1,0 +1,56 @@
+---
+layout: post
+title:  "ICC Workshop : NPTool School, second Circular"
+date:   2016-10-14 14:00
+author: Adrien Matta
+categories: nptool update
+---
+
+ The [registration website][registration] is now ready.
+ You will also find a list of hotels close to GANIL with reduced prices for the
+ workshop.
+ 
+ ----------------------------------------------------------------------------------------------------------------------------
+ 
+ ICC Workshop on Detector Simulations (2016)
+ 
+ Over the last decade, with the development of new detection systems that will
+ take full advantage of the new facilities currently under construction in
+ Europe, the demand for realistic simulations to prepare experiments and
+ facilitate the data analysis is constantly on the rise. This led to the
+ development of several simulation toolkits, more or less experiment/detector
+ specific.
+ Amongst the GANIL-SPIRAL2 ICC activities, the simulation working group is
+ looking for solutions to facilitate exchanges between the different existing
+ simulation tools and avoid work duplication. One recent outcome of this
+ enterprise is that, now, most of the frameworks are compatible with detector
+ geometry file in gdml format, which facilitates the exchange of detector
+ geometry files from one toolkit to another, as well as the implementation of
+ new detectors.
+ After the presentation of the successful AGATA and SToGs simulation tool last
+ year, we propose to hold a workshop on the simulation and data analysis
+ framework NPTool for low-energy nuclear physics experiments. NPTool is based on
+ GEANT4 and ROOT and has recently published in Journal of Physics G Nuclear and
+ Particle Physics, Volume 43, Number 4. The response of a large range of
+ detectors are already simulated using NPTOOL and more information can also be
+ found at the project website, http://nptool.org.
+ The workshop will take place at the GANIL guesthouse from the 29th of November
+ (2pm) to 1st (1pm) of December 2016(to be confirmed).
+ The main goal of the workshop is to present the framework, assist the
+ participants in the installation (tbc) and demonstrate through tutorials how it
+ can be used:
+ 
+ *         to simulate a reaction with a realistic beam,
+ 
+ *         to analyse real and simulated data,
+ 
+ *         to implement new detectors and connect to a gdml geometry file,
+ 
+ *         and to define or connect to new event generators. (tbc)
+ We are looking forward to welcoming you at GANIL for this workshop.
+ 
+The Organizers: Adrien Matta, Nicolas de Séréville, Freddy Flavigny, Marc
+ Labiche
+
+[registration]: https://pro.ganil-spiral2.eu/events/workshops/simulation-icc
+

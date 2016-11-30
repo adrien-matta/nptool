@@ -6,7 +6,7 @@ author: Adrien Matta
 manual_order: 10 
 show_in_nav: false 
 ---
-This tutorial presents how to add a new detector using the _nptool-wizard_
+This first part of the tutorial presents how to add a new detector using the _nptool-wizard_
 utility available in the nptool package. _nptool-wizard_ is a simple bash 
 script that will first ask you a few information about the detector you want 
 to create and the author. It will then create the needed files in the NPLib
@@ -45,10 +45,10 @@ can be achieved using the following list of commands:
 {% highlight bash %}
 $ npl
 $ cmake ./
-$ make -jn
+$ make -jn install
 $ nps
 $ cmake ./
-$ make -jn
+$ make -jn install
 {% endhighlight %}
 
 

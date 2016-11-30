@@ -28,14 +28,14 @@ $ sudo port install cmake
 {% endhighlight %}
 
 
-## GSL
+## GSL (no longer needed)
 
-nptool requiere the libmathmore from ROOT, which is build only when the GNU Scientific Library (GSL) is present. This package can be installed easely via package manager:
+nptool required the libmathmore from ROOT, which is build only when the GNU Scientific Library (GSL) is present. This package can be installed easely via package manager:
 
 On Ubuntu and Debian :
 {% highlight console %}
-$ sudo apt-get gsl-bin
-$ sudo apt-get libgsl0-dev
+$ sudo apt-get install gsl-bin
+$ sudo apt-get inatall libgsl0-dev
 {% endhighlight %}
 
 On Fedora (> 21) :
@@ -74,6 +74,8 @@ Once the source downloaded, one need to decide where to install Root. Some prefe
 
 The cmake installation requier an out-of-source compilation, we will therefore create a temporary folder to hold the build, and remove it at the end.
 
+For newer version of nptool mathmore is no longer required. 
+
 {% highlight console %}
 $ cd /path/to/folder
 $ tar -xf /path/to/root.xxx.tar.gz
@@ -103,10 +105,14 @@ $ sudo apt-get install root-system -y
 
 ## Geant4
 
-
-
-
 ### From source (preferred method)
+The following commands install Geant4 from source. QT and GDML are optional and requiered QT4 or QT5 (package libqt4-dev or qtdeclarative5-dev) and  libxerces-c (package libxerces-c-dev , libxerces-cX.X) to be installed.
+
+We however strongly recommand to use the QT interface of npsimulation, as it provide the best user experience. GDML is required for some detectors which load there geometry from GDML file (e.g. Agata, T-Rex, Miniball) as well as exporting geometry to GDML file.
+
+You also need to compile Geant4 with the OpenGL driver in order to benefit from the visualization. This is usually done automatically as the OpenGL headers are installed on most standard distribution, if not you can try to install the mesa-common-dev package to get the GL/gl.h header file.
+
+On Mac Os X you may have to define the QTHOME variable in order for CMake to find your QT installation. When installing Qt dev package from MacPorts, use export QTHOME=/opt/local (you can add this to your .profile for a permanent fix, don't forget to source it before running cmake again).
 
 {% highlight console %}
 $ cd /path/to/folder
@@ -114,7 +120,7 @@ $ tar -xf /path/to/geant4.xxx.tar.gz
 $ mkdir geant4.xxx_build
 $ mkdir geant4.xxx_install
 $ cd geant4.xxx_build
-$ cmake -DCMAKE_INSTALL_PREFIX=/path/to/folder/geant4.xxx_install -DGEANT4_USE_QT=ON -DGEANT4_USE_GDML=ON ../geant4.xxx
+$ cmake -DCMAKE_INSTALL_PREFIX=/path/to/folder/geant4.xxx_install -DGEANT4_INSTALL_DATA=ON -DGEANT4_USE_QT=ON -DGEANT4_USE_GDML=ON ../geant4.xxx
 $ make -j2 
 $ make install
 $ cd ../

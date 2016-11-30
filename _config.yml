@@ -5,7 +5,8 @@ description: > # this means to ignore newlines until "baseurl:"
   nptool, an analysis and simulation framework for nuclear physics experiment based on Root and Geant4.
 
 baseurl: "" # the subpath of your site, e.g. /blog/
-url: "" # use this line when using jekyll serve to preview locally
+url: "http://nptool.org" # the base hostname and protocol for your site
+#url: "" # use this line when using jekyll serve to preview locally
 
 github_username: adrien-matta/nptool 
 
