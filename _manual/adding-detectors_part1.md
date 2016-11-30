@@ -53,6 +53,11 @@ $ make -jn
 
 
 ## Running a simulation with the new detector
+You should now start to work from your new detector project folder, accessible via the npp command:
+{% highlight bash %}
+$ npp newDet
+{% endhighlight %}
+
 Performing a basic Monte Carlo simulation of the recently added detector is
 as easy as running the following command line:
 {% highlight bash %}
