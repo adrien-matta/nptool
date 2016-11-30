@@ -414,21 +414,21 @@ This method is modified in a similar fashion to the previous one.
   static string family;
 
   // Energy 
-  unsigned int sizeE = RawData->GetMultEnergy();
+  unsigned int sizeE = PreTreatedData->GetMultEnergy();
   for (unsigned int i = 0; i < sizeE; i++) {
-    name = "MSX25"+NPL::itoa(RawData->GetE_DetectorNbr(i))+"_ENERGY_CAL";
+    name = "MSX25"+NPL::itoa(PreTreatedData->GetE_DetectorNbr(i))+"_ENERGY_CAL";
     family = "MSX25/CAL";
 
-    GetHisto(family,name) -> Fill(RawData->GetE_StripNbr(), RawData->Get_Energy(i));
+    GetHisto(family,name) -> Fill(PreTreatedData->GetE_StripNbr(i), PreTreatedData->Get_Energy(i));
   }
 
   // Time
-  unsigned int sizeT = RawData->GetMultTime();
+  unsigned int sizeT = PreTreatedData->GetMultTime();
   for (unsigned int i = 0; i < sizeT; i++) {
-    name = "MSX25"+NPL::itoa(RawData->GetT_DetectorNbr(i))+"_TIME_CAL";
+    name = "MSX25"+NPL::itoa(PreTreatedData->GetT_DetectorNbr(i))+"_TIME_CAL";
     family = "MSX25/CAL";
 
-    GetHisto(family,name) -> Fill(RawData->GetT_StripNbr(), RawData->Get_Time(i));
+    GetHisto(family,name) -> Fill(PreTreatedData->GetT_StripNbr(i), PreTreatedData->Get_Time(i));
   }
 
 {% endhighlight %}
