@@ -35,16 +35,16 @@ namespace SILICONSCORERS {
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
   struct RectangularOutput {
-    double totalEnergy;
-    double globalTime;
-    double x;
-    double y;
-    double z;
-    double theta;
-    double phi;
-    double detectorNumber;
-    double stripLengthNumber;
-    double stripWidthNumber;
+    G4double totalEnergy;
+    G4double globalTime;
+    G4double x;
+    G4double y;
+    G4double z;
+    G4double theta;
+    G4double phi;
+    G4double detectorNumber;
+    G4double stripLengthNumber;
+    G4double stripWidthNumber;
   };
 
   class PS_Silicon_Rectangle : public G4VPrimitiveScorer{
@@ -90,17 +90,17 @@ namespace SILICONSCORERS {
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
   struct AnnularOutput {
-    double totalEnergy;
-    double globalTime;
-    double x;
-    double y;
-    double z;
-    double theta;
-    double phi;
-    double detectorNumber;
-    double stripRingNumber;
-    double stripSectorNumber;
-    double stripQuadrantNumber;
+    G4double totalEnergy;
+    G4double globalTime;
+    G4double x;
+    G4double y;
+    G4double z;
+    G4double theta;
+    G4double phi;
+    G4double detectorNumber;
+    G4double stripRingNumber;
+    G4double stripSectorNumber;
+    G4double stripQuadrantNumber;
   };
 
   class PS_Silicon_Annular : public G4VPrimitiveScorer{
@@ -150,16 +150,16 @@ namespace SILICONSCORERS {
   };
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
   struct ResistiveOutput {
-    double upstreamEnergy;
-    double downstreamEnergy;
-    double globalTime;
-    double detectorNumber;
-    double stripWidthNumber;
-    double x;
-    double y;
-    double z;
-    double theta;
-    double phi;
+    G4double upstreamEnergy;
+    G4double downstreamEnergy;
+    G4double globalTime;
+    G4double detectorNumber;
+    G4double stripWidthNumber;
+    G4double x;
+    G4double y;
+    G4double z;
+    G4double theta;
+    G4double phi;
   };
 
   class PS_Silicon_Resistive : public G4VPrimitiveScorer{
