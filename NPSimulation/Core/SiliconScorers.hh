@@ -32,13 +32,27 @@ using namespace std;
 using namespace CLHEP;
 
 namespace SILICONSCORERS {
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......  
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+  struct RectangularOutput {
+    double totalEnergy;
+    double globalTime;
+    double x;
+    double y;
+    double z;
+    double theta;
+    double phi;
+    double detectorNumber;
+    double stripLengthNumber;
+    double stripWidthNumber;
+  };
+
   class PS_Silicon_Rectangle : public G4VPrimitiveScorer{
     
   public: // with description
     PS_Silicon_Rectangle(G4String name, G4int Level, G4double StripPlaneLength, G4double StripPlaneWidth, G4int NumberOfStripLength,G4int NumberOfStripWidth,G4int depth=0,G4String axis="xy");
      ~PS_Silicon_Rectangle();
-    
+
   protected: // with description
      G4bool ProcessHits(G4Step*, G4TouchableHistory*);
     
@@ -74,6 +88,21 @@ namespace SILICONSCORERS {
   };
   
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+  struct AnnularOutput {
+    double totalEnergy;
+    double globalTime;
+    double x;
+    double y;
+    double z;
+    double theta;
+    double phi;
+    double detectorNumber;
+    double stripRingNumber;
+    double stripSectorNumber;
+    double stripQuadrantNumber;
+  };
+
   class PS_Silicon_Annular : public G4VPrimitiveScorer{
     
   public: // with description
@@ -120,6 +149,19 @@ namespace SILICONSCORERS {
     
   };
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+  struct ResistiveOutput {
+    double upstreamEnergy;
+    double downstreamEnergy;
+    double globalTime;
+    double detectorNumber;
+    double stripWidthNumber;
+    double x;
+    double y;
+    double z;
+    double theta;
+    double phi;
+  };
+
   class PS_Silicon_Resistive : public G4VPrimitiveScorer{
     
   public: // with description
