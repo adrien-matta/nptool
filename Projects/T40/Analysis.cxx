@@ -9,7 +9,7 @@
  * Original Author: Adrien MATTA  contact address: a.matta@surrey.ac.uk      *
  *                                                                           *
  * Creation Date  : march 2015                                               *
- * Last update    :                                                          *
+ * Last update    : December 2016 [m.moukaddam@surrey.ac.uk]                 *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  * Class describing the property of an Analysis object                       *
@@ -21,13 +21,13 @@
  *****************************************************************************/
 #include<iostream>
 using namespace std;
-#include"Analysis.h"
-#include"NPAnalysisFactory.h"
-#include"NPDetectorManager.h"
-#include"NPOptionManager.h"
-#include"NPFunction.h" 
-#include"RootOutput.h"
-#include"RootInput.h"
+#include "Analysis.h"
+#include "NPAnalysisFactory.h"
+#include "NPDetectorManager.h"
+#include "NPOptionManager.h"
+#include "NPFunction.h" 
+#include "RootOutput.h"
+#include "RootInput.h"
 ////////////////////////////////////////////////////////////////////////////////
 Analysis::Analysis(){
 }
@@ -39,11 +39,13 @@ Analysis::~Analysis(){
 void Analysis::Init(){
   TH  = (TTiaraHyballPhysics*) m_DetectorManager -> GetDetector("TiaraHyballWedge");
   TB  = (TTiaraBarrelPhysics*) m_DetectorManager -> GetDetector("TiaraInnerBarrel=");
+  TF  = (TFPDTamuPhysics*) m_DetectorManager -> GetDetector("FPDTamu");
 
   // get reaction information
   myReaction = new NPL::Reaction();
   myReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
   OriginalBeamEnergy = myReaction->GetBeamEnergy();
+  cout << "Original Beam energy (entrance of target): " << OriginalBeamEnergy << endl ;
 
   // target thickness
   TargetThickness = m_DetectorManager->GetTargetThickness()*micrometer;
@@ -58,6 +60,7 @@ void Analysis::Init(){
   LightSi = NPL::EnergyLoss(light+"_Si.G4table","G4Table",10);
   BeamTarget = NPL::EnergyLoss(beam+"_"+TargetMaterial+".G4table","G4Table",10);
   FinalBeamEnergy = BeamTarget.Slow(OriginalBeamEnergy, TargetThickness*0.5, 0);
+
   cout << "Final Beam energy (middle of target): " << FinalBeamEnergy << endl;
   myReaction->SetBeamEnergy(FinalBeamEnergy);
 
@@ -73,15 +76,25 @@ void Analysis::Init(){
   Si_E_OuterTB = 0;
   Si_E_TB = 0 ;
   Energy = 0;
+  
+  //Original_ELab=0;
+  //Original_ThetaLab=0;
 
-  Original_ELab=0;
-  Original_ThetaLab=0;
-
-  XTarget = 0;
+  XTarget =0;
   YTarget =0;
   BeamDirection = TVector3(0,0,1);
   InitOutputBranch();
   InitInputBranch();
+
+  //FPD
+  Delta_E = 0; // Energy ionisation chamber
+  Micro_E = 0; // Energy from micromega total
+  Micro_E_row1 = 0 ;// Energy from micromega row 1 
+  Micro_E_col4 = 0 ;// energy from micromega col 1 
+  Plast_E = 0; // Energy Plastic
+  XPlastic_aw = 0; // X on plastic from avalanche wire
+  Theta_aw    = 0; // ion direction in the FPD
+  XPlastic    = 0; // X on plastic from plastic PMTs
 
 }
 
@@ -89,18 +102,14 @@ void Analysis::Init(){
 void Analysis::TreatEvent(){
   // Reinitiate calculated variable
   ReInitValue();
-  
-  Original_ELab = Initial->GetKineticEnergy(0);
-  Original_ThetaLab = Initial->GetParticleDirection(0).Angle(Initial->GetBeamDirection())/deg;
+  //Original_ELab = Initial->GetKineticEnergy(0);
+  //Original_ThetaLab = Initial->GetParticleDirection(0).Angle(Initial->GetBeamDirection())/deg;
 
   ////////////////////////////////////////// LOOP on TiaraHyball + SSSD Hit //////////////////////////////////////////
   for(unsigned int countTiaraHyball = 0 ; countTiaraHyball < TH->Strip_E.size() ; countTiaraHyball++){
     /************************************************/
-
     // TiaraHyball
-
     /************************************************/
-
     // Part 1 : Impact Angle
     ThetaTHSurface = 0;
     ThetaNormalTarget = 0;
@@ -119,14 +128,13 @@ void Analysis::TreatEvent(){
     }
 
     /************************************************/
-
     // Part 2 : Impact Energy
     Energy = ELab = 0;
     Si_E_TH = TH->Strip_E[countTiaraHyball];
     Energy = Si_E_TH;
 
     // Evaluate energy using the thickness 
-//    ELab = LightAl.EvaluateInitialEnergy( Energy ,0.4*micrometer , ThetaTHSurface); 
+    //    ELab = LightAl.EvaluateInitialEnergy( Energy ,0.4*micrometer , ThetaTHSurface); 
     ELab = Energy;
     // Target Correction
     ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget); 
@@ -164,6 +172,7 @@ void Analysis::TreatEvent(){
 
   /////////////////////////// LOOP on TiaraBarrel /////////////////////////////
   for(unsigned int countTiaraBarrel = 0 ; countTiaraBarrel < TB->Strip_E.size() ; countTiaraBarrel++){
+
     /************************************************/
     // Part 1 : Impact Angle
     ThetaTBSurface = 0;
@@ -228,7 +237,38 @@ void Analysis::TreatEvent(){
     /************************************************/
 
   } // end loop TiaraBarrel
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+ ////////////////////////////////////////// LOOP on FPD  //////////////////////////////////////////
+  
+  //for(unsigned int countFPD = 0 ; countFPD < TF->Delta.size() ; countFPD++) // multiplicity treated for now is zero 
+  { 
+    TF->Dump();
+    if(0){ // hit on target or another condition
+
+      // Part 1 : Collect the energis from the different sub-detectors
+      Delta_E      = TF->DeltaEnergy[0];
+      Micro_E_row1 = TF->GetMicroGroupEnergy(1,1,1,7); // energy sum from the row 1 
+      Micro_E_col4 = TF->GetMicroGroupEnergy(1,4,4,4); // energy sum from the col 4
+      Micro_E      = TF->GetMicroGroupEnergy(1,4,1,7); // energy sum from all the pads 
+      Plast_E      = TF->PlastCharge[0];
+
+      // Part 2 : Reconstruct ion direction from Avalanche Wire
+      Theta_aw          = TF->IonDirection.Theta()/deg; // calculate Theta from AWire
+      XPlastic_aw       = TF->PlastPositionX_AW; // calculate position on plastic, provided the Ion Direction, and Z plastic 
+      XPlastic          = TF->PlastPositionX[0]; // calculate  position on plastic from Right and Left PMT signals 
+    }
+    else{
+      Delta_E      = -1000;
+      Micro_E_row1 = -1000;   
+      Micro_E_col4 = -1000; 
+      Micro_E      = -1000;  
+      Plast_E      = -1000;
+      Theta_aw     = -1000;
+      XPlastic_aw  = -1000;
+      XPlastic     = -1000;
+    }
+
+  } // end loop on FPD
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -241,8 +281,17 @@ void Analysis::ReInitValue(){
   ELab = -1000;
   ThetaLab = -1000;
   ThetaCM = -1000;
-  Original_ELab = -1000;
-  Original_ThetaLab = -1000;
+  //Original_ELab = -1000;
+  //Original_ThetaLab = -1000;
+  //FPD
+  Delta_E      = -1000;
+  Micro_E_row1 = -1000;   
+  Micro_E_col4 = -1000; 
+  Micro_E      = -1000;  
+  Plast_E      = -1000;
+  Theta_aw     = -1000;
+  XPlastic_aw  = -1000;
+  XPlastic     = -1000;
 }
 /////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
@@ -254,14 +303,22 @@ void Analysis::InitOutputBranch() {
   RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixX",&TiaraIMX,"TiaraImpactMatrixX/D");
   RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixY",&TiaraIMY,"TiaraImpactMatrixY/D");
   RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixZ",&TiaraIMZ,"TiaraImpactMatrixZ/D");
-  RootOutput::getInstance()->GetTree()->Branch("Original_ELab",&Original_ELab,"Original_ELab/D");
-  RootOutput::getInstance()->GetTree()->Branch("Original_ThetaLab",&Original_ThetaLab,"Original_ThetaLab/D");
+  //RootOutput::getInstance()->GetTree()->Branch("Original_ELab",&Original_ELab,"Original_ELab/D");
+  //RootOutput::getInstance()->GetTree()->Branch("Original_ThetaLab",&Original_ThetaLab,"Original_ThetaLab/D");
+  RootOutput::getInstance()->GetTree()->Branch("Delta_E",&Delta_E,"Delta_E/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro_E_row1",&Micro_E_row1,"Micro_E_row1/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro_E_col4",&Micro_E_col4,"Micro_E_col4/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro_E",&Micro_E,"Micro_E/D");
+  RootOutput::getInstance()->GetTree()->Branch("Plast_E",&Plast_E,"Plast_E/D");
+  RootOutput::getInstance()->GetTree()->Branch("Theta_aw",&Theta_aw,"Theta_aw/D");
+  RootOutput::getInstance()->GetTree()->Branch("XPlastic_aw",&XPlastic_aw,"XPlastic_aw/D");
+  RootOutput::getInstance()->GetTree()->Branch("XPlastic",&XPlastic,"XPlastic/D");
 }
 /////////////////////////////////////////////////////////////////////////////
 void Analysis::InitInputBranch(){
-  RootInput:: getInstance()->GetChain()->SetBranchAddress("InitialConditions",&Initial );
-  RootInput:: getInstance()->GetChain()->SetBranchStatus("InitialConditions",true );
-  RootInput:: getInstance()->GetChain()->SetBranchStatus("fIC_*",true );
+  //RootInput:: getInstance()->GetChain()->SetBranchStatus("InitialConditions",true );
+  //RootInput:: getInstance()->GetChain()->SetBranchAddress("InitialConditions",&Initial );
+  //RootInput:: getInstance()->GetChain()->SetBranchStatus("fIC_*",true );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
