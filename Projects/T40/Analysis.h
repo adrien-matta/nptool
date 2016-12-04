@@ -10,9 +10,9 @@
 /*****************************************************************************
  * Original Author: Adrien MATTA  contact address: a.matta@surrey.ac.uk      *
  *                                                                           *
- * Creation Date  : march 2025                                               *
- * Last update    :                                                          *
- *---------------------------------------------------------------------------*
+ * Creation Date  : march 2015                                               *
+ * Last update    : December 2016 [m.moukaddam@surrey.ac.uk]                 *
+  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  * Class describing the property of an Analysis object                       *
  *                                                                           *
@@ -21,9 +21,10 @@
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
-#include"NPVAnalysis.h"
+#include "NPVAnalysis.h"
 #include "TTiaraHyballPhysics.h"
 #include "TTiaraBarrelPhysics.h"
+#include "TFPDTamuPhysics.h"
 #include "TInitialConditions.h"
 #include "NPEnergyLoss.h"
 #include "NPReaction.h"
@@ -71,7 +72,8 @@ class Analysis: public NPL::VAnalysis{
   double FinalBeamEnergy;
 
   TTiaraHyballPhysics* TH;
-  TTiaraBarrelPhysics* TB;
+  TTiaraBarrelPhysics* TB;  
+  TFPDTamuPhysics* TF;
 
   TRandom *Rand ;
 	double ThetaNormalTarget  ;
@@ -90,7 +92,16 @@ class Analysis: public NPL::VAnalysis{
   double XTarget ;
 	double YTarget ;
 	TVector3 BeamDirection ;
-
+  
+  //FPD
+  double Delta_E      ;
+  double Micro_E_row1 ;   
+  double Micro_E_col4 ; 
+  double Micro_E      ;  
+  double Plast_E      ;
+  double Theta_aw     ;
+  double XPlastic_aw  ;
+  double XPlastic     ;
 
 };
 #endif

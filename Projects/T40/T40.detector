@@ -41,6 +41,35 @@ Tiara
     Z= -147
     R= 0
     Phi= 300
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+FPDTamu
+%%%%%%%%
+% All DELTA detectors
+  DELTA
+     UPSTREAM-LEFT=    +150   +00   +20
+     UPSTREAM-RIGHT=   -150   +00   +20
+%%%%%%%%%%%%%%%%%%%%%    
+% All MICRO detectors
+  MICRO
+     UPSTREAM-LEFT=    +154   +00   +340
+     UPSTREAM-RIGHT=   -154   +00   +340
+%%%%%%%%%%%%%%%%%%%%%
+% All AWIRE detectors
+  AWIRE
+     LEFT=             +200   +00   +20
+     RIGHT=            -200   +00   +20
+    AWIRE
+     LEFT=             +200   +00   +171
+     RIGHT=            -200   +00   +171
+    AWIRE
+     LEFT=             +200   +00   +334
+     RIGHT=            -200   +00   +334
+    AWIRE
+     LEFT=             +200   +00   +497
+     RIGHT=            -200   +00   +497
+%%%%%%%%%%%%%%%%%%%%%
+% All Plastic detectors
+  PLAST
+     UPSTREAM-LEFT=    +198   +00   +547
+     UPSTREAM-RIGHT=   -198   +00   +547
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
