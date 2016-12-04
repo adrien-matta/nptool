@@ -85,16 +85,16 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
   vector<double> AWirePositionX;
   vector<double> AWirePositionZ;
   //Plastic scintillator
-  vector<int>    PlastDetNumber;
   vector<double> PlastLeftCharge;
   vector<double> PlastRightCharge;
+  vector<double> PlastCharge;
   vector<double> PlastPositionX;
   vector<double> PlastPositionZ;
   vector<double> PlastTime;
 
   //Calculated AWire and Plastic
-  double   PositionOnPlasticX;
-  TVector3 BeamDirection;//!
+  double   PlastPositionX_AW;
+  TVector3 IonDirection;//!
 
   //////////////////////////////////////////////////////////////
   // methods inherited from the VDetector ABC class
@@ -168,6 +168,8 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
     // needed for online analysis for example
     void SetRawDataPointer(TFPDTamuData* rawDataPointer) {m_EventData = rawDataPointer;}
     
+    void Dump() const;
+
   // objects are not written in the TTree
   private:
     TFPDTamuData*         m_EventData;        //!
@@ -178,7 +180,11 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
   public:
     TFPDTamuData* GetRawData()        const {return m_EventData;}
     TFPDTamuData* GetPreTreatedData() const {return m_PreTreatedData;}
-
+    
+    // Micromega specific used in analysis
+    double GetMicroGroupEnergy(int lrow, int hrow, int lcol, int hcol) ; 
+    double GetMicroRowGeomEnergy(int lrow, int hrow);
+  
   // parameters used in the analysis
   private:
     // thresholds
@@ -193,6 +199,15 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
     void AddMicro(TVector3 A, TVector3 B);  //!
     void AddAWire(TVector3 A, TVector3 B);  //!
     void AddPlast(TVector3 A, TVector3 B);  //!
+
+    vector<TVector3> DeltaLeftPos;  //!
+    vector<TVector3> DeltaRightPos; //!
+    vector<TVector3> MicroLeftPos;  //!
+    vector<TVector3> MicroRightPos; //!
+    vector<TVector3> AWireLeftPos;  //!
+    vector<TVector3> AWireRightPos; //!
+    TVector3 PlastLeftPos;  //!
+    TVector3 PlastRightPos; //!
 
   // number of detectors
   private:
