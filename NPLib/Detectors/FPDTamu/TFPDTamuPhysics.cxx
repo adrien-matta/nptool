@@ -551,57 +551,45 @@ void TFPDTamuPhysics::Dump() const {
  cout << "  ...oooOOOooo...   Micromega  ...oooOOOooo...   " << endl;
   // Energy
   mysize = MicroRowNumber.size();
-  cout << " Row Charge:"  
+  cout << " Row Charge:" <<endl; 
   for (size_t i = 0 ; i < MicroRowNumber.size() ; i++)
     cout << " " << MicroRowNumber[i];
   cout<<endl;
-    cout << " Col Charge:"  
+    cout << " Col Charge:" << endl;
   for (size_t i = 0 ; i < MicroColNumber.size() ; i++)
-    cout << " " << MicroRowNumber[i];
+    cout << " " << MicroColNumber[i];
   cout<<endl;
       cout << " energy: "<<endl; 
   for (size_t i = 0 ; i < MicroColNumber.size() ; i++)
     cout << " " << MicroRowNumber[i];
   cout<<endl;
-        cout << " energy: "<< energy << endl;
+        cout << " energy: " << endl;
   for (size_t i = 0 ; i < MicroColNumber.size() ; i++)
     cout << " " << MicroRowNumber[i];
-  cout<<endl;                                                                                                                                                                                                                                                                                                                                                                             
-    cout << " Charge: " << AWireRightCharge[i]
-    cout << " Energy: " << AWirePositionX[i]
-    cout << " XPos: " << AWirePositionX[i]
-    cout << " ZPos: " << AWirePositionZ[i]
-         <<endl;
-  }
+  cout<<endl;
 
  cout << "  ...oooOOOooo...   Plastic Scintillator  ...oooOOOooo...   " << endl;
     // Energy
-  cout << " Left Charge:"  
+  cout << " Left Charge:" ;
   for (size_t i = 0 ; i < PlastLeftCharge.size() ; i++)
     cout << " " << PlastLeftCharge[i];
   cout<<endl;
-  
-  cout << " Right Charge:"  
+  cout << " Right Charge:" ; 
   for (size_t i = 0 ; i < PlastRightCharge.size() ; i++)
     cout << " " << PlastRightCharge[i];
   cout<<endl;
-  
-  cout << " total Charge:"  
+  cout << " total Charge:" ;
   for (size_t i = 0 ; i < PlastCharge.size() ; i++)
     cout << " " << PlastCharge[i];
   cout<<endl;
-
-  cout << " XPos:"  
+  cout << " XPos:"  ;
   for (size_t i = 0 ; i < PlastPositionX.size() ; i++)
     cout << " " << PlastPositionX[i];
   cout<<endl;
-
-  cout << " ZPos:"  
+  cout << " ZPos:"  ;
   for (size_t i = 0 ; i < PlastPositionZ.size() ; i++)
     cout << " " << PlastPositionZ[i];
   cout<<endl;
-
-  }
 }
 
 
