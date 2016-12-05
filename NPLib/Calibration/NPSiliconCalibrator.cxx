@@ -10,9 +10,9 @@ using namespace std;
 
 namespace {
 #if ROOT_VERSION_CODE > ROOT_VERSION(6,0,0)
-  typedef Double_t* TSPECTRUM_RETURN;
+  typedef Double_t* TSpectrumPosition_t;
 #else
-  typedef Float_t* TSPECTRUM_RETURN;
+  typedef Float_t* TSpectrumPosition_t;
 #endif
 }
 
@@ -220,7 +220,7 @@ TGraphErrors* NPL::SiliconCalibrator::FitSpectrum(TH1* histo, double rmin, doubl
    TSpectrum* sp = new TSpectrum(4,1);
    //  nfound = sp->Search(histo,3,"",0.25);
    Int_t    nfound = sp->Search(histo,3,"",0.5);
-   TSPECTRUM_RETURN xpeaks = sp->GetPositionX();
+   TSpectrumPosition_t xpeaks = sp->GetPositionX();
 
    // order list of peaks
    sort(xpeaks, xpeaks+nfound);
