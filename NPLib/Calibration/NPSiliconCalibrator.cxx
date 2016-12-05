@@ -217,10 +217,10 @@ TGraphErrors* NPL::SiliconCalibrator::FitSpectrum(TH1* histo, double rmin, doubl
    // apply range for peak search
    histo->GetXaxis()->SetRangeUser(rmin, rmax);
    // Perform a peak search to get a hint of where are the peaks
-   TSpectrum* sp = new TSpectrum(4,1);
+   TSpectrum sp(4,1);
    //  nfound = sp->Search(histo,3,"",0.25);
-   Int_t    nfound = sp->Search(histo,3,"",0.5);
-   TSpectrumPosition_t xpeaks = sp->GetPositionX();
+   Int_t    nfound = sp.Search(histo,3,"",0.5);
+   TSpectrumPosition_t xpeaks = sp.GetPositionX();
 
    // order list of peaks
    sort(xpeaks, xpeaks+nfound);
