@@ -200,6 +200,7 @@ NPOptionManager::NPOptionManager(string arg){
 void NPOptionManager::CheckArguments(){
   CheckEventGenerator();
   CheckDetectorConfiguration();
+  CheckG4Macro();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -263,6 +264,21 @@ void NPOptionManager::CheckDetectorConfiguration(){
 
 }
 
+////////////////////////////////////////////////////////////////////////////////
+void NPOptionManager::CheckG4Macro(){
+  if(IsDefault("G4MacroPath"))
+    return ;
+
+  // ifstream to configfile
+  ifstream MacroFile( fG4MacroPath );
+
+  if (!MacroFile.is_open()) {
+    SendErrorAndExit("G4MacroPath");
+  }
+  
+}
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // This method tests if the input files are the default ones
@@ -324,6 +340,15 @@ void NPOptionManager::SendErrorAndExit(const char* type) const{
   }
   else if (stype == "RunToTreat") {
   }
+  else if (stype == "G4MacroPath") {
+    cout << endl;
+    cout << "***********************************       Error       ***********************************" << endl;
+    cout << "*                  No Geant4 macro file found in the provided path                      *" << endl;
+    cout << "*****************************************************************************************" << endl;
+    cout << endl;
+    exit(1);
+  }
+
   else {
     cout << "NPOptionManager::SendErrorAndExit() unkwown keyword" << endl;
   }
