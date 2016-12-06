@@ -11,7 +11,7 @@
  * Original Author: Adrien MATTA  contact address: a.matta@surrey.ac.uk      *
  *                  Peter Bender  contact address: bender@triumf.ca          *
  * Creation Date  : November 2012                                            *
- * Last update    :                                                          *
+ * Last update    : December 2016 m.moukaddam@surrey.ac.uk                   *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This class hold GeTAMU treated data                                     *
