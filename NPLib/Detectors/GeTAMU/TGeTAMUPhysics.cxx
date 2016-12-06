@@ -97,6 +97,11 @@ void TGeTAMUPhysics::BuildPhysicalEvent(){
     AddBack_Crystal.push_back(clv_crystal[clv]);
     AddBack_Segment.push_back(clv_segment[clv]);
   }
+
+//Fill the time OR
+for (unsigned i = 0 ; i < m_PreTreatedData->GetMultiplicityCoreT(); i++)
+  GeTimeOR.push_back(m_PreTreatedData->GetCoreTime(i));
+
 }
 
 /////////////////////////////////////////////////
@@ -108,6 +113,7 @@ void TGeTAMUPhysics::PreTreat(){
   double Eraw,Energy;
   double Traw,Time;
   int clover, crystal, segment;
+
   for(unsigned int i = 0 ; i < mysizeE ; i++){
     Eraw = m_EventData->GetCoreEnergy(i);
     if(Eraw>0){
@@ -118,6 +124,7 @@ void TGeTAMUPhysics::PreTreat(){
       m_PreTreatedData->SetCoreE(clover,crystal,Energy);
     }
   }
+
   for(unsigned int i = 0 ; i < mysizeT ; i++){
     Traw = m_EventData->GetCoreTime(i);
     if(Traw>0){
@@ -140,6 +147,7 @@ void TGeTAMUPhysics::PreTreat(){
       m_PreTreatedData->SetSegmentE(clover,crystal,Energy);
     }
   }
+
  mysizeT = m_EventData->GetMultiplicitySegmentT();
   for(unsigned int i = 0 ; i < mysizeT ; i++){
     Traw = m_EventData->GetSegmentTime(i);
@@ -151,6 +159,7 @@ void TGeTAMUPhysics::PreTreat(){
       m_PreTreatedData->SetSegmentT(clover,crystal,Time);
     }
   }
+
 }
 
 /////////////////////////////////////////////////
@@ -374,6 +383,8 @@ void TGeTAMUPhysics::Clear() {
   AddBack_Clover.clear();
   AddBack_Crystal.clear();
   AddBack_Segment.clear();
+  AddBack_T.clear();
+  GeTimeOR.clear();
 }
 ///////////////////////////////////////////////////////////////////////////  
 void TGeTAMUPhysics::ClearEventData() {

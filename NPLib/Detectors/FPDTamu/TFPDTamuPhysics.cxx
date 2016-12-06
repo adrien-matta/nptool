@@ -99,7 +99,7 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
 
    unsigned int mysizeT = m_PreTreatedData->Get_Micro_Time_Mult();
     for (UShort_t t = 0; t< mysizeT ; t++) {
-      MicroTime.push_back(m_EventData->Get_Micro_Time(t));
+      MicroTimeOR.push_back(m_EventData->Get_Micro_Time(t));
     }
 
    //AWire
@@ -203,6 +203,23 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
     //m_PreTreatedData->Dump();
     //cin.get();
   }
+
+  //separate Left and right detectors 
+  vector<double> PlastRightTime, PlastLeftTime;
+  mysizeT = m_PreTreatedData->Get_Plast_Time_Mult();
+  for (UShort_t t = 0; t < mysizeT ; t++) {
+    //collect info
+    int side = m_PreTreatedData->Get_Plast_T_DetectorSide(t);
+    double time = m_PreTreatedData->Get_Plast_Time(t);
+    // skip values lower than a certain threshold
+    if (time<0) continue;  
+    //redistribute
+    if (side==1)
+      PlastRightTime.push_back(time);
+    else
+      PlastLeftTime.push_back(time);
+  } 
+
 /*
   //model
   // match energy and time together
@@ -494,7 +511,7 @@ void TFPDTamuPhysics::Clear() {
   MicroPositionZ.clear();
   MicroCharge.clear();
   MicroEnergy.clear();
-  MicroTime.clear();
+  MicroTimeOR.clear();
   //Avalanche wire
   AWireDetNumber.clear();
   AWireLeftCharge.clear();
@@ -504,11 +521,11 @@ void TFPDTamuPhysics::Clear() {
   //Plastic scintillator
   PlastLeftCharge.clear();
   PlastRightCharge.clear();
+  PlastTimeLeft.clear();
+  PlastTimeRight.clear();
   PlastCharge.clear();
   PlastPositionX.clear();
   PlastPositionZ.clear();
-  PlastTime.clear();
-
   //Calculated 
   PlastPositionX_AW = -99 ; //from AWire and Plastic Z
   IonDirection.SetXYZ(0,0,0); // from AWire
@@ -1138,6 +1155,8 @@ void TFPDTamuPhysics::InitializeRootInputPhysics() {
   //Plastic scintillator
   inputChain->SetBranchStatus( "PlastLeftCharge" , true );
   inputChain->SetBranchStatus( "PlastRightCharge" , true );
+  inputChain->SetBranchStatus( "PlastLeftTime" , true );
+  inputChain->SetBranchStatus( "PlastRightTime" , true );
   inputChain->SetBranchStatus( "PlastCharge" , true );
   inputChain->SetBranchStatus( "PlastPositionX" , true );
   inputChain->SetBranchStatus( "PlastPositionZ" , true );
