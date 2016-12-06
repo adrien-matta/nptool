@@ -81,9 +81,8 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
       }
 
   //Micro
-  // match the energy and time together (not implemented yet) and fill the vectors    
+  // fill the vectors, calculate positions   
   mysizeE = m_PreTreatedData->Get_Micro_Energy_Mult();
-
   for (UShort_t e = 0; e < mysizeE ; e++) {
         MicroRowNumber.push_back(m_PreTreatedData->Get_Micro_E_RowNbr(e));
         MicroColNumber.push_back(m_PreTreatedData->Get_Micro_E_ColNbr(e));
@@ -97,6 +96,11 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
         MicroEnergy.push_back(m_PreTreatedData->Get_Micro_Energy(e)); //calibrated
         MicroCharge.push_back(m_EventData->Get_Micro_Energy(e)); //uncalibrated
       }    
+
+   unsigned int mysizeT = m_PreTreatedData->Get_Micro_Time_Mult();
+    for (UShort_t t = 0; t< mysizeT ; t++) {
+      MicroTime.push_back(m_EventData->Get_Micro_Time(t));
+    }
 
    //AWire
   //separate Left and right detectors 
