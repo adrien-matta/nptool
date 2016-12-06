@@ -242,7 +242,7 @@ void Analysis::TreatEvent(){
   
   //for(unsigned int countFPD = 0 ; countFPD < TF->Delta.size() ; countFPD++) // multiplicity treated for now is zero 
   { 
-    TF->Dump();
+    //TF->Dump();
     if(0){ // hit on target or another condition
 
       // Part 1 : Collect the energis from the different sub-detectors
