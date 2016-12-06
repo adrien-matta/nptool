@@ -8,6 +8,13 @@ using namespace std;
 #include "TSpectrum.h"
 #include "TH1.h"
 
+namespace {
+#if ROOT_VERSION_CODE > ROOT_VERSION(6,0,0)
+  typedef Double_t* TSpectrumPosition_t;
+#else
+  typedef Float_t* TSpectrumPosition_t;
+#endif
+}
 
 NPL::SiliconCalibrator::SiliconCalibrator(){
 }
@@ -210,10 +217,10 @@ TGraphErrors* NPL::SiliconCalibrator::FitSpectrum(TH1* histo, double rmin, doubl
    // apply range for peak search
    histo->GetXaxis()->SetRangeUser(rmin, rmax);
    // Perform a peak search to get a hint of where are the peaks
-   TSpectrum* sp = new TSpectrum(4,1);
+   TSpectrum sp(4,1);
    //  nfound = sp->Search(histo,3,"",0.25);
-   Int_t    nfound = sp->Search(histo,3,"",0.5);
-   Float_t* xpeaks =(Float_t*) sp->GetPositionX();
+   Int_t    nfound = sp.Search(histo,3,"",0.5);
+   TSpectrumPosition_t xpeaks = sp.GetPositionX();
 
    // order list of peaks
    sort(xpeaks, xpeaks+nfound);

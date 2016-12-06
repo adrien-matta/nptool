@@ -71,6 +71,7 @@ class NPOptionManager{
       void CheckArguments();
       void CheckEventGenerator();
       void CheckDetectorConfiguration();
+      void CheckG4Macro();
 
    public:
       bool IsDefault(const char* type) const;
