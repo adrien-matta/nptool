@@ -11,7 +11,7 @@
  * Original Author: Adrien MATTA  contact address: a.matta@surrey.ac.uk      *
  *                  Peter Bender  contact address: bender@triumf.ca          *
  * Creation Date  : November 2012                                            *
- * Last update    :                                                          *
+ * Last update    : December 2016 m.moukaddam@surrey.ac.uk                   *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This class hold GeTAMU treated data                                     *
@@ -96,6 +96,7 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     vector<int> AddBack_Clover;
     vector<int> AddBack_Crystal;
     vector<int> AddBack_Segment;
+    vector<double> GeTimeOR; // OR of all time signals, can be used for array or or clover only
 
   private: // use for anlysis
    

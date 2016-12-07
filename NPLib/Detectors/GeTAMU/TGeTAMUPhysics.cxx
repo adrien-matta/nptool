@@ -9,10 +9,10 @@
  * Original Author: Adrien MATTA  contact address: a.matta@surrey.ac.uk      *
  *                                                                           * 
  * Creation Date  : November 2012                                            *
- * Last update    :                                                          *
+ * Last update    : December 2016 m.moukaddam@surrey.ac.uk                   *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold GeTAMU treated data                                     *
+ *  This class hold GeTAMU treated data                                      *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -52,31 +52,33 @@ ClassImp(TGeTAMUPhysics)
 /////////////////////////////////////////////////
 void TGeTAMUPhysics::BuildPhysicalEvent(){
   PreTreat();
-  unsigned int c_size = m_PreTreatedData->GetMultiplicityCore();
-  unsigned int s_size = m_PreTreatedData->GetMultiplicitySegment();
+  unsigned int c_size_e = m_PreTreatedData->GetMultiplicityCoreE();
+  unsigned int s_size_e = m_PreTreatedData->GetMultiplicitySegmentE();
+  unsigned int c_size_t = m_PreTreatedData->GetMultiplicityCoreT();
+  unsigned int s_size_t = m_PreTreatedData->GetMultiplicitySegmentT();
   // map for add back
   map<int,double> clv_energy;   
   map<int,int> clv_segment;
   map<int,int> clv_crystal;
   map<int,double> max_core;
   map<int,double> max_segment; 
-  for(unsigned int i = 0 ; i < c_size ; i++){
-    int clv = m_PreTreatedData->GetCoreCloverNbr(i);
-    int cry = m_PreTreatedData->GetCoreCrystalNbr(i);
+  for(unsigned int i = 0 ; i < c_size_e ; i++){
+    int clv = m_PreTreatedData->GetCoreCloverNbrE(i);
+    int cry = m_PreTreatedData->GetCoreCrystalNbrE(i);
     double energy = m_PreTreatedData->GetCoreEnergy(i);
     // Add back energy
     clv_energy[clv] += energy;
-    // Pick up the crystal
+    // Pick up the crystal with the maximum energy in every clover 
     if(energy > max_core[clv]){
       max_core[clv] = energy;
       clv_crystal[clv] = cry;
     }
-    // Pick up the segment
-    for(unsigned int j = 0 ; j < s_size ; j++){
+    // Pick up the segment with the maximum energy in every clover
+    for(unsigned int j = 0 ; j < s_size_e ; j++){
       double s_energy = m_PreTreatedData->GetSegmentEnergy(j); 
       if(s_energy > max_segment[clv]){
         max_segment[clv] = s_energy;
-        clv_segment[clv] = m_PreTreatedData->GetSegmentSegmentNbr(j);
+        clv_segment[clv] = m_PreTreatedData->GetSegmentSegmentNbrE(j);
       }
     }
   }
@@ -96,40 +98,69 @@ void TGeTAMUPhysics::BuildPhysicalEvent(){
     AddBack_Crystal.push_back(clv_crystal[clv]);
     AddBack_Segment.push_back(clv_segment[clv]);
   }
+
+//Fill the time OR
+for (unsigned i = 0 ; i < m_PreTreatedData->GetMultiplicityCoreT(); i++)
+  GeTimeOR.push_back(m_PreTreatedData->GetCoreTime(i));
+
 }
 
 /////////////////////////////////////////////////
 void TGeTAMUPhysics::PreTreat(){
   static CalibrationManager* cal = CalibrationManager::getInstance();
   static string name;
-  unsigned int mysize = m_EventData->GetMultiplicityCore();
+  unsigned int mysizeE = m_EventData->GetMultiplicityCoreE();
+  unsigned int mysizeT = m_EventData->GetMultiplicityCoreT();
   double Eraw,Energy;
   double Traw,Time;
   int clover, crystal, segment;
-  for(unsigned int i = 0 ; i < mysize ; i++){
+
+  for(unsigned int i = 0 ; i < mysizeE ; i++){
     Eraw = m_EventData->GetCoreEnergy(i);
     if(Eraw>0){
-      clover = m_EventData->GetCoreCloverNbr(i);
-      crystal = m_EventData->GetCoreCrystalNbr(i);
+      clover = m_EventData->GetCoreCloverNbrE(i);
+      crystal = m_EventData->GetCoreCrystalNbrE(i);
       name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
       Energy =  cal->ApplyCalibration(name+"_E", Eraw);
+      m_PreTreatedData->SetCoreE(clover,crystal,Energy);
+    }
+  }
+
+  for(unsigned int i = 0 ; i < mysizeT ; i++){
+    Traw = m_EventData->GetCoreTime(i);
+    if(Traw>0){
+      clover = m_EventData->GetCoreCloverNbrT(i);
+      crystal = m_EventData->GetCoreCrystalNbrT(i);
+      name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
       Time =  cal->ApplyCalibration(name+"_T", Traw);
-      m_PreTreatedData->SetCore(clover,crystal,Energy,Time);
+      m_PreTreatedData->SetCoreT(clover,crystal,Time);
     }
   } 
-  mysize = m_EventData->GetMultiplicitySegment();
-  for(unsigned int i = 0 ; i < mysize ; i++){
+
+ mysizeE = m_EventData->GetMultiplicitySegmentE();
+  for(unsigned int i = 0 ; i < mysizeE ; i++){
     Eraw = m_EventData->GetSegmentEnergy(i);
     if(Eraw>0){
-      clover = m_EventData->GetSegmentCloverNbr(i);
-      segment = m_EventData->GetSegmentSegmentNbr(i);
+      clover = m_EventData->GetSegmentCloverNbrE(i);
+      segment = m_EventData->GetSegmentSegmentNbrE(i);
       name = "GETAMU/D"+ NPL::itoa(clover)+"_SEG"+ NPL::itoa(segment);
       Energy =  cal->ApplyCalibration(name+"_E", Eraw);
-      Time =  cal->ApplyCalibration(name+"_T", Traw);
-      m_PreTreatedData->SetSegment(clover,crystal,Energy,Time);
+      m_PreTreatedData->SetSegmentE(clover,crystal,Energy);
     }
-
   }
+
+ mysizeT = m_EventData->GetMultiplicitySegmentT();
+  for(unsigned int i = 0 ; i < mysizeT ; i++){
+    Traw = m_EventData->GetSegmentTime(i);
+    if(Traw>0){
+      clover = m_EventData->GetSegmentCloverNbrT(i);
+      segment = m_EventData->GetSegmentSegmentNbrT(i);
+      name = "GETAMU/D"+ NPL::itoa(clover)+"_SEG"+ NPL::itoa(segment);
+      Time =  cal->ApplyCalibration(name+"_T", Traw);
+      m_PreTreatedData->SetSegmentT(clover,crystal,Time);
+    }
+  }
+
 }
 
 /////////////////////////////////////////////////
@@ -284,6 +315,8 @@ void TGeTAMUPhysics::Clear() {
   AddBack_Clover.clear();
   AddBack_Crystal.clear();
   AddBack_Segment.clear();
+  AddBack_T.clear();
+  GeTimeOR.clear();
 }
 ///////////////////////////////////////////////////////////////////////////  
 void TGeTAMUPhysics::ClearEventData() {

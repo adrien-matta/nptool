@@ -81,9 +81,8 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
   }
 
   //Micro
-  // match the energy and time together (not implemented yet) and fill the vectors    
+  // fill the vectors, calculate positions   
   mysizeE = m_PreTreatedData->Get_Micro_Energy_Mult();
-
   for (UShort_t e = 0; e < mysizeE ; e++) {
     MicroRowNumber.push_back(m_PreTreatedData->Get_Micro_E_RowNbr(e));
     MicroColNumber.push_back(m_PreTreatedData->Get_Micro_E_ColNbr(e));
@@ -490,7 +489,7 @@ void TFPDTamuPhysics::Clear() {
   MicroPositionZ.clear();
   MicroCharge.clear();
   MicroEnergy.clear();
-  MicroTime.clear();
+  MicroTimeOR.clear();
   //Avalanche wire
   AWireDetNumber.clear();
   AWireLeftCharge.clear();
@@ -500,11 +499,11 @@ void TFPDTamuPhysics::Clear() {
   //Plastic scintillator
   PlastLeftCharge.clear();
   PlastRightCharge.clear();
+  PlastTimeLeft.clear();
+  PlastTimeRight.clear();
   PlastCharge.clear();
   PlastPositionX.clear();
   PlastPositionZ.clear();
-  PlastTime.clear();
-
   //Calculated 
   PlastPositionX_AW = -99 ; //from AWire and Plastic Z
   IonDirection.SetXYZ(0,0,0); // from AWire
@@ -817,6 +816,8 @@ void TFPDTamuPhysics::InitializeRootInputPhysics() {
   //Plastic scintillator
   inputChain->SetBranchStatus( "PlastLeftCharge" , true );
   inputChain->SetBranchStatus( "PlastRightCharge" , true );
+  inputChain->SetBranchStatus( "PlastLeftTime" , true );
+  inputChain->SetBranchStatus( "PlastRightTime" , true );
   inputChain->SetBranchStatus( "PlastCharge" , true );
   inputChain->SetBranchStatus( "PlastPositionX" , true );
   inputChain->SetBranchStatus( "PlastPositionZ" , true );
