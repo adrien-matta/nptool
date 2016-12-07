@@ -15,7 +15,7 @@
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This class describe a Modular cylindrical Plastic Scintillator           *
- *   Few Material are instantiate and user can choose position and dimension    * 
+ *   Few Material are instantiate and user can choose position and dimension * 
  *  but also the adding of a lead plate on the rear side of the detector     *
  *                                                                           *
  *---------------------------------------------------------------------------*
@@ -39,9 +39,9 @@
 // NPTool header
 #include "NPSVDetector.hh"
 #include "TPlasticData.h"
-
+#include "NPInputParser.h"
 using namespace std;
-using namespace CLHEP;
+using namespace CLHEP;
 
 class Plastic : public NPS::VDetector
 {
@@ -82,7 +82,7 @@ public:
 public:
    // Read stream at Configfile to pick-up parameters of detector (Position,...)
    // Called in DetecorConstruction::ReadDetextorConfiguration Method
-   void ReadConfiguration(string Path) ;
+   void ReadConfiguration(NPL::InputParser) ;
 
    // Construct detector and inialise sensitive part.
    // Called After DetecorConstruction::AddDetector Method

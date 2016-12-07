@@ -38,7 +38,9 @@
 #include "RootInput.h"
 #include "NPOptionManager.h"
 #include "NPCalibrationManager.h"
-
+#include "NPInputParser.h"
+#include "NPSystemOfUnits.h"
+using namespace NPUNITS;
 //Root
 #include"TCanvas.h"
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -85,159 +87,82 @@ void NPL::DetectorManager::ReadConfigurationFile(string Path)   {
   NPL::DetectorFactory* theFactory = NPL::DetectorFactory::getInstance();
   theFactory->ReadClassList(classlist);
 
-  ifstream ConfigFile;
-  ConfigFile.open(Path.c_str());
-  string LineBuffer,DataBuffer;
   set<string> check;
-  bool cGeneralTarget=false;
+  NPL::InputParser parser(Path);
 
-  if (ConfigFile.is_open()) {
-    cout << endl << "/////////// Detector geometry ///////////" << endl;
-    cout << "Configuration file " << Path << " loading " << endl;
+  ////////////////////////////////////////////
+  //////////// Search for Target /////////////
+  ////////////////////////////////////////////
+  vector<NPL::InputBlock*>  starget = parser.GetAllBlocksWithToken("Target");
+  vector<NPL::InputBlock*>  ctarget = parser.GetAllBlocksWithToken("CryoTarget");
+
+  if(starget.size()==1){
+    if(NPOptionManager::getInstance()->GetVerboseLevel()){
+    cout << "////       TARGET      ////" << endl;
+    cout << "//// Solid Target found " << endl;
+    }
+    vector<string> token = {"Thickness","Radius","Material","Angle","X","Y","Z"};
+    if(starget[0]->HasTokenList(token)){
+      m_TargetThickness= starget[0]->GetDouble("Thickness","micrometer");
+      m_TargetAngle=starget[0]->GetDouble("Angle","deg");
+      m_TargetMaterial=starget[0]->GetString("Material");
+      m_TargetX=starget[0]->GetDouble("X","mm");
+      m_TargetY=starget[0]->GetDouble("Y","mm");
+      m_TargetZ=starget[0]->GetDouble("Z","mm");
+    }
+    else{
+      cout << "ERROR: Target token list incomplete, check your input file" << endl;
+      exit(1);
+    }
+  }
+  else if(ctarget.size()==1){
+    if(NPOptionManager::getInstance()->GetVerboseLevel())
+      cout << "//// Cryogenic Target found " << endl;
+    
+    vector<string> token = {"Thickness","Radius","Material","Density","WindowsThickness","WindowsMaterial","Angle","X","Y","Z"};
+    if(ctarget[0]->HasTokenList(token)){
+      m_TargetThickness= ctarget[0]->GetDouble("Thickness","micrometer");
+      m_TargetAngle=ctarget[0]->GetDouble("Angle","deg");
+      m_TargetMaterial=ctarget[0]->GetString("Material");
+      m_WindowsThickness=ctarget[0]->GetDouble("WindowsThickness","micrometer");
+      m_WindowsMaterial=ctarget[0]->GetString("WindowsMaterial");
+      m_TargetX=ctarget[0]->GetDouble("X","mm");
+      m_TargetY=ctarget[0]->GetDouble("Y","mm");
+      m_TargetZ =ctarget[0]->GetDouble("Z","mm");
+    }
+    else{
+      cout << "ERROR: Target token list incomplete, check your input file" << endl;
+      exit(1);
+    }
+  }
+  else{
+    cout << "ERROR: One and only one target shall be declared in your detector file" << endl;
   }
 
-  while (!ConfigFile.eof()) {
-    // Pick-up next line
-    getline(ConfigFile, LineBuffer);
-    //Search for comment Symbol: %
-    if (LineBuffer.compare(0, 1, "%") == 0) { ;}
-    ////////////////////////////////////////////
-    //////////// Search for Target /////////////
-    ////////////////////////////////////////////
-
-    else if (LineBuffer.compare(0, 13, "GeneralTarget") == 0 && cGeneralTarget == false) {
-      cGeneralTarget = true ;
-      cout << "////////// Target ///////////" << endl;
-
-      // jump one line
-      getline(ConfigFile, LineBuffer);
-      getline(ConfigFile, LineBuffer);
-
-      bool check_Thickness = false;
-      //         bool check_Angle     = false;
-      bool check_Radius    = false;
-      bool check_Material  = false;
-      bool check_X         = false;
-      bool check_Y         = false;
-      bool check_Z         = false;
-      bool check_WinMaterial = false;
-      bool check_WinThickness = false ;
-
-      bool ReadingStatusTarget = true;
-      while (ReadingStatusTarget) {
-        ConfigFile >> DataBuffer;
-        // Search for comment Symbol %
-        if (DataBuffer.compare(0, 1, "%") == 0) {ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );getline(ConfigFile, LineBuffer);}
-
-        else if (DataBuffer.compare(0, 10, "THICKNESS=") == 0) {
-          check_Thickness = true ;
-          ConfigFile >> DataBuffer;
-          m_TargetThickness = atof(DataBuffer.c_str());
-          cout << "Target Thickness: " << m_TargetThickness << endl;
-        }
-
-        else if (DataBuffer.compare(0, 6, "ANGLE=") == 0) {
-          ConfigFile >> DataBuffer;
-          m_TargetAngle = atof(DataBuffer.c_str());
-          cout << "Target Angle: " << m_TargetAngle << endl;
-        }
-
-        else if (DataBuffer.compare(0, 7, "RADIUS=") == 0) {
-          check_Radius = true ;
-          ConfigFile >> DataBuffer;
-          m_TargetRadius = atof(DataBuffer.c_str());
-          cout << "Target Radius: " <<  m_TargetRadius << endl;
-        }
-
-        else if (DataBuffer.compare(0, 9, "MATERIAL=") == 0) {
-          check_Material = true ;
-          ConfigFile >> DataBuffer;
-          m_TargetMaterial = DataBuffer;
-          cout << "Target Material: " << m_TargetMaterial << endl;
-        }
-
-        else if (DataBuffer.compare(0, 17, "DENSITY=") == 0) {
-          ConfigFile >> DataBuffer;
-          /* Do Nothing */
-        }
-
-
-        else if (DataBuffer.compare(0, 17, "WINDOWSTHICKNESS=") == 0) {
-        check_WinThickness = true ;
-        ConfigFile >> DataBuffer;
-        m_WindowsThickness = atof(DataBuffer.c_str());
-        cout << "Windows Thickness: " 
-            << m_WindowsThickness << " um" << endl   ;
-        }
-
-        else if (DataBuffer.compare(0, 16, "WINDOWSMATERIAL=") == 0) {
-        check_WinMaterial = true ;
-        ConfigFile >> DataBuffer;
-        m_WindowsMaterial = DataBuffer;
-        cout << "Windows Material: " << m_WindowsMaterial << endl;
-        }
-
-        else if (DataBuffer.compare(0, 2, "X=") == 0) {
-          check_X = true ;
-          ConfigFile >> DataBuffer;
-          m_TargetX = atoi(DataBuffer.c_str());
-          cout << "Target Coordinates (mm): ( " << m_TargetX << " ; ";
-        }
-
-        else if (DataBuffer.compare(0, 2, "Y=") == 0) {
-          check_Y = true ;
-          ConfigFile >> DataBuffer;
-          m_TargetY = atoi(DataBuffer.c_str());
-          cout << m_TargetY << " ; ";
-        }
-
-        else if (DataBuffer.compare(0, 2, "Z=") == 0) {
-          check_Z = true ;
-          ConfigFile >> DataBuffer;
-          m_TargetZ = atoi(DataBuffer.c_str());
-          cout  << m_TargetZ << " )" << endl;
-        }
-
-        ///////////////////////////////////////////////////
-        // If no Target Token and no comments, toggle out
-        else {
-          ReadingStatusTarget = false; 
-          cout << "WARNING : Wrong Token Sequence: Getting out " << endl;
-        }
-
-        ///////////////////////////////////////////////////
-        // If all Token found toggle out
-        if (check_Thickness && check_Radius && check_Material && check_X && check_Y && check_Z)
-          ReadingStatusTarget = false;
-
-      }
+  ////////////////////////////////////////////
+  /////////// Search for Detectors ///////////
+  ////////////////////////////////////////////
+  // Get the list of main token
+  std::vector<std::string> token = parser.GetAllBlocksToken();
+  // Look for detectors among them
+  for(unsigned int i = 0 ; i < token.size() ; i++){
+  VDetector* detector = theFactory->Construct(token[i]);
+  if(detector!=NULL && check.find(token[i])==check.end()){
+    if(NPOptionManager::getInstance()->GetVerboseLevel()){
+      cout << "/////////////////////////////////////////" << endl;
+      cout << "//// Adding Detector " << token[i] << endl; 
     }
-
-    ///////////////////////////////////////////
-    /////////// Search for Detectors ///////////
-    ////////////////////////////////////////////
-    else{
-      istringstream oss(LineBuffer);
-      string token;
-      oss >> token ;
-      VDetector* detector = theFactory->Construct(token);
-      if(detector!=NULL && check.find(token)==check.end()){
-        cout << "/////////////////////////////////////////" << endl;
-        cout << "//// Adding Detector " << token << endl; 
-        detector->ReadConfiguration(Path);
-        cout << "/////////////////////////////////////////" << endl;
-        // Add array to the VDetector Vector
-        AddDetector(token, detector);
-        check.insert(token);
-      }
-      else if(detector!=NULL)
-        delete detector;
-    }
-  } 
-  cout << "\033[0m" ;
-
-  ConfigFile.close();
-
+    detector->ReadConfiguration(parser);
+    if(NPOptionManager::getInstance()->GetVerboseLevel())
+      cout << "/////////////////////////////////////////" << endl;
+    
+    // Add array to the VDetector Vector
+    AddDetector(token[i], detector);
+    check.insert(token[i]);
+  }
+  else if(detector!=NULL)
+    delete detector;
+  }
   // Now That the detector lib are loaded, we can instantiate the root input
   string runToReadfileName = NPOptionManager::getInstance()->GetRunToReadFile();
   RootInput::getInstance(runToReadfileName);
@@ -277,7 +202,7 @@ void NPL::DetectorManager::BuildPhysicalEvent(){
   m_CV.notify_all();
 
   while(!IsDone()){
-   // this_thread::yield();
+    // this_thread::yield();
   }
 
 #else 
@@ -442,7 +367,7 @@ void NPL::DetectorManager::StartThread(NPL::VDetector* det,unsigned int id){
       while(!m_Ready[id]){
         m_CV.wait(lk);
       }
-      
+
       // Do the job
       (det->*m_ClearEventPhysicsPtr)();
       (det->*m_BuildPhysicalPtr)();

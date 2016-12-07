@@ -28,6 +28,7 @@
 #include "TMust2Data.h"
 #include "G4SDManager.hh"
 #include "G4MultiFunctionalDetector.hh"
+#include "NPInputParser.h"
 #include <vector>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -115,7 +116,7 @@ public:
 public:
    // Read stream at Configfile to pick-up parameters of detector (Position,...)
    // Called in DetecorConstruction::ReadDetextorConfiguration Method
-   void ReadConfiguration(string Path);
+   void ReadConfiguration(NPL::InputParser);
 
    // Construct detector and inialise sensitive part.
    // Called After DetecorConstruction::AddDetector Method

@@ -52,6 +52,7 @@
 #include "MaterialManager.hh"
 #include "NPSDetectorFactory.hh"
 #include "Target.hh"
+#include "NPOptionManager.h"
 // CLHEP header
 #include "CLHEP/Random/RandGauss.h"
 
@@ -201,94 +202,32 @@ G4LogicalVolume* Helios2::BuildMagnet(){
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void Helios2::ReadConfiguration(string Path){
-  ifstream ConfigFile;
-  ConfigFile.open(Path.c_str()) ;
-  string LineBuffer;
-  string DataBuffer;
+void Helios2::ReadConfiguration(NPL::InputParser parser ){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Helios2");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  double Z = 0 ;
-  string Face;
+  vector<string> token = {"Z","Face"};
 
-  bool check_Z = false ;
-  bool check_Face = false ;
-  bool ReadingStatus = false; 
-  while (!ConfigFile.eof()) {
-    getline(ConfigFile, LineBuffer);
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasToken("MagneticField"))
+      m_B=blocks[i]->GetDouble("MagneticField","T");
 
-    //   If line is a Start Up Helios2 bloc, Reading toggle to true      
-    string name = "Helios2";
-
-    if (LineBuffer.compare(0, name.length(), name) == 0) {
-      G4cout << "///" << G4endl           ;
-      G4cout << "Helios2 found: " << G4endl   ;        
-      ReadingStatus = true ;
+    if(blocks[i]->HasTokenList(token)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  Helios2 " << i+1 <<  endl;
+      double Z = blocks[i]->GetDouble("Z","mm");
+      string Face = blocks[i]->GetString("Face");
+      AddHelios2(Z,Face);
     }
 
-    //   Else don't toggle to Reading Block Status
-    else ReadingStatus = false ;
-
-    //   Reading Block
-    while(ReadingStatus){
-      // Pickup Next Word 
-      ConfigFile >> DataBuffer ;
-
-      //   Comment Line 
-      if (DataBuffer.compare(0, 1, "%") == 0) {   
-        ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
-      }
-
-      //   Finding another telescope (safety), toggle out
-      else if (DataBuffer.compare(0, name.length(),name) == 0) {
-        G4cout << "WARNING: Another Detector is find before standard sequence of Token, Error may occured in Telecope definition" << G4endl ;
-        ReadingStatus = false ;
-      }
-
-      else if (DataBuffer=="Z=") {
-        check_Z = true;
-        ConfigFile >> Z;
-        Z = Z * mm;
-        G4cout << "Z:  " << Z / mm << G4endl;
-      }
-
-
-      else if (DataBuffer == "Face=") {
-        check_Face = true;
-        ConfigFile >> DataBuffer ;
-        Face = DataBuffer ;
-        G4cout << "Face:  " << Face << G4endl;
-      }
-
-      else if (DataBuffer == "MagneticField=") {
-        ConfigFile >> m_B;
-        m_B*=tesla;
-        G4cout << "MagneticField: " << m_B/tesla << " Tesla" <<  G4endl;
-      }
-
-
-      ///////////////////////////////////////////////////
-      //   If no Detector Token and no comment, toggle out
-      else{
-        ReadingStatus = false; 
-        G4cout << "Wrong Token Sequence: Getting out " << DataBuffer << G4endl ;
-      }
-
-      /////////////////////////////////////////////////
-      //   If All necessary information there, toggle out
-
-      if (check_Z && check_Face){
-
-        AddHelios2(Z,Face);
-
-        //   Reinitialisation of Check Boolean 
-        check_Z= false ;
-        check_Face= false;
-        ReadingStatus = false ;   
-        G4cout << "///"<< G4endl ;            
-      }      
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
     }
   }
 }
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 // Construct detector and inialise sensitive part.

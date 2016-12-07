@@ -32,6 +32,7 @@ using namespace std;
 
 #include "NPCalibrationManager.h"
 #include "NPVDetector.h"
+#include "NPInputParser.h"
 
 // ROOT 
 #include "TVector2.h" 
@@ -69,7 +70,7 @@ class TComptonTelescopePhysics : public TObject, public NPL::VDetector
 
    public:  // inherited from VDetector
    // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-   void ReadConfiguration(string);
+   void ReadConfiguration(NPL::InputParser);
 
    // Add parameters to the CalibrationManger
    void AddParameterToCalibrationManager();

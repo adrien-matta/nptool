@@ -27,7 +27,7 @@
 #include "NPVDetector.h"
 #include "THeliosData.h"
 #include "THeliosPhysics.h"
-
+#include "NPInputParser.h"
 // Root
 #include "TVector3.h"
 
@@ -42,7 +42,7 @@ public:
    // Innherited from VDetector Class //
    /////////////////////////////////////
    // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-   void ReadConfiguration(string);
+   void ReadConfiguration(NPL::InputParser);
 
    // Read stream at CalibFile and pick-up calibration parameter using Token
    // If argument is "Simulation" no change calibration is loaded

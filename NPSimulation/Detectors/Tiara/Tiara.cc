@@ -92,92 +92,55 @@ Tiara::~Tiara(){
 // Virtual Method of NPS::VDetector class
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void Tiara::ReadConfiguration(string Path){
-  ifstream ConfigFile           ;
-  ConfigFile.open(Path.c_str()) ;
-  string LineBuffer             ;
-  string DataBuffer             ;
-  bool ReadingStatus = false    ;
+void Tiara::ReadConfiguration(NPL::InputParser parser){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithTokenAndValue("Tiara","Barrel");
 
-  int VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  while (getline(ConfigFile, LineBuffer)){
+  vector<string> token = {"InnerBarrel","OuterBarrel","Chamber"};
 
-    if (LineBuffer.compare(0, 5, "Tiara") == 0)
-      ReadingStatus = true;
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  Barrel " << i+1 <<  endl;
+      m_boolInner   = blocks[i]->GetInt("InnerBarrel");
+      m_boolOuter   = blocks[i]->GetInt("OuterBarrel");
+      m_boolChamber = blocks[i]->GetInt("Chamber");
+    }
 
-    while (ReadingStatus && ConfigFile >> DataBuffer ) {
-      //   Comment Line
-      if (DataBuffer.compare(0, 1, "%") == 0) { ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
-
-      // Tiara Chamber
-      else if (DataBuffer=="TiaraChamber="){
-        if(VerboseLevel==1) G4cout << "Chamber Found " << G4endl   ;
-        ConfigFile >> m_boolChamber;
-      }
-
-      // Inner Barrel case
-      else if (DataBuffer=="TiaraInnerBarrel="){
-        if(VerboseLevel==1) G4cout << "Inner Barrel found " << G4endl   ;
-        ConfigFile >> m_boolInner;
-      }
-
-      // Outter Barrel case
-      else if (DataBuffer=="TiaraOuterBarrel="){
-        if(VerboseLevel==1) G4cout << "Outer Barrel found " << G4endl   ;
-        ConfigFile >> m_boolOuter;
-      }
-
-      // Hyball case
-      else if (DataBuffer=="TiaraHyballWedge") { 
-        if(VerboseLevel==1) G4cout << "// \n Hyball  found: " << G4endl   ;
-        bool ReadingHyball = true;
-        double Z,R,Phi;
-        bool  boolZ= false;
-        bool  boolR= false;
-        bool  boolPhi= false;
-        while(ReadingHyball && ConfigFile >> DataBuffer){
-          if (DataBuffer.compare(0, 1, "%") == 0) { 
-            ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
-          }
-
-          else if(DataBuffer == "Z="){
-            ConfigFile >> Z ;
-            boolZ = true;
-            if(VerboseLevel==1) G4cout << "\t" << DataBuffer << Z << G4endl;
-
-          }
-
-          else if(DataBuffer == "R="){
-            ConfigFile >> R ;
-            boolR = true; 
-            if(VerboseLevel==1) G4cout <<"\t" << DataBuffer << R << G4endl;
-          }
-
-          else if(DataBuffer == "Phi="){
-            ConfigFile >> Phi ;
-            boolPhi = true;
-            if(VerboseLevel==1) G4cout <<"\t" <<  DataBuffer << Phi << G4endl;
-          }
-
-          else{
-            G4cout << "Error: Wrong Token Sequence for Tiara Hyball : Getting out " << DataBuffer << G4endl;
-            exit(1);
-          }
-
-          if(boolPhi && boolR && boolZ){
-            ReadingHyball = false;
-            m_HyballZ.push_back(Z*mm);
-            m_HyballR.push_back(R*mm);
-            m_HyballPhi.push_back(Phi*deg);
-          }
-        }
-      }
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
     }
   }
 
-  ConfigFile.close();
+  blocks.clear();
+  blocks = parser.GetAllBlocksWithToken("HyballWedge");
 
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
+
+  token.clear();
+  token = {"Z","R","Phi"};
+
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  Hyball Wedge" << i+1 <<  endl;
+      double Z = blocks[i]->GetDouble("Z","mm");
+      double R = blocks[i]->GetDouble("R","mm");
+      double Phi = blocks[i]->GetDouble("Phi","deg");
+      m_HyballZ.push_back(Z);
+      m_HyballR.push_back(R);
+      m_HyballPhi.push_back(Phi);
+    }
+
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
+    }
+  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -776,8 +739,6 @@ void Tiara::ConstructHyball(G4LogicalVolume* world){
       G4ThreeVector(0,0,0),
       logicAW,"Hyball_ActiveWafer",
       logicHyball,false,0);
-
-
 
   for(unsigned int i = 0 ; i < m_HyballZ.size() ; i++){
     // Place mother volume

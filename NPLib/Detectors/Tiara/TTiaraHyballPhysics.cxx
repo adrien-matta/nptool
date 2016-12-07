@@ -47,7 +47,7 @@ using namespace NPUNITS;
 //#include "TRandom3.h"
 //#include "random"
 
-  TRandom *Rand = new TRandom3();
+TRandom *Rand = new TRandom3();
 ///////////////////////////////////////////////////////////////////////////
 
 ClassImp(TTiaraHyballPhysics)
@@ -196,11 +196,11 @@ void TTiaraHyballPhysics::PreTreat(){
 ///////////////////////////////////////////////////////////////////////////
 int TTiaraHyballPhysics :: CheckEvent(){
   // Check the size of the different elements
-//  if(m_PreTreatedData->GetSectorEMult() == m_PreTreatedData->GetRingEMult() )
-    return 1 ; // Regular Event
+  //  if(m_PreTreatedData->GetSectorEMult() == m_PreTreatedData->GetRingEMult() )
+  return 1 ; // Regular Event
 
- // else
-    return -1 ; // Rejected Event
+  // else
+  return -1 ; // Rejected Event
 
 }
 
@@ -212,7 +212,7 @@ vector < TVector2 > TTiaraHyballPhysics :: Match_Ring_Sector(){
   // Those event are not physical anyway and that improve speed.
   if( m_PreTreatedData->GetRingEMult() > m_MaximumStripMultiplicityAllowed || m_PreTreatedData->GetSectorEMult() > m_MaximumStripMultiplicityAllowed )
     return ArrayOfGoodCouple;
- 
+
   unsigned int sizeR = m_PreTreatedData->GetRingEMult();
   unsigned int sizeS = m_PreTreatedData->GetSectorEMult();
 
@@ -220,10 +220,10 @@ vector < TVector2 > TTiaraHyballPhysics :: Match_Ring_Sector(){
     for(unsigned int j = 0 ; j < sizeS ; j++){
       //   if same detector check energy
       if ( m_PreTreatedData->GetRingEDetectorNbr(i) == m_PreTreatedData->GetSectorEDetectorNbr(j) ){
-      //   Look if energy match
+        //   Look if energy match
         if( abs( (m_PreTreatedData->GetRingEEnergy(i)-m_PreTreatedData->GetSectorEEnergy(j))/2. ) 
             < m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma ) {
-                    ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;
+          ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;
         }
       }
     }
@@ -413,113 +413,45 @@ void TTiaraHyballPhysics::Clear(){
 ////   Innherited from VDetector Class   ////
 
 ///////////////////////////////////////////////////////////////////////////
-void TTiaraHyballPhysics::ReadConfiguration(string Path){
-  ifstream ConfigFile           ;
-  ConfigFile.open(Path.c_str()) ;
-  string LineBuffer             ;
-  string DataBuffer             ;
+void TTiaraHyballPhysics::ReadConfiguration(NPL::InputParser parser){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("HyballWedge");
 
-  double R,Phi,Z;
-  R = 0 ; Phi = 0 ; Z = 0;
-  TVector3 Pos;
-  bool check_R   = false ;
-  bool check_Phi = false ;
-  bool check_Z   = false ;
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  bool ReadingStatusWedge = false ;
-  bool ReadingStatus    = false ;
+  vector<string> token = {"Z","R","Phi"};
 
-  bool VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel(); ;
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  Hyball Wedge" << i+1 <<  endl;
+      double Z = blocks[i]->GetDouble("Z","mm");
+      double R = blocks[i]->GetDouble("R","mm");
+      double Phi = blocks[i]->GetDouble("Phi","deg");
+      AddWedgeDetector(R,Phi,Z);
 
-  while (!ConfigFile.eof()){
+    }
 
-    getline(ConfigFile, LineBuffer);
-    // cout << LineBuffer << endl;
-    if (LineBuffer.compare(0, 5, "Tiara") == 0)
-      ReadingStatus = true;
-
-    while (ReadingStatus && !ConfigFile.eof()) {
-      ConfigFile >> DataBuffer ;
-      //   Comment Line
-      if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
-
-      //   Hyball case
-      if (DataBuffer=="TiaraHyballWedge"){
-        if(VerboseLevel) cout << "///" << endl           ;
-        if(VerboseLevel) cout << "Wedge found: " << endl   ;
-        ReadingStatusWedge = true ;
-      }
-
-      //   Reading Block
-      while(ReadingStatusWedge){
-        // Pickup Next Word
-        ConfigFile >> DataBuffer ;
-
-        //   Comment Line
-        if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
-
-        //Position method
-        else if (DataBuffer == "Z=") {
-          check_Z = true;
-          ConfigFile >> DataBuffer ;
-          Z= atof(DataBuffer.c_str());
-          if(VerboseLevel) cout << "  Z= " << Z << "mm" << endl;
-        }
-
-        else if (DataBuffer == "R=") {
-          check_R = true;
-          ConfigFile >> DataBuffer ;
-          R= atof(DataBuffer.c_str());
-          if(VerboseLevel) cout << "  R= " << R << "mm" << endl;
-        }
-
-        else if (DataBuffer == "Phi=") {
-          check_Phi = true;
-          ConfigFile >> DataBuffer ;
-          Phi= atof(DataBuffer.c_str());
-          if(VerboseLevel) cout << "  Phi= " << Phi << "deg" << endl;
-        }
-
-        else if (DataBuffer == "ThicknessDector=") {
-          /*ignore that*/
-        }
-
-        ///////////////////////////////////////////////////
-        //   If no Detector Token and no comment, toggle out
-        else{
-          ReadingStatusWedge = false;
-          cout << "Error: Wrong Token Sequence: Getting out " << DataBuffer << endl ;
-          exit(1);
-        }
-
-        /////////////////////////////////////////////////
-        //   If All necessary information there, toggle out
-
-        if (check_R && check_Phi && check_Z){
-
-          ReadingStatusWedge = false;
-          AddWedgeDetector(R,Phi,Z);
-          //   Reinitialisation of Check Boolean
-          check_R   = false ;
-          check_Phi = false ;
-        }
-      }
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
     }
   }
 
   InitializeStandardParameter();
   ReadAnalysisConfig();
 }
+
 ///////////////////////////////////////////////////////////////////////////
 void TTiaraHyballPhysics::InitSpectra(){  
-   m_Spectra = new TTiaraHyballSpectra();
+  m_Spectra = new TTiaraHyballSpectra();
 }
 
 ///////////////////////////////////////////////////////////////////////////
 void TTiaraHyballPhysics::FillSpectra(){  
-   m_Spectra -> FillRawSpectra(m_EventData);
-   m_Spectra -> FillPreTreatedSpectra(m_PreTreatedData);
-   m_Spectra -> FillPhysicsSpectra(m_EventPhysics);
+  m_Spectra -> FillRawSpectra(m_EventData);
+  m_Spectra -> FillPreTreatedSpectra(m_PreTreatedData);
+  m_Spectra -> FillPhysicsSpectra(m_EventPhysics);
 }
 ///////////////////////////////////////////////////////////////////////////
 void TTiaraHyballPhysics::CheckSpectra(){  
@@ -543,7 +475,7 @@ map< string,TH1* > TTiaraHyballPhysics::GetSpectra() {
     map< string,TH1* > empty;
     return empty ;
   }
-    
+
 } 
 ///////////////////////////////////////////////////////////////////////////
 void TTiaraHyballPhysics::AddParameterToCalibrationManager(){
@@ -552,8 +484,8 @@ void TTiaraHyballPhysics::AddParameterToCalibrationManager(){
   for(int i = 0 ; i < m_NumberOfDetector ; ++i){
     for( int j = 0 ; j < 24 ; ++j){
       Cal->AddParameter("TIARAHYBALL", "D"+NPL::itoa(i+1)+"_STRIP_RING"+NPL::itoa(j+1)+"_E","TIARAHYBALL_D"+NPL::itoa(i+1)+"_STRIP_RING"+NPL::itoa(j+1)+"_E")   ;
-       Cal->AddParameter("TIARAHYBALL", "D"+NPL::itoa(i+1)+"_STRIP_RING"+NPL::itoa(j+1)+"_MATCHSTICK","TIARAHYBALL_D"+NPL::itoa(i+1)+"_STRIP_RING"+NPL::itoa(j+1)+"_MATCHSTICK")   ;
- 
+      Cal->AddParameter("TIARAHYBALL", "D"+NPL::itoa(i+1)+"_STRIP_RING"+NPL::itoa(j+1)+"_MATCHSTICK","TIARAHYBALL_D"+NPL::itoa(i+1)+"_STRIP_RING"+NPL::itoa(j+1)+"_MATCHSTICK")   ;
+
       Cal->AddParameter("TIARAHYBALL", "D"+NPL::itoa(i+1)+"_STRIP_RING"+NPL::itoa(j+1)+"_T","TIARAHYBALL_D"+NPL::itoa(i+1)+"_STRIP_RING"+NPL::itoa(j+1)+"_T")   ;
     }
 
@@ -717,29 +649,29 @@ namespace TiaraHyball_LOCAL{
   //   Ring
   double fStrip_Ring_E(const TTiaraHyballData* m_EventData , const int i){
     static string name; name = "TIARAHYBALL/D" ;
-name+= NPL::itoa( m_EventData->GetRingEDetectorNbr(i) ) ;
-name+= "_STRIP_RING" ;
-name+= NPL::itoa( m_EventData->GetRingEStripNbr(i) ) ;
-name+= "_E";
+    name+= NPL::itoa( m_EventData->GetRingEDetectorNbr(i) ) ;
+    name+= "_STRIP_RING" ;
+    name+= NPL::itoa( m_EventData->GetRingEStripNbr(i) ) ;
+    name+= "_E";
     return CalibrationManager::getInstance()->ApplyCalibration(name ,
         fStrip_Ring_Matchstick(m_EventData,i) );
   }
   double fStrip_Ring_Matchstick(const TTiaraHyballData* m_EventData , const int i){
     static string name; name = "TIARAHYBALL/D" ;
-name+= NPL::itoa( m_EventData->GetRingEDetectorNbr(i) ) ;
-name+= "_STRIP_RING" ;
-name+= NPL::itoa( m_EventData->GetRingEStripNbr(i) ) ;
-name+= "_MATCHSTICK";
+    name+= NPL::itoa( m_EventData->GetRingEDetectorNbr(i) ) ;
+    name+= "_STRIP_RING" ;
+    name+= NPL::itoa( m_EventData->GetRingEStripNbr(i) ) ;
+    name+= "_MATCHSTICK";
     return CalibrationManager::getInstance()->ApplyCalibration(name ,
         m_EventData->GetRingEEnergy(i) );
   }
 
   double fStrip_Ring_T(const TTiaraHyballData* m_EventData , const int i){
     static string name; name = "TIARAHYBALL/D" ;
-name+= NPL::itoa( m_EventData->GetRingTDetectorNbr(i) ) ;
-name+= "_STRIP_RING" ;
-name+= NPL::itoa( m_EventData->GetRingTStripNbr(i) ) ;
-name+="_T";
+    name+= NPL::itoa( m_EventData->GetRingTDetectorNbr(i) ) ;
+    name+= "_STRIP_RING" ;
+    name+= NPL::itoa( m_EventData->GetRingTStripNbr(i) ) ;
+    name+="_T";
     return CalibrationManager::getInstance()->ApplyCalibration(name ,
         m_EventData->GetRingTTime(i) );
   }
@@ -747,30 +679,30 @@ name+="_T";
   //   Sector
   double fStrip_Sector_E(const TTiaraHyballData* m_EventData , const int i){
     static string name; name = "TIARAHYBALL/D" ;
-name+= NPL::itoa( m_EventData->GetSectorEDetectorNbr(i) ) ;
-name+= "_STRIP_SECTOR" ;
-name+= NPL::itoa( m_EventData->GetSectorEStripNbr(i) ) ;
-name+="_E";
+    name+= NPL::itoa( m_EventData->GetSectorEDetectorNbr(i) ) ;
+    name+= "_STRIP_SECTOR" ;
+    name+= NPL::itoa( m_EventData->GetSectorEStripNbr(i) ) ;
+    name+="_E";
     return CalibrationManager::getInstance()->ApplyCalibration(name,
         fStrip_Sector_Matchstick(m_EventData,i) );
   }
 
   double fStrip_Sector_Matchstick(const TTiaraHyballData* m_EventData , const int i){
     static string name; name = "TIARAHYBALL/D" ;
-name+= NPL::itoa( m_EventData->GetSectorEDetectorNbr(i) ) ;
-name+= "_STRIP_SECTOR" ;
-name+= NPL::itoa( m_EventData->GetSectorEStripNbr(i) ) ;
-name+="_MATCHSTICK";
+    name+= NPL::itoa( m_EventData->GetSectorEDetectorNbr(i) ) ;
+    name+= "_STRIP_SECTOR" ;
+    name+= NPL::itoa( m_EventData->GetSectorEStripNbr(i) ) ;
+    name+="_MATCHSTICK";
     return CalibrationManager::getInstance()->ApplyCalibration(name,
         m_EventData->GetSectorEEnergy(i) );
   }
 
   double fStrip_Sector_T(const TTiaraHyballData* m_EventData , const int i){
     static string name; name = "TIARAHYBALL/D" ;
-name+= NPL::itoa( m_EventData->GetSectorTDetectorNbr(i) ); 
-name+= "_STRIP_SECTOR" ;
-name+= NPL::itoa( m_EventData->GetSectorTStripNbr(i) ); 
-name+="_T";
+    name+= NPL::itoa( m_EventData->GetSectorTDetectorNbr(i) ); 
+    name+= "_STRIP_SECTOR" ;
+    name+= NPL::itoa( m_EventData->GetSectorTStripNbr(i) ); 
+    name+="_T";
     return CalibrationManager::getInstance()->ApplyCalibration(name,
         m_EventData->GetRingTTime(i) );
   }
@@ -791,8 +723,8 @@ extern "C"{
 class proxy_hyball{
   public:
     proxy_hyball(){
-      NPL::DetectorFactory::getInstance()->AddToken("Tiara","Tiara");
-      NPL::DetectorFactory::getInstance()->AddDetector("TiaraHyballWedge",TTiaraHyballPhysics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("HyballWedge","Tiara");
+      NPL::DetectorFactory::getInstance()->AddDetector("HyballWedge",TTiaraHyballPhysics::Construct);
     }
 };
 

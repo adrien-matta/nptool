@@ -29,11 +29,12 @@ using namespace CLHEP;
 
 // NPTool header
 #include "NPSVDetector.hh"
-
+#include "NPInputParser.h"
 // Geant4
 #include "G4MultiFunctionalDetector.hh"
 #include "G4LogicalVolume.hh"
 #include "G4GDMLParser.hh"
+
 
 class Spice : public NPS::VDetector{
   ////////////////////////////////////////////////////
@@ -59,7 +60,7 @@ class Spice : public NPS::VDetector{
   public:
     // Read stream at Configfile to pick-up parameters of detector (Position,...)
     // Called in DetecorConstruction::ReadDetextorConfiguration Method
-    void ReadConfiguration(string Path);
+    void ReadConfiguration(NPL::InputParser);
 
     // Construct detector and inialise sensitive part.
     // Called After DetecorConstruction::AddDetector Method

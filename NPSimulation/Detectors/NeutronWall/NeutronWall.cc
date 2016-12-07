@@ -50,6 +50,7 @@
 #include "RootOutput.h"
 #include "MaterialManager.hh"
 #include "NPSDetectorFactory.hh"
+#include "NPOptionManager.h"
 // CLHEP header
 #include "CLHEP/Random/RandGauss.h"
 
@@ -180,214 +181,39 @@ void NeutronWall::BuildDetector(){
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void NeutronWall::ReadConfiguration(string Path){
-    ifstream ConfigFile           ;
-    ConfigFile.open(Path.c_str()) ;
-    string LineBuffer          ;
-    string DataBuffer          ;
-    
-    double Theta = 0 , Phi = 0 , R = 0 ;
-    double X = 0 , Y = 0 , Z = 0 ;
-    double Rot =0;
-    int Bars = 0;
-    string NWMaterial = "NE213";
-    double VWDistance = 0.0;
-    int VetoWall = 0;
-    string VWMaterial = "BC400";
-    double Overlap = 6;
-    
-    bool check_Theta = false ;
-    bool check_Phi = false ;
-    bool check_R = false ;
-    bool check_rotation = false ;
-    bool check_X = false ;
-    bool check_Y = false ;
-    bool check_Z = false ;
-    bool ReadingStatus = false ;
-    bool check_Bars = false ;
-    bool check_NWMaterial = false ;
-    
-    while (!ConfigFile.eof()) {
-        getline(ConfigFile, LineBuffer);
-        
-        //   If line is a Start Up NeutronWall bloc, Reading toggle to true
-        string name = "NeutronWall";
-        
-        if (LineBuffer.compare(0, name.length(), name) == 0) {
-            G4cout << "///" << G4endl           ;
-            G4cout << "NeutronWall found: " << G4endl   ;
-            ReadingStatus = true ;
-        }
-        
-        //   Else don't toggle to Reading Block Status
-        else ReadingStatus = false ;
-        
-        //   Reading Block
-        while(ReadingStatus){
-            // Pickup Next Word
-            ConfigFile >> DataBuffer ;
-            
-            //   Comment Line
-            if (DataBuffer.compare(0, 1, "%") == 0) {
-                ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
-            }
-            
-            //   Finding another telescope (safety), toggle out
-            else if (DataBuffer.compare(0, name.length(),name) == 0) {
-                G4cout << "WARNING: Another Detector is find before standard sequence of Token, Error may occured in Telecope definition" << G4endl ;
-                ReadingStatus = false ;
-            }
-            
-            //Angle method
-            else if (DataBuffer.compare(0, 6, "THETA=") == 0) {
-                check_Theta = true;
-                ConfigFile >> DataBuffer ;
-                Theta = atof(DataBuffer.c_str()) ;
-                Theta = Theta * deg;
-                G4cout << "Theta:  " << Theta / deg << G4endl;
-            }
-            
-            else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
-                check_Phi = true;
-                ConfigFile >> DataBuffer ;
-                Phi = atof(DataBuffer.c_str()) ;
-                Phi = Phi * deg;
-                G4cout << "Phi:  " << Phi / deg << G4endl;
-            }
-            
-            else if (DataBuffer.compare(0, 2, "R=") == 0) {
-                check_R = true;
-                ConfigFile >> DataBuffer ;
-                R = atof(DataBuffer.c_str()) ;
-                R = R * mm;
-                G4cout << "R:  " << R/mm << G4endl;
-            }
-            
-            //Position method
-            else if (DataBuffer.compare(0, 2, "X=") == 0) {
-                check_X = true;
-                ConfigFile >> DataBuffer ;
-                X = atof(DataBuffer.c_str()) ;
-                X = X * cm;
-                G4cout << "X:  " << X / cm << G4endl;
-            }
-            
-            else if (DataBuffer.compare(0, 2, "Y=") == 0) {
-                check_Y = true;
-                ConfigFile >> DataBuffer ;
-                Y = atof(DataBuffer.c_str()) ;
-                Y = Y * cm;
-                G4cout << "Y:  " << Y / cm << G4endl;
-            }
-            
-            else if (DataBuffer.compare(0, 2, "Z=") == 0) {
-                check_Z = true;
-                ConfigFile >> DataBuffer ;
-                Z = atof(DataBuffer.c_str()) ;
-                Z = Z * cm;
-                G4cout << "Z:  " << Z / cm << G4endl;
-            }
-            
-            
-            //General
-            else if (DataBuffer.compare(0, 4, "Rot=") == 0) {
-                check_rotation = true;
-                ConfigFile >> DataBuffer ;
-                Rot = atof(DataBuffer.c_str());
-                Rot = Rot*deg ;
-                G4cout << "Rotation:  " << Rot/deg << G4endl;
-            }
-            
-            //Bar number
-            else if (DataBuffer.compare(0, 5, "BARS=") == 0){
-                check_Bars = true;
-                ConfigFile >> DataBuffer ;
-                Bars = atoi(DataBuffer.c_str()) ;
-                G4cout << "Bars:  " << Bars << G4endl;
-            }
-            
-            
-            //Material type
-            else if (DataBuffer.compare(0, 11, "NWMATERIAL=") == 0){
-                check_NWMaterial = true;
-                ConfigFile >> DataBuffer ;
-                NWMaterial = DataBuffer;
-                G4cout << "NWMaterials:  " << NWMaterial << G4endl;
-            }
-            
-            //Distance
-            else if (DataBuffer.compare(0, 11, "VWDISTANCE=") == 0){
-                //check_VWDistance = true;
-                ConfigFile >> DataBuffer ;
-                VWDistance = atof(DataBuffer.c_str());
-                VWDistance = VWDistance * mm;
-                G4cout << "VWDistance: " << VWDistance << G4endl;
-            }
-            
-            //Decide whether to add the vetowall or not, 1 means yes, 0 means no
-            else if (DataBuffer.compare(0, 9, "VETOWALL=") == 0){
-                //check_VetoWall = true;
-                ConfigFile >> DataBuffer ;
-                VetoWall = atoi(DataBuffer.c_str());
-                G4cout << "VetoWall:  " << VetoWall << G4endl;
-            }
-            
-            //VetoWall Material
-            else if (DataBuffer.compare(0, 11, "VWMATERIAL=") == 0){
-                //check_VWMaterial = true;
-                ConfigFile >> DataBuffer ;
-                VWMaterial = DataBuffer ;
-                G4cout << "VWMaterial:  " << VWMaterial << G4endl;
-            }
-            
-            //Overlap
-            else if (DataBuffer.compare(0, 8, "OVERLAP=") == 0){
-                ConfigFile >> DataBuffer ;
-                Overlap = atof(DataBuffer.c_str());
-                Overlap = Overlap*mm;
-                G4cout << "Overlap:  " << Overlap << G4endl;
-            }
-            
-            ///////////////////////////////////////////////////
-            //   If no Detector Token and no comment, toggle out
-            else{
-                ReadingStatus = false;
-                G4cout << "Wrong Token Sequence: Getting out " << DataBuffer << G4endl ;
-            }
-            
-            /////////////////////////////////////////////////
-            //   If All necessary information there, toggle out
-            
-            if (( check_Theta && check_Phi && check_R && check_Bars && check_NWMaterial)
-                ||
-                ( check_X && check_Y && check_Z && check_rotation && check_Bars && check_NWMaterial)){
+void NeutronWall::ReadConfiguration(NPL::InputParser parser){
+
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("NeutronWall");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
+
+  vector<string> token = {"R","THETA","PHI","BARS","VETOWALL","VWDISTANCE","NWMATERIAL","VWMATERIAL","OVERLAP"};
+
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  Neutron Wall " << i+1 <<  endl;
+      double R = blocks[i]->GetDouble("R","mm");
+      double Theta = blocks[i]->GetDouble("THETA","deg");
+      double Phi = blocks[i]->GetDouble("PHI","deg");
+      int Bars = blocks[i]->GetInt("BARS");
+      int VetoWall = blocks[i]->GetInt("VETOWALL");
+      double VWDistance = blocks[i]->GetDouble("VWDISTANCE","mm");
+      string NWMaterial = blocks[i]->GetString("NWMATERIAL");
+      string VWMaterial = blocks[i]->GetString("VWMATERIAL");
+
+      int Overlap = blocks[i]->GetInt("OVERLAP");
+      AddNeutronWall(R,Theta,Phi,0,0,0,0, Bars, NWMaterial, VWDistance, VetoWall, VWMaterial, Overlap);
                 
-                
-                // Convert Cartesian to Spherical (detector always face the target)
-                if (check_X){
-                    R = sqrt (X*X+Y*Y+Z*Z);
-                    Theta = acos(Z / (R) );
-                    Phi = atan2(Y,X);
-                }
-                
-                AddNeutronWall(R,Theta,Phi,X,Y,Z,Rot, Bars, NWMaterial, VWDistance, VetoWall, VWMaterial, Overlap);
-                
-                //   Reinitialisation of Check Boolean
-                check_Theta = false ;
-                check_Phi = false ;
-                check_R = false ;
-                check_rotation = false ;
-                check_X = false ;
-                check_Y = false ;
-                check_Z = false ;
-                ReadingStatus = false ;
-                check_Bars = false ;
-                check_NWMaterial = false ;
-                G4cout << "///"<< G4endl ;
-            }
-        }
     }
+
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
+    }
+  }
 }
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 // Construct detector and inialise sensitive part.

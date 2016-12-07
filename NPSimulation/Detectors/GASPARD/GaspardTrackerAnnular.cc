@@ -257,115 +257,31 @@ void GaspardTrackerAnnular::VolumeMaker(G4int DetectorNumber,
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void GaspardTrackerAnnular::ReadConfiguration(string Path)
-{
-   ifstream ConfigFile           ;
-   ConfigFile.open(Path.c_str()) ;
-   string LineBuffer          ;
-   string DataBuffer          ;
+void GaspardTrackerAnnular::ReadConfiguration(NPL::InputParser parser){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("GaspardTracker");
+  vector<string> tokenp= {"Z","RMIN","RMAX"};
 
-   G4double Z = 0, Rmin = 0, Rmax = 0;
-   int FIRSTSTAGE = 0 , SECONDSTAGE = 0 , THIRDSTAGE = 0;
+  vector<string> token={"FIRSTSTAGE","SECONDSTAGE","THIRDSTAGE"};
 
-
-   bool ReadingStatus = false ;
-   bool check_Z    = false ;
-   bool check_Rmin = false ;
-   bool check_Rmax = false ;
-   bool check_FirstStage = false ;
-   bool check_SecondStage = false ;
-   bool check_ThirdStage = false ;
-
-   while (!ConfigFile.eof()) {
-      getline(ConfigFile, LineBuffer);
-      if (LineBuffer.compare(0, 10, "GPDAnnular") == 0) {
-         G4cout << "///" << G4endl           ;
-         G4cout << "Annular element found: " << G4endl   ;
-         ReadingStatus = true ;}
-      
-   while(ReadingStatus){
-
-               ConfigFile >> DataBuffer;      
-      //   Comment Line 
-      if (DataBuffer.compare(0, 1, "%") == 0) {/*do nothing */;}
-      
-
-         
-         //Position method
-         else if (DataBuffer.compare(0, 2, "Z=") == 0) {
-            check_Z = true;
-            ConfigFile >> DataBuffer ;
-            Z = atof(DataBuffer.c_str()) ;
-            Z = Z * mm;
-            G4cout << "Z:  " << Z / mm << G4endl;
-         }
-
-         //Position method
-         else if (DataBuffer.compare(0, 5, "RMIN=") == 0) {
-            check_Rmin = true;
-            ConfigFile >> DataBuffer ;
-            Rmin = atof(DataBuffer.c_str()) ;
-            Rmin = Rmin * mm;
-            G4cout << "Rmin:  " << Rmin / mm << G4endl;
-         }
-
-         //Position method
-         else if (DataBuffer.compare(0, 5, "RMAX=") == 0) {
-            check_Rmax = true;
-            ConfigFile >> DataBuffer ;
-            Rmax = atof(DataBuffer.c_str()) ;
-            Rmax = Rmax * mm;
-            G4cout << "Rmax:  " << Rmax / mm << G4endl;
-         }
-
-         else if (DataBuffer.compare(0, 11, "FIRSTSTAGE=") == 0) {
-            check_FirstStage = true ;
-            ConfigFile >> DataBuffer;
-            FIRSTSTAGE = atof(DataBuffer.c_str()) ;
-         }
-
-         else if (DataBuffer.compare(0, 12, "SECONDSTAGE=") == 0) {
-            check_SecondStage = true ;
-            ConfigFile >> DataBuffer;
-            SECONDSTAGE = atof(DataBuffer.c_str()) ;
-         }
-
-         else if (DataBuffer.compare(0, 11, "THIRDSTAGE=") == 0) {
-            check_ThirdStage = true ;
-            ConfigFile >> DataBuffer;
-            THIRDSTAGE = atof(DataBuffer.c_str()) ;
-         }
-
-         else if (DataBuffer.compare(0, 4, "VIS=") == 0) {
-            ConfigFile >> DataBuffer;
-            if (DataBuffer.compare(0, 3, "all") == 0) m_non_sensitive_part_visiualisation = true;
-         }
-
-      else {
-        G4cout << "WARNIG: Wrong Token Sequence, GaspardTrackerAnnular: Annular Element not added" << G4endl;
-           }
-
-         if (check_Z && check_Rmin && check_Rmax && check_FirstStage && check_SecondStage && check_ThirdStage) {
-            
-            ReadingStatus = false ;
-             check_Z    = false ;
-            check_Rmin = false ;
-            check_Rmax = false ;
-            check_FirstStage = false ;
-             check_SecondStage = false ;
-             check_ThirdStage = false ;
-            
-            AddModule(Z,
-                      Rmin,
-                      Rmax,
-                      FIRSTSTAGE  == 1 ,
-                      SECONDSTAGE == 1 ,
-                      THIRDSTAGE  == 1);
-         }
-         
-         
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->GetMainValue() == "Annular" && blocks[i]->HasTokenList(token) ){
+      bool first = blocks[i]->GetInt("FIRSTSTAGE");
+      bool second = blocks[i]->GetInt("SECONDSTAGE");
+      bool third = blocks[i]->GetInt("THIRDSTAGE");
+        m_non_sensitive_part_visiualisation =  blocks[i]->GetInt("VIS");
+      if(blocks[i]->HasTokenList(tokenp)){
+        // Add module
+        double Z    = blocks[i]->GetDouble("Z","mm");
+        double Rmin = blocks[i]->GetDouble("Rmin","mm");
+        double Rmax = blocks[i]->GetDouble("Rmax","mm");
+        AddModule(Z,Rmin,Rmax,first,second,third);
       }
-   }
+      else{
+      cout << "ERROR: Check input formatting for Gaspard" << endl;
+      exit(1);
+      }
+    }
+  } 
 }
 
 // Construct detector and inialise sensitive part.

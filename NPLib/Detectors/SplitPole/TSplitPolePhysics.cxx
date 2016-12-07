@@ -38,6 +38,7 @@ using namespace std;
 #include "RootInput.h"
 #include "NPDetectorFactory.h"
 #include "NPCalibrationManager.h"
+#include "NPOptionManager.h"
 
 //  ROOT
 #include "TChain.h"
@@ -101,47 +102,27 @@ void TSplitPolePhysics::Clear()
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TSplitPolePhysics::ReadConfiguration(string Path) 
-{
-   ifstream ConfigFile;
-   ConfigFile.open(Path.c_str());
-   string LineBuffer, DataBuffer;
+void TSplitPolePhysics::ReadConfiguration(NPL::InputParser parser) {
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("SplitPole");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-   bool ReadingStatus = false;
 
-   while (!ConfigFile.eof()) {      
-      getline(ConfigFile, LineBuffer);
+  vector<string> token = {""};
 
-      // If SplitPole detector found, toggle Reading Block Status
-      if (LineBuffer.compare(0, 9, "SplitPole") == 0) {
-         cout << "Detector found: " << endl;
-         ReadingStatus = true;
-      }
-      // else don't toggle to Reading Block Status
-      else ReadingStatus = false;
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+ /*   if(blocks[i]->HasTokenList(token)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  XXX " << i+1 <<  endl;
+    }
 
-      // Reading Block
-      while (ReadingStatus) {
-         // Pickup Next Word 
-         ConfigFile >> DataBuffer;
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
+    }*/
+  }
 
-         //  Comment Line 
-         if (DataBuffer.compare(0, 1, "%") == 0) {ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
 
-         //  Finding another telescope (safety), toggle out
-         else if (DataBuffer.compare(0, 9, "SplitPole") == 0) {
-            cout << "WARNING: Another Telescope is find before standard sequence of Token, Error may occured in Telecope definition" << endl;
-            ReadingStatus = false;
-         }
-
-         //  If no Detector Token and no comment, toggle out
-         else {
-            ReadingStatus = false; 
-//            cout << "Wrong Token Sequence: Getting out " << DataBuffer << endl;
-         }
-      }
-   }
-          
    // read specific SplitPole configuration parameters
    ReadAnalysisConfig();
 

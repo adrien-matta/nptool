@@ -26,7 +26,7 @@
 #include "RootInput.h"
 #include "NPDetectorFactory.h"
 #include "RootOutput.h"
-
+#include "NPOptionManager.h"
 //  STL
 #include <vector>
 #include <iostream>
@@ -153,359 +153,41 @@ void TParisPhysics::Clear(){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TParisPhysics::ReadConfiguration(string Path)    {
-  ifstream ConfigFile              ;
-  ConfigFile.open(Path.c_str())    ;
-  string LineBuffer                ;
-  string DataBuffer                ;
+void TParisPhysics::ReadConfiguration(NPL::InputParser parser){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("ParisCluster");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  double   Ax, Bx, Cx, Dx, Ay, By, Cy, Dy, Az, Bz, Cz, Dz;
-  TVector3 A, B, C, D;
-  double   Theta = 0, Phi = 0, R = 0, beta_u = 0 , beta_v = 0 , beta_w = 0;
+  vector<string> cart = {"A","B","C","D"};
+  vector<string> sphe = {"R","THETA","PHI","BETA"};
 
-  bool check_A = false;
-  bool check_C = false;
-  bool check_B = false;
-  bool check_D = false;
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(cart)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  ParisCluster " << i+1 <<  endl;
+      TVector3 A = blocks[i]->GetTVector3("A","mm");
+      TVector3 B = blocks[i]->GetTVector3("B","mm");
+      TVector3 C = blocks[i]->GetTVector3("C","mm");
+      TVector3 D = blocks[i]->GetTVector3("D","mm");
 
-  bool check_Theta = false;
-  bool check_Phi   = false;
-  bool check_R     = false;
-  bool check_beta  = false;
-
-  bool ReadingStatus = false;
-
-  bool isCluster     = false;
-  bool isPhoswich = false;
-
-  while (!ConfigFile.eof()) {
-    getline(ConfigFile, LineBuffer);
-
-    // If line is a Paris bloc, reading toggle to true
-    // and toggle to true flags indicating which shape is treated.
-    if (LineBuffer.compare(0, 12, "ParisCluster")     == 0  ||
-        LineBuffer.compare(0, 13, "ParisPhoswish")  == 0  ) {
-      cout << "///////////////////////" << endl;
-      cout << "Module found:" << endl;
-
-      if (LineBuffer.compare(0, 12, "ParisCluster")     == 0) isCluster     = true;
-      if (LineBuffer.compare(0, 13, "ParisPhoswich") == 0) isPhoswich = true;
-      ReadingStatus = true;
+      AddDetector(A,B,C,D);
     }
-    // Else don't toggle to Reading Block Status
-    else ReadingStatus = false;
+    else if(blocks[i]->HasTokenList(sphe)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  ParisCluster " << i+1 <<  endl;
+      double R = blocks[i]->GetDouble("R","mm");
+      double Theta = blocks[i]->GetDouble("THETA","deg");
+      double Phi = blocks[i]->GetDouble("PHI","deg");
+      vector<double> Beta = blocks[i]->GetVectorDouble("BETA","deg");
 
-    // Reading Block
-    while (ReadingStatus) {
-      if (isCluster) {    // square shape
-        ConfigFile >> DataBuffer ;
-        // Comment Line
-        if (DataBuffer.compare(0, 1, "%") == 0) {
-          ConfigFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n' );
-        }
-        // Finding another telescope (safety), toggle out
-        else if (DataBuffer.compare(0, 12, "ParisCluster") == 0) {
-          cout << "WARNING: Another Module is find before standard sequence of Token, Error may occured in Telecope definition" << endl;
-          ReadingStatus = false;
-        }
+      AddDetector(R,Theta,Phi,Beta[0],Beta[1],Beta[2]);
+    }
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
+    }
+  }
 
-        // Position method
-        else if (DataBuffer=="A=") {
-          check_A = true;
-          ConfigFile >> DataBuffer ;
-          Ax = atof(DataBuffer.c_str()) ;
-          Ax = Ax  ;
-          ConfigFile >> DataBuffer ;
-          Ay = atof(DataBuffer.c_str()) ;
-          Ay = Ay  ;
-          ConfigFile >> DataBuffer ;
-          Az = atof(DataBuffer.c_str()) ;
-          Az = Az  ;
-
-          A = TVector3(Ax, Ay, Az);
-          cout << "X1 Y1 corner position : (" << A.X() << ";" << A.Y() << ";" << A.Z() << ")" << endl;
-        }
-        else if (DataBuffer=="B=") {
-          check_B = true;
-          ConfigFile >> DataBuffer ;
-          Bx = atof(DataBuffer.c_str()) ;
-          Bx = Bx  ;
-          ConfigFile >> DataBuffer ;
-          By = atof(DataBuffer.c_str()) ;
-          By = By  ;
-          ConfigFile >> DataBuffer ;
-          Bz = atof(DataBuffer.c_str()) ;
-          Bz = Bz  ;
-
-          B = TVector3(Bx, By, Bz);
-          cout << "X128 Y1 corner position : (" << B.X() << ";" << B.Y() << ";" << B.Z() << ")" << endl;
-        }
-        else if (DataBuffer=="C=") {
-          check_C = true;
-          ConfigFile >> DataBuffer ;
-          Cx = atof(DataBuffer.c_str()) ;
-          Cx = Cx  ;
-          ConfigFile >> DataBuffer ;
-          Cy = atof(DataBuffer.c_str()) ;
-          Cy = Cy  ;
-          ConfigFile >> DataBuffer ;
-          Cz = atof(DataBuffer.c_str()) ;
-          Cz = Cz  ;
-
-          C = TVector3(Cx, Cy, Cz);
-          cout << "X1 Y128 corner position : (" << C.X() << ";" << C.Y() << ";" << C.Z() << ")" << endl;
-        }
-        else if (DataBuffer=="D=") {
-          check_D = true;
-          ConfigFile >> DataBuffer ;
-          Dx = atof(DataBuffer.c_str()) ;
-          Dx = Dx  ;
-          ConfigFile >> DataBuffer ;
-          Dy = atof(DataBuffer.c_str()) ;
-          Dy = Dy  ;
-          ConfigFile >> DataBuffer ;
-          Dz = atof(DataBuffer.c_str()) ;
-          Dz = Dz  ;
-
-          D = TVector3(Dx, Dy, Dz);
-          cout << "X128 Y128 corner position : (" << D.X() << ";" << D.Y() << ";" << D.Z() << ")" << endl;
-        } // End Position Method
-
-        // Angle method
-        else if (DataBuffer== "Theta="){
-          check_Theta = true;
-          ConfigFile >> DataBuffer ;
-          Theta = atof(DataBuffer.c_str()) ;
-          Theta = Theta ;
-          cout << "Theta:  " << Theta << endl;
-        }
-        else if (DataBuffer == "Phi=") {
-          check_Phi = true;
-          ConfigFile >> DataBuffer ;
-          Phi = atof(DataBuffer.c_str()) ;
-          Phi = Phi ;
-          cout << "Phi:  " << Phi << endl;
-        }
-        else if (DataBuffer =="R="){
-          check_R = true;
-          ConfigFile >> DataBuffer ;
-          R = atof(DataBuffer.c_str()) ;
-          R = R ;
-          cout << "R:  " << R << endl;
-        }
-        else if (DataBuffer=="beta=") {
-          check_beta = true;
-          ConfigFile >> DataBuffer ;
-          beta_u = atof(DataBuffer.c_str()) ;
-          beta_u = beta_u    ;
-          ConfigFile >> DataBuffer ;
-          beta_v = atof(DataBuffer.c_str()) ;
-          beta_v = beta_v    ;
-          ConfigFile >> DataBuffer ;
-          beta_w = atof(DataBuffer.c_str()) ;
-          beta_w = beta_w    ;
-          cout << "Beta:  " << beta_u << " " << beta_v << " " << beta_w << endl  ;
-        }
-
-        /////////////////////////////////////////////////
-        // If All necessary information there, toggle out
-        if ( (check_A && check_B && check_C && check_D) || (check_Theta && check_Phi && check_R && check_beta)  ) {
-          ReadingStatus = false;
-
-          // Add The previously define telescope
-          // With position method
-          if ( check_A && check_B && check_C && check_D ) {
-            AddModuleSquare(A   ,
-                B   ,
-                C   ,
-                D   ) ;
-          }
-
-          // with angle method
-          else if ( check_Theta && check_Phi && check_R && check_beta ) {
-            AddModuleSquare(Theta   ,
-                Phi     ,
-                R       ,
-                beta_u  ,
-                beta_v  ,
-                beta_w  );
-          }
-
-          // reset boolean flag for point positioning
-          check_A = false;
-          check_B = false;
-          check_C = false;
-          check_D = false;
-
-          // reset boolean flag for angle positioning
-          check_Theta = false;
-          check_Phi   = false;
-          check_R     = false;
-          check_beta  = false;
-
-          // reset boolean flag for shape determination
-          isCluster     = false;
-          isPhoswich = false;
-        } // end test for adding a module
-      } // end test for ParisCluster shape
-
-      else if (isPhoswich) {    // ParisPhoswich shape
-        ConfigFile >> DataBuffer ;
-        // Comment Line
-        if (DataBuffer.compare(0, 1, "%") == 0) {
-          ConfigFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n' );
-        }
-        // Finding another telescope (safety), toggle out
-        else if (DataBuffer.compare(0, 13, "ParisPhoswich") == 0) {
-          cout << "WARNING: Another Module is find before standard sequence of Token, Error may occured in Telecope definition" << endl;
-          ReadingStatus = false;
-        }
-
-        // Position method
-        else if (DataBuffer.compare(0, 6, "X1_Y1=") == 0) {
-          check_A = true;
-          ConfigFile >> DataBuffer ;
-          Ax = atof(DataBuffer.c_str()) ;
-          Ax = Ax  ;
-          ConfigFile >> DataBuffer ;
-          Ay = atof(DataBuffer.c_str()) ;
-          Ay = Ay  ;
-          ConfigFile >> DataBuffer ;
-          Az = atof(DataBuffer.c_str()) ;
-          Az = Az  ;
-
-          A = TVector3(Ax, Ay, Az);
-          cout << "X1 Y1 corner position : (" << A.X() << ";" << A.Y() << ";" << A.Z() << ")" << endl;
-        }
-        else if (DataBuffer.compare(0, 8, "X128_Y1=") == 0) {
-          check_B = true;
-          ConfigFile >> DataBuffer ;
-          Bx = atof(DataBuffer.c_str()) ;
-          Bx = Bx  ;
-          ConfigFile >> DataBuffer ;
-          By = atof(DataBuffer.c_str()) ;
-          By = By  ;
-          ConfigFile >> DataBuffer ;
-          Bz = atof(DataBuffer.c_str()) ;
-          Bz = Bz  ;
-
-          B = TVector3(Bx, By, Bz);
-          cout << "X128 Y1 corner position : (" << B.X() << ";" << B.Y() << ";" << B.Z() << ")" << endl;
-        }
-        else if (DataBuffer.compare(0, 8, "X1_Y128=") == 0) {
-          check_C = true;
-          ConfigFile >> DataBuffer ;
-          Cx = atof(DataBuffer.c_str()) ;
-          Cx = Cx  ;
-          ConfigFile >> DataBuffer ;
-          Cy = atof(DataBuffer.c_str()) ;
-          Cy = Cy  ;
-          ConfigFile >> DataBuffer ;
-          Cz = atof(DataBuffer.c_str()) ;
-          Cz = Cz  ;
-
-          C = TVector3(Cx, Cy, Cz);
-          cout << "X1 Y128 corner position : (" << C.X() << ";" << C.Y() << ";" << C.Z() << ")" << endl;
-        }
-        else if (DataBuffer.compare(0, 10, "X128_Y128=") == 0) {
-          check_D = true;
-          ConfigFile >> DataBuffer ;
-          Dx = atof(DataBuffer.c_str()) ;
-          Dx = Dx  ;
-          ConfigFile >> DataBuffer ;
-          Dy = atof(DataBuffer.c_str()) ;
-          Dy = Dy  ;
-          ConfigFile >> DataBuffer ;
-          Dz = atof(DataBuffer.c_str()) ;
-          Dz = Dz  ;
-
-          D = TVector3(Dx, Dy, Dz);
-          cout << "X128 Y128 corner position : (" << D.X() << ";" << D.Y() << ";" << D.Z() << ")" << endl;
-        } // End Position Method
-
-        // Angle method
-        else if (DataBuffer.compare(0, 6, "THETA=") == 0) {
-          check_Theta = true;
-          ConfigFile >> DataBuffer ;
-          Theta = atof(DataBuffer.c_str()) ;
-          Theta = Theta ;
-          cout << "Theta:  " << Theta << endl;
-        }
-        else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
-          check_Phi = true;
-          ConfigFile >> DataBuffer ;
-          Phi = atof(DataBuffer.c_str()) ;
-          Phi = Phi ;
-          cout << "Phi:  " << Phi << endl;
-        }
-        else if (DataBuffer.compare(0, 2, "R=") == 0) {
-          check_R = true;
-          ConfigFile >> DataBuffer ;
-          R = atof(DataBuffer.c_str()) ;
-          R = R ;
-          cout << "R:  " << R << endl;
-        }
-        else if (DataBuffer.compare(0, 5, "BETA=") == 0) {
-          check_beta = true;
-          ConfigFile >> DataBuffer ;
-          beta_u = atof(DataBuffer.c_str()) ;
-          beta_u = beta_u    ;
-          ConfigFile >> DataBuffer ;
-          beta_v = atof(DataBuffer.c_str()) ;
-          beta_v = beta_v    ;
-          ConfigFile >> DataBuffer ;
-          beta_w = atof(DataBuffer.c_str()) ;
-          beta_w = beta_w    ;
-          cout << "Beta:  " << beta_u << " " << beta_v << " " << beta_w << endl  ;
-        }
-
-        /////////////////////////////////////////////////
-        // If All necessary information there, toggle out
-        if ( (check_A && check_B && check_C && check_D) || (check_Theta && check_Phi && check_R && check_beta)  ) {
-          ReadingStatus = false;
-
-          // Add The previously define telescope
-          // With position method
-          if ( check_A && check_B && check_C && check_D ) {
-            AddModuleDummyShape(A   ,
-                B   ,
-                C   ,
-                D   ) ;
-          }
-
-          // with angle method
-          else if ( check_Theta && check_Phi && check_R && check_beta ) {
-            AddModuleDummyShape(Theta,
-                Phi,
-                R,
-                beta_u,
-                beta_v,
-                beta_w);
-          }
-
-          // reset boolean flag for point positioning
-          check_A = false;
-          check_B = false;
-          check_C = false;
-          check_D = false;
-
-          // reset boolean flag for angle positioning
-          check_Theta = false;
-          check_Phi   = false;
-          check_R     = false;
-          check_beta  = false;
-
-          // reset boolean flag for shape determination
-          isPhoswich     = false;
-          isCluster = false;
-        } // end test for adding a module
-      } // end test for ParisPhoswich shape
-
-
-    } // end while for reading block
-  } // end while for reading file
-
-  cout << endl << "/////////////////////////////" << endl<<endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -722,7 +404,7 @@ void TParisPhysics::AddModuleSquare(double theta,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TParisPhysics::AddModuleDummyShape(TVector3 C_X1_Y1,
+void TParisPhysics::AddDetector(TVector3 C_X1_Y1,
     TVector3 C_X128_Y1,
     TVector3 C_X1_Y128,
     TVector3 C_X128_Y128)
@@ -787,7 +469,7 @@ void TParisPhysics::AddModuleDummyShape(TVector3 C_X1_Y1,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TParisPhysics::AddModuleDummyShape(double theta,
+void TParisPhysics::AddDetector(double theta,
     double phi,
     double distance,
     double beta_u,

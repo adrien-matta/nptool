@@ -49,6 +49,7 @@
 #include "MaterialManager.hh"
 #include "NPSDetectorFactory.hh"
 #include "RootOutput.h"
+#include "NPOptionManager.h"
 using namespace OBSOLETEGENERALSCORERS;
 
 // CLHEP header
@@ -100,111 +101,29 @@ void Eurogam::AddEurogamModule(G4double R, G4double Theta, G4double Phi,
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void Eurogam::ReadConfiguration(string Path)
-{
-   ifstream ConfigFile;
-   ConfigFile.open(Path.c_str());
-   string LineBuffer, DataBuffer;
+void Eurogam::ReadConfiguration(NPL::InputParser parser){
 
-   G4double R = 0, Theta = 0, Phi = 0;
-   G4double beta_u = 0, beta_v = 0, beta_w = 0;
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Eurogam");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-   bool check_Theta   = false;
-   bool check_Phi     = false;
-   bool check_R       = false;
-   bool ReadingStatus = false;
+  vector<string> token = {"R","Theta","Phi"};
 
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token)){
+      double R = blocks[i]->GetDouble("R","mm");
+      double Theta = blocks[i]->GetDouble("Theta","deg");
+      double Phi = blocks[i]->GetDouble("Phi","deg");
+      vector<double> beta = blocks[i]->GetVectorDouble("BETA","deg");
+      AddEurogamModule(R, Theta, Phi, beta[0], beta[1], beta[2]);
+    }
 
-   while (!ConfigFile.eof()) {
-      getline(ConfigFile, LineBuffer);
-
-      // If line is a Start Up Eurogam bloc, Reading toggle to true
-      if (LineBuffer.compare(0, 7, "Eurogam") == 0) {
-         G4cout << "///" << G4endl;
-         G4cout << "Eurogam Module found: " << G4endl;
-         ReadingStatus = true;
-      }
-      // Else don't toggle to Reading Block Status
-      else ReadingStatus = false;
-
-      // Reading Block
-      while (ReadingStatus) {
-         // Pickup Next Word 
-         ConfigFile >> DataBuffer;
-
-         // Comment Line 
-         if (DataBuffer.compare(0, 1, "%") == 0) {
-            ConfigFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-         }
-
-         // Finding another telescope (safety), toggle out
-         else if (DataBuffer.compare(0, 7, "Eurogam") == 0) {
-            G4cout << "WARNING: Another Detector is find before standard sequence of Token, Error may occured in Telecope definition" << G4endl;
-            ReadingStatus = false;
-         }
-
-         // Angle method
-         else if (DataBuffer.compare(0, 2, "R=") == 0) {
-            check_R = true;
-            ConfigFile >> DataBuffer ;
-            R = atof(DataBuffer.c_str()) ;
-            R = R * mm;
-            G4cout << "R:  " << R/mm << G4endl;
-         }
-
-         else if (DataBuffer.compare(0, 6, "THETA=") == 0) {
-            check_Theta = true;
-            ConfigFile >> DataBuffer ;
-            Theta = atof(DataBuffer.c_str()) ;
-            Theta = Theta * deg;
-            G4cout << "Theta:  " << Theta / deg << G4endl;
-         }
-
-         else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
-            check_Phi = true;
-            ConfigFile >> DataBuffer ;
-            Phi = atof(DataBuffer.c_str()) ;
-            Phi = Phi * deg;
-            G4cout << "Phi:  " << Phi / deg << G4endl;
-         }
-
-         else if (DataBuffer.compare(0, 5, "BETA=") == 0) {
-            ConfigFile >> DataBuffer ;
-            beta_u = atof(DataBuffer.c_str()) ;
-            beta_u = beta_u * deg   ;
-            ConfigFile >> DataBuffer ;
-            beta_v = atof(DataBuffer.c_str()) ;
-            beta_v = beta_v * deg   ;
-            ConfigFile >> DataBuffer ;
-            beta_w = atof(DataBuffer.c_str()) ;
-            beta_w = beta_w * deg   ;
-            G4cout << "Beta:  " << beta_u / deg << " " << beta_v / deg << " " << beta_w / deg << G4endl  ;
-         }
-         
-         ///////////////////////////////////////////////////
-         // If no Detector Token and no comment, toggle out
-         else {
-            ReadingStatus = false; 
-            G4cout << "Wrong Token Sequence: Getting out " << DataBuffer << G4endl;
-         }
-
-         /////////////////////////////////////////////////
-         // If All necessary information there, toggle out
-         if (check_Theta && check_Phi && check_R) { 
-            AddEurogamModule(R, Theta, Phi, beta_u, beta_v, beta_w);
-
-            // Reinitialisation of Check Boolean 
-            check_R       = false;
-            check_Theta   = false;
-            check_Phi     = false;
-            ReadingStatus = false;
-            G4cout << "///"<< G4endl;
-      	 }
-      }
-   }
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
+    }
+  }
 }
-
-
 
 // Construct detector and inialise sensitive part.
 // Called After DetecorConstruction::AddDetector Method

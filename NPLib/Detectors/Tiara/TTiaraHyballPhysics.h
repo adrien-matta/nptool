@@ -30,6 +30,7 @@
 #include "TTiaraHyballSpectra.h"
 #include "NPCalibrationManager.h"
 #include "NPVDetector.h"
+#include "NPInputParser.h"
 
 // ROOT 
 #include "TVector2.h" 
@@ -77,7 +78,7 @@ class TTiaraHyballPhysics : public TObject, public NPL::VDetector{
 
   public:      //   Innherited from VDetector Class
     //   Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-    void ReadConfiguration(string) ;
+    void ReadConfiguration(NPL::InputParser) ;
 
     //   Add Parameter to the CalibrationManger
     void AddParameterToCalibrationManager() ;      

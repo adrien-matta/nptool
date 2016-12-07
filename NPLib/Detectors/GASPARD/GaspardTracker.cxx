@@ -36,6 +36,7 @@
 #include "RootInput.h"
 #include "RootOutput.h"
 #include "NPDetectorFactory.h"
+#include "NPOptionManager.h"
 
 // ROOT headers
 #include "TChain.h"
@@ -69,21 +70,21 @@ void GaspardTracker::Clear(){
 
 ////////////////////////////////////////////////////////////////////////////////
 // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-void GaspardTracker::ReadConfiguration(string Path){
-  // open configuration file
-  ifstream ConfigFile;
-  ConfigFile.open(Path.c_str());
+void GaspardTracker::ReadConfiguration(NPL::InputParser parser ){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("GaspardTracker");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  bool GPDTrkSquare     = false;
-  bool GPDTrkRectangle  = false;
-  bool GPDTrkTrapezoid  = false;
-  bool GPDTrkAnnular    = false;
-  bool GPDTrkDummyShape = false;
 
-  string LineBuffer;
-  while (!ConfigFile.eof()) {
-    getline(ConfigFile, LineBuffer);
-    if (LineBuffer.compare(0, 9, "GPDSquare") == 0  &&  GPDTrkSquare == false) {
+  bool GPDTrkSquare = false;
+  bool GPDTrkAnnular= false;
+  bool GPDTrkTrapezoid= false;
+  bool GPDTrkDummyShape= false;
+  bool GPDTrkRectangle= false;
+
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+
+    if(blocks[i]->GetMainValue() == "Square" && !GPDTrkSquare){
       GPDTrkSquare = true;
 
       // instantiate a new "detector" corresponding to the Square elements
@@ -93,69 +94,62 @@ void GaspardTracker::ReadConfiguration(string Path){
       myDetector->SetGaspardDataPointer(m_EventData);
 
       // read part of the configuration file corresponding to square elements
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
+      myDetector->ReadConfiguration(parser);
     }
-    else if (LineBuffer.compare(0, 12, "GPDRectangle") == 0  &&  GPDTrkRectangle == false) {
-      GPDTrkRectangle = true;
+    else if(blocks[i]->GetMainValue() == "Annular" && !GPDTrkAnnular){
+      GPDTrkAnnular= true;
 
-      // instantiate a new "detector" corresponding to the Rectangle elements
-      GaspardTrackerModule* myDetector = new GaspardTrackerRectangle(m_ModulesMap, m_EventPhysics);
-
-      // Pass the data object to the GaspardTracker*** object
-      myDetector->SetGaspardDataPointer(m_EventData);
-
-      // read part of the configuration file corresponding to trapezoid elements
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-    }
-    else if (LineBuffer.compare(0, 12, "GPDTrapezoid") == 0  &&  GPDTrkTrapezoid == false) {
-      GPDTrkTrapezoid = true;
-
-      // instantiate a new "detector" corresponding to the Trapezoid elements
-      GaspardTrackerModule* myDetector = new GaspardTrackerTrapezoid(m_ModulesMap, m_EventPhysics);
-
-      // Pass the data object to the GaspardTracker*** object
-      myDetector->SetGaspardDataPointer(m_EventData);
-
-      // read part of the configuration file corresponding to trapezoid elements
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-    }
-    else if (LineBuffer.compare(0, 10, "GPDAnnular") == 0  &&  GPDTrkAnnular == false) {
-      GPDTrkAnnular = true;
-
-      // instantiate a new "detector" corresponding to the Trapezoid elements
+      // instantiate a new "detector" corresponding to the Square elements
       GaspardTrackerModule* myDetector = new GaspardTrackerAnnular(m_ModulesMap, m_EventPhysics);
 
       // Pass the data object to the GaspardTracker*** object
       myDetector->SetGaspardDataPointer(m_EventData);
 
-      // read part of the configuration file corresponding to trapezoid elements
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
+      // read part of the configuration file corresponding to square elements
+      myDetector->ReadConfiguration(parser);
     }
-    else if (LineBuffer.compare(0, 13, "GPDDummyShape") == 0  &&  GPDTrkDummyShape == false) {
-      GPDTrkDummyShape = true;
+    else if(blocks[i]->GetMainValue() == "Trapezoid" &&! GPDTrkTrapezoid){
+      GPDTrkTrapezoid= true;
 
-      // instantiate a new "detector" corresponding to the Shape elements
+      // instantiate a new "detector" corresponding to the Square elements
+      GaspardTrackerModule* myDetector = new GaspardTrackerTrapezoid(m_ModulesMap, m_EventPhysics);
+
+      // Pass the data object to the GaspardTracker*** object
+      myDetector->SetGaspardDataPointer(m_EventData);
+
+      // read part of the configuration file corresponding to square elements
+      myDetector->ReadConfiguration(parser);
+    }
+    else if(blocks[i]->GetMainValue() == "Rectangle" && !GPDTrkRectangle){
+      GPDTrkRectangle= true;
+
+      // instantiate a new "detector" corresponding to the Square elements
+      GaspardTrackerModule* myDetector = new GaspardTrackerRectangle(m_ModulesMap, m_EventPhysics);
+
+      // Pass the data object to the GaspardTracker*** object
+      myDetector->SetGaspardDataPointer(m_EventData);
+
+      // read part of the configuration file corresponding to square elements
+      myDetector->ReadConfiguration(parser);
+    }
+    else if(blocks[i]->GetMainValue() == "DummyShape" && !GPDTrkDummyShape){
+      GPDTrkDummyShape= true;
+
+      // instantiate a new "detector" corresponding to the Square elements
       GaspardTrackerModule* myDetector = new GaspardTrackerDummyShape(m_ModulesMap, m_EventPhysics);
 
       // Pass the data object to the GaspardTracker*** object
       myDetector->SetGaspardDataPointer(m_EventData);
 
-      // read part of the configuration file corresponding to shape elements
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
+      // read part of the configuration file corresponding to square elements
+      myDetector->ReadConfiguration(parser);
+    }
+
+    else{
+      cout << "Warning: check your input file formatting " << endl;
     }
   }
 }
-
 ////////////////////////////////////////////////////////////////////////////////
 // Read stream at Path and pick-up calibration parameter using Token
 // If argument is "Simulation" no change calibration is loaded

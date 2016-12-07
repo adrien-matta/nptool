@@ -34,6 +34,8 @@ using namespace ANNULARS1_LOCAL;
 #include "TAsciiFile.h"
 #include "NPOptionManager.h"
 #include "NPDetectorFactory.h"
+#include "NPSystemOfUnits.h"
+using namespace NPUNITS;
 //   ROOT
 #include "TChain.h"
 ///////////////////////////////////////////////////////////////////////////
@@ -378,62 +380,22 @@ void TAnnularS1Physics::Clear(){
 ////   Innherited from VDetector Class   ////
 
 ///////////////////////////////////////////////////////////////////////////
-void TAnnularS1Physics::ReadConfiguration(string Path){
-  ifstream ConfigFile           ;
-  ConfigFile.open(Path.c_str()) ;
-  string LineBuffer             ;
-  string DataBuffer             ;
+void TAnnularS1Physics::ReadConfiguration(NPL::InputParser parser){
 
-  double Z = 0;
-  TVector3 Pos;
-  bool check_Z   = false ;
+ vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("AnnularS1");
+  cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  bool ReadingStatus    = false ;
+  vector<string> token = {"Z"};
 
-  bool VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel(); ;
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token)){
+      double Z = blocks[i]->GetDouble("Z","mm");
+      AddDetector(Z);
+    }
 
-  while (!ConfigFile.eof()){
-
-    getline(ConfigFile, LineBuffer);
-
-    // cout << LineBuffer << endl;
-    if (LineBuffer.compare(0, 9, "AnnularS1") == 0)
-      ReadingStatus = true;
-
-    while (ReadingStatus && !ConfigFile.eof()) {
-      if(VerboseLevel) cout << "///" << endl           ;
-      if(VerboseLevel) cout << "AnnularS1 found: " << endl   ;
-      
-      // Take next word
-      ConfigFile >> DataBuffer ;
-      //   Comment Line
-      if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
-
-      //Position method
-      else if (DataBuffer == "Z=") {
-        check_Z = true;
-        ConfigFile >> DataBuffer ;
-        Z= atof(DataBuffer.c_str());
-        if(VerboseLevel) cout << "  Z= " << Z << "mm" << endl;
-      }
-
-      ///////////////////////////////////////////////////
-      //   If no Detector Token and no comment, toggle out
-      else{
-        ReadingStatus = false;
-        cout << "Error: Wrong Token Sequence: Getting out " << DataBuffer << endl ;
-        exit(1);
-      }
-
-      /////////////////////////////////////////////////
-      //   If All necessary information there, toggle out
-
-      if (check_Z){
-        ReadingStatus = false;
-        AddDetector(Z);
-        //   Reinitialisation of Check Boolean
-        check_Z   = false ;
-      }
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
     }
   }
 

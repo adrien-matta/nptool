@@ -30,6 +30,7 @@
 #include "Helios.hh"
 #include "HeliosDetDummyShape.hh"
 #include "NPSDetectorFactory.hh"
+#include "NPOptionManager.h"
 using namespace std;
 
 
@@ -47,41 +48,25 @@ Helios::~Helios()
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void Helios::ReadConfiguration(string Path)
-{
-   // open configuration file
-   ifstream ConfigFile;
-   ConfigFile.open(Path.c_str());
-
-   bool HeliosDummyShape = false;
-
-   string LineBuffer;
-   while (!ConfigFile.eof()) {
-      getline(ConfigFile, LineBuffer);
- 
-      if (LineBuffer.compare(0, 16, "HeliosDummyShape") == 0  &&  HeliosDummyShape == false) {
-         HeliosDummyShape = true;
-
-         // instantiate a new "detector" corresponding to the Shape elements
+void Helios::ReadConfiguration(NPL::InputParser parser){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("HeliosDummyShape");
+  if(blocks.size()>1){
+    cout << "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww " << endl;
+     // instantiate a new "detector" corresponding to the Shape elements
          // The HeliosSquare class should be replaced by the
          // HeliosShape class you need to define
          HeliosModule* myDetector = new HeliosDetDummyShape();
 
          // read part of the configuration file corresponding to shape elements
-         ConfigFile.close();
-         myDetector->ReadConfiguration(Path);
-         ConfigFile.open(Path.c_str());
+         myDetector->ReadConfiguration(parser);
 
          // ms_InterCoord comes from NPS::VDetector
          myDetector->SetInterCoordPointer(ms_InterCoord);
 
          // store HeliosShape "detector"
          m_Modules.push_back(myDetector);
-      }
-   }
+  }
 }
-
-
 
 // Construct detector and initialize sensitive part.
 // Called After DetecorConstruction::AddDetector Method
@@ -147,8 +132,8 @@ void Helios::ReadSensitive(const G4Event* event)
  class proxy{
    public:
     proxy(){
-      NPS::DetectorFactory::getInstance()->AddToken("Helios","Helios");
-      NPS::DetectorFactory::getInstance()->AddDetector("Helios",Helios::Construct);
+      NPS::DetectorFactory::getInstance()->AddToken("HeliosDummyShape","Helios");
+      NPS::DetectorFactory::getInstance()->AddDetector("HeliosDummyShape",Helios::Construct);
     }
 };
 

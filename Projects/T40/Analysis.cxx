@@ -37,8 +37,8 @@ Analysis::~Analysis(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::Init(){
-  TH  = (TTiaraHyballPhysics*) m_DetectorManager -> GetDetector("TiaraHyballWedge");
-  TB  = (TTiaraBarrelPhysics*) m_DetectorManager -> GetDetector("TiaraInnerBarrel=");
+  TH  = (TTiaraHyballPhysics*) m_DetectorManager -> GetDetector("HyballWedge");
+  TB  = (TTiaraBarrelPhysics*) m_DetectorManager -> GetDetector("Tiara");
   TF  = (TFPDTamuPhysics*) m_DetectorManager -> GetDetector("FPDTamu");
 
   // get reaction information

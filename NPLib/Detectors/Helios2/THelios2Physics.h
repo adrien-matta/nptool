@@ -38,7 +38,7 @@ using namespace std;
 #include "THelios2Spectra.h"
 #include "NPCalibrationManager.h"
 #include "NPVDetector.h"
-
+#include "NPInputParser.h"
 // forward declaration
 class THelios2Spectra;
 
@@ -77,7 +77,7 @@ class THelios2Physics : public TObject, public NPL::VDetector {
   // methods inherited from the VDetector ABC class
   public:
     // read stream from ConfigFile to pick-up detector parameters
-    void ReadConfiguration(string);
+    void ReadConfiguration(NPL::InputParser);
 
     // add parameters to the CalibrationManger
     void AddParameterToCalibrationManager();

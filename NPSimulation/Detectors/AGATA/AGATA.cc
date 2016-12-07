@@ -46,6 +46,7 @@
 #include "RootOutput.h"
 #include "MaterialManager.hh"
 #include "NPSDetectorFactory.hh"
+#include "NPOptionManager.h"
 // CLHEP header
 #include "CLHEP/Random/RandGauss.h"
 
@@ -75,11 +76,10 @@ AGATA::~AGATA(){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void AGATA::AddAGATA(double  R, double  Theta, double  Phi, string  Shape){
+void AGATA::AddAGATA(double  R, double  Theta, double  Phi){
   m_R.push_back(R);
   m_Theta.push_back(Theta);
   m_Phi.push_back(Phi);
-  m_Shape.push_back(Shape);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -134,156 +134,31 @@ G4AssemblyVolume* AGATA::BuildTripleCluster(){
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void AGATA::ReadConfiguration(string Path){
-  ifstream ConfigFile           ;
-  ConfigFile.open(Path.c_str()) ;
-  string LineBuffer          ;
-  string DataBuffer          ;
+void AGATA::ReadConfiguration(NPL::InputParser parser){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("AGATA");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  double Theta = 0 , Phi = 0 , R = 0 ;
-  double X = 0 , Y = 0 , Z = 0 ;
-  string Shape ;
+  vector<string> token = {"R","Theta","Phi"};
 
-  bool check_Theta = false ;
-  bool check_Phi = false ;
-  bool check_R = false ;
-  bool check_Shape = false ;
-  bool check_X = false ;
-  bool check_Y = false ;
-  bool check_Z = false ;      
-  bool ReadingStatus = false ;
-
-
-  while (!ConfigFile.eof()) {
-    getline(ConfigFile, LineBuffer);
-
-    //   If line is a Start Up AGATA bloc, Reading toggle to true      
-    string name = "AGATA";
-
-    if (LineBuffer.compare(0, name.length(), name) == 0) {
-      G4cout << "///" << G4endl           ;
-      G4cout << "AGATA found: " << G4endl   ;        
-      ReadingStatus = true ;
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token)){
+      double R = blocks[i]->GetDouble("R","mm");
+      double Theta = blocks[i]->GetDouble("Theta","deg");
+      double Phi = blocks[i]->GetDouble("Phi","deg");
+      
+      // To be done
+      AddAGATA(R,Theta,Phi);
     }
 
-    //   Else don't toggle to Reading Block Status
-    else ReadingStatus = false ;
-
-    //   Reading Block
-    while(ReadingStatus){
-      // Pickup Next Word 
-      ConfigFile >> DataBuffer ;
-
-      //   Comment Line 
-      if (DataBuffer.compare(0, 1, "%") == 0) {   
-        ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
-      }
-
-      //   Finding another telescope (safety), toggle out
-      else if (DataBuffer.compare(0, name.length(),name) == 0) {
-        G4cout << "WARNING: Another Detector is find before standard sequence of Token, Error may occured in Telecope definition" << G4endl ;
-        ReadingStatus = false ;
-      }
-
-      //Angle method
-      else if (DataBuffer.compare(0, 6, "THETA=") == 0) {
-        check_Theta = true;
-        ConfigFile >> DataBuffer ;
-        Theta = atof(DataBuffer.c_str()) ;
-        Theta = Theta * deg;
-        G4cout << "Theta:  " << Theta / deg << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
-        check_Phi = true;
-        ConfigFile >> DataBuffer ;
-        Phi = atof(DataBuffer.c_str()) ;
-        Phi = Phi * deg;
-        G4cout << "Phi:  " << Phi / deg << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 2, "R=") == 0) {
-        check_R = true;
-        ConfigFile >> DataBuffer ;
-        R = atof(DataBuffer.c_str()) ;
-        R = R * mm;
-        if(R==0)
-          R=1e-12*um;
-        G4cout << "R:  " << R/mm << G4endl;
-      }
-
-      //Position method
-      else if (DataBuffer.compare(0, 2, "X=") == 0) {
-        check_X = true;
-        ConfigFile >> DataBuffer ;
-        X = atof(DataBuffer.c_str()) ;
-        X = X * mm;
-        G4cout << "X:  " << X / mm << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 2, "Y=") == 0) {
-        check_Y = true;
-        ConfigFile >> DataBuffer ;
-        Y = atof(DataBuffer.c_str()) ;
-        Y = Y * mm;
-        G4cout << "Y:  " << Y / mm << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 2, "Z=") == 0) {
-        check_Z = true;
-        ConfigFile >> DataBuffer ;
-        Z = atof(DataBuffer.c_str()) ;
-        Z = Z * mm;
-        G4cout << "Z:  " << Z / mm << G4endl;
-      }
-
-
-      //General
-      else if (DataBuffer.compare(0, 6, "Shape=") == 0) {
-        check_Shape = true;
-        ConfigFile >> DataBuffer ;
-        Shape = DataBuffer ;
-        G4cout << "Shape:  " << Shape << G4endl;
-      }
-
-      ///////////////////////////////////////////////////
-      //   If no Detector Token and no comment, toggle out
-      else{
-        ReadingStatus = false; 
-        G4cout << "Wrong Token Sequence: Getting out " << DataBuffer << G4endl ;
-      }
-
-      /////////////////////////////////////////////////
-      //   If All necessary information there, toggle out
-
-      if (( check_Theta && check_Phi && check_R && check_Shape)
-          ||    
-          ( check_X && check_Y && check_Z && check_Shape)){
-
-
-        // Convert Cartesian to Spherical (detector always face the target)
-        if (check_X){
-          R = sqrt (X*X+Y*Y+Z*Z);
-          Theta = acos(Z / (R) );
-          Phi = atan2(Y,X);
-        }
-
-        AddAGATA(R,Theta,Phi,Shape);
-
-        //   Reinitialisation of Check Boolean 
-        check_Theta = false ;
-        check_Phi = false ;
-        check_R = false ;
-        check_Shape = false ;
-        check_X = false ;
-        check_Y = false ;
-        check_Z = false ;
-        ReadingStatus = false ;   
-        G4cout << "///"<< G4endl ;            
-      }
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
     }
   }
+
 }
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 // Construct detector and inialise sensitive part.

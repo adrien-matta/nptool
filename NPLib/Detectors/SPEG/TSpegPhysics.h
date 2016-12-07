@@ -42,8 +42,7 @@ using namespace std ;
 #include "NPVDetector.h"
 #include "NPCalibrationManager.h"
 
-class TSpegPhysics : public TObject, public NPL::VDetector
-{
+class TSpegPhysics : public TObject, public NPL::VDetector{
    public:   //   Constructor and Destructor
       TSpegPhysics();
       ~TSpegPhysics();
@@ -248,7 +247,7 @@ class TSpegPhysics : public TObject, public NPL::VDetector
 
    public:   //   inherrited from VDetector
       //   Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-      void ReadConfiguration(string);
+      void ReadConfiguration(string Path);
       
 
       //   Add Parameter to the CalibrationManger

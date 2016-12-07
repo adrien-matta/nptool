@@ -28,7 +28,7 @@
 // NPTool header
 #include "NPSVDetector.hh"
 #include "GaspardTrackerModule.hh"
-
+#include "NPInputParser.h"
 // Geant4 Header
 #include "G4AssemblyVolume.hh"
 
@@ -49,7 +49,7 @@ class GaspardTracker : public NPS::VDetector{
   public:
     // Read stream at Configfile to pick-up parameters of detector (Position,...)
     // Called in DetecorConstruction::ReadDetextorConfiguration Method
-    void ReadConfiguration(string Path);
+    void ReadConfiguration(NPL::InputParser);
 
     // Construct detector and inialise sensitive part.
     // Called After DetecorConstruction::AddDetector Method

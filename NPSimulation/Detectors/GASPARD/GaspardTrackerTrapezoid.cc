@@ -52,6 +52,9 @@
 #include "GaspardScorers.hh"
 #include "RootOutput.h"
 #include "NPSVDetector.hh"
+#include "NPOptionManager.h"
+#include "NPSDetectorFactory.hh"
+
 // CLHEP
 #include "CLHEP/Random/RandGauss.h"
 
@@ -292,231 +295,42 @@ void GaspardTrackerTrapezoid::VolumeMaker(G4int DetectorNumber,
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void GaspardTrackerTrapezoid::ReadConfiguration(string Path)
-{
-   ifstream ConfigFile           ;
-   ConfigFile.open(Path.c_str()) ;
-   string LineBuffer          ;
-   string DataBuffer          ;
+void GaspardTrackerTrapezoid::ReadConfiguration(NPL::InputParser parser){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("GaspardTracker");
+  vector<string> token_cart= {"X1_Y1","X128_Y1","X1_Y128","X128_Y128"};
+  vector<string> token_sphe= {"R","THETA","PHI","BETA"};
 
-   // A:X1_Y1     --> X:1    Y:1
-   // B:X128_Y1   --> X:128  Y:1
-   // C:X1_Y128   --> X:1    Y:128
-   // D:X128_Y128    --> X:128  Y:128
+  vector<string> token={"FIRSTSTAGE","SECONDSTAGE","THIRDSTAGE"};
 
-   G4double Ax , Bx , Cx , Dx , Ay , By , Cy , Dy , Az , Bz , Cz , Dz          ;
-   G4ThreeVector A , B , C , D                                                 ;
-   G4double Theta = 0 , Phi = 0 , R = 0 , beta_u = 0 , beta_v = 0 , beta_w = 0 ;
-   int FIRSTSTAGE = 0 , SECONDSTAGE = 0 , THIRDSTAGE = 0                       ;
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->GetMainValue() == "Trapezoid" && blocks[i]->HasTokenList(token) ){
+       
+      bool first = blocks[i]->GetInt("FIRSTSTAGE");
+      bool second = blocks[i]->GetInt("SECONDSTAGE");
+      bool third = blocks[i]->GetInt("THIRDSTAGE");
+      if(blocks[i]->HasToken("VIS"))
+        m_non_sensitive_part_visiualisation =  blocks[i]->GetInt("VIS");
 
-   bool ReadingStatus = false ;
-
-   bool check_A = false ;
-   bool check_C = false ;
-   bool check_B = false ;
-   bool check_D = false ;
-
-   bool check_Theta = false ;
-   bool check_Phi   = false ;
-   bool check_R     = false ;
-   
-   bool check_FirstStage = false ;
-   bool check_SecondStage = false ;
-   bool check_ThirdStage = false ;
-   bool checkVis = false ;
-
-   while (!ConfigFile.eof()) {
-      getline(ConfigFile, LineBuffer);
-      if (LineBuffer.compare(0, 12, "GPDTrapezoid") == 0) {
-         G4cout << "///" << G4endl           ;
-         G4cout << "Trapezoid element found: " << G4endl   ;
-         ReadingStatus = true ;
-         }
-         
-   while(ReadingStatus){      
-
-         ConfigFile >> DataBuffer;
-         //   Comment Line 
-      if (DataBuffer.compare(0, 1, "%") == 0) {/*do nothing */;}
+      if(blocks[i]->HasTokenList(token_cart)){
+        // Add module
+        G4ThreeVector A = NPS::ConvertVector(blocks[i]->GetTVector3("X1_Y1","mm"));
+        G4ThreeVector B = NPS::ConvertVector(blocks[i]->GetTVector3("X128_Y1","mm"));
+        G4ThreeVector C = NPS::ConvertVector(blocks[i]->GetTVector3("X1_Y128","mm"));
+        G4ThreeVector D = NPS::ConvertVector(blocks[i]->GetTVector3("X128_Y128","mm"));
       
-         // Position method
-         else if (DataBuffer.compare(0, 6, "X1_Y1=") == 0) {
-            check_A = true;
-            ConfigFile >> DataBuffer ;
-            Ax = atof(DataBuffer.c_str()) ;
-            Ax = Ax * mm ;
-            ConfigFile >> DataBuffer ;
-            Ay = atof(DataBuffer.c_str()) ;
-            Ay = Ay * mm ;
-            ConfigFile >> DataBuffer ;
-            Az = atof(DataBuffer.c_str()) ;
-            Az = Az * mm ;
-
-            A = G4ThreeVector(Ax, Ay, Az);
-            G4cout << "X1 Y1 corner position : " << A << G4endl;
-         }
-        
-         else if (DataBuffer.compare(0, 8, "X128_Y1=") == 0) {
-            check_B = true;
-            ConfigFile >> DataBuffer ;
-            Bx = atof(DataBuffer.c_str()) ;
-            Bx = Bx * mm ;
-            ConfigFile >> DataBuffer ;
-            By = atof(DataBuffer.c_str()) ;
-            By = By * mm ;
-            ConfigFile >> DataBuffer ;
-            Bz = atof(DataBuffer.c_str()) ;
-            Bz = Bz * mm ;
-
-            B = G4ThreeVector(Bx, By, Bz);
-            G4cout << "X128 Y1 corner position : " << B << G4endl;
-         }
-         
-         else if (DataBuffer.compare(0, 8, "X1_Y128=") == 0) {
-            check_C = true;
-            ConfigFile >> DataBuffer ;
-            Cx = atof(DataBuffer.c_str()) ;
-            Cx = Cx * mm ;
-            ConfigFile >> DataBuffer ;
-            Cy = atof(DataBuffer.c_str()) ;
-            Cy = Cy * mm ;
-            ConfigFile >> DataBuffer ;
-            Cz = atof(DataBuffer.c_str()) ;
-            Cz = Cz * mm ;
-
-            C = G4ThreeVector(Cx, Cy, Cz);
-            G4cout << "X1 Y128 corner position : " << C << G4endl;
-         }
-        
-         else if (DataBuffer.compare(0, 10, "X128_Y128=") == 0) {
-            check_D = true;
-            ConfigFile >> DataBuffer ;
-            Dx = atof(DataBuffer.c_str()) ;
-            Dx = Dx * mm ;
-            ConfigFile >> DataBuffer ;
-            Dy = atof(DataBuffer.c_str()) ;
-            Dy = Dy * mm ;
-            ConfigFile >> DataBuffer ;
-            Dz = atof(DataBuffer.c_str()) ;
-            Dz = Dz * mm ;
-
-            D = G4ThreeVector(Dx, Dy, Dz);
-            G4cout << "X128 Y128 corner position : " << D << G4endl;
-         }
-         
-
-       // Angle method
-         else if (DataBuffer.compare(0, 6, "THETA=") == 0) {
-            check_Theta = true;
-            ConfigFile >> DataBuffer ;
-            Theta = atof(DataBuffer.c_str()) ;
-            Theta = Theta * deg;
-            G4cout << "Theta:  " << Theta / deg << G4endl;
-         }
-
-         else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
-            check_Phi = true;
-            ConfigFile >> DataBuffer ;
-            Phi = atof(DataBuffer.c_str()) ;
-            Phi = Phi * deg;
-            G4cout << "Phi:  " << Phi / deg << G4endl;
-         }
-
-         else if (DataBuffer.compare(0, 2, "R=") == 0) {
-            check_R = true;
-            ConfigFile >> DataBuffer ;
-            R = atof(DataBuffer.c_str()) ;
-            R = R * mm;
-            G4cout << "R:  " << R / mm << G4endl;
-         }
-
-         else if (DataBuffer.compare(0, 5, "BETA=") == 0) {
-            ConfigFile >> DataBuffer ;
-            beta_u = atof(DataBuffer.c_str()) ;
-            beta_u = beta_u * deg   ;
-            ConfigFile >> DataBuffer ;
-            beta_v = atof(DataBuffer.c_str()) ;
-            beta_v = beta_v * deg   ;
-            ConfigFile >> DataBuffer ;
-            beta_w = atof(DataBuffer.c_str()) ;
-            beta_w = beta_w * deg   ;
-            G4cout << "Beta:  " << beta_u / deg << " " << beta_v / deg << " " << beta_w / deg << G4endl  ;
-         }
-
-         else if (DataBuffer.compare(0, 11, "FIRSTSTAGE=") == 0) {
-            check_FirstStage = true ;
-            ConfigFile >> DataBuffer;
-            FIRSTSTAGE = atof(DataBuffer.c_str()) ;
-         }
-
-         else if (DataBuffer.compare(0, 12, "SECONDSTAGE=") == 0) {
-            check_SecondStage = true ;
-            ConfigFile >> DataBuffer;
-            SECONDSTAGE = atof(DataBuffer.c_str()) ;
-         }
-
-         else if (DataBuffer.compare(0, 11, "THIRDSTAGE=") == 0) {
-            check_ThirdStage = true ;
-            ConfigFile >> DataBuffer;
-            THIRDSTAGE = atof(DataBuffer.c_str()) ;
-         }
-
-         else if (DataBuffer.compare(0, 4, "VIS=") == 0) {
-            checkVis = true ;
-            ConfigFile >> DataBuffer;
-            if (DataBuffer.compare(0, 3, "all") == 0) m_non_sensitive_part_visiualisation = true;
-         }
-         
-         else G4cout << "WARNING: Wrong Token, GaspardTrackerTrapezoid: Trapezoid Element not added" << G4endl;
-
-         //Add The previously define telescope
-         //With position method
-         if ((check_A && check_B && check_C && check_D && check_FirstStage && check_SecondStage && check_ThirdStage && checkVis) && !(check_Theta && check_Phi && check_R)) {
-         
-            ReadingStatus = false ;
-          check_A = false ;
-          check_C = false ;
-          check_B = false ;
-          check_D = false ;
-          check_FirstStage = false ;
-          check_SecondStage = false ;
-          check_ThirdStage = false ;
-          checkVis = false ;
-         
-            AddModule(A                ,
-                      B                ,
-                      C                ,
-                      D                ,
-                      FIRSTSTAGE  == 1 ,
-                      SECONDSTAGE == 1 ,
-                      THIRDSTAGE  == 1);
-         }
-
-         //with angle method
-        if ((check_Theta && check_Phi && check_R && check_FirstStage && check_SecondStage && check_ThirdStage && checkVis) && !(check_A && check_B && check_C && check_D)) {
-            ReadingStatus = false ;
-             check_Theta = false ;
-             check_Phi   = false ;
-             check_R     = false ;
-           check_FirstStage = false ;
-          check_SecondStage = false ;
-           check_ThirdStage = false ;
-           checkVis = false ;
-           
-            AddModule(R                ,
-                      Theta            ,
-                      Phi              ,
-                      beta_u           ,
-                      beta_v           ,
-                      beta_w           ,
-                      FIRSTSTAGE  == 1 ,
-                      SECONDSTAGE == 1 ,
-                      THIRDSTAGE  == 1);
-         }
-
-         
+        AddModule(A,B,C,D,first,second,third);
       }
-   }
+     else if(blocks[i]->HasTokenList(token_sphe)){
+        // Add module
+        double R = blocks[i]->GetDouble("R","mm");
+        double Theta = blocks[i]->GetDouble("THETA","deg");
+        double Phi = blocks[i]->GetDouble("PHI","deg");
+        vector<double> beta = blocks[i]->GetVectorDouble("BETA","deg");
+      
+        AddModule(R,Theta,Phi,beta[0],beta[1],beta[2],first,second,third);
+      }
+    }
+  } 
 }
 
 // Construct detector and inialise sensitive part.

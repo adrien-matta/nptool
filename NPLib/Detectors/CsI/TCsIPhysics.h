@@ -32,6 +32,7 @@ using namespace std ;
 //   NPL
 #include "TCsIData.h"
 #include "NPVDetector.h"
+#include "NPInputParser.h"
 
 //#include "../include/CalibrationManager.h"
 
@@ -52,7 +53,7 @@ class TCsIPhysics : public TObject, public NPL::VDetector
 
    public:   //   inherrited from VDetector
       //   Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-      void ReadConfiguration(string);
+      void ReadConfiguration(NPL::InputParser);
       
 
       //   Add Parameter to the CalibrationManger

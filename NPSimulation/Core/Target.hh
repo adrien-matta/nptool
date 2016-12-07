@@ -41,7 +41,7 @@
 
 // NPTool headers
 #include "NPSVDetector.hh"
-
+#include "NPInputParser.h"
 using namespace std;
 using namespace CLHEP;
 
@@ -53,7 +53,7 @@ public:
 public:
   //   Read stream at Configfile to pick-up parameters of detector (Position,...)
   //   Called in DetecorConstruction::ReadDetextorConfiguration Method
-  void ReadConfiguration(string Path);
+  void ReadConfiguration(NPL::InputParser);
   
   //   Construct detector and inialise sensitive part.
   //   Called After DetecorConstruction::AddDetector Method

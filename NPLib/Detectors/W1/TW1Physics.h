@@ -38,6 +38,7 @@ using namespace std;
 #include "TW1Spectra.h"
 #include "NPVDetector.h"
 #include "NPCalibrationManager.h"
+#include "NPInputParser.h"
 
 // forward declaration
 class TW1Spectra;
@@ -97,7 +98,7 @@ class TW1Physics : public TObject, public NPL::VDetector
 
  public:   // inherited from VDetector
    // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-   void ReadConfiguration(string);
+   void ReadConfiguration(NPL::InputParser);
       
    // Add parameters to the CalibrationManger
    void AddParameterToCalibrationManager();      
