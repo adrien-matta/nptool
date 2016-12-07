@@ -35,6 +35,7 @@ using namespace std;
 // NPTool header
 #include "NPSVDetector.hh"
 #include "TDETECTORNAMEData.h"
+#include "NPInputParser.h"
 
 class DETECTORNAME : public NPS::VDetector{
   ////////////////////////////////////////////////////
@@ -48,11 +49,11 @@ class DETECTORNAME : public NPS::VDetector{
     /////// Specific Function of this Class ///////////
     ////////////////////////////////////////////////////
   public:
-    // Cylindric plastic
-    void AddDETECTORNAME(double R,
-        double Theta,
-        double Phi,
-        string Shape);  
+    // Cartesian
+    void AddDetector(G4ThreeVector POS, string Shape);
+    // Spherical
+    void AddDetector(double R,double Theta,double Phi,string Shape);  
+
 
     G4LogicalVolume* BuildSquareDetector();
     G4LogicalVolume* BuildCylindricalDetector();
@@ -67,7 +68,7 @@ class DETECTORNAME : public NPS::VDetector{
   public:
     // Read stream at Configfile to pick-up parameters of detector (Position,...)
     // Called in DetecorConstruction::ReadDetextorConfiguration Method
-    void ReadConfiguration(string Path) ;
+    void ReadConfiguration(NPL::InputParser) ;
 
     // Construct detector and inialise sensitive part.
     // Called After DetecorConstruction::AddDetector Method

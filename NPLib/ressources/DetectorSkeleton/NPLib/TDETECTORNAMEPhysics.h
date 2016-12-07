@@ -32,13 +32,13 @@ using namespace std;
 #include "TObject.h"
 #include "TH1.h"
 #include "TCanvas.h"
-
+#include "TVector3.h"
 // NPTool headers
 #include "TDETECTORNAMEData.h"
 #include "TDETECTORNAMESpectra.h"
 #include "NPCalibrationManager.h"
 #include "NPVDetector.h"
-
+#include "NPInputParser.h"
 // forward declaration
 class TDETECTORNAMESpectra;
 
@@ -67,12 +67,15 @@ class TDETECTORNAMEPhysics : public TObject, public NPL::VDetector {
     vector<double>   Energy;
     vector<double>   Time;
 
-
+  /// A usefull method to bundle all operation to add a detector
+  void AddDetector(TVector3 POS, string shape); 
+  void AddDetector(double R, double Theta, double Phi, string shape); 
+  
   //////////////////////////////////////////////////////////////
   // methods inherited from the VDetector ABC class
   public:
     // read stream from ConfigFile to pick-up detector parameters
-    void ReadConfiguration(string);
+    void ReadConfiguration(NPL::InputParser);
 
     // add parameters to the CalibrationManger
     void AddParameterToCalibrationManager();
