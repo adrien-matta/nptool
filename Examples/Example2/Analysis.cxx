@@ -43,7 +43,7 @@ void Analysis::Init(){
   BeamCD2 = EnergyLoss("Example/Mg28_CD2.G4table","G4Table",10);
   myReaction = new NPL::Reaction();
   myReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
-   TargetThickness = m_DetectorManager->GetTargetThickness()*micrometer;
+   TargetThickness = m_DetectorManager->GetTargetThickness();
   OriginalBeamEnergy = myReaction->GetBeamEnergy();
    Rand = TRandom3();
    DetectorNumber = 0 ;
@@ -86,7 +86,6 @@ void Analysis::TreatEvent(){
     if(XTarget>-1000 && YTarget>-1000){
       TVector3 HitDirection = Sharc -> GetPositionOfInteraction(0,true);
       ThetaLab = HitDirection.Angle( BeamDirection );
-      
       ThetaSharcSurface = HitDirection.Angle( TVector3(0,0,1) ) ;
       ThetaNormalTarget = HitDirection.Angle( TVector3(0,0,1) ) ;
     }
@@ -101,7 +100,6 @@ void Analysis::TreatEvent(){
     
     /************************************************/
     // Part 2 : Impact Energy
-
     Energy = 0;
     if(Sharc->PAD_E[0]>0){
       Energy = Sharc->PAD_E[0];
@@ -109,9 +107,8 @@ void Analysis::TreatEvent(){
 
     Energy += Sharc->Strip_E[0];
     // Target Correction
-    
     ELab = LightCD2.EvaluateInitialEnergy( Energy ,TargetThickness*0.5, ThetaNormalTarget);
-   /************************************************/
+    /************************************************/
     
     /************************************************/
     // Part 3 : Excitation Energy Calculation
@@ -125,7 +122,6 @@ void Analysis::TreatEvent(){
     ThetaLab=ThetaLab/deg;
     /************************************************/
   }//end loop Sharc 
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -417,6 +417,7 @@ TVector3 Helios::GetPositionOfInteraction()
 
    return(Position);
    */
+return (TVector3(0,0,0));
 }
 
 

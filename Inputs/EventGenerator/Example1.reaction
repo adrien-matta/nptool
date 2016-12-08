@@ -30,9 +30,9 @@ TwoBodyReaction
  ShootHeavy= 1
   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ParticleDecay 10He
- Daughter= 8He n n
- ExcitationEnergy= 0 0 0 MeV
- shoot= 1 1 1
+%ParticleDecay 10He
+% Daughter= 8He n n
+% ExcitationEnergy= 0 0 0 MeV
+% shoot= 1 1 1
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

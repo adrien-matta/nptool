@@ -458,48 +458,32 @@ void TSharcPhysics::Clear(){
 
 ///////////////////////////////////////////////////////////////////////////
 void TSharcPhysics::ReadConfiguration(NPL::InputParser parser){
-
-
-  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithTokenAndValue("Sharc","QQQ");
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Sharc");
   if(NPOptionManager::getInstance()->GetVerboseLevel())
-    cout << "//// QQQ: " << blocks.size() << " detectors found " << endl; 
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  vector<string> token = {"Z","R","Phi","ThicknessDetector"};
-
+ vector<string> tokenQQQ = {"Z","R","Phi","ThicknessDetector"};
+ vector<string> tokenBOX = {"Z","ThicknessDetector1","ThicknessDetector2","ThicknessDetector3","ThicknessDetector4","ThicknessPAD1","ThicknessPAD2","ThicknessPAD3","ThicknessPAD4"};
+ 
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
-    if(blocks[i]->HasTokenList(token)){
+
+    if(blocks[i]->GetMainValue()=="QQQ" && blocks[i]->HasTokenList(tokenQQQ)){
       if(NPOptionManager::getInstance()->GetVerboseLevel())
         cout << endl << "////  Sharc QQQ " << i+1 <<  endl;
         double Z = blocks[i]->GetDouble("Z","mm");
         double R = blocks[i]->GetDouble("R","mm");
         double Phi = blocks[i]->GetDouble("Phi","deg");
-        double ThicknessDetector = blocks[i]->GetDouble("ThicknessDetector","micrometer");
-        AddQQQDetector(Z,R,Phi);
+        double Thickness= blocks[i]->GetDouble("ThicknessDetector","micrometer");
+        AddQQQDetector(R,Phi,Z);
     }
-
-    else{
-      cout << "ERROR: check your input file formatting " << endl;
-      exit(1);
-    }
-  }
-
-  blocks.clear();
-  blocks = parser.GetAllBlocksWithTokenAndValue("Sharc","BOX");
-  if(NPOptionManager::getInstance()->GetVerboseLevel())
-    cout << "//// BOX: " << blocks.size() << " detectors found " << endl; 
-
-  token.clear();
-  token = {"Z","ThicknessDetector1","ThicknessDetector2","ThicknessDetector3","ThicknessDetector4","ThicknessPAD1","ThicknessPAD2","ThicknessPAD3","ThicknessPAD4"};
-
-  for(unsigned int i = 0 ; i < blocks.size() ; i++){
-    if(blocks[i]->HasTokenList(token)){
+    else if(blocks[i]->GetMainValue()=="BOX" && blocks[i]->HasTokenList(tokenBOX)){
       if(NPOptionManager::getInstance()->GetVerboseLevel())
         cout << endl << "////  Sharc Box " << i+1 <<  endl;
         double Z = blocks[i]->GetDouble("Z","mm");
-        double ThicknessDetector1 = blocks[i]->GetDouble("ThicknessDetector1","micrometer");
-        double ThicknessDetector2 = blocks[i]->GetDouble("ThicknessDetector2","micrometer");
-        double ThicknessDetector3 = blocks[i]->GetDouble("ThicknessDetector3","micrometer");
-        double ThicknessDetector4 = blocks[i]->GetDouble("ThicknessDetector4","micrometer");
+        double Thickness1= blocks[i]->GetDouble("ThicknessDetector1","micrometer");
+        double Thickness2= blocks[i]->GetDouble("ThicknessDetector2","micrometer");
+        double Thickness3= blocks[i]->GetDouble("ThicknessDetector3","micrometer");
+        double Thickness4= blocks[i]->GetDouble("ThicknessDetector4","micrometer");
         double ThicknessPAD1 = blocks[i]->GetDouble("ThicknessPAD1","micrometer");
         double ThicknessPAD2 = blocks[i]->GetDouble("ThicknessPAD2","micrometer");
         double ThicknessPAD3 = blocks[i]->GetDouble("ThicknessPAD3","micrometer");
@@ -508,11 +492,9 @@ void TSharcPhysics::ReadConfiguration(NPL::InputParser parser){
     }
 
     else{
-      cout << "ERROR: check your input file formatting " << endl;
-      exit(1);
+      cout << "Warning: check your input file formatting " << endl;
     }
   }
- 
   InitializeStandardParameter();
   ReadAnalysisConfig();
 }

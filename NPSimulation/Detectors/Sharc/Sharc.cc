@@ -114,14 +114,16 @@ void Sharc::AddQQQDetector(G4ThreeVector Pos,G4double Thickness){
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
 void Sharc::ReadConfiguration(NPL::InputParser parser){
-  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithTokenAndValue("Sharc","QQQ");
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Sharc");
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  vector<string> token = {"Z","R","Phi","ThicknessDetector"};
-
+ vector<string> tokenQQQ = {"Z","R","Phi","ThicknessDetector"};
+ vector<string> tokenBOX = {"Z","ThicknessDetector1","ThicknessDetector2","ThicknessDetector3","ThicknessDetector4","ThicknessPAD1","ThicknessPAD2","ThicknessPAD3","ThicknessPAD4"};
+ 
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
-    if(blocks[i]->HasTokenList(token)){
+
+    if(blocks[i]->GetMainValue()=="QQQ" && blocks[i]->HasTokenList(tokenQQQ)){
       if(NPOptionManager::getInstance()->GetVerboseLevel())
         cout << endl << "////  Sharc QQQ " << i+1 <<  endl;
         double Z = blocks[i]->GetDouble("Z","mm");
@@ -130,22 +132,7 @@ void Sharc::ReadConfiguration(NPL::InputParser parser){
         double Thickness= blocks[i]->GetDouble("ThicknessDetector","micrometer");
         AddQQQDetector(G4ThreeVector(R,Phi,Z),Thickness);
     }
-
-    else{
-      cout << "Warning: check your input file formatting " << endl;
-    }
-  }
-
-  blocks.clear();
-  blocks = parser.GetAllBlocksWithTokenAndValue("Sharc","BOX");
-  if(NPOptionManager::getInstance()->GetVerboseLevel())
-    cout << "//// " << blocks.size() << " detectors found " << endl; 
-
-  token.clear();
-  token = {"Z","ThicknessDetector1","ThicknessDetector2","ThicknessDetector3","ThicknessDetector4","ThicknessPAD1","ThicknessPAD2","ThicknessPAD3","ThicknessPAD4"};
-
-  for(unsigned int i = 0 ; i < blocks.size() ; i++){
-    if(blocks[i]->HasTokenList(token)){
+    else if(blocks[i]->GetMainValue()=="BOX" && blocks[i]->HasTokenList(tokenBOX)){
       if(NPOptionManager::getInstance()->GetVerboseLevel())
         cout << endl << "////  Sharc Box " << i+1 <<  endl;
         double Z = blocks[i]->GetDouble("Z","mm");
