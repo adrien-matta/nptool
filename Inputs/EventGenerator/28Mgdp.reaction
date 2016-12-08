@@ -19,22 +19,22 @@ Beam
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 TwoBodyReaction
-	Beam= 28Mg
-	Target= 2H
-	Light= 1H
-	Heavy= 29Mg
-	ExcitationEnergyLight= 0.0
-	ExcitationEnergyHeavy= 0.0 
+ Beam= 28Mg
+ Target= 2H
+ Light= 1H
+ Heavy= 29Mg
+ ExcitationEnergyLight= 0.0
+ ExcitationEnergyHeavy= 0.0 
   CrossSectionPath= flat.txt CSR
-	ShootLight= 1
-	ShootHeavy= 1
+ ShootLight= 1
+ ShootHeavy= 1
   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %GammaDecay 25Na
   Cascade
     BranchingRatio= 70
     Energies= 2.2
-    DifferentialCrossSection= 11Li(d,3He)10He.txt	Gamma25Na
+    DifferentialCrossSection= 11Li(d,3He)10He.txt Gamma25Na
   Cascade
     BranchingRatio= 30
     Energies= 1.0 1.2

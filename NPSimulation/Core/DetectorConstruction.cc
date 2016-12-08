@@ -95,6 +95,7 @@ void DetectorConstruction::AddDetector(NPS::VDetector* NewDetector){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
+  
   // Construct the World volume
   G4Material* Vacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
 
@@ -130,7 +131,9 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
   }
   else
     VerboseLevel = 0;
-  cout << "\033[1;36m" ;
+  
+   if(VerboseLevel)
+    cout << endl << "\033[1;36m//// Reading detector file  "<< Path  << endl<<endl; 
 
   // Access the DetectorFactory and ask it to load the Class List
   std::string classlist = getenv("NPTOOL");

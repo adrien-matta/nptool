@@ -40,7 +40,7 @@
 
 // NPTool headers
 #include "Target.hh"
-
+#include "NPInputParser.h"
 using namespace CLHEP;
 using namespace std;
 using namespace CLHEP;
@@ -54,7 +54,7 @@ public:
    virtual ~VEventGenerator();
 
 public:
-   virtual void ReadConfiguration(string,int dump=0) {dump*=1;};
+   virtual void ReadConfiguration(NPL::InputParser) {};
    virtual void GenerateEvent(G4Event*) {};
    virtual void InitializeRootOutput() {};
 

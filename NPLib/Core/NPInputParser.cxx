@@ -123,7 +123,8 @@ double InputBlock::GetDouble(std::string Token,std::string default_unit){
   std::string unit;
   iss >> val >> unit ;
   if(unit==""){
-    std::cout <<"WARNING: Using default units for token " << Token << std::endl;
+    if(default_unit!="void")
+      std::cout <<"WARNING: Using default units for token " << Token << std::endl;
     val = ApplyUnit(val,default_unit); 
   }
   else{
@@ -165,7 +166,8 @@ TVector3 InputBlock::GetTVector3(std::string Token,std::string  default_unit){
   std::string unit;
   iss >> x >> y >> z >> unit ;
   if(unit==""){
-    std::cout <<"WARNING: Using default units for token " << Token << std::endl;
+    if(default_unit!="void")
+      std::cout <<"WARNING: Using default units for token " << Token << std::endl;
     x = ApplyUnit(x,default_unit); 
     y = ApplyUnit(y,default_unit); 
     z = ApplyUnit(z,default_unit); 
@@ -223,7 +225,8 @@ std::vector<double> InputBlock::GetVectorDouble(std::string Token,std::string  d
   iss>>unit;
  
   if(unit==""){
-    std::cout <<"WARNING: Using default units for token " << Token << std::endl;
+    if(default_unit!="void")
+      std::cout <<"WARNING: Using default units for token " << Token << std::endl;
     for(unsigned int i = 0 ; i < val.size() ; i++)
       val[i]=ApplyUnit(val[i],default_unit);
   }
@@ -358,7 +361,10 @@ void InputParser::ReadFile(std::string filename){
 }
 ////////////////////////////////////////////////////////////////////////////////
 double NPL::ApplyUnit(double value, std::string unit){
-  if(unit=="millimeter"){
+  if(unit=="void") // apply no unit
+    return value;
+
+  else if(unit=="millimeter"){
     return value*NPUNITS::millimeter;
   }
 

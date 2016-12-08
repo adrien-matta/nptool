@@ -33,7 +33,7 @@ using namespace CLHEP;
 // NPS headers
 #include "VEventGenerator.hh"
 #include "ParticleStack.hh"
-
+#include "NPInputParser.h"
 // ROOT Headers
 #include "TH1F.h"
 #include "TH2F.h"
@@ -41,11 +41,11 @@ using namespace CLHEP;
 
 class EventGeneratorpBUU : public NPS::VEventGenerator{
 public:     // Constructor and destructor
-    EventGeneratorpBUU() ;
+    EventGeneratorpBUU();
     virtual ~EventGeneratorpBUU();
   
 public:     // Inherit from VEventGenerator Class
-    void ReadConfiguration(string,int)               ;
+    void ReadConfiguration(NPL::InputParser)              ;
     void GenerateEvent(G4Event*) ;
     void InitializeRootOutput()                  ;
   

@@ -37,7 +37,7 @@ using namespace std;
 #include "VEventGenerator.hh"
 #include "Target.hh"
 #include "ParticleStack.hh"
-
+#include "NPInputParser.h"
 // ROOT
 #include "TH1F.h"
 
@@ -49,7 +49,7 @@ public: // Constructor and destructor
   ~EventGeneratorGammaDecay();
   
 public: // Inherit from VEventGenerator class
-  void ReadConfiguration(string,int);
+  void ReadConfiguration(NPL::InputParser);
   void GenerateEvent(G4Event*);
   void SetTarget(Target* Target) ;
   

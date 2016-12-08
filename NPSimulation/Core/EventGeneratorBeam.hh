@@ -36,7 +36,7 @@
 
 // NPL Header
 #include "NPBeam.h"
-
+#include "NPInputParser.h"
 using namespace std  ;
 
 class EventGeneratorBeam : public NPS::VEventGenerator{
@@ -45,7 +45,7 @@ public:     // Constructor and destructor
   virtual ~EventGeneratorBeam();
   
 public:     // Inherit from VEventGenerator Class
-  void ReadConfiguration(string,int);
+  void ReadConfiguration(NPL::InputParser);
   void GenerateEvent(G4Event*);
   void InitializeRootOutput();
   void SetTarget(Target* Target) ;

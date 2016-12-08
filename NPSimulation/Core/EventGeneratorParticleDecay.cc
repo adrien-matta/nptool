@@ -55,145 +55,46 @@ EventGeneratorParticleDecay::~EventGeneratorParticleDecay(){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventGeneratorParticleDecay::ReadConfiguration(string Path,int Occurence){
-    ////////General Reading needs////////
-    string LineBuffer;
-    string DataBuffer;
-    istringstream LineStream;
-    int TokkenOccurence = 0;
-    //////// Setting needs///////
-    bool ReadingStatusParticleDecay  = false ;
-    
-    bool check_Daughter = false ;
-    bool check_shoot = false ;
-    bool check_created = false ;
-    
-    // Instantiate new variable for the up coming Particle
-    vector<string> DaughterName;
-    vector<double> ExcitationEnergy;
-    vector<bool>   shoot;
-    string CSPath = "TGenPhaseSpace";
-    string CSName ;
-    int VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
-    
-    //////////////////////////////////////////////////////////////////////////////////////////
-    ifstream InputFile;
-    InputFile.open(Path.c_str());
-    
-    if (InputFile.is_open()) {}
-    
-    else {
-        return;
+void EventGeneratorParticleDecay::ReadConfiguration(NPL::InputParser parser){
+
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("ParticleDecay");
+  
+  m_MotherNucleiName = blocks[0]->GetMainValue();
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << endl << "\033[1;35m//// Particle decay found for" << m_MotherNucleiName << endl; 
+
+  vector<string> token = {"Daughter","shoot"};
+  vector<string> DaughterName;
+  vector<int>   shoot;
+  vector<double> ExcitationEnergy;
+  string CSPath = "TGenPhaseSpace";
+  string CSName = "";
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token)){
+      DaughterName = blocks[i]->GetVectorString("Daughter");
+      shoot        = blocks[i]->GetVectorInt("shoot");
+      
+      if(blocks[i]->HasToken("ExcitationEnergy"))
+        ExcitationEnergy =  blocks[i]->GetVectorDouble("ExcitationEnergy","MeV"); 
+      
+      if(blocks[i]->HasToken("DifferentialCrossSection")){
+          vector<string> cs = blocks[i]->GetVectorString("DifferentialCrossSection");
+          CSPath = cs[0]; CSName=cs[1];
+      }
+
     }
-    
-    while (!InputFile.eof()&& !check_created) {
-        //Pick-up next line
-        getline(InputFile, LineBuffer);
-        
-        if (LineBuffer.compare(0, 13, "ParticleDecay") == 0) {
-            TokkenOccurence++;
-            if(TokkenOccurence==Occurence){
-                ReadingStatusParticleDecay = true ;
-                if(VerboseLevel==1) G4cout << "///////////////////////////////////////// " << G4endl;
-                // Get the nuclei name
-                LineStream.clear();
-                LineStream.str(LineBuffer);
-                LineStream >> DataBuffer;
-                DataBuffer.erase();
-                LineStream >> DataBuffer;
-                m_MotherNucleiName = DataBuffer ;
-                if(VerboseLevel==1) G4cout << "Particle Decay for " << m_MotherNucleiName << G4endl;
-            }
-        }
-        
-        ///////////////////////////////
-        /// Gamma Decay case
-        while(ReadingStatusParticleDecay){
-            
-            InputFile >> DataBuffer;
-            //Search for comment Symbol %
-            if (DataBuffer.compare(0, 1, "%") == 0) {
-                InputFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
-            }
-            
-            else if (DataBuffer == "Daughter=") {
-                check_Daughter = true ;
-                LineStream.clear();
-                LineStream.str(LineBuffer);
-                
-                getline(InputFile, LineBuffer);
-                LineStream.clear();
-                LineStream.str(LineBuffer);
-                if(VerboseLevel==1) G4cout << "    Daughter: " ;
-                while(LineStream >> DataBuffer){
-                    DaughterName.push_back(DataBuffer);
-                    if(VerboseLevel==1)G4cout << DataBuffer << " " ;
-                }
-                
-                if(VerboseLevel==1)G4cout << G4endl;
-                
-            }
-            
-            else if(DataBuffer == "ExcitationEnergy=") {
-                LineStream.clear();
-                LineStream.str(LineBuffer);
-                
-                getline(InputFile, LineBuffer);
-                LineStream.clear();
-                LineStream.str(LineBuffer);
-                if(VerboseLevel==1) G4cout << "    Excitation Energy: " ;
-                while(LineStream >> DataBuffer){
-                    ExcitationEnergy.push_back( atof(DataBuffer.c_str()) );
-                    if(VerboseLevel==1) G4cout << DataBuffer << " " ;
-                }
-                
-                if(VerboseLevel==1) G4cout << G4endl;
-            }
-            
-            else if(DataBuffer == "DifferentialCrossSection=") {
-                LineStream.clear();
-                getline(InputFile, LineBuffer);
-                
-                LineStream.str(LineBuffer);
-                LineStream >> CSPath >> CSName ;
-                if(VerboseLevel==1) G4cout << "    Cross Section Path: " << CSPath  << G4endl;
-            }
-            
-            else if(DataBuffer == "shoot=") {
-                check_shoot = true;
-                LineStream.clear();
-                LineStream.str(LineBuffer);
-                
-                getline(InputFile, LineBuffer);
-                LineStream.clear();
-                LineStream.str(LineBuffer);
-                if(VerboseLevel==1) G4cout << "    Shoot Particle: " ;
-                while(LineStream >> DataBuffer){
-                    shoot.push_back( atof(DataBuffer.c_str()) );
-                    if(VerboseLevel==1)G4cout << DataBuffer << " " ;
-                }
-                
-                if(VerboseLevel==1)G4cout << G4endl;
-            }
-            
-            //////////////////////////////////////////////////////
-            // If no Token and no comment, toggle out //
-            else
-            {ReadingStatusParticleDecay = false; G4cout << "ERROR : Wrong Token Sequence: Getting out " << G4endl ;
-                exit(1);
-            }
-            
-            // Decay ended
-            if(check_Daughter && check_shoot){
-                SetDecay(DaughterName,shoot,ExcitationEnergy,CSPath,CSName);
-                ReadingStatusParticleDecay = false;
-                check_created=true;
-            }
-        }
+    else{
+      cout << "ERROR: check your input file formatting \033[0m" << endl; 
+      exit(1);
     }
-    
-    if(VerboseLevel==1) G4cout << "///////////////////////////////////////// " << G4endl;
-    InputFile.close();
+  }
+  
+  if(ExcitationEnergy.size()==0)
+    ExcitationEnergy.resize(DaughterName.size(),0);
+
+  SetDecay(DaughterName,shoot,ExcitationEnergy,CSPath,CSName);
+  cout << "\033[0m" ;
+
 }
 
 
@@ -321,7 +222,7 @@ void EventGeneratorParticleDecay::SetTarget(Target* Target){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventGeneratorParticleDecay::SetDecay(vector<string> DaughterName, vector<bool> shoot, vector<double> ExcitationEnergy, string CSPath, string CSName){
+void EventGeneratorParticleDecay::SetDecay(vector<string> DaughterName, vector<int> shoot, vector<double> ExcitationEnergy, string CSPath, string CSName){
     m_CrossSectionPath=CSPath;
     m_CrossSectionName=CSName;
     

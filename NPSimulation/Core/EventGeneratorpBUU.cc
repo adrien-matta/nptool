@@ -59,7 +59,9 @@ EventGeneratorpBUU::~EventGeneratorpBUU(){
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventGeneratorpBUU::ReadConfiguration(string Path,int){
+void EventGeneratorpBUU::ReadConfiguration(NPL::InputParser ){
+    return;
+    string Path="";
     ////////General Reading needs////////
     string LineBuffer;
     string DataBuffer;

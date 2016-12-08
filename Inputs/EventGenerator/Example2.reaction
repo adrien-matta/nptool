@@ -19,14 +19,14 @@ Beam
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 TwoBodyReaction
-	Beam= 28Mg
-	Target= 2H
-	Light= 1H
-	Heavy= 29Mg
-	ExcitationEnergyLight= 0.0
-	ExcitationEnergyHeavy= 0.0 
+ Beam= 28Mg
+ Target= 2H
+ Light= 1H
+ Heavy= 29Mg
+ ExcitationEnergyLight= 0.0
+ ExcitationEnergyHeavy= 0.0 
   CrossSectionPath= flat.txt CSR
-	ShootLight= 1
-	ShootHeavy= 1
+ ShootLight= 1
+ ShootHeavy= 1
   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

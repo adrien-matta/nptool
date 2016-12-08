@@ -237,8 +237,6 @@ G4LogicalVolume* AnnularS1::ConstructVolume(){
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
 void AnnularS1::ReadConfiguration(NPL::InputParser parser){
-
-
  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("AnnularS1");
   cout << "//// " << blocks.size() << " detectors found " << endl; 
 
