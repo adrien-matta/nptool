@@ -159,7 +159,16 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
       cout << "WARNING: No target found in detector input file! Use with caution" << endl;
     }
   }
-     
+  ////////////////////////////////////////////
+  /////////// Search for Chamber /////////////
+  ////////////////////////////////////////////
+  blocks.clear();
+  blocks = parser.GetAllBlocksWithToken("Chamber");
+  if(blocks.size()==1){
+    m_Chamber = new Chamber();
+    m_Chamber->ReadConfiguration(parser);
+    AddDetector(m_Chamber);
+  }  
   ////////////////////////////////////////////
   /////////// Search for Detectors ///////////
   ////////////////////////////////////////////

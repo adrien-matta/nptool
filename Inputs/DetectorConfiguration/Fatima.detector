@@ -8,24 +8,14 @@ Target
  Y= 0 mm 
  Z= 0 mm
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%GeneralChamber
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%GREATChamber
-%GREAT-Karl
-%        Heightmin= 178.
-%        Heightmax= 181.
-%        Widthmin= 228.
-%        Widthmax= 231.
-%        Depthmin= 200.
-%        Depthmax= 205.
-%        MATERIAL= Alu
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% #################################################
-% ############ At the back of DSSSDs:  #############
-% #################################################
-%
+Chamber Great-Karl
+ Heightmin= 178.
+ Heightmax= 181.
+ Widthmin= 228.
+ Widthmax= 231.
+ Depthmin= 200.
+ Depthmax= 205.
+ MATERIAL= Alu
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 					1
 Fatima
  Theta=	19.02390167 deg				
