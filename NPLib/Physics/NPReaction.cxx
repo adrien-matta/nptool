@@ -353,12 +353,12 @@ void Reaction::ReadConfigurationFile(NPL::InputParser parser){
       fExcitation3 = blocks[i]->GetDouble("ExcitationEnergyLight","MeV"); 
     else if(blocks[i]->HasToken("ExcitationEnergy3"))
       fExcitation3 = blocks[i]->GetDouble("ExcitationEnergy3","MeV"); 
-    
+
     if(blocks[i]->HasToken("ExcitationEnergyHeavy"))
       fExcitation4 = blocks[i]->GetDouble("ExcitationEnergyHeavy","MeV"); 
     else if(blocks[i]->HasToken("ExcitationEnergy4"))
       fExcitation4 = blocks[i]->GetDouble("ExcitationEnergy4","MeV"); 
-    
+
     if(blocks[i]->HasToken("ExcitationEnergyDistribution")){
       vector<string> file = blocks[i]->GetVectorString("ExcitationEnergyDistribution");
       fExcitationEnergyHist = Read1DProfile(file[0],file[1]);
@@ -377,7 +377,7 @@ void Reaction::ReadConfigurationFile(NPL::InputParser parser){
     }
 
     if(blocks[i]->HasToken("DoubleDifferentialCrossSectionPath")){
-      vector<string> file = blocks[i]->GetVectorString("CrossSectionPath");
+      vector<string> file = blocks[i]->GetVectorString("DoubleDifferentialCrossSectionPath");
       TH2F* CStemp = Read2DProfile(file[0],file[1]);
 
       // multiply CStemp by sin(theta)
@@ -409,9 +409,7 @@ void Reaction::ReadConfigurationFile(NPL::InputParser parser){
     if(blocks[i]->HasToken("ShootLight")){
       fshoot3 = blocks[i]->GetInt("ShootLight");
     }
-
   }
-
   SetCSAngle(CSHalfOpenAngleMin,CSHalfOpenAngleMax);
   initializePrecomputeVariable();
   cout << "\033[0m" ;
@@ -629,10 +627,10 @@ void Reaction::PrintKinematic(){
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Reaction::SetCSAngle(double CSHalfOpenAngleMin,double CSHalfOpenAngleMax){
-
-  for (int i = 0 ; i< fCrossSectionHist->GetNbinsX(); i++)
-    if( fCrossSectionHist->GetBinCenter(i) > CSHalfOpenAngleMax && fCrossSectionHist->GetBinCenter(i) < CSHalfOpenAngleMin)
-      fCrossSectionHist->SetBinContent(i,0);
-
+  if(fCrossSectionHist){
+    for (int i = 0 ; i< fCrossSectionHist->GetNbinsX(); i++)
+      if( fCrossSectionHist->GetBinCenter(i) > CSHalfOpenAngleMax && fCrossSectionHist->GetBinCenter(i) < CSHalfOpenAngleMin)
+        fCrossSectionHist->SetBinContent(i,0);
+  }
 }
 
