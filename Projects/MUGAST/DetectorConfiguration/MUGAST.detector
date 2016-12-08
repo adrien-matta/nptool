@@ -1,7 +1,7 @@
 %%%%%%%%%%Detector%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
 Target
- THICKNESS= 0.94 micrometer
+ THICKNESS= 5 micrometer
  RADIUS= 7.5 mm
  MATERIAL= CD2 
  Angle= 0 deg
