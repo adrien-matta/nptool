@@ -13,32 +13,30 @@ Target
  Z= 0 mm
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Sharc
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Upstream CD
-SharcQQQ
+Sharc QQQ
  Z= -71 mm
  R= 0 mm
  Phi= 0 deg 
  ThicknessDetector= 500 micrometer
-SharcQQQ
+Sharc QQQ
  Z= -71 mm
  R= 0 mm
  Phi= 90 deg 
  ThicknessDetector= 500 micrometer
-SharcQQQ
+Sharc QQQ
  Z= -71 mm
  R= 0 mm
  Phi= 180 deg 
  ThicknessDetector= 500 micrometer
-SharcQQQ
+Sharc QQQ
  Z= -71 mm
  R= 0 mm
  Phi= 270 deg 
  ThicknessDetector= 500 micrometer
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Upstream Box
-SharcBOX 
+Sharc BOX 
  Z= -30 mm
  ThicknessDetector1= 500 micrometer
  ThicknessDetector2= 500 micrometer
@@ -50,7 +48,7 @@ SharcBOX
  ThicknessPAD4= 0 micrometer
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Down Stream Box
-SharcBOX
+Sharc BOX
  Z= 31.4 mm 
  ThicknessDetector1= 140 micrometer
  ThicknessDetector2= 140 micrometer
@@ -62,22 +60,22 @@ SharcBOX
  ThicknessPAD4= 1 mm 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Downstream CD
-SharcQQQ
+Sharc QQQ
  Z= 67 mm
  R= 0 mm
  Phi= 0 deg
  ThicknessDetector= 500 micrometer
-SharcQQQ
+Sharc QQQ
  Z= 67 mm
  R= 0 mm
  Phi= 90 deg
  ThicknessDetector= 500 micrometer
-SharcQQQ
+Sharc QQQ
  Z= 67 mm
  R= 0 mm
  Phi= 180 deg 
  ThicknessDetector= 500 micrometer
-SharcQQQ
+Sharc QQQ
  Z= 67 mm
  R= 0 mm
  Phi= 270 deg

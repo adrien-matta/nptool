@@ -569,7 +569,7 @@ void MUST2Array::ReadConfiguration(NPL::InputParser parser){
     // Spherical Case
     vector<string> sphe= {"R","THETA","PHI","BETA","SI","SILI","CSI"};
 
-    if(blocks[i]->HasTokenList(cart)){
+        if(blocks[i]->HasTokenList(cart)){
       G4ThreeVector A = NPS::ConvertVector( blocks[i]->GetTVector3("X1_Y1","mm"));
       G4ThreeVector B = NPS::ConvertVector( blocks[i]->GetTVector3("X128_Y1","mm"));
       G4ThreeVector C = NPS::ConvertVector( blocks[i]->GetTVector3("X1_Y128","mm"));
@@ -577,13 +577,6 @@ void MUST2Array::ReadConfiguration(NPL::InputParser parser){
       int SI = blocks[i]->GetInt("SI");
       int SILI = blocks[i]->GetInt("SILI");
       int CSI = blocks[i]->GetInt("CSI");
-      string VIS = blocks[i]->GetString("VIS");
-
-      cout << " X1_Y1 (mm): (" << A.x()/mm << ";" << A.y()/mm << ";" << A.z()/mm << ")" << endl;; 
-      cout << " X128_Y1 (mm): (" << B.x()/mm << ";" << B.y()/mm << ";" << B.z()/mm << ")" << endl;; 
-      cout << " X1_Y128 (mm): (" << C.x()/mm << ";" << C.y()/mm << ";" << C.z()/mm << ")" << endl;; 
-      cout << " X128_Y128 (mm): (" << D.x()/mm << ";" << D.y()/mm << ";" << D.z()/mm << ")" << endl;; 
-      cout << " Si: " << SI << " Si(Li): " << SILI << " CsI: " << CSI << endl;;   
       AddTelescope(A,B,C,D,SI==1,SILI==1,CSI==1) ;
     }
 
@@ -596,19 +589,17 @@ void MUST2Array::ReadConfiguration(NPL::InputParser parser){
       int SI = blocks[i]->GetInt("SI");
       int SILI = blocks[i]->GetInt("SILI");
       int CSI = blocks[i]->GetInt("CSI");
-      string VIS = blocks[i]->GetString("VIS");
-
-      cout << " Pos: R(mm): " << R << " Theta (deg): " << Theta/deg << " Phi (deg): " << Phi/deg << endl;
-      cout << " Rot (deg): u: " << beta[0] << " v: " << beta[1] <<" w: " << beta[2] << endl;
-      cout << " Si: " << SI << " Si(Li): " << SILI << " CsI: " << CSI << endl ;   
-
-      AddTelescope(  Theta,Phi,R,beta[0],beta[1],beta[2],SI==1,SILI==1,CSI==1);
+      AddTelescope(  R,Theta,Phi,beta[0],beta[1],beta[2],SI==1,SILI==1,CSI==1);
     }
 
     else{
       cout << "WARNING: Missing token for M2Telescope blocks, check your input file" << endl;
       exit(1);
     }
+
+    if(blocks[i]->GetString("VIS")=="all")
+       m_non_sensitive_part_visiualisation = true;
+
   }
 }
 

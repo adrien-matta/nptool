@@ -11,12 +11,12 @@ using namespace NPL;
 ////////////////////////////////////////////////////////////////////////////////
 std::string NPL::StripSpaces(std::string line){
   // Remove preceding spaces
-  while(line.compare(0,1," ") == 0)
+  while(line.front()==' ')
     line = line.substr(1,line.length());
 
   // Remove trailing spaces
   if(line.length()>0)
-    while(line.compare(line.length()-1,1," ") == 0)
+    while(line.back()==' ')
       line = line.substr(0,line.length()-1);
   return line;
 
@@ -112,6 +112,7 @@ std::string InputBlock::GetValue(std::string Token){
     if(m_Token[i]==ToLower(Token))
       return m_Value[i];
   }
+  return "";
 
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -130,7 +131,7 @@ double InputBlock::GetDouble(std::string Token,std::string default_unit){
   }
   
   if(verbose)
-    cout << " " << Token << " (" <<default_unit << "):" << val/ApplyUnit(1,default_unit) << endl; 
+    cout << " " << Token << " (" <<default_unit << "): " << val/ApplyUnit(1,default_unit) << endl; 
 
   return val;        
 }
@@ -151,7 +152,7 @@ int InputBlock::GetInt(std::string Token){
 std::string InputBlock::GetString(std::string Token){
   int verbose = NPOptionManager::getInstance()->GetVerboseLevel();
   if(verbose)
-    cout << " " << Token << " : " << GetValue(Token) << endl; 
+    cout << " " << Token << ": " << GetValue(Token) << endl; 
 
   return GetValue(Token);
 }
@@ -745,7 +746,7 @@ double NPL::ApplyUnit(double value, std::string unit){
     return value*NPUNITS::weber;
   }
 
-  else if(unit=="tesla"){
+  else if(unit=="tesla" || unit=="T"){
     return value*NPUNITS::tesla;
   }
 

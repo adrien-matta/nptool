@@ -4,26 +4,26 @@ GeneralTarget
 
 %0.2mg/cm2
 Target
-	THICKNESS= 4.5
-	RADIUS=	5
-	MATERIAL= CD2
-	ANGLE= 0
-	X= 0
-	Y= 0
-	Z= 0
+ THICKNESS= 4.5
+ RADIUS=	5
+ MATERIAL= CD2
+ ANGLE= 0
+ X= 0
+ Y= 0
+ Z= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Spice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-MUST2Array			
-%%%%%%% Telescope 1 %%%%%%%			
+MUST2Array 		
+%%%%%%% Telescope 1 %%%%%%% 		
 M2Telescope
-	THETA= 0
-	PHI= 0
-	R= 400
-	BETA= 0 0 0
-	SI= 1
-	SILI= 1
-	CSI= 1
-	VIS= all					
+ THETA= 0
+ PHI= 0
+ R= 400
+ BETA= 0 0 0
+ SI= 1
+ SILI= 1
+ CSI= 1
+ VIS= all					
 
 

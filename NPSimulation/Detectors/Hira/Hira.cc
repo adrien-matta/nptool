@@ -552,8 +552,8 @@ extern"C" {
     class proxy_nps_hira{
     public:
         proxy_nps_hira(){
-            NPS::DetectorFactory::getInstance()->AddToken("HIRAArray","Hira");
-            NPS::DetectorFactory::getInstance()->AddDetector("HIRAArray",Hira::Construct);
+            NPS::DetectorFactory::getInstance()->AddToken("HiraTelescope","Hira");
+            NPS::DetectorFactory::getInstance()->AddDetector("HiraTelescope",Hira::Construct);
         }
     };
     

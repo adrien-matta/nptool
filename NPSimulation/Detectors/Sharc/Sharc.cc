@@ -114,7 +114,7 @@ void Sharc::AddQQQDetector(G4ThreeVector Pos,G4double Thickness){
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
 void Sharc::ReadConfiguration(NPL::InputParser parser){
-  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("SharcQQQ");
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithTokenAndValue("Sharc","QQQ");
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl; 
 
@@ -137,7 +137,7 @@ void Sharc::ReadConfiguration(NPL::InputParser parser){
   }
 
   blocks.clear();
-  blocks = parser.GetAllBlocksWithToken("SharcBOX");
+  blocks = parser.GetAllBlocksWithTokenAndValue("Sharc","BOX");
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl; 
 

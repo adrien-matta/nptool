@@ -1,0 +1,52 @@
+%Fichier de configuration manip E225
+%%%%%%%%%%%Target%%%%%%%%%%%%%%%%%%%1
+%Thickness in micrometer
+%Radius in mm
+%Temperature in K, Pressure in bar
+%Material name according to the target library
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%GeneralTarget
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Target
+% THICKNESS= 10.3
+% ANGLE= 0
+% RADIUS=	12
+% MATERIAL= CD2
+% NBLAYERS= 50
+% X= 0
+% Y= 0
+% Z= 0	
+
+
+%%%%%%%%%%Detector%%%%%%%%%%%%%%%%%%%
+%%Position and R given in mm
+%%Angle given in degree
+%%Option: 0,1 for Si SiLi and CsI
+%%Option: all or sensible for VISualisation
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GeneralChamber
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Chamber
+        Rmin= 200
+        Rmax= 202
+        PhiMin= 0.
+        PhiMax= 6.283185
+        ThetaMin= 0.
+        ThetaMax= 3.14159
+%        MATERIAL= 12C
+        MATERIAL= Alu
+%  MATERIAL= Cu
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Paris
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%0
+ParisPhoswich
+ A=		-28.5 	-235	28.5
+ B= 	28.5	-235	28.5
+ C= 	-28.5	-235	-28.5	
+ D= 	28.5	-235	-28.5	

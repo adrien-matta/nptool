@@ -3,7 +3,7 @@ ComptonTelescope
    THETA= 0 deg 
    PHI= 0 deg
    BETA= 0 0 0 deg
-   SIZE_DSSSD= 64 
+   SIZE_DSSSD= 64 mm 
    NUMBER_DSSSD= 1
    DISTANCE_INTER_DSSSD= 0 mm
    THICKNESS_DSSSD= 1.5 mm
@@ -12,4 +12,4 @@ ComptonTelescope
    THICKNESS_CALORIMETER= 0 mm
    TRACKER= 1
    CALORIMETER= 0
-   VIS= 0
+   VIS= 1

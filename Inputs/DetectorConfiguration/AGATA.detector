@@ -2,40 +2,40 @@
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Target
-	THICKNESS= 10
-	RADIUS=	20
-	MATERIAL= CD2
-	ANGLE= 0
-	X= 0
-	Y= 0
-	Z= 0
+ THICKNESS= 10
+ RADIUS=	20
+ MATERIAL= CD2
+ ANGLE= 0
+ X= 0
+ Y= 0
+ Z= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 AGATA
-	  THETA= 22.5 
+   THETA= 22.5 
     PHI= 45 
     R= 256.432
     Shape= Square 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 AGATA
-	  THETA= 22.5 
+   THETA= 22.5 
     PHI= 117 
     R= 256.432
     Shape= Square 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 AGATA
-	  THETA= 22.5 
+   THETA= 22.5 
     PHI= 189 
     R= 256.432
     Shape= Square 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 AGATA
-	  THETA= 22.5 
+   THETA= 22.5 
     PHI= 261
     R= 256.432
     Shape= Square 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 AGATA
-	  THETA= 22.5 
+   THETA= 22.5 
     PHI= 333 
     R= 256.432
     Shape= Square 

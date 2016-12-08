@@ -780,8 +780,8 @@ extern "C"{
     class proxy_hira{
     public:
         proxy_hira(){
-            NPL::DetectorFactory::getInstance()->AddToken("HIRAArray","Hira");
-            NPL::DetectorFactory::getInstance()->AddDetector("HIRAArray",THiraPhysics::Construct);
+            NPL::DetectorFactory::getInstance()->AddToken("HiraTelescope","Hira");
+            NPL::DetectorFactory::getInstance()->AddDetector("HiraTelescope",THiraPhysics::Construct);
         }
     };
     

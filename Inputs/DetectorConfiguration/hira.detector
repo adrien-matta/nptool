@@ -6,168 +6,166 @@ GeneralTarget
 % Radius in mm
 % Temperature in K, Pressure in bar
 Target
-	THICKNESS= 12.5
-  	ANGLE= 0
-	RADIUS=	10
-	MATERIAL= CD2
-	X= 0
-	Y= 0
-	Z= 0
-	
-%%%%%%%%%%%%%%%%%%%%%			
-HIRAArray			
+ THICKNESS= 12.5
+ ANGLE= 0
+ RADIUS=	10
+ MATERIAL= CD2
+ X= 0
+ Y= 0
+ Z= 0
+ 
+%%%%%%%%%%%%%%%%%%%%% 		
+HIRAArray 		
 %%%%%%%%%%%%%%%%%%%%%
-		
-%%%%%%% Telescope 1 %%%%%%%			
-HiraTelescope 			
-A=	173.37	146.75	262.67	
-B=	131.14	113.17	299.62
-C=	151.53	79.58	301.68
-D=	193.66	113.27	265.03
-ThinSi_DE= 1
-ThickSi_E= 1
-CsI= 1
+ 	
+%%%%%%% Telescope 1 %%%%%%% 		
+HiraTelescope  		
+ A= 173.37	146.75	262.67	
+ B= 131.14	113.17	299.62
+ C= 151.53	79.58	301.68
+ D= 193.66	113.27	265.03
+ ThinSi_DE= 1
+ ThickSi_E= 1
+ CsI= 1
 
-%%%%%%% Telescope 2 %%%%%%%			
-HiraTelescope 			
-A=	185.54	74.46	284.21
-B=	139.49	39.19	313.95
-C=	155.91	3.85	309.52
-D=	202.07	39.18	280.08
-ThinSi_DE= 1
-ThickSi_E= 1
-CsI= 1
+%%%%%%% Telescope 2 %%%%%%% 		
+HiraTelescope  		
+ A= 185.54	74.46	284.21
+ B= 139.49	39.19	313.95
+ C= 155.91	3.85	309.52
+ D= 202.07	39.18	280.08
+ ThinSi_DE= 1
+ ThickSi_E= 1
+ CsI= 1
 
-		
-%%%%%%% Telescope 3 %%%%%%%			
-HiraTelescope 			
-A=	189.04	-1.58	291.62
-B=	139.10	-36.55	314.66
-C=	151.29	-71.91	302.98
-D=	201.44	-36.97	280.35
-ThinSi_DE= 1
-ThickSi_E= 1
-CsI= 1
-
-
-%%%%%%% Telescope 4 %%%%%%%			
-HiraTelescope 			
-A=	183.90	-77.07	283.93
-B=	130.43	-110.63	300.17
-C=	139.05	-144.12	281.73
-D=	192.75	-110.68	265.85
-ThinSi_DE= 1
-ThickSi_E= 1
-CsI= 1
+ 	
+%%%%%%% Telescope 3 %%%%%%% 		
+HiraTelescope  		
+ A= 189.04	-1.58	291.62
+ B= 139.10	-36.55	314.66
+ C= 151.29	-71.91	302.98
+ D= 201.44	-36.97	280.35
+ ThinSi_DE= 1
+ ThickSi_E= 1
+ CsI= 1
 
 
-%%%%%%% Telescope 5 %%%%%%%			
-HiraTelescope 			
-A=	89.03	146.90	300.27
-B=	37.97	113.38	323.02
-C=	56.43	79.76	330.94
-D=	107.59	113.39	308.52
-ThinSi_DE= 1
-ThickSi_E= 1
-CsI= 1
+%%%%%%% Telescope 4 %%%%%%% 		
+HiraTelescope  		
+ A= 183.90	-77.07	283.93
+ B= 130.43	-110.63	300.17
+ C= 139.05	-144.12	281.73
+ D= 192.75	-110.68	265.85
+ ThinSi_DE= 1
+ ThickSi_E= 1
+ CsI= 1
 
 
-%%%%%%% Telescope 6 %%%%%%%			
-HiraTelescope 			
-A=	94.01	74.21	324.51
-B=	41.45	38.75	339.56
-C=	58.48	34.39	339.75
-D=	111.12	38.96	325.13
-ThinSi_DE= 1
-ThickSi_E= 1
-CsI= 1
+%%%%%%% Telescope 5 %%%%%%% 		
+HiraTelescope  		
+ A= 89.03	146.90	300.27
+ B= 37.97	113.38	323.02
+ C= 56.43	79.76	330.94
+ D= 107.59	113.39	308.52
+ ThinSi_DE= 1
+ ThickSi_E= 1
+ CsI= 1
 
 
-%%%%%%% Telescope 7 %%%%%%%			
-HiraTelescope 			
-A=	95.57	-1.96	332.31
-B=	41.29	-37.33	339.64
-C=	56.63	-72.62	332.23
-D=	110.97	-37.25	325.09
-ThinSi_DE= 1
-ThickSi_E= 1
-CsI= 1
+%%%%%%% Telescope 6 %%%%%%% 		
+HiraTelescope  		
+ A= 94.01	74.21	324.51
+ B= 41.45	38.75	339.56
+ C= 58.48	34.39	339.75
+ D= 111.12	38.96	325.13
+ ThinSi_DE= 1
+ ThickSi_E= 1
+ CsI= 1
 
 
-%%%%%%% Telescope 8 %%%%%%%			
-HiraTelescope 			
-A=	93.18	-77.88	323.56
-B=	37.45	-111.64	323.69
-C=	51.20	-145.11	308.69
-D=	107.05	-111.48	308.92
-ThinSi_DE= 1
-ThickSi_E= 1
-CsI= 1
+%%%%%%% Telescope 7 %%%%%%% 		
+HiraTelescope  		
+ A= 95.57	-1.96	332.31
+ B= 41.29	-37.33	339.64
+ C= 56.63	-72.62	332.23
+ D= 110.97	-37.25	325.09
+ ThinSi_DE= 1
+ ThickSi_E= 1
+ CsI= 1
 
 
-%%%%%%% Telescope 9 %%%%%%%			
-HiraTelescope 			
-A=	-22.26	91.79	332.36
-B=	-77.07	56.46	330.57
-C=	-61.34	21.44	338.41
-D=	-6.58	56.83	340.66
-ThinSi_DE= 1
-ThickSi_E= 1
-CsI= 1
+%%%%%%% Telescope 8 %%%%%%% 		
+HiraTelescope  		
+ A= 93.18	-77.88	323.56
+ B= 37.45	-111.64	323.69
+ C= 51.20	-145.11	308.69
+ D= 107.05	-111.48	308.92
+ ThinSi_DE= 1
+ ThickSi_E= 1
+ CsI= 1
 
 
-%%%%%%% Telescope 10 %%%%%%%			
-HiraTelescope 			
-A=	-23.10	-19.16	344.31
-B=	-76.45	-54.13	330.49
-C=	-59.35	-89.22	327.12	
-D=	-5.97	-54.26	341.22
-ThinSi_DE= 1
-ThickSi_E= 1
-CsI= 1
+%%%%%%% Telescope 9 %%%%%%% 		
+HiraTelescope  		
+ A= -22.26	91.79	332.36
+ B= -77.07	56.46	330.57
+ C= -61.34	21.44	338.41
+ D= -6.58	56.83	340.66
+ ThinSi_DE= 1
+ ThickSi_E= 1
+ CsI= 1
 
 
-%%%%%%% Telescope 11 %%%%%%%			
-HiraTelescope 			
-A=	-96.45	147.32	297.42
-B=	-151.2	113.36	286.61
-C=	-140.2	79.81	303.70
-D=	-85.74	113.90	314.86
-ThinSi_DE= 1
-ThickSi_E= 1
-CsI= 1
+%%%%%%% Telescope 10 %%%%%%% 		
+HiraTelescope  		
+ A= -23.10	-19.16	344.31
+ B= -76.45	-54.13	330.49
+ C= -59.35	-89.22	327.12	
+ D= -5.97	-54.26	341.22
+ ThinSi_DE= 1
+ ThickSi_E= 1
+ CsI= 1
 
 
-%%%%%%% Telescope 12 %%%%%%%			
-HiraTelescope 			
-A=	-105.62	74.17	320.23
-B=	-157.09	38.47	302.22
-C=	-143.26	3.23	312.38
-D=	-91.94	38.96	330.70
-ThinSi_DE= 1
-ThickSi_E= 1
-CsI= 1
-
-%%%%%%% Telescope 13 %%%%%%%			
-HiraTelescope 			
-A=	-108.60	-1.94	327.52
-B=	-156.99	-37.61	302.29
-C=	-140.04	-72.81	305.17
-D=	-91.79	-37.71	330.80
-ThinSi_DE= 1
-ThickSi_E= 1
-CsI= 1
+%%%%%%% Telescope 11 %%%%%%% 		
+HiraTelescope  		
+ A= -96.45	147.32	297.42
+ B= -151.2	113.36	286.61
+ C= -140.2	79.81	303.70
+ D= -85.74	113.90	314.86
+ ThinSi_DE= 1
+ ThickSi_E= 1
+ CsI= 1
 
 
-%%%%%%% Telescope 14 %%%%%%%			
-HiraTelescope 			
-A=	-104.76	-78.01	319.19
-B=	-150.28	-111.80	287.13
-C=	-130.29	-145.22	282.83
-D=	-84.95	-111.59	315.32
-ThinSi_DE= 1
-ThickSi_E= 1
-CsI= 1
+%%%%%%% Telescope 12 %%%%%%% 		
+HiraTelescope  		
+ A= -105.62	74.17	320.23
+ B= -157.09	38.47	302.22
+ C= -143.26	3.23	312.38
+ D= -91.94	38.96	330.70
+ ThinSi_DE= 1
+ ThickSi_E= 1
+ CsI= 1
+
+%%%%%%% Telescope 13 %%%%%%% 		
+HiraTelescope  		
+ A= -108.60	-1.94	327.52
+ B= -156.99	-37.61	302.29
+ C= -140.04	-72.81	305.17
+ D= -91.79	-37.71	330.80
+ ThinSi_DE= 1
+ ThickSi_E= 1
+ CsI= 1
 
 
+%%%%%%% Telescope 14 %%%%%%% 		
+HiraTelescope  		
+ A= -104.76	-78.01	319.19
+ B= -150.28	-111.80	287.13
+ C= -130.29	-145.22	282.83
+ D= -84.95	-111.59	315.32
+ ThinSi_DE= 1
+ ThickSi_E= 1
+ CsI= 1
 

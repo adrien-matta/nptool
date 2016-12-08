@@ -1,0 +1,109 @@
+%%%%%%%%%%Detector%%%%%%%%%%%%%%%%%%%
+%%Position and distance given in mm
+%%Angle given in degree
+%% using the data from the experimental mesurement
+%% special care is given for the X Y direction
+%% NOTATTION USED IN THE FOLLOWING:
+%%
+%% X1_Y1  	--> X:1    Y:1
+%% X128_Y1  	--> X:128  Y:1
+%% X1_Y128  	--> X:1    Y:128
+%% X128_Y128  --> X:128  Y:128
+%%Option: 0,1 for Si SiLi and CSI
+%%Option: all or sensible for VISualisation
+% 1.2 12.371134021
+% 2   20.618556701
+% 30  309.278350515
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+GeneralTarget
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+Target
+ THICKNESS= 0.001
+ RADIUS=	7.5
+ MATERIAL= CD2
+ X= 0
+ Y= 0
+ Z= 0
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+GaspardTracker
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Barrel
+GPDTrapezoid
+ X1_Y1=	 	55.34	-14.35	146.50
+ X128_Y1=	114.70	-38.88	 91.36
+ X1_Y128=	114.70	 38.85	 91.36
+ X128_Y128=	55.34	 14.26	146.50
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 1
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
+GPDTrapezoid
+ X1_Y1=	 	 49.27	 28.99	146.50
+ X128_Y1=	108.60	 53.61	 91.36
+ X1_Y128=	 53.63	108.58	 91.36
+ X128_Y128=	 29.04	 49.21	146.50
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 1
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%3
+GPDTrapezoid
+ X1_Y1=	 	 14.35	 55.34	146.50
+ X128_Y1=	 38.88	114.70	 91.36
+ X1_Y128=	-38.85	114.70	 91.36
+ X128_Y128=	-14.26	 55.34	146.50
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 1
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%4
+GPDTrapezoid
+ X1_Y1=	 	 -28.99	 49.27	146.50
+ X128_Y1=	 -53.61	108.60	 91.36
+ X1_Y128=	-108.58	 53.63	 91.36
+ X128_Y128=	 -49.21	 29.04	146.50
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 1
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+GPDTrapezoid
+ X1_Y1=	 	 -55.34	 14.35	146.50
+ X128_Y1=	-114.70	 38.88	 91.36
+ X1_Y128=	-114.70	-38.85	 91.36
+ X128_Y128=	 -55.34	-14.26	146.50
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 1
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%6
+GPDTrapezoid
+ X1_Y1=	 	 -49.27	 -28.99	146.50
+ X128_Y1=	-108.60	 -53.61	 91.36
+ X1_Y128=	 -53.63	-108.58	 91.36
+ X128_Y128=	 -29.04	 -49.21	146.50
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 1
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%7
+GPDTrapezoid
+ X1_Y1=	 	-14.35	 -55.34	146.50
+ X128_Y1=	-38.88	-114.70	 91.36
+ X1_Y128=	 38.85	-114.70	 91.36
+ X128_Y128=	 14.26	 -55.34	146.50
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 1
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%8
+GPDTrapezoid
+ X1_Y1=	 	 28.99	-49.27	146.50
+ X128_Y1=	 53.61	-108.60	 91.36
+ X1_Y128=	108.58	-53.63	 91.36
+ X128_Y128=	 49.21	-29.04	146.50
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 1
+ VIS= all

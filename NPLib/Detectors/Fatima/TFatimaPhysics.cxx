@@ -118,7 +118,7 @@ void TFatimaPhysics::Clear(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TFatimaPhysics::ReadConfiguration(NPL::InputParser parser){
-  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("FatimaCluser");
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Fatima");
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl; 
   for(unsigned int i  = 0 ; i < blocks.size() ; i++){
@@ -137,6 +137,7 @@ void TFatimaPhysics::ReadConfiguration(NPL::InputParser parser){
     }
 
     else if(blocks[i]->HasTokenList(sphe)){
+      cout << endl << "////  Fatima " << i+1 << endl;
       double Theta = blocks[i]->GetDouble("THETA","deg");
       double Phi= blocks[i]->GetDouble("PHI","deg");
       double R = blocks[i]->GetDouble("R","mm");

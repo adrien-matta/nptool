@@ -1,18 +1,18 @@
 /*****************************************************************************
- * Copyright (C) 2009-2016   this file is part of the NPTool Project       *
+ * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Pierre Morfouace  contact address: morfouac@nscl.msu.edu                        *
+ * Original Author: Pierre Morfouace  contact address: morfouac@nscl.msu.edu *
  *                                                                           *
- * Creation Date  : June 2016                                           *
+ * Creation Date  : June 2016                                                *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe  Microball simulation                             *
+ *  This class describe  Microball simulation                                *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -155,7 +155,7 @@ void Microball::ReadConfiguration(NPL::InputParser parser){
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  vector<string> token = {"RING1","RING2","RING3","RING4","RING5","RING6","RING7","RING8","RING9","DISABLE_CRYSTAL"};
+  vector<string> token = {"RING1","RING2","RING3","RING4","RING5","RING6","RING7","RING8","RING9"};
 
   vector<int> copyNumArray;
   bool bFlip = false;
@@ -175,7 +175,8 @@ void Microball::ReadConfiguration(NPL::InputParser parser){
       bool bR7 = blocks[i]->GetInt("RING7");
       bool bR8 = blocks[i]->GetInt("RING8");
       bool bR9 = blocks[i]->GetInt("RING9");
-      copyNumArray.push_back( blocks[i]->GetInt("DISABLE_CRYSTAL"));
+      if(blocks[i]->HasToken("DISABLE_CRYSTAL"))
+        copyNumArray.push_back( blocks[i]->GetInt("DISABLE_CRYSTAL"));
       if(blocks[i]->HasToken("DETECTOR_FLIP"))
        bFlip =  blocks[i]->GetInt("DETECTOR_FLIP");
       if(blocks[i]->HasToken("INCLUDE_CHAMBER"))

@@ -106,6 +106,10 @@ void Target::ReadConfiguration(NPL::InputParser parser){
       cout << "ERROR: Target token list incomplete, check your input file" << endl;
       exit(1);
     }
+    if(starget[0]->HasToken("NBLAYERS"))
+      m_TargetNbLayers = starget[0]->GetInt("NBLAYERS");
+
+
   }
   else if(ctarget.size()==1){
     cout << " Solid Target found " << endl;
@@ -124,9 +128,14 @@ void Target::ReadConfiguration(NPL::InputParser parser){
       cout << "ERROR: Target token list incomplete, check your input file" << endl;
       exit(1);
     }
+    
+    if(ctarget[0]->HasToken("NBLAYERS"))
+      m_TargetNbLayers = ctarget[0]->GetInt("NBLAYERS");
+
   }
   else{
     cout << "ERROR: One and only one target shall be declared in your detector file" << endl;
+    exit(1);
   }
 
 

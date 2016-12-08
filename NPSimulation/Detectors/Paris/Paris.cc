@@ -167,15 +167,15 @@ void Paris::AddPhoswich(G4ThreeVector Pos, double beta_u, double beta_v, double 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
 void Paris::ReadConfiguration(NPL::InputParser parser){
-  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("ParisCluster");
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Paris");
   if(NPOptionManager::getInstance()->GetVerboseLevel())
-    cout << "//// Paris Cluster " << blocks.size() << " detectors found " << endl; 
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
   vector<string> cart = {"A","B","C","D"};
   vector<string> sphe = {"R","THETA","PHI","BETA"};
 
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
-    if(blocks[i]->HasTokenList(cart)){
+    if(blocks[i]->HasTokenList(cart) && blocks[i]->GetMainValue()=="Cluster"){
       if(NPOptionManager::getInstance()->GetVerboseLevel())
         cout << endl << "////  Cluster " << i+1 <<  endl;
       G4ThreeVector A = NPS::ConvertVector(blocks[i]->GetTVector3("A","mm"));
@@ -185,7 +185,7 @@ void Paris::ReadConfiguration(NPL::InputParser parser){
 
       AddCluster(A,B,C,D);
     }
-    else if(blocks[i]->HasTokenList(sphe)){
+    else if(blocks[i]->HasTokenList(sphe)&& blocks[i]->GetMainValue()=="Cluster"){
       if(NPOptionManager::getInstance()->GetVerboseLevel())
         cout << endl << "////  Cluster " << i+1 <<  endl;
       double R = blocks[i]->GetDouble("R","mm");
@@ -196,18 +196,7 @@ void Paris::ReadConfiguration(NPL::InputParser parser){
       G4ThreeVector Pos(R*sin(Theta)*cos(Phi),R*sin(Theta)*sin(Phi),R*cos(Theta));
       AddCluster(Pos,Beta[0],Beta[1],Beta[2]);
     }
-    else{
-      cout << "ERROR: check your input file formatting " << endl;
-      exit(1);
-    }
-  }
-  
-  blocks = parser.GetAllBlocksWithToken("ParisPhoswich");
-  if(NPOptionManager::getInstance()->GetVerboseLevel())
-    cout << "//// Paris Phoswich: " << blocks.size() << " detectors found " << endl; 
-
-  for(unsigned int i = 0 ; i < blocks.size() ; i++){
-    if(blocks[i]->HasTokenList(cart)){
+    else if(blocks[i]->HasTokenList(cart)&& blocks[i]->GetMainValue()=="Phoswich"){
       if(NPOptionManager::getInstance()->GetVerboseLevel())
         cout << endl << "////  Phoswich" << i+1 <<  endl;
       G4ThreeVector A = NPS::ConvertVector(blocks[i]->GetTVector3("A","mm"));
@@ -217,7 +206,8 @@ void Paris::ReadConfiguration(NPL::InputParser parser){
 
       AddPhoswich(A,B,C,D);
     }
-    else if(blocks[i]->HasTokenList(sphe)){
+
+    else if(blocks[i]->HasTokenList(sphe)&& blocks[i]->GetMainValue()=="Phoswich"){
       if(NPOptionManager::getInstance()->GetVerboseLevel())
         cout << endl << "////  Phoswich " << i+1 <<  endl;
       double R = blocks[i]->GetDouble("R","mm");
@@ -228,6 +218,7 @@ void Paris::ReadConfiguration(NPL::InputParser parser){
       G4ThreeVector Pos(R*sin(Theta)*cos(Phi),R*sin(Theta)*sin(Phi),R*cos(Theta));
       AddPhoswich(Pos,Beta[0],Beta[1],Beta[2]);
     }
+
     else{
       cout << "ERROR: check your input file formatting " << endl;
       exit(1);

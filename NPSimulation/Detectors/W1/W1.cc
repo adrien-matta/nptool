@@ -198,6 +198,7 @@ void W1::ReadConfiguration(NPL::InputParser parser){
     }
 
     else if(blocks[i]->HasTokenList(sphe)){
+      cout << endl << "////  W1 " << i+1 << endl;
       double Theta = blocks[i]->GetDouble("THETA","deg");
       double Phi= blocks[i]->GetDouble("PHI","deg");
       double R = blocks[i]->GetDouble("R","mm");

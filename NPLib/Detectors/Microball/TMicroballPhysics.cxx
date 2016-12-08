@@ -187,7 +187,7 @@ void TMicroballPhysics::ReadConfiguration(NPL::InputParser parser ) {
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  vector<string> token = {"RING1","RING2","RING3","RING4","RING5","RING6","RING7","RING8","RING9","DISABLE_CRYSTAL"};
+  vector<string> token = {"RING1","RING2","RING3","RING4","RING5","RING6","RING7","RING8","RING9"};
 
   vector<int> copyNumArray;
   bool bFlip = false;
@@ -206,7 +206,8 @@ void TMicroballPhysics::ReadConfiguration(NPL::InputParser parser ) {
       bool bR7 = blocks[i]->GetInt("RING7");
       bool bR8 = blocks[i]->GetInt("RING8");
       bool bR9 = blocks[i]->GetInt("RING9");
-      copyNumArray.push_back( blocks[i]->GetInt("DISABLE_CRYSTAL"));
+      if( blocks[i]->HasToken("DISABLE_CRYSTAL"))
+        copyNumArray.push_back( blocks[i]->GetInt("DISABLE_CRYSTAL"));
       if(blocks[i]->HasToken("DETECTOR_FLIP"))
        bFlip =  blocks[i]->GetInt("DETECTOR_FLIP");
     }

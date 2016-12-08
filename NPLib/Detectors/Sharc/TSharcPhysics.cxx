@@ -460,7 +460,7 @@ void TSharcPhysics::Clear(){
 void TSharcPhysics::ReadConfiguration(NPL::InputParser parser){
 
 
-  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("SharcQQQ");
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithTokenAndValue("Sharc","QQQ");
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// QQQ: " << blocks.size() << " detectors found " << endl; 
 
@@ -484,7 +484,7 @@ void TSharcPhysics::ReadConfiguration(NPL::InputParser parser){
   }
 
   blocks.clear();
-  blocks = parser.GetAllBlocksWithToken("SharcBOX");
+  blocks = parser.GetAllBlocksWithTokenAndValue("Sharc","BOX");
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// BOX: " << blocks.size() << " detectors found " << endl; 
 

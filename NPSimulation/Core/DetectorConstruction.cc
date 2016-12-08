@@ -156,8 +156,7 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
       AddDetector(m_Target);
      }
     else{
-      cout << "ERROR: No target found in detector input file! " << endl;
-      exit(1);
+      cout << "WARNING: No target found in detector input file! Use with caution" << endl;
     }
   }
      

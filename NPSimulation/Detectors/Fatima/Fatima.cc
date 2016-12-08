@@ -117,7 +117,7 @@ void Fatima::AddDetector(G4ThreeVector Pos, double beta_u, double beta_v, double
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
 void Fatima::ReadConfiguration(NPL::InputParser parser){
-  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("FatimaCluser");
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Fatima");
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl; 
   for(unsigned int i  = 0 ; i < blocks.size() ; i++){
@@ -128,7 +128,7 @@ void Fatima::ReadConfiguration(NPL::InputParser parser){
     vector<string> sphe= {"R","THETA","PHI","BETA"};
 
     if(blocks[i]->HasTokenList(cart)){
-      cout << endl << "////  Must 2 Telecope found:" << endl;
+      cout << endl << "////  Fatima " << i+1 << endl;
       G4ThreeVector A = NPS::ConvertVector(blocks[i]->GetTVector3("A","mm"));
       G4ThreeVector B = NPS::ConvertVector(blocks[i]->GetTVector3("B","mm"));
       G4ThreeVector C = NPS::ConvertVector(blocks[i]->GetTVector3("C","mm"));
@@ -137,6 +137,7 @@ void Fatima::ReadConfiguration(NPL::InputParser parser){
     }
 
     else if(blocks[i]->HasTokenList(sphe)){
+      cout << endl << "////  Fatima " << i+1 << endl;
       double Theta = blocks[i]->GetDouble("THETA","deg");
       double Phi= blocks[i]->GetDouble("PHI","deg");
       double R = blocks[i]->GetDouble("R","mm");
@@ -147,7 +148,7 @@ void Fatima::ReadConfiguration(NPL::InputParser parser){
     }
 
     else{
-      cout << "ERROR: Missing token for FatimaCluser blocks, check your input file" << endl;
+      cout << "ERROR: Missing token for Fatima blocks, check your input file" << endl;
       exit(1);
     }
   }

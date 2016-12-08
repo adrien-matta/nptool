@@ -74,11 +74,11 @@ void TExlPhysics::ReadConfiguration(NPL::InputParser parser) {
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  vector<string> token= {"CsI_X_Y_Z"};
+  vector<string> token= {"POS"};
   vector<TVector3> Center_CsI_Crystals;
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
     if(blocks[i]->HasTokenList(token)){
-      TVector3 pos = blocks[i]->GetTVector3("CsI_X_Y_Z","mm");
+      TVector3 pos = blocks[i]->GetTVector3("POS","mm");
       Center_CsI_Crystals.push_back(pos);
     }
 

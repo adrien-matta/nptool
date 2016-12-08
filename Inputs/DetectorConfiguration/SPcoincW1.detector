@@ -1,61 +1,55 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-GeneralTarget
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Target
-   THICKNESS= 10
-   RADIUS=  7.5
+   THICKNESS= 10 micrometer
+   RADIUS=  7.5 mm
    MATERIAL= CD2
-   X= 0
-   Y= 0
-   Z= 0
+   Angle= 0 deg
+   X= 0 mm
+   Y= 0 mm
+   Z= 0 mm
 
-
-
-
-%%%%%%% Detector 1 %%%%%%%			
+%%%%%%% Detector 1 %%%%%%% 		
 W1
-	THETA= 150
-	PHI= 0
-	R= 150
-	BETA= 0 0 0
-	VIS= all					
-%%%%%%% Detector 2 %%%%%%%			
+ THETA= 150 deg
+ PHI= 0 deg 
+ R= 150 mm
+ BETA= 0 0 0 deg
+ VIS= all					
+%%%%%%% Detector 2 %%%%%%% 		
 W1
-	THETA= 150
-	PHI= 0
-	R= 150
-	BETA= 0 0 0
-	VIS= all					
-%%%%%%% Detector 3 %%%%%%%			
+ THETA= 150 deg
+ PHI= 0 deg 
+ R= 150 mm 
+ BETA= 0 0 0 deg
+ VIS= all					
+%%%%%%% Detector 3 %%%%%%% 		
 W1
-	THETA= 150
-	PHI= 0
-	R= 150
-	BETA= 0 0 0
-	VIS= all					
-%%%%%%% Detector 4 %%%%%%%			
+ THETA= 150 deg
+ PHI= 0 deg
+ R= 150 mm
+ BETA= 0 0 0 deg
+ VIS= all					
+%%%%%%% Detector 4 %%%%%%% 		
 W1
-	THETA= 150
-	PHI= 0
-	R= 150
-	BETA= 0 0 0
-	VIS= all					
-%%%%%%% Detector 5 %%%%%%%			
+ THETA= 150 deg
+ PHI= 0 deg
+ R= 150 mm 
+ BETA= 0 0 0 deg
+ VIS= all					
+%%%%%%% Detector 5 %%%%%%% 		
 W1
-	THETA= 150
-	PHI= 0
-	R= 150
-	BETA= 0 0 0
-	VIS= all					
-%%%%%%% Detector 6 %%%%%%%			
+ THETA= 150 deg
+ PHI= 0 deg
+ R= 150 mm 
+ BETA= 0 0 0 deg
+ VIS= all					
+%%%%%%% Detector 6 %%%%%%% 		
 W1
-	THETA= 150
-	PHI= 0
-	R= 150
-	BETA= 0 0 0
-	VIS= all					
-
-
+ THETA= 150 deg
+ PHI= 0 deg
+ R= 150 mm 
+ BETA= 0 0 0 deg
+ VIS= all					
 %%%%%%% Splitpole  %%%%%%%
 SplitPole
 
