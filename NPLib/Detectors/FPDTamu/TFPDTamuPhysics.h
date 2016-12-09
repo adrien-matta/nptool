@@ -77,7 +77,7 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
   vector<double> MicroPositionZ;
   vector<double> MicroCharge;
   vector<double> MicroEnergy;
-  vector<double> MicroTimeOR;
+  vector<double> MicroTime;
   //Avalanche wire
   vector<int>    AWireDetNumber;
   vector<double> AWireLeftCharge;
@@ -87,8 +87,8 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
   //Plastic scintillator
   vector<double> PlastLeftCharge;
   vector<double> PlastRightCharge;
-  vector<double> PlastTimeLeft;
-  vector<double> PlastTimeRight;
+  vector<double> PlastLeftTime;
+  vector<double> PlastRightTime;
   vector<double> PlastCharge;
   vector<double> PlastPositionX;
   vector<double> PlastPositionZ;

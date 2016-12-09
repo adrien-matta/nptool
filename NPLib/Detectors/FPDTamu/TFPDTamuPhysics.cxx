@@ -81,6 +81,7 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
       }
 
   //Micro
+  // Time and energy can't be matched since the we have only an OR on time
   // fill the vectors, calculate positions   
   mysizeE = m_PreTreatedData->Get_Micro_Energy_Mult();
   for (UShort_t e = 0; e < mysizeE ; e++) {
@@ -96,11 +97,11 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
         MicroEnergy.push_back(m_PreTreatedData->Get_Micro_Energy(e)); //calibrated
         MicroCharge.push_back(m_EventData->Get_Micro_Energy(e)); //uncalibrated
       }    
-
-   unsigned int mysizeT = m_PreTreatedData->Get_Micro_Time_Mult();
-    for (UShort_t t = 0; t< mysizeT ; t++) {
-      MicroTimeOR.push_back(m_EventData->Get_Micro_Time(t));
-    }
+  unsigned int mysizeT = m_PreTreatedData->Get_Micro_Time_Mult();
+  for (UShort_t t = 0; t < mysizeT ; t++) {
+        //Pass the corresponding Time
+        MicroTime.push_back(m_PreTreatedData->Get_Micro_Time(t));
+      } 
 
    //AWire
   //separate Left and right detectors 
@@ -205,7 +206,6 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
   }
 
   //separate Left and right detectors 
-  vector<double> PlastRightTime, PlastLeftTime;
   mysizeT = m_PreTreatedData->Get_Plast_Time_Mult();
   for (UShort_t t = 0; t < mysizeT ; t++) {
     //collect info
@@ -245,7 +245,7 @@ double TFPDTamuPhysics::GetMicroGroupEnergy(int lrow, int hrow, int lcol, int hc
   double energy = 0;  
   
   //avoid zeros
-  if (lrow==0 || hrow==0 || lcol==0 || hcol)
+  if (lrow==0 || hrow==0 || lcol==0 || hcol==0)
     cout << " \033[1;311mWARNING: '0' value detected, TFPDTamuPhysics::GetMicroGroupEnergy() uses values >=1 " << endl;
   //check validity
   if (lrow>hrow) { 
@@ -358,8 +358,8 @@ void TFPDTamuPhysics::PreTreat() {
       name+= "_C" ;
       name+= NPL::itoa( m_EventData->Get_Micro_T_ColNbr(i)+1) ;
       name+= "_T" ;
-      Double_t Time = Cal->ApplyCalibration(name, m_EventData->Get_Micro_Energy(i));
-      if (Time > m_E_Threshold) {
+      Double_t Time = Cal->ApplyCalibration(name, m_EventData->Get_Micro_Time(i));
+      if (Time > m_T_Threshold) {
         m_PreTreatedData->Set_Micro_T(m_EventData->Get_Micro_T_RowNbr(i),m_EventData->Get_Micro_T_ColNbr(i), Time);
       }
     }
@@ -511,7 +511,7 @@ void TFPDTamuPhysics::Clear() {
   MicroPositionZ.clear();
   MicroCharge.clear();
   MicroEnergy.clear();
-  MicroTimeOR.clear();
+  MicroTime.clear();
   //Avalanche wire
   AWireDetNumber.clear();
   AWireLeftCharge.clear();
@@ -521,8 +521,8 @@ void TFPDTamuPhysics::Clear() {
   //Plastic scintillator
   PlastLeftCharge.clear();
   PlastRightCharge.clear();
-  PlastTimeLeft.clear();
-  PlastTimeRight.clear();
+  PlastLeftTime.clear();
+  PlastRightTime.clear();
   PlastCharge.clear();
   PlastPositionX.clear();
   PlastPositionZ.clear();
