@@ -12,7 +12,7 @@
  *                                                                           *
  * Creation Date  : march 2015                                               *
  * Last update    : December 2016 [m.moukaddam@surrey.ac.uk]                 *
-  *---------------------------------------------------------------------------*
+ *---------------------------------------------------------------------------*
  * Decription:                                                               *
  * Class describing the property of an Analysis object                       *
  *                                                                           *
@@ -25,6 +25,7 @@
 #include "TTiaraHyballPhysics.h"
 #include "TTiaraBarrelPhysics.h"
 #include "TFPDTamuPhysics.h"
+#include "TGeTAMUPhysics.h"
 #include "TInitialConditions.h"
 #include "NPEnergyLoss.h"
 #include "NPReaction.h"
@@ -74,22 +75,23 @@ class Analysis: public NPL::VAnalysis{
   TTiaraHyballPhysics* TH;
   TTiaraBarrelPhysics* TB;  
   TFPDTamuPhysics* TF;
+  //TGeTAMUPhysics* TG;
 
   TRandom *Rand ;
 	double ThetaNormalTarget  ;
 	double ThetaTHSurface ;
-  double ThetaTBSurface ;
+	double ThetaTBSurface ;
 	double Si_E_TH  ;
-  double Si_E_InnerTB;
-  double Si_E_OuterTB;
-  double Si_E_TB  ;
+	double Si_E_InnerTB;
+	double Si_E_OuterTB;
+	double Si_E_TB  ;
 	double Energy ;
 	double TargetThickness ;
 
-  double Original_ThetaLab;
-  double Original_ELab;
-	
-  double XTarget ;
+	double Original_ThetaLab;
+	double Original_ELab;
+
+	double XTarget ;
 	double YTarget ;
 	TVector3 BeamDirection ;
   
@@ -103,5 +105,10 @@ class Analysis: public NPL::VAnalysis{
   double XPlastic_aw  ;
   double XPlastic     ;
 
+  //TAC
+  double TacSiGeOR ;
+  double TacSiMicroOR ;
+	double TacSiPlast1 ;
+	double TacSiPlast2 ;
 };
 #endif

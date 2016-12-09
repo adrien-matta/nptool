@@ -19,8 +19,10 @@
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
-#include<iostream>
+
+#include <iostream>
 using namespace std;
+
 #include "Analysis.h"
 #include "NPAnalysisFactory.h"
 #include "NPDetectorManager.h"
@@ -40,7 +42,8 @@ void Analysis::Init(){
   TH  = (TTiaraHyballPhysics*) m_DetectorManager -> GetDetector("TiaraHyballWedge");
   TB  = (TTiaraBarrelPhysics*) m_DetectorManager -> GetDetector("TiaraInnerBarrel=");
   TF  = (TFPDTamuPhysics*) m_DetectorManager -> GetDetector("FPDTamu");
-
+  //TG  = (TGeTAMUPhysics*) m_DetectorManager -> GetDetector("GeTAMU");
+  
   // get reaction information
   myReaction = new NPL::Reaction();
   myReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
@@ -66,7 +69,6 @@ void Analysis::Init(){
 
   Initial = new TInitialConditions();
 
-
   Rand = new TRandom3();
   ThetaNormalTarget = 0 ;
   ThetaTHSurface = 0;
@@ -79,7 +81,6 @@ void Analysis::Init(){
   
   //Original_ELab=0;
   //Original_ThetaLab=0;
-
   XTarget =0;
   YTarget =0;
   BeamDirection = TVector3(0,0,1);
@@ -95,6 +96,12 @@ void Analysis::Init(){
   XPlastic_aw = 0; // X on plastic from avalanche wire
   Theta_aw    = 0; // ion direction in the FPD
   XPlastic    = 0; // X on plastic from plastic PMTs
+  
+  //TAC
+  TacSiGeOR     = -1000;
+  TacSiMicroOR    = -1000;
+  TacSiPlast1  = -1000;
+  TacSiPlast2 = -1000;
 
 }
 
@@ -102,15 +109,10 @@ void Analysis::Init(){
 void Analysis::TreatEvent(){
   // Reinitiate calculated variable
   ReInitValue();
-  //Original_ELab = Initial->GetKineticEnergy(0);
-  //Original_ThetaLab = Initial->GetParticleDirection(0).Angle(Initial->GetBeamDirection())/deg;
-
   ////////////////////////////////////////// LOOP on TiaraHyball + SSSD Hit //////////////////////////////////////////
   for(unsigned int countTiaraHyball = 0 ; countTiaraHyball < TH->Strip_E.size() ; countTiaraHyball++){
-    /************************************************/
-    // TiaraHyball
-    /************************************************/
-    // Part 1 : Impact Angle
+   /////////////////////////////
+   // Part 1 : Impact Angle
     ThetaTHSurface = 0;
     ThetaNormalTarget = 0;
     if(XTarget>-1000 && YTarget>-1000){
@@ -127,53 +129,40 @@ void Analysis::TreatEvent(){
       ThetaNormalTarget = -1000  ;
     }
 
-    /************************************************/
+    /////////////////////////////
     // Part 2 : Impact Energy
     Energy = ELab = 0;
     Si_E_TH = TH->Strip_E[countTiaraHyball];
     Energy = Si_E_TH;
 
     // Evaluate energy using the thickness 
-    //    ELab = LightAl.EvaluateInitialEnergy( Energy ,0.4*micrometer , ThetaTHSurface); 
+    Energy = LightAl.EvaluateInitialEnergy( Energy ,0.4*micrometer , ThetaTHSurface); 
     ELab = Energy;
     // Target Correction
     ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget); 
 
-    /************************************************/
-
+   /////////////////////////////
     // Part 3 : Excitation Energy Calculation
     Ex = myReaction -> ReconstructRelativistic( ELab , ThetaLab );
 
-    /************************************************/
-
+    /////////////////////////////
     // Part 4 : Theta CM Calculation
     ThetaCM  = myReaction -> EnergyLabToThetaCM( ELab , ThetaLab)/deg;
     ThetaLab=ThetaLab/deg;
 
-    /************************************************/
-
-    // Part 5 : Implementing impact matrix for the entire Hyball (all 6 wedges)
-    /*TVector3 HyballImpactPosition = TH -> GetPositionOfInteraction(countTiaraHyball);
-      HyballIMX = HyballImpactPosition.X();
-      HyballIMY = HyballImpactPosition.Y();
-      HyballIMZ = HyballImpactPosition.Z();*/
-
-    /************************************************/
-
-    // Part 6 : Implementing randomised position impact matrix for the Hyball
+    /////////////////////////////
+    // Part 5 : Implementing randomised position impact matrix for the Hyball
     TVector3 HyballRandomImpactPosition = TH -> GetRandomisedPositionOfInteraction(countTiaraHyball);
     TiaraIMX = HyballRandomImpactPosition.X();
     TiaraIMY = HyballRandomImpactPosition.Y();
     TiaraIMZ = HyballRandomImpactPosition.Z();
-
-    /************************************************/
 
   } // end loop TiaraHyball
 
   /////////////////////////// LOOP on TiaraBarrel /////////////////////////////
   for(unsigned int countTiaraBarrel = 0 ; countTiaraBarrel < TB->Strip_E.size() ; countTiaraBarrel++){
 
-    /************************************************/
+    /////////////////////////////
     // Part 1 : Impact Angle
     ThetaTBSurface = 0;
     ThetaNormalTarget = 0;
@@ -189,8 +178,8 @@ void Analysis::TreatEvent(){
       ThetaTBSurface    = -1000  ;
       ThetaNormalTarget = -1000  ;
     }
-    /************************************************/
 
+    /////////////////////////////
     // Part 2 : Impact Energy
     Energy = ELab = 0;
     Si_E_InnerTB = TB->Strip_E[countTiaraBarrel];
@@ -207,44 +196,35 @@ void Analysis::TreatEvent(){
     // Target Correction
     ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
 
-    /************************************************/
-
+    /////////////////////////////
     // Part 3 : Excitation Energy Calculation
     Ex = myReaction -> ReconstructRelativistic( ELab , ThetaLab );
 
-    /************************************************/
-
+    //////////////////////////////
     // Part 4 : Theta CM Calculation
     ThetaCM  = myReaction -> EnergyLabToThetaCM( ELab , ThetaLab)/deg;
     ThetaLab=ThetaLab/deg;
 
-    /************************************************/      
-
-    // Part 5 : Implementing impact matrix for the Tiara Barrel (all 8 detecting strips)
-    /*TVector3 BarrelImpactPosition = TB -> GetPositionOfInteraction(countTiaraBarrel);
-      BarrelIMX = BarrelImpactPosition.X();
-      BarrelIMY = BarrelImpactPosition.Y();
-      BarrelIMZ = BarrelImpactPosition.Z();*/
-
-    /************************************************/
-
-    // Part 6 : Implementing randomised position impact matrix for both the entire Barrel (all 8 strips) and each strip making up the octagonal Barrel individually
+    /////////////////////////////
+    // Part 5 : Implementing randomised position impact matrix for both the entire Barrel (all 8 strips) and each strip making up the octagonal Barrel individually
     TVector3 BarrelRandomImpactPosition = TB -> GetRandomisedPositionOfInteraction(countTiaraBarrel);
     TiaraIMX = BarrelRandomImpactPosition.X();
     TiaraIMY = BarrelRandomImpactPosition.Y();
     TiaraIMZ = BarrelRandomImpactPosition.Z();
 
-    /************************************************/
-
   } // end loop TiaraBarrel
 
+  /////////////////////////// LOOP on Ge TAMU /////////////////////////////
+//for(unsigned int countGe = 0 ; countGe < TG->something.size() ; countGe++) // multiplicity treated for now is zero 
+//  { 
+  // Things goes here ...
+//  }
+
  ////////////////////////////////////////// LOOP on FPD  //////////////////////////////////////////
-  
   //for(unsigned int countFPD = 0 ; countFPD < TF->Delta.size() ; countFPD++) // multiplicity treated for now is zero 
   { 
     //TF->Dump();
-    if(0){ // hit on target or another condition
-
+    if(0){ // some condition
       // Part 1 : Collect the energis from the different sub-detectors
       Delta_E      = TF->DeltaEnergy[0];
       Micro_E_row1 = TF->GetMicroGroupEnergy(1,1,1,7); // energy sum from the row 1 
@@ -269,7 +249,35 @@ void Analysis::TreatEvent(){
     }
 
   } // end loop on FPD
-}
+  
+
+  ////////////////////////////////////////// TAC  //////////////////////////////////////////
+  // The Physics classes for FPDTamu are made to hold the time information from every channel
+  // i.e. there can not be channels providing time more than channels providing energies 
+  // In Tiara@TAMU campaign the times are provided as OR from the Micro and the Germanium
+  // i.e. one time channel per detector. Typically this information is given to the first channel
+  // of the detector, e.g. for micro: FpdTAMU MICRO_R1_C1_T and for HPGe: GeTamu CLOVER01_CRYSTAL01_T 
+  if(TF->MicroTime.size()==1) 
+    TacSiMicroOR = TF->MicroTime[0];
+  else 
+    TacSiMicroOR = -999;
+  /*if(TG->GeTime.size()==1)
+    TacSiGeOR = TG->GeTime[0];
+  else 
+    TacSiGeOR = -999;*/
+  // For the plastic there's two ways to calculate the times, both ar OR. 
+  // The two available time channels i.e. Plast Right and Plast left are used in this case
+  if(TF->PlastRightTime.size()==1)
+      TacSiPlast1 = TF->PlastRightTime[0];
+  else
+    TacSiPlast1 = -999;
+  
+  if(TF->PlastLeftTime.size()==1)
+      TacSiPlast2 = TF->PlastLeftTime[0];
+  else
+    TacSiPlast2 = -999;
+
+  }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::End(){
@@ -277,12 +285,16 @@ void Analysis::End(){
 
 
 void Analysis::ReInitValue(){
+  //Silicon
   Ex = -1000 ;
   ELab = -1000;
   ThetaLab = -1000;
   ThetaCM = -1000;
+  
+  //Simu
   //Original_ELab = -1000;
   //Original_ThetaLab = -1000;
+  
   //FPD
   Delta_E      = -1000;
   Micro_E_row1 = -1000;   
@@ -292,10 +304,18 @@ void Analysis::ReInitValue(){
   Theta_aw     = -1000;
   XPlastic_aw  = -1000;
   XPlastic     = -1000;
+  
+  //TAC
+  TacSiGeOR     = -1000;
+  TacSiMicroOR    = -1000;
+  TacSiPlast1  = -1000;
+  TacSiPlast2 = -1000;
 }
+
 /////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 void Analysis::InitOutputBranch() {
+  //Tiara
   RootOutput::getInstance()->GetTree()->Branch("Ex",&Ex,"Ex/D");
   RootOutput::getInstance()->GetTree()->Branch("ELab",&ELab,"ELab/D");
   RootOutput::getInstance()->GetTree()->Branch("ThetaLab",&ThetaLab,"ThetaLab/D");
@@ -303,8 +323,9 @@ void Analysis::InitOutputBranch() {
   RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixX",&TiaraIMX,"TiaraImpactMatrixX/D");
   RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixY",&TiaraIMY,"TiaraImpactMatrixY/D");
   RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixZ",&TiaraIMZ,"TiaraImpactMatrixZ/D");
-  //RootOutput::getInstance()->GetTree()->Branch("Original_ELab",&Original_ELab,"Original_ELab/D");
-  //RootOutput::getInstance()->GetTree()->Branch("Original_ThetaLab",&Original_ThetaLab,"Original_ThetaLab/D");
+  //GeTamu
+  // stuff goes here 
+  //FPD
   RootOutput::getInstance()->GetTree()->Branch("Delta_E",&Delta_E,"Delta_E/D");
   RootOutput::getInstance()->GetTree()->Branch("Micro_E_row1",&Micro_E_row1,"Micro_E_row1/D");
   RootOutput::getInstance()->GetTree()->Branch("Micro_E_col4",&Micro_E_col4,"Micro_E_col4/D");
@@ -312,7 +333,16 @@ void Analysis::InitOutputBranch() {
   RootOutput::getInstance()->GetTree()->Branch("Plast_E",&Plast_E,"Plast_E/D");
   RootOutput::getInstance()->GetTree()->Branch("Theta_aw",&Theta_aw,"Theta_aw/D");
   RootOutput::getInstance()->GetTree()->Branch("XPlastic_aw",&XPlastic_aw,"XPlastic_aw/D");
-  RootOutput::getInstance()->GetTree()->Branch("XPlastic",&XPlastic,"XPlastic/D");
+  RootOutput::getInstance()->GetTree()->Branch("XPlastic",&XPlastic,"XPlastic/D"); 
+  //TACS
+  RootOutput::getInstance()->GetTree()->Branch("TacSiGeOR",&TacSiGeOR,"TacSiGeOR/D");
+  RootOutput::getInstance()->GetTree()->Branch("TacSiMicroOR",&TacSiMicroOR,"TacSiMicroOR/D");
+  RootOutput::getInstance()->GetTree()->Branch("TacSiPlast1",& TacSiPlast1," TacSiPlast1/D");
+  RootOutput::getInstance()->GetTree()->Branch("TacSiPlast2",& TacSiPlast2," TacSiPlast2/D");
+  
+  //Simulation
+  //RootOutput::getInstance()->GetTree()->Branch("Original_ELab",&Original_ELab,"Original_ELab/D");
+  //RootOutput::getInstance()->GetTree()->Branch("Original_ThetaLab",&Original_ThetaLab,"Original_ThetaLab/D");
 }
 /////////////////////////////////////////////////////////////////////////////
 void Analysis::InitInputBranch(){
@@ -341,4 +371,3 @@ class proxy{
 
 proxy p;
 }
-

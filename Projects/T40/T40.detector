@@ -14,6 +14,7 @@ Target
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Tiara
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   TiaraInnerBarrel= 1
   TiaraOuterBarrel= 1
   TiaraChamber= 1
@@ -41,19 +42,18 @@ Tiara
     Z= -147
     R= 0
     Phi= 300
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 FPDTamu
-%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % All DELTA detectors
   DELTA
      UPSTREAM-LEFT=    +150   +00   +20
-     UPSTREAM-RIGHT=   -150   +00   +20
-%%%%%%%%%%%%%%%%%%%%%    
+     UPSTREAM-RIGHT=   -150   +00   +20    
 % All MICRO detectors
   MICRO
      UPSTREAM-LEFT=    +154   +00   +340
      UPSTREAM-RIGHT=   -154   +00   +340
-%%%%%%%%%%%%%%%%%%%%%
 % All AWIRE detectors
   AWIRE
      LEFT=             +200   +00   +20
@@ -67,9 +67,34 @@ FPDTamu
     AWIRE
      LEFT=             +200   +00   +497
      RIGHT=            -200   +00   +497
-%%%%%%%%%%%%%%%%%%%%%
 % All Plastic detectors
   PLAST
      UPSTREAM-LEFT=    +198   +00   +547
      UPSTREAM-RIGHT=   -198   +00   +547
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% R Radius from target
+% Theta polar angle
+% Phi azimutal angle
+%GeTAMU
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GeTAMUClover
+  CloverId= 1
+  R= 60
+  Theta= 90
+  Phi= 45
+GeTAMUClover
+  CloverId= 2
+  R= 60
+  Theta= 90
+  Phi= 135
+GeTAMUClover
+  CloverId= 3
+  R= 60
+  Theta= 90
+  Phi= 225
+GeTAMUClover
+  CloverId= 4
+  R= 60
+  Theta= 90
+  Phi= 315
