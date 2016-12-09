@@ -95,7 +95,7 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     vector<int> AddBack_Clover;
     vector<int> AddBack_Crystal;
     vector<int> AddBack_Segment;
-    vector<double> GeTimeOR; // OR of all time signals, can be used for array or or clover only
+    vector<double> GeTime; // OR of all time signals, can be used for array or or clover only
 
   private: // use for anlysis
    

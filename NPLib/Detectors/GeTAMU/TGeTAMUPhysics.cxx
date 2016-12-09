@@ -100,7 +100,7 @@ void TGeTAMUPhysics::BuildPhysicalEvent(){
 
 //Fill the time OR
 for (unsigned i = 0 ; i < m_PreTreatedData->GetMultiplicityCoreT(); i++)
-  GeTimeOR.push_back(m_PreTreatedData->GetCoreTime(i));
+  GeTime.push_back(m_PreTreatedData->GetCoreTime(i));
 
 }
 
@@ -268,7 +268,6 @@ TVector3 TGeTAMUPhysics::GetSegmentPosition(int& CloverNbr,int& CoreNbr, int& Se
 void TGeTAMUPhysics::ReadConfiguration(string Path)  {
   ifstream ConfigFile           ;
   ConfigFile.open(Path.c_str()) ;
-
   if(!ConfigFile.is_open()) cout << "Config File not Found" << endl ;
 
   string LineBuffer;
@@ -289,7 +288,7 @@ void TGeTAMUPhysics::ReadConfiguration(string Path)  {
 
     getline(ConfigFile, LineBuffer);
     //   If line is a Start Up GeTAMU bloc, Reading toggle to true      
-    if (LineBuffer.compare(0, 13, "GeTAMUClover") == 0) {
+    if (LineBuffer.compare(0, 12, "GeTAMUClover") == 0) {
       cout << "///" << endl ;
       cout << "GeTAMU Clover found: " << endl ;        
       ReadingStatus = true ;
@@ -307,7 +306,7 @@ void TGeTAMUPhysics::ReadConfiguration(string Path)  {
       if (DataBuffer.compare(0, 1, "%") == 0) {ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
 
       //   Finding another Clover toggle out (safety)
-      else if (DataBuffer.compare(0, 13, "GeTAMUClover") == 0) {
+      else if (DataBuffer.compare(0, 12, "GeTAMUClover") == 0) {
         cout << "WARNING: Another Detector is find before standard sequence of Token, Error may occured in Clover definition" << endl ;
         ReadingStatus = false ;
       }
@@ -384,7 +383,7 @@ void TGeTAMUPhysics::Clear() {
   AddBack_Crystal.clear();
   AddBack_Segment.clear();
   AddBack_T.clear();
-  GeTimeOR.clear();
+  GeTime.clear();
 }
 ///////////////////////////////////////////////////////////////////////////  
 void TGeTAMUPhysics::ClearEventData() {
