@@ -220,7 +220,7 @@ void EventGeneratorGammaDecay::PrepareCascade(){
   
   // Check that the total ratio is not over 100% (below is allowed)
   if(TotalRatio>1) {
-    G4cout << "Gamma Decay Error: Sum of branching ratio is over 100%" << G4endl;
+    cout << "Gamma Decay Error: Sum of branching ratio is over 100%" << endl;
     exit(1);
   }
   
