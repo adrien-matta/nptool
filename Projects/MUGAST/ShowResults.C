@@ -49,7 +49,7 @@ using namespace std;
 #include "TInitialConditions.h"
 #include "TInteractionCoordinates.h"
 //#include "NPDetectorManager.h"
-#include "Reaction.h"
+#include "NPReaction.h"
 using namespace NPL;
 
 void ShowResults()
@@ -82,8 +82,7 @@ void ShowResults()
 void CountingRates(Double_t ibeam = 1e5, Double_t ubt = 30)
 {
    // load event generator file
-   NPL::Reaction *reaction = new NPL::Reaction();
-   Reaction *reaction = new Reaction();
+   NPL::Reaction* reaction = new NPL::Reaction();
    reaction->ReadConfigurationFile("30Pdp.reaction");
 //   reaction->ReadConfigurationFile("11Be_d3He.reaction");
    // get angular distribution

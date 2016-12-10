@@ -85,201 +85,30 @@ Lassa::~Lassa(){
 // Virtual Method of VDetector class
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void Lassa::ReadConfiguration(string Path){
-    
-    ifstream ConfigFile           ;
-    ConfigFile.open(Path.c_str()) ;
-    string LineBuffer          ;
-    string DataBuffer          ;
-    
-    // A:X1_Y1     --> X:1    Y:1
-    // B:X128_Y1   --> X:128  Y:1
-    // C:X1_Y128   --> X:1    Y:128
-    // D:X128_Y128    --> X:128  Y:128
-    
-    G4double Ax , Bx , Cx , Dx , Ay , By , Cy , Dy , Az , Bz , Cz , Dz          ;
-    G4ThreeVector A , B , C , D                                                 ;
-    //G4double Theta = 0 , Phi = 0 , R = 0                     ;
-    
-    bool ReadingStatus = false ;
-    
-    bool check_A = false ;
-    bool check_C = false ;
-    bool check_B = false ;
-    bool check_D = false ;
-    
-    /*bool check_Theta = false ;
-     bool check_Phi   = false ;
-     bool check_R     = false ;*/
-    
-    
-    
-    while (!ConfigFile.eof()) {
-        getline(ConfigFile, LineBuffer);
-        if (LineBuffer.compare(0, 14, "LassaTelescope") == 0) {
-            G4cout << "///" << G4endl           ;
-            G4cout << "Lassa element found: " << G4endl   ;
-            ReadingStatus = true ;
-        }
-        
-        while(ReadingStatus){
-            
-            ConfigFile >> DataBuffer;
-            //   Comment Line
-            if (DataBuffer.compare(0, 1, "%") == 0) {/*do nothing */;}
-            
-            // Position method
-            else if (DataBuffer.compare(0, 2, "A=") == 0) {
-                check_A = true;
-                ConfigFile >> DataBuffer ;
-                Ax = atof(DataBuffer.c_str()) ;
-                Ax = Ax * mm ;
-                ConfigFile >> DataBuffer ;
-                Ay = atof(DataBuffer.c_str()) ;
-                Ay = Ay * mm ;
-                ConfigFile >> DataBuffer ;
-                Az = atof(DataBuffer.c_str()) ;
-                Az = Az * mm ;
-                
-                A = G4ThreeVector(Ax, Ay, Az);
-                G4cout << "A corner position : " << A << G4endl;
-            }
-            
-            else if (DataBuffer.compare(0, 2, "B=") == 0) {
-                check_B = true;
-                ConfigFile >> DataBuffer ;
-                Bx = atof(DataBuffer.c_str()) ;
-                Bx = Bx * mm ;
-                ConfigFile >> DataBuffer ;
-                By = atof(DataBuffer.c_str()) ;
-                By = By * mm ;
-                ConfigFile >> DataBuffer ;
-                Bz = atof(DataBuffer.c_str()) ;
-                Bz = Bz * mm ;
-                
-                B = G4ThreeVector(Bx, By, Bz);
-                G4cout << "B corner position : " << B << G4endl;
-            }
-            
-            else if (DataBuffer.compare(0, 2, "C=") == 0) {
-                check_C = true;
-                ConfigFile >> DataBuffer ;
-                Cx = atof(DataBuffer.c_str()) ;
-                Cx = Cx * mm ;
-                ConfigFile >> DataBuffer ;
-                Cy = atof(DataBuffer.c_str()) ;
-                Cy = Cy * mm ;
-                ConfigFile >> DataBuffer ;
-                Cz = atof(DataBuffer.c_str()) ;
-                Cz = Cz * mm ;
-                
-                C = G4ThreeVector(Cx, Cy, Cz);
-                G4cout << "C corner position : " << C << G4endl;
-            }
-            
-            else if (DataBuffer.compare(0, 2, "D=") == 0) {
-                check_D = true;
-                ConfigFile >> DataBuffer ;
-                Dx = atof(DataBuffer.c_str()) ;
-                Dx = Dx * mm ;
-                ConfigFile >> DataBuffer ;
-                Dy = atof(DataBuffer.c_str()) ;
-                Dy = Dy * mm ;
-                ConfigFile >> DataBuffer ;
-                Dz = atof(DataBuffer.c_str()) ;
-                Dz = Dz * mm ;
-                
-                D = G4ThreeVector(Dx, Dy, Dz);
-                G4cout << "D corner position : " << D << G4endl;
-            }
-            
-            
-            // Angle method
-            /*   else if (DataBuffer.compare(0, 6, "THETA=") == 0) {
-             check_Theta = true;
-             ConfigFile >> DataBuffer ;
-             Theta = atof(DataBuffer.c_str()) ;
-             Theta = Theta * deg;
-             G4cout << "Theta:  " << Theta / deg << G4endl;
-             }
-             
-             else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
-             check_Phi = true;
-             ConfigFile >> DataBuffer ;
-             Phi = atof(DataBuffer.c_str()) ;
-             Phi = Phi * deg;
-             G4cout << "Phi:  " << Phi / deg << G4endl;
-             }
-             
-             else if (DataBuffer.compare(0, 2, "R=") == 0) {
-             check_R = true;
-             ConfigFile >> DataBuffer ;
-             R = atof(DataBuffer.c_str()) ;
-             R = R * mm;
-             G4cout << "R:  " << R / mm << G4endl;
-             }
-             
-             else if (DataBuffer.compare(0, 5, "BETA=") == 0) {
-             ConfigFile >> DataBuffer ;
-             beta_u = atof(DataBuffer.c_str()) ;
-             beta_u = beta_u * deg   ;
-             ConfigFile >> DataBuffer ;
-             beta_v = atof(DataBuffer.c_str()) ;
-             beta_v = beta_v * deg   ;
-             ConfigFile >> DataBuffer ;
-             beta_w = atof(DataBuffer.c_str()) ;
-             beta_w = beta_w * deg   ;
-             G4cout << "Beta:  " << beta_u / deg << " " << beta_v / deg << " " << beta_w / deg << G4endl  ;
-             }*/
-            
-            
-            else G4cout << "WARNING: Wrong Token, GaspardTrackerRectangle: Rectangle Element not added" << G4endl;
-            
-            //Add The previously define telescope
-            //With position method
-            if (check_A && check_B && check_C && check_D) {
-                
-                ReadingStatus = false ;
-                check_A = false ;
-                check_C = false ;
-                check_B = false ;
-                check_D = false ;
-                
-                AddTelescope(A                ,
-                             B                ,
-                             C                ,
-                             D);
-            }
-            
-            //with angle method
-            /*if ((check_Theta && check_Phi && check_R && check_FirstStage && check_SecondStage && check_ThirdStage && checkVis) && !(check_A && check_B && check_C && check_D)) {
-             ReadingStatus = false ;
-             check_Theta = false ;
-             check_Phi   = false ;
-             check_R     = false ;
-             check_FirstStage = false ;
-             check_SecondStage = false ;
-             check_ThirdStage = false ;
-             checkVis = false ;
-             
-             AddModule(R                ,
-             Theta            ,
-             Phi              ,
-             beta_u           ,
-             beta_v           ,
-             beta_w           ,
-             FIRSTSTAGE  == 1 ,
-             SECONDSTAGE == 1 ,
-             THIRDSTAGE  == 1);
-             }*/
-            
-            
-        }
+void Lassa::ReadConfiguration(NPL::InputParser parser){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("LassaTelescope");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " Telescope found " << endl; 
+
+  // Cartesian Case
+  vector<string> cart = {"A","B","C","D"};
+  for(unsigned int i  = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(cart)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  Lassa Telescope " << i+1 <<  endl;
+      G4ThreeVector A = NPS::ConvertVector(blocks[i]->GetTVector3("A","mm"));
+      G4ThreeVector B = NPS::ConvertVector(blocks[i]->GetTVector3("B","mm"));
+      G4ThreeVector C = NPS::ConvertVector(blocks[i]->GetTVector3("C","mm"));
+      G4ThreeVector D = NPS::ConvertVector(blocks[i]->GetTVector3("D","mm"));
+      AddTelescope(A,B,C,D) ;
     }
+
+    else{
+      cout << "ERROR: Missing token for M2Telescope blocks, check your input file" << endl;
+      exit(1);
+    }
+  }
 }
-
-
-
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Lassa::AddTelescope(G4ThreeVector Pos1, G4ThreeVector Pos2, G4ThreeVector Pos3, G4ThreeVector Pos4){

@@ -53,7 +53,7 @@ using namespace CLHEP ;
 
 // NPL
 #include "NPOptionManager.h"
-
+#include "NPInputParser.h"
 using namespace std;
 
 Target* Target::TargetInstance=0;
@@ -85,226 +85,59 @@ G4Material* Target::GetMaterialFromLibrary(G4String MaterialName){
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void Target::ReadConfiguration(string Path){
-  ifstream ConfigFile;
-  ConfigFile.open(Path.c_str());
-  string LineBuffer;
-  string DataBuffer;
+void Target::ReadConfiguration(NPL::InputParser parser){
+  vector<NPL::InputBlock*>  starget = parser.GetAllBlocksWithToken("Target");
+  vector<NPL::InputBlock*>  ctarget = parser.GetAllBlocksWithToken("CryoTarget");
 
-  bool ReadingStatusTarget = false ;
-  bool ReadingStatusCryoTarget = false ;
-
-  bool check_Thickness = false ;
-  bool check_Radius = false ;
-  bool check_Material = false ;
-  bool check_X = false ;
-  bool check_Y = false ;
-  bool check_Z = false ;
-  bool check_Angle = false;
-  bool check_Density = false ;
-  bool check_WinThickness = false ;
-  bool check_WinMaterial = false ;
-
-  int VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
-
-  while (!ConfigFile.eof()) {
-    getline(ConfigFile, LineBuffer);
-    if (LineBuffer.compare(0, 6, "Target") == 0) {
-      if(VerboseLevel==1) G4cout << "Target Found" << G4endl;
-      m_TargetType = true ;
-      ReadingStatusTarget = true ;
+  if(starget.size()==1){
+    cout << "////       TARGET      ////" << endl;
+    cout << "//// Solid Target found " << endl;
+    vector<string> token = {"Thickness","Radius","Material","Angle","X","Y","Z"};
+    if(starget[0]->HasTokenList(token)){
+      m_TargetThickness= starget[0]->GetDouble("Thickness","micrometer");
+      m_TargetAngle=starget[0]->GetDouble("Angle","deg");
+      m_TargetRadius=starget[0]->GetDouble("Radius","mm");
+      m_TargetMaterial= GetMaterialFromLibrary(starget[0]->GetString("Material"));
+      m_TargetX=starget[0]->GetDouble("X","mm");
+      m_TargetY=starget[0]->GetDouble("Y","mm");
+      m_TargetZ=starget[0]->GetDouble("Z","mm");
     }
-    else if (LineBuffer.compare(0, 10, "CryoTarget") == 0) {
-      if(VerboseLevel==1) G4cout << "Cryogenic Target Found" << G4endl;
-      m_TargetType = false ;
-      ReadingStatusCryoTarget = true ;
+    else{
+      cout << "ERROR: Target token list incomplete, check your input file" << endl;
+      exit(1);
     }
+    if(starget[0]->HasToken("NBLAYERS"))
+      m_TargetNbLayers = starget[0]->GetInt("NBLAYERS");
 
-    while (ReadingStatusTarget) {
-      ConfigFile >> DataBuffer;
-      //Search for comment Symbol %
-      if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
 
-      else if (DataBuffer.compare(0, 10, "THICKNESS=") == 0) {
-        check_Thickness = true ;
-        ConfigFile >> DataBuffer;
-        m_TargetThickness = atof(DataBuffer.c_str()) * micrometer;
-        if(VerboseLevel==1) G4cout << "Target Thickness: "  << m_TargetThickness / micrometer << " micrometer" << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 6, "ANGLE=") == 0) {
-        check_Angle = true ;
-        ConfigFile >> DataBuffer;
-        m_TargetAngle = atof(DataBuffer.c_str()) * deg;
-        if(VerboseLevel==1) G4cout << "Target Angle: "  << m_TargetAngle / deg << G4endl     ;
-      }
-
-      else if (DataBuffer.compare(0, 7, "RADIUS=") == 0) {
-        check_Radius = true ;
-        ConfigFile >> DataBuffer;
-        m_TargetRadius = atof(DataBuffer.c_str()) * mm;
-        if(VerboseLevel==1) G4cout << "Target Radius: "     <<  m_TargetRadius / mm << " mm " << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 9, "MATERIAL=") == 0) {
-        check_Material = true ;
-        ConfigFile >> DataBuffer;
-        m_TargetMaterial = GetMaterialFromLibrary(DataBuffer);
-        if(VerboseLevel==1) G4cout << "Target Material: "      << m_TargetMaterial  << G4endl  ;
-      }
-
-      else if (DataBuffer.compare(0, 2, "X=") == 0) {
-        check_X = true ;
-        ConfigFile >> DataBuffer;
-        m_TargetX = atof(DataBuffer.c_str()) * mm;
-        if(VerboseLevel==1) G4cout << "Target coordinate (mm): ( " << m_TargetX / mm << " ; ";
-      }
-
-      else if (DataBuffer.compare(0, 2, "Y=") == 0) {
-        check_Y = true ;
-        ConfigFile >> DataBuffer;
-        m_TargetY = atof(DataBuffer.c_str()) * mm;
-        if(VerboseLevel==1) G4cout << m_TargetY / mm << " ; ";
-      }
-
-      else if (DataBuffer.compare(0, 2, "Z=") == 0) {
-        check_Z = true ;
-        ConfigFile >> DataBuffer;
-        m_TargetZ = atof(DataBuffer.c_str()) * mm;
-        if(VerboseLevel==1) G4cout  << m_TargetZ / mm << " )" << G4endl ;
-      }
-
-      else if (DataBuffer.compare(0, 9, "NBLAYERS=") == 0) {
-        //        check_m_TargetNbLayers = true ;
-        ConfigFile >> DataBuffer;
-        m_TargetNbLayers = atoi(DataBuffer.c_str());
-        if(VerboseLevel==1) 
-          G4cout  << "Number of steps for slowing down the beam in target: " 
-            << m_TargetNbLayers << G4endl;
-      }
-
-      ///////////////////////////////////////////////////
-      //   If no Beam Token and no comment, toggle out
-      else{ReadingStatusTarget = false;
-        G4cout << "WARNING : Wrong Token Sequence: Getting out " << G4endl ;
-      }
-
-      ///////////////////////////////////////////////////
-      //   If all Token found toggle out
-      if( check_Thickness && check_Radius && check_Material 
-          && check_X && check_Y && check_Z && check_Angle){
-        m_EffectiveThickness = m_TargetThickness / cos(m_TargetAngle);
-        ReadingStatusTarget = false ;
-      }
-    }
-
-    while(ReadingStatusCryoTarget){
-      ConfigFile >> DataBuffer;
-      //Search for comment Symbol %
-      if (DataBuffer.compare(0, 1, "%") == 0) {/*Do Nothing*/;}
-
-      else if (DataBuffer.compare(0, 10, "THICKNESS=") == 0) {
-        check_Thickness = true ;
-        ConfigFile >> DataBuffer;
-        m_TargetThickness = atof(DataBuffer.c_str()) * micrometer;
-        if(VerboseLevel==1) 
-          G4cout << "Target Thickness: " << m_TargetThickness / micrometer  
-            << "um" << G4endl   ;
-      }
-
-      else if (DataBuffer.compare(0, 7, "RADIUS=") == 0) {
-        check_Radius = true ;
-        ConfigFile >> DataBuffer;
-        m_TargetRadius = atof(DataBuffer.c_str()) * mm;
-        if(VerboseLevel==1) 
-          G4cout << "Target Radius: " <<  m_TargetRadius / mm  << "mm" << G4endl ;
-      }
-
-      else if (DataBuffer.compare(0, 8, "DENSITY=") == 0) {
-        check_Density= true ;
-        ConfigFile >> DataBuffer;
-        if(VerboseLevel==1) m_TargetDensity = atof(DataBuffer.c_str())*g/cm3;
-      }
-
-      else if (DataBuffer.compare(0, 9, "MATERIAL=") == 0) {
-        check_Material = true ;
-        ConfigFile >> DataBuffer;
-        m_TargetMaterial = 
-          GetMaterialFromLibrary(DataBuffer);
-        if(VerboseLevel==1) 
-          G4cout << "Target Material: " << m_TargetMaterial << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 17, "WINDOWSTHICKNESS=") == 0) {
-        check_WinThickness = true ;
-        ConfigFile >> DataBuffer;
-        m_WindowsThickness = atof(DataBuffer.c_str()) * micrometer;
-        if(VerboseLevel==1) 
-          G4cout << "Windows Thickness: " 
-            << m_WindowsThickness / micrometer << "um" << G4endl   ;
-      }
-
-      else if (DataBuffer.compare(0, 16, "WINDOWSMATERIAL=") == 0) {
-        check_WinMaterial = true ;
-        ConfigFile >> DataBuffer;
-        m_WindowsMaterial = GetMaterialFromLibrary(DataBuffer);
-        if(VerboseLevel==1) 
-          G4cout << "Windows Material: " << m_WindowsMaterial << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 2, "X=") == 0) {
-        check_X = true ;
-        ConfigFile >> DataBuffer;
-        m_TargetX = atof(DataBuffer.c_str()) * mm;
-        if(VerboseLevel==1) 
-          G4cout << "Target coordinate (mm): ( " << m_TargetX / mm << " ; ";
-      }
-
-      else if (DataBuffer.compare(0, 2, "Y=") == 0) {
-        check_Y = true ;
-        ConfigFile >> DataBuffer;
-        m_TargetY = atof(DataBuffer.c_str()) * mm;
-        if(VerboseLevel==1) G4cout << m_TargetY / mm << " ; ";
-      }
-
-      else if (DataBuffer.compare(0, 2, "Z=") == 0) {
-        check_Z = true ;
-        ConfigFile >> DataBuffer;
-        m_TargetZ = atof(DataBuffer.c_str()) * mm;
-        if(VerboseLevel==1) G4cout << m_TargetZ / mm << " )" << G4endl ;
-      }
-
-      else if (DataBuffer.compare(0, 9, "NBLAYERS=") == 0) {
-        ConfigFile >> DataBuffer;
-        m_TargetNbLayers = atoi(DataBuffer.c_str());
-        if(VerboseLevel==1) 
-          G4cout  << "Number of steps for slowing down the beam in target: " 
-            << m_TargetNbLayers << G4endl;
-      }
-
-      ///////////////////////////////////////////////////
-      //   If no Beam Token and no comment, toggle out
-      else{
-        ReadingStatusCryoTarget = false;
-        G4cout << "WARNING : Wrong Token Sequence: Getting out " << G4endl ;
-      }
-
-      ///////////////////////////////////////////////////
-      //   If all Token found toggle out
-      if( check_Thickness && check_Radius && check_Material && check_X 
-          && check_Y && check_Z && check_WinThickness && check_WinMaterial 
-          && check_Density){
-        m_EffectiveThickness = m_TargetThickness / cos(m_TargetAngle);
-        ReadingStatusCryoTarget = false ;
-      }
-
-    }
   }
-  // if the target as a null radius then no target exist
-  if(m_TargetRadius==0) {
-    m_TargetThickness=0;
-    m_TargetRadius=0.1*um;
+  else if(ctarget.size()==1){
+    cout << " Solid Target found " << endl;
+    vector<string> token = {"Thickness","Radius","Material","Density","WindowsThickness","WindowsMaterial","Angle","X","Y","Z"};
+    if(ctarget[0]->HasTokenList(token)){
+      m_TargetThickness= ctarget[0]->GetDouble("Thickness","micrometer");
+      m_TargetAngle=ctarget[0]->GetDouble("Angle","deg");
+      m_TargetMaterial= GetMaterialFromLibrary(ctarget[0]->GetString("Material"));
+      m_WindowsThickness= ctarget[0]->GetDouble("WindowsThickness","micrometer");
+      m_WindowsMaterial= GetMaterialFromLibrary(ctarget[0]->GetString("WindowsMaterial"));
+      m_TargetX=ctarget[0]->GetDouble("X","mm");
+      m_TargetY=ctarget[0]->GetDouble("Y","mm");
+      m_TargetZ =ctarget[0]->GetDouble("Z","mm");
+    }
+    else{
+      cout << "ERROR: Target token list incomplete, check your input file" << endl;
+      exit(1);
+    }
+    
+    if(ctarget[0]->HasToken("NBLAYERS"))
+      m_TargetNbLayers = ctarget[0]->GetInt("NBLAYERS");
+
   }
+  else{
+    cout << "ERROR: One and only one target shall be declared in your detector file" << endl;
+    exit(1);
+  }
+
 
 }
 

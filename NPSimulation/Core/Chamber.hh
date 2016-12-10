@@ -15,10 +15,10 @@
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This class describe Cryogenic and standard Chamber.                      *
- *  Derived fromNPS::VDetector                                                   *
+ *  Derived fromNPS::VDetector                                               *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *
+ *                                                                           *
  *                                                                           *
  *****************************************************************************/
 // C++ headers
@@ -40,9 +40,9 @@
 
 // NPTool headers
 #include "NPSVDetector.hh"
-
+#include "NPInputParser.h"
 using namespace std;
-using namespace CLHEP;
+using namespace CLHEP;
 
 class Chamber : public NPS::VDetector
 {
@@ -54,7 +54,7 @@ class Chamber : public NPS::VDetector
    public:
       //   Read stream at Configfile to pick-up parameters of detector (Position,...)
       //   Called in DetecorConstruction::ReadDetextorConfiguration Method
-      void ReadConfiguration(string Path);
+      void ReadConfiguration(NPL::InputParser);
 
       //   Construct detector and inialise sensitive part.
       //   Called After DetecorConstruction::AddDetector Method

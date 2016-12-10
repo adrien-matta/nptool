@@ -44,6 +44,7 @@
 #include "RootOutput.h"
 #include "MaterialManager.hh"
 #include "NPSDetectorFactory.hh"
+#include "NPOptionManager.h"
 // CLHEP header
 #include "CLHEP/Random/RandGauss.h"
 
@@ -150,96 +151,27 @@ G4AssemblyVolume* Miniball::BuildClusterDetector(){
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void Miniball::ReadConfiguration(string Path){
-  ifstream ConfigFile           ;
-  ConfigFile.open(Path.c_str()) ;
-  string LineBuffer          ;
-  string DataBuffer          ;
+void Miniball::ReadConfiguration(NPL::InputParser parser){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Miniball");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  double Theta = 0 , Phi = 0 , R = 0 ;
+  vector<string> token = {"R","Theta","Phi"};
 
-  bool check_Theta = false ;
-  bool check_Phi = false ;
-  bool check_R = false ;
-  bool ReadingStatus = false ;
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  Miniball Cluster" << i+1 <<  endl;
+      double R = blocks[i]->GetDouble("R","mm");
+      double Theta = blocks[i]->GetDouble("Theta","deg");
+      double Phi = blocks[i]->GetDouble("Phi","deg");
 
-
-  while (!ConfigFile.eof()) {
-    getline(ConfigFile, LineBuffer);
-
-    //   If line is a Start Up Miniball bloc, Reading toggle to true      
-    string name = "Miniball";
-
-    if (LineBuffer.compare(0, name.length(), name) == 0) {
-      G4cout << "///" << G4endl           ;
-      G4cout << "Miniball found: " << G4endl   ;        
-      ReadingStatus = true ;
+      AddMiniball(R,Theta,Phi);
     }
 
-    //   Else don't toggle to Reading Block Status
-    else ReadingStatus = false ;
-
-    //   Reading Block
-    while(ReadingStatus){
-      // Pickup Next Word 
-      ConfigFile >> DataBuffer ;
-
-      //   Comment Line 
-      if (DataBuffer.compare(0, 1, "%") == 0) {   
-        ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
-      }
-
-      //   Finding another telescope (safety), toggle out
-      else if (DataBuffer.compare(0, name.length(),name) == 0) {
-        G4cout << "WARNING: Another Detector is find before standard sequence of Token, Error may occured in Telecope definition" << G4endl ;
-        ReadingStatus = false ;
-      }
-
-      //Angle method
-      else if (DataBuffer.compare(0, 6, "THETA=") == 0) {
-        check_Theta = true;
-        ConfigFile >> DataBuffer ;
-        Theta = atof(DataBuffer.c_str()) ;
-        Theta = Theta * deg;
-        G4cout << "Theta:  " << Theta / deg << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
-        check_Phi = true;
-        ConfigFile >> DataBuffer ;
-        Phi = atof(DataBuffer.c_str()) ;
-        Phi = Phi * deg;
-        G4cout << "Phi:  " << Phi / deg << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 2, "R=") == 0) {
-        check_R = true;
-        ConfigFile >> DataBuffer ;
-        R = atof(DataBuffer.c_str()) ;
-        R = R * mm;
-        G4cout << "R:  " << R/mm << G4endl;
-      }
-
-      ///////////////////////////////////////////////////
-      //   If no Detector Token and no comment, toggle out
-      else{
-        ReadingStatus = false; 
-        G4cout << "Wrong Token Sequence: Getting out " << DataBuffer << G4endl ;
-      }
-
-      /////////////////////////////////////////////////
-      //   If All necessary information there, toggle out
-
-      if (check_Theta && check_Phi && check_R){
-        AddMiniball(R,Theta,Phi);
-
-        //   Reinitialisation of Check Boolean 
-        check_Theta = false ;
-        check_Phi = false ;
-        check_R = false ;
-        ReadingStatus = false ;   
-        G4cout << "///"<< G4endl ;            
-      }
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
     }
   }
 }

@@ -26,14 +26,16 @@
  *   Adding Fill Spectra Method to fill control Histogramm                   *
  *****************************************************************************/
 
-// ROOT headers
+// ROOT
 #include "TH1.h"
 #include "TCanvas.h"
-//   STL header
+// STL 
 #include <string>
 #include <vector>
 #include <map>
-using namespace std;
+
+// NPL
+#include "NPInputParser.h"
 
 namespace NPL {
   std::string itoa(const int&); 
@@ -46,7 +48,7 @@ namespace NPL {
       virtual ~VDetector()   ;
 
       //  Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-      virtual void ReadConfiguration(string) {} ;
+      virtual void ReadConfiguration(NPL::InputParser) {} ;
 
       //  Add Parameter to the CalibrationManger
       virtual void AddParameterToCalibrationManager() {} ;      
@@ -86,9 +88,9 @@ namespace NPL {
       // Used for Online only, clear all the spectra hold by the Spectra class
       virtual void ClearSpectra() {};
       // Used for Online only, get all the spectra hold by the Spectra class
-      virtual  map< string , TH1*> GetSpectra() {map< string, TH1* > x; return x;};
+      virtual  std::map< std::string , TH1*> GetSpectra() {std::map< std::string, TH1* > x; return x;};
       // Used for Online only, get all the canvases
-      virtual vector<TCanvas*> GetCanvas(){vector<TCanvas*> x ; return x;};
+      virtual std::vector<TCanvas*> GetCanvas(){std::vector<TCanvas*> x ; return x;};
 
     private:   //   The list below is here to help you building your own detector
       /*

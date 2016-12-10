@@ -8,13 +8,13 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Pierre MORFOUACE  contact address:						 *
+ * Original Author: Pierre MORFOUACE  contact address:						           *
  *                                                                           *
- * Creation Date  : Feb 2015												 *
+ * Creation Date  : Feb 2015												                         *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe the Hira Telescops                                   *
+ *  This class describe the Lassa Telescops                                  *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -39,6 +39,7 @@
 
 // NPLib
 #include "TLassaData.h"
+#include "NPInputParser.h"
 using namespace std;
 using namespace CLHEP;
 
@@ -145,7 +146,7 @@ private:
 public:
     // Read stream at Configfile to pick-up parameters of detector (Position,...)
     // Called in DetecorConstruction::ReadDetextorConfiguration Method
-    void ReadConfiguration(string Path) ;
+    void ReadConfiguration(NPL::InputParser) ;
     
     // Construct detector and inialise sensitive part.
     // Called After DetecorConstruction::AddDetector Method

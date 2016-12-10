@@ -744,215 +744,42 @@ void TCharissaPhysics::Clear(){
 ////   Innherited from VDetector Class   ////
 
 ///////////////////////////////////////////////////////////////////////////
-void TCharissaPhysics::ReadConfiguration(string Path){
-  ifstream ConfigFile              ;
-  ConfigFile.open(Path.c_str())    ;
-  string LineBuffer                ;
-  string DataBuffer                ;
+void TCharissaPhysics::ReadConfiguration(NPL::InputParser parser){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("CharissaTelescope");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " Telescope found " << endl; 
+  for(unsigned int i  = 0 ; i < blocks.size() ; i++){
+    // Cartesian Case
+    vector<string> cart = {"X1_Y1","X1_Y16","X16_Y1","X16_Y16","SI","SILI","CSI"};
+    // Spherical Case
+    vector<string> sphe= {"R","THETA","PHI","BETA","SI","SILI","CSI"};
 
-  // A:X1_Y1     --> X:1    Y:1
-  // B:X m_NumberOfStrip_Y1   --> X: m_NumberOfStrip  Y:1
-  // C:X1_Y m_NumberOfStrip   --> X:1    Y: m_NumberOfStrip
-  // D:X m_NumberOfStrip_Y m_NumberOfStrip --> X: m_NumberOfStrip  Y: m_NumberOfStrip
-
-  double Ax , Bx , Cx , Dx , Ay , By , Cy , Dy , Az , Bz , Cz , Dz;
-  TVector3 A , B , C , D;
-  double Theta = 0 , Phi = 0 , R = 0 , beta_u = 0 , beta_v = 0 , beta_w = 0;
-
-  bool check_A = false ;
-  bool check_C = false ;
-  bool check_B = false ;
-  bool check_D = false ;
-
-  bool check_Theta = false ;
-  bool check_Phi   = false ;
-  bool check_R     = false ;
-  bool check_beta  = false ;
-
-  bool ReadingStatus = false ;
-
-
-  while (!ConfigFile.eof())
-  {
-
-    getline(ConfigFile, LineBuffer);
-
-    //   If line is a Start Up CharissaCHARISSA bloc, Reading toggle to true
-    if (LineBuffer.compare(0, 17, "CharissaTelescope")==0)
-    {
-      cout << "///" << endl                 ;
-      cout << "Telescope found: " << endl   ;
-      ReadingStatus = true                ;
-
+    if(blocks[i]->HasTokenList(cart)){
+      cout << endl << "////  Charissa telecope " << i+1 <<  endl;
+      TVector3 A = blocks[i]->GetTVector3("X1_Y1","mm");
+      TVector3 B = blocks[i]->GetTVector3("X16_Y1","mm");
+      TVector3 C = blocks[i]->GetTVector3("X1_Y16","mm");
+      TVector3 D = blocks[i]->GetTVector3("X16_Y16","mm");
+      AddTelescope(A,B,C,D) ;
     }
 
-    //   Else don't toggle to Reading Block Status
-    else ReadingStatus = false ;
-
-    //   Reading Block
-    while(ReadingStatus)
-    {
-
-      ConfigFile >> DataBuffer ;
-      //   Comment Line
-      if(DataBuffer.compare(0, 1, "%") == 0) {
-        ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
-
-      }
-
-      //   Finding another telescope (safety), toggle out
-      else if (DataBuffer=="CharissaTelescope") {
-        cout << "WARNING: Another Telescope is find before standard sequence of Token, Error may occured in Telecope definition" << endl ;
-        ReadingStatus = false ;
-      }
-
-      //   Position method
-
-      else if (DataBuffer=="X1_Y1=") {
-        check_A = true;
-        ConfigFile >> DataBuffer ;
-        Ax = atof(DataBuffer.c_str()) ;
-        ConfigFile >> DataBuffer ;
-        Ay = atof(DataBuffer.c_str()) ;
-        ConfigFile >> DataBuffer ;
-        Az = atof(DataBuffer.c_str()) ;
-
-        A = TVector3(Ax, Ay, Az);
-        cout << "X1 Y1 corner position : (" << A.X() << ";" << A.Y() << ";" << A.Z() << ")" << endl;
-
-      }
-
-
-      else if (DataBuffer=="X16_Y1=") {
-        check_B = true;
-        ConfigFile >> DataBuffer ;
-        Bx = atof(DataBuffer.c_str()) ;
-        ConfigFile >> DataBuffer ;
-        By = atof(DataBuffer.c_str()) ;
-        ConfigFile >> DataBuffer ;
-        Bz = atof(DataBuffer.c_str()) ;
-
-        B = TVector3(Bx, By, Bz);
-        cout << "X16 Y1 corner position : (" << B.X() << ";" << B.Y() << ";" << B.Z() << ")" << endl;
-
-      }
-
-
-      else if (DataBuffer=="X1_Y16=") {
-        check_C = true;
-        ConfigFile >> DataBuffer ;
-        Cx = atof(DataBuffer.c_str()) ;
-        ConfigFile >> DataBuffer ;
-        Cy = atof(DataBuffer.c_str()) ;
-        ConfigFile >> DataBuffer ;
-        Cz = atof(DataBuffer.c_str()) ;
-
-        C = TVector3(Cx, Cy, Cz);
-        cout << "X1 Y16 corner position : (" << C.X() << ";" << C.Y() << ";" << C.Z() << ")" << endl;
-
-      }
-
-      else if (DataBuffer=="X16_Y16=") {
-        check_D = true;
-        ConfigFile >> DataBuffer ;
-        Dx = atof(DataBuffer.c_str()) ;
-        ConfigFile >> DataBuffer ;
-        Dy = atof(DataBuffer.c_str()) ;
-        ConfigFile >> DataBuffer ;
-        Dz = atof(DataBuffer.c_str()) ;
-
-        D = TVector3(Dx, Dy, Dz);
-        cout << "X16 Y16 corner position : (" << D.X() << ";" << D.Y() << ";" << D.Z() << ")" << endl;
-
-      }
-
-      //   End Position Method
-
-      //   Angle method
-      else if (DataBuffer=="THETA=") {
-        check_Theta = true;
-        ConfigFile >> DataBuffer ;
-        Theta = atof(DataBuffer.c_str()) ;
-        cout << "Theta:  " << Theta << endl;
-
-      }
-
-      //Angle method
-      else if (DataBuffer=="PHI=") {
-        check_Phi = true;
-        ConfigFile >> DataBuffer ;
-        Phi = atof(DataBuffer.c_str()) ;
-        cout << "Phi:  " << Phi << endl;
-
-      }
-
-      //Angle method
-      else if (DataBuffer=="R=") {
-        check_R = true;
-        ConfigFile >> DataBuffer ;
-        R = atof(DataBuffer.c_str()) ;
-        cout << "R:  " << R << endl;
-
-      }
-
-      //Angle method
-      else if (DataBuffer=="BETA=") {
-        check_beta = true;
-        ConfigFile >> DataBuffer ;
-        beta_u = atof(DataBuffer.c_str()) ;
-        ConfigFile >> DataBuffer ;
-        beta_v = atof(DataBuffer.c_str()) ;
-        ConfigFile >> DataBuffer ;
-        beta_w = atof(DataBuffer.c_str()) ;
-        cout << "Beta:  " << beta_u << " " << beta_v << " " << beta_w << endl  ;
-
-      }
-
-      /////////////////////////////////////////////////
-      //   If All necessary information there, toggle out
-      if ( (check_A && check_B && check_C && check_D) || (check_Theta && check_Phi && check_R && check_beta)  )
-      {
-        ReadingStatus = false;
-
-        ///Add The previously define telescope
-        //With position method
-        if ( check_A && check_B && check_C && check_D )
-        {
-          AddTelescope(  A,
-              B,
-              C,
-              D) ;
-        }
-
-        //with angle method
-        else if ( check_Theta && check_Phi && check_R && check_beta )
-        {
-          AddTelescope(  Theta,
-              Phi,
-              R,
-              beta_u,
-              beta_v,
-              beta_w);
-        }
-
-        check_A = false ;
-        check_B = false ;
-        check_C = false ;
-        check_D = false ;
-
-        check_Theta = false ;
-        check_Phi  = false ;
-        check_R    = false ;
-        check_beta = false ;
-      }
+    else if(blocks[i]->HasTokenList(sphe)){
+      double Theta = blocks[i]->GetDouble("THETA","deg");
+      double Phi= blocks[i]->GetDouble("PHI","deg");
+      double R = blocks[i]->GetDouble("R","mm");
+      vector<double> beta = blocks[i]->GetVectorDouble("BETA","deg");
+      AddTelescope(  Theta,Phi,R,beta[0],beta[1],beta[2]);
     }
+
+    else{
+      cout << "ERROR: Missing token for CharissaTelescope blocks, check your input file" << endl;
+      exit(1);
+    }
+
   }
 
   InitializeStandardParameter();
   ReadAnalysisConfig();
-
-  cout << endl << "/////////////////////////////" << endl << endl;
-
 }
 ///////////////////////////////////////////////////////////////////////////
 void TCharissaPhysics::InitSpectra(){  

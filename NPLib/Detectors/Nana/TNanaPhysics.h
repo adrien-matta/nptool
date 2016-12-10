@@ -31,7 +31,7 @@ using namespace std ;
 // NPL
 #include "NPVDetector.h"
 #include "TNanaData.h"
-
+#include "NPInputParser.h"
 // Root
 #include "TObject.h"
 #include "TVector3.h"
@@ -51,7 +51,7 @@ class TNanaPhysics : public TObject, public NPL::VDetector{
     // Innherited from VDetector Class //
     /////////////////////////////////////
     // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-    void ReadConfiguration(string);
+    void ReadConfiguration(NPL::InputParser);
 
     // Read stream at CalibFile and pick-up calibration parameter using Token
     // If argument is "Simulation" no change calibration is loaded

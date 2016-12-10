@@ -32,6 +32,7 @@
 #include "TGaspardTrackerData.h"
 #include "TGaspardTrackerPhysics.h"
 #include "GaspardTrackerModule.h"
+#include "NPInputParser.h"
 
 // C++
 #include <map>
@@ -55,7 +56,7 @@ class GaspardTracker : public NPL::VDetector{
     // Innherited from VDetector Class //
     /////////////////////////////////////
     // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-    void ReadConfiguration(string);
+    void ReadConfiguration(NPL::InputParser);
 
     // Read stream at CalibFile and pick-up calibration parameter using Token
     // If argument is "Simulation" no change calibration is loaded

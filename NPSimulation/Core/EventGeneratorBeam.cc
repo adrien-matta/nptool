@@ -67,8 +67,8 @@ void   EventGeneratorBeam::SetTarget(Target* Target){
   
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventGeneratorBeam::ReadConfiguration(string Path,int){
-  m_Beam->ReadConfigurationFile(Path);
+void EventGeneratorBeam::ReadConfiguration(NPL::InputParser parser){
+  m_Beam->ReadConfigurationFile(parser);
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorBeam::GenerateEvent(G4Event* anEvent){

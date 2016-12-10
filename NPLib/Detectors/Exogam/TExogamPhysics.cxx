@@ -32,6 +32,7 @@ using namespace EXOGAM_LOCAL;
 #include "NPDetectorFactory.h"
 #include "RootOutput.h"
 #include "NPVDetector.h"
+#include "NPOptionManager.h"
 //	ROOT
 #include "TChain.h"
 
@@ -458,83 +459,24 @@ void TExogamPhysics::Clear()
 ////	Innherited from VDetector Class	////				
 				
 //	Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-void TExogamPhysics::ReadConfiguration(string Path) 	
-{
+void TExogamPhysics::ReadConfiguration(NPL::InputParser parser){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("EXOGAMClover");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  ifstream ConfigFile;
-  ConfigFile.open(Path.c_str());
-  string LineBuffer          	;
-  string DataBuffer         	;
-  string AngleFile             ;
+  vector<string> token = {"EXOGAMClover"};
 
-  
-  bool check_C = false 	;
- 
-  bool ReadingStatus = false ;
-
- 
-
-  while (!ConfigFile.eof()) 
-    {
-      getline(ConfigFile, LineBuffer);
-
-      //If line is a Start Up CATS bloc, Reading toggle to true      
-      if (LineBuffer.compare(0, 12, "EXOGAMClover") == 0) 
-	{
-	  cout << "///" << endl           		;
-	  cout << "EXOGAM Detector found: " << endl   ;  
-	  ReadingStatus = true 					;
-	}
-      
-      //	Else don't toggle to Reading Block Status
-      else ReadingStatus = false ;
-      
-      //	Reading Block
-      while(ReadingStatus)
-	{
-	  ConfigFile >> DataBuffer ;
-	  //	Comment Line 
-	  if(DataBuffer.compare(0, 1, "%") == 0) {
-	    ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
-	  }
-	  
-	  //	Finding another telescope (safety), toggle out
-	  else if (DataBuffer.compare(0, 12, "EXOGAMClover") == 0) {
-	    cout << "WARNING: Another EXOGAM is found before standard sequence of Token, Error may occured in EXOGAM definition" << endl ;
-	    ReadingStatus = false ;
-	  }
-	  
-	 
-	  //	File angle method 
-	  
-	  if (DataBuffer.compare(0, 12, "ANGLES_FILE=") == 0) {
-	    check_C = true;
-	    ConfigFile >> DataBuffer ;
-	    AngleFile = DataBuffer;
-	   
-	    cout << "File angle used : " << DataBuffer << endl;
-	  }
-	  
-  
-	  //	End File angle Method
-
-	  /////////////////////////////////////////////////
-	    //	If All necessary information there, toggle out
-	    if (check_C)  
-	      { 
-		ReadingStatus = false; 
-		
-		///Add The previously define telescope
-		  
-		  AddClover(AngleFile);
-		  
-		  check_C = false;
-		  
-	      }
-	}  
-		  
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token)){
+      string AngleFile = blocks[i]->GetString("ANGLE_FILE");
+      AddClover(AngleFile);
     }
 
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
+    }
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////

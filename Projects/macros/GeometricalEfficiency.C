@@ -48,7 +48,7 @@
 using namespace std;
 
 
-void GeometricalEfficiency(const char * fname = "e09042_alphasource_nucl"){
+void GeometricalEfficiency(const char * fname = "myResult.root"){
   // Open output ROOT file from NPTool simulation run
   TString path = gSystem->Getenv("NPTOOL");
   path += "/Outputs/Simulation/";

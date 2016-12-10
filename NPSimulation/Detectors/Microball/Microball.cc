@@ -1,18 +1,18 @@
 /*****************************************************************************
- * Copyright (C) 2009-2016   this file is part of the NPTool Project       *
+ * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Pierre Morfouace  contact address: morfouac@nscl.msu.edu                        *
+ * Original Author: Pierre Morfouace  contact address: morfouac@nscl.msu.edu *
  *                                                                           *
- * Creation Date  : June 2016                                           *
+ * Creation Date  : June 2016                                                *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe  Microball simulation                             *
+ *  This class describe  Microball simulation                                *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -54,6 +54,7 @@
 #include "RootOutput.h"
 #include "MaterialManager.hh"
 #include "NPSDetectorFactory.hh"
+#include "NPOptionManager.h"
 // CLHEP header
 #include "CLHEP/Random/RandGauss.h"
 
@@ -149,195 +150,48 @@ G4LogicalVolume* Microball::BuildCylindricalDetector(){
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void Microball::ReadConfiguration(string Path){
-  ifstream ConfigFile           ;
-  ConfigFile.open(Path.c_str()) ;
-  string LineBuffer          ;
-  string DataBuffer          ;
+void Microball::ReadConfiguration(NPL::InputParser parser){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Microball");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
+  vector<string> token = {"RING1","RING2","RING3","RING4","RING5","RING6","RING7","RING8","RING9"};
 
-bool bR1 = false;
-bool bR2 = false;
-bool bR3 = false;
-bool bR4 = false;
-bool bR5 = false;
-bool bR6 = false;
-bool bR7 = false;
-bool bR8 = false;
-bool bR9 = false;
-vector<int> copyNumArray;
-bool bFlip = false;
-bool bChamber = false;
-     
-  bool ReadingStatus = false ;
+  vector<int> copyNumArray;
+  bool bFlip = false;
+  bool bChamber = false;
 
-bool check_Ring1 = false;
-bool check_Ring2 = false;
-bool check_Ring3 = false;
-bool check_Ring4 = false;
-bool check_Ring5 = false;
-bool check_Ring6 = false;
-bool check_Ring7 = false;
-bool check_Ring8 = false;
-bool check_Ring9 = false;
-bool check_Flip = false;
-bool check_Chamber = false;
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+       cout << endl << "////  Microball " << i+1 <<  endl;
+      
+      bool bR1 = blocks[i]->GetInt("RING1");
+      bool bR2 = blocks[i]->GetInt("RING2");
+      bool bR3 = blocks[i]->GetInt("RING3");
+      bool bR4 = blocks[i]->GetInt("RING4");
+      bool bR5 = blocks[i]->GetInt("RING5");
+      bool bR6 = blocks[i]->GetInt("RING6");
+      bool bR7 = blocks[i]->GetInt("RING7");
+      bool bR8 = blocks[i]->GetInt("RING8");
+      bool bR9 = blocks[i]->GetInt("RING9");
+      if(blocks[i]->HasToken("DISABLE_CRYSTAL"))
+        copyNumArray.push_back( blocks[i]->GetInt("DISABLE_CRYSTAL"));
+      if(blocks[i]->HasToken("DETECTOR_FLIP"))
+       bFlip =  blocks[i]->GetInt("DETECTOR_FLIP");
+      if(blocks[i]->HasToken("INCLUDE_CHAMBER"))
+       bChamber =  blocks[i]->GetInt("INCLUDE_CHAMBER=");
 
-  while (!ConfigFile.eof()) {
-    getline(ConfigFile, LineBuffer);
-
-    //   If line is a Start Up Microball bloc, Reading toggle to true      
-    string name = "Microball";
-
-    if (LineBuffer.compare(0, name.length(), name) == 0) {
-      G4cout << "///" << G4endl           ;
-      G4cout << "Microball found: " << G4endl   ;        
-      ReadingStatus = true ;
+      AddMicroball(bR1, bR2, bR3,bR4, bR5, bR6, bR7, bR8, bR9, copyNumArray, bFlip, bChamber);
     }
 
-    //   Else don't toggle to Reading Block Status
-    else ReadingStatus = false ;
-
-    //   Reading Block
-    while(ReadingStatus){
-      // Pickup Next Word 
-      ConfigFile >> DataBuffer ;
-
-      //   Comment Line 
-      if (DataBuffer.compare(0, 1, "%") == 0) {   
-        ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
-      }
-
-      //   Finding another telescope (safety), toggle out
-      else if (DataBuffer.compare(0, name.length(),name) == 0) {
-        G4cout << "WARNING: Another Detector is find before standard sequence of Token, Error may occured in Telecope definition" << G4endl ;
-        ReadingStatus = false ;
-      }
-
-      //Angle method
-      else if (DataBuffer.compare(0, 6, "RING1=") == 0) {
-        check_Ring1 = true;
-        ConfigFile >> DataBuffer ;
-        bR1 = atoi(DataBuffer.c_str()) ;
-        G4cout << "Ring1:  " << bR1 << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 6, "RING2=") == 0) {
-        check_Ring2 = true;
-        ConfigFile >> DataBuffer ;
-        bR2 = atoi(DataBuffer.c_str()) ;
-        G4cout << "Ring2:  " << bR2 << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 6, "RING3=") == 0) {
-        check_Ring3 = true;
-        ConfigFile >> DataBuffer ;
-        bR3 = atoi(DataBuffer.c_str()) ;
-        G4cout << "Ring3:  " << bR3 << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 6, "RING4=") == 0) {
-        check_Ring4 = true;
-        ConfigFile >> DataBuffer ;
-        bR4 = atoi(DataBuffer.c_str()) ;
-        G4cout << "Ring4:  " << bR4 << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 6, "RING5=") == 0) {
-        check_Ring5 = true;
-        ConfigFile >> DataBuffer ;
-        bR5 = atoi(DataBuffer.c_str()) ;
-        G4cout << "Ring5:  " << bR5 << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 6, "RING6=") == 0) {
-        check_Ring6 = true;
-        ConfigFile >> DataBuffer ;
-        bR6 = atoi(DataBuffer.c_str()) ;
-        G4cout << "Ring6:  " << bR6 << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 6, "RING7=") == 0) {
-        check_Ring7 = true;
-        ConfigFile >> DataBuffer ;
-        bR7 = atoi(DataBuffer.c_str()) ;
-        G4cout << "Ring7:  " << bR7 << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 6, "RING8=") == 0) {
-        check_Ring8 = true;
-        ConfigFile >> DataBuffer ;
-        bR8 = atoi(DataBuffer.c_str()) ;
-        G4cout << "Ring8:  " << bR8 << G4endl;
-      }
-
-
-      else if (DataBuffer.compare(0, 6, "RING9=") == 0) {
-        check_Ring9 = true;
-        ConfigFile >> DataBuffer ;
-        bR9 = atoi(DataBuffer.c_str()) ;
-        G4cout << "Ring9:  " << bR9 << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 15, "DISABLE_CRYSTAL") == 0) {        
-	ConfigFile >> DataBuffer ;
-	int item = atoi(DataBuffer.c_str());
-        copyNumArray.push_back(item) ;
-        G4cout << "Disabled crystal:  " << item << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 14, "DETECTOR_FLIP=") == 0) {
-        check_Flip = true;
-        ConfigFile >> DataBuffer ;
-        bFlip = atoi(DataBuffer.c_str()) ;
-        G4cout << "Flip Detector:  " << bFlip << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 16, "INCLUDE_CHAMBER=") == 0) {
-        check_Chamber = true;
-        ConfigFile >> DataBuffer ;
-        bChamber = atoi(DataBuffer.c_str()) ;
-        G4cout << "Include Chamber:  " << bChamber << G4endl;
-      }
-
-
-      //General
-
-
-      ///////////////////////////////////////////////////
-      //   If no Detector Token and no comment, toggle out
-      else{
-	ReadingStatus = false; 
-        G4cout << "Wrong Token Sequence: Getting out " << DataBuffer << G4endl ;
-      }
-	if(check_Ring1 && check_Ring2 && check_Ring3 &&
-		check_Ring4 && check_Ring5 && check_Ring6 &&
-		check_Ring7 && check_Ring8 && check_Ring9 &&
-		check_Flip && check_Chamber){
-        AddMicroball(bR1, bR2, bR3, 
-			bR4, bR5, bR6, 
-			bR7, bR8, bR9,
-			copyNumArray, bFlip, bChamber);
-
-	//   Reinitialisation of Check Boolean 
-        check_Ring1 = false ;
-        check_Ring2 = false ;
-        check_Ring3 = false ;
-        check_Ring4 = false ;
-        check_Ring5 = false ;
-        check_Ring6 = false ;
-        check_Ring7 = false ;
-        check_Ring8 = false ;
-        check_Ring9 = false ;
-	check_Flip = false ;
-	check_Chamber = false;
-
-        ReadingStatus = false ;   
-        G4cout << "///"<< G4endl ; 
-	}          
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
     }
   }
 }
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 // Construct detector and inialise sensitive part.

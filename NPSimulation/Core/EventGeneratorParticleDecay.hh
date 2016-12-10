@@ -42,6 +42,7 @@ using namespace std;
 
 //NPL
 #include "NPFunction.h"
+#include "NPInputParser.h"
 using namespace NPL;
 
 // Geant4
@@ -53,7 +54,7 @@ public: // Constructor and destructor
   ~EventGeneratorParticleDecay();
   
 public: // Inherit from VEventGenerator class
-  void ReadConfiguration(string,int);
+  void ReadConfiguration(NPL::InputParser);
   void GenerateEvent(G4Event*);
   void SetTarget(Target* Target) ;
   
@@ -66,7 +67,7 @@ private: // The decaying nuclei
   vector<G4ParticleDefinition*> m_DaughterNuclei;
   vector<string> m_DaughterName;
   vector<double> m_ExcitationEnergy;
-  vector<bool>   m_shoot;
+  vector<int>   m_shoot;
   
   // Used for cross section
   string  m_DifferentialCrossSection;
@@ -82,6 +83,6 @@ private: // Pointer to the Particle stack for faster acces
   ParticleStack* m_ParticleStack;
 public: // Managing the decay
         // Set everything for the decay
-  void SetDecay(vector<string> DaughterName, vector<bool> shoot, vector<double> ExcitationEnergy, string CSPath , string CSName);
+  void SetDecay(vector<string> DaughterName, vector<int> shoot, vector<double> ExcitationEnergy, string CSPath , string CSName);
 };
 #endif

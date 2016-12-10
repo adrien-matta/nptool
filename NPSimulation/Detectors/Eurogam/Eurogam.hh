@@ -38,96 +38,95 @@
 // NPTool header
 #include "NPSVDetector.hh"
 #include "TEurogamData.h"
-
+#include "NPInputParser.h"
 using namespace std;
-using namespace CLHEP;
+using namespace CLHEP;
 
-class Eurogam : public NPS::VDetector
-{
-   ////////////////////////////////////////////////////
-   /////// Default Constructor and Destructor /////////
-   ////////////////////////////////////////////////////
-public:
-   Eurogam() ;
-   virtual ~Eurogam() ;
+class Eurogam : public NPS::VDetector{
+  ////////////////////////////////////////////////////
+  /////// Default Constructor and Destructor /////////
+  ////////////////////////////////////////////////////
+  public:
+    Eurogam() ;
+    virtual ~Eurogam() ;
 
-   ////////////////////////////////////////////////////
-   //////// Specific Function of this Class ///////////
-   ////////////////////////////////////////////////////
-public:
-   // By Angle Method
-   void AddEurogamModule(G4double R, G4double Theta, G4double Phi,
-                         G4double beta_u, G4double beta_v, G4double beta_w);
+    ////////////////////////////////////////////////////
+    //////// Specific Function of this Class ///////////
+    ////////////////////////////////////////////////////
+  public:
+    // By Angle Method
+    void AddEurogamModule(G4double R, G4double Theta, G4double Phi,
+        G4double beta_u, G4double beta_v, G4double beta_w);
 
-   void VolumeMaker(G4int             DetectorNumber, 
-                    G4ThreeVector     DetectorPosition, 
-                    G4RotationMatrix* DetectorRotation,
-                    G4LogicalVolume*  world);
-
-
-   ////////////////////////////////////////////////////
-   /////////  Inherite from NPS::VDetector class ///////////
-   ////////////////////////////////////////////////////
-public:
-   // Read stream at Configfile to pick-up parameters of detector (Position,...)
-   // Called in DetecorConstruction::ReadDetextorConfiguration Method
-   void ReadConfiguration(string Path);
-
-   // Construct detector and inialise sensitive part.
-   // Called After DetecorConstruction::AddDetector Method
-   void ConstructDetector(G4LogicalVolume* world);
-
-   // Add Detector branch to the EventTree.
-   // Called After DetecorConstruction::AddDetector Method
-   void InitializeRootOutput();
-
-   // Read sensitive part and fill the Root tree.
-   // Called at in the EventAction::EndOfEventAvtion
-   void ReadSensitive(const G4Event* event);
+    void VolumeMaker(G4int             DetectorNumber, 
+        G4ThreeVector     DetectorPosition, 
+        G4RotationMatrix* DetectorRotation,
+        G4LogicalVolume*  world);
 
 
-   /////////////////////////////////////////////////
-   /////////////////// Materials ///////////////////
-   /////////////////////////////////////////////////
-private:
-   void InitializeMaterial();
-   G4Material* m_Material_Vacuum;
-   G4Material* m_Material_Aluminium;
-   G4Material* m_Material_Silicon;
-   G4Material* m_Material_Germanium;
+    ////////////////////////////////////////////////////
+    /////////  Inherite from NPS::VDetector class ///////////
+    ////////////////////////////////////////////////////
+  public:
+    // Read stream at Configfile to pick-up parameters of detector (Position,...)
+    // Called in DetecorConstruction::ReadDetextorConfiguration Method
+    void ReadConfiguration(NPL::InputParser);
+
+    // Construct detector and inialise sensitive part.
+    // Called After DetecorConstruction::AddDetector Method
+    void ConstructDetector(G4LogicalVolume* world);
+
+    // Add Detector branch to the EventTree.
+    // Called After DetecorConstruction::AddDetector Method
+    void InitializeRootOutput();
+
+    // Read sensitive part and fill the Root tree.
+    // Called at in the EventAction::EndOfEventAvtion
+    void ReadSensitive(const G4Event* event);
 
 
-   /////////////////////////////////////////////////
-   //////////////////// Scorers ////////////////////
-   /////////////////////////////////////////////////
-public:
-   // Initialize all Scorer used by Eurogam
-   void InitializeScorers();
-
-private:
-   // Eurogam Scorer
-   G4MultiFunctionalDetector* m_EurogamScorer;
-
-
-   ////////////////////////////////////////////////////
-   ///////////Event class to store Data////////////////
-   ////////////////////////////////////////////////////
-private:
-   TEurogamData* m_Event;
+    /////////////////////////////////////////////////
+    /////////////////// Materials ///////////////////
+    /////////////////////////////////////////////////
+  private:
+    void InitializeMaterial();
+    G4Material* m_Material_Vacuum;
+    G4Material* m_Material_Aluminium;
+    G4Material* m_Material_Silicon;
+    G4Material* m_Material_Germanium;
 
 
-   ////////////////////////////////////////////////////
-   ///////////////Private intern Data//////////////////
-   ////////////////////////////////////////////////////
-private:
-   // Used for "By Angle Definition"
-   vector<G4double>  m_R;     //  |
-   vector<G4double>  m_Theta; //  > Spherical coordinate Eurogam volume center
-   vector<G4double>  m_Phi;   //  |
-   vector<G4double>  m_beta_u; //  |
-   vector<G4double>  m_beta_v; //  > Tilt angle of the detector
-   vector<G4double>  m_beta_w; //  |
-public:
+    /////////////////////////////////////////////////
+    //////////////////// Scorers ////////////////////
+    /////////////////////////////////////////////////
+  public:
+    // Initialize all Scorer used by Eurogam
+    void InitializeScorers();
+
+  private:
+    // Eurogam Scorer
+    G4MultiFunctionalDetector* m_EurogamScorer;
+
+
+    ////////////////////////////////////////////////////
+    ///////////Event class to store Data////////////////
+    ////////////////////////////////////////////////////
+  private:
+    TEurogamData* m_Event;
+
+
+    ////////////////////////////////////////////////////
+    ///////////////Private intern Data//////////////////
+    ////////////////////////////////////////////////////
+  private:
+    // Used for "By Angle Definition"
+    vector<G4double>  m_R;     //  |
+    vector<G4double>  m_Theta; //  > Spherical coordinate Eurogam volume center
+    vector<G4double>  m_Phi;   //  |
+    vector<G4double>  m_beta_u; //  |
+    vector<G4double>  m_beta_v; //  > Tilt angle of the detector
+    vector<G4double>  m_beta_w; //  |
+  public:
     static NPS::VDetector* Construct();
 };
 
@@ -135,19 +134,19 @@ public:
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace EUROGAMDETECTOR
 {
-   // Energy and time Resolution
-   const G4double ResoTime    = 4.2             ;// = 10ns of Resolution   //   Unit is MeV/2.35
-   const G4double ResoEnergy  = 0.2             ;// Resolution in %
+  // Energy and time Resolution
+  const G4double ResoTime    = 4.2             ;// = 10ns of Resolution   //   Unit is MeV/2.35
+  const G4double ResoEnergy  = 0.2             ;// Resolution in %
 
-   // Geometry
-   const G4double EurogamSize  =  90*mm;
-   const G4double EurogamDepth = 280*mm;
+  // Geometry
+  const G4double EurogamSize  =  90*mm;
+  const G4double EurogamDepth = 280*mm;
 
-   // definition of the 
-//   const G4double 
+  // definition of the 
+  //   const G4double 
 
-   // Definition of the crystal
-//   const G4double CrystalLength = 
+  // Definition of the crystal
+  //   const G4double CrystalLength = 
 }
 
 #endif

@@ -34,6 +34,7 @@ using namespace std;
 #include "RootInput.h"
 #include "RootOutput.h"
 #include "NPDetectorFactory.h"
+#include "NPOptionManager.h"
 
 //   ROOT
 #include "TChain.h"
@@ -192,88 +193,32 @@ void TMiniballPhysics::Clear() {
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TMiniballPhysics::ReadConfiguration(string Path) {
-  ifstream ConfigFile           ;
-  ConfigFile.open(Path.c_str()) ;
-  string LineBuffer             ;
-  string DataBuffer             ;
+void TMiniballPhysics::ReadConfiguration(NPL::InputParser parser) {
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Miniball");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  bool check_Theta = false          ;
-  bool check_Phi  = false           ;
-  bool check_R     = false          ;
-  bool ReadingStatus = false        ;
+  vector<string> token = {"R","Theta","Phi"};
 
-  while (!ConfigFile.eof()){
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  Miniball Cluster" << i+1 <<  endl;
+      double R = blocks[i]->GetDouble("R","mm");
+      double Theta = blocks[i]->GetDouble("Theta","deg");
+      double Phi = blocks[i]->GetDouble("Phi","deg");
 
-    getline(ConfigFile, LineBuffer);
-
-    //   If line is a Start Up Miniball bloc, Reading toggle to true
-    string name="Miniball";
-    if (LineBuffer.compare(0, name.length(), name) == 0){
-      cout << "///" << endl ;
-      cout << "Miniball found: " << endl ;
-      ReadingStatus = true ; 
+//      AddDetector(R,Theta,Phi);
     }
 
-    //   Reading Block
-    while(ReadingStatus)
-    {
-      // Pickup Next Word
-      ConfigFile >> DataBuffer ;
-
-      //   Comment Line
-      if (DataBuffer.compare(0, 1, "%") == 0) {   
-        ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
-      }
-
-      //   Finding another telescope (safety), toggle out
-      else if (DataBuffer.compare(0, name.length(), name) == 0) {
-        cout << "\033[1;311mWARNING: Another detector is find before standard sequence of Token, Error may occured in detector definition\033[0m" << endl ;
-        ReadingStatus = false ;
-      }
-
-      //Angle method
-      else if (DataBuffer=="THETA=") {
-        check_Theta = true;
-        ConfigFile >> DataBuffer ;
-        cout << "Theta:  " << atof(DataBuffer.c_str()) << "deg" << endl;
-      }
-
-      else if (DataBuffer=="PHI=") {
-        check_Phi = true;
-        ConfigFile >> DataBuffer ;
-        cout << "Phi:  " << atof( DataBuffer.c_str() ) << "deg" << endl;
-      }
-
-      else if (DataBuffer=="R=") {
-        check_R = true;
-        ConfigFile >> DataBuffer ;
-        cout << "R:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
-      }
-
-      ///////////////////////////////////////////////////
-      //   If no Detector Token and no comment, toggle out
-      else{
-        ReadingStatus = false; cout << "Wrong Token Sequence: Getting out " << DataBuffer << endl ;
-      }
-
-      /////////////////////////////////////////////////
-      //   If All necessary information there, toggle out
-
-      if (check_Theta && check_Phi && check_R){
-        m_NumberOfDetectors++;
-
-        //   Reinitialisation of Check Boolean
-        check_Theta = false          ;
-        check_Phi  = false           ;
-        check_R     = false          ;
-        ReadingStatus = false        ;
-        cout << "///"<< endl         ;
-      }
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
     }
   }
-}
 
+  ReadAnalysisConfig();
+}
 
 
 ///////////////////////////////////////////////////////////////////////////

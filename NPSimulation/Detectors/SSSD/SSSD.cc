@@ -47,6 +47,7 @@
 #include "NPSDetectorFactory.hh"
 #include "SiliconScorers.hh"
 #include "RootOutput.h"
+#include "NPOptionManager.h"
 using namespace SSSD_LOCAL;
 
 // CLHEP header
@@ -233,214 +234,41 @@ void SSSD::VolumeMaker(  G4int             DetNumber ,
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void SSSD::ReadConfiguration(string Path){
-  ifstream ConfigFile           ;
-  ConfigFile.open(Path.c_str()) ;
-  string LineBuffer             ;
-  string DataBuffer             ;
+void SSSD::ReadConfiguration(NPL::InputParser parser){
+vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("SSSD");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  G4double TLX , BLX , BRX , TRX , TLY , BLY , BRY , TRY , TLZ , BLZ , BRZ , TRZ;
-  G4ThreeVector TL , BL , BR , TR ;
-  G4double Theta = 0 , Phi = 0 , R = 0 , beta_u = 0 , beta_v = 0 , beta_w = 0 ;
-  bool check_A = false ;
-  bool check_B = false ;
-  bool check_C = false ;
-  bool check_D = false ;
+  vector<string> cart = {"A","B","C","D"};
+  vector<string> sphe = {"R","THETA","PHI","BETA"};
 
-  bool check_Theta   = false;
-  bool check_Phi     = false;
-  bool check_R       = false;
-  bool check_beta    = false;
-  bool ReadingStatus = false;
-
-  while (!ConfigFile.eof()) 
-  {
-
-    getline(ConfigFile, LineBuffer);
-
-    //   If line is a Start Up SSSD bloc, Reading toggle to true      
-    if (LineBuffer.compare(0, 4, "SSSD") == 0 && LineBuffer.compare(0, 5, "SSSDA") != 0) 
-    {
-      G4cout << "///" << G4endl           ;
-      G4cout << "Detector found: " << G4endl   ;        
-      ReadingStatus = true ;
-
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(cart)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  SSSD " << i+1 <<  endl;
+      G4ThreeVector A = NPS::ConvertVector(blocks[i]->GetTVector3("A","mm"));
+      G4ThreeVector B = NPS::ConvertVector(blocks[i]->GetTVector3("B","mm"));
+      G4ThreeVector C = NPS::ConvertVector(blocks[i]->GetTVector3("C","mm"));
+      G4ThreeVector D = NPS::ConvertVector(blocks[i]->GetTVector3("D","mm"));
+      AddTelescope(A,B,C,D);
     }
-
-    //   Else don't toggle to Reading Block Status
-    else ReadingStatus = false ;
-
-    //   Reading Block
-    while(ReadingStatus)
-    {
-      // Pickup Next Word 
-      ConfigFile >> DataBuffer ;
-
-      //   Comment Line 
-      if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
-
-      //   Finding another telescope (safety), toggle out
-      else if (DataBuffer=="SSSD") {
-        G4cout << "WARNING: Another Telescope is found before standard sequence of Token, Error may occured in detector definition" << G4endl ;
-        ReadingStatus = false ;
-      }
-
-      //Position method
-      else if (DataBuffer.compare(0, 3, "A=") == 0) {
-        check_A = true;
-        ConfigFile >> DataBuffer ;
-        TLX = atof(DataBuffer.c_str()) ;
-        TLX = TLX * mm;
-        ConfigFile >> DataBuffer ;
-        TLY = atof(DataBuffer.c_str()) ;
-        TLY = TLY * mm;
-        ConfigFile >> DataBuffer ;
-        TLZ = atof(DataBuffer.c_str()) ;
-        TLZ = TLZ * mm;
-
-        TL = G4ThreeVector(TLX, TLY, TLZ);
-        G4cout << "Top Left position : (" << TLX << ";" << TLY << ";" << TLZ << ")" << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 3, "B=") == 0) {
-        check_B = true;
-        ConfigFile >> DataBuffer ;
-        BLX = atof(DataBuffer.c_str()) ;
-        BLX = BLX * mm;
-        ConfigFile >> DataBuffer ;
-        BLY = atof(DataBuffer.c_str()) ;
-        BLY = BLY * mm;
-        ConfigFile >> DataBuffer ;
-        BLZ = atof(DataBuffer.c_str()) ;
-        BLZ = BLZ * mm;
-
-        BL = G4ThreeVector(BLX, BLY, BLZ);
-        G4cout << "Top Right position : (" << BLX << ";" << BLY << ";" << BLZ << ")" << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 3, "C=") == 0) {
-        check_C = true;
-        ConfigFile >> DataBuffer ;
-        BRX = atof(DataBuffer.c_str()) ;
-        BRX = BRX * mm;
-        ConfigFile >> DataBuffer ;
-        BRY = atof(DataBuffer.c_str()) ;
-        BRY = BRY * mm;
-        ConfigFile >> DataBuffer ;
-        BRZ = atof(DataBuffer.c_str()) ;
-        BRZ = BRZ * mm;
-
-        BR = G4ThreeVector(BRX, BRY, BRZ);
-        G4cout << "Bottom Right position : (" << BRX << ";" << BRY << ";" << BRZ << ")" << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 3, "D=") == 0) {
-        check_D = true;
-        ConfigFile >> DataBuffer ;
-        TRX = atof(DataBuffer.c_str()) ;
-        TRX = TRX * mm;
-        ConfigFile >> DataBuffer ;
-        TRY = atof(DataBuffer.c_str()) ;
-        TRY = TRY * mm;
-        ConfigFile >> DataBuffer ;
-        TRZ = atof(DataBuffer.c_str()) ;
-        TRZ = TRZ * mm;
-
-        TR = G4ThreeVector(TRX, TRY, TRZ);
-        G4cout << "Center position : (" << TRX << ";" << TRY << ";" << TRZ << ")" << G4endl << G4endl;
-      }
-
-
-      //Angle method
-      else if (DataBuffer.compare(0, 6, "THETA=") == 0) {
-        check_Theta = true;
-        ConfigFile >> DataBuffer ;
-        Theta = atof(DataBuffer.c_str()) ;
-        Theta = Theta * deg;
-        G4cout << "Theta:  " << Theta / deg << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
-        check_Phi = true;
-        ConfigFile >> DataBuffer ;
-        Phi = atof(DataBuffer.c_str()) ;
-        Phi = Phi * deg;
-        G4cout << "Phi:  " << Phi / deg << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 2, "R=") == 0) {
-        check_R = true;
-        ConfigFile >> DataBuffer ;
-        R = atof(DataBuffer.c_str()) ;
-        R = R * mm;
-        G4cout << "R:  " << R*mm << G4endl;
-      }
-
-
-      else if (DataBuffer.compare(0, 5, "BETA=") == 0) {
-        check_beta = true;
-        ConfigFile >> DataBuffer ;
-        beta_u = atof(DataBuffer.c_str()) ;
-        beta_u = beta_u * deg   ;
-        ConfigFile >> DataBuffer ;
-        beta_v = atof(DataBuffer.c_str()) ;
-        beta_v = beta_v * deg   ;
-        ConfigFile >> DataBuffer ;
-        beta_w = atof(DataBuffer.c_str()) ;
-        beta_w = beta_w * deg   ;
-        G4cout << "Beta:  " << beta_u / deg <<  " " << beta_v / deg << " " << beta_w / deg << G4endl       ;
-      }
-
-      ///////////////////////////////////////////////////
-      //   If no Detector Token and no comment, toggle out
-      else 
-      {ReadingStatus = false; G4cout << "Wrong Token Sequence: Getting out " << DataBuffer << G4endl ;}
-
-      /////////////////////////////////////////////////
-      //   If All necessary information there, toggle out
-
-      if ( (check_A && check_B && check_C && check_D) || (check_Theta && check_Phi && check_R && check_beta) ) 
-      { 
-        ReadingStatus = false; 
-
-        ///Add The previously define telescope
-        //With position method
-        if ((check_A && check_B && check_C && check_D) || !(check_Theta && check_Phi && check_R)) {
-          AddTelescope(   TL ,
-              BL ,
-              BR ,
-              TR );
-        }
-
-        //with angle method
-        else if ((check_Theta && check_Phi && check_R) || !(check_A && check_B && check_C && check_D)) {
-          AddTelescope(   R ,
-              Theta ,
-              Phi ,
-              beta_u ,
-              beta_v ,
-              beta_w );
-        }
-
-        //   Reinitialisation of Check Boolean 
-
-        check_A = false ;
-        check_B = false ;
-        check_C = false ;
-        check_D = false ;
-
-        check_Theta   = false ;
-        check_Phi     = false ;
-        check_R       = false ;
-        check_beta    = false ;
-        ReadingStatus = false ;
-
-      }
-
+    else if(blocks[i]->HasTokenList(sphe)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  SSSD " << i+1 <<  endl;
+      double R = blocks[i]->GetDouble("R","mm");
+      double Theta = blocks[i]->GetDouble("THETA","deg");
+      double Phi = blocks[i]->GetDouble("PHI","deg");
+      vector<double> beta = blocks[i]->GetVectorDouble("BETA","deg");
+      AddTelescope(R,Theta,Phi,beta[0],beta[1],beta[2]);
+    }
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
     }
   }
-
 }
+
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Construct detector and inialise sensitive part.
 // Called After DetecorConstruction::AddDetector Method

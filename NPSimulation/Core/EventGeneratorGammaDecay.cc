@@ -33,6 +33,7 @@
 // NPL
 #include "NPOptionManager.h"
 #include "NPFunction.h"
+#include "NPInputParser.h"
 using namespace NPL;
 
 // G4 headers including CLHEP headers
@@ -57,147 +58,38 @@ EventGeneratorGammaDecay::~EventGeneratorGammaDecay(){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventGeneratorGammaDecay::ReadConfiguration(string Path, int Occurence){
-  ////////General Reading needs////////
-  string LineBuffer;
-  string DataBuffer;
-  istringstream LineStream;
-  int TokenOccurence = 0 ;
-  //////// Setting needs///////
-  unsigned int NumberOfCascade = 0;
-  bool ReadingStatusGammaDecay  = false ;
-  bool CascadeStatus = false ;
-  
-  bool check_E = false;
-  bool check_BranchingRatio = false;
-  bool check_CSPath = false ;
-  bool check_created = false;
-  
-  int VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
-  
-  //////////////////////////////////////////////////////////////////////////////////////////
-  ifstream InputFile;
-  InputFile.open(Path.c_str());
-  
-  if (InputFile.is_open()) {} else {
-    return;
-  }
-  
-  while (!InputFile.eof() && !check_created) {
-    //Pick-up next line
-    getline(InputFile, LineBuffer);
-    
-    if (LineBuffer.compare(0, 10, "GammaDecay") == 0) {
-      TokenOccurence++;
-      if (TokenOccurence == Occurence) {
-        ReadingStatusGammaDecay = true ;
-        if(VerboseLevel==1) G4cout << "///////////////////////////////////////// " << G4endl;
-        // Get the nuclei name
-        LineStream.clear();
-        LineStream.str(LineBuffer);
-        LineStream >> DataBuffer;
-        DataBuffer.erase();
-        LineStream >> DataBuffer;
-        m_NucleiName = DataBuffer ;
-        if(VerboseLevel==1) G4cout << "Gamma Decay for " << m_NucleiName << G4endl;
-      }
+void EventGeneratorGammaDecay::ReadConfiguration(NPL::InputParser parser){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("GammaCascade");
+  vector<string> token = {"BranchingRatio","Energies"};
+
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(NPOptionManager::getInstance()->GetVerboseLevel())
+      cout << endl << "\033[1;35m//// Cascade for nuclei " << blocks[i]->GetMainValue() << endl;
+    if(m_NucleiName=="")
+      m_NucleiName = blocks[i]->GetMainValue();
+
+    else if(m_NucleiName!=blocks[i]->GetMainValue()){
+      cout << "ERROR: The decay of only one nuclei is presently supported\033[0m" << endl;
+      exit(1);
     }
-    
-    ///////////////////////////////
-    /// Gamma Decay case
-    while(ReadingStatusGammaDecay){
-      InputFile >> DataBuffer;
-      //Search for comment Symbol %
-      if (DataBuffer.compare(0, 1, "%") == 0) {   InputFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
-      
-      else if (DataBuffer == "Cascade") {
-        CascadeStatus = true ;
-        NumberOfCascade++;
-        if(VerboseLevel==1) G4cout << "  Cascade " << NumberOfCascade << G4endl;
-        
-        LineStream.clear();
-        LineStream.str(LineBuffer);
-        
-        // Instantiate new variable for the up coming cascade
-        check_E = false;
-        check_BranchingRatio = false;
-        check_CSPath = false ;
-        
-        double BranchingRatio = -1;
-        vector<double> E ;
-        string CSPath,CSName;
-        
-        while (CascadeStatus) {
-          getline(InputFile, LineBuffer);
-          LineStream.clear();
-          LineStream.str(LineBuffer);
-          LineStream >> DataBuffer ;
-          
-          // G4cout << DataBuffer << G4endl;
-          
-          //Search for comment Symbol %
-          if (DataBuffer.compare(0, 1, "%") == 0) {   InputFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
-          
-          else if(DataBuffer == "BranchingRatio=") {
-            check_BranchingRatio = true;
-            LineStream.clear();
-            LineStream.str(LineBuffer);
-            LineStream >> DataBuffer ;
-            LineStream >> DataBuffer ;
-            BranchingRatio = atof(DataBuffer.c_str());
-            if(VerboseLevel==1) G4cout << "    Branching Ratio: " << atof(DataBuffer.c_str()) << G4endl;
-            
-          }
-          
-          else if(DataBuffer == "Energies=") {
-            check_E = true;
-            if(VerboseLevel==1) G4cout << "    Energies: " ;
-            LineStream.clear();
-            LineStream.str(LineBuffer);
-            LineStream >> DataBuffer;
-            while(LineStream >> DataBuffer){
-              E.push_back(atof(DataBuffer.c_str()));
-              if(VerboseLevel==1)G4cout << atof(DataBuffer.c_str()) << " ";
-              
-            }
-            if(VerboseLevel==1)G4cout << G4endl;
-          }
-          
-          else if(DataBuffer == "DifferentialCrossSection="){
-            LineStream.clear();
-            LineStream.str(LineBuffer);
-            LineStream >> DataBuffer >> CSPath >> CSName ;
-            if(VerboseLevel==1) G4cout << "    Cross Section Path: " << CSPath << G4endl;
-            check_CSPath = true;
-          }
-          
-          // Cascade ended
-          if(check_E && check_BranchingRatio && E.size()>1){
-            AddCascade(E, BranchingRatio, "_void_");
-            CascadeStatus = false;
-          }
-          
-          if(check_E && check_BranchingRatio && (E.size()<2 && check_CSPath)){
-            AddCascade(E, BranchingRatio, CSPath , CSName);
-            CascadeStatus = false;
-          }
-          
-        }
-        
-      }
-      
-      //////////////////////////////////////////////////////
-      // If no Token and no comment, toggle out //
-      //  else
-      //   {ReadingStatusGammaDecay = false; G4cout << "WARNING : Wrong Token Sequence: Getting out " << G4endl ;}
-      
-      
-      if(InputFile.eof()) {ReadingStatusGammaDecay=false;check_created=true;}
+   
+    vector<double> E = blocks[i]->GetVectorDouble("Energies","MeV");
+    double BranchingRatio = blocks[i]->GetDouble("BranchingRatio","void");  
+    vector<string> CS; 
+    if(blocks[i]->HasToken("DifferentialCrossSection"))
+      CS = blocks[i]->GetVectorString("DifferentialCrossSection");
+
+    // Sanity Check
+    if(E.size()>1 && CS.size()>0){
+      cout << "ERROR: Cannot use Cross section with decay of multiple gamma" << endl;
     }
+     
+    if(CS.size()>0) 
+      AddCascade(E, BranchingRatio, CS[0] , CS[1]);
+    else
+      AddCascade(E, BranchingRatio);
   }
-  if(VerboseLevel==1) G4cout << "///////////////////////////////////////// " << G4endl;
-  InputFile.close();
-  PrepareCascade();
+PrepareCascade();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -328,7 +220,7 @@ void EventGeneratorGammaDecay::PrepareCascade(){
   
   // Check that the total ratio is not over 100% (below is allowed)
   if(TotalRatio>1) {
-    G4cout << "Gamma Decay Error: Sum of branching ratio is over 100%" << G4endl;
+    cout << "Gamma Decay Error: Sum of branching ratio is over 100%" << endl;
     exit(1);
   }
   

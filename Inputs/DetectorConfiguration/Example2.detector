@@ -4,93 +4,91 @@ GeneralTarget
 
 %0.2mg/cm2
 Target
-	THICKNESS= 4.5
-	RADIUS=	5
-	MATERIAL= CD2
-	ANGLE= 0
-	X= 0
-	Y= 0
-	Z= 0
+ THICKNESS= 4.5 micrometer
+ RADIUS= 5 mm
+ MATERIAL= CD2
+ ANGLE= 0 deg
+ X= 0 mm
+ Y= 0 mm
+ Z= 0 mm
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Sharc
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  %Upstream CD
-  SharcQQQ
-    Z= -71
-    R= 0
-    Phi= 0
-    ThicknessDector= 500
-  SharcQQQ
-    Z= -71
-    R= 0
-    Phi= 90
-    ThicknessDector= 500
-  SharcQQQ
-    Z= -71
-    R= 0
-    Phi= 180
-    ThicknessDector= 500
-  SharcQQQ
-    Z= -71
-    R= 0
-    Phi= 270
-    ThicknessDector= 500
+%Upstream CD
+Sharc QQQ
+ Z= -71 mm
+ R= 0 mm
+ Phi= 0 deg 
+ ThicknessDetector= 500 micrometer
+Sharc QQQ
+ Z= -71 mm
+ R= 0 mm
+ Phi= 90 deg 
+ ThicknessDetector= 500 micrometer
+Sharc QQQ
+ Z= -71 mm
+ R= 0 mm
+ Phi= 180 deg 
+ ThicknessDetector= 500 micrometer
+Sharc QQQ
+ Z= -71 mm
+ R= 0 mm
+ Phi= 270 deg 
+ ThicknessDetector= 500 micrometer
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Upstream Box
-  SharcBOX
-    Z= -30
-    ThicknessDector1= 500
-    ThicknessDector2= 500
-    ThicknessDector3= 500
-    ThicknessDector4= 500
-    ThicknessPAD1= 0
-    ThicknessPAD2= 0
-    ThicknessPAD3= 0
-    ThicknessPAD4= 0
+Sharc BOX 
+ Z= -30 mm
+ ThicknessDetector1= 500 micrometer
+ ThicknessDetector2= 500 micrometer
+ ThicknessDetector3= 500 micrometer
+ ThicknessDetector4= 500 micrometer
+ ThicknessPAD1= 0 micrometer
+ ThicknessPAD2= 0 micrometer
+ ThicknessPAD3= 0 micrometer
+ ThicknessPAD4= 0 micrometer
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Down Stream Box
-  SharcBOX
-    Z= 31.4
-    ThicknessDector1= 140
-    ThicknessDector2= 140
-    ThicknessDector3= 140
-    ThicknessDector4= 140
-    ThicknessPAD1= 1000
-    ThicknessPAD2= 1000
-    ThicknessPAD3= 1000
-    ThicknessPAD4= 1000
+Sharc BOX
+ Z= 31.4 mm 
+ ThicknessDetector1= 140 micrometer
+ ThicknessDetector2= 140 micrometer
+ ThicknessDetector3= 140 micrometer
+ ThicknessDetector4= 140 micrometer
+ ThicknessPAD1= 1 mm 
+ ThicknessPAD2= 1 mm 
+ ThicknessPAD3= 1 mm 
+ ThicknessPAD4= 1 mm 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Downstream CD
-  SharcQQQ
-    Z= 67
-    R= 0
-    Phi= 0
-    ThicknessDector= 500
-  SharcQQQ
-    Z= 67
-    R= 0
-    Phi= 90
-    ThicknessDector= 500
-  SharcQQQ
-    Z= 67
-    R= 0
-    Phi= 180
-    ThicknessDector= 500
-  SharcQQQ
-    Z= 67
-    R= 0
-    Phi= 270
-    ThicknessDector= 500
+Sharc QQQ
+ Z= 67 mm
+ R= 0 mm
+ Phi= 0 deg
+ ThicknessDetector= 500 micrometer
+Sharc QQQ
+ Z= 67 mm
+ R= 0 mm
+ Phi= 90 deg
+ ThicknessDetector= 500 micrometer
+Sharc QQQ
+ Z= 67 mm
+ R= 0 mm
+ Phi= 180 deg 
+ ThicknessDetector= 500 micrometer
+Sharc QQQ
+ Z= 67 mm
+ R= 0 mm
+ Phi= 270 deg
+ ThicknessDetector= 500 micrometer
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Plastic
-	X= 0
-	Y= 0
-	Z= 400
-	Thickness= 0.025
-	Shape= Square
-	Height= 40
-	Width= 40
-	Scintillator= BC400
-	LeadThickness= 0.09
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ X= 0 mm
+ Y= 0 mm
+ Z= 400 mm
+ Thickness= 0.025 mm
+ Shape= Square
+ Height= 40 mm
+ Width= 40 mm
+ Scintillator= BC400
+ LeadThickness= 0.09 mm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

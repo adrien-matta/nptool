@@ -457,178 +457,44 @@ void TSharcPhysics::Clear(){
 ////   Innherited from VDetector Class   ////
 
 ///////////////////////////////////////////////////////////////////////////
-void TSharcPhysics::ReadConfiguration(string Path){
-  ifstream ConfigFile           ;
-  ConfigFile.open(Path.c_str()) ;
-  string LineBuffer             ;
-  string DataBuffer             ;
+void TSharcPhysics::ReadConfiguration(NPL::InputParser parser){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Sharc");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  double R,Phi,Z;
-  R = 0 ; Phi = 0 ; Z = 0;
-  TVector3 Pos;
-  bool check_R   = false ;
-  bool check_Phi = false ;
-  bool check_Z   = false ;
+ vector<string> tokenQQQ = {"Z","R","Phi","ThicknessDetector"};
+ vector<string> tokenBOX = {"Z","ThicknessDetector1","ThicknessDetector2","ThicknessDetector3","ThicknessDetector4","ThicknessPAD1","ThicknessPAD2","ThicknessPAD3","ThicknessPAD4"};
+ 
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
 
-  bool ReadingStatusQQQ = false ;
-  bool ReadingStatusBOX = false ;
-  bool ReadingStatus    = false ;
+    if(blocks[i]->GetMainValue()=="QQQ" && blocks[i]->HasTokenList(tokenQQQ)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  Sharc QQQ " << i+1 <<  endl;
+        double Z = blocks[i]->GetDouble("Z","mm");
+        double R = blocks[i]->GetDouble("R","mm");
+        double Phi = blocks[i]->GetDouble("Phi","deg");
+        double Thickness= blocks[i]->GetDouble("ThicknessDetector","micrometer");
+        AddQQQDetector(R,Phi,Z);
+    }
+    else if(blocks[i]->GetMainValue()=="BOX" && blocks[i]->HasTokenList(tokenBOX)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  Sharc Box " << i+1 <<  endl;
+        double Z = blocks[i]->GetDouble("Z","mm");
+        double Thickness1= blocks[i]->GetDouble("ThicknessDetector1","micrometer");
+        double Thickness2= blocks[i]->GetDouble("ThicknessDetector2","micrometer");
+        double Thickness3= blocks[i]->GetDouble("ThicknessDetector3","micrometer");
+        double Thickness4= blocks[i]->GetDouble("ThicknessDetector4","micrometer");
+        double ThicknessPAD1 = blocks[i]->GetDouble("ThicknessPAD1","micrometer");
+        double ThicknessPAD2 = blocks[i]->GetDouble("ThicknessPAD2","micrometer");
+        double ThicknessPAD3 = blocks[i]->GetDouble("ThicknessPAD3","micrometer");
+        double ThicknessPAD4 = blocks[i]->GetDouble("ThicknessPAD4","micrometer");
+        AddBoxDetector(Z);
+    }
 
-  bool VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel(); ;
-
-  while (!ConfigFile.eof()){
-
-    getline(ConfigFile, LineBuffer);
-    // cout << LineBuffer << endl;
-    if (LineBuffer.compare(0, 5, "Sharc") == 0)
-      ReadingStatus = true;
-
-    while (ReadingStatus && !ConfigFile.eof()) {
-      ConfigFile >> DataBuffer ;
-      //   Comment Line
-      if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
-
-      //   CD case
-      if (DataBuffer=="SharcQQQ"){
-        if(VerboseLevel) cout << "///" << endl           ;
-        if(VerboseLevel) cout << "QQQ Quadrant found: " << endl   ;
-        ReadingStatusQQQ = true ;
-      }
-
-      //  Box case
-      else if (DataBuffer=="SharcBOX"){
-        if(VerboseLevel) cout << "///" << endl           ;
-        if(VerboseLevel) cout << "Box Detector found: " << endl   ;
-        ReadingStatusBOX = true ;
-      }
-
-      //   Reading Block
-      while(ReadingStatusQQQ){
-        // Pickup Next Word
-        ConfigFile >> DataBuffer ;
-
-        //   Comment Line
-        if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
-
-        //Position method
-        else if (DataBuffer == "Z=") {
-          check_Z = true;
-          ConfigFile >> DataBuffer ;
-          Z= atof(DataBuffer.c_str());
-          if(VerboseLevel) cout << "  Z= " << Z << "mm" << endl;
-        }
-
-        else if (DataBuffer == "R=") {
-          check_R = true;
-          ConfigFile >> DataBuffer ;
-          R= atof(DataBuffer.c_str());
-          if(VerboseLevel) cout << "  R= " << R << "mm" << endl;
-        }
-
-        else if (DataBuffer == "Phi=") {
-          check_Phi = true;
-          ConfigFile >> DataBuffer ;
-          Phi= atof(DataBuffer.c_str());
-          if(VerboseLevel) cout << "  Phi= " << Phi << "deg" << endl;
-        }
-
-        else if (DataBuffer == "ThicknessDector=") {
-          /*ignore that*/
-        }
-
-        ///////////////////////////////////////////////////
-        //   If no Detector Token and no comment, toggle out
-        else{
-          ReadingStatusQQQ = false;
-          cout << "Error: Wrong Token Sequence: Getting out " << DataBuffer << endl ;
-          exit(1);
-        }
-
-        /////////////////////////////////////////////////
-        //   If All necessary information there, toggle out
-
-        if (check_R && check_Phi && check_Z){
-
-          ReadingStatusQQQ = false;
-          AddQQQDetector(R,Phi,Z);
-          //   Reinitialisation of Check Boolean
-          check_R   = false ;
-          check_Phi = false ;
-        }
-
-      }
-
-      while(ReadingStatusBOX){
-        // Pickup Next Word
-        ConfigFile >> DataBuffer ;
-
-        //   Comment Line
-        if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
-
-        //Position method
-        else if (DataBuffer == "Z=") {
-          check_Z = true;
-          ConfigFile >> DataBuffer ;
-          Z= atof(DataBuffer.c_str());
-          if(VerboseLevel) cout << "  Z= " << Z << "mm" << endl;
-        }
-
-        else if (DataBuffer == "ThicknessDector1=") {
-          /*ignore this */
-        }
-
-        else if (DataBuffer == "ThicknessDector2=") {
-          /*ignore this */
-        }
-
-        else if (DataBuffer == "ThicknessDector3=") {
-          /*ignore this */
-        }
-
-        else if (DataBuffer == "ThicknessDector4=") {
-          /*ignore this */
-        }
-
-        else if (DataBuffer == "ThicknessPAD1=") {
-          /*ignore this */
-        }
-
-        else if (DataBuffer == "ThicknessPAD2=") {
-          /*ignore this */
-        }
-
-        else if (DataBuffer == "ThicknessPAD3=") {
-          /*ignore this */
-        }
-
-        else if (DataBuffer == "ThicknessPAD4=") {
-          /*ignore this */
-        }
-
-        ///////////////////////////////////////////////////
-        //   If no Detector Token and no comment, toggle out
-        else{
-          ReadingStatusBOX = false;
-          cout << "Error: Wrong Token Sequence: Getting out " << DataBuffer << endl ;
-          exit(1);
-        }
-
-        /////////////////////////////////////////////////
-        //   If All necessary information there, toggle out
-
-        if (check_Z){
-          ReadingStatusBOX = false;
-          AddBoxDetector(Z);
-          //   Reinitialisation of Check Boolean
-          check_R = false ;
-          check_Phi = false ;
-          check_Z = false ;
-
-        }
-      }
+    else{
+      cout << "Warning: check your input file formatting " << endl;
     }
   }
-
   InitializeStandardParameter();
   ReadAnalysisConfig();
 }

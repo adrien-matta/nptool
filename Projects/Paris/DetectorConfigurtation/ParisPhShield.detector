@@ -1,0 +1,112 @@
+%Fichier de configuration manip E225
+%%%%%%%%%%%Target%%%%%%%%%%%%%%%%%%%1
+%Thickness in micrometer
+%Radius in mm
+%Temperature in K, Pressure in bar
+%Material name according to the target library
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GeneralTarget
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Target
+ THICKNESS= 10.3
+ ANGLE= 0
+ RADIUS=	12
+ MATERIAL= CD2l
+ NBLAYERS= 50
+ X= 0
+ Y= 0
+ Z= 0	
+%%%%%%%%%%Detector%%%%%%%%%%%%%%%%%%%
+%%Position and R given in mm
+%%Angle given in degree
+%%Option: 0,1 for Si SiLi and CsI
+%%Option: all or sensible for VISualisation
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Shield
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%9
+ShieldClParis
+ X1_Y1=	-364	153.75	151.375
+ X1_Y128=	-364	91.5	151.375
+ X128_Y1=	-364	153.75	-84.5
+ X128_Y128=	-364	91.5	-84.5
+ VIS=all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ShieldClParis
+ X1_Y1=	-364	-151.375	153.75
+ X1_Y128=	-364	-151.375	91.49999999
+ X128_Y1=	-364	84.49999999	153.75
+ X128_Y128=	-364	84.5	91.50000004
+ VIS=all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ShieldClParis
+ X1_Y1=	-364	-153.75	-151.375
+ X1_Y128=	-364	-91.49999999	-151.375
+ X128_Y1=	-364	-153.7500001	84.49999997
+ X128_Y128=	-364	-91.50000008	84.5
+ VIS=all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ShieldClParis
+ X1_Y1=	-364	151.375	-153.75
+ X1_Y128=	-364	151.375	-91.49999998
+ X128_Y1=	-364	-84.49999996	-153.7500001
+ X128_Y128=	-364	-84.5	-91.50000013
+ VIS=all
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%0
+ShieldPhParis
+ THETA=	54.73
+ PHI=	45.02
+ R=	248
+ BETA= 0 0 -30
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+ShieldPhParis
+ THETA=	54.73
+ PHI=	134.98
+ R=	248
+ BETA= 0 0 210
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
+ShieldPhParis
+ THETA=	54.73
+ PHI=	225
+ R=	248
+ BETA= 0 0 -30
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%3
+ShieldPhParis
+ THETA=	54.73
+ PHI=	315
+ R=	248
+ BETA= 0 0 210
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%4
+ShieldPhParis
+ THETA=	125.26
+ PHI=	45.02
+ R=	248
+ BETA= 0 0 30
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+ShieldPhParis
+ THETA=	125.26
+ PHI=	134.98
+ R=	248
+ BETA= 0 0 -210
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%6
+ShieldPhParis
+ THETA=	125.26
+ PHI=	225
+ R=	248
+ BETA= 0 0 30
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%7
+ShieldPhParis
+ THETA=	125.26
+ PHI=	315
+ R=	248
+ BETA= 0 0 -210
+ VIS= all

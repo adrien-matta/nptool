@@ -37,6 +37,7 @@ using namespace std;
 #include "TSplitPoleNMR.h"
 #include "TSplitPoleSpectra.h"
 #include "NPVDetector.h"
+#include "NPInputParser.h"
 
 // forward declaration
 class TSplitPoleSpectra;
@@ -91,7 +92,7 @@ class TSplitPolePhysics : public TObject, public NPL::VDetector
 
    public:   //   inherited from VDetector
       // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-      void ReadConfiguration(string);
+      void ReadConfiguration(NPL::InputParser);
 
       // Add Parameter to the CalibrationManger
       void AddParameterToCalibrationManager();      

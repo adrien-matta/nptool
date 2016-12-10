@@ -49,6 +49,7 @@
 #include "W1Scorers.hh"
 #include "TW1Data.h"
 #include "RootOutput.h"
+#include "NPOptionManager.h"
 
 // CLHEP
 #include "CLHEP/Random/RandGauss.h"
@@ -175,195 +176,46 @@ void W1::VolumeMaker(G4int             DetecNumber,
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void W1::ReadConfiguration(string Path)
-{
-   ifstream ConfigFile;
-   ConfigFile.open(Path.c_str());
-   string LineBuffer, DataBuffer;
+void W1::ReadConfiguration(NPL::InputParser parser){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("W1");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
+  for(unsigned int i  = 0 ; i < blocks.size() ; i++){
+    // Cartesian Case
+    vector<string> cart = {"X1_Y1","X1_Y16","X16_Y1","X16_Y16","VIS"};
+    // Spherical Case
+    vector<string> sphe= {"R","THETA","PHI","BETA","VIS"};
 
-   // A:X1_Y1     --> X:1    Y:1
-   // B:X16_Y1    --> X:16   Y:1
-   // C:X1_Y16    --> X:1    Y:16
-   // D:X16_Y16   --> X:16   Y:16
+    if(blocks[i]->HasTokenList(cart)){
+      cout << endl << "////  W1 " << i+1 << endl;
+      G4ThreeVector A = NPS::ConvertVector(blocks[i]->GetTVector3("X1_Y1","mm"));
+      G4ThreeVector B = NPS::ConvertVector(blocks[i]->GetTVector3("X16_Y1","mm"));
+      G4ThreeVector C = NPS::ConvertVector(blocks[i]->GetTVector3("X1_Y16","mm"));
+      G4ThreeVector D = NPS::ConvertVector(blocks[i]->GetTVector3("X16_Y16","mm"));
+      if(blocks[i]->GetInt("VIS"))
+        m_non_sensitive_part_visiualisation = true;
+      AddDetector(A,B,C,D) ;
+    }
 
-   G4double Ax, Bx, Cx, Dx, Ay, By, Cy, Dy, Az, Bz, Cz, Dz;
-   G4ThreeVector A, B, C, D;
-   G4double Theta = 0, Phi = 0, R = 0, beta_u = 0, beta_v = 0, beta_w = 0;
+    else if(blocks[i]->HasTokenList(sphe)){
+      cout << endl << "////  W1 " << i+1 << endl;
+      double Theta = blocks[i]->GetDouble("THETA","deg");
+      double Phi= blocks[i]->GetDouble("PHI","deg");
+      double R = blocks[i]->GetDouble("R","mm");
+      vector<double> beta = blocks[i]->GetVectorDouble("BETA","deg");
+      if(blocks[i]->GetInt("VIS"))
+        m_non_sensitive_part_visiualisation = true;
 
-   bool ReadingStatus = false;
+      AddDetector(Theta,Phi,R,beta[0],beta[1],beta[2]);
 
-   bool check_A = false;
-   bool check_C = false;
-   bool check_B = false;
-   bool check_D = false;
-   bool check_R     = false;
-   bool check_Theta = false;
-   bool check_Phi   = false;
-   bool checkVis = false ;
+    }
 
-   while (!ConfigFile.eof()) {
-      getline(ConfigFile, LineBuffer);
-
-      if (LineBuffer.compare(0, 2, "W1") == 0) {
-         G4cout << "///" << G4endl;
-         G4cout << "W1 element found: " << G4endl;
-         ReadingStatus = true;
-      }
-      else ReadingStatus = false;
-
-      while (ReadingStatus) {
-         ConfigFile >> DataBuffer;
-
-         // Search for comment Symbol %
-         if (DataBuffer.compare(0, 1, "%") == 0) {
-            ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
-         }
-
-         // Position method
-         else if (DataBuffer.compare(0, 6, "X1_Y1=") == 0) {
-            check_A = true;
-            ConfigFile >> DataBuffer;
-            Ax = atof(DataBuffer.c_str());
-            Ax = Ax * mm;
-            ConfigFile >> DataBuffer;
-            Ay = atof(DataBuffer.c_str());
-            Ay = Ay * mm;
-            ConfigFile >> DataBuffer;
-            Az = atof(DataBuffer.c_str());
-            Az = Az * mm;
-
-            A = G4ThreeVector(Ax, Ay, Az);
-            G4cout << "X1 Y1 corner position : " << A << G4endl;
-         }
-
-         else if (DataBuffer.compare(0, 7, "X16_Y1=") == 0) {
-            check_B = true;
-            ConfigFile >> DataBuffer;
-            Bx = atof(DataBuffer.c_str());
-            Bx = Bx * mm;
-            ConfigFile >> DataBuffer;
-            By = atof(DataBuffer.c_str());
-            By = By * mm;
-            ConfigFile >> DataBuffer;
-            Bz = atof(DataBuffer.c_str());
-            Bz = Bz * mm ;
-
-            B = G4ThreeVector(Bx, By, Bz);
-            G4cout << "X16 Y1 corner position : " << B << G4endl;
-         }
-
-         else if (DataBuffer.compare(0, 7, "X1_Y16=") == 0) {
-            check_C = true;
-            ConfigFile >> DataBuffer;
-            Cx = atof(DataBuffer.c_str());
-            Cx = Cx * mm;
-            ConfigFile >> DataBuffer;
-            Cy = atof(DataBuffer.c_str());
-            Cy = Cy * mm;
-            ConfigFile >> DataBuffer;
-            Cz = atof(DataBuffer.c_str());
-            Cz = Cz * mm;
-
-            C = G4ThreeVector(Cx, Cy, Cz);
-            G4cout << "X1 Y16 corner position : " << C << G4endl;
-         }
-
-         else if (DataBuffer.compare(0, 8, "X16_Y16=") == 0) {
-            check_D = true;
-            ConfigFile >> DataBuffer; 
-            Dx = atof(DataBuffer.c_str());
-            Dx = Dx * mm;
-            ConfigFile >> DataBuffer;
-            Dy = atof(DataBuffer.c_str());
-            Dy = Dy * mm;
-            ConfigFile >> DataBuffer;
-            Dz = atof(DataBuffer.c_str());
-            Dz = Dz * mm;
-
-            D = G4ThreeVector(Dx, Dy, Dz);
-            G4cout << "X16 Y16 corner position : " << D << G4endl;
-         }
-
-
-         // Angle method
-         else if (DataBuffer.compare(0, 6, "THETA=") == 0) {
-            check_Theta = true;
-            ConfigFile >> DataBuffer ;
-            Theta = atof(DataBuffer.c_str()) ;
-            Theta = Theta * deg;
-            G4cout << "Theta:  " << Theta / deg << G4endl;
-         }
-
-         else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
-            check_Phi = true;
-            ConfigFile >> DataBuffer ;
-            Phi = atof(DataBuffer.c_str()) ;
-            Phi = Phi * deg;
-            G4cout << "Phi:  " << Phi / deg << G4endl;
-         }
-
-         else if (DataBuffer.compare(0, 2, "R=") == 0) {
-            check_R = true;
-            ConfigFile >> DataBuffer ;
-            R = atof(DataBuffer.c_str()) ;
-            R = R * mm;
-            G4cout << "R:  " << R / mm << G4endl;
-         }
-
-         else if (DataBuffer.compare(0, 5, "BETA=") == 0) {
-            ConfigFile >> DataBuffer;
-            beta_u = atof(DataBuffer.c_str());
-            beta_u = beta_u * deg;
-            ConfigFile >> DataBuffer;
-            beta_v = atof(DataBuffer.c_str());
-            beta_v = beta_v * deg;
-            ConfigFile >> DataBuffer;
-            beta_w = atof(DataBuffer.c_str());
-            beta_w = beta_w * deg;
-            G4cout << "Beta:  " << beta_u / deg << " " << beta_v / deg << " " << beta_w / deg << G4endl  ;
-         }
-
-         else if (DataBuffer.compare(0, 4, "VIS=") == 0) {
-            checkVis = true;
-            ConfigFile >> DataBuffer;
-            if (DataBuffer.compare(0, 3, "all") == 0) m_non_sensitive_part_visiualisation = true;
-         }
-
-         else {
-            ///////////////////////////////////////////////////
-            // If no Detector Token and no comment, toggle out
-            ReadingStatus = false;
-            G4cout << "Wrong Token Sequence: Getting out " << DataBuffer << G4endl;
-         }
-
-         // Add The previously define detector
-         // With position method
-         if ((check_A && check_B && check_C && check_D && checkVis) && !(check_Theta && check_Phi && check_R)) {
-            ReadingStatus = false;
-            check_A  = false;
-            check_C  = false;
-            check_B  = false;
-            check_D  = false;
-            checkVis = false;
-
-            AddDetector(A, B, C, D);
-         }
-
-         // with angle method
-         if ((check_Theta && check_Phi && check_R && checkVis) && !(check_A && check_B && check_C && check_D)) {
-            ReadingStatus = false;
-            check_R     = false;
-            check_Theta = false;
-            check_Phi   = false;
-            checkVis    = false;
-
-            AddDetector(R, Theta, Phi, beta_u, beta_v, beta_w);
-         }
-      }
-   }
+    else{
+      cout << "ERROR: Missing token for W1 blocks, check your input file" << endl;
+      exit(1);
+    }
+  }
 }
-
-
 
 // Construct detector and inialise sensitive part.
 // Called After DetecorConstruction::AddDetector Method

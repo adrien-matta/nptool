@@ -4,9 +4,17 @@
 #include<map>
 #include<string>
 
+// Geant4
+#include"G4ThreeVector.hh"
+// Root
+#include"TVector3.h"
+
 typedef NPS::VDetector* (*ClassDetectorFactoryFn)();
 
 namespace NPS{
+  // Convert fron root to g4 standard
+  G4ThreeVector ConvertVector(TVector3 vec);
+
 class DetectorFactory{
   private:
       DetectorFactory();

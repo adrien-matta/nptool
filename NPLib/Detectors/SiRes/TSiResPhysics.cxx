@@ -25,7 +25,7 @@
 #include "RootOutput.h"
 #include "RootInput.h"
 #include "NPDetectorFactory.h"
-
+#include "NPOptionManager.h"
 //   STL
 #include <iostream>
 #include <sstream>
@@ -76,120 +76,31 @@ void TSiResPhysics::Clear()
    }
    
 ///////////////////////////////////////////////////////////////////////////
-void TSiResPhysics::ReadConfiguration(string Path) 
-   {
-      ifstream ConfigFile           ;
-      ConfigFile.open(Path.c_str()) ;
-      string LineBuffer             ;
-      string DataBuffer             ;
+void TSiResPhysics::ReadConfiguration(NPL::InputParser parser) {
 
-      bool check_Thickness = false      ;
-      bool check_Height = false         ;
-      bool check_Width = false          ;
-      bool check_X = false              ;
-      bool check_Y = false              ;
-      bool check_Z = false              ;      
-      bool ReadingStatus = false        ;
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("SiRes");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-    while (!ConfigFile.eof()) 
-       {
-         
-         getline(ConfigFile, LineBuffer);
+  vector<string> token = {"X","Y","Z","Width","Height","Thickness"};
 
-         //   If line is a Start Up SiRes bloc, Reading toggle to true      
-         if (LineBuffer.compare(0, 5, "SiRes") == 0) 
-            {
-               cout << "///" << endl ;
-               cout << "SiRes found: " << endl ;        
-               ReadingStatus = true ;
-            }
-            
-         //   Else don't toggle to Reading Block Status
-         else ReadingStatus = false ;
-         
-         //   Reading Block
-         while(ReadingStatus)
-            {
-               // Pickup Next Word 
-               ConfigFile >> DataBuffer ;
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  SiRes " << i+1 <<  endl;
+      double X = blocks[i]->GetDouble("X","mm");
+      double Y = blocks[i]->GetDouble("Y","mm");
+      double Z = blocks[i]->GetDouble("Z","mm");
+      double Width = blocks[i]->GetDouble("Width","mm");
+      double Height = blocks[i]->GetDouble("Height","mm");
+      double Thickness = blocks[i]->GetDouble("Thickness","mm");
+    }
 
-               //   Comment Line 
-               if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
-
-                  //   Finding another telescope (safety), toggle out
-               else if (DataBuffer.compare(0, 5, "SiRes") == 0) {
-                  cout << "WARNING: Another Detector is find before standard sequence of Token, Error may occured in Telecope definition" << endl ;
-                  ReadingStatus = false ;
-               }
-                              
-               //Position method
-               else if (DataBuffer=="X=") {
-                  check_X = true;
-                  ConfigFile >> DataBuffer ;
-                  cout << "X:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
-               }
-
-               else if (DataBuffer=="Y=") {
-                  check_Y = true;
-                  ConfigFile >> DataBuffer ;
-                  cout << "Y:  " << atof( DataBuffer.c_str() ) << "mm"<< endl;
-               }
-
-               else if (DataBuffer=="Z=") {
-                  check_Z = true;
-                  ConfigFile >> DataBuffer ;
-                  cout << "Z:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
-               }
-               
-               
-
-                 // Squared shape
-               else if (DataBuffer=="Width=") {
-                  check_Width = true;
-                  ConfigFile >> DataBuffer ;
-                  cout << "SiRes Width:  " <<atof( DataBuffer.c_str() ) << "mm" << endl;
-               }
-               
-               else if (DataBuffer== "Height=") {
-                  check_Height = true;
-                  ConfigFile >> DataBuffer ;
-                  cout << "SiRes Height:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
-               }
-               
-               // Common
-               else if (DataBuffer=="Thickness=") {
-                  check_Thickness = true;
-                  ConfigFile >> DataBuffer ;
-                  cout << "SiRes Thickness:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
-               }
-               
-                                                
-               ///////////////////////////////////////////////////
-               //   If no Detector Token and no comment, toggle out
-               else 
-                  {ReadingStatus = false; cout << "Wrong Token Sequence: Getting out " << DataBuffer << endl ;}
-               
-                  /////////////////////////////////////////////////
-                  //   If All necessary information there, toggle out
-               
-               if ( check_Thickness && check_Height &&   check_Width && check_X && check_Y && check_Z ) 
-                  { 
-                     NumberOfDetector++;
-                     
-                     //   Reinitialisation of Check Boolean  
-                     check_Thickness = false      ;
-                     check_Height = false         ;
-                     check_Width = false          ;
-                     check_X = false              ;
-                     check_Y = false              ;
-                     check_Z = false              ;
-                     ReadingStatus = false        ;   
-                     cout << "///"<< endl         ;                
-                  }
-            }
-      }
-   }
-
+    else{
+      cout << "Warning: check your input file formatting " << endl;
+    }
+  }
+}
 ///////////////////////////////////////////////////////////////////////////
 void TSiResPhysics::AddParameterToCalibrationManager()
    {

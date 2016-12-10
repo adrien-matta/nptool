@@ -26,7 +26,7 @@
 
 // NPTool - ROOT headers
 #include "TGaspardTrackerData.h"
-
+#include "NPInputParser.h"
 using namespace std;
 
 
@@ -39,7 +39,7 @@ public:
 
 public:
    // Read stream at Configfile to pick-up parameters of detector (Position,...)
-   virtual void ReadConfiguration(string Path) = 0;
+   virtual void ReadConfiguration(NPL::InputParser) = 0;
 
    // The goal of this method is to extract physical parameters from raw data
    // Method called at each event read from the Input Tree

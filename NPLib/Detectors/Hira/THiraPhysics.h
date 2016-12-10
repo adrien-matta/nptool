@@ -37,7 +37,7 @@ using namespace std ;
 #include "THiraData.h"
 #include "NPVDetector.h"
 #include "NPCalibrationManager.h"
-
+#include "NPInputParser.h"
 
 class THiraPhysics : public TObject, public NPL::VDetector
 {
@@ -82,7 +82,7 @@ public:   //   Calibrated Data
     
 public:   //   inherrited from VDetector
     //   Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-    void ReadConfiguration(string);
+    void ReadConfiguration(NPL::InputParser);
     
     
     //   Add Parameter to the CalibrationManger

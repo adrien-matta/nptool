@@ -34,6 +34,7 @@ using namespace std;
 #include "RootInput.h"
 #include "RootOutput.h"
 #include "NPDetectorFactory.h"
+#include "NPOptionManager.h"
 
 //   ROOT
 #include "TChain.h"
@@ -52,8 +53,23 @@ TDETECTORNAMEPhysics::TDETECTORNAMEPhysics()
      m_NumberOfDetectors(0) {
 }
 
+///////////////////////////////////////////////////////////////////////////
+/// A usefull method to bundle all operation to add a detector
+void TDETECTORNAMEPhysics::AddDetector(TVector3 , string ){
+  // In That simple case nothing is done
+  // Typically for more complex detector one would calculate the relevant 
+  // positions (stripped silicon) or angles (gamma array)
+  m_NumberOfDetectors++;
+} 
 
-
+///////////////////////////////////////////////////////////////////////////
+void TDETECTORNAMEPhysics::AddDetector(double R, double Theta, double Phi, string shape){
+  // Compute the TVector3 corresponding
+  TVector3 Pos(R*sin(Theta)*cos(Phi),R*sin(Theta)*sin(Phi),R*cos(Theta));
+  // Call the cartesian method
+  AddDetector(Pos,shape);
+} 
+  
 ///////////////////////////////////////////////////////////////////////////
 void TDETECTORNAMEPhysics::BuildSimplePhysicalEvent() {
   BuildPhysicalEvent();
@@ -186,124 +202,38 @@ void TDETECTORNAMEPhysics::Clear() {
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TDETECTORNAMEPhysics::ReadConfiguration(string Path) {
-  ifstream ConfigFile           ;
-  ConfigFile.open(Path.c_str()) ;
-  string LineBuffer             ;
-  string DataBuffer             ;
+void TDETECTORNAMEPhysics::ReadConfiguration(NPL::InputParser parser) {
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("DETECTORNAME");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  bool check_Theta = false          ;
-  bool check_Phi  = false           ;
-  bool check_R     = false          ;
-  bool check_Shape = false          ;
-  bool check_X = false              ;
-  bool check_Y = false              ;
-  bool check_Z = false              ;
-  bool ReadingStatus = false        ;
+  vector<string> cart = {"POS","Shape"};
+  vector<string> sphe = {"R","Theta","Phi","Shape"};
 
-  while (!ConfigFile.eof()){
-
-    getline(ConfigFile, LineBuffer);
-
-    //   If line is a Start Up DETECTORNAME bloc, Reading toggle to true
-    string name="DETECTORNAME";
-    if (LineBuffer.compare(0, name.length(), name) == 0){
-      cout << "///" << endl ;
-      cout << "DETECTORNAME found: " << endl ;
-      ReadingStatus = true ; 
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(cart)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  DETECTORNAME " << i+1 <<  endl;
+    
+      TVector3 Pos = blocks[i]->GetTVector3("POS","mm");
+      string Shape = blocks[i]->GetString("Shape");
+      AddDetector(Pos,Shape);
     }
-
-    //   Reading Block
-    while(ReadingStatus)
-    {
-      // Pickup Next Word
-      ConfigFile >> DataBuffer ;
-
-      //   Comment Line
-      if (DataBuffer.compare(0, 1, "%") == 0) {   
-        ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
-      }
-
-      //   Finding another telescope (safety), toggle out
-      else if (DataBuffer.compare(0, name.length(), name) == 0) {
-        cout << "\033[1;311mWARNING: Another detector is find before standard sequence of Token, Error may occured in detector definition\033[0m" << endl ;
-        ReadingStatus = false ;
-      }
-
-      //Angle method
-      else if (DataBuffer=="THETA=") {
-        check_Theta = true;
-        ConfigFile >> DataBuffer ;
-        cout << "Theta:  " << atof(DataBuffer.c_str()) << "deg" << endl;
-      }
-
-      else if (DataBuffer=="PHI=") {
-        check_Phi = true;
-        ConfigFile >> DataBuffer ;
-        cout << "Phi:  " << atof( DataBuffer.c_str() ) << "deg" << endl;
-      }
-
-      else if (DataBuffer=="R=") {
-        check_R = true;
-        ConfigFile >> DataBuffer ;
-        cout << "R:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
-      }
-
-      //Position method
-      else if (DataBuffer=="X=") {
-        check_X = true;
-        ConfigFile >> DataBuffer ;
-        cout << "X:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
-      }
-
-      else if (DataBuffer=="Y=") {
-        check_Y = true;
-        ConfigFile >> DataBuffer ;
-        cout << "Y:  " << atof( DataBuffer.c_str() ) << "mm"<< endl;
-      }
-
-      else if (DataBuffer=="Z=") {
-        check_Z = true;
-        ConfigFile >> DataBuffer ;
-        cout << "Z:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
-      }
-
-
-      //General
-      else if (DataBuffer=="Shape=") {
-        check_Shape = true;
-        ConfigFile >> DataBuffer ;
-        cout << "Shape:  " << DataBuffer << endl;
-      }
-
-      ///////////////////////////////////////////////////
-      //   If no Detector Token and no comment, toggle out
-      else{
-        ReadingStatus = false; cout << "Wrong Token Sequence: Getting out " << DataBuffer << endl ;
-      }
-
-      /////////////////////////////////////////////////
-      //   If All necessary information there, toggle out
-
-      if ( ((check_Theta && check_Phi && check_R) ||( check_X && check_Y && check_Z)  ) && check_Shape ){
-        m_NumberOfDetectors++;
-
-        //   Reinitialisation of Check Boolean
-        check_Theta = false          ;
-        check_Phi  = false           ;
-        check_R     = false          ;
-        check_Shape = false          ;
-        check_X = false              ;
-        check_Y = false              ;
-        check_Z = false              ;
-        ReadingStatus = false        ;
-        cout << "///"<< endl         ;
-      }
+    else if(blocks[i]->HasTokenList(sphe)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  DETECTORNAME " << i+1 <<  endl;
+      double R = blocks[i]->GetDouble("R","mm");
+      double Theta = blocks[i]->GetDouble("Theta","deg");
+      double Phi = blocks[i]->GetDouble("Phi","deg");
+      string Shape = blocks[i]->GetString("Shape");
+      AddDetector(R,Theta,Phi,Shape);
+    }
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
     }
   }
 }
-
-
 
 ///////////////////////////////////////////////////////////////////////////
 void TDETECTORNAMEPhysics::InitSpectra() {

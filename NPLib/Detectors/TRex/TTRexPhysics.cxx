@@ -6,7 +6,7 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Adrien Matta  contact address: a.matta@surrey.ac.uk      *
+ * Original Author: Adrien Matta  contact address: matta@lpccaen.in2p3.fr    *
  *                                                                           *
  * Creation Date  : January 2016                                             *
  * Last update    :                                                          *
@@ -34,7 +34,7 @@ using namespace std;
 #include "RootInput.h"
 #include "RootOutput.h"
 #include "NPDetectorFactory.h"
-
+#include "NPOptionManager.h"
 //   ROOT
 #include "TChain.h"
 ClassImp(TTRexPhysics)
@@ -83,10 +83,10 @@ void TTRexPhysics::BuildPhysicalEvent() {
           }
         }
         if(checkTime)
-           Time.push_back(tt);
+          Time.push_back(tt);
         else
           Time.push_back(-1000);
-        
+
         bool checkPAD = false;
         double pp;
         // Look for associated time
@@ -97,7 +97,7 @@ void TTRexPhysics::BuildPhysicalEvent() {
           }
         }
         if(checkPAD)
-           PAD_E.push_back(pp);
+          PAD_E.push_back(pp);
         else
           PAD_E.push_back(-1000);
       }
@@ -245,103 +245,30 @@ void TTRexPhysics::Clear() {
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TTRexPhysics::ReadConfiguration(string Path) {
-  ifstream ConfigFile;
-  ConfigFile.open(Path.c_str());
-  string LineBuffer;
-  string DataBuffer;
+void TTRexPhysics::ReadConfiguration(NPL::InputParser parser) {
 
-  double X,Y,Z;
-  bool check_X = false ;
-  bool check_Y = false ;
-  bool check_Z = false ;      
-  bool ReadingStatus = false ;
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("TRex");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " Detector found " << endl; 
 
+  vector<string> token = {"X","Y","Z"};
 
-  while (!ConfigFile.eof()) {
-    getline(ConfigFile, LineBuffer);
-
-    //   If line is a Start Up TRex bloc, Reading toggle to true      
-    string name = "TRex";
-
-    if (LineBuffer.compare(0, name.length(), name) == 0) {
-      cout << "///" << endl           ;
-      cout << "TRex found: " << endl   ;        
-      ReadingStatus = true ;
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token)){
+      double X = blocks[i]->GetDouble("X","mm");
+      double Y = blocks[i]->GetDouble("Y","mm");
+      double Z = blocks[i]->GetDouble("Z","mm");
+      AddBarrelDetector(X,Y,Z);
+      if(blocks[i]->HasToken("Chamber"))
+        blocks[i]->GetInt("Chamber");          
     }
 
-    //   Else don't toggle to Reading Block Status
-    else ReadingStatus = false ;
-
-    //   Reading Block
-    while(ReadingStatus){
-      // Pickup Next Word 
-      ConfigFile >> DataBuffer ;
-
-      //   Comment Line 
-      if (DataBuffer.compare(0, 1, "%") == 0) {   
-        ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
-      }
-
-      //   Finding another telescope (safety), toggle out
-      else if (DataBuffer.compare(0, name.length(),name) == 0) {
-        cout << "WARNING: Another Detector is find before standard sequence of Token, Error may occured in Telecope definition" << endl ;
-        ReadingStatus = false ;
-      }
-
-      //Position method
-      else if (DataBuffer.compare(0, 2, "X=") == 0) {
-        check_X = true;
-        ConfigFile >> DataBuffer ;
-        X = atof(DataBuffer.c_str()) ;
-        X = X ;
-        cout << "X:  " << X  << endl;
-      }
-
-      else if (DataBuffer.compare(0, 2, "Y=") == 0) {
-        check_Y = true;
-        ConfigFile >> DataBuffer ;
-        Y = atof(DataBuffer.c_str()) ;
-        Y = Y ;
-        cout << "Y:  " << Y  << endl;
-      }
-
-      else if (DataBuffer.compare(0, 2, "Z=") == 0) {
-        check_Z = true;
-        ConfigFile >> DataBuffer ;
-        Z = atof(DataBuffer.c_str()) ;
-        Z = Z ;
-        cout << "Z:  " << Z  << endl;
-      }
-
-      else if (DataBuffer.compare(0, 8, "Chamber=") == 0) {
-        ConfigFile >> DataBuffer ; 
-      }
-      ///////////////////////////////////////////////////
-      //   If no Detector Token and no comment, toggle out
-      else{
-        ReadingStatus = false; 
-        cout << "Wrong Token Sequence: Getting out " << DataBuffer << endl ;
-      }
-
-      /////////////////////////////////////////////////
-      //   If All necessary information there, toggle out
-
-      if (check_X && check_Y && check_Z){
-        // Convert Cartesian to Spherical (detector always face the target)
-        AddBarrelDetector(X,Y,Z);
-
-        //   Reinitialisation of Check Boolean 
-        check_X = false ;
-        check_Y = false ;
-        check_Z = false ;
-        ReadingStatus = false ;   
-        cout << "///"<< endl ;            
-      }
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
     }
   }
 }
-
 ///////////////////////////////////////////////////////////////////////////
 void TTRexPhysics::InitSpectra() {
   m_Spectra = new TTRexSpectra(m_NumberOfDetectors);
@@ -387,10 +314,10 @@ void TTRexPhysics::AddBarrelDetector(double X, double Y, double Z){
   m_NumberOfDetectors++;
   double StripPitchFront= 50/16.;
   double StripPitchBack= 50/16.;
-  
+
   // Half the length of the wafer (square wafer)
- double A = (50-StripPitchFront)*0.5;
- double B = (50-StripPitchBack)*0.5;
+  double A = (50-StripPitchFront)*0.5;
+  double B = (50-StripPitchBack)*0.5;
   double Zc=0; 
   if(Z<0){// Up Stream
     Zc = Z +B; 
@@ -504,11 +431,11 @@ TVector3 TTRexPhysics::GetPositionOfInteraction(const int& i,bool random) const{
   Position = TVector3 (  GetStripPositionX( DetectorNumber[i], Strip_Front[i], Strip_Back[i] ),
       GetStripPositionY( DetectorNumber[i] , Strip_Front[i], Strip_Back[i] ),
       GetStripPositionZ( DetectorNumber[i] , Strip_Front[i], Strip_Back[i] )) ;
-  
+
   if(random){
     return Position;
   }
-  
+
   return Position ;
 
 }

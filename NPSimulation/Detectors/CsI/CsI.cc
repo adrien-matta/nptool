@@ -51,6 +51,7 @@
 #include "PhotoDiodeScorers.hh"
 #include "CalorimeterScorers.hh"
 #include "NPSDetectorFactory.hh"
+#include "NPOptionManager.h"
 //using namespace OBSOLETEGENERALSCORERS ;
 // CLHEP header
 #include "CLHEP/Random/RandGauss.h"
@@ -69,9 +70,6 @@ CsI::CsI(){
     ResoCsI = 2.5/2.35;// 2.5% FWHM
     PhotoDiodeFace = 18.;//mm
     PhotoDiodeThickness = 3.;//mm
- 
-
-
 }
 
 CsI::~CsI(){
@@ -129,238 +127,79 @@ void CsI::AddCsI(   G4double R                      ,
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void CsI::ReadConfiguration(string Path){
-  ifstream ConfigFile           ;
-  ConfigFile.open(Path.c_str()) ;
-  string LineBuffer          ;
-  string DataBuffer          ;
+void CsI::ReadConfiguration(NPL::InputParser parser ){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("CsI");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  G4double Theta = 0 , Phi = 0 , R = 0 , Thickness = 0 , Radius = 0 ;
-  G4double  LeadThickness = 0, X = 0 , Y = 0 , Z = 0 , FaceFront = 0 , FaceBack = 0 ;
-  G4String Scintillator, Shape ;
+  vector<string> cart = {"X","Y","Z"};
+  vector<string> sphe = {"R","Theta","Phi"};
+  vector<string> trapez= {"Shape","FaceFront","FaceBack","Thickness","Scintillator","LeadThickness"};
+  vector<string> cylind= {"Shape","Radius","Thickness","Scintillator","LeadThickness"};
 
-  bool check_Theta = false ;
-  bool check_Phi = false ;
-  bool check_R = false ;
-  bool check_Thickness = false ;
-  bool check_Radius = false ;
-  bool check_LeadThickness = false ;
-  bool check_Scintillator = false ;
-  bool check_FaceFront = false ;
-  bool check_FaceBack = false ;
-  bool check_Shape = false ;
-  bool check_X = false ;
-  bool check_Y = false ;
-  bool check_Z = false ;      
-  bool ReadingStatus = false ;
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(cart)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  Plastic " << i+1 <<  endl;
+      double X = blocks[i]->GetDouble("X","mm");
+      double Y = blocks[i]->GetDouble("Y","mm");
+      double Z = blocks[i]->GetDouble("Z","mm");
+      double R = sqrt (X*X+Y*Y+Z*Z);
+      double Theta = acos(Z / (R) );
+      double Phi = atan2(Y,X);
 
+      if(blocks[i]->HasTokenList(trapez)){
+        string Shape = blocks[i]->GetString("Shape");
+        double FaceFront = blocks[i]->GetDouble("FaceFront","mm");
+        double FaceBack = blocks[i]->GetDouble("FaceBack","mm");
+        double Thickness = blocks[i]->GetDouble("Thickness","mm");
+        string Scintillator= blocks[i]->GetString("Scintillator");
+        double LeadThickness = blocks[i]->GetDouble("LeadThickness","mm");
+        AddCsI(R,Theta,Phi,FaceFront,FaceBack,Thickness,Scintillator,LeadThickness);
+      }
+      
+      else if(blocks[i]->HasTokenList(cylind)){
+        string Shape = blocks[i]->GetString("Shape");
+        double Radius = blocks[i]->GetDouble("Radius","mm");
+        double Thickness = blocks[i]->GetDouble("Thickness","mm");
+        string Scintillator= blocks[i]->GetString("Scintillator");
+        double LeadThickness = blocks[i]->GetDouble("LeadThickness","mm");
+        AddCsI(R,Theta,Phi,Thickness,Radius,Scintillator,LeadThickness);
+      }
 
-  while (!ConfigFile.eof()) {
-    getline(ConfigFile, LineBuffer);
+    }
+    else if(blocks[i]->HasTokenList(sphe)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  Plastic " << i+1 <<  endl;
+      double R = blocks[i]->GetDouble("R","mm");
+      double Theta = blocks[i]->GetDouble("Theta","deg");
+      double Phi = blocks[i]->GetDouble("Phi","deg");
 
-    //   If line is a Start Up CsI bloc, Reading toggle to true      
-    if (LineBuffer.compare(0, 3, "CsI") == 0) {
-      G4cout << "///" << G4endl           ;
-      G4cout << "CsI found: " << G4endl   ;
-      ReadingStatus = true ;
+      if(blocks[i]->HasTokenList(trapez)){
+        string Shape = blocks[i]->GetString("Shape");
+        double FaceFront = blocks[i]->GetDouble("FaceFront","mm");
+        double FaceBack = blocks[i]->GetDouble("FaceBack","mm");
+        double Thickness = blocks[i]->GetDouble("Thickness","mm");
+        string Scintillator = blocks[i]->GetString("Scintillator");
+        double LeadThickness = blocks[i]->GetDouble("LeadThickness","mm");
+        AddCsI(R,Theta,Phi,FaceFront,FaceBack,Thickness,Scintillator,LeadThickness);
+      }
+      
+      else if(blocks[i]->HasTokenList(cylind)){
+        string Shape = blocks[i]->GetString("Shape");
+        double Radius = blocks[i]->GetDouble("Radius","mm");
+        double Thickness = blocks[i]->GetDouble("Thickness","mm");
+        string Scintillator = blocks[i]->GetString("Scintillator");
+        double LeadThickness = blocks[i]->GetDouble("LeadThickness","mm");
+        AddCsI(R,Theta,Phi,Thickness,Radius,Scintillator,LeadThickness);
+      }
 
     }
 
-    //   Else don't toggle to Reading Block Status
-    else ReadingStatus = false ;
 
-    //   Reading Block
-    while(ReadingStatus){
-      // Pickup Next Word 
-      ConfigFile >> DataBuffer ;
-
-      //   Comment Line 
-      if (DataBuffer.compare(0, 1, "%") == 0) {   
-        ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
-      }
-
-      //   Finding another telescope (safety), toggle out
-      else if (DataBuffer.compare(0, 3, "CsI") == 0) {
-        G4cout << "WARNING: Another Telescope is find before standard sequence of Token, Error may occured in Telecope definition" << G4endl ;
-        ReadingStatus = false ;
-      }
-
-      //Angle method
-      else if (DataBuffer.compare(0, 6, "THETA=") == 0) {
-        check_Theta = true;
-        ConfigFile >> DataBuffer ;
-        Theta = atof(DataBuffer.c_str()) ;
-        Theta = Theta * deg;
-        G4cout << "Theta:  " << Theta / deg << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
-        check_Phi = true;
-        ConfigFile >> DataBuffer ;
-        Phi = atof(DataBuffer.c_str()) ;
-        Phi = Phi * deg;
-        G4cout << "Phi:  " << Phi / deg << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 2, "R=") == 0) {
-        check_R = true;
-        ConfigFile >> DataBuffer ;
-        R = atof(DataBuffer.c_str()) ;
-        R = R * mm;
-        G4cout << "R:  " << R/mm << G4endl;
-      }
-
-      //Position method
-      else if (DataBuffer.compare(0, 2, "X=") == 0) {
-        check_X = true;
-        ConfigFile >> DataBuffer ;
-        X = atof(DataBuffer.c_str()) ;
-        X = X * mm;
-        G4cout << "X:  " << X / mm << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 2, "Y=") == 0) {
-        check_Y = true;
-        ConfigFile >> DataBuffer ;
-        Y = atof(DataBuffer.c_str()) ;
-        Y = Y * mm;
-        G4cout << "Y:  " << Y / mm << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 2, "Z=") == 0) {
-        check_Z = true;
-        ConfigFile >> DataBuffer ;
-        Z = atof(DataBuffer.c_str()) ;
-        Z = Z * mm;
-        G4cout << "Z:  " << Z / mm << G4endl;
-      }
-
-
-      //General
-      else if (DataBuffer.compare(0, 6, "Shape=") == 0) {
-        check_Shape = true;
-        ConfigFile >> DataBuffer ;
-        Shape = DataBuffer ;
-        G4cout << "Shape:  " << Shape << G4endl;
-      }
-
-      // Cylindrical shape
-      else if (DataBuffer.compare(0, 7, "Radius=") == 0) {
-        check_Radius = true;
-        ConfigFile >> DataBuffer ;
-        Radius = atof(DataBuffer.c_str()) ;
-        Radius = Radius * mm;
-        G4cout << "CsI Radius:  " << Radius/mm << G4endl;
-      }
-
-      // Trapezoidal shape
-      else if (DataBuffer.compare(0, 10, "FaceFront=") == 0) {
-        check_FaceFront = true;
-        ConfigFile >> DataBuffer ;
-        FaceFront = atof(DataBuffer.c_str()) ;
-        FaceFront = FaceFront * mm;
-        G4cout << "CsI FaceFront:  " << FaceFront/mm << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 9, "FaceBack=") == 0) {
-        check_FaceBack = true;
-        ConfigFile >> DataBuffer ;
-        FaceBack = atof(DataBuffer.c_str()) ;
-        FaceBack = FaceBack * mm;
-        G4cout << "CsI FaceBack:  " << FaceBack/mm << G4endl;
-      }
-
-      // Common
-      else if (DataBuffer.compare(0, 10, "Thickness=") == 0) {
-        check_Thickness = true;
-        ConfigFile >> DataBuffer ;
-        Thickness = atof(DataBuffer.c_str()) ;
-        Thickness = Thickness * mm;
-        G4cout << "CsI Thickness:  " << Thickness/mm << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 13, "Scintillator=") == 0) {
-        check_Scintillator = true ;
-        ConfigFile >> DataBuffer ;
-        Scintillator = DataBuffer ;
-        G4cout << "CsI Scintillator type:  " << Scintillator << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 14, "LeadThickness=") == 0) {
-        check_LeadThickness = true;
-        ConfigFile >> DataBuffer ;
-        LeadThickness = atof(DataBuffer.c_str()) ;
-        LeadThickness = LeadThickness * mm;
-        G4cout << "Lead Thickness :  " << LeadThickness/mm << G4endl;
-      }
-
-      ///////////////////////////////////////////////////
-      //   If no Detector Token and no comment, toggle out
-      else{
-        ReadingStatus = false; 
-        G4cout << "Wrong Token Sequence: Getting out " << DataBuffer << G4endl ;
-      }
-
-      /////////////////////////////////////////////////
-      //   If All necessary information there, toggle out
-
-      if (( check_Theta && check_Phi && check_R && check_Thickness 
-            && check_Radius && check_LeadThickness && check_Scintillator 
-            && check_Shape) // Cylindrical case
-          ||    
-          ( check_X && check_Y && check_Z && check_Thickness && check_Radius 
-            && check_LeadThickness && check_Scintillator )
-          ||   
-          ( check_Theta && check_Phi && check_R && check_Thickness 
-            && check_FaceBack && check_FaceFront && check_LeadThickness 
-            && check_Scintillator && check_Shape ) // Trapezoidal case
-          ||   
-          ( check_X && check_Y && check_Z && check_Thickness && check_FaceBack 
-            && check_FaceFront && check_LeadThickness && check_Scintillator )) { 
-
-        if (check_X && check_Y && check_Z){
-          R = sqrt (X*X+Y*Y+Z*Z);
-          Theta = acos(Z / (R) );
-          Phi = atan2(Y,X);
-        }
-
-        if (Shape == "Cylinder")
-          AddCsI(   R                ,
-              Theta             ,
-              Phi               ,
-              Thickness         ,
-              Radius            ,
-              Scintillator   ,
-              LeadThickness   );
-
-        else if (Shape == "Trapezoidal")
-          AddCsI(   R                ,
-              Theta             ,
-              Phi               ,
-              FaceFront            ,
-              FaceBack               ,
-              Thickness         ,
-              Scintillator   ,
-              LeadThickness   );
-
-        //   Reinitialisation of Check Boolean 
-
-        check_Theta = false ;
-        check_Phi = false ;
-        check_R = false ;
-        check_Thickness = false ;
-        check_Radius = false ;
-        check_LeadThickness = false ;
-        check_Scintillator = false ;
-        check_FaceFront = false ;
-        check_FaceBack = false ;
-        check_Shape = false ;
-        check_X = false ;
-        check_Y = false ;
-        check_Z = false ;
-        ReadingStatus = false ;   
-        G4cout << "///"<< G4endl ;            
-      }
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
     }
   }
 }

@@ -87,7 +87,7 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name,double density){
     if(it==m_Material.end()){
         
         //Usual compound
-        if(Name == "Vacuum"){
+        if(Name == "Vacuum"||Name=="Vaccum"||Name=="Vaccuum"||Name=="Vacum"){
             if(!density)
                 density = 0.000000001 * mg / cm3;
             G4Material* material = new G4Material("NPS_"+Name, density ,2);
@@ -547,6 +547,15 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name,double density){
             return material;
         }
         
+        else  if(Name == "Ca"){
+            if(!density)
+                density = 1.54*g/cm3;
+            G4Material* material = new G4Material("NPS_"+Name,density,1);
+            material->AddElement(GetElementFromLibrary("Ca"),1);
+            m_Material[Name]=material;
+            return material;
+        }
+
         else  if(Name == "P10_1atm"){
             if(!density)
                 density = 1.74*mg/cm3;

@@ -1,37 +1,24 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-GeneralTarget
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Thickness in micrometer
-% Radius in mm
-% Temperature in K, Pressure in bar
 Target
-	THICKNESS= 100
-  	ANGLE= 0
-	RADIUS=	7.5
-	MATERIAL= CH2
-	X= 0
-	Y= 0
-	Z= 0
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ScintillatorPlastic
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ScintillatorPlastic
+ THICKNESS= 100 micrometer
+ ANGLE= 0 deg
+ RADIUS=	7.5 mm
+ MATERIAL= CH2
+ X= 0 mm
+ Y= 0 mm
+ Z= 0 mm
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Plastic
-	THETA= 0
-	PHI= 0
-	R= 0
- 	X= 0
-  	Y= 0
-  	Z= 10
-	Thickness= 1.0
-  	Shape= Square
-  	Height= 22
-  	Width= 22
-	Radius= 0
-	Scintillator= BC400
-	LeadThickness= 0
+ X= 0 mm
+ Y= 0 mm
+ Z= 10 mm
+ Thickness= 1.0 cm
+ Shape= Square
+ Height= 22 mm
+ Width= 22 mm
+ Radius= 0 mm
+ Scintillator= BC400
+ LeadThickness= 0 mm
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

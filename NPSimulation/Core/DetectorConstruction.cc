@@ -50,6 +50,7 @@
 // NPL
 #include "RootOutput.h"
 #include "NPOptionManager.h"
+#include "NPInputParser.h"
 
 // NPS
 #include "NPSDetectorFactory.hh"
@@ -94,13 +95,14 @@ void DetectorConstruction::AddDetector(NPS::VDetector* NewDetector){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
+  
   // Construct the World volume
   G4Material* Vacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
 
   //------------------------------world volume
-  G4double world_x = 10.0 * m;
-  G4double world_y = 10.0 * m;
-  G4double world_z = 10.0 * m;
+  G4double world_x = 100.0 * m;
+  G4double world_y = 100.0 * m;
+  G4double world_z = 100.0 * m;
 
   G4Box* world_box
     = new G4Box("world_box", world_x, world_y, world_z);
@@ -120,8 +122,6 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
   ////////General Reading needs////////
   std::string LineBuffer;
   std::string DataBuffer;
-  bool cGeneralTarget=false;
-  bool cGeneralChamber=false;
   static bool already=false;
   std::set<std::string> check;
   int VerboseLevel = 0 ;
@@ -131,7 +131,9 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
   }
   else
     VerboseLevel = 0;
-  cout << "\033[1;36m" ;
+  
+   if(VerboseLevel)
+    cout << endl << "\033[1;36m//// Reading detector file  "<< Path  << endl<<endl; 
 
   // Access the DetectorFactory and ask it to load the Class List
   std::string classlist = getenv("NPTOOL");
@@ -139,101 +141,59 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
   NPS::DetectorFactory* theFactory = NPS::DetectorFactory::getInstance();
   theFactory->ReadClassList(classlist);
 
-  ifstream ConfigFile;
-  ConfigFile.open(Path.c_str());
-
-  if (ConfigFile.is_open()) {   // should be always be true
-    G4cout << " Configuration file " << Path << " loading " << G4endl;
+  NPL::InputParser parser(Path);
+  ////////////////////////////////////////////
+  /////////// Search for Target  /////////////
+  ////////////////////////////////////////////
+  std::vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Target");
+  if(blocks.size()==1){
+    m_Target = new Target();
+    m_Target->ReadConfiguration(parser);
+    AddDetector(m_Target);
   }
-  else {
-    G4cout << " Error, no configuration file" << Path << " found" << G4endl;
-    exit(1);
-  }
-
-  while (!ConfigFile.eof()) {
-    //Pick-up next line
-    getline(ConfigFile, LineBuffer);
-    //Search for comment Symbol: %
-    if (LineBuffer.compare(0, 1, "%") == 0) {   /*Do  Nothing*/;}
-
-    ////////////////////////////////////////////
-    //////////// Search for Target /////////////
-    ////////////////////////////////////////////
-
-    else if (LineBuffer.compare(0, 13, "GeneralTarget") == 0 && cGeneralTarget == false) {
-      cGeneralTarget = true ;
-      if(VerboseLevel) G4cout << G4endl << "////////// Target ///////////" << G4endl   << G4endl   ;
-
-      // Instantiate the new array as aNPS::VDetector Objects
-      NPS::VDetector* myDetector = new Target();
-
-      // Read Position and target specification
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-
-      // Add Target to DetectorConstruction
-      m_Target = (Target*) myDetector;
-
-      // Add target to theNPS::VDetector Vector
-      AddDetector(myDetector);
-    }
-
-    ////////////////////////////////////////////
-    //////////// Search for Chamber /////////////
-    ////////////////////////////////////////////
-
-    else if (LineBuffer.compare(0, 14, "GeneralChamber") == 0 && cGeneralChamber == false) {
-      cGeneralChamber = true ;
-      if(VerboseLevel) G4cout << G4endl << "////////// Chamber ///////////" << G4endl   << G4endl   ;
-
-      // Instantiate the new array as aNPS::VDetector Objects
-      NPS::VDetector* myDetector = new Chamber();
-
-      // Read Position and target specification
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-
-      // Add Target to DetectorConstruction
-      m_Chamber = (Chamber*) myDetector;
-
-      // Add target to theNPS::VDetector Vector
-      AddDetector(myDetector);
-    }
-
+  else{
+     blocks = parser.GetAllBlocksWithToken("CryoTarget");
+     if(blocks.size()==1){
+      m_Target = new Target();
+      m_Target->ReadConfiguration(parser);
+      AddDetector(m_Target);
+     }
     else{
-      std::stringstream oss(LineBuffer);
-      std::string token;
-      oss >> token ;
-      NPS::VDetector* detector = theFactory->Construct(token);
-      if(detector!=NULL && check.find(token)==check.end()){
-        if(VerboseLevel){
-        cout << "/////////////////////////////////////////" << endl;
-        cout << "//// Adding Detector " << token << endl; 
-        }
-        detector->ReadConfiguration(Path);
-        if(VerboseLevel){
-        cout << "/////////////////////////////////////////" << endl;
-        }
-        // Add array to the VDetector Vector
-        AddDetector(detector);
-        check.insert(token);
-      }
-      else{
-        if(detector!=NULL)
-          delete detector;
-      }
+      cout << "WARNING: No target found in detector input file! Use with caution" << endl;
     }
   }
-
-  ConfigFile.close();
-  cout << "\033[0m" ;
-
-  if(m_Target==NULL){
-    G4cout << "\033[1;31mERROR: No target define in detector file. Cannot perform simulation without target\033[0m" << G4endl ;
-    exit(1);
+  ////////////////////////////////////////////
+  /////////// Search for Chamber /////////////
+  ////////////////////////////////////////////
+  blocks.clear();
+  blocks = parser.GetAllBlocksWithToken("Chamber");
+  if(blocks.size()==1){
+    m_Chamber = new Chamber();
+    m_Chamber->ReadConfiguration(parser);
+    AddDetector(m_Chamber);
+  }  
+  ////////////////////////////////////////////
+  /////////// Search for Detectors ///////////
+  ////////////////////////////////////////////
+  // Get the list of main token
+  std::vector<std::string> token = parser.GetAllBlocksToken();
+  // Look for detectors among them
+  for(unsigned int i = 0 ; i < token.size() ; i++){
+  NPS::VDetector* detector = theFactory->Construct(token[i]);
+  if(detector!=NULL && check.find(token[i])==check.end()){
+    cout << "/////////////////////////////////////////" << endl;
+    cout << "//// Adding Detector " << token[i] << endl; 
+    detector->ReadConfiguration(parser);
+    cout << "/////////////////////////////////////////" << endl;
+    // Add array to the VDetector Vector
+    AddDetector(detector);
+    check.insert(token[i]);
   }
+  else if(detector!=NULL)
+    delete detector;
+  }
+
+  cout << "\033[0m" ;
 
   // Create the Material sample for DEDX tables
   MaterialManager::getInstance()->CreateSampleVolumes(world_log);

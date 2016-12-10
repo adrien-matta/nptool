@@ -43,7 +43,7 @@
 #include "NPSDetectorFactory.hh"
 #include "SiliconScorers.hh"
 #include "RootOutput.h"
-
+#include "NPOptionManager.h"
 // CLHEP
 #include "CLHEP/Random/RandGauss.h"
 
@@ -143,8 +143,7 @@ G4LogicalVolume* Spice::ConstructVolume(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void Spice::ReadConfiguration(string Path){
-  Path ="";
+void Spice::ReadConfiguration(NPL::InputParser){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

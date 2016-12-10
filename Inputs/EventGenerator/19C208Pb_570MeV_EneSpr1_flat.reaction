@@ -5,26 +5,26 @@
 Beam
   Particle= 19C
   Energy= 570
-	SigmaEnergy= 5.70
-	SigmaX= 1.
-	SigmaY= 1.
-	SigmaThetaX= 0. 
-	SigmaPhiY= 0.
+ SigmaEnergy= 5.70
+ SigmaX= 1.
+ SigmaY= 1.
+ SigmaThetaX= 0. 
+ SigmaPhiY= 0.
   MeanThetaX= 0
   MeanPhiY= 0
   MeanX= 0
   MeanY= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 TwoBodyReaction
-	Beam= 19C
-	Target= 208Pb
-	Light= 19C
-	Heavy= 208Pb
-	ExcitationEnergyLight= 0.0
-	ExcitationEnergyHeavy= 0.0
-	CrossSectionPath= flat.txt CS
-	ShootLight= 1
-	ShootHeavy= 0
+ Beam= 19C
+ Target= 208Pb
+ Light= 19C
+ Heavy= 208Pb
+ ExcitationEnergyLight= 0.0
+ ExcitationEnergyHeavy= 0.0
+ CrossSectionPath= flat.txt CS
+ ShootLight= 1
+ ShootHeavy= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %ShootLight= 1 -> therefore we shoot light particle
 %ShootHeavy= 0 -> therefore we DO NOT shoot heavy particle

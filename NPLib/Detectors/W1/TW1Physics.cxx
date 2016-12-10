@@ -36,6 +36,7 @@ using namespace std;
 #include "RootOutput.h"
 #include "RootInput.h"
 #include "NPDetectorFactory.h"
+#include "NPOptionManager.h"
 
 //  ROOT
 #include "TChain.h"
@@ -101,178 +102,42 @@ void TW1Physics::Clear()
 
 
 ///////////////////////////////////////////////////////////////////////////
-void TW1Physics::ReadConfiguration(string Path) 
-{
-   ifstream ConfigFile;
-   ConfigFile.open(Path.c_str());
-   string LineBuffer, DataBuffer;
+void TW1Physics::ReadConfiguration(NPL::InputParser parser) {
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("W1");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
+  for(unsigned int i  = 0 ; i < blocks.size() ; i++){
+    // Cartesian Case
+    vector<string> cart = {"X1_Y1","X1_Y16","X16_Y1","X16_Y16"};
+    // Spherical Case
+    vector<string> sphe= {"R","THETA","PHI","BETA"};
 
-   double TLX, BLX, BRX, TRX, TLY, BLY, BRY, TRY, TLZ, BLZ, BRZ, TRZ;
-   TVector3 A, B, C, D;
-   double Theta = 0, Phi = 0, R = 0, beta_u = 0, beta_v = 0, beta_w = 0;
-   bool check_A = false;
-   bool check_B = false;
-   bool check_C = false;
-   bool check_D = false;
-   bool check_Theta = false;
-   bool check_Phi   = false;
-   bool check_R     = false;
-   bool check_beta  = false;
-   bool ReadingStatus = false;
+    if(blocks[i]->HasTokenList(cart)){
+      cout << endl << "////  W1 " << i+1 << endl;
+      TVector3 A = blocks[i]->GetTVector3("X1_Y1","mm");
+      TVector3 B = blocks[i]->GetTVector3("X16_Y1","mm");
+      TVector3 C = blocks[i]->GetTVector3("X1_Y16","mm");
+      TVector3 D = blocks[i]->GetTVector3("X16_Y16","mm");
+      AddDetector(A,B,C,D) ;
+    }
 
-   while (!ConfigFile.eof()) {      
-      getline(ConfigFile, LineBuffer);
+    else if(blocks[i]->HasTokenList(sphe)){
+      double Theta = blocks[i]->GetDouble("THETA","deg");
+      double Phi= blocks[i]->GetDouble("PHI","deg");
+      double R = blocks[i]->GetDouble("R","mm");
+      vector<double> beta = blocks[i]->GetVectorDouble("BETA","deg");
+      AddDetector(Theta,Phi,R,beta[0],beta[1],beta[2]);
+    }
 
-      // If W1 detector found, toggle Reading Block Status
-      if (LineBuffer.compare(0, 2, "W1") == 0) {
-         cout << "Detector found: " << endl;
-         ReadingStatus = true;
-      }
+    else{
+      cout << "ERROR: Missing token for W1 blocks, check your input file" << endl;
+      exit(1);
+    }
 
-      // else don't toggle to Reading Block Status
-      else ReadingStatus = false;
+  }
 
-      // Reading Block
-      while (ReadingStatus) {
-         // Pickup Next Word 
-         ConfigFile >> DataBuffer;
-
-         //  Comment Line 
-         if (DataBuffer.compare(0, 1, "%") == 0) {ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
-
-         //  Finding another telescope (safety), toggle out
-         else if (DataBuffer.compare(0, 2, "W1") == 0) {
-            cout << "WARNING: Another Telescope is find before standard sequence of Token, Error may occured in Telecope definition" << endl;
-            ReadingStatus = false;
-         }
-
-         // Position method
-         else if (DataBuffer.compare(0, 6, "X1_Y1=") == 0) {
-            check_A = true;
-            ConfigFile >> DataBuffer;
-            TLX = atof(DataBuffer.c_str());
-            ConfigFile >> DataBuffer;
-            TLY = atof(DataBuffer.c_str());
-            ConfigFile >> DataBuffer;
-            TLZ = atof(DataBuffer.c_str());
-
-            A = TVector3(TLX, TLY, TLZ);
-            cout << "X1 Y1 corner position : (" << A.X() << ";" << A.Y() << ";" << A.Z() << ")" << endl;
-         }
-
-         else if (DataBuffer.compare(0, 7, "X16_Y1=") == 0) {
-            check_B = true;
-            ConfigFile >> DataBuffer;
-            BLX = atof(DataBuffer.c_str());
-            ConfigFile >> DataBuffer;
-            BLY = atof(DataBuffer.c_str());
-            ConfigFile >> DataBuffer;
-            BLZ = atof(DataBuffer.c_str());            
-
-            B = TVector3(BLX, BLY, BLZ);
-            cout << "X16 Y1 corner position : (" << B.X() << ";" << B.Y() << ";" << B.Z() << ")" << endl;
-         }
-
-         else if (DataBuffer.compare(0, 7, "X1_Y16=") == 0) {
-            check_C = true;
-            ConfigFile >> DataBuffer;
-            BRX = atof(DataBuffer.c_str());
-            ConfigFile >> DataBuffer;
-            BRY = atof(DataBuffer.c_str());
-            ConfigFile >> DataBuffer;
-            BRZ = atof(DataBuffer.c_str());
-
-            C = TVector3(BRX, BRY, BRZ);
-            cout << "X1 Y16 corner position : (" << C.X() << ";" << C.Y() << ";" << C.Z() << ")" << endl;
-        }
-
-         else if (DataBuffer.compare(0, 8, "X16_Y16=") == 0) {
-            check_D = true;
-            ConfigFile >> DataBuffer;
-            TRX = atof(DataBuffer.c_str());
-            ConfigFile >> DataBuffer;
-            TRY = atof(DataBuffer.c_str());
-            ConfigFile >> DataBuffer;
-            TRZ = atof(DataBuffer.c_str());
-
-            D = TVector3(TRX, TRY, TRZ);
-            cout << "X16 Y16 corner position : (" << D.X() << ";" << D.Y() << ";" << D.Z() << ")" << endl;
-         }
-
-                  
-         //Angle method
-         else if (DataBuffer.compare(0, 6, "THETA=") == 0) {
-            check_Theta = true;
-            ConfigFile >> DataBuffer;
-            Theta = atof(DataBuffer.c_str());
-            cout << "Theta:  " << Theta << endl;
-         }
-
-         else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
-            check_Phi = true;
-            ConfigFile >> DataBuffer;
-            Phi = atof(DataBuffer.c_str());
-            cout << "Phi:  " << Phi << endl;
-         }
-
-         else if (DataBuffer.compare(0, 2, "R=") == 0) {
-            check_R = true;
-            ConfigFile >> DataBuffer;
-            R = atof(DataBuffer.c_str());
-            cout << "R:  " << R << endl;
-         }
-
-         else if (DataBuffer.compare(0, 5, "BETA=") == 0) {
-            check_beta = true;
-            ConfigFile >> DataBuffer;
-            beta_u = atof(DataBuffer.c_str());
-            ConfigFile >> DataBuffer;
-            beta_v = atof(DataBuffer.c_str());
-            ConfigFile >> DataBuffer;
-            beta_w = atof(DataBuffer.c_str());
-            cout << "Beta:  " << beta_u << " " << beta_v << " " << beta_w << endl;
-         }
-          
-         ///////////////////////////////////////////////////
-         //  If no Detector Token and no comment, toggle out
-         else {
-            ReadingStatus = false; 
-            cout << "Wrong Token Sequence: Getting out " << DataBuffer << endl;
-         }
-
-         /////////////////////////////////////////////////
-         //  If All necessary information there, toggle out             
-         if ((check_A && check_B && check_C && check_D) || (check_Theta && check_Phi && check_R && check_beta)) { 
-            ReadingStatus = false; 
-                   
-            // Add The previously define telescope
-            // With position method
-            if ((check_A && check_B && check_C && check_D) || !(check_Theta && check_Phi && check_R)) {
-               AddDetector(A, B, C, D);
-            }
-
-            // with angle method
-            else if ((check_Theta && check_Phi && check_R) || !(check_A && check_B && check_C && check_D)) {
-               AddDetector(Theta, Phi, R, beta_u, beta_v, beta_w);
-            }
-                     
-            //  Reinitialisation of Check Boolean 
-            check_A = false;
-            check_B = false;
-            check_C = false;
-            check_D = false;
-
-            check_Theta   = false;
-            check_Phi     = false;
-            check_R       = false;
-            check_beta    = false;
-            ReadingStatus = false;
-         }
-      }
-   }
-          
-   InitializeStandardParameters();
-   ReadAnalysisConfig();
+  InitializeStandardParameters();
+  ReadAnalysisConfig();
 }
 
 

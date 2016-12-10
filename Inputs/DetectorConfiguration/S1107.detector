@@ -2,71 +2,68 @@
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Target
-	THICKNESS= 10.1469 
-	RADIUS=	5
-	MATERIAL= CD2
-	ANGLE= 0
-	X= 0
-	Y= 0
-	Z= 0
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Sharc
+ THICKNESS= 10.1469 
+ RADIUS=	5
+ MATERIAL= CD2
+ ANGLE= 0
+ X= 0
+ Y= 0
+ Z= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %Upstream CD
-  SharcQQQ
-    Z= -67
-    R= 0
-    Phi= 2
-    ThicknessDector= 500
-  SharcQQQ
-    Z= -67
-    R= 0
-    Phi= 92
-    ThicknessDector= 500
-  SharcQQQ
-    Z= -67
-    R= 0
-    Phi= 182
-    ThicknessDector= 500
-  SharcQQQ
-    Z= -67
-    R= 0
-    Phi= 272
-    ThicknessDector= 500
+Sharc QQQ
+ Z= -67
+ R= 0
+ Phi= 2
+ ThicknessDetector= 500
+Sharc QQQ
+ Z= -67
+ R= 0
+ Phi= 92
+ ThicknessDetector= 500
+Sharc QQQ
+ Z= -67
+ R= 0
+ Phi= 182
+ ThicknessDetector= 500
+Sharc QQQ
+ Z= -67
+ R= 0
+ Phi= 272
+ ThicknessDetector= 500
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % Upstream Box
-  SharcBOX
-    Z= -26.2466785
-    ThicknessDector1= 500
-    ThicknessDector2= 500
-    ThicknessDector3= 500
-    ThicknessDector4= 500
-    ThicknessPAD1= 0
-    ThicknessPAD2= 0
-    ThicknessPAD3= 0
-    ThicknessPAD4= 0
+Sharc BOX
+ Z= -26.2466785
+ ThicknessDetector1= 500
+ ThicknessDetector2= 500
+ ThicknessDetector3= 500
+ ThicknessDetector4= 500
+ ThicknessPAD1= 0
+ ThicknessPAD2= 0
+ ThicknessPAD3= 0
+ ThicknessPAD4= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  % Down Stream Box
-  SharcBOX
-    Z= 29.943595
-    ThicknessDector1= 140
-    ThicknessDector2= 140
-    ThicknessDector3= 140
-    ThicknessDector4= 140
-    ThicknessPAD1= 1500
-    ThicknessPAD2= 1500
-    ThicknessPAD3= 1500
-    ThicknessPAD4= 1500
+ % Down Stream Box
+Sharc BOX
+ Z= 29.943595
+ ThicknessDetector1= 140
+ ThicknessDetector2= 140
+ ThicknessDetector3= 140
+ ThicknessDetector4= 140
+ ThicknessPAD1= 1500
+ ThicknessPAD2= 1500
+ ThicknessPAD3= 1500
+ ThicknessPAD4= 1500
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Plastic
-	X= 0
-	Y= 0
-	Z= 400
-	Thickness= 0.010
-	Shape= Square
-	Height= 40
-	Width= 40
-	Scintillator= BC400
-	LeadThickness= 0.005
+ X= 0
+ Y= 0
+ Z= 400
+ Thickness= 0.010
+ Shape= Square
+ Height= 40
+ Width= 40
+ Scintillator= BC400
+ LeadThickness= 0.005
 

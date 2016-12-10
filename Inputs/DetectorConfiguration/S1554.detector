@@ -4,13 +4,13 @@ GeneralTarget
 
 %0.2mg/cm2
 Target
-	THICKNESS= 5.1
-	RADIUS=	5
-	MATERIAL= CD2
-	ANGLE= 0
-	X= 0.1635909
-	Y= 0.910980
-	Z= 0
+ THICKNESS= 5.1
+ RADIUS=	5
+ MATERIAL= CD2
+ ANGLE= 0
+ X= 0.1635909
+ Y= 0.910980
+ Z= 0
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Sharc
@@ -61,7 +61,7 @@ Sharc
     ThicknessPAD3= 1500
     ThicknessPAD4= 1500
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%		
+%%%%%%%%%%%%%%%%%%%%% 	
 %Tigress Array
 Tigress
 %%%%%%%%%%%%%%%%%%%%

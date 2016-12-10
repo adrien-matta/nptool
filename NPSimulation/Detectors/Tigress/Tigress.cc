@@ -122,268 +122,46 @@ Tigress::~Tigress(){
 // Virtual Method of NPS::VDetector class
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void Tigress::ReadConfiguration(string Path){
-  ifstream ConfigFile           ;
-  ConfigFile.open(Path.c_str()) ;
-  string LineBuffer             ;
-  string DataBuffer             ;
-  istringstream LineStream      ;
-  // Standard Case:
-  bool check_CloverId = false;
+void Tigress::ReadConfiguration(NPL::InputParser parser){
 
-  vector<int> CloverId;
-  int    CloverId_Free = 0;
-  double R     = 0;
-  double Theta = 0;
-  double Phi   = 0;
-  double BetaX=0;
-  double BetaY=0;
-  double BetaZ=0;
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithTokenAndValue("Tigress","Clover");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << "free clovers found " << endl; 
 
-  // Free postion case:
-  bool check_R   = false ;
-  bool check_Theta = false ;
-  bool check_Phi = false ;
-  bool check_Beta = false ;
+  vector<string> token = {"CloverID","R","Theta","Phi","Beta"};
 
-  // Frame Case
-  bool check_RightFrame = false ;
-  bool check_LeftFrame = false ;
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token)){
+      double R = blocks[i]->GetDouble("R","mm");
+      double Theta = blocks[i]->GetDouble("Theta","deg");
+      double Phi = blocks[i]->GetDouble("Phi","deg");
+      int     id = blocks[i]->GetInt("CloverID");
+      vector<double> beta = blocks[i]->GetVectorDouble("Beta","mm");
 
-  bool ReadingStatusStandard = false ;
-  bool ReadingStatusFree = false ;
-  bool ReadingStatusFrame = false ;
-  bool ReadingStatus = false ;
+      AddCloverFreePosition(id,R,Theta,Phi,beta[0],beta[1],beta[2]);
+    }
 
-  while (!ConfigFile.eof()){
-    int VerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
+    else{
+      cout << "Warning: check your input file formatting " << endl;
+    }
+  }
 
-    getline(ConfigFile, LineBuffer);
+  blocks.clear();
+  blocks = parser.GetAllBlocksWithTokenAndValue("Tigress","Standard");
+    token.clear();
+  token = {"CloverID"};
 
-    if (LineBuffer.compare(0, 7, "Tigress") == 0)
-      ReadingStatus = true;
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token)){
+     if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << "//// Standard clovers found " << endl; 
+      vector<int> id = blocks[i]->GetVectorInt("CloverID");
+   
+      AddCloverStandard(id);
+    }
 
-    while (ReadingStatus && !ConfigFile.eof()) {
-      getline(ConfigFile, LineBuffer);
-
-      //   Comment Line
-      while (LineBuffer.compare(0, 1, "%") == 0) {
-        // Take the next line
-        getline(ConfigFile, LineBuffer);
-      }
-
-      //   Standard case
-      if (LineBuffer.compare(0, 15, "TigressStandard") == 0){
-        if(VerboseLevel==1)
-          G4cout << "/// Clovers in Standard Configuration : ///" << G4endl   ;
-        ReadingStatusStandard = true ;
-      }
-
-      //  Free placing case
-      else if (LineBuffer.compare(0, 13, "TigressClover") == 0){
-        if(VerboseLevel==1)
-          G4cout << "/// Free placed clover : ///" << G4endl   ;
-        ReadingStatusFree = true ;
-      }
-
-      //  Frame case
-      else if (LineBuffer.compare(0, 12, "TigressFrame") == 0){
-        if(VerboseLevel==1)
-          G4cout << "/// Support Frame : ///" << G4endl   ;
-        ReadingStatusFrame = true ;
-      }
-
-      //   Reading Block
-      while(ReadingStatusStandard){
-        // Pickup Next Line
-        getline(ConfigFile, LineBuffer);
-        //   Comment Line
-        while (LineBuffer.compare(0, 1, "%") == 0) {
-          // Take the next line
-          getline(ConfigFile, LineBuffer);
-        }
-
-        LineStream.clear();
-        LineStream.str(LineBuffer);
-        LineStream >> DataBuffer;
-
-        if ( DataBuffer == "CloverId=" ) {
-          check_CloverId = true;
-
-          if(VerboseLevel==1) G4cout << "CloverId: " ;
-          while(LineStream >> DataBuffer){
-            CloverId.push_back(atoi(DataBuffer.c_str()));
-            if(VerboseLevel==1) G4cout << atoi(DataBuffer.c_str()) << " ";
-          }
-          if(VerboseLevel==1) G4cout << G4endl << G4endl;
-        }
-
-        ///////////////////////////////////////////////////
-        //   If no Detector Token and no comment, toggle out
-        else{
-          ReadingStatusStandard = false;
-          G4cout << "Error: Wrong Token Sequence: Getting out " << DataBuffer << G4endl ;
-          exit(1);
-        }
-
-        /////////////////////////////////////////////////
-        //   If All necessary information there, toggle out
-
-        if (check_CloverId){
-          ReadingStatusStandard = false;
-          AddCloverStandard(CloverId);
-          CloverId.clear();
-          check_CloverId   = false ;
-        }
-      }
-
-      //   Reading Block
-      while(ReadingStatusFree){
-        // Pickup Next Line
-        getline(ConfigFile, LineBuffer);
-        //   Comment Line
-        while (LineBuffer.compare(0, 1, "%") == 0) {
-          // Take the next line
-          getline(ConfigFile, LineBuffer);
-        }
-
-        LineStream.clear();
-        LineStream.str(LineBuffer);
-        LineStream >> DataBuffer;
-
-        if ( DataBuffer == "CloverId=" ) {
-          check_CloverId = true;
-          LineStream >> DataBuffer;
-          CloverId_Free = atoi(DataBuffer.c_str());
-          if(VerboseLevel==1)
-            G4cout << "CloverId: " << atoi(DataBuffer.c_str()) << " " << G4endl ;
-        }
-
-        else if ( DataBuffer == "R=" ) {
-          check_R = true;
-          LineStream >> DataBuffer;
-          R = atof(DataBuffer.c_str())*mm;
-          if(VerboseLevel==1)
-            G4cout << "R: " << R/mm << " " << G4endl ;
-        }
-
-        else if ( DataBuffer == "Theta=" ) {
-          check_Theta = true;
-          LineStream >> DataBuffer;
-          Theta = atof(DataBuffer.c_str())*deg;
-          if(VerboseLevel==1)
-            G4cout << "Theta: " << Theta/deg << " " << G4endl ;
-        }
-
-        else if ( DataBuffer == "Phi=" ) {
-          check_Phi = true;
-          LineStream >> DataBuffer;
-          Phi = atof(DataBuffer.c_str())*deg;
-          if(VerboseLevel==1)
-            G4cout << "Phi: " << Phi/deg << " " << G4endl ;
-        }
-
-        else if ( DataBuffer == "Beta=" ) {
-          check_Beta = true;
-          LineStream >> DataBuffer;
-          BetaX = atof(DataBuffer.c_str())*deg;
-          if(VerboseLevel==1)
-            G4cout << "BetaX: " << BetaX/deg << " " << G4endl ;
-          LineStream >> DataBuffer;
-          BetaY = atof(DataBuffer.c_str())*deg;
-          if(VerboseLevel==1)
-            G4cout << "BetaY: " << BetaY/deg << " " << G4endl ;
-          LineStream >> DataBuffer;
-          BetaZ = atof(DataBuffer.c_str())*deg;
-          if(VerboseLevel==1)
-            G4cout << "BetaZ: " << BetaZ/deg << " " << G4endl ;
-        }
-
-
-        ///////////////////////////////////////////////////
-        //   If no Detector Token and no comment, toggle out
-        else{
-          ReadingStatusStandard = false;
-          G4cout << "Error: Wrong Token Sequence: Getting out " << DataBuffer << G4endl ;
-          exit(1);
-        }
-
-        /////////////////////////////////////////////////
-        //   If All necessary information there, toggle out
-
-        if (check_CloverId && check_R && check_Theta && check_Phi && check_Beta){
-          ReadingStatusFree = false;
-          AddCloverFreePosition(CloverId_Free,R,Theta,Phi,BetaX,BetaY,BetaZ);
-          check_CloverId = false ;
-          check_R = false ;
-          check_Theta = false ;
-          check_Phi = false ;
-          check_Beta = false ;
-        }
-      }
-
-      //   Reading Block
-      while(ReadingStatusFrame){
-        // Pickup Next Line
-        getline(ConfigFile, LineBuffer);
-        //   Comment Line
-        while (LineBuffer.compare(0, 1, "%") == 0) {
-          // Take the next line
-          getline(ConfigFile, LineBuffer);
-        }
-
-        LineStream.clear();
-        LineStream.str(LineBuffer);
-        LineStream >> DataBuffer;
-
-        if ( DataBuffer == "RightFrame=" ) {
-          check_RightFrame = true;
-
-          LineStream >> DataBuffer;
-          m_RightFrame=atoi(DataBuffer.c_str());
-
-          if (VerboseLevel==1) {
-            if(m_RightFrame)
-              G4cout << "Right frame: yes" << G4endl;
-            else
-              G4cout << "Right frame: no" << G4endl;
-          }
-        }
-
-        else if ( DataBuffer == "LeftFrame=" ) {
-          check_LeftFrame = true;
-
-          LineStream >> DataBuffer;
-          m_LeftFrame=atoi(DataBuffer.c_str());
-
-          if (VerboseLevel==1) {
-            if(m_LeftFrame)
-              G4cout << "Left frame: yes" << G4endl;
-            else
-              G4cout << "Left frame: no" << G4endl;
-          }
-        }
-
-        ///////////////////////////////////////////////////
-        //   If no Detector Token and no comment, toggle out
-        else{
-          ReadingStatusStandard = false;
-          G4cout << "Error: Wrong Token Sequence: Getting out " << DataBuffer << G4endl ;
-          exit(1);
-        }
-
-        /////////////////////////////////////////////////
-        //   If All necessary information there, toggle out
-
-        if (check_RightFrame && check_LeftFrame){
-          ReadingStatusFrame = false;
-          AddCloverStandard(CloverId);
-          CloverId.clear();
-          check_RightFrame = false;
-          check_LeftFrame = false;
-        }
-      }
-
+    else{
+      cout << "Warning: check your input file formatting " << endl;
     }
   }
 }

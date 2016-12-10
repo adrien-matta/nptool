@@ -1,20 +1,20 @@
 #ifndef TMiniballPHYSICS_H
 #define TMiniballPHYSICS_H
 /*****************************************************************************
- * Copyright (C) 2009-2016   this file is part of the NPTool Project       *
+ * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Adrien Matta  contact address: a.matta@surrey.ac.uk                        *
+ * Original Author: Adrien Matta  contact address: matta@lpccaen.in2p3.fr    *
  *                                                                           *
- * Creation Date  : January 2016                                           *
+ * Creation Date  : January 2016                                             *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold Miniball Treated data                                *
+ *  This class hold Miniball Treated data                                    *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -38,6 +38,7 @@ using namespace std;
 #include "TMiniballSpectra.h"
 #include "NPCalibrationManager.h"
 #include "NPVDetector.h"
+#include "NPInputParser.h"
 
 // forward declaration
 class TMiniballSpectra;
@@ -73,7 +74,7 @@ class TMiniballPhysics : public TObject, public NPL::VDetector {
   // methods inherited from the VDetector ABC class
   public:
     // read stream from ConfigFile to pick-up detector parameters
-    void ReadConfiguration(string);
+    void ReadConfiguration(NPL::InputParser);
 
     // add parameters to the CalibrationManger
     void AddParameterToCalibrationManager();

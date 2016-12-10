@@ -21,18 +21,18 @@ Transfert
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%Beam energy given in MeV ; Excitation in MeV 748  612
 %Transfert
-%	Beam= 34Si
-%	Target= 2H
-%	Light= 1H
-%	Heavy= 35Si
-%	ExcitationEnergy= 2.0
-%	BeamEnergy= 748
-%	BeamEnergySpread= 0
-%	SigmaX= 0.5
-%	SigmaY= 0.5
-%	SigmaThetaX= 0
-%	SigmaPhiY= 0
-%	CrossSectionPath= flat.txt
-%	ShootLight= 1
-%	ShootHeavy= 0
+% Beam= 34Si
+% Target= 2H
+% Light= 1H
+% Heavy= 35Si
+% ExcitationEnergy= 2.0
+% BeamEnergy= 748
+% BeamEnergySpread= 0
+% SigmaX= 0.5
+% SigmaY= 0.5
+% SigmaThetaX= 0
+% SigmaPhiY= 0
+% CrossSectionPath= flat.txt
+% ShootLight= 1
+% ShootHeavy= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

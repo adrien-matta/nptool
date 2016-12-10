@@ -26,8 +26,7 @@
 #include "RootOutput.h"
 #include "NPDetectorFactory.h"
 #include "NPCalibrationManager.h"
-#include "NPCalibrationManager.h"
-
+#include "NPOptionManager.h"
 //   STL
 #include <iostream>
 #include <sstream>
@@ -157,226 +156,36 @@ void THiraPhysics::Clear(){
 }
 
 ///////////////////////////////////////////////////////////////////////////
-void THiraPhysics::ReadConfiguration(string Path){
-    ifstream ConfigFile           ;
-    ConfigFile.open(Path.c_str()) ;
-    string LineBuffer          ;
-    string DataBuffer          ;
-    
-    // A:X1_Y1     --> X:1    Y:1
-    // B:X128_Y1   --> X:128  Y:1
-    // C:X1_Y128   --> X:1    Y:128
-    // D:X128_Y128    --> X:128  Y:128
-    
-    double Ax , Bx , Cx , Dx , Ay , By , Cy , Dy , Az , Bz , Cz , Dz          ;
-    TVector3 A , B , C , D                                                 ;
+void THiraPhysics::ReadConfiguration(NPL::InputParser parser){
 
-    
-    bool ReadingStatus = false ;
-    
-    bool check_A = false ;
-    bool check_C = false ;
-    bool check_B = false ;
-    bool check_D = false ;
-    bool check_ThinSi = false;
-    bool check_ThickSi = false;
-    bool check_CsI = false;
-    /*bool check_Theta = false ;
-     bool check_Phi   = false ;
-     bool check_R     = false ;*/
-    
-    
-    
-    while (!ConfigFile.eof()) {
-        getline(ConfigFile, LineBuffer);
-        if (LineBuffer.compare(0, 13, "HiraTelescope") == 0) {
-            cout << "///" << endl           ;
-            cout << "Hira element found: " << endl   ;
-            ReadingStatus = true ;
-        }
-        
-        while(ReadingStatus){
-            
-            ConfigFile >> DataBuffer;
-            //   Comment Line
-            if (DataBuffer.compare(0, 1, "%") == 0) {/*do nothing */;}
-            
-            // Position method
-            else if (DataBuffer.compare(0, 2, "A=") == 0) {
-                check_A = true;
-                ConfigFile >> DataBuffer ;
-                Ax = atof(DataBuffer.c_str()) ;
-                Ax = Ax ;
-                ConfigFile >> DataBuffer ;
-                Ay = atof(DataBuffer.c_str()) ;
-                Ay = Ay;
-                ConfigFile >> DataBuffer ;
-                Az = atof(DataBuffer.c_str()) ;
-                Az = Az;
-                
-                A = TVector3(Ax, Ay, Az);
-                cout << "A corner position : " << A.X() << ";" << A.Y() << ";" << A.Z() << endl;
-            }
-            
-            else if (DataBuffer.compare(0, 2, "B=") == 0) {
-                check_B = true;
-                ConfigFile >> DataBuffer ;
-                Bx = atof(DataBuffer.c_str()) ;
-                Bx = Bx;
-                ConfigFile >> DataBuffer ;
-                By = atof(DataBuffer.c_str()) ;
-                By = By;
-                ConfigFile >> DataBuffer ;
-                Bz = atof(DataBuffer.c_str()) ;
-                Bz = Bz;
-                
-                B = TVector3(Bx, By, Bz);
-                cout << "B corner position : " << B.X() << ";" << B.Y() << ";" << B.Z() << endl;
-            }
-            
-            else if (DataBuffer.compare(0, 2, "C=") == 0) {
-                check_C = true;
-                ConfigFile >> DataBuffer ;
-                Cx = atof(DataBuffer.c_str()) ;
-                Cx = Cx;
-                ConfigFile >> DataBuffer ;
-                Cy = atof(DataBuffer.c_str()) ;
-                Cy = Cy;
-                ConfigFile >> DataBuffer ;
-                Cz = atof(DataBuffer.c_str()) ;
-                Cz = Cz;
-                
-                C = TVector3(Cx, Cy, Cz);
-                cout << "C corner position : " << C.X() << ";" << C.Y() << ";" << C.Z() << endl;
-            }
-            
-            else if (DataBuffer.compare(0, 2, "D=") == 0) {
-                check_D = true;
-                ConfigFile >> DataBuffer ;
-                Dx = atof(DataBuffer.c_str()) ;
-                Dx = Dx;
-                ConfigFile >> DataBuffer ;
-                Dy = atof(DataBuffer.c_str()) ;
-                Dy = Dy;
-                ConfigFile >> DataBuffer ;
-                Dz = atof(DataBuffer.c_str()) ;
-                Dz = Dz;
-                
-                D = TVector3(Dx, Dy, Dz);
-                cout << "D corner position : " << D.X() << ";" << D.Y() << ";" << D.Z() << endl;
-            }
-            
-            else if (DataBuffer.compare(0, 10, "ThinSi_DE=") == 0) {
-                check_ThinSi= true;
-                ConfigFile >> DataBuffer ;
-                m_build_ThinSi = atoi(DataBuffer.c_str()) ;
-                cout << "Build ThinSi : " << m_build_ThinSi << endl;
-            }
-            
-            else if (DataBuffer.compare(0, 10, "ThickSi_E=") == 0) {
-                check_ThickSi= true;
-                ConfigFile >> DataBuffer ;
-                m_build_ThickSi = atoi(DataBuffer.c_str()) ;
-                cout << "Build ThickSi : " << m_build_ThickSi << endl;
-            }
-            
-            else if (DataBuffer.compare(0, 4, "CsI=") == 0) {
-                check_CsI= true;
-                ConfigFile >> DataBuffer ;
-                m_build_CsI = atoi(DataBuffer.c_str()) ;
-                cout << "Build CsI : " << m_build_CsI << endl;
-            }
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("HiraTelescope");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " Telescope found " << endl; 
 
-            
-            
-            // Angle method
-            /*   else if (DataBuffer.compare(0, 6, "THETA=") == 0) {
-             check_Theta = true;
-             ConfigFile >> DataBuffer ;
-             Theta = atof(DataBuffer.c_str()) ;
-             Theta = Theta * deg;
-             cout << "Theta:  " << Theta / deg << endl;
-             }
-             
-             else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
-             check_Phi = true;
-             ConfigFile >> DataBuffer ;
-             Phi = atof(DataBuffer.c_str()) ;
-             Phi = Phi * deg;
-             cout << "Phi:  " << Phi / deg << endl;
-             }
-             
-             else if (DataBuffer.compare(0, 2, "R=") == 0) {
-             check_R = true;
-             ConfigFile >> DataBuffer ;
-             R = atof(DataBuffer.c_str()) ;
-             R = R * mm;
-             cout << "R:  " << R / mm << endl;
-             }
-             
-             else if (DataBuffer.compare(0, 5, "BETA=") == 0) {
-             ConfigFile >> DataBuffer ;
-             beta_u = atof(DataBuffer.c_str()) ;
-             beta_u = beta_u * deg   ;
-             ConfigFile >> DataBuffer ;
-             beta_v = atof(DataBuffer.c_str()) ;
-             beta_v = beta_v * deg   ;
-             ConfigFile >> DataBuffer ;
-             beta_w = atof(DataBuffer.c_str()) ;
-             beta_w = beta_w * deg   ;
-             cout << "Beta:  " << beta_u / deg << " " << beta_v / deg << " " << beta_w / deg << endl  ;
-             }*/
-            
-            
-            else cout << "WARNING: Wrong Token, GaspardTrackerRectangle: Rectangle Element not added" << endl;
-            
-            //Add The previously define telescope
-            //With position method
-            if (check_A && check_B && check_C && check_D && check_ThinSi && check_ThickSi && check_CsI) {
-                
-                ReadingStatus = false ;
-                check_A = false ;
-                check_C = false ;
-                check_B = false ;
-                check_D = false ;
-                
-                AddTelescope(A                ,
-                             B                ,
-                             C                ,
-                             D);
-            }
-            
-            //with angle method
-            /*if ((check_Theta && check_Phi && check_R && check_FirstStage && check_SecondStage && check_ThirdStage && checkVis) && !(check_A && check_B && check_C && check_D)) {
-             ReadingStatus = false ;
-             check_Theta = false ;
-             check_Phi   = false ;
-             check_R     = false ;
-             check_FirstStage = false ;
-             check_SecondStage = false ;
-             check_ThirdStage = false ;
-             checkVis = false ;
-             
-             AddModule(R                ,
-             Theta            ,
-             Phi              ,
-             beta_u           ,
-             beta_v           ,
-             beta_w           ,
-             FIRSTSTAGE  == 1 ,
-             SECONDSTAGE == 1 ,
-             THIRDSTAGE  == 1);
-             }*/
-            
-            
-        }
+  // Cartesian Case
+  vector<string> cart = {"A","B","C","D","ThickSi_E","ThinSi_DE","CsI"};
+  for(unsigned int i  = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(cart)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  Hira Telescope " << i+1 <<  endl;
+      TVector3 A = blocks[i]->GetTVector3("A","mm");
+      TVector3 B = blocks[i]->GetTVector3("B","mm");
+      TVector3 C = blocks[i]->GetTVector3("C","mm");
+      TVector3 D = blocks[i]->GetTVector3("D","mm");
+      AddTelescope(A,B,C,D) ;
     }
-    
-    InitializeStandardParameter();
-    ReadAnalysisConfig();
-    
-    cout << endl << "/////////////////////////////" << endl << endl;
+
+    else{
+      cout << "ERROR: Missing token for M2Telescope blocks, check your input file" << endl;
+      exit(1);
+    }
+
+  }
+
+  InitializeStandardParameter();
+  ReadAnalysisConfig();
 }
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void THiraPhysics::AddTelescope(TVector3 Pos1, TVector3 Pos2, TVector3 Pos3, TVector3 Pos4){
@@ -971,8 +780,8 @@ extern "C"{
     class proxy_hira{
     public:
         proxy_hira(){
-            NPL::DetectorFactory::getInstance()->AddToken("HIRAArray","Hira");
-            NPL::DetectorFactory::getInstance()->AddDetector("HIRAArray",THiraPhysics::Construct);
+            NPL::DetectorFactory::getInstance()->AddToken("HiraTelescope","Hira");
+            NPL::DetectorFactory::getInstance()->AddDetector("HiraTelescope",THiraPhysics::Construct);
         }
     };
     

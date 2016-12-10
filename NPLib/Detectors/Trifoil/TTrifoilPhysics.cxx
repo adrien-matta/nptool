@@ -32,6 +32,8 @@
 #include "NPDetectorFactory.h"
 #include "RootOutput.h"
 #include "TAsciiFile.h"
+#include "NPOptionManager.h"
+
 //   ROOT
 #include "TChain.h"
 #include "TSpectrum.h"
@@ -77,9 +79,10 @@ void TTrifoilPhysics::Clear(){
 ////   Innherited from VDetector Class   ////            
 
 ///////////////////////////////////////////////////////////////////////////
-void TTrifoilPhysics::ReadConfiguration(string Path)  {
-  /*Trifoil has only one key word, so do nothing*/
-  Path.clear();
+void TTrifoilPhysics::ReadConfiguration(NPL::InputParser parser){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Trifoil");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 }
 
 ///////////////////////////////////////////////////////////////////////////

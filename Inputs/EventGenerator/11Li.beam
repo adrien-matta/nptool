@@ -4,11 +4,11 @@
 Beam
   Particle= 11Li
   Energy= 553
-	SigmaEnergy= 20
-	SigmaThetaX= 0.6138
-	SigmaPhiY= 0.3812
-	SigmaX= 6.216
-	SigmaY= 6.109
+ SigmaEnergy= 20
+ SigmaThetaX= 0.6138
+ SigmaPhiY= 0.3812
+ SigmaX= 6.216
+ SigmaY= 6.109
   MeanThetaX= 0
   MeanPhiY= 0
   MeanX= 1.773

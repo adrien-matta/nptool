@@ -37,7 +37,7 @@ using namespace std;
 // NPTool header
 #include "NPSVDetector.hh"
 #include "TMiniballData.h"
-
+#include "NPInputParser.h"
 class Miniball : public NPS::VDetector{
   ////////////////////////////////////////////////////
   /////// Default Constructor and Destructor /////////
@@ -67,7 +67,7 @@ class Miniball : public NPS::VDetector{
   public:
     // Read stream at Configfile to pick-up parameters of detector (Position,...)
     // Called in DetecorConstruction::ReadDetextorConfiguration Method
-    void ReadConfiguration(string Path) ;
+    void ReadConfiguration(NPL::InputParser) ;
 
     // Construct detector and inialise sensitive part.
     // Called After DetecorConstruction::AddDetector Method

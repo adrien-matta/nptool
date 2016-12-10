@@ -35,11 +35,9 @@
 // NPTool - ROOT headers
 #include "TInteractionCoordinates.h"
 #include "TGaspardTrackerData.h"
-
+#include "NPInputParser.h"
 using namespace std;
-using namespace CLHEP;
-
-
+using namespace CLHEP;
 
 class GaspardTrackerModule
 {
@@ -49,7 +47,7 @@ public:
 
 public:
    // Read stream at Configfile to pick-up parameters of detector (Position,...)
-   virtual void ReadConfiguration(string Path) = 0;
+   virtual void ReadConfiguration(NPL::InputParser) = 0;
 
    // Construct detector and inialise sensitive part.
    virtual void ConstructDetector(G4LogicalVolume* world) = 0;

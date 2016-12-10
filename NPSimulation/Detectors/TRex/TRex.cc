@@ -43,6 +43,7 @@
 #include "RootOutput.h"
 #include "MaterialManager.hh"
 #include "NPSDetectorFactory.hh"
+#include "NPOptionManager.h"
 // CLHEP header
 #include "CLHEP/Random/RandGauss.h"
 
@@ -148,104 +149,31 @@ G4LogicalVolume* TRex::BuildChamber(){
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void TRex::ReadConfiguration(string Path){
-  ifstream ConfigFile;
-  ConfigFile.open(Path.c_str());
-  string LineBuffer;
-  string DataBuffer;
+void TRex::ReadConfiguration(NPL::InputParser parser){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("TRex");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " Detector found " << endl; 
 
-  double X=0;
-  double Y=0;
-  double Z=0;
-  bool check_X = false ;
-  bool check_Y = false ;
-  bool check_Z = false ;      
-  bool ReadingStatus = false ;
+  vector<string> token = {"X","Y","Z"};
+
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << "//// TRex " << i+1 << endl; 
 
 
-  while (!ConfigFile.eof()) {
-    getline(ConfigFile, LineBuffer);
-
-    //   If line is a Start Up TRex bloc, Reading toggle to true      
-    string name = "TRex";
-
-    if (LineBuffer.compare(0, name.length(), name) == 0) {
-      G4cout << "///" << G4endl           ;
-      G4cout << "TRex found: " << G4endl   ;        
-      ReadingStatus = true ;
+      double X = blocks[i]->GetDouble("X","mm");
+      double Y = blocks[i]->GetDouble("Y","mm");
+      double Z = blocks[i]->GetDouble("Z","mm");
+      AddTRex(X,Y,Z);
+      if(blocks[i]->HasToken("Chamber"))
+        if(blocks[i]->GetInt("Chamber"))
+          BuildChamber();          
     }
 
-    //   Else don't toggle to Reading Block Status
-    else ReadingStatus = false ;
-
-    //   Reading Block
-    while(ReadingStatus){
-      // Pickup Next Word 
-      ConfigFile >> DataBuffer ;
-
-      //   Comment Line 
-      if (DataBuffer.compare(0, 1, "%") == 0) {   
-        ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
-      }
-
-      //   Finding another telescope (safety), toggle out
-      else if (DataBuffer.compare(0, name.length(),name) == 0) {
-        G4cout << "WARNING: Another Detector is find before standard sequence of Token, Error may occured in Telecope definition" << G4endl ;
-        ReadingStatus = false ;
-      }
-
-      //Position method
-      else if (DataBuffer.compare(0, 2, "X=") == 0) {
-        check_X = true;
-        ConfigFile >> DataBuffer ;
-        X = atof(DataBuffer.c_str()) ;
-        X = X * mm;
-        G4cout << "X:  " << X / mm << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 2, "Y=") == 0) {
-        check_Y = true;
-        ConfigFile >> DataBuffer ;
-        Y = atof(DataBuffer.c_str()) ;
-        Y = Y * mm;
-        G4cout << "Y:  " << Y / mm << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 2, "Z=") == 0) {
-        check_Z = true;
-        ConfigFile >> DataBuffer ;
-        Z = atof(DataBuffer.c_str()) ;
-        Z = Z * mm;
-        G4cout << "Z:  " << Z / mm << G4endl;
-      }
-
-      else if (DataBuffer.compare(0, 8, "Chamber=") == 0) {
-        ConfigFile >> DataBuffer ;
-        if(DataBuffer=="1")
-          BuildChamber();
-        G4cout << "Adding TRex Chamber"<< G4endl;
-      }
-      ///////////////////////////////////////////////////
-      //   If no Detector Token and no comment, toggle out
-      else{
-        ReadingStatus = false; 
-        G4cout << "Wrong Token Sequence: Getting out " << DataBuffer << G4endl ;
-      }
-
-      /////////////////////////////////////////////////
-      //   If All necessary information there, toggle out
-
-      if (check_X && check_Y && check_Z){
-        // Convert Cartesian to Spherical (detector always face the target)
-        AddTRex(X,Y,Z);
-
-        //   Reinitialisation of Check Boolean 
-        check_X = false ;
-        check_Y = false ;
-        check_Z = false ;
-        ReadingStatus = false ;   
-        G4cout << "///"<< G4endl ;            
-      }
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
     }
   }
 }

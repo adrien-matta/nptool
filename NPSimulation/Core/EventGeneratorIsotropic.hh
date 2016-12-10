@@ -34,14 +34,14 @@ using namespace CLHEP;
 // NPS headers
 #include "VEventGenerator.hh"
 #include "ParticleStack.hh"
-
+#include "NPInputParser.h"
 class EventGeneratorIsotropic : public NPS::VEventGenerator{
 public:     // Constructor and destructor
     EventGeneratorIsotropic() ;
     virtual ~EventGeneratorIsotropic();
     
 public:     // Inherit from VEventGenerator Class
-    void ReadConfiguration(string,int)               ;
+    void ReadConfiguration(NPL::InputParser)               ;
     void GenerateEvent(G4Event*) ;
     void InitializeRootOutput()                  ;
     
@@ -56,7 +56,7 @@ private:    // Source parameter from input file
     G4double               m_SigmaX           ;
     G4double               m_SigmaY           ;
     G4ParticleDefinition*  m_particle         ;  // Kind of particle to shoot isotropically
-    G4double               m_ExcitationEnergy ;  // Excitation energy of the emitted particle
+    vector<G4double>       m_ExcitationEnergy ;  // Excitation energy of the emitted particle
     vector<string>         m_particleName     ;
     ParticleStack*         m_ParticleStack    ;
     vector<G4int>          m_Multiplicty;

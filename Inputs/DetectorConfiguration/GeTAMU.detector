@@ -1,49 +1,17 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%0.5mg/cm2
 Target
-	THICKNESS= 4.8
-	RADIUS=	5
-	MATERIAL= CD2
-	ANGLE= 0
-	X= 0
-	Y= 0
-	Z= 0
+ THICKNESS= 4.8
+ RADIUS=	5
+ MATERIAL= CD2
+ ANGLE= 0
+ X= 0
+ Y= 0
+ Z= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 GeTAMU
-% Placing detector in the standard position
-%GeTAMUStandard
-%CloverId= 1 2 3 4
-%CloverId= 5 7 9 11
-% Free placing of detector at any arbitrary position
-GeTAMUClover
-    CloverId= 1
-    R= 100
-    Phi= 0
-    Theta= 90
-    Beta= 0 0 0
-GeTAMUClover
-    CloverId= 2
-    R= 100
-    Phi= 90
-    Theta= 90
-    Beta= 0 0 0
-GeTAMUClover
-    CloverId= 3
-    R= 100
-    Phi= 180
-    Theta= 90
-    Beta= 0 0 0
-GeTAMUClover
-    CloverId= 4
-    R= 100
-    Phi= 270
-    Theta= 90
-    Beta= 0 0 0
-
-% Adding the support Frame
-GeTAMUFrame
-  RightFrame= 1
-  LeftFrame= 0
+ CloverId= 1
+ R= 100
+ Phi= 0
+ Theta= 90
+ Beta= 0 0 0

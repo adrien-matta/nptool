@@ -48,6 +48,7 @@
 #include "G4MultiFunctionalDetector.hh"
 // NPLib header
 #include "TInteractionCoordinates.h"
+#include "NPInputParser.h"
 
 using namespace std;
 using namespace CLHEP;
@@ -61,7 +62,7 @@ class VDetector{
 
     // Read stream at Configfile to pick-up parameters of detector (Position,...)
     // Called in DetectorConstruction::ReadDetectorConfiguration Method
-    virtual void ReadConfiguration(string) = 0;
+    virtual void ReadConfiguration(NPL::InputParser){};
 
     // Construct detector and inialise sensitive part.
     // Called After DetecorConstruction::AddDetector Method

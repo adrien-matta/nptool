@@ -6,9 +6,9 @@ Beam
   Energy= 1904
   SigmaEnergy= 0
   SigmaX= 1.5
-	SigmaY= 1.5
-	SigmaThetaX= 0.005
-	SigmaPhiY= 0.005
+ SigmaY= 1.5
+ SigmaThetaX= 0.005
+ SigmaPhiY= 0.005
   MeanThetaX= 0
   MeanPhiY= 0
   MeanX= 0
@@ -17,14 +17,14 @@ Beam
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 TwoBodyReaction
-	Beam= 68Ni
-	Target= 2H
-	Light= 1H
-	Heavy= 69Ni
-	ExcitationEnergyLight= 0.0
-	ExcitationEnergyHeavy= 2.0
-	%CrossSectionPath= ./Data/CrossSection/ni69_d5_01.txt CS
+ Beam= 68Ni
+ Target= 2H
+ Light= 1H
+ Heavy= 69Ni
+ ExcitationEnergyLight= 0.0
+ ExcitationEnergyHeavy= 2.0
+ %CrossSectionPath= ./Data/CrossSection/ni69_d5_01.txt CS
   CrossSectionPath= flat.txt CS
-	ShootLight= 1
-	ShootHeavy= 0
+ ShootLight= 1
+ ShootHeavy= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

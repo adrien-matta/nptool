@@ -8,7 +8,7 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Adrien Matta  contact address: a.matta@surrey.ac.uk      *
+ * Original Author: Adrien Matta  contact address: matta@lpccaen.in2p3.fr    *
  *                                                                           *
  * Creation Date  : January 2016                                             *
  * Last update    :                                                          *
@@ -38,6 +38,7 @@ using namespace std;
 // NPTool header
 #include "NPSVDetector.hh"
 #include "TTRexData.h"
+#include "NPInputParser.h"
 
 class TRex : public NPS::VDetector{
   ////////////////////////////////////////////////////
@@ -69,7 +70,7 @@ class TRex : public NPS::VDetector{
   public:
     // Read stream at Configfile to pick-up parameters of detector (Position,...)
     // Called in DetecorConstruction::ReadDetextorConfiguration Method
-    void ReadConfiguration(string Path) ;
+    void ReadConfiguration(NPL::InputParser) ;
 
     // Construct detector and inialise sensitive part.
     // Called After DetecorConstruction::AddDetector Method

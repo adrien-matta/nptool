@@ -166,182 +166,62 @@ void Paris::AddPhoswich(G4ThreeVector Pos, double beta_u, double beta_v, double 
 // Virtual Method of NPS::VDetector class
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void Paris::ReadConfiguration(string Path){
-  ifstream ConfigFile;
-  ConfigFile.open(Path.c_str());
-  string LineBuffer, DataBuffer; 
+void Paris::ReadConfiguration(NPL::InputParser parser){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Paris");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  // A,B,C,D are the four corner of the detector
+  vector<string> cart = {"A","B","C","D"};
+  vector<string> sphe = {"R","THETA","PHI","BETA"};
 
-  G4double Ax , Bx , Cx , Dx , Ay , By , Cy , Dy , Az , Bz , Cz , Dz          ;
-  G4ThreeVector A , B , C , D                                                 ;
-  G4double Theta = 0 , Phi = 0 , R = 0 , beta_u = 0 , beta_v = 0 , beta_w = 0 ;
-  bool Type = true;
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(cart) && blocks[i]->GetMainValue()=="Cluster"){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  Cluster " << i+1 <<  endl;
+      G4ThreeVector A = NPS::ConvertVector(blocks[i]->GetTVector3("A","mm"));
+      G4ThreeVector B = NPS::ConvertVector(blocks[i]->GetTVector3("B","mm"));
+      G4ThreeVector C = NPS::ConvertVector(blocks[i]->GetTVector3("C","mm"));
+      G4ThreeVector D = NPS::ConvertVector(blocks[i]->GetTVector3("D","mm"));
 
-  bool ReadingStatus = false;
+      AddCluster(A,B,C,D);
+    }
+    else if(blocks[i]->HasTokenList(sphe)&& blocks[i]->GetMainValue()=="Cluster"){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  Cluster " << i+1 <<  endl;
+      double R = blocks[i]->GetDouble("R","mm");
+      double Theta = blocks[i]->GetDouble("THETA","deg");
+      double Phi = blocks[i]->GetDouble("PHI","deg");
+      vector<double> Beta = blocks[i]->GetVectorDouble("BETA","deg");
+      R = R +  0.5*Length;
+      G4ThreeVector Pos(R*sin(Theta)*cos(Phi),R*sin(Theta)*sin(Phi),R*cos(Theta));
+      AddCluster(Pos,Beta[0],Beta[1],Beta[2]);
+    }
+    else if(blocks[i]->HasTokenList(cart)&& blocks[i]->GetMainValue()=="Phoswich"){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  Phoswich" << i+1 <<  endl;
+      G4ThreeVector A = NPS::ConvertVector(blocks[i]->GetTVector3("A","mm"));
+      G4ThreeVector B = NPS::ConvertVector(blocks[i]->GetTVector3("B","mm"));
+      G4ThreeVector C = NPS::ConvertVector(blocks[i]->GetTVector3("C","mm"));
+      G4ThreeVector D = NPS::ConvertVector(blocks[i]->GetTVector3("D","mm"));
 
-  bool check_A = false;
-  bool check_C = false;
-  bool check_B = false;
-  bool check_D = false;
-
-  bool check_Theta = false;
-  bool check_Phi   = false;
-  bool check_R     = false;
-
-  while (!ConfigFile.eof()) {
-    getline(ConfigFile, LineBuffer);
-    if (LineBuffer.compare(0, 12, "ParisCluster") == 0) {
-      G4cout << "///" << G4endl           ;
-      G4cout << "Cluster element found: " << G4endl   ;
-      ReadingStatus = true ;
-      Type = true;
+      AddPhoswich(A,B,C,D);
     }
 
-    else if (LineBuffer.compare(0, 13, "ParisPhoswich") == 0) {
-      G4cout << "///" << G4endl           ;
-      G4cout << "Phoswich element found: " << G4endl   ;
-      ReadingStatus = true ;
-      Type = false;
+    else if(blocks[i]->HasTokenList(sphe)&& blocks[i]->GetMainValue()=="Phoswich"){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  Phoswich " << i+1 <<  endl;
+      double R = blocks[i]->GetDouble("R","mm");
+      double Theta = blocks[i]->GetDouble("THETA","deg");
+      double Phi = blocks[i]->GetDouble("PHI","deg");
+      vector<double> Beta = blocks[i]->GetVectorDouble("BETA","deg");
+      R = R +  0.5*Length;
+      G4ThreeVector Pos(R*sin(Theta)*cos(Phi),R*sin(Theta)*sin(Phi),R*cos(Theta));
+      AddPhoswich(Pos,Beta[0],Beta[1],Beta[2]);
     }
 
-
-    while (ReadingStatus) {
-      ConfigFile >> DataBuffer;
-      // Comment Line 
-      if (DataBuffer.compare(0, 1, "%") == 0) {/*do nothing */;}
-
-      // Position method
-      else if (DataBuffer == "A=") {
-        check_A = true;
-        ConfigFile >> DataBuffer ;
-        Ax = atof(DataBuffer.c_str()) ;
-        Ax = Ax * mm ;
-        ConfigFile >> DataBuffer ;
-        Ay = atof(DataBuffer.c_str()) ;
-        Ay = Ay * mm ;
-        ConfigFile >> DataBuffer ;
-        Az = atof(DataBuffer.c_str()) ;
-        Az = Az * mm ;
-
-        A = G4ThreeVector(Ax, Ay, Az);
-        G4cout << "Corner A position : " << A << G4endl;
-      }
-      else if (DataBuffer == "B=") {
-        check_B = true;
-        ConfigFile >> DataBuffer ;
-        Bx = atof(DataBuffer.c_str()) ;
-        Bx = Bx * mm ;
-        ConfigFile >> DataBuffer ;
-        By = atof(DataBuffer.c_str()) ;
-        By = By * mm ;
-        ConfigFile >> DataBuffer ;
-        Bz = atof(DataBuffer.c_str()) ;
-        Bz = Bz * mm ;
-
-        B = G4ThreeVector(Bx, By, Bz);
-        G4cout << "Corner B position : " << B << G4endl;
-      }
-
-      else if (DataBuffer == "C=") {
-        check_C = true;
-        ConfigFile >> DataBuffer ;
-        Cx = atof(DataBuffer.c_str()) ;
-        Cx = Cx * mm ;
-        ConfigFile >> DataBuffer ;
-        Cy = atof(DataBuffer.c_str()) ;
-        Cy = Cy * mm ;
-        ConfigFile >> DataBuffer ;
-        Cz = atof(DataBuffer.c_str()) ;
-        Cz = Cz * mm ;
-
-        C = G4ThreeVector(Cx, Cy, Cz);
-        G4cout << "Corner C position : " << C << G4endl;
-      }
-      else if (DataBuffer == "D=") {
-        check_D = true;
-        ConfigFile >> DataBuffer ;
-        Dx = atof(DataBuffer.c_str()) ;
-        Dx = Dx * mm ;
-        ConfigFile >> DataBuffer ;
-        Dy = atof(DataBuffer.c_str()) ;
-        Dy = Dy * mm ;
-        ConfigFile >> DataBuffer ;
-        Dz = atof(DataBuffer.c_str()) ;
-        Dz = Dz * mm ;
-
-        D = G4ThreeVector(Dx, Dy, Dz);
-        G4cout << "Corner D position : " << D << G4endl;
-      }
-
-      // Angle method
-      else if (DataBuffer=="Theta=") {
-        check_Theta = true;
-        ConfigFile >> DataBuffer ;
-        Theta = atof(DataBuffer.c_str()) ;
-        Theta = Theta * deg;
-        G4cout << "Theta:  " << Theta / deg << G4endl;
-      }
-      else if (DataBuffer=="Phi=") {
-        check_Phi = true;
-        ConfigFile >> DataBuffer ;
-        Phi = atof(DataBuffer.c_str()) ;
-        Phi = Phi * deg;
-        G4cout << "Phi:  " << Phi / deg << G4endl;
-      }
-      else if (DataBuffer=="R=") {
-        check_R = true;
-        ConfigFile >> DataBuffer ;
-        R = atof(DataBuffer.c_str()) ;
-        R = R * mm;
-        G4cout << "R:  " << R / mm << G4endl;
-      }
-      else if (DataBuffer=="Beta=") {
-        ConfigFile >> DataBuffer ;
-        beta_u = atof(DataBuffer.c_str()) ;
-        beta_u = beta_u * deg   ;
-        ConfigFile >> DataBuffer ;
-        beta_v = atof(DataBuffer.c_str()) ;
-        beta_v = beta_v * deg   ;
-        ConfigFile >> DataBuffer ;
-        beta_w = atof(DataBuffer.c_str()) ;
-        beta_w = beta_w * deg   ;
-        G4cout << "Beta:  " << beta_u / deg << " " << beta_v / deg << " " << beta_w / deg << G4endl  ;
-      }
-
-      else G4cout << "WARNING: Wrong Token, ParisCluster: Cluster Element not added" << G4endl;
-
-      // Add The previously define telescope
-      // With position method
-      if ((check_A && check_B && check_C && check_D) && 
-          !(check_Theta && check_Phi && check_R)) {
-        ReadingStatus = false;
-        check_A = false;
-        check_C = false;
-        check_B = false;
-        check_D = false;
-
-        if(Type)
-          AddCluster(A, B, C, D);
-        else 
-          AddPhoswich(A, B, C, D);
-      }
-
-      // With angle method
-      if ((check_Theta && check_Phi && check_R ) && 
-          !(check_A && check_B && check_C && check_D)) {
-        ReadingStatus = false;
-        check_Theta = false;
-        check_Phi   = false;
-        check_R     = false;
-
-        G4ThreeVector Pos(R*sin(Theta)*cos(Phi),R*sin(Theta)*sin(Phi),R*cos(Theta));
-
-        if(Type) 
-          AddCluster(Pos, beta_u, beta_v, beta_w);
-        else
-          AddPhoswich(Pos, beta_u, beta_v, beta_w);
-      }
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
     }
   }
 }

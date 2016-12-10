@@ -32,7 +32,8 @@ using namespace S2_LOCAL;
 #include "RootInput.h"
 #include "RootOutput.h"
 #include "NPDetectorFactory.h"
-
+#include "NPSystemOfUnits.h"
+using namespace NPUNITS;
 //	ROOT
 #include "TChain.h"
 ///////////////////////////////////////////////////////////////////////////
@@ -643,189 +644,30 @@ void TS2Physics::ReadCalibrationRun()
 ////	Innherited from VDetector Class	////				
 				
 //	Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-void TS2Physics::ReadConfiguration(string Path) 	
-{ 
-  ifstream ConfigFile           	;
-  ConfigFile.open(Path.c_str()) 	;
-  string LineBuffer          		;
-  string DataBuffer          		;	
+void TS2Physics::ReadConfiguration(NPL::InputParser parser) 	{
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("AnnularS2");
+  cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  // A:Theta1_Phi1     --> Theta:1    Phi:1
-  // B:Theta128_Phi1   --> Theta:128  Phi:1
-  // C:Theta1_Phi128   --> Theta:1    Phi:128
-  // D:Theta128_Phi128 --> Theta:128  Phi:128
+  vector<string> token = {"CalculatedCenter","Phi2_Phi3","Phi6_Phi7","Phi10_Phi11","Phi14_Phi15"};
 
-  double Centerx, Centery, Centerz;
-  double Ax , Bx , Cx , Dx , Ay , By , Cy , Dy , Az , Bz , Cz , Dz           	;
-  TVector3 A , B , C , D, Center                       				;
-  //  double Theta = 0 , Phi = 0 , R = 0 , beta_u = 0 , beta_v = 0 , beta_w = 0    ;
-  
-  bool check_Center = false 	;
-  bool check_A = false 	;
-  bool check_C = false  	;
-  bool check_B = false 	;
-  bool check_D = false  	;
-
-  bool ReadingStatus = false ;
-	
-
-  while (!ConfigFile.eof()) 
-    {
-      
-      getline(ConfigFile, LineBuffer);
-
-      //	If line is a Start Up S2 bloc, Reading toggle to true      
-      if (LineBuffer.compare(0, 11, "AnnularS2")==0) 
-	{
-	  cout << "///" << endl           		;
-	  cout << "Annular found: " << endl   ;        
-	  ReadingStatus = true 					;
-	        	
-	}
-		
-      //	Else don't toggle to Reading Block Status
-      else ReadingStatus = false ;
-		
-      //	Reading Block
-      while(ReadingStatus)
-	{
-				 
-	  ConfigFile >> DataBuffer ;
-	  //	Comment Line 
-	  if(DataBuffer.compare(0, 1, "%") == 0) {
-	    ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
-							
-	  }
-			
-	  //	Finding another telescope (safety), toggle out
-	  else if (DataBuffer=="AnnularS2") {
-	    cout << "WARNING: Another Annular is find before standard sequence of Token, Error may occured in Telecope definition" << endl ;
-	    ReadingStatus = false ;
-	  }
-			
-	  //	Position method
-	  else if (DataBuffer=="CalculatedCenter=") {
-	    check_Center = true;
-	    ConfigFile >> DataBuffer ;
-	    Centerx = atof(DataBuffer.c_str()) ;
-	    Centerx = Centerx  ;
-	    ConfigFile >> DataBuffer ;
-	    Centery = atof(DataBuffer.c_str()) ;
-	    Centery = Centery  ;
-	    ConfigFile >> DataBuffer ;
-	    Centerz = atof(DataBuffer.c_str()) ;
-	    Centerz = Centerz  ;
-
-	    Center = TVector3(Centerx, Centery, Centerz);
-	    cout << "Center position : (" << Center.X() << ";" << Center.Y() << ";" << Center.Z() << ")" << endl;
-	  }         
-				
-	  else if (DataBuffer=="Phi2_Phi3=") {
-	    check_A = true;
-	    ConfigFile >> DataBuffer ;
-	    Ax = atof(DataBuffer.c_str()) ;
-	    Ax = Ax  ;
-	    ConfigFile >> DataBuffer ;
-	    Ay = atof(DataBuffer.c_str()) ;
-	    Ay = Ay  ;
-	    ConfigFile >> DataBuffer ;
-	    Az = atof(DataBuffer.c_str()) ;
-	    Az = Az  ;
-
-	    A = TVector3(Ax, Ay, Az);
-	    cout << "Phi2 Phi3 corner position : (" << A.X() << ";" << A.Y() << ";" << A.Z() << ")" << endl;
-		            
-	  }
-
-
-	  else if (DataBuffer=="Phi6_Phi7=") {
-	    check_B = true;
-	    ConfigFile >> DataBuffer ;
-	    Bx = atof(DataBuffer.c_str()) ;
-	    Bx = Bx  ;
-	    ConfigFile >> DataBuffer ;
-	    By = atof(DataBuffer.c_str()) ;
-	    By = By  ;
-	    ConfigFile >> DataBuffer ;
-	    Bz = atof(DataBuffer.c_str()) ;
-	    Bz = Bz  ;
-
-	    B = TVector3(Bx, By, Bz);
-	    cout << "Phi6 Phi7 corner position : (" << B.X() << ";" << B.Y() << ";" << B.Z() << ")" << endl;
-		            
-	  }
-		         
-
-	  else if (DataBuffer=="Phi10_Phi11=") {
-	    check_C = true;
-	    ConfigFile >> DataBuffer ;
-	    Cx = atof(DataBuffer.c_str()) ;
-	    Cx = Cx  ;
-	    ConfigFile >> DataBuffer ;
-	    Cy = atof(DataBuffer.c_str()) ;
-	    Cy = Cy  ;
-	    ConfigFile >> DataBuffer ;
-	    Cz = atof(DataBuffer.c_str()) ;
-	    Cz = Cz  ;
-
-	    C = TVector3(Cx, Cy, Cz);
-	    cout << "Phi10 Phi11 corner position : (" << C.X() << ";" << C.Y() << ";" << C.Z() << ")" << endl;
-		           
-	  }
-
-	  else if (DataBuffer=="Phi14_Phi15=") {
-	    check_D = true;
-	    ConfigFile >> DataBuffer ;
-	    Dx = atof(DataBuffer.c_str()) ;
-	    Dx = Dx  ;
-	    ConfigFile >> DataBuffer ;
-	    Dy = atof(DataBuffer.c_str()) ;
-	    Dy = Dy  ;
-	    ConfigFile >> DataBuffer ;
-	    Dz = atof(DataBuffer.c_str()) ;
-	    Dz = Dz  ;
-
-	    D = TVector3(Dx, Dy, Dz);
-	    cout << "Phi14 Phi15 corner position : (" << D.X() << ";" << D.Y() << ";" << D.Z() << ")" << endl;
-		           
-	  }
-			
-	  //	End Position Method
-
-	
-	  /////////////////////////////////////////////////
-	    //	If All necessary information there, toggle out
-	    if ( (check_Center && check_A && check_B && check_C && check_D)) // || (check_Theta && check_Phi && check_R && check_beta)  ) 
-	      { 
-		ReadingStatus = false; 
-		         	
-		///Add The previously define telescope
-		  //With position method
-		  if ( check_Center && check_A && check_B && check_C && check_D ) 
-		    {
-		      AddAnnular(Center, 
-				   A   ,
-				   B   ,
-				   C   ,
-				   D   ) ;
-		    }
-		         	
-		  //with angle method
-		 
-		  check_Center = false  ;
-		  check_A = false 	;
-		  check_B = false 	;
-		  check_C = false  	;
-		  check_D = false  	;
-	      }
-		         
-	}
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token)){
+      TVector3 Center = blocks[i]->GetTVector3("CalculatedCenter","mm");
+      TVector3 A = blocks[i]->GetTVector3("Phi2_Phi3","mm");
+      TVector3 B = blocks[i]->GetTVector3("Phi6_Phi7","mm");
+      TVector3 C = blocks[i]->GetTVector3("Phi10_Phi11","mm");
+      TVector3 D = blocks[i]->GetTVector3("Phi14_Phi15","mm");
+      AddAnnular(Center, A,B,C,D) ;
     }
-  InitializeStandardParameter();        
-  ReadAnalysisConfig();
-	
-  cout << endl << "/////////////////////////////" << endl << endl;
 
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
+    }
+  }
+
+  InitializeStandardParameter();
+  ReadAnalysisConfig();
 }
 
 //	Add Parameter to the CalibrationManger

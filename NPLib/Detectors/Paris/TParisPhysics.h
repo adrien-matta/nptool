@@ -31,7 +31,7 @@ using namespace std ;
 // NPL
 #include "NPVDetector.h"
 #include "TParisData.h"
-
+#include "NPInputParser.h"
 // Root
 #include "TObject.h"
 #include "TVector3.h"
@@ -51,7 +51,7 @@ class TParisPhysics : public TObject, public NPL::VDetector{
     // Innherited from VDetector Class //
     /////////////////////////////////////
     // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-    void ReadConfiguration(string);
+    void ReadConfiguration(NPL::InputParser);
 
     // Read stream at CalibFile and pick-up calibration parameter using Token
     // If argument is "Simulation" no change calibration is loaded
@@ -98,13 +98,13 @@ class TParisPhysics : public TObject, public NPL::VDetector{
 
     // Case of a DummyShape module
     // Add a Module using Corner Coordinate information
-    void AddModuleDummyShape(TVector3 C_X1_Y1,
+    void AddDetector(TVector3 C_X1_Y1,
         TVector3 C_X128_Y1,
         TVector3 C_X1_Y128,
         TVector3 C_X128_Y128);//!
 
     // Add a Module using R Theta Phi of Si center information
-    void AddModuleDummyShape(double theta,
+    void AddDetector(double theta,
         double phi,
         double distance,
         double beta_u,

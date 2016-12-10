@@ -35,6 +35,7 @@ using namespace std;
 #include "RootInput.h"
 #include "NPDetectorFactory.h"
 #include "RootOutput.h"
+#include "NPOptionManager.h"
 //	ROOT
 #include "TChain.h"
 #include "TF1.h"
@@ -259,142 +260,29 @@ void TCATSPhysics::BuildPhysicalEvent(){
 
 ///////////////////////////////////////////////////////////////////////////
 //	Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-void TCATSPhysics::ReadConfiguration(string Path){
-  ifstream ConfigFile;
-  ConfigFile.open(Path.c_str());
-  string LineBuffer          		;
-  string DataBuffer          		;
+void TCATSPhysics::ReadConfiguration(NPL::InputParser parser){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("CATSDetector");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  double Ax , Bx , Cx , Dx , Ay , By , Cy , Dy , Az , Bz , Cz , Dz    	;
-  TVector3 A , B , C , D                                          	;
+  vector<string> token = {"X1_Y1","X28_Y1","X1_Y28","X28_Y28"};
 
-  bool check_A = false 	;
-  bool check_B = false  	;
-  bool check_C = false 	;
-  bool check_D = false 	;
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token)){
+      TVector3 A = blocks[i]->GetTVector3("X1_Y1","mm");
+      TVector3 B = blocks[i]->GetTVector3("X28_Y1","mm");
+      TVector3 C = blocks[i]->GetTVector3("X1_Y28","mm");
+      TVector3 D = blocks[i]->GetTVector3("X28_Y28","mm");
 
-  bool ReadingStatus = false ;
-
-
-  while (!ConfigFile.eof()) 
-  {
-    getline(ConfigFile, LineBuffer);
-
-    //If line is a Start Up CATS bloc, Reading toggle to true      
-    if (LineBuffer.compare(0, 12, "CATSDetector") == 0) 
-    {
-      cout << "CATS Detector found: " << endl   ;  
-      ReadingStatus = true 	       ;
+      AddCATS(A,B,C,D);
     }
 
-    //	Else don't toggle to Reading Block Status
-    else ReadingStatus = false ;
-
-    //	Reading Block
-    while(ReadingStatus)
-    {
-      ConfigFile >> DataBuffer ;
-      //	Comment Line 
-      if(DataBuffer.compare(0, 1, "%") == 0) {
-        ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
-      }
-
-      //	Finding another telescope (safety), toggle out
-      else if (DataBuffer.compare(0, 12, "CATSDetector") == 0) {
-        cout << "Warning: Another CATS is found before standard sequence of Token, Error may have occurred in CATS definition" << endl ;
-        ReadingStatus = false ;
-      }
-
-      //	Corner Position method
-
-      else if (DataBuffer.compare(0, 6, "X1_Y1=") == 0) {
-        check_A = true;
-        ConfigFile >> DataBuffer ;
-        Ax = atof(DataBuffer.c_str()) ;
-        Ax = Ax  ;
-        ConfigFile >> DataBuffer ;
-        Ay = atof(DataBuffer.c_str()) ;
-        Ay = Ay  ;
-        ConfigFile >> DataBuffer ;
-        Az = atof(DataBuffer.c_str()) ;
-        Az = Az  ;
-
-        A = TVector3(Ax, Ay, Az);
-        cout << " X1 Y1 corner position : (" << A.X() << ";" << A.Y() << ";" << A.Z() << ")" << endl;
-      }
-
-      else if (DataBuffer.compare(0, 7, "X28_Y1=") == 0) {
-        check_B = true;
-        ConfigFile >> DataBuffer ;
-        Bx = atof(DataBuffer.c_str()) ;
-        Bx = Bx  ;
-        ConfigFile >> DataBuffer ;
-        By = atof(DataBuffer.c_str()) ;
-        By = By  ;
-        ConfigFile >> DataBuffer ;
-        Bz = atof(DataBuffer.c_str()) ;
-        Bz = Bz  ;
-
-        B = TVector3(Bx, By, Bz);
-        cout << " X28 Y1 corner position : (" << B.X() << ";" << B.Y() << ";" << B.Z() << ")" << endl;
-      }
-
-      else if (DataBuffer.compare(0, 7, "X1_Y28=") == 0) {
-        check_C = true;
-        ConfigFile >> DataBuffer ;
-        Cx = atof(DataBuffer.c_str()) ;
-        Cx = Cx  ;
-        ConfigFile >> DataBuffer ;
-        Cy = atof(DataBuffer.c_str()) ;
-        Cy = Cy  ;
-        ConfigFile >> DataBuffer ;
-        Cz = atof(DataBuffer.c_str()) ;
-        Cz = Cz  ;
-
-        C = TVector3(Cx, Cy, Cz);
-        cout << " X1 Y28 corner position : (" << C.X() << ";" << C.Y() << ";" << C.Z() << ")" << endl;
-      }
-
-      else if (DataBuffer.compare(0, 8, "X28_Y28=") == 0) {
-        check_D = true;
-        ConfigFile >> DataBuffer ;
-        Dx = atof(DataBuffer.c_str()) ;
-        Dx = Dx  ;
-        ConfigFile >> DataBuffer ;
-        Dy = atof(DataBuffer.c_str()) ;
-        Dy = Dy  ;
-        ConfigFile >> DataBuffer ;
-        Dz = atof(DataBuffer.c_str()) ;
-        Dz = Dz  ;
-
-        D = TVector3(Dx, Dy, Dz);
-        cout << " X28 Y28 corner position : (" << D.X() << ";" << D.Y() << ";" << D.Z() << ")" << endl;
-
-      }
-
-      //	End Corner Position Method
-
-      /////////////////////////////////////////////////
-      //	If All necessary information there, toggle out
-      if (check_A && check_B && check_C && check_D)  
-      { 
-        ReadingStatus = false; 
-
-        ///Add The previously define telescope
-
-        AddCATS(	A   ,
-            B   ,
-            C   ,
-            D   );
-
-        check_A = false;
-        check_B = false;
-        check_C = false;
-        check_D = false;
-      }
-    }  
-
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
+    }
   }
+
   InitializeStandardParameter();
   ReadAnalysisConfig();
 }

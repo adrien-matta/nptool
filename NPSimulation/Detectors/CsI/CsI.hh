@@ -14,8 +14,8 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe a Modular cylindrical CsI Scintillator           *
- *   Few Material are instantiate and user can choose position and dimension    * 
+ *  This class describe a Modular cylindrical CsI Scintillator               *
+ *   Few Material are instantiate and user can choose position and dimension * 
  *  but also the adding of a lead plate on the rear side of the detector     *
  *                                                                           *
  *---------------------------------------------------------------------------*
@@ -42,7 +42,7 @@
 // NPTool header
 #include "NPSVDetector.hh"
 #include "TCsIData.h"
-
+#include "NPInputParser.h"
 using namespace std;
 
 using namespace CLHEP;
@@ -90,7 +90,7 @@ public:
 public:
    // Read stream at Configfile to pick-up parameters of detector (Position,...)
    // Called in DetecorConstruction::ReadDetextorConfiguration Method
-   void ReadConfiguration(string Path) ;
+   void ReadConfiguration(NPL::InputParser) ;
 
    // Construct detector and inialise sensitive part.
    // Called After DetecorConstruction::AddDetector Method

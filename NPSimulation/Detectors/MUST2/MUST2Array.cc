@@ -44,6 +44,8 @@
 #include "ObsoleteGeneralScorers.hh"
 #include "MUST2Scorers.hh"
 
+#include "NPOptionManager.h"
+
 //ROOT
 #include "RootOutput.h"
 
@@ -177,7 +179,7 @@ void MUST2Array::VolumeMaker( G4int TelescopeNumber,
   new G4PVPlacement(0, positionVacBox, logicVacBox, Name + "_VacBox", logicMM, false, 0);
 
   logicVacBox->SetVisAttributes(G4VisAttributes::Invisible);
- 
+
   G4VisAttributes* SiliconVisAtt = new G4VisAttributes(G4Colour(0.3, 0.3, 0.3)) ;
 
   ////////////////////////////////////////////////////////////////
@@ -206,7 +208,7 @@ void MUST2Array::VolumeMaker( G4int TelescopeNumber,
 
     ///Set Silicon strip sensible
     logicSilicon->SetSensitiveDetector(m_StripScorer);
-     
+
     ///Visualisation of Silicon Strip
     logicSilicon->SetVisAttributes(SiliconVisAtt)                        ;
   }
@@ -555,296 +557,49 @@ void MUST2Array::VolumeMaker( G4int TelescopeNumber,
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void MUST2Array::ReadConfiguration(string Path){
-  ifstream ConfigFile           ;
-  ConfigFile.open(Path.c_str()) ;
-  string LineBuffer          ;
-  string DataBuffer          ;
+void MUST2Array::ReadConfiguration(NPL::InputParser parser){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("M2Telescope");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " telescope found" << endl;
+  for(unsigned int i  = 0 ; i < blocks.size() ; i++){
+    if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << endl << "//// Must 2 Telecope " << i+1 <<  endl;
+    // Cartesian Case
+    vector<string> cart = {"X1_Y1","X1_Y128","X128_Y1","X128_Y128","SI","SILI","CSI"};
+    // Spherical Case
+    vector<string> sphe= {"R","THETA","PHI","BETA","SI","SILI","CSI"};
 
-  // A:X1_Y1     --> X:1    Y:1
-  // B:X128_Y1   --> X:128  Y:1
-  // C:X1_Y128   --> X:1    Y:128
-  // D:X128_Y128 --> X:128  Y:128
-
-  G4double Ax , Bx , Cx , Dx , Ay , By , Cy , Dy , Az , Bz , Cz , Dz           	;
-  G4ThreeVector A , B , C , D                                          			;
-  G4double Theta = 0 , Phi = 0 , R = 0 , beta_u = 0 , beta_v = 0 , beta_w = 0      ;
-  int SI = 0 , SILI = 0 , CSI = 0                                         			;	
-
-  bool check_A = false ;
-  bool check_C = false  ;
-  bool check_B = false ;
-  bool check_D = false  ;
-
-  bool check_Theta = false   ;
-  bool check_Phi  = false  ;
-  bool check_R     = false   ;
-  //   bool check_beta = false  ;
-
-  bool check_SI = false   ;
-  bool check_SILI  = false  ;
-  bool check_CSI     = false   ;
-  bool check_VIS = false  ;
-
-  bool ReadingStatus = false ;
-
-
-  while (!ConfigFile.eof()) {
-
-    getline(ConfigFile, LineBuffer);
-
-    //	If line is a Start Up MUST2 bloc, Reading toggle to true      
-    if (LineBuffer.compare(0, 11, "M2Telescope") == 0) 
-    {
-      G4cout << "///" << G4endl           ;
-      G4cout << "Telescope found: " << G4endl   ;        
-      ReadingStatus = true ;
-
+        if(blocks[i]->HasTokenList(cart)){
+      G4ThreeVector A = NPS::ConvertVector( blocks[i]->GetTVector3("X1_Y1","mm"));
+      G4ThreeVector B = NPS::ConvertVector( blocks[i]->GetTVector3("X128_Y1","mm"));
+      G4ThreeVector C = NPS::ConvertVector( blocks[i]->GetTVector3("X1_Y128","mm"));
+      G4ThreeVector D = NPS::ConvertVector( blocks[i]->GetTVector3("X128_Y128","mm"));
+      int SI = blocks[i]->GetInt("SI");
+      int SILI = blocks[i]->GetInt("SILI");
+      int CSI = blocks[i]->GetInt("CSI");
+      AddTelescope(A,B,C,D,SI==1,SILI==1,CSI==1) ;
     }
 
-    //	Else don't toggle to Reading Block Status
-    else ReadingStatus = false ;
+    else if(blocks[i]->HasTokenList(sphe)){
 
-    //	Reading Block
-    while(ReadingStatus)
-    {
-
-      ConfigFile >> DataBuffer ;
-      //	Comment Line 
-      if(DataBuffer.compare(0, 1, "%") == 0) {
-        ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
-
-      }
-
-      //	Finding another telescope (safety), toggle out
-      else if (DataBuffer.compare(0, 11, "M2Telescope") == 0) {
-        G4cout << "WARNING: Another Telescope is find before standard sequence of Token, Error may occured in Telecope definition" << G4endl ;
-        ReadingStatus = false ;
-      }
-
-      //	Position method
-
-      else if (DataBuffer.compare(0, 6, "X1_Y1=") == 0) {
-        check_A = true;
-        ConfigFile >> DataBuffer ;
-        Ax = atof(DataBuffer.c_str()) ;
-        Ax = Ax * mm ;
-        ConfigFile >> DataBuffer ;
-        Ay = atof(DataBuffer.c_str()) ;
-        Ay = Ay * mm ;
-        ConfigFile >> DataBuffer ;
-        Az = atof(DataBuffer.c_str()) ;
-        Az = Az * mm ;
-
-        A = G4ThreeVector(Ax, Ay, Az);
-        G4cout << "X1 Y1 corner position : " << A << G4endl;
-
-      }
-
-
-      else if (DataBuffer.compare(0, 8, "X128_Y1=") == 0) {
-        check_B = true;
-        ConfigFile >> DataBuffer ;
-        Bx = atof(DataBuffer.c_str()) ;
-        Bx = Bx * mm ;
-        ConfigFile >> DataBuffer ;
-        By = atof(DataBuffer.c_str()) ;
-        By = By * mm ;
-        ConfigFile >> DataBuffer ;
-        Bz = atof(DataBuffer.c_str()) ;
-        Bz = Bz * mm ;
-
-        B = G4ThreeVector(Bx, By, Bz);
-        G4cout << "X128 Y1 corner position : " << B << G4endl;
-
-      }
-
-
-      else if (DataBuffer.compare(0, 8, "X1_Y128=") == 0) {
-        check_C = true;
-        ConfigFile >> DataBuffer ;
-        Cx = atof(DataBuffer.c_str()) ;
-        Cx = Cx * mm ;
-        ConfigFile >> DataBuffer ;
-        Cy = atof(DataBuffer.c_str()) ;
-        Cy = Cy * mm ;
-        ConfigFile >> DataBuffer ;
-        Cz = atof(DataBuffer.c_str()) ;
-        Cz = Cz * mm ;
-
-        C = G4ThreeVector(Cx, Cy, Cz);
-        G4cout << "X1 Y128 corner position : " << C << G4endl;
-
-      }
-
-      else if (DataBuffer.compare(0, 10, "X128_Y128=") == 0) {
-        check_D = true;
-        ConfigFile >> DataBuffer ;
-        Dx = atof(DataBuffer.c_str()) ;
-        Dx = Dx * mm ;
-        ConfigFile >> DataBuffer ;
-        Dy = atof(DataBuffer.c_str()) ;
-        Dy = Dy * mm ;
-        ConfigFile >> DataBuffer ;
-        Dz = atof(DataBuffer.c_str()) ;
-        Dz = Dz * mm ;
-
-        D = G4ThreeVector(Dx, Dy, Dz);
-        G4cout << "X128 Y128 corner position : " << D << G4endl;
-
-      }
-
-      //	End Position Method
-
-      //	Angle method
-      else if (DataBuffer.compare(0, 6, "THETA=") == 0) {
-        check_Theta = true;
-        ConfigFile >> DataBuffer ;
-        Theta = atof(DataBuffer.c_str()) ;
-        Theta = Theta * deg;
-        G4cout << "Theta:  " << Theta / deg << G4endl;
-
-      }
-
-      //Angle method
-      else if (DataBuffer.compare(0, 4, "PHI=") == 0) {
-        check_Phi = true;
-        ConfigFile >> DataBuffer ;
-        Phi = atof(DataBuffer.c_str()) ;
-        Phi = Phi * deg;
-        G4cout << "Phi:  " << Phi / deg << G4endl;
-
-      }
-
-      //Angle method
-      else if (DataBuffer.compare(0, 2, "R=") == 0) {
-        check_R = true;
-        ConfigFile >> DataBuffer ;
-        R = atof(DataBuffer.c_str()) ;
-        R = R * mm;
-        G4cout << "R:  " << R / mm << G4endl;
-
-      }
-
-      //Angle method
-      else if (DataBuffer.compare(0, 5, "BETA=") == 0) {
-        //		            check_beta = true;
-        ConfigFile >> DataBuffer ;
-        beta_u = atof(DataBuffer.c_str()) ;
-        beta_u = beta_u * deg   ;
-        ConfigFile >> DataBuffer ;
-        beta_v = atof(DataBuffer.c_str()) ;
-        beta_v = beta_v * deg   ;
-        ConfigFile >> DataBuffer ;
-        beta_w = atof(DataBuffer.c_str()) ;
-        beta_w = beta_w * deg   ;
-        G4cout << "Beta:  " << beta_u / deg << " " << beta_v / deg << " " << beta_w / deg << G4endl  ;
-
-      }
-
-      //	End Angle Method
-
-
-      //	Common part
-      else if (DataBuffer.compare(0, 3, "SI=") == 0) {
-        check_SI = true ;
-        ConfigFile >> DataBuffer;
-        SI = atof(DataBuffer.c_str()) ;
-        G4cout << " SI= " << SI << G4endl ;
-
-      }
-
-
-      else if (DataBuffer.compare(0, 5, "SILI=") == 0) {
-        check_SILI = true ;
-        ConfigFile >> DataBuffer;
-        SILI = atof(DataBuffer.c_str()) ;
-        G4cout << " SILI= " << SILI << G4endl ;
-
-      }
-
-
-      else if (DataBuffer.compare(0, 4, "CSI=") == 0) {
-        check_CSI = true ;
-        ConfigFile >> DataBuffer;
-        CSI = atof(DataBuffer.c_str()) ;
-        G4cout << " CSI= " << CSI << G4endl ;
-
-      }
-
-
-      else if (DataBuffer.compare(0, 4, "VIS=") == 0) {
-        check_VIS = true ;
-        ConfigFile >> DataBuffer;
-        if (DataBuffer.compare(0, 3, "all") == 0) 
-        {
-          m_non_sensitive_part_visiualisation = true;
-          G4cout << " VIS= all" << G4endl ;
-        }
-
-        else 
-          G4cout << " VIS= Sensible Only" << G4endl ;	             
-
-
-      }
-
-      // If no MUST2 Token and no comment, toggle out
-      else 
-      {ReadingStatus = false; G4cout << "other token " << DataBuffer << G4endl ;}
-
-
-
-      /////////////////////////////////////////////////
-      //	If All necessary information there, toggle out
-      if ( ( check_SI && check_SILI && check_CSI && check_VIS ) && ( (check_A && check_B && check_C && check_D) || (check_Theta && check_Phi && check_R) ) ) 
-      { 
-        ReadingStatus = false; 
-
-        ///Add The previously define telescope
-        //With position method
-        if ((check_A && check_B && check_C && check_D) || !(check_Theta && check_Phi && check_R)) 
-        {
-          AddTelescope(  A,
-              B,
-              C,
-              D,
-              SI == 1,
-              SILI == 1,
-              CSI == 1);
-        }
-
-        //with angle method
-        else if ((check_Theta && check_Phi && check_R) || !(check_A && check_B && check_C && check_D)) 
-        {
-          AddTelescope(  R,
-              Theta,
-              Phi,
-              beta_u,
-              beta_v,
-              beta_w,
-              SI == 1,
-              SILI == 1,
-              CSI == 1);
-        }
-
-
-        check_A = false 	;
-        check_C = false  	;
-        check_B = false 	;
-        check_D = false  	;
-
-        check_Theta = false   	;
-        check_Phi  = false  	;
-        check_R    = false   	;
-        //	      				check_beta = false  	;
-
-        check_SI = false   		;
-        check_SILI  = false  	;
-        check_CSI   = false   	;
-        check_VIS = false  		;	
-
-      }
+      double Theta = blocks[i]->GetDouble("THETA","deg");
+      double Phi= blocks[i]->GetDouble("PHI","deg");
+      double R = blocks[i]->GetDouble("R","mm");
+      vector<double> beta = blocks[i]->GetVectorDouble("BETA","deg");
+      int SI = blocks[i]->GetInt("SI");
+      int SILI = blocks[i]->GetInt("SILI");
+      int CSI = blocks[i]->GetInt("CSI");
+      AddTelescope(  R,Theta,Phi,beta[0],beta[1],beta[2],SI==1,SILI==1,CSI==1);
     }
+
+    else{
+      cout << "WARNING: Missing token for M2Telescope blocks, check your input file" << endl;
+      exit(1);
+    }
+
+    if(blocks[i]->GetString("VIS")=="all")
+       m_non_sensitive_part_visiualisation = true;
+
   }
 }
 
@@ -947,7 +702,7 @@ void MUST2Array::InitializeRootOutput(){
   if(!pTree->FindBranch("MUST2")){
     pTree->Branch("MUST2", "TMust2Data", &m_Event) ;
   } 
- pTree->SetBranchAddress("MUST2", &m_Event) ;
+  pTree->SetBranchAddress("MUST2", &m_Event) ;
 }
 
 // Read sensitive part and fill the Root tree.
@@ -1279,8 +1034,8 @@ void MUST2Array::InitializeScorers() {
   m_SiLiScorer	= CheckScorer("MUST2_SiLiScorer",already_exist);
   m_CsIScorer	= CheckScorer("MUST2_CsIScorer",already_exist);
 
-   // if the scorer were created previously nothing else need to be made
-   if(already_exist) return; 
+  // if the scorer were created previously nothing else need to be made
+  if(already_exist) return; 
 
   G4VPrimitiveScorer* DetNbr 									= new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber","MUST2Telescope", 0);
   G4VPrimitiveScorer* Energy 									= new OBSOLETEGENERALSCORERS::PSEnergy("StripEnergy","MUST2Telescope", 0);			
@@ -1292,7 +1047,7 @@ void MUST2Array::InitializeScorers() {
   G4VPrimitiveScorer* InteractionCoordinatesX 				= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","MUST2Telescope", 0);
   G4VPrimitiveScorer* InteractionCoordinatesY				= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","MUST2Telescope", 0);
   G4VPrimitiveScorer* InteractionCoordinatesZ  			= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","MUST2Telescope", 0);
- 		 
+
   G4VPrimitiveScorer* InteractionCoordinatesAngleTheta	= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","MUST2Telescope", 0);
   G4VPrimitiveScorer* InteractionCoordinatesAnglePhi    = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","MUST2Telescope", 0) ;	    
 
@@ -1310,7 +1065,7 @@ void MUST2Array::InitializeScorers() {
   m_StripScorer->RegisterPrimitive(InteractionCoordinatesAnglePhi);
 
   //	SiLi Associate Scorer
-    G4VPrimitiveScorer* SiLiEnergy 			= new OBSOLETEGENERALSCORERS::PSEnergy("SiLiEnergy","MUST2Telescope", 0) ;
+  G4VPrimitiveScorer* SiLiEnergy 			= new OBSOLETEGENERALSCORERS::PSEnergy("SiLiEnergy","MUST2Telescope", 0) ;
   G4VPrimitiveScorer* SiLiPadNbr 			= new PSPadOrCristalNumber("SiLiPadNbr",0) ;
   m_SiLiScorer->RegisterPrimitive(SiLiEnergy);
   m_SiLiScorer->RegisterPrimitive(SiLiPadNbr);
@@ -1357,24 +1112,24 @@ G4RotationMatrix* Rotation(double tetaX, double tetaY, double tetaZ){
 }
 
 
- ////////////////////////////////////////////////////////////////////////////////
- //            Construct Method to be pass to the DetectorFactory              //
- ////////////////////////////////////////////////////////////////////////////////
- NPS::VDetector* MUST2Array::Construct(){
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPS::VDetector* MUST2Array::Construct(){
   return  (NPS::VDetector*) new MUST2Array();
- }
+}
 
- ////////////////////////////////////////////////////////////////////////////////
- //            Registering the construct method to the factory                 //
- ////////////////////////////////////////////////////////////////////////////////
- extern"C" {
- class proxy_nps_must2{
-   public:
-    proxy_nps_must2(){
-      NPS::DetectorFactory::getInstance()->AddToken("MUST2Array","MUST2Array");
-      NPS::DetectorFactory::getInstance()->AddDetector("MUST2Array",MUST2Array::Construct);
-    }
-};
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern"C" {
+  class proxy_nps_must2{
+    public:
+      proxy_nps_must2(){
+        NPS::DetectorFactory::getInstance()->AddToken("M2Telescope","MUST2");
+        NPS::DetectorFactory::getInstance()->AddDetector("M2Telescope",MUST2Array::Construct);
+      }
+  };
 
- proxy_nps_must2 p_nps_must2;
- }
+  proxy_nps_must2 p_nps_must2;
+}

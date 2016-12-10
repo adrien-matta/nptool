@@ -35,6 +35,7 @@
 #include "GaspardTrackerDummyShape.hh"
 #include "NPSDetectorFactory.hh"
 #include "MaterialManager.hh"
+#include "NPOptionManager.h"
 
 // G4 
 #include "G4VisAttributes.hh"
@@ -62,119 +63,96 @@ GaspardTracker::~GaspardTracker()
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void GaspardTracker::ReadConfiguration(string Path)
-{
-  // open configuration file
-  ifstream ConfigFile;
-  ConfigFile.open(Path.c_str());
+void GaspardTracker::ReadConfiguration(NPL::InputParser parser){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("GaspardTracker");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  bool GPDTrkSquare     = false;
-  bool GPDTrkRectangle  = false;
-  bool GPDTrkTrapezoid  = false;
-  bool GPDTrkAnnular    = false;
-  bool GPDTrkDummyShape = false;
-  bool GPDChamber       = false;
-  string LineBuffer;
-  while (!ConfigFile.eof()) {
-    getline(ConfigFile, LineBuffer);
-    if (LineBuffer.compare(0, 11, "GPDChamber=") == 0  &&  GPDChamber== false) {
-      GPDChamber= true;
-      m_Chamber = "MUGAST";
-      cout << "Chamber found : " << m_Chamber << endl; 
-      // read part of the configuration file corresponding to square elements
-    }
 
-    else if (LineBuffer.compare(0, 9, "GPDSquare") == 0  &&  GPDTrkSquare == false) {
+  bool GPDTrkSquare = false;
+  bool GPDTrkAnnular= false;
+  bool GPDTrkTrapezoid= false;
+  bool GPDTrkDummyShape= false;
+  bool GPDTrkRectangle= false;
+
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+
+    if(blocks[i]->GetMainValue() == "Square" && !GPDTrkSquare){
       GPDTrkSquare = true;
 
       // instantiate a new "detector" corresponding to the Square elements
       GaspardTrackerModule* myDetector = new GaspardTrackerSquare();
 
-      // read part of the configuration file corresponding to square elements
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-
-      // ms_InterCoord comes from NPS::VDetector
+      // Pass the data object to the GaspardTracker*** object
       myDetector->SetInterCoordPointer(ms_InterCoord);
 
-      // store GaspardTrackerSquare "detector"
+      // read part of the configuration file corresponding to square elements
+      myDetector->ReadConfiguration(parser);
       m_Modules.push_back(myDetector);
     }
-    else if (LineBuffer.compare(0, 12, "GPDRectangle") == 0  &&  GPDTrkRectangle == false) {
-      GPDTrkRectangle = true;
+    else if(blocks[i]->GetMainValue() == "Annular" && !GPDTrkAnnular){
+      GPDTrkAnnular= true;
+
+      // instantiate a new "detector" corresponding to the Square elements
+      GaspardTrackerModule* myDetector = new GaspardTrackerAnnular();
+
+      // Pass the data object to the GaspardTracker*** object
+      myDetector->SetInterCoordPointer(ms_InterCoord);
+      
+      // read part of the configuration file corresponding to square elements
+      myDetector->ReadConfiguration(parser);
+      m_Modules.push_back(myDetector);
+
+    }
+    else if(blocks[i]->GetMainValue() == "Trapezoid" &&! GPDTrkTrapezoid){
+      GPDTrkTrapezoid= true;
+
+      // instantiate a new "detector" corresponding to the Square elements
+      GaspardTrackerModule* myDetector = new GaspardTrackerTrapezoid();
+
+      // Pass the data object to the GaspardTracker*** object
+      myDetector->SetInterCoordPointer(ms_InterCoord);
+
+      // read part of the configuration file corresponding to square elements
+      myDetector->ReadConfiguration(parser);
+      m_Modules.push_back(myDetector);
+
+    }
+    else if(blocks[i]->GetMainValue() == "Rectangle" && !GPDTrkRectangle){
+      GPDTrkRectangle= true;
 
       // instantiate a new "detector" corresponding to the Square elements
       GaspardTrackerModule* myDetector = new GaspardTrackerRectangle();
 
+      // Pass the data object to the GaspardTracker*** object
+      myDetector->SetInterCoordPointer(ms_InterCoord);
+
       // read part of the configuration file corresponding to square elements
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-
-      // ms_InterCoord comes from NPS::VDetector
-      myDetector->SetInterCoordPointer(ms_InterCoord);
-
-      // store GaspardTrackerSquare "detector"
+      myDetector->ReadConfiguration(parser);
       m_Modules.push_back(myDetector);
+
     }
-    else if (LineBuffer.compare(0, 12, "GPDTrapezoid") == 0  &&  GPDTrkTrapezoid == false) {
-      GPDTrkTrapezoid = true;
+    else if(blocks[i]->GetMainValue() == "DummyShape" && !GPDTrkDummyShape){
+      GPDTrkDummyShape= true;
 
-      // instantiate a new "detector" corresponding to the Trapezoid elements
-      GaspardTrackerModule* myDetector = new GaspardTrackerTrapezoid();
-
-      // read part of the configuration file corresponding to trapezoid elements
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-
-      // ms_InterCoord comes from NPS::VDetector
-      myDetector->SetInterCoordPointer(ms_InterCoord);
-
-      // store GaspardTrackerTrapezoid "detector"
-      m_Modules.push_back(myDetector);
-    }
-    else if (LineBuffer.compare(0, 10, "GPDAnnular") == 0  &&  GPDTrkAnnular == false) {
-      GPDTrkAnnular = true;
-
-      // instantiate a new "detector" corresponding to the Trapezoid elements
-      GaspardTrackerModule* myDetector = new GaspardTrackerAnnular();
-
-      // read part of the configuration file corresponding to trapezoid elements
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-
-      // ms_InterCoord comes from NPS::VDetector
-      myDetector->SetInterCoordPointer(ms_InterCoord);
-
-      // store GaspardTrackerTrapezoid "detector"
-      m_Modules.push_back(myDetector);
-    }
-    else if (LineBuffer.compare(0, 13, "GPDDummyShape") == 0  &&  GPDTrkDummyShape == false) {
-      GPDTrkDummyShape = true;
-
-      // instantiate a new "detector" corresponding to the Shape elements
-      // The GaspardTrackerSquare class should be replaced by the
-      // GaspardTrackerShape class you need to define
+      // instantiate a new "detector" corresponding to the Square elements
       GaspardTrackerModule* myDetector = new GaspardTrackerDummyShape();
 
-      // read part of the configuration file corresponding to shape elements
-      ConfigFile.close();
-      myDetector->ReadConfiguration(Path);
-      ConfigFile.open(Path.c_str());
-
-      // ms_InterCoord comes from NPS::VDetector
+      // Pass the data object to the GaspardTracker*** object
       myDetector->SetInterCoordPointer(ms_InterCoord);
 
-      // store GaspardTrackerShape "detector"
+
+      // read part of the configuration file corresponding to square elements
+      myDetector->ReadConfiguration(parser);
       m_Modules.push_back(myDetector);
+
+    }
+
+    else{
+      cout << "Warning: check your input file formatting " << endl;
     }
   }
 }
-
-
 
 // Construct detector and initialize sensitive part.
 // Called After DetecorConstruction::AddDetector Method
