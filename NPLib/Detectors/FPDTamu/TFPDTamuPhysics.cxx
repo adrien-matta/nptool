@@ -650,7 +650,7 @@ void TFPDTamuPhysics::ReadConfiguration(NPL::InputParser parser) {
       if(blocks[i]->HasTokenList(token_micro)){
         TVector3 left = blocks[i]->GetTVector3("UPSTREAM-LEFT","mm");
         TVector3 right = blocks[i]->GetTVector3("UPSTREAM-RIGHT","mm");  
-        AddDelta(left,right);
+        AddMicro(left,right);
       }
 
       else{
@@ -664,7 +664,7 @@ void TFPDTamuPhysics::ReadConfiguration(NPL::InputParser parser) {
       if(blocks[i]->HasTokenList(token_awire)){
         TVector3 left = blocks[i]->GetTVector3("LEFT","mm");
         TVector3 right = blocks[i]->GetTVector3("RIGHT","mm");  
-        AddDelta(left,right);
+        AddAWire(left,right);
       }
 
       else{
@@ -678,7 +678,7 @@ void TFPDTamuPhysics::ReadConfiguration(NPL::InputParser parser) {
       if(blocks[i]->HasTokenList(token_plast)){
         TVector3 left = blocks[i]->GetTVector3("UPSTREAM-LEFT","mm");
         TVector3 right = blocks[i]->GetTVector3("UPSTREAM-RIGHT","mm");  
-        AddDelta(left,right);
+        AddPlast(left,right);
       }
 
       else{
