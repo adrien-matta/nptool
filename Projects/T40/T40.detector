@@ -1,7 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 %0.5mg/cm2
 Target
  THICKNESS= 1 micrometer 
@@ -11,37 +10,35 @@ Target
  X= 0 mm
  Y= 0 mm
  Z= 0 mm
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Tiara Barrel
  InnerBarrel= 1
  OuterBarrel= 1
  Chamber= 1
-Tiara HyballWedge
+HyballWedge
  Z= -147 mm
  R= 0 mm
  Phi= 0 deg 
-Tiara HyballWedge
+HyballWedge
  Z= -147 mm
  R= 0 mm
  Phi= 60 deg
-Tiara HyballWedge
+HyballWedge
  Z= -147 mm
  R= 0 mm 
  Phi= 120 deg
-Tiara HyballWedge
+HyballWedge
  Z= -147 mm
  R= 0 mm
  Phi= 180 deg
-Tiara HyballWedge
+HyballWedge
  Z= -147 mm
  R= 0 mm
  Phi= 240 deg
-Tiara HyballWedge
+HyballWedge
  Z= -147 mm
  R= 0 mm
  Phi= 300 deg
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%% FPD TAMU
 % All DELTA detectors
 FPDTamu DELTA

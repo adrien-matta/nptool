@@ -75,7 +75,7 @@ class Analysis: public NPL::VAnalysis{
   TTiaraHyballPhysics* TH;
   TTiaraBarrelPhysics* TB;  
   TFPDTamuPhysics* TF;
-  //TGeTAMUPhysics* TG;
+  TGeTAMUPhysics* TG;
 
   TRandom *Rand ;
 	double ThetaNormalTarget  ;

@@ -39,10 +39,11 @@ Analysis::~Analysis(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::Init(){
+
   TH  = (TTiaraHyballPhysics*) m_DetectorManager -> GetDetector("HyballWedge");
   TB  = (TTiaraBarrelPhysics*) m_DetectorManager -> GetDetector("Tiara");
   TF  = (TFPDTamuPhysics*) m_DetectorManager -> GetDetector("FPDTamu");
-  //TG  = (TGeTAMUPhysics*) m_DetectorManager -> GetDetector("GeTAMU");
+  TG  = (TGeTAMUPhysics*) m_DetectorManager -> GetDetector("GeTAMU");
   
   // get reaction information
   myReaction = new NPL::Reaction();
@@ -136,8 +137,7 @@ void Analysis::TreatEvent(){
     Energy = Si_E_TH;
 
     // Evaluate energy using the thickness 
-    Energy = LightAl.EvaluateInitialEnergy( Energy ,0.4*micrometer , ThetaTHSurface); 
-    ELab = Energy;
+    ELab = LightAl.EvaluateInitialEnergy( Energy ,0.4*micrometer , ThetaTHSurface); 
     // Target Correction
     ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget); 
 
@@ -261,10 +261,10 @@ void Analysis::TreatEvent(){
     TacSiMicroOR = TF->MicroTime[0];
   else 
     TacSiMicroOR = -999;
-  /*if(TG->GeTime.size()==1)
+  if(TG->GeTime.size()==1)
     TacSiGeOR = TG->GeTime[0];
   else 
-    TacSiGeOR = -999;*/
+    TacSiGeOR = -999;
   // For the plastic there's two ways to calculate the times, both ar OR. 
   // The two available time channels i.e. Plast Right and Plast left are used in this case
   if(TF->PlastRightTime.size()==1)
