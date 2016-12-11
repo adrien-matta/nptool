@@ -96,7 +96,7 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
         //Pass the corresponding Energy, Charge 
         MicroEnergy.push_back(m_PreTreatedData->Get_Micro_Energy(e)); //calibrated
         MicroCharge.push_back(m_EventData->Get_Micro_Energy(e)); //uncalibrated
-      }    
+      } 
   unsigned int mysizeT = m_PreTreatedData->Get_Micro_Time_Mult();
   for (UShort_t t = 0; t < mysizeT ; t++) {
         //Pass the corresponding Time
@@ -861,22 +861,30 @@ void TFPDTamuPhysics::InitializeRootOutput() {
 
 void TFPDTamuPhysics::AddDelta(TVector3 corner_UPL, TVector3 corner_UPR){
   m_NumberOfDelta++      ;
+  DeltaLeftPos.push_back(corner_UPL);
+  DeltaRightPos.push_back(corner_UPR);
   if (m_NumberOfDelta>2) cout << " \033[1;311mWARNING: FPDTamu can have up to 2 Delta-E ion chambers  " << endl;
 
 }
 
 void TFPDTamuPhysics::AddMicro(TVector3 corner_UPL, TVector3 corner_UPR){
   m_NumberOfMicro++      ;
+  MicroLeftPos.push_back(corner_UPL);
+  MicroRightPos.push_back(corner_UPR);
   if (m_NumberOfMicro>2) cout << " \033[1;311mWARNING: FPDTamu can have up to 2 Micormegas " << endl;
 }
 
 void TFPDTamuPhysics::AddAWire(TVector3 corner_UPL, TVector3 corner_UPR){
   m_NumberOfAWire++      ;
+  AWireLeftPos.push_back(corner_UPL);
+  AWireRightPos.push_back(corner_UPR);
   if (m_NumberOfAWire>4) cout << " \033[1;311mWARNING: FPDTamu has 4 Avalanche Wires scintillator " << endl;
 }
 
 void TFPDTamuPhysics::AddPlast(TVector3 corner_UPL, TVector3 corner_UPR){
   m_NumberOfPlast++      ;
+  PlastLeftPos= corner_UPL;
+  PlastRightPos= corner_UPR;
   if (m_NumberOfPlast>1) cout << " \033[1;311mWARNING: FPDTamu has one plastic scintillator " << endl;
 
 }
