@@ -72,11 +72,13 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     void BuildSimplePhysicalEvent(){BuildPhysicalEvent();} ;
 
     //   Clear the Event Physics
-    void ClearEventPhysics() {Clear();}      
-    void ClearEventData() ;
-
+    void ClearEventPhysics() {Clear();}          
+    void ClearEventData()    {m_EventData->Clear();}  
+    
   public:
     void PreTreat();
+    // clear the pre-treated object
+    void ClearPreTreatedData()   {m_PreTreatedData->Clear();}
 
   private:   //   Root Input and Output tree classes
 

@@ -52,6 +52,7 @@ ClassImp(TGeTAMUPhysics)
 /////////////////////////////////////////////////
 void TGeTAMUPhysics::BuildPhysicalEvent(){
   PreTreat();
+
   unsigned int c_size_e = m_PreTreatedData->GetMultiplicityCoreE();
   unsigned int s_size_e = m_PreTreatedData->GetMultiplicitySegmentE();
   unsigned int c_size_t = m_PreTreatedData->GetMultiplicityCoreT();
@@ -107,6 +108,9 @@ for (unsigned i = 0 ; i < m_PreTreatedData->GetMultiplicityCoreT(); i++)
 
 /////////////////////////////////////////////////
 void TGeTAMUPhysics::PreTreat(){
+
+  ClearPreTreatedData();
+
   static CalibrationManager* cal = CalibrationManager::getInstance();
   static string name;
   unsigned int mysizeE = m_EventData->GetMultiplicityCoreE();
@@ -304,6 +308,7 @@ void TGeTAMUPhysics::InitializeRootOutput()    {
   TTree* outputTree = RootOutput::getInstance()->GetTree();
   outputTree->Branch( "GeTAMU" , "TGeTAMUPhysics" , &m_EventPhysics );
 }
+
 ///////////////////////////////////////////////////////////////////////////  
 void TGeTAMUPhysics::Clear() {
   AddBack_E.clear();
@@ -318,11 +323,7 @@ void TGeTAMUPhysics::Clear() {
   AddBack_T.clear();
   GeTime.clear();
 }
-///////////////////////////////////////////////////////////////////////////  
-void TGeTAMUPhysics::ClearEventData() {
-  m_EventData->Clear();
-  m_PreTreatedData->Clear();
-}
+
 ///////////////////////////////////////////////////////////////////////////
 void TGeTAMUPhysics::AddParameterToCalibrationManager(){
   CalibrationManager* Cal = CalibrationManager::getInstance();
