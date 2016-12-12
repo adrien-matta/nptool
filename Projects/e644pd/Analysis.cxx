@@ -43,7 +43,7 @@ void Analysis::Init(){
   LightSi = EnergyLoss("proton_Si.G4table","G4Table",100);
   myReaction = new NPL::Reaction();
   myReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
-  TargetThickness = m_DetectorManager->GetTargetThickness()*micrometer;
+  TargetThickness = m_DetectorManager->GetTargetThickness();
   OriginalBeamEnergy = myReaction->GetBeamEnergy();
   Rand = TRandom3();
   DetectorNumber = 0 ;

@@ -45,7 +45,7 @@ int main(int argc,char** argv)
    Double_t BeamEnergyNominal = myReaction->GetBeamEnergy() * MeV;
    cout << "Nominal beam energy (MeV): " << BeamEnergyNominal << endl;
    // Slow beam at target middle
-   Double_t BeamEnergy = BeamTarget.Slow(BeamEnergyNominal, myDetector->GetTargetThickness()/2 * micrometer, 0);
+   Double_t BeamEnergy = BeamTarget.Slow(BeamEnergyNominal, myDetector->GetTargetThickness()/2 , 0);
    cout << "Middle-target beam energy (MeV): " << BeamEnergy << endl << endl;
    // Set energy beam at target middle
    myReaction->SetBeamEnergy(BeamEnergy);
@@ -161,7 +161,7 @@ int main(int argc,char** argv)
 //         Theta      = ThetaCalculation(Detec - TVector3(XTarget + r*cos(angle), YTarget + r*sin(angle), 0), BeamDirection);
 //
          // Correct for energy loss in the target
-         E = LightTarget.EvaluateInitialEnergy(E, myDetector->GetTargetThickness()/2 * micrometer, ThetaStrip);
+         E = LightTarget.EvaluateInitialEnergy(E, myDetector->GetTargetThickness()/2 , ThetaStrip);
 
          // Calculate excitation energy
 //         if (Theta/deg > 150  && Theta/deg < 180) {
