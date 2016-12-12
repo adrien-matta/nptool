@@ -8,15 +8,15 @@ Target
  Y= 0 mm
  Z= 0 mm
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-pipo
+DETECTORNAME
  POS= 0 0 350 mm
  Shape= Square
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-pipo
+DETECTORNAME
  POS = 35 35 35 cm
  Shape= Square
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-pipo
+DETECTORNAME
  R= 350 mm
  THETA= 90 deg
  PHI= 63 deg

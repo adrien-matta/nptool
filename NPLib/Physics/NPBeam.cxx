@@ -124,7 +124,7 @@ void Beam::ReadConfigurationFile(string Path){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Beam::ReadConfigurationFile(NPL::InputParser parser){
   vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Beam");
-  if(NPOptionManager::getInstance()->GetVerboseLevel())
+  if(blocks.size()>0 && NPOptionManager::getInstance()->GetVerboseLevel())
     cout << endl << "\033[1;35m//// Beam found " << endl; 
 
   vector<string> token   = {"Particle"};
