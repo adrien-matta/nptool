@@ -315,7 +315,7 @@ void Reaction::ReadConfigurationFile(string Path){
 void Reaction::ReadConfigurationFile(NPL::InputParser parser){
 
   vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("TwoBodyReaction");
-  if(NPOptionManager::getInstance()->GetVerboseLevel())
+  if(blocks.size()>0 && NPOptionManager::getInstance()->GetVerboseLevel())
     cout << endl << "\033[1;35m//// Two body reaction found " << endl; 
 
   vector<string> token1 = {"Beam","Target","Light","Heavy"};

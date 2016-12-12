@@ -36,7 +36,7 @@ Analysis::~Analysis(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::Init(){
-  M2= (TMust2Physics*) m_DetectorManager->GetDetector("MUST2Array");
+  M2= (TMust2Physics*) m_DetectorManager->GetDetector("M2Telescope");
   Initial=new TInitialConditions();
   InitOutputBranch();
   InitInputBranch();
