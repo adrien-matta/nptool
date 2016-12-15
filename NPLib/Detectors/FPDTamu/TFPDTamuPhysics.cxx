@@ -71,7 +71,7 @@ void TFPDTamuPhysics::BuildSimplePhysicalEvent() {
 void TFPDTamuPhysics::BuildPhysicalEvent() {
   // apply thresholds and calibration
   PreTreat();
-cout << " start of BuildPhysicalEvent " << endl ; 
+// cout << " start of BuildPhysicalEvent " << endl ; 
   //Delta
   // match the energy and time together (not implemented yet) and fill the vectors
   unsigned int mysizeE = m_PreTreatedData->Get_Delta_Energy_Mult();
@@ -79,7 +79,7 @@ cout << " start of BuildPhysicalEvent " << endl ;
         DeltaDetNumber.push_back(m_PreTreatedData->Get_Delta_E_DetectorNbr(e));
         DeltaEnergy.push_back(m_PreTreatedData->Get_Delta_Energy(e));
       }
-cout << " end of delta " << endl ; 
+// cout << " end of delta " << endl ; 
   //Micro
   // fill the vectors, calculate positions   
   mysizeE = m_PreTreatedData->Get_Micro_Energy_Mult();
@@ -102,7 +102,7 @@ cout << " end of delta " << endl ;
       MicroTimeOR.push_back(m_EventData->Get_Micro_Time(t));
     }
    
-cout << " end of Micro " << endl ; 
+// cout << " end of Micro " << endl ; 
    //AWire
   //separate Left and right detectors 
   vector<double> awireLeftDetNumber, awireRightDetNumber;
@@ -159,7 +159,7 @@ cout << " end of Micro " << endl ;
     //m_PreTreatedData->Dump();
     //cin.get();
   }
-cout << " end of awire " << endl ; 
+// cout << " end of awire " << endl ; 
   //Plastic
   //separate Left and right detectors 
   vector<double> plastLeftCharge, plastRightCharge;
@@ -206,7 +206,7 @@ cout << " end of awire " << endl ;
   }
 
 
-cout << " start of plastic " << endl ; 
+// cout << " start of plastic " << endl ; 
   //separate Left and right detectors 
   mysizeT = m_PreTreatedData->Get_Plast_Time_Mult();
   for (UShort_t t = 0; t < mysizeT ; t++) {
@@ -221,7 +221,7 @@ cout << " start of plastic " << endl ;
     else
       PlastLeftTime.push_back(time);
   }
-  cout << " end of plastic " << endl ;
+//  cout << " end of plastic " << endl ;
    
 /*
   //model
@@ -248,7 +248,7 @@ double TFPDTamuPhysics::GetMicroGroupEnergy(int lrow, int hrow, int lcol, int hc
   double energy = 0;  
   
   //avoid zeros
-  if (lrow==0 || hrow==0 || lcol==0 || hcol)
+  if (lrow==0 || hrow==0 || lcol==0 || hcol==0)
     cout << " \033[1;311mWARNING: '0' value detected, TFPDTamuPhysics::GetMicroGroupEnergy() uses values >=1 " << endl;
   //check validity
   if (lrow>hrow) { 
@@ -431,7 +431,7 @@ void TFPDTamuPhysics::PreTreat() {
     }
   }
 
-cout << " end of pretreat " << endl ; 
+// cout << " end of pretreat " << endl ; 
 }//end of function
 
 

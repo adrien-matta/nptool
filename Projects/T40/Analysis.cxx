@@ -40,7 +40,7 @@ Analysis::~Analysis(){
 void Analysis::Init(){
   TH  = (TTiaraHyballPhysics*) m_DetectorManager -> GetDetector("TiaraHyballWedge");
   TB  = (TTiaraBarrelPhysics*) m_DetectorManager -> GetDetector("TiaraInnerBarrel=");
-  //TF  = (TFPDTamuPhysics*) m_DetectorManager -> GetDetector("FPDTamu");
+  TF  = (TFPDTamuPhysics*) m_DetectorManager -> GetDetector("FPDTamu");
   //TG  = (TGeTAMUPhysics*) m_DetectorManager -> GetDetector("GeTAMU");
   
   // get reaction information
@@ -245,20 +245,43 @@ void Analysis::TreatEvent(){
   } // end loop TiaraBarrel
 
  ////////////////////////////////////////// LOOP on FPD  //////////////////////////////////////////
-   
+
+	// Micromega energy
+	// Sums across various rows & columns
+	if(TF->MicroRowNumber.size())
+	{
+		Micro_E_row1 = TF->GetMicroGroupEnergy(1,1,1,7); // energy sum from the row 1 
+		Micro_E_col4 = TF->GetMicroGroupEnergy(1,4,4,4); // energy sum from the col 4
+		Micro_E      = TF->GetMicroGroupEnergy(1,4,1,7); // energy sum from all the pads
+		Micro_E_row1_2 = TF->GetMicroGroupEnergy(1,2,1,7); // energy sum from row 1-2
+		Micro_E_row3_6 = TF->GetMicroGroupEnergy(3,6,1,7); // energy sum from row 3-6
+	}
+	else 
+	{
+		Micro_E_row1 = -1000;   
+		Micro_E_col4 = -1000;
+		Micro_E_row1_2 = -1000;
+		Micro_E_row3_6 = -1000;
+		Micro_E      = -1000;  
+	}
+	// Delta E ion chamber
+	Delta_E      = TF->DeltaEnergy.empty() ? -1000 : TF->DeltaEnergy[0];
+
+	// Energy in plastic
+	Plast_E      = TF->PlastCharge.empty() ? -1000 : TF->PlastCharge[0];
+
+	
   //for(unsigned int countFPD = 0 ; countFPD < TF->Delta.size() ; countFPD++) // multiplicity treated for now is zero 
   { 
     //TF->Dump();
     if(0){ // hit on target or another condition
 
       // Part 1 : Collect the energis from the different sub-detectors
-      Delta_E      = TF->DeltaEnergy[0];
-      Micro_E_row1 = TF->GetMicroGroupEnergy(1,1,1,7); // energy sum from the row 1 
-      Micro_E_col4 = TF->GetMicroGroupEnergy(1,4,4,4); // energy sum from the col 4
-      Micro_E      = TF->GetMicroGroupEnergy(1,4,1,7); // energy sum from all the pads
-			Micro_E_row1_2 = TF->GetMicroGroupEnergy(1,2,1,7); // energy sum from row 1-2
-			Micro_E_row3_6 = TF->GetMicroGroupEnergy(3,6,1,7); // energy sum from row 3-6
-      Plast_E      = TF->PlastCharge[0];
+      // Micro_E_row1 = TF->GetMicroGroupEnergy(1,1,1,7); // energy sum from the row 1 
+      // Micro_E_col4 = TF->GetMicroGroupEnergy(1,4,4,4); // energy sum from the col 4
+      // Micro_E      = TF->GetMicroGroupEnergy(1,4,1,7); // energy sum from all the pads
+			// Micro_E_row1_2 = TF->GetMicroGroupEnergy(1,2,1,7); // energy sum from row 1-2
+			// Micro_E_row3_6 = TF->GetMicroGroupEnergy(3,6,1,7); // energy sum from row 3-6
 
       // Part 2 : Reconstruct ion direction from Avalanche Wire
       Theta_aw          = TF->IonDirection.Theta()/deg; // calculate Theta from AWire
@@ -266,13 +289,8 @@ void Analysis::TreatEvent(){
       XPlastic          = TF->PlastPositionX[0]; // calculate  position on plastic from Right and Left PMT signals 
     }
     else{
-      Delta_E      = -1000;
-      Micro_E_row1 = -1000;   
-      Micro_E_col4 = -1000;
-			Micro_E_row1_2 = -1000;
-			Micro_E_row3_6 = -1000;
-      Micro_E      = -1000;  
-      Plast_E      = -1000;
+      // Delta_E      = -1000;
+      // Plast_E      = -1000;
       Theta_aw     = -1000;
       XPlastic_aw  = -1000;
       XPlastic     = -1000;
