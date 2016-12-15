@@ -101,8 +101,8 @@ void Analysis::Init(){
   //TAC
   //TacSiGe       = -1000;
   TacSiMicro    = -1000;
- 	// TacSiMicro_E = -1000;
-	// TacSiMicro_dE = -1000;
+ 	TacSiMicro_E = -1000;
+	TacSiMicro_dE = -1000;
 	TacSiPlastLeft  = -1000;
 	TacSiPlastRight = -1000;
 
@@ -301,15 +301,28 @@ void Analysis::TreatEvent(){
 	// cout << " Hello TAC " << endl; 
   
   //TAC
-  //the TAC vectors should be all of dimension 1 for the TIARA campaign in Texas
+
   //if(TG->OR_T.size()==1) TacSiMicro = TG->OR_T[0];
 
-  // if(TF->MicroTimeOR.size()==1) TacSiMicro = TF->MicroTimeOR[0];
-	// cout << " Hello left " << endl; 
-  // if(TF->PlastLeftTime.size()==1)  TacSiPlastLeft = TF->PlastLeftTime[0];
-	// cout << " Hello right " << endl;
-  // if(TF->PlastRightTime.size()==1)  TacSiPlastRight = TF->PlastRightTime[0];
-	// cout << " Hello end " << endl;
+	if(TF->MicroTimeOR.size()){
+		TacSiMicro = TF->MicroTimeOR[0];
+
+		for(UInt_t ti = 0; ti< TF->MicroTimeOR.size(); ++ti) {
+			switch(TF->MicroTimeRowNumber[ti]) {
+			case 0:
+				TacSiMicro_dE = TF->MicroTimeOR[ti];
+				break;
+			case 5:
+				TacSiMicro_E  = TF->MicroTimeOR[ti];
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	// if(TF->PlastLeftTime.size()==1)  TacSiPlastLeft = TF->PlastLeftTime[0];
+	// if(TF->PlastRightTime.size()==1)  TacSiPlastRight = TF->PlastRightTime[0];
 
 }
 
@@ -344,15 +357,15 @@ void Analysis::ReInitValue(){
   //TAC
   //TacSiGe       = -1000;
   TacSiMicro    = -1000;
-	// TacSiMicro_E  = -1000;
-	// TacSiMicro_dE = -1000;
+	TacSiMicro_E  = -1000;
+	TacSiMicro_dE = -1000;
   TacSiPlastLeft  = -1000;
   TacSiPlastRight = -1000;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
-void Analysis::InitOutputBranch() {
+void Analysis::InitOutputBranch() { 
   //Tiara
   RootOutput::getInstance()->GetTree()->Branch("Ex",&Ex,"Ex/D");
   RootOutput::getInstance()->GetTree()->Branch("ELab",&ELab,"ELab/D");
@@ -375,14 +388,15 @@ void Analysis::InitOutputBranch() {
   //TACS
 	//RootOutput::getInstance()->GetTree()->Branch("TacSiGe",&TacSiGe,"TacSiGe/D");
 	RootOutput::getInstance()->GetTree()->Branch("TacSiMicro",&TacSiMicro,"TacSiMicro/D");
-	// RootOutput::getInstance()->GetTree()->Branch("TacSiMicro_E",&TacSiMicro_E,"TacSiMicro_E/D");
-	// RootOutput::getInstance()->GetTree()->Branch("TacSiMicro_dE",&TacSiMicro_dE,"TacSiMicro_dE/D");
+	RootOutput::getInstance()->GetTree()->Branch("TacSiMicro_E",&TacSiMicro_E,"TacSiMicro_E/D");
+	RootOutput::getInstance()->GetTree()->Branch("TacSiMicro_dE",&TacSiMicro_dE,"TacSiMicro_dE/D");
 	RootOutput::getInstance()->GetTree()->Branch("TacSiPlastLeft",& TacSiPlastLeft," TacSiPlastLeft/D");
   RootOutput::getInstance()->GetTree()->Branch("TacSiPlastRight",& TacSiPlastRight," TacSiPlastRight/D");
   
   //Simulation
   //RootOutput::getInstance()->GetTree()->Branch("Original_ELab",&Original_ELab,"Original_ELab/D");
   //RootOutput::getInstance()->GetTree()->Branch("Original_ThetaLab",&Original_ThetaLab,"Original_ThetaLab/D");
+
 }
 /////////////////////////////////////////////////////////////////////////////
 void Analysis::InitInputBranch(){

@@ -73,6 +73,7 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
   //Micromega
   vector<int>    MicroRowNumber;
   vector<int>    MicroColNumber;
+	vector<int>    MicroTimeRowNumber;
   vector<double> MicroPositionX;
   vector<double> MicroPositionZ;
   vector<double> MicroCharge;

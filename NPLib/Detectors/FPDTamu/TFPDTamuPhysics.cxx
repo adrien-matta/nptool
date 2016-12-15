@@ -100,6 +100,7 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
    unsigned int mysizeT = m_PreTreatedData->Get_Micro_Time_Mult();
     for (UShort_t t = 0; t< mysizeT ; t++) {
       MicroTimeOR.push_back(m_EventData->Get_Micro_Time(t));
+			MicroTimeRowNumber.push_back(m_EventData->Get_Micro_T_RowNbr(t));
     }
    
 // cout << " end of Micro " << endl ; 
@@ -511,6 +512,7 @@ void TFPDTamuPhysics::Clear() {
   //Micromega
   MicroRowNumber.clear();
   MicroColNumber.clear();
+	MicroTimeRowNumber.clear();
   MicroPositionX.clear();
   MicroPositionZ.clear();
   MicroCharge.clear();
@@ -583,6 +585,10 @@ void TFPDTamuPhysics::Dump() const {
     cout << " Col Charge:" << endl;
   for (size_t i = 0 ; i < MicroColNumber.size() ; i++)
     cout << " " << MicroColNumber[i];
+  cout<<endl;
+    cout << " Row TAC:" << endl;
+  for (size_t i = 0 ; i < MicroTimeRowNumber.size() ; i++)
+    cout << " " << MicroTimeRowNumber[i];
   cout<<endl;
       cout << " energy: "<<endl; 
   for (size_t i = 0 ; i < MicroColNumber.size() ; i++)
@@ -1146,6 +1152,7 @@ void TFPDTamuPhysics::InitializeRootInputPhysics() {
   //Micromega
   inputChain->SetBranchStatus( "MicroRowNumber" , true );
   inputChain->SetBranchStatus( "MicroColNumber" , true );
+  inputChain->SetBranchStatus( "MicroTimeRowNumber" , true );
   inputChain->SetBranchStatus( "MicroPositionX" , true );
   inputChain->SetBranchStatus( "MicroPositionZ" , true );
   inputChain->SetBranchStatus( "MicroCharge" , true );

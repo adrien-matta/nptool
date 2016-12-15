@@ -109,8 +109,8 @@ class Analysis: public NPL::VAnalysis{
   //TACS
   //double TacSiGe ;
   double TacSiMicro ;
-	/* double TacSiMicro_E; */
-	/* double TacSiMicro_dE; */
+	double TacSiMicro_E;
+	double TacSiMicro_dE;
   double TacSiPlastLeft ;
   double TacSiPlastRight ;
 
