@@ -71,7 +71,7 @@ void TFPDTamuPhysics::BuildSimplePhysicalEvent() {
 void TFPDTamuPhysics::BuildPhysicalEvent() {
   // apply thresholds and calibration
   PreTreat();
-
+cout << " start of BuildPhysicalEvent " << endl ; 
   //Delta
   // match the energy and time together (not implemented yet) and fill the vectors
   unsigned int mysizeE = m_PreTreatedData->Get_Delta_Energy_Mult();
@@ -79,7 +79,7 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
         DeltaDetNumber.push_back(m_PreTreatedData->Get_Delta_E_DetectorNbr(e));
         DeltaEnergy.push_back(m_PreTreatedData->Get_Delta_Energy(e));
       }
-
+cout << " end of delta " << endl ; 
   //Micro
   // fill the vectors, calculate positions   
   mysizeE = m_PreTreatedData->Get_Micro_Energy_Mult();
@@ -95,13 +95,14 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
         //Pass the corresponding Energy, Charge 
         MicroEnergy.push_back(m_PreTreatedData->Get_Micro_Energy(e)); //calibrated
         MicroCharge.push_back(m_EventData->Get_Micro_Energy(e)); //uncalibrated
-      }    
-
+      }   
+            
    unsigned int mysizeT = m_PreTreatedData->Get_Micro_Time_Mult();
     for (UShort_t t = 0; t< mysizeT ; t++) {
       MicroTimeOR.push_back(m_EventData->Get_Micro_Time(t));
     }
-
+   
+cout << " end of Micro " << endl ; 
    //AWire
   //separate Left and right detectors 
   vector<double> awireLeftDetNumber, awireRightDetNumber;
@@ -158,7 +159,7 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
     //m_PreTreatedData->Dump();
     //cin.get();
   }
-
+cout << " end of awire " << endl ; 
   //Plastic
   //separate Left and right detectors 
   vector<double> plastLeftCharge, plastRightCharge;
@@ -204,8 +205,9 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
     //cin.get();
   }
 
+
+cout << " start of plastic " << endl ; 
   //separate Left and right detectors 
-  vector<double> PlastRightTime, PlastLeftTime;
   mysizeT = m_PreTreatedData->Get_Plast_Time_Mult();
   for (UShort_t t = 0; t < mysizeT ; t++) {
     //collect info
@@ -218,8 +220,9 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
       PlastRightTime.push_back(time);
     else
       PlastLeftTime.push_back(time);
-  } 
-
+  }
+  cout << " end of plastic " << endl ;
+   
 /*
   //model
   // match energy and time together
@@ -428,6 +431,7 @@ void TFPDTamuPhysics::PreTreat() {
     }
   }
 
+cout << " end of pretreat " << endl ; 
 }//end of function
 
 
@@ -521,8 +525,8 @@ void TFPDTamuPhysics::Clear() {
   //Plastic scintillator
   PlastLeftCharge.clear();
   PlastRightCharge.clear();
-  PlastTimeLeft.clear();
-  PlastTimeRight.clear();
+  PlastLeftTime.clear();
+  PlastRightTime.clear();
   PlastCharge.clear();
   PlastPositionX.clear();
   PlastPositionZ.clear();

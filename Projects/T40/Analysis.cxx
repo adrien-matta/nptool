@@ -19,6 +19,7 @@
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
+#include<cassert>
 #include<iostream>
 using namespace std;
 #include "Analysis.h"
@@ -39,8 +40,9 @@ Analysis::~Analysis(){
 void Analysis::Init(){
   TH  = (TTiaraHyballPhysics*) m_DetectorManager -> GetDetector("TiaraHyballWedge");
   TB  = (TTiaraBarrelPhysics*) m_DetectorManager -> GetDetector("TiaraInnerBarrel=");
-  TF  = (TFPDTamuPhysics*) m_DetectorManager -> GetDetector("FPDTamu");
-
+  //TF  = (TFPDTamuPhysics*) m_DetectorManager -> GetDetector("FPDTamu");
+  //TG  = (TGeTAMUPhysics*) m_DetectorManager -> GetDetector("GeTAMU");
+  
   // get reaction information
   myReaction = new NPL::Reaction();
   myReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
@@ -66,7 +68,6 @@ void Analysis::Init(){
 
   Initial = new TInitialConditions();
 
-
   Rand = new TRandom3();
   ThetaNormalTarget = 0 ;
   ThetaTHSurface = 0;
@@ -79,7 +80,6 @@ void Analysis::Init(){
   
   //Original_ELab=0;
   //Original_ThetaLab=0;
-
   XTarget =0;
   YTarget =0;
   BeamDirection = TVector3(0,0,1);
@@ -89,12 +89,22 @@ void Analysis::Init(){
   //FPD
   Delta_E = 0; // Energy ionisation chamber
   Micro_E = 0; // Energy from micromega total
+	Micro_E_row1_2 = 0; // Energy from micromega rows 1 & 2 ("delta E in stopping mode")
+	Micro_E_row3_6 = 0; // Energy from micromega rows 3-6  ("E in stopping mode")
   Micro_E_row1 = 0 ;// Energy from micromega row 1 
   Micro_E_col4 = 0 ;// energy from micromega col 1 
   Plast_E = 0; // Energy Plastic
   XPlastic_aw = 0; // X on plastic from avalanche wire
   Theta_aw    = 0; // ion direction in the FPD
   XPlastic    = 0; // X on plastic from plastic PMTs
+  
+  //TAC
+  //TacSiGe       = -1000;
+  TacSiMicro    = -1000;
+ 	// TacSiMicro_E = -1000;
+	// TacSiMicro_dE = -1000;
+	TacSiPlastLeft  = -1000;
+	TacSiPlastRight = -1000;
 
 }
 
@@ -102,9 +112,6 @@ void Analysis::Init(){
 void Analysis::TreatEvent(){
   // Reinitiate calculated variable
   ReInitValue();
-  //Original_ELab = Initial->GetKineticEnergy(0);
-  //Original_ThetaLab = Initial->GetParticleDirection(0).Angle(Initial->GetBeamDirection())/deg;
-
   ////////////////////////////////////////// LOOP on TiaraHyball + SSSD Hit //////////////////////////////////////////
   for(unsigned int countTiaraHyball = 0 ; countTiaraHyball < TH->Strip_E.size() ; countTiaraHyball++){
     /************************************************/
@@ -134,7 +141,7 @@ void Analysis::TreatEvent(){
     Energy = Si_E_TH;
 
     // Evaluate energy using the thickness 
-    //    ELab = LightAl.EvaluateInitialEnergy( Energy ,0.4*micrometer , ThetaTHSurface); 
+    Energy = LightAl.EvaluateInitialEnergy( Energy ,0.4*micrometer , ThetaTHSurface); 
     ELab = Energy;
     // Target Correction
     ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget); 
@@ -166,8 +173,7 @@ void Analysis::TreatEvent(){
     TiaraIMY = HyballRandomImpactPosition.Y();
     TiaraIMZ = HyballRandomImpactPosition.Z();
 
-    /************************************************/
-
+    /************************************************/    
   } // end loop TiaraHyball
 
   /////////////////////////// LOOP on TiaraBarrel /////////////////////////////
@@ -239,7 +245,7 @@ void Analysis::TreatEvent(){
   } // end loop TiaraBarrel
 
  ////////////////////////////////////////// LOOP on FPD  //////////////////////////////////////////
-  
+   
   //for(unsigned int countFPD = 0 ; countFPD < TF->Delta.size() ; countFPD++) // multiplicity treated for now is zero 
   { 
     //TF->Dump();
@@ -249,7 +255,9 @@ void Analysis::TreatEvent(){
       Delta_E      = TF->DeltaEnergy[0];
       Micro_E_row1 = TF->GetMicroGroupEnergy(1,1,1,7); // energy sum from the row 1 
       Micro_E_col4 = TF->GetMicroGroupEnergy(1,4,4,4); // energy sum from the col 4
-      Micro_E      = TF->GetMicroGroupEnergy(1,4,1,7); // energy sum from all the pads 
+      Micro_E      = TF->GetMicroGroupEnergy(1,4,1,7); // energy sum from all the pads
+			Micro_E_row1_2 = TF->GetMicroGroupEnergy(1,2,1,7); // energy sum from row 1-2
+			Micro_E_row3_6 = TF->GetMicroGroupEnergy(3,6,1,7); // energy sum from row 3-6
       Plast_E      = TF->PlastCharge[0];
 
       // Part 2 : Reconstruct ion direction from Avalanche Wire
@@ -260,7 +268,9 @@ void Analysis::TreatEvent(){
     else{
       Delta_E      = -1000;
       Micro_E_row1 = -1000;   
-      Micro_E_col4 = -1000; 
+      Micro_E_col4 = -1000;
+			Micro_E_row1_2 = -1000;
+			Micro_E_row3_6 = -1000;
       Micro_E      = -1000;  
       Plast_E      = -1000;
       Theta_aw     = -1000;
@@ -269,6 +279,20 @@ void Analysis::TreatEvent(){
     }
 
   } // end loop on FPD
+
+	// cout << " Hello TAC " << endl; 
+  
+  //TAC
+  //the TAC vectors should be all of dimension 1 for the TIARA campaign in Texas
+  //if(TG->OR_T.size()==1) TacSiMicro = TG->OR_T[0];
+
+  // if(TF->MicroTimeOR.size()==1) TacSiMicro = TF->MicroTimeOR[0];
+	// cout << " Hello left " << endl; 
+  // if(TF->PlastLeftTime.size()==1)  TacSiPlastLeft = TF->PlastLeftTime[0];
+	// cout << " Hello right " << endl;
+  // if(TF->PlastRightTime.size()==1)  TacSiPlastRight = TF->PlastRightTime[0];
+	// cout << " Hello end " << endl;
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -277,25 +301,41 @@ void Analysis::End(){
 
 
 void Analysis::ReInitValue(){
+  //Silicon
   Ex = -1000 ;
   ELab = -1000;
   ThetaLab = -1000;
   ThetaCM = -1000;
+  
+  //Simu
   //Original_ELab = -1000;
   //Original_ThetaLab = -1000;
+  
   //FPD
   Delta_E      = -1000;
   Micro_E_row1 = -1000;   
   Micro_E_col4 = -1000; 
-  Micro_E      = -1000;  
+ 	Micro_E_row1_2 = -1000;
+	Micro_E_row3_6 = -1000;
+	Micro_E      = -1000;  
   Plast_E      = -1000;
   Theta_aw     = -1000;
   XPlastic_aw  = -1000;
   XPlastic     = -1000;
+  
+  //TAC
+  //TacSiGe       = -1000;
+  TacSiMicro    = -1000;
+	// TacSiMicro_E  = -1000;
+	// TacSiMicro_dE = -1000;
+  TacSiPlastLeft  = -1000;
+  TacSiPlastRight = -1000;
 }
+
 /////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 void Analysis::InitOutputBranch() {
+  //Tiara
   RootOutput::getInstance()->GetTree()->Branch("Ex",&Ex,"Ex/D");
   RootOutput::getInstance()->GetTree()->Branch("ELab",&ELab,"ELab/D");
   RootOutput::getInstance()->GetTree()->Branch("ThetaLab",&ThetaLab,"ThetaLab/D");
@@ -303,16 +343,28 @@ void Analysis::InitOutputBranch() {
   RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixX",&TiaraIMX,"TiaraImpactMatrixX/D");
   RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixY",&TiaraIMY,"TiaraImpactMatrixY/D");
   RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixZ",&TiaraIMZ,"TiaraImpactMatrixZ/D");
-  //RootOutput::getInstance()->GetTree()->Branch("Original_ELab",&Original_ELab,"Original_ELab/D");
-  //RootOutput::getInstance()->GetTree()->Branch("Original_ThetaLab",&Original_ThetaLab,"Original_ThetaLab/D");
+  //FPD
   RootOutput::getInstance()->GetTree()->Branch("Delta_E",&Delta_E,"Delta_E/D");
   RootOutput::getInstance()->GetTree()->Branch("Micro_E_row1",&Micro_E_row1,"Micro_E_row1/D");
   RootOutput::getInstance()->GetTree()->Branch("Micro_E_col4",&Micro_E_col4,"Micro_E_col4/D");
+	RootOutput::getInstance()->GetTree()->Branch("Micro_E_row1_2", &Micro_E_row1_2, "Micro_E_row1_2/D");
+	RootOutput::getInstance()->GetTree()->Branch("Micro_E_row3_6", &Micro_E_row3_6, "Micro_E_row3_6/D");
   RootOutput::getInstance()->GetTree()->Branch("Micro_E",&Micro_E,"Micro_E/D");
   RootOutput::getInstance()->GetTree()->Branch("Plast_E",&Plast_E,"Plast_E/D");
   RootOutput::getInstance()->GetTree()->Branch("Theta_aw",&Theta_aw,"Theta_aw/D");
   RootOutput::getInstance()->GetTree()->Branch("XPlastic_aw",&XPlastic_aw,"XPlastic_aw/D");
-  RootOutput::getInstance()->GetTree()->Branch("XPlastic",&XPlastic,"XPlastic/D");
+  RootOutput::getInstance()->GetTree()->Branch("XPlastic",&XPlastic,"XPlastic/D"); 
+  //TACS
+	//RootOutput::getInstance()->GetTree()->Branch("TacSiGe",&TacSiGe,"TacSiGe/D");
+	RootOutput::getInstance()->GetTree()->Branch("TacSiMicro",&TacSiMicro,"TacSiMicro/D");
+	// RootOutput::getInstance()->GetTree()->Branch("TacSiMicro_E",&TacSiMicro_E,"TacSiMicro_E/D");
+	// RootOutput::getInstance()->GetTree()->Branch("TacSiMicro_dE",&TacSiMicro_dE,"TacSiMicro_dE/D");
+	RootOutput::getInstance()->GetTree()->Branch("TacSiPlastLeft",& TacSiPlastLeft," TacSiPlastLeft/D");
+  RootOutput::getInstance()->GetTree()->Branch("TacSiPlastRight",& TacSiPlastRight," TacSiPlastRight/D");
+  
+  //Simulation
+  //RootOutput::getInstance()->GetTree()->Branch("Original_ELab",&Original_ELab,"Original_ELab/D");
+  //RootOutput::getInstance()->GetTree()->Branch("Original_ThetaLab",&Original_ThetaLab,"Original_ThetaLab/D");
 }
 /////////////////////////////////////////////////////////////////////////////
 void Analysis::InitInputBranch(){

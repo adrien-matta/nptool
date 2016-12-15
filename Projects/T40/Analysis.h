@@ -12,7 +12,7 @@
  *                                                                           *
  * Creation Date  : march 2015                                               *
  * Last update    : December 2016 [m.moukaddam@surrey.ac.uk]                 *
-  *---------------------------------------------------------------------------*
+ *---------------------------------------------------------------------------*
  * Decription:                                                               *
  * Class describing the property of an Analysis object                       *
  *                                                                           *
@@ -21,19 +21,20 @@
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
+//NPTOOL
 #include "NPVAnalysis.h"
 #include "TTiaraHyballPhysics.h"
 #include "TTiaraBarrelPhysics.h"
 #include "TFPDTamuPhysics.h"
+#include "TGeTAMUPhysics.h"
 #include "TInitialConditions.h"
 #include "NPEnergyLoss.h"
 #include "NPReaction.h"
+//ROOT
 #include <TVector3.h>
 #include <TRandom3.h>
 #include <TMath.h>
 #include <TObject.h>
-
-
 
 
 class Analysis: public NPL::VAnalysis{
@@ -49,9 +50,8 @@ class Analysis: public NPL::VAnalysis{
     void InitOutputBranch();
     void InitInputBranch();
     static NPL::VAnalysis* Construct();
-
+    
   private:
-
   double Ex;
   double ELab;
   double ThetaLab;
@@ -74,22 +74,23 @@ class Analysis: public NPL::VAnalysis{
   TTiaraHyballPhysics* TH;
   TTiaraBarrelPhysics* TB;  
   TFPDTamuPhysics* TF;
-
-  TRandom *Rand ;
+  //TGeTAMUPhysics* TG;
+  
+	TRandom *Rand ;
 	double ThetaNormalTarget  ;
 	double ThetaTHSurface ;
-  double ThetaTBSurface ;
+	double ThetaTBSurface ;
 	double Si_E_TH  ;
-  double Si_E_InnerTB;
-  double Si_E_OuterTB;
-  double Si_E_TB  ;
+	double Si_E_InnerTB;
+	double Si_E_OuterTB;
+	double Si_E_TB  ;
 	double Energy ;
 	double TargetThickness ;
 
-  double Original_ThetaLab;
-  double Original_ELab;
-	
-  double XTarget ;
+	double Original_ThetaLab;
+	double Original_ELab;
+
+	double XTarget ;
 	double YTarget ;
 	TVector3 BeamDirection ;
   
@@ -97,11 +98,21 @@ class Analysis: public NPL::VAnalysis{
   double Delta_E      ;
   double Micro_E_row1 ;   
   double Micro_E_col4 ; 
-  double Micro_E      ;  
+  double Micro_E      ;
+	double Micro_E_row1_2;
+	double Micro_E_row3_6;
   double Plast_E      ;
   double Theta_aw     ;
   double XPlastic_aw  ;
   double XPlastic     ;
+  
+  //TACS
+  //double TacSiGe ;
+  double TacSiMicro ;
+	/* double TacSiMicro_E; */
+	/* double TacSiMicro_dE; */
+  double TacSiPlastLeft ;
+  double TacSiPlastRight ;
 
 };
 #endif

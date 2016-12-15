@@ -87,8 +87,8 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
   //Plastic scintillator
   vector<double> PlastLeftCharge;
   vector<double> PlastRightCharge;
-  vector<double> PlastTimeLeft;
-  vector<double> PlastTimeRight;
+  vector<double> PlastLeftTime;
+  vector<double> PlastRightTime;
   vector<double> PlastCharge;
   vector<double> PlastPositionX;
   vector<double> PlastPositionZ;

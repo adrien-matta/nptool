@@ -4,7 +4,7 @@ GeneralTarget
 
 %0.5mg/cm2
 Target
-	THICKNESS= 0.001
+	THICKNESS= 0.5
 	RADIUS=	5
 	MATERIAL= CD2
 	ANGLE= 0
