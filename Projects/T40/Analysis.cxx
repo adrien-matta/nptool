@@ -29,6 +29,48 @@ using namespace std;
 #include "NPFunction.h" 
 #include "RootOutput.h"
 #include "RootInput.h"
+#include "TGraph.h"
+#include "TFitResult.h"
+#include "TFitResultPtr.h"
+
+////// INTERNAL FUNCTIONS //////////
+namespace {
+double calculate_fit_slope(int len, double* Aw_X, double* Aw_Z)
+{
+	TGraph gr;
+	for(int i=0; i< len; ++i) {
+		if(Aw_X[i] != -1000 && Aw_Z[i] != -1000) {
+			gr.SetPoint(gr.GetN(), Aw_Z[i], Aw_X[i]);
+		}
+	}
+	TFitResultPtr fp = gr.Fit("pol1", "qns");
+	double slope_fit = fp.Get()->GetParams()[1];
+	return slope_fit;
+
+	//////  TODO::
+	//////  This should really be calculated analytically, since it's
+	//////  possible. The code below was an attempt, but it gets it wrong....
+	//////
+	// vector<double> X, Z;
+	// for(int i=0; i< len; ++i) {
+	// 	if(Aw_X[i] != -1000) { X.push_back(Aw_X[i]); }
+	// 	if(Aw_Z[i] != -1000) { Z.push_back(Aw_Z[i]); }
+	// }
+
+	// double sumZX = 0, sumZ = 0, sumX = 0, sumZ2 = 0;
+	// for(size_t i=0; i< X.size(); ++i) {
+	// 	sumZX += (X[i]*Z[i]);
+	// 	sumZ  += Z[i];
+	// 	sumX  += X[i];
+	// 	sumZ2 += (Z[i]*Z[i]);
+	// }
+
+	// double slope = ( sumZX - (1./X.size())*sumZ*sumX ) /
+	// 	( sumZ2 - 0.5*sumZ*sumZ );
+	// return slope;
+} }
+
+
 ////////////////////////////////////////////////////////////////////////////////
 Analysis::Analysis(){
 }
@@ -94,10 +136,13 @@ void Analysis::Init(){
   Micro_E_row1 = 0 ;// Energy from micromega row 1 
   Micro_E_col4 = 0 ;// energy from micromega col 1 
   Plast_E = 0; // Energy Plastic
-  XPlastic_aw = 0; // X on plastic from avalanche wire
-  Theta_aw    = 0; // ion direction in the FPD
-  XPlastic    = 0; // X on plastic from plastic PMTs
-  
+	for(int i=0; i< kNumAw; ++i) {
+		Aw_X[i] = -1000;
+		Aw_Z[i] = -1000;
+	}
+	Aw_Theta1_2 = -1000;
+	Aw_ThetaFit = -1000;
+	
   //TAC
   //TacSiGe       = -1000;
   TacSiMicro    = -1000;
@@ -270,38 +315,38 @@ void Analysis::TreatEvent(){
 	// Energy in plastic
 	Plast_E      = TF->PlastCharge.empty() ? -1000 : TF->PlastCharge[0];
 
+	// Avalanche wire
+	for(size_t iw=0; iw< TF->AWireDetNumber.size(); ++iw) {
+		int detNumber = TF->AWireDetNumber[iw];
+
+		if(detNumber >=0 && detNumber< 4) {
+			Aw_X[detNumber] = TF->AWirePositionX[iw];
+			Aw_Z[detNumber] = TF->AWirePositionZ[iw];
+		}
+		else {
+			cerr << "WARNING:: Wire number not bewtween 0 and 4!\n";
+		}
+	}
+
+	// (calculate angles)
+	if(Aw_X[0] != -1000 && Aw_X[1] != -1000) {
+		Aw_Theta1_2 = TMath::ATan((Aw_X[1] - Aw_X[0]) / (Aw_Z[1] - Aw_Z[0]));
+		Aw_Theta1_2 *= (180/TMath::Pi());
+	}
+
+	int numValid = 0;
+	for(int i=0; i< kNumAw; ++i) {
+		if(Aw_X[i] != -1000) { ++numValid; }
+		if(numValid == 2) {  // at least 2 points to calculate an angle
+			double slope = calculate_fit_slope(kNumAw, Aw_X, Aw_Z); // slope of X vs. Z
+
+			Aw_ThetaFit = TMath::ATan(slope)*(180/TMath::Pi());
+			break;
+		}
+	}
 	
-  //for(unsigned int countFPD = 0 ; countFPD < TF->Delta.size() ; countFPD++) // multiplicity treated for now is zero 
-  { 
-    //TF->Dump();
-    if(0){ // hit on target or another condition
-
-      // Part 1 : Collect the energis from the different sub-detectors
-      // Micro_E_row1 = TF->GetMicroGroupEnergy(1,1,1,7); // energy sum from the row 1 
-      // Micro_E_col4 = TF->GetMicroGroupEnergy(1,4,4,4); // energy sum from the col 4
-      // Micro_E      = TF->GetMicroGroupEnergy(1,4,1,7); // energy sum from all the pads
-			// Micro_E_row1_2 = TF->GetMicroGroupEnergy(1,2,1,7); // energy sum from row 1-2
-			// Micro_E_row3_6 = TF->GetMicroGroupEnergy(3,6,1,7); // energy sum from row 3-6
-
-      // Part 2 : Reconstruct ion direction from Avalanche Wire
-      Theta_aw          = TF->IonDirection.Theta()/deg; // calculate Theta from AWire
-      XPlastic_aw       = TF->PlastPositionX_AW; // calculate position on plastic, provided the Ion Direction, and Z plastic 
-      XPlastic          = TF->PlastPositionX[0]; // calculate  position on plastic from Right and Left PMT signals 
-    }
-    else{
-      // Delta_E      = -1000;
-      // Plast_E      = -1000;
-      Theta_aw     = -1000;
-      XPlastic_aw  = -1000;
-      XPlastic     = -1000;
-    }
-
-  } // end loop on FPD
-
-	// cout << " Hello TAC " << endl; 
-  
+	
   //TAC
-
   //if(TG->OR_T.size()==1) TacSiMicro = TG->OR_T[0];
 
 	if(TF->MicroTimeOR.size()){
@@ -350,10 +395,13 @@ void Analysis::ReInitValue(){
 	Micro_E_row3_6 = -1000;
 	Micro_E      = -1000;  
   Plast_E      = -1000;
-  Theta_aw     = -1000;
-  XPlastic_aw  = -1000;
-  XPlastic     = -1000;
-  
+	for(int i=0; i< kNumAw; ++i) {
+		Aw_X[i] = -1000;
+		Aw_X[i] = -1000;
+	}
+	Aw_Theta1_2 = -1000;
+	Aw_ThetaFit	= -1000;
+	
   //TAC
   //TacSiGe       = -1000;
   TacSiMicro    = -1000;
@@ -382,10 +430,13 @@ void Analysis::InitOutputBranch() {
 	RootOutput::getInstance()->GetTree()->Branch("Micro_E_row3_6", &Micro_E_row3_6, "Micro_E_row3_6/D");
   RootOutput::getInstance()->GetTree()->Branch("Micro_E",&Micro_E,"Micro_E/D");
   RootOutput::getInstance()->GetTree()->Branch("Plast_E",&Plast_E,"Plast_E/D");
-  RootOutput::getInstance()->GetTree()->Branch("Theta_aw",&Theta_aw,"Theta_aw/D");
-  RootOutput::getInstance()->GetTree()->Branch("XPlastic_aw",&XPlastic_aw,"XPlastic_aw/D");
-  RootOutput::getInstance()->GetTree()->Branch("XPlastic",&XPlastic,"XPlastic/D"); 
-  //TACS
+  RootOutput::getInstance()->GetTree()->Branch("Aw_X",Aw_X,Form("Aw_X[%i]/D", kNumAw));
+  RootOutput::getInstance()->GetTree()->Branch("Aw_Z",Aw_Z,Form("Aw_Z[%i]/D", kNumAw));
+  RootOutput::getInstance()->GetTree()->Branch("Aw_Theta1_2",&Aw_Theta1_2,"Aw_Theta1_2/D");
+  RootOutput::getInstance()->GetTree()->Branch("Aw_ThetaFit",&Aw_ThetaFit,"Aw_ThetaFit/D");
+	
+
+//TACS
 	//RootOutput::getInstance()->GetTree()->Branch("TacSiGe",&TacSiGe,"TacSiGe/D");
 	RootOutput::getInstance()->GetTree()->Branch("TacSiMicro",&TacSiMicro,"TacSiMicro/D");
 	RootOutput::getInstance()->GetTree()->Branch("TacSiMicro_E",&TacSiMicro_E,"TacSiMicro_E/D");

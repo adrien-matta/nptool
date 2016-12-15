@@ -95,6 +95,7 @@ class Analysis: public NPL::VAnalysis{
 	TVector3 BeamDirection ;
   
   //FPD
+	static const Int_t kNumAw = 4; // number of wires
   double Delta_E      ;
   double Micro_E_row1 ;   
   double Micro_E_col4 ; 
@@ -102,10 +103,11 @@ class Analysis: public NPL::VAnalysis{
 	double Micro_E_row1_2;
 	double Micro_E_row3_6;
   double Plast_E      ;
-  double Theta_aw     ;
-  double XPlastic_aw  ;
-  double XPlastic     ;
-  
+	double Aw_X[kNumAw] ;
+	double Aw_Z[kNumAw] ;
+	double Aw_Theta1_2  ; // Theta calculated from wire 1 & wire 2
+	double Aw_ThetaFit  ; // Theta calculated from FITTING all wires
+	
   //TACS
   //double TacSiGe ;
   double TacSiMicro ;
