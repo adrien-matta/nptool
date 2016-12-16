@@ -29,45 +29,40 @@ using namespace std;
 #include "NPFunction.h" 
 #include "RootOutput.h"
 #include "RootInput.h"
+#include "TMath.h"
 #include "TGraph.h"
 #include "TFitResult.h"
 #include "TFitResultPtr.h"
 
 ////// INTERNAL FUNCTIONS //////////
 namespace {
-double calculate_fit_slope(int len, double* Aw_X, double* Aw_Z)
+double calculate_fit_slope(int len, double* Aw_X, double* Aw_Z, double& R2)
 {
-	TGraph gr;
+	vector<double> X, Z;
 	for(int i=0; i< len; ++i) {
-		if(Aw_X[i] != -1000 && Aw_Z[i] != -1000) {
-			gr.SetPoint(gr.GetN(), Aw_Z[i], Aw_X[i]);
-		}
+		if(Aw_X[i] != -1000) { X.push_back(Aw_X[i]); }
+		if(Aw_Z[i] != -1000) { Z.push_back(Aw_Z[i]); }
 	}
-	TFitResultPtr fp = gr.Fit("pol1", "qns");
-	double slope_fit = fp.Get()->GetParams()[1];
-	return slope_fit;
 
-	//////  TODO::
-	//////  This should really be calculated analytically, since it's
-	//////  possible. The code below was an attempt, but it gets it wrong....
-	//////
-	// vector<double> X, Z;
-	// for(int i=0; i< len; ++i) {
-	// 	if(Aw_X[i] != -1000) { X.push_back(Aw_X[i]); }
-	// 	if(Aw_Z[i] != -1000) { Z.push_back(Aw_Z[i]); }
-	// }
+	Long64_t N = X.size();
+	double meanZ = TMath::Mean(N, &Z[0]);
+	double meanX = TMath::Mean(N, &X[0]);
+	double meanZ2 = 0, meanXZ = 0, meanX2 = 0;
+	for(size_t i=0; i< N; ++i) {
+		meanZ2 += Z[i]*Z[i];
+		meanX2 += X[i]*X[i];
+		meanXZ += Z[i]*X[i];
+	}
+	meanZ2 /= N;
+	meanXZ /= N;
 
-	// double sumZX = 0, sumZ = 0, sumX = 0, sumZ2 = 0;
-	// for(size_t i=0; i< X.size(); ++i) {
-	// 	sumZX += (X[i]*Z[i]);
-	// 	sumZ  += Z[i];
-	// 	sumX  += X[i];
-	// 	sumZ2 += (Z[i]*Z[i]);
-	// }
+	double slope = (meanXZ - meanX*meanZ) / (meanZ2 - meanZ*meanZ);
+	R2 = pow(meanXZ - meanX*meanZ, 2) / 
+		((meanZ2 - meanZ*meanZ) * (meanX2 - meanX*meanX));
 
-	// double slope = ( sumZX - (1./X.size())*sumZ*sumX ) /
-	// 	( sumZ2 - 0.5*sumZ*sumZ );
-	// return slope;
+	/// TODO::: R2 doesn't seem to make sense... look into it!
+	
+	return slope;
 } }
 
 
@@ -142,6 +137,7 @@ void Analysis::Init(){
 	}
 	Aw_Theta1_2 = -1000;
 	Aw_ThetaFit = -1000;
+	Aw_ThetaFit_R2 = -1000;
 	
   //TAC
   //TacSiGe       = -1000;
@@ -338,8 +334,8 @@ void Analysis::TreatEvent(){
 	for(int i=0; i< kNumAw; ++i) {
 		if(Aw_X[i] != -1000) { ++numValid; }
 		if(numValid == 2) {  // at least 2 points to calculate an angle
-			double slope = calculate_fit_slope(kNumAw, Aw_X, Aw_Z); // slope of X vs. Z
 
+			double slope = calculate_fit_slope(kNumAw, Aw_X, Aw_Z, Aw_ThetaFit_R2); // slope of X vs. Z
 			Aw_ThetaFit = TMath::ATan(slope)*(180/TMath::Pi());
 			break;
 		}
@@ -401,6 +397,7 @@ void Analysis::ReInitValue(){
 	}
 	Aw_Theta1_2 = -1000;
 	Aw_ThetaFit	= -1000;
+	Aw_ThetaFit_R2	= -1000;
 	
   //TAC
   //TacSiGe       = -1000;
@@ -434,6 +431,7 @@ void Analysis::InitOutputBranch() {
   RootOutput::getInstance()->GetTree()->Branch("Aw_Z",Aw_Z,Form("Aw_Z[%i]/D", kNumAw));
   RootOutput::getInstance()->GetTree()->Branch("Aw_Theta1_2",&Aw_Theta1_2,"Aw_Theta1_2/D");
   RootOutput::getInstance()->GetTree()->Branch("Aw_ThetaFit",&Aw_ThetaFit,"Aw_ThetaFit/D");
+  RootOutput::getInstance()->GetTree()->Branch("Aw_ThetaFit_R2",&Aw_ThetaFit_R2,"Aw_ThetaFit_R2/D");
 	
 
 //TACS

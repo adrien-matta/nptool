@@ -107,6 +107,7 @@ class Analysis: public NPL::VAnalysis{
 	double Aw_Z[kNumAw] ;
 	double Aw_Theta1_2  ; // Theta calculated from wire 1 & wire 2
 	double Aw_ThetaFit  ; // Theta calculated from FITTING all wires
+	double Aw_ThetaFit_R2; // Goodness of fit value of theta from fitting
 	
   //TACS
   //double TacSiGe ;
