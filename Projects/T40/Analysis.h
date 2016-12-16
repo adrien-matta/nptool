@@ -117,5 +117,7 @@ class Analysis: public NPL::VAnalysis{
   double TacSiPlastLeft ;
   double TacSiPlastRight ;
 
+	// Other
+	int RunNumber;
 };
 #endif

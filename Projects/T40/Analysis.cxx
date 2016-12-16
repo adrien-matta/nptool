@@ -147,6 +147,7 @@ void Analysis::Init(){
 	TacSiPlastLeft  = -1000;
 	TacSiPlastRight = -1000;
 
+	RunNumber = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -365,6 +366,8 @@ void Analysis::TreatEvent(){
 	// if(TF->PlastLeftTime.size()==1)  TacSiPlastLeft = TF->PlastLeftTime[0];
 	// if(TF->PlastRightTime.size()==1)  TacSiPlastRight = TF->PlastRightTime[0];
 
+
+	RunNumber = RootInput::getInstance()->GetChain()->GetFileNumber() + 1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -406,6 +409,8 @@ void Analysis::ReInitValue(){
 	TacSiMicro_dE = -1000;
   TacSiPlastLeft  = -1000;
   TacSiPlastRight = -1000;
+
+	RunNumber = 0;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -441,7 +446,10 @@ void Analysis::InitOutputBranch() {
 	RootOutput::getInstance()->GetTree()->Branch("TacSiMicro_dE",&TacSiMicro_dE,"TacSiMicro_dE/D");
 	RootOutput::getInstance()->GetTree()->Branch("TacSiPlastLeft",& TacSiPlastLeft," TacSiPlastLeft/D");
   RootOutput::getInstance()->GetTree()->Branch("TacSiPlastRight",& TacSiPlastRight," TacSiPlastRight/D");
-  
+
+// Other
+	RootOutput::getInstance()->GetTree()->Branch("RunNumber", &RunNumber," RunNumber/I");
+
   //Simulation
   //RootOutput::getInstance()->GetTree()->Branch("Original_ELab",&Original_ELab,"Original_ELab/D");
   //RootOutput::getInstance()->GetTree()->Branch("Original_ThetaLab",&Original_ThetaLab,"Original_ThetaLab/D");
