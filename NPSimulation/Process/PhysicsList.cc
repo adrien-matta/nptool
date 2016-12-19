@@ -36,7 +36,7 @@
 #include "G4LossTableManager.hh"
 #include "G4UnitsTable.hh"
 #include "G4ProcessManager.hh"
-
+#include "G4FastSimulationManagerProcess.hh"
 /////////////////////////////////////////////////////////////////////////////
 PhysicsList::PhysicsList() : G4VModularPhysicsList(){
     m_EmList = "Option4";
@@ -267,13 +267,30 @@ void PhysicsList::ConstructProcess(){
     em_option.SetFluo(true);
     em_option.SetAuger(true);
     
-    
+    AddParametrisation();
     
     return;
 }
 /////////////////////////////////////////////////////////////////////////////
 void PhysicsList::AddStepMax(){
 }
+/////////////////////////////////////////////////////////////////////////////
+void PhysicsList::AddParametrisation(){
+
+	G4FastSimulationManagerProcess* drift =
+			new G4FastSimulationManagerProcess("DriftElectron");
+  
+
+	theParticleIterator->reset();
+	while ((*theParticleIterator)()){
+		  G4ParticleDefinition* particle = theParticleIterator->value();
+      G4ProcessManager* pmanager = particle->GetProcessManager();
+
+      if(particle->GetParticleName()=="e-")
+        pmanager->AddDiscreteProcess(drift);
+  }
+}
+
 
 /////////////////////////////////////////////////////////////////////////////
 void PhysicsList::SetCuts(){

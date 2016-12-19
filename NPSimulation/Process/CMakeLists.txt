@@ -1,0 +1,2 @@
+add_library(NPSProcess SHARED  FastDriftElectron.cc NPIonIonInelasticPhysic.cc PhysicsList.cc)
+target_link_libraries(NPSProcess ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} ${NPLib_LIBRARIES} -lNPInitialConditions -lNPInteractionCoordinates)

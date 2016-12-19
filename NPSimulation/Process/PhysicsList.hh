@@ -79,6 +79,7 @@ class PhysicsList: public G4VModularPhysicsList{
     void SetCuts();
     void ConstructProcess();
     void AddStepMax();
+    void AddParametrisation();
     void AddPackage(const G4String& name);
     void BiasCrossSectionByFactor(double factor);
   
