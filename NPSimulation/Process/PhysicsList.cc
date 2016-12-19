@@ -279,9 +279,13 @@ void PhysicsList::AddParametrisation(){
 
 	G4FastSimulationManagerProcess* drift =
 			new G4FastSimulationManagerProcess("DriftElectron");
-  
+
+// For 10.3 and higher
+#ifndef theParticleIterator  
   G4ParticleTable::G4PTblDicIterator* theParticleIterator = GetParticleIterator();
-	theParticleIterator->reset();
+#endif
+ 
+  theParticleIterator->reset();
 	while ((*theParticleIterator)()){
 		  G4ParticleDefinition* particle = theParticleIterator->value();
       G4ProcessManager* pmanager = particle->GetProcessManager();
