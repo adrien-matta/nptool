@@ -1,0 +1,11 @@
+---
+layout: post
+title:  "Geant4 10.3 is not working with nptool"
+date:   2016-12-19 10:00
+author: Adrien Matta
+categories: nptool update
+---
+
+Dear User,
+
+Geant4 10.3 made a major change in the scorer facility that make our own scorer classes incompatible with their version at the moment. We are working to find a solution but in the mean time, do not update to 10.3 if your are using nptool. 
