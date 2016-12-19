@@ -25,6 +25,7 @@ using namespace std;
 #include"NPAnalysisFactory.h"
 #include"NPDetectorManager.h"
 #include"NPOptionManager.h"
+#include"NPFunction.h"
 ////////////////////////////////////////////////////////////////////////////////
 Analysis::Analysis(){
 }
@@ -38,12 +39,21 @@ void Analysis::Init(){
   InitInputBranch();
   
   Sharc = (TSharcPhysics*)  m_DetectorManager -> GetDetector("Sharc");
-  LightCD2 = EnergyLoss("proton_CD2.G4table","G4Table",10 );
-  LightSi = EnergyLoss("proton_Si.G4table","G4Table",1);
-  BeamCD2 = EnergyLoss("Mg28_CD2.G4table","G4Table",10);
   myReaction = new NPL::Reaction();
   myReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
-   TargetThickness = m_DetectorManager->GetTargetThickness()*micrometer;
+  // target thickness
+  TargetThickness = m_DetectorManager->GetTargetThickness();
+  string TargetMaterial = m_DetectorManager->GetTargetMaterial();
+
+  // energy losses
+  string light=NPL::ChangeNameToG4Standard(myReaction->GetNucleus3().GetName());
+  string beam=NPL::ChangeNameToG4Standard(myReaction->GetNucleus1().GetName());
+
+  LightCD2 = NPL::EnergyLoss(light+"_"+TargetMaterial+".G4table","G4Table",100 );
+  LightAl = NPL::EnergyLoss(light+"_Al.G4table","G4Table",100);
+  LightSi = NPL::EnergyLoss(light+"_Si.G4table","G4Table",100);
+  BeamCD2 = NPL::EnergyLoss(beam+"_"+TargetMaterial+".G4table","G4Table",100);
+  
   OriginalBeamEnergy = myReaction->GetBeamEnergy();
    Rand = TRandom3();
    DetectorNumber = 0 ;
