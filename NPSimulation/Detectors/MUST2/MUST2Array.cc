@@ -727,28 +727,28 @@ void MUST2Array::ReadSensitive(const G4Event* event){
   std::map<G4int, G4double*>::iterator Ang_Theta_itr;
   std::map<G4int, G4double*>::iterator Ang_Phi_itr;
 
-  G4THitsMap<G4int>*	  DetectorNumberHitMap;
-  G4THitsMap<G4double>* EnergyHitMap;
-  G4THitsMap<G4double>* TimeHitMap;
-  G4THitsMap<G4int>* XHitMap;
-  G4THitsMap<G4int>* YHitMap;
-  G4THitsMap<G4double>* PosXHitMap;
-  G4THitsMap<G4double>* PosYHitMap;
-  G4THitsMap<G4double>* PosZHitMap;
-  G4THitsMap<G4double>* AngThetaHitMap;
-  G4THitsMap<G4double>* AngPhiHitMap;
+  NPS::HitsMap<G4int>*	  DetectorNumberHitMap;
+  NPS::HitsMap<G4double>* EnergyHitMap;
+  NPS::HitsMap<G4double>* TimeHitMap;
+  NPS::HitsMap<G4int>* XHitMap;
+  NPS::HitsMap<G4int>* YHitMap;
+  NPS::HitsMap<G4double>* PosXHitMap;
+  NPS::HitsMap<G4double>* PosYHitMap;
+  NPS::HitsMap<G4double>* PosZHitMap;
+  NPS::HitsMap<G4double>* AngThetaHitMap;
+  NPS::HitsMap<G4double>* AngPhiHitMap;
 
   // Si(Li)
   std::map<G4int, G4double*>::iterator SiLiEnergy_itr;
   std::map<G4int, G4int*>::iterator SiLiPadNbr_itr;
-  G4THitsMap<G4double>* 				 SiLiEnergyHitMap;
-  G4THitsMap<G4int>* 				    SiLiPadNbrHitMap;
+  NPS::HitsMap<G4double>* 				 SiLiEnergyHitMap;
+  NPS::HitsMap<G4int>* 				    SiLiPadNbrHitMap;
 
   // CsI
   std::map<G4int, G4double*>::iterator CsIEnergy_itr;
   std::map<G4int, G4int*>::iterator    CsICristalNbr_itr;
-  G4THitsMap<G4double>* 				    CsIEnergyHitMap;
-  G4THitsMap<G4int>* 				       CsICristalNbrHitMap;
+  NPS::HitsMap<G4double>* 				    CsIEnergyHitMap;
+  NPS::HitsMap<G4int>* 				       CsICristalNbrHitMap;
   //////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
 
@@ -756,72 +756,72 @@ void MUST2Array::ReadSensitive(const G4Event* event){
 
   //Detector Number
   G4int StripDetCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_StripScorer/DetectorNumber");
-  DetectorNumberHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripDetCollectionID));
+  DetectorNumberHitMap = (NPS::HitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripDetCollectionID));
   DetectorNumber_itr =  DetectorNumberHitMap->GetMap()->begin();
 
   //Energy
   G4int StripEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_StripScorer/StripEnergy") ;
-  EnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripEnergyCollectionID)) ;
+  EnergyHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripEnergyCollectionID)) ;
   Energy_itr = EnergyHitMap->GetMap()->begin();
 
   //Time of Flight
   G4int StripTimeCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_StripScorer/StripTime");
-  TimeHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripTimeCollectionID));
+  TimeHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripTimeCollectionID));
   Time_itr = TimeHitMap->GetMap()->begin();
 
   //Strip Number X
   G4int StripXCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_StripScorer/StripNumberX") ;
-  XHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripXCollectionID));
+  XHitMap = (NPS::HitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripXCollectionID));
   X_itr = XHitMap->GetMap()->begin();
 
   //Strip Number Y
   G4int StripYCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_StripScorer/StripNumberY");
-  YHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripYCollectionID));
+  YHitMap = (NPS::HitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripYCollectionID));
   Y_itr = YHitMap->GetMap()->begin();
 
   //Interaction Coordinate X
   G4int InterCoordXCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_StripScorer/InterCoordX");
-  PosXHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordXCollectionID));
+  PosXHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordXCollectionID));
   Pos_X_itr = PosXHitMap->GetMap()->begin();
 
   //Interaction Coordinate Y
   G4int InterCoordYCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_StripScorer/InterCoordY");
-  PosYHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordYCollectionID));
+  PosYHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordYCollectionID));
   Pos_Y_itr = PosYHitMap->GetMap()->begin();
 
   //Interaction Coordinate Z
   G4int InterCoordZCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_StripScorer/InterCoordZ");
-  PosZHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordZCollectionID));
+  PosZHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordZCollectionID));
   Pos_Z_itr = PosXHitMap->GetMap()->begin();
 
   //Interaction Coordinate Angle Theta
   G4int InterCoordAngThetaCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_StripScorer/InterCoordAngTheta");
-  AngThetaHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordAngThetaCollectionID));
+  AngThetaHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordAngThetaCollectionID));
   Ang_Theta_itr = AngThetaHitMap->GetMap()->begin();
 
   //Interaction Coordinate Angle Phi
   G4int InterCoordAngPhiCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_StripScorer/InterCoordAngPhi");	
-  AngPhiHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordAngPhiCollectionID));
+  AngPhiHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordAngPhiCollectionID));
   Ang_Phi_itr = AngPhiHitMap->GetMap()->begin();			
 
   // Read the Scorer associate to the SiLi
   //Energy
   G4int SiLiEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_SiLiScorer/SiLiEnergy");
-  SiLiEnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(SiLiEnergyCollectionID));
+  SiLiEnergyHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(SiLiEnergyCollectionID));
   SiLiEnergy_itr = SiLiEnergyHitMap->GetMap()->begin();
 
   G4int SiLiPadNbrCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_SiLiScorer/SiLiPadNbr");
-  SiLiPadNbrHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(SiLiPadNbrCollectionID));
+  SiLiPadNbrHitMap = (NPS::HitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(SiLiPadNbrCollectionID));
   SiLiPadNbr_itr = SiLiPadNbrHitMap->GetMap()->begin();
 
   // Read the Scorer associate to the CsI crystal
   //Energy
   G4int CsIEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_CsIScorer/CsIEnergy");
-  CsIEnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(CsIEnergyCollectionID));
+  CsIEnergyHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(CsIEnergyCollectionID));
   CsIEnergy_itr = CsIEnergyHitMap->GetMap()->begin();
 
   G4int CsICristalNbrCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_CsIScorer/CsICristalNbr");
-  CsICristalNbrHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(CsICristalNbrCollectionID));
+  CsICristalNbrHitMap = (NPS::HitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(CsICristalNbrCollectionID));
   CsICristalNbr_itr = CsICristalNbrHitMap->GetMap()->begin();
 
 

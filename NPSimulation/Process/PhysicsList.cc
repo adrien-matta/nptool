@@ -38,7 +38,7 @@
 #include "G4ProcessManager.hh"
 #include "G4FastSimulationManagerProcess.hh"
 /////////////////////////////////////////////////////////////////////////////
-PhysicsList::PhysicsList() : G4VModularPhysicsList(){
+PhysicsList::PhysicsList() : G4VUserPhysicsList(){
     m_EmList = "Option4";
     defaultCutValue = 1*mm;//0.2*mm;
     opticalPhysicsList = NULL;
@@ -280,7 +280,7 @@ void PhysicsList::AddParametrisation(){
 	G4FastSimulationManagerProcess* drift =
 			new G4FastSimulationManagerProcess("DriftElectron");
   
-
+  G4ParticleTable::G4PTblDicIterator* theParticleIterator = GetParticleIterator();
 	theParticleIterator->reset();
 	while ((*theParticleIterator)()){
 		  G4ParticleDefinition* particle = theParticleIterator->value();

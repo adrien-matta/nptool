@@ -449,11 +449,11 @@ void GaspardTrackerRectangle::ReadSensitive(const G4Event* event)
 {
    //////////////
    // First stage
-   G4THitsMap<G4double*>* GPD1HitMap;
+   NPS::HitsMap<G4double*>* GPD1HitMap;
    std::map<G4int, G4double**>::iterator GPD1_itr;
 
    G4int GPD1CollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerGPDRectangle/GPDRectangleFirstStage");
-   GPD1HitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(GPD1CollectionID));
+   GPD1HitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(GPD1CollectionID));
 
    // Loop on the GPD map
    for (GPD1_itr = GPD1HitMap->GetMap()->begin(); GPD1_itr != GPD1HitMap->GetMap()->end(); GPD1_itr++) {
@@ -501,11 +501,11 @@ void GaspardTrackerRectangle::ReadSensitive(const G4Event* event)
 
    //////////////
    // Second stage
-   G4THitsMap<G4double*>* GPD2HitMap;
+   NPS::HitsMap<G4double*>* GPD2HitMap;
    std::map<G4int, G4double**>::iterator GPD2_itr;
 
    G4int GPD2CollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("SecondStageScorerGPDRectangle/GPDRectangleSecondStage");
-   GPD2HitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(GPD2CollectionID));
+   GPD2HitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(GPD2CollectionID));
 
    // Loop on the GPD map
    for (GPD2_itr = GPD2HitMap->GetMap()->begin(); GPD2_itr != GPD2HitMap->GetMap()->end(); GPD2_itr++) {
@@ -539,11 +539,11 @@ void GaspardTrackerRectangle::ReadSensitive(const G4Event* event)
 
    //////////////
    // Third stage
-   G4THitsMap<G4double*>* GPD3HitMap;
+   NPS::HitsMap<G4double*>* GPD3HitMap;
    std::map<G4int, G4double**>::iterator GPD3_itr;
 
    G4int GPD3CollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ThirdStageScorerGPDRectangle/GPDRectangleThirdStage");
-   GPD3HitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(GPD3CollectionID));
+   GPD3HitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(GPD3CollectionID));
 
    // Loop on the GPD map
    for (GPD3_itr = GPD3HitMap->GetMap()->begin(); GPD3_itr != GPD3HitMap->GetMap()->end(); GPD3_itr++) {

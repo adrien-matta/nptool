@@ -25,7 +25,7 @@
  *Only one scorer is needed for a detector                                   *
  *****************************************************************************/
 #include "G4VPrimitiveScorer.hh"
-#include "G4THitsMap.hh"
+#include "NPSHitsMap.hh"
 
 #include <map>
 using namespace std;
@@ -62,7 +62,7 @@ namespace PHOTODIODESCORERS {
 
   private: // inherited from G4VPrimitiveScorer
       G4int HCID;
-      G4THitsMap<G4double*>* EvtMap;
+      NPS::HitsMap<G4double*>* EvtMap;
     
   private: // Needed for intermediate calculation (avoid multiple instantiation in Processing Hit)
       G4ThreeVector m_Position  ;

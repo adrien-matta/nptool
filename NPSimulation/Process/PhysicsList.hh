@@ -24,7 +24,7 @@
 #ifndef PhysicsList_h
 #define PhysicsList_h 1
 
-#include "G4VModularPhysicsList.hh"
+#include "G4VUserPhysicsList.hh"
 #include "G4EmConfigurator.hh"
 #include "G4EmProcessOptions.hh"
 
@@ -53,10 +53,9 @@
 #include "G4OpticalPhysics.hh"
 
 //Hadronique
-#include "G4HadronElasticPhysics.hh"
-#include "G4HadronElasticPhysicsHP.hh"
+
 #include "G4IonElasticPhysics.hh"
-#include "G4HadronDElasticPhysics.hh"
+#include "G4HadronElasticPhysics.hh"
 #include "G4HadronInelasticQBBC.hh"
 #include "G4IonBinaryCascadePhysics.hh"
 #include "G4HadronPhysicsINCLXX.hh"
@@ -69,7 +68,7 @@
 
 class G4VPhysicsConstructor;
 
-class PhysicsList: public G4VModularPhysicsList{
+class PhysicsList: public G4VUserPhysicsList{
   public:
     PhysicsList();
     virtual ~PhysicsList();

@@ -25,7 +25,7 @@
  *Only one scorer is needed for a detector                                   *
  *****************************************************************************/
 #include "G4VPrimitiveScorer.hh"
-#include "G4THitsMap.hh"
+#include "NPSHitsMap.hh"
 
 #include <map>
 using namespace std;
@@ -57,7 +57,7 @@ namespace CALORIMETERSCORERS {
 
   private: // inherited from G4VPrimitiveScorer
     G4int HCID;
-    G4THitsMap<G4double*>* EvtMap;
+    NPS::HitsMap<G4double*>* EvtMap;
   };
 
   //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......  
@@ -85,7 +85,7 @@ namespace CALORIMETERSCORERS {
 
   private: // inherited from G4VPrimitiveScorer
     G4int HCID;
-    G4THitsMap<G4double*>* EvtMap;
+    NPS::HitsMap<G4double*>* EvtMap;
   };
 }
 

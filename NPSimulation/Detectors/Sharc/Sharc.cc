@@ -571,11 +571,11 @@ void Sharc::ReadSensitive(const G4Event* event){
 
   ///////////
   // BOX
-  G4THitsMap<G4double*>* BOXHitMap;
+  NPS::HitsMap<G4double*>* BOXHitMap;
   std::map<G4int, G4double**>::iterator BOX_itr;
 
   G4int BOXCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Sharc_BOXScorer/SharcBOX");
-  BOXHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(BOXCollectionID));
+  BOXHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(BOXCollectionID));
 
   // Loop on the BOX map
   for (BOX_itr = BOXHitMap->GetMap()->begin() ; BOX_itr != BOXHitMap->GetMap()->end() ; BOX_itr++){
@@ -617,11 +617,11 @@ void Sharc::ReadSensitive(const G4Event* event){
 
   ///////////
   // PAD
-  G4THitsMap<G4double*>*     PADHitMap;
+  NPS::HitsMap<G4double*>*     PADHitMap;
   std::map<G4int, G4double**>::iterator    PAD_itr;
 
   G4int PADCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Sharc_PADScorer/SharcPAD");
-  PADHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(PADCollectionID));
+  PADHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(PADCollectionID));
 
   // Loop on the BOX map
   for (PAD_itr = PADHitMap->GetMap()->begin() ; PAD_itr != PADHitMap->GetMap()->end() ; PAD_itr++){
@@ -645,11 +645,11 @@ void Sharc::ReadSensitive(const G4Event* event){
 
   ///////////
   // QQQ
-  G4THitsMap<G4double*>* QQQHitMap;
+  NPS::HitsMap<G4double*>* QQQHitMap;
   std::map<G4int, G4double**>::iterator QQQ_itr;
 
   G4int QQQCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Sharc_QQQScorer/SharcQQQ");
-  QQQHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(QQQCollectionID));
+  QQQHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(QQQCollectionID));
 
   // Loop on the BOX map
   for (QQQ_itr = QQQHitMap->GetMap()->begin() ; QQQ_itr != QQQHitMap->GetMap()->end() ; QQQ_itr++){

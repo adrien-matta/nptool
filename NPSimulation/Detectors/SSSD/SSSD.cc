@@ -370,11 +370,11 @@ void SSSD::ReadSensitive(const G4Event* event){
   m_Event->Clear();
 
   ///////////
-  G4THitsMap<G4double*>* StripHitMap;
+  NPS::HitsMap<G4double*>* StripHitMap;
   std::map<G4int, G4double**>::iterator Strip_itr;
   
   G4int StripCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("SSSD_Scorer/StripScorer");
-  StripHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(StripCollectionID));
+  StripHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(StripCollectionID));
   
   // Loop on the Strip map
   for (Strip_itr = StripHitMap->GetMap()->begin() ; Strip_itr != StripHitMap->GetMap()->end() ; Strip_itr++){

@@ -453,10 +453,10 @@ void CsI::ReadSensitive(const G4Event* event){
     m_Event->Clear();
     
     // CsI //
-    G4THitsMap<G4double*>* CsIHitMap;
+    NPS::HitsMap<G4double*>* CsIHitMap;
     std::map<G4int, G4double**>::iterator CsI_itr;
     G4int CsICollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("CsIScorer/CsI");
-    CsIHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CsICollectionID));
+    CsIHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CsICollectionID));
     
     // Loop on the CsI map
     for (CsI_itr = CsIHitMap->GetMap()->begin() ; CsI_itr != CsIHitMap->GetMap()->end() ; CsI_itr++){
@@ -477,11 +477,11 @@ void CsI::ReadSensitive(const G4Event* event){
     CsIHitMap->clear();
     
     // PhotoDiode //
-    G4THitsMap<G4double*>* PhotoDiodeHitMap;
+    NPS::HitsMap<G4double*>* PhotoDiodeHitMap;
     std::map<G4int, G4double**>::iterator PhotoDiode_itr;
     
     G4int PhotoDiodeCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("PDScorer/PhotoDiode");
-    PhotoDiodeHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(PhotoDiodeCollectionID));
+    PhotoDiodeHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(PhotoDiodeCollectionID));
     
     // Loop on the PhotoDiode map
     vector<double> NumberOfOpticalPhoton;

@@ -156,11 +156,11 @@ void Hira::ReadSensitive(const G4Event* event){
     
     // ThinSi //
     if(m_build_ThinSi){
-        G4THitsMap<G4double*>* ThinSiHitMap;
+        NPS::HitsMap<G4double*>* ThinSiHitMap;
         std::map<G4int, G4double**>::iterator ThinSi_itr;
         
         G4int ThinSiCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Hira_ThinSiScorer/ThinSi");
-        ThinSiHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(ThinSiCollectionID));
+        ThinSiHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(ThinSiCollectionID));
         
         // Loop on the ThinSi map
         for (ThinSi_itr = ThinSiHitMap->GetMap()->begin() ; ThinSi_itr != ThinSiHitMap->GetMap()->end() ; ThinSi_itr++){
@@ -184,10 +184,10 @@ void Hira::ReadSensitive(const G4Event* event){
     
     // ThickSi //
     if(m_build_ThickSi){
-        G4THitsMap<G4double*>* ThickSiHitMap;
+        NPS::HitsMap<G4double*>* ThickSiHitMap;
         std::map<G4int, G4double**>::iterator ThickSi_itr;
         G4int ThickSiCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Hira_ThickSiScorer/ThickSi");
-        ThickSiHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(ThickSiCollectionID));
+        ThickSiHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(ThickSiCollectionID));
         
         // Loop on the ThickSi map
         for (ThickSi_itr = ThickSiHitMap->GetMap()->begin() ; ThickSi_itr != ThickSiHitMap->GetMap()->end() ; ThickSi_itr++){
@@ -224,10 +224,10 @@ void Hira::ReadSensitive(const G4Event* event){
     
     // CsI //
     if(m_build_CsI){
-        G4THitsMap<G4double*>* CsIHitMap;
+        NPS::HitsMap<G4double*>* CsIHitMap;
         std::map<G4int, G4double**>::iterator CsI_itr;
         G4int CsICollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Hira_CsIScorer/CsI");
-        CsIHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CsICollectionID));
+        CsIHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CsICollectionID));
         
         // Loop on the CsI map
         for (CsI_itr = CsIHitMap->GetMap()->begin() ; CsI_itr != CsIHitMap->GetMap()->end() ; CsI_itr++){

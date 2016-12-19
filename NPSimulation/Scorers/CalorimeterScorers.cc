@@ -66,7 +66,7 @@ G4bool PS_Calorimeter::ProcessHits(G4Step* aStep, G4TouchableHistory*){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PS_Calorimeter::Initialize(G4HCofThisEvent* HCE){
-    EvtMap = new G4THitsMap<G4double*>(GetMultiFunctionalDetector()->GetName(), GetName());
+    EvtMap = new NPS::HitsMap<G4double*>(GetMultiFunctionalDetector()->GetName(), GetName());
     if (HCID < 0) {
         HCID = GetCollectionID(0);
     }
@@ -152,7 +152,7 @@ G4bool PS_CalorimeterWithInteraction::ProcessHits(G4Step* aStep, G4TouchableHist
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PS_CalorimeterWithInteraction::Initialize(G4HCofThisEvent* HCE){
-    EvtMap = new G4THitsMap<G4double*>(GetMultiFunctionalDetector()->GetName(), GetName());
+    EvtMap = new NPS::HitsMap<G4double*>(GetMultiFunctionalDetector()->GetName(), GetName());
     if (HCID < 0) {
         HCID = GetCollectionID(0);
     }

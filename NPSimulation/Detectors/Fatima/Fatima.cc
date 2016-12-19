@@ -316,11 +316,11 @@ void Fatima::ReadSensitive(const G4Event* event){
 
   ///////////
   // LaBr3
-  G4THitsMap<G4double*>* LaBr3HitMap;
+  NPS::HitsMap<G4double*>* LaBr3HitMap;
   std::map<G4int, G4double**>::iterator LaBr3_itr;
 
   G4int LaBr3CollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Fatima_LaBr3Scorer/FatimaLaBr3");
-  LaBr3HitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(LaBr3CollectionID));
+  LaBr3HitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(LaBr3CollectionID));
 
   // Loop on the LaBr3 map
   for (LaBr3_itr = LaBr3HitMap->GetMap()->begin() ; LaBr3_itr != LaBr3HitMap->GetMap()->end() ; LaBr3_itr++){

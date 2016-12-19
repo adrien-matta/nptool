@@ -253,17 +253,17 @@ void TRex::ReadSensitive(const G4Event* event){
 
   ///////////
   // Striprimeter scorer
-  G4THitsMap<G4double*>* StripHitMap;
+  NPS::HitsMap<G4double*>* StripHitMap;
   std::map<G4int, G4double**>::iterator Strip_itr;
 
   G4int StripCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("TRexStripScorer/Strip");
-  StripHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(StripCollectionID));
+  StripHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(StripCollectionID));
   
-  G4THitsMap<G4double*>* PADHitMap;
+  NPS::HitsMap<G4double*>* PADHitMap;
   std::map<G4int, G4double**>::iterator PAD_itr;
 
   G4int PADCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("TRexPADScorer/PAD");
-  PADHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(PADCollectionID));
+  PADHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(PADCollectionID));
 
 
   // Loop on the Strip map

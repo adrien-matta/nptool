@@ -303,11 +303,11 @@ void AnnularS1::ReadSensitive(const G4Event* event){
   // Clear ROOT objects
   m_Event->Clear();
 
-  G4THitsMap<G4double*>* SiliconHitMap;
+  NPS::HitsMap<G4double*>* SiliconHitMap;
   std::map<G4int, G4double**>::iterator Silicon_itr;
 
   G4int SiliconCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("AnnularS1_Scorer/AnnularS1_Scorer");
-  SiliconHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(SiliconCollectionID));
+  SiliconHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(SiliconCollectionID));
 
   // Loop on the Silicon map
   for (Silicon_itr = SiliconHitMap->GetMap()->begin() ; Silicon_itr != SiliconHitMap->GetMap()->end() ; Silicon_itr++){
