@@ -9,8 +9,8 @@
 
 /*****************************************************************************
  * Original Author: S. Giron   contact address: giron@ipno.in2p3.fr          *
- *                  B. Le Crom                  lecrom@ipno.in2p3.fr                                       *
- * Creation Date  : march 2014                                            *
+ *                  B. Le Crom                  lecrom@ipno.in2p3.fr         *
+ * Creation Date  : march 2014                                               *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
@@ -31,6 +31,7 @@
 #include "NPVDetector.h"
 #include "TExogamData.h"
 #include "TExogamSpectra.h"
+#include "NPInputParser.h"
 // ROOT 
 #include "TVector2.h" 
 #include "TVector3.h" 
@@ -41,8 +42,7 @@ using namespace std ;
 // Forward Declaration
 class TExogamSpectra;
 
-class TExogamPhysics : public TObject, public NPL::VDetector
-{
+class TExogamPhysics : public TObject, public NPL::VDetector{
  public:
   TExogamPhysics()	;
   ~TExogamPhysics() {};
@@ -97,7 +97,7 @@ class TExogamPhysics : public TObject, public NPL::VDetector
  public:		//	Innherited from VDetector Class
 			
   //	Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-  void ReadConfiguration(string) 				;
+  void ReadConfiguration(NPL::InputParser) 				;
 		
 
   //	Add Parameter to the CalibrationManger

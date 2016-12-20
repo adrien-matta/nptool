@@ -1,0 +1,35 @@
+%Fichier de configuration manip E225
+%%%%%%%%%%%Target%%%%%%%%%%%%%%%%%%%1
+%Thickness in micrometer
+%Radius in mm
+%Temperature in K, Pressure in bar
+%Material name according to the target library
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GeneralTarget
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Target
+ THICKNESS= 10.3
+ ANGLE= 0
+ RADIUS=	12
+ MATERIAL= CD2l
+ NBLAYERS= 50
+ X= 0
+ Y= 0
+ Z= 0	
+%%%%%%%%%%Detector%%%%%%%%%%%%%%%%%%%
+%%Position and R given in mm
+%%Angle given in degree
+%%Option: 0,1 for Si SiLi and CsI
+%%Option: all or sensible for VISualisation
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Paris
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%0
+ParisCluster
+ X1_Y1=		-84.5 	-235	84.5
+ X1_Y128= 	84.5	-235	84.5
+ X128_Y1= 	-84.5	-235	-84.5	
+ X128_Y128= 	84.5	-235	-84.5	
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1

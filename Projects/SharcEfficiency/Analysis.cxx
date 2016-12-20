@@ -45,7 +45,7 @@ void Analysis::Init(){
   myReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
 
   // target thickness
-  TargetThickness = m_DetectorManager->GetTargetThickness()*micrometer;
+  TargetThickness = m_DetectorManager->GetTargetThickness();
   string TargetMaterial = m_DetectorManager->GetTargetMaterial();
 
   // energy losses

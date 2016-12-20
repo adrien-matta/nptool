@@ -35,6 +35,7 @@ using namespace std;
 #include "RootOutput.h"
 #include "NPDetectorFactory.h"
 #include "NPPhysicalConstants.h"
+#include "NPOptionManager.h"
 //   ROOT
 #include "TChain.h"
 
@@ -287,88 +288,34 @@ void THelios2Physics::Clear() {
 
 
 ///////////////////////////////////////////////////////////////////////////
-void THelios2Physics::ReadConfiguration(string Path) {
-  ifstream ConfigFile           ;
-  ConfigFile.open(Path.c_str()) ;
-  string LineBuffer             ;
-  string DataBuffer             ;
+void THelios2Physics::ReadConfiguration(NPL::InputParser parser){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Helios2");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  bool check_Face = false       ;
-  bool check_Z = false          ;
-  bool ReadingStatus = false    ;
-  double Z;
-  string Face;
- 
- while (!ConfigFile.eof()){
-    getline(ConfigFile, LineBuffer);
+  vector<string> token = {"Z","Face"};
 
-    //   If line is a Start Up Helios2 bloc, Reading toggle to true
-    string name="Helios2";
-    if (LineBuffer.compare(0, name.length(), name) == 0){
-      cout << "///" << endl ;
-      cout << "Helios2 found: " << endl ;
-      ReadingStatus = true ; 
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasToken("MagneticField"))
+      m_B=blocks[i]->GetDouble("MagneticField","T");
+
+    if(blocks[i]->HasTokenList(token)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  Helios2 " << i+1 <<  endl;
+      double Z = blocks[i]->GetDouble("Z","mm");
+      string Face = blocks[i]->GetString("Face");
+
+      m_Z.push_back(Z);
+      m_Face.push_back(Face);
     }
 
-    //   Reading Block
-    while(ReadingStatus)
-    {
-      // Pickup Next Word
-      ConfigFile >> DataBuffer ;
-
-      //   Comment Line
-      if (DataBuffer.compare(0, 1, "%") == 0) {   
-        ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
-      }
-
-      //   Finding another telescope (safety), toggle out
-      else if (DataBuffer.compare(0, name.length(), name) == 0) {
-        cout << "\033[1;311mWARNING: Another detector is find before standard sequence of Token, Error may occured in detector definition\033[0m" << endl ;
-        ReadingStatus = false ;
-      }
-
-      // Z and Face of the square
-      else if (DataBuffer=="Z=") {
-        check_Z= true;
-        ConfigFile >> Z;
-        
-        cout << "Z:  " << Z << "mm" << endl;
-      }
-
-      else if (DataBuffer=="Face=") {
-        check_Face = true;
-        ConfigFile >> Face;
-        cout << "Face:  " << Face << endl;
-      }
-      
-      else if (DataBuffer=="MagneticField="){
-        ConfigFile >> m_B;
-        m_B*=NPUNITS::tesla;
-        cout << "Magnetic Field set to " << m_B << " Tesla" << endl;
-      }
-
-      ///////////////////////////////////////////////////
-      //   If no Detector Token and no comment, toggle out
-      else{
-        ReadingStatus = false; cout << "Wrong Token Sequence: Getting out " << DataBuffer << endl ;
-      }
-
-      /////////////////////////////////////////////////
-      //   If All necessary information there, toggle out
-      if ( check_Z && check_Face ){
-        m_NumberOfDetectors++;
-        m_Z.push_back(Z);
-        m_Face.push_back(Face);
-
-        //   Reinitialisation of Check Boolean
-        check_Z = false       ;
-        check_Face = false    ;
-
-        ReadingStatus = false ;
-        cout << "///"<< endl  ;
-      }
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
     }
   }
+
+  ReadAnalysisConfig();
 }
 
 

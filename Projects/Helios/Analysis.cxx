@@ -59,7 +59,7 @@ void Analysis::Init(){
   myReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
 
   //TargetThickness = 0.189*micrometer;
-   TargetThickness = m_DetectorManager->GetTargetThickness()*micrometer;  // * by micrometer to convert in mm  
+   TargetThickness = m_DetectorManager->GetTargetThickness();  // * by micrometer to convert in mm  
    cout << "Target Thickness = " <<  TargetThickness << " mm" << endl; 
 
 

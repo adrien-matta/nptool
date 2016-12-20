@@ -2,28 +2,20 @@
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Target
-	THICKNESS= 0.001
-	RADIUS=	5
-	MATERIAL= CD2
-	ANGLE= 0
-	X= 0
-	Y= 0
-	Z= 0
+ THICKNESS= 0.001 micrometer
+ RADIUS= 5 mm
+ MATERIAL= CD2
+ ANGLE= 0 deg
+ X= 0 mm 
+ Y= 0 mm
+ Z= 0 mm
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
-Tigress
-% Placing detector in the standard position
-TigressStandard
-%CloverId= 1 2 3 4
+Tigres sStandard
   CloverId= 5 6 7 8 9 10 11 12 13 14 15 16
 % Free placing of detector at any arbitrary position
-%TigressClover
-    CloverId= 19
-    R= 150
-    Phi= 0
-    Theta= 0
-    Beta= 0 0 0
-
-% Adding the support Frame
-TigressFrame
-  RightFrame= 1
-  LeftFrame= 0
+Tigress Clover
+ CloverId= 19
+ R= 150
+ Phi= 0
+ Theta= 0
+ Beta= 0 0 0

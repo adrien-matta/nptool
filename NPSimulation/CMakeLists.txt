@@ -7,8 +7,8 @@ cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
 
 project (NPSimulation)
 set (NPSIM_VERSION_MAJOR 2)
-set (NPSIM_VERSION_MINOR 0)
-set (NPSIM_VERSION_DETS 18)
+set (NPSIM_VERSION_MINOR 1)
+set (NPSIM_VERSION_DETS 29)
 
 set(CMAKE_BUILD_TYPE Release)
 
@@ -94,8 +94,12 @@ ENDMACRO()
 
 # Call the Macro
 subdirlist(SUB_DIRECTORY ${CMAKE_BINARY_DIR})
-set(SUB_DIRECTORY ${SUB_DIRECTORY} Core)
+set(SUB_DIRECTORY ${SUB_DIRECTORY} Core EventGenerator Process Scorers)
 include_directories("Core/")
+include_directories("Process/")
+include_directories("EventGenerator/")
+include_directories("Scorers/")
+
 
 # Add each sub folder to the project
 foreach(subdir ${SUB_DIRECTORY})
@@ -104,7 +108,7 @@ foreach(subdir ${SUB_DIRECTORY})
  endforeach()
 
 add_executable(npsimulation Simulation.cc)
-target_Link_libraries(npsimulation ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} NPSCore)
+target_Link_libraries(npsimulation ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} NPSCore NPSScorers NPSProcess NPSEventGenerator)
 configure_file(ressources/macro/gui.mac.in ressources/macro/gui.mac @ONLY) 
 configure_file(ressources/macro/aliases.mac.in ressources/macro/aliases.mac @ONLY) 
 

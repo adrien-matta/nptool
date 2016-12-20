@@ -1,15 +1,15 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%% An Isotropic Source to be used as EventGenerator %%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%			   Energy are given in MeV , Position in mm   %	
+%      Energy are given in MeV , Position in mm   % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% In the TH2F histogram, angle ix X-axis and energy is Y-axis	      %
+% In the TH2F histogram, angle ix X-axis and energy is Y-axis       %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 pBUU
-	AngleEnergyHistPath= sn124sn124e50_flat_p.root h
-	x0= 0	
-	y0= 0	
-	z0= 0	
-	Particle= proton
+ AngleEnergyHistPath= sn124sn124e50_flat_p.root h
+ x0= 0 
+ y0= 0 
+ z0= 0 
+ Particle= proton
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Supported particle type: proton, neutron, deuton, triton, He3 , alpha 

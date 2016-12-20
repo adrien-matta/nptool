@@ -1,156 +1,169 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
-GeneralTarget
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
 Target
-        THICKNESS= 1.29870130
-        RADIUS= 30
-        MATERIAL= Ca
-        X= 0
-        Y= 0
-        Z= 0
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%		
-MUST2Array
-%%%%%%% Bloc Telescope 1 %%%%%%%			
-M2Telescope 			
-X1_Y1=	-122.76 105.03 34.29	
-X1_Y128= -149.81 9.84 51.57    
-X128_Y1=  -68.67 105.03 118.94	
-X128_Y128= -95.71 9.84 136.22
-SI=	1		
-SILI=	1		
-CSI=	1		
-VIS=	all
-%%%%%%% Bloc Telescope 2 %%%%%%%			
-M2Telescope 			
-X1_Y1= 	-138.89 9.84 -91.8  
-X1_Y128= -158.29 9.84 6.77   
-X128_Y1= -107.4 105.03 -85.6
-X128_Y128= -126.8 105.03 12.97 
-SI=	1		
-SILI=	1		
-CSI=	1		
-VIS=	all
-%%%%%%% Bloc Telescope 3 %%%%%%%			
-M2Telescope 			
-X1_Y1=	-126.8 -105.03 12.97	
-X1_Y128= -158.29 -9.84 6.77     
-X128_Y1= -107.4 -105.03 -85.6	
-X128_Y128= -138.89 -9.84 -91.8
-SI=	1		
-SILI=	1		
-CSI=	1		
-VIS=	all
-%%%%%%% Bloc Telescope 4 %%%%%%%			
-M2Telescope 			
-X1_Y1= -95.71 -9.84 136.22   
-X1_Y128= -149.81 -9.84 51.57   
-X128_Y1= -68.67 -105.03 118.94    
-X128_Y128= -122.76 -105.03 34.29 
-SI=	1		
-SILI=	1		
-CSI=	1		
-VIS=	all
-%%%%%%% Telescope 5 à l'arrière côté gauche du faisceau %%%%%%%			
-M2Telescope 			
-X1_Y1= 19.24 -50.23 -157.01  
-X1_Y128= 19.24 50.23 -157.01  
-X128_Y1=  109.91 -50.23 -113.76	       
-X128_Y128= 109.91 50.23 -113.76	 
-SI=	1		
-SILI=	1		
-CSI=	0		
-VIS=	all
-%%%%%%% Telescope 6 collé à l'arrière du bloc %%%%%%%			
-M2Telescope 			
-X1_Y1= -108 50.23 -115.58	 
-X1_Y128= -16.62 50.23 -157.31   	
-X128_Y1= -108 -50.23 -115.58 
-X128_Y128= -16.62 -50.23 -157.31       
-SI=	1		
-SILI=	0		
-CSI=	1		
-VIS=	all
-%%%%%%% Telescope 7 à l'avant côté gauche du faisceau %%%%%%%			
-M2Telescope 			
-X1_Y1= 145.63 50.23 61.77	   
-X1_Y128= 79.06 50.23 137.01 
-X128_Y1= 145.63 -50.23 61.77 
-X128_Y128= 79.06 -50.23 137.01
-SI=	1		
-SILI=	0		
-CSI=	1		
-VIS=	all
-%%%%%%% Telescope 8 en face du bloc %%%%%%%			
-M2Telescope 			
-X1_Y1= 157.58 -50.23 13.83
-X1_Y128= 134.13 -50.23 -83.86	  
-X128_Y1=  157.58 50.23 13.83     
-X128_Y128=  134.13 50.23 -83.86	 
-SI=	1		
-SILI=	1		
-CSI=	0		
-VIS=	all
+  THICKNESS= 1.29870130 micrometer
+  RADIUS= 30 mm
+  MATERIAL= Ca
+  ANGLE= 0 deg
+  X= 0 deg
+  Y= 0 deg
+  Z= 0 deg
+%%%%%%% Bloc Telescope 1 %%%%%%% 		
+M2Telescope  		
+ X1_Y1= -122.76 105.03 34.29 mm	
+ X1_Y128= -149.81 9.84 51.57 mm   
+ X128_Y1=  -68.67 105.03 118.94 mm 
+ X128_Y128= -95.71 9.84 136.22 mm
+ SI= 1		
+ SILI= 1		
+ CSI= 1		
+ VIS= all
+%%%%%%% Bloc Telescope 2 %%%%%%% 		
+M2Telescope  		
+ X1_Y1=  -138.89 9.84 -91.8 mm 
+ X1_Y128= -158.29 9.84 6.77 mm  
+ X128_Y1= -107.4 105.03 -85.6 mm
+ X128_Y128= -126.8 105.03 12.97 mm
+ SI= 1		
+ SILI= 1		
+ CSI= 1		
+ VIS= all
+%%%%%%% Bloc Telescope 3 %%%%%%% 		
+M2Telescope  		
+ X1_Y1= -126.8 -105.03 12.97 mm	
+ X1_Y128= -158.29 -9.84 6.77 mm  
+ X128_Y1= -107.4 -105.03 -85.6 mm
+ X128_Y128= -138.89 -9.84 -91.8 mm
+ SI= 1		
+ SILI= 1		
+ CSI= 1		
+ VIS= all
+%%%%%%% Bloc Telescope 4 %%%%%%% 		
+M2Telescope  		
+ X1_Y1= -95.71 -9.84 136.22 mm  
+ X1_Y128= -149.81 -9.84 51.57 mm  
+ X128_Y1= -68.67 -105.03 118.94 mm   
+ X128_Y128= -122.76 -105.03 34.29 mm
+ SI= 1		
+ SILI= 1		
+ CSI= 1		
+ VIS= all
+%%%%%%% Telescope 5 à l'arrière côté gauche du faisceau %%%%%%% 		
+M2Telescope  		
+ X1_Y1= 19.24 -50.23 -157.01 mm  
+ X1_Y128= 19.24 50.23 -157.01 mm 
+ X128_Y1=  109.91 -50.23 -113.76 mm        
+ X128_Y128= 109.91 50.23 -113.76 mm 
+ SI= 1		
+ SILI= 1		
+ CSI= 0		
+ VIS= all
+%%%%%%% Telescope 6 collé à l'arrière du bloc %%%%%%% 		
+M2Telescope  		
+ X1_Y1= -108 50.23 -115.58 mm 
+ X1_Y128= -16.62 50.23 -157.31 mm    
+ X128_Y1= -108 -50.23 -115.58 mm
+ X128_Y128= -16.62 -50.23 -157.31 mm       
+ SI= 1		
+ SILI= 0		
+ CSI= 1		
+ VIS= all
+%%%%%%% Telescope 7 à l'avant côté gauche du faisceau %%%%%%% 		
+M2Telescope  		
+ X1_Y1= 145.63 50.23 61.77 mm   
+ X1_Y128= 79.06 50.23 137.01 mm 
+ X128_Y1= 145.63 -50.23 61.77 mm 
+ X128_Y128= 79.06 -50.23 137.01 mm
+ SI= 1		
+ SILI= 0		
+ CSI= 1		
+ VIS= all
+%%%%%%% Telescope 8 en face du bloc %%%%%%% 		
+M2Telescope  		
+ X1_Y1= 157.58 -50.23 13.83 mm
+ X1_Y128= 134.13 -50.23 -83.86 mm   
+ X128_Y1=  157.58 50.23 13.83 mm 
+ X128_Y128=  134.13 50.23 -83.86 mm  
+ SI= 1		
+ SILI= 1		
+ CSI= 0		
+ VIS= all
 
 %%%%%%%%%%%%%%%%SPEG Spectrometer%%%%%%%%%%%%%
 SPEG
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
-dotrx
-nmesx= 4                                
-nomx= x11 
-zx= 168.2 iev= 1 dx= 3.5 x0= 14838.0 etalx= .0025  ievd= 11   z= 16384.0  f= 100.0
-nomx= x12
-zx= 173.2 iev= 2 dx= 3.5 x0= 14910.0 etalx= .0025  ievd= 12   z= 16384.0  f= 100.0
-nomx= x21
-zx= 240.3 iev= 3 dx= 3.5 x0= 14148.0 etalx= .0025  ievd= 13   z= 16384.0  f= 100.0
-nomx= x22
-zx= 245.3 iev= 4 dx= 3.5 x0= 14238.0 etalx= .0025  ievd= 14   z= 16384.0  f= 100.0
-nax= 42 fax= 200000.0 zax= 16384.0                        
-nbx= 43 fbx= 100.0 zbx= 16384.0
-ichix= 44 fchix= 100.0                                     
-nfx= 45 nfoc= 8.0  zfoc= 164.0 ffx= 400.0 zfx= 16384.0                     
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+ dotrx
+ nmesx= 4                                
+ nomx= x11 
+ zx= 168.2 iev= 1 dx= 3.5 x0= 14838.0 etalx= .0025  ievd= 11   z= 16384.0  f= 100.0
+ nomx= x12
+ zx= 173.2 iev= 2 dx= 3.5 x0= 14910.0 etalx= .0025  ievd= 12   z= 16384.0  f= 100.0
+ nomx= x21
+ zx= 240.3 iev= 3 dx= 3.5 x0= 14148.0 etalx= .0025  ievd= 13   z= 16384.0  f= 100.0
+ nomx= x22
+ zx= 245.3 iev= 4 dx= 3.5 x0= 14238.0 etalx= .0025  ievd= 14   z= 16384.0  f= 100.0
+ nax= 42 fax= 200000.0 zax= 16384.0                        
+ nbx= 43 fbx= 100.0 zbx= 16384.0
+ ichix= 44 fchix= 100.0                                     
+ nfx= 45 nfoc= 8.0  zfoc= 164.0 ffx= 400.0 zfx= 16384.0                     
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ dotry
+ nmesy= 4                                
+ zy= 168.2 iev= 5 dy= 3.5 y0= 460.0 etaly= .00512 ievd= 21   z= 4096.0  f= 100.0
+ zy= 173.2 iev= 6 dy= 3.5 y0= 436.0 etaly= .00512  ievd= 22   z= 4096.0  f= 100.0
+ zy= 240.3 iev= 7 dy= 3.5 y0= 460.0 etaly= .00512  ievd= 23   z= 4096.0  f= 100.0
+ zy= 245.3 iev= 8 dy= 3.5 y0= 451.0 etaly= .00512  ievd= 24   z= 4096.0 f= 100.0
+ nay= 55 fay= 2000000.0 zay= 16000.0                       
+ nby= 53 fby= 100000.0 zby= 4096.0
+ ichiy= 54 fchiy= 100.0                                     
+ nfy= 52 nfoc= 0.0  zfoc= 165.0 ffy= 100. zfy= 16000.0
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ Coefficients
+ alpha0= 1.5 alpha1= 1.5 alpha2= 1.5 alpha3= 1.6
+ tema= 20000.0000000 temb= 1.000000
+ tcora= 0.4e-5 tcorb= 12000.0000000
+ cmsurqa= 8.e-6 cmsurqb= 3000.0000000
+ za= 0.600000 zb= 20000.0000000
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-dotry
-nmesy= 4                                
-zy= 168.2 iev= 5 dy= 3.5 y0= 460.0 etaly= .00512 ievd= 21   z= 4096.0  f= 100.0
-zy= 173.2 iev= 6 dy= 3.5 y0= 436.0 etaly= .00512  ievd= 22   z= 4096.0  f= 100.0
-zy= 240.3 iev= 7 dy= 3.5 y0= 460.0 etaly= .00512  ievd= 23   z= 4096.0  f= 100.0
-zy= 245.3 iev= 8 dy= 3.5 y0= 451.0 etaly= .00512  ievd= 24   z= 4096.0 f= 100.0
-nay= 55 fay= 2000000.0 zay= 16000.0                       
-nby= 53 fby= 100000.0 zby= 4096.0
-ichiy= 54 fchiy= 100.0                                     
-nfy= 52 nfoc= 0.0  zfoc= 165.0 ffy= 100. zfy= 16000.0
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Coefficients
-alpha0= 1.5 alpha1= 1.5 alpha2= 1.5 alpha3= 1.6
-tema= 20000.0000000 temb= 1.000000
-tcora= 0.4e-5 tcorb= 12000.0000000
-cmsurqa= 8.e-6 cmsurqb= 3000.0000000
-za= 0.600000 zb= 20000.0000000
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-degree_of_calibration_angle_with_Brho= 1
-degree_of_correction_angle_with_Brho= 1
+ degree_of_calibration_angle_with_Brho= 1
+ degree_of_correction_angle_with_Brho= 1
 %%%%%%%%%%%%%%%%%%%%%%%%%%EXL%%%%%%%%%%%%%%%%%%%%%%%%%%
 EXL
-NumberOfCrystal= 18
-CsI_X_Y_Z= -1.956 48.401 -82.301
-CsI_X_Y_Z= 11.973 49.194 -76.1
-CsI_X_Y_Z= 33.85 82.032 -15.711
-CsI_X_Y_Z= 47.211 81.194 -8.369
-CsI_X_Y_Z= -21.958 80.001 -42.184
-CsI_X_Y_Z= -8.103 80.908 -35.833
-CsI_X_Y_Z= 54.018 50.157 -56.162
-CsI_X_Y_Z= 67.311 49.454 -48.684
-CsI_X_Y_Z= 6.304 82.469 -29.756
-CsI_X_Y_Z= 19.943 82.504 -22.894
-CsI_X_Y_Z= -11.619 65.279 -62.922
-CsI_X_Y_Z= 2.275 66.134 -56.648
-CsI_X_Y_Z= 26.508 50.531 -70.279
-CsI_X_Y_Z= 40.151 50.576 -63.424
-CsI_X_Y_Z= 16.748 67.591 -50.703
-CsI_X_Y_Z= 30.389 67.631 -43.845
-CsI_X_Y_Z= 44.275 67.183 -36.621
-CsI_X_Y_Z= 57.601 66.409 -29.208
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ POS= -1.956 48.401 -82.301
+EXL
+ POS= 11.973 49.194 -76.1
+EXL
+ POS= 33.85 82.032 -15.711
+EXL
+ POS= 47.211 81.194 -8.369
+EXL
+ POS= -21.958 80.001 -42.184
+EXL
+ POS= -8.103 80.908 -35.833
+EXL
+ POS= 54.018 50.157 -56.162
+EXL
+ POS= 67.311 49.454 -48.684
+EXL
+ POS= 6.304 82.469 -29.756
+EXL
+ POS= 19.943 82.504 -22.894
+EXL
+ POS= -11.619 65.279 -62.922
+EXL
+ POS= 2.275 66.134 -56.648
+EXL
+ POS= 26.508 50.531 -70.279
+EXL
+ POS= 40.151 50.576 -63.424
+EXL
+ POS= 16.748 67.591 -50.703
+EXL
+ POS= 30.389 67.631 -43.845
+EXL
+ POS= 44.275 67.183 -36.621
+EXL
+ POS= 57.601 66.409 -29.208
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 TAC
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -159,8 +172,8 @@ TAC
 
 
 
-	
-			
-					
+ 
+ 		
+ 				
 
 

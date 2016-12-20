@@ -31,9 +31,9 @@ int main(int argc , char** argv){
   // Generate the Class list with Token for autoloading of the Detector classes
   DIR *dir;
   struct dirent *ent;
-  string path = getenv("NPTOOL");
+ std::string path = getenv("NPTOOL");
   path += "/NPLib/lib";
-  string lib;
+ std::string lib;
   if ((dir = opendir (path.c_str())) != NULL) {
     while ((ent = readdir (dir)) != NULL) {
       lib= ent->d_name ;
@@ -52,23 +52,23 @@ int main(int argc , char** argv){
   if ((dir = opendir (path.c_str())) != NULL){
     while ((ent = readdir (dir)) != NULL) {
       if(ent->d_type == DT_DIR){
-        string folderName = ent->d_name ;
+       std::string folderName = ent->d_name ;
         if(strncmp(folderName.c_str(),".",1)!=0 && folderName!="scripts"
             && folderName!="lib" && folderName!="include"  
             && folderName!="Utility" && folderName!="bin"
             && folderName!="CMakeFiles"){
           if(detlist.length()==0 || detlist.find(folderName)!=std::string::npos){
-            string command = "ls "+ folderName+"/*.pcm > /dev/null 2>/dev/null";
+           std::string command = "ls "+ folderName+"/*.pcm > /dev/null 2>/dev/null";
             return_value=system(command.c_str());             
             if(!return_value){
-              string cmd1 = "cp " + folderName+"/*.pcm lib/ > /dev/null 2>/dev/null"; 
+             std::string cmd1 = "cp " + folderName+"/*.pcm lib/ > /dev/null 2>/dev/null"; 
               return_value=system(cmd1.c_str());
             }
 
             command = "ls "+ folderName+"/*.rootmap > /dev/null 2>/dev/null";
             return_value=system(command.c_str());             
             if(!return_value){
-              string cmd2 = "cp " + folderName+"/*.rootmap lib/ > /dev/null 2>/dev/null" ;
+             std::string cmd2 = "cp " + folderName+"/*.rootmap lib/ > /dev/null 2>/dev/null" ;
               return_value=system(cmd2.c_str());
             }
           }
@@ -82,19 +82,19 @@ int main(int argc , char** argv){
   if ((dir = opendir (path.c_str())) != NULL){
     while ((ent = readdir (dir)) != NULL) {
       if(ent->d_type == DT_DIR){
-        string folderName = ent->d_name ;
+       std::string folderName = ent->d_name ;
         if(strncmp(folderName.c_str(),".",1)!=0){
           if(detlist.length()==0 || detlist.find(folderName)!=std::string::npos){
-            string command = "ls "+ folderName+"/*.pcm > /dev/null 2>/dev/null";
+           std::string command = "ls "+ folderName+"/*.pcm > /dev/null 2>/dev/null";
             return_value=system(command.c_str());             
             if(!return_value){
-              string cmd1 = "cp " + folderName+"/*.pcm lib/ > /dev/null 2>/dev/null"; 
+             std::string cmd1 = "cp " + folderName+"/*.pcm lib/ > /dev/null 2>/dev/null"; 
               return_value=system(cmd1.c_str());
             }
             command = "ls Detectors/"+ folderName+"/*.rootmap > /dev/null 2>/dev/null";
             return_value=system(command.c_str());             
             if(!return_value){
-              string cmd2 = "cp Detectors/" + folderName+"/*.rootmap lib/ > /dev/null 2>/dev/null" ;
+             std::string cmd2 = "cp Detectors/" + folderName+"/*.rootmap lib/ > /dev/null 2>/dev/null" ;
               return_value=system(cmd2.c_str());
             }
           }
@@ -110,23 +110,23 @@ int main(int argc , char** argv){
   if ((dir = opendir (path.c_str())) != NULL){
     while ((ent = readdir (dir)) != NULL) {
       if(ent->d_type == DT_DIR){
-        string folderName = ent->d_name ;
+       std::string folderName = ent->d_name ;
         if(strncmp(folderName.c_str(),".",1)!=0 && folderName!="scripts"
             && folderName!="lib" && folderName!="include"  
             && folderName!="Utility" && folderName!="bin"
             && folderName!="CMakeFiles"){
           if(detlist.length()==0 || detlist.find(folderName)!=std::string::npos){
-            string command = "ls Detectors/"+ folderName+"/*.pcm > /dev/null 2>/dev/null";
+           std::string command = "ls Detectors/"+ folderName+"/*.pcm > /dev/null 2>/dev/null";
             return_value=system(command.c_str());             
             if(!return_value){
-              string cmd1 = "cp Detectors/" + folderName+"/*.pcm lib/ > /dev/null 2>/dev/null"; 
+             std::string cmd1 = "cp Detectors/" + folderName+"/*.pcm lib/ > /dev/null 2>/dev/null"; 
               return_value=system(cmd1.c_str());
             }
 
             command = "ls "+ folderName+"/*.rootmap > /dev/null 2>/dev/null";
             return_value=system(command.c_str());             
             if(!return_value){
-              string cmd2 = "cp Detectors/" + folderName+"/*.rootmap lib/ > /dev/null 2>/dev/null" ;
+             std::string cmd2 = "cp Detectors/" + folderName+"/*.rootmap lib/ > /dev/null 2>/dev/null" ;
               return_value=system(cmd2.c_str());
             }
           }
@@ -139,7 +139,7 @@ int main(int argc , char** argv){
 #ifdef __APPLE__
   path = getenv("NPTOOL");
   path += "/NPLib/*/*.rootmap";
-  string command = "ls "+ path +" > /dev/null 2>/dev/null";
+ std::string command = "ls "+ path +" > /dev/null 2>/dev/null";
   return_value=system(command.c_str());
 
   if(!return_value){

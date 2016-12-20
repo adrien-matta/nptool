@@ -4,19 +4,19 @@
 %% Beam energy given in MeV ; Excitation in MeV ; SigmaXY in mm
 %  SigmaThetaX/PhiY in deg
 Transfert
-	Beam= 5He
-	Target= 208Pb
-	Light= 5He
-	Heavy= 208Pb
-	ExcitationEnergyLight= 0.0
-	ExcitationEnergyHeavy= 0.0
-	BeamEnergy= 22
-	BeamEnergySpread= 10
-	SigmaThetaX= 0
-	SigmaPhiY= 0
-	SigmaX= 0
-	SigmaY= 0
-	CrossSectionPath= flat.txt
-	ShootLight= 1
-	ShootHeavy= 0
+ Beam= 5He
+ Target= 208Pb
+ Light= 5He
+ Heavy= 208Pb
+ ExcitationEnergyLight= 0.0
+ ExcitationEnergyHeavy= 0.0
+ BeamEnergy= 22
+ BeamEnergySpread= 10
+ SigmaThetaX= 0
+ SigmaPhiY= 0
+ SigmaX= 0
+ SigmaY= 0
+ CrossSectionPath= flat.txt
+ ShootLight= 1
+ ShootHeavy= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

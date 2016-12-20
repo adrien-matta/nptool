@@ -5,24 +5,24 @@ Beam
   Particle= 34Ar
   Energy= 2380
   SigmaEnergy= 10
-	SigmaX= 2
-	SigmaY= 2
-	SigmaThetaX= 0 
-	SigmaPhiY= 0
+ SigmaX= 2
+ SigmaY= 2
+ SigmaThetaX= 0 
+ SigmaPhiY= 0
   MeanThetaX= 0
   MeanPhiY= 0
   MeanX= 0
   MeanY= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 TwoBodyReaction
-	Beam= 34Ar
-	Target= 1H
-	Light= 2H
-	Heavy= 33Ar
-	ExcitationEnergyHeavy= 0.0
-	ExcitationEnergyLight= 0.0
+ Beam= 34Ar
+ Target= 1H
+ Light= 2H
+ Heavy= 33Ar
+ ExcitationEnergyHeavy= 0.0
+ ExcitationEnergyLight= 0.0
   CrossSectionPath= flat.txt CS
-	ShootLight= 1
-	ShootHeavy= 0
+ ShootLight= 1
+ ShootHeavy= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

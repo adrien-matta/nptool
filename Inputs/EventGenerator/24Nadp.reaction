@@ -2,40 +2,37 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Beam
-  Particle= 24Na
-  ExcitationEnergy= 0
-  Energy= 192
-  SigmaEnergy= 1
-  SigmaThetaX= 0.01 
-  SigmaPhiY= 0.01
-  SigmaX= 0.5
-  SigmaY= 0.5
-  MeanThetaX= 0
-  MeanPhiY= 0
-  MeanX= 0
-  MeanY= 0
-  %EnergyProfilePath=
-  %XThetaXProfilePath=
-  %YPhiYProfilePath=
+ Particle= 24Na
+ ExcitationEnergy= 0 MeV
+ Energy= 192 MeV
+ SigmaEnergy= 1 MeV
+ SigmaThetaX= 0.01 deg
+ SigmaPhiY= 0.01 deg
+ SigmaX= 0.5 mm
+ SigmaY= 0.5 mm
+ MeanThetaX= 0 deg
+ MeanPhiY= 0 deg
+ MeanX= 0 mm
+ MeanY= 0 mm
+ %EnergyProfilePath=
+ %XThetaXProfilePath=
+ %YPhiYProfilePath=
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 TwoBodyReaction
-	Beam= 24Na
-	Target= 2H
-	Light= 1H
-	Heavy= 25Na
-	ExcitationEnergyLight= 0.0
-	ExcitationEnergyHeavy= 2.2
-  CrossSectionPath= flat.txt	CSR
-	ShootLight= 1
-	ShootHeavy= 1
+ Beam= 24Na
+ Target= 2H
+ Light= 1H
+ Heavy= 25Na
+ ExcitationEnergyLight= 0.0 MeV
+ ExcitationEnergyHeavy= 2.2 MeV
+ CrossSectionPath= flat.txt  CSR
+ ShootLight= 1
+ ShootHeavy= 1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-GammaDecay 25Na
-Cascade
+GammaCascade 25Na
   BranchingRatio= 70
-  Energies= 2.2
-  DifferentialCrossSection= 11Li(d,3He)10He.txt	Gamma25Na
-Cascade
+  Energies= 2.2 MeV
+  DifferentialCrossSection= flat.txt Gamma25Na
+GammaCascade 25Na
   BranchingRatio= 30
-  Energies= 1.0 1.2
-
-
+  Energies= 1.0 1.2 MeV

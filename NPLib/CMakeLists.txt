@@ -12,9 +12,9 @@ include("ressources/CMake/NPTool_CMake_Preamble.cmake")
 # Major change in the Core/Physics (affecting the detector/analysis/simulation)
 set(NPLIB_VERSION_MAJOR 2)
 # Minor change in the Core/Physics (not affecting any other part)
-set(NPLIB_VERSION_MINOR 1)
+set(NPLIB_VERSION_MINOR 2)
 # Change any of the detector in NPA
-set(NPLIB_VERSION_DETA 35)
+set(NPLIB_VERSION_DETA 45)
 
 configure_file(Core/NPLibVersion.h.in Core/NPLibVersion.h @ONLY)
 set(DETLIST ${ETLIST})

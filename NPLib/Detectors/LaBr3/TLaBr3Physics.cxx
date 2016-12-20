@@ -25,6 +25,7 @@
 #include "RootOutput.h"
 #include "RootInput.h"
 #include "NPDetectorFactory.h"
+#include "NPOptionManager.h"
 
 //   STL
 #include <iostream>
@@ -72,136 +73,36 @@ void TLaBr3Physics::Clear()
    }
    
 ///////////////////////////////////////////////////////////////////////////
-void TLaBr3Physics::ReadConfiguration(string Path) 
-   {
-      ifstream ConfigFile           ;
-      ConfigFile.open(Path.c_str()) ;
-      string LineBuffer             ;
-      string DataBuffer             ;
+void TLaBr3Physics::ReadConfiguration(NPL::InputParser parser) {
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("LaBr3");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-      bool check_Theta = false          ;
-      bool check_Phi  = false           ;
-      bool check_R     = false          ;
-      bool check_Radius = false         ;
-      bool check_Height = false         ;
-      bool check_X = false              ;
-      bool check_Y = false              ;
-      bool check_Z = false              ;      
-      bool ReadingStatus = false        ;
+  vector<string> token_sphe = {"R","THETA","PHI"};
+  vector<string> token_cart = {"X","Y","Z"};
 
-    while (!ConfigFile.eof()) 
-       {
-         
-         getline(ConfigFile, LineBuffer);
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token_cart)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  LaBr3" << i+1 <<  endl;
+      blocks[i]->GetDouble("X","mm");
+      blocks[i]->GetDouble("Y","mm");
+      blocks[i]->GetDouble("Z","mm");
+    }
+    else if(blocks[i]->HasTokenList(token_sphe)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  LaBr3" << i+1 <<  endl;
+      blocks[i]->GetDouble("R","deg");
+      blocks[i]->GetDouble("THETA","deg");
+      blocks[i]->GetDouble("PHI","deg");
+    }
 
-         //   If line is a Start Up LaBr3 bloc, Reading toggle to true      
-         if (LineBuffer.compare(0, 5, "LaBr3") == 0) 
-            {
-               cout << "///" << endl ;
-               cout << "LaBr3 found: " << endl ;        
-               ReadingStatus = true ;
-            }
-            
-         //   Else don't toggle to Reading Block Status
-         else ReadingStatus = false ;
-         
-         //   Reading Block
-         while(ReadingStatus)
-            {
-               // Pickup Next Word 
-               ConfigFile >> DataBuffer ;
-
-               //   Comment Line 
-               if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
-
-                  //   Finding another telescope (safety), toggle out
-               else if (DataBuffer.compare(0, 5, "LaBr3") == 0) {
-                  cout << "WARNING: Another Detector is find before standard sequence of Token, Error may occured in Telecope definition" << endl ;
-                  ReadingStatus = false ;
-               }
-                              
-                                    //Angle method
-               else if (DataBuffer=="THETA=") {
-                  check_Theta = true;
-                  ConfigFile >> DataBuffer ;
-                  cout << "Theta:  " << atof(DataBuffer.c_str()) << "deg" << endl;
-               }
-
-               else if (DataBuffer=="PHI=") {
-                  check_Phi = true;
-                  ConfigFile >> DataBuffer ;
-                  cout << "Phi:  " << atof( DataBuffer.c_str() ) << "deg" << endl;
-               }
-
-               else if (DataBuffer=="R=") {
-                  check_R = true;
-                  ConfigFile >> DataBuffer ;
-                  cout << "R:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
-               }
-               
-               //Position method
-               else if (DataBuffer=="X=") {
-                  check_X = true;
-                  ConfigFile >> DataBuffer ;
-                  cout << "X:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
-               }
-
-               else if (DataBuffer=="Y=") {
-                  check_Y = true;
-                  ConfigFile >> DataBuffer ;
-                  cout << "Y:  " << atof( DataBuffer.c_str() ) << "mm"<< endl;
-               }
-
-               else if (DataBuffer=="Z=") {
-                  check_Z = true;
-                  ConfigFile >> DataBuffer ;
-                  cout << "Z:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
-               }
-               
-               
-                 
-               // Cylindrical shape
-               else if (DataBuffer== "Radius=") {
-                  check_Radius = true;
-                  ConfigFile >> DataBuffer ;
-                  cout << "LaBr3 Radius:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
-               }
- 
-               
-               else if (DataBuffer== "Height=") {
-                  check_Height = true;
-                  ConfigFile >> DataBuffer ;
-                  cout << "LaBr3 Height:  " << atof( DataBuffer.c_str() ) << "mm" << endl;
-               }
-               
-                                                 
-               ///////////////////////////////////////////////////
-               //   If no Detector Token and no comment, toggle out
-               else 
-                  {ReadingStatus = false; cout << "Wrong Token Sequence: Getting out " << DataBuffer << endl ;}
-               
-                  /////////////////////////////////////////////////
-                  //   If All necessary information there, toggle out
-               
-               if ( check_Theta && check_Phi && check_R &&  check_Radius &&      check_Height &&    check_X && check_Y && check_Z ) 
-                  { 
-                     NumberOfDetector++;
-                     
-                     //   Reinitialisation of Check Boolean  
-                     check_Theta = false          ;
-                     check_Phi  = false           ;
-                     check_R     = false          ;
-                     check_Radius = false         ;
-                     check_Height = false         ;
-                     check_X = false              ;
-                     check_Y = false              ;
-                     check_Z = false              ;
-                     ReadingStatus = false        ;   
-                     cout << "///"<< endl         ;                
-                  }
-            }
-      }
-   }
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
+    }
+  }
+}
 
 ///////////////////////////////////////////////////////////////////////////
 void TLaBr3Physics::AddParameterToCalibrationManager()

@@ -67,13 +67,13 @@ Beam::Beam(){
   fTargetAngle = 0 ;
   fTargetZ = 0 ;
   fVerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
-  
+
   // case of user given distribution
   // do that to avoid warning from multiple Hist with same name...
   int offset = 0;
   while(gDirectory->FindObjectAny(Form("EnergyHist_%i",offset))!=0)
     ++offset;
-  
+
   fEnergyHist  = new TH1F(Form("EnergyHist_%i",offset),"EnergyHist",1,0,1);
   fXThetaXHist = new TH2F(Form("XThetaXHis_%i",offset),"XThetaXHis",1,0,1,1,0,1);
   fYPhiYHist   = new TH2F(Form("YPhiYHist_%i",offset),"YPhiYHist",1,0,1,1,0,1);
@@ -99,13 +99,13 @@ Beam::Beam(string isotope){
   fTargetAngle = 0 ;
   fTargetZ = 0 ;
   fVerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
-  
+
   // case of user given distribution
   // do that to avoid warning from multiple Hist with same name...
   int offset = 0;
   while(gDirectory->FindObjectAny(Form("EnergyHist_%i",offset))!=0)
     ++offset;
-  
+
   fEnergyHist  = new TH1F(Form("EnergyHist_%i",offset),"EnergyHist",1,0,1);
   fXThetaXHist = new TH2F(Form("XThetaXHis_%i",offset),"XThetaXHis",1,0,1,1,0,1);
   fYPhiYHist   = new TH2F(Form("YPhiYHist_%i",offset),"YPhiYHist",1,0,1,1,0,1);
@@ -118,224 +118,98 @@ Beam::~Beam(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Beam::ReadConfigurationFile(string Path){
-  ////////General Reading needs////////
-  string LineBuffer;
-  string DataBuffer;
-  //////////////////////////////////////////////////////////////////////////////////////////
-  ifstream ReactionFile;
-  
-  bool ReadingStatus      = false ;
-  bool check_BeamName     = false ;
-  bool check_Energy       = false ;
-  bool check_SigmaEnergy  = false ;
-  bool check_MeanX        = false ;
-  bool check_MeanY        = false ;
-  bool check_SigmaX       = false ;
-  bool check_SigmaY       = false ;
-  bool check_MeanThetaX   = false ;
-  bool check_MeanPhiY     = false ;
-  bool check_SigmaThetaX  = false ;
-  bool check_SigmaPhiY    = false ;
-  
-  bool check_EnergyProfilePath  = false ;
-  bool check_XThetaXPath        = false ;
-  bool check_YPhiYPath          = false ;
-  
-  bool check_AllEnergy = false;
-  bool check_AllEmittance = false;
-  
-  string GlobalPath = getenv("NPTOOL");
-  string StandardPath = GlobalPath + "/Inputs/EventGenerator/" + Path;
-  ReactionFile.open(StandardPath.c_str());
-  if (ReactionFile.is_open()) {cout << "Reading Reaction File " << Path << endl ;}
-  
-  // In case the file is not found in the standard path, the programm try to interpret the file name as an absolute or relative file path.
-  else{
-    ReactionFile.open( Path.c_str() );
-    if(ReactionFile.is_open()) { 
-        
-      if(fVerboseLevel==1) 
-        cout << "\033[1;35m/////////// Beam ///////////" << endl;
-      
-      if(fVerboseLevel==1) 
-          cout << "Reading Reaction File " << Path << endl;}
-    
-    else {cout << "Reaction File " << Path << " not found" << endl;exit(1);}
-  }
+  NPL::InputParser parser(Path);
+  ReadConfigurationFile(parser);
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void Beam::ReadConfigurationFile(NPL::InputParser parser){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Beam");
+  if(blocks.size()>0 && NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << endl << "\033[1;35m//// Beam found " << endl; 
+
+  vector<string> token   = {"Particle"};
+  vector<string> energyA = {"Energy","SigmaEnergy"};
+  vector<string> energyP = {"EnergyProfilePath"};
+  vector<string> emmitA  = {"SigmaThetaX","SigmaPhiY","SigmaX","SigmaY","MeanThetaX","MeanPhiY","MeanX","MeanY"};
+  vector<string> emmitP  = {"EnergyProfilePath","XThetaXProfilePath","YPhiYProfilePath"};
 
 
-  while (!ReactionFile.eof()) {
-    //Pick-up next line
-    getline(ReactionFile, LineBuffer);
-    
-    if (LineBuffer.compare(0, 4, "Beam") == 0) {
-      if(fVerboseLevel==1) cout << "Beam Found" << endl ;
-      ReadingStatus = true ;
-    }
-    
-    while(ReadingStatus){
-      
-      ReactionFile >> DataBuffer;
-      
-      //Search for comment Symbol %
-      if (DataBuffer.compare(0, 1, "%") == 0) {   ReactionFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
-      
-      else if (DataBuffer == "Particle=") {
-        check_BeamName = true ;
-        ReactionFile >> DataBuffer;
-        SetUp(DataBuffer);
-        if(fVerboseLevel==1) cout << "Beam Particle: " << GetName() << endl;
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token)){
+      SetUp(blocks[i]->GetString("Particle"));
+
+      if(blocks[i]->HasToken("ExcitationEnergy"))
+        fExcitationEnergy = blocks[i]->GetDouble("ExcitationEnergy","MeV");
+
+      // Energy analytic
+      if(blocks[i]->HasTokenList(energyA)){
+        fEnergy = blocks[i]->GetDouble("Energy","MeV");
+        fSigmaEnergy= blocks[i]->GetDouble("SigmaEnergy","MeV");
       }
-      
-      else if (DataBuffer == "ExcitationEnergy=") {
-        ReactionFile >> DataBuffer;
-        fExcitationEnergy = atof(DataBuffer.c_str()) * MeV;
-        if(fVerboseLevel==1) cout << "Excitation Energy: " << fExcitationEnergy << " MeV" << endl;
+
+      // Energy profile
+      else if(blocks[i]->HasTokenList(energyP)){
+        vector<string> FileName = blocks[i]->GetVectorString("EnergyProfilePath");
+        SetEnergyHist( Read1DProfile(FileName[0], FileName[1]));
       }
-      
-      else if (DataBuffer == "Energy=") {
-        check_Energy = true ;
-        ReactionFile >> DataBuffer;
-        fEnergy = atof(DataBuffer.c_str()) * MeV;
-        if(fVerboseLevel==1) cout << "Beam Energy: " << fEnergy / MeV << " MeV" << endl;
-      }
-      
-      else if (DataBuffer == "SigmaEnergy=") {
-        check_SigmaEnergy = true ;
-        ReactionFile >> DataBuffer;
-        fSigmaEnergy= atof(DataBuffer.c_str()) * MeV;
-        if(fVerboseLevel==1) cout << "Beam Energy Sigma: " << fSigmaEnergy / MeV << " MeV" << endl;
-      }
-      
-      else if (DataBuffer=="MeanX=") {
-        check_MeanX = true ;
-        ReactionFile >> DataBuffer;
-        fMeanX = atof(DataBuffer.c_str()) * mm;
-        if(fVerboseLevel==1) cout << "Mean X: " << fMeanX / mm << " mm" << endl;
-      }
-      
-      else if (DataBuffer=="MeanY=") {
-        check_MeanY = true ;
-        ReactionFile >> DataBuffer;
-        fMeanY = atof(DataBuffer.c_str()) * mm;
-        if(fVerboseLevel==1) cout << "Mean Y: " << fMeanY / mm << " mm" << endl;
-      }
-      
-      else if (DataBuffer=="SigmaX=") {
-        check_SigmaX = true ;
-        ReactionFile >> DataBuffer;
-        fSigmaX = atof(DataBuffer.c_str()) * mm;
-        if(fVerboseLevel==1) cout << "Sigma X: " << fSigmaX / mm << " mm" << endl;
-      }
-      
-      else if (DataBuffer=="SigmaY=") {
-        check_SigmaY = true ;
-        ReactionFile >> DataBuffer;
-        fSigmaY = atof(DataBuffer.c_str()) * mm;
-        if(fVerboseLevel==1) cout << "Sigma Y: " << fSigmaY / mm << " mm" << endl;
-      }
-      
-      else if (DataBuffer == "MeanThetaX=" ) {
-        check_MeanThetaX = true ;
-        ReactionFile >> DataBuffer;
-        fMeanThetaX = atof(DataBuffer.c_str()) * deg;
-        if(fVerboseLevel==1) cout << "Mean Theta X: " << fMeanThetaX / deg << " deg" << endl;
-      }
-      
-      else if (DataBuffer == "MeanPhiY=") {
-        check_MeanPhiY = true ;
-        ReactionFile >> DataBuffer;
-        fMeanPhiY = atof(DataBuffer.c_str()) * deg;
-        if(fVerboseLevel==1) cout << "Mean Phi Y: " << fMeanPhiY / deg << " deg" << endl;
-      }
-      
-      else if (DataBuffer == "SigmaThetaX=" ) {
-        check_SigmaThetaX = true ;
-        ReactionFile >> DataBuffer;
-        fSigmaThetaX = atof(DataBuffer.c_str()) * deg;
-        if(fVerboseLevel==1) cout << "Sigma Theta X: " << fSigmaThetaX / deg << " deg" << endl;
-      }
-      
-      else if (DataBuffer == "SigmaPhiY=") {
-        check_SigmaPhiY = true ;
-        ReactionFile >> DataBuffer;
-        fSigmaPhiY = atof(DataBuffer.c_str()) * deg;
-        if(fVerboseLevel==1) cout << "Sigma Phi Y: " << fSigmaPhiY / deg << " deg" << endl;
-      }
-      
-      else if (DataBuffer == "EnergyProfilePath=") {
-        check_EnergyProfilePath = true ;
-        string FileName,HistName;
-        ReactionFile >> FileName >> HistName;
-        if(fVerboseLevel==1) cout << "Reading Energy profile file: " << FileName << endl;
-        SetEnergyHist( Read1DProfile(FileName, HistName ));
-      }
-      
-      else if (DataBuffer == "XThetaXProfilePath=") {
-        check_XThetaXPath = true ;
-        string FileName,HistName;
-        ReactionFile >> FileName >> HistName;
-        if(fVerboseLevel==1) cout << "Reading X-ThetaX profile file: " << FileName << endl;
-        SetXThetaXHist(Read2DProfile(FileName, HistName ) );
-      }
-      
-      else if (DataBuffer == "YPhiYProfilePath=") {
-        check_YPhiYPath = true ;
-        string FileName,HistName;
-        ReactionFile >> FileName >> HistName;
-        if(fVerboseLevel==1) cout << "Reading Y-ThetaY profile file: " << FileName << endl;
-        SetYPhiYHist( Read2DProfile(FileName, HistName ));
-      }
-      
-      
-      ///////////////////////////////////////////////////
-      //   If no Beam Token and no comment, toggle out
+
       else{
-        cout << "\033[1;31mERROR : Wrong Token Sequence: Getting out\033[0m" << endl ;
+        cout << "ERROR: check your input file formatting " << endl; 
         exit(1);
       }
-      
-      ///////////////////////////////////////////////////
-      if(  ( check_MeanX && check_MeanY && check_SigmaX && check_SigmaY && check_SigmaThetaX && check_SigmaPhiY && check_MeanThetaX && check_MeanPhiY) || ( check_XThetaXPath && check_YPhiYPath ) ){
-        check_AllEmittance = true ;
+
+      // Emmitance analytic
+      if(blocks[i]->HasTokenList(emmitA)){
+        fSigmaThetaX = blocks[i]->GetDouble("SigmaThetaX","deg");
+        fSigmaPhiY = blocks[i]->GetDouble("SigmaPhiY","deg");
+        fSigmaX = blocks[i]->GetDouble("SigmaX","mm");
+        fSigmaY = blocks[i]->GetDouble("SigmaY","mm");
+        fMeanThetaX = blocks[i]->GetDouble("MeanThetaX","deg");
+        fMeanPhiY = blocks[i]->GetDouble("MeanPhiY","deg");
+        fMeanX = blocks[i]->GetDouble("MeanX","mm");
+        fMeanY = blocks[i]->GetDouble("MeanY","mm");
       }
-      
-      if(  ( check_Energy && check_SigmaEnergy ) || ( check_EnergyProfilePath ) ){
-        check_AllEnergy = true ;
+      // Emmitance profile
+      else if(blocks[i]->HasTokenList(emmitP)){
+        vector<string> XThetaX= blocks[i]->GetVectorString("XThetaXProfilePath");
+        SetEnergyHist( Read1DProfile(XThetaX[0], XThetaX[1]));
+        vector<string> YPhiY= blocks[i]->GetVectorString("YPhiYProfilePath");
+        SetEnergyHist( Read1DProfile(YPhiY[0], YPhiY[1]));
+
       }
-      
-      //   If all Token found toggle out
-      if( check_BeamName && check_AllEnergy && check_AllEmittance )
-        ReadingStatus = false ;
+
+      else{
+        cout << "ERROR: check your input file formatting \033[0m" << endl; 
+        exit(1);
+      }
+    }
+
+    else{
+      cout << "ERROR: check your input file formatting \033[0m" << endl;
+      exit(1);
     }
   }
-  
-  if( !check_BeamName || !check_AllEnergy || !check_AllEnergy ){
-    cout << "\033[1;31mERROR : Token Sequence Incomplete, Beam definition could not be Fonctionnal\033[0m" << endl ;
-    exit(1);
-  }
-
-  cout << "\033[0m" ;
-
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "\033[0m" ;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Beam::GenerateRandomEvent(double& E, double& X, double& Y, double& Z, double& ThetaX, double& PhiY ){
   X = Y = 1000000*cm;
-  
+
   if(fSigmaEnergy!=-1)
     E = gRandom->Gaus(fEnergy,fSigmaEnergy);
   else
     E = fEnergyHist->GetRandom();
-  
+
   if(fSigmaX!=-1){
-  // Shoot within the target unless target size is null (no limit)
+    // Shoot within the target unless target size is null (no limit)
     while(sqrt(X*X+Y*Y)>fEffectiveTargetSize || fEffectiveTargetSize == 0){
       NPL::RandomGaussian2D(fMeanX, fMeanThetaX, fSigmaX, fSigmaThetaX, X, ThetaX);
       NPL::RandomGaussian2D(fMeanY, fMeanPhiY, fSigmaY, fSigmaPhiY, Y, PhiY);
     }
   }
-  
+
   else{
     while(sqrt(X*X+Y*Y)>fEffectiveTargetSize || fEffectiveTargetSize == 0){
       fXThetaXHist->GetRandom2(X,ThetaX);
@@ -347,8 +221,8 @@ void Beam::GenerateRandomEvent(double& E, double& X, double& Y, double& Z, doubl
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Beam::Print() const {
-  
-  
+
+
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

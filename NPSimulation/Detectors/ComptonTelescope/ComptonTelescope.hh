@@ -27,7 +27,7 @@
 #include "NPSVDetector.hh"
 #include "TComptonTelescopeData.h"
 #include "TComptonTelescopeProcessData.h"
-
+#include "NPInputParser.h"
 // Geant4 headers
 #include "G4SDManager.hh"
 #include "G4MultiFunctionalDetector.hh"
@@ -88,7 +88,7 @@ public:
 public:
    // Read stream at Configfile to pick-up parameters of detector (Position,...)
    // Called in DetecorConstruction::ReadDetextorConfiguration Method
-   void ReadConfiguration(string Path);
+   void ReadConfiguration(NPL::InputParser);
 
    // Construct detector and inialise sensitive part.
    // Called After DetecorConstruction::AddDetector Method

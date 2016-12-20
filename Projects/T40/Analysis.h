@@ -74,9 +74,9 @@ class Analysis: public NPL::VAnalysis{
   TTiaraHyballPhysics* TH;
   TTiaraBarrelPhysics* TB;  
   TFPDTamuPhysics* TF;
-  //TGeTAMUPhysics* TG;
-  
-	TRandom *Rand ;
+  TGeTAMUPhysics* TG;
+
+  TRandom *Rand ;
 	double ThetaNormalTarget  ;
 	double ThetaTHSurface ;
 	double ThetaTBSurface ;
@@ -110,13 +110,13 @@ class Analysis: public NPL::VAnalysis{
 	double Aw_ThetaFit_R2; // Goodness of fit value of theta from fitting
 	
   //TACS
-  //double TacSiGe ;
+  double TacSiGeOR ;
   double TacSiMicro ;
 	double TacSiMicro_E;
 	double TacSiMicro_dE;
   double TacSiPlastLeft ;
   double TacSiPlastRight ;
-
+  
 	// Other
 	int RunNumber;
 };

@@ -36,7 +36,7 @@ using namespace std;
 
 // NPL header
 #include "NPNucleus.h"
-
+#include "NPInputParser.h"
 using namespace NPL;
 
 namespace NPL{
@@ -50,7 +50,8 @@ namespace NPL{
     
   public:  // Various Method
     void ReadConfigurationFile(string Path);
-  
+    void ReadConfigurationFile(NPL::InputParser);
+
   private:
     int fVerboseLevel;
   

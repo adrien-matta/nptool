@@ -1,31 +1,25 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-GeneralTarget
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Target
-	THICKNESS= 10
-	RADIUS=	20
-	MATERIAL= CD2
-	ANGLE= 0
-	X= 0
-	Y= 0
-	Z= 0
+ THICKNESS= 10 micrometer
+ RADIUS=	20 mm
+ MATERIAL= CD2
+ ANGLE= 0 deg
+ X= 0 mm
+ Y= 0 mm
+ Z= 0 mm
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 DETECTORNAME
-	X= 0
-	Y= 0
-	Z= 350
-	Shape= Square
+ POS= 0 0 350 mm
+ Shape= Square
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 DETECTORNAME
-	X= 350
-	Y= 350
-	Z= 350
-	Shape= Square
+ POS = 35 35 35 cm
+ Shape= Square
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 DETECTORNAME
-	R= 350
-	THETA= 90
-	PHI= 63
-	Shape= Cylindrical
+ R= 350 mm
+ THETA= 90 deg
+ PHI= 63 deg
+ Shape= Cylindrical
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

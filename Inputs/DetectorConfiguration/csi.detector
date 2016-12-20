@@ -1,69 +1,61 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-GeneralTarget
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Thickness in micrometer
-% Radius in mm
-% Temperature in K, Pressure in bar
 Target
-        THICKNESS= 0.1
-        ANGLE= 0
-        RADIUS= 10
-        MATERIAL= CD2
-        X= 0
-        Y= 0
-        Z= 0
+ THICKNESS= 0.1 micrometer
+ ANGLE= 0 deg
+ RADIUS= 10 mm
+ MATERIAL= CD2
+ X= 0 mm 
+ Y= 0 mm
+ Z= 0 mm
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%ScintillatorCsI
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%CsI
-	THETA= 0
-	PHI= 0
-	R= 0
-	X= 0
-	Y= 0
-  Z= 15
-	Thickness= 0.0001
-	Shape= Trapezoidal
-  FaceFront= 1000
-  FaceBack= 1000
-  Radius= 0
-	Scintillator= CsI
-	LeadThickness= 0
+CsI
+ THETA= 0 deg
+ PHI= 0 deg
+ R= 0 mm
+ X= 0 mm
+ Y= 0 mm
+ Z= 15 mm
+ Thickness= 1 mm
+ Shape= Trapezoidal
+ FaceFront= 100 mm
+ FaceBack= 100 mm
+ Radius= 0 mm
+ Scintillator= CsI
+ LeadThickness= 0 mm
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ScintillatorPlastic
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Plastic
-	THETA= 0
-	PHI= 0
-	R= 0
-	X= 0
-  Y= 0
-  Z= 1
-	Thickness= 1.0
- 	Shape= Square
-  Height= 10
-  Width= 10
-	Radius= 0
-	Scintillator= Pb
-	LeadThickness= 0
+ THETA= 0 deg
+ PHI= 0 deg
+ R= 0 mm
+ X= 0 mm
+ Y= 0 mm
+ Z= 100 mm
+ Thickness= 10.0 mm
+ Shape= Square
+ Height= 10 mm
+ Width= 10 mm
+ Scintillator= Pb
+ LeadThickness= 0 mm
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Plastic
-	THETA= 0
-	PHI= 0
-	R= 0
- 	X= 0
-  Y= 0
-  Z= 250
-	Thickness= 200
-  Shape= Square
-  Height= 300
-  Width= 300
-	Radius= 0
-	Scintillator= CsI
-	LeadThickness= 0
+ THETA= 0 deg
+ PHI= 0 deg 
+ R= 0 mm 
+ X= 0 mm
+ Y= 0 mm
+ Z= 250 mm
+ Thickness= 20 mm
+ Shape= Square
+ Height= 20 mm
+ Width= 20 mm
+ Scintillator= CsI
+ LeadThickness= 0 mm
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Avaible material:
 % BC400

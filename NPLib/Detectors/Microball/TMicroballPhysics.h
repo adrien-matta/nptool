@@ -1,20 +1,20 @@
 #ifndef TMicroballPHYSICS_H
 #define TMicroballPHYSICS_H
 /*****************************************************************************
- * Copyright (C) 2009-2016   this file is part of the NPTool Project       *
+ * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Pierre Morfouace  contact address: morfouac@nscl.msu.edu                        *
+ * Original Author: Pierre Morfouace  contact address: morfouac@nscl.msu.edu *
  *                                                                           *
- * Creation Date  : June 2016                                           *
+ * Creation Date  : June 2016                                                *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold Microball Treated data                                *
+ *  This class hold Microball Treated data                                   *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -38,7 +38,7 @@ using namespace std;
 #include "TMicroballSpectra.h"
 #include "NPCalibrationManager.h"
 #include "NPVDetector.h"
-
+#include "NPInputParser.h"
 // forward declaration
 class TMicroballSpectra;
 
@@ -72,7 +72,7 @@ class TMicroballPhysics : public TObject, public NPL::VDetector {
   // methods inherited from the VDetector ABC class
   public:
     // read stream from ConfigFile to pick-up detector parameters
-    void ReadConfiguration(string);
+    void ReadConfiguration(NPL::InputParser);
 
     // add parameters to the CalibrationManger
     void AddParameterToCalibrationManager();

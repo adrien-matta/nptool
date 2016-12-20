@@ -30,7 +30,7 @@
 #include "TGaspardTrackerData.h"
 #include "TGaspardTrackerPhysics.h"
 #include "GaspardTrackerModule.h"
-
+#include "NPInputParser.h"
 using namespace std;
 
 
@@ -49,7 +49,7 @@ public:
    ////  Inherite from GaspardTrackerModule class /////
    ////////////////////////////////////////////////////
    // Read stream at Configfile to pick-up parameters of detector (Position,...)
-   void ReadConfiguration(string Path);
+   void ReadConfiguration(NPL::InputParser);
 
    // The goal of this method is to extract physical parameters from raw data
    // Method called at each event read from the Input Tree

@@ -25,6 +25,7 @@
 #include "RootOutput.h"
 #include "RootInput.h"
 #include "NPDetectorFactory.h"
+#include "NPOptionManager.h"
 // C++
 #include <iostream>
 #include <sstream>
@@ -88,77 +89,27 @@ void TChateauCristalPhysics::Clear()
 }
 
 ///////////////////////////////////////////////////////////////////////////
-void TChateauCristalPhysics::ReadConfiguration(string Path) 
-{
-   ifstream ConfigFile           ;
-   ConfigFile.open(Path.c_str()) ;
-   string LineBuffer             ;
-   string DataBuffer             ;
-   string AngleFile;
+void TChateauCristalPhysics::ReadConfiguration(NPL::InputParser parser) {
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("ChateauCristal");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-   bool check_A       = false;
-   bool ReadingStatus = false;
+  vector<string> token = {"ANGLES_FILE"};
 
-   while (!ConfigFile.eof()) {
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token)){
+      string AngleFile = blocks[i]->GetString("ANGLE_FILE");
+      AddModule(AngleFile);
+    }
 
-      getline(ConfigFile, LineBuffer);
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
+    }
+  }
 
-      //  If line is a Start Up ChateauCristal bloc, Reading toggle to true      
-      if (LineBuffer.compare(0, 14, "ChateauCristal") == 0) //whole array at once
-         //if (LineBuffer.compare(0, 4, "BAF2") == 0) //individual detector
-      {
-         cout << "Chateau de Cristal found: " << endl   ;        
-         //         m_NumberOfDetectors=64;//simplify matters to read whole array at once sf
-         ReadingStatus = true ;
-      }
-
-      //  Else don't toggle to Reading Block Status
-      else ReadingStatus = false ;
-
-      //  Reading Block
-      while(ReadingStatus)
-      {
-         // Pickup Next Word 
-         ConfigFile >> DataBuffer ;
-
-         //  Comment Line 
-         if (DataBuffer.compare(0, 1, "%") == 0) {  ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
-
-         //       //  Finding another telescope (safety), toggle out
-         //     else if (DataBuffer=="BAF2") {
-         //       cout << "WARNING: Another Telescope is founnd before standard sequence of Token, Error may occured in detector definition" << endl ;
-         //       ReadingStatus = false ;
-         //     }
-
-         //  File angle method 
-
-         if (DataBuffer.compare(0, 12, "ANGLES_FILE=") == 0) {
-            check_A = true;
-            ConfigFile >> DataBuffer ;
-            AngleFile = DataBuffer;
-
-            cout << "File angle used : " << DataBuffer << endl;
-         }
-
-         //  End File angle Method
-
-         /////////////////////////////////////////////////
-         //   If All necessary information there, toggle out
-         if (check_A)
-         {
-            ReadingStatus = false;
-
-            ///Add The previously define telescope
-
-            AddModule(AngleFile);
-
-            check_A = false;
-         }
-      }
-   }
-
-   InitializeStandardParameter() ;
-   ReadAnalysisConfig()          ;
+  InitializeStandardParameter();
+  ReadAnalysisConfig();
 }
 
 ///////////////////////////////////////////////////////////////////////////

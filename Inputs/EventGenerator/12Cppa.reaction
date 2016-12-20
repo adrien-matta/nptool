@@ -16,15 +16,15 @@ Beam
   MeanY= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 TwoBodyReaction
-	Beam= 1H
-	Target= 12C
-	Light= 1H
-	Heavy= 12C
-	ExcitationEnergyLight= 0.0
-	ExcitationEnergyHeavy= 12.7
-	CrossSectionPath= flat.txt CS
-	ShootLight= 1
-	ShootHeavy= 1
+ Beam= 1H
+ Target= 12C
+ Light= 1H
+ Heavy= 12C
+ ExcitationEnergyLight= 0.0
+ ExcitationEnergyHeavy= 12.7
+ CrossSectionPath= flat.txt CS
+ ShootLight= 1
+ ShootHeavy= 1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ParticleDecay 12C
   Daughter= 4He 4He 4He

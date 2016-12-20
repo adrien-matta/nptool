@@ -61,7 +61,7 @@ void Analysis::Init(){
   //  LightAl = EnergyLoss("alpha_Al.G4table","G4Table",10);
 
   BeamCD2 = EnergyLoss(heavy+"_CD2.G4table","G4Table",10);
-  TargetThickness = m_DetectorManager->GetTargetThickness()*micrometer;
+  TargetThickness = m_DetectorManager->GetTargetThickness();
   OriginalBeamEnergy = myReaction->GetBeamEnergy();
   Rand = TRandom3();
   DetectorNumber = 0 ;

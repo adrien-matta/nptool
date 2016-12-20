@@ -29,7 +29,7 @@ using namespace CLHEP;
 
 // NPTool header
 #include "NPSVDetector.hh"
-
+#include "NPInputParser.h"
 // NPTool - ROOT headers
 #include "TS1Data.h"
 
@@ -64,7 +64,7 @@ private:
 public:
    // Read stream at Configfile to pick-up parameters of detector (Position,...)
    // Called in DetecorConstruction::ReadDetextorConfiguration Method
-   void ReadConfiguration(string Path);
+   void ReadConfiguration(NPL::InputParser);
 
    // Construct detector and inialise sensitive part.
    // Called After DetecorConstruction::AddDetector Method

@@ -34,6 +34,7 @@
 // NPL
 #include "NPNucleus.h"
 #include "NPBeam.h"
+#include "NPInputParser.h"
 using namespace NPL;
 
 // ROOT header
@@ -59,6 +60,8 @@ namespace NPL{
 
     public:  // Various Method
       void ReadConfigurationFile(string Path);
+      void ReadConfigurationFile(NPL::InputParser);
+
 
     private:
       int fVerboseLevel;

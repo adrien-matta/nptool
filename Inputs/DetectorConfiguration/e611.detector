@@ -1,54 +1,42 @@
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-GeneralTarget
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Thickness in micrometer
-% Radius in mm
-% Temperature in K, Pressure in bar
 Target
-	THICKNESS= 2.92
-	RADIUS=	24
-	MATERIAL= CD2
-	ANGLE= 0
-	X= 0
-	Y= 0
-	Z= 0
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-CATSArray 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+ THICKNESS= 2.92 micrometer
+ RADIUS=	24 mm
+ MATERIAL= CD2
+ ANGLE= 0 deg
+ X= 0 mm
+ Y= 0 mm
+ Z= 0 mm
 %%%%%%%%%%%%% Cats 1 %%%%%%%%%%%
 CATSDetector
-   X1_Y1=          -34.36  -34.96  -1787
-   X28_Y1=         36.76   -34.96  -1787
-   X1_Y28=         -34.36  36.16   -1787
-   X28_Y28=        36.76   36.16   -1787
+   X1_Y1=          -34.36  -34.96  -1787 mm
+   X28_Y1=         36.76   -34.96  -1787 mm
+   X1_Y28=         -34.36  36.16   -1787 mm
+   X28_Y28=        36.76   36.16   -1787 mm
 
 %%%%%%%%%%%%% Cats 2 %%%%%%%%%%%
 CATSDetector
-   X1_Y1=          34.26   -35.46  -1155
-   X28_Y1=         -36.86  -35.46  -1155
-   X1_Y28=         34.26   35.66   -1155
-   X28_Y28=        -36.86  35.66   -1155
+   X1_Y1=          34.26   -35.46  -1155 mm
+   X28_Y1=         -36.86  -35.46  -1155 mm
+   X1_Y28=         34.26   35.66   -1155 mm
+   X28_Y28=        -36.86  35.66   -1155 mm
 
 %%%%%%%%%%%%%%%%%%%
 ChateauCristal
 %%%%%%%%%%%%%%%%%%%
    ANGLES_FILE= BaF_geometry.geo.nicolas
-	
-%%%%%%%%%%%%%%%%%%%%			
-CDArray		
+ 
+%%%%%%%%%%%%%%%%%%%% 		
+CDArray 	
 %%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%% Detector 1 %%%%%%%%			
+%%%%%%%%% Detector 1 %%%%%%%% 		
 
-%%%%%%%%% Detector 2 %%%%%%%%			
+%%%%%%%%% Detector 2 %%%%%%%% 		
 
-%%%%%%%%% Detector 3 %%%%%%%%			
+%%%%%%%%% Detector 3 %%%%%%%% 		
 
-%%%%%%%%% Detector 4 %%%%%%%%			
+%%%%%%%%% Detector 4 %%%%%%%% 		
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -60,10 +48,10 @@ IonisationChamber
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Chio 
-A=       -30.  -30.   600.
-B=        30.  -30.   600.
-C=       -30.   30.   600.
-D=        30.   30.   600.
+A=       -30.  -30.   600. mm
+B=        30.  -30.   600. mm
+C=       -30.   30.   600. mm
+D=        30.   30.   600. mm
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ScintillatorPlastic
@@ -72,19 +60,15 @@ ScintillatorPlastic
 %% all parameters need to be there for routine to exit
 
 Plastic
-      THETA= 0
-      PHI= 0
-      R= 0
-      X= 0
-      Y= 0
-      Z= 800
-      Thickness= 20
-      Shape= Square
-      Height= 30 
-      Width= 30
-      Radius= 0
-      Scintillator= BC400
-      LeadThickness= 0
+  X= 0 mm
+  Y= 0 mm
+  Z= 800 mm
+  Thickness= 20 mm
+  Shape= Square
+  Height= 30 mm
+  Width= 30 mm
+  Scintillator= BC400
+  LeadThickness= 0
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

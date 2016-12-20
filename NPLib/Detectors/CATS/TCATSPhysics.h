@@ -32,11 +32,10 @@
 //   NPLib
 #include "TCATSData.h"
 #include "TCATSSpectra.h"
-
 #include "NPVDetector.h"
 #include "NPCalibrationManager.h"
 #include "NPDetectorFactory.h"
-
+#include "NPInputParser.h"
 // forward declaration
 class TCATSSpectra;
 using namespace std ;
@@ -175,7 +174,7 @@ class TCATSPhysics : public TObject, public NPL::VDetector
     void InitializeStandardParameter();
     void AddParameterToCalibrationManager();
     void ReadAnalysisConfig();
-    void ReadConfiguration(string);
+    void ReadConfiguration(NPL::InputParser);
     void AddCATS(TVector3 C_X1_Y1, TVector3 C_X28_Y1, TVector3 C_X1_Y28, TVector3 C_X28_Y28);
 
   public:

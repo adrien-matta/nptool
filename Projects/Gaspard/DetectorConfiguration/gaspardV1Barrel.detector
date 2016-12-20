@@ -1,0 +1,110 @@
+%%%%%%%%%%Detector%%%%%%%%%%%%%%%%%%%
+%%Position and distance given in mm
+%%Angle given in degree
+%% using the data from the experimental mesurement
+%% special care is given for the X Y direction
+%% NOTATTION USED IN THE FOLLOWING:
+%%
+%% X1_Y1  	--> X:1    Y:1
+%% X128_Y1  	--> X:128  Y:1
+%% X1_Y128  	--> X:1    Y:128
+%% X128_Y128  --> X:128  Y:128
+%%Option: 0,1 for Si SiLi and CSI
+%%Option: all or sensible for VISualisation
+% 1.2 12.371134021
+% 2   20.618556701
+% 30  309.278350515
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+GeneralTarget
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+Target
+ THICKNESS= 309.278350515
+ RADIUS=	7.5
+ MATERIAL= CD2
+ X= 0
+ Y= 0
+ Z= 0
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+GaspardTracker
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+GPDSquare 
+ X1_Y1=	 	49.1	66.08	-135.41
+ X128_Y1=	-48.9	66.22	-135.41
+ X1_Y128=	-48.8	135.51	-66.1
+ X128_Y128=	49.2	135.36	-66.1
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 0
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
+GPDSquare 
+ X1_Y1=	 	-66.04	61.23	-130.4
+ X128_Y1=	-135.4	12.32	-81.4
+ X1_Y128=	-65.94	130.51	-61.09
+ X128_Y128=	-135.3	81.6	-12.1
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 0
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%3
+GPDSquare 
+ X1_Y1=	 	-142.52	0.22	-69.3
+ X128_Y1=	-142.62	-69.09	-0.01
+ X1_Y128=	-142.42	69.5	0.01
+ X128_Y128=	-142.52	0.19	69.3
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 0
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%4
+GPDSquare 
+ X1_Y1=	 	-135.54	-81.21	12.1
+ X128_Y1=	-66.31	-130.32	61.09
+ X1_Y128=	-135.44	-11.93	81.4
+ X128_Y128=	-66.21	-61.04	130.4
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 0
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+GPDSquare 
+ X1_Y1=	 	-49.2	-135.36	66.1
+ X128_Y1=	48.8	-135.51	66.1
+ X1_Y128=	48.9	-66.22	135.41
+ X128_Y128=	-49.1	-66.08	135.41
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 0
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%6
+GPDSquare 
+ X1_Y1=	 	65.94	-130.51	61.09
+ X128_Y1=	135.3	-81.6	12.1
+ X1_Y128=	135.4	-12.32	81.4
+ X128_Y128=	66.04	-61.23	130.4
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 0
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%7
+GPDSquare 
+ X1_Y1=	 	142.42	-69.5	-0.01
+ X128_Y1=	142.52	-0.19	-69.3
+ X1_Y128=	142.52	-0.22	69.3
+ X128_Y128=	142.62	69.09	0.01
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 0
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%8
+GPDSquare 
+ X1_Y1=	 	135.44	11.93	-81.4
+ X128_Y1=	66.21	61.04	-130.4
+ X1_Y128=	66.31	130.32	-61.09
+ X128_Y128=	135.54	81.21	 -12.1
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 0
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%9

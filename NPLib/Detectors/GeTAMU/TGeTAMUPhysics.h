@@ -29,6 +29,7 @@ using namespace std;
 #include "TGeTAMUData.h"
 #include "NPCalibrationManager.h"
 #include "NPVDetector.h"
+#include "NPInputParser.h"
 
 // ROOT
 #include "TObject.h"
@@ -46,7 +47,7 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
 
   public: // inherited from VDetector
     //   Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-    void ReadConfiguration(string);
+    void ReadConfiguration(NPL::InputParser);
 
     //   Add Parameter to the CalibrationManger
     void AddParameterToCalibrationManager();      
@@ -71,11 +72,13 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     void BuildSimplePhysicalEvent(){BuildPhysicalEvent();} ;
 
     //   Clear the Event Physics
-    void ClearEventPhysics() {Clear();}      
-    void ClearEventData() ;
-
+    void ClearEventPhysics() {Clear();}          
+    void ClearEventData()    {m_EventData->Clear();}  
+    
   public:
     void PreTreat();
+    // clear the pre-treated object
+    void ClearPreTreatedData()   {m_PreTreatedData->Clear();}
 
   private:   //   Root Input and Output tree classes
 
@@ -95,7 +98,7 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     vector<int> AddBack_Clover;
     vector<int> AddBack_Crystal;
     vector<int> AddBack_Segment;
-    vector<double> GeTimeOR; // OR of all time signals, can be used for array or or clover only
+    vector<double> GeTime; // OR of all time signals, can be used for array or or clover only
 
   private: // use for anlysis
    

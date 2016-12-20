@@ -118,9 +118,7 @@ void NPToolLogon(){
       }
     }
 
-
     // gROOT->ProcessLine(".L $NPTOOL/NPLib/include/RootInput.h+");   
-
     // Since the libdir.GetListOfFiles() commands cds to the
     // libidr directory, one has to return to the initial
     // directory

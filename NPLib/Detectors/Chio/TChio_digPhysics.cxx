@@ -34,6 +34,7 @@
 #include "RootInput.h"
 #include "RootOutput.h"
 #include "NPDetectorFactory.h"
+#include "NPOptionManager.h"
 // ROOT
 #include "TChain.h"
 #include "TRandom.h"
@@ -56,144 +57,32 @@ TChio_digPhysics::~TChio_digPhysics()
 
 
 // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-void TChio_digPhysics::ReadConfiguration(string Path)
-{
-  ifstream ConfigFile;
-  ConfigFile.open(Path.c_str());
-  string LineBuffer              ;
-  string DataBuffer              ;
+void TChio_digPhysics::ReadConfiguration(NPL::InputParser parser){
+ vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Chio");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  double Ax , Bx , Cx , Dx , Ay , By , Cy , Dy , Az , Bz , Cz , Dz      ;
-  TVector3 A , B , C , D                                             ;
+  vector<string> token = {"A","B","C","D"};
 
-  bool check_A = false  ;
-  bool check_B = false     ;
-  bool check_C = false  ;
-  bool check_D = false  ;
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token)){
+      TVector3 A = blocks[i]->GetTVector3("A","mm");
+      TVector3 B = blocks[i]->GetTVector3("B","mm");
+      TVector3 C = blocks[i]->GetTVector3("C","mm");
+      TVector3 D = blocks[i]->GetTVector3("D","mm");
 
-  bool ReadingStatus = false ;
-
-  while (!ConfigFile.eof()) {
-    getline(ConfigFile, LineBuffer);
-
-    //If line is a Start Up chio bloc, Reading toggle to true
-    if (LineBuffer.compare(0, 4, "Chio") == 0) {
-      cout << "///" << endl                ;
-      cout << "Chio Detector found: " << endl   ;
-      ReadingStatus = true              ;
+     // AddChio(A,B,C,D);
     }
 
-    // Else don't toggle to Reading Block Status
-    else ReadingStatus = false ;
-
-    // Reading Block
-    while (ReadingStatus) {
-      ConfigFile >> DataBuffer ;
-      //  Comment Line
-      if (DataBuffer.compare(0, 1, "%") == 0) {
-	ConfigFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-      }
-
-      //  Finding another telescope (safety), toggle out
-      else if (DataBuffer.compare(0, 4, "Chio") == 0) {
-	cout << "WARNING: Another chio is found before standard sequence of Token, Error may have occured in chio definition" << endl ;
-	ReadingStatus = false ;
-      }
-
-      //  Corner Position method
-
-      else if (DataBuffer.compare(0, 2, "A=") == 0) {
-	check_A = true;
-	ConfigFile >> DataBuffer ;
-	Ax = atof(DataBuffer.c_str()) ;
-	Ax = Ax  ;
-	ConfigFile >> DataBuffer ;
-	Ay = atof(DataBuffer.c_str()) ;
-	Ay = Ay  ;
-	ConfigFile >> DataBuffer ;
-	Az = atof(DataBuffer.c_str()) ;
-	Az = Az  ;
-
-	A = TVector3(Ax, Ay, Az);
-	cout << "A corner position : (" << A.X() << ";" << A.Y() << ";" << A.Z() << ")" << endl;
-      }
-
-      else if (DataBuffer.compare(0, 2, "B=") == 0) {
-	check_B = true;
-	ConfigFile >> DataBuffer ;
-	Bx = atof(DataBuffer.c_str()) ;
-	Bx = Bx  ;
-	ConfigFile >> DataBuffer ;
-	By = atof(DataBuffer.c_str()) ;
-	By = By  ;
-	ConfigFile >> DataBuffer ;
-	Bz = atof(DataBuffer.c_str()) ;
-	Bz = Bz  ;
-
-	B = TVector3(Bx, By, Bz);
-	cout << "B corner position : (" << B.X() << ";" << B.Y() << ";" << B.Z() << ")" << endl;
-      }
-
-      else if (DataBuffer.compare(0, 2, "C=") == 0) {
-	check_C = true;
-	ConfigFile >> DataBuffer ;
-	Cx = atof(DataBuffer.c_str()) ;
-	Cx = Cx  ;
-	ConfigFile >> DataBuffer ;
-	Cy = atof(DataBuffer.c_str()) ;
-	Cy = Cy  ;
-	ConfigFile >> DataBuffer ;
-	Cz = atof(DataBuffer.c_str()) ;
-	Cz = Cz  ;
-
-	C = TVector3(Cx, Cy, Cz);
-	cout << "C corner position : (" << C.X() << ";" << C.Y() << ";" << C.Z() << ")" << endl;
-      }
-
-      else if (DataBuffer.compare(0, 2, "D=") == 0) {
-	check_D = true;
-	ConfigFile >> DataBuffer ;
-	Dx = atof(DataBuffer.c_str()) ;
-	Dx = Dx  ;
-	ConfigFile >> DataBuffer ;
-	Dy = atof(DataBuffer.c_str()) ;
-	Dy = Dy  ;
-	ConfigFile >> DataBuffer ;
-	Dz = atof(DataBuffer.c_str()) ;
-	Dz = Dz  ;
-
-	D = TVector3(Dx, Dy, Dz);
-	cout << "D corner position : (" << D.X() << ";" << D.Y() << ";" << D.Z() << ")" << endl;
-
-      }
-
-      //  End Corner Position Method
-
-      /////////////////////////////////////////////////
-      //   If All necessary information there, toggle out
-      if (check_A && check_B && check_C && check_D) {
-	ReadingStatus = false;
-
-	///Add The previously define telescope
-
-	//      AddChio(  A   ,
-	//    B   ,
-	//    C   ,
-	//    D   );
-
-	check_A = false;
-	check_B = false;
-	check_C = false;
-	check_D = false;
-      }
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
     }
-
   }
 
-  cout << endl << "/////////////////////////////" << endl << endl;
+//  InitializeStandardParameter();
+//  ReadAnalysisConfig();
 }
-
-
 
 // Add Parameter to the CalibrationManger
 void TChio_digPhysics::AddParameterToCalibrationManager()

@@ -56,87 +56,32 @@ GaspardTrackerAnnular::~GaspardTrackerAnnular()
 
 
 
-void GaspardTrackerAnnular::ReadConfiguration(string Path)
-{
-  // open config file
-  ifstream ConfigFile;
-  ConfigFile.open(Path.c_str());
-  string LineBuffer;
-  string DataBuffer;
+void GaspardTrackerAnnular::ReadConfiguration(NPL::InputParser parser){
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("GaspardTracker");
+  vector<string> tokenp= {"Z","RMIN","RMAX"};
 
-  double Z = 0, Rmin = 0, Rmax = 0;
+  vector<string> token={"FIRSTSTAGE","SECONDSTAGE","THIRDSTAGE"};
 
-  // initialize flags
-  bool ReadingStatus = false;
-  bool check_Z       = false;
-  bool check_Rmin    = false;
-  bool check_Rmax    = false;
-
-  // read config file
-  while (!ConfigFile.eof()) {
-    getline(ConfigFile, LineBuffer);
-
-    // If line is a GaspardXXX bloc, reading toggle to true
-    // and toggle to true flags indicating which shape is treated.
-    if (LineBuffer.compare(0, 10, "GPDAnnular") == 0) {
-      cout << "///////////////////////" << endl;
-      cout << "Annular module found:" << endl;
-      ReadingStatus = true;
-    }
-
-    // Reading Block
-    while (ReadingStatus) {
-      ConfigFile >> DataBuffer ;
-      // Comment Line 
-      if (DataBuffer.compare(0, 1, "%") == 0) {
-        ConfigFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n' );
-      }
-      // Finding another telescope (safety), toggle out
-      else if (DataBuffer.compare(0, 10, "GPDAnnular") == 0) {
-        cout << "WARNING: Another Module is find before standard sequence of Token, Error may occured in Telecope definition" << endl;
-        ReadingStatus = false;
-      }
-
-      //Position method
-      else if (DataBuffer.compare(0, 2, "Z=") == 0) {
-        check_Z = true;
-        ConfigFile >> DataBuffer ;
-        Z = atof(DataBuffer.c_str()) ;
-        cout << "Z:  " << Z << endl;
-      }
-      else if (DataBuffer.compare(0, 5, "RMIN=") == 0) {
-        check_Rmin = true;
-        ConfigFile >> DataBuffer ;
-        Rmin = atof(DataBuffer.c_str()) ;
-        cout << "Rmin:  " << Rmin << endl;
-      }
-      else if (DataBuffer.compare(0, 5, "RMAX=") == 0) {
-        check_Rmax = true;
-        ConfigFile >> DataBuffer ;
-        Rmax = atof(DataBuffer.c_str()) ;
-        cout << "Rmax:  " << Rmax << endl;
-      }
-
-      /////////////////////////////////////////////////
-      // If All necessary information there, toggle out
-      if (check_Z && check_Rmin && check_Rmax) {
-        ReadingStatus = false;
-
-        // Add imodule
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->GetMainValue() == "Annular" && blocks[i]->HasTokenList(token) ){
+      bool first = blocks[i]->GetInt("FIRSTSTAGE");
+      bool second = blocks[i]->GetInt("SECONDSTAGE");
+      bool third = blocks[i]->GetInt("THIRDSTAGE");
+      if(blocks[i]->HasTokenList(tokenp)){
+        // Add module
+        double Z    = blocks[i]->GetDouble("Z","mm");
+        double Rmin = blocks[i]->GetDouble("Rmin","mm");
+        double Rmax = blocks[i]->GetDouble("Rmax","mm");
         AddModule(Z, Rmin, Rmax);
         m_ModuleTest[m_index["Annular"] + m_NumberOfModule] = this;
-
-        // reset boolean flag for point positioning
-        check_Z    = false;
-        check_Rmin = false;
-        check_Rmax = false;
-      } // end test for adding a module
-    } // end while for reading block
-  } // end while for reading file
-
-  cout << endl << "/////////////////////////////" << endl<<endl;
+      }
+      else{
+      cout << "ERROR: Check input formatting for Gaspard" << endl;
+      exit(1);
+      }
+    }
+  } 
 }
-
 
 void GaspardTrackerAnnular::PreTreat()
 {

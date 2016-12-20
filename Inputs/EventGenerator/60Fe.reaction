@@ -2,27 +2,27 @@
 %%%%%%%%%  Reaction file for 60Fe(d,p)61Fe reaction  %%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Beam
-  Particle= 60Fe
-  Energy= 540
-  SigmaEnergy= 0
-	SigmaX= 0
-	SigmaY= 0
-	SigmaThetaX= 0 
-	SigmaPhiY= 0
-  MeanThetaX= 0
-  MeanPhiY= 0
-  MeanX= 0
-  MeanY= 0
+ Particle= 60Fe
+ Energy= 540
+ SigmaEnergy= 0
+ SigmaX= 0
+ SigmaY= 0
+ SigmaThetaX= 0 
+ SigmaPhiY= 0
+ MeanThetaX= 0
+ MeanPhiY= 0
+ MeanX= 0
+ MeanY= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 TwoBodyReaction
-	Beam= 60Fe
-	Target= 2H
-	Light= 1H
-	Heavy= 61Fe
-	ExcitationEnergyHeavy= 4.0
-	ExcitationEnergyLight= 0.0
-  CrossSectionPath= CS_61dp_f.txt CS
-	ShootLight= 1
-	ShootHeavy= 0
+ Beam= 60Fe
+ Target= 2H
+ Light= 1H
+ Heavy= 61Fe
+ ExcitationEnergyHeavy= 4.0
+ ExcitationEnergyLight= 0.0
+ CrossSectionPath= flat.txt CS
+ ShootLight= 1
+ ShootHeavy= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

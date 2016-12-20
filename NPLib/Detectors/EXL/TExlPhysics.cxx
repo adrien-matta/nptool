@@ -25,7 +25,7 @@
 #include "RootOutput.h"
 #include "RootInput.h"
 #include "NPDetectorFactory.h"
-
+#include "NPOptionManager.h"
 //   STL
 #include <sstream>
 #include <iostream>
@@ -69,132 +69,26 @@ void TExlPhysics::Clear()
    }
    
 ///////////////////////////////////////////////////////////////////////////
-void TExlPhysics::ReadConfiguration(string Path) 
-   {
+void TExlPhysics::ReadConfiguration(NPL::InputParser parser) {
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("EXL");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-      ifstream ConfigFile           ;
-      ConfigFile.open(Path.c_str()) ;
-      string LineBuffer             ;
-      string DataBuffer             ;
+  vector<string> token= {"POS"};
+  vector<TVector3> Center_CsI_Crystals;
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token)){
+      TVector3 pos = blocks[i]->GetTVector3("POS","mm");
+      Center_CsI_Crystals.push_back(pos);
+    }
 
-      double Centerx , Centery , Centerz;
-      double CenterR, CenterTheta, CenterPhi;
-      TVector3 Center;
-      vector <TVector3> Center_CsI_Crystals;
-
-      bool check_CsI_X_Y_Z = false ;
-      bool check_NumberOfCrystal = false ;
-      bool check_CsI_R_Theta_Phi = false ;
-      bool ReadingStatus = false        ;
-
-    while (!ConfigFile.eof()) 
-       {
-         
-         getline(ConfigFile, LineBuffer);
-
-         //   If line is a Start Up EXL bloc, Reading toggle to true      
-         if (LineBuffer.compare(0, 3, "EXL") == 0) 
-            {
-               cout << "///" << endl ;
-               cout << "EXL found ! " << endl ;        
-               ReadingStatus = true ;
-            }
-            
-         //   Else don't toggle to Reading Block Status
-         else ReadingStatus = false ;
-         
-         //   Reading Block
-         while(ReadingStatus)
-            {
-               // Pickup Next Word 
-               ConfigFile >> DataBuffer ;
-
-               //   Comment Line 
-               if (DataBuffer.compare(0, 1, "%") == 0) {   ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
-
-                  //   Finding another telescope (safety), toggle out
-               else if (DataBuffer.compare(0, 3, "EXL") == 0) {
-                  cout << "WARNING: Another Detector is find before standard sequence of Token, Error may occured in EXL definition" << endl ;
-                  ReadingStatus = false ;
-               }
-
- 		else if (DataBuffer=="NumberOfCrystal=") {
-                  check_NumberOfCrystal = true;
-                  ConfigFile >> DataBuffer ;
-		  NumberOfCrystal=atof(DataBuffer.c_str());
-                  cout << "NumberOfCrystal:  " << atof(DataBuffer.c_str()) << endl;
-               }
-                              
-		//   Position method
-               else if (DataBuffer=="CsI_X_Y_Z=") {
-                  check_CsI_X_Y_Z = true;
-                  ConfigFile >> DataBuffer ;
-                  Centerx = atof(DataBuffer.c_str()) ;
-                  Centerx = Centerx  ;
-                  ConfigFile >> DataBuffer ;
-                  Centery = atof(DataBuffer.c_str()) ;
-                  Centery = Centery  ;
-                  ConfigFile >> DataBuffer ;
-                  Centerz = atof(DataBuffer.c_str()) ;
-                  Centerz = Centerz  ;
-
-                  Center = TVector3(Centerx, Centery, Centerz);
-		  Center_CsI_Crystals.push_back(Center);
-                  cout << "CsI crystal position : (" << Center.X() << ";" << Center.Y() << ";" << Center.Z() << ")" << endl;   
-               }
-
-		//   Angle method
-               else if (DataBuffer=="CsI_R_Theta_Phi=") {
-                  check_CsI_R_Theta_Phi = true;
-                  ConfigFile >> DataBuffer ;
-                  CenterR = atof(DataBuffer.c_str()) ;
-                  CenterR = CenterR  ;
-                  ConfigFile >> DataBuffer ;
-                  CenterTheta = atof(DataBuffer.c_str()) ;
-                  CenterTheta = CenterTheta*3.141592654/180  ;
-                  ConfigFile >> DataBuffer ;
-                  CenterPhi = atof(DataBuffer.c_str()) ;
-                  CenterPhi = CenterPhi*3.141592654/180  ;
-
-                  Center = TVector3(CenterR*sin(CenterTheta)*cos(CenterPhi), CenterR*sin(CenterTheta)*sin(CenterPhi), CenterR*cos(CenterTheta));
-		  Center_CsI_Crystals.push_back(Center);
-                  cout << "CsI crystal position : (" << Center.X() << ";" << Center.Y() << ";" << Center.Z() << ")" << endl;   
-               }
-
-
-                                                
-               ///////////////////////////////////////////////////
-               //   If no Detector Token and no comment, toggle out
-               else 
-                  {ReadingStatus = false; cout << "Wrong Token Sequence: Getting out " << DataBuffer << endl ;}
-               
-                  /////////////////////////////////////////////////
-                  //   If All necessary information there, toggle out
-               
-               if ((NumberOfCrystal == Center_CsI_Crystals.size() && check_CsI_R_Theta_Phi && check_NumberOfCrystal) || (NumberOfCrystal == Center_CsI_Crystals.size() && check_CsI_X_Y_Z && check_NumberOfCrystal)) 
-                  { 
-		      //with angle method
-                      if (check_CsI_R_Theta_Phi) 
-                        {
-                           AddEXL(Center_CsI_Crystals) ;
-                        }
-                      //With position method
-                      if (check_CsI_X_Y_Z) 
-                        {
-                           AddEXL(Center_CsI_Crystals) ;
-                        }
-                     //   Reinitialisation of Check Boolean  
-                     ReadingStatus = false; 
-		     check_NumberOfCrystal = false;
-	             check_CsI_X_Y_Z = false;
-                     check_CsI_R_Theta_Phi  = false ;
-		     Center_CsI_Crystals.clear();
-                     cout << "///"<< endl ;                
-                  }
-            }
-      }
-
-   }
+    else{
+      cout << "ERROR: check your input file formatting " << endl;
+      exit(1);
+    }
+  }
+  AddEXL(Center_CsI_Crystals) ;
+}
 ///////////////////////////////////////////////////////////////////////////
 void TExlPhysics::AddEXL(vector <TVector3> Center_CsI_Crystals)
 {

@@ -1,0 +1,137 @@
+%%%%%%%%%%Detector%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+Target
+ THICKNESS= 9.5 micrometer
+ RADIUS= 7.5 mm
+ MATERIAL= CD2 
+ Angle= 0 deg
+ X= 0 mm
+ Y= 0 mm
+ Z= 0 mm
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Annular Back
+GaspardTracker Annular
+ Z=      -148.6 mm
+ RMIN=     16 mm
+ RMAX=     45 mm
+ FIRSTSTAGE=  1
+ SECONDSTAGE= 0
+ THIRDSTAGE=  0
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 End-Cap Back
+GaspardTracker Trapezoid
+ X128_Y128=41.963   21.364  -138.589 mm
+ X1_Y128= 23.737   39.592  -138.591 mm
+ X128_Y1= 122.368   54.712   -71.098 mm
+ X1_Y1= 57.084  119.996   -71.098 mm
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 0
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
+GaspardTracker Trapezoid
+ X128_Y128=     -41.963  -21.364  -138.589 mm
+ X1_Y128=       -23.737  -39.592  -138.591 mm
+ X128_Y1=     -122.368  -54.712   -71.098 mm
+ X1_Y1=        -57.084 -119.996   -71.098 mm
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 0
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%3
+GaspardTracker Trapezoid
+ X128_Y128=     -21.364   41.963  -138.589 mm
+ X1_Y128=       -39.592   23.737  -138.591 mm
+ X128_Y1=      -54.712  122.368   -71.098 mm
+ X1_Y1=       -119.996   57.084   -71.098 mm
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 0
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%4
+GaspardTracker Trapezoid
+ X128_Y128=      21.364  -41.963  -138.589 mm
+ X1_Y128=        39.592  -23.737  -138.591 mm
+ X128_Y1=       54.712 -122.368   -71.098 mm
+ X1_Y1=        119.996  -57.084   -71.098 mm
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 0
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Barrel
+GaspardTracker Square
+ X1_Y1=     -132.251  58.314   53.5 mm
+ X128_Y1=    -61.823 128.742   53.5 mm
+ X1_Y128=   -132.251 58.314   -58.5 mm
+ X128_Y128=  -61.823 128.742  -58.5 mm
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0 
+ THIRDSTAGE= 0
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
+GaspardTracker Square
+ X1_Y1=     -134.75  -52.319  53.5 mm
+ X128_Y1=   -134.75   47.281  53.5 mm
+ X1_Y128=   -134.75  -52.319 -58.5 mm
+ X128_Y128= -134.75   47.281 -58.5 mm
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 0
+ VIS= all
+%%%%%%% Telescope 1 %%%%%%%
+M2Telescope
+ X1_Y1=  13.00 102.79  145.98 mm
+ X1_Y128=  24.88 10.58 175.20 mm
+ X128_Y1=  103.08  102.90  110.06 mm
+ X128_Y128=  115.23  10.76 139.14 mm
+ SI= 1
+ SILI= 0
+ CSI=  1
+ VIS=  all
+
+%%%%%%% Telescope 2 %%%%%%%
+M2Telescope
+ X1_Y1=  -114.05 10.98 138.48 mm
+ X1_Y128=  -23.81  10.92 174.84 mm
+ X128_Y1=  -102.23 102.22  109.39 mm
+ X128_Y128=  -11.95  102.90  145.48 mm
+ SI= 1
+ SILI= 0
+ CSI=  1
+ VIS=  all
+
+%%%%%%% Telescope 3 %%%%%%%
+M2Telescope
+ X1_Y1=  -11.91  -103.68 146.50 mm
+ X1_Y128=  -24.30  -10.94  175.00 mm
+ X128_Y1=  -102.03 -103.39 110.36 mm
+ X128_Y128=  -114.58 -10.71  138.76 mm
+ SI= 1
+ SILI= 0
+ CSI=  1
+ VIS=  all
+
+%%%%%%% Telescope 4 %%%%%%%
+M2Telescope
+ X1_Y1=  115.12  -11.35  138.94 mm
+ X1_Y128=  24.33 -11.60  174.81 mm
+ X128_Y1=  103.64  -103.42 110.51 mm
+ X128_Y128=  12.89 -103.90 146.29 mm
+ SI= 1
+ SILI= 0
+ CSI=  1
+ VIS=  all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Paris
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%ParisCluster
+ A= 291.358    -7.734 -38.5
+ B= 291        -7.118 129
+ C= 246.046  -168.989 129
+ D= 246.661  -168.641 -38.5
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%ParisCluster
+ A= 243.139  158.516  -38.5
+ B= 242.517  158.852  129
+ C= 290.527   -2.142  129
+ D= 290.863   -1.52   -38.5

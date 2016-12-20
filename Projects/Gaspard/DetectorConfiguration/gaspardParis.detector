@@ -1,0 +1,557 @@
+%Fichier de configuration manip E225
+%%%%%%%%%%%Target%%%%%%%%%%%%%%%%%%%1
+%Thickness in micrometer
+%Radius in mm
+%Temperature in K, Pressure in bar
+%Material name according to the target library
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GeneralTarget
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Target
+ THICKNESS= 10.3
+ ANGLE= 0
+ RADIUS=	12
+ MATERIAL= CD2l
+ NBLAYERS= 50
+ X= 0
+ Y= 0
+ Z= 0	
+%%%%%%%%%%Detector%%%%%%%%%%%%%%%%%%%
+%%Position and R given in mm
+%%Angle given in degree
+%%Option: 0,1 for Si SiLi and CsI
+%%Option: all or sensible for VISualisation
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Paris
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+ParisCluster
+ X1_Y1=		-63.142		-111.96		235.7938 
+ X1_Y128= 	5.6268		-230.775	137.2298 	
+ X128_Y1= 	-201.3545	-111.28		138.5418	
+ X128_Y128= 	-132.58		-230.095	39.9778	
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
+ParisCluster
+ X1_Y1=		-218.111	-103.574	117.561
+ X1_Y128= 	-149.342	-222.389	18.997	
+ X128_Y1= 	-267.215	-18.112		-19.72	
+ X128_Y128= 	-198.446	-136.927	-118.284		
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%3
+ParisCluster
+ X1_Y1=		-265.456	0.2844		-40.6687 
+ X1_Y128= 	-196.6865	-118.53		-139.233 	
+ X128_Y1= 	-196.6865	120.4659	-137.5614	
+ X128_Y128= 	-127.9173	1.6512		-236.1254
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%4
+ParisCluster
+ X1_Y1=		-177.4417	138.7763	-146.2065
+ X1_Y128= 	-108.6725	19.9616		-244.7704
+ X128_Y1= 	-31.0838	233.2766	-145.9525
+ X128_Y128= 	 37.6854	104.4618	-244.5164		
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+ParisCluster
+ X1_Y1=		-5.6268		230.7749	-137.2298		
+ X1_Y128= 	63.1424		111.9602	-235.7938 	
+ X128_Y1= 	132.5853	230.0949	-39.9678
+ X128_Y128= 	201.3545	111.2801	-138.5418
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%6
+ParisCluster
+ X1_Y1=		149.3422	222.3888	-18.9970	
+ X1_Y128= 	218.1114	103.5741	-117.5610
+ X128_Y1= 	198.4457	136.9268	118.2839
+ X128_Y128= 	267.2149	18.1120		19.7200	
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%7
+ParisCluster
+ X1_Y1=		196.6865	118.5303	139.2326
+ X1_Y128=  	265.4567	-0.2839		40.6887
+ X128_Y1= 	127.9173	-1.6512		236.1254	
+ X128_Y128= 	196.6865	-120.463	137.5614
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%8
+ParisCluster
+ X1_Y1=		108.6725	-19.9616	244.7705
+ X1_Y128= 	177.4417	-138.776	146.2065
+ X128_Y1= 	-37.6854	-104.462	244.6154
+ X128_Y128= 	31.0838		-223.277	145.9525		
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%9
+ParisCluster
+ X1_Y1=		63.1424		-108.652	-237.3365 
+ X1_Y128=  	-5.6268		-228.833	-140.4337
+ X128_Y1= 	201.3545	-109.332	-140.0845	
+ X128_Y128= 	132.5853	-229.513	-43.1918
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%10
+ParisCluster
+ X1_Y1=		218.1114	-101.92		-118.7980	
+ X1_Y128= 	149.3422	-222.101	-22.10526
+ X128_Y1= 	267.2149	-18.386		19.4647
+ X128_Y128= 	198.4457	-138.568	116.3575	
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%11
+ParisCluster
+ X1_Y1=		177.4417	136.718		148.1329
+ X1_Y128=  	108.6725	16.5365		245.0257
+ X128_Y1= 	31.08380	221.2136	149.0607		
+ X128_Y128= 	-37.6854	101.0321	245.9534
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%12
+ParisCluster
+ X1_Y1=		5.6268		228.8332	140.4337	
+ X1_Y128= 	-63.1424	108.6517	237.3365
+ X128_Y1= 	-132.5853	229.5133	43.1918
+ X128_Y128= 	-201.3545	109.3318	140.0845		
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%13
+ParisCluster
+ X1_Y1=		-149.3422	222.1014	22.1053
+ X1_Y128=  	-218.1114	101.9199	118.9980
+ X128_Y1= 	-198.4457	138.5676	-116.3575	
+ X128_Y128= 	-267.21494	18.38604	-19.4647	
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%14
+ParisCluster
+ X1_Y1=		-108.6725	-16.5365	-245.025
+ X1_Y128=  	-177.44171	-136.718	-148.1329
+ X128_Y1= 	37.6854		-101.032	-245.9534
+ X128_Y128= 	-31.0838	-221.214	-149.0607	
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%15
+ParisCluster
+ X1_Y1=		207.506468	-83.4626	-148.646587
+ X1_Y128=  	207.506468	85.53326	-147.464835	
+ X128_Y1= 	69.2943359	-82.7826	-245.898545	
+ X128_Y128= 	69.2943359	86.21332	-244.716793	
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%16
+ParisCluster
+ X1_Y1=		117.733235	240.6373	-18.7966735
+ X1_Y128=  	20.4788977	239.6709	119.4120787
+ X128_Y1= 	-20.478898	241.3174	-116.048635
+ X128_Y128= 	-117.73323	240.3509	22.16012052	
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%17
+ParisCluster
+ X1_Y1=		-69.294336	82.78255	245.8985453	
+ X1_Y128=  	-69.294336	-86.2133	244.7167929	
+ X128_Y1= 	-207.50647	83.46261	148.6465871		
+ X128_Y128= 	-207.50647	-85.5333	147.4648347	
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%18
+ParisCluster
+ X1_Y1=		20.4788977	-241.317	116.0486339
+ X1_Y128=  	117.733235	-240.351	-22.1601217
+ X128_Y1= 	-117.73323	-240.637	18.79667235
+ X128_Y128= 	-20.478898	-239.671	-119.41208
+ VIS= all
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GaspardTracker
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%0 Central Barrel
+GPDDummyShape
+ THETA= 90
+ PHI= 90 
+ R= 100
+ BETA= 0 0 0
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 1
+ THIRDSTAGE= 1
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+GPDDummyShape
+ THETA= 90
+ PHI= 120
+ R= 100
+ BETA= 0 0 0
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 1
+ THIRDSTAGE= 1	
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
+GPDDummyShape
+ THETA= 90
+ PHI= 150
+ R= 100
+ BETA= 0 0 0
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 1
+ THIRDSTAGE= 1
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%3
+GPDDummyShape
+ THETA= 90
+ PHI= 180
+ R= 100
+ BETA= 0 0 0
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 1
+ THIRDSTAGE= 1	
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%4
+GPDDummyShape
+ THETA= 90
+ PHI= 210
+ R= 100
+ BETA= 0 0 0
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 1
+ THIRDSTAGE= 1	
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+GPDDummyShape
+ THETA= 90
+ PHI= 240
+ R= 100
+ BETA= 0 0 0
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 1
+ THIRDSTAGE= 1	
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%6
+GPDDummyShape
+ THETA= 90
+ PHI= 270
+ R= 100
+ BETA= 0 0 0
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 1
+ THIRDSTAGE= 1	
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%7
+GPDDummyShape
+ THETA= 90
+ PHI= 300
+ R= 100
+ BETA= 0 0 0
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 1
+ THIRDSTAGE= 1	
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%8
+GPDDummyShape
+ THETA= 90
+ PHI= 330
+ R= 100
+ BETA= 0 0 0
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 1
+ THIRDSTAGE= 1	
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%9
+GPDDummyShape
+        THETA= 90
+        PHI= 360
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%10
+GPDDummyShape
+        THETA= 90
+        PHI= 30
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%11
+GPDDummyShape
+        THETA= 90
+        PHI= 60
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%12 First Cone (forward)
+GPDDummyShape
+        THETA= 60
+        PHI= 90
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%13
+GPDDummyShape
+        THETA= 60
+        PHI= 130
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%14
+GPDDummyShape
+        THETA= 60
+        PHI= 170
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%15
+GPDDummyShape
+        THETA= 60
+        PHI= 210
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%16
+GPDDummyShape
+        THETA= 60
+        PHI= 250
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%17
+GPDDummyShape
+        THETA= 60
+        PHI= 290
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%18
+GPDDummyShape
+        THETA= 60
+        PHI= 330
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%19
+GPDDummyShape
+        THETA= 60
+        PHI= 10
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%20
+GPDDummyShape
+        THETA= 60
+        PHI= 50
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%21 Second Cone (forward)
+GPDDummyShape
+        THETA= 30
+        PHI= 90
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%22
+GPDDummyShape
+        THETA= 30
+        PHI= 180
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%23
+GPDDummyShape
+        THETA= 30
+        PHI= 270
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%24
+GPDDummyShape
+        THETA= 30
+        PHI= 360
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%25 First Cone (backward)
+GPDDummyShape
+        THETA= 120
+        PHI= 90
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%26
+GPDDummyShape
+        THETA= 120
+        PHI= 130
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%27
+GPDDummyShape
+        THETA= 120
+        PHI= 170
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%28
+GPDDummyShape
+        THETA= 120
+        PHI= 210
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%29
+GPDDummyShape
+        THETA= 120
+        PHI= 250
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%30
+GPDDummyShape
+        THETA= 120
+        PHI= 290
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%31
+GPDDummyShape
+        THETA= 120
+        PHI= 330
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%32
+GPDDummyShape
+        THETA= 120
+        PHI= 10
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%33
+GPDDummyShape
+        THETA= 120
+        PHI= 50
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%34 Second Cone (backward)
+GPDDummyShape
+        THETA= 150
+        PHI= 90
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%35
+GPDDummyShape
+        THETA= 150
+        PHI= 180
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%36
+GPDDummyShape
+        THETA= 150
+        PHI= 270
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%37
+GPDDummyShape
+        THETA= 150
+        PHI= 360
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%38 End Cap (forward)
+GPDDummyShape
+        THETA= 0
+        PHI= 0
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%39 End Cap (backward)
+GPDDummyShape
+        THETA= 180
+        PHI= 0
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all

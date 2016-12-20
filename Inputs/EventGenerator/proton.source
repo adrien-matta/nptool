@@ -1,19 +1,19 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%% An Isotropic Source to be used as EventGenerator %%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%			   Energy are given in MeV , Position in mm				  %	
+%      Energy are given in MeV , Position in mm      % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Isotropic
-	EnergyLow=  0
-	EnergyHigh= 160
+ EnergyLow=  0
+ EnergyHigh= 160
   HalfOpenAngleMin= 0
-	HalfOpenAngleMax= 180
-	x0= 0	
-	y0= 0	
-	z0= 0	
+ HalfOpenAngleMax= 180
+ x0= 0 
+ y0= 0 
+ z0= 0 
   SigmaX= 0
   SigmaY= 0
   Multiplicity= 1
-	Particle= proton
+ Particle= proton
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Supported particle type: proton, neutron, deuton, triton, He3 , alpha 

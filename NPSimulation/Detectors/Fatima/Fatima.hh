@@ -33,7 +33,7 @@
 #include "G4LogicalVolume.hh"
 #include "G4VisAttributes.hh"
 #include "G4MultiFunctionalDetector.hh"
-
+#include "NPInputParser.h"
 // NPSimulation header
 #include "NPSVDetector.hh"
 
@@ -72,7 +72,7 @@ private: // Guarranty that each volume is created only once
 public:
   // Read stream at Configfile to pick-up parameters of detector (Position,...)
   // Called in DetecorConstruction::ReadDetextorConfiguration Method
-  void ReadConfiguration(string Path) ;
+  void ReadConfiguration(NPL::InputParser) ;
   
   // Construct detector and inialise sensitive part.
   // Called After DetecorConstruction::AddDetector Method

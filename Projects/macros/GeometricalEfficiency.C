@@ -48,7 +48,7 @@
 using namespace std;
 
 
-void GeometricalEfficiency(const char * fname = "e09042_alphasource_nucl"){
+void GeometricalEfficiency(const char * fname = "myResult.root"){
   // Open output ROOT file from NPTool simulation run
   TString path = gSystem->Getenv("NPTOOL");
   path += "/Outputs/Simulation/";
@@ -68,10 +68,10 @@ void GeometricalEfficiency(const char * fname = "e09042_alphasource_nucl"){
   tree->SetBranchStatus("InteractionCoordinates", true);
   
   // Prepare histograms
-  TH1F *hDetecTheta   = new TH1F("hDetecTheta",   "DetecTheta",    180, 0, 90);
-  TH1F *hDetecThetaCM = new TH1F("hDetecThetaCM", "hDetecThetaCM", 180, 0, 90);
-  TH1F *hEmittTheta   = new TH1F("hEmittTheta",   "EmittTheta",    180, 0, 90);
-  TH1F *hEmittThetaCM = new TH1F("hEmittThetaCM", "hEmittThetaCM", 180, 0, 90);
+  TH1F *hDetecTheta   = new TH1F("hDetecTheta",   "DetecTheta",    180, 0, 180);
+  TH1F *hDetecThetaCM = new TH1F("hDetecThetaCM", "hDetecThetaCM", 180, 0, 180);
+  TH1F *hEmittTheta   = new TH1F("hEmittTheta",   "EmittTheta",    180, 0, 180);
+  TH1F *hEmittThetaCM = new TH1F("hEmittThetaCM", "hEmittThetaCM", 180, 0, 180);
   
   // Read the TTree
   int nentries = tree->GetEntries();

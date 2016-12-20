@@ -1,108 +1,102 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-GeneralTarget
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%0.5mg/cm2
 Target
-	THICKNESS= 4.8
-	RADIUS=	5
-	MATERIAL= CD2
-	ANGLE= 0
-	X= 0
-	Y= 0
-	Z= 0
+ THICKNESS= 4.8 micrometer
+ RADIUS=	5 mm
+ MATERIAL= CD2
+ ANGLE= 0 deg
+ X= 0 mm
+ Y= 0 mm
+ Z= 0 mm
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-CATSArray
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 CATSDetector
-   X1_Y1=          -34.36  -34.96  -1193
-   X28_Y1=         36.76   -34.96  -1193
-   X1_Y28=         -34.36  36.16   -1193
-   X28_Y28=        36.76   36.16   -1193
+   X1_Y1=          -34.36  -34.96  -1193 mm
+   X28_Y1=         36.76   -34.96  -1193 mm
+   X1_Y28=         -34.36  36.16   -1193 mm
+   X28_Y28=        36.76   36.16   -1193 mm
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
 CATSDetector
-   X1_Y1=          34.26   -35.46  -684
-   X28_Y1=         -36.86  -35.46  -684
-   X1_Y28=         34.26   35.66   -684
-   X28_Y28=        -36.86  35.66   -684
+   X1_Y1=          34.26   -35.46  -684 mm
+   X28_Y1=         -36.86  -35.46  -684 mm
+   X1_Y28=         34.26   35.66   -684 mm
+   X28_Y28=        -36.86  35.66   -684 mm
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%         
 MUST2Array        
 %%%%%%% Telescope 1 %%%%%%%         
 M2Telescope          
-X1_Y1=      10.85 105.03   146.16
-X1_Y128= 22.8  9.84  175.95
-X128_Y1= 104.09   105.03   108.76
-X128_Y128=  116.04   9.84  138.55
-SI=   1     
-SILI= 1     
-CSI=  1     
-VIS=  all      
+ X1_Y1=      10.85 105.03   146.16 mm
+ X1_Y128= 22.8  9.84  175.95 mm
+ X128_Y1= 104.09   105.03   108.76 mm
+ X128_Y128=  116.04   9.84  138.55 mm
+ SI=   1     
+ SILI= 1     
+ CSI=  1     
+ VIS=  all      
          
 %%%%%%% Telescope 2 %%%%%%%         
 M2Telescope          
-X1_Y1=      -116.04  9.84  138.55
-X1_Y128= -22.8 9.84  175.95
-X128_Y1= -104.09  105.03   108.76
-X128_Y128=  -10.85   105.03   146.16
-SI=   1     
-SILI= 1     
-CSI=  1     
-VIS=  all      
+ X1_Y1=      -116.04  9.84  138.55 mm
+ X1_Y128= -22.8 9.84  175.95 mm
+ X128_Y1= -104.09  105.03   108.76 mm
+ X128_Y128=  -10.85   105.03   146.16 mm
+ SI=   1     
+ SILI= 1     
+ CSI=  1     
+ VIS=  all      
          
 %%%%%%% Telescope 3 %%%%%%%         
 M2Telescope          
-X1_Y1=      -10.85   -105.03  146.16
-X1_Y128= -22.8 -9.84 175.95
-X128_Y1= -104.09  -105.03  108.76
-X128_Y128=  -116.04  -9.84 138.55
-SI=   1     
-SILI= 1     
-CSI=  1     
-VIS=  all      
+ X1_Y1=      -10.85   -105.03  146.16 mm
+ X1_Y128= -22.8 -9.84 175.95 mm
+ X128_Y1= -104.09  -105.03  108.76 mm
+ X128_Y128=  -116.04  -9.84 138.55 mm
+ SI=   1     
+ SILI= 1     
+ CSI=  1     
+ VIS=  all      
          
 %%%%%%% Telescope 4 %%%%%%%         
 M2Telescope          
-X1_Y1=      116.04   -9.84 138.55
-X1_Y128= 22.8  -9.84 175.95
-X128_Y1= 104.09   -105.03  108.76
-X128_Y128=  10.85 -105.03  146.16
-SI=   1     
-SILI= 1     
-CSI=  1     
-VIS=  all      
+ X1_Y1=      116.04   -9.84 138.55 mm
+ X1_Y128= 22.8  -9.84 175.95 mm
+ X128_Y1= 104.09   -105.03  108.76 mm
+ X128_Y128=  10.85 -105.03  146.16 mm
+ SI=   1     
+ SILI= 1     
+ CSI=  1     
+ VIS=  all      
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%         
-Tiara
-TiaraHyballWedge
-   Z= -147
-   R= 0
-   Phi= 0
-TiaraHyballWedge
-   Z= -147
-   R= 0
-   Phi= 60
-TiaraHyballWedge
-   Z= -147
-   R= 0
-   Phi= 120
-TiaraHyballWedge
-   Z= -147
-   R= 0
-   Phi= 180
-TiaraHyballWedge
-   Z= -147
-   R= 0
-   Phi= 240
-TiaraHyballWedge
-   Z= -147
-   R= 0
-   Phi= 300
-%%%%%%%%%%%%%%%%%%%%%%%%%%%         
-TiaraBarrel
-TiaraInnerBarrel= 1
-TiaraOuterBarrel= 1
-TiaraChamber= 1
+Tiara Barrel
+ InnerBarrel= 1
+ OuterBarrel= 1
+ Chamber= 1
+
+HyballWedge
+   Z= -147 mm
+   R= 0 mm
+   Phi= 0 deg
+HyballWedge
+   Z= -147 mm
+   R= 0 mm
+   Phi= 60 deg
+HyballWedge
+   Z= -147 mm
+   R= 0 mm
+   Phi= 120 deg
+HyballWedge
+   Z= -147 mm
+   R= 0 mm
+   Phi= 180 deg
+HyballWedge
+   Z= -147 mm
+   R= 0 mm
+   Phi= 240 deg
+HyballWedge 
+   Z= -147 mm
+   R= 0 mm
+   Phi= 300 deg 
+

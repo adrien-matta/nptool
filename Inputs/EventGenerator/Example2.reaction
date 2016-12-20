@@ -2,31 +2,31 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Beam
   Particle= 28Mg
-  ExcitationEnergy= 0
-  Energy= 224
-  SigmaEnergy= 0.448
-  SigmaThetaX= 0.01 
-  SigmaPhiY= 0.01
-  SigmaX= 0.5
-  SigmaY= 0.5
-  MeanThetaX= 0
-  MeanPhiY= 0
-  MeanX= 0
-  MeanY= 0
+  ExcitationEnergy= 0 MeV
+  Energy= 224 MeV
+  SigmaEnergy= 0.448 MeV
+  SigmaThetaX= 0.01 deg
+  SigmaPhiY= 0.01 deg
+  SigmaX= 0.5 mm
+  SigmaY= 0.5 mm
+  MeanThetaX= 0 deg
+  MeanPhiY= 0 deg
+  MeanX= 0 mm
+  MeanY= 0 mm
   %EnergyProfilePath=
   %XThetaXProfilePath=
   %YPhiYProfilePath=
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 TwoBodyReaction
-	Beam= 28Mg
-	Target= 2H
-	Light= 1H
-	Heavy= 29Mg
-	ExcitationEnergyLight= 0.0
-	ExcitationEnergyHeavy= 0.0 
+ Beam= 28Mg
+ Target= 2H
+ Light= 1H
+ Heavy= 29Mg
+ ExcitationEnergyLight= 0.0 MeV
+ ExcitationEnergyHeavy= 0.0 MeV
   CrossSectionPath= flat.txt CSR
-	ShootLight= 1
-	ShootHeavy= 1
+ ShootLight= 1
+ ShootHeavy= 1
   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

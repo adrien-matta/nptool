@@ -13,47 +13,47 @@ Target
 
 
 
-%%%%%%% Detector 1 %%%%%%%			
+%%%%%%% Detector 1 %%%%%%% 		
 W1
-	THETA= 150
-	PHI= 0
-	R= 150
-	BETA= 0 0 0
-	VIS= all					
-%%%%%%% Detector 2 %%%%%%%			
+ THETA= 150
+ PHI= 0
+ R= 150
+ BETA= 0 0 0
+ VIS= all					
+%%%%%%% Detector 2 %%%%%%% 		
 W1
-	THETA= 150
-	PHI= 0
-	R= 150
-	BETA= 0 0 0
-	VIS= all					
-%%%%%%% Detector 3 %%%%%%%			
+ THETA= 150
+ PHI= 0
+ R= 150
+ BETA= 0 0 0
+ VIS= all					
+%%%%%%% Detector 3 %%%%%%% 		
 W1
-	THETA= 150
-	PHI= 0
-	R= 150
-	BETA= 0 0 0
-	VIS= all					
-%%%%%%% Detector 4 %%%%%%%			
+ THETA= 150
+ PHI= 0
+ R= 150
+ BETA= 0 0 0
+ VIS= all					
+%%%%%%% Detector 4 %%%%%%% 		
 W1
-	THETA= 150
-	PHI= 0
-	R= 150
-	BETA= 0 0 0
-	VIS= all					
-%%%%%%% Detector 5 %%%%%%%			
+ THETA= 150
+ PHI= 0
+ R= 150
+ BETA= 0 0 0
+ VIS= all					
+%%%%%%% Detector 5 %%%%%%% 		
 W1
-	THETA= 150
-	PHI= 0
-	R= 150
-	BETA= 0 0 0
-	VIS= all					
-%%%%%%% Detector 6 %%%%%%%			
+ THETA= 150
+ PHI= 0
+ R= 150
+ BETA= 0 0 0
+ VIS= all					
+%%%%%%% Detector 6 %%%%%%% 		
 W1
-	THETA= 150
-	PHI= 0
-	R= 150
-	BETA= 0 0 0
-	VIS= all					
+ THETA= 150
+ PHI= 0
+ R= 150
+ BETA= 0 0 0
+ VIS= all					
 
 

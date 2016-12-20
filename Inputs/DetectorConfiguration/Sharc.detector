@@ -4,13 +4,13 @@ GeneralTarget
 
 %0.2mg/cm2
 Target
-	THICKNESS= 0.01
-	RADIUS=	5
-	MATERIAL= CD2
-	ANGLE= 0
-	X= 0
-	Y= 0
-	Z= 0
+ THICKNESS= 0.01
+ RADIUS=	5
+ MATERIAL= CD2
+ ANGLE= 0
+ X= 0
+ Y= 0
+ Z= 0
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Sharc
@@ -84,13 +84,13 @@ Sharc
     ThicknessDector= 500
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Plastic
-	X= 0
-	Y= 0
-	Z= 400
-	Thickness= 0.025
-	Shape= Square
-	Height= 40
-	Width= 40
-	Scintillator= BC400
-	LeadThickness= 0.09
+ X= 0
+ Y= 0
+ Z= 400
+ Thickness= 0.025
+ Shape= Square
+ Height= 40
+ Width= 40
+ Scintillator= BC400
+ LeadThickness= 0.09
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

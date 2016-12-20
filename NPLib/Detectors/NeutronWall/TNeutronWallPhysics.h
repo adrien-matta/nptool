@@ -38,7 +38,7 @@ using namespace std;
 #include "TNeutronWallSpectra.h"
 #include "NPCalibrationManager.h"
 #include "NPVDetector.h"
-
+#include "NPInputParser.h"
 // forward declaration
 class TNeutronWallSpectra;
 
@@ -82,7 +82,7 @@ class TNeutronWallPhysics : public TObject, public NPL::VDetector {
   // methods inherited from the VDetector ABC class
   public:
     // read stream from ConfigFile to pick-up detector parameters
-    void ReadConfiguration(string);
+    void ReadConfiguration(NPL::InputParser);
 
     // add parameters to the CalibrationManger
     void AddParameterToCalibrationManager();

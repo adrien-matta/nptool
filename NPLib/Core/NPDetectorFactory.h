@@ -41,7 +41,7 @@ class DetectorFactory{
       void ReadClassList(std::string FileList);
       void AddToken(std::string Token, std::string LibName);
       void AddDetector(std::string Token, ClassDetectorFactoryFn fn);
-      void CreateClassList(string FileName);
+      void CreateClassList(std::string FileName);
   private:
       static DetectorFactory* m_Instance;
       // Map that Match the Token with Constructor, once the lib is loaded

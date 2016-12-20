@@ -33,6 +33,7 @@ using namespace std;
 #include "RootOutput.h"
 #include "TAsciiFile.h"
 #include "NPSystemOfUnits.h"
+#include "NPOptionManager.h"
 using namespace NPUNITS;
 
 //   ROOT
@@ -241,99 +242,27 @@ TVector3 TTigressPhysics::GetSegmentPosition(int& CloverNbr,int& CoreNbr, int& S
 
 
 /////////////////////////////////////////////////
-void TTigressPhysics::ReadConfiguration(string Path)  {
-  ifstream ConfigFile           ;
-  ConfigFile.open(Path.c_str()) ;
+void TTigressPhysics::ReadConfiguration(NPL::InputParser parser)  {
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("TigressClover");
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " clovers found " << endl; 
 
-  if(!ConfigFile.is_open()) cout << "Config File not Found" << endl ;
+  vector<string> token = {"CloverID","R","Theta","Phi"};
 
-  string LineBuffer;
-  string DataBuffer;
-
-  bool check_CloverId= false;
-  bool check_R= false; 
-  bool check_Theta= false;
-  bool check_Phi= false;
-  bool ReadingStatus = true;
-
-  int CloverId=0;
-  double R=0;
-  double Theta=0;
-  double Phi=0;
-
-  while (!ConfigFile.eof()) {
-
-    getline(ConfigFile, LineBuffer);
-    //   If line is a Start Up Tigress bloc, Reading toggle to true      
-    if (LineBuffer.compare(0, 13, "TigressClover") == 0) {
-      cout << "///" << endl ;
-      cout << "Tigress Clover found: " << endl ;        
-      ReadingStatus = true ;
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token)){
+      double R = blocks[i]->GetDouble("R","mm");
+      double Theta = blocks[i]->GetDouble("Theta","deg");
+      double Phi = blocks[i]->GetDouble("Phi","deg");
+      int     id = blocks[i]->GetInt("CloverID");
+      AddClover(id,R,Theta,Phi);
     }
-    //   Else don't toggle to Reading Block Status
-    else ReadingStatus = false ;
 
-    //   Reading Block
-    while(ReadingStatus)  {
-      // Pickup Next Word 
-
-      ConfigFile >> DataBuffer ;
-      //   Comment Line 
-
-      if (DataBuffer.compare(0, 1, "%") == 0) {ConfigFile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );}
-
-      //   Finding another Clover toggle out (safety)
-      else if (DataBuffer.compare(0, 13, "TigressClover") == 0) {
-        cout << "WARNING: Another Detector is find before standard sequence of Token, Error may occured in Clover definition" << endl ;
-        ReadingStatus = false ;
-      }
-
-      else if (DataBuffer=="CloverId=") {
-        check_CloverId = true;
-        ConfigFile >> DataBuffer ;
-        CloverId=atoi(DataBuffer.c_str());
-        cout << "CloverId:  " << CloverId << endl;
-      }
-
-      else if (DataBuffer=="R=") {
-        check_R = true;
-        ConfigFile >> DataBuffer ;
-        R = atof(DataBuffer.c_str());
-        cout << "R:  " << R << "mm" << endl;
-      }
-
-      else if (DataBuffer=="Theta=") {
-        check_Theta = true;
-        ConfigFile >> DataBuffer ;
-        Theta = atof(DataBuffer.c_str());
-        cout << "Theta:  " << Theta << "deg" << endl;
-      }
-
-      else if (DataBuffer=="Phi=") {
-        check_Phi = true;
-        ConfigFile >> DataBuffer ;
-        Phi = atof(DataBuffer.c_str());
-        cout << "Phi:  " << Phi << "deg" << endl;
-      }
-
-      ///////////////////////////////////////////////////
-      //   If no Detector Token and no comment, toggle out
-      else {
-        ReadingStatus = false; cout << "Wrong Token Sequence: Getting out " << DataBuffer << endl ;}
-      /////////////////////////////////////////////////
-      //   If All necessary information there, toggle out
-      if ( check_Theta && check_Phi && check_R && check_CloverId) { 
-        ReadingStatus = false;
-        check_CloverId= false;
-        check_R= false; 
-        check_Theta= false;
-        check_Phi= false;
-        AddClover(CloverId,R,Theta*3.141592653589793/180.,Phi*3.141592653589793/180.);
-      }
+    else{
+      cout << "Warning: check your input file formatting " << endl;
     }
   }
 }
-
 ///////////////////////////////////////////////////////////////////////////
 void TTigressPhysics::InitializeRootInputRaw() {
   TChain* inputChain = RootInput::getInstance()->GetChain();

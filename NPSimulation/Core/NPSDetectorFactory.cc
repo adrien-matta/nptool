@@ -19,6 +19,12 @@ std::string SHARED_LIB_EXTENSION = ".dylib";
 #endif
 
 
+////////////////////////////////////////////////////////////////////////////////
+G4ThreeVector NPS::ConvertVector(TVector3 vec){
+
+  return G4ThreeVector(vec.X(),vec.Y(),vec.Z());
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 DetectorFactory::DetectorFactory(){
@@ -82,7 +88,8 @@ NPS::VDetector* DetectorFactory::Construct(std::string Token){
     std::string path = getenv("NPTOOL"); 
     std::string libName = path+"/NPSimulation/lib/"+m_TokenLib[Token];
     dlopen(libName.c_str(),RTLD_NOW);
-    
+    char* LibError = dlerror();
+
     if(m_Construct.find(Token)!=m_Construct.end())
       return  m_Construct[Token]();
  
@@ -92,7 +99,7 @@ NPS::VDetector* DetectorFactory::Construct(std::string Token){
     } 
 
     else{
-      std::cout << "Warning: Detector with Token " << Token << " has no Constructor or no Library" << std::endl;
+      std::cout << "Warning: Detector with Token " << Token << " has no Constructor or no Library" << endl << " error is: " << LibError << std::endl;
       return NULL;
     }
   }

@@ -33,9 +33,9 @@ using namespace std ;
 #include "TChateauCristalData.h"
 #include "NPVDetector.h"
 #include "NPCalibrationManager.h"
+#include "NPInputParser.h"
 
-class TChateauCristalPhysics : public TObject, public NPL::VDetector
-{
+class TChateauCristalPhysics : public TObject, public NPL::VDetector{
  public:   //   Constructor and Destructor
    TChateauCristalPhysics();
    ~TChateauCristalPhysics();
@@ -49,7 +49,7 @@ class TChateauCristalPhysics : public TObject, public NPL::VDetector
 
  public:   //   inherited from VDetector
    // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
-   void ReadConfiguration(string);
+   void ReadConfiguration(NPL::InputParser);
       
    // Add Parameter to the CalibrationManager
    void AddParameterToCalibrationManager();      

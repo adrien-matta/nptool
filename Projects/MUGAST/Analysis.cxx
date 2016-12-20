@@ -41,7 +41,7 @@ void Analysis::Init() {
   InitInputBranch();
   myInit = new TInitialConditions();
   // get MUST2 and Gaspard objects
-  M2 = (TMust2Physics*)  m_DetectorManager -> GetDetector("MUST2Array");
+  M2 = (TMust2Physics*)  m_DetectorManager -> GetDetector("M2Telescope");
   GD = (GaspardTracker*) m_DetectorManager -> GetDetector("GaspardTracker");
 
   // get reaction information
@@ -49,10 +49,10 @@ void Analysis::Init() {
   OriginalBeamEnergy = myReaction.GetBeamEnergy();
 
   // target thickness
-  TargetThickness = m_DetectorManager->GetTargetThickness()*micrometer;
+  TargetThickness = m_DetectorManager->GetTargetThickness();
   string TargetMaterial = m_DetectorManager->GetTargetMaterial();
   // Cryo target case
-  WindowsThickness = m_DetectorManager->GetWindowsThickness()*micrometer; 
+  WindowsThickness = m_DetectorManager->GetWindowsThickness(); 
   string WindowsMaterial = m_DetectorManager->GetWindowsMaterial();
 
   // energy losses
@@ -88,19 +88,6 @@ void Analysis::Init() {
   Z = 0;
   dE = 0;
   dTheta=0;
-  // determine beam energy for a randomized interaction point in target
-  FinalBeamEnergy = OriginalBeamEnergy;
-  if(BeamWindow)
-    FinalBeamEnergy = BeamWindow->Slow(OriginalBeamEnergy,WindowsThickness,0);
-
-  FinalBeamEnergy = BeamCD2.Slow(FinalBeamEnergy, TargetThickness*0.5, 0);
-
-    myReaction.SetBeamEnergy(FinalBeamEnergy);
-
-  cout << "//// Slow down Beam in the target ////" << endl;
-  cout << "Initial beam energy : " << OriginalBeamEnergy << endl;
-  cout << "Final beam energy   : " << FinalBeamEnergy << endl;
-
   BeamDirection = TVector3(0,0,1);
 
 }
@@ -112,6 +99,11 @@ void Analysis::TreatEvent() {
   //double zImpact = Rand.Uniform(-TargetThickness*0.5,TargetThickness*0.5);
   double zImpact = 0 ;
   BeamImpact = TVector3(0,0,zImpact); 
+  // determine beam energy for a randomized interaction point in target
+  // 1% FWHM randominastion (E/100)/2.35
+  myReaction.SetBeamEnergy(Rand.Gaus(myInit->GetIncidentFinalKineticEnergy(),myInit->GetIncidentFinalKineticEnergy()/235));
+
+
   //////////////////////////// LOOP on MUST2 //////////////////
   for(unsigned int countMust2 = 0 ; countMust2 < M2->Si_E.size() ; countMust2++){
     /************************************************/

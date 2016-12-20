@@ -33,10 +33,10 @@ using namespace std;
 #include "G4AssemblyVolume.hh"
 #include "G4MultiFunctionalDetector.hh"
 #include "G4GDMLParser.hh"
-
 // NPTool header
 #include "NPSVDetector.hh"
 #include "TAGATAData.h"
+#include "NPInputParser.h"
 
 class AGATA : public NPS::VDetector{
   ////////////////////////////////////////////////////
@@ -53,8 +53,7 @@ class AGATA : public NPS::VDetector{
     // Cylindric plastic
     void AddAGATA(double R,
         double Theta,
-        double Phi,
-        string Shape);  
+        double Phi);  
 
     G4AssemblyVolume* BuildTripleCluster();
   
@@ -68,7 +67,7 @@ class AGATA : public NPS::VDetector{
   public:
     // Read stream at Configfile to pick-up parameters of detector (Position,...)
     // Called in DetecorConstruction::ReadDetextorConfiguration Method
-    void ReadConfiguration(string Path) ;
+    void ReadConfiguration(NPL::InputParser) ;
 
     // Construct detector and inialise sensitive part.
     // Called After DetecorConstruction::AddDetector Method
@@ -102,9 +101,6 @@ class AGATA : public NPS::VDetector{
     vector<double>  m_R; 
     vector<double>  m_Theta;
     vector<double>  m_Phi; 
-    
-    //   Shape type
-    vector<string> m_Shape ;
    
   // Needed for dynamic loading of the library
   public:

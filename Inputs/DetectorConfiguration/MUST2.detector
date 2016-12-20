@@ -2,44 +2,42 @@
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Target
-	THICKNESS= 4.8
-	RADIUS=	5
-	MATERIAL= CD2
-	ANGLE= 0
-	X= 0
-	Y= 0
-	Z= 0
-%%%%%%%%%%%%%%%%%%%%%
-MUST2Array			
-%%%%%%% Telescope 1 %%%%%%%			
-M2Telescope 			
-X1_Y1=		10.85	105.03	146.16
-X1_Y128=	22.8	9.84	175.95
-X128_Y1=	104.09	105.03	108.76
-X128_Y128=	116.04	9.84	138.55
-SI=	1		
-SILI=	0		
-CSI=	1		
-VIS=	all		
-			
-%%%%%%% Telescope 2 %%%%%%%			
+ THICKNESS= 4.8 micrometer
+ RADIUS=	5 mm
+ MATERIAL= CD2
+ ANGLE= 0 deg
+ X= 0 deg
+ Y= 0 deg
+ Z= 0 deg
+%%%%%%% Telescope 1 %%%%%%% 		
+M2Telescope  		
+ X1_Y1= 	10.85	105.03	146.16 mm
+ X1_Y128= 22.8	9.84	175.95 mm
+ X128_Y1= 104.09	105.03	108.76 mm
+ X128_Y128= 116.04	9.84	138.55 mm
+ SI= 1		
+ SILI= 0		
+ CSI= 1		
+ VIS= all  
+ 		
+%%%%%%% Telescope 2 %%%%%%% 		
 M2Telescope
-	THETA= -130
-	PHI= 0
-	R= 150
-	BETA= 0 0 0
-	SI= 1
-	SILI= 1
-	CSI= 0
-	VIS= all					
+ THETA= -130 deg
+ PHI= 0 deg
+ R= 150 mm
+ BETA= 0 0 0 deg
+ SI= 1
+ SILI= 1
+ CSI= 0
+ VIS= all  
 
-%%%%%%% Telescope 2 %%%%%%%			
+%%%%%%% Telescope 2 %%%%%%% 		
 M2Telescope
-	THETA= -40
-	PHI= 0
-	R= 150
-	BETA= 0 0 0
-	SI= 1
-	SILI= 1
-	CSI= 1
-	VIS= all			
+ THETA= -40 deg
+ PHI= 0 deg
+ R= 150 mm
+ BETA= 0 0 0 deg
+ SI= 1
+ SILI= 1
+ CSI= 1
+ VIS= all 

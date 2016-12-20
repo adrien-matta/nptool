@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%% Reaction file for 11Li(d,3He)10He reaction %%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Isotropic
+%Isotropic 
   EnergyLow= 100
   EnergyHigh= 100
   HalfOpenAngleMin= 0
@@ -15,11 +15,11 @@
 Beam
   Particle= 11Li
   Energy= 553
-	SigmaEnergy= 20
-	SigmaThetaX= 0.6138
-	SigmaPhiY= 0.3812
-	SigmaX= 6.216
-	SigmaY= 6.109
+ SigmaEnergy= 20
+ SigmaThetaX= 0.6138
+ SigmaPhiY= 0.3812
+ SigmaX= 6.216
+ SigmaY= 6.109
   MeanThetaX= 0
   MeanPhiY= 0
   MeanX= 1.773
@@ -31,22 +31,22 @@ Beam
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 TwoBodyReaction
-	Beam= 11Li
-	Target= 2H
-	Light= 3He
-	Heavy= 10He
-	ExcitationEnergyLight= 0.0
-	ExcitationEnergyHeavy= 10.0
-  CrossSectionPath= 11Li(d,3He)10He.txt	CS10He
-	ShootLight= 1
-	ShootHeavy= 0
+ Beam= 11Li
+ Target= 2H
+ Light= 3He
+ Heavy= 10He
+ ExcitationEnergyLight= 0.0
+ ExcitationEnergyHeavy= 10.0
+  CrossSectionPath= 11Li(d,3He)10He.txt CS10He
+ ShootLight= 1
+ ShootHeavy= 0
   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
 %ParticleDecay 10He
   Daughter= 9He n
   ExcitationEnergy= 0.1 0
-  DifferentialCrossSection= 11Li(d,3He)10He.txt	particle9He
+  DifferentialCrossSection= 11Li(d,3He)10He.txt particle9He
   shoot= 1 1
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -55,7 +55,7 @@ TwoBodyReaction
   Cascade
     BranchingRatio= 30
     Energies= 0.1
-    DifferentialCrossSection= 11Li(d,3He)10He.txt	Gamma9He
+    DifferentialCrossSection= 11Li(d,3He)10He.txt Gamma9He
   Cascade
     BranchingRatio= 70
     Energies= 0.05 0.5

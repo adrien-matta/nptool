@@ -38,8 +38,7 @@ using namespace std;
 #include "TChain.h"
 
 //   tranform an integer to a string
-string itoa(int value)
-{
+string itoa(int value){
    char buffer [33];
    sprintf(buffer,"%d",value);
    return buffer;
@@ -47,15 +46,14 @@ string itoa(int value)
 
 ClassImp(TTacPhysics)
 ///////////////////////////////////////////////////////////////////////////
-TTacPhysics::TTacPhysics()
-   {      
+TTacPhysics::TTacPhysics(){      
       EventData = new TTacData ;
       EventPhysics = this ;
-   }
+}
    
 ///////////////////////////////////////////////////////////////////////////
-TTacPhysics::~TTacPhysics()
-   {}
+TTacPhysics::~TTacPhysics(){
+}
    
 ///////////////////////////////////////////////////////////////////////////
 void TTacPhysics::Clear()
@@ -69,10 +67,8 @@ void TTacPhysics::Clear()
    }
    
 ///////////////////////////////////////////////////////////////////////////
-void TTacPhysics::ReadConfiguration(string Path) 
-   {
-	   Path = "dummy";
-   }
+void TTacPhysics::ReadConfiguration(NPL::InputParser ) {
+}
 
 ///////////////////////////////////////////////////////////////////////////
 void TTacPhysics::AddParameterToCalibrationManager()

@@ -6,23 +6,23 @@ Beam
    Energy= 375
    SigmaEnergy= 0
    SigmaX= 0
-	SigmaY= 0
-	SigmaThetaX= 0 
-	SigmaPhiY= 0
+ SigmaY= 0
+ SigmaThetaX= 0 
+ SigmaPhiY= 0
    MeanThetaX= 0
    MeanPhiY= 0
    MeanX= 0
    MeanY= 0
 
 TwoBodyReaction
-	Beam= 25Al
-	Target= 3He
-	Light= 2H
-	Heavy= 26Al
-	ExcitationEnergyHeavy= 5.9
-	ExcitationEnergyLight= 0.0
+ Beam= 25Al
+ Target= 3He
+ Light= 2H
+ Heavy= 26Al
+ ExcitationEnergyHeavy= 5.9
+ ExcitationEnergyLight= 0.0
    CrossSectionPath= al25he3d_5.9_2s1.txt CS
-	ShootLight= 1
-	ShootHeavy= 0
+ ShootLight= 1
+ ShootHeavy= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

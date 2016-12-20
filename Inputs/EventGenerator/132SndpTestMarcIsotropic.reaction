@@ -5,25 +5,25 @@
 Beam
   Particle= 132Sn
   Energy= 1320
-	SigmaEnergy= 0
-	SigmaX= 0.851
-	SigmaY= 0.851
-	SigmaThetaX= 0 
-	SigmaPhiY= 0
+ SigmaEnergy= 0
+ SigmaX= 0.851
+ SigmaY= 0.851
+ SigmaThetaX= 0 
+ SigmaPhiY= 0
   MeanThetaX= 0
   MeanPhiY= 0
   MeanX= 0
   MeanY= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 TwoBodyReaction
-	Beam= 132Sn
-	Target= 2H
-	Light= 1H
-	Heavy= 133Sn
-	ExcitationEnergyLight= 0.0
-	ExcitationEnergyHeavy= 0.0
-	CrossSectionPath= flat.txt CS
-	ShootLight= 1
-	ShootHeavy= 0
+ Beam= 132Sn
+ Target= 2H
+ Light= 1H
+ Heavy= 133Sn
+ ExcitationEnergyLight= 0.0
+ ExcitationEnergyHeavy= 0.0
+ CrossSectionPath= flat.txt CS
+ ShootLight= 1
+ ShootHeavy= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
