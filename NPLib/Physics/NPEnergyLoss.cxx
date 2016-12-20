@@ -22,7 +22,7 @@
  *                                                                           *
  *   Table Should come in the following unit:                                *
  *   Particle Energy: MeV/u                                                  *
- *   dEdX:            MeV/micrometer                                         *
+ *   dEdX:            MeV/micrometer      | SRIM MeV/mm                      *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *                                                                           *
