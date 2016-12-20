@@ -78,7 +78,7 @@ G4bool PSDetectorNumber::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
 void PSDetectorNumber::Initialize(G4HCofThisEvent* HCE)
 { 
-   EvtMap = new G4THitsMap<G4int>(GetMultiFunctionalDetector()->GetName(), GetName());
+   EvtMap = new NPS::HitsMap<G4int>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
       HCID = GetCollectionID(0);
    }
@@ -144,7 +144,7 @@ G4bool PSEnergy::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
 void PSEnergy::Initialize(G4HCofThisEvent* HCE)
 {
-   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
+   EvtMap = new NPS::HitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
       HCID = GetCollectionID(0);
    }
@@ -206,7 +206,7 @@ G4bool PSTOF::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
 void PSTOF::Initialize(G4HCofThisEvent* HCE)
 {
-   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(),
+   EvtMap = new NPS::HitsMap<G4double>(GetMultiFunctionalDetector()->GetName(),
          GetName());
    if (HCID < 0) {
       HCID = GetCollectionID(0);
@@ -261,7 +261,7 @@ G4bool PSInteractionCoordinatesX::ProcessHits(G4Step* aStep, G4TouchableHistory*
 
 void PSInteractionCoordinatesX::Initialize(G4HCofThisEvent* HCE)
 {
-   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
+   EvtMap = new NPS::HitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
       HCID = GetCollectionID(0);
    }
@@ -317,7 +317,7 @@ G4bool PSInteractionCoordinatesY::ProcessHits(G4Step* aStep, G4TouchableHistory*
 void PSInteractionCoordinatesY::Initialize(G4HCofThisEvent* HCE)
 {
 
-   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
+   EvtMap = new NPS::HitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
       HCID = GetCollectionID(0);
    }
@@ -372,7 +372,7 @@ G4bool PSInteractionCoordinatesZ::ProcessHits(G4Step* aStep, G4TouchableHistory*
 
 void PSInteractionCoordinatesZ::Initialize(G4HCofThisEvent* HCE)
 {
-   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
+   EvtMap = new NPS::HitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
       HCID = GetCollectionID(0);
    }
@@ -428,7 +428,7 @@ G4bool PSInteractionCoordinatesAngleTheta::ProcessHits(G4Step* aStep, G4Touchabl
 
 void PSInteractionCoordinatesAngleTheta::Initialize(G4HCofThisEvent* HCE)
 {
-   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
+   EvtMap = new NPS::HitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
       HCID = GetCollectionID(0);
    }
@@ -485,7 +485,7 @@ G4bool PSInteractionCoordinatesAnglePhi::ProcessHits(G4Step* aStep, G4TouchableH
 
 void PSInteractionCoordinatesAnglePhi::Initialize(G4HCofThisEvent* HCE)
 {
-   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
+   EvtMap = new NPS::HitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
    if (HCID < 0) {
       HCID = GetCollectionID(0);
    }

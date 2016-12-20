@@ -167,10 +167,10 @@ void Tiara::ReadSensitive(const G4Event* event){
   m_EventHyball->Clear();
 
   // InnerBarrel //
-  G4THitsMap<G4double*>* InnerBarrelHitMap;
+  NPS::HitsMap<G4double*>* InnerBarrelHitMap;
   std::map<G4int, G4double**>::iterator InnerBarrel_itr;
   G4int InnerBarrelCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Tiara_InnerBarrelScorer/InnerBarrel");
-  InnerBarrelHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(InnerBarrelCollectionID));
+  InnerBarrelHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(InnerBarrelCollectionID));
 
   // Loop on the InnerBarrel map 
   for (InnerBarrel_itr = InnerBarrelHitMap->GetMap()->begin() ; InnerBarrel_itr != InnerBarrelHitMap->GetMap()->end() ; InnerBarrel_itr++){
@@ -207,10 +207,10 @@ void Tiara::ReadSensitive(const G4Event* event){
   InnerBarrelHitMap->clear();
 
   // OuterBarrel //
-  G4THitsMap<G4double*>* OuterBarrelHitMap;
+  NPS::HitsMap<G4double*>* OuterBarrelHitMap;
   std::map<G4int, G4double**>::iterator OuterBarrel_itr;
   G4int OuterBarrelCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Tiara_OuterBarrelScorer/OuterBarrel");
-  OuterBarrelHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(OuterBarrelCollectionID));
+  OuterBarrelHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(OuterBarrelCollectionID));
 
   // Loop on the OuterBarrel map 
   for (OuterBarrel_itr = OuterBarrelHitMap->GetMap()->begin() ; OuterBarrel_itr != OuterBarrelHitMap->GetMap()->end() ; OuterBarrel_itr++){
@@ -233,10 +233,10 @@ void Tiara::ReadSensitive(const G4Event* event){
 
 
   // Hyball //
-  G4THitsMap<G4double*>* HyballHitMap;
+  NPS::HitsMap<G4double*>* HyballHitMap;
   std::map<G4int, G4double**>::iterator Hyball_itr;
   G4int HyballCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Tiara_HyballScorer/Hyball");
-  HyballHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(HyballCollectionID));
+  HyballHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(HyballCollectionID));
 
   // Loop on the Hyball map 
   for (Hyball_itr = HyballHitMap->GetMap()->begin() ; Hyball_itr != HyballHitMap->GetMap()->end() ; Hyball_itr++){

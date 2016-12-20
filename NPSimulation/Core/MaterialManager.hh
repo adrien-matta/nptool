@@ -72,6 +72,10 @@ public:
   // If the Material is instantiate it return it
   G4Material* GetMaterialFromLibrary(string Name, double density = 0);
 
+  // Look for a known gas
+  // Compute the correct density using Gas Law and density at STP
+  G4Material* GetGasFromLibrary(string Name, double Pressure, double Temperature);
+
   // Same as above but for Element.
   G4Element*  GetElementFromLibrary(string Name);
   

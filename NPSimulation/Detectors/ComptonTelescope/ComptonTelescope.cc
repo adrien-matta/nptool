@@ -418,105 +418,105 @@ void ComptonTelescope::ReadSensitive(const G4Event* event)
    std::map<G4int, G4double*>::iterator Ang_Theta_itr;
    std::map<G4int, G4double*>::iterator Ang_Phi_itr;
 */
-   G4THitsMap<G4int>*    TowerNumberHitMap;
-   G4THitsMap<G4int>*    DSSSDNumberHitMap;
-   G4THitsMap<G4double>* EnergyHitMap;
-   G4THitsMap<G4double>* TimeHitMap;
-/*   G4THitsMap<G4int>*    XHitMap;
-   G4THitsMap<G4int>*    YHitMap;
-   G4THitsMap<G4double>* PosXHitMap;
-   G4THitsMap<G4double>* PosYHitMap;
-   G4THitsMap<G4double>* PosZHitMap;
-   G4THitsMap<G4double>* AngThetaHitMap;
-   G4THitsMap<G4double>* AngPhiHitMap;
+   NPS::HitsMap<G4int>*    TowerNumberHitMap;
+   NPS::HitsMap<G4int>*    DSSSDNumberHitMap;
+   NPS::HitsMap<G4double>* EnergyHitMap;
+   NPS::HitsMap<G4double>* TimeHitMap;
+/*   NPS::HitsMap<G4int>*    XHitMap;
+   NPS::HitsMap<G4int>*    YHitMap;
+   NPS::HitsMap<G4double>* PosXHitMap;
+   NPS::HitsMap<G4double>* PosYHitMap;
+   NPS::HitsMap<G4double>* PosZHitMap;
+   NPS::HitsMap<G4double>* AngThetaHitMap;
+   NPS::HitsMap<G4double>* AngPhiHitMap;
 */
    // Calorimeter
    std::map<G4int, G4int*>::iterator    CalorimeterTowerNumber_itr;
    std::map<G4int, G4int*>::iterator    CalorimeterDetectorNumber_itr;
    std::map<G4int, G4double*>::iterator CalorimeterEnergy_itr;
 //   std::map<G4int, G4double*>::iterator CalorimeterTime_itr;
-   G4THitsMap<G4int>*    CalorimeterTowerNumberHitMap;
-   G4THitsMap<G4int>*    CalorimeterDetectorNumberHitMap;
-   G4THitsMap<G4double>* CalorimeterEnergyHitMap;
-//   G4THitsMap<G4double>* CalorimeterTimeHitMap;
+   NPS::HitsMap<G4int>*    CalorimeterTowerNumberHitMap;
+   NPS::HitsMap<G4int>*    CalorimeterDetectorNumberHitMap;
+   NPS::HitsMap<G4double>* CalorimeterEnergyHitMap;
+//   NPS::HitsMap<G4double>* CalorimeterTimeHitMap;
 
 
    // Read scorers associated to the tracker part
    // tower number
    G4int TrackTowCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("TrackerScorerComptonTelescope/TowerNumber");
-   TowerNumberHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(TrackTowCollectionID));
+   TowerNumberHitMap = (NPS::HitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(TrackTowCollectionID));
    TowerNumber_itr = TowerNumberHitMap->GetMap()->begin();
 
    // detector number
    G4int TrackDetCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("TrackerScorerComptonTelescope/DSSSDNumber");
-   DSSSDNumberHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(TrackDetCollectionID));
+   DSSSDNumberHitMap = (NPS::HitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(TrackDetCollectionID));
    DSSSDNumber_itr = DSSSDNumberHitMap->GetMap()->begin();
 
    // energy
    G4int TrackEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("TrackerScorerComptonTelescope/Energy");
-   EnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(TrackEnergyCollectionID))                    ;
+   EnergyHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(TrackEnergyCollectionID))                    ;
    Energy_itr = EnergyHitMap->GetMap()->begin();
 
    // time of flight
    G4int TrackTimeCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("TrackerScorerComptonTelescope/Time");
-   TimeHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(TrackTimeCollectionID));
+   TimeHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(TrackTimeCollectionID));
    Time_itr = TimeHitMap->GetMap()->begin();
 /*
    //Track Number X
    G4int TrackXCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("TrackerScorerComptonTelescope/NumberX");
-   XHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(TrackXCollectionID));
+   XHitMap = (NPS::HitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(TrackXCollectionID));
    X_itr = XHitMap->GetMap()->begin();
 
    //Track Number Y
    G4int TrackYCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("TrackerScorerComptonTelescope/TrackNumberY")    ;
-   YHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(TrackYCollectionID));
+   YHitMap = (NPS::HitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(TrackYCollectionID));
    Y_itr = YHitMap->GetMap()->begin();
 
    //Interaction Coordinate X
    G4int InterCoordXCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("TrackerScorerComptonTelescope/InterCoordX")    ;
-   PosXHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordXCollectionID))                              ;
+   PosXHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordXCollectionID))                              ;
    Pos_X_itr = PosXHitMap->GetMap()->begin()                                                                    ;
 
    //Interaction Coordinate Y
    G4int InterCoordYCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("TrackerScorerComptonTelescope/InterCoordY")    ;
-   PosYHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordYCollectionID))                              ;
+   PosYHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordYCollectionID))                              ;
    Pos_Y_itr = PosYHitMap->GetMap()->begin()                                                                    ;
 
    //Interaction Coordinate Z
    G4int InterCoordZCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("TrackerScorerComptonTelescope/InterCoordZ")    ;
-   PosZHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordZCollectionID))                              ;
+   PosZHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordZCollectionID))                              ;
    Pos_Z_itr = PosXHitMap->GetMap()->begin()                                                                    ;
 
    //Interaction Coordinate Angle Theta
    G4int InterCoordAngThetaCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("TrackerScorerComptonTelescope/InterCoordAngTheta")    ;
-   AngThetaHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordAngThetaCollectionID))                              ;
+   AngThetaHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordAngThetaCollectionID))                              ;
    Ang_Theta_itr = AngThetaHitMap->GetMap()->begin()                                                                    ;
 
    //Interaction Coordinate Angle Phi
    G4int InterCoordAngPhiCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("TrackerScorerComptonTelescope/InterCoordAngPhi")    ;
-   AngPhiHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordAngPhiCollectionID))                              ;
+   AngPhiHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordAngPhiCollectionID))                              ;
    Ang_Phi_itr = AngPhiHitMap->GetMap()->begin()                                                                    ;
 */
 
    // read the scorers associated to the calorimeter
    // tower number
    G4int CaloTowCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("CalorimeterScorerComptonTelescope/TowerNumber");
-   CalorimeterTowerNumberHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(CaloTowCollectionID));
+   CalorimeterTowerNumberHitMap = (NPS::HitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(CaloTowCollectionID));
    CalorimeterTowerNumber_itr = CalorimeterTowerNumberHitMap->GetMap()->begin();
 
    // detector number
    G4int CaloDetCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("CalorimeterScorerComptonTelescope/DetectorNumber");
-   CalorimeterDetectorNumberHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(CaloDetCollectionID));
+   CalorimeterDetectorNumberHitMap = (NPS::HitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(CaloDetCollectionID));
    CalorimeterDetectorNumber_itr = CalorimeterDetectorNumberHitMap->GetMap()->begin();
 
    // energy
    G4int CaloEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("CalorimeterScorerComptonTelescope/Energy");
-   CalorimeterEnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(CaloEnergyCollectionID))                    ;
+   CalorimeterEnergyHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(CaloEnergyCollectionID))                    ;
    CalorimeterEnergy_itr = CalorimeterEnergyHitMap->GetMap()->begin();
 /*
    // time of flight
    G4int CaloTimeCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("CalorimeterScorerComptonTelescope/Time");
-   CalorimeterTimeHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(CaloTimeCollectionID));
+   CalorimeterTimeHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(CaloTimeCollectionID));
    CalorimeterTime_itr = CalorimeterTimeHitMap->GetMap()->begin();
 */
 
@@ -708,9 +708,9 @@ void ComptonTelescope::ReadSensitive(const G4Event* event)
 
    // scorers for processes....
    std::map<G4int, G4double*>::iterator TrkProcC_itr;
-   G4THitsMap<G4double>* TrkProcCHitMap;
+   NPS::HitsMap<G4double>* TrkProcCHitMap;
    G4int TrkProcCCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("TrackerScorerComptonTelescope/Process");
-   TrkProcCHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(TrkProcCCollectionID))                    ;
+   TrkProcCHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(TrkProcCCollectionID))                    ;
    TrkProcC_itr = TrkProcCHitMap->GetMap()->begin();
 
    for (G4int l = 0; l < TrkProcCHitMap->entries(); l++) {

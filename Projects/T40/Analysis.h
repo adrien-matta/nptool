@@ -21,6 +21,7 @@
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
+//NPTOOL
 #include "NPVAnalysis.h"
 #include "TTiaraHyballPhysics.h"
 #include "TTiaraBarrelPhysics.h"
@@ -29,12 +30,11 @@
 #include "TInitialConditions.h"
 #include "NPEnergyLoss.h"
 #include "NPReaction.h"
+//ROOT
 #include <TVector3.h>
 #include <TRandom3.h>
 #include <TMath.h>
 #include <TObject.h>
-
-
 
 
 class Analysis: public NPL::VAnalysis{
@@ -50,9 +50,8 @@ class Analysis: public NPL::VAnalysis{
     void InitOutputBranch();
     void InitInputBranch();
     static NPL::VAnalysis* Construct();
-
+    
   private:
-
   double Ex;
   double ELab;
   double ThetaLab;
@@ -96,19 +95,29 @@ class Analysis: public NPL::VAnalysis{
 	TVector3 BeamDirection ;
   
   //FPD
+	static const Int_t kNumAw = 4; // number of wires
   double Delta_E      ;
   double Micro_E_row1 ;   
   double Micro_E_col4 ; 
-  double Micro_E      ;  
+  double Micro_E      ;
+	double Micro_E_row1_2;
+	double Micro_E_row3_6;
   double Plast_E      ;
-  double Theta_aw     ;
-  double XPlastic_aw  ;
-  double XPlastic     ;
-
-  //TAC
+	double Aw_X[kNumAw] ;
+	double Aw_Z[kNumAw] ;
+	double Aw_Theta1_2  ; // Theta calculated from wire 1 & wire 2
+	double Aw_ThetaFit  ; // Theta calculated from FITTING all wires
+	double Aw_ThetaFit_R2; // Goodness of fit value of theta from fitting
+	
+  //TACS
   double TacSiGeOR ;
-  double TacSiMicroOR ;
-	double TacSiPlast1 ;
-	double TacSiPlast2 ;
+  double TacSiMicro ;
+	double TacSiMicro_E;
+	double TacSiMicro_dE;
+  double TacSiPlastLeft ;
+  double TacSiPlastRight ;
+  
+	// Other
+	int RunNumber;
 };
 #endif

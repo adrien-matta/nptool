@@ -591,67 +591,67 @@ void HeliosDetDummyShape::ReadSensitive(const G4Event* event)
    std::map<G4int, G4double*>::iterator Ang_Theta_itr;
    std::map<G4int, G4double*>::iterator Ang_Phi_itr;
 
-   G4THitsMap<G4int>*    DetectorNumberHitMap;
-   G4THitsMap<G4double>* EnergyHitMap;
-   G4THitsMap<G4double>* TimeHitMap;
-   G4THitsMap<G4double>* XHitMap;  // X strip id
-   G4THitsMap<G4double>* YHitMap;  // Y strip id
-   G4THitsMap<G4double>* PosXHitMap;
-   G4THitsMap<G4double>* PosYHitMap;
-   G4THitsMap<G4double>* PosZHitMap;
-   G4THitsMap<G4double>* AngThetaHitMap;
-   G4THitsMap<G4double>* AngPhiHitMap;
+   NPS::HitsMap<G4int>*    DetectorNumberHitMap;
+   NPS::HitsMap<G4double>* EnergyHitMap;
+   NPS::HitsMap<G4double>* TimeHitMap;
+   NPS::HitsMap<G4double>* XHitMap;  // X strip id
+   NPS::HitsMap<G4double>* YHitMap;  // Y strip id
+   NPS::HitsMap<G4double>* PosXHitMap;
+   NPS::HitsMap<G4double>* PosYHitMap;
+   NPS::HitsMap<G4double>* PosZHitMap;
+   NPS::HitsMap<G4double>* AngThetaHitMap;
+   NPS::HitsMap<G4double>* AngPhiHitMap;
 
 
    // Read the Scorer associate to the Silicon Strip
    //Detector Number
    G4int StripDetCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerHeliosDummyShape/DetectorNumber")    ;
-   DetectorNumberHitMap = (G4THitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripDetCollectionID))         ;
+   DetectorNumberHitMap = (NPS::HitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripDetCollectionID))         ;
    DetectorNumber_itr =  DetectorNumberHitMap->GetMap()->begin()                                               ;
 
    //Energy
    G4int StripEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerHeliosDummyShape/StripEnergy")   ;
-   EnergyHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripEnergyCollectionID))                    ;
+   EnergyHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripEnergyCollectionID))                    ;
    Energy_itr = EnergyHitMap->GetMap()->begin()                                                          ;
 
    //Time of Flight
    G4int StripTimeCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerHeliosDummyShape/StripTime")    ;
-   TimeHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripTimeCollectionID))                        ;
+   TimeHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripTimeCollectionID))                        ;
    Time_itr = TimeHitMap->GetMap()->begin()                                                              ;
 
    //Strip Number X
    G4int StripXCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerHeliosDummyShape/StripIDFront")    ;
-   XHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripXCollectionID))                              ;
+   XHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripXCollectionID))                              ;
    X_itr = XHitMap->GetMap()->begin()                                                                    ;
 
    //Strip Number Y
    G4int StripYCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerHeliosDummyShape/StripIDBack");
-   YHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripYCollectionID))                              ;
+   YHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripYCollectionID))                              ;
    Y_itr = YHitMap->GetMap()->begin()                                                                    ;
 
    //Interaction Coordinate X
    G4int InterCoordXCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerHeliosDummyShape/InterCoordX")    ;
-   PosXHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordXCollectionID))                              ;
+   PosXHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordXCollectionID))                              ;
    Pos_X_itr = PosXHitMap->GetMap()->begin()                                                                    ;
 
    //Interaction Coordinate Y
    G4int InterCoordYCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerHeliosDummyShape/InterCoordY")    ;
-   PosYHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordYCollectionID))                              ;
+   PosYHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordYCollectionID))                              ;
    Pos_Y_itr = PosYHitMap->GetMap()->begin()                                                                    ;
 
    //Interaction Coordinate Z
    G4int InterCoordZCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerHeliosDummyShape/InterCoordZ")    ;
-   PosZHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordZCollectionID))                              ;
+   PosZHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordZCollectionID))                              ;
    Pos_Z_itr = PosXHitMap->GetMap()->begin()                                                                    ;
 
    //Interaction Coordinate Angle Theta
    G4int InterCoordAngThetaCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerHeliosDummyShape/InterCoordAngTheta")    ;
-   AngThetaHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordAngThetaCollectionID))                              ;
+   AngThetaHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordAngThetaCollectionID))                              ;
    Ang_Theta_itr = AngThetaHitMap->GetMap()->begin()                                                                    ;
 
    //Interaction Coordinate Angle Phi
    G4int InterCoordAngPhiCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FirstStageScorerHeliosDummyShape/InterCoordAngPhi")    ;
-   AngPhiHitMap = (G4THitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordAngPhiCollectionID))                              ;
+   AngPhiHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordAngPhiCollectionID))                              ;
    Ang_Phi_itr = AngPhiHitMap->GetMap()->begin()                                                                    ;
 
 

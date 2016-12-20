@@ -243,11 +243,11 @@ void Miniball::ReadSensitive(const G4Event* event){
 
   ///////////
   // Calorimeter scorer
-  G4THitsMap<G4double*>* CaloHitMap;
+  NPS::HitsMap<G4double*>* CaloHitMap;
   std::map<G4int, G4double**>::iterator Calo_itr;
 
   G4int CaloCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MiniballScorer/Crystal");
-  CaloHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CaloCollectionID));
+  CaloHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CaloCollectionID));
 
   // Loop on the Calo map
   for (Calo_itr = CaloHitMap->GetMap()->begin() ; Calo_itr != CaloHitMap->GetMap()->end() ; Calo_itr++){

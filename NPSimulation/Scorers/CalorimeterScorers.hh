@@ -1,5 +1,5 @@
-#ifndef PhotoDiodeScorers_h
-#define SiliconScorers_h 1
+#ifndef CalorimeterScorers_h
+#define CalorimeterScorers_h 1
 /*****************************************************************************
  * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
  *                                                                           *
@@ -25,19 +25,19 @@
  *Only one scorer is needed for a detector                                   *
  *****************************************************************************/
 #include "G4VPrimitiveScorer.hh"
-#include "G4THitsMap.hh"
+#include "NPSHitsMap.hh"
 
 #include <map>
 using namespace std;
 using namespace CLHEP;
 
-namespace PHOTODIODESCORERS {
+namespace CALORIMETERSCORERS {
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......  
-  class PS_PhotoDiode_Rectangle : public G4VPrimitiveScorer{
+  class PS_Calorimeter : public G4VPrimitiveScorer{
     
   public: // with description
-    PS_PhotoDiode_Rectangle(G4String name, G4int Level, G4double StripPlaneLength, G4double StripPlaneWidth, G4int NumberOfStripLength,G4int NumberOfStripWidth,G4int depth=0);
-     ~PS_PhotoDiode_Rectangle();
+    PS_Calorimeter(G4String name, vector<G4int> NestingLevel,G4int depth=0);
+     ~PS_Calorimeter();
     
   protected: // with description
      G4bool ProcessHits(G4Step*, G4TouchableHistory*);
@@ -49,32 +49,45 @@ namespace PHOTODIODESCORERS {
     void DrawAll();
     void PrintAll();
   
-  private: // Geometry of the detector
-      G4double m_StripPlaneLength;
-      G4double m_StripPlaneWidth;
-      G4int    m_NumberOfStripLength;
-      G4int    m_NumberOfStripWidth;
-      G4double m_StripPitchLength;
-      G4double m_StripPitchWidth;
-      // Level at which to find the copy number linked to the detector number
-      G4int    m_Level;
-      
+  private: // How much level of volume nesting should be considered
+   // Give the list of the nesting level at which the copy number should be return.
+   // 0 is the lowest level possible (the actual volume copy number in which the interaction happen)
+   vector<G4int> m_NestingLevel;
+   G4int m_Index; 
 
   private: // inherited from G4VPrimitiveScorer
-      G4int HCID;
-      G4THitsMap<G4double*>* EvtMap;
-    
-  private: // Needed for intermediate calculation (avoid multiple instantiation in Processing Hit)
-      G4ThreeVector m_Position  ;
-      G4int m_DetectorNumber    ;
-      G4int m_StripLengthNumber ;
-      G4int m_StripWidthNumber  ;
-      G4int m_Index             ;
-      G4double m_NumberOfOpticalPhoton;
-    
+    G4int HCID;
+    NPS::HitsMap<G4double*>* EvtMap;
   };
-  
 
+  //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......  
+  class PS_CalorimeterWithInteraction : public G4VPrimitiveScorer{
+    
+  public: // with description
+    PS_CalorimeterWithInteraction(G4String name, vector<G4int> NestingLevel,G4int depth=0);
+     ~PS_CalorimeterWithInteraction();
+    
+  protected: // with description
+     G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+     G4ThreeVector m_Position; 
+  public:
+    void Initialize(G4HCofThisEvent*);
+    void EndOfEvent(G4HCofThisEvent*);
+    void clear();
+    void DrawAll();
+    void PrintAll();
+  
+  private: // How much level of volume nesting should be considered
+   // Give the list of the nesting level at which the copy number should be return.
+   // 0 is the lowest level possible (the actual volume copy number in which the interaction happen)
+   vector<G4int> m_NestingLevel;
+   G4int m_Index; 
+
+  private: // inherited from G4VPrimitiveScorer
+    G4int HCID;
+    NPS::HitsMap<G4double*>* EvtMap;
+  };
 }
+
 
 #endif

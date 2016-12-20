@@ -19,8 +19,9 @@
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
+#include<cassert>
+#include<iostream>
 
-#include <iostream>
 using namespace std;
 
 #include "Analysis.h"
@@ -30,6 +31,43 @@ using namespace std;
 #include "NPFunction.h" 
 #include "RootOutput.h"
 #include "RootInput.h"
+#include "TMath.h"
+#include "TGraph.h"
+#include "TFitResult.h"
+#include "TFitResultPtr.h"
+
+////// INTERNAL FUNCTIONS //////////
+namespace {
+double calculate_fit_slope(int len, double* Aw_X, double* Aw_Z, double& R2)
+{
+	vector<double> X, Z;
+	for(int i=0; i< len; ++i) {
+		if(Aw_X[i] != -1000) { X.push_back(Aw_X[i]); }
+		if(Aw_Z[i] != -1000) { Z.push_back(Aw_Z[i]); }
+	}
+
+	Long64_t N = X.size();
+	double meanZ = TMath::Mean(N, &Z[0]);
+	double meanX = TMath::Mean(N, &X[0]);
+	double meanZ2 = 0, meanXZ = 0, meanX2 = 0;
+	for(size_t i=0; i< N; ++i) {
+		meanZ2 += Z[i]*Z[i];
+		meanX2 += X[i]*X[i];
+		meanXZ += Z[i]*X[i];
+	}
+	meanZ2 /= N;
+	meanXZ /= N;
+
+	double slope = (meanXZ - meanX*meanZ) / (meanZ2 - meanZ*meanZ);
+	R2 = pow(meanXZ - meanX*meanZ, 2) / 
+		((meanZ2 - meanZ*meanZ) * (meanX2 - meanX*meanX));
+
+	/// TODO::: R2 doesn't seem to make sense... look into it!
+	
+	return slope;
+} }
+
+
 ////////////////////////////////////////////////////////////////////////////////
 Analysis::Analysis(){
 }
@@ -44,6 +82,7 @@ void Analysis::Init(){
   TB  = (TTiaraBarrelPhysics*) m_DetectorManager -> GetDetector("Tiara");
   TF  = (TFPDTamuPhysics*) m_DetectorManager -> GetDetector("FPDTamu");
   TG  = (TGeTAMUPhysics*) m_DetectorManager -> GetDetector("GeTAMU");
+
   
   // get reaction information
   myReaction = new NPL::Reaction();
@@ -91,18 +130,28 @@ void Analysis::Init(){
   //FPD
   Delta_E = 0; // Energy ionisation chamber
   Micro_E = 0; // Energy from micromega total
+	Micro_E_row1_2 = 0; // Energy from micromega rows 1 & 2 ("delta E in stopping mode")
+	Micro_E_row3_6 = 0; // Energy from micromega rows 3-6  ("E in stopping mode")
   Micro_E_row1 = 0 ;// Energy from micromega row 1 
   Micro_E_col4 = 0 ;// energy from micromega col 1 
   Plast_E = 0; // Energy Plastic
-  XPlastic_aw = 0; // X on plastic from avalanche wire
-  Theta_aw    = 0; // ion direction in the FPD
-  XPlastic    = 0; // X on plastic from plastic PMTs
-  
+	for(int i=0; i< kNumAw; ++i) {
+		Aw_X[i] = -1000;
+		Aw_Z[i] = -1000;
+	}
+	Aw_Theta1_2 = -1000;
+	Aw_ThetaFit = -1000;
+	Aw_ThetaFit_R2 = -1000;
+	
   //TAC
-  TacSiGeOR     = -1000;
-  TacSiMicroOR    = -1000;
-  TacSiPlast1  = -1000;
-  TacSiPlast2 = -1000;
+  TacSiGeOR       = -1000;
+  TacSiMicro    = -1000;
+ 	TacSiMicro_E = -1000;
+	TacSiMicro_dE = -1000;
+	TacSiPlastLeft  = -1000;
+	TacSiPlastRight = -1000;
+
+	RunNumber = 0;
 
 }
 
@@ -257,62 +306,107 @@ for(unsigned int countGe = 0 ; countGe < TG->something.size() ; countGe++) // mu
 */
 
  ////////////////////////////////////////// LOOP on FPD  //////////////////////////////////////////
-  //for(unsigned int countFPD = 0 ; countFPD < TF->Delta.size() ; countFPD++) // multiplicity treated for now is zero 
-  { 
-    //TF->Dump();
-    if(0){ // some condition
-      // Part 1 : Collect the energis from the different sub-detectors
-      Delta_E      = TF->DeltaEnergy[0];
-      Micro_E_row1 = TF->GetMicroGroupEnergy(1,1,1,7); // energy sum from the row 1 
-      Micro_E_col4 = TF->GetMicroGroupEnergy(1,4,4,4); // energy sum from the col 4
-      Micro_E      = TF->GetMicroGroupEnergy(1,4,1,7); // energy sum from all the pads 
-      Plast_E      = TF->PlastCharge[0];
+	// Micromega energy
+	// Sums across various rows & columns
+	if(TF->MicroRowNumber.size())
+	{
+		Micro_E_row1 = TF->GetMicroGroupEnergy(1,1,1,7); // energy sum from the row 1 
+		Micro_E_col4 = TF->GetMicroGroupEnergy(1,4,4,4); // energy sum from the col 4
+		Micro_E      = TF->GetMicroGroupEnergy(1,4,1,7); // energy sum from all the pads
+		Micro_E_row1_2 = TF->GetMicroGroupEnergy(1,2,1,7); // energy sum from row 1-2
+		Micro_E_row3_6 = TF->GetMicroGroupEnergy(3,6,1,7); // energy sum from row 3-6
+	}
+	else 
+	{
+		Micro_E_row1 = -1000;   
+		Micro_E_col4 = -1000;
+		Micro_E_row1_2 = -1000;
+		Micro_E_row3_6 = -1000;
+		Micro_E      = -1000;  
+	}
+	// Delta E ion chamber
+	Delta_E      = TF->DeltaEnergy.empty() ? -1000 : TF->DeltaEnergy[0];
 
-      // Part 2 : Reconstruct ion direction from Avalanche Wire
-      Theta_aw          = TF->IonDirection.Theta()/deg; // calculate Theta from AWire
-      XPlastic_aw       = TF->PlastPositionX_AW; // calculate position on plastic, provided the Ion Direction, and Z plastic 
-      XPlastic          = TF->PlastPositionX[0]; // calculate  position on plastic from Right and Left PMT signals 
-    }
-    else{
-      Delta_E      = -1000;
-      Micro_E_row1 = -1000;   
-      Micro_E_col4 = -1000; 
-      Micro_E      = -1000;  
-      Plast_E      = -1000;
-      Theta_aw     = -1000;
-      XPlastic_aw  = -1000;
-      XPlastic     = -1000;
-    }
-  } // end loop on FPD
-  
+	// Energy in plastic
+	Plast_E      = TF->PlastCharge.empty() ? -1000 : TF->PlastCharge[0];
 
+	// Avalanche wire
+	for(size_t iw=0; iw< TF->AWireDetNumber.size(); ++iw) {
+		int detNumber = TF->AWireDetNumber[iw];
+
+		if(detNumber >=0 && detNumber< 4) {
+			Aw_X[detNumber] = TF->AWirePositionX[iw];
+			Aw_Z[detNumber] = TF->AWirePositionZ[iw];
+		}
+		else {
+			cerr << "WARNING:: Wire number not bewtween 0 and 4!\n";
+		}
+	}
+
+	// (calculate angles)
+	if(Aw_X[0] != -1000 && Aw_X[1] != -1000) {
+		Aw_Theta1_2 = TMath::ATan((Aw_X[1] - Aw_X[0]) / (Aw_Z[1] - Aw_Z[0]));
+		Aw_Theta1_2 *= (180/TMath::Pi());
+	}
+
+	int numValid = 0;
+	for(int i=0; i< kNumAw; ++i) {
+		if(Aw_X[i] != -1000) { ++numValid; }
+		if(numValid == 2) {  // at least 2 points to calculate an angle
+
+			double slope = calculate_fit_slope(kNumAw, Aw_X, Aw_Z, Aw_ThetaFit_R2); // slope of X vs. Z
+			Aw_ThetaFit = TMath::ATan(slope)*(180/TMath::Pi());
+			break;
+		}
+	}
+	
+	
   ////////////////////////////////////////// TAC  //////////////////////////////////////////
   // The Physics classes for FPDTamu are made to hold the time information from every channel
   // i.e. there can not be channels providing time more than channels providing energies 
   // In Tiara@TAMU campaign the times are provided as OR from the Micro and the Germanium
   // i.e. one time channel per detector. Typically this information is given to the first channel
   // of the detector, e.g. for micro: FpdTAMU MICRO_R1_C1_T and for HPGe: GeTamu CLOVER01_CRYSTAL01_T 
-  if(TF->MicroTime.size()==1) 
-    TacSiMicroOR = TF->MicroTime[0];
-  else 
-    TacSiMicroOR = -999;
-  if(TG->GeTime.size()==1)
-    TacSiGeOR = TG->GeTime[0];
-  else 
-    TacSiGeOR = -999;
+  
+	if(TF->MicroTimeOR.size()){
+		TacSiMicro = TF->MicroTimeOR[0];
+
+		for(UInt_t ti = 0; ti< TF->MicroTimeOR.size(); ++ti) {
+			switch(TF->MicroTimeRowNumber[ti]) {
+			case 0:
+				TacSiMicro_dE = TF->MicroTimeOR[ti];
+				break;
+			case 5:
+				TacSiMicro_E  = TF->MicroTimeOR[ti];
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
   // For the plastic there's two ways to calculate the times, both ar OR. 
   // The two available time channels i.e. Plast Right and Plast left are used in this case
   if(TF->PlastRightTime.size()==1)
-      TacSiPlast1 = TF->PlastRightTime[0];
+      TacSiPlastRight = TF->PlastRightTime[0];
   else
-    TacSiPlast1 = -999;
+    TacSiPlastRight = -999;
   
   if(TF->PlastLeftTime.size()==1)
-      TacSiPlast2 = TF->PlastLeftTime[0];
+      TacSiPlastLeft = TF->PlastLeftTime[0];
   else
-    TacSiPlast2 = -999;
+    TacSiPlastLeft = -999;
+    
+	
+	if(TG->GeTime.size()==1)
+    TacSiGeOR = TG->GeTime[0];
+  else 
+    TacSiGeOR = -999;
+ 
+ 	RunNumber = RootInput::getInstance()->GetChain()->GetFileNumber() + 1;
+ 	   
+}
 
-  }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::End(){
@@ -334,21 +428,33 @@ void Analysis::ReInitValue(){
   Delta_E      = -1000;
   Micro_E_row1 = -1000;   
   Micro_E_col4 = -1000; 
-  Micro_E      = -1000;  
+ 	Micro_E_row1_2 = -1000;
+	Micro_E_row3_6 = -1000;
+	Micro_E      = -1000;  
   Plast_E      = -1000;
-  Theta_aw     = -1000;
-  XPlastic_aw  = -1000;
-  XPlastic     = -1000;
-  
+
+	for(int i=0; i< kNumAw; ++i) {
+		Aw_X[i] = -1000;
+		Aw_X[i] = -1000;
+	}
+	Aw_Theta1_2 = -1000;
+	Aw_ThetaFit	= -1000;
+	Aw_ThetaFit_R2	= -1000;
+	
   //TAC
   TacSiGeOR     = -1000;
-  TacSiMicroOR  = -1000;
-  TacSiPlast1   = -1000;
-  TacSiPlast2   = -1000;
+  TacSiMicro    = -1000;
+	TacSiMicro_E  = -1000;
+	TacSiMicro_dE = -1000;
+  TacSiPlastLeft  = -1000;
+  TacSiPlastRight = -1000;
+
+	RunNumber = 0;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
+
 void Analysis::InitOutputBranch() {
   //Tiara
   RootOutput::getInstance()->GetTree()->Branch("Ex",&Ex,"Ex/D");
@@ -358,26 +464,39 @@ void Analysis::InitOutputBranch() {
   RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixX",&TiaraIMX,"TiaraImpactMatrixX/D");
   RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixY",&TiaraIMY,"TiaraImpactMatrixY/D");
   RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixZ",&TiaraIMZ,"TiaraImpactMatrixZ/D");
+
   //GeTamu
   // stuff goes here 
+
   //FPD
   RootOutput::getInstance()->GetTree()->Branch("Delta_E",&Delta_E,"Delta_E/D");
   RootOutput::getInstance()->GetTree()->Branch("Micro_E_row1",&Micro_E_row1,"Micro_E_row1/D");
   RootOutput::getInstance()->GetTree()->Branch("Micro_E_col4",&Micro_E_col4,"Micro_E_col4/D");
+	RootOutput::getInstance()->GetTree()->Branch("Micro_E_row1_2", &Micro_E_row1_2, "Micro_E_row1_2/D");
+	RootOutput::getInstance()->GetTree()->Branch("Micro_E_row3_6", &Micro_E_row3_6, "Micro_E_row3_6/D");
   RootOutput::getInstance()->GetTree()->Branch("Micro_E",&Micro_E,"Micro_E/D");
   RootOutput::getInstance()->GetTree()->Branch("Plast_E",&Plast_E,"Plast_E/D");
-  RootOutput::getInstance()->GetTree()->Branch("Theta_aw",&Theta_aw,"Theta_aw/D");
-  RootOutput::getInstance()->GetTree()->Branch("XPlastic_aw",&XPlastic_aw,"XPlastic_aw/D");
-  RootOutput::getInstance()->GetTree()->Branch("XPlastic",&XPlastic,"XPlastic/D"); 
-  //TACS
+  RootOutput::getInstance()->GetTree()->Branch("Aw_X",Aw_X,Form("Aw_X[%i]/D", kNumAw));
+  RootOutput::getInstance()->GetTree()->Branch("Aw_Z",Aw_Z,Form("Aw_Z[%i]/D", kNumAw));
+  RootOutput::getInstance()->GetTree()->Branch("Aw_Theta1_2",&Aw_Theta1_2,"Aw_Theta1_2/D");
+  RootOutput::getInstance()->GetTree()->Branch("Aw_ThetaFit",&Aw_ThetaFit,"Aw_ThetaFit/D");
+  RootOutput::getInstance()->GetTree()->Branch("Aw_ThetaFit_R2",&Aw_ThetaFit_R2,"Aw_ThetaFit_R2/D");
+	
+//TACS
   RootOutput::getInstance()->GetTree()->Branch("TacSiGeOR",&TacSiGeOR,"TacSiGeOR/D");
-  RootOutput::getInstance()->GetTree()->Branch("TacSiMicroOR",&TacSiMicroOR,"TacSiMicroOR/D");
-  RootOutput::getInstance()->GetTree()->Branch("TacSiPlast1",& TacSiPlast1," TacSiPlast1/D");
-  RootOutput::getInstance()->GetTree()->Branch("TacSiPlast2",& TacSiPlast2," TacSiPlast2/D");
-  
+	RootOutput::getInstance()->GetTree()->Branch("TacSiMicro",&TacSiMicro,"TacSiMicro/D");
+	RootOutput::getInstance()->GetTree()->Branch("TacSiMicro_E",&TacSiMicro_E,"TacSiMicro_E/D");
+	RootOutput::getInstance()->GetTree()->Branch("TacSiMicro_dE",&TacSiMicro_dE,"TacSiMicro_dE/D");
+	RootOutput::getInstance()->GetTree()->Branch("TacSiPlastLeft",& TacSiPlastLeft," TacSiPlastLeft/D");
+  RootOutput::getInstance()->GetTree()->Branch("TacSiPlastRight",& TacSiPlastRight," TacSiPlastRight/D");
+
+// Other
+	RootOutput::getInstance()->GetTree()->Branch("RunNumber", &RunNumber," RunNumber/I");
+
   //Simulation
   //RootOutput::getInstance()->GetTree()->Branch("Original_ELab",&Original_ELab,"Original_ELab/D");
   //RootOutput::getInstance()->GetTree()->Branch("Original_ThetaLab",&Original_ThetaLab,"Original_ThetaLab/D");
+
 }
 /////////////////////////////////////////////////////////////////////////////
 void Analysis::InitInputBranch(){

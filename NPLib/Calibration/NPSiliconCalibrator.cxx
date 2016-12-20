@@ -190,6 +190,7 @@ double NPL::SiliconCalibrator::SimpleCalibration(TH1* histo, NPL::CalibrationSou
 double NPL::SiliconCalibrator::FitPoints(TGraphErrors* gre, double* Energies, double* ErrEnergies, vector<double>& coeff, double pedestal)
 {
    if (gre->GetN() > 0) {
+   		//std::cout << "gre->GetN() > 0" << std::endl; // used for debugging
       gre->Fit("pol1","Q");
       coeff.clear();
       coeff.push_back(gre->GetFunction("pol1")->GetParameter(0));
@@ -198,6 +199,7 @@ double NPL::SiliconCalibrator::FitPoints(TGraphErrors* gre, double* Energies, do
       return (coeff[0]/coeff[1]-pedestal);
    }
    else {
+      //std::cout << "gre->GetN() <= 0" << std::endl; // used for debugging
       coeff.clear();
       coeff.push_back(0);
       coeff.push_back(-1);
@@ -219,7 +221,8 @@ TGraphErrors* NPL::SiliconCalibrator::FitSpectrum(TH1* histo, double rmin, doubl
    // Perform a peak search to get a hint of where are the peaks
    TSpectrum sp(4,1);
    //  nfound = sp->Search(histo,3,"",0.25);
-   Int_t    nfound = sp.Search(histo,3,"",0.5);
+   Int_t    nfound = sp.Search(histo,3,"",0.25);
+   //std::cout << "Number of peaks found = " << nfound << std::endl; // used for debugging
    TSpectrumPosition_t xpeaks = sp.GetPositionX();
 
    // order list of peaks
@@ -274,6 +277,7 @@ TGraphErrors* NPL::SiliconCalibrator::FitSpectrum(TH1* histo, double rmin, doubl
          gre->SetPoint(point, fit->GetParameter(3*i+1), Energies[i][0]);
          gre->SetPointError(point++, fit->GetParError(3*i+1), ErrEnergies[i][0]);
       }
+      //std::cout << "gre->GetN() = " << gre->GetN() << std::endl; // used for debugging
       return gre;
    }
 

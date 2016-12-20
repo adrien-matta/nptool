@@ -25,7 +25,7 @@
  *  provided ones or being very carefull doing so.                           *s
  *****************************************************************************/
 #include "G4VPrimitiveScorer.hh"
-#include "G4THitsMap.hh"
+#include "NPSHitsMap.hh"
 using namespace CLHEP;
 namespace OBSOLETEGENERALSCORERS
    {
@@ -63,7 +63,7 @@ namespace OBSOLETEGENERALSCORERS
             private:
                 G4String m_VolumeName; 
                G4int HCID;
-               G4THitsMap<G4int>* EvtMap;
+               NPS::HitsMap<G4int>* EvtMap;
                
             };
 
@@ -88,7 +88,7 @@ namespace OBSOLETEGENERALSCORERS
                   private:
                         G4String m_VolumeName;
                      G4int HCID;
-                     G4THitsMap<G4double>* EvtMap;
+                     NPS::HitsMap<G4double>* EvtMap;
                };
 
          //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -112,7 +112,7 @@ namespace OBSOLETEGENERALSCORERS
                   private:
                         G4String m_VolumeName;
                         G4int HCID;
-                        G4THitsMap<G4double>* EvtMap;
+                        NPS::HitsMap<G4double>* EvtMap;
                };
 
          //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -135,7 +135,7 @@ namespace OBSOLETEGENERALSCORERS
             private:
                   G4String m_VolumeName;
                G4int HCID;
-               G4THitsMap<G4double>* EvtMap;
+               NPS::HitsMap<G4double>* EvtMap;
             };
 
 
@@ -159,7 +159,7 @@ namespace OBSOLETEGENERALSCORERS
             private:
                   G4String m_VolumeName;
                G4int HCID;
-               G4THitsMap<G4double>* EvtMap;
+               NPS::HitsMap<G4double>* EvtMap;
             };
 
 
@@ -183,7 +183,7 @@ namespace OBSOLETEGENERALSCORERS
             private:
                   G4String m_VolumeName;
                G4int HCID;
-               G4THitsMap<G4double>* EvtMap;
+               NPS::HitsMap<G4double>* EvtMap;
             };
 
 
@@ -207,7 +207,7 @@ namespace OBSOLETEGENERALSCORERS
                private:
                         G4String m_VolumeName;
                   G4int HCID;
-                  G4THitsMap<G4double>* EvtMap;
+                  NPS::HitsMap<G4double>* EvtMap;
             };
 
 
@@ -231,7 +231,7 @@ namespace OBSOLETEGENERALSCORERS
                private:
                    G4String m_VolumeName;
                   G4int HCID;
-                  G4THitsMap<G4double>* EvtMap;
+                  NPS::HitsMap<G4double>* EvtMap;
             };
 
          

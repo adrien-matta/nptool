@@ -144,10 +144,10 @@ void Lassa::ReadSensitive(const G4Event* event){
     m_EventLassa->Clear();
     
     // ThickSi //
-    G4THitsMap<G4double*>* ThickSiHitMap;
+    NPS::HitsMap<G4double*>* ThickSiHitMap;
     std::map<G4int, G4double**>::iterator ThickSi_itr;
     G4int ThickSiCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Lassa_ThickSiScorer/ThickSi");
-    ThickSiHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(ThickSiCollectionID));
+    ThickSiHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(ThickSiCollectionID));
     
     // Loop on the ThickSi map
     for (ThickSi_itr = ThickSiHitMap->GetMap()->begin() ; ThickSi_itr != ThickSiHitMap->GetMap()->end() ; ThickSi_itr++){
@@ -182,10 +182,10 @@ void Lassa::ReadSensitive(const G4Event* event){
     ThickSiHitMap->clear();
     
     // CsI //
-    G4THitsMap<G4double*>* CsIHitMap;
+    NPS::HitsMap<G4double*>* CsIHitMap;
     std::map<G4int, G4double**>::iterator CsI_itr;
     G4int CsICollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Lassa_CsIScorer/CsI");
-    CsIHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CsICollectionID));
+    CsIHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CsICollectionID));
     
     // Loop on the CsI map
     for (CsI_itr = CsIHitMap->GetMap()->begin() ; CsI_itr != CsIHitMap->GetMap()->end() ; CsI_itr++){

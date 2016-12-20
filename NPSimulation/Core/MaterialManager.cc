@@ -588,6 +588,16 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name,double density){
             return material;
         }
         
+        else if(Name == "CF4"){ // 52 torr
+            if(!density)
+                density =  3.78*mg/cm3;
+            G4Material* material = new G4Material("NPS_"+Name,density,2,kStateGas,300,0.0693276*bar);
+            material->AddElement(GetElementFromLibrary("C"), 1);
+            material->AddElement(GetElementFromLibrary("F"), 4);
+            m_Material[Name]=material;
+            return material;
+        }
+
         else  if(Name == "Wood"){
             if(!density)
                 density =  0.9*mg/cm3;
@@ -673,8 +683,9 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name,double density){
 
         
         else{
-          G4cout << "ERROR: Material requested \""<< Name <<"\" is not available in the Material Library" << G4endl;
-        exit(1);
+        G4cout << "ERROR: Material requested \""<< Name <<"\" is not available in the Material Library, trying with NIST" << G4endl;
+        G4NistManager* man = G4NistManager::Instance();
+        return man->FindOrBuildMaterial(Name.c_str());
         }
     }
     
@@ -721,6 +732,36 @@ G4Element* MaterialManager::GetElementFromLibrary(string Name){
     G4NistManager* man = G4NistManager::Instance();
     return man->FindOrBuildElement(Name.c_str());
     
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//   
+G4Material* MaterialManager::GetGasFromLibrary(string Name, double Pressure, double Temperature){
+    ostringstream oss;
+    oss << Name<< "_"<<Pressure<<"_"<<Temperature;
+    string newName= oss.str();
+    map<string,G4Material*>::iterator it;
+    it = m_Material.find(Name);
+    double density = 0 ; 
+    // The element is not found
+    if(it==m_Material.end()){
+        if(Name == "CF4"){ // 52 torr
+            density =  3.72*kg/m3;
+            double refTemp= (273.15+15)*kelvin;
+            double refPres= 1.01325*bar;
+            density = density*(refTemp/Temperature)/(refPres/Pressure);
+            G4Material* material = new G4Material("NPS_"+newName,density,2,kStateGas,Temperature,Pressure);
+            material->AddElement(GetElementFromLibrary("C"), 1);
+            material->AddElement(GetElementFromLibrary("F"), 4);
+            m_Material[Name]=material;
+            return material;
+        }
+        
+        else{
+          exit(1);
+        }
+     }
+  return NULL;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

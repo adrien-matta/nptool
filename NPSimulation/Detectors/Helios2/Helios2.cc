@@ -321,11 +321,11 @@ void Helios2::ReadSensitive(const G4Event* event){
 
   ///////////
   // Resistiverimeter scorer
-  G4THitsMap<G4double*>* ResistiveHitMap;
+  NPS::HitsMap<G4double*>* ResistiveHitMap;
   std::map<G4int, G4double**>::iterator Resistive_itr;
 
   G4int ResistiveCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Helios2Scorer/Resistive");
-  ResistiveHitMap = (G4THitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(ResistiveCollectionID));
+  ResistiveHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(ResistiveCollectionID));
 
   // Loop on the Resistive map
   for (Resistive_itr = ResistiveHitMap->GetMap()->begin() ; Resistive_itr != ResistiveHitMap->GetMap()->end() ; Resistive_itr++){
