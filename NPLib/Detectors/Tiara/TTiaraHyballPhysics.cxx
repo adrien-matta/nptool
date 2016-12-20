@@ -429,7 +429,6 @@ void TTiaraHyballPhysics::ReadConfiguration(NPL::InputParser parser){
       double R = blocks[i]->GetDouble("R","mm");
       double Phi = blocks[i]->GetDouble("Phi","deg");
       AddWedgeDetector(R,Phi,Z);
-
     }
 
     else{
@@ -531,52 +530,47 @@ void TTiaraHyballPhysics::InitializeRootOutput(){
 /////   Specific to TiaraHyballArray   ////
 void TTiaraHyballPhysics::AddWedgeDetector( double R,double Phi,double Z){
 
-  double Wedge_R_Min = 32.6+R;
-  double Wedge_R_Max = 135.1+R;
-  double Wedge_Phi_Min = -27.2*deg/rad;
-  double Wedge_Phi_Max = 27.2*deg/rad;
-  Phi= Phi*deg/rad;
-
-  int Wedge_Ring_NumberOfStrip = 16 ;
-  int Wedge_Sector_NumberOfStrip = 8 ;
-
-  double StripPitchSector = (Wedge_Phi_Max-Wedge_Phi_Min)/Wedge_Sector_NumberOfStrip ;
-  double StripPitchRing   = (Wedge_R_Max-Wedge_R_Min)/Wedge_Ring_NumberOfStrip  ; 
-
-  TVector3 Strip_1_1;
-
-  m_NumberOfDetector++;
-  Strip_1_1=TVector3(0,0,Z);
+  m_NumberOfDetector++; 
+  double r_min = R+32.6;
+  double r_max = R+135.1;
+  double phi_offset = 5.6*deg; 
+  double phi_min = -27.2*deg; // momo: check the offset
+  double phi_max = 27.2*deg;
+  int NumberOfRings = 16 ;
+  int NumberOfSectors = 8 ;
+  double ring_pitch   = (r_max-r_min)/NumberOfRings  ; 
+  double sec_pitch = (phi_max-phi_min)/NumberOfSectors ;
 
   //   Buffer object to fill Position Array
-  vector<double> lineX ; vector<double> lineY ; vector<double> lineZ ;
-
-  vector< vector< double > >   OneWedgeStripPositionX   ;
-  vector< vector< double > >   OneWedgeStripPositionY   ;
-  vector< vector< double > >   OneWedgeStripPositionZ   ;
-
-  TVector3 StripCenter = Strip_1_1;
-  for(int f = 0 ; f < Wedge_Ring_NumberOfStrip ; f++){
-    lineX.clear()   ;
-    lineY.clear()   ;
-    lineZ.clear()   ;
-
-    for(int b = 0 ; b < Wedge_Sector_NumberOfStrip ; b++){
-      StripCenter = Strip_1_1;
-      StripCenter.SetY(Wedge_R_Max-f*StripPitchRing-0.5*StripPitchRing);
+  TVector3 StripCenter(0,0,0);
+  vector<double> lineX ; 
+  vector<double> lineY ; 
+  vector<double> lineZ ;
+  vector< vector< double > >   WedgeStripPositionX   ;
+  vector< vector< double > >   WedgeStripPositionY   ;
+  vector< vector< double > >   WedgeStripPositionZ   ;
+  
+  for(int iRing = 0 ; iRing < NumberOfRings ; iRing++){
+    lineX.clear() ;
+    lineY.clear() ;
+    lineZ.clear() ;
+    for(int iSec = 0 ; iSec < NumberOfSectors ; iSec++){ // momo: check the order
+      StripCenter.SetX(0);
+      StripCenter.SetY(r_max - (iRing+0.5)*ring_pitch);
       StripCenter.SetZ(Z);
-      StripCenter.RotateZ(Phi+Wedge_Phi_Min+b*StripPitchSector);
+      StripCenter.RotateZ(Phi + (iSec-4+0.5)*sec_pitch + phi_offset); // momo : check signs and offset
       lineX.push_back( StripCenter.X() );
       lineY.push_back( StripCenter.Y() );
       lineZ.push_back( StripCenter.Z() );
     }
-    OneWedgeStripPositionX.push_back(lineX);
-    OneWedgeStripPositionY.push_back(lineY);
-    OneWedgeStripPositionZ.push_back(lineZ);
+    WedgeStripPositionX.push_back(lineX);
+    WedgeStripPositionY.push_back(lineY);
+    WedgeStripPositionZ.push_back(lineZ);
   }
-  m_StripPositionX.push_back( OneWedgeStripPositionX ) ;
-  m_StripPositionY.push_back( OneWedgeStripPositionY ) ;
-  m_StripPositionZ.push_back( OneWedgeStripPositionZ ) ;
+
+  m_StripPositionX.push_back( WedgeStripPositionX ) ;
+  m_StripPositionY.push_back( WedgeStripPositionY ) ;
+  m_StripPositionZ.push_back( WedgeStripPositionZ ) ;
 
   return;
 }
@@ -603,20 +597,14 @@ TVector3 TTiaraHyballPhysics::GetPositionOfInteraction(const int i) const{
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 TVector3 TTiaraHyballPhysics::GetRandomisedPositionOfInteraction(const int i) const{
-  TVector3 RandomPosition = GetPositionOfInteraction(i);
-  double Zholder = RandomPosition.Z();
-  RandomPosition.SetZ(0.0);
-  double R = RandomPosition.Mag();
-  double Theta = RandomPosition.Theta(); // defines the inclination coordinate in a spherical coordinate system
-  double Phi = RandomPosition.Phi(); // defines the azimuthal coordinate in a spherical coordinate system
-  double RandomNumber1 = Rand->Rndm();
-  double DeltaR = ((RandomNumber1 * 6.4)-3.2);
-  R = R + DeltaR; // randomises R within a given detector ring
-  double RandomNumber2 = Rand->Rndm();
-  double DeltaAngle = ((RandomNumber2 * 0.118682389)-0.0593411946);
-  Phi = Phi + DeltaAngle; // randomises Phi within a given detector sector
-  RandomPosition.SetXYZ(R*(sin(Theta))*(cos(Phi)),R*(sin(Phi))*(sin(Theta)),Zholder);
-  return(RandomPosition) ;
+  TVector3 OriginalPosition = GetPositionOfInteraction(i);
+  double rho = OriginalPosition.Perp(); 
+  double phi = OriginalPosition.Phi();
+  double z = OriginalPosition.Z();
+  // randomises within a given detector ring and sector
+  double rho_rand = (rho-3.2) + 6.4*sqrt(Rand->Uniform(0,1));// sqrt is necessary for realistic randomise!
+  double phi_rand = phi + Rand->Uniform(-3.4*deg, +3.4*deg); 
+  return( TVector3(rho_rand*cos(phi_rand),rho_rand*sin(phi_rand),z) ) ; 
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 

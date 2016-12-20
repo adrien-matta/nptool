@@ -431,8 +431,8 @@ TVector3 TTiaraBarrelPhysics::GetPositionOfInteraction(const int i) const{
   double Y = INNERBARREL_PCB_Width*(0.5+sin(45*deg));
   double Z = Strip_Pos[i]*(0.5*INNERBARREL_ActiveWafer_Length); 
   //original version of the line above = double Z = (Strip_Pos[i]-0.5)*INNERBARREL_ActiveWafer_Length;
-  TVector3 POS(X,Y,-Z);
-  POS.RotateZ((DetectorNumber[i]-1)*45*deg);
+  TVector3 POS(X,Y,-Z); // since RowPos = (U-D)/(U+D) => Downstream hit (i.e. Z>0) has RowPos<0, thus the sign
+  POS.RotateZ((5-DetectorNumber[i])*45*deg);// looking downstream Detector 1 is at 3'oclock 
   return( POS ) ;
 }
 ///////////////////////////////////////////////////////////////////////////////
@@ -440,8 +440,8 @@ TVector3 TTiaraBarrelPhysics::GetRandomisedPositionOfInteraction(const int i) co
   TVector3 RandomPOS = GetPositionOfInteraction(i);
   TVector3 v1(-12.0, 27.76*(0.5+sin(45*deg)), 0.0); // the numbers used in this line and the one below are related to those in lines 594-597
   TVector3 v2(12.0, 27.76*(0.5+sin(45*deg)), 0.0);
-  v1.RotateZ((DetectorNumber[i]-1)*45*deg);
-  v2.RotateZ((DetectorNumber[i]-1)*45*deg);
+  v1.RotateZ((5-DetectorNumber[i])*45*deg);
+  v2.RotateZ((5-DetectorNumber[i])*45*deg);
   TVector3 u = (v2-v1).Unit();
   double RandomNumber = Random->Rndm();
   TVector3 DeltaHolder((RandomNumber*6.0)-3.0,(RandomNumber*6.0)-3.0,0.0);
