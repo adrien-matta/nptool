@@ -52,24 +52,22 @@ void Analysis::Init(){
   cout << "Original Beam energy (entrance of target): " << OriginalBeamEnergy << endl ;
 
   // target thickness
-  TargetThickness = m_DetectorManager->GetTargetThickness()*micrometer;
+  TargetThickness = 0*m_DetectorManager->GetTargetThickness();
   string TargetMaterial = m_DetectorManager->GetTargetMaterial();
 
   // energy losses
   string light=NPL::ChangeNameToG4Standard(myReaction->GetNucleus3().GetName());
   string beam=NPL::ChangeNameToG4Standard(myReaction->GetNucleus1().GetName());
-
   LightTarget = NPL::EnergyLoss(light+"_"+TargetMaterial+".G4table","G4Table",10 );
   LightAl = NPL::EnergyLoss(light+"_Al.G4table","G4Table",10);
   LightSi = NPL::EnergyLoss(light+"_Si.G4table","G4Table",10);
   BeamTarget = NPL::EnergyLoss(beam+"_"+TargetMaterial+".G4table","G4Table",10);
   FinalBeamEnergy = BeamTarget.Slow(OriginalBeamEnergy, TargetThickness*0.5, 0);
-
-  cout << "Final Beam energy (middle of target): " << FinalBeamEnergy << endl;
   myReaction->SetBeamEnergy(FinalBeamEnergy);
+  cout << "Final Beam energy (middle of target): " << FinalBeamEnergy << endl;
+
 
   Initial = new TInitialConditions();
-
   Rand = new TRandom3();
   ThetaNormalTarget = 0 ;
   ThetaTHSurface = 0;
@@ -87,7 +85,9 @@ void Analysis::Init(){
   BeamDirection = TVector3(0,0,1);
   InitOutputBranch();
   InitInputBranch();
-
+  
+  //Ge
+  
   //FPD
   Delta_E = 0; // Energy ionisation chamber
   Micro_E = 0; // Energy from micromega total
@@ -136,11 +136,9 @@ void Analysis::TreatEvent(){
     Si_E_TH = TH->Strip_E[countTiaraHyball];
     Energy = Si_E_TH;
 
-    // Evaluate energy using the thickness 
-    ELab = LightAl.EvaluateInitialEnergy( Energy ,0.4*micrometer , ThetaTHSurface); 
-    // Target Correction
+    // Correct for energy loss using the thickness of the target and the dead layer
+    ELab = LightSi.EvaluateInitialEnergy( Energy*keV ,0.0*micrometer , ThetaTHSurface); 
     ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget); 
-
    /////////////////////////////
     // Part 3 : Excitation Energy Calculation
     Ex = myReaction -> ReconstructRelativistic( ELab , ThetaLab );
@@ -183,17 +181,16 @@ void Analysis::TreatEvent(){
     // Part 2 : Impact Energy
     Energy = ELab = 0;
     Si_E_InnerTB = TB->Strip_E[countTiaraBarrel];
-    if(TB->Outer_Strip_E[countTiaraBarrel]>0){
-      Si_E_OuterTB = TB->Outer_Strip_E[countTiaraBarrel];
-      Energy = Si_E_InnerTB + Si_E_OuterTB;
-    }
-    else {
-      Energy = Si_E_InnerTB;
-    }
+    Energy = Si_E_InnerTB;
+    //treat the back detector (in progress)
+    if(false && TB->Outer_Strip_E.size()>0)
+	    if(TB->Outer_Strip_E[countTiaraBarrel]>0){
+	      Si_E_OuterTB = TB->Outer_Strip_E[countTiaraBarrel];
+	      Energy = Si_E_InnerTB + Si_E_OuterTB;
+	    }
 
-    // Evaluate energy using the thickness 
-    ELab = LightAl.EvaluateInitialEnergy( Energy ,0.4*micrometer , ThetaTBSurface); 
-    // Target Correction
+    // Evaluate energy using the thickness, Target and Si dead layer Correction
+    ELab = LightSi.EvaluateInitialEnergy( Energy*keV ,0.0*micrometer , ThetaTBSurface); 
     ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
 
     /////////////////////////////
@@ -215,10 +212,49 @@ void Analysis::TreatEvent(){
   } // end loop TiaraBarrel
 
   /////////////////////////// LOOP on Ge TAMU /////////////////////////////
-//for(unsigned int countGe = 0 ; countGe < TG->something.size() ; countGe++) // multiplicity treated for now is zero 
-//  { 
-  // Things goes here ...
-//  }
+  /*
+for(unsigned int countGe = 0 ; countGe < TG->something.size() ; countGe++) // multiplicity treated for now is zero 
+  { 
+
+  unsigned int c_size_e = TG->m_PreTreatedData->GetMultiplicityCoreE();
+  unsigned int s_size_e = m_PreTreatedData->GetMultiplicitySegmentE();
+  // map for add back
+  map<int,double> clv_energy;   
+  map<int,int> clv_segment;
+  map<int,int> clv_crystal;
+  map<int,double> max_core;
+  map<int,double> max_segment; 
+  for(unsigned int i = 0 ; i < c_size_e ; i++){
+    int clv = m_PreTreatedData->GetCoreCloverNbrE(i);
+    int cry = m_PreTreatedData->GetCoreCrystalNbrE(i);
+    double energy = m_PreTreatedData->GetCoreEnergy(i);
+    // Add back energy
+    clv_energy[clv] += energy;
+    // Pick up the crystal with the maximum energy in every clover 
+    if(energy > max_core[clv]){
+      max_core[clv] = energy;
+      clv_crystal[clv] = cry;
+    }
+    // Pick up the segment with the maximum energy in every clover
+    for(unsigned int j = 0 ; j < s_size_e ; j++){
+      double s_energy = m_PreTreatedData->GetSegmentEnergy(j); 
+      if(s_energy > max_segment[clv]){
+        max_segment[clv] = s_energy;
+        clv_segment[clv] = m_PreTreatedData->GetSegmentSegmentNbrE(j);
+      }
+    }
+  }
+
+  // Singles spectra 
+  
+  // Addback spectra 
+
+  // calculate angle
+
+  // calculate doppler corrected spectra 
+  	
+  }
+*/
 
  ////////////////////////////////////////// LOOP on FPD  //////////////////////////////////////////
   //for(unsigned int countFPD = 0 ; countFPD < TF->Delta.size() ; countFPD++) // multiplicity treated for now is zero 
@@ -247,7 +283,6 @@ void Analysis::TreatEvent(){
       XPlastic_aw  = -1000;
       XPlastic     = -1000;
     }
-
   } // end loop on FPD
   
 
@@ -307,9 +342,9 @@ void Analysis::ReInitValue(){
   
   //TAC
   TacSiGeOR     = -1000;
-  TacSiMicroOR    = -1000;
-  TacSiPlast1  = -1000;
-  TacSiPlast2 = -1000;
+  TacSiMicroOR  = -1000;
+  TacSiPlast1   = -1000;
+  TacSiPlast2   = -1000;
 }
 
 /////////////////////////////////////////////////////////////////////////////
