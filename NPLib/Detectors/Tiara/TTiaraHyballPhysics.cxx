@@ -534,10 +534,11 @@ void TTiaraHyballPhysics::AddWedgeDetector( double R,double Phi,double Z){
   double r_min = R+32.6;
   double r_max = R+135.1;
   double phi_offset = 5.6*deg; 
-  double phi_min = -27.2*deg; // momo: check the offset
+  double phi_min = -27.2*deg;
   double phi_max = 27.2*deg;
   int NumberOfRings = 16 ;
   int NumberOfSectors = 8 ;
+  double wedge_pitch  = 60*deg  ; 
   double ring_pitch   = (r_max-r_min)/NumberOfRings  ; 
   double sec_pitch = (phi_max-phi_min)/NumberOfSectors ;
 
@@ -554,11 +555,11 @@ void TTiaraHyballPhysics::AddWedgeDetector( double R,double Phi,double Z){
     lineX.clear() ;
     lineY.clear() ;
     lineZ.clear() ;
-    for(int iSec = 0 ; iSec < NumberOfSectors ; iSec++){ // momo: check the order
-      StripCenter.SetX(0);
-      StripCenter.SetY(r_max - (iRing+0.5)*ring_pitch);
+    for(int iSec = 0 ; iSec < NumberOfSectors ; iSec++){ 
+      StripCenter.SetX(r_min + (iRing+0.5)*ring_pitch); // build the detector at angle phi=0, then rotate 
+      StripCenter.SetY(0);
       StripCenter.SetZ(Z);
-      StripCenter.RotateZ(Phi + (iSec-4+0.5)*sec_pitch + phi_offset); // momo : check signs and offset
+      StripCenter.RotateZ(Phi + (iSec-4+0.5)*sec_pitch + phi_offset ); //https://gca.tamu.edu/TIARA+General/25
       lineX.push_back( StripCenter.X() );
       lineY.push_back( StripCenter.Y() );
       lineZ.push_back( StripCenter.Z() );
