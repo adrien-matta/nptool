@@ -151,21 +151,20 @@ G4DEAmplification::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 
   // Create the secondary tracks
   for(G4int i = 0 ; i < number_electron ; i++){
-    // Electron follow the field direction
-    G4ThreeVector field(0,1,0);
-    G4double v_drift = aMaterialPropertiesTable->GetConstProperty("DE_DRIFTSPEED"); 
-    G4double v_long  = G4RandGauss::shoot(0,aMaterialPropertiesTable->GetConstProperty("DE_LONGITUDINALSPREAD")/v_drift);
-    G4double v_trans = G4RandGauss::shoot(0,aMaterialPropertiesTable->GetConstProperty("DE_TRANSVERSALSPREAD")/v_drift);
-cout << v_drift << " " << v_long << " " << v_trans << endl;
-    G4ThreeVector v = v_drift*field+v_long*G4ThreeVector(0,0,1)+v_trans*G4ThreeVector(1,0,0);
+    // Random direction at creation
+    G4double cost = 1-2*G4UniformRand();
+    G4double theta = acos(cost);
+    G4double phi = twopi*G4UniformRand();
+    G4ThreeVector p;
+    p.setRThetaPhi(1,theta,phi); 
 
     // Random Position along the step with matching time
     G4double rand = G4UniformRand();
     G4ThreeVector pos = x0 + rand * aStep.GetDeltaPosition();
     G4double time = t0+ rand* aStep.GetDeltaTime(); 
 
-    G4DynamicParticle* particle = new G4DynamicParticle(G4DriftElectron::DriftElectron(),v.unit(), electron_mass_c2*v.mag()/c_squared);
-    G4Track* aSecondaryTrack = new G4Track(particle,time,pos);
+    G4DynamicParticle* particle = new G4DynamicParticle(G4DriftElectron::DriftElectron(),p, pair_energy);
+     G4Track* aSecondaryTrack = new G4Track(particle,time,pos);
 
     aSecondaryTrack->SetTouchableHandle(
         aStep.GetPreStepPoint()->GetTouchableHandle());
