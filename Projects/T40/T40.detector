@@ -3,7 +3,7 @@ GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %0.5mg/cm2
 Target
- THICKNESS= 1 micrometer 
+ THICKNESS= 0.0 micrometer 
  RADIUS=	5 mm
  MATERIAL= CD2
  ANGLE= 0 deg
@@ -15,30 +15,33 @@ Tiara Barrel
  InnerBarrel= 1
  OuterBarrel= 1
  Chamber= 1
+ X= 0 mm
+ Y= 0 mm
+ Z= 0 mm
 HyballWedge
  Z= -147 mm
  R= 0 mm
- Phi= 0 deg 
+ Phi= 210 deg 
 HyballWedge
  Z= -147 mm
  R= 0 mm
- Phi= 60 deg
+ Phi= 150 deg
 HyballWedge
  Z= -147 mm
  R= 0 mm 
- Phi= 120 deg
+ Phi= 90 deg
 HyballWedge
  Z= -147 mm
  R= 0 mm
- Phi= 180 deg
+ Phi= 30 deg
 HyballWedge
  Z= -147 mm
  R= 0 mm
- Phi= 240 deg
+ Phi= 330 deg
 HyballWedge
  Z= -147 mm
  R= 0 mm
- Phi= 300 deg
+ Phi= 270 deg
 %%%%%%%%%%%%%%%%%%%%%%%%%%% FPD TAMU
 % All DELTA detectors
 FPDTamu DELTA
@@ -74,22 +77,22 @@ GeTAMU GeTAMUClover
   R=      60 mm
   Theta=  90 deg
   Phi=    45 deg
-  Beta=    0 deg
+  Beta=    0 0 0  deg
 GeTAMU GeTAMUClover
   CloverID= 2
   R=      60 mm
   Theta=  90 deg
   Phi=   135 deg
-  Beta=    0 deg
+  Beta=    0 0 0  deg
 GeTAMU GeTAMUClover
   CloverID= 3
   R=      60 mm
   Theta=  90 deg
   Phi=   225 deg
-  Beta=    0 deg
+  Beta=    0 0 0  deg
 GeTAMU GeTAMUClover
   CloverID= 4
   R=      60 mm
   Theta=  90 deg
   Phi=   315 deg
-  Beta=    0 deg
+  Beta=    0 0 0 deg

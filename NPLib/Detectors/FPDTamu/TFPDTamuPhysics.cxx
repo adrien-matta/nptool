@@ -71,7 +71,7 @@ void TFPDTamuPhysics::BuildSimplePhysicalEvent() {
 void TFPDTamuPhysics::BuildPhysicalEvent() {
   // apply thresholds and calibration
   PreTreat();
-
+// cout << " start of BuildPhysicalEvent " << endl ; 
   //Delta
   // match the energy and time together (not implemented yet) and fill the vectors
   unsigned int mysizeE = m_PreTreatedData->Get_Delta_Energy_Mult();
@@ -96,14 +96,16 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
         //Pass the corresponding Energy, Charge 
         MicroEnergy.push_back(m_PreTreatedData->Get_Micro_Energy(e)); //calibrated
         MicroCharge.push_back(m_EventData->Get_Micro_Energy(e)); //uncalibrated
-      } 
-  unsigned int mysizeT = m_PreTreatedData->Get_Micro_Time_Mult();
-  for (UShort_t t = 0; t < mysizeT ; t++) {
-        //Pass the corresponding Time
-        MicroTime.push_back(m_PreTreatedData->Get_Micro_Time(t));
-      } 
-
-  //AWire
+      }   
+            
+   unsigned int mysizeT = m_PreTreatedData->Get_Micro_Time_Mult();
+    for (UShort_t t = 0; t< mysizeT ; t++) {
+      MicroTimeOR.push_back(m_EventData->Get_Micro_Time(t));
+			MicroTimeRowNumber.push_back(m_EventData->Get_Micro_T_RowNbr(t));
+    }
+   
+// cout << " end of Micro " << endl ; 
+   //AWire
   //separate Left and right detectors 
   vector<double> awireLeftDetNumber, awireRightDetNumber;
   vector<double> awireLeftCharge, awireRightCharge;
@@ -159,7 +161,7 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
     //m_PreTreatedData->Dump();
     //cin.get();
   }
-
+// cout << " end of awire " << endl ; 
   //Plastic
   //separate Left and right detectors 
   vector<double> plastLeftCharge, plastRightCharge;
@@ -205,7 +207,9 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
     //cin.get();
   }
 
-  //time: separate Left and right detectors 
+
+// cout << " start of plastic " << endl ; 
+  //separate Left and right detectors 
   mysizeT = m_PreTreatedData->Get_Plast_Time_Mult();
   for (UShort_t t = 0; t < mysizeT ; t++) {
     //collect info
@@ -218,8 +222,9 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
       PlastRightTime.push_back(time);
     else
       PlastLeftTime.push_back(time);
-  } 
-
+  }
+//  cout << " end of plastic " << endl ;
+   
 /*
   //model
   // match energy and time together
@@ -428,6 +433,7 @@ void TFPDTamuPhysics::PreTreat() {
     }
   }
 
+// cout << " end of pretreat " << endl ; 
 }//end of function
 
 
@@ -507,11 +513,12 @@ void TFPDTamuPhysics::Clear() {
   //Micromega
   MicroRowNumber.clear();
   MicroColNumber.clear();
+	MicroTimeRowNumber.clear();
   MicroPositionX.clear();
   MicroPositionZ.clear();
   MicroCharge.clear();
   MicroEnergy.clear();
-  MicroTime.clear();
+  MicroTimeOR.clear();
   //Avalanche wire
   AWireDetNumber.clear();
   AWireLeftCharge.clear();
@@ -580,7 +587,12 @@ void TFPDTamuPhysics::Dump() const {
   for (size_t i = 0 ; i < MicroColNumber.size() ; i++)
     cout << " " << MicroColNumber[i];
   cout<<endl;
-  cout << " energy: "<<endl; 
+    cout << " Row TAC:" << endl;
+  for (size_t i = 0 ; i < MicroTimeRowNumber.size() ; i++)
+    cout << " " << MicroTimeRowNumber[i];
+  cout<<endl;
+      cout << " energy: "<<endl; 
+
   for (size_t i = 0 ; i < MicroColNumber.size() ; i++)
     cout << " " << MicroRowNumber[i];
   cout<<endl;
@@ -825,6 +837,7 @@ void TFPDTamuPhysics::InitializeRootInputPhysics() {
   //Micromega
   inputChain->SetBranchStatus( "MicroRowNumber" , true );
   inputChain->SetBranchStatus( "MicroColNumber" , true );
+  inputChain->SetBranchStatus( "MicroTimeRowNumber" , true );
   inputChain->SetBranchStatus( "MicroPositionX" , true );
   inputChain->SetBranchStatus( "MicroPositionZ" , true );
   inputChain->SetBranchStatus( "MicroCharge" , true );

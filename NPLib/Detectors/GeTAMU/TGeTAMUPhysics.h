@@ -87,6 +87,18 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     TGeTAMUPhysics* m_EventPhysics;//!
 
   public: // Data Member
+    //singles
+    vector<double> Singles_CoreE; 
+    vector<double> Singles_SegE;   
+    vector<double> Singles_DC;   
+    vector<double> Singles_Theta;
+    vector<double> Singles_X;
+    vector<double> Singles_Y;
+    vector<double> Singles_Z;
+    vector<int> Singles_Clover;
+    vector<int> Singles_Crystal;
+    vector<int> Singles_Segment;
+
     // add back by clover
     vector<double> AddBack_E;   
     vector<double> AddBack_T;   
@@ -98,6 +110,7 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     vector<int> AddBack_Clover;
     vector<int> AddBack_Crystal;
     vector<int> AddBack_Segment;
+
     vector<double> GeTime; // OR of all time signals, can be used for array or or clover only
 
   private: // use for anlysis

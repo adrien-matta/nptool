@@ -76,73 +76,84 @@ void TTiaraBarrelPhysics::BuildPhysicalEvent(){
   unsigned int sizeD = m_PreTreatedData->GetFrontDownstreamEMult();
   unsigned int sizeB = m_PreTreatedData->GetBackEMult(); 
   unsigned int sizeO = m_PreTreatedData->GetOuterEMult();
-  for(unsigned int k = 0 ; k < sizeB ; k++){
-    for(unsigned int i = 0 ; i < sizeU ; i++){  
-      if(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i) == m_PreTreatedData->GetBackEDetectorNbr(k))
-        for(unsigned int j = 0 ; j < sizeD ; j++){  
-          // same detector, same strip
-          if( m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i) 
-              == m_PreTreatedData->GetFrontDownstreamEDetectorNbr(j)
-              && m_PreTreatedData->GetFrontUpstreamEStripNbr(i) 
-              == m_PreTreatedData->GetFrontDownstreamEStripNbr(j)){
+  static string name; // token 
 
-            double EU = m_PreTreatedData->GetFrontUpstreamEEnergy(i) ;
-            double ED = m_PreTreatedData->GetFrontDownstreamEEnergy(j); 
+   for(unsigned int i = 0 ; i < sizeU ; i++){  
+      //if(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i) == m_PreTreatedData->GetBackEDetectorNbr(k))
+      for(unsigned int j = 0 ; j < sizeD ; j++){  
+        // same detector, same strip
+        if( m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i) 
+            == m_PreTreatedData->GetFrontDownstreamEDetectorNbr(j)
+            && m_PreTreatedData->GetFrontUpstreamEStripNbr(i) 
+            == m_PreTreatedData->GetFrontDownstreamEStripNbr(j)) {
 
-            // Front back Energy match
-            if(true){ 
-              static string name =  "TIARABARREL/B";
-              name+=NPL::itoa(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i));
-              name+="_STRIP";
-              name+=NPL::itoa(m_PreTreatedData->GetFrontUpstreamEStripNbr(i));
-              name+="_POS";
-              double POS =
-                CalibrationManager::getInstance()
-                ->ApplyResistivePositionCalibration(name,(ED-EU)/(EU+ED));
-              double EO = -1000;
-              double EO1 = -500;
-              double EO2 = -500;
-              double OO = 0;
-              for(unsigned int l = 0 ; l < sizeO ; l++){
-                if(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i) 
-                    == m_PreTreatedData->GetOuterEDetectorNbr(l))
-                  /*&& m_PreTreatedData->GetFrontUpstreamEStripNbr(i) 
-                    == m_PreTreatedData->GetOuterEStripNbr(l))*/{
-                      OO = m_PreTreatedData->GetOuterEEnergy(l);
-                      if(l==0){
-                        EO1 = OO;
-                      }
-                      else if(l==1){
-                        EO2 = OO;
-                      }
+          double EU = m_PreTreatedData->GetFrontUpstreamEEnergy(i) ;
+          double ED = m_PreTreatedData->GetFrontDownstreamEEnergy(j); 
+          double ChU = m_EventData->GetFrontUpstreamEEnergy(i) ;
+          double ChD = m_EventData->GetFrontDownstreamEEnergy(j);
+          double RowPos = (ChU-ChD)/(ChU+ChD); // order of U and D in numerator is crucial
+          
+          // Front back Energy match
+          if(true){ 
+            name =  "TIARABARREL/B";
+            name+=NPL::itoa(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i));
+            name+="_STRIP";
+            name+=NPL::itoa(m_PreTreatedData->GetFrontUpstreamEStripNbr(i));
+            name+="_POS";
+            double Pos = CalibrationManager::getInstance()
+            ->ApplyResistivePositionCalibration(name,RowPos);
+            /*
+            double EO = -1000;
+            double EO1 = -500;
+            double EO2 = -500;
+            double OO = 0;
+            for(unsigned int l = 0 ; l < sizeO ; l++){
+              if(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i)== m_PreTreatedData->GetOuterEDetectorNbr(l))
+                //&& m_PreTreatedData->GetFrontUpstreamEStripNbr(i)== m_PreTreatedData->GetOuterEStripNbr(l))
+              {
+                    OO = m_PreTreatedData->GetOuterEEnergy(l);
+                    if(l==0){
+                      EO1 = OO;
                     }
-              }
-
-              UpStream_E.push_back(EU);
-              DownStream_E.push_back(ED);
-              Strip_Pos.push_back(POS); 
-              Strip_N.push_back(m_PreTreatedData->GetFrontUpstreamEStripNbr(i));
-              DetectorNumber.push_back(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i));
-              double E = (EU+ED); /* / CalibrationManager::getInstance()
-                                     ->ApplyCalibration("TIARABARREL/BALLISTIC_B" 
-                                     + NPL::itoa(m_PreTreatedData->GetFrontDownstreamEDetectorNbr(i)) 
-                                     + "_STRIP" 
-                                     + NPL::itoa(m_PreTreatedData->GetFrontDownstreamEStripNbr(i)),
-                                     POS); */
-              Strip_E.push_back(E);
-              if(sizeO == 1)
-                EO = EO1;
-              else if(sizeO == 2)
-                EO = EO1 + EO2;
-              else
-                EO = -1000;
-
-              Outer_Strip_E.push_back(EO);
+                    else if(l==1){
+                      EO2 = OO;
+                    }
+                  }
             }
-          }
+            */
+            UpStream_E.push_back(EU);
+            DownStream_E.push_back(ED);
+            Strip_Pos.push_back(Pos); 
+            Strip_N.push_back(m_PreTreatedData->GetFrontUpstreamEStripNbr(i));
+            DetectorNumber.push_back(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i));
+            name ="TIARABARREL/BALLISTIC_B";
+            name+=NPL::itoa(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i));
+            name+="_STRIP";
+            name+=NPL::itoa(m_PreTreatedData->GetFrontUpstreamEStripNbr(i));
+            // calibration is applied as BD (k*k - RowPos*RowPos)
+            // k is typically the max value of RowPos and is the same value used in the 
+            // Position calibration, 0.66 is a good approximation for k
+            double k = 0.66;
+            double BDtimesk2 =CalibrationManager::getInstance()->ApplyCalibration(name,fabs(k)); 
+            double BDtimesPos2 =CalibrationManager::getInstance()->ApplyCalibration(name,fabs(RowPos));
+            Strip_E.push_back( (EU+ED) * (1+(BDtimesk2-BDtimesPos2))  ); //* (1+(BDk2-BDp2)) (k2-p2)=BD correction is multiplicative and used as perturbation on unit 
+            /*
+            if(sizeO == 1)
+              EO = EO1;
+            else if(sizeO == 2)
+              EO = EO1 + EO2;
+            else
+              EO = -1000;
+            Outer_Strip_E.push_back(EO);
+            */
+          } // if true?
         }
-    }
-  }
+      } // downstream
+    } // upstream 
+
+  //for(unsigned int k = 0 ; k < sizeB ; k++){
+      // for the back detectors goes here
+  //}
 }
 ///////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelPhysics::PreTreat(){
@@ -239,7 +250,7 @@ void TTiaraBarrelPhysics::ReadConfiguration(NPL::InputParser parser){
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  vector<string> token = {"InnerBarrel","OuterBarrel","Chamber"};
+  vector<string> token = {"InnerBarrel","OuterBarrel","Chamber","X","Y","Z"};
 
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
     if(blocks[i]->HasTokenList(token)){
@@ -248,6 +259,10 @@ void TTiaraBarrelPhysics::ReadConfiguration(NPL::InputParser parser){
       int inner   = blocks[i]->GetInt("InnerBarrel");
       int outer   = blocks[i]->GetInt("OuterBarrel");
       int chamber = blocks[i]->GetInt("Chamber");
+      double X = blocks[i]->GetDouble("X","mm");
+      double Y = blocks[i]->GetDouble("Y","mm");
+      double Z = blocks[i]->GetDouble("Z","mm");
+      AddDetector(X,Y,Z);
     }
 
     else{
@@ -290,6 +305,7 @@ map< string,TH1* > TTiaraBarrelPhysics::GetSpectra() {
 } 
 ///////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelPhysics::AddParameterToCalibrationManager(){
+
   CalibrationManager* Cal = CalibrationManager::getInstance();
   // E and T
   for(int i = 0 ; i < m_NumberOfDetector ; ++i){
@@ -306,7 +322,6 @@ void TTiaraBarrelPhysics::AddParameterToCalibrationManager(){
     }
 
     Cal->AddParameter("TIARABARREL","TIARABARREL/B" + NPL::itoa( i+1 ) + "_BACK_E","TIARABARREL_B" + NPL::itoa( i+1 ) + "_BACK_E");
-
   }
   return;
 
@@ -416,8 +431,8 @@ TVector3 TTiaraBarrelPhysics::GetPositionOfInteraction(const int i) const{
   double Y = INNERBARREL_PCB_Width*(0.5+sin(45*deg));
   double Z = Strip_Pos[i]*(0.5*INNERBARREL_ActiveWafer_Length); 
   //original version of the line above = double Z = (Strip_Pos[i]-0.5)*INNERBARREL_ActiveWafer_Length;
-  TVector3 POS(X,Y,-Z);
-  POS.RotateZ((DetectorNumber[i]-1)*45*deg);
+  TVector3 POS(X,Y,-Z); // since RowPos = (U-D)/(U+D) => Downstream hit (i.e. Z>0) has RowPos<0, thus the sign
+  POS.RotateZ((5-DetectorNumber[i])*45*deg);// looking downstream Detector 1 is at 3'oclock 
   return( POS ) ;
 }
 ///////////////////////////////////////////////////////////////////////////////
@@ -425,8 +440,8 @@ TVector3 TTiaraBarrelPhysics::GetRandomisedPositionOfInteraction(const int i) co
   TVector3 RandomPOS = GetPositionOfInteraction(i);
   TVector3 v1(-12.0, 27.76*(0.5+sin(45*deg)), 0.0); // the numbers used in this line and the one below are related to those in lines 594-597
   TVector3 v2(12.0, 27.76*(0.5+sin(45*deg)), 0.0);
-  v1.RotateZ((DetectorNumber[i]-1)*45*deg);
-  v2.RotateZ((DetectorNumber[i]-1)*45*deg);
+  v1.RotateZ((5-DetectorNumber[i])*45*deg);
+  v2.RotateZ((5-DetectorNumber[i])*45*deg);
   TVector3 u = (v2-v1).Unit();
   double RandomNumber = Random->Rndm();
   TVector3 DeltaHolder((RandomNumber*6.0)-3.0,(RandomNumber*6.0)-3.0,0.0);
