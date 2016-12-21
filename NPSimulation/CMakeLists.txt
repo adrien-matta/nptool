@@ -57,7 +57,7 @@ endif()
 
 
 # set the Geant4 version info
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNPS_GEANT4_VERSION_MAJOR=${NPS_GEANT4_VERSION_MAJOR}") 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -DNPS_GEANT4_VERSION_MAJOR=${NPS_GEANT4_VERSION_MAJOR}") 
 
 # If the compiler is Clang, silence the unrecognised flags
 if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*Clang.*")
