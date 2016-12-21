@@ -1,2 +1,2 @@
-add_library(NPSCore SHARED EventAction.cc PrimaryGeneratorAction.cc Target.cc Chamber.cc Particle.cc PrimaryGeneratorActionMessenger.cc NPSVDetector.cc DetectorConstruction.cc MaterialManager.cc ParticleStack.cc DetectorMessenger.cc MyMagneticField.cc  SteppingVerbose.cc NPSDetectorFactory.cc RunAction.cc )
-target_link_libraries(NPSCore ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} ${NPLib_LIBRARIES} NPSEventGenerator NPSScorers -lNPInitialConditions -lNPInteractionCoordinates )
+add_library(NPSCore SHARED $<TARGET_OBJECTS:NPSEventGenerator> EventAction.cc PrimaryGeneratorAction.cc Target.cc Chamber.cc PrimaryGeneratorActionMessenger.cc NPSVDetector.cc DetectorConstruction.cc MaterialManager.cc DetectorMessenger.cc MyMagneticField.cc  SteppingVerbose.cc NPSDetectorFactory.cc RunAction.cc Particle.cc ParticleStack.cc)
+target_link_libraries(NPSCore ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} ${NPLib_LIBRARIES} NPSScorers NPInitialConditions NPInteractionCoordinates )

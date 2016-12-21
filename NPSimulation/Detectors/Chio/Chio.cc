@@ -68,11 +68,11 @@ using namespace CLHEP;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace Chio_NS{
   // Energy and time Resolution
-  const double EnergyThreshold = 0.1*MeV;
-  const double ResoTime = 4.5*ns ;
-  const double ResoEnergy = 1.0*MeV ;
-  const double Radius = 50*mm ; 
-  const double Width = 100*mm ;
+//  const double EnergyThreshold = 0.1*MeV;
+  //const double ResoTime = 4.5*ns ;
+ // const double ResoEnergy = 1.0*MeV ;
+  //const double Radius = 50*mm ; 
+ // const double Width = 100*mm ;
   const double Thickness = 300*mm ;
   const string Material = "BC400";
 }

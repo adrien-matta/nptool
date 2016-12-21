@@ -108,7 +108,7 @@ foreach(subdir ${SUB_DIRECTORY})
  endforeach()
 
 add_executable(npsimulation Simulation.cc)
-target_Link_libraries(npsimulation ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} NPSCore NPSScorers NPSProcess NPSEventGenerator)
+target_Link_libraries(npsimulation ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} NPSCore NPSScorers NPSProcess )
 configure_file(ressources/macro/gui.mac.in ressources/macro/gui.mac @ONLY) 
 configure_file(ressources/macro/aliases.mac.in ressources/macro/aliases.mac @ONLY) 
 

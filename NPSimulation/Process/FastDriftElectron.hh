@@ -38,10 +38,6 @@ class DriftElectron : public G4VFastSimulationModel{
     virtual G4bool IsApplicable(const G4ParticleDefinition&);
     virtual G4bool ModelTrigger(const G4FastTrack &);
     virtual void DoIt(const G4FastTrack&, G4FastStep&);
-
-  private:
-
-    PhysicsList* m_PhysicsList;
 };
 
 

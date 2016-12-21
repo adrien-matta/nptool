@@ -193,15 +193,15 @@ void G4DriftElectronPhysics::ConstructProcess()
   DEProcesses[kDEIonization] = IonizationProcess;
 
   // For 10.3 and higher
-  #ifndef theParticleIterator  
-    G4ParticleTable::G4PTblDicIterator* theParticleIterator = GetParticleIterator();
-  #endif
+#ifndef aParticleIterator  
+    G4ParticleTable::G4PTblDicIterator* aParticleIterator = GetParticleIterator();
+#endif
  
-  theParticleIterator->reset();
+  aParticleIterator->reset();
 
-  while( (*theParticleIterator)() ){
+  while( (*aParticleIterator)() ){
 
-    G4ParticleDefinition* particle = theParticleIterator->value();
+    G4ParticleDefinition* particle = aParticleIterator->value();
     G4String particleName = particle->GetParticleName();
 
     pManager = particle->GetProcessManager();
