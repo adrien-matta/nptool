@@ -1,0 +1,13 @@
+---
+layout: post
+title:  "Geant4 10.3 is NOW working with nptool"
+date:   2017-01-02 17:00
+author: Adrien Matta
+categories: nptool update
+---
+
+Dear User,
+
+The Geant4 10.3 compatibility issues are resolved and all is working correctly with the last version of geant4. The QT interface is however troubled by additional button, which we work at removing for an unclettered experience, but this does not affect functionallity. QT5 is seen to be very slow on linux machine and we advice using QT4 using the associate force flag at geant4 compilation!
+
+We wish you all a happy new year!
