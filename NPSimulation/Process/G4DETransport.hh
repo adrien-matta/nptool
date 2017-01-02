@@ -59,7 +59,8 @@
 #include "G4DynamicParticle.hh"
 #include "G4Material.hh"
 #include "G4DriftElectron.hh"
-
+#include "G4TransportationManager.hh"
+class G4SafetyHelper;
 // Class Description:
 // Discrete Process -- Bulk transport of Drift Electron.
 // Class inherits publicly from G4VDiscreteProcess
@@ -112,6 +113,8 @@ public:
         // This is the method implementing bulk transport of drift
         // electron.
 
+private:
+  G4SafetyHelper* m_SafetyHelper;
 };
 
 ////////////////////

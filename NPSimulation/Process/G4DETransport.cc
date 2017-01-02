@@ -74,6 +74,8 @@ G4DETransport::G4DETransport(const G4String& processName, G4ProcessType type)
   }
 
   SetProcessSubType(fDETransport);
+  G4TransportationManager* TransportationManager = G4TransportationManager::GetTransportationManager(); 
+  m_SafetyHelper = TransportationManager->GetSafetyHelper();
 }
 
 // G4DETransport::G4DETransport(const G4OpAbsorpton &right)
@@ -144,6 +146,9 @@ G4DETransport::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
   // Random Position along the step with matching time
   G4ThreeVector pos = x0 + d_Pos;
   G4double time = t0 + step; 
+
+  // Garanty that the electron does not jump outside the current volume
+  m_SafetyHelper->ReLocateWithinVolume(pos);  
 
   aParticleChange.ProposeMomentumDirection(d_Pos.unit());
   aParticleChange.ProposeEnergy(Energy);
