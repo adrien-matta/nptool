@@ -108,8 +108,6 @@ G4DEAmplification::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 
   G4StepPoint* pPreStepPoint  = aStep.GetPreStepPoint();
 
-
-
   G4ThreeVector x0 = pPreStepPoint->GetPosition();
   G4ThreeVector p0 = aStep.GetDeltaPosition().unit();
   G4double      t0 = pPreStepPoint->GetGlobalTime();
@@ -158,13 +156,8 @@ G4DEAmplification::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
     G4ThreeVector p;
     p.setRThetaPhi(1,theta,phi); 
 
-    // Random Position along the step with matching time
-    G4double rand = G4UniformRand();
-    G4ThreeVector pos = x0 + rand * aStep.GetDeltaPosition();
-    G4double time = t0+ rand* aStep.GetDeltaTime(); 
-
     G4DynamicParticle* particle = new G4DynamicParticle(G4DriftElectron::DriftElectron(),p, pair_energy);
-     G4Track* aSecondaryTrack = new G4Track(particle,time,pos);
+     G4Track* aSecondaryTrack = new G4Track(particle,t0,x0);
 
     aSecondaryTrack->SetTouchableHandle(
         aStep.GetPreStepPoint()->GetTouchableHandle());
@@ -174,6 +167,7 @@ G4DEAmplification::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
     aParticleChange.AddSecondary(aSecondaryTrack);
   }
 
+  // The original track is left intact
   return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
 }
 

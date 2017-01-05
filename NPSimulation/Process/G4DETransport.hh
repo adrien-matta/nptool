@@ -105,8 +105,8 @@ public:
 	       G4double GetMeanFreePath(const G4Track& aTrack,
 				 G4double ,
 				 G4ForceCondition* );
-        // Returns the transport length for bulk transport of drift 
-        // electron in media with a specified attenuation length. 
+        // Returns the typical travel length for transport of drift 
+        // electron in media 
 
 	      G4VParticleChange* PostStepDoIt(const G4Track& aTrack,
  				        const G4Step&  aStep);

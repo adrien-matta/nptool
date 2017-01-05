@@ -163,14 +163,16 @@ G4IonizationWithDE::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
     return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
  
 
-  G4double pair_energy=0; 
-  pair_energy=
+  G4double v_drift=
+    aMaterialPropertiesTable->GetConstProperty("DE_DRIFTSPEED");
+  G4double pair_energy=
     aMaterialPropertiesTable->GetConstProperty("DE_PAIRENERGY");
   G4double IonizationWithDEYield = 0;
   IonizationWithDEYield=
     aMaterialPropertiesTable->GetConstProperty("DE_YIELD");
 
   G4int number_electron = IonizationWithDEYield*TotalEnergyDeposit/pair_energy;
+  number_electron = G4Poisson(number_electron);
     //if no electron leave
   if(number_electron<1){
     aParticleChange.SetNumberOfSecondaries(0);
@@ -195,9 +197,7 @@ G4IonizationWithDE::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 
     G4DynamicParticle* particle = new G4DynamicParticle(G4DriftElectron::DriftElectron(),p, pair_energy);
      G4Track* aSecondaryTrack = new G4Track(particle,time,pos);
-
-    aSecondaryTrack->SetTouchableHandle(
-        aStep.GetPreStepPoint()->GetTouchableHandle());
+    aSecondaryTrack->SetVelocity(v_drift/c_light);
 
     aSecondaryTrack->SetParentID(aTrack.GetTrackID());
     aSecondaryTrack->SetTouchableHandle(aStep.GetPreStepPoint()->GetTouchableHandle());

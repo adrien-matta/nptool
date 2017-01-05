@@ -68,11 +68,11 @@ using namespace CLHEP;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace Chio_NS{
   // Energy and time Resolution
-//  const double EnergyThreshold = 0.1*MeV;
+  //  const double EnergyThreshold = 0.1*MeV;
   //const double ResoTime = 4.5*ns ;
- // const double ResoEnergy = 1.0*MeV ;
+  // const double ResoEnergy = 1.0*MeV ;
   //const double Radius = 50*mm ; 
- // const double Width = 100*mm ;
+  // const double Width = 100*mm ;
   const double Thickness = 300*mm ;
   const string Material = "BC400";
 }
@@ -133,12 +133,12 @@ G4LogicalVolume* Chio::BuildDetector(){
     G4Material* Fe= MaterialManager::getInstance()->GetMaterialFromLibrary("Fe");
     G4Material* CF4= MaterialManager::getInstance()->GetGasFromLibrary("CF4",0.0693276*bar,273.15*kelvin);
     G4Material* Mylar= MaterialManager::getInstance()->GetMaterialFromLibrary("Mylar");
-   
+
     G4MaterialPropertiesTable* MPT = new G4MaterialPropertiesTable();      
     MPT->AddConstProperty("DE_PAIRENERGY",30*eV);
-    MPT->AddConstProperty("DE_YIELD",1e-3);
-//    MPT->AddConstProperty("DE_AMPLIFICATION",1e4);
-    MPT->AddConstProperty("DE_ABSLENGTH",1*km);
+    MPT->AddConstProperty("DE_YIELD",1e-4);
+    //  MPT->AddConstProperty("DE_AMPLIFICATION",1e4);
+    MPT->AddConstProperty("DE_ABSLENGTH",1*pc);
     MPT->AddConstProperty("DE_DRIFTSPEED",8e-3*mm/ns);
     MPT->AddConstProperty("DE_TRANSVERSALSPREAD",6e-5*mm2/ns);
     MPT->AddConstProperty("DE_LONGITUDINALSPREAD",4e-5*mm2/ns);
@@ -162,14 +162,31 @@ G4LogicalVolume* Chio::BuildDetector(){
         logicWindows,
         "ChioEntranceWindows",m_SquareDetector,false,0);
 
+    G4ElectricField* field = new G4UniformElectricField(G4ThreeVector(0.0,-1000*volt/cm,0.0));
+    // Create an equation of motion for this field
+    G4EqMagElectricField*  Equation = new G4EqMagElectricField(field); 
+    G4MagIntegratorStepper* Stepper = new G4ClassicalRK4( Equation, 8 );       
 
-/*    G4Region* DriftRegion = new G4Region("DriftRegion");
-    DriftRegion->AddRootLogicalVolume(logicGas);
-    G4ProductionCuts* cuts = new G4ProductionCuts;
-    cuts->SetProductionCut(1e-9*micrometer); // same cuts for gamma, e- and e+
-    DriftRegion->SetProductionCuts(cuts);
- 
-    new DriftElectron("DriftElectron",DriftRegion);*/
+    // Get the global field manager 
+    G4FieldManager* FieldManager= new G4FieldManager();
+    // Set this field to the global field manager 
+    FieldManager->SetDetectorField(field );
+    logicGas->SetFieldManager(FieldManager,true);
+
+    G4MagInt_Driver* IntgrDriver = new G4MagInt_Driver(0.1*mm, 
+        Stepper, 
+        Stepper->GetNumberOfVariables() );
+
+   G4ChordFinder* ChordFinder = new G4ChordFinder(IntgrDriver);
+    FieldManager->SetChordFinder( ChordFinder );
+  
+  /*    G4Region* DriftRegion = new G4Region("DriftRegion");
+          DriftRegion->AddRootLogicalVolume(logicGas);
+          G4ProductionCuts* cuts = new G4ProductionCuts;
+          cuts->SetProductionCut(1e-9*micrometer); // same cuts for gamma, e- and e+
+          DriftRegion->SetProductionCuts(cuts);
+
+          new DriftElectron("DriftElectron",DriftRegion);*/
     m_SquareDetector->SetVisAttributes(m_VisChamber);
     logicGas->SetVisAttributes(m_VisGas);
     logicWindows->SetVisAttributes(m_VisWindows);
