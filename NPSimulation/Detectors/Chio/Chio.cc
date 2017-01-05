@@ -52,7 +52,7 @@
 
 // NPTool header
 #include "Chio.hh"
-#include "CalorimeterScorers.hh"
+#include "DriftElectronScorers.hh"
 #include "RootOutput.h"
 #include "MaterialManager.hh"
 #include "NPSDetectorFactory.hh"
@@ -68,8 +68,8 @@ using namespace CLHEP;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace Chio_NS{
   // Energy and time Resolution
-  //  const double EnergyThreshold = 0.1*MeV;
-  //const double ResoTime = 4.5*ns ;
+  const double ChargeThreshold = 1;
+  const double ResoTime = 4.5*ns ;
   // const double ResoEnergy = 1.0*MeV ;
   //const double Radius = 50*mm ; 
   // const double Width = 100*mm ;
@@ -125,18 +125,29 @@ G4LogicalVolume* Chio::BuildDetector(){
     G4Box* sGas = new G4Box("Chio_Gas",6*cm*0.5,
         6*cm*0.5,12*cm*0.5-2*12*micrometer*0.5);
 
+    // Frish grid
+    G4Box* sGrid = new G4Box("Chio_Grid",1*um*0.5,
+        6*cm*0.5,12*cm*0.5-2*12*micrometer*0.5);
+
+    // Cathode
+    G4Box* sCathode = new G4Box("Chio_Cathode",1*um*0.5,
+        6*cm*0.5,12*cm*0.5-2*12*micrometer*0.5);
+
+
     // Entrance/Exit windows
     G4Box* sWindows = new G4Box("Chio_Windows",7*cm*0.5,
         7*cm*0.5,12*micrometer*0.5);
 
 
     G4Material* Fe= MaterialManager::getInstance()->GetMaterialFromLibrary("Fe");
+    G4Material* Al= MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
+
     G4Material* CF4= MaterialManager::getInstance()->GetGasFromLibrary("CF4",0.0693276*bar,273.15*kelvin);
     G4Material* Mylar= MaterialManager::getInstance()->GetMaterialFromLibrary("Mylar");
 
     G4MaterialPropertiesTable* MPT = new G4MaterialPropertiesTable();      
     MPT->AddConstProperty("DE_PAIRENERGY",30*eV);
-    MPT->AddConstProperty("DE_YIELD",1e-4);
+    MPT->AddConstProperty("DE_YIELD",1e-1);
     //  MPT->AddConstProperty("DE_AMPLIFICATION",1e4);
     MPT->AddConstProperty("DE_ABSLENGTH",1*pc);
     MPT->AddConstProperty("DE_DRIFTSPEED",8e-3*mm/ns);
@@ -144,8 +155,18 @@ G4LogicalVolume* Chio::BuildDetector(){
     MPT->AddConstProperty("DE_LONGITUDINALSPREAD",4e-5*mm2/ns);
 
     CF4->SetMaterialPropertiesTable(MPT);
+
+    G4MaterialPropertiesTable* MPT2 = new G4MaterialPropertiesTable();      
+    MPT2->AddConstProperty("DE_YIELD",1);
+    MPT2->AddConstProperty("DE_AMPLIFICATION",2);
+    MPT2->AddConstProperty("DE_ABSLENGTH",1*pc);
+
+    Al->SetMaterialPropertiesTable(MPT2);
+
     m_SquareDetector = new G4LogicalVolume(sChamber,Fe,"logic_Chio_Box",0,0,0);
     G4LogicalVolume* logicGas = new G4LogicalVolume(sGas,CF4,"logic_Gas",0,0,0);
+    G4LogicalVolume* logicGrid = new G4LogicalVolume(sGrid,Al,"logic_Grid",0,0,0);
+    G4LogicalVolume* logicCathode = new G4LogicalVolume(sCathode,Fe,"logic_Cathode",0,0,0);
     G4LogicalVolume* logicWindows = new G4LogicalVolume(sWindows,Mylar,"logic_Windows",0,0,0);
 
     G4RotationMatrix* Rot = new G4RotationMatrix();
@@ -153,6 +174,14 @@ G4LogicalVolume* Chio::BuildDetector(){
     new G4PVPlacement(G4Transform3D(*Rot,G4ThreeVector(0,0,0)),
         logicGas,
         "ChioGas",m_SquareDetector,false,0);
+
+    new G4PVPlacement(G4Transform3D(*Rot,G4ThreeVector(2.5*cm,0,0)),
+        logicGrid,
+        "ChioGrid",logicGas,false,0);
+
+    new G4PVPlacement(G4Transform3D(*Rot,G4ThreeVector(3*cm,0,0)),
+        logicCathode,
+        "ChioCathode",logicGas,false,0);
 
     new G4PVPlacement(G4Transform3D(*Rot,G4ThreeVector(0,0,6*cm-6*micrometer)),
         logicWindows,
@@ -177,16 +206,10 @@ G4LogicalVolume* Chio::BuildDetector(){
         Stepper, 
         Stepper->GetNumberOfVariables() );
 
-   G4ChordFinder* ChordFinder = new G4ChordFinder(IntgrDriver);
+    G4ChordFinder* ChordFinder = new G4ChordFinder(IntgrDriver);
     FieldManager->SetChordFinder( ChordFinder );
-  
-  /*    G4Region* DriftRegion = new G4Region("DriftRegion");
-          DriftRegion->AddRootLogicalVolume(logicGas);
-          G4ProductionCuts* cuts = new G4ProductionCuts;
-          cuts->SetProductionCut(1e-9*micrometer); // same cuts for gamma, e- and e+
-          DriftRegion->SetProductionCuts(cuts);
 
-          new DriftElectron("DriftElectron",DriftRegion);*/
+    logicCathode->SetSensitiveDetector(m_ChioScorer); 
     m_SquareDetector->SetVisAttributes(m_VisChamber);
     logicGas->SetVisAttributes(m_VisGas);
     logicWindows->SetVisAttributes(m_VisWindows);
@@ -288,27 +311,28 @@ void Chio::ReadSensitive(const G4Event* event){
   m_Event->Clear();
 
   ///////////
-  // Calorimeter scorer
-  NPS::HitsMap<G4double*>* CaloHitMap;
-  std::map<G4int, G4double**>::iterator Calo_itr;
+  // Cathoderimeter scorer
+  NPS::HitsMap<G4double*>* CathodeHitMap;
+  std::map<G4int, G4double**>::iterator Cathode_itr;
 
-  G4int CaloCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ChioScorer/Calorimeter");
-  CaloHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CaloCollectionID));
-  /*
-  // Loop on the Calo map
-  for (Calo_itr = CaloHitMap->GetMap()->begin() ; Calo_itr != CaloHitMap->GetMap()->end() ; Calo_itr++){
+  G4int CathodeCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ChioScorer/Cathode");
+  CathodeHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CathodeCollectionID));
 
-  G4double* Info = *(Calo_itr->second);
-  double Energy = RandGauss::shoot(Info[0],Chio_NS::ResoEnergy);
-  if(Energy>Chio_NS::EnergyThreshold){
-  double Time = RandGauss::shoot(Info[1],Chio_NS::ResoTime);
-  int DetectorNbr = (int) Info[2];
-  //m_Event->SetEnergy(DetectorNbr,Energy);
-  //m_Event->SetTime(DetectorNbr,Time); 
+  // Loop on the Cathode map
+  for (Cathode_itr = CathodeHitMap->GetMap()->begin() ; Cathode_itr != CathodeHitMap->GetMap()->end() ; Cathode_itr++){
+
+    G4double* Info = *(Cathode_itr->second);
+    double Count= Info[0];
+    if(Count>Chio_NS::ChargeThreshold-1){
+      double Time = RandGauss::shoot(Info[1],Chio_NS::ResoTime);
+      int DetectorNbr = (int) Info[2];
+      //cout << Count << " " << Time/ns << endl;
+      //m_Event->SetEnergy(DetectorNbr,Energy);
+      //m_Event->SetTime(DetectorNbr,Time); 
+    }
   }
-  }*/
   // clear map for next event
-  CaloHitMap->clear();
+  CathodeHitMap->clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -322,10 +346,9 @@ void Chio::InitializeScorers() {
     return ;
 
   // Otherwise the scorer is initialised
-  vector<int> level; level.push_back(0);
-  G4VPrimitiveScorer* Calorimeter= new CALORIMETERSCORERS::PS_Calorimeter("Calorimeter",level, 0) ;
+  G4VPrimitiveScorer* Cathode= new DRIFTELECTRONSCORERS::PS_DriftElectron("Cathode",0) ;
   //and register it to the multifunctionnal detector
-  m_ChioScorer->RegisterPrimitive(Calorimeter);
+  m_ChioScorer->RegisterPrimitive(Cathode);
   G4SDManager::GetSDMpointer()->AddNewDetector(m_ChioScorer) ;
 }
 

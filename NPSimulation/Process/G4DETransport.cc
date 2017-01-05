@@ -109,10 +109,12 @@ G4DETransport::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 
   G4double Energy = pPreStepPoint->GetKineticEnergy();
 
-   // The time scale is imposed by the drift speed
-  G4double step = aStep.GetDeltaTime();
- 
-  if(!step){ // allow internal relocation of the track by the kernel taking a 0 length intermediate step
+   // The time scale is imposed by the distance travelled
+  G4double step_length = aStep.GetDeltaPosition().mag();
+
+  // allow internal relocation of the track by the kernel taking a 0 length intermediate step
+  // suppress also parasite infinetismal step that slow down the tracking
+  if(step_length<100*micrometer){     
     return G4VDiscreteProcess::PostStepDoIt(aTrack, aStep);
   }
 
@@ -149,8 +151,7 @@ G4DETransport::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
   driftDir = driftDir.unit();
   G4double v_drift = aMaterialPropertiesTable->GetConstProperty("DE_DRIFTSPEED"); 
    // Should be equal to delta length
-  G4double step_length = aStep.GetDeltaPosition().mag();
-  step = step_length/v_drift;
+  G4double step = step_length/v_drift;
  
   G4double sigmaTrans  = sqrt(2*step_length*aMaterialPropertiesTable->GetConstProperty("DE_TRANSVERSALSPREAD")/v_drift);
   G4double sigmaLong   = sqrt(2*step_length*aMaterialPropertiesTable->GetConstProperty("DE_LONGITUDINALSPREAD")/v_drift);
@@ -177,6 +178,7 @@ G4DETransport::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
   aParticleChange.ProposePosition(pos);
   aParticleChange.ProposeGlobalTime(time);
   aParticleChange.ProposeVelocity(v_drift/c_light);
+
   return &aParticleChange;
 }
 

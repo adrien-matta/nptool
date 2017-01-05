@@ -66,10 +66,10 @@ inline
 G4String G4DriftElectronProcessName(G4int processNumber)
 {
   switch ( processNumber ) {
-    case kDEIonization:    return "Ionization";
-    case kDEAmplification: return "Amplification";
-    case kDEAbsorption:    return "Absorption";
-    default:               return "NoProcess";
+    case kDEIonization:    return "DEIonization";
+    case kDEAmplification: return "DEAmplification";
+    case kDEAbsorption:    return "DEAbsorption";
+    default:               return "DENoProcess";
   }
 }
 

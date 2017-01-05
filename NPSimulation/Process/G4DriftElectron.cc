@@ -68,12 +68,12 @@ G4DriftElectron*  G4DriftElectron::Definition()
     //             stable         lifetime    decay table 
     //             shortlived      subType    anti_encoding
     anInstance = new G4ParticleDefinition(
-        name,  electron_mass_c2,       0.0*MeV,    -0.*eplus, 
+        name,  electron_mass_c2,       0.0*MeV,    0, 
         1,                 0,             0,          
         0,                 0,             0,             
         "lepton",          1,             0,          11,
         true,              -1.0,          NULL,
-        false,             "e"
+        false,             "driftion"
         );
   }
 
