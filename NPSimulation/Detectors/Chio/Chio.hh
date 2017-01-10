@@ -86,7 +86,7 @@ class Chio : public NPS::VDetector{
   public:   // Scorer
     //   Initialize all Scorer used by the MUST2Array
     void InitializeScorers() ;
-    void SimulateDigitizer(vector<double> E, vector<double> T,double riseTime, double fallTime,double start,double stop,double step);
+    void SimulateDigitizer(vector<double> E, vector<double> T, double fallTime,double start,double stop,double step,double noise);
 
     //   Associated Scorer
     G4MultiFunctionalDetector* m_ChioScorer ;

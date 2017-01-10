@@ -199,5 +199,5 @@ G4double G4DETransport::GetMeanFreePath(const G4Track& ,
       // Typical distance after which the electron position should be reevaluated
       // to take into account the diffusivity of the charge cloud inside the 
       // medium
-      return 5*mm;
+      return 1*mm;
 }

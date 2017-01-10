@@ -156,7 +156,7 @@ G4LogicalVolume* Chio::BuildDetector(){
     MPT->AddConstProperty("DE_YIELD",1e-2);
     //  MPT->AddConstProperty("DE_AMPLIFICATION",1e4);
     MPT->AddConstProperty("DE_ABSLENGTH",1*pc);
-    MPT->AddConstProperty("DE_DRIFTSPEED",13*cm/us);
+    MPT->AddConstProperty("DE_DRIFTSPEED",11*cm/us);
     MPT->AddConstProperty("DE_TRANSVERSALSPREAD",6e-5*mm2/ns);
     MPT->AddConstProperty("DE_LONGITUDINALSPREAD",4e-5*mm2/ns);
 
@@ -365,10 +365,10 @@ void Chio::ReadSensitive(const G4Event* event){
     if(count)
   //  m_Event_dig->AddEnergyPoint(count,time);
     E.push_back(count);
-    T.push_back(time+5000);
+    T.push_back(time+500);
   }
 
-  SimulateDigitizer(E,T,275*ns,1.40*us,0,12500,25);
+  SimulateDigitizer(E,T,1.40*us,0,8750,25,5);
 
   delete h;
   // clear map for next event
@@ -377,22 +377,21 @@ void Chio::ReadSensitive(const G4Event* event){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void Chio::SimulateDigitizer(vector<double> E, vector<double> T,double riseTime, double fallTime,double start,double stop, double step){
+void Chio::SimulateDigitizer(vector<double> E, vector<double> T, double fallTime,double start,double stop, double step,double noise){
 
-  string formula = "";
-  string Es,Ts,var,cond1,cond2;
-  string fall=std::to_string(fallTime);
-  string rise=std::to_string(riseTime);
+  static string formula; 
+  formula= "";
+  static string Es,Ts,var,cond;
+  static string fall;
+  fall=std::to_string(fallTime);
 
   for(unsigned int i = 0 ; i < E.size() ; i++){
     if(E[i]!=0 && T[i]!=0){
       Es = std::to_string(E[i]);
       Ts = std::to_string(T[i]);
-      cond1 = ")*(x<"+Ts+"&& x>"+Ts+"-"+rise+ ")+";
-      cond2 = ")*(x>"+Ts+")+";
+      cond = ")*(x>"+Ts+")+";
       var = "(x-"+Ts+")";
-      formula += Es+"*-1*exp("+var+"/"+rise+cond1
-                  +Es+"*-1*exp(-"+var+"/"+fall+cond2;
+      formula += Es+"*-1*exp(-"+var+"/"+fall+cond;
     }
   }
   formula+="0";
@@ -400,8 +399,7 @@ void Chio::SimulateDigitizer(vector<double> E, vector<double> T,double riseTime,
   unsigned int size = (stop-start)/step;
   for(unsigned int i = 0 ; i < size ; i++){
     double time = start+i*step;
-    double energy = f->Eval(time);
-    
+    double energy = f->Eval(time)+noise*(1-2*G4UniformRand());
     m_Event_dig->AddEnergyPoint(energy,time);
   }
   
