@@ -49,7 +49,8 @@
 #include "G4SystemOfUnits.hh"
 #include "G4ParticleTypes.hh"
 #include "G4EmProcessSubType.hh"
-
+#include "G4ElectroMagneticField.hh"
+#include "G4FieldManager.hh"
 #include "G4IonizationWithDE.hh"
 #include <iostream>
 using namespace std;
@@ -183,12 +184,20 @@ G4IonizationWithDE::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 
   // Create the secondary tracks
   for(G4int i = 0 ; i < number_electron ; i++){
-    // Random direction at creation
-    G4double cost = 1-2*G4UniformRand();
-    G4double theta = acos(cost);
-    G4double phi = twopi*G4UniformRand();
-    G4ThreeVector p;
-    p.setRThetaPhi(1,theta,phi); 
+  // Electron follow the field direction
+  // The field direction is taken from the field manager
+  G4double* fieldArr = new G4double[6];
+  G4double  Point[4]={x0.x(),x0.y(),x0.z(),t0};
+  G4FieldManager* fMng = pPreStepPoint->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->
+    GetFieldManager();
+
+  G4ElectroMagneticField* field = (G4ElectroMagneticField*)fMng->GetDetectorField();
+  field->GetFieldValue(Point,fieldArr) ;
+
+  // Electron move opposite to the field direction, hance the minus sign
+  G4ThreeVector p(-fieldArr[3],-fieldArr[4],-fieldArr[5]);
+  // Normalised the drift direction
+  p = p.unit();
 
     // Random Position along the step with matching time
     G4double rand = G4UniformRand();

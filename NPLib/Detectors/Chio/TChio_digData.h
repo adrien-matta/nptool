@@ -3,16 +3,16 @@
 
 #include <vector>
 #include "TObject.h"
+#include "TGraph.h"
 using namespace std;
 
 
 class TChio_digData : public TObject {
  private:
    // ADC
-   vector<UShort_t>	fChio_dig_Energy;
+   vector<double>	fChio_dig_Energy;
+   vector<double>	fChio_dig_Time;
 
-   //sum 
-   Int_t fChio_dig_Sum;
 
  public:
    TChio_digData();
@@ -24,19 +24,18 @@ class TChio_digData : public TObject {
 
    /////////////////////           GETTERS           ////////////////////////
    // (E)
-   UShort_t	GetEsize()           {return fChio_dig_Energy.size();}
-   UShort_t	GetEnergy(Int_t i)   {return fChio_dig_Energy.at(i);}
-
-   //sum
-   Int_t    GetSum()             {return fChio_dig_Sum;}
+   inline unsigned int GetEsize()      {return fChio_dig_Energy.size();}
+   inline vector<double> GetEnergy()   {return fChio_dig_Energy;}
+   TGraph* GetEnergyAsGraph();
 
    /////////////////////           SETTERS           ////////////////////////
-   //sum
-   void SetSum(UShort_t E)       {fChio_dig_Sum += (Int_t)E;}
    // (E)
-   void SetEnergy(UShort_t E)    {fChio_dig_Energy.push_back(E);}
+   void SetEnergy(vector<double>& E) {fChio_dig_Energy=E;}
+   void AddEnergyPoint(double& E,double& T){
+    fChio_dig_Energy.push_back(E);
+    fChio_dig_Time.push_back(T);}
 
-   ClassDef(TChio_digData,1)  // Chio_digData structure
+   ClassDef(TChio_digData,2)  // Chio_digData structure
 };
 
 #endif

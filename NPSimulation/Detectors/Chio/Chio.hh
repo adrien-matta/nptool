@@ -1,7 +1,7 @@
 #ifndef Chio_h
 #define Chio_h 1
 /*****************************************************************************
- * Copyright (C) 2009-XYEARX   this file is part of the NPTool Project       *
+ * Copyright (C) 2009-2017     this file is part of the NPTool Project       *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -35,6 +35,8 @@ using namespace std;
 // NPTool header
 #include "NPSVDetector.hh"
 #include "TChio_anData.h"
+#include "TChio_digData.h"
+
 #include "NPInputParser.h"
 
 class Chio : public NPS::VDetector{
@@ -84,6 +86,7 @@ class Chio : public NPS::VDetector{
   public:   // Scorer
     //   Initialize all Scorer used by the MUST2Array
     void InitializeScorers() ;
+    void SimulateDigitizer(vector<double> E, vector<double> T,double riseTime, double fallTime,double start,double stop,double step);
 
     //   Associated Scorer
     G4MultiFunctionalDetector* m_ChioScorer ;
@@ -91,7 +94,8 @@ class Chio : public NPS::VDetector{
     ///////////Event class to store Data////////////////
     ////////////////////////////////////////////////////
   private:
-    TChio_anData* m_Event ;
+    TChio_anData* m_Event_an ;
+    TChio_digData* m_Event_dig ;
 
     ////////////////////////////////////////////////////
     ///////////////Private intern Data//////////////////
