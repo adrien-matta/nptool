@@ -156,7 +156,7 @@ G4LogicalVolume* Chio::BuildDetector(){
     MPT->AddConstProperty("DE_YIELD",1e-2);
     //  MPT->AddConstProperty("DE_AMPLIFICATION",1e4);
     MPT->AddConstProperty("DE_ABSLENGTH",1*pc);
-    MPT->AddConstProperty("DE_DRIFTSPEED",11*cm/us);
+    MPT->AddConstProperty("DE_DRIFTSPEED",11*cm/microsecond);
     MPT->AddConstProperty("DE_TRANSVERSALSPREAD",6e-5*mm2/ns);
     MPT->AddConstProperty("DE_LONGITUDINALSPREAD",4e-5*mm2/ns);
 
@@ -368,7 +368,7 @@ void Chio::ReadSensitive(const G4Event* event){
     T.push_back(time+500);
   }
 
-  SimulateDigitizer(E,T,1.40*us,0,8750,25,5);
+  SimulateDigitizer(E,T,1.40*microsecond,0,8750,25,5);
 
   delete h;
   // clear map for next event
