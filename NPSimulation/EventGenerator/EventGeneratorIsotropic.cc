@@ -84,6 +84,7 @@ void EventGeneratorIsotropic::ReadConfiguration(NPL::InputParser parser){
         else if(particleName[j]=="alpha") { m_particleName.push_back("4He") ; }
         else if(particleName[j]=="gamma") { m_particleName.push_back("gamma") ;}
         else if(particleName[j]=="neutron") {m_particleName.push_back("neutron") ;}
+        else if(particleName[j]=="e-") {m_particleName.push_back("e-") ;}
       }
 
       if(blocks[i]->HasToken("ExcitationEnergy"))
@@ -116,7 +117,7 @@ void EventGeneratorIsotropic::ReadConfiguration(NPL::InputParser parser){
         m_particle=NULL;
         if(m_particle==NULL){
 
-          if(m_particleName[p]=="gamma" || m_particleName[p]=="neutron" ||  m_particleName[p]=="opticalphoton"){
+          if(m_particleName[p]=="gamma" || m_particleName[p]=="neutron" ||  m_particleName[p]=="opticalphoton" || m_particleName[p]=="e-" ){
             m_particle =  G4ParticleTable::GetParticleTable()->FindParticle(m_particleName[p].c_str());
           }
           else{
