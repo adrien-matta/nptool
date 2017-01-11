@@ -37,6 +37,7 @@
 #include "G4PVPlacement.hh"
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
+#include "G4THitsMap.hh"
 
 // NPTool header
 #include "DETECTORNAME.hh"
