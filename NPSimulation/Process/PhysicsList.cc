@@ -42,7 +42,7 @@ PhysicsList::PhysicsList() : G4VUserPhysicsList(){
     m_EmList = "Option4";
     defaultCutValue = 1*mm;//0.2*mm;
     opticalPhysicsList = NULL;
-    
+    driftElectronPhysicsList = NULL; 
     ReadConfiguration("PhysicsListOption.txt");
     G4LossTableManager::Instance();
     SetVerboseLevel(0);
@@ -116,8 +116,8 @@ PhysicsList::PhysicsList() : G4VUserPhysicsList(){
         opticalPhysicsList->SetTrackSecondariesFirst(kCerenkov,true);
     }
  
+    // Drift electron for gazeous detector simulation
     if(m_DriftElectronPhysics){
-      
         driftElectronPhysicsList = new G4DriftElectronPhysics(0);
         driftElectronPhysicsList->SetMaxNumDriftElectronPerStep(1e6);
     }
@@ -213,7 +213,7 @@ void PhysicsList::ConstructParticle(){
         
     }
    
-     if(driftElectronPhysicsList){
+     if(m_DriftElectronPhysics){
         ((G4VPhysicsConstructor*) driftElectronPhysicsList)->ConstructParticle();
     }
  
@@ -291,7 +291,7 @@ void PhysicsList::AddStepMax(){
 }
 /////////////////////////////////////////////////////////////////////////////
 void PhysicsList::AddParametrisation(){
-
+/*
 	G4FastSimulationManagerProcess* drift =
 			new G4FastSimulationManagerProcess("DriftElectron");
 
@@ -307,7 +307,7 @@ void PhysicsList::AddParametrisation(){
 
       if(particle->GetParticleName()=="e-")
         pmanager->AddDiscreteProcess(drift);
-  }
+  }*/
 }
 
 
