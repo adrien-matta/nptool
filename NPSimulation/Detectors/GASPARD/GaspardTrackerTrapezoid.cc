@@ -396,9 +396,9 @@ void GaspardTrackerTrapezoid::ConstructDetector(G4LogicalVolume* world)
          // w perpendicular to (u,v) plan and pointing ThirdStage
          // Phi is angle between X axis and projection in (X,Y) plan
          // Theta is angle between  position vector and z axis
-         G4double wX = m_R[i] * sin(Theta / rad) * cos(Phi / rad);
-         G4double wY = m_R[i] * sin(Theta / rad) * sin(Phi / rad);
-         G4double wZ = m_R[i] * cos(Theta / rad);
+         G4double wX = m_R[i] * sin(Theta) * cos(Phi);
+         G4double wY = m_R[i] * sin(Theta) * sin(Phi);
+         G4double wZ = m_R[i] * cos(Theta);
          MMw = G4ThreeVector(wX, wY, wZ);
 
          // vector corresponding to the center of the module
@@ -406,9 +406,9 @@ void GaspardTrackerTrapezoid::ConstructDetector(G4LogicalVolume* world)
 
          // vector parallel to one axis of silicon plane
          // in fact, this is vector u
-         G4double ii = cos(Theta / rad) * cos(Phi / rad);
-         G4double jj = cos(Theta / rad) * sin(Phi / rad);
-         G4double kk = -sin(Theta / rad);
+         G4double ii = cos(Theta) * cos(Phi);
+         G4double jj = cos(Theta) * sin(Phi);
+         G4double kk = -sin(Theta);
          G4ThreeVector Y = G4ThreeVector(ii, jj, kk);
 
          MMw = MMw.unit();

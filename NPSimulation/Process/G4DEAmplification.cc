@@ -97,18 +97,16 @@ G4DEAmplification::~G4DEAmplification(){}
   G4VParticleChange*
 G4DEAmplification::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 {
+
+//  if(aTrack.GetCreatorProcess()->GetProcessName()=="DEAmplification" )
+//    return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
+
   // Get the primary track
   aParticleChange.Initialize(aTrack);
-
-  // Check that the parent process is not amplification
-  if(aTrack.GetCreatorProcess()->GetProcessName()=="DEAmplification" )
-    return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
 
   const G4Material* aMaterial = aTrack.GetMaterial();
 
   G4StepPoint* pPreStepPoint  = aStep.GetPreStepPoint();
-
-
 
   G4ThreeVector x0 = pPreStepPoint->GetPosition();
   G4ThreeVector p0 = aStep.GetDeltaPosition().unit();
@@ -121,24 +119,14 @@ G4DEAmplification::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
     return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
   }
   
-  if(!aMaterialPropertiesTable->ConstPropertyExists("DE_PAIRENERGY") ||
-     !aMaterialPropertiesTable->ConstPropertyExists("DE_AMPLIFICATION") ||
-     !aMaterialPropertiesTable->ConstPropertyExists("DE_YIELD") ||
-     !aMaterialPropertiesTable->ConstPropertyExists("DE_DRIFTSPEED") ||
-     !aMaterialPropertiesTable->ConstPropertyExists("DE_TRANSVERSALSPREAD") ||
-     !aMaterialPropertiesTable->ConstPropertyExists("DE_LONGITUDINALSPREAD"))
+  if(!aMaterialPropertiesTable->ConstPropertyExists("DE_AMPLIFICATION") ||
+     !aMaterialPropertiesTable->ConstPropertyExists("DE_YIELD"))
     return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
   
-  G4double pair_energy = 0;
-  pair_energy =
-    aMaterialPropertiesTable->GetConstProperty("DE_PAIRENERGY");
+  G4double pair_energy = pPreStepPoint->GetKineticEnergy();
 
-  G4double amplification=0; 
-  amplification=
-    aMaterialPropertiesTable->GetConstProperty("DE_AMPLIFICATION");
-  G4double Yield = 0;
-  Yield=
-    aMaterialPropertiesTable->GetConstProperty("DE_YIELD");
+  G4double amplification = aMaterialPropertiesTable->GetConstProperty("DE_AMPLIFICATION");
+  G4double Yield = aMaterialPropertiesTable->GetConstProperty("DE_YIELD");
 
   G4int number_electron = amplification*Yield;
     //if no electron leave
@@ -148,7 +136,6 @@ G4DEAmplification::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
   }
 
   aParticleChange.SetNumberOfSecondaries(number_electron);
-
   // Create the secondary tracks
   for(G4int i = 0 ; i < number_electron ; i++){
     // Random direction at creation
@@ -158,42 +145,48 @@ G4DEAmplification::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
     G4ThreeVector p;
     p.setRThetaPhi(1,theta,phi); 
 
-    // Random Position along the step with matching time
-    G4double rand = G4UniformRand();
-    G4ThreeVector pos = x0 + rand * aStep.GetDeltaPosition();
-    G4double time = t0+ rand* aStep.GetDeltaTime(); 
-
     G4DynamicParticle* particle = new G4DynamicParticle(G4DriftElectron::DriftElectron(),p, pair_energy);
-     G4Track* aSecondaryTrack = new G4Track(particle,time,pos);
+     G4Track* aSecondaryTrack = new G4Track(particle,t0,x0);
 
     aSecondaryTrack->SetTouchableHandle(
         aStep.GetPreStepPoint()->GetTouchableHandle());
-
+    aSecondaryTrack->SetCreatorProcess(this);
     aSecondaryTrack->SetParentID(aTrack.GetTrackID());
     aSecondaryTrack->SetTouchableHandle(aStep.GetPreStepPoint()->GetTouchableHandle());
     aParticleChange.AddSecondary(aSecondaryTrack);
   }
-
-  return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
+  // to kill the primary track to avoid it being re-amplified
+  aParticleChange.ProposeEnergy(0);
+  // The original track is left intact
+  return &aParticleChange;
 }
 
 
 // GetMeanFreePath
 // ---------------
 //
-G4double G4DEAmplification::GetMeanFreePath(const G4Track& ,
+G4double G4DEAmplification::GetMeanFreePath(const G4Track& aTrack,
     G4double ,
     G4ForceCondition* condition)
 {
+  if(aTrack.GetCreatorProcess()->GetProcessName()=="DEAmplification" ){
+    *condition = NotForced;
+    return DBL_MAX;
+  }
   *condition = StronglyForced;
   return DBL_MAX;
 }
 // GetMeanLifeTime
 // ---------------
 //
-G4double G4DEAmplification::GetMeanLifeTime(const G4Track& ,
+G4double G4DEAmplification::GetMeanLifeTime(const G4Track& aTrack,
     G4ForceCondition* condition)
 {
+  if(aTrack.GetCreatorProcess()->GetProcessName()=="DEAmplification" ){
+   *condition = NotForced;
+    return DBL_MAX;
+  }
+    
   *condition = StronglyForced;
   return DBL_MAX;
 }

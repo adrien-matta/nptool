@@ -101,9 +101,9 @@ void TChio_anPhysics::AddParameterToCalibrationManager()
 void TChio_anPhysics::InitializeRootInputRaw()
 {
   TChain* inputChain = RootInput::getInstance()->GetChain() ;
-  inputChain->SetBranchStatus("CHIO_AN" , true)        ;
+  inputChain->SetBranchStatus("ChioAn" , true)        ;
   inputChain->SetBranchStatus("fChio_an_*" , true)     ;
-  inputChain->SetBranchAddress("CHIO_AN" , &EventData)           ;
+  inputChain->SetBranchAddress("ChioAn" , &EventData)           ;
 }
 
 //   Activated associated Branches and link it to the private member DetectorPhysics address

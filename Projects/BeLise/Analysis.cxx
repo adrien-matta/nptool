@@ -78,7 +78,8 @@ void Analysis::TreatEvent(){
   // Beam energy is measured using F3 and F2 plastic TOF
   double BeamEnergy = Rand.Gaus(Initial->GetIncidentInitialKineticEnergy(),4.5);
   //BeamEnergy = Li11CD2.Slow(BeamEnergy,TargetThickness/2.,0);
-
+  OriginalThetaLab = Initial->GetThetaCM(0);
+  OriginalELab =  Initial->GetKineticEnergy(0);
   myReaction->SetBeamEnergy(BeamEnergy);
   //////////////////////////// LOOP on MUST2 Hit //////////////////
     for(unsigned int countMust2 = 0 ; countMust2 < M2->Si_E.size() ; countMust2++){
@@ -174,6 +175,10 @@ void Analysis::InitOutputBranch() {
   RootOutput::getInstance()->GetTree()->Branch("ELab",&ELab,"ELab/D");
   RootOutput::getInstance()->GetTree()->Branch("ThetaLab",&ThetaLab,"ThetaLab/D");
   RootOutput::getInstance()->GetTree()->Branch("ThetaCM",&ThetaCM,"ThetaCM/D");
+  RootOutput::getInstance()->GetTree()->Branch("OriginalThetaLab",&OriginalThetaLab,"OriginalThetaLab/D");
+ RootOutput::getInstance()->GetTree()->Branch("OriginalELab",&OriginalELab,"OriginalELab/D");
+
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -189,6 +194,8 @@ void Analysis::ReInitValue(){
   ELab = -1000;
   ThetaLab = -1000;
   ThetaCM = -1000;
+  OriginalThetaLab = -1000;
+  OriginalELab = -1000;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

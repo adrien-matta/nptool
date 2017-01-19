@@ -79,6 +79,7 @@ using NPUNITS::megahertz;
 using NPUNITS::ns;
 using NPUNITS::s;
 using NPUNITS::ms;
+using NPUNITS::us;
 using NPUNITS::eplus;
 using NPUNITS::e_SI;
 using NPUNITS::coulomb;

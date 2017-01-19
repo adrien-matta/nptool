@@ -88,19 +88,20 @@ void GeometricalEfficiency(const char * fname = "myResult.root"){
   }
 
    hEmittTheta->Sumw2();
-    hEmittThetaCM->Sumw2();
-      hDetecTheta->Sumw2();
-      hDetecThetaCM->Sumw2();
+   hEmittThetaCM->Sumw2();
+   hDetecTheta->Sumw2();
+   hDetecThetaCM->Sumw2();
    
 
-   TCanvas *c0 = new TCanvas("c0", "Distrib",800,800);
-  hEmittTheta->Draw("");
+  TCanvas *c0 = new TCanvas("c0", "Distrib",800,800);
+  hEmittTheta->Draw(""); 
+  hDetecTheta->SetMarkerColor(kAzure+7);
   hDetecTheta->Draw("same");
   // efficiency in lab frame in %
   TCanvas *c = new TCanvas("c", "efficiency",800,800);
   c->SetTopMargin(0.01);
   c->SetRightMargin(0.03);
-  TH1F *hEfficiency = new TH1F("hEfficiency", "Efficiency", 180, 0, 90);
+  TH1F *hEfficiency = new TH1F("hEfficiency", "Efficiency", 180, 0, 180);
   hEfficiency->Divide(hDetecTheta, hEmittTheta, 1, 1);
   hEfficiency->GetXaxis()->SetTitle("#Theta (deg)");
   hEfficiency->GetYaxis()->SetTitle("#epsilon");

@@ -53,6 +53,9 @@ G4DriftElectron*  G4DriftElectron::Definition()
   // search in particle table]
   G4ParticleTable* pTable = G4ParticleTable::GetParticleTable();
   G4ParticleDefinition* anInstance = pTable->FindParticle(name);
+  // Note: The charge of drift electron is null so they are not afected by the
+  // electro magnetic field directly. This is taken care of "manually" by the
+  // G4DETransport process that get the local field direction
   if (anInstance ==0)
   {
     // create particle
@@ -65,14 +68,15 @@ G4DriftElectron*  G4DriftElectron::Definition()
     //             stable         lifetime    decay table 
     //             shortlived      subType    anti_encoding
     anInstance = new G4ParticleDefinition(
-        name,  electron_mass_c2,       0.0*MeV,    -1.*eplus, 
+        name,  electron_mass_c2,       0.0*MeV,    0, 
         1,                 0,             0,          
         0,                 0,             0,             
         "lepton",          1,             0,          11,
         true,              -1.0,          NULL,
-        false,             "e"
+        false,             "driftion"
         );
   }
+
   theInstance = reinterpret_cast<G4DriftElectron*>(anInstance);
   return theInstance;
 }

@@ -1,4 +1,4 @@
-#ifndef Analysis_h 
+#ifndef Analysis_h
 #define Analysis_h
 /*****************************************************************************
  * Copyright (C) 2009-2014    this file is part of the NPTool Project        *
@@ -22,17 +22,21 @@
  *                                                                           *
  *****************************************************************************/
 #include"NPVAnalysis.h"
-#include "TMust2Physics.h"
+#include"THiraPhysics.h"
 #include "TInitialConditions.h"
+#include "TInteractionCoordinates.h"
 #include "NPEnergyLoss.h"
 #include "NPReaction.h"
 #include "TRandom3.h"
+#include "TF1.h"
+#include "TLorentzVector.h"
+
 class Analysis: public NPL::VAnalysis{
-  public:
+public:
     Analysis();
     ~Analysis();
-
-  public: 
+    
+public:
     void Init();
     void TreatEvent();
     void End();
@@ -40,38 +44,72 @@ class Analysis: public NPL::VAnalysis{
     void InitInputBranch();
     void ReInitValue();
     static NPL::VAnalysis* Construct();
-
-  private:
-    double Ex;
+    
+    double event;
+    double good_event;
+    double ProtonEnergy;
+    
+private:
+    double ThicknessCsI;
+    double TargetThickness;
+    double ExcitationEnergy;
     double ELab;
+    double ECM;
+    double ECM_initial;
+    double ECM_initial_Hira;
+    double E_ThinSi;
+    double E_ThickSi;
+    double E_CsI;
+    double PhiLab;
     double ThetaLab;
+    double ThetaLab_simu;
     double ThetaCM;
-    NPL::Reaction* myReaction;
-
+    double X,Y,Z;
+    double TelescopeNumber;
+    double EnergyThreshold;
+    double X_target;
+    double Y_target;
+    double InitialEnergy;
+    double InitialEnergy_Hira;
+    double Rapidity_Lab;
+    double Rapidity_CM;
+    double Pper;
+    double PID;
+    int Particle;
+    
+    
+    
+    NPL::Reaction* TransferReaction;
+    
     // intermediate variable
     TRandom3 Rand;
-    int DetectorNumber;
-    double ThetaNormalTarget;
-    double ThetaM2Surface; 
-    double X_M2;
-    double Y_M2;
-    double Z_M2;
-    double Si_E_M2;
-    double CsI_E_M2; 
-    double Energy ;
-    double E_M2 ;
-    double Si_X_M2;
-    double Si_Y_M2;
-    double ZTarget;
-    double TargetThickness;
-    double OriginalThetaLab;
-    double OriginalELab;
-    NPL::EnergyLoss He3CD2  ;
-    NPL::EnergyLoss He3Al   ;
-    NPL::EnergyLoss He3Si   ;
-    NPL::EnergyLoss Li11CD2 ;
-
-    TMust2Physics* M2;
-    TInitialConditions* Initial;
+    
+    
+    TF1* f_proton;
+    TF1* f_deuton;
+    TF1* f_triton;
+    TF1* f_3He;
+    
+    NPL::EnergyLoss Proton_CsI  ;
+    NPL::EnergyLoss Deuton_CsI  ;
+    NPL::EnergyLoss Triton_CsI  ;
+    NPL::EnergyLoss Triton_CD2  ;
+    NPL::EnergyLoss Triton_CH2  ;
+    NPL::EnergyLoss Deuteron_CH2  ;
+    NPL::EnergyLoss He3_CD2;
+    NPL::EnergyLoss He3_CsI;
+    NPL::EnergyLoss He4_CH2;
+    
+    NPL::Nucleus* proton;
+    NPL::Nucleus* deuton;
+    NPL::Nucleus* triton;
+    NPL::Nucleus* helium3;
+    NPL::Nucleus* alpha;
+    NPL::Nucleus* beam;
+    NPL::Nucleus* target;
+    
+    THiraPhysics* Hira;
+    TInitialConditions* InitialConditions;
+    TInteractionCoordinates* InteractionCoordinates;
 };
 #endif
