@@ -58,28 +58,34 @@ TChio_digPhysics::~TChio_digPhysics()
 
 // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
 void TChio_digPhysics::ReadConfiguration(NPL::InputParser parser){
- vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Chio");
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Chio");
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  vector<string> token = {"A","B","C","D"};
+  vector<string> cart = {"POS","Shape"};
+  vector<string> sphe = {"R","Theta","Phi","Shape"};
 
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
-    if(blocks[i]->HasTokenList(token)){
-      TVector3 A = blocks[i]->GetTVector3("A","mm");
-      TVector3 B = blocks[i]->GetTVector3("B","mm");
-      TVector3 C = blocks[i]->GetTVector3("C","mm");
-      TVector3 D = blocks[i]->GetTVector3("D","mm");
+    if(blocks[i]->HasTokenList(cart)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  Chio " << i+1 <<  endl;
 
-     // AddChio(A,B,C,D);
+      TVector3 Pos = blocks[i]->GetTVector3("POS","mm");
+      string Shape = blocks[i]->GetString("Shape");
     }
-
+    else if(blocks[i]->HasTokenList(sphe)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "////  Chio " << i+1 <<  endl;
+      double R = blocks[i]->GetDouble("R","mm");
+      double Theta = blocks[i]->GetDouble("Theta","deg");
+      double Phi = blocks[i]->GetDouble("Phi","deg");
+      string Shape = blocks[i]->GetString("Shape");
+    }
     else{
       cout << "ERROR: check your input file formatting " << endl;
       exit(1);
     }
   }
-
 //  InitializeStandardParameter();
 //  ReadAnalysisConfig();
 }
