@@ -22,7 +22,7 @@ GaspardTracker Trapezoid
  THIRDSTAGE= 0
  VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%GaspardTracker Trapezoid
+GaspardTracker Trapezoid
  R= -90 mm
  THETA= 60 deg
  PHI= 45 deg
@@ -32,7 +32,7 @@ GaspardTracker Trapezoid
  THIRDSTAGE= 0
  VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%GaspardTracker Trapezoid
+GaspardTracker Trapezoid
  R= -90 mm
  THETA= 60 deg
  PHI= 90 deg
@@ -42,7 +42,7 @@ GaspardTracker Trapezoid
  THIRDSTAGE= 0
  VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%GaspardTracker Trapezoid
+GaspardTracker Trapezoid
  R= -90 mm
  THETA= 60 deg
  PHI= 135 deg
@@ -52,7 +52,7 @@ GaspardTracker Trapezoid
  THIRDSTAGE= 0
  VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%GaspardTracker Trapezoid
+GaspardTracker Trapezoid
  R= -90 mm
  THETA= 60 deg
  PHI= 180 deg
@@ -62,7 +62,7 @@ GaspardTracker Trapezoid
  THIRDSTAGE= 0
  VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%GaspardTracker Trapezoid
+GaspardTracker Trapezoid
  R= -90 mm
  THETA= 60 deg
  PHI= 225 deg
@@ -72,7 +72,7 @@ GaspardTracker Trapezoid
  THIRDSTAGE= 0
  VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%GaspardTracker Trapezoid
+GaspardTracker Trapezoid
  R= -90 mm
  THETA= 60 deg
  PHI= 270 deg
@@ -82,7 +82,7 @@ GaspardTracker Trapezoid
  THIRDSTAGE= 0
  VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%GaspardTracker Trapezoid
+GaspardTracker Trapezoid
  R= -90 mm
  THETA= 60 deg
  PHI= 315 deg
@@ -99,5 +99,18 @@ Tiara Barrel
  X= 0 mm
  Y= 0 mm
  Z= 0 mm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% Telescope 4 %%%%%%%
+M2Telescope
+ X1_Y1=   115.12	-11.35	1540.94 mm
+ X1_Y128= 24.33	-11.60	1900.81 mm
+ X128_Y1= 103.64	-103.42	1206.51 mm
+ X128_Y128= 12.89	-103.90	1602.29 mm
+ SI= 1.00
+ SILI= 0.00
+ CSI= 1.00
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 

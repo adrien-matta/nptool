@@ -64,7 +64,8 @@ class Analysis: public NPL::VAnalysis{
     double Si_Y_M2;
     double ZTarget;
     double TargetThickness;
-
+    double OriginalThetaLab;
+    double OriginalELab;
     NPL::EnergyLoss He3CD2  ;
     NPL::EnergyLoss He3Al   ;
     NPL::EnergyLoss He3Si   ;

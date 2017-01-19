@@ -102,7 +102,8 @@ void Analysis::TreatEvent() {
   // determine beam energy for a randomized interaction point in target
   // 1% FWHM randominastion (E/100)/2.35
   myReaction.SetBeamEnergy(Rand.Gaus(myInit->GetIncidentFinalKineticEnergy(),myInit->GetIncidentFinalKineticEnergy()/235));
-
+  OriginalThetaLab = myInit->GetThetaLab_WorldFrame(0);
+  OriginalELab = myInit->GetKineticEnergy(0);
 
   //////////////////////////// LOOP on MUST2 //////////////////
   for(unsigned int countMust2 = 0 ; countMust2 < M2->Si_E.size() ; countMust2++){
@@ -230,6 +231,10 @@ void Analysis::InitOutputBranch() {
   RootOutput::getInstance()->GetTree()->Branch("Y",&Y,"Y/D");
   RootOutput::getInstance()->GetTree()->Branch("Z",&Z,"Z/D");
   RootOutput::getInstance()->GetTree()->Branch("dE",&dE,"dE/D");
+  RootOutput::getInstance()->GetTree()->Branch("OriginalThetaLab",&OriginalThetaLab,"OriginalThetaLab/D");
+  RootOutput::getInstance()->GetTree()->Branch("OriginalELab",&OriginalELab,"OriginalELab/D");
+
+
   RootOutput::getInstance()->GetTree()->Branch("dTheta",&dTheta,"dTheta/D");
 }
 
@@ -252,6 +257,8 @@ void Analysis::ReInitValue(){
   Z = -1000;
   dE= -1000;
   dTheta= -1000;
+  OriginalThetaLab = -1000;
+  OriginalELab = -1000;
 }
 
 
