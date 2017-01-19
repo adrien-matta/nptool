@@ -1,0 +1,13 @@
+TTreeName 
+	SimulatedTree
+RootFileName 
+  ../../Outputs/Simulation/hira_acceptance.root
+	%../../Outputs/Simulation/hiraU_deutonpbuu_nucl.root
+  %../../Outputs/Simulation/hiraU_tritonpbuu_nucl.root
+  %../../Outputs/Simulation/hiraU_3Hepbuu_nucl.root
+  %../../Outputs/Simulation/hiraU_alphapbuu_nucl.root
+
+
+  %../../Outputs/Simulation/hiraU_protonpbuu_nucl.root
+	%../../Outputs/Simulation/hiraU_flat_p_nucl.root
+	%../../Outputs/Simulation/hiraU_protonsource_nucl.root
