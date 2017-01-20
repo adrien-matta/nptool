@@ -55,18 +55,68 @@ m_NumberOfDetectors(0) {
 
 ///////////////////////////////////////////////////////////////////////////
 /// A usefull method to bundle all operation to add a detector
-void TAnnularS4Physics::AddDetector(TVector3 ){
+void TAnnularS4Physics::AddDetector(TVector3 Position){
     // In That simple case nothing is done
     // Typically for more complex detector one would calculate the relevant
     // positions (stripped silicon) or angles (gamma array)
+    
+    double R_Min = 5;
+    double R_Max = 65;
+    
+    double Phi_Min = 0  ;
+    double Phi_Max = 360;
+    
+    int NumberOfRingStrip = 128 ;
+    int NumberOfSector = 128 ;
+    int Ring_NumberOfQuadrant = 1 ;
+    
+    double StripPitchSector = (Phi_Max-Phi_Min)/NumberOfSector ; //radial strip spacing in deg
+    double StripPitchRing = (R_Max-R_Min)/NumberOfRingStrip  ; // ring strip spacing in mm
+    
+    
     m_NumberOfDetectors++;
+    
+    double X = Position.X();
+    double Y = Position.Y();
+    double Z = Position.Z();
+    TVector3 Strip_1_1 = TVector3(0,0,Z);
+    TVector3 StripCenter;
+    
+    vector<double> v_Theta;
+    v_Theta.clear();
+    for(int i=0; i<NumberOfRingStrip; i++){
+        StripCenter = TVector3(R_Min+(i+0.5)*StripPitchRing,0,Z);
+        v_Theta.push_back(StripCenter.Theta());
+    }
+    m_ThetaAngleOfRingStrip.push_back(v_Theta);
+    for(int s=0; s<NumberOfSector; s++){
+        double PhiAngle = s*StripPitchSector;
+        m_PhiAngleOfSector.push_back(PhiAngle*M_PI/180);
+        //cout << PhiAngle << endl;
+    }
+
+    return;
+}
+
+///////////////////////////////////////////////////////////////////////////
+TVector3 TAnnularS4Physics::GetPositionOfInteraction(const int i) const{
+    TVector3 Position;
+    
+    double R = GetR(DetectorNumber[i]);
+    double Theta = GetTheta(DetectorNumber[i], StripNbr[i]);
+    double Phi = GetPhi(SectorNbr[i]);
+    
+    Position = TVector3(R*tan(Theta)*cos(Phi),R*tan(Theta)*sin(Phi),R);
+    
+    return(Position) ;
+    
 }
 
 ///////////////////////////////////////////////////////////////////////////
 void TAnnularS4Physics::AddDetector(double R, double Theta, double Phi){
     // Compute the TVector3 corresponding
     TVector3 Pos(R*sin(Theta)*cos(Phi),R*sin(Theta)*sin(Phi),R*cos(Theta));
-    // Call the cartesian method
+    m_R.push_back(R);
     AddDetector(Pos);
 }
 

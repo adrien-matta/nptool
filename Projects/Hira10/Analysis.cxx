@@ -36,7 +36,7 @@ Analysis::~Analysis(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::Init(){
-    Hira = (THiraPhysics*) m_DetectorManager->GetDetector("HIRAArray");
+    Hira = (THiraPhysics*) m_DetectorManager->GetDetector("HiraTelescope");
     InitialConditions=new TInitialConditions();
     InitOutputBranch();
     InitInputBranch();

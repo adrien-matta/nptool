@@ -70,7 +70,7 @@ class TAnnularS4Physics : public TObject, public NPL::VDetector {
     vector<double>  Time;
 
   /// A usefull method to bundle all operation to add a detector
-  void AddDetector(TVector3 POS);
+  void AddDetector(TVector3 Position);
   void AddDetector(double R, double Theta, double Phi);
   
   //////////////////////////////////////////////////////////////
@@ -145,11 +145,25 @@ class TAnnularS4Physics : public TObject, public NPL::VDetector {
     // needed for online analysis for example
     void SetRawDataPointer(TAnnularS4Data* rawDataPointer) {m_EventData = rawDataPointer;}
     
+    // Return the position of interaction in S4
+    TVector3 GetPositionOfInteraction(const int i) const;
+    
+    double GetR(const int N)                                const{return m_R[N];}
+    double GetTheta(const int N, const int RingStrip)       const{return m_ThetaAngleOfRingStrip[N][RingStrip-1];}
+    double GetPhi(const int Sector)                         const {return m_PhiAngleOfSector[Sector-1];}
+    
   // objects are not written in the TTree
   private:
     TAnnularS4Data*         m_EventData;        //!
     TAnnularS4Data*         m_PreTreatedData;   //!
     TAnnularS4Physics*      m_EventPhysics;     //!
+    
+    vector<double>          m_R; //!
+    vector<vector<double>>  m_ThetaAngleOfRingStrip; //!
+    vector<double>          m_PhiAngleOfSector; //!
+    
+    
+
 
   // getters for raw and pre-treated data object
   public:

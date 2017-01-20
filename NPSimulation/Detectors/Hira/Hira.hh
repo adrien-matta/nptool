@@ -50,8 +50,8 @@ namespace HIRA
     // Resolution
     const G4double ResoTime         = 0.212765957;      // = 500ps                 //   Unit is  ns/2.35
     const G4double ResoCsI      	= 0.200/2.35;       // = 250 kev of resolution //   Unit is MeV/2.35
-    const G4double ResoThickSi  	= 0.065/2.35;       // = 120keV of Resolution   //   Unit is MeV/2.35
-    const G4double ResoThinSi       = 0.050/2.35;       // = 80keV of Resolution   //   Unit is MeV/2.35
+    const G4double ResoThickSi  	= 0.080/2.35;       // = 120keV of Resolution   //   Unit is MeV/2.35
+    const G4double ResoThinSi       = 0.060/2.35;       // = 80keV of Resolution   //   Unit is MeV/2.35
     
     const G4double EnergyThreshold = 0.;//100*keV;
     
