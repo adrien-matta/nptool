@@ -43,6 +43,7 @@ addons:
   apt:
     packages:
     - ninja-build
+    - libafterimage0
 
 #notifications:
 #  email:
