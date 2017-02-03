@@ -1,0 +1,102 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Target
+ THICKNESS= 4.8 micrometer
+ RADIUS=	5 mm
+ MATERIAL= CD2
+ ANGLE= 0 deg
+ X= 0 mm
+ Y= 0 mm
+ Z= 0 mm
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+CATSDetector
+   X1_Y1=          -34.36  -34.96  -1193 mm
+   X28_Y1=         36.76   -34.96  -1193 mm
+   X1_Y28=         -34.36  36.16   -1193 mm
+   X28_Y28=        36.76   36.16   -1193 mm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
+CATSDetector
+   X1_Y1=          34.26   -35.46  -684 mm
+   X28_Y1=         -36.86  -35.46  -684 mm
+   X1_Y28=         34.26   35.66   -684 mm
+   X28_Y28=        -36.86  35.66   -684 mm
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%         
+MUST2Array        
+%%%%%%% Telescope 1 %%%%%%%         
+M2Telescope          
+ X1_Y1=      10.85 105.03   146.16 mm
+ X1_Y128= 22.8  9.84  175.95 mm
+ X128_Y1= 104.09   105.03   108.76 mm
+ X128_Y128=  116.04   9.84  138.55 mm
+ SI=   1     
+ SILI= 1     
+ CSI=  1     
+ VIS=  all      
+         
+%%%%%%% Telescope 2 %%%%%%%         
+M2Telescope          
+ X1_Y1=      -116.04  9.84  138.55 mm
+ X1_Y128= -22.8 9.84  175.95 mm
+ X128_Y1= -104.09  105.03   108.76 mm
+ X128_Y128=  -10.85   105.03   146.16 mm
+ SI=   1     
+ SILI= 1     
+ CSI=  1     
+ VIS=  all      
+         
+%%%%%%% Telescope 3 %%%%%%%         
+M2Telescope          
+ X1_Y1=      -10.85   -105.03  146.16 mm
+ X1_Y128= -22.8 -9.84 175.95 mm
+ X128_Y1= -104.09  -105.03  108.76 mm
+ X128_Y128=  -116.04  -9.84 138.55 mm
+ SI=   1     
+ SILI= 1     
+ CSI=  1     
+ VIS=  all      
+         
+%%%%%%% Telescope 4 %%%%%%%         
+M2Telescope          
+ X1_Y1=      116.04   -9.84 138.55 mm
+ X1_Y128= 22.8  -9.84 175.95 mm
+ X128_Y1= 104.09   -105.03  108.76 mm
+ X128_Y128=  10.85 -105.03  146.16 mm
+ SI=   1     
+ SILI= 1     
+ CSI=  1     
+ VIS=  all      
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%         
+Tiara Barrel
+ InnerBarrel= 1
+ OuterBarrel= 1
+ Chamber= 1
+
+HyballWedge
+   Z= -147 mm
+   R= 0 mm
+   Phi= 0 deg
+HyballWedge
+   Z= -147 mm
+   R= 0 mm
+   Phi= 60 deg
+HyballWedge
+   Z= -147 mm
+   R= 0 mm
+   Phi= 120 deg
+HyballWedge
+   Z= -147 mm
+   R= 0 mm
+   Phi= 180 deg
+HyballWedge
+   Z= -147 mm
+   R= 0 mm
+   Phi= 240 deg
+HyballWedge 
+   Z= -147 mm
+   R= 0 mm
+   Phi= 300 deg 
+

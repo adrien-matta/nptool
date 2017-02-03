@@ -1,0 +1,15 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+Target
+ THICKNESS= 0.1 um
+ RADIUS= 7.5 mm
+ MATERIAL= CD2 
+ Angle= 0 deg
+ X= 0 mm
+ Y= 0 mm
+ Z= 0 mm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+AnnularS1
+ Z=   100 mm 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+AnnularS1
+ Z=   -100 mm 

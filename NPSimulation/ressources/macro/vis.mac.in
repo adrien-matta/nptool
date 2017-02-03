@@ -1,0 +1,50 @@
+# Macro file for the initialization phase of "exampleN03.cc"
+# when running in interactive mode
+#
+# Sets some default verbose
+#
+/control/verbose 0
+/run/verbose 0
+/material/verbose 0
+/tracking/verbose 0
+/cuts/verbose 0
+/process/em/verbose 0
+/process/eLoss/verbose 0
+
+#/process/list
+#
+# Use this open statement to create an OpenGL view:
+/vis/open OGLI 1200x600-0+0
+
+# use VRML viewer
+#/vis/open VRML2FILE
+
+# Draw geometry:
+/vis/drawVolume
+
+# Set the default view
+# Specify view angle:
+/vis/viewer/set/viewpointThetaPhi 45. 45.
+
+# Specify zoom value:
+/vis/viewer/zoom 1.
+
+# Specify style (surface or wireframe):
+/vis/viewer/set/style surface
+
+# Draw smooth trajectories at end of event, showing trajectory points
+/vis/scene/add/trajectories smooth
+
+# Select colour by particle ID:
+/vis/modeling/trajectories/create/drawByParticleID
+
+# To superimpose all of the events from a given run:
+/vis/scene/endOfEventAction accumulate
+
+# Re-establish auto refreshing and verbosity:
+/vis/viewer/set/autoRefresh true
+/vis/verbose 0
+
+# Set the background color
+/vis/viewer/set/background black 
+

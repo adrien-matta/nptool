@@ -1,0 +1,6 @@
+add_custom_command(OUTPUT TGaspardTrackerPhysicsDict.cxx COMMAND ../../scripts/build_dict.sh TGaspardTrackerPhysics.h TGaspardTrackerPhysicsDict.cxx TGaspardTrackerPhysics.rootmap libNPGASPARD.dylib DEPENDS TGaspardTrackerPhysics.h)
+add_custom_command(OUTPUT TGaspardTrackerDataDict.cxx COMMAND ../../scripts/build_dict.sh TGaspardTrackerData.h TGaspardTrackerDataDict.cxx TGaspardTrackerData.rootmap libNPGASPARD.dylib DEPENDS TGaspardTrackerData.h)
+add_library(NPGASPARD SHARED GaspardTracker.cxx GaspardTrackerAnnular.cxx GaspardTrackerDummyShape.cxx GaspardTrackerModule.cxx GaspardTrackerTrapezoid.cxx GaspardTrackerSquare.cxx GaspardTrackerRectangle.cxx TGaspardTrackerData.cxx TGaspardTrackerPhysics.cxx TGaspardTrackerDataDict.cxx TGaspardTrackerPhysicsDict.cxx )
+target_link_libraries(NPGASPARD ${ROOT_LIBRARIES} NPCore) 
+install(FILES TGaspardTrackerData.h TGaspardTrackerPhysics.h GaspardTracker.h GaspardTrackerAnnular.h GaspardTrackerDummyShape.h GaspardTrackerModule.h GaspardTrackerRectangle.h GaspardTrackerSquare.h GaspardTrackerTrapezoid.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
+

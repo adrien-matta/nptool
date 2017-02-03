@@ -1,0 +1,22 @@
+TTreeName
+  EGTree
+RootFileName
+  /scratch/gypaos/data/al27pp/oct2015/midas/root/R50_0.root
+  /scratch/gypaos/data/al27pp/oct2015/midas/root/R51_0.root
+  /scratch/gypaos/data/al27pp/oct2015/midas/root/R52_0.root
+  /scratch/gypaos/data/al27pp/oct2015/midas/root/R53_0.root
+  /scratch/gypaos/data/al27pp/oct2015/midas/root/R54_0.root
+  /scratch/gypaos/data/al27pp/oct2015/midas/root/R55_0.root
+  /scratch/gypaos/data/al27pp/oct2015/midas/root/R56_0.root
+  /scratch/gypaos/data/al27pp/oct2015/midas/root/R57_0.root
+  /scratch/gypaos/data/al27pp/oct2015/midas/root/R58_0.root
+  /scratch/gypaos/data/al27pp/oct2015/midas/root/R59_0.root
+  /scratch/gypaos/data/al27pp/oct2015/midas/root/R60_0.root
+  /scratch/gypaos/data/al27pp/oct2015/midas/root/R67_0.root
+  /scratch/gypaos/data/al27pp/oct2015/midas/root/R69_0.root
+  /scratch/gypaos/data/al27pp/oct2015/midas/root/R70_0.root
+  /scratch/gypaos/data/al27pp/oct2015/midas/root/R71_0.root
+  /scratch/gypaos/data/al27pp/oct2015/midas/root/R72_0.root
+  /scratch/gypaos/data/al27pp/oct2015/midas/root/R73_0.root
+  /scratch/gypaos/data/al27pp/oct2015/midas/root/R74_0.root
+

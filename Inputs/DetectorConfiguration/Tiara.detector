@@ -1,0 +1,46 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GeneralTarget
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%0.5mg/cm2
+Target
+ THICKNESS= 4.8
+ RADIUS=	5
+ MATERIAL= CD2
+ ANGLE= 0
+ X= 0
+ Y= 0
+ Z= 0
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Tiara
+  TiaraInnerBarrel= 1
+  TiaraOuterBarrel= 1
+  TiaraChamber= 1
+  TiaraHyballWedge
+    Z= -147
+    R= 0
+    Phi= 0
+  TiaraHyballWedge
+    Z= -147
+    R= 0
+    Phi= 60
+  TiaraHyballWedge
+    Z= -147
+    R= 0
+    Phi= 120
+  TiaraHyballWedge
+    Z= -147
+    R= 0
+    Phi= 180
+  TiaraHyballWedge
+    Z= -147
+    R= 0
+    Phi= 240
+  TiaraHyballWedge
+    Z= -147
+    R= 0
+    Phi= 300
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+

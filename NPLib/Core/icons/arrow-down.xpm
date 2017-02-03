@@ -1,0 +1,37 @@
+/* XPM */
+static char *arrow_down[] = {
+/* columns rows colors chars-per-pixel */
+"10 10 21 1 ",
+"  c #373636",
+". c #393C3C",
+"X c #52726A",
+"o c #598378",
+"O c #6BAA9B",
+"+ c #74BEAC",
+"@ c #74C2AE",
+"# c #78C1AF",
+"$ c #77C3B0",
+"% c #7BC5B3",
+"& c #80C4B3",
+"* c #8ECDBD",
+"= c #98D1C3",
+"- c #9DD3C6",
+"; c #AFD7CD",
+": c #B5DED3",
+"> c #C3E0D9",
+", c #D6E9E4",
+"< c #DAEFEA",
+"1 c #F2F9F8",
+"2 c #FBFCFC",
+/* pixels */
+" .XO++OX. ",
+".o+%**%+o.",
+"X+@-11=@+X",
+"O$@-22-@@O",
+"+%:<22<:%+",
+"@@;2222:@+",
+"O@#>22>@%O",
+"X+%&,,&@+X",
+".o+@&&@+o.",
+" .XO+@OX. "
+};

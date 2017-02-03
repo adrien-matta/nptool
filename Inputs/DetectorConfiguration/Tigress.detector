@@ -1,0 +1,21 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GeneralTarget
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Target
+ THICKNESS= 0.001 micrometer
+ RADIUS= 5 mm
+ MATERIAL= CD2
+ ANGLE= 0 deg
+ X= 0 mm 
+ Y= 0 mm
+ Z= 0 mm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+Tigres sStandard
+  CloverId= 5 6 7 8 9 10 11 12 13 14 15 16
+% Free placing of detector at any arbitrary position
+Tigress Clover
+ CloverId= 19
+ R= 150
+ Phi= 0
+ Theta= 0
+ Beta= 0 0 0

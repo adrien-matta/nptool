@@ -1,0 +1,5 @@
+ConfigSplitPole
+   MAGNETIC_FIELD_CORRECTION  ON
+   TIME_DELAY  3657
+   NMR_FILE_PATH  /scratch/gypaos/data/al27pp/oct2015/rmn
+   NMR_LARGE_FIELD   0

@@ -1,0 +1,32 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Target
+  Thickness= 10 micrometer
+  Radius= 20 mm
+  Material= CD2
+  Angle= 0 deg
+  X= 0 mm
+  Y= 0 mm
+  Z= 0 mm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+NeutronWall
+  THETA= 0 deg
+  PHI= 0 deg 
+  R= 4 m
+  BARS= 25
+  VETOWALL= 1
+  VWDISTANCE= 100 mm 
+  OVERLAP= 3
+  VWMATERIAL= BC400
+  NWMATERIAL= NE213
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%NeutronWall
+  THETA= 0
+  PHI= 0
+  R= 6000
+  BARS= 25
+  VETOWALL= 0
+  VWDISTANCE= 1000
+  OVERLAP= 3
+  VWMATERIAL= BC400
+  NWMATERIAL= NE213
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

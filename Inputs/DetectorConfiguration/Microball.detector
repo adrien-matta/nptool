@@ -1,0 +1,25 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GeneralTarget
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Target
+ THICKNESS= 10 micrometer
+ RADIUS=	20 nn
+ MATERIAL= CD2
+ ANGLE= 0 deg
+ X= 0 mm
+ Y= 0 mm
+ Z= 0 mm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Microball
+ RING1= 1
+ RING2= 1
+ RING3= 1
+ RING4= 1
+ RING5= 1
+ RING6= 1
+ RING7= 1
+ RING8= 1
+ RING9= 1
+ %DISABLE_CRYSTAL 20 21 22 32 33 34 44 45 46 47
+ DETECTOR_FLIP= 0
+ INCLUDE_CHAMBER= 0

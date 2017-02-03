@@ -1,0 +1,9 @@
+# Sets some default verbose
+/control/verbose 0
+/run/verbose 0
+/material/verbose 0
+/tracking/verbose 0
+/cuts/verbose 0
+/process/em/verbose 0
+/process/eLoss/verbose 0
+

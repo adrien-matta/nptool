@@ -1,0 +1,46 @@
+This file lists the most important contributors to the NPTool project.
+It is sorted by name and the fields are: name (N), email (E), description (D).
+Please, let us know if you are not on this list while you should be, or
+if something in your entry is incorrect.
+
+Adrien Matta & Nicolas de Séréville.
+
+
+N: Freddy FLAVIGNY
+D: CATS, MUST2 detectors
+
+N: Julien GIBELIN
+D: MAYA detector
+
+N: Sandra GIRON
+D: CATS, AnnularS1, Chio detectors
+
+N: Marc LABICHE
+D: PARIS, FATIMA, HELIOS detectors
+
+N: Laurent LEFEBVRE
+D: SPEG, EXL detectors
+
+N: Adrien MATTA
+D: NPTool conception
+D: Main contributor to NPTool
+D: MUST2, SHARC, ... detectors 
+
+N: Pierre MORFOUACE
+D: CATS, HIRA, LASSA detectors 
+D: TwoBody kinematics event generator
+
+N: Nicolas de SEREVILLE
+D: Main contributor to NPTool
+D: Gaspard, W1, SplitPole, ComptonTelescope detectors
+
+N: Robert SHEARMAN
+D: NANA detector
+
+N: Marine VANDEBROUCK
+D: MAYA detector
+
+N: Ryan WILKINSON
+D: TIARA detector
+
+Inspired by previous work by Alexis RAMUS and Marc LABICHE.

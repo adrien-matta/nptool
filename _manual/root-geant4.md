@@ -27,39 +27,6 @@ If cmake is not present after that:
 $ sudo port install cmake
 {% endhighlight %}
 
-
-## GSL (no longer needed)
-
-nptool required the libmathmore from ROOT, which is build only when the GNU Scientific Library (GSL) is present. This package can be installed easely via package manager:
-
-On Ubuntu and Debian :
-{% highlight console %}
-$ sudo apt-get install gsl-bin
-$ sudo apt-get inatall libgsl0-dev
-{% endhighlight %}
-
-On Fedora (> 21) :
-{% highlight console %}
-$ sudo dnf install gsl
-{% endhighlight %}
-
-On Fedora (< 22) :
-{% highlight console %}
-$ sudo yum install gsl
-{% endhighlight %}
-
-On Mac Os X using mac port:
-{% highlight console %}
-$ sudo port install gsl
-{% endhighlight %}
-
-On Mac Os X using homebrew:
-{% highlight console %}
-$ sudo brew install gsl
-{% endhighlight %}
-
-Alternatively, if you do not have sudo credential you can download and compile the source.
-
 ## Root
 
 Root sources are available and it is the safest way to install the analysis framework on your system. If however you are in a situation were installing from source is difficult (on virtual machine or to setup test) you can alternatively install the debian package (for both Debian and Ubuntu).
@@ -95,13 +62,11 @@ The last line whould be added to your .bashrc/.shrc/.cshrc/.tcshrc/.profile file
 
 ### Via debian package
 
-On Debian / Ubuntu
-{% highlight console %}
-$ sudo add-apt-repository -y "deb http://archive.ubuntu.com/ubuntu/ trusty main universe"
-$ sudo apt-get update -y
-$ sudo apt-get install libexpat1-dev libexpat1 -y
-$ sudo apt-get install root-system -y 
-{% endhighlight %}
+The debian package is no longer supported as it is missing essential root library, such as libASImage.so.
+
+### Via binaries distribution
+
+You can download precompile binaries for most popular OS/compiler combinaison on the root website. Once the distribution downloaded, untar it, and source thisroot.sh file, located in /parth_to_root/root/bin.
 
 ## Geant4
 
@@ -130,4 +95,5 @@ $ source /path/to/folder/geant4.xxx_install/share/Geant4-xxx/geant4make/geant4ma
 {% endhighlight %}
 The last line whould be added to your .bashrc/.shrc/.cshrc/.tcshrc/.profile file as well.
 
-### Precompiled download
+### Precompiled distribution
+A limited number of precompiled distribution exist and are available for download from the geant4 web site.

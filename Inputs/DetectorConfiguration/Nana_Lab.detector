@@ -1,0 +1,17 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Target
+ THICKNESS= 10.3 micrometer
+ ANGLE= 0 deg
+ RADIUS= 12 mm
+ MATERIAL= CH2 
+ NBLAYERS= 50 
+ X= 0 mm
+ Y= 0 mm
+ Z= 0 mm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+Nana
+ Theta= 60.0 deg
+ Phi= 0.0 deg
+ R= 70.0 mm
+ Beta= 0 0 0 deg
+ Vis= all

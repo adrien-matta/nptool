@@ -1,0 +1,64 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Target
+ THICKNESS= 0.1 micrometer
+ ANGLE= 0 deg
+ RADIUS= 10 mm
+ MATERIAL= CD2
+ X= 0 mm 
+ Y= 0 mm
+ Z= 0 mm
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+CsI
+ THETA= 0 deg
+ PHI= 0 deg
+ R= 0 mm
+ X= 0 mm
+ Y= 0 mm
+ Z= 15 mm
+ Thickness= 1 mm
+ Shape= Trapezoidal
+ FaceFront= 100 mm
+ FaceBack= 100 mm
+ Radius= 0 mm
+ Scintillator= CsI_Scintillator
+ LeadThickness= 0 mm
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ScintillatorPlastic
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Plastic
+ THETA= 0 deg
+ PHI= 0 deg
+ R= 0 mm
+ X= 0 mm
+ Y= 0 mm
+ Z= 100 mm
+ Thickness= 10.0 mm
+ Shape= Square
+ Height= 10 mm
+ Width= 10 mm
+ Scintillator= Pb
+ LeadThickness= 0 mm
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Plastic
+ THETA= 0 deg
+ PHI= 0 deg 
+ R= 0 mm 
+ X= 0 mm
+ Y= 0 mm
+ Z= 250 mm
+ Thickness= 20 mm
+ Shape= Square
+ Height= 20 mm
+ Width= 20 mm
+ Scintillator= CsI
+ LeadThickness= 0 mm
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Avaible material:
+% BC400
+% BC452_2  : BC400 with 2% Pb
+% BC452_5  : BC400 with 5% Pb
+% BC452_10 : BC400 with 10% Pb

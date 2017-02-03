@@ -1,0 +1,731 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Target
+ THICKNESS= 10.3 micrometer
+ ANGLE= 0 deg
+ RADIUS=	12 mm
+ MATERIAL= CD2
+ NBLAYERS= 50
+ X= 0 mm
+ Y= 0 mm
+ Z= 0	mm
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GeneralChamber
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Chamber
+        Rmin= 200
+        Rmax= 202
+        PhiMin= 0.
+        PhiMax= 6.14318
+        ThetaMin= 0.
+        ThetaMax= 3.14159
+        MATERIAL= Alu
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%Detector%%%%%%%%%%%%%%%%%%%
+%%Position and R given in mm
+%%Angle given in degree
+%%Option: 0,1 for Si SiLi and CsI
+%%Option: all or sensible for VISualisation
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%0
+Paris Cluster
+ A=		-84.5 	-235	84.5
+ C= 	84.5	-235	84.5
+ B= 	-84.5	-235	-84.5	
+ D= 	84.5	-235	-84.5	
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+Paris Cluster
+ A=		-225.920617	-106.419571	84.5
+ C=	-106.419571	-225.920617	84.5
+ B=	-225.920617	-106.419571	-84.5
+ D=	-106.419571	-225.920617	-84.5
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+Paris Cluster
+ A=		-235	84.5	84.5
+ C=	-235	-84.5	84.5
+ B=	-235	84.5	-84.5
+ D=	-235	-84.5	-84.5
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
+Paris Cluster
+ A=		-106.419571	225.920617	84.5
+ C=	-225.920617	106.419571	84.5
+ B=	-106.419571	225.920617	-84.5
+ D=	-225.920617	106.419571	-84.5
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+Paris Cluster
+ A=		84.5	235	84.5
+ C=	-84.5	235	84.5
+ B=	84.5	235	-84.5
+ D=	-84.5	235	-84.5
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+Paris Cluster
+ A=		225.920617	106.419571	84.5
+ C=	106.419571	225.920617	84.5
+ B=	225.920617	106.419571	-84.5
+ D=	106.419571	225.920617	-84.5
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+Paris Cluster
+ A=		235	-84.5	84.5
+ C=	235	84.5	84.5
+ B=	235	-84.5	-84.5
+ D=	235	84.5	-84.5
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+Paris Cluster
+ A=		106.419571	-225.920617	84.5
+ C=	225.920617	-106.419571	84.5
+ B=	106.419571	-225.920617	-84.5
+ D=	225.920617	-106.419571	-84.5
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+Paris Cluster
+ A=		84.5	84.5	-235
+ C=	-84.5	84.5	-235
+ B=	84.5	-84.5	-235
+ D=	-84.5	-84.5	-235
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+Paris Cluster
+ A=		225.920617	84.5	-106.419571
+ C=	106.419571	84.5	-225.920617
+ B=	225.920617	-84.5	-106.419571
+ D=	106.419571	-84.5	-225.920617
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+Paris Cluster
+ A=		106.419571	84.5	225.920617
+ C=	225.920617	84.5	106.419571
+ B=	106.419571	-84.5	225.920617
+ D=	225.920617	-84.5	106.419571
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+Paris Cluster
+ A=		-84.5	84.5	235
+ C=	84.5	84.5	235
+ B=	-84.5	-84.5	235
+ D=	84.5	-84.5	235
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+Paris Cluster
+ A=		-225.920617	84.5	106.419571
+ C=	-106.419571	84.5	225.920617
+ B=	-225.920617	-84.5	106.419571
+ D=	-106.419571	-84.5	225.920617
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+Paris Cluster
+ A=		-106.419571	84.5	-225.920617
+ C=	-225.920617	84.5	-106.419571
+ B=	-106.419571	-84.5	-225.920617
+ D=	-225.920617	-84.5	-106.419571
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+Paris Cluster
+ A=		-84.5	106.419571	-225.920617
+ C=	84.5	106.419571	-225.920617
+ B=	-84.5	225.920617	-106.419571
+ D=	84.5	225.920617	-106.419571
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+Paris Cluster
+ A=		-84.5	225.920617	106.419571
+ C=	84.5	225.920617	106.419571
+ B=	-84.5	106.419571	225.920617
+ D=	84.5	106.419571	225.920617
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+Paris Cluster
+ A=		-84.5	-106.419571	225.920617
+ C=	84.5	-106.419571	225.920617
+ B=	-84.5	-225.920617	106.419571
+ D=	84.5	-225.920617	106.419571
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+Paris Cluster
+ A=		-84.5	-225.920617	-106.419571
+ C=	84.5	-225.920617	-106.419571
+ B=	-84.5	-106.419571	-225.920617
+ D=	84.5	-106.419571	-225.920617
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Paris Phoswich
+ A=		-175.9824	135.677313	-95.372227
+ C=	-199.252552	89.137008	-118.642379
+ B=	-135.677313	135.677313	-135.677313
+ D=	-158.947466	89.137008	-158.947466
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Paris Phoswich
+ A=		-135.677313	135.677313	-135.677313
+ C=	-158.947466	89.137008	-158.947466
+ B=	-95.372227	135.677313	-175.9824
+ D=	-118.642379	89.137008	-199.252552
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Paris Phoswich
+ A=		-132.559704	182.217618	-92.254617
+ C=	-155.829857	135.677313	-115.52477
+ B=	-92.254617	182.217618	-132.559704
+ D=	-115.52477	135.677313	-155.829857
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Paris Phoswich
+ A=		-95.372227	135.677313	175.9824
+ C=	-118.642379	89.137008	199.252552
+ B=	-135.677313	135.677313	135.677313
+ D=	-158.947466	89.137008	158.947466
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Paris Phoswich
+ A=		-135.677313	135.677313	135.677313
+ C=	-158.947466	89.137008	158.947466
+ B=	-175.9824	135.677313	95.372227
+ D=	-199.252552	89.137008	118.642379
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Paris Phoswich
+ A=		-92.254617	182.217618	132.559704
+ C=	-115.52477	135.677313	155.829857
+ B=	-132.559704	182.217618	92.254617
+ D=	-155.829857	135.677313	115.52477
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Paris Phoswich
+ A=		175.9824	135.677313	95.372227
+ C=	199.252552	89.137008	118.642379
+ B=	135.677313	135.677313	135.677313
+ D=	158.947466	89.137008	158.947466
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Paris Phoswich
+ A=		135.677313	135.677313	135.677313
+ C=	158.947466	89.137008	158.947466
+ B=	95.372227	135.677313	175.9824
+ D=	118.642379	89.137008	199.252552
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Paris Phoswich
+ A=		132.559704	182.217618	92.254617
+ C=	155.829857	135.677313	115.52477
+ B=	92.254617	182.217618	132.559704
+ D=	115.52477	135.677313	155.829857
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Paris Phoswich
+ A=		95.372227	135.677313	-175.9824
+ C=	118.642379	89.137008	-199.252552
+ B=	135.677313	135.677313	-135.677313
+ D=	158.947466	89.137008	-158.947466
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Paris Phoswich
+ A=		135.677313	135.677313	-135.677313
+ C=	158.947466	89.137008	-158.947466
+ B=	175.9824	135.677313	-95.372227
+ D=	199.252552	89.137008	-118.642379
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Paris Phoswich
+ A=		92.254617	182.217618	-132.559704
+ C=	115.52477	135.677313	-155.829857
+ B=	132.559704	182.217618	-92.254617
+ D=	155.829857	135.677313	-115.52477
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Paris Phoswich
+ A=		-95.372227	-135.677313	-175.9824
+ C=	-118.642379	-89.137008	-199.252552
+ B=	-135.677313	-135.677313	-135.677313
+ D=	-158.947466	-89.137008	-158.947466
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Paris Phoswich
+ A=		-135.677313	-135.677313	-135.677313
+ C=	-158.947466	-89.137008	-158.947466
+ B=	-175.9824	-135.677313	-95.372227
+ D=	-199.252552	-89.137008	-118.642379
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Paris Phoswich
+ A=		-92.254617	-182.217618	-132.559704
+ C=	-115.52477	-135.677313	-155.829857
+ B=	-132.559704	-182.217618	-92.254617
+ D=	-155.829857	-135.677313	-115.52477
+
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Paris Phoswich
+% A=		175.9824	-135.677313	-95.372227
+% C=	199.252552	-89.137008	-118.642379
+% B=	135.677313	-135.677313	-135.677313
+% D=	158.947466	-89.137008	-158.947466
+% VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Paris Phoswich
+% A=		135.677313	-135.677313	-135.677313
+% C=	158.947466	-89.137008	-158.947466
+% B=	95.372227	-135.677313	-175.9824
+% D=	118.642379	-89.137008	-199.252552
+% VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Paris Phoswich
+% A=		132.559704	-182.217618	-92.254617
+% C=	155.829857	-135.677313	-115.52477
+% B=	92.254617	-182.217618	-132.559704
+% D=	115.52477	-135.677313	-155.829857
+% VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Paris Phoswich
+ A=		95.372227	-135.677313	175.9824
+ C=	118.642379	-89.137008	199.252552
+ B=	135.677313	-135.677313	135.677313
+ D=	158.947466	-89.137008	158.947466
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Paris Phoswich
+ A=		135.677313	-135.677313	135.677313
+ C=	158.947466	-89.137008	158.947466
+ B=	175.9824	-135.677313	95.372227
+ D=	199.252552	-89.137008	118.642379
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Paris Phoswich
+ A=		92.254617	-182.217618	132.559704
+ C=	115.52477	-135.677313	155.829857
+ B=	132.559704	-182.217618	92.254617
+ D=	155.829857	-135.677313	115.52477
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Paris Phoswich
+% A=		-175.9824	-135.677313	95.372227
+% C=	-199.252552	-89.137008	118.642379
+% B=	-135.677313	-135.677313	135.677313
+% D=	-158.947466	-89.137008	158.947466
+% VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Paris Phoswich
+% A=		-135.677313	-135.677313	135.677313
+% C=	-158.947466	-89.137008	158.947466
+% B=	-95.372227	-135.677313	175.9824
+% D=	-118.642379	-89.137008	199.252552
+% VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Paris Phoswich
+% A=		-132.559704	-182.217618	92.254617
+% C=	-155.829857	-135.677313	115.52477
+% B=	-92.254617	-182.217618	132.559704
+% D=	-115.52477	-135.677313	155.829857
+% VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GaspardTracker
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%0 Central Barrel
+GaspardTracker DummyShape
+ THETA= 90
+ PHI= 90 
+ R= 100
+ BETA= 0 0 0
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 1
+ THIRDSTAGE= 1
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+GaspardTracker DummyShape
+ THETA= 90
+ PHI= 120
+ R= 100
+ BETA= 0 0 0
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 1
+ THIRDSTAGE= 1	
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
+GaspardTracker DummyShape
+ THETA= 90
+ PHI= 150
+ R= 100
+ BETA= 0 0 0
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 1
+ THIRDSTAGE= 1
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%3
+GaspardTracker DummyShape
+ THETA= 90
+ PHI= 180
+ R= 100
+ BETA= 0 0 0
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 1
+ THIRDSTAGE= 1	
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%4
+GaspardTracker DummyShape
+ THETA= 90
+ PHI= 210
+ R= 100
+ BETA= 0 0 0
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 1
+ THIRDSTAGE= 1	
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+GaspardTracker DummyShape
+ THETA= 90
+ PHI= 240
+ R= 100
+ BETA= 0 0 0
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 1
+ THIRDSTAGE= 1	
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%6
+GaspardTracker DummyShape
+ THETA= 90
+ PHI= 270
+ R= 100
+ BETA= 0 0 0
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 1
+ THIRDSTAGE= 1	
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%7
+GaspardTracker DummyShape
+ THETA= 90
+ PHI= 300
+ R= 100
+ BETA= 0 0 0
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 1
+ THIRDSTAGE= 1	
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%8
+GaspardTracker DummyShape
+ THETA= 90
+ PHI= 330
+ R= 100
+ BETA= 0 0 0
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 1
+ THIRDSTAGE= 1	
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%9
+GaspardTracker DummyShape
+        THETA= 90
+        PHI= 360
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%10
+GaspardTracker DummyShape
+        THETA= 90
+        PHI= 30
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%11
+GaspardTracker DummyShape
+        THETA= 90
+        PHI= 60
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%12 First Cone (forward)
+GaspardTracker DummyShape
+        THETA= 60
+        PHI= 90
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%13
+GaspardTracker DummyShape
+        THETA= 60
+        PHI= 130
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%14
+GaspardTracker DummyShape
+        THETA= 60
+        PHI= 170
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%15
+GaspardTracker DummyShape
+        THETA= 60
+        PHI= 210
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%16
+GaspardTracker DummyShape
+        THETA= 60
+        PHI= 250
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%17
+GaspardTracker DummyShape
+        THETA= 60
+        PHI= 290
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%18
+GaspardTracker DummyShape
+        THETA= 60
+        PHI= 330
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%19
+GaspardTracker DummyShape
+        THETA= 60
+        PHI= 10
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%20
+GaspardTracker DummyShape
+        THETA= 60
+        PHI= 50
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%21 Second Cone (forward)
+GaspardTracker DummyShape
+        THETA= 30
+        PHI= 90
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%22
+GaspardTracker DummyShape
+        THETA= 30
+        PHI= 180
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%23
+GaspardTracker DummyShape
+        THETA= 30
+        PHI= 270
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%24
+GaspardTracker DummyShape
+        THETA= 30
+        PHI= 360
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%25 First Cone (backward)
+GaspardTracker DummyShape
+        THETA= 120
+        PHI= 90
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%26
+GaspardTracker DummyShape
+        THETA= 120
+        PHI= 130
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%27
+GaspardTracker DummyShape
+        THETA= 120
+        PHI= 170
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%28
+GaspardTracker DummyShape
+        THETA= 120
+        PHI= 210
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%29
+GaspardTracker DummyShape
+        THETA= 120
+        PHI= 250
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%30
+GaspardTracker DummyShape
+        THETA= 120
+        PHI= 290
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%31
+GaspardTracker DummyShape
+        THETA= 120
+        PHI= 330
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%32
+GaspardTracker DummyShape
+        THETA= 120
+        PHI= 10
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%33
+GaspardTracker DummyShape
+        THETA= 120
+        PHI= 50
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%34 Second Cone (backward)
+GaspardTracker DummyShape
+        THETA= 150
+        PHI= 90
+        R= 100
+        BETA= 0 0 0
+        FIRSTSTAGE= 1
+        SECONDSTAGE= 1
+        THIRDSTAGE= 1
+        VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%35
+GaspardTracker DummyShape
+ THETA= 150
+ PHI= 180
+ R= 100
+ BETA= 0 0 0
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 1
+ THIRDSTAGE= 1
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%36
+GaspardTracker DummyShape
+ THETA= 150
+ PHI= 270
+ R= 100
+ BETA= 0 0 0
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 1
+ THIRDSTAGE= 1
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%37
+GaspardTracker DummyShape
+ THETA= 150
+ PHI= 360
+ R= 100
+ BETA= 0 0 0
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 1
+ THIRDSTAGE= 1
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%38 End Cap (forward)
+GaspardTracker DummyShape
+ THETA= 0
+ PHI= 0
+ R= 100
+ BETA= 0 0 0
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 1
+ THIRDSTAGE= 1
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%39 End Cap (backward)
+GaspardTracker DummyShape
+ THETA= 180
+ PHI= 0
+ R= 100
+ BETA= 0 0 0
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 1
+ THIRDSTAGE= 1
+ VIS= all
+

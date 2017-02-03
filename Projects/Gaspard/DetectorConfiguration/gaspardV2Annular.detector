@@ -1,0 +1,48 @@
+%%%%%%%%%%Detector%%%%%%%%%%%%%%%%%%%
+%%Position and distance given in mm
+%%Angle given in degree
+%% using the data from the experimental mesurement
+%% special care is given for the X Y direction
+%% NOTATTION USED IN THE FOLLOWING:
+%%
+%% X1_Y1  	--> X:1    Y:1
+%% X128_Y1  	--> X:128  Y:1
+%% X1_Y128  	--> X:1    Y:128
+%% X128_Y128  --> X:128  Y:128
+%%Option: 0,1 for Si SiLi and CSI
+%%Option: all or sensible for VISualisation
+% 1.2 12.371134021
+% 2   20.618556701
+% 30  309.278350515
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+GeneralTarget
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+Target
+ THICKNESS= 0.001
+ RADIUS=	7.5
+ MATERIAL= CD2
+ NBLAYERS= 0
+ X= 0
+ Y= 0
+ Z= 0
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+GaspardTracker
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Annular Back
+GPDAnnular
+ Z=	-156.5
+ RMIN=	16
+ RMAX=	52
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 1
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Annular Front 
+%GPDAnnular
+ Z=	156.5
+ RMIN=	16
+ RMAX=	52
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 1
+ VIS= all
