@@ -62,14 +62,11 @@ void TChio_digPhysics::ReadConfiguration(NPL::InputParser parser){
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  vector<string> token = {"A","B","C","D"};
+  vector<string> token = {"POS"};
 
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
     if(blocks[i]->HasTokenList(token)){
-      TVector3 A = blocks[i]->GetTVector3("A","mm");
-      TVector3 B = blocks[i]->GetTVector3("B","mm");
-      TVector3 C = blocks[i]->GetTVector3("C","mm");
-      TVector3 D = blocks[i]->GetTVector3("D","mm");
+      TVector3 Pos = blocks[i]->GetTVector3("POS","mm");
 
      // AddChio(A,B,C,D);
     }

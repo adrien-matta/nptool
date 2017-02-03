@@ -22,7 +22,159 @@
 #include "SiliconScorers.hh"
 #include "G4UnitsTable.hh"
 using namespace SILICONSCORERS ;
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+PS_Silicon_Images::PS_Silicon_Images(G4String name, string imageFront,string imageBack,double scalingFront, double scalingBack, double centerOffsetX,double centerOffsetY,unsigned int ignoreValue, G4int depth)  :G4VPrimitiveScorer(name, depth),HCID(-1){
+  m_ImageFront = new NPL::Image(imageFront,scalingFront,scalingFront); 
+  m_ImageBack  = new NPL::Image(imageBack,scalingBack,scalingBack); 
+  m_ScalingFront = scalingFront;
+  m_ScalingBack  = scalingBack;
+  m_CenterOffsetX = centerOffsetX;
+  m_CenterOffsetY = centerOffsetY;
+  m_IgnoreValue = ignoreValue;
+  m_Level = depth;
+}
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+G4bool PS_Silicon_Images::ProcessHits(G4Step* aStep, G4TouchableHistory*){
+  // contain Energy Time, DetNbr, PixelFront and PixelBack
+  t_Energy = aStep->GetTotalEnergyDeposit();
+  t_Time = aStep->GetPreStepPoint()->GetGlobalTime();
+
+  t_DetectorNbr = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_Level);
+  t_Position  = aStep->GetPreStepPoint()->GetPosition();
+
+  // Interaction coordinates (used to fill the InteractionCoordinates branch)
+  t_X = t_Position.x();
+  t_Y = t_Position.y();
+  t_Z = t_Position.z();
+  t_Theta = t_Position.theta();
+  t_Phi = t_Position.phi();
+
+  t_Position = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(t_Position);
+
+  t_PixelFront = m_ImageFront->GetPixelAtCoordinate(t_Position.x(),t_Position.y());
+  t_PixelBack = m_ImageBack->GetPixelAtCoordinate(t_Position.x(),t_Position.y());
+
+  unsigned int front = (m_ImageFront->GetPixelAtCoordinate(t_Position.x(),t_Position.y()))&0xff;
+  unsigned int back  = (m_ImageBack->GetPixelAtCoordinate(t_Position.x(),t_Position.y()))&0xff;
+
+
+  // If front and back are in inactive part of the wafer,
+  // nothing is added to the map
+  if(t_PixelFront == m_IgnoreValue && t_PixelBack == m_IgnoreValue)
+    return FALSE;
+
+  t_Index =  aStep->GetTrack()->GetTrackID() + t_DetectorNbr * 1e3 ;
+  // Check if the particle has interact before, if yes, add up the energies.
+  map<unsigned int, double>::iterator it;
+  it= m_Energy.find(t_Index);
+  if(it!=m_Energy.end()){
+    double dummy = it->second;
+    t_Energy+=dummy;
+  }
+
+  m_Energy[t_Index] = t_Energy; 
+  m_Time[t_Index] = t_Time;
+  m_DetectorNbr[t_Index] = t_DetectorNbr;
+  m_PixelFront[t_Index] = t_PixelFront;
+  m_PixelBack[t_Index] = t_PixelBack;
+  m_X[t_Index] = t_X;
+  m_Y[t_Index] = t_Y;
+  m_Z[t_Index] = t_Z;
+  m_Theta[t_Index] = t_Theta;
+  m_Phi[t_Index] = t_Phi;
+
+
+  return TRUE;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void PS_Silicon_Images::Initialize(G4HCofThisEvent* HCE){
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void PS_Silicon_Images::EndOfEvent(G4HCofThisEvent*){
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void PS_Silicon_Images::clear(){
+  m_Energy.clear();
+  m_Time.clear();
+  m_DetectorNbr.clear();
+  m_PixelFront.clear();
+  m_PixelBack.clear();
+  m_X.clear();
+  m_Y.clear();
+  m_Z.clear();
+  m_Theta.clear();
+  m_Phi.clear();
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+vector<unsigned int> PS_Silicon_Images::GetIndexes(){
+  vector<unsigned int > indexes;
+  map<unsigned int , double>::iterator it;
+  for(it=m_Energy.begin(); it!=m_Energy.end();it++)
+    indexes.push_back(it->first);
+
+  return indexes;
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+unsigned int PS_Silicon_Images::GetPixelFront(unsigned int index){
+  return  m_PixelFront[index];
+} 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+unsigned int PS_Silicon_Images::GetPixelBack(unsigned int index){
+  return m_PixelBack[index];
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void PS_Silicon_Images::GetARGBFront(unsigned int index,unsigned int& a,unsigned int& r,unsigned int& g,unsigned int& b){
+  unsigned int Info =m_PixelFront[index];
+  a = (Info>>24)&0xff;
+  r = (Info>>16)&0xff;
+  g = (Info>>8)&0xff;
+  b = (Info>>0)&0xff;
+} 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void PS_Silicon_Images::GetARGBBack(unsigned int index,unsigned int& a,unsigned int& r,unsigned int& g,unsigned int& b){
+  unsigned int Info =m_PixelBack[index];
+
+  a = (Info>>24)&0xff;
+  r = (Info>>16)&0xff;
+  g = (Info>>8)&0xff;
+  b = (Info>>0)&0xff;
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double PS_Silicon_Images::GetEnergy(unsigned int index){
+  return m_Energy[index];
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double PS_Silicon_Images::GetTime(unsigned int index){
+  return m_Time[index];
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+unsigned int PS_Silicon_Images::GetDetectorNbr(unsigned int index){
+  return m_DetectorNbr[index];
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double PS_Silicon_Images::GetX(unsigned int index){
+  return m_X[index]; 
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double PS_Silicon_Images::GetY(unsigned int index){
+  return m_Y[index]; 
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double PS_Silicon_Images::GetZ(unsigned int index){
+  return m_Z[index]; 
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double PS_Silicon_Images::GetTheta(unsigned int index){
+  return m_Theta[index]; 
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double PS_Silicon_Images::GetPhi(unsigned int index){
+  return m_Phi[index]; 
+}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 PS_Silicon_Rectangle::PS_Silicon_Rectangle(G4String name,G4int Level, G4double StripPlaneLength, G4double StripPlaneWidth, G4int NumberOfStripLength,G4int NumberOfStripWidth,G4int depth,G4String axis)
   :G4VPrimitiveScorer(name, depth),HCID(-1){
@@ -192,7 +344,7 @@ G4bool PS_Silicon_Annular::ProcessHits(G4Step* aStep, G4TouchableHistory*){
     phi+=2*M_PI;
   m_StripSectorNumber   = (int) ((phi - m_PhiStart)  / m_StripPitchSector ) + 1 ;
   m_StripQuadrantNumber = (int) ((phi - m_PhiStart)  /m_StripPitchQuadrant) + 1 ; 
-  
+
   //Rare case where particle is close to edge of silicon plan
   if (m_StripRingNumber > m_NumberOfStripRing) m_StripRingNumber = m_NumberOfStripRing;
   if (m_StripSectorNumber > m_NumberOfStripSector) m_StripSectorNumber = m_NumberOfStripSector;

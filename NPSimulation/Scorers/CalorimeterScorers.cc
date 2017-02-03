@@ -126,7 +126,6 @@ G4bool PS_CalorimeterWithInteraction::ProcessHits(G4Step* aStep, G4TouchableHist
     Infos[5] = m_Position.theta();
     Infos[6] = m_Position.phi();
     
-    
     for(unsigned int i = 0 ; i < mysize ; i++){
         Infos[i+7] = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_NestingLevel[i]);
     }

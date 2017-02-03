@@ -37,13 +37,13 @@
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
 #include "G4PVDivision.hh"
-
+#include "Randomize.hh"
 // NPS
 #include "MaterialManager.hh"
 #include "NPSDetectorFactory.hh"
 #include "ObsoleteGeneralScorers.hh"
-#include "MUST2Scorers.hh"
-
+#include "SiliconScorers.hh"
+#include "CalorimeterScorers.hh"
 #include "NPOptionManager.h"
 
 //ROOT
@@ -161,7 +161,7 @@ void MUST2Array::VolumeMaker( G4int TelescopeNumber,
       Name                  ,
       world                 ,
       false                 ,
-      0                     );
+      TelescopeNumber                     );
 
   if (m_non_sensitive_part_visiualisation){
     G4VisAttributes* FrameVisAtt = new G4VisAttributes(G4Colour(0.80, 0.80, 0.80));
@@ -176,7 +176,7 @@ void MUST2Array::VolumeMaker( G4int TelescopeNumber,
   G4LogicalVolume* logicVacBox = new G4LogicalVolume(solidVacBox, m_MaterialVacuum, "logicVacBox", 0, 0, 0);
 
 
-  new G4PVPlacement(0, positionVacBox, logicVacBox, Name + "_VacBox", logicMM, false, 0);
+  new G4PVPlacement(0, positionVacBox, logicVacBox, Name + "_VacBox", logicMM, false, TelescopeNumber );
 
   logicVacBox->SetVisAttributes(G4VisAttributes::Invisible);
 
@@ -193,8 +193,8 @@ void MUST2Array::VolumeMaker( G4int TelescopeNumber,
     G4Box*           solidAluStrip = new G4Box("AluBox", 0.5*SiliconFace, 0.5*SiliconFace, 0.5*AluStripThickness);
     G4LogicalVolume* logicAluStrip = new G4LogicalVolume(solidAluStrip, m_MaterialAluminium, "logicAluStrip", 0, 0, 0);
 
-    new G4PVPlacement(0, positionAluStripFront, logicAluStrip, Name + "_AluStripFront", logicMM, false, 0);
-    new G4PVPlacement(0, positionAluStripBack, logicAluStrip, Name + "_AluStripBack", logicMM, false, 0);
+    new G4PVPlacement(0, positionAluStripFront, logicAluStrip, Name + "_AluStripFront", logicMM, false, TelescopeNumber );
+    new G4PVPlacement(0, positionAluStripBack, logicAluStrip, Name + "_AluStripBack", logicMM, false, TelescopeNumber );
 
     logicAluStrip->SetVisAttributes(G4VisAttributes::Invisible);
 
@@ -203,7 +203,7 @@ void MUST2Array::VolumeMaker( G4int TelescopeNumber,
     G4Box*           solidSilicon = new G4Box("solidSilicon", 0.5*SiliconFace, 0.5*SiliconFace, 0.5*SiliconThickness);
     G4LogicalVolume* logicSilicon = new G4LogicalVolume(solidSilicon, m_MaterialSilicon, "logicSilicon", 0, 0, 0);
 
-    new G4PVPlacement(0, positionSilicon, logicSilicon, Name + "_Silicon", logicMM, false, 0);
+    new G4PVPlacement(0, positionSilicon, logicSilicon, Name + "_Silicon", logicMM, false, TelescopeNumber );
 
 
     ///Set Silicon strip sensible
@@ -245,148 +245,158 @@ void MUST2Array::VolumeMaker( G4int TelescopeNumber,
     G4ThreeVector ShiftSiLiDown  = G4ThreeVector(0.25  * SiliconFace + 0.5 * SiLiSpace, 0, 0)	;
 
     // SiLi : left side of SiLi detector
-    G4Box* solidSiLi_LT  = new G4Box("SiLi_LT"  , 0.5*SiLi_WidthX_Left  , 0.5*SiLi_HighY_Upper   , 0.5*SiLiThickness);
-    G4Box* solidSiLi_RT  = new G4Box("SiLi_RT"  , 0.5*SiLi_WidthX_Right , 0.5*SiLi_HighY_Upper   , 0.5*SiLiThickness);
-    G4Box* solidSiLi_LC1 = new G4Box("SiLi_LC1" , 0.5*SiLi_WidthX_Left  , 0.5*SiLi_HighY_Center  , 0.5*SiLiThickness);
-    G4Box* solidSiLi_RC1 = new G4Box("SiLi_RC1" , 0.5*SiLi_WidthX_Right , 0.5*SiLi_HighY_Center  , 0.5*SiLiThickness);
-    G4Box* solidSiLi_LB  = new G4Box("SiLi_LB"  , 0.5*SiLi_WidthX_Left  , 0.5*SiLi_HighY_Upper   , 0.5*SiLiThickness);
-    G4Box* solidSiLi_RB  = new G4Box("SiLi_RB"  , 0.5*SiLi_WidthX_Right , 0.5*SiLi_HighY_Upper   , 0.5*SiLiThickness);
-    G4Box* solidSiLi_LC2 = new G4Box("SiLi_LC2" , 0.5*SiLi_WidthX_Left  , 0.5*SiLi_HighY_Center  , 0.5*SiLiThickness);
-    G4Box* solidSiLi_RC2 = new G4Box("SiLi_RC2" , 0.5*SiLi_WidthX_Right , 0.5*SiLi_HighY_Center  , 0.5*SiLiThickness);
+    G4Box* solidSiLi_LT  = new G4Box("SiLi_LT", 0.5*SiLi_WidthX_Left, 0.5*SiLi_HighY_Upper, 0.5*SiLiThickness);
+    G4Box* solidSiLi_RT  = new G4Box("SiLi_RT", 0.5*SiLi_WidthX_Right, 0.5*SiLi_HighY_Upper, 0.5*SiLiThickness);
+    G4Box* solidSiLi_LC1 = new G4Box("SiLi_LC1", 0.5*SiLi_WidthX_Left, 0.5*SiLi_HighY_Center, 0.5*SiLiThickness);
+    G4Box* solidSiLi_RC1 = new G4Box("SiLi_RC1", 0.5*SiLi_WidthX_Right, 0.5*SiLi_HighY_Center, 0.5*SiLiThickness);
+    G4Box* solidSiLi_LB  = new G4Box("SiLi_LB", 0.5*SiLi_WidthX_Left, 0.5*SiLi_HighY_Upper, 0.5*SiLiThickness);
+    G4Box* solidSiLi_RB  = new G4Box("SiLi_RB", 0.5*SiLi_WidthX_Right, 0.5*SiLi_HighY_Upper, 0.5*SiLiThickness);
+    G4Box* solidSiLi_LC2 = new G4Box("SiLi_LC2", 0.5*SiLi_WidthX_Left, 0.5*SiLi_HighY_Center, 0.5*SiLiThickness);
+    G4Box* solidSiLi_RC2 = new G4Box("SiLi_RC2", 0.5*SiLi_WidthX_Right, 0.5*SiLi_HighY_Center, 0.5*SiLiThickness);
 
-    G4LogicalVolume* logicSiLi_LT    = new G4LogicalVolume(solidSiLi_LT   , m_MaterialSilicon , "SiLi_LT"  , 0 , 0 , 0);
-    G4LogicalVolume* logicSiLi_RT    = new G4LogicalVolume(solidSiLi_RT   , m_MaterialSilicon , "SiLi_RT"  , 0 , 0 , 0);
-    G4LogicalVolume* logicSiLi_LC1   = new G4LogicalVolume(solidSiLi_LC1  , m_MaterialSilicon , "SiLi_LC1" , 0 , 0 , 0);
-    G4LogicalVolume* logicSiLi_RC1   = new G4LogicalVolume(solidSiLi_RC1  , m_MaterialSilicon , "SiLi_RC1" , 0 , 0 , 0);
-    G4LogicalVolume* logicSiLi_LB    = new G4LogicalVolume(solidSiLi_LB   , m_MaterialSilicon , "SiLi_LB"  , 0 , 0 , 0);
-    G4LogicalVolume* logicSiLi_RB    = new G4LogicalVolume(solidSiLi_RB   , m_MaterialSilicon , "SiLi_RB"  , 0 , 0 , 0);
-    G4LogicalVolume* logicSiLi_LC2   = new G4LogicalVolume(solidSiLi_LC2  , m_MaterialSilicon , "SiLi_LC2" , 0 , 0 , 0);
-    G4LogicalVolume* logicSiLi_RC2   = new G4LogicalVolume(solidSiLi_RC2  , m_MaterialSilicon , "SiLi_RC2" , 0 , 0 , 0);
+    G4LogicalVolume* logicSiLi_LT  = new G4LogicalVolume(solidSiLi_LT , m_MaterialSilicon, "SiLi_LT" , 0, 0, 0);
+    G4LogicalVolume* logicSiLi_RT  = new G4LogicalVolume(solidSiLi_RT , m_MaterialSilicon, "SiLi_RT" , 0, 0, 0);
+    G4LogicalVolume* logicSiLi_LC1 = new G4LogicalVolume(solidSiLi_LC1, m_MaterialSilicon, "SiLi_LC1", 0, 0, 0);
+    G4LogicalVolume* logicSiLi_RC1 = new G4LogicalVolume(solidSiLi_RC1, m_MaterialSilicon, "SiLi_RC1", 0, 0, 0);
+    G4LogicalVolume* logicSiLi_LB  = new G4LogicalVolume(solidSiLi_LB , m_MaterialSilicon, "SiLi_LB" , 0, 0, 0);
+    G4LogicalVolume* logicSiLi_RB  = new G4LogicalVolume(solidSiLi_RB , m_MaterialSilicon, "SiLi_RB" , 0, 0, 0);
+    G4LogicalVolume* logicSiLi_LC2 = new G4LogicalVolume(solidSiLi_LC2, m_MaterialSilicon, "SiLi_LC2", 0, 0, 0);
+    G4LogicalVolume* logicSiLi_RC2 = new G4LogicalVolume(solidSiLi_RC2, m_MaterialSilicon, "SiLi_RC2", 0, 0, 0);
 
     G4double interSiLi = 0.5 * mm;
 
     // Top
-    G4ThreeVector positionSiLi_LT_up = G4ThreeVector(  -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX ,
-        0.5 * SiLi_HighY_Upper  + SiLi_HighY_Center + 1.5 * interSiLi,
-        0);
+    G4ThreeVector positionSiLi_LT_up = 
+      G4ThreeVector(  -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX ,
+          0.5 * SiLi_HighY_Upper  + SiLi_HighY_Center + 1.5 * interSiLi,
+          0);
 
     positionSiLi_LT_up += ShiftSiLiUp ;
 
-    G4ThreeVector positionSiLi_RT_up = G4ThreeVector(  0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
-        0.5 * SiLi_HighY_Upper  + SiLi_HighY_Center + 1.5 * interSiLi,
-        0);
+    G4ThreeVector positionSiLi_RT_up = 
+      G4ThreeVector(  0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
+          0.5 * SiLi_HighY_Upper  + SiLi_HighY_Center + 1.5 * interSiLi,
+          0);
 
     positionSiLi_RT_up += ShiftSiLiUp ;
 
-    G4ThreeVector positionSiLi_LC1_up = G4ThreeVector( -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX ,
-        0.5 * SiLi_HighY_Center + 0.5 * interSiLi,
-        0);
+    G4ThreeVector positionSiLi_LC1_up = 
+      G4ThreeVector( -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX ,
+          0.5 * SiLi_HighY_Center + 0.5 * interSiLi,
+          0);
 
     positionSiLi_LC1_up += ShiftSiLiUp ;
 
-    G4ThreeVector positionSiLi_RC1_up = G4ThreeVector( 0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
-        0.5 * SiLi_HighY_Center + 0.5 * interSiLi,
-        0);
+    G4ThreeVector positionSiLi_RC1_up = 
+      G4ThreeVector( 0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
+          0.5 * SiLi_HighY_Center + 0.5 * interSiLi,
+          0);
 
     positionSiLi_RC1_up += ShiftSiLiUp ;
 
-    G4ThreeVector positionSiLi_LB_up = G4ThreeVector(  -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX ,
-        -0.5 * SiLi_HighY_Upper  - SiLi_HighY_Center - 1.5 * interSiLi ,
-        0);
+    G4ThreeVector positionSiLi_LB_up = 
+      G4ThreeVector(  -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX ,
+          -0.5 * SiLi_HighY_Upper  - SiLi_HighY_Center - 1.5 * interSiLi ,
+          0);
 
     positionSiLi_LB_up += ShiftSiLiUp ;
 
-    G4ThreeVector positionSiLi_RB_up = G4ThreeVector(  0.5 * SiLi_WidthX_Right - SiLi_ShiftX ,
-        -0.5 * SiLi_HighY_Upper  - SiLi_HighY_Center - 1.5 * interSiLi ,
-        0);
+    G4ThreeVector positionSiLi_RB_up = 
+      G4ThreeVector(  0.5 * SiLi_WidthX_Right - SiLi_ShiftX ,
+          -0.5 * SiLi_HighY_Upper  - SiLi_HighY_Center - 1.5 * interSiLi ,
+          0);
 
     positionSiLi_RB_up += ShiftSiLiUp ;
 
-    G4ThreeVector positionSiLi_LC2_up = G4ThreeVector( -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX ,
-        -0.5 * SiLi_HighY_Center - 0.5 * interSiLi,
-        0);
+    G4ThreeVector positionSiLi_LC2_up = 
+      G4ThreeVector( -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX ,
+          -0.5 * SiLi_HighY_Center - 0.5 * interSiLi,
+          0);
 
     positionSiLi_LC2_up += ShiftSiLiUp ;
 
-    G4ThreeVector positionSiLi_RC2_up = G4ThreeVector( 0.5 * SiLi_WidthX_Right - SiLi_ShiftX ,
-        -0.5 * SiLi_HighY_Center - 0.5 * interSiLi  ,
-        0);
+    G4ThreeVector positionSiLi_RC2_up = 
+      G4ThreeVector( 0.5 * SiLi_WidthX_Right - SiLi_ShiftX ,
+          -0.5 * SiLi_HighY_Center - 0.5 * interSiLi  ,
+          0);
 
     positionSiLi_RC2_up += ShiftSiLiUp ;
 
 
     // Down
-    G4ThreeVector positionSiLi_LT_down = G4ThreeVector(   -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX,
-        0.5 * SiLi_HighY_Upper  + SiLi_HighY_Center + 1.5 * interSiLi,
-        0);
+    G4ThreeVector positionSiLi_LT_down = 
+      G4ThreeVector(   -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX,
+          0.5 * SiLi_HighY_Upper  + SiLi_HighY_Center + 1.5 * interSiLi,
+          0);
 
     positionSiLi_LT_down += ShiftSiLiDown ;
 
-    G4ThreeVector positionSiLi_RT_down = G4ThreeVector(   0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
-        0.5 * SiLi_HighY_Upper  + SiLi_HighY_Center + 1.5 * interSiLi,
-        0);
+    G4ThreeVector positionSiLi_RT_down = 
+      G4ThreeVector(   0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
+          0.5 * SiLi_HighY_Upper  + SiLi_HighY_Center + 1.5 * interSiLi,
+          0);
 
     positionSiLi_RT_down += ShiftSiLiDown ;
 
-    G4ThreeVector positionSiLi_LC1_down = G4ThreeVector(  -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX,
-        0.5 * SiLi_HighY_Center + 0.5 * interSiLi,
-        0);
+    G4ThreeVector positionSiLi_LC1_down = 
+      G4ThreeVector(  -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX,
+          0.5 * SiLi_HighY_Center + 0.5 * interSiLi,
+          0);
 
     positionSiLi_LC1_down += ShiftSiLiDown ;
 
-    G4ThreeVector positionSiLi_RC1_down = G4ThreeVector(  0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
-        0.5 * SiLi_HighY_Center + 0.5 * interSiLi ,
-        0);
+    G4ThreeVector positionSiLi_RC1_down = 
+      G4ThreeVector(  0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
+          0.5 * SiLi_HighY_Center + 0.5 * interSiLi ,
+          0);
 
     positionSiLi_RC1_down += ShiftSiLiDown ;
 
-    G4ThreeVector positionSiLi_LB_down = G4ThreeVector(   -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX,
-        -0.5 * SiLi_HighY_Upper  - SiLi_HighY_Center - 1.5 * interSiLi,
-        0);
+    G4ThreeVector positionSiLi_LB_down = 
+      G4ThreeVector(   -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX,
+          -0.5 * SiLi_HighY_Upper  - SiLi_HighY_Center - 1.5 * interSiLi,
+          0);
 
     positionSiLi_LB_down += ShiftSiLiDown ;
 
-    G4ThreeVector positionSiLi_RB_down = G4ThreeVector(   0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
-        -0.5 * SiLi_HighY_Upper  - SiLi_HighY_Center - 1.5 * interSiLi,
-        0);
+    G4ThreeVector positionSiLi_RB_down = 
+      G4ThreeVector(   0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
+          -0.5 * SiLi_HighY_Upper  - SiLi_HighY_Center - 1.5 * interSiLi,
+          0);
 
     positionSiLi_RB_down += ShiftSiLiDown ;
 
-    G4ThreeVector positionSiLi_LC2_down = G4ThreeVector(  -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX,
-        -0.5 * SiLi_HighY_Center - 0.5 * interSiLi,
-        0);
+    G4ThreeVector positionSiLi_LC2_down = 
+      G4ThreeVector(  -0.5 * SiLi_WidthX_Left - interSiLi - SiLi_ShiftX,
+          -0.5 * SiLi_HighY_Center - 0.5 * interSiLi,
+          0);
 
     positionSiLi_LC2_down += ShiftSiLiDown ;
 
-    G4ThreeVector positionSiLi_RC2_down = G4ThreeVector(  0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
-        -0.5 * SiLi_HighY_Center - 0.5 * interSiLi,
-        0);
+    G4ThreeVector positionSiLi_RC2_down = 
+      G4ThreeVector(  0.5 * SiLi_WidthX_Right - SiLi_ShiftX,
+          -0.5 * SiLi_HighY_Center - 0.5 * interSiLi,
+          0);
 
     positionSiLi_RC2_down += ShiftSiLiDown ;
 
+    new G4PVPlacement(0 , positionSiLi_RT_down  , logicSiLi_RT  , Name + "_SiLi_Pad1" , logicSiLi , false ,1);
+    new G4PVPlacement(0 , positionSiLi_LT_down  , logicSiLi_LT  , Name + "_SiLi_Pad2" , logicSiLi , false ,2);
+    new G4PVPlacement(0 , positionSiLi_RC1_down , logicSiLi_RC1 , Name + "_SiLi_Pad3" , logicSiLi , false ,3);
+    new G4PVPlacement(0 , positionSiLi_LC1_down , logicSiLi_LC1 , Name + "_SiLi_Pad4" , logicSiLi , false ,4);
+    new G4PVPlacement(0 , positionSiLi_LC2_down , logicSiLi_LC2 , Name + "_SiLi_Pad5" , logicSiLi , false ,5);
+    new G4PVPlacement(0 , positionSiLi_RC2_down , logicSiLi_RC2 , Name + "_SiLi_Pad6" , logicSiLi , false ,6);
+    new G4PVPlacement(0 , positionSiLi_LB_down  , logicSiLi_LB  , Name + "_SiLi_Pad7" , logicSiLi , false ,7);
+    new G4PVPlacement(0 , positionSiLi_RB_down  , logicSiLi_RB  , Name + "_SiLi_Pad8" , logicSiLi , false ,8);
+    new G4PVPlacement(0 , positionSiLi_LT_up  , logicSiLi_LT  , Name + "_SiLi_Pad9"  , logicSiLi , false ,9);
+    new G4PVPlacement(0 , positionSiLi_RT_up  , logicSiLi_RT  , Name + "_SiLi_Pad10" , logicSiLi , false ,10);
+    new G4PVPlacement(0 , positionSiLi_LC1_up , logicSiLi_LC1 , Name + "_SiLi_Pad11" , logicSiLi , false ,11);
+    new G4PVPlacement(0 , positionSiLi_RC1_up , logicSiLi_RC1 , Name + "_SiLi_Pad12" , logicSiLi , false ,12);
+    new G4PVPlacement(0 , positionSiLi_RC2_up , logicSiLi_RC2 , Name + "_SiLi_Pad13" , logicSiLi , false ,13);
+    new G4PVPlacement(0 , positionSiLi_LC2_up , logicSiLi_LC2 , Name + "_SiLi_Pad14" , logicSiLi , false ,14);
+    new G4PVPlacement(0 , positionSiLi_RB_up  , logicSiLi_RB  , Name + "_SiLi_Pad15" , logicSiLi , false ,15);
+    new G4PVPlacement(0 , positionSiLi_LB_up  , logicSiLi_LB  , Name + "_SiLi_Pad16" , logicSiLi , false ,16);
 
-    // up
-    new G4PVPlacement(0 , positionSiLi_LT_up  , logicSiLi_LT  , Name + "_SiLi_Pad9"   , logicSiLi , false , 0)  ;
-    new G4PVPlacement(0 , positionSiLi_RT_up  , logicSiLi_RT  , Name + "_SiLi_Pad10"  , logicSiLi , false , 0)  ;
-    new G4PVPlacement(0 , positionSiLi_LC1_up , logicSiLi_LC1 , Name + "_SiLi_Pad11" 	, logicSiLi , false , 0);
-    new G4PVPlacement(0 , positionSiLi_RC1_up , logicSiLi_RC1 , Name + "_SiLi_Pad12" 	, logicSiLi , false , 0);
-
-    new G4PVPlacement(0 , positionSiLi_LB_up  , logicSiLi_LB  , Name + "_SiLi_Pad16"  , logicSiLi , false , 0)  ;
-    new G4PVPlacement(0 , positionSiLi_RB_up  , logicSiLi_RB  , Name + "_SiLi_Pad15"  , logicSiLi , false , 0)  ;
-    new G4PVPlacement(0 , positionSiLi_LC2_up , logicSiLi_LC2 , Name + "_SiLi_Pad14" 	, logicSiLi , false , 0);
-    new G4PVPlacement(0 , positionSiLi_RC2_up , logicSiLi_RC2 , Name + "_SiLi_Pad13" 	, logicSiLi , false , 0);
-
-
-    // down
-    new G4PVPlacement(0 , positionSiLi_LT_down  , logicSiLi_LT  , Name + "_SiLi_Pad2"  , logicSiLi , false , 0) ;
-    new G4PVPlacement(0 , positionSiLi_RT_down  , logicSiLi_RT  , Name + "_SiLi_Pad1"  , logicSiLi , false , 0) ;
-    new G4PVPlacement(0 , positionSiLi_LC1_down , logicSiLi_LC1 , Name + "_SiLi_Pad4" 	, logicSiLi , false , 0) ;
-    new G4PVPlacement(0 , positionSiLi_RC1_down , logicSiLi_RC1 , Name + "_SiLi_Pad3" 	, logicSiLi , false , 0) ;
-
-    new G4PVPlacement(0 , positionSiLi_LB_down  , logicSiLi_LB  , Name + "_SiLi_Pad7"  , logicSiLi , false , 0) ;
-    new G4PVPlacement(0 , positionSiLi_RB_down  , logicSiLi_RB  , Name + "_SiLi_Pad8"  , logicSiLi , false , 0) ;
-    new G4PVPlacement(0 , positionSiLi_LC2_down , logicSiLi_LC2 , Name + "_SiLi_Pad5" 	, logicSiLi , false , 0) ;
-    new G4PVPlacement(0 , positionSiLi_RC2_down , logicSiLi_RC2 , Name + "_SiLi_Pad6" 	, logicSiLi , false , 0) ;
 
     // Set SiLi sensible
     logicSiLi_LT->SetSensitiveDetector(m_SiLiScorer);
@@ -563,13 +573,13 @@ void MUST2Array::ReadConfiguration(NPL::InputParser parser){
     cout << "//// " << blocks.size() << " telescope found" << endl;
   for(unsigned int i  = 0 ; i < blocks.size() ; i++){
     if(NPOptionManager::getInstance()->GetVerboseLevel())
-    cout << endl << "//// Must 2 Telecope " << i+1 <<  endl;
+      cout << endl << "//// Must 2 Telecope " << i+1 <<  endl;
     // Cartesian Case
     vector<string> cart = {"X1_Y1","X1_Y128","X128_Y1","X128_Y128","SI","SILI","CSI"};
     // Spherical Case
     vector<string> sphe= {"R","THETA","PHI","BETA","SI","SILI","CSI"};
 
-        if(blocks[i]->HasTokenList(cart)){
+    if(blocks[i]->HasTokenList(cart)){
       G4ThreeVector A = NPS::ConvertVector( blocks[i]->GetTVector3("X1_Y1","mm"));
       G4ThreeVector B = NPS::ConvertVector( blocks[i]->GetTVector3("X128_Y1","mm"));
       G4ThreeVector C = NPS::ConvertVector( blocks[i]->GetTVector3("X1_Y128","mm"));
@@ -598,7 +608,7 @@ void MUST2Array::ReadConfiguration(NPL::InputParser parser){
     }
 
     if(blocks[i]->GetString("VIS")=="all")
-       m_non_sensitive_part_visiualisation = true;
+      m_non_sensitive_part_visiualisation = true;
 
   }
 }
@@ -609,13 +619,13 @@ void MUST2Array::ReadConfiguration(NPL::InputParser parser){
 void MUST2Array::ConstructDetector(G4LogicalVolume* world){
   G4RotationMatrix* MMrot  		= NULL ;
   G4ThreeVector     MMpos  		= G4ThreeVector(0, 0, 0) ;
-  G4ThreeVector     MMu       	= G4ThreeVector(0, 0, 0) ;
-  G4ThreeVector     MMv       	= G4ThreeVector(0, 0, 0) ;
-  G4ThreeVector     MMw       	= G4ThreeVector(0, 0, 0) ;
+  G4ThreeVector     MMu       = G4ThreeVector(0, 0, 0) ;
+  G4ThreeVector     MMv       = G4ThreeVector(0, 0, 0) ;
+  G4ThreeVector     MMw       = G4ThreeVector(0, 0, 0) ;
   G4ThreeVector     MMCenter 	= G4ThreeVector(0, 0, 0) ;
-  bool           	Si     		= true ;
-  bool          	 	SiLi   		= true ;
-  bool           	CsI    		= true ;
+  bool Si   = true ;
+  bool SiLi = true ;
+  bool CsI  = true ;
 
   G4int NumberOfTelescope = m_DefinitionType.size() ;
 
@@ -708,320 +718,184 @@ void MUST2Array::InitializeRootOutput(){
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
 void MUST2Array::ReadSensitive(const G4Event* event){
-  G4String DetectorNumber 	;
-  m_Event->Clear()			;
+  G4String DetectorNumber;
+  m_Event->Clear();
 
   //////////////////////////////////////////////////////////////////////////////////////
   //////////////////////// Used to Read Event Map of detector //////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
 
-  // Si
-  std::map<G4int, G4int*>::iterator DetectorNumber_itr;
-  std::map<G4int, G4double*>::iterator Energy_itr;
-  std::map<G4int, G4double*>::iterator Time_itr;
-  std::map<G4int, G4int*>::iterator X_itr;
-  std::map<G4int, G4int*>::iterator Y_itr;
-  std::map<G4int, G4double*>::iterator Pos_X_itr;
-  std::map<G4int, G4double*>::iterator Pos_Y_itr;
-  std::map<G4int, G4double*>::iterator Pos_Z_itr;
-  std::map<G4int, G4double*>::iterator Ang_Theta_itr;
-  std::map<G4int, G4double*>::iterator Ang_Phi_itr;
-
-  NPS::HitsMap<G4int>*	  DetectorNumberHitMap;
-  NPS::HitsMap<G4double>* EnergyHitMap;
-  NPS::HitsMap<G4double>* TimeHitMap;
-  NPS::HitsMap<G4int>* XHitMap;
-  NPS::HitsMap<G4int>* YHitMap;
-  NPS::HitsMap<G4double>* PosXHitMap;
-  NPS::HitsMap<G4double>* PosYHitMap;
-  NPS::HitsMap<G4double>* PosZHitMap;
-  NPS::HitsMap<G4double>* AngThetaHitMap;
-  NPS::HitsMap<G4double>* AngPhiHitMap;
-
-  // Si(Li)
-  std::map<G4int, G4double*>::iterator SiLiEnergy_itr;
-  std::map<G4int, G4int*>::iterator SiLiPadNbr_itr;
-  NPS::HitsMap<G4double>* 				 SiLiEnergyHitMap;
-  NPS::HitsMap<G4int>* 				    SiLiPadNbrHitMap;
-
-  // CsI
-  std::map<G4int, G4double*>::iterator CsIEnergy_itr;
-  std::map<G4int, G4int*>::iterator    CsICristalNbr_itr;
-  NPS::HitsMap<G4double>* 				    CsIEnergyHitMap;
-  NPS::HitsMap<G4int>* 				       CsICristalNbrHitMap;
-  //////////////////////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////////////
-
-  // Read the Scorer associate to the Silicon Strip
-
-  //Detector Number
-  G4int StripDetCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_StripScorer/DetectorNumber");
-  DetectorNumberHitMap = (NPS::HitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripDetCollectionID));
-  DetectorNumber_itr =  DetectorNumberHitMap->GetMap()->begin();
-
-  //Energy
-  G4int StripEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_StripScorer/StripEnergy") ;
-  EnergyHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripEnergyCollectionID)) ;
-  Energy_itr = EnergyHitMap->GetMap()->begin();
-
-  //Time of Flight
-  G4int StripTimeCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_StripScorer/StripTime");
-  TimeHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripTimeCollectionID));
-  Time_itr = TimeHitMap->GetMap()->begin();
-
-  //Strip Number X
-  G4int StripXCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_StripScorer/StripNumberX") ;
-  XHitMap = (NPS::HitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripXCollectionID));
-  X_itr = XHitMap->GetMap()->begin();
-
-  //Strip Number Y
-  G4int StripYCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_StripScorer/StripNumberY");
-  YHitMap = (NPS::HitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripYCollectionID));
-  Y_itr = YHitMap->GetMap()->begin();
-
-  //Interaction Coordinate X
-  G4int InterCoordXCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_StripScorer/InterCoordX");
-  PosXHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordXCollectionID));
-  Pos_X_itr = PosXHitMap->GetMap()->begin();
-
-  //Interaction Coordinate Y
-  G4int InterCoordYCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_StripScorer/InterCoordY");
-  PosYHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordYCollectionID));
-  Pos_Y_itr = PosYHitMap->GetMap()->begin();
-
-  //Interaction Coordinate Z
-  G4int InterCoordZCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_StripScorer/InterCoordZ");
-  PosZHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordZCollectionID));
-  Pos_Z_itr = PosXHitMap->GetMap()->begin();
-
-  //Interaction Coordinate Angle Theta
-  G4int InterCoordAngThetaCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_StripScorer/InterCoordAngTheta");
-  AngThetaHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordAngThetaCollectionID));
-  Ang_Theta_itr = AngThetaHitMap->GetMap()->begin();
-
-  //Interaction Coordinate Angle Phi
-  G4int InterCoordAngPhiCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_StripScorer/InterCoordAngPhi");	
-  AngPhiHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordAngPhiCollectionID));
-  Ang_Phi_itr = AngPhiHitMap->GetMap()->begin();			
-
-  // Read the Scorer associate to the SiLi
-  //Energy
-  G4int SiLiEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_SiLiScorer/SiLiEnergy");
-  SiLiEnergyHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(SiLiEnergyCollectionID));
-  SiLiEnergy_itr = SiLiEnergyHitMap->GetMap()->begin();
-
-  G4int SiLiPadNbrCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_SiLiScorer/SiLiPadNbr");
-  SiLiPadNbrHitMap = (NPS::HitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(SiLiPadNbrCollectionID));
-  SiLiPadNbr_itr = SiLiPadNbrHitMap->GetMap()->begin();
-
-  // Read the Scorer associate to the CsI crystal
-  //Energy
-  G4int CsIEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_CsIScorer/CsIEnergy");
-  CsIEnergyHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(CsIEnergyCollectionID));
-  CsIEnergy_itr = CsIEnergyHitMap->GetMap()->begin();
-
-  G4int CsICristalNbrCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_CsIScorer/CsICristalNbr");
-  CsICristalNbrHitMap = (NPS::HitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(CsICristalNbrCollectionID));
-  CsICristalNbr_itr = CsICristalNbrHitMap->GetMap()->begin();
-
-
   /////////////////////
+  // Read the Scorer associate to the Silicon Strip
+  SILICONSCORERS::PS_Silicon_Images* SiScorer = (SILICONSCORERS::PS_Silicon_Images*) m_StripScorer->GetPrimitive(0);
 
-  G4int sizeN = DetectorNumberHitMap->entries();
-  G4int sizeE = EnergyHitMap->entries();
-  G4int sizeT = TimeHitMap->entries();
-  G4int sizeX = XHitMap->entries();
-  G4int sizeY = YHitMap->entries();
+  set<int> trig; // list of telescope that got a Si trigger
+  vector<unsigned int> indexes = SiScorer->GetIndexes();
+  unsigned int size = indexes.size();
+  for(unsigned int i = 0 ;i<size;i++){
+    unsigned int index = indexes[i];
+    double energy = SiScorer->GetEnergy(index);
+    double energyX = RandGauss::shoot(energy, ResoStrip);
+    double energyY= RandGauss::shoot(energy, ResoStrip);
+    int detectorNbr = SiScorer->GetDetectorNbr(index); 
+    double time = SiScorer->GetTime(index);
+    // X
+    if(energyX>0.1*keV){ // above threshold
+      // Pixel value at interaction point
+      unsigned int a,r,g,b;
+      //  pixel
+      SiScorer->GetARGBFront(indexes[i],a,r,g,b);
+      if(r==0){
+        trig.insert(detectorNbr);
+        // Energy 
+        m_Event->SetMMStripXEDetectorNbr(detectorNbr);
+        m_Event->SetMMStripXEStripNbr(b+1);
+        m_Event->SetMMStripXEEnergy(energyX);
 
-  // Loop on Telescope Number entry
-  for (G4int l = 0 ; l < sizeN ; l++) {
-    G4int N         =  *(DetectorNumber_itr->second);
-    G4int NTrackID  =   DetectorNumber_itr->first - N;
-
-
-    if (N > 0) {
-
-      m_Event->SetMMStripXEDetectorNbr(N) ;
-      m_Event->SetMMStripYEDetectorNbr(N) ;
-      m_Event->SetMMStripXTDetectorNbr(N) ;
-      m_Event->SetMMStripYTDetectorNbr(N) ;
-
-      //  Energy
-      Energy_itr = EnergyHitMap->GetMap()->begin();
-      for (G4int h = 0 ; h < sizeE ; h++) {
-        G4int ETrackID  =   Energy_itr->first - N;
-        G4double E      = *(Energy_itr->second);
-
-        if (ETrackID == NTrackID) {
-          m_Event->SetMMStripXEEnergy(RandGauss::shoot(E, ResoStrip));
-          m_Event->SetMMStripYEEnergy(RandGauss::shoot(E, ResoStrip));
-        }
-
-        Energy_itr++;
+        // Time 
+        m_Event->SetMMStripXTDetectorNbr(detectorNbr);
+        m_Event->SetMMStripXTStripNbr(b+1);
+        m_Event->SetMMStripXTTime(RandGauss::shoot(time, ResoTimeMust));
       }
+      else{ // Interstrip X, keep maximum shared energy
+        double rand = G4UniformRand();
+        if(rand>0.5){
+          energyX = rand*energyX;
+          if(energyX>0.1*keV){
+            trig.insert(detectorNbr);
+            // Energy 
+            m_Event->SetMMStripXEDetectorNbr(detectorNbr);
+            m_Event->SetMMStripXEStripNbr(b+1);
+            m_Event->SetMMStripXEEnergy(energyX);
 
-
-      //  Time
-      Time_itr = TimeHitMap->GetMap()->begin();
-      for (G4int h = 0 ; h < sizeT ; h++) {
-        G4int TTrackID  =   Time_itr->first - N;
-        G4double T      = *(Time_itr->second);
-
-        if (TTrackID == NTrackID) {
-          m_Event->SetMMStripXTTime(RandGauss::shoot(T, ResoTimeMust)) ;
-          m_Event->SetMMStripYTTime(RandGauss::shoot(T, ResoTimeMust)) ;
+            // Time 
+            m_Event->SetMMStripXTDetectorNbr(detectorNbr);
+            m_Event->SetMMStripXTStripNbr(b+1);
+            m_Event->SetMMStripXTTime(RandGauss::shoot(time, ResoTimeMust));
+          } 
         }
+        else{
+          energyX = (1-rand)*energyX;
+          if(energyX>0.1*keV){
+            trig.insert(detectorNbr);
 
-        Time_itr++;
-      }
+            // Energy 
+            m_Event->SetMMStripXEDetectorNbr(detectorNbr);
+            m_Event->SetMMStripXEStripNbr(g+1);
+            m_Event->SetMMStripXEEnergy(energyX);
 
-
-      // X
-      X_itr = XHitMap->GetMap()->begin();
-      for (G4int h = 0 ; h < sizeX ; h++) {
-        G4int XTrackID  =   X_itr->first  - N;
-        G4int X         = *(X_itr->second);
-        if (XTrackID == NTrackID) {
-          m_Event->SetMMStripXEStripNbr(X);
-          m_Event->SetMMStripXTStripNbr(X);
+            // Time 
+            m_Event->SetMMStripXTDetectorNbr(detectorNbr);
+            m_Event->SetMMStripXTStripNbr(g+1);
+            m_Event->SetMMStripXTTime(RandGauss::shoot(time, ResoTimeMust));
+          }
         }
-
-        X_itr++;
       }
-
-      // Y
-      Y_itr = YHitMap->GetMap()->begin()  ;
-      for (G4int h = 0 ; h < sizeY ; h++) {
-        G4int YTrackID  =   Y_itr->first  - N ;
-        G4int Y         = *(Y_itr->second);
-        if (YTrackID == NTrackID) {
-          m_Event->SetMMStripYEStripNbr(Y);
-          m_Event->SetMMStripYTStripNbr(Y);
-        }
-
-        Y_itr++;
-      }
-
-      // Pos X
-      Pos_X_itr = PosXHitMap->GetMap()->begin();
-      for (G4int h = 0 ; h < PosXHitMap->entries() ; h++) {
-        G4int PosXTrackID =   Pos_X_itr->first  - N ;
-        G4double PosX     = *(Pos_X_itr->second) ;
-        if (PosXTrackID == NTrackID) {
-          ms_InterCoord->SetDetectedPositionX(PosX) ;
-        }
-        Pos_X_itr++;
-      }
-
-      // Pos Y
-      Pos_Y_itr = PosYHitMap->GetMap()->begin();
-      for (G4int h = 0 ; h < PosYHitMap->entries() ; h++) {
-        G4int PosYTrackID =   Pos_Y_itr->first  - N ;
-        G4double PosY     = *(Pos_Y_itr->second) ;
-        if (PosYTrackID == NTrackID) {
-          ms_InterCoord->SetDetectedPositionY(PosY) ;
-        }
-        Pos_Y_itr++;
-      }
-
-      // Pos Z
-      Pos_Z_itr = PosZHitMap->GetMap()->begin();
-      for (G4int h = 0 ; h < PosZHitMap->entries() ; h++) {
-        G4int PosZTrackID =   Pos_Z_itr->first   - N  ;
-        G4double PosZ     = *(Pos_Z_itr->second)      ;
-        if (PosZTrackID == NTrackID) {
-          ms_InterCoord->SetDetectedPositionZ(PosZ) ;
-        }
-        Pos_Z_itr++;
-      }
-
-      // Angle Theta
-      Ang_Theta_itr = AngThetaHitMap->GetMap()->begin();
-      for (G4int h = 0 ; h < AngThetaHitMap->entries(); h++) {
-        G4int AngThetaTrackID =   Ang_Theta_itr->first  - N   ;
-        G4double AngTheta     = *(Ang_Theta_itr->second)      ;
-        if (AngThetaTrackID == NTrackID) {
-          ms_InterCoord->SetDetectedAngleTheta(AngTheta) ;
-        }
-        Ang_Theta_itr++;
-      }
-
-      // Angle Phi
-      Ang_Phi_itr = AngPhiHitMap->GetMap()->begin();
-      for (G4int h = 0 ; h < AngPhiHitMap->entries() ; h++) {
-        G4int AngPhiTrackID =   Ang_Phi_itr->first  - N   ;
-        G4double AngPhi     = *(Ang_Phi_itr->second)      ;
-        if (AngPhiTrackID == NTrackID) {
-          ms_InterCoord->SetDetectedAnglePhi(AngPhi) ;
-        }
-        Ang_Phi_itr++;
-      }
-
-      // Si(Li)
-      SiLiEnergy_itr = SiLiEnergyHitMap->GetMap()->begin() ;
-      SiLiPadNbr_itr = SiLiPadNbrHitMap->GetMap()->begin() ;
-
-      for (G4int h = 0 ; h < SiLiEnergyHitMap->entries() ; h++) {
-        G4int SiLiEnergyTrackID =   SiLiEnergy_itr->first  -N ;
-        G4double SiLiEnergy     = *(SiLiEnergy_itr->second)   ;
-
-        G4int PadNbr = *(SiLiPadNbr_itr->second)   ;
-
-        if (SiLiEnergyTrackID == NTrackID) {
-          m_Event->SetMMSiLiEEnergy(RandGauss::shoot(SiLiEnergy, ResoSiLi)) ;
-          m_Event->SetMMSiLiEPadNbr(PadNbr);
-          m_Event->SetMMSiLiTPadNbr(PadNbr);
-          m_Event->SetMMSiLiTTime(1);
-          m_Event->SetMMSiLiTDetectorNbr(N);
-          m_Event->SetMMSiLiEDetectorNbr(N);
-        }
-
-        SiLiEnergy_itr++	;
-        SiLiPadNbr_itr++	;
-      }
-
-      // CsI    
-      CsIEnergy_itr = CsIEnergyHitMap->GetMap()->begin()  				;
-      CsICristalNbr_itr = CsICristalNbrHitMap->GetMap()->begin()  ;
-
-      for (G4int h = 0 ; h < CsIEnergyHitMap->entries() ; h++) {
-        G4int CsIEnergyTrackID  =   CsIEnergy_itr->first-N ;
-        G4double CsIEnergy      = *(CsIEnergy_itr->second) ;
-
-        G4int CristalNumber  = *(CsICristalNbr_itr->second) ;
-        if (CsIEnergyTrackID == NTrackID) {
-          m_Event->SetMMCsIEEnergy(RandGauss::shoot(CsIEnergy, ResoCsI*sqrt(CsIEnergy)));
-          m_Event->SetMMCsIECristalNbr(CristalNumber);
-          m_Event->SetMMCsITCristalNbr(CristalNumber);
-          m_Event->SetMMCsITTime(1);
-          m_Event->SetMMCsITDetectorNbr(N);
-          m_Event->SetMMCsIEDetectorNbr(N);
-        }
-
-        CsIEnergy_itr++			;
-        CsICristalNbr_itr++	;
-      }
-
     }
+    // Y
+    if(energyY>0.1*keV){ // above threshold
+      // Pixel value at interaction point
+      unsigned int a,r,g,b;
+      //  pixel
+      SiScorer->GetARGBBack(indexes[i],a,r,g,b);
+      if(r==0){
+        trig.insert(detectorNbr);
+        // Energy 
+        m_Event->SetMMStripYEDetectorNbr(detectorNbr);
+        m_Event->SetMMStripYEStripNbr(b+1);
+        m_Event->SetMMStripYEEnergy(energyY);
 
-    DetectorNumber_itr++;
+        // Time 
+        m_Event->SetMMStripYTDetectorNbr(detectorNbr);
+        m_Event->SetMMStripYTStripNbr(b+1);
+        m_Event->SetMMStripYTTime(RandGauss::shoot(time, ResoTimeMust));
+      }
+      else{ // Interstrip Y, keep both strip with shared energy
+        double rand = G4UniformRand();
+        double energyY1 = rand*energyY;
+        if(energyY1>0.1*keV){
+          trig.insert(detectorNbr);
+
+          // Energy 
+          m_Event->SetMMStripYEDetectorNbr(detectorNbr);
+          m_Event->SetMMStripYEStripNbr(b+1);
+          m_Event->SetMMStripYEEnergy(energyY1);
+
+          // Time 
+          m_Event->SetMMStripYTDetectorNbr(detectorNbr);
+          m_Event->SetMMStripYTStripNbr(b+1);
+          m_Event->SetMMStripYTTime(RandGauss::shoot(time, ResoTimeMust));
+        }
+
+        if(energyY1>0.1*keV){
+          trig.insert(detectorNbr);
+          double energyY2 = (1-rand)*energyY;
+          // Energy 
+          m_Event->SetMMStripYEDetectorNbr(detectorNbr);
+          m_Event->SetMMStripYEStripNbr(g+1);
+          m_Event->SetMMStripYEEnergy(energyY2);
+
+          // Time 
+          m_Event->SetMMStripYTDetectorNbr(detectorNbr);
+          m_Event->SetMMStripYTStripNbr(g+1);
+          m_Event->SetMMStripYTTime(RandGauss::shoot(time, ResoTimeMust));
+        }
+      }
+    }
   }
 
+  // Si(Li)
+  NPS::HitsMap<G4double*>* SiLiHitMap;
+  std::map<G4int, G4double**>::iterator SiLi_itr;
+
+  G4int SiLiCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_SiLiScorer/SiLiScorer");
+  SiLiHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(SiLiCollectionID));
+
+  // CsI
+  NPS::HitsMap<G4double*>* CsIHitMap;
+  std::map<G4int, G4double**>::iterator CsI_itr;
+
+  G4int CsICollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_CsIScorer/CsIScorer");
+  CsIHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CsICollectionID));
+
+
+  // Look for SiLi data in Trigg Telescope
+  std::set<int>::iterator itr;
+  for(itr=trig.begin();itr!=trig.end();itr++){
+    for(SiLi_itr = SiLiHitMap->GetMap()->begin(); SiLi_itr!=SiLiHitMap->GetMap()->end() ; SiLi_itr++){
+      G4double* Info = *(SiLi_itr->second);
+      if(Info[7]==*itr){//matching telescope number
+        m_Event->SetMMSiLiEDetectorNbr(Info[7]); 
+        m_Event->SetMMSiLiEEnergy(RandGauss::shoot(Info[0],ResoSiLi)); 
+        m_Event->SetMMSiLiEPadNbr(Info[8]);
+        m_Event->SetMMSiLiTDetectorNbr(Info[7]); 
+        m_Event->SetMMSiLiTTime(RandGauss::shoot(Info[1],ResoTimeMust)); 
+        m_Event->SetMMSiLiTPadNbr(Info[8]);
+      }
+    }
+  }
+
+  // Look for CsI data in Trigg Telescope
+  for(itr=trig.begin();itr!=trig.end();itr++){
+    for(CsI_itr = CsIHitMap->GetMap()->begin(); CsI_itr!=CsIHitMap->GetMap()->end() ; CsI_itr++){
+      G4double* Info = *(CsI_itr->second);
+      
+      if(Info[7]==*itr){//matching telescope number
+        m_Event->SetMMCsIEDetectorNbr(Info[7]); 
+        m_Event->SetMMCsIEEnergy(RandGauss::shoot(Info[0],ResoCsI)); 
+        m_Event->SetMMCsIECristalNbr(Info[8]);
+        m_Event->SetMMCsITDetectorNbr(Info[7]); 
+        m_Event->SetMMCsITTime(RandGauss::shoot(Info[1],ResoTimeMust)); 
+        m_Event->SetMMCsITCristalNbr(Info[8]);
+      }
+    }
+  }
+
+
+  SiScorer->clear();
   // clear map for next event
-  DetectorNumberHitMap	->clear();
-  EnergyHitMap   			->clear() ;
-  TimeHitMap     			->clear() ;
-  XHitMap        			->clear() ;
-  YHitMap        			->clear() ;
-  SiLiEnergyHitMap			->clear() ;
-  SiLiPadNbrHitMap			->clear() ;
-  CsIEnergyHitMap			->clear() ;
-  CsICristalNbrHitMap		->clear() ;
-  PosXHitMap					->clear() ; 
-  PosYHitMap					->clear() ;
-  PosZHitMap					->clear() ;
-  AngThetaHitMap			->clear() ;
-  AngPhiHitMap				->clear() ;
+  SiLiHitMap->clear() ;
+  CsIHitMap->clear() ;
 }
 
 
@@ -1037,49 +911,26 @@ void MUST2Array::InitializeScorers() {
   // if the scorer were created previously nothing else need to be made
   if(already_exist) return; 
 
-  G4VPrimitiveScorer* DetNbr 									= new OBSOLETEGENERALSCORERS::PSDetectorNumber("DetectorNumber","MUST2Telescope", 0);
-  G4VPrimitiveScorer* Energy 									= new OBSOLETEGENERALSCORERS::PSEnergy("StripEnergy","MUST2Telescope", 0);			
-  G4VPrimitiveScorer* TOF 										= new OBSOLETEGENERALSCORERS::PSTOF("StripTime","MUST2Telescope", 0);          					 		 
-
-  G4VPrimitiveScorer* StripPositionX							= new PSStripNumberX("StripNumberX", 0, SiliconFace, 128);
-  G4VPrimitiveScorer* StripPositionY							= new PSStripNumberY("StripNumberY", 0, SiliconFace, 128);  		
-
-  G4VPrimitiveScorer* InteractionCoordinatesX 				= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","MUST2Telescope", 0);
-  G4VPrimitiveScorer* InteractionCoordinatesY				= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","MUST2Telescope", 0);
-  G4VPrimitiveScorer* InteractionCoordinatesZ  			= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","MUST2Telescope", 0);
-
-  G4VPrimitiveScorer* InteractionCoordinatesAngleTheta	= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordAngTheta","MUST2Telescope", 0);
-  G4VPrimitiveScorer* InteractionCoordinatesAnglePhi    = new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAnglePhi("InterCoordAngPhi","MUST2Telescope", 0) ;	    
-
+  G4VPrimitiveScorer* SiScorer = new SILICONSCORERS::PS_Silicon_Images("SiScorer","/scratch/nptool/NPLib/Detectors/MUST2/maskFront.png","/scratch/nptool/NPLib/Detectors/MUST2/maskBack.png",0.01,0.01,0,0,0xffff0000,0);
 
   //and register it to the multifunctionnal detector
-  m_StripScorer->RegisterPrimitive(DetNbr);
-  m_StripScorer->RegisterPrimitive(Energy);
-  m_StripScorer->RegisterPrimitive(TOF);
-  m_StripScorer->RegisterPrimitive(StripPositionX);
-  m_StripScorer->RegisterPrimitive(StripPositionY);
-  m_StripScorer->RegisterPrimitive(InteractionCoordinatesX);
-  m_StripScorer->RegisterPrimitive(InteractionCoordinatesY);
-  m_StripScorer->RegisterPrimitive(InteractionCoordinatesZ);
-  m_StripScorer->RegisterPrimitive(InteractionCoordinatesAngleTheta);
-  m_StripScorer->RegisterPrimitive(InteractionCoordinatesAnglePhi);
-
+  m_StripScorer->RegisterPrimitive(SiScorer);
   //	SiLi Associate Scorer
-  G4VPrimitiveScorer* SiLiEnergy 			= new OBSOLETEGENERALSCORERS::PSEnergy("SiLiEnergy","MUST2Telescope", 0) ;
-  G4VPrimitiveScorer* SiLiPadNbr 			= new PSPadOrCristalNumber("SiLiPadNbr",0) ;
-  m_SiLiScorer->RegisterPrimitive(SiLiEnergy);
-  m_SiLiScorer->RegisterPrimitive(SiLiPadNbr);
+  vector<int> SiLi_nesting={3,0};
+  G4VPrimitiveScorer* SiLiScorer= 
+    new CALORIMETERSCORERS::PS_CalorimeterWithInteraction("SiLiScorer",SiLi_nesting) ;
+  m_SiLiScorer->RegisterPrimitive(SiLiScorer);
 
   //	CsI Associate Scorer 
-  G4VPrimitiveScorer* CsIEnergy 		= new OBSOLETEGENERALSCORERS::PSEnergy("CsIEnergy","MUST2Telescope", 0) 	;
-  G4VPrimitiveScorer* CsICristalNbr 	= new PSPadOrCristalNumber("CsICristalNbr",0) ;
-  m_CsIScorer->RegisterPrimitive(CsIEnergy) ;
-  m_CsIScorer->RegisterPrimitive(CsICristalNbr) ;
+  vector<int> CsI_nesting = {2,0};
+  G4VPrimitiveScorer* CsIScorer= 
+    new CALORIMETERSCORERS::PS_CalorimeterWithInteraction("CsIScorer",CsI_nesting, 0) 	;
+  m_CsIScorer->RegisterPrimitive(CsIScorer) ;
 
   //	Add All Scorer to the Global Scorer Manager
-  G4SDManager::GetSDMpointer()->AddNewDetector(m_StripScorer) ;
-  G4SDManager::GetSDMpointer()->AddNewDetector(m_SiLiScorer)	 ;
-  G4SDManager::GetSDMpointer()->AddNewDetector(m_CsIScorer)	 ;
+  G4SDManager::GetSDMpointer()->AddNewDetector(m_StripScorer);
+  G4SDManager::GetSDMpointer()->AddNewDetector(m_SiLiScorer);
+  G4SDManager::GetSDMpointer()->AddNewDetector(m_CsIScorer);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
