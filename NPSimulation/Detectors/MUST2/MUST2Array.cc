@@ -41,7 +41,6 @@
 // NPS
 #include "MaterialManager.hh"
 #include "NPSDetectorFactory.hh"
-#include "ObsoleteGeneralScorers.hh"
 #include "SiliconScorers.hh"
 #include "CalorimeterScorers.hh"
 #include "NPOptionManager.h"
@@ -53,13 +52,13 @@
 #include "CLHEP/Random/RandGauss.h"
 
 // STL
-#include "sstream"
-#include "string"
+#include <sstream>
+#include <string>
 #include <cmath>
-
-using namespace std  ;
-using namespace CLHEP   ;
-using namespace MUST2   ;
+#include <set>
+using namespace std;
+using namespace CLHEP;
+using namespace MUST2;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
