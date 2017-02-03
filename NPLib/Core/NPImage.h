@@ -66,6 +66,8 @@ namespace NPL{
     unsigned int* m_ARGB; // the alpha red green blue array of pixel value
     double m_Xscaling; // pixel per mm
     double m_Yscaling; // pixel per mm
+    unsigned int m_Width;
+    unsigned int m_Height;
   };
 
 }

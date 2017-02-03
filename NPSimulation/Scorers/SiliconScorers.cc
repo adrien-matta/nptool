@@ -55,10 +55,6 @@ G4bool PS_Silicon_Images::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   t_PixelFront = m_ImageFront->GetPixelAtCoordinate(t_Position.x(),t_Position.y());
   t_PixelBack = m_ImageBack->GetPixelAtCoordinate(t_Position.x(),t_Position.y());
 
-  unsigned int front = (m_ImageFront->GetPixelAtCoordinate(t_Position.x(),t_Position.y()))&0xff;
-  unsigned int back  = (m_ImageBack->GetPixelAtCoordinate(t_Position.x(),t_Position.y()))&0xff;
-
-
   // If front and back are in inactive part of the wafer,
   // nothing is added to the map
   if(t_PixelFront == m_IgnoreValue && t_PixelBack == m_IgnoreValue)
@@ -89,7 +85,7 @@ G4bool PS_Silicon_Images::ProcessHits(G4Step* aStep, G4TouchableHistory*){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void PS_Silicon_Images::Initialize(G4HCofThisEvent* HCE){
+void PS_Silicon_Images::Initialize(G4HCofThisEvent*){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

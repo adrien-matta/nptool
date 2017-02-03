@@ -910,7 +910,8 @@ void MUST2Array::InitializeScorers() {
   // if the scorer were created previously nothing else need to be made
   if(already_exist) return; 
 
-  G4VPrimitiveScorer* SiScorer = new SILICONSCORERS::PS_Silicon_Images("SiScorer","/scratch/nptool/NPLib/Detectors/MUST2/maskFront.png","/scratch/nptool/NPLib/Detectors/MUST2/maskBack.png",0.01,0.01,0,0,0xffff0000,0);
+  string nptool = getenv("NPTOOL");
+  G4VPrimitiveScorer* SiScorer = new SILICONSCORERS::PS_Silicon_Images("SiScorer",nptool+"/NPLib/Detectors/MUST2/ressources/maskFront.png",nptool+"/NPLib/Detectors/MUST2/ressources/maskBack.png",0.01,0.01,0,0,0xffff0000,0);
 
   //and register it to the multifunctionnal detector
   m_StripScorer->RegisterPrimitive(SiScorer);
