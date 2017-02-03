@@ -11,7 +11,7 @@
  * Original Author: Adrien MATTA  contact address: a.matta@surrey.ac.uk      *
  *                                                                           *
  * Creation Date  : 2016                                                     *
- * Last update    : December 2016 m.moukaddam@suurey.ac.uk                   *
+ * Last update    : December 2016 m.moukaddam@surrey.ac.uk                   *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This class hold the GeTAMU  raw data                                     *
