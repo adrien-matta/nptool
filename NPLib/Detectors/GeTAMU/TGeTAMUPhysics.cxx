@@ -54,11 +54,11 @@ void TGeTAMUPhysics::BuildPhysicalEvent(){
   PreTreat();
 
  //Treat singles
-  for(unsigned int iSeg = 0 ; iSeg < Singles_SegE.size() ; iSeg++){
+  for(unsigned int iSeg = 0 ; iSeg < Singles_E.size() ; iSeg++){
     int clv = Singles_Clover[iSeg];
     int cry = Singles_Crystal[iSeg];
     int seg = Singles_Segment[iSeg];
-    double energy = Singles_SegE[iSeg];
+    double energy = Singles_E[iSeg];
     TVector3 pos = GetPositionOfInteraction(iSeg);
 
     Singles_Theta.push_back(pos.Theta()/deg);
@@ -244,40 +244,9 @@ void TGeTAMUPhysics::PreTreat(){
     }
   }
 
-MatchSegmentToCore();
-//m_PreTreatedData->Dump();
-//Organaise Data in maps
-/*
-  unsigned int sizec = m_PreTreatedData->GetMultiplicityCoreE();
-  unsigned int sizes = m_PreTreatedData->GetMultiplicitySegmentE();
-  int clover_s;
-  double Energy_s;
-  
-  for(unsigned int iCry = 0 ; iCry < sizec ; iCry++){
-    clover = m_PreTreatedData->GetCoreCloverNbrE(iCry); 
-    crystal = m_PreTreatedData->GetCoreCrystalNbrE(iCry);
-    Energy = m_PreTreatedData->GetCoreEnergy(iCry);
-    for(unsigned int iSeg = 0 ; iSeg < sizes ; iSeg++){
-      clover_s = m_PreTreatedData->GetSegmentCloverNbrE(iSeg);
-      segment = m_PreTreatedData->GetSegmentSegmentNbrE(iSeg);
-      Energy_s = m_PreTreatedData->GetSegmentEnergy(iSeg);
-      if (clover==clover_s) 
-        //avoid impossible cases 
-        //if ( ! ((segment==1 && (crystal==2||crystal==3)) || (segment==3 && (crystal==1||crystal==4)) )  ) 
-        {
-          //for every "valid combination" there's an entry, this means that the energy information
-          // can be duplicated in some ambiguous cases. This can only be solved with Addback 
-          Singles_CryE.push_back(Energy); 
-          Singles_Clover.push_back(clover);
-          Singles_Crystal.push_back(crystal);
-          Singles_Segment.push_back(segment);  
-          Singles_SegE.push_back(Energy_s); 
-        }
-        //else
-        //  cout << "Warning: GeTAMU segment number " << segment << " and core number " << crystal << " are not compatible " << endl;
-    }
-  }
-*/
+if(m_PreTreatedData->GetMultiplicityCoreE()) 
+  MatchSegmentToCore();
+
 }
 
 void TGeTAMUPhysics::MatchSegmentToCore(void){
@@ -286,10 +255,21 @@ void TGeTAMUPhysics::MatchSegmentToCore(void){
 // Rule 1: cores > segments
 // Rule 2: Energy > time
 
-for (unsigned iClover; iClover<4; iClover++){
+cout<<"++++++++++++++++++++++++++++++++++++++++++++++++++++++"<<endl; 
+m_PreTreatedData->Dump();
+
+double EnergyTolTot = 30 ; // in keV;
+vector <int>    CryEN, SegEN;
+vector <double> CryE, SegE;
+
+for (unsigned iClover=0; iClover<4; iClover++){
+  int clover = iClover+1;
+  CryEN.clear();
+  SegEN.clear();
+  CryE.clear();
+  SegE.clear();
+
   //Energy
-  vector <int>    CryEN, SegEN;
-  vector <double> CryE, SegE;
   if(Singles_CloverMap_CryEN.find(iClover+1) != Singles_CloverMap_CryEN.end()){
     CryEN  = Singles_CloverMap_CryEN[iClover+1];
     CryE   = Singles_CloverMap_CryE[iClover+1];
@@ -303,21 +283,36 @@ for (unsigned iClover; iClover<4; iClover++){
   for (unsigned i=0 ; i < CryE.size();i++)    totCryE+=CryE[i];
   for (unsigned i=0 ; i < SegE.size();i++)   totSegE+=SegE[i];
 
-  //Fill the matrix 
-  //double max = std::numeric_limits<double>::max();// maximum  value of double
-  double max = -999;
-  double cell[4][3]={{max,max,max},{max,max,max},{max,max,max},{max,max,max}};// 4 Crys x 3 segments
+  //sort the crystal energies;
+  double swapE;
+  int swapEN;
+ for (unsigned i=0; i < CryE.size(); i++)  
+   for (unsigned j=0; j < CryE.size()-i; j++)
+      if (CryE[j] < CryE[j+1]){ 
+      swapE     = CryE[j] ;   CryE[j]  = CryE[j+1];     CryE[j+1] = swapE;
+      swapEN    = CryEN[j];  CryEN[j]  = CryEN[j+1];   CryEN[j+1] = swapEN;
+      }
 
   // insert the Crys values
+  if (CryEN.size()==0) continue; // no need to go further if the cores are not fired
+
+  //Fill the matrix 
+  //double max = std::numeric_limits<double>::max();// maximum  value of double
+  int max = 0;
+  int cell[4][3]; //={{max,max,max},{max,max,max},{max,max,max},{max,max,max}};// 4 Crys x 3 segments
+   for (int i = 0; i < 4; i++)
+      for (int j = 0; j < 3; j++)
+        cell[i][j]= 0;
+
   for (unsigned iCry = 0 ; iCry < CryEN.size() ; iCry++){
     double Energy = CryE[iCry];
     int Cry = CryEN[iCry] ;
-    cout << Cry << " " << Energy << endl; 
     for (unsigned iSeg = 1 ; iSeg <= 3 ; iSeg++){
       if( (Cry==1 && iSeg!=3) || (Cry==4 && iSeg!=3) || // (Segment 3 (right) + Cry 1 or 4) is impossible
           (Cry==2 && iSeg!=1) || (Cry==3 && iSeg!=1) )  // (Segment 1 (Left)  + Cry 2 or 3) is impossible
-      cell[Cry-1][iSeg-1] = Energy;
-      cout << " Changing cell " << Cry-1 << " " << iSeg-1<< " " <<  cell[Cry-1][iSeg-1] << endl;   
+      //cell[Cry-1][iSeg-1] = Energy;
+      cell[Cry-1][iSeg-1]++;
+      cout << " Filling cell " << Cry << " " << iSeg-1<< " " <<  cell[Cry-1][iSeg-1] << endl;   
     }
   }
   unsigned CryMode=CryEN.size();
@@ -329,36 +324,64 @@ for (unsigned iClover; iClover<4; iClover++){
     double Energy = SegE[iSeg];
     int Seg = SegEN[iSeg];
     for (unsigned iCry = 1 ; iCry <= 4 ; iCry++){
-      if( cell[iCry-1][Seg-1] != max){ // if the cell was filled by a Cry signal previously, access it
-        cell[iCry-1][Seg-1] = cell[iCry-1][Seg-1]-Energy;
+      double EnergyCry = cell[iCry-1][Seg-1];
+      if( EnergyCry != max){ // if the cell was filled by a Cry signal previously, access it
+        //cell[iCry-1][Seg-1] = fabs(cell[iCry-1][Seg-1]-Energy);
+        cell[iCry-1][Seg-1]++;
+        cout << " Changing cell " << iCry-1 << " " << Seg-1<< " " <<  cell[iCry-1][Seg-1] << endl; 
         Good = true;
       }
     }
     if(Good) SegMode++;
   }
 
-  m_PreTreatedData->Dump();
-  //show cells 
-  double* aCell = *cell;
-  cout <<endl<<"-------"<< endl;
-  for (int i = 0 ; i < 4 ; i++){
-      cout << endl;
-      for (int j = 0 ; j < 3 ; j++){
+  // show
+  int* aCell = *cell;
+  cout <<endl<<"------- Clover "<< clover << endl;
+  for (unsigned i = 0 ; i < 4 ; i++){
+    for (unsigned j = 0 ; j < 3 ; j++)
         cout << *(aCell+(i*3)+j) << " ";
-    }
+    cout << endl; 
   }
+   cout <<endl<<"----------------------- (mode) " << CryMode << " - " << SegMode << endl;
 
-    for (int i = 0 ; i < 4 ; i++){
-      cout << endl;
-      for (int j = 0 ; j < 3 ; j++){
-        cout << cell[i][j] << " ";
+
+  for (unsigned i = 0 ; i < CryEN.size() ; i++){
+
+    int segment = -1; 
+    unsigned crystal = CryEN[i];
+    unsigned segmentA = 2; 
+    unsigned segmentB = 3; 
+    if (crystal==1 || crystal==4){ // if Core 1 or 4 change the segments to segment 1 and 2
+      segmentA = 1; 
+      segmentB = 2; 
     }
-  }
-  cout <<endl<<"-----------------------"<< endl;
+    //pick between segment A or B for each case
+    if (cell[crystal-1][segmentA-1] == cell[crystal-1][segmentB-1])
+      segment = 0; // system can't be resolved
+    else if (cell[crystal-1][segmentA-1] > cell[crystal-1][segmentB-1])
+      segment = segmentA; 
+    else if (cell[crystal-1][segmentA-1] < cell[crystal-1][segmentB-1])
+       segment = segmentB; 
+
+    cout << "picked crystal " << crystal << "   segment " << segment << "  Energy " << CryE[i] << endl; 
+    Singles_Clover.push_back(clover);  
+    Singles_Crystal.push_back(CryEN[i]);  
+    Singles_Segment.push_back(segment);
+    Singles_Crystal.push_back(CryE[i]);  
+    TVector3 Pos = GetSegmentPosition(clover,CryEN[i],segment);
+    Singles_X.push_back(Pos.X());
+    Singles_Z.push_back(Pos.Y());
+    Singles_Z.push_back(Pos.Z());
+    Singles_Theta.push_back(Pos.Theta()); 
+    cout << " XYZ "<< Pos.X() << " "<< Pos.Y() << " "<< Pos.Z() << " Theta: " <<Pos.Theta()/deg<< endl ; 
+    }
+
   cin.get();
 
   //picking the hits Rules
   // "best" hit is defined as the hit where |ECry-Eseg| is the lowest
+    // if mode: ?c x 0s pick all clovers as singles  
     // if mode: 1c x 1s pick 1:  trivial
     // if mode: 1c x 2s pick 1:  highest seg energy defines the first hit (angle) but 1 hit is considered
     // if mode: 2c x 1s pick 2:  highest Cry energy defines the first hit 
@@ -369,20 +392,37 @@ for (unsigned iClover; iClover<4; iClover++){
     // if mode: 3c x 3s pick 2:  try to kick one segment out by sum rule otherwise same as before 
     // if mode: 4c x 3s pick 2:  try to kick one segment out by sum rule otherwise same as before 
 
+    //CryEN  = Singles_CloverMap_CryEN[iClover+1];
+    //CryE   = Singles_CloverMap_CryE[iClover+1];
+    //SegEN  = Singles_CloverMap_SegEN[iClover+1];
+/*
 if(CryMode==1){
   if (SegMode==0) {
-    /*
-    Singles_CryE; 
-    Singles_SegE;   
-    Singles_DC;   
-    Singles_Theta;
-    Singles_X;
-    Singles_Y;
-    Singles_Z;
-    Singles_Clover;
-    Singles_Crystal;
-    Singles_Segment;
-    */
+    for(unsigned i ; i < CryEN.size() ; i++){
+      Singles_Clover.push_back(clover);  
+      Singles_Crystal.push_back(CryEN[i]);  
+      Singles_Segment.push_back(0);
+      Singles_Crystal.push_back(CryE[i]);  
+      TVector3 Pos = GetCorePosition(clover,CryEN[i]);
+      Singles_X.push_back(Pos.X());
+      Singles_Z.push_back(Pos.Y());
+      Singles_Z.push_back(Pos.Z());
+      Singles_Theta.push_back(Pos.Theta());
+    }
+  }
+  if (SegMode==1){
+    for(unsigned i ; i < CryEN.size() ; i++){
+      Singles_Clover.push_back(clover);  
+      Singles_Crystal.push_back(CryEN[i]);  
+      Singles_Segment.push_back(0);
+      Singles_Crystal.push_back(CryE[i]);  
+      TVector3 Pos = GetCorePosition(clover,CryEN[i]);
+      Singles_X.push_back(Pos.X());
+      Singles_Z.push_back(Pos.Y());
+      Singles_Z.push_back(Pos.Z());
+      Singles_Theta.push_back(Pos.Theta());
+    }
+
   }
 
 
@@ -403,7 +443,7 @@ else if (CryMode==4){
 
 //Time
   
-
+*/
   } // end of Clover loop on map 
 
 }
@@ -465,11 +505,7 @@ TVector3 TGeTAMUPhysics::GetCorePosition(int& CloverNbr,int& CoreNbr){
 /////////////////////////////////////////////////
 TVector3 TGeTAMUPhysics::GetSegmentPosition(int& CloverNbr,int& CoreNbr, int& SegmentNbr){
  
- //warnings
- if (CoreNbr<1 || CoreNbr>4) 
-  cout << "Warning in GetSegmentPosition: GeTAMU crystal number " << CoreNbr << " is out of range (1 to 4)" << endl;
- if (SegmentNbr<1 || SegmentNbr>3) 
-  cout << "Warning in GetSegmentPosition: GeTAMU segment number " << CoreNbr << " is out of range (1 to 3)" << endl;
+  if (SegmentNbr==0) return GetCorePosition(CloverNbr,CoreNbr);
 
   static double offsetX = 33.4; // mm assumed the same as TIGRESS, CHECK
   static double offsetY = 33.4; //mm in case of left and right segments, CHECK
@@ -478,7 +514,7 @@ TVector3 TGeTAMUPhysics::GetSegmentPosition(int& CloverNbr,int& CoreNbr, int& Se
   // Changes signs with segment/core combinations
   if (CoreNbr==1||CoreNbr==4)
     offsetX = -offsetX;
-  if (CoreNbr==3||CoreNbr==4)
+  if (CoreNbr==3||CoreNbr==4) // CHECK
     offsetY = -offsetY;
 
   TVector3 CorePos = GetCorePosition(CloverNbr,CoreNbr);
@@ -569,8 +605,7 @@ void TGeTAMUPhysics::Clear() {
   Singles_CloverMap_SegTN.clear(); // seg number
   Singles_CloverMap_CryT.clear(); // cry energy
   Singles_CloverMap_SegT.clear(); // seg energy 
-  Singles_CryE.clear(); 
-  Singles_SegE.clear();  
+  Singles_E.clear(); 
   Singles_DC.clear();   
   Singles_Theta.clear();
   Singles_X.clear();

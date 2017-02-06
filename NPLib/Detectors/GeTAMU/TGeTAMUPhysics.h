@@ -97,9 +97,9 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     map<int, vector <double> > Singles_CloverMap_CryT; // cry energy
     map<int, vector <double> > Singles_CloverMap_SegT; // seg energy 
     //sorting parameters
-    vector<double> Singles_CryE; 
-    vector<double> Singles_SegE;   
-    vector<double> Singles_DC;   
+    vector<double> Singles_E;    
+    vector<double> Singles_T;    
+    vector<double> Singles_DC;   // Doppler Corrected Energy
     vector<double> Singles_Theta;
     vector<double> Singles_X;
     vector<double> Singles_Y;
@@ -110,7 +110,7 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     // add back parameters
     vector<double> AddBack_E;   
     vector<double> AddBack_T;   
-    vector<double> AddBack_DC;   
+    vector<double> AddBack_DC;    // Doppler Corrected Energy
     vector<double> AddBack_Theta;
     vector<double> AddBack_X;
     vector<double> AddBack_Y;
