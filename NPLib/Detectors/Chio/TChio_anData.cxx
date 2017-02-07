@@ -27,28 +27,19 @@ using namespace std;
 
 ClassImp(TChio_anData)
 
-TChio_anData::TChio_anData()
-{
-   // Default constructor
+TChio_anData::TChio_anData(){
+ }
 
-   // (E)
-   fChio_an_Energy.clear();
-   fChio_an_Energy_pileup.clear();
+
+
+TChio_anData::~TChio_anData(){
 }
 
 
-
-TChio_anData::~TChio_anData()
-{
-}
-
-
-
-void TChio_anData::Clear()
-{
-   // (E)
+void TChio_anData::Clear(){
    fChio_an_Energy.clear();
-   fChio_an_Energy_pileup.clear();
+   fChio_an_Time.clear();
+   fChio_an_DetectorNbr.clear();
 }
 
 
@@ -56,14 +47,12 @@ void TChio_anData::Clear()
 void TChio_anData::Dump() const
 {
    cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event XXXXXXXXXXXXXXXXX" << endl;
-
    // Chio_an
    // (E)
    cout << "Chio_an_MultE = " << fChio_an_Energy.size() << endl;
-   for (UShort_t i = 0; i < fChio_an_Energy.size(); i++)
-      cout <<  " Energy: " << fChio_an_Energy[i] << endl;
-
-   cout << "Chio_an_MultE pileup = " << fChio_an_Energy_pileup.size() << endl;
-   for (UShort_t i = 0; i < fChio_an_Energy_pileup.size(); i++)
-      cout <<  " Energy: " << fChio_an_Energy_pileup[i] << endl;
+   for (UShort_t i = 0; i < fChio_an_Energy.size(); i++){
+      cout <<  " Detector: " << fChio_an_DetectorNbr[i] ; 
+      cout <<  " Energy: " << fChio_an_Energy[i];
+      cout <<  " Time: " << fChio_an_Time[i] << endl; 
+   }
 }

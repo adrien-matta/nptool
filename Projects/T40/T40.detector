@@ -21,27 +21,27 @@ Tiara Barrel
 HyballWedge
  Z= -147 mm
  R= 0 mm
- Phi= 0 deg 
+ Phi= 210 deg 
 HyballWedge
  Z= -147 mm
  R= 0 mm
- Phi= 60 deg
+ Phi= 150 deg
 HyballWedge
  Z= -147 mm
  R= 0 mm 
- Phi= 120 deg
+ Phi= 90 deg
 HyballWedge
  Z= -147 mm
  R= 0 mm
- Phi= 180 deg
+ Phi= 30 deg
 HyballWedge
  Z= -147 mm
  R= 0 mm
- Phi= 240 deg
+ Phi= 330 deg
 HyballWedge
  Z= -147 mm
  R= 0 mm
- Phi= 300 deg
+ Phi= 270 deg
 %%%%%%%%%%%%%%%%%%%%%%%%%%% FPD TAMU
 % All DELTA detectors
 FPDTamu DELTA

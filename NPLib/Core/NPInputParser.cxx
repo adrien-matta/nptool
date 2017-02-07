@@ -580,8 +580,8 @@ double NPL::ApplyUnit(double value, std::string unit){
     return value*NPUNITS::ns;
   }
 
-  else if(unit=="s"){
-    return value*NPUNITS::s;
+  else if(unit=="us"){
+    return value*NPUNITS::us;
   }
 
   else if(unit=="ms"){

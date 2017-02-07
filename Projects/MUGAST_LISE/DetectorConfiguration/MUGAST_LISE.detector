@@ -1,0 +1,105 @@
+%%%%%%%%%%Detector%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
+Target
+ THICKNESS= 9.5 
+ RADIUS= 7.5 mm
+ MATERIAL= CD2 
+ Angle= 0 deg
+ X= 0 mm
+ Y= 0 mm
+ Z= 0 mm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+AnnularS1
+ Z= -100
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GaspardTracker Trapezoid
+ R= -90 mm
+ THETA= 60 deg
+ PHI= 0 deg
+ BETA= -60 0 -90 deg
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 0
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GaspardTracker Trapezoid
+ R= -90 mm
+ THETA= 60 deg
+ PHI= 45 deg
+ BETA= -60 0 -90 deg
+ FIRSTSTAGE= 1
+ SECONDSTAGE= -1
+ THIRDSTAGE= 0
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GaspardTracker Trapezoid
+ R= -90 mm
+ THETA= 60 deg
+ PHI= 90 deg
+ BETA= -60 0 -90 deg
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 0
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GaspardTracker Trapezoid
+ R= -90 mm
+ THETA= 60 deg
+ PHI= 135 deg
+ BETA= -60 0 -90 deg
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 0
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GaspardTracker Trapezoid
+ R= -90 mm
+ THETA= 60 deg
+ PHI= 180 deg
+ BETA= -60 0 -90 deg
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 0
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GaspardTracker Trapezoid
+ R= -90 mm
+ THETA= 60 deg
+ PHI= 225 deg
+ BETA= -60 0 -90 deg
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 0
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GaspardTracker Trapezoid
+ R= -90 mm
+ THETA= 60 deg
+ PHI= 270 deg
+ BETA= -60 0 -90 deg
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 0
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GaspardTracker Trapezoid
+ R= -90 mm
+ THETA= 60 deg
+ PHI= 315 deg
+ BETA= -60 0 -90 deg
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 0
+ VIS= all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Tiara Barrel
+ InnerBarrel= 0
+ OuterBarrel= 0
+ Chamber= 0
+ X= 0 mm
+ Y= 0 mm
+ Z= 0 mm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+

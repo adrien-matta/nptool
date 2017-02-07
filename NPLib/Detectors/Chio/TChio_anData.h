@@ -28,30 +28,34 @@ using namespace std;
 class TChio_anData : public TObject {
  private:
    // ADC
-   vector<UShort_t>	fChio_an_Energy;
-   vector<UShort_t>	fChio_an_Energy_pileup;
+   vector<double>	fChio_an_Energy;
+   vector<double>	fChio_an_Time;
+   vector<double> fChio_an_DetectorNbr;
 
  public:
    TChio_anData();
    virtual ~TChio_anData();
 
    void	Clear();
-   void  Clear(const Option_t*) {};
+   void Clear(const Option_t*) {};
    void	Dump() const;
 
    /////////////////////           GETTERS           ////////////////////////
    // (E)
-   UShort_t	GetMultE()                 {return fChio_an_Energy.size();}
-   UShort_t	GetEnergy(Int_t i)         {return fChio_an_Energy.at(i);}
-   UShort_t	GetMultE_pileup()          {return fChio_an_Energy_pileup.size();}
-   UShort_t	GetEnergy_pileup(Int_t i)  {return fChio_an_Energy_pileup.at(i);}
+   UShort_t	GetMult()                  {return fChio_an_Energy.size();}
+   UShort_t	GetEnergy(unsigned int i)  {return fChio_an_Energy[i];}
+   UShort_t	GetTime(unsigned int i)    {return fChio_an_Time[i];}
+   UShort_t	GetDetectorNbr(unsigned i)  {return fChio_an_DetectorNbr[i];}
 
    /////////////////////           SETTERS           ////////////////////////
    // (E)
-   void SetEnergy(UShort_t E)          {fChio_an_Energy.push_back(E);}
-   void SetEnergy_pileup(UShort_t E)   {fChio_an_Energy_pileup.push_back(E);}
+   inline void SetEnergyAndTime(double E, double T, unsigned int Det) {
+      fChio_an_Energy.push_back(E);
+      fChio_an_Time.push_back(T);
+      fChio_an_DetectorNbr.push_back(Det);
+  }
 
-   ClassDef(TChio_anData,1)  // Chio_anData structure
+   ClassDef(TChio_anData,2)  // Chio_anData structure
 };
 
 #endif

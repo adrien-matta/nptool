@@ -97,11 +97,11 @@ void Analysis::Init(){
   // energy losses
   string light=NPL::ChangeNameToG4Standard(myReaction->GetNucleus3().GetName());
   string beam=NPL::ChangeNameToG4Standard(myReaction->GetNucleus1().GetName());
-  LightTarget = NPL::EnergyLoss(light+"_"+TargetMaterial+".G4table","G4Table",10 );
-  LightAl = NPL::EnergyLoss(light+"_Al.G4table","G4Table",10);
-  //LightSi = NPL::EnergyLoss(light+"_Si.G4table","G4Table",10);
+  LightTarget = NPL::EnergyLoss(light+"_"+TargetMaterial+".SRIM","SRIM",10 );
+  LightAl = NPL::EnergyLoss(light+"_Al.SRIM","SRIM",10);
+  //LightSi = NPL::EnergyLoss(light+"_Si.SRIM","SRIM",10);
   LightSi = NPL::EnergyLoss("He4_Si.SRIM","SRIM",10);
-  BeamTarget = NPL::EnergyLoss(beam+"_"+TargetMaterial+".G4table","G4Table",10);
+  BeamTarget = NPL::EnergyLoss(beam+"_"+TargetMaterial+".SRIM","SRIM",10);
   FinalBeamEnergy = BeamTarget.Slow(OriginalBeamEnergy, TargetThickness*0.5, 0);
   myReaction->SetBeamEnergy(FinalBeamEnergy);
   cout << "Final Beam energy (middle of target): " << FinalBeamEnergy << endl;
@@ -144,9 +144,9 @@ void Analysis::Init(){
 	Aw_ThetaFit_R2 = -1000;
 	
   //TAC
-  TacSiGeOR       = -1000;
+  TacSiGeOR     = -1000;
   TacSiMicro    = -1000;
- 	TacSiMicro_E = -1000;
+ 	TacSiMicro_E  = -1000;
 	TacSiMicro_dE = -1000;
 	TacSiPlastLeft  = -1000;
 	TacSiPlastRight = -1000;

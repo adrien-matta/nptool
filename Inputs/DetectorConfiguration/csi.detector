@@ -21,7 +21,7 @@ CsI
  FaceFront= 100 mm
  FaceBack= 100 mm
  Radius= 0 mm
- Scintillator= CsI
+ Scintillator= CsI_Scintillator
  LeadThickness= 0 mm
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

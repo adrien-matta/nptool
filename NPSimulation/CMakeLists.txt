@@ -57,7 +57,7 @@ endif()
 
 
 # set the Geant4 version info
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNPS_GEANT4_VERSION_MAJOR=${NPS_GEANT4_VERSION_MAJOR}") 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -DNPS_GEANT4_VERSION_MAJOR=${NPS_GEANT4_VERSION_MAJOR}") 
 
 # If the compiler is Clang, silence the unrecognised flags
 if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*Clang.*")
@@ -108,7 +108,7 @@ foreach(subdir ${SUB_DIRECTORY})
  endforeach()
 
 add_executable(npsimulation Simulation.cc)
-target_Link_libraries(npsimulation ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} NPSCore NPSScorers NPSProcess NPSEventGenerator)
+target_Link_libraries(npsimulation ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} NPSCore NPSScorers NPSProcess )
 configure_file(ressources/macro/gui.mac.in ressources/macro/gui.mac @ONLY) 
 configure_file(ressources/macro/aliases.mac.in ressources/macro/aliases.mac @ONLY) 
 

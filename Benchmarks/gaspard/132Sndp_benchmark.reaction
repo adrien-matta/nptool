@@ -3,29 +3,29 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%Beam energy given in MeV ; Excitation in MeV ; emmitance in rad
 Beam
-  Particle= 132Sn
-  Energy= 1320
-  SigmaEnergy= 0
-  SigmaThetaX= 0.42
-  SigmaPhiY= 0.42
-  SigmaX= 1.7
-  SigmaY= 1.7
-  MeanThetaX= 0.3
-  MeanPhiY= 0
-  MeanX= 1.0
-  MeanY= 2.0
+ Particle= 132Sn
+ Energy= 1320
+ SigmaEnergy= 0 MeV
+ SigmaThetaX= 0.42 deg
+ SigmaPhiY= 0.42 deg
+ SigmaX= 1.7 mm
+ SigmaY= 1.7 mm
+ MeanThetaX= 0.3 deg
+ MeanPhiY= 0 deg
+ MeanX= 1.0 mm
+ MeanY= 2.0 mm
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 TwoBodyReaction
-  Beam= 132Sn
-  Target= 2H
-  Light= 1H
-  Heavy= 133Sn
-  ExcitationEnergyLight= 0.0
-  ExcitationEnergyHeavy= 0.0
-  CrossSectionPath= 132Sndp_10A_MeV_2f7_ZR_FRC.lis CS
-  HalfOpenAngleMin= 0
-  HalfOpenAngleMax= 180
-  ShootLight= 1
-  ShootHeavy= 0
+ Beam= 132Sn
+ Target= 2H
+ Light= 1H
+ Heavy= 133Sn
+ ExcitationEnergyLight= 0.0 MeV
+ ExcitationEnergyHeavy= 0.0 MeV
+ CrossSectionPath= 132Sndp_10A_MeV_2f7_ZR_FRC.lis CS
+ HalfOpenAngleMin= 0 deg
+ HalfOpenAngleMax= 180 deg
+ ShootLight= 1
+ ShootHeavy= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

@@ -110,6 +110,7 @@ namespace NPUNITS {
 
   // symbols
   static const double ns = nanosecond;
+  static const double us = microsecond;
   static const double  s = second;
   static const double ms = millisecond;
 

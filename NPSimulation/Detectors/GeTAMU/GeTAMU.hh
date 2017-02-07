@@ -159,10 +159,6 @@ private:
   vector<double> m_BetaY;
   vector<double> m_BetaZ;
     
-  // Frame: true if the frame is to be done
-  bool m_LeftFrame;
-  bool m_RightFrame;
-  
 private:/// Visualisation Attribute:
   G4VisAttributes* BlueVisAtt;
   G4VisAttributes* GreenVisAtt;

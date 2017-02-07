@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4DriftElectron.cc 67971 2013-03-13 10:13:24Z gcosmo $
+// $Id: G4DriftElectron.cc 67971 2016-12-19 10:00:30Z gcosmo $
 //
 // 
 // ----------------------------------------------------------------------
@@ -41,7 +41,7 @@
 #include "G4ParticleTable.hh"
 
 // ######################################################################
-// ###                         OPTICAL PHOTON                         ###
+// ###                         Drift Electron                         ###
 // ######################################################################
 G4DriftElectron* G4DriftElectron::theInstance = 0;
 
@@ -53,26 +53,30 @@ G4DriftElectron*  G4DriftElectron::Definition()
   // search in particle table]
   G4ParticleTable* pTable = G4ParticleTable::GetParticleTable();
   G4ParticleDefinition* anInstance = pTable->FindParticle(name);
+  // Note: The charge of drift electron is null so they are not afected by the
+  // electro magnetic field directly. This is taken care of "manually" by the
+  // G4DETransport process that get the local field direction
   if (anInstance ==0)
   {
-  // create particle
-  //      
-  //    Arguments for constructor are as follows 
-  //               name             mass          width         charge
-  //             2*spin           parity  C-conjugation
-  //          2*Isospin       2*Isospin3       G-parity
-  //               type    lepton number  baryon number   PDG encoding
-  //             stable         lifetime    decay table 
-  //             shortlived      subType    anti_encoding
+    // create particle
+    //      
+    //    Arguments for constructor are as follows 
+    //               name             mass          width         charge
+    //             2*spin           parity  C-conjugation
+    //          2*Isospin       2*Isospin3       G-parity
+    //               type    lepton number  baryon number   PDG encoding
+    //             stable         lifetime    decay table 
+    //             shortlived      subType    anti_encoding
     anInstance = new G4ParticleDefinition(
-                 name,  electron_mass_c2,       0.0*MeV,    -1.*eplus, 
-		    1,                 0,             0,          
-		    0,                 0,             0,             
-	     "lepton",                 1,             0,          11,
-		 true,              -1.0,          NULL,
-             false,                  "e"
-              );
+        name,  electron_mass_c2,       0.0*MeV,    0, 
+        1,                 0,             0,          
+        0,                 0,             0,             
+        "lepton",          1,             0,          11,
+        true,              -1.0,          NULL,
+        false,             "driftion"
+        );
   }
+
   theInstance = reinterpret_cast<G4DriftElectron*>(anInstance);
   return theInstance;
 }

@@ -42,7 +42,7 @@ PhysicsList::PhysicsList() : G4VUserPhysicsList(){
     m_EmList = "Option4";
     defaultCutValue = 1*mm;//0.2*mm;
     opticalPhysicsList = NULL;
-    
+    driftElectronPhysicsList = NULL; 
     ReadConfiguration("PhysicsListOption.txt");
     G4LossTableManager::Instance();
     SetVerboseLevel(0);
@@ -115,7 +115,12 @@ PhysicsList::PhysicsList() : G4VUserPhysicsList(){
         opticalPhysicsList->SetTrackSecondariesFirst(kScintillation,true);
         opticalPhysicsList->SetTrackSecondariesFirst(kCerenkov,true);
     }
-    
+ 
+    // Drift electron for gazeous detector simulation
+    if(m_DriftElectronPhysics){
+        driftElectronPhysicsList = new G4DriftElectronPhysics(0);
+        driftElectronPhysicsList->SetMaxNumDriftElectronPerStep(1e6);
+    }
     
     // Decay physics
     // Add Radioactive decay
@@ -142,6 +147,7 @@ void PhysicsList::ReadConfiguration(std::string filename){
     m_NPIonInelasticPhysics = 0;
     m_StoppingPhysics = 0;
     m_OpticalPhysics = 0;
+    m_DriftElectronPhysics = 0;
     m_HadronPhysicsQGSP_BIC_HP = 0;
     m_HadronPhysicsINCLXX = 0;
     m_Decay = 0;
@@ -175,6 +181,8 @@ void PhysicsList::ReadConfiguration(std::string filename){
             m_StoppingPhysics= value;
         else if (name == "OpticalPhysics")
             m_OpticalPhysics= value;
+        else if (name == "DriftElectronPhysics")
+            m_DriftElectronPhysics= value;
         else if (name == "HadronPhysicsQGSP_BIC_HP")
             m_HadronPhysicsQGSP_BIC_HP= value;
         else if (name == "HadronPhysicsINCLXX")
@@ -204,7 +212,11 @@ void PhysicsList::ConstructParticle(){
         ((G4VPhysicsConstructor*) opticalPhysicsList)->ConstructParticle();
         
     }
-    
+   
+     if(m_DriftElectronPhysics){
+        ((G4VPhysicsConstructor*) driftElectronPhysicsList)->ConstructParticle();
+    }
+ 
     if(decay_List){
         decay_List -> ConstructParticle();
         radioactiveDecay_List->ConstructParticle();
@@ -244,7 +256,6 @@ void PhysicsList::ConstructParticle(){
         ionConstructor.ConstructParticle()  ;
     }
 }
-
 /////////////////////////////////////////////////////////////////////////////
 void PhysicsList::ConstructProcess(){
     // Transportation
@@ -255,6 +266,10 @@ void PhysicsList::ConstructProcess(){
     if(opticalPhysicsList){
         ((G4VPhysicsConstructor*) opticalPhysicsList)->ConstructProcess();
     }
+    if(driftElectronPhysicsList){
+        ((G4VPhysicsConstructor*) driftElectronPhysicsList)->ConstructProcess();
+    }
+
     // Hadronic physics
     std::map<std::string,G4VPhysicsConstructor*>::iterator it;
     for(it = m_PhysList.begin(); it!= m_PhysList.end(); it++){
@@ -276,7 +291,7 @@ void PhysicsList::AddStepMax(){
 }
 /////////////////////////////////////////////////////////////////////////////
 void PhysicsList::AddParametrisation(){
-
+/*
 	G4FastSimulationManagerProcess* drift =
 			new G4FastSimulationManagerProcess("DriftElectron");
 
@@ -292,7 +307,7 @@ void PhysicsList::AddParametrisation(){
 
       if(particle->GetParticleName()=="e-")
         pmanager->AddDiscreteProcess(drift);
-  }
+  }*/
 }
 
 

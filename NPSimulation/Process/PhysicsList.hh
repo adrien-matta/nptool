@@ -52,6 +52,9 @@
 //Optical
 #include "G4OpticalPhysics.hh"
 
+// Drift Electron
+#include "G4DriftElectronPhysics.hh"
+
 //Hadronique
 
 #include "G4IonElasticPhysics.hh"
@@ -89,6 +92,7 @@ class PhysicsList: public G4VUserPhysicsList{
 
   private: // Physics List
     G4OpticalPhysics* opticalPhysicsList;
+    G4DriftElectronPhysics* driftElectronPhysicsList;
     G4VPhysicsConstructor* emPhysicsList;
     G4VPhysicsConstructor* decay_List;
     G4VPhysicsConstructor* radioactiveDecay_List;
@@ -102,6 +106,7 @@ class PhysicsList: public G4VUserPhysicsList{
     double m_HadronInelasticPhysics;
     double m_StoppingPhysics;
     double m_OpticalPhysics; 
+    double m_DriftElectronPhysics;
     double m_HadronPhysicsQGSP_BIC_HP;
     double m_HadronPhysicsINCLXX;
     double m_Decay; 

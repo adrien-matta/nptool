@@ -265,6 +265,8 @@ void GaspardTrackerAnnular::ReadConfiguration(NPL::InputParser parser){
 
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
     if(blocks[i]->GetMainValue() == "Annular" && blocks[i]->HasTokenList(token) ){
+      cout << "Gaspard Annular " << i+1 << ":" << endl; 
+
       bool first = blocks[i]->GetInt("FIRSTSTAGE");
       bool second = blocks[i]->GetInt("SECONDSTAGE");
       bool third = blocks[i]->GetInt("THIRDSTAGE");

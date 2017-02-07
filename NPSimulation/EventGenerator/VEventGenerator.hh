@@ -43,27 +43,25 @@
 #include "NPInputParser.h"
 using namespace CLHEP;
 using namespace std;
-using namespace CLHEP;
 
 namespace NPS{
 
-class VEventGenerator
-{
-public:
-   VEventGenerator();
-   virtual ~VEventGenerator();
+  class VEventGenerator{
+    public:
+      VEventGenerator();
+      virtual ~VEventGenerator();
 
-public:
-   virtual void ReadConfiguration(NPL::InputParser) {};
-   virtual void GenerateEvent(G4Event*) {};
-   virtual void InitializeRootOutput() {};
+    public:
+      virtual void ReadConfiguration(NPL::InputParser) {};
+      virtual void GenerateEvent(G4Event*) {};
+      virtual void InitializeRootOutput() {};
 
-   // Used in some case to generate event inside the target
-   virtual void SetTarget(Target*) {};
-   
-   // Used to simulate beam emmitance effect
-   void RandomGaussian2D(double MeanX, double MeanY, double SigmaX, double SigmaY, double &X, double &Y, double NumberOfSigma = 10000);
-};
+      // Used in some case to generate event inside the target
+      virtual void SetTarget(Target*) {};
+
+      // Used to simulate beam emmitance effect
+      void RandomGaussian2D(double MeanX, double MeanY, double SigmaX, double SigmaY, double &X, double &Y, double NumberOfSigma = 10000);
+  };
 
 }
 #endif

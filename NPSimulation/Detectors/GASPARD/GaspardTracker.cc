@@ -199,15 +199,9 @@ void GaspardTracker::InitializeScorers()
 // Called at in the EventAction::EndOfEventAction
 void GaspardTracker::ReadSensitive(const G4Event* event)
 {
-  // Before looping on each sub-detector, clear the static variable
-  // ms_InterCoord
-  // This is done on the first element of the m_Modules vector.
-  // This should be done here since this variable (of type TIneractionCoordinates)
-  // deals with multiplicity of events > 1.
-  m_Modules[0]->GetInterCoordPointer()->Clear();
-
-  // We do the same for the static variable ms_Event
-  m_Modules[0]->GetEventPointer()->Clear();
+  // Before looping on each sub-detector, clear the static variable ms_Event
+  if(m_Modules.size()>0)
+    m_Modules[0]->GetEventPointer()->Clear();
 
   // loop on sub-detectors belonging to GaspardTracker
   int nbDetectors = m_Modules.size();

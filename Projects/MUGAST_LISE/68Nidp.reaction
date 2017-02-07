@@ -1,0 +1,33 @@
+%%%%%%%%%%%%%%%%%%%%%% S1107 at Triumf %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Beam
+  Particle= 68Ni 
+  Energy= 1700
+  SigmaEnergy= 10
+  ExcitationEnergy= 0 MeV
+  SigmaThetaX= 3 mrad
+  SigmaPhiY= 3 mrad
+  SigmaX= 25 mm
+  SigmaY= 25 mm
+  MeanThetaX= 1 mrad
+  MeanPhiY= 1 mrad
+  MeanX= 0 mm
+  MeanY= 0 mm
+  %EnergyProfilePath= eLise.txt EL
+  %XThetaXProfilePath=
+  %YPhiYProfilePath=
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+TwoBodyReaction
+ Beam= 68Ni
+ Target= 2H
+ Light= 1H
+ Heavy= 69Ni
+ ExcitationEnergyLight= 0.0 MeV
+ ExcitationEnergyHeavy= 1.0 MeV
+ CrossSectionPath= fe61_f5_2_250.txt h
+ ShootLight= 1
+ ShootHeavy= 0
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+ 
