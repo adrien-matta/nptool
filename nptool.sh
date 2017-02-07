@@ -2,21 +2,6 @@
   CMD="export"
   SEP="="
 
-# test if export is supported
-export 1>/dev/null 2>/dev/null
-if [ "${?}" == 0 ]; then
-  CMD="export"
-  SEP="="
-else
-  setenv 1>/dev/null 2>/dev/null
-  if [ "${?} == 0" ]; then
-  CMD="setenv"
-  SEP=" "
-  else
-  echo "Neither setenv nor export found!"
-  fi
-fi 
-
 # find script path
 if [ -n "$ZSH_VERSION" ]; then
    SCRIPTPATH="$( cd "$( dirname "${(%):-%x}" )" && pwd )"

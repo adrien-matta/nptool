@@ -2,7 +2,7 @@
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Target
- THICKNESS= 5
+ THICKNESS= 6.2
  RADIUS=	5
  MATERIAL= CD2
  ANGLE= 0
@@ -12,7 +12,7 @@ Target
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 TRex
  Chamber= 1
-  X= 0
+ X= 0
  Y= 29
  Z= 33
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -52,27 +52,25 @@ TRex
  Y= 0
  Z= -33
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Sharc
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  %Upstream CD
-  SharcQQQ
-    Z= -70
-    R= 0
-    Phi= 2
-    ThicknessDector= 500
-  SharcQQQ
-    Z= -70
-    R= 0
-    Phi= 92
-    ThicknessDector= 500
-  SharcQQQ
-    Z= -70
-    R= 0
-    Phi= 182
-    ThicknessDector= 500
-  SharcQQQ
-    Z= -70
-    R= 0
-    Phi= 272
-    ThicknessDector= 500
+%Sharc
+Sharc QQQ
+ Z= -70 mm
+ R= 0 mm
+ Phi= 2 deg 
+ ThicknessDetector= 500 micrometer
+Sharc QQQ
+ Z= -70 mm
+ R= 0 mm
+ Phi= 92 deg 
+ ThicknessDetector= 500 micrometer
+Sharc QQQ
+ Z= -70 mm
+ R= 0 mm
+ Phi= 182 deg 
+ ThicknessDetector= 500 micrometer
+Sharc QQQ
+ Z= -70 mm
+ R= 0 mm
+ Phi= 272 deg 
+ ThicknessDetector= 500 micrometer
 %
