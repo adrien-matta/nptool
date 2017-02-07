@@ -18,6 +18,7 @@
  * Comment:                                                                  *
  * This new type of scorer is aim to become the standard for DSSD,SSSD and   *
  * PAD detector (any Silicon Detector)                                       *
+ * Addition for pixel silicon detecters e.g. SAGE & SPEDE by Daniel Cox      *
  *****************************************************************************/
 #include "SiliconScorers.hh"
 #include "G4UnitsTable.hh"
@@ -356,5 +357,138 @@ void PS_Silicon_Resistive::PrintAll(){
   G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
   G4cout << " Number of entries " << EvtMap->entries() << G4endl     ;
 }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+PS_Silicon_Pixel::PS_Silicon_Pixel(G4String name,
+		G4int Level,
+		vector<G4double>* PixelInnerRadius,
+		vector<G4double>* PixelOuterRadius,
+		vector<G4double>* PixelPhiStart,
+		vector<G4double>* PixelPhiStop,
+		G4int depth)
 
+	:G4VPrimitiveScorer(name, depth),HCID(-1){
 
+		m_PixelInnerRadius = *PixelInnerRadius;
+		m_PixelOuterRadius = *PixelOuterRadius;
+		m_PixelPhiStart = *PixelPhiStart;
+		m_PixelPhiStop = *PixelPhiStop;
+
+		m_Level = Level;
+
+		m_Position = G4ThreeVector(-1000,-1000,-1000);
+		m_uz = G4ThreeVector(0,0,1);
+		m_DetectorNumber = -1;
+		m_PixelNumber  = -1;
+		m_Index = -1 ;
+  }
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+PS_Silicon_Pixel::~PS_Silicon_Pixel(){
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+G4bool PS_Silicon_Pixel::ProcessHits(G4Step* aStep, G4TouchableHistory*){
+  // contain Energy, time, detector number, pixel number, and interaction coordinates
+  G4double* EnergyAndTime = new G4double[9];
+  
+  EnergyAndTime[0] = aStep->GetTotalEnergyDeposit();//Energy
+  EnergyAndTime[1] = aStep->GetPreStepPoint()->GetGlobalTime();//Time
+
+  m_DetectorNumber = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_Level);
+  m_Position = aStep->GetPreStepPoint()->GetPosition();
+
+  // Interaction coordinates (used to fill the InteractionCoordinates branch)
+  EnergyAndTime[2] = m_Position.x();
+  EnergyAndTime[3] = m_Position.y();
+  EnergyAndTime[4] = m_Position.z();
+  EnergyAndTime[5] = m_Position.theta();
+  EnergyAndTime[6] = m_Position.phi();
+
+  EnergyAndTime[7] = m_DetectorNumber;//Detector number 
+
+  //Translate to detector reference frame from global frame
+  m_Position = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(m_Position);
+
+	//Find interaction radius
+	double intX = abs(m_Position.x());	
+	double intY = abs(m_Position.y());	
+	double intRadius = sqrt(intX*intX+intY*intY);
+
+	//Find interaction angle and convert to degrees
+	double intPhi = atan2(m_Position.x(),m_Position.y());
+	intPhi+=1*M_PI;
+	intPhi*=180;
+	intPhi/=M_PI;
+
+	//TODO expand this to include inter-pixel dead layer
+
+	if ( intRadius < m_PixelInnerRadius[0] )//sanity check
+		cout << "Interaction point has smaller radius than defined detector\n";
+	else if (intRadius > m_PixelOuterRadius[int(m_PixelOuterRadius.size())-1] )//sanity check
+		cout << "Interaction point has larger radius than defined detector\n";
+	else
+	{
+		//Find which pixel it is in
+		for (int i = 0; i < int(m_PixelInnerRadius.size()); i++)
+		{
+			if (intRadius 	> m_PixelInnerRadius[i] &&
+				intRadius 	< m_PixelOuterRadius[i] &&
+				intPhi		> m_PixelPhiStart[i]	&&
+				intPhi		< m_PixelPhiStop[i])
+			{
+				EnergyAndTime[8] = i;//Set pixel number
+				break;
+			}
+		}
+	}
+
+//TODO why isn't the pixel number being passed back properly?!
+  // Check if the particle has interact before, if yes, add up the energies.
+  map<G4int, G4double**>::iterator it;
+  it= EvtMap->GetMap()->find(m_Index);
+  if(it!=EvtMap->GetMap()->end()){
+    G4double* dummy = *(it->second);
+    EnergyAndTime[0]+=dummy[0];
+    EnergyAndTime[1]+=dummy[1];
+	EnergyAndTime[8] = dummy[8];//Make sure first interaction point is the reported pixel
+  }
+  EvtMap->set(m_Index, EnergyAndTime);
+  return TRUE;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void PS_Silicon_Pixel::Initialize(G4HCofThisEvent* HCE){
+  EvtMap = new NPS::HitsMap<G4double*>(GetMultiFunctionalDetector()->GetName(), GetName());
+  if (HCID < 0) {
+    HCID = GetCollectionID(0);
+  }
+  HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void PS_Silicon_Pixel::EndOfEvent(G4HCofThisEvent*){
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void PS_Silicon_Pixel::clear(){
+  std::map<G4int, G4double**>::iterator    MapIterator;
+  for (MapIterator = EvtMap->GetMap()->begin() ; MapIterator != EvtMap->GetMap()->end() ; MapIterator++){
+    delete *(MapIterator->second);
+  }
+
+  EvtMap->clear();
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void PS_Silicon_Pixel::DrawAll(){
+
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void PS_Silicon_Pixel::PrintAll(){
+  G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl ;
+  G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
+  G4cout << " Number of entries " << EvtMap->entries() << G4endl     ;
+}

@@ -201,6 +201,56 @@ namespace SILICONSCORERS {
     
   };
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+  struct PixelOutput {
+    G4double totalEnergy;
+    G4double globalTime;
+    G4double x;
+    G4double y;
+    G4double z;
+    G4double theta;
+    G4double phi;
+    G4double detectorNumber;
+  };
+
+  class PS_Silicon_Pixel : public G4VPrimitiveScorer{
+    
+  public: // with description
+    PS_Silicon_Pixel(G4String name,G4int Level, vector<G4double>* PixelInnerRadius, vector<G4double>* PixelOuterRadius, vector<G4double>* PixelPhiStart, vector<G4double>* PixelPhiStop, G4int depth=0);
+    ~PS_Silicon_Pixel();
+    
+  protected: // with description
+    G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+    
+  public:
+    void Initialize(G4HCofThisEvent*);
+    void EndOfEvent(G4HCofThisEvent*);
+    void clear();
+    void DrawAll();
+    void PrintAll();
+    
+  private: // Geometry of the detector
+    vector<G4double> m_PixelInnerRadius;
+    vector<G4double> m_PixelOuterRadius;
+    vector<G4double> m_PixelPhiStart;
+    vector<G4double> m_PixelPhiStop;
+
+    // Level at which to find the copy number linked to the detector number
+    G4int    m_Level;
+
+  private: // inherited from G4VPrimitiveScorer
+    G4int HCID;
+    NPS::HitsMap<G4double*>* EvtMap;
+
+  private: // Needed for intermediate calculation (avoid multiple instantiation in Processing Hit)
+    G4ThreeVector m_Position    ;
+    G4ThreeVector m_uz          ;
+    G4int m_DetectorNumber      ;
+    G4int m_PixelNumber         ;
+    G4int m_Index               ;
+    
+  };
 }
 
 
