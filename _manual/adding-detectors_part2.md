@@ -87,7 +87,7 @@ public:
     inline void SetT_DetectorNbr(const UShort_t& DetNbr)
       {fMSX25_T_DetectorNbr.push_back(DetNbr);} //!
     inline void SetT_StripNbr(const UShort_t& StripNbr)
-      {fMSX25_T_StripNbr.push_back(DetNbr);} //!
+      {fMSX25_T_StripNbr.push_back(StripNbr);} //!
     inline void Set_Time(const Double_t& Time)
       {fMSX25_Time.push_back(Time);}//!
     // Prefer global setter so that all vectors have the same size
