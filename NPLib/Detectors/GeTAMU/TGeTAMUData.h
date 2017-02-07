@@ -37,6 +37,9 @@ private:
   vector<unsigned short> fGeTAMU_Core_CloverNbr_E;
   vector<unsigned short> fGeTAMU_Core_CrystalNbr_E;
   vector<double> fGeTAMU_Core_Energy;
+  vector<unsigned short> fGeTAMU_Core_CloverNbr_E_LG;
+  vector<unsigned short> fGeTAMU_Core_CrystalNbr_E_LG;
+  vector<double> fGeTAMU_Core_Energy_LG;
   vector<unsigned short> fGeTAMU_Core_CloverNbr_T;
   vector<unsigned short> fGeTAMU_Core_CrystalNbr_T;
   vector<double> fGeTAMU_Core_Time;
@@ -44,6 +47,9 @@ private:
   vector<unsigned short> fGeTAMU_Segment_CloverNbr_E;
   vector<unsigned short> fGeTAMU_Segment_SegmentNbr_E;
   vector<double> fGeTAMU_Segment_Energy;
+  vector<unsigned short> fGeTAMU_Segment_CloverNbr_E_LG;
+  vector<unsigned short> fGeTAMU_Segment_SegmentNbr_E_LG;
+  vector<double> fGeTAMU_Segment_Energy_LG;
   vector<unsigned short> fGeTAMU_Segment_CloverNbr_T;
   vector<unsigned short> fGeTAMU_Segment_SegmentNbr_T;
   vector<double> fGeTAMU_Segment_Time;
@@ -62,6 +68,10 @@ public:
   inline void SetCoreCrystalNbrE(const unsigned short &CoreCrystalNbr){fGeTAMU_Core_CrystalNbr_E.push_back(CoreCrystalNbr);}
   inline void SetCoreEnergy(const double &CoreEnergy){fGeTAMU_Core_Energy.push_back(CoreEnergy);}
 
+  inline void SetCoreCloverNbrELowGain(const unsigned short &CoreCloverNbr){fGeTAMU_Core_CloverNbr_E_LG.push_back(CoreCloverNbr); }
+  inline void SetCoreCrystalNbrELowGain(const unsigned short &CoreCrystalNbr){fGeTAMU_Core_CrystalNbr_E_LG.push_back(CoreCrystalNbr);}
+  inline void SetCoreEnergyLowGain(const double &CoreEnergy){fGeTAMU_Core_Energy_LG.push_back(CoreEnergy);}
+
   inline void SetCoreCloverNbrT(const unsigned short &CoreCloverNbr){fGeTAMU_Core_CloverNbr_T.push_back(CoreCloverNbr); }
   inline void SetCoreCrystalNbrT(const unsigned short &CoreCrystalNbr){fGeTAMU_Core_CrystalNbr_T.push_back(CoreCrystalNbr);}
   inline void SetCoreTime(const double &CoreTime){fGeTAMU_Core_Time.push_back(CoreTime);}
@@ -73,6 +83,13 @@ public:
     fGeTAMU_Core_CrystalNbr_E.push_back(CoreCrystalNbr);
     fGeTAMU_Core_Energy.push_back(CoreEnergy);}
 
+  inline void SetCoreELowGain(const unsigned short &CoreCloverNbr,
+                      const unsigned short &CoreCrystalNbr,
+                      const double &CoreEnergy){
+    fGeTAMU_Core_CloverNbr_E_LG.push_back(CoreCloverNbr);
+    fGeTAMU_Core_CrystalNbr_E_LG.push_back(CoreCrystalNbr);
+    fGeTAMU_Core_Energy_LG.push_back(CoreEnergy);}
+
   inline void SetCoreT(const unsigned short &CoreCloverNbr,
                       const unsigned short &CoreCrystalNbr,
                       const double &CoreTime){
@@ -83,6 +100,10 @@ public:
   inline void SetSegmentCloverNbrE(const unsigned short &SegmentCloverNbr){fGeTAMU_Segment_CloverNbr_E.push_back(SegmentCloverNbr); }
   inline void SetSegmentSegmentNbrE(const unsigned short &SegmentNbr){fGeTAMU_Segment_SegmentNbr_E.push_back(SegmentNbr);}
   inline void SetSegmentEnergy(const double &SegmentEnergy){fGeTAMU_Segment_Energy.push_back(SegmentEnergy);}
+
+  inline void SetSegmentCloverNbrELowGain(const unsigned short &SegmentCloverNbr){fGeTAMU_Segment_CloverNbr_E_LG.push_back(SegmentCloverNbr); }
+  inline void SetSegmentSegmentNbrELowGain(const unsigned short &SegmentNbr){fGeTAMU_Segment_SegmentNbr_E_LG.push_back(SegmentNbr);}
+  inline void SetSegmentEnergyLowGain(const double &SegmentEnergy){fGeTAMU_Segment_Energy_LG.push_back(SegmentEnergy);}
   
   inline void SetSegmentCloverNbrT(const unsigned short &SegmentCloverNbr){fGeTAMU_Segment_CloverNbr_T.push_back(SegmentCloverNbr); }
   inline void SetSegmentSegmentNbrT(const unsigned short &SegmentNbr){fGeTAMU_Segment_SegmentNbr_T.push_back(SegmentNbr);}
@@ -94,6 +115,14 @@ public:
     fGeTAMU_Segment_CloverNbr_E.push_back(SegmentCloverNbr);
     fGeTAMU_Segment_SegmentNbr_E.push_back(SegmentNbr);
     fGeTAMU_Segment_Energy.push_back(SegmentEnergy);};
+
+  
+  inline void SetSegmentELowGain(const unsigned short &SegmentCloverNbr,
+                      const unsigned short &SegmentNbr,
+                      const double &SegmentEnergy){
+    fGeTAMU_Segment_CloverNbr_E_LG.push_back(SegmentCloverNbr);
+    fGeTAMU_Segment_SegmentNbr_E_LG.push_back(SegmentNbr);
+    fGeTAMU_Segment_Energy_LG.push_back(SegmentEnergy);};
 
   inline void SetSegmentT(const unsigned short &SegmentCloverNbr,
                       const unsigned short &SegmentNbr,
@@ -108,6 +137,11 @@ public:
   inline unsigned short GetCoreCrystalNbrE(const unsigned int &i)  {return fGeTAMU_Core_CrystalNbr_E[i]; }
   inline double GetCoreEnergy(const unsigned int &i)      {return fGeTAMU_Core_Energy[i];}
 
+  inline unsigned int GetMultiplicityCoreELowGain()  {return fGeTAMU_Core_CloverNbr_E_LG.size();}
+  inline unsigned short GetCoreCloverNbrELowGain(const unsigned int &i)   {return fGeTAMU_Core_CloverNbr_E_LG[i]; }
+  inline unsigned short GetCoreCrystalNbrELowGain(const unsigned int &i)  {return fGeTAMU_Core_CrystalNbr_E_LG[i]; }
+  inline double GetCoreEnergyLowGain(const unsigned int &i)      {return fGeTAMU_Core_Energy_LG[i];}
+
   inline unsigned int GetMultiplicityCoreT()  {return fGeTAMU_Core_CloverNbr_T.size();}
   inline unsigned short GetCoreCloverNbrT(const unsigned int &i)   {return fGeTAMU_Core_CloverNbr_T[i]; }
   inline unsigned short GetCoreCrystalNbrT(const unsigned int &i)  {return fGeTAMU_Core_CrystalNbr_T[i]; }
@@ -117,6 +151,11 @@ public:
   inline unsigned short GetSegmentCloverNbrE(const unsigned int &i)   {return fGeTAMU_Segment_CloverNbr_E[i]; }
   inline unsigned short GetSegmentSegmentNbrE(const unsigned int &i)   {return fGeTAMU_Segment_SegmentNbr_E[i]; }
   inline double GetSegmentEnergy(const unsigned int &i)      {return fGeTAMU_Segment_Energy[i];}
+
+   inline unsigned int GetMultiplicitySegmentELowGain()  {return fGeTAMU_Segment_CloverNbr_E_LG.size();}
+  inline unsigned short GetSegmentCloverNbrELowGain(const unsigned int &i)   {return fGeTAMU_Segment_CloverNbr_E_LG[i]; }
+  inline unsigned short GetSegmentSegmentNbrELowGain(const unsigned int &i)   {return fGeTAMU_Segment_SegmentNbr_E_LG[i]; }
+  inline double GetSegmentEnergyLowGain(const unsigned int &i)      {return fGeTAMU_Segment_Energy_LG[i];}
   
   inline unsigned int GetMultiplicitySegmentT()  {return fGeTAMU_Segment_CloverNbr_T.size();}
   inline unsigned short GetSegmentCloverNbrT(const unsigned int &i)   {return fGeTAMU_Segment_CloverNbr_T[i]; }
