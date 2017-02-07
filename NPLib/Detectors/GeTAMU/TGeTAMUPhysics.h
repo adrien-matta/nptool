@@ -136,7 +136,7 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
 
   private:
     map<unsigned int,TVector3> m_CloverPosition;//!
-    void MatchSegmentToCore(void);
+    void FillSingles(void);
   public: // Static constructor to be passed to the Detector Factory
     static NPL::VDetector* Construct();
     ClassDef(TGeTAMUPhysics,1)  // GeTAMUPhysics structure

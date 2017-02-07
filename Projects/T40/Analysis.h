@@ -94,6 +94,9 @@ class Analysis: public NPL::VAnalysis{
 	double YTarget ;
 	TVector3 BeamDirection ;
   
+  //Gamma
+  double GammaSinglesE;
+  
   //FPD
 	static const Int_t kNumAw = 4; // number of wires
   double Delta_E      ;
