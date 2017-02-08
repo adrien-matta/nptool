@@ -63,8 +63,9 @@ void TGeTAMUPhysics::BuildPhysicalEvent(){
     double Y = Singles_Y[iPixel];
     double Z = Singles_Z[iPixel];
     double Theta = Singles_Theta[iPixel];
-    }
-
+    //cout << clv << " " << cry << " " << seg << " " << X << " " << Y << " " << Z << " "<< energy << endl; 
+     }
+  
   // Treat addback 
   unsigned int c_size_e = m_PreTreatedData->GetMultiplicityCoreE();
   unsigned int s_size_e = m_PreTreatedData->GetMultiplicitySegmentE();
@@ -354,10 +355,10 @@ for (int i=0; i< (size -1); i++){    // element to be compared
     Singles_Clover.push_back(clover);  
     Singles_Crystal.push_back(CryEN[i]);  
     Singles_Segment.push_back(segment);
-    Singles_Crystal.push_back(CryE[i]);  
+    Singles_E.push_back(CryE[i]);  
     TVector3 Pos = GetSegmentPosition(clover,CryEN[i],segment);
     Singles_X.push_back(Pos.X());
-    Singles_Z.push_back(Pos.Y());
+    Singles_Y.push_back(Pos.Y());
     Singles_Z.push_back(Pos.Z());
     Singles_Theta.push_back(Pos.Theta()); 
     //cout << " XYZ "<< Pos.X() << " "<< Pos.Y() << " "<< Pos.Z() << " Theta: " <<Pos.Theta()/deg<< endl ; 
@@ -402,19 +403,19 @@ TVector3 TGeTAMUPhysics::GetCloverPosition(int& CloverNbr){
 }
 /////////////////////////////////////////////////
 TVector3 TGeTAMUPhysics::GetCorePosition(int& CloverNbr,int& CoreNbr){
-  static double offset = 33.4; // mm
-  static double depth = 45; // mm
-  static TVector3 Pos;
-  TVector3 CloverPos = m_CloverPosition[CloverNbr];
+  double offset = 20; // mm
+  double depth = 40; // mm
+  TVector3 Pos;
+  TVector3 CloverPos = GetCloverPosition(CloverNbr);
 
   if(CoreNbr==1)
-    Pos.SetXYZ(-offset,offset,depth);
-  else if(CoreNbr==2)
     Pos.SetXYZ(offset,offset,depth);
+  else if(CoreNbr==2)
+    Pos.SetXYZ(-offset,offset,depth);
   else if(CoreNbr==3)
-    Pos.SetXYZ(offset,-offset,depth);
-  else if(CoreNbr==4)
     Pos.SetXYZ(-offset,-offset,depth);
+  else if(CoreNbr==4)
+    Pos.SetXYZ(offset,-offset,depth);
   else
     cout << "Warning in GetCorePosition: GeTAMU crystal number " << CoreNbr << " is out of range (1 to 4)" << endl;
 
@@ -428,23 +429,20 @@ TVector3 TGeTAMUPhysics::GetSegmentPosition(int& CloverNbr,int& CoreNbr, int& Se
  
   if (SegmentNbr==0) return GetCorePosition(CloverNbr,CoreNbr);
 
-  static double offsetX = 33.4; // mm assumed the same as TIGRESS, CHECK
-  static double offsetY = 33.4; //mm in case of left and right segments, CHECK
-  static double depth = 45; // mm in crystal, assumed the same as TIGRESS, CHECK
+   double offsetX = 20; // 20mm in GeTAMU according to measurments, 33.4 mm in TIGRESS
+   double offsetY = 20;
+   double depth = 40;  // 40mm in GeTAMU according to measurments, 45 mm in TIGRESS
 
   // Changes signs with segment/core combinations
-  if (CoreNbr==1||CoreNbr==4)
+  if (CoreNbr==3||CoreNbr==2)
     offsetX = -offsetX;
-  if (CoreNbr==3||CoreNbr==4) // CHECK
+  if (CoreNbr==3||CoreNbr==4) 
     offsetY = -offsetY;
 
-  TVector3 CorePos = GetCorePosition(CloverNbr,CoreNbr);
   TVector3 CloverPos = GetCloverPosition(CloverNbr);
-  static TVector3 Pos;
+  TVector3 Pos;
 
-  if(SegmentNbr == 0)
-    return CorePos;
-  else if(SegmentNbr==1 || SegmentNbr==3){ // LEFT OR RIGHT
+  if(SegmentNbr==1 || SegmentNbr==3){ // LEFT OR RIGHT
     offsetX = 1.5*offsetX ;
     Pos.SetXYZ(offsetX,offsetY,depth);
     }
@@ -454,7 +452,7 @@ TVector3 TGeTAMUPhysics::GetSegmentPosition(int& CloverNbr,int& CoreNbr, int& Se
     }
   else
     cout << "Warning: GeTAMU segment number " << SegmentNbr 
-    << " is out of range\n accepted range: 0 (reserved for core) or 1-3 (Left, Middle, Right segment) " << endl;
+    << " is out of range\n accepted values: 0 (reserved for core) or 1-3 (Left, Middle, Right segment) " << endl;
 
 /* // Not need in case of geTAMU, CHECK
   // Each crystal is a rotation of the previous one
