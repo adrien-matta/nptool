@@ -380,7 +380,7 @@ TVector3 TGeTAMUPhysics::GetPositionOfInteraction(unsigned int& i){
 // original energy, position, beta
 double TGeTAMUPhysics::GetDopplerCorrectedEnergy(double& energy , TVector3 direction, TVector3& beta){
   // renormalise pos vector
-  position.SetMag(1);
+  direction.SetMag(1);
   m_GammaLV.SetPx(energy*direction.X());
   m_GammaLV.SetPy(energy*direction.Y());
   m_GammaLV.SetPz(energy*direction.Z());
