@@ -15,19 +15,20 @@ CsI
  R= 0 mm
  X= 0 mm
  Y= 0 mm
- Z= 15 mm
- Thickness= 1 mm
- Shape= Trapezoidal
- FaceFront= 100 mm
- FaceBack= 100 mm
+ Z= 900 mm
+ Thickness= 30 mm
+ Shape= Square
+ FaceFront= 80 mm
+ FaceBack= 80 mm
  Radius= 0 mm
- Scintillator= CsI_Scintillator
+ %Scintillator= CsI_Scintillator
+ Scintillator= Cu
  LeadThickness= 0 mm
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ScintillatorPlastic
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Plastic
+%Plastic
  THETA= 0 deg
  PHI= 0 deg
  R= 0 mm
@@ -42,7 +43,7 @@ Plastic
  LeadThickness= 0 mm
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Plastic
+%Plastic
  THETA= 0 deg
  PHI= 0 deg 
  R= 0 mm 

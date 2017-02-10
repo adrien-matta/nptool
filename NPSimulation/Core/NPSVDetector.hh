@@ -50,6 +50,7 @@
 #include "TInteractionCoordinates.h"
 #include "NPInputParser.h"
 
+
 using namespace std;
 using namespace CLHEP;
 
@@ -91,6 +92,7 @@ class VDetector{
   protected:
     // Class to store the interaction data (i.e. X,Y,Z,theta,phi)
     static TInteractionCoordinates*      ms_InterCoord;
+    
 };
 }
 #endif
