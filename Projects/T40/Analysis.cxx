@@ -97,11 +97,11 @@ void Analysis::Init(){
   // energy losses
   string light=NPL::ChangeNameToG4Standard(myReaction->GetNucleus3().GetName());
   string beam=NPL::ChangeNameToG4Standard(myReaction->GetNucleus1().GetName());
-  LightTarget = NPL::EnergyLoss(light+"_"+TargetMaterial+".SRIM","SRIM",10 );
-  LightAl = NPL::EnergyLoss(light+"_Al.SRIM","SRIM",10);
-  //LightSi = NPL::EnergyLoss(light+"_Si.SRIM","SRIM",10);
+  LightTarget = NPL::EnergyLoss(light+"_"+TargetMaterial+".G4table","G4Table",10 );
+  LightAl = NPL::EnergyLoss(light+"_Al.G4table","G4Table",10);
+  //LightSi = NPL::EnergyLoss(light+"_Si.G4table","G4Table",10);
   LightSi = NPL::EnergyLoss("He4_Si.SRIM","SRIM",10);
-  BeamTarget = NPL::EnergyLoss(beam+"_"+TargetMaterial+".SRIM","SRIM",10);
+  BeamTarget = NPL::EnergyLoss(beam+"_"+TargetMaterial+".G4table","G4Table",10);
   FinalBeamEnergy = BeamTarget.Slow(OriginalBeamEnergy, TargetThickness*0.5, 0);
   myReaction->SetBeamEnergy(FinalBeamEnergy);
   cout << "Final Beam energy (middle of target): " << FinalBeamEnergy << endl;
@@ -126,6 +126,7 @@ void Analysis::Init(){
   InitInputBranch();
   
   //Ge
+  GammaSinglesE=0;
   
   //FPD
   Delta_E = 0; // Energy ionisation chamber
@@ -157,6 +158,7 @@ void Analysis::Init(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::TreatEvent(){
+
   // Reinitiate calculated variable
   ReInitValue();
   ////////////////////////////////////////// LOOP on TiaraHyball + SSSD Hit //////////////////////////////////////////
@@ -266,49 +268,20 @@ void Analysis::TreatEvent(){
   } // end loop TiaraBarrel
 
   /////////////////////////// LOOP on Ge TAMU /////////////////////////////
-  /*
-for(unsigned int countGe = 0 ; countGe < TG->something.size() ; countGe++) // multiplicity treated for now is zero 
+  
+for(unsigned int countGe = 0 ; countGe < TG->Singles_E.size() ; countGe++) // multiplicity treated for now is zero 
   { 
-
-  unsigned int c_size_e = TG->m_PreTreatedData->GetMultiplicityCoreE();
-  unsigned int s_size_e = m_PreTreatedData->GetMultiplicitySegmentE();
-  // map for add back
-  map<int,double> clv_energy;   
-  map<int,int> clv_segment;
-  map<int,int> clv_crystal;
-  map<int,double> max_core;
-  map<int,double> max_segment; 
-  for(unsigned int i = 0 ; i < c_size_e ; i++){
-    int clv = m_PreTreatedData->GetCoreCloverNbrE(i);
-    int cry = m_PreTreatedData->GetCoreCrystalNbrE(i);
-    double energy = m_PreTreatedData->GetCoreEnergy(i);
-    // Add back energy
-    clv_energy[clv] += energy;
-    // Pick up the crystal with the maximum energy in every clover 
-    if(energy > max_core[clv]){
-      max_core[clv] = energy;
-      clv_crystal[clv] = cry;
-    }
-    // Pick up the segment with the maximum energy in every clover
-    for(unsigned int j = 0 ; j < s_size_e ; j++){
-      double s_energy = m_PreTreatedData->GetSegmentEnergy(j); 
-      if(s_energy > max_segment[clv]){
-        max_segment[clv] = s_energy;
-        clv_segment[clv] = m_PreTreatedData->GetSegmentSegmentNbrE(j);
-      }
-    }
-  }
-
   // Singles spectra 
   
   // Addback spectra 
+  GammaSinglesE+= TG->Singles_E[countGe];
 
   // calculate angle
 
   // calculate doppler corrected spectra 
   	
   }
-*/
+
 
  ////////////////////////////////////////// LOOP on FPD  //////////////////////////////////////////
 	// Micromega energy
@@ -472,6 +445,8 @@ void Analysis::InitOutputBranch() {
 
   //GeTamu
   // stuff goes here 
+  RootOutput::getInstance()->GetTree()->Branch("GammaSinglesE",&GammaSinglesE,"GammaSinglesE/D");
+
 
   //FPD
   RootOutput::getInstance()->GetTree()->Branch("Delta_E",&Delta_E,"Delta_E/D");
