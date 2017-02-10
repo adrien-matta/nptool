@@ -7,7 +7,7 @@
 
 /*****************************************************************************
  * Original Author: Adrien MATTA  contact address: a.matta@surrey.ac.uk      *
- *                                                                           * 
+ *                                                                           *
  * Creation Date  : November 2012                                            *
  * Last update    : December 2016 m.moukaddam@surrey.ac.uk                   *
  *---------------------------------------------------------------------------*
@@ -67,21 +67,21 @@ void TGeTAMUPhysics::BuildPhysicalEvent(){
     Singles_Z.push_back(pos.Z());
     }
 
-  // Treat addback 
+  // Treat addback
   unsigned int c_size_e = m_PreTreatedData->GetMultiplicityCoreE();
   unsigned int s_size_e = m_PreTreatedData->GetMultiplicitySegmentE();
   unsigned int c_size_t = m_PreTreatedData->GetMultiplicityCoreT();
   unsigned int s_size_t = m_PreTreatedData->GetMultiplicitySegmentT();
 
   // map for add back
-  map<int,double> clv_energy; 
-  map<int,int> clv_segment;  
+  map<int,double> clv_energy;
+  map<int,int> clv_segment;
   map<int,int> clv_crystal;
   map<int,double> max_core;
   map<int,double> max_segment;
 
   map<int,TVector3> max_pos; // first hit
-  map<int,int> cry_segment;    
+  map<int,int> cry_segment;
 
 /*
 
@@ -92,14 +92,14 @@ void TGeTAMUPhysics::BuildPhysicalEvent(){
     double energy = m_PreTreatedData->GetCoreEnergy(i);
     // Add back energy
     clv_energy[clv] += energy;
-    // Pick up the crystal with the maximum energy in every clover 
+    // Pick up the crystal with the maximum energy in every clover
     if(energy > max_core[clv]){
       max_core[clv] = energy;
       clv_crystal[clv] = cry;
     }
     // Pick up the segment with the maximum energy in every clover
     for(unsigned int j = 0 ; j < s_size_e ; j++){
-      double s_energy = m_PreTreatedData->GetSegmentEnergy(j); 
+      double s_energy = m_PreTreatedData->GetSegmentEnergy(j);
       if(s_energy > max_segment[clv]){
         max_segment[clv] = s_energy;
         clv_segment[clv] = m_PreTreatedData->GetSegmentSegmentNbrE(j);
@@ -115,7 +115,7 @@ void TGeTAMUPhysics::BuildPhysicalEvent(){
     }
 
     for(unsigned int j = 0 ; j < s_size_e ; j++){
-      double s_energy = m_PreTreatedData->GetSegmentEnergy(j); 
+      double s_energy = m_PreTreatedData->GetSegmentEnergy(j);
       if(s_energy > max_segment[clv]){
         max_segment[clv] = s_energy;
         clv_segment[clv] = m_PreTreatedData->GetSegmentSegmentNbrE(j);
@@ -131,21 +131,21 @@ void TGeTAMUPhysics::BuildPhysicalEvent(){
     double energy = m_PreTreatedData->GetCoreEnergy(i);
     // Add back energy
     clv_energy[clv] += energy;
-    // Pick up the crystal with the maximum energy in every clover 
+    // Pick up the crystal with the maximum energy in every clover
     if(energy > max_core[clv]){
       max_core[clv] = energy;
       clv_crystal[clv] = cry;
     }
     // Pick up the segment with the maximum energy in every clover
     for(unsigned int j = 0 ; j < s_size_e ; j++){
-      double s_energy = m_PreTreatedData->GetSegmentEnergy(j); 
+      double s_energy = m_PreTreatedData->GetSegmentEnergy(j);
       int s_seg = m_PreTreatedData->GetSegmentSegmentNbrE(i);
       int s_cry = m_PreTreatedData->GetSegmentSegmentNbrE(i);
       if(s_energy > max_segment[clv]){
         max_segment[clv] = s_energy;
         cry_segment[clv] = s_cry;
         clv_segment[clv] = s_seg;
-        //max_pos[clv] = 
+        //max_pos[clv] =
       }
     }
   }
@@ -210,7 +210,7 @@ void TGeTAMUPhysics::PreTreat(){
       Time =  cal->ApplyCalibration(name+"_T", Traw);
       m_PreTreatedData->SetCoreT(clover,crystal,Time);
     }
-  } 
+  }
 
  mysizeE = m_EventData->GetMultiplicitySegmentE();
   for(unsigned int i = 0 ; i < mysizeE ; i++){
@@ -239,7 +239,7 @@ void TGeTAMUPhysics::PreTreat(){
 //match data and fill singles
   unsigned int sizec = m_PreTreatedData->GetMultiplicityCoreE();
   unsigned int sizes = m_PreTreatedData->GetMultiplicitySegmentE();
-  //cores 
+  //cores
   for(unsigned int iCore = 0 ; iCore < sizec ; iCore++){
     Energy = m_PreTreatedData->GetCoreEnergy(iCore);
     Singles_CoreE.push_back(Energy);
@@ -247,7 +247,7 @@ void TGeTAMUPhysics::PreTreat(){
   //segments
   // For geometry parameters (clover, crystal, segment) we use the segment vectors
   for(unsigned int iSeg = 0 ; iSeg < sizes ; iSeg++){
-    clover = m_PreTreatedData->GetSegmentCloverNbrE(iSeg); 
+    clover = m_PreTreatedData->GetSegmentCloverNbrE(iSeg);
     crystal = m_PreTreatedData->GetSegmentCloverNbrE(iSeg);
     segment = m_PreTreatedData->GetSegmentSegmentNbrE(iSeg);
     Energy = m_PreTreatedData->GetSegmentEnergy(iSeg);
@@ -255,8 +255,8 @@ void TGeTAMUPhysics::PreTreat(){
     if ( !(segment==0 && (crystal==2||crystal==3)) || (segment==2 && (crystal==1||crystal==4)) ){
       Singles_Clover.push_back(clover);
       Singles_Crystal.push_back(crystal);
-      Singles_Segment.push_back(segment);  
-      Singles_SegE.push_back(Energy);  
+      Singles_Segment.push_back(segment);
+      Singles_SegE.push_back(Energy);
     }
   }
 
@@ -270,12 +270,12 @@ TVector3 TGeTAMUPhysics::GetPositionOfInteraction(unsigned int& i){
 }
 /////////////////////////////////////////////////
 // original energy, position, beta
-double TGeTAMUPhysics::GetDopplerCorrectedEnergy(double& energy , TVector3 position, TVector3& beta){
-  // renorm pos vector
-  position.SetMag(1); 
-  m_GammaLV.SetPx(energy*position.X());
-  m_GammaLV.SetPy(energy*position.Y());
-  m_GammaLV.SetPz(energy*position.Z());
+double TGeTAMUPhysics::GetDopplerCorrectedEnergy(double& energy , TVector3 direction, TVector3& beta){
+  // renormalise pos vector
+  position.SetMag(1);
+  m_GammaLV.SetPx(energy*direction.X());
+  m_GammaLV.SetPy(energy*direction.Y());
+  m_GammaLV.SetPz(energy*direction.Z());
   m_GammaLV.SetE(energy);
   m_GammaLV.Boost(-beta);
   return m_GammaLV.Energy();
@@ -315,11 +315,11 @@ TVector3 TGeTAMUPhysics::GetCorePosition(int& CloverNbr,int& CoreNbr){
   // Define reference axis as the clover direction
   Pos.RotateUz(CloverPos.Unit());
   Pos+=CloverPos;
-  return (Pos); 
+  return (Pos);
 }
 /////////////////////////////////////////////////
 TVector3 TGeTAMUPhysics::GetSegmentPosition(int& CloverNbr,int& CoreNbr, int& SegmentNbr){
-  
+
   static double offsetX = 33.4; // mm assumed the same as TIGRESS, CHECK
   static double offsetY = 33.4; //mm in case of left and right segments, CHECK
   static double depth = 45; // mm in crystal, assumed the same as TIGRESS, CHECK
@@ -332,7 +332,7 @@ TVector3 TGeTAMUPhysics::GetSegmentPosition(int& CloverNbr,int& CoreNbr, int& Se
 
   //impossible cases
   if ( (SegmentNbr==0 && (CoreNbr==2||CoreNbr==3)) || (SegmentNbr==2 && (CoreNbr==1||CoreNbr==4)) )
-    cout << "Warning: GeTAMU segment number " << SegmentNbr 
+    cout << "Warning: GeTAMU segment number " << SegmentNbr
     << " and core number " << CoreNbr << " are not compatible " << endl;
 
   TVector3 CorePos = GetCorePosition(CloverNbr,CoreNbr);
@@ -350,7 +350,7 @@ TVector3 TGeTAMUPhysics::GetSegmentPosition(int& CloverNbr,int& CoreNbr, int& Se
     Pos.SetXYZ(offsetX,offsetY,depth);
     }
   else
-    cout << "Warning: GeTAMU segment number " << SegmentNbr 
+    cout << "Warning: GeTAMU segment number " << SegmentNbr
     << " is out of range\n accepted range: 0 (core) or 1-3 (L,M,R) " << endl;
 
 /* // Not need in case of geTAMU, CHECK
@@ -363,11 +363,11 @@ TVector3 TGeTAMUPhysics::GetSegmentPosition(int& CloverNbr,int& CoreNbr, int& Se
     Pos.RotateZ(270*deg);
 */
 
-  // Define reference axis as the Clover position, 
+  // Define reference axis as the Clover position,
   // This is a special case to GeTAMU where segmentation is with respect to clover
   Pos.RotateUz(CloverPos.Unit());
   Pos+=CloverPos;
-  return (Pos); 
+  return (Pos);
 
 }
 
@@ -377,7 +377,7 @@ TVector3 TGeTAMUPhysics::GetSegmentPosition(int& CloverNbr,int& CoreNbr, int& Se
 void TGeTAMUPhysics::ReadConfiguration(NPL::InputParser parser)  {
   vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("GeTAMU");
   if(NPOptionManager::getInstance()->GetVerboseLevel())
-    cout << "//// " << blocks.size() << " clovers found " << endl; 
+    cout << "//// " << blocks.size() << " clovers found " << endl;
 
   vector<string> token = {"CloverID","R","Theta","Phi","Beta"};
 
@@ -402,7 +402,7 @@ void TGeTAMUPhysics::InitializeRootInputRaw() {
   TChain* inputChain = RootInput::getInstance()->GetChain();
   inputChain->SetBranchStatus( "GeTAMU" , true );
   if(inputChain->FindBranch( "fTIG_*" ))
-    inputChain->SetBranchStatus( "fTIG_*" , true ); // CHECK 
+    inputChain->SetBranchStatus( "fTIG_*" , true ); // CHECK
   inputChain->SetBranchAddress( "GeTAMU" , &m_EventData );
 }
 
@@ -412,12 +412,12 @@ void TGeTAMUPhysics::InitializeRootOutput()    {
   outputTree->Branch( "GeTAMU" , "TGeTAMUPhysics" , &m_EventPhysics );
 }
 
-///////////////////////////////////////////////////////////////////////////  
+///////////////////////////////////////////////////////////////////////////
 void TGeTAMUPhysics::Clear() {
 
-  Singles_CoreE.clear(); 
-  Singles_SegE.clear();  
-  Singles_DC.clear();   
+  Singles_CoreE.clear();
+  Singles_SegE.clear();
+  Singles_DC.clear();
   Singles_Theta.clear();
   Singles_X.clear();
   Singles_Y.clear();
@@ -450,7 +450,7 @@ void TGeTAMUPhysics::AddParameterToCalibrationManager(){
         Cal->AddParameter("GETAMU", "D"+ NPL::itoa(i+1)+"_CRY"+NPL::itoa(cry+1)+"_SEG"+ NPL::itoa(j)+"_E","GETAMU_D"+ NPL::itoa(i+1)+"_CRY"+NPL::itoa(cry+1)+"_SEG"+NPL::itoa(j)+"_E");
       }
     }
-  } 
+  }
   return;
 }
 
@@ -476,4 +476,3 @@ class proxy_getamu{
 
 proxy_getamu p;
 }
-
