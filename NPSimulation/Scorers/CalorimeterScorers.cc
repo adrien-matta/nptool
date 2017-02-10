@@ -40,7 +40,7 @@ G4bool PS_Calorimeter::ProcessHits(G4Step* aStep, G4TouchableHistory*){
     G4double* Infos = new G4double[2+mysize];
     Infos[0] = aStep->GetTotalEnergyDeposit();
     Infos[1] = aStep->GetPreStepPoint()->GetGlobalTime();
-    
+        
     for(unsigned int i = 0 ; i < mysize ; i++){
         Infos[i+2] = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_NestingLevel[i]);
     }
@@ -111,11 +111,13 @@ PS_CalorimeterWithInteraction::~PS_CalorimeterWithInteraction(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4bool PS_CalorimeterWithInteraction::ProcessHits(G4Step* aStep, G4TouchableHistory*){
+
     // Contain Energy, Time + as many copy number as nested volume
     unsigned int mysize = m_NestingLevel.size();
     G4double* Infos = new G4double[7+mysize];
     Infos[0] = aStep->GetTotalEnergyDeposit();
     Infos[1] = aStep->GetPreStepPoint()->GetGlobalTime();
+    
     
     // Interaction coordinates (used to fill the InteractionCoordinates branch)
     m_Position  = aStep->GetPreStepPoint()->GetPosition();
