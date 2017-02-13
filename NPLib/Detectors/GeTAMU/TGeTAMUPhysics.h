@@ -88,14 +88,14 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
 
   public: // Data Member
     //singles sorting tools
-    map<int, vector <int> > Singles_CloverMap_CryEN; // cry number energy
-    map<int, vector <int> > Singles_CloverMap_SegEN; // seg number
-    map<int, vector <double> > Singles_CloverMap_CryE; // cry energy
-    map<int, vector <double> > Singles_CloverMap_SegE; // seg energy 
-    map<int, vector <int> > Singles_CloverMap_CryTN; // cry number time
-    map<int, vector <int> > Singles_CloverMap_SegTN; // seg number
-    map<int, vector <double> > Singles_CloverMap_CryT; // cry energy
-    map<int, vector <double> > Singles_CloverMap_SegT; // seg energy 
+    map<int, vector <int> > Singles_CloverMap_CryEN; //! cry number energy
+    map<int, vector <int> > Singles_CloverMap_SegEN; //1 seg number
+    map<int, vector <double> > Singles_CloverMap_CryE; //! cry energy
+    map<int, vector <double> > Singles_CloverMap_SegE; //! seg energy 
+    map<int, vector <int> > Singles_CloverMap_CryTN; //! cry number time
+    map<int, vector <int> > Singles_CloverMap_SegTN; //! seg number
+    map<int, vector <double> > Singles_CloverMap_CryT; //! cry energy
+    map<int, vector <double> > Singles_CloverMap_SegT; //! seg energy 
     //sorting parameters
     vector<double> Singles_E;    
     vector<double> Singles_T;    
@@ -132,6 +132,7 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     TVector3 GetCloverPosition(int& CloverNbr);
     TVector3 GetCorePosition(int& CloverNbr, int& CoreNbr);
     TVector3 GetSegmentPosition(int& CloverNbr, int& CoreNbr, int& SegmentNbr);
+    void FillAddBack(int scheme, TVector3& beta);
     inline TVector3 GetCrystalPosition(int& CloverNbr, int& CoreNbr){return GetCorePosition(CloverNbr,CoreNbr);};
 
   private:

@@ -53,6 +53,7 @@ ClassImp(TGeTAMUPhysics)
 void TGeTAMUPhysics::BuildPhysicalEvent(){
   PreTreat();
 
+/*
  //Treat singles
   for(unsigned int iPixel = 0 ; iPixel < Singles_E.size() ; iPixel++){
     int clv = Singles_Clover[iPixel];
@@ -82,46 +83,44 @@ void TGeTAMUPhysics::BuildPhysicalEvent(){
   map<int,TVector3> max_pos; // first hit
   map<int,int> cry_segment;    
 
-/*
+  
 
 
-  for(unsigned int i = 0 ; i < c_size_e ; i++){
-    int clv = m_PreTreatedData->GetCoreCloverNbrE(i);
-    int cry = m_PreTreatedData->GetCoreCrystalNbrE(i);
-    double energy = m_PreTreatedData->GetCoreEnergy(i);
-    // Add back energy
-    clv_energy[clv] += energy;
-    // Pick up the crystal with the maximum energy in every clover 
-    if(energy > max_cry[clv]){
-      max_cry[clv] = energy;
-      clv_crystal[clv] = cry;
-    }
-    // Pick up the segment with the maximum energy in every clover
-    for(unsigned int j = 0 ; j < s_size_e ; j++){
-      double s_energy = m_PreTreatedData->GetSegmentEnergy(j); 
-      if(s_energy > max_segment[clv]){
-        max_segment[clv] = s_energy;
-        clv_segment[clv] = m_PreTreatedData->GetSegmentSegmentNbrE(j);
-      }
-    }
-  }
+                    for(unsigned int i = 0 ; i < c_size_e ; i++){
+                      int clv = m_PreTreatedData->GetCoreCloverNbrE(i);
+                      int cry = m_PreTreatedData->GetCoreCrystalNbrE(i);
+                      double energy = m_PreTreatedData->GetCoreEnergy(i);
+                      // Add back energy
+                      clv_energy[clv] += energy;
+                      // Pick up the crystal with the maximum energy in every clover 
+                      if(energy > max_cry[clv]){
+                        max_cry[clv] = energy;
+                        clv_crystal[clv] = cry;
+                      }
+                      // Pick up the segment with the maximum energy in every clover
+                      for(unsigned int j = 0 ; j < s_size_e ; j++){
+                        double s_energy = m_PreTreatedData->GetSegmentEnergy(j); 
+                        if(s_energy > max_segment[clv]){
+                          max_segment[clv] = s_energy;
+                          clv_segment[clv] = m_PreTreatedData->GetSegmentSegmentNbrE(j);
+                        }
+                      }
+                    }
 
-    // Pick up the segment with the maximum energy in every clover
-  for(unsigned int i = 0 ; i < c_size_e ; i++){
-    int clv = m_PreTreatedData->GetCoreCloverNbrE(i);
-    int cry = m_PreTreatedData->GetCoreCrystalNbrE(i);
-    double energy = m_PreTreatedData->GetCoreEnergy(i);
-    }
+                      // Pick up the segment with the maximum energy in every clover
+                    for(unsigned int i = 0 ; i < c_size_e ; i++){
+                      int clv = m_PreTreatedData->GetCoreCloverNbrE(i);
+                      int cry = m_PreTreatedData->GetCoreCrystalNbrE(i);
+                      double energy = m_PreTreatedData->GetCoreEnergy(i);
+                      }
 
-    for(unsigned int j = 0 ; j < s_size_e ; j++){
-      double s_energy = m_PreTreatedData->GetSegmentEnergy(j); 
-      if(s_energy > max_segment[clv]){
-        max_segment[clv] = s_energy;
-        clv_segment[clv] = m_PreTreatedData->GetSegmentSegmentNbrE(j);
-      }
-    }
-
-*/
+                      for(unsigned int j = 0 ; j < s_size_e ; j++){
+                        double s_energy = m_PreTreatedData->GetSegmentEnergy(j); 
+                        if(s_energy > max_segment[clv]){
+                          max_segment[clv] = s_energy;
+                          clv_segment[clv] = m_PreTreatedData->GetSegmentSegmentNbrE(j);
+                        }
+                      }
 
 
   for(unsigned int i = 0 ; i < c_size_e ; i++){
@@ -170,6 +169,7 @@ void TGeTAMUPhysics::BuildPhysicalEvent(){
     AddBack_Z.push_back(-1000);
   }
 
+*/
 //Fill the time OR
 for (unsigned i = 0 ; i < m_PreTreatedData->GetMultiplicityCoreT(); i++)
   GeTime.push_back(m_PreTreatedData->GetCoreTime(i));
@@ -388,6 +388,52 @@ double TGeTAMUPhysics::GetDopplerCorrectedEnergy(double& energy , TVector3 posit
   return m_GammaLV.Energy();
 }
 
+void TGeTAMUPhysics::FillAddBack(int scheme, TVector3& beta){
+
+    vector<int>::iterator itClover;
+
+  if (scheme==1){
+   //cout << " Clover Add-Back, singles: " << Singles_E.size()<< endl; 
+   //Treat singles
+    for(unsigned int iPixel = 0 ; iPixel < Singles_E.size() ; iPixel++){
+      int clv = Singles_Clover[iPixel];
+      int cry = Singles_Crystal[iPixel];
+      int seg = Singles_Segment[iPixel];
+      double energy = Singles_E[iPixel];
+      //cout << clv << " " << cry << " " << seg << " "<< energy << endl; 
+      itClover = find (AddBack_Clover.begin(), AddBack_Clover.end(), clv); 
+      bool end = (itClover == AddBack_Clover.end());
+      if ( end ){ // Clover is not found
+        // Fill these values only for the first hit
+        AddBack_Clover.push_back(clv);
+        AddBack_Crystal.push_back(cry);
+        AddBack_Segment.push_back(seg);
+        TVector3 position = GetSegmentPosition(clv,cry,seg);
+        AddBack_X.push_back(position.X());
+        AddBack_Y.push_back(position.Y());
+        AddBack_Z.push_back(position.Z());
+        AddBack_Theta.push_back(position.Theta()); 
+        AddBack_E.push_back(energy);      
+        // Define reference axis as the beam direction
+        //beta.Unit().Dump();
+        //position.Dump();
+        position.RotateUz(beta.Unit()); // CHECK
+        //position.Dump();
+        //AddBack_DC.push_back(energy); // Doppler Corrected for highest energy
+        AddBack_DC.push_back(GetDopplerCorrectedEnergy(energy, position, beta)); // Doppler Corrected for highest energy
+        }
+      else{
+        AddBack_E.back()+=energy;      // E1+E2+E3...
+        AddBack_DC.back()+=energy;     // DC(E1)+E2+E3...
+        }
+      }
+    } 
+    else 
+      cout << " Addback scheme " << scheme << " is not supported " << endl;
+   
+
+} // end of add back
+
 /////////////////////////////////////////////////
 void TGeTAMUPhysics::AddClover(unsigned int ID ,double R, double Theta, double Phi){
   TVector3 Pos(0,0,1);
@@ -453,16 +499,6 @@ TVector3 TGeTAMUPhysics::GetSegmentPosition(int& CloverNbr,int& CoreNbr, int& Se
   else
     cout << "Warning: GeTAMU segment number " << SegmentNbr 
     << " is out of range\n accepted values: 0 (reserved for core) or 1-3 (Left, Middle, Right segment) " << endl;
-
-/* // Not need in case of geTAMU, CHECK
-  // Each crystal is a rotation of the previous one
-  if (CoreNbr == 2 )
-    Pos.RotateZ(90*deg);
-  else if (CoreNbr == 3 )
-    Pos.RotateZ(180*deg);
-  else if (CoreNbr == 4)
-    Pos.RotateZ(270*deg);
-*/
 
   // Define reference axis as the Clover position, 
   // This is a special case to GeTAMU where segmentation is with respect to clover
