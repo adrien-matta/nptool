@@ -144,7 +144,7 @@ int InputBlock::GetInt(std::string Token){
   iss >> val ;
 
   if(verbose)
-    cout << " " << Token << ": " << val << endl; 
+    cout << " " << Token << ": " << val << endl;
 
 
   return val;        
@@ -302,7 +302,7 @@ std::vector<InputBlock*> InputParser::GetAllBlocksWithToken(std::string Token){
   std::vector<InputBlock*> res;
   for(unsigned int i = 0 ; i < m_Block.size(); i++){
     if(m_Block[i]->GetMainToken() == Token){
-      res.push_back(m_Block[i]);
+        res.push_back(m_Block[i]);
     }
   }
 
@@ -325,8 +325,9 @@ std::vector<InputBlock*> InputParser::GetAllBlocksWithTokenAndValue(std::string 
 ////////////////////////////////////////////////////////////////////////////////
 std::vector<std::string> InputParser::GetAllBlocksToken(){
   std::vector<std::string> token;
-  for(unsigned int i = 0 ; i < m_Block.size() ; i++)
-      token.push_back(m_Block[i]->GetMainToken());
+    for(unsigned int i = 0 ; i < m_Block.size() ; i++){
+        token.push_back(m_Block[i]->GetMainToken());
+    }
 
   return token;
 }
