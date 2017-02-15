@@ -99,7 +99,7 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     //sorting parameters
     vector<double> Singles_E;    
     vector<double> Singles_T;    
-    vector<double> Singles_DC;   // Doppler Corrected Energy
+    vector<double> Singles_DC;   // Doppler Corrected Energy (filled externaly)
     vector<double> Singles_Theta;
     vector<double> Singles_X;
     vector<double> Singles_Y;
@@ -132,12 +132,11 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     TVector3 GetCloverPosition(int& CloverNbr);
     TVector3 GetCorePosition(int& CloverNbr, int& CoreNbr);
     TVector3 GetSegmentPosition(int& CloverNbr, int& CoreNbr, int& SegmentNbr);
-    void FillAddBack(int scheme, TVector3& beta);
+    void AddBack(TVector3& beta, int scheme=1);
     inline TVector3 GetCrystalPosition(int& CloverNbr, int& CoreNbr){return GetCorePosition(CloverNbr,CoreNbr);};
 
   private:
     map<unsigned int,TVector3> m_CloverPosition;//!
-    void FillSingles(void);
   public: // Static constructor to be passed to the Detector Factory
     static NPL::VDetector* Construct();
     ClassDef(TGeTAMUPhysics,1)  // GeTAMUPhysics structure
