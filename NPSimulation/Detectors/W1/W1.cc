@@ -168,7 +168,7 @@ void W1::VolumeMaker(G4int             DetecNumber,
    logicSilicon->SetSensitiveDetector(m_Scorer);
 
    ///Visualisation of Silicon Strip
-   G4VisAttributes* SiliconVisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 0.9));
+   G4VisAttributes* SiliconVisAtt = new G4VisAttributes(G4Colour(0.0, 0.9, 0.0));
    logicSilicon->SetVisAttributes(SiliconVisAtt);
 }
 
@@ -192,7 +192,7 @@ void W1::ReadConfiguration(NPL::InputParser parser){
       G4ThreeVector B = NPS::ConvertVector(blocks[i]->GetTVector3("X16_Y1","mm"));
       G4ThreeVector C = NPS::ConvertVector(blocks[i]->GetTVector3("X1_Y16","mm"));
       G4ThreeVector D = NPS::ConvertVector(blocks[i]->GetTVector3("X16_Y16","mm"));
-      if(blocks[i]->GetInt("VIS"))
+      if(blocks[i]->GetString("VIS")=="all")
         m_non_sensitive_part_visiualisation = true;
       AddDetector(A,B,C,D) ;
     }
@@ -203,7 +203,7 @@ void W1::ReadConfiguration(NPL::InputParser parser){
       double Phi= blocks[i]->GetDouble("PHI","deg");
       double R = blocks[i]->GetDouble("R","mm");
       vector<double> beta = blocks[i]->GetVectorDouble("BETA","deg");
-      if(blocks[i]->GetInt("VIS"))
+      if(blocks[i]->GetString("VIS")=="all")
         m_non_sensitive_part_visiualisation = true;
 
       AddDetector(Theta,Phi,R,beta[0],beta[1],beta[2]);
@@ -214,6 +214,7 @@ void W1::ReadConfiguration(NPL::InputParser parser){
       cout << "ERROR: Missing token for W1 blocks, check your input file" << endl;
       exit(1);
     }
+//     if(m_non_sensitive_part_visiualisation)cout << "L217 - VIS is true" << endl;
   }
 }
 

@@ -44,6 +44,7 @@ using namespace NPL;
 #include "TGraph.h"
 #include "TCanvas.h"
 #include "TH1F.h"
+#include "TRandom3.h"
 
 using namespace std;
 
@@ -61,7 +62,6 @@ namespace NPL{
     public:  // Various Method
       void ReadConfigurationFile(string Path);
       void ReadConfigurationFile(NPL::InputParser);
-
 
     private:
       int fVerboseLevel;
@@ -84,6 +84,7 @@ namespace NPL{
       double   fQValue;                  // Q-value in MeV
       double   fBeamEnergy;              // Beam energy in MeV
       double   fThetaCM;                 // Center-of-mass angle in radian
+      double   fThetaLab;
       double   fExcitation3;             // Excitation energy in MeV
       double   fExcitation4;             // Excitation energy in MeV
       TH1F*    fCrossSectionHist;        // Differential cross section in CM frame
@@ -93,6 +94,7 @@ namespace NPL{
       // Getters and Setters
       void     SetBeamEnergy(double eBeam)      {fBeamEnergy = eBeam;     initializePrecomputeVariable();}
       void     SetThetaCM(double angle)         {fThetaCM = angle;        initializePrecomputeVariable();}
+      void     SetThetaLab(double angle)        {fThetaLab = angle;      initializePrecomputeVariable();}
       void     SetExcitation3(double exci)      {fExcitation3 = exci; initializePrecomputeVariable();}
       void     SetExcitation4(double exci)      {fExcitation4 = exci; initializePrecomputeVariable();}
       // For retro compatibility
@@ -106,6 +108,7 @@ namespace NPL{
         {fDoubleDifferentialCrossSectionHist = CrossSectionHist;}
       double   GetBeamEnergy() const            {return fBeamEnergy;}
       double   GetThetaCM() const               {return fThetaCM;}
+      double   GetThetaCMFromThetaLab(double thetaLab);
       double   GetExcitation3() const           {return fExcitation3;}
       double   GetExcitation4() const           {return fExcitation4;}
       double   GetQValue() const                {return fQValue;}
@@ -180,9 +183,17 @@ namespace NPL{
     public: // Kinematics
       // Check that the reaction is alowed
       bool CheckKinematic();
+      
+      private:
+      bool TwoBodyReactionCMCS = true;
 
+  public:
+      bool CheckTwoBodyReactionCMCS() {return TwoBodyReactionCMCS;}
       // Use fCrossSectionHist to shoot a Random ThetaCM and set fThetaCM to this value
       double ShootRandomThetaCM();
+      
+      //If fCrossSectionHist is defined in Lab angles, shoot a random ThetaLab and set fThetaCM to the appropriate matching value
+      double ShootRandomThetaLab();
 
       // Use fExcitationEnergyHist to shoot a Random Excitation energy and set fExcitation4 to this value
       void ShootRandomExcitationEnergy();

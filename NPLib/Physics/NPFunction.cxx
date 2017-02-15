@@ -34,7 +34,7 @@ TH1F* Read1DProfile(string filename,string HistName)
   ifstream ASCII;
   TFile ROOT;
   TH1F* h;
-  
+
   // test whether file format is ASCII or ROOT
   bool type = OpenASCIIorROOTFile(filename, ASCII , ROOT);
   

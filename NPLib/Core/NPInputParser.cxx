@@ -73,6 +73,9 @@ std::string InputBlock::ExtractValue(std::string line,std::string separator){
 
 ////////////////////////////////////////////////////////////////////////////////
 void InputBlock::AddLine(std::string line){
+//     cout << "line: " << line << endl;
+//     cout << "ExtractToken(line): " << ExtractToken(line) << endl;
+//     cout << "StripSpaces(ExtractToken(line): " << StripSpaces(ExtractToken(line)) << endl;
   m_Token.push_back(ToLower(StripSpaces(ExtractToken(line))));
   m_Value.push_back(StripSpaces(ExtractValue(line)));
 }
@@ -92,14 +95,19 @@ bool InputBlock::HasTokenList(std::vector<std::string> Token){
 
   bool res = true;
   for(unsigned int i = 0 ; i < Token.size() ; i++)
+  {
+//       cout << "L96: " << Token[i].c_str() << endl;
     res = res && HasToken(Token[i]);
+  }
 
   return res;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool InputBlock::HasToken(std::string Token){
+//     cout << "L105: " << m_Token.size() << endl;
   for(unsigned int i = 0 ; i < m_Token.size() ; i++){
+//       cout << "L106: " << m_Token[i] << endl;
     if(m_Token[i] == ToLower(Token)){
       return true;
     }
@@ -109,6 +117,7 @@ bool InputBlock::HasToken(std::string Token){
 ////////////////////////////////////////////////////////////////////////////////
 std::string InputBlock::GetValue(std::string Token){
   for(unsigned int i = 0 ; i < m_Token.size() ; i++){
+//       cout << "L115: " << m_Token[i] << endl;
     if(m_Token[i]==ToLower(Token))
       return m_Value[i];
   }

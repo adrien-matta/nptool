@@ -208,10 +208,54 @@ double Reaction::ShootRandomThetaCM(){
   return theta;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Reaction::ShootRandomThetaLab(){
+ double theta;
+ if(fDoubleDifferentialCrossSectionHist){
+    // Take a slice in energy
+    TAxis* Y = fDoubleDifferentialCrossSectionHist->GetYaxis();
+    int binY;
+      
+    // Those test are there for the tail event of the energy distribution
+    // In case the energy is outside the range of the 2D histo we take the 
+    // closest available CS
+    if(Y->FindBin(fBeamEnergy) > Y->GetLast())
+      binY = Y->GetLast()-1;
+
+    else if(Y->FindBin(fBeamEnergy) < Y->GetFirst())
+      binY = Y->GetFirst()+1;
+
+    else
+      binY = Y->FindBin(fBeamEnergy);
+
+    TH1D* Proj = fDoubleDifferentialCrossSectionHist->ProjectionX("proj",binY,binY);
+    SetThetaLab( theta=Proj->GetRandom()*deg );
+   }
+  else
+    SetThetaLab( theta=fCrossSectionHist->GetRandom()*deg );
+  
+    SetThetaCM(GetThetaCMFromThetaLab(theta));
+  return theta;
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Reaction::GetThetaCMFromThetaLab(double thetaLab)
+{ 
+  double thetaCM = 0;
+  double rapidity = atanh(BetaCM);
+  if(pCM_3 - pCM_4 > 1e-6)cout << "I don't understand this: " << pCM_3 << "\t" << pCM_4 << endl;
+  double p3 = (sqrt(m3*m3 + pCM_3*pCM_3) * cos(thetaLab) * sinh(rapidity) + cosh(rapidity) * sqrt(pCM_3*pCM_3 - m3*m3*sin(thetaLab)*sin(thetaLab)*sinh(rapidity)*sinh(rapidity))) / (1.0 + sin(thetaLab)*sin(thetaLab) * sinh(rapidity)*sinh(rapidity));
+  thetaCM = asin(p3 * sin(thetaLab) / pCM_3);
+  return thetaCM;
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Reaction::ShootRandomExcitationEnergy(){
   if(fExcitationEnergyHist){
     SetExcitation4(fExcitationEnergyHist->GetRandom());
   }
+    
+//     cout << "L225: randy= " << randy->Rndm(0) << endl;
+//     double Exciting = 9.5+2*randy->Rndm();
+//     SetExcitation4(9.5+2*randy->Rndm());
+//     delete randy;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -374,6 +418,17 @@ void Reaction::ReadConfigurationFile(NPL::InputParser parser){
       CStemp->Divide(fsin,1);
       SetCrossSectionHist(CStemp);
       delete fsin;
+    }
+    if(blocks[i]->HasToken("CrossSectionFrame")){
+        string frame = blocks[i]->GetString("CrossSectionFrame");
+        cout << "Set the cross section frame for the reaction generation" << endl;
+        if(frame=="Lab")TwoBodyReactionCMCS = false;
+        else if(frame=="CM")TwoBodyReactionCMCS = true;
+        else
+        {
+            cout << "No frame recognised - assuming centre-of-mass" << endl;
+            TwoBodyReactionCMCS = true;
+        }
     }
 
     if(blocks[i]->HasToken("DoubleDifferentialCrossSectionPath")){

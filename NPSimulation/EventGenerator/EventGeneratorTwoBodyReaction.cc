@@ -149,8 +149,16 @@ void EventGeneratorTwoBodyReaction::GenerateEvent(G4Event*){
   
   // Angles
   // Shoot and Set a Random ThetaCM
-  G4double ThetaCM = m_Reaction->ShootRandomThetaCM();
-  G4double phi     = RandFlat::shoot() * 2. * pi;
+  G4double ThetaCM = 0, ThetaLab = 0;
+  if(m_Reaction->CheckTwoBodyReactionCMCS())ThetaCM = m_Reaction->ShootRandomThetaCM();
+  else
+  {
+//       G4cout << "Getting lab theta for reaction kinematics" << endl;
+      ThetaLab = m_Reaction->ShootRandomThetaLab();
+      ThetaCM = m_Reaction->GetThetaCMFromThetaLab(ThetaLab);
+  }
+//   G4double phi     = RandFlat::shoot() * 2. * pi;
+  G4double phi = 0;
  
   //////////////////////////////////////////////////
   /////  Momentum and angles from  kinematics  /////
