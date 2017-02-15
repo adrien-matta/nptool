@@ -276,11 +276,12 @@ void Analysis::TreatEvent(){
  else Recoil_LV =  myReaction -> GetEnergyImpulsionLab_1();
   RecoilBeta = Recoil_LV.Vect();
   RecoilBeta *= (1/Recoil_LV.E());// divide by the total energy (T+M) to get the velocity (beta) vector
+  TG->DCSingles(RecoilBeta);
   TG->AddBack(RecoilBeta);
 
 //for(unsigned int countGe = 0 ; countGe < TG->Singles_E.size() ; countGe++){ // multiplicity treated for now is zero 
 
-  //}
+//}
 
 
  ////////////////////////////////////////// LOOP on FPD  //////////////////////////////////////////

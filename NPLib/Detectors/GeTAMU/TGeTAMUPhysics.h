@@ -133,6 +133,7 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     TVector3 GetCorePosition(int& CloverNbr, int& CoreNbr);
     TVector3 GetSegmentPosition(int& CloverNbr, int& CoreNbr, int& SegmentNbr);
     void AddBack(TVector3& beta, int scheme=1);
+    void DCSingles(TVector3& beta);
     inline TVector3 GetCrystalPosition(int& CloverNbr, int& CoreNbr){return GetCorePosition(CloverNbr,CoreNbr);};
 
   private:

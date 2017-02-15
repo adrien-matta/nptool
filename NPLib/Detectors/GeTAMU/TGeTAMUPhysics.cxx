@@ -264,6 +264,21 @@ double TGeTAMUPhysics::GetDopplerCorrectedEnergy(double& energy , TVector3 GamLa
   return m_GammaLV.Energy();
 }
 
+void TGeTAMUPhysics::DCSingles( TVector3& BeamBeta){
+
+  for(unsigned int iPixel = 0 ; iPixel < Singles_E.size() ; iPixel++){
+    int clv = Singles_Clover[iPixel];
+    int cry = Singles_Crystal[iPixel];
+    int seg = Singles_Segment[iPixel];
+    double energy = Singles_E[iPixel];
+    TVector3 GammaLabDirection = GetSegmentPosition(clv,cry,seg);   
+    // Fill The doppler corrected singles  
+    Singles_DC.push_back(GetDopplerCorrectedEnergy(energy, GammaLabDirection, BeamBeta)); // Doppler Corrected for highest energy
+  }
+}
+
+
+
 void TGeTAMUPhysics::AddBack( TVector3& BeamBeta, int scheme){
     vector<int>::iterator itClover;
 
