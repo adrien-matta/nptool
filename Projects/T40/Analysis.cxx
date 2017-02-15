@@ -268,20 +268,30 @@ void Analysis::TreatEvent(){
     LightParticleDetected = true ; 
   } // end loop TiaraBarrel
 
-  /////////////////////////// LOOP on Ge TAMU /////////////////////////////
- //Geenral treatment for GeTamu
- TVector3 RecoilBeta;
+
+
+/////////////////////////// GENERAL treatment on Ge TAMU /////////////////////////////
+ 
+  /////////////////////////////
+  // Part 1 : Get the recoil beta vetor
  TLorentzVector Recoil_LV;
+ TVector3 RecoilBeta;
  if (LightParticleDetected) Recoil_LV =  myReaction -> GetEnergyImpulsionLab_4();
  else Recoil_LV =  myReaction -> GetEnergyImpulsionLab_1();
   RecoilBeta = Recoil_LV.Vect();
   RecoilBeta *= (1/Recoil_LV.E());// divide by the total energy (T+M) to get the velocity (beta) vector
+ 
+  /////////////////////////////
+  // Part 2 : Calculate Doppler-Corrected energies for singles, and addback spectra
   TG->DCSingles(RecoilBeta);
-  TG->AddBack(RecoilBeta);
+  TG->AddBack(RecoilBeta,3);
 
-//for(unsigned int countGe = 0 ; countGe < TG->Singles_E.size() ; countGe++){ // multiplicity treated for now is zero 
-
-//}
+  /////////////////////////// LOOP on Ge TAMU /////////////////////////////
+  //for(unsigned int countGe = 0 ; countGe < TG->Singles_E.size() ; countGe++){ // multiplicity treated for now is zero 
+  // 
+  //Event by event treatment goes here
+  // 
+  //}
 
 
  ////////////////////////////////////////// LOOP on FPD  //////////////////////////////////////////
