@@ -163,7 +163,6 @@ void TGeTAMUPhysics::BuildPhysicalEvent(){
       Singles_X.push_back(Pos.X());
       Singles_Y.push_back(Pos.Y());
       Singles_Z.push_back(Pos.Z());
-      Singles_Theta.push_back(Pos.Theta());
       //cout << " XYZ "<< Pos.X() << " "<< Pos.Y() << " "<< Pos.Z() << " Theta: " <<Pos.Theta()/deg<< endl ;
     }
 
@@ -274,6 +273,7 @@ void TGeTAMUPhysics::DCSingles( TVector3& BeamBeta){
     TVector3 GammaLabDirection = GetSegmentPosition(clv,cry,seg);   
     // Fill The doppler corrected singles  
     Singles_DC.push_back(GetDopplerCorrectedEnergy(energy, GammaLabDirection, BeamBeta)); // Doppler Corrected for highest energy
+    Singles_Theta.push_back(GammaLabDirection.Angle(BeamBeta)); 
   }
 }
 
@@ -282,9 +282,12 @@ void TGeTAMUPhysics::DCSingles( TVector3& BeamBeta){
 void TGeTAMUPhysics::AddBack( TVector3& BeamBeta, int scheme){
     vector<int>::iterator itClover;
 
-  if (scheme==1){
-   //cout << " Clover Add-Back, singles: " << Singles_E.size()<< endl; 
-   //Treat singles
+  if (! (scheme >=1 && scheme <= 2) ){
+      cout << " Addback scheme " << scheme << " is not supported " << endl;
+      return;
+      }   
+  
+  if (scheme==1){ // clover by clover add-back
     for(unsigned int iPixel = 0 ; iPixel < Singles_E.size() ; iPixel++){
       int clv = Singles_Clover[iPixel];
       int cry = Singles_Crystal[iPixel];
@@ -294,7 +297,8 @@ void TGeTAMUPhysics::AddBack( TVector3& BeamBeta, int scheme){
       itClover = find (AddBack_Clover.begin(), AddBack_Clover.end(), clv); 
       bool NotFound = (itClover == AddBack_Clover.end());
       if ( NotFound ){ // if Clover is not found
-        // Fill these values only for the first hit
+        // Fill these values only for the first hit in every clover found, 
+        // The enregies in Singles_E are stored in decreasing order
         AddBack_Clover.push_back(clv);
         AddBack_Crystal.push_back(cry);
         AddBack_Segment.push_back(seg);
@@ -302,19 +306,85 @@ void TGeTAMUPhysics::AddBack( TVector3& BeamBeta, int scheme){
         AddBack_X.push_back(GammaLabDirection.X());
         AddBack_Y.push_back(GammaLabDirection.Y());
         AddBack_Z.push_back(GammaLabDirection.Z());
-        AddBack_Theta.push_back(GammaLabDirection.Angle(BeamBeta)); 
         AddBack_E.push_back(energy);      
         AddBack_DC.push_back(GetDopplerCorrectedEnergy(energy, GammaLabDirection, BeamBeta)); // Doppler Corrected for highest energy
-        }
+        AddBack_Theta.push_back(GammaLabDirection.Angle(BeamBeta)); 
+      }
       else{
         AddBack_E.back()+=energy;      // E1+E2+E3...
         AddBack_DC.back()+=energy;     // DC(E1)+E2+E3...
       }
     }
   } 
-    else 
-      cout << " Addback scheme " << scheme << " is not supported " << endl;
-   
+  else if (scheme==2){ // facing clovers (1&3) or (2&4) add-back
+  
+    double max24 = -1; // total energy 
+    double max13 = -1;
+    double totE24 = 0; // total energy 
+    double totE13 = 0; 
+    unsigned pixel24 = -1;
+    unsigned pixel13 = -1;
+
+    for(unsigned int iPixel = 0 ; iPixel < Singles_E.size() ; iPixel++){
+      int clv = Singles_Clover[iPixel];
+      int cry = Singles_Crystal[iPixel];
+      int seg = Singles_Segment[iPixel];
+      double energy = Singles_E[iPixel];
+
+      if(clv == 1 || clv ==3 ) {
+        totE13+=energy;
+        if(energy>max13) {
+          max13 = energy;
+          pixel13 = iPixel; // select this pixel for this clover souple 2,4
+        }
+      }
+      else {
+        totE24+=energy;
+        if(energy>max24) {
+          max24 = energy;
+          pixel24 = iPixel; // select this pixel for this clover souple 2,4
+        }
+      }
+
+    //Fill the addback vectors
+      if (totE13>0){
+        int clv = Singles_Clover[pixel13];
+        int cry = Singles_Crystal[pixel13];
+        int seg = Singles_Segment[pixel13];
+        double maxE13 = Singles_E[pixel13];
+        AddBack_Clover.push_back(clv);
+        AddBack_Crystal.push_back(cry);
+        AddBack_Segment.push_back(seg);
+        TVector3 GammaLabDirection = GetSegmentPosition(clv,cry,seg);
+        AddBack_X.push_back(GammaLabDirection.X());
+        AddBack_Y.push_back(GammaLabDirection.Y());
+        AddBack_Z.push_back(GammaLabDirection.Z());
+        AddBack_E.push_back(totE13);
+        //Doppler correction
+        totE13 -= maxE13 ; // take out the maximum energy contribution, Apply DC and add again 
+        AddBack_DC.push_back(totE13+GetDopplerCorrectedEnergy(maxE13, GammaLabDirection, BeamBeta)); // Doppler Corrected for highest energy
+        AddBack_Theta.push_back(GammaLabDirection.Angle(BeamBeta)); 
+      }
+      if (totE24>0){
+        int clv = Singles_Clover[pixel24];
+        int cry = Singles_Crystal[pixel24];
+        int seg = Singles_Segment[pixel24];
+        double maxE24 = Singles_E[pixel24];
+        AddBack_Clover.push_back(clv);
+        AddBack_Crystal.push_back(cry);
+        AddBack_Segment.push_back(seg);
+        TVector3 GammaLabDirection = GetSegmentPosition(clv,cry,seg);
+        AddBack_X.push_back(GammaLabDirection.X());
+        AddBack_Y.push_back(GammaLabDirection.Y());
+        AddBack_Z.push_back(GammaLabDirection.Z());
+        AddBack_E.push_back(totE24);
+        totE24 -= maxE24 ; 
+        AddBack_DC.push_back(totE24+GetDopplerCorrectedEnergy(maxE24, GammaLabDirection, BeamBeta)); // Doppler Corrected for highest energy
+        AddBack_Theta.push_back(GammaLabDirection.Angle(BeamBeta)); 
+      }
+    } 
+  }
+
 } // end of add back
 
 /////////////////////////////////////////////////
