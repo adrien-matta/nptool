@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 2.8)
 include(CheckCXXCompilerFlag)
 project(NPLib CXX)
 set(CMAKE_BUILD_TYPE Release)
-
+set(CMAKE_CXX_STANDARD 11)
 # Setting the policy to match Cmake version
 cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
 

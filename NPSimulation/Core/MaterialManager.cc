@@ -201,6 +201,16 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name,double density){
             m_Material[Name]=material;
             return material;
         }
+        
+        else  if(Name == "CaF2"){
+            if(!density)
+                density = 3.18*g / cm3;
+            G4Material* material = new G4Material("NPS_"+Name, density,2);
+            material->AddElement(GetElementFromLibrary("Ca"),1);
+            material->AddElement(GetElementFromLibrary("F"),2);
+            m_Material[Name]=material;
+            return material;
+        }
 
         // Cooling
         else  if(Name == "N2_liquid"){

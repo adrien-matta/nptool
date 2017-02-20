@@ -202,6 +202,8 @@ double Reaction::ShootRandomThetaCM(){
 
     TH1D* Proj = fDoubleDifferentialCrossSectionHist->ProjectionX("proj",binY,binY);
     SetThetaCM( theta=Proj->GetRandom()*deg );
+    delete Proj;
+    delete Y;
   }
   else
     SetThetaCM( theta=fCrossSectionHist->GetRandom()*deg );
@@ -229,6 +231,8 @@ double Reaction::ShootRandomThetaLab(){
 
     TH1D* Proj = fDoubleDifferentialCrossSectionHist->ProjectionX("proj",binY,binY);
     SetThetaLab( theta=Proj->GetRandom()*deg );
+    delete Proj;
+    delete Y;
    }
   else
     SetThetaLab( theta=fCrossSectionHist->GetRandom()*deg );
@@ -251,11 +255,6 @@ void Reaction::ShootRandomExcitationEnergy(){
   if(fExcitationEnergyHist){
     SetExcitation4(fExcitationEnergyHist->GetRandom());
   }
-    
-//     cout << "L225: randy= " << randy->Rndm(0) << endl;
-//     double Exciting = 9.5+2*randy->Rndm();
-//     SetExcitation4(9.5+2*randy->Rndm());
-//     delete randy;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

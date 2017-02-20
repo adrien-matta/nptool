@@ -284,7 +284,6 @@ G4double Target::SlowDownBeam(G4ParticleDefinition* Beam,
           IncidentEnergy = 0;
           break;
         }
-
       }
 
     // Target
@@ -300,7 +299,6 @@ G4double Target::SlowDownBeam(G4ParticleDefinition* Beam,
 
       }
   }
-
   if(IncidentEnergy<0) IncidentEnergy = 0 ;
   return IncidentEnergy;
 }
