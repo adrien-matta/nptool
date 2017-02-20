@@ -53,123 +53,121 @@ ClassImp(TGeTAMUPhysics)
 void TGeTAMUPhysics::BuildPhysicalEvent(){
   PreTreat();
 
- //Treat singles
+  //match segments data to cores data,
+  // Rule 0: If more than 1 core is fired, there are as many hits as there are fired cores
+  // Rule 1: segments are auxilliary to cores, they only point out the reduced "pixel" if any, (pixel== overlap segment/core)
+  //Ideas: try to kick one segment out by sum rule
 
-  for(unsigned int iPixel = 0 ; iPixel < Singles_E.size() ; iPixel++){
-    int clv = Singles_Clover[iPixel];
-    int cry = Singles_Crystal[iPixel];
-    int seg = Singles_Segment[iPixel];
-    double energy = Singles_E[iPixel];
-    double X = Singles_X[iPixel];
-    double Y = Singles_Y[iPixel];
-    double Z = Singles_Z[iPixel];
-    double Theta = Singles_Theta[iPixel];
-    //cout << clv << " " << cry << " " << seg << " " << X << " " << Y << " " << Z << " "<< energy << endl;
-     }
+  //cout<<"++++++++++++++++++++++++++++++++++++++++++++++++++++++"<<endl;
+  //m_PreTreatedData->Dump();
+  if(m_PreTreatedData->GetMultiplicityCoreE()==0) return;
 
-  // Treat addback
-  unsigned int c_size_e = m_PreTreatedData->GetMultiplicityCoreE();
-  unsigned int s_size_e = m_PreTreatedData->GetMultiplicitySegmentE();
-  unsigned int c_size_t = m_PreTreatedData->GetMultiplicityCoreT();
-  unsigned int s_size_t = m_PreTreatedData->GetMultiplicitySegmentT();
-
-  // map for add back
-  map<int,double> clv_energy;
-  map<int,int> clv_segment;
-  map<int,int> clv_crystal;
-  map<int,double> max_cry;
-  map<int,double> max_segment;
-
-  map<int,TVector3> max_pos; // first hit
-  map<int,int> cry_segment;
-
-/*
-
-
-  for(unsigned int i = 0 ; i < c_size_e ; i++){
-    int clv = m_PreTreatedData->GetCoreCloverNbrE(i);
-    int cry = m_PreTreatedData->GetCoreCrystalNbrE(i);
-    double energy = m_PreTreatedData->GetCoreEnergy(i);
-    // Add back energy
-    clv_energy[clv] += energy;
-    // Pick up the crystal with the maximum energy in every clover
-    if(energy > max_cry[clv]){
-      max_cry[clv] = energy;
-      clv_crystal[clv] = cry;
+  vector <int>    CryEN, SegEN;
+  vector <double> CryE, SegE;
+  for (unsigned iClover=0; iClover<4; iClover++){
+    int clover = iClover+1;
+    CryEN.clear();
+    SegEN.clear();
+    CryE.clear();
+    SegE.clear();
+    //Energy
+    if(Singles_CloverMap_CryEN.find(iClover+1) != Singles_CloverMap_CryEN.end()){
+      CryEN  = Singles_CloverMap_CryEN[iClover+1];
+      CryE   = Singles_CloverMap_CryE[iClover+1];
     }
-    // Pick up the segment with the maximum energy in every clover
-    for(unsigned int j = 0 ; j < s_size_e ; j++){
-      double s_energy = m_PreTreatedData->GetSegmentEnergy(j);
-      if(s_energy > max_segment[clv]){
-        max_segment[clv] = s_energy;
-        clv_segment[clv] = m_PreTreatedData->GetSegmentSegmentNbrE(j);
+    else
+      continue; // no need to go further if Cores energies are non existant
+
+    if(Singles_CloverMap_SegEN.find(iClover+1) != Singles_CloverMap_SegEN.end()){
+      SegEN   = Singles_CloverMap_SegEN[iClover+1];
+      SegE    = Singles_CloverMap_SegE[iClover+1];
+    }
+
+  /*
+  //calculate total energy for sum rules
+    double totCryE =0;
+    double totSegE =0;
+    for (unsigned i=0 ; i < CryE.size();i++)    totCryE+=CryE[i];
+    for (unsigned i=0 ; i < SegE.size();i++)   totSegE+=SegE[i];
+  */
+
+  //sort the crystal energies;
+    int swapEN;
+    double swapE;
+    int size = (int) CryE.size();
+    for (int i=0; i< (size -1); i++){    // element to be compared
+      for(int j = (i+1); j < size; j++){   // rest of the elements
+        if (CryE[i] < CryE[j]){          // descending order
+          swapE= CryE[i];    CryE[i] = CryE[j];   CryE[j] = swapE;
+          swapEN= CryEN[i];   CryEN[i] = CryEN[j];   CryEN[j] = swapEN;
+        }
       }
     }
-  }
-
-    // Pick up the segment with the maximum energy in every clover
-  for(unsigned int i = 0 ; i < c_size_e ; i++){
-    int clv = m_PreTreatedData->GetCoreCloverNbrE(i);
-    int cry = m_PreTreatedData->GetCoreCrystalNbrE(i);
-    double energy = m_PreTreatedData->GetCoreEnergy(i);
-    }
-
-    for(unsigned int j = 0 ; j < s_size_e ; j++){
-      double s_energy = m_PreTreatedData->GetSegmentEnergy(j);
-      if(s_energy > max_segment[clv]){
-        max_segment[clv] = s_energy;
-        clv_segment[clv] = m_PreTreatedData->GetSegmentSegmentNbrE(j);
+    //create hit matrix
+    int pixel[4][3];
+    memset(pixel,0,sizeof(pixel)); // filling the matrix with zeros
+    //fill the cores
+    for (unsigned iCry = 0 ; iCry < CryEN.size() ; iCry++){
+      int Cry = CryEN[iCry] ;
+      for (unsigned iSeg = 1 ; iSeg <= 3 ; iSeg++){
+        // (Segment 3 (right) + Cry 1 or 4) or (Segment 1 (Left)  + Cry 2 or 3) are impossible
+        if( ((Cry==1 || Cry==4) && iSeg!=3) ||  ((Cry==2 || Cry==3) && iSeg!=1) ){
+          pixel[Cry-1][iSeg-1]++;
+        }
       }
     }
-
-*/
-
-
-  for(unsigned int i = 0 ; i < c_size_e ; i++){
-    int clv = m_PreTreatedData->GetCoreCloverNbrE(i);
-    int cry = m_PreTreatedData->GetCoreCrystalNbrE(i);
-    double energy = m_PreTreatedData->GetCoreEnergy(i);
-    // Add back energy
-    clv_energy[clv] += energy;
-    // Pick up the crystal with the maximum energy in every clover
-    if(energy > max_cry[clv]){
-      max_cry[clv] = energy;
-      clv_crystal[clv] = cry;
-    }
-    // Pick up the segment with the maximum energy in every clover
-    for(unsigned int j = 0 ; j < s_size_e ; j++){
-      double s_energy = m_PreTreatedData->GetSegmentEnergy(j);
-      int s_seg = m_PreTreatedData->GetSegmentSegmentNbrE(i);
-      int s_cry = m_PreTreatedData->GetSegmentSegmentNbrE(i);
-      if(s_energy > max_segment[clv]){
-        max_segment[clv] = s_energy;
-        cry_segment[clv] = s_cry;
-        clv_segment[clv] = s_seg;
-        //max_pos[clv] =
+    //fill the segments
+    for (unsigned iSeg = 0 ; iSeg < SegEN.size() ; iSeg++){
+      int Seg = SegEN[iSeg];
+      for (unsigned iCry = 1 ; iCry <= 4 ; iCry++){
+        if( pixel[iCry-1][Seg-1] != 0){ // Only if the pixel was filled by a Cry signal previously, access it
+          pixel[iCry-1][Seg-1]++;
+        }
       }
     }
-  }
+    // show
+    /*
+    int* apixel = *pixel;
+    cout <<endl<<"------- Clover "<< clover << endl;
+    for (unsigned i = 0 ; i < 4 ; i++){
+      for (unsigned j = 0 ; j < 3 ; j++)
+          cout << *(apixel+(i*3)+j) << " ";
+      cout << endl;
+    }
+     cout <<"----------------------- " <<endl;
+    */
+     //Calculate the singles
+    for (unsigned i = 0 ; i < CryEN.size() ; i++){
+      int segment = -1;
+      unsigned crystal = CryEN[i];
+      unsigned segmentA = 2;
+      unsigned segmentB = 3;
+      if (crystal==1 || crystal==4){ // if Core 1 or 4 change the segments to segment 1 and 2
+        segmentA = 1;
+        segmentB = 2;
+      }
+      //pick between segment A or B for each case
+      if (pixel[crystal-1][segmentA-1] == pixel[crystal-1][segmentB-1])
+        segment = 0; // system can't be resolved
+      else if (pixel[crystal-1][segmentA-1] > pixel[crystal-1][segmentB-1])
+        segment = segmentA;
+      else if (pixel[crystal-1][segmentA-1] < pixel[crystal-1][segmentB-1])
+         segment = segmentB;
 
-  // Fill in the info using the map
-  map<int,double>::iterator it;
-  for (it = clv_energy.begin(); it != clv_energy.end(); ++it) {
-    int clv = it->first;
-    //energy
-    AddBack_E.push_back(it->second);
-    //AddBack_DC.push_back(-1000);
-    //time
-    AddBack_T.push_back(-1000);
+      //cout << i <<" picked: crystal " << crystal << "   segment " << segment << "  Energy " << CryE[i] << endl;
+      Singles_Clover.push_back(clover);
+      Singles_Crystal.push_back(CryEN[i]);
+      Singles_Segment.push_back(segment);
+      Singles_E.push_back(CryE[i]);
+      TVector3 Pos = GetSegmentPosition(clover,CryEN[i],segment);
+      Singles_X.push_back(Pos.X());
+      Singles_Y.push_back(Pos.Y());
+      Singles_Z.push_back(Pos.Z());
+      //cout << " XYZ "<< Pos.X() << " "<< Pos.Y() << " "<< Pos.Z() << " Theta: " <<Pos.Theta()/deg<< endl ;
+    }
 
-    //geometry for first hit
-    AddBack_Clover.push_back(clv);
-    AddBack_Crystal.push_back(clv_crystal[clv]);
-    AddBack_Segment.push_back(clv_segment[clv]);
+  } // end of Clover loop on map
 
-    AddBack_Theta.push_back(-1000);
-    AddBack_X.push_back(-1000);
-    AddBack_Y.push_back(-1000);
-    AddBack_Z.push_back(-1000);
-  }
 
 //Fill the time OR
 for (unsigned i = 0 ; i < m_PreTreatedData->GetMultiplicityCoreT(); i++)
@@ -244,133 +242,187 @@ void TGeTAMUPhysics::PreTreat(){
     }
   }
 
-if(m_PreTreatedData->GetMultiplicityCoreE())   FillSingles();
-
 }
 
-void TGeTAMUPhysics::FillSingles(void){
-//match segments data to cores data,
-// Rule 0: If more than 1 core is fired, there are as many hits as there are fired cores
-// Rule 1: segments are auxilliary to cores, they only point out the reduced "pixel" if any, (pixel== overlap segment/core)
-//Ideas: try to kick one segment out by sum rule
+/////////////////////////////////////////////////
+TVector3 TGeTAMUPhysics::GetPositionOfInteraction(unsigned int& i){
+  //return TVector3();
+  return GetSegmentPosition(Singles_Clover[i],Singles_Crystal[i],Singles_Segment[i]);
+}
+/////////////////////////////////////////////////
+// original energy, position, beta
+double TGeTAMUPhysics::GetDopplerCorrectedEnergy(double& energy , TVector3 GamLabDirection, TVector3& BeamBeta){
+  
+  // renormalise GamLabDirection vector
+  GamLabDirection.SetMag(1); // gamma direction
+  m_GammaLV.SetPx(energy*GamLabDirection.X());
+  m_GammaLV.SetPy(energy*GamLabDirection.Y());
+  m_GammaLV.SetPz(energy*GamLabDirection.Z());
+  m_GammaLV.SetE(energy);
+  m_GammaLV.Boost(-BeamBeta); // beam beta
+  return m_GammaLV.Energy();
+}
 
-//cout<<"++++++++++++++++++++++++++++++++++++++++++++++++++++++"<<endl;
-//m_PreTreatedData->Dump();
+void TGeTAMUPhysics::DCSingles( TVector3& BeamBeta){
 
-vector <int>    CryEN, SegEN;
-vector <double> CryE, SegE;
-
-for (unsigned iClover=0; iClover<4; iClover++){
-  int clover = iClover+1;
-  CryEN.clear();
-  SegEN.clear();
-  CryE.clear();
-  SegE.clear();
-  //Energy
-  if(Singles_CloverMap_CryEN.find(iClover+1) != Singles_CloverMap_CryEN.end()){
-    CryEN  = Singles_CloverMap_CryEN[iClover+1];
-    CryE   = Singles_CloverMap_CryE[iClover+1];
+  for(unsigned int iPixel = 0 ; iPixel < Singles_E.size() ; iPixel++){
+    int clv = Singles_Clover[iPixel];
+    int cry = Singles_Crystal[iPixel];
+    int seg = Singles_Segment[iPixel];
+    double energy = Singles_E[iPixel];
+    TVector3 GammaLabDirection = GetSegmentPosition(clv,cry,seg);   
+    // Fill The doppler corrected singles  
+    Singles_DC.push_back(GetDopplerCorrectedEnergy(energy, GammaLabDirection, BeamBeta)); // Doppler Corrected for highest energy
+    Singles_Theta.push_back(GammaLabDirection.Angle(BeamBeta)); 
   }
-  else
-    continue; // no need to go further if Cores energies are non existant
+}
 
-  if(Singles_CloverMap_SegEN.find(iClover+1) != Singles_CloverMap_SegEN.end()){
-    SegEN   = Singles_CloverMap_SegEN[iClover+1];
-    SegE    = Singles_CloverMap_SegE[iClover+1];
-  }
+
+
+void TGeTAMUPhysics::AddBack( TVector3& BeamBeta, int scheme){
+    vector<int>::iterator itClover;
+
+  if (! (scheme >=1 && scheme <= 3) ){
+      cout << " Addback scheme " << scheme << " is not supported " << endl;
+      return;
+      }   
+  
+  if (scheme==1){ // clover by clover add-back
+    for(unsigned int iPixel = 0 ; iPixel < Singles_E.size() ; iPixel++){
+      int clv = Singles_Clover[iPixel];
+      int cry = Singles_Crystal[iPixel];
+      int seg = Singles_Segment[iPixel];
+      double energy = Singles_E[iPixel];
+      //cout << clv << " " << cry << " " << seg << " "<< energy << endl; 
+      itClover = find (AddBack_Clover.begin(), AddBack_Clover.end(), clv); 
+      bool NotFound = (itClover == AddBack_Clover.end());
+      if ( NotFound ){ // if Clover is not found
+        // Fill these values only for the first hit in every clover found, 
+        // The enregies in Singles_E are stored in decreasing order
+        AddBack_Clover.push_back(clv);
+        AddBack_Crystal.push_back(cry);
+        AddBack_Segment.push_back(seg);
+        TVector3 GammaLabDirection = GetSegmentPosition(clv,cry,seg);
+        AddBack_X.push_back(GammaLabDirection.X());
+        AddBack_Y.push_back(GammaLabDirection.Y());
+        AddBack_Z.push_back(GammaLabDirection.Z());
+        AddBack_E.push_back(energy);      
+        AddBack_DC.push_back(GetDopplerCorrectedEnergy(energy, GammaLabDirection, BeamBeta)); // Doppler Corrected for highest energy
+        AddBack_Theta.push_back(GammaLabDirection.Angle(BeamBeta)); 
+      }
+      else{
+        AddBack_E.back()+=energy;      // E1+E2+E3...
+        AddBack_DC.back()+=energy;     // DC(E1)+E2+E3...
+      }
+    }
+  } 
+  else 
+    if (scheme==2){ // facing clovers (1&3) or (2&4) add-back
+      double max24 = -1; // maximum stored energy 
+      double max13 = -1;
+      double totE24 = 0; // total energy 
+      double totE13 = 0; 
+      unsigned pixel24 = -1;
+      unsigned pixel13 = -1;
+
+      for(unsigned int iPixel = 0 ; iPixel < Singles_E.size() ; iPixel++){
+        int clv = Singles_Clover[iPixel];
+        int cry = Singles_Crystal[iPixel];
+        int seg = Singles_Segment[iPixel];
+        double energy = Singles_E[iPixel];
+        if(clv == 1 || clv ==3 ) {
+          totE13+=energy;
+          if(energy>max13) {
+            max13 = energy;
+            pixel13 = iPixel; // select this pixel for this clover souple 2,4
+          }
+        }
+        else {
+          totE24+=energy;
+          if(energy>max24) {
+            max24 = energy;
+            pixel24 = iPixel; // select this pixel for this clover souple 2,4
+          }
+        }
+      }
+    //Fill the addback vectors
+    if (totE13>0){
+      int clv = Singles_Clover[pixel13];
+      int cry = Singles_Crystal[pixel13];
+      int seg = Singles_Segment[pixel13];
+      double maxE13 = Singles_E[pixel13];
+      AddBack_Clover.push_back(clv);
+      AddBack_Crystal.push_back(cry);
+      AddBack_Segment.push_back(seg);
+      TVector3 GammaLabDirection = GetSegmentPosition(clv,cry,seg);
+      AddBack_X.push_back(GammaLabDirection.X());
+      AddBack_Y.push_back(GammaLabDirection.Y());
+      AddBack_Z.push_back(GammaLabDirection.Z());
+      AddBack_E.push_back(totE13);
+      //Doppler correction
+      totE13 -= maxE13 ; // take out the maximum energy contribution, Apply DC and add again 
+      AddBack_DC.push_back(totE13+GetDopplerCorrectedEnergy(maxE13, GammaLabDirection, BeamBeta)); // Doppler Corrected for highest energy
+      AddBack_Theta.push_back(GammaLabDirection.Angle(BeamBeta)); 
+    }
+    if (totE24>0){
+      int clv = Singles_Clover[pixel24];
+      int cry = Singles_Crystal[pixel24];
+      int seg = Singles_Segment[pixel24];
+      double maxE24 = Singles_E[pixel24];
+      AddBack_Clover.push_back(clv);
+      AddBack_Crystal.push_back(cry);
+      AddBack_Segment.push_back(seg);
+      TVector3 GammaLabDirection = GetSegmentPosition(clv,cry,seg);
+      AddBack_X.push_back(GammaLabDirection.X());
+      AddBack_Y.push_back(GammaLabDirection.Y());
+      AddBack_Z.push_back(GammaLabDirection.Z());
+      AddBack_E.push_back(totE24);
+      totE24 -= maxE24 ; 
+      AddBack_DC.push_back(totE24+GetDopplerCorrectedEnergy(maxE24, GammaLabDirection, BeamBeta)); // Doppler Corrected for highest energy
+      AddBack_Theta.push_back(GammaLabDirection.Angle(BeamBeta)); 
+    } 
+  } // end of scheme 2
+else 
+  if (scheme==3){ // all clovers add-back
+    double maxE = -1; // maximum stored energy 
+    double totE = 0; // total energy 
+    unsigned pixel = -1;
+
+    for(unsigned int iPixel = 0 ; iPixel < Singles_E.size() ; iPixel++){
+      int clv = Singles_Clover[iPixel];
+      int cry = Singles_Crystal[iPixel];
+      int seg = Singles_Segment[iPixel];
+      double energy = Singles_E[iPixel];
+      totE+=energy;
+      if(energy>maxE) {
+        maxE = energy;
+        pixel = iPixel; // select this pixel for this clover souple 2,4
+      }
+    }
+    //Fill the addback vectors
+    if (totE>0){
+      int clv = Singles_Clover[pixel];
+      int cry = Singles_Crystal[pixel];
+      int seg = Singles_Segment[pixel];
+      double maxE = Singles_E[pixel];
+      AddBack_Clover.push_back(clv);
+      AddBack_Crystal.push_back(cry);
+      AddBack_Segment.push_back(seg);
+      TVector3 GammaLabDirection = GetSegmentPosition(clv,cry,seg);
+      AddBack_X.push_back(GammaLabDirection.X());
+      AddBack_Y.push_back(GammaLabDirection.Y());
+      AddBack_Z.push_back(GammaLabDirection.Z());
+      AddBack_E.push_back(totE);
+      //Doppler correction
+      totE -= maxE ; // take out the maximum energy contribution, Apply DC and add again 
+      AddBack_DC.push_back(totE+GetDopplerCorrectedEnergy(maxE, GammaLabDirection, BeamBeta)); // Doppler Corrected for highest energy
+      AddBack_Theta.push_back(GammaLabDirection.Angle(BeamBeta)); 
+    }
+  } // end of scheme 3 
+
+}
 
 /*
-//calculate total energy for sum rules
-  double totCryE =0;
-  double totSegE =0;
-  for (unsigned i=0 ; i < CryE.size();i++)    totCryE+=CryE[i];
-  for (unsigned i=0 ; i < SegE.size();i++)   totSegE+=SegE[i];
-*/
-
-//sort the crystal energies;
-  int swapEN;
-  double swapE;
-  int size = (int) CryE.size();
-for (int i=0; i< (size -1); i++){    // element to be compared
-  for(int j = (i+1); j < size; j++){   // rest of the elements
-    if (CryE[i] < CryE[j]){          // descending order
-      swapE= CryE[i];    CryE[i] = CryE[j];   CryE[j] = swapE;
-      swapEN= CryEN[i];   CryEN[i] = CryEN[j];   CryEN[j] = swapEN;
-    }
-  }
-}
-
-  //create hit matrix
-  int pixel[4][3];
-  memset(pixel,0,sizeof(pixel)); // filling the matrix with zeros
-  //fill the cores
-  for (unsigned iCry = 0 ; iCry < CryEN.size() ; iCry++){
-    int Cry = CryEN[iCry] ;
-    for (unsigned iSeg = 1 ; iSeg <= 3 ; iSeg++){
-      // (Segment 3 (right) + Cry 1 or 4) or (Segment 1 (Left)  + Cry 2 or 3) are impossible
-      if( ((Cry==1 || Cry==4) && iSeg!=3) ||  ((Cry==2 || Cry==3) && iSeg!=1) ){
-        pixel[Cry-1][iSeg-1]++;
-      }
-    }
-  }
-  //fill the segments
-  for (unsigned iSeg = 0 ; iSeg < SegEN.size() ; iSeg++){
-    int Seg = SegEN[iSeg];
-    for (unsigned iCry = 1 ; iCry <= 4 ; iCry++){
-      if( pixel[iCry-1][Seg-1] != 0){ // Only if the pixel was filled by a Cry signal previously, access it
-        pixel[iCry-1][Seg-1]++;
-      }
-    }
-  }
-
-  // show
-  /*
-  int* apixel = *pixel;
-  cout <<endl<<"------- Clover "<< clover << endl;
-  for (unsigned i = 0 ; i < 4 ; i++){
-    for (unsigned j = 0 ; j < 3 ; j++)
-        cout << *(apixel+(i*3)+j) << " ";
-    cout << endl;
-  }
-   cout <<"----------------------- " <<endl;
-  */
-   //Calculate the singles
-  for (unsigned i = 0 ; i < CryEN.size() ; i++){
-    int segment = -1;
-    unsigned crystal = CryEN[i];
-    unsigned segmentA = 2;
-    unsigned segmentB = 3;
-    if (crystal==1 || crystal==4){ // if Core 1 or 4 change the segments to segment 1 and 2
-      segmentA = 1;
-      segmentB = 2;
-    }
-    //pick between segment A or B for each case
-    if (pixel[crystal-1][segmentA-1] == pixel[crystal-1][segmentB-1])
-      segment = 0; // system can't be resolved
-    else if (pixel[crystal-1][segmentA-1] > pixel[crystal-1][segmentB-1])
-      segment = segmentA;
-    else if (pixel[crystal-1][segmentA-1] < pixel[crystal-1][segmentB-1])
-       segment = segmentB;
-
-    //cout << i <<" picked: crystal " << crystal << "   segment " << segment << "  Energy " << CryE[i] << endl;
-    Singles_Clover.push_back(clover);
-    Singles_Crystal.push_back(CryEN[i]);
-    Singles_Segment.push_back(segment);
-    Singles_E.push_back(CryE[i]);
-    TVector3 Pos = GetSegmentPosition(clover,CryEN[i],segment);
-    Singles_X.push_back(Pos.X());
-    Singles_Y.push_back(Pos.Y());
-    Singles_Z.push_back(Pos.Z());
-    Singles_Theta.push_back(Pos.Theta());
-    //cout << " XYZ "<< Pos.X() << " "<< Pos.Y() << " "<< Pos.Z() << " Theta: " <<Pos.Theta()/deg<< endl ;
-    }
-  //cin.get();
-//Time
-
-  } // end of Clover loop on map
-
-}
-
 /////////////////////////////////////////////////
 TVector3 TGeTAMUPhysics::GetPositionOfInteraction(unsigned int& i){
   //return TVector3();
@@ -388,6 +440,9 @@ double TGeTAMUPhysics::GetDopplerCorrectedEnergy(double& energy , TVector3 direc
   m_GammaLV.Boost(-beta);
   return m_GammaLV.Energy();
 }
+//=======
+//} // end of add back
+*/
 
 /////////////////////////////////////////////////
 void TGeTAMUPhysics::AddClover(unsigned int ID ,double R, double Theta, double Phi){
@@ -456,17 +511,7 @@ TVector3 TGeTAMUPhysics::GetSegmentPosition(int& CloverNbr,int& CoreNbr, int& Se
     cout << "Warning: GeTAMU segment number " << SegmentNbr
     << " is out of range\n accepted values: 0 (reserved for core) or 1-3 (Left, Middle, Right segment) " << endl;
 
-/* // Not need in case of geTAMU, CHECK
-  // Each crystal is a rotation of the previous one
-  if (CoreNbr == 2 )
-    Pos.RotateZ(90*deg);
-  else if (CoreNbr == 3 )
-    Pos.RotateZ(180*deg);
-  else if (CoreNbr == 4)
-    Pos.RotateZ(270*deg);
-*/
-
-  // Define reference axis as the Clover position,
+  // Define reference axis as the Clover position, 
   // This is a special case to GeTAMU where segmentation is with respect to clover
   Pos.RotateUz(CloverPos.Unit());
   Pos+=CloverPos;

@@ -26,7 +26,7 @@
  *****************************************************************************/
 #include "G4VPrimitiveScorer.hh"
 #include "NPSHitsMap.hh"
-#include "NPSecondaries.hh"
+//#include "NPSecondaries.hh"
 
 #include <map>
 using namespace std;

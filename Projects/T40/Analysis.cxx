@@ -161,6 +161,7 @@ void Analysis::TreatEvent(){
 
   // Reinitiate calculated variable
   ReInitValue();
+
   ////////////////////////////////////////// LOOP on TiaraHyball + SSSD Hit //////////////////////////////////////////
   for(unsigned int countTiaraHyball = 0 ; countTiaraHyball < TH->Strip_E.size() ; countTiaraHyball++){
    /////////////////////////////
@@ -172,7 +173,7 @@ void Analysis::TreatEvent(){
       TVector3 HitDirection = TH -> GetRandomisedPositionOfInteraction(countTiaraHyball) - BeamImpact ;
 
       ThetaLab = HitDirection.Angle( BeamDirection );
-      ThetaTHSurface = HitDirection.Angle(TVector3(0,0,-1) );
+      ThetaTHSurface = HitDirection.Angle(TVector3(0,0,-1)); // vector Normal on target
       ThetaNormalTarget = HitDirection.Angle( TVector3(0,0,1) ) ;
     }
     else{
@@ -188,8 +189,8 @@ void Analysis::TreatEvent(){
     Energy = Si_E_TH; // calibration for hyball is in MeV
 
     // Correct for energy loss using the thickness of the target and the dead layer
-    ELab = LightSi.EvaluateInitialEnergy( Energy ,0.0*micrometer , ThetaTHSurface); 
-    //ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget); 
+    ELab = LightSi.EvaluateInitialEnergy( Energy ,0.1*micrometer , ThetaTHSurface); // 0.1 um of Aluminum
+    ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget); 
    /////////////////////////////
     // Part 3 : Excitation Energy Calculation
     Ex = myReaction -> ReconstructRelativistic( ELab , ThetaLab );
@@ -205,7 +206,7 @@ void Analysis::TreatEvent(){
     TiaraIMX = HyballRandomImpactPosition.X();
     TiaraIMY = HyballRandomImpactPosition.Y();
     TiaraIMZ = HyballRandomImpactPosition.Z();
-
+    LightParticleDetected = true ; 
   } // end loop TiaraHyball
 
   /////////////////////////// LOOP on TiaraBarrel /////////////////////////////
@@ -264,23 +265,33 @@ void Analysis::TreatEvent(){
     TiaraIMX = BarrelRandomImpactPosition.X();
     TiaraIMY = BarrelRandomImpactPosition.Y();
     TiaraIMZ = BarrelRandomImpactPosition.Z();
-
+    LightParticleDetected = true ; 
   } // end loop TiaraBarrel
 
+
+
+/////////////////////////// GENERAL treatment on Ge TAMU /////////////////////////////
+ 
+  /////////////////////////////
+  // Part 1 : Get the recoil beta vetor
+ TLorentzVector Recoil_LV;
+ TVector3 RecoilBeta;
+ if (LightParticleDetected) Recoil_LV =  myReaction -> GetEnergyImpulsionLab_4();
+ else Recoil_LV =  myReaction -> GetEnergyImpulsionLab_1();
+  RecoilBeta = Recoil_LV.Vect();
+  RecoilBeta *= (1/Recoil_LV.E());// divide by the total energy (T+M) to get the velocity (beta) vector
+ 
+  /////////////////////////////
+  // Part 2 : Calculate Doppler-Corrected energies for singles, and addback spectra
+  TG->DCSingles(RecoilBeta);
+  TG->AddBack(RecoilBeta,3); 
+
   /////////////////////////// LOOP on Ge TAMU /////////////////////////////
-  
-for(unsigned int countGe = 0 ; countGe < TG->Singles_E.size() ; countGe++) // multiplicity treated for now is zero 
-  { 
-  // Singles spectra 
-  
-  // Addback spectra 
-  GammaSinglesE+= TG->Singles_E[countGe];
-
-  // calculate angle
-
-  // calculate doppler corrected spectra 
-  	
-  }
+  //for(unsigned int countGe = 0 ; countGe < TG->Singles_E.size() ; countGe++){ // multiplicity treated for now is zero 
+  // 
+  //Event by event treatment goes here
+  // 
+  //}
 
 
  ////////////////////////////////////////// LOOP on FPD  //////////////////////////////////////////
@@ -397,6 +408,7 @@ void Analysis::ReInitValue(){
   ELab = -1000;
   ThetaLab = -1000;
   ThetaCM = -1000;
+  LightParticleDetected = false ; 
   
   //Simu
   //Original_ELab = -1000;
