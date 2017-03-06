@@ -115,7 +115,7 @@ GeTAMU::GeTAMU(){
 }
 
 GeTAMU::~GeTAMU(){
-  delete m_MaterialVacuum;
+//  delete m_MaterialVacuum;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
