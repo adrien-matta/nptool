@@ -38,6 +38,9 @@ using namespace NPUNITS;
 
 //   ROOT
 #include "TChain.h"
+#include "TRandom3.h"
+
+TRandom *Random = new TRandom3();
 ///////////////////////////////////////////////////////////////////////////
 
 ClassImp(TGeTAMUPhysics)
@@ -194,7 +197,7 @@ void TGeTAMUPhysics::PreTreat(){
       clover = m_EventData->GetCoreCloverNbrE(i);
       crystal = m_EventData->GetCoreCrystalNbrE(i);
       name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
-      Energy =  cal->ApplyCalibration(name+"_E", Eraw);
+      Energy =  cal->ApplyCalibration(name+"_E", Eraw+Random->Rndm());
       Singles_CloverMap_CryEN[clover].push_back(crystal);
       Singles_CloverMap_CryE[clover].push_back(Energy);
       m_PreTreatedData->SetCoreE(clover,crystal,Energy);
@@ -207,7 +210,7 @@ void TGeTAMUPhysics::PreTreat(){
       clover = m_EventData->GetCoreCloverNbrT(i);
       crystal = m_EventData->GetCoreCrystalNbrT(i);
       name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
-      Time =  cal->ApplyCalibration(name+"_T", Traw);
+      Time =  cal->ApplyCalibration(name+"_T", Traw+Random->Rndm());
       Singles_CloverMap_CryTN[clover].push_back(crystal);
       Singles_CloverMap_CryT[clover].push_back(Time);
       m_PreTreatedData->SetCoreT(clover,crystal,Time);
@@ -221,7 +224,7 @@ void TGeTAMUPhysics::PreTreat(){
       clover = m_EventData->GetSegmentCloverNbrE(i);
       segment = m_EventData->GetSegmentSegmentNbrE(i);
       name = "GETAMU/D"+ NPL::itoa(clover)+"_SEG"+ NPL::itoa(segment);
-      Energy =  cal->ApplyCalibration(name+"_E", Eraw);
+      Energy =  cal->ApplyCalibration(name+"_E", Eraw+Random->Rndm());
       Singles_CloverMap_SegEN[clover].push_back(segment);
       Singles_CloverMap_SegE[clover].push_back(Energy);
       m_PreTreatedData->SetSegmentE(clover,segment,Energy);
@@ -235,7 +238,7 @@ void TGeTAMUPhysics::PreTreat(){
       clover = m_EventData->GetSegmentCloverNbrT(i);
       segment = m_EventData->GetSegmentSegmentNbrT(i);
       name = "GETAMU/D"+ NPL::itoa(clover)+"_SEG"+ NPL::itoa(segment);
-      Time =  cal->ApplyCalibration(name+"_T", Traw);
+      Time =  cal->ApplyCalibration(name+"_T", Traw+Random->Rndm());
       Singles_CloverMap_CryTN[clover].push_back(segment);
       Singles_CloverMap_CryT[clover].push_back(Time);
       m_PreTreatedData->SetSegmentT(clover,segment,Time);
