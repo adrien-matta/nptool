@@ -218,7 +218,7 @@ double NPL::SiliconCalibrator::FitPoints(TGraphErrors* gre, double* Energies, do
       coeff.push_back(gre->GetFunction("pol1")->GetParameter(0));
       coeff.push_back(gre->GetFunction("pol1")->GetParameter(1));
       // Compute the Distance to pedestal:
-      return (coeff[0]/coeff[1]-pedestal);
+      return ((-coeff[0]/coeff[1])-pedestal);
    }
    else {
       //std::cout << "gre->GetN() <= 0" << std::endl; // used for debugging
