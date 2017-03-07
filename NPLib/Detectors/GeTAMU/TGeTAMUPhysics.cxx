@@ -423,7 +423,29 @@ else
     }
   } // end of scheme 3 
 
-} // end of add back
+}
+
+/*
+/////////////////////////////////////////////////
+TVector3 TGeTAMUPhysics::GetPositionOfInteraction(unsigned int& i){
+  //return TVector3();
+  return GetSegmentPosition(Singles_Clover[i],Singles_Crystal[i],Singles_Segment[i]);
+}
+/////////////////////////////////////////////////
+// original energy, position, beta
+double TGeTAMUPhysics::GetDopplerCorrectedEnergy(double& energy , TVector3 direction, TVector3& beta){
+  // renormalise pos vector
+  direction.SetMag(1);
+  m_GammaLV.SetPx(energy*direction.X());
+  m_GammaLV.SetPy(energy*direction.Y());
+  m_GammaLV.SetPz(energy*direction.Z());
+  m_GammaLV.SetE(energy);
+  m_GammaLV.Boost(-beta);
+  return m_GammaLV.Energy();
+}
+//=======
+//} // end of add back
+*/
 
 /////////////////////////////////////////////////
 void TGeTAMUPhysics::AddClover(unsigned int ID ,double R, double Theta, double Phi){
