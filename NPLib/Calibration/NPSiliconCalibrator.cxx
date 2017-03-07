@@ -24,7 +24,7 @@ NPL::SiliconCalibrator::~SiliconCalibrator(){
 }
 
 //////////////////////////////////////////////
-double NPL::SiliconCalibrator::ZeroExtrapolation(TH1* histo, NPL::CalibrationSource* CS, NPL::EnergyLoss* EL, vector<double>& coeff, unsigned int pedestal, unsigned int max_iteration,double rmin,double rmax){
+double NPL::SiliconCalibrator::ZeroExtrapolation(TH1* histo, NPL::CalibrationSource* CS, NPL::EnergyLoss* EL, vector<double>& coeff, unsigned int pedestal, unsigned int max_iteration, double rmin,double rmax){
   if(histo->GetEntries()==0){
     coeff.clear();
     coeff.push_back(0);
@@ -134,7 +134,7 @@ double NPL::SiliconCalibrator::ZeroExtrapolation(TH1* histo, NPL::CalibrationSou
   return Assume_Thickness/micrometer;
 }
 ////////////////////////////////////////////////////////////////////////////////
-double NPL::SiliconCalibrator::SimpleCalibration(TH1* histo, NPL::CalibrationSource* CS, NPL::EnergyLoss* EL, vector<double>& coeff, double rmin,double rmax){
+double NPL::SiliconCalibrator::SimpleCalibration(TH1* histo, NPL::CalibrationSource* CS, NPL::EnergyLoss* EL, vector<double>& coeff, double Assume_Thickness, double rmin,double rmax){
   if(histo->GetEntries()==0){
     coeff.clear();
     coeff.push_back(0);
@@ -157,7 +157,7 @@ double NPL::SiliconCalibrator::SimpleCalibration(TH1* histo, NPL::CalibrationSou
     }
   }
 
-  if(counts < 30){
+  if(counts == 0){
     coeff.clear();
     coeff.push_back(0);
     coeff.push_back(-1);
@@ -175,14 +175,22 @@ double NPL::SiliconCalibrator::SimpleCalibration(TH1* histo, NPL::CalibrationSou
     Source_E[i] = CS->GetEnergies()[i][0];
     Source_Sig[i] = CS->GetEnergiesErrors()[i][0]; 
   }
+
+  // Compute the new assumed energies   
+  vector<double> Assume_E ; // Energie calculated assuming Assume_Thickness deadlayer of Al
+  Assume_E.resize(source_size,0); 
+  for(unsigned int i = 0 ; i < source_size ; i++){
+    Assume_E[i] = EL->Slow(Source_E[i], Assume_Thickness, 0); // Assume_Thickness in micrometer
+  }
+
   TGraphErrors* g = FitSpectrum(histo,rmin,rmax);
-  double dist = FitPoints(g,Source_E , Source_Sig, coeff, 0 );
+  double DistanceToPedestal = FitPoints(g, &Assume_E[0] , Source_Sig, coeff, 0 );
 
   delete g;
-  if(dist!=-3)
-    return abs(dist);
+  if(DistanceToPedestal!=-3)
+    return abs(DistanceToPedestal);
   else 
-    return dist;
+    return DistanceToPedestal;
 }
 
 
