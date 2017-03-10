@@ -335,25 +335,22 @@ std::vector<std::string> InputParser::GetAllBlocksToken(){
 void InputParser::TreatAliases(){
 
   // Call the alias block
-  std::vector<NPL::InputBlock*> blocks = GetAllBlockWithToken("Alias");
-  // List of token:
+  std::vector<NPL::InputBlock*> blocks = GetAllBlocksWithToken("Alias");
+  // List of token:                      
+
   // - Action -> take value Split(create new block for each value) or Inplace 
   // - Type -> Specify the type of value Vector/Int/Double/String
   // - Value -> The list of value to be used
-  std::vector<std::string> token = {"Action","Type","Value"}
+  std::vector<std::string> token = {"Action","Type","Value"};
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
     string alias = blocks[i]->GetMainValue(); 
-    std::string action = blocks->GetString("Action");
-    std::vector<std::string> value  = blocks->GetVectorString("Value"); 
+    std::string action = blocks[i]->GetString("Action");
+    std::vector<std::string> value  = blocks[i]->GetVectorString("Value"); 
     for(unsigned int v = 0 ; v < value.size() ; v++){
       
     }
 
   }
-
-}
-////////////////////////////////////////////////////////////////////////////////
-void InputParser::TreatOneAliases(){
 
 }
 ////////////////////////////////////////////////////////////////////////////////

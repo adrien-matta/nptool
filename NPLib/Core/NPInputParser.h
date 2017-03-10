@@ -26,6 +26,7 @@
 // STL
 #include<string>
 #include<vector>
+#include<map>
 
 // ROOT
 #include"TVector3.h"
@@ -100,7 +101,7 @@ namespace NPL{
     public:
       void ReadFile(std::string filename,bool ExitOnError=true);
       void TreatAliases();
-      void TreatOneAlias();
+      void TreatOneAlias(){};
       void Dump();
       void Print() {Dump();}
       void Clear();
