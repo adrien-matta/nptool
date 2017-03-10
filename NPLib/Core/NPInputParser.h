@@ -92,7 +92,7 @@ namespace NPL{
 
     private:
       std::vector<InputBlock*> m_Block;
-      std::map<std::string, vector<std::string> > m_Aliases;
+      std::map<std::string, std::vector<std::string> > m_Aliases;
 
     private:
       int m_verbose;
