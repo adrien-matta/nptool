@@ -30,7 +30,7 @@
 // ForwardDeclaration
 class TMust2Physics ;
 
-class TMust2Spectra:public VSpectra {
+class TMust2Spectra:public VSpectra{
   public:
     // constructor and destructor
     TMust2Spectra();

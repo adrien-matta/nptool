@@ -27,29 +27,36 @@
 #include "TMonitor.h"
 #include "TMessage.h"
 #include "TList.h"
-#include "TCanvas.h"
+#include "TH1.h"
+#include <string>
+#include <map>
+
 namespace NPL{
   class SpectraServer{
     public:
       static SpectraServer* getInstance();
-      void Destroy(); 
+      void Destroy();
+ 
     private:
       SpectraServer();
       ~SpectraServer();
 
     private:
       static SpectraServer* instance;
-   
+
     public:
       void HandleSocket(TSocket* s);
-      void AddCanvas(TCanvas* c);
+      void AddSpectra(std::string family,TH1* h);
+      void FillHisto(std::string index,double val);
       void CheckRequest();
-   private:
-    bool m_stop;
-    TServerSocket* m_Server;     
-    TMonitor* m_Monitor;     
-    TList* m_Sockets;
-    TList* m_Canvas;
+
+    private:
+      bool m_stop;
+      TServerSocket* m_Server;     
+      TMonitor* m_Monitor;     
+      std::map<TSocket*,std::map<std::string,TH1*> > m_Delta;
+      TList* m_Sockets;
+      TList* m_Canvas;
   };
 }
 #endif

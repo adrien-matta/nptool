@@ -1,5 +1,27 @@
 #ifndef NPINPUTPARSER
 #define NPINPUTPARSER
+/*****************************************************************************
+ * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Original Author: Adrien Matta   contact address: matta@lpccaen.in2p3.fr   *
+ *                                                                           *
+ * Creation Date  : December 2016                                            *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *   This class allow for parsing of tabulated input file with unit and token*
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
+
 
 // STL
 #include<string>
@@ -65,19 +87,23 @@ namespace NPL{
   class InputParser{
     public:
       InputParser(){};
-      InputParser(std::string filename) {ReadFile(filename);}
+      InputParser(std::string filename,bool ExitOnError=true) {ReadFile(filename,ExitOnError);}
       ~InputParser(){};
 
     private:
       std::vector<InputBlock*> m_Block;
+      std::map<std::string, vector<std::string> > m_Aliases;
 
     private:
       int m_verbose;
 
     public:
-      void ReadFile(std::string filename);
+      void ReadFile(std::string filename,bool ExitOnError=true);
+      void TreatAliases();
+      void TreatOneAlias();
       void Dump();
       void Print() {Dump();}
+      void Clear();
       std::vector<InputBlock*> GetAllBlocksWithToken(std::string Token);
       std::vector<InputBlock*> GetAllBlocksWithTokenAndValue(std::string Token,std::string Value);
 

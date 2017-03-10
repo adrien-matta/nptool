@@ -23,8 +23,10 @@
 
 
 // NPL
-#include "NPOnline.h"
-
+#include "NPOnlineGUI.h"
+#include "NPOptionManager.h"
+#include "NPInputParser.h"
+#include "NPCore.h"
 // STL
 #include <iostream>
 #include <dirent.h>
@@ -39,7 +41,7 @@
 #include "TFile.h"
 #include "TMessage.h"
 #include "TGSplitter.h"
-ClassImp(NPL::NPOnline);
+ClassImp(NPL::OnlineGUI);
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::ExecuteMacro(string name){
   static DIR *dir;
@@ -56,26 +58,28 @@ void NPL::ExecuteMacro(string name){
   }
 }
 ////////////////////////////////////////////////////////////////////////////////
-NPL::NPOnline::NPOnline(string address,int port){
+NPL::OnlineGUI::OnlineGUI(NPL::SpectraClient* client){
+  m_Client = client;
   m_Sock = 0;
   TString NPLPath = gSystem->Getenv("NPTOOL");
   gROOT->ProcessLine(Form(".x %s/NPLib/scripts/NPToolLogon.C+", NPLPath.Data()));
   gROOT->SetStyle("nponline");
 
   // Build the interface
-  MakeGui(address,port);
+  MakeGui();
 
   // Link the button slot to the function
   m_Quit->SetCommand("gApplication->Terminate()");
-  m_Connect->Connect("Clicked()", "NPL::NPOnline", this, "Connect()");
-  m_Update->Connect("Clicked()", "NPL::NPOnline", this, "Update()");
-  m_Clock->Connect("Clicked()","NPL::NPOnline",this,"AutoUpdate()");
+  m_Connect->Connect("Clicked()", "NPL::OnlineGUI", this, "Connect()");
+  m_Update->Connect("Clicked()", "NPL::OnlineGUI", this, "Update()");
+  m_Clock->Connect("Clicked()","NPL::OnlineGUI",this,"AutoUpdate()");
 
   Connect();
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////
-void NPL::NPOnline::MakeGui(string address,int port){
+void NPL::OnlineGUI::MakeGui(){
   m_BgColor = gROOT->GetColor(kGray+3)->GetPixel();
   m_FgColor = gROOT->GetColor(kAzure+7)->GetPixel();
   m_TabBgColor = gROOT->GetColor(kGray+3)->GetPixel();
@@ -87,7 +91,6 @@ void NPL::NPOnline::MakeGui(string address,int port){
   m_Main->SetName("nponline");
   m_Main->SetBackgroundColor(m_BgColor);
   m_Main->SetForegroundColor(m_FgColor);
-
   // Button bar to hold the button
   m_ButtonBar= new TGVerticalFrame(m_Main,10000,42,kFixedSize);
   m_ButtonBar->SetBackgroundColor(m_BgColor);
@@ -148,12 +151,12 @@ void NPL::NPOnline::MakeGui(string address,int port){
   m_Address = new TGTextEntry(m_ButtonBar, new TGTextBuffer(14),-1,uGC->GetGC(),ufont->GetFontStruct(),kChildFrame | kOwnBackground);
   m_Address->SetMaxLength(4096);
   m_Address->SetAlignment(kTextLeft);
-  m_Address->SetText(address.c_str());
+  m_Address->SetText(m_Client->GetAddress().c_str());
   m_Address->Resize(200,m_Address->GetDefaultHeight());
   m_ButtonBar->AddFrame(m_Address, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
   m_Address->MoveResize(90,10,200,20);
 
-  m_Port = new TGNumberEntry(m_ButtonBar, (Double_t) port,9,-1,(TGNumberFormat::EStyle) 5);
+  m_Port = new TGNumberEntry(m_ButtonBar, (Double_t) m_Client->GetPort(),9,-1,(TGNumberFormat::EStyle) 5);
   m_Port->SetName("m_Port");
   m_Port->GetButtonUp()->SetStyle(1);
   m_Port->GetButtonDown()->SetStyle(1);
@@ -199,53 +202,56 @@ void NPL::NPOnline::MakeGui(string address,int port){
 
   m_Split->AddFrame(fV2, new TGLayoutHints(kLHintsRight | kLHintsExpandX | kLHintsExpandY));
   m_Main->AddFrame(m_Split, new TGLayoutHints(kLHintsRight | kLHintsExpandX |kLHintsExpandY));
+  // Right //
+  TRootEmbeddedCanvas* canvas = new TRootEmbeddedCanvas("Canvas",m_Right,700,490,!kSunkenFrame);  
+  m_Right->AddFrame(canvas,new TGLayoutHints(kLHintsLeft | kLHintsBottom | kLHintsExpandX | kLHintsExpandY));
+  // Left //
+  // Create tabs for histo list and canvas list
+  m_Tab = new TGTab(m_Left,700,500);
+  m_Tab->Resize(m_Tab->GetDefaultSize());
+  m_Tab->SetBackgroundColor(m_TabBgColor);
+  m_Tab->SetForegroundColor(m_TabFgColor);
+  m_Tab->ChangeSubframesBackground(m_BgColor);
+  TGCompositeFrame* tfCanvas= m_Tab->AddTab("Canvas");
+  TGCompositeFrame* tfHisto = m_Tab->AddTab("Histo");
 
+  m_Left->AddFrame(m_Tab, new TGLayoutHints(kLHintsLeft | kLHintsBottom | kLHintsExpandY | kLHintsExpandX));
   // canvas widget
-  TGCanvas* m_ListCanvas = new TGCanvas(m_Left,120,500);
+  TGCanvas* m_ListCanvas = new TGCanvas(tfCanvas,120,500);
   m_ListCanvas->SetName("m_ListCanvas");
 
-  m_ListCanvas ->SetForegroundColor(m_BgColor); 
+  m_ListCanvas->SetForegroundColor(m_BgColor); 
   m_ListCanvas->SetForegroundColor(m_BgColor);    
 
 
   // canvas viewport
-  TGViewPort* fViewPort669 = m_ListCanvas->GetViewPort();
+  TGViewPort* CanvasViewPort = m_ListCanvas->GetViewPort();
 
   // list tree
-  m_CanvasListTree = new CanvasList(m_Main,m_ListCanvas);
+  m_CanvasListTree = new CanvasList(m_Main,m_ListCanvas,canvas);
   m_ListTree = m_CanvasListTree->GetListTree();
 
-  fViewPort669->AddFrame(m_ListTree,new TGLayoutHints(kLHintsRight | kLHintsBottom | kLHintsExpandY | kLHintsExpandX));
+  CanvasViewPort->AddFrame(m_ListTree,new TGLayoutHints(kLHintsRight | kLHintsBottom | kLHintsExpandY | kLHintsExpandX));
   m_ListTree->SetLayoutManager(new TGHorizontalLayout(m_ListTree));
   m_ListTree->MapSubwindows();
 
   m_ListCanvas->SetContainer(m_ListTree);
   m_ListCanvas->MapSubwindows();
-  m_Left->AddFrame(m_ListCanvas, new TGLayoutHints(kLHintsLeft | kLHintsBottom | kLHintsExpandY | kLHintsExpandX));
+  tfCanvas->AddFrame(m_ListCanvas, new TGLayoutHints(kLHintsLeft | kLHintsBottom | kLHintsExpandY | kLHintsExpandX));
   m_ListCanvas->MoveResize(10,50,120,500);
 
-  // tab widget
-  m_Tab = new TGTab(m_Right,700,500);
-
-  m_Tab->Resize(m_Tab->GetDefaultSize());
-  m_Tab->SetBackgroundColor(m_TabBgColor);
-  m_Tab->SetForegroundColor(m_TabFgColor);
-  m_Tab->ChangeSubframesBackground(m_BgColor);
-
-  m_Right->AddFrame(m_Tab,new TGLayoutHints(kLHintsRight | kLHintsBottom | kLHintsExpandX | kLHintsExpandY));
-  m_CanvasListTree->SetTab(m_Tab);
 
   m_Main->SetMWMHints(kMWMDecorAll,kMWMFuncAll,kMWMInputModeless);
   m_Main->MapSubwindows();
 
   m_Main->Resize(m_Main->GetDefaultSize());
   m_Main->MapWindow();
-  m_Main->MoveResize(0,0,1000,500);
+  m_Main->MoveResize(0,0,500,500);
 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-NPL::NPOnline::~NPOnline(){
+NPL::OnlineGUI::~OnlineGUI(){
   delete m_Main; 
   delete m_ListCanvas;
   delete m_ListTree;
@@ -256,80 +262,27 @@ NPL::NPOnline::~NPOnline(){
   delete m_Sock;
   delete m_Port;
   delete m_Address;
+  delete m_StatusBar;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void NPL::NPOnline::Connect(){
-  // Connect to SpectraServer
-  if(m_Sock){
-    m_Sock->Close("force");
-    delete m_Sock;
-    m_Sock = NULL;
-  }
-
-  m_Sock = new TSocket(m_Address->GetDisplayText(),(Int_t) m_Port->GetNumber());
-  if(m_Sock->IsValid()){
-    m_Connect->SetState(kButtonDisabled);
-    Update();
-  }
-  else{
-    cout << "Connection to " << m_Address->GetDisplayText() << " " <<(Int_t) m_Port->GetNumber() << " Failed" << endl;
-  }
+void NPL::OnlineGUI::Connect(){
+  m_Client->SetAddressAndPort((string) m_Address->GetDisplayText(),(int) m_Port->GetNumber());
+  m_Client->Connect();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void NPL::NPOnline::Update(){
-  if(!m_Sock || !(m_Sock->IsValid())){
-    if(m_Sock){
-      m_Sock->Close("force");
-      delete m_Sock;
-      m_Sock = NULL;
-    }
-    m_Connect->SetState(kButtonUp);
-    return;
+void NPL::OnlineGUI::Update(){
+  if(m_Client->Update()){
+    // Do some stuff with the histo
   }
 
-  TMessage* message;
-  m_Sock->Send("RequestSpectra");
-
-  if(m_Sock->Recv(message)<=0){
-    if(m_Sock){
-      m_Sock->Close("force");
-      delete m_Sock;
-      m_Sock = NULL;
-    }
-    m_Connect->SetState(kButtonUp);
-    return;
-  }
-
-  m_CanvasListTree->Clear();
-  m_CanvasList = (TList*) message->ReadObject(message->GetClass());
-
-  TGCompositeFrame* tf; 
-  TRootEmbeddedCanvas* canvas;
-  for(TCanvas* c = (TCanvas*) m_CanvasList->First() ; c !=0 ; c = (TCanvas*) m_CanvasList->After(c)){
-    m_CanvasListTree->AddItem(c);
-
-    TGCompositeFrame*  tab =  m_Tab->GetTabContainer(c->GetName());
-    if(tab){
-      tab->RemoveAll();
-      TRootEmbeddedCanvas* canvas = new TRootEmbeddedCanvas(c->GetName(),tab,700,500,!kSunkenFrame); 
-
-      c->UseCurrentStyle();
-      c->SetMargin(0,0,0,0);
-      canvas->AdoptCanvas(c);
-      tab->SetLayoutManager(new TGHorizontalLayout(tab));
-      tab->AddFrame(canvas,new TGLayoutHints(kLHintsLeft | kLHintsBottom | kLHintsExpandX | kLHintsExpandY));
-      ExecuteMacro(c->GetName());
-    }
-  }
-
-  m_Main->MapSubwindows();
-  m_Main->Layout();
+  else
+    m_Connect->SetState(kButtonUp);  
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void NPL::NPOnline::AutoUpdate(){
+void NPL::OnlineGUI::AutoUpdate(){
 
   if(m_Timer){
     delete m_Timer;
@@ -339,7 +292,7 @@ void NPL::NPOnline::AutoUpdate(){
 
   else if(m_TimerEntry->GetNumber()>0){
     m_Timer = new TTimer(m_TimerEntry->GetNumber()*1000);
-    m_Timer->Connect("Timeout()", "NPL::NPOnline", this, "Update()");
+    m_Timer->Connect("Timeout()", "NPL::OnlineGUI", this, "Update()");
     m_Timer->TurnOn();
   }
 }
@@ -351,7 +304,7 @@ void NPL::NPOnline::AutoUpdate(){
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-NPL::CanvasList::CanvasList(TGMainFrame* main, TGCanvas* parent){
+NPL::CanvasList::CanvasList(TGMainFrame* main, TGCanvas* parent,TRootEmbeddedCanvas* canvas){
   string NPLPath = gSystem->Getenv("NPTOOL");  
   string path_icon = NPLPath+"/NPLib/Core/icons/polaroid.xpm";
 
@@ -364,17 +317,23 @@ NPL::CanvasList::CanvasList(TGMainFrame* main, TGCanvas* parent){
   m_ListTree = new TGListTree(parent,kHorizontalFrame);
   m_ListTree->Connect("DoubleClicked(TGListTreeItem*,Int_t)","NPL::CanvasList",this,"OnDoubleClick(TGListTreeItem*,Int_t)");
   m_Main = main;
+  m_EmbeddedCanvas = canvas;
+  LoadCanvasList();
 }
 ////////////////////////////////////////////////////////////////////////////////
 NPL::CanvasList::~CanvasList(){
 }
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::CanvasList::OnDoubleClick(TGListTreeItem* item, Int_t btn){
-  AddTab(item->GetText(),m_Canvas[item->GetText()]);
+  TCanvas* c = m_Canvas[item->GetText()];
+  if(c){
+    m_EmbeddedCanvas->AdoptCanvas(c);
+    ExecuteMacro(c->GetName());
+  }
 }
 ////////////////////////////////////////////////////////////////////////////////
-void NPL::CanvasList::AddItem(TCanvas* c){
-  TGListTreeItem*  item  = m_ListTree->AddItem(NULL,c->GetName());
+void NPL::CanvasList::AddItem(TCanvas* c,TGListTreeItem* parent){
+  TGListTreeItem* item  = m_ListTree->AddItem(parent,c->GetName());
   item->SetPictures(m_popen, m_pclose);
   m_Canvas[c->GetName()]=c;
 }
@@ -392,36 +351,67 @@ TGListTree* NPL::CanvasList::GetListTree(){
   return m_ListTree;
 }
 ////////////////////////////////////////////////////////////////////////////////
-void NPL::CanvasList::AddTab(std::string name,TCanvas* c){
-  // If the tab exist, activate
-  if(m_Tab->GetTabTab(name.c_str())){
-    m_Tab->SetTab(name.c_str());
-    return;
-  }
-
-  TGCompositeFrame* tf = m_Tab->AddTab(name.c_str());
-  TRootEmbeddedCanvas* canvas = new TRootEmbeddedCanvas("Canvas",tf,700,490,!kSunkenFrame); 
-
-  if(c){
-    c->UseCurrentStyle();
-    c->SetMargin(0,0,0,0);
-    canvas->AdoptCanvas(c);
-    ExecuteMacro(c->GetName());
-  }
-
-  tf->SetBackgroundColor(m_BgColor);
-  tf->SetForegroundColor(m_FgColor);
-  tf->SetLayoutManager(new TGVerticalLayout(tf));
-  tf->AddFrame(canvas,new TGLayoutHints(kLHintsTop | kLHintsLeft |kLHintsExpandX | kLHintsExpandY));
-  m_Tab->Resize(m_Tab->GetDefaultSize());
-  m_Tab->MoveResize(144,50,700,500);
-  m_Tab->SetTab(name.c_str());
-  m_Main->MapSubwindows();
-  m_Main->MapWindow();
-  m_Main->Layout();
-}
-////////////////////////////////////////////////////////////////////////////////
 void NPL::CanvasList::SetTab(TGTab* tab){
   m_Tab=tab;
 }
+////////////////////////////////////////////////////////////////////////////////
+void NPL::CanvasList::SetStatusText(const char* txt, int pi){
+  for(unsigned int i = 0 ; i < m_StatusBar.size(); i++)
+    m_StatusBar[i]->SetText(txt,pi);
+}
+////////////////////////////////////////////////////////////////////////////////
+void NPL::CanvasList::EventInfo(int event,int px,int py,TObject* selected){
+  const char *text0, *text1, *text3;
+  char text2[50];
+  text0 = selected->GetTitle();
+  SetStatusText(text0,0);
+  text1 = selected->GetName();
+  SetStatusText(text1,1);
+  if (event == kKeyPress)
+    sprintf(text2, "%c", (char) px);
+  else
+    sprintf(text2, "%d,%d", px, py);
+  SetStatusText(text2,2);
+  text3 = selected->GetObjectInfo(px,py);
+  SetStatusText(text3,3);
+}
+////////////////////////////////////////////////////////////////////////////////
+void NPL::CanvasList::LoadCanvasList(){
+  NPL::InputParser parser("CanvasList.txt",false);
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Canvas");
+  vector<std::string> token = {"Path","Divide","Histo"};
+  NPOptionManager::getInstance()->SetVerboseLevel(0);
+  gROOT->ProcessLine("gROOT->SetBatch(kTRUE)");
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token)){
+      vector<std::string> path = blocks[i]->GetVectorString("Path");
+      vector<int> divide = blocks[i]->GetVectorInt("Divide");
+      vector<std::string> histo = blocks[i]->GetVectorString("Histo");
+      string name = path[path.size()-1];
+      TCanvas* c = new TCanvas(name.c_str(),name.c_str());
+      c->Divide(divide[0],divide[1]);
+      TGListTreeItem*  item  =  NULL;
+      TGListTreeItem*  pitem =  NULL;
 
+      string item_path="";
+      for(unsigned int j = 0 ; j < path.size()-1 ; j++){
+        item_path+="/"+path[j];
+        item = m_ListTree->FindItemByPathname(item_path.c_str());
+        if(!item){
+          item= m_ListTree->AddItem(pitem,path[j].c_str());
+        }
+        pitem = item;
+
+      }
+
+      if(item)
+        AddItem(c,item);
+      else
+        AddItem(c);
+    }
+    else
+      NPL::SendWarning("NPL::CanvasList","CanvasList.txt has incorrect formatting");
+  }
+  gROOT->ProcessLine("gROOT->SetBatch(kFALSE)");
+
+}

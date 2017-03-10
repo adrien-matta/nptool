@@ -1,3 +1,7 @@
+#ifndef NPIMAGE
+#define NPIMAGE
+
+
 /*****************************************************************************
  * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
  *                                                                           *
@@ -71,3 +75,4 @@ namespace NPL{
   };
 
 }
+#endif

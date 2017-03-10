@@ -424,7 +424,7 @@ void TTiaraHyballPhysics::ReadConfiguration(NPL::InputParser parser){
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
     if(blocks[i]->HasTokenList(token)){
       if(NPOptionManager::getInstance()->GetVerboseLevel())
-        cout << endl << "////  Hyball Wedge" << i+1 <<  endl;
+        cout << endl << "////  Hyball Wedge " << i+1 <<  endl;
       double Z = blocks[i]->GetDouble("Z","mm");
       double R = blocks[i]->GetDouble("R","mm");
       double Phi = blocks[i]->GetDouble("Phi","deg");

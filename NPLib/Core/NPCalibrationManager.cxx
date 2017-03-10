@@ -265,11 +265,6 @@ double CalibrationManager::ApplyResistivePositionCalibration(const string& Param
 
   // If the find methods return the end iterator it's mean the parameter was not found
   if(it == ite ){
-    /*     cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
-           cout << " ERROR: PARAMETER " << ParameterPath << " IS NOT FOUND IN THE CALIBRATION DATA BASE  " << endl ;
-           cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl;
-           exit(1); */
-
     return DeltaRawValue ;
   }
 

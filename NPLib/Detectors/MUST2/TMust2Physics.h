@@ -178,7 +178,7 @@ class TMust2Physics : public TObject, public NPL::VDetector{
     void ReadCalibrationRun();
 
     // Give and external TMustData object to TMust2Physics. Needed for online analysis for example.
-    void SetRawDataPointer(TMust2Data* rawDataPointer) {m_EventData = rawDataPointer;}
+    void SetRawDataPointer(void* rawDataPointer) {m_EventData = (TMust2Data*) rawDataPointer;}
     // Retrieve raw and pre-treated data
     TMust2Data* GetRawData()        const {return m_EventData;}
     TMust2Data* GetPreTreatedData() const {return m_PreTreatedData;}
@@ -281,6 +281,7 @@ class TMust2Physics : public TObject, public NPL::VDetector{
 
   public: // Spectra Getter
     map< string , TH1*> GetSpectra(); 
+    vector<TCanvas*> GetCanvas();
 
     public: // Static constructor to be passed to the Detector Factory
      static NPL::VDetector* Construct();

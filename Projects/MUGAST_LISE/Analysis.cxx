@@ -40,8 +40,7 @@ void Analysis::Init() {
   InitOutputBranch();
   InitInputBranch();
   myInit = new TInitialConditions();
-  // get MUST2 and Gaspard objects
-  M2 = (TMust2Physics*)  m_DetectorManager -> GetDetector("M2Telescope");
+  Coord = new TInteractionCoordinates();
   GD = (GaspardTracker*) m_DetectorManager -> GetDetector("GaspardTracker");
 
   // get reaction information
@@ -105,68 +104,6 @@ void Analysis::TreatEvent() {
   OriginalThetaLab = myInit->GetThetaLab_WorldFrame(0);
   OriginalELab = myInit->GetKineticEnergy(0);
 
-  //////////////////////////// LOOP on MUST2 //////////////////
-  for(unsigned int countMust2 = 0 ; countMust2 < M2->Si_E.size() ; countMust2++){
-    /************************************************/
-    //Part 0 : Get the usefull Data
-    // MUST2
-    int TelescopeNumber = M2->TelescopeNumber[countMust2];
-
-    /************************************************/
-    // Part 1 : Impact Angle
-    ThetaM2Surface = 0;
-    ThetaNormalTarget = 0;
-    TVector3 HitDirection = M2 -> GetPositionOfInteraction(countMust2) - BeamImpact ;
-    ThetaLab = HitDirection.Angle( BeamDirection );
-
-    X = M2 -> GetPositionOfInteraction(countMust2).X();
-    Y = M2 -> GetPositionOfInteraction(countMust2).Y();
-    Z = M2 -> GetPositionOfInteraction(countMust2).Z();
-
-    ThetaM2Surface = HitDirection.Angle(- M2 -> GetTelescopeNormal(countMust2) );
-    ThetaNormalTarget = HitDirection.Angle( TVector3(0,0,1) ) ;
-
-    /************************************************/
-
-    /************************************************/
-    // Part 2 : Impact Energy
-    Energy = ELab = 0;
-    Si_E_M2 = M2->Si_E[countMust2];
-    CsI_E_M2= M2->CsI_E[countMust2];
-
-    // if CsI
-    if(CsI_E_M2>0 ){
-      // The energy in CsI is calculate form dE/dx Table because
-      Energy = CsI_E_M2;
-      Energy = LightAl.EvaluateInitialEnergy( Energy ,0.4*micrometer , ThetaM2Surface);
-      Energy+=Si_E_M2;
-    }
-
-    else
-      Energy = Si_E_M2;
-
-    // Evaluate energy using the thickness
-    ELab = LightAl.EvaluateInitialEnergy( Energy ,0.4*micrometer , ThetaM2Surface);
-    // Target Correction
-    ELab   = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2.-zImpact, ThetaNormalTarget);
-
-    if(LightWindow)
-      ELab = LightWindow->EvaluateInitialEnergy( ELab ,WindowsThickness, ThetaNormalTarget);
-    /************************************************/
-
-    /************************************************/
-    // Part 3 : Excitation Energy Calculation
-    Ex = myReaction.ReconstructRelativistic( ELab , ThetaLab );
-    ThetaLab=ThetaLab/deg;
-
-    /************************************************/
-
-    /************************************************/
-    // Part 4 : Theta CM Calculation
-    ThetaCM  = myReaction.EnergyLabToThetaCM( ELab , ThetaLab)/deg;
-    /************************************************/
-  }//end loop MUST2
-
   ////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////
   //////////////////////////// LOOP on GASPARD //////////////////
@@ -181,7 +118,8 @@ void Analysis::TreatEvent() {
     X =  GD -> GetPositionOfInteraction().X();
     Y =  GD -> GetPositionOfInteraction().Y();
     Z =  GD -> GetPositionOfInteraction().Z();
-
+    cout << " -- " << endl;
+     cout << X-Coord->GetDetectedPositionX(0) << " " << Y-Coord->GetDetectedPositionY(0) << " " << Z << endl;
     ThetaGDSurface = HitDirection.Angle( TVector3(0,0,1) ) ;
     ThetaNormalTarget = HitDirection.Angle( TVector3(0,0,1) ) ;
 
@@ -245,6 +183,8 @@ void Analysis::InitInputBranch(){
   RootInput::getInstance()->GetChain()->SetBranchAddress("Run",&Run);
   RootInput::getInstance()->GetChain()->SetBranchStatus("InitialConditions",true);
   RootInput::getInstance()->GetChain()->SetBranchAddress("InitialConditions",&myInit);
+  RootInput::getInstance()->GetChain()->SetBranchAddress("InteractionCoordinates",&Coord);
+
 }
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::ReInitValue(){

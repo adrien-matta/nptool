@@ -2,7 +2,7 @@
 using namespace NPL;
 #include"NPSystemOfUnits.h"
 #include"NPOptionManager.h"
-
+#include"NPCore.h"
 #include<sstream>
 #include<iostream>
 #include<fstream>
@@ -130,7 +130,7 @@ double InputBlock::GetDouble(std::string Token,std::string default_unit){
   else{
     val = ApplyUnit(val,unit);
   }
-  
+
   if(verbose)
     cout << " " << Token << " (" <<default_unit << "): " << val/ApplyUnit(1,default_unit) << endl; 
 
@@ -180,9 +180,9 @@ TVector3 InputBlock::GetTVector3(std::string Token,std::string  default_unit){
 
   if(verbose)
     cout << " " << Token << " (" <<default_unit << "): (" 
-    << x/ApplyUnit(1,default_unit) << " ; " 
-    << y/ApplyUnit(1,default_unit) << " ; " 
-    << z/ApplyUnit(1,default_unit) << ")" << endl; 
+      << x/ApplyUnit(1,default_unit) << " ; " 
+      << y/ApplyUnit(1,default_unit) << " ; " 
+      << z/ApplyUnit(1,default_unit) << ")" << endl; 
 
 
   return TVector3(x,y,z);        
@@ -195,10 +195,10 @@ std::vector<std::string> InputBlock::GetVectorString(std::string Token){
 
   std::vector<std::string> val;
   std::string buffer;
-    while(iss>>buffer)
-      val.push_back(buffer);
+  while(iss>>buffer)
+    val.push_back(buffer);
 
-  
+
   if(verbose){
     cout << " " << Token << ": ";
     for(unsigned int i = 0 ; i < val.size() ; i++)
@@ -216,14 +216,14 @@ std::vector<double> InputBlock::GetVectorDouble(std::string Token,std::string  d
 
   std::vector<double> val;
   double buffer;
-    while(iss>>buffer)
-      val.push_back(buffer);
+  while(iss>>buffer)
+    val.push_back(buffer);
 
   // Try to read the unit  
   iss.clear();
   std::string unit;
   iss>>unit;
- 
+
   if(unit==""){
     if(default_unit!="void")
       std::cout <<"WARNING: Using default units for token " << Token << std::endl;
@@ -242,7 +242,7 @@ std::vector<double> InputBlock::GetVectorDouble(std::string Token,std::string  d
     cout << endl; 
   }
 
-return val;        
+  return val;        
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -252,10 +252,10 @@ std::vector<int> InputBlock::GetVectorInt(std::string Token){
   std::stringstream iss(GetValue(Token));
   std::vector<int> val;
   int buffer;
-    while(iss>>buffer)
-      val.push_back(buffer);
+  while(iss>>buffer)
+    val.push_back(buffer);
 
- if(verbose){
+  if(verbose){
     cout << " " << Token << ": ";
     for(unsigned int i = 0 ; i < val.size() ; i++)
       cout << val[i] << " " ;
@@ -302,7 +302,7 @@ std::vector<InputBlock*> InputParser::GetAllBlocksWithToken(std::string Token){
   std::vector<InputBlock*> res;
   for(unsigned int i = 0 ; i < m_Block.size(); i++){
     if(m_Block[i]->GetMainToken() == Token){
-        res.push_back(m_Block[i]);
+      res.push_back(m_Block[i]);
     }
   }
 
@@ -325,19 +325,51 @@ std::vector<InputBlock*> InputParser::GetAllBlocksWithTokenAndValue(std::string 
 ////////////////////////////////////////////////////////////////////////////////
 std::vector<std::string> InputParser::GetAllBlocksToken(){
   std::vector<std::string> token;
-    for(unsigned int i = 0 ; i < m_Block.size() ; i++){
-        token.push_back(m_Block[i]->GetMainToken());
-    }
+  for(unsigned int i = 0 ; i < m_Block.size() ; i++){
+    token.push_back(m_Block[i]->GetMainToken());
+  }
 
   return token;
 }
-
 ////////////////////////////////////////////////////////////////////////////////
-void InputParser::ReadFile(std::string filename){
+void InputParser::TreatAliases(){
+
+  // Call the alias block
+  std::vector<NPL::InputBlock*> blocks = GetAllBlockWithToken("Alias");
+  // List of token:
+  // - Action -> take value Split(create new block for each value) or Inplace 
+  // - Type -> Specify the type of value Vector/Int/Double/String
+  // - Value -> The list of value to be used
+  std::vector<std::string> token = {"Action","Type","Value"}
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    string alias = blocks[i]->GetMainValue(); 
+    std::string action = blocks->GetString("Action");
+    std::vector<std::string> value  = blocks->GetVectorString("Value"); 
+    for(unsigned int v = 0 ; v < value.size() ; v++){
+      
+    }
+
+  }
+
+}
+////////////////////////////////////////////////////////////////////////////////
+void InputParser::TreatOneAliases(){
+
+}
+////////////////////////////////////////////////////////////////////////////////
+void InputParser::ReadFile(std::string filename,bool ExitOnError){
+  Clear();
   std::ifstream file(filename.c_str());
   if(!file.is_open()){
-    std::cout <<"ERROR : file " << filename << " not found " << std::endl;
-    exit(1);
+    std::ostringstream message;
+    message <<"file " << filename << " not found " << std::endl;
+
+    if(ExitOnError)
+      NPL::SendErrorAndExit("NPL::InputParser", message.str());
+    else{
+      NPL::SendWarning("NPL::InputParser", message.str());
+      return;
+    }
   }
 
   std::string line;
@@ -359,7 +391,18 @@ void InputParser::ReadFile(std::string filename){
   // Add the last block
   if(block)
     m_Block.push_back(block);
+
+  TreatAliases();
 }
+////////////////////////////////////////////////////////////////////////////////
+void InputParser::Clear(){
+  for(unsigned int i = 0 ; m_Block.size() ; i++)
+    delete m_Block[i];
+
+  m_Block.clear();
+  m_Aliases.clear();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 double NPL::ApplyUnit(double value, std::string unit){
   if(unit=="void") // apply no unit

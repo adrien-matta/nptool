@@ -74,6 +74,9 @@ Tiara Barrel
  InnerBarrel= 1
  OuterBarrel= 1
  Chamber= 1
+ X= 0 mm
+ Y= 0 mm
+ Z= 0 mm 
 
 HyballWedge
    Z= -147 mm

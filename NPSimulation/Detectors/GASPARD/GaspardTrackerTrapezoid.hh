@@ -146,18 +146,6 @@ namespace GPDTRAP
    const G4double ResoTimeGpd     = 0.212765957    ;// = 500ps                 //   Unit is  ns/2.35
    const G4double ResoTimePPAC    = 0.106382979    ;// = 250ps                 //   Unit is  ns/2.35
 
-   // Geometry
-   // gaspard Trapezoid
-//   const G4double Height    = 90*mm;
-//   const G4double BaseLarge = 85*mm;
-//   const G4double BaseSmall = 35*mm;
-//   const G4double Length    = 20*mm;
-   // gaspHyde
-//   const G4double Height    = 115*mm;
-//   const G4double BaseLarge =  98*mm;
-//   const G4double BaseSmall =  30*mm;
-//   const G4double Length    =  20*mm;
-//   const G4double InterStageDistance = 7*mm;
    // mugast 
    const G4double Height    = 106*mm;
    const G4double BaseLarge =  93*mm;
@@ -166,20 +154,9 @@ namespace GPDTRAP
    const G4double InterStageDistance = 7*mm;
 
    // First stage
-//   const G4double FirstStageThickness = 300*micrometer;
-   // mugast
    const G4double FirstStageThickness = 500*micrometer;
    const G4int    NumberOfStripsX     = 128;
    const G4int    NumberOfStripsY     = 128;
-   // gaspard Trapezoid
-//   const G4double FirstStageHeight    = 81*mm;
-//   const G4double FirstStageBaseLarge = 78*mm;
-//   const G4double FirstStageBaseSmall = 29*mm;
-   // gaspHyde
-//   const G4double FirstStageHeight    = 113.5*mm;
-//   const G4double FirstStageBaseLarge =  97.5*mm;
-//   const G4double FirstStageBaseSmall =  28.5*mm;
-   // mugast
    const G4double FirstStageHeight    = 105*mm;
    const G4double FirstStageBaseLarge =  92.326*mm;
    const G4double FirstStageBaseSmall =  25.77*mm;
