@@ -12,7 +12,8 @@
  * Last update    : 06/11/2009                                               *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe Cryogenic and standard Target. Derived fromNPS::VDetector*
+ *  This class describe Cryogenic and standard Target. Derived from          *
+ *  NPS::VDetector                                                           * 
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -67,7 +68,6 @@ Target::Target(){
   m_TargetRadius       = 0   ;
   m_WindowsThickness   = 0   ;
   m_TargetDensity      = 0   ;
-  m_EffectiveThickness = 0   ; // effective thickness at 0 deg, compute using angle and thickness
   m_TargetNbLayers     = 5;   // Number of steps by default
   // Set the global pointer
   TargetInstance = this;
@@ -254,7 +254,7 @@ G4double Target::SlowDownBeam(G4ParticleDefinition* Beam,
   }
 
   G4double ThicknessBeforeInteraction = 
-    abs(ZInteraction - 0.5*m_EffectiveThickness) / cos(m_TargetAngle);
+    abs(ZInteraction - 0.5*m_TargetThickness) / cos(m_TargetAngle);
 
   G4double dedx,de;
   static G4EmCalculator emCalculator;
@@ -278,7 +278,7 @@ G4double Target::SlowDownBeam(G4ParticleDefinition* Beam,
     if(m_WindowsThickness!=0)
       for (G4int i = 0; i < m_TargetNbLayers; i++){
         dedx = emCalculator.ComputeTotalDEDX(IncidentEnergy, Beam, m_WindowsMaterial);
-        de   = dedx * m_TargetNbLayers * m_WindowsThickness / cos(IncidentTheta);
+        de   = dedx  * m_WindowsThickness / (cos(IncidentTheta)* m_TargetNbLayers);
         IncidentEnergy -= de;
         if(IncidentEnergy<0){
           IncidentEnergy = 0;

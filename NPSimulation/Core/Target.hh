@@ -108,7 +108,6 @@ private:
   G4double    m_TargetThickness;
   G4double    m_TargetRadius;
   G4double    m_TargetAngle;
-  G4double    m_EffectiveThickness;
   G4Material* m_TargetMaterial;
   G4int       m_TargetNbLayers;
   
