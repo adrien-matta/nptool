@@ -1,5 +1,6 @@
 #include"TApplication.h"
 #include "TROOT.h"
+#include "TError.h"
 #include"NPOnlineGUI.h"
 #include"NPSpectraClient.h"
 #include<cstdlib>
