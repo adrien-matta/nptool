@@ -250,7 +250,7 @@ double CalibrationManager::ApplyCalibrationDebug(const string& ParameterPath , c
     cout << Coeff[i] << " " ;
     CalibratedValue += Coeff[i]*pow(RawValue, (double)i);
   }
-cout << "results = " << CalibratedValue << endl ;
+  cout << "results = " << CalibratedValue << endl ;
   return CalibratedValue ;
 }
 //////////////////////////////////////////////////////////////////
@@ -258,10 +258,10 @@ double CalibrationManager::ApplyResistivePositionCalibration(const string& Param
   map< string , vector<double> >::iterator it ;
   static map< string , vector<double> >::iterator ite = fCalibrationCoeff.end();
 
-
   //   Find the good parameter in the Map
   // Using Find method of stl is the fastest way
   it = fCalibrationCoeff.find(ParameterPath)  ;
+  vector<double> Coeff = it->second  ;
 
   // If the find methods return the end iterator it's mean the parameter was not found
   if(it == ite ){
@@ -272,9 +272,39 @@ double CalibrationManager::ApplyResistivePositionCalibration(const string& Param
   if(it->second.size()!=2) 
     return DeltaRawValue ; 
 
-  return (DeltaRawValue-it->second[0])/(it->second[1]-it->second[0]) ;
+  double CalibratedValue = (DeltaRawValue-Coeff[0])/(Coeff[1]);
+
+  return CalibratedValue ;
 }
 
+double CalibrationManager::ApplyResistivePositionCalibrationDebug(const string& ParameterPath , const double& DeltaRawValue){
+  map< string , vector<double> >::iterator it ;
+  static map< string , vector<double> >::iterator ite = fCalibrationCoeff.end();
+
+  //   Find the good parameter in the Map
+  // Using Find method of stl is the fastest way
+  it = fCalibrationCoeff.find(ParameterPath)  ;
+  vector<double> Coeff = it->second  ;
+
+  // If the find methods return the end iterator it's mean the parameter was not found
+  if(it == ite ){
+      cout << " PARAMETER " << ParameterPath << " IS NOT FOUND IN THE CALIBRATION DATA BASE  " << endl ;
+    return DeltaRawValue ;
+  }
+
+  // Check that the number of coeff is ok
+  if(Coeff.size()!=2){
+      cout << " NUMBER OF COEFF " << Coeff.size() << " IS DIFFERENT THAN TWO " << endl ;
+    return DeltaRawValue ; 
+  }
+
+  double CalibratedValue = (DeltaRawValue-Coeff[0])/(Coeff[1]);
+  cout << it->first << " :  raw = " << DeltaRawValue << " coeff = "  ;
+  cout << Coeff[0] << " " << Coeff[1] << endl ;
+  cout << "results = " << CalibratedValue << endl ;
+
+  return CalibratedValue ;
+}
 
 //////////////////////////////////////////////////////////////////
 bool CalibrationManager::ApplyThreshold(const string& ParameterPath, const double& RawValue){
