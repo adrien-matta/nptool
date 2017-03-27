@@ -394,7 +394,7 @@ void NPL::InputParser::TreatAliases(){
             }
             else{
               vector<NPL::InputBlock*>::iterator it = m_Block.begin();
-              m_Block.insert(it+a+1,newBlock);
+              m_Block.insert(it+b+a,newBlock);
             }
           }
         }
