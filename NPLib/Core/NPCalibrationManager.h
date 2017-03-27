@@ -58,9 +58,11 @@ class CalibrationManager{
          // call like : myCalibrationManager->ApplyCalibration( "MUST2/Telescope5_Si_X38_E" , RawEnergy )
          // return the Calibrated value
          double ApplyCalibration(const string& ParameterPath , const double& RawValue);
+         double ApplyResistivePositionCalibration(const string& ParameterPath , const double& RawValue);
          // Same but with debug information outputs
          double ApplyCalibrationDebug(const string& ParameterPath , const double& RawValue);
-         double ApplyResistivePositionCalibration(const string& ParameterPath , const double& RawValue);
+         double ApplyResistivePositionCalibrationDebug(const string& ParameterPath , const double& RawValue);
+         
          bool ApplyThreshold(const string& ParameterPath, const double& RawValue);
          double GetPedestal(const string& ParameterPath);
          double GetValue(const string& ParameterPath,const unsigned int& order);
