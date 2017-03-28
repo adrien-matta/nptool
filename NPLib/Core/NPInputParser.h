@@ -42,8 +42,10 @@ namespace NPL{
 
   class InputBlock{
     public:
+      InputBlock(){};
       InputBlock(std::string line);
       ~InputBlock(){};
+      NPL::InputBlock* Copy();
 
     private:
       unsigned int m_Level;
@@ -51,7 +53,6 @@ namespace NPL{
       std::string m_MainValue;
       std::vector<std::string> m_Token;
       std::vector<std::string> m_Value; 
-      std::vector<NPL::InputBlock*> m_SubBlock;
 
     public:
       void AddLine(std::string line);  
@@ -62,6 +63,8 @@ namespace NPL{
       std::string GetToken(unsigned int i){return m_Token[i];};
       std::string GetValue(unsigned int i){return m_Value[i];};
       std::string GetValue(std::string Token);
+      void SetValue(unsigned int i, std::string val){m_Value[i]=val;};
+
 
     public:  
       bool HasTokenList(std::vector<std::string> TokenList);
