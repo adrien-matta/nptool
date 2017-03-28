@@ -448,12 +448,13 @@ TVector3 TTiaraBarrelPhysics::GetPositionOfInteraction(const int i) const{
   double INNERBARREL_ActiveWafer_Length = 94.80; 
   double INNERBARREL_ActiveWafer_Width = 24.0;
   double StripPitch = INNERBARREL_ActiveWafer_Width/4.0;
-
+  
+  //Calculate position locally as if it's detector 3 (at 12'oclock) that is hit 
   double X = (Strip_N[i]*StripPitch-0.5*INNERBARREL_ActiveWafer_Width)-(0.5*StripPitch);
   double Y = INNERBARREL_PCB_Width*(0.5+sin(45*deg));
   double Z = Strip_Pos[i]*(0.5*INNERBARREL_ActiveWafer_Length); 
   TVector3 POS(X,Y,-Z); // since RowPos = (U-D)/(U+D) => Downstream hit (i.e. Z>0) has RowPos<0, thus the sign
-  POS.RotateZ((5-DetectorNumber[i])*45*deg);// looking downstream Detector 1 is at 3 o'clock 
+  POS.RotateZ((3-DetectorNumber[i])*45*deg);// looking downstream, Detector 1 is at 3 o'clock 
   return( POS ) ;
 }
 ///////////////////////////////////////////////////////////////////////////////
