@@ -126,7 +126,7 @@ class TTiaraBarrelPhysics : public TObject, public NPL::VDetector{
     void WriteSpectra();
   public://   Specific to TiaraBarrel Array
     //   Clear The PreTeated object
-    void ClearPreTreatedData()   {m_PreTreatedData->Clear();}
+    void ClearPreTreatedData()   {m_PreTreatedData->Clear(); m_PreTreatedMSData->Clear();}
 
     //   Remove bad channel, calibrate the data and apply threshold
     void PreTreat();
@@ -173,6 +173,7 @@ class TTiaraBarrelPhysics : public TObject, public NPL::VDetector{
   private:   //   Root Input and Output tree classes
     TTiaraBarrelData*         m_EventData;//!
     TTiaraBarrelData*         m_PreTreatedData;//!
+    TTiaraBarrelData*         m_PreTreatedMSData;//! stores the intermediate Matchsticks calibrated Data
     TTiaraBarrelPhysics*      m_EventPhysics;//!
 
   private:   //   Map of activated channel
