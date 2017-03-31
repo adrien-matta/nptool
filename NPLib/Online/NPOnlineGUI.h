@@ -53,6 +53,8 @@ namespace NPL{
       map<string,TCanvas*> m_Canvas;
       const TGPicture* m_popen;     
       const TGPicture* m_pclose;   
+      const TGPicture* m_pfolder;   
+
       Pixel_t m_BgColor;
       Pixel_t m_FgColor;
       vector<TGStatusBar*> m_StatusBar;
@@ -76,7 +78,7 @@ namespace NPL{
       void SetStatusText(const char* txt,int pi); 
       void EventInfo(int event,int px,int py,TObject* selected);
 
-      TGListTree* GetListTree();
+           TGListTree* GetListTree();
   };
 
   class OnlineGUI{
@@ -94,6 +96,9 @@ namespace NPL{
       void Connect();
       void Update();
       void AutoUpdate();
+      void Fit();
+
+
     private: // Server client
       TSocket* m_Sock;
       TList* m_CanvasList;
@@ -106,16 +111,25 @@ namespace NPL{
       // Splitted frame for Tree (l) and Tab (r)
       TGHorizontalFrame* m_Split; 
 
-      // left view port
+      // left List Tree
       TGCompositeFrame* m_Left;
-      // right view port
-      TGCompositeFrame* m_Right;
+      // center View port
+      TGCompositeFrame* m_Center;
+      TRootEmbeddedCanvas* m_EmbeddedCanvas; 
 
+      // right Tool bar
+      TGCompositeFrame* m_Right;
+      TGPictureButton* m_Fit;
+      TGCheckButton* m_CheckFitAll;
+      TGCheckButton* m_BackgroundFit;
+
+      // Server tool bar
       TGTab* m_Tab;
       TGPictureButton* m_Quit;
       TGPictureButton* m_Connect;
       TGPictureButton* m_Update;
       TGPictureButton* m_Clock;
+      
       TGNumberEntry* m_TimerEntry;
       TTimer* m_Timer;
       TGStatusBar* m_StatusBar;     
