@@ -189,7 +189,7 @@ void Analysis::TreatEvent(){
     Energy = Si_E_TH; // calibration for hyball is in MeV
 
     // Correct for energy loss using the thickness of the target and the dead layer
-    ELab = LightSi.EvaluateInitialEnergy( Energy ,0.1*micrometer , ThetaTHSurface); // 0.1 um of Aluminum
+    ELab = LightSi.EvaluateInitialEnergy( Energy ,0.7*micrometer , ThetaTHSurface); // 0.1 um of Aluminum
     ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget); 
    /////////////////////////////
     // Part 3 : Excitation Energy Calculation
@@ -247,7 +247,7 @@ void Analysis::TreatEvent(){
     	//ThetaTBSurface += 2*deg; //temporary solution
     }
     // Evaluate energy using the thickness, Target and Si dead layer Correction
-    ELab = LightSi.EvaluateInitialEnergy( Energy ,0.0*micrometer , ThetaTBSurface); 
+    ELab = LightSi.EvaluateInitialEnergy( Energy ,0.3*micrometer, ThetaTBSurface); 
     //ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
 
     /////////////////////////////
