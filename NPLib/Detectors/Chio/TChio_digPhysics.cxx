@@ -62,24 +62,11 @@ void TChio_digPhysics::ReadConfiguration(NPL::InputParser parser){
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  vector<string> cart = {"POS","Shape"};
-  vector<string> sphe = {"R","Theta","Phi","Shape"};
+  vector<string> token = {"POS"};
 
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
-    if(blocks[i]->HasTokenList(cart)){
-      if(NPOptionManager::getInstance()->GetVerboseLevel())
-        cout << endl << "////  Chio " << i+1 <<  endl;
-
+    if(blocks[i]->HasTokenList(token)){
       TVector3 Pos = blocks[i]->GetTVector3("POS","mm");
-      string Shape = blocks[i]->GetString("Shape");
-    }
-    else if(blocks[i]->HasTokenList(sphe)){
-      if(NPOptionManager::getInstance()->GetVerboseLevel())
-        cout << endl << "////  Chio " << i+1 <<  endl;
-      double R = blocks[i]->GetDouble("R","mm");
-      double Theta = blocks[i]->GetDouble("Theta","deg");
-      double Phi = blocks[i]->GetDouble("Phi","deg");
-      string Shape = blocks[i]->GetString("Shape");
     }
     else{
       cout << "ERROR: check your input file formatting " << endl;

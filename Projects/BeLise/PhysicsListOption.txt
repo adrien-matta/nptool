@@ -6,7 +6,7 @@ EmExtraPhysics 0
 HadronElasticPhysics 0
 StoppingPhysics 0
 OpticalPhysics 0
-DriftElectronPhysics 1
+DriftElectronPhysics 0
 HadronPhysicsINCLXX 0
 HadronPhysicsQGSP_BIC_HP 0
-Decay 1
+Decay 0

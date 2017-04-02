@@ -97,11 +97,11 @@ void Analysis::Init(){
   // energy losses
   string light=NPL::ChangeNameToG4Standard(myReaction->GetNucleus3().GetName());
   string beam=NPL::ChangeNameToG4Standard(myReaction->GetNucleus1().GetName());
-  LightTarget = NPL::EnergyLoss(light+"_"+TargetMaterial+".SRIM","SRIM",10 );
-  LightAl = NPL::EnergyLoss(light+"_Al.SRIM","SRIM",10);
-  //LightSi = NPL::EnergyLoss(light+"_Si.SRIM","SRIM",10);
+  LightTarget = NPL::EnergyLoss(light+"_"+TargetMaterial+".G4table","G4Table",10 );
+  LightAl = NPL::EnergyLoss(light+"_Al.G4table","G4Table",10);
+  //LightSi = NPL::EnergyLoss(light+"_Si.G4table","G4Table",10);
   LightSi = NPL::EnergyLoss("He4_Si.SRIM","SRIM",10);
-  BeamTarget = NPL::EnergyLoss(beam+"_"+TargetMaterial+".SRIM","SRIM",10);
+  BeamTarget = NPL::EnergyLoss(beam+"_"+TargetMaterial+".G4table","G4Table",10);
   FinalBeamEnergy = BeamTarget.Slow(OriginalBeamEnergy, TargetThickness*0.5, 0);
   myReaction->SetBeamEnergy(FinalBeamEnergy);
   cout << "Final Beam energy (middle of target): " << FinalBeamEnergy << endl;
@@ -126,6 +126,7 @@ void Analysis::Init(){
   InitInputBranch();
   
   //Ge
+  GammaSinglesE=0;
   
   //FPD
   Delta_E = 0; // Energy ionisation chamber
@@ -157,8 +158,10 @@ void Analysis::Init(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::TreatEvent(){
+
   // Reinitiate calculated variable
   ReInitValue();
+
   ////////////////////////////////////////// LOOP on TiaraHyball + SSSD Hit //////////////////////////////////////////
   for(unsigned int countTiaraHyball = 0 ; countTiaraHyball < TH->Strip_E.size() ; countTiaraHyball++){
    /////////////////////////////
@@ -170,7 +173,7 @@ void Analysis::TreatEvent(){
       TVector3 HitDirection = TH -> GetRandomisedPositionOfInteraction(countTiaraHyball) - BeamImpact ;
 
       ThetaLab = HitDirection.Angle( BeamDirection );
-      ThetaTHSurface = HitDirection.Angle(TVector3(0,0,-1) );
+      ThetaTHSurface = HitDirection.Angle(TVector3(0,0,-1)); // vector Normal on target
       ThetaNormalTarget = HitDirection.Angle( TVector3(0,0,1) ) ;
     }
     else{
@@ -186,8 +189,8 @@ void Analysis::TreatEvent(){
     Energy = Si_E_TH; // calibration for hyball is in MeV
 
     // Correct for energy loss using the thickness of the target and the dead layer
-    ELab = LightSi.EvaluateInitialEnergy( Energy ,0.0*micrometer , ThetaTHSurface); 
-    //ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget); 
+    ELab = LightSi.EvaluateInitialEnergy( Energy ,0.7*micrometer , ThetaTHSurface); // 0.1 um of Aluminum
+    ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget); 
    /////////////////////////////
     // Part 3 : Excitation Energy Calculation
     Ex = myReaction -> ReconstructRelativistic( ELab , ThetaLab );
@@ -203,7 +206,7 @@ void Analysis::TreatEvent(){
     TiaraIMX = HyballRandomImpactPosition.X();
     TiaraIMY = HyballRandomImpactPosition.Y();
     TiaraIMZ = HyballRandomImpactPosition.Z();
-
+    LightParticleDetected = true ; 
   } // end loop TiaraHyball
 
   /////////////////////////// LOOP on TiaraBarrel /////////////////////////////
@@ -244,7 +247,7 @@ void Analysis::TreatEvent(){
     	//ThetaTBSurface += 2*deg; //temporary solution
     }
     // Evaluate energy using the thickness, Target and Si dead layer Correction
-    ELab = LightSi.EvaluateInitialEnergy( Energy ,0.0*micrometer , ThetaTBSurface); 
+    ELab = LightSi.EvaluateInitialEnergy( Energy ,0.3*micrometer, ThetaTBSurface); 
     //ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
 
     /////////////////////////////
@@ -262,53 +265,34 @@ void Analysis::TreatEvent(){
     TiaraIMX = BarrelRandomImpactPosition.X();
     TiaraIMY = BarrelRandomImpactPosition.Y();
     TiaraIMZ = BarrelRandomImpactPosition.Z();
-
+    LightParticleDetected = true ; 
   } // end loop TiaraBarrel
 
+
+
+/////////////////////////// GENERAL treatment on Ge TAMU /////////////////////////////
+ 
+  /////////////////////////////
+  // Part 1 : Get the recoil beta vetor
+ TLorentzVector Recoil_LV;
+ TVector3 RecoilBeta;
+ if (LightParticleDetected) Recoil_LV =  myReaction -> GetEnergyImpulsionLab_4();
+ else Recoil_LV =  myReaction -> GetEnergyImpulsionLab_1();
+  RecoilBeta = Recoil_LV.Vect();
+  RecoilBeta *= (1/Recoil_LV.E());// divide by the total energy (T+M) to get the velocity (beta) vector
+ 
+  /////////////////////////////
+  // Part 2 : Calculate Doppler-Corrected energies for singles, and addback spectra
+  TG->DCSingles(RecoilBeta);
+  TG->AddBack(RecoilBeta,3); 
+
   /////////////////////////// LOOP on Ge TAMU /////////////////////////////
-  /*
-for(unsigned int countGe = 0 ; countGe < TG->something.size() ; countGe++) // multiplicity treated for now is zero 
-  { 
+  //for(unsigned int countGe = 0 ; countGe < TG->Singles_E.size() ; countGe++){ // multiplicity treated for now is zero 
+  // 
+  //Event by event treatment goes here
+  // 
+  //}
 
-  unsigned int c_size_e = TG->m_PreTreatedData->GetMultiplicityCoreE();
-  unsigned int s_size_e = m_PreTreatedData->GetMultiplicitySegmentE();
-  // map for add back
-  map<int,double> clv_energy;   
-  map<int,int> clv_segment;
-  map<int,int> clv_crystal;
-  map<int,double> max_core;
-  map<int,double> max_segment; 
-  for(unsigned int i = 0 ; i < c_size_e ; i++){
-    int clv = m_PreTreatedData->GetCoreCloverNbrE(i);
-    int cry = m_PreTreatedData->GetCoreCrystalNbrE(i);
-    double energy = m_PreTreatedData->GetCoreEnergy(i);
-    // Add back energy
-    clv_energy[clv] += energy;
-    // Pick up the crystal with the maximum energy in every clover 
-    if(energy > max_core[clv]){
-      max_core[clv] = energy;
-      clv_crystal[clv] = cry;
-    }
-    // Pick up the segment with the maximum energy in every clover
-    for(unsigned int j = 0 ; j < s_size_e ; j++){
-      double s_energy = m_PreTreatedData->GetSegmentEnergy(j); 
-      if(s_energy > max_segment[clv]){
-        max_segment[clv] = s_energy;
-        clv_segment[clv] = m_PreTreatedData->GetSegmentSegmentNbrE(j);
-      }
-    }
-  }
-
-  // Singles spectra 
-  
-  // Addback spectra 
-
-  // calculate angle
-
-  // calculate doppler corrected spectra 
-  	
-  }
-*/
 
  ////////////////////////////////////////// LOOP on FPD  //////////////////////////////////////////
 	// Micromega energy
@@ -424,6 +408,7 @@ void Analysis::ReInitValue(){
   ELab = -1000;
   ThetaLab = -1000;
   ThetaCM = -1000;
+  LightParticleDetected = false ; 
   
   //Simu
   //Original_ELab = -1000;
@@ -472,6 +457,8 @@ void Analysis::InitOutputBranch() {
 
   //GeTamu
   // stuff goes here 
+  RootOutput::getInstance()->GetTree()->Branch("GammaSinglesE",&GammaSinglesE,"GammaSinglesE/D");
+
 
   //FPD
   RootOutput::getInstance()->GetTree()->Branch("Delta_E",&Delta_E,"Delta_E/D");

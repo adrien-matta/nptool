@@ -52,15 +52,16 @@ ClassImp(TTiaraBarrelPhysics)
     EventMultiplicity   = 0 ;
     m_EventData         = new TTiaraBarrelData ;
     m_PreTreatedData    = new TTiaraBarrelData ;
+    m_PreTreatedMSData  = new TTiaraBarrelData ;
     m_EventPhysics      = this ;
     m_NumberOfDetector  = 0 ;
 
     m_Take_E_Strip= true;
     m_Take_T_Back=true;
-    m_Strip_E_Threshold = 0.40 ;
-    m_Back_E_Threshold = 0.40 ;
-    m_Maximum_FrontBack_Difference = 0.4;
-    m_OuterBack_E_Threshold =0;
+    m_Strip_E_Threshold = 10 ; //keV
+    m_Back_E_Threshold = 10 ; //keV
+    m_Maximum_FrontBack_Difference = 30 ; // keV
+    m_OuterBack_E_Threshold = 0;
     m_Spectra = NULL ;
   }
 
@@ -87,22 +88,51 @@ void TTiaraBarrelPhysics::BuildPhysicalEvent(){
             && m_PreTreatedData->GetFrontUpstreamEStripNbr(i) 
             == m_PreTreatedData->GetFrontDownstreamEStripNbr(j)) {
 
-          double EU = m_PreTreatedData->GetFrontUpstreamEEnergy(i) ;
-          double ED = m_PreTreatedData->GetFrontDownstreamEEnergy(j); 
-          double ChU = m_EventData->GetFrontUpstreamEEnergy(i) ;
-          double ChD = m_EventData->GetFrontDownstreamEEnergy(j);
-          double RowPos = (ChU-ChD)/(ChU+ChD); // order of U and D in numerator is crucial
+          int det =  m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i);
+          int strip = m_PreTreatedData->GetFrontUpstreamEStripNbr(i) ;
+          double EU = m_PreTreatedData->GetFrontUpstreamEEnergy(i) ; // energy calibrated
+          double ED = m_PreTreatedData->GetFrontDownstreamEEnergy(j); // energy calibrated
+          double msU = m_PreTreatedMSData->GetFrontUpstreamEEnergy(i) ; // energy matchsticked
+          double msD = m_PreTreatedMSData->GetFrontDownstreamEEnergy(j); // energy matchsticked
+          double RowPos = (msU-msD)/(msU+msD);
           
+          //Calculate position
+          // Apply correction factor on RowPos
+          name =  "TIARABARREL/B";
+          name+=NPL::itoa(det);
+          name+="_STRIP";
+          name+=NPL::itoa(strip);
+          name+="_POS";
+          double Pos = CalibrationManager::getInstance()
+          ->ApplyResistivePositionCalibration(name,RowPos); // returns ((RowPos-d)/k)
+
+          //Fix Balistic deficit
+          // calibration is applied as: (U+D)*( 1 + BD*(pow(k,2)-pow(pos-d,2)) ), 
+          //                               While BD > 0 and |k| >= |pos-d| for good events
+          //
+          // Get resistive shift and length, this will fix asymetries
+          double d = CalibrationManager::getInstance()->GetValue(name,0); // resistive strip length shift
+          double k = CalibrationManager::getInstance()->GetValue(name,1); // resistive strip half-length
+          name ="TIARABARREL/B";
+          name+=NPL::itoa(det);
+          name+="_STRIP";
+          name+=NPL::itoa(strip);
+          name+="_BALLISTIC";
+          double BD_x_k2 =CalibrationManager::getInstance()->ApplyCalibration(name, k ); 
+          double BD_x_Pos2 =CalibrationManager::getInstance()->ApplyCalibration(name, (RowPos-d) );
+          double BD = (BD_x_k2 - BD_x_Pos2);
+
+          DetectorNumber.push_back(det);
+          Strip_N.push_back(strip);
+          Strip_Pos.push_back(Pos); // position expressed in [-1;+1]
+          UpStream_E.push_back(EU);
+          DownStream_E.push_back(ED);  
+          Strip_E.push_back( (EU+ED) * (1+BD) );
+
           // Front back Energy match
+         /*
+          // check if back and front detectors are matched
           if(true){ 
-            name =  "TIARABARREL/B";
-            name+=NPL::itoa(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i));
-            name+="_STRIP";
-            name+=NPL::itoa(m_PreTreatedData->GetFrontUpstreamEStripNbr(i));
-            name+="_POS";
-            double Pos = CalibrationManager::getInstance()
-            ->ApplyResistivePositionCalibration(name,RowPos);
-            /*
             double EO = -1000;
             double EO1 = -500;
             double EO2 = -500;
@@ -120,24 +150,6 @@ void TTiaraBarrelPhysics::BuildPhysicalEvent(){
                     }
                   }
             }
-            */
-            UpStream_E.push_back(EU);
-            DownStream_E.push_back(ED);
-            Strip_Pos.push_back(Pos); 
-            Strip_N.push_back(m_PreTreatedData->GetFrontUpstreamEStripNbr(i));
-            DetectorNumber.push_back(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i));
-            name ="TIARABARREL/BALLISTIC_B";
-            name+=NPL::itoa(m_PreTreatedData->GetFrontUpstreamEDetectorNbr(i));
-            name+="_STRIP";
-            name+=NPL::itoa(m_PreTreatedData->GetFrontUpstreamEStripNbr(i));
-            // calibration is applied as BD (k*k - RowPos*RowPos)
-            // k is typically the max value of RowPos and is the same value used in the 
-            // Position calibration, 0.66 is a good approximation for k
-            double k = 0.66;
-            double BDtimesk2 =CalibrationManager::getInstance()->ApplyCalibration(name,fabs(k)); 
-            double BDtimesPos2 =CalibrationManager::getInstance()->ApplyCalibration(name,fabs(RowPos));
-            Strip_E.push_back( (EU+ED) * (1+(BDtimesk2-BDtimesPos2))  ); //* (1+(BDk2-BDp2)) (k2-p2)=BD correction is multiplicative and used as perturbation on unit 
-            /*
             if(sizeO == 1)
               EO = EO1;
             else if(sizeO == 2)
@@ -145,8 +157,9 @@ void TTiaraBarrelPhysics::BuildPhysicalEvent(){
             else
               EO = -1000;
             Outer_Strip_E.push_back(EO);
-            */
-          } // if true?
+            
+          } // if(true)
+          */
         }
       } // downstream
     } // upstream 
@@ -164,20 +177,29 @@ void TTiaraBarrelPhysics::PreTreat(){
   unsigned int sizeD = m_EventData->GetFrontDownstreamEMult();
   unsigned int sizeB = m_EventData->GetBackEMult();
   unsigned int sizeO = m_EventData->GetOuterEMult();
+
   for(unsigned int i = 0 ; i < sizeU ; i++){  
     double EU = Cal_Strip_Upstream_E(i) ;
-    if(EU > m_Strip_E_Threshold)
+    if(EU > m_Strip_E_Threshold){
       m_PreTreatedData->SetFrontUpstreamE(m_EventData->GetFrontUpstreamEDetectorNbr(i),
           m_EventData->GetFrontUpstreamEStripNbr(i),
           EU);
+      m_PreTreatedMSData->SetFrontUpstreamE(m_EventData->GetFrontUpstreamEDetectorNbr(i),
+          m_EventData->GetFrontUpstreamEStripNbr(i),
+          Match_Strip_Upstream_E(i));
+    }
   }
 
   for(unsigned int j = 0 ; j < sizeD ; j++){  
     double ED = Cal_Strip_Downstream_E(j) ;
-    if(ED>m_Strip_E_Threshold)
+    if(ED>m_Strip_E_Threshold){
       m_PreTreatedData->SetFrontDownstreamE(m_EventData->GetFrontDownstreamEDetectorNbr(j),
           m_EventData->GetFrontDownstreamEStripNbr(j),
           ED);
+      m_PreTreatedMSData->SetFrontDownstreamE(m_EventData->GetFrontDownstreamEDetectorNbr(j),
+          m_EventData->GetFrontDownstreamEStripNbr(j),
+          Match_Strip_Downstream_E(j));
+    }
   }
 
   for(unsigned int k = 0 ; k < sizeB ; k++){
@@ -190,7 +212,8 @@ void TTiaraBarrelPhysics::PreTreat(){
     double EO = m_EventData->GetOuterEEnergy(l) ;
     if(EO > m_OuterBack_E_Threshold)
       m_PreTreatedData->SetOuterE(m_EventData->GetOuterEDetectorNbr(l),m_EventData->GetOuterEStripNbr(l),EO);
-  } 
+  }
+
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -313,15 +336,14 @@ void TTiaraBarrelPhysics::AddParameterToCalibrationManager(){
       Cal->AddParameter("TIARABARREL","B"+NPL::itoa(i+1)+"_UPSTREAM"+NPL::itoa(j+1)+"_E","TIARABARREL_B"+NPL::itoa(i+1)+"_UPSTREAM"+NPL::itoa(j+1)+"_E")   ;
       Cal->AddParameter("TIARABARREL","B"+NPL::itoa(i+1)+"_DOWNSTREAM"+NPL::itoa(j+1)+"_E","TIARABARREL_B"+NPL::itoa(i+1)+"_DOWNSTREAM"+NPL::itoa(j+1)+"_E")   ;
 
-      Cal->AddParameter("TIARABARREL","MATCHSTICK_B"+NPL::itoa(i+1)+"_UPSTREAM"+NPL::itoa(j+1)+"_E","TIARABARREL_MATCHSTICK_B"+NPL::itoa(i+1)+"_UPSTREAM"+NPL::itoa(j+1)+"_E")   ;
-      Cal->AddParameter("TIARABARREL","MATCHSTICK_B"+NPL::itoa(i+1)+"_DOWNSTREAM"+NPL::itoa(j+1)+"_E","TIARABARREL_MATCHSTICK_B"+NPL::itoa(i+1)+"_DOWNSTREAM"+NPL::itoa(j+1)+"_E")   ;
+      Cal->AddParameter("TIARABARREL","B"+NPL::itoa(i+1)+"_UPSTREAM"+NPL::itoa(j+1)+"_MATCHSTICK","TIARABARREL_B"+NPL::itoa(i+1)+"_UPSTREAM"+NPL::itoa(j+1)+"_MATCHSTICK")   ;
+      Cal->AddParameter("TIARABARREL","B"+NPL::itoa(i+1)+"_DOWNSTREAM"+NPL::itoa(j+1)+"_MATCHSTICK","TIARABARREL_B"+NPL::itoa(i+1)+"_DOWNSTREAM"+NPL::itoa(j+1)+"_MATCHSTICK")   ;
 
-      Cal->AddParameter("TIARABARREL","BALLISTIC_B"+NPL::itoa(i+1)+"_STRIP"+NPL::itoa(j+1),"TIARABARREL_BALLISTIC_B"+NPL::itoa(i+1)+"_STRIP"+NPL::itoa(j+1))   ;
+      Cal->AddParameter("TIARABARREL","B"+NPL::itoa(i+1)+"_STRIP"+NPL::itoa(j+1)+"_BALLISTIC","TIARABARREL_B"+NPL::itoa(i+1)+"_STRIP"+NPL::itoa(j+1)+"_BALLISTIC")   ;
       Cal->AddParameter("TIARABARREL","B"+NPL::itoa(i+1)+"_STRIP"+NPL::itoa(j+1)+"_POS","TIARABARREL_B"+NPL::itoa(i+1)+"_STRIP"+NPL::itoa(j+1)+"_POS")   ;
-
     }
 
-    Cal->AddParameter("TIARABARREL","TIARABARREL/B" + NPL::itoa( i+1 ) + "_BACK_E","TIARABARREL_B" + NPL::itoa( i+1 ) + "_BACK_E");
+    Cal->AddParameter("TIARABARREL","B" + NPL::itoa( i+1 ) + "_BACK_E","TIARABARREL_B" + NPL::itoa( i+1 ) + "_BACK_E");
   }
   return;
 
@@ -426,13 +448,13 @@ TVector3 TTiaraBarrelPhysics::GetPositionOfInteraction(const int i) const{
   double INNERBARREL_ActiveWafer_Length = 94.80; 
   double INNERBARREL_ActiveWafer_Width = 24.0;
   double StripPitch = INNERBARREL_ActiveWafer_Width/4.0;
-
+  
+  //Calculate position locally as if it's detector 3 (at 12'oclock) that is hit 
   double X = (Strip_N[i]*StripPitch-0.5*INNERBARREL_ActiveWafer_Width)-(0.5*StripPitch);
   double Y = INNERBARREL_PCB_Width*(0.5+sin(45*deg));
   double Z = Strip_Pos[i]*(0.5*INNERBARREL_ActiveWafer_Length); 
-  //original version of the line above = double Z = (Strip_Pos[i]-0.5)*INNERBARREL_ActiveWafer_Length;
   TVector3 POS(X,Y,-Z); // since RowPos = (U-D)/(U+D) => Downstream hit (i.e. Z>0) has RowPos<0, thus the sign
-  POS.RotateZ((5-DetectorNumber[i])*45*deg);// looking downstream Detector 1 is at 3'oclock 
+  POS.RotateZ((3-DetectorNumber[i])*45*deg);// looking downstream, Detector 1 is at 3 o'clock 
   return( POS ) ;
 }
 ///////////////////////////////////////////////////////////////////////////////
@@ -477,8 +499,9 @@ double TTiaraBarrelPhysics::Cal_Strip_Upstream_E(const int i){
   name+= "_UPSTREAM" ;
   name+= NPL::itoa( m_EventData->GetFrontUpstreamEStripNbr(i) ) ;
   name+= "_E";
-  return CalibrationManager::getInstance()->ApplyCalibration(name,
-      Match_Strip_Upstream_E(i) );
+  double MSEnergy = Match_Strip_Upstream_E(i);
+  double CalEnergy = CalibrationManager::getInstance()->ApplyCalibration(name,MSEnergy);
+  return CalEnergy ;
 }
 ///////////////////////////////////////////////////////////////////////////////
 double TTiaraBarrelPhysics::Cal_Strip_Downstream_E(const int i){
@@ -487,28 +510,31 @@ double TTiaraBarrelPhysics::Cal_Strip_Downstream_E(const int i){
   name+= "_DOWNSTREAM" ;
   name+= NPL::itoa( m_EventData->GetFrontDownstreamEStripNbr(i) ) ;
   name+= "_E";
-  return CalibrationManager::getInstance()->ApplyCalibration(name,
-      Match_Strip_Downstream_E(i) );
+  double MSEnergy = Match_Strip_Downstream_E(i);
+  double CalEnergy = CalibrationManager::getInstance()->ApplyCalibration(name, MSEnergy);
+  return CalEnergy ;
 }
 ///////////////////////////////////////////////////////////////////////////////
 double TTiaraBarrelPhysics::Match_Strip_Upstream_E(const int i){
-  static string name; name = "TIARABARREL/MATCHSTICK_B" ;
+  static string name; name = "TIARABARREL/B" ;
   name+= NPL::itoa( m_EventData->GetFrontUpstreamEDetectorNbr(i) ) ;
   name+= "_UPSTREAM" ;
   name+= NPL::itoa( m_EventData->GetFrontUpstreamEStripNbr(i) ) ;
-  name+= "_E";
-  return CalibrationManager::getInstance()->ApplyCalibration(name,
-      m_EventData->GetFrontUpstreamEEnergy(i) );
+  name+= "_MATCHSTICK";
+  double RawEnergy = m_EventData->GetFrontUpstreamEEnergy(i);
+  double MSEnergy = CalibrationManager::getInstance()->ApplyCalibration(name,RawEnergy);
+  return MSEnergy ;
 }
 ///////////////////////////////////////////////////////////////////////////////
 double TTiaraBarrelPhysics::Match_Strip_Downstream_E(const int i){
-  static string name; name ="TIARABARREL/MATCHSTICK_B" ;
+  static string name; name ="TIARABARREL/B" ;
   name+= NPL::itoa( m_EventData->GetFrontDownstreamEDetectorNbr(i) ) ;
   name+= "_DOWNSTREAM" ;
   name+= NPL::itoa( m_EventData->GetFrontDownstreamEStripNbr(i) ) ;
-  name+= "_E"; 
-  return CalibrationManager::getInstance()->ApplyCalibration(name,
-      m_EventData->GetFrontDownstreamEEnergy(i) );
+  name+= "_MATCHSTICK"; 
+  double RawEnergy = m_EventData->GetFrontDownstreamEEnergy(i);
+  double MSEnergy = CalibrationManager::getInstance()->ApplyCalibration(name,RawEnergy);
+  return MSEnergy;
 }
 ///////////////////////////////////////////////////////////////////////////////
 double TTiaraBarrelPhysics::Cal_Back_E(const int i){

@@ -6,7 +6,7 @@ GeneralTarget
 % Radius in mm
 % Temperature in K, Pressure in bar
 Target
- THICKNESS= 12.5
+ THICKNESS= 6
  ANGLE= 0
  RADIUS=	10
  MATERIAL= CD2

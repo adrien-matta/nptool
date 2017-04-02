@@ -2,15 +2,15 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Beam
   Particle= 68Ni 
-  Energy= 1700
-  SigmaEnergy= 10
+  Energy= 680 MeV
+  SigmaEnergy= 0 MeV
   ExcitationEnergy= 0 MeV
-  SigmaThetaX= 3 mrad
-  SigmaPhiY= 3 mrad
-  SigmaX= 25 mm
-  SigmaY= 25 mm
-  MeanThetaX= 1 mrad
-  MeanPhiY= 1 mrad
+  SigmaThetaX= 0 mrad
+  SigmaPhiY= 0 mrad
+  SigmaX= 0 mm
+  SigmaY= 0 mm
+  MeanThetaX= 0 mrad
+  MeanPhiY= 0 mrad
   MeanX= 0 mm
   MeanY= 0 mm
   %EnergyProfilePath= eLise.txt EL
@@ -24,7 +24,7 @@ TwoBodyReaction
  Light= 1H
  Heavy= 69Ni
  ExcitationEnergyLight= 0.0 MeV
- ExcitationEnergyHeavy= 1.0 MeV
+ ExcitationEnergyHeavy= 0.0 MeV
  CrossSectionPath= fe61_f5_2_250.txt h
  ShootLight= 1
  ShootHeavy= 0

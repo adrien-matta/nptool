@@ -192,7 +192,6 @@ void TMust2Physics::BuildSimplePhysicalEvent(){
 
 void TMust2Physics::BuildPhysicalEvent(){
   PreTreat();
-
   bool check_SILI = false ;
   bool check_CSI  = false ;
 
@@ -204,11 +203,9 @@ void TMust2Physics::BuildPhysicalEvent(){
   m_SiLiTMult = m_PreTreatedData->GetMMSiLiTMult();
   m_CsIEMult = m_PreTreatedData->GetMMCsIEMult();
   m_CsITMult = m_PreTreatedData->GetMMCsITMult();
-
   if( CheckEvent() == 1 ){
     vector< TVector2 > couple = Match_X_Y() ;
     EventMultiplicity = couple.size();
-
     for(unsigned int i = 0 ; i < couple.size() ; ++i){
       check_SILI = false ;
       check_CSI = false ;
@@ -314,7 +311,6 @@ void TMust2Physics::BuildPhysicalEvent(){
     }
   }
   return;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -328,7 +324,6 @@ void TMust2Physics::PreTreat(){
   m_SiLiTMult = m_EventData->GetMMSiLiTMult();
   m_CsIEMult = m_EventData->GetMMCsIEMult();
   m_CsITMult = m_EventData->GetMMCsITMult();
-
   //   X
   //   E
   for(unsigned int i = 0 ; i < m_StripXEMult ; ++i){
@@ -912,6 +907,16 @@ map< string , TH1*> TMust2Physics::GetSpectra() {
     return empty;
   }
 }
+////////////////////////////////////////////////////////////////////////////////
+vector<TCanvas*> TMust2Physics::GetCanvas(){
+  if(m_Spectra)
+   return m_Spectra->GetCanvas();
+  else{
+     vector<TCanvas*> empty;
+    return empty;
+  }
+}
+
 ///////////////////////////////////////////////////////////////////////////
 void TMust2Physics::AddParameterToCalibrationManager()
 {

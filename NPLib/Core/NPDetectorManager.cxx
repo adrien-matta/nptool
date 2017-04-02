@@ -43,7 +43,8 @@
 using namespace NPUNITS;
 //Root
 #include"TCanvas.h"
-/////////////////////////////////////////////////////////////////////////////////////////////////
+#include "TROOT.h"
+///////////////////////////////////////////////////////////////////////////////
 //   Default Constructor
 NPL::DetectorManager::DetectorManager(){
   m_BuildPhysicalPtr = &NPL::VDetector::BuildPhysicalEvent;
@@ -62,7 +63,7 @@ NPL::DetectorManager::DetectorManager(){
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////   
+///////////////////////////////////////////////////////////////////////////////
 //   Default Desstructor
 NPL::DetectorManager::~DetectorManager(){
 #if __cplusplus > 199711L
@@ -72,7 +73,7 @@ NPL::DetectorManager::~DetectorManager(){
     m_SpectraServer->Destroy();
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 //   Read stream at ConfigFile and pick-up Token declaration of Detector
 void NPL::DetectorManager::ReadConfigurationFile(string Path)   {
   cout << "\033[1;36m" ;
@@ -186,7 +187,7 @@ void NPL::DetectorManager::ReadConfigurationFile(string Path)   {
   return;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////   
+///////////////////////////////////////////////////////////////////////////////
 void NPL::DetectorManager::BuildPhysicalEvent(){
 #if __cplusplus > 199711L
   // add new job
@@ -219,7 +220,7 @@ void NPL::DetectorManager::BuildPhysicalEvent(){
 #endif
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 void NPL::DetectorManager::BuildSimplePhysicalEvent(){
   ClearEventPhysics();
   map<string,VDetector*>::iterator it;
@@ -234,7 +235,7 @@ void NPL::DetectorManager::BuildSimplePhysicalEvent(){
   }
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 void NPL::DetectorManager::InitializeRootInput(){
 
   if( NPOptionManager::getInstance()->GetDisableAllBranchOption() )
@@ -251,7 +252,7 @@ void NPL::DetectorManager::InitializeRootInput(){
       it->second->InitializeRootInputRaw();
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////   
+///////////////////////////////////////////////////////////////////////////////
 void NPL::DetectorManager::InitializeRootOutput(){
   map<string,VDetector*>::iterator it;
 
@@ -260,13 +261,13 @@ void NPL::DetectorManager::InitializeRootOutput(){
       it->second->InitializeRootOutput();
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 void NPL::DetectorManager::AddDetector(string DetectorName , VDetector* newDetector){
   m_Detector[DetectorName] = newDetector;
   newDetector->AddParameterToCalibrationManager();
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 NPL::VDetector* NPL::DetectorManager::GetDetector(string name){
   map<string,VDetector*>::iterator it;
   it = m_Detector.find(name);
@@ -282,28 +283,36 @@ NPL::VDetector* NPL::DetectorManager::GetDetector(string name){
 
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 void NPL::DetectorManager::ClearEventPhysics(){
   map<string,VDetector*>::iterator it;
   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) 
     (it->second->*m_ClearEventPhysicsPtr)();
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 void NPL::DetectorManager::ClearEventData(){
   map<string,VDetector*>::iterator it;
   for (it = m_Detector.begin(); it != m_Detector.end(); ++it)
     (it->second->*m_ClearEventDataPtr)();
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////   
+///////////////////////////////////////////////////////////////////////////////
 void NPL::DetectorManager::InitSpectra(){
+  bool batch = false;
+  if(gROOT){
+     batch = gROOT->IsBatch();
+     gROOT->ProcessLine("gROOT->SetBatch()");
+  }
   map<string,VDetector*>::iterator it;
   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) 
     it->second->InitSpectra();
+
+  if(gROOT&&!batch)
+   gROOT->ProcessLine("gROOT->SetBatch(kFALSE)");
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////   
+///////////////////////////////////////////////////////////////////////////////
 void NPL::DetectorManager::WriteSpectra(){
   std::cout << endl << "\r \033[1;36m *** Writing Spectra: this may take a while ***\033[0m"<<flush;
   map<string,VDetector*>::iterator it;
@@ -312,7 +321,7 @@ void NPL::DetectorManager::WriteSpectra(){
   std::cout << "\r                                                  " << flush; 
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////   
+///////////////////////////////////////////////////////////////////////////////
 vector< map< string, TH1* > > NPL::DetectorManager::GetSpectra(){
   vector< map< string, TH1* > > myVector;
   map<string,VDetector*>::iterator it;
@@ -324,7 +333,7 @@ vector< map< string, TH1* > > NPL::DetectorManager::GetSpectra(){
   return myVector;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////   
+///////////////////////////////////////////////////////////////////////////////
 vector<string> NPL::DetectorManager::GetDetectorList(){
   map<string,VDetector*>::iterator it;
   vector<string> DetectorList;
@@ -376,9 +385,9 @@ void NPL::DetectorManager::StartThread(NPL::VDetector* det,unsigned int id){
         if(m_CheckSpectra)
           (det->*m_CheckSpectra)();
       }
+      
       // Reset Ready flag
       m_Ready[id]=false;
-
       // Quite if stopped
       if(m_stop)
         return;
@@ -411,22 +420,30 @@ void NPL::DetectorManager::SetSpectraServer(){
   for (it = m_Detector.begin(); it != m_Detector.end(); ++it){ 
     vector<TCanvas*> canvas = it->second->GetCanvas();
     size_t mysize = canvas.size();
-    for (size_t i = 0 ; i < mysize ; i++) 
-      m_SpectraServer->AddCanvas(canvas[i]);
+    for (size_t i = 0 ; i < mysize ; i++){} 
+      //m_SpectraServer->AddCanvas(canvas[i]);
   }
 
   // Avoid warning on gcc
   int r;
-  r=system("nponline localhost 9090 & ");
+  r=system("nponline localhost 9092 & ");
   m_SpectraServer->CheckRequest(); 
 }
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::DetectorManager::StopSpectraServer(){
-  m_SpectraServer->Destroy();
+  if(m_SpectraServer)
+    m_SpectraServer->Destroy();
+  else
+  cout <<"WARNING: requesting to stop spectra server, which is not started" << endl; 
+  
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::DetectorManager::CheckSpectraServer(){
-  m_SpectraServer->CheckRequest();
+  if(m_SpectraServer)
+    m_SpectraServer->CheckRequest();
+  else
+  cout <<"WARNING: requesting to check spectra server, which is not started" << endl; 
+
 }
 

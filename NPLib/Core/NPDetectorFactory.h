@@ -1,5 +1,5 @@
-#ifndef _DETECTORFACTORY_
-#define _DETECTORFACTORY_
+#ifndef NPDETECTORFACTORY
+#define NPDETECTORFACTORY
 /*****************************************************************************
  * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
  *                                                                           *

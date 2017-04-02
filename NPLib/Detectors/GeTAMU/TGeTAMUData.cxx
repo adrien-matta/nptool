@@ -41,6 +41,10 @@ void TGeTAMUData::Clear(){
   fGeTAMU_Core_CloverNbr_E.clear();
   fGeTAMU_Core_CrystalNbr_E.clear();
   fGeTAMU_Core_Energy.clear();
+  
+  fGeTAMU_Core_CloverNbr_E_LG.clear();
+  fGeTAMU_Core_CrystalNbr_E_LG.clear();
+  fGeTAMU_Core_Energy_LG.clear();
 
   fGeTAMU_Core_CloverNbr_T.clear();
   fGeTAMU_Core_CrystalNbr_T.clear();
@@ -49,6 +53,10 @@ void TGeTAMUData::Clear(){
   fGeTAMU_Segment_CloverNbr_E.clear();
   fGeTAMU_Segment_SegmentNbr_E.clear();
   fGeTAMU_Segment_Energy.clear();
+  
+  fGeTAMU_Segment_CloverNbr_E_LG.clear();
+  fGeTAMU_Segment_SegmentNbr_E_LG.clear();
+  fGeTAMU_Segment_Energy_LG.clear();
 
   fGeTAMU_Segment_CloverNbr_T.clear();
   fGeTAMU_Segment_SegmentNbr_T.clear();
@@ -62,7 +70,14 @@ void TGeTAMUData::Dump() const{
   for (unsigned int i = 0; i <  fGeTAMU_Core_CloverNbr_E.size(); i++){
     cout << " Clover: " <<  fGeTAMU_Core_CloverNbr_E[i] 
          << " Crystal: " << fGeTAMU_Core_CrystalNbr_E[i]  
-         << " Energy: " <<  fGeTAMU_Core_Energy[i] << endl;  
+         << " Energy: " <<  fGeTAMU_Core_Energy[i]<< endl;  
+
+  }
+ cout << "Core Energy Multiplicity (LowGain) = " << fGeTAMU_Core_CloverNbr_E_LG.size() << endl;  
+  for (unsigned int i = 0; i <  fGeTAMU_Core_CloverNbr_E_LG.size(); i++){
+    cout << " Clover LG: " <<  fGeTAMU_Core_CloverNbr_E_LG[i] 
+         << " Crystal LG: " << fGeTAMU_Core_CrystalNbr_E_LG[i]  
+         << " Energy LG: " <<  fGeTAMU_Core_Energy_LG[i] << endl;  
   }
 
  cout << "Core Time Multiplicity = " << fGeTAMU_Core_CloverNbr_T.size() << endl;  
@@ -77,6 +92,13 @@ void TGeTAMUData::Dump() const{
     cout << " Clover: " <<  fGeTAMU_Segment_CloverNbr_E[i]  
          << " Segment: " << fGeTAMU_Segment_SegmentNbr_E[i]  
          << " Energy: " <<  fGeTAMU_Segment_Energy[i] << endl;   
+  }
+
+  cout << "Segment Energy Multiplicity (LowGain) = " <<  fGeTAMU_Segment_CloverNbr_E_LG.size() << endl;  
+  for (unsigned int i = 0; i < fGeTAMU_Segment_CloverNbr_E_LG.size(); i++){
+    cout << " Clover: " <<  fGeTAMU_Segment_CloverNbr_E_LG[i]  
+         << " Segment: " << fGeTAMU_Segment_SegmentNbr_E_LG[i]  
+         << " Energy: " <<  fGeTAMU_Segment_Energy_LG[i] << endl;   
   }
 
   cout << "Segment Time Multiplicity = " <<  fGeTAMU_Segment_CloverNbr_T.size() << endl;  

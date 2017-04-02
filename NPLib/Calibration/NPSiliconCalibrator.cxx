@@ -24,7 +24,7 @@ NPL::SiliconCalibrator::~SiliconCalibrator(){
 }
 
 //////////////////////////////////////////////
-double NPL::SiliconCalibrator::ZeroExtrapolation(TH1* histo, NPL::CalibrationSource* CS, NPL::EnergyLoss* EL, vector<double>& coeff, unsigned int pedestal, unsigned int max_iteration,double rmin,double rmax){
+double NPL::SiliconCalibrator::ZeroExtrapolation(TH1* histo, NPL::CalibrationSource* CS, NPL::EnergyLoss* EL, vector<double>& coeff, unsigned int pedestal, unsigned int max_iteration, double rmin,double rmax){
   if(histo->GetEntries()==0){
     coeff.clear();
     coeff.push_back(0);
@@ -80,8 +80,12 @@ double NPL::SiliconCalibrator::ZeroExtrapolation(TH1* histo, NPL::CalibrationSou
   }
   Assume_E.resize(source_size,0);
   TGraphErrors* g = FitSpectrum(histo,rmin,rmax);
-  if (g->GetN()!=3)
+  if (g->GetN()!=3){
+    coeff.clear();
+    coeff.push_back(0);
+    coeff.push_back(-1);
     return -1;
+  }
 
   while(k++<max_iteration && abs(Assume_Thickness) < 100*micrometer){
 
@@ -92,7 +96,7 @@ double NPL::SiliconCalibrator::ZeroExtrapolation(TH1* histo, NPL::CalibrationSou
       g->SetPoint(i,x[i] ,Assume_E[i]);
     }
 
-    DistanceToPedestal = FitPoints(g,&Assume_E[0] , Source_Sig, coeff, 0 );
+    DistanceToPedestal = FitPoints(g,&Assume_E[0], Source_Sig, coeff, 0 );
     if(abs(DistanceToPedestal) < my_precision || Step < 0.01*micrometer)
       break;
 
@@ -134,7 +138,7 @@ double NPL::SiliconCalibrator::ZeroExtrapolation(TH1* histo, NPL::CalibrationSou
   return Assume_Thickness/micrometer;
 }
 ////////////////////////////////////////////////////////////////////////////////
-double NPL::SiliconCalibrator::SimpleCalibration(TH1* histo, NPL::CalibrationSource* CS, NPL::EnergyLoss* EL, vector<double>& coeff, double rmin,double rmax){
+double NPL::SiliconCalibrator::SimpleCalibration(TH1* histo, NPL::CalibrationSource* CS, NPL::EnergyLoss* EL, vector<double>& coeff, double Assume_Thickness, double rmin,double rmax){
   if(histo->GetEntries()==0){
     coeff.clear();
     coeff.push_back(0);
@@ -157,12 +161,13 @@ double NPL::SiliconCalibrator::SimpleCalibration(TH1* histo, NPL::CalibrationSou
     }
   }
 
-  if(counts < 30){
+  if(counts == 0){
     coeff.clear();
     coeff.push_back(0);
     coeff.push_back(-1);
     return -2;
   }
+
 
   m_CalibrationSource= CS;
   m_EL_Al= EL;
@@ -175,14 +180,31 @@ double NPL::SiliconCalibrator::SimpleCalibration(TH1* histo, NPL::CalibrationSou
     Source_E[i] = CS->GetEnergies()[i][0];
     Source_Sig[i] = CS->GetEnergiesErrors()[i][0]; 
   }
-  TGraphErrors* g = FitSpectrum(histo,rmin,rmax);
-  double dist = FitPoints(g,Source_E , Source_Sig, coeff, 0 );
+
+  TGraphErrors* g = FitSpectrum(histo,rmin,rmax); // the graph uses the original tabulated alpha energies 
+  if(g->GetN() != 3) {
+    coeff.clear();
+    coeff.push_back(0);
+    coeff.push_back(-1);
+    return -1;
+  }
+  
+  // Compute the new assumed energies and store in graph  
+  double* x = g->GetX(); // get the fitted channel centroids
+  vector<double> Assume_E ; // Energie calculated assuming Assume_Thickness deadlayer of Al
+  Assume_E.resize(source_size,0); 
+  for(unsigned int i = 0 ; i < source_size ; i++){
+    Assume_E[i] = EL->Slow(Source_E[i], Assume_Thickness, 0); // Assume_Thickness in micrometer
+    g->SetPoint(i,x[i],Assume_E[i]);
+  }
+
+  double DistanceToPedestal = FitPoints(g, &Assume_E[0] , Source_Sig, coeff, 0 );
 
   delete g;
-  if(dist!=-3)
-    return abs(dist);
+  if(DistanceToPedestal!=-3)
+    return abs(DistanceToPedestal);
   else 
-    return dist;
+    return DistanceToPedestal;
 }
 
 
@@ -196,7 +218,7 @@ double NPL::SiliconCalibrator::FitPoints(TGraphErrors* gre, double* Energies, do
       coeff.push_back(gre->GetFunction("pol1")->GetParameter(0));
       coeff.push_back(gre->GetFunction("pol1")->GetParameter(1));
       // Compute the Distance to pedestal:
-      return (coeff[0]/coeff[1]-pedestal);
+      return ((-coeff[0]/coeff[1])-pedestal);
    }
    else {
       //std::cout << "gre->GetN() <= 0" << std::endl; // used for debugging
@@ -281,8 +303,9 @@ TGraphErrors* NPL::SiliconCalibrator::FitSpectrum(TH1* histo, double rmin, doubl
       return gre;
    }
 
-   else
+   else{
       return (new TGraphErrors());
+   }
 }
 
 

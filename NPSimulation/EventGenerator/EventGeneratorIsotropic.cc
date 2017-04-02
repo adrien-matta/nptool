@@ -84,6 +84,7 @@ void EventGeneratorIsotropic::ReadConfiguration(NPL::InputParser parser){
         else if(particleName[j]=="alpha") { m_particleName.push_back("4He") ; }
         else if(particleName[j]=="gamma") { m_particleName.push_back("gamma") ;}
         else if(particleName[j]=="neutron") {m_particleName.push_back("neutron") ;}
+        else m_particleName.push_back(particleName[j]);
       }
 
       if(blocks[i]->HasToken("ExcitationEnergy"))

@@ -22,11 +22,11 @@
  *****************************************************************************/
 
 
-
 #include "NPSpectraServer.h"
 #include<cstdlib>
 #include<unistd.h>
 #include<iostream>
+
 NPL::SpectraServer* NPL::SpectraServer::instance = 0 ;
 ////////////////////////////////////////////////////////////////////////////////
 NPL::SpectraServer* NPL::SpectraServer::getInstance(){
@@ -42,32 +42,31 @@ void NPL::SpectraServer::Destroy(){
 }
 ////////////////////////////////////////////////////////////////////////////////
 NPL::SpectraServer::SpectraServer(){
-  m_Server= new TServerSocket(9090,true);
+  m_Server= new TServerSocket(9092,true);
   if(!m_Server->IsValid())
     exit(1);
   
   m_Server->SetCompressionSettings(1);
   // Add server socket to monitor so we are notified when a client needs to be
   // accepted
-  m_Monitor  = new TMonitor;
-  m_Monitor->Add(m_Server);
+  m_Monitor  = new TMonitor();
+  m_Monitor->Add(m_Server,TMonitor::kRead|TMonitor::kWrite);
 
   // Create a list to contain all client connections
   m_Sockets = new TList;
 
   // Create the list of Canvas
   m_Canvas = new TList;
-}
-////////////////////////////////////////////////////////////////////////////////
-void NPL::SpectraServer::AddCanvas(TCanvas* c){
-  m_Canvas->Add(c);
+  
+  std::cout << "INFO: nptool spectra server started on port 9092" << std::endl;
 }
 
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 void NPL::SpectraServer::CheckRequest(){
-  if(m_Server){
+  if(m_Server && m_Monitor){
       TSocket* s ;
-      if((s=m_Monitor->Select(1))!=(TSocket*)-1)
+      m_Monitor->ResetInterrupt();
+      if((s=m_Monitor->Select(10))!=(TSocket*)-1)
         HandleSocket(s);
   }
 }
@@ -87,24 +86,24 @@ void NPL::SpectraServer::HandleSocket(TSocket* s){
   if (s->IsA() == TServerSocket::Class()) {
     // accept new connection from spy
     TSocket* socket = ((TServerSocket*)s)->Accept();
-    m_Monitor->Add(socket);
+    m_Monitor->Add(socket,TMonitor::kRead|TMonitor::kWrite);
     m_Sockets->Add(socket);
   }
-  else {
-    // we only get string based requests from the spy
-    char request[64];
-    if (s->Recv(request, sizeof(request)) <= 0) {
-      m_Monitor->Remove(s);
-      m_Sockets->Remove(s);
-      delete s;
-      return;
-    }
-
-    // send requested object back
-    TMessage answer(kMESS_OBJECT);
-    if (!strcmp(request, "RequestSpectra"))
-      answer.WriteObject(m_Canvas);
-
-    s->Send(answer);
+  else{
+  // we only get string based requests from the spy
+  char request[64];
+  if (s->Recv(request, sizeof(request)) <= 0) {
+    m_Monitor->Remove(s);
+    m_Sockets->Remove(s);
+    delete s;
+    return;
   }
+
+  // send requested object back
+  TMessage answer(kMESS_OBJECT);
+  if (!strcmp(request, "RequestSpectra")){
+    answer.WriteObject(m_Canvas);
+  }
+  s->Send(answer);
+}
 }
