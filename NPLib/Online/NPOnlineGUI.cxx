@@ -106,8 +106,9 @@ void NPL::OnlineGUI::Fit(){
           fit2->SetParName(4,"Slope");
 
           if(m_BackgroundFit->IsOn()){
-            fit2->SetParameter(0,((TH1*)obj)->GetMaximum());
-            fit2->SetParameter(1,((TH1*)obj)->GetMaximumBin()->GetBinCenter());
+            TH1* hh = (TH1*)obj;
+            fit2->SetParameter(0,hh->GetMaximum());
+            fit2->SetParameter(1,hh->GetBinCenter(hh->GetMaximumBin()));
             fit2->SetParameter(2,5);
             fit2->SetParameter(3,10);fit2->SetParameters(4,0);
             ((TH1*) obj)->Fit(fit2,"Q");
