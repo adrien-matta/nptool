@@ -360,7 +360,7 @@ void NPL::OnlineGUI::MakeGui(){
   m_Right->AddFrame(m_FitBar, new TGLayoutHints(kLHintsTop|kLHintsExpandX));
 
   // Fit button
-  string path_fit = "/scratch/nptool/NPLib/Core/icons/barchart.xpm";
+  string path_fit = NPLPath + "/NPLib/Core/icons/barchart.xpm";
   m_Fit= new TGPictureButton(m_FitBar,gClient->GetPicture(path_fit.c_str()),-1,TGPictureButton::GetDefaultGC()(),kChildFrame);
   m_Fit->SetBackgroundColor(m_FgColor);
   m_Fit->SetToolTipText("Fit");
@@ -406,7 +406,7 @@ void NPL::OnlineGUI::MakeGui(){
   m_Right->AddFrame(m_PrintBar, new TGLayoutHints(kLHintsTop|kLHintsExpandX));
 
   // Print button
-  string path_print= "/scratch/nptool/NPLib/Core/icons/print.xpm";
+  string path_print= NPLPath + "/NPLib/Core/icons/print.xpm";
   TGPictureButton* m_Print= new TGPictureButton(m_PrintBar,gClient->GetPicture(path_print.c_str()),-1,TGPictureButton::GetDefaultGC()(),kChildFrame);
   m_Print->SetBackgroundColor(m_FgColor);
   m_Print->SetToolTipText("SaveAs");
@@ -441,7 +441,7 @@ void NPL::OnlineGUI::MakeGui(){
 
 
   // Elog button
-  string path_elog= "/scratch/nptool/NPLib/Core/icons/booklet.xpm";
+  string path_elog= NPLPath +  "/NPLib/Core/icons/booklet.xpm";
   TGPictureButton* m_Elog= new TGPictureButton(m_Right,gClient->GetPicture(path_elog.c_str()),-1,TGPictureButton::GetDefaultGC()(),kChildFrame);
   m_Elog->SetBackgroundColor(m_FgColor);
   m_Elog->SetToolTipText("Elog");
@@ -459,7 +459,8 @@ void NPL::OnlineGUI::MakeGui(){
   m_EmbeddedCanvas->SetAutoFit(true);
   m_Center->AddFrame(m_EmbeddedCanvas,new TGLayoutHints(kLHintsLeft | kLHintsBottom | kLHintsExpandX | kLHintsExpandY));
   TCanvas* c = new TCanvas("logo",0,0,0);
-  TASImage* logo = new TASImage("/scratch/nptool/NPLib/Core/icons/nptoolLogo.png");
+  string path = NPLPath + "/NPLib/Core/icons/nptoolLogo.pdf";
+  TASImage* logo = new TASImage(path.c_str());
   logo->Draw("");
   m_EmbeddedCanvas->AdoptCanvas(c);
   // Left //
