@@ -107,9 +107,11 @@ void NPL::OnlineGUI::Fit(){
 
           if(m_BackgroundFit->IsOn()){
             fit2->SetParameter(0,((TH1*)obj)->GetMaximum());
-            fit2->SetParameter(1,((TH1*)obj)->GetMaximumBin()->GetBinCenter());
+            //fit2->SetParameter(1,((TH1*)obj)->GetMaximumBin()->GetBinCenter());
+            fit2->SetParameter(1,((TH1*)obj)->GetMaximumBin());
             fit2->SetParameter(2,5);
-            fit2->SetParameter(3,10);fit2->SetParameters(4,0);
+            fit2->SetParameter(3,10);
+            fit2->SetParameters(4,0);
             ((TH1*) obj)->Fit(fit2,"Q");
 
           }
