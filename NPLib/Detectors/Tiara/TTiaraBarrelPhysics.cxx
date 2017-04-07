@@ -58,7 +58,7 @@ ClassImp(TTiaraBarrelPhysics)
 
     m_Take_E_Strip= true;
     m_Take_T_Back=true;
-    m_Strip_E_Threshold = 10 ; //keV
+    m_Strip_E_Threshold = 300 ; //keV
     m_Back_E_Threshold = 10 ; //keV
     m_Maximum_FrontBack_Difference = 30 ; // keV
     m_OuterBack_E_Threshold = 0;
@@ -460,10 +460,10 @@ TVector3 TTiaraBarrelPhysics::GetPositionOfInteraction(const int i) const{
 ///////////////////////////////////////////////////////////////////////////////
 TVector3 TTiaraBarrelPhysics::GetRandomisedPositionOfInteraction(const int i) const{
   TVector3 RandomPOS = GetPositionOfInteraction(i);
-  TVector3 v1(-12.0, 27.76*(0.5+sin(45*deg)), 0.0); // the numbers used in this line and the one below are related to those in lines 594-597
+  TVector3 v1(-12.0, 27.76*(0.5+sin(45*deg)), 0.0);
   TVector3 v2(12.0, 27.76*(0.5+sin(45*deg)), 0.0);
-  v1.RotateZ((5-DetectorNumber[i])*45*deg);
-  v2.RotateZ((5-DetectorNumber[i])*45*deg);
+  v1.RotateZ((3-DetectorNumber[i])*45*deg);
+  v2.RotateZ((3-DetectorNumber[i])*45*deg);
   TVector3 u = (v2-v1).Unit();
   double RandomNumber = Random->Rndm();
   TVector3 DeltaHolder((RandomNumber*6.0)-3.0,(RandomNumber*6.0)-3.0,0.0);

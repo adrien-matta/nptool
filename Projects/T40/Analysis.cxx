@@ -28,7 +28,7 @@ using namespace std;
 #include "NPAnalysisFactory.h"
 #include "NPDetectorManager.h"
 #include "NPOptionManager.h"
-#include "NPFunction.h" 
+#include "NPFunction.h"
 #include "RootOutput.h"
 #include "RootInput.h"
 #include "TMath.h"
@@ -59,11 +59,11 @@ double calculate_fit_slope(int len, double* Aw_X, double* Aw_Z, double& R2)
 	meanXZ /= N;
 
 	double slope = (meanXZ - meanX*meanZ) / (meanZ2 - meanZ*meanZ);
-	R2 = pow(meanXZ - meanX*meanZ, 2) / 
+	R2 = pow(meanXZ - meanX*meanZ, 2) /
 		((meanZ2 - meanZ*meanZ) * (meanX2 - meanX*meanX));
 
 	/// TODO::: R2 doesn't seem to make sense... look into it!
-	
+
 	return slope;
 } }
 
@@ -83,7 +83,7 @@ void Analysis::Init(){
   TF  = (TFPDTamuPhysics*) m_DetectorManager -> GetDetector("FPDTamu");
   TG  = (TGeTAMUPhysics*) m_DetectorManager -> GetDetector("GeTAMU");
 
-  
+
   // get reaction information
   myReaction = new NPL::Reaction();
   myReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
@@ -97,11 +97,11 @@ void Analysis::Init(){
   // energy losses
   string light=NPL::ChangeNameToG4Standard(myReaction->GetNucleus3().GetName());
   string beam=NPL::ChangeNameToG4Standard(myReaction->GetNucleus1().GetName());
-  LightTarget = NPL::EnergyLoss(light+"_"+TargetMaterial+".G4table","G4Table",10 );
-  LightAl = NPL::EnergyLoss(light+"_Al.G4table","G4Table",10);
-  //LightSi = NPL::EnergyLoss(light+"_Si.G4table","G4Table",10);
-  LightSi = NPL::EnergyLoss("He4_Si.SRIM","SRIM",10);
-  BeamTarget = NPL::EnergyLoss(beam+"_"+TargetMaterial+".G4table","G4Table",10);
+  LightTarget = NPL::EnergyLoss(light+"_"+TargetMaterial+".SRIM","SRIM",10 );
+  LightAl = NPL::EnergyLoss(light+"_Al.SRIM","SRIM",10);
+  LightSi = NPL::EnergyLoss(light+"_Si.SRIM","SRIM",10);
+  //LightSi = NPL::EnergyLoss("He4_Si.SRIM","SRIM",10);
+  BeamTarget = NPL::EnergyLoss(beam+"_"+TargetMaterial+".SRIM","SRIM",10);
   FinalBeamEnergy = BeamTarget.Slow(OriginalBeamEnergy, TargetThickness*0.5, 0);
   myReaction->SetBeamEnergy(FinalBeamEnergy);
   cout << "Final Beam energy (middle of target): " << FinalBeamEnergy << endl;
@@ -116,7 +116,7 @@ void Analysis::Init(){
   Si_E_OuterTB = 0;
   Si_E_TB = 0 ;
   Energy = 0;
-  
+
   //Original_ELab=0;
   //Original_ThetaLab=0;
   XTarget =0;
@@ -124,17 +124,17 @@ void Analysis::Init(){
   BeamDirection = TVector3(0,0,1);
   InitOutputBranch();
   InitInputBranch();
-  
+
   //Ge
   GammaSinglesE=0;
-  
+
   //FPD
   Delta_E = 0; // Energy ionisation chamber
   Micro_E = 0; // Energy from micromega total
 	Micro_E_row1_2 = 0; // Energy from micromega rows 1 & 2 ("delta E in stopping mode")
 	Micro_E_row3_6 = 0; // Energy from micromega rows 3-6  ("E in stopping mode")
-  Micro_E_row1 = 0 ;// Energy from micromega row 1 
-  Micro_E_col4 = 0 ;// energy from micromega col 1 
+  Micro_E_row1 = 0 ;// Energy from micromega row 1
+  Micro_E_col4 = 0 ;// energy from micromega col 1
   Plast_E = 0; // Energy Plastic
 	for(int i=0; i< kNumAw; ++i) {
 		Aw_X[i] = -1000;
@@ -143,7 +143,7 @@ void Analysis::Init(){
 	Aw_Theta1_2 = -1000;
 	Aw_ThetaFit = -1000;
 	Aw_ThetaFit_R2 = -1000;
-	
+
   //TAC
   TacSiGeOR     = -1000;
   TacSiMicro    = -1000;
@@ -190,12 +190,10 @@ void Analysis::TreatEvent(){
 
     // Correct for energy loss using the thickness of the target and the dead layer
     ELab = LightSi.EvaluateInitialEnergy( Energy ,0.7*micrometer , ThetaTHSurface); // 0.1 um of Aluminum
-    ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget); 
+    ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
    /////////////////////////////
     // Part 3 : Excitation Energy Calculation
     Ex = myReaction -> ReconstructRelativistic( ELab , ThetaLab );
-
-    /////////////////////////////
     // Part 4 : Theta CM Calculation
     ThetaCM  = myReaction -> EnergyLabToThetaCM( ELab , ThetaLab)/deg;
     ThetaLab=ThetaLab/deg;
@@ -206,7 +204,7 @@ void Analysis::TreatEvent(){
     TiaraIMX = HyballRandomImpactPosition.X();
     TiaraIMY = HyballRandomImpactPosition.Y();
     TiaraIMZ = HyballRandomImpactPosition.Z();
-    LightParticleDetected = true ; 
+    LightParticleDetected = true ;
   } // end loop TiaraHyball
 
   /////////////////////////// LOOP on TiaraBarrel /////////////////////////////
@@ -219,7 +217,7 @@ void Analysis::TreatEvent(){
       TVector3 BeamImpact(XTarget,YTarget,0);
       TVector3 HitDirection = TB -> GetRandomisedPositionOfInteraction(countTiaraBarrel) - BeamImpact ;
       ThetaLab = HitDirection.Angle( BeamDirection );
-      TVector3 NormalOnBarrel(+1,0,0); // Normal on detector 5 
+      TVector3 NormalOnBarrel(+1,0,0); // Normal on detector 5
       int det = TB->DetectorNumber[countTiaraBarrel];
       NormalOnBarrel.RotateZ((5-det)*45*deg);
       ThetaTBSurface = HitDirection.Angle(NormalOnBarrel);
@@ -247,7 +245,7 @@ void Analysis::TreatEvent(){
     	//ThetaTBSurface += 2*deg; //temporary solution
     }
     // Evaluate energy using the thickness, Target and Si dead layer Correction
-    ELab = LightSi.EvaluateInitialEnergy( Energy ,0.3*micrometer, ThetaTBSurface); 
+    ELab = LightSi.EvaluateInitialEnergy( Energy ,0.3*micrometer, ThetaTBSurface);
     //ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
 
     /////////////////////////////
@@ -265,13 +263,11 @@ void Analysis::TreatEvent(){
     TiaraIMX = BarrelRandomImpactPosition.X();
     TiaraIMY = BarrelRandomImpactPosition.Y();
     TiaraIMZ = BarrelRandomImpactPosition.Z();
-    LightParticleDetected = true ; 
+    LightParticleDetected = true ;
   } // end loop TiaraBarrel
 
-
-
 /////////////////////////// GENERAL treatment on Ge TAMU /////////////////////////////
- 
+
   /////////////////////////////
   // Part 1 : Get the recoil beta vetor
  TLorentzVector Recoil_LV;
@@ -280,17 +276,17 @@ void Analysis::TreatEvent(){
  else Recoil_LV =  myReaction -> GetEnergyImpulsionLab_1();
   RecoilBeta = Recoil_LV.Vect();
   RecoilBeta *= (1/Recoil_LV.E());// divide by the total energy (T+M) to get the velocity (beta) vector
- 
+
   /////////////////////////////
   // Part 2 : Calculate Doppler-Corrected energies for singles, and addback spectra
   TG->DCSingles(RecoilBeta);
-  TG->AddBack(RecoilBeta,3); 
+  TG->AddBack(RecoilBeta,3);
 
   /////////////////////////// LOOP on Ge TAMU /////////////////////////////
-  //for(unsigned int countGe = 0 ; countGe < TG->Singles_E.size() ; countGe++){ // multiplicity treated for now is zero 
-  // 
+  //for(unsigned int countGe = 0 ; countGe < TG->Singles_E.size() ; countGe++){ // multiplicity treated for now is zero
+  //
   //Event by event treatment goes here
-  // 
+  //
   //}
 
 
@@ -299,19 +295,19 @@ void Analysis::TreatEvent(){
 	// Sums across various rows & columns
 	if(TF->MicroRowNumber.size())
 	{
-		Micro_E_row1 = TF->GetMicroGroupEnergy(1,1,1,7); // energy sum from the row 1 
+		Micro_E_row1 = TF->GetMicroGroupEnergy(1,1,1,7); // energy sum from the row 1
 		Micro_E_col4 = TF->GetMicroGroupEnergy(1,4,4,4); // energy sum from the col 4
 		Micro_E      = TF->GetMicroGroupEnergy(1,4,1,7); // energy sum from all the pads
 		Micro_E_row1_2 = TF->GetMicroGroupEnergy(1,2,1,7); // energy sum from row 1-2
 		Micro_E_row3_6 = TF->GetMicroGroupEnergy(3,6,1,7); // energy sum from row 3-6
 	}
-	else 
+	else
 	{
-		Micro_E_row1 = -1000;   
+		Micro_E_row1 = -1000;
 		Micro_E_col4 = -1000;
 		Micro_E_row1_2 = -1000;
 		Micro_E_row3_6 = -1000;
-		Micro_E      = -1000;  
+		Micro_E      = -1000;
 	}
 	// Delta E ion chamber
 	Delta_E      = TF->DeltaEnergy.empty() ? -1000 : TF->DeltaEnergy[0];
@@ -348,15 +344,15 @@ void Analysis::TreatEvent(){
 			break;
 		}
 	}
-	
-	
+
+
   ////////////////////////////////////////// TAC  //////////////////////////////////////////
   // The Physics classes for FPDTamu are made to hold the time information from every channel
-  // i.e. there can not be channels providing time more than channels providing energies 
+  // i.e. there can not be channels providing time more than channels providing energies
   // In Tiara@TAMU campaign the times are provided as OR from the Micro and the Germanium
   // i.e. one time channel per detector. Typically this information is given to the first channel
-  // of the detector, e.g. for micro: FpdTAMU MICRO_R1_C1_T and for HPGe: GeTamu CLOVER01_CRYSTAL01_T 
-  
+  // of the detector, e.g. for micro: FpdTAMU MICRO_R1_C1_T and for HPGe: GeTamu CLOVER01_CRYSTAL01_T
+
 	if(TF->MicroTimeOR.size()){
 		TacSiMicro = TF->MicroTimeOR[0];
 
@@ -374,26 +370,26 @@ void Analysis::TreatEvent(){
 		}
 	}
 
-  // For the plastic there's two ways to calculate the times, both ar OR. 
+  // For the plastic there's two ways to calculate the times, both ar OR.
   // The two available time channels i.e. Plast Right and Plast left are used in this case
   if(TF->PlastRightTime.size()==1)
       TacSiPlastRight = TF->PlastRightTime[0];
   else
     TacSiPlastRight = -999;
-  
+
   if(TF->PlastLeftTime.size()==1)
       TacSiPlastLeft = TF->PlastLeftTime[0];
   else
     TacSiPlastLeft = -999;
-    
-	
+
+
 	if(TG->GeTime.size()==1)
     TacSiGeOR = TG->GeTime[0];
-  else 
+  else
     TacSiGeOR = -999;
- 
+
  	RunNumber = RootInput::getInstance()->GetChain()->GetFileNumber() + 1;
- 	   
+
 }
 
 
@@ -408,19 +404,19 @@ void Analysis::ReInitValue(){
   ELab = -1000;
   ThetaLab = -1000;
   ThetaCM = -1000;
-  LightParticleDetected = false ; 
-  
+  LightParticleDetected = false ;
+
   //Simu
   //Original_ELab = -1000;
   //Original_ThetaLab = -1000;
-  
+
   //FPD
   Delta_E      = -1000;
-  Micro_E_row1 = -1000;   
-  Micro_E_col4 = -1000; 
+  Micro_E_row1 = -1000;
+  Micro_E_col4 = -1000;
  	Micro_E_row1_2 = -1000;
 	Micro_E_row3_6 = -1000;
-	Micro_E      = -1000;  
+	Micro_E      = -1000;
   Plast_E      = -1000;
 
 	for(int i=0; i< kNumAw; ++i) {
@@ -430,7 +426,7 @@ void Analysis::ReInitValue(){
 	Aw_Theta1_2 = -1000;
 	Aw_ThetaFit	= -1000;
 	Aw_ThetaFit_R2	= -1000;
-	
+
   //TAC
   TacSiGeOR     = -1000;
   TacSiMicro    = -1000;
@@ -456,7 +452,7 @@ void Analysis::InitOutputBranch() {
   RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixZ",&TiaraIMZ,"TiaraImpactMatrixZ/D");
 
   //GeTamu
-  // stuff goes here 
+  // stuff goes here
   RootOutput::getInstance()->GetTree()->Branch("GammaSinglesE",&GammaSinglesE,"GammaSinglesE/D");
 
 
@@ -473,7 +469,7 @@ void Analysis::InitOutputBranch() {
   RootOutput::getInstance()->GetTree()->Branch("Aw_Theta1_2",&Aw_Theta1_2,"Aw_Theta1_2/D");
   RootOutput::getInstance()->GetTree()->Branch("Aw_ThetaFit",&Aw_ThetaFit,"Aw_ThetaFit/D");
   RootOutput::getInstance()->GetTree()->Branch("Aw_ThetaFit_R2",&Aw_ThetaFit_R2,"Aw_ThetaFit_R2/D");
-	
+
 //TACS
   RootOutput::getInstance()->GetTree()->Branch("TacSiGeOR",&TacSiGeOR,"TacSiGeOR/D");
 	RootOutput::getInstance()->GetTree()->Branch("TacSiMicro",&TacSiMicro,"TacSiMicro/D");
