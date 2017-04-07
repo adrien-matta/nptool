@@ -459,11 +459,11 @@ void NPL::OnlineGUI::MakeGui(){
   m_EmbeddedCanvas = new TRootEmbeddedCanvas("Display",m_Center,700,490,!kSunkenFrame);  
   m_EmbeddedCanvas->SetAutoFit(true);
   m_Center->AddFrame(m_EmbeddedCanvas,new TGLayoutHints(kLHintsLeft | kLHintsBottom | kLHintsExpandX | kLHintsExpandY));
-  TCanvas* c = new TCanvas("logo",0,0,0);
-  string path = NPLPath + "/NPLib/Core/icons/nptoolLogo.pdf";
-  TASImage* logo = new TASImage(path.c_str());
-  logo->Draw("");
-  m_EmbeddedCanvas->AdoptCanvas(c);
+//  TCanvas* c = new TCanvas("logo",0,0,0);
+ // string path = NPLPath + "/NPLib/Core/icons/nptoolLogo.png";
+//  TASImage* logo = new TASImage(path.c_str());
+//  logo->Draw("");
+//  m_EmbeddedCanvas->AdoptCanvas(c);
   // Left //
   // Create tabs for histo list and canvas list
   m_Tab = new TGTab(m_Left,700,500);
